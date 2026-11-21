@@ -31990,6 +31990,113 @@
         "anneal/theory"
       ]
     },
+    "forward-progress-assumptions-side-effect-free-loop-deletion-and-slicing": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.1984.5010248"
+          },
+          "name": "Program Slicing (Weiser, IEEE TSE SE-10(4):352-357, 1984)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-50940-2_47"
+          },
+          "name": "The Semantics of Program Slicing and Program Integration (Reps and Yang, TAPSOFT '89, LNCS 352)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1275497.1275502"
+          },
+          "name": "A new foundation for control dependence and slicing for modern program structures (Ranganath, Amtoft, Banerjee, Hatcliff, Dwyer, ACM TOPLAS 29(5), 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-1-4612-1674-2"
+          },
+          "name": "Refinement Calculus: A Systematic Introduction (Back and von Wright, Springer, 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9155-4"
+          },
+          "name": "A Formally Verified Compiler Back-end (Leroy, Journal of Automated Reasoning 43(4), 2009)"
+        },
+        {
+          "identity": {
+            "path": "source/statements.tex",
+            "repository": "cplusplus/draft",
+            "revision": "604674fa5028d318770a1b689966cffeeedd4e2b"
+          },
+          "name": "C++ working draft sources ([stmt.iter.general], trivial infinite loops)"
+        },
+        {
+          "identity": {
+            "date": "2024-03-21",
+            "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p2809r3.html"
+          },
+          "name": "WG21 P2809R3, Trivial infinite loops are not Undefined Behavior"
+        },
+        {
+          "identity": {
+            "document": "ISO/IEC JTC1/SC22/WG21 N4861",
+            "url": "https://timsong-cpp.github.io/cppwp/n4861/intro.progress"
+          },
+          "name": "C++ working draft N4861, [intro.progress]"
+        },
+        {
+          "identity": {
+            "document": "ISO/IEC 9899 draft N1570",
+            "url": "https://port70.net/~nsz/c/c11/n1570.html"
+          },
+          "name": "C11 committee draft N1570, 6.8.5 paragraph 6"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6"
+          },
+          "name": "LLVM (mustprogress, loop deletion, inliner attribute merging)"
+        },
+        {
+          "identity": {
+            "path": "common/Behaviors.v",
+            "repository": "AbsInt/CompCert",
+            "revision": "5e4ef44c57b22cdc2e1893770843fd693a5f82e1"
+          },
+          "name": "CompCert behaviours (common/Behaviors.v)"
+        },
+        {
+          "identity": {
+            "pull_request": "81451",
+            "repository": "rust-lang/rust",
+            "revision": "409920873cf8a95739a55dc5fe5adb05e1b4758e"
+          },
+          "name": "rustc: Upgrade to LLVM 12 (closes rust-lang/rust issue 28728)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/refinement",
+        "pl/forward-progress",
+        "pl/undefined-behavior",
+        "pl/divergence",
+        "compilers/loop-deletion",
+        "compilers/program-slicing",
+        "compilers/inlining",
+        "compilers/llvm-mustprogress"
+      ]
+    },
     "frame-limited-reuse-fip-second-class-values-and-levity-kind-immediates": {
       "observed_at": "2026-11-19",
       "subjects": [

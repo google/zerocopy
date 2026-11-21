@@ -1,0 +1,442 @@
+[
+ {
+  "id": "loop-deletion-unsound-divergence-observable",
+  "lean": "Toy.Progress.loopDeletion_spin_not_refines_divergenceObservable",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "Under the divergence-observable semantics, for either loop flag mp, deleting `while 1 do skip` from `while 1 do skip ;; emit 1` is not a refinement: from every initial state the target `emit 1` terminates emitting [1], while the source has the behaviour `div []` (it silently diverges with empty trace) and never terminates emitting [1].",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The statement is a concrete instance for each loop flag mp; it has no hypotheses.",
+  "nonvacuity_witness_lean": "Toy.Progress.loopDeletion_spin_not_refines_divergenceObservable",
+  "positive_control_lean": "Toy.Progress.loopDeletion_spin_refines_forwardProgress",
+  "non_claims": [
+   "Says nothing about forward-progress semantics; there the same deletion is a refinement (loopDeletion_spin_refines_forwardProgress).",
+   "Concerns one concrete program pair; it does not say that every deletion of a possibly diverging loop is unsound (deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff).",
+   "Escape hatches: under the divergence-observable semantics, deleting an emit-free loop with dead writes from `p ;; loop ;; k` is a refinement whenever, at every state reachable at the end of p, the loop terminates (for example because it is never entered or its condition is false there) or k itself has the behaviour `div []` (deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff).",
+   "The loop `while 1 do skip` is exactly a loop that C11 (constant controlling expression) and the current C++ working draft (trivial infinite loop) do not let an implementation assume to terminate; the toy uses it only as the simplest silent loop.",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction).",
+   "That this models rustc's `loop {}` and the historical miscompilation is a modelling-bridge argument, not part of the kernel-checked statement."
+  ],
+  "prior_art": [
+   "rust-lang/rust issue #28728, 'LLVM loop optimization can make safe programs crash' (opened 2015-09-29; closed 2021-03-05 as completed with the comment 'Closed by #81451'), https://github.com/rust-lang/rust/issues/28728; rust-lang/rust pull request #81451, 'Upgrade to LLVM 12' (merged 2021-03-04, merge commit 409920873cf8a95739a55dc5fe5adb05e1b4758e).",
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v: `program_behavior` has constructors Terminates (trace and exit code), Diverges (finite trace), Reacts (infinite trace) and Goes_wrong (trace); `behavior_improves beh1 beh2` holds iff beh1 = beh2 or beh1 = Goes_wrong t for a prefix t of beh2. Prose comparison only.",
+   "Xavier Leroy, 'A Formally Verified Compiler Back-end', Journal of Automated Reasoning 43(4):363-446, 2009, DOI 10.1007/s10817-009-9155-4 (compiler correctness stated over observable behaviours, including divergence).",
+   "Nuno P. Lopes, Juneyoung Lee, Chung-Kil Hur, Zhengyang Liu, John Regehr, 'Alive2: Bounded Translation Validation for LLVM', PLDI 2021, pp. 65-79, DOI 10.1145/3453483.3454030."
+  ],
+  "design_question": "When divergence is observable (the reading under which Rust's `loop {}` is defined behaviour), is deleting a silent infinite loop in front of an output a sound transformation, and does the answer depend on the loop's progress flag? This card answers with the smallest program pair, `while 1 do skip ;; emit 1` versus `emit 1`, for either flag value."
+ },
+ {
+  "id": "loop-deletion-sound-forward-progress",
+  "lean": "Toy.Progress.deleteEmitFreeLoop_withDeadWrites_refines_forwardProgress",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "Under the forward-progress semantics, for every prefix p, condition b, flag mp, loop body body and continuation k: if the body is emit-free (hEmit) and the variables it writes are dead before k in every state reachable at the end of p (hDead), then deleting `while b do body` from `p ;; while b do body ;; k` is a refinement. The theorem has no termination hypothesis: the loop may diverge from reachable states.",
+  "hypotheses": [
+   {
+    "name": "hEmit : EmitFree body",
+    "purpose": "The loop body contains no `emit`, so deleting the loop cannot drop output and a diverging execution of the loop is silent. Syntactic; a semantic 'emits nothing from reachable entry states' condition would also suffice (not proved here) but is not stated. Counterexample class: one concrete program, p = `x0 := 0`, body `emit 7 ;; x0 := 1` (one iteration, emits 7), k = skip, loop flag false; deletion drops the output 7.",
+    "tightness": "tight",
+    "counterexample": "Toy.Progress.deleteLoop_forwardProgress_needs_emitFree"
+   },
+   {
+    "name": "hDead : DeadAfterPrefix p body.writes k",
+    "purpose": "In every state reachable at the end of p, changing the variables the body may assign does not change the observable behaviours of k, so a terminating loop's effect on the state is unobservable. Implied by the all-state condition DeadAtEntry body.writes k (deadAfterPrefix_of_deadAtEntry) and strictly weaker (deadAfterPrefix_example_not_deadAtEntry). Counterexample class: one concrete program, p = `x0 := 0`, emit-free body `x0 := 1`, k = `emit x0`, loop flag false; deletion changes the output from [1] to [0].",
+    "tightness": "tight",
+    "counterexample": "Toy.Progress.deleteLoop_forwardProgress_needs_deadWrites"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "With p = skip, body `x1 := x1 + 1` (emit-free, writes only x1) and continuation `emit x0` (x1 dead): the hypotheses hold, and the loop `while x0 = 0 do x1 := x1 + 1` does not terminate from the reachable all-zero state, so the theorem covers deleting a loop that can diverge.",
+  "nonvacuity_witness_lean": "Toy.Progress.deleteLoop_hypotheses_nonvacuous",
+  "non_claims": [
+   "Forward progress here is the thread-level reading: any run that never terminates and eventually stops emitting is undefined behaviour.",
+   "C11 §6.8.5p6 and C++26 (WG21 P2809R3) differ in which loops they exempt from termination assumptions: C11 exempts every loop whose controlling expression is a constant expression regardless of its body (so `while (1) { x1 = x1 + 1; }` may not be assumed to terminate in C11), whereas the C++ working draft exempts only trivial infinite loops, whose body is `;` or `{}` and whose controlling expression is a constant expression evaluating to true (so `while (true) { x1 = x1 + 1; }` may still be assumed to terminate). `FPBeh` models neither exemption.",
+   "Undefined behaviour admits every behaviour, including behaviours that contradict output already produced (C++-style). The deletion `p ;; loop ;; k` to `p ;; k` nevertheless reproduces every output prefix emitted by p, so it does not depend on contradicting earlier output; transformations that hoist a trap or a contradictory output above p rely on retroactive undefined behaviour and are not sound under CompCert-style undefined behaviour that only admits extensions of the trace produced so far (not proved here).",
+   "Deletion here replaces `p ;; loop ;; k` by `p ;; k`, falling through to k. In LLVM, deleting a dead loop that has no exit block replaces the branch into it by `unreachable` (LoopUtils.cpp `deleteDeadLoop`), which additionally licenses removing k; that stronger transformation is not modelled.",
+   "Deletion is formalized only for a loop in top-level sequence position `p ;; loop ;; k`; loops nested inside other loops or conditionals are not covered.",
+   "EmitFree is syntactic and DeadAfterPrefix is semantic; neither a liveness analysis nor an effect analysis that would establish them is formalized.",
+   "Does not say the deletion is a refinement under the divergence-observable semantics (loopDeletion_spin_not_refines_divergenceObservable). Nor does it say that deleting a flagged loop `.loop true b body` with `EmitFree body` and `DeadAfterPrefix` is a refinement under the per-loop semantics `MixedBeh`: when `body` silently diverges inside a nested unflagged loop, the enclosing flagged loop has no progress violation. For example, `flaggedOverUnflagged` (`.loop true x0IsZero (.seq (spin false) (.assign 0 (.num 1)))`, whose body is emit-free), run from a state with `x0 = 0`, has no progress violation (not_progressViolation_flaggedOverUnflagged) and has exactly the per-loop behaviour `div []` (mixedBeh_flaggedOverUnflagged); that deleting such a loop is therefore not a `MixedBeh` refinement is not stated as a separate theorem (not proved here).",
+   "Refinement compares behaviours from every initial state separately; it says nothing about programs run from a restricted set of initial states.",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "ISO/IEC JTC1/SC22/WG21 N4861 (C++ working draft, 2020-04-01), §6.9.2.2 [intro.progress] paragraph 1: the implementation may assume that any thread will eventually terminate, call a library I/O function, perform a volatile access, or perform a synchronization or atomic operation; its note says this is intended to allow removal of empty loops even when termination cannot be proven. Rendering: https://timsong-cpp.github.io/cppwp/n4861/intro.progress.",
+   "ISO/IEC 9899 draft N1570 (C11), §6.8.5 paragraph 6: an iteration statement whose controlling expression is not a constant expression and that performs no input/output operations, does not access volatile objects, and performs no synchronization or atomic operations in its body, controlling expression, or (for a for statement) expression-3, may be assumed by the implementation to terminate. Rendering: https://port70.net/~nsz/c/c11/n1570.html.",
+   "JF Bastien, 'Trivial infinite loops are not Undefined Behavior', WG21 P2809R3, 2024-03-21, https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2024/p2809r3.html. Its wording is in [stmt.iter.general] of the C++ working draft, cplusplus/draft commit 604674fa5028d318770a1b689966cffeeedd4e2b, source/statements.tex lines 585-597: a trivial infinite loop is a trivially empty iteration statement (body `;` or `{}`) whose converted controlling expression is a constant expression evaluating to true; its statement is replaced by a call to std::this_thread::yield, and whether this replacement occurs on freestanding implementations is implementation-defined.",
+   "LLVM Language Reference Manual at llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, file llvm/docs/LangRef.md (quoted sentence at line 2981): function attribute `mustprogress` (the function is required to return, unwind, or interact with the environment in an observable way; intended to model the first section of [intro.progress]; terminating loops without side effects can be removed; 'If a mustprogress function calls a function not marked mustprogress, and that function never returns, the program is well-defined even if there isn't any other observable progress') and loop metadata `llvm.loop.mustprogress`.",
+   "llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6: llvm/lib/Transforms/Scalar/LoopDeletion.cpp line 110 (`isLoopDead` ends with `return isLoopNestFinite(L, SE, LI);`, defined at llvm/lib/Analysis/LoopInfo.cpp line 1216: the loop must be finite by assumption (ScalarEvolution::loopIsFiniteByAssumption), or every loop of its nest must be finite by assumption or have a computable constant maximal backedge-taken count); llvm/lib/Transforms/Utils/LoopUtils.cpp lines 622-628 (`deleteDeadLoop` replaces the branch into a deleted loop that has no exit block by `unreachable`).",
+   "Nuno P. Lopes, Juneyoung Lee, Chung-Kil Hur, Zhengyang Liu, John Regehr, 'Alive2: Bounded Translation Validation for LLVM', PLDI 2021, pp. 65-79, DOI 10.1145/3453483.3454030."
+  ],
+  "design_question": "Under a thread-level forward-progress assumption (the reading behind C++ [intro.progress] and LLVM `mustprogress`), which side conditions suffice to delete a loop that may not terminate, so that a compiler needs no termination proof? This card answers: an emit-free body whose written variables are dead before the continuation at the loop's reachable entry states.",
+  "lean_names": [
+   "Toy.Progress.deadAfterPrefix_of_deadAtEntry",
+   "Toy.Progress.deadAfterPrefix_example_not_deadAtEntry"
+  ]
+ },
+ {
+  "id": "loop-deletion-exact-condition-divergence-observable",
+  "lean": "Toy.Progress.deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff",
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "Under the divergence-observable semantics, for an emit-free loop body (hEmit) whose written variables are dead before k in every state reachable at the end of p (hDead), deleting the loop from `p ;; loop ;; k` is a refinement iff from every state reachable at the end of a terminating run of p, the loop terminates or k itself silently diverges with empty trace (`ObsBeh k s₁ (div [])`).",
+  "hypotheses": [
+   {
+    "name": "hEmit : EmitFree body",
+    "purpose": "The loop body contains no `emit`, so deleting the loop cannot drop output and a diverging execution of the loop is silent. Syntactic; a semantic 'emits nothing from reachable entry states' condition would also suffice (not proved here) but is not stated. Counterexample class: the same concrete program as for the forward-progress card (p = `x0 := 0`, body `emit 7 ;; x0 := 1`, k = skip); the loop terminates at every reachable entry state, yet deletion is not a refinement, so the equivalence fails.",
+    "tightness": "tight",
+    "counterexample": "Toy.Progress.deleteLoop_divergenceObservable_iff_needs_emitFree"
+   },
+   {
+    "name": "hDead : DeadAfterPrefix p body.writes k",
+    "purpose": "In every state reachable at the end of p, the variables the body may assign are dead before k, so a terminating loop leaves k's behaviours unchanged. Used only in the 'if' direction. Counterexample class: one concrete program, p = `x0 := 0`, body `x0 := 1`, k = `emit x0`; the loop terminates at every reachable entry state, yet deletion is not a refinement, so the equivalence fails.",
+    "tightness": "tight",
+    "counterexample": "Toy.Progress.deleteLoop_divergenceObservable_iff_needs_deadWrites"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "With p = `x0 := 1`, body `x1 := x1 + 1` and k = `emit x0`, the hypotheses hold and both sides of the equivalence are true: the loop terminates at every reachable entry state although it does not terminate from the unreachable all-zero state, and deletion is a refinement.",
+  "nonvacuity_witness_lean": "Toy.Progress.deleteLoop_iff_terminates_nonvacuous",
+  "non_claims": [
+   "The condition is not 'the loop terminates from every reachable entry state': that condition is sufficient but not necessary (deleteLoop_refines_divergenceObservable_without_termination); it becomes necessary when k never has the behaviour `div []` at reachable entry states (deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff_terminates).",
+   "`hEmit : EmitFree body` (syntactic) and `hDead : DeadAfterPrefix p body.writes k` (semantic, over all states reachable at the end of p) are fixed sufficient hypotheses outside the equivalence, not necessary conditions for deletion to be a refinement: deleting a loop whose body contains an `emit` that is never executed from reachable entry states, or whose writes are read by k only in ways that cannot change k's behaviour along the loop's actual runs, can still be a refinement under `ObsBeh` (not proved here).",
+   "Because the language is deterministic and `ObsBeh` has no undefined-behaviour case, `Refines ObsBeh src tgt` is symmetric and coincides with behavioural equivalence `∀ s b, ObsBeh src s b ↔ ObsBeh tgt s b` (refines_obsBeh_iff_equiv). In divergence-observable intermediate languages that also have non-loop undefined behaviour (such as Rust MIR or CompCert's languages with Goes_wrong), refinement is one-way, and a loop that triggers undefined behaviour from every reachable non-terminating entry state can be deleted although it neither terminates nor is followed by a silently diverging continuation (not proved here); this is not modelled.",
+   "Reachability is relative to the prefix p only; the condition is not decidable in general and no analysis that establishes it is formalized.",
+   "Deletion is formalized only for a loop in top-level sequence position `p ;; loop ;; k`.",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v: `program_behavior` has constructors Terminates (trace and exit code), Diverges (finite trace), Reacts (infinite trace) and Goes_wrong (trace); `behavior_improves beh1 beh2` holds iff beh1 = beh2 or beh1 = Goes_wrong t for a prefix t of beh2. Prose comparison only.",
+   "Xavier Leroy, 'A Formally Verified Compiler Back-end', Journal of Automated Reasoning 43(4):363-446, 2009, DOI 10.1007/s10817-009-9155-4 (compiler correctness stated over observable behaviours, including divergence).",
+   "rust-lang/rust issue #28728, 'LLVM loop optimization can make safe programs crash' (opened 2015-09-29; closed 2021-03-05 as completed with the comment 'Closed by #81451'), https://github.com/rust-lang/rust/issues/28728; rust-lang/rust pull request #81451, 'Upgrade to LLVM 12' (merged 2021-03-04, merge commit 409920873cf8a95739a55dc5fe5adb05e1b4758e)."
+  ],
+  "design_question": "When divergence is observable, what exactly must hold, given an emit-free body with dead writes, for loop deletion to be a refinement, i.e. what replaces the termination proof that the forward-progress semantics makes unnecessary?",
+  "lean_names": [
+   "Toy.Progress.refines_obsBeh_iff_equiv",
+   "Toy.Progress.obsBeh_exists",
+   "Toy.Progress.obsBeh_unique"
+  ]
+ },
+ {
+  "id": "loop-deletion-termination-condition-not-necessary",
+  "lean": "Toy.Progress.deleteLoop_refines_divergenceObservable_without_termination",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "Deleting the always-diverging loop `while 1 do skip` from `skip ;; while 1 do skip ;; while 1 do skip` is a divergence-observable refinement although the loop terminates from no state; the hypotheses of the exact characterization hold (the body skip is emit-free and writes nothing), so 'deletion is a refinement only if the loop terminates from every reachable entry state' is false.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance; it also establishes EmitFree skip and DeadAfterPrefix skip [] (while 1 do skip).",
+  "nonvacuity_witness_lean": "Toy.Progress.deleteLoop_refines_divergenceObservable_without_termination",
+  "positive_control_lean": "Toy.Progress.loopDeletion_spin_not_refines_divergenceObservable",
+  "non_claims": [
+   "Escape hatch restoring necessity of termination: adding the hypothesis that k never has the behaviour `div []` at any state reachable at the end of p makes reachable loop termination both necessary and sufficient (deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff_terminates).",
+   "Does not say that deleting diverging loops is generally sound when divergence is observable; the continuation here is itself a silent infinite loop. With the continuation `emit 1` the deletion fails (loopDeletion_spin_not_refines_divergenceObservable).",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v: `program_behavior` has constructors Terminates (trace and exit code), Diverges (finite trace), Reacts (infinite trace) and Goes_wrong (trace); `behavior_improves beh1 beh2` holds iff beh1 = beh2 or beh1 = Goes_wrong t for a prefix t of beh2. Prose comparison only."
+  ],
+  "design_question": "Is 'the loop terminates from every reachable entry state' necessary for deletion when divergence is observable, or can a continuation that itself silently diverges make deletion of a never-terminating loop sound? Reference counterexample delimiting the exact characterization."
+ },
+ {
+  "id": "loop-deletion-iff-terminates-under-nonsilent-continuation",
+  "lean": "Toy.Progress.deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff_terminates",
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "Corollary of the exact characterization: if additionally k never has the behaviour `div []` at a state reachable at the end of p (hNoSilentK), then, for an emit-free body (hEmit) whose writes are dead before k at reachable states (hDead), deleting the loop from `p ;; loop ;; k` is a divergence-observable refinement iff the loop terminates from every state reachable at the end of p.",
+  "hypotheses": [
+   {
+    "name": "hEmit : EmitFree body",
+    "purpose": "The loop body contains no `emit`, so deleting the loop cannot drop output and a diverging execution of the loop is silent. Syntactic; a semantic 'emits nothing from reachable entry states' condition would also suffice (not proved here) but is not stated. Counterexample class: one concrete program, p = `x0 := 0`, body `emit 7 ;; x0 := 1`, k = skip (which never has behaviour `div []`).",
+    "tightness": "tight",
+    "counterexample": "Toy.Progress.deleteLoop_iff_terminates_needs_emitFree"
+   },
+   {
+    "name": "hDead : DeadAfterPrefix p body.writes k",
+    "purpose": "In every state reachable at the end of p, the variables the body may assign are dead before k. Counterexample class: one concrete program, p = `x0 := 0`, body `x0 := 1`, k = `emit x0` (which never has behaviour `div []`).",
+    "tightness": "tight",
+    "counterexample": "Toy.Progress.deleteLoop_iff_terminates_needs_deadWrites"
+   },
+   {
+    "name": "hNoSilentK : ∀ s₁, ReachableAt p s₁ → ¬ ObsBeh k s₁ (.div [])",
+    "purpose": "Rules out a continuation whose own silent divergence masks the loop's divergence; without it the 'only if' direction fails. Counterexample class: one concrete program, p = skip, loop `while 1 do skip`, k = `while 1 do skip`; deletion is a refinement although the loop terminates from no state.",
+    "tightness": "tight",
+    "counterexample": "Toy.Progress.deleteLoop_iff_terminates_needs_continuation_not_silent"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "With p = `x0 := 1`, body `x1 := x1 + 1` and k = `emit x0`, all three hypotheses hold and both sides of the equivalence are true (the loop terminates at every reachable entry state but not from the unreachable all-zero state).",
+  "nonvacuity_witness_lean": "Toy.Progress.deleteLoop_iff_terminates_nonvacuous",
+  "non_claims": [
+   "A reference corollary of deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff (three-line proof); it adds no independent semantic content.",
+   "hNoSilentK excludes only the behaviour `div []` (silent divergence without any output after p); a continuation that emits and then silently diverges, such as `emit 1 ;; while 1 do skip`, satisfies hNoSilentK (noSilentK_admits_emit_then_spin).",
+   "`hEmit : EmitFree body` (syntactic) and `hDead : DeadAfterPrefix p body.writes k` (semantic, over all states reachable at the end of p) are fixed sufficient hypotheses outside the equivalence, not necessary conditions for deletion to be a refinement: deleting a loop whose body contains an `emit` that is never executed from reachable entry states, or whose writes are read by k only in ways that cannot change k's behaviour along the loop's actual runs, can still be a refinement under `ObsBeh` (not proved here).",
+   "Because the language is deterministic and `ObsBeh` has no undefined-behaviour case, `Refines ObsBeh src tgt` is symmetric and coincides with behavioural equivalence `∀ s b, ObsBeh src s b ↔ ObsBeh tgt s b` (refines_obsBeh_iff_equiv). In divergence-observable intermediate languages that also have non-loop undefined behaviour (such as Rust MIR or CompCert's languages with Goes_wrong), refinement is one-way, and a loop that triggers undefined behaviour from every reachable non-terminating entry state can be deleted although it neither terminates nor is followed by a silently diverging continuation (not proved here); this is not modelled.",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "rust-lang/rust issue #28728, 'LLVM loop optimization can make safe programs crash' (opened 2015-09-29; closed 2021-03-05 as completed with the comment 'Closed by #81451'), https://github.com/rust-lang/rust/issues/28728; rust-lang/rust pull request #81451, 'Upgrade to LLVM 12' (merged 2021-03-04, merge commit 409920873cf8a95739a55dc5fe5adb05e1b4758e).",
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v: `program_behavior` has constructors Terminates (trace and exit code), Diverges (finite trace), Reacts (infinite trace) and Goes_wrong (trace); `behavior_improves beh1 beh2` holds iff beh1 = beh2 or beh1 = Goes_wrong t for a prefix t of beh2. Prose comparison only."
+  ],
+  "design_question": "Corollary and reference point: under which extra hypothesis on the continuation does the exact divergence-observable deletion condition reduce to the familiar requirement that the loop terminate from every reachable entry state?",
+  "lean_names": [
+   "Toy.Progress.noSilentK_admits_emit_then_spin",
+   "Toy.Progress.refines_obsBeh_iff_equiv"
+  ]
+ },
+ {
+  "id": "forward-progress-admits-divergence-observable-refinements",
+  "lean": "Toy.Progress.refines_forwardProgress_of_refines_divergenceObservable_strict",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "Divergence-observable refinement is strictly stronger than forward-progress refinement: for all programs src and tgt, if tgt refines src under the divergence-observable semantics then tgt refines src under the forward-progress semantics, and there exist programs src and tgt such that tgt refines src under forward progress but not under the divergence-observable semantics.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The statement has no hypotheses; its first conjunct applies, for example, to removing a dead store, which is a divergence-observable refinement.",
+  "nonvacuity_witness_lean": "Toy.Progress.refines_divergenceObservable_example",
+  "non_claims": [
+   "The second conjunct is purely existential and names no programs. A concrete pair with this property is src = `while 1 do skip ;; emit 1` and tgt = `emit 1` (deleting the loop), by loopDeletion_spin_refines_forwardProgress and loopDeletion_spin_not_refines_divergenceObservable. A reference point combining monotonicity of the forward-progress completion with the loop-deletion example; the first conjunct is a two-line unfolding of the definitions. The premise `Refines ObsBeh src tgt` of the first conjunct cannot be dropped: adding an output is not a forward-progress refinement (refines_forwardProgress_needs_hypothesis).",
+   "The analogous transfer into the per-loop semantics `MixedBeh` is false: because `ObsBeh` ignores loop flags, `Refines ObsBeh (spin false) (spin true)` holds while `Refines MixedBeh (spin false) (spin true)` fails (refines_divergenceObservable_not_imp_refines_mixed).",
+   "Relies on `FPBeh` being determined by `ObsBeh` and on determinism (under which `Refines ObsBeh` is behavioural equivalence, refines_obsBeh_iff_equiv). In a language with internal nondeterminism, refining a choice between `term [1]` and `div []` to `div []` is a divergence-observable refinement that turns a possibly progressing program into one that always silently diverges; the statement says nothing about that setting (not proved here).",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "CompCert, AbsInt/CompCert commit 5e4ef44c57b22cdc2e1893770843fd693a5f82e1, common/Behaviors.v: `program_behavior` has constructors Terminates (trace and exit code), Diverges (finite trace), Reacts (infinite trace) and Goes_wrong (trace); `behavior_improves beh1 beh2` holds iff beh1 = beh2 or beh1 = Goes_wrong t for a prefix t of beh2. Prose comparison only.",
+   "Ralph-Johan Back, Joakim von Wright, 'Refinement Calculus: A Systematic Introduction', Springer, 1998, DOI 10.1007/978-1-4612-1674-2."
+  ],
+  "design_question": "Reference point: in this deterministic toy language, is every divergence-observable refinement also a forward-progress refinement, so that a transformation validated with observable divergence may also be used under forward progress, and does the forward-progress semantics admit strictly more refinements?",
+  "lean_names": [
+   "Toy.Progress.refines_forwardProgress_of_refines_divergenceObservable",
+   "Toy.Progress.refines_divergenceObservable_not_imp_refines_mixed",
+   "Toy.Progress.refines_obsBeh_iff_equiv",
+   "Toy.Progress.loopDeletion_spin_refines_forwardProgress",
+   "Toy.Progress.loopDeletion_spin_not_refines_divergenceObservable",
+   "Toy.Progress.refines_forwardProgress_needs_hypothesis"
+  ]
+ },
+ {
+  "id": "classic-slice-preserves-terminating-traces",
+  "lean": "Toy.Progress.classicSlice_preserves_terminating_traces",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For every classic slice c' of c with respect to all emit statements (hSlice), every state s and every trace t: if c terminates from s emitting t, then c' terminates from s emitting t.",
+  "hypotheses": [
+   {
+    "name": "hSlice : IsClassicSlice c c'",
+    "purpose": "c' arises from c by the data- and control-dependence rules of IsSlice with termination-insensitive dropping and nothing relevant after the program. Counterexample class: one concrete pair, c = `emit 1`, c' = skip (not a classic slice), from the all-zero state.",
+    "tightness": "tight",
+    "counterexample": "Toy.Progress.classicSlice_preserves_terminating_traces_needs_slice"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`skip ;; emit 1` is a classic slice of `while x0 = 0 do x1 := x1 + 1 ;; emit 1`, and the original terminates with [1] from a state with x0 = 1.",
+  "nonvacuity_witness_lean": "Toy.Progress.classicSlice_preserves_terminating_traces_nonvacuous",
+  "non_claims": [
+   "Says nothing about runs of c that do not terminate; the slice may terminate when c diverges (classicSlice_spin_terminates_while_original_diverges).",
+   "The slicing criterion is the set of all emit statements; slicing with respect to a proper subset of the outputs (trace projection) is not formalized.",
+   "Intraprocedural only; the interprocedural slicing of Horwitz, Reps and Binkley is not modelled.",
+   "`IsSlice` is a declarative relation, not an algorithm: every command is a slice of itself (isClassicSlice_refl), and the statement says nothing about how slices are computed or about minimality.",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "Mark Weiser, 'Program Slicing', IEEE Transactions on Software Engineering SE-10(4):352-357, July 1984, DOI 10.1109/TSE.1984.5010248. Its definition of a slice (p. 353) requires: 'Whenever P halts on an input I with state trajectory T, then S also halts on input I with state trajectory T'' with equal projections; a footnote says that extending the definition to inputs on which the original program does not halt 'causes many new problems', since there is no way to guarantee that a slice fails to halt whenever the original program fails to halt.",
+   "Thomas Reps and Wuu Yang, 'The Semantics of Program Slicing', Computer Sciences Technical Report #777, University of Wisconsin-Madison, June 1988; conference version: Thomas W. Reps and Wuu Yang, 'The Semantics of Program Slicing and Program Integration', TAPSOFT '89 Vol. 2, LNCS 352:360-374, Springer, 1989, DOI 10.1007/3-540-50940-2_47. Slicing Theorem: from any initial state on which the program halts, a dependence-graph slice also halts and computes the same sequence of values at each of its program points.",
+   "Susan Horwitz, Thomas W. Reps, David W. Binkley, 'Interprocedural Slicing Using Dependence Graphs', ACM TOPLAS 12(1):26-60, 1990, DOI 10.1145/77606.77608.",
+   "Daniel Wasserrab, 'Towards Certified Slicing', Archive of Formal Proofs, September 16, 2008, https://www.isa-afp.org/entries/Slicing.html (Isabelle/HOL framework for dynamic and static intraprocedural slicing over control-flow and dependence graphs, instantiated to a While language and to Jinja bytecode; correctness is stated as a weak simulation of the original by the slice).",
+   "Sandrine Blazy, André Maroneze, David Pichardie, 'Verified Validation of Program Slicing', CPP 2015, pp. 109-117, DOI 10.1145/2676724.2693169 (Coq, CompCert).",
+   "Torben Amtoft, 'Slicing for modern program structures: a theory for eliminating irrelevant loops', Information Processing Letters 106(2):45-51, 2008, DOI 10.1016/j.ipl.2007.10.002.",
+   "Sebastian Danicic, Richard W. Barraclough, Mark Harman, John D. Howroyd, Ákos Kiss, Michael R. Laurence, 'A unifying theory of control dependence and its application to arbitrary program structures', Theoretical Computer Science 412(49):6809-6842, 2011, DOI 10.1016/j.tcs.2011.08.033."
+  ],
+  "design_question": "What does classic (termination-insensitive) slicing with respect to all outputs guarantee independently of how divergence is treated? Reference restatement of the Weiser and Reps-Yang guarantee for runs on which the original program terminates.",
+  "lean_names": [
+   "Toy.Progress.isClassicSlice_refl"
+  ]
+ },
+ {
+  "id": "classic-slice-may-terminate-when-original-diverges",
+  "lean": "Toy.Progress.classicSlice_spin_terminates_while_original_diverges",
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "`skip ;; emit 1` is a classic slice of `while 1 do skip ;; emit 1`; from every state the original silently diverges with empty trace while the slice terminates emitting [1], so this classic slice is not a divergence-observable refinement.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance; no hypotheses.",
+  "nonvacuity_witness_lean": "Toy.Progress.classicSlice_spin_terminates_while_original_diverges",
+  "positive_control_lean": "Toy.Progress.not_isTerminationSensitiveSlice_spin",
+  "non_claims": [
+   "Does not say classic slicing is unsound under forward progress; it is a refinement there (classicSlice_refines_forwardProgress).",
+   "No termination-sensitive slice drops this loop (not_isTerminationSensitiveSlice_spin); the example says nothing against termination-sensitive slicing.",
+   "Escape hatches: classic slicing preserves behaviour on every initial state from which the original program terminates (classicSlice_preserves_terminating_traces), is a refinement across all states under thread-level forward progress (classicSlice_refines_forwardProgress), and preserves all divergence-observable behaviours when every dropped sub-command terminates from every state (terminationSensitiveSlice_preserves_obsBeh).",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "Mark Weiser, 'Program Slicing', IEEE Transactions on Software Engineering SE-10(4):352-357, July 1984, DOI 10.1109/TSE.1984.5010248. Its definition of a slice (p. 353) requires: 'Whenever P halts on an input I with state trajectory T, then S also halts on input I with state trajectory T'' with equal projections; a footnote says that extending the definition to inputs on which the original program does not halt 'causes many new problems', since there is no way to guarantee that a slice fails to halt whenever the original program fails to halt.",
+   "Thomas Reps and Wuu Yang, 'The Semantics of Program Slicing', Computer Sciences Technical Report #777, University of Wisconsin-Madison, June 1988; conference version: Thomas W. Reps and Wuu Yang, 'The Semantics of Program Slicing and Program Integration', TAPSOFT '89 Vol. 2, LNCS 352:360-374, Springer, 1989, DOI 10.1007/3-540-50940-2_47. Slicing Theorem: from any initial state on which the program halts, a dependence-graph slice also halts and computes the same sequence of values at each of its program points.",
+   "Andy Podgurski and Lori A. Clarke, 'A Formal Model of Program Dependences and Its Implications for Software Testing, Debugging, and Maintenance', IEEE TSE 16(9):965-979, 1990, DOI 10.1109/32.58784 (weak and strong control dependence).",
+   "Venkatesh Prasad Ranganath, Torben Amtoft, Anindya Banerjee, Matthew B. Dwyer, John Hatcliff, 'A New Foundation for Control-Dependence and Slicing for Modern Program Structures', ESOP 2005, LNCS 3444:77-93, Springer, 2005, DOI 10.1007/978-3-540-31987-0_7; journal version: Venkatesh Prasad Ranganath, Torben Amtoft, Anindya Banerjee, John Hatcliff, Matthew B. Dwyer, 'A new foundation for control dependence and slicing for modern program structures', ACM TOPLAS 29(5), Article 27, 2007, DOI 10.1145/1275497.1275502. Defines non-termination-sensitive and non-termination-insensitive control dependence on control-flow graphs.",
+   "Torben Amtoft, 'Slicing for modern program structures: a theory for eliminating irrelevant loops', Information Processing Letters 106(2):45-51, 2008, DOI 10.1016/j.ipl.2007.10.002."
+  ],
+  "design_question": "Can a classic slice terminate and produce output from a state on which the original program silently diverges, so that classic slicing is not a divergence-observable refinement?"
+ },
+ {
+  "id": "termination-sensitive-slice-preserves-behaviours",
+  "lean": "Toy.Progress.terminationSensitiveSlice_preserves_obsBeh",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every termination-guarded slice c' of c with respect to all emit statements (hSlice: every dropped sub-command terminates from every state), every state s and behaviour b: c' has behaviour b from s under the divergence-observable semantics iff c does, including silent divergence and infinite traces.",
+  "hypotheses": [
+   {
+    "name": "hSlice : IsTerminationSensitiveSlice c c'",
+    "purpose": "As for classic slices, but a sub-command may be dropped only if it terminates from every state, so a possibly diverging loop is kept together with the statements its condition depends on. Counterexample class: one concrete pair that is a classic but not a termination-guarded slice, c = `while 1 do skip ;; emit 1`, c' = `skip ;; emit 1`.",
+    "tightness": "tight",
+    "counterexample": "Toy.Progress.terminationSensitiveSlice_needs_terminationSensitivity"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`while x0 = 0 do skip ;; emit 1` is a termination-guarded slice of `while x0 = 0 do x1 := x1 + 1 ;; emit 1`: the always-terminating body `x1 := x1 + 1` is dropped, while the possibly diverging loop and its condition are kept.",
+  "nonvacuity_witness_lean": "Toy.Progress.terminationSensitiveSlice_preserves_obsBeh_nonvacuous",
+  "non_claims": [
+   "The drop rule of IsTerminationSensitiveSlice requires semantic termination from every state (`∀ s, Terminates c s`), an undecidable premise; the relation is a semantic termination-guarded slicing relation, not the computable control-flow-graph notion of non-termination-sensitive control dependence of Podgurski & Clarke and Ranganath et al. It differs from that notion: it may drop `while x0 = 0 do x0 := 1` before `emit 1` (isTerminationSensitiveSlice_drops_terminating_loop), whereas in a control-flow graph that loop's back edge yields an infinite path avoiding `emit 1`, so that analysis makes `emit 1` control dependent on the loop condition and keeps the loop (not proved here).",
+   "Because execution is deterministic and `ObsBeh` has no undefined-behaviour case, the conclusion `∀ s b, ObsBeh c' s b ↔ ObsBeh c s b` has the same strength as `Refines ObsBeh c c'` (refines_obsBeh_iff_equiv).",
+   "Termination evidence is required from every state, not only from states reachable at the dropped sub-command.",
+   "`IsSlice` is a declarative relation (every command is a slice of itself); no slicing algorithm or minimality is formalized; the criterion is the set of all emit statements.",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "Andy Podgurski and Lori A. Clarke, 'A Formal Model of Program Dependences and Its Implications for Software Testing, Debugging, and Maintenance', IEEE TSE 16(9):965-979, 1990, DOI 10.1109/32.58784 (weak and strong control dependence).",
+   "Venkatesh Prasad Ranganath, Torben Amtoft, Anindya Banerjee, Matthew B. Dwyer, John Hatcliff, 'A New Foundation for Control-Dependence and Slicing for Modern Program Structures', ESOP 2005, LNCS 3444:77-93, Springer, 2005, DOI 10.1007/978-3-540-31987-0_7; journal version: Venkatesh Prasad Ranganath, Torben Amtoft, Anindya Banerjee, John Hatcliff, Matthew B. Dwyer, 'A new foundation for control dependence and slicing for modern program structures', ACM TOPLAS 29(5), Article 27, 2007, DOI 10.1145/1275497.1275502. Defines non-termination-sensitive and non-termination-insensitive control dependence on control-flow graphs.",
+   "Torben Amtoft, 'Slicing for modern program structures: a theory for eliminating irrelevant loops', Information Processing Letters 106(2):45-51, 2008, DOI 10.1016/j.ipl.2007.10.002.",
+   "Sebastian Danicic, Richard W. Barraclough, Mark Harman, John D. Howroyd, Ákos Kiss, Michael R. Laurence, 'A unifying theory of control dependence and its application to arbitrary program structures', Theoretical Computer Science 412(49):6809-6842, 2011, DOI 10.1016/j.tcs.2011.08.033.",
+   "Jean-Christophe Léchenet, Nikolai Kosmatov, Pascale Le Gall, 'Cut branches before looking for bugs: certifiably sound verification on relaxed slices', Formal Aspects of Computing 30(1):107-131, 2018, DOI 10.1007/s00165-017-0439-x (Coq).",
+   "Daniel Wasserrab, Denis Lohner, Gregor Snelting, 'On PDG-Based Noninterference and its Modular Proof', PLAS 2009, pp. 31-44, DOI 10.1145/1554339.1554345 (Isabelle/HOL).",
+   "Daniel Wasserrab, 'Towards Certified Slicing', Archive of Formal Proofs, September 16, 2008, https://www.isa-afp.org/entries/Slicing.html (Isabelle/HOL framework for dynamic and static intraprocedural slicing over control-flow and dependence graphs, instantiated to a While language and to Jinja bytecode; correctness is stated as a weak simulation of the original by the slice)."
+  ],
+  "design_question": "Which restriction on what a slice may drop recovers preservation of all divergence-observable behaviours, including silent divergence and infinite traces? This card answers with the semantic condition that every dropped sub-command terminate from every state.",
+  "lean_names": [
+   "Toy.Progress.isTerminationSensitiveSlice_drops_terminating_loop",
+   "Toy.Progress.isTerminationSensitiveSlice_refl",
+   "Toy.Progress.refines_obsBeh_iff_equiv"
+  ]
+ },
+ {
+  "id": "classic-slice-refines-forward-progress",
+  "lean": "Toy.Progress.classicSlice_refines_forwardProgress",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For all commands c and c', if c' is a classic slice of c with respect to all emit statements (hSlice), then c' refines c under the thread-level forward-progress semantics. Equivalently (refines_fpBeh_iff_silentlyDiverges_or_obsBeh_iff; the instance is classicSlice_silentlyDiverges_or_obsBeh_iff): from every initial state s, either c silently diverges from s (undefined behaviour under forward progress) or c' has exactly the same divergence-observable behaviours from s as c.",
+  "hypotheses": [
+   {
+    "name": "hSlice : IsClassicSlice c c'",
+    "purpose": "c' arises from c by the IsSlice rules with termination-insensitive dropping. Counterexample class: one concrete pair, c = `x0 := 5 ;; emit x0`, c' = `skip ;; emit x0` (drops the definition of an emitted variable, so not a classic slice).",
+    "tightness": "tight",
+    "counterexample": "Toy.Progress.classicSlice_refines_forwardProgress_needs_slice"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`skip ;; emit 1` is a classic slice of `while x0 = 0 do x1 := x1 + 1 ;; emit 1`.",
+  "nonvacuity_witness_lean": "Toy.Progress.classicSlice_refines_forwardProgress_nonvacuous",
+  "non_claims": [
+   "Does not say where the silent divergence of c occurs: it may be inside a sub-command that the slice dropped or inside kept code (in which case c' silently diverges too). The theorem only splits each initial state into 'c silently diverges' and 'c' and c have the same divergence-observable behaviours'.",
+   "Fails under the divergence-observable semantics (classicSlice_spin_terminates_while_original_diverges).",
+   "C11 §6.8.5p6 and C++26 (WG21 P2809R3) differ in which loops they exempt from termination assumptions: C11 exempts every loop whose controlling expression is a constant expression regardless of its body (so `while (1) { x1 = x1 + 1; }` may not be dropped by classic slicing under C11 rules), whereas the C++ working draft exempts only trivial infinite loops, whose body is `;` or `{}` and whose controlling expression is a constant expression evaluating to true (so `while (true) { x1 = x1 + 1; }` may still be assumed to terminate). `FPBeh` models neither exemption.",
+   "Although `FPBeh` models undefined behaviour retroactively, for every classic slice c' of c and every state s, every finite output prefix emitted by c from s is also emitted by c' from s: writing `Reach c s t` for `∃ n, traceAt n c s = t`, `Reach c s t → Reach c' s t` follows from slice_partial_fwd (applied with equal initial states, which agree on every variable) together with the adequacy equivalence reach_iff_partial : Reach c s t ↔ Partial c s t. This implication is established inside the proof of classicSlice_refines_forwardProgress (`lean/Toy/Progress/Slicing.lean` lines 561-562) and is not a separately named theorem. So the theorem does not rely on contradicting output already emitted.",
+   "`IsSlice` is a declarative relation; no slicing algorithm is formalized; the criterion is the set of all emit statements; intraprocedural only.",
+   "Not claimed novel.",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "ISO/IEC JTC1/SC22/WG21 N4861 (C++ working draft, 2020-04-01), §6.9.2.2 [intro.progress] paragraph 1: the implementation may assume that any thread will eventually terminate, call a library I/O function, perform a volatile access, or perform a synchronization or atomic operation; its note says this is intended to allow removal of empty loops even when termination cannot be proven. Rendering: https://timsong-cpp.github.io/cppwp/n4861/intro.progress.",
+   "Mark Weiser, 'Program Slicing', IEEE Transactions on Software Engineering SE-10(4):352-357, July 1984, DOI 10.1109/TSE.1984.5010248. Its definition of a slice (p. 353) requires: 'Whenever P halts on an input I with state trajectory T, then S also halts on input I with state trajectory T'' with equal projections; a footnote says that extending the definition to inputs on which the original program does not halt 'causes many new problems', since there is no way to guarantee that a slice fails to halt whenever the original program fails to halt.",
+   "Thomas Reps and Wuu Yang, 'The Semantics of Program Slicing', Computer Sciences Technical Report #777, University of Wisconsin-Madison, June 1988; conference version: Thomas W. Reps and Wuu Yang, 'The Semantics of Program Slicing and Program Integration', TAPSOFT '89 Vol. 2, LNCS 352:360-374, Springer, 1989, DOI 10.1007/3-540-50940-2_47. Slicing Theorem: from any initial state on which the program halts, a dependence-graph slice also halts and computes the same sequence of values at each of its program points.",
+   "Torben Amtoft, 'Slicing for modern program structures: a theory for eliminating irrelevant loops', Information Processing Letters 106(2):45-51, 2008, DOI 10.1016/j.ipl.2007.10.002."
+  ],
+  "design_question": "Is classic slicing, which may delete emit-free code that does not terminate, a refinement under the thread-level forward-progress semantics?",
+  "lean_names": [
+   "Toy.Progress.refines_fpBeh_iff_silentlyDiverges_or_obsBeh_iff",
+   "Toy.Progress.classicSlice_silentlyDiverges_or_obsBeh_iff",
+   "Toy.Progress.slice_partial_fwd"
+  ]
+ },
+ {
+  "id": "per-loop-semantics-restricts-to-both-global-semantics",
+  "lean": "Toy.Progress.mixedBeh_markAll_restricts",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every command c, state s and behaviour b: the per-loop semantics of c with every loop flagged (c.markAll true) admits b from s iff the thread-level forward-progress semantics of c does, and the per-loop semantics of c with no loop flagged (c.markAll false) admits b from s iff the divergence-observable semantics of c does.",
+  "hypotheses": [],
+  "depth": "substantive",
+  "nonvacuity_witness": "On `skip ;; while 1 do skip ;; emit 1` with every loop flagged, both sides admit `term [42]`; with no loop flagged, neither side admits it.",
+  "nonvacuity_witness_lean": "Toy.Progress.mixedBeh_markAll_nonvacuous",
+  "non_claims": [
+   "Shows that toy definitions agree; it does not show that either global semantics matches the C++ standard, LLVM or rustc.",
+   "The per-loop semantics attributes undefined behaviour to a flagged loop only when that loop itself completes infinitely many iterations of its body and eventually stops emitting (SilentlyIterates). Silent divergence inside one iteration, for example in a nested unflagged loop, is never blamed on an enclosing flagged loop (not_progressViolation_flaggedOverUnflagged, mixedBeh_flaggedOverUnflagged), while a flagged loop nested in an unflagged one is blamed (progressViolation_unflaggedOverFlagged). This theorem compares only the two uniform flag assignments; programs with mixed flags are not compared with any external semantics.",
+   "Every per-loop behaviour is a forward-progress behaviour for arbitrary flags (fpBeh_of_mixedBeh); the restriction to uniform flags is what makes the two sides equal.",
+   "The `markAll false` half is near-definitional: no loop is flagged, so no progress violation exists.",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "ISO/IEC JTC1/SC22/WG21 N4861 (C++ working draft, 2020-04-01), §6.9.2.2 [intro.progress] paragraph 1: the implementation may assume that any thread will eventually terminate, call a library I/O function, perform a volatile access, or perform a synchronization or atomic operation; its note says this is intended to allow removal of empty loops even when termination cannot be proven. Rendering: https://timsong-cpp.github.io/cppwp/n4861/intro.progress.",
+   "LLVM Language Reference Manual at llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, file llvm/docs/LangRef.md (quoted sentence at line 2981): function attribute `mustprogress` (the function is required to return, unwind, or interact with the environment in an observable way; intended to model the first section of [intro.progress]; terminating loops without side effects can be removed; 'If a mustprogress function calls a function not marked mustprogress, and that function never returns, the program is well-defined even if there isn't any other observable progress') and loop metadata `llvm.loop.mustprogress`.",
+   "llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6: llvm/include/llvm/IR/Attributes.td line 515 `def : MergeRule<\"setAND<MustProgressAttr>\">;`; llvm/lib/IR/Attributes.cpp lines 2680-2684 (`setAND` removes the attribute from the caller when the callee lacks it), applied by AttributeFuncs::mergeAttributesForInlining, which llvm/lib/Transforms/Utils/InlineFunction.cpp calls at lines 3399 and 3567; llvm/lib/Analysis/LoopInfo.cpp lines 1249-1250 (`isMustProgress(L)` holds if the enclosing function is mustprogress or the loop carries llvm.loop.mustprogress)."
+  ],
+  "design_question": "Is the per-loop flag semantics used to model mixing the two progress regimes a conservative common generalization, i.e. does it coincide with the forward-progress semantics when every loop is flagged and with the divergence-observable semantics when no loop is flagged?",
+  "lean_names": [
+   "Toy.Progress.mixedBeh_markAll_true_iff_fpBeh",
+   "Toy.Progress.mixedBeh_markAll_false_iff_obsBeh",
+   "Toy.Progress.fpBeh_of_mixedBeh",
+   "Toy.Progress.not_progressViolation_flaggedOverUnflagged",
+   "Toy.Progress.mixedBeh_flaggedOverUnflagged",
+   "Toy.Progress.progressViolation_unflaggedOverFlagged",
+   "Toy.Progress.exists_head_silentlyIterates",
+   "Toy.Progress.silentlyDiverges_of_progressViolation"
+  ]
+ },
+ {
+  "id": "unmarked-inlining-of-divergence-observable-callee-miscompiles",
+  "lean": "Toy.Progress.inlineUnmarked_divergenceObservableCallee_not_refines",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For the forward-progress call site `skip ;; call g ;; emit 1` (hazardSite) and the divergence-observable callee g whose body is `while 1 do skip` (spinFn), the linked program has no progress violation from any state, inlining g so that the caller's attribute flags the inlined loop yields a progress violation from every state and is not a per-loop refinement, and replacing the now-flagged loop by skip (giving `skip ;; skip ;; emit 1`) refines the inlined program but not the linked one.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance (hazardSite, spinFn); no hypotheses.",
+  "nonvacuity_witness_lean": "Toy.Progress.inlineUnmarked_divergenceObservableCallee_not_refines",
+  "positive_control_lean": "Toy.Progress.inlineDroppingAttr_hazard_defined",
+  "non_claims": [
+   "Does not say any particular compiler performs unmarked inlining; at the referenced LLVM revision the inliner merges mustprogress by logical AND (setAND), which corresponds to inlineDroppingAttr.",
+   "Escape hatches: unmarked inlining into a forward-progress caller introduces no progress violation when every loop of the callee terminates or keeps emitting from every state reachable at the call site, and the subsequent loop deletion adds no behaviour when post already silently diverges with empty trace or has a progress violation (not proved here).",
+   "`CallSite` models only a single top-level call `pre ;; call g ;; post` sharing one global variable store, with no parameters, local variables, early return, unwinding, recursion, or calls nested inside conditionals or loops.",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "LLVM Language Reference Manual at llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, file llvm/docs/LangRef.md (quoted sentence at line 2981): function attribute `mustprogress` (the function is required to return, unwind, or interact with the environment in an observable way; intended to model the first section of [intro.progress]; terminating loops without side effects can be removed; 'If a mustprogress function calls a function not marked mustprogress, and that function never returns, the program is well-defined even if there isn't any other observable progress') and loop metadata `llvm.loop.mustprogress`.",
+   "llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6: llvm/include/llvm/IR/Attributes.td line 515 `def : MergeRule<\"setAND<MustProgressAttr>\">;`; llvm/lib/IR/Attributes.cpp lines 2680-2684 (`setAND` removes the attribute from the caller when the callee lacks it), applied by AttributeFuncs::mergeAttributesForInlining, which llvm/lib/Transforms/Utils/InlineFunction.cpp calls at lines 3399 and 3567; llvm/lib/Analysis/LoopInfo.cpp lines 1249-1250 (`isMustProgress(L)` holds if the enclosing function is mustprogress or the loop carries llvm.loop.mustprogress).",
+   "llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6: llvm/lib/Transforms/Scalar/LoopDeletion.cpp line 110 (`isLoopDead` ends with `return isLoopNestFinite(L, SE, LI);`, defined at llvm/lib/Analysis/LoopInfo.cpp line 1216: the loop must be finite by assumption (ScalarEvolution::loopIsFiniteByAssumption), or every loop of its nest must be finite by assumption or have a computable constant maximal backedge-taken count); llvm/lib/Transforms/Utils/LoopUtils.cpp lines 622-628 (`deleteDeadLoop` replaces the branch into a deleted loop that has no exit block by `unreachable`).",
+   "rust-lang/rust issue #28728, 'LLVM loop optimization can make safe programs crash' (opened 2015-09-29; closed 2021-03-05 as completed with the comment 'Closed by #81451'), https://github.com/rust-lang/rust/issues/28728; rust-lang/rust pull request #81451, 'Upgrade to LLVM 12' (merged 2021-03-04, merge commit 409920873cf8a95739a55dc5fe5adb05e1b4758e).",
+   "Nuno P. Lopes, Juneyoung Lee, Chung-Kil Hur, Zhengyang Liu, John Regehr, 'Alive2: Bounded Translation Validation for LLVM', PLDI 2021, pp. 65-79, DOI 10.1145/3453483.3454030."
+  ],
+  "design_question": "What goes wrong if an inliner lets the forward-progress attribute of the caller govern the loops of an inlined divergence-observable callee, and how does a subsequent loop deletion turn that into a miscompilation?"
+ },
+ {
+  "id": "attribute-dropping-inlining-refines",
+  "lean": "Toy.Progress.inlineDroppingAttr_refines_linked",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "For every top-level call site `pre ;; call g ;; post` with caller attribute cm and every callee g with attribute gm, inlining g and giving every loop of the merged body the attribute cm && gm refines the linked program under the per-loop semantics.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "For the caller `while 1 do skip ;; call g ;; emit 1` (forward-progress caller) and g = spinFn, attribute-dropping inlining unflags the caller's own loop: the linked program has a progress violation from every state, the inlined one has none, and the refinement holds.",
+  "nonvacuity_witness_lean": "Toy.Progress.inlineDroppingAttr_callerLoop_nonvacuous",
+  "non_claims": [
+   "Dropping the attribute is sound but coarse: it also removes the progress assumption from the caller's own loops (inlineDroppingAttr_callerLoop_nonvacuous). Inlining that keeps each loop's original flag produces exactly the linked program, so its soundness is reflexivity; for that to be meaningful the per-loop semantics attributes undefined behaviour only to the innermost loop that fails to make progress (SilentlyIterates).",
+   "In LLVM (LoopInfo.cpp `isMustProgress`), a loop is treated as must-progress if its enclosing function carries mustprogress or the loop carries llvm.loop.mustprogress metadata. Intersecting the function attribute (setAND) therefore keeps must-progress optimization of caller loops that carry the loop metadata, whereas attaching llvm.loop.mustprogress to inlined callee loops would bypass setAND and reintroduce the hazard of unmarked inlining (not proved here). Loop metadata is not modelled separately from the per-loop flag. Unlike `SilentlyIterates`, which blames only the innermost loop that fails to make progress, LLVM's `isLoopNestFinite` (llvm/lib/Analysis/LoopInfo.cpp lines 1216-1219 at llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, whose first test is `SE.loopIsFiniteByAssumption(L)` under the comment 'An assumption on L covers every cycle inside it') treats llvm.loop.mustprogress on an outer loop L as covering every cycle inside L, and llvm/lib/Transforms/Utils/InlineFunction.cpp at that commit contains no handling of llvm.loop.mustprogress, so that metadata on a caller loop is not stripped when a callee without mustprogress is inlined into it. Keeping caller loop metadata is therefore hazard-free for loops that are siblings of the call (pre and post in `CallSite`) but not for a caller loop that encloses a call to a callee without mustprogress (not proved here); calls inside loops are outside `CallSite`.",
+   "`CallSite` models only a single top-level call `pre ;; call g ;; post` sharing one global variable store, with no parameters, local variables, early return, unwinding, recursion, or calls nested inside conditionals or loops.",
+   "The setting is a toy deterministic While language over natural-number variables whose only observable effect is `emit`; final states are not observable. It has no pointers, memory, volatile accesses, atomics, threads, recursion or function calls (calls appear only through the `CallSite` construction)."
+  ],
+  "prior_art": [
+   "LLVM Language Reference Manual at llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6, file llvm/docs/LangRef.md (quoted sentence at line 2981): function attribute `mustprogress` (the function is required to return, unwind, or interact with the environment in an observable way; intended to model the first section of [intro.progress]; terminating loops without side effects can be removed; 'If a mustprogress function calls a function not marked mustprogress, and that function never returns, the program is well-defined even if there isn't any other observable progress') and loop metadata `llvm.loop.mustprogress`.",
+   "llvm/llvm-project commit a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6: llvm/include/llvm/IR/Attributes.td line 515 `def : MergeRule<\"setAND<MustProgressAttr>\">;`; llvm/lib/IR/Attributes.cpp lines 2680-2684 (`setAND` removes the attribute from the caller when the callee lacks it), applied by AttributeFuncs::mergeAttributesForInlining, which llvm/lib/Transforms/Utils/InlineFunction.cpp calls at lines 3399 and 3567; llvm/lib/Analysis/LoopInfo.cpp lines 1249-1250 (`isMustProgress(L)` holds if the enclosing function is mustprogress or the loop carries llvm.loop.mustprogress)."
+  ],
+  "design_question": "Which flag assignment for the merged body makes inlining across the two progress regimes a per-loop refinement for every top-level call site, and what does it cost the caller's own loops?"
+ }
+]

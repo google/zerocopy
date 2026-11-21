@@ -1,0 +1,1271 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Progress.AgreeOff": [],
+    "Toy.Progress.AgreeOn": [],
+    "Toy.Progress.Beh": [],
+    "Toy.Progress.Beh.casesOn": [],
+    "Toy.Progress.Beh.ctorElim": [],
+    "Toy.Progress.Beh.ctorElimType": [],
+    "Toy.Progress.Beh.ctorIdx": [],
+    "Toy.Progress.Beh.div": [],
+    "Toy.Progress.Beh.div.elim": [],
+    "Toy.Progress.Beh.div.inj": [],
+    "Toy.Progress.Beh.div.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Beh.div.noConfusion": [],
+    "Toy.Progress.Beh.div.sizeOf_spec": [],
+    "Toy.Progress.Beh.noConfusion": [],
+    "Toy.Progress.Beh.noConfusionType": [],
+    "Toy.Progress.Beh.react": [],
+    "Toy.Progress.Beh.react.elim": [],
+    "Toy.Progress.Beh.react.inj": [],
+    "Toy.Progress.Beh.react.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Beh.react.noConfusion": [],
+    "Toy.Progress.Beh.react.sizeOf_spec": [],
+    "Toy.Progress.Beh.rec": [],
+    "Toy.Progress.Beh.recOn": [],
+    "Toy.Progress.Beh.term": [],
+    "Toy.Progress.Beh.term.elim": [],
+    "Toy.Progress.Beh.term.inj": [],
+    "Toy.Progress.Beh.term.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Beh.term.noConfusion": [],
+    "Toy.Progress.Beh.term.sizeOf_spec": [],
+    "Toy.Progress.BehPrefix": [],
+    "Toy.Progress.BehPrefix.match_1": [],
+    "Toy.Progress.BigStep": [],
+    "Toy.Progress.BigStep.assign": [],
+    "Toy.Progress.BigStep.below": [],
+    "Toy.Progress.BigStep.below.assign": [],
+    "Toy.Progress.BigStep.below.casesOn": [],
+    "Toy.Progress.BigStep.below.emit": [],
+    "Toy.Progress.BigStep.below.iteF": [],
+    "Toy.Progress.BigStep.below.iteT": [],
+    "Toy.Progress.BigStep.below.loopExit": [],
+    "Toy.Progress.BigStep.below.loopIter": [],
+    "Toy.Progress.BigStep.below.rec": [],
+    "Toy.Progress.BigStep.below.seq": [],
+    "Toy.Progress.BigStep.below.skip": [],
+    "Toy.Progress.BigStep.brecOn": [],
+    "Toy.Progress.BigStep.casesOn": [],
+    "Toy.Progress.BigStep.emit": [],
+    "Toy.Progress.BigStep.iteF": [],
+    "Toy.Progress.BigStep.iteT": [],
+    "Toy.Progress.BigStep.loopExit": [],
+    "Toy.Progress.BigStep.loopIter": [],
+    "Toy.Progress.BigStep.rec": [],
+    "Toy.Progress.BigStep.recOn": [],
+    "Toy.Progress.BigStep.seq": [],
+    "Toy.Progress.BigStep.skip": [],
+    "Toy.Progress.CallSite": [],
+    "Toy.Progress.CallSite.casesOn": [],
+    "Toy.Progress.CallSite.ctorIdx": [],
+    "Toy.Progress.CallSite.inlineDroppingAttr": [
+      "propext"
+    ],
+    "Toy.Progress.CallSite.inlineDroppingAttr.eq_1": [
+      "propext"
+    ],
+    "Toy.Progress.CallSite.inlineUnmarked": [
+      "propext"
+    ],
+    "Toy.Progress.CallSite.linked": [
+      "propext"
+    ],
+    "Toy.Progress.CallSite.linked.eq_1": [
+      "propext"
+    ],
+    "Toy.Progress.CallSite.mk": [],
+    "Toy.Progress.CallSite.mk.inj": [],
+    "Toy.Progress.CallSite.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.CallSite.mk.noConfusion": [],
+    "Toy.Progress.CallSite.mk.sizeOf_spec": [],
+    "Toy.Progress.CallSite.mustProgress": [],
+    "Toy.Progress.CallSite.noConfusion": [],
+    "Toy.Progress.CallSite.noConfusionType": [],
+    "Toy.Progress.CallSite.post": [],
+    "Toy.Progress.CallSite.pre": [],
+    "Toy.Progress.CallSite.rec": [],
+    "Toy.Progress.CallSite.recOn": [],
+    "Toy.Progress.Cmd": [],
+    "Toy.Progress.Cmd.assign": [],
+    "Toy.Progress.Cmd.assign.elim": [],
+    "Toy.Progress.Cmd.assign.inj": [],
+    "Toy.Progress.Cmd.assign.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.assign.noConfusion": [],
+    "Toy.Progress.Cmd.assign.sizeOf_spec": [],
+    "Toy.Progress.Cmd.below": [],
+    "Toy.Progress.Cmd.brecOn": [],
+    "Toy.Progress.Cmd.brecOn.eq": [],
+    "Toy.Progress.Cmd.brecOn.go": [],
+    "Toy.Progress.Cmd.casesOn": [],
+    "Toy.Progress.Cmd.ctorElim": [],
+    "Toy.Progress.Cmd.ctorElimType": [],
+    "Toy.Progress.Cmd.ctorIdx": [],
+    "Toy.Progress.Cmd.emit": [],
+    "Toy.Progress.Cmd.emit.elim": [],
+    "Toy.Progress.Cmd.emit.inj": [],
+    "Toy.Progress.Cmd.emit.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.emit.noConfusion": [],
+    "Toy.Progress.Cmd.emit.sizeOf_spec": [],
+    "Toy.Progress.Cmd.head": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.head.eq_1": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.head.eq_2": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.head.eq_def": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.head.match_1": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.ite": [],
+    "Toy.Progress.Cmd.ite.elim": [],
+    "Toy.Progress.Cmd.ite.inj": [],
+    "Toy.Progress.Cmd.ite.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.ite.noConfusion": [],
+    "Toy.Progress.Cmd.ite.sizeOf_spec": [],
+    "Toy.Progress.Cmd.loop": [],
+    "Toy.Progress.Cmd.loop.elim": [],
+    "Toy.Progress.Cmd.loop.inj": [],
+    "Toy.Progress.Cmd.loop.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.loop.noConfusion": [],
+    "Toy.Progress.Cmd.loop.sizeOf_spec": [],
+    "Toy.Progress.Cmd.markAll": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.markAll.eq_1": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.markAll.eq_2": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.markAll.eq_3": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.markAll.eq_4": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.markAll.eq_def": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.markAll.match_1": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.noConfusion": [],
+    "Toy.Progress.Cmd.noConfusionType": [],
+    "Toy.Progress.Cmd.noEmit": [],
+    "Toy.Progress.Cmd.noEmit.eq_1": [],
+    "Toy.Progress.Cmd.noEmit.eq_2": [],
+    "Toy.Progress.Cmd.noEmit.eq_3": [],
+    "Toy.Progress.Cmd.noEmit.eq_4": [],
+    "Toy.Progress.Cmd.noEmit.eq_5": [],
+    "Toy.Progress.Cmd.noEmit.eq_6": [],
+    "Toy.Progress.Cmd.noEmit.eq_def": [],
+    "Toy.Progress.Cmd.rec": [],
+    "Toy.Progress.Cmd.recOn": [],
+    "Toy.Progress.Cmd.seq": [],
+    "Toy.Progress.Cmd.seq.elim": [],
+    "Toy.Progress.Cmd.seq.inj": [],
+    "Toy.Progress.Cmd.seq.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Cmd.seq.noConfusion": [],
+    "Toy.Progress.Cmd.seq.sizeOf_spec": [],
+    "Toy.Progress.Cmd.skip": [],
+    "Toy.Progress.Cmd.skip.elim": [],
+    "Toy.Progress.Cmd.skip.sizeOf_spec": [],
+    "Toy.Progress.Cmd.writes": [],
+    "Toy.Progress.Cmd.writes.eq_1": [],
+    "Toy.Progress.Cmd.writes.eq_2": [],
+    "Toy.Progress.Cmd.writes.eq_3": [],
+    "Toy.Progress.Cmd.writes.eq_4": [],
+    "Toy.Progress.Cmd.writes.eq_5": [],
+    "Toy.Progress.Cmd.writes.eq_6": [],
+    "Toy.Progress.Cmd.writes.eq_def": [],
+    "Toy.Progress.Cmd.writes.match_1": [],
+    "Toy.Progress.DeadAfterPrefix": [],
+    "Toy.Progress.DeadAtEntry": [],
+    "Toy.Progress.Diverges": [],
+    "Toy.Progress.Diverges.eq_1": [],
+    "Toy.Progress.EmitFree": [],
+    "Toy.Progress.EmitFree.eq_1": [],
+    "Toy.Progress.Exp": [],
+    "Toy.Progress.Exp.add": [],
+    "Toy.Progress.Exp.add.elim": [],
+    "Toy.Progress.Exp.add.inj": [],
+    "Toy.Progress.Exp.add.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Exp.add.noConfusion": [],
+    "Toy.Progress.Exp.add.sizeOf_spec": [],
+    "Toy.Progress.Exp.below": [],
+    "Toy.Progress.Exp.brecOn": [],
+    "Toy.Progress.Exp.brecOn.eq": [],
+    "Toy.Progress.Exp.brecOn.go": [],
+    "Toy.Progress.Exp.casesOn": [],
+    "Toy.Progress.Exp.ctorElim": [],
+    "Toy.Progress.Exp.ctorElimType": [],
+    "Toy.Progress.Exp.ctorIdx": [],
+    "Toy.Progress.Exp.eq": [],
+    "Toy.Progress.Exp.eq.elim": [],
+    "Toy.Progress.Exp.eq.inj": [],
+    "Toy.Progress.Exp.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Exp.eq.noConfusion": [],
+    "Toy.Progress.Exp.eq.sizeOf_spec": [],
+    "Toy.Progress.Exp.eval": [],
+    "Toy.Progress.Exp.eval.eq_1": [],
+    "Toy.Progress.Exp.eval.eq_2": [],
+    "Toy.Progress.Exp.eval.eq_3": [],
+    "Toy.Progress.Exp.eval.eq_4": [],
+    "Toy.Progress.Exp.eval.eq_5": [],
+    "Toy.Progress.Exp.eval.eq_6": [],
+    "Toy.Progress.Exp.eval.eq_def": [],
+    "Toy.Progress.Exp.lt": [],
+    "Toy.Progress.Exp.lt.elim": [],
+    "Toy.Progress.Exp.lt.inj": [],
+    "Toy.Progress.Exp.lt.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Exp.lt.noConfusion": [],
+    "Toy.Progress.Exp.lt.sizeOf_spec": [],
+    "Toy.Progress.Exp.noConfusion": [],
+    "Toy.Progress.Exp.noConfusionType": [],
+    "Toy.Progress.Exp.num": [],
+    "Toy.Progress.Exp.num.elim": [],
+    "Toy.Progress.Exp.num.inj": [],
+    "Toy.Progress.Exp.num.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Exp.num.noConfusion": [],
+    "Toy.Progress.Exp.num.sizeOf_spec": [],
+    "Toy.Progress.Exp.rec": [],
+    "Toy.Progress.Exp.recOn": [],
+    "Toy.Progress.Exp.sub": [],
+    "Toy.Progress.Exp.sub.elim": [],
+    "Toy.Progress.Exp.sub.inj": [],
+    "Toy.Progress.Exp.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Exp.sub.noConfusion": [],
+    "Toy.Progress.Exp.sub.sizeOf_spec": [],
+    "Toy.Progress.Exp.var": [],
+    "Toy.Progress.Exp.var.elim": [],
+    "Toy.Progress.Exp.var.inj": [],
+    "Toy.Progress.Exp.var.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Exp.var.noConfusion": [],
+    "Toy.Progress.Exp.var.sizeOf_spec": [],
+    "Toy.Progress.Exp.vars": [],
+    "Toy.Progress.Exp.vars.eq_1": [],
+    "Toy.Progress.Exp.vars.eq_2": [],
+    "Toy.Progress.Exp.vars.eq_3": [],
+    "Toy.Progress.Exp.vars.eq_4": [],
+    "Toy.Progress.Exp.vars.eq_5": [],
+    "Toy.Progress.Exp.vars.eq_6": [],
+    "Toy.Progress.Exp.vars.eq_def": [],
+    "Toy.Progress.FPBeh": [],
+    "Toy.Progress.FPBeh.eq_1": [],
+    "Toy.Progress.Fn": [],
+    "Toy.Progress.Fn.body": [],
+    "Toy.Progress.Fn.casesOn": [],
+    "Toy.Progress.Fn.code": [
+      "propext"
+    ],
+    "Toy.Progress.Fn.code.eq_1": [
+      "propext"
+    ],
+    "Toy.Progress.Fn.ctorIdx": [],
+    "Toy.Progress.Fn.mk": [],
+    "Toy.Progress.Fn.mk.inj": [],
+    "Toy.Progress.Fn.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Progress.Fn.mk.noConfusion": [],
+    "Toy.Progress.Fn.mk.sizeOf_spec": [],
+    "Toy.Progress.Fn.mustProgress": [],
+    "Toy.Progress.Fn.noConfusion": [],
+    "Toy.Progress.Fn.noConfusionType": [],
+    "Toy.Progress.Fn.rec": [],
+    "Toy.Progress.Fn.recOn": [],
+    "Toy.Progress.InBeep": [],
+    "Toy.Progress.InFlaggedOverUnflagged": [],
+    "Toy.Progress.InSpin": [],
+    "Toy.Progress.InSpinSeq": [],
+    "Toy.Progress.IsClassicSlice": [],
+    "Toy.Progress.IsSlice": [],
+    "Toy.Progress.IsSlice.assign": [],
+    "Toy.Progress.IsSlice.below": [],
+    "Toy.Progress.IsSlice.below.assign": [],
+    "Toy.Progress.IsSlice.below.casesOn": [],
+    "Toy.Progress.IsSlice.below.drop": [],
+    "Toy.Progress.IsSlice.below.emit": [],
+    "Toy.Progress.IsSlice.below.ite": [],
+    "Toy.Progress.IsSlice.below.loop": [],
+    "Toy.Progress.IsSlice.below.rec": [],
+    "Toy.Progress.IsSlice.below.seq": [],
+    "Toy.Progress.IsSlice.below.skip": [],
+    "Toy.Progress.IsSlice.brecOn": [],
+    "Toy.Progress.IsSlice.casesOn": [],
+    "Toy.Progress.IsSlice.drop": [],
+    "Toy.Progress.IsSlice.emit": [],
+    "Toy.Progress.IsSlice.ite": [],
+    "Toy.Progress.IsSlice.loop": [],
+    "Toy.Progress.IsSlice.rec": [],
+    "Toy.Progress.IsSlice.recOn": [],
+    "Toy.Progress.IsSlice.seq": [],
+    "Toy.Progress.IsSlice.skip": [],
+    "Toy.Progress.IsTerminationSensitiveSlice": [],
+    "Toy.Progress.LoopReach": [],
+    "Toy.Progress.LoopReach.below": [],
+    "Toy.Progress.LoopReach.below.casesOn": [],
+    "Toy.Progress.LoopReach.below.rec": [],
+    "Toy.Progress.LoopReach.below.refl": [],
+    "Toy.Progress.LoopReach.below.step": [],
+    "Toy.Progress.LoopReach.brecOn": [],
+    "Toy.Progress.LoopReach.casesOn": [],
+    "Toy.Progress.LoopReach.rec": [],
+    "Toy.Progress.LoopReach.recOn": [],
+    "Toy.Progress.LoopReach.refl": [],
+    "Toy.Progress.LoopReach.step": [],
+    "Toy.Progress.MixedBeh": [
+      "propext"
+    ],
+    "Toy.Progress.ObsBeh": [],
+    "Toy.Progress.ObsBeh.eq_1": [],
+    "Toy.Progress.ObsBeh.eq_2": [],
+    "Toy.Progress.ObsBeh.eq_3": [],
+    "Toy.Progress.ObsBeh.match_1": [],
+    "Toy.Progress.Partial": [],
+    "Toy.Progress.Partial.below": [],
+    "Toy.Progress.Partial.below.casesOn": [],
+    "Toy.Progress.Partial.below.emit": [],
+    "Toy.Progress.Partial.below.iteF": [],
+    "Toy.Progress.Partial.below.iteT": [],
+    "Toy.Progress.Partial.below.loopBody": [],
+    "Toy.Progress.Partial.below.loopIter": [],
+    "Toy.Progress.Partial.below.nil": [],
+    "Toy.Progress.Partial.below.rec": [],
+    "Toy.Progress.Partial.below.seqL": [],
+    "Toy.Progress.Partial.below.seqR": [],
+    "Toy.Progress.Partial.brecOn": [],
+    "Toy.Progress.Partial.casesOn": [],
+    "Toy.Progress.Partial.emit": [],
+    "Toy.Progress.Partial.iteF": [],
+    "Toy.Progress.Partial.iteT": [],
+    "Toy.Progress.Partial.loopBody": [],
+    "Toy.Progress.Partial.loopIter": [],
+    "Toy.Progress.Partial.nil": [],
+    "Toy.Progress.Partial.rec": [],
+    "Toy.Progress.Partial.recOn": [],
+    "Toy.Progress.Partial.seqL": [],
+    "Toy.Progress.Partial.seqR": [],
+    "Toy.Progress.ProgressViolation": [
+      "propext"
+    ],
+    "Toy.Progress.Reach": [],
+    "Toy.Progress.ReachableAt": [],
+    "Toy.Progress.Refines": [],
+    "Toy.Progress.SilentlyDiverges": [],
+    "Toy.Progress.SilentlyDiverges.eq_1": [],
+    "Toy.Progress.SilentlyIterates": [],
+    "Toy.Progress.State": [],
+    "Toy.Progress.State.update": [],
+    "Toy.Progress.State.update.eq_1": [],
+    "Toy.Progress.Terminates": [],
+    "Toy.Progress.Terminates.eq_1": [],
+    "Toy.Progress.TermsWith": [],
+    "Toy.Progress.Val": [],
+    "Toy.Progress.Var": [],
+    "Toy.Progress.VarSet": [],
+    "Toy.Progress.agreeOn_mono": [],
+    "Toy.Progress.beep": [],
+    "Toy.Progress.beep.eq_1": [],
+    "Toy.Progress.beep_inv": [
+      "propext"
+    ],
+    "Toy.Progress.bigStep_agreeOff": [
+      "propext"
+    ],
+    "Toy.Progress.bigStep_det": [
+      "propext"
+    ],
+    "Toy.Progress.bigStep_emitFree": [
+      "propext"
+    ],
+    "Toy.Progress.bigStep_of_run": [
+      "propext"
+    ],
+    "Toy.Progress.bigStep_of_step": [
+      "propext"
+    ],
+    "Toy.Progress.bigStep_seq_inv": [],
+    "Toy.Progress.bigStep_skip_inv": [],
+    "Toy.Progress.callerLoopSite": [],
+    "Toy.Progress.classicSlice_preserves_terminating_traces": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.classicSlice_preserves_terminating_traces_needs_slice": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.classicSlice_preserves_terminating_traces_needs_slice.match_1_1": [],
+    "Toy.Progress.classicSlice_preserves_terminating_traces_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.classicSlice_refines_forwardProgress": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.classicSlice_refines_forwardProgress.match_1_1": [],
+    "Toy.Progress.classicSlice_refines_forwardProgress_needs_slice": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.classicSlice_refines_forwardProgress_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.classicSlice_silentlyDiverges_or_obsBeh_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.classicSlice_spin_terminates_while_original_diverges": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.countBody": [],
+    "Toy.Progress.countBody.eq_1": [],
+    "Toy.Progress.countLoop": [],
+    "Toy.Progress.deadAfterPrefix_example_not_deadAtEntry": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deadAfterPrefix_example_not_deadAtEntry.match_1_2": [],
+    "Toy.Progress.deadAfterPrefix_of_deadAtEntry": [],
+    "Toy.Progress.deadAtEntry_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deadAtEntry_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deadAtEntry_skip": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff.match_1_1": [],
+    "Toy.Progress.deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff_terminates": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteEmitFreeLoop_withDeadWrites_refines_forwardProgress": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteLoop_divergenceObservable_iff_needs_deadWrites": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteLoop_divergenceObservable_iff_needs_emitFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteLoop_forwardProgress_needs_deadWrites": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteLoop_forwardProgress_needs_emitFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteLoop_hypotheses_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteLoop_iff_terminates_needs_continuation_not_silent": [
+      "propext"
+    ],
+    "Toy.Progress.deleteLoop_iff_terminates_needs_deadWrites": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteLoop_iff_terminates_needs_emitFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteLoop_iff_terminates_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.deleteLoop_refines_divergenceObservable_without_termination": [
+      "propext"
+    ],
+    "Toy.Progress.diverges_iff_not_terminates": [
+      "propext"
+    ],
+    "Toy.Progress.diverges_spin": [
+      "propext"
+    ],
+    "Toy.Progress.drop_agree": [
+      "propext"
+    ],
+    "Toy.Progress.emitBody": [],
+    "Toy.Progress.emitFree_example_neg": [],
+    "Toy.Progress.emitFree_example_pos": [],
+    "Toy.Progress.eq_of_reach_of_length_eq": [
+      "propext"
+    ],
+    "Toy.Progress.eval_eq_of_agree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.exists_head_silentlyIterates": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.exists_max_of_bounded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.flaggedOverUnflagged": [],
+    "Toy.Progress.flaggedOverUnflagged.eq_1": [],
+    "Toy.Progress.flaggedOverUnflagged_inv": [
+      "propext"
+    ],
+    "Toy.Progress.fpBeh_beep_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.fpBeh_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.fpBeh_example_ub": [
+      "propext"
+    ],
+    "Toy.Progress.fpBeh_iff_of_obsBeh_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.fpBeh_of_mixedBeh": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.getElem_prefixOf": [
+      "propext"
+    ],
+    "Toy.Progress.guardedEmit": [],
+    "Toy.Progress.hazardSite": [],
+    "Toy.Progress.head_markAll": [
+      "propext"
+    ],
+    "Toy.Progress.inlineDroppingAttr_callerLoop_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.inlineDroppingAttr_eq_linked_of_both": [
+      "propext"
+    ],
+    "Toy.Progress.inlineDroppingAttr_hazard": [
+      "propext"
+    ],
+    "Toy.Progress.inlineDroppingAttr_hazard_defined": [
+      "propext"
+    ],
+    "Toy.Progress.inlineDroppingAttr_refines_linked": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.inlineUnmarked_divergenceObservableCallee_not_refines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.inlineUnmarked_hazard": [
+      "propext"
+    ],
+    "Toy.Progress.instDecidableEmitFree": [],
+    "Toy.Progress.instDecidableEqCmd": [],
+    "Toy.Progress.instDecidableEqCmd.decEq": [],
+    "Toy.Progress.instDecidableEqCmd.decEq.match_1": [],
+    "Toy.Progress.instDecidableEqExp": [],
+    "Toy.Progress.instDecidableEqExp.decEq": [],
+    "Toy.Progress.instDecidableEqExp.decEq.match_1": [],
+    "Toy.Progress.instReprCmd": [],
+    "Toy.Progress.instReprCmd.repr": [],
+    "Toy.Progress.instReprCmd.repr.match_1": [],
+    "Toy.Progress.instReprExp": [],
+    "Toy.Progress.instReprExp.repr": [],
+    "Toy.Progress.instReprExp.repr.match_1": [],
+    "Toy.Progress.isClassicSlice_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.isClassicSlice_refl": [],
+    "Toy.Progress.isSlice_refl": [],
+    "Toy.Progress.isTerminationSensitiveSlice_drops_terminating_loop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.isTerminationSensitiveSlice_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.isTerminationSensitiveSlice_refl": [],
+    "Toy.Progress.iterNext": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.iterNext.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.iterNext_spec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.iterState": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.iterState.match_1": [],
+    "Toy.Progress.iterTrace": [],
+    "Toy.Progress.iterTrace.eq_1": [],
+    "Toy.Progress.iterTrace.eq_2": [],
+    "Toy.Progress.iterTrace.eq_def": [],
+    "Toy.Progress.iterTrace_length_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.length_prefixOf": [
+      "propext"
+    ],
+    "Toy.Progress.length_prefixOf'": [
+      "propext"
+    ],
+    "Toy.Progress.length_traceAt_le_of_run_skip": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.linked_hazard": [
+      "propext"
+    ],
+    "Toy.Progress.linked_markAll_false": [
+      "propext"
+    ],
+    "Toy.Progress.loopDeletion_spin_not_refines_divergenceObservable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.loopDeletion_spin_refines_forwardProgress": [
+      "propext"
+    ],
+    "Toy.Progress.loop_x0IsZero_terminates_after_reset": [
+      "propext"
+    ],
+    "Toy.Progress.markAll_eq_skip_iff": [
+      "propext"
+    ],
+    "Toy.Progress.markAll_example": [
+      "propext"
+    ],
+    "Toy.Progress.markAll_example_neg": [
+      "propext"
+    ],
+    "Toy.Progress.markAll_idem": [
+      "propext"
+    ],
+    "Toy.Progress.mixedBeh_example_neg": [
+      "propext"
+    ],
+    "Toy.Progress.mixedBeh_example_ub": [
+      "propext"
+    ],
+    "Toy.Progress.mixedBeh_flaggedOverUnflagged": [
+      "propext"
+    ],
+    "Toy.Progress.mixedBeh_markAll_false_iff_obsBeh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.mixedBeh_markAll_nonvacuous": [
+      "propext"
+    ],
+    "Toy.Progress.mixedBeh_markAll_restricts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.mixedBeh_markAll_true_iff_fpBeh": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.noSilentK_admits_emit_then_spin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.not_diverges_of_termsWith": [
+      "propext"
+    ],
+    "Toy.Progress.not_isClassicSlice_drop_definition": [
+      "propext"
+    ],
+    "Toy.Progress.not_isClassicSlice_drop_guard_definition": [
+      "propext"
+    ],
+    "Toy.Progress.not_isSlice_drop_emit": [
+      "propext"
+    ],
+    "Toy.Progress.not_isTerminationSensitiveSlice_spin": [
+      "propext"
+    ],
+    "Toy.Progress.not_progressViolation_beep": [
+      "propext"
+    ],
+    "Toy.Progress.not_progressViolation_flaggedOverUnflagged": [
+      "propext"
+    ],
+    "Toy.Progress.not_progressViolation_markAll_false": [
+      "propext"
+    ],
+    "Toy.Progress.not_progressViolation_seq_spin_false": [
+      "propext"
+    ],
+    "Toy.Progress.not_progressViolation_spinSeq_false": [
+      "propext"
+    ],
+    "Toy.Progress.not_reach_react_of_bounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.not_refines_fp_of_termsWith": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.not_refines_obs_of_termsWith": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.not_silentlyDiverges_beep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.not_silentlyDiverges_of_termsWith": [
+      "propext"
+    ],
+    "Toy.Progress.not_terminates_countLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.not_terminates_of_silentlyIterates": [
+      "propext"
+    ],
+    "Toy.Progress.not_terminates_spin": [
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_beep_react": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_congr.match_1_2": [],
+    "Toy.Progress.obsBeh_div_iff": [
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_emit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_emitFree_not_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_example_div": [
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_example_neg": [
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_exists": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_markAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_of_run_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_of_run_nil.match_1_2": [],
+    "Toy.Progress.obsBeh_of_run_skip": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_of_silent": [
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_of_silent.match_1_6": [],
+    "Toy.Progress.obsBeh_of_termsWith": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_react_iff": [],
+    "Toy.Progress.obsBeh_seq_congr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_seq_congr.match_1_1": [],
+    "Toy.Progress.obsBeh_seq_emitFree_not_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_seq_loop_of_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_seq_of_bigStep_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_seq_of_not_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_seq_of_not_terminates.match_1_1": [],
+    "Toy.Progress.obsBeh_seq_of_not_terminates.match_1_3": [],
+    "Toy.Progress.obsBeh_seq_skip_spinSeq": [
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_skip": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_spin": [
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_spinSeq": [
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_term_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.obsBeh_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.partial_emitFree": [
+      "propext"
+    ],
+    "Toy.Progress.partial_of_reach": [
+      "propext"
+    ],
+    "Toy.Progress.partial_of_step": [
+      "propext"
+    ],
+    "Toy.Progress.partial_seq_inv": [],
+    "Toy.Progress.partial_skip_inv": [],
+    "Toy.Progress.prefixOf": [],
+    "Toy.Progress.prefixOf.eq_1": [],
+    "Toy.Progress.prefixOf_const": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.progressViolation_seq_spin_true": [
+      "propext"
+    ],
+    "Toy.Progress.progressViolation_unflaggedOverFlagged": [
+      "propext"
+    ],
+    "Toy.Progress.reach_chain": [
+      "propext"
+    ],
+    "Toy.Progress.reach_iff_behPrefix": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.reach_iff_partial": [
+      "propext"
+    ],
+    "Toy.Progress.reach_le_of_bigStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.reach_nil": [],
+    "Toy.Progress.reach_of_bigStep": [
+      "propext"
+    ],
+    "Toy.Progress.reach_of_obsBeh_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.reach_of_partial": [
+      "propext"
+    ],
+    "Toy.Progress.reach_of_prefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.reach_of_run": [
+      "propext"
+    ],
+    "Toy.Progress.reach_of_run_inv": [
+      "propext"
+    ],
+    "Toy.Progress.reach_of_step": [
+      "propext"
+    ],
+    "Toy.Progress.reach_seqL": [
+      "propext"
+    ],
+    "Toy.Progress.reach_seqR": [
+      "propext"
+    ],
+    "Toy.Progress.reachableAt_assign_zero": [
+      "propext"
+    ],
+    "Toy.Progress.reachableAt_example": [],
+    "Toy.Progress.reachableAt_example_neg": [
+      "propext"
+    ],
+    "Toy.Progress.reachableAt_spin_neg": [
+      "propext"
+    ],
+    "Toy.Progress.refines_divergenceObservable_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.refines_divergenceObservable_not_imp_refines_mixed": [
+      "propext"
+    ],
+    "Toy.Progress.refines_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.refines_forwardProgress_needs_hypothesis": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.refines_forwardProgress_of_refines_divergenceObservable": [],
+    "Toy.Progress.refines_forwardProgress_of_refines_divergenceObservable.match_1_1": [],
+    "Toy.Progress.refines_forwardProgress_of_refines_divergenceObservable_strict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.refines_fpBeh_iff_silentlyDiverges_or_obsBeh_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.refines_obsBeh_iff_equiv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.refines_refl": [],
+    "Toy.Progress.resetBody": [],
+    "Toy.Progress.run": [],
+    "Toy.Progress.run.eq_1": [],
+    "Toy.Progress.run.eq_2": [],
+    "Toy.Progress.run.eq_def": [],
+    "Toy.Progress.run.match_1": [],
+    "Toy.Progress.run_add": [
+      "propext"
+    ],
+    "Toy.Progress.run_emit_example": [
+      "propext"
+    ],
+    "Toy.Progress.run_four_beep": [
+      "propext"
+    ],
+    "Toy.Progress.run_loop_iter": [
+      "propext"
+    ],
+    "Toy.Progress.run_markAll": [
+      "propext"
+    ],
+    "Toy.Progress.run_mul_four_beep": [
+      "propext"
+    ],
+    "Toy.Progress.run_of_loopReach": [
+      "propext"
+    ],
+    "Toy.Progress.run_of_run_skip": [
+      "propext"
+    ],
+    "Toy.Progress.run_seq_lift": [
+      "propext"
+    ],
+    "Toy.Progress.run_seq_of_bigStep": [
+      "propext"
+    ],
+    "Toy.Progress.run_seq_of_run_skip": [
+      "propext"
+    ],
+    "Toy.Progress.run_skip": [],
+    "Toy.Progress.run_succ_of_step": [
+      "propext"
+    ],
+    "Toy.Progress.run_zero": [],
+    "Toy.Progress.setX2": [],
+    "Toy.Progress.silent_of_step": [
+      "propext"
+    ],
+    "Toy.Progress.silentlyDiverges_iff_bounded": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.silentlyDiverges_iff_of_run": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.silentlyDiverges_of_head": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.silentlyDiverges_of_progressViolation": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.silentlyDiverges_of_silentlyIterates": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.silentlyDiverges_seq_of_left": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.silentlyDiverges_spin": [
+      "propext"
+    ],
+    "Toy.Progress.silentlyDiverges_spinSeq": [
+      "propext"
+    ],
+    "Toy.Progress.silentlyIterates_countLoop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.silentlyIterates_spin": [
+      "propext"
+    ],
+    "Toy.Progress.slice_bigStep_bwd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.slice_bigStep_fwd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.slice_partial_bwd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.slice_partial_fwd": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.spin": [],
+    "Toy.Progress.spin.eq_1": [],
+    "Toy.Progress.spinFn": [],
+    "Toy.Progress.spinSeq_inv": [
+      "propext"
+    ],
+    "Toy.Progress.spinSeq_silent": [
+      "propext"
+    ],
+    "Toy.Progress.spin_inv": [
+      "propext"
+    ],
+    "Toy.Progress.spin_silent": [
+      "propext"
+    ],
+    "Toy.Progress.step": [],
+    "Toy.Progress.step.eq_1": [],
+    "Toy.Progress.step.eq_2": [],
+    "Toy.Progress.step.eq_3": [],
+    "Toy.Progress.step.eq_4": [],
+    "Toy.Progress.step.eq_5": [],
+    "Toy.Progress.step.eq_6": [],
+    "Toy.Progress.step.eq_def": [],
+    "Toy.Progress.step.match_1": [],
+    "Toy.Progress.step.match_3": [],
+    "Toy.Progress.step_eq_none_iff": [
+      "propext"
+    ],
+    "Toy.Progress.step_example": [],
+    "Toy.Progress.step_markAll": [
+      "propext"
+    ],
+    "Toy.Progress.step_output_length": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.step_skip_none": [],
+    "Toy.Progress.terminates_example": [],
+    "Toy.Progress.terminates_example_neg": [
+      "propext"
+    ],
+    "Toy.Progress.terminates_iff_bigStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.terminates_iff_of_run": [
+      "propext"
+    ],
+    "Toy.Progress.terminates_of_termsWith": [],
+    "Toy.Progress.terminationSensitiveSlice_needs_terminationSensitivity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.terminationSensitiveSlice_preserves_obsBeh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.terminationSensitiveSlice_preserves_obsBeh.match_1_1": [],
+    "Toy.Progress.terminationSensitiveSlice_preserves_obsBeh_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.termsWith_assign": [],
+    "Toy.Progress.termsWith_emit": [],
+    "Toy.Progress.termsWith_emitBody": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_iff_bigStep": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_iff_bigStep.match_1_1": [],
+    "Toy.Progress.termsWith_iff_of_run": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_ite_false": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_ite_true": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_loop_exit": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_loop_iter": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_loop_x0IsZero": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_markAll": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_of_bigStep": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_of_run": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_of_step": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_prefix_emit": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_prefix_emitBody": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_prefix_resetBody": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_prefix_skip": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_resetBody": [],
+    "Toy.Progress.termsWith_seq": [
+      "propext"
+    ],
+    "Toy.Progress.termsWith_skip": [],
+    "Toy.Progress.termsWith_unique": [
+      "propext"
+    ],
+    "Toy.Progress.traceAt": [],
+    "Toy.Progress.traceAt.eq_1": [],
+    "Toy.Progress.traceAt_prefix": [
+      "propext"
+    ],
+    "Toy.Progress.traceAt_succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.unflaggedOverFlagged": [],
+    "Toy.Progress.unflaggedOverFlagged.eq_1": [],
+    "Toy.Progress.writes_example": [],
+    "Toy.Progress.writes_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Progress.x0IsZero": [],
+    "Toy.Progress.x0IsZero.eq_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
