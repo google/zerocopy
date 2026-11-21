@@ -31,6 +31,10 @@ halted states. It is meant to capture the operational semantics of a program or 
 verification framework that defines its weakest precondition either by structural recursion on a fuel counter
 (`wpFuel`, `wpFuelTotal`) or as a fixpoint (`wpGfp`, `wpLfp`). Every result is stated for an arbitrary
 `System σ` (or for a concrete toy system used as a counterexample or witness).
+Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the
+corresponding claims about the fuel-indexed or fixpoint weakest preconditions of any concrete language, interpreter or
+verification framework (such as an Iris-style program logic); the `Basis: derived (modeling bridge)` paragraph below
+states what a transfer would require.
 
 **Conventions built into the definitions** (each tested by proved positive and negative examples in
 `ToyFuelWP.Examples`):
