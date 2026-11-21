@@ -1,6 +1,3 @@
-$ lean --version
-Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
-$ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=true MaybeDanglingAttrsAndSroaSoundness.lean
 'MaybeDanglingModel.matrix_post_llvm23_opt2' does not depend on any axioms
 'MaybeDanglingModel.matrix_post_llvm22_opt2' does not depend on any axioms
 'MaybeDanglingModel.matrix_pre_opt2' does not depend on any axioms
@@ -33,4 +30,3 @@ $ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=tru
 'MaybeDanglingModel.ce2_dereferenceable_on_shared_unsafecell_or_pinned_mut_unsound' does not depend on any axioms
 'MaybeDanglingModel.ce2_maybe_dangling_spurious_read_unsound' does not depend on any axioms
 'MaybeDanglingModel.ce3_null_or_unaligned_inside_maybe_dangling_violates_retained_scalar_validity' depends on axioms: [propext]
-exit status: 0

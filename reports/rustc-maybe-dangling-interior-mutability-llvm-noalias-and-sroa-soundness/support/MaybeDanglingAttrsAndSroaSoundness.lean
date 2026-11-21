@@ -136,7 +136,6 @@ def Wrapper.isUnion : Wrapper → Bool
 inductive Ty
   | ref (m : Mutbl) (t : Pointee)
   | wrap (w : Wrapper) (inner : Ty)
-  deriving DecidableEq, Repr
 
 /-! ## Lowering: `PointeeInfo`, `ArgAttributes`, LLVM parameter attributes -/
 
@@ -159,7 +158,7 @@ def patchMaybeDangling : Option PointeeInfo → Option PointeeInfo
 
 /-- `ty_and_layout_pointee_info_at` at offset 0.  `optimize` is
 `sess.opts.optimize != OptLevel::No`. -/
-def pointeeInfoAt (optimize : Bool) : Ty → Option PointeeInfo
+noncomputable def pointeeInfoAt (optimize : Bool) : Ty → Option PointeeInfo
   | .ref .shared t =>
       some { safe := some (.sharedRef (optimize && t.freeze))
              size := match optimize && t.freeze with
@@ -186,7 +185,7 @@ structure Scalar where
   rangeExcludesZero : Bool
   deriving DecidableEq, Repr
 
-def scalarOf : Ty → Scalar
+noncomputable def scalarOf : Ty → Scalar
   | .ref _ _ => { uninitValid := false, rangeExcludesZero := true }
   | .wrap w inner =>
       match w.isUnion with
@@ -235,7 +234,7 @@ theorem alignAttr_eq_some {a n : Nat} (h : alignAttr a = some n) : a = n := by
     exact Option.some.inj h
 
 /-- `arg_attrs_for_rust_scalar` for an argument (not a return value). -/
-def argAttrs (optimize : Bool) (ty : Ty) : ArgAttrs :=
+noncomputable def argAttrs (optimize : Bool) (ty : Ty) : ArgAttrs :=
   match (scalarOf ty).uninitValid, pointeeInfoAt optimize ty with
   | true, _ => emptyArgAttrs
   | false, none =>
@@ -300,10 +299,10 @@ def lowerPre (optimize : Bool) (a : ArgAttrs) : LlvmAttrs :=
   | false => unoptimizedAttrs a
   | true => optimizedAttrs (!(isZero a.pointeeSize)) false a
 
-def llvmParamAttrs (optimize llvmGe23 : Bool) (ty : Ty) : LlvmAttrs :=
+noncomputable def llvmParamAttrs (optimize llvmGe23 : Bool) (ty : Ty) : LlvmAttrs :=
   lowerPost optimize llvmGe23 (argAttrs optimize ty)
 
-def llvmParamAttrsPre (optimize : Bool) (ty : Ty) : LlvmAttrs :=
+noncomputable def llvmParamAttrsPre (optimize : Bool) (ty : Ty) : LlvmAttrs :=
   lowerPre optimize (argAttrs optimize ty)
 
 /-! ### The nine rows -/
@@ -457,7 +456,7 @@ def derefable (h : HeapState) (p : Ptr) (n : Nat) : Bool :=
 `check_safe_pointer`.  `mayDangle` is the visitor's sticky `may_dangle` flag: it is set
 on entering a maybe-dangling-like type and switches off only the dereferenceability
 check.  A union accepts every bit pattern. -/
-def validSlot (h : HeapState) : Bool → Ty → Slot → Bool
+noncomputable def validSlot (h : HeapState) : Bool → Ty → Slot → Bool
   | _, .ref _ _, .uninit => false
   | mayDangle, .ref _ _, .ptr p =>
       nonNull p && aligned 8 p && (mayDangle || derefable h p 8)
@@ -523,7 +522,7 @@ def Level.weaken : Bool → Level → Level
   | true, .rawAligned a => .rawAligned a
   | true, .uninitOrArbitrary => .uninitOrArbitrary
 
-def levelOf : Ty → Level
+noncomputable def levelOf : Ty → Level
   | .ref _ t => .fullRef t.freeze t.unpin
   | .wrap w inner =>
       match w.isUnion, w.isLikeMaybeDangling with
@@ -780,11 +779,11 @@ theorem lowering_sound_entry (h : HeapState) (opt ge23 : Bool) (ty : Ty) (s : Sl
 
 /-- Null is outside the valid range and uninitialized bytes are not allowed, so null is
 available as a niche. -/
-def hasNullNiche (ty : Ty) : Bool :=
+noncomputable def hasNullNiche (ty : Ty) : Bool :=
   !(scalarOf ty).uninitValid && (scalarOf ty).rangeExcludesZero
 
 /-- `size_of::<Option<T>>()` for the pointer-sized `T` of this family. -/
-def optionSize (ty : Ty) : Nat :=
+noncomputable def optionSize (ty : Ty) : Nat :=
   match hasNullNiche ty with
   | true => 8
   | false => 16
@@ -892,7 +891,7 @@ inductive RefKind
   | mayDangle
   deriving DecidableEq, Repr
 
-def kindOf : Ty → RefKind
+noncomputable def kindOf : Ty → RefKind
   | .ref .shared t =>
       match t.freeze with
       | true => .frozenShared
@@ -1026,7 +1025,7 @@ def step (k : RefKind) (s : CallState) : Ev → Option CallState
   | .otherWrite v => guardState (s.live && otherMayWriteOrFree s.other) { s with val := v }
   | .otherFree => guardState (s.live && otherMayWriteOrFree s.other) { s with live := false }
 
-def run (k : RefKind) : CallState → List Ev → Option CallState
+noncomputable def run (k : RefKind) : CallState → List Ev → Option CallState
   | s, [] => some s
   | s, e :: rest => (step k s e).bind (fun s' => run k s' rest)
 
@@ -1294,9 +1293,8 @@ inductive Stmt
   /-- A whole-value typed copy of the observed value at type `ty`; defined iff the value
   satisfies the validity invariant of `ty` in the current heap. -/
   | copyAt (ty : Ty)
-  deriving DecidableEq, Repr
 
-def freeAt : HeapState → Nat → HeapState
+noncomputable def freeAt : HeapState → Nat → HeapState
   | [], _ => []
   | a :: rest, 0 => { a with state := .freed } :: rest
   | a :: rest, i + 1 => a :: freeAt rest i
@@ -1307,7 +1305,7 @@ def guardHeap (b : Bool) (k : Option HeapState) : Option HeapState :=
   | false => none
 
 /-- Run a statement list on one observed value; `none` is undefined behaviour. -/
-def exec (s : Slot) : HeapState → List Stmt → Option HeapState
+noncomputable def exec (s : Slot) : HeapState → List Stmt → Option HeapState
   | h, [] => some h
   | h, .free i :: rest => exec s (freeAt h i) rest
   | h, .copyAt ty :: rest => guardHeap (validSlot h false ty s) (exec s h rest)
@@ -1453,7 +1451,7 @@ theorem ce1_sroa_flattening_maybe_dangling_introduces_dangling_ref_ub :
       ((llvmParamAttrs true true row1).dereferenceable = some 8 ∧
         attrsHold (freeAt ce1Heap 0) (llvmParamAttrs true true row1) ce1Slot = false ∧
         attrsHold (freeAt ce1Heap 0) (llvmParamAttrs true true row8) ce1Slot = true) := by
-  decide
+  exact ⟨⟨rfl, rfl, rfl⟩, ⟨rfl, rfl, rfl⟩, ⟨rfl, rfl, rfl⟩, ⟨rfl, rfl, rfl⟩⟩
 
 def ce2Exclusive : CallState := { live := true, other := .uniqueActive, val := 0 }
 
