@@ -214,7 +214,7 @@
     "kind": "counterexample",
     "tier": "T1",
     "tier_rationale": "A concrete instance in this toy language; no prior statement of it was found.",
-    "plain_claim": "For each connective semantics c: (a b : Nat), a - b <= a (fSubLeSelf) agrees with the partialNat human reading wherever that is defined, for every junk record (AgreesWhereDefined c partialNat J, which holds for every formula); it is Lean-valid; it is junk-dependent (with every junk value equal to 1, the record oneJ, it is false at a = 0, b = 1); and its human value is undefined at a = 0, b = 1, so it is not defined everywhere. Hence agreement-where-defined implies neither junk independence nor definedness everywhere.",
+    "plain_claim": "For each connective semantics c: (a b : Nat), a - b <= a (fSubLeSelf) agrees with the partialNat human reading wherever that is defined, for every junk record (AgreesWhereDefined c partialNat J, which holds for every formula by agreesWhereDefined_partialNat); it is Lean-valid; it is junk-dependent (with every junk value equal to 1, the record oneJ, it is false at a = 0, b = 1); and its human value is undefined at a = 0, b = 1, so it is not defined everywhere. Hence agreement-where-defined implies neither junk independence nor definedness everywhere.",
     "hypotheses": [],
     "depth": "shallow",
     "nonvacuity_witness": "No propositional hypotheses (vacuous). The sole parameter of ce_agrees_not_junkIndependent is c : Conn (inhabited by kleene and seq); the reading is fixed to partialNat, and the quantifier over junk records J inside the statement is part of its conclusion. The supporting theorem agreesWhereDefined_partialNat (quoted under Supporting theorems) is universal over c, J and phi and has no hypotheses.",
