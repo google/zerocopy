@@ -1,0 +1,47 @@
+=== Part A: Lazy Trees (--lazy-trees vs --no-lazy-trees) ===
+--- Running nix eval --lazy-trees .#checks.x86_64-linux.core.drvPath ---
+drvPath (lazy): /nix/store/x72phvg87ykhd89j9api2a1ap99r853p-probe2-core.drv
+Checking if unrelated-large.bin was copied into /nix/store during --lazy-trees eval:
+Found in /nix/store after --lazy-trees: NONE
+--- Running nix eval --no-lazy-trees .#checks.x86_64-linux.core.drvPath ---
+drvPath (no-lazy): /nix/store/x72phvg87ykhd89j9api2a1ap99r853p-probe2-core.drv
+Checking if unrelated-large.bin was copied into /nix/store during --no-lazy-trees eval:
+Found in /nix/store after --no-lazy-trees: /nix/store/7z8zwi5sghy9rcbhrymcbf1dczisgwf2-source/unrelated-large.bin
+
+=== Part B: Realize ONLY 'core', upload to local binary cache, probe BOTH 'core' and 'other' ===
+core  outPath: /nix/store/h0f60ka9axqjz52ymp0vkiag7w0yq8vm-probe2-core
+other outPath: /nix/store/kv7gdwh8wyzxq00j5pkal41ybk9d1m2i-probe2-other
+this derivation will be built:
+  /nix/store/x72phvg87ykhd89j9api2a1ap99r853p-probe2-core.drv
+this path will be fetched (596.7 KiB download, 1.3 MiB unpacked):
+  /nix/store/gw6fqdf6sd50az8lgwis0bzg5nk283db-busybox-1.37.0
+copying path '/nix/store/gw6fqdf6sd50az8lgwis0bzg5nk283db-busybox-1.37.0' from 'https://cache.nixos.org'...
+building '/nix/store/x72phvg87ykhd89j9api2a1ap99r853p-probe2-core.drv'...
+copying 1 paths...
+copying path '/nix/store/h0f60ka9axqjz52ymp0vkiag7w0yq8vm-probe2-core' to 'file:///tmp/tmp.Ftc22juk9R/cache'...
+--- Exact narinfo file (h0f60ka9axqjz52ymp0vkiag7w0yq8vm.narinfo) in binary cache ---
+StorePath: /nix/store/h0f60ka9axqjz52ymp0vkiag7w0yq8vm-probe2-core
+URL: nar/0zsjpzl3794fhs7ihad0bk8v4nj36zpcqnx1vfkykg5xgh77bb3j.nar.xz
+Compression: xz
+FileHash: sha256:0zsjpzl3794fhs7ihad0bk8v4nj36zpcqnx1vfkykg5xgh77bb3j
+FileSize: 168
+NarHash: sha256:0p2gv2ghjyb1kc3mbwm8f5p07gv2ls1lr3dbs61v5xn01fi7f1q4
+NarSize: 160
+References: 
+Deriver: x72phvg87ykhd89j9api2a1ap99r853p-probe2-core.drv
+--- Probe cached 'core' outPath via nix path-info --store ---
+warning: '--json' without '--json-format' is deprecated; please specify '--json-format 1' or '--json-format 2'. This will become an error in a future release.
+{"/nix/store/h0f60ka9axqjz52ymp0vkiag7w0yq8vm-probe2-core":{"ca":null,"compression":"xz","deriver":"/nix/store/x72phvg87ykhd89j9api2a1ap99r853p-probe2-core.drv","downloadHash":"sha256-cqx1Dny9vOmn26FbzO43Q1qy0VygKRiPho6kM+i/Un8=","downloadSize":168,"narHash":"sha256-BAd3ogvA9rKD0auNTIOmYr8DbnGo8lUHm2F5CZ/YT1w=","narSize":160,"references":[],"registrationTime":null,"signatures":[],"storeDir":"/nix/store","ultimate":false,"url":"nar/0zsjpzl3794fhs7ihad0bk8v4nj36zpcqnx1vfkykg5xgh77bb3j.nar.xz","version":1}}
+
+--- Probe unbuilt 'other' outPath via nix path-info --store (no realization) ---
+don't know how to build these paths:
+  /nix/store/kv7gdwh8wyzxq00j5pkal41ybk9d1m2i-probe2-other
+warning: '--json' without '--json-format' is deprecated; please specify '--json-format 1' or '--json-format 2'. This will become an error in a future release.
+{"/nix/store/kv7gdwh8wyzxq00j5pkal41ybk9d1m2i-probe2-other":null}
+(unexpected hit)
+Verify 'other' was NOT realized locally:
+NOT_IN_LOCAL_STORE
+
+=== Part C: Experimental ca-derivations outPath before realization ===
+caCore drvPath: /nix/store/7428i7aj01692zrx87wdb3c72id2h2jd-probe2-ca-core.drv
+caCore outPath (pre-build): /1q37br5pbz5sa9wy23mb8g7wwv84ajv1qriqwwj3zkhqwc4kim7i

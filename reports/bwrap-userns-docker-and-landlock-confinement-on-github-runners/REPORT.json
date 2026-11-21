@@ -1,0 +1,64 @@
+{
+  "topics": [
+    "build/sandboxing",
+    "security/capability-sandboxing",
+    "security/container-sandboxing",
+    "security/landlock",
+    "security/seccomp-bpf",
+    "systems/bubblewrap",
+    "tooling/ci"
+  ],
+  "subjects": [
+    {
+      "name": "GitHub Actions runner-images (ubuntu-24.04)",
+      "identity": {
+        "repository": "actions/runner-images",
+        "revision": "0e63d4f9d2c29043b4cf1d2f40d1812a7cde1369",
+        "image_version": "20261116.376.1"
+      }
+    },
+    {
+      "name": "GitHub Actions Runner",
+      "identity": {
+        "repository": "actions/runner",
+        "revision": "7e211dc69c347b78fc398e630e74facb11a13235"
+      }
+    },
+    {
+      "name": "Moby (Docker Engine)",
+      "identity": {
+        "repository": "moby/moby",
+        "revision": "8b0c45e42959ea5322cfb33bfb97a40ed64d4a07"
+      }
+    },
+    {
+      "name": "Docker CLI",
+      "identity": {
+        "repository": "docker/cli",
+        "revision": "01a20278d3603af41da9a1b62c0d942d67066672"
+      }
+    },
+    {
+      "name": "bubblewrap",
+      "identity": {
+        "repository": "containers/bubblewrap",
+        "revision": "1fb0aa26d3eb66254f7742e704add7f82f41a582"
+      }
+    },
+    {
+      "name": "Linux kernel Landlock LSM",
+      "identity": {
+        "repository": "torvalds/linux",
+        "versions": "v6.8, v6.10, v6.12, v6.15, v7.0"
+      }
+    },
+    {
+      "name": "Ubuntu noble/resolute apparmor and bubblewrap packages",
+      "identity": {
+        "distribution": "Ubuntu",
+        "suites": "noble, noble-updates, resolute"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

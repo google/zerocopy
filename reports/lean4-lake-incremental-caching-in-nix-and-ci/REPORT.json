@@ -1,0 +1,51 @@
+{
+  "topics": [
+    "build/caching",
+    "build/nix",
+    "lake/artifact-cache",
+    "lake/build",
+    "lake/readonly-dependencies",
+    "lean/olean",
+    "tooling/ci"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 / Lake v4.35.0",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "Lean 4 Nix build removal commit",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "535435955b482176e8d62a54deebcacdec0827db"
+      }
+    },
+    {
+      "name": "Lean 4 last surviving nix/buildLeanPackage.nix",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "f86b192ec24dd3922d63f5ba05718ab5c4ef8e85"
+      }
+    },
+    {
+      "name": "lean4-nix (lake2nix)",
+      "identity": {
+        "repository": "lenianiva/lean4-nix",
+        "revision": "2ad74592e34c2e6ff5e8bec9d8abab8f4e9c3a37"
+      }
+    },
+    {
+      "name": "nixpkgs lean4 package",
+      "identity": {
+        "repository": "NixOS/nixpkgs",
+        "path": "pkgs/by-name/le/lean4/package.nix",
+        "version": "4.35.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

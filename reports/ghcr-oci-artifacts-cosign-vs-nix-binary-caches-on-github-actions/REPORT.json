@@ -1,0 +1,112 @@
+{
+  "topics": [
+    "build/caching",
+    "build/nix",
+    "security/supply-chain",
+    "tooling/ci"
+  ],
+  "subjects": [
+    {
+      "name": "GitHub Docs",
+      "identity": {
+        "repository": "github/docs",
+        "revision": "d7487f5debb5a5a2a6e65e6f9fa539266f5f8db6"
+      }
+    },
+    {
+      "name": "OCI Distribution Specification",
+      "identity": {
+        "repository": "opencontainers/distribution-spec",
+        "revision": "a139cc423184af6078077b9b7ee336eddbd03f8f",
+        "version": "v1.1.1"
+      }
+    },
+    {
+      "name": "OCI Image Specification",
+      "identity": {
+        "repository": "opencontainers/image-spec",
+        "revision": "147f9c13cedb47a0c4d9a11a222961073d585877",
+        "version": "v1.1.1"
+      }
+    },
+    {
+      "name": "BuildKit",
+      "identity": {
+        "repository": "moby/buildkit",
+        "revision": "412cc86ad3c4252b82e929f9b1b1ad167376ded8",
+        "version": "v0.35.1"
+      }
+    },
+    {
+      "name": "docker/build-push-action",
+      "identity": {
+        "repository": "docker/build-push-action",
+        "revision": "c3c9e263c25d99ce0380d002d59b67737d91b0dc",
+        "version": "v7.4.0"
+      }
+    },
+    {
+      "name": "actions/upload-artifact",
+      "identity": {
+        "repository": "actions/upload-artifact",
+        "revision": "cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+        "version": "v7.0.2"
+      }
+    },
+    {
+      "name": "ORAS CLI",
+      "identity": {
+        "repository": "oras-project/oras",
+        "revision": "fdeb304ddeeb29f6cc9200457b8775908471c3ad",
+        "version": "v1.4.0"
+      }
+    },
+    {
+      "name": "Cosign",
+      "identity": {
+        "repository": "sigstore/cosign",
+        "revision": "0e48502cf5ef34e2e60bbd3617aa19945712f705",
+        "version": "v3.1.4"
+      }
+    },
+    {
+      "name": "go-containerregistry",
+      "identity": {
+        "repository": "google/go-containerregistry",
+        "version": "v0.22.1"
+      }
+    },
+    {
+      "name": "Attic",
+      "identity": {
+        "repository": "zhaofengli/attic",
+        "revision": "7a19204df10d606c5070e6bb72615c3461900c05"
+      }
+    },
+    {
+      "name": "DeterminateSystems/nix-installer-action",
+      "identity": {
+        "repository": "DeterminateSystems/nix-installer-action",
+        "revision": "3138316df39ed29be04236d7ffc686fa525866aa",
+        "version": "v23"
+      }
+    },
+    {
+      "name": "cachix/install-nix-action",
+      "identity": {
+        "repository": "cachix/install-nix-action",
+        "revision": "bb0495a1086c46893eee56f32fd192dfe4a15bb9",
+        "version": "v32.0.0"
+      }
+    },
+    {
+      "name": "GitHub Container Registry (ghcr.io)",
+      "identity": {
+        "endpoint": "https://ghcr.io",
+        "probed_artifact": "ghcr.io/oras-project/oras:v1.4.0",
+        "probed_digest": "sha256:5fabb4e523de1781443c227fca62782a51aeacd044413c07f54dc64935d7f013"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

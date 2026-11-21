@@ -1,0 +1,128 @@
+{
+  "topics": [
+    "build/hermeticity",
+    "build/caching",
+    "cargo",
+    "rust",
+    "rustc",
+    "tooling/ci",
+    "verification/miri",
+    "verification/kani"
+  ],
+  "subjects": [
+    {
+      "name": "rustc (stable)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.100.0",
+        "commit": "0ef1bc386",
+        "date": "2026-11-09"
+      }
+    },
+    {
+      "name": "cargo (stable)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "version": "1.100.0",
+        "commit": "3acc79c0c",
+        "date": "2026-11-05"
+      }
+    },
+    {
+      "name": "rustc (nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.102.0-nightly",
+        "commit": "3ef0c22cd",
+        "date": "2026-11-11"
+      }
+    },
+    {
+      "name": "cargo (nightly)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "version": "1.102.0-nightly",
+        "commit": "c07ac2c4d",
+        "date": "2026-11-06"
+      }
+    },
+    {
+      "name": "trybuild",
+      "identity": {
+        "repository": "dtolnay/trybuild",
+        "version": "1.0.125"
+      }
+    },
+    {
+      "name": "cargo-semver-checks",
+      "identity": {
+        "repository": "obi1kenobi/cargo-semver-checks",
+        "tag": "v0.51.0"
+      }
+    },
+    {
+      "name": "trustfall-rustdoc",
+      "identity": {
+        "repository": "obi1kenobi/trustfall-rustdoc",
+        "tag": "v0.41.0"
+      }
+    },
+    {
+      "name": "cargo-llvm-cov",
+      "identity": {
+        "repository": "taiki-e/cargo-llvm-cov",
+        "tag": "v0.9.2"
+      }
+    },
+    {
+      "name": "cargo-show-asm",
+      "identity": {
+        "repository": "pacak/cargo-show-asm",
+        "revision": "5c0b140c004b"
+      }
+    },
+    {
+      "name": "Miri",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "7e679961edcf"
+      }
+    },
+    {
+      "name": "rustc-build-sysroot",
+      "identity": {
+        "repository": "RalfJung/rustc-build-sysroot",
+        "revision": "6534cd367f8d"
+      }
+    },
+    {
+      "name": "Kani Rust Verifier",
+      "identity": {
+        "repository": "model-checking/kani",
+        "tag": "kani-0.68.0"
+      }
+    },
+    {
+      "name": "Determinate Nix Installer Action",
+      "identity": {
+        "repository": "DeterminateSystems/nix-installer-action",
+        "tag": "v23"
+      }
+    },
+    {
+      "name": "rust-cache",
+      "identity": {
+        "repository": "Swatinem/rust-cache",
+        "tag": "v2.9.3"
+      }
+    },
+    {
+      "name": "GitHub Actions standard Linux runners documentation",
+      "identity": {
+        "url": "https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners",
+        "retrieved": "2026-11-21"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

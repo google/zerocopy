@@ -1,0 +1,50 @@
+=== 1a. String context check: nix eval --json .#planRaw (succeeds in Nix 2.33.3 but DOES NOT realize) ===
+{"check-core-fileset":{"drv_path":"/nix/store/fjq76nl1i5g3xcgz1835xcm1mj9200cx-check-core-fileset.drv","out_path":"/nix/store/lf3gsyb7mi8w02cxhb6ifsj9n4icg40r-check-core-fileset"},"check-leaf-fileset":{"drv_path":"/nix/store/r84q3ds0lmxf3jva4vjzvlrl1ssz5raq-check-leaf-fileset.drv","out_path":"/nix/store/qkaiwbh1ka4p129f5ymx4q7nnn3750yc-check-leaf-fileset"},"check-naive-self":{"drv_path":"/nix/store/54m6nsi9p964jl5ig5n41icf4dxl3b9w-check-naive-self.drv","out_path":"/nix/store/rqz4zlarlixxvfs99vwb43pxcs23sjpk-check-naive-self"}}
+
+=== 1b. String context error WITHOUT unsafeDiscardStringContext in builtins.toFile ===
+error:
+       … while calling the 'toFile' builtin
+         at /tmp/tmp.Dkn07L6HFZ/repo/flake.nix:35:23:
+           34|       planRaw = builtins.mapAttrs (_: d: { drv_path = d.drvPath; out_path = d.outPath; }) checks;
+           35|       planRawToFile = builtins.toFile "plan.json" (builtins.toJSON (
+             |                       ^
+           36|         builtins.mapAttrs (_: d: { drv_path = d.drvPath; out_path = d.outPath; }) checks
+
+       error: files created by builtins.toFile may not reference derivations, but plan.json references =54m6nsi9p964jl5ig5n41icf4dxl3b9w-check-naive-self.drv
+(failed as expected without unsafeDiscardStringContext)
+=== 1c. String context discarded WITH unsafeDiscardStringContext in builtins.toFile ===
+/nix/store/1x83za9scq0jaha1gkagw18mrc2gl4g8-plan-safe.json
+
+=== 2. Baseline plan ===
+{"check-core-fileset":{"drv_path":"/nix/store/fjq76nl1i5g3xcgz1835xcm1mj9200cx-check-core-fileset.drv","out_path":"/nix/store/lf3gsyb7mi8w02cxhb6ifsj9n4icg40r-check-core-fileset"},"check-leaf-fileset":{"drv_path":"/nix/store/r84q3ds0lmxf3jva4vjzvlrl1ssz5raq-check-leaf-fileset.drv","out_path":"/nix/store/qkaiwbh1ka4p129f5ymx4q7nnn3750yc-check-leaf-fileset"},"check-naive-self":{"drv_path":"/nix/store/54m6nsi9p964jl5ig5n41icf4dxl3b9w-check-naive-self.drv","out_path":"/nix/store/rqz4zlarlixxvfs99vwb43pxcs23sjpk-check-naive-self"}}
+
+
+=== 3. Edit unrelated README.md ===
+warning: Git tree '/tmp/tmp.Dkn07L6HFZ/repo' has uncommitted changes
+{"check-core-fileset":{"drv_path":"/nix/store/fjq76nl1i5g3xcgz1835xcm1mj9200cx-check-core-fileset.drv","out_path":"/nix/store/lf3gsyb7mi8w02cxhb6ifsj9n4icg40r-check-core-fileset"},"check-leaf-fileset":{"drv_path":"/nix/store/r84q3ds0lmxf3jva4vjzvlrl1ssz5raq-check-leaf-fileset.drv","out_path":"/nix/store/qkaiwbh1ka4p129f5ymx4q7nnn3750yc-check-leaf-fileset"},"check-naive-self":{"drv_path":"/nix/store/mlbfysgq1j6c05mv82iwslgsi92rs31m-check-naive-self.drv","out_path":"/nix/store/c4ln9vbf13hx0qvrv909yprm0w91kmjq-check-naive-self"}}
+
+
+=== 4. Edit crates/leaf/src/lib.rs ===
+warning: Git tree '/tmp/tmp.Dkn07L6HFZ/repo' has uncommitted changes
+{"check-core-fileset":{"drv_path":"/nix/store/fjq76nl1i5g3xcgz1835xcm1mj9200cx-check-core-fileset.drv","out_path":"/nix/store/lf3gsyb7mi8w02cxhb6ifsj9n4icg40r-check-core-fileset"},"check-leaf-fileset":{"drv_path":"/nix/store/p72a6xj0rzwy7chb5lncpmxdhdkjj6zd-check-leaf-fileset.drv","out_path":"/nix/store/crddm6w0gavf6r24q2l8iclnq5a077zy-check-leaf-fileset"},"check-naive-self":{"drv_path":"/nix/store/ldqm77xy2m5fiv5149d1gainvxbz60j6-check-naive-self.drv","out_path":"/nix/store/ylf9lxzyny6lls6r0k5pwmsyibwabpd8-check-naive-self"}}
+
+
+=== 5. Edit crates/core/src/lib.rs ===
+warning: Git tree '/tmp/tmp.Dkn07L6HFZ/repo' has uncommitted changes
+{"check-core-fileset":{"drv_path":"/nix/store/mwl8cl0604lzqzplx5wficfgxc0h2wps-check-core-fileset.drv","out_path":"/nix/store/5bdhpll7ldk2acad2fzcymkxra8ggh9i-check-core-fileset"},"check-leaf-fileset":{"drv_path":"/nix/store/g9c7crk3fz7aq333aak7zrn85acc5q97-check-leaf-fileset.drv","out_path":"/nix/store/9g374b5h6c1xq46s5icpiqmxmp2wxyx7-check-leaf-fileset"},"check-naive-self":{"drv_path":"/nix/store/b30j8r3crw8xsab9gdb4764wmq1n27il-check-naive-self.drv","out_path":"/nix/store/vmlsg79a3d8k7q7r53x9v2k78wg4izzy-check-naive-self"}}
+
+
+--- Diff: Edit README.md (unrelated) ---
+  check-core-fileset  : drvPath=UNCHANGED | outPath=UNCHANGED
+  check-leaf-fileset  : drvPath=UNCHANGED | outPath=UNCHANGED
+  check-naive-self    : drvPath=CHANGED   | outPath=CHANGED
+
+--- Diff: Edit crates/leaf/src/lib.rs ---
+  check-core-fileset  : drvPath=UNCHANGED | outPath=UNCHANGED
+  check-leaf-fileset  : drvPath=CHANGED   | outPath=CHANGED
+  check-naive-self    : drvPath=CHANGED   | outPath=CHANGED
+
+--- Diff: Edit crates/core/src/lib.rs ---
+  check-core-fileset  : drvPath=CHANGED   | outPath=CHANGED
+  check-leaf-fileset  : drvPath=CHANGED   | outPath=CHANGED
+  check-naive-self    : drvPath=CHANGED   | outPath=CHANGED

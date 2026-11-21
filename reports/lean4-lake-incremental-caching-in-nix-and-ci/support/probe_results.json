@@ -1,0 +1,199 @@
+{
+  "lean_version": "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+  "lake_version": "Lake version 5.0.0-src+eb6cafb (Lean version 4.35.0)",
+  "cases": {
+    "1_producer_rw_writable": {
+      "returncode": 0,
+      "elapsed_s": 5.966,
+      "cache_file_count": 12,
+      "cache_outputs": [
+        "outputs/cacheprobe/0391b2a201236bde.json",
+        "outputs/cacheprobe/877e2cafcb09aeb1.json",
+        "outputs/cacheprobe/95f9f06d3ee933e8.json"
+      ],
+      "stdout_lines": [
+        "\u2714 [0/5] Ran job computation",
+        "\u2714 [1/5] Ran cacheprobe:extraDep",
+        "\u2139 [2/5] Built CacheProbe.Base (5.3s)",
+        "trace: .> LEAN_PATH=/tmp/work/.lake/build/lib/lean $HOME/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean /tmp/work/CacheProbe/Base.lean -o /tmp/work/.lake/build/lib/lean/CacheProbe/Base.olean -i /tmp/work/.lake/build/lib/lean/CacheProbe/Base.ilean -c /tmp/work/.lake/build/ir/CacheProbe/Base.c --setup /tmp/work/.lake/build/ir/CacheProbe/Base.setup.json --json",
+        "\u2139 [3/5] Built CacheProbe.Leaf (318ms)",
+        "trace: .> LEAN_PATH=/tmp/work/.lake/build/lib/lean $HOME/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean /tmp/work/CacheProbe/Leaf.lean -o /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.olean -i /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.ilean -c /tmp/work/.lake/build/ir/CacheProbe/Leaf.c --setup /tmp/work/.lake/build/ir/CacheProbe/Leaf.setup.json --json",
+        "\u2139 [4/5] Built CacheProbe (312ms)",
+        "trace: .> LEAN_PATH=/tmp/work/.lake/build/lib/lean $HOME/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean /tmp/work/CacheProbe.lean -o /tmp/work/.lake/build/lib/lean/CacheProbe.olean -i /tmp/work/.lake/build/lib/lean/CacheProbe.ilean -c /tmp/work/.lake/build/ir/CacheProbe.c --setup /tmp/work/.lake/build/ir/CacheProbe.setup.json --json",
+        "\u2714 [5/5] Ran cacheprobe/CacheProbe:default",
+        "Build completed successfully (5 jobs)."
+      ],
+      "stderr_lines": [
+        "info: cacheprobe: no previous manifest, creating one from scratch",
+        "info: toolchain not updated; already up-to-date"
+      ]
+    },
+    "2_ro_default_full_hit": {
+      "returncode": 0,
+      "elapsed_s": 0.152,
+      "cache_unchanged": true,
+      "restored_oleans_in_build": [
+        ".lake/build/lib/lean/CacheProbe.olean",
+        ".lake/build/lib/lean/CacheProbe/Base.olean",
+        ".lake/build/lib/lean/CacheProbe/Leaf.olean"
+      ],
+      "hardlink_fallback_seen": true,
+      "stdout_lines": [
+        "\u2714 [0/5] Ran job computation",
+        "\u2714 [1/5] Ran cacheprobe:extraDep",
+        "\u2139 [2/5] Reused CacheProbe.Base",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/dfa54dfe6c84cef5.olean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe/Base.olean",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/bc8c8c485972a346.ilean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe/Base.ilean",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/9862be94c2617042.c",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/ir/CacheProbe/Base.c",
+        "\u2139 [3/5] Reused CacheProbe.Leaf",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/084a3440cf4cfb86.olean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.olean",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/c8abf43fbd446597.ilean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.ilean",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/ea7ef14dc2bddb57.c",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/ir/CacheProbe/Leaf.c",
+        "\u2139 [4/5] Reused CacheProbe",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/2346a76643e69efc.olean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe.olean",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/c6d4329e0356894a.ilean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe.ilean",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/bb526dc3f51a9083.c",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/ir/CacheProbe.c",
+        "\u2714 [5/5] Ran cacheprobe/CacheProbe:default",
+        "Build completed successfully (5 jobs)."
+      ],
+      "stderr_lines": [
+        "info: cacheprobe: no previous manifest, creating one from scratch",
+        "info: toolchain not updated; already up-to-date"
+      ]
+    },
+    "3_ro_default_leaf_miss": {
+      "returncode": 0,
+      "elapsed_s": 0.657,
+      "cache_unchanged": true,
+      "stdout_lines": [
+        "\u2714 [0/5] Ran job computation",
+        "\u2714 [1/5] Ran cacheprobe:extraDep",
+        "\u2139 [2/5] Reused CacheProbe.Base",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/dfa54dfe6c84cef5.olean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe/Base.olean",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/bc8c8c485972a346.ilean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe/Base.ilean",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/9862be94c2617042.c",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/ir/CacheProbe/Base.c",
+        "\u2139 [3/5] Built CacheProbe.Leaf (259ms)",
+        "trace: .> LEAN_PATH=/tmp/work/.lake/build/lib/lean $HOME/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean /tmp/work/CacheProbe/Leaf.lean -o /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.olean -i /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.ilean -c /tmp/work/.lake/build/ir/CacheProbe/Leaf.c --setup /tmp/work/.lake/build/ir/CacheProbe/Leaf.setup.json --json",
+        "\u2139 [4/5] Built CacheProbe (277ms)",
+        "trace: .> LEAN_PATH=/tmp/work/.lake/build/lib/lean $HOME/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean /tmp/work/CacheProbe.lean -o /tmp/work/.lake/build/lib/lean/CacheProbe.olean -i /tmp/work/.lake/build/lib/lean/CacheProbe.ilean -c /tmp/work/.lake/build/ir/CacheProbe.c --setup /tmp/work/.lake/build/ir/CacheProbe.setup.json --json",
+        "\u2714 [5/5] Ran cacheprobe/CacheProbe:default",
+        "Build completed successfully (5 jobs)."
+      ],
+      "stderr_lines": [
+        "info: cacheprobe: no previous manifest, creating one from scratch",
+        "info: toolchain not updated; already up-to-date"
+      ]
+    },
+    "4_ro_writable_leaf_miss": {
+      "returncode": 1,
+      "elapsed_s": 0.356,
+      "cache_unchanged": true,
+      "stdout_lines": [
+        "\u2714 [0/5] Ran job computation",
+        "\u2714 [1/5] Ran cacheprobe:extraDep",
+        "\u2139 [2/5] Reused CacheProbe.Base",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/bc8c8c485972a346.ilean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe/Base.ilean",
+        "\u2716 [3/5] Building CacheProbe.Leaf (248ms)",
+        "trace: .> LEAN_PATH=/tmp/work/.lake/build/lib/lean $HOME/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean /tmp/work/CacheProbe/Leaf.lean -o /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.olean -i /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.ilean -c /tmp/work/.lake/build/ir/CacheProbe/Leaf.c --setup /tmp/work/.lake/build/ir/CacheProbe/Leaf.setup.json --json",
+        "error: failed to cache artifact: read-only file system (error code: 30)",
+        "  file: /tmp/ro-cache/artifacts/90ff69022274939e.olean",
+        "\u2714 [4/5] Ran CacheProbe",
+        "\u2714 [5/5] Ran cacheprobe/CacheProbe:default",
+        "Some required targets logged failures:",
+        "- CacheProbe.Leaf"
+      ],
+      "stderr_lines": [
+        "info: cacheprobe: no previous manifest, creating one from scratch",
+        "info: toolchain not updated; already up-to-date",
+        "error: build failed"
+      ]
+    },
+    "5_ro_writable_full_hit": {
+      "returncode": 0,
+      "elapsed_s": 0.16,
+      "cache_unchanged": true,
+      "restored_oleans_in_build": [],
+      "restored_ileans_in_build": [
+        ".lake/build/lib/lean/CacheProbe.ilean",
+        ".lake/build/lib/lean/CacheProbe/Base.ilean",
+        ".lake/build/lib/lean/CacheProbe/Leaf.ilean"
+      ],
+      "stdout_lines": [
+        "\u2714 [0/5] Ran job computation",
+        "\u2714 [1/5] Ran cacheprobe:extraDep",
+        "\u2139 [2/5] Reused CacheProbe.Base",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/bc8c8c485972a346.ilean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe/Base.ilean",
+        "\u2139 [3/5] Reused CacheProbe.Leaf",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/c8abf43fbd446597.ilean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.ilean",
+        "\u2139 [4/5] Reused CacheProbe",
+        "trace: found artifact in cache: /tmp/ro-cache/artifacts/c6d4329e0356894a.ilean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe.ilean",
+        "\u2714 [5/5] Ran cacheprobe/CacheProbe:default",
+        "Build completed successfully (5 jobs)."
+      ],
+      "stderr_lines": [
+        "info: cacheprobe: no previous manifest, creating one from scratch",
+        "info: toolchain not updated; already up-to-date"
+      ]
+    },
+    "6_rw_writable_leaf_miss": {
+      "returncode": 0,
+      "elapsed_s": 0.656,
+      "cache_files_before": 12,
+      "cache_files_after": 16,
+      "new_cache_outputs": [
+        "outputs/cacheprobe/c1bf5a7071fa620b.json",
+        "outputs/cacheprobe/f20f83888520b52d.json"
+      ],
+      "stdout_lines": [
+        "\u2714 [0/5] Ran job computation",
+        "\u2714 [1/5] Ran cacheprobe:extraDep",
+        "\u2139 [2/5] Reused CacheProbe.Base",
+        "trace: found artifact in cache: /tmp/rw-cache/artifacts/bc8c8c485972a346.ilean",
+        "trace: could not hard link artifact, copying from cache instead; error: unsupported operation (error code: 18, cross-device link not permitted)",
+        "trace: restored artifact from cache to: /tmp/work/.lake/build/lib/lean/CacheProbe/Base.ilean",
+        "\u2139 [3/5] Built CacheProbe.Leaf (247ms)",
+        "trace: .> LEAN_PATH=/tmp/work/.lake/build/lib/lean $HOME/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean /tmp/work/CacheProbe/Leaf.lean -o /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.olean -i /tmp/work/.lake/build/lib/lean/CacheProbe/Leaf.ilean -c /tmp/work/.lake/build/ir/CacheProbe/Leaf.c --setup /tmp/work/.lake/build/ir/CacheProbe/Leaf.setup.json --json",
+        "\u2139 [4/5] Built CacheProbe (311ms)",
+        "trace: .> LEAN_PATH=/tmp/work/.lake/build/lib/lean $HOME/.elan/toolchains/leanprover--lean4---v4.35.0/bin/lean /tmp/work/CacheProbe.lean -o /tmp/work/.lake/build/lib/lean/CacheProbe.olean -i /tmp/work/.lake/build/lib/lean/CacheProbe.ilean -c /tmp/work/.lake/build/ir/CacheProbe.c --setup /tmp/work/.lake/build/ir/CacheProbe.setup.json --json",
+        "\u2714 [5/5] Ran cacheprobe/CacheProbe:default",
+        "Build completed successfully (5 jobs)."
+      ],
+      "stderr_lines": [
+        "info: cacheprobe: no previous manifest, creating one from scratch",
+        "info: toolchain not updated; already up-to-date"
+      ]
+    }
+  }
+}

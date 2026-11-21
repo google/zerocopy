@@ -1,0 +1,129 @@
+{
+  "topics": [
+    "build",
+    "build/nix",
+    "build/caching",
+    "build/hermeticity",
+    "build/sandboxing",
+    "cargo",
+    "cargo/caching",
+    "tooling/ci"
+  ],
+  "subjects": [
+    {
+      "name": "Nix",
+      "identity": {
+        "repository": "NixOS/nix",
+        "revision": "3705f35ddcdca8d777c1d75b939eb6a3a4ac9ebb",
+        "version": "2.36.0"
+      }
+    },
+    {
+      "name": "Determinate Nix source",
+      "identity": {
+        "repository": "DeterminateSystems/nix-src",
+        "revision": "a21b800b3c1640f2350cc311fee1a2f64576e33a",
+        "version": "v3.24.3"
+      }
+    },
+    {
+      "name": "Determinate Nix CLI runtime",
+      "identity": {
+        "distribution": "Determinate Nix",
+        "version": "3.17.0",
+        "upstream_nix_version": "2.33.3"
+      }
+    },
+    {
+      "name": "nix-eval-jobs",
+      "identity": {
+        "repository": "nix-community/nix-eval-jobs",
+        "revision": "9f1553afabd95f9f59951f5c946e86005af7196a",
+        "version": "v2.35.4"
+      }
+    },
+    {
+      "name": "crane",
+      "identity": {
+        "repository": "ipetkov/crane",
+        "revision": "95e62def851e9d650f0eab63cb4f59a3306e20bd",
+        "version": "v0.24.0"
+      }
+    },
+    {
+      "name": "fenix",
+      "identity": {
+        "repository": "nix-community/fenix",
+        "revision": "ea745d6a7730c73bb5e0c028818240234e7bda05"
+      }
+    },
+    {
+      "name": "rust-overlay",
+      "identity": {
+        "repository": "oxalica/rust-overlay",
+        "revision": "a5c999945da3991d7aa3cc2a6075cfd22bd387e9"
+      }
+    },
+    {
+      "name": "rules_rust",
+      "identity": {
+        "repository": "bazelbuild/rules_rust",
+        "revision": "5d99ff2e58d1a0c9387fc4945029df11144bc8a3",
+        "version": "0.75.0"
+      }
+    },
+    {
+      "name": "reindeer",
+      "identity": {
+        "repository": "facebookincubator/reindeer",
+        "revision": "5981c7a3faacee2efc15584a94c0caa851c6517b"
+      }
+    },
+    {
+      "name": "bubblewrap",
+      "identity": {
+        "repository": "containers/bubblewrap",
+        "version": "v0.12.0"
+      }
+    },
+    {
+      "name": "BuildKit",
+      "identity": {
+        "repository": "moby/buildkit",
+        "version": "v0.35.1"
+      }
+    },
+    {
+      "name": "sccache",
+      "identity": {
+        "repository": "mozilla/sccache",
+        "revision": "1616af1ba4881ad17d1619884042febaa5189055",
+        "version": "v0.19.0"
+      }
+    },
+    {
+      "name": "rust-cache",
+      "identity": {
+        "repository": "Swatinem/rust-cache",
+        "revision": "eedcf2fb1c22f010a0eb66b92f378c110977f266",
+        "version": "v2.9.3"
+      }
+    },
+    {
+      "name": "guppy (cargo-hakari)",
+      "identity": {
+        "repository": "guppy-rs/guppy",
+        "revision": "0cbe52c4cbf4ac55bc2fa9ba7f8f5d14288fe478"
+      }
+    },
+    {
+      "name": "cargo-nextest",
+      "identity": {
+        "repository": "nextest-rs/nextest",
+        "revision": "bb7472661992548512163aa563bee0948db47a4f",
+        "version": "cargo-nextest-0.9.152"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

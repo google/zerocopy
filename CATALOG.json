@@ -13032,6 +13032,70 @@
         "zerocopy/succinct-serialization"
       ]
     },
+    "bwrap-userns-docker-and-landlock-confinement-on-github-runners": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "image_version": "20261116.376.1",
+            "repository": "actions/runner-images",
+            "revision": "0e63d4f9d2c29043b4cf1d2f40d1812a7cde1369"
+          },
+          "name": "GitHub Actions runner-images (ubuntu-24.04)"
+        },
+        {
+          "identity": {
+            "repository": "actions/runner",
+            "revision": "7e211dc69c347b78fc398e630e74facb11a13235"
+          },
+          "name": "GitHub Actions Runner"
+        },
+        {
+          "identity": {
+            "repository": "moby/moby",
+            "revision": "8b0c45e42959ea5322cfb33bfb97a40ed64d4a07"
+          },
+          "name": "Moby (Docker Engine)"
+        },
+        {
+          "identity": {
+            "repository": "docker/cli",
+            "revision": "01a20278d3603af41da9a1b62c0d942d67066672"
+          },
+          "name": "Docker CLI"
+        },
+        {
+          "identity": {
+            "repository": "containers/bubblewrap",
+            "revision": "1fb0aa26d3eb66254f7742e704add7f82f41a582"
+          },
+          "name": "bubblewrap"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "versions": "v6.8, v6.10, v6.12, v6.15, v7.0"
+          },
+          "name": "Linux kernel Landlock LSM"
+        },
+        {
+          "identity": {
+            "distribution": "Ubuntu",
+            "suites": "noble, noble-updates, resolute"
+          },
+          "name": "Ubuntu noble/resolute apparmor and bubblewrap packages"
+        }
+      ],
+      "topics": [
+        "build/sandboxing",
+        "security/capability-sandboxing",
+        "security/container-sandboxing",
+        "security/landlock",
+        "security/seccomp-bpf",
+        "systems/bubblewrap",
+        "tooling/ci"
+      ]
+    },
     "byte-level-separation-logic-typed-points-to-and-transmute-view-changes": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -16271,6 +16335,135 @@
         "pl/session-types",
         "systems/distributed-systems",
         "ffi/protocols"
+      ]
+    },
+    "ci-enforced-source-closure-skipping-nix-and-alternatives": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "NixOS/nix",
+            "revision": "3705f35ddcdca8d777c1d75b939eb6a3a4ac9ebb",
+            "version": "2.36.0"
+          },
+          "name": "Nix"
+        },
+        {
+          "identity": {
+            "repository": "DeterminateSystems/nix-src",
+            "revision": "a21b800b3c1640f2350cc311fee1a2f64576e33a",
+            "version": "v3.24.3"
+          },
+          "name": "Determinate Nix source"
+        },
+        {
+          "identity": {
+            "distribution": "Determinate Nix",
+            "upstream_nix_version": "2.33.3",
+            "version": "3.17.0"
+          },
+          "name": "Determinate Nix CLI runtime"
+        },
+        {
+          "identity": {
+            "repository": "nix-community/nix-eval-jobs",
+            "revision": "9f1553afabd95f9f59951f5c946e86005af7196a",
+            "version": "v2.35.4"
+          },
+          "name": "nix-eval-jobs"
+        },
+        {
+          "identity": {
+            "repository": "ipetkov/crane",
+            "revision": "95e62def851e9d650f0eab63cb4f59a3306e20bd",
+            "version": "v0.24.0"
+          },
+          "name": "crane"
+        },
+        {
+          "identity": {
+            "repository": "nix-community/fenix",
+            "revision": "ea745d6a7730c73bb5e0c028818240234e7bda05"
+          },
+          "name": "fenix"
+        },
+        {
+          "identity": {
+            "repository": "oxalica/rust-overlay",
+            "revision": "a5c999945da3991d7aa3cc2a6075cfd22bd387e9"
+          },
+          "name": "rust-overlay"
+        },
+        {
+          "identity": {
+            "repository": "bazelbuild/rules_rust",
+            "revision": "5d99ff2e58d1a0c9387fc4945029df11144bc8a3",
+            "version": "0.75.0"
+          },
+          "name": "rules_rust"
+        },
+        {
+          "identity": {
+            "repository": "facebookincubator/reindeer",
+            "revision": "5981c7a3faacee2efc15584a94c0caa851c6517b"
+          },
+          "name": "reindeer"
+        },
+        {
+          "identity": {
+            "repository": "containers/bubblewrap",
+            "version": "v0.12.0"
+          },
+          "name": "bubblewrap"
+        },
+        {
+          "identity": {
+            "repository": "moby/buildkit",
+            "version": "v0.35.1"
+          },
+          "name": "BuildKit"
+        },
+        {
+          "identity": {
+            "repository": "mozilla/sccache",
+            "revision": "1616af1ba4881ad17d1619884042febaa5189055",
+            "version": "v0.19.0"
+          },
+          "name": "sccache"
+        },
+        {
+          "identity": {
+            "repository": "Swatinem/rust-cache",
+            "revision": "eedcf2fb1c22f010a0eb66b92f378c110977f266",
+            "version": "v2.9.3"
+          },
+          "name": "rust-cache"
+        },
+        {
+          "identity": {
+            "repository": "guppy-rs/guppy",
+            "revision": "0cbe52c4cbf4ac55bc2fa9ba7f8f5d14288fe478"
+          },
+          "name": "guppy (cargo-hakari)"
+        },
+        {
+          "identity": {
+            "repository": "nextest-rs/nextest",
+            "revision": "bb7472661992548512163aa563bee0948db47a4f",
+            "version": "cargo-nextest-0.9.152"
+          },
+          "name": "cargo-nextest"
+        }
+      ],
+      "topics": [
+        "build",
+        "build/nix",
+        "build/caching",
+        "build/hermeticity",
+        "build/sandboxing",
+        "cargo",
+        "cargo/caching",
+        "tooling/ci"
       ]
     },
     "clausal-proof-certificates-rup-rat-and-deletion-soundness": {
@@ -34105,6 +34298,118 @@
         "tooling/open-space-weather-modelling-frameworks"
       ]
     },
+    "ghcr-oci-artifacts-cosign-vs-nix-binary-caches-on-github-actions": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "github/docs",
+            "revision": "d7487f5debb5a5a2a6e65e6f9fa539266f5f8db6"
+          },
+          "name": "GitHub Docs"
+        },
+        {
+          "identity": {
+            "repository": "opencontainers/distribution-spec",
+            "revision": "a139cc423184af6078077b9b7ee336eddbd03f8f",
+            "version": "v1.1.1"
+          },
+          "name": "OCI Distribution Specification"
+        },
+        {
+          "identity": {
+            "repository": "opencontainers/image-spec",
+            "revision": "147f9c13cedb47a0c4d9a11a222961073d585877",
+            "version": "v1.1.1"
+          },
+          "name": "OCI Image Specification"
+        },
+        {
+          "identity": {
+            "repository": "moby/buildkit",
+            "revision": "412cc86ad3c4252b82e929f9b1b1ad167376ded8",
+            "version": "v0.35.1"
+          },
+          "name": "BuildKit"
+        },
+        {
+          "identity": {
+            "repository": "docker/build-push-action",
+            "revision": "c3c9e263c25d99ce0380d002d59b67737d91b0dc",
+            "version": "v7.4.0"
+          },
+          "name": "docker/build-push-action"
+        },
+        {
+          "identity": {
+            "repository": "actions/upload-artifact",
+            "revision": "cf430e030ddbb5b0abf93d22962f4752f3646cd9",
+            "version": "v7.0.2"
+          },
+          "name": "actions/upload-artifact"
+        },
+        {
+          "identity": {
+            "repository": "oras-project/oras",
+            "revision": "fdeb304ddeeb29f6cc9200457b8775908471c3ad",
+            "version": "v1.4.0"
+          },
+          "name": "ORAS CLI"
+        },
+        {
+          "identity": {
+            "repository": "sigstore/cosign",
+            "revision": "0e48502cf5ef34e2e60bbd3617aa19945712f705",
+            "version": "v3.1.4"
+          },
+          "name": "Cosign"
+        },
+        {
+          "identity": {
+            "repository": "google/go-containerregistry",
+            "version": "v0.22.1"
+          },
+          "name": "go-containerregistry"
+        },
+        {
+          "identity": {
+            "repository": "zhaofengli/attic",
+            "revision": "7a19204df10d606c5070e6bb72615c3461900c05"
+          },
+          "name": "Attic"
+        },
+        {
+          "identity": {
+            "repository": "DeterminateSystems/nix-installer-action",
+            "revision": "3138316df39ed29be04236d7ffc686fa525866aa",
+            "version": "v23"
+          },
+          "name": "DeterminateSystems/nix-installer-action"
+        },
+        {
+          "identity": {
+            "repository": "cachix/install-nix-action",
+            "revision": "bb0495a1086c46893eee56f32fd192dfe4a15bb9",
+            "version": "v32.0.0"
+          },
+          "name": "cachix/install-nix-action"
+        },
+        {
+          "identity": {
+            "endpoint": "https://ghcr.io",
+            "probed_artifact": "ghcr.io/oras-project/oras:v1.4.0",
+            "probed_digest": "sha256:5fabb4e523de1781443c227fca62782a51aeacd044413c07f54dc64935d7f013"
+          },
+          "name": "GitHub Container Registry (ghcr.io)"
+        }
+      ],
+      "topics": [
+        "build/caching",
+        "build/nix",
+        "security/supply-chain",
+        "tooling/ci"
+      ]
+    },
     "gherrit-multi-remote-ancestry-and-graphql-batch-idempotency-2026": {
       "observed_at": "2026-11-02",
       "subjects": [
@@ -34506,6 +34811,99 @@
         "verification/variant-representation-normalization/hgvs-3-prime-rule",
         "tooling/haplotype-aware-call-comparison",
         "tooling/haplotype-aware-call-comparison/vcfeval-path-complexity"
+      ]
+    },
+    "github-actions-selection-tcb-cache-isolation-and-signed-remote-builders": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "github/docs",
+            "revision": "d7487f5debb5a5a2a6e65e6f9fa539266f5f8db6"
+          },
+          "name": "GitHub Docs"
+        },
+        {
+          "identity": {
+            "repository": "github/rest-api-description",
+            "revision": "c9c95fe34ced05fe076001f5c55704742bc8e7f8"
+          },
+          "name": "GitHub REST API Description"
+        },
+        {
+          "identity": {
+            "repository": "NixOS/nix",
+            "revision": "3705f35ddcdca8d777c1d75b939eb6a3a4ac9ebb"
+          },
+          "name": "Nix"
+        },
+        {
+          "identity": {
+            "distribution": "Determinate Nix",
+            "nix_version": "2.33.3",
+            "platform": "x86_64-linux",
+            "version": "3.17.0"
+          },
+          "name": "Determinate Nix"
+        },
+        {
+          "identity": {
+            "repository": "DeterminateSystems/magic-nix-cache",
+            "revision": "12fb09b6126680552ebf1918102d65d832554057"
+          },
+          "name": "Magic Nix Cache"
+        },
+        {
+          "identity": {
+            "repository": "DeterminateSystems/magic-nix-cache-action",
+            "revision": "8941f279e15828abcd2fc8fbb7cd282ab00972a7"
+          },
+          "name": "Magic Nix Cache Action"
+        },
+        {
+          "identity": {
+            "repository": "zhaofengli/attic",
+            "revision": "7a19204df10d606c5070e6bb72615c3461900c05"
+          },
+          "name": "Attic"
+        },
+        {
+          "identity": {
+            "repository": "cachix/cachix",
+            "revision": "8231a10ca573fc5cbdd844d2a2802d6c7765f288"
+          },
+          "name": "Cachix"
+        },
+        {
+          "identity": {
+            "repository": "firecracker-microvm/firecracker",
+            "revision": "58cf1b2cdca407f2323d1b0b25ebb95dfe5b4bcb"
+          },
+          "name": "Firecracker"
+        },
+        {
+          "identity": {
+            "repository": "cloud-hypervisor/cloud-hypervisor",
+            "revision": "8d5dd53b7ce7ff49249496cdb29a144b3ef2e19c"
+          },
+          "name": "Cloud Hypervisor"
+        },
+        {
+          "identity": {
+            "repository": "google/gvisor",
+            "revision": "9d60518521ac1fd54989ec0482570cd18c70d885"
+          },
+          "name": "gVisor"
+        }
+      ],
+      "topics": [
+        "build/nix",
+        "build/caching",
+        "build/sandboxing",
+        "security/ci",
+        "security/supply-chain",
+        "systems/virtualization",
+        "tooling/ci"
       ]
     },
     "gkat-bigkat-coalgebraic-automata-and-decidable-cfg-alignment": {
@@ -46628,6 +47026,57 @@
         "lean/elaboration",
         "lean/tactics",
         "lean/codegen"
+      ]
+    },
+    "lean4-lake-incremental-caching-in-nix-and-ci": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 / Lake v4.35.0"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "535435955b482176e8d62a54deebcacdec0827db"
+          },
+          "name": "Lean 4 Nix build removal commit"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "f86b192ec24dd3922d63f5ba05718ab5c4ef8e85"
+          },
+          "name": "Lean 4 last surviving nix/buildLeanPackage.nix"
+        },
+        {
+          "identity": {
+            "repository": "lenianiva/lean4-nix",
+            "revision": "2ad74592e34c2e6ff5e8bec9d8abab8f4e9c3a37"
+          },
+          "name": "lean4-nix (lake2nix)"
+        },
+        {
+          "identity": {
+            "path": "pkgs/by-name/le/lean4/package.nix",
+            "repository": "NixOS/nixpkgs",
+            "version": "4.35.0"
+          },
+          "name": "nixpkgs lean4 package"
+        }
+      ],
+      "topics": [
+        "build/caching",
+        "build/nix",
+        "lake/artifact-cache",
+        "lake/build",
+        "lake/readonly-dependencies",
+        "lean/olean",
+        "tooling/ci"
       ]
     },
     "lean4-realizeconst-diamond-collisions-chunked-mir-ast-and-olean-rss-scaling": {
@@ -72214,6 +72663,134 @@
         "rust/unsafe",
         "rustc/codegen",
         "security/secret-zeroization"
+      ]
+    },
+    "rust-ci-hermeticity-specialized-verifiers-and-runner-economics": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "0ef1bc386",
+            "date": "2026-11-09",
+            "repository": "rust-lang/rust",
+            "version": "1.100.0"
+          },
+          "name": "rustc (stable)"
+        },
+        {
+          "identity": {
+            "commit": "3acc79c0c",
+            "date": "2026-11-05",
+            "repository": "rust-lang/cargo",
+            "version": "1.100.0"
+          },
+          "name": "cargo (stable)"
+        },
+        {
+          "identity": {
+            "commit": "3ef0c22cd",
+            "date": "2026-11-11",
+            "repository": "rust-lang/rust",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc (nightly)"
+        },
+        {
+          "identity": {
+            "commit": "c07ac2c4d",
+            "date": "2026-11-06",
+            "repository": "rust-lang/cargo",
+            "version": "1.102.0-nightly"
+          },
+          "name": "cargo (nightly)"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/trybuild",
+            "version": "1.0.125"
+          },
+          "name": "trybuild"
+        },
+        {
+          "identity": {
+            "repository": "obi1kenobi/cargo-semver-checks",
+            "tag": "v0.51.0"
+          },
+          "name": "cargo-semver-checks"
+        },
+        {
+          "identity": {
+            "repository": "obi1kenobi/trustfall-rustdoc",
+            "tag": "v0.41.0"
+          },
+          "name": "trustfall-rustdoc"
+        },
+        {
+          "identity": {
+            "repository": "taiki-e/cargo-llvm-cov",
+            "tag": "v0.9.2"
+          },
+          "name": "cargo-llvm-cov"
+        },
+        {
+          "identity": {
+            "repository": "pacak/cargo-show-asm",
+            "revision": "5c0b140c004b"
+          },
+          "name": "cargo-show-asm"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "7e679961edcf"
+          },
+          "name": "Miri"
+        },
+        {
+          "identity": {
+            "repository": "RalfJung/rustc-build-sysroot",
+            "revision": "6534cd367f8d"
+          },
+          "name": "rustc-build-sysroot"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "tag": "kani-0.68.0"
+          },
+          "name": "Kani Rust Verifier"
+        },
+        {
+          "identity": {
+            "repository": "DeterminateSystems/nix-installer-action",
+            "tag": "v23"
+          },
+          "name": "Determinate Nix Installer Action"
+        },
+        {
+          "identity": {
+            "repository": "Swatinem/rust-cache",
+            "tag": "v2.9.3"
+          },
+          "name": "rust-cache"
+        },
+        {
+          "identity": {
+            "retrieved": "2026-11-21",
+            "url": "https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners"
+          },
+          "name": "GitHub Actions standard Linux runners documentation"
+        }
+      ],
+      "topics": [
+        "build/hermeticity",
+        "build/caching",
+        "cargo",
+        "rust",
+        "rustc",
+        "tooling/ci",
+        "verification/miri",
+        "verification/kani"
       ]
     },
     "rust-coroutines-gen-blocks-async-drop-and-self-referential-generator-pinning": {
