@@ -1,0 +1,6 @@
+name = "fail-closed-ir-capture-soundness-erasing-pass-sets-and-metadata-injectivity"
+version = "0.1.0"
+defaultTargets = ["Toy"]
+
+[[lean_lib]]
+name = "Toy"

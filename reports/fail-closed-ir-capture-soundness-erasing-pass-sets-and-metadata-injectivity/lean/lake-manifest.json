@@ -1,0 +1,7 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages": [],
+ "name":
+ "«fail-closed-ir-capture-soundness-erasing-pass-sets-and-metadata-injectivity»",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

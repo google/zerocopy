@@ -1,0 +1,1102 @@
+[
+ {
+  "id": "transfer-to-capture-input",
+  "lean": "Toy.Capture.transfer_to_capture_input",
+  "lean_names": [
+   "Toy.Capture.cex_capInput_hV",
+   "Toy.Capture.cex_capInput_hcap",
+   "Toy.Capture.cex_capInput_hok",
+   "Toy.Capture.cex_capInput_hver",
+   "Toy.Capture.transfer_to_capture_input_nonvacuous",
+   "Toy.Capture.OpaqueSem",
+   "Toy.Capture.Outcome",
+   "Toy.Capture.OverApproxOnOk",
+   "Toy.Capture.STerm",
+   "Toy.Capture.Sat",
+   "Toy.Capture.Tag",
+   "Toy.Capture.VTerm",
+   "Toy.Capture.VerifierSound",
+   "Toy.Capture.capDefault",
+   "Toy.Capture.capFC",
+   "Toy.Capture.cex_faithful_iff_htot",
+   "Toy.Capture.failClosed_empty_fragment",
+   "Toy.Capture.pPM",
+   "Toy.Capture.pRet",
+   "Toy.Capture.pTrap",
+   "Toy.Capture.qAsm",
+   "Toy.Capture.qGoto",
+   "Toy.Capture.qPM",
+   "Toy.Capture.qRet",
+   "Toy.Capture.returnsNormally",
+   "Toy.Capture.semS",
+   "Toy.Capture.semS_total",
+   "Toy.Capture.semV",
+   "Toy.Capture.trustAll",
+   "Toy.Capture.ubFree",
+   "Toy.Capture.Den",
+   "Toy.Capture.DenEquiv",
+   "Toy.Capture.DenIncl",
+   "Toy.Capture.FaithfulOnOk",
+   "Toy.Capture.LosesNoBehaviourAt",
+   "Toy.Capture.Pass",
+   "Toy.Capture.qAsm_havoc_no_sound_verifier_accepts_ubFree"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "The standard soundness argument of translation validation and semantics-preserving compilation (backward simulation implies preservation of every specification), restated for a partial capture.",
+  "plain_claim": "For all types `S`, `V`, `E`, `B`, source semantics `semS`, verifier semantics `semV`, capture `cap : S → Except E V`, verdict relation `verified`, programs `p`, `q` and specification `spec : B → Prop`: if `verified` is sound for `semV` (`VerifierSound`) and `cap` over-approximates on its ok-image (`OverApproxOnOk`: every run of a successfully captured program is a run of its capture), then `cap p = .ok q` and `verified q spec` imply `Sat (semS p) spec`. When the capture is taken after a pipeline, `p` is the pipeline output, not the original source.",
+  "hypotheses": [
+   {
+    "name": "hV : VerifierSound semV verified",
+    "purpose": "verdicts must be true of the verifier semantics",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_capInput_hV",
+    "witness_class": "concrete toy: `capFC`, `p = pPM`, `q = qPM`, the verdict relation `trustAll` accepts `ubFree` for `qPM`"
+   },
+   {
+    "name": "hcap : OverApproxOnOk semS semV cap",
+    "purpose": "every run of a successfully captured program must be a run of its capture",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_capInput_hcap",
+    "witness_class": "concrete toy: `capDefault` maps `pTrap` to `qGoto`; spec `returnsNormally`"
+   },
+   {
+    "name": "hok : cap p = .ok q",
+    "purpose": "ties `q` to `p`",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_capInput_hok",
+    "witness_class": "concrete toy: `qRet` is verified UB-free but is not the capture of `pPM`"
+   },
+   {
+    "name": "hver : verified q spec",
+    "purpose": "the verdict",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_capInput_hver",
+    "witness_class": "concrete toy: the capture `qPM` of `pPM` is not verified UB-free"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "`transfer_to_capture_input_nonvacuous`: the exact verifier for `semV os`, `capFC`, `p = pRet`, `q = qRet`, spec `ubFree`.",
+  "nonvacuity_witness_lean": "Toy.Capture.transfer_to_capture_input_nonvacuous",
+  "non_claims": [
+   "It says nothing about the program before any pass ran; see `transfer-relative-to-erasing-set` and `capture-after-ub-erasing-pass`.",
+   "Over-approximation is weaker than faithfulness; an over-approximating capture may make many specifications unverifiable (`qAsm` read with `havoc` admits a run ending in UB, so no sound verifier accepts `ubFree` for it: `qAsm_havoc_no_sound_verifier_accepts_ubFree`).",
+   "Failure and divergence must be runs of `B` for `Sat` to say anything about them: `Sat (semS p) spec` quantifies over the runs that `semS p` admits. If `semS` admits no run for a stuck or diverging execution, `Sat (semS p) spec` and `OverApproxOnOk` hold vacuously for it (`cex_faithful_iff_htot` exhibits an empty source denotation that over-approximation accepts). The concrete toy reifies UB, erroneous constants and running out of fuel as outcomes, and every `semS p` admits a run on every input (`semS_total`).",
+   "`Sat` expresses universal properties of single runs (`∀ b, d b → spec b`). Over-approximation on the ok-image is not shown to transfer existential properties (`∃ b, d b ∧ spec b`, such as reachability of a bug) or properties of sets of runs; such transfers would need the reverse inclusion (not proved here).",
+   "No coverage is claimed: programs on which `cap` returns `.error` impose no obligation, and a capture that rejects every program over-approximates vacuously (`failClosed_empty_fragment`). A capture error neither proves nor refutes `Sat (semS p) spec`.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "X. Leroy, \"A Formally Verified Compiler Back-end\", Journal of Automated Reasoning 43(4):363–446, 2009, doi:10.1007/s10817-009-9155-4 (arXiv:0902.2137), §2.1 \"Notions of semantic preservation\": Definition 2 (backward simulation, ∀B, C ⇓ B ⟹ S ⇓ B), Definition 3 (backward simulation for safe programs), Definition 4 (forward simulation), Definition 6 (preservation of a specification, S ⊨ Spec ⟹ C ⊨ Spec, where C ⊨ Spec means that every behaviour of C satisfies Spec), and the remarks that backward simulation for safe programs implies preservation of every specification, and that forward simulation implies backward simulation if C is deterministic. In a capture, the verified program (the captured `q`) plays the role of S and the program concluded about (`p`) the role of C.",
+   "A. Pnueli, M. Siegel, E. Singerman, \"Translation Validation\", TACAS 1998, LNCS 1384, pp. 151–166, doi:10.1007/BFb0054170 (publisher's abstract: each run of the translator is followed by a validation that the target code correctly implements the source, with correct implementation formalized as a refinement relation).",
+   "S. Blazy, Z. Dargaye, X. Leroy, \"Formal Verification of a C Compiler Front-End\", FM 2006, LNCS 4085, pp. 460–475, doi:10.1007/11813040_31 (publisher's abstract: machine-checked proof of observational semantic equivalence between source and generated code for a front-end from a subset of C to Cminor). The direction differs from a capture: a compiler correctness theorem of this kind constrains the behaviours of the generated code by those of the source, and in CompCert it is conditional on the source not going wrong (X. Leroy, JAR 2009, §2.1, Definition 3), whereas transfer through a capture with every sound verifier needs every source run, UB runs included, to be a run of the captured program (`transferSound_all_sound_verifiers_iff_overApproxOnOk`).",
+   "reference corpus package `zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume`, cards `ub-check-of-output-complete-under-reverse-refinement` (`Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_refinesWT_rev`, `Toy.ZstAssume.ubFree_src_of_ubFree_output_of_revChainWT`: UB-freedom of an output transfers to a source that whole-trace-refines it, also along a pipeline whose every pass's input refines its output), `ub-check-of-output-incomplete` (`Toy.ZstAssume.ubCheck_of_output_misses_source_ub`) and `delete-zero-size-access-equivalence-exact-condition` (`Toy.ZstAssume.deleteZeroSizeAccess_equivPP_iff`); cited, not imported."
+  ],
+  "design_question": "What must a capture guarantee for a verifier's verdict about the captured program to say anything about the captured program's input?"
+ },
+ {
+  "id": "transfer-through-pipeline-losing-no-runs",
+  "lean": "Toy.Capture.transfer_of_losesNoBehaviourAtInputs",
+  "lean_names": [
+   "Toy.Capture.cex_pipeline_hV",
+   "Toy.Capture.cex_pipeline_hcap",
+   "Toy.Capture.cex_pipeline_hpipe",
+   "Toy.Capture.cex_pipeline_hok",
+   "Toy.Capture.cex_pipeline_hver",
+   "Toy.Capture.denIncl_runPipe_of_losesNoBehaviourAtInputs",
+   "Toy.Capture.transfer_of_losesNoBehaviourAtInputs_nonvacuous",
+   "Toy.Capture.LosesNoBehaviourAtInputs",
+   "Toy.Capture.Outcome",
+   "Toy.Capture.STerm",
+   "Toy.Capture.Sat",
+   "Toy.Capture.VTerm",
+   "Toy.Capture.capDefault",
+   "Toy.Capture.capFC",
+   "Toy.Capture.pOk",
+   "Toy.Capture.pPM",
+   "Toy.Capture.pTrap",
+   "Toy.Capture.pipeOk",
+   "Toy.Capture.pipePM",
+   "Toy.Capture.qOk",
+   "Toy.Capture.qPM",
+   "Toy.Capture.qRet",
+   "Toy.Capture.runPipe",
+   "Toy.Capture.semS",
+   "Toy.Capture.semV",
+   "Toy.Capture.trustAll",
+   "Toy.Capture.ubFree"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Finite composition of reverse inclusions with `transfer-to-capture-input`; the same composition is mechanized for UB-freedom along a pipeline in the cited zero-size-access package.",
+  "plain_claim": "For every pipeline `pipe`, source `src`, program `q` and specification `spec`: if `verified` is sound for `semV`, `cap` over-approximates on its ok-image, and every pass of `pipe`, whatever its tag, loses no run at its actual input (`LosesNoBehaviourAtInputs`: the input of pass `i` is the program the passes before it produce from `src`), then `cap (runPipe pipe src) = .ok q` and `verified q spec` imply `Sat (semS src) spec`.",
+  "hypotheses": [
+   {
+    "name": "hV : VerifierSound semV verified",
+    "purpose": "verdicts must be true of the verifier semantics",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_pipeline_hV",
+    "witness_class": "concrete toy, empty pipeline, `capFC`, source `pPM`, `trustAll`"
+   },
+   {
+    "name": "hcap : OverApproxOnOk semS semV cap",
+    "purpose": "every run of a successfully captured program must be a run of its capture",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_pipeline_hcap",
+    "witness_class": "concrete toy, empty pipeline, `capDefault` on `pTrap`"
+   },
+   {
+    "name": "hpipe : LosesNoBehaviourAtInputs semS pipe src",
+    "purpose": "no pass may lose a source run at its actual input",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_pipeline_hpipe",
+    "witness_class": "concrete toy: `pipePM` (exactly one pass, erasing place mentions) at `pPM`"
+   },
+   {
+    "name": "hok : cap (runPipe pipe src) = .ok q",
+    "purpose": "ties `q` to `src`",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_pipeline_hok",
+    "witness_class": "concrete toy, empty pipeline: `qRet` is not the capture of `pPM`"
+   },
+   {
+    "name": "hver : verified q spec",
+    "purpose": "the verdict",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_pipeline_hver",
+    "witness_class": "concrete toy, empty pipeline: `qPM` is not verified UB-free"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`transfer_of_losesNoBehaviourAtInputs_nonvacuous`: `pipeOk` (an erasing pass, then an equiv pass) at `pOk`, `capFC`, `q = qOk`, exact verifier, spec `ubFree`.",
+  "nonvacuity_witness_lean": "Toy.Capture.transfer_of_losesNoBehaviourAtInputs_nonvacuous",
+  "non_claims": [
+   "The hypothesis is per input: it asks for every pass at the inputs produced from this `src`, and the theorem gives no way to establish it.",
+   "The scope remarks of `transfer-to-capture-input` apply: failure and divergence must be runs of `B`, `Sat` is a universal single-run property, and rejected programs carry no obligation.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "reference corpus package `zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume`, cards `ub-check-of-output-complete-under-reverse-refinement` (`Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_refinesWT_rev`, `Toy.ZstAssume.ubFree_src_of_ubFree_output_of_revChainWT`: UB-freedom of an output transfers to a source that whole-trace-refines it, also along a pipeline whose every pass's input refines its output), `ub-check-of-output-incomplete` (`Toy.ZstAssume.ubCheck_of_output_misses_source_ub`) and `delete-zero-size-access-equivalence-exact-condition` (`Toy.ZstAssume.deleteZeroSizeAccess_equivPP_iff`); cited, not imported.",
+   "A. Pnueli, M. Siegel, E. Singerman, \"Translation Validation\", TACAS 1998, LNCS 1384, pp. 151–166, doi:10.1007/BFb0054170 (publisher's abstract: each run of the translator is followed by a validation that the target code correctly implements the source, with correct implementation formalized as a refinement relation).",
+   "X. Leroy, \"A Formally Verified Compiler Back-end\", Journal of Automated Reasoning 43(4):363–446, 2009, doi:10.1007/s10817-009-9155-4 (arXiv:0902.2137), §2.1 \"Notions of semantic preservation\": Definition 2 (backward simulation, ∀B, C ⇓ B ⟹ S ⇓ B), Definition 3 (backward simulation for safe programs), Definition 4 (forward simulation), Definition 6 (preservation of a specification, S ⊨ Spec ⟹ C ⊨ Spec, where C ⊨ Spec means that every behaviour of C satisfies Spec), and the remarks that backward simulation for safe programs implies preservation of every specification, and that forward simulation implies backward simulation if C is deterministic. In a capture, the verified program (the captured `q`) plays the role of S and the program concluded about (`p`) the role of C."
+  ],
+  "design_question": "What is the weakest per-pass condition, in this model, under which a verdict about captured IR transfers through every pass before the capture point?"
+ },
+ {
+  "id": "transfer-relative-to-erasing-set",
+  "lean": "Toy.Capture.transfer_relative_to_erasingSet",
+  "lean_names": [
+   "Toy.Capture.cex_hV",
+   "Toy.Capture.cex_hcap_default",
+   "Toy.Capture.cex_hcap_stringify_noop",
+   "Toy.Capture.cex_hcap_swallow",
+   "Toy.Capture.cex_hcap_noCleanup",
+   "Toy.Capture.cex_hcap_noReason",
+   "Toy.Capture.cex_hEq",
+   "Toy.Capture.cex_erasingSet_placeMention",
+   "Toy.Capture.cex_erasingSet_zstRead",
+   "Toy.Capture.cex_erasingSet_trivialSwitch",
+   "Toy.Capture.cex_hok",
+   "Toy.Capture.cex_hver",
+   "Toy.Capture.erasure_disabled_control",
+   "Toy.Capture.losesNoBehaviourAtInputs_of_erasingSet",
+   "Toy.Capture.InErasingSet",
+   "Toy.Capture.ErasingSetPrecondition",
+   "Toy.Capture.erasingSetPrecondition_iff_forall_inErasingSet",
+   "Toy.Capture.transfer_relative_to_erasingSet_nonvacuous",
+   "Toy.Capture.transfer_single_pass",
+   "Toy.Capture.transfer_single_pass_nonvacuous",
+   "Toy.Capture.EquivTagSound",
+   "Toy.Capture.Outcome",
+   "Toy.Capture.SBlock",
+   "Toy.Capture.STerm",
+   "Toy.Capture.Sat",
+   "Toy.Capture.Tag",
+   "Toy.Capture.UnwindAct",
+   "Toy.Capture.VBlock",
+   "Toy.Capture.VTerm",
+   "Toy.Capture.capFC",
+   "Toy.Capture.clearReplace",
+   "Toy.Capture.pOk",
+   "Toy.Capture.pPM",
+   "Toy.Capture.pipeOk",
+   "Toy.Capture.qOk",
+   "Toy.Capture.runPipe",
+   "Toy.Capture.semS",
+   "Toy.Capture.semV",
+   "Toy.Capture.transfer_to_capture_input",
+   "Toy.Capture.trustAll",
+   "Toy.Capture.ubFree"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Translation-validation folklore, made precise relative to a stated set of UB-erasing passes before the capture point.",
+  "plain_claim": "For every pipeline `pipe`, source `src`, program `q` and specification `spec`: if `verified` is sound for `semV`, `cap` over-approximates on its ok-image, every `equiv`-tagged pass of `pipe` preserves the denotation of every program (`EquivTagSound`, for all programs, not only those it is applied to), and every pass in the erasing set `E_k` (`InErasingSet`: the `erasing`-tagged passes of `pipe`) loses no run at its actual input (`ErasingSetPrecondition`, equivalently `erasingSetPrecondition_iff_forall_inErasingSet`), then `cap (runPipe pipe src) = .ok q` and `verified q spec` imply `Sat (semS src) spec`. Its one-pass instance is `transfer_single_pass`.",
+  "hypotheses": [
+   {
+    "name": "hV : VerifierSound semV verified",
+    "purpose": "verdicts must be true of the verifier semantics",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_hV",
+    "witness_class": "concrete toy, empty pipeline, `trustAll`"
+   },
+   {
+    "name": "hcap : OverApproxOnOk semS semV cap",
+    "purpose": "every run of a successfully captured program must be a run of its capture",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_hcap_default",
+    "witness_class": "concrete toy, empty pipeline; also `cex_hcap_stringify_noop`, `cex_hcap_swallow`, `cex_hcap_noCleanup`, `cex_hcap_noReason`"
+   },
+   {
+    "name": "hEq : ∀ P ∈ pipe, EquivTagSound semS P",
+    "purpose": "an `equiv` tag is trusted without a per-input check, so the tag's promise is stated for every program; the proof uses no more than that each `equiv` pass loses no run at its actual input (see the non-claims)",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_hEq",
+    "witness_class": "concrete toy: the place-mention eraser mis-tagged `equiv` (erasing set empty, so `hE` holds vacuously)"
+   },
+   {
+    "name": "hE : ErasingSetPrecondition semS pipe src",
+    "purpose": "erasing passes must lose no run at their actual inputs",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_erasingSet_placeMention",
+    "witness_class": "concrete toy: exactly one erasing pass removing place mentions, source `pPM` (UB on input 0); also the zero-size-read and equal-target switch variants"
+   },
+   {
+    "name": "hok : cap (runPipe pipe src) = .ok q",
+    "purpose": "ties `q` to `src`",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_hok",
+    "witness_class": "concrete toy, empty pipeline"
+   },
+   {
+    "name": "hver : verified q spec",
+    "purpose": "the verdict",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_hver",
+    "witness_class": "concrete toy, empty pipeline"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`transfer_relative_to_erasingSet_nonvacuous`: `pipeOk` at `pOk` (erasing set {0}, `InErasingSet pipeOk 0`; equiv pass `clearReplace`), `capFC`, `q = qOk`, exact verifier, spec `ubFree`. For the one-pass instance: `transfer_single_pass_nonvacuous`.",
+  "nonvacuity_witness_lean": [
+   "Toy.Capture.transfer_relative_to_erasingSet_nonvacuous",
+   "Toy.Capture.transfer_single_pass_nonvacuous"
+  ],
+  "positive_control_lean": "Toy.Capture.erasure_disabled_control",
+  "non_claims": [
+   "`hEq` asks more than the proof uses: `transfer-through-pipeline-losing-no-runs` asks each `equiv` pass to lose no run at its actual input, instead of preserving every program's denotation.",
+   "Without `hE`, the package proves the conclusion for the pipeline output (`transfer_to_capture_input`), and `cex_erasingSet_placeMention` shows that it can fail for `src`.",
+   "When `spec` is UB-freedom (`ubFree`), discharging `hE` amounts to showing, outside the post-capture verifier, that no erasing pass loses a UB run at its actual input; the post-capture verdict adds no check of the UB that the erasing passes remove.",
+   "[derived (modeling bridge); rust-lang/rust f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1, compiler/rustc_mir_transform/src/simplify.rs L307–309] Not claimed: that running erasing passes after borrow checking discharges `ErasingSetPrecondition`. The quoted upstream comment orders the switch optimization after borrowck and says nothing about `unsafe` code; this package does not examine borrowck.",
+   "[derived (modeling bridge); rust-lang/rust f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1, compiler/rustc_mir_transform/src/lib.rs L649–663, compiler/rustc_mir_transform/src/remove_place_mention.rs L10–12, compiler/rustc_mir_transform/src/simplify.rs L128–130] Not claimed: that `-Zmir-preserve-ub` makes the erasing set empty up to `Runtime(PostCleanup)`. The quoted code disables `RemovePlaceMention` and the removal of `SwitchInt` reads; the other passes on the way (for example `LowerIntrinsics`, in the same quoted pass list, and the analysis-cleanup and runtime-lowering passes) and the change of MIR dialect are not examined here.",
+   "Which real compiler passes are UB-erasing, and their preconditions, are not established here; the bridge section quotes documentation and proves nothing about it.",
+   "The scope remarks of `transfer-to-capture-input` apply: failure and divergence must be runs of `B`, `Sat` is a universal single-run property, and rejected programs carry no obligation.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "A. Pnueli, M. Siegel, E. Singerman, \"Translation Validation\", TACAS 1998, LNCS 1384, pp. 151–166, doi:10.1007/BFb0054170 (publisher's abstract: each run of the translator is followed by a validation that the target code correctly implements the source, with correct implementation formalized as a refinement relation).",
+   "S. Blazy, Z. Dargaye, X. Leroy, \"Formal Verification of a C Compiler Front-End\", FM 2006, LNCS 4085, pp. 460–475, doi:10.1007/11813040_31 (publisher's abstract: machine-checked proof of observational semantic equivalence between source and generated code for a front-end from a subset of C to Cminor). The direction differs from a capture: a compiler correctness theorem of this kind constrains the behaviours of the generated code by those of the source, and in CompCert it is conditional on the source not going wrong (X. Leroy, JAR 2009, §2.1, Definition 3), whereas transfer through a capture with every sound verifier needs every source run, UB runs included, to be a run of the captured program (`transferSound_all_sound_verifiers_iff_overApproxOnOk`).",
+   "reference corpus package `zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume`, cards `ub-check-of-output-complete-under-reverse-refinement` (`Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_refinesWT_rev`, `Toy.ZstAssume.ubFree_src_of_ubFree_output_of_revChainWT`: UB-freedom of an output transfers to a source that whole-trace-refines it, also along a pipeline whose every pass's input refines its output), `ub-check-of-output-incomplete` (`Toy.ZstAssume.ubCheck_of_output_misses_source_ub`) and `delete-zero-size-access-equivalence-exact-condition` (`Toy.ZstAssume.deleteZeroSizeAccess_equivPP_iff`); cited, not imported.",
+   "reference corpus package `place-evaluation-ub-placemention-erasure-inbounds-projections-and-equal-target-switches`, cards `place-mention-erasure-equivalence-exact-condition-static-slots` (`Toy.PlaceEval.erasePlaceMention_equivPP_iff_slots`: exact condition for deleting a place mention to be a prefix-preserving equivalence), `equal-target-switch-erasure-equivalence-exact-condition-static-slots` (`Toy.PlaceEval.switchToGoto_equivPP_iff_slots`: the same for replacing an equal-target switch by a goto) and `ub-check-after-erasure-incomplete` (`Toy.PlaceEval.ubCheck_after_erasePlaceMention_misses_place_ub`: an exact UB checker accepts the edited program although the original is not UB-free); cited, not imported.",
+   "reference corpus package `call-site-inlining-slot-renaming-cleanup-splicing-capability-guards-and-caller-locations`, cards `R2` (`Toy.Inline.inline_behEquiv_retTemp_of_capsEq`: under stated side conditions, inlining a call site is a behavioural equivalence, an instance of a pass whose `equiv` tag would be sound) and `R4` (`Toy.Inline.terminalHolds_iff_of_behEquivAt`: a property of every halted run transfers both ways across behavioural equivalence); cited, not imported.",
+   "reference corpus package `monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets`, card `R6-spec-transfer` (`Toy.MonoShim.closed_target_meets_specs_in_source_semantics`: verdicts on a closed monomorphic target transfer to the source semantics under its stated hypotheses, in the partial-correctness sense); it concerns which items are captured, while this package concerns what a capture of one program must preserve; cited, not imported.",
+   "[documentation and source; connection to the toy: derived (modeling bridge)] rust-lang/rust f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1, compiler/rustc_mir_transform/src/lib.rs L649–663 (`run_runtime_cleanup_passes`: passes `LowerIntrinsics`, `RemovePlaceMention`, `SimplifyCfg::PreOptimizations`, run with `Some(MirPhase::Runtime(RuntimePhase::PostCleanup))`), L596–598 (call and assertion of `Runtime(PostCleanup)`); compiler/rustc_mir_transform/src/remove_place_mention.rs L10–12 (`is_enabled` returns `!sess.opts.unstable_opts.mir_preserve_ub`); compiler/rustc_session/src/options.rs L2469–2471 (help text of `mir_preserve_ub`: \"keep place mention statements and reads in trivial SwitchInt terminators, which are interpreted e.g., by miri; implies -Zmir-opt-level=0 (default: no)\"); compiler/rustc_mir_transform/src/simplify.rs L128–130 and L307–309 (\"Removing a `SwitchInt` terminator may remove reads that result in UB, so we must not apply this optimization before borrowck or when `-Zmir-preserve-ub` is set.\"; the same comment is at rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, simplify.rs L309–311)."
+  ],
+  "design_question": "Which passes before the capture point must preserve UB (or have their erasure precondition discharged at the actual input) for a UB-freedom proof of the captured IR to transfer to the source?"
+ },
+ {
+  "id": "capture-after-ub-erasing-pass",
+  "lean": [
+   "Toy.Capture.cex_erasingSet_placeMention",
+   "Toy.Capture.cex_erasingSet_zstRead",
+   "Toy.Capture.cex_erasingSet_trivialSwitch"
+  ],
+  "lean_names": [
+   "Toy.Capture.erasure_disabled_control",
+   "Toy.Capture.pPM",
+   "Toy.Capture.pZst",
+   "Toy.Capture.pSw",
+   "Toy.Capture.pipePM",
+   "Toy.Capture.pipeZst",
+   "Toy.Capture.pipeSw",
+   "Toy.Capture.erasePlaceMentions",
+   "Toy.Capture.eraseZstReads",
+   "Toy.Capture.simplifyTrivialSwitches",
+   "Toy.Capture.passes_example",
+   "Toy.Capture.OpaqueSem",
+   "Toy.Capture.Outcome",
+   "Toy.Capture.SStmt",
+   "Toy.Capture.STerm",
+   "Toy.Capture.VStmt",
+   "Toy.Capture.VTerm",
+   "Toy.Capture.capFC",
+   "Toy.Capture.fixedFuel_boundary",
+   "Toy.Capture.noAbort",
+   "Toy.Capture.noAbortInCleanup",
+   "Toy.Capture.pLoopDead",
+   "Toy.Capture.pLoopTrim",
+   "Toy.Capture.pLoopUB",
+   "Toy.Capture.runS_pPM",
+   "Toy.Capture.semS",
+   "Toy.Capture.semV",
+   "Toy.Capture.transfer_relative_to_erasingSet",
+   "Toy.Capture.ubFree"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Instances, in this toy, of the known incompleteness of checking the output of UB-erasing passes.",
+  "plain_claim": "In the concrete toy, with the fail-closed capture `capFC`, the exact verifier for `semV .noop` and a pipeline of exactly one erasing pass, the captured program is verified `ubFree` while the source is not, for place-mention erasure on `pPM`, zero-size-read erasure on `pZst`, and equal-target switch erasure on `pSw`; in each instance every hypothesis of `transfer_relative_to_erasingSet` except the erasing-set precondition holds, and the precondition fails.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Concrete statements; control `erasure_disabled_control` (without the erasing pass, the capture of `pPM` keeps the place mention and is not verified `ubFree`).",
+  "nonvacuity_witness_lean": "Toy.Capture.erasure_disabled_control",
+  "positive_control_lean": "Toy.Capture.erasure_disabled_control",
+  "non_claims": [
+   "The toy passes are not shown to be refinements here; what is shown is that they lose the UB run.",
+   "It does not say that any real pass behaves like these toy passes on any real program.",
+   "Toy simplifications: an erroneous constant fails at run time with outcome `constErr` (a real source language may reject such a constant at compile time instead); `asm` is a fall-through statement (a real IR may represent inline assembly as a block terminator instead); `placeMention` and `zstRead` have the same validity check (null or uninitialized pointer), ignoring alignment and provenance; the drop terminator deinitializes a local and runs no drop glue. `simplifyTrivialSwitches` keeps switches on an erroneous constant (`passes_example`), so it never removes a `constErr` outcome.",
+   "Fixed fuel: `semS` and `semV` run for at most `blocks.length + 1` block entries and report `fuelOut` beyond that; `fuelOut` satisfies `ubFree`, `noAbort` and `noAbortInCleanup`. So a loop that reaches UB after more block entries than that counts as UB-free (`fixedFuel_boundary`: `pLoopUB`), and deleting unreachable blocks can change a denotation (`fixedFuel_boundary`: `pLoopDead`, `pLoopTrim`). The other concrete statements in the cards (witnesses, counterexamples and controls) are checked by computation at this fixed bound, so the bound is part of what they assert.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "reference corpus package `zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume`, cards `ub-check-of-output-complete-under-reverse-refinement` (`Toy.ZstAssume.ubFree_src_of_ubFree_tgt_of_refinesWT_rev`, `Toy.ZstAssume.ubFree_src_of_ubFree_output_of_revChainWT`: UB-freedom of an output transfers to a source that whole-trace-refines it, also along a pipeline whose every pass's input refines its output), `ub-check-of-output-incomplete` (`Toy.ZstAssume.ubCheck_of_output_misses_source_ub`) and `delete-zero-size-access-equivalence-exact-condition` (`Toy.ZstAssume.deleteZeroSizeAccess_equivPP_iff`); cited, not imported.",
+   "reference corpus package `place-evaluation-ub-placemention-erasure-inbounds-projections-and-equal-target-switches`, cards `place-mention-erasure-equivalence-exact-condition-static-slots` (`Toy.PlaceEval.erasePlaceMention_equivPP_iff_slots`: exact condition for deleting a place mention to be a prefix-preserving equivalence), `equal-target-switch-erasure-equivalence-exact-condition-static-slots` (`Toy.PlaceEval.switchToGoto_equivPP_iff_slots`: the same for replacing an equal-target switch by a goto) and `ub-check-after-erasure-incomplete` (`Toy.PlaceEval.ubCheck_after_erasePlaceMention_misses_place_ub`: an exact UB checker accepts the edited program although the original is not UB-free); cited, not imported."
+  ],
+  "design_question": "Does a verdict about IR captured after a UB-erasing pass say anything about UB in the source?"
+ },
+ {
+  "id": "fail-open-capture-variants-unsound",
+  "lean": [
+   "Toy.Capture.cex_hcap_default",
+   "Toy.Capture.cex_hcap_stringify_noop",
+   "Toy.Capture.cex_hcap_swallow"
+  ],
+  "lean_names": [
+   "Toy.Capture.capFC_pTrap",
+   "Toy.Capture.capFC_pAsm",
+   "Toy.Capture.capFC_pErr",
+   "Toy.Capture.pTrap",
+   "Toy.Capture.pAsm",
+   "Toy.Capture.pErr",
+   "Toy.Capture.capDefault",
+   "Toy.Capture.capStringify",
+   "Toy.Capture.capSwallow",
+   "Toy.Capture.failOpenVariants_eq_partialExtend_capFC",
+   "Toy.Capture.OpaqueSem",
+   "Toy.Capture.Outcome",
+   "Toy.Capture.SStmt",
+   "Toy.Capture.STerm",
+   "Toy.Capture.VStmt",
+   "Toy.Capture.capFC",
+   "Toy.Capture.semV",
+   "Toy.Capture.transferSound_iff_witnesses",
+   "Toy.Capture.transfer_relative_to_erasingSet"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise.",
+  "plain_claim": "In the concrete toy, with the empty pipeline and the exact verifier for `semV .noop`, for each of the three fail-open captures there is a named program with an unmodeled construct that the capture accepts, and a specification that the verifier proves of the captured program and that is false of the source: `capDefault` on `pTrap` (specification `returnsNormally`), `capStringify` on `pAsm` with `opaque` read as a no-op (specification `silent`, no output), `capSwallow` on `pErr` (specification `returnsNormally`); in each instance every hypothesis of `transfer_relative_to_erasingSet` except over-approximation holds, and over-approximation fails.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Concrete statements; the fail-closed capture rejects the three programs (`capFC_pTrap`, `capFC_pAsm`, `capFC_pErr`), and each variant agrees with `capFC` wherever `capFC` succeeds (`failOpenVariants_eq_partialExtend_capFC`).",
+  "nonvacuity_witness_lean": [
+   "Toy.Capture.capFC_pTrap",
+   "Toy.Capture.capFC_pAsm",
+   "Toy.Capture.capFC_pErr"
+  ],
+  "positive_control_lean": [
+   "Toy.Capture.capFC_pTrap",
+   "Toy.Capture.capFC_pAsm",
+   "Toy.Capture.capFC_pErr"
+  ],
+  "non_claims": [
+   "It does not show that every non-error result on an unmodeled construct is unsound: `capStringify` read with `havoc` is transfer-sound for every sound verifier (`transferSound_iff_witnesses`).",
+   "Toy simplifications: an erroneous constant fails at run time with outcome `constErr` (a real source language may reject such a constant at compile time instead); `asm` is a fall-through statement that outputs a value (a real IR may represent inline assembly as a block terminator that may diverge or unwind); `trap` aborts.",
+   "No real capture tool is described.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "Folklore; no specific source is claimed."
+  ],
+  "design_question": "Why must a capture reject, rather than default, stringify or swallow, constructs it does not model, unless the verifier reads the placeholder as an arbitrary effect?"
+ },
+ {
+  "id": "dropped-metadata-unsound",
+  "lean": [
+   "Toy.Capture.cleanupMark_merged_pair",
+   "Toy.Capture.terminateReason_merged_pair",
+   "Toy.Capture.cex_hcap_noCleanup",
+   "Toy.Capture.cex_hcap_noReason"
+  ],
+  "lean_names": [
+   "Toy.Capture.capFC_pCl_ne_pNo",
+   "Toy.Capture.capFC_pTerm_abi_ne_inCleanup",
+   "Toy.Capture.pCl",
+   "Toy.Capture.pNo",
+   "Toy.Capture.pTerm",
+   "Toy.Capture.qUnw",
+   "Toy.Capture.qTermAbi",
+   "Toy.Capture.capNoCleanup",
+   "Toy.Capture.capNoReason",
+   "Toy.Capture.OpaqueSem",
+   "Toy.Capture.Outcome",
+   "Toy.Capture.Reason",
+   "Toy.Capture.UnwindAct",
+   "Toy.Capture.noAbort",
+   "Toy.Capture.noAbortInCleanup",
+   "Toy.Capture.semV",
+   "Toy.Capture.transfer_relative_to_erasingSet"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise.",
+  "plain_claim": "In the concrete toy, `capNoCleanup` maps `pCl` (aborts with reason `inCleanup`) and `pNo` (unwinds) to the same `qUnw`, and `capNoReason` maps `pTerm .abi` and `pTerm .inCleanup` to the same `qTermAbi`, although in each pair the two programs do not admit the same runs; with the empty pipeline and the exact verifier for `semV .noop`, the verifier proves `noAbort` of `qUnw` (false of `pCl`) and `noAbortInCleanup` of `qTermAbi` (false of `pTerm .inCleanup`), and every hypothesis of `transfer_relative_to_erasingSet` except over-approximation holds.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "`cleanupMark_merged_pair` and `terminateReason_merged_pair` exhibit the two merged pairs; positive control: the fail-closed capture separates both pairs (`capFC_pCl_ne_pNo`, `capFC_pTerm_abi_ne_inCleanup`).",
+  "nonvacuity_witness_lean": [
+   "Toy.Capture.cleanupMark_merged_pair",
+   "Toy.Capture.terminateReason_merged_pair"
+  ],
+  "positive_control_lean": [
+   "Toy.Capture.capFC_pCl_ne_pNo",
+   "Toy.Capture.capFC_pTerm_abi_ne_inCleanup"
+  ],
+  "non_claims": [
+   "[derived (modeling bridge); rust-lang/rust f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1, compiler/rustc_middle/src/mir/syntax.rs L666–671, compiler/rustc_middle/src/mir/mod.rs L1337–1341] In the toy the cleanup mark decides the response to a panic; in rustc's documented design the response is carried by the terminator's unwind action, so the toy pair does not establish that `is_cleanup` alone is operationally distinguishing.",
+   "[derived (modeling bridge); rust-lang/rust f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1, compiler/rustc_middle/src/mir/syntax.rs L675] The toy witness `pCl` has a call whose unwind action is `continueUnwind` inside a block marked cleanup; rustc's documented invariant (syntax.rs L675) restricts the `unwind` fields in cleanup blocks to `UnwindAction::Terminate` or `UnwindAction::Unreachable`, so `pCl` has no direct rustc counterpart.",
+   "[derived (modeling bridge); rust-lang/rust f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1, compiler/rustc_middle/src/mir/syntax.rs L1046–1055] Not claimed: that the abort reason is observable at run time in rustc. The toy makes the reason part of the observable outcome; the quoted `UnwindTerminateReason` documentation does not say whether it is observable.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1, compiler/rustc_middle/src/mir/syntax.rs L1046–1055 (`UnwindTerminateReason`: \"The reason we are terminating the process during unwinding.\", variants `Abi` (\"Unwinding is just not possible given the ABI of this function.\") and `InCleanup` (\"We were already cleaning up for an ongoing unwind, and a *second*, *nested* unwind was triggered by the drop glue.\")); L675 (within the list of cleanup-block restrictions at L673–676): \"1. All `unwind` fields in them must be `UnwindAction::Terminate` or `UnwindAction::Unreachable`.\"; compiler/rustc_middle/src/mir/mod.rs L1337–1341 (field `is_cleanup`: \"If true, this block lies on an unwind path. This is used during codegen where distinct kinds of basic blocks may be generated (particularly for MSVC cleanup). Unwind blocks must only branch to other unwind blocks.\")."
+  ],
+  "design_question": "Which metadata must a capture carry across, and what goes wrong when it collapses two values of it?"
+ },
+ {
+  "id": "no-faithful-semantics-for-merged-pair",
+  "lean": [
+   "Toy.Capture.no_semV_faithful_at_merged_pair",
+   "Toy.Capture.not_faithfulOnOk_of_merged_pair"
+  ],
+  "lean_names": [
+   "Toy.Capture.FaithfulAt",
+   "Toy.Capture.merge_hypotheses_tight",
+   "Toy.Capture.dropReplace_merged_yet_faithful",
+   "Toy.Capture.cleanupMark_no_faithful_semV",
+   "Toy.Capture.terminateReason_no_faithful_semV",
+   "Toy.Capture.verdict_on_merged_capture_holds_for_both",
+   "Toy.Capture.qCl",
+   "Toy.Capture.capFC",
+   "Toy.Capture.capNoCleanup",
+   "Toy.Capture.pCl",
+   "Toy.Capture.pDrop",
+   "Toy.Capture.pNo",
+   "Toy.Capture.qUnw",
+   "Toy.Capture.semS",
+   "Toy.Capture.semV"
+  ],
+  "kind": "impossibility",
+  "tier": "T0",
+  "tier_justification": "Elementary: no function of the captured program can separate two programs that the capture identifies.",
+  "plain_claim": "For every capture `cap`, source semantics `semS` and programs `p₁`, `p₂`, `q`: if `cap p₁ = .ok q`, `cap p₂ = .ok q`, and `p₁`, `p₂` do not admit the same runs, then no verifier semantics makes `cap` faithful at both `p₁` and `p₂` (`no_semV_faithful_at_merged_pair`), and hence none makes `cap` faithful on its ok-image (`not_faithfulOnOk_of_merged_pair`).",
+  "hypotheses": [
+   {
+    "name": "h₁ : cap p₁ = .ok q",
+    "purpose": "the merge (first program)",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.merge_hypotheses_tight",
+    "witness_class": "concrete toy: `capFC` maps `pCl` to `qCl` and `pNo` to `qUnw ≠ qCl`; take `q = qUnw`"
+   },
+   {
+    "name": "h₂ : cap p₂ = .ok q",
+    "purpose": "the merge (second program)",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.merge_hypotheses_tight",
+    "witness_class": "concrete toy: as for `h₁`, take `q = qCl`"
+   },
+   {
+    "name": "hdiff : ¬ DenEquiv (semS p₁) (semS p₂)",
+    "purpose": "the merged programs must differ in runs",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.dropReplace_merged_yet_faithful",
+    "witness_class": "concrete toy: `pDrop true`, `pDrop false` (they differ in nothing but the replace flag)"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "`cleanupMark_no_faithful_semV` (the `capNoCleanup` pair `pCl`, `pNo`); also `terminateReason_no_faithful_semV`.",
+  "nonvacuity_witness_lean": "Toy.Capture.cleanupMark_no_faithful_semV",
+  "positive_control_lean": "Toy.Capture.dropReplace_merged_yet_faithful",
+  "non_claims": [
+   "It concerns faithfulness (equality of run sets). A merging capture can still over-approximate, and so be transfer-sound, if `semV q` admits the runs of both programs; then every verified specification holds of both (`verdict_on_merged_capture_holds_for_both`).",
+   "Escape hatches: mapping the two programs to different results, or rejecting one of them, removes `h₁` or `h₂` (the fail-closed capture maps the cleanup pair to different programs and is faithful at both, `merge_hypotheses_tight`); and coarsening the runs `B` until the merged programs admit the same runs removes `hdiff` (the replace-flag pair, `dropReplace_merged_yet_faithful`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "Elementary; no specific source is claimed. (Lean core's quotient primitive `Quot.lift` asks the lifted function to agree on related elements, the same condition read positively.)",
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1, compiler/rustc_middle/src/mir/syntax.rs L758–760: \"The `replace` flag indicates whether this terminator was created as part of an assignment. This should only be used for diagnostic purposes, and does not have any operational meaning.\""
+  ],
+  "design_question": "Why must a capture preserve injectively every piece of metadata that distinguishes behaviour?"
+ },
+ {
+  "id": "faithful-semantics-exists-iff-merges-only-equivalent",
+  "lean": "Toy.Capture.exists_faithful_semV_iff_merges_only_equivalent",
+  "lean_names": [
+   "Toy.Capture.exists_faithful_semV_witnesses",
+   "Toy.Capture.capFC",
+   "Toy.Capture.capNoCleanup",
+   "Toy.Capture.cleanupMark_merged_pair",
+   "Toy.Capture.clearReplace_denEquiv",
+   "Toy.Capture.dropReplace_merged_yet_faithful",
+   "Toy.Capture.semS",
+   "Toy.Capture.semV",
+   "Toy.Capture.terminateReason_merged_pair"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Elementary factorization through the identifications a map makes, restated for partial captures.",
+  "plain_claim": "For every capture `cap` and source semantics `semS`, some verifier semantics makes `cap` faithful on its ok-image iff any two programs that `cap` maps to the same `q` admit the same runs.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`exists_faithful_semV_witnesses`: both sides hold for `capFC` and both fail for `capNoCleanup`.",
+  "nonvacuity_witness_lean": "Toy.Capture.exists_faithful_semV_witnesses",
+  "non_claims": [
+   "The `semV` constructed in the proof admits, at `q`, exactly the runs of the programs captured to `q` (and no run outside `cap`'s ok-image); it is defined from `semS` and `cap` as a whole, so the theorem says nothing about a computable, total or compositional verifier semantics, nor about a given, independently defined one.",
+   "In the toy, the cleanup mark and the terminate reason separate programs with different runs (`cleanupMark_merged_pair`, `terminateReason_merged_pair`); the replace flag does not (`dropReplace_merged_yet_faithful`, `clearReplace_denEquiv`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "Elementary; no specific source is claimed."
+  ],
+  "design_question": "Exactly which identifications may a capture make if a faithful verifier semantics is to exist?"
+ },
+ {
+  "id": "toy-clearing-replace-flag-is-equivalence",
+  "lean": "Toy.Capture.clearReplace_denEquiv",
+  "lean_names": [
+   "Toy.Capture.runS_clearReplace",
+   "Toy.Capture.denEquiv_example_pos",
+   "Toy.Capture.clearReplace",
+   "Toy.Capture.pDrop"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Direct consequence of the toy semantics, which follows documented upstream design.",
+  "plain_claim": "In the concrete toy, clearing every drop replace flag (`clearReplace`) preserves the source denotation of every program.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`denEquiv_example_pos` (`pDrop true`).",
+  "nonvacuity_witness_lean": "Toy.Capture.denEquiv_example_pos",
+  "non_claims": [
+   "It holds because the toy semantics ignores the flag, following the quoted upstream documentation; it says nothing about how any real tool or pass uses the flag.",
+   "The underlying run equality `runS_clearReplace` holds at every fuel, so the result does not depend on the fuel bound; `clearReplace` also keeps the number of blocks.",
+   "The toy drop terminator deinitializes a local (UB if it is uninitialized); drop glue, conditional drops, and any other fields that a real drop terminator carries are not modeled.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "[documentation; connection to the toy: derived (modeling bridge)] rust-lang/rust f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1, compiler/rustc_middle/src/mir/syntax.rs L758–760: \"The `replace` flag indicates whether this terminator was created as part of an assignment. This should only be used for diagnostic purposes, and does not have any operational meaning.\""
+  ],
+  "design_question": "May a capture drop metadata that the source semantics documents as non-operational?"
+ },
+ {
+  "id": "transfer-soundness-iff-over-approximation",
+  "lean": [
+   "Toy.Capture.transferSound_all_sound_verifiers_iff_overApproxOnOk",
+   "Toy.Capture.transferSound_exactVerifier_iff_overApproxOnOk"
+  ],
+  "lean_names": [
+   "Toy.Capture.transferSound_iff_witnesses",
+   "Toy.Capture.capStringify_havoc_not_faithful",
+   "Toy.Capture.transferSound_of_verifier_accepts_nothing",
+   "Toy.Capture.acceptNothing_control",
+   "Toy.Capture.TransferSound",
+   "Toy.Capture.exactVerifier",
+   "Toy.Capture.OpaqueSem",
+   "Toy.Capture.Sat",
+   "Toy.Capture.capDefault",
+   "Toy.Capture.capFC",
+   "Toy.Capture.capStringify",
+   "Toy.Capture.semS",
+   "Toy.Capture.semV",
+   "Toy.Capture.ubFree"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Backward simulation (behaviour inclusion) implies preservation of every specification (Leroy, JAR 2009, §2.1); the converse is the instantiation `spec := semV q`. Restated for partial captures and sound verdict relations.",
+  "plain_claim": "For every capture `cap : S → Except E V`, source semantics `semS` and verifier semantics `semV`: verification transfers through `cap` (`TransferSound`, which quantifies over every specification `spec : B → Prop`) for every verdict relation sound for `semV` iff `cap` over-approximates on its ok-image; and it transfers for the exact verifier of `semV` iff `cap` over-approximates on its ok-image. Programs on which `cap` errors impose no obligation.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`transferSound_iff_witnesses`: both sides hold for `capFC`; both fail for `capDefault`; both hold for `capStringify` read with `havoc`, which is not faithful.",
+  "nonvacuity_witness_lean": "Toy.Capture.transferSound_iff_witnesses",
+  "non_claims": [
+   "Faithfulness on the ok-image is sufficient, not necessary (`transferSound_iff_witnesses`, `capStringify_havoc_not_faithful`).",
+   "Transfer soundness for one fixed verdict relation is not characterized: a relation that accepts nothing makes every capture transfer-sound (`acceptNothing_control`).",
+   "Necessity uses the quantification over every specification: the proof instantiates `spec := semV q`. For a verifier that checks a restricted family of specifications (for example `ubFree` alone), over-approximation remains sufficient; it is not shown to be necessary there (not proved here).",
+   "The scope remarks of `transfer-to-capture-input` apply: failure and divergence must be runs of `B`, `Sat` is a universal single-run property, and rejected programs carry no obligation.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "X. Leroy, \"A Formally Verified Compiler Back-end\", Journal of Automated Reasoning 43(4):363–446, 2009, doi:10.1007/s10817-009-9155-4 (arXiv:0902.2137), §2.1 \"Notions of semantic preservation\": Definition 2 (backward simulation, ∀B, C ⇓ B ⟹ S ⇓ B), Definition 3 (backward simulation for safe programs), Definition 4 (forward simulation), Definition 6 (preservation of a specification, S ⊨ Spec ⟹ C ⊨ Spec, where C ⊨ Spec means that every behaviour of C satisfies Spec), and the remarks that backward simulation for safe programs implies preservation of every specification, and that forward simulation implies backward simulation if C is deterministic. In a capture, the verified program (the captured `q`) plays the role of S and the program concluded about (`p`) the role of C.",
+   "A. Pnueli, M. Siegel, E. Singerman, \"Translation Validation\", TACAS 1998, LNCS 1384, pp. 151–166, doi:10.1007/BFb0054170 (publisher's abstract: each run of the translator is followed by a validation that the target code correctly implements the source, with correct implementation formalized as a refinement relation)."
+  ],
+  "design_question": "What exactly must a capture guarantee, independently of which sound verifier consumes its output?"
+ },
+ {
+  "id": "fail-closed-and-fail-open-obligations",
+  "lean": [
+   "Toy.Capture.failClosed_overApproxOnOk_iff",
+   "Toy.Capture.failOpen_overApproxOnOk_iff",
+   "Toy.Capture.partialExtend_overApproxOnOk_iff"
+  ],
+  "lean_names": [
+   "Toy.Capture.failClosed",
+   "Toy.Capture.failOpen",
+   "Toy.Capture.partialExtend",
+   "Toy.Capture.failClosed_eq_partialExtend",
+   "Toy.Capture.failOpen_eq_partialExtend",
+   "Toy.Capture.failClosed_failOpen_witnesses",
+   "Toy.Capture.failOpen_overApproxOnOk_example_pos",
+   "Toy.Capture.failClosed_empty_fragment",
+   "Toy.Capture.refuted_capFC_has_failClosed_shape",
+   "Toy.Capture.refuted_failOpenVariants_have_failOpen_shape",
+   "Toy.Capture.failOpenVariants_eq_partialExtend_capFC",
+   "Toy.Capture.capFCAccepts",
+   "Toy.Capture.capFCOut",
+   "Toy.Capture.OpaqueSem",
+   "Toy.Capture.St",
+   "Toy.Capture.capFC",
+   "Toy.Capture.capStringify"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Case analysis on an if-then-else; restated for captures.",
+  "plain_claim": "For every decidable fragment `M` and translation `tr`: the fail-closed capture `failClosed M tr e` (for every error value `e`) over-approximates on its ok-image iff `tr` over-approximates on every program in `M`; the fail-open capture `failOpen M tr fb` (for every fallback `fb`) over-approximates iff `tr` over-approximates on every program in `M` and `fb` over-approximates on every program outside `M`; and more generally the partial extension `partialExtend M tr rest` over-approximates iff `tr` over-approximates on `M` and every successful result of `rest` outside `M` over-approximates.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "`failClosed_failOpen_witnesses`: on Nat with identity semantics, fragment {0}, `tr = id`, fallback `fun _ => 0`, the fail-closed capture over-approximates and the fail-open capture does not; `failOpen_overApproxOnOk_example_pos`: a fail-open capture whose fallback admits every run over-approximates.",
+  "nonvacuity_witness_lean": [
+   "Toy.Capture.failClosed_failOpen_witnesses",
+   "Toy.Capture.failOpen_overApproxOnOk_example_pos"
+  ],
+  "non_claims": [
+   "Fail-open is not always unsound: a fallback that over-approximates is sound (`failOpen_overApproxOnOk_example_pos`; in the concrete toy, `capStringify` read with `havoc`).",
+   "Refuted earlier candidate statement: \"the concrete captures have the shape of `failClosed` or `failOpen` on whole programs\". They do not: `capFC` returns construct-specific errors (`refuted_capFC_has_failClosed_shape`), and `failOpen` never returns an error while each fail-open variant does (`refuted_failOpenVariants_have_failOpen_shape`). What holds instead: each fail-open variant is the partial extension of `capFC`'s result on the programs `capFC` accepts (`failOpenVariants_eq_partialExtend_capFC`), so `partialExtend_overApproxOnOk_iff` splits its obligation into `capFC`'s and the variant's own on the rest.",
+   "Coverage is not measured: the fail-closed capture on the empty fragment rejects every program and over-approximates vacuously (`failClosed_empty_fragment`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "Folklore; no specific source is claimed."
+  ],
+  "design_question": "What extra obligation does a capture take on when it returns a result for a construct it does not model?"
+ },
+ {
+  "id": "over-approximation-is-faithfulness-for-total-deterministic",
+  "lean": "Toy.Capture.faithfulOnOk_iff_overApproxOnOk_of_total_of_det",
+  "lean_names": [
+   "Toy.Capture.Total",
+   "Toy.Capture.Det",
+   "Toy.Capture.cex_faithful_iff_htot",
+   "Toy.Capture.cex_faithful_iff_hdet",
+   "Toy.Capture.capFC_image_det",
+   "Toy.Capture.semS_total",
+   "Toy.Capture.faithful_iff_overApprox_nonvacuous",
+   "Toy.Capture.OpaqueSem",
+   "Toy.Capture.capFC",
+   "Toy.Capture.capStringify",
+   "Toy.Capture.semV"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Forward simulation implies backward simulation for deterministic targets (Leroy, JAR 2009, §2.1; mechanized at step level in CompCert), restated for run sets over `I × O`.",
+  "plain_claim": "For runs of the form `I × O`: if every successfully captured source denotation is total (`Total`: every input has at least one outcome) and every captured denotation is deterministic (`Det`: every input has at most one outcome), then the capture over-approximates on its ok-image iff it is faithful on its ok-image.",
+  "hypotheses": [
+   {
+    "name": "htot : ∀ p q, cap p = .ok q → Total (semS p)",
+    "purpose": "every input of a captured source has at least one outcome",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_faithful_iff_htot",
+    "witness_class": "instance with exactly one program, over `Unit × Bool`, whose source denotation is empty"
+   },
+   {
+    "name": "hdet : ∀ p q, cap p = .ok q → Det (semV q)",
+    "purpose": "every captured program has at most one outcome per input",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_faithful_iff_hdet",
+    "witness_class": "concrete toy: `capStringify` read with `havoc`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`faithful_iff_overApprox_nonvacuous` (`capFC`).",
+  "nonvacuity_witness_lean": "Toy.Capture.faithful_iff_overApprox_nonvacuous",
+  "non_claims": [
+   "The hypotheses ask for totality of `semS p` and determinism of `semV q` whenever `cap p = .ok q`; nothing is claimed about rejected programs.",
+   "Any nondeterminism in `semV q` (for example a choice of addresses or of a thread schedule that the run records) breaks `Det (semV q)`; then over-approximation is not shown to imply faithfulness, and `cex_faithful_iff_hdet` shows that it can fail to.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "X. Leroy, \"A Formally Verified Compiler Back-end\", Journal of Automated Reasoning 43(4):363–446, 2009, doi:10.1007/s10817-009-9155-4 (arXiv:0902.2137), §2.1 \"Notions of semantic preservation\": Definition 2 (backward simulation, ∀B, C ⇓ B ⟹ S ⇓ B), Definition 3 (backward simulation for safe programs), Definition 4 (forward simulation), Definition 6 (preservation of a specification, S ⊨ Spec ⟹ C ⊨ Spec, where C ⊨ Spec means that every behaviour of C satisfies Spec), and the remarks that backward simulation for safe programs implies preservation of every specification, and that forward simulation implies backward simulation if C is deterministic. In a capture, the verified program (the captured `q`) plays the role of S and the program concluded about (`p`) the role of C.",
+   "CompCert (github.com/AbsInt/CompCert at 2685140bf72c959446981fb99b5e44a8975021bc): common/Smallstep.v L1863–1866, `Lemma forward_to_backward_simulation: forall L1 L2, forward_simulation L1 L2 -> receptive L1 -> determinate L2 -> backward_simulation L1 L2.`; common/Behaviors.v L493–496 (`backward_simulation_behavior_improves`). These are the step-level, mechanized counterparts of the set-level statements here."
+  ],
+  "design_question": "When is 'the captured program means exactly the source' the right requirement, rather than 'the captured program allows at least the source's behaviours'?"
+ },
+ {
+  "id": "toy-fail-closed-capture-faithful",
+  "lean": [
+   "Toy.Capture.capFC_faithfulOnOk",
+   "Toy.Capture.capFC_runV_eq_runS"
+  ],
+  "lean_names": [
+   "Toy.Capture.capWith_runV",
+   "Toy.Capture.capWith_fuel",
+   "Toy.Capture.CfgFCExceptAsm",
+   "Toy.Capture.capFC_pPM",
+   "Toy.Capture.faithfulOnOk_example_pos",
+   "Toy.Capture.cex_capFC_runV_h",
+   "Toy.Capture.fixedFuel_boundary",
+   "Toy.Capture.capFC",
+   "Toy.Capture.cfgFC",
+   "Toy.Capture.capWith",
+   "Toy.Capture.semS",
+   "Toy.Capture.semV",
+   "Toy.Capture.runS",
+   "Toy.Capture.runV",
+   "Toy.Capture.SProg.fuel",
+   "Toy.Capture.VProg.fuel",
+   "Toy.Capture.Outcome",
+   "Toy.Capture.VStmt",
+   "Toy.Capture.noAbort",
+   "Toy.Capture.noAbortInCleanup",
+   "Toy.Capture.pLoopDead",
+   "Toy.Capture.pLoopTrim",
+   "Toy.Capture.pLoopUB",
+   "Toy.Capture.pPM",
+   "Toy.Capture.qRet",
+   "Toy.Capture.runS_pPM",
+   "Toy.Capture.ubFree",
+   "Toy.Capture.Beh",
+   "Toy.Capture.CapCfg",
+   "Toy.Capture.CapErr",
+   "Toy.Capture.Const",
+   "Toy.Capture.Outcome.isAbort",
+   "Toy.Capture.Run",
+   "Toy.Capture.SOperand",
+   "Toy.Capture.SOperand.eval",
+   "Toy.Capture.SProg",
+   "Toy.Capture.SStmt.isPlaceMention",
+   "Toy.Capture.SStmt.isZstRead",
+   "Toy.Capture.St.emit",
+   "Toy.Capture.St.fin",
+   "Toy.Capture.St.init",
+   "Toy.Capture.St.set",
+   "Toy.Capture.VOperand",
+   "Toy.Capture.VOperand.eval",
+   "Toy.Capture.VProg",
+   "Toy.Capture.VRes.admits",
+   "Toy.Capture.capBlock",
+   "Toy.Capture.capBlocks",
+   "Toy.Capture.capOperand",
+   "Toy.Capture.capStmt",
+   "Toy.Capture.capStmts",
+   "Toy.Capture.capTerm",
+   "Toy.Capture.clearReplaceBlock",
+   "Toy.Capture.denEquiv_example_neg",
+   "Toy.Capture.denIncl_example_neg",
+   "Toy.Capture.denIncl_example_pos",
+   "Toy.Capture.derefOk",
+   "Toy.Capture.det_example_neg",
+   "Toy.Capture.equivTagSound_erasing",
+   "Toy.Capture.equivTagSound_example_neg",
+   "Toy.Capture.equivTagSound_example_pos",
+   "Toy.Capture.erasingSetPrecondition_example_neg",
+   "Toy.Capture.erasingSetPrecondition_example_pos",
+   "Toy.Capture.execSStmt",
+   "Toy.Capture.execSStmts",
+   "Toy.Capture.execVStmt",
+   "Toy.Capture.execVStmts",
+   "Toy.Capture.failClosed_example_neg",
+   "Toy.Capture.failClosed_example_pos",
+   "Toy.Capture.failOpen_example",
+   "Toy.Capture.faithfulAt_example_neg",
+   "Toy.Capture.faithfulAt_example_pos",
+   "Toy.Capture.faithfulOnOk_example_neg",
+   "Toy.Capture.inErasingSet_example_neg",
+   "Toy.Capture.inErasingSet_example_pos",
+   "Toy.Capture.liftS",
+   "Toy.Capture.losesNoBehaviourAtInputs_example_neg",
+   "Toy.Capture.losesNoBehaviourAtInputs_example_pos",
+   "Toy.Capture.losesNoBehaviourAt_example_neg",
+   "Toy.Capture.losesNoBehaviourAt_example_pos",
+   "Toy.Capture.overApproxOnOk_example_pos",
+   "Toy.Capture.pSwConstErr",
+   "Toy.Capture.passPM",
+   "Toy.Capture.pipeMis",
+   "Toy.Capture.qDrop",
+   "Toy.Capture.qZero",
+   "Toy.Capture.runPipe_example",
+   "Toy.Capture.sat_example_neg",
+   "Toy.Capture.sat_example_pos",
+   "Toy.Capture.semS_det",
+   "Toy.Capture.semS_example_neg",
+   "Toy.Capture.semS_example_pos",
+   "Toy.Capture.semV_example_neg",
+   "Toy.Capture.semV_example_pos",
+   "Toy.Capture.silent",
+   "Toy.Capture.specs_example",
+   "Toy.Capture.total_example_neg",
+   "Toy.Capture.transferSound_example_neg",
+   "Toy.Capture.transferSound_example_pos",
+   "Toy.Capture.verifierSound_example_neg",
+   "Toy.Capture.verifierSound_example_pos"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "A simulation between two toy interpreters written to correspond construct by construct.",
+  "plain_claim": "In the concrete toy, the fail-closed capture `capFC` is faithful on its ok-image for either meaning of `opaque` (`capFC_faithfulOnOk`); more precisely, whenever `capFC p = .ok q`, the verifier run of `q` equals the source run of `p` at every fuel, block and state (`capFC_runV_eq_runS`).",
+  "hypotheses": [
+   {
+    "name": "h : capFC p = .ok q (in `capFC_runV_eq_runS`)",
+    "purpose": "ties `q` to `p`",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_capFC_runV_h",
+    "witness_class": "concrete toy: `qRet` is not the capture of `pPM`, and their runs differ on input 0"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`capFC_pPM` (a successful capture).",
+  "nonvacuity_witness_lean": "Toy.Capture.capFC_pPM",
+  "non_claims": [
+   "Faithfulness is a property of the toy interpreters; it is the positive control for `transfer-soundness-iff-over-approximation`, not evidence about any real capture.",
+   "Fixed fuel: `semS` and `semV` run for at most `blocks.length + 1` block entries and report `fuelOut` beyond that; `fuelOut` satisfies `ubFree`, `noAbort` and `noAbortInCleanup`. So a loop that reaches UB after more block entries than that counts as UB-free (`fixedFuel_boundary`: `pLoopUB`), and deleting unreachable blocks can change a denotation (`fixedFuel_boundary`: `pLoopDead`, `pLoopTrim`). The other concrete statements in the cards (witnesses, counterexamples and controls) are checked by computation at this fixed bound, so the bound is part of what they assert. The step-for-step simulation `capFC_runV_eq_runS` holds at every fuel, so faithfulness does not depend on the bound; `capFC` also keeps the number of blocks (`capWith_fuel`). A capture or pass that splits or merges blocks is not covered.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "Folklore; no specific source is claimed."
+  ],
+  "design_question": "Is there a non-trivial capture that meets the transfer requirement on a modeled fragment?"
+ },
+ {
+  "id": "toy-stringify-with-havoc-over-approximates",
+  "lean": [
+   "Toy.Capture.capStringify_overApproxOnOk_havoc",
+   "Toy.Capture.capStringify_havoc_not_faithful",
+   "Toy.Capture.overApproxOnOk_example_neg"
+  ],
+  "lean_names": [
+   "Toy.Capture.capStringify_pAsm",
+   "Toy.Capture.semV_havoc_admits_any_trace",
+   "Toy.Capture.qEmitOpaque",
+   "Toy.Capture.OpaqueSem",
+   "Toy.Capture.VRes",
+   "Toy.Capture.qAsm",
+   "Toy.Capture.VStmt",
+   "Toy.Capture.capStringify"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Reading unknown constructs as arbitrary effects is standard; made precise in the toy.",
+  "plain_claim": "In the concrete toy, `capStringify` over-approximates on its ok-image when `opaque` is read as `havoc`; it is not faithful under that reading, and it does not over-approximate when `opaque` is read as a no-op.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`capStringify_pAsm` (a successful capture containing `opaque`).",
+  "nonvacuity_witness_lean": "Toy.Capture.capStringify_pAsm",
+  "non_claims": [
+   "Under `havoc`, for an input on which a run reaches `opaque`, the specifications that hold of the captured program are those that every behaviour satisfies.",
+   "The toy `havoc` is whole-run: reaching `opaque` admits every behaviour for the input, including behaviours whose trace does not extend the output emitted before `opaque` (`semV_havoc_admits_any_trace`). A havoc that keeps the emitted prefix or the unmodified state is a different semantics and is not studied here.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "Folklore; no specific source is claimed."
+  ],
+  "design_question": "Is fail-closed necessary when the verifier is conservative about unmodeled constructs?"
+ },
+ {
+  "id": "flag-contract-sound-iff-no-silent-omission",
+  "lean": [
+   "Toy.Capture.flagContractSound_iff_neverOmits",
+   "Toy.Capture.flagContractSound_of_neverOmits",
+   "Toy.Capture.neverOmits_of_flagContractSound",
+   "Toy.Capture.flagContractSound_iff_omitted_hold_in_admitted_contexts"
+  ],
+  "lean_names": [
+   "Toy.Capture.Backend",
+   "Toy.Capture.Backend.run",
+   "Toy.Capture.HonoursAdmitted",
+   "Toy.Capture.OmissionObservableOnAdmitted",
+   "Toy.Capture.FlagContractSound",
+   "Toy.Capture.NeverOmits",
+   "Toy.Capture.cex_flag_hAdm",
+   "Toy.Capture.cex_flag_hObs",
+   "Toy.Capture.silent_omission_breaks_contract",
+   "Toy.Capture.flag_nonvacuous",
+   "Toy.Capture.beSan_instance",
+   "Toy.Capture.beOmit_honours",
+   "Toy.Capture.beOmit_observable",
+   "Toy.Capture.beFC_honours",
+   "Toy.Capture.beFC_observable",
+   "Toy.Capture.beOmit",
+   "Toy.Capture.beFC",
+   "Toy.Capture.beSan",
+   "Toy.Capture.instruments",
+   "Toy.Capture.sanHolds",
+   "Toy.Capture.Response",
+   "Toy.Capture.run_example"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "Fail-closed configuration handling (folklore), made precise with its two side conditions.",
+  "plain_claim": "For every toy backend `be` and per-flag property `Holds`: if admitted flags are honoured (`HonoursAdmitted`: for every list `fs` of admitted flags, the artifact `be.build fs` has the property of every flag in `fs`, all at once) and every omission is observable in some admitted context (`OmissionObservableOnAdmitted`: for every omitted flag `f` there is a list `fs` of admitted flags, possibly empty, such that `be.build fs` lacks `f`'s property), then the contract 'flag set ⇒ property holds of the artifact', for every configuration (`FlagContractSound`), holds iff the backend never silently omits a flag (`NeverOmits`). Sufficiency uses `HonoursAdmitted` alone (`flagContractSound_of_neverOmits`), necessity uses `OmissionObservableOnAdmitted` alone (`neverOmits_of_flagContractSound`), and under `HonoursAdmitted` alone the contract holds iff the property of every omitted flag holds of the artifact built from every list of admitted flags (`flagContractSound_iff_omitted_hold_in_admitted_contexts`).",
+  "hypotheses": [
+   {
+    "name": "hAdm : HonoursAdmitted Holds be (in `flagContractSound_iff_neverOmits`, `flagContractSound_of_neverOmits`, `flagContractSound_iff_omitted_hold_in_admitted_contexts`)",
+    "purpose": "admitted flags must be established",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_flag_hAdm",
+    "witness_class": "backend over `Unit` with exactly one flag, which it admits without establishing its property"
+   },
+   {
+    "name": "hObs : OmissionObservableOnAdmitted Holds be (in `flagContractSound_iff_neverOmits`, `neverOmits_of_flagContractSound`)",
+    "purpose": "an omitted property must fail in some admitted context",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_flag_hObs",
+    "witness_class": "backend over `Unit` with exactly one flag, which it omits although its property always holds"
+   },
+   {
+    "name": "hno : NeverOmits be (in `flagContractSound_of_neverOmits`)",
+    "purpose": "the backend never omits",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_flag_hno",
+    "witness_class": "the toy backend `beOmit` with property `instruments`: it honours admitted flags, omits flag 2, and the contract fails"
+   },
+   {
+    "name": "hS : FlagContractSound Holds be (in `neverOmits_of_flagContractSound`)",
+    "purpose": "the contract holds",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_flag_hS",
+    "witness_class": "the toy backend `beOmit` with property `instruments`: its omissions are observable, the contract fails, and it omits flag 2"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`flag_nonvacuous`: both hypotheses hold for `beFC` and `beOmit`; both sides hold for `beFC` and fail for `beOmit`. `beSan_instance`: a backend with exactly two flags for which both hypotheses hold, the omitted flag's property holds of the artifact built from no flags and fails in the admitted context `[false]`.",
+  "nonvacuity_witness_lean": [
+   "Toy.Capture.flag_nonvacuous",
+   "Toy.Capture.beSan_instance"
+  ],
+  "non_claims": [
+   "Backend behaviour and properties are toy parameters; nothing is claimed about any real backend.",
+   "`hObs` is a real restriction: omission can be harmless when the property holds anyway (`cex_flag_hObs`).",
+   "The response `respond : F → Response` is per flag and does not depend on the rest of the configuration; `HonoursAdmitted` excludes interactions in which one admitted flag overrides another; `build` takes the list of admitted flags and no source program. Configuration-dependent responses and flag overrides are not modeled.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "Folklore; no specific source is claimed."
+  ],
+  "design_question": "When a configuration requests a property, what must the backend do with requests it cannot honour?"
+ },
+ {
+  "id": "checked-artifact-restores-flag-contract",
+  "lean": [
+   "Toy.Capture.checkedRun_contractSound",
+   "Toy.Capture.checkedRun_eq_run_of_holds"
+  ],
+  "lean_names": [
+   "Toy.Capture.checkedRun",
+   "Toy.Capture.checkedRun_detects_omission",
+   "Toy.Capture.cex_checkedRun_hcheck",
+   "Toy.Capture.cex_checkedRun_hcomp",
+   "Toy.Capture.cex_checkedRun_hrun",
+   "Toy.Capture.cex_checkedRun_hall",
+   "Toy.Capture.checkedRun_nonvacuous",
+   "Toy.Capture.passes_example",
+   "Toy.Capture.erasePlaceMentions",
+   "Toy.Capture.pPM",
+   "Toy.Capture.pRet",
+   "Toy.Capture.Backend",
+   "Toy.Capture.Backend.run",
+   "Toy.Capture.FlagContractSound",
+   "Toy.Capture.beFC",
+   "Toy.Capture.beOmit",
+   "Toy.Capture.instruments"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Elementary: a guard that checks every requested flag on the returned artifact (`List.find?` returns `none` iff no element fails the check).",
+  "plain_claim": "For every toy backend `be`, property `Holds` and per-flag check `check`: if the check is sound for the property (`check f a = true → Holds f a`), then every artifact that the checked run `checkedRun be check cfg` returns has the property of every requested flag, for every configuration `cfg`, including for a backend that silently omits flags (`checkedRun_contractSound`); and if the check is also complete (`Holds f a → check f a = true`), the checked run returns `a` whenever `be.run cfg = .ok a` and `a` has the property of every flag in `cfg` (`checkedRun_eq_run_of_holds`).",
+  "hypotheses": [
+   {
+    "name": "hcheck : ∀ f a, check f a = true → Holds f a (in `checkedRun_contractSound`)",
+    "purpose": "the check must be sound for the property",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_checkedRun_hcheck",
+    "witness_class": "toy backend `beOmit` with the check that accepts everything"
+   },
+   {
+    "name": "hcomp : ∀ f a, Holds f a → check f a = true (in `checkedRun_eq_run_of_holds`)",
+    "purpose": "the check must accept artifacts that have the property",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_checkedRun_hcomp",
+    "witness_class": "toy backend `beFC` with the check that rejects everything"
+   },
+   {
+    "name": "hrun : be.run cfg = .ok a (in `checkedRun_eq_run_of_holds`)",
+    "purpose": "the build must succeed with `a`",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_checkedRun_hrun",
+    "witness_class": "toy backend `beOmit`, which rejects flag 1"
+   },
+   {
+    "name": "hall : ∀ f ∈ cfg, Holds f a (in `checkedRun_eq_run_of_holds`)",
+    "purpose": "the artifact must have every requested property",
+    "tightness": "tight",
+    "counterexample": "Toy.Capture.cex_checkedRun_hall",
+    "witness_class": "toy backend `beOmit`, which omits flag 2"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "`checkedRun_nonvacuous`: the membership check is sound and complete for `instruments`; the checked runs of `beOmit` on `[0]` and of `beFC` on `[0, 2]` succeed with artifacts that have every requested property. Contrast: `checkedRun_detects_omission` (the checked run of `beOmit` on `[2]` fails).",
+  "nonvacuity_witness_lean": "Toy.Capture.checkedRun_nonvacuous",
+  "non_claims": [
+   "`checkedRun` is a function `List F → Except F A` around `Backend.run`, not a `Backend`; the conclusion has the shape of `FlagContractSound` with `checkedRun` in place of `Backend.run`, and the proof does not use `respond`.",
+   "The check sees nothing but the artifact. In the toy, erasing the place mention of `pPM` gives `pRet` (`passes_example`), so no check of the output alone can tell whether a place mention was erased or was never present; detecting the omission of an erasure-disabling request would have to use information beyond the output artifact, for example the input program or trustworthy build metadata (not proved here beyond the toy pair).",
+   "The check is a toy parameter; nothing is claimed about any real checker.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "Folklore; no specific source is claimed."
+  ],
+  "design_question": "Can a post-hoc check of the produced artifact detect silent omission?"
+ },
+ {
+  "id": "exempting-source-audit-weaker-than-ir-audit",
+  "lean": [
+   "Toy.Capture.exemptingSrcAudit_strictlyWeaker_than_irAudit",
+   "Toy.Capture.srcAudit_of_irAudit",
+   "Toy.Capture.srcAudit_misses_external_unsafe"
+  ],
+  "lean_names": [
+   "Toy.Capture.Item",
+   "Toy.Capture.expand",
+   "Toy.Capture.srcAuditExemptExternal",
+   "Toy.Capture.irAudit",
+   "Toy.Capture.progAuditOk",
+   "Toy.Capture.srcAudit_of_irAudit_nonvacuous",
+   "Toy.Capture.srcAuditExemptExternal_example_neg"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "tier_justification": "Elementary list induction (`List.any` over an append) in a toy audit model.",
+  "plain_claim": "In the toy audit model, every program that the post-expansion IR audit `irAudit` accepts is accepted by the source-level audit `srcAuditExemptExternal`, which exempts external macro expansions (`srcAudit_of_irAudit`); and the converse fails: there is a program, `[.macro true [true]]` (exactly one external macro whose expansion contains an unsafe item), that the exempting source audit accepts and the IR audit rejects (`srcAudit_misses_external_unsafe`). `exemptingSrcAudit_strictlyWeaker_than_irAudit` states both.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "`srcAudit_of_irAudit_nonvacuous`: both audits accept `progAuditOk` (plain safe code, a safe non-external expansion and a safe external expansion).",
+  "nonvacuity_witness_lean": "Toy.Capture.srcAudit_of_irAudit_nonvacuous",
+  "non_claims": [
+   "The audits are toy functions; nothing is claimed about any real lint, audit tool, macro hygiene or attribute semantics.",
+   "The implication holds in the toy because `expand` keeps the unsafe flag of every plain item and every item is code that the IR contains. Whether an audit of a real lowered IR (for example a function-body IR) subsumes a source-level audit is neither established nor refuted here; source constructs that a function-body IR may not represent (such as declarations outside function bodies, foreign-function blocks, global assembly, conditionally excluded code, or the syntactic extent of unsafe regions) are not modeled.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about any real compiler's IR pipeline, about any verifier that consumes compiler IR, or about any compiler backend."
+  ],
+  "prior_art": [
+   "Folklore; no specific source is claimed."
+  ],
+  "design_question": "Is a source-level audit that exempts external macro expansions a substitute for an audit of the post-expansion IR?"
+ }
+]

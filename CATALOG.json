@@ -36361,6 +36361,54 @@
         "tooling/code-review"
       ]
     },
+    "fail-closed-ir-capture-soundness-erasing-pass-sets-and-metadata-injectivity": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9155-4"
+          },
+          "name": "A Formally Verified Compiler Back-end (X. Leroy, Journal of Automated Reasoning 43(4), 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0054170"
+          },
+          "name": "Translation Validation (A. Pnueli, M. Siegel, E. Singerman, TACAS 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11813040_31"
+          },
+          "name": "Formal Verification of a C Compiler Front-End (S. Blazy, Z. Dargaye, X. Leroy, FM 2006)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert (common/Smallstep.v, common/Behaviors.v)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/translation-validation",
+        "verification/refinement",
+        "verification/trusted-computing-base",
+        "verification/soundness",
+        "compilers/ir-design",
+        "pl/undefined-behavior"
+      ]
+    },
     "falk-wcet-aware-coloring-appel-george-optimal-spills-unison-integrated-scheduling-and-irc-validators": {
       "observed_at": "2026-11-20",
       "subjects": [

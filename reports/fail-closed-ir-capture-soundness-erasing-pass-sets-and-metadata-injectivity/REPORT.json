@@ -1,0 +1,48 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/translation-validation",
+    "verification/refinement",
+    "verification/trusted-computing-base",
+    "verification/soundness",
+    "compilers/ir-design",
+    "pl/undefined-behavior"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "A Formally Verified Compiler Back-end (X. Leroy, Journal of Automated Reasoning 43(4), 2009)",
+      "identity": {
+        "doi": "10.1007/s10817-009-9155-4"
+      }
+    },
+    {
+      "name": "Translation Validation (A. Pnueli, M. Siegel, E. Singerman, TACAS 1998)",
+      "identity": {
+        "doi": "10.1007/BFb0054170"
+      }
+    },
+    {
+      "name": "Formal Verification of a C Compiler Front-End (S. Blazy, Z. Dargaye, X. Leroy, FM 2006)",
+      "identity": {
+        "doi": "10.1007/11813040_31"
+      }
+    },
+    {
+      "name": "CompCert (common/Smallstep.v, common/Behaviors.v)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
