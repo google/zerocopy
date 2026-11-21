@@ -1,0 +1,112 @@
+{
+  "topics": [
+    "domains/avalanche-danger-forecasting",
+    "domains/snowpack-stability-modelling",
+    "verification/forecast-consistency-and-bias",
+    "tooling/open-avalanche-simulation-frameworks"
+  ],
+  "subjects": [
+    {
+      "name": "SNOWPACK model (bundled with MeteoIO and Alpine3D)",
+      "identity": {
+        "repository": "snowpack-model/snowpack",
+        "revision": "b324cbdd1b7f4da4db8ff8a5b408274e88ac1945"
+      }
+    },
+    {
+      "name": "AvaFrame (com1DFA dense-flow module and ana3AIMEC analysis)",
+      "identity": {
+        "repository": "OpenNHM/AvaFrame",
+        "revision": "61f1bb90f5aee0e10b81a46d15aca1ed8663fb7a"
+      }
+    },
+    {
+      "name": "Bartelt and Lehning 2002, SNOWPACK Part I: numerical model",
+      "identity": {
+        "doi": "10.1016/S0165-232X(02)00074-5"
+      }
+    },
+    {
+      "name": "Lehning, Bartelt, Brown, Fierz and Satyawali 2002, SNOWPACK Part II: snow microstructure",
+      "identity": {
+        "doi": "10.1016/S0165-232X(02)00073-3"
+      }
+    },
+    {
+      "name": "Lehning, Bartelt, Brown and Fierz 2002, SNOWPACK Part III: meteorological forcing, thin layer formation and evaluation",
+      "identity": {
+        "doi": "10.1016/S0165-232X(02)00072-1"
+      }
+    },
+    {
+      "name": "Morin et al. 2020, physical snowpack models in operational avalanche forecasting",
+      "identity": {
+        "doi": "10.1016/j.coldregions.2019.102910"
+      }
+    },
+    {
+      "name": "Statham et al. 2018, A conceptual model of avalanche hazard",
+      "identity": {
+        "doi": "10.1007/s11069-017-3070-5"
+      }
+    },
+    {
+      "name": "Techel et al. 2018, Spatial consistency and bias in avalanche forecasts",
+      "identity": {
+        "doi": "10.5194/nhess-18-2697-2018"
+      }
+    },
+    {
+      "name": "Techel, Mueller and Schweizer 2020, stability, its frequency and avalanche size versus danger level",
+      "identity": {
+        "doi": "10.5194/tc-14-3503-2020"
+      }
+    },
+    {
+      "name": "Perez-Guillen et al. 2022, data-driven danger level predictions for Switzerland",
+      "identity": {
+        "doi": "10.5194/nhess-22-2031-2022"
+      }
+    },
+    {
+      "name": "Mayer et al. 2022, random forest snow instability model",
+      "identity": {
+        "doi": "10.5194/tc-16-4593-2022"
+      }
+    },
+    {
+      "name": "Tonnel et al. 2023, AvaFrame com1DFA (v1.3) theory, numerics and testing",
+      "identity": {
+        "doi": "10.5194/gmd-16-7013-2023"
+      }
+    },
+    {
+      "name": "Mueller, Techel and Mitterer 2025, The EAWS matrix (Part A): conceptual development",
+      "identity": {
+        "doi": "10.5194/nhess-25-4503-2025"
+      }
+    },
+    {
+      "name": "Techel, Mueller, Marquardt and Mitterer 2026, The EAWS matrix (Part B): operational testing and use",
+      "identity": {
+        "doi": "10.5194/nhess-26-1161-2026"
+      }
+    },
+    {
+      "name": "European Avalanche Danger Scale",
+      "identity": {
+        "standard": "European Avalanche Danger Scale (EAWS)",
+        "url": "https://www.avalanches.org/standards/avalanche-danger-scale/"
+      }
+    },
+    {
+      "name": "EAWS Matrix definitions",
+      "identity": {
+        "standard": "Determination of the avalanche danger level in regional avalanche forecasting (EAWS Working Group Matrix and Scale)",
+        "version": "updated May 2025, accepted by EAWS General Assembly June 2025",
+        "url": "https://www.avalanches.org/wp-content/uploads/2025/08/EAWS_matrix_definitions_EN.pdf"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

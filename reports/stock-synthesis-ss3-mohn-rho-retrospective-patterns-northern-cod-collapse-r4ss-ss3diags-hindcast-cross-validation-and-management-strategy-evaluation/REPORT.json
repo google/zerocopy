@@ -1,0 +1,145 @@
+{
+  "topics": [
+    "domains/fish-stock-assessment",
+    "domains/fishery-catch-advice",
+    "verification/retrospective-pattern-diagnostics",
+    "tooling/stock-assessment-diagnostic-packages"
+  ],
+  "subjects": [
+    {
+      "name": "Stock Synthesis (SS3) source",
+      "identity": {
+        "repository": "nmfs-ost/ss3-source-code",
+        "revision": "94cea415b5861104289c6fa80e2737c94b090487"
+      }
+    },
+    {
+      "name": "Stock Synthesis (SS3) release v3.30.26 Linux executable",
+      "identity": {
+        "repository": "nmfs-ost/ss3-source-code",
+        "revision": "25bab0242fe1ac044db2bd7eb08f7f3613016ad9",
+        "version": "v3.30.26",
+        "artifact": "ss3_linux",
+        "sha256": "e186c2691a645e340d644127cade04df53e10d77219608ad00665513401ba10b"
+      }
+    },
+    {
+      "name": "SS3 test models (Simple, Hake_2018)",
+      "identity": {
+        "repository": "nmfs-ost/ss3-test-models",
+        "revision": "236171c9bc084a4e380731ca446fc9220f5c8a46"
+      }
+    },
+    {
+      "name": "r4ss R package",
+      "identity": {
+        "repository": "r4ss/r4ss",
+        "revision": "c5d7e20b484b91f3080eeb9d9cddc0127948b460",
+        "version": "1.56.0"
+      }
+    },
+    {
+      "name": "ss3diags R package (legacy repository)",
+      "identity": {
+        "repository": "jabbamodel/ss3diags",
+        "revision": "e15da7a22f91141248286104bdfa3f9cf7895814",
+        "version": "1.10.3"
+      }
+    },
+    {
+      "name": "ss3diags R package (maintained repository)",
+      "identity": {
+        "repository": "nmfs-ost/ss3diags",
+        "revision": "d8773e0ac9040e9f8771596a1db54945760f923f",
+        "version": "2.2.2"
+      }
+    },
+    {
+      "name": "SSMSE R package",
+      "identity": {
+        "repository": "nmfs-ost/SSMSE",
+        "revision": "4d858d884a77bf34549ac5f19633f83be600eee8",
+        "version": "0.4.0"
+      }
+    },
+    {
+      "name": "Hutchings and Myers 1994, collapse of northern cod",
+      "identity": {
+        "doi": "10.1139/f94-214"
+      }
+    },
+    {
+      "name": "Walters and Maguire 1996, lessons for stock assessment from the northern cod collapse",
+      "identity": {
+        "doi": "10.1007/BF00182340"
+      }
+    },
+    {
+      "name": "Mohn 1999, the retrospective problem in sequential population analysis",
+      "identity": {
+        "doi": "10.1006/jmsc.1999.0481"
+      }
+    },
+    {
+      "name": "Methot and Wetzel 2013, Stock Synthesis framework",
+      "identity": {
+        "doi": "10.1016/j.fishres.2012.10.012"
+      }
+    },
+    {
+      "name": "Hurtado-Ferro et al. 2015, bias and retrospective patterns in integrated age-structured models",
+      "identity": {
+        "doi": "10.1093/icesjms/fsu198"
+      }
+    },
+    {
+      "name": "Punt et al. 2016, management strategy evaluation best practices",
+      "identity": {
+        "doi": "10.1111/faf.12104"
+      }
+    },
+    {
+      "name": "Kell, Kimoto and Kitakado 2016, prediction skill by hindcasting",
+      "identity": {
+        "doi": "10.1016/j.fishres.2016.05.017"
+      }
+    },
+    {
+      "name": "Kell et al. 2021, validation of stock assessment methods",
+      "identity": {
+        "doi": "10.1093/icesjms/fsab104"
+      }
+    },
+    {
+      "name": "Carvalho et al. 2021, cookbook for model diagnostics in integrated stock assessments",
+      "identity": {
+        "doi": "10.1016/j.fishres.2021.105959"
+      }
+    },
+    {
+      "name": "Legault 2020, Rose vs. Rho",
+      "identity": {
+        "doi": "10.1093/icesjms/fsaa184"
+      }
+    },
+    {
+      "name": "Doering et al. 2023, SSMSE R package paper",
+      "identity": {
+        "doi": "10.21105/joss.04937"
+      }
+    },
+    {
+      "name": "Brooks and Legault 2016, retrospective forecasting for New England groundfish",
+      "identity": {
+        "doi": "10.1139/cjfas-2015-0163"
+      }
+    },
+    {
+      "name": "Deroba 2014, consequences of Mohn's rho adjustment",
+      "identity": {
+        "doi": "10.1080/02755947.2014.882452"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
