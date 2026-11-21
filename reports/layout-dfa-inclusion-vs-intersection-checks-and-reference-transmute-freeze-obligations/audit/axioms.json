@@ -1,0 +1,1246 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.LayoutDfa.DecrCert": [],
+    "Toy.LayoutDfa.FitMeets": [],
+    "Toy.LayoutDfa.FitSubset": [],
+    "Toy.LayoutDfa.FrozenDuring": [],
+    "Toy.LayoutDfa.FrozenDuring.eq_1": [],
+    "Toy.LayoutDfa.Includes": [],
+    "Toy.LayoutDfa.Layout": [],
+    "Toy.LayoutDfa.Layout.Accepts": [],
+    "Toy.LayoutDfa.Layout.Accepts.eq_1": [],
+    "Toy.LayoutDfa.Layout.Acyclic": [],
+    "Toy.LayoutDfa.Layout.Deterministic": [],
+    "Toy.LayoutDfa.Layout.FixedSize": [],
+    "Toy.LayoutDfa.Layout.Lang": [],
+    "Toy.LayoutDfa.Layout.LiveCert": [],
+    "Toy.LayoutDfa.Layout.Path": [],
+    "Toy.LayoutDfa.Layout.Path.below": [],
+    "Toy.LayoutDfa.Layout.Path.below.casesOn": [],
+    "Toy.LayoutDfa.Layout.Path.below.cons": [],
+    "Toy.LayoutDfa.Layout.Path.below.nil": [],
+    "Toy.LayoutDfa.Layout.Path.below.rec": [],
+    "Toy.LayoutDfa.Layout.Path.brecOn": [],
+    "Toy.LayoutDfa.Layout.Path.casesOn": [],
+    "Toy.LayoutDfa.Layout.Path.cons": [],
+    "Toy.LayoutDfa.Layout.Path.nil": [],
+    "Toy.LayoutDfa.Layout.Path.rec": [],
+    "Toy.LayoutDfa.Layout.Path.recOn": [],
+    "Toy.LayoutDfa.Layout.RankCert": [],
+    "Toy.LayoutDfa.Layout.ReachableDeterministic": [],
+    "Toy.LayoutDfa.Layout.ReachableLive": [],
+    "Toy.LayoutDfa.Layout.ReachableLiveAcyclic": [],
+    "Toy.LayoutDfa.Layout.accept": [],
+    "Toy.LayoutDfa.Layout.acceptsB": [],
+    "Toy.LayoutDfa.Layout.acceptsB.eq_1": [],
+    "Toy.LayoutDfa.Layout.acceptsB.eq_2": [],
+    "Toy.LayoutDfa.Layout.acceptsB.eq_def": [],
+    "Toy.LayoutDfa.Layout.acceptsB.match_1": [],
+    "Toy.LayoutDfa.Layout.acceptsB_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.acceptsB_iff.match_1_1": [],
+    "Toy.LayoutDfa.Layout.accepts_of_mem_wordsFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.accepts_of_mem_wordsFrom.match_1_1": [],
+    "Toy.LayoutDfa.Layout.casesOn": [],
+    "Toy.LayoutDfa.Layout.ctorIdx": [],
+    "Toy.LayoutDfa.Layout.edges": [],
+    "Toy.LayoutDfa.Layout.fixedSize_of_rankCert": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.fixedSize_of_rankCert'": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.forall_lang_of_wordsFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.inhabited_of_reachableLive": [],
+    "Toy.LayoutDfa.Layout.instDecidableAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.instDecidableDeterministic": [],
+    "Toy.LayoutDfa.Layout.instDecidableLang": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.instDecidableLiveCert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.instDecidableRankCert": [],
+    "Toy.LayoutDfa.Layout.length_of_accepts_of_rankCert": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.length_of_accepts_of_rankCert.match_1_1": [],
+    "Toy.LayoutDfa.Layout.live_of_liveCert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.live_of_liveCert.match_1_1": [],
+    "Toy.LayoutDfa.Layout.mem_of_path_of_liveCert": [],
+    "Toy.LayoutDfa.Layout.mem_out": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.mem_wordsFrom_of_accepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.mem_wordsFrom_of_accepts.match_1_1": [],
+    "Toy.LayoutDfa.Layout.mk": [],
+    "Toy.LayoutDfa.Layout.mk.inj": [],
+    "Toy.LayoutDfa.Layout.mk.injEq": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.mk.noConfusion": [],
+    "Toy.LayoutDfa.Layout.mk.sizeOf_spec": [],
+    "Toy.LayoutDfa.Layout.noConfusion": [],
+    "Toy.LayoutDfa.Layout.noConfusionType": [],
+    "Toy.LayoutDfa.Layout.not_fixedSize_of_lang": [],
+    "Toy.LayoutDfa.Layout.out": [],
+    "Toy.LayoutDfa.Layout.path_cons_iff": [],
+    "Toy.LayoutDfa.Layout.path_det_from_reachable": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.path_det_from_reachable.match_1_1": [],
+    "Toy.LayoutDfa.Layout.path_det_start": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.path_from_accept": [],
+    "Toy.LayoutDfa.Layout.path_nil_iff": [],
+    "Toy.LayoutDfa.Layout.path_split": [],
+    "Toy.LayoutDfa.Layout.path_split.match_1_1": [],
+    "Toy.LayoutDfa.Layout.path_trans": [],
+    "Toy.LayoutDfa.Layout.reachableDeterministic_of_deterministic": [],
+    "Toy.LayoutDfa.Layout.reachableLive_of_liveCert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.Layout.rec": [],
+    "Toy.LayoutDfa.Layout.recOn": [],
+    "Toy.LayoutDfa.Layout.start": [],
+    "Toy.LayoutDfa.Layout.wordsFrom": [],
+    "Toy.LayoutDfa.Layout.wordsFrom.eq_1": [],
+    "Toy.LayoutDfa.Layout.wordsFrom.eq_2": [],
+    "Toy.LayoutDfa.Layout.wordsFrom.eq_def": [],
+    "Toy.LayoutDfa.Layout.wordsFrom.match_1": [],
+    "Toy.LayoutDfa.MatrixOK": [],
+    "Toy.LayoutDfa.MatrixOK.match_1": [],
+    "Toy.LayoutDfa.MatrixOKNoSrcFreeze": [],
+    "Toy.LayoutDfa.Meets": [],
+    "Toy.LayoutDfa.Mode": [],
+    "Toy.LayoutDfa.Mode.casesOn": [],
+    "Toy.LayoutDfa.Mode.ctorElim": [],
+    "Toy.LayoutDfa.Mode.ctorElimType": [],
+    "Toy.LayoutDfa.Mode.ctorIdx": [],
+    "Toy.LayoutDfa.Mode.mutable": [],
+    "Toy.LayoutDfa.Mode.mutable.elim": [],
+    "Toy.LayoutDfa.Mode.mutable.sizeOf_spec": [],
+    "Toy.LayoutDfa.Mode.noConfusion": [],
+    "Toy.LayoutDfa.Mode.noConfusionType": [],
+    "Toy.LayoutDfa.Mode.ofNat": [],
+    "Toy.LayoutDfa.Mode.ofNat_ctorIdx": [],
+    "Toy.LayoutDfa.Mode.rec": [],
+    "Toy.LayoutDfa.Mode.recOn": [],
+    "Toy.LayoutDfa.Mode.shared": [],
+    "Toy.LayoutDfa.Mode.shared.elim": [],
+    "Toy.LayoutDfa.Mode.shared.sizeOf_spec": [],
+    "Toy.LayoutDfa.Op": [],
+    "Toy.LayoutDfa.Op.casesOn": [],
+    "Toy.LayoutDfa.Op.ctorElim": [],
+    "Toy.LayoutDfa.Op.ctorElimType": [],
+    "Toy.LayoutDfa.Op.ctorIdx": [],
+    "Toy.LayoutDfa.Op.next": [],
+    "Toy.LayoutDfa.Op.noConfusion": [],
+    "Toy.LayoutDfa.Op.noConfusionType": [],
+    "Toy.LayoutDfa.Op.read": [],
+    "Toy.LayoutDfa.Op.read.elim": [],
+    "Toy.LayoutDfa.Op.read.inj": [],
+    "Toy.LayoutDfa.Op.read.injEq": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.Op.read.noConfusion": [],
+    "Toy.LayoutDfa.Op.read.sizeOf_spec": [],
+    "Toy.LayoutDfa.Op.rec": [],
+    "Toy.LayoutDfa.Op.recOn": [],
+    "Toy.LayoutDfa.Op.write": [],
+    "Toy.LayoutDfa.Op.write.elim": [],
+    "Toy.LayoutDfa.Op.write.inj": [],
+    "Toy.LayoutDfa.Op.write.injEq": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.Op.write.noConfusion": [],
+    "Toy.LayoutDfa.Op.write.sizeOf_spec": [],
+    "Toy.LayoutDfa.OpOK": [],
+    "Toy.LayoutDfa.OpOK.match_1": [],
+    "Toy.LayoutDfa.Permitted": [],
+    "Toy.LayoutDfa.Permitted.match_1": [],
+    "Toy.LayoutDfa.RefTy": [],
+    "Toy.LayoutDfa.RefTy.casesOn": [],
+    "Toy.LayoutDfa.RefTy.ctorIdx": [],
+    "Toy.LayoutDfa.RefTy.freeze": [],
+    "Toy.LayoutDfa.RefTy.mk": [],
+    "Toy.LayoutDfa.RefTy.mk.inj": [],
+    "Toy.LayoutDfa.RefTy.mk.injEq": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.RefTy.mk.noConfusion": [],
+    "Toy.LayoutDfa.RefTy.mk.sizeOf_spec": [],
+    "Toy.LayoutDfa.RefTy.noConfusion": [],
+    "Toy.LayoutDfa.RefTy.noConfusionType": [],
+    "Toy.LayoutDfa.RefTy.ofLayout": [],
+    "Toy.LayoutDfa.RefTy.ofLayout.eq_1": [],
+    "Toy.LayoutDfa.RefTy.rec": [],
+    "Toy.LayoutDfa.RefTy.recOn": [],
+    "Toy.LayoutDfa.RefTy.valid": [],
+    "Toy.LayoutDfa.RunOK": [],
+    "Toy.LayoutDfa.RunOK.match_1": [],
+    "Toy.LayoutDfa.Satisfiable": [],
+    "Toy.LayoutDfa.Sound": [],
+    "Toy.LayoutDfa.SoundOneStep": [],
+    "Toy.LayoutDfa.Subset": [],
+    "Toy.LayoutDfa.Sym": [],
+    "Toy.LayoutDfa.Sym.byte": [],
+    "Toy.LayoutDfa.Sym.byte.elim": [],
+    "Toy.LayoutDfa.Sym.byte.inj": [],
+    "Toy.LayoutDfa.Sym.byte.injEq": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.Sym.byte.noConfusion": [],
+    "Toy.LayoutDfa.Sym.byte.sizeOf_spec": [],
+    "Toy.LayoutDfa.Sym.casesOn": [],
+    "Toy.LayoutDfa.Sym.ctorElim": [],
+    "Toy.LayoutDfa.Sym.ctorElimType": [],
+    "Toy.LayoutDfa.Sym.ctorIdx": [],
+    "Toy.LayoutDfa.Sym.noConfusion": [],
+    "Toy.LayoutDfa.Sym.noConfusionType": [],
+    "Toy.LayoutDfa.Sym.rec": [],
+    "Toy.LayoutDfa.Sym.recOn": [],
+    "Toy.LayoutDfa.Sym.uninit": [],
+    "Toy.LayoutDfa.Sym.uninit.elim": [],
+    "Toy.LayoutDfa.Sym.uninit.sizeOf_spec": [],
+    "Toy.LayoutDfa.View": [],
+    "Toy.LayoutDfa.View.casesOn": [],
+    "Toy.LayoutDfa.View.ctorElim": [],
+    "Toy.LayoutDfa.View.ctorElimType": [],
+    "Toy.LayoutDfa.View.ctorIdx": [],
+    "Toy.LayoutDfa.View.dst": [],
+    "Toy.LayoutDfa.View.dst.elim": [],
+    "Toy.LayoutDfa.View.dst.sizeOf_spec": [],
+    "Toy.LayoutDfa.View.noConfusion": [],
+    "Toy.LayoutDfa.View.noConfusionType": [],
+    "Toy.LayoutDfa.View.ofNat": [],
+    "Toy.LayoutDfa.View.ofNat_ctorIdx": [],
+    "Toy.LayoutDfa.View.rec": [],
+    "Toy.LayoutDfa.View.recOn": [],
+    "Toy.LayoutDfa.View.src": [],
+    "Toy.LayoutDfa.View.src.elim": [],
+    "Toy.LayoutDfa.View.src.sizeOf_spec": [],
+    "Toy.LayoutDfa.acceptNDL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.acceptNDL.eq_1": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.acceptNDL_reachableDeterministic": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.accepting_sources_nodup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.accepting_sources_nodup.match_1_1": [],
+    "Toy.LayoutDfa.acyclic_of_decrCert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.allSyms": [],
+    "Toy.LayoutDfa.anyEdges": [],
+    "Toy.LayoutDfa.anyEdges.eq_1": [],
+    "Toy.LayoutDfa.b0L": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.b0L_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.b0L_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.b0L_not_fixedSize_two": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.b0L_not_fixedSize_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.b0uL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.b0uL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.b1L": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.b1L_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.b1L_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.bool2L": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.bool2L_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.boolL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.boolL_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.boolL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.boolL_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.boolRef": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.boolRef_includes_byteRef": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.boolRef_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.boolUL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.boolUL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.byteEdges": [],
+    "Toy.LayoutDfa.byteEdges.eq_1": [],
+    "Toy.LayoutDfa.byteRef": [],
+    "Toy.LayoutDfa.byteRef_includes_cellByteRef": [],
+    "Toy.LayoutDfa.byteRef_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.byteRef_valid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.cellBoolRef": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.cellByteRef": [],
+    "Toy.LayoutDfa.cellByteRef_includes_byteRef": [],
+    "Toy.LayoutDfa.cellByteRef_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.cellByteRef_valid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.cellByte_to_byte_admitted_without_srcFreeze": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.chainL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.chainL_fitSubset_cycL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.chainL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.chainL_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.checks_depend_on_edge_list_representation": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.cycDupL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.cycDupL.eq_1": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.cycL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.cycL.eq_1": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.cycL_not_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.cycL_not_fixedSize_five": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.cycL_not_reachableLiveAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadCycReachL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadCycReachL.eq_1": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadCycReachL_fixedSize": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadCycReachL_lang_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadCycReachL_not_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadCycReachL_state2_not_live": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadL.eq_1": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadL_fitSubset_b1L": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadL_state1_not_live": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.deadL_subset_b1L": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_deterministic": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_existsCheck": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_fit": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_fitMeets": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_fitSubset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_forallCheck": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_frozenDuring": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_includes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_lang_accept_terminal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_lang_bool": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_lang_u8": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_lang_unit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_matrixOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_matrixOKNoSrcFreeze": [],
+    "Toy.LayoutDfa.ex_meets": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_deterministic": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_existsCheck": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_fitMeets": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_fitSubset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_fixedSize": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_forallCheck": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_meets": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_reachableLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_reachableLive_uninhabited": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_reachableLive_uninhabited.match_1_1": [],
+    "Toy.LayoutDfa.ex_not_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_not_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_opOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_permitted": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_reachableDeterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_reachableLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_reachableLiveAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_refCheck": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_runOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ex_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsAux": [],
+    "Toy.LayoutDfa.existsAux.eq_1": [],
+    "Toy.LayoutDfa.existsAux.eq_2": [],
+    "Toy.LayoutDfa.existsAux.eq_def": [],
+    "Toy.LayoutDfa.existsAux_of_accepts_fit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsAux_of_accepts_fit.match_1_1": [],
+    "Toy.LayoutDfa.existsAux_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsAux_sound.match_1_1": [],
+    "Toy.LayoutDfa.existsAux_start_of_lang_fit_of_lt_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck": [],
+    "Toy.LayoutDfa.existsCheck_eq_false_imp_no_promise_of_acyclic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_eq_false_imp_no_promise_of_fixedSize": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_eq_false_imp_no_promise_of_reachableLiveAcyclic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_eq_true_iff_meets_of_eq_fixedSize_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_iff_meets_needs_fixedSize_dst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_iff_meets_needs_fixedSize_src": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_iff_meets_needs_reachableLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_iff_meets_needs_reachableLive_uninhabited": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_iff_meets_needs_reachableLive_uninhabited.match_1_1": [],
+    "Toy.LayoutDfa.existsCheck_iff_meets_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_noPromise_acyclic_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_noPromise_needs_fixedSize_dst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_noPromise_needs_reachableLiveAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_noPromise_nonvacuous": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_sound_exists_fitMeets_of_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_sound_exists_needs_reachableLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_sound_exists_needs_reachableLive_uninhabited": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_sound_exists_needs_reachableLive_uninhabited.match_1_1": [],
+    "Toy.LayoutDfa.existsCheck_sound_exists_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_sound_fit_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_sound_fit_of_fixedSize_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_sound_needs_fixedSize_dst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive_uninhabited": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive_uninhabited.match_1_1": [],
+    "Toy.LayoutDfa.extension_iff_needs_deterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.extension_iff_needs_fixedSize_dst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.extension_iff_needs_fixedSize_src": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.extension_iff_needs_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.extension_iff_needs_reachableLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.extension_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.extension_iff_nonvacuous_fullWidth": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.extension_u8_to_u16_rejected_u8_to_u8Pad_accepted": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.fit": [],
+    "Toy.LayoutDfa.fit.eq_1": [],
+    "Toy.LayoutDfa.fit_cons": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.fit_nil_succ": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.fit_of_length_eq": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.fit_of_length_le": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.fit_zero": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.fixedSize_acyclic_incomparable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.fixedSize_src_counterexamples_hold_for_mu8L": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallAux": [],
+    "Toy.LayoutDfa.forallAux.eq_1": [],
+    "Toy.LayoutDfa.forallAux.eq_2": [],
+    "Toy.LayoutDfa.forallAux.eq_def": [],
+    "Toy.LayoutDfa.forallAux.match_1": [],
+    "Toy.LayoutDfa.forallAux_complete_aux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallAux_complete_aux.match_1_1": [],
+    "Toy.LayoutDfa.forallAux_complete_fit_of_lt_fuel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallAux_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallAux_sound.match_1_1": [],
+    "Toy.LayoutDfa.forallAux_uninit_tail": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallAux_uninit_tail.match_1_1": [],
+    "Toy.LayoutDfa.forallCheck": [],
+    "Toy.LayoutDfa.forallCheck_complete_acyc_needs_deterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_complete_acyc_needs_reachableLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_complete_acyc_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_complete_fit_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_complete_fit_of_acyclic_det_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_complete_fit_of_fixedSize_det_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_complete_fit_of_reachableLiveAcyclic_det_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_complete_needs_deterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_complete_needs_fixedSize_dst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_complete_needs_reachableLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_complete_needs_reachableLiveAcyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_eq_true_iff_subset_of_eq_fixedSize_det_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_eq_true_iff_uninit_padded_of_fixedSize_le_det_live": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_iff_subset_needs_deterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_iff_subset_needs_fixedSize_dst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_iff_subset_needs_fixedSize_src": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_iff_subset_needs_reachableLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_iff_subset_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_ndSrcL_self": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_sound_fit_nonvacuous": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_sound_fit_of_fixedSize": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_sound_needs_fixedSize_dst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.forallCheck_sound_needs_fixedSize_dst_variable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.fuelFor": [],
+    "Toy.LayoutDfa.fuelFor.eq_1": [],
+    "Toy.LayoutDfa.instDecidableDecrCert": [],
+    "Toy.LayoutDfa.instDecidableEqMode": [],
+    "Toy.LayoutDfa.instDecidableEqSym": [],
+    "Toy.LayoutDfa.instDecidableEqSym.decEq": [],
+    "Toy.LayoutDfa.instDecidableEqSym.decEq.match_1": [],
+    "Toy.LayoutDfa.instDecidableEqView": [],
+    "Toy.LayoutDfa.instDecidableOfLayoutValid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.instReprLayout": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.instReprLayout.repr": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.instReprMode": [],
+    "Toy.LayoutDfa.instReprMode.repr": [],
+    "Toy.LayoutDfa.instReprMode.repr.match_1": [],
+    "Toy.LayoutDfa.instReprSym": [],
+    "Toy.LayoutDfa.instReprSym.repr": [],
+    "Toy.LayoutDfa.instReprSym.repr.match_1": [],
+    "Toy.LayoutDfa.instReprView": [],
+    "Toy.LayoutDfa.instReprView.repr": [],
+    "Toy.LayoutDfa.instReprView.repr.match_1": [],
+    "Toy.LayoutDfa.length_fit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.length_le_edges_of_acyclic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.length_le_edges_of_fixedSize": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.length_le_edges_of_reachableLiveAcyclic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.length_le_of_nodup_subset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.length_le_of_nodup_subset.match_1_1": [],
+    "Toy.LayoutDfa.matrixOK_iff_sound_needs_satisfiable": [],
+    "Toy.LayoutDfa.matrixOK_iff_sound_needs_sharedDst_freeze": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.matrixOK_iff_sound_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.matrixOK_iff_sound_of_sharedDst_freeze": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.mu8L": [],
+    "Toy.LayoutDfa.mu8L.eq_1": [],
+    "Toy.LayoutDfa.mu8L_deterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.mu8L_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.mutMut_sound_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.mutMut_sound_iff.match_1_1": [],
+    "Toy.LayoutDfa.mutMut_sound_iff_needs_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.mutMut_sound_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.mutShared_sound_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.mutShared_sound_iff.match_1_1": [],
+    "Toy.LayoutDfa.mutShared_sound_iff_needs_satisfiable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.mutShared_sound_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ndDstL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ndDstL_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ndDstL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ndDstL_not_reachableDeterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ndSrcL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ndSrcL_fitSubset_ndDstL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ndSrcL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.ndSrcL_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ndSrcL_ndDstL_lang": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.ndSrcL_subset_ndDstL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.neverL": [],
+    "Toy.LayoutDfa.neverL.eq_1": [],
+    "Toy.LayoutDfa.neverL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.neverL_lang_empty": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.neverL_not_reachableLive": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.neverRef": [],
+    "Toy.LayoutDfa.neverRef_not_satisfiable": [],
+    "Toy.LayoutDfa.neverRef_not_satisfiable.match_1_1": [],
+    "Toy.LayoutDfa.not_includes_byteRef_boolRef": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.not_includes_byteRef_neverRef": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.not_includes_cellByteRef_neverRef": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.not_sound_mut_mut_bool_byte": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.not_sound_mut_shared_byte_bool": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.not_sound_shared_mut_byte_byte": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.not_sound_shared_shared_cell_byte": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.pairSrcL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.pairSrcL_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.path_iff_of_edges_iff": [],
+    "Toy.LayoutDfa.rank_lt_of_path_of_decrCert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.rank_lt_of_path_of_decrCert.match_1_1": [],
+    "Toy.LayoutDfa.reachableLiveAcyclic_of_acyclic": [],
+    "Toy.LayoutDfa.reachableLiveAcyclic_of_fixedSize": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.reachableLiveAcyclic_strictly_weaker_than_both": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.refCheck": [],
+    "Toy.LayoutDfa.refCheck.eq_1": [],
+    "Toy.LayoutDfa.refCheck.eq_2": [],
+    "Toy.LayoutDfa.refCheck.eq_3": [],
+    "Toy.LayoutDfa.refCheck.eq_4": [],
+    "Toy.LayoutDfa.refCheck.match_1": [],
+    "Toy.LayoutDfa.refCheck_mutMut_needs_eq_fixedSize": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.refCheck_sound_needs_fixedSize_dst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.refCheck_sound_needs_fixedSize_src": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.refCheck_sound_nonvacuous": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.refCheck_sound_of_eq_fixedSize": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.runOK_of_invariant": [],
+    "Toy.LayoutDfa.runOK_of_invariant.match_1_1": [],
+    "Toy.LayoutDfa.sharedMut_not_sound": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.sharedMut_not_sound_needs_satisfiable": [],
+    "Toy.LayoutDfa.sharedMut_not_sound_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.sharedMut_positive_control": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.sharedShared_sound_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.sharedShared_sound_iff.match_1_1": [],
+    "Toy.LayoutDfa.sharedShared_sound_iff_needs_satisfiable": [],
+    "Toy.LayoutDfa.sharedShared_sound_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_iff_soundOneStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_mut_mut_byte_byte": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_mut_shared_bool_byte": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_mut_shared_cell_cell": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_mutable_mutable_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_mutable_shared_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_of_invariant": [],
+    "Toy.LayoutDfa.sound_of_matrixOK": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_of_matrixOK_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_of_neverRef": [],
+    "Toy.LayoutDfa.sound_shared_shared_bool_byte": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_shared_shared_byte_byte": [],
+    "Toy.LayoutDfa.sound_shared_shared_cell_cell": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.sound_shared_shared_of": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.subset_of_forallCheck_of_eq_fixedSize": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.u16L": [],
+    "Toy.LayoutDfa.u16L.eq_1": [],
+    "Toy.LayoutDfa.u16L_deterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.u16L_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.u8L": [],
+    "Toy.LayoutDfa.u8L.eq_1": [],
+    "Toy.LayoutDfa.u8L_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.u8L_lang_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.u8L_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.u8PadL": [],
+    "Toy.LayoutDfa.u8PadL.eq_1": [],
+    "Toy.LayoutDfa.u8PadL_deterministic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.u8PadL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.u8PadL_lang_byte_uninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.uL": [],
+    "Toy.LayoutDfa.uL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.unitL": [],
+    "Toy.LayoutDfa.unitL_fixedSize": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.unitL_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.unitL_not_fixedSize_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.varDstL": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.varDstL.eq_1": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.varDstL_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.varDstL_lang": [
+      "propext"
+    ],
+    "Toy.LayoutDfa.varDstL_not_fixedSize": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LayoutDfa.viewTy": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

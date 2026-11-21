@@ -53287,6 +53287,92 @@
         "compilers"
       ]
     },
+    "layout-dfa-inclusion-vs-intersection-checks-and-reference-transmute-freeze-obligations": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc transmutability checker (compiler/rustc_transmute) and core library TransmuteFrom, Freeze and Cell sources"
+        },
+        {
+          "identity": {
+            "repository": "leanprover-community/mathlib4",
+            "revision": "a495318fed6482b3c90df686de5131b46a70fd5b"
+          },
+          "name": "Mathlib DFA library (Mathlib/Computability/DFA.lean)"
+        },
+        {
+          "identity": {
+            "doi": "10.1147/rd.32.0114"
+          },
+          "name": "Finite automata and their decision problems"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-55179-4_25"
+          },
+          "name": "Checking for language inclusion using simulation preorders"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0039066"
+          },
+          "name": "The linear time - branching time spectrum"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11817963_5"
+          },
+          "name": "Antichains: a new algorithm for checking universality of finite automata"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-03545-1_6"
+          },
+          "name": "A constructive theory of regular languages in Coq"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371109"
+          },
+          "name": "Stacked Borrows: An Aliasing Model for Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592"
+          },
+          "name": "Tree Borrows"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/language-inclusion",
+        "verification/finite-automata",
+        "pl/transmute",
+        "pl/validity-invariants",
+        "pl/interior-mutability",
+        "pl/reference-capabilities",
+        "compilers/transmutability-checking"
+      ]
+    },
     "lazy-radix-trie-tabulation-and-backward-cone-certificate-invalidation-for-incremental-cfg-proofs": {
       "observed_at": "2026-11-21",
       "subjects": [

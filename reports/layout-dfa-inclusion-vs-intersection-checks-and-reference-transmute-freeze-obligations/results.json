@@ -1,0 +1,1520 @@
+[
+ {
+  "id": "LD1-sound",
+  "lean": "Toy.LayoutDfa.forallCheck_sound_fit_of_fixedSize",
+  "lean_names": [
+   "Toy.LayoutDfa.forallCheck_sound_fit_of_fixedSize",
+   "Toy.LayoutDfa.forallCheck_sound_needs_fixedSize_dst_variable",
+   "Toy.LayoutDfa.forallCheck_sound_needs_fixedSize_dst",
+   "Toy.LayoutDfa.forallCheck_sound_fit_nonvacuous",
+   "Toy.LayoutDfa.Layout.FixedSize",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.FitSubset",
+   "Toy.LayoutDfa.Layout.Lang",
+   "Toy.LayoutDfa.b0L",
+   "Toy.LayoutDfa.boolL",
+   "Toy.LayoutDfa.varDstL",
+   "Toy.LayoutDfa.pairSrcL",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.Layout",
+   "Toy.LayoutDfa.unitL",
+   "Toy.LayoutDfa.Layout.out",
+   "Toy.LayoutDfa.acceptNDL",
+   "Toy.LayoutDfa.allSyms",
+   "Toy.LayoutDfa.anyEdges",
+   "Toy.LayoutDfa.b0uL",
+   "Toy.LayoutDfa.byteEdges",
+   "Toy.LayoutDfa.chainL",
+   "Toy.LayoutDfa.ex_acyclic",
+   "Toy.LayoutDfa.ex_deterministic",
+   "Toy.LayoutDfa.ex_existsCheck",
+   "Toy.LayoutDfa.ex_fit",
+   "Toy.LayoutDfa.ex_fitMeets",
+   "Toy.LayoutDfa.ex_fitSubset",
+   "Toy.LayoutDfa.ex_fixedSize",
+   "Toy.LayoutDfa.ex_forallCheck",
+   "Toy.LayoutDfa.ex_lang_accept_terminal",
+   "Toy.LayoutDfa.ex_lang_bool",
+   "Toy.LayoutDfa.ex_lang_u8",
+   "Toy.LayoutDfa.ex_lang_unit",
+   "Toy.LayoutDfa.ex_meets",
+   "Toy.LayoutDfa.ex_not_deterministic",
+   "Toy.LayoutDfa.ex_not_fitMeets",
+   "Toy.LayoutDfa.ex_not_fitSubset",
+   "Toy.LayoutDfa.ex_not_fixedSize",
+   "Toy.LayoutDfa.ex_not_forallCheck",
+   "Toy.LayoutDfa.ex_not_meets",
+   "Toy.LayoutDfa.ex_not_reachableLive",
+   "Toy.LayoutDfa.ex_not_reachableLive_uninhabited",
+   "Toy.LayoutDfa.ex_not_subset",
+   "Toy.LayoutDfa.ex_reachableDeterministic",
+   "Toy.LayoutDfa.ex_reachableLive",
+   "Toy.LayoutDfa.ex_reachableLiveAcyclic",
+   "Toy.LayoutDfa.ex_subset",
+   "Toy.LayoutDfa.existsAux",
+   "Toy.LayoutDfa.forallAux",
+   "Toy.LayoutDfa.Sym",
+   "Toy.LayoutDfa.ndDstL"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Soundness of a simulation-style product check for inclusion is folklore, and textbook automata constructions are mechanized (prior art below); made precise here for the 257-symbol layout encoding with the layout check's truncation and extension rules and the `fit` view, which no mechanization found in the search covers.",
+  "plain_claim": "For every source layout automaton `A` (deterministic or not, with or without dead branches, with empty language or not) and every destination layout automaton `B` all of whose accepted words have length exactly `nB` (`B.FixedSize nB`): if `forallCheck A B = true`, then for every word `s` accepted by `A`, `B` accepts `fit nB s` (the first `nB` symbols of `s`, followed by `uninit` symbols up to length `nB` when `s` is shorter; truncated subtraction `nB - s.length`).",
+  "unfolded_prose": "`FitSubset A B nB` is `∀ s, A.Lang s → B.Lang (s.take nB ++ List.replicate (nB - s.length) Sym.uninit)`.",
+  "hypotheses": [
+   {
+    "name": "hB : B.FixedSize nB",
+    "purpose": "Gives the truncation rule (success as soon as the destination reaches its accept state) the meaning \"the first `nB` symbols are valid\"; without it, there is a pair (`pairSrcL`, `varDstL`) that the check accepts although no size satisfies the conclusion.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.LayoutDfa.forallCheck_sound_needs_fixedSize_dst_variable",
+     "Toy.LayoutDfa.forallCheck_sound_needs_fixedSize_dst"
+    ],
+    "witness_class": "a 3-state deterministic acyclic destination whose words have lengths 1 and 2 (`varDstL`) against a 4-state fixed-size source (`pairSrcL`): the check accepts and `FitSubset` fails at every `nB`; also the fixed-size-0 destination `unitL` evaluated at `nB = 1`"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`b0L` into `boolL` with `nB = 1`: `boolL` has fixed size exactly 1 and the check accepts.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.forallCheck_sound_fit_nonvacuous",
+  "non_claims": [
+   "Does not say the check is complete; completeness needs further hypotheses (LD1-complete, LD1-complete-acyc), and there is a nondeterministic destination (`ndDstL`, LD1-nd) for which it fails.",
+   "`FixedSize` holds at every size for an automaton with empty language. When the source `A` has empty language, `FitSubset A B nB` holds vacuously; when the destination `B` has empty language (so `B.FixedSize nB` holds for every `nB`), the theorem says that `forallCheck A B = false` for every inhabited source `A`.",
+   "Says nothing positive about destinations whose accepted words have different lengths: there is such a destination (`varDstL`) and a source (`pairSrcL`) that the check accepts although `FitSubset` fails at every size (`forallCheck_sound_needs_fixedSize_dst_variable`).",
+   "Degenerate zero size: at size 0, `fit 0 s = []` discards the whole source word, and `FixedSize 0` holds exactly when the language is `{[]}` (a zero-sized type) or empty (an uninhabited type).",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "Edges carry single symbols of the 257-symbol alphabet; byte-range edges, reference (pointer) edges inside layouts, alignment, and the `Assume` flags other than validity are not modelled. `Layout` is a partial automaton with a single terminal accept state (textbook DFAs have a total transition function and non-terminal accept states), and it does not enforce initialisation monotonicity: a position may accept `Sym.uninit` without accepting the 256 initialised byte values, unlike rustc's uninit byte range, which covers every value.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, 2nd ed., Addison-Wesley, 2001, Chapter 4: closure of regular languages under intersection by the product construction (Section 4.2.1, Theorem 4.8), decision properties (Section 4.3) and testing equivalence of automata (Section 4.4), all for total DFAs with non-terminal accept sets. Section numbers and contents are taken from secondary sources; the primary text was not accessed.",
+   "Mechanized automata theory, cited as context: C. Doczkal, J.-O. Kaiser, G. Smolka, A constructive theory of regular languages in Coq, CPP 2013, LNCS 8307, Springer, 2013, pp. 82-97, DOI 10.1007/978-3-319-03545-1_6 (DFAs, NFAs, closure properties and decidable equivalence; bibliographic record checked, text not read); Lean 4 Mathlib, leanprover-community/mathlib4 commit `a495318fed6482b3c90df686de5131b46a70fd5b`, `Mathlib/Computability/DFA.lean` lines 57-65 (`structure DFA` with a total transition function `step : σ → α → σ` and a set of accept states) and lines 318-338 (`DFA.inter`, `accepts_inter`) (source). Neither was found to formalize a check with this package's truncation and extension rules or step budget (search record under Evidence, Primary sources; not a proof of absence)."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`forallCheck` is read as the exploration mode of rustc's transmutability checker used when the compiler cannot assume a validity check by the programmer (for every source transition, some destination transition), with its truncation rule (success once the destination reaches its accept state) and its extension rule (the destination's `uninit` edge once the source reaches its accept state), as stated in the source comments cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role).",
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/layout/mod.rs` lines 14-54 (`Byte` is a range over 0..=256 with 256 the uninit value; `Byte::uninit()` covers every value, lines 40-43) and `compiler/rustc_transmute/src/layout/dfa.rs` lines 10-18 (`Dfa` with one `start` and one `accept` state), lines 199-201 (out-edges of the accept state do not affect the semantics), lines 252-255 (`get_uninit_edge_dst`) (source and source comments).",
+    "`core::mem::TransmuteFrom` / `core::mem::Assume` (unstable feature `transmutability`), rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/mem/transmutability.rs` lines 41-44 (union-transmutes extend `Src` with trailing padding to fill trailing uninitialized bytes of `Self`), lines 110-111 (with `ASSUME.validity` the caller must guarantee that `src` is a bit-valid instance of `Self`), line 85 (`#[unstable(feature = \"transmutability\", issue = \"99571\")]`) (documentation)."
+   ]
+  }
+ },
+ {
+  "id": "LD1-complete",
+  "lean": "Toy.LayoutDfa.forallCheck_complete_fit_of_fixedSize_det_live",
+  "lean_names": [
+   "Toy.LayoutDfa.forallCheck_complete_fit_of_fixedSize_det_live",
+   "Toy.LayoutDfa.forallCheck_complete_needs_fixedSize_dst",
+   "Toy.LayoutDfa.forallCheck_complete_needs_deterministic",
+   "Toy.LayoutDfa.forallCheck_complete_needs_reachableLive",
+   "Toy.LayoutDfa.forallCheck_complete_fit_nonvacuous",
+   "Toy.LayoutDfa.Layout.Deterministic",
+   "Toy.LayoutDfa.Layout.FixedSize",
+   "Toy.LayoutDfa.Layout.ReachableLive",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.Layout.Path",
+   "Toy.LayoutDfa.Layout.Accepts",
+   "Toy.LayoutDfa.b0L",
+   "Toy.LayoutDfa.boolL",
+   "Toy.LayoutDfa.Layout.inhabited_of_reachableLive",
+   "Toy.LayoutDfa.neverL",
+   "Toy.LayoutDfa.forallAux_complete_fit_of_lt_fuel",
+   "Toy.LayoutDfa.Layout.ReachableDeterministic",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.Layout",
+   "Toy.LayoutDfa.Layout.ReachableLiveAcyclic",
+   "Toy.LayoutDfa.reachableLiveAcyclic_of_fixedSize",
+   "Toy.LayoutDfa.length_le_edges_of_reachableLiveAcyclic",
+   "Toy.LayoutDfa.Layout.Acyclic",
+   "Toy.LayoutDfa.forallCheck_complete_fit_of_acyclic_det_live",
+   "Toy.LayoutDfa.fixedSize_acyclic_incomparable",
+   "Toy.LayoutDfa.ndDstL",
+   "Toy.LayoutDfa.Layout.reachableDeterministic_of_deterministic",
+   "Toy.LayoutDfa.Sym"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Completeness of the per-pair universal check for deterministic destinations is folklore (the product of DFAs); the liveness and size hypotheses that the layout check's truncation, extension and step-budget rules require are made explicit and shown tight here. Proved as the fixed-size corollary of LD1-complete-acyc.",
+  "plain_claim": "For every destination layout automaton `B` that is deterministic (`B.Deterministic`: from every state, reachable or not, including the accept state, at most one target per label) and all of whose accepted words have length exactly `nB` (`B.FixedSize nB`), and every source layout automaton `A` every state of which that is reachable from its start (by runs that stop at the accept state), the start state included, can still reach the accept state (`A.ReachableLive`; in particular `A` accepts at least one word): if for every word `s` accepted by `A`, `B` accepts `fit nB s`, then `forallCheck A B = true`.",
+  "unfolded_prose": "`A.ReachableLive` is `∀ w q, A.Path A.start w q → ∃ v, A.Accepts q v`; `B.Deterministic` is `∀ e₁ ∈ B.edges, ∀ e₂ ∈ B.edges, e₁.1 = e₂.1 → e₁.2.1 = e₂.2.1 → e₁.2.2 = e₂.2.2`.",
+  "hypotheses": [
+   {
+    "name": "hB : B.FixedSize nB",
+    "purpose": "Implies `B.ReachableLiveAcyclic` (`reachableLiveAcyclic_of_fixedSize`), which bounds every accepted destination word by the length of the edge list (`length_le_edges_of_reachableLiveAcyclic`), so the step budget `fuelFor B` suffices; this card is the fixed-size corollary of LD1-complete-acyc. `B.Acyclic` is a different sufficient condition (corollary `forallCheck_complete_fit_of_acyclic_det_live`): neither of `B.FixedSize nB` and `B.Acyclic` implies the other (`fixedSize_acyclic_incomparable`).",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.forallCheck_complete_needs_fixedSize_dst",
+    "witness_class": "a deterministic destination with a self-loop (3 edges, words of unbounded length) and a 6-state chain source; the step budget is exhausted"
+   },
+   {
+    "name": "hdet : B.Deterministic",
+    "purpose": "The check commits to one destination edge per source edge; there is a destination with two targets for one label (`ndDstL`) for which that commitment makes the check reject an included source.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.forallCheck_complete_needs_deterministic",
+    "witness_class": "small acyclic automata with at most 4 states over byte values 0-2, fixed size exactly 2"
+   },
+   {
+    "name": "hlive : A.ReachableLive",
+    "purpose": "The check demands a destination edge for every source edge, including edges into dead source branches that contribute no word.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.forallCheck_complete_needs_reachableLive",
+    "witness_class": "a 3-state source with one reachable dead state and a 2-state destination"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`b0L` into `boolL` with `nB = 1`.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.forallCheck_complete_fit_nonvacuous",
+  "non_claims": [
+   "Does not cover nondeterministic destinations (LD1-nd) or sources with reachable dead branches; a check that tracks sets of destination states is not modelled (its completeness is not proved here).",
+   "`A.ReachableLive` requires `A.start` itself to reach `A.accept` (`inhabited_of_reachableLive`), so source automata with empty language, including the edge-free `neverL`, are outside this theorem. For such sources the check's answer is not characterized here.",
+   "`B.Deterministic` constrains every state of `B`, reachable or not, including the out-edges of the accept state. The proof uses determinism at states reachable from the start other than the accept state (`forallAux_complete_fit_of_lt_fuel` assumes `ReachableDeterministic` instead), but this card's statement assumes `Deterministic`.",
+   "On destinations with a non-empty cycle through their reachable live part the check's behaviour is characterized by neither this card nor LD1-complete-acyc; the budget lemma `forallAux_complete_fit_of_lt_fuel` covers every destination size below the step budget.",
+   "Degenerate zero size: at size 0, `fit 0 s = []` discards the whole source word, and `FixedSize 0` holds exactly when the language is `{[]}` (a zero-sized type) or empty (an uninhabited type).",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "Edges carry single symbols of the 257-symbol alphabet; byte-range edges, reference (pointer) edges inside layouts, alignment, and the `Assume` flags other than validity are not modelled. `Layout` is a partial automaton with a single terminal accept state (textbook DFAs have a total transition function and non-terminal accept states), and it does not enforce initialisation monotonicity: a position may accept `Sym.uninit` without accepting the 256 initialised byte values, unlike rustc's uninit byte range, which covers every value.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, 2nd ed., Addison-Wesley, 2001, Chapter 4: closure of regular languages under intersection by the product construction (Section 4.2.1, Theorem 4.8), decision properties (Section 4.3) and testing equivalence of automata (Section 4.4), all for total DFAs with non-terminal accept sets. Section numbers and contents are taken from secondary sources; the primary text was not accessed.",
+   "D. L. Dill, A. J. Hu, H. Wong-Toi, Checking for language inclusion using simulation preorders, in Computer Aided Verification (CAV '91), LNCS 575, Springer, 1992, pp. 255-265, DOI 10.1007/3-540-55179-4_25 (bibliographic record checked; text not read): simulation preorders as a sufficient, efficiently checkable condition for language inclusion.",
+   "Mechanized automata theory, cited as context: C. Doczkal, J.-O. Kaiser, G. Smolka, A constructive theory of regular languages in Coq, CPP 2013, LNCS 8307, Springer, 2013, pp. 82-97, DOI 10.1007/978-3-319-03545-1_6 (DFAs, NFAs, closure properties and decidable equivalence; bibliographic record checked, text not read); Lean 4 Mathlib, leanprover-community/mathlib4 commit `a495318fed6482b3c90df686de5131b46a70fd5b`, `Mathlib/Computability/DFA.lean` lines 57-65 (`structure DFA` with a total transition function `step : σ → α → σ` and a set of accept states) and lines 318-338 (`DFA.inter`, `accepts_inter`) (source). Neither was found to formalize a check with this package's truncation and extension rules or step budget (search record under Evidence, Primary sources; not a proof of absence)."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`forallCheck` is read as the exploration mode of rustc's transmutability checker used when the compiler cannot assume a validity check by the programmer (for every source transition, some destination transition), with its truncation rule (success once the destination reaches its accept state) and its extension rule (the destination's `uninit` edge once the source reaches its accept state), as stated in the source comments cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role)."
+   ]
+  }
+ },
+ {
+  "id": "LD1-complete-acyc",
+  "lean": "Toy.LayoutDfa.forallCheck_complete_fit_of_reachableLiveAcyclic_det_live",
+  "lean_names": [
+   "Toy.LayoutDfa.forallCheck_complete_fit_of_reachableLiveAcyclic_det_live",
+   "Toy.LayoutDfa.forallCheck_complete_needs_reachableLiveAcyclic",
+   "Toy.LayoutDfa.forallCheck_complete_acyc_needs_deterministic",
+   "Toy.LayoutDfa.forallCheck_complete_acyc_needs_reachableLive",
+   "Toy.LayoutDfa.forallCheck_complete_acyc_nonvacuous",
+   "Toy.LayoutDfa.Layout.Deterministic",
+   "Toy.LayoutDfa.Layout.ReachableLiveAcyclic",
+   "Toy.LayoutDfa.Layout.ReachableLive",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.Sym",
+   "Toy.LayoutDfa.Layout.Path",
+   "Toy.LayoutDfa.Layout.Accepts",
+   "Toy.LayoutDfa.b0L",
+   "Toy.LayoutDfa.varDstL",
+   "Toy.LayoutDfa.deadCycReachL",
+   "Toy.LayoutDfa.Layout.Acyclic",
+   "Toy.LayoutDfa.forallCheck_complete_fit_of_acyclic_det_live",
+   "Toy.LayoutDfa.Layout.FixedSize",
+   "Toy.LayoutDfa.reachableLiveAcyclic_of_fixedSize",
+   "Toy.LayoutDfa.reachableLiveAcyclic_of_acyclic",
+   "Toy.LayoutDfa.reachableLiveAcyclic_strictly_weaker_than_both",
+   "Toy.LayoutDfa.fixedSize_acyclic_incomparable",
+   "Toy.LayoutDfa.forallAux_complete_fit_of_lt_fuel",
+   "Toy.LayoutDfa.Layout.inhabited_of_reachableLive",
+   "Toy.LayoutDfa.neverL",
+   "Toy.LayoutDfa.Layout.ReachableDeterministic",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.Layout",
+   "Toy.LayoutDfa.length_le_edges_of_reachableLiveAcyclic"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Shows that the absence of cycles through the reachable live part of the destination suffices for completeness of the layout check with its step budget (folklore for acyclic product exploration, made precise here); it covers destinations without a fixed size and destinations with cycles through unreachable or dead states.",
+  "plain_claim": "For every destination layout automaton `B` that is deterministic (`B.Deterministic`: from every state, reachable or not, including the accept state, at most one target per label) and without non-empty cycles through its reachable live part (`B.ReachableLiveAcyclic`: no non-empty run returns to a state that is reachable from the start state of `B` and from which the accept state of `B` is reachable; cycles through unreachable states or through dead states are allowed, and the accepted words may have different lengths), every destination size `nB`, and every source layout automaton `A` every state of which that is reachable from its start (by runs that stop at the accept state), the start state included, can still reach the accept state (`A.ReachableLive`; in particular `A` accepts at least one word): if for every word `s` accepted by `A`, `B` accepts `fit nB s`, then `forallCheck A B = true`.",
+  "unfolded_prose": "`B.ReachableLiveAcyclic` is `∀ (pre : List Sym) (p : Nat) (c v : List Sym), c ≠ [] → B.Path B.start pre p → B.Path p c p → B.Accepts p v → False`.",
+  "hypotheses": [
+   {
+    "name": "hno : B.ReachableLiveAcyclic",
+    "purpose": "Bounds every accepted destination word by the length of the edge list (`length_le_edges_of_reachableLiveAcyclic`), so the step budget suffices.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.forallCheck_complete_needs_reachableLiveAcyclic",
+    "witness_class": "a deterministic destination with a self-loop at a reachable live state (3 edges) and a 6-state chain source; the step budget is exhausted"
+   },
+   {
+    "name": "hdet : B.Deterministic",
+    "purpose": "As in LD1-complete.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.forallCheck_complete_acyc_needs_deterministic",
+    "witness_class": "small acyclic automata with at most 4 states over byte values 0-2"
+   },
+   {
+    "name": "hlive : A.ReachableLive",
+    "purpose": "As in LD1-complete.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.forallCheck_complete_acyc_needs_reachableLive",
+    "witness_class": "a 3-state source with one reachable dead state and a 2-state acyclic destination"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`b0L` into `varDstL` (deterministic, acyclic, no fixed size) and into `deadCycReachL` (deterministic, fixed size 1, a self-loop at a reachable dead state, so not `Acyclic`), both at `nB = 1`; the first instance lies outside LD1-complete, the second outside the global-acyclicity corollary `forallCheck_complete_fit_of_acyclic_det_live`.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.forallCheck_complete_acyc_nonvacuous",
+  "non_claims": [
+   "`B.ReachableLiveAcyclic` is implied by `B.FixedSize nB` (`reachableLiveAcyclic_of_fixedSize`) and by `B.Acyclic` (`reachableLiveAcyclic_of_acyclic`), and is strictly weaker than each (`reachableLiveAcyclic_strictly_weaker_than_both`: `deadCycReachL` has a fixed size and a cycle at a reachable dead state; `varDstL` is acyclic without a fixed size). `B.FixedSize nB` and `B.Acyclic` are incomparable (`fixedSize_acyclic_incomparable`). This card therefore implies LD1-complete and the global-acyclicity corollary `forallCheck_complete_fit_of_acyclic_det_live`.",
+   "Whether a still weaker hypothesis on `B` suffices is not examined, beyond the budget lemma `forallAux_complete_fit_of_lt_fuel`, which needs a destination size below the step budget.",
+   "`A.ReachableLive` requires `A.start` itself to reach `A.accept` (`inhabited_of_reachableLive`), so source automata with empty language, including the edge-free `neverL`, are outside this theorem. For such sources the check's answer is not characterized here.",
+   "`B.Deterministic` constrains every state of `B`, reachable or not, including the out-edges of the accept state. The proof uses determinism at states reachable from the start other than the accept state (`forallAux_complete_fit_of_lt_fuel` assumes `ReachableDeterministic` instead), but this card's statement assumes `Deterministic`.",
+   "Degenerate zero size: at size 0, `fit 0 s = []` discards the whole source word, and `FixedSize 0` holds exactly when the language is `{[]}` (a zero-sized type) or empty (an uninhabited type).",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "Edges carry single symbols of the 257-symbol alphabet; byte-range edges, reference (pointer) edges inside layouts, alignment, and the `Assume` flags other than validity are not modelled. `Layout` is a partial automaton with a single terminal accept state (textbook DFAs have a total transition function and non-terminal accept states), and it does not enforce initialisation monotonicity: a position may accept `Sym.uninit` without accepting the 256 initialised byte values, unlike rustc's uninit byte range, which covers every value.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, 2nd ed., Addison-Wesley, 2001, Chapter 4: closure of regular languages under intersection by the product construction (Section 4.2.1, Theorem 4.8), decision properties (Section 4.3) and testing equivalence of automata (Section 4.4), all for total DFAs with non-terminal accept sets. Section numbers and contents are taken from secondary sources; the primary text was not accessed.",
+   "Mechanized automata theory, cited as context: C. Doczkal, J.-O. Kaiser, G. Smolka, A constructive theory of regular languages in Coq, CPP 2013, LNCS 8307, Springer, 2013, pp. 82-97, DOI 10.1007/978-3-319-03545-1_6 (DFAs, NFAs, closure properties and decidable equivalence; bibliographic record checked, text not read); Lean 4 Mathlib, leanprover-community/mathlib4 commit `a495318fed6482b3c90df686de5131b46a70fd5b`, `Mathlib/Computability/DFA.lean` lines 57-65 (`structure DFA` with a total transition function `step : σ → α → σ` and a set of accept states) and lines 318-338 (`DFA.inter`, `accepts_inter`) (source). Neither was found to formalize a check with this package's truncation and extension rules or step budget (search record under Evidence, Primary sources; not a proof of absence)."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`forallCheck` is read as the exploration mode of rustc's transmutability checker used when the compiler cannot assume a validity check by the programmer (for every source transition, some destination transition), with its truncation rule (success once the destination reaches its accept state) and its extension rule (the destination's `uninit` edge once the source reaches its accept state), as stated in the source comments cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role)."
+   ]
+  }
+ },
+ {
+  "id": "LD1-iff",
+  "lean": "Toy.LayoutDfa.forallCheck_eq_true_iff_subset_of_eq_fixedSize_det_live",
+  "lean_names": [
+   "Toy.LayoutDfa.forallCheck_eq_true_iff_subset_of_eq_fixedSize_det_live",
+   "Toy.LayoutDfa.forallCheck_iff_subset_needs_fixedSize_src",
+   "Toy.LayoutDfa.fixedSize_src_counterexamples_hold_for_mu8L",
+   "Toy.LayoutDfa.forallCheck_iff_subset_needs_fixedSize_dst",
+   "Toy.LayoutDfa.forallCheck_iff_subset_needs_deterministic",
+   "Toy.LayoutDfa.forallCheck_iff_subset_needs_reachableLive",
+   "Toy.LayoutDfa.forallCheck_iff_subset_nonvacuous",
+   "Toy.LayoutDfa.Layout.FixedSize",
+   "Toy.LayoutDfa.Layout.Deterministic",
+   "Toy.LayoutDfa.Layout.ReachableLive",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.Subset",
+   "Toy.LayoutDfa.Layout.Lang",
+   "Toy.LayoutDfa.b0L",
+   "Toy.LayoutDfa.boolL",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.subset_of_forallCheck_of_eq_fixedSize",
+   "Toy.LayoutDfa.Layout.inhabited_of_reachableLive",
+   "Toy.LayoutDfa.neverL",
+   "Toy.LayoutDfa.forallAux_complete_fit_of_lt_fuel",
+   "Toy.LayoutDfa.Layout.ReachableDeterministic",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.Layout",
+   "Toy.LayoutDfa.unitL",
+   "Toy.LayoutDfa.uL",
+   "Toy.LayoutDfa.mu8L",
+   "Toy.LayoutDfa.Sym"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "Inclusion of DFA languages by product exploration is textbook and mechanized for total DFAs (prior art below); the T1 content is the exact hypothesis set (equal fixed sizes, source liveness, determinism) under which the layout check, with its truncation, extension and step-budget rules, decides inclusion, each hypothesis shown tight.",
+  "plain_claim": "For layout automata `A` and `B` all of whose accepted words have length exactly `n` (the same `n` for both: `A.FixedSize n`, `B.FixedSize n`), with `B` deterministic (`B.Deterministic`: from every state, reachable or not, including the accept state, at most one target per label) and every reachable state of `A`, the start state included, live (`A.ReachableLive`): `forallCheck A B = true` if and only if every word accepted by `A` is accepted by `B` (`Subset A B`).",
+  "unfolded_prose": "`Subset A B` is `∀ s, A.Lang s → B.Lang s`.",
+  "hypotheses": [
+   {
+    "name": "hA : A.FixedSize n",
+    "purpose": "Without it, there is a shorter source (`unitL`) that the extension rule accepts because its padded strings, not its own strings, are valid.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.LayoutDfa.forallCheck_iff_subset_needs_fixedSize_src",
+     "Toy.LayoutDfa.fixedSize_src_counterexamples_hold_for_mu8L"
+    ],
+    "witness_class": "source `()` (size 0) and the destination `{[uninit]}` (one `uninit` symbol) (`uL`) with `n = 1`; the same failure with the initialisation-monotone destination `mu8L` (`MaybeUninit<u8>`)"
+   },
+   {
+    "name": "hB : B.FixedSize n",
+    "purpose": "Without it, there is a longer source (`b0L`) that the truncation rule accepts.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.forallCheck_iff_subset_needs_fixedSize_dst",
+    "witness_class": "source `{[0]}` and destination `()` with `n = 1`"
+   },
+   {
+    "name": "hdet : B.Deterministic",
+    "purpose": "As in LD1-complete.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.forallCheck_iff_subset_needs_deterministic",
+    "witness_class": "small acyclic automata with at most 4 states over byte values 0-2, fixed size exactly 2"
+   },
+   {
+    "name": "hlive : A.ReachableLive",
+    "purpose": "As in LD1-complete.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.forallCheck_iff_subset_needs_reachableLive",
+    "witness_class": "a 3-state source with one dead state, `n = 1`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`b0L`/`boolL` (accepted and included) and `boolL`/`b0L` (rejected and not included), all hypotheses holding in both.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.forallCheck_iff_subset_nonvacuous",
+  "non_claims": [
+   "This is the equal-size corollary of LD1-sound and LD1-complete (at equal sizes `fit n s = s`), and the case `nA = nB` of LD3-ext. For unequal sizes the check decides the `fit` relation (LD1-sound, LD1-complete, LD3-ext), which differs from inclusion.",
+   "The soundness direction holds without `hdet` and `hlive` (`subset_of_forallCheck_of_eq_fixedSize`); both are assumed for the completeness direction, where each is tight.",
+   "`A.ReachableLive` requires `A.start` itself to reach `A.accept` (`inhabited_of_reachableLive`), so source automata with empty language, including the edge-free `neverL`, are outside this theorem.",
+   "`B.Deterministic` constrains every state of `B`, reachable or not, including the out-edges of the accept state. The proof uses determinism at states reachable from the start other than the accept state (`forallAux_complete_fit_of_lt_fuel` assumes `ReachableDeterministic` instead), but this card's statement assumes `Deterministic`.",
+   "Degenerate zero size: at size 0, `fit 0 s = []` discards the whole source word, and `FixedSize 0` holds exactly when the language is `{[]}` (a zero-sized type) or empty (an uninhabited type).",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "Edges carry single symbols of the 257-symbol alphabet; byte-range edges, reference (pointer) edges inside layouts, alignment, and the `Assume` flags other than validity are not modelled. `Layout` is a partial automaton with a single terminal accept state (textbook DFAs have a total transition function and non-terminal accept states), and it does not enforce initialisation monotonicity: a position may accept `Sym.uninit` without accepting the 256 initialised byte values, unlike rustc's uninit byte range, which covers every value.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, 2nd ed., Addison-Wesley, 2001, Chapter 4: closure of regular languages under intersection by the product construction (Section 4.2.1, Theorem 4.8), decision properties (Section 4.3) and testing equivalence of automata (Section 4.4), all for total DFAs with non-terminal accept sets. Section numbers and contents are taken from secondary sources; the primary text was not accessed.",
+   "M. O. Rabin, D. Scott, Finite automata and their decision problems, IBM Journal of Research and Development 3(2):114-125, 1959, DOI 10.1147/rd.32.0114 (bibliographic record checked; text not read): finite automata, nondeterministic automata, and decision problems for them.",
+   "Mechanized automata theory, cited as context: C. Doczkal, J.-O. Kaiser, G. Smolka, A constructive theory of regular languages in Coq, CPP 2013, LNCS 8307, Springer, 2013, pp. 82-97, DOI 10.1007/978-3-319-03545-1_6 (DFAs, NFAs, closure properties and decidable equivalence; bibliographic record checked, text not read); Lean 4 Mathlib, leanprover-community/mathlib4 commit `a495318fed6482b3c90df686de5131b46a70fd5b`, `Mathlib/Computability/DFA.lean` lines 57-65 (`structure DFA` with a total transition function `step : σ → α → σ` and a set of accept states) and lines 318-338 (`DFA.inter`, `accepts_inter`) (source). Neither was found to formalize a check with this package's truncation and extension rules or step budget (search record under Evidence, Primary sources; not a proof of absence)."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`forallCheck` is read as the exploration mode of rustc's transmutability checker used when the compiler cannot assume a validity check by the programmer (for every source transition, some destination transition), with its truncation rule (success once the destination reaches its accept state) and its extension rule (the destination's `uninit` edge once the source reaches its accept state), as stated in the source comments cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role)."
+   ]
+  }
+ },
+ {
+  "id": "LD1-nd",
+  "lean": "Toy.LayoutDfa.forallCheck_complete_needs_deterministic",
+  "lean_names": [
+   "Toy.LayoutDfa.forallCheck_complete_needs_deterministic",
+   "Toy.LayoutDfa.forallCheck_ndSrcL_self",
+   "Toy.LayoutDfa.ndSrcL",
+   "Toy.LayoutDfa.ndDstL",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.ndSrcL_ndDstL_lang",
+   "Toy.LayoutDfa.Layout.Deterministic"
+  ],
+  "kind": "counterexample",
+  "role": "Headline counterexample; the same theorem is the tightness counterexample for `hdet` in LD1-complete.",
+  "tier": "T0",
+  "tier_justification": "That a per-state simulation check is sufficient but not necessary for inclusion into a nondeterministic automaton is classical (simulation versus trace inclusion); this is a concrete instance in the layout encoding.",
+  "plain_claim": "For the layout automata `ndSrcL` (deterministic, fixed size exactly 2) and `ndDstL` (not deterministic: byte 0 from the start leads to two different states), `ndDstL` has fixed size exactly 2, every reachable state of `ndSrcL` is live, and `ndDstL` accepts `fit 2 s` for every word `s` accepted by `ndSrcL`, yet `forallCheck ndSrcL ndDstL = false`.",
+  "unfolded_prose": "both automata accept exactly the words `[0, 1]` and `[0, 2]` (`ndSrcL_ndDstL_lang`); after byte 0 the check must pick one destination state, and state 1 has a single outgoing edge, labelled 1, and state 2 a single outgoing edge, labelled 2.",
+  "hypotheses": [],
+  "hypotheses_note": "no hypotheses (a statement about concrete fixtures).",
+  "depth": "definitional",
+  "nonvacuity_witness": "The theorem is itself a concrete instance.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.forallCheck_complete_needs_deterministic",
+  "positive_control_lean": "Toy.LayoutDfa.forallCheck_ndSrcL_self",
+  "non_claims": [
+   "Does not show that every nondeterministic destination defeats the check.",
+   "The failure is of the check, not of inclusion: both automata have the same language (`ndSrcL_ndDstL_lang`).",
+   "Says nothing about rustc, whose layout automaton type is named `Dfa` (whether its automata are deterministic in the sense of `Deterministic` is not examined here); this counterexample concerns a nondeterministic encoding.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "D. L. Dill, A. J. Hu, H. Wong-Toi, Checking for language inclusion using simulation preorders, in Computer Aided Verification (CAV '91), LNCS 575, Springer, 1992, pp. 255-265, DOI 10.1007/3-540-55179-4_25 (bibliographic record checked; text not read): simulation preorders as a sufficient, efficiently checkable condition for language inclusion.",
+   "R. J. van Glabbeek, The linear time – branching time spectrum, CONCUR '90, LNCS 458, Springer, 1990, pp. 278-297, DOI 10.1007/BFb0039066 (bibliographic record checked; text not read): a classification of process semantics that separates trace (language) inclusion from simulation.",
+   "M. De Wulf, L. Doyen, T. A. Henzinger, J.-F. Raskin, Antichains: a new algorithm for checking universality of finite automata, CAV 2006, LNCS 4144, Springer, 2006, pp. 17-30, DOI 10.1007/11817963_5 (bibliographic record checked; text not read): exact universality (and inclusion) checking for nondeterministic automata over sets of states without explicit determinisation.",
+   "J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, 2nd ed., Addison-Wesley, 2001, Chapter 4: closure of regular languages under intersection by the product construction (Section 4.2.1, Theorem 4.8), decision properties (Section 4.3) and testing equivalence of automata (Section 4.4), all for total DFAs with non-terminal accept sets. Section numbers and contents are taken from secondary sources; the primary text was not accessed."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`ndDstL` is a nondeterministic encoding. rustc's layout automaton type is named `Dfa`; whether its automata are deterministic in the sense of `Deterministic` is not examined, and no claim about rustc is derived from this counterexample (see Modeling bridge item 1). The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/layout/mod.rs` lines 14-54 (`Byte` is a range over 0..=256 with 256 the uninit value; `Byte::uninit()` covers every value, lines 40-43) and `compiler/rustc_transmute/src/layout/dfa.rs` lines 10-18 (`Dfa` with one `start` and one `accept` state), lines 199-201 (out-edges of the accept state do not affect the semantics), lines 252-255 (`get_uninit_edge_dst`) (source and source comments)."
+   ]
+  }
+ },
+ {
+  "id": "LD2-sound",
+  "lean": "Toy.LayoutDfa.existsCheck_sound_fit_of_fixedSize_live",
+  "lean_names": [
+   "Toy.LayoutDfa.existsCheck_sound_fit_of_fixedSize_live",
+   "Toy.LayoutDfa.existsCheck_sound_needs_fixedSize_dst",
+   "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive",
+   "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive_uninhabited",
+   "Toy.LayoutDfa.existsCheck_sound_fit_nonvacuous",
+   "Toy.LayoutDfa.Layout.FixedSize",
+   "Toy.LayoutDfa.Layout.ReachableLive",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.FitMeets",
+   "Toy.LayoutDfa.Layout.Lang",
+   "Toy.LayoutDfa.boolL",
+   "Toy.LayoutDfa.b0L",
+   "Toy.LayoutDfa.Layout.inhabited_of_reachableLive",
+   "Toy.LayoutDfa.neverL",
+   "Toy.LayoutDfa.unitL",
+   "Toy.LayoutDfa.deadL",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.Layout",
+   "Toy.LayoutDfa.Sym"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Soundness of an existential product search for non-empty intersection is textbook; the layout check's truncation and extension rules and the liveness hypothesis (which includes source inhabitation) are made precise. The fixed-destination-size corollary of LD2-sound-exists.",
+  "plain_claim": "For every destination layout automaton `B` (deterministic or not) all of whose accepted words have length exactly `nB` (`B.FixedSize nB`), and every source layout automaton `A` every state of which that is reachable from its start (by runs that stop at the accept state), the start state included, can still reach the accept state (`A.ReachableLive`; in particular `A` accepts at least one word): if `existsCheck A B = true`, then there is a word `s` accepted by `A` such that `B` accepts `fit nB s` (`FitMeets A B nB`).",
+  "unfolded_prose": "`FitMeets A B nB` is `∃ s, A.Lang s ∧ B.Lang (s.take nB ++ List.replicate (nB - s.length) Sym.uninit)`.",
+  "hypotheses": [
+   {
+    "name": "hB : B.FixedSize nB",
+    "purpose": "Pins the size parameter `nB` to the length of the destination word the check finds; without it the conclusion still holds at some size (LD2-sound-exists), but not necessarily at the given `nB`.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.existsCheck_sound_needs_fixedSize_dst",
+    "witness_class": "the fixed-size-0 destination `unitL` evaluated at `nB = 1`, source `b0L`"
+   },
+   {
+    "name": "hlive : A.ReachableLive",
+    "purpose": "Truncation succeeds as soon as the destination reaches its accept state, without inspecting the rest of the source; there is a source with a dead branch (`deadL`), and there is a source with no word at all (`neverL`), for which the check reaches that point along a prefix of no source word.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive",
+     "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive_uninhabited"
+    ],
+    "witness_class": "a 3-state source with one dead state against destination `{[0]}`; and the uninhabited, edge-free source `neverL` against `unitL` at `nB = 0`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`boolL` against `b0L`, `nB = 1`.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.existsCheck_sound_fit_nonvacuous",
+  "non_claims": [
+   "This is the fixed-destination-size corollary of LD2-sound-exists: `hB` pins the existential size to `nB`.",
+   "`existsCheck A B = true` does not make an `Assume::VALIDITY`-style transmute sound without a guarantee from the caller, and it does not identify which source values are valid at `B`; it establishes that the validity promise is satisfiable by at least one source word.",
+   "`A.ReachableLive` requires `A.start` itself to reach `A.accept` (`inhabited_of_reachableLive`), so source automata with empty language, including the edge-free `neverL`, are outside this theorem. Without `hlive`, `existsCheck neverL unitL = true` although `neverL` accepts no word (`existsCheck_sound_needs_reachableLive_uninhabited`); rustc answers yes for uninhabited sources before any exploration (see the card's modeling-bridge line), a rule the toy's checks do not have.",
+   "There is a source with a dead branch (`deadL`, against `b0L`) for which the check accepts although no valid source value satisfies the promise (`existsCheck_sound_needs_reachableLive`); by the definition of `FitMeets`, no use of that pair can satisfy the promise.",
+   "Degenerate zero size: at size 0, `fit 0 s = []` discards the whole source word, and `FixedSize 0` holds exactly when the language is `{[]}` (a zero-sized type) or empty (an uninhabited type).",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "Edges carry single symbols of the 257-symbol alphabet; byte-range edges, reference (pointer) edges inside layouts, alignment, and the `Assume` flags other than validity are not modelled. `Layout` is a partial automaton with a single terminal accept state (textbook DFAs have a total transition function and non-terminal accept states), and it does not enforce initialisation monotonicity: a position may accept `Sym.uninit` without accepting the 256 initialised byte values, unlike rustc's uninit byte range, which covers every value.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, 2nd ed., Addison-Wesley, 2001, Chapter 4: closure of regular languages under intersection by the product construction (Section 4.2.1, Theorem 4.8), decision properties (Section 4.3) and testing equivalence of automata (Section 4.4), all for total DFAs with non-terminal accept sets. Section numbers and contents are taken from secondary sources; the primary text was not accessed."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`existsCheck` is read as the exploration mode used when the compiler may assume a validity check by the programmer (some source transition, some destination transition), and `FitMeets A B nB` as the satisfiability, by at least one valid source value, of the caller's validity promise documented for `Assume::VALIDITY`, as stated in the sources cited here. rustc answers yes for an uninhabited source before any exploration, a rule the toy's checks do not have; the hypothesis `A.ReachableLive` excludes uninhabited sources instead. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role).",
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs` lines 116-123: when the source layout is uninhabited the query answers yes before any automaton exploration (source comment: \"conclude that the transmutation is acceptable, because instances of the `src` type do not exist\", lines 118-119). The toy's checks have no such rule; the `ReachableLive` hypothesis excludes uninhabited sources instead.",
+    "`core::mem::TransmuteFrom` / `core::mem::Assume` (unstable feature `transmutability`), rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/mem/transmutability.rs` lines 41-44 (union-transmutes extend `Src` with trailing padding to fill trailing uninitialized bytes of `Self`), lines 110-111 (with `ASSUME.validity` the caller must guarantee that `src` is a bit-valid instance of `Self`), line 85 (`#[unstable(feature = \"transmutability\", issue = \"99571\")]`) (documentation)."
+   ]
+  }
+ },
+ {
+  "id": "LD2-sound-exists",
+  "lean": "Toy.LayoutDfa.existsCheck_sound_exists_fitMeets_of_live",
+  "lean_names": [
+   "Toy.LayoutDfa.existsCheck_sound_exists_fitMeets_of_live",
+   "Toy.LayoutDfa.existsCheck_sound_exists_needs_reachableLive",
+   "Toy.LayoutDfa.existsCheck_sound_exists_needs_reachableLive_uninhabited",
+   "Toy.LayoutDfa.existsCheck_sound_exists_nonvacuous",
+   "Toy.LayoutDfa.Layout.ReachableLive",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.FitMeets",
+   "Toy.LayoutDfa.boolL",
+   "Toy.LayoutDfa.b0L",
+   "Toy.LayoutDfa.pairSrcL",
+   "Toy.LayoutDfa.varDstL",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.FitSubset",
+   "Toy.LayoutDfa.forallCheck_sound_needs_fixedSize_dst_variable",
+   "Toy.LayoutDfa.Layout.inhabited_of_reachableLive",
+   "Toy.LayoutDfa.neverL",
+   "Toy.LayoutDfa.unitL",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.Layout",
+   "Toy.LayoutDfa.Sym"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "A folklore property of existential product search, made precise for the layout check; it shows that the destination-size hypothesis of LD2-sound serves to pin the size parameter.",
+  "plain_claim": "For every destination layout automaton `B` (deterministic or not, of fixed size or not, cyclic or not) and every source layout automaton `A` every state of which that is reachable from its start (by runs that stop at the accept state), the start state included, can still reach the accept state (`A.ReachableLive`; in particular `A` accepts at least one word): if `existsCheck A B = true`, then there is a size `nB` and a word `s` accepted by `A` such that `B` accepts `fit nB s` (`∃ nB, FitMeets A B nB`).",
+  "hypotheses": [
+   {
+    "name": "hlive : A.ReachableLive",
+    "purpose": "As in LD2-sound.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.LayoutDfa.existsCheck_sound_exists_needs_reachableLive",
+     "Toy.LayoutDfa.existsCheck_sound_exists_needs_reachableLive_uninhabited"
+    ],
+    "witness_class": "a 3-state source with one dead state against `{[0]}`, and the uninhabited, edge-free `neverL` against `unitL`; in both, no size `nB` makes the promise satisfiable"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`boolL` against `b0L`; and `pairSrcL` against `varDstL`, a destination without a fixed size, where the promise is satisfiable at size 1.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.existsCheck_sound_exists_nonvacuous",
+  "non_claims": [
+   "The size `nB` is existentially quantified: it is the length of the destination word the check found; for a destination with words of several lengths it is one of them.",
+   "The universal check has no analogue of this statement without a fixed destination size: there is a pair (`pairSrcL`, `varDstL`) that `forallCheck` accepts while `FitSubset` fails at every size (`forallCheck_sound_needs_fixedSize_dst_variable`).",
+   "`existsCheck A B = true` does not make an `Assume::VALIDITY`-style transmute sound without a guarantee from the caller, and it does not identify which source values are valid at `B`; it establishes that the validity promise is satisfiable by at least one source word.",
+   "`A.ReachableLive` requires `A.start` itself to reach `A.accept` (`inhabited_of_reachableLive`), so source automata with empty language, including the edge-free `neverL`, are outside this theorem. Without `hlive`, `existsCheck neverL unitL = true` although `neverL` accepts no word (`existsCheck_sound_exists_needs_reachableLive_uninhabited`); rustc answers yes for uninhabited sources before any exploration (see the card's modeling-bridge line), a rule the toy's checks do not have.",
+   "Degenerate zero size: the existential size may be `nB = 0`, where `fit 0 s = []` discards the whole source word; the conclusion then says that `B` accepts `[]`.",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "Edges carry single symbols of the 257-symbol alphabet; byte-range edges, reference (pointer) edges inside layouts, alignment, and the `Assume` flags other than validity are not modelled. `Layout` is a partial automaton with a single terminal accept state (textbook DFAs have a total transition function and non-terminal accept states), and it does not enforce initialisation monotonicity: a position may accept `Sym.uninit` without accepting the 256 initialised byte values, unlike rustc's uninit byte range, which covers every value.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, 2nd ed., Addison-Wesley, 2001, Chapter 4: closure of regular languages under intersection by the product construction (Section 4.2.1, Theorem 4.8), decision properties (Section 4.3) and testing equivalence of automata (Section 4.4), all for total DFAs with non-terminal accept sets. Section numbers and contents are taken from secondary sources; the primary text was not accessed."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`existsCheck` is read as the exploration mode used when the compiler may assume a validity check by the programmer (some source transition, some destination transition), and `FitMeets A B nB` as the satisfiability, by at least one valid source value, of the caller's validity promise documented for `Assume::VALIDITY`, as stated in the sources cited here. rustc answers yes for an uninhabited source before any exploration, a rule the toy's checks do not have; the hypothesis `A.ReachableLive` excludes uninhabited sources instead. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role).",
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs` lines 116-123: when the source layout is uninhabited the query answers yes before any automaton exploration (source comment: \"conclude that the transmutation is acceptable, because instances of the `src` type do not exist\", lines 118-119). The toy's checks have no such rule; the `ReachableLive` hypothesis excludes uninhabited sources instead.",
+    "`core::mem::TransmuteFrom` / `core::mem::Assume` (unstable feature `transmutability`), rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/mem/transmutability.rs` lines 41-44 (union-transmutes extend `Src` with trailing padding to fill trailing uninitialized bytes of `Self`), lines 110-111 (with `ASSUME.validity` the caller must guarantee that `src` is a bit-valid instance of `Self`), line 85 (`#[unstable(feature = \"transmutability\", issue = \"99571\")]`) (documentation)."
+   ]
+  }
+ },
+ {
+  "id": "LD2-noloss",
+  "lean": "Toy.LayoutDfa.existsCheck_eq_false_imp_no_promise_of_fixedSize",
+  "lean_names": [
+   "Toy.LayoutDfa.existsCheck_eq_false_imp_no_promise_of_fixedSize",
+   "Toy.LayoutDfa.existsCheck_noPromise_needs_fixedSize_dst",
+   "Toy.LayoutDfa.existsCheck_noPromise_nonvacuous",
+   "Toy.LayoutDfa.Layout.FixedSize",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.b0L",
+   "Toy.LayoutDfa.b1L",
+   "Toy.LayoutDfa.deadL",
+   "Toy.LayoutDfa.neverL",
+   "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive",
+   "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive_uninhabited",
+   "Toy.LayoutDfa.existsAux_start_of_lang_fit_of_lt_fuel",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.Layout",
+   "Toy.LayoutDfa.Layout.ReachableLiveAcyclic",
+   "Toy.LayoutDfa.reachableLiveAcyclic_of_fixedSize",
+   "Toy.LayoutDfa.Layout.Acyclic",
+   "Toy.LayoutDfa.existsCheck_eq_false_imp_no_promise_of_acyclic",
+   "Toy.LayoutDfa.fixedSize_acyclic_incomparable",
+   "Toy.LayoutDfa.Sym",
+   "Toy.LayoutDfa.FitMeets"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Completeness of an exhaustive existential product search is folklore; stated here as \"rejection loses no satisfiable promise\" for the layout check with its step budget. Proved as the fixed-size corollary of LD2-noloss-acyc.",
+  "plain_claim": "For every source layout automaton `A` (deterministic or not, with or without dead branches, with empty language or not) and every destination layout automaton `B` (deterministic or not) all of whose accepted words have length exactly `nB` (`B.FixedSize nB`): if `existsCheck A B = false`, then no word `s` accepted by `A` has `fit nB s` accepted by `B`; so rejecting a pair never rejects one for which some valid source value satisfies the validity promise at size `nB`.",
+  "hypotheses": [
+   {
+    "name": "hB : B.FixedSize nB",
+    "purpose": "Implies `B.ReachableLiveAcyclic` (`reachableLiveAcyclic_of_fixedSize`), which bounds every accepted destination word by the length of the edge list, so the step budget suffices; this card is the fixed-size corollary of LD2-noloss-acyc. `B.Acyclic` is a different sufficient condition (corollary `existsCheck_eq_false_imp_no_promise_of_acyclic`): neither of `B.FixedSize nB` and `B.Acyclic` implies the other (`fixedSize_acyclic_incomparable`).",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.existsCheck_noPromise_needs_fixedSize_dst",
+    "witness_class": "a deterministic destination with a self-loop (3 edges, words of unbounded length) and a 6-state chain source whose word the destination accepts; the step budget is exhausted"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`b0L` against `b1L`: the check rejects and `b1L` has fixed size exactly 1.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.existsCheck_noPromise_nonvacuous",
+  "non_claims": [
+   "Does not establish the converse: there is a source with a reachable dead branch (`deadL`) and there is a source with empty language (`neverL`) for which `existsCheck A B = true` holds although no source word satisfies the promise (`existsCheck_sound_needs_reachableLive`, `existsCheck_sound_needs_reachableLive_uninhabited`); see LD2-sound.",
+   "On destinations with a non-empty cycle through their reachable live part the check's answer is characterized by neither this card nor LD2-noloss-acyc; the budget lemma `existsAux_start_of_lang_fit_of_lt_fuel` covers every destination size below the step budget.",
+   "Degenerate zero size: at size 0, `fit 0 s = []` discards the whole source word, and `FixedSize 0` holds exactly when the language is `{[]}` (a zero-sized type) or empty (an uninhabited type).",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "Edges carry single symbols of the 257-symbol alphabet; byte-range edges, reference (pointer) edges inside layouts, alignment, and the `Assume` flags other than validity are not modelled. `Layout` is a partial automaton with a single terminal accept state (textbook DFAs have a total transition function and non-terminal accept states), and it does not enforce initialisation monotonicity: a position may accept `Sym.uninit` without accepting the 256 initialised byte values, unlike rustc's uninit byte range, which covers every value.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, 2nd ed., Addison-Wesley, 2001, Chapter 4: closure of regular languages under intersection by the product construction (Section 4.2.1, Theorem 4.8), decision properties (Section 4.3) and testing equivalence of automata (Section 4.4), all for total DFAs with non-terminal accept sets. Section numbers and contents are taken from secondary sources; the primary text was not accessed."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`existsCheck` is read as the exploration mode used when the compiler may assume a validity check by the programmer (some source transition, some destination transition), and `FitMeets A B nB` as the satisfiability, by at least one valid source value, of the caller's validity promise documented for `Assume::VALIDITY`, as stated in the sources cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role).",
+    "`core::mem::TransmuteFrom` / `core::mem::Assume` (unstable feature `transmutability`), rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/mem/transmutability.rs` lines 41-44 (union-transmutes extend `Src` with trailing padding to fill trailing uninitialized bytes of `Self`), lines 110-111 (with `ASSUME.validity` the caller must guarantee that `src` is a bit-valid instance of `Self`), line 85 (`#[unstable(feature = \"transmutability\", issue = \"99571\")]`) (documentation)."
+   ]
+  }
+ },
+ {
+  "id": "LD2-noloss-acyc",
+  "lean": "Toy.LayoutDfa.existsCheck_eq_false_imp_no_promise_of_reachableLiveAcyclic",
+  "lean_names": [
+   "Toy.LayoutDfa.existsCheck_eq_false_imp_no_promise_of_reachableLiveAcyclic",
+   "Toy.LayoutDfa.existsCheck_noPromise_needs_reachableLiveAcyclic",
+   "Toy.LayoutDfa.existsCheck_noPromise_acyclic_nonvacuous",
+   "Toy.LayoutDfa.Layout.ReachableLiveAcyclic",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.Sym",
+   "Toy.LayoutDfa.Layout.Path",
+   "Toy.LayoutDfa.Layout.Accepts",
+   "Toy.LayoutDfa.b0L",
+   "Toy.LayoutDfa.b1L",
+   "Toy.LayoutDfa.varDstL",
+   "Toy.LayoutDfa.deadCycReachL",
+   "Toy.LayoutDfa.Layout.Acyclic",
+   "Toy.LayoutDfa.deadL",
+   "Toy.LayoutDfa.neverL",
+   "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive",
+   "Toy.LayoutDfa.existsCheck_sound_needs_reachableLive_uninhabited",
+   "Toy.LayoutDfa.Layout.FixedSize",
+   "Toy.LayoutDfa.reachableLiveAcyclic_of_fixedSize",
+   "Toy.LayoutDfa.reachableLiveAcyclic_of_acyclic",
+   "Toy.LayoutDfa.reachableLiveAcyclic_strictly_weaker_than_both",
+   "Toy.LayoutDfa.fixedSize_acyclic_incomparable",
+   "Toy.LayoutDfa.existsCheck_eq_false_imp_no_promise_of_acyclic",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.Layout",
+   "Toy.LayoutDfa.length_le_edges_of_reachableLiveAcyclic",
+   "Toy.LayoutDfa.existsAux_start_of_lang_fit_of_lt_fuel",
+   "Toy.LayoutDfa.FitMeets"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Settles, for the existential check, that the absence of cycles through the reachable live part of the destination suffices for the step budget; folklore for acyclic product exploration, made precise here.",
+  "plain_claim": "For every source layout automaton `A` (deterministic or not, with or without dead branches, with empty language or not), every destination layout automaton `B` (deterministic or not) without non-empty cycles through its reachable live part (`B.ReachableLiveAcyclic`: no non-empty run returns to a state that is reachable from the start state of `B` and from which the accept state of `B` is reachable; cycles through unreachable states or through dead states are allowed, and the accepted words may have different lengths), and every size `nB`: if `existsCheck A B = false`, then no word `s` accepted by `A` has `fit nB s` accepted by `B`.",
+  "unfolded_prose": "`B.ReachableLiveAcyclic` is `∀ (pre : List Sym) (p : Nat) (c v : List Sym), c ≠ [] → B.Path B.start pre p → B.Path p c p → B.Accepts p v → False`.",
+  "hypotheses": [
+   {
+    "name": "hno : B.ReachableLiveAcyclic",
+    "purpose": "Bounds every accepted destination word by the length of the edge list (`length_le_edges_of_reachableLiveAcyclic`), so the step budget suffices.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.existsCheck_noPromise_needs_reachableLiveAcyclic",
+    "witness_class": "a deterministic destination with a self-loop (3 edges, words of unbounded length) and a 6-state chain source whose word the destination accepts; the step budget is exhausted"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "`b0L` against `b1L`; `b1L` against `varDstL` (acyclic, no fixed size); and `b1L` against `deadCycReachL` (fixed size 1, not `Acyclic`); the check rejects in all three.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.existsCheck_noPromise_acyclic_nonvacuous",
+  "non_claims": [
+   "Does not establish the converse: there is a source with a reachable dead branch (`deadL`) and there is a source with empty language (`neverL`) for which `existsCheck A B = true` holds although no source word satisfies the promise (`existsCheck_sound_needs_reachableLive`, `existsCheck_sound_needs_reachableLive_uninhabited`); see LD2-sound.",
+   "`B.ReachableLiveAcyclic` is implied by `B.FixedSize nB` (`reachableLiveAcyclic_of_fixedSize`) and by `B.Acyclic` (`reachableLiveAcyclic_of_acyclic`), and is strictly weaker than each (`reachableLiveAcyclic_strictly_weaker_than_both`: `deadCycReachL` has a fixed size and a cycle at a reachable dead state; `varDstL` is acyclic without a fixed size). `B.FixedSize nB` and `B.Acyclic` are incomparable (`fixedSize_acyclic_incomparable`). This card therefore implies LD2-noloss and the global-acyclicity corollary `existsCheck_eq_false_imp_no_promise_of_acyclic`.",
+   "Whether a still weaker hypothesis on `B` suffices is not examined, beyond the budget lemma `existsAux_start_of_lang_fit_of_lt_fuel`, which needs a destination size below the step budget.",
+   "Degenerate zero size: at size 0, `fit 0 s = []` discards the whole source word, and `FixedSize 0` holds exactly when the language is `{[]}` (a zero-sized type) or empty (an uninhabited type).",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "Edges carry single symbols of the 257-symbol alphabet; byte-range edges, reference (pointer) edges inside layouts, alignment, and the `Assume` flags other than validity are not modelled. `Layout` is a partial automaton with a single terminal accept state (textbook DFAs have a total transition function and non-terminal accept states), and it does not enforce initialisation monotonicity: a position may accept `Sym.uninit` without accepting the 256 initialised byte values, unlike rustc's uninit byte range, which covers every value.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, 2nd ed., Addison-Wesley, 2001, Chapter 4: closure of regular languages under intersection by the product construction (Section 4.2.1, Theorem 4.8), decision properties (Section 4.3) and testing equivalence of automata (Section 4.4), all for total DFAs with non-terminal accept sets. Section numbers and contents are taken from secondary sources; the primary text was not accessed."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`existsCheck` is read as the exploration mode used when the compiler may assume a validity check by the programmer (some source transition, some destination transition), and `FitMeets A B nB` as the satisfiability, by at least one valid source value, of the caller's validity promise documented for `Assume::VALIDITY`, as stated in the sources cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role).",
+    "`core::mem::TransmuteFrom` / `core::mem::Assume` (unstable feature `transmutability`), rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/mem/transmutability.rs` lines 41-44 (union-transmutes extend `Src` with trailing padding to fill trailing uninitialized bytes of `Self`), lines 110-111 (with `ASSUME.validity` the caller must guarantee that `src` is a bit-valid instance of `Self`), line 85 (`#[unstable(feature = \"transmutability\", issue = \"99571\")]`) (documentation)."
+   ]
+  }
+ },
+ {
+  "id": "LD2-iff",
+  "lean": "Toy.LayoutDfa.existsCheck_eq_true_iff_meets_of_eq_fixedSize_live",
+  "lean_names": [
+   "Toy.LayoutDfa.existsCheck_eq_true_iff_meets_of_eq_fixedSize_live",
+   "Toy.LayoutDfa.existsCheck_iff_meets_needs_fixedSize_src",
+   "Toy.LayoutDfa.fixedSize_src_counterexamples_hold_for_mu8L",
+   "Toy.LayoutDfa.existsCheck_iff_meets_needs_fixedSize_dst",
+   "Toy.LayoutDfa.existsCheck_iff_meets_needs_reachableLive",
+   "Toy.LayoutDfa.existsCheck_iff_meets_needs_reachableLive_uninhabited",
+   "Toy.LayoutDfa.existsCheck_iff_meets_nonvacuous",
+   "Toy.LayoutDfa.Layout.ReachableLive",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.Meets",
+   "Toy.LayoutDfa.Layout.Lang",
+   "Toy.LayoutDfa.boolL",
+   "Toy.LayoutDfa.b0L",
+   "Toy.LayoutDfa.b1L",
+   "Toy.LayoutDfa.Layout.inhabited_of_reachableLive",
+   "Toy.LayoutDfa.neverL",
+   "Toy.LayoutDfa.unitL",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.Layout.FixedSize",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.Layout",
+   "Toy.LayoutDfa.mu8L",
+   "Toy.LayoutDfa.Sym",
+   "Toy.LayoutDfa.FitMeets"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "Non-emptiness of a DFA product is textbook and mechanized for total DFAs (prior art); the T1 content is the exact hypothesis set (equal fixed sizes, source liveness including inhabitation; no determinism) under which the layout check decides non-empty intersection, each hypothesis shown tight.",
+  "plain_claim": "For layout automata `A` and `B` all of whose accepted words have length exactly `n` (the same `n` for both), with every reachable state of `A`, the start state included, live (`A.ReachableLive`; `B` may be nondeterministic): `existsCheck A B = true` if and only if there is a word accepted by both (`Meets A B`).",
+  "unfolded_prose": "`Meets A B` is `∃ s, A.Lang s ∧ B.Lang s`.",
+  "hypotheses": [
+   {
+    "name": "hA : A.FixedSize n",
+    "purpose": "Without it, there is a shorter source (`unitL`) that the extension rule accepts.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.LayoutDfa.existsCheck_iff_meets_needs_fixedSize_src",
+     "Toy.LayoutDfa.fixedSize_src_counterexamples_hold_for_mu8L"
+    ],
+    "witness_class": "source `()` and the destination `{[uninit]}` (one `uninit` symbol), `n = 1`; the same failure with the initialisation-monotone destination `mu8L`"
+   },
+   {
+    "name": "hB : B.FixedSize n",
+    "purpose": "Without it, there is a longer source (`b0L`) that the truncation rule accepts.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.existsCheck_iff_meets_needs_fixedSize_dst",
+    "witness_class": "source `{[0]}` and destination `()`, `n = 1`"
+   },
+   {
+    "name": "hlive : A.ReachableLive",
+    "purpose": "As in LD2-sound.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.LayoutDfa.existsCheck_iff_meets_needs_reachableLive",
+     "Toy.LayoutDfa.existsCheck_iff_meets_needs_reachableLive_uninhabited"
+    ],
+    "witness_class": "a 3-state source with one dead state, `n = 1`; and the uninhabited, edge-free `neverL` against `unitL`, `n = 0`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`boolL`/`b0L` (accepted, meeting) and `b0L`/`b1L` (rejected, disjoint).",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.existsCheck_iff_meets_nonvacuous",
+  "non_claims": [
+   "Determinism of either automaton is not assumed.",
+   "This is the equal-size corollary of LD2-sound and LD2-noloss.",
+   "`existsCheck A B = true` does not make an `Assume::VALIDITY`-style transmute sound without a guarantee from the caller, and it does not identify which source values are valid at `B`; it establishes that the validity promise is satisfiable by at least one source word.",
+   "`A.ReachableLive` requires `A.start` itself to reach `A.accept` (`inhabited_of_reachableLive`), so source automata with empty language, including the edge-free `neverL`, are outside this theorem. Without `hlive`, `existsCheck neverL unitL = true` although `neverL` accepts no word (`existsCheck_iff_meets_needs_reachableLive_uninhabited`); rustc answers yes for uninhabited sources before any exploration (see the card's modeling-bridge line), a rule the toy's checks do not have.",
+   "Degenerate zero size: at size 0, `fit 0 s = []` discards the whole source word, and `FixedSize 0` holds exactly when the language is `{[]}` (a zero-sized type) or empty (an uninhabited type).",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "Edges carry single symbols of the 257-symbol alphabet; byte-range edges, reference (pointer) edges inside layouts, alignment, and the `Assume` flags other than validity are not modelled. `Layout` is a partial automaton with a single terminal accept state (textbook DFAs have a total transition function and non-terminal accept states), and it does not enforce initialisation monotonicity: a position may accept `Sym.uninit` without accepting the 256 initialised byte values, unlike rustc's uninit byte range, which covers every value.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "J. E. Hopcroft, R. Motwani, J. D. Ullman, Introduction to Automata Theory, Languages, and Computation, 2nd ed., Addison-Wesley, 2001, Chapter 4: closure of regular languages under intersection by the product construction (Section 4.2.1, Theorem 4.8), decision properties (Section 4.3) and testing equivalence of automata (Section 4.4), all for total DFAs with non-terminal accept sets. Section numbers and contents are taken from secondary sources; the primary text was not accessed.",
+   "Mechanized automata theory, cited as context: C. Doczkal, J.-O. Kaiser, G. Smolka, A constructive theory of regular languages in Coq, CPP 2013, LNCS 8307, Springer, 2013, pp. 82-97, DOI 10.1007/978-3-319-03545-1_6 (DFAs, NFAs, closure properties and decidable equivalence; bibliographic record checked, text not read); Lean 4 Mathlib, leanprover-community/mathlib4 commit `a495318fed6482b3c90df686de5131b46a70fd5b`, `Mathlib/Computability/DFA.lean` lines 57-65 (`structure DFA` with a total transition function `step : σ → α → σ` and a set of accept states) and lines 318-338 (`DFA.inter`, `accepts_inter`) (source). Neither was found to formalize a check with this package's truncation and extension rules or step budget (search record under Evidence, Primary sources; not a proof of absence)."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`existsCheck` is read as the exploration mode used when the compiler may assume a validity check by the programmer (some source transition, some destination transition), and `FitMeets A B nB` as the satisfiability, by at least one valid source value, of the caller's validity promise documented for `Assume::VALIDITY`, as stated in the sources cited here. rustc answers yes for an uninhabited source before any exploration, a rule the toy's checks do not have; the hypothesis `A.ReachableLive` excludes uninhabited sources instead. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role).",
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs` lines 116-123: when the source layout is uninhabited the query answers yes before any automaton exploration (source comment: \"conclude that the transmutation is acceptable, because instances of the `src` type do not exist\", lines 118-119). The toy's checks have no such rule; the `ReachableLive` hypothesis excludes uninhabited sources instead.",
+    "`core::mem::TransmuteFrom` / `core::mem::Assume` (unstable feature `transmutability`), rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/mem/transmutability.rs` lines 41-44 (union-transmutes extend `Src` with trailing padding to fill trailing uninitialized bytes of `Self`), lines 110-111 (with `ASSUME.validity` the caller must guarantee that `src` is a bit-valid instance of `Self`), line 85 (`#[unstable(feature = \"transmutability\", issue = \"99571\")]`) (documentation)."
+   ]
+  }
+ },
+ {
+  "id": "LD3-ext",
+  "lean": "Toy.LayoutDfa.forallCheck_eq_true_iff_uninit_padded_of_fixedSize_le_det_live",
+  "lean_names": [
+   "Toy.LayoutDfa.forallCheck_eq_true_iff_uninit_padded_of_fixedSize_le_det_live",
+   "Toy.LayoutDfa.extension_iff_needs_fixedSize_src",
+   "Toy.LayoutDfa.extension_iff_needs_fixedSize_dst",
+   "Toy.LayoutDfa.extension_iff_needs_le",
+   "Toy.LayoutDfa.extension_iff_needs_deterministic",
+   "Toy.LayoutDfa.extension_iff_needs_reachableLive",
+   "Toy.LayoutDfa.extension_iff_nonvacuous",
+   "Toy.LayoutDfa.extension_iff_nonvacuous_fullWidth",
+   "Toy.LayoutDfa.Layout.Deterministic",
+   "Toy.LayoutDfa.Layout.ReachableLive",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.boolL",
+   "Toy.LayoutDfa.boolUL",
+   "Toy.LayoutDfa.bool2L",
+   "Toy.LayoutDfa.u8L",
+   "Toy.LayoutDfa.u8PadL",
+   "Toy.LayoutDfa.u16L",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.unitL",
+   "Toy.LayoutDfa.uL",
+   "Toy.LayoutDfa.refCheck",
+   "Toy.LayoutDfa.refCheck_sound_needs_fixedSize_src",
+   "Toy.LayoutDfa.Layout.inhabited_of_reachableLive",
+   "Toy.LayoutDfa.neverL",
+   "Toy.LayoutDfa.forallAux_complete_fit_of_lt_fuel",
+   "Toy.LayoutDfa.Layout.ReachableDeterministic",
+   "Toy.LayoutDfa.Layout.FixedSize",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.Layout",
+   "Toy.LayoutDfa.Sym"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "Follows the documented union-transmute extension semantics (trailing uninitialised bytes); the exact decision statement for the layout check is made precise here.",
+  "plain_claim": "For a source layout automaton `A` all of whose accepted words have length exactly `nA` and a destination layout automaton `B` all of whose accepted words have length exactly `nB`, with `nA ≤ nB`, `B` deterministic (`B.Deterministic`: from every state, reachable or not, including the accept state, at most one target per label) and every reachable state of `A`, the start state included, live (`A.ReachableLive`): `forallCheck A B = true` if and only if, for every word `s` accepted by `A`, `B` accepts `s` followed by exactly `nB - nA` `uninit` symbols.",
+  "hypotheses": [
+   {
+    "name": "hA : A.FixedSize nA",
+    "purpose": "Fixes the padding length `nB - nA` for every source word.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.extension_iff_needs_fixedSize_src",
+    "witness_class": "source `{[0]}` claimed at size 0, destination `{[0, uninit]}`, `nB = 2`"
+   },
+   {
+    "name": "hB : B.FixedSize nB",
+    "purpose": "Ties the destination accept state to length `nB`.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.extension_iff_needs_fixedSize_dst",
+    "witness_class": "source and destination `{[0]}`, `nB = 2`"
+   },
+   {
+    "name": "hle : nA ≤ nB",
+    "purpose": "For a longer source the check truncates; with truncated subtraction the padded form then asks for inclusion of the full source words.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.extension_iff_needs_le",
+    "witness_class": "source `{[0]}` (size exactly 1), destination `()` (size exactly 0)"
+   },
+   {
+    "name": "hdet : B.Deterministic",
+    "purpose": "As in LD1-complete.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.extension_iff_needs_deterministic",
+    "witness_class": "small acyclic automata with at most 4 states over byte values 0-2, `nA = nB = 2`"
+   },
+   {
+    "name": "hlive : A.ReachableLive",
+    "purpose": "As in LD1-complete.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.extension_iff_needs_reachableLive",
+    "witness_class": "a 3-state source with one dead state, `nA = nB = 1`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`boolL` into `boolUL` (accepted; padded strings valid) and into `bool2L` (rejected; `[0, uninit]` invalid); on initialisation-monotone full-width fixtures, `u8L` into `u8PadL` (accepted) and into `u16L` (rejected).",
+  "nonvacuity_witness_lean": [
+   "Toy.LayoutDfa.extension_iff_nonvacuous",
+   "Toy.LayoutDfa.extension_iff_nonvacuous_fullWidth"
+  ],
+  "non_claims": [
+   "The condition is per source word: the destination must accept each valid source string followed by `uninit` symbols. It is not the condition that every destination state at depth `nA` accepts `uninit` continuations (such a state may be unreachable by source words); the relation between the two is not proved here.",
+   "Says nothing about a source longer than the destination (truncation); see LD1-sound and LD1-complete for the `fit` form covering both cases.",
+   "The semantics of the extra bytes (`uninit`) is the toy's reading of a union-style transmute; other conventions (zero-filled or copied bytes) are not modelled.",
+   "Value-level size extension does not transfer to whole-region reference casts: there is a shorter source referent (`unitL` into `uL`) for which `refCheck` accepts a cast that is unsound in the reference model (`refCheck_sound_needs_fixedSize_src`; LD4-refcheck).",
+   "`A.ReachableLive` requires `A.start` itself to reach `A.accept` (`inhabited_of_reachableLive`), so source automata with empty language, including the edge-free `neverL`, are outside this theorem.",
+   "`B.Deterministic` constrains every state of `B`, reachable or not, including the out-edges of the accept state. The proof uses determinism at states reachable from the start other than the accept state (`forallAux_complete_fit_of_lt_fuel` assumes `ReachableDeterministic` instead), but this card's statement assumes `Deterministic`.",
+   "Degenerate zero size: at size 0, `fit 0 s = []` discards the whole source word, and `FixedSize 0` holds exactly when the language is `{[]}` (a zero-sized type) or empty (an uninhabited type). At `nA = 0` the padded word consists of exactly `nB` `uninit` symbols.",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "Edges carry single symbols of the 257-symbol alphabet; byte-range edges, reference (pointer) edges inside layouts, alignment, and the `Assume` flags other than validity are not modelled. `Layout` is a partial automaton with a single terminal accept state (textbook DFAs have a total transition function and non-terminal accept states), and it does not enforce initialisation monotonicity: a position may accept `Sym.uninit` without accepting the 256 initialised byte values, unlike rustc's uninit byte range, which covers every value.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "No prior art beyond the documentation and source of the real system cited in this card's modeling bridge."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`forallCheck` is read as the exploration mode of rustc's transmutability checker used when the compiler cannot assume a validity check by the programmer (for every source transition, some destination transition), with its truncation rule (success once the destination reaches its accept state) and its extension rule (the destination's `uninit` edge once the source reaches its accept state), as stated in the source comments cited here. The padded form `s ++ List.replicate (nB - nA) Sym.uninit` and `fit` are read as the documented union-transmute extension of the source with trailing uninitialised bytes, and the fixtures named after Rust types (`u8L`, `u16L`, `u8PadL`) as intended readings of those types' layouts, as stated in the sources cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role).",
+    "`core::mem::TransmuteFrom` / `core::mem::Assume` (unstable feature `transmutability`), rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/mem/transmutability.rs` lines 41-44 (union-transmutes extend `Src` with trailing padding to fill trailing uninitialized bytes of `Self`), lines 110-111 (with `ASSUME.validity` the caller must guarantee that `src` is a bit-valid instance of `Self`), line 85 (`#[unstable(feature = \"transmutability\", issue = \"99571\")]`) (documentation).",
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/layout/mod.rs` lines 14-54 (`Byte` is a range over 0..=256 with 256 the uninit value; `Byte::uninit()` covers every value, lines 40-43) and `compiler/rustc_transmute/src/layout/dfa.rs` lines 10-18 (`Dfa` with one `start` and one `accept` state), lines 199-201 (out-edges of the accept state do not affect the semantics), lines 252-255 (`get_uninit_edge_dst`) (source and source comments)."
+   ]
+  }
+ },
+ {
+  "id": "LD3-u16",
+  "lean": "Toy.LayoutDfa.extension_u8_to_u16_rejected_u8_to_u8Pad_accepted",
+  "lean_names": [
+   "Toy.LayoutDfa.extension_u8_to_u16_rejected_u8_to_u8Pad_accepted",
+   "Toy.LayoutDfa.u8L",
+   "Toy.LayoutDfa.u16L",
+   "Toy.LayoutDfa.u8PadL",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.fit",
+   "Toy.LayoutDfa.ex_not_existsCheck",
+   "Toy.LayoutDfa.Sym"
+  ],
+  "kind": "counterexample",
+  "role": "Full-width reference instance of LD3-ext (initialisation-monotone fixtures).",
+  "tier": "T0",
+  "tier_justification": "A reference instance of LD3-ext on full-width fixtures.",
+  "plain_claim": "For the toy layouts `u8L` (one initialised byte, size exactly 1), `u16L` (two initialised bytes, size exactly 2) and `u8PadL` (an initialised byte followed by a position that admits all 257 symbols, size exactly 2): `forallCheck u8L u16L = false` and `u16L` rejects `fit 2 [0] = [0, uninit]`, while `forallCheck u8L u8PadL = true` and `u8PadL` accepts `[b, uninit]` for every byte value `b`.",
+  "hypotheses": [],
+  "hypotheses_note": "no hypotheses (a statement about concrete fixtures).",
+  "depth": "definitional",
+  "nonvacuity_witness": "The theorem is itself a concrete instance.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.extension_u8_to_u16_rejected_u8_to_u8Pad_accepted",
+  "non_claims": [
+   "Rejection of `u8L` into `u16L` reflects union-style `uninit` padding (`fit 2 [b] = [b, uninit]`), not integer zero-extension (`u8 as u16`); the existential check rejects this pair as well (`ex_not_existsCheck`).",
+   "The fixtures are toy automata named after Rust types; their correspondence with rustc's layouts of those types is a modelling assumption.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "No prior art beyond the documentation and source of the real system cited in this card's modeling bridge."
+  ],
+  "design_question": "Exactly which language relations do the universal and existential product explorations of layout automata decide, and under which determinism, liveness, size and acyclicity hypotheses?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "The padded form `s ++ List.replicate (nB - nA) Sym.uninit` and `fit` are read as the documented union-transmute extension of the source with trailing uninitialised bytes, and the fixtures named after Rust types (`u8L`, `u16L`, `u8PadL`) as intended readings of those types' layouts, as stated in the sources cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "`core::mem::TransmuteFrom` / `core::mem::Assume` (unstable feature `transmutability`), rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/mem/transmutability.rs` lines 41-44 (union-transmutes extend `Src` with trailing padding to fill trailing uninitialized bytes of `Self`), lines 110-111 (with `ASSUME.validity` the caller must guarantee that `src` is a bit-valid instance of `Self`), line 85 (`#[unstable(feature = \"transmutability\", issue = \"99571\")]`) (documentation).",
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/layout/mod.rs` lines 14-54 (`Byte` is a range over 0..=256 with 256 the uninit value; `Byte::uninit()` covers every value, lines 40-43) and `compiler/rustc_transmute/src/layout/dfa.rs` lines 10-18 (`Dfa` with one `start` and one `accept` state), lines 199-201 (out-edges of the accept state do not affect the semantics), lines 252-255 (`get_uninit_edge_dst`) (source and source comments)."
+   ]
+  }
+ },
+ {
+  "id": "LD4-ss",
+  "lean": "Toy.LayoutDfa.sharedShared_sound_iff",
+  "lean_names": [
+   "Toy.LayoutDfa.sharedShared_sound_iff",
+   "Toy.LayoutDfa.sharedShared_sound_iff_needs_satisfiable",
+   "Toy.LayoutDfa.sharedShared_sound_iff_nonvacuous",
+   "Toy.LayoutDfa.Sound",
+   "Toy.LayoutDfa.Satisfiable",
+   "Toy.LayoutDfa.boolRef",
+   "Toy.LayoutDfa.byteRef",
+   "Toy.LayoutDfa.cellByteRef",
+   "Toy.LayoutDfa.SoundOneStep",
+   "Toy.LayoutDfa.sound_iff_soundOneStep",
+   "Toy.LayoutDfa.sound_shared_shared_cell_cell",
+   "Toy.LayoutDfa.neverRef",
+   "Toy.LayoutDfa.Includes",
+   "Toy.LayoutDfa.Mode",
+   "Toy.LayoutDfa.Op",
+   "Toy.LayoutDfa.Op.next",
+   "Toy.LayoutDfa.RefTy",
+   "Toy.LayoutDfa.View",
+   "Toy.LayoutDfa.cellBoolRef",
+   "Toy.LayoutDfa.ex_frozenDuring",
+   "Toy.LayoutDfa.ex_includes",
+   "Toy.LayoutDfa.ex_matrixOK",
+   "Toy.LayoutDfa.ex_matrixOKNoSrcFreeze",
+   "Toy.LayoutDfa.ex_not_sound",
+   "Toy.LayoutDfa.ex_opOK",
+   "Toy.LayoutDfa.ex_permitted",
+   "Toy.LayoutDfa.ex_refCheck",
+   "Toy.LayoutDfa.ex_runOK",
+   "Toy.LayoutDfa.ex_satisfiable",
+   "Toy.LayoutDfa.ex_sound",
+   "Toy.LayoutDfa.viewTy"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "Combines the bit-validity conditions of shared reference casts (published package `transmutation-soundness-bit-validity-and-reference-variance`, cards R2 and R4) with the `frozen` assertion of shared references to `Freeze` referents; folklore in the Rust community, made precise in the toy.",
+  "plain_claim": "In the toy reference model (`Sound`), for every source referent type `S` with at least one valid byte string (`Satisfiable S`) and every destination referent type `D`: an unchecked cast from a shared reference to `S` to a shared reference to `D` is sound if and only if every `S`-valid byte string is `D`-valid, `S` and `D` have the same `Freeze` flag, and, when `D` is not `Freeze`, every `D`-valid byte string is `S`-valid.",
+  "hypotheses": [
+   {
+    "name": "hS : Satisfiable S",
+    "purpose": "From an uninhabited source every cast is vacuously sound.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.sharedShared_sound_iff_needs_satisfiable",
+    "witness_class": "the uninhabited referent `neverRef` and `cellByteRef`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`& boolRef → & byteRef` (sound), `& cellByteRef → & byteRef` (unsound), `& cellByteRef → & cellByteRef` (sound).",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.sharedShared_sound_iff_nonvacuous",
+  "non_claims": [
+   "`Sound` consists of the toy's three assertions (bit validity of reads, the whole-region `frozen` assertion, and `unique`). Referent sizes (both views cover the same region), alignment, lifetimes, library safety invariants, Rust's aliasing and provenance models (Stacked Borrows, Tree Borrows) and destructors (drop glue) are not modelled. `Sound` is equivalent to its one-operation form `SoundOneStep` (`sound_iff_soundOneStep`): runs of several operations add nothing in this model, because a write replaces the whole region.",
+   "`RefTy.freeze` is a single Boolean for the whole referent region: `freeze = false` models uniform `Cell`-like interior mutability, under which a shared view may overwrite the whole region with any byte string valid at its type. Per-byte placement of `UnsafeCell` and synchronisation (`Sync`, atomics, locks) are not modelled. For example, `(u8, Cell<u8>)` and `(Cell<u8>, u8)` of equal validity, or `Cell<u8>` and `AtomicU8`, receive the same encoding, so the toy's verdict on a cast between them carries no information about Rust.",
+   "Necessity (the `→` direction) and the counterexample runs assume that a non-`Freeze` shared view can write any byte string valid at its type to the whole region (`Cell`-like unrestricted writes, including the empty string for a zero-sized referent). `!Freeze` wrappers whose APIs restrict the written values, or never write during the cast, are not modelled; for them the necessity direction is not established (escape hatch).",
+   "In particular the toy counts `& cellByteRef → & cellByteRef` (the `&Cell<u8> → &Cell<u8>` shape, `cellByteRef` being the toy's reading of `Cell<u8>`) as sound (`sound_shared_shared_cell_cell`); real checkers may reject such casts for reasons outside the toy.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Published package `transmutation-soundness-bit-validity-and-reference-variance`: cards R2 (`sharedSound_iff_includes`), R3 (`mutSound_iff_includes_and_satisfiable_imp_includes_rev`), R4 (`sharedIMSound_iff_includes_and_dstWrites_imp_satisfiable_imp_includes_rev`) and R4-src (`sharedIMSound_noDstWrites_iff_includes`): the bit-validity conditions of reference casts over validity sets, which this package does not re-prove as standalone results.",
+   "Published package `pointer-capability-modality-lattice-ir-attribute-lowering-and-sroa-monotonicity`: the `frozen` atom (no pointee byte written while the pointer is live) and the `unique` atom (no access through another pointer), and card R1-transformers-best (`kindBase_best`; `tCell` drops `frozen` for a shared reference to a non-`Freeze` pointee).",
+   "Published package `send-sync-auto-traits-thread-safety-typing-and-interior-mutability`: card cell-not-sync (`not_semSync_cell`: two holders of a shared reference to a `Cell` can both write its storage).",
+   "Published package `zerocopy-trait-semantics-over-layouts-and-derive-check-soundness`: card R7a-immutable-not-byte-determined (`immutable_not_byte_determined`: `UnsafeCell<u8>` and `u8` have the same byte semantics but differ in `Immutable`).",
+   "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, RustBelt: securing the foundations of the Rust programming language, PACMPL 2 (POPL 2018), article 66, DOI 10.1145/3158154 (bibliographic record checked; text not read): machine-checked semantic soundness of a Rust subset including `Cell` and other interior-mutability libraries.",
+   "R. Jung, H.-H. Dang, J. Kang, D. Dreyer, Stacked Borrows: an aliasing model for Rust, PACMPL 4 (POPL 2020), DOI 10.1145/3371109 (bibliographic record checked; text not read): an operational aliasing model for references.",
+   "N. Villani, J. Hostert, D. Dreyer, R. Jung, Tree Borrows, PACMPL 9 (PLDI 2025), DOI 10.1145/3735592 (bibliographic record checked; text not read): a tree-structured aliasing model for Rust with per-location permissions."
+  ],
+  "design_question": "For reference casts, which `Freeze` obligations make a validity-inclusion check sound, and which make it exact?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`RefTy.freeze` is read as `core::marker::Freeze` holding for the whole referent, and the writes of a non-`Freeze` shared view as those that `Cell` permits (any value valid at its type, through a shared reference); `cellByteRef` and `byteRef` are read as `Cell<u8>` and `u8`, as stated in the sources cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "`core::marker::Freeze`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/marker.rs` lines 890-918: the unstable auto trait `Freeze` (lines 890-891: \"Used to determine whether a type contains any `UnsafeCell` internally, but not through an indirection.\"), with `impl<T: PointeeSized> !Freeze for UnsafeCell<T>` at line 909 (source).",
+    "`core::cell::Cell`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/cell.rs` lines 277-279 (`Cell<T>` has the same in-memory representation as `T`), lines 636-655 (`Cell::from_mut`, a `&Cell<T>` from a `&mut T`), lines 719-739 (`Cell::as_slice_of_cells`, a `&[Cell<T>]` from a `&Cell<[T]>`), lines 741-759 (`Cell::as_array_of_cells`, a `&[Cell<T>; N]` from a `&Cell<[T; N]>`, stable since Rust 1.91.0) (documentation).",
+    "rust-lang/rust issue 164247 (https://github.com/rust-lang/rust/issues/164247; open on 2026-11-21, labelled I-unsound; title \"TransmuteFrom::<_, Assume::NOTHING> can transmute references to types with interior mutability\"): a public report whose example transmutes a shared reference to a `Cell` into `&[u8; 4]` and then calls `cell.set(1)` while the byte reference is in use. Prose context; not a subject and not relied on."
+   ]
+  }
+ },
+ {
+  "id": "LD4-ms",
+  "lean": "Toy.LayoutDfa.mutShared_sound_iff",
+  "lean_names": [
+   "Toy.LayoutDfa.mutShared_sound_iff",
+   "Toy.LayoutDfa.mutShared_sound_iff_needs_satisfiable",
+   "Toy.LayoutDfa.mutShared_sound_iff_nonvacuous",
+   "Toy.LayoutDfa.Satisfiable",
+   "Toy.LayoutDfa.boolRef",
+   "Toy.LayoutDfa.byteRef",
+   "Toy.LayoutDfa.cellByteRef",
+   "Toy.LayoutDfa.sound_mut_shared_cell_cell",
+   "Toy.LayoutDfa.Sound",
+   "Toy.LayoutDfa.SoundOneStep",
+   "Toy.LayoutDfa.sound_iff_soundOneStep",
+   "Toy.LayoutDfa.neverRef",
+   "Toy.LayoutDfa.RefTy"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "As LD4-ss; the reborrowed `&mut` is inactive while the shared reference is live.",
+  "plain_claim": "In the toy reference model, for every source referent type `S` with at least one valid byte string (`Satisfiable S`) and every destination referent type `D`: an unchecked cast from a mutable reference to `S` to a shared reference to `D` is sound if and only if every `S`-valid byte string is `D`-valid and, when `D` is not `Freeze`, every `D`-valid byte string is `S`-valid; `S`'s `Freeze` flag does not occur in the condition.",
+  "hypotheses": [
+   {
+    "name": "hS : Satisfiable S",
+    "purpose": "As in LD4-ss.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.mutShared_sound_iff_needs_satisfiable",
+    "witness_class": "`neverRef` and `cellByteRef`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`&mut boolRef → & byteRef` (sound), `&mut byteRef → & boolRef` (unsound), `&mut cellByteRef → & cellByteRef` (sound).",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.mutShared_sound_iff_nonvacuous",
+  "non_claims": [
+   "The toy models `&mut S → &D` as a reborrow whose source `&mut` is inactive while the destination `&` is live; pointer provenance and aliasing-tag retagging of a bit-level transmute of `&mut` into `&` are not modelled. Two-phase borrows and reborrow chains longer than one step are not modelled either.",
+   "That `D: Freeze` is not necessary (`&mut cellByteRef → & cellByteRef`, the `&mut Cell<u8> → &Cell<u8>` shape with `cellByteRef` the toy's reading of `Cell<u8>`, is sound in the toy, `sound_mut_shared_cell_cell`) is a statement about the toy.",
+   "`Sound` consists of the toy's three assertions (bit validity of reads, the whole-region `frozen` assertion, and `unique`). Referent sizes (both views cover the same region), alignment, lifetimes, library safety invariants, Rust's aliasing and provenance models (Stacked Borrows, Tree Borrows) and destructors (drop glue) are not modelled. `Sound` is equivalent to its one-operation form `SoundOneStep` (`sound_iff_soundOneStep`): runs of several operations add nothing in this model, because a write replaces the whole region.",
+   "`RefTy.freeze` is a single Boolean for the whole referent region: `freeze = false` models uniform `Cell`-like interior mutability, under which a shared view may overwrite the whole region with any byte string valid at its type. Per-byte placement of `UnsafeCell` and synchronisation (`Sync`, atomics, locks) are not modelled. For example, `(u8, Cell<u8>)` and `(Cell<u8>, u8)` of equal validity, or `Cell<u8>` and `AtomicU8`, receive the same encoding, so the toy's verdict on a cast between them carries no information about Rust.",
+   "Necessity (the `→` direction) and the counterexample runs assume that a non-`Freeze` shared view can write any byte string valid at its type to the whole region (`Cell`-like unrestricted writes, including the empty string for a zero-sized referent). `!Freeze` wrappers whose APIs restrict the written values, or never write during the cast, are not modelled; for them the necessity direction is not established (escape hatch).",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Published package `transmutation-soundness-bit-validity-and-reference-variance`: cards R2 (`sharedSound_iff_includes`), R3 (`mutSound_iff_includes_and_satisfiable_imp_includes_rev`), R4 (`sharedIMSound_iff_includes_and_dstWrites_imp_satisfiable_imp_includes_rev`) and R4-src (`sharedIMSound_noDstWrites_iff_includes`): the bit-validity conditions of reference casts over validity sets, which this package does not re-prove as standalone results.",
+   "Published package `pointer-capability-modality-lattice-ir-attribute-lowering-and-sroa-monotonicity`: the `frozen` atom (no pointee byte written while the pointer is live) and the `unique` atom (no access through another pointer), and card R1-transformers-best (`kindBase_best`; `tCell` drops `frozen` for a shared reference to a non-`Freeze` pointee).",
+   "Published package `send-sync-auto-traits-thread-safety-typing-and-interior-mutability`: card cell-not-sync (`not_semSync_cell`: two holders of a shared reference to a `Cell` can both write its storage).",
+   "Published package `zerocopy-trait-semantics-over-layouts-and-derive-check-soundness`: card R7a-immutable-not-byte-determined (`immutable_not_byte_determined`: `UnsafeCell<u8>` and `u8` have the same byte semantics but differ in `Immutable`).",
+   "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, RustBelt: securing the foundations of the Rust programming language, PACMPL 2 (POPL 2018), article 66, DOI 10.1145/3158154 (bibliographic record checked; text not read): machine-checked semantic soundness of a Rust subset including `Cell` and other interior-mutability libraries.",
+   "R. Jung, H.-H. Dang, J. Kang, D. Dreyer, Stacked Borrows: an aliasing model for Rust, PACMPL 4 (POPL 2020), DOI 10.1145/3371109 (bibliographic record checked; text not read): an operational aliasing model for references.",
+   "N. Villani, J. Hostert, D. Dreyer, R. Jung, Tree Borrows, PACMPL 9 (PLDI 2025), DOI 10.1145/3735592 (bibliographic record checked; text not read): a tree-structured aliasing model for Rust with per-location permissions."
+  ],
+  "design_question": "For reference casts, which `Freeze` obligations make a validity-inclusion check sound, and which make it exact?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`RefTy.freeze` is read as `core::marker::Freeze` holding for the whole referent, and the writes of a non-`Freeze` shared view as those that `Cell` permits (any value valid at its type, through a shared reference); `cellByteRef` and `byteRef` are read as `Cell<u8>` and `u8`, as stated in the sources cited here. A cast from `&mut S` to `&D` is read as a reborrow whose source is inactive while the shared reference is live. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "`core::marker::Freeze`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/marker.rs` lines 890-918: the unstable auto trait `Freeze` (lines 890-891: \"Used to determine whether a type contains any `UnsafeCell` internally, but not through an indirection.\"), with `impl<T: PointeeSized> !Freeze for UnsafeCell<T>` at line 909 (source).",
+    "`core::cell::Cell`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/cell.rs` lines 277-279 (`Cell<T>` has the same in-memory representation as `T`), lines 636-655 (`Cell::from_mut`, a `&Cell<T>` from a `&mut T`), lines 719-739 (`Cell::as_slice_of_cells`, a `&[Cell<T>]` from a `&Cell<[T]>`), lines 741-759 (`Cell::as_array_of_cells`, a `&[Cell<T>; N]` from a `&Cell<[T; N]>`, stable since Rust 1.91.0) (documentation)."
+   ]
+  }
+ },
+ {
+  "id": "LD4-mm",
+  "lean": "Toy.LayoutDfa.mutMut_sound_iff",
+  "lean_names": [
+   "Toy.LayoutDfa.mutMut_sound_iff",
+   "Toy.LayoutDfa.mutMut_sound_iff_needs_satisfiable",
+   "Toy.LayoutDfa.mutMut_sound_iff_nonvacuous",
+   "Toy.LayoutDfa.Satisfiable",
+   "Toy.LayoutDfa.byteRef",
+   "Toy.LayoutDfa.boolRef",
+   "Toy.LayoutDfa.Sound",
+   "Toy.LayoutDfa.SoundOneStep",
+   "Toy.LayoutDfa.sound_iff_soundOneStep",
+   "Toy.LayoutDfa.neverRef"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "tier_justification": "Restates card R3 of the published package `transmutation-soundness-bit-validity-and-reference-variance` in the combined toy model; `Freeze` flags play no role.",
+  "plain_claim": "In the toy reference model, for every source referent type `S` with at least one valid byte string (`Satisfiable S`) and every destination referent type `D`: an unchecked cast from a mutable reference to `S` to a mutable reference to `D` is sound if and only if every `S`-valid byte string is `D`-valid and every `D`-valid byte string is `S`-valid; neither `Freeze` flag occurs.",
+  "hypotheses": [
+   {
+    "name": "hS : Satisfiable S",
+    "purpose": "As in LD4-ss.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.mutMut_sound_iff_needs_satisfiable",
+    "witness_class": "`neverRef` and `byteRef`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`&mut byteRef → &mut byteRef` (sound), `&mut boolRef → &mut byteRef` (unsound).",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.mutMut_sound_iff_nonvacuous",
+  "non_claims": [
+   "Writes through the cast reference are of arbitrary `D`-valid values; APIs that restrict writes are not modelled.",
+   "`Sound` consists of the toy's three assertions (bit validity of reads, the whole-region `frozen` assertion, and `unique`). Referent sizes (both views cover the same region), alignment, lifetimes, library safety invariants, Rust's aliasing and provenance models (Stacked Borrows, Tree Borrows) and destructor compatibility (drop glue run on overwrite or at the end of the borrow) are not modelled. `Sound` is equivalent to its one-operation form `SoundOneStep` (`sound_iff_soundOneStep`): runs of several operations add nothing in this model, because a write replaces the whole region.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Published package `transmutation-soundness-bit-validity-and-reference-variance`: cards R2 (`sharedSound_iff_includes`), R3 (`mutSound_iff_includes_and_satisfiable_imp_includes_rev`), R4 (`sharedIMSound_iff_includes_and_dstWrites_imp_satisfiable_imp_includes_rev`) and R4-src (`sharedIMSound_noDstWrites_iff_includes`): the bit-validity conditions of reference casts over validity sets, which this package does not re-prove as standalone results.",
+   "Published package `pointer-capability-modality-lattice-ir-attribute-lowering-and-sroa-monotonicity`: the `frozen` atom (no pointee byte written while the pointer is live) and the `unique` atom (no access through another pointer), and card R1-transformers-best (`kindBase_best`; `tCell` drops `frozen` for a shared reference to a non-`Freeze` pointee).",
+   "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, RustBelt: securing the foundations of the Rust programming language, PACMPL 2 (POPL 2018), article 66, DOI 10.1145/3158154 (bibliographic record checked; text not read): machine-checked semantic soundness of a Rust subset including `Cell` and other interior-mutability libraries.",
+   "R. Jung, H.-H. Dang, J. Kang, D. Dreyer, Stacked Borrows: an aliasing model for Rust, PACMPL 4 (POPL 2020), DOI 10.1145/3371109 (bibliographic record checked; text not read): an operational aliasing model for references."
+  ],
+  "design_question": "For reference casts, which `Freeze` obligations make a validity-inclusion check sound, and which make it exact?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "A cast from `&mut S` to `&mut D` is read as a reborrow: the source reference performs no operation while the destination `&mut` is live, the destination may read the region and may write any `D`-valid byte string to it, and when the destination's use ends the source reads the region at type `S`. The `Freeze` flags play no role in this cell. This reading is informal, cites no external source, and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about Rust reference casts.",
+   "sources": []
+  }
+ },
+ {
+  "id": "LD4-sm",
+  "lean": "Toy.LayoutDfa.sharedMut_not_sound",
+  "lean_names": [
+   "Toy.LayoutDfa.sharedMut_not_sound",
+   "Toy.LayoutDfa.sharedMut_not_sound_needs_satisfiable",
+   "Toy.LayoutDfa.sharedMut_not_sound_nonvacuous",
+   "Toy.LayoutDfa.sharedMut_positive_control",
+   "Toy.LayoutDfa.Satisfiable",
+   "Toy.LayoutDfa.OpOK",
+   "Toy.LayoutDfa.byteRef",
+   "Toy.LayoutDfa.Sound",
+   "Toy.LayoutDfa.SoundOneStep",
+   "Toy.LayoutDfa.sound_iff_soundOneStep",
+   "Toy.LayoutDfa.neverRef"
+  ],
+  "kind": "impossibility",
+  "role": "Definitional check of the `unique` assertion built into `OpOK`.",
+  "tier": "T0",
+  "tier_justification": "Folklore (`&T → &mut T` is never allowed); in this toy a one-step unfolding of the `unique` clause of `OpOK`.",
+  "plain_claim": "In the toy reference model, for every source referent type `S` with at least one valid byte string (`Satisfiable S`) and every destination referent type `D` (any validities, any `Freeze` flags), an unchecked cast from a shared reference to `S` to a mutable reference to `D` is not sound.",
+  "hypotheses": [
+   {
+    "name": "hS : Satisfiable S",
+    "purpose": "From an uninhabited source every cast is vacuously sound.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.sharedMut_not_sound_needs_satisfiable",
+    "witness_class": "`neverRef` and `byteRef`"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "`& byteRef → &mut byteRef`.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.sharedMut_not_sound_nonvacuous",
+  "positive_control_lean": "Toy.LayoutDfa.sharedMut_positive_control",
+  "non_claims": [
+   "Escape hatches that defeat the impossibility: (1) dropping `Satisfiable S` (an uninhabited source makes `Sound` vacuous: `sharedMut_not_sound_needs_satisfiable`); (2) weakening the `unique` assertion of `OpOK`, which in the toy forbids even a single read through the source view with no write; (3) APIs with dynamic exclusivity (such as `RefCell::borrow_mut` or `Mutex::lock`) that suspend source accesses while the `&mut` is live, which the toy does not model. Whether the impossibility persists under a weaker uniqueness notion is not proved here.",
+   "Says nothing about raw-pointer or `UnsafeCell::get` routes to mutation.",
+   "`Sound` consists of the toy's three assertions (bit validity of reads, the whole-region `frozen` assertion, and `unique`). Referent sizes (both views cover the same region), alignment, lifetimes, library safety invariants, Rust's aliasing and provenance models (Stacked Borrows, Tree Borrows) and destructors (drop glue) are not modelled. `Sound` is equivalent to its one-operation form `SoundOneStep` (`sound_iff_soundOneStep`): runs of several operations add nothing in this model, because a write replaces the whole region.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Published package `pointer-capability-modality-lattice-ir-attribute-lowering-and-sroa-monotonicity`: the `frozen` atom (no pointee byte written while the pointer is live) and the `unique` atom (no access through another pointer), and card R1-transformers-best (`kindBase_best`; `tCell` drops `frozen` for a shared reference to a non-`Freeze` pointee).",
+   "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, RustBelt: securing the foundations of the Rust programming language, PACMPL 2 (POPL 2018), article 66, DOI 10.1145/3158154 (bibliographic record checked; text not read): machine-checked semantic soundness of a Rust subset including `Cell` and other interior-mutability libraries.",
+   "R. Jung, H.-H. Dang, J. Kang, D. Dreyer, Stacked Borrows: an aliasing model for Rust, PACMPL 4 (POPL 2020), DOI 10.1145/3371109 (bibliographic record checked; text not read): an operational aliasing model for references.",
+   "N. Villani, J. Hostert, D. Dreyer, R. Jung, Tree Borrows, PACMPL 9 (PLDI 2025), DOI 10.1145/3735592 (bibliographic record checked; text not read): a tree-structured aliasing model for Rust with per-location permissions."
+  ],
+  "design_question": "For reference casts, which `Freeze` obligations make a validity-inclusion check sound, and which make it exact?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "A cast from `&S` to `&mut D` is read as producing a mutable reference while the shared source reference remains usable; in the toy, one read through the source while the destination `&mut` is live violates the `unique` assertion. Apart from the hypothesis `Satisfiable S`, the validities and the `Freeze` flags play no role in this cell. This reading is informal, cites no external source, and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about Rust reference casts.",
+   "sources": []
+  }
+ },
+ {
+  "id": "LD4-matrix-sound",
+  "lean": "Toy.LayoutDfa.sound_of_matrixOK",
+  "lean_names": [
+   "Toy.LayoutDfa.sound_of_matrixOK",
+   "Toy.LayoutDfa.sound_of_matrixOK_nonvacuous",
+   "Toy.LayoutDfa.MatrixOK",
+   "Toy.LayoutDfa.Satisfiable",
+   "Toy.LayoutDfa.matrixOK_iff_sound_needs_sharedDst_freeze",
+   "Toy.LayoutDfa.Sound",
+   "Toy.LayoutDfa.SoundOneStep",
+   "Toy.LayoutDfa.sound_iff_soundOneStep",
+   "Toy.LayoutDfa.RefTy",
+   "Toy.LayoutDfa.cellByteRef",
+   "Toy.LayoutDfa.byteRef"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "The obligation matrix imposed by checkers that require `Freeze` on shared sources and destinations; its soundness in the toy is made precise here.",
+  "plain_claim": "In the toy reference model, for every mode pair `ms`, `md` and all referent types `S` and `D` (no satisfiability hypothesis, no `Freeze` hypothesis): if the obligation matrix `MatrixOK` holds — `& → &`: `S ⊆ D`, `D` `Freeze` and `S` `Freeze`; `&mut → &`: `S ⊆ D` and `D` `Freeze`; `&mut → &mut`: `S ⊆ D` and `D ⊆ S`; `& → &mut`: never — then the cast is sound.",
+  "hypotheses": [],
+  "hypotheses_note": "no side hypotheses: the theorem is universally quantified over both modes `ms`, `md` and both referent types `S`, `D`, and its antecedent is `MatrixOK ms md S D`; neither `Satisfiable S` nor `D.freeze = true` is assumed.",
+  "depth": "shallow",
+  "nonvacuity_witness": "The three accepting cells each hold for a fixture pair.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.sound_of_matrixOK_nonvacuous",
+  "non_claims": [
+   "The matrix is not exact without further hypotheses: the toy has sound casts it rejects (LD4-matrix-iff, `matrixOK_iff_sound_needs_sharedDst_freeze`).",
+   "`Sound` consists of the toy's three assertions (bit validity of reads, the whole-region `frozen` assertion, and `unique`). Referent sizes (both views cover the same region), alignment, lifetimes, library safety invariants, Rust's aliasing and provenance models (Stacked Borrows, Tree Borrows) and destructors (drop glue) are not modelled. `Sound` is equivalent to its one-operation form `SoundOneStep` (`sound_iff_soundOneStep`): runs of several operations add nothing in this model, because a write replaces the whole region.",
+   "`RefTy.freeze` is a single Boolean for the whole referent region: `freeze = false` models uniform `Cell`-like interior mutability, under which a shared view may overwrite the whole region with any byte string valid at its type. Per-byte placement of `UnsafeCell` and synchronisation (`Sync`, atomics, locks) are not modelled. For example, `(u8, Cell<u8>)` and `(Cell<u8>, u8)` of equal validity, or `Cell<u8>` and `AtomicU8`, receive the same encoding, so the toy's verdict on a cast between them carries no information about Rust.",
+   "The toy models `&mut S → &D` as a reborrow whose source `&mut` is inactive while the destination `&` is live; pointer provenance and aliasing-tag retagging of a bit-level transmute of `&mut` into `&` are not modelled.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Published package `transmutation-soundness-bit-validity-and-reference-variance`: cards R2 (`sharedSound_iff_includes`), R3 (`mutSound_iff_includes_and_satisfiable_imp_includes_rev`), R4 (`sharedIMSound_iff_includes_and_dstWrites_imp_satisfiable_imp_includes_rev`) and R4-src (`sharedIMSound_noDstWrites_iff_includes`): the bit-validity conditions of reference casts over validity sets, which this package does not re-prove as standalone results.",
+   "Published package `pointer-capability-modality-lattice-ir-attribute-lowering-and-sroa-monotonicity`: the `frozen` atom (no pointee byte written while the pointer is live) and the `unique` atom (no access through another pointer), and card R1-transformers-best (`kindBase_best`; `tCell` drops `frozen` for a shared reference to a non-`Freeze` pointee).",
+   "Published package `send-sync-auto-traits-thread-safety-typing-and-interior-mutability`: card cell-not-sync (`not_semSync_cell`: two holders of a shared reference to a `Cell` can both write its storage).",
+   "Published package `zerocopy-trait-semantics-over-layouts-and-derive-check-soundness`: card R7a-immutable-not-byte-determined (`immutable_not_byte_determined`: `UnsafeCell<u8>` and `u8` have the same byte semantics but differ in `Immutable`).",
+   "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, RustBelt: securing the foundations of the Rust programming language, PACMPL 2 (POPL 2018), article 66, DOI 10.1145/3158154 (bibliographic record checked; text not read): machine-checked semantic soundness of a Rust subset including `Cell` and other interior-mutability libraries.",
+   "R. Jung, H.-H. Dang, J. Kang, D. Dreyer, Stacked Borrows: an aliasing model for Rust, PACMPL 4 (POPL 2020), DOI 10.1145/3371109 (bibliographic record checked; text not read): an operational aliasing model for references.",
+   "N. Villani, J. Hostert, D. Dreyer, R. Jung, Tree Borrows, PACMPL 9 (PLDI 2025), DOI 10.1145/3735592 (bibliographic record checked; text not read): a tree-structured aliasing model for Rust with per-location permissions."
+  ],
+  "design_question": "For reference casts, which `Freeze` obligations make a validity-inclusion check sound, and which make it exact?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`RefTy.freeze` is read as `core::marker::Freeze` holding for the whole referent, and the writes of a non-`Freeze` shared view as those that `Cell` permits (any value valid at its type, through a shared reference); `cellByteRef` and `byteRef` are read as `Cell<u8>` and `u8`, as stated in the sources cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "`core::marker::Freeze`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/marker.rs` lines 890-918: the unstable auto trait `Freeze` (lines 890-891: \"Used to determine whether a type contains any `UnsafeCell` internally, but not through an indirection.\"), with `impl<T: PointeeSized> !Freeze for UnsafeCell<T>` at line 909 (source).",
+    "`core::cell::Cell`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/cell.rs` lines 277-279 (`Cell<T>` has the same in-memory representation as `T`), lines 636-655 (`Cell::from_mut`, a `&Cell<T>` from a `&mut T`), lines 719-739 (`Cell::as_slice_of_cells`, a `&[Cell<T>]` from a `&Cell<[T]>`), lines 741-759 (`Cell::as_array_of_cells`, a `&[Cell<T>; N]` from a `&Cell<[T; N]>`, stable since Rust 1.91.0) (documentation)."
+   ]
+  }
+ },
+ {
+  "id": "LD4-matrix-iff",
+  "lean": "Toy.LayoutDfa.matrixOK_iff_sound_of_sharedDst_freeze",
+  "lean_names": [
+   "Toy.LayoutDfa.matrixOK_iff_sound_of_sharedDst_freeze",
+   "Toy.LayoutDfa.matrixOK_iff_sound_needs_satisfiable",
+   "Toy.LayoutDfa.matrixOK_iff_sound_needs_sharedDst_freeze",
+   "Toy.LayoutDfa.matrixOK_iff_sound_nonvacuous",
+   "Toy.LayoutDfa.Satisfiable",
+   "Toy.LayoutDfa.MatrixOK",
+   "Toy.LayoutDfa.boolRef",
+   "Toy.LayoutDfa.byteRef",
+   "Toy.LayoutDfa.cellByteRef",
+   "Toy.LayoutDfa.Sound",
+   "Toy.LayoutDfa.SoundOneStep",
+   "Toy.LayoutDfa.sound_iff_soundOneStep",
+   "Toy.LayoutDfa.neverRef",
+   "Toy.LayoutDfa.RefTy"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "Corollary of LD4-ss, LD4-ms, LD4-mm, LD4-sm and LD4-matrix-sound.",
+  "plain_claim": "In the toy reference model, for every mode pair, for every source referent type `S` with at least one valid byte string (`Satisfiable S`), and every destination referent type `D` that is `Freeze` whenever the destination reference is shared: `MatrixOK` holds if and only if the cast is sound.",
+  "hypotheses": [
+   {
+    "name": "hS : Satisfiable S",
+    "purpose": "As in LD4-ss.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.matrixOK_iff_sound_needs_satisfiable",
+    "witness_class": "`& neverRef → &mut byteRef`"
+   },
+   {
+    "name": "hD : md = .shared → D.freeze = true",
+    "purpose": "There is a shared, non-`Freeze` destination (`cellByteRef`) with sound casts outside the matrix.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.matrixOK_iff_sound_needs_sharedDst_freeze",
+    "witness_class": "`& cellByteRef → & cellByteRef` and `&mut cellByteRef → & cellByteRef`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`& boolRef → & byteRef` (accepted, sound) and `& cellByteRef → & byteRef` (rejected, unsound).",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.matrixOK_iff_sound_nonvacuous",
+  "non_claims": [
+   "Exactness is relative to the toy's assertions; it does not say real checkers that impose these obligations are exact.",
+   "`Sound` consists of the toy's three assertions (bit validity of reads, the whole-region `frozen` assertion, and `unique`). Referent sizes (both views cover the same region), alignment, lifetimes, library safety invariants, Rust's aliasing and provenance models (Stacked Borrows, Tree Borrows) and destructors (drop glue) are not modelled. `Sound` is equivalent to its one-operation form `SoundOneStep` (`sound_iff_soundOneStep`): runs of several operations add nothing in this model, because a write replaces the whole region.",
+   "`RefTy.freeze` is a single Boolean for the whole referent region: `freeze = false` models uniform `Cell`-like interior mutability, under which a shared view may overwrite the whole region with any byte string valid at its type. Per-byte placement of `UnsafeCell` and synchronisation (`Sync`, atomics, locks) are not modelled. For example, `(u8, Cell<u8>)` and `(Cell<u8>, u8)` of equal validity, or `Cell<u8>` and `AtomicU8`, receive the same encoding, so the toy's verdict on a cast between them carries no information about Rust.",
+   "Necessity (the `→` direction) and the counterexample runs assume that a non-`Freeze` shared view can write any byte string valid at its type to the whole region (`Cell`-like unrestricted writes, including the empty string for a zero-sized referent). `!Freeze` wrappers whose APIs restrict the written values, or never write during the cast, are not modelled; for them the necessity direction is not established (escape hatch).",
+   "The toy models `&mut S → &D` as a reborrow whose source `&mut` is inactive while the destination `&` is live; pointer provenance and aliasing-tag retagging of a bit-level transmute of `&mut` into `&` are not modelled.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Published package `transmutation-soundness-bit-validity-and-reference-variance`: cards R2 (`sharedSound_iff_includes`), R3 (`mutSound_iff_includes_and_satisfiable_imp_includes_rev`), R4 (`sharedIMSound_iff_includes_and_dstWrites_imp_satisfiable_imp_includes_rev`) and R4-src (`sharedIMSound_noDstWrites_iff_includes`): the bit-validity conditions of reference casts over validity sets, which this package does not re-prove as standalone results.",
+   "Published package `pointer-capability-modality-lattice-ir-attribute-lowering-and-sroa-monotonicity`: the `frozen` atom (no pointee byte written while the pointer is live) and the `unique` atom (no access through another pointer), and card R1-transformers-best (`kindBase_best`; `tCell` drops `frozen` for a shared reference to a non-`Freeze` pointee).",
+   "Published package `send-sync-auto-traits-thread-safety-typing-and-interior-mutability`: card cell-not-sync (`not_semSync_cell`: two holders of a shared reference to a `Cell` can both write its storage).",
+   "Published package `zerocopy-trait-semantics-over-layouts-and-derive-check-soundness`: card R7a-immutable-not-byte-determined (`immutable_not_byte_determined`: `UnsafeCell<u8>` and `u8` have the same byte semantics but differ in `Immutable`).",
+   "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, RustBelt: securing the foundations of the Rust programming language, PACMPL 2 (POPL 2018), article 66, DOI 10.1145/3158154 (bibliographic record checked; text not read): machine-checked semantic soundness of a Rust subset including `Cell` and other interior-mutability libraries.",
+   "R. Jung, H.-H. Dang, J. Kang, D. Dreyer, Stacked Borrows: an aliasing model for Rust, PACMPL 4 (POPL 2020), DOI 10.1145/3371109 (bibliographic record checked; text not read): an operational aliasing model for references.",
+   "N. Villani, J. Hostert, D. Dreyer, R. Jung, Tree Borrows, PACMPL 9 (PLDI 2025), DOI 10.1145/3735592 (bibliographic record checked; text not read): a tree-structured aliasing model for Rust with per-location permissions."
+  ],
+  "design_question": "For reference casts, which `Freeze` obligations make a validity-inclusion check sound, and which make it exact?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`RefTy.freeze` is read as `core::marker::Freeze` holding for the whole referent, and the writes of a non-`Freeze` shared view as those that `Cell` permits (any value valid at its type, through a shared reference); `cellByteRef` and `byteRef` are read as `Cell<u8>` and `u8`, as stated in the sources cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "`core::marker::Freeze`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/marker.rs` lines 890-918: the unstable auto trait `Freeze` (lines 890-891: \"Used to determine whether a type contains any `UnsafeCell` internally, but not through an indirection.\"), with `impl<T: PointeeSized> !Freeze for UnsafeCell<T>` at line 909 (source).",
+    "`core::cell::Cell`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/cell.rs` lines 277-279 (`Cell<T>` has the same in-memory representation as `T`), lines 636-655 (`Cell::from_mut`, a `&Cell<T>` from a `&mut T`), lines 719-739 (`Cell::as_slice_of_cells`, a `&[Cell<T>]` from a `&Cell<[T]>`), lines 741-759 (`Cell::as_array_of_cells`, a `&[Cell<T>; N]` from a `&Cell<[T; N]>`, stable since Rust 1.91.0) (documentation)."
+   ]
+  }
+ },
+ {
+  "id": "LD4-cell",
+  "lean": "Toy.LayoutDfa.cellByte_to_byte_admitted_without_srcFreeze",
+  "lean_names": [
+   "Toy.LayoutDfa.cellByte_to_byte_admitted_without_srcFreeze",
+   "Toy.LayoutDfa.sound_shared_shared_byte_byte",
+   "Toy.LayoutDfa.cellByteRef",
+   "Toy.LayoutDfa.byteRef",
+   "Toy.LayoutDfa.MatrixOKNoSrcFreeze",
+   "Toy.LayoutDfa.Permitted",
+   "Toy.LayoutDfa.FrozenDuring",
+   "Toy.LayoutDfa.RunOK",
+   "Toy.LayoutDfa.MatrixOK",
+   "Toy.LayoutDfa.RefTy"
+  ],
+  "kind": "counterexample",
+  "role": "Headline counterexample for dropping the source-side `Freeze` obligation.",
+  "tier": "T0",
+  "tier_justification": "A concrete instance of a known hazard of interior mutability, of the shape described by a public report (https://github.com/rust-lang/rust/issues/164247), in the toy.",
+  "plain_claim": "For the toy referents `cellByteRef` (validity of one initialised byte, not `Freeze`; modelling `Cell<u8>`) and `byteRef` (the same validity, `Freeze`; modelling `u8`): the obligation matrix with the source-side `Freeze` obligation removed (`MatrixOKNoSrcFreeze`) holds for `& cellByteRef → & byteRef`, the two validities are included in each other, and the cast is not sound; from contents `[0]`, writing `[1]` through the source view is permitted (`Permitted`), the `frozen` assertion is in force (`FrozenDuring`), and that one-operation run violates an assertion (`RunOK` fails); the full `MatrixOK` rejects this cast and accepts `& byteRef → & byteRef`, which is sound.",
+  "hypotheses": [],
+  "hypotheses_note": "no hypotheses (a statement about concrete fixtures).",
+  "depth": "definitional",
+  "nonvacuity_witness": "The theorem is itself a concrete instance.",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.cellByte_to_byte_admitted_without_srcFreeze",
+  "positive_control_lean": "Toy.LayoutDfa.sound_shared_shared_byte_byte",
+  "non_claims": [
+   "The violation is of the toy's `frozen` assertion; for bit validity alone the cast is fine (card R4-src of the published package `transmutation-soundness-bit-validity-and-reference-variance`).",
+   "The counterexample run assumes that a non-`Freeze` shared view can write any byte string valid at its type to the whole region (`Cell`-like unrestricted writes); in this run the source view writes `[1]` over the contents `[0]`. `!Freeze` wrappers whose APIs restrict the written values, or never write during the cast, are not modelled; the counterexample does not cover them, and whether such a cast is unsound for them is not examined (escape hatch).",
+   "No claim is made about the implementation behind https://github.com/rust-lang/rust/issues/164247; the issue serves as context: a public report of the same shape.",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Published package `transmutation-soundness-bit-validity-and-reference-variance`: cards R2 (`sharedSound_iff_includes`), R3 (`mutSound_iff_includes_and_satisfiable_imp_includes_rev`), R4 (`sharedIMSound_iff_includes_and_dstWrites_imp_satisfiable_imp_includes_rev`) and R4-src (`sharedIMSound_noDstWrites_iff_includes`): the bit-validity conditions of reference casts over validity sets, which this package does not re-prove as standalone results.",
+   "Published package `pointer-capability-modality-lattice-ir-attribute-lowering-and-sroa-monotonicity`: the `frozen` atom (no pointee byte written while the pointer is live) and the `unique` atom (no access through another pointer), and card R1-transformers-best (`kindBase_best`; `tCell` drops `frozen` for a shared reference to a non-`Freeze` pointee).",
+   "Published package `zerocopy-trait-semantics-over-layouts-and-derive-check-soundness`: card R7a-immutable-not-byte-determined (`immutable_not_byte_determined`: `UnsafeCell<u8>` and `u8` have the same byte semantics but differ in `Immutable`)."
+  ],
+  "design_question": "For reference casts, which `Freeze` obligations make a validity-inclusion check sound, and which make it exact?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`RefTy.freeze` is read as `core::marker::Freeze` holding for the whole referent, and the writes of a non-`Freeze` shared view as those that `Cell` permits (any value valid at its type, through a shared reference); `cellByteRef` and `byteRef` are read as `Cell<u8>` and `u8`, as stated in the sources cited here. The counterexample has the shape of the example in the public report https://github.com/rust-lang/rust/issues/164247 (a shared reference to a `Cell` transmuted to a byte-array reference, then `cell.set(1)` while the byte reference is in use); no claim is made about the implementation behind that report. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "`core::marker::Freeze`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/marker.rs` lines 890-918: the unstable auto trait `Freeze` (lines 890-891: \"Used to determine whether a type contains any `UnsafeCell` internally, but not through an indirection.\"), with `impl<T: PointeeSized> !Freeze for UnsafeCell<T>` at line 909 (source).",
+    "`core::cell::Cell`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/cell.rs` lines 277-279 (`Cell<T>` has the same in-memory representation as `T`), lines 636-655 (`Cell::from_mut`, a `&Cell<T>` from a `&mut T`), lines 719-739 (`Cell::as_slice_of_cells`, a `&[Cell<T>]` from a `&Cell<[T]>`), lines 741-759 (`Cell::as_array_of_cells`, a `&[Cell<T>; N]` from a `&Cell<[T; N]>`, stable since Rust 1.91.0) (documentation).",
+    "rust-lang/rust issue 164247 (https://github.com/rust-lang/rust/issues/164247; open on 2026-11-21, labelled I-unsound; title \"TransmuteFrom::<_, Assume::NOTHING> can transmute references to types with interior mutability\"): a public report whose example transmutes a shared reference to a `Cell` into `&[u8; 4]` and then calls `cell.set(1)` while the byte reference is in use. Prose context; not a subject and not relied on."
+   ]
+  }
+ },
+ {
+  "id": "LD4-refcheck",
+  "lean": "Toy.LayoutDfa.refCheck_sound_of_eq_fixedSize",
+  "lean_names": [
+   "Toy.LayoutDfa.refCheck_sound_of_eq_fixedSize",
+   "Toy.LayoutDfa.refCheck_sound_needs_fixedSize_src",
+   "Toy.LayoutDfa.fixedSize_src_counterexamples_hold_for_mu8L",
+   "Toy.LayoutDfa.refCheck_sound_needs_fixedSize_dst",
+   "Toy.LayoutDfa.refCheck_sound_nonvacuous",
+   "Toy.LayoutDfa.refCheck",
+   "Toy.LayoutDfa.RefTy.ofLayout",
+   "Toy.LayoutDfa.boolL",
+   "Toy.LayoutDfa.u8L",
+   "Toy.LayoutDfa.refCheck_mutMut_needs_eq_fixedSize",
+   "Toy.LayoutDfa.Sound",
+   "Toy.LayoutDfa.SoundOneStep",
+   "Toy.LayoutDfa.sound_iff_soundOneStep",
+   "Toy.LayoutDfa.forallCheck",
+   "Toy.LayoutDfa.existsCheck",
+   "Toy.LayoutDfa.fuelFor",
+   "Toy.LayoutDfa.cycL",
+   "Toy.LayoutDfa.cycDupL",
+   "Toy.LayoutDfa.checks_depend_on_edge_list_representation",
+   "Toy.LayoutDfa.unitL",
+   "Toy.LayoutDfa.uL",
+   "Toy.LayoutDfa.mu8L",
+   "Toy.LayoutDfa.b0L",
+   "Toy.LayoutDfa.RefTy",
+   "Toy.LayoutDfa.cellByteRef",
+   "Toy.LayoutDfa.byteRef"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Composition of LD1-sound with the matrix soundness (LD4-matrix-sound).",
+  "plain_claim": "For referent layout automata `S` and `D` all of whose accepted words have length exactly `n` (the same `n` for both; deterministic or not, with or without dead branches), every mode pair `ms`, `md` and all caller-supplied `Freeze` flags `fzS`, `fzD`: if `refCheck ms md S fzS D fzD = true`, then the cast is sound in the toy reference model for the referent types `RefTy.ofLayout S fzS` and `RefTy.ofLayout D fzD`.",
+  "hypotheses": [
+   {
+    "name": "hS : S.FixedSize n",
+    "purpose": "Equal referent sizes: there is a shorter source referent (`unitL` into `uL`) for which the value-level extension rule makes `refCheck` accept an unsound cast.",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.LayoutDfa.refCheck_sound_needs_fixedSize_src",
+     "Toy.LayoutDfa.fixedSize_src_counterexamples_hold_for_mu8L"
+    ],
+    "witness_class": "`& () → & {[uninit]}`, `n = 1`; the same failure with the initialisation-monotone destination `mu8L`"
+   },
+   {
+    "name": "hD : D.FixedSize n",
+    "purpose": "Equal referent sizes: there is a longer source referent (`b0L` into `unitL`) for which the value-level truncation rule makes `refCheck` accept a cast that is unsound for whole-region references.",
+    "tightness": "tight",
+    "counterexample": "Toy.LayoutDfa.refCheck_sound_needs_fixedSize_dst",
+    "witness_class": "`& {[0]} → & ()`, `n = 1`"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "`refCheck` accepts `& boolL → & u8L`, `&mut boolL → & u8L` and `&mut u8L → &mut u8L` (all `Freeze`).",
+  "nonvacuity_witness_lean": "Toy.LayoutDfa.refCheck_sound_nonvacuous",
+  "non_claims": [
+   "Completeness of `refCheck` is not stated as a theorem (not proved here).",
+   "`fzS` and `fzD` are trusted caller-supplied Booleans; `refCheck` does not compute or verify `Freeze` from the layouts `S` and `D`, which cannot distinguish `Cell<u8>` from `u8`.",
+   "`refCheck_sound_needs_fixedSize_dst` (`& {[0]} → & ()` failing) is a consequence of the toy's whole-region reference model, in which both views validate the entire region; it neither establishes nor refutes the soundness of prefix-shrinking shared reference casts (`&T → &U` with a smaller `U`), which are not modelled.",
+   "The equal-size requirement also bites in the `&mut → &mut` cell (`refCheck_mutMut_needs_eq_fixedSize`).",
+   "`Sound` consists of the toy's three assertions (bit validity of reads, the whole-region `frozen` assertion, and `unique`). Referent sizes (both views cover the same region), alignment, lifetimes, library safety invariants, Rust's aliasing and provenance models (Stacked Borrows, Tree Borrows) and destructors (drop glue) are not modelled. `Sound` is equivalent to its one-operation form `SoundOneStep` (`sound_iff_soundOneStep`): runs of several operations add nothing in this model, because a write replaces the whole region.",
+   "`RefTy.freeze` is a single Boolean for the whole referent region: `freeze = false` models uniform `Cell`-like interior mutability, under which a shared view may overwrite the whole region with any byte string valid at its type. Per-byte placement of `UnsafeCell` and synchronisation (`Sync`, atomics, locks) are not modelled. For example, `(u8, Cell<u8>)` and `(Cell<u8>, u8)` of equal validity, or `Cell<u8>` and `AtomicU8`, receive the same encoding, so the toy's verdict on a cast between them carries no information about Rust.",
+   "The toy models `&mut S → &D` as a reborrow whose source `&mut` is inactive while the destination `&` is live; pointer provenance and aliasing-tag retagging of a bit-level transmute of `&mut` into `&` are not modelled.",
+   "Degenerate zero size: at `n = 0` both layouts accept at most `[]` (zero-sized or uninhabited referents).",
+   "`forallCheck` and `existsCheck` are pure recursive functions of a state pair and a step budget; no memo table is modelled, and that caching their results per state pair is transparent is not proved here. The budget `fuelFor B` is one more than the length of the edge list of `B`, counting duplicate and unreachable edges; there are two edge lists for the same cyclic destination (`cycL`, `cycDupL`) on which both checks give different answers (`checks_depend_on_edge_list_representation`).",
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's transmutability checker (`rustc_transmute`), the unstable `core::mem::TransmuteFrom` trait, or zerocopy. Model–system relation: none proved."
+  ],
+  "prior_art": [
+   "Published package `transmutation-soundness-bit-validity-and-reference-variance`: cards R2 (`sharedSound_iff_includes`), R3 (`mutSound_iff_includes_and_satisfiable_imp_includes_rev`), R4 (`sharedIMSound_iff_includes_and_dstWrites_imp_satisfiable_imp_includes_rev`) and R4-src (`sharedIMSound_noDstWrites_iff_includes`): the bit-validity conditions of reference casts over validity sets, which this package does not re-prove as standalone results.",
+   "Published package `pointer-capability-modality-lattice-ir-attribute-lowering-and-sroa-monotonicity`: the `frozen` atom (no pointee byte written while the pointer is live) and the `unique` atom (no access through another pointer), and card R1-transformers-best (`kindBase_best`; `tCell` drops `frozen` for a shared reference to a non-`Freeze` pointee)."
+  ],
+  "design_question": "For reference casts, which `Freeze` obligations make a validity-inclusion check sound, and which make it exact?",
+  "basis": "execution (Lean kernel check)",
+  "modeling_bridge": {
+   "basis": "derived (modeling bridge)",
+   "relation": "none proved",
+   "reading": "`RefTy.freeze` is read as `core::marker::Freeze` holding for the whole referent, and the writes of a non-`Freeze` shared view as those that `Cell` permits (any value valid at its type, through a shared reference); `cellByteRef` and `byteRef` are read as `Cell<u8>` and `u8`, as stated in the sources cited here. `refCheck` is read as a reference rule that decides validity inclusion with the universal layout check and takes the `Freeze` flags from the caller. `forallCheck` is read as the exploration mode of rustc's transmutability checker used when the compiler cannot assume a validity check by the programmer (for every source transition, some destination transition), with its truncation rule (success once the destination reaches its accept state) and its extension rule (the destination's `uninit` edge once the source reaches its accept state), as stated in the source comments cited here. The reading is argued from the cited documentation and source and is not proved. Model–system relation: none proved. These statements neither establish nor refute the corresponding claims about the cited systems.",
+   "sources": [
+    "rustc at commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `compiler/rustc_transmute/src/maybe_transmutable/mod.rs`: lines 187-210 (truncation when the destination is at its accept state; extension through the destination's uninit edge when the source is at its accept state), lines 212-222 (the two quantifier comments), lines 377-412 (`enum Quantifier` and `Quantifier::apply`) (source and source comments; documentation role).",
+    "`core::marker::Freeze`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/marker.rs` lines 890-918: the unstable auto trait `Freeze` (lines 890-891: \"Used to determine whether a type contains any `UnsafeCell` internally, but not through an indirection.\"), with `impl<T: PointeeSized> !Freeze for UnsafeCell<T>` at line 909 (source).",
+    "`core::cell::Cell`, rust-lang/rust commit `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, `library/core/src/cell.rs` lines 277-279 (`Cell<T>` has the same in-memory representation as `T`), lines 636-655 (`Cell::from_mut`, a `&Cell<T>` from a `&mut T`), lines 719-739 (`Cell::as_slice_of_cells`, a `&[Cell<T>]` from a `&Cell<[T]>`), lines 741-759 (`Cell::as_array_of_cells`, a `&[Cell<T>; N]` from a `&Cell<[T; N]>`, stable since Rust 1.91.0) (documentation)."
+   ]
+  }
+ }
+]

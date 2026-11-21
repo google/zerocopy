@@ -1,0 +1,6 @@
+name = "toy_layout_dfa"
+version = "0.1.0"
+defaultTargets = ["ToyLayoutDfa"]
+
+[[lean_lib]]
+name = "ToyLayoutDfa"
