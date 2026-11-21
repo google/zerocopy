@@ -1,0 +1,698 @@
+[
+ {
+  "id": "defext-expansions-eq-expand",
+  "lean": "Toy.Extension.defExt_expansions_eq_expand",
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For any theory T, any explicit definition d (a new k-ary function symbol defined by an old term, or a new k-ary relation symbol defined by an old formula) and any model S of T: the structures on S's carrier that keep S's old symbols and satisfy the definitional extension T + d are exactly one structure, the canonical expansion d.expand S.",
+  "hypotheses": [
+   {
+    "name": "hS : S.ModelsTh T",
+    "purpose": "Gives that the canonical expansion satisfies the translated axioms of T. Tight; witness class: the inconsistent theory {falsum} over {zero, succ, le} with the standard structure on Nat, where the characterization fails at S' = d.expand S.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.defExt_expansions_eq_expand_ce_not_model"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The standard structure on Nat for {zero, succ, le}, the empty theory, and the definition two := succ (succ zero).",
+  "nonvacuity_witness_lean": "Toy.Extension.defExt_expansions_eq_expand_nonvacuity",
+  "non_claims": [
+   "Uniqueness holds without assuming that S models T (defExt_expansion_unique_of_axiom).",
+   "The structures share the carrier with S; nothing is said about expansions up to isomorphism or on other carriers.",
+   "Kernel definitional equality of a dependent type theory is not modeled: Defn.theory adds a first-order defining axiom, and Defn.DeltaConv is conversion for one defined symbol over first-order syntax (no beta, iota or eta, no type-level conversion such as Vec a c versus Vec a e).",
+   "Recursive definitions (the new symbol occurring in its own definiens), type or inductive definitions, definitions of a function symbol by a formula with a proved unique-existence condition, and polymorphic or overloaded definitions are not modeled.",
+   "Applies to stored first-order syntax read along d.incl; in a surface language with name resolution, notations, coercions or instances, adding declarations can change how displayed text elaborates (default_numeral_change_flips_truth, new_coercion_flips_truth, new_instance_flips_truth)."
+  ],
+  "prior_art": [
+   "Joseph R. Shoenfield, Mathematical Logic, Addison-Wesley, Reading MA, 1967, Section 4.6 'Extensions by definitions' (section title confirmed from the table of contents; page range approximately pp. 57-60, not visually confirmed). Treats extensions by definitions proof-theoretically over non-empty domains; the semantic statements here are not quoted from it.",
+   "Wilfrid Hodges, A Shorter Model Theory, Cambridge University Press, 1997, ISBN 978-0-521-58713-6, Section 2.6 'Translations' (pp. 51-58, from the table of contents). General reference for reducts and expansions over non-empty structures; no exercise-level statement is claimed."
+  ],
+  "design_question": "When a library adds an explicit definition, does each model of the old theory extend in exactly one way to a model of the extended theory?"
+ },
+ {
+  "id": "defext-expansion-unique-of-axiom",
+  "lean": "Toy.Extension.defExt_expansion_unique_of_axiom",
+  "lean_names": [
+   "Toy.Extension.defExt_expansion_iff_of_axiom"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For any explicit definition d, any L-structure S and any structure S' of the extended language on the same carrier: if the reduct of S' to L is S and S' satisfies the defining axiom of d, then S' is the canonical expansion d.expand S. No theory T is involved.",
+  "hypotheses": [
+   {
+    "name": "hred : S'.reduct d.incl = S",
+    "purpose": "Ties S' to S on the old symbols. Tight; witness class: {zero, succ, le} on Nat with the defined constant two, where the canonical expansion of the nonstandard structure natStr2 satisfies the defining axiom but is not the canonical expansion of natStr.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.defExt_expansion_unique_ce_reduct"
+   },
+   {
+    "name": "hax : S'.Models d.defAxiom",
+    "purpose": "Pins the new symbol to its definiens. Tight; witness class: {zero, succ, le} on Nat, interpreting two as 3.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.defExt_expansion_unique_ce_axiom"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The canonical expansion of the standard structure on Nat by two := succ (succ zero).",
+  "nonvacuity_witness_lean": "Toy.Extension.defExt_axiom_nonvacuity",
+  "non_claims": [
+   "Says nothing about structures whose old symbols differ from S.",
+   "Equality is equality of structures on a fixed carrier (function and propositional extensionality are used), not isomorphism.",
+   "The converse also holds and is proved as defExt_expansion_iff_of_axiom (a helper, not a separate card).",
+   "Kernel definitional equality of a dependent type theory is not modeled: Defn.theory adds a first-order defining axiom, and Defn.DeltaConv is conversion for one defined symbol over first-order syntax (no beta, iota or eta, no type-level conversion such as Vec a c versus Vec a e).",
+   "Recursive definitions (the new symbol occurring in its own definiens), type or inductive definitions, definitions of a function symbol by a formula with a proved unique-existence condition, and polymorphic or overloaded definitions are not modeled."
+  ],
+  "prior_art": [
+   "Joseph R. Shoenfield, Mathematical Logic, Addison-Wesley, Reading MA, 1967, Section 4.6 'Extensions by definitions' (section title confirmed from the table of contents; page range approximately pp. 57-60, not visually confirmed). Treats extensions by definitions proof-theoretically over non-empty domains; the semantic statements here are not quoted from it."
+  ],
+  "design_question": "Does the defining axiom of an explicit definition fix the meaning of the new symbol on every structure?"
+ },
+ {
+  "id": "defext-conservative",
+  "lean": "Toy.Extension.defExt_conservative",
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For any theory T and any explicit definition d, the definitional extension T + d is conservative over T: every old-language sentence it entails is entailed by T.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "The definitional extension of the empty {zero, succ, le}-theory by two := succ (succ zero) has a model.",
+  "nonvacuity_witness_lean": "Toy.Extension.defExt_theory_has_model",
+  "non_claims": [
+   "Conservativity is semantic (entailment over all structures with carriers in Type, including empty ones); no proof system is modeled.",
+   "Does not cover axiomatic extensions, which can fail to be conservative (axiom_P_c_not_conservative).",
+   "Applies to stored first-order syntax read along d.incl; in a surface language with name resolution, notations, coercions or instances, adding declarations can change how displayed text elaborates (default_numeral_change_flips_truth, new_coercion_flips_truth, new_instance_flips_truth).",
+   "Kernel definitional equality of a dependent type theory is not modeled: Defn.theory adds a first-order defining axiom, and Defn.DeltaConv is conversion for one defined symbol over first-order syntax (no beta, iota or eta, no type-level conversion such as Vec a c versus Vec a e).",
+   "Recursive definitions (the new symbol occurring in its own definiens), type or inductive definitions, definitions of a function symbol by a formula with a proved unique-existence condition, and polymorphic or overloaded definitions are not modeled."
+  ],
+  "prior_art": [
+   "Joseph R. Shoenfield, Mathematical Logic, Addison-Wesley, Reading MA, 1967, Section 4.6 'Extensions by definitions' (section title confirmed from the table of contents; page range approximately pp. 57-60, not visually confirmed). Treats extensions by definitions proof-theoretically over non-empty domains; the semantic statements here are not quoted from it.",
+   "Ondrej Kuncar and Andrei Popescu, 'Safety and Conservativity of Definitions in HOL and Isabelle/HOL', Proceedings of the ACM on Programming Languages 2(POPL), 2018, Article 24 (26 pages), DOI 10.1145/3158112 (proves safety and conservativity of definitions, including type definitions, for HOL and Isabelle/HOL; a counterpart for a real system, not formalized here)."
+  ],
+  "design_question": "When a library adds an explicit definition, can any old statement become provable that was not provable before?"
+ },
+ {
+  "id": "defext-unfold-preserves-sat-iff-defining-axiom",
+  "lean": [
+   "Toy.Extension.models_defAxiom_iff_unfold_preserves_sat",
+   "Toy.Extension.models_defAxiom_iff_deltaConv_sound",
+   "Toy.Extension.defExt_eliminable"
+  ],
+  "lean_names": [
+   "Toy.Extension.dTwo_deltaConv_examples",
+   "Toy.Extension.dTwo_deltaConv_sound_and_unsound",
+   "Toy.Extension.dTwo_three_not_models_defAxiom",
+   "Toy.Extension.defExt_unfold_equiv_ce_axiom",
+   "Toy.Extension.unfold_preserves_tru_without_defAxiom"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "plain_claim": "For any explicit definition d and any structure S' of the extended language, the following are equivalent: (i) S' satisfies the defining axiom of d; (ii) unfolding preserves truth in S': every formula of the extended language has, under every assignment, the same truth value in S' as its unfolding d.unfold (each occurrence of the new symbol replaced by its definiens, read back along the inclusion); (iii) delta-conversion for d is sound in S': any two formulas whose unfoldings coincide have the same truth value in S' under every assignment. Moreover, for every theory T and formula psi, the definitional extension T + d entails the universal closure of psi <-> unfold psi.",
+  "hypotheses": [],
+  "depth": "substantive",
+  "nonvacuity_witness": "Both sides hold for the canonical expansion of the standard structure on Nat by two := succ (succ zero) (defExt_axiom_nonvacuity); both sides fail when two is interpreted as 3 (dTwo_three_not_models_defAxiom, defExt_unfold_equiv_ce_axiom, dTwo_deltaConv_sound_and_unsound); two convertible but different sentences are exhibited in dTwo_deltaConv_examples.",
+  "nonvacuity_witness_lean": "Toy.Extension.defExt_axiom_nonvacuity",
+  "non_claims": [
+   "Kernel definitional equality of a dependent type theory is not modeled: Defn.theory adds a first-order defining axiom, and Defn.DeltaConv is conversion for one defined symbol over first-order syntax (no beta, iota or eta, no type-level conversion such as Vec a c versus Vec a e).",
+   "Items (ii) and (iii) quantify over all formulas; for one fixed formula, truth can be preserved without the defining axiom (unfold_preserves_tru_without_defAxiom).",
+   "The unfolding is one specific syntactic function (Defn.unfold); nothing is said about other old-language equivalents, or about the size of the unfolding.",
+   "Depth: the proof uses a substitution lemma for formulas under binders.",
+   "Recursive definitions (the new symbol occurring in its own definiens), type or inductive definitions, definitions of a function symbol by a formula with a proved unique-existence condition, and polymorphic or overloaded definitions are not modeled."
+  ],
+  "prior_art": [
+   "Joseph R. Shoenfield, Mathematical Logic, Addison-Wesley, Reading MA, 1967, Section 4.6 'Extensions by definitions' (section title confirmed from the table of contents; page range approximately pp. 57-60, not visually confirmed). Treats extensions by definitions proof-theoretically over non-empty domains; the semantic statements here are not quoted from it.",
+   "The Lean Language Reference, leanprover/reference-manual tag v4.34.0 (commit a6451f0647eb4dc46fce2dd0532331c59351f87c), Manual/Defs.lean: in the kernel a defined constant 'may be replaced via delta-reduction with the term that it stands for', and in the elaborator 'this replacement is governed by the constant's reducibility' (lines 489-490); 'Opaque constants are defined constants that are not subject to delta-reduction in the kernel' and 'can only be used for types that are inhabited' (lines 554-556). Cited for context; Lean's kernel is not formalized here."
+  ],
+  "design_question": "When may a checker see through a defined name to its body (unfold it, or identify terms up to unfolding) without changing the meaning of any statement?"
+ },
+ {
+  "id": "explicit-definability-implies-unique-expansion",
+  "lean": "Toy.Extension.fnExplicitlyDefinable_expansion_unique",
+  "lean_names": [
+   "Toy.Extension.axPc_not_fnExplicitlyDefinable",
+   "Toy.Extension.defnFn_theory_fnExplicitlyDefinable",
+   "Toy.Extension.falsum_theory_fnExplicitlyDefinable_no_model",
+   "Toy.Extension.fnExplicitlyDefinable_of_no_model",
+   "Toy.Extension.fnExplicitlyDefinable_satisfiable_not_conservative"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For a theory T' over L plus one new k-ary function symbol c: if c is explicitly definable in T' (FnExplicitlyDefinable T': some old-language formula theta(y, x) satisfies T' |= forall y x, (c(x) = y <-> theta(y, x))), then any two models S1, S2 of T' on the same carrier whose reducts to L coincide are equal.",
+  "hypotheses": [
+   {
+    "name": "hdef : FnExplicitlyDefinable T'",
+    "purpose": "The substantive hypothesis: transparency of c, modeled as explicit definability. Tight; witness class: the language {P} plus a fresh constant c with the single axiom P c, on Bool with P everywhere true, where c = true and c = false are two models with the same reduct.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.axPc_two_lawful_interpretations"
+   },
+   {
+    "name": "h₁ : S₁.ModelsTh T'",
+    "purpose": "Assumes S1 is a model of T'. Tight; witness class: {zero, succ, le} on Nat with the definitional extension by two, S1 the expansion interpreting two as 3 and S2 the canonical expansion (the counterexample records both orders).",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.fnExplicitlyDefinable_expansion_unique_ce_model"
+   },
+   {
+    "name": "h₂ : S₂.ModelsTh T'",
+    "purpose": "Assumes S2 is a model of T'. Tight; same witness class with the roles of S1 and S2 exchanged.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.fnExplicitlyDefinable_expansion_unique_ce_model"
+   },
+   {
+    "name": "hred : S₁.reduct (SigHom.inclFn L k) = S₂.reduct (SigHom.inclFn L k)",
+    "purpose": "Assumes the two models agree on the old symbols. Tight; witness class: {zero, succ, le} on Nat with the definitional extension by two, comparing the canonical expansions of natStr and natStr2.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.fnExplicitlyDefinable_expansion_unique_ce_reduct"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "The definitional extension of the empty {zero, succ, le}-theory by two is explicitly definable and has a model (take S1 = S2 that model).",
+  "nonvacuity_witness_lean": "Toy.Extension.fnExplicitlyDefinable_nonvacuity",
+  "non_claims": [
+   "The converse (uniqueness of expansions implies explicit definability, Beth's theorem) is not proved here.",
+   "The theorem is about a new function symbol; the analogue for a new relation symbol is not stated.",
+   "Transparency here means explicit definability by a first-order formula of the old language; it is not kernel delta-reduction in a dependent type theory.",
+   "WeakSortSpec and StrongSortSpec are higher-order characterizations of a function on List Nat; this first-order theorem does not apply to them, and any analogy to weakSortSpec_admits_natSort_and_weirdSort is informal (not proved here).",
+   "Separately proved consequences, which are not part of this theorem's statement: a symbol introduced by an explicit definition is explicitly definable in the definitional extension (defnFn_theory_fnExplicitlyDefinable), and the constant whose sole axiom is P c is not explicitly definable (axPc_not_fnExplicitlyDefinable).",
+   "FnExplicitlyDefinable T' holds vacuously when T' has no model on any carrier (fnExplicitlyDefinable_of_no_model; instance: falsum_theory_fnExplicitlyDefinable_no_model); the conclusion is then vacuous as well.",
+   "For a satisfiable T', FnExplicitlyDefinable T' gives uniqueness of expansions (S1 = S2), not conservativity or the expansion property over a base theory: singletonDefTheory explicitly defines c and has a model, yet it entails the old-language sentence forall x y, x = y, which the empty {P}-theory does not entail; so it is not Conservative over the empty theory and does not have the ExpansionProperty over it (fnExplicitlyDefinable_satisfiable_not_conservative)."
+  ],
+  "prior_art": [
+   "Alessandro Padoa, 'Essai d'une theorie algebrique des nombres entiers, precede d'une introduction logique a une theorie deductive quelconque', Bibliotheque du Congres International de Philosophie, vol. 3, Paris, 1901, pp. 309-365 (bibliographic data from a secondary bibliography; the two-model method for showing that a primitive is not definable from the others is attributed to this paper in the literature on Beth's theorem).",
+   "E. W. Beth, 'On Padoa's method in the theory of definition', Proceedings KNAW Series A 56 = Indagationes Mathematicae 15 (1953), pp. 330-339, DOI 10.1016/S1385-7258(53)50042-3 (the converse direction, implicit definability implies explicit definability, is Beth's definability theorem; not proved here)."
+  ],
+  "design_question": "Can a symbol that a library characterizes by lemmas, without a definition, be read as an abbreviation of some old-language definiens, that is, is its name transparent?"
+ },
+ {
+  "id": "expansion-property-implies-conservative",
+  "lean": "Toy.Extension.expansionProperty_implies_conservative",
+  "lean_names": [
+   "Toy.Extension.noninjective_hom_empty_theories_not_conservative"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For any signature morphism iota : L -> L', theory T over L and theory T' over L': if every model of T expands (same carrier, old symbols read through iota unchanged) to a model of T', then T' is conservative over T along iota.",
+  "hypotheses": [
+   {
+    "name": "hexp : ExpansionProperty ι T T'",
+    "purpose": "Assumes every model of T expands. Tight; witness class: the language {P} plus a fresh constant c with the axiom P c over the empty theory (a one-point countermodel).",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.expansionProperty_implies_conservative_ce"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Adding a fresh 0-ary relation symbol with no axioms to the empty {P}-theory has the expansion property.",
+  "nonvacuity_witness_lean": "Toy.Extension.expansionProperty_nonvacuity",
+  "non_claims": [
+   "The converse fails: conservative_not_implies_expansionProperty.",
+   "Along the non-injective morphism ιCollapse from {a, b} (two 0-ary relation symbols) to a language with one 0-ary relation symbol, the empty theory over the target language is not Conservative over the empty theory over the source language and does not have the ExpansionProperty over it (noninjective_hom_empty_theories_not_conservative).",
+   "Terminology: ExpansionProperty is what algebraic specification often calls model-theoretic conservativity, and Conservative is consequence-conservativity (terminology remark; no source is cited for it here)."
+  ],
+  "prior_art": [
+   "Wilfrid Hodges, A Shorter Model Theory, Cambridge University Press, 1997, ISBN 978-0-521-58713-6, Section 2.6 'Translations' (pp. 51-58, from the table of contents). General reference for reducts and expansions over non-empty structures; no exercise-level statement is claimed."
+  ],
+  "design_question": "Is showing that every model of the old theory expands enough to establish that an extension is conservative?"
+ },
+ {
+  "id": "axiom-p-c-not-conservative",
+  "lean": "Toy.Extension.axiom_P_c_not_conservative",
+  "lean_names": [
+   "Toy.Extension.axPc_not_fnExplicitlyDefinable"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "Over the language {P} with one unary predicate, the axiomatic extension of the empty theory by a fresh constant c with the single axiom P c entails the old-language sentence exists x, P x, which the empty theory does not entail; hence the extension is not conservative and does not have the expansion property.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance (no hypotheses).",
+  "non_claims": [
+   "An axiomatized symbol here models unchecked first-order axioms about a fresh symbol. It is not a model of Lean's opaque keyword (which requires an inhabited type and attaches no characterizing axioms) or of @[irreducible] definitions (which keep one fixed body); these comparisons are informal (not proved here).",
+   "Axioms that admit a lawful interpretation in every model of the base theory give conservative extensions (expansionProperty_implies_conservative).",
+   "The axiom P c also leaves c undetermined: it is not explicitly definable (axPc_not_fnExplicitlyDefinable)."
+  ],
+  "prior_art": [
+   "Standard textbook-style example; no specific source is claimed.",
+   "The Lean Language Reference, leanprover/reference-manual tag v4.34.0 (commit a6451f0647eb4dc46fce2dd0532331c59351f87c), Manual/Defs.lean: in the kernel a defined constant 'may be replaced via delta-reduction with the term that it stands for', and in the elaborator 'this replacement is governed by the constant's reducibility' (lines 489-490); 'Opaque constants are defined constants that are not subject to delta-reduction in the kernel' and 'can only be used for types that are inhabited' (lines 554-556). Cited for context; Lean's kernel is not formalized here."
+  ],
+  "design_question": "Can characterizing a new constant by an axiom change what is true of the old vocabulary?"
+ },
+ {
+  "id": "fresh-constant-not-conservative-with-empty-carriers",
+  "lean": "Toy.Extension.fresh_constant_not_conservative_with_empty_carriers",
+  "lean_names": [
+   "Toy.Extension.fresh_constant_conservative_iff_entails_nonempty",
+   "Toy.Extension.fresh_constant_conservative_of_nonempty_models"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "With carriers allowed to be empty, over the language {P} (which has no closed terms), adding one fresh constant with no axioms to the empty theory is not conservative: the extension entails exists x, x = x, and the empty theory does not.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance (no hypotheses).",
+  "non_claims": [
+   "For every signature L and theory T over L, adding a fresh constant with no axioms is conservative iff T entails exists x, x = x (fresh_constant_conservative_iff_entails_nonempty; the positive direction is fresh_constant_conservative_of_nonempty_models).",
+   "The link to Lean's requirement that opaque constants have inhabited types is an informal analogy (not proved here).",
+   "Explicit definitions are unaffected: a defined constant has a closed definiens (defExt_conservative)."
+  ],
+  "prior_art": [
+   "Andrzej Mostowski, 'On the rules of proof in the pure functional calculus of the first order', Journal of Symbolic Logic 16(2):107-111, 1951, DOI 10.2307/2266682, and Theodore Hailperin, 'Quantification theory and empty individual-domains', Journal of Symbolic Logic 18(3):197-200, 1953, DOI 10.2307/2267402 (first-order logic over possibly empty domains; background for the empty-carrier phenomenon; the conservativity statement here is not quoted from them).",
+   "The Lean Language Reference, leanprover/reference-manual tag v4.34.0 (commit a6451f0647eb4dc46fce2dd0532331c59351f87c), Manual/Defs.lean: in the kernel a defined constant 'may be replaced via delta-reduction with the term that it stands for', and in the elaborator 'this replacement is governed by the constant's reducibility' (lines 489-490); 'Opaque constants are defined constants that are not subject to delta-reduction in the kernel' and 'can only be used for types that are inhabited' (lines 554-556). Cited for context; Lean's kernel is not formalized here."
+  ],
+  "design_question": "Is declaring a new constant without axioms always harmless when carriers may be empty?"
+ },
+ {
+  "id": "conservative-not-implies-expansion-property",
+  "lean": "Toy.Extension.conservative_not_implies_expansionProperty",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "Conservativity does not imply the expansion property: for T = Th(N0), the complete theory of (Nat + Nat, P = left), and T' = T plus 'the new unary function f maps the complement of P injectively into P', T' is conservative over T but does not have the expansion property; the model M0 = (Nat + (Nat -> Bool), P = left) of T has no expansion to a model of T'.",
+  "hypotheses": [],
+  "depth": "substantive",
+  "nonvacuity_witness": "Concrete instance (no hypotheses).",
+  "non_claims": [
+   "T = Th(N0) is a complete theory given as a predicate on sentences, not a recursively axiomatized theory.",
+   "The standard compactness-based characterization ('T' is conservative over T iff every model of T is elementarily equivalent to a reduct of a model of T'') is not proved here.",
+   "Proof note: M0 |= Th(N0) is shown by a back-and-forth argument for one unary predicate with infinite extension and complement; the non-expansion uses Cantor's diagonal argument; compactness is not used."
+  ],
+  "prior_art": [
+   "Classical back-and-forth technique and Cantor's diagonal argument; no source for this exact countermodel was verified, so none is claimed.",
+   "Wilfrid Hodges, A Shorter Model Theory, Cambridge University Press, 1997, ISBN 978-0-521-58713-6, Section 2.6 'Translations' (pp. 51-58, from the table of contents). General reference for reducts and expansions over non-empty structures; no exercise-level statement is claimed."
+  ],
+  "design_question": "Is conservativity of a specification enough to guarantee that every intended model can be extended to interpret the new symbols?"
+ },
+ {
+  "id": "axext-entails-iff-lawful-interpretations",
+  "lean": "Toy.Extension.axExt_entails_iff_lawful_interpretations",
+  "lean_names": [
+   "Toy.Extension.weakSortSpec_satisfiable_not_determines"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For a theory T over L, axioms A over L plus one new k-ary function symbol, and a sentence psi of the extended language: T + A entails psi iff psi holds in S.withFn g for every model S of T (any carrier in Type) and every interpretation g of the new symbol for which S.withFn g satisfies A.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The axiom P c has a lawful interpretation (one point, P true, c that point).",
+  "nonvacuity_witness_lean": "Toy.Extension.axExt_lawful_interpretation_exists",
+  "non_claims": [
+   "Reference point: this is the definition of semantic consequence restricted to expansions; it is included for use by the other cards.",
+   "An axiomatized symbol here models unchecked first-order axioms about a fresh symbol. It is not a model of Lean's opaque keyword (which requires an inhabited type and attaches no characterizing axioms) or of @[irreducible] definitions (which keep one fixed body); these comparisons are informal (not proved here).",
+   "Conservativity of an axiomatic extension follows from existence of a lawful interpretation in every model of the base theory (expansionProperty_implies_conservative), not from uniqueness; the loose characterization WeakSortSpec is satisfiable yet does not determine a function (weakSortSpec_satisfiable_not_determines)."
+  ],
+  "prior_art": [
+   "Standard model-theoretic (loose) semantics of axiomatized symbols; no specific source is claimed.",
+   "Wilfrid Hodges, A Shorter Model Theory, Cambridge University Press, 1997, ISBN 978-0-521-58713-6, Section 2.6 'Translations' (pp. 51-58, from the table of contents). General reference for reducts and expansions over non-empty structures; no exercise-level statement is claimed."
+  ],
+  "design_question": "What may a reader conclude about a symbol that a library characterizes by axioms and no definition?"
+ },
+ {
+  "id": "weak-sort-spec-admits-natsort-and-weirdsort",
+  "lean": "Toy.Extension.weakSortSpec_admits_natSort_and_weirdSort",
+  "lean_names": [
+   "Toy.Extension.false_spec_atMostOneLawful_not_determines",
+   "Toy.Extension.weakSortSpec_satisfiable_not_determines"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "plain_claim": "The characterization WeakSortSpec of a function List Nat -> List Nat ('for every list, the output is sorted by <= and has the input's length') is satisfied by merge sort natSort and by weirdSort = (l |-> replicate (length l) 0); these two functions differ, so WeakSortSpec has more than one lawful interpretation (not AtMostOneLawful WeakSortSpec).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance (no hypotheses).",
+  "non_claims": [
+   "WeakSortSpec is satisfiable: existence without uniqueness (weakSortSpec_satisfiable_not_determines).",
+   "AtMostOneLawful alone is vacuous for an unsatisfiable characterization (false_spec_atMostOneLawful_not_determines); the positive counterpart for StrongSortSpec states existence as well (strongSortSpec_determines).",
+   "Does not say which lemmas a library should state, or that other weak characterizations fail in the same way."
+  ],
+  "prior_art": [
+   "Alessandro Padoa, 'Essai d'une theorie algebrique des nombres entiers, precede d'une introduction logique a une theorie deductive quelconque', Bibliotheque du Congres International de Philosophie, vol. 3, Paris, 1901, pp. 309-365 (bibliographic data from a secondary bibliography; the two-model method for showing that a primitive is not definable from the others is attributed to this paper in the literature on Beth's theorem).",
+   "E. W. Beth, 'On Padoa's method in the theory of definition', Proceedings KNAW Series A 56 = Indagationes Mathematicae 15 (1953), pp. 330-339, DOI 10.1016/S1385-7258(53)50042-3 (the converse direction, implicit definability implies explicit definability, is Beth's definability theorem; not proved here)."
+  ],
+  "design_question": "Can a function characterized by plausible lemmas still mean something its name does not promise?"
+ },
+ {
+  "id": "strong-sort-spec-determines-natsort",
+  "lean": [
+   "Toy.Extension.strongSortSpec_iff_eq_natSort",
+   "Toy.Extension.strongSortSpec_determines"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "A function f : List Nat -> List Nat satisfies StrongSortSpec ('for every list, the output is sorted by <= and is a permutation of the input') iff f = natSort (merge sort). In particular StrongSortSpec determines a function: it has a lawful interpretation, and at most one.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Merge sort satisfies StrongSortSpec.",
+  "nonvacuity_witness_lean": "Toy.Extension.natSort_strongSortSpec",
+  "non_claims": [
+   "The uniqueness part follows from antisymmetry of <= on Nat through List.Perm.eq_of_pairwise (two lists that are sorted by an antisymmetric relation and are permutations of each other are equal); existence (natSort_strongSortSpec) uses totality and transitivity through the merge-sort library lemmas. For a preorder that is not antisymmetric, uniqueness can fail (not proved here).",
+   "The statements are about <= on Nat; other orders and element types are not treated."
+  ],
+  "prior_art": [
+   "Lean 4 core v4.34.1, Init/Data/List/Perm.lean line 530, theorem List.Perm.eq_of_pairwise: two lists sorted by a relation that is antisymmetric on their elements and permutations of each other are equal (used in the proof)."
+  ],
+  "design_question": "Which characterization of a sorting function leaves no room for unintended lawful interpretations?"
+ },
+ {
+  "id": "label-deciders-agree-on-examples-one-misses-spec",
+  "lean": "Toy.Extension.label_deciders_agree_on_examples_one_misses_spec",
+  "lean_names": [
+   "Toy.Extension.label_deciders_conclusion_without_hypotheses"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For any type a with decidable equality, intended predicate Spec, lists Pos and Neg with correct labels (every element of Pos satisfies Spec and no element of Neg does) and point x0 outside Pos ++ Neg: the two deciders memDecider Pos ('x is in Pos') and memDecider (x0 :: Pos) ('x is x0 or in Pos') both agree with Spec on every example, and at least one of them does not decide Spec.",
+  "hypotheses": [
+   {
+    "name": "[DecidableEq α]",
+    "purpose": "Used to form memDecider (decide (x in l)). The deciders are built from the lists and this instance without consulting Spec; they are executable when the supplied instance is computable. Every type has a classical instance, so the hypothesis restricts nothing.",
+    "tightness": "harmless"
+   },
+   {
+    "name": "hlab : LabelsCorrect Spec Pos Neg",
+    "purpose": "Used to show that memDecider Pos agrees with Spec on the examples. Tight; witness class: Bool with one mislabeled positive example (Spec = (. = true), Pos = [false], Neg = [], x0 = true). The conclusion can also hold when this hypothesis fails: on Nat with Spec = (. = 0), Pos = Neg = [0] and x0 = 1 the labels are incorrect and the conclusion holds (label_deciders_conclusion_without_hypotheses).",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.label_deciders_ce_labels"
+   },
+   {
+    "name": "hx₀ : x₀ ∉ Pos ++ Neg",
+    "purpose": "Used to make the two deciders differ at x0. Tight; witness class: Bool exhausted by the examples (Spec = (. = true), Pos = [true], Neg = [false], x0 = true), where both deciders decide Spec. The conclusion can also hold when this hypothesis fails: on Nat with Spec = True, Pos = [0], Neg = [] and x0 = 0 the conclusion holds (label_deciders_conclusion_without_hypotheses).",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.label_deciders_ce_point"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Nat, Spec = even, Pos = [0, 2], Neg = [1], x0 = 4.",
+  "nonvacuity_witness_lean": "Toy.Extension.label_deciders_nonvacuity",
+  "non_claims": [
+   "Does not say which of the two deciders is wrong; that depends on Spec x0.",
+   "Deciders are Boolean-valued functions; computability is not expressed as a proposition. memDecider Pos is executable when the supplied DecidableEq instance is computable; an instance exists classically for every type, and computability is outside the formal statement.",
+   "The deciders are built from the labels alone; deciders that consult further information are not addressed."
+  ],
+  "prior_art": [
+   "Tom M. Mitchell, Machine Learning, McGraw-Hill, 1997, Section 2.7.2 'An Unbiased Learner' (pp. 40-41: with the power set of the instances as hypothesis space, 'each unobserved instance will be classified positive by precisely half the hypotheses in the version space') and Section 2.7.3 'The Futility of Bias-Free Learning' (p. 42)."
+  ],
+  "design_question": "Can a finite set of positive and negative examples certify that a definition means what its name says?"
+ },
+ {
+  "id": "unrestricted-decider-not-certified-by-finite-examples",
+  "lean": "Toy.Extension.unrestricted_decider_not_certified_by_finite_examples_of_infinite",
+  "lean_names": [
+   "Toy.Extension.decides_iff_reference_matches_spec",
+   "Toy.Extension.reference_equivalence_moves_trust",
+   "Toy.Extension.threshold_examples_certify_nonvacuity"
+  ],
+  "kind": "impossibility",
+  "tier": "T0",
+  "plain_claim": "For any infinite type a (no finite list contains every element), any intended predicate Spec on a and any finite example list E: some function d : a -> Bool, drawn from the unrestricted class of all Boolean-valued functions, agrees with Spec on E but does not decide Spec.",
+  "hypotheses": [
+   {
+    "name": "hinf : InfiniteType α",
+    "purpose": "Provides a point outside the examples where d can deviate. Tight; witness class: the finite type Bool with the exhaustive example list [true, false], where every decider agreeing on the examples decides Spec.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.unrestricted_decider_not_certified_ce_finite"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Nat is infinite.",
+  "nonvacuity_witness_lean": "Toy.Extension.unrestricted_decider_not_certified_nonvacuity",
+  "positive_control_lean": [
+   "Toy.Extension.threshold_examples_certify",
+   "Toy.Extension.exhaustive_examples_certify",
+   "Toy.Extension.reference_equivalence_certifies"
+  ],
+  "non_claims": [
+   "Escape hatch: the decider ranges over all functions a -> Bool. Within a restricted class, finite examples can certify on an infinite domain: for threshold deciders x |-> (j <= x) on Nat, agreement with (k <= .) on the two examples k - 1 and k certifies the decider (threshold_examples_certify).",
+   "Rules out finite example lists as certificates of correctness over the unrestricted class; it does not make examples useless as falsification checks that reject wrong definitions.",
+   "Given d proved equivalent to a reference definition ref, d decides Spec iff ref matches Spec (decides_iff_reference_matches_spec): an equivalence theorem moves the trust to ref.",
+   "Deciders are Boolean-valued functions; computability is not modeled."
+  ],
+  "prior_art": [
+   "Tom M. Mitchell, Machine Learning, McGraw-Hill, 1997, Section 2.7.2 'An Unbiased Learner' (pp. 40-41: with the power set of the instances as hypothesis space, 'each unobserved instance will be classified positive by precisely half the hypotheses in the version space') and Section 2.7.3 'The Futility of Bias-Free Learning' (p. 42).",
+   "Sally A. Goldman and Michael J. Kearns, 'On the Complexity of Teaching', Journal of Computer and System Sciences 50(1):20-31, 1995, DOI 10.1006/jcss.1995.1003 (defines the teaching dimension of a concept class, the number of labeled examples needed to single out a concept within that class; context for the restricted-class positive control; it does not state the unrestricted infinite-domain impossibility)."
+  ],
+  "design_question": "Can a finite set of positive and negative examples certify that a definition means what its name says?"
+ },
+ {
+  "id": "adjrel-iff-pairwise-on-all-lists-iff-transitive",
+  "lean": "Toy.Extension.adjRel_iff_pairwise_on_all_lists_iff_transitive",
+  "lean_names": [
+   "Toy.Extension.pairwise_implies_adjRel",
+   "Toy.Extension.pairwise_implies_adjRel_ce"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For any relation r on a type a: 'adjacent elements are related' (AdjRel r l) and 'every earlier element is related to every later one' (List.Pairwise r l) agree on every list l iff r is transitive.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "<= on Nat is transitive and the two readings agree on [1, 2, 2, 3].",
+  "nonvacuity_witness_lean": "Toy.Extension.sorted_readings_nonvacuity",
+  "non_claims": [
+   "The direction from List.Pairwise r l to AdjRel r l holds for every r and l (pairwise_implies_adjRel; its hypothesis is tight by pairwise_implies_adjRel_ce).",
+   "For one fixed list, transitivity of r on the list's elements suffices (adjRel_iff_pairwise_of_transOn) and is not necessary (transOn_not_necessary_for_single_list)."
+  ],
+  "prior_art": [
+   "leanprover-community/batteries, tag v4.29.0 (commit 756e3321fd3b02a85ffda19fef789916223e578c), Batteries/Data/List/Lemmas.lean line 423: theorem List.isChain_iff_pairwise [Trans R R R] : IsChain R l <-> Pairwise R l (under global transitivity).",
+   "Rocq standard library, rocq-prover/stdlib tag V9.2.0, theories/Sorting/Sorted.v lines 135-136: Lemma Sorted_StronglySorted : Transitive R -> forall l, Sorted l -> StronglySorted l."
+  ],
+  "design_question": "When does the cheap definition of 'sorted' (adjacent pairs) mean what the name promises (all pairs)?"
+ },
+ {
+  "id": "adjrel-iff-pairwise-of-transon",
+  "lean": "Toy.Extension.adjRel_iff_pairwise_of_transOn",
+  "lean_names": [
+   "Toy.Extension.ne_not_transOn"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For any relation r and list l: if r is transitive on the elements of l (TransOn r l), then AdjRel r l holds iff List.Pairwise r l holds.",
+  "hypotheses": [
+   {
+    "name": "htr : TransOn r l",
+    "purpose": "Lets adjacent relatedness propagate along the list. Tight; witness class: r = (!=) on Nat with the three-element list [0, 1, 0].",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.adjRel_ne_not_pairwise"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "<= on Nat is transitive on [1, 2, 2, 3].",
+  "nonvacuity_witness_lean": "Toy.Extension.sorted_readings_nonvacuity",
+  "non_claims": [
+   "TransOn r l lets the three elements range independently over the members of l, with repetition and ignoring list positions (so [0, 1] fails TransOn (!=) via 0, 1, 0; ne_not_transOn); a version restricted to positions i < j < k is not stated.",
+   "Not necessary for a single list (transOn_not_necessary_for_single_list)."
+  ],
+  "prior_art": [
+   "leanprover-community/batteries, tag v4.29.0 (commit 756e3321fd3b02a85ffda19fef789916223e578c), Batteries/Data/List/Lemmas.lean line 423: theorem List.isChain_iff_pairwise [Trans R R R] : IsChain R l <-> Pairwise R l (under global transitivity).",
+   "Rocq standard library, rocq-prover/stdlib tag V9.2.0, theories/Sorting/Sorted.v lines 135-136: Lemma Sorted_StronglySorted : Transitive R -> forall l, Sorted l -> StronglySorted l."
+  ],
+  "design_question": "When does the cheap definition of 'sorted' (adjacent pairs) mean what the name promises (all pairs)?"
+ },
+ {
+  "id": "transon-not-necessary-for-single-list",
+  "lean": "Toy.Extension.transOn_not_necessary_for_single_list",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "For r = (!=) on Nat and the list [0, 1], AdjRel r [0, 1] and List.Pairwise r [0, 1] agree, although r is not transitive on the elements of [0, 1].",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance (no hypotheses).",
+  "non_claims": [
+   "Uniform agreement over all lists still requires transitivity (adjRel_iff_pairwise_on_all_lists_iff_transitive)."
+  ],
+  "prior_art": [
+   "No source is claimed for this small counterexample."
+  ],
+  "design_question": "When does the cheap definition of 'sorted' (adjacent pairs) mean what the name promises (all pairs)?"
+ },
+ {
+  "id": "stored-formula-stable-under-expansion",
+  "lean": "Toy.Extension.stored_formula_stable_under_expansion",
+  "lean_names": [
+   "Toy.Extension.noninjective_hom_empty_theories_not_conservative",
+   "Toy.Extension.reinterpreted_symbol_need_not_flip_truth",
+   "Toy.Extension.sat_map",
+   "Toy.Extension.stored_formula_stable_ce_reinterpreted"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For any signature morphism iota : L -> L', structure S' of L' and formula phi of L: under every assignment, phi read along iota has the same truth value in S' as phi has in the reduct of S' (the old symbols read through iota).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Expanding a {P}-structure by a constant keeps the old symbols: its reduct is the original structure.",
+  "nonvacuity_witness_lean": "Toy.Extension.stored_formula_stable_nonvacuity",
+  "non_claims": [
+   "Reference point: the same statement as the infrastructure lemma sat_map (structural induction on formulas).",
+   "Stability is relative to the reduct: reinterpreting an old symbol can change a truth value (stored_formula_stable_ce_reinterpreted) but need not (reinterpreted_symbol_need_not_flip_truth).",
+   "Along the non-injective morphism ιCollapse from {a, b} (two 0-ary relation symbols) to a language with one 0-ary relation symbol, the empty theory over the target language is not Conservative over the empty theory over the source language and does not have the ExpansionProperty over it (noninjective_hom_empty_theories_not_conservative).",
+   "Displayed text is not stable under environment extension in the toy elaborator (default_numeral_change_flips_truth, new_coercion_flips_truth, new_instance_flips_truth)."
+  ],
+  "prior_art": [
+   "Wilfrid Hodges, A Shorter Model Theory, Cambridge University Press, 1997, ISBN 978-0-521-58713-6, Section 2.6 'Translations' (pp. 51-58, from the table of contents). General reference for reducts and expansions over non-empty structures; no exercise-level statement is claimed."
+  ],
+  "design_question": "Does extending a library's vocabulary change the meaning of statements already stored as syntax trees?"
+ },
+ {
+  "id": "text-not-stable-under-env-extension",
+  "lean": [
+   "Toy.Extension.default_numeral_change_flips_truth",
+   "Toy.Extension.new_coercion_flips_truth",
+   "Toy.Extension.new_instance_flips_truth"
+  ],
+  "lean_names": [
+   "Toy.Extension.elab_change_without_truth_change"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "In a toy elaborator from displayed arithmetic comparisons to stored sentences, each of three environment extensions (prepending int as the default numeral type, prepending a coercion nat -> int, prepending an instance making / on int Euclidean) changes the stored reading of an old displayed string from a false sentence to a true one in the intended structure on Int.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instances (no hypotheses).",
+  "non_claims": [
+   "Env.elab computes one join type for both sides of a comparison and pushes coercions to numeral leaves, including inside ascribed subterms (so - in (0 : nat) - (1 : nat) < (0 : int) becomes integer subtraction after the coercion is added); Lean 4 elaborates (0 : Nat) - (1 : Nat) at Nat before coercing (not proved here).",
+   "A changed elaboration need not change truth (elab_change_without_truth_change).",
+   "Notation and name-resolution changes are not modeled."
+  ],
+  "prior_art": [
+   "Lean 4 core v4.34.1, Init/Data/Int/DivMod/Basic.lean line 111: the Div Int instance uses Int.ediv (Euclidean division); context for the instance countermodel."
+  ],
+  "design_question": "Does extending a library's environment change the meaning of statements kept as displayed text rather than as stored syntax?"
+ },
+ {
+  "id": "elab-preserves-check-iff",
+  "lean": [
+   "Toy.Extension.elabPreservesCheck_iff_elabPreservesAccepted",
+   "Toy.Extension.elabInvariantCheck_iff_elabInvariantOn"
+  ],
+  "lean_names": [
+   "Toy.Extension.additive_coercion_preserves_but_not_invariant",
+   "Toy.Extension.elabInvariantOn_symm",
+   "Toy.Extension.reinterpreted_symbol_need_not_flip_truth",
+   "Toy.Extension.stored_formula_stable_ce_reinterpreted"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "plain_claim": "For any two environments e, e' and finite list D of displayed strings of the toy elaborator: elabPreservesCheck e e' D = true iff every string of D that elaborates under e elaborates to the same stored sentence under e' (ElabPreservesAccepted); and elabInvariantCheck e e' D = true iff every string of D has the same elaboration result, including failure, under e and e' (ElabInvariantOn).",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The default-type change preserves the annotated strings sCoe and sDiv and does not preserve 0 - 1 < 0.",
+  "nonvacuity_witness_lean": "Toy.Extension.default_change_preserves_examples",
+  "non_claims": [
+   "Reference point: the checkers are List.all over decidable equality of elaboration results; the theorem is definitional.",
+   "ElabInvariantOn is symmetric (elabInvariantOn_symm) and can reject an extension that changes no previously accepted string: adding the coercion nat -> int to a coercion-free environment preserves every accepted string of the whole surface language but is not invariant on [sCoe], which it newly accepts (additive_coercion_preserves_but_not_invariant).",
+   "ElabPreservesAccepted ignores strings rejected under e; whether a string is accepted is the separate check (e.elab s).isSome.",
+   "Equal stored syntax read under the same interpretations of its symbols has the same truth value (stored_formula_stable_under_expansion, relative to the reduct). Reinterpreting a referenced symbol can change a truth value (stored_formula_stable_ce_reinterpreted) but need not (reinterpreted_symbol_need_not_flip_truth)."
+  ],
+  "prior_art": [
+   "Lean 4 core v4.34.1, Init/Data/List/Lemmas.lean line 576, theorem List.all_eq_true (used in the proof)."
+  ],
+  "design_question": "Can re-elaborating a library's displayed statements decide whether an environment change preserved them?"
+ },
+ {
+  "id": "adequate-specconservative-implies-translated-domain-entails",
+  "lean": "Toy.Extension.adequate_specConservative_implies_translated_domain_entails",
+  "lean_names": [
+   "Toy.Extension.noninjective_hom_empty_theories_not_conservative",
+   "Toy.Extension.specExpansionProperty_adequate_iff"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "plain_claim": "For a signature morphism iota : LE -> L, domain knowledge K and a requirement R over LE, and a specification Spec over L: if K u Spec adds no LE-consequence to the translated K (SpecConservative) and K, Spec |= R (Adequate), then the translated K already entails the translated R.",
+  "hypotheses": [
+   {
+    "name": "hcons : SpecConservative ι K Spec",
+    "purpose": "The criterion under test. Tight; witness class: a two-symbol propositional base vocabulary {train, car} extended by one symbol gate, with K empty and Spec = {train -> gate, gate -> not car}.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.translated_domain_entails_ce_not_conservative"
+   },
+   {
+    "name": "hadq : Adequate ι K Spec R",
+    "purpose": "The requirement argument. Tight; same witness class, with the empty specification.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.translated_domain_entails_ce_not_adequate"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "Domain knowledge {not (train and car)} with the empty specification is conservative and adequate.",
+  "nonvacuity_witness_lean": "Toy.Extension.translated_domain_entails_nonvacuity",
+  "non_claims": [
+   "Consequence: under SpecConservative, a specification contributes nothing toward a requirement over LE; whenever K, Spec |= R holds, the translated K alone entails the translated R. In the setting with control and visibility, the analogous criterion ConservativeFor rejects the relatively consistent (SpecRelConsistent) and adequate specification of crossing_control_spec_relConsistent_not_envConservative.",
+   "The expansion-property criterion collapses in the same way: under SpecExpansionProperty, Adequate holds iff the translated K entails the translated R (specExpansionProperty_adequate_iff).",
+   "The conclusion is about the translated K. Reading it back as K |= R follows when the change of vocabulary is itself conservative (Conservative ι K (K.map ι), by the definition of Conservative); without that, the reading can fail: the empty theory over the target language (which has the same models as the translated empty theory) entails a translated sentence that the empty theory over the source language does not, for a fresh constant over empty carriers (fresh_constant_not_conservative_with_empty_carriers) and for a non-injective morphism (noninjective_hom_empty_theories_not_conservative).",
+   "This generic setting is not the reference-model split of Gunter et al.: there K and R may mention machine-controlled shared phenomena and the specification uses a smaller vocabulary; see specRelConsistent_adequate_ev_requirement_implies_domain_entails."
+  ],
+  "prior_art": [
+   "Pamela Zave and Michael Jackson, 'Four dark corners of requirements engineering', ACM Transactions on Software Engineering and Methodology 6(1):1-30, 1997, DOI 10.1145/237432.237434 (Section 4.1, p. 11: phenomena are environment- or machine-controlled and shared or unshared; p. 19 and Section 6.3, p. 27: the argument S, K |- R; Section 6.3, p. 27: the members of S 'do not constrain the environment; they are not stated in terms of any unshared actions or state components')."
+  ],
+  "design_question": "Can consequence-conservativity of K u Spec over K detect specifications that silently assume something about the environment?"
+ },
+ {
+  "id": "relconsistent-ev-requirement-implies-domain-entails",
+  "lean": "Toy.Extension.specRelConsistent_adequate_ev_requirement_implies_domain_entails",
+  "kind": "theorem",
+  "tier": "T1",
+  "plain_claim": "In a split LEv -> LS -> LW (machine-visible environment-controlled phenomena, shared phenomena, environment-visible phenomena) with domain knowledge K over LW, a specification Spec over LS and a sentence rho over LEv: if Spec is relatively consistent with K (SpecRelConsistent: for every model M of K, some LS-structure on M's carrier has the same LEv-reduct as M and satisfies Spec, and every such LS-structure is the LS-reduct of some model of K on that carrier) and K, Spec |= rho (rho translated to LW; SpecAdequate), then K |= rho already.",
+  "hypotheses": [
+   {
+    "name": "hrc : SpecRelConsistent ιVS ιSW K Spec",
+    "purpose": "The specification condition. Tight; witness class: a propositional split with train and car machine-visible and environment-controlled, gate machine-controlled, no hidden phenomena, K empty and Spec = {train -> gate, gate -> not car}.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.ev_requirement_ce_not_relConsistent"
+   },
+   {
+    "name": "hadq : SpecAdequate ιSW K Spec ((ρ.map ιVS).map ιSW)",
+    "purpose": "Specification adequacy. Tight; same witness class with the empty specification.",
+    "tightness": "tight",
+    "counterexample": "Toy.Extension.ev_requirement_ce_not_adequate"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Same split with K = {not (train and car)} and the empty specification.",
+  "nonvacuity_witness_lean": "Toy.Extension.ev_requirement_nonvacuity",
+  "positive_control_lean": "Toy.Extension.crossing_control_spec_relConsistent_not_envConservative",
+  "non_claims": [
+   "The theorem assumes the requirement is a translated LEv-sentence. For a requirement that mentions hidden environment phenomena the conclusion can fail: a relatively consistent specification meets a requirement that K alone does not entail (crossing_control_spec_relConsistent_not_envConservative).",
+   "SpecRelConsistent renders formula (5) of Gunter et al. model-theoretically, with all phenomena interpreted over one shared carrier; this correspondence is a modeling bridge (derived), not a kernel-checked fact about their notation.",
+   "Time, the machine M and the program P of the reference model are not modeled."
+  ],
+  "prior_art": [
+   "Carl A. Gunter, Elsa L. Gunter, Michael Jackson and Pamela Zave, 'A Reference Model for Requirements and Specifications', IEEE Software 17(3):37-43, 2000, DOI 10.1109/52.896248 (p. 38: e = eh u ev and s = sv u sh; terms for eh, ev and sv are 'used in W and R', and S is restricted to ev and sv; p. 40: specification adequacy (4) 'forall e s. W and S => R' and relative consistency (5) 'forall ev. (exists eh s. W) => (exists s. S) and (forall s. S => exists eh. W)').",
+   "Pamela Zave and Michael Jackson, 'Four dark corners of requirements engineering', ACM Transactions on Software Engineering and Methodology 6(1):1-30, 1997, DOI 10.1145/237432.237434 (Section 4.1, p. 11: phenomena are environment- or machine-controlled and shared or unshared; p. 19 and Section 6.3, p. 27: the argument S, K |- R; Section 6.3, p. 27: the members of S 'do not constrain the environment; they are not stated in terms of any unshared actions or state components')."
+  ],
+  "design_question": "Which requirements can a specification establish without assuming something about the environment?"
+ },
+ {
+  "id": "crossing-control-spec-relconsistent-not-envconservative",
+  "lean": "Toy.Extension.crossing_control_spec_relConsistent_not_envConservative",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "With train environment-controlled and machine-visible, car environment-controlled and hidden, gate machine-controlled, domain knowledge domainA = {gate -> not car} and specification specA = {train -> gate}: the specification meets not (train and car) (SpecAdequate), the domain knowledge alone does not entail it, the specification is relatively consistent (SpecRelConsistent ιVSA ιSWA domainA specA), and domain knowledge plus specification is not consequence-conservative over the domain knowledge for sentences over the environment-controlled vocabulary {train, car} (not ConservativeFor ιEWA domainA (withSpec ιSWA domainA specA)).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance (no hypotheses).",
+  "non_claims": [
+   "One example: it shows that ConservativeFor over the environment-controlled vocabulary fails for a specification that is adequate and SpecRelConsistent; it says nothing about how often this happens. Calling this control legitimate is the reading of SpecRelConsistent as the relative-consistency condition of Gunter et al. (derived, modeling bridge).",
+   "Whether gate -> not car is true of a real crossing is a domain assumption of the example, not a proved fact.",
+   "Name: 'envConservative' in the theorem name stands for ConservativeFor ιEWA domainA (withSpec ιSWA domainA specA), consequence-conservativity of domain knowledge plus specification over the domain knowledge for sentences over {train, car}. It is neither the generic SpecConservative of the vocabulary-extension setting nor Conservative ι T T' along a signature morphism ι."
+  ],
+  "prior_art": [
+   "Carl A. Gunter, Elsa L. Gunter, Michael Jackson and Pamela Zave, 'A Reference Model for Requirements and Specifications', IEEE Software 17(3):37-43, 2000, DOI 10.1109/52.896248 (p. 38: e = eh u ev and s = sv u sh; terms for eh, ev and sv are 'used in W and R', and S is restricted to ev and sv; p. 40: specification adequacy (4) 'forall e s. W and S => R' and relative consistency (5) 'forall ev. (exists eh s. W) => (exists s. S) and (forall s. S => exists eh. W)').",
+   "Pamela Zave and Michael Jackson, 'Four dark corners of requirements engineering', ACM Transactions on Software Engineering and Methodology 6(1):1-30, 1997, DOI 10.1145/237432.237434 (Section 4.1, p. 11: phenomena are environment- or machine-controlled and shared or unshared; p. 19 and Section 6.3, p. 27: the argument S, K |- R; Section 6.3, p. 27: the members of S 'do not constrain the environment; they are not stated in terms of any unshared actions or state components')."
+  ],
+  "design_question": "Can consequence-conservativity of K u Spec over K detect specifications that silently assume something about the environment?"
+ },
+ {
+  "id": "crossing-restricting-spec-violates-env-input-condition",
+  "lean": "Toy.Extension.crossing_restricting_spec_violates_env_input_condition",
+  "kind": "counterexample",
+  "tier": "T1",
+  "plain_claim": "With train and car environment-controlled and machine-visible, gate machine-controlled and empty domain knowledge (ιSWB is the identity, so the shared and environment-visible vocabularies coincide): the specification specB = {train -> gate, gate -> not car} meets not (train and car) (SpecAdequate), the empty domain knowledge does not entail not (train and car), and specB does not accept every environment input (not SpecAcceptsEveryEnvInput ιVSB ιSWB Theory.empty specB); moreover, for every specification Spec over these phenomena, if Spec meets not (train and car) with empty domain knowledge, then Spec is not relatively consistent (not SpecRelConsistent ιVSB ιSWB Theory.empty Spec).",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Concrete instance (no hypotheses).",
+  "non_claims": [
+   "The universal part is stated for this setting (car environment-controlled and visible to the machine, empty domain knowledge). In the different setting of crossing_control_spec_relConsistent_not_envConservative (car hidden, domain knowledge gate -> not car), an adequate specification that is SpecRelConsistent exists.",
+   "Calling the failure an assumption about the environment is the reading of the relative-consistency condition in Gunter et al.; it is a modeling bridge (derived), not a separate theorem.",
+   "Proof detail, not part of the statement: the witness for not SpecAcceptsEveryEnvInput is the one-point model in which train and car both hold; no structure on the shared phenomena with that train and car satisfies specB. The universal part follows from specRelConsistent_adequate_ev_requirement_implies_domain_entails."
+  ],
+  "prior_art": [
+   "Carl A. Gunter, Elsa L. Gunter, Michael Jackson and Pamela Zave, 'A Reference Model for Requirements and Specifications', IEEE Software 17(3):37-43, 2000, DOI 10.1109/52.896248 (p. 38: e = eh u ev and s = sv u sh; terms for eh, ev and sv are 'used in W and R', and S is restricted to ev and sv; p. 40: specification adequacy (4) 'forall e s. W and S => R' and relative consistency (5) 'forall ev. (exists eh s. W) => (exists s. S) and (forall s. S => exists eh. W)').",
+   "Pamela Zave and Michael Jackson, 'Four dark corners of requirements engineering', ACM Transactions on Software Engineering and Methodology 6(1):1-30, 1997, DOI 10.1145/237432.237434 (Section 4.1, p. 11: phenomena are environment- or machine-controlled and shared or unshared; p. 19 and Section 6.3, p. 27: the argument S, K |- R; Section 6.3, p. 27: the members of S 'do not constrain the environment; they are not stated in terms of any unshared actions or state components')."
+  ],
+  "design_question": "Which requirements can a specification establish without assuming something about the environment?"
+ }
+]

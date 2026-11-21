@@ -1,0 +1,7 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages": [],
+ "name":
+ "«conservative-extension-definitional-transparency-and-names-that-overpromise»",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

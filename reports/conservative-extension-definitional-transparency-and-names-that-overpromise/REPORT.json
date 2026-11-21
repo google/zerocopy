@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "lean",
+    "lean/mechanization",
+    "verification",
+    "verification/formalized-results",
+    "verification/conservative-extension",
+    "verification/definitional-extension",
+    "verification/explicit-definability",
+    "verification/loose-specification",
+    "verification/requirements-and-specifications",
+    "pl/elaboration",
+    "pl/definitional-transparency"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "The Lean Language Reference (Manual/Defs.lean)",
+      "identity": {
+        "repository": "leanprover/reference-manual",
+        "version": "v4.34.0",
+        "revision": "a6451f0647eb4dc46fce2dd0532331c59351f87c"
+      }
+    },
+    {
+      "name": "Batteries library (List.isChain_iff_pairwise)",
+      "identity": {
+        "repository": "leanprover-community/batteries",
+        "version": "v4.29.0",
+        "revision": "756e3321fd3b02a85ffda19fef789916223e578c"
+      }
+    },
+    {
+      "name": "Rocq standard library (Sorted_StronglySorted)",
+      "identity": {
+        "repository": "rocq-prover/stdlib",
+        "version": "V9.2.0",
+        "revision": "8dd155bc10529814202f8f4c643e5ae6c2c88fa6"
+      }
+    },
+    {
+      "name": "A Reference Model for Requirements and Specifications (Gunter, Gunter, Jackson, Zave; IEEE Software 17(3), 2000)",
+      "identity": {
+        "doi": "10.1109/52.896248"
+      }
+    },
+    {
+      "name": "Four Dark Corners of Requirements Engineering (Zave, Jackson; ACM TOSEM 6(1), 1997)",
+      "identity": {
+        "doi": "10.1145/237432.237434"
+      }
+    },
+    {
+      "name": "On Padoa's method in the theory of definition (Beth; Indagationes Mathematicae 15, 1953)",
+      "identity": {
+        "doi": "10.1016/S1385-7258(53)50042-3"
+      }
+    },
+    {
+      "name": "Safety and Conservativity of Definitions in HOL and Isabelle/HOL (Kuncar, Popescu; PACMPL 2(POPL), 2018)",
+      "identity": {
+        "doi": "10.1145/3158112"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

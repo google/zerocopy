@@ -1,0 +1,1554 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Extension.ABRel": [],
+    "Toy.Extension.ABRel.a": [],
+    "Toy.Extension.ABRel.a.elim": [],
+    "Toy.Extension.ABRel.a.sizeOf_spec": [],
+    "Toy.Extension.ABRel.b": [],
+    "Toy.Extension.ABRel.b.elim": [],
+    "Toy.Extension.ABRel.b.sizeOf_spec": [],
+    "Toy.Extension.ABRel.casesOn": [],
+    "Toy.Extension.ABRel.ctorElim": [],
+    "Toy.Extension.ABRel.ctorElimType": [],
+    "Toy.Extension.ABRel.ctorIdx": [],
+    "Toy.Extension.ABRel.noConfusion": [],
+    "Toy.Extension.ABRel.noConfusionType": [],
+    "Toy.Extension.ABRel.ofNat": [],
+    "Toy.Extension.ABRel.ofNat_ctorIdx": [],
+    "Toy.Extension.ABRel.rec": [],
+    "Toy.Extension.ABRel.recOn": [],
+    "Toy.Extension.AFn": [],
+    "Toy.Extension.AFn.add": [],
+    "Toy.Extension.AFn.add.elim": [],
+    "Toy.Extension.AFn.add.sizeOf_spec": [],
+    "Toy.Extension.AFn.arity": [
+      "propext"
+    ],
+    "Toy.Extension.AFn.arity.match_1": [
+      "propext"
+    ],
+    "Toy.Extension.AFn.casesOn": [],
+    "Toy.Extension.AFn.castNZ": [],
+    "Toy.Extension.AFn.castNZ.elim": [],
+    "Toy.Extension.AFn.castNZ.sizeOf_spec": [],
+    "Toy.Extension.AFn.castZN": [],
+    "Toy.Extension.AFn.castZN.elim": [],
+    "Toy.Extension.AFn.castZN.sizeOf_spec": [],
+    "Toy.Extension.AFn.ctorElim": [],
+    "Toy.Extension.AFn.ctorElimType": [],
+    "Toy.Extension.AFn.ctorIdx": [],
+    "Toy.Extension.AFn.divE": [],
+    "Toy.Extension.AFn.divE.elim": [],
+    "Toy.Extension.AFn.divE.sizeOf_spec": [],
+    "Toy.Extension.AFn.divT": [],
+    "Toy.Extension.AFn.divT.elim": [],
+    "Toy.Extension.AFn.divT.sizeOf_spec": [],
+    "Toy.Extension.AFn.lit": [],
+    "Toy.Extension.AFn.lit.elim": [],
+    "Toy.Extension.AFn.lit.inj": [],
+    "Toy.Extension.AFn.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.AFn.lit.noConfusion": [],
+    "Toy.Extension.AFn.lit.sizeOf_spec": [],
+    "Toy.Extension.AFn.noConfusion": [],
+    "Toy.Extension.AFn.noConfusionType": [],
+    "Toy.Extension.AFn.rec": [],
+    "Toy.Extension.AFn.recOn": [],
+    "Toy.Extension.AFn.subN": [],
+    "Toy.Extension.AFn.subN.elim": [],
+    "Toy.Extension.AFn.subN.sizeOf_spec": [],
+    "Toy.Extension.AFn.subZ": [],
+    "Toy.Extension.AFn.subZ.elim": [],
+    "Toy.Extension.AFn.subZ.sizeOf_spec": [],
+    "Toy.Extension.ARel": [],
+    "Toy.Extension.ARel.casesOn": [],
+    "Toy.Extension.ARel.ctorIdx": [],
+    "Toy.Extension.ARel.lt": [],
+    "Toy.Extension.ARel.lt.sizeOf_spec": [],
+    "Toy.Extension.ARel.noConfusion": [],
+    "Toy.Extension.ARel.noConfusionType": [],
+    "Toy.Extension.ARel.ofNat": [],
+    "Toy.Extension.ARel.ofNat_ctorIdx": [],
+    "Toy.Extension.ARel.rec": [],
+    "Toy.Extension.ARel.recOn": [],
+    "Toy.Extension.ASig": [
+      "propext"
+    ],
+    "Toy.Extension.Adequate": [],
+    "Toy.Extension.AdjRel": [],
+    "Toy.Extension.AdjRel.match_1": [],
+    "Toy.Extension.AgreesOn": [],
+    "Toy.Extension.AtMostOneLawful": [],
+    "Toy.Extension.BothInfinite": [],
+    "Toy.Extension.CEnvA": [],
+    "Toy.Extension.CEnvA.car": [],
+    "Toy.Extension.CEnvA.car.elim": [],
+    "Toy.Extension.CEnvA.car.sizeOf_spec": [],
+    "Toy.Extension.CEnvA.casesOn": [],
+    "Toy.Extension.CEnvA.ctorElim": [],
+    "Toy.Extension.CEnvA.ctorElimType": [],
+    "Toy.Extension.CEnvA.ctorIdx": [],
+    "Toy.Extension.CEnvA.noConfusion": [],
+    "Toy.Extension.CEnvA.noConfusionType": [],
+    "Toy.Extension.CEnvA.ofNat": [],
+    "Toy.Extension.CEnvA.ofNat_ctorIdx": [],
+    "Toy.Extension.CEnvA.rec": [],
+    "Toy.Extension.CEnvA.recOn": [],
+    "Toy.Extension.CEnvA.train": [],
+    "Toy.Extension.CEnvA.train.elim": [],
+    "Toy.Extension.CEnvA.train.sizeOf_spec": [],
+    "Toy.Extension.CEvA": [],
+    "Toy.Extension.CEvA.casesOn": [],
+    "Toy.Extension.CEvA.ctorIdx": [],
+    "Toy.Extension.CEvA.noConfusion": [],
+    "Toy.Extension.CEvA.noConfusionType": [],
+    "Toy.Extension.CEvA.ofNat": [],
+    "Toy.Extension.CEvA.ofNat_ctorIdx": [],
+    "Toy.Extension.CEvA.rec": [],
+    "Toy.Extension.CEvA.recOn": [],
+    "Toy.Extension.CEvA.train": [],
+    "Toy.Extension.CEvA.train.sizeOf_spec": [],
+    "Toy.Extension.CEvB": [],
+    "Toy.Extension.CEvB.car": [],
+    "Toy.Extension.CEvB.car.elim": [],
+    "Toy.Extension.CEvB.car.sizeOf_spec": [],
+    "Toy.Extension.CEvB.casesOn": [],
+    "Toy.Extension.CEvB.ctorElim": [],
+    "Toy.Extension.CEvB.ctorElimType": [],
+    "Toy.Extension.CEvB.ctorIdx": [],
+    "Toy.Extension.CEvB.noConfusion": [],
+    "Toy.Extension.CEvB.noConfusionType": [],
+    "Toy.Extension.CEvB.ofNat": [],
+    "Toy.Extension.CEvB.ofNat_ctorIdx": [],
+    "Toy.Extension.CEvB.rec": [],
+    "Toy.Extension.CEvB.recOn": [],
+    "Toy.Extension.CEvB.train": [],
+    "Toy.Extension.CEvB.train.elim": [],
+    "Toy.Extension.CEvB.train.sizeOf_spec": [],
+    "Toy.Extension.CSA": [],
+    "Toy.Extension.CSA.casesOn": [],
+    "Toy.Extension.CSA.ctorElim": [],
+    "Toy.Extension.CSA.ctorElimType": [],
+    "Toy.Extension.CSA.ctorIdx": [],
+    "Toy.Extension.CSA.gate": [],
+    "Toy.Extension.CSA.gate.elim": [],
+    "Toy.Extension.CSA.gate.sizeOf_spec": [],
+    "Toy.Extension.CSA.noConfusion": [],
+    "Toy.Extension.CSA.noConfusionType": [],
+    "Toy.Extension.CSA.ofNat": [],
+    "Toy.Extension.CSA.ofNat_ctorIdx": [],
+    "Toy.Extension.CSA.rec": [],
+    "Toy.Extension.CSA.recOn": [],
+    "Toy.Extension.CSA.train": [],
+    "Toy.Extension.CSA.train.elim": [],
+    "Toy.Extension.CSA.train.sizeOf_spec": [],
+    "Toy.Extension.CSB": [],
+    "Toy.Extension.CSB.car": [],
+    "Toy.Extension.CSB.car.elim": [],
+    "Toy.Extension.CSB.car.sizeOf_spec": [],
+    "Toy.Extension.CSB.casesOn": [],
+    "Toy.Extension.CSB.ctorElim": [],
+    "Toy.Extension.CSB.ctorElimType": [],
+    "Toy.Extension.CSB.ctorIdx": [],
+    "Toy.Extension.CSB.gate": [],
+    "Toy.Extension.CSB.gate.elim": [],
+    "Toy.Extension.CSB.gate.sizeOf_spec": [],
+    "Toy.Extension.CSB.noConfusion": [],
+    "Toy.Extension.CSB.noConfusionType": [],
+    "Toy.Extension.CSB.ofNat": [],
+    "Toy.Extension.CSB.ofNat_ctorIdx": [],
+    "Toy.Extension.CSB.rec": [],
+    "Toy.Extension.CSB.recOn": [],
+    "Toy.Extension.CSB.train": [],
+    "Toy.Extension.CSB.train.elim": [],
+    "Toy.Extension.CSB.train.sizeOf_spec": [],
+    "Toy.Extension.CWA": [],
+    "Toy.Extension.CWA.car": [],
+    "Toy.Extension.CWA.car.elim": [],
+    "Toy.Extension.CWA.car.sizeOf_spec": [],
+    "Toy.Extension.CWA.casesOn": [],
+    "Toy.Extension.CWA.ctorElim": [],
+    "Toy.Extension.CWA.ctorElimType": [],
+    "Toy.Extension.CWA.ctorIdx": [],
+    "Toy.Extension.CWA.gate": [],
+    "Toy.Extension.CWA.gate.elim": [],
+    "Toy.Extension.CWA.gate.sizeOf_spec": [],
+    "Toy.Extension.CWA.noConfusion": [],
+    "Toy.Extension.CWA.noConfusionType": [],
+    "Toy.Extension.CWA.ofNat": [],
+    "Toy.Extension.CWA.ofNat_ctorIdx": [],
+    "Toy.Extension.CWA.rec": [],
+    "Toy.Extension.CWA.recOn": [],
+    "Toy.Extension.CWA.train": [],
+    "Toy.Extension.CWA.train.elim": [],
+    "Toy.Extension.CWA.train.sizeOf_spec": [],
+    "Toy.Extension.Conservative": [],
+    "Toy.Extension.ConservativeFor": [],
+    "Toy.Extension.Decides": [],
+    "Toy.Extension.Defn": [],
+    "Toy.Extension.Defn.DeltaConv": [],
+    "Toy.Extension.Defn.casesOn": [],
+    "Toy.Extension.Defn.ctorElim": [],
+    "Toy.Extension.Defn.ctorElimType": [],
+    "Toy.Extension.Defn.ctorIdx": [],
+    "Toy.Extension.Defn.decDeltaConv": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.Defn.defAxiom": [],
+    "Toy.Extension.Defn.expand": [],
+    "Toy.Extension.Defn.expand.match_1": [],
+    "Toy.Extension.Defn.fn": [],
+    "Toy.Extension.Defn.fn.elim": [],
+    "Toy.Extension.Defn.fn.inj": [],
+    "Toy.Extension.Defn.fn.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Defn.fn.noConfusion": [],
+    "Toy.Extension.Defn.fn.sizeOf_spec": [],
+    "Toy.Extension.Defn.incl": [],
+    "Toy.Extension.Defn.noConfusion": [],
+    "Toy.Extension.Defn.noConfusionType": [],
+    "Toy.Extension.Defn.rec": [],
+    "Toy.Extension.Defn.recOn": [],
+    "Toy.Extension.Defn.rel": [],
+    "Toy.Extension.Defn.rel.elim": [],
+    "Toy.Extension.Defn.rel.inj": [],
+    "Toy.Extension.Defn.rel.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Defn.rel.noConfusion": [],
+    "Toy.Extension.Defn.rel.sizeOf_spec": [],
+    "Toy.Extension.Defn.sig": [],
+    "Toy.Extension.Defn.sig.match_1": [],
+    "Toy.Extension.Defn.theory": [],
+    "Toy.Extension.Defn.theory.eq_1": [],
+    "Toy.Extension.Defn.unfold": [],
+    "Toy.Extension.Defn.unfold.match_1": [],
+    "Toy.Extension.Defn.unfold_map_incl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.Determines": [],
+    "Toy.Extension.Disp": [],
+    "Toy.Extension.Disp.casesOn": [],
+    "Toy.Extension.Disp.ctorIdx": [],
+    "Toy.Extension.Disp.lt": [],
+    "Toy.Extension.Disp.lt.inj": [],
+    "Toy.Extension.Disp.lt.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Disp.lt.noConfusion": [],
+    "Toy.Extension.Disp.lt.sizeOf_spec": [],
+    "Toy.Extension.Disp.noConfusion": [],
+    "Toy.Extension.Disp.noConfusionType": [],
+    "Toy.Extension.Disp.rec": [],
+    "Toy.Extension.Disp.recOn": [],
+    "Toy.Extension.ElabInvariantOn": [
+      "propext"
+    ],
+    "Toy.Extension.ElabInvariantOn.eq_1": [
+      "propext"
+    ],
+    "Toy.Extension.ElabPreservesAccepted": [
+      "propext"
+    ],
+    "Toy.Extension.ElabPreservesAccepted.eq_1": [
+      "propext"
+    ],
+    "Toy.Extension.Entails": [],
+    "Toy.Extension.Env": [],
+    "Toy.Extension.Env.Extends": [],
+    "Toy.Extension.Env.casesOn": [],
+    "Toy.Extension.Env.coe": [
+      "propext"
+    ],
+    "Toy.Extension.Env.coercions": [],
+    "Toy.Extension.Env.ctorIdx": [],
+    "Toy.Extension.Env.defaults": [],
+    "Toy.Extension.Env.elab": [
+      "propext"
+    ],
+    "Toy.Extension.Env.elab.match_1": [
+      "propext"
+    ],
+    "Toy.Extension.Env.elab.match_3": [],
+    "Toy.Extension.Env.elab.match_5": [],
+    "Toy.Extension.Env.elabAt": [
+      "propext"
+    ],
+    "Toy.Extension.Env.elabAt.eq_def": [
+      "propext"
+    ],
+    "Toy.Extension.Env.elabAt.match_1": [
+      "propext"
+    ],
+    "Toy.Extension.Env.instances": [],
+    "Toy.Extension.Env.joinAll": [],
+    "Toy.Extension.Env.joinAll.eq_1": [],
+    "Toy.Extension.Env.joinAll.eq_2": [],
+    "Toy.Extension.Env.joinAll.eq_def": [],
+    "Toy.Extension.Env.joinAll.match_1": [],
+    "Toy.Extension.Env.joinAll.match_3": [],
+    "Toy.Extension.Env.joinTy": [],
+    "Toy.Extension.Env.joinTy.eq_1": [],
+    "Toy.Extension.Env.joinTy.match_1": [],
+    "Toy.Extension.Env.lookupInst": [],
+    "Toy.Extension.Env.mk": [],
+    "Toy.Extension.Env.mk.inj": [],
+    "Toy.Extension.Env.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Env.mk.noConfusion": [],
+    "Toy.Extension.Env.mk.sizeOf_spec": [],
+    "Toy.Extension.Env.noConfusion": [],
+    "Toy.Extension.Env.noConfusionType": [],
+    "Toy.Extension.Env.rec": [],
+    "Toy.Extension.Env.recOn": [],
+    "Toy.Extension.Env.treeTy": [],
+    "Toy.Extension.Env.treeTy.match_1": [],
+    "Toy.Extension.EnvRel": [],
+    "Toy.Extension.EnvRel.car": [],
+    "Toy.Extension.EnvRel.car.elim": [],
+    "Toy.Extension.EnvRel.car.sizeOf_spec": [],
+    "Toy.Extension.EnvRel.casesOn": [],
+    "Toy.Extension.EnvRel.ctorElim": [],
+    "Toy.Extension.EnvRel.ctorElimType": [],
+    "Toy.Extension.EnvRel.ctorIdx": [],
+    "Toy.Extension.EnvRel.noConfusion": [],
+    "Toy.Extension.EnvRel.noConfusionType": [],
+    "Toy.Extension.EnvRel.ofNat": [],
+    "Toy.Extension.EnvRel.ofNat_ctorIdx": [],
+    "Toy.Extension.EnvRel.rec": [],
+    "Toy.Extension.EnvRel.recOn": [],
+    "Toy.Extension.EnvRel.train": [],
+    "Toy.Extension.EnvRel.train.elim": [],
+    "Toy.Extension.EnvRel.train.sizeOf_spec": [],
+    "Toy.Extension.ExpansionProperty": [],
+    "Toy.Extension.FnExplicitlyDefinable": [],
+    "Toy.Extension.Formula": [],
+    "Toy.Extension.Formula.all": [],
+    "Toy.Extension.Formula.all.elim": [],
+    "Toy.Extension.Formula.all.inj": [],
+    "Toy.Extension.Formula.all.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Formula.all.noConfusion": [],
+    "Toy.Extension.Formula.all.sizeOf_spec": [],
+    "Toy.Extension.Formula.and": [],
+    "Toy.Extension.Formula.and.elim": [],
+    "Toy.Extension.Formula.and.inj": [],
+    "Toy.Extension.Formula.and.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Formula.and.noConfusion": [],
+    "Toy.Extension.Formula.and.sizeOf_spec": [],
+    "Toy.Extension.Formula.below": [],
+    "Toy.Extension.Formula.brecOn": [],
+    "Toy.Extension.Formula.brecOn.eq": [],
+    "Toy.Extension.Formula.brecOn.go": [],
+    "Toy.Extension.Formula.casesOn": [],
+    "Toy.Extension.Formula.closeAll": [],
+    "Toy.Extension.Formula.closeAll.eq_1": [],
+    "Toy.Extension.Formula.closeAll.eq_2": [],
+    "Toy.Extension.Formula.closeAll.eq_def": [],
+    "Toy.Extension.Formula.closeAll.match_1": [],
+    "Toy.Extension.Formula.ctorElim": [],
+    "Toy.Extension.Formula.ctorElimType": [],
+    "Toy.Extension.Formula.ctorIdx": [],
+    "Toy.Extension.Formula.decEq": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.Formula.decEq.match_1": [],
+    "Toy.Extension.Formula.decEq.match_3": [],
+    "Toy.Extension.Formula.decEq.match_5": [],
+    "Toy.Extension.Formula.decEq.match_7": [],
+    "Toy.Extension.Formula.eq": [],
+    "Toy.Extension.Formula.eq.elim": [],
+    "Toy.Extension.Formula.eq.inj": [],
+    "Toy.Extension.Formula.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Formula.eq.noConfusion": [],
+    "Toy.Extension.Formula.eq.sizeOf_spec": [],
+    "Toy.Extension.Formula.ex": [],
+    "Toy.Extension.Formula.ex.elim": [],
+    "Toy.Extension.Formula.ex.inj": [],
+    "Toy.Extension.Formula.ex.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Formula.ex.noConfusion": [],
+    "Toy.Extension.Formula.ex.sizeOf_spec": [],
+    "Toy.Extension.Formula.falsum": [],
+    "Toy.Extension.Formula.falsum.elim": [],
+    "Toy.Extension.Formula.falsum.noConfusion": [],
+    "Toy.Extension.Formula.falsum.sizeOf_spec": [],
+    "Toy.Extension.Formula.iff": [],
+    "Toy.Extension.Formula.iff.eq_1": [],
+    "Toy.Extension.Formula.imp": [],
+    "Toy.Extension.Formula.imp.elim": [],
+    "Toy.Extension.Formula.imp.inj": [],
+    "Toy.Extension.Formula.imp.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Formula.imp.noConfusion": [],
+    "Toy.Extension.Formula.imp.sizeOf_spec": [],
+    "Toy.Extension.Formula.instDecidableEq": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.Formula.map": [],
+    "Toy.Extension.Formula.map.eq_1": [],
+    "Toy.Extension.Formula.map.eq_2": [],
+    "Toy.Extension.Formula.map.eq_3": [],
+    "Toy.Extension.Formula.map.eq_4": [],
+    "Toy.Extension.Formula.map.eq_5": [],
+    "Toy.Extension.Formula.map.eq_6": [],
+    "Toy.Extension.Formula.map.eq_7": [],
+    "Toy.Extension.Formula.map.eq_8": [],
+    "Toy.Extension.Formula.map.eq_def": [],
+    "Toy.Extension.Formula.map.match_1": [],
+    "Toy.Extension.Formula.noConfusion": [],
+    "Toy.Extension.Formula.noConfusionType": [],
+    "Toy.Extension.Formula.not": [],
+    "Toy.Extension.Formula.or": [],
+    "Toy.Extension.Formula.or.elim": [],
+    "Toy.Extension.Formula.or.inj": [],
+    "Toy.Extension.Formula.or.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Formula.or.noConfusion": [],
+    "Toy.Extension.Formula.or.sizeOf_spec": [],
+    "Toy.Extension.Formula.rec": [],
+    "Toy.Extension.Formula.recOn": [],
+    "Toy.Extension.Formula.rel": [],
+    "Toy.Extension.Formula.rel.elim": [],
+    "Toy.Extension.Formula.rel.inj": [],
+    "Toy.Extension.Formula.rel.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Formula.rel.noConfusion": [],
+    "Toy.Extension.Formula.rel.sizeOf_spec": [],
+    "Toy.Extension.Formula.rename": [],
+    "Toy.Extension.Formula.rename.match_1": [],
+    "Toy.Extension.Formula.subst": [],
+    "Toy.Extension.Formula.subst.eq_1": [],
+    "Toy.Extension.Formula.subst.eq_2": [],
+    "Toy.Extension.Formula.subst.eq_3": [],
+    "Toy.Extension.Formula.subst.eq_4": [],
+    "Toy.Extension.Formula.subst.eq_5": [],
+    "Toy.Extension.Formula.subst.eq_6": [],
+    "Toy.Extension.Formula.subst.eq_7": [],
+    "Toy.Extension.Formula.subst.eq_8": [],
+    "Toy.Extension.Formula.subst.eq_def": [],
+    "Toy.Extension.Formula.subst.match_1": [],
+    "Toy.Extension.Formula.tru": [],
+    "Toy.Extension.InfiniteType": [],
+    "Toy.Extension.LAB": [],
+    "Toy.Extension.LCross": [],
+    "Toy.Extension.LEnv": [],
+    "Toy.Extension.LP": [],
+    "Toy.Extension.LUnit": [],
+    "Toy.Extension.LabelsCorrect": [],
+    "Toy.Extension.M0": [],
+    "Toy.Extension.M0_models_thN0": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.M0_no_expansion": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.N0": [],
+    "Toy.Extension.N0f": [],
+    "Toy.Extension.N0f_models_injTheory": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.NFn": [],
+    "Toy.Extension.NFn.arity": [],
+    "Toy.Extension.NFn.arity.match_1": [],
+    "Toy.Extension.NFn.casesOn": [],
+    "Toy.Extension.NFn.ctorElim": [],
+    "Toy.Extension.NFn.ctorElimType": [],
+    "Toy.Extension.NFn.ctorIdx": [],
+    "Toy.Extension.NFn.noConfusion": [],
+    "Toy.Extension.NFn.noConfusionType": [],
+    "Toy.Extension.NFn.ofNat": [],
+    "Toy.Extension.NFn.ofNat_ctorIdx": [],
+    "Toy.Extension.NFn.rec": [],
+    "Toy.Extension.NFn.recOn": [],
+    "Toy.Extension.NFn.succ": [],
+    "Toy.Extension.NFn.succ.elim": [],
+    "Toy.Extension.NFn.succ.sizeOf_spec": [],
+    "Toy.Extension.NFn.zero": [],
+    "Toy.Extension.NFn.zero.elim": [],
+    "Toy.Extension.NFn.zero.sizeOf_spec": [],
+    "Toy.Extension.NRel": [],
+    "Toy.Extension.NRel.casesOn": [],
+    "Toy.Extension.NRel.ctorIdx": [],
+    "Toy.Extension.NRel.le": [],
+    "Toy.Extension.NRel.le.sizeOf_spec": [],
+    "Toy.Extension.NRel.noConfusion": [],
+    "Toy.Extension.NRel.noConfusionType": [],
+    "Toy.Extension.NRel.ofNat": [],
+    "Toy.Extension.NRel.ofNat_ctorIdx": [],
+    "Toy.Extension.NRel.rec": [],
+    "Toy.Extension.NRel.recOn": [],
+    "Toy.Extension.NSig": [],
+    "Toy.Extension.Op": [],
+    "Toy.Extension.Op.add": [],
+    "Toy.Extension.Op.add.elim": [],
+    "Toy.Extension.Op.add.sizeOf_spec": [],
+    "Toy.Extension.Op.casesOn": [],
+    "Toy.Extension.Op.ctorElim": [],
+    "Toy.Extension.Op.ctorElimType": [],
+    "Toy.Extension.Op.ctorIdx": [],
+    "Toy.Extension.Op.div": [],
+    "Toy.Extension.Op.div.elim": [],
+    "Toy.Extension.Op.div.sizeOf_spec": [],
+    "Toy.Extension.Op.noConfusion": [],
+    "Toy.Extension.Op.noConfusionType": [],
+    "Toy.Extension.Op.ofNat": [],
+    "Toy.Extension.Op.ofNat_ctorIdx": [],
+    "Toy.Extension.Op.rec": [],
+    "Toy.Extension.Op.recOn": [],
+    "Toy.Extension.Op.sub": [],
+    "Toy.Extension.Op.sub.elim": [],
+    "Toy.Extension.Op.sub.sizeOf_spec": [],
+    "Toy.Extension.PRel": [],
+    "Toy.Extension.PRel.P": [],
+    "Toy.Extension.PRel.P.sizeOf_spec": [],
+    "Toy.Extension.PRel.casesOn": [],
+    "Toy.Extension.PRel.ctorIdx": [],
+    "Toy.Extension.PRel.noConfusion": [],
+    "Toy.Extension.PRel.noConfusionType": [],
+    "Toy.Extension.PRel.ofNat": [],
+    "Toy.Extension.PRel.ofNat_ctorIdx": [],
+    "Toy.Extension.PRel.rec": [],
+    "Toy.Extension.PRel.recOn": [],
+    "Toy.Extension.SameType": [],
+    "Toy.Extension.SameType.extend": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.SameType.symm": [],
+    "Toy.Extension.Sat": [],
+    "Toy.Extension.Sat.eq_1": [],
+    "Toy.Extension.Sat.eq_2": [],
+    "Toy.Extension.Sat.eq_3": [],
+    "Toy.Extension.Sat.eq_4": [],
+    "Toy.Extension.Sat.eq_5": [],
+    "Toy.Extension.Sat.eq_6": [],
+    "Toy.Extension.Sat.eq_7": [],
+    "Toy.Extension.Sat.eq_8": [],
+    "Toy.Extension.Sat.eq_def": [],
+    "Toy.Extension.Sat.match_1": [],
+    "Toy.Extension.Sentence": [],
+    "Toy.Extension.Sig": [],
+    "Toy.Extension.Sig.Fn": [],
+    "Toy.Extension.Sig.Rel": [],
+    "Toy.Extension.Sig.addFn": [],
+    "Toy.Extension.Sig.addFn.match_1": [],
+    "Toy.Extension.Sig.addRel": [],
+    "Toy.Extension.Sig.addRel.match_1": [],
+    "Toy.Extension.Sig.casesOn": [],
+    "Toy.Extension.Sig.ctorIdx": [],
+    "Toy.Extension.Sig.fnArity": [],
+    "Toy.Extension.Sig.mk": [],
+    "Toy.Extension.Sig.mk.inj": [],
+    "Toy.Extension.Sig.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Sig.mk.noConfusion": [],
+    "Toy.Extension.Sig.mk.sizeOf_spec": [],
+    "Toy.Extension.Sig.noConfusion": [],
+    "Toy.Extension.Sig.noConfusionType": [],
+    "Toy.Extension.Sig.rec": [],
+    "Toy.Extension.Sig.recOn": [],
+    "Toy.Extension.Sig.relArity": [],
+    "Toy.Extension.SigHom": [],
+    "Toy.Extension.SigHom.casesOn": [],
+    "Toy.Extension.SigHom.ctorIdx": [],
+    "Toy.Extension.SigHom.fn": [],
+    "Toy.Extension.SigHom.fnArity": [],
+    "Toy.Extension.SigHom.id": [],
+    "Toy.Extension.SigHom.inclFn": [],
+    "Toy.Extension.SigHom.inclRel": [],
+    "Toy.Extension.SigHom.mk": [],
+    "Toy.Extension.SigHom.mk.inj": [],
+    "Toy.Extension.SigHom.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.SigHom.mk.noConfusion": [],
+    "Toy.Extension.SigHom.mk.sizeOf_spec": [],
+    "Toy.Extension.SigHom.noConfusion": [],
+    "Toy.Extension.SigHom.noConfusionType": [],
+    "Toy.Extension.SigHom.rec": [],
+    "Toy.Extension.SigHom.recOn": [],
+    "Toy.Extension.SigHom.rel": [],
+    "Toy.Extension.SigHom.relArity": [],
+    "Toy.Extension.SpecAcceptsEveryEnvInput": [],
+    "Toy.Extension.SpecAddedConsequence": [],
+    "Toy.Extension.SpecAdequate": [],
+    "Toy.Extension.SpecConservative": [],
+    "Toy.Extension.SpecExpansionProperty": [],
+    "Toy.Extension.SpecRelConsistent": [],
+    "Toy.Extension.SpecResponsesDomainConsistent": [],
+    "Toy.Extension.Str": [],
+    "Toy.Extension.Str.Models": [],
+    "Toy.Extension.Str.ModelsTh": [],
+    "Toy.Extension.Str.casesOn": [],
+    "Toy.Extension.Str.ctorIdx": [],
+    "Toy.Extension.Str.fn": [],
+    "Toy.Extension.Str.mk": [],
+    "Toy.Extension.Str.mk.inj": [],
+    "Toy.Extension.Str.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Str.mk.noConfusion": [],
+    "Toy.Extension.Str.mk.sizeOf_spec": [],
+    "Toy.Extension.Str.noConfusion": [],
+    "Toy.Extension.Str.noConfusionType": [],
+    "Toy.Extension.Str.rec": [],
+    "Toy.Extension.Str.recOn": [],
+    "Toy.Extension.Str.reduct": [],
+    "Toy.Extension.Str.reduct.eq_1": [],
+    "Toy.Extension.Str.rel": [],
+    "Toy.Extension.Str.withFn": [],
+    "Toy.Extension.Str.withFn.match_1": [],
+    "Toy.Extension.Str.withRel": [],
+    "Toy.Extension.Str.withRel.match_1": [],
+    "Toy.Extension.StrongSortSpec": [],
+    "Toy.Extension.Stx": [],
+    "Toy.Extension.Stx.annots": [],
+    "Toy.Extension.Stx.annots.match_1": [],
+    "Toy.Extension.Stx.below": [],
+    "Toy.Extension.Stx.bin": [],
+    "Toy.Extension.Stx.bin.elim": [],
+    "Toy.Extension.Stx.bin.inj": [],
+    "Toy.Extension.Stx.bin.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Stx.bin.noConfusion": [],
+    "Toy.Extension.Stx.bin.sizeOf_spec": [],
+    "Toy.Extension.Stx.brecOn": [],
+    "Toy.Extension.Stx.brecOn.eq": [],
+    "Toy.Extension.Stx.brecOn.go": [],
+    "Toy.Extension.Stx.casesOn": [],
+    "Toy.Extension.Stx.ctorElim": [],
+    "Toy.Extension.Stx.ctorElimType": [],
+    "Toy.Extension.Stx.ctorIdx": [],
+    "Toy.Extension.Stx.noConfusion": [],
+    "Toy.Extension.Stx.noConfusionType": [],
+    "Toy.Extension.Stx.num": [],
+    "Toy.Extension.Stx.num.elim": [],
+    "Toy.Extension.Stx.num.inj": [],
+    "Toy.Extension.Stx.num.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Stx.num.noConfusion": [],
+    "Toy.Extension.Stx.num.sizeOf_spec": [],
+    "Toy.Extension.Stx.numAt": [],
+    "Toy.Extension.Stx.numAt.elim": [],
+    "Toy.Extension.Stx.numAt.inj": [],
+    "Toy.Extension.Stx.numAt.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Stx.numAt.noConfusion": [],
+    "Toy.Extension.Stx.numAt.sizeOf_spec": [],
+    "Toy.Extension.Stx.rec": [],
+    "Toy.Extension.Stx.recOn": [],
+    "Toy.Extension.Term": [],
+    "Toy.Extension.Term.app": [],
+    "Toy.Extension.Term.app.elim": [],
+    "Toy.Extension.Term.app.inj": [],
+    "Toy.Extension.Term.app.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Term.app.noConfusion": [],
+    "Toy.Extension.Term.app.sizeOf_spec": [],
+    "Toy.Extension.Term.below": [],
+    "Toy.Extension.Term.brecOn": [],
+    "Toy.Extension.Term.brecOn.eq": [],
+    "Toy.Extension.Term.brecOn.go": [],
+    "Toy.Extension.Term.casesOn": [],
+    "Toy.Extension.Term.ctorElim": [],
+    "Toy.Extension.Term.ctorElimType": [],
+    "Toy.Extension.Term.ctorIdx": [],
+    "Toy.Extension.Term.decEq": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.Term.decEq.match_1": [],
+    "Toy.Extension.Term.decEq.match_3": [],
+    "Toy.Extension.Term.eval": [],
+    "Toy.Extension.Term.eval.eq_1": [],
+    "Toy.Extension.Term.eval.eq_2": [],
+    "Toy.Extension.Term.eval.eq_def": [],
+    "Toy.Extension.Term.eval.match_1": [],
+    "Toy.Extension.Term.instDecidableEq": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.Term.map": [],
+    "Toy.Extension.Term.map.eq_1": [],
+    "Toy.Extension.Term.map.eq_2": [],
+    "Toy.Extension.Term.map.eq_def": [],
+    "Toy.Extension.Term.noConfusion": [],
+    "Toy.Extension.Term.noConfusionType": [],
+    "Toy.Extension.Term.rec": [],
+    "Toy.Extension.Term.recOn": [],
+    "Toy.Extension.Term.rename": [],
+    "Toy.Extension.Term.rename.match_1": [],
+    "Toy.Extension.Term.subst": [],
+    "Toy.Extension.Term.var": [],
+    "Toy.Extension.Term.var.elim": [],
+    "Toy.Extension.Term.var.inj": [],
+    "Toy.Extension.Term.var.injEq": [
+      "propext"
+    ],
+    "Toy.Extension.Term.var.noConfusion": [],
+    "Toy.Extension.Term.var.sizeOf_spec": [],
+    "Toy.Extension.Theory": [],
+    "Toy.Extension.Theory.empty": [],
+    "Toy.Extension.Theory.map": [],
+    "Toy.Extension.Theory.ofList": [],
+    "Toy.Extension.Theory.th": [],
+    "Toy.Extension.Theory.union": [],
+    "Toy.Extension.TransOn": [],
+    "Toy.Extension.TransitiveRel": [],
+    "Toy.Extension.Ty": [],
+    "Toy.Extension.Ty.casesOn": [],
+    "Toy.Extension.Ty.ctorElim": [],
+    "Toy.Extension.Ty.ctorElimType": [],
+    "Toy.Extension.Ty.ctorIdx": [],
+    "Toy.Extension.Ty.int": [],
+    "Toy.Extension.Ty.int.elim": [],
+    "Toy.Extension.Ty.int.sizeOf_spec": [],
+    "Toy.Extension.Ty.nat": [],
+    "Toy.Extension.Ty.nat.elim": [],
+    "Toy.Extension.Ty.nat.sizeOf_spec": [],
+    "Toy.Extension.Ty.noConfusion": [],
+    "Toy.Extension.Ty.noConfusionType": [],
+    "Toy.Extension.Ty.ofNat": [],
+    "Toy.Extension.Ty.ofNat_ctorIdx": [],
+    "Toy.Extension.Ty.rec": [],
+    "Toy.Extension.Ty.recOn": [],
+    "Toy.Extension.WeakSortSpec": [],
+    "Toy.Extension.abIff": [],
+    "Toy.Extension.abStr": [],
+    "Toy.Extension.abStr.eq_1": [],
+    "Toy.Extension.abStr.match_1": [],
+    "Toy.Extension.additive_coercion_preserves_but_not_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.adequate_specConservative_implies_translated_domain_entails": [],
+    "Toy.Extension.adjRel_iff_pairwise_of_transOn": [],
+    "Toy.Extension.adjRel_iff_pairwise_of_transOn_aux": [],
+    "Toy.Extension.adjRel_iff_pairwise_of_transOn_aux.match_1_1": [],
+    "Toy.Extension.adjRel_iff_pairwise_of_transOn_aux.match_1_3": [],
+    "Toy.Extension.adjRel_iff_pairwise_on_all_lists_iff_transitive": [],
+    "Toy.Extension.adjRel_le_example": [],
+    "Toy.Extension.adjRel_le_nonexample": [],
+    "Toy.Extension.adjRel_ne_not_pairwise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.agreesOn_examples": [],
+    "Toy.Extension.app1": [
+      "propext"
+    ],
+    "Toy.Extension.app2": [
+      "propext"
+    ],
+    "Toy.Extension.atMostOneElt": [
+      "propext"
+    ],
+    "Toy.Extension.atom": [],
+    "Toy.Extension.atomP": [],
+    "Toy.Extension.axExt_does_not_entail_unforced_fact": [
+      "propext"
+    ],
+    "Toy.Extension.axExt_entails_iff_lawful_interpretations": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.axExt_lawful_interpretation_exists": [],
+    "Toy.Extension.axPc": [],
+    "Toy.Extension.axPc_not_fnExplicitlyDefinable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.axPc_two_lawful_interpretations": [],
+    "Toy.Extension.axiom_P_c_not_conservative": [
+      "propext"
+    ],
+    "Toy.Extension.baseEnv": [],
+    "Toy.Extension.baseEnv.eq_1": [],
+    "Toy.Extension.bool_not_infiniteType": [
+      "propext"
+    ],
+    "Toy.Extension.bothInfinite_pM": [],
+    "Toy.Extension.bothInfinite_pN": [],
+    "Toy.Extension.cantor_no_injection": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.carIn": [],
+    "Toy.Extension.castSym": [
+      "propext"
+    ],
+    "Toy.Extension.castSym.match_1": [
+      "propext"
+    ],
+    "Toy.Extension.combined": [],
+    "Toy.Extension.conservative_id": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.conservative_not_implies_expansionProperty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.crossing_adequate": [],
+    "Toy.Extension.crossing_adequate.match_1_1": [],
+    "Toy.Extension.crossing_control_spec_relConsistent_not_envConservative": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.crossing_control_spec_relConsistent_not_envConservative.match_1_1": [],
+    "Toy.Extension.crossing_restricting_spec_violates_env_input_condition": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.dIsSucc": [
+      "propext"
+    ],
+    "Toy.Extension.dIsSucc_expand_models_defAxiom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.dIsSucc_unfold_not_capturing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.dIsSucc_unfold_psiIsSucc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.dTwo": [],
+    "Toy.Extension.dTwo_deltaConv_examples": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.dTwo_deltaConv_sound_and_unsound": [],
+    "Toy.Extension.dTwo_expand_models_defAxiom": [],
+    "Toy.Extension.dTwo_three_not_models_defAxiom": [],
+    "Toy.Extension.dTwo_unfold_psiTwo": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.decAdjRel": [],
+    "Toy.Extension.decAdjRel.match_1": [],
+    "Toy.Extension.decForallFin": [],
+    "Toy.Extension.decForallFin.match_1": [],
+    "Toy.Extension.decForallFin.match_3": [],
+    "Toy.Extension.decForallFin.match_5": [],
+    "Toy.Extension.decides_iff_reference_matches_spec": [],
+    "Toy.Extension.defExt_axiom_nonvacuity": [],
+    "Toy.Extension.defExt_conservative": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.defExt_eliminable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.defExt_expansion_iff_of_axiom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.defExt_expansion_unique_ce_axiom": [],
+    "Toy.Extension.defExt_expansion_unique_ce_reduct": [],
+    "Toy.Extension.defExt_expansion_unique_ce_reduct.natStr2_withFn_reduct_ne'": [],
+    "Toy.Extension.defExt_expansion_unique_of_axiom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.defExt_expansions_eq_expand": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.defExt_expansions_eq_expand_ce_not_model": [],
+    "Toy.Extension.defExt_expansions_eq_expand_nonvacuity": [],
+    "Toy.Extension.defExt_theory_has_model": [],
+    "Toy.Extension.defExt_unfold_equiv_ce_axiom": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.defExt_unfold_equiv_of_axiom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.default_change_invariant_on_annotated": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.default_change_not_invariant_on_unannotated": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.default_change_preserves_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.default_numeral_change_flips_truth": [
+      "propext"
+    ],
+    "Toy.Extension.defnFn_theory_fnExplicitlyDefinable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.domainA": [],
+    "Toy.Extension.drop_coercion_not_extends": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.elabAt_envNoCoe_to_envAddNatInt": [
+      "propext"
+    ],
+    "Toy.Extension.elabAt_envNoCoe_to_envAddNatInt.match_1_1": [
+      "propext"
+    ],
+    "Toy.Extension.elabInvariantCheck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.elabInvariantCheck.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.elabInvariantCheck_iff_elabInvariantOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.elabInvariantOn_preservesAccepted": [
+      "propext"
+    ],
+    "Toy.Extension.elabInvariantOn_symm": [
+      "propext"
+    ],
+    "Toy.Extension.elabPreservesCheck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.elabPreservesCheck.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.elabPreservesCheck.match_1": [
+      "propext"
+    ],
+    "Toy.Extension.elabPreservesCheck_iff_elabPreservesAccepted": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.elab_change_without_truth_change": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.empty_spec_not_adequate": [],
+    "Toy.Extension.envAddNatInt": [],
+    "Toy.Extension.envBoth": [],
+    "Toy.Extension.envCoeNatInt": [],
+    "Toy.Extension.envDefaultInt": [],
+    "Toy.Extension.envDivE": [],
+    "Toy.Extension.envNoCoe": [],
+    "Toy.Extension.envNoCoe.eq_1": [],
+    "Toy.Extension.envNone": [],
+    "Toy.Extension.envs_extend_base": [],
+    "Toy.Extension.eq_natSort_determines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.eq_propStr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.ev_requirement_ce_not_adequate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.ev_requirement_ce_not_relConsistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.ev_requirement_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.eval_liftSubst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.eval_map": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.eval_relTermDown": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.eval_relTermDown.match_1_1": [],
+    "Toy.Extension.eval_rename": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.eval_rename.match_1_1": [],
+    "Toy.Extension.eval_subst": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.eval_subst.match_1_1": [],
+    "Toy.Extension.eval_unfoldFnTerm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.eval_unfoldFnTerm.match_1_1": [],
+    "Toy.Extension.exhaustive_examples_certify": [],
+    "Toy.Extension.existsEq": [
+      "propext"
+    ],
+    "Toy.Extension.existsP": [
+      "propext"
+    ],
+    "Toy.Extension.expand_models_defAxiom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.expand_reduct": [],
+    "Toy.Extension.expansionProperty_implies_conservative": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.expansionProperty_implies_conservative_ce": [
+      "propext"
+    ],
+    "Toy.Extension.expansionProperty_nonvacuity": [],
+    "Toy.Extension.false_spec_atMostOneLawful_not_determines": [],
+    "Toy.Extension.false_spec_atMostOneLawful_not_determines.match_1_1": [],
+    "Toy.Extension.falsum_theory_fnExplicitlyDefinable_no_model": [],
+    "Toy.Extension.falsum_theory_fnExplicitlyDefinable_no_model.match_1_1": [],
+    "Toy.Extension.finSum": [],
+    "Toy.Extension.finSum.match_1": [],
+    "Toy.Extension.fin_succ_cases": [],
+    "Toy.Extension.fin_succ_cases.match_1_1": [],
+    "Toy.Extension.fnDefiningSentence": [],
+    "Toy.Extension.fnExplicitlyDefinable_expansion_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.fnExplicitlyDefinable_expansion_unique_ce_model": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.fnExplicitlyDefinable_expansion_unique_ce_reduct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.fnExplicitlyDefinable_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.fnExplicitlyDefinable_of_no_model": [],
+    "Toy.Extension.fnExplicitlyDefinable_satisfiable_not_conservative": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.fn_eq_iff_of_models_fnDefiningSentence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.forallP": [
+      "propext"
+    ],
+    "Toy.Extension.formula_subst_var_id": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.formula_subst_var_id.match_1_1": [],
+    "Toy.Extension.fresh_constant_conservative_iff_entails_nonempty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.fresh_constant_conservative_of_nonempty_models": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.fresh_constant_not_conservative_with_empty_carriers": [
+      "propext"
+    ],
+    "Toy.Extension.gateDown": [],
+    "Toy.Extension.id_decides_eq_true": [],
+    "Toy.Extension.id_not_weakSortSpec": [],
+    "Toy.Extension.injAx1": [
+      "propext"
+    ],
+    "Toy.Extension.injAx2": [
+      "propext"
+    ],
+    "Toy.Extension.injTheory": [
+      "propext"
+    ],
+    "Toy.Extension.injTheory_not_expansionProperty": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.instDecidableEqABRel": [],
+    "Toy.Extension.instDecidableEqAFn": [],
+    "Toy.Extension.instDecidableEqAFn.decEq": [],
+    "Toy.Extension.instDecidableEqAFn.decEq.match_1": [],
+    "Toy.Extension.instDecidableEqARel": [],
+    "Toy.Extension.instDecidableEqCEnvA": [],
+    "Toy.Extension.instDecidableEqCEvA": [],
+    "Toy.Extension.instDecidableEqCEvB": [],
+    "Toy.Extension.instDecidableEqCSA": [],
+    "Toy.Extension.instDecidableEqCSB": [],
+    "Toy.Extension.instDecidableEqCWA": [],
+    "Toy.Extension.instDecidableEqEnvRel": [],
+    "Toy.Extension.instDecidableEqFnSigDTwo": [],
+    "Toy.Extension.instDecidableEqNFn": [],
+    "Toy.Extension.instDecidableEqNRel": [],
+    "Toy.Extension.instDecidableEqOp": [],
+    "Toy.Extension.instDecidableEqPRel": [],
+    "Toy.Extension.instDecidableEqRelSigDTwo": [],
+    "Toy.Extension.instDecidableEqTy": [],
+    "Toy.Extension.intStr": [
+      "propext"
+    ],
+    "Toy.Extension.intStr.match_1": [
+      "propext"
+    ],
+    "Toy.Extension.intStr.match_3": [
+      "propext"
+    ],
+    "Toy.Extension.joinAll_envNoCoe": [
+      "propext"
+    ],
+    "Toy.Extension.joinAll_envNoCoe.match_1_1": [],
+    "Toy.Extension.joinAll_envNoCoe.match_1_3": [],
+    "Toy.Extension.joinAll_same": [
+      "propext"
+    ],
+    "Toy.Extension.joinAll_same.match_1_1": [],
+    "Toy.Extension.label_deciders_agree_on_examples_one_misses_spec": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.label_deciders_ce_labels": [
+      "propext"
+    ],
+    "Toy.Extension.label_deciders_ce_point": [
+      "propext"
+    ],
+    "Toy.Extension.label_deciders_conclusion_without_hypotheses": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.label_deciders_conclusion_without_hypotheses.match_1_1": [],
+    "Toy.Extension.label_deciders_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.labelsCorrect_nonexample": [],
+    "Toy.Extension.le_finSum": [],
+    "Toy.Extension.le_finSum.match_1_1": [],
+    "Toy.Extension.le_transOn": [],
+    "Toy.Extension.le_transitiveRel": [],
+    "Toy.Extension.liftRen": [],
+    "Toy.Extension.liftRen.match_1": [],
+    "Toy.Extension.liftSubst": [],
+    "Toy.Extension.liftSubst_var": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.lit": [
+      "propext"
+    ],
+    "Toy.Extension.memDecider": [
+      "propext"
+    ],
+    "Toy.Extension.modelsTh_empty": [],
+    "Toy.Extension.modelsTh_map": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.modelsTh_ofList": [],
+    "Toy.Extension.modelsTh_th": [],
+    "Toy.Extension.modelsTh_union": [],
+    "Toy.Extension.models_defAxiom_iff_deltaConv_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.models_defAxiom_iff_unfold_preserves_sat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.models_iff_of_bothInfinite": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.models_map": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.models_unfold_defAxiom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.natSort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.natSort_ne_weirdSort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.natSort_pairwise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.natSort_strongSortSpec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.natSort_weakSortSpec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.natStr": [],
+    "Toy.Extension.natStr.match_1": [],
+    "Toy.Extension.natStr.match_3": [],
+    "Toy.Extension.natStr2": [],
+    "Toy.Extension.natStr2_withFn_reduct_ne": [],
+    "Toy.Extension.natStr_withFn_reduct": [],
+    "Toy.Extension.nat_infiniteType": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.ne_not_transOn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.ne_not_transitiveRel": [],
+    "Toy.Extension.new_coercion_flips_truth": [
+      "propext"
+    ],
+    "Toy.Extension.new_instance_flips_truth": [
+      "propext"
+    ],
+    "Toy.Extension.noCollision": [],
+    "Toy.Extension.noCollisionE": [],
+    "Toy.Extension.noCollisionEv": [],
+    "Toy.Extension.noVars": [],
+    "Toy.Extension.noninjective_hom_empty_theories_not_conservative": [],
+    "Toy.Extension.not_entails_noCollisionEv": [],
+    "Toy.Extension.not_not_decides_eq_true": [],
+    "Toy.Extension.not_translated_entails_noCollision": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.not_translated_entails_noCollision.match_1_1": [],
+    "Toy.Extension.pM": [],
+    "Toy.Extension.pN": [],
+    "Toy.Extension.pStr": [],
+    "Toy.Extension.pStr.eq_1": [],
+    "Toy.Extension.pairwise_implies_adjRel": [],
+    "Toy.Extension.pairwise_implies_adjRel_aux": [],
+    "Toy.Extension.pairwise_implies_adjRel_aux.match_1_1": [],
+    "Toy.Extension.pairwise_implies_adjRel_ce": [],
+    "Toy.Extension.pcModelFalse": [],
+    "Toy.Extension.pcModelTrue": [],
+    "Toy.Extension.propHom": [],
+    "Toy.Extension.propSig": [],
+    "Toy.Extension.propSig_str_ext": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.propStr": [],
+    "Toy.Extension.psiIsSucc": [
+      "propext"
+    ],
+    "Toy.Extension.psiTwo": [],
+    "Toy.Extension.psiTwoRefl": [],
+    "Toy.Extension.reduct_id": [],
+    "Toy.Extension.reduct_withFn": [],
+    "Toy.Extension.reduct_withRel": [],
+    "Toy.Extension.reference_equivalence_certifies": [],
+    "Toy.Extension.reference_equivalence_moves_trust": [],
+    "Toy.Extension.reinterpreted_symbol_need_not_flip_truth": [
+      "propext"
+    ],
+    "Toy.Extension.relTermDown": [],
+    "Toy.Extension.relTermDown.eq_1": [],
+    "Toy.Extension.relTermDown.eq_2": [],
+    "Toy.Extension.relTermDown.eq_def": [],
+    "Toy.Extension.relTermDown.match_1": [],
+    "Toy.Extension.relTermDown_map_incl": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.relTermDown_map_incl.match_1_1": [],
+    "Toy.Extension.rel_args_irrel": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.sCoe": [],
+    "Toy.Extension.sDefault": [],
+    "Toy.Extension.sDiv": [],
+    "Toy.Extension.sHarmless": [],
+    "Toy.Extension.sat_closeAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.sat_closeAll.match_1_1": [],
+    "Toy.Extension.sat_iff": [],
+    "Toy.Extension.sat_iff_of_sameType": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.sat_map": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.sat_not": [],
+    "Toy.Extension.sat_subst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.sat_subst.match_1_1": [],
+    "Toy.Extension.sat_tru": [],
+    "Toy.Extension.sat_unfoldFnFormula": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.sat_unfoldFnFormula.match_1_1": [],
+    "Toy.Extension.sat_unfoldRelFormula": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.sat_unfoldRelFormula.match_1_1": [],
+    "Toy.Extension.scons": [],
+    "Toy.Extension.scons.match_1": [],
+    "Toy.Extension.scons_succ": [],
+    "Toy.Extension.scons_surj": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.scons_surj.match_1_1": [],
+    "Toy.Extension.scons_zero": [],
+    "Toy.Extension.singletonDefTheory": [
+      "propext"
+    ],
+    "Toy.Extension.sorted_readings_nonvacuity": [],
+    "Toy.Extension.specA": [],
+    "Toy.Extension.specB": [],
+    "Toy.Extension.specB_adequate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.specB_adequate.match_1_1": [],
+    "Toy.Extension.specConservative_empty": [],
+    "Toy.Extension.specConservative_iff_no_added_consequence": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.specCross": [],
+    "Toy.Extension.specCross_not_specConservative_not_specExpansionProperty": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.specExpansionProperty_adequate_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.specExpansionProperty_empty": [],
+    "Toy.Extension.specExpansionProperty_specConservative": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.specRelConsistent_adequate_ev_requirement_implies_domain_entails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.specRelConsistent_empty_B": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.stored_formula_stable_ce_reinterpreted": [
+      "propext"
+    ],
+    "Toy.Extension.stored_formula_stable_nonvacuity": [],
+    "Toy.Extension.stored_formula_stable_under_expansion": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.strongSortSpec_determines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.strongSortSpec_iff_eq_natSort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.subst_var_id": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.subst_var_id.match_1_1": [],
+    "Toy.Extension.tC": [],
+    "Toy.Extension.tF": [],
+    "Toy.Extension.tSucc": [],
+    "Toy.Extension.tTwoNew": [],
+    "Toy.Extension.tZero": [],
+    "Toy.Extension.term_LP_var": [],
+    "Toy.Extension.term_LP_var.match_1_1": [],
+    "Toy.Extension.thresholdDecider": [],
+    "Toy.Extension.thresholdDecider.eq_1": [],
+    "Toy.Extension.threshold_examples_certify": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.threshold_examples_certify_nonvacuity": [
+      "propext"
+    ],
+    "Toy.Extension.trainIn": [],
+    "Toy.Extension.transOn_not_necessary_for_single_list": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.translated_domain_entails_ce_not_adequate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.translated_domain_entails_ce_not_conservative": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.translated_domain_entails_nonvacuity": [],
+    "Toy.Extension.treeTy_envNoCoe_to_envAddNatInt": [
+      "propext"
+    ],
+    "Toy.Extension.treeTy_envNoCoe_to_envAddNatInt.match_1_1": [],
+    "Toy.Extension.unfoldFnFormula": [],
+    "Toy.Extension.unfoldFnFormula.eq_1": [],
+    "Toy.Extension.unfoldFnFormula.eq_2": [],
+    "Toy.Extension.unfoldFnFormula.eq_3": [],
+    "Toy.Extension.unfoldFnFormula.eq_4": [],
+    "Toy.Extension.unfoldFnFormula.eq_5": [],
+    "Toy.Extension.unfoldFnFormula.eq_6": [],
+    "Toy.Extension.unfoldFnFormula.eq_7": [],
+    "Toy.Extension.unfoldFnFormula.eq_8": [],
+    "Toy.Extension.unfoldFnFormula.eq_def": [],
+    "Toy.Extension.unfoldFnFormula.match_1": [],
+    "Toy.Extension.unfoldFnFormula_map_incl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.unfoldFnFormula_map_incl.match_1_1": [],
+    "Toy.Extension.unfoldFnTerm": [],
+    "Toy.Extension.unfoldFnTerm.eq_1": [],
+    "Toy.Extension.unfoldFnTerm.eq_2": [],
+    "Toy.Extension.unfoldFnTerm.eq_3": [],
+    "Toy.Extension.unfoldFnTerm.eq_def": [],
+    "Toy.Extension.unfoldFnTerm.match_1": [],
+    "Toy.Extension.unfoldFnTerm_map_incl": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.unfoldFnTerm_map_incl.match_1_1": [],
+    "Toy.Extension.unfoldFn_closeAll": [],
+    "Toy.Extension.unfoldFn_closeAll.match_1_1": [],
+    "Toy.Extension.unfoldRelFormula": [],
+    "Toy.Extension.unfoldRelFormula.eq_1": [],
+    "Toy.Extension.unfoldRelFormula.eq_2": [],
+    "Toy.Extension.unfoldRelFormula.eq_3": [],
+    "Toy.Extension.unfoldRelFormula.eq_4": [],
+    "Toy.Extension.unfoldRelFormula.eq_5": [],
+    "Toy.Extension.unfoldRelFormula.eq_6": [],
+    "Toy.Extension.unfoldRelFormula.eq_7": [],
+    "Toy.Extension.unfoldRelFormula.eq_8": [],
+    "Toy.Extension.unfoldRelFormula.eq_9": [],
+    "Toy.Extension.unfoldRelFormula.eq_def": [],
+    "Toy.Extension.unfoldRelFormula.match_1": [],
+    "Toy.Extension.unfoldRelFormula_map_incl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.unfoldRelFormula_map_incl.match_1_1": [],
+    "Toy.Extension.unfoldRel_closeAll": [],
+    "Toy.Extension.unfoldRel_closeAll.match_1_1": [],
+    "Toy.Extension.unfold_preserves_tru_without_defAxiom": [],
+    "Toy.Extension.unrestricted_decider_not_certified_by_finite_examples_of_infinite": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.unrestricted_decider_not_certified_ce_finite": [
+      "propext"
+    ],
+    "Toy.Extension.unrestricted_decider_not_certified_nonvacuity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.valSA": [],
+    "Toy.Extension.valWA": [],
+    "Toy.Extension.valWA.match_1": [],
+    "Toy.Extension.weakSortSpec_admits_natSort_and_weirdSort": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.weakSortSpec_does_not_force_output": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.weakSortSpec_satisfiable_not_determines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.weirdSort": [],
+    "Toy.Extension.weirdSort_not_strongSortSpec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.weirdSort_weakSortSpec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Extension.withFn_reduct": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.withRel_reduct": [
+      "Quot.sound"
+    ],
+    "Toy.Extension.withSpec": [],
+    "Toy.Extension.\u03b9Collapse": [],
+    "Toy.Extension.\u03b9Collapse.eq_1": [],
+    "Toy.Extension.\u03b9Cross": [],
+    "Toy.Extension.\u03b9EWA": [],
+    "Toy.Extension.\u03b9EWA.match_1": [],
+    "Toy.Extension.\u03b9SWA": [],
+    "Toy.Extension.\u03b9SWA.match_1": [],
+    "Toy.Extension.\u03b9SWB": [],
+    "Toy.Extension.\u03b9VSA": [],
+    "Toy.Extension.\u03b9VSA.match_1": [],
+    "Toy.Extension.\u03b9VSB": [],
+    "Toy.Extension.\u03b9VSB.match_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
