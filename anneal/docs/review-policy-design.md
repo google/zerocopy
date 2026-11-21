@@ -40,7 +40,7 @@ the single repository-wide ownership map:
 | [`skills/source-control/SKILL.md`](../skills/source-control/SKILL.md) | Commit sizing, bottom-up stack self-containment, commit messages, delegated-worker quarantine, PR/stack publication and readiness, and stack locking/rebasing |
 | [`docs/codex-review.md`](codex-review.md) | Merge gates, live ruleset state, read-only `ci/codex_review.py` diagnostics, and re-enablement criteria |
 | [`docs/review-policy-design.md`](review-policy-design.md) | Maintainer architecture contract, drift checks, non-bootstrap self-modification rule, and empirical evaluation methodology |
-| [`skills/README.md`](../skills/README.md) | Provenance and short index for all vendored and repo-owned skills |
+| [`skills/README.md`](../skills/README.md) | Index of Anneal policy skills and pointer to shared [`../../skills/README.md`](../../skills/README.md) |
 
 ### Parity between Code Review Rules and skill hubs
 
@@ -285,7 +285,7 @@ them in production:
   adjudicated defects and embedded clean controls; **keep confirmation cases
   separate from development examples** and **preserve all assigned attempts,
   including failed and incomplete ones** (see
-  [`skill-authorship`](../skills/skill-authorship/SKILL.md)).
+  [`skill-authorship`](../../skills/skill-authorship/SKILL.md)).
 - **Metrics and interpretation guards:** Measure true-positive catch rate and
   misses by severity on seeded Pass 1/Pass 2 and specification defects,
   precision and false-positive rate on clean controls, new defects introduced

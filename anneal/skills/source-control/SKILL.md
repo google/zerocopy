@@ -11,12 +11,13 @@ description: >-
 
 # Source control
 
-Compose this skill with [`commit-message`](../commit-message/SKILL.md),
-[`authorship-disclosure`](../authorship-disclosure/SKILL.md),
-[`reader-oriented-explanation`](../reader-oriented-explanation/SKILL.md), and
-[`williams-style`](../williams-style/SKILL.md). This skill grants no authority
-to rewrite published history, push branches, open, update, merge, or close pull
-requests, or waive merge gates; act only when authorized.
+Compose this skill with
+[`commit-message`](../../../skills/commit-message/SKILL.md),
+[`authorship-disclosure`](../../../skills/authorship-disclosure/SKILL.md),
+[`reader-oriented-explanation`](../../../skills/reader-oriented-explanation/SKILL.md),
+and [`williams-style`](../../../skills/williams-style/SKILL.md). This skill
+grants no authority to rewrite published history, push branches, open, update,
+merge, or close pull requests, or waive merge gates; act only when authorized.
 
 ## Structure and size commits for review
 
@@ -42,11 +43,11 @@ reviewable:
 
 ## Format commit messages to repository conventions
 
-Follow [`commit-message`](../commit-message/SKILL.md) and these Anneal rules.
-Commit messages must be concise and self-contained: explain rationale and
-necessary context in the commit message itself rather than relying on an issue
-link (Git history is more durable than issue-tracker history), and avoid
-superfluous details or session narrative.
+Follow [`commit-message`](../../../skills/commit-message/SKILL.md) and these
+Anneal rules. Commit messages must be concise and self-contained: explain
+rationale and necessary context in the commit message itself rather than relying
+on an issue link (Git history is more durable than issue-tracker history), and
+avoid superfluous details or session narrative.
 
 - **Subject line and body layout:**
   1. **Subsystem prefix:** When a commit affects a specific subsystem, prefix
@@ -80,7 +81,8 @@ superfluous details or session narrative.
   manually).
   <!-- TODO-check-enable -->
 - **Authorship disclosure and privacy:** Include the `Agent-authored-by:`
-  trailer per [`authorship-disclosure`](../authorship-disclosure/SKILL.md)
+  trailer per
+  [`authorship-disclosure`](../../../skills/authorship-disclosure/SKILL.md)
   whenever an agent contributed (literal `AI agent acting on <user>'s behalf`,
   never a vendor or model name), and follow the privacy rule in
   [`AGENTS.md`](../../AGENTS.md#standing-rules).
@@ -348,8 +350,8 @@ authorized**.
 - **Non-interactive stacked publication with prepared bodies:** Do not use bare
   `gh stack submit` (prompts interactively and can hang under a PTY) or
   `gh stack submit --auto` (publishes PRs with auto-generated titles before
-  [`authorship-disclosure`](../authorship-disclosure/SKILL.md) and `Human
-  review surface` bodies are attached). Instead, push only branches whose
+  [`authorship-disclosure`](../../../skills/authorship-disclosure/SKILL.md) and
+  `Human review surface` bodies are attached). Instead, push only branches whose
   cumulative `main..<head>` diff satisfies the pre-push CI-executed-surface
   gate in
   [`change-review`](../change-review/SKILL.md#schedule-by-data-dependency)

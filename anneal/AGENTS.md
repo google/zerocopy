@@ -67,7 +67,7 @@ Apply these rules to work on the current verifier:
     leaks or forbidden task markers.
   - *On the frozen commit (before delegating review or pushing):* verify a
     clean tree, commit-message rules and `Agent-authored-by:` trailer per
-    [`authorship-disclosure`](skills/authorship-disclosure/SKILL.md),
+    [`authorship-disclosure`](../skills/authorship-disclosure/SKILL.md),
     `./ci/check_todo.sh`, policy drift checks in
     [`docs/review-policy-design.md`](docs/review-policy-design.md#drift-checks)
     when editing policy files, and applicable builds, tests, and audits (e.g.
@@ -90,7 +90,7 @@ Apply these rules to work on the current verifier:
 - Maintain this policy under
   [`docs/review-policy-design.md`](docs/review-policy-design.md). Keep vendored
   `joshlf/skills` packages unmodified
-  (see [`skills/README.md`](skills/README.md)).
+  (see [`../skills/README.md`](../skills/README.md)).
 
 ## Code Review Rules
 
@@ -352,8 +352,8 @@ never proves defect absence or substitutes for CI or merge gates.
 
 ## Required skills
 
-The [`skills/`](skills/README.md) directory holds the skills governing work in
-this repository. Before performing any activity below, read the full `SKILL.md`
+The [`skills/`](skills/README.md) and [`../skills/`](../skills/README.md) directories
+hold the skills governing this work. Before any activity below, read the full `SKILL.md`
 (delegated read-only reviewers need only Part I of `change-review`; single-turn
 hosted reviewers apply [Code Review Rules](#code-review-rules) above) plus any
 referenced `references/` files. Do not infer a skill's rules from its summary;
@@ -363,11 +363,11 @@ applicable skills compose.
 typo in non-TCB docs outside all Pass 2 triggers, the Human review surface,
 directives, and Rust doctests), load only
 [`source-control`](skills/source-control/SKILL.md#format-commit-messages-to-repository-conventions)
-(commit-message section), [`commit-message`](skills/commit-message/SKILL.md),
-[`authorship-disclosure`](skills/authorship-disclosure/SKILL.md), and
+(commit-message section), [`commit-message`](../skills/commit-message/SKILL.md),
+[`authorship-disclosure`](../skills/authorship-disclosure/SKILL.md), and
 applicable writing skills
-([`reader-oriented-explanation`](skills/reader-oriented-explanation/SKILL.md),
-[`williams-style`](skills/williams-style/SKILL.md)); apply the standing rules
+([`reader-oriented-explanation`](../skills/reader-oriented-explanation/SKILL.md),
+[`williams-style`](../skills/williams-style/SKILL.md)); apply the standing rules
 above (0 refinement passes, deterministic preflight, scoped Pass 1 hygiene and
 diff check, and a 3–5 bullet PR-comment or branch-handoff
 [receipt](skills/change-review/SKILL.md#record-the-receipt-and-converge)), and
@@ -377,16 +377,16 @@ orchestration and `trust-review`).
 | Activity | Required skills |
 | :--- | :--- |
 | Authoring changes for publication, reviewing code/commits/PRs, or auditing trust boundaries | [`change-review`](skills/change-review/SKILL.md) (delegated reviewers: Part I only), [`trust-review`](skills/trust-review/SKILL.md) |
-| Designing, implementing, refactoring, or reviewing code for comprehension, invariants, or safe evolution | [`robust-code`](skills/robust-code/SKILL.md) |
-| Writing, revising, or reviewing technical prose (docs, comments, commits, PRs, issues) | [`reader-oriented-explanation`](skills/reader-oriented-explanation/SKILL.md), [`williams-style`](skills/williams-style/SKILL.md) (writing skills) |
-| Adding, revising, or reviewing explanatory inline (`//`, `--`) or doc (`///`, `//!`, `/--`, `/-!`) comments | [`comment-guidelines`](skills/comment-guidelines/SKILL.md), plus writing skills |
-| Structuring commits, commit messages, worker integration, stack locking/rebasing, or PR publication | [`source-control`](skills/source-control/SKILL.md), [`commit-message`](skills/commit-message/SKILL.md), [`authorship-disclosure`](skills/authorship-disclosure/SKILL.md), plus writing skills |
-| Preparing or updating Git commits, PR descriptions, or externally visible prose | [`authorship-disclosure`](skills/authorship-disclosure/SKILL.md) |
-| Designing or redesigning a system, subsystem, semantic model, protocol, or framework end to end | [`architectural-design`](skills/architectural-design/SKILL.md), [`model-refinement`](skills/model-refinement/SKILL.md), [`swarm-model-refinement`](skills/swarm-model-refinement/SKILL.md), plus writing skills |
-| Simplifying or generalizing conceptual models, semantic interfaces, schemas, protocols, or instructions | [`model-refinement`](skills/model-refinement/SKILL.md) |
-| Coordinating multi-agent conceptual model refinement across theories, designs, schemas, or instructions | [`swarm-model-refinement`](skills/swarm-model-refinement/SKILL.md), [`model-refinement`](skills/model-refinement/SKILL.md) |
-| Creating, revising, evaluating, or retiring agent skills or maintainer guidance | [`skill-authorship`](skills/skill-authorship/SKILL.md), [`model-refinement`](skills/model-refinement/SKILL.md) |
-| Leading ambiguous efforts, recovering requirements, evaluating architecture, or recovering context | [`tech-lead`](skills/tech-lead/SKILL.md), plus writing skills |
+| Designing, implementing, refactoring, or reviewing code for comprehension, invariants, or safe evolution | [`robust-code`](../skills/robust-code/SKILL.md) |
+| Writing, revising, or reviewing technical prose (docs, comments, commits, PRs, issues) | [`reader-oriented-explanation`](../skills/reader-oriented-explanation/SKILL.md), [`williams-style`](../skills/williams-style/SKILL.md) (writing skills) |
+| Adding, revising, or reviewing explanatory inline (`//`, `--`) or doc (`///`, `//!`, `/--`, `/-!`) comments | [`comment-guidelines`](../skills/comment-guidelines/SKILL.md), plus writing skills |
+| Structuring commits, commit messages, worker integration, stack locking/rebasing, or PR publication | [`source-control`](skills/source-control/SKILL.md), [`commit-message`](../skills/commit-message/SKILL.md), [`authorship-disclosure`](../skills/authorship-disclosure/SKILL.md), plus writing skills |
+| Preparing or updating Git commits, PR descriptions, or externally visible prose | [`authorship-disclosure`](../skills/authorship-disclosure/SKILL.md) |
+| Designing or redesigning a system, subsystem, semantic model, protocol, or framework end to end | [`architectural-design`](../skills/architectural-design/SKILL.md), [`model-refinement`](../skills/model-refinement/SKILL.md), [`swarm-model-refinement`](../skills/swarm-model-refinement/SKILL.md), plus writing skills |
+| Simplifying or generalizing conceptual models, semantic interfaces, schemas, protocols, or instructions | [`model-refinement`](../skills/model-refinement/SKILL.md) |
+| Coordinating multi-agent conceptual model refinement across theories, designs, schemas, or instructions | [`swarm-model-refinement`](../skills/swarm-model-refinement/SKILL.md), [`model-refinement`](../skills/model-refinement/SKILL.md) |
+| Creating, revising, evaluating, or retiring agent skills or maintainer guidance | [`skill-authorship`](../skills/skill-authorship/SKILL.md), [`model-refinement`](../skills/model-refinement/SKILL.md) |
+| Leading ambiguous efforts, recovering requirements, evaluating architecture, or recovering context | [`tech-lead`](../skills/tech-lead/SKILL.md), plus writing skills |
 | Multi-round research on Rust/`rustc`/Lean 4 or harvesting findings into the reference corpus (with user approval) | [`reference-research`](https://github.com/google/zerocopy/blob/reference/skills/reference-research/SKILL.md) (`google/zerocopy` `reference` branch; see [Technical reference corpus](#technical-reference-corpus)) |
 
 ## Architecture and trust boundary
@@ -416,7 +416,7 @@ Because auditing `trusted/` and its pinned manifests must suffice to verify
 Anneal upholds [`META_PRINCIPLES.md`](META_PRINCIPLES.md),
 [`PRINCIPLES.md`](PRINCIPLES.md), and [`THREAT_MODEL.md`](THREAT_MODEL.md), all
 code in `trusted/` undergoes careful human review. Comment liberally using
-[`comment-guidelines`](skills/comment-guidelines/SKILL.md) and its companion
+[`comment-guidelines`](../skills/comment-guidelines/SKILL.md) and its companion
 writing skills so a human auditor can verify rationale, invariants,
 assumptions, and contracts without reconstructing unstated context.
 

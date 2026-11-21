@@ -2,6 +2,9 @@
   "entries": [
     {
       "path": "../skills"
+    },
+    {
+      "path": "../../skills"
     }
   ]
 }
