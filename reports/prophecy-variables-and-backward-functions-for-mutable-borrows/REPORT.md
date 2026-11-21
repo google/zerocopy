@@ -9,11 +9,14 @@ ends, and calls that take one borrow and return a borrow derived from it), and
 three semantics for it: an address-based reference semantics (the ground truth),
 a backward-function translation in the style described for Aeneas, and a
 prophecy translation in the style described for RustHorn and Creusot. A static
-checker defines five separate parts of a borrow discipline. Every result below
-is a kernel-checked theorem about this toy model; these theorems neither
-establish nor refute the corresponding claims about Aeneas, RustHorn, Creusot or
-Rust's borrow checker, and the `Basis: derived (modeling bridge)` paragraphs
-under **Findings** argue each connection to those systems separately.
+checker defines five separate parts of a borrow discipline.
+Model–system relation: none proved (`back-sound`, `agreement` and `proph-sound`
+relate the package's own three semantics to one another, not to those tools).
+Every result below is a kernel-checked theorem about this toy model; these
+theorems neither establish nor refute the corresponding claims about Aeneas,
+RustHorn, Creusot or Rust's borrow checker, and the `Basis: derived (modeling
+bridge)` paragraphs under **Findings** argue each connection to those systems
+separately.
 
 - **`back-sound`** — For every program that has no access to lent locals, no
   access to reborrowed borrows, no use of a borrow after its end, fresh borrow
@@ -1558,7 +1561,7 @@ several results is listed once with the results it applies to.
 
 #### Non-claims shared by several results
 
-- (`back-sound`, `agreement`, `proph-sound`, `proph-inclusion`, `omission-monotone`, `omission-keeps-real`, `resolution-necessary`, `premature-resolution`, `callee-exit-resolution`, `callee-back-projection`, `callee-summary-agreement`, `selection-correct`, `selection-shapes`) Toy model only: straight-line code over unbounded integer locals; mutable borrows of whole integer locals only (no pair components, no compound values, no shared borrows, no two-phase borrows); explicit `endBorrow` instead of inferred (non-lexical) lifetimes; callees take exactly one borrow, have no locals, make no calls, and return a borrow derived from their parameter; no branches other than run-time selection of a borrow, no loops, no panics, divergence or early exits, no intermediate assertions, no unsafe code, no interior mutability, no concurrency.
+- (`back-sound`, `agreement`, `proph-sound`, `proph-inclusion`, `omission-monotone`, `omission-keeps-real`, `resolution-necessary`, `premature-resolution`, `callee-exit-resolution`, `callee-back-projection`, `callee-summary-agreement`, `selection-correct`, `selection-shapes`) Toy model: straight-line code over unbounded integer locals; mutable borrows of whole integer locals only (no pair components, no compound values, no shared borrows, no two-phase borrows); explicit `endBorrow` instead of inferred (non-lexical) lifetimes; callees take exactly one borrow, have no locals, make no calls, and return a borrow derived from their parameter; no branches other than run-time selection of a borrow, no loops, no panics, divergence or early exits, no intermediate assertions, no unsafe code, no interior mutability, no concurrency. These are statements about this toy model; they neither establish nor refute the corresponding claims about Rust's borrow checker or about Aeneas, RustHorn and Creusot.
 - (`back-sound`, `agreement`, `proph-sound`, `proph-inclusion`, `omission-keeps-real`, `resolution-necessary`, `premature-resolution`, `callee-exit-resolution`, `callee-summary-agreement`, `selection-correct`, `selection-shapes`) Nothing is proved about Aeneas, RustHorn, Creusot or any other implementation; the two translations are toy models in the style their papers describe. Any connection to a real tool is a modeling bridge stated in prose, not a kernel-checked fact.
 - (`back-sound`, `agreement`, `proph-sound`, `proph-inclusion`, `omission-keeps-real`) The discipline (`violations`) is a static, explicit-end checker chosen for this package, not Rust's borrow checker; in particular it lends both candidates of a run-time selected borrow until the borrow ends, and it does not model non-lexical lifetimes or two-phase borrows. It keeps statuses per borrow name; rebinding a name leaks the borrow previously held under it (reported only as `rebind`). It stops at the first scoping error (a reference variable that was never bound, a local operation in a callee, a callee returning a name that was never bound): once stuck it records no further violation (`checkStmts_of_stuck`), and `unendedAtExit` is not reported for a stuck program. So a program with a scoping error satisfies each discipline property as soon as no violation of that kind is recorded before the checker gets stuck, whatever follows (`stuckProg_satisfies_all_avoids`: a program with a lent access, frozen accesses, a use after end, a rebinding and live borrows after its scoping error satisfies all five).
 - (`back-sound`, `agreement`, `proph-sound`, `proph-inclusion`, `omission-keeps-real`) `FreshBindings` and `AllEndedAtExit` are artifacts of explicit `endBorrow` without inferred (non-lexical) lifetimes: in Rust the borrow checker infers where a borrow ends, so reassigning a reference variable or leaving its scope needs no explicit end. `FreshBindings` also rejects reusing the name of a borrow that has already ended; on the example `rebindEnded` that reuse is harmless for both translations (`rebindEnded_harmless`), and no general statement about it is made. Tightness of `FreshBindings` and `AllEndedAtExit` here does not mean that a verifier for Rust must forbid reassigning reference variables or require explicit ends.
