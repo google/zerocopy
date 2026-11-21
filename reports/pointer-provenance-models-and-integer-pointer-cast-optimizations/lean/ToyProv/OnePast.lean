@@ -84,7 +84,7 @@ theorem substAddrEq_example_refines_flat :
 /-! ### R1c — address-equality substitution between in-bounds pointers -/
 
 /-- **R1c.** In every model, substituting `p` for `q` in one instruction is a refinement when, in
-every reachable state at that point, the two pointers have equal addresses and both are strictly
+every reachable state at that point, the two pointers have equal addresses and both are
 in bounds of a live allocation (`inBoundsC`). In `strict`/`exposed` this holds because live
 allocations are disjoint, so two in-bounds pointers with the same address have the same
 provenance and are the same value (then R2c applies). -/

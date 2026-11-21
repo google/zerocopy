@@ -3,8 +3,8 @@ import ToyProv.Lemmas
 /-!
 # Definition examples
 
-For each core definition: at least one intended instance it admits and one it must reject,
-all checked by evaluation.
+Positive and negative examples for the operational definitions, for 8 of the 11 state predicates, and for 8 of the 10
+transformation relations. Negative transformation examples are proved by case analysis, not by closed evaluation.
 -/
 
 namespace Toy.Prov
