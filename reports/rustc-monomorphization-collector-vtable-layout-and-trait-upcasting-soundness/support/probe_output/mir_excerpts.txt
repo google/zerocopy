@@ -1,0 +1,150 @@
+=== SPECIMEN 1: Runtime(PostCleanup) MIR EXCERPTS ===
+
+--- vtable_diamond_upcast.upcast_d_to_a.3-2-000.runtime-post-cleanup.after.mir ---
+// MIR for `upcast_d_to_a` after runtime-post-cleanup
+
+fn upcast_d_to_a(_1: &dyn Diamond) -> &dyn SuperA {
+    debug d => _1;
+    let mut _0: &dyn SuperA;
+    let mut _2: &dyn SuperA;
+    let _3: &dyn SuperA;
+    let mut _4: &dyn Diamond;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn SuperA (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn SuperA (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+--- vtable_diamond_upcast.upcast_d_to_b.3-2-000.runtime-post-cleanup.after.mir ---
+// MIR for `upcast_d_to_b` after runtime-post-cleanup
+
+fn upcast_d_to_b(_1: &dyn Diamond) -> &dyn SuperB {
+    debug d => _1;
+    let mut _0: &dyn SuperB;
+    let mut _2: &dyn SuperB;
+    let _3: &dyn SuperB;
+    let mut _4: &dyn Diamond;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn SuperB (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+--- vtable_diamond_upcast.upcast_d_to_base.3-2-000.runtime-post-cleanup.after.mir ---
+// MIR for `upcast_d_to_base` after runtime-post-cleanup
+
+fn upcast_d_to_base(_1: &dyn Diamond) -> &dyn Base {
+    debug d => _1;
+    let mut _0: &dyn Base;
+    let mut _2: &dyn Base;
+    let _3: &dyn Base;
+    let mut _4: &dyn Diamond;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn Base (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn Base (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+--- vtable_diamond_upcast.upcast_empty_to_sec.3-2-000.runtime-post-cleanup.after.mir ---
+// MIR for `upcast_empty_to_sec` after runtime-post-cleanup
+
+fn upcast_empty_to_sec(_1: &dyn SubAfterEmpty) -> &dyn SecondSuper {
+    debug e => _1;
+    let mut _0: &dyn SecondSuper;
+    let mut _2: &dyn SecondSuper;
+    let _3: &dyn SecondSuper;
+    let mut _4: &dyn SubAfterEmpty;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn SecondSuper (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn SecondSuper (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+--- vtable_diamond_upcast.upcast_erase_principal.3-2-000.runtime-post-cleanup.after.mir ---
+// MIR for `upcast_erase_principal` after runtime-post-cleanup
+
+fn upcast_erase_principal(_1: &dyn Diamond + Send) -> &dyn Send {
+    debug d => _1;
+    let mut _0: &dyn std::marker::Send;
+    let mut _2: &dyn std::marker::Send;
+    let _3: &dyn std::marker::Send;
+    let mut _4: &dyn Diamond + std::marker::Send;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &(*_1);
+        _3 = move _4 as &dyn std::marker::Send (PointerCoercion(Unsize, Implicit));
+        StorageDead(_4);
+        _2 = &(*_3);
+        _0 = move _2 as &dyn std::marker::Send (PointerCoercion(Unsize, Implicit));
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+--- shims_and_mono_collection.reify_tracked_fn.3-2-000.runtime-post-cleanup.after.mir ---
+// MIR for `reify_tracked_fn` after runtime-post-cleanup
+
+fn reify_tracked_fn() -> fn(u64) -> u32 {
+    let mut _0: fn(u64) -> u32;
+
+    bb0: {
+        _0 = tracked_free as fn(u64) -> u32 (PointerCoercion(ReifyFnPointer(Safe), Implicit));
+        return;
+    }
+}
+
+--- shims_and_mono_collection.reify_virtual_method.3-2-000.runtime-post-cleanup.after.mir ---
+// MIR for `reify_virtual_method` after runtime-post-cleanup
+
+fn reify_virtual_method() -> for<'a> fn(&'a dyn DynSpeak) -> u64 {
+    let mut _0: for<'a> fn(&'a dyn DynSpeak) -> u64;
+
+    bb0: {
+        _0 = <dyn DynSpeak as DynSpeak>::speak as for<'a> fn(&'a dyn DynSpeak) -> u64 (PointerCoercion(ReifyFnPointer(Safe), Implicit));
+        return;
+    }
+}

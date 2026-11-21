@@ -1,0 +1,36 @@
+=== SPECIMEN 2: LAZY vs EAGER MONO ITEMS ===
+lazy_count=50 eager_count=56 delta=6
+eager_only:
+  + fn <CopyNoDrop as UnusedDefaultTrait>::unused_default
+  + fn <UnusedDrop as std::ops::Drop>::drop
+  + fn <UnusedDrop as std::ops::Drop>::pin_drop
+  + fn dead_non_generic
+  + fn std::hint::black_box::<u64>
+  + fn std::ptr::drop_glue::<UnusedDrop> - shim(Some(UnusedDrop))
+
+=== SPECIMEN 3: MULTI-CGU (codegen-units=4) ===
+--- O0 histogram={'External': 21, 'Internal': 8} ---
+  fn <Token as Ping>::ping @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.3[External]
+  fn main @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.3[External]
+  fn mod_a::always_inline_helper @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.1[Internal] multi_cgu_linkage.1ad9f0e85d915083-cgu.2[Internal]
+  fn mod_a::make_dyn_a @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.1[External]
+  fn mod_a::only_in_a @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.1[External]
+  fn mod_a::private_only_a @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.1[Internal]
+  fn mod_a::shared_generic::<u64> @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.1[External]
+  fn mod_b::call_cross_cgu @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.2[External]
+  fn mod_b::make_dyn_b @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.2[External]
+--- O2 histogram={'Internal': 7, 'External': 9} ---
+  fn <Token as Ping>::ping @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.0[External]
+  fn main @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.0[External]
+  fn mod_a::make_dyn_a @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.3[External]
+  fn mod_a::only_in_a @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.3[External]
+  fn mod_a::private_only_a @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.3[Internal]
+  fn mod_a::shared_generic::<u64> @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.3[External]
+  fn mod_b::call_cross_cgu @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.2[External]
+  fn mod_b::make_dyn_b @@ multi_cgu_linkage.1ad9f0e85d915083-cgu.2[External]
+
+=== SPECIMEN 4: SEPARATE COMPILATION (-Z share-generics=yes vs no) ===
+share_yes dep_poly=['fn poly_default::<u64>', 'fn poly_inline_never::<u64>']
+share_yes app_poly=['fn sep_dep::poly_default::<i32>']
+share_no dep_poly=['fn poly_default::<u64>', 'fn poly_inline_never::<u64>']
+share_no app_poly=['fn sep_dep::poly_default::<i32>', 'fn sep_dep::poly_default::<u64>']

@@ -1,0 +1,631 @@
+{
+  "checks": {
+    "cgu::intra_crate_duplicate_private_vtables": {
+      "detail": {
+        "O0": {
+          "res": "136",
+          "same_vtable": "false"
+        },
+        "O2": {
+          "res": "136",
+          "same_vtable": "false"
+        }
+      },
+      "passed": true
+    },
+    "cgu::o0_localcopy_internalized_and_cross_cgu_external": {
+      "detail": {
+        "always_inline_helper": [
+          {
+            "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.1",
+            "linkage": "Internal"
+          },
+          {
+            "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.2",
+            "linkage": "Internal"
+          }
+        ],
+        "private_only_a": [
+          {
+            "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.1",
+            "linkage": "Internal"
+          }
+        ],
+        "shared_generic": [
+          {
+            "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.1",
+            "linkage": "External"
+          }
+        ]
+      },
+      "passed": true
+    },
+    "cgu::zero_linkonce_odr_emissions": {
+      "detail": {
+        "O0": {
+          "External": 21,
+          "Internal": 8
+        },
+        "O2": {
+          "External": 9,
+          "Internal": 7
+        }
+      },
+      "passed": true
+    },
+    "cli::print_mono_items_requires_bool": {
+      "detail": "error: incorrect value `lazy` for unstable option `print-mono-items` - one of: `y`, `yes`, `on`, `true`, `n`, `no`, `off` or `false` was expected",
+      "passed": true
+    },
+    "limits::enforce_type_length_limit_flag_triggers_type_length_error": {
+      "detail": "error: reached the type-length limit while instantiating `exp_blowup::<(((..., ...), ...), ...)>`",
+      "passed": true
+    },
+    "limits::poly_recursion_hits_recursion_limit": {
+      "detail": "error: reached the recursion limit while instantiating `poly_rec::<((((..., u8), u8), u8), u8)>`",
+      "passed": true
+    },
+    "limits::type_length_limit_not_enforced_by_default": {
+      "detail": "error: reached the recursion limit while instantiating `exp_blowup::<(((..., ...), ...), ...)>`",
+      "passed": true
+    },
+    "llvm_ir::copy_diamond_vtable_null_drop_and_trait_vptr": {
+      "detail": {
+        "primary": "@vtable.3 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr, ptr }> <{ [24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXs1_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_4Base7base_id, ptr @_RNvXs2_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_6SuperA5a_val, ptr @_RNvXs3_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_6SuperB5b_val, ptr @alloc_dbc5df7f08781942ba48fe0ebb3e4706, ptr @_RNvXs4_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_7Diamond5d_val }>, align 8",
+        "secondary": "@alloc_dbc5df7f08781942ba48fe0ebb3e4706 = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXs1_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_4Base7base_id, ptr @_RNvXs3_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_6SuperB5b_val }>, align 8",
+        "secondary_sym": "@alloc_dbc5df7f08781942ba48fe0ebb3e4706"
+      },
+      "passed": true
+    },
+    "llvm_ir::drop_diamond_vtable_nonnull_drop_and_trait_vptr": {
+      "detail": {
+        "primary": "@vtable.4 = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr, ptr, ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCs5mDCosJkIdB_21vtable_diamond_upcast8DropLeafEBD_, [16 x i8] c\"\\10\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXsa_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_4Base7base_id, ptr @_RNvXsb_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_6SuperA5a_val, ptr @_RNvXsc_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_6SuperB5b_val, ptr @alloc_dc53af2feba63701ec459c90bd651b1c, ptr @_RNvXsd_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_7Diamond5d_val }>, align 8",
+        "secondary": "@alloc_dc53af2feba63701ec459c90bd651b1c = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCs5mDCosJkIdB_21vtable_diamond_upcast8DropLeafEBD_, [16 x i8] c\"\\10\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXsa_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_4Base7base_id, ptr @_RNvXsc_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_6SuperB5b_val }>, align 8",
+        "secondary_sym": "@alloc_dc53af2feba63701ec459c90bd651b1c"
+      },
+      "passed": true
+    },
+    "llvm_ir::dyn_drop_glue_null_checks_slot_0": {
+      "detail": "define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueDNtCs5mDCosJkIdB_21vtable_diamond_upcast6SuperBEL_EBE_(ptr %_1.0, ptr align 8 %_1.1) unnamed_addr #0 {\nstart:\n  %0 = getelementptr inbounds i8, ptr %_1.1, i64 0\n  %1 = load ptr, ptr %0, align 8, !invariant.load !5\n  %2 = icmp ne ptr %1, null\n  br i1 %2, label %is_not_null, label %bb1\n\nis_not_null:                                      ; preds = %start\n  call void %1(ptr %_1.0) #16\n  br label %bb1\n\nbb1:                                              ; preds = %is_not_null, %start\n  ret void\n}",
+      "passed": true
+    },
+    "llvm_ir::empty_marker_has_no_trait_vptr": {
+      "detail": "@vtable.2 = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXs6_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_11SecondSuper7sec_val, ptr @_RNvXs7_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_13SubAfterEmpty5sub_e }>, align 8",
+      "passed": true
+    },
+    "llvm_ir::upcast_d_to_b_loads_offset_48_invariant_nonnull": {
+      "detail": "define dso_local { ptr, ptr } @upcast_d_to_b(ptr %d.0, ptr align 8 %d.1) unnamed_addr #2 {\nstart:\n  %0 = getelementptr inbounds i8, ptr %d.1, i64 48\n  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !5, !nonnull !5\n  %1 = insertvalue { ptr, ptr } poison, ptr %d.0, 0\n  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1\n  ret { ptr, ptr } %2\n}",
+      "passed": true
+    },
+    "llvm_ir::vacant_slot_is_undef": {
+      "detail": "@vtable.5 = private unnamed_addr constant <{ [24 x i8], ptr, [8 x i8] }> <{ [24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXs8_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafINtB5_10CondVacantNtNtCs8jjFDZd5IFg_5alloc6string6StringE6alwaysB5_, [8 x i8] undef }>, align 8",
+      "passed": true
+    },
+    "llvm_ir::zero_cost_upcast_b_to_base": {
+      "detail": "define dso_local { ptr, ptr } @upcast_b_to_base(ptr %b.0, ptr align 8 %b.1) unnamed_addr #2 {\nstart:\n  %0 = insertvalue { ptr, ptr } poison, ptr %b.0, 0\n  %1 = insertvalue { ptr, ptr } %0, ptr %b.1, 1\n  ret { ptr, ptr } %1\n}",
+      "passed": true
+    },
+    "llvm_ir::zero_cost_upcast_d_to_a": {
+      "detail": "define dso_local { ptr, ptr } @upcast_d_to_a(ptr %d.0, ptr align 8 %d.1) unnamed_addr #2 {\nstart:\n  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0\n  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1\n  ret { ptr, ptr } %1\n}",
+      "passed": true
+    },
+    "llvm_ir::zero_cost_upcast_d_to_base": {
+      "detail": "define dso_local { ptr, ptr } @upcast_d_to_base(ptr %d.0, ptr align 8 %d.1) unnamed_addr #2 {\nstart:\n  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0\n  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1\n  ret { ptr, ptr } %1\n}",
+      "passed": true
+    },
+    "llvm_ir::zero_cost_upcast_empty_to_sec": {
+      "detail": "define dso_local { ptr, ptr } @upcast_empty_to_sec(ptr %e.0, ptr align 8 %e.1) unnamed_addr #2 {\nstart:\n  %0 = insertvalue { ptr, ptr } poison, ptr %e.0, 0\n  %1 = insertvalue { ptr, ptr } %0, ptr %e.1, 1\n  ret { ptr, ptr } %1\n}",
+      "passed": true
+    },
+    "llvm_ir::zero_cost_upcast_erase_principal": {
+      "detail": "define dso_local { ptr, ptr } @upcast_erase_principal(ptr %d.0, ptr align 8 %d.1) unnamed_addr #2 {\nstart:\n  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0\n  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1\n  ret { ptr, ptr } %1\n}",
+      "passed": true
+    },
+    "llvm_ir::zero_cost_upcast_single_base": {
+      "detail": "define dso_local { ptr, ptr } @upcast_single_base(ptr %s.0, ptr align 8 %s.1) unnamed_addr #2 {\nstart:\n  %0 = insertvalue { ptr, ptr } poison, ptr %s.0, 0\n  %1 = insertvalue { ptr, ptr } %0, ptr %s.1, 1\n  ret { ptr, ptr } %1\n}",
+      "passed": true
+    },
+    "llvm_ir::zero_cost_upcast_single_mid": {
+      "detail": "define dso_local { ptr, ptr } @upcast_single_mid(ptr %s.0, ptr align 8 %s.1) unnamed_addr #2 {\nstart:\n  %0 = insertvalue { ptr, ptr } poison, ptr %s.0, 0\n  %1 = insertvalue { ptr, ptr } %0, ptr %s.1, 1\n  ret { ptr, ptr } %1\n}",
+      "passed": true
+    },
+    "mir::post_cleanup_dumps_captured": {
+      "detail": [
+        "vtable_diamond_upcast.drop_box_super_b.3-2-000.runtime-post-cleanup.after.mir",
+        "vtable_diamond_upcast.upcast_d_to_a.3-2-000.runtime-post-cleanup.after.mir",
+        "vtable_diamond_upcast.upcast_d_to_b.3-2-000.runtime-post-cleanup.after.mir",
+        "vtable_diamond_upcast.upcast_d_to_base.3-2-000.runtime-post-cleanup.after.mir",
+        "vtable_diamond_upcast.upcast_empty_to_sec.3-2-000.runtime-post-cleanup.after.mir",
+        "vtable_diamond_upcast.upcast_erase_principal.3-2-000.runtime-post-cleanup.after.mir"
+      ],
+      "passed": true
+    },
+    "sep::cross_crate_duplicate_private_vtables": {
+      "detail": {
+        "a": "10",
+        "b": "30",
+        "c": "3",
+        "dep_sum": "20",
+        "same_vtable": "false"
+      },
+      "passed": true
+    },
+    "sep::share_generics_no_reinstantiates_default_but_still_reuses_inline_never": {
+      "detail": [
+        "fn sep_dep::poly_default::<i32>",
+        "fn sep_dep::poly_default::<u64>"
+      ],
+      "passed": true
+    },
+    "sep::share_generics_yes_reuses_upstream_poly_default_u64": {
+      "detail": [
+        "fn sep_dep::poly_default::<i32>"
+      ],
+      "passed": true
+    },
+    "shims::all_instance_kinds_collected_in_lazy": {
+      "detail": {
+        "ClosureOnceShim": true,
+        "DropGlue_reified_None": true,
+        "FnPtrShim_fndef": true,
+        "FnPtrShim_fnptr": true,
+        "ReifyShim_track_caller_fnptr": true,
+        "ReifyShim_track_caller_vtable": true,
+        "ReifyShim_virtual_fnptr": true,
+        "VTableShim": true
+      },
+      "passed": true
+    },
+    "shims::compile_lazy_eager_ir": {
+      "detail": {
+        "eager": "",
+        "lazy": ""
+      },
+      "passed": true
+    },
+    "shims::eager_adds_dead_fn_unused_drop_and_default_trait_method": {
+      "detail": {
+        "eager_count": 56,
+        "eager_only": [
+          "fn <CopyNoDrop as UnusedDefaultTrait>::unused_default",
+          "fn <UnusedDrop as std::ops::Drop>::drop",
+          "fn <UnusedDrop as std::ops::Drop>::pin_drop",
+          "fn dead_non_generic",
+          "fn std::hint::black_box::<u64>",
+          "fn std::ptr::drop_glue::<UnusedDrop> - shim(Some(UnusedDrop))"
+        ],
+        "lazy_count": 50
+      },
+      "passed": true
+    },
+    "shims::link_dead_code_disables_internalization": {
+      "detail": {
+        "eager_linkages": [
+          "External"
+        ],
+        "lazy_linkages": [
+          "External",
+          "Internal"
+        ]
+      },
+      "passed": true
+    },
+    "shims::runtime_values_and_track_caller_lines": {
+      "detail": {
+        "expected_direct_line": 99,
+        "expected_reified_line": 42,
+        "expected_vtable_track_line": 35,
+        "kv": {
+          "box_once": "10",
+          "cl_once": "17",
+          "direct_line": "99",
+          "fndef": "16",
+          "fnptr": "15",
+          "reified_line": "42",
+          "virt_reify": "60",
+          "vtable_shim": "15",
+          "vtable_track": "35"
+        }
+      },
+      "passed": true
+    },
+    "vtable::auto_trait_erase_prefix_reuse": {
+      "detail": "true",
+      "passed": true
+    },
+    "vtable::compile_bin": {
+      "detail": "",
+      "passed": true
+    },
+    "vtable::compile_llvm_ir": {
+      "detail": "",
+      "passed": true
+    },
+    "vtable::diamond_prefix_vs_secondary_vptr": {
+      "detail": {
+        "diamond_a_reuses_vptr": "true",
+        "diamond_b_to_base_reuses_vptr": "true",
+        "diamond_b_uses_secondary_vptr": "true",
+        "diamond_base_reuses_vptr": "true",
+        "diamond_copy_dispatch_ok": "true"
+      },
+      "passed": true
+    },
+    "vtable::drop_dispatch_through_upcasted_boxes": {
+      "detail": {
+        "box_copy_b_val": "203",
+        "box_dl_b_val": "35",
+        "drop_after_concrete": "3009",
+        "drop_after_upcast_b": "8010",
+        "drop_after_upcast_send": "15012",
+        "drop_leaf_dispatch_ok": "true"
+      },
+      "passed": true
+    },
+    "vtable::empty_marker_prefix_reuse": {
+      "detail": {
+        "empty_marker_dispatch_ok": "true",
+        "empty_marker_reuses_vptr": "true"
+      },
+      "passed": true
+    },
+    "vtable::native_exit_zero": {
+      "detail": "",
+      "passed": true
+    },
+    "vtable::single_chain_prefix_reuse": {
+      "detail": {
+        "single_dispatch_ok": "true",
+        "single_same_base": "true",
+        "single_same_mid": "true"
+      },
+      "passed": true
+    },
+    "vtable::vacant_always_dispatch": {
+      "detail": "107",
+      "passed": true
+    }
+  },
+  "rustc": {
+    "LLVM version": "22.1.6",
+    "binary": "rustc",
+    "commit-date": "2026-05-31",
+    "commit-hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "header": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+    "host": "x86_64-unknown-linux-gnu",
+    "release": "1.98.0-nightly"
+  },
+  "specimen_sha256": {
+    "multi_cgu_linkage.rs": "f6358a100a9be0c0e453242a1e95c89fbe34154ddbb71aad990d6e4dbc11a927",
+    "poly_recursion_limit.rs": "e58273516309b766e172f12d011ac3ce59ffd646f4c92c0d5884f477ca36f3a9",
+    "sep_app.rs": "98b3c95a17bd77bee5f59f4f32093456e97b7d35d819d7ded9f230397656056f",
+    "sep_dep.rs": "9955fd55e2562da6ff798ce7f8dec252c41f247659ca495199692dce821f30c0",
+    "shims_and_mono_collection.rs": "1e28b06a619e357877fb7031c0e78f707bc391c3362ad08149aa1e72b9328a24",
+    "type_length_limit.rs": "d8405ffc76f63f263e42aa76dc05544a2a6cf38df333293a298c27e065ddf1ee",
+    "vtable_diamond_upcast.rs": "8c1d4bfc3313e01304ab5b70b6acfc95837b5fd8b500eeda27305e6cc184d459"
+  },
+  "specimens": {
+    "multi_cgu_linkage": {
+      "O0": {
+        "compile_rc": 0,
+        "crate_items": [
+          {
+            "item": "fn <Token as Ping>::ping",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.3",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn main",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.3",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_a::always_inline_helper",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.1",
+                "linkage": "Internal"
+              },
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.2",
+                "linkage": "Internal"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_a::make_dyn_a",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.1",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_a::only_in_a",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.1",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_a::private_only_a",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.1",
+                "linkage": "Internal"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_a::shared_generic::<u64>",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.1",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_b::call_cross_cgu",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.2",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_b::make_dyn_b",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.2",
+                "linkage": "External"
+              }
+            ]
+          }
+        ],
+        "linkage_histogram": {
+          "External": 21,
+          "Internal": 8
+        },
+        "runtime_kv": {
+          "res": "136",
+          "same_vtable": "false"
+        },
+        "total_mono_items": 27
+      },
+      "O2": {
+        "compile_rc": 0,
+        "crate_items": [
+          {
+            "item": "fn <Token as Ping>::ping",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.0",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn main",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.0",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_a::make_dyn_a",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.3",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_a::only_in_a",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.3",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_a::private_only_a",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.3",
+                "linkage": "Internal"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_a::shared_generic::<u64>",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.3",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_b::call_cross_cgu",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.2",
+                "linkage": "External"
+              }
+            ]
+          },
+          {
+            "item": "fn mod_b::make_dyn_b",
+            "placements": [
+              {
+                "cgu": "multi_cgu_linkage.1ad9f0e85d915083-cgu.2",
+                "linkage": "External"
+              }
+            ]
+          }
+        ],
+        "linkage_histogram": {
+          "External": 9,
+          "Internal": 7
+        },
+        "runtime_kv": {
+          "res": "136",
+          "same_vtable": "false"
+        },
+        "total_mono_items": 16
+      }
+    },
+    "recursion_and_type_length_limits": {
+      "poly_recursion_error": "error: reached the recursion limit while instantiating `poly_rec::<((((..., u8), u8), u8), u8)>`",
+      "poly_recursion_rc": 1,
+      "type_length_default_error": "error: reached the recursion limit while instantiating `exp_blowup::<(((..., ...), ...), ...)>`",
+      "type_length_default_rc": 1,
+      "type_length_enforced_error": "error: reached the type-length limit while instantiating `exp_blowup::<(((..., ...), ...), ...)>`",
+      "type_length_enforced_rc": 1
+    },
+    "separate_compilation": {
+      "share_no": {
+        "app_poly_items": [
+          "fn sep_dep::poly_default::<i32>",
+          "fn sep_dep::poly_default::<u64>"
+        ],
+        "app_rc": 0,
+        "dep_poly_items": [
+          "fn poly_default::<u64>",
+          "fn poly_inline_never::<u64>"
+        ],
+        "dep_rc": 0,
+        "runtime_kv": {
+          "a": "10",
+          "b": "30",
+          "c": "3",
+          "dep_sum": "20",
+          "same_vtable": "false"
+        }
+      },
+      "share_yes": {
+        "app_poly_items": [
+          "fn sep_dep::poly_default::<i32>"
+        ],
+        "app_rc": 0,
+        "dep_poly_items": [
+          "fn poly_default::<u64>",
+          "fn poly_inline_never::<u64>"
+        ],
+        "dep_rc": 0,
+        "runtime_kv": {
+          "a": "10",
+          "b": "30",
+          "c": "3",
+          "dep_sum": "20",
+          "same_vtable": "false"
+        }
+      }
+    },
+    "shims_and_mono_collection": {
+      "eager_count": 56,
+      "eager_linkages": [
+        "External"
+      ],
+      "eager_only": [
+        "fn <CopyNoDrop as UnusedDefaultTrait>::unused_default",
+        "fn <UnusedDrop as std::ops::Drop>::drop",
+        "fn <UnusedDrop as std::ops::Drop>::pin_drop",
+        "fn dead_non_generic",
+        "fn std::hint::black_box::<u64>",
+        "fn std::ptr::drop_glue::<UnusedDrop> - shim(Some(UnusedDrop))"
+      ],
+      "lazy_count": 50,
+      "lazy_linkages": [
+        "External",
+        "Internal"
+      ],
+      "runtime_kv": {
+        "box_once": "10",
+        "cl_once": "17",
+        "direct_line": "99",
+        "fndef": "16",
+        "fnptr": "15",
+        "reified_line": "42",
+        "virt_reify": "60",
+        "vtable_shim": "15",
+        "vtable_track": "35"
+      },
+      "shim_items_lazy": [
+        "fn <Payload as ByValConsume>::consume - shim(vtable)",
+        "fn <Payload as DynSpeak>::tracked_on_impl - shim(reify)",
+        "fn <dyn DynSpeak as DynSpeak>::speak - shim(reify)",
+        "fn <fn() as std::ops::FnOnce<()>>::call_once - shim(fn())",
+        "fn <fn(u64) -> u64 as std::ops::Fn<(u64,)>>::call - shim(fn(u64) -> u64)",
+        "fn <fn(u64) -> u64 {plain_fn} as std::ops::Fn<(u64,)>>::call - shim(fn(u64) -> u64 {plain_fn})",
+        "fn <{closure@specimens/shims_and_mono_collection.rs:115:22: 115:35} as std::ops::FnOnce<(u64,)>>::call_once - shim",
+        "fn <{closure@specimens/shims_and_mono_collection.rs:121:60: 121:73} as std::ops::FnOnce<(u64,)>>::call_once - shim(vtable)",
+        "fn <{closure@std::rt::lang_start<()>::{closure#0}} as std::ops::FnOnce<()>>::call_once - shim",
+        "fn <{closure@std::rt::lang_start<()>::{closure#0}} as std::ops::FnOnce<()>>::call_once - shim(vtable)",
+        "fn call_via_fnonce::<{closure@specimens/shims_and_mono_collection.rs:115:22: 115:35}>",
+        "fn std::boxed::Box::<{closure@specimens/shims_and_mono_collection.rs:121:60: 121:73}>::new",
+        "fn std::ptr::drop_in_place::<CopyNoDrop>",
+        "fn tracked_free - shim(reify)"
+      ]
+    },
+    "vtable_diamond_upcast": {
+      "copy_diamond_vtable": "@vtable.3 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr, ptr }> <{ [24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXs1_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_4Base7base_id, ptr @_RNvXs2_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_6SuperA5a_val, ptr @_RNvXs3_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_6SuperB5b_val, ptr @alloc_dbc5df7f08781942ba48fe0ebb3e4706, ptr @_RNvXs4_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_7Diamond5d_val }>, align 8",
+      "copy_super_b_vtable": "@alloc_dbc5df7f08781942ba48fe0ebb3e4706 = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXs1_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_4Base7base_id, ptr @_RNvXs3_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_6SuperB5b_val }>, align 8",
+      "drop_diamond_vtable": "@vtable.4 = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr, ptr, ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCs5mDCosJkIdB_21vtable_diamond_upcast8DropLeafEBD_, [16 x i8] c\"\\10\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXsa_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_4Base7base_id, ptr @_RNvXsb_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_6SuperA5a_val, ptr @_RNvXsc_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_6SuperB5b_val, ptr @alloc_dc53af2feba63701ec459c90bd651b1c, ptr @_RNvXsd_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_7Diamond5d_val }>, align 8",
+      "drop_super_b_vtable": "@alloc_dc53af2feba63701ec459c90bd651b1c = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCs5mDCosJkIdB_21vtable_diamond_upcast8DropLeafEBD_, [16 x i8] c\"\\10\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXsa_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_4Base7base_id, ptr @_RNvXsc_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_6SuperB5b_val }>, align 8",
+      "empty_marker_vtable": "@vtable.2 = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXs6_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_11SecondSuper7sec_val, ptr @_RNvXs7_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_13SubAfterEmpty5sub_e }>, align 8",
+      "post_cleanup_mir_files": [
+        "vtable_diamond_upcast.drop_box_super_b.3-2-000.runtime-post-cleanup.after.mir",
+        "vtable_diamond_upcast.upcast_d_to_a.3-2-000.runtime-post-cleanup.after.mir",
+        "vtable_diamond_upcast.upcast_d_to_b.3-2-000.runtime-post-cleanup.after.mir",
+        "vtable_diamond_upcast.upcast_d_to_base.3-2-000.runtime-post-cleanup.after.mir",
+        "vtable_diamond_upcast.upcast_empty_to_sec.3-2-000.runtime-post-cleanup.after.mir",
+        "vtable_diamond_upcast.upcast_erase_principal.3-2-000.runtime-post-cleanup.after.mir"
+      ],
+      "runtime_kv": {
+        "auto_erase_reuses_vptr": "true",
+        "box_copy_b_val": "203",
+        "box_dl_b_val": "35",
+        "diamond_a_reuses_vptr": "true",
+        "diamond_b_to_base_reuses_vptr": "true",
+        "diamond_b_uses_secondary_vptr": "true",
+        "diamond_base_reuses_vptr": "true",
+        "diamond_copy_dispatch_ok": "true",
+        "drop_after_concrete": "3009",
+        "drop_after_upcast_b": "8010",
+        "drop_after_upcast_send": "15012",
+        "drop_leaf_dispatch_ok": "true",
+        "empty_marker_dispatch_ok": "true",
+        "empty_marker_reuses_vptr": "true",
+        "single_dispatch_ok": "true",
+        "single_same_base": "true",
+        "single_same_mid": "true",
+        "vacant_always": "107"
+      },
+      "vacant_vtable": "@vtable.5 = private unnamed_addr constant <{ [24 x i8], ptr, [8 x i8] }> <{ [24 x i8] c\"\\00\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\\08\\00\\00\\00\\00\\00\\00\\00\", ptr @_RNvXs8_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafINtB5_10CondVacantNtNtCs8jjFDZd5IFg_5alloc6string6StringE6alwaysB5_, [8 x i8] undef }>, align 8",
+      "vtable_global_count": 6
+    }
+  },
+  "summary": {
+    "all_passed": true,
+    "checks_passed": 38,
+    "checks_total": 38
+  }
+}

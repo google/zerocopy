@@ -1,0 +1,92 @@
+=== SPECIMEN 1: VTABLE GLOBALS & EMBEDDED SUPERTRAIT VTABLES ===
+; CopyLeaf as Diamond
+@vtable.3 = private unnamed_addr constant <{ [24 x i8], ptr, ptr, ptr, ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs1_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_4Base7base_id, ptr @_RNvXs2_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_6SuperA5a_val, ptr @_RNvXs3_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_6SuperB5b_val, ptr @alloc_dbc5df7f08781942ba48fe0ebb3e4706, ptr @_RNvXs4_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_7Diamond5d_val }>, align 8
+; CopyLeaf as SuperB (@alloc_dbc5df7f08781942ba48fe0ebb3e4706)
+@alloc_dbc5df7f08781942ba48fe0ebb3e4706 = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs1_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_4Base7base_id, ptr @_RNvXs3_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_6SuperB5b_val }>, align 8
+; DropLeaf as Diamond
+@vtable.4 = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr, ptr, ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCs5mDCosJkIdB_21vtable_diamond_upcast8DropLeafEBD_, [16 x i8] c"\10\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXsa_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_4Base7base_id, ptr @_RNvXsb_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_6SuperA5a_val, ptr @_RNvXsc_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_6SuperB5b_val, ptr @alloc_dc53af2feba63701ec459c90bd651b1c, ptr @_RNvXsd_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_7Diamond5d_val }>, align 8
+; DropLeaf as SuperB (@alloc_dc53af2feba63701ec459c90bd651b1c)
+@alloc_dc53af2feba63701ec459c90bd651b1c = private unnamed_addr constant <{ ptr, [16 x i8], ptr, ptr }> <{ ptr @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueNtCs5mDCosJkIdB_21vtable_diamond_upcast8DropLeafEBD_, [16 x i8] c"\10\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXsa_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_4Base7base_id, ptr @_RNvXsc_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8DropLeafNtB5_6SuperB5b_val }>, align 8
+; CopyLeaf as SubAfterEmpty
+@vtable.2 = private unnamed_addr constant <{ [24 x i8], ptr, ptr }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs6_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_11SecondSuper7sec_val, ptr @_RNvXs7_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafNtB5_13SubAfterEmpty5sub_e }>, align 8
+; CopyLeaf as CondVacant<String>
+@vtable.5 = private unnamed_addr constant <{ [24 x i8], ptr, [8 x i8] }> <{ [24 x i8] c"\00\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00\08\00\00\00\00\00\00\00", ptr @_RNvXs8_Cs5mDCosJkIdB_21vtable_diamond_upcastNtB5_8CopyLeafINtB5_10CondVacantNtNtCs8jjFDZd5IFg_5alloc6string6StringE6alwaysB5_, [8 x i8] undef }>, align 8
+
+=== SPECIMEN 1: UPCAST FUNCTIONS & DYN DROP GLUE ===
+
+; upcast_d_to_a
+define dso_local { ptr, ptr } @upcast_d_to_a(ptr %d.0, ptr align 8 %d.1) unnamed_addr #2 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1
+  ret { ptr, ptr } %1
+}
+
+; upcast_d_to_b
+define dso_local { ptr, ptr } @upcast_d_to_b(ptr %d.0, ptr align 8 %d.1) unnamed_addr #2 {
+start:
+  %0 = getelementptr inbounds i8, ptr %d.1, i64 48
+  %_0.1 = load ptr, ptr %0, align 8, !invariant.load !5, !nonnull !5
+  %1 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %2 = insertvalue { ptr, ptr } %1, ptr %_0.1, 1
+  ret { ptr, ptr } %2
+}
+
+; upcast_d_to_base
+define dso_local { ptr, ptr } @upcast_d_to_base(ptr %d.0, ptr align 8 %d.1) unnamed_addr #2 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1
+  ret { ptr, ptr } %1
+}
+
+; upcast_empty_to_sec
+define dso_local { ptr, ptr } @upcast_empty_to_sec(ptr %e.0, ptr align 8 %e.1) unnamed_addr #2 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %e.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %e.1, 1
+  ret { ptr, ptr } %1
+}
+
+; upcast_erase_principal
+define dso_local { ptr, ptr } @upcast_erase_principal(ptr %d.0, ptr align 8 %d.1) unnamed_addr #2 {
+start:
+  %0 = insertvalue { ptr, ptr } poison, ptr %d.0, 0
+  %1 = insertvalue { ptr, ptr } %0, ptr %d.1, 1
+  ret { ptr, ptr } %1
+}
+
+; drop_in_place::<dyn SuperB>
+define internal void @_RINvNtCs8b4M6GsfcPr_4core3ptr9drop_glueDNtCs5mDCosJkIdB_21vtable_diamond_upcast6SuperBEL_EBE_(ptr %_1.0, ptr align 8 %_1.1) unnamed_addr #0 {
+start:
+  %0 = getelementptr inbounds i8, ptr %_1.1, i64 0
+  %1 = load ptr, ptr %0, align 8, !invariant.load !5
+  %2 = icmp ne ptr %1, null
+  br i1 %2, label %is_not_null, label %bb1
+
+is_not_null:                                      ; preds = %start
+  call void %1(ptr %_1.0) #16
+  br label %bb1
+
+bb1:                                              ; preds = %is_not_null, %start
+  ret void
+}
+
+=== SPECIMEN 2: VTableShim & ReifyShim LLVM IR ===
+
+; VTableShim (<Payload as ByValConsume>::consume)
+define internal i64 @_RNSNvYNtCsj6qs4FvsrHN_25shims_and_mono_collection7PayloadNtB6_12ByValConsume7consume6vtableB6_(ptr %_1, i64 %_2) unnamed_addr #1 {
+start:
+  %0 = load i64, ptr %_1, align 8
+; call <shims_and_mono_collection::Payload as shims_and_mono_collection::ByValConsume>::consume
+  %_0 = call i64 @_RNvXCsj6qs4FvsrHN_25shims_and_mono_collectionNtB2_7PayloadNtB2_12ByValConsume7consume(i64 %0, i64 %_2) #16
+  ret i64 %_0
+}
+
+; ReifyShim (tracked_free)
+define internal i32 @_RNSNvCsj6qs4FvsrHN_25shims_and_mono_collection12tracked_free5reifyB3_(i64 %_1) unnamed_addr #2 {
+start:
+; call shims_and_mono_collection::tracked_free
+  %_0 = call i32 @_RNvCsj6qs4FvsrHN_25shims_and_mono_collection12tracked_free(i64 %_1, ptr align 8 @alloc_d9da8e8aadf3f5f2c5cd0b1647427f6d) #16
+  ret i32 %_0
+}

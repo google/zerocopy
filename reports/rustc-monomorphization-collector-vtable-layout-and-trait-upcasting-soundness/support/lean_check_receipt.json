@@ -1,0 +1,56 @@
+{
+  "audit": {
+    "max_rss_kb": 1614740,
+    "returncode": 0,
+    "stderr": "",
+    "summary": {
+      "AUDIT_AXIOMS": "[Quot.sound, propext]",
+      "AUDIT_DEFS": "389",
+      "AUDIT_INDUCTIVES": "21",
+      "AUDIT_THEOREMS": "416",
+      "AUDIT_TOTAL_CONSTANTS": "899",
+      "AUDIT_VIOLATIONS": "0",
+      "AUDIT_ZERO_AXIOM_THEOREMS": "281"
+    },
+    "wall_seconds": 5.246
+  },
+  "audit_sha256": "7a994daf958cb2d2cee8518f48d2ead19d39beff2fae2856bd8e5d8ad356b68a",
+  "compile": {
+    "max_rss_kb": 590964,
+    "olean_bytes": 3816840,
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "",
+    "wall_seconds": 10.55
+  },
+  "flags": [
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false"
+  ],
+  "forbidden_token_hits": {
+    "Classical": 0,
+    "_unsafe_rec": 0,
+    "admit": 0,
+    "axiom_decl": 0,
+    "bv_decide": 0,
+    "extern_attr": 0,
+    "native_decide": 0,
+    "noncomputable": 0,
+    "omega": 0,
+    "opaque_decl": 0,
+    "partial_def": 0,
+    "sorry": 0,
+    "unsafe_kw": 0
+  },
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "module": "MonomorphVtableUpcastSoundness.lean",
+  "module_sha256": "c04e06df5f8221e3c4648e3994c6494906a6953f3a5239eba471722775c65817",
+  "passed": true,
+  "source_metrics": {
+    "bytes": 90934,
+    "def_and_abbrev_decls": 95,
+    "inductive_and_structure_decls": 19,
+    "lines": 2027,
+    "theorem_decls": 82
+  }
+}

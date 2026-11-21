@@ -77184,6 +77184,68 @@
         "lean/mechanization"
       ]
     },
+    "rustc-monomorphization-collector-vtable-layout-and-trait-upcasting-soundness": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rust-lang/rust (rustc 1.98.0-nightly 2026-05-31: monomorphization collector, CGU partitioning, vtable layout, shim MIR builders, and LLVM/SSA codegen)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "rust-lang/rust (later upstream snapshot checked for vtable and collector source drift)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+          },
+          "name": "rust-lang/reference (type coercions and trait object chapters pinned by rust-lang/rust 14210df0e)"
+        },
+        {
+          "identity": {
+            "path": "text/3324-dyn-upcasting.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "rust-lang/rfcs (RFC 3324 dyn trait upcasting coercion)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (Trusted.MirAst and Trusted.MirSemantics)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (v4.34.1)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "compilers/verified-rustc/traits",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/monomorphization",
+        "verification"
+      ]
+    },
     "rustc-monomorphization-vtables-statics-symbols-and-cgu-partitioning": {
       "observed_at": "2026-11-13",
       "subjects": [
