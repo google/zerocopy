@@ -29,7 +29,7 @@ namespace Anneal.MirCorrespondence
 open Trusted Trusted.MirAst Trusted.MirSemantics Trusted.Correspondence
 open Anneal.MirWp
 
-/-! ## Move Deinitialization, Overflow, and Enum Canaries (`D6`–`D13`) -/
+/-! ## Move, Overflow, Enum, `char`, and Cast Canaries (`D6`–`D16`) -/
 
 /-- `D6` (Use-After-Move UB):
 `_2 = move _1; _0 = copy _1; return` deinitializes `_1` on `move _1` and
@@ -202,5 +202,47 @@ theorem canary_D13_enum_invalid_tag_and_uninit_ub_base :
     progEnumUninitDiscrUb queryEmpty .undefined).1 h_ub₂
   exact ⟨h_ub₁, h_nunsup₁, h_nwf₁, h_ref_ub₁,
     h_ub₂, h_nunsup₂, h_nwf₂, h_ref_ub₂⟩
+
+/-- `D14` (`char` three-way comparison returned through the return place,
+the discriminant of an `Ordering`, and `switchInt` on a `char` agree in
+$M_{\text{anneal}}$ and $M_{\text{ref}}$). -/
+theorem canary_D14_char_cmp_and_switch_ok_base :
+    CanaryD14CharCmpAndSwitchOkClaim := by
+  let ⟨_, _, _, ⟨h_wf₁, h_beh₁⟩, _, _, _, ⟨h_wf₂, h_beh₂⟩,
+      ⟨h_wf₃, h_beh₃⟩, _⟩ :=
+    Anneal.MirWp.canary_positive_char_and_cmp_anneal
+  let ⟨h_rwf₁, h_rbeh₁, _⟩ := anneal_corresponds_to_miri _ _ h_wf₁
+  let ⟨h_rwf₂, h_rbeh₂, _⟩ := anneal_corresponds_to_miri _ _ h_wf₂
+  let ⟨h_rwf₃, h_rbeh₃, _⟩ := anneal_corresponds_to_miri _ _ h_wf₃
+  exact ⟨h_wf₁, h_beh₁, h_rwf₁, (h_rbeh₁ _).1 h_beh₁,
+    h_wf₂, h_beh₂, h_rwf₂, (h_rbeh₂ _).1 h_beh₂,
+    h_wf₃, h_beh₃, h_rwf₃, (h_rbeh₃ _).1 h_beh₃⟩
+
+/-- `D15` (`CastKind.intToInt`: `-1i8 as u32` and `200u8 as char` agree in
+both machines, and `300u32 as char` is unsupported in $M_{\text{anneal}}$ and
+blocked in $M_{\text{ref}}$). -/
+theorem canary_D15_int_to_int_cast_base : CanaryD15IntToIntCastClaim := by
+  let ⟨⟨h_wf₁, h_beh₁⟩, _, _, _, _, _, ⟨h_wf₂, h_beh₂⟩⟩ :=
+    Anneal.MirWp.canary_positive_int_to_int_cast_anneal
+  let ⟨⟨h_unsup, h_nub, h_nwf⟩, _, _, _⟩ :=
+    Anneal.MirWp.canary_negative_int_to_int_cast_anneal
+  let ⟨h_rwf₁, h_rbeh₁, _⟩ := anneal_corresponds_to_miri _ _ h_wf₁
+  let ⟨h_rwf₂, h_rbeh₂, _⟩ := anneal_corresponds_to_miri _ _ h_wf₂
+  have h_ref_blocked := (reachesResult_fault_iff_refReachesOutcome
+    (mkIntToIntCastProg u32Ty .char) { args := [u32Val 300] }
+    .unsupported).1 h_unsup
+  exact ⟨h_wf₁, h_beh₁, h_rwf₁, (h_rbeh₁ _).1 h_beh₁,
+    h_wf₂, h_beh₂, h_rwf₂, (h_rbeh₂ _).1 h_beh₂,
+    h_unsup, h_nub, h_nwf, h_ref_blocked⟩
+
+/-- `D16` (`BinOp.addWithOverflow` and `BinOp.subWithOverflow` return the same
+`(T, bool)` overflow pair through the return place in both machines). -/
+theorem canary_D16_with_overflow_ok_base : CanaryD16WithOverflowOkClaim := by
+  let ⟨⟨h_wf₁, h_beh₁⟩, _, ⟨h_wf₂, h_beh₂⟩, _, _, _⟩ :=
+    Anneal.MirWp.canary_positive_overflow_ops_anneal
+  let ⟨h_rwf₁, h_rbeh₁, _⟩ := anneal_corresponds_to_miri _ _ h_wf₁
+  let ⟨h_rwf₂, h_rbeh₂, _⟩ := anneal_corresponds_to_miri _ _ h_wf₂
+  exact ⟨h_wf₁, h_beh₁, h_rwf₁, (h_rbeh₁ _).1 h_beh₁,
+    h_wf₂, h_beh₂, h_rwf₂, (h_rbeh₂ _).1 h_beh₂⟩
 
 end Anneal.MirCorrespondence

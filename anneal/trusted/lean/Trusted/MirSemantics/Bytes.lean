@@ -80,6 +80,13 @@ For fieldless enums (`.enum ety`), constant decoding matches `op_to_const`
   `tagBitsToDiscrBits`, and resolve the matching declaration index via
   `findDiscrVariant?` (returning `.error .undefined` on an invalid tag bit
   pattern not matching any declared discriminant).
+- `char` constants validate that `bits` fits in 4 bytes and is a Unicode
+  scalar value (`isUnicodeScalar`), faulting with `.error .undefined` like
+  `ScalarIntError.invalidChar` (which `Miri.Interpreter.ScalarOps.scalarError`
+  maps to `.undefinedBehavior`).
+- `core::cmp::Ordering` constants validate that `bits` fits in 1 byte and is
+  one of the tags `255`, `0`, and `1` (`orderingOfTagBits`), faulting with
+  `.error .undefined` on any other tag as for a fieldless enum.
 
 `decodeVal` reuses `evalConstLit` to interpret the bytes read from memory, so
 constant operands and memory reads apply the same validity checks. -/
@@ -101,6 +108,20 @@ noncomputable def evalConstLit : MirTy → ConstLit → Except FaultKind Val
       else
         .error .undefined
   | .unit, .zeroSized => .ok .unit
+  | .char, .scalar bits =>
+    if truncateBits .i32 bits != bits then
+      .error .unsupported
+    else if isUnicodeScalar bits.toNat then
+      .ok (.char (Char.ofNat bits.toNat))
+    else
+      .error .undefined
+  | .ordering, .scalar bits =>
+    if truncateBits .i8 bits != bits then
+      .error .unsupported
+    else
+      match orderingOfTagBits bits.toNat with
+      | some ord => .ok (.ordering ord)
+      | none => .error .undefined
   | .enum ety, .zeroSized =>
     if isZstEnumTy ety then .ok (.enumVal ety 0) else .error .unsupported
   | .enum ety, .scalar bits =>
@@ -206,14 +227,38 @@ noncomputable def initBytes? : List AllocByte → Option (List UInt8)
 
 - `.int w _`: the `w.byteSize` bytes of the scalar's bits.
 - `.bool`: one byte, `1` for `true` and `0` for `false`.
+- `.char`: the four bytes of the Unicode scalar value (`char` has the size of
+  `u32`).
+- `.ordering`: the one byte of the `i8` tag (`orderingTagBits`).
 - `.unit` and 1-variant `.zeroSized` enums: no bytes.
 - `.scalar tagW _` enums: the `tagW.byteSize` low bytes of the variant's
   discriminant (a `TagEncoding::Direct` tag stores the discriminant truncated
   to the tag width).
+- Overflow pairs `.tuple [.int w _, .bool]`: the integer's `w.byteSize` bytes,
+  the `bool`'s byte, and `w.byteSize - 1` uninitialized padding bytes
+  (`overflowPairLayout`), matching `write_immediate_to_mplace_no_validate`'s
+  `Immediate::ScalarPair` case
+  (`compiler/rustc_const_eval/src/interpret/place.rs`, `rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`):
 
-Every encoded byte is initialized and carries no provenance. A value that is
-not a well-formed value of `ty` (`checkVal v ty = false`), and any other
-`(ty, v)` pair outside the Day-1 fragment, returns `.error .unsupported`. -/
+  > "// In preparation, if we do *not* later reset the padding, we clear the
+  > // entire destination now to ensure that no stray pointer fragments are
+  > // being preserved (see <https://github.com/rust-lang/rust/issues/148470>).
+  > // We can skip this if there is no padding (e.g. for wide pointers).
+  > if !will_later_validate && a_size + b_size != layout.size {
+  >     alloc.write_uninit_full();
+  > }
+  >
+  > alloc.write_scalar(alloc_range(Size::ZERO, a_size), a_val)?;
+  > alloc.write_scalar(alloc_range(b_offset, b_size), b_val)?;"
+
+  The padding bytes end up uninitialized either way: this write clears them,
+  or validation resets them.
+
+Every encoded value byte is initialized and carries no provenance. A value
+that is not a well-formed value of `ty` (`checkVal v ty = false`), and any
+other `(ty, v)` pair outside the Day-1 fragment, returns
+`.error .unsupported`. -/
 noncomputable def encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val) :
     Except FaultKind (List AllocByte) :=
   if !checkVal v ty then
@@ -225,6 +270,11 @@ noncomputable def encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val) :
         (fun b => AllocByte.init b none))
     | .bool, .bool b =>
       .ok [AllocByte.init (if b then 1 else 0) none]
+    | .char, .char c =>
+      .ok ((encodeUInt endian 4 c.toNat).map (fun b => AllocByte.init b none))
+    | .ordering, .ordering ord =>
+      .ok ((encodeUInt endian 1 (orderingTagBits ord)).map
+        (fun b => AllocByte.init b none))
     | .unit, .unit => .ok []
     | .enum ety, .enumVal _ variant =>
       match ety.tagRepr with
@@ -235,6 +285,11 @@ noncomputable def encodeVal (endian : TargetEndian) (ty : MirTy) (v : Val) :
           .ok ((encodeUInt endian tagW.byteSize disc).map
             (fun b => AllocByte.init b none))
         | none => .error .unsupported
+    | .tuple [.int w _, .bool], .tuple [.scalar sv, .bool b] =>
+      .ok ((encodeUInt endian w.byteSize sv.bits.toNat).map
+          (fun byte => AllocByte.init byte none) ++
+        [AllocByte.init (if b then 1 else 0) none] ++
+        List.replicate (w.byteSize - 1) AllocByte.uninit)
     | _, _ => .error .unsupported
 
 /-- Decode the bytes `bytes` of a value of type `ty` in byte order `endian`:
@@ -244,12 +299,17 @@ initialized value, or a fault.
 - `.never`: no valid value exists, so the result is `.ok none` (as for an
   uninitialized `.immediate none` slot of type `.never`, a later use faults
   with `.undefined`).
+- Overflow pairs `.tuple [.int w s, .bool]`: the integer from the first
+  `w.byteSize` bytes and the `bool` from the next byte, ignoring the padding
+  bytes (`read_immediate_from_mplace_raw` reads only the two scalars of a
+  `BackendRepr::ScalarPair`); `.ok none` if a value byte is uninitialized.
 - Zero-sized types (`.unit` and 1-variant `.zeroSized` enums): the type's
   unique value, via `evalConstLit ty .zeroSized`.
 - Other Day-1 types: `.ok none` if any byte is uninitialized (`initBytes?`),
   and otherwise the result of `evalConstLit ty` on the bytes decoded as an
   unsigned integer (`decodeUInt`), which faults with `.undefined` on an
-  invalid `bool` byte or an enum tag that matches no discriminant.
+  invalid `bool` byte, an invalid `char`, or an enum or `Ordering` tag that
+  matches no discriminant.
 
 A byte count that differs from `layoutOfTy ty`, or a type outside the Day-1
 fragment (including an enum that `enumAdmitted` rejects, which has no
@@ -258,6 +318,22 @@ noncomputable def decodeVal (endian : TargetEndian) (ty : MirTy)
     (bytes : List AllocByte) : Except FaultKind (Option Val) :=
   match ty with
   | .never => .ok none
+  | .tuple [.int w s, .bool] =>
+    if !Nat.beq bytes.length (overflowPairLayout w).size then
+      .error .unsupported
+    else
+      match initBytes? (bytes.take w.byteSize),
+          initBytes? ((bytes.drop w.byteSize).take 1) with
+      | some intRaw, some boolRaw =>
+        match evalConstLit (.int w s)
+            (.scalar (BitVec.ofNat 128 (decodeUInt endian intRaw))) with
+        | .error k => .error k
+        | .ok intVal =>
+          match evalConstLit .bool
+              (.scalar (BitVec.ofNat 128 (decodeUInt endian boolRaw))) with
+          | .error k => .error k
+          | .ok boolVal => .ok (some (.tuple [intVal, boolVal]))
+      | _, _ => .ok none
   | _ =>
     match layoutOfTy ty with
     | none => .error .unsupported

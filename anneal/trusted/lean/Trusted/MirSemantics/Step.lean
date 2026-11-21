@@ -250,6 +250,23 @@ noncomputable def evalDiscriminantOfVal (ety : EnumTy) (optVal : Option Val)
         .error .unsupported
     | .scalar _ _, some _ => .error .unsupported
 
+/-- Result of `Rvalue.discriminant` on a local of type `core::cmp::Ordering`
+whose value is `optVal`: the `i8` discriminant (`orderingTagBits`: `-1_i8`,
+`0_i8`, or `1_i8`) as a scalar of `(.i8, true)`, with `locals` and `mem`
+unchanged. `Ordering` is a `#[repr(i8)]` fieldless enum whose tag is its
+discriminant, so this matches `read_discriminant` and
+`discriminant_for_variant` as `evalDiscriminantOfVal` does for scalar-tagged
+enums; an uninitialized (`none`) value faults with `.error .undefined`. -/
+noncomputable def evalOrderingDiscriminantOfVal (optVal : Option Val)
+    (locals : List LocalSlot) (mem : MemoryState) :
+    Except FaultKind (Val × List LocalSlot × MemoryState) :=
+  match optVal with
+  | none => .error .undefined
+  | some (.ordering ord) =>
+    .ok (.scalar ⟨.i8, true, BitVec.ofNat 128 (orderingTagBits ord)⟩, locals,
+      mem)
+  | some _ => .error .unsupported
+
 /-- Evaluate an `Rvalue` for a destination of type `dstTy`, following the RHS
 cases of `eval_rvalue_into_place`
 (`compiler/rustc_const_eval/src/interpret/step.rs`, `rust-lang/rust`
@@ -272,9 +289,17 @@ both producing `.undefined`):
   `rhs`), then applies `evalBinOp`.
 - `.unaryOp op opnd`: evaluates `opnd` via `evalPrimitiveOperand`, then applies
   `evalUnOp`.
+- `.cast .intToInt opnd castTy`: resolves `(srcTy, optVal, locals₁, mem₁) ←
+  evalOperandToSlot`, checks that `srcTy` is integer-like (`isIntLikeTy`,
+  matching `Miri.Interpreter.Cast.cast`'s source-type validity check, which
+  precedes `read_immediate`), then checks `optVal = some v` (`read_immediate`'s
+  uninitialized check), and applies `evalIntToIntCast v castTy`, which rejects
+  targets other than integers and `char`. (`castTypesValid` guarantees
+  `castTy = dstTy`.)
 - `.discriminant place`: reads an unprojected local of admitted fieldless enum
-  type `.enum ety` (from its `.immediate` value or, for an `.indirect` local,
-  with `loadIndirect`) and returns `evalDiscriminantOfVal ety`. Reading
+  type `.enum ety` or of type `.ordering` (from its `.immediate` value or, for
+  an `.indirect` local, with `loadIndirect`) and returns
+  `evalDiscriminantOfVal ety` or `evalOrderingDiscriminantOfVal`. Reading
   `.discriminant` from a `.dead` local faults with `.error .undefined`. -/
 noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
     (mem : MemoryState) (dstTy : MirTy) :
@@ -307,6 +332,19 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
       match evalUnOp op v with
       | .error k => .error k
       | .ok res => .ok (res, locals₁, mem₁)
+  | .cast .intToInt opnd castTy =>
+    match evalOperandToSlot bodyLocals locals mem isIntLikeTy opnd with
+    | .error k => .error k
+    | .ok (srcTy, optVal, locals₁, mem₁) =>
+      if !isIntLikeTy srcTy then
+        .error .unsupported
+      else
+        match optVal with
+        | none => .error .undefined
+        | some v =>
+          match evalIntToIntCast v castTy with
+          | .error k => .error k
+          | .ok res => .ok (res, locals₁, mem₁)
   | .discriminant place =>
     match getElem? bodyLocals place.localId,
         getElem? locals place.localId with
@@ -317,6 +355,7 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
       else
         match srcTy with
         | .enum ety => evalDiscriminantOfVal ety optVal locals mem
+        | .ordering => evalOrderingDiscriminantOfVal optVal locals mem
         | _ => .error .unsupported
     | some srcTy, some (.indirect mplace) =>
       if !place.projection.isEmpty then
@@ -327,6 +366,10 @@ noncomputable def evalRvalue (bodyLocals : List MirTy) (locals : List LocalSlot)
           match loadIndirect mem srcTy mplace with
           | .error k => .error k
           | .ok optVal => evalDiscriminantOfVal ety optVal locals mem
+        | .ordering =>
+          match loadIndirect mem srcTy mplace with
+          | .error k => .error k
+          | .ok optVal => evalOrderingDiscriminantOfVal optVal locals mem
         | _ => .error .unsupported
     | _, _ => .error .unsupported
   | _ => .error .unsupported
@@ -581,6 +624,35 @@ noncomputable def evalBoolSwitchBranches (discr : Bool)
     | .ok _ =>
       .error .unsupported
 
+/-- Evaluate a `SwitchTargets` branch list against a `char` discriminant
+`discr`, matching `compareSwitchCase` in
+`Miri.Interpreter.ExecutionMachine.stepHooks`
+(`vendor/lean-miri/Miri/Interpreter/ExecutionMachine.lean`), where each case
+value is checked at the 4-byte `char` layout via `Scalar.fromUInt`
+(`ScalarInt.tryFromUInt`) and compared via `ScalarOps.binary .Eq`
+(`Scalar.toChar` on both operands, then `IntegerOps.binaryChar`):
+- `caseBits` overflowing 4 bytes fails `Scalar.fromUInt` with
+  `.invalidProgram` (`.error .unsupported`);
+- a `caseBits` that is not a Unicode scalar value triggers
+  `ScalarIntError.invalidChar` and faults with `.error .undefined`;
+- otherwise the case matches when it equals `discr`. These are exactly the
+  outcomes of `evalConstLit .char (.scalar caseBits)`. -/
+noncomputable def evalCharSwitchBranches (discr : Char)
+    (otherwise : BasicBlockId) :
+    List (BitVec 128 × BasicBlockId) → Except FaultKind BasicBlockId
+  | [] => .ok otherwise
+  | (caseBits, target) :: rest =>
+    match evalConstLit .char (.scalar caseBits) with
+    | .ok (.char c) =>
+      if Nat.beq discr.toNat c.toNat then
+        .ok target
+      else
+        evalCharSwitchBranches discr otherwise rest
+    | .error k =>
+      .error k
+    | .ok _ =>
+      .error .unsupported
+
 /-- Assign the frame location to `(target, 0)`, matching
 `Miri.Interpreter.ControlFlow.goToBlock` (`Miri/Interpreter/ControlFlow.lean`:
 target block existence is checked at the start of the next step in `evalStep` /
@@ -652,7 +724,15 @@ noncomputable def evalTerminator (body : Body) (bb : BasicBlock)
           evalSwitchBranches sv.width sv.bits targets.otherwise targets.branches
         | .bool b =>
           evalBoolSwitchBranches b targets.otherwise targets.branches
-        | _ => .error .unsupported
+        | .char c =>
+          evalCharSwitchBranches c targets.otherwise targets.branches
+        | _ =>
+          -- An overflow pair is primitive-readable, but `compareSwitchCase`'s
+          -- `ScalarOps.binary .Eq` rejects it, so only an empty branch list
+          -- (which compares nothing) jumps to `otherwise`.
+          match targets.branches with
+          | [] => .ok targets.otherwise
+          | _ :: _ => .error .unsupported
       match targetRes with
       | .error k => .fault k
       | .ok target =>

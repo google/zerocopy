@@ -256,7 +256,8 @@ theorem evalRefUnOp_eq (op : UnOp) (v : Val) :
     evalRefUnOp op v = evalUnOp op v := by
   cases v with
   | bool b => cases op <;> rfl
-  | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ => cases op <;> rfl
+  | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | char _ | ordering _ =>
+    cases op <;> rfl
   | scalar sv =>
     cases sv with
     | mk w s bits =>
@@ -334,9 +335,34 @@ theorem toMiriBinOp_isUnchecked (op : BinOp) :
     (toMiriBinOp op).isUnchecked = op.isUnchecked := by
   cases op <;> rfl
 
+theorem toMiriBinOp_isOverflowing (op : BinOp) :
+    (toMiriBinOp op).isOverflowing = op.isOverflowing := by
+  cases op <;> rfl
+
+/-- Proof-side map from Lean's `Ordering` (the `IntegerResult.ordering`
+payload of `Miri.Interpreter.IntegerOps`) to `OrderingVal`. -/
+noncomputable def refOrderingOfMiri : Ordering → OrderingVal
+  | .lt => .less
+  | .eq => .equal
+  | .gt => .greater
+
+/-- Proof-side map from a `Miri.Interpreter.IntegerOps` result at integer
+type `(w, s)` to the corresponding `Val` or `FaultKind`, mirroring
+`Miri.Interpreter.ScalarOps.finish` and `ScalarOps.integerError`. -/
+noncomputable def refIntResultVal (w : IntWidth) (s : Bool)
+    (r : Except IntegerOpError IntegerResult) : Except FaultKind Val :=
+  match r with
+  | .ok (.scalar sc) => .ok (.scalar ⟨w, s, sc.data⟩)
+  | .ok (.withOverflow sc o) =>
+    .ok (.tuple [.scalar ⟨w, s, sc.data⟩, .bool o])
+  | .ok (.boolean b) => .ok (.bool b)
+  | .ok (.ordering o) => .ok (.ordering (refOrderingOfMiri o))
+  | .error (.undefinedBehavior _) => .error .undefined
+  | .error _ => .error .unsupported
+
 theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
     (resInt r : Int) (overflow : Bool) :
-    (match bind
+    (refIntResultVal w s (bind
         (if (toMiriIntType w s).signed then
           let wrapped := (BitVec.ofInt 128 resInt).toInt
           (ScalarInt.truncateFromInt wrapped
@@ -349,13 +375,7 @@ theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
             throw (IntegerOpError.undefinedBehavior
               (.shiftOverflow (toMiriBinOp op) r rs))
           else
-            pure (IntegerResult.scalar value)) with
-    | .ok (.scalar sc) =>
-      (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
-    | .ok (.boolean b) => .ok (.bool b)
-    | .ok _ => .error .unsupported
-    | .error (.undefinedBehavior _) => .error .undefined
-    | .error _ => .error .unsupported) =
+            pure (IntegerResult.scalar value)))) =
     (match truncateScalar w s resInt with
     | .error k => .error k
     | .ok (res, _) =>
@@ -367,7 +387,7 @@ theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
       toMiriBinOp_isUnchecked]
   cases s with
   | true =>
-    change (match bind
+    change (refIntResultVal w true (bind
         ((ScalarInt.truncateFromInt (bvToInt (bvOfInt 128 resInt))
           (toMiriSize w)).mapError IntegerOpError.scalar)
         (fun (value, _) =>
@@ -375,13 +395,7 @@ theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
             throw (IntegerOpError.undefinedBehavior
               (.shiftOverflow (toMiriBinOp op) r rs))
           else
-            pure (IntegerResult.scalar value)) with
-      | .ok (.scalar sc) =>
-        (Except.ok (Val.scalar ⟨w, true, sc.data⟩) : Except FaultKind Val)
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported) =
+            pure (IntegerResult.scalar value)))) =
       (match truncateScalar w true resInt with
       | .error k => .error k
       | .ok (res, _) =>
@@ -400,7 +414,7 @@ theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
         rw [h_oob]
         rfl)
     | false =>
-      have h : (match bind
+      have h : (refIntResultVal w true (bind
           ((ScalarInt.truncateFromInt wrapped (toMiriSize w)).mapError
             IntegerOpError.scalar)
           (fun (value, _) =>
@@ -408,13 +422,7 @@ theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
               throw (IntegerOpError.undefinedBehavior
                 (.shiftOverflow (toMiriBinOp op) r rs))
             else
-              pure (IntegerResult.scalar value)) with
-        | .ok (.scalar sc) =>
-          (Except.ok (Val.scalar ⟨w, true, sc.data⟩) : Except FaultKind Val)
-        | .ok (.boolean b) => .ok (.bool b)
-        | .ok _ => .error .unsupported
-        | .error (.undefinedBehavior _) => .error .undefined
-        | .error _ => .error .unsupported) =
+              pure (IntegerResult.scalar value)))) =
         (match (toMiriSize w).truncate (BitVec.ofInt 128 wrapped) with
         | .ok b =>
           match (toMiriSize w).signExtend b with
@@ -434,7 +442,7 @@ theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
       rw [size_signExtend_eq]
       rfl
   | false =>
-    change (match bind
+    change (refIntResultVal w false (bind
         ((ScalarInt.truncateFromUInt (bvOfInt 128 resInt)
           (toMiriSize w)).mapError IntegerOpError.scalar)
         (fun (value, _) =>
@@ -442,13 +450,7 @@ theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
             throw (IntegerOpError.undefinedBehavior
               (.shiftOverflow (toMiriBinOp op) r rs))
           else
-            pure (IntegerResult.scalar value)) with
-      | .ok (.scalar sc) =>
-        (Except.ok (Val.scalar ⟨w, false, sc.data⟩) : Except FaultKind Val)
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported) =
+            pure (IntegerResult.scalar value)))) =
       (match truncateScalar w false resInt with
       | .error k => .error k
       | .ok (res, _) =>
@@ -459,7 +461,7 @@ theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
     dsimp only [truncateScalar]
     let ⟨raw, h_raw⟩ : ∃ x, bvOfInt 128 resInt = x := ⟨_, rfl⟩
     rw [h_raw]
-    have h : (match bind
+    have h : (refIntResultVal w false (bind
         ((ScalarInt.truncateFromUInt raw (toMiriSize w)).mapError
           IntegerOpError.scalar)
         (fun (value, _) =>
@@ -467,13 +469,7 @@ theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
             throw (IntegerOpError.undefinedBehavior
               (.shiftOverflow (toMiriBinOp op) r rs))
           else
-            pure (IntegerResult.scalar value)) with
-      | .ok (.scalar sc) =>
-        (Except.ok (Val.scalar ⟨w, false, sc.data⟩) : Except FaultKind Val)
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported) =
+            pure (IntegerResult.scalar value)))) =
       (match (toMiriSize w).truncate raw with
       | .ok b =>
         if overflow && op.isUnchecked then
@@ -486,9 +482,9 @@ theorem shift_truncate_eq (op : BinOp) (w : IntWidth) (s rs : Bool)
     rfl
 
 theorem binary_truncate_scalarResult_eq (op : BinOp) (w : IntWidth) (s : Bool)
-    (resInt : Int) (hostOverflow : Bool)
-    (h_ovf : (toMiriBinOp op).isOverflowing = false) :
-    (match bind
+    (resInt : Int) (hostOverflow ovf : Bool)
+    (h_ovf : (toMiriBinOp op).isOverflowing = ovf) :
+    (refIntResultVal w s (bind
         (if (toMiriIntType w s).signed then
           let wrapped := (BitVec.ofInt 128 resInt).toInt
           (ScalarInt.truncateFromInt wrapped
@@ -504,25 +500,21 @@ theorem binary_truncate_scalarResult_eq (op : BinOp) (w : IntWidth) (s : Bool)
             pure (if (toMiriBinOp op).isOverflowing then
               IntegerResult.withOverflow value (hostOverflow || lossy)
             else
-              IntegerResult.scalar value)) with
-    | .ok (.scalar sc) =>
-      (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
-    | .ok (.boolean b) => .ok (.bool b)
-    | .ok _ => .error .unsupported
-    | .error (.undefinedBehavior _) => .error .undefined
-    | .error _ => .error .unsupported) =
+              IntegerResult.scalar value)))) =
     (match truncateScalar w s resInt with
     | .error k => .error k
     | .ok (val, lossy) =>
       if (hostOverflow || lossy) && op.isUnchecked then
         .error .undefined
+      else if ovf then
+        .ok (.tuple [.scalar val, .bool (hostOverflow || lossy)])
       else
         .ok (.scalar val)) := by
   rw [toMiriIntType_signed, toMiriIntType_size, bitVec_ofInt_eq, h_ovf,
       toMiriBinOp_isUnchecked]
   cases s with
   | true =>
-    change (match bind
+    change (refIntResultVal w true (bind
         ((ScalarInt.truncateFromInt (bvToInt (bvOfInt 128 resInt))
           (toMiriSize w)).mapError IntegerOpError.scalar)
         (fun (value, lossy) =>
@@ -530,21 +522,17 @@ theorem binary_truncate_scalarResult_eq (op : BinOp) (w : IntWidth) (s : Bool)
             throw (IntegerOpError.undefinedBehavior
               (.arithmeticOverflow (toMiriBinOp op)))
           else
-            pure (if false then
+            pure (if ovf then
               IntegerResult.withOverflow value (hostOverflow || lossy)
             else
-              IntegerResult.scalar value)) with
-      | .ok (.scalar sc) =>
-        (Except.ok (Val.scalar ⟨w, true, sc.data⟩) : Except FaultKind Val)
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported) =
+              IntegerResult.scalar value)))) =
       (match truncateScalar w true resInt with
       | .error k => .error k
       | .ok (val, lossy) =>
         if (hostOverflow || lossy) && op.isUnchecked then
           .error .undefined
+        else if ovf then
+          .ok (.tuple [.scalar val, .bool (hostOverflow || lossy)])
         else
           .ok (.scalar val))
     dsimp only [truncateScalar]
@@ -558,7 +546,7 @@ theorem binary_truncate_scalarResult_eq (op : BinOp) (w : IntWidth) (s : Bool)
         rw [h_oob]
         rfl)
     | false =>
-      have h : (match bind
+      have h : (refIntResultVal w true (bind
           ((ScalarInt.truncateFromInt wrapped (toMiriSize w)).mapError
             IntegerOpError.scalar)
           (fun (value, lossy) =>
@@ -566,22 +554,19 @@ theorem binary_truncate_scalarResult_eq (op : BinOp) (w : IntWidth) (s : Bool)
               throw (IntegerOpError.undefinedBehavior
                 (.arithmeticOverflow (toMiriBinOp op)))
             else
-              pure (if false then
+              pure (if ovf then
                 IntegerResult.withOverflow value (hostOverflow || lossy)
               else
-                IntegerResult.scalar value)) with
-        | .ok (.scalar sc) =>
-          (Except.ok (Val.scalar ⟨w, true, sc.data⟩) : Except FaultKind Val)
-        | .ok (.boolean b) => .ok (.bool b)
-        | .ok _ => .error .unsupported
-        | .error (.undefinedBehavior _) => .error .undefined
-        | .error _ => .error .unsupported) =
+                IntegerResult.scalar value)))) =
         (match (toMiriSize w).truncate (BitVec.ofInt 128 wrapped) with
         | .ok b =>
           match (toMiriSize w).signExtend b with
           | .ok dec =>
             if (hostOverflow || (dec != wrapped)) && op.isUnchecked then
               .error .undefined
+            else if ovf then
+              .ok (.tuple [.scalar ⟨w, true, b⟩,
+                .bool (hostOverflow || (dec != wrapped))])
             else
               .ok (.scalar ⟨w, true, b⟩)
           | .error _ => .error .unsupported
@@ -589,28 +574,26 @@ theorem binary_truncate_scalarResult_eq (op : BinOp) (w : IntWidth) (s : Bool)
         cases w <;> (
           dsimp only [ScalarInt.truncateFromInt]
           rw [h_oob]
-          change (match (if ((hostOverflow || _) && op.isUnchecked) = true then
+          change (refIntResultVal _ true
+              ((if ((hostOverflow || _) && op.isUnchecked) = true then
               Except.error (IntegerOpError.undefinedBehavior
                 (.arithmeticOverflow (toMiriBinOp op)))
             else
-              Except.ok (IntegerResult.scalar _)) with
-            | .ok (.scalar sc) =>
-              (Except.ok (Val.scalar ⟨_, true, sc.data⟩) : Except FaultKind Val)
-            | .ok (.boolean b) => .ok (.bool b)
-            | .ok _ => .error .unsupported
-            | .error (.undefinedBehavior _) => .error .undefined
-            | .error _ => .error .unsupported) =
+              Except.ok (if ovf then IntegerResult.withOverflow _ _
+                else IntegerResult.scalar _)))) =
             if ((hostOverflow || _) && op.isUnchecked) = true then
               Except.error FaultKind.undefined
+            else if ovf then
+              Except.ok (Val.tuple [Val.scalar ⟨_, true, _⟩, Val.bool _])
             else
               Except.ok (Val.scalar ⟨_, true, _⟩)
-          cases ((hostOverflow || _) && op.isUnchecked) <;> rfl)
+          cases ((hostOverflow || _) && op.isUnchecked) <;> cases ovf <;> rfl)
       rw [h, bitVec_ofInt_eq, size_truncate_eq]
       dsimp only
       rw [size_signExtend_eq]
       rfl
   | false =>
-    change (match bind
+    change (refIntResultVal w false (bind
         ((ScalarInt.truncateFromUInt (bvOfInt 128 resInt)
           (toMiriSize w)).mapError IntegerOpError.scalar)
         (fun (value, lossy) =>
@@ -618,27 +601,23 @@ theorem binary_truncate_scalarResult_eq (op : BinOp) (w : IntWidth) (s : Bool)
             throw (IntegerOpError.undefinedBehavior
               (.arithmeticOverflow (toMiriBinOp op)))
           else
-            pure (if false then
+            pure (if ovf then
               IntegerResult.withOverflow value (hostOverflow || lossy)
             else
-              IntegerResult.scalar value)) with
-      | .ok (.scalar sc) =>
-        (Except.ok (Val.scalar ⟨w, false, sc.data⟩) : Except FaultKind Val)
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported) =
+              IntegerResult.scalar value)))) =
       (match truncateScalar w false resInt with
       | .error k => .error k
       | .ok (val, lossy) =>
         if (hostOverflow || lossy) && op.isUnchecked then
           .error .undefined
+        else if ovf then
+          .ok (.tuple [.scalar val, .bool (hostOverflow || lossy)])
         else
           .ok (.scalar val))
     dsimp only [truncateScalar]
     let ⟨raw, h_raw⟩ : ∃ x, bvOfInt 128 resInt = x := ⟨_, rfl⟩
     rw [h_raw]
-    have h : (match bind
+    have h : (refIntResultVal w false (bind
         ((ScalarInt.truncateFromUInt raw (toMiriSize w)).mapError
           IntegerOpError.scalar)
         (fun (value, lossy) =>
@@ -646,40 +625,35 @@ theorem binary_truncate_scalarResult_eq (op : BinOp) (w : IntWidth) (s : Bool)
             throw (IntegerOpError.undefinedBehavior
               (.arithmeticOverflow (toMiriBinOp op)))
           else
-            pure (if false then
+            pure (if ovf then
               IntegerResult.withOverflow value (hostOverflow || lossy)
             else
-              IntegerResult.scalar value)) with
-      | .ok (.scalar sc) =>
-        (Except.ok (Val.scalar ⟨w, false, sc.data⟩) : Except FaultKind Val)
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported) =
+              IntegerResult.scalar value)))) =
       (match (toMiriSize w).truncate raw with
       | .ok b =>
         if (hostOverflow || (b != raw)) && op.isUnchecked then
           .error .undefined
+        else if ovf then
+          .ok (.tuple [.scalar ⟨w, false, b⟩,
+            .bool (hostOverflow || (b != raw))])
         else
           .ok (.scalar ⟨w, false, b⟩)
       | .error _ => .error .unsupported) := by
       cases w <;> (
-        change (match (if ((hostOverflow || _) && op.isUnchecked) = true then
+        change (refIntResultVal _ false
+            ((if ((hostOverflow || _) && op.isUnchecked) = true then
             Except.error (IntegerOpError.undefinedBehavior
               (.arithmeticOverflow (toMiriBinOp op)))
           else
-            Except.ok (IntegerResult.scalar _)) with
-          | .ok (.scalar sc) =>
-            (Except.ok (Val.scalar ⟨_, false, sc.data⟩) : Except FaultKind Val)
-          | .ok (.boolean b) => .ok (.bool b)
-          | .ok _ => .error .unsupported
-          | .error (.undefinedBehavior _) => .error .undefined
-          | .error _ => .error .unsupported) =
+            Except.ok (if ovf then IntegerResult.withOverflow _ _
+                else IntegerResult.scalar _)))) =
           if ((hostOverflow || _) && op.isUnchecked) = true then
             Except.error FaultKind.undefined
+          else if ovf then
+            Except.ok (Val.tuple [Val.scalar ⟨_, false, _⟩, Val.bool _])
           else
             Except.ok (Val.scalar ⟨_, false, _⟩)
-        cases ((hostOverflow || _) && op.isUnchecked) <;> rfl)
+        cases ((hostOverflow || _) && op.isUnchecked) <;> cases ovf <;> rfl)
     rw [h, size_truncate_eq]
     rfl
 
@@ -699,27 +673,15 @@ theorem toMiriIntType_bne_self (w : IntWidth) (s : Bool) :
   cases w <;> cases s <;> rfl
 
 theorem bitwise_truncate_eq (w : IntWidth) (s : Bool) (bits : BitVec 128) :
-    (match bind
+    (refIntResultVal w s (bind
         ((ScalarInt.truncateFromUInt bits (toMiriSize w)).mapError
           IntegerOpError.scalar)
-        (fun (value, _) => pure (IntegerResult.scalar value)) with
-    | .ok (.scalar sc) =>
-      (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
-    | .ok (.boolean b) => .ok (.bool b)
-    | .ok _ => .error .unsupported
-    | .error (.undefinedBehavior _) => .error .undefined
-    | .error _ => .error .unsupported) =
+        (fun (value, _) => pure (IntegerResult.scalar value)))) =
     .ok (.scalar ⟨w, s, truncateBits w bits⟩) := by
-  have h : (match bind
+  have h : (refIntResultVal w s (bind
       ((ScalarInt.truncateFromUInt bits (toMiriSize w)).mapError
         IntegerOpError.scalar)
-      (fun (value, _) => pure (IntegerResult.scalar value)) with
-    | .ok (.scalar sc) =>
-      (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
-    | .ok (.boolean b) => .ok (.bool b)
-    | .ok _ => .error .unsupported
-    | .error (.undefinedBehavior _) => .error .undefined
-    | .error _ => .error .unsupported) =
+      (fun (value, _) => pure (IntegerResult.scalar value)))) =
     (match (toMiriSize w).truncate bits with
     | .ok b => .ok (.scalar ⟨w, s, b⟩)
     | .error _ => .error .unsupported) := by
@@ -727,33 +689,27 @@ theorem bitwise_truncate_eq (w : IntWidth) (s : Bool) (bits : BitVec 128) :
   rw [h, size_truncate_eq]
 
 /-- Proof-side helper matching `Miri.Interpreter.ScalarOps.binary` over
-`Miri.Interpreter.IntegerOps.{binary,binaryBool}` for scalar and boolean
-operands. -/
+`Miri.Interpreter.IntegerOps.{binary,binaryBool,binaryChar}` for scalar,
+boolean, and `char` operands. -/
 noncomputable def evalRefMiriBinOp (op : Miri.MIR.BinOp) (lhs rhs : Val) :
     Except FaultKind Val :=
   match lhs, rhs with
   | .scalar l, .scalar r =>
-    match op with
-    | .AddWithOverflow | .SubWithOverflow | .MulWithOverflow | .Offset =>
-      .error .unsupported
-    | _ =>
-      match Miri.Interpreter.IntegerOps.binary op
-          (miriIntValue l) (miriIntValue r) with
-      | .ok (.scalar sc) => .ok (.scalar ⟨l.width, l.signed, sc.data⟩)
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported
+    refIntResultVal l.width l.signed
+      (Miri.Interpreter.IntegerOps.binary op (miriIntValue l) (miriIntValue r))
   | .bool l, .bool r =>
-    match op with
-    | .AddWithOverflow | .SubWithOverflow | .MulWithOverflow | .Offset =>
-      .error .unsupported
-    | _ =>
-      match Miri.Interpreter.IntegerOps.binaryBool op l r with
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported
+    match Miri.Interpreter.IntegerOps.binaryBool op l r with
+    | .ok (.boolean b) => .ok (.bool b)
+    | .ok _ => .error .unsupported
+    | .error (.undefinedBehavior _) => .error .undefined
+    | .error _ => .error .unsupported
+  | .char l, .char r =>
+    match Miri.Interpreter.IntegerOps.binaryChar op l r with
+    | .ok (.boolean b) => .ok (.bool b)
+    | .ok (.ordering o) => .ok (.ordering (refOrderingOfMiri o))
+    | .ok _ => .error .unsupported
+    | .error (.undefinedBehavior _) => .error .undefined
+    | .error _ => .error .unsupported
   | _, _ => .error .unsupported
 
 /-- Proof-side shorthand lifting `Trusted.MirAst.BinOp` into
@@ -767,7 +723,7 @@ theorem evalShiftOp_eq (op : BinOp) (w₁ w₂ : IntWidth) (s₁ s₂ : Bool)
     evalRefBinOp op (.scalar ⟨w₁, s₁, bits₁⟩) (.scalar ⟨w₂, s₂, bits₂⟩) =
     evalBinOp op (.scalar ⟨w₁, s₁, bits₁⟩) (.scalar ⟨w₂, s₂, bits₂⟩) := by
   have proveShift (op' : BinOp) (resInt rInt : Int) (w : IntWidth) :
-      (match bind
+      (refIntResultVal w s₁ (bind
           (if (toMiriIntType w s₁).signed then
             let wrapped := (BitVec.ofInt 128 resInt).toInt
             (ScalarInt.truncateFromInt wrapped
@@ -782,13 +738,7 @@ theorem evalShiftOp_eq (op : BinOp) (w₁ w₂ : IntWidth) (s₁ s₂ : Bool)
                 (.shiftOverflow (toMiriBinOp op') rInt
                   (toMiriIntType w₂ s₂).signed))
             else
-              pure (IntegerResult.scalar value)) with
-      | .ok (.scalar sc) =>
-        (Except.ok (Val.scalar ⟨w, s₁, sc.data⟩) : Except FaultKind Val)
-      | .ok (.boolean b) => .ok (.bool b)
-      | .ok _ => .error .unsupported
-      | .error (.undefinedBehavior _) => .error .undefined
-      | .error _ => .error .unsupported) =
+              pure (IntegerResult.scalar value)))) =
       (match truncateScalar w s₁ resInt with
       | .error k => .error k
       | .ok (res, _) =>
@@ -922,9 +872,10 @@ theorem miriIntValue_toUInt (w : IntWidth) (s : Bool) (bits : BitVec 128) :
     .ok (truncateBits w bits) :=
   miriScalar_toUInt w bits
 
-theorem arith_after_rw_eq (op : BinOp) (w : IntWidth) (s : Bool) (resInt : Int)
-    (h_ovf : (toMiriBinOp op).isOverflowing = false) :
-    (match (let hostOverflow := if s then
+theorem arith_after_rw_eq (op : BinOp) (w : IntWidth) (s : Bool)
+    (resInt : Int) :
+    (refIntResultVal w s (
+      (let hostOverflow := if s then
           decide (resInt < Neg.neg (HPow.hPow (2 : Int) 127)) ||
             decide (resInt ≥ HPow.hPow (2 : Int) 127)
         else
@@ -944,13 +895,7 @@ theorem arith_after_rw_eq (op : BinOp) (w : IntWidth) (s : Bool) (resInt : Int)
             pure (if (toMiriBinOp op).isOverflowing then
               IntegerResult.withOverflow value (hostOverflow || lossy)
             else
-              IntegerResult.scalar value))) with
-    | .ok (.scalar sc) =>
-      (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
-    | .ok (.boolean b) => .ok (.bool b)
-    | .ok _ => .error .unsupported
-    | .error (.undefinedBehavior _) => .error .undefined
-    | .error _ => .error .unsupported) =
+              IntegerResult.scalar value))))) =
     (match truncateScalar w s resInt with
     | .error k => .error k
     | .ok (val, lossy) =>
@@ -962,6 +907,14 @@ theorem arith_after_rw_eq (op : BinOp) (w : IntWidth) (s : Bool) (resInt : Int)
               decide (resInt ≥ HPow.hPow (2 : Int) 128)) ||
           lossy) && op.isUnchecked then
         .error .undefined
+      else if op.isOverflowing then
+        .ok (.tuple [.scalar val, .bool ((if s then
+            decide (resInt < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+              decide (resInt ≥ HPow.hPow (2 : Int) 127)
+          else
+            decide (resInt < 0) ||
+              decide (resInt ≥ HPow.hPow (2 : Int) 128)) ||
+          lossy)])
       else
         .ok (.scalar val)) := by
   have h := binary_truncate_scalarResult_eq op w s resInt
@@ -969,7 +922,8 @@ theorem arith_after_rw_eq (op : BinOp) (w : IntWidth) (s : Bool) (resInt : Int)
       decide (resInt < Neg.neg (HPow.hPow (2 : Int) 127)) ||
         decide (resInt ≥ HPow.hPow (2 : Int) 127)
     else
-      decide (resInt < 0) || decide (resInt ≥ HPow.hPow (2 : Int) 128)) h_ovf
+      decide (resInt < 0) || decide (resInt ≥ HPow.hPow (2 : Int) 128))
+    op.isOverflowing (toMiriBinOp_isOverflowing op)
   rw [toMiriIntType_signed, toMiriIntType_size] at h
   exact h
 
@@ -979,9 +933,9 @@ theorem int_tdiv_eq (a b : Int) : Int.tdiv a b = intTdiv a b := by
 theorem int_tmod_eq (a b : Int) : Int.tmod a b = intTmod a b := by
   cases a <;> cases b <;> rfl
 
-theorem div_rem_signed_eq (op : BinOp) (w : IntWidth) (lInt rInt resInt : Int)
-    (h_ovf : (toMiriBinOp op).isOverflowing = false) :
-    (match
+theorem div_rem_signed_eq (op : BinOp) (w : IntWidth)
+    (lInt rInt resInt : Int) :
+    (refIntResultVal w true (
       (let jp := fun (_ : PUnit) =>
         let hostOverflow := if true then
             decide (resInt < Neg.neg (HPow.hPow (2 : Int) 127)) ||
@@ -1011,13 +965,7 @@ theorem div_rem_signed_eq (op : BinOp) (w : IntWidth) (lInt rInt resInt : Int)
           else
             .remainderOverflow))) jp
       else
-        jp PUnit.unit) with
-    | .ok (.scalar sc) =>
-      (Except.ok (Val.scalar ⟨w, true, sc.data⟩) : Except FaultKind Val)
-    | .ok (.boolean b) => .ok (.bool b)
-    | .ok _ => .error .unsupported
-    | .error (.undefinedBehavior _) => .error .undefined
-    | .error _ => .error .unsupported) =
+        jp PUnit.unit))) =
     (if (false : Bool) then
       .error .undefined
     else if lInt == signedMinInt w && rInt == Neg.neg 1 then
@@ -1034,18 +982,27 @@ theorem div_rem_signed_eq (op : BinOp) (w : IntWidth) (lInt rInt resInt : Int)
                 decide (resInt ≥ HPow.hPow (2 : Int) 128)) ||
             lossy) && op.isUnchecked then
           .error .undefined
+        else if op.isOverflowing then
+          .ok (.tuple [.scalar val, .bool ((if true then
+              decide (resInt < Neg.neg (HPow.hPow (2 : Int) 127)) ||
+                decide (resInt ≥ HPow.hPow (2 : Int) 127)
+            else
+              decide (resInt < 0) ||
+                decide (resInt ≥ HPow.hPow (2 : Int) 128)) ||
+            lossy)])
         else
           .ok (.scalar val)) := by
   cases (lInt == signedMinInt w && rInt == Neg.neg 1) with
   | true => rfl
-  | false => exact arith_after_rw_eq op w true resInt h_ovf
+  | false => exact arith_after_rw_eq op w true resInt
 
 theorem arith_full_eq (op : BinOp) (w : IntWidth) (s : Bool) (lInt rInt : Int)
     (h_op : (match op with
       | .add | .sub | .mul | .addUnchecked | .subUnchecked | .mulUnchecked
-      | .div | .rem => true
+      | .addWithOverflow | .subWithOverflow | .mulWithOverflow
+      | .div | .rem | .offset => true
       | _ => false) = true) :
-    (match
+    (refIntResultVal w s (
       (let jp3 := fun (result : Int) =>
         let hostOverflow := if (toMiriIntType w s).signed then
             decide (result < Neg.neg (HPow.hPow (2 : Int) 127)) ||
@@ -1110,64 +1067,72 @@ theorem arith_full_eq (op : BinOp) (w : IntWidth) (s : Bool) (lInt rInt : Int)
         else
           jp0 PUnit.unit
       else
-        jp1 PUnit.unit) with
-    | .ok (.scalar sc) =>
-      (Except.ok (Val.scalar ⟨w, s, sc.data⟩) : Except FaultKind Val)
-    | .ok (.boolean b) => .ok (.bool b)
-    | .ok _ => .error .unsupported
-    | .error (.undefinedBehavior _) => .error .undefined
-    | .error _ => .error .unsupported) =
+        jp1 PUnit.unit))) =
     evalArithOp op w s lInt rInt := by
   rw [toMiriIntType_signed, toMiriIntType_size, size_signedIntMin_eq,
       int_tdiv_eq, int_tmod_eq]
   cases op with
   | add =>
     cases (rInt == 0) <;> cases s with
-    | false => exact arith_after_rw_eq .add w false (lInt + rInt) rfl
-    | true => exact arith_after_rw_eq .add w true (lInt + rInt) rfl
+    | false => exact arith_after_rw_eq .add w false (lInt + rInt)
+    | true => exact arith_after_rw_eq .add w true (lInt + rInt)
   | sub =>
     cases (rInt == 0) <;> cases s with
-    | false => exact arith_after_rw_eq .sub w false (lInt - rInt) rfl
-    | true => exact arith_after_rw_eq .sub w true (lInt - rInt) rfl
+    | false => exact arith_after_rw_eq .sub w false (lInt - rInt)
+    | true => exact arith_after_rw_eq .sub w true (lInt - rInt)
   | mul =>
     cases (rInt == 0) <;> cases s with
-    | false => exact arith_after_rw_eq .mul w false (lInt * rInt) rfl
-    | true => exact arith_after_rw_eq .mul w true (lInt * rInt) rfl
+    | false => exact arith_after_rw_eq .mul w false (lInt * rInt)
+    | true => exact arith_after_rw_eq .mul w true (lInt * rInt)
   | addUnchecked =>
     cases (rInt == 0) <;> cases s with
-    | false => exact arith_after_rw_eq .addUnchecked w false (lInt + rInt) rfl
-    | true => exact arith_after_rw_eq .addUnchecked w true (lInt + rInt) rfl
+    | false => exact arith_after_rw_eq .addUnchecked w false (lInt + rInt)
+    | true => exact arith_after_rw_eq .addUnchecked w true (lInt + rInt)
   | subUnchecked =>
     cases (rInt == 0) <;> cases s with
-    | false => exact arith_after_rw_eq .subUnchecked w false (lInt - rInt) rfl
-    | true => exact arith_after_rw_eq .subUnchecked w true (lInt - rInt) rfl
+    | false => exact arith_after_rw_eq .subUnchecked w false (lInt - rInt)
+    | true => exact arith_after_rw_eq .subUnchecked w true (lInt - rInt)
   | mulUnchecked =>
     cases (rInt == 0) <;> cases s with
-    | false => exact arith_after_rw_eq .mulUnchecked w false (lInt * rInt) rfl
-    | true => exact arith_after_rw_eq .mulUnchecked w true (lInt * rInt) rfl
+    | false => exact arith_after_rw_eq .mulUnchecked w false (lInt * rInt)
+    | true => exact arith_after_rw_eq .mulUnchecked w true (lInt * rInt)
+  | addWithOverflow =>
+    cases (rInt == 0) <;> cases s with
+    | false => exact arith_after_rw_eq .addWithOverflow w false (lInt + rInt)
+    | true => exact arith_after_rw_eq .addWithOverflow w true (lInt + rInt)
+  | subWithOverflow =>
+    cases (rInt == 0) <;> cases s with
+    | false => exact arith_after_rw_eq .subWithOverflow w false (lInt - rInt)
+    | true => exact arith_after_rw_eq .subWithOverflow w true (lInt - rInt)
+  | mulWithOverflow =>
+    cases (rInt == 0) <;> cases s with
+    | false => exact arith_after_rw_eq .mulWithOverflow w false (lInt * rInt)
+    | true => exact arith_after_rw_eq .mulWithOverflow w true (lInt * rInt)
+  | offset => cases (rInt == 0) <;> cases s <;> rfl
   | div =>
     dsimp only [evalArithOp]
     cases (rInt == 0) with
     | true => rfl
     | false =>
       cases s with
-      | false => exact arith_after_rw_eq .div w false (intTdiv lInt rInt) rfl
-      | true => exact div_rem_signed_eq .div w lInt rInt (intTdiv lInt rInt) rfl
+      | false => exact arith_after_rw_eq .div w false (intTdiv lInt rInt)
+      | true => exact div_rem_signed_eq .div w lInt rInt (intTdiv lInt rInt)
   | rem =>
     dsimp only [evalArithOp]
     cases (rInt == 0) with
     | true => rfl
     | false =>
       cases s with
-      | false => exact arith_after_rw_eq .rem w false (intTmod lInt rInt) rfl
-      | true => exact div_rem_signed_eq .rem w lInt rInt (intTmod lInt rInt) rfl
+      | false => exact arith_after_rw_eq .rem w false (intTmod lInt rInt)
+      | true => exact div_rem_signed_eq .rem w lInt rInt (intTmod lInt rInt)
   | _ => nomatch h_op
 
 theorem evalArithOp_eq (op : BinOp) (w : IntWidth) (s : Bool)
     (bits₁ bits₂ : BitVec 128)
     (h_op : (match op with
       | .add | .sub | .mul | .addUnchecked | .subUnchecked | .mulUnchecked
-      | .div | .rem => true
+      | .addWithOverflow | .subWithOverflow | .mulWithOverflow
+      | .div | .rem | .offset => true
       | _ => false) = true) :
     evalRefBinOp op (.scalar ⟨w, s, bits₁⟩) (.scalar ⟨w, s, bits₂⟩) =
     evalArithOp op w s (decodeScalar ⟨w, s, bits₁⟩)
@@ -1175,7 +1140,8 @@ theorem evalArithOp_eq (op : BinOp) (w : IntWidth) (s : Bool)
   have h_full := arith_full_eq op w s
     (decodeScalar ⟨w, s, bits₁⟩) (decodeScalar ⟨w, s, bits₂⟩) h_op
   cases op with
-  | add | sub | mul | addUnchecked | subUnchecked | mulUnchecked | div | rem =>
+  | add | sub | mul | addUnchecked | subUnchecked | mulUnchecked
+  | addWithOverflow | subWithOverflow | mulWithOverflow | div | rem | offset =>
     dsimp only [evalRefBinOp, evalRefMiriBinOp, toMiriBinOp, IntegerOps.binary]
     rw [integerOps_decode_eq, integerOps_decode_eq]
     dsimp only [bind, Except.bind, pure, Except.pure]
@@ -1183,17 +1149,109 @@ theorem evalArithOp_eq (op : BinOp) (w : IntWidth) (s : Bool)
     exact h_full
   | _ => nomatch h_op
 
+theorem refOrderingOfMiri_compareOfLessAndEq {α : Type} [LT α]
+    [deq : DecidableEq α] (x y : α) [dlt : Decidable (x < y)] (l r : Int)
+    (h_lt : x < y ↔ l < r) (h_eq : x = y ↔ l = r) :
+    refOrderingOfMiri (compareOfLessAndEq x y) = cmpOrderingOfInt l r := by
+  dsimp only [compareOfLessAndEq, cmpOrderingOfInt]
+  cases dlt with
+  | isTrue h =>
+    rw [decide_eq_true (h_lt.mp h)]
+    rfl
+  | isFalse h =>
+    rw [decide_eq_false (fun h' => h (h_lt.mpr h'))]
+    cases deq x y with
+    | isTrue h₂ =>
+      rw [decide_eq_true (h_eq.mp h₂)]
+      rfl
+    | isFalse h₂ =>
+      rw [decide_eq_false (fun h' => h₂ (h_eq.mpr h'))]
+      rfl
+
+theorem refOrderingOfMiri_compare_int (l r : Int) :
+    refOrderingOfMiri (compare l r) = cmpOrderingOfInt l r :=
+  refOrderingOfMiri_compareOfLessAndEq l r l r Iff.rfl Iff.rfl
+
+theorem char_lt_iff (l r : Char) :
+    l < r ↔ Int.ofNat l.toNat < Int.ofNat r.toNat :=
+  Iff.trans Char.lt_def
+    (Iff.trans UInt32.lt_iff_toNat_lt Int.ofNat_lt.symm)
+
+theorem char_le_iff (l r : Char) :
+    l ≤ r ↔ Int.ofNat l.toNat ≤ Int.ofNat r.toNat :=
+  Iff.trans Char.le_def (Iff.trans UInt32.le_iff_toNat_le Int.ofNat_le.symm)
+
+theorem char_eq_iff (l r : Char) :
+    l = r ↔ Int.ofNat l.toNat = Int.ofNat r.toNat :=
+  Iff.trans Char.toNat_inj.symm Int.ofNat_inj.symm
+
+theorem decide_congr_iff {p q : Prop} [Decidable p] [Decidable q]
+    (h : p ↔ q) : decide p = decide q := by
+  cases h_p : decide p with
+  | true => exact (decide_eq_true (h.mp (of_decide_eq_true h_p))).symm
+  | false =>
+    exact (decide_eq_false (fun h_q => absurd (h.mpr h_q)
+      (of_decide_eq_false h_p))).symm
+
+theorem refOrderingOfMiri_compare_char (l r : Char) :
+    refOrderingOfMiri (compare l r) =
+      cmpOrderingOfInt (Int.ofNat l.toNat) (Int.ofNat r.toNat) :=
+  refOrderingOfMiri_compareOfLessAndEq l r _ _ (char_lt_iff l r)
+    (char_eq_iff l r)
+
+theorem evalCharBinOp_eq (op : BinOp) (l r : Char) :
+    evalRefBinOp op (.char l) (.char r) = evalBinOp op (.char l) (.char r) := by
+  cases op with
+  | eq =>
+    change Except.ok (Val.bool (decide (l = r))) =
+      Except.ok (Val.bool (decide (Int.ofNat l.toNat = Int.ofNat r.toNat)))
+    rw [decide_congr_iff (char_eq_iff l r)]
+  | ne =>
+    change Except.ok (Val.bool (!decide (l = r))) =
+      Except.ok (Val.bool (!decide (Int.ofNat l.toNat = Int.ofNat r.toNat)))
+    rw [decide_congr_iff (char_eq_iff l r)]
+  | lt =>
+    change Except.ok (Val.bool (decide (l < r))) =
+      Except.ok (Val.bool (decide (Int.ofNat l.toNat < Int.ofNat r.toNat)))
+    rw [decide_congr_iff (char_lt_iff l r)]
+  | le =>
+    change Except.ok (Val.bool (decide (l ≤ r))) =
+      Except.ok (Val.bool (decide (Int.ofNat l.toNat ≤ Int.ofNat r.toNat)))
+    rw [decide_congr_iff (char_le_iff l r)]
+  | gt =>
+    change Except.ok (Val.bool (decide (r < l))) =
+      Except.ok (Val.bool (decide (Int.ofNat r.toNat < Int.ofNat l.toNat)))
+    rw [decide_congr_iff (char_lt_iff r l)]
+  | ge =>
+    change Except.ok (Val.bool (decide (r ≤ l))) =
+      Except.ok (Val.bool (decide (Int.ofNat r.toNat ≤ Int.ofNat l.toNat)))
+    rw [decide_congr_iff (char_le_iff r l)]
+  | cmp =>
+    change Except.ok (Val.ordering (refOrderingOfMiri (compare l r))) =
+      Except.ok (Val.ordering
+        (cmpOrderingOfInt (Int.ofNat l.toNat) (Int.ofNat r.toNat)))
+    rw [refOrderingOfMiri_compare_char]
+  | _ => rfl
+
 theorem evalRefBinOp_eq (op : BinOp) (lhs rhs : Val) :
     evalRefBinOp op lhs rhs = evalBinOp op lhs rhs := by
   cases lhs with
-  | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ => cases rhs <;> rfl
+  | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | ordering _ =>
+    cases rhs <;> rfl
   | bool l =>
     cases rhs with
-    | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | scalar _ => rfl
+    | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | scalar _ | char _
+    | ordering _ => rfl
     | bool r => cases op <;> cases l <;> cases r <;> rfl
+  | char l =>
+    cases rhs with
+    | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | scalar _ | bool _
+    | ordering _ => rfl
+    | char r => exact evalCharBinOp_eq op l r
   | scalar l =>
     cases rhs with
-    | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | bool _ => rfl
+    | unit | enumVal _ _ | ptr _ | tuple _ | bytes _ | bool _ | char _
+    | ordering _ => rfl
     | scalar r =>
       cases l with
       | mk w₁ s₁ bits₁ =>
@@ -1229,10 +1287,26 @@ theorem evalRefBinOp_eq (op : BinOp) (lhs rhs : Val) :
               have h_bne := miriIntValue_type_bne_self w₁ s₁ bits₁ bits₂
               cases op with
               | shl | shr | shlUnchecked | shrUnchecked => nomatch h_sh
-              | addWithOverflow | subWithOverflow | mulWithOverflow | offset =>
-                dsimp only [evalRefBinOp, evalRefMiriBinOp, evalBinOp]
+              | offset =>
+                dsimp only [evalBinOp]
                 rw [h_ty]
-                rfl
+                have h := evalArithOp_eq .offset w₁ s₁ bits₁ bits₂ rfl
+                cases s₁ <;> exact h
+              | cmp =>
+                dsimp only [evalRefBinOp, evalRefMiriBinOp, evalBinOp,
+                  toMiriBinOp, IntegerOps.binary]
+                rw [h_ty, integerOps_decode_eq, integerOps_decode_eq]
+                let ⟨lInt, h_l⟩ : ∃ x, decodeScalar ⟨w₁, s₁, bits₁⟩ = x :=
+                  ⟨_, rfl⟩
+                let ⟨rInt, h_r⟩ : ∃ x, decodeScalar ⟨w₁, s₁, bits₂⟩ = x :=
+                  ⟨_, rfl⟩
+                rw [h_l, h_r]
+                dsimp only [bind, Except.bind, pure, Except.pure]
+                rw [h_bne]
+                change Except.ok
+                    (Val.ordering (refOrderingOfMiri (compare lInt rInt))) =
+                  Except.ok (Val.ordering (cmpOrderingOfInt lInt rInt))
+                rw [refOrderingOfMiri_compare_int]
               | eq | ne | lt | le | gt | ge =>
                 dsimp only [evalRefBinOp, evalRefMiriBinOp, evalBinOp,
                   toMiriBinOp, IntegerOps.binary]
@@ -1311,6 +1385,18 @@ theorem evalRefBinOp_eq (op : BinOp) (lhs rhs : Val) :
                 dsimp only [evalBinOp]
                 rw [h_ty]
                 exact evalArithOp_eq .mulUnchecked w₁ s₁ bits₁ bits₂ rfl
+              | addWithOverflow =>
+                dsimp only [evalBinOp]
+                rw [h_ty]
+                exact evalArithOp_eq .addWithOverflow w₁ s₁ bits₁ bits₂ rfl
+              | subWithOverflow =>
+                dsimp only [evalBinOp]
+                rw [h_ty]
+                exact evalArithOp_eq .subWithOverflow w₁ s₁ bits₁ bits₂ rfl
+              | mulWithOverflow =>
+                dsimp only [evalBinOp]
+                rw [h_ty]
+                exact evalArithOp_eq .mulWithOverflow w₁ s₁ bits₁ bits₂ rfl
               | div =>
                 dsimp only [evalBinOp]
                 rw [h_ty]

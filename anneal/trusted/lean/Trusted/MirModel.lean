@@ -20,7 +20,7 @@ open Trusted.MirAst
 # Shared MIR Value and Outcome Model (`Trusted.MirModel`)
 
 Pure boundary data types (`FaultKind`, `StepResult`, `ScalarVal`, `PtrVal`,
-`AllocByte`, `Val`, `Allocation`, `CallerMemory`, `Query`, `Out`,
+`AllocByte`, `OrderingVal`, `Val`, `Allocation`, `CallerMemory`, `Query`, `Out`,
 `TerminalOut`, `MemPlace`, `LocalSlot`, `Choice`) and total list lookup/update
 helpers (`getElem?`, `setElem?`) shared across $M_{\text{anneal}}$
 (`Trusted.MirSemantics.*`) and $M_{\text{ref}}$
@@ -87,12 +87,39 @@ inductive AllocByte where
   | uninit
   | init (byte : UInt8) (prov : Option AllocId := none)
 
+/-- Value of `core::cmp::Ordering`, the result type of `BinOp::Cmp`
+(`library/core/src/cmp.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "#[repr(i8)]
+> pub enum Ordering {
+>     ...
+>     Less = -1,
+>     ...
+>     Equal = 0,
+>     ...
+>     Greater = 1,
+> }"
+
+`.less`, `.equal`, and `.greater` correspond to `Ordering::Less`,
+`Ordering::Equal`, and `Ordering::Greater`. Lean's own `Ordering` lives in
+`Init.Data.Ord.Basic`, which `trusted/lean/foundation-lock.json` does not
+admit, so the trusted base declares this three-constructor type itself. -/
+inductive OrderingVal where
+  | less
+  | equal
+  | greater
+
 /-- Canonical boundary value used in `Query`, `Out`, and `TerminalOut` of
-$M_{\text{anneal}}$. -/
+$M_{\text{anneal}}$. `.char c` is a value of type `char` (Lean's `Char` holds
+exactly the Unicode scalar values that Rust's `char` admits), and
+`.ordering ord` is a value of `core::cmp::Ordering`. -/
 inductive Val where
   | scalar (v : ScalarVal)
   | ptr (p : PtrVal)
   | bool (b : Bool)
+  | char (c : Char)
+  | ordering (ord : OrderingVal)
   | unit
   | enumVal (ty : EnumTy) (variant : Nat)
   | tuple (fields : List Val)

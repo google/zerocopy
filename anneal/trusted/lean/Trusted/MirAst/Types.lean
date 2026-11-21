@@ -226,18 +226,40 @@ Constructor correspondence:
   `u64`, `u128`, `usize`).
 - `.unit` corresponds to the 0-element unit tuple `TyKind::Tuple([])` (`()`).
 - `.never` corresponds to the uninhabited never type `TyKind::Never` (`!`).
+- `.char` corresponds to `TyKind::Char` (a Unicode scalar value).
+- `.ordering` corresponds to `TyKind::Adt(def, [])` where `def` is the
+  `core::cmp::Ordering` lang item, the result type of `BinOp::Cmp`
+  (`library/core/src/cmp.rs`, `rust-lang/rust`
+  `8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+  > "// This is a lang item only so that `BinOp::Cmp` in MIR can return it.
+  > // It has no special behavior, but does require that the three variants
+  > // `Less`/`Equal`/`Greater` remain `-1_i8`/`0_i8`/`+1_i8` respectively.
+  > #[lang = \"Ordering\"]
+  > #[repr(i8)]
+  > pub enum Ordering {
+  >     ...
+  >     Less = -1,
+  >     ...
+  >     Equal = 0,
+  >     ...
+  >     Greater = 1,
+  > }"
 - `.enum ty` corresponds to a fieldless `TyKind::Adt(def, _)` enum
   (`def.is_enum()` where every variant has zero fields), carrying `ty : EnumTy`
   with its nominal `id`, `Ty::discriminant_ty` `(discrWidth, discrSigned)`,
   in-memory `tagRepr` (`Variants::Single` ZST vs. direct `Variants::Multiple`
   scalar tag), and variant `discriminants` bit patterns.
 - `.tuple fields` corresponds to non-empty `TyKind::Tuple(fields)` (empty
-  `TyKind::Tuple([])` corresponds to `.unit`).
+  `TyKind::Tuple([])` corresponds to `.unit`). Only the `(T, bool)` result
+  type of `BinOp::{Add,Sub,Mul}WithOverflow` on an integer `T`
+  (`.tuple [.int w s, .bool]`) is executable; see
+  `Trusted.MirSemantics.isOverflowPairTy`.
 - `.ref mutability pointee` corresponds to `TyKind::Ref(_, pointee, mutability)`
   (regions are erased at runtime).
 - `.rawPtr mutability pointee` corresponds to
   `TyKind::RawPtr(pointee, mutability)`.
-- `.unsupported` represents all other `TyKind` variants (`Char`, `Float`,
+- `.unsupported` represents all other `TyKind` variants (`Float`,
   non-fieldless-enum `Adt`, `Foreign`, `Str`, `Array`, `Pat`, `Slice`, `FnDef`,
   `FnPtr`, `Dynamic`, `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing
   $M_{\text{anneal}}$ to fail closed with `FaultKind.unsupported`. -/
@@ -246,6 +268,8 @@ inductive MirTy where
   | int (width : IntWidth) (signed : Bool)
   | unit
   | never
+  | char
+  | ordering
   | enum (ty : EnumTy)
   | tuple (fields : List MirTy)
   | ref (mutability : Mutability) (pointee : MirTy)
@@ -296,6 +320,8 @@ mutual
     | .int w₁ s₁, .int w₂ s₂ => IntWidth.beq w₁ w₂ && (s₁ == s₂)
     | .unit, .unit => true
     | .never, .never => true
+    | .char, .char => true
+    | .ordering, .ordering => true
     | .enum ety₁, .enum ety₂ => EnumTy.beq ety₁ ety₂
     | .tuple fs₁, .tuple fs₂ => MirTy.beqList fs₁ fs₂
     | .ref m₁ p₁, .ref m₂ p₂ => Mutability.beq m₁ m₂ && MirTy.beq p₁ p₂

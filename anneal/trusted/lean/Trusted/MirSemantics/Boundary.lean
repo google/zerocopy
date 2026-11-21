@@ -202,7 +202,8 @@ noncomputable def bodiesHaveUniqueIdentities (bodies : List Body) : Bool :=
 /-- Unconditional static admission predicate for `(p, body)`: checks 64-bit
 target layout, MIR semantic profile version 1, non-empty `body.identity`,
 non-empty basic blocks, `argumentCount < locals.length`, in-bounds storage
-annotations, well-typed `Discriminant` destinations, and supported local types
+annotations, well-typed `Discriminant` and `Cast` destinations, and supported
+local types
 (`isSupportedScalarOrUnitTy`) even when `body` has uninhabited (`MirTy.never`)
 parameters and `ValidEntryArgs body args` is vacuously empty. -/
 noncomputable def BodyStaticAdmitted (p : Program) (body : Body) : Bool :=
@@ -213,6 +214,7 @@ noncomputable def BodyStaticAdmitted (p : Program) (body : Body) : Bool :=
     Nat.blt body.argumentCount body.locals.length &&
     storageAnnotationsInBounds body &&
     discriminantTypesValid body &&
+    castTypesValid body &&
     body.locals.all isSupportedScalarOrUnitTy
 
 /-- Verification judgment for a single MIR function body `body` at index `defId`

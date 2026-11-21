@@ -245,7 +245,8 @@ noncomputable def evalShiftOp (op : BinOp) (w : IntWidth) (s : Bool)
       .ok (.scalar res)
 
 /-- Evaluate an integer arithmetic operator (`.add`, `.sub`, `.mul`, `.div`,
-`.rem`, `.addUnchecked`, `.subUnchecked`, `.mulUnchecked`) in lockstep with
+`.rem`, `.addUnchecked`, `.subUnchecked`, `.mulUnchecked`,
+`.addWithOverflow`, `.subWithOverflow`, `.mulWithOverflow`) in lockstep with
 `compiler/rustc_const_eval/src/interpret/operator.rs` (`rust-lang/rust`
 `8144389c895da997dbdecaa635e41d6a50be6ffd`) and
 `Miri.Interpreter.IntegerOps.arithmetic`
@@ -254,6 +255,15 @@ noncomputable def evalShiftOp (op : BinOp) (w : IntWidth) (s : Bool)
 > "// We need a special check for overflowing Rem and Div since they are *UB*
 > // on overflow, which can happen with \"int_min $OP -1\"."
 > (`compiler/rustc_const_eval/src/interpret/operator.rs`, `rust-lang/rust`
+> `8144389c895da997dbdecaa635e41d6a50be6ffd`)
+
+An overflowing operator (`op.isOverflowing`) never faults on overflow and
+returns the pair `(wrapped, overflowed)` as `.tuple [.scalar wrapped,
+.bool overflowed]`, matching `BinOp::AddWithOverflow`'s documented result:
+
+> "Like `Add`, but returns `(T, bool)` of both the wrapped result
+> and a bool indicating whether it overflowed."
+> (`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
 > `8144389c895da997dbdecaa635e41d6a50be6ffd`) -/
 noncomputable def evalArithOp (op : BinOp) (w : IntWidth) (s : Bool)
     (l r : Int) : Except FaultKind Val :=
@@ -264,9 +274,9 @@ noncomputable def evalArithOp (op : BinOp) (w : IntWidth) (s : Bool)
     .error .undefined
   else
     let res? : Option Int := match op with
-      | .add | .addUnchecked => some (l + r)
-      | .sub | .subUnchecked => some (l - r)
-      | .mul | .mulUnchecked => some (l * r)
+      | .add | .addUnchecked | .addWithOverflow => some (l + r)
+      | .sub | .subUnchecked | .subWithOverflow => some (l - r)
+      | .mul | .mulUnchecked | .mulWithOverflow => some (l * r)
       | .div => some (intTdiv l r)
       | .rem => some (intTmod l r)
       | _ => none
@@ -284,8 +294,27 @@ noncomputable def evalArithOp (op : BinOp) (w : IntWidth) (s : Bool)
       | .ok (val, lossy) =>
         if (hostOverflow || lossy) && op.isUnchecked then
           .error .undefined
+        else if op.isOverflowing then
+          .ok (.tuple [.scalar val, .bool (hostOverflow || lossy)])
         else
           .ok (.scalar val)
+
+/-- Three-way comparison of mathematical integers, matching `Ord::cmp` on
+integers (`library/core/src/cmp.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) as `BinOp::Cmp` evaluates it
+(`compiler/rustc_middle/src/mir/syntax.rs`):
+
+> "[`Rvalue::BinaryOp`]`(BinOp::Cmp, A, B)` returns
+> - `Ordering::Less` (`-1_i8`, as a Scalar) if `A < B`
+> - `Ordering::Equal` (`0_i8`, as a Scalar) if `A == B`
+> - `Ordering::Greater` (`+1_i8`, as a Scalar) if `A > B`" -/
+noncomputable def cmpOrderingOfInt (l r : Int) : OrderingVal :=
+  if decide (l < r) then
+    .less
+  else if decide (l = r) then
+    .equal
+  else
+    .greater
 
 /-- Evaluate a binary operator across all 6 integer widths (`i8`..`i128`,
 `isize`), signedness modes, shift operators, and booleans in lockstep with
@@ -305,7 +334,15 @@ noncomputable def evalArithOp (op : BinOp) (w : IntWidth) (s : Bool)
   fault with `.undefined` on `.shlUnchecked`/`.shrUnchecked` when `r < 0`
   or `r ≥ w.bitWidth`, and perform arithmetic right shift on signed `l`.
 - Signed `.div` and `.rem` fault with `.undefined` on `INT_MIN / -1` and
-  `INT_MIN % -1` as well as `r == 0`. -/
+  `INT_MIN % -1` as well as `r == 0`.
+- `.addWithOverflow`, `.subWithOverflow`, and `.mulWithOverflow` return
+  `.tuple [.scalar wrapped, .bool overflowed]` (`evalArithOp`).
+- `.cmp` on integers and on `char`s returns `.ordering` (`cmpOrderingOfInt`);
+  `.cmp` on `bool` returns `.error .unsupported`, matching
+  `Miri.Interpreter.IntegerOps.binaryBool`.
+- On `char` operands, only the six comparisons and `.cmp` are defined
+  (`Miri.Interpreter.IntegerOps.binaryChar`), comparing Unicode scalar values;
+  every other operator returns `.error .unsupported`. -/
 noncomputable def evalBinOp (op : BinOp) (lhs rhs : Val) :
     Except FaultKind Val :=
   match lhs, rhs with
@@ -326,6 +363,7 @@ noncomputable def evalBinOp (op : BinOp) (lhs rhs : Val) :
       | .le => .ok (.bool (decide (lInt ≤ rInt)))
       | .gt => .ok (.bool (decide (lInt > rInt)))
       | .ge => .ok (.bool (decide (lInt ≥ rInt)))
+      | .cmp => .ok (.ordering (cmpOrderingOfInt lInt rInt))
       | .bitAnd =>
         let lb := truncateBits w l.bits
         let rb := truncateBits r.width r.bits
@@ -339,7 +377,8 @@ noncomputable def evalBinOp (op : BinOp) (lhs rhs : Val) :
         let rb := truncateBits r.width r.bits
         .ok (.scalar ⟨w, s, truncateBits w (bvXor lb rb)⟩)
       | .add | .sub | .mul | .div | .rem
-      | .addUnchecked | .subUnchecked | .mulUnchecked =>
+      | .addUnchecked | .subUnchecked | .mulUnchecked
+      | .addWithOverflow | .subWithOverflow | .mulWithOverflow =>
         evalArithOp op w s lInt rInt
       | _ => .error .unsupported
   | .bool l, .bool r =>
@@ -354,7 +393,88 @@ noncomputable def evalBinOp (op : BinOp) (lhs rhs : Val) :
     | .bitOr => .ok (.bool (l || r))
     | .bitXor => .ok (.bool (bne l r))
     | _ => .error .unsupported
+  | .char l, .char r =>
+    let lInt := Int.ofNat l.toNat
+    let rInt := Int.ofNat r.toNat
+    match op with
+    | .eq => .ok (.bool (lInt == rInt))
+    | .ne => .ok (.bool (lInt != rInt))
+    | .lt => .ok (.bool (decide (lInt < rInt)))
+    | .le => .ok (.bool (decide (lInt ≤ rInt)))
+    | .gt => .ok (.bool (decide (lInt > rInt)))
+    | .ge => .ok (.bool (decide (lInt ≥ rInt)))
+    | .cmp => .ok (.ordering (cmpOrderingOfInt lInt rInt))
+    | _ => .error .unsupported
   | _, _ => .error .unsupported
+
+/-- The `u128` intermediate of an integer-like cast source `v`, or `none` if
+`v` is not an integer, `bool`, or `char`. Matches `cast_from_int_like` in
+`compiler/rustc_const_eval/src/interpret/cast.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.Cast.intLikeValue`
+(`vendor/lean-miri/Miri/Interpreter/Cast.lean`):
+
+> "let v = match src_layout.ty.kind() {
+>     ty::Uint(_) | ty::RawPtr(..) | ty::FnPtr(..) =>
+>         scalar.to_uint(src_layout.size)?,
+>     ty::Int(_) => scalar.to_int(src_layout.size)? as u128, // we will cast
+>         back to `i128` below if the sign matters
+>     ty::Bool => scalar.to_bool()?.into(),
+>     ty::Char => scalar.to_char()?.into(),
+>     _ => span_bug!(self.cur_span(), \"invalid int-like cast from {}\",
+>         src_layout.ty),
+> };"
+
+A signed integer is sign-extended to 128 bits (`i128 as u128`), an unsigned
+integer is zero-extended, `bool` is `0` or `1`, and `char` is its Unicode
+scalar value. -/
+noncomputable def intLikeBits : Val → Option Nat
+  | .scalar sv =>
+    if sv.signed then
+      some (bvOfInt 128 (decodeScalar sv)).toNat
+    else
+      some (truncateBits sv.width sv.bits).toNat
+  | .bool b => some (if b then 1 else 0)
+  | .char c => some c.toNat
+  | _ => none
+
+/-- Evaluate `CastKind::IntToInt` of the integer-like value `v` to the target
+type `castTy`, matching `cast_from_int_like` in
+`compiler/rustc_const_eval/src/interpret/cast.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.Cast.castFromIntLike` with
+`Miri.Interpreter.IntegerCast.cast`:
+
+> "// int -> int
+> ty::Int(_) | ty::Uint(_) => {
+>     ...
+>     let v = size.truncate(v);
+>     Scalar::from_uint(v, size)
+> }
+> ...
+> // u8 -> char
+> ty::Char => Scalar::from_u32(u8::try_from(v).unwrap().into()),"
+
+- `.int w s` targets truncate the intermediate (`intLikeBits v`) to `w`.
+- `.char` targets accept an intermediate of at most `255` (`u8 as char`, the
+  only integer-to-`char` cast Rust admits). A larger intermediate panics in
+  `u8::try_from(v).unwrap()`, which `Miri.Interpreter.Cast.integerCastError`
+  reports as an invalid program, so the result is `.error .unsupported`.
+- A source that is not integer-like, and any other target type, return
+  `.error .unsupported`. -/
+noncomputable def evalIntToIntCast (v : Val) (castTy : MirTy) :
+    Except FaultKind Val :=
+  match intLikeBits v with
+  | none => .error .unsupported
+  | some bits =>
+    match castTy with
+    | .int w s => .ok (.scalar ⟨w, s, truncateBits w (BitVec.ofNat 128 bits)⟩)
+    | .char =>
+      if Nat.ble bits 255 then
+        .ok (.char (Char.ofNat bits))
+      else
+        .error .unsupported
+    | _ => .error .unsupported
 
 /-- Evaluate a unary operator (`not` and `neg`) in lockstep with
 `compiler/rustc_const_eval/src/interpret/operator.rs` (`rust-lang/rust`
@@ -371,7 +491,9 @@ noncomputable def evalBinOp (op : BinOp) (lhs rhs : Val) :
   truncated to `(sv.width, sv.signed)`.
 - `.neg` on signed `.scalar sv` returns wrapping `-decodeScalar sv`
   (`-INT_MIN == INT_MIN`); `.neg` on unsigned `.scalar sv` returns
-  `.error .unsupported`. -/
+  `.error .unsupported`.
+- Every unary operator on `.char` returns `.error .unsupported`, matching
+  `Miri.Interpreter.ScalarOps.unary`'s `invalid character unary operation`. -/
 noncomputable def evalUnOp (op : UnOp) (v : Val) : Except FaultKind Val :=
   match op, v with
   | .not, .bool b => .ok (.bool (!b))

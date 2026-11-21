@@ -131,6 +131,8 @@ mutual
       cases s <;> rfl
     | unit => rfl
     | never => rfl
+    | char => rfl
+    | ordering => rfl
     | enum ety => exact EnumTy.beq_refl ety
     | tuple fs =>
       change MirTy.beqList fs fs = true
@@ -170,6 +172,8 @@ mutual
       | _ => cases h
     | unit => cases b <;> first | rfl | cases h
     | never => cases b <;> first | rfl | cases h
+    | char => cases b <;> first | rfl | cases h
+    | ordering => cases b <;> first | rfl | cases h
     | enum ety₁ =>
       cases b with
       | enum ety₂ =>
@@ -329,8 +333,8 @@ theorem encodeRvalue_binaryOp_iff_base : EncodeRvalueBinaryOpIffClaim := by
       subst h_op; subst h_l₁; subst h_r₁
       dsimp only [encodeRvalue]
       rw [h_l, h_r]
-  | use _ | unaryOp _ _ | discriminant _ | ref _ _ | addressOf _ _
-  | aggregateTuple _ | unsupported =>
+  | use _ | unaryOp _ _ | cast _ _ _ | discriminant _ | ref _ _
+  | addressOf _ _ | aggregateTuple _ | unsupported =>
     constructor
     · intro h; cases h
     · intro h
@@ -354,8 +358,8 @@ theorem encodeRvalue_unaryOp_iff_base : EncodeRvalueUnaryOpIffClaim := by
       subst h_op; subst h_o₁
       dsimp only [encodeRvalue]
       rw [h_o]
-  | use _ | binaryOp _ _ _ | discriminant _ | ref _ _ | addressOf _ _
-  | aggregateTuple _ | unsupported =>
+  | use _ | binaryOp _ _ _ | cast _ _ _ | discriminant _ | ref _ _
+  | addressOf _ _ | aggregateTuple _ | unsupported =>
     constructor
     · intro h; cases h
     · intro h
@@ -539,6 +543,14 @@ mutual
     | never =>
       dsimp only [collectTy]
       exact ⟨subTable_insertTy .never acc,
+        fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
+    | char =>
+      dsimp only [collectTy]
+      exact ⟨subTable_insertTy .char acc,
+        fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
+    | ordering =>
+      dsimp only [collectTy]
+      exact ⟨subTable_insertTy .ordering acc,
         fun _ h_sub => getElem?_lookupTyId_of_subTable h_sub⟩
     | enum ety =>
       dsimp only [collectTy]
@@ -793,6 +805,13 @@ theorem collectRvalue_spec (acc : List MirTy) (rv : Rvalue) :
     dsimp only [encodeRvalue, decodeRvalue]
     rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
     rfl
+  | cast k opnd ty =>
+    let ⟨h_sub₁, h_dec₁⟩ := collectOperand_spec acc opnd
+    let ⟨h_sub₂, h_dec₂⟩ := collectTy_spec (collectOperand acc opnd) ty
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    dsimp only [encodeRvalue, decodeRvalue]
+    rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+    rfl
   | unaryOp op opnd =>
     let ⟨h_sub, h_dec⟩ := collectOperand_spec acc opnd
     refine ⟨h_sub, fun ts h_s => ?_⟩
@@ -931,6 +950,12 @@ mutual
     | never =>
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy .never acc h
+    | char =>
+      dsimp only [collectTy]
+      exact typesAreCanonical_insertTy .char acc h
+    | ordering =>
+      dsimp only [collectTy]
+      exact typesAreCanonical_insertTy .ordering acc h
     | enum ety =>
       dsimp only [collectTy]
       exact typesAreCanonical_insertTy (.enum ety) acc h
@@ -991,6 +1016,9 @@ theorem collectRvalue_canonical (acc : List MirTy) (rv : Rvalue)
   | binaryOp _ l r =>
     exact collectOperand_canonical (collectOperand acc l) r
       (collectOperand_canonical acc l h)
+  | cast _ op ty =>
+    exact collectTy_canonical (collectOperand acc op) ty
+      (collectOperand_canonical acc op h)
   | discriminant p | ref _ p | addressOf _ p =>
     exact collectPlace_canonical acc p h
   | aggregateTuple ops =>

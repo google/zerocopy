@@ -29,8 +29,8 @@ open Anneal.MirCorrespondence
 /-!
 # MIR Correspondence Proof Hub (`Anneal.MirCorrespondenceProof`)
 
-Thin Pass 2 entry module forwarding all 34 locked correspondence, wiring,
-codec, simulation, byte-codec, and non-vacuity canary (`D6`–`D13`) theorems to
+Thin Pass 2 entry module forwarding all 37 locked correspondence, wiring,
+codec, simulation, byte-codec, and non-vacuity canary (`D6`–`D16`) theorems to
 their modular proof implementations under `Anneal.MirCorrespondence.*`.
 -/
 
@@ -156,6 +156,15 @@ theorem canary_D12_zst_enum_move_and_discr_ok : CanaryD12ZstEnumMoveAndDiscrOkCl
 
 theorem canary_D13_enum_invalid_tag_and_uninit_ub : CanaryD13EnumInvalidTagAndUninitUbClaim :=
   canary_D13_enum_invalid_tag_and_uninit_ub_base
+
+theorem canary_D14_char_cmp_and_switch_ok : CanaryD14CharCmpAndSwitchOkClaim :=
+  canary_D14_char_cmp_and_switch_ok_base
+
+theorem canary_D15_int_to_int_cast : CanaryD15IntToIntCastClaim :=
+  canary_D15_int_to_int_cast_base
+
+theorem canary_D16_with_overflow_ok : CanaryD16WithOverflowOkClaim :=
+  canary_D16_with_overflow_ok_base
 
 theorem refStep_sound_for_allowedStep_holds : RefStepSoundForAllowedStepClaim :=
   refStep_sound_for_allowedStep_base

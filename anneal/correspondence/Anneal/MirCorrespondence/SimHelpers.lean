@@ -193,7 +193,8 @@ theorem auxTyOfCode_auxTyCode {ty : MirTy} {code : Nat}
   | unit => injection h with hc; subst hc; rfl
   | int w s =>
     cases w <;> cases s <;> (injection h with hc; subst hc; rfl)
-  | never | enum _ | tuple _ | ref _ _ | rawPtr _ _ | unsupported => cases h
+  | never | char | ordering | enum _ | tuple _ | ref _ _ | rawPtr _ _
+  | unsupported => cases h
 
 theorem indexOfTy_some_getElem? {ts : List MirTy} {ty : MirTy} {idx : TyId}
     (h : indexOfTy ts ty = some idx) :
@@ -428,7 +429,8 @@ theorem slotMatchesTy_liveUninitSlot (ty : MirTy) :
     SlotMatchesTy ty (liveUninitSlot ty) := by
   cases ty with
   | unit => rfl
-  | bool | int _ _ | never | tuple _ | ref _ _ | rawPtr _ _ | unsupported =>
+  | bool | int _ _ | never | char | ordering | tuple _ | ref _ _ | rawPtr _ _
+  | unsupported =>
     exact ⟨fun h => (by cases h), fun _ h => (by cases h)⟩
   | enum ety =>
     dsimp only [liveUninitSlot]
@@ -645,6 +647,30 @@ theorem evalConstLit_checkVal {ty : MirTy} {lit : ConstLit} {v : Val}
           | true =>
             rw [h1] at h; injection h with hv; subst hv; rfl
           | false => rw [h1] at h; cases h
+  | char =>
+    cases lit with
+    | zeroSized => cases h
+    | scalar bits =>
+      dsimp only [evalConstLit] at h
+      cases h_tr : (truncateBits .i32 bits != bits) with
+      | true => rw [h_tr] at h; cases h
+      | false =>
+        rw [h_tr] at h
+        cases h_u : isUnicodeScalar bits.toNat with
+        | false => rw [h_u] at h; cases h
+        | true => rw [h_u] at h; injection h with hv; subst hv; rfl
+  | ordering =>
+    cases lit with
+    | zeroSized => cases h
+    | scalar bits =>
+      dsimp only [evalConstLit] at h
+      cases h_tr : (truncateBits .i8 bits != bits) with
+      | true => rw [h_tr] at h; cases h
+      | false =>
+        rw [h_tr] at h
+        cases h_o : orderingOfTagBits bits.toNat with
+        | none => rw [h_o] at h; cases h
+        | some o => rw [h_o] at h; injection h with hv; subst hv; rfl
   | enum ety =>
     cases lit with
     | zeroSized =>
@@ -900,6 +926,24 @@ theorem evalDiscriminantOfVal_ok {ety : EnumTy} {optVal : Option Val}
               exact ⟨h_l.symm, h_m.symm⟩
         | _ => cases h
 
+/-- `evalOrderingDiscriminantOfVal` leaves `locals` and `mem` unchanged. -/
+theorem evalOrderingDiscriminantOfVal_ok {optVal : Option Val}
+    {locals locals' : List LocalSlot} {mem mem' : MemoryState} {v : Val}
+    (h : evalOrderingDiscriminantOfVal optVal locals mem =
+      .ok (v, locals', mem')) :
+    locals' = locals ∧ mem' = mem := by
+  unfold evalOrderingDiscriminantOfVal at h
+  cases optVal with
+  | none => cases h
+  | some val =>
+    cases val with
+    | ordering _ =>
+      injection h with h_tup
+      injection h_tup with _ h_rest
+      injection h_rest with h_l h_m
+      exact ⟨h_l.symm, h_m.symm⟩
+    | _ => cases h
+
 theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
     {locals locals' : List LocalSlot} {mem mem' : MemoryState}
     {dstTy : MirTy} {rv : Rvalue} {v : Val}
@@ -971,6 +1015,35 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
         injection h_rest with h_loc h_mem
         subst h_loc; subst h_mem
         exact evalPrimitiveOperand_slotsMatchTys h_inv h_op
+  | cast k opnd castTy =>
+    cases k with
+    | unsupported => cases h
+    | intToInt =>
+      dsimp only [evalRvalue] at h
+      cases h_op : evalOperandToSlot bodyLocals locals mem isIntLikeTy opnd with
+      | error _ => rw [h_op] at h; cases h
+      | ok res =>
+        let ⟨srcTy, optVal, l₁, m₁⟩ := res
+        rw [h_op] at h
+        dsimp only at h
+        cases h_il : isIntLikeTy srcTy with
+        | false => rw [h_il] at h; cases h
+        | true =>
+          rw [h_il] at h
+          cases optVal with
+          | none => cases h
+          | some v₀ =>
+            dsimp only at h
+            cases h_c : evalIntToIntCast v₀ castTy with
+            | error _ => rw [h_c] at h; cases h
+            | ok _ =>
+              rw [h_c] at h
+              injection h with h_tup
+              injection h_tup with _ h_rest
+              injection h_rest with h_loc h_mem
+              subst h_loc; subst h_mem
+              let ⟨h_l, _, h_m⟩ := evalOperandToSlot_slotsMatchTys h_inv h_op
+              exact ⟨h_l, h_m⟩
   | discriminant place =>
     dsimp only [evalRvalue] at h
     cases h_ty : MirSemantics.getElem? bodyLocals place.localId with
@@ -994,6 +1067,11 @@ theorem evalRvalue_slotsMatchTys {bodyLocals : List MirTy}
             | enum ety =>
               dsimp only at h
               let ⟨h_l, h_m⟩ := evalDiscriminantOfVal_ok h
+              subst h_l; subst h_m
+              exact ⟨h_inv, rfl⟩
+            | ordering =>
+              dsimp only at h
+              let ⟨h_l, h_m⟩ := evalOrderingDiscriminantOfVal_ok h
               subst h_l; subst h_m
               exact ⟨h_inv, rfl⟩
             | _ => cases h
@@ -1066,8 +1144,8 @@ theorem refState_unique_of_simulationInv_base :
   injection hinit₂ with h_pair
   injection h_pair with h_mem_eq h_rp_eq
   subst h_mem_eq
-  let ⟨body₁, rbody₁, hb₁, hrb₁, _, _, _, _, _, _, _, hrf₁⟩ := hframe₁
-  let ⟨body₂, rbody₂, hb₂, hrb₂, _, _, _, _, _, _, _, hrf₂⟩ := hframe₂
+  let ⟨body₁, rbody₁, hb₁, hrb₁, _, _, _, _, _, _, _, _, hrf₁⟩ := hframe₁
+  let ⟨body₂, rbody₂, hb₂, hrb₂, _, _, _, _, _, _, _, _, hrf₂⟩ := hframe₂
   rw [hb₁] at hb₂
   injection hb₂ with h_b_eq
   subst h_b_eq

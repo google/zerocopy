@@ -140,6 +140,7 @@ def FrameSimInv (rp : RefProg) (p : Program) (f : FrameState)
     Nat.blt body.argumentCount body.locals.length = true ∧
     storageAnnotationsInBounds body = true ∧
     discriminantTypesValid body = true ∧
+    castTypesValid body = true ∧
     body.locals.all isSupportedScalarOrUnitTy = true ∧
     SlotsMatchTys body.locals f.locals ∧
     FramePcInBounds body f ∧

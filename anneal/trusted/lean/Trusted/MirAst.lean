@@ -38,10 +38,9 @@ therefore the governing design priority for every declaration in this tree:
 2. **Explicit fail-closed boundaries (`.unsupported`):** Every syntax category
    with unmodeled `rustc` variants either includes an explicit `.unsupported`
    constructor or documents where unmodeled variants are handled (`Operand`
-   relies on capture rejecting `RuntimeChecks`, `BinOp` routes `Cmp` to
-   `Rvalue.unsupported`, and `ConstLit` handles non-scalar constants one level
-   up), and every comment documents both the modeled and unmodeled upstream
-   `rustc_middle::mir` variants.
+   relies on capture rejecting `RuntimeChecks`, and `ConstLit` handles
+   non-scalar constants one level up), and every comment documents both the
+   modeled and unmodeled upstream `rustc_middle::mir` variants.
 3. **Pinned upstream citations:** Every modeled AST type and operator
    declaration cites (and, where helpful for auditing, quotes) the
    corresponding `rust-lang/rust` definition at `vendor/lean-miri`'s upstream

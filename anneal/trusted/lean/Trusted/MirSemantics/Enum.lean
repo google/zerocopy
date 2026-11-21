@@ -149,20 +149,76 @@ noncomputable def findDiscrVariant? (discrBits : BitVec 128)
     (ds : List Nat) : Option Nat :=
   findDiscrVariantAux 0 discrBits ds
 
+/-- Whether `n` is a Unicode scalar value, the values of Rust's `char`
+(`src/types/char.md`, `rust-lang/reference`
+`a286e1ecb8ce193d50056e4bb042eea9b23876ef`):
+
+> "A value of type `char` is represented as a 32-bit unsigned word in the
+> 0x0000 to 0xD7FF or 0xE000 to 0x10FFFF range. It is immediate [undefined
+> behavior] to create a `char` that falls outside this range."
+
+This is the check `Miri.Memory.ScalarInt.toChar`
+(`vendor/lean-miri/Miri/Memory/ScalarInt.lean`) applies. -/
+noncomputable def isUnicodeScalar (n : Nat) : Bool :=
+  Nat.ble n 0x10ffff && !(Nat.ble 0xd800 n && Nat.ble n 0xdfff)
+
+/-- The `i8` tag bit pattern of a `core::cmp::Ordering` value: `255` (`-1_i8`)
+for `Less`, `0` for `Equal`, and `1` for `Greater`
+(`library/core/src/cmp.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "// It has no special behavior, but does require that the three variants
+> // `Less`/`Equal`/`Greater` remain `-1_i8`/`0_i8`/`+1_i8` respectively." -/
+noncomputable def orderingTagBits : OrderingVal → Nat
+  | .less => 255
+  | .equal => 0
+  | .greater => 1
+
+/-- The `core::cmp::Ordering` value whose `i8` tag bit pattern is `bits`
+(`orderingTagBits`), or `none` for any other bit pattern (an invalid tag). -/
+noncomputable def orderingOfTagBits (bits : Nat) : Option OrderingVal :=
+  if Nat.beq bits 255 then
+    some .less
+  else if Nat.beq bits 0 then
+    some .equal
+  else if Nat.beq bits 1 then
+    some .greater
+  else
+    none
+
+/-- Whether `ty` is the `(T, bool)` result type `.tuple [.int w s, .bool]` of
+`BinOp::{Add,Sub,Mul}WithOverflow` on an integer `T`
+(`compiler/rustc_middle/src/mir/syntax.rs`, `rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`):
+
+> "Like `Add`, but returns `(T, bool)` of both the wrapped result
+> and a bool indicating whether it overflowed."
+
+These are the only tuple types that $M_{\text{anneal}}$ executes. -/
+noncomputable def isOverflowPairTy : MirTy → Bool
+  | .tuple [.int _ _, .bool] => true
+  | _ => false
+
 namespace Val
 
 /-- Intrinsic type and well-formedness of a runtime value `Val`: returns
-`some ty` iff `v` is a well-formed scalar, boolean, unit, or fieldless enum
-value of type `ty`. -/
+`some ty` iff `v` is a well-formed scalar, boolean, `char`, `Ordering`, unit,
+fieldless enum, or overflow-pair value of type `ty`. An overflow pair
+`.tuple [.scalar sv, .bool b]` has type `.tuple [.int sv.width sv.signed,
+.bool]` (`isOverflowPairTy`); every other tuple has no type. -/
 noncomputable def ty? : Val → Option MirTy
   | .scalar sv => if sv.wf then some (.int sv.width sv.signed) else none
   | .bool _ => some .bool
+  | .char _ => some .char
+  | .ordering _ => some .ordering
   | .unit => some .unit
   | .enumVal ety v =>
     if enumAdmitted ety && Nat.blt v ety.discriminants.length then
       some (.enum ety)
     else
       none
+  | .tuple [.scalar sv, .bool _] =>
+    if sv.wf then some (.tuple [.int sv.width sv.signed, .bool]) else none
   | _ => none
 
 end Val
@@ -182,12 +238,14 @@ noncomputable def checkArgsMatch : List Val → List MirTy → Bool
   | _, _ => false
 
 /-- Check whether `ty` belongs to the supported local-variable type fragment
-(`.bool`, `.int`, `.unit`, uninhabited `.never`, or admitted fieldless
-`.enum`). The fragment is wider than the name suggests; downstream proof
-modules refer to the predicate by this name. -/
+(`.bool`, `.int`, `.char`, `.ordering`, `.unit`, uninhabited `.never`,
+admitted fieldless `.enum`, or an overflow pair `.tuple [.int w s, .bool]`).
+The fragment is wider than the name suggests; downstream proof modules refer
+to the predicate by this name. -/
 noncomputable def isSupportedScalarOrUnitTy : MirTy → Bool
-  | .bool | .int _ _ | .unit | .never => true
+  | .bool | .int _ _ | .char | .ordering | .unit | .never => true
   | .enum ety => enumAdmitted ety
+  | .tuple fs => isOverflowPairTy (.tuple fs)
   | _ => false
 
 /-- Initial state of a newly live local slot of type `ty`:
@@ -219,11 +277,30 @@ noncomputable def liveUninitSlot : MirTy → LocalSlot
     else .immediate none
   | _ => .immediate none
 
-/-- Check whether `ty : MirTy` has a primitive-readable `BackendRepr.Scalar`
-layout in `Miri.Interpreter.MemoryOperand.readImmediate`
-(`Miri/Interpreter/MemoryOperand.lean`). -/
+/-- Check whether `ty : MirTy` has a primitive-readable
+`BackendRepr.Scalar (.Initialized ..)` or `BackendRepr.ScalarPair` layout in
+`Miri.Interpreter.MemoryOperand.readImmediate`
+(`Miri/Interpreter/MemoryOperand.lean`): `bool`, integers, `char`, and
+overflow pairs. Fieldless enums and `Ordering` are not, because their layouts
+in $M_{\text{ref}}$ mark the tag scalar `.Union` (see
+`Trusted.Correspondence.refEnumLayoutData`). -/
 noncomputable def isPrimitiveReadableTy : MirTy → Bool
-  | .bool | .int _ _ => true
+  | .bool | .int _ _ | .char => true
+  | .tuple fs => isOverflowPairTy (.tuple fs)
+  | _ => false
+
+/-- Check whether `ty` is an integer-like cast source (an integer, `bool`, or
+`char`), the source types that `CastKind::IntToInt` admits in
+`compiler/rustc_const_eval/src/interpret/cast.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Interpreter.Cast.cast`:
+
+> "match sourceKind with
+> | .integer _ | .boolean | .character => pure ()
+> | _ => invalid \"IntToInt/IntToFloat source type is not integer-like\""
+> (`vendor/lean-miri/Miri/Interpreter/Cast.lean`) -/
+noncomputable def isIntLikeTy : MirTy → Bool
+  | .bool | .int _ _ | .char => true
   | _ => false
 
 end Trusted.MirSemantics

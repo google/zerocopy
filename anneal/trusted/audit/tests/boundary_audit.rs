@@ -1778,6 +1778,49 @@ const SYNTHETIC_CANARIES: &[(&str, &str, &str, &str)] = &[
         "And.intro True.intro (And.intro True.intro (And.intro True.intro \
          (And.intro True.intro True.intro)))",
     ),
+    (
+        "CanaryPositiveCharAndCmpAnnealClaim",
+        "canary_positive_char_and_cmp_anneal",
+        "And PositiveCanaryClaim (And mkBinOpProg (And Trusted.MirAst.BinOp.cmp \
+         (And Trusted.MirAst.MirTy.char (And charVal \
+         (And mkCmpDiscriminantProg progCharSwitch)))))",
+        "And.intro True.intro (And.intro True.intro (And.intro True.intro \
+         (And.intro True.intro (And.intro True.intro \
+         (And.intro True.intro True.intro)))))",
+    ),
+    (
+        "CanaryNegativeCharAndCmpAnnealClaim",
+        "canary_negative_char_and_cmp_anneal",
+        "And NegativeCanaryClaim (And progInvalidCharConstUb \
+         (And progInvalidCharSwitchCaseUb (And mkBinOpProg \
+         (And Trusted.MirAst.BinOp.cmp mkUnOpProg))))",
+        "And.intro True.intro (And.intro True.intro (And.intro True.intro \
+         (And.intro True.intro (And.intro True.intro True.intro))))",
+    ),
+    (
+        "CanaryPositiveOverflowOpsAnnealClaim",
+        "canary_positive_overflow_ops_anneal",
+        "And PositiveCanaryClaim (And mkBinOpProg (And overflowPairTy \
+         (And Trusted.MirAst.BinOp.addWithOverflow \
+         (And Trusted.MirAst.BinOp.subWithOverflow \
+         Trusted.MirAst.BinOp.mulWithOverflow))))",
+        "And.intro True.intro (And.intro True.intro (And.intro True.intro \
+         (And.intro True.intro (And.intro True.intro True.intro))))",
+    ),
+    (
+        "CanaryPositiveIntToIntCastAnnealClaim",
+        "canary_positive_int_to_int_cast_anneal",
+        "And PositiveCanaryClaim (And mkIntToIntCastProg \
+         (And Trusted.MirAst.MirTy.char charVal))",
+        "And.intro True.intro (And.intro True.intro (And.intro True.intro True.intro))",
+    ),
+    (
+        "CanaryNegativeIntToIntCastAnnealClaim",
+        "canary_negative_int_to_int_cast_anneal",
+        "And NegativeCanaryClaim (And mkIntToIntCastProg \
+         (And Trusted.MirAst.MirTy.char progCastUninitSourceUb))",
+        "And.intro True.intro (And.intro True.intro (And.intro True.intro True.intro))",
+    ),
 ];
 
 /// Configurable synthetic fixture containing minimal `Trusted.MirAst`,
@@ -1838,6 +1881,11 @@ impl MirWpSyntheticSpec {
              import Init.NotationExtra\n\
              namespace Trusted.MirAst\n\
              def placeholder : Nat := 0\n\
+             def BinOp.cmp : Prop := True\n\
+             def BinOp.addWithOverflow : Prop := True\n\
+             def BinOp.subWithOverflow : Prop := True\n\
+             def BinOp.mulWithOverflow : Prop := True\n\
+             def MirTy.char : Prop := True\n\
              end Trusted.MirAst\n\
              {}\n",
             self.mir_ast_extra
@@ -1864,7 +1912,17 @@ impl MirWpSyntheticSpec {
              def initState : Prop := True\n\
              def evalStep : Prop := True\n\
              def forceAllocation : Prop := True\n\
-             def readBytes : Prop := True\n",
+             def readBytes : Prop := True\n\
+             def mkBinOpProg : Prop := True\n\
+             def mkUnOpProg : Prop := True\n\
+             def charVal : Prop := True\n\
+             def mkCmpDiscriminantProg : Prop := True\n\
+             def progCharSwitch : Prop := True\n\
+             def progInvalidCharConstUb : Prop := True\n\
+             def progInvalidCharSwitchCaseUb : Prop := True\n\
+             def overflowPairTy : Prop := True\n\
+             def mkIntToIntCastProg : Prop := True\n\
+             def progCastUninitSourceUb : Prop := True\n",
         );
         if let Some(decl) = &self.wp_soundness_claim {
             sem.push_str(decl);
@@ -2254,7 +2312,7 @@ fn enforces_mir_wp_param_claim_proof_rules() {
 }
 
 /// Verifies every rejection branch of `requireClaimProof` (exact-claim mode,
-/// `argName? = none`) in `TrustedBoundary.lean` across the 20 canary claims
+/// `argName? = none`) in `TrustedBoundary.lean` across the 25 canary claims
 /// (missing claim, non-definition claim, wrong-module claim, non-`Prop` claim,
 /// claim body missing required constant, missing canary theorem, non-theorem
 /// proof, wrong-module proof, and weakened/wrong-type canary theorem).
@@ -2411,15 +2469,66 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
         "claim Trusted.MirSemantics.CanaryMemoryLifecycleAnnealClaim body must reference \
          Trusted.MirSemantics.forceAllocation",
     );
+
+    // `char`, `BinOp.cmp`, overflow-pair, and `IntToInt` cast canary claims
+    // that each replace one pinned constant with a duplicate of another (so
+    // the new operation, fixture, or UB path is no longer exercised while the
+    // synthetic proof still type-checks). Each weakened body keeps every other
+    // required constant, so the rejection names exactly the dropped one.
+    for (claim, weakened_body, dropped) in [
+        (
+            "CanaryPositiveCharAndCmpAnnealClaim",
+            "And PositiveCanaryClaim (And mkBinOpProg (And mkBinOpProg \
+             (And Trusted.MirAst.MirTy.char (And charVal \
+             (And mkCmpDiscriminantProg progCharSwitch)))))",
+            "Trusted.MirAst.BinOp.cmp",
+        ),
+        (
+            "CanaryNegativeCharAndCmpAnnealClaim",
+            "And NegativeCanaryClaim (And progInvalidCharConstUb \
+             (And progInvalidCharConstUb (And mkBinOpProg \
+             (And Trusted.MirAst.BinOp.cmp mkUnOpProg))))",
+            "Trusted.MirSemantics.progInvalidCharSwitchCaseUb",
+        ),
+        (
+            "CanaryPositiveOverflowOpsAnnealClaim",
+            "And PositiveCanaryClaim (And mkBinOpProg (And overflowPairTy \
+             (And Trusted.MirAst.BinOp.addWithOverflow \
+             (And Trusted.MirAst.BinOp.subWithOverflow \
+             Trusted.MirAst.BinOp.subWithOverflow))))",
+            "Trusted.MirAst.BinOp.mulWithOverflow",
+        ),
+        (
+            "CanaryPositiveIntToIntCastAnnealClaim",
+            "And PositiveCanaryClaim (And charVal (And Trusted.MirAst.MirTy.char charVal))",
+            "Trusted.MirSemantics.mkIntToIntCastProg",
+        ),
+        (
+            "CanaryNegativeIntToIntCastAnnealClaim",
+            "And NegativeCanaryClaim (And mkIntToIntCastProg \
+             (And Trusted.MirAst.MirTy.char mkIntToIntCastProg))",
+            "Trusted.MirSemantics.progCastUninitSourceUb",
+        ),
+    ] {
+        let mut weak_canary = MirWpSyntheticSpec::valid();
+        weak_canary.canary_claim_overrides.insert(
+            claim.to_string(),
+            Some(format!("def {claim} : Prop := {weakened_body}")),
+        );
+        weak_canary.expect_audit_policy_err(&format!(
+            "claim Trusted.MirSemantics.{claim} body must reference {dropped}"
+        ));
+    }
 }
 
 /// Verifies Pass 2 non-backsliding enforcement (`--require-correspondence`):
 /// missing correspondence directories, `verifyCorrespondenceClaims` across all
-/// 34 required claims (including `CorrespondenceAtChoicesClaim`,
+/// 37 required claims (including `CorrespondenceAtChoicesClaim`,
 /// `FaultEquivalenceAtChoicesClaim`, `OperandMachine.evalOperand` wiring,
-/// `RefStepSoundForAllowedStepClaim`, and `BytesCodecMatchesMiriClaim`), and
+/// `RefStepSoundForAllowedStepClaim`, `BytesCodecMatchesMiriClaim`, and the
+/// `D14`–`D16` `char`/`cmp`, cast, and overflow canaries), and
 /// `verifyRefEvaluatorIndependence`
-/// (all 34 required live `ExecutionMachine` Miri primitives on
+/// (all 39 required live `ExecutionMachine` Miri primitives on
 /// `[evalRefStep, initRefState]` unmasked by `RefAllowedStep`,
 /// `ExecutionMachine.AllowedStep` on `RefAllowedStep`, module-level import
 /// isolation and modular placement checks on isolated
@@ -2442,9 +2551,9 @@ fn enforces_correspondence_non_backsliding() {
     );
 
     // 2. Pass 2 (`InspectorRequest::CorrespondenceAudit`) enforces
-    // `verifyCorrespondenceClaims` (required constant references across all 34
+    // `verifyCorrespondenceClaims` (required constant references across all 37
     // claims and exact claim-type proof checking) and
-    // `verifyRefEvaluatorIndependence` (34 live `ExecutionMachine` Miri
+    // `verifyRefEvaluatorIndependence` (39 live `ExecutionMachine` Miri
     // primitives on `[evalRefStep, initRefState]` without `RefAllowedStep`
     // masking, `AllowedStep` on `RefAllowedStep`, fail-closed module-level
     // import isolation and modular placement checks on isolated
@@ -2525,11 +2634,20 @@ fn enforces_correspondence_non_backsliding() {
          def binary : Nat := 0\n\
          def binaryBool : Nat := 0\n\
          def unary : Nat := 0\n\
+         def binaryChar : Nat := 0\n\
          end Miri.Interpreter.IntegerOps\n\
+         namespace Miri.Interpreter.Cast\n\
+         def cast : Nat := 0\n\
+         end Miri.Interpreter.Cast\n\
+         namespace Miri.Interpreter.IntegerCast\n\
+         def cast : Nat := 0\n\
+         end Miri.Interpreter.IntegerCast\n\
          namespace Miri.Memory.ScalarInt\n\
          def truncateFromUInt : Nat := 0\n\
          def tryFromUInt : Nat := 0\n\
          def tryToBool : Nat := 0\n\
+         def toChar : Nat := 0\n\
+         def ofChar : Nat := 0\n\
          end Miri.Memory.ScalarInt\n\
          namespace Miri.Interpreter\n\
          def evalOperand : Nat := 0\n\
@@ -2588,6 +2706,11 @@ fn enforces_correspondence_non_backsliding() {
          def encodeVal : Nat := 0\n\
          def decodeVal : Nat := 0\n\
          def profileTargetEndian : Nat := 0\n\
+         def mkBinOpProg : Nat := 0\n\
+         def mkCmpDiscriminantProg : Nat := 0\n\
+         def progCharSwitch : Nat := 0\n\
+         def mkIntToIntCastProg : Nat := 0\n\
+         def overflowPairTy : Nat := 0\n\
          def unlistedAnnealHelper : Nat := 0\n\
          end Trusted.MirSemantics\n",
     );
@@ -2613,7 +2736,13 @@ fn enforces_correspondence_non_backsliding() {
         "prelude\nimport Init.Core\n\
          namespace Trusted.MirSemantics\n\
          def sharedModelData : Nat := 0\n\
-         end Trusted.MirSemantics\n",
+         end Trusted.MirSemantics\n\
+         namespace Trusted.MirAst\n\
+         def BinOp.cmp : Nat := 0\n\
+         def BinOp.addWithOverflow : Nat := 0\n\
+         def BinOp.subWithOverflow : Nat := 0\n\
+         def MirTy.char : Nat := 0\n\
+         end Trusted.MirAst\n",
     );
 
     compile_forged_module(
@@ -2702,10 +2831,10 @@ fn enforces_correspondence_non_backsliding() {
         "unexpected error: {err_weak_claim}"
     );
 
-    // 2b. When all 34 required claims and proofs are present,
+    // 2b. When all 37 required claims and proofs are present,
     // `verifyCorrespondenceClaims` succeeds and
     // `verifyRefEvaluatorIndependence` rejects an `evalRefStep` or
-    // `initRefState` that omits any of the 34 required live `ExecutionMachine`
+    // `initRefState` that omits any of the 39 required live `ExecutionMachine`
     // Miri primitives (even when `RefAllowedStep` reaches all of them), rejects
     // a `RefAllowedStep` omitting `ExecutionMachine.AllowedStep`, rejects
     // illegal references (directly or transitively) to any constant defined in
@@ -2853,6 +2982,21 @@ fn enforces_correspondence_non_backsliding() {
                Trusted.MirSemantics.progEnumInvalidTagConstUb = Trusted.MirSemantics.progEnumUninitDiscrUb ∧\n\
                encodeProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
                Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n\
+             def CanaryD14CharCmpAndSwitchOkClaim : Prop :=\n\
+               Trusted.MirSemantics.mkBinOpProg = Trusted.MirSemantics.mkCmpDiscriminantProg ∧\n\
+               Trusted.MirAst.BinOp.cmp = Trusted.MirAst.MirTy.char ∧\n\
+               Trusted.MirSemantics.progCharSwitch = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
+             def CanaryD15IntToIntCastClaim : Prop :=\n\
+               Trusted.MirSemantics.mkIntToIntCastProg = Trusted.MirAst.MirTy.char ∧\n\
+               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               RefWellFormed ∧ RefBehavior ∧ RefReachesOutcome\n\
+             def CanaryD16WithOverflowOkClaim : Prop :=\n\
+               Trusted.MirSemantics.mkBinOpProg = Trusted.MirSemantics.overflowPairTy ∧\n\
+               Trusted.MirAst.BinOp.addWithOverflow = Trusted.MirAst.BinOp.subWithOverflow ∧\n\
+               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
              def RefStepSoundForAllowedStepClaim : Prop := {ref_step_allowed_def}\n\
              def BytesCodecMatchesMiriClaim : Prop :=\n\
                Trusted.MirSemantics.encodeVal = Trusted.MirSemantics.decodeVal ∧\n\
@@ -2917,6 +3061,12 @@ fn enforces_correspondence_non_backsliding() {
                    ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
                  theorem canary_D13_enum_invalid_tag_and_uninit_ub : CanaryD13EnumInvalidTagAndUninitUbClaim :=\n\
                    ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro⟩\n\
+                 theorem canary_D14_char_cmp_and_switch_ok : CanaryD14CharCmpAndSwitchOkClaim :=\n\
+                   ⟨Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
+                 theorem canary_D15_int_to_int_cast : CanaryD15IntToIntCastClaim :=\n\
+                   ⟨Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro, True.intro, True.intro⟩\n\
+                 theorem canary_D16_with_overflow_ok : CanaryD16WithOverflowOkClaim :=\n\
+                   ⟨Eq.refl _, Eq.refl _, Eq.refl _, True.intro, True.intro, True.intro, True.intro⟩\n\
                  theorem refStep_sound_for_allowedStep_holds : RefStepSoundForAllowedStepClaim :=\n\
                    {ref_step_allowed_proof}\n\
                  theorem bytes_codec_matches_miri : BytesCodecMatchesMiriClaim :=\n\
@@ -3220,6 +3370,68 @@ fn enforces_correspondence_non_backsliding() {
         "unexpected weakened BytesCodecMatchesMiriClaim error: {err_weak_bytes_codec}"
     );
 
+    // Weakening a `D14`–`D16` canary claim (replacing the pinned `BinOp.cmp`,
+    // `IntToInt` cast fixture, or `addWithOverflow` operation with a
+    // duplicate of another constant so the synthetic proof still type-checks)
+    // is rejected by `verifyCorrespondenceClaims`.
+    for (claim, valid_conjunct, weakened_conjunct, dropped) in [
+        (
+            "CanaryD14CharCmpAndSwitchOkClaim",
+            "Trusted.MirAst.BinOp.cmp = Trusted.MirAst.MirTy.char ∧",
+            "Trusted.MirAst.MirTy.char = Trusted.MirAst.MirTy.char ∧",
+            "Trusted.MirAst.BinOp.cmp",
+        ),
+        (
+            "CanaryD15IntToIntCastClaim",
+            "Trusted.MirSemantics.mkIntToIntCastProg = Trusted.MirAst.MirTy.char ∧",
+            "Trusted.MirAst.MirTy.char = Trusted.MirAst.MirTy.char ∧",
+            "Trusted.MirSemantics.mkIntToIntCastProg",
+        ),
+        (
+            "CanaryD16WithOverflowOkClaim",
+            "Trusted.MirAst.BinOp.addWithOverflow = Trusted.MirAst.BinOp.subWithOverflow ∧",
+            "Trusted.MirAst.BinOp.subWithOverflow = Trusted.MirAst.BinOp.subWithOverflow ∧",
+            "Trusted.MirAst.BinOp.addWithOverflow",
+        ),
+    ] {
+        assert_eq!(
+            valid_claims.matches(valid_conjunct).count(),
+            1,
+            "synthetic {claim} body drifted"
+        );
+        compile_forged_module(
+            &mut checker_pass2,
+            &corr_src,
+            &trusted_lib,
+            &corr_deps,
+            "Trusted.Correspondence",
+            &valid_claims.replace(valid_conjunct, weakened_conjunct),
+        );
+        compile_forged_module(
+            &mut checker_pass2,
+            &corr_src,
+            &corr_lib,
+            &proof_deps,
+            "Anneal.MirCorrespondenceProof",
+            &all_proofs_src(
+                corr_choices_valid_proof,
+                fault_choices_valid_proof,
+                wiring_valid_proof,
+                d6_valid_proof,
+                ref_step_allowed_valid_proof,
+            ),
+        );
+        let err_weak_canary = run_corr_audit(&mut checker_pass2).unwrap_err();
+        assert_eq!(err_weak_canary.code, 1);
+        assert_eq!(err_weak_canary.phase, "correspondence-audit");
+        assert!(
+            err_weak_canary.message.contains(&format!(
+                "claim Trusted.Correspondence.{claim} body must reference {dropped}"
+            )),
+            "unexpected weakened {claim} error: {err_weak_canary}"
+        );
+    }
+
     compile_forged_module(
         &mut checker_pass2,
         &corr_src,
@@ -3291,11 +3503,16 @@ fn enforces_correspondence_non_backsliding() {
         "Miri.Interpreter.IntegerOps.binary",
         "Miri.Interpreter.IntegerOps.binaryBool",
         "Miri.Interpreter.IntegerOps.unary",
+        "Miri.Interpreter.IntegerOps.binaryChar",
+        "Miri.Interpreter.Cast.cast",
+        "Miri.Interpreter.IntegerCast.cast",
         "Miri.Interpreter.Discriminant.readDiscriminant",
         "Miri.Interpreter.Discriminant.discriminantForVariant",
         "Miri.Memory.ScalarInt.truncateFromUInt",
         "Miri.Memory.ScalarInt.tryFromUInt",
         "Miri.Memory.ScalarInt.tryToBool",
+        "Miri.Memory.ScalarInt.toChar",
+        "Miri.Memory.ScalarInt.ofChar",
     ];
     for missing_miri in [
         "Miri.Interpreter.ExecutionMachine.step",
@@ -3303,6 +3520,11 @@ fn enforces_correspondence_non_backsliding() {
         "Miri.Interpreter.ValidityVisitor.validatePlace",
         "Miri.Interpreter.Discriminant.readDiscriminant",
         "Miri.Interpreter.Discriminant.discriminantForVariant",
+        "Miri.Interpreter.IntegerOps.binaryChar",
+        "Miri.Interpreter.Cast.cast",
+        "Miri.Interpreter.IntegerCast.cast",
+        "Miri.Memory.ScalarInt.toChar",
+        "Miri.Memory.ScalarInt.ofChar",
     ] {
         let kept_primitives = required_miri_primitives
             .iter()
@@ -3357,7 +3579,7 @@ fn enforces_correspondence_non_backsliding() {
 
     // 2b-ii. `RefAllowedStep` cannot mask an `evalRefStep` that bypasses
     // `Miri.Interpreter.ExecutionMachine.step` (even when `RefAllowedStep`
-    // transitively reaches all 34 primitives plus `AllowedStep`).
+    // transitively reaches all 39 primitives plus `AllowedStep`).
     let masking_allowed_step =
         format!("let _ := ({all_miri_tuple}, Miri.Interpreter.ExecutionMachine.AllowedStep); 0");
     compile_forged_module(
@@ -3403,7 +3625,7 @@ fn enforces_correspondence_non_backsliding() {
 
     // 2b-iii. `RefAllowedStep` itself must reach
     // `Miri.Interpreter.ExecutionMachine.AllowedStep` even when `evalRefStep`
-    // reaches all 34 live primitives.
+    // reaches all 39 live primitives.
     let all_miri_step_only = format!("let _ := ({all_miri_tuple}); 0");
     compile_forged_module(
         &mut checker_pass2,

@@ -34,11 +34,12 @@ Constructs the concrete `Miri.Interpreter.ExecutionMachine.Config Unit RefUser
 Choice Unit Unit Unit` for a `RefProg`, wiring `deinitMovedPlace := true`,
 64-bit target layouts, `ValidityMemory.bind` shallow validation,
 `ExecutionScalar.Leaves`, `ExecutionLeaves.Discriminant`,
+`ExecutionCast.Leaves` (integer-like `IntToInt` casts only),
 `PlaceMachine.AccessConfig`, and `TerminatorMachine.Hooks` with fail-closed
-Day-1 leaves for unmodeled features (calls, casts, floats, pointers, atomics,
-intrinsics, unwinding). Imports only `Init.*`, `Miri.*`, `Trusted.MirAst`,
-`Trusted.MirModel`, and `Trusted.Correspondence.{Codec,State}` — never
-`Trusted.MirSemantics`.
+Day-1 leaves for unmodeled features (calls, other casts, floats, pointers,
+atomics, intrinsics, unwinding). Imports only `Init.*`, `Miri.*`,
+`Trusted.MirAst`, `Trusted.MirModel`, and `Trusted.Correspondence.{Codec,State}`
+— never `Trusted.MirSemantics`.
 -/
 
 /-- Resource budget passed to `Miri.Interpreter.ExecutionMachine.step`. Day-1
@@ -139,8 +140,9 @@ noncomputable def refLayoutOfTyId (types : List MirTy) (tyId : TyId) :
 
 /-- Field-layout projection used by `ProjectionCx.field` and
 `PlaceProjectionHooks.field`: projects field `0` of a scalar-tagged fieldless
-enum to its initialized tag scalar layout (`refLocalLayoutForTy types (.int tagW
-tagS)`). -/
+enum (or of `core::cmp::Ordering`) to its initialized tag scalar layout
+(`refLocalLayoutForTy types (.int tagW tagS)`), and fields `0` and `1` of an
+overflow pair `.tuple [.int w s, .bool]` to the integer and `bool` layouts. -/
 noncomputable def refProjectFieldLayout (types : List MirTy)
     (base : Miri.Interpreter.LocalLayout) (fieldIdx : Nat) :
     Except Miri.Interpreter.ProjectionError Miri.Interpreter.LocalLayout :=
@@ -150,7 +152,14 @@ noncomputable def refProjectFieldLayout (types : List MirTy)
       match ety.tagRepr with
       | .scalar tagW tagS => .ok (refLocalLayoutForTy types (.int tagW tagS))
       | .zeroSized => .error (.invariant "field projection on ZST enum")
+    | some .ordering => .ok (refLocalLayoutForTy types (.int .i8 true))
+    | some (.tuple [.int w s, .bool]) =>
+      .ok (refLocalLayoutForTy types (.int w s))
     | _ => .error (.obligation "field projection unsupported on Day 1")
+  else if Nat.beq fieldIdx 1 then
+    match resolveTy types base.ty with
+    | some (.tuple [.int _ _, .bool]) => .ok (refLocalLayoutForTy types .bool)
+    | _ => .error (.obligation "non-zero field projection unsupported on Day 1")
   else
     .error (.obligation "non-zero field projection unsupported on Day 1")
 
@@ -163,6 +172,11 @@ noncomputable def refProjectVariantLayout (types : List MirTy)
   match resolveTy types base.ty with
   | some (.enum ety) =>
     if Nat.blt variant ety.discriminants.length then
+      .ok ⟨base.ty, { refUnitLayoutData with variants := .Single variant }⟩
+    else
+      .error (.invariant "enum variant index out of bounds")
+  | some .ordering =>
+    if Nat.blt variant refOrderingEnumTy.discriminants.length then
       .ok ⟨base.ty, { refUnitLayoutData with variants := .Single variant }⟩
     else
       .error (.invariant "enum variant index out of bounds")
@@ -332,13 +346,58 @@ noncomputable def refOperandLeaves (types : List MirTy) :
   constantAt := fun _ _ c _ st => refEvalConstOperand types c st
 }
 
-/-- `PlaceCopyHooks` for `refExecutionConfig`: Day-1 types have no padding and
-canonical `TyId`s make layout compatibility exact `a.ty == b.ty`. -/
+/-- Padding decision of `copy_op_no_validate`, matching
+`compiler/rustc_const_eval/src/interpret/place.rs` (`rust-lang/rust`
+`8144389c895da997dbdecaa635e41d6a50be6ffd`) and
+`Miri.Input.CompilerCopy.hasPadding`:
+
+> "// If the source has padding, we want to always do a mem-to-mem copy to
+> // ensure consistent padding in the target independent of layout choices.
+> let src_has_padding = match src.layout().backend_repr {
+>     BackendRepr::Scalar(_) => false,
+>     BackendRepr::ScalarPair { a: left, b: right, b_offset: _ }
+>         if matches!(src.layout().ty.kind(), ty::Ref(..) | ty::RawPtr(..)) =>
+>     {
+>         // Wide pointers never have padding, so we can avoid calling `size()`.
+>         debug_assert_eq!(left.size(self) + right.size(self),
+>             src.layout().size);
+>         false
+>     }
+>     BackendRepr::ScalarPair { a: left, b: right, b_offset: _ } => {
+>         let left_size = left.size(self);
+>         let right_size = right.size(self);
+>         // We have padding if the sizes don't add up to the total.
+>         ...
+>         left_size + right_size != src.layout().size
+>     }
+>     // Everything else can only exist in memory anyway, so it doesn't matter.
+>     BackendRepr::SimdVector { .. }
+>     | BackendRepr::SimdScalableVector { .. }
+>     | BackendRepr::Memory { .. } => true,
+> };"
+
+No reference or raw-pointer type has a $M_{\text{ref}}$ layout, so the
+wide-pointer arm never applies. -/
+noncomputable def refHasPadding (layout : Miri.Interpreter.LocalLayout) :
+    Except Miri.Interpreter.StepError Bool :=
+  match layout.layout.backendRepr with
+  | .Scalar _ => .ok false
+  | .ScalarPair (a := a) (b := b) (bOffset := _) =>
+    match a.size refAccessConfig.runtime, b.size refAccessConfig.runtime with
+    | .ok sizeA, .ok sizeB =>
+      match sizeA.add sizeB with
+      | .ok total => .ok (total != layout.layout.size)
+      | .error _ => .error (.invalidProgram "scalar-pair size overflow")
+    | _, _ => .error (.invalidProgram "scalar-pair scalar size unavailable")
+  | _ => .ok true
+
+/-- `PlaceCopyHooks` for `refExecutionConfig`: `refHasPadding` decides padding,
+and canonical `TyId`s make layout compatibility exact `a.ty == b.ty`. -/
 noncomputable def refPlaceCopyHooks :
     Miri.Interpreter.PlaceCopyHooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice := {
   compatible := fun a b => .ok (a.ty == b.ty)
-  hasPadding := fun _ => .ok false
+  hasPadding := refHasPadding
   readRaw := fun _ => Miri.Interpreter.PlaceMachine.readRaw refAccessConfig
   memoryCopy := fun _ _ _ st =>
     .error (.unsupported "memoryCopy unsupported on Day 1") st
@@ -356,6 +415,7 @@ noncomputable def refDiscriminantLeaves (types : List MirTy) :
         .ok (refLocalLayoutForTy types (.int ety.discrWidth ety.discrSigned)) st
       else
         .error (.unsupported "unadmitted enum in discriminantLayout") st
+    | some .ordering => .ok (refLocalLayoutForTy types (.int .i8 true)) st
     | _ => .error (.unsupported "discriminant on non-enum type") st
   tagLayout := fun _ tag st =>
     match tag.primitive with
@@ -371,15 +431,23 @@ noncomputable def refDiscriminantLeaves (types : List MirTy) :
         .ok (some (tyIdFor types (.int ety.discrWidth ety.discrSigned),
           BitVec.ofNat 128 disc)) st
       | none => .error (.invalidProgram "enum variant out of bounds") st
+    | some .ordering =>
+      match MirSemantics.getElem? refOrderingEnumTy.discriminants variant with
+      | some disc =>
+        .ok (some (tyIdFor types (.int .i8 true), BitVec.ofNat 128 disc)) st
+      | none => .error (.invalidProgram "enum variant out of bounds") st
     | _ => .error (.unsupported "discriminantValue on non-enum type") st
   variantForDiscriminant := fun _ tyId discrBits st =>
     match resolveTy types tyId with
     | some (.enum ety) =>
       .ok (refFindDiscrVariant? discrBits ety.discriminants) st
+    | some .ordering =>
+      .ok (refFindDiscrVariant? discrBits refOrderingEnumTy.discriminants) st
     | _ => .error (.unsupported "variantForDiscriminant on non-enum type") st
   adtVariantCount := fun _ tyId st =>
     match resolveTy types tyId with
     | some (.enum ety) => .ok ety.discriminants.length st
+    | some .ordering => .ok refOrderingEnumTy.discriminants.length st
     | _ => .error (.unsupported "adtVariantCount on non-enum type") st
   scalarMayBeNull := fun _ _ st =>
     .error (.unsupported "niche scalarMayBeNull unsupported on Day 1") st
@@ -492,7 +560,8 @@ noncomputable def refValidityMemoryEnv :
 }
 
 /-- `ValidityVisitor.Hooks` bound to real `ValidityMemory.bind` for Day-1
-integer, boolean, unit, never, and fieldless-enum validation. -/
+integer, boolean, `char`, unit, never, fieldless-enum, `Ordering`, and
+overflow-pair validation. -/
 noncomputable def refValidityHooks (types : List MirTy) :
     Miri.Interpreter.ValidityVisitor.Hooks Miri.Memory.Provenance
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice
@@ -514,9 +583,12 @@ noncomputable def refValidityHooks (types : List MirTy) :
       match resolveTy types tyId with
       | some .bool => .ok .boolean st
       | some (.int _ _) => .ok .integer st
+      | some .char => .ok .character st
+      | some .ordering => .ok (.aggregate false false true) st
       | some .unit => .ok (.aggregate false false false) st
       | some .never => .ok .never st
       | some (.enum _) => .ok (.aggregate false false true) st
+      | some (.tuple [.int _ _, .bool]) => .ok (.aggregate false false false) st
       | _ => .error (.invalidProgram "unsupported validity type") st
     unitLayout := fun _ st => .ok (refLocalLayoutForTy types .unit) st
     typeName := fun _ _ st => .ok "" st
@@ -580,12 +652,15 @@ noncomputable def refScalarLeaves (types : List MirTy) :
     match resolveTy types tyId with
     | some .bool => .ok .boolean st
     | some (.int w s) => .ok (.integer (toMiriIntKind w s)) st
+    | some .char => .ok .character st
     | _ => .error (.invalidProgram "non-scalar operand type") st
   boolLayout := fun _ st => .ok (refLocalLayoutForTy types .bool) st
-  orderingLayout := fun _ st =>
-    .error (.unsupported "Cmp unsupported on Day 1") st
-  overflowLayout := fun _ _ st =>
-    .error (.unsupported "WithOverflow unsupported on Day 1") st
+  orderingLayout := fun _ st => .ok (refLocalLayoutForTy types .ordering) st
+  overflowLayout := fun _ input st =>
+    match resolveTy types input.ty with
+    | some (.int w s) =>
+      .ok (refLocalLayoutForTy types (.tuple [.int w s, .bool])) st
+    | _ => .error (.invalidProgram "overflow layout on non-integer type") st
   metadataLayout := fun _ _ st =>
     .error (.unsupported "PtrMetadata unsupported on Day 1") st
   unitLayout := fun _ st => .ok (refLocalLayoutForTy types .unit) st
@@ -728,11 +803,20 @@ noncomputable def refFloatOpsHooks (types : List MirTy) :
   chooseNaN := fun _ _ st => .ok 0 st
 }
 
-/-- Fail-closed `ExecutionCast.Leaves` placeholder for Day-1. -/
+/-- `ExecutionCast.Leaves` for `refExecutionConfig`. `typeInfo` classifies
+integers, `bool`, and `char` (the integer-like types of `CastKind::IntToInt`)
+and fails closed with `.unsupported` on every other type, so
+`Miri.Interpreter.Cast.cast` rejects any other cast source or target; every
+pointer, function, and vtable leaf fails closed. -/
 noncomputable def refCastLeaves (types : List MirTy) :
     Miri.Interpreter.ExecutionCast.Leaves
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice := {
-  typeInfo := fun _ _ st => .error (.unsupported "casts unsupported") st
+  typeInfo := fun _ tyId st =>
+    match resolveTy types tyId with
+    | some (.int w s) => .ok (.integer (toMiriIntKind w s)) st
+    | some .bool => .ok .boolean st
+    | some .char => .ok .character st
+    | _ => .error (.unsupported "cast type unsupported") st
   layoutOf := fun _ tyId st =>
     match refLayoutOfTyId types tyId with
     | .ok l => .ok l st
