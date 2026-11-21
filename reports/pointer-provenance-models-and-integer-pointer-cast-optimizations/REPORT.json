@@ -1,0 +1,54 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/refinement",
+    "pl/pointer-provenance",
+    "pl/memory-models",
+    "pl/integer-pointer-casts",
+    "compilers/optimization-soundness",
+    "compilers/alias-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Exploring C Semantics and Pointer Provenance (POPL 2019)",
+      "identity": {
+        "doi": "10.1145/3290380"
+      }
+    },
+    {
+      "name": "Reconciling High-Level Optimizations and Low-Level Code in LLVM (OOPSLA 2018)",
+      "identity": {
+        "doi": "10.1145/3276495"
+      }
+    },
+    {
+      "name": "A Formal C Memory Model Supporting Integer-Pointer Casts (PLDI 2015)",
+      "identity": {
+        "doi": "10.1145/2737924.2738005"
+      }
+    },
+    {
+      "name": "VIP: Verifying Real-World C Idioms with Integer-Pointer Casts (POPL 2022)",
+      "identity": {
+        "doi": "10.1145/3498681"
+      }
+    },
+    {
+      "name": "MiniRust specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    }
+  ],
+  "observed_at": "2026-11-20"
+}

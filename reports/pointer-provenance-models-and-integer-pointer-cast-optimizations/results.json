@@ -1,0 +1,1078 @@
+[
+  {
+    "id": "R1a-one-past-end-compares-equal-to-adjacent-start",
+    "lean": "Toy.Prov.onePast_ptrEq_adjacent_start",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "The adjacency fact is the situation addressed by ISO C18 6.5.9p6 and used in every cited provenance paper; here it is a closed evaluation in the toy, quantified over allocation sizes.",
+    "plain_claim": "In each of the three models (flat, strict, exposed), for all allocation sizes n1, n2 >= 1, with the toy's bump allocator placing a second allocation B of n2 bytes immediately after an allocation A of n1 bytes, the pointer A + n1 (one past A's end) compares equal by address to the pointer to B's start (the program outputs [1]).",
+    "hypotheses": [
+      {
+        "name": "h₁ : n₁ ≠ 0",
+        "purpose": "A zero-size allocation is UB in the toy.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.onePast_size₁_needed"
+      },
+      {
+        "name": "h₂ : n₂ ≠ 0",
+        "purpose": "A zero-size allocation is UB in the toy.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.onePast_size₂_needed"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "The two-byte instance onePastProg (n1 = n2 = 2), used again by R1b.",
+    "nonvacuity_witness_lean": "Toy.Prov.onePast_ptrEq_adjacent_start_all_models",
+    "non_claims": [
+      "Evaluates the fixed program onePastProgN n1 n2 from the initial state under the toy's deterministic bump allocator; it is not quantified over arbitrary heap states, and does not say real allocators place allocations adjacently.",
+      "Does not say pointer equality compares provenance: ptrEq compares addresses only, by definition (ISO C18 6.5.9p6 likewise requires such pointers to compare equal; semantics in which they may compare unequal or nondeterministically are not modeled).",
+      "Address equality does not make the two pointers interchangeable (see R1b).",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "P2318R0 (as above), on ISO C18 6.5.9p6: the text 'requires such pointers [one past the end of one array object and the start of an immediately following one] to compare equal'.",
+      "K. Memarian, V. B. F. Gomes, B. Davis, S. Kell, A. Richardson, R. N. M. Watson, P. Sewell. Exploring C Semantics and Pointer Provenance. Proc. ACM Program. Lang. 3, POPL, Article 67 (2019). doi:10.1145/3290380. Also WG14 N2311. Source checked: Cerberus project page (https://www.cl.cam.ac.uk/~pes20/cerberus/), which lists authors, venue, article number and this DOI. Defines the PNVI-plain and PVI models and discusses one-past-the-end equality and pointer substitution; the exposure-based variants PNVI-ae and PNVI-ae-udi are from the later TS draft (see P2318R0).",
+      "R. Jung. Pointers Are Complicated II, or: We need better language specs. Blog post, 14 December 2020, https://www.ralfj.de/blog/2020/12/14/provenance.html. Presents the three-step chain: integer substitution after iq == ip, removal of the int-ptr round trip on the one-past-the-end pointer, and provenance-based alias analysis; argues the round-trip removal is the incorrect step."
+    ],
+    "design_question": "Which pointer-substitution optimizations (GVN on pointers after p == q or (int)p == (int)q) a compiler may perform under each provenance model. (Reference point: the boundary situation behind R1b-R3b.)"
+  },
+  {
+    "id": "R1b-address-equality-substitution-unsound-strict-exposed",
+    "lean": [
+      "Toy.Prov.substAddrEq_counterexample_strict",
+      "Toy.Prov.substAddrEq_counterexample_exposed",
+      "Toy.Prov.substAddrEq_not_sound_strict",
+      "Toy.Prov.substAddrEq_not_sound_exposed"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The one-past-the-end pointer-substitution miscompilation is a published example (Memarian et al. 2019; Lee et al. 2018; Jung 2020); restated as a decidable counterexample over an explicit transformation relation.",
+    "plain_claim": "In the strict and the exposed model, the transformation SubstAddrEq (replace the reads of register q in one instruction by reads of p, when p and q hold pointers with equal addresses in every reachable state at that point) is not sound: with p one past A's end and q B's start, replacing the pointer operand of a store gives a target that is UB while the source outputs [1, 7]. In the flat model the same rewrite is a refinement (both output [1, 7]).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "r1Src / r1Tgt satisfy SubstAddrEq in all three models.",
+    "nonvacuity_witness_lean": "Toy.Prov.substAddrEq_example_refines_flat",
+    "positive_control_lean": "Toy.Prov.substAddrEq_example_refines_flat",
+    "non_claims": [
+      "SubstAddrEq substitutes reads of q in an arbitrary instruction i under a semantic side condition (addrEqC in every reachable state after pre); it does not require pre to contain a ptrEq. The counterexample uses a store; nothing is claimed about which instruction kinds are safe.",
+      "Does not show SubstAddrEq is unsound for every program in strict/exposed; only that the transformation as a whole is not sound.",
+      "Escape hatch: when both pointers are in bounds of live allocations at that point (base ≤ address < base + size), the substitution is a refinement in every model (R1c, the analogue of the in-bounds GVN condition of Lee et al. 2018); the counterexample needs a one-past-the-end pointer.",
+      "The flat positive control is one program; general flat soundness is the separate table entry substAddrEq_sound_flat (R6g).",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "K. Memarian, V. B. F. Gomes, B. Davis, S. Kell, A. Richardson, R. N. M. Watson, P. Sewell. Exploring C Semantics and Pointer Provenance. Proc. ACM Program. Lang. 3, POPL, Article 67 (2019). doi:10.1145/3290380. Also WG14 N2311. Source checked: Cerberus project page (https://www.cl.cam.ac.uk/~pes20/cerberus/), which lists authors, venue, article number and this DOI. Defines the PNVI-plain and PVI models and discusses one-past-the-end equality and pointer substitution; the exposure-based variants PNVI-ae and PNVI-ae-udi are from the later TS draft (see P2318R0).",
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block').",
+      "R. Jung. Pointers Are Complicated II, or: We need better language specs. Blog post, 14 December 2020, https://www.ralfj.de/blog/2020/12/14/provenance.html. Presents the three-step chain: integer substitution after iq == ip, removal of the int-ptr round trip on the one-past-the-end pointer, and provenance-based alias analysis; argues the round-trip removal is the incorrect step."
+    ],
+    "design_question": "Which pointer-substitution optimizations (GVN on pointers after p == q or (int)p == (int)q) a compiler may perform under each provenance model."
+  },
+  {
+    "id": "R1c-in-bounds-address-equality-substitution-sound",
+    "lean": "Toy.Prov.substAddrEqInBounds_sound",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Analogue, for these three models, of the in-bounds condition of Lee et al.'s Coq-proved Theorem C.5 (twin-allocation model); restated over this semantics.",
+    "plain_claim": "In every model, replacing the reads of q by reads of p in one instruction is a refinement when, in every reachable state at that point, p and q hold pointers with equal addresses and both are in bounds of a live allocation (inBoundsC: a one-byte access through each is allowed, i.e. base ≤ address < base + size for a live allocation, which in strict/exposed must be the pointer's own provenance; the start address is included, one past the end is excluded). In strict/exposed, disjointness of live allocations forces equal provenance, so the two registers hold the same value.",
+    "hypotheses": [
+      {
+        "name": "SubstAddrEqInBounds side condition, conjunct addrEqC p q",
+        "purpose": "Without it, p and q may be two different in-bounds pointers (to different allocations), and reading through p instead of q reads a different allocation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.substAddrEqInBounds_addrEq_needed"
+      },
+      {
+        "name": "SubstAddrEqInBounds side condition, conjunct inBoundsC m p",
+        "purpose": "Without it, p may be a one-past-the-end pointer with another allocation's provenance (R1b's pair).",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.substAddrEqInBounds_p_needed"
+      },
+      {
+        "name": "SubstAddrEqInBounds side condition, conjunct inBoundsC m q",
+        "purpose": "Without it, q may be a one-past-the-end pointer that the source moves back into its own allocation, which p cannot do.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.substAddrEqInBounds_q_needed"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "q := A and p := (A + 1) - 1: equal addresses, both in bounds, in strict and exposed.",
+    "nonvacuity_witness_lean": "Toy.Prov.substAddrEqInBounds_nonvacuous",
+    "non_claims": [
+      "In bounds (inBoundsC) means base ≤ address < base + size: an allocation's start address is in bounds and its one-past-the-end address is not. It does not mean interior-only (base < address). The statement says nothing about one-past pointers.",
+      "Relies on the toy's allocator never giving two live allocations overlapping ranges (bump allocation, alloc 0 is UB); with zero-sized or overlapping allocations it is not established.",
+      "Says nothing about pointers to freed allocations: inBoundsC requires a live allocation.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block').",
+      "K. Memarian, V. B. F. Gomes, B. Davis, S. Kell, A. Richardson, R. N. M. Watson, P. Sewell. Exploring C Semantics and Pointer Provenance. Proc. ACM Program. Lang. 3, POPL, Article 67 (2019). doi:10.1145/3290380. Also WG14 N2311. Source checked: Cerberus project page (https://www.cl.cam.ac.uk/~pes20/cerberus/), which lists authors, venue, article number and this DOI. Defines the PNVI-plain and PVI models and discusses one-past-the-end equality and pointer substitution; the exposure-based variants PNVI-ae and PNVI-ae-udi are from the later TS draft (see P2318R0)."
+    ],
+    "design_question": "Which pointer-substitution optimizations (GVN on pointers after p == q or (int)p == (int)q) a compiler may perform under each provenance model."
+  },
+  {
+    "id": "R2a-integer-equality-pointer-substitution-unsound-even-when-exposed",
+    "lean": [
+      "Toy.Prov.substIntEq_counterexample_strict",
+      "Toy.Prov.substIntEq_counterexample_exposed",
+      "Toy.Prov.substIntEq_not_sound_strict",
+      "Toy.Prov.substIntEq_not_sound_exposed"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "The (int)p == (int)q pointer-substitution examples are published (Memarian et al. 2019; Jung 2020); here with exposure made explicit in the side condition.",
+    "plain_claim": "In the strict and the exposed model, the transformation SubstIntEq (as SubstAddrEq, with the additional side condition that the provenances of both pointers are in the exposed set in every reachable state at that point) is not sound: on a program that also casts both pointers to integers and observes them equal, replacing q (B's start) by p (one past A's end) in a store gives a UB target while the source outputs [1, 7]. Exposure does not rescue pointer substitution because the substituted pointer keeps its own provenance. In the flat model the same rewrite is a refinement.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "r2Src / r2Tgt satisfy SubstIntEq (including bothExposedC) in all models.",
+    "nonvacuity_witness_lean": "Toy.Prov.substIntEq_example_refines_flat",
+    "positive_control_lean": "Toy.Prov.substIntEq_example_refines_flat",
+    "non_claims": [
+      "SubstIntEq's side conditions are semantic (addrEqC and bothExposedC in every reachable state after pre); the transformation does not syntactically require pre to contain ptr2int or intEq, and bothExposedC holds trivially for pointers without provenance.",
+      "Does not concern substituting integers (that is sound, R2c) or folding an integer back into a pointer (R2b).",
+      "Does not say exposure is irrelevant in general; it matters for int2ptr, not for already-formed pointers.",
+      "Escape hatch: if both pointers are in bounds of live allocations (base ≤ address < base + size), address equality implies equal provenance and the substitution is sound (R1c).",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "K. Memarian, V. B. F. Gomes, B. Davis, S. Kell, A. Richardson, R. N. M. Watson, P. Sewell. Exploring C Semantics and Pointer Provenance. Proc. ACM Program. Lang. 3, POPL, Article 67 (2019). doi:10.1145/3290380. Also WG14 N2311. Source checked: Cerberus project page (https://www.cl.cam.ac.uk/~pes20/cerberus/), which lists authors, venue, article number and this DOI. Defines the PNVI-plain and PVI models and discusses one-past-the-end equality and pointer substitution; the exposure-based variants PNVI-ae and PNVI-ae-udi are from the later TS draft (see P2318R0).",
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "P2318R0 (as above), definition of PNVI-ae: 'A storage instance is deemed exposed by a conversion of a pointer to it to an integer type, by a read (at non-pointer type) of the representation of the pointer, or by an output of the pointer using \"%p\".'",
+      "R. Jung. Pointers Are Complicated II, or: We need better language specs. Blog post, 14 December 2020, https://www.ralfj.de/blog/2020/12/14/provenance.html. Presents the three-step chain: integer substitution after iq == ip, removal of the int-ptr round trip on the one-past-the-end pointer, and provenance-based alias analysis; argues the round-trip removal is the incorrect step."
+    ],
+    "design_question": "Which pointer-substitution optimizations (GVN on pointers after p == q or (int)p == (int)q) a compiler may perform under each provenance model."
+  },
+  {
+    "id": "R2b-int2ptr-fold-refines-exposed-if-no-other-candidate",
+    "lean": "Toy.Prov.int2ptrToCopy_refines_exposed_of_intIsAddrOf_of_candSubProv",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "The PNVI-ae-udi literature discusses when the round-trip fold is valid informally, and VIP (Coq) verifies programs that state the intended provenance explicitly; no mechanized statement of this fold condition for an angelic exposed-provenance semantics was found.",
+    "plain_claim": "In the exposed model, replacing d := int2ptr k by d := p is a refinement provided that, in every reachable state at that point, k holds p's address as an integer (hk) and every allocation that int2ptr could pick for that address (exposed, live, address within [base, base + size]) is p's own provenance (hc) - either p's allocation is the unique such candidate, or there is no candidate at all, in which case the source pointer has no provenance and the target pointer has p's.",
+    "hypotheses": [
+      {
+        "name": "hk : AllAfter .exposed pre (intIsAddrOfC k p)",
+        "purpose": "The integer must equal p's address; otherwise the cast may pick an unrelated allocation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.int2ptrToCopy_intIsAddrOf_needed"
+      },
+      {
+        "name": "hc : AllAfter .exposed pre (candSubProvC p)",
+        "purpose": "If another exposed live allocation contains the address (one-past-the-end of A = start of B), the source's cast can angelically pick it while the target keeps p's provenance; p's allocation being live, exposed and in range is not enough.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.int2ptrToCopy_candSubProv_needed"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "After k := ptr2int A, A is the only candidate for its own address and the fold preserves the output [5]. The case with no candidate (A not exposed, so candidates is empty) is witnessed by int2ptrToCopy_refines_exposed_no_candidate_example (both programs output [16]).",
+    "nonvacuity_witness_lean": [
+      "Toy.Prov.int2ptrToCopy_refines_exposed_nonvacuous",
+      "Toy.Prov.int2ptrToCopy_refines_exposed_no_candidate_example"
+    ],
+    "non_claims": [
+      "Covers the case with no candidate (the fold adds provenance to a pointer that had none); this depends on provenance-monotone decoding of pointer bytes (R7b) and is exercised by int2ptrToCopy_refines_exposed_no_candidate_example, where a mixed-provenance byte copy follows the fold. Under a decoder that makes mixed-provenance bytes UB, this case fails (R7a).",
+      "Does not claim behaviour equality (only refinement); equality under the stronger candEqProvC is R3a.",
+      "In-boundsness of p (base ≤ address < base + size, which includes B's start) is not enough: if an exposed live allocation A ends exactly where p's allocation B starts, then B's start is also A's one-past address and has two candidates; the fold then fails when later code moves the pointer back into A (Toy.Prov.roundTrip_fold_counterexample_exposed_base_pointer). Not proved here: an address strictly inside an allocation (interior: base < a < base + size) is never the one-past address of an adjacent live allocation. No fold theorem in this package is stated for interior-only addresses; the fold theorems assume the candidate condition hc directly.",
+      "Does not allow removing the earlier ptr2int that exposed p's allocation or computed k (DropUnusedPtr2int is unsound in exposed, R6g).",
+      "The rewrite is the single instruction d := int2ptr k <-> d := p with k already holding p's address; it does not insert or delete the ptr2int that computed k (an inserted ptr2int would itself expose p's allocation).",
+      "This toy restricts int2ptr candidates to exposed live allocations whose closed range [base, base + size] contains the address (PNVI-ae-udi); MiniRust's int2ptr may pick any exposed provenance (or none) regardless of the address, so address-local side conditions such as candSubProvC/candEqProvC/provIsCandC do not carry over to MiniRust when another allocation is exposed and the pointer is later moved with wrapping offsets.",
+      "Rust 1.84.0's with_exposed_provenance documentation does not specify which exposed provenance is picked ('we cannot provide any guarantees about which provenance the resulting pointer will have'); the angelic choice used here is MiniRust's and PNVI-ae-udi's reading, not a guarantee of the Rust library documentation.",
+      "Not stated for strict or flat here (those are table entries in R6g).",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "P2318R0 (as above), on one-past integer-to-pointer casts: 'for PNVI-plain and PNVI-ae we follow the stricter semantics. PNVI-ae-udi, however, is designed to permit a cast of a one-past pointer to integer and back to recover the original provenance'; ambiguous cases are resolved by leaving 'the provenance of pointer values resulting from such casts unknown until the first operation (e.g. an access, pointer arithmetic, or pointer relational comparison) that disambiguates them', 'allowing one or the other (but not both) to be used, so long as that is done consistently'.",
+      "R. Jung. Pointers Are Complicated II, or: We need better language specs. Blog post, 14 December 2020, https://www.ralfj.de/blog/2020/12/14/provenance.html. Presents the three-step chain: integer substitution after iq == ip, removal of the int-ptr round trip on the one-past-the-end pointer, and provenance-based alias analysis; argues the round-trip removal is the incorrect step.",
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block').",
+      "R. Lepigre, M. Sammler, K. Memarian, R. Krebbers, D. Dreyer, P. Sewell. VIP: Verifying Real-World C Idioms with Integer-Pointer Casts. Proc. ACM Program. Lang. 6, POPL, Article 20 (January 2022). doi:10.1145/3498681. Source checked: author PDF https://iris-project.org/pdfs/2022-popl-vip.pdf. Introduces a construct that lets programmers state the intended provenance of an integer-pointer cast (copy_alloc_id); 'we prove VIP compatible with PNVI-ae-udi'; the RefinedC-VIP tool 'produces foundational proofs in Coq'.",
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`')."
+    ],
+    "design_question": "When an optimizer may fold or introduce integer-pointer round trips (inttoptr(ptrtoint p) vs p) under strict and exposed provenance."
+  },
+  {
+    "id": "R2c-identical-value-substitution-sound-all-models",
+    "lean": [
+      "Toy.Prov.substSameVal_beh_eq",
+      "Toy.Prov.substSameVal_sound"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "That GVN on values with no hidden state is behaviour-preserving is standard (Lee et al. 2018 make integers provenance-free so that 'GVN for integers becomes sound'); restated over this semantics.",
+    "plain_claim": "In every model, replacing the reads of register q by reads of p in one instruction preserves behaviour (equality of behaviour, not merely refinement) whenever q and p hold identical values in every reachable state at that point; in particular substituting one integer for an equal integer (integer GVN after (int)p == (int)q) is sound even in the exposed model at the one-past-the-end boundary.",
+    "hypotheses": [
+      {
+        "name": "h : AllAfter m pre (sameValC p q)",
+        "purpose": "Identical values (for pointers: equal provenance as well as address). Weakening it to equal addresses gives SubstAddrEq, which is unsound in strict/exposed.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.substAddrEq_counterexample_strict"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Integer substitution iq -> ip after ip := (int)(A+2), iq := (int)B in the exposed model.",
+    "nonvacuity_witness_lean": "Toy.Prov.substSameVal_int_boundary_example",
+    "non_claims": [
+      "A sufficient condition, not a characterization: the rewrite can also preserve behaviour when the instruction does not read q or its result is unused.",
+      "Does not say that subsequently folding int2ptr(ip) into A+2 is sound (it is not at the boundary, R3b).",
+      "Integers carry no provenance in this toy by construction; a semantics where integers carry provenance is not covered.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "R. Jung. Pointers Are Complicated II, or: We need better language specs. Blog post, 14 December 2020, https://www.ralfj.de/blog/2020/12/14/provenance.html. Presents the three-step chain: integer substitution after iq == ip, removal of the int-ptr round trip on the one-past-the-end pointer, and provenance-based alias analysis; argues the round-trip removal is the incorrect step.",
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block')."
+    ],
+    "design_question": "Which pointer-substitution optimizations (GVN on pointers after p == q or (int)p == (int)q) a compiler may perform under each provenance model."
+  },
+  {
+    "id": "R3a-roundtrip-interchangeable-exposed-if-unique-candidate",
+    "lean": "Toy.Prov.int2ptrToCopy_beh_eq_exposed_of_intIsAddrOf_of_candEqProv",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "The PNVI-ae-udi literature treats the unambiguous case informally; stated and proved here for one semantics.",
+    "plain_claim": "In the exposed model, d := int2ptr k and d := p are interchangeable (equal behaviour) when, in every reachable state at that point, k holds p's address (hk) and the int2ptr candidates for that address are exactly p's own provenance (hc: p's allocation is live, exposed, contains the address in its closed range and is the only such allocation, or p has no provenance and there is no candidate).",
+    "hypotheses": [
+      {
+        "name": "hk : AllAfter .exposed pre (intIsAddrOfC k p)",
+        "purpose": "Ties the integer to p's address.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.int2ptrToCopy_beh_eq_intIsAddrOf_needed"
+      },
+      {
+        "name": "hc : AllAfter .exposed pre (candEqProvC p)",
+        "purpose": "Uniqueness: at the one-past-the-end boundary with the next allocation exposed, the round trip and p behave differently.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.roundTrip_fold_counterexample_exposed_boundary"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "After k := ptr2int A with only A exposed; both programs output [5].",
+    "nonvacuity_witness_lean": "Toy.Prov.int2ptrToCopy_beh_eq_nonvacuous",
+    "non_claims": [
+      "'p's allocation is live and exposed' alone does NOT suffice (R3b).",
+      "In-boundsness of p (base ≤ address < base + size, which includes B's start) is not enough: if an exposed live allocation A ends exactly where p's allocation B starts, then B's start is also A's one-past address and has two candidates; the fold then fails when later code moves the pointer back into A (Toy.Prov.roundTrip_fold_counterexample_exposed_base_pointer). Not proved here: an address strictly inside an allocation (interior: base < a < base + size) is never the one-past address of an adjacent live allocation. No fold theorem in this package is stated for interior-only addresses; the fold theorems assume the candidate condition hc directly.",
+      "The rewrite is the single instruction d := int2ptr k <-> d := p with k already holding p's address; it does not insert or delete the ptr2int that computed k (an inserted ptr2int would itself expose p's allocation).",
+      "Does not justify merging two int2ptr k instructions at an ambiguous address without candEqProvC.",
+      "Does not cover strict: there the round trip loses provenance (R3c).",
+      "Does not say the cast ptr2int that produced k may be removed: removing it changes exposure (table: DropUnusedPtr2int unsound in exposed).",
+      "This toy restricts int2ptr candidates to exposed live allocations whose closed range [base, base + size] contains the address (PNVI-ae-udi); MiniRust's int2ptr may pick any exposed provenance (or none) regardless of the address, so address-local side conditions such as candSubProvC/candEqProvC/provIsCandC do not carry over to MiniRust when another allocation is exposed and the pointer is later moved with wrapping offsets.",
+      "Rust 1.84.0's with_exposed_provenance documentation does not specify which exposed provenance is picked ('we cannot provide any guarantees about which provenance the resulting pointer will have'); the angelic choice used here is MiniRust's and PNVI-ae-udi's reading, not a guarantee of the Rust library documentation.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "P2318R0 (as above), on one-past integer-to-pointer casts: 'for PNVI-plain and PNVI-ae we follow the stricter semantics. PNVI-ae-udi, however, is designed to permit a cast of a one-past pointer to integer and back to recover the original provenance'; ambiguous cases are resolved by leaving 'the provenance of pointer values resulting from such casts unknown until the first operation (e.g. an access, pointer arithmetic, or pointer relational comparison) that disambiguates them', 'allowing one or the other (but not both) to be used, so long as that is done consistently'.",
+      "R. Jung. Pointers Are Complicated II, or: We need better language specs. Blog post, 14 December 2020, https://www.ralfj.de/blog/2020/12/14/provenance.html. Presents the three-step chain: integer substitution after iq == ip, removal of the int-ptr round trip on the one-past-the-end pointer, and provenance-based alias analysis; argues the round-trip removal is the incorrect step.",
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block').",
+      "R. Lepigre, M. Sammler, K. Memarian, R. Krebbers, D. Dreyer, P. Sewell. VIP: Verifying Real-World C Idioms with Integer-Pointer Casts. Proc. ACM Program. Lang. 6, POPL, Article 20 (January 2022). doi:10.1145/3498681. Source checked: author PDF https://iris-project.org/pdfs/2022-popl-vip.pdf. Introduces a construct that lets programmers state the intended provenance of an integer-pointer cast (copy_alloc_id); 'we prove VIP compatible with PNVI-ae-udi'; the RefinedC-VIP tool 'produces foundational proofs in Coq'."
+    ],
+    "design_question": "When an optimizer may fold or introduce integer-pointer round trips (inttoptr(ptrtoint p) vs p) under strict and exposed provenance."
+  },
+  {
+    "id": "R3b-roundtrip-fold-unsound-exposed-at-one-past-boundary",
+    "lean": [
+      "Toy.Prov.roundTrip_fold_counterexample_exposed_boundary",
+      "Toy.Prov.int2ptrToCopy_not_sound_exposed",
+      "Toy.Prov.roundTrip_fold_counterexample_exposed_base_pointer"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Matches the round-trip-removal step identified as incorrect in Jung (2020) and the user-disambiguation case of PNVI-ae-udi; here decidable instances, including one with an in-bounds base pointer.",
+    "plain_claim": "In the exposed model, folding int2ptr((int)p) into p is not a refinement even though p's allocation A is live, exposed by the cast, and contains p's address in its closed range: with p one past A's end and the adjacent B exposed, the source's cast can pick B and outputs [7] while the target's store through p is UB. The same happens for p = B's start (in bounds of B: base ≤ address < base + size holds with address = base) when A is exposed and later code moves the pointer back into A.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The r2bPreRT program pair satisfies Int2ptrToCopy and provIsCandC.",
+    "nonvacuity_witness_lean": "Toy.Prov.roundTrip_fold_counterexample_exposed_boundary",
+    "positive_control_lean": "Toy.Prov.roundTrip_fold_boundary_flat_strict",
+    "non_claims": [
+      "Does not say the fold is never sound in exposed (R2b, R3a give conditions).",
+      "The source's success depends on angelic resolution of the cast; under a demonic reading the source would be UB and the example would disappear.",
+      "Escape hatch: PNVI-ae (without -udi) gives a one-past integer an empty provenance (P2318R0); with half-open candidate ranges B's start has the unique candidate B and the base-pointer example disappears, at the cost of rejecting one-past round trips. Not modeled here.",
+      "In the flat model the same pair is a refinement, and in the strict model the source is UB (positive control).",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "P2318R0 (as above), on one-past integer-to-pointer casts: 'for PNVI-plain and PNVI-ae we follow the stricter semantics. PNVI-ae-udi, however, is designed to permit a cast of a one-past pointer to integer and back to recover the original provenance'; ambiguous cases are resolved by leaving 'the provenance of pointer values resulting from such casts unknown until the first operation (e.g. an access, pointer arithmetic, or pointer relational comparison) that disambiguates them', 'allowing one or the other (but not both) to be used, so long as that is done consistently'.",
+      "R. Jung. Pointers Are Complicated II, or: We need better language specs. Blog post, 14 December 2020, https://www.ralfj.de/blog/2020/12/14/provenance.html. Presents the three-step chain: integer substitution after iq == ip, removal of the int-ptr round trip on the one-past-the-end pointer, and provenance-based alias analysis; argues the round-trip removal is the incorrect step."
+    ],
+    "design_question": "When an optimizer may fold or introduce integer-pointer round trips (inttoptr(ptrtoint p) vs p) under strict and exposed provenance."
+  },
+  {
+    "id": "R3c-roundtrip-not-equivalent-strict",
+    "lean": [
+      "Toy.Prov.roundTrip_counterexample_strict",
+      "Toy.Prov.copyToInt2ptr_not_sound_strict"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "tier_justification": "Immediate from strict provenance (int2ptr yields no provenance); restated as a concrete program.",
+    "plain_claim": "In the strict model int2ptr(ptr2int p) is not interchangeable with p: introducing the round trip (the single-instruction rewrite d := p -> d := int2ptr k with k := (int)p computed earlier) turns a program that outputs [7] into a UB program, so CopyToInt2ptr is unsound in strict; in the exposed model the same pair has equal behaviour.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "r3Pre program pair.",
+    "nonvacuity_witness_lean": "Toy.Prov.roundTrip_counterexample_strict",
+    "positive_control_lean": "Toy.Prov.roundTrip_example_exposed",
+    "non_claims": [
+      "Says nothing about the fold direction (round trip -> p). In strict the fold is proved sound (table entry int2ptrToCopy_sound_strict, R6g), which relies on provenance-monotone decoding (R7b) and fails under a decoder that makes mixed-provenance pointer bytes UB (R7a).",
+      "The strict model's int2ptr corresponds to Rust's std::ptr::without_provenance(addr) (a pointer with no provenance), not to Rust's `as` casts: per the Rust 1.84.0 documentation, with_exposed_provenance 'is fully equivalent to addr as *const T', i.e. `as` casts follow the exposed model.",
+      "Strict-provenance APIs that keep the original pointer (Rust's p.with_addr(a)) or constructs that name the intended provenance (VIP's copy_alloc_id) avoid int2ptr altogether; they are not modeled.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "Rust standard library documentation, version 1.84.0: std::ptr::with_exposed_provenance (https://doc.rust-lang.org/1.84.0/std/ptr/fn.with_exposed_provenance.html) - 'This is fully equivalent to addr as *const T.'; 'The exact provenance that gets picked is not specified. The compiler will do its best to pick the \"right\" provenance for you (whatever that may be), but currently we cannot provide any guarantees about which provenance the resulting pointer will have - and therefore there is no definite specification for which memory the resulting pointer may access.'; 'If there is no previously \"exposed\" provenance that justifies the way the returned pointer will be used, the program has undefined behavior.' std::ptr::without_provenance (https://doc.rust-lang.org/1.84.0/std/ptr/fn.without_provenance.html) - 'Creates a pointer with the given address and no provenance.'; such pointers 'may be used for zero-sized memory accesses (if suitably aligned), but non-zero-sized memory accesses with a no-provenance pointer are UB.' pointer::addr ('the provenance of the pointer is discarded and not exposed').",
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`').",
+      "R. Lepigre, M. Sammler, K. Memarian, R. Krebbers, D. Dreyer, P. Sewell. VIP: Verifying Real-World C Idioms with Integer-Pointer Casts. Proc. ACM Program. Lang. 6, POPL, Article 20 (January 2022). doi:10.1145/3498681. Source checked: author PDF https://iris-project.org/pdfs/2022-popl-vip.pdf. Introduces a construct that lets programmers state the intended provenance of an integer-pointer cast (copy_alloc_id); 'we prove VIP compatible with PNVI-ae-udi'; the RefinedC-VIP tool 'produces foundational proofs in Coq'."
+    ],
+    "design_question": "When an optimizer may fold or introduce integer-pointer round trips (inttoptr(ptrtoint p) vs p) under strict and exposed provenance."
+  },
+  {
+    "id": "R4a-forwarding-across-cast-store-unsound-exposed-flat",
+    "lean": [
+      "Toy.Prov.forwardAcrossCast_counterexample",
+      "Toy.Prov.forwardAcrossCast_not_sound_exposed",
+      "Toy.Prov.forwardAcrossCast_not_sound_flat",
+      "Toy.Prov.forwardAcrossCast_counterexample_guessed_address",
+      "Toy.Prov.forwardAcrossCast_strict_src_ub"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "Folklore about inttoptr and alias analysis (Lee et al. 2018; Jung 2022); stated as a decidable counterexample, with the strict model's vacuity made explicit.",
+    "plain_claim": "Store-to-load forwarding across a store through r := int2ptr k (ForwardAcrossCast: the optimizer's heuristic that a freshly cast pointer r, as a register distinct from a, does not alias a) is not a refinement in the exposed model: with k := (int)A the cast picks A, the source outputs [9] and the target [5]; the same happens in the flat model. In the strict model, for every pair of programs src, tgt matching ForwardAcrossCast (hypothesis h of forwardAcrossCast_strict_src_ub), both src and tgt are UB; such pairs exist (r4Src / r4Tgt, forwardAcrossCast_example_refines_strict). Hence the strict-model soundness of this forwarding is vacuous: it holds only because every matching source is UB, and it says nothing about defined programs.",
+    "hypotheses": [
+      {
+        "name": "h : ForwardAcrossCast .strict src tgt (forwardAcrossCast_strict_src_ub)",
+        "purpose": "Restricts the universally quantified programs src and tgt to pairs that match the cast window in the strict model. The other four statements of this card are closed and have no hypotheses. Tightness witness class: a closed two-instruction program without casts, src = tgt = constObsProg = [.const 0 1, .obs 0], defined in strict (outputs [1]).",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.forwardAcrossCast_strict_src_ub_h_needed"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statements: r4Src / r4Tgt satisfy ForwardAcrossCast in the exposed and flat models, where both sources are defined (forwardAcrossCast_counterexample). forwardAcrossCast_strict_src_ub: the same pair satisfies its hypothesis h (ForwardAcrossCast .strict r4Src r4Tgt) and both sides are UB in strict (forwardAcrossCast_example_refines_strict). The strict-model soundness entry it yields is vacuous.",
+    "nonvacuity_witness_lean": [
+      "Toy.Prov.forwardAcrossCast_counterexample",
+      "Toy.Prov.forwardAcrossCast_example_refines_strict"
+    ],
+    "positive_control_lean": "Toy.Prov.forwardLoad_nonvacuous",
+    "non_claims": [
+      "In the strict model, the soundness of ForwardAcrossCast holds only vacuously: every program matching it is UB, because the window stores through the provenance-less result of int2ptr (forwardAcrossCast_strict_src_ub); replacing the load by anything would also 'refine'. The strict pair r4Src/r4Tgt is UB on both sides.",
+      "The positive control is the provenance-based criterion of R4c (sound in exposed when r and a have different provenance), not the strict model.",
+      "The variant forwardAcrossCast_counterexample_guessed_address casts the constant 16, which equals A's address only because the toy's allocator is deterministic. Under PNVI-ae-udi (P2318R0, pointer_from_integer_1ie.c) and under twin allocation (Lee et al. 2018, Theorem C.1) casting a guessed address is UB even after the allocation is exposed, so that variant does not transfer; the primary counterexample uses k := (int)A instead.",
+      "Does not show forwarding is wrong on most programs; one counterexample.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block').",
+      "R. Jung. Pointers Are Complicated III, or: Pointer-integer casts exposed. Blog post, 11 April 2022, https://www.ralfj.de/blog/2022/04/11/provenance-exposed.html. 'casting a pointer to an integer has a side-effect, and that side-effect has to be preserved even if we don't care about the result of the cast'; discusses pointer-to-integer transmutation via memcpy or unions.",
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "P2318R0 (as above), discussion of pointer_from_integer_1ie.c: casting a guessed constant address is UB even after the storage instance is exposed - 'if j is exposed, as in the example on the right, these models still make it UB, now for the same reason as PNVI-plain' (allocation addresses are chosen nondeterministically)."
+    ],
+    "design_question": "Whether provenance-based alias analysis may treat pointers obtained from integers as non-aliasing, and what exposure information it needs."
+  },
+  {
+    "id": "R4b-dse-across-cast-load-unsound-exposed-flat",
+    "lean": [
+      "Toy.Prov.dseAcrossCast_counterexample",
+      "Toy.Prov.dseAcrossCast_not_sound_exposed",
+      "Toy.Prov.dseAcrossCast_not_sound_flat",
+      "Toy.Prov.dseAcrossCast_strict_src_ub"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "As R4a, for dead-store elimination.",
+    "plain_claim": "Deleting store a v before x := load r; store a w, where r := int2ptr k (DSEAcrossCast), is not a refinement in the exposed model (with k := (int)A the load reads A; the source outputs [5], the target [1]) nor in the flat model. In the strict model, for every pair of programs src, tgt matching DSEAcrossCast (hypothesis h of dseAcrossCast_strict_src_ub), both src and tgt are UB; such pairs exist (r4dSrc / r4dTgt, dseAcrossCast_example_refines_strict). Hence the strict-model soundness of this dead-store elimination is vacuous: it holds only because every matching source is UB, and it says nothing about defined programs.",
+    "hypotheses": [
+      {
+        "name": "h : DSEAcrossCast .strict src tgt (dseAcrossCast_strict_src_ub)",
+        "purpose": "Restricts the universally quantified programs src and tgt to pairs that match the cast window in the strict model. The other three statements of this card are closed and have no hypotheses. Tightness witness class: a closed two-instruction program without casts, src = tgt = constObsProg = [.const 0 1, .obs 0], defined in strict (outputs [1]).",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.dseAcrossCast_strict_src_ub_h_needed"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statements: r4dSrc / r4dTgt satisfy DSEAcrossCast in the exposed and flat models, where both sources are defined (dseAcrossCast_counterexample). dseAcrossCast_strict_src_ub: the same pair satisfies its hypothesis h (DSEAcrossCast .strict r4dSrc r4dTgt) and both sides are UB in strict (dseAcrossCast_example_refines_strict). The strict-model soundness entry it yields is vacuous.",
+    "nonvacuity_witness_lean": [
+      "Toy.Prov.dseAcrossCast_counterexample",
+      "Toy.Prov.dseAcrossCast_example_refines_strict"
+    ],
+    "positive_control_lean": "Toy.Prov.dse_nonvacuous",
+    "non_claims": [
+      "In the strict model, the soundness of DSEAcrossCast holds only vacuously: every program matching it is UB, because the window loads through the provenance-less result of int2ptr (dseAcrossCast_strict_src_ub). The strict pair r4dSrc/r4dTgt is UB on both sides.",
+      "The positive control is the provenance-based criterion of R4d, not the strict model.",
+      "Does not cover DSE across other kinds of intervening instructions.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block').",
+      "R. Jung. Pointers Are Complicated III, or: Pointer-integer casts exposed. Blog post, 11 April 2022, https://www.ralfj.de/blog/2022/04/11/provenance-exposed.html. 'casting a pointer to an integer has a side-effect, and that side-effect has to be preserved even if we don't care about the result of the cast'; discusses pointer-to-integer transmutation via memcpy or unions."
+    ],
+    "design_question": "Whether provenance-based alias analysis may treat pointers obtained from integers as non-aliasing, and what exposure information it needs."
+  },
+  {
+    "id": "R4c-forwarding-refines-exposed-if-provenances-differ",
+    "lean": "Toy.Prov.forwardLoad_refines_exposed_of_provNe_of_isInt",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Provenance-based alias analysis is standard and Coq-verified for block-based models without integer-to-pointer provenance recovery (CompCert); not found mechanized for an angelic exposed-provenance semantics where r may come from an int2ptr.",
+    "plain_claim": "In the exposed model, replacing x := load int a by x := v in the window store a v; store r w; load is a refinement provided that, in every reachable state before the window, r and a hold pointers of different provenance (hne) and v holds an integer (hv); r may come from an int2ptr.",
+    "hypotheses": [
+      {
+        "name": "hne : AllAfter .exposed pre (provNeC r a)",
+        "purpose": "Provenance-based non-aliasing; without it the cast pointer may carry a's provenance.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.forwardLoad_provNe_needed"
+      },
+      {
+        "name": "hv : AllAfter .exposed pre (isIntC v)",
+        "purpose": "The forwarded load is integer-typed: loading a stored pointer at integer type returns its address (and exposes it), not the pointer itself.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.forwardLoad_isInt_needed"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "r := int2ptr (int)B with A never exposed; both programs output [5].",
+    "nonvacuity_witness_lean": "Toy.Prov.forwardLoad_nonvacuous",
+    "non_claims": [
+      "Specific to the integer-typed load x := load int a; forwarding to a pointer-typed load of a stored pointer is a different statement, not made here.",
+      "All values have the toy's fixed two-byte width and the store and the load use the same base register a.",
+      "Stated for the exposed model only; the strict analogue is expected but not stated.",
+      "In the flat model no pointer has provenance, so provNeC can never hold there; nothing about flat follows.",
+      "Does not say how a compiler establishes hne; R4e gives one sufficient criterion (a's allocation not exposed at the cast).",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block').",
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "X. Leroy, S. Blazy. Formal Verification of a C-like Memory Model and Its Uses for Verifying Program Transformations. Journal of Automated Reasoning 41, 1-31 (2008). doi:10.1007/s10817-008-9099-0. Source checked: publisher page (abstract). Coq-verified block-based memory model used to prove semantic preservation for passes of the CompCert compiler; no integer-to-pointer provenance recovery."
+    ],
+    "design_question": "Whether provenance-based alias analysis may treat pointers obtained from integers as non-aliasing, and what exposure information it needs."
+  },
+  {
+    "id": "R4d-dse-refines-exposed-if-provenances-differ",
+    "lean": "Toy.Prov.dse_refines_exposed_of_provNe_of_ne",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "As R4c, for dead-store elimination.",
+    "plain_claim": "In the exposed model, deleting store a v before x := load ty r; store a w is a refinement provided that, in every reachable state before the window, r and a hold pointers of different provenance (hne) and the load does not overwrite register a (hx).",
+    "hypotheses": [
+      {
+        "name": "hne : AllAfter .exposed pre (provNeC r a)",
+        "purpose": "Otherwise the load may read the deleted store.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.dse_provNe_needed"
+      },
+      {
+        "name": "hx : x ≠ a",
+        "purpose": "If the load overwrites a, the second store goes elsewhere and the first is not dead.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.dse_ne_needed"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "r := int2ptr (int)B, A never exposed, B initialised; both programs output [1].",
+    "nonvacuity_witness_lean": "Toy.Prov.dse_nonvacuous",
+    "non_claims": [
+      "Fixed two-byte stores through the same base register a, so store a w overwrites exactly the bytes of store a v; if v is unset, store a v is UB in every execution and the deletion refines trivially.",
+      "Exposed model only; as in R4c nothing about flat follows.",
+      "Only this three-instruction window.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block').",
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "X. Leroy, S. Blazy. Formal Verification of a C-like Memory Model and Its Uses for Verifying Program Transformations. Journal of Automated Reasoning 41, 1-31 (2008). doi:10.1007/s10817-008-9099-0. Source checked: publisher page (abstract). Coq-verified block-based memory model used to prove semantic preservation for passes of the CompCert compiler; no integer-to-pointer provenance recovery."
+    ],
+    "design_question": "Whether provenance-based alias analysis may treat pointers obtained from integers as non-aliasing, and what exposure information it needs."
+  },
+  {
+    "id": "R4e-int2ptr-picks-only-exposed-candidates",
+    "lean": [
+      "Toy.Prov.int2ptr_exposed_result",
+      "Toy.Prov.int2ptr_strict_result",
+      "Toy.Prov.int2ptr_result_provNe_of_not_exposed"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Restates the definition of the exposed-model cast and the strict cast, plus the one-step consequence used as the side condition of R4c/R4d.",
+    "plain_claim": "When register k holds an integer n, every result of d := int2ptr k in the exposed model is a pointer with address n whose provenance, if any, is a candidate (exposed, live, n within its closed range [base, base + size]); in the strict model the only result is the pointer with address n and no provenance. Consequently, if a register a different from the destination (d ≠ a) holds a pointer y whose allocation A is not exposed at the cast, every successor of d := int2ptr k in the exposed model satisfies provNeC d a (the side condition of R4c/R4d).",
+    "hypotheses": [
+      {
+        "name": "hk : s.regs k = some (.int a) (int2ptr_exposed_result, int2ptr_strict_result)",
+        "purpose": "Otherwise the cast is UB.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Prov.int2ptr_exposed_result_hk_needed",
+          "Toy.Prov.int2ptr_strict_result_hk_needed"
+        ]
+      },
+      {
+        "name": "hk : s.regs k = some (.int n) (int2ptr_result_provNe_of_not_exposed)",
+        "purpose": "Otherwise the cast is UB and its only successor is none, which is not a state satisfying provNeC.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.int2ptr_result_provNe_hk_needed"
+      },
+      {
+        "name": "ha : s.regs a = some (.ptr y) (int2ptr_result_provNe_of_not_exposed)",
+        "purpose": "provNeC d a requires register a to hold a pointer; ha also ties y (the pointer named in hA) to register a.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.int2ptr_result_provNe_ha_needed"
+      },
+      {
+        "name": "hA : y.prov = some A (int2ptr_result_provNe_of_not_exposed)",
+        "purpose": "Ties the unexposed allocation A of hnot to a's pointer; if a's pointer has another (exposed) provenance, the cast may pick that provenance.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.int2ptr_result_provNe_hA_needed"
+      },
+      {
+        "name": "hnot : A ∉ s.exposed (int2ptr_result_provNe_of_not_exposed)",
+        "purpose": "If a's allocation is exposed (and contains the address), the cast may pick it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.int2ptr_result_provNe_hnot_needed"
+      },
+      {
+        "name": "hda : d ≠ a (int2ptr_result_provNe_of_not_exposed)",
+        "purpose": "If the cast writes register a itself, provNeC a a compares a register with itself and is false.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.int2ptr_result_provNe_hda_needed"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "After A, B adjacent and both exposed, register 3 holds 18 and the exposed cast has two successors; for the consequence, in the state after alloc A; alloc B; k := (int)B (A never exposed), all five hypotheses hold for d = 5, k = 2, a = 0, y = A's pointer, and every successor of the cast satisfies provNeC 5 0.",
+    "nonvacuity_witness_lean": [
+      "Toy.Prov.int2ptr_result_nonvacuous",
+      "Toy.Prov.int2ptr_result_provNe_nonvacuous"
+    ],
+    "non_claims": [
+      "Pointer-typed loads of integer bytes also go through castToPtr; this card states only the int2ptr instruction.",
+      "Does not say an exposed-model int2ptr is defined or useful: with no candidate the result has no provenance.",
+      "This toy restricts int2ptr candidates to exposed live allocations whose closed range [base, base + size] contains the address (PNVI-ae-udi); MiniRust's int2ptr may pick any exposed provenance (or none) regardless of the address, so address-local side conditions such as candSubProvC/candEqProvC/provIsCandC do not carry over to MiniRust when another allocation is exposed and the pointer is later moved with wrapping offsets.",
+      "Rust 1.84.0's with_exposed_provenance documentation does not specify which exposed provenance is picked ('we cannot provide any guarantees about which provenance the resulting pointer will have'); the angelic choice used here is MiniRust's and PNVI-ae-udi's reading, not a guarantee of the Rust library documentation.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "Rust standard library documentation, version 1.84.0: std::ptr::with_exposed_provenance (https://doc.rust-lang.org/1.84.0/std/ptr/fn.with_exposed_provenance.html) - 'This is fully equivalent to addr as *const T.'; 'The exact provenance that gets picked is not specified. The compiler will do its best to pick the \"right\" provenance for you (whatever that may be), but currently we cannot provide any guarantees about which provenance the resulting pointer will have - and therefore there is no definite specification for which memory the resulting pointer may access.'; 'If there is no previously \"exposed\" provenance that justifies the way the returned pointer will be used, the program has undefined behavior.' std::ptr::without_provenance (https://doc.rust-lang.org/1.84.0/std/ptr/fn.without_provenance.html) - 'Creates a pointer with the given address and no provenance.'; such pointers 'may be used for zero-sized memory accesses (if suitably aligned), but non-zero-sized memory accesses with a no-provenance pointer are UB.' pointer::addr ('the provenance of the pointer is discarded and not exposed').",
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`')."
+    ],
+    "design_question": "Whether provenance-based alias analysis may treat pointers obtained from integers as non-aliasing, and what exposure information it needs."
+  },
+  {
+    "id": "R5a-integer-load-of-pointer-bytes-strips-or-exposes",
+    "lean": [
+      "Toy.Prov.load_int_of_ptrFrags",
+      "Toy.Prov.decodeInt_ptrFrags",
+      "Toy.Prov.byteLoadAsInt_strict_strips_exposed_exposes"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "PNVI-ae's 'read (at non-pointer type) of the representation' exposure rule and MiniRust's stripping integer decode, made precise in one toy.",
+    "plain_claim": "Loading a stored pointer's two bytes at integer type yields the pointer's address as a provenance-free integer and records its provenance as exposed, in every model; in strict that exposure is inert, so casting the integer back gives a pointer that cannot be used (UB), while in exposed the load is what lets a later int2ptr (even of a guessed constant) pick the allocation again.",
+    "hypotheses": [
+      {
+        "name": "hr : s.regs r = some (.ptr x)",
+        "purpose": "The load's address register must hold a pointer.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.load_int_of_ptrFrags_hr_needed"
+      },
+      {
+        "name": "hacc : canAccess m s x 2 = true",
+        "purpose": "The access must be allowed (live allocation, in bounds, provenance in strict/exposed).",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.load_int_of_ptrFrags_hacc_needed"
+      },
+      {
+        "name": "h0 : s.mem x.addr = .ptrFrag p 0",
+        "purpose": "The first byte must be fragment 0 of a pointer.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.load_int_of_ptrFrags_h0_needed"
+      },
+      {
+        "name": "h1 : s.mem (x.addr + 1) = .ptrFrag p 1",
+        "purpose": "The second byte must be fragment 1 of a pointer.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.load_int_of_ptrFrags_h1_needed"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "r5State: B holds the pointer A and is accessible; program-level: r5aProg, r5aGuess, r5aGuessAfterLoad.",
+    "nonvacuity_witness_lean": "Toy.Prov.load_int_of_ptrFrags_nonvacuous",
+    "non_claims": [
+      "Rust does not behave like the exposed model here: per MiniRust (commit cited) ptr-to-int transmutation strips provenance without exposing (an open question there); Rust's byte-level reinterpretation corresponds to the strict column.",
+      "Memory holds symbolic two-byte fragments (intFrag n i | ptrFrag p i), not u8 bytes: any load whose two bytes are not the fragments 0 and 1 of one integer, or pointer fragments 0 and 1 with a common address, is UB - in particular partial, misaligned, and mixed integer/pointer reads. MiniRust (any initialized bytes decode at integer type), C character-type reads, and zerocopy-style byte casts define such reads; they are not modeled.",
+      "Does not model C's effective-type or strict-aliasing rules.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "P2318R0 (as above), definition of PNVI-ae: 'A storage instance is deemed exposed by a conversion of a pointer to it to an integer type, by a read (at non-pointer type) of the representation of the pointer, or by an output of the pointer using \"%p\".'",
+      "R. Jung. Pointers Are Complicated III, or: Pointer-integer casts exposed. Blog post, 11 April 2022, https://www.ralfj.de/blog/2022/04/11/provenance-exposed.html. 'casting a pointer to an integer has a side-effect, and that side-effect has to be preserved even if we don't care about the result of the cast'; discusses pointer-to-integer transmutation via memcpy or unions.",
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`').",
+      "R. Jung. Pointers Are Complicated, or: What's in a Byte? Blog post, 24 July 2018, https://www.ralfj.de/blog/2018/07/24/pointers-and-bytes.html. Abstract bytes that carry pointer fragments with provenance.",
+      "F. Besson, S. Blazy, P. Wilke. CompCertS: A Memory-Aware Verified C Compiler Using a Pointer as Integer Semantics. Journal of Automated Reasoning 63, 369-392 (2019). doi:10.1007/s10817-018-9496-y. Source checked: publisher page (abstract). A verified compiler whose memory model lets 'the binary representation of pointers ... be manipulated much like integers'."
+    ],
+    "design_question": "What a byte-level memory must record so that transmute-style pointer/integer reinterpretation (as performed by zerocopy-like byte casts) has a defined meaning under each provenance model."
+  },
+  {
+    "id": "R5b-memcpy-copies-abstract-bytes-and-provenance",
+    "lean": [
+      "Toy.Prov.memcpy_copies_abstract_bytes",
+      "Toy.Prov.memcpy_frame",
+      "Toy.Prov.memcpy_preserves_provenance_example",
+      "Toy.Prov.intRoundTrip_out_of_range_example"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Byte copies preserving pointer fragments is the standard design (MiniRust, PNVI's memcpy rule, CompCert's pointer fragments); restated.",
+    "plain_claim": "In every model, a defined memcpy d r n makes each of the n destination bytes equal to the corresponding source byte of the pre-state, abstract byte for abstract byte (so pointer fragments and their provenance are copied), and leaves every byte outside the destination range unchanged; a pointer copied this way is usable with no cast, even when it points outside its allocation's range and is moved back with wrapping offsets.",
+    "hypotheses": [
+      {
+        "name": "hd : s.regs d = some (.ptr x) (memcpy_copies_abstract_bytes)",
+        "purpose": "Names the destination pointer; with a different x the bytes at x are not the copy. Tightness witness class: the concrete state r5State (allocations A, B, C), exposed model, s' := r5Succ, x = A while d holds C.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.memcpy_copies_hd_needed"
+      },
+      {
+        "name": "hr : s.regs r = some (.ptr y) (memcpy_copies_abstract_bytes)",
+        "purpose": "Names the source pointer; with a different y the copied bytes are not y's. Tightness witness class: r5State, exposed model, s' := r5Succ, y = A while r holds B.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.memcpy_copies_hr_needed"
+      },
+      {
+        "name": "hs : some s' ∈ step m s (.memcpy d r n) (memcpy_copies_abstract_bytes)",
+        "purpose": "s' must be the successor of the memcpy; an arbitrary s' (e.g. s itself) does not contain the copy. Tightness witness class: r5State with s' := r5State (no copy performed).",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.memcpy_copies_hs_needed"
+      },
+      {
+        "name": "hd : s.regs d = some (.ptr x) (memcpy_frame)",
+        "purpose": "Names the destination pointer; the frame is stated relative to x. Tightness witness class: r5State, exposed model, s' := r5Succ, x = A (at 16) while d holds C (at 20); C's changed byte at 20 lies outside [16, 18).",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.memcpy_frame_hd_needed"
+      },
+      {
+        "name": "hr : s.regs r = some (.ptr y) (memcpy_frame)",
+        "purpose": "Not needed: the conclusion does not mention y, and a defined memcpy already forces register r to hold some pointer; memcpy_frame_of_hd_hs proves the same conclusion from hd and hs alone.",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hs : some s' ∈ step m s (.memcpy d r n) (memcpy_frame)",
+        "purpose": "s' must be the successor of the memcpy; an arbitrary s' may differ from s outside the destination range. Tightness witness class: r5State, x = C, y = B, s' := r5WrongDst (B's bytes written over A instead of C), which differs from r5State at 16, outside [20, 22).",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.memcpy_frame_hs_needed"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "r5State: memcpy C B 2 has the successor r5Succ in every model; program level: r5bProg defined in strict and exposed.",
+    "nonvacuity_witness_lean": "Toy.Prov.memcpy_copies_abstract_bytes_nonvacuous",
+    "non_claims": [
+      "memcpy here reads all source bytes before writing (memmove semantics).",
+      "A byte-wise copy written as a loop of integer-typed loads and stores is NOT memcpy in this toy; it is a value-level round trip (R5c).",
+      "The out-of-range example forms A + 10 with the toy's wrapping offset (Rust wrapping_offset-like, no bounds check); in ISO C and PNVI-ae-udi forming such a pointer is already UB, so that example has no C counterpart. The copied pointer is used only after moving it back into [base, base + size).",
+      "memcpy d r 0 still checks canAccess for both pointers (provenance required) in strict/exposed, unlike Rust, where zero-sized accesses need no provenance.",
+      "Memory holds symbolic two-byte fragments (intFrag n i | ptrFrag p i), not u8 bytes: any load whose two bytes are not the fragments 0 and 1 of one integer, or pointer fragments 0 and 1 with a common address, is UB - in particular partial, misaligned, and mixed integer/pointer reads. MiniRust (any initialized bytes decode at integer type), C character-type reads, and zerocopy-style byte casts define such reads; they are not modeled.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`').",
+      "R. Jung. Pointers Are Complicated, or: What's in a Byte? Blog post, 24 July 2018, https://www.ralfj.de/blog/2018/07/24/pointers-and-bytes.html. Abstract bytes that carry pointer fragments with provenance.",
+      "X. Leroy, S. Blazy. Formal Verification of a C-like Memory Model and Its Uses for Verifying Program Transformations. Journal of Automated Reasoning 41, 1-31 (2008). doi:10.1007/s10817-008-9099-0. Source checked: publisher page (abstract). Coq-verified block-based memory model used to prove semantic preservation for passes of the CompCert compiler; no integer-to-pointer provenance recovery.",
+      "Rust standard library documentation, version 1.84.0: std::ptr::with_exposed_provenance (https://doc.rust-lang.org/1.84.0/std/ptr/fn.with_exposed_provenance.html) - 'This is fully equivalent to addr as *const T.'; 'The exact provenance that gets picked is not specified. The compiler will do its best to pick the \"right\" provenance for you (whatever that may be), but currently we cannot provide any guarantees about which provenance the resulting pointer will have - and therefore there is no definite specification for which memory the resulting pointer may access.'; 'If there is no previously \"exposed\" provenance that justifies the way the returned pointer will be used, the program has undefined behavior.' std::ptr::without_provenance (https://doc.rust-lang.org/1.84.0/std/ptr/fn.without_provenance.html) - 'Creates a pointer with the given address and no provenance.'; such pointers 'may be used for zero-sized memory accesses (if suitably aligned), but non-zero-sized memory accesses with a no-provenance pointer are UB.' pointer::addr ('the provenance of the pointer is discarded and not exposed')."
+    ],
+    "design_question": "What a byte-level memory must record so that transmute-style pointer/integer reinterpretation (as performed by zerocopy-like byte casts) has a defined meaning under each provenance model.",
+    "corollaries_lean": [
+      "Toy.Prov.memcpy_frame_of_hd_hs"
+    ]
+  },
+  {
+    "id": "R5c-integer-value-roundtrip-does-not-carry-provenance",
+    "lean": [
+      "Toy.Prov.load_ptr_of_intFrags",
+      "Toy.Prov.decodePtr_intFrags",
+      "Toy.Prov.intRoundTrip_in_range_example",
+      "Toy.Prov.intRoundTrip_out_of_range_example",
+      "Toy.Prov.intRoundTrip_boundary_example"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Contrasts the PNVI-style re-derivation with strict loss of provenance in one toy; the boundary case is not found stated elsewhere as a program.",
+    "plain_claim": "Loading, at pointer type, the two fragments of a stored integer n converts n exactly as int2ptr would (load_ptr_of_intFrags). Hence copying a pointer through an integer value (load at integer type, store the integer, load at pointer type) does not carry its provenance: in strict the reloaded pointer has none; in exposed a provenance is re-derived from the exposed set, which on the three proved example programs coincides with the original (in-range pointer, unique candidate), is absent (pointer outside every allocation's range), or is a different allocation (one-past-the-end boundary).",
+    "hypotheses": [
+      {
+        "name": "hr : s.regs r = some (.ptr x)",
+        "purpose": "The load's address register must hold a pointer.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.load_ptr_of_intFrags_hr_needed"
+      },
+      {
+        "name": "hacc : canAccess m s x 2 = true",
+        "purpose": "The access must be allowed.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.load_ptr_of_intFrags_hacc_needed"
+      },
+      {
+        "name": "h0 : s.mem x.addr = .intFrag n 0",
+        "purpose": "Byte 0 must be fragment 0 of the integer n; otherwise (here an uninitialised byte) the pointer-typed load is UB, not castToPtr's result.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.load_ptr_of_intFrags_h0_needed"
+      },
+      {
+        "name": "h1 : s.mem (x.addr + 1) = .intFrag n 1",
+        "purpose": "As h0, for byte 1.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.load_ptr_of_intFrags_h1_needed"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "r5IntState: B holds the integer 16 (A's exposed address); program level: r5cProg, r5cOutInt, r5cBndInt.",
+    "nonvacuity_witness_lean": "Toy.Prov.load_ptr_of_intFrags_nonvacuous",
+    "non_claims": [
+      "Beyond the step-level lemma, only three concrete programs are proved; no universally quantified program equivalence about value-level round trips is stated.",
+      "In exposed the round trip is sometimes MORE defined than the original pointer (boundary), so 'loses provenance' is not the same as 'adds UB'.",
+      "Pointer-typed loads of integer bytes act as int2ptr in exposed (PNVI-ae-udi reading); in Rust/MiniRust they yield no provenance.",
+      "MiniRust's explicit int2ptr may pick any exposed provenance regardless of the address, so an explicit cast round trip of an out-of-range pointer can recover its provenance there, unlike r5cOutInt here.",
+      "The out-of-range examples rely on the toy's wrapping offset (forming A + 10 is UB in ISO C / PNVI-ae-udi).",
+      "Memory holds symbolic two-byte fragments (intFrag n i | ptrFrag p i), not u8 bytes: any load whose two bytes are not the fragments 0 and 1 of one integer, or pointer fragments 0 and 1 with a common address, is UB - in particular partial, misaligned, and mixed integer/pointer reads. MiniRust (any initialized bytes decode at integer type), C character-type reads, and zerocopy-style byte casts define such reads; they are not modeled.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`').",
+      "F. Besson, S. Blazy, P. Wilke. CompCertS: A Memory-Aware Verified C Compiler Using a Pointer as Integer Semantics. Journal of Automated Reasoning 63, 369-392 (2019). doi:10.1007/s10817-018-9496-y. Source checked: publisher page (abstract). A verified compiler whose memory model lets 'the binary representation of pointers ... be manipulated much like integers'."
+    ],
+    "design_question": "What a byte-level memory must record so that transmute-style pointer/integer reinterpretation (as performed by zerocopy-like byte casts) has a defined meaning under each provenance model."
+  },
+  {
+    "id": "R6a-exposed-refines-strict",
+    "lean": "Toy.Prov.exposed_semRefines_strict",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Informally known that exposed provenance only adds definedness over strict (VIP proves a related compatibility result for PNVI-ae-udi on paper and verifies RefinedC-VIP in Coq); not found mechanized for this pair of models.",
+    "plain_claim": "For every program, the exposed model's behaviour refines the strict model's: either the program has UB in strict, or every exposed behaviour is a strict behaviour (strict has more UB).",
+    "hypotheses": [],
+    "depth": "substantive",
+    "nonvacuity_witness": "No hypotheses; the ordering is strict (R6d).",
+    "nonvacuity_witness_lean": "Toy.Prov.model_orderings_strict",
+    "non_claims": [
+      "The literal reverse containment 'every strict behaviour is an exposed behaviour' is false when the strict behaviour is UB (R6d).",
+      "Does not imply that optimizations sound in one model are sound in the other (R6e, R6g).",
+      "Relies on provenance-monotone decoding of pointer bytes (R7b): mixed-provenance pointer fragments with a common address decode without UB. Under a decoder that makes such bytes UB the statement is false (R7a, eqProvDecode_exposed_not_semRefines_strict).",
+      "Depends on int2ptr of an address with no candidate producing a pointer without provenance whose use, not creation, is UB (as with Rust's without_provenance); a semantics that makes the cast itself UB is not covered.",
+      "Rust 1.84.0's with_exposed_provenance documentation does not specify which exposed provenance is picked ('we cannot provide any guarantees about which provenance the resulting pointer will have'); the angelic choice used here is MiniRust's and PNVI-ae-udi's reading, not a guarantee of the Rust library documentation.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "Rust standard library documentation, version 1.84.0: std::ptr::with_exposed_provenance (https://doc.rust-lang.org/1.84.0/std/ptr/fn.with_exposed_provenance.html) - 'This is fully equivalent to addr as *const T.'; 'The exact provenance that gets picked is not specified. The compiler will do its best to pick the \"right\" provenance for you (whatever that may be), but currently we cannot provide any guarantees about which provenance the resulting pointer will have - and therefore there is no definite specification for which memory the resulting pointer may access.'; 'If there is no previously \"exposed\" provenance that justifies the way the returned pointer will be used, the program has undefined behavior.' std::ptr::without_provenance (https://doc.rust-lang.org/1.84.0/std/ptr/fn.without_provenance.html) - 'Creates a pointer with the given address and no provenance.'; such pointers 'may be used for zero-sized memory accesses (if suitably aligned), but non-zero-sized memory accesses with a no-provenance pointer are UB.' pointer::addr ('the provenance of the pointer is discarded and not exposed').",
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`').",
+      "R. Lepigre, M. Sammler, K. Memarian, R. Krebbers, D. Dreyer, P. Sewell. VIP: Verifying Real-World C Idioms with Integer-Pointer Casts. Proc. ACM Program. Lang. 6, POPL, Article 20 (January 2022). doi:10.1145/3498681. Source checked: author PDF https://iris-project.org/pdfs/2022-popl-vip.pdf. Introduces a construct that lets programmers state the intended provenance of an integer-pointer cast (copy_alloc_id); 'we prove VIP compatible with PNVI-ae-udi'; the RefinedC-VIP tool 'produces foundational proofs in Coq'."
+    ],
+    "design_question": "Whether choosing a stricter or more permissive provenance model lets optimization soundness results be reused."
+  },
+  {
+    "id": "R6b-flat-refines-exposed",
+    "lean": "Toy.Prov.flat_semRefines_exposed",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Kang et al. (2015) verify in Coq a compiler from their quasi-concrete model to a concrete model that eliminates dead casts; not found mechanized for this exposed model.",
+    "plain_claim": "For every program, the flat model's behaviour refines the exposed model's: either the program has UB in exposed, or every flat behaviour is an exposed behaviour.",
+    "hypotheses": [],
+    "depth": "substantive",
+    "nonvacuity_witness": "No hypotheses; the ordering is strict (R6d).",
+    "nonvacuity_witness_lean": "Toy.Prov.model_orderings_strict",
+    "non_claims": [
+      "Relies on strictly positive, disjoint allocations (alloc 0 is UB; bump allocation), on unbounded memory (no out-of-memory on alloc or ptr2int), and on a deterministic allocator.",
+      "Does not imply optimizations transfer between flat and exposed (R6g: forwarding across a cast is unsound in both, dead-cast elimination sound in flat only).",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "J. Kang, C.-K. Hur, W. Mansky, D. Garbuzov, S. Zdancewic, V. Vafeiadis. A Formal C Memory Model Supporting Integer-Pointer Casts. PLDI 2015. doi:10.1145/2737924.2738005. Source checked: author-hosted PDF https://sf.snu.ac.kr/publications/intptrcast.pdf. Quasi-concrete model, 'fully formalized in Coq'; 'In the quasi-concrete model, casting a pointer to an integer has a side effect on memory, and we cannot eliminate cast operations. In the fully concrete model, however, a cast from pointer to integer is a no-op'; Section 6.6 verifies in Coq a compiler from the quasi-concrete to the concrete model that eliminates dead casts. (Lee et al. 2018 note that this model does not support one-past-the-end round trips.)",
+      "C. Beck, I. Yoon, H. Chen, Y. Zakowski, S. Zdancewic. A Two-Phase Infinite/Finite Low-Level Memory Model. ICFP 2024 (Proc. ACM Program. Lang. 8); related DOI 10.1145/3674652 as listed on arXiv:2404.16143 (source checked: arXiv abstract page). Infinite and finite memory models of LLVM IR with pointer-integer casts, instantiated in the VIR semantics; justifies optimizations such as dead-alloca elimination."
+    ],
+    "design_question": "Whether choosing a stricter or more permissive provenance model lets optimization soundness results be reused."
+  },
+  {
+    "id": "R6c-exposed-defined-behaviours-coincide",
+    "lean": "Toy.Prov.exposed_beh_elements_equal",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "A consequence of angelic resolution and provenance-insensitive observation in this toy; not found stated.",
+    "plain_claim": "In the exposed model, angelic resolution never yields two different defined behaviours: for every program P, all elements of beh .exposed P are equal (at most one distinct outcome; the list may repeat it once per resolution).",
+    "hypotheses": [],
+    "depth": "substantive",
+    "nonvacuity_witness": "angelicProg has two executions, one UB and one outputting [7] (ex_runs_two_resolutions), and the single behaviour [7] (ex_beh_angelic_pos); dupBehProg has two equal behaviours (exposed_beh_may_repeat).",
+    "nonvacuity_witness_lean": [
+      "Toy.Prov.exposed_beh_may_repeat",
+      "Toy.Prov.ex_runs_two_resolutions",
+      "Toy.Prov.ex_beh_angelic_pos"
+    ],
+    "non_claims": [
+      "Bounds the number of distinct outcomes, not the length of the list: beh keeps one entry per UB-free resolution (exposed_beh_may_repeat has length 2).",
+      "Depends on the toy's deterministic bump allocator (no allocation-address nondeterminism), on strictly positive disjoint allocations (alloc 0 is UB), on deterministic address-only pointer equality (semantics with nondeterministic pointer equality are not covered), and on obs printing addresses only (a language that can observe provenance without UB is not covered).",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`').",
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf)."
+    ],
+    "design_question": "Whether choosing a stricter or more permissive provenance model lets optimization soundness results be reused."
+  },
+  {
+    "id": "R6d-orderings-are-strict",
+    "lean": "Toy.Prov.model_orderings_strict",
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Concrete evaluations.",
+    "plain_claim": "A round trip of A's address followed by a store is defined in exposed and UB in strict, and a store through A's one-past-the-end pointer into B is defined in flat and UB in exposed; neither reverse ordering holds. Together with R6a and R6b, flat is strictly more defined than exposed, which is strictly more defined than strict.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "r6StrictUB, r6ExposedUB.",
+    "nonvacuity_witness_lean": "Toy.Prov.model_orderings_strict",
+    "non_claims": [
+      "Two programs; says nothing quantitative about how much more UB a model has.",
+      "The 'strictly ordered' reading uses R6a and R6b, which are general theorems; this card itself only proves the two separations.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf)."
+    ],
+    "design_question": "Whether choosing a stricter or more permissive provenance model lets optimization soundness results be reused."
+  },
+  {
+    "id": "R6e-refinement-transfer-principles",
+    "lean": [
+      "Toy.Prov.refines_exposed_of_refines_strict_of_src_semRefines",
+      "Toy.Prov.refines_strict_of_refines_exposed_of_tgt_semRefines",
+      "Toy.Prov.refines_exposed_of_refines_strict_core",
+      "Toy.Prov.refines_strict_of_refines_exposed_core"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Order-theoretic consequence of R6a (a few lines); restated.",
+    "plain_claim": "A refinement in strict is a refinement in exposed whenever every strict behaviour of the source is an exposed behaviour of it (SemRefines .strict .exposed src); a refinement in exposed is a refinement in strict whenever every strict behaviour of the target is an exposed behaviour of it (SemRefines .strict .exposed tgt). The core lemmas take the needed instance of R6a as an explicit hypothesis and are fully proved; the two principles discharge it with R6a.",
+    "hypotheses": [
+      {
+        "name": "h : Refines .strict tgt src (resp. Refines .exposed tgt src)",
+        "purpose": "The refinement being transferred.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.transfer_refines_needed"
+      },
+      {
+        "name": "hsrc : SemRefines .strict .exposed src (strict -> exposed)",
+        "purpose": "The source must not rely on exposed provenance: the boundary fold of R3b is a refinement in strict only because the source is UB there.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.transfer_to_exposed_src_agreement_needed"
+      },
+      {
+        "name": "htgt : SemRefines .strict .exposed tgt (exposed -> strict)",
+        "purpose": "The target must not rely on exposed provenance: the round-trip introduction of R3c.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.transfer_to_strict_tgt_agreement_needed"
+      },
+      {
+        "name": "hord : SemRefines .exposed .strict tgt (resp. src) (core lemmas only)",
+        "purpose": "An instance of R6a; derivable from R6a for every program, so it is not a hypothesis of the two principles.",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "A cast-free substitution pair (and dupBehProg, whose behaviour lists differ in length but satisfy the SemRefines hypotheses).",
+    "nonvacuity_witness_lean": "Toy.Prov.transfer_nonvacuous",
+    "non_claims": [
+      "Each principle uses only its own side hypothesis; they are listed together.",
+      "The side hypotheses are whole-program behavioural conditions on pre ++ window ++ post, not local syntactic properties of the rewritten window (DropUnusedPtr2int has no int2ptr in its window, yet post can make the models differ).",
+      "The two principles use R6a for the other program; the core lemmas take that R6a instance as an explicit hypothesis (hord) and do not depend on R6a.",
+      "The hypotheses are weaker than list equality of behaviours (transfer_hyp_weaker_than_list_eq).",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block')."
+    ],
+    "design_question": "Whether choosing a stricter or more permissive provenance model lets optimization soundness results be reused.",
+    "corollaries_lean": [
+      "Toy.Prov.transfer_hyp_weaker_than_list_eq"
+    ]
+  },
+  {
+    "id": "R6f-introduce-roundtrip-refines-exposed-if-candidate",
+    "lean": "Toy.Prov.copyToInt2ptr_refines_exposed_of_intIsAddrOf_of_provIsCand",
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "The precise form of 'the exposed set contains p's allocation, so int2ptr can recover it'; VIP's copy_alloc_id addresses the same need by naming the provenance explicitly.",
+    "plain_claim": "In the exposed model, replacing d := p by d := int2ptr k is a refinement provided that, in every reachable state at that point, k holds p's address (hk) and p's allocation is an int2ptr candidate for it (hc: exposed, live, address in its closed range); uniqueness is not needed in this direction.",
+    "hypotheses": [
+      {
+        "name": "hk : AllAfter .exposed pre (intIsAddrOfC k p)",
+        "purpose": "Ties the integer to p's address.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.copyToInt2ptr_intIsAddrOf_needed"
+      },
+      {
+        "name": "hc : AllAfter .exposed pre (provIsCandC p)",
+        "purpose": "If p's allocation was never exposed the cast cannot recover it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.copyToInt2ptr_provIsCand_needed"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "After k := ptr2int A.",
+    "nonvacuity_witness_lean": "Toy.Prov.copyToInt2ptr_refines_exposed_nonvacuous",
+    "non_claims": [
+      "The reverse direction (fold) needs uniqueness (R3b).",
+      "Unsound in strict (R3c).",
+      "The rewrite is the single instruction d := int2ptr k <-> d := p with k already holding p's address; it does not insert or delete the ptr2int that computed k (an inserted ptr2int would itself expose p's allocation).",
+      "Rust 1.84.0's with_exposed_provenance documentation does not specify which exposed provenance is picked ('we cannot provide any guarantees about which provenance the resulting pointer will have'); the angelic choice used here is MiniRust's and PNVI-ae-udi's reading, not a guarantee of the Rust library documentation.",
+      "This toy restricts int2ptr candidates to exposed live allocations whose closed range [base, base + size] contains the address (PNVI-ae-udi); MiniRust's int2ptr may pick any exposed provenance (or none) regardless of the address, so address-local side conditions such as candSubProvC/candEqProvC/provIsCandC do not carry over to MiniRust when another allocation is exposed and the pointer is later moved with wrapping offsets.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "ISO/IEC TS 6010:2025, Programming languages - C - A provenance-aware memory object model for C, edition 1.0, publication date 2025-05-15 (IEC webstore entry https://webstore.iec.ch/en/publication/107524). The normative text is not publicly available; statements about PNVI-ae-udi here are checked against the public draft J. Gustedt, P. Sewell, K. Memarian, V. B. F. Gomes, M. Uecker, A Provenance-aware Memory Object Model for C, Draft Technical Specification, WG21 P2318R0 / WG14 N2577 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2021/p2318r0.pdf).",
+      "Rust standard library documentation, version 1.84.0: std::ptr::with_exposed_provenance (https://doc.rust-lang.org/1.84.0/std/ptr/fn.with_exposed_provenance.html) - 'This is fully equivalent to addr as *const T.'; 'The exact provenance that gets picked is not specified. The compiler will do its best to pick the \"right\" provenance for you (whatever that may be), but currently we cannot provide any guarantees about which provenance the resulting pointer will have - and therefore there is no definite specification for which memory the resulting pointer may access.'; 'If there is no previously \"exposed\" provenance that justifies the way the returned pointer will be used, the program has undefined behavior.' std::ptr::without_provenance (https://doc.rust-lang.org/1.84.0/std/ptr/fn.without_provenance.html) - 'Creates a pointer with the given address and no provenance.'; such pointers 'may be used for zero-sized memory accesses (if suitably aligned), but non-zero-sized memory accesses with a no-provenance pointer are UB.' pointer::addr ('the provenance of the pointer is discarded and not exposed').",
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`').",
+      "R. Lepigre, M. Sammler, K. Memarian, R. Krebbers, D. Dreyer, P. Sewell. VIP: Verifying Real-World C Idioms with Integer-Pointer Casts. Proc. ACM Program. Lang. 6, POPL, Article 20 (January 2022). doi:10.1145/3498681. Source checked: author PDF https://iris-project.org/pdfs/2022-popl-vip.pdf. Introduces a construct that lets programmers state the intended provenance of an integer-pointer cast (copy_alloc_id); 'we prove VIP compatible with PNVI-ae-udi'; the RefinedC-VIP tool 'produces foundational proofs in Coq'."
+    ],
+    "design_question": "When an optimizer may fold or introduce integer-pointer round trips (inttoptr(ptrtoint p) vs p) under strict and exposed provenance."
+  },
+  {
+    "id": "R6g-optimization-soundness-table",
+    "lean": [
+      "Toy.Prov.substAddrEq_sound_flat",
+      "Toy.Prov.substAddrEq_not_sound_strict",
+      "Toy.Prov.substAddrEq_not_sound_exposed",
+      "Toy.Prov.substAddrEqInBounds_sound_all",
+      "Toy.Prov.substIntEq_sound_flat",
+      "Toy.Prov.substIntEq_not_sound_strict",
+      "Toy.Prov.substIntEq_not_sound_exposed",
+      "Toy.Prov.substSameVal_sound",
+      "Toy.Prov.int2ptrToCopy_sound_flat",
+      "Toy.Prov.int2ptrToCopy_sound_strict",
+      "Toy.Prov.int2ptrToCopy_not_sound_exposed",
+      "Toy.Prov.copyToInt2ptr_sound_flat",
+      "Toy.Prov.copyToInt2ptr_not_sound_strict",
+      "Toy.Prov.copyToInt2ptr_not_sound_exposed",
+      "Toy.Prov.copyToInt2ptrIfCand_sound_flat",
+      "Toy.Prov.copyToInt2ptrIfCand_not_sound_strict",
+      "Toy.Prov.copyToInt2ptrIfCand_sound_exposed",
+      "Toy.Prov.dropUnusedPtr2int_sound_flat",
+      "Toy.Prov.dropUnusedPtr2int_sound_strict",
+      "Toy.Prov.dropUnusedPtr2int_not_sound_exposed",
+      "Toy.Prov.forwardAcrossCast_not_sound_flat",
+      "Toy.Prov.forwardAcrossCast_sound_strict",
+      "Toy.Prov.forwardAcrossCast_not_sound_exposed",
+      "Toy.Prov.dseAcrossCast_not_sound_flat",
+      "Toy.Prov.dseAcrossCast_sound_strict",
+      "Toy.Prov.dseAcrossCast_not_sound_exposed",
+      "Toy.Prov.soundness_table_vacuous_cells",
+      "Toy.Prov.soundness_does_not_transfer_either_way",
+      "Toy.Prov.refines_does_not_transfer_either_way"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Each row is folklore in the provenance literature (several are Coq-verified in other models: Kang et al. 2015 for dead casts, Lee et al. 2018 for pointer GVN); the table with every entry a Lean theorem or decidable counterexample in one semantics is the contribution.",
+    "plain_claim": "For ten transformations and the three models (flat, strict, exposed), soundness is: SubstAddrEq ✓✗✗; SubstAddrEqInBounds ✓✓✓; SubstIntEq ✓✗✗; SubstSameVal ✓✓✓; Int2ptrToCopy (fold) ✓✓✗; CopyToInt2ptr (introduce) ✓✗✗; CopyToInt2ptrIfCand (introduce when p's allocation is a candidate) ✓✗✓; DropUnusedPtr2int ✓✓✗; ForwardAcrossCast ✗✓✗; DSEAcrossCast ✗✓✗. The table has 17 ✓ and 13 ✗ entries. 14 of the 17 ✓ entries are non-vacuous: each is inhabited by a pair in the relation whose source is defined in that model (soundness_table_nonvacuous). The other 3 ✓ entries are vacuous, holding only because every matching source is UB (soundness_table_vacuous_cells): CopyToInt2ptrIfCand in flat (no flat pointer carries the provenance its candidate condition requires), and ForwardAcrossCast and DSEAcrossCast in strict. A vacuous ✓ is not evidence that the transformation is safe on defined programs. Soundness transfers neither from strict to exposed (DropUnusedPtr2int) nor from exposed to strict (CopyToInt2ptrIfCand).",
+    "hypotheses": [],
+    "depth": "substantive",
+    "nonvacuity_witness": "Each ✗ entry is witnessed by a concrete pair satisfying the transformation's side conditions. Each ✓ entry except the three vacuous ones is inhabited by a concrete pair in the relation whose source is defined in that model, with its output evaluated (soundness_table_nonvacuous). The three vacuous ✓ entries (CopyToInt2ptrIfCand in flat, ForwardAcrossCast and DSEAcrossCast in strict) are inhabited only by pairs whose source is UB (soundness_table_vacuous_cells). The non-transfer pairs are evaluated in refines_does_not_transfer_either_way.",
+    "nonvacuity_witness_lean": [
+      "Toy.Prov.soundness_table_nonvacuous",
+      "Toy.Prov.refines_does_not_transfer_either_way"
+    ],
+    "non_claims": [
+      "The strict ✓ for ForwardAcrossCast and DSEAcrossCast is vacuous: every matching straight-line source is UB (forwardAcrossCast_strict_src_ub, dseAcrossCast_strict_src_ub); it says nothing about provenance-based alias analysis on defined strict programs.",
+      "The flat ✓ for CopyToInt2ptrIfCand is vacuous: in flat no reachable pointer has a provenance, so provIsCandC holds in no reachable state, and every matching source and target is UB (copyToInt2ptrIfCand_flat_src_ub). It says nothing about introducing casts on defined flat programs; that is the separate, non-vacuous entry CopyToInt2ptr in flat (✓). The non-transfer claim for CopyToInt2ptrIfCand concerns exposed and strict only.",
+      "The strict ✓ for Int2ptrToCopy relies on provenance-monotone decoding (R7b); it fails under a decoder that makes mixed-provenance pointer bytes UB (R7a).",
+      "Among the nine transformations without a candidate side condition, every row sound in exposed (SubstSameVal, SubstAddrEqInBounds) is also sound in strict; non-transfer from exposed to strict needs the exposure-dependent side condition of CopyToInt2ptrIfCand.",
+      "A ✗ is one counterexample program; it does not say the transformation is wrong on most programs.",
+      "The transformations are this package's definitions (fixed windows and semantic side conditions), not any compiler's passes. In particular SubstIntEq does not syntactically require the program to compare (int)p == (int)q.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "R. Jung. Pointers Are Complicated II, or: We need better language specs. Blog post, 14 December 2020, https://www.ralfj.de/blog/2020/12/14/provenance.html. Presents the three-step chain: integer substitution after iq == ip, removal of the int-ptr round trip on the one-past-the-end pointer, and provenance-based alias analysis; argues the round-trip removal is the incorrect step.",
+      "R. Jung. Pointers Are Complicated III, or: Pointer-integer casts exposed. Blog post, 11 April 2022, https://www.ralfj.de/blog/2022/04/11/provenance-exposed.html. 'casting a pointer to an integer has a side-effect, and that side-effect has to be preserved even if we don't care about the result of the cast'; discusses pointer-to-integer transmutation via memcpy or unions.",
+      "J. Lee, C.-K. Hur, R. Jung, Z. Liu, J. Regehr, N. P. Lopes. Reconciling High-Level Optimizations and Low-Level Code in LLVM. Proc. ACM Program. Lang. 2, OOPSLA, Article 125 (November 2018). doi:10.1145/3276495. Source checked: author-hosted PDF https://people.mpi-sws.org/~jung/twinsem/twinsem.pdf. Twin-allocation model for LLVM IR; Appendix C ('Coq formalization and proof', artifact https://github.com/snu-sf/llvmtwin-coq) proves in Coq, among others, Theorem C.1 ('Twin allocation forbids pointer guessing'), Theorem C.4 (ptrtoint/inttoptr can be moved across malloc and free) and Theorem C.5 ('Soundness of GVN for pointers', for the conditions of Section 5, which include 'p and q are logical pointers, and both are either dereferenceable or point to the same block').",
+      "K. Memarian, V. B. F. Gomes, B. Davis, S. Kell, A. Richardson, R. N. M. Watson, P. Sewell. Exploring C Semantics and Pointer Provenance. Proc. ACM Program. Lang. 3, POPL, Article 67 (2019). doi:10.1145/3290380. Also WG14 N2311. Source checked: Cerberus project page (https://www.cl.cam.ac.uk/~pes20/cerberus/), which lists authors, venue, article number and this DOI. Defines the PNVI-plain and PVI models and discusses one-past-the-end equality and pointer substitution; the exposure-based variants PNVI-ae and PNVI-ae-udi are from the later TS draft (see P2318R0).",
+      "J. Kang, C.-K. Hur, W. Mansky, D. Garbuzov, S. Zdancewic, V. Vafeiadis. A Formal C Memory Model Supporting Integer-Pointer Casts. PLDI 2015. doi:10.1145/2737924.2738005. Source checked: author-hosted PDF https://sf.snu.ac.kr/publications/intptrcast.pdf. Quasi-concrete model, 'fully formalized in Coq'; 'In the quasi-concrete model, casting a pointer to an integer has a side effect on memory, and we cannot eliminate cast operations. In the fully concrete model, however, a cast from pointer to integer is a no-op'; Section 6.6 verifies in Coq a compiler from the quasi-concrete to the concrete model that eliminates dead casts. (Lee et al. 2018 note that this model does not support one-past-the-end round trips.)",
+      "C. Beck, I. Yoon, H. Chen, Y. Zakowski, S. Zdancewic. A Two-Phase Infinite/Finite Low-Level Memory Model. ICFP 2024 (Proc. ACM Program. Lang. 8); related DOI 10.1145/3674652 as listed on arXiv:2404.16143 (source checked: arXiv abstract page). Infinite and finite memory models of LLVM IR with pointer-integer casts, instantiated in the VIR semantics; justifies optimizations such as dead-alloca elimination."
+    ],
+    "design_question": "Whether choosing a stricter or more permissive provenance model lets optimization soundness results be reused.",
+    "corollaries_lean": [
+      "Toy.Prov.copyToInt2ptrIfCand_flat_src_ub",
+      "Toy.Prov.not_copyToInt2ptrIfCand_flat_r3"
+    ]
+  },
+  {
+    "id": "R7a-identical-provenance-decoding-breaks-monotonicity",
+    "lean": [
+      "Toy.Prov.EqProvDecode.decodeEq_not_monotone",
+      "Toy.Prov.EqProvDecode.eqProvDecode_exposed_not_semRefines_strict",
+      "Toy.Prov.EqProvDecode.eqProvDecode_fold_not_refinement",
+      "Toy.Prov.EqProvDecode.eqProvDecode_transfer_fails",
+      "Toy.Prov.EqProvDecode.eqProvDecode_ptr_load_variants"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "MiniRust states monotonicity of decoding as a requirement and chooses 'no provenance' for mixed pointer bytes; the concrete program-level consequences for these model orderings and cast folds are not found stated.",
+    "plain_claim": "In the variant semantics where a pointer is decoded from two bytes only if both carry the identical pointer (same-address fragments with different provenances are UB), adding provenance can introduce UB: the exposed model does not refine the strict model (a program outputs [16] in strict and is UB in exposed), folding d := int2ptr k into d := p with k == (int)p is not a refinement in strict, R2b's fold fails in the case with no candidate, and both transfer principles of R6e fail. With this package's decoder (mixed provenance yields a pointer without provenance) the same programs are well behaved.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "tornProg and the r2bPreTorn fold pair.",
+    "nonvacuity_witness_lean": "Toy.Prov.EqProvDecode.eqProvDecode_exposed_not_semRefines_strict",
+    "positive_control_lean": "Toy.Prov.EqProvDecode.mainDecode_same_programs_ok",
+    "non_claims": [
+      "Concerns one alternative decoder in this toy; it does not say every semantics with UB on mixed provenance breaks every ordering, only that these statements fail for this variant on these programs.",
+      "The variant changes only load decoding (stepE_eq_step_of_not_load); everything else is the package semantics.",
+      "Does not say which decoding a real language uses; MiniRust uses 'no provenance' for mixed pointer bytes (cited); C's provenance model treats representation reads differently and is not modeled.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`')."
+    ],
+    "design_question": "How a byte-level semantics must decode pointer bytes with mixed provenance so that adding provenance never introduces UB, which the model ordering and the cast-fold results depend on.",
+    "corollaries_lean": [
+      "Toy.Prov.EqProvDecode.stepE_eq_step_of_not_load"
+    ]
+  },
+  {
+    "id": "R7b-pointer-byte-decoding-is-provenance-monotone",
+    "lean": [
+      "Toy.Prov.decodeInt_mono",
+      "Toy.Prov.decodePtr_mono"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "The monotonicity law MiniRust requires of decode, proved for this toy's two-byte decoders.",
+    "plain_claim": "If each of two abstract bytes is below the corresponding byte of a second pair in the information order (identical, except that a pointer fragment may carry more provenance: none below some id), then a defined integer decoding of the first pair is defined on the second with the same integer and a superset of exposed provenances, a pointer decoding of integer fragments gives the same bare address, and a pointer decoding of pointer fragments gives a pointer with the same address and at least as much provenance.",
+    "hypotheses": [
+      {
+        "name": "h₀ : AByteLE b₀ c₀",
+        "purpose": "The first bytes must be related; otherwise (e.g. different addresses) a defined decoding can become UB.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.decode_mono_h₀_needed"
+      },
+      {
+        "name": "h₁ : AByteLE b₁ c₁",
+        "purpose": "As h₀, for the second bytes.",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.decode_mono_h₁_needed"
+      },
+      {
+        "name": "h : decodeInt b₀ b₁ = some (n, ps) (decodeInt_mono)",
+        "purpose": "Monotonicity is about defined decodings: if the smaller pair's integer decoding is UB, nothing is claimed about the larger pair (here both are UB).",
+        "tightness": "tight",
+        "counterexample": "Toy.Prov.decodeInt_mono_h_needed"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "A provenance-less fragment below the same fragment with provenance; both decodings of the smaller pair defined.",
+    "nonvacuity_witness_lean": "Toy.Prov.decode_mono_nonvacuous",
+    "non_claims": [
+      "Byte-level only: this card's two theorems are about the decoders decodeInt and decodePtr. The program-level consequences that R2b, R6a and the strict cast fold rely on are separate proved theorems whose proofs use these lemmas (through a monotone simulation of the whole step relation); this card itself states no program-level monotonicity.",
+      "The order relates only provenance; it does not relate initialized and uninitialized bytes or integer and pointer fragments.",
+      "Nothing about a specific compiler, C, LLVM IR, Rust, or zerocopy follows from the Lean statement alone; any such connection is a separate modeling-bridge claim."
+    ],
+    "prior_art": [
+      "MiniRust specification, repository minirust/minirust at commit 063d784186d3252bee242217f218223205c0b568: spec/mem/intptrcast.md (int2ptr predicts a provenance that 'must be either `None` or already exposed', with no address-range check, chosen 'maximally in the programmer's favor'); spec/lang/representation.md (integer decoding 'entirely ignores provenance', i.e. ptr-to-int transmutation strips provenance without exposing, marked with an open TODO; pointer bytes 'not all having the same provenance' decode to 'a pointer without provenance'; encode and decode are required to be monotone: 'If `bytes1 <= bytes2`, then `ty.decode(bytes1) <= ty.decode(bytes2)`')."
+    ],
+    "design_question": "How a byte-level semantics must decode pointer bytes with mixed provenance so that adding provenance never introduces UB, which the model ordering and the cast-fold results depend on."
+  }
+]
