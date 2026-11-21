@@ -1,0 +1,5 @@
+name = "monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets"
+defaultTargets = ["MonoShim"]
+
+[[lean_lib]]
+name = "MonoShim"

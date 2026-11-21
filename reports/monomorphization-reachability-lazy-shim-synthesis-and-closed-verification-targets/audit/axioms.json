@@ -1,0 +1,2487 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "List.lookup.eq_1": [],
+    "List.lookup.eq_2": [],
+    "List.lookup.eq_def": [],
+    "List.range.eq_1": [],
+    "List.range.loop.eq_1": [],
+    "List.range.loop.eq_2": [],
+    "List.range.loop.eq_def": [],
+    "Toy.MonoShim.BodyEquiv": [
+      "propext"
+    ],
+    "Toy.MonoShim.BodyEquiv.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Call": [],
+    "Toy.MonoShim.CanonicalKeys": [
+      "propext"
+    ],
+    "Toy.MonoShim.CanonicalRefs": [
+      "propext"
+    ],
+    "Toy.MonoShim.Closed": [
+      "propext"
+    ],
+    "Toy.MonoShim.CoversRefs": [
+      "propext"
+    ],
+    "Toy.MonoShim.DeterministicUnits": [
+      "propext"
+    ],
+    "Toy.MonoShim.EdgesIn": [],
+    "Toy.MonoShim.FnDef": [],
+    "Toy.MonoShim.FnDef.body": [],
+    "Toy.MonoShim.FnDef.casesOn": [],
+    "Toy.MonoShim.FnDef.ctorIdx": [],
+    "Toy.MonoShim.FnDef.mk": [],
+    "Toy.MonoShim.FnDef.mk.inj": [],
+    "Toy.MonoShim.FnDef.mk.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.FnDef.mk.noConfusion": [],
+    "Toy.MonoShim.FnDef.mk.sizeOf_spec": [],
+    "Toy.MonoShim.FnDef.noConfusion": [],
+    "Toy.MonoShim.FnDef.noConfusionType": [],
+    "Toy.MonoShim.FnDef.rec": [],
+    "Toy.MonoShim.FnDef.recOn": [],
+    "Toy.MonoShim.FnDef.trackCaller": [],
+    "Toy.MonoShim.Frame": [],
+    "Toy.MonoShim.FrameIn": [],
+    "Toy.MonoShim.FrameIn.match_1": [],
+    "Toy.MonoShim.GenericVerified": [
+      "propext"
+    ],
+    "Toy.MonoShim.ImplEntry": [],
+    "Toy.MonoShim.ImplEntry.body": [],
+    "Toy.MonoShim.ImplEntry.casesOn": [],
+    "Toy.MonoShim.ImplEntry.ctorIdx": [],
+    "Toy.MonoShim.ImplEntry.m": [],
+    "Toy.MonoShim.ImplEntry.mk": [],
+    "Toy.MonoShim.ImplEntry.mk.inj": [],
+    "Toy.MonoShim.ImplEntry.mk.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.ImplEntry.mk.noConfusion": [],
+    "Toy.MonoShim.ImplEntry.mk.sizeOf_spec": [],
+    "Toy.MonoShim.ImplEntry.noConfusion": [],
+    "Toy.MonoShim.ImplEntry.noConfusionType": [],
+    "Toy.MonoShim.ImplEntry.rec": [],
+    "Toy.MonoShim.ImplEntry.recOn": [],
+    "Toy.MonoShim.ImplEntry.tr": [],
+    "Toy.MonoShim.ImplEntry.ty": [],
+    "Toy.MonoShim.ImplsConform": [
+      "propext"
+    ],
+    "Toy.MonoShim.InstB": [
+      "propext"
+    ],
+    "Toy.MonoShim.InstB.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.InstB_of_KB": [
+      "propext"
+    ],
+    "Toy.MonoShim.InstDefined": [
+      "propext"
+    ],
+    "Toy.MonoShim.KB": [],
+    "Toy.MonoShim.KB.eq_1": [],
+    "Toy.MonoShim.KB.eq_2": [],
+    "Toy.MonoShim.KB.eq_3": [],
+    "Toy.MonoShim.KB.eq_4": [],
+    "Toy.MonoShim.KB.eq_5": [],
+    "Toy.MonoShim.KB.eq_6": [],
+    "Toy.MonoShim.KB.eq_7": [],
+    "Toy.MonoShim.KB.match_1": [],
+    "Toy.MonoShim.KB.mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.KB_norm_cloneKey": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.KB_of_lb": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.KB_subst_norm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.Key": [],
+    "Toy.MonoShim.Key.casesOn": [],
+    "Toy.MonoShim.Key.cloneShim": [],
+    "Toy.MonoShim.Key.cloneShim.elim": [],
+    "Toy.MonoShim.Key.cloneShim.inj": [],
+    "Toy.MonoShim.Key.cloneShim.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.cloneShim.noConfusion": [],
+    "Toy.MonoShim.Key.cloneShim.sizeOf_spec": [],
+    "Toy.MonoShim.Key.ctorElim": [],
+    "Toy.MonoShim.Key.ctorElimType": [],
+    "Toy.MonoShim.Key.ctorIdx": [],
+    "Toy.MonoShim.Key.dropGlue": [],
+    "Toy.MonoShim.Key.dropGlue.elim": [],
+    "Toy.MonoShim.Key.dropGlue.inj": [],
+    "Toy.MonoShim.Key.dropGlue.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.dropGlue.noConfusion": [],
+    "Toy.MonoShim.Key.dropGlue.sizeOf_spec": [],
+    "Toy.MonoShim.Key.inst": [],
+    "Toy.MonoShim.Key.inst.elim": [],
+    "Toy.MonoShim.Key.inst.inj": [],
+    "Toy.MonoShim.Key.inst.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.inst.noConfusion": [],
+    "Toy.MonoShim.Key.inst.sizeOf_spec": [],
+    "Toy.MonoShim.Key.isImpl": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isImpl.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isImpl.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isImpl.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isImpl.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isImpl.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isShim": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isShim.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isShim.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isShim.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isShim.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.isShim.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.lb": [],
+    "Toy.MonoShim.Key.lb.eq_1": [],
+    "Toy.MonoShim.Key.lb.eq_2": [],
+    "Toy.MonoShim.Key.lb.eq_3": [],
+    "Toy.MonoShim.Key.lb.eq_4": [],
+    "Toy.MonoShim.Key.lb.eq_5": [],
+    "Toy.MonoShim.Key.lb.eq_6": [],
+    "Toy.MonoShim.Key.lb.eq_7": [],
+    "Toy.MonoShim.Key.meth": [],
+    "Toy.MonoShim.Key.meth.elim": [],
+    "Toy.MonoShim.Key.meth.inj": [],
+    "Toy.MonoShim.Key.meth.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.meth.noConfusion": [],
+    "Toy.MonoShim.Key.meth.sizeOf_spec": [],
+    "Toy.MonoShim.Key.noConfusion": [],
+    "Toy.MonoShim.Key.noConfusionType": [],
+    "Toy.MonoShim.Key.norm": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.norm.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.norm.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.norm.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.norm.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.norm.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.norm.eq_6": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.norm_idem_rt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.Key.rec": [],
+    "Toy.MonoShim.Key.recOn": [],
+    "Toy.MonoShim.Key.reifyShim": [],
+    "Toy.MonoShim.Key.reifyShim.elim": [],
+    "Toy.MonoShim.Key.reifyShim.inj": [],
+    "Toy.MonoShim.Key.reifyShim.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.reifyShim.noConfusion": [],
+    "Toy.MonoShim.Key.reifyShim.sizeOf_spec": [],
+    "Toy.MonoShim.Key.subst": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.subst.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.subst.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.subst.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.subst.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.subst.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.subst.eq_6": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.subst.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.subst_nil_rt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.Key.userClone": [],
+    "Toy.MonoShim.Key.userClone.elim": [],
+    "Toy.MonoShim.Key.userClone.inj": [],
+    "Toy.MonoShim.Key.userClone.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.userClone.noConfusion": [],
+    "Toy.MonoShim.Key.userClone.sizeOf_spec": [],
+    "Toy.MonoShim.Key.userDrop": [],
+    "Toy.MonoShim.Key.userDrop.elim": [],
+    "Toy.MonoShim.Key.userDrop.inj": [],
+    "Toy.MonoShim.Key.userDrop.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Key.userDrop.noConfusion": [],
+    "Toy.MonoShim.Key.userDrop.sizeOf_spec": [],
+    "Toy.MonoShim.MeetsAt": [
+      "propext"
+    ],
+    "Toy.MonoShim.MonoCfg": [],
+    "Toy.MonoShim.MonoCfg.E": [],
+    "Toy.MonoShim.MonoCfg.casesOn": [],
+    "Toy.MonoShim.MonoCfg.ctorIdx": [],
+    "Toy.MonoShim.MonoCfg.mk": [],
+    "Toy.MonoShim.MonoCfg.mk.inj": [],
+    "Toy.MonoShim.MonoCfg.mk.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.MonoCfg.mk.noConfusion": [],
+    "Toy.MonoShim.MonoCfg.mk.sizeOf_spec": [],
+    "Toy.MonoShim.MonoCfg.noConfusion": [],
+    "Toy.MonoShim.MonoCfg.noConfusionType": [],
+    "Toy.MonoShim.MonoCfg.rec": [],
+    "Toy.MonoShim.MonoCfg.recOn": [],
+    "Toy.MonoShim.MonoCfg.synth": [],
+    "Toy.MonoShim.OptEquiv": [
+      "propext"
+    ],
+    "Toy.MonoShim.OptEquiv.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.OptEquiv.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.OptEquiv.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.OptEquiv.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.P2a": [],
+    "Toy.MonoShim.P2b": [],
+    "Toy.MonoShim.P2c": [],
+    "Toy.MonoShim.P2c_generic_verified": [
+      "propext"
+    ],
+    "Toy.MonoShim.P2c_generic_verified.match_1_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.P2c_main_exec": [
+      "propext"
+    ],
+    "Toy.MonoShim.P2d": [],
+    "Toy.MonoShim.P3": [],
+    "Toy.MonoShim.P3abort": [],
+    "Toy.MonoShim.P3three": [],
+    "Toy.MonoShim.P4a": [],
+    "Toy.MonoShim.P4a_generic_verified": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_generic_verified.match_1_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_generic_verified_rev": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_generic_verified_rev.match_1_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_impls_conform": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_impls_conform_rev": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_main_violates_Q4aRev_in_source": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_runS_main": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_std_meets_specs": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_std_meets_specs_in_source_semantics": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_synthRev_verified_rev": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4a_synthStd_verified": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4b": [],
+    "Toy.MonoShim.P4b_generic_verified": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4b_generic_verified.match_1_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.P4bad": [],
+    "Toy.MonoShim.P5": [],
+    "Toy.MonoShim.P5.eq_1": [],
+    "Toy.MonoShim.P5_f_run_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.P5_f_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.P5_fails_rankCheck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.P5_srcDef_f": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.P5_srcDef_main": [
+      "propext"
+    ],
+    "Toy.MonoShim.P5flat": [],
+    "Toy.MonoShim.P5flat_collects": [
+      "propext"
+    ],
+    "Toy.MonoShim.P5mut": [],
+    "Toy.MonoShim.P5mut.eq_1": [],
+    "Toy.MonoShim.P5ok": [],
+    "Toy.MonoShim.P5ok_rankCheck_and_collects": [
+      "propext"
+    ],
+    "Toy.MonoShim.P6": [],
+    "Toy.MonoShim.P6chain": [],
+    "Toy.MonoShim.P7a": [],
+    "Toy.MonoShim.P7b": [],
+    "Toy.MonoShim.P9assoc": [],
+    "Toy.MonoShim.P9assoc.eq_1": [],
+    "Toy.MonoShim.P9assoc_proj_norm": [
+      "propext"
+    ],
+    "Toy.MonoShim.P9assoc_reach": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.Pall": [],
+    "Toy.MonoShim.Pall_all_hypotheses_hold": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.PdeadUndef": [],
+    "Toy.MonoShim.PdeadUndef.eq_1": [],
+    "Toy.MonoShim.PdropAbort": [],
+    "Toy.MonoShim.PdropUnwind": [],
+    "Toy.MonoShim.Pempty": [],
+    "Toy.MonoShim.Pnc": [],
+    "Toy.MonoShim.Pnc0": [],
+    "Toy.MonoShim.PncMeth": [],
+    "Toy.MonoShim.PncMeth.eq_1": [],
+    "Toy.MonoShim.Program": [],
+    "Toy.MonoShim.Program.assoc": [],
+    "Toy.MonoShim.Program.casesOn": [],
+    "Toy.MonoShim.Program.cloneImpls": [],
+    "Toy.MonoShim.Program.ctorIdx": [],
+    "Toy.MonoShim.Program.dropImpls": [],
+    "Toy.MonoShim.Program.fns": [],
+    "Toy.MonoShim.Program.impls": [],
+    "Toy.MonoShim.Program.methods": [],
+    "Toy.MonoShim.Program.mk": [],
+    "Toy.MonoShim.Program.mk.inj": [],
+    "Toy.MonoShim.Program.mk.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Program.mk.noConfusion": [],
+    "Toy.MonoShim.Program.mk.sizeOf_spec": [],
+    "Toy.MonoShim.Program.noConfusion": [],
+    "Toy.MonoShim.Program.noConfusionType": [],
+    "Toy.MonoShim.Program.rec": [],
+    "Toy.MonoShim.Program.recOn": [],
+    "Toy.MonoShim.Program.sig": [
+      "propext"
+    ],
+    "Toy.MonoShim.Program.sig.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Pundef": [],
+    "Toy.MonoShim.Q2c": [],
+    "Toy.MonoShim.Q2c.eq_1": [],
+    "Toy.MonoShim.Q4a": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4a.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4a.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4a.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4a.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4a.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4a.eq_6": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4a.eq_7": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4a.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4aRev": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4aRev.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4aRev.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4aRev.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4aRev.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4aRev.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4aRev.eq_6": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4aRev.eq_7": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4aRev.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Q4b": [],
+    "Toy.MonoShim.Q4b.eq_1": [],
+    "Toy.MonoShim.Reach": [],
+    "Toy.MonoShim.Reach.below": [],
+    "Toy.MonoShim.Reach.below.casesOn": [],
+    "Toy.MonoShim.Reach.below.rec": [],
+    "Toy.MonoShim.Reach.below.root": [],
+    "Toy.MonoShim.Reach.below.step": [],
+    "Toy.MonoShim.Reach.brecOn": [],
+    "Toy.MonoShim.Reach.casesOn": [],
+    "Toy.MonoShim.Reach.rec": [],
+    "Toy.MonoShim.Reach.recOn": [],
+    "Toy.MonoShim.Reach.root": [],
+    "Toy.MonoShim.Reach.step": [],
+    "Toy.MonoShim.Res": [],
+    "Toy.MonoShim.Res.abort": [],
+    "Toy.MonoShim.Res.abort.elim": [],
+    "Toy.MonoShim.Res.abort.sizeOf_spec": [],
+    "Toy.MonoShim.Res.casesOn": [],
+    "Toy.MonoShim.Res.ctorElim": [],
+    "Toy.MonoShim.Res.ctorElimType": [],
+    "Toy.MonoShim.Res.ctorIdx": [],
+    "Toy.MonoShim.Res.link": [],
+    "Toy.MonoShim.Res.link.elim": [],
+    "Toy.MonoShim.Res.link.inj": [],
+    "Toy.MonoShim.Res.link.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Res.link.noConfusion": [],
+    "Toy.MonoShim.Res.link.sizeOf_spec": [],
+    "Toy.MonoShim.Res.noConfusion": [],
+    "Toy.MonoShim.Res.noConfusionType": [],
+    "Toy.MonoShim.Res.ok": [],
+    "Toy.MonoShim.Res.ok.elim": [],
+    "Toy.MonoShim.Res.ok.sizeOf_spec": [],
+    "Toy.MonoShim.Res.outOfFuel": [],
+    "Toy.MonoShim.Res.outOfFuel.elim": [],
+    "Toy.MonoShim.Res.outOfFuel.sizeOf_spec": [],
+    "Toy.MonoShim.Res.rec": [],
+    "Toy.MonoShim.Res.recOn": [],
+    "Toy.MonoShim.Res.stuck": [],
+    "Toy.MonoShim.Res.stuck.elim": [],
+    "Toy.MonoShim.Res.stuck.sizeOf_spec": [],
+    "Toy.MonoShim.Res.unwind": [],
+    "Toy.MonoShim.Res.unwind.elim": [],
+    "Toy.MonoShim.Res.unwind.sizeOf_spec": [],
+    "Toy.MonoShim.RootsIn": [],
+    "Toy.MonoShim.SatOut": [],
+    "Toy.MonoShim.SatOut.eq_1": [],
+    "Toy.MonoShim.SchedOK": [],
+    "Toy.MonoShim.Sig": [],
+    "Toy.MonoShim.Sig.casesOn": [],
+    "Toy.MonoShim.Sig.ctorIdx": [],
+    "Toy.MonoShim.Sig.methods": [],
+    "Toy.MonoShim.Sig.mk": [],
+    "Toy.MonoShim.Sig.mk.inj": [],
+    "Toy.MonoShim.Sig.mk.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Sig.mk.noConfusion": [],
+    "Toy.MonoShim.Sig.mk.sizeOf_spec": [],
+    "Toy.MonoShim.Sig.noConfusion": [],
+    "Toy.MonoShim.Sig.noConfusionType": [],
+    "Toy.MonoShim.Sig.rec": [],
+    "Toy.MonoShim.Sig.recOn": [],
+    "Toy.MonoShim.Sig.tc": [],
+    "Toy.MonoShim.SlotVal": [],
+    "Toy.MonoShim.SlotVal.casesOn": [],
+    "Toy.MonoShim.SlotVal.ctorElim": [],
+    "Toy.MonoShim.SlotVal.ctorElimType": [],
+    "Toy.MonoShim.SlotVal.ctorIdx": [],
+    "Toy.MonoShim.SlotVal.fn": [],
+    "Toy.MonoShim.SlotVal.fn.elim": [],
+    "Toy.MonoShim.SlotVal.fn.inj": [],
+    "Toy.MonoShim.SlotVal.fn.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.SlotVal.fn.noConfusion": [],
+    "Toy.MonoShim.SlotVal.fn.sizeOf_spec": [],
+    "Toy.MonoShim.SlotVal.noConfusion": [],
+    "Toy.MonoShim.SlotVal.noConfusionType": [],
+    "Toy.MonoShim.SlotVal.rec": [],
+    "Toy.MonoShim.SlotVal.recOn": [],
+    "Toy.MonoShim.SlotVal.vt": [],
+    "Toy.MonoShim.SlotVal.vt.elim": [],
+    "Toy.MonoShim.SlotVal.vt.inj": [],
+    "Toy.MonoShim.SlotVal.vt.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.SlotVal.vt.noConfusion": [],
+    "Toy.MonoShim.SlotVal.vt.sizeOf_spec": [],
+    "Toy.MonoShim.Spec": [],
+    "Toy.MonoShim.St": [],
+    "Toy.MonoShim.St.casesOn": [],
+    "Toy.MonoShim.St.ctorIdx": [],
+    "Toy.MonoShim.St.ctr": [],
+    "Toy.MonoShim.St.evs": [],
+    "Toy.MonoShim.St.mk": [],
+    "Toy.MonoShim.St.mk.inj": [],
+    "Toy.MonoShim.St.mk.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.St.mk.noConfusion": [],
+    "Toy.MonoShim.St.mk.sizeOf_spec": [],
+    "Toy.MonoShim.St.noConfusion": [],
+    "Toy.MonoShim.St.noConfusionType": [],
+    "Toy.MonoShim.St.rec": [],
+    "Toy.MonoShim.St.recOn": [],
+    "Toy.MonoShim.Stmt": [],
+    "Toy.MonoShim.Stmt.below": [],
+    "Toy.MonoShim.Stmt.brecOn": [],
+    "Toy.MonoShim.Stmt.brecOn.eq": [],
+    "Toy.MonoShim.Stmt.brecOn.go": [],
+    "Toy.MonoShim.Stmt.call": [],
+    "Toy.MonoShim.Stmt.call.elim": [],
+    "Toy.MonoShim.Stmt.call.inj": [],
+    "Toy.MonoShim.Stmt.call.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.call.noConfusion": [],
+    "Toy.MonoShim.Stmt.call.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.callDyn": [],
+    "Toy.MonoShim.Stmt.callDyn.elim": [],
+    "Toy.MonoShim.Stmt.callDyn.inj": [],
+    "Toy.MonoShim.Stmt.callDyn.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.callDyn.noConfusion": [],
+    "Toy.MonoShim.Stmt.callDyn.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.callPtr": [],
+    "Toy.MonoShim.Stmt.callPtr.elim": [],
+    "Toy.MonoShim.Stmt.callPtr.inj": [],
+    "Toy.MonoShim.Stmt.callPtr.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.callPtr.noConfusion": [],
+    "Toy.MonoShim.Stmt.callPtr.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.casesOn": [],
+    "Toy.MonoShim.Stmt.clone": [],
+    "Toy.MonoShim.Stmt.clone.elim": [],
+    "Toy.MonoShim.Stmt.clone.inj": [],
+    "Toy.MonoShim.Stmt.clone.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.clone.noConfusion": [],
+    "Toy.MonoShim.Stmt.clone.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.cloneAgg": [],
+    "Toy.MonoShim.Stmt.cloneAgg.elim": [],
+    "Toy.MonoShim.Stmt.cloneAgg.inj": [],
+    "Toy.MonoShim.Stmt.cloneAgg.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.cloneAgg.noConfusion": [],
+    "Toy.MonoShim.Stmt.cloneAgg.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.ctorElim": [],
+    "Toy.MonoShim.Stmt.ctorElimType": [],
+    "Toy.MonoShim.Stmt.ctorIdx": [],
+    "Toy.MonoShim.Stmt.drop": [],
+    "Toy.MonoShim.Stmt.drop.elim": [],
+    "Toy.MonoShim.Stmt.drop.inj": [],
+    "Toy.MonoShim.Stmt.drop.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.drop.noConfusion": [],
+    "Toy.MonoShim.Stmt.drop.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.dropDyn": [],
+    "Toy.MonoShim.Stmt.dropDyn.elim": [],
+    "Toy.MonoShim.Stmt.dropDyn.inj": [],
+    "Toy.MonoShim.Stmt.dropDyn.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.dropDyn.noConfusion": [],
+    "Toy.MonoShim.Stmt.dropDyn.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.emit": [],
+    "Toy.MonoShim.Stmt.emit.elim": [],
+    "Toy.MonoShim.Stmt.emit.inj": [],
+    "Toy.MonoShim.Stmt.emit.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.emit.noConfusion": [],
+    "Toy.MonoShim.Stmt.emit.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.guard": [],
+    "Toy.MonoShim.Stmt.guard.elim": [],
+    "Toy.MonoShim.Stmt.guard.inj": [],
+    "Toy.MonoShim.Stmt.guard.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.guard.noConfusion": [],
+    "Toy.MonoShim.Stmt.guard.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.invoke": [],
+    "Toy.MonoShim.Stmt.invoke.elim": [],
+    "Toy.MonoShim.Stmt.invoke.inj": [],
+    "Toy.MonoShim.Stmt.invoke.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.invoke.noConfusion": [],
+    "Toy.MonoShim.Stmt.invoke.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.lb": [],
+    "Toy.MonoShim.Stmt.lb.eq_1": [],
+    "Toy.MonoShim.Stmt.lb.eq_10": [],
+    "Toy.MonoShim.Stmt.lb.eq_11": [],
+    "Toy.MonoShim.Stmt.lb.eq_12": [],
+    "Toy.MonoShim.Stmt.lb.eq_13": [],
+    "Toy.MonoShim.Stmt.lb.eq_14": [],
+    "Toy.MonoShim.Stmt.lb.eq_15": [],
+    "Toy.MonoShim.Stmt.lb.eq_16": [],
+    "Toy.MonoShim.Stmt.lb.eq_17": [],
+    "Toy.MonoShim.Stmt.lb.eq_2": [],
+    "Toy.MonoShim.Stmt.lb.eq_3": [],
+    "Toy.MonoShim.Stmt.lb.eq_4": [],
+    "Toy.MonoShim.Stmt.lb.eq_5": [],
+    "Toy.MonoShim.Stmt.lb.eq_6": [],
+    "Toy.MonoShim.Stmt.lb.eq_7": [],
+    "Toy.MonoShim.Stmt.lb.eq_8": [],
+    "Toy.MonoShim.Stmt.lb.eq_9": [],
+    "Toy.MonoShim.Stmt.lb.eq_def": [],
+    "Toy.MonoShim.Stmt.lb.match_1": [],
+    "Toy.MonoShim.Stmt.mcall": [],
+    "Toy.MonoShim.Stmt.mcall.elim": [],
+    "Toy.MonoShim.Stmt.mcall.inj": [],
+    "Toy.MonoShim.Stmt.mcall.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.mcall.noConfusion": [],
+    "Toy.MonoShim.Stmt.mcall.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.noConfusion": [],
+    "Toy.MonoShim.Stmt.noConfusionType": [],
+    "Toy.MonoShim.Stmt.norm": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_10": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_11": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_12": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_6": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_7": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_8": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_9": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.norm.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.onUnwind": [],
+    "Toy.MonoShim.Stmt.onUnwind.elim": [],
+    "Toy.MonoShim.Stmt.onUnwind.inj": [],
+    "Toy.MonoShim.Stmt.onUnwind.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.onUnwind.noConfusion": [],
+    "Toy.MonoShim.Stmt.onUnwind.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.panic": [],
+    "Toy.MonoShim.Stmt.panic.elim": [],
+    "Toy.MonoShim.Stmt.panic.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.rec": [],
+    "Toy.MonoShim.Stmt.recOn": [],
+    "Toy.MonoShim.Stmt.reify": [],
+    "Toy.MonoShim.Stmt.reify.elim": [],
+    "Toy.MonoShim.Stmt.reify.inj": [],
+    "Toy.MonoShim.Stmt.reify.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.reify.noConfusion": [],
+    "Toy.MonoShim.Stmt.reify.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.seq": [],
+    "Toy.MonoShim.Stmt.seq.elim": [],
+    "Toy.MonoShim.Stmt.seq.inj": [],
+    "Toy.MonoShim.Stmt.seq.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.seq.noConfusion": [],
+    "Toy.MonoShim.Stmt.seq.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.skip": [],
+    "Toy.MonoShim.Stmt.skip.elim": [],
+    "Toy.MonoShim.Stmt.skip.sizeOf_spec": [],
+    "Toy.MonoShim.Stmt.subst": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_10": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_11": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_12": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_6": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_7": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_8": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_9": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.subst_nil_rt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.unsize": [],
+    "Toy.MonoShim.Stmt.unsize.elim": [],
+    "Toy.MonoShim.Stmt.unsize.inj": [],
+    "Toy.MonoShim.Stmt.unsize.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Stmt.unsize.noConfusion": [],
+    "Toy.MonoShim.Stmt.unsize.sizeOf_spec": [],
+    "Toy.MonoShim.SynthAgrees": [
+      "propext"
+    ],
+    "Toy.MonoShim.SynthTotal": [
+      "propext"
+    ],
+    "Toy.MonoShim.SynthVerified": [
+      "propext"
+    ],
+    "Toy.MonoShim.T2a": [],
+    "Toy.MonoShim.T2b": [],
+    "Toy.MonoShim.T2c": [],
+    "Toy.MonoShim.T2d": [],
+    "Toy.MonoShim.T3": [],
+    "Toy.MonoShim.T4a": [],
+    "Toy.MonoShim.T4a.eq_1": [],
+    "Toy.MonoShim.T4a_collected": [
+      "propext"
+    ],
+    "Toy.MonoShim.T4b": [],
+    "Toy.MonoShim.T4b.eq_1": [],
+    "Toy.MonoShim.T6": [],
+    "Toy.MonoShim.T7a": [],
+    "Toy.MonoShim.T7b": [],
+    "Toy.MonoShim.Tall": [],
+    "Toy.MonoShim.TdeadUndef": [],
+    "Toy.MonoShim.TdeadUndef.eq_1": [],
+    "Toy.MonoShim.TncMeth": [],
+    "Toy.MonoShim.TncMeth.eq_1": [],
+    "Toy.MonoShim.Ty": [],
+    "Toy.MonoShim.Ty.base": [],
+    "Toy.MonoShim.Ty.base.elim": [],
+    "Toy.MonoShim.Ty.base.inj": [],
+    "Toy.MonoShim.Ty.base.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.base.noConfusion": [],
+    "Toy.MonoShim.Ty.base.sizeOf_spec": [],
+    "Toy.MonoShim.Ty.below": [],
+    "Toy.MonoShim.Ty.box": [],
+    "Toy.MonoShim.Ty.box.elim": [],
+    "Toy.MonoShim.Ty.box.inj": [],
+    "Toy.MonoShim.Ty.box.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.box.noConfusion": [],
+    "Toy.MonoShim.Ty.box.sizeOf_spec": [],
+    "Toy.MonoShim.Ty.brecOn": [],
+    "Toy.MonoShim.Ty.brecOn.eq": [],
+    "Toy.MonoShim.Ty.brecOn.go": [],
+    "Toy.MonoShim.Ty.casesOn": [],
+    "Toy.MonoShim.Ty.ctorElim": [],
+    "Toy.MonoShim.Ty.ctorElimType": [],
+    "Toy.MonoShim.Ty.ctorIdx": [],
+    "Toy.MonoShim.Ty.dyn": [],
+    "Toy.MonoShim.Ty.dyn.elim": [],
+    "Toy.MonoShim.Ty.dyn.inj": [],
+    "Toy.MonoShim.Ty.dyn.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.dyn.noConfusion": [],
+    "Toy.MonoShim.Ty.dyn.sizeOf_spec": [],
+    "Toy.MonoShim.Ty.fnPtr": [],
+    "Toy.MonoShim.Ty.fnPtr.elim": [],
+    "Toy.MonoShim.Ty.fnPtr.sizeOf_spec": [],
+    "Toy.MonoShim.Ty.grows": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.grows.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.grows.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.grows.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.hasParam": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.hasParam.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.hasParam.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.hasParam.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.hasParam.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.hasParam.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.hasParam.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.hasParam.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.noConfusion": [],
+    "Toy.MonoShim.Ty.noConfusionType": [],
+    "Toy.MonoShim.Ty.norm": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.norm.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.norm.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.norm.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.norm.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.norm.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.norm.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.norm_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.pair": [],
+    "Toy.MonoShim.Ty.pair.elim": [],
+    "Toy.MonoShim.Ty.pair.inj": [],
+    "Toy.MonoShim.Ty.pair.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.pair.noConfusion": [],
+    "Toy.MonoShim.Ty.pair.sizeOf_spec": [],
+    "Toy.MonoShim.Ty.param": [],
+    "Toy.MonoShim.Ty.param.elim": [],
+    "Toy.MonoShim.Ty.param.inj": [],
+    "Toy.MonoShim.Ty.param.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.param.noConfusion": [],
+    "Toy.MonoShim.Ty.param.sizeOf_spec": [],
+    "Toy.MonoShim.Ty.proj": [],
+    "Toy.MonoShim.Ty.proj.elim": [],
+    "Toy.MonoShim.Ty.proj.inj": [],
+    "Toy.MonoShim.Ty.proj.injEq": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.proj.noConfusion": [],
+    "Toy.MonoShim.Ty.proj.sizeOf_spec": [],
+    "Toy.MonoShim.Ty.rec": [],
+    "Toy.MonoShim.Ty.recOn": [],
+    "Toy.MonoShim.Ty.size": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.size.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.size.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.size.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.size.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.size.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.size.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst_nil_fun_rt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst_nil_rt": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.subst_of_hasParam_false": [
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.wt": [],
+    "Toy.MonoShim.Ty.wt.eq_1": [],
+    "Toy.MonoShim.Ty.wt.eq_2": [],
+    "Toy.MonoShim.Ty.wt.eq_3": [],
+    "Toy.MonoShim.Ty.wt.eq_4": [],
+    "Toy.MonoShim.Ty.wt.eq_5": [],
+    "Toy.MonoShim.Ty.wt.eq_6": [],
+    "Toy.MonoShim.Ty.wt.eq_7": [],
+    "Toy.MonoShim.Ty.wt.eq_def": [],
+    "Toy.MonoShim.Ty.wt.match_1": [],
+    "Toy.MonoShim.Ty.wt_norm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.wt_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.Ty.wt_subst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.UnitsCover": [],
+    "Toy.MonoShim.VerifiedBody": [
+      "propext"
+    ],
+    "Toy.MonoShim.adequacy_holds_on_nonclosed_target": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.aggClone": [
+      "propext"
+    ],
+    "Toy.MonoShim.aggClone.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.aggClone.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.aggClone.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.aggClone.match_1": [],
+    "Toy.MonoShim.aggClone_congr": [
+      "propext"
+    ],
+    "Toy.MonoShim.aggClone_no_link": [
+      "propext"
+    ],
+    "Toy.MonoShim.allKeys": [],
+    "Toy.MonoShim.allKeys.eq_1": [],
+    "Toy.MonoShim.allLists": [],
+    "Toy.MonoShim.allLists.eq_1": [],
+    "Toy.MonoShim.allLists.eq_2": [],
+    "Toy.MonoShim.allLists.eq_def": [],
+    "Toy.MonoShim.allTys": [],
+    "Toy.MonoShim.allTys.eq_1": [],
+    "Toy.MonoShim.allTys.eq_2": [],
+    "Toy.MonoShim.allTys.eq_def": [],
+    "Toy.MonoShim.allTys.match_1": [],
+    "Toy.MonoShim.appends": [],
+    "Toy.MonoShim.appends.eq_1": [],
+    "Toy.MonoShim.assocLookup": [],
+    "Toy.MonoShim.assocLookup.eq_1": [],
+    "Toy.MonoShim.assocNormal": [
+      "propext"
+    ],
+    "Toy.MonoShim.assocNormal_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.availLocal": [
+      "propext"
+    ],
+    "Toy.MonoShim.availLocal.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.bodyEquiv_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.bodyEquiv_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.bodyM": [
+      "propext"
+    ],
+    "Toy.MonoShim.bodyM.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.boxIter": [],
+    "Toy.MonoShim.boxIter.eq_1": [],
+    "Toy.MonoShim.boxIter.eq_2": [],
+    "Toy.MonoShim.boxIter.eq_def": [],
+    "Toy.MonoShim.boxIter.match_1": [],
+    "Toy.MonoShim.boxIter_norm": [
+      "propext"
+    ],
+    "Toy.MonoShim.boxIter_size": [
+      "propext"
+    ],
+    "Toy.MonoShim.boxIter_size_gen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.boxIter_succ'": [
+      "propext"
+    ],
+    "Toy.MonoShim.canonicalRefs_of_closed_canonicalKeys": [
+      "propext"
+    ],
+    "Toy.MonoShim.canonicalRefs_stdCfg_of_assocNormal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.canonical_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.canonical_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.canonical_refs_close_positive_control": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.cfg2a": [
+      "propext"
+    ],
+    "Toy.MonoShim.cfg2b": [
+      "propext"
+    ],
+    "Toy.MonoShim.cfg2c": [
+      "propext"
+    ],
+    "Toy.MonoShim.cfg2d": [
+      "propext"
+    ],
+    "Toy.MonoShim.cfg3": [
+      "propext"
+    ],
+    "Toy.MonoShim.cfgJunkEdges": [
+      "propext"
+    ],
+    "Toy.MonoShim.cfgNoSynth": [
+      "propext"
+    ],
+    "Toy.MonoShim.cfgRev": [
+      "propext"
+    ],
+    "Toy.MonoShim.cleanupDrops": [
+      "propext"
+    ],
+    "Toy.MonoShim.cleanupDrops.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.cleanupDrops.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.cleanupDrops.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.cleanupDrops.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.cleanupDrops.match_4": [],
+    "Toy.MonoShim.cleanupDrops_congr": [
+      "propext"
+    ],
+    "Toy.MonoShim.cleanupDrops_no_link": [
+      "propext"
+    ],
+    "Toy.MonoShim.cleanup_edges_missing_break_closure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.cloneKey": [
+      "propext"
+    ],
+    "Toy.MonoShim.cloneKey.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.cloneKey.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.cloneKey.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.cloneKey_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.cloneKey_norm_of_norm": [
+      "propext"
+    ],
+    "Toy.MonoShim.cloneSrc": [
+      "propext"
+    ],
+    "Toy.MonoShim.cloneSrc.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.cloneSrc.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.cloneSrc.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.cloneSrc.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.closed_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.closed_excludes_link": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.closed_of_edgesIn_covering_total_canonicalRefs_instDefined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.closed_target_meets_specs_in_source_semantics": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.closed_target_meets_specs_of_generic_impl_synth_verified": [
+      "propext"
+    ],
+    "Toy.MonoShim.collect": [
+      "propext"
+    ],
+    "Toy.MonoShim.collectGo": [
+      "propext"
+    ],
+    "Toy.MonoShim.collectGo.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.collectGo.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.collectGo.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.collectGo.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.collectGo.match_1": [],
+    "Toy.MonoShim.collectGo_complete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.collectGo_schedBump_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.collectGo_sound": [
+      "propext"
+    ],
+    "Toy.MonoShim.collect_canonicalKeys_of_assocNormal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.collect_mem_iff_reach": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.collect_order_independent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.collect_rootsIn_edgesIn": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.collect_stdCfg_closed_and_adequate_of_assocNormal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.collect_terminates_of_rankCheck_of_assocNormal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.collected_set_includes_dead_code_not_minimal": [
+      "propext"
+    ],
+    "Toy.MonoShim.coversRefs_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.coversRefs_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.dead_undefined_call_never_links": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.deterministicUnits_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.deterministic_units_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.edgesAvail": [
+      "propext"
+    ],
+    "Toy.MonoShim.edgesIn_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.edgesM": [
+      "propext"
+    ],
+    "Toy.MonoShim.edgesM.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.edgesM.match_1": [],
+    "Toy.MonoShim.edgesM_norm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.execS": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_10": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_11": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_12": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_13": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_14": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_15": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_16": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_17": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_6": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_7": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_8": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_9": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.match_10": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.match_13": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.match_15": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.match_18": [],
+    "Toy.MonoShim.execS.match_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.execS.match_8": [],
+    "Toy.MonoShim.execS_congr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.execS_no_link": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.fifo": [],
+    "Toy.MonoShim.fifo.eq_1": [],
+    "Toy.MonoShim.fifo_lifo_same_set_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.fifo_ok": [
+      "propext"
+    ],
+    "Toy.MonoShim.full_edges_close_missing_edge_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.genericVerified_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.generic_verified_right_at_conforming_impl": [
+      "propext"
+    ],
+    "Toy.MonoShim.generic_verified_wrong_at_nonconforming_impl": [
+      "propext"
+    ],
+    "Toy.MonoShim.glueKey4a": [],
+    "Toy.MonoShim.glueKey4a.eq_1": [],
+    "Toy.MonoShim.glueSrc": [
+      "propext"
+    ],
+    "Toy.MonoShim.glueSrc.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.glueSrc.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.glueSrc.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.glueSrc.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.glueSrc.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.glueSrc.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.glueSrc_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.glueSrc_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.glue_pair_unwind_drops_remaining_field_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.grows_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.implLookup": [],
+    "Toy.MonoShim.inadmissible_first_scheduler_breaks_order_independence": [
+      "propext"
+    ],
+    "Toy.MonoShim.inadmissible_on_demand_scheduler_breaks_precomputed_equality": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.inadmissible_scheduler_breaks_precomputed_equality": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.inadmissible_scheduler_breaks_termination": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.inadmissible_scheduler_misses_keys": [
+      "propext"
+    ],
+    "Toy.MonoShim.inadmissible_second_scheduler_breaks_order_independence": [
+      "propext"
+    ],
+    "Toy.MonoShim.instDecidableCanonicalKeys": [
+      "propext"
+    ],
+    "Toy.MonoShim.instDecidableCanonicalRefs": [
+      "propext"
+    ],
+    "Toy.MonoShim.instDecidableClosed": [
+      "propext"
+    ],
+    "Toy.MonoShim.instDecidableEdgesIn": [
+      "propext"
+    ],
+    "Toy.MonoShim.instDecidableEqKey": [],
+    "Toy.MonoShim.instDecidableEqKey.decEq": [],
+    "Toy.MonoShim.instDecidableEqKey.decEq.match_1": [],
+    "Toy.MonoShim.instDecidableEqRes": [],
+    "Toy.MonoShim.instDecidableEqRes.decEq": [],
+    "Toy.MonoShim.instDecidableEqRes.decEq.match_1": [],
+    "Toy.MonoShim.instDecidableEqSlotVal": [],
+    "Toy.MonoShim.instDecidableEqSlotVal.decEq": [],
+    "Toy.MonoShim.instDecidableEqSlotVal.decEq.match_1": [],
+    "Toy.MonoShim.instDecidableEqSt": [],
+    "Toy.MonoShim.instDecidableEqSt.decEq": [],
+    "Toy.MonoShim.instDecidableEqSt.decEq.match_1": [],
+    "Toy.MonoShim.instDecidableEqStmt": [],
+    "Toy.MonoShim.instDecidableEqStmt.decEq": [],
+    "Toy.MonoShim.instDecidableEqStmt.decEq.match_1": [],
+    "Toy.MonoShim.instDecidableEqTy": [],
+    "Toy.MonoShim.instDecidableEqTy.decEq": [],
+    "Toy.MonoShim.instDecidableEqTy.decEq.match_1": [],
+    "Toy.MonoShim.instDecidableInstDefined": [
+      "propext"
+    ],
+    "Toy.MonoShim.instDecidableRootsIn": [
+      "propext"
+    ],
+    "Toy.MonoShim.instDecidableSynthTotal": [
+      "propext"
+    ],
+    "Toy.MonoShim.instDefined_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs.eq_6": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs.eq_7": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs.eq_8": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.instRefs_of_refs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.instReprFnDef": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprFnDef.repr": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprImplEntry": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprImplEntry.repr": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprKey": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprKey.repr": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprKey.repr.match_1": [],
+    "Toy.MonoShim.instReprRes": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprRes.repr": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprRes.repr.match_1": [],
+    "Toy.MonoShim.instReprSlotVal": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprSlotVal.repr": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprSlotVal.repr.match_1": [],
+    "Toy.MonoShim.instReprSt": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprSt.repr": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprStmt": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprStmt.repr": [
+      "propext"
+    ],
+    "Toy.MonoShim.instReprStmt.repr.match_1": [],
+    "Toy.MonoShim.instReprTy": [],
+    "Toy.MonoShim.instReprTy.repr": [],
+    "Toy.MonoShim.instReprTy.repr.match_1": [],
+    "Toy.MonoShim.isShim_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.isShim_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.keyDepth": [
+      "propext"
+    ],
+    "Toy.MonoShim.keyDepth.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.keyDepth.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.keyDepth.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.key_norm_idem_of_assocNormal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.ladder": [],
+    "Toy.MonoShim.ladder.eq_1": [],
+    "Toy.MonoShim.ladder.eq_2": [],
+    "Toy.MonoShim.ladder.eq_def": [],
+    "Toy.MonoShim.ladder.match_1": [],
+    "Toy.MonoShim.ladderNoCleanup": [],
+    "Toy.MonoShim.ladderNoCleanup.match_1": [],
+    "Toy.MonoShim.ladderNoCleanup_ne_cloneAgg": [
+      "propext"
+    ],
+    "Toy.MonoShim.ladder_bodyEquiv_cloneAgg": [
+      "propext"
+    ],
+    "Toy.MonoShim.ladder_cloneAgg_three_fields_reverse_cleanup_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.ladder_cloneAgg_unwind_and_abort_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.ladder_drop_refs_missing_break_closure": [
+      "propext"
+    ],
+    "Toy.MonoShim.ladder_exec_eq_cloneAgg": [
+      "propext"
+    ],
+    "Toy.MonoShim.ladder_post": [
+      "propext"
+    ],
+    "Toy.MonoShim.ladder_shape_example": [],
+    "Toy.MonoShim.lb_cloneKey": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.lb_refs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.le_maxUpTo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.le_maxUpTo.match_1_1": [],
+    "Toy.MonoShim.le_methLb": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.le_rtSum": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.le_rtSum.match_1_1": [],
+    "Toy.MonoShim.lifo": [],
+    "Toy.MonoShim.lifo.eq_1": [],
+    "Toy.MonoShim.lifo_ok": [
+      "propext"
+    ],
+    "Toy.MonoShim.linkUnits": [
+      "propext"
+    ],
+    "Toy.MonoShim.linkUnits.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.linkUnits.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.linkUnits.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.linkUnits.match_1": [],
+    "Toy.MonoShim.linkUnits_eq_tableM_of_deterministic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.list_keyDepth_bounded": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.litM": [],
+    "Toy.MonoShim.litM_assoc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.litM_clones": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.litM_drops": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.litM_fns": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.litM_impls": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.litM_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.litM_roots": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.lookup_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.maxUpTo": [],
+    "Toy.MonoShim.maxUpTo.eq_1": [],
+    "Toy.MonoShim.maxUpTo.eq_2": [],
+    "Toy.MonoShim.maxUpTo.eq_def": [],
+    "Toy.MonoShim.meetsAt_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.meetsAt_tableM_iff_srcDef_of_adequacy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.meetsAt_tableM_iff_srcDef_of_closed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.mem_allKeys": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.mem_allLists": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.mem_allLists.match_1_1": [],
+    "Toy.MonoShim.mem_allTys": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.mem_edgesM_rt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.methLb": [],
+    "Toy.MonoShim.natLookup": [],
+    "Toy.MonoShim.no_source_only_verdict_correct_for_every_synthesizer": [
+      "propext"
+    ],
+    "Toy.MonoShim.noncanonical_key_breaks_canonicalRefs": [
+      "propext"
+    ],
+    "Toy.MonoShim.noncanonical_key_breaks_source_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.noncanonical_refs_break_closure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.noncanonical_root_breaks_adequacy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.nonclosed_target_breaks_source_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.nonclosed_target_breaks_spec_transfer": [
+      "propext"
+    ],
+    "Toy.MonoShim.nonconforming_impl_breaks_source_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.nondeterministic_units_break_link_equality": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.nondeterministic_units_link_order_matters": [
+      "propext"
+    ],
+    "Toy.MonoShim.nonnormal_assoc_breaks_termination": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.norm_box_inv": [
+      "propext"
+    ],
+    "Toy.MonoShim.norm_cloneKey_kind": [
+      "propext"
+    ],
+    "Toy.MonoShim.norm_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.norm_pair_inv": [
+      "propext"
+    ],
+    "Toy.MonoShim.norm_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.not_forall_runM_eq_runS_of_ne": [
+      "propext"
+    ],
+    "Toy.MonoShim.operand_edges_missing_break_closure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.partial_synth_breaks_closure": [
+      "propext"
+    ],
+    "Toy.MonoShim.per_crate_collection_has_holes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.polyrec_collector_diverges": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.polyrec_fails_rankCheck_and_diverges": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.polyrec_inadmissible_scheduler_terminates": [
+      "propext"
+    ],
+    "Toy.MonoShim.polyrec_instances_reachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.polyrec_runs_finite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.postClean": [
+      "propext"
+    ],
+    "Toy.MonoShim.postClean.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.postClean.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.postClean.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.pre2a": [],
+    "Toy.MonoShim.preCfg": [],
+    "Toy.MonoShim.preCfg.eq_1": [],
+    "Toy.MonoShim.precomputed_and_on_demand_synthesis_same_target": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.precomputed_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rank5ok": [],
+    "Toy.MonoShim.rank5ok.match_1": [],
+    "Toy.MonoShim.rankCheck": [
+      "propext"
+    ],
+    "Toy.MonoShim.rankCheck.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.rankCheck.match_1": [],
+    "Toy.MonoShim.rankCheck_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rankCheck_not_necessary": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.reach_congr": [],
+    "Toy.MonoShim.reach_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.reach_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.reach_subset_of_rootsIn_edgesIn": [],
+    "Toy.MonoShim.refs": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_10": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_11": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_12": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_13": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_14": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_15": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_16": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_17": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_6": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_7": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_8": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_9": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.refsNoCleanup": [
+      "propext"
+    ],
+    "Toy.MonoShim.refsNoCleanup.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.refsNoOperand": [
+      "propext"
+    ],
+    "Toy.MonoShim.refsNoOperand.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.refsNoReifyShim": [
+      "propext"
+    ],
+    "Toy.MonoShim.refsNoVtable": [
+      "propext"
+    ],
+    "Toy.MonoShim.refsNoVtable.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs_in_of_covering": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.refs_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs_norm_canonical": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.refs_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.refs_subst_norm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.reifyKey": [],
+    "Toy.MonoShim.reifyKey.eq_1": [],
+    "Toy.MonoShim.reifyKey_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.reifyKey_norm_of_norm": [
+      "propext"
+    ],
+    "Toy.MonoShim.reify_shim_edges_missing_break_closure": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.root_outside_target_breaks_adequacy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rootsIn_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.rtCntNot": [
+      "propext"
+    ],
+    "Toy.MonoShim.rtCntNot.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.rtCntNot.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.rtCntNot.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.rtCntNot.match_1": [],
+    "Toy.MonoShim.rtCntNot_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rtCntNot_le.match_1_1": [],
+    "Toy.MonoShim.rtCntNot_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rtCntNot_lt.match_1_1": [],
+    "Toy.MonoShim.rtSum": [],
+    "Toy.MonoShim.rtSum.eq_1": [],
+    "Toy.MonoShim.rtSum.eq_2": [],
+    "Toy.MonoShim.rtSum.eq_def": [],
+    "Toy.MonoShim.rtSum.match_1": [],
+    "Toy.MonoShim.rt_arg_bound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rt_assocLookup_some": [
+      "propext"
+    ],
+    "Toy.MonoShim.rt_base_arith": [
+      "propext"
+    ],
+    "Toy.MonoShim.rt_child_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rt_cloneKey_not_inst": [
+      "propext"
+    ],
+    "Toy.MonoShim.rt_clone_case": [
+      "propext"
+    ],
+    "Toy.MonoShim.rt_collectGo_terminates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rt_fixed_edge": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rt_getD_mem_or": [
+      "propext"
+    ],
+    "Toy.MonoShim.rt_getElem?_some": [
+      "propext"
+    ],
+    "Toy.MonoShim.rt_grow_arith": [
+      "propext"
+    ],
+    "Toy.MonoShim.rt_lab_bound": [
+      "propext"
+    ],
+    "Toy.MonoShim.rt_lookup_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rt_lookup_mem.match_1_1": [],
+    "Toy.MonoShim.rt_main": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rt_map_eq_self": [
+      "propext"
+    ],
+    "Toy.MonoShim.rt_map_eq_self.match_1_1": [],
+    "Toy.MonoShim.rt_mono_arith": [],
+    "Toy.MonoShim.rt_rankCheck": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rt_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.rt_ty_bound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.runKey": [
+      "propext"
+    ],
+    "Toy.MonoShim.runKey.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.runKey.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.runKey.eq_def": [
+      "propext"
+    ],
+    "Toy.MonoShim.runKey.match_1": [],
+    "Toy.MonoShim.runKey.match_3": [],
+    "Toy.MonoShim.runM": [
+      "propext"
+    ],
+    "Toy.MonoShim.runM.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.runM_eq_runS_of_rootsIn_edgesIn_covering_agreeing_canonical": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.runM_eq_runS_on_target": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.runS": [
+      "propext"
+    ],
+    "Toy.MonoShim.runS.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.schedBump": [
+      "propext"
+    ],
+    "Toy.MonoShim.schedBump.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.schedBump.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.schedBump.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.schedBump_not_ok": [
+      "propext"
+    ],
+    "Toy.MonoShim.schedDrop": [],
+    "Toy.MonoShim.schedOK_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.schedOK_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.source_defs_verified_yet_program_violates_spec_under_reverse_glue": [
+      "propext"
+    ],
+    "Toy.MonoShim.source_transfer_without_covering_or_edge_closure": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.specs_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.specs_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef0": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef0.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef0.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef0.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef0.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef0.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef0.eq_6": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef0.eq_7": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef0.match_1": [],
+    "Toy.MonoShim.srcDef_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcDef_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.srcVerdict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.srcVerdict.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.srcVerdict_correct_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.srcVerdict_correct_of_adequacy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.st0": [],
+    "Toy.MonoShim.st0.eq_1": [],
+    "Toy.MonoShim.stale_precomputed_table_changes_target": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.stdCfg": [
+      "propext"
+    ],
+    "Toy.MonoShim.stdCfg.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.stdCfg_covers": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthAgrees_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthAgrees_pos_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.synthRev": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthRev.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd.eq_2": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd.eq_3": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd.eq_4": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd.eq_5": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd.match_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd_agrees": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd_neg_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd_optEquiv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.synthStd_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthTotal_examples": [
+      "propext"
+    ],
+    "Toy.MonoShim.synthTotal_of_synthAgrees": [
+      "propext"
+    ],
+    "Toy.MonoShim.synth_disagreement_breaks_adequacy": [
+      "propext"
+    ],
+    "Toy.MonoShim.synth_disagreement_breaks_source_transfer": [
+      "propext"
+    ],
+    "Toy.MonoShim.tableM": [
+      "propext"
+    ],
+    "Toy.MonoShim.tableM.eq_1": [
+      "propext"
+    ],
+    "Toy.MonoShim.target_not_edge_closed_breaks_closure_and_adequacy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.ty_norm_idem_of_assocNormal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.uncovering_units_break_link_equality": [
+      "propext"
+    ],
+    "Toy.MonoShim.undefined_instance_breaks_closure": [
+      "propext"
+    ],
+    "Toy.MonoShim.unitA": [],
+    "Toy.MonoShim.unitA.eq_1": [],
+    "Toy.MonoShim.unitB": [],
+    "Toy.MonoShim.unitB.eq_1": [],
+    "Toy.MonoShim.unverified_generic_body_breaks_source_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.unverified_generic_body_breaks_spec_transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.unverified_synth_breaks_source_transfer": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.verifiedBody_neg_example": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MonoShim.verifiedBody_pos_example": [
+      "propext"
+    ],
+    "Toy.MonoShim.verified_emit": [
+      "propext"
+    ],
+    "Toy.MonoShim.verified_glue_pair": [
+      "propext"
+    ],
+    "Toy.MonoShim.verified_single_call": [
+      "propext"
+    ],
+    "Toy.MonoShim.vtEntries": [],
+    "Toy.MonoShim.vtEntries.eq_1": [],
+    "Toy.MonoShim.vtable_edges_missing_break_closure": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

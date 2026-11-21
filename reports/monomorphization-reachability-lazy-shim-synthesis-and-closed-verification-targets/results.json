@@ -1,0 +1,944 @@
+[
+  {
+    "id": "R1-closure",
+    "lean": "Toy.MonoShim.closed_of_edgesIn_covering_total_canonicalRefs_instDefined",
+    "lean_names": [
+      "Toy.MonoShim.implLookup",
+      "Toy.MonoShim.ImplEntry",
+      "Toy.MonoShim.Ty.norm",
+      "Toy.MonoShim.assocNormal_examples",
+      "Toy.MonoShim.ty_norm_idem_of_assocNormal",
+      "Toy.MonoShim.Stmt.subst",
+      "Toy.MonoShim.Stmt.norm",
+      "Toy.MonoShim.isShim_pos_example",
+      "Toy.MonoShim.isShim_neg_example",
+      "Toy.MonoShim.norm_pos_example",
+      "Toy.MonoShim.norm_neg_example",
+      "Toy.MonoShim.refs",
+      "Toy.MonoShim.reifyKey",
+      "Toy.MonoShim.refs_pos_example",
+      "Toy.MonoShim.refs_neg_example",
+      "Toy.MonoShim.reifyKey_examples",
+      "Toy.MonoShim.cloneKey_examples",
+      "Toy.MonoShim.execS",
+      "Toy.MonoShim.runKey",
+      "Toy.MonoShim.Res",
+      "Toy.MonoShim.srcDef",
+      "Toy.MonoShim.glueSrc_pos_example",
+      "Toy.MonoShim.glueSrc_neg_example",
+      "Toy.MonoShim.glue_pair_unwind_drops_remaining_field_example",
+      "Toy.MonoShim.srcDef_pos_example",
+      "Toy.MonoShim.srcDef_neg_example",
+      "Toy.MonoShim.glueSrc",
+      "Toy.MonoShim.srcDef0",
+      "Toy.MonoShim.cloneSrc",
+      "Toy.MonoShim.cloneKey",
+      "Toy.MonoShim.synthStd",
+      "Toy.MonoShim.synthStd_pos_example",
+      "Toy.MonoShim.synthStd_neg_example",
+      "Toy.MonoShim.ladder_shape_example",
+      "Toy.MonoShim.reach_pos_example",
+      "Toy.MonoShim.reach_neg_example",
+      "Toy.MonoShim.schedOK_pos_example",
+      "Toy.MonoShim.schedOK_neg_example",
+      "Toy.MonoShim.edgesIn_examples",
+      "Toy.MonoShim.rootsIn_examples",
+      "Toy.MonoShim.closed_examples",
+      "Toy.MonoShim.coversRefs_pos_example",
+      "Toy.MonoShim.coversRefs_neg_example",
+      "Toy.MonoShim.bodyEquiv_pos_example",
+      "Toy.MonoShim.bodyEquiv_neg_example",
+      "Toy.MonoShim.synthAgrees_pos_example",
+      "Toy.MonoShim.synthAgrees_neg_example",
+      "Toy.MonoShim.canonical_pos_example",
+      "Toy.MonoShim.canonical_neg_example",
+      "Toy.MonoShim.instDefined_examples",
+      "Toy.MonoShim.synthTotal_examples",
+      "Toy.MonoShim.GenericVerified",
+      "Toy.MonoShim.SatOut",
+      "Toy.MonoShim.MeetsAt",
+      "Toy.MonoShim.srcVerdict",
+      "Toy.MonoShim.Program",
+      "Toy.MonoShim.Key",
+      "Toy.MonoShim.Spec",
+      "Toy.MonoShim.verifiedBody_pos_example",
+      "Toy.MonoShim.verifiedBody_neg_example",
+      "Toy.MonoShim.specs_pos_example",
+      "Toy.MonoShim.specs_neg_example",
+      "Toy.MonoShim.genericVerified_neg_example",
+      "Toy.MonoShim.meetsAt_examples",
+      "Toy.MonoShim.rankCheck",
+      "Toy.MonoShim.instRefs",
+      "Toy.MonoShim.deterministicUnits_examples",
+      "Toy.MonoShim.rankCheck_examples",
+      "Toy.MonoShim.grows_examples",
+      "Toy.MonoShim.edgesM",
+      "Toy.MonoShim.SynthTotal",
+      "Toy.MonoShim.cleanup_edges_missing_break_closure",
+      "Toy.MonoShim.operand_edges_missing_break_closure",
+      "Toy.MonoShim.reify_shim_edges_missing_break_closure",
+      "Toy.MonoShim.synthTotal_of_synthAgrees",
+      "Toy.MonoShim.assocNormal",
+      "Toy.MonoShim.canonicalRefs_stdCfg_of_assocNormal",
+      "Toy.MonoShim.Pall",
+      "Toy.MonoShim.Closed",
+      "Toy.MonoShim.MonoCfg",
+      "Toy.MonoShim.CoversRefs",
+      "Toy.MonoShim.CanonicalRefs",
+      "Toy.MonoShim.InstDefined",
+      "Toy.MonoShim.EdgesIn",
+      "Toy.MonoShim.Key.isShim",
+      "Toy.MonoShim.FnDef",
+      "Toy.MonoShim.Program.sig",
+      "Toy.MonoShim.Ty.subst",
+      "Toy.MonoShim.Key.subst",
+      "Toy.MonoShim.assocLookup",
+      "Toy.MonoShim.Key.norm",
+      "Toy.MonoShim.vtEntries",
+      "Toy.MonoShim.SlotVal",
+      "Toy.MonoShim.cleanupDrops",
+      "Toy.MonoShim.aggClone",
+      "Toy.MonoShim.natLookup",
+      "Toy.MonoShim.bodyM",
+      "Toy.MonoShim.collectGo",
+      "Toy.MonoShim.lifo",
+      "Toy.MonoShim.BodyEquiv",
+      "Toy.MonoShim.OptEquiv",
+      "Toy.MonoShim.VerifiedBody",
+      "Toy.MonoShim.Key.isImpl",
+      "Toy.MonoShim.Ty.size",
+      "Toy.MonoShim.Ty.hasParam",
+      "Toy.MonoShim.P9assoc",
+      "Toy.MonoShim.PdropUnwind",
+      "Toy.MonoShim.PdropAbort",
+      "Toy.MonoShim.P3",
+      "Toy.MonoShim.fifo_ok",
+      "Toy.MonoShim.lifo_ok",
+      "Toy.MonoShim.ladder_bodyEquiv_cloneAgg",
+      "Toy.MonoShim.ladderNoCleanup",
+      "Toy.MonoShim.Pnc",
+      "Toy.MonoShim.Pundef",
+      "Toy.MonoShim.cfgNoSynth",
+      "Toy.MonoShim.P4b",
+      "Toy.MonoShim.Q4b",
+      "Toy.MonoShim.appends",
+      "Toy.MonoShim.T4b",
+      "Toy.MonoShim.P4bad",
+      "Toy.MonoShim.unitA",
+      "Toy.MonoShim.unitB",
+      "Toy.MonoShim.P5ok",
+      "Toy.MonoShim.rank5ok",
+      "Toy.MonoShim.Tall",
+      "Toy.MonoShim.FrameIn",
+      "Toy.MonoShim.postClean",
+      "Toy.MonoShim.P3abort",
+      "Toy.MonoShim.P3three",
+      "Toy.MonoShim.cfg3",
+      "Toy.MonoShim.T3",
+      "Toy.MonoShim.Q2c",
+      "Toy.MonoShim.schedDrop",
+      "Toy.MonoShim.P5flat",
+      "Toy.MonoShim.Pempty",
+      "Toy.MonoShim.schedBump",
+      "Toy.MonoShim.P5mut",
+      "Toy.MonoShim.glueKey4a",
+      "Toy.MonoShim.Pnc0"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "In the toy pipeline, for every program `P`, configuration `cfg` and key list `T`: if `T` is closed under the collector's edge function `edgesM P cfg` (HE), the edge function `cfg.E` covers every runtime reference of every body (H1: `call`, `invoke`, `mcall`, operand-position `reify`, every trait method at an unsized type plus that type's drop glue, drops on normal and cleanup paths, clones, and the clones and drops of `cloneAgg`), the synthesizer is defined on every shim key of `T` (H2t), every key referenced by a body the compiler emits for a key of `T` is in normal form (H3b), and the source defines every non-shim key of `T` (H0), then the table restricted to `T` is closed: every key of `T` has a body and every runtime reference of that body lies in `T`.",
+    "hypotheses": [
+      {
+        "name": "hE (HE): EdgesIn (edgesM P cfg) T",
+        "purpose": "every emitted edge must land in T",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.target_not_edge_closed_breaks_closure_and_adequacy",
+        "witness_class": "a 2-function program whose target stops at the root"
+      },
+      {
+        "name": "h1 (H1): CoversRefs P.sig cfg.E",
+        "purpose": "a missed reference kind leaves its target outside T",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.vtable_edges_missing_break_closure",
+        "witness_class": "a 1-function program with one impl; SynthTotal holds non-vacuously"
+      },
+      {
+        "name": "h2t (H2t): SynthTotal cfg T",
+        "purpose": "a shim key without a synthesized body is a hole",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.partial_synth_breaks_closure",
+        "witness_class": "a 2-function program with one destructor and a synthesizer returning none"
+      },
+      {
+        "name": "h3b (H3b): CanonicalRefs P cfg T",
+        "purpose": "the collector records normalized keys; a referenced key that is not normal is missed",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.noncanonical_refs_break_closure",
+        "witness_class": "a 3-function program with a chained associated-type table"
+      },
+      {
+        "name": "h0 (H0): InstDefined P T",
+        "purpose": "a call to an undefined function is a hole",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.undefined_instance_breaks_closure",
+        "witness_class": "a 1-function program calling an undefined function"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Pall with the standard pipeline",
+    "nonvacuity_witness_lean": "Toy.MonoShim.Pall_all_hypotheses_hold",
+    "non_claims": [
+      "Does not show that any algorithm computes such a `T` (R7) or that collection terminates (R8, R9).",
+      "`Closed` is key membership of runtime references; it does not by itself give behavioural agreement (R2).",
+      "None of the constructs listed as absent in §1.1 is covered. (H1) is stated against the toy's own `refs`; nothing is claimed about which edges rustc's collector follows.",
+      "The closed set need not be dynamically minimal (R13).",
+      "`glueSrc` models the two-field drop ladder (§1.3); drops through a panicking cleanup drop abort, and nothing further about rustc's drop elaboration (drop flags, async drop, enums) is modelled.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_monomorphize/src/collector.rs module documentation L1-195 (documentation)",
+      "Tolmach and Oliva, 'From ML to Ada: Strongly-typed language interoperability via source translation', Journal of Functional Programming 8(4):367-412, 1998, doi:10.1017/S0956796898003086",
+      "Weeks, 'Whole-program compilation in MLton', Proc. 2006 ACM Workshop on ML, p. 1, doi:10.1145/1159876.1159877 (one-page invited-talk abstract)",
+      "Wu, Wang, Yu, Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1, 2026 (a workshop-presentation proposal, submitted to Rust Verify 2026, describing ongoing work on a sequential subset of Rust without polymorphism or traits; its verified frontend includes drop elaboration and 'generates drop glue functions for types that require destructors')"
+    ],
+    "design_question": "Which reference kinds must a collector follow, and what must a synthesizer supply, for a whole-program verification target to have no undefined symbols?"
+  },
+  {
+    "id": "R2-adequacy",
+    "lean": "Toy.MonoShim.runM_eq_runS_of_rootsIn_edgesIn_covering_agreeing_canonical",
+    "lean_names": [
+      "Toy.MonoShim.runM",
+      "Toy.MonoShim.runS",
+      "Toy.MonoShim.runKey",
+      "Toy.MonoShim.execS_congr",
+      "Toy.MonoShim.Closed",
+      "Toy.MonoShim.Res",
+      "Toy.MonoShim.adequacy_holds_on_nonclosed_target",
+      "Toy.MonoShim.Ty.norm",
+      "Toy.MonoShim.assocNormal",
+      "Toy.MonoShim.collect_canonicalKeys_of_assocNormal",
+      "Toy.MonoShim.canonicalRefs_stdCfg_of_assocNormal",
+      "Toy.MonoShim.St",
+      "Toy.MonoShim.SynthAgrees",
+      "Toy.MonoShim.CanonicalKeys",
+      "Toy.MonoShim.RootsIn",
+      "Toy.MonoShim.closed_excludes_link",
+      "Toy.MonoShim.dead_undefined_call_never_links",
+      "Toy.MonoShim.PdeadUndef",
+      "Toy.MonoShim.TdeadUndef"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every program, configuration, root list and key list `T`: if every root is in `T` (HR), `T` is closed under the collector's edge function (HE), the edge function covers every runtime reference (H1), on every shim key of `T` the synthesized body is defined exactly when the source construct is and, when both are defined, is behaviourally equivalent to it under every call oracle (H2), every key of `T` is in normal form (H3a), and every key referenced by a body the compiler emits for a key of `T` is in normal form (H3b), then for every root, every fuel and every initial state, the mono semantics restricted to `T` (`runM`) yields the same outcome and final state as the source semantics (`runS`); both are runs of the shared interpreter `runKey`.",
+    "hypotheses": [
+      {
+        "name": "hR (HR): RootsIn roots T",
+        "purpose": "a root outside T is a link error",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.root_outside_target_breaks_adequacy",
+        "witness_class": "a 2-function program and the empty target"
+      },
+      {
+        "name": "hE (HE): EdgesIn (edgesM P cfg) T",
+        "purpose": "every emitted edge must land in T",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.target_not_edge_closed_breaks_closure_and_adequacy",
+        "witness_class": "a 2-function program whose target stops at the root"
+      },
+      {
+        "name": "h1 (H1): CoversRefs P.sig cfg.E",
+        "purpose": "every key the interpreter may request must be collected",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.cleanup_edges_missing_break_closure",
+        "witness_class": "a 2-function program with a cleanup-only drop"
+      },
+      {
+        "name": "h2 (H2): SynthAgrees P cfg T",
+        "purpose": "the mono run executes synthesized bodies",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.synth_disagreement_breaks_adequacy",
+        "witness_class": "reverse-declaration-order glue for a 2-field pair"
+      },
+      {
+        "name": "h3a (H3a): CanonicalKeys P T",
+        "purpose": "the source normalizes a requested key while the table is keyed literally",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.noncanonical_root_breaks_adequacy",
+        "witness_class": "a program without functions, one associated type, a root over an unnormalized projection"
+      },
+      {
+        "name": "h3b (H3b): CanonicalRefs P cfg T",
+        "purpose": "referrer keys must match definer keys",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.noncanonical_refs_break_closure",
+        "witness_class": "a 3-function program with a chained associated-type table"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "Pall with the standard pipeline",
+    "nonvacuity_witness_lean": "Toy.MonoShim.Pall_all_hypotheses_hold",
+    "non_claims": [
+      "R2 does not assume `Closed`, (H2t) or (H0): its hypotheses can hold on a target with a key that is undefined both in the table and in the source, and `runM` and `runS` can then agree by both returning the same `Res.link` outcome (`adequacy_holds_on_nonclosed_target`: every hypothesis of R2 holds on a target that is not closed, and both runs from the root end in `Res.link`).",
+      "The hypotheses of R2 do not exclude `Res.link` outcomes (the run in `adequacy_holds_on_nonclosed_target` ends in one). On a closed target, no run from a key of the target ends in `Res.link` (`closed_excludes_link`), and R1 derives closedness from its hypotheses; closedness is not necessary for runs from the roots to avoid `Res.link`: in `dead_undefined_call_never_links` the hypotheses of R2 hold, the target is neither closed nor source-defined, and no run from the root ends in `Res.link` (the undefined call is unreachable).",
+      "`S` and `M` are the same interpreter with two resolvers; agreement is equality of fuel-indexed outcomes, not a bisimulation between independently defined semantics, and `S` is a toy, not the semantics of Rust.",
+      "The claim quantifies over runs produced by `runKey` at every fuel (out-of-fuel outcomes included). (H2) asks for equivalence under every call oracle, which is stronger than any single program needs; weaker notions are not examined. \"Link error\" is the toy's undefined-key outcome; nothing is claimed about symbol mangling or linkers.",
+      "`Ty.norm` is a single pass (§1.1); if `assocNormal P = true` and every root is in normal form, then (H3a) holds for every target that the collector returns when run with an admissible scheduler (`SchedOK`) (`collect_canonicalKeys_of_assocNormal`), and for the standard configuration (H3b) follows from (H3a) and `assocNormal P = true` for every key list `T` (`canonicalRefs_stdCfg_of_assocNormal`, R12); no other normalization strategy is examined.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "Griesemer, Hu, Kokke, Lange, Taylor, Toninho, Wadler, Yoshida, 'Featherweight Go', Proc. ACM Program. Lang. 4 (OOPSLA), pp. 1-29, 2020, doi:10.1145/3428217; arXiv:2005.11710v4: Theorem 5.4 (Bisimulation) for the FGG-to-FG monomorphisation (paper proof, different calculus)",
+      "Ellis, Zhu, Yoshida, Song, 'Generic Go to Go: Dictionary-Passing, Monomorphisation, and Hybrid', Proc. ACM Program. Lang. 6 (OOPSLA2), pp. 1207-1235, 2022, doi:10.1145/3563331 (main proved behavioural equivalence is for the dictionary-passing translation)"
+    ],
+    "design_question": "Under which conditions may a verifier reason about the collected monomorphic program instead of the generic source, or vice versa?"
+  },
+  {
+    "id": "R3-missing-edge-kinds",
+    "lean": [
+      "Toy.MonoShim.cleanup_edges_missing_break_closure",
+      "Toy.MonoShim.vtable_edges_missing_break_closure",
+      "Toy.MonoShim.operand_edges_missing_break_closure",
+      "Toy.MonoShim.reify_shim_edges_missing_break_closure"
+    ],
+    "lean_names": [
+      "Toy.MonoShim.refsNoCleanup",
+      "Toy.MonoShim.refsNoVtable",
+      "Toy.MonoShim.refsNoOperand",
+      "Toy.MonoShim.refsNoReifyShim",
+      "Toy.MonoShim.Res",
+      "Toy.MonoShim.reifyKey",
+      "Toy.MonoShim.cfg2a",
+      "Toy.MonoShim.T2a",
+      "Toy.MonoShim.st0",
+      "Toy.MonoShim.P2b",
+      "Toy.MonoShim.cfg2b",
+      "Toy.MonoShim.T2b",
+      "Toy.MonoShim.P2c",
+      "Toy.MonoShim.cfg2c",
+      "Toy.MonoShim.T2c",
+      "Toy.MonoShim.P2d",
+      "Toy.MonoShim.cfg2d",
+      "Toy.MonoShim.T2d"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "For each of four collector edge functions that omit one runtime reference kind — (a) drops on cleanup paths (`refsNoCleanup`), (b) the method entries of a vtable created by unsizing (`refsNoVtable`), (c) functions reified in operand position (`refsNoOperand`), (d) the reify shim a `trackCaller` function needs when reified (`refsNoReifyShim`) — there is a concrete program on which every other hypothesis of R1 and of R2 holds (roots in `T`, edge-closure, synthesizer agreement and totality, source definedness, canonical keys and references), the collected target is not closed, the adequacy conclusion fails, and the run of the collected program from the root ends in `Res.link` of a specific missing key, while the source run completes or unwinds normally.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "each theorem is a concrete instance",
+    "positive_control_lean": "Toy.MonoShim.full_edges_close_missing_edge_examples",
+    "non_claims": [
+      "Each witness is one small program; it shows that the named edge kind cannot be dropped from (H1) in the toy, not how often real programs need it.",
+      "No claim that rustc misses any edge.",
+      "The reify-shim case models the ABI mismatch as a distinct key; caller locations are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, collector.rs L109-111: 'whenever we encounter a function or method in operand position, we treat it as a use of the current mono item. Calls are just a special case of that.' (documentation)",
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, collector.rs L122-124: 'Since the resulting wide-pointer contains a reference to a vtable, we need to instantiate all dyn-compatible methods of the trait, as we need to store pointers to these functions even if they never get called anywhere.' (documentation)",
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, collector.rs L114: 'Drop glue mono items are introduced by MIR drop-statements.' (documentation)",
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/ty/instance.rs L114-118 (ShimKind::Reify; #[track_caller] functions 'must have their implicit caller location argument populated for a call') (source)",
+      "The Rust Reference, rust-lang/reference at commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/attributes/codegen.md, attributes.codegen.track_caller.decay, L1047: 'coercing a function with #[track_caller] to a function pointer creates a shim' (normative)",
+      "VanHattum, Schwartz-Narbonne, Chong, Sampson, 'Verifying Dynamic Trait Objects in Rust', ICSE-SEIP 2022, pp. 321-330, doi:10.1145/3510457.3513031"
+    ],
+    "design_question": "Which edge kinds must a whole-program collector feeding a verifier follow?"
+  },
+  {
+    "id": "R4-clone-ladder-exact",
+    "lean": "Toy.MonoShim.ladder_exec_eq_cloneAgg",
+    "lean_names": [
+      "Toy.MonoShim.ladder",
+      "Toy.MonoShim.ladder_post",
+      "Toy.MonoShim.ladderNoCleanup_ne_cloneAgg",
+      "Toy.MonoShim.ladder_drop_refs_missing_break_closure",
+      "Toy.MonoShim.synthStd_optEquiv",
+      "Toy.MonoShim.synthStd_agrees",
+      "Toy.MonoShim.refs",
+      "Toy.MonoShim.Ty",
+      "Toy.MonoShim.Sig",
+      "Toy.MonoShim.Frame",
+      "Toy.MonoShim.Call"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every call oracle, every list of field types, every frame and every state, executing the explicit ladder `ladder fs` (clone field `i` left to right; if that unwinds, drop the clones of fields `i-1, …, 0`; a panic in such a drop aborts) gives exactly the same outcome, frame and state as the source aggregate clone `cloneAgg fs` (clone operands left to right; on unwinding drop the evaluated operands in reverse order of creation; a panic in cleanup aborts).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "P3: the second field's clone panics (trace [1, 2], unwind; abort with a panicking destructor); P3three: three fields, reverse cleanup [1, 2, 20, 10]",
+    "nonvacuity_witness_lean": [
+      "Toy.MonoShim.ladder_cloneAgg_unwind_and_abort_examples",
+      "Toy.MonoShim.ladder_cloneAgg_three_fields_reverse_cleanup_example"
+    ],
+    "non_claims": [
+      "Statement-level aggregates have any arity, but the toy type grammar has binary pairs and no wider tuples, so the clone shim of a toy type has two fields.",
+      "Clones are not values: events come from user `Clone`/`Drop` bodies.",
+      "`box τ` has no clone behaviour in the toy (§1.3).",
+      "Both `ladder` and `refs` of `cloneAgg` reference the drop glue of the last field, which no unwind path drops (as in rustc's unused final cleanup block); such a key can be collected without ever running.",
+      "Nothing is proved about rustc's shim implementation; the correspondence to its documented block structure is a `derived (modeling bridge)`.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/shim.rs clone_fields L658-705, comments L673-678, cleanup drop with UnwindAction::Terminate(UnwindTerminateReason::InCleanup) at L694; build_clone_shim L508-531 (source)",
+      "The Rust Reference, rust-lang/reference at commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/destructors.md, destructors.scope.intro (L58-59) and destructors.scope.operands (L352-355) (normative)"
+    ],
+    "design_question": "What must a verified clone-shim synthesizer establish, and against which source rule?"
+  },
+  {
+    "id": "R5-source-only-unsound",
+    "lean": [
+      "Toy.MonoShim.no_source_only_verdict_correct_for_every_synthesizer",
+      "Toy.MonoShim.source_defs_verified_yet_program_violates_spec_under_reverse_glue"
+    ],
+    "lean_names": [
+      "Toy.MonoShim.P4a",
+      "Toy.MonoShim.Q4a",
+      "Toy.MonoShim.GenericVerified",
+      "Toy.MonoShim.T4a",
+      "Toy.MonoShim.ImplsConform",
+      "Toy.MonoShim.cfgRev",
+      "Toy.MonoShim.glueSrc",
+      "Toy.MonoShim.cloneSrc",
+      "Toy.MonoShim.srcVerdict",
+      "Toy.MonoShim.runS",
+      "Toy.MonoShim.synth_disagreement_breaks_adequacy",
+      "Toy.MonoShim.synthRev",
+      "Toy.MonoShim.generic_verified_wrong_at_nonconforming_impl",
+      "Toy.MonoShim.stdCfg",
+      "Toy.MonoShim.SynthVerified",
+      "Toy.MonoShim.MeetsAt"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "For every Boolean verdict `V` that is a function of a program and its spec assignment (any function `Program → (Key → Spec) → Bool`, computable or not): in program `P4a` (a guard type whose destructor emits 10, a data type whose destructor emits 20, `main` drops a pair of them) with the specs `Q4a` (\"release before free\"), every generic body is verified (`GenericVerified`) and every user impl in `T4a` conforms (`ImplsConform`), and there is a configuration — the standard one or the reverse-declaration-order glue variant `cfgRev`, which differ in the synthesized glue of the pair — whose table restricted to `T4a` is closed and for which `V P4a Q4a = true` disagrees with whether `main` meets its spec in that table. Concretely, under `cfgRev` the target is closed, the user side is verified, and `main` emits `[20, 10]` and violates its spec, while under the standard configuration every key meets its spec (`P4a_std_meets_specs`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "P4a with Q4a; both configurations give a closed target with every user definition verified",
+    "nonvacuity_witness_lean": "Toy.MonoShim.P4a_std_meets_specs",
+    "positive_control_lean": [
+      "Toy.MonoShim.srcVerdict_correct_of_adequacy",
+      "Toy.MonoShim.srcVerdict_correct_example"
+    ],
+    "non_claims": [
+      "The impossibility rests on letting the synthesizer range over configurations that disagree with the source drop rule; for configurations and targets satisfying (H2) and the other hypotheses of R2 (with roots `[main]`), the verdict `srcVerdict` — a function of the program and specs alone that checks the source semantics, including the language-defined glue `glueSrc` — is correct (`srcVerdict_correct_of_adequacy`).",
+      "`srcVerdict` is noncomputable; nothing here gives a decision procedure for `MeetsAt` or claims one exists.",
+      "R5 therefore does not say that whole-program specs cannot be verified from source, nor that synthesized shims must be extracted and verified separately; it says that a verdict blind to the synthesizer cannot be correct for every synthesizer.",
+      "No program verifier is modelled; nothing here is a statement about any existing tool.",
+      "`synthRev` is a hypothetical synthesizer variant, not a claim about any compiler.",
+      "Generic verification is per instantiation (`∀ τs`).",
+      "A related but distinct failure — a generic body verified against a trait-method spec and wrong at a non-conforming user impl — is the tightness witness of `ImplsConform` in R6 (`generic_verified_wrong_at_nonconforming_impl`), not a synthesizer effect.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "The Rust Reference, rust-lang/reference at commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/destructors.md L12-14, destructors.operation: 'The fields of a [struct] are dropped in declaration order.' (L12); 'The fields of a [tuple] are dropped in order.' (L14) (normative)",
+      "Wu, Wang, Yu, Meng, 'RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust', arXiv:2602.07455v1, 2026 (a workshop-presentation proposal, submitted to Rust Verify 2026, describing ongoing work on a sequential subset of Rust without polymorphism or traits; its verified frontend includes drop elaboration and 'generates drop glue functions for types that require destructors') (an instance of the escape hatch: the synthesizer is verified against the source semantics)"
+    ],
+    "design_question": "Must a whole-program verification target contain the synthesized shims, or must the synthesizer be verified against a stated drop/clone semantics?"
+  },
+  {
+    "id": "R6-spec-transfer",
+    "lean": [
+      "Toy.MonoShim.closed_target_meets_specs_of_generic_impl_synth_verified",
+      "Toy.MonoShim.closed_target_meets_specs_in_source_semantics"
+    ],
+    "lean_names": [
+      "Toy.MonoShim.tableM",
+      "Toy.MonoShim.MeetsAt",
+      "Toy.MonoShim.runKey",
+      "Toy.MonoShim.runS",
+      "Toy.MonoShim.generic_verified_right_at_conforming_impl",
+      "Toy.MonoShim.P4a",
+      "Toy.MonoShim.runM",
+      "Toy.MonoShim.srcDef0",
+      "Toy.MonoShim.cfgRev",
+      "Toy.MonoShim.GenericVerified",
+      "Toy.MonoShim.canonicalRefs_of_closed_canonicalKeys",
+      "Toy.MonoShim.meetsAt_tableM_iff_srcDef_of_closed",
+      "Toy.MonoShim.meetsAt_tableM_iff_srcDef_of_adequacy",
+      "Toy.MonoShim.srcDef",
+      "Toy.MonoShim.SynthAgrees",
+      "Toy.MonoShim.CanonicalKeys",
+      "Toy.MonoShim.CanonicalRefs",
+      "Toy.MonoShim.Q4aRev",
+      "Toy.MonoShim.P4a_std_meets_specs_in_source_semantics",
+      "Toy.MonoShim.nonclosed_target_breaks_source_transfer",
+      "Toy.MonoShim.unverified_generic_body_breaks_source_transfer",
+      "Toy.MonoShim.nonconforming_impl_breaks_source_transfer",
+      "Toy.MonoShim.unverified_synth_breaks_source_transfer",
+      "Toy.MonoShim.synth_disagreement_breaks_source_transfer",
+      "Toy.MonoShim.noncanonical_key_breaks_source_transfer",
+      "Toy.MonoShim.PncMeth",
+      "Toy.MonoShim.TncMeth",
+      "Toy.MonoShim.source_transfer_without_covering_or_edge_closure",
+      "Toy.MonoShim.cfgJunkEdges"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every program, configuration, key list `T` and spec assignment `Q`: if the table restricted to `T` is closed, every generic body is verified at every instantiation against its spec assuming `Q` on the keys it requests, every user impl body (trait method, user `Drop`, user `Clone`) of a key in `T` verifies against its spec, and every synthesized body for a shim key of `T` verifies against its spec, then every key of `T` meets its spec in the monomorphic table `tableM P cfg T` (`MeetsAt`: every run of `runKey` over that table, at every fuel and initial state, satisfies the spec), in the partial-correctness sense (out-of-fuel outcomes exempt). If, in addition, on every shim key of `T` the synthesized body is defined exactly when the source construct is and is behaviourally equivalent to it under every call oracle (H2), and every key of `T` is in normal form (H3a), then every key of `T` meets its spec in the source semantics `runS` (`closed_target_meets_specs_in_source_semantics`). Edge-closure, (H1) and (H3b) are not hypotheses of that theorem: the edge function `cfg.E` does not occur in `tableM`, and on a closed target (H3b) follows from (H3a) (`canonicalRefs_of_closed_canonicalKeys`).",
+    "hypotheses": [
+      {
+        "name": "hC: Closed P.sig (tableM P cfg T) T",
+        "purpose": "callees must be inside the target",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.nonclosed_target_breaks_spec_transfer",
+        "witness_class": "a 2-function program whose target stops at the root",
+        "applies_to": "Toy.MonoShim.closed_target_meets_specs_of_generic_impl_synth_verified"
+      },
+      {
+        "name": "hG: GenericVerified P Q",
+        "purpose": "user bodies must be verified",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.unverified_generic_body_breaks_spec_transfer",
+        "witness_class": "a 1-function program ignoring its spec",
+        "applies_to": "Toy.MonoShim.closed_target_meets_specs_of_generic_impl_synth_verified"
+      },
+      {
+        "name": "hI: ImplsConform P Q T",
+        "purpose": "generic bodies rely on trait-method specs",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.generic_verified_wrong_at_nonconforming_impl",
+        "witness_class": "a 1-function generic program with two impls, one violating the trait-method spec",
+        "applies_to": "Toy.MonoShim.closed_target_meets_specs_of_generic_impl_synth_verified"
+      },
+      {
+        "name": "hS: SynthVerified P cfg Q T",
+        "purpose": "synthesized glue decides drop-event order",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.source_defs_verified_yet_program_violates_spec_under_reverse_glue",
+        "witness_class": "P4a with the reverse-glue synthesizer",
+        "applies_to": "Toy.MonoShim.closed_target_meets_specs_of_generic_impl_synth_verified"
+      },
+      {
+        "name": "hC: Closed P.sig (tableM P cfg T) T",
+        "applies_to": "Toy.MonoShim.closed_target_meets_specs_in_source_semantics",
+        "purpose": "keys outside the target are not covered by hI and hS",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.nonclosed_target_breaks_source_transfer",
+        "witness_class": "P4a with the target [main] and the 'free before release' specs Q4aRev"
+      },
+      {
+        "name": "hG: GenericVerified P Q",
+        "applies_to": "Toy.MonoShim.closed_target_meets_specs_in_source_semantics",
+        "purpose": "user bodies must be verified",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.unverified_generic_body_breaks_source_transfer",
+        "witness_class": "a 1-function program ignoring its spec"
+      },
+      {
+        "name": "hI: ImplsConform P Q T",
+        "applies_to": "Toy.MonoShim.closed_target_meets_specs_in_source_semantics",
+        "purpose": "generic bodies rely on trait-method specs",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.nonconforming_impl_breaks_source_transfer",
+        "witness_class": "a 1-function generic program with two impls, one violating the trait-method spec"
+      },
+      {
+        "name": "hS: SynthVerified P cfg Q T",
+        "applies_to": "Toy.MonoShim.closed_target_meets_specs_in_source_semantics",
+        "purpose": "the synthesized glue must meet its spec",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.unverified_synth_breaks_source_transfer",
+        "witness_class": "P4a with the standard synthesizer and Q4aRev"
+      },
+      {
+        "name": "h2 (H2): SynthAgrees P cfg T",
+        "applies_to": "Toy.MonoShim.closed_target_meets_specs_in_source_semantics",
+        "purpose": "the source semantics runs the source rules, not the synthesized bodies",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.synth_disagreement_breaks_source_transfer",
+        "witness_class": "P4a with the reverse-glue synthesizer and Q4aRev (every key meets its spec in the table; main violates it in runS)"
+      },
+      {
+        "name": "h3a (H3a): CanonicalKeys P T",
+        "applies_to": "Toy.MonoShim.closed_target_meets_specs_in_source_semantics",
+        "purpose": "the source normalizes a key while the table is keyed literally",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.noncanonical_key_breaks_source_transfer",
+        "witness_class": "a program without functions, one associated type, and impls of one method at <base 0 as 0>::Out and at base 1"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "P4a with the standard synthesizer and specs Q4a: all four hypotheses of the table theorem (P4a_std_meets_specs) and all six hypotheses of the source-transfer theorem (P4a_std_meets_specs_in_source_semantics) hold",
+    "nonvacuity_witness_lean": [
+      "Toy.MonoShim.P4a_std_meets_specs",
+      "Toy.MonoShim.P4a_std_meets_specs_in_source_semantics"
+    ],
+    "non_claims": [
+      "`closed_target_meets_specs_of_generic_impl_synth_verified` establishes `MeetsAt` in `tableM P cfg T` (the `runM` resolver), not in `runS`: with a synthesizer that disagrees with `srcDef0` (violating (H2)), every key of `T` can meet `Q` in the table while `runS` violates `Q` (`synth_disagreement_breaks_source_transfer`, with `cfgRev` and specs demanding `[20, 10]`).",
+      "For transfer to `runS` on a closed target, (H2) and (H3a) suffice together with the four hypotheses of that theorem, and each of the six is tight (see the hypothesis ledger of `closed_target_meets_specs_in_source_semantics`); edge-closure, (H1) and (H3b) are not assumed (`source_transfer_without_covering_or_edge_closure` is an instance in which (H1) and edge-closure both fail and the conclusion holds).",
+      "`GenericVerified` quantifies over every concrete type-argument list (any length, including types without impls), not a single parametric proof, and `Q (.meth tr m t)` is indexed by the concrete type `t` rather than a `Self`-parametric trait spec.",
+      "`T` is any closed key list; it need not be the collected set.",
+      "Partial correctness; termination is not claimed.",
+      "Specs are outcome predicates per key; there is no heap, frame rule or ownership.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "Hoare, 'Procedures and parameters: an axiomatic approach', Lecture Notes in Mathematics 188, pp. 102-116, 1971, doi:10.1007/BFb0059696",
+      "Apt, 'Ten Years of Hoare's Logic: A Survey - Part I', ACM TOPLAS 3(4):431-483, 1981, doi:10.1145/357146.357150",
+      "Nipkow, 'Hoare Logics for Recursive Procedures and Unbounded Nondeterminism', CSL 2002, LNCS 2471, pp. 103-119, doi:10.1007/3-540-45793-3_8 (mechanized in Isabelle/HOL)",
+      "Liskov and Wing, 'A Behavioral Notion of Subtyping', ACM TOPLAS 16(6):1811-1841, 1994, doi:10.1145/197320.197383"
+    ],
+    "design_question": "What suffices, beyond verifying generic source, for every instance of a closed target to be correct?"
+  },
+  {
+    "id": "R7-least-fixpoint-order-independent",
+    "lean": [
+      "Toy.MonoShim.collect_mem_iff_reach",
+      "Toy.MonoShim.collect_order_independent"
+    ],
+    "lean_names": [
+      "Toy.MonoShim.collect",
+      "Toy.MonoShim.Reach",
+      "Toy.MonoShim.Pall",
+      "Toy.MonoShim.SchedOK",
+      "Toy.MonoShim.schedDrop",
+      "Toy.MonoShim.fifo"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every edge function, every admissible scheduler (one that neither loses nor invents worklist entries), every root list and fuel: if the worklist collector `collect` returns `T`, then `T` contains exactly the keys reachable from the roots; hence two admissible schedulers that both return a set return sets with the same members.",
+    "hypotheses": [
+      {
+        "name": "hs: SchedOK sched",
+        "purpose": "the worklist must neither lose nor invent entries",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.inadmissible_scheduler_misses_keys",
+        "witness_class": "a 2-function program and a scheduler that discards new keys",
+        "applies_to": "Toy.MonoShim.collect_mem_iff_reach"
+      },
+      {
+        "name": "h: collect edges sched roots fuel = some T",
+        "applies_to": "Toy.MonoShim.collect_mem_iff_reach",
+        "purpose": "the collector returns a set; this defines T (it names the output being characterized)",
+        "tightness": "harmless"
+      },
+      {
+        "name": "hs1: SchedOK s1",
+        "applies_to": "Toy.MonoShim.collect_order_independent",
+        "purpose": "the first scheduler must be admissible",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.inadmissible_first_scheduler_breaks_order_independence",
+        "witness_class": "a 2-function program; schedDrop first, FIFO second"
+      },
+      {
+        "name": "hs2: SchedOK s2",
+        "applies_to": "Toy.MonoShim.collect_order_independent",
+        "purpose": "the second scheduler must be admissible",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.inadmissible_second_scheduler_breaks_order_independence",
+        "witness_class": "the same program with the schedulers swapped"
+      },
+      {
+        "name": "h1, h2: both collectors return sets",
+        "applies_to": "Toy.MonoShim.collect_order_independent",
+        "purpose": "they name the outputs T1, T2 being compared",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "FIFO and LIFO collection of Pall",
+    "nonvacuity_witness_lean": "Toy.MonoShim.fifo_lifo_same_set_example",
+    "non_claims": [
+      "Says nothing when the collector does not return a set (R8, R9).",
+      "The conclusion is equality of membership: the list order of `T` can depend on the scheduler (`fifo_lifo_same_set_example` shows two orders), nothing is claimed about the fuel each scheduler needs, and `SchedOK` permits a scheduler to duplicate worklist entries; neither equal order, equal fuel, nor absence of duplicates in the worklist is claimed.",
+      "No model of rustc's parallel collection or of its used/mentioned distinction.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, collector.rs L57-59: 'Starting from the roots, find uses by inspecting the MIR representation of the item corresponding to a given node, until no more new nodes are found.' (documentation)",
+      "Lammich and Neumann, 'A Framework for Verifying Depth-First Search Algorithms', CPP 2015, pp. 137-146, doi:10.1145/2676724.2693165",
+      "Wimmer and Lammich, 'Worklist Algorithms', Archive of Formal Proofs, 2024, https://isa-afp.org/entries/Worklist_Algorithms.html"
+    ],
+    "design_question": "Is the collected target independent of collection order?"
+  },
+  {
+    "id": "R8-polymorphic-recursion-diverges",
+    "lean": [
+      "Toy.MonoShim.polyrec_runs_finite",
+      "Toy.MonoShim.polyrec_instances_reachable",
+      "Toy.MonoShim.polyrec_collector_diverges"
+    ],
+    "lean_names": [
+      "Toy.MonoShim.P5",
+      "Toy.MonoShim.refs",
+      "Toy.MonoShim.polyrec_fails_rankCheck_and_diverges",
+      "Toy.MonoShim.boxIter"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "In program `P5` (`main` calls `f::<base 0>`; `f<T>` calls `f::<Box<T>>` under the counter guard), for every initial counter value `c` the source run of `main` with fuel `c + 3` completes normally; yet every `f::<Box^k<base 0>>` is reachable, and for every admissible scheduler and every fuel the worklist collector returns `none`.",
+    "hypotheses": [
+      {
+        "name": "hs: SchedOK sched (in polyrec_collector_diverges)",
+        "purpose": "an inadmissible scheduler may stop early",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.polyrec_inadmissible_scheduler_terminates",
+        "witness_class": "the same program with a scheduler that discards new keys"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "P5 itself; the hypothesis hs : SchedOK sched of polyrec_collector_diverges is satisfiable: polyrec_fails_rankCheck_and_diverges proves SchedOK fifo and that the FIFO collector returns no set on P5 at any fuel",
+    "nonvacuity_witness_lean": "Toy.MonoShim.polyrec_fails_rankCheck_and_diverges",
+    "positive_control_lean": "Toy.MonoShim.P5flat_collects",
+    "non_claims": [
+      "The toy has no type system; the result refutes, in the toy, that every program whose runs are finite has finitely many reachable instances; it is not a statement about Rust's type system or about whether rustc accepts such programs.",
+      "Finite runs are proved for fuel `c + 3`, not for every fuel.",
+      "Escape hatches that defeat divergence: (1) compiling without monomorphization (dictionary passing, type erasure, or `dyn` boxing) compiles polymorphic recursion to a finite program (not proved here; Ellis et al. 2022 study dictionary passing for Featherweight Generic Go); (2) the collector's reference relation `refs` ignores the counter guard, so it is flow- and value-insensitive; for a fixed initial counter `c` the run of `main` calls `f` at `c + 1` type arguments (not proved here); (3) rejecting such programs statically: the rank check of R9 rejects `P5` for every rank (`polyrec_fails_rankCheck_and_diverges`).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "Mycroft, 'Polymorphic type schemes and recursive definitions', International Symposium on Programming, LNCS 167, pp. 217-228, 1984, doi:10.1007/3-540-12925-1_41",
+      "Tolmach and Oliva, 'From ML to Ada: Strongly-typed language interoperability via source translation', Journal of Functional Programming 8(4):367-412, 1998, doi:10.1017/S0956796898003086",
+      "Griesemer, Hu, Kokke, Lange, Taylor, Toninho, Wadler, Yoshida, 'Featherweight Go', Proc. ACM Program. Lang. 4 (OOPSLA), pp. 1-29, 2020, doi:10.1145/3428217; arXiv:2005.11710v4: Section 2.4 and Fig. 10 (polymorphic recursion that cannot be monomorphised)"
+    ],
+    "design_question": "Can a verifier assume that the collected target is finite?"
+  },
+  {
+    "id": "R9-rank-check-termination",
+    "lean": "Toy.MonoShim.collect_terminates_of_rankCheck_of_assocNormal",
+    "lean_names": [
+      "Toy.MonoShim.rankCheck",
+      "Toy.MonoShim.assocNormal",
+      "Toy.MonoShim.SchedOK",
+      "Toy.MonoShim.fifo",
+      "Toy.MonoShim.rankCheck_not_necessary",
+      "Toy.MonoShim.Ty.grows"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every program `P`, every rank function `rank` such that `rankCheck P rank = true` (every function-instance reference in a function body from `f` to `g` has `rank g ≤ rank f`, strictly `<` when some type argument mentions a type parameter under `box`, `pair` or `proj`), if every right-hand side of `P.assoc` is in normal form (`assocNormal P = true`), then for every admissible scheduler and every root list there is a fuel at which the standard collector returns a set.",
+    "hypotheses": [
+      {
+        "name": "hrank: rankCheck P rank = true",
+        "purpose": "rules out type-growing call cycles",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.polyrec_fails_rankCheck_and_diverges",
+        "witness_class": "a 2-function program with polymorphic recursion and no traits or impls"
+      },
+      {
+        "name": "hassoc: assocNormal P = true",
+        "purpose": "every right-hand side of `P.assoc` must be in normal form (`assocNormal P = true`, a condition on the table under which single-pass normalization is idempotent, `ty_norm_idem_of_assocNormal`; whether idempotence of `Ty.norm` alone would suffice is not examined), or each normalization step can grow a type",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.nonnormal_assoc_breaks_termination",
+        "witness_class": "a 2-function program with no growing type argument, a canonical root, and one self-referential associated type"
+      },
+      {
+        "name": "hs: SchedOK sched",
+        "purpose": "the worklist must neither lose nor invent entries",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.inadmissible_scheduler_breaks_termination",
+        "witness_class": "the empty program and a scheduler that invents fresh keys"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "P5ok: growth along a non-recursive chain",
+    "nonvacuity_witness_lean": "Toy.MonoShim.P5ok_rankCheck_and_collects",
+    "non_claims": [
+      "Together with `assocNormal P = true`, a passing rank check makes the standard collector return a set under every admissible scheduler (R9); the check is not necessary: `rankCheck_not_necessary` gives a program on which the collector with the FIFO scheduler `fifo` returns a set and the check fails for every rank.",
+      "`rankCheck` checks a supplied certificate; the package defines no procedure that finds a rank from `P` alone and does not prove `∃ rank, rankCheck P rank = true` decidable.",
+      "`rankCheck` inspects function bodies; it can ignore impl, drop and clone tables and associated types because in the toy these are literal, non-generic tables (§1.1).",
+      "In a language with generic trait, `Drop` or `Clone` impls, or parametric associated types, a function-level check does not rule out non-terminating monomorphization through impls (not proved here).",
+      "`Ty.grows` counts a projection of a parameter as growing although normalization may shrink it (conservative).",
+      "It is not Featherweight Go's `nomono` check (an occurs check over a closure of instances); no equivalence is claimed.",
+      "Whether every divergent collection has a reachable type-growing cycle is unknown.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "Griesemer, Hu, Kokke, Lange, Taylor, Toninho, Wadler, Yoshida, 'Featherweight Go', Proc. ACM Program. Lang. 4 (OOPSLA), pp. 1-29, 2020, doi:10.1145/3428217; arXiv:2005.11710v4: Theorem 5.1 (Decidability), Theorem 5.2 (Monomorphisable), Section 5.3 (nomono is conservative)",
+      "Tolmach and Oliva, 'From ML to Ada: Strongly-typed language interoperability via source translation', Journal of Functional Programming 8(4):367-412, 1998, doi:10.1017/S0956796898003086"
+    ],
+    "design_question": "Which decidable check guarantees a finite verification target?"
+  },
+  {
+    "id": "R10-precomputed-vs-on-demand-synthesis",
+    "lean": "Toy.MonoShim.precomputed_and_on_demand_synthesis_same_target",
+    "lean_names": [
+      "Toy.MonoShim.reach_congr",
+      "Toy.MonoShim.P2a",
+      "Toy.MonoShim.pre2a",
+      "Toy.MonoShim.Stmt",
+      "Toy.MonoShim.preCfg"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every program, edge function, synthesizer `synth`, precomputed shim table `pre`, roots, admissible schedulers and fuels: if `pre` agrees with `synth` on every shim key reachable under the on-demand pipeline, and both pipelines' collectors return sets, then the sets have the same members and the emitted tables coincide on every key.",
+    "hypotheses": [
+      {
+        "name": "hpre: pre agrees with synth on every shim key reachable under the on-demand pipeline",
+        "purpose": "a stale table changes the bodies, hence the edges",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.stale_precomputed_table_changes_target",
+        "witness_class": "a 2-function program with one destructor and the empty table"
+      },
+      {
+        "name": "hs1: SchedOK s1",
+        "purpose": "least-fixpoint characterization of the on-demand output",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.inadmissible_on_demand_scheduler_breaks_precomputed_equality",
+        "witness_class": "a 2-function program without shim keys; schedDrop on the on-demand side, FIFO on the precomputed side"
+      },
+      {
+        "name": "hs2: SchedOK s2",
+        "purpose": "least-fixpoint characterization of the precomputed output",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.inadmissible_scheduler_breaks_precomputed_equality",
+        "witness_class": "the same program; FIFO on the on-demand side, schedDrop on the precomputed side"
+      },
+      {
+        "name": "c1, c2: both collectors return sets",
+        "purpose": "they name the outputs T1, T2 being compared",
+        "tightness": "harmless"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "P2a with a table precomputed from the standard synthesizer, FIFO and LIFO",
+    "nonvacuity_witness_lean": "Toy.MonoShim.precomputed_example",
+    "non_claims": [
+      "R10 assumes that `pre` is already populated and equal to `synth` on every reachable shim key, and that both collectors terminate (`c1`, `c2`); it does not model how an eager pre-pass discovers which shim keys will be reachable, nor transfer termination from one pipeline to the other. rustc's documented eager strategy instantiates drop glue for every drop-able type even without a drop call; R10 is about when shim bodies are computed, not about adding roots.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, collector.rs L141-154 (eager and lazy collection strategies) and L23-29 ('The following things also result in LLVM artifacts, but are not collected here, since we instantiate them locally on demand when needed in a given codegen unit:', listing Constants, VTables and Object Shims) (documentation)"
+    ],
+    "design_question": "May a verification target be assembled from shims synthesized lazily during collection?"
+  },
+  {
+    "id": "R11-per-unit-duplication",
+    "lean": "Toy.MonoShim.linkUnits_eq_tableM_of_deterministic",
+    "lean_names": [
+      "Toy.MonoShim.P4a",
+      "Toy.MonoShim.linkUnits",
+      "Toy.MonoShim.DeterministicUnits",
+      "Toy.MonoShim.UnitsCover"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every program, edge function, synthesizer `synth`, key list `T` and list of codegen units: if every unit's synthesizer agrees with `synth` on the shim keys that unit lists, and the units together list exactly the keys of `T` (shim keys may be listed by several units), then the linked table (first listing unit wins) equals the single-target table on `T` at every key.",
+    "hypotheses": [
+      {
+        "name": "hdet: DeterministicUnits synth units",
+        "purpose": "duplicate copies must be identical",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.nondeterministic_units_break_link_equality",
+        "witness_class": "two units of P4a, one with reverse-order glue"
+      },
+      {
+        "name": "hcov: UnitsCover units T",
+        "purpose": "every key of T must be emitted by some unit",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.uncovering_units_break_link_equality",
+        "witness_class": "one unit of P4a missing glue keys"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "two units of P4a sharing the pair's glue, both with the standard synthesizer",
+    "nonvacuity_witness_lean": "Toy.MonoShim.deterministic_units_example",
+    "non_claims": [
+      "Linking is modelled as a first-listing-unit merge, not as internal linkage with each unit calling its own copy; with deterministic synthesis all copies are equal, so in the toy the choice does not matter.",
+      "The toy has no function-pointer or vtable-pointer address comparison; in Rust, duplicating functions or vtables across codegen units is observable through address comparison even when every copy behaves identically (`core::ptr::eq` and `core::ptr::fn_addr_eq` document this; see Prior art).",
+      "Symbol visibility and linker duplicate-symbol errors are not modelled.",
+      "The edge-function argument `E` of `linkUnits` does not affect its result.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, collector.rs L23-29 (documentation)",
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, library/core/src/ptr/mod.rs L2471-2474 (ptr::eq: 'pointers to values of the same underlying type can compare inequal (because vtables are duplicated in multiple codegen units)') and L2558-2559 (ptr::fn_addr_eq: 'functions may sometimes be processed more than once by the compiler, resulting in duplicate machine code') (documentation)"
+    ],
+    "design_question": "Is duplicating shims across codegen units harmless for a verification target?"
+  },
+  {
+    "id": "R12-noncanonical-keys",
+    "lean": [
+      "Toy.MonoShim.canonicalRefs_stdCfg_of_assocNormal",
+      "Toy.MonoShim.noncanonical_refs_break_closure"
+    ],
+    "lean_names": [
+      "Toy.MonoShim.assocNormal",
+      "Toy.MonoShim.P6chain",
+      "Toy.MonoShim.P6",
+      "Toy.MonoShim.refs_norm_canonical",
+      "Toy.MonoShim.collect_stdCfg_closed_and_adequate_of_assocNormal",
+      "Toy.MonoShim.Ty.norm",
+      "Toy.MonoShim.T6"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every program `P` and key list `T`: if every right-hand side of `P.assoc` is in normal form (`assocNormal P = true`) and every key of `T` is in normal form (H3a), then every key referenced by a body the standard pipeline emits for a key of `T` is in normal form (H3b). By contrast, in program `P6chain` (as `P6`, with the chained associated-type table `<base 0 as 0>::Out = <base 0 as 1>::Out`, `<base 0 as 1>::Out = base 1`, on which `assocNormal` fails), with the full edge function and the standard synthesizer, every hypothesis of R1 and R2 except (H3b) holds, the target is not closed, and the collected program's run ends in a link error at the once-normalized key `h::<<base 0 as 1>::Out>`, while the source run emits 9.",
+    "hypotheses": [
+      {
+        "name": "hA: assocNormal P = true",
+        "purpose": "every right-hand side of `P.assoc` must be in normal form (`assocNormal P = true`, a condition on the table under which single-pass normalization is idempotent, `ty_norm_idem_of_assocNormal`; whether idempotence of `Ty.norm` alone would suffice is not examined)",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.noncanonical_refs_break_closure",
+        "witness_class": "a 3-function program with a chained associated-type table"
+      },
+      {
+        "name": "h3a: CanonicalKeys P T",
+        "purpose": "the glue of a key that is not normal references keys that are not normal",
+        "tightness": "tight",
+        "counterexample": "Toy.MonoShim.noncanonical_key_breaks_canonicalRefs",
+        "witness_class": "a program without functions, one associated type, one non-normal drop-glue key"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "P6 with the standard pipeline: a normal table, a reached reducible projection",
+    "nonvacuity_witness_lean": "Toy.MonoShim.canonical_refs_close_positive_control",
+    "non_claims": [
+      "`Ty.norm` is a toy single-pass normalizer; rustc's normalization (to a fixpoint, with regions erased) is not modelled, and nothing is claimed about how rustc keys instances. (H3b) for configurations other than the standard one is not examined.",
+      "No claim that any compiler mis-keys instances.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_monomorphize/src/collector.rs L700-710 (fn monomorphize, calling instantiate_mir_and_normalize_erasing_regions) (source)"
+    ],
+    "design_question": "Must referrers and definers key instances by the same normal form, and when does the standard pipeline guarantee it?"
+  },
+  {
+    "id": "R13-over-approximation",
+    "lean": "Toy.MonoShim.collected_set_includes_dead_code_not_minimal",
+    "lean_names": [
+      "Toy.MonoShim.P7a",
+      "Toy.MonoShim.reach_subset_of_rootsIn_edgesIn",
+      "Toy.MonoShim.T7a"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "In program `P7a` (`main` panics before calling function 1), the collector includes `inst 1 []`, yet removing it from the table changes no run from the root at any fuel and state; the smaller set is not closed under the collector's edges.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "concrete instance",
+    "non_claims": [
+      "R13 refutes dynamic minimality (the collected set is the set of keys that run), not static minimality: every key list containing the roots and closed under the edges contains every reachable key (`reach_subset_of_rootsIn_edgesIn`), and by R7, whenever the collector run with an admissible scheduler (`SchedOK`) returns a key list, the members of that list are exactly the reachable keys.",
+      "Computing the set of keys that run is not examined (undecidability in general is not proved here).",
+      "Given R2's other hypotheses — (H1), (H2), (H3a) and (H3b) — adequacy (R2) holds for every key list `T` that contains the roots (HR) and is closed under the collector's edges (HE), not only for the collected set.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, collector.rs L145-147 (lazy strategy: 'The goal is to produce the least amount of machine code possible.'; a goal statement, not a minimality claim) (documentation)"
+    ],
+    "design_question": "Reference point: is the collected target the set of instances that run?"
+  },
+  {
+    "id": "R14-per-crate-holes",
+    "lean": "Toy.MonoShim.per_crate_collection_has_holes",
+    "lean_names": [
+      "Toy.MonoShim.P7b",
+      "Toy.MonoShim.edgesAvail",
+      "Toy.MonoShim.availLocal",
+      "Toy.MonoShim.T7b"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "In program `P7b` (`main` calls `ext`, a non-generic function whose body drops a value with a destructor), a per-crate collector that creates no node for the unavailable key `inst 1 []` returns a target that is not closed, and the run from `main` ends in a link error at that key while the source run emits 3; collecting with every body available yields a closed target whose run from `main` agrees with the source at every fuel and state.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "concrete instance",
+    "non_claims": [
+      "R14 shows that leaving unavailable external bodies out yields a table that is not closed; it does not rule out modular per-crate verification in which unavailable external items are checked against verified interface specifications (contracts), and does not model other crates supplying symbols or separate compilation.",
+      "`P7b`'s unavailable function is neither generic nor marked `#[inline]`; rustc's documentation says a crate's binary also contains instantiations of extern generic functions and of `#[inline]` functions (see Prior art), so a generic external function is not this case (`derived (modeling bridge)`).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, collector.rs L130-139: 'It will also contain monomorphic instantiations of any extern generic functions and of functions marked with #[inline]. ... If the MIR is not available, it assumes that the item is just linked to and no node is created' (documentation)"
+    ],
+    "design_question": "Reference point: does a per-crate target suffice for whole-program verification?"
+  }
+]

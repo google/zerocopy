@@ -60084,6 +60084,124 @@
         "pl/contextual-equivalence"
       ]
     },
+    "monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc (mono-item collector, shims, drop elaboration) and core::ptr documentation"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "arxiv": "2005.11710v4",
+            "doi": "10.1145/3428217"
+          },
+          "name": "Featherweight Go"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3563331"
+          },
+          "name": "Generic Go to Go: Dictionary-Passing, Monomorphisation, and Hybrid"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-12925-1_41"
+          },
+          "name": "Polymorphic type schemes and recursive definitions"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796898003086"
+          },
+          "name": "From ML to Ada: Strongly-typed language interoperability via source translation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1159876.1159877"
+          },
+          "name": "Whole-program compilation in MLton"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.07455v1",
+            "doi": "10.48550/arXiv.2602.07455"
+          },
+          "name": "RustCompCert: A Verified and Verifying Compiler for a Sequential Subset of Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3510457.3513031"
+          },
+          "name": "Verifying Dynamic Trait Objects in Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0059696"
+          },
+          "name": "Procedures and parameters: an axiomatic approach"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/357146.357150"
+          },
+          "name": "Ten Years of Hoare's Logic: A Survey\u2014Part I"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-45793-3_8"
+          },
+          "name": "Hoare Logics for Recursive Procedures and Unbounded Nondeterminism"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/197320.197383"
+          },
+          "name": "A Behavioral Notion of Subtyping"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2676724.2693165"
+          },
+          "name": "A Framework for Verifying Depth-First Search Algorithms"
+        },
+        {
+          "identity": {
+            "url": "https://isa-afp.org/entries/Worklist_Algorithms.html"
+          },
+          "name": "Worklist Algorithms (Archive of Formal Proofs)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/whole-program-verification",
+        "verification/hoare-logic",
+        "compilers/monomorphization",
+        "compilers/shims",
+        "compilers/drop-glue",
+        "pl/generics",
+        "pl/polymorphic-recursion"
+      ]
+    },
     "montague-syntactic-modality-hbl-derivability-and-arithmetized-godel-mechanizations": {
       "observed_at": "2026-11-19",
       "subjects": [
