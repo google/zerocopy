@@ -19,13 +19,27 @@ import Lean.Compiler.CSimpAttr
 Pinned to Lean 4.34.1, commit
 `leanprover/lean4@5045d0056413266e57c625dcd7c365b10e377c52`. `anneal-audit`
 (`trusted/audit/`) and `cargo-anneal verify` (`trusted/cargo-anneal/`) invoke
-this file across seven JSON IPC modes (`run` and `main`):
+this file across eight JSON IPC modes (`run` and `main`):
 
 - **`"headers"` (target import discovery before elaboration):**
-  Parses only module `prelude`/`import` headers via `Parser.parseHeader` so
-  `cargo-anneal verify` can validate target module roles, admit the requested
-  `library-lock.json` closure, and reject import cycles before compiling any
-  target source.
+  Parses only module `prelude`/`import` headers via `Parser.parseHeader`,
+  rejecting Lean 4 module-system headers (`module`), import modifiers
+  (`import all`, non-exported imports, and `meta import` except Lean 4's
+  synthetic `!hasPrelude` `Init(isMeta = true)` paired with non-meta `Init`),
+  and `Lean.*`/`Lake.*` imports so `cargo-anneal verify` can validate target
+  module roles, admit the requested `library-lock.json` or unpinned `Init`/
+  `Std` closure, and reject import cycles before compiling any target source.
+- **`"spec-preflight"` (target specification syntactic admission):**
+  Parses every `TargetRole::Specification` source against the authenticated
+  `Init` + `Std` parser environment only (zero target `.olean`s loaded, zero
+  command elaboration, zero tactic allowlist on `proof/`), enforcing a closed
+  14-command allowlist, arity-independent fail-closed modifiers, resolved
+  lexical scope tracking across all five `open` forms (banning `Lean`, `Lake`,
+  `IO`, `BaseIO`, `EIO`, `EST`, `ST`, `Task`, and `System` except
+  `System.Platform.{numBits, getNumBits, numBits_eq}`), closed attributes,
+  deriving, and `set_option` rules, a dynamic fail-closed pure-spec tactic
+  allowlist, and exact term/quotation guards (`include_str`, `by_elab`,
+  `sorry`, debug/meta forms, and quotations).
 - **`"resolve-imports"` (unpinned sysroot import-DAG discovery):**
   Imports requested sysroot modules with `trustLevel := 0`, `plugins := #[]`,
   and `loadExts := false` (no initializers or extension callbacks) and emits
@@ -754,10 +768,12 @@ already been admitted by `allowedKinds`:
 - `Parser.Attr.simple`, `Parser.Attr.instance`, `Parser.Attr.simp`, and
   `Parser.Command.eraseAttr`: attribute names must belong to
   `allowedAttributeNames` and carry no arguments or priority overrides. -/
-def inspectNodeKind (k : SyntaxNodeKind) (args : Array Syntax) : IO Unit := do
+def inspectNodeKind (k : SyntaxNodeKind) (args : Array Syntax)
+    (requirePrelude : Bool := true) : IO Unit := do
   if k == ``Parser.Module.header then
-    unless !(args[1]?.map Syntax.getArgs |>.getD #[]).isEmpty do
-      fail "explicit prelude is required"
+    if requirePrelude then
+      unless !(args[1]?.map Syntax.getArgs |>.getD #[]).isEmpty do
+        fail "explicit prelude is required"
   else if k == ``Parser.Command.sectionHeader then
     unless args.all (·.getArgs.isEmpty) do
       fail "section/namespace modifiers are unsupported"
@@ -792,11 +808,13 @@ def inspectNodeKind (k : SyntaxNodeKind) (args : Array Syntax) : IO Unit := do
       fail s!"unsupported attribute removal {attrName}"
 
 /-- Recursively validate syntax tree `s` in a single top-down pass against the
-closed `allowedKinds` allowlist during `"preflight"`. Pattern-matching
+closed `allowedKinds` allowlist during `"preflight"` (with `requirePrelude :=
+true`) or `"headers"` (with `requirePrelude := false`). Pattern-matching
 exhaustively on `Syntax` rejects recovery placeholders (`.missing`), validates
 every identifier with `isValidSourceIdent`, and requires every non-`null`
 `Syntax.node` kind to belong to `allowedKinds` and satisfy `inspectNodeKind`. -/
-partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax) : IO Unit := do
+partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax)
+    (requirePrelude : Bool := true) : IO Unit := do
   match s with
   | .missing => fail "unexpected missing syntax node"
   | .atom _ _ => pure ()
@@ -806,9 +824,9 @@ partial def inspectSyntax (allowedKinds : NameSet) (s : Syntax) : IO Unit := do
   | .node _ k args =>
     unless k == nullKind || allowedKinds.contains k do
       fail s!"unsupported syntax kind {k}"
-    inspectNodeKind k args
+    inspectNodeKind k args requirePrelude
     for child in args do
-      inspectSyntax allowedKinds child
+      inspectSyntax allowedKinds child requirePrelude
 
 /-- Collect every namespace that registers at least one scoped entry in any
 registered `ScopedEnvExtension` of `env` (including
@@ -1093,19 +1111,861 @@ def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
     ("imports", toJson imports),
     ("trustTier", toJson role.renderTier?)]
 
-/-- Read only a source header (`"headers"`). Target elaboration is deliberately
-separate from repository command admission: authored macros and tactics may use
-arbitrary syntax, while their final logical dependencies must pass kernel
-replay. -/
+/-- Validate target module import edges (`"headers"` and `"target-audit"`):
+reject `import all`, non-exported imports, `Lean.*`/`Lake.*` imports, and any
+`isMeta` edge other than Lean 4's synthetic `!hasPrelude` `Init(isMeta = true)`
+paired with a non-meta `Init` edge. -/
+def validateTargetImports (context : String) (imports : Array Import) :
+    IO Unit := do
+  let hasNonMetaInit := imports.any fun imp =>
+    imp.module == `Init && !imp.isMeta
+  for imp in imports do
+    if imp.importAll || !imp.isExported then
+      fail s!"import modifiers are unsupported in {context}"
+    if imp.isMeta then
+      unless imp.module == `Init && hasNonMetaInit do
+        fail s!"meta import {imp.module} is unsupported in {context}"
+    let root := imp.module.getRoot
+    if imp.module == `Lean || root == `Lean ||
+        imp.module == `Lake || root == `Lake then
+      fail s!"disallowed sysroot import {imp.module} in {context}"
+
+/-- Read and validate a target source header (`"headers"`), rejecting Lean 4
+module-system headers (`module`), import modifiers (`public`/`meta`/`all`), and
+`Lean.*`/`Lake.*` imports while permitting omitted `prelude` (synthetic
+non-meta + meta `Init` pair). -/
 def inspectHeader (moduleName : Name) (path : System.FilePath) : IO Json := do
   let text ← IO.FS.readFile path
   let ctx := Parser.mkInputContext text path.toString
   let (header, state, messages) ← Parser.parseHeader ctx
   if messages.hasErrors || state.recovering then
     fail s!"header parser error in {moduleName}"
+  if Elab.HeaderSyntax.isModule header then
+    fail s!"module system header is unsupported in {moduleName}"
+  inspectSyntax (.ofList allowedHeaderKinds) header.raw
+    (requirePrelude := false)
+  let imports := Elab.HeaderSyntax.imports header
+  validateTargetImports moduleName.toString imports
   return Json.mkObj [
     ("module", toJson moduleName),
-    ("imports", toJson (Elab.HeaderSyntax.imports header))]
+    ("imports", toJson imports)]
+
+/-! ## Phase 1b: Specification syntactic preflight (`"spec-preflight"`) -/
+
+/-- Closed 14-command allowlist permitted in `TargetRole::Specification`
+modules. -/
+def allowedSpecCommandKinds : List Name := [
+  ``Parser.Command.declaration, ``Parser.Command.namespace,
+  ``Parser.Command.section, ``Parser.Command.end,
+  ``Parser.Command.universe, ``Parser.Command.variable,
+  ``Parser.Command.open, ``Parser.Command.export,
+  ``Parser.Command.mutual, ``Parser.Command.in,
+  ``Parser.Command.attribute, ``Parser.Command.deriving,
+  ``Parser.Command.set_option, ``Parser.Command.moduleDoc]
+
+/-- Commands allowed on the left-hand side of `Command.in` inside a target
+specification. -/
+def allowedSpecInLhsKinds : List Name := [
+  ``Parser.Command.open, ``Parser.Command.variable,
+  ``Parser.Command.universe, ``Parser.Command.set_option,
+  ``Parser.Command.attribute]
+
+/-- Return `true` when `k` is allowed inside a `mutual` block or on the RHS of
+`Command.in` inside a specification (the 14-command allowlist minus scoping and
+nested `mutual`). -/
+def isAllowedSpecNestedCommand (k : SyntaxNodeKind) : Bool :=
+  allowedSpecCommandKinds.contains k &&
+    ![``Parser.Command.namespace, ``Parser.Command.section,
+      ``Parser.Command.end, ``Parser.Command.mutual].contains k
+
+/-- Closed 7-declaration allowlist permitted inside `Parser.Command.declaration`
+in specifications (`opaque`, `axiom`, `example`, and `coinductive` excluded). -/
+def allowedSpecDeclarationKinds : List Name := [
+  ``Parser.Command.definition, ``Parser.Command.abbrev,
+  ``Parser.Command.theorem, ``Parser.Command.structure,
+  ``Parser.Command.inductive, ``Parser.Command.classInductive,
+  ``Parser.Command.instance]
+
+/-- Non-empty modifier kinds permitted inside `Parser.Command.declModifiers`
+in specifications (arity-independent fail-closed check). -/
+def allowedSpecDeclModifierKinds : List Name := [
+  ``Parser.Command.docComment, ``Parser.Term.attributes,
+  ``Parser.Command.private, ``Parser.Command.protected,
+  ``Parser.Command.noncomputable]
+
+/-- Modifier and fixpoint kinds unconditionally rejected anywhere in a
+specification AST (`Parser.Term.scoped` closes `scoped instance` as well as
+`@[scoped ...]`). -/
+def forbiddenSpecModifierKinds : List Name := [
+  ``Parser.Command.meta, ``Parser.Command.unsafe,
+  ``Parser.Command.partial, ``Parser.Command.public,
+  ``Parser.Term.unsafe, ``Parser.Term.scoped,
+  `Lean.Parser.Termination.partialFixpoint,
+  `Lean.Parser.Termination.coinductiveFixpoint,
+  `Lean.Parser.Termination.inductiveFixpoint]
+
+/-- Root namespaces forbidden in specification lexical scopes and references
+(except `System.Platform.{numBits, getNumBits, numBits_eq}`). -/
+def forbiddenSpecRootNamespaces : List Name := [
+  `Lean, `Lake, `IO, `BaseIO, `EIO, `EST, `ST, `Task, `System]
+
+/-- Root-level identifiers forbidden in specifications (`autoParam` evaluates a
+stored `Lean.Syntax` tactic script during elaboration, bypassing syntactic
+tactic inspection). -/
+def forbiddenSpecIdentifiers : List Name := [`autoParam]
+
+/-- Exact `System.Platform` declarations admitted in target specifications. -/
+def allowedSystemPlatformDecls : List Name := [
+  `System.Platform.numBits,
+  `System.Platform.getNumBits,
+  `System.Platform.numBits_eq]
+
+/-- Simple attributes permitted inside `@[...]` in target specifications. -/
+def allowedSpecSimpleAttrs : List Name := [
+  `reducible, `semireducible, `irreducible, `inline, `match_pattern]
+
+/-- Attribute names permitted in `attribute [-attr]` inside specifications. -/
+def allowedSpecEraseAttrs : List Name := [
+  `simp, `instance, `ext, `specialize,
+  `reducible, `semireducible, `irreducible, `inline, `match_pattern]
+
+/-- Typeclasses permitted in `deriving` clauses and `deriving instance` commands
+inside target specifications. -/
+def allowedSpecDerivingClasses : List Name := [
+  `BEq, `DecidableEq, `Repr, `Inhabited, `Ord, `Hashable, `Nonempty]
+
+/-- Pure non-tactic parser categories in `Init`/`Std`. Every other category
+registered in `Parser.parserExtension` (including `tactic`, `conv`, `grind*`,
+`sym_*`, `m*Pat`, `vcgenDischarge`, `stx`, `rawStx`, and future solver
+categories) is treated as tactic-like and gated by `allowedSpecTacticKinds`. -/
+def nonTacticSpecCategories : List Name := [
+  `attr, `binderPred, `command, `doElem, `level, `prec, `prio,
+  `structInstFieldDecl, `term]
+
+/-- Pure `Init` specification, proof, and termination tactics permitted inside
+`TargetRole::Specification` modules. Excludes `bv_decide`, `bv_check`,
+`native_decide`, `decide_cbv`, `cbv`, `grind`, `rfl'`, `sorry`, `admit`,
+`run_tac`, `sleep`, `dbg_trace`, `Tactic.{open,set_option}`, `conv`, `sym`,
+`mvcgen`, and interactive suggestion tactics. -/
+def allowedSpecTacticKinds : NameSet :=
+  .ofList <| allowedTheoryTacticKinds ++ [
+    `Lean.cdot, `Lean.calcTactic,
+    `Lean.Parser.Tactic.tacticSeqBracketed,
+    `Lean.Parser.Tactic.nestedTactic,
+    `Lean.Parser.Tactic.focus, `Lean.Parser.Tactic.case,
+    `Lean.Parser.Tactic.case', `Lean.Parser.Tactic.caseArg,
+    `Lean.Parser.Tactic.«tacticNext_=>_»,
+    `Lean.Parser.Tactic.allGoals, `Lean.Parser.Tactic.anyGoals,
+    `Lean.Parser.Tactic.skip, `Lean.Parser.Tactic.done,
+    `Lean.Parser.Tactic.tacticTry_, `Lean.Parser.Tactic.tacticIterate____,
+    `Lean.Parser.Tactic.repeat', `Lean.Parser.Tactic.repeat1',
+    `Lean.Parser.Tactic.tacIfThenElse, `Lean.Parser.Tactic.tacDepIfThenElse,
+    `Lean.Parser.Tactic.rotateLeft, `Lean.Parser.Tactic.rotateRight,
+    `Lean.Parser.Tactic.assumption, `Lean.Parser.Tactic.contradiction,
+    `Lean.Parser.Tactic.tacticTrivial, `Lean.Parser.Tactic.tacticExfalso,
+    `Lean.Parser.Tactic.tacticNofun, `Lean.Parser.Tactic.eqRefl,
+    `Lean.Parser.Tactic.acRfl, `Lean.Parser.Tactic.applyRfl,
+    `Lean.Parser.Tactic.symm, `Lean.Parser.Tactic.congr,
+    `Lean.Parser.Tactic.split, `Lean.Parser.Tactic.clear,
+    `Lean.Parser.Tactic.clearValue, `Lean.Parser.Tactic.generalize,
+    `Lean.Parser.Tactic.rename, `Lean.Parser.Tactic.renameI,
+    `Lean.Parser.Tactic.replace, `Lean.Parser.Tactic.specialize,
+    `Lean.Parser.Tactic.intros, `Lean.Parser.Tactic.introMatch,
+    `Lean.Parser.Tactic.injections, `Lean.Parser.Tactic.substEqs,
+    `Lean.Parser.Tactic.substVars, `Lean.Parser.Tactic.delta,
+    `Lean.Parser.Tactic.rewriteSeq, `Lean.Parser.Tactic.tacticErw___,
+    `Lean.Parser.Tactic.tacticRwa__, `Lean.Parser.Tactic.show,
+    `Lean.Parser.Tactic.tacticSuffices_, `Lean.Parser.Tactic.«tacticExists_,,»,
+    `Lean.Parser.Tactic.tacticAnd_intros, `Lean.Parser.Tactic.tacticHave',
+    `Lean.Parser.Tactic.tacticHaveI__, `Lean.Parser.Tactic.tacticLet'__,
+    `Lean.Parser.Tactic.tacticLetI__, `Lean.Parser.Tactic.letToHave,
+    `Lean.Parser.Tactic.tacticInfer_instance, `Lean.Parser.Tactic.refine',
+    `Lean.Parser.Tactic.falseOrByContra, `Lean.Parser.Tactic.classical,
+    `Lean.Parser.Tactic.match, `«tacticBy_cases_:_»,
+    `Lean.Parser.Tactic.simpAll, `Lean.Parser.Tactic.simpArith,
+    `Lean.Parser.Tactic.simpAllArith, `Lean.Parser.Tactic.simpa,
+    `Lean.Parser.Tactic.simpaArgsRest, `Lean.Parser.Tactic.tacticSimpa!_,
+    `Lean.Parser.Tactic.tacticSimpa!__1, `Lean.Parser.Tactic.simpErase,
+    `Lean.Parser.Tactic.simpStar, `Lean.Parser.Tactic.locationType,
+    `Lean.Parser.Tactic.locationWildcard, `Lean.Parser.Tactic.discharger,
+    `Lean.Parser.Tactic.configItem, `Lean.Parser.Tactic.posConfigItem,
+    `Lean.Parser.Tactic.negConfigItem,
+    `Lean.Parser.Tactic.omega, `Lean.Parser.Tactic.tacticBv_omega,
+    `tacticDecreasing_tactic, `tacticDecreasing_trivial,
+    `tacticDecreasing_trivial_pre_omega, `tacticDecreasing_with_,
+    `tacticSimp_wf, `tacticClean_wf,
+    `tacticGet_elem_tactic, `tacticGet_elem_tactic_trivial,
+    `Array.tacticArray_get_dec, `Array.tacticArray_mem_dec,
+    `List.tacticSizeOf_list_dec,
+    `Lean.Parser.Tactic.funCases, `Lean.Parser.Tactic.funInduction,
+    `Lean.Parser.Tactic.rcases, `Lean.Parser.Tactic.rintro,
+    `Lean.Parser.Tactic.obtain,
+    `Lean.Parser.Tactic.rcasesPatLo, `Lean.Parser.Tactic.rcasesPatMed,
+    `Lean.Parser.Tactic.rcasesPat.ignore, `Lean.Parser.Tactic.rcasesPat.paren,
+    `Lean.Parser.Tactic.rcasesPat.clear, `Lean.Parser.Tactic.rcasesPat.explicit,
+    `Lean.Parser.Tactic.rcasesPat.tuple, `Lean.Parser.Tactic.rcasesPat.one,
+    `Lean.Parser.Tactic.rintroPat.one, `Lean.Parser.Tactic.rintroPat.binder]
+
+/-- Term and `doElem` meta/debug/quotation/parser-macro syntax kinds rejected
+anywhere in a target specification. `Lean.includeStr` and `Lean.byElab` use
+double-backtick resolution so renames in `Init` fail inspector compilation. -/
+def forbiddenSpecTermKinds : NameSet := .ofList [
+  ``Lean.includeStr, ``Lean.byElab,
+  ``Parser.Term.sorry, ``Parser.Term.unsafe,
+  ``Parser.Term.quotedName, ``Parser.Term.doubleQuotedName,
+  ``Parser.Term.binderTactic,
+  `Lean.Parser.Term.dbgTrace, `Lean.Parser.Term.idbg,
+  `Lean.Parser.Term.doDbgTrace, `Lean.Parser.Term.doIdbg,
+  `Lean.Parser.Term.matchExpr, `Lean.Parser.Term.letExpr,
+  `Lean.Parser.Term.doMatchExpr, `Lean.Parser.Term.doLetExpr,
+  `Lean.Parser.Term.doLetMetaExpr, `Lean.Parser.Term.showTermElabImpl,
+  `Lean.Parser.Tactic.showTermElab, `Lean.Parser.Term.declName,
+  `Lean.Parser.Term.withDeclName, `Lean.Parser.Term.privateDecl,
+  `Lean.Parser.Term.leading_parser, `Lean.Parser.Term.trailing_parser,
+  `Lean.Parser.Term.elabToSyntax, `Lean.«termMacro.trace[_]_»,
+  `Lean.Parser.Syntax.exact?, `Lean.termEval_prec_, `Lean.termEval_prio_,
+  `termPrintln!__, `Lean.Parser.Term.dynamicQuot,
+  `Lean.Parser.Term.precheckedQuot,
+  `Lean.Parser.Term.logNamedErrorMacro,
+  `Lean.Parser.Term.logNamedErrorAtMacro,
+  `Lean.Parser.Term.logNamedWarningMacro,
+  `Lean.Parser.Term.logNamedWarningAtMacro,
+  `Lean.Parser.Term.throwNamedErrorMacro,
+  `Lean.Parser.Term.throwNamedErrorAtMacro]
+
+/-- Return `true` when `k` is a syntax quotation node (`*.quot`/`*.quotSeq`). -/
+def isQuotationKind (k : SyntaxNodeKind) : Bool :=
+  match k with
+  | .str _ "quot" | .str _ "quotSeq" => true
+  | _ => false
+
+/-- Return `true` when any component of `id` is `"_unsafe_rec"`. -/
+def hasUnsafeRecComponent (id : Name) : Bool :=
+  id.components.any fun
+    | .str .anonymous seg => seg == "_unsafe_rec"
+    | _ => false
+
+/-- Extract `(commandLikeKinds, tacticLikeKinds)` dynamically from
+`Parser.parserExtension` on `env`. -/
+def collectSpecParserSets (env : Environment) : IO (NameSet × NameSet) := do
+  let cats := (Parser.parserExtension.getState env).categories
+  let some cmdCat := cats.find? `command
+    | throw <| IO.userError "missing command parser category"
+  let commandLikeKinds : NameSet :=
+    cmdCat.kinds.foldl (init := {}) fun acc k _ => acc.insert k
+  let tacticLikeKinds : NameSet :=
+    cats.foldl (init := {}) fun acc catName cat =>
+      if nonTacticSpecCategories.contains catName then acc
+      else cat.kinds.foldl (init := acc) fun inner k _ => inner.insert k
+  return (commandLikeKinds, tacticLikeKinds)
+
+/-- Return `true` if `s` is an empty `null` node or a single priority literal
+(`num`, `prioHigh`, `prioLow`, `prioDefault`, `prioMid`). -/
+def isSpecPrioOpt (s : Syntax) : Bool :=
+  if s.isOfKind nullKind && s.getArgs.isEmpty then true
+  else if s.isOfKind nullKind && s.getArgs.size == 1 then
+    let k := s.getArgs[0]!.getKind
+    k == numLitKind ||
+      [`prioHigh, `prioLow, `prioDefault, `prioMid].contains k
+  else false
+
+/-- Validate a `Parser.Term.attrInstance` node inside a target specification:
+permit only empty or `local` `attrKind` (never `scoped`), and dispatch strictly
+over the five allowed attribute kinds. -/
+def validateSpecAttrInstance (args : Array Syntax) : IO Unit := do
+  unless args.size == 2 do
+    fail "unsupported attribute instance shape in specification"
+  let attrKind := args[0]!
+  unless attrKind.isOfKind ``Parser.Term.attrKind &&
+      attrKind.getArgs.size == 1 do
+    fail "unsupported attribute kind in specification"
+  let kindOpt := attrKind.getArgs[0]!
+  unless kindOpt.isOfKind nullKind &&
+      (kindOpt.getArgs.isEmpty ||
+        (kindOpt.getArgs.size == 1 &&
+          kindOpt.getArgs[0]!.isOfKind ``Parser.Term.local)) do
+    fail "only global or local attributes are allowed in specification"
+  let attr := args[1]!
+  let ak := attr.getKind
+  if ak == ``Parser.Attr.simple then
+    let attrName := attr[0].getId
+    unless allowedSpecSimpleAttrs.contains attrName do
+      fail s!"unsupported attribute {attrName} in specification"
+    unless attr[1].isOfKind nullKind && attr[1].getArgs.isEmpty do
+      fail s!"unsupported arguments on attribute {attrName} in specification"
+  else if ak == `Lean.Parser.Attr.simp then
+    let aArgs := attr.getArgs
+    unless aArgs.size == 4 do
+      fail "unsupported simp attribute shape in specification"
+    let okPost := aArgs[1]!.isOfKind nullKind &&
+      (aArgs[1]!.getArgs.isEmpty ||
+        (aArgs[1]!.getArgs.size == 1 &&
+          match aArgs[1]!.getArgs[0]! with
+          | .atom _ "↓" | .atom _ "↑" => true
+          | _ => false))
+    let okInv := aArgs[2]!.isOfKind nullKind &&
+      (aArgs[2]!.getArgs.isEmpty ||
+        (aArgs[2]!.getArgs.size == 1 &&
+          match aArgs[2]!.getArgs[0]! with
+          | .atom _ "←" | .atom _ "<-" => true
+          | _ => false))
+    unless okPost && okInv && isSpecPrioOpt aArgs[3]! do
+      fail "unsupported arguments on simp attribute in specification"
+  else if ak == ``Parser.Attr.instance then
+    unless attr.getArgs.size == 2 && isSpecPrioOpt attr[1] do
+      fail "unsupported arguments on instance attribute in specification"
+  else if ak == ``Parser.Attr.ext then
+    let aArgs := attr.getArgs
+    unless aArgs.size >= 1 &&
+        (aArgs.extract 1 aArgs.size).all fun c =>
+          isSpecPrioOpt c ||
+            (c.isOfKind nullKind && c.getArgs.size == 1 &&
+              match c.getArgs[0]! with
+              | .atom _ "flat" => true
+              | _ => false) do
+      fail "unsupported arguments on ext attribute in specification"
+  else if ak == ``Parser.Attr.specialize then
+    unless attr.getArgs.size == 2 && attr[1].isOfKind nullKind &&
+        attr[1].getArgs.all fun c =>
+          c.isOfKind numLitKind ||
+            (c.isIdent && isValidSourceIdent c.getId &&
+              !hasUnsafeRecComponent c.getId &&
+              !forbiddenSpecRootNamespaces.contains c.getId.getRoot) do
+      fail "unsupported arguments on specialize attribute in specification"
+  else
+    fail s!"unsupported attribute kind {ak} in specification"
+
+/-- Validate a `Parser.Command.sectionHeader` arity-independently: every child
+must be `null #[]` or `null #[atom "noncomputable"]`. -/
+def validateSpecSectionHeader (args : Array Syntax) : IO Unit := do
+  for child in args do
+    let ok := child.isOfKind nullKind &&
+      (child.getArgs.isEmpty ||
+        (child.getArgs.size == 1 &&
+          match child.getArgs[0]! with
+          | .atom _ "noncomputable" => true
+          | _ => false))
+    unless ok do
+      fail "unsupported section/namespace modifier in specification"
+
+/-- Validate `Command.set_option` (`args.size == 4`) or `Term.set_option`
+(`args.size == 6`) against the closed specification option policy. -/
+def validateSpecSetOption (args : Array Syntax) : IO Unit := do
+  unless args.size == 4 || args.size == 6 do
+    fail "unsupported set_option shape in specification"
+  unless args[2]!.isOfKind nullKind && args[2]!.getArgs.isEmpty do
+    fail "unsupported set_option shape in specification"
+  let optName := args[1]!.getId
+  let valStx := args[3]!
+  if optName == `maxHeartbeats || optName == `maxRecDepth then
+    unless valStx.isOfKind numLitKind do
+      fail s!"option {optName} requires a numeric literal in specification"
+  else if optName == `autoImplicit || optName == `relaxedAutoImplicit ||
+      (`linter).isPrefixOf optName then
+    let isBoolLit := match valStx with
+      | .atom _ "true" | .atom _ "false" => true
+      | .ident _ _ `true _ | .ident _ _ `false _ => true
+      | _ => false
+    unless isBoolLit do
+      fail s!"option {optName} requires a boolean literal in specification"
+  else
+    fail s!"unsupported option {optName} in specification"
+
+/-- Validate `Lean.Parser.Tactic.decide` config items: admit bare `decide` or
+only `+kernel`, `-kernel`, `+revert`, and `-revert` (rejecting `+native`,
+`-native`, and `(config := ...)`). -/
+def validateSpecDecideTactic (args : Array Syntax) : IO Unit := do
+  unless args.size == 2 && args[1]!.isOfKind `Lean.Parser.Tactic.optConfig &&
+      args[1]!.getArgs.size == 1 do
+    fail "unsupported decide tactic shape in specification"
+  for item in args[1]![0].getArgs do
+    unless item.isOfKind `Lean.Parser.Tactic.configItem &&
+        item.getArgs.size == 1 do
+      fail "unsupported decide config item in specification"
+    let inner := item[0]
+    let ik := inner.getKind
+    unless (ik == `Lean.Parser.Tactic.posConfigItem ||
+        ik == `Lean.Parser.Tactic.negConfigItem) && inner.getArgs.size == 2 do
+      fail "unsupported decide config modifier in specification"
+    let opt := inner[1].getId
+    unless opt == `kernel || opt == `revert do
+      fail s!"unsupported decide config option {opt} in specification"
+
+/-- Reject `ns` if its root belongs to `forbiddenSpecRootNamespaces`. -/
+def rejectForbiddenSpecNamespace (how : String) (ns : Name) : IO Unit := do
+  if forbiddenSpecRootNamespaces.contains ns.getRoot then
+    fail s!"cannot {how} forbidden namespace {ns} in specification"
+
+/-- Validate an `open` declaration node (`openSimple`, `openOnly`, `openHiding`,
+`openRenaming`, `openScoped`) against `forbiddenSpecRootNamespaces`, allowing
+`open System.Platform (numBits ...)` strictly for `allowedSystemPlatformDecls`,
+and return the updated `(parserEnv, openDecls)`. -/
+def validateSpecOpenDecl (currNs : Name) (openDecls : List OpenDecl)
+    (parserEnv : Environment) (openDecl : Syntax) :
+    IO (Environment × List OpenDecl) := do
+  let hasSimple (ods : List OpenDecl) (ns : Name) : Bool :=
+    ods.any fun
+      | OpenDecl.simple existing _ => existing == ns
+      | _ => false
+  let addSimple (ods : List OpenDecl) (ns : Name) : List OpenDecl :=
+    if hasSimple ods ns then ods else OpenDecl.simple ns [] :: ods
+  let k := openDecl.getKind
+  if k == ``Parser.Command.openSimple then
+    let mut env := parserEnv
+    let mut ods := openDecls
+    for idStx in openDecl[0].getArgs do
+      let id := idStx.getId
+      unless isValidSourceIdent id && !hasUnsafeRecComponent id do
+        fail s!"invalid open identifier {id} in specification"
+      let candidates := candidateOpenNamespaces currNs ods id
+      let mut added := false
+      for ns in candidates do
+        rejectForbiddenSpecNamespace "open" ns
+        if env.isNamespace ns then
+          ods := addSimple ods ns
+          env := Parser.parserExtension.activateScoped env ns
+          added := true
+      if !added then
+        let stripped := id.replacePrefix rootNamespace .anonymous
+        rejectForbiddenSpecNamespace "open" stripped
+        ods := addSimple ods stripped
+    return (env, ods)
+  else if k == ``Parser.Command.openOnly then
+    let nsId := openDecl[0].getId
+    unless isValidSourceIdent nsId && !hasUnsafeRecComponent nsId do
+      fail s!"invalid open namespace {nsId} in specification"
+    let itemIds := openDecl[2].getArgs.map Syntax.getId
+    for itemId in itemIds do
+      unless isValidSourceIdent itemId && !hasUnsafeRecComponent itemId do
+        fail s!"invalid open item {itemId} in specification"
+    let candidates := candidateOpenNamespaces currNs openDecls nsId
+    let mut ods := openDecls
+    for ns in candidates do
+      if ns == `System.Platform then
+        if itemIds.isEmpty then
+          fail "cannot open System.Platform without explicit allowed items"
+        for itemId in itemIds do
+          let full := ns ++ itemId
+          unless allowedSystemPlatformDecls.contains full do
+            fail s!"disallowed open item {full} in specification"
+          ods := OpenDecl.explicit itemId full :: ods
+      else
+        rejectForbiddenSpecNamespace "open" ns
+        for itemId in itemIds do
+          ods := OpenDecl.explicit itemId (ns ++ itemId) :: ods
+    return (parserEnv, ods)
+  else if k == ``Parser.Command.openHiding ||
+      k == ``Parser.Command.openRenaming then
+    let nsId := openDecl[0].getId
+    unless isValidSourceIdent nsId && !hasUnsafeRecComponent nsId do
+      fail s!"invalid open namespace {nsId} in specification"
+    if k == ``Parser.Command.openHiding then
+      for idStx in openDecl[2].getArgs do
+        let hid := idStx.getId
+        unless isValidSourceIdent hid && !hasUnsafeRecComponent hid do
+          fail s!"invalid open hiding identifier {hid} in specification"
+    else
+      for itemStx in openDecl[2].getArgs do
+        let fromId := itemStx[0].getId
+        let toId := itemStx[2].getId
+        unless isValidSourceIdent fromId && !hasUnsafeRecComponent fromId &&
+            isValidSourceIdent toId && !hasUnsafeRecComponent toId do
+          fail (s!"invalid open renaming item {fromId} -> {toId} " ++
+            "in specification")
+    let candidates := candidateOpenNamespaces currNs openDecls nsId
+    let mut env := parserEnv
+    let mut ods := openDecls
+    let mut added := false
+    for ns in candidates do
+      rejectForbiddenSpecNamespace "open" ns
+      if env.isNamespace ns then
+        ods := addSimple ods ns
+        if k == ``Parser.Command.openHiding then
+          env := Parser.parserExtension.activateScoped env ns
+        added := true
+    if !added then
+      let stripped := nsId.replacePrefix rootNamespace .anonymous
+      rejectForbiddenSpecNamespace "open" stripped
+      ods := addSimple ods stripped
+    return (env, ods)
+  else if k == ``Parser.Command.openScoped then
+    let mut env := parserEnv
+    for idStx in openDecl[1].getArgs do
+      let id := idStx.getId
+      unless isValidSourceIdent id && !hasUnsafeRecComponent id do
+        fail s!"invalid open scoped identifier {id} in specification"
+      let candidates := candidateOpenNamespaces currNs openDecls id
+      for ns in candidates do
+        rejectForbiddenSpecNamespace "open scoped" ns
+        if env.isNamespace ns then
+          env := Parser.parserExtension.activateScoped env ns
+    return (env, openDecls)
+  else
+    fail s!"unsupported open form {k} in specification"
+
+/-- Validate `export ns (id1 ...)` in a specification using the same namespace
+and `System.Platform` policy as `openOnly`. -/
+def validateSpecExport (currNs : Name) (openDecls : List OpenDecl)
+    (args : Array Syntax) : IO Unit := do
+  unless args.size == 5 do
+    fail "unsupported export shape in specification"
+  let nsId := args[1]!.getId
+  unless isValidSourceIdent nsId && !hasUnsafeRecComponent nsId do
+    fail s!"invalid export namespace {nsId} in specification"
+  let itemIds := args[3]!.getArgs.map Syntax.getId
+  for itemId in itemIds do
+    unless isValidSourceIdent itemId && !hasUnsafeRecComponent itemId do
+      fail s!"invalid export item {itemId} in specification"
+  for ns in candidateOpenNamespaces currNs openDecls nsId do
+    if ns == `System.Platform then
+      if itemIds.isEmpty then
+        fail "cannot export System.Platform without explicit allowed items"
+      for itemId in itemIds do
+        let full := ns ++ itemId
+        unless allowedSystemPlatformDecls.contains full do
+          fail s!"disallowed export item {full} in specification"
+    else
+      rejectForbiddenSpecNamespace "export" ns
+
+/-- Push `namespace`/`section` scopes for `"spec-preflight"`, rejecting any
+forbidden root namespace and activating scoped parser extensions when entering
+an existing `Init`/`Std` namespace. -/
+def pushSpecScopes (isNewNamespace : Bool) (header : Name)
+    (parserEnv : Environment) (scopes : List ParseScope) :
+    IO (Environment × List ParseScope) := do
+  match header with
+  | .anonymous => return (parserEnv, scopes)
+  | .str p seg =>
+    let (parserEnv, scopes) ←
+      pushSpecScopes isNewNamespace p parserEnv scopes
+    let top := scopes.head!
+    let newNs := if isNewNamespace then Name.mkStr top.currNamespace seg
+      else top.currNamespace
+    if isNewNamespace then
+      rejectForbiddenSpecNamespace "enter" newNs
+    let mut env := parserEnv.registerNamespace newNs
+    env := Parser.parserExtension.pushScope env
+    if isNewNamespace && parserEnv.isNamespace newNs then
+      env := Parser.parserExtension.activateScoped env newNs
+    let newScope : ParseScope :=
+      { top with header := seg, currNamespace := newNs }
+    return (env, newScope :: scopes)
+  | _ => fail s!"invalid scope name {header}"
+
+/-- Check that every namespace prefix of declaration identifier `id` avoids
+`forbiddenSpecRootNamespaces` and register each prefix in `parserEnv`. -/
+def checkSpecDeclNamespace (currNs : Name) (id : Name)
+    (parserEnv : Environment) : IO Environment := do
+  if (`_root_).isPrefixOf id then
+    fail s!"invalid _root_ declaration identifier {id} in specification"
+  let rec walkPrefix (ns : Name) (env : Environment) :
+      IO (Name × Environment) := do
+    match ns with
+    | .anonymous => return (currNs, env)
+    | .str p seg =>
+      let (base, env) ← walkPrefix p env
+      let full := Name.mkStr base seg
+      rejectForbiddenSpecNamespace "declare in" full
+      return (full, env.registerNamespace full)
+    | _ => fail s!"invalid declaration namespace {id} in specification"
+  match id with
+  | .str .anonymous _ => return parserEnv
+  | .str pre _ =>
+    let (_, env) ← walkPrefix pre parserEnv
+    return env
+  | _ => return parserEnv
+
+/-- Return `true` if `openDecl` activates scoped parser extensions in Lean 4
+(`open N`, `open N hiding ...`, and `open scoped N`). -/
+def openActivatesScoped (openDecl : Syntax) : Bool :=
+  openDecl.isOfKind ``Parser.Command.openSimple ||
+    openDecl.isOfKind ``Parser.Command.openHiding ||
+    openDecl.isOfKind ``Parser.Command.openScoped
+
+/-- Recursively validate a specification AST node `s` under lexical scope
+`(currNs, openDecls)` and dynamic `(commandLikeKinds, tacticLikeKinds)`. -/
+partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
+    (parserEnv : Environment) (currNs : Name) (openDecls : List OpenDecl)
+    (s : Syntax) : IO Unit := do
+  match s with
+  | .missing => fail "unexpected missing syntax node in specification"
+  | .atom _ _ => pure ()
+  | .ident _ _ val _ =>
+    unless isValidSourceIdent val do
+      fail s!"invalid identifier {val} in specification"
+    if hasUnsafeRecComponent val then
+      fail s!"disallowed _unsafe_rec identifier {val} in specification"
+    if forbiddenSpecIdentifiers.contains val then
+      fail s!"disallowed identifier {val} in specification"
+    if forbiddenSpecRootNamespaces.contains val.getRoot then
+      unless allowedSystemPlatformDecls.contains val do
+        fail s!"disallowed reference {val} in specification"
+  | .node _ k args =>
+    if k != nullKind then
+      if forbiddenSpecModifierKinds.contains k then
+        fail s!"disallowed modifier {k} in specification"
+      if forbiddenSpecTermKinds.contains k || isQuotationKind k then
+        fail s!"disallowed syntax {k} in specification"
+      if commandLikeKinds.contains k then
+        unless allowedSpecCommandKinds.contains k do
+          fail s!"unsupported command {k} in specification"
+      if tacticLikeKinds.contains k || (`Lean.Parser.Tactic).isPrefixOf k then
+        unless allowedSpecTacticKinds.contains k do
+          fail s!"unsupported tactic {k} in specification"
+    -- Structural checks and scope-aware subtrees.
+    if k == ``Parser.Command.sectionHeader then
+      validateSpecSectionHeader args
+    else if k == ``Parser.Command.declModifiers then
+      for child in args do
+        unless child.isOfKind nullKind && child.getArgs.isEmpty do
+          let ck := child.getKind
+          if ck == nullKind then
+            for inner in child.getArgs do
+              unless allowedSpecDeclModifierKinds.contains inner.getKind do
+                fail (s!"unsupported declaration modifier {inner.getKind} " ++
+                  "in specification")
+              inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
+                currNs openDecls inner
+          else
+            unless allowedSpecDeclModifierKinds.contains ck do
+              fail s!"unsupported declaration modifier {ck} in specification"
+            inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
+              currNs openDecls child
+    else if k == ``Parser.Command.declaration then
+      unless args.size == 2 &&
+          args[0]!.isOfKind ``Parser.Command.declModifiers do
+        fail "unsupported declaration shape in specification"
+      let declKind := args[1]!.getKind
+      unless allowedSpecDeclarationKinds.contains declKind do
+        fail s!"unsupported declaration kind {declKind} in specification"
+      if let some id := declarationIdent? s then
+        if hasUnsafeRecComponent id then
+          fail s!"disallowed _unsafe_rec declaration {id} in specification"
+        discard <| checkSpecDeclNamespace currNs id parserEnv
+      for child in args do
+        inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
+          currNs openDecls child
+    else if k == ``Parser.Command.mutual then
+      unless args.size == 3 &&
+          args[1]!.getArgs.all (isAllowedSpecNestedCommand ·.getKind) do
+        fail "unsupported mutual-block shape in specification"
+      let mut mutEnv := parserEnv
+      let mut mutOpen := openDecls
+      let mut mutCmds := commandLikeKinds
+      let mut mutTacs := tacticLikeKinds
+      for child in args[1]!.getArgs do
+        inspectSpecSyntax mutCmds mutTacs mutEnv currNs mutOpen child
+        if child.isOfKind ``Parser.Command.open then
+          let (nextEnv, nextOpen) ←
+            validateSpecOpenDecl currNs mutOpen mutEnv child[1]
+          mutEnv := nextEnv
+          mutOpen := nextOpen
+          if openActivatesScoped child[1] then
+            let (nc, nt) ← collectSpecParserSets mutEnv
+            mutCmds := nc
+            mutTacs := nt
+    else if k == ``Parser.Command.in then
+      unless args.size == 3 do
+        fail "unsupported command-wrapper shape in specification"
+      unless allowedSpecInLhsKinds.contains args[0]!.getKind do
+        fail s!"unsupported command on LHS of `in`: {args[0]!.getKind}"
+      unless isAllowedSpecNestedCommand args[2]!.getKind do
+        fail s!"unsupported command inside `in`: {args[2]!.getKind}"
+      inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
+        currNs openDecls args[0]!
+      let (tmpEnv, tmpOpen) ←
+        if args[0]!.isOfKind ``Parser.Command.open then
+          validateSpecOpenDecl currNs openDecls parserEnv args[0]![1]
+        else
+          pure (parserEnv, openDecls)
+      let (tmpCmds, tmpTacs) ←
+        if args[0]!.isOfKind ``Parser.Command.open &&
+            openActivatesScoped args[0]![1] then
+          collectSpecParserSets tmpEnv
+        else
+          pure (commandLikeKinds, tacticLikeKinds)
+      inspectSpecSyntax tmpCmds tmpTacs tmpEnv currNs tmpOpen args[2]!
+    else if k == ``Parser.Command.open then
+      unless args.size == 2 do
+        fail "unsupported open command shape in specification"
+      discard <| validateSpecOpenDecl currNs openDecls parserEnv args[1]!
+    else if k == ``Parser.Term.open then
+      unless args.size == 4 do
+        fail "unsupported term open shape in specification"
+      let (tmpEnv, tmpOpen) ←
+        validateSpecOpenDecl currNs openDecls parserEnv args[1]!
+      let (tmpCmds, tmpTacs) ←
+        if openActivatesScoped args[1]! then
+          collectSpecParserSets tmpEnv
+        else
+          pure (commandLikeKinds, tacticLikeKinds)
+      inspectSpecSyntax tmpCmds tmpTacs tmpEnv currNs tmpOpen args[3]!
+    else if k == ``Parser.Command.export then
+      validateSpecExport currNs openDecls args
+    else if k == ``Parser.Term.attrInstance then
+      validateSpecAttrInstance args
+    else if k == ``Parser.Command.eraseAttr then
+      let attrName := args[1]?.map Syntax.getId |>.getD .anonymous
+      unless allowedSpecEraseAttrs.contains attrName do
+        fail s!"unsupported attribute removal {attrName} in specification"
+    else if k == ``Parser.Command.deriving then
+      unless args.size == 6 && args[1]!.isOfKind nullKind &&
+          args[1]!.getArgs.isEmpty do
+        fail "unsupported deriving command modifier in specification"
+      for child in args do
+        inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
+          currNs openDecls child
+    else if k == ``Parser.Command.derivingClass then
+      unless args.size == 2 && args[0]!.isOfKind nullKind &&
+          args[0]!.getArgs.isEmpty do
+        fail "unsupported deriving modifier in specification"
+      let cls := args[1]!.getId
+      unless allowedSpecDerivingClasses.contains cls do
+        fail s!"unsupported deriving class {cls} in specification"
+    else if k == ``Parser.Command.set_option then
+      validateSpecSetOption args
+    else if k == ``Parser.Term.set_option then
+      validateSpecSetOption args
+      inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
+        currNs openDecls args[5]!
+    else if k == `Lean.Parser.Tactic.decide then
+      validateSpecDecideTactic args
+    else
+      for child in args do
+        inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
+          currNs openDecls child
+
+/-- Update lexical scope state `(parserEnv, scopes)` after validating a
+specification command `stx`. -/
+partial def applySpecScope (parserEnv : Environment)
+    (scopes : List ParseScope) (stx : Syntax) :
+    IO (Environment × List ParseScope) := do
+  let k := stx.getKind
+  if k == ``Parser.Command.namespace then
+    pushSpecScopes true stx[1].getId parserEnv scopes
+  else if k == ``Parser.Command.section then
+    if stx[2].isNone then
+      let top := scopes.head!
+      let parserEnv := Parser.parserExtension.pushScope parserEnv
+      return (parserEnv, { top with header := "" } :: scopes)
+    else
+      pushSpecScopes false stx[2][0].getId parserEnv scopes
+  else if k == ``Parser.Command.end then
+    let header? := if stx[1].isNone then none else some stx[1][0].getId
+    let endSize := match header? with
+      | none => 1
+      | some n => n.getNumParts
+    if scopes.length <= 1 then
+      fail "unexpected `end` command with no active scope"
+    match header? with
+    | none =>
+      if scopes.head!.header != "" then
+        fail s!"missing scope name `{scopes.head!.header}` after `end`"
+    | some header =>
+      if endSize >= scopes.length then
+        fail s!"`end {header}` closes more scopes than are open"
+      let expected := nameOfParseScopes scopes endSize
+      if expected != header then
+        fail s!"mismatched `end {header}` (expected `{expected}`)"
+    let mut env := parserEnv
+    for _ in [:endSize] do
+      env := Parser.parserExtension.popScope env
+    return (env, scopes.drop endSize)
+  else if k == ``Parser.Command.open then
+    let top := scopes.head!
+    let (nextEnv, nextOpen) ←
+      validateSpecOpenDecl top.currNamespace top.openDecls parserEnv stx[1]
+    return (nextEnv, { top with openDecls := nextOpen } :: scopes.tail!)
+  else if k == ``Parser.Command.in then
+    let top := scopes.head!
+    let tmpEnv := Parser.parserExtension.pushScope parserEnv
+    let (tmpEnv, tmpScopes) ← applySpecScope tmpEnv (top :: scopes) stx[0]
+    let (tmpEnv, _) ← applySpecScope tmpEnv tmpScopes stx[2]
+    return (Parser.parserExtension.popScope tmpEnv, scopes)
+  else if k == ``Parser.Command.mutual then
+    let top := scopes.head!
+    let mut tmpEnv := Parser.parserExtension.pushScope parserEnv
+    let mut tmpScopes := top :: scopes
+    for child in stx[1].getArgs do
+      (tmpEnv, tmpScopes) ← applySpecScope tmpEnv tmpScopes child
+    return (Parser.parserExtension.popScope tmpEnv, scopes)
+  else if k == ``Parser.Command.declaration then
+    match declarationIdent? stx with
+    | some id =>
+      let env ← checkSpecDeclNamespace scopes.head!.currNamespace id parserEnv
+      return (env, scopes)
+    | none => return (parserEnv, scopes)
+  else
+    return (parserEnv, scopes)
+
+/-- Parse and validate all commands in a `TargetRole::Specification` module
+against the authenticated `Init`/`Std` parser environment without elaborating
+any command. -/
+partial def parseAndInspectSpecCommands (ctx : Parser.InputContext)
+    (commandLikeKinds tacticLikeKinds : NameSet) (parserEnv : Environment)
+    (scopes : List ParseScope) (moduleName : Name)
+    (state : Parser.ModuleParserState) (messages : MessageLog) : IO Unit := do
+  let previous := state.pos
+  let top := scopes.head!
+  let pmctx : Parser.ParserModuleContext := {
+    env := parserEnv
+    options := {}
+    currNamespace := top.currNamespace
+    openDecls := top.openDecls
+  }
+  let (stx, nextState, nextMessages) :=
+    Parser.parseCommand ctx pmctx state messages
+  if nextMessages.hasErrors || nextState.recovering then
+    fail s!"command parser error in specification {moduleName}"
+  if stx.isOfKind ``Parser.Command.eoi then
+    return ()
+  if nextState.pos <= previous then
+    throw <| IO.userError "parser made no progress"
+  unless allowedSpecCommandKinds.contains stx.getKind do
+    fail s!"unsupported command {stx.getKind} in specification {moduleName}"
+  inspectSpecSyntax commandLikeKinds tacticLikeKinds parserEnv
+    top.currNamespace top.openDecls stx
+  let (nextEnv, nextScopes) ← applySpecScope parserEnv scopes stx
+  let (nextCmds, nextTacs) ←
+    if stx.isOfKind ``Parser.Command.namespace ||
+        stx.isOfKind ``Parser.Command.end ||
+        (stx.isOfKind ``Parser.Command.open &&
+          openActivatesScoped stx[1]) then
+      collectSpecParserSets nextEnv
+    else
+      pure (commandLikeKinds, tacticLikeKinds)
+  parseAndInspectSpecCommands ctx nextCmds nextTacs nextEnv nextScopes
+    moduleName nextState nextMessages
+
+/-- Execute batched fail-closed `"spec-preflight"` across all
+`TargetRole::Specification` modules against the authenticated `Init` + `Std`
+parser environment (`loadExts := true`, zero target `.olean`s loaded). -/
+def preflightSpecs (j : Json) (foundation : Array Name) : IO Json := do
+  let libraries ← names j "libraries"
+  let sources ← field (α := Array (String × String)) j "sources"
+  let env ← importEnv j (foundation ++ libraries) true
+  validateGraph j env
+  let (commandLikeKinds, tacticLikeKinds) ← collectSpecParserSets env
+  let mut checked : Array Json := #[]
+  for (modStr, pathStr) in sources do
+    let moduleName := modStr.toName
+    let text ← IO.FS.readFile pathStr
+    let ctx := Parser.mkInputContext text pathStr
+    let (header, initial, log) ← Parser.parseHeader ctx
+    if log.hasErrors || initial.recovering then
+      fail s!"header parser error in specification {moduleName}"
+    if Elab.HeaderSyntax.isModule header then
+      fail s!"module system header is unsupported in specification {moduleName}"
+    inspectSyntax (.ofList allowedHeaderKinds) header.raw
+      (requirePrelude := false)
+    let imports := Elab.HeaderSyntax.imports header
+    validateTargetImports moduleName.toString imports
+    let rootScope : ParseScope :=
+      { header := "", currNamespace := .anonymous, openDecls := [] }
+    parseAndInspectSpecCommands ctx commandLikeKinds tacticLikeKinds env
+      [rootScope] moduleName initial log
+    checked := checked.push (toJson moduleName)
+  return Json.mkObj [("checked", .arr checked)]
 
 /-! ## Shared kernel-environment combinators -/
 
@@ -2779,6 +3639,146 @@ def csimpEntries (env : Environment) :
         (previous.push (scope, e.toDeclName, e.thmName))
   return entries
 
+/-- Return `true` when `n` (ignoring private prefixes) names `Lean.Syntax` or a
+declaration beneath `Lean.Syntax`. -/
+def isLeanSyntaxConst (n : Name) : Bool :=
+  let u := (privateToUserName n).replacePrefix rootNamespace .anonymous
+  u == `Lean.Syntax || (`Lean.Syntax).isPrefixOf u
+
+/-- Narrowed transitive effect/meta/`System`/debug ban enforced across all
+declarations reachable from any `TargetRole::Specification` module. Preserves
+`System.Platform.{numBits, getNumBits, numBits_eq}` (and their compiler-private
+proof auxiliaries). -/
+def isForbiddenSpecTransitiveConst (n : Name) : Bool :=
+  let u := (privateToUserName n).replacePrefix rootNamespace .anonymous
+  let r := u.getRoot
+  if [`IO, `BaseIO, `EIO, `EST, `ST, `Task].contains r then
+    true
+  else if [`Lean.Macro, `Lean.Elab, `Lean.Core, `Lean.Meta,
+      `Lean.Environment, `Lean.Compiler, `Lean.Internal,
+      `Lean.getGithash, `Lean.version,
+      `System.FilePath, `System.SearchPath, `System.Uri].any
+        (fun pre => u == pre || pre.isPrefixOf u) then
+    true
+  else if u == `System.Platform || (`System.Platform).isPrefixOf u then
+    !(allowedSystemPlatformDecls.any fun ok => u == ok || ok.isPrefixOf u)
+  else
+    [`dbgTrace, `dbgTraceVal, `dbgTraceIfShared,
+      `dbgSleep, `dbgStackTrace, `dbgStackTraceIf].contains u
+
+/-- Check the exact first three parts of the 4-part `p._unsafe_rec` pairing
+invariant for a `.source .specification` constant `ci` in module `m`:
+1. `ci.isPartial && !ci.isUnsafe` and `ci` is a `.defnInfo`,
+2. `ci.name` has shape `p._unsafe_rec`, and
+3. `p` is defined in the same specification module `m` as a total, non-opaque
+   `.defnInfo`. Returns `some p` when paired, or `none` otherwise. -/
+def pairedSpecUnsafeRecParent? (env : Environment) (m : Name)
+    (ci : ConstantInfo) : IO (Option Name) := do
+  if !ci.isPartial || ci.isUnsafe || !(ci matches .defnInfo _) then
+    return none
+  let .str parent "_unsafe_rec" := ci.name | return none
+  let some parentCi := env.checked.get.find? parent | return none
+  let parentOrig ← origin env parent
+  if parentOrig == m && (parentCi matches .defnInfo _) &&
+      !parentCi.isUnsafe && !parentCi.isPartial then
+    return some parent
+  return none
+
+/-- Mutable memoized traversal state shared across Phase 1 (claim +
+specification closure) and Phase 2 (proof closure) of `"target-audit"`. -/
+structure TargetClosureState where
+  visited : NameSet := {}
+  axioms : NameSet := {}
+  sorryDecls : NameSet := {}
+  alternateProofs : Array ConstantInfo := #[]
+  edgesCache : Std.HashMap Name NameSet := {}
+
+/-- Run one phase of the unified `"target-audit"` dependency closure from
+`initialPending`, reusing memoized state across Phase 1 (`inPhase1 := true`)
+and Phase 2 (`inPhase1 := false`).
+
+Per-edge `sorryAx` admission runs in `parent`'s outgoing edge loop before
+`visited` short-circuiting so every proof declaration referencing `sorryAx` is
+recorded in `sorryDecls`, while any `sorryAx` reference from Phase 1 or from a
+non-`.proof` origin fails closed even when `allowSorryInProof` is `true`. -/
+def runTargetClosurePhase
+    (lookup : Name → IO ConstantInfo)
+    (provenance : Name → IO (Name × TargetOrigin))
+    (axiomPolicy : Array (String × String))
+    (libraryInventories : Std.HashMap Name NameSet)
+    (libraryExports : Std.HashMap Name (Array ConstantInfo))
+    (inPhase1 : Bool) (allowSorryInProof : Bool)
+    (phase1Closure : NameSet) (initialPending : List Name)
+    (initState : TargetClosureState) : IO TargetClosureState := do
+  let mut st := initState
+  let mut pending := initialPending
+  while !pending.isEmpty do
+    let n :: rest := pending | break
+    pending := rest
+    if st.visited.contains n then
+      continue
+    st := { st with visited := st.visited.insert n }
+    let (orig, role) ← provenance n
+    let ci ← lookup n
+    if ci.isAxiom then
+      unless axiomPolicy.contains (n.toString, orig.toString) do
+        fail s!"unapproved axiom {n} from {orig}"
+      st := { st with axioms := st.axioms.insert n }
+    let deps ← match st.edgesCache.get? n with
+      | some cached => pure cached
+      | none =>
+        let computed ← declarationEdges ci
+        st := { st with edgesCache := st.edgesCache.insert n computed }
+        pure computed
+    if role == .source .specification then
+      if ci matches .opaqueInfo _ then
+        fail s!"opaque declaration {n} is not allowed in specification"
+      for dep in deps do
+        if isLeanSyntaxConst dep then
+          fail s!"specification declaration {n} cannot reference {dep}"
+    for dep in deps do
+      let (depMod, depRole) ← provenance dep
+      if dep == `sorryAx && depMod == `Init.Prelude then
+        let sorryCi ← lookup dep
+        unless sorryCi.isAxiom do
+          fail s!"unexpected non-axiom {dep} in {depMod}"
+        if let some msg := role.edgeViolation? n dep depRole then
+          fail msg
+        if !inPhase1 && allowSorryInProof &&
+            role == .source .proof && !phase1Closure.contains n then
+          st := { st with
+            sorryDecls := st.sorryDecls.insert n
+            axioms := st.axioms.insert dep }
+        else
+          fail s!"unapproved axiom {dep} from {depMod}"
+      else if !st.visited.contains dep then
+        pending := dep :: pending
+    if let .library := role then
+      unless (libraryInventories.getD orig {}).contains n do
+        fail s!"uninventoried target library dependency {n}"
+    for exportedCi in libraryExports.getD n #[] do
+      match role with
+      | .foundation | .library => pure ()
+      | .source _ => fail s!"target library inventory origin mismatch {n}"
+      let alternatives ← inventoryAlternates ci exportedCi true
+      for proof in alternatives do
+        let altDeps ← declarationEdges proof
+        let merged := (st.edgesCache.getD n {}) ++ altDeps
+        st := { st with edgesCache := st.edgesCache.insert n merged }
+        -- A discarded proof is still a library export. Its own edges cannot
+        -- acquire target-source authority or bypass the 3-axiom ceiling.
+        for dep in altDeps do
+          let (depMod, depRole) ← provenance dep
+          if let some msg :=
+              TargetOrigin.edgeViolation? n .library dep depRole then
+            fail msg
+          if dep == `sorryAx && depMod == `Init.Prelude then
+            fail s!"unapproved axiom {dep} from {depMod}"
+          if !st.visited.contains dep then
+            pending := dep :: pending
+      st := { st with alternateProofs := st.alternateProofs ++ alternatives }
+  return st
+
 /-- Execute Phase 4 (`"target-audit"`) on compiled target artifacts.
 
 Target auditing checks actual stored declarations, including private helpers
@@ -2790,6 +3790,10 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let target ← field (α := Json) j "target"
   let libraries ← names j "libraries"
   let modules ← field (α := Array Json) target "modules"
+  let allowSorryInProof ← match target.getObjVal? "allowSorryInProof" with
+    | .error _ => pure false
+    | .ok val => IO.ofExcept (fromJson? (α := Bool) val)
+  let arts ← artifacts j
   let mut roles : Std.HashMap Name TargetOrigin := {}
   for m in foundation do roles := roles.insert m .foundation
   for m in libraries do
@@ -2801,6 +3805,12 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     let some role := TargetRole.parse? rawRole
       | fail s!"unknown target role {rawRole}"
     roles ← insertRole roles m (.source role) "overlapping target module"
+    -- Reject companion artifact parts (`.olean.private`, `.olean.server`,
+    -- `.ir`) on target modules before `importEnv` ever opens or mmaps them.
+    let some art := arts.find? m
+      | fail s!"missing target artifacts for {m}"
+    unless (art.oleanParts true).size == 1 && art.irParts.isEmpty do
+      fail s!"companion artifact parts unsupported in {m}"
     roots := roots.push m
   let env ← importEnv j roots
   validateGraph j env
@@ -2816,6 +3826,8 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   let mut sourceInventory : NameSet := {}
   let mut libraryInventories : Std.HashMap Name NameSet := {}
   let mut libraryExports : Std.HashMap Name (Array ConstantInfo) := {}
+  let mut specAllConsts : List Name := []
+  let mut pairedSpecUnsafeRecs : Array (Name × Name) := #[]
   for m in env.header.modules, data in env.header.moduleData do
     let some role := roles.get? m.module
       | fail s!"foreign target module {m.module}"
@@ -2831,6 +3843,13 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
         libraryExports := libraryExports.insert ci.name
           ((libraryExports.getD ci.name #[]).push ci)
     if let .source targetRole := role then
+      if data.isModule then
+        fail s!"module-system artifact unsupported in {m.module}"
+      let some art := arts.find? m.module
+        | fail s!"missing target artifacts for {m.module}"
+      unless (art.oleanParts true).size == 1 && art.irParts.isEmpty do
+        fail s!"companion artifact parts unsupported in {m.module}"
+      validateTargetImports m.module.toString data.imports
       unless data.constNames == data.constants.map ConstantInfo.name do
         fail s!"invalid target inventory {m.module}"
       for ci in data.constants do
@@ -2851,6 +3870,11 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
         unless stored.type == ci.type && stored.value? true == ci.value? true do
           fail s!"stored target declaration differs {ci.name}"
         sourceInventory := sourceInventory.insert ci.name
+        if targetRole == .specification then
+          if let some parent ← pairedSpecUnsafeRecParent? env m.module ci then
+            pairedSpecUnsafeRecs := pairedSpecUnsafeRecs.push (ci.name, parent)
+          else
+            specAllConsts := ci.name :: specAllConsts
   let theoremName := (← field (α := String) target "theoremName").toName
   let theoremModule := (← field (α := String) target "theoremModule").toName
   let expectedName :=
@@ -2901,51 +3925,43 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
   unless axiomPolicy == #[("Classical.choice", "Init.Prelude"),
       ("Quot.sound", "Init.Prelude"), ("propext", "Init.Core")] do
     fail "target axiom policy differs from the original foundation"
-  -- A library name can occur in several serialized inventories while the
-  -- imported environment selects only one value. Reconcile every reached
-  -- variant before replay. Alternate proofs can introduce further logical
-  -- dependencies, so extend the same closure until no new roots remain.
-  let mut pending := [
-    theoremName, expectedName, canonicalRoot, crateCtor, subjectName, specName]
-  let mut axioms : Array Name := #[]
-  let mut reached : NameSet := {}
-  let mut alternateProofs : Array ConstantInfo := #[]
-  repeat
-    let previous := reached
-    let (allAxioms, allReached) ← closure lookup provenance axiomPolicy
-      pending (visited := reached) (reachedAxioms := .ofList axioms.toList)
-    axioms := allAxioms
-    reached := allReached
-    pending := []
-    for n in reached do
-      unless previous.contains n do
-        let (orig, role) ← provenance n
-        if let .library := role then
-          unless (libraryInventories.getD orig {}).contains n do
-            fail s!"uninventoried target library dependency {n}"
-        for ci in libraryExports.getD n #[] do
-          match role with
-          | .foundation | .library => pure ()
-          | .source _ => fail s!"target library inventory origin mismatch {n}"
-          let alternatives ← inventoryAlternates (← lookup n) ci true
-          for proof in alternatives do
-            let deps ← declarationEdges proof
-            -- A discarded proof is still a library export. Its own edges
-            -- cannot acquire target-source authority merely because the
-            -- selected body has no such dependency.
-            for dep in deps do
-              let (_, depRole) ← provenance dep
-              if let some msg :=
-                  TargetOrigin.edgeViolation? n .library dep depRole then
-                fail msg
-            pending := deps.toList ++ pending
-          alternateProofs := alternateProofs ++ alternatives
-    if pending.isEmpty then break
+  -- Phase 1: Claim and whole-specification closure (strict 3-axiom ceiling,
+  -- zero `sorryAx`, non-opaque specs, no direct `Lean.Syntax` edges).
+  let claimRoots := [
+    expectedName, canonicalRoot, crateCtor, subjectName, specName]
+  let phase1State ← runTargetClosurePhase lookup provenance axiomPolicy
+    libraryInventories libraryExports true allowSorryInProof {}
+    (claimRoots ++ specAllConsts) {}
+  let phase1Closure := phase1State.visited
+  -- Narrowed transitive effect/meta/`System`/debug ban across every constant
+  -- transitively reachable from any `TargetRole::Specification` declaration.
+  let mut specSeen : NameSet := {}
+  let mut specQueue : List Name := specAllConsts
+  while !specQueue.isEmpty do
+    let n :: rest := specQueue | break
+    specQueue := rest
+    if specSeen.contains n then
+      continue
+    specSeen := specSeen.insert n
+    if isForbiddenSpecTransitiveConst n then
+      fail s!"specification transitively references disallowed constant {n}"
+    let deps := phase1State.edgesCache.getD n {}
+    for dep in deps do
+      if !specSeen.contains dep then
+        specQueue := dep :: specQueue
+  -- Phase 2: Proof closure (`[theoremName]`), reusing memoized Phase 1 state
+  -- and admitting `sorryAx` strictly on proof-only edges when requested.
+  let phase2State ← runTargetClosurePhase lookup provenance axiomPolicy
+    libraryInventories libraryExports false allowSorryInProof phase1Closure
+    [theoremName] phase1State
+  let reached := phase2State.visited
+  let axioms := phase2State.axioms.toArray.qsort Name.lt
+  let sorryDecls := phase2State.sorryDecls.toArray.qsort Name.lt
+  let alternateProofs := phase2State.alternateProofs
   -- Meaning surfaces follow the canonical claim's dependencies, independently
   -- of which proof helpers establish it. Those helpers still belong to reached
   -- and undergo replay, but editing them must not redefine the reviewed claim.
-  let (_, expectedReached) ← closure lookup provenance axiomPolicy
-    [canonicalRoot, crateCtor, subjectName, specName]
+  let (_, expectedReached) ← closure lookup provenance axiomPolicy claimRoots
   let mut replayMap : Std.HashMap Name ConstantInfo := {}
   let mut modelRoots : List Name := []
   let mut specRoots : List Name := []
@@ -2971,7 +3987,10 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
       -- Parsed imports are only the early authority gate. Recheck the actual
       -- type/body edges, including private and generated helpers, so the stored
       -- declarations' meanings obey the same authority boundary.
-      for dep in ← declarationEdges ci do
+      let deps ← match phase2State.edgesCache.get? n with
+        | some cached => pure cached
+        | none => declarationEdges ci
+      for dep in deps do
         let (_, depRole) ← provenance dep
         if let some msg := role.edgeViolation? n dep depRole then
           fail msg
@@ -2981,6 +4000,15 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
       | .source .model => modelRoots := n :: modelRoots
       | .source .specification => specRoots := n :: specRoots
       | _ => pure ()
+  -- Final part of the 4-part `p._unsafe_rec` pairing invariant: zero
+  -- references anywhere in `phase1Closure ∪ phase2Closure`, never in
+  -- `replayMap`, and every paired parent `p` must be replayed.
+  for (unsafeRec, parent) in pairedSpecUnsafeRecs do
+    if reached.contains unsafeRec || replayMap.contains unsafeRec then
+      fail (s!"paired _unsafe_rec helper {unsafeRec} cannot be " ++
+        "referenced logically")
+    unless replayMap.contains parent do
+      fail s!"paired _unsafe_rec parent {parent} missing from replay"
   -- Rebuild from the original foundation before comparing the root, so neither
   -- the proof nor its specification is validated using unchecked target data.
   let base ← importEnv j foundation
@@ -3047,6 +4075,7 @@ def targetAudit (j : Json) (foundation : Array Name) : IO Json := do
     ("canonicalRoot", toJson canonicalRoot), ("subject", toJson subjectName),
     ("specification", toJson specName), ("graph", graph env),
     ("expected", toJson expectedName), ("axioms", toJson axioms),
+    ("sorryDeclarations", toJson sorryDecls),
     ("replay", toJson true), ("exactType", toJson true),
     ("replayedDeclarations", toJson replayMap.size),
     ("checkedAlternateProofs", toJson alternateProofs.size),
@@ -3064,6 +4093,10 @@ def run (j : Json) : IO Json := do
     let sources ← field (α := Array (String × String)) j "sources"
     let headers ← sources.mapM fun (n, p) => inspectHeader n.toName p
     return Json.mkObj [("headers", .arr headers)]
+  | "spec-preflight" =>
+    let foundation ← names j "foundation"
+    initHermeticSearchPath sysrootStr
+    preflightSpecs j foundation
   | "resolve-imports" =>
     initHermeticSearchPath sysrootStr
     let mods ← names j "modules"

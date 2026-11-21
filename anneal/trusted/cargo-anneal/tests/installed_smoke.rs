@@ -464,7 +464,7 @@ fn audit_case(name: &str, case: &mut CaseDirectory, root: &Path) -> TestResult {
     for file in ["TrustedBoundary.lean", "library-lock.json"] {
         case.copy(
             &root.join("share/anneal/trusted/audit").join(file),
-            &format!("fixture/trusted/audit/{file}"),
+            format!("fixture/trusted/audit/{file}"),
         )?;
     }
     let source = if name == "audit-rejected" {

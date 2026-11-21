@@ -245,12 +245,13 @@ Direct `rustc` mode dereferences symlinks when staging regular source files (so
 Bazel runfiles symlink forests work directly) while still rejecting FIFOs,
 devices, and TOCTOU swaps. Host-level verification flags (`--capture`,
 `--sysroot`, `--lean`, `--artifacts`, `--export-lean-lib`,
-`--allow-unpinned-lean`, `--lean-memory-mb`) are accepted either before or after
-`rustc`. `--export-lean-lib` requires `--artifacts` and copies compiled target
-`.olean*` artifacts into `<artifacts>/lean-lib/` (even when proof checking
-fails, so interactive editors can inspect partial builds). `--lean-memory-mb`
-`<MB>` overrides Lean's `-M<MB>` memory limit (with a 4096 MiB floor for
-`resolve-imports`).
+`--allow-unpinned-lean`, `--allow-unsandboxed-elaboration`,
+`--allow-sorry-in-proof`, `--lean-memory-mb`) are accepted either before or
+after `rustc`. `--export-lean-lib` requires `--artifacts`: Door 1 promotes
+verified target `.olean` artifacts, omits authored `Proof` `.olean`s into
+`<artifacts>/lean-lib/` on `proof_failed` (exit `1`), and exports nothing on
+`tool_failed` (exit `2`). `--lean-memory-mb <MB>` overrides Lean's `-M<MB>`
+memory limit (with a 4096 MiB floor for `resolve-imports`).
 
 When verifying against a Lean installation other than the locked `v4.34.1`
 toolchain (for example, a build system's centrally managed Lean distribution),
@@ -258,8 +259,15 @@ pass `--allow-unpinned-lean` together with an explicit `--lean <PATH>`. Unpinned
 runs print a `TAINTED` banner on stderr, skip `foundation-lock.json` and
 `library-lock.json` matching, dynamically discover and hash the minimal `Init.*`
 / `Std.*` sysroot import closure, record it in the receipt's `unpinned_lean`
-object, set `taint_reasons: ["unpinned_lean"]`, and mark
-`correspondence_provenance` inapplicable.
+object, add `"unpinned_lean"` to `taint_reasons`, and mark
+`correspondence_provenance` inapplicable. Two additional relaxation flags follow
+the same Uniform Flag-Driven Taint Law (unconditionally adding their sorted atom
+to `taint_reasons` and printing a `TAINTED` banner even on clean runs):
+`--allow-unsandboxed-elaboration` disables OS-level `ExecSeal` containment
+(`"elaboration_sandbox": "none"`, retaining `"hostile Lean elaborator effects"`
+in `deferred`), and `--allow-sorry-in-proof` permits `sorry` strictly in
+`TargetRole::Proof` modules (never specifications, model, capture, or expected)
+while recording every `sorry`-using proof declaration in `sorry_declarations`.
 
 ## Author specifications and proofs
 
@@ -328,9 +336,10 @@ The submitted declaration must be a closed theorem proving the canonical
 application for the actual captured subject and requested specification.
 Acceptance checks declaration origins, the actual theorem type, the logical
 dependency closure and kernel replay from the authenticated foundation. `sorry`
-and additional logical axioms are rejected. Installed math libraries supply
-checked declarations, not new trusted axioms. Arbitrary external Lean packages
-need an admitted import path.
+(unless `--allow-sorry-in-proof` is passed for proof modules, which taints the
+receipt and records `sorry_declarations`) and additional logical axioms are
+rejected. Installed math libraries supply checked declarations, not new trusted
+axioms. Arbitrary external Lean packages need an admitted import path.
 
 ## Compose source proofs
 
@@ -407,16 +416,20 @@ environment variable through `env!` or `option_env!`, even an absent one, is
 refused because the environment is not part of the bound inputs. Broader
 memory, concurrency and full Starnix verification remain further work.
 
-Verification returns a Receipt schema v2 (`"schema_version": 2`) JSON receipt
-with `"taint_reasons"` (`[]` for pinned runs, `["unpinned_lean"]` when
-`--allow-unpinned-lean` is active) and one of these statuses:
+Verification returns a Receipt schema v3 (`"schema_version": 3`) JSON receipt
+with sorted `"taint_reasons"` (`[]` for untainted runs, or any subset of
+`["sorry_in_proof", "unpinned_lean", "unsandboxed_elaboration"]`), top-level
+`"elaboration_sandbox"` (`"linux_bwrap"`, `"linux_landlock_seccomp"`, or
+`"none"`; omitted on pre-sandbox failure receipts), optional
+`"sorry_declarations"` (present iff `--allow-sorry-in-proof` is active), and
+one of these statuses:
 
 | Status | Meaning | Exit code |
 | :--- | :--- | :--- |
-| `crate_verified` | The requested whole crate passed with the pinned Lean toolchain. | 0 |
-| `selected_unit_verified` | The requested selected scope passed with the pinned Lean toolchain. | 0 |
-| `tainted_crate_verified` | The requested whole crate passed with `--allow-unpinned-lean`. | 0 |
-| `tainted_selected_unit_verified` | The requested selected scope passed with `--allow-unpinned-lean`. | 0 |
+| `crate_verified` | The requested whole crate passed untainted (`taint_reasons == []`). | 0 |
+| `selected_unit_verified` | The requested selected scope passed untainted (`taint_reasons == []`). | 0 |
+| `tainted_crate_verified` | The requested whole crate passed with one or more `--allow-*` relaxation flags. | 0 |
+| `tainted_selected_unit_verified` | The requested selected scope passed with one or more `--allow-*` relaxation flags. | 0 |
 | `unsupported` | A required input or obligation is outside the implemented fragment. | 1 |
 | `proof_failed` | The frontend reported a source rejection, or acceptance policy rejected the proof. | 1 |
 | `compiler_failed` | The configured Rust compilation failed. | 2 |
@@ -539,13 +552,15 @@ correctness. Verification separately assumes an intact compiler and verification
 environment, which also covers the toolchain components that the receipt's
 `toolchain_identity` lists as unhashed.
 
-External target elaborators can execute host code: compiling target sources
-runs authored metaprograms and the initializers of imported target modules.
-This verifier does not isolate hostile elaborator effects, and its exact-root
-and logical-assumption checks do not provide that isolation. The acceptance
-inspector itself imports target artifacts without loading extensions or running
-initializers, so it runs no target-provided Lean code, but its verdict still
-depends on artifacts that compilation produced.
+External target elaborators can execute arbitrary metaprograms and imported
+module initializers during compilation. On Linux (`x86_64` and `aarch64`),
+`ExecSeal` isolates target Lean elaboration inside Tier 1 `linux_bwrap` or
+Tier 2 `linux_landlock_seccomp` by default, failing closed unless
+`--allow-unsandboxed-elaboration` is explicitly passed with Receipt v3 taint
+(while Tier 2 logs its shared host mount/PID namespace metadata-visibility
+assumption). The acceptance inspector itself imports target artifacts without
+loading extensions or running initializers, so it runs no target-provided Lean
+code.
 
 Full review-surface presentation, source-to-deployed-binary correspondence and
 the complete Starnix migration remain deferred. These limitations do not weaken
