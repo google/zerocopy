@@ -49,7 +49,7 @@ Basis: derived (modeling bridge). Applying a result to a real analyzer requires 
 
 ## Findings
 
-All Lean statements below are the output of Lean's pretty-printer on the compiled declarations (option `pp.fieldNotation.generalized false`; namespace `Toy.AbsInt` omitted), except the three structurally recursive definitions, which are shown by their source equations, and the two blocks under **Fixture domains and transformers** that are labelled as Lean source excerpts. Every `Toy.AbsInt` declaration named in this report is defined or quoted in it: key definitions and fixtures in this section, definition examples under **Definition examples**, and further proved statements on the cards and under **Proved boundary examples**. The pretty-printer omits implicit arguments, including the carrier type of predicates such as `Monotone` or `WidenTerminates` when the printed term does not fix it; where the truth of a quoted counterexample or example depends on such a hidden carrier, the carrier is stated in the hypothesis ledger or in a comment next to the statement. *Unfolded* blocks are hand-written elementary readings in which `x ⊆ y` abbreviates `x ≤ y` on `Pred σ`, i.e. `∀ s, x s → y s`.
+Every theorem statement below is quoted verbatim from the Lean source, after a comment `-- <file>:<lines>` that gives its location in the package; proofs are omitted. In quotes from the main-result sections of modules `Galois` and `Transformer`, `σ`, `A` and the instance on `A` are section variables (`variable {σ A : Type} [LE A]`). The definitions under **Key definitions** and in the first block under **Fixture domains and transformers** are the output of Lean's pretty-printer on the compiled declarations (option `pp.fieldNotation.generalized false`; namespace `Toy.AbsInt` omitted), except the three structurally recursive definitions, which are shown by their source equations; the two blocks under **Fixture domains and transformers** that are labelled as Lean source excerpts are quoted from the source. Every `Toy.AbsInt` declaration named in this report is defined or quoted in it: key definitions and fixtures in this section, definition examples under **Definition examples**, and further proved statements on the cards and under **Proved boundary examples**. *Unfolded* blocks are hand-written elementary readings in which `x ⊆ y` abbreviates `x ≤ y` on `Pred σ`, i.e. `∀ s, x s → y s`.
 
 ### Key definitions
 
@@ -543,227 +543,252 @@ def pbStutter (n : Nat) : PB := .pt ((n + 1) / 2) true
 
 Definitions reachable from a statement listed in the **Evidence** tables are part of that statement's definition closure, so they are covered by the closure hash recorded for that statement.
 
-**Facts about the fixtures cited in the text** (pretty-printed statements):
+**Facts about the fixtures cited in the text** (statements quoted from the Lean source):
 
 ```lean
+-- lean/Toy/AbsInt/Sign.lean:79
 theorem signGC :
   GaloisConnection signAlpha signGamma
 
+-- lean/Toy/AbsInt/Sign.lean:44
 theorem Sign.heightLE :
   HeightLE Sign 2
 
-theorem UB.not_acc :
-  ¬ACC UB
+-- lean/Toy/AbsInt/Domains.lean:310
+theorem UB.not_acc : ¬ ACC UB
 
-theorem UB.not_heightLE :
-  ∀ (h : Nat), ¬HeightLE UB h
+-- lean/Toy/AbsInt/Fixpoint.lean:206
+theorem UB.not_heightLE (h : Nat) : ¬ HeightLE UB h
 
-theorem lfp_counterStep :
-  ∀ (k : Nat), lfp counterStep k
+-- lean/Toy/AbsInt/Fixpoint.lean:162
+theorem lfp_counterStep (k : Nat) : lfp counterStep k
 
-theorem post_monotone :
-  ∀ {σ : Type} (h : σ → σ), Monotone (post h)
+-- lean/Toy/AbsInt/Transformer.lean:40
+theorem post_monotone {σ : Type} (h : σ → σ) : Monotone (post h)
 ```
 
 #### Definition examples
 
-Proved positive and negative examples for the key definitions, in the order of the key-definition block, followed by examples for the fixtures `ubGamma`, `posLoop` and `signPosLoop` (pretty-printed statements; the fixtures are defined above). A comment states the carrier where the pretty-printer hides an implicit carrier type on which the statement depends.
+Proved positive and negative examples for the key definitions, in the order of the key-definition block, followed by examples for the fixtures `ubGamma`, `posLoop` and `signPosLoop` (statements quoted from the Lean source; the fixtures are defined above).
 
 ```lean
-theorem pred_example_pos :
-  signGamma Sign.pos 1
+-- lean/Toy/AbsInt/Sign.lean:59
+theorem pred_example_pos : signGamma .pos 1
 
-theorem pred_example_neg :
-  ¬signGamma Sign.pos 0
+-- lean/Toy/AbsInt/Sign.lean:62
+theorem pred_example_neg : ¬ signGamma .pos 0
 
-theorem Pred.le_refl :
-  ∀ {σ : Type} (x : Pred σ), x ≤ x
+-- lean/Toy/AbsInt/Basic.lean:29
+theorem Pred.le_refl {σ : Type} (x : Pred σ) : x ≤ x
 
-theorem le_U :
-  ∀ {σ : Type} (x : Pred σ), x ≤ Pred.univ σ
+-- lean/Toy/AbsInt/Domains.lean:49
+theorem le_U {σ : Type} (x : Pred σ) : x ≤ Pred.univ σ
 
-theorem E_le :
-  ∀ {σ : Type} (x : Pred σ), Pred.empty σ ≤ x
+-- lean/Toy/AbsInt/Domains.lean:50
+theorem E_le {σ : Type} (x : Pred σ) : Pred.empty σ ≤ x
 
-theorem not_U_le_E :
-  ¬U ≤ E
+-- lean/Toy/AbsInt/Domains.lean:51
+theorem not_U_le_E : ¬ (U ≤ E)
 
+-- lean/Toy/AbsInt/Galois.lean:267
 theorem isRefl_example_pos :
   IsRefl B2
 
-theorem isRefl_example_neg :
-  ¬IsRefl NR2
+-- lean/Toy/AbsInt/Galois.lean:268
+theorem isRefl_example_neg : ¬ IsRefl NR2
 
+-- lean/Toy/AbsInt/Galois.lean:269
 theorem isTrans_example_pos :
   IsTrans B2
 
-theorem isTrans_example_neg :
-  ¬IsTrans NT3
+-- lean/Toy/AbsInt/Galois.lean:270
+theorem isTrans_example_neg : ¬ IsTrans NT3
 
+-- lean/Toy/AbsInt/Fixpoint.lean:408
 theorem isAntisymm_example_pos :
   IsAntisymm Sign
 
-theorem isAntisymm_example_neg :
-  IsRefl E2 ∧ IsTrans E2 ∧ ¬IsAntisymm E2
+-- lean/Toy/AbsInt/Fixpoint.lean:412
+theorem isAntisymm_example_neg : IsRefl E2 ∧ IsTrans E2 ∧ ¬ IsAntisymm E2
 
-theorem isAntisymm_example_neg_nonTrans :
-  ¬IsAntisymm NT4w
+-- lean/Toy/AbsInt/Fixpoint.lean:416
+theorem isAntisymm_example_neg_nonTrans : ¬ IsAntisymm NT4w
 
+-- lean/Toy/AbsInt/Galois.lean:257
 theorem monotone_example_pos :
   Monotone b2Gamma
 
-theorem monotone_example_neg :
-  ¬Monotone (unitAlpha B2.hi B2.lo)
+-- lean/Toy/AbsInt/Galois.lean:261
+theorem monotone_example_neg : ¬ Monotone (unitAlpha B2.hi B2.lo)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:405
 theorem strictLt_example_pos :
   StrictLt Sign.bot Sign.neg
 
-theorem strictLt_example_neg :
-  ¬StrictLt Sign.neg Sign.zero
+-- lean/Toy/AbsInt/Fixpoint.lean:406
+theorem strictLt_example_neg : ¬ StrictLt Sign.neg Sign.zero
 
+-- lean/Toy/AbsInt/Fixpoint.lean:386
 theorem acc_example_pos :
   ACC Sign
 
-theorem acc_example_neg :
-  ¬ACC UB
+-- lean/Toy/AbsInt/Fixpoint.lean:387
+theorem acc_example_neg : ¬ ACC UB
 
+-- lean/Toy/AbsInt/Fixpoint.lean:389
 theorem heightLE_example_pos :
   HeightLE Sign 2
 
-theorem heightLE_example_neg :
-  ¬HeightLE Sign 1
+-- lean/Toy/AbsInt/Fixpoint.lean:393
+theorem heightLE_example_neg : ¬ HeightLE Sign 1
 
+-- lean/Toy/AbsInt/Fixpoint.lean:402
 theorem isBot_example_pos :
   IsBot Sign.bot
 
-theorem isBot_example_neg :
-  ¬IsBot Sign.neg
+-- lean/Toy/AbsInt/Fixpoint.lean:403
+theorem isBot_example_neg : ¬ IsBot Sign.neg
 
+-- lean/Toy/AbsInt/Galois.lean:237
 theorem galoisConnection_example_pos :
   GaloisConnection b2Alpha b2Gamma
 
+-- lean/Toy/AbsInt/Galois.lean:241-242
 theorem galoisConnection_example_neg :
-  ¬GaloisConnection (fun x => B2.lo) fun x => E
+    ¬ GaloisConnection (fun _ : Pred Unit => B2.lo) (fun _ : B2 => E)
 
+-- lean/Toy/AbsInt/Galois.lean:245
 theorem extensive_example_pos :
   Extensive b2Alpha b2Gamma
 
-theorem extensive_example_neg :
-  ¬Extensive (fun x => B2.lo) fun x => E
+-- lean/Toy/AbsInt/Galois.lean:248
+theorem extensive_example_neg : ¬ Extensive (fun _ : Pred Unit => B2.lo) (fun _ : B2 => E)
 
+-- lean/Toy/AbsInt/Galois.lean:251
 theorem reductive_example_pos :
   Reductive b2Alpha b2Gamma
 
-theorem reductive_example_neg :
-  ¬Reductive (fun x => B2.hi) fun x => U
+-- lean/Toy/AbsInt/Galois.lean:254
+theorem reductive_example_neg : ¬ Reductive (fun _ : Pred Unit => B2.hi) (fun _ : B2 => U)
 
+-- lean/Toy/AbsInt/Transformer.lean:188-189
 theorem bestTransformer_example_pos :
-  bestTransformer signAlpha signGamma (post incr) Sign.pos = Sign.pos
+    bestTransformer signAlpha signGamma (post incr) .pos = .pos
 
+-- lean/Toy/AbsInt/Transformer.lean:193-194
 theorem bestTransformer_example_neg :
-  bestTransformer signAlpha signGamma (post decr) Sign.pos ≠ Sign.pos
+    bestTransformer signAlpha signGamma (post decr) .pos ≠ .pos
 
-theorem sound_example_pos :
-  Sound signGamma (post incr) fun x => Sign.top
+-- lean/Toy/AbsInt/Transformer.lean:146
+theorem sound_example_pos : Sound signGamma (post incr) (fun _ => Sign.top)
 
-theorem sound_example_neg :
-  ¬Sound signGamma (post incr) fun x => Sign.bot
+-- lean/Toy/AbsInt/Transformer.lean:151
+theorem sound_example_neg : ¬ Sound signGamma (post incr) (fun _ => Sign.bot)
 
-theorem post_example_pos :
-  post incr (signGamma Sign.zero) 1
+-- lean/Toy/AbsInt/Transformer.lean:154
+theorem post_example_pos : post incr (signGamma .zero) 1
 
-theorem post_example_neg :
-  ¬post incr (signGamma Sign.zero) 0
+-- lean/Toy/AbsInt/Transformer.lean:156
+theorem post_example_neg : ¬ post incr (signGamma .zero) 0
 
-theorem lfp_example_pos :
-  ∀ (k : Nat), lfp counterStep k
+-- lean/Toy/AbsInt/Fixpoint.lean:370
+theorem lfp_example_pos : ∀ k, lfp counterStep k
 
-theorem lfp_example_neg :
-  ¬lfp (fun x => Pred.empty Nat) 0
+-- lean/Toy/AbsInt/Fixpoint.lean:374
+theorem lfp_example_neg : ¬ lfp (fun _ => Pred.empty Nat) 0
 
-theorem isLeastFixpoint_example_pos :
-  IsLeastFixpoint (fun x => U) U
+-- lean/Toy/AbsInt/Fixpoint.lean:433
+theorem isLeastFixpoint_example_pos : IsLeastFixpoint (fun _ : Pred Unit => U) U
 
-theorem isLeastFixpoint_example_neg :
-  ¬IsLeastFixpoint id U
+-- lean/Toy/AbsInt/Fixpoint.lean:438
+theorem isLeastFixpoint_example_neg : ¬ IsLeastFixpoint (id : Pred Unit → Pred Unit) U
 
+-- lean/Toy/AbsInt/Fixpoint.lean:377
 theorem postFixpoint_example_pos :
   PostFixpoint ubIncr UB.top
 
-theorem postFixpoint_example_neg :
-  ¬PostFixpoint ubIncr (UB.atMost 0)
+-- lean/Toy/AbsInt/Fixpoint.lean:379
+theorem postFixpoint_example_neg : ¬ PostFixpoint ubIncr (UB.atMost 0)
 
+-- lean/Toy/AbsInt/Widening.lean:189
 theorem widenUpperLeft_example_pos :
   WidenUpperLeft ubWiden
 
-theorem widenUpperLeft_example_neg :
-  ¬WidenUpperLeft fun x b => b
-  -- the operator `fun x b => b` is on `B2` (implicit `A := B2`)
+-- lean/Toy/AbsInt/Widening.lean:190
+theorem widenUpperLeft_example_neg : ¬ WidenUpperLeft (fun _ b : B2 => b)
 
+-- lean/Toy/AbsInt/Widening.lean:192
 theorem widenUpperRight_example_pos :
   WidenUpperRight ubWiden
 
-theorem widenUpperRight_example_neg :
-  ¬WidenUpperRight fun a x => a
-  -- the operator `fun a x => a` is on `B2` (implicit `A := B2`)
+-- lean/Toy/AbsInt/Widening.lean:193
+theorem widenUpperRight_example_neg : ¬ WidenUpperRight (fun a _ : B2 => a)
 
-theorem ascending_example_pos :
-  Ascending fun n => n
-  -- on `Nat` (implicit `A := Nat`)
+-- lean/Toy/AbsInt/Widening.lean:196
+theorem ascending_example_pos : Ascending (fun n : Nat => n)
 
-theorem ascending_example_neg :
-  ¬Ascending fun n => 10 - n
-  -- on `Nat` (implicit `A := Nat`; `10 - n` is truncated subtraction)
+-- lean/Toy/AbsInt/Widening.lean:197
+theorem ascending_example_neg : ¬ Ascending (fun n : Nat => 10 - n)
+-- `10 - n` is truncated subtraction on `Nat`
 
+-- lean/Toy/AbsInt/Widening.lean:215
 theorem widenTerminates_example_pos :
   WidenTerminates ubWiden
 
-theorem widenTerminates_example_neg :
-  ¬WidenTerminates max
-  -- `max` on `Nat` (implicit `A := Nat`)
+-- lean/Toy/AbsInt/Widening.lean:225
+theorem widenTerminates_example_neg : ¬ WidenTerminates (max : Nat → Nat → Nat)
 
+-- lean/Toy/AbsInt/Widening.lean:216
 theorem widenStabilizes_example_pos :
   WidenStabilizes ubWiden
 
-theorem widenStabilizes_example_neg :
-  ¬WidenStabilizes max
-  -- `max` on `Nat` (implicit `A := Nat`)
+-- lean/Toy/AbsInt/Widening.lean:232
+theorem widenStabilizes_example_neg : ¬ WidenStabilizes (max : Nat → Nat → Nat)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:382
 theorem kleene_example_pos :
   kleene ubIncr UB.bot 3 = UB.atMost 2
 
+-- lean/Toy/AbsInt/Fixpoint.lean:384
 theorem kleene_example_neg :
   kleene ubIncr UB.bot 3 ≠ UB.top
 
+-- lean/Toy/AbsInt/Widening.lean:200
 theorem widenChain_example_pos :
   widenChain ubWiden (fun n => UB.atMost n) 1 = UB.top
 
+-- lean/Toy/AbsInt/Widening.lean:204
 theorem widenChain_example_neg :
   widenChain ubWiden (fun n => UB.atMost n) 1 ≠ UB.atMost 1
 
+-- lean/Toy/AbsInt/Widening.lean:207
 theorem widenIter_example_pos :
   widenIter ubWiden ubIncr UB.bot 1 = UB.top
 
+-- lean/Toy/AbsInt/Widening.lean:211-212
 theorem widenIter_example_neg :
   widenIter ubWiden ubIncr UB.bot 1 ≠ kleene ubIncr UB.bot 1
 
+-- lean/Toy/AbsInt/Domains.lean:327
 theorem ubGamma_example_pos :
   ubGamma (UB.atMost 2) 1
 
-theorem ubGamma_example_neg :
-  ¬ubGamma (UB.atMost 0) 1
+-- lean/Toy/AbsInt/Domains.lean:331
+theorem ubGamma_example_neg : ¬ ubGamma (UB.atMost 0) 1
 
+-- lean/Toy/AbsInt/Fixpoint.lean:419
 theorem posLoop_example_pos :
   posLoop (Pred.empty Int) 1
 
-theorem posLoop_example_neg :
-  ¬posLoop (Pred.empty Int) 2
+-- lean/Toy/AbsInt/Fixpoint.lean:422
+theorem posLoop_example_neg : ¬ posLoop (Pred.empty Int) 2
 
+-- lean/Toy/AbsInt/Fixpoint.lean:428
 theorem signPosLoop_example_pos :
   PostFixpoint signPosLoop Sign.pos
 
-theorem signPosLoop_example_neg :
-  ¬PostFixpoint signPosLoop Sign.zero
+-- lean/Toy/AbsInt/Fixpoint.lean:431
+theorem signPosLoop_example_neg : ¬ PostFixpoint signPosLoop Sign.zero
 ```
 
 ### Galois connections
@@ -774,15 +799,14 @@ theorem signPosLoop_example_neg :
 - **Plain claim.** If the abstract order is reflexive and transitive (antisymmetry is not assumed), then alpha : Pred sigma -> A and gamma : A -> Pred sigma form a Galois connection (alpha x <= a iff x is included in gamma a) exactly when alpha and gamma are monotone, x is included in gamma (alpha x) for every x, and alpha (gamma a) <= a for every a.
 
 ```lean
-theorem galoisConnection_iff_monotone_extensive_reductive_of_refl_of_trans :
-  ∀ {σ A : Type} [inst : LE A],
-    IsRefl A →
-      IsTrans A →
-        ∀ (α : Pred σ → A) (γ : A → Pred σ),
-          GaloisConnection α γ ↔ Monotone α ∧ Monotone γ ∧ Extensive α γ ∧ Reductive α γ
+-- lean/Toy/AbsInt/Galois.lean:49-52
+theorem galoisConnection_iff_monotone_extensive_reductive_of_refl_of_trans
+    (hrefl : IsRefl A) (htrans : IsTrans A) (α : Pred σ → A) (γ : A → Pred σ) :
+    GaloisConnection α γ ↔
+      (Monotone α ∧ Monotone γ ∧ Extensive α γ ∧ Reductive α γ)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 For a preorder (A, ≤) (reflexive and transitive, not necessarily antisymmetric) and any α : Pred σ → A, γ : A → Pred σ:
@@ -799,23 +823,26 @@ For a preorder (A, ≤) (reflexive and transitive, not necessarily antisymmetric
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Galois.lean:281-285
 theorem gcIff_tight_refl :
-  IsTrans NR2 ∧
-    ¬IsRefl NR2 ∧
-      ¬(GaloisConnection nr2Alpha nr2Gamma ↔
-          Monotone nr2Alpha ∧ Monotone nr2Gamma ∧ Extensive nr2Alpha nr2Gamma ∧ Reductive nr2Alpha nr2Gamma)
+    IsTrans NR2 ∧ ¬ IsRefl NR2 ∧
+      ¬ (GaloisConnection nr2Alpha nr2Gamma ↔
+          (Monotone nr2Alpha ∧ Monotone nr2Gamma ∧ Extensive nr2Alpha nr2Gamma ∧
+            Reductive nr2Alpha nr2Gamma))
 
+-- lean/Toy/AbsInt/Galois.lean:290-294
 theorem gcIff_tight_trans :
-  IsRefl NT3 ∧
-    ¬IsTrans NT3 ∧
-      ¬(GaloisConnection nt3Alpha nt3Gamma ↔
-          Monotone nt3Alpha ∧ Monotone nt3Gamma ∧ Extensive nt3Alpha nt3Gamma ∧ Reductive nt3Alpha nt3Gamma)
+    IsRefl NT3 ∧ ¬ IsTrans NT3 ∧
+      ¬ (GaloisConnection nt3Alpha nt3Gamma ↔
+          (Monotone nt3Alpha ∧ Monotone nt3Gamma ∧ Extensive nt3Alpha nt3Gamma ∧
+            Reductive nt3Alpha nt3Gamma))
 
 ```
 
 - **Non-vacuity witness** (`gc_nonvacuous`). The sign domain (Sign, with its order, signAlpha, signGamma over Pred Int) is reflexive and transitive and is a Galois connection, so both sides of the equivalence are exercised at a true instance.
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:201-202
 theorem gc_nonvacuous :
   IsRefl Sign ∧ IsTrans Sign ∧ GaloisConnection signAlpha signGamma
 ```
@@ -839,15 +866,14 @@ Basis: derived (modeling bridge). An abstract domain of an analyzer instantiates
 - **Plain claim.** If the abstract order is reflexive and transitive and alpha, gamma form a Galois connection, then alpha and gamma are monotone, gamma . alpha is extensive, and alpha . gamma is reductive.
 
 ```lean
-theorem monotone_extensive_reductive_of_galoisConnection_of_refl_of_trans :
-  ∀ {σ A : Type} [inst : LE A],
-    IsRefl A →
-      IsTrans A →
-        ∀ {α : Pred σ → A} {γ : A → Pred σ},
-          GaloisConnection α γ → Monotone α ∧ Monotone γ ∧ Extensive α γ ∧ Reductive α γ
+-- lean/Toy/AbsInt/Galois.lean:67-70
+theorem monotone_extensive_reductive_of_galoisConnection_of_refl_of_trans
+    (hrefl : IsRefl A) (htrans : IsTrans A) {α : Pred σ → A} {γ : A → Pred σ}
+    (hgc : GaloisConnection α γ) :
+    Monotone α ∧ Monotone γ ∧ Extensive α γ ∧ Reductive α γ
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 Preorder A, (∀ x a, α x ≤ a ↔ x ⊆ γ a)  ⟹  α monotone ∧ γ monotone ∧ (∀ x, x ⊆ γ (α x)) ∧ (∀ a, α (γ a) ≤ a).
@@ -864,30 +890,32 @@ Preorder A, (∀ x a, α x ≤ a ↔ x ⊆ γ a)  ⟹  α monotone ∧ γ monoto
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Galois.lean:298-301
 theorem gcForward_tight_refl :
-  IsTrans NR2 ∧
-    ¬IsRefl NR2 ∧
-      GaloisConnection nr2Alpha nr2Gamma ∧
-        ¬(Monotone nr2Alpha ∧ Monotone nr2Gamma ∧ Extensive nr2Alpha nr2Gamma ∧ Reductive nr2Alpha nr2Gamma)
+    IsTrans NR2 ∧ ¬ IsRefl NR2 ∧ GaloisConnection nr2Alpha nr2Gamma ∧
+      ¬ (Monotone nr2Alpha ∧ Monotone nr2Gamma ∧ Extensive nr2Alpha nr2Gamma ∧
+          Reductive nr2Alpha nr2Gamma)
 
+-- lean/Toy/AbsInt/Galois.lean:306-309
 theorem gcForward_tight_trans :
-  IsRefl NT4 ∧
-    ¬IsTrans NT4 ∧
-      GaloisConnection nt4Alpha nt4Gamma ∧
-        ¬(Monotone nt4Alpha ∧ Monotone nt4Gamma ∧ Extensive nt4Alpha nt4Gamma ∧ Reductive nt4Alpha nt4Gamma)
+    IsRefl NT4 ∧ ¬ IsTrans NT4 ∧ GaloisConnection nt4Alpha nt4Gamma ∧
+      ¬ (Monotone nt4Alpha ∧ Monotone nt4Gamma ∧ Extensive nt4Alpha nt4Gamma ∧
+          Reductive nt4Alpha nt4Gamma)
 
+-- lean/Toy/AbsInt/Galois.lean:314-319
 theorem gcForward_tight_gc :
-  IsRefl B2 ∧
-    IsTrans B2 ∧
-      (¬GaloisConnection (fun x => B2.lo) fun x => E) ∧
-        ¬((Monotone fun x => B2.lo) ∧
-            (Monotone fun x => E) ∧ (Extensive (fun x => B2.lo) fun x => E) ∧ Reductive (fun x => B2.lo) fun x => E)
+    IsRefl B2 ∧ IsTrans B2 ∧
+      ¬ GaloisConnection (fun _ : Pred Unit => B2.lo) (fun _ : B2 => E) ∧
+      ¬ (Monotone (fun _ : Pred Unit => B2.lo) ∧ Monotone (fun _ : B2 => E) ∧
+          Extensive (fun _ : Pred Unit => B2.lo) (fun _ : B2 => E) ∧
+          Reductive (fun _ : Pred Unit => B2.lo) (fun _ : B2 => E))
 
 ```
 
 - **Non-vacuity witness** (`gc_nonvacuous`). Sign domain: reflexive, transitive, and signAlpha/signGamma form a Galois connection.
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:201-202
 theorem gc_nonvacuous :
   IsRefl Sign ∧ IsTrans Sign ∧ GaloisConnection signAlpha signGamma
 ```
@@ -908,13 +936,14 @@ Basis: derived (modeling bridge). Same instantiation conditions as `R1-gc-iff`; 
 - **Plain claim.** If the abstract order is transitive (reflexivity not needed), alpha and gamma are monotone, x is included in gamma (alpha x) for all x, and alpha (gamma a) <= a for all a, then alpha and gamma form a Galois connection.
 
 ```lean
-theorem galoisConnection_of_monotone_extensive_reductive_of_trans :
-  ∀ {σ A : Type} [inst : LE A],
-    IsTrans A →
-      ∀ {α : Pred σ → A} {γ : A → Pred σ}, Monotone α → Monotone γ → Extensive α γ → Reductive α γ → GaloisConnection α γ
+-- lean/Toy/AbsInt/Galois.lean:77-80
+theorem galoisConnection_of_monotone_extensive_reductive_of_trans
+    (htrans : IsTrans A) {α : Pred σ → A} {γ : A → Pred σ}
+    (hα : Monotone α) (hγ : Monotone γ) (hext : Extensive α γ) (hred : Reductive α γ) :
+    GaloisConnection α γ
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 Transitive ≤ on A, α monotone, γ monotone, (∀ x, x ⊆ γ (α x)), (∀ a, α (γ a) ≤ a)  ⟹  ∀ x a, α x ≤ a ↔ x ⊆ γ a.
@@ -933,43 +962,47 @@ Transitive ≤ on A, α monotone, γ monotone, (∀ x, x ⊆ γ (α x)), (∀ a,
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Galois.lean:324-326
 theorem gcBackward_tight_trans :
-  Monotone nt3Alpha ∧
-    Monotone nt3Gamma ∧
-      Extensive nt3Alpha nt3Gamma ∧ Reductive nt3Alpha nt3Gamma ∧ ¬IsTrans NT3 ∧ ¬GaloisConnection nt3Alpha nt3Gamma
+    Monotone nt3Alpha ∧ Monotone nt3Gamma ∧ Extensive nt3Alpha nt3Gamma ∧
+      Reductive nt3Alpha nt3Gamma ∧ ¬ IsTrans NT3 ∧ ¬ GaloisConnection nt3Alpha nt3Gamma
 
+-- lean/Toy/AbsInt/Galois.lean:331-336
 theorem gcBackward_tight_monoAlpha :
-  IsTrans B2 ∧
-    (Monotone fun x => U) ∧
-      (Extensive (unitAlpha B2.hi B2.lo) fun x => U) ∧
-        (Reductive (unitAlpha B2.hi B2.lo) fun x => U) ∧
-          ¬Monotone (unitAlpha B2.hi B2.lo) ∧ ¬GaloisConnection (unitAlpha B2.hi B2.lo) fun x => U
+    IsTrans B2 ∧ Monotone (fun _ : B2 => U) ∧
+      Extensive (unitAlpha B2.hi B2.lo) (fun _ : B2 => U) ∧
+      Reductive (unitAlpha B2.hi B2.lo) (fun _ : B2 => U) ∧
+      ¬ Monotone (unitAlpha B2.hi B2.lo) ∧
+      ¬ GaloisConnection (unitAlpha B2.hi B2.lo) (fun _ : B2 => U)
 
+-- lean/Toy/AbsInt/Galois.lean:348-353
 theorem gcBackward_tight_monoGamma :
-  IsTrans B2 ∧
-    (Monotone fun x => B2.lo) ∧
-      Extensive (fun x => B2.lo) b2GammaRev ∧
-        Reductive (fun x => B2.lo) b2GammaRev ∧ ¬Monotone b2GammaRev ∧ ¬GaloisConnection (fun x => B2.lo) b2GammaRev
+    IsTrans B2 ∧ Monotone (fun _ : Pred Unit => B2.lo) ∧
+      Extensive (fun _ : Pred Unit => B2.lo) b2GammaRev ∧
+      Reductive (fun _ : Pred Unit => B2.lo) b2GammaRev ∧
+      ¬ Monotone b2GammaRev ∧
+      ¬ GaloisConnection (fun _ : Pred Unit => B2.lo) b2GammaRev
 
+-- lean/Toy/AbsInt/Galois.lean:358-362
 theorem gcBackward_tight_extensive :
-  IsTrans B2 ∧
-    (Monotone fun x => B2.lo) ∧
-      (Monotone fun x => E) ∧
-        (Reductive (fun x => B2.lo) fun x => E) ∧
-          (¬Extensive (fun x => B2.lo) fun x => E) ∧ ¬GaloisConnection (fun x => B2.lo) fun x => E
+    IsTrans B2 ∧ Monotone (fun _ : Pred Unit => B2.lo) ∧ Monotone (fun _ : B2 => E) ∧
+      Reductive (fun _ : Pred Unit => B2.lo) (fun _ : B2 => E) ∧
+      ¬ Extensive (fun _ : Pred Unit => B2.lo) (fun _ : B2 => E) ∧
+      ¬ GaloisConnection (fun _ : Pred Unit => B2.lo) (fun _ : B2 => E)
 
+-- lean/Toy/AbsInt/Galois.lean:367-371
 theorem gcBackward_tight_reductive :
-  IsTrans B2 ∧
-    (Monotone fun x => B2.hi) ∧
-      (Monotone fun x => U) ∧
-        (Extensive (fun x => B2.hi) fun x => U) ∧
-          (¬Reductive (fun x => B2.hi) fun x => U) ∧ ¬GaloisConnection (fun x => B2.hi) fun x => U
+    IsTrans B2 ∧ Monotone (fun _ : Pred Unit => B2.hi) ∧ Monotone (fun _ : B2 => U) ∧
+      Extensive (fun _ : Pred Unit => B2.hi) (fun _ : B2 => U) ∧
+      ¬ Reductive (fun _ : Pred Unit => B2.hi) (fun _ : B2 => U) ∧
+      ¬ GaloisConnection (fun _ : Pred Unit => B2.hi) (fun _ : B2 => U)
 
 ```
 
 - **Non-vacuity witness** (`gcBackward_nonvacuous`). Sign domain: transitive, and signAlpha, signGamma satisfy the four laws (derived directly from the proved Galois connection signGC).
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:207-209
 theorem gcBackward_nonvacuous :
   IsTrans Sign ∧ Monotone signAlpha ∧ Monotone signGamma ∧ Extensive signAlpha signGamma ∧ Reductive signAlpha signGamma
 ```
@@ -992,14 +1025,14 @@ Basis: derived (modeling bridge). An implementer who proves monotonicity of both
 - **Plain claim.** If alpha, gamma form a Galois connection and the abstract order is reflexive, then for every concrete transformer f (monotone or not) the best abstract transformer alpha . f . gamma is gamma-sound: f (gamma a) is included in gamma (alpha (f (gamma a))) for every a. For non-monotone f this gamma-form constrains f only on the sets gamma a.
 
 ```lean
-theorem bestTransformer_sound_of_galoisConnection_of_refl :
-  ∀ {σ A : Type} [inst : LE A],
-    IsRefl A →
-      ∀ {α : Pred σ → A} {γ : A → Pred σ},
-        GaloisConnection α γ → ∀ (f : Pred σ → Pred σ), Sound γ f (bestTransformer α γ f)
+-- lean/Toy/AbsInt/Transformer.lean:61-64
+theorem bestTransformer_sound_of_galoisConnection_of_refl
+    (hrefl : IsRefl A) {α : Pred σ → A} {γ : A → Pred σ}
+    (hgc : GaloisConnection α γ) (f : Pred σ → Pred σ) :
+    Sound γ f (bestTransformer α γ f)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 Reflexive ≤ on A, Galois connection α, γ  ⟹  ∀ f : Pred σ → Pred σ, ∀ a, f (γ a) ⊆ γ (α (f (γ a))).
@@ -1015,20 +1048,23 @@ Reflexive ≤ on A, Galois connection α, γ  ⟹  ∀ f : Pred σ → Pred σ, 
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:278-280
 theorem bestSound_tight_refl :
-  ¬IsRefl NR2 ∧
-    GaloisConnection nr2Alpha nr2Gamma ∧ ¬Sound nr2Gamma (fun x => U) (bestTransformer nr2Alpha nr2Gamma fun x => U)
+    ¬ IsRefl NR2 ∧ GaloisConnection nr2Alpha nr2Gamma ∧
+      ¬ Sound nr2Gamma (fun _ => U) (bestTransformer nr2Alpha nr2Gamma (fun _ => U))
 
+-- lean/Toy/AbsInt/Transformer.lean:285-288
 theorem bestSound_tight_gc :
-  IsRefl B2 ∧
-    (¬GaloisConnection (fun x => B2.lo) fun x => E) ∧
-      ¬Sound (fun x => E) (fun x => U) (bestTransformer (fun x => B2.lo) (fun x => E) fun x => U)
+    IsRefl B2 ∧ ¬ GaloisConnection (fun _ : Pred Unit => B2.lo) (fun _ : B2 => E) ∧
+      ¬ Sound (fun _ : B2 => E) (fun _ => U)
+          (bestTransformer (fun _ : Pred Unit => B2.lo) (fun _ : B2 => E) (fun _ => U))
 
 ```
 
 - **Non-vacuity witness** (`bestSound_nonvacuous`). Sign domain: reflexive and a Galois connection; f is arbitrary (e.g. the concrete transformer of x := x + 1).
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:220
 theorem bestSound_nonvacuous :
   IsRefl Sign ∧ GaloisConnection signAlpha signGamma
 ```
@@ -1052,12 +1088,14 @@ Basis: derived (modeling bridge). An analyzer that specifies a transfer function
 - **Plain claim.** If alpha, gamma form a Galois connection, then an abstract transformer f# is gamma-sound for f (f (gamma a) included in gamma (f# a) for all a) exactly when alpha (f (gamma a)) <= f# a for all a; hence alpha . f . gamma is a pointwise lower bound of all gamma-sound transformers. No order law and no monotonicity of f or f# is assumed.
 
 ```lean
-theorem sound_iff_bestTransformer_le_of_galoisConnection :
-  ∀ {σ A : Type} [inst : LE A] {α : Pred σ → A} {γ : A → Pred σ},
-    GaloisConnection α γ → ∀ (f : Pred σ → Pred σ) (fs : A → A), Sound γ f fs ↔ ∀ (a : A), bestTransformer α γ f a ≤ fs a
+-- lean/Toy/AbsInt/Transformer.lean:74-77
+theorem sound_iff_bestTransformer_le_of_galoisConnection
+    {α : Pred σ → A} {γ : A → Pred σ} (hgc : GaloisConnection α γ)
+    (f : Pred σ → Pred σ) (fs : A → A) :
+    Sound γ f fs ↔ ∀ a, bestTransformer α γ f a ≤ fs a
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 Galois connection α, γ  ⟹  ∀ f fs, (∀ a, f (γ a) ⊆ γ (fs a)) ↔ (∀ a, α (f (γ a)) ≤ fs a).
@@ -1072,18 +1110,20 @@ Galois connection α, γ  ⟹  ∀ f fs, (∀ a, f (γ a) ⊆ γ (fs a)) ↔ (�
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:294-299
 theorem soundIff_tight_gc :
-  IsRefl B2 ∧
-    IsTrans B2 ∧
-      (¬GaloisConnection (fun x => B2.hi) fun x => U) ∧
-        ¬((Sound (fun x => U) id fun x => B2.lo) ↔
-            ∀ (a : B2), bestTransformer (fun x => B2.hi) (fun x => U) id a ≤ (fun x => B2.lo) a)
+    IsRefl B2 ∧ IsTrans B2 ∧
+      ¬ GaloisConnection (fun _ : Pred Unit => B2.hi) (fun _ : B2 => U) ∧
+      ¬ (Sound (fun _ : B2 => U) id (fun _ => B2.lo) ↔
+          ∀ a, bestTransformer (fun _ : Pred Unit => B2.hi) (fun _ : B2 => U) id a ≤
+            (fun _ => B2.lo) a)
 
 ```
 
 - **Non-vacuity witness** (`bestSound_nonvacuous`). Sign domain Galois connection (signAlpha, signGamma).
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:220
 theorem bestSound_nonvacuous :
   IsRefl Sign ∧ GaloisConnection signAlpha signGamma
 ```
@@ -1105,15 +1145,14 @@ Basis: derived (modeling bridge). A verified analyzer can state the correctness 
 - **Plain claim.** If alpha, gamma form a Galois connection over a reflexive, transitive abstract order and the concrete transformer f is monotone, then the best abstract transformer alpha . f . gamma is monotone.
 
 ```lean
-theorem bestTransformer_monotone_of_galoisConnection_of_refl_of_trans_of_monotone :
-  ∀ {σ A : Type} [inst : LE A],
-    IsRefl A →
-      IsTrans A →
-        ∀ {α : Pred σ → A} {γ : A → Pred σ},
-          GaloisConnection α γ → ∀ {f : Pred σ → Pred σ}, Monotone f → Monotone (bestTransformer α γ f)
+-- lean/Toy/AbsInt/Transformer.lean:83-86
+theorem bestTransformer_monotone_of_galoisConnection_of_refl_of_trans_of_monotone
+    (hrefl : IsRefl A) (htrans : IsTrans A) {α : Pred σ → A} {γ : A → Pred σ}
+    (hgc : GaloisConnection α γ) {f : Pred σ → Pred σ} (hf : Monotone f) :
+    Monotone (bestTransformer α γ f)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 Preorder A, Galois connection α, γ, f monotone  ⟹  ∀ a b, a ≤ b → α (f (γ a)) ≤ α (f (γ b)).
@@ -1126,34 +1165,41 @@ Preorder A, Galois connection α, γ, f monotone  ⟹  ∀ a b, a ≤ b → α (
 | `hrefl : IsRefl A` | Needed for monotonicity of alpha and extensivity. | tight: counterexample `bestMono_tight_refl` |
 | `htrans : IsTrans A` | Needed for monotonicity of gamma. | tight: counterexample `bestMono_tight_trans` |
 | `hgc : GaloisConnection α γ` | Supplies monotone alpha, gamma. | tight: counterexample `bestMono_tight_gc` |
-| `hf : Monotone f` | Among R2-best-sound, R2-best-least and R2-best-mono, the only place where monotonicity of f is used. In the counterexample, f is compl on Pred Unit (implicit argument sigma := Unit, which the pretty-printer does not show in the conjunct stating that compl is not monotone). | tight: counterexample `bestMono_tight_monoF` |
+| `hf : Monotone f` | Among R2-best-sound, R2-best-least and R2-best-mono, the only place where monotonicity of f is used. In the counterexample, f is compl on Pred Unit (implicit argument sigma := Unit). | tight: counterexample `bestMono_tight_monoF` |
 
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:324-327
 theorem bestMono_tight_refl :
-  IsTrans NR2 ∧
-    ¬IsRefl NR2 ∧
-      GaloisConnection nr2Alpha nr2Gamma ∧
-        (Monotone fun x => U) ∧ ¬Monotone (bestTransformer nr2Alpha nr2Gamma fun x => U)
+    IsTrans NR2 ∧ ¬ IsRefl NR2 ∧ GaloisConnection nr2Alpha nr2Gamma ∧
+      Monotone (fun _ : Pred Unit => U) ∧
+      ¬ Monotone (bestTransformer nr2Alpha nr2Gamma (fun _ => U))
 
+-- lean/Toy/AbsInt/Transformer.lean:337-340
 theorem bestMono_tight_trans :
-  IsRefl NT4 ∧
-    ¬IsTrans NT4 ∧ GaloisConnection nt4Alpha nt4Gamma ∧ Monotone id ∧ ¬Monotone (bestTransformer nt4Alpha nt4Gamma id)
+    IsRefl NT4 ∧ ¬ IsTrans NT4 ∧ GaloisConnection nt4Alpha nt4Gamma ∧
+      Monotone (id : Pred Unit → Pred Unit) ∧
+      ¬ Monotone (bestTransformer nt4Alpha nt4Gamma id)
 
+-- lean/Toy/AbsInt/Transformer.lean:351-354
 theorem bestMono_tight_gc :
-  IsRefl B2 ∧
-    IsTrans B2 ∧ Monotone id ∧ ¬GaloisConnection b2Alpha b2GammaRev ∧ ¬Monotone (bestTransformer b2Alpha b2GammaRev id)
+    IsRefl B2 ∧ IsTrans B2 ∧ Monotone (id : Pred Unit → Pred Unit) ∧
+      ¬ GaloisConnection b2Alpha b2GammaRev ∧
+      ¬ Monotone (bestTransformer b2Alpha b2GammaRev id)
 
+-- lean/Toy/AbsInt/Transformer.lean:305-308
 theorem bestMono_tight_monoF :
-  IsRefl B2 ∧
-    IsTrans B2 ∧ GaloisConnection b2Alpha b2Gamma ∧ ¬Monotone compl ∧ ¬Monotone (bestTransformer b2Alpha b2Gamma compl)
+    IsRefl B2 ∧ IsTrans B2 ∧ GaloisConnection b2Alpha b2Gamma ∧
+      ¬ Monotone (compl : Pred Unit → Pred Unit) ∧
+      ¬ Monotone (bestTransformer b2Alpha b2Gamma compl)
 
 ```
 
 - **Non-vacuity witness** (`bestMono_nonvacuous`). Sign domain with f = post incr (the concrete transformer of x := x + 1).
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:225-227
 theorem bestMono_nonvacuous :
   IsRefl Sign ∧ IsTrans Sign ∧ GaloisConnection signAlpha signGamma ∧ Monotone (post incr)
 ```
@@ -1175,18 +1221,15 @@ Basis: derived (modeling bridge). When an analyzer uses best transformers of a m
 - **Plain claim.** If alpha, gamma form a Galois connection over a reflexive abstract order and f is monotone, then for every g and every abstract a, the best transformer of the composition is below the composition of best transformers: (f . g)# a <= f# (g# a). Transitivity and monotonicity of g are not needed.
 
 ```lean
-theorem bestTransformer_comp_le_of_galoisConnection_of_refl_of_monotone :
-  ∀ {σ A : Type} [inst : LE A],
-    IsRefl A →
-      ∀ {α : Pred σ → A} {γ : A → Pred σ},
-        GaloisConnection α γ →
-          ∀ {f : Pred σ → Pred σ},
-            Monotone f →
-              ∀ (g : Pred σ → Pred σ) (a : A),
-                bestTransformer α γ (f ∘ g) a ≤ bestTransformer α γ f (bestTransformer α γ g a)
+-- lean/Toy/AbsInt/Transformer.lean:100-104
+theorem bestTransformer_comp_le_of_galoisConnection_of_refl_of_monotone
+    (hrefl : IsRefl A) {α : Pred σ → A} {γ : A → Pred σ}
+    (hgc : GaloisConnection α γ) {f : Pred σ → Pred σ} (hf : Monotone f)
+    (g : Pred σ → Pred σ) (a : A) :
+    bestTransformer α γ (f ∘ g) a ≤ bestTransformer α γ f (bestTransformer α γ g a)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 Reflexive ≤ on A, Galois connection α, γ, f monotone  ⟹  ∀ g a, α (f (g (γ a))) ≤ α (f (γ (α (g (γ a))))).
@@ -1203,32 +1246,36 @@ Reflexive ≤ on A, Galois connection α, γ, f monotone  ⟹  ∀ g a, α (f (g
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:398-403
 theorem compLe_tight_refl :
-  ¬IsRefl NR2 ∧
-    GaloisConnection nr2Alpha nr2Gamma ∧
-      Monotone id ∧
-        ¬bestTransformer nr2Alpha nr2Gamma (id ∘ fun x => U) NR2.lo ≤
-            bestTransformer nr2Alpha nr2Gamma id (bestTransformer nr2Alpha nr2Gamma (fun x => U) NR2.lo)
+    ¬ IsRefl NR2 ∧ GaloisConnection nr2Alpha nr2Gamma ∧
+      Monotone (id : Pred Unit → Pred Unit) ∧
+      ¬ (bestTransformer nr2Alpha nr2Gamma (id ∘ (fun _ => U)) NR2.lo ≤
+          bestTransformer nr2Alpha nr2Gamma id
+            (bestTransformer nr2Alpha nr2Gamma (fun _ => U) NR2.lo))
 
+-- lean/Toy/AbsInt/Transformer.lean:413-418
 theorem compLe_tight_gc :
-  IsRefl B2 ∧
-    Monotone id ∧
-      (¬GaloisConnection b2Alpha fun x => E) ∧
-        ¬bestTransformer b2Alpha (fun x => E) (id ∘ fun x => U) B2.lo ≤
-            bestTransformer b2Alpha (fun x => E) id (bestTransformer b2Alpha (fun x => E) (fun x => U) B2.lo)
+    IsRefl B2 ∧ Monotone (id : Pred Unit → Pred Unit) ∧
+      ¬ GaloisConnection b2Alpha (fun _ : B2 => E) ∧
+      ¬ (bestTransformer b2Alpha (fun _ : B2 => E) (id ∘ (fun _ => U)) B2.lo ≤
+          bestTransformer b2Alpha (fun _ : B2 => E) id
+            (bestTransformer b2Alpha (fun _ : B2 => E) (fun _ => U) B2.lo))
 
+-- lean/Toy/AbsInt/Transformer.lean:378-383
 theorem compLe_tight_monoF :
-  IsRefl B2 ∧
-    GaloisConnection boolAlpha boolGamma ∧
-      ¬Monotone notAtFalse ∧
-        ¬bestTransformer boolAlpha boolGamma (notAtFalse ∘ constTrue) B2.lo ≤
-            bestTransformer boolAlpha boolGamma notAtFalse (bestTransformer boolAlpha boolGamma constTrue B2.lo)
+    IsRefl B2 ∧ GaloisConnection boolAlpha boolGamma ∧
+      ¬ Monotone notAtFalse ∧
+      ¬ (bestTransformer boolAlpha boolGamma (notAtFalse ∘ constTrue) B2.lo ≤
+          bestTransformer boolAlpha boolGamma notAtFalse
+            (bestTransformer boolAlpha boolGamma constTrue B2.lo))
 
 ```
 
 - **Non-vacuity witness** (`compLe_nonvacuous`). Sign domain with f = post decr.
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:232-233
 theorem compLe_nonvacuous :
   IsRefl Sign ∧ GaloisConnection signAlpha signGamma ∧ Monotone (post decr)
 ```
@@ -1250,21 +1297,19 @@ Basis: derived (modeling bridge). An analyzer that composes per-statement best t
 - **Plain claim.** In the sign domain over Int, with g the concrete transformer of x := x + 1 and f that of x := x - 1, all hypotheses of R3-comp-le hold, (f . g)# pos = pos, g# pos = pos and f# pos = top, so (f . g)# pos < f# (g# pos) strictly (pos <= top and not top <= pos).
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:242-250
 theorem bestTransformer_comp_strict_sign :
-  GaloisConnection signAlpha signGamma ∧
-    IsRefl Sign ∧
-      IsTrans Sign ∧
-        Monotone (post decr) ∧
-          Monotone (post incr) ∧
-            bestTransformer signAlpha signGamma (post incr) Sign.pos = Sign.pos ∧
-              bestTransformer signAlpha signGamma (post decr) Sign.pos = Sign.top ∧
-                bestTransformer signAlpha signGamma (post decr ∘ post incr) Sign.pos = Sign.pos ∧
-                  StrictLt (bestTransformer signAlpha signGamma (post decr ∘ post incr) Sign.pos)
-                    (bestTransformer signAlpha signGamma (post decr)
-                      (bestTransformer signAlpha signGamma (post incr) Sign.pos))
+    GaloisConnection signAlpha signGamma ∧ IsRefl Sign ∧ IsTrans Sign ∧
+      Monotone (post decr) ∧ Monotone (post incr) ∧
+      bestTransformer signAlpha signGamma (post incr) .pos = .pos ∧
+      bestTransformer signAlpha signGamma (post decr) .pos = .top ∧
+      bestTransformer signAlpha signGamma (post decr ∘ post incr) .pos = .pos ∧
+      StrictLt (bestTransformer signAlpha signGamma (post decr ∘ post incr) .pos)
+        (bestTransformer signAlpha signGamma (post decr)
+          (bestTransformer signAlpha signGamma (post incr) .pos))
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 With g = post incr (x := x + 1), f = post decr (x := x − 1) on Pred Int and the sign domain: all hypotheses of R3-comp-le hold, signAlpha (g (signGamma pos)) = pos, signAlpha (f (signGamma pos)) = top, signAlpha (f (g (signGamma pos))) = pos, and pos ≤ top ∧ ¬ (top ≤ pos), i.e. (f ∘ g)♯ pos < f♯ (g♯ pos) strictly.
@@ -1277,9 +1322,11 @@ With g = post incr (x := x + 1), f = post decr (x := x − 1) on Pred Int and th
 - **Positive control** (`bestTransformer_comp_exact_sign_incr`), a nearby setting where the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Transformer.lean:260-263
 theorem bestTransformer_comp_exact_sign_incr :
-  bestTransformer signAlpha signGamma (post incr ∘ post incr) Sign.pos = Sign.pos ∧
-    bestTransformer signAlpha signGamma (post incr) (bestTransformer signAlpha signGamma (post incr) Sign.pos) = Sign.pos
+    bestTransformer signAlpha signGamma (post incr ∘ post incr) .pos = .pos ∧
+      bestTransformer signAlpha signGamma (post incr)
+        (bestTransformer signAlpha signGamma (post incr) .pos) = .pos
 ```
 
 - **Prior art.**
@@ -1300,11 +1347,12 @@ Basis: derived (modeling bridge). The sign domain and the statements `x := x + 1
 - **Plain claim.** For a monotone concrete transformer f on predicates, the intersection lfp f of all post-fixpoints {x | f x included in x} is a fixpoint: f (lfp f) = lfp f.
 
 ```lean
-theorem lfp_eq_of_monotone :
-  ∀ {σ : Type} {f : Pred σ → Pred σ}, Monotone f → f (lfp f) = lfp f
+-- lean/Toy/AbsInt/Fixpoint.lean:61-62
+theorem lfp_eq_of_monotone {σ : Type} {f : Pred σ → Pred σ} (hf : Monotone f) :
+    f (lfp f) = lfp f
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 f monotone on Pred σ  ⟹  f (fun s => ∀ x, f x ⊆ x → x s) = (fun s => ∀ x, f x ⊆ x → x s).
@@ -1314,19 +1362,21 @@ f monotone on Pred σ  ⟹  f (fun s => ∀ x, f x ⊆ x → x s) = (fun s => �
 
 | Hypothesis | Why it is needed | Tightness |
 | --- | --- | --- |
-| `hf : Monotone f` | Knaster-Tarski argument. In the counterexample, f is compl on Pred Unit (implicit argument sigma := Unit, which the pretty-printer does not show). | tight: counterexample `lfpEq_tight_monotone` |
+| `hf : Monotone f` | Knaster-Tarski argument. In the counterexample, f is compl on Pred Unit (implicit argument sigma := Unit). | tight: counterexample `lfpEq_tight_monotone` |
 
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:477-478
 theorem lfpEq_tight_monotone :
-  ¬Monotone compl ∧ ¬compl (lfp compl) = lfp compl
+    ¬ Monotone (@compl Unit) ∧ ¬ (@compl Unit (lfp (@compl Unit)) = lfp (@compl Unit))
 
 ```
 
 - **Non-vacuity witness** (`lfpEq_nonvacuous`). counterStep (the concrete transformer of x := 0; while * do x := x + 1) is monotone.
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:443
 theorem lfpEq_nonvacuous :
   Monotone counterStep
 ```
@@ -1347,11 +1397,12 @@ Basis: derived (modeling bridge). The collecting semantics of a loop is commonly
 - **Plain claim.** For every concrete transformer f (monotone or not) and every concrete post-fixpoint x (f x included in x), lfp f is included in x.
 
 ```lean
-theorem lfp_le_of_le :
-  ∀ {σ : Type} (f : Pred σ → Pred σ) (x : Pred σ), f x ≤ x → lfp f ≤ x
+-- lean/Toy/AbsInt/Fixpoint.lean:72-73
+theorem lfp_le_of_le {σ : Type} (f : Pred σ → Pred σ) (x : Pred σ) (hx : f x ≤ x) :
+    lfp f ≤ x
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 f x ⊆ x  ⟹  (fun s => ∀ y, f y ⊆ y → y s) ⊆ x.
@@ -1366,14 +1417,16 @@ f x ⊆ x  ⟹  (fun s => ∀ y, f y ⊆ y → y s) ⊆ x.
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:489-490
 theorem lfpLe_tight_postFixpoint :
-  ¬counterStep (Pred.empty Nat) ≤ Pred.empty Nat ∧ ¬lfp counterStep ≤ Pred.empty Nat
+    ¬ (counterStep (Pred.empty Nat) ≤ Pred.empty Nat) ∧ ¬ (lfp counterStep ≤ Pred.empty Nat)
 
 ```
 
 - **Non-vacuity witness** (`lfpLe_nonvacuous`). counterStep with x = all naturals. All hypotheses hold, but the conclusion lfp counterStep included in all naturals is trivially true for this x; necessity of the hypothesis is shown separately by lfpLe_tight_postFixpoint (x = empty).
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:445
 theorem lfpLe_nonvacuous :
   counterStep (Pred.univ Nat) ≤ Pred.univ Nat
 ```
@@ -1393,12 +1446,14 @@ Basis: derived (modeling bridge). An analyzer that wants to show that a candidat
 - **Plain claim.** If gamma is monotone and the abstract transformer f# is gamma-sound for f (f (gamma a) included in gamma (f# a) for all a), then for every abstract post-fixpoint a (f# a <= a), lfp f, the intersection of all concrete post-fixpoints {x | f x included in x}, is included in gamma a. No abstraction function, Galois connection, order law on A, or monotonicity of f or f# is assumed; lfp f is guaranteed to be the concrete least fixpoint only when f is monotone (without monotonicity it need not be a fixpoint; R4-transfer-lfp).
 
 ```lean
-theorem lfp_le_gamma_of_monotone_gamma_of_sound_of_postFixpoint :
-  ∀ {σ A : Type} [inst : LE A] {γ : A → Pred σ} {f : Pred σ → Pred σ} {fs : A → A},
-    Monotone γ → Sound γ f fs → ∀ {a : A}, PostFixpoint fs a → lfp f ≤ γ a
+-- lean/Toy/AbsInt/Fixpoint.lean:87-90
+theorem lfp_le_gamma_of_monotone_gamma_of_sound_of_postFixpoint
+    {σ A : Type} [LE A] {γ : A → Pred σ} {f : Pred σ → Pred σ} {fs : A → A}
+    (hγ : Monotone γ) (hs : Sound γ f fs) {a : A} (ha : PostFixpoint fs a) :
+    lfp f ≤ γ a
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 γ monotone, (∀ a, f (γ a) ⊆ γ (fs a)), fs a ≤ a  ⟹  (fun s => ∀ x, f x ⊆ x → x s) ⊆ γ a.   (The left side is the intersection of all concrete post-fixpoints; it is guaranteed to be the least fixpoint of f only when f is monotone; without monotonicity it need not be a fixpoint.)
@@ -1415,24 +1470,31 @@ theorem lfp_le_gamma_of_monotone_gamma_of_sound_of_postFixpoint :
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:496-498
 theorem lfpGamma_tight_monoGamma :
-  (Sound b2GammaRev (fun x => U) fun x => B2.lo) ∧
-    PostFixpoint (fun x => B2.lo) B2.hi ∧ ¬Monotone b2GammaRev ∧ ¬(lfp fun x => U) ≤ b2GammaRev B2.hi
+    Sound b2GammaRev (fun _ => U) (fun _ => B2.lo) ∧ PostFixpoint (fun _ : B2 => B2.lo) B2.hi ∧
+      ¬ Monotone b2GammaRev ∧ ¬ (lfp (fun _ : Pred Unit => U) ≤ b2GammaRev B2.hi)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:505-507
 theorem lfpGamma_tight_sound :
-  Monotone b2Gamma ∧ PostFixpoint id B2.lo ∧ ¬Sound b2Gamma (fun x => U) id ∧ ¬(lfp fun x => U) ≤ b2Gamma B2.lo
+    Monotone b2Gamma ∧ PostFixpoint (id : B2 → B2) B2.lo ∧
+      ¬ Sound b2Gamma (fun _ => U) id ∧ ¬ (lfp (fun _ : Pred Unit => U) ≤ b2Gamma B2.lo)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:513-516
 theorem lfpGamma_tight_postFixpoint :
-  Monotone b2Gamma ∧
-    (Sound b2Gamma (fun x => U) fun x => B2.hi) ∧ ¬PostFixpoint (fun x => B2.hi) B2.lo ∧ ¬(lfp fun x => U) ≤ b2Gamma B2.lo
+    Monotone b2Gamma ∧ Sound b2Gamma (fun _ => U) (fun _ => B2.hi) ∧
+      ¬ PostFixpoint (fun _ : B2 => B2.hi) B2.lo ∧
+      ¬ (lfp (fun _ : Pred Unit => U) ≤ b2Gamma B2.lo)
 
 ```
 
 - **Non-vacuity witness** (`lfpGamma_nonvacuous`). Sign domain over Int with the loop x := 1; while * do x := x + 1 (posLoop), its sound abstraction signPosLoop, and the post-fixpoint pos, whose concretization {n | 0 < n} is not the full set.
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:450-452
 theorem lfpGamma_nonvacuous :
-  Monotone signGamma ∧ Sound signGamma posLoop signPosLoop ∧ PostFixpoint signPosLoop Sign.pos ∧ ¬signGamma Sign.pos 0
+    Monotone signGamma ∧ Sound signGamma posLoop signPosLoop ∧
+      PostFixpoint signPosLoop Sign.pos ∧ ¬ signGamma Sign.pos 0
 ```
 
 - **Prior art.**
@@ -1454,15 +1516,14 @@ Basis: derived (modeling bridge). A verified analyzer that checks `f♯ a ≤ a`
 - **Plain claim.** If the concrete transformer f is monotone, gamma is monotone, f# is gamma-sound for f, and a is an abstract post-fixpoint (f# a <= a), then lfp f is the least fixpoint of f and every least fixpoint of f is included in gamma a: the abstract invariant over-approximates the concrete least fixpoint (the collecting semantics).
 
 ```lean
-theorem isLeastFixpoint_lfp_and_le_gamma_of_monotone_of_monotone_gamma_of_sound_of_postFixpoint :
-  ∀ {σ A : Type} [inst : LE A] {γ : A → Pred σ} {f : Pred σ → Pred σ} {fs : A → A},
-    Monotone f →
-      Monotone γ →
-        Sound γ f fs →
-          ∀ {a : A}, PostFixpoint fs a → IsLeastFixpoint f (lfp f) ∧ ∀ (x : Pred σ), IsLeastFixpoint f x → x ≤ γ a
+-- lean/Toy/AbsInt/Fixpoint.lean:98-101
+theorem isLeastFixpoint_lfp_and_le_gamma_of_monotone_of_monotone_gamma_of_sound_of_postFixpoint
+    {σ A : Type} [LE A] {γ : A → Pred σ} {f : Pred σ → Pred σ} {fs : A → A}
+    (hf : Monotone f) (hγ : Monotone γ) (hs : Sound γ f fs) {a : A} (ha : PostFixpoint fs a) :
+    IsLeastFixpoint f (lfp f) ∧ ∀ x, IsLeastFixpoint f x → x ≤ γ a
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 f monotone, γ monotone, (∀ a, f (γ a) ⊆ γ (fs a)), fs a ≤ a  ⟹  [f L = L ∧ ∀ y, f y = y → L ⊆ y] ∧ ∀ x, (f x = x ∧ ∀ y, f y = y → x ⊆ y) → x ⊆ γ a,  where L = (fun s => ∀ x, f x ⊆ x → x s).
@@ -1480,48 +1541,46 @@ f monotone, γ monotone, (∀ a, f (γ a) ⊆ γ (fs a)), fs a ≤ a  ⟹  [f L 
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:617-624
 theorem lfpFixGamma_tight_monotone :
-  ¬Monotone nonMonoUniqueFix ∧
-    Monotone id ∧
-      Sound id nonMonoUniqueFix nonMonoUniqueFix ∧
-        PostFixpoint nonMonoUniqueFix pFalse ∧
-          ¬(IsLeastFixpoint nonMonoUniqueFix (lfp nonMonoUniqueFix) ∧
-                ∀ (x : Pred Bool), IsLeastFixpoint nonMonoUniqueFix x → x ≤ id pFalse) ∧
-            IsLeastFixpoint nonMonoUniqueFix pTrue ∧
-              ¬pTrue ≤ id pFalse ∧ ¬IsLeastFixpoint nonMonoUniqueFix (lfp nonMonoUniqueFix)
+    ¬ Monotone nonMonoUniqueFix ∧ Monotone (id : Pred Bool → Pred Bool) ∧
+      Sound (id : Pred Bool → Pred Bool) nonMonoUniqueFix nonMonoUniqueFix ∧
+      PostFixpoint nonMonoUniqueFix pFalse ∧
+      ¬ (IsLeastFixpoint nonMonoUniqueFix (lfp nonMonoUniqueFix) ∧
+          ∀ x, IsLeastFixpoint nonMonoUniqueFix x → x ≤ id pFalse) ∧
+      IsLeastFixpoint nonMonoUniqueFix pTrue ∧ ¬ (pTrue ≤ id pFalse) ∧
+      ¬ IsLeastFixpoint nonMonoUniqueFix (lfp nonMonoUniqueFix)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:640-644
 theorem lfpFixGamma_tight_monoGamma :
-  (Monotone fun x => U) ∧
-    ¬Monotone b2GammaRev ∧
-      (Sound b2GammaRev (fun x => U) fun x => B2.lo) ∧
-        PostFixpoint (fun x => B2.lo) B2.hi ∧
-          ¬(IsLeastFixpoint (fun x => U) (lfp fun x => U) ∧
-              ∀ (x : Pred Unit), IsLeastFixpoint (fun x => U) x → x ≤ b2GammaRev B2.hi)
+    Monotone (fun _ : Pred Unit => U) ∧ ¬ Monotone b2GammaRev ∧
+      Sound b2GammaRev (fun _ => U) (fun _ => B2.lo) ∧ PostFixpoint (fun _ : B2 => B2.lo) B2.hi ∧
+      ¬ (IsLeastFixpoint (fun _ : Pred Unit => U) (lfp (fun _ : Pred Unit => U)) ∧
+          ∀ x, IsLeastFixpoint (fun _ : Pred Unit => U) x → x ≤ b2GammaRev B2.hi)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:649-653
 theorem lfpFixGamma_tight_sound :
-  (Monotone fun x => U) ∧
-    Monotone b2Gamma ∧
-      PostFixpoint id B2.lo ∧
-        ¬Sound b2Gamma (fun x => U) id ∧
-          ¬(IsLeastFixpoint (fun x => U) (lfp fun x => U) ∧
-              ∀ (x : Pred Unit), IsLeastFixpoint (fun x => U) x → x ≤ b2Gamma B2.lo)
+    Monotone (fun _ : Pred Unit => U) ∧ Monotone b2Gamma ∧ PostFixpoint (id : B2 → B2) B2.lo ∧
+      ¬ Sound b2Gamma (fun _ => U) id ∧
+      ¬ (IsLeastFixpoint (fun _ : Pred Unit => U) (lfp (fun _ : Pred Unit => U)) ∧
+          ∀ x, IsLeastFixpoint (fun _ : Pred Unit => U) x → x ≤ b2Gamma B2.lo)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:659-663
 theorem lfpFixGamma_tight_postFixpoint :
-  (Monotone fun x => U) ∧
-    Monotone b2Gamma ∧
-      (Sound b2Gamma (fun x => U) fun x => B2.hi) ∧
-        ¬PostFixpoint (fun x => B2.hi) B2.lo ∧
-          ¬(IsLeastFixpoint (fun x => U) (lfp fun x => U) ∧
-              ∀ (x : Pred Unit), IsLeastFixpoint (fun x => U) x → x ≤ b2Gamma B2.lo)
+    Monotone (fun _ : Pred Unit => U) ∧ Monotone b2Gamma ∧
+      Sound b2Gamma (fun _ => U) (fun _ => B2.hi) ∧ ¬ PostFixpoint (fun _ : B2 => B2.hi) B2.lo ∧
+      ¬ (IsLeastFixpoint (fun _ : Pred Unit => U) (lfp (fun _ : Pred Unit => U)) ∧
+          ∀ x, IsLeastFixpoint (fun _ : Pred Unit => U) x → x ≤ b2Gamma B2.lo)
 
 ```
 
 - **Non-vacuity witness** (`lfpFixGamma_nonvacuous`). Sign domain over Int with the monotone loop transformer posLoop (x := 1; while * do x := x + 1), its sound abstraction signPosLoop, and the post-fixpoint pos, whose concretization {n | 0 < n} is not the full set.
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:457-459
 theorem lfpFixGamma_nonvacuous :
-  Monotone posLoop ∧
-    Monotone signGamma ∧ Sound signGamma posLoop signPosLoop ∧ PostFixpoint signPosLoop Sign.pos ∧ ¬signGamma Sign.pos 0
+    Monotone posLoop ∧ Monotone signGamma ∧ Sound signGamma posLoop signPosLoop ∧
+      PostFixpoint signPosLoop Sign.pos ∧ ¬ signGamma Sign.pos 0
 ```
 
 - **Prior art.**
@@ -1544,12 +1603,14 @@ Basis: derived (modeling bridge). Collecting semantics defined from images and u
 - **Plain claim.** If f# is monotone, the abstract order has no infinite sequence of consecutive strict steps (ACC), and the start a0 satisfies a0 <= f# a0 (e.g. a0 is a least element), then some Kleene iterate kleene f# a0 n = f#^n(a0) is a post-fixpoint of f#. Reflexivity and transitivity of the order are not needed.
 
 ```lean
-theorem exists_kleene_postFixpoint_of_monotone_of_acc_of_le_apply :
-  ∀ {A : Type} [inst : LE A] {fs : A → A},
-    Monotone fs → ACC A → ∀ (a₀ : A), a₀ ≤ fs a₀ → ∃ n, PostFixpoint fs (kleene fs a₀ n)
+-- lean/Toy/AbsInt/Fixpoint.lean:114-117
+theorem exists_kleene_postFixpoint_of_monotone_of_acc_of_le_apply
+    {A : Type} [LE A] {fs : A → A} (hmono : Monotone fs) (hacc : ACC A)
+    (a₀ : A) (hstart : a₀ ≤ fs a₀) :
+    ∃ n, PostFixpoint fs (kleene fs a₀ n)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 fs monotone, ¬ ∃ c : ℕ → A, ∀ n, c n ≤ c (n+1) ∧ ¬ c (n+1) ≤ c n, a₀ ≤ fs a₀  ⟹  ∃ n, fs (fsⁿ a₀) ≤ fsⁿ a₀.
@@ -1566,23 +1627,27 @@ fs monotone, ¬ ∃ c : ℕ → A, ∀ n, c n ≤ c (n+1) ∧ ¬ c (n+1) ≤ c n
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:521-523
 theorem kleeneAcc_tight_monotone :
-  ACC V3 ∧ V3.bot ≤ v3Step V3.bot ∧ ¬Monotone v3Step ∧ ∀ (n : Nat), ¬PostFixpoint v3Step (kleene v3Step V3.bot n)
+    ACC V3 ∧ V3.bot ≤ v3Step V3.bot ∧ ¬ Monotone v3Step ∧
+      ∀ n, ¬ PostFixpoint v3Step (kleene v3Step V3.bot n)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:530-532
 theorem kleeneAcc_tight_acc :
-  Monotone ubIncr ∧
-    UB.bot ≤ ubIncr UB.bot ∧
-      ¬ACC UB ∧ PostFixpoint ubIncr UB.top ∧ ∀ (n : Nat), ¬PostFixpoint ubIncr (kleene ubIncr UB.bot n)
+    Monotone ubIncr ∧ UB.bot ≤ ubIncr UB.bot ∧ ¬ ACC UB ∧ PostFixpoint ubIncr UB.top ∧
+      ∀ n, ¬ PostFixpoint ubIncr (kleene ubIncr UB.bot n)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:536-538
 theorem kleeneAcc_tight_start :
-  Monotone dis2Swap ∧
-    ACC Dis2 ∧ ¬Dis2.a ≤ dis2Swap Dis2.a ∧ ∀ (n : Nat), ¬PostFixpoint dis2Swap (kleene dis2Swap Dis2.a n)
+    Monotone dis2Swap ∧ ACC Dis2 ∧ ¬ (Dis2.a ≤ dis2Swap Dis2.a) ∧
+      ∀ n, ¬ PostFixpoint dis2Swap (kleene dis2Swap Dis2.a n)
 
 ```
 
 - **Non-vacuity witness** (`kleeneAcc_nonvacuous`). Sign domain (ACC via a rank function), the monotone signLoop, start bot.
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:463-464
 theorem kleeneAcc_nonvacuous :
   Monotone signLoop ∧ ACC Sign ∧ Sign.bot ≤ signLoop Sign.bot
 ```
@@ -1604,12 +1669,14 @@ Basis: derived (modeling bridge). For an analyzer over a domain without infinite
 - **Plain claim.** If f# is monotone, the abstract order has height at most h (every sequence of consecutive strict steps has at most h steps), and a0 <= f# a0, then some Kleene iterate kleene f# a0 n with n <= h is a post-fixpoint of f#.
 
 ```lean
-theorem exists_kleene_postFixpoint_le_of_monotone_of_heightLE_of_le_apply :
-  ∀ {A : Type} [inst : LE A] {fs : A → A},
-    Monotone fs → ∀ (h : Nat), HeightLE A h → ∀ (a₀ : A), a₀ ≤ fs a₀ → ∃ n, n ≤ h ∧ PostFixpoint fs (kleene fs a₀ n)
+-- lean/Toy/AbsInt/Fixpoint.lean:128-131
+theorem exists_kleene_postFixpoint_le_of_monotone_of_heightLE_of_le_apply
+    {A : Type} [LE A] {fs : A → A} (hmono : Monotone fs) (h : Nat) (hh : HeightLE A h)
+    (a₀ : A) (hstart : a₀ ≤ fs a₀) :
+    ∃ n, n ≤ h ∧ PostFixpoint fs (kleene fs a₀ n)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 fs monotone, (∀ c k, (∀ i < k, c i ≤ c (i+1) ∧ ¬ c (i+1) ≤ c i) → k ≤ h), a₀ ≤ fs a₀  ⟹  ∃ n ≤ h, fs (fsⁿ a₀) ≤ fsⁿ a₀.
@@ -1626,22 +1693,27 @@ fs monotone, (∀ c k, (∀ i < k, c i ≤ c (i+1) ∧ ¬ c (i+1) ≤ c i) → k
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:542-544
 theorem kleeneHeight_tight_monotone :
-  HeightLE V3 1 ∧ V3.bot ≤ v3Step V3.bot ∧ ¬Monotone v3Step ∧ ¬∃ n, n ≤ 1 ∧ PostFixpoint v3Step (kleene v3Step V3.bot n)
+    HeightLE V3 1 ∧ V3.bot ≤ v3Step V3.bot ∧ ¬ Monotone v3Step ∧
+      ¬ ∃ n, n ≤ 1 ∧ PostFixpoint v3Step (kleene v3Step V3.bot n)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:557-559
 theorem kleeneHeight_tight_height :
-  Monotone ubIncr ∧
-    UB.bot ≤ ubIncr UB.bot ∧ ∀ (h : Nat), ¬HeightLE UB h ∧ ¬∃ n, n ≤ h ∧ PostFixpoint ubIncr (kleene ubIncr UB.bot n)
+    Monotone ubIncr ∧ UB.bot ≤ ubIncr UB.bot ∧
+      ∀ h, ¬ HeightLE UB h ∧ ¬ ∃ n, n ≤ h ∧ PostFixpoint ubIncr (kleene ubIncr UB.bot n)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:549-551
 theorem kleeneHeight_tight_start :
-  Monotone dis2Swap ∧
-    HeightLE Dis2 0 ∧ ¬Dis2.a ≤ dis2Swap Dis2.a ∧ ¬∃ n, n ≤ 0 ∧ PostFixpoint dis2Swap (kleene dis2Swap Dis2.a n)
+    Monotone dis2Swap ∧ HeightLE Dis2 0 ∧ ¬ (Dis2.a ≤ dis2Swap Dis2.a) ∧
+      ¬ ∃ n, n ≤ 0 ∧ PostFixpoint dis2Swap (kleene dis2Swap Dis2.a n)
 
 ```
 
 - **Non-vacuity witness** (`kleeneHeight_nonvacuous`). Sign domain (height 2), signLoop, start bot.
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:467-468
 theorem kleeneHeight_nonvacuous :
   Monotone signLoop ∧ HeightLE Sign 2 ∧ Sign.bot ≤ signLoop Sign.bot
 ```
@@ -1662,16 +1734,14 @@ Basis: derived (modeling bridge). For finite-height domains the number of plain 
 - **Plain claim.** For every h, on the chain Fin (h+1) (height h) with the capped successor, every hypothesis of R4-kleene-height holds, the h-th Kleene iterate from 0 is a post-fixpoint, and no earlier iterate is; so the bound n <= h is attained.
 
 ```lean
-theorem kleeneHeight_bound_attained :
-  ∀ (h : Nat),
-    HeightLE (Fin (h + 1)) h ∧
-      Monotone (capSucc h) ∧
-        capZero h ≤ capSucc h (capZero h) ∧
-          PostFixpoint (capSucc h) (kleene (capSucc h) (capZero h) h) ∧
-            ∀ (n : Nat), n < h → ¬PostFixpoint (capSucc h) (kleene (capSucc h) (capZero h) n)
+-- lean/Toy/AbsInt/Fixpoint.lean:567-570
+theorem kleeneHeight_bound_attained (h : Nat) :
+    HeightLE (Fin (h + 1)) h ∧ Monotone (capSucc h) ∧ capZero h ≤ capSucc h (capZero h) ∧
+      PostFixpoint (capSucc h) (kleene (capSucc h) (capZero h) h) ∧
+      ∀ n, n < h → ¬ PostFixpoint (capSucc h) (kleene (capSucc h) (capZero h) n)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 On Fin (h+1) with i ↦ min (i+1) h, from 0: height ≤ h, monotone, 0 ≤ step 0, the h-th iterate is a post-fixpoint, and ∀ n < h the n-th iterate is not.
@@ -1684,12 +1754,10 @@ On Fin (h+1) with i ↦ min (i+1) h, from 0: height ≤ h, monotone, 0 ≤ step 
 - **Positive control** (`kleeneHeight_bound_not_attained_from_top`), a nearby setting where the conclusion fails:
 
 ```lean
-theorem kleeneHeight_bound_not_attained_from_top :
-  ∀ (h : Nat),
-    0 < h →
-      HeightLE (Fin (h + 1)) h ∧
-        Monotone (capSucc h) ∧
-          capTop h ≤ capSucc h (capTop h) ∧ ∃ n, n < h ∧ PostFixpoint (capSucc h) (kleene (capSucc h) (capTop h) n)
+-- lean/Toy/AbsInt/Fixpoint.lean:600-602
+theorem kleeneHeight_bound_not_attained_from_top (h : Nat) (hpos : 0 < h) :
+    HeightLE (Fin (h + 1)) h ∧ Monotone (capSucc h) ∧ capTop h ≤ capSucc h (capTop h) ∧
+      ∃ n, n < h ∧ PostFixpoint (capSucc h) (kleene (capSucc h) (capTop h) n)
 ```
 
 - **Prior art.**
@@ -1706,11 +1774,11 @@ Basis: derived (modeling bridge). The worst case of `h` iterations occurs alread
 - **Plain claim.** An abstract order of height at most h has no infinite sequence of consecutive strict steps (ACC).
 
 ```lean
-theorem acc_of_heightLE :
-  ∀ {A : Type} [inst : LE A] (h : Nat), HeightLE A h → ACC A
+-- lean/Toy/AbsInt/Fixpoint.lean:143
+theorem acc_of_heightLE {A : Type} [LE A] (h : Nat) (hh : HeightLE A h) : ACC A
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 (∀ c k, (∀ i < k, strict step c i → c (i+1)) → k ≤ h)  ⟹  ¬ ∃ c : ℕ → A, ∀ n, strict step c n → c (n+1).
@@ -1725,14 +1793,15 @@ theorem acc_of_heightLE :
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
-theorem accOfHeight_tight :
-  ¬ACC UB ∧ ∀ (h : Nat), ¬HeightLE UB h
+-- lean/Toy/AbsInt/Fixpoint.lean:610
+theorem accOfHeight_tight : ¬ ACC UB ∧ ∀ h, ¬ HeightLE UB h
 
 ```
 
 - **Non-vacuity witness** (`accOfHeight_nonvacuous`). Sign domain has height 2.
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:471
 theorem accOfHeight_nonvacuous :
   HeightLE Sign 2
 ```
@@ -1754,17 +1823,15 @@ Basis: derived (modeling bridge). Auxiliary bridge; no modeling claim beyond all
 - **Plain claim.** If the abstract order is transitive, the operator widen satisfies a <= a widen b and b <= a widen b and the termination axiom (for every ascending input sequence the widened chain is not strictly increasing at every step), f# is monotone, and a0 <= f# a0, then some widened iterate (x0 = a0, x(n+1) = x n widen f# (x n)) is a post-fixpoint of f#; equivalently, the loop that widens until the first post-fixpoint terminates. No chain condition on the domain is needed.
 
 ```lean
-theorem exists_widenIter_postFixpoint_of_trans_of_upperLeft_of_upperRight_of_terminates_of_monotone_of_le_apply :
-  ∀ {A : Type} [inst : LE A],
-    IsTrans A →
-      ∀ {w : A → A → A},
-        WidenUpperLeft w →
-          WidenUpperRight w →
-            WidenTerminates w →
-              ∀ {fs : A → A}, Monotone fs → ∀ (a₀ : A), a₀ ≤ fs a₀ → ∃ n, PostFixpoint fs (widenIter w fs a₀ n)
+-- lean/Toy/AbsInt/Widening.lean:74-78
+theorem exists_widenIter_postFixpoint_of_trans_of_upperLeft_of_upperRight_of_terminates_of_monotone_of_le_apply
+    {A : Type} [LE A] (htrans : IsTrans A) {w : A → A → A}
+    (hL : WidenUpperLeft w) (hR : WidenUpperRight w) (hT : WidenTerminates w)
+    {fs : A → A} (hmono : Monotone fs) (a₀ : A) (hstart : a₀ ≤ fs a₀) :
+    ∃ n, PostFixpoint fs (widenIter w fs a₀ n)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 ≤ transitive; ∀ a b, a ≤ a ∇ b; ∀ a b, b ≤ a ∇ b; for every ascending b, the chain y₀ = b 0, yₙ₊₁ = yₙ ∇ b (n+1) is not strictly increasing at every step; fs monotone; a₀ ≤ fs a₀  ⟹  ∃ n, fs (xₙ) ≤ xₙ where x₀ = a₀, xₙ₊₁ = xₙ ∇ fs xₙ.
@@ -1776,68 +1843,59 @@ theorem exists_widenIter_postFixpoint_of_trans_of_upperLeft_of_upperRight_of_ter
 | --- | --- | --- |
 | `htrans : IsTrans A` | Chains f# (x n) <= x (n+1) <= x n. | tight: counterexample `widen_tight_trans` |
 | `hL : WidenUpperLeft w` | Makes the widened iterates ascending, hence the input to the termination axiom ascending. | tight: counterexample `widen_tight_upperLeft` |
-| `hR : WidenUpperRight w` | Gives f# (x n) <= x (n+1). In the counterexample, w is the left projection fun a x => a on B2 (implicit carrier B2, which the pretty-printer does not show in the WidenUpperLeft, WidenUpperRight and WidenTerminates conjuncts). | tight: counterexample `widen_tight_upperRight` |
-| `hT : WidenTerminates w` | Supplies a step with x (n+1) <= x n. In the counterexample, w is max on Nat (implicit argument A := Nat, which the pretty-printer does not show in the WidenUpperLeft, WidenUpperRight and WidenTerminates conjuncts). | tight: counterexample `widen_tight_terminates` |
+| `hR : WidenUpperRight w` | Gives f# (x n) <= x (n+1). In the counterexample, w is the left projection fun a x => a on B2 (implicit carrier B2). | tight: counterexample `widen_tight_upperRight` |
+| `hT : WidenTerminates w` | Supplies a step with x (n+1) <= x n. In the counterexample, w is max on Nat (implicit argument A := Nat). | tight: counterexample `widen_tight_terminates` |
 | `hmono : Monotone fs` | Makes the input sequence a0, f# x0, f# x1, ... ascending, as the termination axiom requires. | tight: counterexample `widen_tight_monotone` |
 | `hstart : a₀ ≤ fs a₀` | First step of that input sequence. | tight: counterexample `widen_tight_start` |
 
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Widening.lean:525-528
 theorem widen_tight_trans :
-  ¬IsTrans NT4w ∧
-    WidenUpperLeft nt4wWiden ∧
-      WidenUpperRight nt4wWiden ∧
-        WidenTerminates nt4wWiden ∧
-          Monotone nt4wStep ∧
-            NT4w.bot ≤ nt4wStep NT4w.bot ∧ ∀ (n : Nat), ¬PostFixpoint nt4wStep (widenIter nt4wWiden nt4wStep NT4w.bot n)
+    ¬ IsTrans NT4w ∧ WidenUpperLeft nt4wWiden ∧ WidenUpperRight nt4wWiden ∧
+      WidenTerminates nt4wWiden ∧ Monotone nt4wStep ∧ NT4w.bot ≤ nt4wStep NT4w.bot ∧
+      ∀ n, ¬ PostFixpoint nt4wStep (widenIter nt4wWiden nt4wStep NT4w.bot n)
 
+-- lean/Toy/AbsInt/Widening.lean:538-541
 theorem widen_tight_upperLeft :
-  IsTrans W4 ∧
-    ¬WidenUpperLeft w4Widen ∧
-      WidenUpperRight w4Widen ∧
-        WidenTerminates w4Widen ∧
-          Monotone w4Step ∧ W4.z ≤ w4Step W4.z ∧ ∀ (n : Nat), ¬PostFixpoint w4Step (widenIter w4Widen w4Step W4.z n)
+    IsTrans W4 ∧ ¬ WidenUpperLeft w4Widen ∧ WidenUpperRight w4Widen ∧
+      WidenTerminates w4Widen ∧ Monotone w4Step ∧ W4.z ≤ w4Step W4.z ∧
+      ∀ n, ¬ PostFixpoint w4Step (widenIter w4Widen w4Step W4.z n)
 
+-- lean/Toy/AbsInt/Widening.lean:551-556
 theorem widen_tight_upperRight :
-  IsTrans B2 ∧
-    (WidenUpperLeft fun a x => a) ∧
-      (¬WidenUpperRight fun a x => a) ∧
-        (WidenTerminates fun a x => a) ∧
-          (Monotone fun x => B2.hi) ∧
-            B2.lo ≤ (fun x => B2.hi) B2.lo ∧
-              ∀ (n : Nat), ¬PostFixpoint (fun x => B2.hi) (widenIter (fun a x => a) (fun x => B2.hi) B2.lo n)
+    IsTrans B2 ∧ WidenUpperLeft (fun a _ : B2 => a) ∧ ¬ WidenUpperRight (fun a _ : B2 => a) ∧
+      WidenTerminates (fun a _ : B2 => a) ∧ Monotone (fun _ : B2 => B2.hi) ∧
+      B2.lo ≤ (fun _ : B2 => B2.hi) B2.lo ∧
+      ∀ n, ¬ PostFixpoint (fun _ : B2 => B2.hi)
+        (widenIter (fun a _ : B2 => a) (fun _ : B2 => B2.hi) B2.lo n)
 
+-- lean/Toy/AbsInt/Widening.lean:565-569
 theorem widen_tight_terminates :
-  IsTrans Nat ∧
-    WidenUpperLeft max ∧
-      WidenUpperRight max ∧
-        ¬WidenTerminates max ∧
-          Monotone Nat.succ ∧ 0 ≤ Nat.succ 0 ∧ ∀ (n : Nat), ¬PostFixpoint Nat.succ (widenIter max Nat.succ 0 n)
+    IsTrans Nat ∧ WidenUpperLeft (max : Nat → Nat → Nat) ∧
+      WidenUpperRight (max : Nat → Nat → Nat) ∧ ¬ WidenTerminates (max : Nat → Nat → Nat) ∧
+      Monotone Nat.succ ∧ 0 ≤ Nat.succ 0 ∧
+      ∀ n, ¬ PostFixpoint Nat.succ (widenIter max Nat.succ 0 n)
 
+-- lean/Toy/AbsInt/Widening.lean:579-582
 theorem widen_tight_monotone :
-  IsTrans PT ∧
-    WidenUpperLeft ptWiden ∧
-      WidenUpperRight ptWiden ∧
-        WidenTerminates ptWiden ∧
-          ¬Monotone ptBadStep ∧
-            PT.pt 0 0 ≤ ptBadStep (PT.pt 0 0) ∧
-              ∀ (n : Nat), ¬PostFixpoint ptBadStep (widenIter ptWiden ptBadStep (PT.pt 0 0) n)
+    IsTrans PT ∧ WidenUpperLeft ptWiden ∧ WidenUpperRight ptWiden ∧
+      WidenTerminates ptWiden ∧ ¬ Monotone ptBadStep ∧ PT.pt 0 0 ≤ ptBadStep (PT.pt 0 0) ∧
+      ∀ n, ¬ PostFixpoint ptBadStep (widenIter ptWiden ptBadStep (PT.pt 0 0) n)
 
+-- lean/Toy/AbsInt/Widening.lean:598-601
 theorem widen_tight_start :
-  IsTrans PT ∧
-    WidenUpperLeft ptWiden ∧
-      WidenUpperRight ptWiden ∧
-        WidenTerminates ptWiden ∧
-          Monotone ptShift ∧
-            ¬PT.pt 0 1 ≤ ptShift (PT.pt 0 1) ∧
-              ∀ (n : Nat), ¬PostFixpoint ptShift (widenIter ptWiden ptShift (PT.pt 0 1) n)
+    IsTrans PT ∧ WidenUpperLeft ptWiden ∧ WidenUpperRight ptWiden ∧
+      WidenTerminates ptWiden ∧ Monotone ptShift ∧ ¬ (PT.pt 0 1 ≤ ptShift (PT.pt 0 1)) ∧
+      ∀ n, ¬ PostFixpoint ptShift (widenIter ptWiden ptShift (PT.pt 0 1) n)
 
 ```
 
 - **Non-vacuity witness** (`widen_nonvacuous`). UB domain with the jump-to-top widening ubWiden, the counter-loop transformer ubIncr, start bot.
 
 ```lean
+-- lean/Toy/AbsInt/Widening.lean:243-245
 theorem widen_nonvacuous :
   IsTrans UB ∧
     WidenUpperLeft ubWiden ∧ WidenUpperRight ubWiden ∧ WidenTerminates ubWiden ∧ Monotone ubIncr ∧ UB.bot ≤ ubIncr UB.bot
@@ -1864,24 +1922,19 @@ Basis: derived (modeling bridge). Analyzers over infinite-height domains (for ex
 - **Plain claim.** On the infinite-height UB domain, for the monotone counter loop counterStep and its sound monotone abstraction ubIncr, with the jump-to-top widening ubWiden satisfying every widening hypothesis of R5-widen: plain Kleene iteration from bot never reaches a post-fixpoint and no Kleene iterate over-approximates the concrete least fixpoint (so stopping plain iteration at any finite step is unsound here), whereas iteration with ubWiden reaches the post-fixpoint top at step 1, whose concretization contains the least fixpoint.
 
 ```lean
+-- lean/Toy/AbsInt/Widening.lean:260-268
 theorem kleene_diverges_widen_converges_ub :
-  Monotone ubIncr ∧
-    IsBot UB.bot ∧
-      ¬ACC UB ∧
-        Sound ubGamma counterStep ubIncr ∧
-          Monotone counterStep ∧
-            IsTrans UB ∧
-              WidenUpperLeft ubWiden ∧
-                WidenUpperRight ubWiden ∧
-                  WidenTerminates ubWiden ∧
-                    (∀ (n : Nat), ¬PostFixpoint ubIncr (kleene ubIncr UB.bot n)) ∧
-                      (∀ (n : Nat), ¬lfp counterStep ≤ ubGamma (kleene ubIncr UB.bot n)) ∧
-                        widenIter ubWiden ubIncr UB.bot 1 = UB.top ∧
-                          PostFixpoint ubIncr (widenIter ubWiden ubIncr UB.bot 1) ∧
-                            lfp counterStep ≤ ubGamma (widenIter ubWiden ubIncr UB.bot 1)
+    Monotone ubIncr ∧ IsBot UB.bot ∧ ¬ ACC UB ∧ Sound ubGamma counterStep ubIncr ∧
+      Monotone counterStep ∧ IsTrans UB ∧ WidenUpperLeft ubWiden ∧
+      WidenUpperRight ubWiden ∧ WidenTerminates ubWiden ∧
+      (∀ n, ¬ PostFixpoint ubIncr (kleene ubIncr UB.bot n)) ∧
+      (∀ n, ¬ lfp counterStep ≤ ubGamma (kleene ubIncr UB.bot n)) ∧
+      widenIter ubWiden ubIncr UB.bot 1 = UB.top ∧
+      PostFixpoint ubIncr (widenIter ubWiden ubIncr UB.bot 1) ∧
+      lfp counterStep ≤ ubGamma (widenIter ubWiden ubIncr UB.bot 1)
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 UB domain, counterStep, ubIncr, ubWiden a b = if b ≤ a then a else top: ubIncr monotone, bot least, ¬ ACC UB, ubIncr sound, counterStep monotone, ≤ transitive on UB, ubWiden satisfies a ≤ a ∇ b, b ≤ a ∇ b and the termination axiom; ∀ n, ¬ ubIncr (ubIncrⁿ bot) ≤ ubIncrⁿ bot; ∀ n, ¬ lfp counterStep ⊆ ubGamma (ubIncrⁿ bot); the widened iterate at step 1 is top, a post-fixpoint, and lfp counterStep ⊆ ubGamma top.
@@ -1894,6 +1947,7 @@ UB domain, counterStep, ubIncr, ubWiden a b = if b ≤ a then a else top: ubIncr
 - **Positive control** (`kleene_converges_sign`), a nearby setting where the conclusion fails:
 
 ```lean
+-- lean/Toy/AbsInt/Widening.lean:285-286
 theorem kleene_converges_sign :
   kleene signLoop Sign.bot 2 = Sign.top ∧ PostFixpoint signLoop (kleene signLoop Sign.bot 2)
 ```
@@ -1913,11 +1967,12 @@ Basis: derived (modeling bridge). `UB` models the upper-bound component of an in
 - **Plain claim.** The textbook termination axiom (the widened chain of every ascending input eventually becomes constant, with constancy meaning equality) implies the termination axiom used in R5-widen (the widened chain is not strictly increasing at every step), with no order law assumed.
 
 ```lean
-theorem widenTerminates_of_widenStabilizes :
-  ∀ {A : Type} [inst : LE A] {w : A → A → A}, WidenStabilizes w → WidenTerminates w
+-- lean/Toy/AbsInt/Widening.lean:97-98
+theorem widenTerminates_of_widenStabilizes {A : Type} [LE A] {w : A → A → A}
+    (h : WidenStabilizes w) : WidenTerminates w
 ```
 
-*Unfolded*
+*Unfolded (prose)*
 
 ```text
 (∀ b ascending, ∃ N, ∀ m ≥ N, yₘ = y_N)  ⟹  (∀ b ascending, ¬ ∀ n, yₙ < yₙ₊₁ strictly).
@@ -1927,19 +1982,21 @@ theorem widenTerminates_of_widenStabilizes :
 
 | Hypothesis | Why it is needed | Tightness |
 | --- | --- | --- |
-| `h : WidenStabilizes w` | Gives a step N with widenChain (N+1) = widenChain N, which cannot be strict. In the counterexample, w is max on Nat (implicit argument A := Nat, which the pretty-printer does not show). | tight: counterexample `widenBridge_tight` |
+| `h : WidenStabilizes w` | Gives a step N with widenChain (N+1) = widenChain N, which cannot be strict. In the counterexample, w is max on Nat (implicit argument A := Nat). | tight: counterexample `widenBridge_tight` |
 
 Each counterexample states that a concrete instance satisfies every other hypothesis, that the dropped hypothesis fails (where stated), and that the conclusion fails:
 
 ```lean
-theorem widenBridge_tight :
-  ¬WidenStabilizes max ∧ ¬WidenTerminates max
+-- lean/Toy/AbsInt/Widening.lean:611-612
+theorem widenBridge_tight : ¬ WidenStabilizes (max : Nat → Nat → Nat) ∧
+    ¬ WidenTerminates (max : Nat → Nat → Nat)
 
 ```
 
 - **Non-vacuity witness** (`widenBridge_nonvacuous`). ubWiden stabilizes.
 
 ```lean
+-- lean/Toy/AbsInt/Widening.lean:249
 theorem widenBridge_nonvacuous :
   WidenStabilizes ubWiden
 ```
@@ -1960,29 +2017,31 @@ Basis: derived (modeling bridge). Widening operators proved correct against the 
 **Leading non-claim: fixpoint transfer needs a monotone concrete transformer.** A `γ`-sound abstract post-fixpoint is guaranteed to over-approximate the concrete least fixpoint (the collecting semantics) only when the concrete transformer `f` is monotone (`R4-transfer-lfp`, hypothesis `hf : Monotone f`, tight). Without monotonicity, the "least fixpoint" `lfp f` of this package is merely the intersection of all concrete post-fixpoints: it need not be a fixpoint (`lfpEq_tight_monotone`) or even a post-fixpoint (`lfp_not_postFixpoint_of_not_monotone`), and `R4-transfer` then says nothing about the fixpoints of `f`. Concretely, for the non-monotone `nonMonoUniqueFix` on `Pred Bool`, with the exact abstraction `α = γ = id` on the partial order `Pred Bool` and `a = {false}`, `γ` is monotone, `nonMonoUniqueFix` is `γ`-sound for itself and `a` is a post-fixpoint, yet the unique (hence least) fixpoint `{true}` is not included in `γ a`, and `lfp nonMonoUniqueFix = ∅` is not a fixpoint (it is mapped to the full set):
 
 ```lean
+-- lean/Toy/AbsInt/Fixpoint.lean:617-624
 theorem lfpFixGamma_tight_monotone :
-  ¬Monotone nonMonoUniqueFix ∧
-    Monotone id ∧
-      Sound id nonMonoUniqueFix nonMonoUniqueFix ∧
-        PostFixpoint nonMonoUniqueFix pFalse ∧
-          ¬(IsLeastFixpoint nonMonoUniqueFix (lfp nonMonoUniqueFix) ∧
-                ∀ (x : Pred Bool), IsLeastFixpoint nonMonoUniqueFix x → x ≤ id pFalse) ∧
-            IsLeastFixpoint nonMonoUniqueFix pTrue ∧
-              ¬pTrue ≤ id pFalse ∧ ¬IsLeastFixpoint nonMonoUniqueFix (lfp nonMonoUniqueFix)
+    ¬ Monotone nonMonoUniqueFix ∧ Monotone (id : Pred Bool → Pred Bool) ∧
+      Sound (id : Pred Bool → Pred Bool) nonMonoUniqueFix nonMonoUniqueFix ∧
+      PostFixpoint nonMonoUniqueFix pFalse ∧
+      ¬ (IsLeastFixpoint nonMonoUniqueFix (lfp nonMonoUniqueFix) ∧
+          ∀ x, IsLeastFixpoint nonMonoUniqueFix x → x ≤ id pFalse) ∧
+      IsLeastFixpoint nonMonoUniqueFix pTrue ∧ ¬ (pTrue ≤ id pFalse) ∧
+      ¬ IsLeastFixpoint nonMonoUniqueFix (lfp nonMonoUniqueFix)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:682-689
 theorem transfer_misses_leastFixpoint_of_not_monotone :
-  IsRefl (Pred Bool) ∧
-    IsTrans (Pred Bool) ∧
-      IsAntisymm (Pred Bool) ∧
-        GaloisConnection id id ∧
-          Monotone id ∧
-            Sound id nonMonoUniqueFix nonMonoUniqueFix ∧
-              PostFixpoint nonMonoUniqueFix pFalse ∧
-                (∀ (x : Pred Bool), nonMonoUniqueFix x = x ↔ x = pTrue) ∧ ¬pTrue ≤ id pFalse
+    IsRefl (Pred Bool) ∧ IsTrans (Pred Bool) ∧ IsAntisymm (Pred Bool) ∧
+      GaloisConnection (id : Pred Bool → Pred Bool) id ∧
+      Monotone (id : Pred Bool → Pred Bool) ∧
+      Sound (id : Pred Bool → Pred Bool) nonMonoUniqueFix nonMonoUniqueFix ∧
+      PostFixpoint nonMonoUniqueFix pFalse ∧
+      (∀ x, nonMonoUniqueFix x = x ↔ x = pTrue) ∧
+      ¬ (pTrue ≤ id pFalse)
 
+-- lean/Toy/AbsInt/Fixpoint.lean:341
 theorem lfp_nonMonoUniqueFix_eq_empty :
   lfp nonMonoUniqueFix = Pred.empty Bool
 
+-- lean/Toy/AbsInt/Fixpoint.lean:297
 theorem nonMonoUniqueFix_empty :
   nonMonoUniqueFix (Pred.empty Bool) = Pred.univ Bool
 ```
@@ -2140,6 +2199,7 @@ These proved statements back the non-claims above.
 - `nr2_gc` — Without reflexivity, a Galois connection can hold although `α x` does not soundly describe `x`: on `NR2` (transitive, not reflexive), `nr2Alpha` and `nr2Gamma` form a Galois connection (`GaloisConnection`, `R1-gc-backward`).
 
   ```lean
+  -- lean/Toy/AbsInt/Galois.lean:135
   theorem nr2_gc :
     GaloisConnection nr2Alpha nr2Gamma
   ```
@@ -2147,55 +2207,58 @@ These proved statements back the non-claims above.
 - `nr2_not_extensive` — For the same pair, `γ ∘ α` is not extensive: `nr2Gamma` maps every element to `E`, so `x ⊆ nr2Gamma (nr2Alpha x)` fails at `x = U` (`GaloisConnection`, `R1-gc-backward`).
 
   ```lean
-  theorem nr2_not_extensive :
-    ¬Extensive nr2Alpha nr2Gamma
+  -- lean/Toy/AbsInt/Galois.lean:143
+  theorem nr2_not_extensive : ¬ Extensive nr2Alpha nr2Gamma
   ```
 
 - `sound_le_of_le_gamma_of_monotone` — For monotone `f`, `γ`-soundness lifts to every subset of `γ a` (`R2-best-sound`, `Sound`).
 
   ```lean
-  theorem sound_le_of_le_gamma_of_monotone :
-    ∀ {σ A : Type} [LE A] {γ : A → Pred σ} {f : Pred σ → Pred σ} {fs : A → A},
-      Monotone f → Sound γ f fs → ∀ {x : Pred σ} {a : A}, x ≤ γ a → f x ≤ γ (fs a)
+  -- lean/Toy/AbsInt/Transformer.lean:434-436
+  theorem sound_le_of_le_gamma_of_monotone {σ A : Type} [LE A] {γ : A → Pred σ}
+      {f : Pred σ → Pred σ} {fs : A → A} (hf : Monotone f) (hs : Sound γ f fs)
+      {x : Pred σ} {a : A} (hx : x ≤ γ a) : f x ≤ γ (fs a)
   ```
 
 - `sound_not_subset_of_not_monotone` — For non-monotone `f` it does not (`R2-best-sound`, `Sound`).
 
   ```lean
+  -- lean/Toy/AbsInt/Transformer.lean:444-449
   theorem sound_not_subset_of_not_monotone :
-    IsRefl B2 ∧
-      GaloisConnection boolAlpha boolGamma ∧
-        ¬Monotone notAtFalse ∧
-          Sound boolGamma notAtFalse (bestTransformer boolAlpha boolGamma notAtFalse) ∧
-            constTrue (Pred.empty Bool) ≤ boolGamma B2.hi ∧
-              ¬notAtFalse (constTrue (Pred.empty Bool)) ≤ boolGamma (bestTransformer boolAlpha boolGamma notAtFalse B2.hi)
+      IsRefl B2 ∧ GaloisConnection boolAlpha boolGamma ∧ ¬ Monotone notAtFalse ∧
+        Sound boolGamma notAtFalse (bestTransformer boolAlpha boolGamma notAtFalse) ∧
+        (constTrue (Pred.empty Bool) : Pred Bool) ≤ boolGamma B2.hi ∧
+        ¬ (notAtFalse (constTrue (Pred.empty Bool)) ≤
+            boolGamma (bestTransformer boolAlpha boolGamma notAtFalse B2.hi))
   ```
 
 - `bestTransformer_lowerBound_not_sound_without_refl` — Without reflexivity the best transformer is only a lower bound of the sound transformers and need not be sound (`R2-best-least`).
 
   ```lean
+  -- lean/Toy/AbsInt/Transformer.lean:462-469
   theorem bestTransformer_lowerBound_not_sound_without_refl :
-    IsTrans NR3 ∧
-      ¬IsRefl NR3 ∧
-        GaloisConnection nr3Alpha nr3Gamma ∧
-          (Sound nr3Gamma (fun x => U) fun x => NR3.hi) ∧
-            (∀ (fs : NR3 → NR3),
-                Sound nr3Gamma (fun x => U) fs → ∀ (a : NR3), bestTransformer nr3Alpha nr3Gamma (fun x => U) a ≤ fs a) ∧
-              ¬Sound nr3Gamma (fun x => U) (bestTransformer nr3Alpha nr3Gamma fun x => U) ∧
-                ¬bestTransformer nr3Alpha nr3Gamma (fun x => U) NR3.lo ≤
-                    bestTransformer nr3Alpha nr3Gamma (fun x => U) NR3.lo
+      IsTrans NR3 ∧ ¬ IsRefl NR3 ∧ GaloisConnection nr3Alpha nr3Gamma ∧
+        Sound nr3Gamma (fun _ => U) (fun _ => NR3.hi) ∧
+        (∀ fs : NR3 → NR3, Sound nr3Gamma (fun _ => U) fs →
+            ∀ a, bestTransformer nr3Alpha nr3Gamma (fun _ => U) a ≤ fs a) ∧
+        ¬ Sound nr3Gamma (fun _ => U) (bestTransformer nr3Alpha nr3Gamma (fun _ => U)) ∧
+        ¬ (bestTransformer nr3Alpha nr3Gamma (fun _ => U) NR3.lo ≤
+            bestTransformer nr3Alpha nr3Gamma (fun _ => U) NR3.lo)
   ```
 
 - `lfp_not_postFixpoint_of_not_monotone` — For non-monotone `f`, `lfp f` need not be a post-fixpoint (`lfp`, `R4-lfp-least`).
 
   ```lean
+  -- lean/Toy/AbsInt/Fixpoint.lean:670-672
   theorem lfp_not_postFixpoint_of_not_monotone :
-    ¬Monotone nonMonoUniqueFix ∧ ¬nonMonoUniqueFix (lfp nonMonoUniqueFix) ≤ lfp nonMonoUniqueFix
+      ¬ Monotone nonMonoUniqueFix ∧
+        ¬ (nonMonoUniqueFix (lfp nonMonoUniqueFix) ≤ lfp nonMonoUniqueFix)
   ```
 
 - `lfp_nonMonoUniqueFix_eq_empty` — For the non-monotone `nonMonoUniqueFix`, `lfp` is empty (`R4-transfer-lfp`).
 
   ```lean
+  -- lean/Toy/AbsInt/Fixpoint.lean:341
   theorem lfp_nonMonoUniqueFix_eq_empty :
     lfp nonMonoUniqueFix = Pred.empty Bool
   ```
@@ -2203,6 +2266,7 @@ These proved statements back the non-claims above.
 - `nonMonoUniqueFix_empty` — `nonMonoUniqueFix` maps the empty set to the full set, so the empty set is not a fixpoint (`R4-transfer-lfp`).
 
   ```lean
+  -- lean/Toy/AbsInt/Fixpoint.lean:297
   theorem nonMonoUniqueFix_empty :
     nonMonoUniqueFix (Pred.empty Bool) = Pred.univ Bool
   ```
@@ -2210,6 +2274,7 @@ These proved statements back the non-claims above.
 - `isLeastFixpoint_nonMonoUniqueFix_pTrue` — `{true}` is the least (indeed unique) fixpoint of `nonMonoUniqueFix` (`R4-transfer-lfp`).
 
   ```lean
+  -- lean/Toy/AbsInt/Fixpoint.lean:336
   theorem isLeastFixpoint_nonMonoUniqueFix_pTrue :
     IsLeastFixpoint nonMonoUniqueFix pTrue
   ```
@@ -2217,90 +2282,83 @@ These proved statements back the non-claims above.
 - `transfer_misses_leastFixpoint_of_not_monotone` — For non-monotone `f`, `γ a` can miss the unique fixpoint of `f`, even with an exact Galois connection on a partial order (`R4-transfer`).
 
   ```lean
+  -- lean/Toy/AbsInt/Fixpoint.lean:682-689
   theorem transfer_misses_leastFixpoint_of_not_monotone :
-    IsRefl (Pred Bool) ∧
-      IsTrans (Pred Bool) ∧
-        IsAntisymm (Pred Bool) ∧
-          GaloisConnection id id ∧
-            Monotone id ∧
-              Sound id nonMonoUniqueFix nonMonoUniqueFix ∧
-                PostFixpoint nonMonoUniqueFix pFalse ∧
-                  (∀ (x : Pred Bool), nonMonoUniqueFix x = x ↔ x = pTrue) ∧ ¬pTrue ≤ id pFalse
+      IsRefl (Pred Bool) ∧ IsTrans (Pred Bool) ∧ IsAntisymm (Pred Bool) ∧
+        GaloisConnection (id : Pred Bool → Pred Bool) id ∧
+        Monotone (id : Pred Bool → Pred Bool) ∧
+        Sound (id : Pred Bool → Pred Bool) nonMonoUniqueFix nonMonoUniqueFix ∧
+        PostFixpoint nonMonoUniqueFix pFalse ∧
+        (∀ x, nonMonoUniqueFix x = x ↔ x = pTrue) ∧
+        ¬ (pTrue ≤ id pFalse)
   ```
 
 - `cyc3_not_acc` — A finite non-transitive relation with a strict cycle violates `ACC` (`R4-kleene-acc`).
 
   ```lean
-  theorem cyc3_not_acc :
-    IsRefl Cyc3 ∧ ¬IsTrans Cyc3 ∧ ¬ACC Cyc3
+  -- lean/Toy/AbsInt/Fixpoint.lean:699
+  theorem cyc3_not_acc : IsRefl Cyc3 ∧ ¬ IsTrans Cyc3 ∧ ¬ ACC Cyc3
   ```
 
 - `cyc3_not_heightLE` — The same relation has no height bound (`R4-kleene-height`).
 
   ```lean
-  theorem cyc3_not_heightLE :
-    ∀ (h : Nat), ¬HeightLE Cyc3 h
+  -- lean/Toy/AbsInt/Fixpoint.lean:703
+  theorem cyc3_not_heightLE (h : Nat) : ¬ HeightLE Cyc3 h
   ```
 
 - `nb_heightLE_one_ascending_not_stabilizing` — Height 1 on a non-transitive relation does not make ascending sequences stabilize (`ACC`, `HeightLE`, `R4-height-acc`).
 
   ```lean
+  -- lean/Toy/AbsInt/Fixpoint.lean:711-714
   theorem nb_heightLE_one_ascending_not_stabilizing :
-    IsRefl NB ∧
-      ¬IsTrans NB ∧
-        HeightLE NB 1 ∧
-          ACC NB ∧ (∀ (n : Nat), nbChain n ≤ nbChain (n + 1)) ∧ ¬∃ N, ∀ (m : Nat), N ≤ m → nbChain m ≤ nbChain N
+      IsRefl NB ∧ ¬ IsTrans NB ∧ HeightLE NB 1 ∧ ACC NB ∧
+        (∀ n, nbChain n ≤ nbChain (n + 1)) ∧
+        ¬ ∃ N, ∀ m, N ≤ m → nbChain m ≤ nbChain N
   ```
 
 - `widenTerminates_not_widenStabilizes_preorder` — `WidenTerminates` does not imply `WidenStabilizes` on a preorder that is not antisymmetric (`R5-widen-bridge`).
 
   ```lean
+  -- lean/Toy/AbsInt/Widening.lean:631-634
   theorem widenTerminates_not_widenStabilizes_preorder :
-    IsRefl E2 ∧
-      IsTrans E2 ∧
-        ¬IsAntisymm E2 ∧
-          HeightLE E2 0 ∧
-            WidenUpperLeft flipWiden ∧ WidenUpperRight flipWiden ∧ WidenTerminates flipWiden ∧ ¬WidenStabilizes flipWiden
+      IsRefl E2 ∧ IsTrans E2 ∧ ¬ IsAntisymm E2 ∧ HeightLE E2 0 ∧
+        WidenUpperLeft flipWiden ∧ WidenUpperRight flipWiden ∧
+        WidenTerminates flipWiden ∧ ¬ WidenStabilizes flipWiden
   ```
 
 - `widenIter_postFixpoint_not_persistent` — Being a post-fixpoint is not preserved along `widenIter` (`R5-widen`).
 
   ```lean
+  -- lean/Toy/AbsInt/Widening.lean:701-707
   theorem widenIter_postFixpoint_not_persistent :
-    IsRefl (Fin 4) ∧
-      IsTrans (Fin 4) ∧
-        IsAntisymm (Fin 4) ∧
-          WidenUpperLeft widen4 ∧
-            WidenUpperRight widen4 ∧
-              WidenStabilizes widen4 ∧
-                WidenTerminates widen4 ∧
-                  Monotone step4 ∧
-                    ⟨0, ⋯⟩ ≤ step4 ⟨0, ⋯⟩ ∧
-                      PostFixpoint step4 (widenIter widen4 step4 ⟨0, ⋯⟩ 1) ∧
-                        ¬PostFixpoint step4 (widenIter widen4 step4 ⟨0, ⋯⟩ 2)
+      IsRefl (Fin 4) ∧ IsTrans (Fin 4) ∧ IsAntisymm (Fin 4) ∧
+        WidenUpperLeft widen4 ∧ WidenUpperRight widen4 ∧
+        WidenStabilizes widen4 ∧ WidenTerminates widen4 ∧
+        Monotone step4 ∧ (⟨0, by omega⟩ : Fin 4) ≤ step4 ⟨0, by omega⟩ ∧
+        PostFixpoint step4 (widenIter widen4 step4 ⟨0, by omega⟩ 1) ∧
+        ¬ PostFixpoint step4 (widenIter widen4 step4 ⟨0, by omega⟩ 2)
   ```
 
 - `pbWiden_terminates_infinitely_many_strict` — On a preorder that is not antisymmetric, `WidenTerminates` allows widened chains of ascending inputs with infinitely many strict steps (`R5-widen`, `WidenTerminates`).
 
   ```lean
+  -- lean/Toy/AbsInt/Widening.lean:895-901
   theorem pbWiden_terminates_infinitely_many_strict :
-    IsRefl PB ∧
-      IsTrans PB ∧
-        ¬IsAntisymm PB ∧
-          WidenUpperLeft pbWiden ∧
-            WidenUpperRight pbWiden ∧
-              WidenTerminates pbWiden ∧
-                Ascending pbStutter ∧
-                  (∀ (k : Nat),
-                      StrictLt (widenChain pbWiden pbStutter (2 * k)) (widenChain pbWiden pbStutter (2 * k + 1))) ∧
-                    ¬∃ N, ∀ (m : Nat), N ≤ m → widenChain pbWiden pbStutter m ≤ widenChain pbWiden pbStutter N
+      IsRefl PB ∧ IsTrans PB ∧ ¬ IsAntisymm PB ∧
+        WidenUpperLeft pbWiden ∧ WidenUpperRight pbWiden ∧ WidenTerminates pbWiden ∧
+        Ascending pbStutter ∧
+        (∀ k, StrictLt (widenChain pbWiden pbStutter (2 * k))
+          (widenChain pbWiden pbStutter (2 * k + 1))) ∧
+        ¬ ∃ N, ∀ m, N ≤ m → widenChain pbWiden pbStutter m ≤ widenChain pbWiden pbStutter N
   ```
 
 - `widenTerminates_of_acc` — Helper: under `ACC` every binary operator satisfies `WidenTerminates` (`R4-height-acc`).
 
   ```lean
-  theorem widenTerminates_of_acc :
-    ∀ {A : Type} [inst : LE A], ACC A → ∀ (w : A → A → A), WidenTerminates w
+  -- lean/Toy/AbsInt/Widening.lean:109-110
+  theorem widenTerminates_of_acc {A : Type} [LE A] (hacc : ACC A) (w : A → A → A) :
+      WidenTerminates w
   ```
 
 ## Evidence

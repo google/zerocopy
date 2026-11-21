@@ -242,7 +242,7 @@
       },
       {
         "name": "hf : Monotone f",
-        "purpose": "Among R2-best-sound, R2-best-least and R2-best-mono, the only place where monotonicity of f is used. In the counterexample, f is compl on Pred Unit (implicit argument sigma := Unit, which the pretty-printer does not show in the conjunct stating that compl is not monotone).",
+        "purpose": "Among R2-best-sound, R2-best-least and R2-best-mono, the only place where monotonicity of f is used. In the counterexample, f is compl on Pred Unit (implicit argument sigma := Unit).",
         "tightness": "tight",
         "counterexample": "Toy.AbsInt.bestMono_tight_monoF"
       }
@@ -343,7 +343,7 @@
     "hypotheses": [
       {
         "name": "hf : Monotone f",
-        "purpose": "Knaster-Tarski argument. In the counterexample, f is compl on Pred Unit (implicit argument sigma := Unit, which the pretty-printer does not show).",
+        "purpose": "Knaster-Tarski argument. In the counterexample, f is compl on Pred Unit (implicit argument sigma := Unit).",
         "tightness": "tight",
         "counterexample": "Toy.AbsInt.lfpEq_tight_monotone"
       }
@@ -656,13 +656,13 @@
       },
       {
         "name": "hR : WidenUpperRight w",
-        "purpose": "Gives f# (x n) <= x (n+1). In the counterexample, w is the left projection fun a x => a on B2 (implicit carrier B2, which the pretty-printer does not show in the WidenUpperLeft, WidenUpperRight and WidenTerminates conjuncts).",
+        "purpose": "Gives f# (x n) <= x (n+1). In the counterexample, w is the left projection fun a x => a on B2 (implicit carrier B2).",
         "tightness": "tight",
         "counterexample": "Toy.AbsInt.widen_tight_upperRight"
       },
       {
         "name": "hT : WidenTerminates w",
-        "purpose": "Supplies a step with x (n+1) <= x n. In the counterexample, w is max on Nat (implicit argument A := Nat, which the pretty-printer does not show in the WidenUpperLeft, WidenUpperRight and WidenTerminates conjuncts).",
+        "purpose": "Supplies a step with x (n+1) <= x n. In the counterexample, w is max on Nat (implicit argument A := Nat).",
         "tightness": "tight",
         "counterexample": "Toy.AbsInt.widen_tight_terminates"
       },
@@ -740,7 +740,7 @@
     "hypotheses": [
       {
         "name": "h : WidenStabilizes w",
-        "purpose": "Gives a step N with widenChain (N+1) = widenChain N, which cannot be strict. In the counterexample, w is max on Nat (implicit argument A := Nat, which the pretty-printer does not show).",
+        "purpose": "Gives a step N with widenChain (N+1) = widenChain N, which cannot be strict. In the counterexample, w is max on Nat (implicit argument A := Nat).",
         "tightness": "tight",
         "counterexample": "Toy.AbsInt.widenBridge_tight"
       }
