@@ -1,0 +1,744 @@
+[
+  {
+    "id": "tier-refinement-iff-sound",
+    "lean": [
+      "Toy.FloatTier.refinesS_iff_tierSound",
+      "Toy.FloatTier.Prog.refinesS_iff_tierSound",
+      "Toy.FloatTier.tierOf_refinesS"
+    ],
+    "lean_names": [
+      "Toy.FloatTier.refinesS_iff_tierSound",
+      "Toy.FloatTier.Prog.refinesS_iff_tierSound",
+      "Toy.FloatTier.tierOf_refinesS",
+      "Toy.FloatTier.ChoicePolicy",
+      "Toy.FloatTier.EqNsz",
+      "Toy.FloatTier.Extra",
+      "Toy.FloatTier.F23",
+      "Toy.FloatTier.F32",
+      "Toy.FloatTier.FExpr",
+      "Toy.FloatTier.FExpr.PrimsOk",
+      "Toy.FloatTier.FExpr.closed",
+      "Toy.FloatTier.FExpr.evalS",
+      "Toy.FloatTier.FExpr.evalS_evalT_of_tierSound",
+      "Toy.FloatTier.FExpr.evalS_of_evalS_fold",
+      "Toy.FloatTier.FExpr.evalT",
+      "Toy.FloatTier.FP.neg",
+      "Toy.FloatTier.Fmt",
+      "Toy.FloatTier.Fmt.bias",
+      "Toy.FloatTier.Fmt.maxUnits",
+      "Toy.FloatTier.NaNChoice",
+      "Toy.FloatTier.Prim",
+      "Toy.FloatTier.Prim.isArith",
+      "Toy.FloatTier.Prog",
+      "Toy.FloatTier.Prog.PrimsOk",
+      "Toy.FloatTier.Prog.runS",
+      "Toy.FloatTier.Prog.runS_runT_of_tierSound",
+      "Toy.FloatTier.Prog.runT",
+      "Toy.FloatTier.RefinesS",
+      "Toy.FloatTier.Tier",
+      "Toy.FloatTier.TierSound",
+      "Toy.FloatTier.V",
+      "Toy.FloatTier.V.abs",
+      "Toy.FloatTier.V.bits",
+      "Toy.FloatTier.V.copysign",
+      "Toy.FloatTier.V.neg",
+      "Toy.FloatTier.V.payload",
+      "Toy.FloatTier.V.toFP",
+      "Toy.FloatTier.V.withSign",
+      "Toy.FloatTier.V.zero",
+      "Toy.FloatTier.ValEq",
+      "Toy.FloatTier.add",
+      "Toy.FloatTier.arithSet",
+      "Toy.FloatTier.ex_bitSafe_rejects",
+      "Toy.FloatTier.ex_bits_nan_variants_binary32",
+      "Toy.FloatTier.ex_bits_prefNaN_binary32",
+      "Toy.FloatTier.ex_fold_keeps_var",
+      "Toy.FloatTier.ex_minMaxFree",
+      "Toy.FloatTier.ex_nanChoice_extra_F23",
+      "Toy.FloatTier.ex_nanChoice_propagation_F23",
+      "Toy.FloatTier.ex_nanChoice_rejects_F23",
+      "Toy.FloatTier.ex_no_snan_p2",
+      "Toy.FloatTier.ex_primSet_allows_F23",
+      "Toy.FloatTier.ex_primSet_rejects_F23",
+      "Toy.FloatTier.ex_snan_payload_F23",
+      "Toy.FloatTier.ex_tierSound_F23",
+      "Toy.FloatTier.ex_valEq_F23",
+      "Toy.FloatTier.exists_runS_not_realized_by_any_tier",
+      "Toy.FloatTier.extraPay1",
+      "Toy.FloatTier.feq",
+      "Toy.FloatTier.key",
+      "Toy.FloatTier.le",
+      "Toy.FloatTier.lt",
+      "Toy.FloatTier.maxLt",
+      "Toy.FloatTier.maximum",
+      "Toy.FloatTier.minLt",
+      "Toy.FloatTier.minimum",
+      "Toy.FloatTier.mul",
+      "Toy.FloatTier.nanChoice_prefNaN",
+      "Toy.FloatTier.noExtra",
+      "Toy.FloatTier.primSet",
+      "Toy.FloatTier.refinesS_iff_tierSound_nonvacuous",
+      "Toy.FloatTier.refuted_extra_payload_tier_separates_noExtra_p2",
+      "Toy.FloatTier.round",
+      "Toy.FloatTier.sub",
+      "Toy.FloatTier.tierBad",
+      "Toy.FloatTier.tierCtfe",
+      "Toy.FloatTier.tierExtraPay1",
+      "Toy.FloatTier.tierExtraPay1_sound_extra_not_noExtra",
+      "Toy.FloatTier.tierOf",
+      "Toy.FloatTier.tierOf_sound",
+      "Toy.FloatTier.tierRunA",
+      "Toy.FloatTier.tierSound_extra_irrelevant_of_p_eq_two",
+      "Toy.FloatTier.totalKey"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every format, every extra-payload set `X` and every tier `τ` (a site-independent, context-free choice function `Tier f`): `τ` refines the set-valued semantics `S` bit-exactly on every expression and input (`RefinesS X τ`) iff every choice of `τ` lies in the corresponding set of `S` (`TierSound X τ`). The same equivalence holds with refinement stated on observations: on every program and input, the observation computed by `τ` is one that `S` allows iff `TierSound X τ` (`Prog.refinesS_iff_tierSound`). In particular, for every `ChoicePolicy` `pol` and every `X`, the policy tier `tierOf pol` refines `S` (`tierOf_refinesS`); the example tiers `tierCtfe` and `tierRunA` are policy tiers.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "shallow (structural induction for ⇐; instantiation at `prim p (var 0) (var 1)` for ⇒, and for observations at `toBits (prim p (var 0) (var 1))` with injectivity of `V.bits`; for policy tiers, the case analysis `tierOf_sound`).",
+    "tier_note": "T1. RFC 3514 says in prose that compile-time evaluation makes \"some fixed choices\" inside the run-time NaN rules (REPORT.md, Findings → Modelling bridges). The WebAssembly specification defines NaN results as sets and a deterministic profile that picks one element. The search found no mechanized statement of the refinement relation between such a set-valued semantics and its choice functions.",
+    "nonvacuity_witness": "`refinesS_iff_tierSound_nonvacuous`: in `F23` with `noExtra`, `tierCtfe` satisfies both sides and `tierBad` satisfies neither.",
+    "nonvacuity_witness_lean": "Toy.FloatTier.refinesS_iff_tierSound_nonvacuous",
+    "non_claims": [
+      "`Tier f` is site-independent and context-free: the same primitive on the same operands gets the same result at every occurrence. `S` chooses independently at every node, and there is a program on which `S` allows an observation that no tier produces: for `copysign(1.0, 0.0 * +∞) == copysign(1.0, 0.0 * +∞)`, `S` allows `0` while every tier computes `1` (`exists_runS_not_realized_by_any_tier`). Implementations whose choices depend on the occurrence or the context are not tiers; RFC 3514 L130 allows two evaluations of the same expression during compile-time evaluation to give different results. This result neither establishes nor refutes the correctness of such implementations.",
+      "Refinement is per expression tree: each primitive node chooses independently, and there is no sharing, `let`, memory, loop or concurrency. The RFC's \"stable bit pattern\" property of a value used twice (RFC 3514 L85) is not modelled.",
+      "`S` has one rounding mode (round-to-nearest-ties-to-even) and no status flags, traps or alternative rounding modes; RFC 3514 L58 states the corresponding assumption for Rust.",
+      "The operations modelled are `add`, `sub`, `mul`, `min`, `max`, the bit-level `neg`, `abs`, `copysign`, comparison, and a value-level branch. Division, `sqrt`, `mul_add`, `%` and float-to-float `as` casts (with their payload truncation and extension rules) are not modelled.",
+      "`TierSound X τ` is relative to `X`. In a format with `p ≥ 3` it can depend on `X`: in `F23` the tier `tierExtraPay1` is sound for `extraPay1` (payload `1` allowed) and not for `noExtra` (`tierExtraPay1_sound_extra_not_noExtra`). In every format with `p = 2` there is exactly one NaN payload, and `TierSound X τ ↔ TierSound noExtra τ` for every `X` and `τ` (`tierSound_extra_irrelevant_of_p_eq_two`); so the statement \"a tier that uses extra payloads is sound for an `X` containing them and not for `noExtra`\" is false in `F32` (`refuted_extra_payload_tier_separates_noExtra_p2`).",
+      "`RefinesS` compares full bit patterns. A tier whose results agree with those of a sound tier up to `ValEq` need not be sound; by definition `tierExtraPay1` differs from `tierCtfe` in NaN payloads and nowhere else and is not sound for `noExtra` (`tierExtraPay1_sound_extra_not_noExtra`; agreement up to `ValEq` on every expression is not proved here).",
+      "Policy tiers never use extra payloads or unchanged propagation, give every NaN result the same sign, and, when they propagate, copy the payload of the first NaN operand. So there are sound tiers that are not policy tiers, for example a sound tier that copies the sign of a NaN operand (not proved here); the general characterization above covers every tier.",
+      "Refinement of `S` is not equality between tiers (`sound-tiers-disagree-under-bit-observation`).",
+      "Nothing here says which tier any real compiler, interpreter or target implements. Model–system relation: none proved; the statements neither establish nor refute the corresponding claims about Rust, LLVM or IEEE 754 implementations."
+    ],
+    "prior_art": [
+      "RFC 3514 (rust-lang/rfcs `text/3514-float-semantics.md` at `f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4`, L18–19 and L91–95): compile-time evaluation is \"some deterministic function of the operation's inputs that satisfies the constraints placed on run-time floating point semantics\". LLVM LangRef (llvmorg-21.1.0, `3623fe661ae35c6c80ac221f14d85be76aa870f1`, L3831–3848): the NaN rules. WebAssembly specification (`631890ee71035d9903fe5fd3a2b476bb82c76112`, `document/core/exec/numerics.rst` L1044–1054): set-valued NaN propagation and a deterministic profile. Related mechanizations of IEEE 754 arithmetic are listed in REPORT.md, Findings → Modelling bridges."
+    ],
+    "design_question": "Which deterministic, site-independent implementations (constant folders, interpreters, code generators that make one fixed choice per operation and operands) are correct for a nondeterministic NaN specification? Answer in the toy: exactly the tiers whose every choice lies in the specification's sets; in particular every fixed policy such as \"positive preferred NaN\"."
+  },
+  {
+    "id": "sound-tiers-disagree-under-bit-observation",
+    "lean": "Toy.FloatTier.sound_tiers_disagree_on_bits",
+    "lean_names": [
+      "Toy.FloatTier.sound_tiers_disagree_on_bits",
+      "Toy.FloatTier.FExpr.BitSafe",
+      "Toy.FloatTier.FP.bits",
+      "Toy.FloatTier.FP.isNaN",
+      "Toy.FloatTier.Prog.BitSafe",
+      "Toy.FloatTier.V.isNaN",
+      "Toy.FloatTier.V.isNaNOrZero",
+      "Toy.FloatTier.V.prefNaN",
+      "Toy.FloatTier.progBitsZeroMulInf",
+      "Toy.FloatTier.refuted_value_level_observations_of_sound_tiers_agree",
+      "Toy.FloatTier.tiers_agree_on_isNaN_zero_mul_inf",
+      "Toy.FloatTier.zero"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "In every format, for every extra-payload set `X` and every input `ρ`: the tiers `tierCtfe` and `tierRunA` both refine `S` (`RefinesS`), yet on the program `toBits (0.0 * +∞)` `tierCtfe` returns the bits of the positive preferred quiet NaN and `tierRunA` returns the bits of the negative preferred quiet NaN, and these differ. So refinement of `S` does not make two sound tiers agree on bit-level observations: there is a pair of sound tiers (`tierCtfe`, `tierRunA`) and a program (`toBits (0.0 * +∞)`) on which they disagree.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_note": "definitional (computation of `0 * ∞ = NaN` and of two `bits` values).",
+    "tier_note": "T1. RFC 3514 states this possibility in prose (L18–19, L41–42, L95).",
+    "nonvacuity_witness": "The statement is itself an instance.",
+    "nonvacuity_witness_lean": "Toy.FloatTier.sound_tiers_disagree_on_bits",
+    "non_claims": [
+      "It shows one disagreement, in the sign bit. Payload disagreements between sound tiers are possible in formats with `p ≥ 3` (not proved here).",
+      "For value-level observations the situation depends on the program. `isNaN (0.0 * +∞)` gives `1` under both tiers (`tiers_agree_on_isNaN_zero_mul_inf`), and any two sound tiers agree on every program that satisfies `BitSafe X ρ V.isNaNOrZero` (`observation-determinism-nan-or-zero`). Without that hypothesis value-level observations can disagree as well: `0.0 < copysign(1.0, 0.0 * +∞)` gives `1` under `tierCtfe` and `0` under `tierRunA` (`copysign-of-nan-breaks-determinism`), so the unqualified statement \"value-level observations of the two tiers agree\" is false (`refuted_value_level_observations_of_sound_tiers_agree`).",
+      "The theorem concerns the two toy tiers `tierCtfe` and `tierRunA`. It does not say that every pair of a compile-time tier and a run-time tier disagrees; for example a tier agrees with itself.",
+      "It does not show that any real compiler or target produces different bits; that was not examined, and no programs were run. Model–system relation: none proved; it neither establishes nor refutes the corresponding claim about Rust compile-time evaluation or any target."
+    ],
+    "prior_art": [
+      "RFC 3514 L18–19, L41–42, L91–95; Rust core `primitive_docs.rs` at `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, L1304–1307 (\"The result does not have to match what happens when executing the same code at runtime\")."
+    ],
+    "design_question": "May a verifier or optimizer assume that the NaN bit patterns computed by two correct implementations (for example constant evaluation and execution) agree? Not in a semantics with these NaN sets.",
+    "positive_control": "`tiers_agree_on_isNaN_zero_mul_inf`: under the value-level observation `isNaN (0.0 * +∞)` the two tiers agree (both give `1`).",
+    "positive_control_lean": "Toy.FloatTier.tiers_agree_on_isNaN_zero_mul_inf"
+  },
+  {
+    "id": "sound-tier-constant-folding-refines-spec",
+    "lean": "Toy.FloatTier.Prog.runS_of_runS_fold",
+    "lean_names": [
+      "Toy.FloatTier.Prog.runS_of_runS_fold",
+      "Toy.FloatTier.FExpr.evalT_of_closed",
+      "Toy.FloatTier.FExpr.fold",
+      "Toy.FloatTier.Prog.fold",
+      "Toy.FloatTier.fold_unsound_tier_not_refinement",
+      "Toy.FloatTier.runS_of_runS_fold_nonvacuous"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every format, extra-payload set `X`, input `ρ`, program `P` and observation `n`, and for every tier `τ` that is sound for the same `X` (`hτ : TierSound X τ`): if `S` allows `n` for the constant-folded program `P.fold τ`, then `S` allows `n` for `P`. Folding replaces every maximal closed subexpression (one without variables) by the literal that `τ` computes for it, also inside the branches of `selLt`. This holds in particular for `τ = tierCtfe`.",
+    "hypotheses": [
+      {
+        "name": "hτ : TierSound X τ",
+        "purpose": "the folded literal must be a result that S allows",
+        "tightness": "tight",
+        "counterexample": "Toy.FloatTier.fold_unsound_tier_not_refinement",
+        "witness_class": "every format, every X, every input; the program isNaN (0.0 * +∞) folded with tierBad (always +∞) has the observation 0, which S does not allow for the original program"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "shallow (structural induction; a closed expression's tier result does not depend on the input, `FExpr.evalT_of_closed`).",
+    "tier_note": "T1 (folklore that folding with any allowed choice refines a nondeterministic specification; RFC 3514 prose).",
+    "nonvacuity_witness": "`runS_of_runS_fold_nonvacuous`: `tierCtfe` is sound, folding changes `toBits (0.0 * +∞)` into `toBits (lit (prefNaN false))`, and the folded program has an `S`-observation.",
+    "nonvacuity_witness_lean": "Toy.FloatTier.runS_of_runS_fold_nonvacuous",
+    "non_claims": [
+      "The conclusion is refinement (inclusion of observation sets), not equality: there is a program, `toBits (0.0 * +∞)`, for which `S` allows the original program an observation that it does not allow the folded program (`runS_of_runS_fold_nonvacuous`).",
+      "`hτ` must hold for the same extra-payload set `X` as the semantics `runS X`. Folding with a tier that is sound for a different extra-payload set, for example that of the compiling host rather than the target, is not covered.",
+      "`hτ` is tight over all programs; for a particular program a weaker condition on `τ` can suffice, for example when the program has no closed NaN-producing or `min`/`max` subexpression (not proved here).",
+      "`S` has one rounding mode, no status flags or traps, no undefined behaviour and no divergence, and `FExpr.fold` also folds closed subexpressions in `selLt` branches that no execution takes. In a language with traps, undefined behaviour or alternative rounding modes such eager folding is not justified by this theorem (not proved here); RFC 3514 L58 and L143 describe the corresponding assumptions for Rust.",
+      "The theorem covers folding of closed subexpressions of expression trees. Common-subexpression elimination, duplication of NaN-producing subexpressions and other rewrites are not examined. In a language with shared bindings, folding one use of a NaN-producing binding while evaluating another use at run time could break the stable-bit-pattern property of RFC 3514 L85 (not proved here).",
+      "It does not say that the folded program behaves like the unfolded program under any particular run-time tier (`ctfe-folding-not-preserved-by-run-tier`).",
+      "Model–system relation: none proved; it neither establishes nor refutes the corresponding claim about Rust or LLVM constant folding."
+    ],
+    "prior_art": [
+      "RFC 3514 L91–95; Rust core `primitive_docs.rs` L1304–1307."
+    ],
+    "design_question": "Is constant folding with an arbitrary fixed NaN choice a correct optimization? Yes, when correctness is judged against the set-valued specification with the same extra-payload set and the choice is allowed by it."
+  },
+  {
+    "id": "ctfe-folding-not-preserved-by-run-tier",
+    "lean": "Toy.FloatTier.fold_tierCtfe_changes_tierRunA_bits",
+    "lean_names": [
+      "Toy.FloatTier.fold_tierCtfe_changes_tierRunA_bits",
+      "Toy.FloatTier.fold_tierCtfe_preserves_tierRunA_nan_free",
+      "Toy.FloatTier.progBitsCopysignVarNaN",
+      "Toy.FloatTier.sound_tiers_disagree_on_bits"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "In every format and for every input `ρ`: constant folding of the open program `toBits (copysign (var 0) (0.0 * +∞))` with `tierCtfe` keeps `var 0` and replaces the closed subexpression `0.0 * +∞` by the literal positive preferred quiet NaN, and on the folded program the run-time tier `tierRunA` computes a different observation than on the original program (the theorem states that the two `toBits` observations differ, not which bit differs; the reason is that `copysign` copies the sign of the folded positive preferred NaN, whereas `tierRunA` computes the negative preferred NaN for `0.0 * +∞`, `sound_tiers_disagree_on_bits`). By `sound-tier-constant-folding-refines-spec` the folded program refines the original under `S`; a check of this folding against the fixed run-time tier `tierRunA` instead of against `S` would reject it.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_note": "definitional.",
+    "tier_note": "T1.",
+    "nonvacuity_witness": "The statement is itself an instance.",
+    "nonvacuity_witness_lean": "Toy.FloatTier.fold_tierCtfe_changes_tierRunA_bits",
+    "non_claims": [
+      "It does not show that folding is incorrect: against `S` it is correct (`sound-tier-constant-folding-refines-spec`).",
+      "It concerns `tierRunA`, a toy tier, not any real target. Model–system relation: none proved; it neither establishes nor refutes the corresponding claim about any compiler or target."
+    ],
+    "prior_art": [
+      "RFC 3514 L95 (\"there is no guarantee that the choice made in const evaluation is consistent with the choice made at runtime\")."
+    ],
+    "design_question": "Against which semantics must optimizations be justified? Against `S`, not against the observed behaviour of one fixed run-time tier.",
+    "positive_control": "`fold_tierCtfe_preserves_tierRunA_nan_free`: folding the NaN-free program `toBits (copysign (var 0) (+∞ * -∞))` with `tierCtfe` keeps the variable and does not change the observation computed by `tierRunA`, for every input.",
+    "positive_control_lean": "Toy.FloatTier.fold_tierCtfe_preserves_tierRunA_nan_free"
+  },
+  {
+    "id": "observation-determinism-nan-or-zero",
+    "lean": [
+      "Toy.FloatTier.Prog.runS_unique_of_bitSafe_nanOrZero",
+      "Toy.FloatTier.Prog.runT_eq_of_tierSound_of_bitSafe_nanOrZero"
+    ],
+    "lean_names": [
+      "Toy.FloatTier.Prog.runS_unique_of_bitSafe_nanOrZero",
+      "Toy.FloatTier.Prog.runT_eq_of_tierSound_of_bitSafe_nanOrZero",
+      "Toy.FloatTier.DetCongr",
+      "Toy.FloatTier.FExpr.evalS_rel_of_bitSafe",
+      "Toy.FloatTier.FP.mk'",
+      "Toy.FloatTier.FP.signBit",
+      "Toy.FloatTier.Prog.runS_unique_of_detCongr",
+      "Toy.FloatTier.V.bits_injective",
+      "Toy.FloatTier.V.bits_withSign_true",
+      "Toy.FloatTier.V.isZero",
+      "Toy.FloatTier.V.signBit",
+      "Toy.FloatTier.ValEq.refl",
+      "Toy.FloatTier.add_eqNsz_congr",
+      "Toy.FloatTier.bitSafe_not_necessary",
+      "Toy.FloatTier.copysignNaN_breaks_determinism",
+      "Toy.FloatTier.detCongr_toFP",
+      "Toy.FloatTier.detCongr_valEq",
+      "Toy.FloatTier.eqNsz_of_key_eq",
+      "Toy.FloatTier.ex_bitSafe_guarded",
+      "Toy.FloatTier.f33_4",
+      "Toy.FloatTier.f33_5",
+      "Toy.FloatTier.f33_m0p5",
+      "Toy.FloatTier.f33_m3p5",
+      "Toy.FloatTier.feq_eqNsz_congr",
+      "Toy.FloatTier.lt_eqNsz_congr",
+      "Toy.FloatTier.maxSet",
+      "Toy.FloatTier.minSet",
+      "Toy.FloatTier.minZeroSign_breaks_determinism",
+      "Toy.FloatTier.mul_eqNsz_congr",
+      "Toy.FloatTier.not_tierSound_tierBad",
+      "Toy.FloatTier.primSet_of_isNaN",
+      "Toy.FloatTier.primSet_toFP_congr",
+      "Toy.FloatTier.primSet_valEq_congr",
+      "Toy.FloatTier.progBitsCopysignVarInfMulNegInf",
+      "Toy.FloatTier.progBitsNaNLit",
+      "Toy.FloatTier.progGuardedDeadCopysign",
+      "Toy.FloatTier.progGuardedInputCopysign",
+      "Toy.FloatTier.progIsNaNLitAdd",
+      "Toy.FloatTier.progIsNaNZeroMulInf",
+      "Toy.FloatTier.progMinZeroEq_nonvacuous",
+      "Toy.FloatTier.progNaNBranchSign",
+      "Toy.FloatTier.progNaNBranchSign_nonvacuous",
+      "Toy.FloatTier.progSelfEqCopysignNaN",
+      "Toy.FloatTier.progSignBitAbsNaN",
+      "Toy.FloatTier.sub_eqNsz_congr",
+      "Toy.FloatTier.unsound_tier_breaks_agreement"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every format, extra-payload set `X`, input `ρ` and program `P`: if, in every execution of `S` from `ρ`, every bit-level use in `P` that the execution reaches (the sign argument of `copysign`, and the argument of `signBit` or `toBits`; inside `selLt a b t e`, a branch counts only if some execution takes it) receives a value that is neither a NaN nor a zero (`hsafe : P.BitSafe X ρ V.isNaNOrZero`), then any two observations that `S` allows for `P` on `ρ` are equal. This covers the value-level observations `isNaN`, `==`, `<` and the bit-level observations `signBit`, `toBits`. Consequently, under the same hypothesis, any two tiers that are both sound for `X` compute the same observation of `P` on `ρ`.",
+    "hypotheses": [
+      {
+        "name": "hsafe : P.BitSafe X ρ V.isNaNOrZero (NaN part)",
+        "purpose": "the sign and payload of a NaN are nondeterministic",
+        "tightness": "tight",
+        "counterexample": "Toy.FloatTier.copysignNaN_breaks_determinism",
+        "witness_class": "every format, every X, every input; 0.0 < copysign(1.0, 0.0 * +∞) satisfies BitSafe for V.isZero and S allows the observations 1 and 0"
+      },
+      {
+        "name": "hsafe : P.BitSafe X ρ V.isNaNOrZero (zero part)",
+        "purpose": "min/max may return either of +0 and -0",
+        "tightness": "tight",
+        "counterexample": "Toy.FloatTier.minZeroSign_breaks_determinism",
+        "witness_class": "every format, every X, every input; signBit (min(+0.0, -0.0)) satisfies BitSafe for V.isNaN and S allows the observations 0 and 1"
+      },
+      {
+        "name": "h₁ : TierSound X τ₁, h₂ : TierSound X τ₂ (tier corollary)",
+        "purpose": "only sound tiers compute observations allowed by S",
+        "tightness": "tight",
+        "counterexample": "Toy.FloatTier.unsound_tier_breaks_agreement",
+        "witness_class": "every format, every X, every input; isNaN (0.0 * +∞), which has no bit-level use, under tierBad and tierCtfe"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "shallow. It is one induction, but it rests on auxiliary lemmas: IEEE RNE `add`, `sub` and `mul` and the comparisons respect equality up to the sign of zero, and the comparison key is injective up to the sign of zero (REPORT.md, Findings → Auxiliary lemmas cited by name).",
+    "tier_note": "T1. RFC 3514 L33 states a related prose condition for the operations listed at its L50. The toy also contains `min`/`max`, whose documented choice between equal operands is why zeros are excluded here (`observation-determinism-minmax-free`, `min-zero-deterministic-up-to-eq-not-under-sign-test`).",
+    "nonvacuity_witness": "`progNaNBranchSign_nonvacuous`: `signBit (if 0.0 * +∞ < 0.0 then 1.0 else +∞ * -∞)` produces a NaN, compares it, satisfies the hypothesis, and `S` allows exactly the observation `1`. `progMinZeroEq_nonvacuous`: `min(+0.0, -0.0) == +0.0` satisfies the hypothesis while its `min` node can return either zero, and `S` allows exactly the observation `1`. `ex_bitSafe_guarded`: `progGuardedDeadCopysign`, whose untaken branch applies `copysign` to a NaN, satisfies the hypothesis, and `S` allows exactly the observation `1`.",
+    "nonvacuity_witness_lean": [
+      "Toy.FloatTier.progNaNBranchSign_nonvacuous",
+      "Toy.FloatTier.progMinZeroEq_nonvacuous",
+      "Toy.FloatTier.ex_bitSafe_guarded"
+    ],
+    "non_claims": [
+      "The hypothesis quantifies over all executions of `S` from the given input, not over what some tier or real target produces.",
+      "It is a sufficient condition (`bitSafe_not_necessary`). In addition, bit-level uses of zeros produced by `add`, `sub` or `mul` are deterministic in the toy (`observation-determinism-minmax-free` covers programs without `min`/`max`), so excluding zeros is stronger than needed for such programs.",
+      "The conclusion is per input and per single observation. It is not an IEEE-conformance claim: signaling-NaN outputs remain possible in `S` and are invisible to the observations.",
+      "The language has no division, `sqrt`, `mul_add`, `signum`, total-order comparison or byte conversion. An operation that exposes the sign of a zero at the value level, such as division (`1 / ±0 = ±∞`), would require a new statement; with division this theorem as stated would fail (not proved here).",
+      "`minSet` and `maxSet` model the `min`/`max` documented for Rust `f32::min`/`f32::max`, which may return either operand when the operands compare equal. Operations that order `-0.0` below `+0.0` (Rust `f32::minimum`, LLVM `llvm.minimum`) or return a quiet NaN on a signaling-NaN operand (LLVM `llvm.minnum`) are not modelled (REPORT.md, Findings → Modelling bridges).",
+      "Model–system relation: none proved; the statement neither establishes nor refutes the corresponding claim about Rust, LLVM or IEEE 754 implementations."
+    ],
+    "prior_art": [
+      "RFC 3514 L33, L50, L56–57; Rust core `f32.rs` at `26bfbf28f5f79dff333ce5a232f131b496ec9cfe`, L1094–1104 (`min`: \"either input may be returned non-deterministically\")."
+    ],
+    "design_question": "When can a verifier treat float code as deterministic despite NaN nondeterminism? In the toy, a sufficient condition is that no bit-level use reached by some execution can receive a NaN or a zero."
+  },
+  {
+    "id": "observation-determinism-minmax-free",
+    "lean": [
+      "Toy.FloatTier.Prog.runS_unique_of_minMaxFree_of_bitSafe_nan",
+      "Toy.FloatTier.Prog.runT_eq_of_tierSound_of_minMaxFree_of_bitSafe_nan"
+    ],
+    "lean_names": [
+      "Toy.FloatTier.Prog.runS_unique_of_minMaxFree_of_bitSafe_nan",
+      "Toy.FloatTier.Prog.runT_eq_of_tierSound_of_minMaxFree_of_bitSafe_nan",
+      "Toy.FloatTier.Prog.MinMaxFree",
+      "Toy.FloatTier.progIsNaNLitAdd_nonvacuous",
+      "Toy.FloatTier.progNaNBranchSign_nonvacuous",
+      "Toy.FloatTier.minZeroSign_breaks_determinism",
+      "Toy.FloatTier.copysignNaN_breaks_determinism",
+      "Toy.FloatTier.unsound_tier_breaks_agreement",
+      "Toy.FloatTier.bitSafe_not_necessary",
+      "Toy.FloatTier.progMinZeroEq_nonvacuous",
+      "Toy.FloatTier.ex_minMaxFree"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every format, extra-payload set `X`, input `ρ` and program `P`: if `P` contains no `min`/`max` (`hmm : P.MinMaxFree = true`) and, in every execution of `S` from `ρ`, every bit-level use in `P` that the execution reaches (inside `selLt`, a branch counts only if some execution takes it) receives a value that is not a NaN (`hsafe : P.BitSafe X ρ V.isNaN`), then any two observations that `S` allows for `P` on `ρ` are equal, for value-level and bit-level observations alike. Consequently, under the same hypotheses, any two tiers that are both sound for `X` compute the same observation of `P` on `ρ`.",
+    "hypotheses": [
+      {
+        "name": "hmm : P.MinMaxFree = true",
+        "purpose": "min/max choose between +0 and -0",
+        "tightness": "tight",
+        "counterexample": "Toy.FloatTier.minZeroSign_breaks_determinism",
+        "witness_class": "every format, every X, every input; signBit (min(+0.0, -0.0)) satisfies BitSafe for V.isNaN"
+      },
+      {
+        "name": "hsafe : P.BitSafe X ρ V.isNaN",
+        "purpose": "the sign and payload of a NaN are nondeterministic",
+        "tightness": "tight",
+        "counterexample": "Toy.FloatTier.copysignNaN_breaks_determinism",
+        "witness_class": "every format, every X, every input; 0.0 < copysign(1.0, 0.0 * +∞) is min/max-free"
+      },
+      {
+        "name": "h₁ : TierSound X τ₁, h₂ : TierSound X τ₂ (tier corollary)",
+        "purpose": "only sound tiers compute observations allowed by S",
+        "tightness": "tight",
+        "counterexample": "Toy.FloatTier.unsound_tier_breaks_agreement",
+        "witness_class": "every format, every X, every input; isNaN (0.0 * +∞) is min/max-free and satisfies BitSafe for V.isNaN; tierBad against tierCtfe"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "shallow (every arithmetic primitive factors through the NaN-collapsed view).",
+    "tier_note": "T1 (the shape of RFC 3514 L33, made precise in the toy for `+`, `-`, `*`, unary `-`, `abs`, `copysign` and comparisons; NaN literals are allowed).",
+    "nonvacuity_witness": "`progNaNBranchSign_nonvacuous` (`min`/`max`-free, a NaN produced and compared, a bit-level use of `-∞`, exactly the observation `1`); `progIsNaNLitAdd_nonvacuous` (a NaN literal used by `+`, exactly the observation `1`).",
+    "nonvacuity_witness_lean": [
+      "Toy.FloatTier.progNaNBranchSign_nonvacuous",
+      "Toy.FloatTier.progIsNaNLitAdd_nonvacuous"
+    ],
+    "non_claims": [
+      "It does not cover `min`/`max` (`minZeroSign_breaks_determinism`).",
+      "The pair of hypotheses `P.MinMaxFree = true` and `P.BitSafe X ρ V.isNaN` is a sufficient condition for determinism, not a necessary one. The two programs of `bitSafe_not_necessary`, `signBit (abs (0.0 * +∞))` and `toBits` of a NaN literal, are `min`/`max`-free, violate `P.BitSafe X ρ V.isNaN`, and have exactly one allowed observation each; and the program `min(+0.0, -0.0) == +0.0` violates `P.MinMaxFree = true` (`ex_minMaxFree`) and has exactly one allowed observation (`progMinZeroEq_nonvacuous`).",
+      "It does not say that NaN payloads or signs are deterministic. They are not (`sound-tiers-disagree-under-bit-observation`); under the hypotheses they are unobservable.",
+      "NaN literals, including signaling NaNs, are allowed. They do not break determinism here because no operation of the toy distinguishes a signaling NaN from a quiet one. In a language with an operation whose non-NaN result depends on whether an operand is signaling (RFC 3514 L222–224 gives C `pow` as an example; LLVM `llvm.minnum` returns a quiet NaN when an operand is signaling; see REPORT.md, Findings → Modelling bridges), a NaN built from bits could make value-level results nondeterministic without any bit-level use (not proved here). The toy says nothing about the IEEE-conformance part of RFC 3514 L33.",
+      "The exclusion concerns `minSet`/`maxSet`. Operations that order `-0.0` below `+0.0`, such as Rust `f32::minimum` and LLVM `llvm.minimum` (REPORT.md, Findings → Modelling bridges), are not modelled; this result neither establishes nor refutes determinism for programs that use them.",
+      "Model–system relation: none proved; the statement neither establishes nor refutes the corresponding claim about Rust, LLVM or IEEE 754 implementations."
+    ],
+    "prior_art": [
+      "RFC 3514 L33, L50."
+    ],
+    "design_question": "Is \"never apply a bit-level operation to a NaN\" enough for determinism? In the toy, it is a sufficient condition for programs without `min`/`max`, and it is not sufficient with them."
+  },
+  {
+    "id": "min-zero-deterministic-up-to-eq-not-under-sign-test",
+    "lean": [
+      "Toy.FloatTier.minZero_eq_and_signBit_runS",
+      "Toy.FloatTier.minZeroSign_breaks_determinism"
+    ],
+    "lean_names": [
+      "Toy.FloatTier.minZero_eq_and_signBit_runS",
+      "Toy.FloatTier.minZeroSign_breaks_determinism",
+      "Toy.FloatTier.progMinZeroEq",
+      "Toy.FloatTier.progMinZeroSign",
+      "Toy.FloatTier.progMinZeroEq_nonvacuous"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "In every format, for every extra-payload set and input: `S` allows exactly the observation `1` for `min(+0.0, -0.0) == +0.0`, but exactly the observations `0` and `1` for `signBit (min(+0.0, -0.0))`. The sound tiers `tierCtfe` and `tierRunA` compute `0` and `1` for the sign test, although no bit-level use in it receives a NaN.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_note": "definitional.",
+    "tier_note": "T1 (Rust core `f32::min` documentation states the nondeterminism).",
+    "nonvacuity_witness": "The statements are instances.",
+    "nonvacuity_witness_lean": "Toy.FloatTier.minZero_eq_and_signBit_runS",
+    "non_claims": [
+      "The theorems state `min` on `(+0, -0)`; `max` on `(+0, -0)` is analogous in the model (not proved here).",
+      "Apart from operands that compare equal and from NaN results when both operands are NaN, `minSet` and `maxSet` allow no other choice (not proved here).",
+      "Value-level determinism of `min(+0.0, -0.0) == +0.0` holds in the toy because the language has no value-level operation that distinguishes `+0` from `-0`, such as division (not proved here).",
+      "The nondeterminism is that of `minSet`/`maxSet`, which follow Rust `f32::min`. Rust `f32::minimum` and LLVM `llvm.minimum` are documented to order `-0.0` below `+0.0` (REPORT.md, Findings → Modelling bridges); they are not modelled.",
+      "Model–system relation: none proved; the statement neither establishes nor refutes the corresponding claim about Rust's `f32::min` or any target."
+    ],
+    "prior_art": [
+      "Rust core `f32.rs` L1094–1104."
+    ],
+    "design_question": "Must determinism arguments treat `min`/`max` specially? Yes, when zeros can reach bit-level observations.",
+    "positive_control": "The `==` half of `minZero_eq_and_signBit_runS`, also stated as `progMinZeroEq_nonvacuous`: a value-level observation of the same `min` node is deterministic, as `observation-determinism-nan-or-zero` predicts.",
+    "positive_control_lean": [
+      "Toy.FloatTier.minZero_eq_and_signBit_runS",
+      "Toy.FloatTier.progMinZeroEq_nonvacuous"
+    ]
+  },
+  {
+    "id": "copysign-of-nan-breaks-determinism",
+    "lean": "Toy.FloatTier.copysignNaN_breaks_determinism",
+    "lean_names": [
+      "Toy.FloatTier.copysignNaN_breaks_determinism",
+      "Toy.FloatTier.progCopysignNaN",
+      "Toy.FloatTier.tiers_agree_on_isNaN_zero_mul_inf"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "In every format, for every extra-payload set and input: the program `0.0 < copysign(1.0, 0.0 * +∞)` has no `min`/`max`, and every bit-level use in it receives a value that is not a zero. Yet the sound tiers `tierCtfe` and `tierRunA` compute `1` and `0`, so `S` allows two different observations, although the final observation is value-level.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_note": "definitional.",
+    "tier_note": "T1 (RFC 3514 L33 lists `copysign` on a NaN among the operations that can observe nondeterminism).",
+    "nonvacuity_witness": "The statement is an instance.",
+    "nonvacuity_witness_lean": "Toy.FloatTier.copysignNaN_breaks_determinism",
+    "non_claims": [
+      "One program. `toBits` on a NaN is `sound-tiers-disagree-under-bit-observation`; `signBit` on a NaN is not stated separately.",
+      "`copysign` with a NaN magnitude and a sign argument that is never a NaN does not break determinism (`observation-determinism-minmax-free` covers it).",
+      "Other bit-observing operations of real systems (total-order comparison, byte conversions, sign tests) are not modelled. Model–system relation: none proved; the statement neither establishes nor refutes the corresponding claim about Rust's `copysign` or any target."
+    ],
+    "prior_art": [
+      "RFC 3514 L33, L56–57; Rust core `primitive_docs.rs` L1256–1260."
+    ],
+    "design_question": "Which bit-level operations leak NaN nondeterminism into value-level results? The sign argument of `copysign` does.",
+    "positive_control": "`tiers_agree_on_isNaN_zero_mul_inf` (the same NaN observed with `isNaN` gives one observation).",
+    "positive_control_lean": "Toy.FloatTier.tiers_agree_on_isNaN_zero_mul_inf"
+  },
+  {
+    "id": "trunc-unsigned-open-interval",
+    "lean": "Toy.FloatTier.trunc_mem_unsigned_range_iff",
+    "lean_names": [
+      "Toy.FloatTier.trunc_mem_unsigned_range_iff",
+      "Toy.FloatTier.F33",
+      "Toy.FloatTier.FP",
+      "Toy.FloatTier.FP.isFinite",
+      "Toy.FloatTier.InOpenU",
+      "Toy.FloatTier.cast_results_nonvacuous",
+      "Toy.FloatTier.cvtS_eq_some_of_inOpenS",
+      "Toy.FloatTier.cvtU_eq_some_of_inOpenU",
+      "Toy.FloatTier.cvtU_isSome_iff",
+      "Toy.FloatTier.ex_inOpenU_F33",
+      "Toy.FloatTier.ex_negOne_F33",
+      "Toy.FloatTier.ex_trunc_F33",
+      "Toy.FloatTier.ex_twoPowFits_binary32_32",
+      "Toy.FloatTier.ex_twoPowRound_fits_F33",
+      "Toy.FloatTier.ex_twoPowRound_overflow_F33",
+      "Toy.FloatTier.negOne",
+      "Toy.FloatTier.not_inOpen_of_not_finite",
+      "Toy.FloatTier.trunc",
+      "Toy.FloatTier.trunc_mem_range_iff_fails_at_inf",
+      "Toy.FloatTier.trunc_uval_of_not_finite"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every format, every width `W` and every finite `x` (`hx : x.isFinite = true`): `trunc x` (truncation toward zero, computed by floor division of the magnitude) lies in `[0, 2^W − 1]` iff `InOpenU W x`, that is, iff `−1 < x < 2^W` as an exact comparison (`InOpenU` also requires `x` to be finite). The bound `2^W − 1` is an integer in `Int`; it is at least `0`, so no truncated subtraction occurs.",
+    "hypotheses": [
+      {
+        "name": "hx : x.isFinite = true",
+        "purpose": "on NaN and ±∞, trunc returns the junk value 0",
+        "tightness": "tight",
+        "counterexample": "Toy.FloatTier.trunc_mem_range_iff_fails_at_inf",
+        "witness_class": "every format, every W; x = +∞, where trunc (+∞) = 0 lies in [0, 2^W - 1] and InOpenU W (+∞) is false"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "shallow (integer arithmetic with floor division).",
+    "tier_note": "T0. The WebAssembly specification states the definedness condition `−1 < trunc(±q) < 2^N` on the truncated value (REPORT.md, Findings → Modelling bridges), the forward direction on the float input is mechanized in CompCert (`ZofB_range_nonneg`, `ZofB_range_pos`, `ZofB_range_neg`, `ZofB_range_zero`), and the equivalence on the float input is folklore.",
+    "nonvacuity_witness": "`cast_results_nonvacuous` (in `F33`, `3.5` is finite and lies in the interval for `W = 2`; `4.0` is finite and does not); `ex_trunc_F33`; `ex_inOpenU_F33`.",
+    "nonvacuity_witness_lean": [
+      "Toy.FloatTier.cast_results_nonvacuous",
+      "Toy.FloatTier.ex_trunc_F33",
+      "Toy.FloatTier.ex_inOpenU_F33"
+    ],
+    "non_claims": [
+      "`trunc` truncates toward zero. It is not floor (`trunc (-3.5) = -3`, `ex_trunc_F33`).",
+      "The degenerate width `W = 0` is covered: range `[0, 0]`, interval `(−1, 1)`.",
+      "On NaN and `±∞` the equivalence fails (`trunc_mem_range_iff_fails_at_inf`); `trunc` is `0` there (`trunc_uval_of_not_finite`) and `InOpenU` is false (`not_inOpen_of_not_finite`).",
+      "This is about exact values in the toy; conversion instructions of real hardware are not examined. Model–system relation: none proved; it neither establishes nor refutes the corresponding claim about Rust, LLVM or any hardware conversion."
+    ],
+    "prior_art": [
+      "CompCert `lib/IEEE754_extra.v` at `1670ae76afdb2546402898b6e9064d7229845d24`, L751–752, L758–759, L771–772, L778–779. WebAssembly specification `numerics.rst` L1842–1845 (`trunc_u`). Rust core `f32.rs` L1239–1245 (`to_int_unchecked` Safety). IEEE 754-2019 (DOI 10.1109/IEEESTD.2019.8766229): the text was not accessible and is not quoted."
+    ],
+    "design_question": "What is the exact precondition of a truncating conversion to an unsigned type, stated on the floating-point input? `x` finite and in the open interval `(−1, 2^W)`."
+  },
+  {
+    "id": "trunc-signed-open-interval",
+    "lean": "Toy.FloatTier.trunc_mem_signed_range_iff",
+    "lean_names": [
+      "Toy.FloatTier.trunc_mem_signed_range_iff",
+      "Toy.FloatTier.InOpenS",
+      "Toy.FloatTier.ex_cvtS_F33",
+      "Toy.FloatTier.ex_inOpenS_F33",
+      "Toy.FloatTier.signed_lower_guards_not_exact_F33",
+      "Toy.FloatTier.cast_results_nonvacuous",
+      "Toy.FloatTier.trunc_mem_range_iff_fails_at_inf"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every format, every `k` (signed width `k + 1`; `k = 0` is the 1-bit range `[−1, 0]`) and every finite `x` (`hx : x.isFinite = true`): `trunc x` (truncation toward zero, computed by floor division of the magnitude) lies in `[−2^k, 2^k − 1]` iff `InOpenS k x`, that is, iff `−2^k − 1 < x < 2^k` as an exact comparison (`InOpenS` also requires `x` to be finite).",
+    "hypotheses": [
+      {
+        "name": "hx : x.isFinite = true",
+        "purpose": "on NaN and ±∞, trunc returns the junk value 0",
+        "tightness": "tight",
+        "counterexample": "Toy.FloatTier.trunc_mem_range_iff_fails_at_inf",
+        "witness_class": "every format, every k; x = +∞, where trunc (+∞) = 0 lies in [-2^k, 2^k - 1] and InOpenS k (+∞) is false"
+      }
+    ],
+    "depth": "shallow",
+    "depth_note": "shallow.",
+    "tier_note": "T0 (as `trunc-unsigned-open-interval`; WebAssembly `trunc_s`, `numerics.rst` L1865–1868).",
+    "nonvacuity_witness": "`cast_results_nonvacuous` (in `F33`, `-3.5` is finite and lies in the interval for `k = 2` and not for `k = 1`); `ex_cvtS_F33`; `ex_inOpenS_F33`.",
+    "nonvacuity_witness_lean": [
+      "Toy.FloatTier.cast_results_nonvacuous",
+      "Toy.FloatTier.ex_cvtS_F33",
+      "Toy.FloatTier.ex_inOpenS_F33"
+    ],
+    "non_claims": [
+      "Signed widths are written `k + 1`; there is no signed width 0. For a signed width `W ≥ 1` the interval `−2^(W−1) − 1 < x < 2^(W−1)` is this statement with `k = W − 1`.",
+      "The lower endpoint `−2^k − 1` need not be representable. No floating-point range check for signed targets is characterized; two natural candidates are not exact in `F33` (`signed_lower_guards_not_exact_F33`, see `two-comparison-range-check-exact`).",
+      "Model–system relation: none proved; it neither establishes nor refutes the corresponding claim about Rust, LLVM or any hardware conversion."
+    ],
+    "prior_art": [
+      "As `trunc-unsigned-open-interval`."
+    ],
+    "design_question": "As `trunc-unsigned-open-interval`, for signed targets."
+  },
+  {
+    "id": "unchecked-conversion-undefined-iff",
+    "lean": [
+      "Toy.FloatTier.cvtU_eq_none_iff",
+      "Toy.FloatTier.cvtS_eq_none_iff"
+    ],
+    "lean_names": [
+      "Toy.FloatTier.cvtU_eq_none_iff",
+      "Toy.FloatTier.cvtS_eq_none_iff",
+      "Toy.FloatTier.cvtS",
+      "Toy.FloatTier.cvtU",
+      "Toy.FloatTier.ex_cvtU_defined_F33",
+      "Toy.FloatTier.ex_cvtU_undefined_F33",
+      "Toy.FloatTier.cast_results_nonvacuous",
+      "Toy.FloatTier.ex_cvtS_F33"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every format, every width `W` and every value `x`: the unchecked unsigned conversion `cvtU W x` is undefined (`none`) iff `¬ InOpenU W x`, that is, iff `x` is NaN or infinite or `x` lies outside the open interval `(−1, 2^W)`. For every `k` (signed width `k + 1`) and every value `x`: `cvtS k x` is undefined iff `¬ InOpenS k x`, that is, iff `x` is NaN or infinite or outside `(−2^k − 1, 2^k)`. The degenerate widths are included: `cvtU 0 x` is defined exactly when `x` is finite and `−1 < x < 1`, and `cvtS 0 x` exactly when `x` is finite and `−2 < x < 1`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "shallow.",
+    "tier_note": "T0 (Rust `to_int_unchecked` Safety, LLVM `fptoui`/`fptosi` poison, WebAssembly `trunc_u`/`trunc_s`, and CompCert `ZofB_range`, restated with `trunc-unsigned-open-interval` and `trunc-signed-open-interval`).",
+    "nonvacuity_witness": "`cast_results_nonvacuous` (defined and undefined finite instances of `cvtU` and `cvtS`), `ex_cvtU_defined_F33`, `ex_cvtU_undefined_F33`, `ex_cvtS_F33`.",
+    "nonvacuity_witness_lean": [
+      "Toy.FloatTier.cast_results_nonvacuous",
+      "Toy.FloatTier.ex_cvtU_defined_F33",
+      "Toy.FloatTier.ex_cvtU_undefined_F33",
+      "Toy.FloatTier.ex_cvtS_F33"
+    ],
+    "non_claims": [
+      "`none` stands for both undefined behaviour (Rust `to_int_unchecked`) and a poison result (LLVM `fptoui`/`fptosi`); the model does not distinguish them. Poison semantics is covered by the published package `undefined-values-poison-undef-freeze-and-refinement`, cited and not repeated.",
+      "The IEEE 754 invalid-operation exception and the concrete results that hardware conversion instructions return for out-of-range inputs are not modelled.",
+      "No statement about how compilers lower these conversions. Model–system relation: none proved; it neither establishes nor refutes the corresponding claim about Rust, LLVM or WebAssembly implementations."
+    ],
+    "prior_art": [
+      "Rust core `f32.rs` L1239–1245; LLVM LangRef L12293–12296 and L12335–12338; CompCert `ZofB_correct` (L699–701) and `ZofB_range`, `ZofB_range_correct` (L840–851); WebAssembly `numerics.rst` L1842–1845 and L1865–1868."
+    ],
+    "design_question": "Which inputs make an unchecked float-to-integer conversion undefined? Exactly NaN, infinities and values outside the open interval."
+  },
+  {
+    "id": "two-comparison-range-check-exact",
+    "lean": "Toy.FloatTier.rangeCheckU_twoPowRound_iff",
+    "lean_names": [
+      "Toy.FloatTier.rangeCheckU_twoPowRound_iff",
+      "Toy.FloatTier.Fmt.qneg",
+      "Toy.FloatTier.TwoPowFits",
+      "Toy.FloatTier.ex_rangeCheckU_F33",
+      "Toy.FloatTier.rangeCheckU",
+      "Toy.FloatTier.rangeCheckU_twoPowRound_iff_nonvacuous",
+      "Toy.FloatTier.twoPowRound",
+      "Toy.FloatTier.twoPowRound_of_fits",
+      "Toy.FloatTier.twoPowRound_of_not_fits",
+      "Toy.FloatTier.two_pow_qneg_le_maxUnits"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every format, every width `W` and every value `x`: with `c = twoPowRound f W` (the mathematical integer `2^W` rounded to the format with ties-to-even, overflowing to `+∞`), the guard `x > −1.0 && x < c` (`rangeCheckU c x`, IEEE quiet comparisons in the same format) holds iff the unchecked conversion `cvtU W x` is defined. When `TwoPowFits f W`, `c` is exactly `2^W` (`twoPowRound_of_fits`). Otherwise `c = +∞` (`twoPowRound_of_not_fits`), and the guard is still exact because every finite value is then below `2^W`. The guard needs no separate finiteness test: a NaN fails both comparisons, and `+∞` fails `x < c` also when `c = +∞`. At `W = 0` the guard is `x > −1.0 && x < 1.0`: `TwoPowFits f 0` holds in every format (`two_pow_qneg_le_maxUnits`, as `0 + qneg = qneg`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "shallow (rounding a power of two is exact or overflows, using the copied rounding lemmas; finite values are at most the largest finite value).",
+    "tier_note": "T1. CompCert proves that, assuming `to_intu x = Some n` and `x < 2^31`, also `to_int x = Some n` (`to_intu_to_int_1`); it assumes definedness of the unsigned conversion rather than establishing it with a guard. The general exactness statement with both cases was not found mechanized.",
+    "nonvacuity_witness": "`rangeCheckU_twoPowRound_iff_nonvacuous` (in `F33`: `W = 2` with `c = 4.0`, and `W = 4` with `c = +∞`; binary32 with `W = 32`; accepted and rejected inputs in each case); `ex_rangeCheckU_F33`.",
+    "nonvacuity_witness_lean": [
+      "Toy.FloatTier.rangeCheckU_twoPowRound_iff_nonvacuous",
+      "Toy.FloatTier.ex_rangeCheckU_F33"
+    ],
+    "non_claims": [
+      "Unsigned targets. A signed range check is not characterized, and two natural signed analogues are not exact: in `F33`, the strict lower bound `x > (−2^3 − 1 as float)` rejects `x = −8.0` because `−9` rounds to `−8.0`, and the bound `x >= −2^1` rejects `x = −2.5`, although `cvtS 3 (−8.0)` and `cvtS 1 (−2.5)` are defined (`signed_lower_guards_not_exact_F33`). Bounded evaluation in `F33` found the strict variant exact for `k ∈ {0, 1, 2, 4, 5, 6, 7}` and inexact at `k = 3` (evaluated, not proved).",
+      "The comparisons are IEEE quiet `<` in the same format: a comparison with a NaN is false, and `+∞ < +∞` is false. Under assumptions that let a compiler treat NaN or infinite operands as impossible (for example LLVM's `nnan`/`ninf` fast-math flags, which the published float-laws package covers), the comparisons may be simplified and the guard need not reject NaN or `+∞` (not proved here).",
+      "`c` is the mathematical integer `2^W` rounded once to the format. Computing `2^W` first in a fixed-width integer type, where it wraps or overflows (for example `1 << 32` in a 32-bit type), gives a different guard and is not examined. Evaluation of the comparison in a wider intermediate precision is not modelled.",
+      "Other rounding modes are not modelled. It does not describe how any compiler implements checked or saturating conversions. Model–system relation: none proved; it neither establishes nor refutes the corresponding claim about any language or compiler."
+    ],
+    "prior_art": [
+      "CompCert `lib/Floats.v` at `1670ae76afdb2546402898b6e9064d7229845d24`, L536–540 (`to_intu_to_int_1`); `trunc-unsigned-open-interval`, `unchecked-conversion-undefined-iff`."
+    ],
+    "design_question": "What guard makes an unchecked unsigned conversion safe without false rejections? `x > −1.0 && x < (2^W rounded to the format)`."
+  },
+  {
+    "id": "max-as-float-guard-not-exact",
+    "lean": [
+      "Toy.FloatTier.naiveCheckU_not_exact_small",
+      "Toy.FloatTier.naiveCheckU_accepts_two_pow_32_binary32",
+      "Toy.FloatTier.naiveCheckU_accepts_inf_binary32_128",
+      "Toy.FloatTier.naiveCheckU_accepts_inf_F23_3",
+      "Toy.FloatTier.naiveCheckU_inexact_every_width_F23",
+      "Toy.FloatTier.roundNat_F33_three_exact"
+    ],
+    "lean_names": [
+      "Toy.FloatTier.naiveCheckU_not_exact_small",
+      "Toy.FloatTier.naiveCheckU_accepts_two_pow_32_binary32",
+      "Toy.FloatTier.naiveCheckU_accepts_inf_binary32_128",
+      "Toy.FloatTier.naiveCheckU_accepts_inf_F23_3",
+      "Toy.FloatTier.naiveCheckU_inexact_every_width_F23",
+      "Toy.FloatTier.roundNat_F33_three_exact",
+      "Toy.FloatTier.Fbin32",
+      "Toy.FloatTier.f33_3p5",
+      "Toy.FloatTier.naiveCheckU",
+      "Toy.FloatTier.refuted_naiveCheckU_exact_at_W_eq_p",
+      "Toy.FloatTier.roundNat",
+      "Toy.FloatTier.rangeCheckU_twoPowRound_iff"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "The guard `x > −1.0 && x <= (2^W − 1 as float)` (`naiveCheckU W`; `2^W − 1` is natural-number subtraction, which does not truncate since `2^W ≥ 1`) is not exact for the unchecked unsigned conversion. Each of the following is proved:\n- In `F32` (precision 2) with `W = 3`, `7 as float` rounds up to `8`, so the guard accepts `x = 8.0`, for which `cvtU 3` is undefined.\n- At `(W, format) = (32, binary32)`, `(2^32 − 1) as float = 2^32`, so the guard accepts `x = 2^32`, for which `cvtU 32` is undefined.\n- At `(128, binary32)`, `(2^128 − 1) as float = +∞`, so the guard accepts `+∞`, for which `cvtU 128` is undefined.\n- At `(3, F23)`, where `W` equals the precision `3`, `7 as float` overflows `F23` (largest finite value `3.5`) to `+∞`, so the guard accepts `+∞`.\n- In `F33` with `W = 2`, `3 as float` is exactly `3.0` (`roundNat_F33_three_exact`), and the guard rejects `x = 3.5`, for which `cvtU 2` is defined.\n- In `F23`, for every width `W` there is a value `x` on which the guard disagrees with definedness of `cvtU W x` (`naiveCheckU_inexact_every_width_F23`).\n\nIn each of the first five instances the exact guard of `two-comparison-range-check-exact` decides correctly (the `rangeCheckU` conjuncts of the same theorems).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "definitional for the instances (kernel evaluation by `decide`); shallow for `naiveCheckU_inexact_every_width_F23` (three small widths by evaluation, and overflow of `2^W − 1` for `W ≥ 3`).",
+    "tier_note": "T1 (folklore pitfall; mechanized instances).",
+    "nonvacuity_witness": "The statements are instances.",
+    "nonvacuity_witness_lean": [
+      "Toy.FloatTier.naiveCheckU_not_exact_small",
+      "Toy.FloatTier.naiveCheckU_accepts_two_pow_32_binary32",
+      "Toy.FloatTier.naiveCheckU_accepts_inf_binary32_128",
+      "Toy.FloatTier.naiveCheckU_accepts_inf_F23_3",
+      "Toy.FloatTier.naiveCheckU_inexact_every_width_F23"
+    ],
+    "non_claims": [
+      "Apart from `F23`, these are instances, not a statement about every format. Bounded evaluation for `W < 12` (in `checks/BoundedChecks.lean`; evaluated, not proved) found the guard exact at `W = p` and inexact at every other tested width in the formats `(e, p) = (3, 3)`, `(3, 2)`, `(3, 4)`, and inexact at every tested width in `(2, 3)`. Exactness at `W = p` does not hold in every format: in `F23` the guard is inexact at `W = p = 3` (`naiveCheckU_accepts_inf_F23_3`, `refuted_naiveCheckU_exact_at_W_eq_p`) and at every width (`naiveCheckU_inexact_every_width_F23`).",
+      "Nothing is claimed about real programs or compilers that use such guards. Model–system relation: none proved; it neither establishes nor refutes the corresponding claim about any language or compiler."
+    ],
+    "prior_art": [
+      "`two-comparison-range-check-exact`; Rust Reference `src/expressions/operator-expr.md` at `5e6c977381e3cb5dcfdef97013bfae3317a181bf`, L606–616 (integer-to-float casts round to nearest with ties to even and overflow to infinity; its example `u128::MAX as f32 == f32::INFINITY`) and L591–595 (saturating `as`)."
+    ],
+    "design_question": "Is `x <= MAX as float` a safe guard for an unchecked conversion? No: there are formats and widths in which it accepts out-of-range values (including `+∞`), and formats and widths in which it rejects in-range ones.",
+    "positive_control": "The `rangeCheckU` conjuncts of the first four theorems: the exact guard of `two-comparison-range-check-exact` at the same points.",
+    "positive_control_lean": [
+      "Toy.FloatTier.naiveCheckU_not_exact_small",
+      "Toy.FloatTier.naiveCheckU_accepts_two_pow_32_binary32",
+      "Toy.FloatTier.naiveCheckU_accepts_inf_binary32_128",
+      "Toy.FloatTier.naiveCheckU_accepts_inf_F23_3",
+      "Toy.FloatTier.rangeCheckU_twoPowRound_iff"
+    ]
+  },
+  {
+    "id": "saturating-conversion-saturates-and-agrees",
+    "lean": [
+      "Toy.FloatTier.satU_saturates_and_agrees",
+      "Toy.FloatTier.satS_saturates_and_agrees",
+      "Toy.FloatTier.satU_spec_iff",
+      "Toy.FloatTier.satS_spec_iff"
+    ],
+    "lean_names": [
+      "Toy.FloatTier.satU_saturates_and_agrees",
+      "Toy.FloatTier.satS_saturates_and_agrees",
+      "Toy.FloatTier.satU_spec_iff",
+      "Toy.FloatTier.satS_spec_iff",
+      "Toy.FloatTier.FP.uval",
+      "Toy.FloatTier.ex_satS_F33",
+      "Toy.FloatTier.ex_satU_F33",
+      "Toy.FloatTier.isFinite_of_uval_bounds",
+      "Toy.FloatTier.satS",
+      "Toy.FloatTier.satU",
+      "Toy.FloatTier.satU_width_zero"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every format, every width `W` and every value `x`: `satU W x` lies in `[0, 2^W − 1]`; it equals `t` whenever `cvtU W x = some t`; NaN gives `0`; `−∞` gives `0`; `+∞` gives `2^W − 1`; `x ≤ −1` gives `0`; and `x ≥ 2^W` gives `2^W − 1` (the last two antecedents are stated on `uval` and imply that `x` is finite, `isFinite_of_uval_bounds`). For every `k` (signed width `k + 1`) and every value `x`: `satS k x` lies in `[−2^k, 2^k − 1]`; it agrees with `cvtS k` where that is defined; NaN gives `0`; `−∞` gives `−2^k`; `+∞` gives `2^k − 1`; `x ≤ −2^k − 1` gives `−2^k`; and `x ≥ 2^k` gives `2^k − 1`. These seven conjuncts characterize the functions: for every `g : FP f → Int`, `g` satisfies them at every input iff `g = satU W` pointwise (`satU_spec_iff`), and likewise for `satS k` (`satS_spec_iff`). At `W = 0`, `satU 0` returns `0` on every input, including `+∞` (`satU_width_zero`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_note": "shallow.",
+    "tier_note": "T0. The WebAssembly specification defines `trunc_sat_u` and `trunc_sat_s` by the same clauses (`numerics.rst` L1891–1894, L1910–1913), LLVM documents the same rules for `llvm.fptoui.sat` (L21046–21054), and the Rust Reference documents saturating `as` (L591–595); agreement with the unchecked conversion follows from the definitions.",
+    "nonvacuity_witness": "No hypotheses; `ex_satU_F33`, `ex_satS_F33` and `satU_width_zero` evaluate the functions on NaN, both infinities, in-range and out-of-range values.",
+    "nonvacuity_witness_lean": [
+      "Toy.FloatTier.ex_satU_F33",
+      "Toy.FloatTier.ex_satS_F33",
+      "Toy.FloatTier.satU_width_zero"
+    ],
+    "non_claims": [
+      "The two conversions agree exactly on the inputs where the unchecked conversion is defined (the agreement conjunct); on the other inputs the unchecked conversion has no value. On inputs that fail the guard of `two-comparison-range-check-exact` the unchecked unsigned conversion is undefined (`unchecked-conversion-undefined-iff`), so replacing a saturating unsigned conversion by an unchecked one preserves results exactly on the inputs that pass that guard.",
+      "`satU` and `satS` operate on the NaN-collapsed view `FP f`; the sign, quiet bit and payload of a NaN do not affect the result.",
+      "The degenerate widths are covered by the same statements. At `W = 0` the unsigned range is `[0, 0]` and `satU 0` returns `0` on every input, including `+∞` (`satU_width_zero`). At `k = 0` (signed width `k + 1 = 1`) the signed range is `[−1, 0]`: by `satS_saturates_and_agrees` at `k = 0`, `+∞` and every finite `x` with exact value at least `1` give `0 = 2^0 − 1`, and `−∞` and every finite `x` with exact value at most `−2` give `−1 = −2^0` (the theorem states these two antecedents on `uval`). Both ranges are computed in `Int`, so `2 ^ W - 1` and `2 ^ k - 1` involve no truncated subtraction.",
+      "No statement about real compilers' lowering of `as` or of saturating intrinsics. Model–system relation: none proved; it neither establishes nor refutes the corresponding claim about Rust, LLVM or WebAssembly implementations."
+    ],
+    "prior_art": [
+      "Rust Reference `src/expressions/operator-expr.md` at `5e6c977381e3cb5dcfdef97013bfae3317a181bf`, L591–595; WebAssembly `numerics.rst` L1891–1894 and L1910–1913; LLVM LangRef L21046–21054."
+    ],
+    "design_question": "Can a saturating `as` replace a guarded unchecked conversion without changing results on the guarded domain? Yes in the toy, and the seven clauses above determine the saturating conversion uniquely."
+  }
+]

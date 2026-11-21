@@ -38428,6 +38428,108 @@
         "domains/climate-model-ensemble-consistency-testing"
       ]
     },
+    "float-nan-set-semantics-refinement-tiers-truncating-cast-open-interval-and-saturation": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "path": "text/3514-float-semantics.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "Rust RFC 3514: float semantics"
+        },
+        {
+          "identity": {
+            "paths": "library/core/src/num/f32.rs; library/core/src/primitive_docs.rs",
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "Rust core library floating-point documentation"
+        },
+        {
+          "identity": {
+            "path": "src/expressions/operator-expr.md",
+            "repository": "rust-lang/reference",
+            "revision": "5e6c977381e3cb5dcfdef97013bfae3317a181bf"
+          },
+          "name": "The Rust Reference: operator expressions (numeric casts)"
+        },
+        {
+          "identity": {
+            "path": "llvm/docs/LangRef.rst",
+            "repository": "llvm/llvm-project",
+            "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1",
+            "version": "llvmorg-21.1.0"
+          },
+          "name": "LLVM Language Reference Manual"
+        },
+        {
+          "identity": {
+            "path": "document/core/exec/numerics.rst",
+            "repository": "WebAssembly/spec",
+            "revision": "631890ee71035d9903fe5fd3a2b476bb82c76112"
+          },
+          "name": "WebAssembly specification: numerics"
+        },
+        {
+          "identity": {
+            "paths": "lib/Floats.v; lib/IEEE754_extra.v",
+            "repository": "AbsInt/CompCert",
+            "revision": "1670ae76afdb2546402898b6e9064d7229845d24"
+          },
+          "name": "CompCert floating-point library"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IEEESTD.2019.8766229",
+            "limitation": "the text was not accessible; no clause is quoted or relied on"
+          },
+          "name": "IEEE Standard for Floating-Point Arithmetic (IEEE Std 754-2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ARITH.2011.40",
+            "limitation": "bibliographic record checked; cited as prior art, no statement relied on"
+          },
+          "name": "Flocq: A Unified Library for Proving Floating-Point Algorithms in Coq"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-014-9317-x",
+            "limitation": "bibliographic record checked; cited as prior art, no statement relied on"
+          },
+          "name": "Verified Compilation of Floating-Point Computations"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062363",
+            "limitation": "bibliographic record checked; cited as prior art, no statement relied on"
+          },
+          "name": "Bringing the Web up to Speed with WebAssembly"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/floating-point",
+        "verification/refinement",
+        "verification/determinism",
+        "pl/floating-point-semantics",
+        "pl/nondeterministic-semantics",
+        "compilers/floating-point",
+        "compilers/constant-folding",
+        "compilers/float-to-int-conversion"
+      ]
+    },
     "floating-point-algebraic-laws-reassociation-contraction-signed-zero-and-nan": {
       "observed_at": "2026-11-21",
       "subjects": [
