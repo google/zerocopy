@@ -89,7 +89,9 @@ class ReleaseWorkflowTests(unittest.TestCase):
         self.assertEqual(publish, "cargo publish --locked -p cargo-anneal --registry crates-io")
 
     def test_qualification_checks_environment_and_exercises_the_packaged_cli(self):
-        steps = self.jobs["mir-qualify-package"]["steps"]
+        qualify = self.jobs["mir-qualify-package"]
+        self.assertEqual(qualify["runs-on"], "ubuntu-24.04")
+        steps = qualify["steps"]
         [protections, package] = [step for step in steps if "run" in step]
         self.assertNotIn("if", protections)
         self.assertNotIn("if", package)

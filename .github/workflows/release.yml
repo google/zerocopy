@@ -367,7 +367,7 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch' && inputs.track == 'mir-publish'
       && github.ref == 'refs/heads/main' && github.repository == 'google/zerocopy'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     permissions:
       contents: read

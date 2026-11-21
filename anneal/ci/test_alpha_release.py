@@ -62,6 +62,9 @@ class AlphaReleaseTest(unittest.TestCase):
             manifest.write_text(self.text)
             flake = repo / "anneal/flake.nix"
             flake.write_text("original archive build")
+            workflow = repo / ".github/workflows/release.yml"
+            workflow.parent.mkdir(parents=True)
+            workflow.write_text("original release workflow")
             commit("source used for toolchain")
             source = git("rev-parse", "HEAD")
 
@@ -70,7 +73,12 @@ class AlphaReleaseTest(unittest.TestCase):
             commit("pin toolchain and update docs")
             check_archive_base(repo, source, self.version)
 
-            flake.write_text("changed archive build")
-            commit("modify archive inputs")
-            with self.assertRaisesRegex(ValueError, "archive inputs changed"):
-                check_archive_base(repo, source, self.version)
+            for path in (flake, workflow):
+                relative = path.relative_to(repo).as_posix()
+                with self.subTest(path=relative):
+                    path.write_text("changed archive build")
+                    commit(f"modify {relative}")
+                    with self.assertRaisesRegex(ValueError, "archive inputs changed") as failure:
+                        check_archive_base(repo, source, self.version)
+                    self.assertIn(relative, str(failure.exception).splitlines())
+                    git("revert", "--no-edit", "HEAD")

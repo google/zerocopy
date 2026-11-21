@@ -19,6 +19,7 @@ MANIFEST = Path(__file__).resolve().parents[1] / "trusted/cargo-anneal/Cargo.tom
 ASSET = "anneal-toolchain-linux-x86_64.tar.zst"
 UNPINNED = "0" * 64
 ARCHIVE_INPUTS = (
+    ".github/workflows/release.yml",
     "anneal/Cargo.lock",
     "anneal/flake.nix",
     "anneal/flake.lock",
