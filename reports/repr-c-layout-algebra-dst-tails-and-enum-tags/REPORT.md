@@ -424,6 +424,7 @@ def IsMaxFittingElems (d : SliceDstSpec) (bufferLen n : Nat) : Prop :=
 - **Plain-language claim:** For any modifier with a positive packing bound (if packed) and any field list whose fields all have positive alignment, `reprCStruct m fields` satisfies the five structural layout invariants: `OffsetsLengthMatch`, `OffsetsAligned`, `OrderedNonOverlapping`, `FieldsInBounds`, and `SizeMinimalAligned` (`OffsetsMonotone` and `FieldsDisjoint` follow as corollaries via `Toy.Layout.orderedNonOverlapping_implies_monotone_and_disjoint`).
 - **Lean statement (exact signature and unfolded predicates):**
 ```lean
+-- lean/Toy/Layout/Struct.lean:721-730
 theorem reprCStruct_invariants_of_align_pos
     (m : ReprModifier) (fields : List FieldLayout)
     (h_fields : ∀ f ∈ fields, AlignPos f)
@@ -472,6 +473,7 @@ theorem reprCStruct_invariants_of_align_pos
 - **Plain-language claim:** For any modifier with a positive packing bound (if packed), any field list whose fields all have positive alignment, and any `StructLayout` `L`, `L = reprCStruct m fields` holds if and only if `L` satisfies the five declarative rules `OffsetsLengthMatch`, `OffsetsGreedyMinimal`, `EndOffsetExact`, `AlignIsMaxEffective`, and `SizeMinimalAligned`.
 - **Lean statement (exact signature and unfolded predicates):**
 ```lean
+-- lean/Toy/Layout/Struct.lean:806-815
 theorem reprCStruct_eq_iff_of_align_pos
     (m : ReprModifier) (fields : List FieldLayout) (L : StructLayout)
     (h_fields : ∀ f ∈ fields, AlignPos f)
@@ -521,6 +523,7 @@ theorem reprCStruct_eq_iff_of_align_pos
 - **Plain-language claim:** If every field alignment and any numeric modifier argument in `m` is a power of two, then `(reprCStruct m fields).align` is a power of two divisible by every field's effective (possibly `packed`-reduced) alignment.
 - **Lean statement (exact signature and unfolded predicates):**
 ```lean
+-- lean/Toy/Layout/Struct.lean:965-970
 theorem reprCStruct_align_pow2_divides
     (m : ReprModifier) (fields : List FieldLayout)
     (h_fields : ∀ f ∈ fields, AlignPow2 f)
@@ -551,6 +554,7 @@ theorem reprCStruct_align_pow2_divides
 - **Plain-language claim:** None of the five struct-layout invariants (`OffsetsAligned`, `OffsetsMonotone`, `FieldsDisjoint`, `FieldsInBounds`, `SizeMinimalAligned`) is implied by the conjunction of the other four together with `OffsetsLengthMatch`: on the concrete sample structs `sampleStructAsc = [⟨1, 1⟩, ⟨4, 4⟩]` and `sampleStructDesc = [⟨4, 4⟩, ⟨1, 1⟩]`, five concrete variant layout algorithms each violate one property while satisfying the other four and `OffsetsLengthMatch`.
 - **Lean statement:**
 ```lean
+-- lean/Toy/Layout/Struct.lean:1284-1304
 theorem struct_invariants_mutually_independent :
     (let L := unalignedPackingLayout sampleStructAsc
      OffsetsLengthMatch sampleStructAsc L ∧ ¬ OffsetsAligned .none sampleStructAsc L ∧
@@ -619,6 +623,7 @@ def sampleStructDesc : List FieldLayout := [⟨4, 4⟩, ⟨1, 1⟩]
 - **Plain-language claim:** For every field list `fields`, `reprCStruct (.packed 1) fields` has no shallow padding (`AllBytesOccupied`), total size and `endOffset` equal to `totalFieldSize fields`, overall alignment `1`, and every field `i` placed at `totalFieldSize (fields.take i)`.
 - **Lean statement (exact signature and unfolded `AllBytesOccupied`):**
 ```lean
+-- lean/Toy/Layout/Struct.lean:1453-1460
 theorem reprCStruct_packed_one_no_padding (fields : List FieldLayout) :
     let L := reprCStruct (.packed 1) fields
     AllBytesOccupied fields L ∧
@@ -651,6 +656,7 @@ theorem reprCStruct_packed_one_no_padding (fields : List FieldLayout) :
 - **Plain-language claim:** For every field list `fields` and packing bound `n`, `(reprCStruct (.packed n) fields).align` is at most `max 1 n` and at most `(reprCStruct .none fields).align`.
 - **Lean statement:**
 ```lean
+-- lean/Toy/Layout/Struct.lean:1490-1492
 theorem reprCStruct_packed_align_le (fields : List FieldLayout) (n : Nat) :
     (reprCStruct (.packed n) fields).align ≤ max 1 n ∧
     (reprCStruct (.packed n) fields).align ≤ (reprCStruct .none fields).align
@@ -674,6 +680,7 @@ theorem reprCStruct_packed_align_le (fields : List FieldLayout) (n : Nat) :
 - **Plain-language claim:** If `n` is at least every field's natural alignment (`∀ f ∈ fields, f.align ≤ n`), then `reprCStruct (.packed n) fields` equals `reprCStruct .none fields`.
 - **Lean statement:**
 ```lean
+-- lean/Toy/Layout/Struct.lean:1556-1559
 theorem reprCStruct_packed_ge_fields_noop
     (fields : List FieldLayout) (n : Nat)
     (h_ge : ∀ f ∈ fields, f.align ≤ n) :
@@ -697,6 +704,7 @@ theorem reprCStruct_packed_ge_fields_noop
 - **Plain-language claim:** For any `fields` and `n`, `reprCStruct (.aligned n) fields` has the exact same field offsets and `endOffset` as `reprCStruct .none fields`, alignment `max base.align n`, and size `alignUp base.endOffset (max base.align n)`.
 - **Lean statement:**
 ```lean
+-- lean/Toy/Layout/Struct.lean:1601-1607
 theorem reprCStruct_aligned_preserves_offsets (fields : List FieldLayout) (n : Nat) :
     let base := reprCStruct .none fields
     let aligned := reprCStruct (.aligned n) fields
@@ -723,6 +731,7 @@ theorem reprCStruct_aligned_preserves_offsets (fields : List FieldLayout) (n : N
 - **Plain-language claim:** When every field alignment and `n` are powers of two, `(reprCStruct (.aligned n) fields).size` equals `alignUp (reprCStruct .none fields).size (max (reprCStruct .none fields).align n)`.
 - **Lean statement (exact signature and unfolded predicates):**
 ```lean
+-- lean/Toy/Layout/Struct.lean:1631-1636
 theorem reprCStruct_aligned_size_eq_alignUp_base_size_of_pow2
     (fields : List FieldLayout) (n : Nat)
     (h_fields : ∀ f ∈ fields, AlignPow2 f)
@@ -752,6 +761,7 @@ theorem reprCStruct_aligned_size_eq_alignUp_base_size_of_pow2
 - **Plain-language claim:** For any modifier `m` and field list `fields`, every byte in `0 .. (reprCStruct m fields).size` is occupied by some field (`AllBytesOccupied`) if and only if `(reprCStruct m fields).size = totalFieldSize fields`.
 - **Lean statement (exact signature and unfolded `AllBytesOccupied`):**
 ```lean
+-- lean/Toy/Layout/Struct.lean:1697-1700
 theorem reprCStruct_no_padding_iff_size_eq_sum
     (m : ReprModifier) (fields : List FieldLayout) :
     AllBytesOccupied fields (reprCStruct m fields) ↔
@@ -779,6 +789,7 @@ theorem reprCStruct_no_padding_iff_size_eq_sum
 - **Plain-language claim:** For any field layout `f` with positive alignment (`0 < f.align`), `∀ k, AllBytesOccupied (List.replicate k f) (reprCStruct .none (List.replicate k f))` holds (that is, the homogeneous `#[repr(C)]` structs `List.replicate k f` have no shallow padding for every `k` simultaneously) if and only if `f.align ∣ f.size` (`SizeMultipleOfAlign f`); no per-`k` biconditional is claimed.
 - **Lean statement (exact signature and unfolded predicates):**
 ```lean
+-- lean/Toy/Layout/Struct.lean:1787-1790
 theorem reprCStruct_homogeneous_no_padding_iff_of_align_pos
     (f : FieldLayout) (h_pos : AlignPos f) :
     (∀ k : Nat, AllBytesOccupied (List.replicate k f) (reprCStruct .none (List.replicate k f))) ↔
@@ -809,6 +820,7 @@ theorem reprCStruct_homogeneous_no_padding_iff_of_align_pos
 - **Plain-language claim:** The heterogeneous `#[repr(C)]` struct `[u8, u16]` (`[⟨1, 1⟩, ⟨2, 2⟩]`) consists exclusively of well-formed fields (power-of-two alignment, size a multiple of alignment), yet has inter-field padding at byte `1` (`size = 4 ≠ 3 = totalFieldSize`).
 - **Lean statement:**
 ```lean
+-- lean/Toy/Layout/Struct.lean:1898-1905
 theorem ce_heterogeneous_u8_u16_has_padding :
     let fields : List FieldLayout := [⟨1, 1⟩, ⟨2, 2⟩]
     let L := reprCStruct .none fields
@@ -837,6 +849,7 @@ theorem ce_heterogeneous_u8_u16_has_padding :
 - **Plain-language claim:** For any tag layout `tag` (with no alignment hypothesis on `tag`) and any variant list `variants` whose variant fields all have power-of-two alignments, `reprCEnum tag variants` satisfies `EnumSizeValid`, `EnumVariantsValid`, and the shared-payload-union structural rule `EnumSharedPayload`.
 - **Lean statement (exact signature and unfolded predicates):**
 ```lean
+-- lean/Toy/Layout/Enum.lean:479-485
 theorem reprCEnum_geometry_of_vars_pow2
     (tag : FieldLayout) (variants : List (List FieldLayout))
     (h_vars : ∀ v ∈ variants, ∀ f ∈ v, AlignPow2 f) :
@@ -885,6 +898,7 @@ theorem reprCEnum_geometry_of_vars_pow2
 - **Plain-language claim:** For any tag layout `tag` (with no alignment hypothesis on `tag`) and any non-empty variant list `variants` whose variant fields all have positive alignment (`AlignPos`), `reprIntEnum tag variants` satisfies `EnumSizeValid`, `EnumVariantsValid`, and the per-variant tag-prefix structural rule `EnumPerVariantTagged`.
 - **Lean statement (exact signature and unfolded predicates):**
 ```lean
+-- lean/Toy/Layout/Enum.lean:626-633
 theorem reprIntEnum_geometry_of_nonempty_align_pos
     (tag : FieldLayout) (variants : List (List FieldLayout))
     (h_nonempty : variants ≠ [])
@@ -926,6 +940,7 @@ theorem reprIntEnum_geometry_of_nonempty_align_pos
 - **Plain-language claim:** Whenever `tag` and every field of every variant in `variants` have power-of-two alignments, `(reprCEnum tag variants).align` is a power of two divisible by `tag.align` and every variant field's alignment (`EnumAlignValid`).
 - **Lean statement (exact signature and unfolded `EnumAlignValid`):**
 ```lean
+-- lean/Toy/Layout/Enum.lean:789-793
 theorem reprCEnum_align_valid_of_pow2
     (tag : FieldLayout) (variants : List (List FieldLayout))
     (h_tag : AlignPow2 tag)
@@ -958,6 +973,7 @@ theorem reprCEnum_align_valid_of_pow2
 - **Plain-language claim:** For any tag layout `tag` and any non-empty variant list `variants` (without requiring power-of-two alignments), `(reprIntEnum tag variants).align = (reprCEnum tag variants).align`.
 - **Lean statement:**
 ```lean
+-- lean/Toy/Layout/Enum.lean:871-874
 theorem reprIntEnum_align_eq_reprCEnum_align_of_nonempty
     (tag : FieldLayout) (variants : List (List FieldLayout))
     (h_nonempty : variants ≠ []) :
@@ -982,6 +998,7 @@ theorem reprIntEnum_align_eq_reprCEnum_align_of_nonempty
 - **Plain-language claim:** For any tag layout `tag` and variant list `variants` with power-of-two alignments everywhere, `(reprIntEnum tag variants).size ≤ (reprCEnum tag variants).size`.
 - **Lean statement (exact signature and unfolded `AlignPow2`):**
 ```lean
+-- lean/Toy/Layout/Enum.lean:967-971
 theorem reprIntEnum_size_le_reprCEnum_size_of_pow2
     (tag : FieldLayout) (variants : List (List FieldLayout))
     (h_tag : AlignPow2 tag)
@@ -1011,6 +1028,7 @@ theorem reprIntEnum_size_le_reprCEnum_size_of_pow2
 - **Plain-language claim:** In the target-parameterized `reprCEnumForTarget` model, neither a pointer-sized tag (`usizeTag64`) nor a fixed 4-byte `c_int` tag (`cIntLayout32Bit`) matches across targets and discriminant ranges: for `[[⟨1, 1⟩], []]` with discriminants `[0, 1]`, `targetX86_64Linux` (`cEnumMinBytes = 4`) gives `size = 8, align = 4` versus `size = 16, align = 8` for `usizeTag64`, while `targetThumbV7mNoneEabi` and `targetHexagonNoneElf` (`cEnumMinBytes = 1`) give `size = 2, align = 1` versus `size = 8, align = 4` for `cIntLayout32Bit`; and for field-less `[[], []]` with discriminants `[0x1_0000_0000, 0x1_0000_0001]` (which do not fit in 32 bits) on `targetX86_64Linux`, `reprCEnumForTarget` gives `size = 8, align = 8` versus `size = 4, align = 4` for `cIntLayout32Bit` (`ce_reprCEnum_tag_sizing_divergence` proves all size equalities, size inequalities, and the `targetX86_64Linux`, `usizeTag64`, and `targetThumbV7mNoneEabi` alignments; `ce_reprCEnum_tag_sizing_divergence_aligns` proves `align = 1` on `targetHexagonNoneElf` and `align = 4` for `cIntLayout32Bit` on both variant lists).
 - **Lean statements (`execution (Lean kernel check)` — main theorem and supporting alignment theorem):**
 ```lean
+-- lean/Toy/Layout/Enum.lean:1121-1140
 theorem ce_reprCEnum_tag_sizing_divergence :
     let enumC_variants : List (List FieldLayout) := [[⟨1, 1⟩], []]
     let fieldless_variants : List (List FieldLayout) := [[], []]
@@ -1032,6 +1050,7 @@ theorem ce_reprCEnum_tag_sizing_divergence :
     (reprCEnumForTarget targetX86_64Linux 0x100000000 0x100000001 fieldless_variants).size ≠
       (reprCEnum cIntLayout32Bit fieldless_variants).size
 
+-- lean/Toy/Layout/Enum.lean:1147-1152
 theorem ce_reprCEnum_tag_sizing_divergence_aligns :
     let enumC_variants : List (List FieldLayout) := [[⟨1, 1⟩], []]
     let fieldless_variants : List (List FieldLayout) := [[], []]
@@ -1071,6 +1090,7 @@ theorem ce_reprCEnum_tag_sizing_divergence_aligns :
 - **Plain-language claim:** On `variants = [[⟨1, 1⟩, ⟨2, 2⟩], []]` with a 1-byte tag `u8Tag`, `reprIntEnum` gives `size = 4` and offsets `[[1, 2], []]`, strictly smaller than `reprCEnum`'s `size = 6` and offsets `[[2, 4], []]`; moreover `EnumSharedPayload` rejects the `reprIntEnum` layout and `EnumPerVariantTagged` rejects the `reprCEnum` layout.
 - **Lean statement:**
 ```lean
+-- lean/Toy/Layout/Enum.lean:1159-1167
 theorem ce_reprIntEnum_lt_reprCEnum_u8 :
     let variants : List (List FieldLayout) := [[⟨1, 1⟩, ⟨2, 2⟩], []]
     (reprIntEnum u8Tag variants).size = 4 ∧
@@ -1098,6 +1118,7 @@ theorem ce_reprIntEnum_lt_reprCEnum_u8 :
 - **Plain-language claim:** For any flat `#[repr(C)]` slice-tailed DST specification `d` and trailing element count `n`, instantiating the trailing slice `[T]` as `[T; n]` yields alignment `dstAlign d`, size `dstSize d n = alignUp (dstTailOffset d + n * d.elem.size) (dstAlign d)`, and offsets equal to the head offsets followed by `dstTailOffset d`.
 - **Lean statement:**
 ```lean
+-- lean/Toy/Layout/Dst.lean:179-183
 theorem dstInstantiated_eq_closed_form (d : SliceDstSpec) (n : Nat) :
     (dstInstantiated d n).align = dstAlign d ∧
     (dstInstantiated d n).size = dstSize d n ∧
@@ -1122,6 +1143,7 @@ theorem dstInstantiated_eq_closed_form (d : SliceDstSpec) (n : Nat) :
 - **Plain-language claim:** For any flat `SliceDstSpec` `d`, buffer length `bufferLen`, and count `n`, `maxSliceElems d bufferLen = some n` if and only if `n` is the greatest natural number satisfying `dstSize d n ≤ bufferLen` (`IsMaxFittingElems d bufferLen n`).
 - **Lean statement (exact signature and unfolded `IsMaxFittingElems`):**
 ```lean
+-- lean/Toy/Layout/Dst.lean:224-225
 theorem maxSliceElems_some_iff (d : SliceDstSpec) (bufferLen n : Nat) :
     maxSliceElems d bufferLen = some n ↔ IsMaxFittingElems d bufferLen n
 
@@ -1130,11 +1152,13 @@ theorem maxSliceElems_some_iff (d : SliceDstSpec) (bufferLen n : Nat) :
 ```
 - **Supporting hashed Lean statements (`lean_names`):** `Toy.Layout.dstSize_eq_phase_normal_form`, `Toy.Layout.maxSliceElems_eq_phase_normal_form_capacity`, `Toy.Layout.dstSize_eq_unphased_normal_form_of_dvd` (in `lean/Toy/Layout/Dst.lean`; they restate `dstSize` and `maxSliceElems` in the normal form used by the bridge bullet below):
 ```lean
+-- lean/Toy/Layout/Dst.lean:620-623
 theorem dstSize_eq_phase_normal_form (d : SliceDstSpec) (n : Nat) :
     dstSize d n =
       (dstTailOffset d - dstTailOffset d % dstAlign d) +
         alignUp (dstTailOffset d % dstAlign d + n * d.elem.size) (dstAlign d)
 
+-- lean/Toy/Layout/Dst.lean:645-652
 theorem maxSliceElems_eq_phase_normal_form_capacity (d : SliceDstSpec) (bufferLen : Nat)
     (h_elem : 0 < d.elem.size) :
     maxSliceElems d bufferLen =
@@ -1144,6 +1168,7 @@ theorem maxSliceElems_eq_phase_normal_form_capacity (d : SliceDstSpec) (bufferLe
       else some ((roundDown (bufferLen - (dstTailOffset d - dstTailOffset d % dstAlign d))
           (dstAlign d) - dstTailOffset d % dstAlign d) / d.elem.size)
 
+-- lean/Toy/Layout/Dst.lean:687-690
 theorem dstSize_eq_unphased_normal_form_of_dvd (d : SliceDstSpec) (n : Nat)
     (h_align_dvd : dstAlign d ∣ d.elem.size) (h_elem_dvd : d.elem.align ∣ d.elem.size) :
     dstSize d n =
@@ -1178,6 +1203,7 @@ theorem dstSize_eq_unphased_normal_form_of_dvd (d : SliceDstSpec) (n : Nat)
 - **Plain-language claim:** Whenever `0 < d.elem.size`, `maxSliceElems d bufferLen = none` if and only if no element count `n` fits in `bufferLen` (`∀ n, bufferLen < dstSize d n`).
 - **Lean statement:**
 ```lean
+-- lean/Toy/Layout/Dst.lean:276-278
 theorem maxSliceElems_none_iff_of_elem_size_pos (d : SliceDstSpec) (bufferLen : Nat)
     (h_elem : 0 < d.elem.size) :
     maxSliceElems d bufferLen = none ↔ ∀ n : Nat, bufferLen < dstSize d n
@@ -1200,6 +1226,7 @@ theorem maxSliceElems_none_iff_of_elem_size_pos (d : SliceDstSpec) (bufferLen : 
 - **Plain-language claim:** If the trailing slice element of a `SliceDstSpec` is zero-sized (`d.elem.size = 0`), then for every `bufferLen : Nat`, no `n : Nat` satisfies `IsMaxFittingElems d bufferLen n`.
 - **Lean statement (exact signature and unfolded `IsMaxFittingElems`):**
 ```lean
+-- lean/Toy/Layout/Dst.lean:330-332
 theorem zst_tail_no_max_fitting_elems (d : SliceDstSpec) (bufferLen : Nat)
     (h_zst : d.elem.size = 0) :
     ∀ n : Nat, ¬ IsMaxFittingElems d bufferLen n
@@ -1227,6 +1254,7 @@ theorem zst_tail_no_max_fitting_elems (d : SliceDstSpec) (bufferLen : Nat)
 - **Plain-language claim:** For any flat `SliceDstSpec` `d`, the trailing padding after the slice is `0` for every element count `n` if and only if `dstAlign d` divides both `dstTailOffset d` and `d.elem.size`.
 - **Lean statement (exact signature and unfolded `dstTrailingPadding`):**
 ```lean
+-- lean/Toy/Layout/Dst.lean:377-379
 theorem dst_no_trailing_padding_all_iff (d : SliceDstSpec) :
     (∀ n : Nat, dstTrailingPadding d n = 0) ↔
       (dstAlign d ∣ dstTailOffset d ∧ dstAlign d ∣ d.elem.size)
@@ -1245,7 +1273,7 @@ theorem dst_no_trailing_padding_all_iff (d : SliceDstSpec) :
 - **Design question informed:** Provides the exact necessary and sufficient static divisibility condition under which dynamic trailing padding vanishes for all slice lengths `n` in a flat `#[repr(C)]` slice DST.
 - **Evidentiary basis:**
   - `Basis: execution (Lean kernel check)` — `Toy.Layout.dst_no_trailing_padding_all_iff` and `nv_dst_no_trailing_padding_all_iff` in `lean/Toy/Layout/Dst.lean`.
-  - `Basis: derived (modeling bridge)` — The exact iff is a statement about the model's `dstTrailingPadding` only; it applies to flat `#[repr(C)]` slice DSTs through Card 20's closed form. Context only (`Basis: source`, not modeled in Lean): `zerocopy`'s internal `DstLayout::requires_dynamic_padding` (`ec133ce4`, `zerocopy/src/layout.rs` lines 1532–1558) returns `initial_size != trailing_slice_layout.offset || !has_static_stride`; it is documented as conservative ("A `true` result conservatively selects the dynamic-padding path; it does not guarantee that any valid metadata actually requires padding.", lines 1521–1522), and only the direction in which a `false` result implies that no valid metadata requires dynamic padding is proved (lines 1543–1545, paraphrased). This package does not model that function and makes no claim about whether it is exact for flat DSTs.
+  - `Basis: derived (modeling bridge)` — The exact iff is a statement about the model's `dstTrailingPadding`; it applies to flat `#[repr(C)]` slice DSTs through Card 20's closed form, and it neither establishes nor refutes the corresponding claim about `zerocopy`'s `DstLayout::requires_dynamic_padding`. Context only (`Basis: source`, not modeled in Lean): `zerocopy`'s internal `DstLayout::requires_dynamic_padding` (`ec133ce4`, `zerocopy/src/layout.rs` lines 1532–1558) returns `initial_size != trailing_slice_layout.offset || !has_static_stride`; it is documented as conservative ("A `true` result conservatively selects the dynamic-padding path; it does not guarantee that any valid metadata actually requires padding.", lines 1521–1522), and only the direction in which a `false` result implies that no valid metadata requires dynamic padding is proved (lines 1543–1545, paraphrased). This package does not model that function and makes no claim about whether it is exact for flat DSTs.
 
 #### Card 25: `ce-dst-trailing-padding-breaks-naive-prefix-cast` (`Toy.Layout.ce_dst_trailing_padding_breaks_naive_prefix_cast`)
 
@@ -1253,6 +1281,7 @@ theorem dst_no_trailing_padding_all_iff (d : SliceDstSpec) :
 - **Plain-language claim:** When `¬ (dstAlign d ∣ dstTailOffset d ∧ dstAlign d ∣ d.elem.size)`, trailing padding can break naive prefix-cast division `(bufferLen - dstTailOffset d) / d.elem.size` and the naive tail check `dstTailOffset d ≤ bufferLen`, across both failure causes: (1) on `[u32, [u8]]` (`4 ∣ 4` holds, `¬ (4 ∣ 1)`), naive `(5 - 4) / 1 = 1` over-estimates `maxSliceElems = some 0`; (2) on `[u16, u8, [u8]]` (neither divisibility holds), `tailOffset = 3 ≤ 3` yet `maxSliceElems = none`; (3) on `[u16, u8, [[u8; 2]]]` (`2 ∣ 2` holds, `¬ (2 ∣ 3)`), naive `(5 - 3) / 2 = 1` over-estimates `maxSliceElems = some 0` and `tailOffset = 3 ≤ 3` accepts a buffer where `maxSliceElems = none`.
 - **Lean statement:**
 ```lean
+-- lean/Toy/Layout/Dst.lean:546-573
 theorem ce_dst_trailing_padding_breaks_naive_prefix_cast :
     let d1 : SliceDstSpec := ⟨.none, [⟨4, 4⟩], ⟨1, 1⟩⟩
     let d2 : SliceDstSpec := ⟨.none, [⟨2, 2⟩, ⟨1, 1⟩], ⟨1, 1⟩⟩
@@ -1299,7 +1328,7 @@ theorem ce_dst_trailing_padding_breaks_naive_prefix_cast :
 
 ### Non-Claims and Unestablished Stronger Conclusions
 
-1. **Formal model vs. real compiler (`execution (Lean kernel check)` vs. `derived (modeling bridge)`):** Proving a theorem in `Toy.Layout` establishes that mathematical statement inside the `Toy.Layout` `Nat` formalism only. It does **not** prove equivalence with `rustc` or the Rust Reference across all Rust types or targets; every real-system statement is a separate `derived (modeling bridge)` claim bounded by the modeling assumptions in `## Applicability` and corroborated empirically on 31 concrete probes (`## Evidence`).
+1. **Formal model vs. real compiler (`execution (Lean kernel check)` vs. `derived (modeling bridge)`):** Proving a theorem in `Toy.Layout` establishes that mathematical statement inside the `Toy.Layout` `Nat` formalism; by itself it neither establishes nor refutes the corresponding claim about `rustc` or the Rust Reference. It does **not** prove equivalence with `rustc` or the Rust Reference across all Rust types or targets; every real-system statement is a separate `derived (modeling bridge)` claim bounded by the modeling assumptions in `## Applicability` and corroborated empirically on 31 concrete probes (`## Evidence`).
 2. **Soundness invariants vs. characterization (Cards 1, 2, 4, 13, 14):** Card 1's five invariants (`OffsetsLengthMatch`, `OffsetsAligned`, `OrderedNonOverlapping`, `FieldsInBounds`, `SizeMinimalAligned`) do **not** uniquely determine `reprCStruct` — layouts with gratuitous inter-field padding or smaller struct alignment satisfy all five; uniqueness requires Card 2's greedy-minimal and max-alignment predicates (`OffsetsGreedyMinimal`, `EndOffsetExact`, `AlignIsMaxEffective`). Likewise, `EnumSizeValid ∧ EnumVariantsValid ∧ EnumAlignValid` is a soundness envelope satisfied by *both* `reprCEnum` and `reprIntEnum`; `EnumSharedPayload` and `EnumPerVariantTagged` separate the two layouts and exclude over-padded layouts, but because they are defined from the same `reprCStruct` / `reprCUnion` pipeline as `reprCEnum` / `reprIntEnum`, their offset conjuncts hold by `rfl` on their own layouts and do **not** constitute an independent specification of enum offsets (Cards 13, 14, 19).
 3. **Rust-universality of toy-domain alignment and non-emptiness hypotheses (Cards 1–3, 9, 11, 13–17):** `Basis: normative` — every Rust alignment is at least 1 and a power of two (`r[layout.properties.align]`), every size is a multiple of its alignment (`r[layout.properties.size]`), every `align(N)` / `packed(N)` argument is a power of two (`r[layout.repr.alignment.constraint-alignment]`), and zero-variant enums cannot carry `#[repr(C)]` or a primitive representation (`r[layout.repr.c.constraint]`, `r[layout.repr.primitive.constraint]`). `Basis: execution` — `rustc 1.98.0-nightly (14210df0e)` and `rustc 1.102.0-nightly (3ef0c22cd)` reject zero-variant `#[repr(C)]`, `#[repr(u8)]`, `#[repr(i32)]`, and `#[repr(usize)]` enums with error `E0084` (`support/e0084_zero_variant_enums_output.txt`). `Basis: derived (modeling bridge)` — accordingly, the tightness counterexamples using alignments `0`, `3`, `6` or `variants = []` witness minimal mathematical hypotheses in `Toy.Layout` and do **not** exhibit valid Rust types or enums for which those conclusions fail. See `## Applicability` for the quoted rules.
 4. **Shallow vs. nested padding (Cards 5, 10, 11, 12, 24):** `AllBytesOccupied`, `totalFieldSize`, and `dstTrailingPadding` treat each `FieldLayout` as an opaque byte block of length `f.size`. Neither `#[repr(C, packed(1))]` (Card 5), `size == totalFieldSize` (Card 10), homogeneous structs (Card 11), nor `dstTrailingPadding = 0` (Card 24) eliminates padding nested inside composite field types (`r[layout.repr.alignment.intro]`).
@@ -1308,12 +1337,13 @@ theorem ce_dst_trailing_padding_breaks_naive_prefix_cast :
    - (`Basis: execution`, with source coordinates in Card 18.) On `x86_64-unknown-linux-gnu`, a bare `#[repr(C)]` enum with discriminants `0, 1` has the size and alignment of 4-byte `c_int` (probes `14`, `15`); the divergence from a fixed `c_int` tag for such small discriminants occurs on `thumbv7m-none-eabi` and `hexagon-unknown-none-elf`, which report `c_enum_min_bits = 8` and give `EnumC` `size = 2, align = 1` despite 4-byte `c_int` (`support/crosscheck_short_enum_output.txt`).
    - Discriminants outside C `int` / `unsigned int` (such as `0x1_0000_0000` in `FieldlessCBigDiscr`) violate `r[layout.repr.c.enum.discriminant]` (`src/type-layout.md` line 402; `Basis: normative`). Both recorded compilers accept such an enum with the warning-level future-incompatibility lint `repr_c_enums_larger_than_int` (`rust-lang/rust#124403`; `Basis: execution`, `support/repr_c_big_discriminant_lint_output.txt`; the lint is silenced via `#[allow]` in `support/crosscheck.rs`). That the lint will become an error is a stated intent, not an observation: the Reference note says "This will become an error in the future." (line 408), the lint's declared reason `FutureReleaseError` is documented as "This will be an error in a future release for all editions" (`compiler/rustc_lint_defs/src/lib.rs` line 361 at `14210df0e`), and the emitted warning says "it will become a hard error in a future release!".
    - Nothing in Card 18 applies to released Aeneas versions; `reprC_default_tag_ty := .unsigned .Usize` appears only in the unmerged prototype pull request `AeneasVerif/aeneas#1447` (`2a1dd75567517e078f90b1df746af7373fe24cbc`).
-6. **`google/zerocopy` visibility, generality, and one-way `requires_dynamic_padding` (Cards 21–24):** `DstLayout` is `#[doc(hidden)]` and `validate_cast_and_convert_metadata` is `pub(crate)` inside `google/zerocopy`. The correspondence between `maxSliceElems` and `zerocopy`'s prefix-cast element count (Card 21's bridge) is established only for flat `#[repr(C)]` slice DSTs whose element alignment does not exceed `dstAlign d` — for which `zerocopy`'s normal form is `size_align = dstAlign d`, `size_phase = dstTailOffset d % dstAlign d` (nonzero when `dstAlign d ∤ dstTailOffset d`), and `size_base = dstTailOffset d - size_phase` — with `elem.size > 0`, no `usize`/`isize::MAX` overflow, an aligned base pointer, and a prefix cast. For a flat `packed(N)` DST whose element alignment exceeds `N`, `zerocopy`'s normal form has `size_align` equal to the element alignment; only the size formula is shown to agree in that case. Nested DSTs are not modeled. Moreover, `zerocopy` documents `DstLayout::requires_dynamic_padding` as a conservative test and proves only its safety-critical direction in Kani (`prove_requires_dynamic_padding`); Card 24's two-way iff concerns the model's `dstTrailingPadding` only, and this package does not model `requires_dynamic_padding`.
+6. **`google/zerocopy` visibility, generality, and one-way `requires_dynamic_padding` (Cards 21–24):** `DstLayout` is `#[doc(hidden)]` and `validate_cast_and_convert_metadata` is `pub(crate)` inside `google/zerocopy`. The correspondence between `maxSliceElems` and `zerocopy`'s prefix-cast element count (Card 21's bridge) is established only for flat `#[repr(C)]` slice DSTs whose element alignment does not exceed `dstAlign d` — for which `zerocopy`'s normal form is `size_align = dstAlign d`, `size_phase = dstTailOffset d % dstAlign d` (nonzero when `dstAlign d ∤ dstTailOffset d`), and `size_base = dstTailOffset d - size_phase` — with `elem.size > 0`, no `usize`/`isize::MAX` overflow, an aligned base pointer, and a prefix cast. For a flat `packed(N)` DST whose element alignment exceeds `N`, `zerocopy`'s normal form has `size_align` equal to the element alignment; only the size formula is shown to agree in that case. Nested DSTs are not modeled. Moreover, `zerocopy` documents `DstLayout::requires_dynamic_padding` as a conservative test and proves only its safety-critical direction in Kani (`prove_requires_dynamic_padding`); Card 24's two-way iff concerns the model's `dstTrailingPadding`; it neither establishes nor refutes the corresponding claim about `requires_dynamic_padding`, which this package does not model.
 
 ### Escape Hatches and Qualified Agreement Regimes
 
 1. **Bounded metadata escape hatch for Card 23 (`Toy.Layout.zst_tail_bounded_max_exists`):** Card 23's impossibility (`zst_tail_no_max_fitting_elems`) holds *only* because `IsMaxFittingElems` quantifies `k` over all of unbounded `Nat`. Replacing `k : Nat` with any bounded metadata domain `k ≤ B` (such as `B = usize::MAX` in real Rust) defeats the impossibility completely: whenever `d.elem.size = 0` and `dstSize d 0 ≤ bufferLen`, `Toy.Layout.zst_tail_bounded_max_exists` proves
    ```lean
+   -- lean/Toy/Layout/Dst.lean:365-367
    theorem zst_tail_bounded_max_exists (d : SliceDstSpec) (bufferLen B : Nat)
        (h_zst : d.elem.size = 0) (h_fit0 : dstSize d 0 ≤ bufferLen) :
        dstSize d B ≤ bufferLen ∧ ∀ k : Nat, k ≤ B → dstSize d k ≤ bufferLen → k ≤ B

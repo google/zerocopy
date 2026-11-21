@@ -682,7 +682,7 @@
     "nonvacuity_witness": "`#[repr(C)] struct { hdr: u32, tail: [u32] }` satisfies `4 ∣ 4` and `4 ∣ 4`.",
     "nonvacuity_witness_lean": "Toy.Layout.nv_dst_no_trailing_padding_all_iff",
     "non_claims": [
-      "zerocopy's `DstLayout` is a doc-hidden internal type, and `validate_cast_and_convert_metadata` is crate-private. zerocopy documents `DstLayout::requires_dynamic_padding` as conservative and proves only its safety-critical direction; this package does not model that function, and the exact iff here concerns the model's `dstTrailingPadding` only.",
+      "zerocopy's `DstLayout` is a doc-hidden internal type, and `validate_cast_and_convert_metadata` is crate-private. zerocopy documents `DstLayout::requires_dynamic_padding` as conservative and proves only its safety-critical direction; this package does not model that function, and the exact iff here concerns the model's `dstTrailingPadding`; it neither establishes nor refutes the corresponding claim about `requires_dynamic_padding`.",
       "Measures trailing padding after the slice only; does not rule out inter-field padding inside `headFields` or between `headFields` and `dstTailOffset d`.",
       "Does not claim that `dstTrailingPadding d n > 0` for every `n` when the right-hand side fails (for instance, `#[repr(C)] struct { hdr: u32, tail: [u8] }` has zero trailing padding whenever `4 ∣ n` and nonzero padding otherwise)."
     ],
