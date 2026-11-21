@@ -2039,4 +2039,34 @@ theorem state_unique_of_simulationInv_base :
   dsimp only at hs₁ hs₂ h_cm hm₁ hm₂
   rw [hs₁, hs₂, h_cm, hm₁, hm₂]
 
+/-- `refLayoutDataForTy` on a tuple is the overflow-pair layout exactly for
+`.tuple [.int w s, .bool]` and the unit layout otherwise. -/
+theorem refLayoutDataForTy_tuple (fs : List MirTy) :
+    refLayoutDataForTy (.tuple fs) = refUnitLayoutData ∨
+      ∃ w s, fs = [.int w s, .bool] ∧
+        refLayoutDataForTy (.tuple fs) = refOverflowPairLayoutData w s := by
+  cases fs with
+  | nil => exact Or.inl rfl
+  | cons f rest =>
+    cases f with
+    | int w s =>
+      cases rest with
+      | nil => exact Or.inl rfl
+      | cons g rest2 =>
+        cases g with
+        | bool =>
+          cases rest2 with
+          | nil => exact Or.inr ⟨w, s, rfl, rfl⟩
+          | cons _ _ => exact Or.inl rfl
+        | _ => exact Or.inl rfl
+    | _ => exact Or.inl rfl
+
+
+theorem mem_ite_true_eq {α : Type} (a b : α) :
+    (if (true = true) then a else b) = a := rfl
+
+theorem mem_ite_false_eq {α : Type} (a b : α) :
+    (if (false = true) then a else b) = b := rfl
+
+
 end Anneal.MirCorrespondence
