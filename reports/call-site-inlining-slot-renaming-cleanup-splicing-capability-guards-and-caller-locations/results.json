@@ -1,0 +1,1470 @@
+[
+ {
+  "id": "R1",
+  "lean": "Toy.Inline.frameRel_step_of_injective_of_avoids",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T0",
+  "tier_justification": "CompCert mechanizes the corresponding register-agreement step of its inlining proof (`agree_set_reg`, backend/Inliningproof.v L141-153, for a shift of pseudo-registers); this re-derives it for the toy store and an arbitrary renaming that is injective and avoids the live caller locals.",
+  "plain_claim": "For a renaming `ρ` that is injective on callee locals below `n` (`RenameInjectiveOn ρ n`) and maps them outside the list `L` of caller locals live across the call (`RenameAvoids ρ n L`), a statement `s` mentioning only locals below `n` (`StmtLocalsLt n s`), and stores with `FrameRel ρ n L C G M` (the merged store `M` agrees with the caller store `C` on `L` and with the callee store `G` through `ρ` below `n`): executing `s` on `G` and its renaming `s.rename ρ ns` on `M` with the auxiliary store-level function `stmtStore` again yields stores related by `FrameRel ρ n L C`, and the two lists of emitted values are equal, for every scope shift `ns`. `stmtStore` updates the store for `assign`, emits a value for `emit`, and maps `needCap` and `loc` to `(st, [])`, so the statement says nothing about capability faults or `loc` events.",
+  "hypotheses": [
+   {
+    "name": "hinj : RenameInjectiveOn ρ n",
+    "purpose": "a write to one callee local must not change another callee local's image",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_frame_injective",
+    "witness_class": "callee locals 0 and 1 share host local 5 (`n = 2`, `L = []`)"
+   },
+   {
+    "name": "havoid : RenameAvoids ρ n L",
+    "purpose": "a write to a callee local must not change a live caller local",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_frame_avoids",
+    "witness_class": "callee local 1 renamed onto live caller local 2"
+   },
+   {
+    "name": "hs : StmtLocalsLt n s",
+    "purpose": "the relation covers every local the statement touches",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_frame_stmtLocals",
+    "witness_class": "a statement reading callee local 2 with `n = 2`"
+   },
+   {
+    "name": "hR : FrameRel ρ n L C G M",
+    "purpose": "the invariant before the step",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_frame_rel",
+    "witness_class": "unrelated stores (`cst 1` and `cst 2`, `n = 1`)"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "Case analysis on the four statement forms; the `assign` case uses injectivity and avoidance.",
+  "nonvacuity_witness": "`ρ = (· + 2)`, `n = 2`, `L = [1]`, statement `assign 0 (use (var 1))`, stores `cst 4`, `cst 7`, `upd (cst 7) 1 4`.",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_frameRel_step",
+  "non_claims": [
+   "Applies to the auxiliary store-level function `stmtStore`, which maps `needCap` and `loc` to `(st, [])`: it ignores capability faults and `loc` events, which `step` does produce. `step_storeStmt` relates `stmtStore` to `step` for `assign` and `emit` only; for `needCap` and `loc` no bridge to `step` is stated.",
+   "Covers one statement step. The argument-binding prologue, the return block, terminators, unwinding and caller locations are not covered; whole-program behaviour is the subject of `inline_behEquiv_retTemp_of_capsEq` and its variants.",
+   "`cex_frame_injective` shows failure when callee locals `0` and `1` map to the same host local. It does not show that a call whose destination is also one of its arguments (`x = f(x)`) breaks injectivity: under `SlotsFresh` and `LocalsBounded F` the inliner's renaming `InlineCfg.rename` maps the destination (below `F.nlocals`) and the callee slots (at or above `F.nlocals`) to different host locals, and under `TempFresh` the temporary differs from every slot (not proved here as a separate lemma).",
+   "The store is a total map `Local → Nat`: no uninitialised values, no places with projections, no borrows and no aliasing through references.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "CompCert v3.18 (AbsInt/CompCert commit 14d616046360a0b2611ebdfc2f98368af402e1f7), backend/Inliningproof.v L98-153: `agree_regs F ctx rs rs'` (L98-100) relates source registers to their shifted images `sreg ctx r`, and `agree_set_reg` (L141-153) proves that setting a register and its image preserves this agreement — the Coq-mechanized register-renaming step of CompCert's inlining proof.",
+   "CompCert v3.18 (AbsInt/CompCert commit 14d616046360a0b2611ebdfc2f98368af402e1f7), backend/Inlining.v L166-186 (`Record context`: a source instruction at PC `n` is relocated to `n + ctx.(dpc)`, pseudo-registers are shifted by `ctx.(dreg)`, and \"return\" instructions become \"return\" or \"move\" instructions as governed by `ctx.(retinfo)`) and backend/Inliningproof.v L1297-1305 (`Theorem transf_program_correct: forward_simulation (semantics prog) (semantics tprog).`). RTL has no unwinding, cleanup blocks, capability guards or caller-location scopes.",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L1193-1206 (`map_local`: the return place maps to `self.destination`, argument `i` to `self.args[i]`, other locals to a fresh range) and L1120-1146 (`create_temp_if_necessary`: \"Reuse the operand if it is a moved temporary.\"; otherwise a fresh temporary is assigned the argument). Unlike the toy, rustc may use an existing caller temporary as a callee argument local instead of copying into a fresh slot."
+  ],
+  "design_question": "Which renaming conditions make the merged frame track both original frames step by step?",
+  "lean_names": [
+   "Toy.Inline.FrameRel",
+   "Toy.Inline.RenameInjectiveOn",
+   "Toy.Inline.RenameAvoids",
+   "Toy.Inline.StmtLocalsLt",
+   "Toy.Inline.stmtStore",
+   "Toy.Inline.Stmt.rename",
+   "Toy.Inline.step_storeStmt",
+   "Toy.Inline.cst",
+   "Toy.Inline.upd",
+   "Toy.Inline.InlineCfg.rename",
+   "Toy.Inline.Local",
+   "Toy.Inline.Stmt",
+   "Toy.Inline.step"
+  ]
+ },
+ {
+  "id": "R2",
+  "lean": "Toy.Inline.inline_behEquiv_retTemp_of_capsEq",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "Correctness of call-site inlining is mechanized for CompCert's RTL (forward simulation, no unwinding or caller locations) and for CakeML's BVL (with exceptions, no CFG cleanup splicing); stated here for a toy MIR-like CFG language with per-frame cleanup, unwind actions, rustc's rewriting rules and the scope-link rule.",
+  "plain_claim": "At a call site `IsCallSite p f b F ci G` (function `f` of `p` is `F`, its block `b` ends in the call `ci`, whose callee is `G`), suppose: every local mentioned by `F` and by `G` is below its declared count (`LocalsBounded F`, `LocalsBounded G`); every jump target of `F` is one of its blocks (`BlocksBounded F`); `F` and `G` satisfy `ScopesWF` (scope `0` exists and carries neither `inlined` nor `inlinedParent`, every `inlinedParent` link of scope `i` points to an index `t < i`, and every scope named by a `loc` statement or call is in range); callee locals `1 ≤ i < G.nlocals` go to host slots at or above `F.nlocals` (`SlotsFresh`) that are pairwise distinct (`SlotsInjective`); the return place goes to a temporary `t` (`cfg.ret = .temp t`) with `F.nlocals ≤ t` and `t` different from every callee slot (`TempFresh`); `continue` edges are redirected, `resume` is rewritten by the call's unwind action and the `rustc` scope-link rule is used; and `F.caps = G.caps` (equal lists). Then `BehEquiv p (inline p f b cfg)`: from every entry, every finite observation of `run` of either program is a prefix of an observation of the other, so the maximal event sequences (including cleanup `out` events, in order, and `loc` events) and the outcomes (including `ub`, `capFault`, `aborted` and `unwound`) coincide.",
+  "hypotheses": [
+   {
+    "name": "hsite : IsCallSite p f b F ci G",
+    "purpose": "names the objects the other hypotheses talk about: function `f` of `p` is `F`, its block `b` ends in the call `ci`, and the callee of `ci` is `G`; without it the other hypotheses constrain unrelated bodies",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_isCallSite",
+    "witness_class": "a two-function program whose function 0 is `freshF`, checked against the mismatched `F := emptyF` (no locals, no blocks); temp-mode part"
+   },
+   {
+    "name": "hlocF : LocalsBounded F",
+    "purpose": "every local mentioned by `F` (including the return place read by `ret`) is below `F.nlocals`, so slots at or above `F.nlocals` cannot clobber caller locals",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedF",
+    "witness_class": "a caller declaring 1 local that keeps local 1 live across the call (slot 1 = local 1); temp-mode part"
+   },
+   {
+    "name": "hlocG : LocalsBounded G",
+    "purpose": "every local mentioned by `G` is below `G.nlocals`, so the prologue binds or zeroes all of them",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedG",
+    "witness_class": "a callee declaring 1 local that reads local 1 (its argument), which the prologue does not bind; temp-mode part"
+   },
+   {
+    "name": "hblkF : BlocksBounded F",
+    "purpose": "every jump target of `F` (goto, branch, call target, cleanup target) is one of `F`'s blocks; a missing block would become the return block or a callee block after inlining",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_blocksBoundedF",
+    "witness_class": "a caller jumping to missing block 4: the original run ends in `ub`, the inlined run (block 4 is now a callee block) in `aborted`; the witness relies on `BehEquiv` distinguishing `ub` (see non-claims); temp-mode part"
+   },
+   {
+    "name": "hscF : ScopesWF F",
+    "purpose": "`ScopesWF F` = `ScopeTreeWF F.scopes` (scope `0` exists and carries neither `inlined` nor `inlinedParent`; every `inlinedParent` link of scope `i` points to an index `t < i`) ∧ `ScopeRefsBounded F` (every scope named by a `loc` statement or call of `F` is in range); the caller-location walk inside the merged body then agrees with the original (`locValue_inline_callerScope`, `locValue_inline_calleeScope`)",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_scopesWFF",
+    "witness_class": "a caller `loc` naming missing scope 1, which after inlining is the callee's inlined tracked scope; temp-mode part",
+    "conjuncts": "`cex_scopesWFF` breaks the `ScopeRefsBounded F` conjunct while `ScopeTreeWF F.scopes` holds (`cex_scopesWF_breaks_refs_conjunct`). The links-point-below conjunct (`ScopeParentsBelow F.scopes`) is tight for the walk theorems (`cex_walkCallee_F`, `cex_walkCaller_F`: a 3-scope table with a 2-cycle); a program-level witness for it is not given (unknown). The clean-scope-`0` conjunct of `ScopeTreeWF F.scopes`: unknown — no counterexample is given; `locValue_inline_calleeScope` and `locValue_inline_callerScope` are proved without it, and the proof of this theorem does not use it, but no theorem with it dropped is stated here."
+   },
+   {
+    "name": "hscG : ScopesWF G",
+    "purpose": "the same well-formedness for the callee's scope table and scope references",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Inline.cex_scopesWFG",
+     "Toy.Inline.cex_scopesWFG_root"
+    ],
+    "witness_class": "`cex_scopesWFG`: a tracked callee `loc` naming missing scope 1; `cex_scopesWFG_root`: a tracked callee whose scope 0 carries `inlined` (both return modes); temp-mode part",
+    "conjuncts": "`cex_scopesWFG` breaks the `ScopeRefsBounded G` conjunct (`ScopeTreeWF G.scopes` holds, `cex_scopesWF_breaks_refs_conjunct`); `cex_scopesWFG_root` breaks the clean-scope-`0` conjunct while `ScopeParentsBelow G.scopes` and `ScopeRefsBounded G` hold. The links-point-below conjunct of `G` is tight for the walk theorem (`cex_walkCallee_Gparents`); a program-level witness is not given (unknown)."
+   },
+   {
+    "name": "hfresh : SlotsFresh cfg F G",
+    "purpose": "callee locals `1 ≤ i < G.nlocals` go to host locals `≥ F.nlocals`, a range disjoint from every declared host local",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_slotsFresh",
+    "witness_class": "slot range overlapping caller local 1, which is live across the call; temp-mode part"
+   },
+   {
+    "name": "hinj : SlotsInjective cfg G",
+    "purpose": "distinct callee locals `1 ≤ i, j < G.nlocals` go to distinct host locals",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_slotsInjective",
+    "witness_class": "two callee arguments sharing host local 5; temp-mode part"
+   },
+   {
+    "name": "hret : cfg.ret = .temp t",
+    "purpose": "selects the fresh-temporary treatment of the return place: the callee writes `t` and the return block moves `t` into the destination",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_destNotReadInCleanup",
+    "witness_class": "the destination-mode configuration `(InlineCfg.canonical 2).withDest` (`ret = .dest ≠ .temp 2`) of a caller whose cleanup reads the destination; every other temp-mode hypothesis holds for it with `t = 2`, including `TempFresh 2`"
+   },
+   {
+    "name": "htemp : TempFresh t cfg F G",
+    "purpose": "`TempFresh t cfg F G` = `F.nlocals ≤ t` ∧ `t` differs from every callee slot `cfg.slot i` (`1 ≤ i < G.nlocals`)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Inline.cex_tempFresh",
+     "Toy.Inline.cex_tempFresh_callerLocal"
+    ],
+    "witness_class": "`cex_tempFresh`: the temporary equals the argument's slot, so the callee's early write to its return place clobbers the argument; `cex_tempFresh_callerLocal`: the temporary is the caller's live local 1",
+    "conjuncts": "Each conjunct is tight on its own: `cex_tempFresh` breaks the slot-disjointness conjunct while `F.nlocals ≤ t` holds (`cex_tempFresh_breaks_slot_conjunct`); `cex_tempFresh_callerLocal` breaks `F.nlocals ≤ t` while the slot-disjointness conjunct holds."
+   },
+   {
+    "name": "hcont : cfg.redirectContinue = true",
+    "purpose": "the callee's `continue` unwind edges get the call's own unwind action",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_redirectContinue",
+    "witness_class": "a callee whose inner call continues unwinding: the caller's cleanup event `out 200` is skipped; temp-mode part"
+   },
+   {
+    "name": "hres : cfg.resumeMap = .unwind",
+    "purpose": "the callee's `resume` is rewritten by the call's unwind action, not as a jump to the normal continuation",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_resumeMap",
+    "witness_class": "a callee panicking into its own cleanup: after it the inlined caller returns normally; temp-mode part"
+   },
+   {
+    "name": "hlink : cfg.link = .rustc",
+    "purpose": "the outermost callee scope's `inlinedParent` is the callsite scope if that scope carries `inlined`, else the callsite scope's own `inlinedParent`",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_linkRule",
+    "witness_class": "second-level inlining at a call in a nested, non-inlined scope of an inlined tracked callee inside an untracked host (location `10` becomes `20`); temp-mode part"
+   },
+   {
+    "name": "hcaps : F.caps = G.caps",
+    "purpose": "equal capability lists: `needCap` and ABI-sensitive calls in the moved code behave as in the callee",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_capsAbi",
+    "witness_class": "host capability list `[1]`, callee `[]` making an ABI-sensitive call, `abiC [1] ≠ abiC []`; temp-mode part"
+   }
+  ],
+  "depth": "substantive",
+  "depth_justification": "A stuttering forward simulation between the two-frame machine of the original program and the merged-frame machine of the inlined program, covering the argument-binding prologue, returns through the return block, unwinding through cleanup code and `continue` chains, the rewritten `resume`, and the scope walk; proved in `lean/ToyInline/Simulation.lean` (see \"How the whole-program inlining theorems are proved\" under Findings).",
+  "nonvacuity_witness": "`progP` (caller with a cleanup block emitting `200`; callee that panics into its own cleanup on argument `0`) with `cfgP = InlineCfg.canonical 2`; also the second-level site of `linkP1` (`nonvacuity_inline_capsEq_secondLevel`). On argument `0` both programs produce `[out 100, out 200]` and `unwound` (`run_progP_lifo`, `behEquivAt_pos`).",
+  "nonvacuity_witness_lean": [
+   "Toy.Inline.nonvacuity_inline_capsEq",
+   "Toy.Inline.nonvacuity_inline_capsEq_secondLevel"
+  ],
+  "non_claims": [
+   "`BehEquiv` is equality of maximal observations, including the outcomes `ub`, `capFault` and `aborted` and argument values changed by ABI garbling, in both directions — the \"Bisimulation\" notion of Leroy (2009, Section 2.1, Definition 1), not a refinement that lets the inlined program differ where the source goes wrong (as CompCert's `forward_simulation` for safe programs or CakeML's `compile_prog_semantics` under the premise `≠ Fail` allow). The tightness witness of `BlocksBounded F` (`cex_blocksBoundedF`) has a source run ending in `ub` whose inlined run ends in `aborted`; under a criterion in which `ub` permits any behaviour it would not refute the conclusion. Whether these hypotheses are needed for a refinement criterion is not examined here.",
+   "`BehEquiv` compares event sequences and outcomes from each entry; it says nothing about step counts, code size, stack depth or performance.",
+   "`F.caps = G.caps` is equality of lists (order and multiplicity matter), not equality as sets; `p.abi` is an arbitrary function of the list. Whether set-equal, order-distinct lists suffice is not examined (no counterexample for them is proved here).",
+   "One inlining step. `inline p f b cfg` replaces function `f` and leaves the callee `G` in `p.fns`, so this says nothing about removing `G`. `IsCallSite` allows direct self-recursion (`ci.callee = f`) and call sites inside cleanup blocks; no claim is made about termination of an inlining pass. For applying an inlining theorem again to the result: preservation of `ScopesWF` (`scopesWF_inlineFn`) and of `LocalsBounded` (`localsBounded_inlineFn`) is proved; `BlocksBounded` is not preserved when the callee jumps out of range (`cex_blocksBounded_inlineFn_oob`); preservation of `CleanupClosed`, `DestNotReadInCleanup`, `CapLegal` and `AbiInsensitive` is not examined.",
+   "The toy has no `catch` or search-phase unwinding, no double-panic rule beyond explicit `terminate` actions, no projections, borrows, storage markers, generics, recursion limits or debug information; values are unbounded naturals (`Rvalue.add` does not wrap); a missing call argument is read as `0` and extra arguments are ignored (`argOr`, `bindArgs`).",
+   "The return place goes to a fresh temporary. With the destination as return place and no further hypotheses the conclusion fails (`cex_destNotReadInCleanup`, `cex_cleanupClosed`); `inline_behEquiv_retDest_of_destUnobservedOnUnwind` states a destination-mode version with two extra hypotheses.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "CompCert v3.18 (AbsInt/CompCert commit 14d616046360a0b2611ebdfc2f98368af402e1f7), backend/Inlining.v L166-186 (`Record context`: a source instruction at PC `n` is relocated to `n + ctx.(dpc)`, pseudo-registers are shifted by `ctx.(dreg)`, and \"return\" instructions become \"return\" or \"move\" instructions as governed by `ctx.(retinfo)`) and backend/Inliningproof.v L1297-1305 (`Theorem transf_program_correct: forward_simulation (semantics prog) (semantics tprog).`). RTL has no unwinding, cleanup blocks, capability guards or caller-location scopes.",
+   "Yong Kiam Tan, Magnus O. Myreen, Ramana Kumar, Anthony Fox, Scott Owens and Michael Norrish, \"The verified CakeML compiler backend\", Journal of Functional Programming 29:e2, 2019, doi:10.1017/S0956796818000229; CakeML/cakeml commit 16bdb1aaaab64a6ac66504ad2e9f0ed6146060e9, compiler/backend/bvl_inlineScript.sml L14-41 (`tick_inline_def`, inlining of known calls in BVL, a first-order language with `Raise`/`Handle`) and compiler/backend/proofs/bvl_inlineProofScript.sml L2030-2039 (`compile_prog_semantics`: if the source semantics is not `Fail`, the compiled program has the same semantics). Mechanized inlining in the presence of exceptions; no CFG cleanup-block splicing, capability guards or caller-location scopes.",
+   "Xavier Leroy, \"A formally verified compiler back-end\", Journal of Automated Reasoning 43(4):363–446, 2009, doi:10.1007/s10817-009-9155-4 (arXiv:0902.2137), Section 2.1, Definitions 1–5: \"Bisimulation\" (`∀B, S ⇓ B ⇐⇒ C ⇓ B`, \"exactly the same sets of observable behaviors\") versus backward and forward simulation, including the variants restricted to safe source programs; the paper notes that Definitions 1 and 2 imply that if the source always goes wrong, so does the compiled program.",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L869-883 (a new return block is pushed; L870-871 verbatim: \"Prepare a new block for code that should execute when call returns. We don't use / target block directly since it might have other predecessors.\") and L919-928 (L919-920 verbatim: \"Always create a local to hold the destination, as `RETURN_PLACE` may appear / where a full `Place` is not allowed.\"; when the destination is a plain local it is used directly).",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L1193-1206 (`map_local`: the return place maps to `self.destination`, argument `i` to `self.args[i]`, other locals to a fresh range) and L1120-1146 (`create_temp_if_necessary`: \"Reuse the operand if it is a moved temporary.\"; otherwise a fresh temporary is assigned the argument). Unlike the toy, rustc may use an existing caller temporary as a callee argument local instead of copying into a fresh slot.",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L1220-1236 (`map_unwind`: inside a callee cleanup block, `Cleanup`/`Continue` unwind actions are a compiler bug (`bug!(\"cleanup on cleanup block\")`); otherwise `Cleanup(target)` is shifted and `Continue` becomes the call's own unwind action, \"Add an unwind edge to the original call's cleanup block\") and L1326-1340 (`Return` becomes `Goto` the return block, or `Unreachable` without one; `UnwindResume` becomes `Goto` for `Cleanup`, stays `UnwindResume` for `Continue`, becomes `Unreachable`/`UnwindTerminate` for `Unreachable`/`Terminate`); L505-507 skip call sites in cleanup blocks. The toy has no `Unreachable` unwind action, allows unwind actions inside callee cleanup blocks, and does not skip call sites in cleanup blocks.",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L1248-1268 (`visit_source_scope_data`: the outermost callee scope, recognised by `parent_scope.is_none()`, gets the callsite scope as lexical `parent_scope`, `inlined = Some((callee, callsite span))` and `inlined_parent_scope` = the callsite scope if it is inlined, else the callsite scope's own `inlined_parent_scope`; inner scopes without `inlined_parent_scope` get the mapped outermost callee scope). The toy has no lexical `parent_scope` and recognises the outermost scope by index `0`.",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L706-710 (direct self-recursion is refused: `return Err(\"self-recursion\")`) and L829-840 (inlining is refused for incompatible sanitizer sets or instruction sets). The toy's `inline` performs none of these checks.",
+   "LLVM llvmorg-21.1.0 (llvm/llvm-project commit 3623fe661ae35c6c80ac221f14d85be76aa870f1), llvm/lib/Transforms/Utils/InlineFunction.cpp L235-253 (`LandingPadInliningInfo::forwardResume`: \"Forward the 'resume' instruction to the caller's landing pad block.\"), L557-613 (`HandleCallsInBlockInlinedThroughInvoke`: calls that can throw in a body inlined into an `invoke` become invokes that unwind to the invoke's destination), L615-670 and L672-799 (`HandleInlinedLandingPad`, `HandleInlinedEHPad`). The analogues of the toy's `resume` rewriting and `continue`-edge redirection in a production inliner; not mechanized."
+  ],
+  "design_question": "When is a spliced CFG equivalent to the original two-frame execution, including unwinding with per-frame cleanup order?",
+  "lean_names": [
+   "Toy.Inline.inline",
+   "Toy.Inline.inlineFn",
+   "Toy.Inline.BehEquiv",
+   "Toy.Inline.BehEquivAt",
+   "Toy.Inline.BehEquivAtWith",
+   "Toy.Inline.run",
+   "Toy.Inline.runWith",
+   "Toy.Inline.init",
+   "Toy.Inline.IsCallSite",
+   "Toy.Inline.LocalsBounded",
+   "Toy.Inline.BlocksBounded",
+   "Toy.Inline.ScopesWF",
+   "Toy.Inline.ScopeTreeWF",
+   "Toy.Inline.ScopeParentsBelow",
+   "Toy.Inline.ScopeRefsBounded",
+   "Toy.Inline.SlotsFresh",
+   "Toy.Inline.SlotsInjective",
+   "Toy.Inline.TempFresh",
+   "Toy.Inline.InlineCfg",
+   "Toy.Inline.InlineCfg.canonical",
+   "Toy.Inline.RetMode",
+   "Toy.Inline.SpliceCtx",
+   "Toy.Inline.SpliceCtx.term",
+   "Toy.Inline.SpliceCtx.mapUnwind",
+   "Toy.Inline.SpliceCtx.block",
+   "Toy.Inline.prologue",
+   "Toy.Inline.argOr",
+   "Toy.Inline.retStmts",
+   "Toy.Inline.retTempSucc",
+   "Toy.Inline.maxSucc",
+   "Toy.Inline.linkScope",
+   "Toy.Inline.linkScopes",
+   "Toy.Inline.step",
+   "Toy.Inline.bindArgs",
+   "Toy.Inline.unwindInto",
+   "Toy.Inline.returnInto",
+   "Toy.Inline.startUnwind",
+   "Toy.Inline.Obs",
+   "Toy.Inline.Obs.Prefix",
+   "Toy.Inline.Outcome",
+   "Toy.Inline.Event",
+   "Toy.Inline.progP",
+   "Toy.Inline.fP",
+   "Toy.Inline.gP",
+   "Toy.Inline.ciP",
+   "Toy.Inline.cfgP",
+   "Toy.Inline.run_progP_lifo",
+   "Toy.Inline.behEquivAt_pos",
+   "Toy.Inline.Block",
+   "Toy.Inline.Block.locals",
+   "Toy.Inline.BlockId",
+   "Toy.Inline.Cap",
+   "Toy.Inline.Config",
+   "Toy.Inline.Fn",
+   "Toy.Inline.FnId",
+   "Toy.Inline.Frame",
+   "Toy.Inline.Obs.Prefix.refl",
+   "Toy.Inline.Operand",
+   "Toy.Inline.Operand.locals",
+   "Toy.Inline.Operand.rename",
+   "Toy.Inline.Program.tracked",
+   "Toy.Inline.ResumeMap",
+   "Toy.Inline.Rvalue",
+   "Toy.Inline.Rvalue.locals",
+   "Toy.Inline.Rvalue.rename",
+   "Toy.Inline.ScopeId",
+   "Toy.Inline.Span",
+   "Toy.Inline.Stmt.locals",
+   "Toy.Inline.Term",
+   "Toy.Inline.Term.locals",
+   "Toy.Inline.Term.succs",
+   "Toy.Inline.Unwind",
+   "Toy.Inline.Unwind.blocks",
+   "Toy.Inline.abiAgree_neg",
+   "Toy.Inline.abiAgree_pos",
+   "Toy.Inline.abiInsensitive_neg",
+   "Toy.Inline.abiInsensitive_pos",
+   "Toy.Inline.behEquivAtWith_of_halted_eq",
+   "Toy.Inline.behEquivAtWith_refl",
+   "Toy.Inline.behEquivAtWith_symm",
+   "Toy.Inline.behEquivAt_neg",
+   "Toy.Inline.blocksBounded_neg",
+   "Toy.Inline.blocksBounded_pos",
+   "Toy.Inline.capLegal_neg",
+   "Toy.Inline.capLegal_pos",
+   "Toy.Inline.capsSubset_neg",
+   "Toy.Inline.capsSubset_pos",
+   "Toy.Inline.cex_scopesWF_breaks_refs_conjunct",
+   "Toy.Inline.cex_tempFresh_breaks_slot_conjunct",
+   "Toy.Inline.cleanupClosed_neg",
+   "Toy.Inline.cleanupClosed_pos",
+   "Toy.Inline.curTerm",
+   "Toy.Inline.destNotReadInCleanup_neg",
+   "Toy.Inline.destNotReadInCleanup_pos",
+   "Toy.Inline.emptyF",
+   "Toy.Inline.evalOp",
+   "Toy.Inline.evalRv",
+   "Toy.Inline.frameRel_neg",
+   "Toy.Inline.frameRel_pos",
+   "Toy.Inline.freshF",
+   "Toy.Inline.isCallSite_neg",
+   "Toy.Inline.isCallSite_pos",
+   "Toy.Inline.localsBounded_neg",
+   "Toy.Inline.localsBounded_pos",
+   "Toy.Inline.noPanic_neg",
+   "Toy.Inline.noPanic_pos",
+   "Toy.Inline.not_behEquivAtWith_of_halted_ne",
+   "Toy.Inline.prefixClosed_neg",
+   "Toy.Inline.prefixClosed_pos",
+   "Toy.Inline.prefix_neg",
+   "Toy.Inline.prefix_pos",
+   "Toy.Inline.renameAvoids_neg",
+   "Toy.Inline.renameAvoids_pos",
+   "Toy.Inline.renameInjectiveOn_neg",
+   "Toy.Inline.renameInjectiveOn_pos",
+   "Toy.Inline.runWith_halted",
+   "Toy.Inline.runWith_halted_unique",
+   "Toy.Inline.runWith_mono",
+   "Toy.Inline.runWith_prefix_of_halted",
+   "Toy.Inline.safetyHolds_neg",
+   "Toy.Inline.safetyHolds_pos",
+   "Toy.Inline.scopeParentsBelow_pos",
+   "Toy.Inline.scopeRefsBounded_neg",
+   "Toy.Inline.scopeRefsBounded_pos",
+   "Toy.Inline.scopeTreeWF_neg",
+   "Toy.Inline.scopeTreeWF_pos",
+   "Toy.Inline.scopesWF_neg",
+   "Toy.Inline.scopesWF_pos",
+   "Toy.Inline.slotsFresh_neg",
+   "Toy.Inline.slotsFresh_pos",
+   "Toy.Inline.slotsInjective_neg",
+   "Toy.Inline.slotsInjective_pos",
+   "Toy.Inline.stmtLocalsLt_neg",
+   "Toy.Inline.stmtLocalsLt_pos",
+   "Toy.Inline.tempFresh_neg",
+   "Toy.Inline.tempFresh_pos",
+   "Toy.Inline.terminalHolds_neg",
+   "Toy.Inline.terminalHolds_pos"
+  ]
+ },
+ {
+  "id": "R3",
+  "lean": "Toy.Inline.inline_behEquiv_retDest_of_destUnobservedOnUnwind",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "As R2; the destination-mode variant corresponds to rustc's use of a plain-local destination as the callee's return place.",
+  "plain_claim": "At a call site `IsCallSite p f b F ci G`, suppose `LocalsBounded F`, `LocalsBounded G`, `BlocksBounded F`, `ScopesWF F`, `ScopesWF G`, `SlotsFresh cfg F G` and `SlotsInjective cfg G` (as in `inline_behEquiv_retTemp_of_capsEq`); the callee's return place is the call's destination (`cfg.ret = .dest`; there is no return temporary); every unwind edge of `F` leads to a cleanup block and every successor of a cleanup block of `F` is a cleanup block (`CleanupClosed F`); no cleanup block of `F` reads `ci.dest` (`DestNotReadInCleanup F ci.dest`); `continue` edges are redirected, `resume` is rewritten by the call's unwind action, the `rustc` scope-link rule is used; and `F.caps = G.caps`. Then `BehEquiv p (inline p f b cfg)`: from every entry the maximal event sequences and outcomes of `run` coincide.",
+  "hypotheses": [
+   {
+    "name": "hsite : IsCallSite p f b F ci G",
+    "purpose": "names the objects the other hypotheses talk about: function `f` of `p` is `F`, its block `b` ends in the call `ci`, and the callee of `ci` is `G`; without it the other hypotheses constrain unrelated bodies",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_isCallSite",
+    "witness_class": "a two-function program whose function 0 is `freshF`, checked against the mismatched `F := emptyF` (no locals, no blocks); dest-mode part (configuration `cfg.withDest`)"
+   },
+   {
+    "name": "hlocF : LocalsBounded F",
+    "purpose": "every local mentioned by `F` (including the return place read by `ret`) is below `F.nlocals`, so slots at or above `F.nlocals` cannot clobber caller locals",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedF",
+    "witness_class": "a caller declaring 1 local that keeps local 1 live across the call (slot 1 = local 1); dest-mode part (configuration `cfg.withDest`)"
+   },
+   {
+    "name": "hlocG : LocalsBounded G",
+    "purpose": "every local mentioned by `G` is below `G.nlocals`, so the prologue binds or zeroes all of them",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedG",
+    "witness_class": "a callee declaring 1 local that reads local 1 (its argument), which the prologue does not bind; dest-mode part (configuration `cfg.withDest`)"
+   },
+   {
+    "name": "hblkF : BlocksBounded F",
+    "purpose": "every jump target of `F` (goto, branch, call target, cleanup target) is one of `F`'s blocks; a missing block would become the return block or a callee block after inlining",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_blocksBoundedF",
+    "witness_class": "a caller jumping to missing block 4: the original run ends in `ub`, the inlined run (block 4 is now a callee block) in `aborted`; the witness relies on `BehEquiv` distinguishing `ub` (see non-claims); dest-mode part (configuration `cfg.withDest`)"
+   },
+   {
+    "name": "hscF : ScopesWF F",
+    "purpose": "`ScopesWF F` = `ScopeTreeWF F.scopes` (scope `0` exists and carries neither `inlined` nor `inlinedParent`; every `inlinedParent` link of scope `i` points to an index `t < i`) ∧ `ScopeRefsBounded F` (every scope named by a `loc` statement or call of `F` is in range); the caller-location walk inside the merged body then agrees with the original (`locValue_inline_callerScope`, `locValue_inline_calleeScope`)",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_scopesWFF",
+    "witness_class": "a caller `loc` naming missing scope 1, which after inlining is the callee's inlined tracked scope; dest-mode part (configuration `cfg.withDest`)",
+    "conjuncts": "`cex_scopesWFF` breaks the `ScopeRefsBounded F` conjunct while `ScopeTreeWF F.scopes` holds (`cex_scopesWF_breaks_refs_conjunct`). The links-point-below conjunct (`ScopeParentsBelow F.scopes`) is tight for the walk theorems (`cex_walkCallee_F`, `cex_walkCaller_F`: a 3-scope table with a 2-cycle); a program-level witness for it is not given (unknown). The clean-scope-`0` conjunct of `ScopeTreeWF F.scopes`: unknown — no counterexample is given; `locValue_inline_calleeScope` and `locValue_inline_callerScope` are proved without it, and the proof of this theorem does not use it, but no theorem with it dropped is stated here."
+   },
+   {
+    "name": "hscG : ScopesWF G",
+    "purpose": "the same well-formedness for the callee's scope table and scope references",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Inline.cex_scopesWFG",
+     "Toy.Inline.cex_scopesWFG_root"
+    ],
+    "witness_class": "`cex_scopesWFG`: a tracked callee `loc` naming missing scope 1; `cex_scopesWFG_root`: a tracked callee whose scope 0 carries `inlined` (both return modes); dest-mode part (configuration `cfg.withDest`)",
+    "conjuncts": "`cex_scopesWFG` breaks the `ScopeRefsBounded G` conjunct (`ScopeTreeWF G.scopes` holds, `cex_scopesWF_breaks_refs_conjunct`); `cex_scopesWFG_root` breaks the clean-scope-`0` conjunct while `ScopeParentsBelow G.scopes` and `ScopeRefsBounded G` hold. The links-point-below conjunct of `G` is tight for the walk theorem (`cex_walkCallee_Gparents`); a program-level witness is not given (unknown)."
+   },
+   {
+    "name": "hfresh : SlotsFresh cfg F G",
+    "purpose": "callee locals `1 ≤ i < G.nlocals` go to host locals `≥ F.nlocals`, a range disjoint from every declared host local",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_slotsFresh",
+    "witness_class": "slot range overlapping caller local 1, which is live across the call; dest-mode part (configuration `cfg.withDest`)"
+   },
+   {
+    "name": "hinj : SlotsInjective cfg G",
+    "purpose": "distinct callee locals `1 ≤ i, j < G.nlocals` go to distinct host locals",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_slotsInjective",
+    "witness_class": "two callee arguments sharing host local 5; dest-mode part (configuration `cfg.withDest`)"
+   },
+   {
+    "name": "hret : cfg.ret = .dest",
+    "purpose": "selects the destination treatment of the return place",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_tempFresh",
+    "witness_class": "the temp-mode configuration `tempCfg` (`ret = .temp 2 ≠ .dest`); every dest-mode hypothesis holds for it (temp-mode part)"
+   },
+   {
+    "name": "hclosed : CleanupClosed F",
+    "purpose": "after a panic the caller executes only cleanup blocks, which do not read the destination",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_cleanupClosed",
+    "witness_class": "a cleanup block jumping to a normal block that reads the destination"
+   },
+   {
+    "name": "hdest : DestNotReadInCleanup F ci.dest",
+    "purpose": "the callee's writes to its return place (and the prologue's zeroing of it) are invisible on the unwind path",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_destNotReadInCleanup",
+    "witness_class": "a caller cleanup block emitting the destination"
+   },
+   {
+    "name": "hcont : cfg.redirectContinue = true",
+    "purpose": "the callee's `continue` unwind edges get the call's own unwind action",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_redirectContinue",
+    "witness_class": "a callee whose inner call continues unwinding: the caller's cleanup event `out 200` is skipped; dest-mode part"
+   },
+   {
+    "name": "hres : cfg.resumeMap = .unwind",
+    "purpose": "the callee's `resume` is rewritten by the call's unwind action, not as a jump to the normal continuation",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_resumeMap",
+    "witness_class": "a callee panicking into its own cleanup: after it the inlined caller returns normally; dest-mode part"
+   },
+   {
+    "name": "hlink : cfg.link = .rustc",
+    "purpose": "the outermost callee scope's `inlinedParent` is the callsite scope if that scope carries `inlined`, else the callsite scope's own `inlinedParent`",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_linkRule",
+    "witness_class": "second-level inlining at a call in a nested, non-inlined scope of an inlined tracked callee inside an untracked host (location `10` becomes `20`); dest-mode part"
+   },
+   {
+    "name": "hcaps : F.caps = G.caps",
+    "purpose": "equal capability lists: `needCap` and ABI-sensitive calls in the moved code behave as in the callee",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_capsAbi",
+    "witness_class": "host capability list `[1]`, callee `[]` making an ABI-sensitive call, `abiC [1] ≠ abiC []`; dest-mode part"
+   }
+  ],
+  "depth": "substantive",
+  "depth_justification": "As R2, with a store relation that lets the destination `ci.dest` differ between the two machines after an unwind out of the inlined body while control is in cleanup blocks of `F`: `CleanupClosed F` keeps control in cleanup blocks and `DestNotReadInCleanup F ci.dest` ensures that none of them reads the destination; proved in `lean/ToyInline/Simulation.lean`.",
+  "nonvacuity_witness": "`progP` with `cfgPd` (destination local 1; the caller's single cleanup block emits a constant).",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_inline_retDest",
+  "non_claims": [
+   "`BehEquiv` is equality of maximal observations, including the outcomes `ub`, `capFault` and `aborted` and argument values changed by ABI garbling, in both directions — the \"Bisimulation\" notion of Leroy (2009, Section 2.1, Definition 1), not a refinement that lets the inlined program differ where the source goes wrong (as CompCert's `forward_simulation` for safe programs or CakeML's `compile_prog_semantics` under the premise `≠ Fail` allow). The tightness witness of `BlocksBounded F` has a source run ending in `ub`. Whether these hypotheses are needed for a refinement criterion is not examined here.",
+   "`BehEquiv` compares event sequences and outcomes from each entry; it says nothing about step counts, code size, stack depth or performance.",
+   "`F.caps = G.caps` is equality of lists (order and multiplicity matter), not equality as sets; `p.abi` is an arbitrary function of the list. Whether set-equal, order-distinct lists suffice is not examined (no counterexample for them is proved here).",
+   "No destination-mode theorem under `CapsSubset` (the analogue of `inline_behEquiv_retTemp_of_capsSubset_capLegal_abiInsensitive` or `inline_behEquiv_retTemp_of_capsSubset_capLegal_abiAgree`) is stated or refuted here.",
+   "One inlining step. `inline p f b cfg` replaces function `f` and leaves the callee `G` in `p.fns`, so this says nothing about removing `G`. `IsCallSite` allows direct self-recursion (`ci.callee = f`) and call sites inside cleanup blocks; no claim is made about termination of an inlining pass. For applying an inlining theorem again to the result: preservation of `ScopesWF` (`scopesWF_inlineFn`) and of `LocalsBounded` (`localsBounded_inlineFn`) is proved; `BlocksBounded` is not preserved when the callee jumps out of range (`cex_blocksBounded_inlineFn_oob`); preservation of `CleanupClosed`, `DestNotReadInCleanup`, `CapLegal` and `AbiInsensitive` is not examined.",
+   "`CleanupClosed` and `DestNotReadInCleanup` are syntactic sufficient conditions; liveness of the destination on the unwind path is not modelled. rustc's inliner uses a plain-local destination directly (inline.rs L919-928) and contains no such syntactic check in inline.rs; whether MIR's own invariants (for example that the destination is not initialised on the unwind edge of a call) exclude cleanup code that reads the destination is not examined here.",
+   "Says nothing about destinations with projections (rustc borrows those through a temporary, inline.rs L901-917); the toy has plain locals.",
+   "The toy has no `catch` or search-phase unwinding, no double-panic rule beyond explicit `terminate` actions, no projections, borrows, storage markers, generics, recursion limits or debug information; values are unbounded naturals (`Rvalue.add` does not wrap); a missing call argument is read as `0` and extra arguments are ignored (`argOr`, `bindArgs`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L869-883 (a new return block is pushed; L870-871 verbatim: \"Prepare a new block for code that should execute when call returns. We don't use / target block directly since it might have other predecessors.\") and L919-928 (L919-920 verbatim: \"Always create a local to hold the destination, as `RETURN_PLACE` may appear / where a full `Place` is not allowed.\"; when the destination is a plain local it is used directly).",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L1220-1236 (`map_unwind`: inside a callee cleanup block, `Cleanup`/`Continue` unwind actions are a compiler bug (`bug!(\"cleanup on cleanup block\")`); otherwise `Cleanup(target)` is shifted and `Continue` becomes the call's own unwind action, \"Add an unwind edge to the original call's cleanup block\") and L1326-1340 (`Return` becomes `Goto` the return block, or `Unreachable` without one; `UnwindResume` becomes `Goto` for `Cleanup`, stays `UnwindResume` for `Continue`, becomes `Unreachable`/`UnwindTerminate` for `Unreachable`/`Terminate`); L505-507 skip call sites in cleanup blocks. The toy has no `Unreachable` unwind action, allows unwind actions inside callee cleanup blocks, and does not skip call sites in cleanup blocks.",
+   "CompCert v3.18 (AbsInt/CompCert commit 14d616046360a0b2611ebdfc2f98368af402e1f7), backend/Inlining.v L166-186 (`Record context`: a source instruction at PC `n` is relocated to `n + ctx.(dpc)`, pseudo-registers are shifted by `ctx.(dreg)`, and \"return\" instructions become \"return\" or \"move\" instructions as governed by `ctx.(retinfo)`) and backend/Inliningproof.v L1297-1305 (`Theorem transf_program_correct: forward_simulation (semantics prog) (semantics tprog).`). RTL has no unwinding, cleanup blocks, capability guards or caller-location scopes."
+  ],
+  "design_question": "When may the callee's return place be the call's destination rather than a fresh temporary?",
+  "lean_names": [
+   "Toy.Inline.CleanupClosed",
+   "Toy.Inline.DestNotReadInCleanup",
+   "Toy.Inline.InlineCfg.withDest",
+   "Toy.Inline.cleanupAt",
+   "Toy.Inline.Term.unwindTargets",
+   "Toy.Inline.Block.reads",
+   "Toy.Inline.Stmt.reads",
+   "Toy.Inline.Term.reads",
+   "Toy.Inline.cfgPd",
+   "Toy.Inline.tempCfg"
+  ]
+ },
+ {
+  "id": "R4",
+  "lean": "Toy.Inline.terminalHolds_iff_of_behEquivAt",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T0",
+  "tier_justification": "Equivalence of behaviours preserves specifications that are predicates of the observable behaviour (Leroy 2009, Section 2.1, Definition 6); a restatement for halted observations.",
+  "plain_claim": "If `p` and `q` are behaviourally equivalent from entry `e` (`BehEquivAt p q e`, defined from `run`), then for every predicate `P` on observations, `P` holds of every halted `run` of `p` from `e` (`TerminalHolds P p e`) iff `P` holds of every halted `run` of `q` from `e`.",
+  "hypotheses": [
+   {
+    "name": "h : BehEquivAt p q e",
+    "purpose": "the two programs have the same halted observations from `e`",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_terminal_behEquiv",
+    "witness_class": "a returning and a panicking one-block program, `P = NoPanic`"
+   }
+  ],
+  "depth": "definitional",
+  "depth_justification": "Unfolds the definitions: halted observations are maximal in the prefix order.",
+  "nonvacuity_witness": "`progP` and its canonical inlining from entry `⟨0, [0], 0⟩`.",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_terminalHolds_iff",
+  "non_claims": [
+   "`TerminalHolds P p e` holds vacuously, for every `P` (including `fun _ => False`), when the run from `e` never halts; so it transfers partial correctness and says nothing about termination.",
+   "Applies to predicates of the observation (`Obs`: emitted events and outcome) under the reference caller-location policy (`run` uses `.walk`) from one entry; internal state (local values, stack depth, visited blocks), relations between different entries, liveness, step counts and resource use are not covered.",
+   "Combined with `inline_behEquiv_retTemp_of_capsEq` (whose conclusion `BehEquiv` gives `BehEquivAt` from every entry) it transfers such conditions between `p` and `inline p f b cfg` under that theorem's hypotheses (a composition of two proved theorems, not stated as a separate theorem here); it does not say that a condition proved for the inlined program establishes the callee's standalone contract (`inlined_vc_not_callee_contract`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "Xavier Leroy, \"A formally verified compiler back-end\", Journal of Automated Reasoning 43(4):363–446, 2009, doi:10.1007/s10817-009-9155-4 (arXiv:0902.2137), Section 2.1, Definition 6 (\"Preservation of a specification\", `S |= Spec =⇒ C |= Spec`, for a specification given as a predicate `Spec(B)` of the observable behaviour)."
+  ],
+  "design_question": "What do verification conditions proved after inlining say about the original program?",
+  "lean_names": [
+   "Toy.Inline.TerminalHolds",
+   "Toy.Inline.Obs.Prefix",
+   "Toy.Inline.NoPanic",
+   "Toy.Inline.terminalHolds_of_halted",
+   "Toy.Inline.not_terminalHolds_of_halted",
+   "Toy.Inline.pRet",
+   "Toy.Inline.pPan",
+   "Toy.Inline.e0",
+   "Toy.Inline.Entry"
+  ]
+ },
+ {
+  "id": "R5",
+  "lean": "Toy.Inline.safetyHolds_iff_of_behEquivAt_of_prefixClosed",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T0",
+  "tier_justification": "Equivalence of behaviours preserves properties closed under prefixes of finite observations; a restatement.",
+  "plain_claim": "If `p` and `q` are behaviourally equivalent from entry `e` and the predicate `S` on observations is closed under observation prefixes (`PrefixClosed S`), then `S` holds of the observation of `run` of `p` from `e` at every step budget (`SafetyHolds S p e`) iff it holds of every such observation of `q`.",
+  "hypotheses": [
+   {
+    "name": "h : BehEquivAt p q e",
+    "purpose": "each finite observation of one program is a prefix of one of the other",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_safety_behEquiv",
+    "witness_class": "a returning and a panicking one-block program, `S = NoPanic`"
+   },
+   {
+    "name": "hS : PrefixClosed S",
+    "purpose": "finite observations of equivalent programs are related by prefixes, not equal, because inlining changes step counts",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_safety_prefixClosed",
+    "witness_class": "`S` = \"has halted\"; a program with a missing entry function versus one taking a silent step first"
+   }
+  ],
+  "depth": "definitional",
+  "depth_justification": "A two-line term: each observation of one program is a prefix of an observation of the other.",
+  "nonvacuity_witness": "`progP` and its canonical inlining from `⟨0, [0], 0⟩`, `S = NoPanic` (`prefixClosed_noPanic`).",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_safetyHolds_iff",
+  "non_claims": [
+   "`SafetyHolds S p e` checks `S` at every step budget `n`, including `n = 0`; the definition does not require `S` to be prefix-closed, so for a predicate that is not, such as \"has halted\", `SafetyHolds` requires the initial configuration to be halted already, and such predicates need not transfer (`cex_safety_prefixClosed`).",
+   "Applies to single-entry predicates of the observation under `run` (policy `.walk`); hyperproperties (relating several entries or runs), liveness and termination properties, internal-state invariants and other caller-location policies are not covered.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "Bowen Alpern and Fred B. Schneider, \"Defining liveness\", Information Processing Letters 21(4):181–185, 1985, doi:10.1016/0020-0190(85)90056-0: the safety/liveness distinction for properties of infinite executions. `PrefixClosed` here is a closure condition on finite observations; no formal correspondence with their definition of safety is proved."
+  ],
+  "design_question": "Which safety properties transfer across inlining?",
+  "lean_names": [
+   "Toy.Inline.SafetyHolds",
+   "Toy.Inline.PrefixClosed",
+   "Toy.Inline.NoPanic",
+   "Toy.Inline.prefixClosed_noPanic",
+   "Toy.Inline.pMissing",
+   "Toy.Inline.pUnr"
+  ]
+ },
+ {
+  "id": "R6",
+  "lean": "Toy.Inline.inlined_vc_not_callee_contract",
+  "kind": "counterexample",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "Folklore (facts that hold at a call site are not the callee's contract) made concrete and mechanized in the toy.",
+  "plain_claim": "In the program `vcP`, whose caller passes the constant `7` to the callee `gP` (which panics into its cleanup on argument `0`), and its canonical inlining `vcQ`: \"no escaped panic\" (`NoPanic`) holds of every halted `run` of `vcQ` and of `vcP` from the caller's entry `e0`; from the callee's own entry with argument `0` (`⟨1, [0], 0⟩`), `run` of `vcP` and of `vcQ` with step budget 30 (at most 30 steps) both give the events `[out 100]` and the outcome `unwound`, so `NoPanic` fails for both programs from that entry.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Decided by evaluation.",
+  "nonvacuity_witness": "The theorem is itself the instance.",
+  "nonvacuity_witness_lean": "Toy.Inline.inlined_vc_not_callee_contract",
+  "non_claims": [
+   "One instance: a verification condition proved for an inlined caller need not hold for the callee's standalone entry, because the inlined code is executed with the call-site arguments. It does not say every such condition fails for the callee.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "No primary source states this specific observation; it is common knowledge in modular verification (not relied on as a citation)."
+  ],
+  "design_question": "What do verification conditions proved after inlining not say about the callee?",
+  "lean_names": [
+   "Toy.Inline.vcP",
+   "Toy.Inline.vcQ",
+   "Toy.Inline.vcF",
+   "Toy.Inline.gP",
+   "Toy.Inline.inlineCanon",
+   "Toy.Inline.hostNLocals",
+   "Toy.Inline.terminalHolds_of_halted",
+   "Toy.Inline.not_terminalHolds_of_halted"
+  ]
+ },
+ {
+  "id": "R7",
+  "lean": "Toy.Inline.capsSubset_needed_inlined_needCap_faults",
+  "kind": "counterexample",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "That inlining into a host lacking a callee's capability is wrong is folklore (the Rust Reference's call rule for safe `#[target_feature]` functions has the same shape); here a concrete mechanized toy witness.",
+  "plain_claim": "In `needP` the callee `needG` holds and uses capability `3` and the host `capF []` holds none. With the canonical configuration for one host local (temp mode, `t = 1`), every hypothesis of `inline_behEquiv_retTemp_of_capsSubset_capLegal_abiInsensitive` and of `inline_behEquiv_retTemp_of_capsSubset_capLegal_abiAgree` other than `CapsSubset G F` holds, and `CapsSubset needG (capF [])` fails. `run` of `needP` from `e0` gives `[out 1]` and `returned 0`; `run` of the inlined program, in temp mode and in destination mode, gives no events and the outcome `capFault`; neither inlined program is behaviourally equivalent to `needP`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Decided by evaluation.",
+  "nonvacuity_witness": "The theorem is itself the instance.",
+  "nonvacuity_witness_lean": "Toy.Inline.capsSubset_needed_inlined_needCap_faults",
+  "non_claims": [
+   "Shows that `CapsSubset` cannot be dropped from the two subset-guard theorems in the toy (with every other hypothesis kept); it does not show that it suffices — it does not (`capsSubset_guard_insufficient`).",
+   "The ABI model is one program-wide map `p.abi : CapSet → Bool` on capability lists. It does not depend on argument or return types or on the individual call (LLVM's `areTypesABICompatible` does), it need not respect set equality of lists or any implication between capabilities (the Rust Reference counts implicitly enabled features, codegen.md L475), and a mismatch garbles every argument deterministically (`v ↦ v + 1`). Capabilities affect only `needCap` statements and ABI-sensitive calls; instruction selection and other code-generation effects of target features are not modelled.",
+   "In the toy a missing capability is a deterministic fault (`capFault`); the Rust Reference makes calling code compiled with a feature the platform does not support undefined behaviour (codegen.md L462-465).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "The Rust Reference, rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/attributes/codegen.md L467-475, rule attributes.codegen.target_feature.safety-restrictions; L470-471 (verbatim): \"- Safe `#[target_feature]` functions (and closures that inherit the attribute) can only be safely called within a caller that enables all the `target_feature`s that the callee enables. / This restriction does not apply in an `unsafe` context.\"; L475 adds that implicitly enabled features are included (an `sse2` function can call ones marked with `sse`), and L462-465 (attributes.codegen.target_feature.target-ub) make calling a function compiled with a feature the running platform does not support undefined behaviour unless the platform documents it as safe.",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L842-851: inlining is refused when the callee's and the caller's target-feature lists differ; comment, L845-849 verbatim: \"In general it is not correct to inline a callee with target features that are a / subset of the caller. This is because the callee might contain calls, and the ABI of / those calls depends on the target features of the surrounding function. By moving a / `Call` terminator from one MIR body to another with more target features, we might / change the ABI of that call!\"",
+   "LLVM llvmorg-21.1.0 (llvm/llvm-project commit 3623fe661ae35c6c80ac221f14d85be76aa870f1), llvm/lib/Target/X86/X86TargetTransformInfo.cpp L6494-6550 (`X86TTIImpl::areInlineCompatible`: equal feature sets apart from an ignore list are compatible; otherwise the callee's features must be a subset of the caller's — L6510-6511 verbatim: \"If the features are a subset, we need to additionally check for calls / that may become ABI-incompatible as a result of inlining.\" — and each call in the callee whose argument or return types include a vector or aggregate is accepted if it is inline assembly, an intrinsic, or a direct call that `areTypesABICompatible` accepts, and rejected if it is an indirect call) and L6552-6572 (`areTypesABICompatible`: after the generic check, a caller and callee that differ in `useAVX512Regs()` are treated as compatible when no type is a vector or aggregate and as incompatible otherwise); llvm/include/llvm/Analysis/TargetTransformInfo.h L1746-1752 (L1746-1747 verbatim: \"\\returns True if the caller and callee agree on how \\p Types will be / passed to or returned from the callee.\"). LLVM checks ABI compatibility per moved call and per argument type, where the toy uses one Boolean ABI class per capability list."
+  ],
+  "design_question": "Which capability guard prevents inlining code into a host lacking the callee's capabilities?",
+  "lean_names": [
+   "Toy.Inline.CapsSubset",
+   "Toy.Inline.CapLegal",
+   "Toy.Inline.AbiInsensitive",
+   "Toy.Inline.AbiAgree",
+   "Toy.Inline.needP",
+   "Toy.Inline.needG",
+   "Toy.Inline.capF",
+   "Toy.Inline.plainCi",
+   "Toy.Inline.abiC",
+   "Toy.Inline.Stmt.capOk"
+  ]
+ },
+ {
+  "id": "R8",
+  "lean": "Toy.Inline.inline_behEquiv_retTemp_of_capsSubset_capLegal_abiInsensitive",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise: a subset guard suffices when the moved code's behaviour depends on the host's capabilities only through `needCap` legality — here when the callee is statically capability-legal (`CapLegal G`), has no block (reachable or not) terminating in an ABI-sensitive call (`AbiInsensitive G`), and the inlined call itself is not ABI-sensitive (`ci.abiSensitive = false`).",
+  "plain_claim": "At a call site `IsCallSite p f b F ci G`, suppose every hypothesis of `inline_behEquiv_retTemp_of_capsEq` other than `F.caps = G.caps` holds: `LocalsBounded F`, `LocalsBounded G`, `BlocksBounded F`, `ScopesWF F`, `ScopesWF G`, `SlotsFresh cfg F G`, `SlotsInjective cfg G`, `cfg.ret = .temp t`, `TempFresh t cfg F G` (`F.nlocals ≤ t` and `t` differs from every callee slot), redirected `continue` edges, `resume` rewritten by the call's unwind action and the `rustc` link rule. Suppose further that every capability in the callee's list is in the caller's list (`CapsSubset G F`), every `needCap c` in the callee names a capability in the callee's list (`CapLegal G`), no block of the callee (reachable or not) terminates in an ABI-sensitive call (`AbiInsensitive G`) and the inlined call itself is not ABI-sensitive (`ci.abiSensitive = false`). Then `BehEquiv p (inline p f b cfg)`.",
+  "hypotheses": [
+   {
+    "name": "hsite : IsCallSite p f b F ci G",
+    "purpose": "names the objects the other hypotheses talk about: function `f` of `p` is `F`, its block `b` ends in the call `ci`, and the callee of `ci` is `G`; without it the other hypotheses constrain unrelated bodies",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_isCallSite",
+    "witness_class": "a two-function program whose function 0 is `freshF`, checked against the mismatched `F := emptyF` (no locals, no blocks); temp-mode part"
+   },
+   {
+    "name": "hlocF : LocalsBounded F",
+    "purpose": "every local mentioned by `F` (including the return place read by `ret`) is below `F.nlocals`, so slots at or above `F.nlocals` cannot clobber caller locals",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedF",
+    "witness_class": "a caller declaring 1 local that keeps local 1 live across the call (slot 1 = local 1); temp-mode part"
+   },
+   {
+    "name": "hlocG : LocalsBounded G",
+    "purpose": "every local mentioned by `G` is below `G.nlocals`, so the prologue binds or zeroes all of them",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedG",
+    "witness_class": "a callee declaring 1 local that reads local 1 (its argument), which the prologue does not bind; temp-mode part"
+   },
+   {
+    "name": "hblkF : BlocksBounded F",
+    "purpose": "every jump target of `F` (goto, branch, call target, cleanup target) is one of `F`'s blocks; a missing block would become the return block or a callee block after inlining",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_blocksBoundedF",
+    "witness_class": "a caller jumping to missing block 4: the original run ends in `ub`, the inlined run (block 4 is now a callee block) in `aborted`; the witness relies on `BehEquiv` distinguishing `ub` (see non-claims); temp-mode part"
+   },
+   {
+    "name": "hscF : ScopesWF F",
+    "purpose": "`ScopesWF F` = `ScopeTreeWF F.scopes` (scope `0` exists and carries neither `inlined` nor `inlinedParent`; every `inlinedParent` link of scope `i` points to an index `t < i`) ∧ `ScopeRefsBounded F` (every scope named by a `loc` statement or call of `F` is in range); the caller-location walk inside the merged body then agrees with the original (`locValue_inline_callerScope`, `locValue_inline_calleeScope`)",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_scopesWFF",
+    "witness_class": "a caller `loc` naming missing scope 1, which after inlining is the callee's inlined tracked scope; temp-mode part",
+    "conjuncts": "`cex_scopesWFF` breaks the `ScopeRefsBounded F` conjunct while `ScopeTreeWF F.scopes` holds (`cex_scopesWF_breaks_refs_conjunct`). The links-point-below conjunct (`ScopeParentsBelow F.scopes`) is tight for the walk theorems (`cex_walkCallee_F`, `cex_walkCaller_F`: a 3-scope table with a 2-cycle); a program-level witness for it is not given (unknown). The clean-scope-`0` conjunct of `ScopeTreeWF F.scopes`: unknown — no counterexample is given; `locValue_inline_calleeScope` and `locValue_inline_callerScope` are proved without it, and the proof of this theorem does not use it, but no theorem with it dropped is stated here."
+   },
+   {
+    "name": "hscG : ScopesWF G",
+    "purpose": "the same well-formedness for the callee's scope table and scope references",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Inline.cex_scopesWFG",
+     "Toy.Inline.cex_scopesWFG_root"
+    ],
+    "witness_class": "`cex_scopesWFG`: a tracked callee `loc` naming missing scope 1; `cex_scopesWFG_root`: a tracked callee whose scope 0 carries `inlined` (both return modes); temp-mode part",
+    "conjuncts": "`cex_scopesWFG` breaks the `ScopeRefsBounded G` conjunct (`ScopeTreeWF G.scopes` holds, `cex_scopesWF_breaks_refs_conjunct`); `cex_scopesWFG_root` breaks the clean-scope-`0` conjunct while `ScopeParentsBelow G.scopes` and `ScopeRefsBounded G` hold. The links-point-below conjunct of `G` is tight for the walk theorem (`cex_walkCallee_Gparents`); a program-level witness is not given (unknown)."
+   },
+   {
+    "name": "hfresh : SlotsFresh cfg F G",
+    "purpose": "callee locals `1 ≤ i < G.nlocals` go to host locals `≥ F.nlocals`, a range disjoint from every declared host local",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_slotsFresh",
+    "witness_class": "slot range overlapping caller local 1, which is live across the call; temp-mode part"
+   },
+   {
+    "name": "hinj : SlotsInjective cfg G",
+    "purpose": "distinct callee locals `1 ≤ i, j < G.nlocals` go to distinct host locals",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_slotsInjective",
+    "witness_class": "two callee arguments sharing host local 5; temp-mode part"
+   },
+   {
+    "name": "hret : cfg.ret = .temp t",
+    "purpose": "selects the fresh-temporary treatment of the return place: the callee writes `t` and the return block moves `t` into the destination",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_destNotReadInCleanup",
+    "witness_class": "the destination-mode configuration `(InlineCfg.canonical 2).withDest` (`ret = .dest ≠ .temp 2`) of a caller whose cleanup reads the destination; every other temp-mode hypothesis holds for it with `t = 2`, including `TempFresh 2`"
+   },
+   {
+    "name": "htemp : TempFresh t cfg F G",
+    "purpose": "`TempFresh t cfg F G` = `F.nlocals ≤ t` ∧ `t` differs from every callee slot `cfg.slot i` (`1 ≤ i < G.nlocals`)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Inline.cex_tempFresh",
+     "Toy.Inline.cex_tempFresh_callerLocal"
+    ],
+    "witness_class": "`cex_tempFresh`: the temporary equals the argument's slot, so the callee's early write to its return place clobbers the argument; `cex_tempFresh_callerLocal`: the temporary is the caller's live local 1",
+    "conjuncts": "Each conjunct is tight on its own: `cex_tempFresh` breaks the slot-disjointness conjunct while `F.nlocals ≤ t` holds (`cex_tempFresh_breaks_slot_conjunct`); `cex_tempFresh_callerLocal` breaks `F.nlocals ≤ t` while the slot-disjointness conjunct holds."
+   },
+   {
+    "name": "hcont : cfg.redirectContinue = true",
+    "purpose": "the callee's `continue` unwind edges get the call's own unwind action",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_redirectContinue",
+    "witness_class": "a callee whose inner call continues unwinding: the caller's cleanup event `out 200` is skipped; temp-mode part"
+   },
+   {
+    "name": "hres : cfg.resumeMap = .unwind",
+    "purpose": "the callee's `resume` is rewritten by the call's unwind action, not as a jump to the normal continuation",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_resumeMap",
+    "witness_class": "a callee panicking into its own cleanup: after it the inlined caller returns normally; temp-mode part"
+   },
+   {
+    "name": "hlink : cfg.link = .rustc",
+    "purpose": "the outermost callee scope's `inlinedParent` is the callsite scope if that scope carries `inlined`, else the callsite scope's own `inlinedParent`",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_linkRule",
+    "witness_class": "second-level inlining at a call in a nested, non-inlined scope of an inlined tracked callee inside an untracked host (location `10` becomes `20`); temp-mode part"
+   },
+   {
+    "name": "hsub : CapsSubset G F",
+    "purpose": "every capability in the callee's list is in the caller's list, so legal `needCap`s of the callee stay legal in the host",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.capsSubset_needed_inlined_needCap_faults",
+    "witness_class": "callee `[3]` using capability 3, host `[]`: the inlined `needCap 3` ends in `capFault`"
+   },
+   {
+    "name": "hlegal : CapLegal G",
+    "purpose": "every `needCap c` in the callee names a capability in the callee's list, so the callee does not rely on a fault that the richer host would let through",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_capLegal",
+    "witness_class": "callee `[]` executing `needCap 3`, host `[3]`: the original ends in `capFault`, the inlined program returns normally (relies on `BehEquiv` preserving `capFault`, see non-claims)"
+   },
+   {
+    "name": "habi : AbiInsensitive G",
+    "purpose": "moved calls do not depend on `p.abi`",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_capsAbi",
+    "witness_class": "an ABI-sensitive call in the callee with host list `[1]`, callee `[]`, `abiC [1] ≠ abiC []`"
+   },
+   {
+    "name": "hcs : ci.abiSensitive = false",
+    "purpose": "the inlined call's own argument passing is not ABI-sensitive (inlining removes that call)",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_callAbiSensitive",
+    "witness_class": "an ABI-sensitive inlined call from host `[1]` to callee `[]`: the original garbles the argument (`out 6`), the inlined prologue binds it unchanged (`out 5`); relies on `BehEquiv` preserving garbled values"
+   }
+  ],
+  "depth": "substantive",
+  "depth_justification": "As R2, plus capability reasoning: under `CapsSubset G F` and `CapLegal G` every `needCap` of the moved code succeeds in the host exactly when it succeeds in the callee, and with `AbiInsensitive G` and `ci.abiSensitive = false` no argument is garbled on either side; proved in `lean/ToyInline/Simulation.lean`.",
+  "nonvacuity_witness": "`nv5P`: host list `[1, 2]`, callee `[2]` using capability 2, no ABI-sensitive calls; the host and callee ABI classes differ (`abiC`).",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_inline_capsSubset_abiInsensitive",
+  "non_claims": [
+   "`BehEquiv` is equality of maximal observations, including the outcomes `ub`, `capFault` and `aborted` and argument values changed by ABI garbling, in both directions — the \"Bisimulation\" notion of Leroy (2009, Section 2.1, Definition 1), not a refinement that lets the inlined program differ where the source goes wrong (as CompCert's `forward_simulation` for safe programs or CakeML's `compile_prog_semantics` under the premise `≠ Fail` allow). The tightness witnesses of `BlocksBounded F` (source `ub`), `CapLegal G` (`cex_capLegal`: source `capFault`, inlined normal return) and `ci.abiSensitive = false` (`cex_callAbiSensitive`: source garbled argument `6`, inlined `5`) all have a source execution that the toy treats as a defined outcome but that a criterion treating capability faults and ABI mismatches as undefined behaviour would not constrain. Whether these hypotheses are needed for a refinement criterion is not examined here.",
+   "Stated for the temporary return mode (`cfg.ret = .temp t`); no destination-mode companion under `CapsSubset` is established or refuted here.",
+   "The ABI model is one program-wide map `p.abi : CapSet → Bool` on capability lists. It does not depend on argument or return types or on the individual call (LLVM's `areTypesABICompatible` does), it need not respect set equality of lists or any implication between capabilities (the Rust Reference counts implicitly enabled features, codegen.md L475), and a mismatch garbles every argument deterministically (`v ↦ v + 1`). Capabilities affect only `needCap` statements and ABI-sensitive calls; instruction selection and other code-generation effects of target features are not modelled.",
+   "`CapsSubset` is list inclusion of capability lists.",
+   "One inlining step. `inline p f b cfg` replaces function `f` and leaves the callee `G` in `p.fns`, so this says nothing about removing `G`. `IsCallSite` allows direct self-recursion (`ci.callee = f`) and call sites inside cleanup blocks; no claim is made about termination of an inlining pass. For applying an inlining theorem again to the result: preservation of `ScopesWF` (`scopesWF_inlineFn`) and of `LocalsBounded` (`localsBounded_inlineFn`) is proved; `BlocksBounded` is not preserved when the callee jumps out of range (`cex_blocksBounded_inlineFn_oob`); preservation of `CleanupClosed`, `DestNotReadInCleanup`, `CapLegal` and `AbiInsensitive` is not examined.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L842-851: inlining is refused when the callee's and the caller's target-feature lists differ; comment, L845-849 verbatim: \"In general it is not correct to inline a callee with target features that are a / subset of the caller. This is because the callee might contain calls, and the ABI of / those calls depends on the target features of the surrounding function. By moving a / `Call` terminator from one MIR body to another with more target features, we might / change the ABI of that call!\"",
+   "The Rust Reference, rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/attributes/codegen.md L467-475, rule attributes.codegen.target_feature.safety-restrictions; L470-471 (verbatim): \"- Safe `#[target_feature]` functions (and closures that inherit the attribute) can only be safely called within a caller that enables all the `target_feature`s that the callee enables. / This restriction does not apply in an `unsafe` context.\"; L475 adds that implicitly enabled features are included (an `sse2` function can call ones marked with `sse`), and L462-465 (attributes.codegen.target_feature.target-ub) make calling a function compiled with a feature the running platform does not support undefined behaviour unless the platform documents it as safe.",
+   "LLVM llvmorg-21.1.0 (llvm/llvm-project commit 3623fe661ae35c6c80ac221f14d85be76aa870f1), llvm/lib/Target/X86/X86TargetTransformInfo.cpp L6494-6550 (`X86TTIImpl::areInlineCompatible`: equal feature sets apart from an ignore list are compatible; otherwise the callee's features must be a subset of the caller's — L6510-6511 verbatim: \"If the features are a subset, we need to additionally check for calls / that may become ABI-incompatible as a result of inlining.\" — and each call in the callee whose argument or return types include a vector or aggregate is accepted if it is inline assembly, an intrinsic, or a direct call that `areTypesABICompatible` accepts, and rejected if it is an indirect call) and L6552-6572 (`areTypesABICompatible`: after the generic check, a caller and callee that differ in `useAVX512Regs()` are treated as compatible when no type is a vector or aggregate and as incompatible otherwise); llvm/include/llvm/Analysis/TargetTransformInfo.h L1746-1752 (L1746-1747 verbatim: \"\\returns True if the caller and callee agree on how \\p Types will be / passed to or returned from the callee.\"). LLVM checks ABI compatibility per moved call and per argument type, where the toy uses one Boolean ABI class per capability list."
+  ],
+  "design_question": "Is \"caller ⊇ callee\" enough when no block of the inlined body (reachable or not) terminates in an ABI-sensitive call?",
+  "lean_names": [
+   "Toy.Inline.AbiInsensitive",
+   "Toy.Inline.Term.abiSensitive",
+   "Toy.Inline.CallInfo",
+   "Toy.Inline.nv5P",
+   "Toy.Inline.nv5F",
+   "Toy.Inline.nv5G"
+  ]
+ },
+ {
+  "id": "R9",
+  "lean": "Toy.Inline.inline_behEquiv_retTemp_of_capsSubset_capLegal_abiAgree",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "Folklore made precise: subset plus ABI agreement is the condition rustc's comment points at (inline.rs L842-851); LLVM's X86 hook checks a per-call version.",
+  "plain_claim": "At a call site `IsCallSite p f b F ci G`, suppose every hypothesis of `inline_behEquiv_retTemp_of_capsEq` other than `F.caps = G.caps` holds (`LocalsBounded F`, `LocalsBounded G`, `BlocksBounded F`, `ScopesWF F`, `ScopesWF G`, `SlotsFresh cfg F G`, `SlotsInjective cfg G`, `cfg.ret = .temp t`, `TempFresh t cfg F G`, redirected `continue` edges, `resume` rewritten by the call's unwind action, the `rustc` link rule), every capability in the callee's list is in the caller's list (`CapsSubset G F`), every `needCap c` in the callee names a capability in the callee's list (`CapLegal G`), and `p.abi F.caps = p.abi G.caps` (`AbiAgree p F G`). Then `BehEquiv p (inline p f b cfg)`, also when ABI-sensitive calls are present.",
+  "hypotheses": [
+   {
+    "name": "hsite : IsCallSite p f b F ci G",
+    "purpose": "names the objects the other hypotheses talk about: function `f` of `p` is `F`, its block `b` ends in the call `ci`, and the callee of `ci` is `G`; without it the other hypotheses constrain unrelated bodies",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_isCallSite",
+    "witness_class": "a two-function program whose function 0 is `freshF`, checked against the mismatched `F := emptyF` (no locals, no blocks); temp-mode part"
+   },
+   {
+    "name": "hlocF : LocalsBounded F",
+    "purpose": "every local mentioned by `F` (including the return place read by `ret`) is below `F.nlocals`, so slots at or above `F.nlocals` cannot clobber caller locals",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedF",
+    "witness_class": "a caller declaring 1 local that keeps local 1 live across the call (slot 1 = local 1); temp-mode part"
+   },
+   {
+    "name": "hlocG : LocalsBounded G",
+    "purpose": "every local mentioned by `G` is below `G.nlocals`, so the prologue binds or zeroes all of them",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedG",
+    "witness_class": "a callee declaring 1 local that reads local 1 (its argument), which the prologue does not bind; temp-mode part"
+   },
+   {
+    "name": "hblkF : BlocksBounded F",
+    "purpose": "every jump target of `F` (goto, branch, call target, cleanup target) is one of `F`'s blocks; a missing block would become the return block or a callee block after inlining",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_blocksBoundedF",
+    "witness_class": "a caller jumping to missing block 4: the original run ends in `ub`, the inlined run (block 4 is now a callee block) in `aborted`; the witness relies on `BehEquiv` distinguishing `ub` (see non-claims); temp-mode part"
+   },
+   {
+    "name": "hscF : ScopesWF F",
+    "purpose": "`ScopesWF F` = `ScopeTreeWF F.scopes` (scope `0` exists and carries neither `inlined` nor `inlinedParent`; every `inlinedParent` link of scope `i` points to an index `t < i`) ∧ `ScopeRefsBounded F` (every scope named by a `loc` statement or call of `F` is in range); the caller-location walk inside the merged body then agrees with the original (`locValue_inline_callerScope`, `locValue_inline_calleeScope`)",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_scopesWFF",
+    "witness_class": "a caller `loc` naming missing scope 1, which after inlining is the callee's inlined tracked scope; temp-mode part",
+    "conjuncts": "`cex_scopesWFF` breaks the `ScopeRefsBounded F` conjunct while `ScopeTreeWF F.scopes` holds (`cex_scopesWF_breaks_refs_conjunct`). The links-point-below conjunct (`ScopeParentsBelow F.scopes`) is tight for the walk theorems (`cex_walkCallee_F`, `cex_walkCaller_F`: a 3-scope table with a 2-cycle); a program-level witness for it is not given (unknown). The clean-scope-`0` conjunct of `ScopeTreeWF F.scopes`: unknown — no counterexample is given; `locValue_inline_calleeScope` and `locValue_inline_callerScope` are proved without it, and the proof of this theorem does not use it, but no theorem with it dropped is stated here."
+   },
+   {
+    "name": "hscG : ScopesWF G",
+    "purpose": "the same well-formedness for the callee's scope table and scope references",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Inline.cex_scopesWFG",
+     "Toy.Inline.cex_scopesWFG_root"
+    ],
+    "witness_class": "`cex_scopesWFG`: a tracked callee `loc` naming missing scope 1; `cex_scopesWFG_root`: a tracked callee whose scope 0 carries `inlined` (both return modes); temp-mode part",
+    "conjuncts": "`cex_scopesWFG` breaks the `ScopeRefsBounded G` conjunct (`ScopeTreeWF G.scopes` holds, `cex_scopesWF_breaks_refs_conjunct`); `cex_scopesWFG_root` breaks the clean-scope-`0` conjunct while `ScopeParentsBelow G.scopes` and `ScopeRefsBounded G` hold. The links-point-below conjunct of `G` is tight for the walk theorem (`cex_walkCallee_Gparents`); a program-level witness is not given (unknown)."
+   },
+   {
+    "name": "hfresh : SlotsFresh cfg F G",
+    "purpose": "callee locals `1 ≤ i < G.nlocals` go to host locals `≥ F.nlocals`, a range disjoint from every declared host local",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_slotsFresh",
+    "witness_class": "slot range overlapping caller local 1, which is live across the call; temp-mode part"
+   },
+   {
+    "name": "hinj : SlotsInjective cfg G",
+    "purpose": "distinct callee locals `1 ≤ i, j < G.nlocals` go to distinct host locals",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_slotsInjective",
+    "witness_class": "two callee arguments sharing host local 5; temp-mode part"
+   },
+   {
+    "name": "hret : cfg.ret = .temp t",
+    "purpose": "selects the fresh-temporary treatment of the return place: the callee writes `t` and the return block moves `t` into the destination",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_destNotReadInCleanup",
+    "witness_class": "the destination-mode configuration `(InlineCfg.canonical 2).withDest` (`ret = .dest ≠ .temp 2`) of a caller whose cleanup reads the destination; every other temp-mode hypothesis holds for it with `t = 2`, including `TempFresh 2`"
+   },
+   {
+    "name": "htemp : TempFresh t cfg F G",
+    "purpose": "`TempFresh t cfg F G` = `F.nlocals ≤ t` ∧ `t` differs from every callee slot `cfg.slot i` (`1 ≤ i < G.nlocals`)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Inline.cex_tempFresh",
+     "Toy.Inline.cex_tempFresh_callerLocal"
+    ],
+    "witness_class": "`cex_tempFresh`: the temporary equals the argument's slot, so the callee's early write to its return place clobbers the argument; `cex_tempFresh_callerLocal`: the temporary is the caller's live local 1",
+    "conjuncts": "Each conjunct is tight on its own: `cex_tempFresh` breaks the slot-disjointness conjunct while `F.nlocals ≤ t` holds (`cex_tempFresh_breaks_slot_conjunct`); `cex_tempFresh_callerLocal` breaks `F.nlocals ≤ t` while the slot-disjointness conjunct holds."
+   },
+   {
+    "name": "hcont : cfg.redirectContinue = true",
+    "purpose": "the callee's `continue` unwind edges get the call's own unwind action",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_redirectContinue",
+    "witness_class": "a callee whose inner call continues unwinding: the caller's cleanup event `out 200` is skipped; temp-mode part"
+   },
+   {
+    "name": "hres : cfg.resumeMap = .unwind",
+    "purpose": "the callee's `resume` is rewritten by the call's unwind action, not as a jump to the normal continuation",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_resumeMap",
+    "witness_class": "a callee panicking into its own cleanup: after it the inlined caller returns normally; temp-mode part"
+   },
+   {
+    "name": "hlink : cfg.link = .rustc",
+    "purpose": "the outermost callee scope's `inlinedParent` is the callsite scope if that scope carries `inlined`, else the callsite scope's own `inlinedParent`",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_linkRule",
+    "witness_class": "second-level inlining at a call in a nested, non-inlined scope of an inlined tracked callee inside an untracked host (location `10` becomes `20`); temp-mode part"
+   },
+   {
+    "name": "hsub : CapsSubset G F",
+    "purpose": "every capability in the callee's list is in the caller's list, so legal `needCap`s of the callee stay legal in the host",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.capsSubset_needed_inlined_needCap_faults",
+    "witness_class": "callee `[3]` using capability 3, host `[]`: the inlined `needCap 3` ends in `capFault`"
+   },
+   {
+    "name": "hlegal : CapLegal G",
+    "purpose": "every `needCap c` in the callee names a capability in the callee's list, so the callee does not rely on a fault that the richer host would let through",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_capLegal",
+    "witness_class": "callee `[]` executing `needCap 3`, host `[3]`: the original ends in `capFault`, the inlined program returns normally (relies on `BehEquiv` preserving `capFault`, see non-claims)"
+   },
+   {
+    "name": "hagree : AbiAgree p F G",
+    "purpose": "an ABI-sensitive call passes arguments the same way from host and callee (one global ABI class per list)",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_capsAbi",
+    "witness_class": "host list `[1]`, callee `[]` making an ABI-sensitive call, `abiC [1] ≠ abiC []`"
+   }
+  ],
+  "depth": "substantive",
+  "depth_justification": "As R2, plus capability and ABI reasoning: under `CapsSubset G F` and `CapLegal G` every `needCap` of the moved code succeeds in the host exactly when it succeeds in the callee, and under `AbiAgree p F G` every ABI-sensitive call of the moved code, and the inlined call itself, garbles its arguments in the inlined program exactly when it does in the original; proved in `lean/ToyInline/Simulation.lean`.",
+  "nonvacuity_witness": "`nv6P`: host list `[0, 2]`, callee `[2]` using capability 2 and making an ABI-sensitive call; `abiC` agrees on both lists.",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_inline_capsSubset_abiAgree",
+  "non_claims": [
+   "`BehEquiv` is equality of maximal observations, including the outcomes `ub`, `capFault` and `aborted` and argument values changed by ABI garbling, in both directions — the \"Bisimulation\" notion of Leroy (2009, Section 2.1, Definition 1), not a refinement that lets the inlined program differ where the source goes wrong (as CompCert's `forward_simulation` for safe programs or CakeML's `compile_prog_semantics` under the premise `≠ Fail` allow). The tightness witnesses of `BlocksBounded F` (source `ub`) and `CapLegal G` (`cex_capLegal`: source `capFault`, inlined normal return) have a source execution that a criterion treating these outcomes as undefined behaviour would not constrain. Whether these hypotheses are needed for a refinement criterion is not examined here.",
+   "Stated for the temporary return mode (`cfg.ret = .temp t`); no destination-mode companion is established or refuted here.",
+   "The ABI model is one program-wide map `p.abi : CapSet → Bool` on capability lists. It does not depend on argument or return types or on the individual call (LLVM's `areTypesABICompatible` does), it need not respect set equality of lists or any implication between capabilities (the Rust Reference counts implicitly enabled features, codegen.md L475), and a mismatch garbles every argument deterministically (`v ↦ v + 1`). Capabilities affect only `needCap` statements and ABI-sensitive calls; instruction selection and other code-generation effects of target features are not modelled.",
+   "`inline_behEquiv_retTemp_of_capsEq` (equal lists) is not a corollary of this theorem: it does not assume `CapLegal G`.",
+   "One inlining step. `inline p f b cfg` replaces function `f` and leaves the callee `G` in `p.fns`, so this says nothing about removing `G`. `IsCallSite` allows direct self-recursion (`ci.callee = f`) and call sites inside cleanup blocks; no claim is made about termination of an inlining pass. For applying an inlining theorem again to the result: preservation of `ScopesWF` (`scopesWF_inlineFn`) and of `LocalsBounded` (`localsBounded_inlineFn`) is proved; `BlocksBounded` is not preserved when the callee jumps out of range (`cex_blocksBounded_inlineFn_oob`); preservation of `CleanupClosed`, `DestNotReadInCleanup`, `CapLegal` and `AbiInsensitive` is not examined.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L842-851: inlining is refused when the callee's and the caller's target-feature lists differ; comment, L845-849 verbatim: \"In general it is not correct to inline a callee with target features that are a / subset of the caller. This is because the callee might contain calls, and the ABI of / those calls depends on the target features of the surrounding function. By moving a / `Call` terminator from one MIR body to another with more target features, we might / change the ABI of that call!\"",
+   "LLVM llvmorg-21.1.0 (llvm/llvm-project commit 3623fe661ae35c6c80ac221f14d85be76aa870f1), llvm/lib/Target/X86/X86TargetTransformInfo.cpp L6494-6550 (`X86TTIImpl::areInlineCompatible`: equal feature sets apart from an ignore list are compatible; otherwise the callee's features must be a subset of the caller's — L6510-6511 verbatim: \"If the features are a subset, we need to additionally check for calls / that may become ABI-incompatible as a result of inlining.\" — and each call in the callee whose argument or return types include a vector or aggregate is accepted if it is inline assembly, an intrinsic, or a direct call that `areTypesABICompatible` accepts, and rejected if it is an indirect call) and L6552-6572 (`areTypesABICompatible`: after the generic check, a caller and callee that differ in `useAVX512Regs()` are treated as compatible when no type is a vector or aggregate and as incompatible otherwise); llvm/include/llvm/Analysis/TargetTransformInfo.h L1746-1752 (L1746-1747 verbatim: \"\\returns True if the caller and callee agree on how \\p Types will be / passed to or returned from the callee.\"). LLVM checks ABI compatibility per moved call and per argument type, where the toy uses one Boolean ABI class per capability list.",
+   "rust-lang/rfcs commit f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/2396-target-feature-1.1.md L55-58, a bullet in the Motivation section describing behaviour at the time of the RFC (not a normative rule), verbatim: \"* `#[target_feature]` functions are not inlined across mismatching contexts, / which can have disastrous performance implications. Currently calling / `#[target_feature]` function from all contexts looks identical which makes it / easy for users to make these mistakes (which get reported often).\""
+  ],
+  "design_question": "What must a capability guard check when moved code contains ABI-sensitive calls?",
+  "lean_names": [
+   "Toy.Inline.AbiAgree",
+   "Toy.Inline.Program",
+   "Toy.Inline.CapSet",
+   "Toy.Inline.nv6P",
+   "Toy.Inline.nv6F",
+   "Toy.Inline.nv6G",
+   "Toy.Inline.nv6K"
+  ]
+ },
+ {
+  "id": "R10",
+  "lean": [
+   "Toy.Inline.capsSubset_guard_insufficient",
+   "Toy.Inline.capsSubset_guard_insufficient_witness"
+  ],
+  "kind": "impossibility",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "rustc's source comment states the reason informally (inline.rs L842-851); made concrete and mechanized in the toy.",
+  "plain_claim": "`capsSubset_guard_insufficient`: it is not the case that for every program, call site and configuration satisfying `IsCallSite p f b F ci G`, `LocalsBounded F`, `LocalsBounded G`, `BlocksBounded F`, `ScopesWF F`, `ScopesWF G`, `SlotsFresh cfg F G`, `SlotsInjective cfg G`, `cfg.ret = .temp t`, `TempFresh t cfg F G`, redirected `continue` edges, `resume` rewritten by the call's unwind action, the `rustc` link rule, `CapsSubset G F`, `CapLegal G` and `ci.abiSensitive = false`, the inlined program is behaviourally equivalent to the original. `capsSubset_guard_insufficient_witness` exposes the instance: in `abiP` (ABI map `abiC`) the host `capF [1]` has capability list `[1]` and the callee `abiG` has `[]`; all those hypotheses hold (canonical configuration, `t = 1`); `abiP.abi [1] ≠ abiP.abi []`; the callee's ABI-sensitive call passes `5` in the original (`run` gives `[out 5]`, `returned 0`) and `6` after inlining (`[out 6]`, `returned 0`); so `¬ BehEquiv abiP (inline abiP 0 0 (InlineCfg.canonical 1))`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Instantiates the universal with the decided instance.",
+  "nonvacuity_witness": "`capsSubset_guard_insufficient_witness` (instance `abiP`, all hypotheses of the refuted universal hold).",
+  "nonvacuity_witness_lean": "Toy.Inline.capsSubset_guard_insufficient_witness",
+  "positive_control_lean": "Toy.Inline.capsSubset_guard_positiveControl",
+  "non_claims": [
+   "Escape hatches (each removes this counterexample; (a) is backed by the proved theorems it names, while (b) and (c) are not modelled here): (a) add `AbiAgree p F G` (`inline_behEquiv_retTemp_of_capsSubset_capLegal_abiAgree`), `AbiInsensitive G` (`inline_behEquiv_retTemp_of_capsSubset_capLegal_abiInsensitive`) or require equal capability lists (`inline_behEquiv_retTemp_of_capsEq`); (b) change the IR so that each call carries its own ABI or feature annotation instead of inheriting the ABI class of the enclosing function's capabilities (not modelled here); (c) check ABI compatibility per call actually present in the callee and per argument type, as LLVM's `X86TTIImpl::areInlineCompatible` does, instead of one global comparison (not modelled here).",
+   "The refuted universal is the temp-mode statement (`cfg.ret = .temp t`); the same instance also fails in destination mode (`cex_capsAbi`), but no destination-mode universal is stated here.",
+   "Positive control: with the capability-independent ABI map of `abiPc`, the same call site satisfies every hypothesis of `inline_behEquiv_retTemp_of_capsSubset_capLegal_abiAgree`, and the inlined program is behaviourally equivalent to the original from every entry (`capsSubset_guard_positiveControl`, proved).",
+   "The garbling `v ↦ v + 1` is a toy stand-in for a calling-convention mismatch. The ABI model is one program-wide map `p.abi : CapSet → Bool` on capability lists. It does not depend on argument or return types or on the individual call (LLVM's `areTypesABICompatible` does), it need not respect set equality of lists or any implication between capabilities (the Rust Reference counts implicitly enabled features, codegen.md L475), and a mismatch garbles every argument deterministically (`v ↦ v + 1`). Capabilities affect only `needCap` statements and ABI-sensitive calls; instruction selection and other code-generation effects of target features are not modelled.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L842-851: inlining is refused when the callee's and the caller's target-feature lists differ; comment, L845-849 verbatim: \"In general it is not correct to inline a callee with target features that are a / subset of the caller. This is because the callee might contain calls, and the ABI of / those calls depends on the target features of the surrounding function. By moving a / `Call` terminator from one MIR body to another with more target features, we might / change the ABI of that call!\"",
+   "LLVM llvmorg-21.1.0 (llvm/llvm-project commit 3623fe661ae35c6c80ac221f14d85be76aa870f1), llvm/lib/Target/X86/X86TargetTransformInfo.cpp L6494-6550 (`X86TTIImpl::areInlineCompatible`: equal feature sets apart from an ignore list are compatible; otherwise the callee's features must be a subset of the caller's — L6510-6511 verbatim: \"If the features are a subset, we need to additionally check for calls / that may become ABI-incompatible as a result of inlining.\" — and each call in the callee whose argument or return types include a vector or aggregate is accepted if it is inline assembly, an intrinsic, or a direct call that `areTypesABICompatible` accepts, and rejected if it is an indirect call) and L6552-6572 (`areTypesABICompatible`: after the generic check, a caller and callee that differ in `useAVX512Regs()` are treated as compatible when no type is a vector or aggregate and as incompatible otherwise); llvm/include/llvm/Analysis/TargetTransformInfo.h L1746-1752 (L1746-1747 verbatim: \"\\returns True if the caller and callee agree on how \\p Types will be / passed to or returned from the callee.\"). LLVM checks ABI compatibility per moved call and per argument type, where the toy uses one Boolean ABI class per capability list.",
+   "rust-lang/rfcs commit f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/2396-target-feature-1.1.md L55-58, a bullet in the Motivation section describing behaviour at the time of the RFC (not a normative rule), verbatim: \"* `#[target_feature]` functions are not inlined across mismatching contexts, / which can have disastrous performance implications. Currently calling / `#[target_feature]` function from all contexts looks identical which makes it / easy for users to make these mistakes (which get reported often).\""
+  ],
+  "design_question": "Is \"caller ⊇ callee\" enough as an inlining guard in general?",
+  "lean_names": [
+   "Toy.Inline.abiP",
+   "Toy.Inline.abiPc",
+   "Toy.Inline.abiG",
+   "Toy.Inline.abiK",
+   "Toy.Inline.abiC",
+   "Toy.Inline.capF",
+   "Toy.Inline.plainCi",
+   "Toy.Inline.cex_capsAbi"
+  ]
+ },
+ {
+  "id": "R11",
+  "lean": "Toy.Inline.locValue_inline_calleeScope",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "Makes precise why rustc's scope-link rule plus `caller_location_span` implement implicit caller locations across inlining; no earlier mechanization is known to us (no systematic search recorded).",
+  "plain_claim": "For any `trackCaller` predicate `tr`, if every `inlinedParent` link of the host's scope table points to a smaller index (`ScopeParentsBelow F.scopes`), the callee's table satisfies `ScopeTreeWF` (scope `0` exists and carries neither `inlined` nor `inlinedParent`, and its links point to smaller indices), `s < G.scopes.length`, and the `rustc` link rule is used, then the caller-location value `locValue` at the shifted scope `F.scopes.length + s` of the merged table `F.scopes ++ linkScopes link F ci G`, with span `sp` and implicit location `il`, equals `locValue` at `s` in the callee's own table with implicit location `some (locValue tr F.scopes ci.scope ci.span il)` if `tr ci.callee` and `none` otherwise. (`locValue` runs the `inlinedParent` walk `walk` with fuel equal to the table length; if the walk stops at an inlined scope of an untracked callee it returns the current span, and if it reaches the end of the chain it returns the implicit location if present and the current span otherwise.)",
+  "hypotheses": [
+   {
+    "name": "hF : ScopeParentsBelow F.scopes",
+    "purpose": "host links point to smaller indices, so the host part of the walk ends within the host prefix and does not depend on its fuel (which grows with the table)",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_walkCallee_F",
+    "witness_class": "a 3-scope host table with a 2-cycle (`1 → 2 → 1`) and a 2-scope callee table"
+   },
+   {
+    "name": "hG : ScopeTreeWF G.scopes",
+    "purpose": "the callee's scope 0 carries no `inlined` or `inlinedParent` (the link rule overwrites it) and its links point to smaller indices",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Inline.cex_walkCallee_G",
+     "Toy.Inline.cex_walkCallee_Gparents"
+    ],
+    "witness_class": "`cex_walkCallee_G`: a callee whose scope 0 is an inlined untracked scope; `cex_walkCallee_Gparents`: a callee table with clean scope 0 and a 2-cycle",
+    "conjuncts": "Each conjunct is tight on its own: `cex_walkCallee_G` breaks the clean-scope-`0` conjunct (links point below there); `cex_walkCallee_Gparents` breaks the links-point-below conjunct (scope 0 is clean there)."
+   },
+   {
+    "name": "hs : s < G.scopes.length",
+    "purpose": "`s` is a callee scope",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_walkCallee_s",
+    "witness_class": "`s = 1` for a 1-scope callee"
+   },
+   {
+    "name": "hlink : link = .rustc",
+    "purpose": "the outermost callee scope links to the callsite scope's own `inlinedParent` when the callsite scope is not inlined",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_walkCallee_link",
+    "witness_class": "second-level inlining inside a nested scope of an inlined tracked callee (`linkP1`)"
+   }
+  ],
+  "depth": "substantive",
+  "depth_justification": "Strong induction on the callee scope index through three regions of the merged table, with a prefix lemma for host scopes.",
+  "nonvacuity_witness": "`linkF1` (a host already containing an inlined tracked callee and a nested scope), `linkCi1`, `linkK`, `s = 0`.",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_locValue_calleeScope",
+  "non_claims": [
+   "Together with `locValue_inline_callerScope`, `scopesWF_inlineFn` and `localsBounded_inlineFn` this is the scope part of the inductive step for nested inlinings; the induction itself, and the whole-program statement (`inline_behEquiv_retTemp_of_capsEq`), are separate.",
+   "`ScopeTreeWF` requires every link to point to a strictly smaller index, which is stronger than acyclicity (`scopeParentsBelow_neg`: an acyclic table with a link to a larger index is rejected). A callsite scope `ci.scope` outside the host table is treated on both sides as the end of the chain, so the answer falls back to `il.getD ci.span`.",
+   "Closures, function-pointer and trait-object shims (Rust Reference attributes.codegen.track_caller.decay, codegen.md L1046-1050) and lexical `parent_scope` chains are not modelled. The caller-location value is a span; file/line/column structure and the Reference's statement that the information is a hint are not modelled.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L1248-1268 (`visit_source_scope_data`: the outermost callee scope, recognised by `parent_scope.is_none()`, gets the callsite scope as lexical `parent_scope`, `inlined = Some((callee, callsite span))` and `inlined_parent_scope` = the callsite scope if it is inlined, else the callsite scope's own `inlined_parent_scope`; inner scopes without `inlined_parent_scope` get the mapped outermost callee scope). The toy has no lexical `parent_scope` and recognises the outermost scope by index `0`.",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/mod.rs L683-715 (`Body::caller_location_span`: follow `inlined_parent_scope`; at a scope with `inlined = Some((callee, callsite_span))` return the current span if the callee does not require a caller location, otherwise replace the span by `callsite_span`; at the end return the frame's caller location if present, else the current span).",
+   "rust-lang/rfcs commit f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/2091-inline-semantic.md, section \"Propagation of tracker\" (L292-310); L294-295 (verbatim): \"When your `#[track_caller]` function calls another `#[track_caller]` function, the caller location / will be propagated downwards:\".",
+   "The Rust Reference, rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/attributes/codegen.md, rule attributes.codegen.track_caller.behavior, L960-966; L964-966 (verbatim): \"an / implementation behaves as if it walks up the stack from `f`'s frame to find the nearest frame of an / *unattributed* function `outer`, and it returns the [`Location`] of the tracked call in `outer`.\" (the sentence begins on L964 with \"At the point of observation, an\"); L1043-1044: \"This information is a hint and implementations are not required to preserve it.\"; L1046-1050 (attributes.codegen.track_caller.decay): coercion to a function pointer creates a shim that loses the caller location."
+  ],
+  "design_question": "How is caller-location information preserved across multi-level inlining, through tracked and untracked wrappers?",
+  "lean_names": [
+   "Toy.Inline.locValue",
+   "Toy.Inline.walk",
+   "Toy.Inline.WalkRes",
+   "Toy.Inline.linkScopes",
+   "Toy.Inline.linkScope",
+   "Toy.Inline.ScopeTreeWF",
+   "Toy.Inline.ScopeParentsBelow",
+   "Toy.Inline.Scope.parentBelow",
+   "Toy.Inline.Scope",
+   "Toy.Inline.mapIdxFrom",
+   "Toy.Inline.nth?",
+   "Toy.Inline.linkF1",
+   "Toy.Inline.linkCi1",
+   "Toy.Inline.linkK",
+   "Toy.Inline.linkP1",
+   "Toy.Inline.scopeParentsBelow_neg"
+  ]
+ },
+ {
+  "id": "R12",
+  "lean": "Toy.Inline.locValue_inline_callerScope",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "Companion of R11 (host part of the merged table).",
+  "plain_claim": "For any `trackCaller` predicate `tr`, any link rule, call data `ci` and callee `G`, if every `inlinedParent` link of the host's table points to a smaller index (`ScopeParentsBelow F.scopes`) and `s < F.scopes.length`, then `locValue` at `s` in the merged table `F.scopes ++ linkScopes link F ci G` equals `locValue` at `s` in `F.scopes`, for every span `sp` and implicit location `il`.",
+  "hypotheses": [
+   {
+    "name": "hF : ScopeParentsBelow F.scopes",
+    "purpose": "host links point to smaller indices (the walk's fuel grows with the table)",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_walkCaller_F",
+    "witness_class": "a host table with a 2-cycle"
+   },
+   {
+    "name": "hs : s < F.scopes.length",
+    "purpose": "`s` is a host scope",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_walkCaller_s",
+    "witness_class": "`s` equal to the host table's length (the appended callee scope 0)"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "Host chains stay inside the host prefix (one prefix lemma).",
+  "nonvacuity_witness": "`linkF1`, scope 2.",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_locValue_callerScope",
+  "non_claims": [
+   "Holds for every `LinkRule`, including the wrong `LinkRule.ignoreParent`, so it does not validate the scope-link rule (that is `locValue_inline_calleeScope` with `hlink`).",
+   "The hypothesis `s < F.scopes.length` restricts the statement to host scopes; for `s` at or beyond the host table the value can change (`cex_walkCaller_s`).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/mod.rs L683-715 (`Body::caller_location_span`: follow `inlined_parent_scope`; at a scope with `inlined = Some((callee, callsite_span))` return the current span if the callee does not require a caller location, otherwise replace the span by `callsite_span`; at the end return the frame's caller location if present, else the current span)."
+  ],
+  "design_question": "Does inlining disturb caller-location values of the host's own code?",
+  "lean_names": [
+   "Toy.Inline.locValue",
+   "Toy.Inline.linkScopes",
+   "Toy.Inline.ScopeParentsBelow"
+  ]
+ },
+ {
+  "id": "R13",
+  "lean": "Toy.Inline.scopesWF_inlineFn",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "Bookkeeping lemma making R11 iterable; folklore made precise.",
+  "plain_claim": "For any configuration `cfg` and any call data `ci`: if block `b` of `F` is `B`, `F` satisfies `ScopesWF` (clean scope `0`, links pointing to smaller indices, scope references in range), every `inlinedParent` link of the callee's table points to a smaller index (`ScopeParentsBelow G.scopes`) and the callee's scope references are in range (`ScopeRefsBounded G`), then `inlineFn F b B ci G cfg` satisfies `ScopesWF`.",
+  "hypotheses": [
+   {
+    "name": "hB : nth? F.blocks b = some B",
+    "purpose": "the call block passed in is the host's block `b`",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_scopesWF_B",
+    "witness_class": "a block naming a missing scope passed in place of block 0"
+   },
+   {
+    "name": "hF : ScopesWF F",
+    "purpose": "host well-formedness (the merged table starts with the host table)",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.Inline.cex_scopesWF_F",
+     "Toy.Inline.cex_scopesWF_Froot",
+     "Toy.Inline.cex_scopesWF_Fparents"
+    ],
+    "witness_class": "`cex_scopesWF_F`: a host `loc` naming a missing scope; `cex_scopesWF_Froot`: a host whose scope 0 carries `inlined`; `cex_scopesWF_Fparents`: a host scope linking to itself",
+    "conjuncts": "Each of the three conjuncts is tight on its own: `cex_scopesWF_F` breaks `ScopeRefsBounded F`, `cex_scopesWF_Froot` the clean-scope-`0` conjunct, `cex_scopesWF_Fparents` the links-point-below conjunct, each with the other two holding."
+   },
+   {
+    "name": "hGpb : ScopeParentsBelow G.scopes",
+    "purpose": "shifted callee links stay below their (shifted) scope",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_scopesWF_Gparents",
+    "witness_class": "a callee scope linking to itself"
+   },
+   {
+    "name": "hGref : ScopeRefsBounded G",
+    "purpose": "shifted callee scope references stay in range",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_scopesWF_G",
+    "witness_class": "a callee `loc` naming a missing scope"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "Index arithmetic on the appended table and case analysis on the spliced blocks.",
+  "nonvacuity_witness": "`linkF`, its block 0, `linkCi0`, `linkG`.",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_scopesWF_inlineFn",
+  "non_claims": [
+   "Holds for every `cfg` (including the wrong `LinkRule.ignoreParent`, a wrong `resumeMap` or overlapping slots) and for any `ci` (not required to be `B`'s call), so `ScopesWF` preservation does not validate the semantic correctness of scope linking or of the splice.",
+   "The callee's scope 0 need not be clean (`linkScope` overwrites it); `ScopesWF G`, as assumed by the inlining theorems, implies both callee hypotheses.",
+   "Of the other hypotheses that the inlining theorems assume and that a further inlining step would have to re-establish, `LocalsBounded` preservation is proved (`localsBounded_inlineFn`) and `BlocksBounded` preservation fails when the callee jumps out of range (`cex_blocksBounded_inlineFn_oob`); `CleanupClosed`, `DestNotReadInCleanup`, `CapLegal` and `AbiInsensitive` preservation is not examined.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L1248-1268 (`visit_source_scope_data`: the outermost callee scope, recognised by `parent_scope.is_none()`, gets the callsite scope as lexical `parent_scope`, `inlined = Some((callee, callsite span))` and `inlined_parent_scope` = the callsite scope if it is inlined, else the callsite scope's own `inlined_parent_scope`; inner scopes without `inlined_parent_scope` get the mapped outermost callee scope). The toy has no lexical `parent_scope` and recognises the outermost scope by index `0`."
+  ],
+  "design_question": "Does the scope-link rule keep scope tables well formed under repeated inlining?",
+  "lean_names": [
+   "Toy.Inline.ScopeRefsBounded",
+   "Toy.Inline.ScopesWF",
+   "Toy.Inline.Block.scopeRefs",
+   "Toy.Inline.Stmt.scopes",
+   "Toy.Inline.Term.scopes",
+   "Toy.Inline.linkF",
+   "Toy.Inline.linkG",
+   "Toy.Inline.linkCi0"
+  ]
+ },
+ {
+  "id": "R14",
+  "lean": "Toy.Inline.innermost_policy_wrong_for_tracked_chain",
+  "kind": "counterexample",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "A concrete mechanized witness against a naive caller-location policy.",
+  "plain_claim": "For tracked `k` called (span `20`) by tracked `g` called (span `10`) by untracked `f` (`chainP true`), and `chainQ true` obtained by inlining `g` into `f` and then the copied call to `k`: `runWith pol (chainP true)` with step budget 30 (at most 30 steps) from `e0` gives `[loc 10]` and `returned 0` for every policy `pol` (`.walk`, `.innermost`, `.outermost`); `run` (the scope walk) of `chainQ true` with step budget 40 (at most 40 steps) gives `[loc 10]`, `returned 0`, and `BehEquivAt (chainP true) (chainQ true) e0`; the innermost-span policy on `chainQ true` gives `[loc 20]`, `returned 0`, so `chainP true` and `chainQ true` are not behaviourally equivalent from `e0` under `.innermost`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Decided by evaluation.",
+  "nonvacuity_witness": "The theorem is itself the instance.",
+  "nonvacuity_witness_lean": "Toy.Inline.innermost_policy_wrong_for_tracked_chain",
+  "non_claims": [
+   "Refutes `.innermost` on one two-level tracked-chain instance from one entry. It does not show that `.walk` is the only policy that preserves behaviour, and it does not show that `.innermost` fails for single-level inlining into an untracked host (not examined here).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "rust-lang/rfcs commit f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/2091-inline-semantic.md, section \"Propagation of tracker\" (L292-310); L294-295 (verbatim): \"When your `#[track_caller]` function calls another `#[track_caller]` function, the caller location / will be propagated downwards:\".",
+   "The Rust Reference, rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/attributes/codegen.md, rule attributes.codegen.track_caller.behavior, L960-966; L964-966 (verbatim): \"an / implementation behaves as if it walks up the stack from `f`'s frame to find the nearest frame of an / *unattributed* function `outer`, and it returns the [`Location`] of the tracked call in `outer`.\" (the sentence begins on L964 with \"At the point of observation, an\"); L1043-1044: \"This information is a hint and implementations are not required to preserve it.\"; L1046-1050 (attributes.codegen.track_caller.decay): coercion to a function pointer creates a shim that loses the caller location.",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/mod.rs L683-715 (`Body::caller_location_span`: follow `inlined_parent_scope`; at a scope with `inlined = Some((callee, callsite_span))` return the current span if the callee does not require a caller location, otherwise replace the span by `callsite_span`; at the end return the frame's caller location if present, else the current span)."
+  ],
+  "design_question": "Which caller-location computation is correct after inlining tracked chains?",
+  "lean_names": [
+   "Toy.Inline.LocPolicy",
+   "Toy.Inline.locValueWith",
+   "Toy.Inline.firstInlined",
+   "Toy.Inline.chainP",
+   "Toy.Inline.chainQ",
+   "Toy.Inline.chainF",
+   "Toy.Inline.chainG",
+   "Toy.Inline.chainK",
+   "Toy.Inline.run_chain_tracked"
+  ]
+ },
+ {
+  "id": "R15",
+  "lean": "Toy.Inline.outermost_policy_wrong_for_untracked_wrapper",
+  "kind": "counterexample",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "A concrete mechanized witness against a naive caller-location policy.",
+  "plain_claim": "For tracked `k` called (span `20`) by an untracked wrapper `g` called (span `10`) by `f` (`chainP false`), and `chainQ false` obtained by inlining both calls: `runWith pol (chainP false)` with step budget 30 (at most 30 steps) from `e0` gives `[loc 20]` and `returned 0` for every policy `pol`; `run` of `chainQ false` with step budget 40 (at most 40 steps) gives `[loc 20]`, `returned 0`, and `BehEquivAt (chainP false) (chainQ false) e0`; the outermost-span policy on `chainQ false` gives `[loc 10]`, `returned 0`, so the two programs are not behaviourally equivalent from `e0` under `.outermost`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Decided by evaluation.",
+  "nonvacuity_witness": "The theorem is itself the instance.",
+  "nonvacuity_witness_lean": "Toy.Inline.outermost_policy_wrong_for_untracked_wrapper",
+  "non_claims": [
+   "Refutes `.outermost` on one two-level instance with an untracked wrapper, from one entry. It does not show that `.walk` is the only policy that preserves behaviour, and it does not show that `.outermost` fails when every intermediate inlined callee is tracked (not examined here).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "The Rust Reference, rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/attributes/codegen.md, rule attributes.codegen.track_caller.behavior, L960-966; L964-966 (verbatim): \"an / implementation behaves as if it walks up the stack from `f`'s frame to find the nearest frame of an / *unattributed* function `outer`, and it returns the [`Location`] of the tracked call in `outer`.\" (the sentence begins on L964 with \"At the point of observation, an\"); L1043-1044: \"This information is a hint and implementations are not required to preserve it.\"; L1046-1050 (attributes.codegen.track_caller.decay): coercion to a function pointer creates a shim that loses the caller location.",
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/mod.rs L683-715 (`Body::caller_location_span`: follow `inlined_parent_scope`; at a scope with `inlined = Some((callee, callsite_span))` return the current span if the callee does not require a caller location, otherwise replace the span by `callsite_span`; at the end return the frame's caller location if present, else the current span)."
+  ],
+  "design_question": "Which caller-location computation is correct after inlining through untracked wrappers?",
+  "lean_names": [
+   "Toy.Inline.lastInlinedSpan",
+   "Toy.Inline.run_chain_wrapper"
+  ]
+ },
+ {
+  "id": "R16",
+  "lean": "Toy.Inline.linkRule_ignoreParent_changes_location",
+  "kind": "counterexample",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "Determines which link variant breaks, with a concrete mechanized witness.",
+  "plain_claim": "In `linkP1`, the host `linkF1` already contains the inlined body of the tracked `linkG` (called from the untracked host with span `10`); its block `3` holds the copied call `linkCi1` to the tracked `linkK`, issued from a nested, non-inlined scope of the inlined callee with span `20`. With `linkCfg` (the canonical configuration for 2 host locals except `link = .ignoreParent`, the variant that sets the outermost callee scope's `inlinedParent` to none when the callsite scope is not inlined), every hypothesis of `inline_behEquiv_retTemp_of_capsEq` other than `hlink` holds (`t = 2`), and `CleanupClosed linkF1` and `DestNotReadInCleanup linkF1 linkCi1.dest` hold. `run` of `linkP1` from `e0` gives `[loc 10]`, `returned 0`; `run` of the inlined program with `linkCfg` and with `linkCfg.withDest` gives `[loc 20]`, `returned 0`; neither inlined program is behaviourally equivalent to `linkP1`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Decided by evaluation.",
+  "nonvacuity_witness": "The theorem is itself the instance.",
+  "nonvacuity_witness_lean": "Toy.Inline.linkRule_ignoreParent_changes_location",
+  "non_claims": [
+   "Varies only the branch of `linkScope` for the outermost callee scope (`j = 0`) when the callsite scope is not inlined; the branch for an inlined callsite scope (`c.inlined.isSome`) and the rule linking inner callee scopes without `inlinedParent` to the outermost callee scope (`none => some ns`) are not varied here.",
+   "`linkP1 = inlineCanon linkP0 0 0` (`linkP1_eq`). The walk-level form of the same failure is `cex_walkCallee_link`.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "rust-lang/rust commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_mir_transform/src/inline.rs L1248-1268 (`visit_source_scope_data`: the outermost callee scope, recognised by `parent_scope.is_none()`, gets the callsite scope as lexical `parent_scope`, `inlined = Some((callee, callsite span))` and `inlined_parent_scope` = the callsite scope if it is inlined, else the callsite scope's own `inlined_parent_scope`; inner scopes without `inlined_parent_scope` get the mapped outermost callee scope). The toy has no lexical `parent_scope` and recognises the outermost scope by index `0`."
+  ],
+  "design_question": "Which part of the scope-link rule is needed for nested inlining?",
+  "lean_names": [
+   "Toy.Inline.linkP1",
+   "Toy.Inline.linkP0",
+   "Toy.Inline.linkF1",
+   "Toy.Inline.linkCi1",
+   "Toy.Inline.linkCfg",
+   "Toy.Inline.linkP1_eq",
+   "Toy.Inline.cex_walkCallee_link",
+   "Toy.Inline.LinkRule",
+   "Toy.Inline.cfgWith",
+   "Toy.Inline.linkF",
+   "Toy.Inline.linkG",
+   "Toy.Inline.linkK",
+   "Toy.Inline.linkCi0"
+  ]
+ },
+ {
+  "id": "R17",
+  "lean": "Toy.Inline.behEquiv_trans",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T0",
+  "tier_justification": "Transitivity of behavioural equivalence (cf. composition of verified passes, Leroy 2009, Section 2.3); a structural reference point.",
+  "plain_claim": "If `BehEquiv p q` and `BehEquiv q r` (behavioural equivalence from every entry), then `BehEquiv p r`.",
+  "hypotheses": [
+   {
+    "name": "h₁ : BehEquiv p q",
+    "purpose": "first step",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_trans_left",
+    "witness_class": "one-block returning versus panicking programs"
+   },
+   {
+    "name": "h₂ : BehEquiv q r",
+    "purpose": "second step",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_trans_right",
+    "witness_class": "one-block returning versus panicking programs"
+   }
+  ],
+  "depth": "definitional",
+  "depth_justification": "Composition of prefix witnesses (`Obs.Prefix.trans`).",
+  "nonvacuity_witness": "Three pairwise distinct programs: `pMissing`, `pUnr`, `pGotoUnr`, with `BehEquiv pMissing pUnr` and `BehEquiv pUnr pGotoUnr`.",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_behEquiv_trans",
+  "non_claims": [
+   "A structural reference point: it composes equivalences but does not mention `inline`. It does not re-establish the hypotheses of the inlining theorems on an intermediate program; for that, `scopesWF_inlineFn` and `localsBounded_inlineFn` are proved, `BlocksBounded` can fail (`cex_blocksBounded_inlineFn_oob`), and the remaining hypotheses must be checked on each intermediate program.",
+   "Says nothing about whether different inlining orders produce the same program; in this toy they need not (`inline_order_changes_body`), and whether they agree up to renaming of locals, blocks and scopes is unknown.",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "Xavier Leroy, \"A formally verified compiler back-end\", Journal of Automated Reasoning 43(4):363–446, 2009, doi:10.1007/s10817-009-9155-4 (arXiv:0902.2137), Section 2.3 (\"Composition of compilation passes\": verified passes compose when the semantic preservation property is transitive).",
+   "Martin Desharnais, \"A Generic Framework for Verified Compilers\", Archive of Formal Proofs, February 2020, https://isa-afp.org/entries/VeriComp.html (Isabelle/HOL locales for simulations and their composition)."
+  ],
+  "design_question": "Reference point: do behaviour-preserving inlining steps compose?",
+  "lean_names": [
+   "Toy.Inline.behEquiv_refl",
+   "Toy.Inline.pGotoUnr",
+   "Toy.Inline.behEquiv_pMissing_pUnr",
+   "Toy.Inline.behEquiv_pUnr_pGotoUnr",
+   "Toy.Inline.Obs.Prefix.trans"
+  ]
+ },
+ {
+  "id": "R18",
+  "lean": "Toy.Inline.inline_order_changes_body",
+  "kind": "counterexample",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "That the result of successive inlining steps depends on their order is informal common knowledge about inliners; here a mechanized instance in this toy's conventions (a reference point).",
+  "plain_claim": "With the canonical configuration, in `ordP` (`h` calls `f`, `f` calls `g`): inlining `g` into `f` and then the new `f` into `h` (`ordQ1`) gives function `0` (`h`) a body with 11 statements; inlining `f` into `h` and then `g` into the copied call (`ordQ2`) gives 9 statements; so the two bodies of `h` differ; from the entry `e0 = ⟨0, [], 0⟩` both programs are behaviourally equivalent to `ordP`.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_justification": "Decided by evaluation.",
+  "nonvacuity_witness": "The theorem is itself the instance.",
+  "nonvacuity_witness_lean": "Toy.Inline.inline_order_changes_body",
+  "non_claims": [
+   "A reference point about this toy's conventions: the difference comes from the prologue zero-initialising every callee local (the first order initialises the inner callee's slots twice); it is not a statement about any real inliner.",
+   "Compares function `0` (`h`) only; `ordQ1` also replaces `f` (function `1`) while `ordQ2` leaves it unchanged (`inline_order_other_fns`). Behavioural equivalence is shown from the single entry `e0`, not from every entry.",
+   "Equality up to renaming and dead-statement removal is not examined (unknown).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "Simon Peyton Jones and Simon Marlow, \"Secrets of the Glasgow Haskell Compiler inliner\", Journal of Functional Programming 12(4–5):393–434, 2002, doi:10.1017/S0956796802004331 (design of a production inliner; a bibliographic pointer, not relied on for any statement of this card)."
+  ],
+  "design_question": "Reference point: should a verified inliner's composition property be stated up to behaviour rather than syntax?",
+  "lean_names": [
+   "Toy.Inline.ordP",
+   "Toy.Inline.ordQ1",
+   "Toy.Inline.ordQ2",
+   "Toy.Inline.ordH",
+   "Toy.Inline.ordF",
+   "Toy.Inline.ordG",
+   "Toy.Inline.Fn.totalStmts",
+   "Toy.Inline.inline_order_other_fns"
+  ]
+ },
+ {
+  "id": "R19",
+  "lean": "Toy.Inline.localsBounded_inlineFn",
+  "kind": "theorem",
+  "status": "proved",
+  "tier": "T1",
+  "tier_justification": "Bookkeeping lemma making the inlining theorems iterable with respect to `LocalsBounded`; folklore made precise.",
+  "plain_claim": "For any configuration `cfg`: if block `b` of `F` is `B`, `B` ends in the call `ci` (`B.term = .call ci`), and `F` and `G` satisfy `LocalsBounded`, then the new body `inlineFn F b B ci G cfg` satisfies `LocalsBounded`. Its declared-local count is `max (max F.nlocals (maxSucc (cfg.rename ci.dest) G.nlocals)) (retTempSucc cfg)`, which also covers the return temporary when the callee declares no locals.",
+  "hypotheses": [
+   {
+    "name": "hB : nth? F.blocks b = some B",
+    "purpose": "the call block passed in is the host's block `b`",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedInline_B",
+    "witness_class": "a block mentioning `var 9` passed in place of block 0"
+   },
+   {
+    "name": "hterm : B.term = .call ci",
+    "purpose": "the call's destination and arguments, which the return block and prologue mention, are locals of `B`",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedInline_term",
+    "witness_class": "block 0 ends in `goto 0` while `ci` has destination 7, which the return block writes"
+   },
+   {
+    "name": "hF : LocalsBounded F",
+    "purpose": "host blocks are kept",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedInline_F",
+    "witness_class": "a host block mentioning `var 3` with one declared local"
+   },
+   {
+    "name": "hG : LocalsBounded G",
+    "purpose": "renamed callee locals stay below the new count",
+    "tightness": "tight",
+    "counterexample": "Toy.Inline.cex_localsBoundedInline_G",
+    "witness_class": "a callee mentioning `var 5` with one declared local (renamed to host local 6)"
+   }
+  ],
+  "depth": "shallow",
+  "depth_justification": "Case analysis on the spliced blocks with a bound for `maxSucc`.",
+  "nonvacuity_witness": "`linkF`, its block 0 (ending in `linkCi0`), `linkG`.",
+  "nonvacuity_witness_lean": "Toy.Inline.nonvacuity_localsBounded_inlineFn",
+  "non_claims": [
+   "Says nothing about behaviour; it is one of the side conditions for applying the inlining theorems again. `BlocksBounded` is not preserved when the callee jumps out of range (`cex_blocksBounded_inlineFn_oob`).",
+   "Holds for every configuration `cfg`, including slot maps that are not fresh or not injective (`SlotsFresh`, `SlotsInjective` are not assumed) and the wrong rewriting variants, so it does not validate the renaming. In temp mode (`cfg.ret = .temp t`) the declared-local count includes `t + 1` (`retTempSucc cfg`) even when `ci.target = none`, where `inlineFn` adds no return block and nothing reads the temporary; the count is an upper bound, not the least bound.",
+   "`inlineFn_nlocals_covers_retTemp` checks the edge case of a callee with no locals in temp mode (new count `2` for one host local).",
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, CompCert or any other compiler."
+  ],
+  "prior_art": [
+   "CompCert v3.18 (AbsInt/CompCert commit 14d616046360a0b2611ebdfc2f98368af402e1f7), backend/Inlining.v L166-186 (`Record context`: a source instruction at PC `n` is relocated to `n + ctx.(dpc)`, pseudo-registers are shifted by `ctx.(dreg)`, and \"return\" instructions become \"return\" or \"move\" instructions as governed by `ctx.(retinfo)`) and backend/Inliningproof.v L1297-1305 (`Theorem transf_program_correct: forward_simulation (semantics prog) (semantics tprog).`). RTL has no unwinding, cleanup blocks, capability guards or caller-location scopes."
+  ],
+  "design_question": "Does one inlining step keep bodies free of undeclared locals, so that inlining can be iterated?",
+  "lean_names": [
+   "Toy.Inline.retTempSucc",
+   "Toy.Inline.maxSucc",
+   "Toy.Inline.lt_maxSucc",
+   "Toy.Inline.inlineFn_nlocals_covers_retTemp",
+   "Toy.Inline.cex_blocksBounded_inlineFn_oob",
+   "Toy.Inline.zeroF",
+   "Toy.Inline.zeroG",
+   "Toy.Inline.zeroCi",
+   "Toy.Inline.oobG"
+  ]
+ }
+]

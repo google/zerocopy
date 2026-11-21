@@ -1,0 +1,91 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/simulation",
+    "compilers/inlining",
+    "compilers/unwinding",
+    "rustc/mir",
+    "rust/track-caller",
+    "rust/target-feature"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "rustc (MIR inliner, caller locations)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Rust RFCs 2091 (implicit caller location) and 2396 (target_feature 1.1)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "CompCert (inlining pass and its proof)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "version": "v3.18",
+        "revision": "14d616046360a0b2611ebdfc2f98368af402e1f7"
+      }
+    },
+    {
+      "name": "LLVM (InlineFunction and X86 inline compatibility)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "version": "llvmorg-21.1.0",
+        "revision": "3623fe661ae35c6c80ac221f14d85be76aa870f1"
+      }
+    },
+    {
+      "name": "CakeML compiler backend (BVL inliner and its proof)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "16bdb1aaaab64a6ac66504ad2e9f0ed6146060e9"
+      }
+    },
+    {
+      "name": "A formally verified compiler back-end",
+      "identity": {
+        "doi": "10.1007/s10817-009-9155-4"
+      }
+    },
+    {
+      "name": "The verified CakeML compiler backend",
+      "identity": {
+        "doi": "10.1017/S0956796818000229"
+      }
+    },
+    {
+      "name": "Defining liveness",
+      "identity": {
+        "doi": "10.1016/0020-0190(85)90056-0"
+      }
+    },
+    {
+      "name": "A Generic Framework for Verified Compilers (Archive of Formal Proofs)",
+      "identity": {
+        "url": "https://isa-afp.org/entries/VeriComp.html"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
