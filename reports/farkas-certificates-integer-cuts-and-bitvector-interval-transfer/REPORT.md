@@ -81,7 +81,7 @@ Lean `leanprover/lean4:v4.34.1`, core library only: no Mathlib, no other depende
 - Every theorem is labeled `Basis: execution (Lean kernel check)`. Any claim connecting a Lean statement to rational numbers or to real systems is a separate `Basis: derived (modeling bridge)` line with its reasoning.
 - Counterexamples are in canonical form: all other hypotheses hold and the conclusion fails.
 - Each card's non-claims are listed under Boundaries; each card's statement and definition-closure hashes are listed under Evidence.
-- Lean statements are printed by Lean's `#check` (namespace `Toy.Farkas` opened). Definitions they use are quoted in full under Core definitions.
+- Lean statements are printed by Lean's `#check` (namespace `Toy.Farkas` opened). Definitions they use are quoted in full under Core definitions. Where the default `#check` output would not elaborate back to the theorem's statement, it is printed with `set_option pp.numericTypes true` (every numeral shows its type; used where a numeral's type is not fixed by its context, e.g. `(0 : Int) < (1 : Int)`, which the default output prints as `0 < 1` and which would then elaborate over `Nat`) or with `set_option pp.structureInstanceTypes true` (every structure instance shows its type, as in `{ terms := …, const := 0 : AffExpr }`).
 
 ### Core definitions
 
@@ -649,9 +649,10 @@ theorem SparseVec.isZero_iff_coeff_eq_zero (v : SparseVec) : v.isZero = true ↔
 
 ```lean
 theorem ce_farkas_negative_multiplier :
-  multipliersNonneg [1, -1] = false ∧
-    lhsVanishes sysTwoUpper [1, -1] = true ∧
-      rhsContradicts sysTwoUpper [1, -1] = true ∧ 0 < 1 ∧ SatScaled sysTwoUpper 1 (pt1 0) ∧ SatInt sysTwoUpper (pt1 0)
+  multipliersNonneg [(1 : Int), (-1 : Int)] = false ∧
+    lhsVanishes sysTwoUpper [(1 : Int), (-1 : Int)] = true ∧
+      rhsContradicts sysTwoUpper [(1 : Int), (-1 : Int)] = true ∧
+        (0 : Int) < (1 : Int) ∧ SatScaled sysTwoUpper (1 : Int) (pt1 (0 : Int)) ∧ SatInt sysTwoUpper (pt1 (0 : Int))
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `multipliersNonneg`, `lhsVanishes`, `sysTwoUpper`, `rhsContradicts`, `SatScaled`, `pt1`, `SatInt`.
@@ -674,11 +675,12 @@ theorem ce_farkas_negative_multiplier :
 
 ```lean
 theorem ce_farkas_strictness_ignored :
-  multipliersNonneg [1, 1] = true ∧
-    lhsVanishes sysEq [1, 1] = true ∧
-      rhsContradictsIgnoringStrictness sysEq [1, 1] = true ∧
-        rhsContradicts sysEq [1, 1] = false ∧
-          checkFarkas sysEq [1, 1] = false ∧ 0 < 1 ∧ SatInt sysEq (pt1 1) ∧ SatScaled sysEq 1 (pt1 1)
+  multipliersNonneg [(1 : Int), (1 : Int)] = true ∧
+    lhsVanishes sysEq [(1 : Int), (1 : Int)] = true ∧
+      rhsContradictsIgnoringStrictness sysEq [(1 : Int), (1 : Int)] = true ∧
+        rhsContradicts sysEq [(1 : Int), (1 : Int)] = false ∧
+          checkFarkas sysEq [(1 : Int), (1 : Int)] = false ∧
+            (0 : Int) < (1 : Int) ∧ SatInt sysEq (pt1 (1 : Int)) ∧ SatScaled sysEq (1 : Int) (pt1 (1 : Int))
 
 theorem ce_farkas_strict_flag_from_zero_weight :
   multipliersNonneg [1, 1, 0] = true ∧
@@ -733,8 +735,9 @@ theorem checkFarkasTightened_sound_int (S : List Constraint) (cert : List Int)
 
 ```lean
 theorem ce_tightening_unsound_over_rat :
-  checkFarkasTightened sysOpenUnit [1, 1] = true ∧
-    checkFarkas sysOpenUnit [1, 1] = false ∧ 0 < 2 ∧ SatScaled sysOpenUnit 2 (pt1 1)
+  checkFarkasTightened sysOpenUnit [(1 : Int), (1 : Int)] = true ∧
+    checkFarkas sysOpenUnit [(1 : Int), (1 : Int)] = false ∧
+      (0 : Int) < (2 : Int) ∧ SatScaled sysOpenUnit (2 : Int) (pt1 (1 : Int))
 ```
 
 - **Key definitions** (quoted in full under Core definitions): `checkFarkasTightened`, `sysOpenUnit`, `checkFarkas`, `SatScaled`, `pt1`.
@@ -1124,19 +1127,19 @@ theorem ce_bv_rearrangement_unsound :
   (InUnsignedRange 8 (eX0.evalInt (uval (bvPt2 0#8 1#8))) ∧
       InUnsignedRange 8 (eX1.evalInt (uval (bvPt2 0#8 1#8))) ∧
         (AffExpr.evalBv 8 eX0 (bvPt2 0#8 1#8)).ule (AffExpr.evalBv 8 eX1 (bvPt2 0#8 1#8)) = true ∧
-          (AffExpr.evalBv 8 { terms := [(0, 1), (1, -1)], const := 0 } (bvPt2 0#8 1#8)).ule
+          (AffExpr.evalBv 8 { terms := [(0, 1), (1, -1)], const := 0 : AffExpr } (bvPt2 0#8 1#8)).ule
                 (AffExpr.evalBv 8 (eConst 0) (bvPt2 0#8 1#8)) =
               false ∧
-            { terms := [(0, 1), (1, -1)], const := 0 }.evalInt (uval (bvPt2 0#8 1#8)) ≤
+            { terms := [(0, 1), (1, -1)], const := 0 : AffExpr }.evalInt (uval (bvPt2 0#8 1#8)) ≤
               (eConst 0).evalInt (uval (bvPt2 0#8 1#8))) ∧
     sval (bvPt2 156#8 100#8) 0 = -100 ∧
       InSignedRange 8 (eX0.evalInt (sval (bvPt2 156#8 100#8))) ∧
         InSignedRange 8 (eX1.evalInt (sval (bvPt2 156#8 100#8))) ∧
           (AffExpr.evalBv 8 eX0 (bvPt2 156#8 100#8)).sle (AffExpr.evalBv 8 eX1 (bvPt2 156#8 100#8)) = true ∧
-            (AffExpr.evalBv 8 { terms := [(0, 1), (1, -1)], const := 0 } (bvPt2 156#8 100#8)).sle
+            (AffExpr.evalBv 8 { terms := [(0, 1), (1, -1)], const := 0 : AffExpr } (bvPt2 156#8 100#8)).sle
                   (AffExpr.evalBv 8 (eConst 0) (bvPt2 156#8 100#8)) =
                 false ∧
-              { terms := [(0, 1), (1, -1)], const := 0 }.evalInt (sval (bvPt2 156#8 100#8)) ≤
+              { terms := [(0, 1), (1, -1)], const := 0 : AffExpr }.evalInt (sval (bvPt2 156#8 100#8)) ≤
                 (eConst 0).evalInt (sval (bvPt2 156#8 100#8))
 ```
 
@@ -1243,9 +1246,13 @@ theorem ce_bv_ule_rhs_out_of_range :
         eX0.evalInt (uval (bvPt2 200#8 0#8)) ≤ (eConst 300).evalInt (uval (bvPt2 200#8 0#8))
 
 theorem ce_cgCut_div_one_unsound_over_rat :
-  cgValid sysOpenUnit { mult := [1, 1], div := 1 } = true ∧
-    cgCut sysOpenUnit { mult := [1, 1], div := 1 } = { lhs := [(0, 0)], rel := Rel.le, rhs := -1 } ∧
-      0 < 2 ∧ SatScaled sysOpenUnit 2 (pt1 1) ∧ ¬(cgCut sysOpenUnit { mult := [1, 1], div := 1 }).HoldsScaled 2 (pt1 1)
+  cgValid sysOpenUnit { mult := [(1 : Int), (1 : Int)], div := (1 : Int) } = true ∧
+    cgCut sysOpenUnit { mult := [(1 : Int), (1 : Int)], div := (1 : Int) } =
+        { lhs := [((0 : Nat), (0 : Int))], rel := Rel.le, rhs := (-1 : Int) } ∧
+      (0 : Int) < (2 : Int) ∧
+        SatScaled sysOpenUnit (2 : Int) (pt1 (1 : Int)) ∧
+          ¬(cgCut sysOpenUnit { mult := [(1 : Int), (1 : Int)], div := (1 : Int) }).HoldsScaled (2 : Int)
+              (pt1 (1 : Int))
 
 theorem ce_cgCut_negative_divisor :
   multipliersNonneg [1] = true ∧
@@ -1255,31 +1262,42 @@ theorem ce_cgCut_negative_divisor :
           ¬(cgCut [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] { mult := [1], div := -1 }).HoldsInt (pt1 (-1))
 
 theorem ce_cgCut_negative_multiplier :
-  multipliersNonneg [-1] = false ∧
-    0 < 1 ∧
-      cgDivisible [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] { mult := [-1], div := 1 } = true ∧
-        SatInt [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] (pt1 (-1)) ∧
-          ¬(cgCut [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] { mult := [-1], div := 1 }).HoldsInt (pt1 (-1))
+  multipliersNonneg [(-1 : Int)] = false ∧
+    (0 : Int) < (1 : Int) ∧
+      cgDivisible [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (0 : Int) }]
+            { mult := [(-1 : Int)], div := (1 : Int) } =
+          true ∧
+        SatInt [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (0 : Int) }] (pt1 (-1 : Int)) ∧
+          ¬(cgCut [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (0 : Int) }]
+                  { mult := [(-1 : Int)], div := (1 : Int) }).HoldsInt
+              (pt1 (-1 : Int))
 
 theorem ce_cgCut_not_divisible :
-  multipliersNonneg [1] = true ∧
-    0 < 2 ∧
-      cgDivisible [{ lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := 0 }] { mult := [1], div := 2 } = false ∧
-        SatInt [{ lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := 0 }] (pt2 (-1) (-1)) ∧
-          ¬(cgCut [{ lhs := [(0, 1), (1, -1)], rel := Rel.le, rhs := 0 }] { mult := [1], div := 2 }).HoldsInt
-              (pt2 (-1) (-1))
+  multipliersNonneg [(1 : Int)] = true ∧
+    (0 : Int) < (2 : Int) ∧
+      cgDivisible [{ lhs := [((0 : Nat), (1 : Int)), ((1 : Nat), (-1 : Int))], rel := Rel.le, rhs := (0 : Int) }]
+            { mult := [(1 : Int)], div := (2 : Int) } =
+          false ∧
+        SatInt [{ lhs := [((0 : Nat), (1 : Int)), ((1 : Nat), (-1 : Int))], rel := Rel.le, rhs := (0 : Int) }]
+            (pt2 (-1 : Int) (-1 : Int)) ∧
+          ¬(cgCut [{ lhs := [((0 : Nat), (1 : Int)), ((1 : Nat), (-1 : Int))], rel := Rel.le, rhs := (0 : Int) }]
+                  { mult := [(1 : Int)], div := (2 : Int) }).HoldsInt
+              (pt2 (-1 : Int) (-1 : Int))
 
 theorem ce_cgCut_point_not_solution :
-  multipliersNonneg [1] = true ∧
-    0 < 2 ∧
-      cgDivisible sysTwoXLeThree { mult := [1], div := 2 } = true ∧
-        ¬SatInt sysTwoXLeThree (pt1 5) ∧ ¬(cgCut sysTwoXLeThree { mult := [1], div := 2 }).HoldsInt (pt1 5)
+  multipliersNonneg [(1 : Int)] = true ∧
+    (0 : Int) < (2 : Int) ∧
+      cgDivisible sysTwoXLeThree { mult := [(1 : Int)], div := (2 : Int) } = true ∧
+        ¬SatInt sysTwoXLeThree (pt1 (5 : Int)) ∧
+          ¬(cgCut sysTwoXLeThree { mult := [(1 : Int)], div := (2 : Int) }).HoldsInt (pt1 (5 : Int))
 
 theorem ce_cgCut_unsound_over_rat :
-  multipliersNonneg [1, 0] = true ∧
-    0 < 2 ∧
-      cgDivisible sysHalf { mult := [1, 0], div := 2 } = true ∧
-        0 < 2 ∧ SatScaled sysHalf 2 (pt1 1) ∧ ¬(cgCut sysHalf { mult := [1, 0], div := 2 }).HoldsScaled 2 (pt1 1)
+  multipliersNonneg [(1 : Int), (0 : Int)] = true ∧
+    (0 : Int) < (2 : Int) ∧
+      cgDivisible sysHalf { mult := [(1 : Int), (0 : Int)], div := (2 : Int) } = true ∧
+        (0 : Int) < (2 : Int) ∧
+          SatScaled sysHalf (2 : Int) (pt1 (1 : Int)) ∧
+            ¬(cgCut sysHalf { mult := [(1 : Int), (0 : Int)], div := (2 : Int) }).HoldsScaled (2 : Int) (pt1 (1 : Int))
 
 theorem ce_cgDerive_rejected :
   cgDerive [{ lhs := [(0, 1)], rel := Rel.le, rhs := 0 }] { mult := [-1], div := 1 } = none ∧
@@ -1291,7 +1309,7 @@ theorem ce_checkCutCert_rejects_satisfiable :
     SatInt sysTwoXLeThree (pt1 1)
 
 theorem ce_checkCutCert_unsound_over_rat :
-  checkCutCert sysHalf halfCutCert = true ∧ 0 < 2 ∧ SatScaled sysHalf 2 (pt1 1)
+  checkCutCert sysHalf halfCutCert = true ∧ (0 : Int) < (2 : Int) ∧ SatScaled sysHalf (2 : Int) (pt1 (1 : Int))
 
 theorem ce_checkFarkasTightened_rejects_satisfiable :
   checkFarkasTightened sysEq [1, 1] = false ∧ SatInt sysEq (pt1 1)
@@ -1335,8 +1353,10 @@ theorem ce_checkFarkas_refutes_bv_rejected :
                 ∀ (a : BvAtom), a ∈ atomsLe → BvAtom.HoldsS 8 a (bvPt2 0#8 0#8)
 
 theorem ce_checkFarkas_rejected_satisfiable :
-  checkFarkas sysEq [1, 1] = false ∧
-    0 < 1 ∧ SatScaled sysEq 1 (pt1 1) ∧ SatInt sysEq (pt1 1) ∧ posSupport [1, 1] sysEq = sysEq
+  checkFarkas sysEq [(1 : Int), (1 : Int)] = false ∧
+    (0 : Int) < (1 : Int) ∧
+      SatScaled sysEq (1 : Int) (pt1 (1 : Int)) ∧
+        SatInt sysEq (pt1 (1 : Int)) ∧ posSupport [(1 : Int), (1 : Int)] sysEq = sysEq
 
 theorem ce_eval_eq_denseDotOn_duplicate_index_list :
   ¬[0, 0].Nodup ∧
@@ -1353,24 +1373,28 @@ theorem ce_eval_eq_denseDot_index_out_of_range :
     (SparseVec.eval [(1, 1)] fun x => 1) ≠ denseDot 1 (SparseVec.coeff [(1, 1)]) fun x => 1
 
 theorem ce_farkas_complete_feasible_system :
-  0 < 1 ∧ SatScaled sysEq 1 (pt1 1) ∧ ¬∃ cert, checkFarkas sysEq cert = true
+  (0 : Int) < (1 : Int) ∧ SatScaled sysEq (1 : Int) (pt1 (1 : Int)) ∧ ¬∃ cert, checkFarkas sysEq cert = true
 
 theorem ce_farkas_denominator_zero :
-  checkFarkas [{ lhs := [], rel := Rel.le, rhs := -1 }] [1] = true ∧
-    multipliersNonneg [1] = true ∧
-      lhsVanishes [{ lhs := [], rel := Rel.le, rhs := -1 }] [1] = true ∧
-        rhsContradicts [{ lhs := [], rel := Rel.le, rhs := -1 }] [1] = true ∧
-          ¬0 < 0 ∧ SatScaled [{ lhs := [], rel := Rel.le, rhs := -1 }] 0 fun x => 0
+  checkFarkas [{ lhs := [], rel := Rel.le, rhs := (-1 : Int) }] [(1 : Int)] = true ∧
+    multipliersNonneg [(1 : Int)] = true ∧
+      lhsVanishes [{ lhs := [], rel := Rel.le, rhs := (-1 : Int) }] [(1 : Int)] = true ∧
+        rhsContradicts [{ lhs := [], rel := Rel.le, rhs := (-1 : Int) }] [(1 : Int)] = true ∧
+          ¬(0 : Int) < (0 : Int) ∧
+            SatScaled [{ lhs := [], rel := Rel.le, rhs := (-1 : Int) }] (0 : Int) fun x => (0 : Int)
 
 theorem ce_farkas_lhs_not_vanishing :
-  multipliersNonneg [1] = true ∧
-    lhsVanishes [{ lhs := [(0, 1)], rel := Rel.le, rhs := -1 }] [1] = false ∧
-      rhsContradicts [{ lhs := [(0, 1)], rel := Rel.le, rhs := -1 }] [1] = true ∧
-        0 < 1 ∧ SatScaled [{ lhs := [(0, 1)], rel := Rel.le, rhs := -1 }] 1 (pt1 (-1))
+  multipliersNonneg [(1 : Int)] = true ∧
+    lhsVanishes [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (-1 : Int) }] [(1 : Int)] = false ∧
+      rhsContradicts [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (-1 : Int) }] [(1 : Int)] = true ∧
+        (0 : Int) < (1 : Int) ∧
+          SatScaled [{ lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (-1 : Int) }] (1 : Int) (pt1 (-1 : Int))
 
 theorem ce_farkas_rhs_not_contradicting :
-  multipliersNonneg [1, 1] = true ∧
-    lhsVanishes sysEq [1, 1] = true ∧ rhsContradicts sysEq [1, 1] = false ∧ 0 < 1 ∧ SatScaled sysEq 1 (pt1 1)
+  multipliersNonneg [(1 : Int), (1 : Int)] = true ∧
+    lhsVanishes sysEq [(1 : Int), (1 : Int)] = true ∧
+      rhsContradicts sysEq [(1 : Int), (1 : Int)] = false ∧
+        (0 : Int) < (1 : Int) ∧ SatScaled sysEq (1 : Int) (pt1 (1 : Int))
 
 theorem nv_bv_sle_slt_noWrapS :
   NoWrapS 8 eDouble (sval (bvPt2 206#8 0#8)) ∧ NoWrapS 8 (eConst 0) (sval (bvPt2 206#8 0#8))
@@ -1390,12 +1414,13 @@ theorem nv_bv_ule_ult_transfer :
       (AffExpr.evalBv 8 eDouble (bvPt2 70#8 0#8)).ule (AffExpr.evalBv 8 (eConst 150) (bvPt2 70#8 0#8)) = true
 
 theorem nv_cgCut_sound_int :
-  multipliersNonneg [1] = true ∧
-    0 < 2 ∧
-      cgDivisible sysTwoXLeThree { mult := [1], div := 2 } = true ∧
-        SatInt sysTwoXLeThree (pt1 1) ∧
-          cgDerive sysTwoXLeThree { mult := [1], div := 2 } = some { lhs := [(0, 1)], rel := Rel.le, rhs := 1 } ∧
-            (cgCut sysTwoXLeThree { mult := [1], div := 2 }).HoldsInt (pt1 1)
+  multipliersNonneg [(1 : Int)] = true ∧
+    (0 : Int) < (2 : Int) ∧
+      cgDivisible sysTwoXLeThree { mult := [(1 : Int)], div := (2 : Int) } = true ∧
+        SatInt sysTwoXLeThree (pt1 (1 : Int)) ∧
+          cgDerive sysTwoXLeThree { mult := [(1 : Int)], div := (2 : Int) } =
+              some { lhs := [((0 : Nat), (1 : Int))], rel := Rel.le, rhs := (1 : Int) } ∧
+            (cgCut sysTwoXLeThree { mult := [(1 : Int)], div := (2 : Int) }).HoldsInt (pt1 (1 : Int))
 
 theorem nv_checkCutCert_sound_int : checkCutCert sysHalf halfCutCert = true
 
@@ -1423,10 +1448,17 @@ theorem nv_checkFarkas_refutes_bv_two_sided :
 theorem nv_checkFarkas_sound : checkFarkas sysLeGe [1, 1] = true ∧ checkFarkas sysStrict [1, 1] = true
 
 theorem nv_checkFarkas_sound_posSupport :
-  checkFarkas (sysLeGe ++ [{ lhs := [(1, 1)], rel := Rel.le, rhs := -7 }]) [1, 1, 0] = true ∧
-    posSupport [1, 1, 0] (sysLeGe ++ [{ lhs := [(1, 1)], rel := Rel.le, rhs := -7 }]) = sysLeGe ∧ 0 < 1
+  checkFarkas (sysLeGe ++ [{ lhs := [((1 : Nat), (1 : Int))], rel := Rel.le, rhs := (-7 : Int) }])
+        [(1 : Int), (1 : Int), (0 : Int)] =
+      true ∧
+    posSupport [(1 : Int), (1 : Int), (0 : Int)]
+          (sysLeGe ++ [{ lhs := [((1 : Nat), (1 : Int))], rel := Rel.le, rhs := (-7 : Int) }]) =
+        sysLeGe ∧
+      (0 : Int) < (1 : Int)
 
-theorem nv_checkFarkas_sound_scaled : checkFarkas sysLeGe [1, 1] = true ∧ checkFarkas sysStrict [1, 1] = true ∧ 0 < 1
+theorem nv_checkFarkas_sound_scaled :
+  checkFarkas sysLeGe [(1 : Int), (1 : Int)] = true ∧
+    checkFarkas sysStrict [(1 : Int), (1 : Int)] = true ∧ (0 : Int) < (1 : Int)
 
 theorem nv_combineLhs_coeff : (combineLhs sysLeGe [2, 3]).coeff 0 = 2 * 1 + 3 * -1
 
@@ -1450,7 +1482,9 @@ theorem nv_farkas_complete_scaled :
       checkFarkas sysLeGe [1, 1] = true ∧ checkFarkas sysStrict [1, 1] = true
 
 theorem nv_farkas_sound_structured :
-  multipliersNonneg [1, 1] = true ∧ lhsVanishes sysLeGe [1, 1] = true ∧ rhsContradicts sysLeGe [1, 1] = true ∧ 0 < 1
+  multipliersNonneg [(1 : Int), (1 : Int)] = true ∧
+    lhsVanishes sysLeGe [(1 : Int), (1 : Int)] = true ∧
+      rhsContradicts sysLeGe [(1 : Int), (1 : Int)] = true ∧ (0 : Int) < (1 : Int)
 
 theorem nv_isZero_iff : SparseVec.isZero [(3, 2), (3, -2)] = true ∧ SparseVec.coeff [(3, 2), (3, -2)] 3 = 0
 
@@ -1547,9 +1581,10 @@ theorem ce_checkFarkasTightened_incomplete_int :
     (∀ (x : Nat → Int), ¬SatInt sysHalf x) ∧ ∀ (cert : List Int), checkFarkasTightened sysHalf cert = false
 
 theorem ce_checkFarkas_bv_incomplete :
-  (∀ (v : BitVec 8), ¬∀ (a : BvAtom), a ∈ atomsHalfU → BvAtom.HoldsU 8 a (bvPt2 v 0#8)) ∧
-    0 < 2 ∧
-      SatScaled (List.map BvAtom.toConstraint atomsHalfU) 2 (pt1 1) ∧
+  (∀ (v : BitVec (8 : Nat)),
+      ¬∀ (a : BvAtom), a ∈ atomsHalfU → BvAtom.HoldsU (8 : Nat) a (bvPt2 v (BitVec.ofNat (8 : Nat) (0 : Nat)))) ∧
+    (0 : Int) < (2 : Int) ∧
+      SatScaled (List.map BvAtom.toConstraint atomsHalfU) (2 : Int) (pt1 (1 : Int)) ∧
         ∀ (cert : List Int), checkFarkas (List.map BvAtom.toConstraint atomsHalfU) cert = false
 
 theorem cgLhs_eval_le_cgRhs (S : List Constraint) (k : CGStep) (hnn : multipliersNonneg k.mult = true)
@@ -1673,7 +1708,7 @@ theorem Motzkin.Deriv.trans {H H' : List Motzkin.HC} (hH : ∀ (g : Motzkin.HC),
 
 ### Statements of the definition examples
 
-The positive and negative examples cited under Core definitions, grouped by source module in the order in which they are cited there. They use only the definitions quoted under Core definitions, are kernel-checked with standard axioms only (recorded in `audit/axioms.json`), and carry no recorded statement hash. Statements are printed by Lean's `#check` (namespace `Toy.Farkas` opened); in them `↑` is a coercion to `Int` (from `Nat`; `↑↑v` for `v : Fin n` goes through `Nat`), and a statement with a binder such as `(v : Fin 7)` is a bounded check over all values of that finite type.
+The positive and negative examples cited under Core definitions, grouped by source module in the order in which they are cited there. They use only the definitions quoted under Core definitions, are kernel-checked with standard axioms only (recorded in `audit/axioms.json`), and carry no recorded statement hash. Statements are printed by Lean's `#check` (namespace `Toy.Farkas` opened; printing options as described under Conventions); in them `↑` is a coercion to `Int` (from `Nat`; `↑↑v` for `v : Fin n` goes through `Nat`), and a statement with a binder such as `(v : Fin 7)` is a bounded check over all values of that finite type.
 
 #### `ToyFarkas/Sparse.lean`
 
@@ -1710,15 +1745,15 @@ theorem ex_denseDot_neg : (denseDot 3 (fun i => ↑i) fun x => 1) ≠ 6
 #### `ToyFarkas/Constraint.lean`
 
 ```lean
-theorem ex_holdsInt_pos : { lhs := [(0, 2), (1, -1)], rel := Rel.le, rhs := 3 }.HoldsInt (pt2 2 1)
+theorem ex_holdsInt_pos : { lhs := [(0, 2), (1, -1)], rel := Rel.le, rhs := 3 : Constraint }.HoldsInt (pt2 2 1)
 
-theorem ex_holdsInt_neg : ¬{ lhs := [(0, 2), (1, -1)], rel := Rel.le, rhs := 3 }.HoldsInt (pt2 3 1)
+theorem ex_holdsInt_neg : ¬{ lhs := [(0, 2), (1, -1)], rel := Rel.le, rhs := 3 : Constraint }.HoldsInt (pt2 3 1)
 
-theorem ex_holdsInt_strict_neg : ¬{ lhs := [(0, 1)], rel := Rel.lt, rhs := 2 }.HoldsInt (pt1 2)
+theorem ex_holdsInt_strict_neg : ¬{ lhs := [(0, 1)], rel := Rel.lt, rhs := 2 : Constraint }.HoldsInt (pt1 2)
 
-theorem ex_holdsScaled_pos : { lhs := [(0, 2)], rel := Rel.le, rhs := 1 }.HoldsScaled 2 (pt1 1)
+theorem ex_holdsScaled_pos : { lhs := [(0, 2)], rel := Rel.le, rhs := 1 : Constraint }.HoldsScaled 2 (pt1 1)
 
-theorem ex_holdsScaled_neg : ¬{ lhs := [(0, 2)], rel := Rel.le, rhs := 1 }.HoldsScaled 2 (pt1 3)
+theorem ex_holdsScaled_neg : ¬{ lhs := [(0, 2)], rel := Rel.le, rhs := 1 : Constraint }.HoldsScaled 2 (pt1 3)
 
 theorem ex_satScaled_pos :
   SatScaled [{ lhs := [(0, 2)], rel := Rel.le, rhs := 1 }, { lhs := [(0, -2)], rel := Rel.le, rhs := -1 }] 2 (pt1 1)
@@ -1734,9 +1769,9 @@ theorem ex_satInt_neg (v : Fin 7) :
 
 theorem ex_satScaled_denominator_zero_degenerate : SatScaled [{ lhs := [], rel := Rel.le, rhs := -1 }] 0 fun x => 0
 
-theorem ex_isStrict_pos : { lhs := [(0, 1)], rel := Rel.lt, rhs := 1 }.isStrict = true
+theorem ex_isStrict_pos : { lhs := [(0, 1)], rel := Rel.lt, rhs := 1 : Constraint }.isStrict = true
 
-theorem ex_isStrict_neg : { lhs := [(0, 1)], rel := Rel.le, rhs := 1 }.isStrict = false
+theorem ex_isStrict_neg : { lhs := [(0, 1)], rel := Rel.le, rhs := 1 : Constraint }.isStrict = false
 ```
 
 #### `ToyFarkas/Checker.lean`
@@ -1795,10 +1830,12 @@ theorem ex_rhsContradictsAnyPremise_pos : rhsContradictsAnyPremise sysEqPlusStri
 theorem ex_rhsContradictsAnyPremise_neg : rhsContradictsAnyPremise sysEq [1, 1] = false
 
 theorem ex_tighten_pos :
-  { lhs := [(0, 1)], rel := Rel.lt, rhs := 1 }.tighten = { lhs := [(0, 1)], rel := Rel.le, rhs := 0 }
+  { lhs := [(0, 1)], rel := Rel.lt, rhs := 1 : Constraint }.tighten =
+    { lhs := [(0, 1)], rel := Rel.le, rhs := 0 : Constraint }
 
 theorem ex_tighten_neg :
-  { lhs := [(0, 1)], rel := Rel.le, rhs := 1 }.tighten ≠ { lhs := [(0, 1)], rel := Rel.le, rhs := 0 }
+  { lhs := [(0, 1)], rel := Rel.le, rhs := 1 : Constraint }.tighten ≠
+    { lhs := [(0, 1)], rel := Rel.le, rhs := 0 : Constraint }
 
 theorem ex_isZeroIndexBlind_pos : isZeroIndexBlind [(0, 1), (0, -1)] = true
 
@@ -1876,8 +1913,8 @@ theorem ex_checkCutCert_no_cuts_no_tightening :
 ```lean
 theorem ex_noWrapU_rejects_machine_subtraction :
   (10#8 - 3#8).toNat = 7 ∧
-    { terms := [(0, 1), (1, -1)], const := 0 }.evalInt (uval (bvPt2 10#8 3#8)) = 7 ∧
-      ¬NoWrapU 8 { terms := [(0, 1), (1, -1)], const := 0 } (uval (bvPt2 10#8 3#8))
+    { terms := [(0, 1), (1, -1)], const := 0 : AffExpr }.evalInt (uval (bvPt2 10#8 3#8)) = 7 ∧
+      ¬NoWrapU 8 { terms := [(0, 1), (1, -1)], const := 0 : AffExpr } (uval (bvPt2 10#8 3#8))
 
 theorem ex_evalInt_pos : eDouble.evalInt (uval (bvPt2 200#8 0#8)) = 400
 
