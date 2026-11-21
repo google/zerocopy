@@ -1,0 +1,972 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.DropScope.Act": [],
+    "Toy.DropScope.Act.casesOn": [],
+    "Toy.DropScope.Act.ctorElim": [],
+    "Toy.DropScope.Act.ctorElimType": [],
+    "Toy.DropScope.Act.ctorIdx": [],
+    "Toy.DropScope.Act.dropLocal": [],
+    "Toy.DropScope.Act.dropLocal.elim": [],
+    "Toy.DropScope.Act.dropLocal.inj": [],
+    "Toy.DropScope.Act.dropLocal.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.dropLocal.noConfusion": [],
+    "Toy.DropScope.Act.dropLocal.sizeOf_spec": [],
+    "Toy.DropScope.Act.dropTemp": [],
+    "Toy.DropScope.Act.dropTemp.elim": [],
+    "Toy.DropScope.Act.dropTemp.inj": [],
+    "Toy.DropScope.Act.dropTemp.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.dropTemp.noConfusion": [],
+    "Toy.DropScope.Act.dropTemp.sizeOf_spec": [],
+    "Toy.DropScope.Act.dropTempKey?": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.events": [],
+    "Toy.DropScope.Act.events.eq_1": [],
+    "Toy.DropScope.Act.events.eq_2": [],
+    "Toy.DropScope.Act.events.eq_3": [],
+    "Toy.DropScope.Act.events.eq_4": [],
+    "Toy.DropScope.Act.events.eq_5": [],
+    "Toy.DropScope.Act.isDropTemp": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.isDropTemp.eq_1": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.isDropTemp.eq_2": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.isDropTemp.match_1": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.mkLocal": [],
+    "Toy.DropScope.Act.mkLocal.elim": [],
+    "Toy.DropScope.Act.mkLocal.inj": [],
+    "Toy.DropScope.Act.mkLocal.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.mkLocal.noConfusion": [],
+    "Toy.DropScope.Act.mkLocal.sizeOf_spec": [],
+    "Toy.DropScope.Act.mkTemp": [],
+    "Toy.DropScope.Act.mkTemp.elim": [],
+    "Toy.DropScope.Act.mkTemp.inj": [],
+    "Toy.DropScope.Act.mkTemp.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.mkTemp.noConfusion": [],
+    "Toy.DropScope.Act.mkTemp.sizeOf_spec": [],
+    "Toy.DropScope.Act.mkTempKey?": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.mkTempKey?.eq_1": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.mkTempKey?.eq_2": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.mkTempKey?.match_1": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.noConfusion": [],
+    "Toy.DropScope.Act.noConfusionType": [],
+    "Toy.DropScope.Act.out": [],
+    "Toy.DropScope.Act.out.elim": [],
+    "Toy.DropScope.Act.out.inj": [],
+    "Toy.DropScope.Act.out.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Act.out.noConfusion": [],
+    "Toy.DropScope.Act.out.sizeOf_spec": [],
+    "Toy.DropScope.Act.rec": [],
+    "Toy.DropScope.Act.recOn": [],
+    "Toy.DropScope.Arm": [],
+    "Toy.DropScope.Arm.casesOn": [],
+    "Toy.DropScope.Arm.ctorElim": [],
+    "Toy.DropScope.Arm.ctorElimType": [],
+    "Toy.DropScope.Arm.ctorIdx": [],
+    "Toy.DropScope.Arm.goto": [],
+    "Toy.DropScope.Arm.goto.elim": [],
+    "Toy.DropScope.Arm.goto.inj": [],
+    "Toy.DropScope.Arm.goto.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Arm.goto.noConfusion": [],
+    "Toy.DropScope.Arm.goto.sizeOf_spec": [],
+    "Toy.DropScope.Arm.noConfusion": [],
+    "Toy.DropScope.Arm.noConfusionType": [],
+    "Toy.DropScope.Arm.rec": [],
+    "Toy.DropScope.Arm.recOn": [],
+    "Toy.DropScope.Arm.unreachable": [],
+    "Toy.DropScope.Arm.unreachable.elim": [],
+    "Toy.DropScope.Arm.unreachable.sizeOf_spec": [],
+    "Toy.DropScope.Arm.usePayload": [],
+    "Toy.DropScope.Arm.usePayload.elim": [],
+    "Toy.DropScope.Arm.usePayload.inj": [],
+    "Toy.DropScope.Arm.usePayload.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Arm.usePayload.noConfusion": [],
+    "Toy.DropScope.Arm.usePayload.sizeOf_spec": [],
+    "Toy.DropScope.Before": [
+      "propext"
+    ],
+    "Toy.DropScope.BehIncl": [],
+    "Toy.DropScope.Block": [],
+    "Toy.DropScope.Block.below": [],
+    "Toy.DropScope.Block.brecOn": [],
+    "Toy.DropScope.Block.brecOn.eq": [],
+    "Toy.DropScope.Block.brecOn.go": [],
+    "Toy.DropScope.Block.casesOn": [],
+    "Toy.DropScope.Block.ctorElim": [],
+    "Toy.DropScope.Block.ctorElimType": [],
+    "Toy.DropScope.Block.ctorIdx": [],
+    "Toy.DropScope.Block.exprS": [],
+    "Toy.DropScope.Block.exprS.elim": [],
+    "Toy.DropScope.Block.exprS.inj": [],
+    "Toy.DropScope.Block.exprS.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Block.exprS.noConfusion": [],
+    "Toy.DropScope.Block.exprS.sizeOf_spec": [],
+    "Toy.DropScope.Block.letS": [],
+    "Toy.DropScope.Block.letS.elim": [],
+    "Toy.DropScope.Block.letS.inj": [],
+    "Toy.DropScope.Block.letS.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Block.letS.noConfusion": [],
+    "Toy.DropScope.Block.letS.sizeOf_spec": [],
+    "Toy.DropScope.Block.noConfusion": [],
+    "Toy.DropScope.Block.noConfusionType": [],
+    "Toy.DropScope.Block.rec": [],
+    "Toy.DropScope.Block.recOn": [],
+    "Toy.DropScope.Block.tail": [],
+    "Toy.DropScope.Block.tail.elim": [],
+    "Toy.DropScope.Block.tail.inj": [],
+    "Toy.DropScope.Block.tail.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Block.tail.noConfusion": [],
+    "Toy.DropScope.Block.tail.sizeOf_spec": [],
+    "Toy.DropScope.Commute": [],
+    "Toy.DropScope.DiscrSem": [],
+    "Toy.DropScope.DiscrSem.casesOn": [],
+    "Toy.DropScope.DiscrSem.ctorIdx": [],
+    "Toy.DropScope.DiscrSem.invalid": [],
+    "Toy.DropScope.DiscrSem.mk": [],
+    "Toy.DropScope.DiscrSem.mk.inj": [],
+    "Toy.DropScope.DiscrSem.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.DiscrSem.mk.noConfusion": [],
+    "Toy.DropScope.DiscrSem.mk.sizeOf_spec": [],
+    "Toy.DropScope.DiscrSem.noConfusion": [],
+    "Toy.DropScope.DiscrSem.noConfusionType": [],
+    "Toy.DropScope.DiscrSem.rec": [],
+    "Toy.DropScope.DiscrSem.recOn": [],
+    "Toy.DropScope.DiscrSem.uninh": [],
+    "Toy.DropScope.Edition": [],
+    "Toy.DropScope.Edition.casesOn": [],
+    "Toy.DropScope.Edition.ctorElim": [],
+    "Toy.DropScope.Edition.ctorElimType": [],
+    "Toy.DropScope.Edition.ctorIdx": [],
+    "Toy.DropScope.Edition.e2021": [],
+    "Toy.DropScope.Edition.e2021.elim": [],
+    "Toy.DropScope.Edition.e2021.sizeOf_spec": [],
+    "Toy.DropScope.Edition.e2024": [],
+    "Toy.DropScope.Edition.e2024.elim": [],
+    "Toy.DropScope.Edition.e2024.sizeOf_spec": [],
+    "Toy.DropScope.Edition.noConfusion": [],
+    "Toy.DropScope.Edition.noConfusionType": [],
+    "Toy.DropScope.Edition.ofNat": [],
+    "Toy.DropScope.Edition.ofNat_ctorIdx": [],
+    "Toy.DropScope.Edition.rec": [],
+    "Toy.DropScope.Edition.recOn": [],
+    "Toy.DropScope.Edition.rules": [],
+    "Toy.DropScope.Enum": [],
+    "Toy.DropScope.Enum.inhabitedTag": [
+      "propext"
+    ],
+    "Toy.DropScope.Enum.inhabitedTag.eq_1": [
+      "propext"
+    ],
+    "Toy.DropScope.Ev": [],
+    "Toy.DropScope.Ev.casesOn": [],
+    "Toy.DropScope.Ev.ctorElim": [],
+    "Toy.DropScope.Ev.ctorElimType": [],
+    "Toy.DropScope.Ev.ctorIdx": [],
+    "Toy.DropScope.Ev.dtor": [],
+    "Toy.DropScope.Ev.dtor.elim": [],
+    "Toy.DropScope.Ev.dtor.inj": [],
+    "Toy.DropScope.Ev.dtor.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Ev.dtor.noConfusion": [],
+    "Toy.DropScope.Ev.dtor.sizeOf_spec": [],
+    "Toy.DropScope.Ev.noConfusion": [],
+    "Toy.DropScope.Ev.noConfusionType": [],
+    "Toy.DropScope.Ev.out": [],
+    "Toy.DropScope.Ev.out.elim": [],
+    "Toy.DropScope.Ev.out.inj": [],
+    "Toy.DropScope.Ev.out.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Ev.out.noConfusion": [],
+    "Toy.DropScope.Ev.out.sizeOf_spec": [],
+    "Toy.DropScope.Ev.rec": [],
+    "Toy.DropScope.Ev.recOn": [],
+    "Toy.DropScope.Expr": [],
+    "Toy.DropScope.Expr.below": [],
+    "Toy.DropScope.Expr.block": [],
+    "Toy.DropScope.Expr.block.elim": [],
+    "Toy.DropScope.Expr.block.inj": [],
+    "Toy.DropScope.Expr.block.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Expr.block.noConfusion": [],
+    "Toy.DropScope.Expr.block.sizeOf_spec": [],
+    "Toy.DropScope.Expr.brecOn": [],
+    "Toy.DropScope.Expr.brecOn.eq": [],
+    "Toy.DropScope.Expr.brecOn.go": [],
+    "Toy.DropScope.Expr.casesOn": [],
+    "Toy.DropScope.Expr.ctorElim": [],
+    "Toy.DropScope.Expr.ctorElimType": [],
+    "Toy.DropScope.Expr.ctorIdx": [],
+    "Toy.DropScope.Expr.ifLet": [],
+    "Toy.DropScope.Expr.ifLet.elim": [],
+    "Toy.DropScope.Expr.ifLet.inj": [],
+    "Toy.DropScope.Expr.ifLet.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Expr.ifLet.noConfusion": [],
+    "Toy.DropScope.Expr.ifLet.sizeOf_spec": [],
+    "Toy.DropScope.Expr.matchE": [],
+    "Toy.DropScope.Expr.matchE.elim": [],
+    "Toy.DropScope.Expr.matchE.inj": [],
+    "Toy.DropScope.Expr.matchE.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Expr.matchE.noConfusion": [],
+    "Toy.DropScope.Expr.matchE.sizeOf_spec": [],
+    "Toy.DropScope.Expr.noConfusion": [],
+    "Toy.DropScope.Expr.noConfusionType": [],
+    "Toy.DropScope.Expr.out": [],
+    "Toy.DropScope.Expr.out.elim": [],
+    "Toy.DropScope.Expr.out.inj": [],
+    "Toy.DropScope.Expr.out.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Expr.out.noConfusion": [],
+    "Toy.DropScope.Expr.out.sizeOf_spec": [],
+    "Toy.DropScope.Expr.rec": [],
+    "Toy.DropScope.Expr.recOn": [],
+    "Toy.DropScope.Expr.seq": [],
+    "Toy.DropScope.Expr.seq.elim": [],
+    "Toy.DropScope.Expr.seq.inj": [],
+    "Toy.DropScope.Expr.seq.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Expr.seq.noConfusion": [],
+    "Toy.DropScope.Expr.seq.sizeOf_spec": [],
+    "Toy.DropScope.Expr.temp": [],
+    "Toy.DropScope.Expr.temp.elim": [],
+    "Toy.DropScope.Expr.temp.inj": [],
+    "Toy.DropScope.Expr.temp.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Expr.temp.noConfusion": [],
+    "Toy.DropScope.Expr.temp.sizeOf_spec": [],
+    "Toy.DropScope.Expr.unit": [],
+    "Toy.DropScope.Expr.unit.elim": [],
+    "Toy.DropScope.Expr.unit.sizeOf_spec": [],
+    "Toy.DropScope.Flipped": [
+      "propext"
+    ],
+    "Toy.DropScope.InvalidRead": [],
+    "Toy.DropScope.InvalidRead.casesOn": [],
+    "Toy.DropScope.InvalidRead.ctorElim": [],
+    "Toy.DropScope.InvalidRead.ctorElimType": [],
+    "Toy.DropScope.InvalidRead.ctorIdx": [],
+    "Toy.DropScope.InvalidRead.noConfusion": [],
+    "Toy.DropScope.InvalidRead.noConfusionType": [],
+    "Toy.DropScope.InvalidRead.ofNat": [],
+    "Toy.DropScope.InvalidRead.ofNat_ctorIdx": [],
+    "Toy.DropScope.InvalidRead.passThrough": [],
+    "Toy.DropScope.InvalidRead.passThrough.elim": [],
+    "Toy.DropScope.InvalidRead.passThrough.sizeOf_spec": [],
+    "Toy.DropScope.InvalidRead.rec": [],
+    "Toy.DropScope.InvalidRead.recOn": [],
+    "Toy.DropScope.InvalidRead.rejectInvalid": [],
+    "Toy.DropScope.InvalidRead.rejectInvalid.elim": [],
+    "Toy.DropScope.InvalidRead.rejectInvalid.sizeOf_spec": [],
+    "Toy.DropScope.NicheEnc": [],
+    "Toy.DropScope.NicheEnc.casesOn": [],
+    "Toy.DropScope.NicheEnc.ctorIdx": [],
+    "Toy.DropScope.NicheEnc.decode": [],
+    "Toy.DropScope.NicheEnc.mk": [],
+    "Toy.DropScope.NicheEnc.mk.inj": [],
+    "Toy.DropScope.NicheEnc.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.NicheEnc.mk.noConfusion": [],
+    "Toy.DropScope.NicheEnc.mk.sizeOf_spec": [],
+    "Toy.DropScope.NicheEnc.nicheHi": [],
+    "Toy.DropScope.NicheEnc.nicheLo": [],
+    "Toy.DropScope.NicheEnc.nicheStart": [],
+    "Toy.DropScope.NicheEnc.noConfusion": [],
+    "Toy.DropScope.NicheEnc.noConfusionType": [],
+    "Toy.DropScope.NicheEnc.rec": [],
+    "Toy.DropScope.NicheEnc.recOn": [],
+    "Toy.DropScope.NicheEnc.untagged": [],
+    "Toy.DropScope.NoIfLetEscapingTemps": [],
+    "Toy.DropScope.NoTailEscapingTemps": [],
+    "Toy.DropScope.Outcome": [],
+    "Toy.DropScope.Outcome.casesOn": [],
+    "Toy.DropScope.Outcome.ctorElim": [],
+    "Toy.DropScope.Outcome.ctorElimType": [],
+    "Toy.DropScope.Outcome.ctorIdx": [],
+    "Toy.DropScope.Outcome.noConfusion": [],
+    "Toy.DropScope.Outcome.noConfusionType": [],
+    "Toy.DropScope.Outcome.rec": [],
+    "Toy.DropScope.Outcome.recOn": [],
+    "Toy.DropScope.Outcome.ret": [],
+    "Toy.DropScope.Outcome.ret.elim": [],
+    "Toy.DropScope.Outcome.ret.inj": [],
+    "Toy.DropScope.Outcome.ret.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Outcome.ret.noConfusion": [],
+    "Toy.DropScope.Outcome.ret.sizeOf_spec": [],
+    "Toy.DropScope.Outcome.ub": [],
+    "Toy.DropScope.Outcome.ub.elim": [],
+    "Toy.DropScope.Outcome.ub.sizeOf_spec": [],
+    "Toy.DropScope.Pending": [],
+    "Toy.DropScope.Pending.bs": [],
+    "Toy.DropScope.Pending.casesOn": [],
+    "Toy.DropScope.Pending.ctorIdx": [],
+    "Toy.DropScope.Pending.dt": [],
+    "Toy.DropScope.Pending.mk": [],
+    "Toy.DropScope.Pending.mk.inj": [],
+    "Toy.DropScope.Pending.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Pending.mk.noConfusion": [],
+    "Toy.DropScope.Pending.mk.sizeOf_spec": [],
+    "Toy.DropScope.Pending.noConfusion": [],
+    "Toy.DropScope.Pending.noConfusionType": [],
+    "Toy.DropScope.Pending.rec": [],
+    "Toy.DropScope.Pending.recOn": [],
+    "Toy.DropScope.Pending.tag": [],
+    "Toy.DropScope.Refines": [],
+    "Toy.DropScope.Refines.eq_1": [],
+    "Toy.DropScope.Rules": [],
+    "Toy.DropScope.Rules.casesOn": [],
+    "Toy.DropScope.Rules.ctorIdx": [],
+    "Toy.DropScope.Rules.ifLet2024": [],
+    "Toy.DropScope.Rules.mk": [],
+    "Toy.DropScope.Rules.mk.inj": [],
+    "Toy.DropScope.Rules.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Rules.mk.noConfusion": [],
+    "Toy.DropScope.Rules.mk.sizeOf_spec": [],
+    "Toy.DropScope.Rules.noConfusion": [],
+    "Toy.DropScope.Rules.noConfusionType": [],
+    "Toy.DropScope.Rules.rec": [],
+    "Toy.DropScope.Rules.recOn": [],
+    "Toy.DropScope.Rules.tail2024": [],
+    "Toy.DropScope.Switch": [],
+    "Toy.DropScope.Switch.arms": [],
+    "Toy.DropScope.Switch.casesOn": [],
+    "Toy.DropScope.Switch.ctorIdx": [],
+    "Toy.DropScope.Switch.mk": [],
+    "Toy.DropScope.Switch.mk.inj": [],
+    "Toy.DropScope.Switch.mk.injEq": [
+      "propext"
+    ],
+    "Toy.DropScope.Switch.mk.noConfusion": [],
+    "Toy.DropScope.Switch.mk.sizeOf_spec": [],
+    "Toy.DropScope.Switch.noConfusion": [],
+    "Toy.DropScope.Switch.noConfusionType": [],
+    "Toy.DropScope.Switch.otherwise": [],
+    "Toy.DropScope.Switch.rec": [],
+    "Toy.DropScope.Switch.recOn": [],
+    "Toy.DropScope.Switch.target": [],
+    "Toy.DropScope.Switch.target.eq_1": [],
+    "Toy.DropScope.Switch.target.match_1": [],
+    "Toy.DropScope.Tag": [],
+    "Toy.DropScope.UninhabitedRead": [],
+    "Toy.DropScope.UninhabitedRead.casesOn": [],
+    "Toy.DropScope.UninhabitedRead.ctorElim": [],
+    "Toy.DropScope.UninhabitedRead.ctorElimType": [],
+    "Toy.DropScope.UninhabitedRead.ctorIdx": [],
+    "Toy.DropScope.UninhabitedRead.noConfusion": [],
+    "Toy.DropScope.UninhabitedRead.noConfusionType": [],
+    "Toy.DropScope.UninhabitedRead.ofNat": [],
+    "Toy.DropScope.UninhabitedRead.ofNat_ctorIdx": [],
+    "Toy.DropScope.UninhabitedRead.permissive": [],
+    "Toy.DropScope.UninhabitedRead.permissive.elim": [],
+    "Toy.DropScope.UninhabitedRead.permissive.sizeOf_spec": [],
+    "Toy.DropScope.UninhabitedRead.rec": [],
+    "Toy.DropScope.UninhabitedRead.recOn": [],
+    "Toy.DropScope.UninhabitedRead.rejectUninhabited": [],
+    "Toy.DropScope.UninhabitedRead.rejectUninhabited.elim": [],
+    "Toy.DropScope.UninhabitedRead.rejectUninhabited.sizeOf_spec": [],
+    "Toy.DropScope.ababLocalDrop": [],
+    "Toy.DropScope.ababProg": [],
+    "Toy.DropScope.ababProg_trace_eq_and_flipped_not_commute": [
+      "propext"
+    ],
+    "Toy.DropScope.ababTempDrop": [],
+    "Toy.DropScope.accepts": [],
+    "Toy.DropScope.accepts.eq_1": [],
+    "Toy.DropScope.accepts_refCellTailProg_e2021": [],
+    "Toy.DropScope.accepts_refCellTailProg_e2024": [],
+    "Toy.DropScope.accepts_unboundBorrow": [],
+    "Toy.DropScope.allowedTag": [],
+    "Toy.DropScope.allowedTag.eq_1": [],
+    "Toy.DropScope.allowedTag_neg": [],
+    "Toy.DropScope.allowedTag_pos": [],
+    "Toy.DropScope.bareIfLetThenProg": [],
+    "Toy.DropScope.beh": [],
+    "Toy.DropScope.behIncl_refl": [],
+    "Toy.DropScope.borrowOK": [],
+    "Toy.DropScope.borrowOK.match_1": [],
+    "Toy.DropScope.borrowOK_shadowing_limitation": [],
+    "Toy.DropScope.closeScope": [],
+    "Toy.DropScope.closeScope.eq_1": [],
+    "Toy.DropScope.commute_distinct_nonempty_event_lists": [],
+    "Toy.DropScope.commute_same_event": [],
+    "Toy.DropScope.commutingTailProg": [],
+    "Toy.DropScope.commutingTailProg_flipped_and_all_commute": [
+      "propext"
+    ],
+    "Toy.DropScope.commutingTailProg_run_ne_and_trace_eq": [],
+    "Toy.DropScope.deadNicheEnum": [],
+    "Toy.DropScope.deadNicheEnum.eq_1": [],
+    "Toy.DropScope.deadNicheEnum_rejectBoth_satisfies_hypothesis": [
+      "propext"
+    ],
+    "Toy.DropScope.deadNicheSwitch": [],
+    "Toy.DropScope.deadNiche_permissive_specializeEnum_introduces_ub": [
+      "propext"
+    ],
+    "Toy.DropScope.decode_exampleNiche": [],
+    "Toy.DropScope.decode_exampleNiche_untagged": [],
+    "Toy.DropScope.decode_of_nicheHi_lt_nicheLo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.dropAll": [],
+    "Toy.DropScope.dropAll.eq_1": [],
+    "Toy.DropScope.dropOrderEvents": [],
+    "Toy.DropScope.dropOrderEvents.eq_1": [],
+    "Toy.DropScope.dropTemps": [
+      "propext"
+    ],
+    "Toy.DropScope.dropTemps.eq_1": [
+      "propext"
+    ],
+    "Toy.DropScope.dropTemps_mkTemp_mkTemps_dropTemp": [
+      "propext"
+    ],
+    "Toy.DropScope.edition_rules_e2021_ne_e2024": [],
+    "Toy.DropScope.edition_rules_e2024": [],
+    "Toy.DropScope.elseSiteProg": [],
+    "Toy.DropScope.elseSiteProg_trace_eq_iff_commute": [
+      "propext"
+    ],
+    "Toy.DropScope.elseSite_commute_iff_of_dtorOnly": [
+      "propext"
+    ],
+    "Toy.DropScope.elseSite_commute_iff_of_dtorOnly_hypothesis_tight": [
+      "propext"
+    ],
+    "Toy.DropScope.elseSite_dtorOnly_hypothesis_holds": [
+      "propext"
+    ],
+    "Toy.DropScope.eval": [],
+    "Toy.DropScope.eval.eq_1": [],
+    "Toy.DropScope.eval.eq_2": [],
+    "Toy.DropScope.eval.eq_3": [],
+    "Toy.DropScope.eval.eq_4": [],
+    "Toy.DropScope.eval.eq_5": [],
+    "Toy.DropScope.eval.eq_6": [],
+    "Toy.DropScope.eval.eq_7": [],
+    "Toy.DropScope.eval.eq_def": [],
+    "Toy.DropScope.eval.match_1": [],
+    "Toy.DropScope.evalBlock": [],
+    "Toy.DropScope.evalBlock.eq_1": [],
+    "Toy.DropScope.evalBlock.eq_2": [],
+    "Toy.DropScope.evalBlock.eq_3": [],
+    "Toy.DropScope.evalBlock.eq_def": [],
+    "Toy.DropScope.evalBlock.match_1": [],
+    "Toy.DropScope.eval_matchE_eq_matchStep": [
+      "propext"
+    ],
+    "Toy.DropScope.exampleNiche": [],
+    "Toy.DropScope.exec": [],
+    "Toy.DropScope.exec.eq_1": [],
+    "Toy.DropScope.exec_ok": [],
+    "Toy.DropScope.exec_readUB": [],
+    "Toy.DropScope.exec_specializeSwitch_eq_of_readUB_of_not_allowedTag": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.explicitUninhabitedArmSwitch": [],
+    "Toy.DropScope.flipped_tailProg": [
+      "propext"
+    ],
+    "Toy.DropScope.ifLetElseProg": [],
+    "Toy.DropScope.ifLetElseProg.eq_1": [],
+    "Toy.DropScope.ifLetElseProg_noTailEscapingTemps_and_run_ne": [],
+    "Toy.DropScope.ifLetElseProg_noTailEscapingTemps_and_traces_differ": [],
+    "Toy.DropScope.ifLetElseProg_not_noIfLetEscapingTemps_and_ifLet_rule_changes_run": [],
+    "Toy.DropScope.ifLetElseProg_traces_differ": [],
+    "Toy.DropScope.ifLetInTailProg": [],
+    "Toy.DropScope.ifLetInTailProg_rules_interact": [],
+    "Toy.DropScope.ifLetInTailProg_tail_rule_changes_run": [],
+    "Toy.DropScope.ifLetInTailProg_toMatch_e2024_ne_e2021": [],
+    "Toy.DropScope.ifLetsClean": [],
+    "Toy.DropScope.ifLetsClean.eq_1": [],
+    "Toy.DropScope.ifLetsClean.eq_2": [],
+    "Toy.DropScope.ifLetsClean.eq_3": [],
+    "Toy.DropScope.ifLetsClean.eq_4": [],
+    "Toy.DropScope.ifLetsClean.eq_5": [],
+    "Toy.DropScope.ifLetsClean.eq_6": [],
+    "Toy.DropScope.ifLetsClean.eq_7": [],
+    "Toy.DropScope.ifLetsClean.eq_def": [],
+    "Toy.DropScope.ifLetsCleanBlock": [],
+    "Toy.DropScope.ifLetsCleanBlock.eq_1": [],
+    "Toy.DropScope.ifLetsCleanBlock.eq_2": [],
+    "Toy.DropScope.ifLetsCleanBlock.eq_3": [],
+    "Toy.DropScope.ifLetsCleanBlock.eq_def": [],
+    "Toy.DropScope.instDecidableCommute": [],
+    "Toy.DropScope.instDecidableEqAct": [],
+    "Toy.DropScope.instDecidableEqAct.decEq": [],
+    "Toy.DropScope.instDecidableEqAct.decEq.match_1": [],
+    "Toy.DropScope.instDecidableEqArm": [],
+    "Toy.DropScope.instDecidableEqArm.decEq": [],
+    "Toy.DropScope.instDecidableEqArm.decEq.match_1": [],
+    "Toy.DropScope.instDecidableEqDiscrSem": [],
+    "Toy.DropScope.instDecidableEqDiscrSem.decEq": [],
+    "Toy.DropScope.instDecidableEqDiscrSem.decEq.match_1": [],
+    "Toy.DropScope.instDecidableEqEdition": [],
+    "Toy.DropScope.instDecidableEqEv": [],
+    "Toy.DropScope.instDecidableEqEv.decEq": [],
+    "Toy.DropScope.instDecidableEqEv.decEq.match_1": [],
+    "Toy.DropScope.instDecidableEqInvalidRead": [],
+    "Toy.DropScope.instDecidableEqNicheEnc": [],
+    "Toy.DropScope.instDecidableEqNicheEnc.decEq": [],
+    "Toy.DropScope.instDecidableEqNicheEnc.decEq.match_1": [],
+    "Toy.DropScope.instDecidableEqOutcome": [],
+    "Toy.DropScope.instDecidableEqOutcome.decEq": [],
+    "Toy.DropScope.instDecidableEqOutcome.decEq.match_1": [],
+    "Toy.DropScope.instDecidableEqPending": [],
+    "Toy.DropScope.instDecidableEqPending.decEq": [],
+    "Toy.DropScope.instDecidableEqPending.decEq.match_1": [],
+    "Toy.DropScope.instDecidableEqRules": [],
+    "Toy.DropScope.instDecidableEqRules.decEq": [],
+    "Toy.DropScope.instDecidableEqRules.decEq.match_1": [],
+    "Toy.DropScope.instDecidableEqSwitch": [],
+    "Toy.DropScope.instDecidableEqSwitch.decEq": [],
+    "Toy.DropScope.instDecidableEqSwitch.decEq.match_1": [],
+    "Toy.DropScope.instDecidableEqUninhabitedRead": [],
+    "Toy.DropScope.instDecidablePredExprNoIfLetEscapingTemps": [],
+    "Toy.DropScope.instDecidablePredExprNoTailEscapingTemps": [],
+    "Toy.DropScope.instReprAct": [
+      "propext"
+    ],
+    "Toy.DropScope.instReprAct.repr": [
+      "propext"
+    ],
+    "Toy.DropScope.instReprAct.repr.match_1": [],
+    "Toy.DropScope.instReprArm": [],
+    "Toy.DropScope.instReprArm.repr": [],
+    "Toy.DropScope.instReprArm.repr.match_1": [],
+    "Toy.DropScope.instReprDiscrSem": [],
+    "Toy.DropScope.instReprDiscrSem.repr": [],
+    "Toy.DropScope.instReprEdition": [],
+    "Toy.DropScope.instReprEdition.repr": [],
+    "Toy.DropScope.instReprEdition.repr.match_1": [],
+    "Toy.DropScope.instReprEv": [],
+    "Toy.DropScope.instReprEv.repr": [],
+    "Toy.DropScope.instReprEv.repr.match_1": [],
+    "Toy.DropScope.instReprInvalidRead": [],
+    "Toy.DropScope.instReprInvalidRead.repr": [],
+    "Toy.DropScope.instReprInvalidRead.repr.match_1": [],
+    "Toy.DropScope.instReprNicheEnc": [],
+    "Toy.DropScope.instReprNicheEnc.repr": [],
+    "Toy.DropScope.instReprOutcome": [],
+    "Toy.DropScope.instReprOutcome.repr": [],
+    "Toy.DropScope.instReprOutcome.repr.match_1": [],
+    "Toy.DropScope.instReprPending": [
+      "propext"
+    ],
+    "Toy.DropScope.instReprPending.repr": [
+      "propext"
+    ],
+    "Toy.DropScope.instReprRules": [],
+    "Toy.DropScope.instReprRules.repr": [],
+    "Toy.DropScope.instReprSwitch": [
+      "propext"
+    ],
+    "Toy.DropScope.instReprSwitch.repr": [
+      "propext"
+    ],
+    "Toy.DropScope.instReprUninhabitedRead": [],
+    "Toy.DropScope.instReprUninhabitedRead.repr": [],
+    "Toy.DropScope.instReprUninhabitedRead.repr.match_1": [],
+    "Toy.DropScope.invalidTag_passThrough_specializeEnum_introduces_ub": [
+      "propext"
+    ],
+    "Toy.DropScope.isDropTemp_dropTemp": [
+      "propext"
+    ],
+    "Toy.DropScope.lastVariantTakesWildcard": [],
+    "Toy.DropScope.lastVariantTakesWildcard.eq_1": [],
+    "Toy.DropScope.lastVariantTakesWildcard.match_1": [],
+    "Toy.DropScope.lastVariantTakesWildcard_no_remaining": [
+      "propext"
+    ],
+    "Toy.DropScope.lastVariantTakesWildcard_orderingSwitch": [],
+    "Toy.DropScope.lastVariantTakesWildcard_permissive_not_refines_both_branches": [
+      "propext"
+    ],
+    "Toy.DropScope.lastVariantTakesWildcard_refines_all_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.lastVariantTakesWildcard_two_remaining": [],
+    "Toy.DropScope.lastVariant_permissive_introduces_ub": [
+      "propext"
+    ],
+    "Toy.DropScope.letsFrom": [],
+    "Toy.DropScope.letsFrom.eq_1": [],
+    "Toy.DropScope.letsFrom.eq_2": [],
+    "Toy.DropScope.letsFrom.eq_def": [],
+    "Toy.DropScope.letsFrom.match_1": [],
+    "Toy.DropScope.matchInIfLetScrutProg": [],
+    "Toy.DropScope.matchInTailProg": [],
+    "Toy.DropScope.matchInTailProg_scrutinee_drop_moves_by_tail_rule": [],
+    "Toy.DropScope.matchStep": [],
+    "Toy.DropScope.matchStep.eq_1": [],
+    "Toy.DropScope.mkTemps": [
+      "propext"
+    ],
+    "Toy.DropScope.mkTemps.eq_1": [
+      "propext"
+    ],
+    "Toy.DropScope.mkTemps_dropTemps_tailProg": [
+      "propext"
+    ],
+    "Toy.DropScope.nestedTailProg": [],
+    "Toy.DropScope.nestedTailProg_traces_differ": [],
+    "Toy.DropScope.noEscape": [],
+    "Toy.DropScope.noEscape.eq_1": [],
+    "Toy.DropScope.noEscape.eq_2": [],
+    "Toy.DropScope.noEscape.eq_3": [],
+    "Toy.DropScope.noEscape.eq_4": [],
+    "Toy.DropScope.noEscape.eq_5": [],
+    "Toy.DropScope.noEscape.eq_6": [],
+    "Toy.DropScope.noEscape.eq_7": [],
+    "Toy.DropScope.noEscape.eq_def": [],
+    "Toy.DropScope.noEscapeBlock": [],
+    "Toy.DropScope.noEscapeBlock.eq_1": [],
+    "Toy.DropScope.noEscapeBlock.eq_2": [],
+    "Toy.DropScope.noEscapeBlock.eq_3": [],
+    "Toy.DropScope.noEscapeBlock.eq_def": [],
+    "Toy.DropScope.noEscape_hypotheses_not_necessary_for_run_eq": [],
+    "Toy.DropScope.noEscape_ifLetScrut": [],
+    "Toy.DropScope.noEscape_letInit": [],
+    "Toy.DropScope.noEscape_matchArms": [],
+    "Toy.DropScope.noEscape_temp": [],
+    "Toy.DropScope.noIfLetEscapingTemps_stmtTempsProg": [],
+    "Toy.DropScope.noTailEscapingTemps_stmtTempsProg": [],
+    "Toy.DropScope.not_behIncl_e2021_e2024_and_not_behIncl_e2024_e2021": [],
+    "Toy.DropScope.not_behIncl_e2021_e2024_at_tailProg": [],
+    "Toy.DropScope.not_commute_tailProg": [],
+    "Toy.DropScope.not_flipped_tailProg_mkLocal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.not_flipped_tailProg_mkLocal.match_1_1": [
+      "propext"
+    ],
+    "Toy.DropScope.not_flipped_tailProg_mkLocal.match_1_5": [
+      "propext"
+    ],
+    "Toy.DropScope.not_isDropTemp_dropLocal": [
+      "propext"
+    ],
+    "Toy.DropScope.not_noIfLetEscapingTemps_ifLetElseProg": [],
+    "Toy.DropScope.not_noTailEscapingTemps_nested": [],
+    "Toy.DropScope.not_noTailEscapingTemps_tailProg": [],
+    "Toy.DropScope.not_refines_ret_ne": [
+      "propext"
+    ],
+    "Toy.DropScope.not_refines_ub_ret": [
+      "propext"
+    ],
+    "Toy.DropScope.orderingSwitch": [],
+    "Toy.DropScope.outsSeq": [],
+    "Toy.DropScope.outsSeq.eq_1": [],
+    "Toy.DropScope.outsSeq.eq_2": [],
+    "Toy.DropScope.outsSeq.eq_def": [],
+    "Toy.DropScope.outsSeq.match_1": [],
+    "Toy.DropScope.permissiveRejectInvalid": [],
+    "Toy.DropScope.permissiveRejectInvalid.eq_1": [],
+    "Toy.DropScope.permissive_allInhabited_orderingSwitch_same": [
+      "propext"
+    ],
+    "Toy.DropScope.pruneArms": [],
+    "Toy.DropScope.pruneArms.eq_1": [],
+    "Toy.DropScope.pruneArms_example": [],
+    "Toy.DropScope.pruneArms_explicitUninhabitedArm_permissive_not_refines": [
+      "propext"
+    ],
+    "Toy.DropScope.pruneArms_keeps_allowed": [],
+    "Toy.DropScope.pruneArms_refines_all_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.readUB": [
+      "propext"
+    ],
+    "Toy.DropScope.readUB.eq_1": [
+      "propext"
+    ],
+    "Toy.DropScope.readUB_emptyEnum": [
+      "propext"
+    ],
+    "Toy.DropScope.readUB_inhabited": [
+      "propext"
+    ],
+    "Toy.DropScope.readUB_invalid": [
+      "propext"
+    ],
+    "Toy.DropScope.readUB_permissive": [
+      "propext"
+    ],
+    "Toy.DropScope.readUB_rejectBoth_of_allowedTag_eq_false": [
+      "propext"
+    ],
+    "Toy.DropScope.readUB_rejectUninhabited": [
+      "propext"
+    ],
+    "Toy.DropScope.refCellTailProg": [],
+    "Toy.DropScope.refCellTailProg_accepted_e2024_rejected_e2021": [],
+    "Toy.DropScope.refCellTailProg_flipped_commute_and_trace_eq_and_accepts_ne": [
+      "propext"
+    ],
+    "Toy.DropScope.refines_ret_eq": [],
+    "Toy.DropScope.refines_ub": [],
+    "Toy.DropScope.refuted_allInhabited_specializeEnum_changes_nothing": [
+      "propext"
+    ],
+    "Toy.DropScope.refuted_emptyTailDtors_give_run_eq": [],
+    "Toy.DropScope.refuted_match_outside_blockTail_same_drop_point": [],
+    "Toy.DropScope.refuted_specializeSwitch_retargets_every_nonAllowed_tag": [
+      "propext"
+    ],
+    "Toy.DropScope.refuted_stmtTempsProg_three_temp_drops": [
+      "propext"
+    ],
+    "Toy.DropScope.rejectBoth": [],
+    "Toy.DropScope.rejectBoth.eq_1": [],
+    "Toy.DropScope.rejectBoth_deadNicheSwitch_same": [
+      "propext"
+    ],
+    "Toy.DropScope.remainingAllowed": [],
+    "Toy.DropScope.remainingAllowed.eq_1": [],
+    "Toy.DropScope.remainingAllowed_all_covered": [],
+    "Toy.DropScope.remainingAllowed_orderingSwitch": [],
+    "Toy.DropScope.run": [],
+    "Toy.DropScope.run.eq_1": [],
+    "Toy.DropScope.runArm": [],
+    "Toy.DropScope.runArm.eq_1": [],
+    "Toy.DropScope.runArm.eq_2": [],
+    "Toy.DropScope.runArm.eq_3": [],
+    "Toy.DropScope.runArm_usePayload_bad": [],
+    "Toy.DropScope.runArm_usePayload_ok": [],
+    "Toy.DropScope.runSwitch": [
+      "propext"
+    ],
+    "Toy.DropScope.runSwitch.eq_1": [
+      "propext"
+    ],
+    "Toy.DropScope.runSwitch_specializeEnum_eq_of_rejectBoth": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.run_e2021_eq_run_e2024_of_noTailEscapingTemps_of_noIfLetEscapingTemps": [
+      "propext"
+    ],
+    "Toy.DropScope.run_e2024_toMatch_eq_run_e2021_of_noTailEscapingTemps": [
+      "propext"
+    ],
+    "Toy.DropScope.run_each_created_temp_dropped_exactly_once": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.run_each_created_temp_dropped_exactly_once.match_1_1": [
+      "propext"
+    ],
+    "Toy.DropScope.run_ifLet2024_eq_of_noIfLetEscapingTemps": [
+      "propext"
+    ],
+    "Toy.DropScope.run_perm_nodup_and_dropTemps_perm_mkTemps_and_nonDropTemps_eq": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.run_tail2024_eq_of_noTailEscapingTemps": [
+      "propext"
+    ],
+    "Toy.DropScope.run_tailProg": [],
+    "Toy.DropScope.run_toMatch_eq_run_ifLet2021": [
+      "propext"
+    ],
+    "Toy.DropScope.shadowedBorrowProg": [],
+    "Toy.DropScope.siblingTailProg": [],
+    "Toy.DropScope.siblingTailProg_traces_differ": [],
+    "Toy.DropScope.silentRefCellTailProg": [],
+    "Toy.DropScope.silentTailProg": [],
+    "Toy.DropScope.site_examples": [],
+    "Toy.DropScope.specializeEnum": [
+      "propext"
+    ],
+    "Toy.DropScope.specializeEnum.eq_1": [
+      "propext"
+    ],
+    "Toy.DropScope.specializeEnum_refines_allTags_iff_rejectUninhabited_and_rejectInvalid": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.specializeEnum_refines_validTags_iff_rejectUninhabited": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.specializeEnum_refines_validTags_permissive_iff_allInhabited": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.specializeSwitch": [],
+    "Toy.DropScope.specializeSwitch.eq_1": [],
+    "Toy.DropScope.specializeSwitch_deadNicheSwitch_permissive_not_refines": [
+      "propext"
+    ],
+    "Toy.DropScope.specializeSwitch_eq_hypothesis_tight": [
+      "propext"
+    ],
+    "Toy.DropScope.specializeSwitch_refines_all_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.stmtTempsProg": [],
+    "Toy.DropScope.stmtTempsProg_noTailEscapingTemps_noIfLetEscapingTemps": [
+      "propext"
+    ],
+    "Toy.DropScope.tailProg": [],
+    "Toy.DropScope.tailProgLocalDrop": [],
+    "Toy.DropScope.tailProgLocalDrop.eq_1": [],
+    "Toy.DropScope.tailProgTempDrop": [],
+    "Toy.DropScope.tailProgTempDrop.eq_1": [],
+    "Toy.DropScope.tailProg_accepted_and_traces_reversed": [],
+    "Toy.DropScope.tailProg_flipped_not_commute_and_traces_differ": [
+      "propext"
+    ],
+    "Toy.DropScope.tailProg_noIfLetEscapingTemps_and_run_ne": [],
+    "Toy.DropScope.tailSiteProg": [],
+    "Toy.DropScope.tailSiteProg_trace_eq_iff_commute": [
+      "propext"
+    ],
+    "Toy.DropScope.tailsClean": [],
+    "Toy.DropScope.tailsClean.eq_1": [],
+    "Toy.DropScope.tailsClean.eq_2": [],
+    "Toy.DropScope.tailsClean.eq_3": [],
+    "Toy.DropScope.tailsClean.eq_4": [],
+    "Toy.DropScope.tailsClean.eq_5": [],
+    "Toy.DropScope.tailsClean.eq_6": [],
+    "Toy.DropScope.tailsClean.eq_7": [],
+    "Toy.DropScope.tailsClean.eq_def": [],
+    "Toy.DropScope.tailsCleanBlock": [],
+    "Toy.DropScope.tailsCleanBlock.eq_1": [],
+    "Toy.DropScope.tailsCleanBlock.eq_2": [],
+    "Toy.DropScope.tailsCleanBlock.eq_3": [],
+    "Toy.DropScope.tailsCleanBlock.eq_def": [],
+    "Toy.DropScope.target_orderingSwitch_0": [],
+    "Toy.DropScope.target_orderingSwitch_2": [],
+    "Toy.DropScope.tempsSeq": [],
+    "Toy.DropScope.tempsSeq.eq_1": [],
+    "Toy.DropScope.tempsSeq.eq_2": [],
+    "Toy.DropScope.tempsSeq.eq_def": [],
+    "Toy.DropScope.tempsSeq.match_1": [],
+    "Toy.DropScope.thenBranchProg": [],
+    "Toy.DropScope.thenBranchProg_traces_differ": [],
+    "Toy.DropScope.toMatch": [],
+    "Toy.DropScope.toMatch.eq_1": [],
+    "Toy.DropScope.toMatch.eq_2": [],
+    "Toy.DropScope.toMatch.eq_3": [],
+    "Toy.DropScope.toMatch.eq_4": [],
+    "Toy.DropScope.toMatch.eq_5": [],
+    "Toy.DropScope.toMatch.eq_6": [],
+    "Toy.DropScope.toMatch.eq_7": [],
+    "Toy.DropScope.toMatch.eq_def": [],
+    "Toy.DropScope.toMatchBlock": [],
+    "Toy.DropScope.toMatchBlock.eq_1": [],
+    "Toy.DropScope.toMatchBlock.eq_2": [],
+    "Toy.DropScope.toMatchBlock.eq_3": [],
+    "Toy.DropScope.toMatchBlock.eq_def": [],
+    "Toy.DropScope.toMatch_ifLetElseProg": [],
+    "Toy.DropScope.toMatch_ifLetElseProg_ne": [
+      "propext"
+    ],
+    "Toy.DropScope.topLevelTailTempProg": [],
+    "Toy.DropScope.trace": [],
+    "Toy.DropScope.trace.eq_1": [],
+    "Toy.DropScope.trace_accepts_beh_eq_of_noTailEscapingTemps_of_noIfLetEscapingTemps": [
+      "propext"
+    ],
+    "Toy.DropScope.trace_e2021_eq_trace_e2024_of_flipped_commute": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.trace_e2021_eq_trace_e2024_of_flipped_commute.match_1_1": [
+      "propext"
+    ],
+    "Toy.DropScope.trace_ifLetElseProg_e2021_ne_scrutinee_first": [],
+    "Toy.DropScope.trace_ifLetElseProg_e2024": [],
+    "Toy.DropScope.trace_ifLetThen_e2024": [],
+    "Toy.DropScope.trace_letInitTemp_both": [],
+    "Toy.DropScope.trace_tailProg_e2021": [],
+    "Toy.DropScope.trace_tailProg_e2024": [],
+    "Toy.DropScope.trace_tailProg_e2024_ne_local_first": [],
+    "Toy.DropScope.trace_two_temps_reverse": [],
+    "Toy.DropScope.usePayloadSwitch": [],
+    "Toy.DropScope.usePayloadSwitch_permissive_specializeEnum_refines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.DropScope.usePayloadSwitch_permissive_specializeEnum_refines.match_1_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

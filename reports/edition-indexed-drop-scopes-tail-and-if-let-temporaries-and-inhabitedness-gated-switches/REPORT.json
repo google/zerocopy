@@ -1,0 +1,114 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/refinement",
+    "pl/rust-editions",
+    "pl/temporary-lifetimes",
+    "pl/drop-order",
+    "pl/undefined-behavior",
+    "pl/discriminant-validity",
+    "compilers/switch-specialization",
+    "compilers/uninhabited-variants"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "The Rust Edition Guide (Rust 2024 temporary-scope chapters)",
+      "identity": {
+        "repository": "rust-lang/edition-guide",
+        "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f"
+      }
+    },
+    {
+      "name": "Rust RFCs (RFC 3606 and RFC 66)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+      }
+    },
+    {
+      "name": "The Rust Reference (Destructors chapter)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "84dc36ff4712fad6829b6063cd4acbcaf5381708"
+      }
+    },
+    {
+      "name": "rustc (unreachable-enum-branching pass, Rvalue::Discriminant and TagEncoding::Niche documentation)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+      }
+    },
+    {
+      "name": "MiniRust specification",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "Problèmes combinatoires de commutation et réarrangements",
+      "identity": {
+        "doi": "10.1007/BFb0079468"
+      }
+    },
+    {
+      "name": "Concurrent Program Schemes and their Interpretations",
+      "identity": {
+        "doi": "10.7146/dpb.v6i78.7691"
+      }
+    },
+    {
+      "name": "The Book of Traces",
+      "identity": {
+        "doi": "10.1142/2563"
+      }
+    },
+    {
+      "name": "Combinatorics on Words",
+      "identity": {
+        "doi": "10.1017/CBO9780511566097"
+      }
+    },
+    {
+      "name": "The equation a^M = b^N c^P in a free group",
+      "identity": {
+        "doi": "10.1307/mmj/1028998766"
+      }
+    },
+    {
+      "name": "Formal Verification of a Realistic Compiler",
+      "identity": {
+        "doi": "10.1145/1538788.1538814"
+      }
+    },
+    {
+      "name": "Taming Undefined Behavior in LLVM",
+      "identity": {
+        "doi": "10.1145/3062341.3062343"
+      }
+    },
+    {
+      "name": "KRust: A Formal Executable Semantics of Rust",
+      "identity": {
+        "doi": "10.1109/TASE.2018.00014"
+      }
+    },
+    {
+      "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs",
+      "identity": {
+        "doi": "10.1145/3656422"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,5 @@
+name = "toy_drop_scope"
+defaultTargets = ["ToyDropScope"]
+
+[[lean_lib]]
+name = "ToyDropScope"

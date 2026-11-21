@@ -1,0 +1,1058 @@
+[
+ {
+  "id": "R1",
+  "lean": [
+   "Toy.DropScope.run_e2021_eq_run_e2024_of_noTailEscapingTemps_of_noIfLetEscapingTemps",
+   "Toy.DropScope.trace_accepts_beh_eq_of_noTailEscapingTemps_of_noIfLetEscapingTemps"
+  ],
+  "lean_names": [
+   "Toy.DropScope.run_e2021_eq_run_e2024_of_noTailEscapingTemps_of_noIfLetEscapingTemps",
+   "Toy.DropScope.trace_accepts_beh_eq_of_noTailEscapingTemps_of_noIfLetEscapingTemps",
+   "Toy.DropScope.Act",
+   "Toy.DropScope.Act.dropTempKey?",
+   "Toy.DropScope.Act.events",
+   "Toy.DropScope.Act.isDropTemp",
+   "Toy.DropScope.Act.mkTempKey?",
+   "Toy.DropScope.Before",
+   "Toy.DropScope.Block",
+   "Toy.DropScope.Edition",
+   "Toy.DropScope.Edition.rules",
+   "Toy.DropScope.Expr",
+   "Toy.DropScope.NoIfLetEscapingTemps",
+   "Toy.DropScope.NoTailEscapingTemps",
+   "Toy.DropScope.Pending",
+   "Toy.DropScope.Tag",
+   "Toy.DropScope.accepts",
+   "Toy.DropScope.accepts_refCellTailProg_e2021",
+   "Toy.DropScope.accepts_refCellTailProg_e2024",
+   "Toy.DropScope.accepts_unboundBorrow",
+   "Toy.DropScope.beh",
+   "Toy.DropScope.closeScope",
+   "Toy.DropScope.commute_same_event",
+   "Toy.DropScope.commutingTailProg_run_ne_and_trace_eq",
+   "Toy.DropScope.dropAll",
+   "Toy.DropScope.dropTemps_mkTemp_mkTemps_dropTemp",
+   "Toy.DropScope.edition_rules_e2021_ne_e2024",
+   "Toy.DropScope.edition_rules_e2024",
+   "Toy.DropScope.eval",
+   "Toy.DropScope.evalBlock",
+   "Toy.DropScope.flipped_tailProg",
+   "Toy.DropScope.ifLetElseProg",
+   "Toy.DropScope.ifLetElseProg_noTailEscapingTemps_and_run_ne",
+   "Toy.DropScope.ifLetsClean",
+   "Toy.DropScope.ifLetsCleanBlock",
+   "Toy.DropScope.isDropTemp_dropTemp",
+   "Toy.DropScope.noEscape",
+   "Toy.DropScope.noEscapeBlock",
+   "Toy.DropScope.noEscape_hypotheses_not_necessary_for_run_eq",
+   "Toy.DropScope.noEscape_ifLetScrut",
+   "Toy.DropScope.noEscape_letInit",
+   "Toy.DropScope.noEscape_matchArms",
+   "Toy.DropScope.noEscape_temp",
+   "Toy.DropScope.noIfLetEscapingTemps_stmtTempsProg",
+   "Toy.DropScope.noTailEscapingTemps_stmtTempsProg",
+   "Toy.DropScope.not_behIncl_e2021_e2024_at_tailProg",
+   "Toy.DropScope.not_flipped_tailProg_mkLocal",
+   "Toy.DropScope.not_isDropTemp_dropLocal",
+   "Toy.DropScope.not_noIfLetEscapingTemps_ifLetElseProg",
+   "Toy.DropScope.not_noTailEscapingTemps_nested",
+   "Toy.DropScope.not_noTailEscapingTemps_tailProg",
+   "Toy.DropScope.refuted_stmtTempsProg_three_temp_drops",
+   "Toy.DropScope.run",
+   "Toy.DropScope.stmtTempsProg",
+   "Toy.DropScope.stmtTempsProg_noTailEscapingTemps_noIfLetEscapingTemps",
+   "Toy.DropScope.tailProg",
+   "Toy.DropScope.tailProg_noIfLetEscapingTemps_and_run_ne",
+   "Toy.DropScope.tailsClean",
+   "Toy.DropScope.tailsCleanBlock",
+   "Toy.DropScope.toMatchBlock",
+   "Toy.DropScope.toMatch_ifLetElseProg",
+   "Toy.DropScope.topLevelTailTempProg",
+   "Toy.DropScope.trace",
+   "Toy.DropScope.trace_ifLetElseProg_e2021_ne_scrutinee_first",
+   "Toy.DropScope.trace_ifLetElseProg_e2024",
+   "Toy.DropScope.trace_ifLetThen_e2024",
+   "Toy.DropScope.trace_letInitTemp_both",
+   "Toy.DropScope.trace_tailProg_e2021",
+   "Toy.DropScope.trace_tailProg_e2024",
+   "Toy.DropScope.trace_tailProg_e2024_ne_local_first",
+   "Toy.DropScope.trace_two_temps_reverse"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_rationale": "T1: the two 2024 narrowing rules are documented in prose (Edition Guide, RFC 3606); this card states a consequence of them inside a toy elaboration. No mechanized statement of it was found in the search recorded under Prior-art search; novelty is not claimed.",
+  "plain_claim": "For every toy program `e`: if no temporary escapes a block tail expression (`NoTailEscapingTemps e`) and no temporary escapes an `if let` scrutinee (`NoIfLetEscapingTemps e`), then the action list produced by `run` under the 2021 rules (`Edition.e2021.rules`) equals the one produced under the 2024 rules (`Edition.e2024.rules`); consequently the event traces (`trace`), the toy borrow-check verdicts (`accepts`) and the behaviours (`beh`) under the two editions agree.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.run_e2021_eq_run_e2024_of_noTailEscapingTemps_of_noIfLetEscapingTemps",
+    "rendering": "∀ (e : Expr), tailsClean e = true → ifLetsClean e = true →\n  closeScope (eval ⟨false, false⟩ [] e) = closeScope (eval ⟨true, true⟩ [] e)"
+   }
+  ],
+  "unfolded_prose": "`NoTailEscapingTemps e` is `tailsClean e = true`: every block tail expression `t` in `e` passes `noEscape t`, that is, no `temp` node of `t` sits in a position from which (under the 2021 rules) its temporary is still pending when `t` finishes (`t` itself, `seq` operands, tails of nested blocks, scrutinees of nested `if let` and `match`). `NoIfLetEscapingTemps e` is the same check applied to every `if let` scrutinee. `run R e` is `closeScope (eval R [] e)`: the executed actions followed by the drops of temporaries still pending at the end of the program.",
+  "hypotheses": [
+   {
+    "name": "ht : NoTailEscapingTemps e (both theorems)",
+    "purpose": "excludes temporaries whose drop point the tail rule moves",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.DropScope.tailProg_noIfLetEscapingTemps_and_run_ne",
+     "Toy.DropScope.tailProg_accepted_and_traces_reversed"
+    ],
+    "counterexample_class": "a one-block program with one local and one tail temporary (`tailProg`), satisfying `NoIfLetEscapingTemps`; `tailProg_noIfLetEscapingTemps_and_run_ne` shows that `tailProg` satisfies `NoIfLetEscapingTemps` and that its 2021 and 2024 action lists differ (the first theorem's conclusion fails), and `tailProg_accepted_and_traces_reversed` shows that its 2021 and 2024 traces differ (the trace conjunct of the second theorem's conclusion fails)"
+   },
+   {
+    "name": "hi : NoIfLetEscapingTemps e (both theorems)",
+    "purpose": "excludes temporaries whose drop point the `if let` rule moves",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.DropScope.ifLetElseProg_noTailEscapingTemps_and_run_ne",
+     "Toy.DropScope.ifLetElseProg_traces_differ"
+    ],
+    "counterexample_class": "a single `if let` whose scrutinee creates one temporary (`ifLetElseProg`), satisfying `NoTailEscapingTemps`; `ifLetElseProg_noTailEscapingTemps_and_run_ne` shows that `ifLetElseProg` satisfies `NoTailEscapingTemps` and that its 2021 and 2024 action lists differ (the first theorem's conclusion fails), and `ifLetElseProg_traces_differ` shows that its 2021 and 2024 traces differ (the trace conjunct of the second theorem's conclusion fails)"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "corollary of R1-split; the second theorem listed is a corollary of the first",
+  "nonvacuity_witness": "`stmtTempsProg` satisfies both hypotheses; under the 2021 rules it executes exactly two temporary drops (a third syntactic temporary sits in the `if let` branch that does not run; `refuted_stmtTempsProg_three_temp_drops`, which refutes the reading that counts three temporary drops, records that the count is not three).",
+  "nonvacuity_witness_lean": "Toy.DropScope.stmtTempsProg_noTailEscapingTemps_noIfLetEscapingTemps",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "The hypotheses are sufficient for equal action lists, not necessary: `noEscape_hypotheses_not_necessary_for_run_eq` gives `topLevelTailTempProg`, which violates `NoTailEscapingTemps` and has equal 2021 and 2024 action lists. Equal traces are weaker than equal action lists: `commutingTailProg_run_ne_and_trace_eq` has different action lists and equal traces (R4-if and R4-site give conditions on traces).",
+   "`NoTailEscapingTemps` and `NoIfLetEscapingTemps` are syntactic checks on the toy syntax; they are not the `tail_expr_drop_order` or `if_let_rescope` lints, and the package proves nothing about those lints.",
+   "Not modeled: temporary lifetime extension; per-block editions for macro-generated code (RFC 3606 applies the tail rule according to the edition of a block's `{}` tokens); `else if let` chains and `let` chains; closures, `async` and `const` blocks; destructuring assignment; unwinding and panics; loops and `while let`; `if` conditions, match guards and lazy boolean operators. `run` treats its argument as a whole function body without adding a block around it, and in a `letS` statement the initializer's temporaries are dropped before the local is bound."
+  ],
+  "prior_art": [
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-tail-expr-scope.md:5 (summary), :54 (`RefCell` example: 2021 drops `c` before the temporary, 2024 after), :58 (2021 extends tail temporaries to the next temporary scope boundary; 2024 drops them at the end of the block before the block's locals), :62-69 (a program accepted in 2021 and rejected in 2024 with E0716), :90 (no semantics-preserving rewrite shortens tail temporaries) [documentation]",
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-if-let-scope.md:5 (2024 drops `if let` scrutinee temporaries before entering `else`), :30 (2021 keeps them until after the `if let`), :32 (2024: until the then-block is evaluated or control enters `else`) [documentation]",
+   "RFC 3606 'Shorter temporary lifetimes in tail expressions' (merged), rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4:text/3606-temporary-lifetimes-in-tail-expressions.md:10, :53-61, :78-79 [documentation (accepted design RFC)]",
+   "RFC 66 'Better temporary lifetimes', rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4:text/0066-better-temporary-lifetimes.md:7-10 (temporary lifetime extension for `let` bindings, which this package does not model) [documentation (accepted design RFC)]",
+   "Formal semantics of Rust, cited as related work and not examined for edition-specific temporary scopes: F. Wang et al., 'KRust: A Formal Executable Semantics of Rust', TASE 2018, DOI 10.1109/TASE.2018.00014; L. Gäher et al., 'RefinedRust: A Type System for High-Assurance Verification of Rust Programs', Proceedings of the ACM on Programming Languages (PLDI) 2024, DOI 10.1145/3656422 [related work]",
+   "Corpus package `drop-flag-elaboration-partial-moves-and-unwind-cleanup-exactly-once-destruction` (published), card R1 (`Toy.DropFlags.stdElab_correct_of_forward_moveChecked_noNormalPathToResume`): exactly-once destruction within a fixed scope assignment; this package varies the scope assignment instead"
+  ],
+  "design_question": "Can a verified compiler share one elaboration for both editions on the programs where the edition cannot be observed, and which syntactic class is safe to treat edition-independently?"
+ },
+ {
+  "id": "R1-split",
+  "lean": [
+   "Toy.DropScope.run_tail2024_eq_of_noTailEscapingTemps",
+   "Toy.DropScope.run_ifLet2024_eq_of_noIfLetEscapingTemps"
+  ],
+  "lean_names": [
+   "Toy.DropScope.run_tail2024_eq_of_noTailEscapingTemps",
+   "Toy.DropScope.run_ifLet2024_eq_of_noIfLetEscapingTemps",
+   "Toy.DropScope.NoIfLetEscapingTemps",
+   "Toy.DropScope.NoTailEscapingTemps",
+   "Toy.DropScope.Rules",
+   "Toy.DropScope.bareIfLetThenProg",
+   "Toy.DropScope.ifLetElseProg",
+   "Toy.DropScope.ifLetElseProg_noTailEscapingTemps_and_traces_differ",
+   "Toy.DropScope.ifLetElseProg_not_noIfLetEscapingTemps_and_ifLet_rule_changes_run",
+   "Toy.DropScope.ifLetInTailProg",
+   "Toy.DropScope.ifLetInTailProg_rules_interact",
+   "Toy.DropScope.ifLetInTailProg_tail_rule_changes_run",
+   "Toy.DropScope.noEscape_hypotheses_not_necessary_for_run_eq",
+   "Toy.DropScope.run",
+   "Toy.DropScope.tailProg",
+   "Toy.DropScope.tailProg_noIfLetEscapingTemps_and_run_ne",
+   "Toy.DropScope.topLevelTailTempProg"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_rationale": "T1: the two 2024 narrowing rules are documented in prose (Edition Guide, RFC 3606); this card states a consequence of them inside a toy elaboration. No mechanized statement of it was found in the search recorded under Prior-art search; novelty is not claimed.",
+  "plain_claim": "For every toy program `e` and every setting `b` of the other rule: if `NoTailEscapingTemps e`, then switching the tail rule leaves the action list produced by `run` unchanged (`run ⟨true, b⟩ e = run ⟨false, b⟩ e`); and if `NoIfLetEscapingTemps e`, then switching the `if let` rule leaves it unchanged (`run ⟨b, true⟩ e = run ⟨b, false⟩ e`).",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.run_tail2024_eq_of_noTailEscapingTemps",
+    "rendering": "∀ (e : Expr) (b : Bool), tailsClean e = true →\n  closeScope (eval ⟨true, b⟩ [] e) = closeScope (eval ⟨false, b⟩ [] e)"
+   },
+   {
+    "theorem": "Toy.DropScope.run_ifLet2024_eq_of_noIfLetEscapingTemps",
+    "rendering": "∀ (e : Expr) (b : Bool), ifLetsClean e = true →\n  closeScope (eval ⟨b, true⟩ [] e) = closeScope (eval ⟨b, false⟩ [] e)"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [
+   {
+    "name": "ht : NoTailEscapingTemps e (first theorem)",
+    "purpose": "excludes temporaries the tail rule moves",
+    "tightness": "tight",
+    "counterexample": "Toy.DropScope.ifLetInTailProg_tail_rule_changes_run",
+    "counterexample_class": "an `if let` with a scrutinee temporary in the tail of a block with one local (`ifLetInTailProg`), at `b = false`"
+   },
+   {
+    "name": "hi : NoIfLetEscapingTemps e (second theorem)",
+    "purpose": "excludes temporaries the `if let` rule moves",
+    "tightness": "tight",
+    "counterexample": "Toy.DropScope.ifLetElseProg_not_noIfLetEscapingTemps_and_ifLet_rule_changes_run",
+    "counterexample_class": "a single `if let` whose scrutinee creates one temporary (`ifLetElseProg`), at `b = true`"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "",
+  "nonvacuity_witness": "`ifLetElseProg` satisfies `NoTailEscapingTemps` and its 2021 and 2024 traces differ, so the first theorem applies to a program the edition does affect; `tailProg` satisfies `NoIfLetEscapingTemps`.",
+  "nonvacuity_witness_lean": [
+   "Toy.DropScope.ifLetElseProg_noTailEscapingTemps_and_traces_differ",
+   "Toy.DropScope.tailProg_noIfLetEscapingTemps_and_run_ne"
+  ],
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "The two rule switches are a modeling choice of the toy (`Rules`); no real compiler is claimed to expose them separately.",
+   "Each hypothesis is sufficient, not necessary: `noEscape_hypotheses_not_necessary_for_run_eq` gives `topLevelTailTempProg` (violates `NoTailEscapingTemps`; the tail rule leaves its action list unchanged at both settings of the `if let` rule) and `bareIfLetThenProg` (violates `NoIfLetEscapingTemps`; the `if let` rule leaves its action list unchanged at both settings of the tail rule).",
+   "The card does not say that the two rules are non-interacting on programs outside both classes: `ifLetInTailProg_rules_interact` shows that for `ifLetInTailProg` the tail rule changes the action list when the `if let` rule is off and leaves it unchanged when the `if let` rule is on.",
+   "The constructs listed as not modeled in R1 are not modeled here either."
+  ],
+  "prior_art": [
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-tail-expr-scope.md:5 (summary), :54 (`RefCell` example: 2021 drops `c` before the temporary, 2024 after), :58 (2021 extends tail temporaries to the next temporary scope boundary; 2024 drops them at the end of the block before the block's locals), :62-69 (a program accepted in 2021 and rejected in 2024 with E0716), :90 (no semantics-preserving rewrite shortens tail temporaries) [documentation]",
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-if-let-scope.md:5 (2024 drops `if let` scrutinee temporaries before entering `else`), :30 (2021 keeps them until after the `if let`), :32 (2024: until the then-block is evaluated or control enters `else`) [documentation]",
+   "RFC 3606 'Shorter temporary lifetimes in tail expressions' (merged), rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4:text/3606-temporary-lifetimes-in-tail-expressions.md:10, :53-61, :78-79 [documentation (accepted design RFC)]"
+  ],
+  "design_question": "Are the two 2024 narrowing rules independent on their clean classes, so that a compiler can stage or verify them separately?"
+ },
+ {
+  "id": "R1-perm",
+  "lean": [
+   "Toy.DropScope.run_perm_nodup_and_dropTemps_perm_mkTemps_and_nonDropTemps_eq",
+   "Toy.DropScope.run_each_created_temp_dropped_exactly_once"
+  ],
+  "lean_names": [
+   "Toy.DropScope.run_perm_nodup_and_dropTemps_perm_mkTemps_and_nonDropTemps_eq",
+   "Toy.DropScope.run_each_created_temp_dropped_exactly_once",
+   "Toy.DropScope.dropTemps",
+   "Toy.DropScope.mkTemps",
+   "Toy.DropScope.mkTemps_dropTemps_tailProg",
+   "Toy.DropScope.run",
+   "Toy.DropScope.run_tailProg"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_rationale": "T1: that the 2024 rules move drops of temporaries without adding or losing drops is implicit in the Edition Guide's description of the change; this card makes it precise for the toy elaboration. Novelty is not claimed.",
+  "plain_claim": "For every toy program `e` and every two rule settings `R₁`, `R₂`: the action lists `run R₁ e` and `run R₂ e` are permutations of each other; `run R₁ e` contains no action twice; in `run R₁ e` the temporaries dropped (`dropTemps`: tag and borrow list of every `dropTemp`) are a permutation of the temporaries created (`mkTemps`: the same data of every `mkTemp`); and the actions other than temporary drops occur in the same order in `run R₁ e` and `run R₂ e`. Consequently (second theorem) under every setting each temporary created during the run occurs exactly once among the temporaries dropped. Rescoping thus reorders temporary drops, keeps the order of every other action, and adds or removes no action.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.run_perm_nodup_and_dropTemps_perm_mkTemps_and_nonDropTemps_eq",
+    "rendering": "∀ (R₁ R₂ : Rules) (e : Expr),\n  (run R₁ e).Perm (run R₂ e) ∧ (run R₁ e).Nodup ∧\n  ((run R₁ e).filterMap Act.dropTempKey?).Perm ((run R₁ e).filterMap Act.mkTempKey?) ∧\n  (run R₁ e).filter (fun a => !a.isDropTemp) = (run R₂ e).filter (fun a => !a.isDropTemp)"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [],
+  "depth": "substantive",
+  "depth_note": "",
+  "nonvacuity_witness": "No hypotheses beyond the quantified variables. `run_tailProg` shows two settings whose action lists differ, so the permutation is not the identity, and `mkTemps_dropTemps_tailProg` shows a run with a created and dropped temporary.",
+  "nonvacuity_witness_lean": [
+   "Toy.DropScope.run_tailProg",
+   "Toy.DropScope.mkTemps_dropTemps_tailProg"
+  ],
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "Branch outcomes are fixed in the toy syntax (`hit : Bool`), destructors cannot change state, and nothing panics, so rescoping cannot change which branches or drops execute in the toy; this neither establishes nor refutes whether changing drop order in Rust can change control flow, unwinding or poisoning behaviour.",
+   "Exactly-once destruction here is a property of the toy elaboration, which has no moves, no conditional initialization and no unwinding; drop flags and partial moves are the subject of the published drop-flag package and are not modeled here. The card says nothing about temporaries in branches that do not run.",
+   "The card does not say that a temporary is dropped after it is created (an ordering property between a creation and its drop); it states the permutation, duplicate-freeness, counting and relative-order facts above."
+  ],
+  "prior_art": [
+   "Corpus package `drop-flag-elaboration-partial-moves-and-unwind-cleanup-exactly-once-destruction` (published), card R1 (`Toy.DropFlags.stdElab_correct_of_forward_moveChecked_noNormalPathToResume`): exactly-once destruction within a fixed scope assignment; this package varies the scope assignment instead",
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-tail-expr-scope.md:5 (summary), :54 (`RefCell` example: 2021 drops `c` before the temporary, 2024 after), :58 (2021 extends tail temporaries to the next temporary scope boundary; 2024 drops them at the end of the block before the block's locals), :62-69 (a program accepted in 2021 and rejected in 2024 with E0716), :90 (no semantics-preserving rewrite shortens tail temporaries) [documentation]"
+  ],
+  "design_question": "May a verified compiler treat the edition change as a pure reordering of temporary drops (no new or lost drops, no other action moved)?"
+ },
+ {
+  "id": "R1-match-tail",
+  "lean": [
+   "Toy.DropScope.matchInTailProg_scrutinee_drop_moves_by_tail_rule",
+   "Toy.DropScope.eval_matchE_eq_matchStep",
+   "Toy.DropScope.refuted_match_outside_blockTail_same_drop_point"
+  ],
+  "lean_names": [
+   "Toy.DropScope.matchInTailProg_scrutinee_drop_moves_by_tail_rule",
+   "Toy.DropScope.eval_matchE_eq_matchStep",
+   "Toy.DropScope.refuted_match_outside_blockTail_same_drop_point",
+   "Toy.DropScope.NoIfLetEscapingTemps",
+   "Toy.DropScope.NoTailEscapingTemps",
+   "Toy.DropScope.eval",
+   "Toy.DropScope.matchInIfLetScrutProg",
+   "Toy.DropScope.matchInTailProg",
+   "Toy.DropScope.matchStep"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_rationale": "T1: RFC 3606 states that temporaries in a block's tail expression are dropped before the block's locals from Rust 2024 on, and the Reference states that a `match` scrutinee is not a temporary scope; this card records the resulting closed computation in the toy. Novelty is not claimed.",
+  "plain_claim": "For the program `matchInTailProg` (a `match` whose scrutinee creates a temporary with destructor event `dtor 1`, in the tail position of a block with one local whose destructor emits `dtor 0`), the 2021 trace is `[dtor 0, dtor 1]` and the 2024 trace is `[dtor 1, dtor 0]`; with the tail rule on and the `if let` rule off the trace is `[dtor 1, dtor 0]`, and with the tail rule off and the `if let` rule on it is `[dtor 0, dtor 1]`. For every rule setting, `eval` of a `match` is the setting-independent combinator `matchStep` (`eval_matchE_eq_matchStep`). Separately (`refuted_match_outside_blockTail_same_drop_point`, which refutes the stronger reading that a `match` scrutinee temporary has the same drop point in both editions whenever the `match` is outside block tail positions), `matchInIfLetScrutProg` (a `match` inside an `if let` scrutinee, with no block) satisfies `NoTailEscapingTemps`, violates `NoIfLetEscapingTemps`, and has 2021 trace `[out 1, dtor 0]` and 2024 trace `[dtor 0, out 1]`.",
+  "unfolded_lean": [],
+  "unfolded_prose": "Under the 2021 rules the scrutinee temporary of the `match` stays pending past the end of the block (no rule closes the tail), so it is dropped after the local; under the tail rule the block's tail expression is a temporary scope and the temporary is dropped before the local. `matchStep hit rs ra rb` appends the selected arm's closed actions to the scrutinee's actions and passes the scrutinee's pending temporaries on, with no dependence on the rules.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "depth_note": "",
+  "nonvacuity_witness": "Closed computations.",
+  "nonvacuity_witness_lean": "Toy.DropScope.matchInTailProg_scrutinee_drop_moves_by_tail_rule",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "`refuted_match_outside_blockTail_same_drop_point` refutes, in the toy, the reading that a `match` scrutinee temporary has the same drop point in both editions whenever the `match` is outside block tail positions: in `matchInIfLetScrutProg` the `match` scrutinee temporary escapes into an enclosing `if let` scrutinee and the `if let` rule moves it. The drop point agrees in both editions when both `NoTailEscapingTemps` and `NoIfLetEscapingTemps` hold (R1).",
+   "RFC 3606 at text/3606-temporary-lifetimes-in-tail-expressions.md:53-61 describes the tail rule for Rust 2024; this card is about the toy model and neither establishes nor refutes rustc's behaviour."
+  ],
+  "prior_art": [
+   "RFC 3606 'Shorter temporary lifetimes in tail expressions' (merged), rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4:text/3606-temporary-lifetimes-in-tail-expressions.md:10, :53-61, :78-79 [documentation (accepted design RFC)]",
+   "The Rust Reference, Destructors, rust-lang/reference@84dc36ff4712fad6829b6063cd4acbcaf5381708:src/destructors.md:281-282 (a `match` scrutinee is not a temporary scope) [documentation]",
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-if-let-scope.md:5 (2024 drops `if let` scrutinee temporaries before entering `else`), :30 (2021 keeps them until after the `if let`), :32 (2024: until the then-block is evaluated or control enters `else`) [documentation]"
+  ],
+  "design_question": "Does an edition-independent treatment of `match` suffice, or must the compiler know whether a `match` sits in a tail position or inside an `if let` scrutinee?"
+ },
+ {
+  "id": "R2",
+  "lean": [
+   "Toy.DropScope.tailProg_accepted_and_traces_reversed",
+   "Toy.DropScope.not_behIncl_e2021_e2024_and_not_behIncl_e2024_e2021",
+   "Toy.DropScope.refCellTailProg_accepted_e2024_rejected_e2021"
+  ],
+  "lean_names": [
+   "Toy.DropScope.tailProg_accepted_and_traces_reversed",
+   "Toy.DropScope.not_behIncl_e2021_e2024_and_not_behIncl_e2024_e2021",
+   "Toy.DropScope.refCellTailProg_accepted_e2024_rejected_e2021",
+   "Toy.DropScope.BehIncl",
+   "Toy.DropScope.NoIfLetEscapingTemps",
+   "Toy.DropScope.NoTailEscapingTemps",
+   "Toy.DropScope.accepts",
+   "Toy.DropScope.behIncl_refl",
+   "Toy.DropScope.borrowOK",
+   "Toy.DropScope.borrowOK_shadowing_limitation",
+   "Toy.DropScope.refCellTailProg",
+   "Toy.DropScope.refCellTailProg_flipped_commute_and_trace_eq_and_accepts_ne",
+   "Toy.DropScope.tailProg",
+   "Toy.DropScope.trace_accepts_beh_eq_of_noTailEscapingTemps_of_noIfLetEscapingTemps",
+   "Toy.DropScope.shadowedBorrowProg"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_rationale": "T1: the Edition Guide documents both the reversed drop order and the `RefCell` program accepted in 2024 and rejected in 2021; this card records the corresponding toy computations and the incomparability they imply. Novelty is not claimed.",
+  "plain_claim": "For the program `tailProg` (one local whose destructor emits `dtor 0`, and a tail temporary whose destructor emits `dtor 1`), the toy borrow check (`accepts`) accepts it under both editions, the 2021 trace is `[dtor 0, dtor 1]` and the 2024 trace is `[dtor 1, dtor 0]`; consequently neither edition's accepted behaviour is included in the other's (`BehIncl` fails in both directions). For `refCellTailProg` (a tail temporary borrowing the block's local), the toy borrow check accepts under the 2024 rules and rejects under the 2021 rules.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.not_behIncl_e2021_e2024_and_not_behIncl_e2024_e2021",
+    "rendering": "(¬ ∀ (e : Expr) (tr : List Ev), beh ⟨false, false⟩ e = some tr → beh ⟨true, true⟩ e = some tr) ∧\n  ¬ ∀ (e : Expr) (tr : List Ev), beh ⟨true, true⟩ e = some tr → beh ⟨false, false⟩ e = some tr"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [],
+  "depth": "definitional",
+  "depth_note": "",
+  "nonvacuity_witness": "Concrete programs; closed computations.",
+  "nonvacuity_witness_lean": "Toy.DropScope.tailProg_accepted_and_traces_reversed",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "The toy borrow check models one direction of the documented acceptance change (a temporary may not outlive a local it borrows). It has no borrows of temporaries, so it cannot express programs accepted under 2021 and rejected under 2024 (the Edition Guide documents such a program at temporary-tail-expr-scope.md:62-69). Whether acceptance under the toy 2021 rules implies acceptance under the toy 2024 rules for every toy program is not proved here and is not a claim about Rust.",
+   "`borrowOK` tracks live locals as a multiset of `Nat` names, not binders: shadowing an outer local with the same name hides the inner local's drop (`borrowOK_shadowing_limitation`). It models no `&mut` exclusivity, no non-lexical lifetimes and no borrows of temporaries.",
+   "Escape hatches for the incomparability: comparability holds on the class of R1 (`trace_accepts_beh_eq_of_noTailEscapingTemps_of_noIfLetEscapingTemps`); action lists agree up to permutation for every program (R1-perm); traces agree when every flipped pair commutes (R4-if), although verdicts of `accepts` may still differ (`refCellTailProg_flipped_commute_and_trace_eq_and_accepts_ne`).",
+   "No destructor-order measurement of any real compilation is made; every trace is a trace of the toy semantics.",
+   "`BehIncl` is the inclusion of accepted behaviours of a deterministic toy semantics; it is not a refinement relation on Rust programs."
+  ],
+  "prior_art": [
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-tail-expr-scope.md:5 (summary), :54 (`RefCell` example: 2021 drops `c` before the temporary, 2024 after), :58 (2021 extends tail temporaries to the next temporary scope boundary; 2024 drops them at the end of the block before the block's locals), :62-69 (a program accepted in 2021 and rejected in 2024 with E0716), :90 (no semantics-preserving rewrite shortens tail temporaries) [documentation]",
+   "RFC 3606 'Shorter temporary lifetimes in tail expressions' (merged), rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4:text/3606-temporary-lifetimes-in-tail-expressions.md:10, :53-61, :78-79 [documentation (accepted design RFC)]",
+   "Corpus package `drop-check-may-dangle-and-destructor-soundness-for-generic-containers` (published), card R5 (`Toy.Dropck.dropOrder_matters_pReaderAfter`): destructor soundness depends on drop order; this package does not model destructor soundness"
+  ],
+  "design_question": "Must a verified compiler's semantics be indexed by edition (no edition's behaviour is included in the other's), and does the edition also change which programs are accepted?",
+  "positive_control_lean": [
+   "Toy.DropScope.trace_accepts_beh_eq_of_noTailEscapingTemps_of_noIfLetEscapingTemps",
+   "Toy.DropScope.behIncl_refl"
+  ],
+  "positive_control": "Restricted to programs satisfying `NoTailEscapingTemps` and `NoIfLetEscapingTemps`, the 2021 and 2024 behaviours coincide (`trace_accepts_beh_eq_of_noTailEscapingTemps_of_noIfLetEscapingTemps`), so incomparability disappears on that class; `behIncl_refl` is the trivial reflexive case."
+ },
+ {
+  "id": "R3-match",
+  "lean": [
+   "Toy.DropScope.run_toMatch_eq_run_ifLet2021",
+   "Toy.DropScope.ifLetElseProg_traces_differ"
+  ],
+  "lean_names": [
+   "Toy.DropScope.run_toMatch_eq_run_ifLet2021",
+   "Toy.DropScope.ifLetElseProg_traces_differ",
+   "Toy.DropScope.ifLetElseProg",
+   "Toy.DropScope.ifLetInTailProg_toMatch_e2024_ne_e2021",
+   "Toy.DropScope.run",
+   "Toy.DropScope.toMatch",
+   "Toy.DropScope.toMatch_ifLetElseProg_ne"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_rationale": "T1: the Edition Guide documents the `if let` rule and the Reference documents that a `match` scrutinee is not a temporary scope; this card states in the toy that rewriting to `match` is the same as switching the `if let` rule off. Novelty is not claimed.",
+  "plain_claim": "For every toy program `e` and every rule setting `R`, the action list that `run` produces for the `match`-rewritten program `toMatch e` under `R` equals the action list of `e` under `R` with the `if let` rule set to its 2021 setting and the tail rule unchanged (`run R (toMatch e) = run { R with ifLet2024 := false } e`). The `if let` rule is observable: for `ifLetElseProg` (an `if let` whose scrutinee temporary's destructor emits `dtor 0`, whose pattern does not match and whose `else` block emits `out 1`) the 2021 trace is `[out 1, dtor 0]` and the 2024 trace is `[dtor 0, out 1]`.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.run_toMatch_eq_run_ifLet2021",
+    "rendering": "∀ (R : Rules) (e : Expr),\n  closeScope (eval R [] (toMatch e)) = closeScope (eval ⟨R.tail2024, false⟩ [] e)"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_note": "",
+  "nonvacuity_witness": "No hypotheses beyond the quantified variables; `toMatch_ifLetElseProg_ne` shows the rewrite changes a program, and `ifLetElseProg_traces_differ` shows the `if let` rule changes that program's trace.",
+  "nonvacuity_witness_lean": [
+   "Toy.DropScope.toMatch_ifLetElseProg_ne",
+   "Toy.DropScope.ifLetElseProg_traces_differ"
+  ],
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "In the toy the rewrite does not in general reproduce, under the 2024 rules, the 2021 action list: the tail rule still applies to the resulting `match` (R3-migration and its tightness counterexample `ifLetInTailProg_toMatch_e2024_ne_e2021`).",
+   "`toMatch` rewrites every `if let` of the program, in a language where `matchE` and `ifLet` with the `if let` rule off have the same evaluation; it does not model `let` chains, `else if let` chains, match ergonomics, autoref or type-inference differences between `if let` and `match`, and rewriting a single site in context is not stated separately.",
+   "No claim about deadlocks or locks; a destructor event stands for any observable effect of a guard's destructor."
+  ],
+  "prior_art": [
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-if-let-scope.md:5 (2024 drops `if let` scrutinee temporaries before entering `else`), :30 (2021 keeps them until after the `if let`), :32 (2024: until the then-block is evaluated or control enters `else`) [documentation]",
+   "The Rust Reference, Destructors, rust-lang/reference@84dc36ff4712fad6829b6063cd4acbcaf5381708:src/destructors.md:281-282 (a `match` scrutinee is not a temporary scope) [documentation]"
+  ],
+  "design_question": "Does rewriting every `if let` to `match` amount, in the toy, to switching off the `if let` rule while leaving the tail rule in force?"
+ },
+ {
+  "id": "R3-migration",
+  "lean": "Toy.DropScope.run_e2024_toMatch_eq_run_e2021_of_noTailEscapingTemps",
+  "lean_names": [
+   "Toy.DropScope.run_e2024_toMatch_eq_run_e2021_of_noTailEscapingTemps",
+   "Toy.DropScope.NoTailEscapingTemps",
+   "Toy.DropScope.accepts",
+   "Toy.DropScope.ifLetElseProg",
+   "Toy.DropScope.ifLetElseProg_noTailEscapingTemps_and_traces_differ",
+   "Toy.DropScope.ifLetInTailProg",
+   "Toy.DropScope.ifLetInTailProg_toMatch_e2024_ne_e2021",
+   "Toy.DropScope.noEscape_hypotheses_not_necessary_for_run_eq",
+   "Toy.DropScope.refuted_emptyTailDtors_give_run_eq",
+   "Toy.DropScope.run",
+   "Toy.DropScope.silentRefCellTailProg",
+   "Toy.DropScope.silentTailProg",
+   "Toy.DropScope.toMatch",
+   "Toy.DropScope.topLevelTailTempProg"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_rationale": "T1: the two 2024 narrowing rules are documented in prose (Edition Guide, RFC 3606); this card states a consequence of them inside a toy elaboration. No mechanized statement of it was found in the search recorded under Prior-art search; novelty is not claimed.",
+  "plain_claim": "For every toy program `e`: if `NoTailEscapingTemps e`, then the action list that `run` produces for `toMatch e` under the 2024 rules equals the action list of `e` under the 2021 rules.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.run_e2024_toMatch_eq_run_e2021_of_noTailEscapingTemps",
+    "rendering": "∀ (e : Expr), tailsClean e = true →\n  closeScope (eval ⟨true, true⟩ [] (toMatch e)) = closeScope (eval ⟨false, false⟩ [] e)"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [
+   {
+    "name": "ht : NoTailEscapingTemps e",
+    "purpose": "the 2024 tail rule also applies to `match` scrutinee temporaries in tail positions",
+    "tightness": "tight",
+    "counterexample": "Toy.DropScope.ifLetInTailProg_toMatch_e2024_ne_e2021",
+    "counterexample_class": "an `if let` with a scrutinee temporary in the tail position of a block with one local (`ifLetInTailProg`)"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "corollary of R3-match and R1-split",
+  "nonvacuity_witness": "`ifLetElseProg` satisfies the hypothesis and its 2021 and 2024 traces differ.",
+  "nonvacuity_witness_lean": "Toy.DropScope.ifLetElseProg_noTailEscapingTemps_and_traces_differ",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "Without the hypothesis the statement is false in the toy (`ifLetInTailProg_toMatch_e2024_ne_e2021`). Nothing is claimed about rustc or about the `if_let_rescope` lint.",
+   "The hypothesis is sufficient, not necessary: `noEscape_hypotheses_not_necessary_for_run_eq` gives `topLevelTailTempProg`, which violates `NoTailEscapingTemps` and for which the rewrite under the 2024 rules reproduces the 2021 action list.",
+   "Empty destructor events do not remove the need for the hypothesis: `refuted_emptyTailDtors_give_run_eq` (which refutes the stronger reading that they do) shows that for `silentTailProg` (tail temporary and local with no destructor events) the traces agree but the action lists differ, and for `silentRefCellTailProg` the traces agree but the verdicts of `accepts` differ.",
+   "The constructs listed as not modeled in R1 are not modeled here either."
+  ],
+  "prior_art": [
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-if-let-scope.md:5 (2024 drops `if let` scrutinee temporaries before entering `else`), :30 (2021 keeps them until after the `if let`), :32 (2024: until the then-block is evaluated or control enters `else`) [documentation]",
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-tail-expr-scope.md:5 (summary), :54 (`RefCell` example: 2021 drops `c` before the temporary, 2024 after), :58 (2021 extends tail temporaries to the next temporary scope boundary; 2024 drops them at the end of the block before the block's locals), :62-69 (a program accepted in 2021 and rejected in 2024 with E0716), :90 (no semantics-preserving rewrite shortens tail temporaries) [documentation]",
+   "RFC 3606 'Shorter temporary lifetimes in tail expressions' (merged), rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4:text/3606-temporary-lifetimes-in-tail-expressions.md:10, :53-61, :78-79 [documentation (accepted design RFC)]"
+  ],
+  "design_question": "When does rewriting every `if let` to `match` (`toMatch`) reproduce, under the toy's 2024 rules, the toy's 2021 action list?"
+ },
+ {
+  "id": "R4-if",
+  "lean": "Toy.DropScope.trace_e2021_eq_trace_e2024_of_flipped_commute",
+  "lean_names": [
+   "Toy.DropScope.trace_e2021_eq_trace_e2024_of_flipped_commute",
+   "Toy.DropScope.Commute",
+   "Toy.DropScope.Ev",
+   "Toy.DropScope.Flipped",
+   "Toy.DropScope.ababProg_trace_eq_and_flipped_not_commute",
+   "Toy.DropScope.accepts",
+   "Toy.DropScope.beh",
+   "Toy.DropScope.commutingTailProg",
+   "Toy.DropScope.commutingTailProg_flipped_and_all_commute",
+   "Toy.DropScope.not_commute_tailProg",
+   "Toy.DropScope.refCellTailProg",
+   "Toy.DropScope.refCellTailProg_flipped_commute_and_trace_eq_and_accepts_ne",
+   "Toy.DropScope.run",
+   "Toy.DropScope.tailProg",
+   "Toy.DropScope.tailProg_flipped_not_commute_and_traces_differ",
+   "Toy.DropScope.tailProgLocalDrop",
+   "Toy.DropScope.tailProgTempDrop",
+   "Toy.DropScope.commute_distinct_nonempty_event_lists"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_rationale": "T1: the abstract core (a reordering in which every inverted pair has commuting images leaves the product of a word unchanged) is standard trace theory (cited below); its instantiation to the toy's edition-indexed action lists, via R1-perm, is folklore made precise. Novelty is not claimed.",
+  "plain_claim": "For every toy program `e`: if every pair of actions that occur in opposite orders in the action lists produced by `run` under the 2021 and the 2024 rules (`Flipped e a b`) has commuting event lists (`Commute a b`, equality of the words `a.events ++ b.events` and `b.events ++ a.events`), then the 2021 and 2024 event traces of `e` are equal.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.trace_e2021_eq_trace_e2024_of_flipped_commute",
+    "rendering": "∀ (e : Expr),\n  (∀ a b : Act,\n      (∃ i j : Nat, i < j ∧ (run ⟨false, false⟩ e)[i]? = some a ∧ (run ⟨false, false⟩ e)[j]? = some b) ∧\n      (∃ i j : Nat, i < j ∧ (run ⟨true, true⟩ e)[i]? = some b ∧ (run ⟨true, true⟩ e)[j]? = some a) →\n      a.events ++ b.events = b.events ++ a.events) →\n    (run ⟨false, false⟩ e).flatMap Act.events = (run ⟨true, true⟩ e).flatMap Act.events"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [
+   {
+    "name": "h : ∀ a b, Flipped e a b → Commute a b",
+    "purpose": "every reordered pair must be unobservable as a word",
+    "tightness": "tight",
+    "counterexample": "Toy.DropScope.tailProg_flipped_not_commute_and_traces_differ",
+    "counterexample_class": "`tailProg`: one flipped pair with distinct single destructor events"
+   }
+  ],
+  "depth": "substantive",
+  "depth_note": "uses R1-perm and an induction over permutations of duplicate-free lists",
+  "nonvacuity_witness": "`commutingTailProg` has a flipped pair and every flipped pair commutes.",
+  "nonvacuity_witness_lean": "Toy.DropScope.commutingTailProg_flipped_and_all_commute",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "The converse is false in the toy: `ababProg_trace_eq_and_flipped_not_commute` (R4-not-necessary) has equal traces and a flipped pair that does not commute.",
+   "Equal traces do not imply equal toy borrow-check verdicts or behaviours: `refCellTailProg_flipped_commute_and_trace_eq_and_accepts_ne` shows that `refCellTailProg` satisfies the hypothesis and has equal traces, yet `accepts` differs between the editions (so `beh` differs as well).",
+   "`Commute` is word equality in the free monoid `List Ev`; it is not an independence relation on effects. Two non-empty event lists commute iff both are powers of a common word (classical; not proved in this package). Hence two actions emitting distinct single events (such as `[dtor 0]` and `[dtor 1]`, `not_commute_tailProg`), or non-empty event lists over disjoint alphabets, never commute, even when the effects they stand for are independent; distinct non-empty event lists that are powers of a common word do commute (`commute_distinct_nonempty_event_lists`: `[dtor 0]` and `[dtor 0, dtor 0]`)."
+  ],
+  "prior_art": [
+   "Trace theory: P. Cartier and D. Foata, Problèmes combinatoires de commutation et réarrangements, Lecture Notes in Mathematics 85, Springer, 1969, DOI 10.1007/BFb0079468; A. Mazurkiewicz, 'Concurrent Program Schemes and their Interpretations', DAIMI Report PB-78, 1977, DOI 10.7146/dpb.v6i78.7691; V. Diekert and G. Rozenberg (eds.), The Book of Traces, World Scientific, 1995, DOI 10.1142/2563: words identified up to commutation of independent letters; the abstract core of R4-if (a reordering in which every inverted pair has commuting images leaves the product unchanged) belongs to this standard theory [prior art]",
+   "Combinatorics on words: M. Lothaire, Combinatorics on Words, Cambridge University Press, 1997, DOI 10.1017/CBO9780511566097, and R. C. Lyndon and M. P. Schützenberger, 'The equation a^M = b^N c^P in a free group', Michigan Mathematical Journal 9(4), 1962, DOI 10.1307/mmj/1028998766: the classical fact that two words commute iff both are powers of a common word [prior art; not proved in this package]",
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-tail-expr-scope.md:5 (summary), :54 (`RefCell` example: 2021 drops `c` before the temporary, 2024 after), :58 (2021 extends tail temporaries to the next temporary scope boundary; 2024 drops them at the end of the block before the block's locals), :62-69 (a program accepted in 2021 and rejected in 2024 with E0716), :90 (no semantics-preserving rewrite shortens tail temporaries) [documentation]",
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-if-let-scope.md:5 (2024 drops `if let` scrutinee temporaries before entering `else`), :30 (2021 keeps them until after the `if let`), :32 (2024: until the then-block is evaluated or control enters `else`) [documentation]"
+  ],
+  "design_question": "What sufficient condition lets a migration tool certify that the edition change is unobservable in the trace of a program?"
+ },
+ {
+  "id": "R4-site",
+  "lean": [
+   "Toy.DropScope.tailSiteProg_trace_eq_iff_commute",
+   "Toy.DropScope.elseSiteProg_trace_eq_iff_commute",
+   "Toy.DropScope.elseSite_commute_iff_of_dtorOnly"
+  ],
+  "lean_names": [
+   "Toy.DropScope.tailSiteProg_trace_eq_iff_commute",
+   "Toy.DropScope.elseSiteProg_trace_eq_iff_commute",
+   "Toy.DropScope.elseSite_commute_iff_of_dtorOnly",
+   "Toy.DropScope.Ev",
+   "Toy.DropScope.dropOrderEvents",
+   "Toy.DropScope.elseSiteProg",
+   "Toy.DropScope.elseSite_commute_iff_of_dtorOnly_hypothesis_tight",
+   "Toy.DropScope.elseSite_dtorOnly_hypothesis_holds",
+   "Toy.DropScope.nestedTailProg_traces_differ",
+   "Toy.DropScope.refCellTailProg_flipped_commute_and_trace_eq_and_accepts_ne",
+   "Toy.DropScope.siblingTailProg_traces_differ",
+   "Toy.DropScope.site_examples",
+   "Toy.DropScope.tailSiteProg",
+   "Toy.DropScope.thenBranchProg_traces_differ",
+   "Toy.DropScope.letsFrom",
+   "Toy.DropScope.tempsSeq",
+   "Toy.DropScope.outsSeq"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_rationale": "T1: the Edition Guide describes which events a moved temporary crosses at one tail or `else` site; this card gives the exact whole-word condition for one site in the toy. Novelty is not claimed.",
+  "plain_claim": "For every list `ls` of local destructor event lists and every list `ds` of tail-temporary destructor event lists, the program `tailSiteProg ls ds` has equal 2021 and 2024 traces iff `dropOrderEvents ls ++ dropOrderEvents ds = dropOrderEvents ds ++ dropOrderEvents ls`; and for every `ds` and every list `es` of output numbers, `elseSiteProg ds es` has equal traces iff `es.map Ev.out ++ dropOrderEvents ds = dropOrderEvents ds ++ es.map Ev.out`. If moreover every event in `dropOrderEvents ds` is a `dtor` event, the latter condition holds iff `es = []` or `dropOrderEvents ds = []` (`elseSite_commute_iff_of_dtorOnly`).",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.tailSiteProg_trace_eq_iff_commute",
+    "rendering": "∀ (ls ds : List (List Ev)),\n  trace ⟨false, false⟩ (tailSiteProg ls ds) = trace ⟨true, true⟩ (tailSiteProg ls ds) ↔\n    ls.reverse.flatten ++ ds.reverse.flatten = ds.reverse.flatten ++ ls.reverse.flatten"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [
+   {
+    "name": "hd : ∀ ev ∈ dropOrderEvents ds, ∃ n, ev = .dtor n (third theorem)",
+    "purpose": "restricts the third theorem to destructors all of whose events are `dtor` events; the two characterizations have no hypotheses",
+    "tightness": "tight",
+    "counterexample": "Toy.DropScope.elseSite_commute_iff_of_dtorOnly_hypothesis_tight",
+    "counterexample_class": "one scrutinee temporary whose destructor emits `out 1`, with `es = [1]`"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "",
+  "nonvacuity_witness": "`site_examples` gives instances of both sides of both characterizations, including an `else` site whose scrutinee temporary's destructor emits an `out` event that commutes with the `else` block's output; `elseSite_dtorOnly_hypothesis_holds` satisfies the hypothesis of the third theorem.",
+  "nonvacuity_witness_lean": [
+   "Toy.DropScope.site_examples",
+   "Toy.DropScope.elseSite_dtorOnly_hypothesis_holds"
+  ],
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "These are single-site shapes (one block with all temporaries in its tail, or one `if let` with a non-matching pattern, as the whole program); the commutation is of whole words, not of each temporary separately.",
+   "Once a block or `if let` is nested inside a larger expression, a moved temporary can cross events outside the immediate block or `else` block (R4-window: `nestedTailProg_traces_differ`, `thenBranchProg_traces_differ`, `siblingTailProg_traces_differ`). No multi-site characterization is claimed; for general programs per-action commutation is sufficient (R4-if) but not necessary (R4-not-necessary).",
+   "In `elseSiteProg` the `else` block emits `out` events; a destructor may also emit `out` events in the toy (`Ev.out` stands for any side effect). For destructors all of whose events are `dtor` events, the condition reduces to emptiness of one side (`elseSite_commute_iff_of_dtorOnly`).",
+   "Equal traces do not imply equal toy borrow-check verdicts (`refCellTailProg_flipped_commute_and_trace_eq_and_accepts_ne`)."
+  ],
+  "prior_art": [
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-tail-expr-scope.md:5 (summary), :54 (`RefCell` example: 2021 drops `c` before the temporary, 2024 after), :58 (2021 extends tail temporaries to the next temporary scope boundary; 2024 drops them at the end of the block before the block's locals), :62-69 (a program accepted in 2021 and rejected in 2024 with E0716), :90 (no semantics-preserving rewrite shortens tail temporaries) [documentation]",
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-if-let-scope.md:5 (2024 drops `if let` scrutinee temporaries before entering `else`), :30 (2021 keeps them until after the `if let`), :32 (2024: until the then-block is evaluated or control enters `else`) [documentation]",
+   "Combinatorics on words: M. Lothaire, Combinatorics on Words, Cambridge University Press, 1997, DOI 10.1017/CBO9780511566097, and R. C. Lyndon and M. P. Schützenberger, 'The equation a^M = b^N c^P in a free group', Michigan Mathematical Journal 9(4), 1962, DOI 10.1307/mmj/1028998766: the classical fact that two words commute iff both are powers of a common word [prior art; not proved in this package]"
+  ],
+  "design_question": "At a single affected site, exactly which destructor behaviours make the migration unobservable in the trace?"
+ },
+ {
+  "id": "R4-not-necessary",
+  "lean": "Toy.DropScope.ababProg_trace_eq_and_flipped_not_commute",
+  "lean_names": [
+   "Toy.DropScope.ababProg_trace_eq_and_flipped_not_commute",
+   "Toy.DropScope.ababLocalDrop",
+   "Toy.DropScope.ababProg",
+   "Toy.DropScope.ababTempDrop"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_rationale": "T1: a toy instance of the classical fact that a product of words can be preserved by a reordering whose individual swaps do not commute; novelty is not claimed.",
+  "plain_claim": "For `ababProg` (two locals and two tail temporaries whose drops spell `[dtor 0, dtor 1]` on each side), the 2021 and 2024 traces are equal, yet the temporary drop `ababTempDrop` and the local drop `ababLocalDrop` occur in opposite orders under the two editions and their event lists do not commute; per-action commutation is therefore not necessary for trace preservation in the toy.",
+  "unfolded_lean": [],
+  "unfolded_prose": "Both editions emit `dtor 0, dtor 1, dtor 0, dtor 1`: under 2021 the locals' drops (`dtor 0, dtor 1`) precede the temporaries' drops (`dtor 0, dtor 1`), under 2024 the order of the two groups is swapped, and the two groups spell the same word. The pair (`ababLocalDrop`, `ababTempDrop`) is flipped and `[dtor 1] ++ [dtor 0]` is not `[dtor 0] ++ [dtor 1]`.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "depth_note": "",
+  "nonvacuity_witness": "Closed computation.",
+  "nonvacuity_witness_lean": "Toy.DropScope.ababProg_trace_eq_and_flipped_not_commute",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "This refutes, in the toy, the reading 'trace preserved iff each moved temporary's destructor events commute with the events it is moved across'; it does not refute the single-site whole-word characterization R4-site.",
+   "Escape hatch: the counterexample relies on distinct drop actions emitting the same event labels; it does not refute necessity of per-action commutation under an additional hypothesis that distinct actions emit pairwise disjoint event alphabets (not proved here)."
+  ],
+  "prior_art": [
+   "Combinatorics on words: M. Lothaire, Combinatorics on Words, Cambridge University Press, 1997, DOI 10.1017/CBO9780511566097, and R. C. Lyndon and M. P. Schützenberger, 'The equation a^M = b^N c^P in a free group', Michigan Mathematical Journal 9(4), 1962, DOI 10.1307/mmj/1028998766: the classical fact that two words commute iff both are powers of a common word [prior art; not proved in this package]",
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-tail-expr-scope.md:5 (summary), :54 (`RefCell` example: 2021 drops `c` before the temporary, 2024 after), :58 (2021 extends tail temporaries to the next temporary scope boundary; 2024 drops them at the end of the block before the block's locals), :62-69 (a program accepted in 2021 and rejected in 2024 with E0716), :90 (no semantics-preserving rewrite shortens tail temporaries) [documentation]"
+  ],
+  "design_question": "Can a migration checker demand per-temporary commutation without rejecting trace-preserving programs?"
+ },
+ {
+  "id": "R4-window",
+  "lean": [
+   "Toy.DropScope.nestedTailProg_traces_differ",
+   "Toy.DropScope.thenBranchProg_traces_differ",
+   "Toy.DropScope.siblingTailProg_traces_differ"
+  ],
+  "lean_names": [
+   "Toy.DropScope.nestedTailProg_traces_differ",
+   "Toy.DropScope.thenBranchProg_traces_differ",
+   "Toy.DropScope.siblingTailProg_traces_differ",
+   "Toy.DropScope.nestedTailProg",
+   "Toy.DropScope.siblingTailProg",
+   "Toy.DropScope.thenBranchProg"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_rationale": "T1: the Edition Guide states that 2021 extends tail temporaries to the next temporary scope boundary; this card records toy instances of the events crossed. Novelty is not claimed.",
+  "plain_claim": "For `nestedTailProg` (a tail temporary created in the tail of an inner block with no locals, the inner block being the tail of an outer block with one local), the traces differ (`[dtor 1, dtor 0]` under 2021, `[dtor 0, dtor 1]` under 2024); for `thenBranchProg` (an `if let` with a matching pattern followed in the same expression by `out 1`), the traces differ (`[out 1, dtor 0]` under 2021, `[dtor 0, out 1]` under 2024); and for `siblingTailProg` (a block with no locals whose tail creates a temporary, followed in the same expression by `out 1`), the traces differ (`[out 1, dtor 0]` under 2021, `[dtor 0, out 1]` under 2024).",
+  "unfolded_lean": [],
+  "unfolded_prose": "In each program the 2021 rules keep the temporary pending until an enclosing temporary scope closes (the end of the program), so its drop follows events produced outside its owning block (the outer local's drop, or the following `out 1`); the 2024 rules close the owning tail expression or `if let` first.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "depth_note": "",
+  "nonvacuity_witness": "Closed computations.",
+  "nonvacuity_witness_lean": "Toy.DropScope.nestedTailProg_traces_differ",
+  "non_claims": [
+   "These are statements about the toy model; they neither establish nor refute the corresponding claims about Rust's 2021 or 2024 editions, the Rust Reference, or any Rust compiler. Model–system relation: none proved.",
+   "These show that the events a moved temporary crosses are not confined to its owning block's locals (tail) or to the `else` block (`if let`): under the 2021 rules the temporary survives until the enclosing temporary scope closes, which can include an outer block's locals, an output after a matching `if let`, or an output after a block with no locals. Commutation with the owning block's locals or with the `else` block alone is therefore not sufficient in the toy."
+  ],
+  "prior_art": [
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-tail-expr-scope.md:5 (summary), :54 (`RefCell` example: 2021 drops `c` before the temporary, 2024 after), :58 (2021 extends tail temporaries to the next temporary scope boundary; 2024 drops them at the end of the block before the block's locals), :62-69 (a program accepted in 2021 and rejected in 2024 with E0716), :90 (no semantics-preserving rewrite shortens tail temporaries) [documentation]",
+   "Edition Guide, rust-lang/edition-guide@ab8544aeed7b792984366aa122ac19bd47ad9a2f:src/rust-2024/temporary-if-let-scope.md:5 (2024 drops `if let` scrutinee temporaries before entering `else`), :30 (2021 keeps them until after the `if let`), :32 (2024: until the then-block is evaluated or control enters `else`) [documentation]",
+   "RFC 3606 'Shorter temporary lifetimes in tail expressions' (merged), rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4:text/3606-temporary-lifetimes-in-tail-expressions.md:10, :53-61, :78-79 [documentation (accepted design RFC)]"
+  ],
+  "design_question": "Which events must a migration check consider for each moved temporary?"
+ },
+ {
+  "id": "R5-eq",
+  "lean": [
+   "Toy.DropScope.exec_specializeSwitch_eq_of_readUB_of_not_allowedTag",
+   "Toy.DropScope.runSwitch_specializeEnum_eq_of_rejectBoth"
+  ],
+  "lean_names": [
+   "Toy.DropScope.exec_specializeSwitch_eq_of_readUB_of_not_allowedTag",
+   "Toy.DropScope.runSwitch_specializeEnum_eq_of_rejectBoth",
+   "Toy.DropScope.Arm",
+   "Toy.DropScope.DiscrSem",
+   "Toy.DropScope.Enum",
+   "Toy.DropScope.Enum.inhabitedTag",
+   "Toy.DropScope.InvalidRead",
+   "Toy.DropScope.NicheEnc",
+   "Toy.DropScope.NicheEnc.decode",
+   "Toy.DropScope.Outcome",
+   "Toy.DropScope.Switch",
+   "Toy.DropScope.Switch.target",
+   "Toy.DropScope.UninhabitedRead",
+   "Toy.DropScope.allowedTag",
+   "Toy.DropScope.deadNicheEnum",
+   "Toy.DropScope.deadNicheEnum_rejectBoth_satisfies_hypothesis",
+   "Toy.DropScope.deadNicheSwitch",
+   "Toy.DropScope.exec",
+   "Toy.DropScope.lastVariantTakesWildcard",
+   "Toy.DropScope.readUB_rejectBoth_of_allowedTag_eq_false",
+   "Toy.DropScope.refuted_specializeSwitch_retargets_every_nonAllowed_tag",
+   "Toy.DropScope.rejectBoth",
+   "Toy.DropScope.rejectBoth_deadNicheSwitch_same",
+   "Toy.DropScope.remainingAllowed",
+   "Toy.DropScope.runArm",
+   "Toy.DropScope.runSwitch",
+   "Toy.DropScope.specializeEnum",
+   "Toy.DropScope.specializeSwitch",
+   "Toy.DropScope.specializeSwitch_eq_hypothesis_tight",
+   "Toy.DropScope.allowedTag_pos",
+   "Toy.DropScope.allowedTag_neg",
+   "Toy.DropScope.decode_exampleNiche",
+   "Toy.DropScope.decode_exampleNiche_untagged",
+   "Toy.DropScope.exec_ok",
+   "Toy.DropScope.exec_readUB",
+   "Toy.DropScope.lastVariantTakesWildcard_two_remaining",
+   "Toy.DropScope.not_refines_ret_ne",
+   "Toy.DropScope.not_refines_ub_ret",
+   "Toy.DropScope.pruneArms_example",
+   "Toy.DropScope.pruneArms_keeps_allowed",
+   "Toy.DropScope.readUB_inhabited",
+   "Toy.DropScope.readUB_invalid",
+   "Toy.DropScope.readUB_permissive",
+   "Toy.DropScope.readUB_rejectUninhabited",
+   "Toy.DropScope.refines_ret_eq",
+   "Toy.DropScope.refines_ub",
+   "Toy.DropScope.remainingAllowed_all_covered",
+   "Toy.DropScope.remainingAllowed_orderingSwitch",
+   "Toy.DropScope.runArm_usePayload_bad",
+   "Toy.DropScope.runArm_usePayload_ok",
+   "Toy.DropScope.target_orderingSwitch_0",
+   "Toy.DropScope.target_orderingSwitch_2",
+   "Toy.DropScope.explicitUninhabitedArmSwitch",
+   "Toy.DropScope.usePayloadSwitch",
+   "Toy.DropScope.orderingSwitch"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_rationale": "T1: that removing branches on tags whose read is undefined behaviour preserves behaviour is the informal justification of the documented pass and an instance of standard refinement reasoning (cited); this card states it parametrically for the toy rewrite. Novelty is not claimed.",
+  "plain_claim": "For every tag count `n`, allowed-tag predicate `A`, read-UB predicate `R` and payload predicate `P`: if every tag `t` that is not an allowed tag (`allowedTag n A t = false`) is read as undefined behaviour (`R t = true`), then for every switch `sw` and tag `t`, `exec R P (specializeSwitch n A sw) t = exec R P sw t`. In particular (second theorem), under the discriminant semantics `rejectBoth` (reading an uninhabited-variant tag or an invalid tag is undefined behaviour), for every enum `E`, switch `sw` and tag `t`, the enum-derived specialization `specializeEnum E sw` has the same outcome as `sw`.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.exec_specializeSwitch_eq_of_readUB_of_not_allowedTag",
+    "rendering": "∀ (n : Nat) (A R P : Nat → Bool), (∀ t, (decide (t < n) && A t) = false → R t = true) →\n  ∀ (sw : Switch) (t : Nat),\n    (if R t then Outcome.ub else runArm P t ((specializeSwitch n A sw).target t)) =\n      (if R t then Outcome.ub else runArm P t (sw.target t))"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [
+   {
+    "name": "hR : ∀ t, allowedTag n A t = false → R t = true (first theorem)",
+    "purpose": "the specialization leaves the target of every allowed tag unchanged and may retarget non-allowed tags to `unreachable` (non-allowed explicit arms, and the wildcard when at most one allowed tag lacks an explicit arm); on the non-allowed tags the read must already be undefined behaviour",
+    "tightness": "tight",
+    "counterexample": "Toy.DropScope.specializeSwitch_eq_hypothesis_tight",
+    "counterexample_class": "`deadNicheEnum` with the permissive read (one uninhabited tag), `deadNicheSwitch`, tag 1"
+   }
+  ],
+  "depth": "shallow",
+  "depth_note": "the second theorem is a corollary of the first with `readUB_rejectBoth_of_allowedTag_eq_false`",
+  "nonvacuity_witness": "`rejectBoth` on `deadNicheEnum` (which has an uninhabited variant) satisfies the hypothesis, and `rejectBoth_deadNicheSwitch_same` shows a switch the specialization changes.",
+  "nonvacuity_witness_lean": [
+   "Toy.DropScope.deadNicheEnum_rejectBoth_satisfies_hypothesis",
+   "Toy.DropScope.rejectBoth_deadNicheSwitch_same"
+  ],
+  "non_claims": [
+   "These are statements about the toy switch model; they neither establish nor refute the corresponding claims about Rust's operational semantics, MIR `Rvalue::Discriminant` and `SwitchInt`, or rustc's unreachable-enum-branching pass. Model–system relation: none proved.",
+   "The two uninhabited-variant read semantics (`UninhabitedRead.rejectUninhabited`, `UninhabitedRead.permissive`) are both kept open, following the documentation of `Rvalue::Discriminant`, which says that the validity requirements of that read are undecided (it links rust-lang/rust#91095, an open issue, mentioned here for orientation and not relied on); the package does not say which semantics Rust has. `InvalidRead.passThrough` is a modeling boundary of this package, not a candidate semantics taken from Rust documentation.",
+   "The toy switch has no memory, aliasing model, partial moves or uninitialized bytes, and no MIR context (no statements between the discriminant read and the switch, no `Assume`, no cleanup blocks); tags equal variant indices (no custom discriminant values and no tagless single-variant layouts); explicit arms may repeat a value (the first one is selected); the pass's own applicability conditions are not modeled. The toy therefore does not engage with the considerations that bear on deciding the validity requirement of the discriminant read.",
+   "Equality of outcomes includes equal undefined behaviour; it is a statement about the toy `exec`.",
+   "The hypothesis does not say that every non-allowed tag is retargeted to `unreachable` on every switch: when two or more allowed tags lack an explicit arm, `lastVariantTakesWildcard` leaves the wildcard unchanged, and non-allowed tags reaching it keep their target (`refuted_specializeSwitch_retargets_every_nonAllowed_tag`, which refutes the stronger reading that every non-allowed tag is retargeted)."
+  ],
+  "prior_art": [
+   "rustc unreachable-enum-branching pass, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_mir_transform/src/unreachable_enum_branching.rs:1 (pass summary), :123-127 (explicit arms whose value is not an allowed variant become unreachable), :129-167 (when at most one allowed variant lacks an arm, the wildcard is made unreachable, after the one remaining variant, if any, takes the wildcard target) [documentation (source comments and code of the pass), used as derived (modeling bridge)]",
+   "rustc MIR `Rvalue::Discriminant` documentation, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_middle/src/mir/syntax.rs:1412-1422 ('The validity requirements for the underlying value are undecided for this rvalue, see [#91095]') [documentation]",
+   "Refinement under undefined behaviour: X. Leroy, 'Formal Verification of a Realistic Compiler', Communications of the ACM 52(7), 2009, DOI 10.1145/1538788.1538814; J. Lee et al., 'Taming Undefined Behavior in LLVM', PLDI 2017, DOI 10.1145/3062341.3062343: compiler correctness as refinement, where undefined behaviour of the source admits any target behaviour (the shape of `Refines`) [prior art]",
+   "MiniRust, minirust/minirust@063d784186d3252bee242217f218223205c0b568:spec/lang/step/expressions.md:101-130 (`ValueExpr::GetDiscriminant`: a discriminant read that raises undefined behaviour when the bytes it reads do not decode to a discriminant) and spec/lang/step/terminators.md:34-48 (`Terminator::Switch`) [documentation (a proposed specification); this package neither adopts nor evaluates its choices]",
+   "rust-lang/rust#91095 'Decide on when MIR Discriminant() operation is UB' (open issue linked from the `Rvalue::Discriminant` documentation; mentioned for orientation, not relied on)"
+  ],
+  "design_question": "Under which discriminant-read semantics is inhabitedness-gated specialization an equivalence?"
+ },
+ {
+  "id": "R5-iff",
+  "lean": "Toy.DropScope.specializeSwitch_refines_all_iff",
+  "lean_names": [
+   "Toy.DropScope.specializeSwitch_refines_all_iff",
+   "Toy.DropScope.InvalidRead",
+   "Toy.DropScope.Refines",
+   "Toy.DropScope.UninhabitedRead",
+   "Toy.DropScope.deadNicheEnum",
+   "Toy.DropScope.deadNicheEnum_rejectBoth_satisfies_hypothesis",
+   "Toy.DropScope.deadNicheSwitch",
+   "Toy.DropScope.permissiveRejectInvalid",
+   "Toy.DropScope.specializeSwitch_deadNicheSwitch_permissive_not_refines",
+   "Toy.DropScope.usePayloadSwitch_permissive_specializeEnum_refines"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_rationale": "T1: the forward direction is the informal justification of the pass; the converse (no weaker read semantics suffices for all switches) is folklore of refinement reasoning; this card mechanizes both for the toy rewrite. Novelty is not claimed.",
+  "plain_claim": "For every `n`, `A`, `R`, `P`: the specialized switch's outcome refines the original's (`Refines`: the original is undefined behaviour or the two outcomes are equal) for every switch and every tag iff every tag that is not an allowed tag is read as undefined behaviour.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.specializeSwitch_refines_all_iff",
+    "rendering": "∀ (n : Nat) (A R P : Nat → Bool),\n  (∀ (sw : Switch) (t : Nat),\n      exec R P sw t = Outcome.ub ∨ exec R P (specializeSwitch n A sw) t = exec R P sw t) ↔\n    ∀ t, (decide (t < n) && A t) = false → R t = true"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_note": "",
+  "nonvacuity_witness": "Both sides occur: `deadNicheEnum_rejectBoth_satisfies_hypothesis` (right side holds) and `specializeSwitch_deadNicheSwitch_permissive_not_refines` (right side fails and `Refines` fails, for `deadNicheSwitch` at tag 1 under the permissive read).",
+  "nonvacuity_witness_lean": [
+   "Toy.DropScope.deadNicheEnum_rejectBoth_satisfies_hypothesis",
+   "Toy.DropScope.specializeSwitch_deadNicheSwitch_permissive_not_refines"
+  ],
+  "non_claims": [
+   "These are statements about the toy switch model; they neither establish nor refute the corresponding claims about Rust's operational semantics, MIR `Rvalue::Discriminant` and `SwitchInt`, or rustc's unreachable-enum-branching pass. Model–system relation: none proved.",
+   "The two uninhabited-variant read semantics (`UninhabitedRead.rejectUninhabited`, `UninhabitedRead.permissive`) are both kept open, following the documentation of `Rvalue::Discriminant`, which says that the validity requirements of that read are undecided (it links rust-lang/rust#91095, an open issue, mentioned here for orientation and not relied on); the package does not say which semantics Rust has. `InvalidRead.passThrough` is a modeling boundary of this package, not a candidate semantics taken from Rust documentation.",
+   "The toy switch has no memory, aliasing model, partial moves or uninitialized bytes, and no MIR context (no statements between the discriminant read and the switch, no `Assume`, no cleanup blocks); tags equal variant indices (no custom discriminant values and no tagless single-variant layouts); explicit arms may repeat a value (the first one is selected); the pass's own applicability conditions are not modeled. The toy therefore does not engage with the considerations that bear on deciding the validity requirement of the discriminant read.",
+   "Escape hatch: the left side quantifies over all switches, including switches whose arms ignore the payload (`goto`). A fixed switch can be refined although the condition fails: `usePayloadSwitch_permissive_specializeEnum_refines` shows a switch on `deadNicheEnum` whose arm for the uninhabited tag uses the payload and whose specialization refines it on every tag under `permissiveRejectInvalid`."
+  ],
+  "prior_art": [
+   "rustc unreachable-enum-branching pass, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_mir_transform/src/unreachable_enum_branching.rs:1 (pass summary), :123-127 (explicit arms whose value is not an allowed variant become unreachable), :129-167 (when at most one allowed variant lacks an arm, the wildcard is made unreachable, after the one remaining variant, if any, takes the wildcard target) [documentation (source comments and code of the pass), used as derived (modeling bridge)]",
+   "rustc MIR `Rvalue::Discriminant` documentation, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_middle/src/mir/syntax.rs:1412-1422 ('The validity requirements for the underlying value are undecided for this rvalue, see [#91095]') [documentation]",
+   "Refinement under undefined behaviour: X. Leroy, 'Formal Verification of a Realistic Compiler', Communications of the ACM 52(7), 2009, DOI 10.1145/1538788.1538814; J. Lee et al., 'Taming Undefined Behavior in LLVM', PLDI 2017, DOI 10.1145/3062341.3062343: compiler correctness as refinement, where undefined behaviour of the source admits any target behaviour (the shape of `Refines`) [prior art]",
+   "MiniRust, minirust/minirust@063d784186d3252bee242217f218223205c0b568:spec/lang/step/expressions.md:101-130 (`ValueExpr::GetDiscriminant`: a discriminant read that raises undefined behaviour when the bytes it reads do not decode to a discriminant) and spec/lang/step/terminators.md:34-48 (`Terminator::Switch`) [documentation (a proposed specification); this package neither adopts nor evaluates its choices]",
+   "rust-lang/rust#91095 'Decide on when MIR Discriminant() operation is UB' (open issue linked from the `Rvalue::Discriminant` documentation; mentioned for orientation, not relied on)"
+  ],
+  "design_question": "What exactly must the discriminant read guarantee for the specialization to be sound for all switches?"
+ },
+ {
+  "id": "R5-iff-shapes",
+  "lean": [
+   "Toy.DropScope.pruneArms_refines_all_iff",
+   "Toy.DropScope.lastVariantTakesWildcard_refines_all_iff"
+  ],
+  "lean_names": [
+   "Toy.DropScope.pruneArms_refines_all_iff",
+   "Toy.DropScope.lastVariantTakesWildcard_refines_all_iff",
+   "Toy.DropScope.InvalidRead",
+   "Toy.DropScope.UninhabitedRead",
+   "Toy.DropScope.deadNicheEnum_rejectBoth_satisfies_hypothesis",
+   "Toy.DropScope.deadNicheSwitch",
+   "Toy.DropScope.lastVariantTakesWildcard",
+   "Toy.DropScope.lastVariantTakesWildcard_no_remaining",
+   "Toy.DropScope.lastVariantTakesWildcard_permissive_not_refines_both_branches",
+   "Toy.DropScope.pruneArms",
+   "Toy.DropScope.pruneArms_explicitUninhabitedArm_permissive_not_refines",
+   "Toy.DropScope.usePayloadSwitch_permissive_specializeEnum_refines"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_rationale": "T1: the two shapes are the two rewrites documented in the pass's source; this card characterizes each separately in the toy. Novelty is not claimed.",
+  "plain_claim": "For every `n`, `A`, `R`, `P`: `pruneArms` alone (every explicit arm whose value is not an allowed tag is retargeted to `unreachable`) refines the original for every switch and tag iff every non-allowed tag is read as undefined behaviour; and `lastVariantTakesWildcard` alone (if zero allowed tags lack an explicit arm, the wildcard becomes `unreachable`; if exactly one allowed tag `j` lacks one, an arm `j ↦ otherwise` is appended and the wildcard becomes `unreachable`; otherwise the switch is unchanged) refines the original for every switch and tag iff the same condition holds.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.pruneArms_refines_all_iff",
+    "rendering": "∀ (n : Nat) (A R P : Nat → Bool),\n  (∀ (sw : Switch) (t : Nat),\n      exec R P sw t = Outcome.ub ∨ exec R P (pruneArms n A sw) t = exec R P sw t) ↔\n    ∀ t, (decide (t < n) && A t) = false → R t = true"
+   },
+   {
+    "theorem": "Toy.DropScope.lastVariantTakesWildcard_refines_all_iff",
+    "rendering": "∀ (n : Nat) (A R P : Nat → Bool),\n  (∀ (sw : Switch) (t : Nat),\n      exec R P sw t = Outcome.ub ∨ exec R P (lastVariantTakesWildcard n A sw) t = exec R P sw t) ↔\n    ∀ t, (decide (t < n) && A t) = false → R t = true"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_note": "",
+  "nonvacuity_witness": "Right side holds: `deadNicheEnum_rejectBoth_satisfies_hypothesis`. Right side fails and refinement fails for each shape exercised directly: `pruneArms_explicitUninhabitedArm_permissive_not_refines` (`pruneArms` changes a switch with an explicit arm on the uninhabited tag) and `lastVariantTakesWildcard_permissive_not_refines_both_branches` (both changing branches of `lastVariantTakesWildcard`: zero remaining allowed tags on `deadNicheSwitch`, exactly one on the enum `[true, false, true, true]`).",
+  "nonvacuity_witness_lean": [
+   "Toy.DropScope.deadNicheEnum_rejectBoth_satisfies_hypothesis",
+   "Toy.DropScope.pruneArms_explicitUninhabitedArm_permissive_not_refines",
+   "Toy.DropScope.lastVariantTakesWildcard_permissive_not_refines_both_branches"
+  ],
+  "non_claims": [
+   "These are statements about the toy switch model; they neither establish nor refute the corresponding claims about Rust's operational semantics, MIR `Rvalue::Discriminant` and `SwitchInt`, or rustc's unreachable-enum-branching pass. Model–system relation: none proved.",
+   "The two uninhabited-variant read semantics (`UninhabitedRead.rejectUninhabited`, `UninhabitedRead.permissive`) are both kept open, following the documentation of `Rvalue::Discriminant`, which says that the validity requirements of that read are undecided (it links rust-lang/rust#91095, an open issue, mentioned here for orientation and not relied on); the package does not say which semantics Rust has. `InvalidRead.passThrough` is a modeling boundary of this package, not a candidate semantics taken from Rust documentation.",
+   "The toy switch has no memory, aliasing model, partial moves or uninitialized bytes, and no MIR context (no statements between the discriminant read and the switch, no `Assume`, no cleanup blocks); tags equal variant indices (no custom discriminant values and no tagless single-variant layouts); explicit arms may repeat a value (the first one is selected); the pass's own applicability conditions are not modeled. The toy therefore does not engage with the considerations that bear on deciding the validity requirement of the discriminant read.",
+   "The name `lastVariantTakesWildcard` describes its one-remaining branch; its zero-remaining branch (wildcard made `unreachable`, no arm added) is part of the rewrite and of both characterizations (`lastVariantTakesWildcard_no_remaining`).",
+   "Escape hatch: as in R5-iff, a fixed switch whose arm for an uninhabited tag uses the payload can be refined although the condition fails (`usePayloadSwitch_permissive_specializeEnum_refines`)."
+  ],
+  "prior_art": [
+   "rustc unreachable-enum-branching pass, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_mir_transform/src/unreachable_enum_branching.rs:1 (pass summary), :123-127 (explicit arms whose value is not an allowed variant become unreachable), :129-167 (when at most one allowed variant lacks an arm, the wildcard is made unreachable, after the one remaining variant, if any, takes the wildcard target) [documentation (source comments and code of the pass), used as derived (modeling bridge)]",
+   "Refinement under undefined behaviour: X. Leroy, 'Formal Verification of a Realistic Compiler', Communications of the ACM 52(7), 2009, DOI 10.1145/1538788.1538814; J. Lee et al., 'Taming Undefined Behavior in LLVM', PLDI 2017, DOI 10.1145/3062341.3062343: compiler correctness as refinement, where undefined behaviour of the source admits any target behaviour (the shape of `Refines`) [prior art]"
+  ],
+  "design_question": "Is either half of the pass sound under a weaker discriminant semantics than the other?"
+ },
+ {
+  "id": "R5-valid",
+  "lean": "Toy.DropScope.specializeEnum_refines_validTags_iff_rejectUninhabited",
+  "lean_names": [
+   "Toy.DropScope.specializeEnum_refines_validTags_iff_rejectUninhabited",
+   "Toy.DropScope.InvalidRead",
+   "Toy.DropScope.UninhabitedRead",
+   "Toy.DropScope.deadNiche_permissive_specializeEnum_introduces_ub",
+   "Toy.DropScope.readUB_emptyEnum",
+   "Toy.DropScope.rejectBoth_deadNicheSwitch_same",
+   "Toy.DropScope.usePayloadSwitch_permissive_specializeEnum_refines"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_rationale": "T1: the dependence of the pass on the uninhabited-variant read is implicit in the pass and in the undecided status documented for `Rvalue::Discriminant`; this card makes it exact in the toy. Novelty is not claimed.",
+  "plain_claim": "For every discriminant semantics `D`: the enum-derived specialization refines the original for every enum, every switch and every valid tag (`t < E.length`) iff `D` rejects uninhabited-variant tags (`D.uninh = .rejectUninhabited`).",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.specializeEnum_refines_validTags_iff_rejectUninhabited",
+    "rendering": "∀ (D : DiscrSem),\n  (∀ (E : Enum) (sw : Switch) (t : Nat), t < E.length →\n      runSwitch D E sw t = Outcome.ub ∨\n        runSwitch D E (specializeEnum E sw) t = runSwitch D E sw t) ↔\n    D.uninh = UninhabitedRead.rejectUninhabited"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_note": "",
+  "nonvacuity_witness": "Both values of `D.uninh` occur: `rejectBoth_deadNicheSwitch_same` (right side holds) and `deadNiche_permissive_specializeEnum_introduces_ub` (right side fails, refinement fails).",
+  "nonvacuity_witness_lean": [
+   "Toy.DropScope.rejectBoth_deadNicheSwitch_same",
+   "Toy.DropScope.deadNiche_permissive_specializeEnum_introduces_ub"
+  ],
+  "non_claims": [
+   "These are statements about the toy switch model; they neither establish nor refute the corresponding claims about Rust's operational semantics, MIR `Rvalue::Discriminant` and `SwitchInt`, or rustc's unreachable-enum-branching pass. Model–system relation: none proved.",
+   "The two uninhabited-variant read semantics (`UninhabitedRead.rejectUninhabited`, `UninhabitedRead.permissive`) are both kept open, following the documentation of `Rvalue::Discriminant`, which says that the validity requirements of that read are undecided (it links rust-lang/rust#91095, an open issue, mentioned here for orientation and not relied on); the package does not say which semantics Rust has. `InvalidRead.passThrough` is a modeling boundary of this package, not a candidate semantics taken from Rust documentation.",
+   "The toy switch has no memory, aliasing model, partial moves or uninitialized bytes, and no MIR context (no statements between the discriminant read and the switch, no `Assume`, no cleanup blocks); tags equal variant indices (no custom discriminant values and no tagless single-variant layouts); explicit arms may repeat a value (the first one is selected); the pass's own applicability conditions are not modeled. The toy therefore does not engage with the considerations that bear on deciding the validity requirement of the discriminant read.",
+   "Restricted to valid tags; with invalid tags included the condition also involves the invalid-tag semantics (R6-all).",
+   "Escape hatch: the left side quantifies over all enums and switches; a fixed switch can be refined under the permissive read (`usePayloadSwitch_permissive_specializeEnum_refines`).",
+   "Degenerate edge: for the empty enum `[]` no tag is valid, so the valid-tag guard `t < E.length` makes the left side hold trivially for that enum (`readUB_emptyEnum` shows that every tag of `[]` takes the invalid-tag branch)."
+  ],
+  "prior_art": [
+   "rustc unreachable-enum-branching pass, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_mir_transform/src/unreachable_enum_branching.rs:1 (pass summary), :123-127 (explicit arms whose value is not an allowed variant become unreachable), :129-167 (when at most one allowed variant lacks an arm, the wildcard is made unreachable, after the one remaining variant, if any, takes the wildcard target) [documentation (source comments and code of the pass), used as derived (modeling bridge)]",
+   "rustc MIR `Rvalue::Discriminant` documentation, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_middle/src/mir/syntax.rs:1412-1422 ('The validity requirements for the underlying value are undecided for this rvalue, see [#91095]') [documentation]",
+   "rust-lang/rust#91095 'Decide on when MIR Discriminant() operation is UB' (open issue linked from the `Rvalue::Discriminant` documentation; mentioned for orientation, not relied on)",
+   "MiniRust, minirust/minirust@063d784186d3252bee242217f218223205c0b568:spec/lang/step/expressions.md:101-130 (`ValueExpr::GetDiscriminant`: a discriminant read that raises undefined behaviour when the bytes it reads do not decode to a discriminant) and spec/lang/step/terminators.md:34-48 (`Terminator::Switch`) [documentation (a proposed specification); this package neither adopts nor evaluates its choices]"
+  ],
+  "design_question": "Does soundness of the specialization for valid tags hinge exactly on the uninhabited-variant read semantics?"
+ },
+ {
+  "id": "R5-permissive",
+  "lean": "Toy.DropScope.specializeEnum_refines_validTags_permissive_iff_allInhabited",
+  "lean_names": [
+   "Toy.DropScope.specializeEnum_refines_validTags_permissive_iff_allInhabited",
+   "Toy.DropScope.InvalidRead",
+   "Toy.DropScope.UninhabitedRead",
+   "Toy.DropScope.deadNiche_permissive_specializeEnum_introduces_ub",
+   "Toy.DropScope.lastVariantTakesWildcard",
+   "Toy.DropScope.lastVariantTakesWildcard_orderingSwitch",
+   "Toy.DropScope.permissive_allInhabited_orderingSwitch_same",
+   "Toy.DropScope.pruneArms",
+   "Toy.DropScope.refuted_allInhabited_specializeEnum_changes_nothing",
+   "Toy.DropScope.usePayloadSwitch_permissive_specializeEnum_refines"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_rationale": "T1: as for R5-valid, restricted to the permissive read; novelty is not claimed.",
+  "plain_claim": "For every invalid-tag choice `inv` and every enum `E`, under the permissive uninhabited-tag semantics `⟨.permissive, inv⟩`: the enum-derived specialization refines the original for every switch and every valid tag iff every variant of `E` is inhabited.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.specializeEnum_refines_validTags_permissive_iff_allInhabited",
+    "rendering": "∀ (inv : InvalidRead) (E : Enum),\n  (∀ (sw : Switch) (t : Nat), t < E.length →\n      runSwitch ⟨.permissive, inv⟩ E sw t = Outcome.ub ∨\n        runSwitch ⟨.permissive, inv⟩ E (specializeEnum E sw) t = runSwitch ⟨.permissive, inv⟩ E sw t) ↔\n    ∀ t, t < E.length → E.getD t false = true"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_note": "",
+  "nonvacuity_witness": "`permissive_allInhabited_orderingSwitch_same` (all-inhabited enum, right side holds, a switch the specialization changes) and `deadNiche_permissive_specializeEnum_introduces_ub` (right side fails).",
+  "nonvacuity_witness_lean": [
+   "Toy.DropScope.permissive_allInhabited_orderingSwitch_same",
+   "Toy.DropScope.deadNiche_permissive_specializeEnum_introduces_ub"
+  ],
+  "non_claims": [
+   "These are statements about the toy switch model; they neither establish nor refute the corresponding claims about Rust's operational semantics, MIR `Rvalue::Discriminant` and `SwitchInt`, or rustc's unreachable-enum-branching pass. Model–system relation: none proved.",
+   "The two uninhabited-variant read semantics (`UninhabitedRead.rejectUninhabited`, `UninhabitedRead.permissive`) are both kept open, following the documentation of `Rvalue::Discriminant`, which says that the validity requirements of that read are undecided (it links rust-lang/rust#91095, an open issue, mentioned here for orientation and not relied on); the package does not say which semantics Rust has. `InvalidRead.passThrough` is a modeling boundary of this package, not a candidate semantics taken from Rust documentation.",
+   "The toy switch has no memory, aliasing model, partial moves or uninitialized bytes, and no MIR context (no statements between the discriminant read and the switch, no `Assume`, no cleanup blocks); tags equal variant indices (no custom discriminant values and no tagless single-variant layouts); explicit arms may repeat a value (the first one is selected); the pass's own applicability conditions are not modeled. The toy therefore does not engage with the considerations that bear on deciding the validity requirement of the discriminant read.",
+   "On an all-inhabited enum, shape 1 (`pruneArms`) changes no explicit arm on a valid tag, while shape 2 (`lastVariantTakesWildcard`) can still change the switch (`lastVariantTakesWildcard_orderingSwitch`; `refuted_allInhabited_specializeEnum_changes_nothing` refutes the stronger reading that `specializeEnum` changes nothing on an all-inhabited enum); the card says that the result preserves outcomes on valid tags, and says nothing about invalid tags (with `inv = passThrough`, R6-all shows refinement can fail on invalid tags).",
+   "Escape hatch: on an enum with an uninhabited variant, a fixed switch can be refined under the permissive read (`usePayloadSwitch_permissive_specializeEnum_refines`)."
+  ],
+  "prior_art": [
+   "rustc unreachable-enum-branching pass, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_mir_transform/src/unreachable_enum_branching.rs:1 (pass summary), :123-127 (explicit arms whose value is not an allowed variant become unreachable), :129-167 (when at most one allowed variant lacks an arm, the wildcard is made unreachable, after the one remaining variant, if any, takes the wildcard target) [documentation (source comments and code of the pass), used as derived (modeling bridge)]",
+   "rustc MIR `Rvalue::Discriminant` documentation, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_middle/src/mir/syntax.rs:1412-1422 ('The validity requirements for the underlying value are undecided for this rvalue, see [#91095]') [documentation]"
+  ],
+  "design_question": "Is there a non-trivial class of enums on which the specialization is sound under the permissive semantics?"
+ },
+ {
+  "id": "R5-cx",
+  "lean": [
+   "Toy.DropScope.deadNiche_permissive_specializeEnum_introduces_ub",
+   "Toy.DropScope.lastVariant_permissive_introduces_ub"
+  ],
+  "lean_names": [
+   "Toy.DropScope.deadNiche_permissive_specializeEnum_introduces_ub",
+   "Toy.DropScope.lastVariant_permissive_introduces_ub",
+   "Toy.DropScope.InvalidRead",
+   "Toy.DropScope.UninhabitedRead",
+   "Toy.DropScope.deadNicheEnum",
+   "Toy.DropScope.deadNicheSwitch",
+   "Toy.DropScope.decode_of_nicheHi_lt_nicheLo",
+   "Toy.DropScope.exampleNiche",
+   "Toy.DropScope.permissiveRejectInvalid",
+   "Toy.DropScope.specializeEnum"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_rationale": "T1: the `TagEncoding::Niche` documentation states that uninhabited variants can fall into the niche range as dead values; this card computes the consequence for the toy specialization. Novelty is not claimed.",
+  "plain_claim": "Under `permissiveRejectInvalid`: for `deadNicheEnum` with `deadNicheSwitch`, the stored value 2 decodes (toy niche encoding `exampleNiche`) to the uninhabited variant 1, the original switch continues normally (`ret 1`) and the specialized switch is undefined behaviour; and for the enum `[true, false, true, true]` with explicit arms `0 ↦ goto 1` and `2 ↦ goto 2` and wildcard `goto 3`, on the uninhabited tag 1 the original switch continues normally (`ret 3`) and the specialized switch is undefined behaviour (`ub`).",
+  "unfolded_lean": [],
+  "unfolded_prose": "`exampleNiche.decode 2` subtracts the niche start 2 (truncated subtraction, guarded by `2 ≤ 2`) and adds `nicheLo = 1`, giving variant 1, which is at most `nicheHi = 2`. Under the permissive read, the read of tag 1 is defined; the original selects the wildcard `goto 1`, while `specializeEnum` makes the wildcard `unreachable` because no inhabited tag lacks an explicit arm. In the second theorem, tag 1 has no explicit arm, so the original takes the wildcard `goto 3`; the inhabited tags are 0, 2 and 3, and exactly one of them (3) lacks an explicit arm, so `specializeEnum` appends the arm `3 ↦ goto 3` and makes the wildcard `unreachable`; the permissive read of tag 1 is defined, and tag 1 then reaches that `unreachable` wildcard, which is undefined behaviour.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "depth_note": "",
+  "nonvacuity_witness": "Closed computations.",
+  "nonvacuity_witness_lean": "Toy.DropScope.deadNiche_permissive_specializeEnum_introduces_ub",
+  "non_claims": [
+   "These are statements about the toy switch model; they neither establish nor refute the corresponding claims about Rust's operational semantics, MIR `Rvalue::Discriminant` and `SwitchInt`, or rustc's unreachable-enum-branching pass. Model–system relation: none proved.",
+   "The two uninhabited-variant read semantics (`UninhabitedRead.rejectUninhabited`, `UninhabitedRead.permissive`) are both kept open, following the documentation of `Rvalue::Discriminant`, which says that the validity requirements of that read are undecided (it links rust-lang/rust#91095, an open issue, mentioned here for orientation and not relied on); the package does not say which semantics Rust has. `InvalidRead.passThrough` is a modeling boundary of this package, not a candidate semantics taken from Rust documentation.",
+   "The toy switch has no memory, aliasing model, partial moves or uninitialized bytes, and no MIR context (no statements between the discriminant read and the switch, no `Assume`, no cleanup blocks); tags equal variant indices (no custom discriminant values and no tagless single-variant layouts); explicit arms may repeat a value (the first one is selected); the pass's own applicability conditions are not modeled. The toy therefore does not engage with the considerations that bear on deciding the validity requirement of the discriminant read.",
+   "How a value whose stored tag decodes to an uninhabited variant arises in a Rust program is not examined; the toy takes the stored tag as given. The toy niche decoder uses guarded truncated subtraction and no wrapping, unlike the documented wrapping formula, and with an empty niche range (`nicheHi < nicheLo`) every stored value decodes to the untagged variant (`decode_of_nicheHi_lt_nicheLo`)."
+  ],
+  "prior_art": [
+   "rustc unreachable-enum-branching pass, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_mir_transform/src/unreachable_enum_branching.rs:1 (pass summary), :123-127 (explicit arms whose value is not an allowed variant become unreachable), :129-167 (when at most one allowed variant lacks an arm, the wildcard is made unreachable, after the one remaining variant, if any, takes the wildcard target) [documentation (source comments and code of the pass), used as derived (modeling bridge)]",
+   "rustc `TagEncoding::Niche` documentation, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_abi/src/lib.rs:2013-2015 (decoding a tag to a variant index, with wrapping subtraction) and :2022-2029 (uninhabited variants can fall into `niche_variants`; such values are dead values) [documentation]",
+   "rustc MIR `Rvalue::Discriminant` documentation, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_middle/src/mir/syntax.rs:1412-1422 ('The validity requirements for the underlying value are undecided for this rvalue, see [#91095]') [documentation]",
+   "Corpus package `enum-niche-layout-guarantees-and-validity-invariants` (published), card `nicheLayout_lawful_iff_isNiche` (niche-filled layouts are lawful iff the niche pattern is invalid for the payload); that package models inhabited extra variants and states that uninhabited variants are not modeled there"
+  ],
+  "design_question": "Under the permissive semantics, does the specialization introduce undefined behaviour on stored tag values that decode to an uninhabited variant?"
+ },
+ {
+  "id": "R6-all",
+  "lean": [
+   "Toy.DropScope.specializeEnum_refines_allTags_iff_rejectUninhabited_and_rejectInvalid",
+   "Toy.DropScope.invalidTag_passThrough_specializeEnum_introduces_ub"
+  ],
+  "lean_names": [
+   "Toy.DropScope.specializeEnum_refines_allTags_iff_rejectUninhabited_and_rejectInvalid",
+   "Toy.DropScope.invalidTag_passThrough_specializeEnum_introduces_ub",
+   "Toy.DropScope.InvalidRead",
+   "Toy.DropScope.UninhabitedRead",
+   "Toy.DropScope.readUB",
+   "Toy.DropScope.readUB_emptyEnum",
+   "Toy.DropScope.rejectBoth_deadNicheSwitch_same",
+   "Toy.DropScope.usePayloadSwitch_permissive_specializeEnum_refines"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_rationale": "T1: as for R5-valid, extended to tags that denote no variant; novelty is not claimed.",
+  "plain_claim": "For every discriminant semantics `D`: the enum-derived specialization refines the original for every enum, every switch and every tag, valid or invalid, iff `D` rejects both uninhabited-variant tags and invalid tags. Rejecting uninhabited-variant tags alone does not suffice (second theorem): under `⟨.rejectUninhabited, .passThrough⟩`, for the one-variant enum `[true]` and the switch with no explicit arm and wildcard `goto 0`, the invalid tag 1 yields `ret 0` in the original and undefined behaviour after specialization.",
+  "unfolded_lean": [
+   {
+    "theorem": "Toy.DropScope.specializeEnum_refines_allTags_iff_rejectUninhabited_and_rejectInvalid",
+    "rendering": "∀ (D : DiscrSem),\n  (∀ (E : Enum) (sw : Switch) (t : Nat),\n      runSwitch D E sw t = Outcome.ub ∨\n        runSwitch D E (specializeEnum E sw) t = runSwitch D E sw t) ↔\n    D.uninh = UninhabitedRead.rejectUninhabited ∧ D.invalid = InvalidRead.rejectInvalid"
+   }
+  ],
+  "unfolded_prose": "",
+  "hypotheses": [],
+  "depth": "shallow",
+  "depth_note": "",
+  "nonvacuity_witness": "`rejectBoth_deadNicheSwitch_same` (right side holds) and `invalidTag_passThrough_specializeEnum_introduces_ub` (right side fails, refinement fails).",
+  "nonvacuity_witness_lean": [
+   "Toy.DropScope.rejectBoth_deadNicheSwitch_same",
+   "Toy.DropScope.invalidTag_passThrough_specializeEnum_introduces_ub"
+  ],
+  "non_claims": [
+   "These are statements about the toy switch model; they neither establish nor refute the corresponding claims about Rust's operational semantics, MIR `Rvalue::Discriminant` and `SwitchInt`, or rustc's unreachable-enum-branching pass. Model–system relation: none proved.",
+   "The two uninhabited-variant read semantics (`UninhabitedRead.rejectUninhabited`, `UninhabitedRead.permissive`) are both kept open, following the documentation of `Rvalue::Discriminant`, which says that the validity requirements of that read are undecided (it links rust-lang/rust#91095, an open issue, mentioned here for orientation and not relied on); the package does not say which semantics Rust has. `InvalidRead.passThrough` is a modeling boundary of this package, not a candidate semantics taken from Rust documentation.",
+   "The toy switch has no memory, aliasing model, partial moves or uninitialized bytes, and no MIR context (no statements between the discriminant read and the switch, no `Assume`, no cleanup blocks); tags equal variant indices (no custom discriminant values and no tagless single-variant layouts); explicit arms may repeat a value (the first one is selected); the pass's own applicability conditions are not modeled. The toy therefore does not engage with the considerations that bear on deciding the validity requirement of the discriminant read.",
+   "Escape hatch: the left side quantifies over all enums and switches; a fixed switch can be refined under weaker read semantics (`usePayloadSwitch_permissive_specializeEnum_refines`).",
+   "Degenerate edge: for the empty enum `[]` every tag takes the invalid-tag branch of `readUB` (`readUB_emptyEnum`), so on that enum the uninhabited-tag choice is irrelevant."
+  ],
+  "prior_art": [
+   "rustc unreachable-enum-branching pass, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_mir_transform/src/unreachable_enum_branching.rs:1 (pass summary), :123-127 (explicit arms whose value is not an allowed variant become unreachable), :129-167 (when at most one allowed variant lacks an arm, the wildcard is made unreachable, after the one remaining variant, if any, takes the wildcard target) [documentation (source comments and code of the pass), used as derived (modeling bridge)]",
+   "rustc MIR `Rvalue::Discriminant` documentation, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_middle/src/mir/syntax.rs:1412-1422 ('The validity requirements for the underlying value are undecided for this rvalue, see [#91095]') [documentation]",
+   "rustc `TagEncoding::Niche` documentation, rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe:compiler/rustc_abi/src/lib.rs:2013-2015 (decoding a tag to a variant index, with wrapping subtraction) and :2022-2029 (uninhabited variants can fall into `niche_variants`; such values are dead values) [documentation]",
+   "MiniRust, minirust/minirust@063d784186d3252bee242217f218223205c0b568:spec/lang/step/expressions.md:101-130 (`ValueExpr::GetDiscriminant`: a discriminant read that raises undefined behaviour when the bytes it reads do not decode to a discriminant) and spec/lang/step/terminators.md:34-48 (`Terminator::Switch`) [documentation (a proposed specification); this package neither adopts nor evaluates its choices]",
+   "rust-lang/rust#91095 'Decide on when MIR Discriminant() operation is UB' (open issue linked from the `Rvalue::Discriminant` documentation; mentioned for orientation, not relied on)",
+   "Corpus package `enum-niche-layout-guarantees-and-validity-invariants` (published), card `nicheLayout_lawful_iff_isNiche` (niche-filled layouts are lawful iff the niche pattern is invalid for the payload); that package models inhabited extra variants and states that uninhabited variants are not modeled there"
+  ],
+  "design_question": "Is rejecting uninhabited-variant tags enough, or must the read also reject tags that denote no variant?"
+ }
+]

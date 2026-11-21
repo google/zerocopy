@@ -1,0 +1,38 @@
+import ToyDropScope
+
+/-! Prints the axioms of every main result of the cards (not part of the library target). -/
+
+#print axioms Toy.DropScope.run_e2021_eq_run_e2024_of_noTailEscapingTemps_of_noIfLetEscapingTemps
+#print axioms Toy.DropScope.trace_accepts_beh_eq_of_noTailEscapingTemps_of_noIfLetEscapingTemps
+#print axioms Toy.DropScope.run_tail2024_eq_of_noTailEscapingTemps
+#print axioms Toy.DropScope.run_ifLet2024_eq_of_noIfLetEscapingTemps
+#print axioms Toy.DropScope.run_perm_nodup_and_dropTemps_perm_mkTemps_and_nonDropTemps_eq
+#print axioms Toy.DropScope.run_each_created_temp_dropped_exactly_once
+#print axioms Toy.DropScope.matchInTailProg_scrutinee_drop_moves_by_tail_rule
+#print axioms Toy.DropScope.eval_matchE_eq_matchStep
+#print axioms Toy.DropScope.refuted_match_outside_blockTail_same_drop_point
+#print axioms Toy.DropScope.tailProg_accepted_and_traces_reversed
+#print axioms Toy.DropScope.not_behIncl_e2021_e2024_and_not_behIncl_e2024_e2021
+#print axioms Toy.DropScope.refCellTailProg_accepted_e2024_rejected_e2021
+#print axioms Toy.DropScope.run_toMatch_eq_run_ifLet2021
+#print axioms Toy.DropScope.ifLetElseProg_traces_differ
+#print axioms Toy.DropScope.run_e2024_toMatch_eq_run_e2021_of_noTailEscapingTemps
+#print axioms Toy.DropScope.trace_e2021_eq_trace_e2024_of_flipped_commute
+#print axioms Toy.DropScope.tailSiteProg_trace_eq_iff_commute
+#print axioms Toy.DropScope.elseSiteProg_trace_eq_iff_commute
+#print axioms Toy.DropScope.elseSite_commute_iff_of_dtorOnly
+#print axioms Toy.DropScope.ababProg_trace_eq_and_flipped_not_commute
+#print axioms Toy.DropScope.nestedTailProg_traces_differ
+#print axioms Toy.DropScope.thenBranchProg_traces_differ
+#print axioms Toy.DropScope.siblingTailProg_traces_differ
+#print axioms Toy.DropScope.exec_specializeSwitch_eq_of_readUB_of_not_allowedTag
+#print axioms Toy.DropScope.runSwitch_specializeEnum_eq_of_rejectBoth
+#print axioms Toy.DropScope.specializeSwitch_refines_all_iff
+#print axioms Toy.DropScope.pruneArms_refines_all_iff
+#print axioms Toy.DropScope.lastVariantTakesWildcard_refines_all_iff
+#print axioms Toy.DropScope.specializeEnum_refines_validTags_iff_rejectUninhabited
+#print axioms Toy.DropScope.specializeEnum_refines_validTags_permissive_iff_allInhabited
+#print axioms Toy.DropScope.deadNiche_permissive_specializeEnum_introduces_ub
+#print axioms Toy.DropScope.lastVariant_permissive_introduces_ub
+#print axioms Toy.DropScope.specializeEnum_refines_allTags_iff_rejectUninhabited_and_rejectInvalid
+#print axioms Toy.DropScope.invalidTag_passThrough_specializeEnum_introduces_ub
