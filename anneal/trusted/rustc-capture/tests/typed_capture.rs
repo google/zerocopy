@@ -189,7 +189,7 @@ fn selected_capture_keeps_unselected_unsupported_items_in_the_census() {
     assert!(output.status.success(), "{output:?}");
     assert_eq!(status(&output)["status"], "captured", "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert!(manifest.get("scope").is_none(), "{manifest}");
     assert_eq!(manifest["program"]["scope"]["kind"], "selected_unit");
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
@@ -1110,7 +1110,7 @@ fn whole_crate_admits_implicit_fieldless_enums_and_refuses_all_anon_consts() {
     let output = fixture.command().arg("--scope=crate").output().unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 2);
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(lean.contains("EnumTagRepr.zeroSized"), "{lean}");
@@ -1217,7 +1217,8 @@ fn whole_crate_admits_implicit_fieldless_enums_and_refuses_all_anon_consts() {
         fixture.assert_no_capture_artifacts();
     }
 
-    // A payload enum with explicit discriminants must stay refused.
+    // A payload enum with explicit discriminants must stay refused in
+    // whole-crate scope because of its `AnonConst` items.
     let payload_enum = b"\
         #[repr(u8)]\n\
         pub enum WithPayload { A = 1, B(u8) = 2 }\n\
@@ -1230,14 +1231,14 @@ fn whole_crate_admits_implicit_fieldless_enums_and_refuses_all_anon_consts() {
     assert!(
         failure
             .to_string()
-            .contains("enum payloads are unsupported"),
+            .contains("whole-crate obligation is unsupported: AnonConst"),
         "{failure}"
     );
     fixture.assert_no_capture_artifacts();
 }
 
 #[test]
-fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_aggregates() {
+fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_unmodeled_adts() {
     // Default-repr narrow signed enum (`discr = isize`, `tag = i8`): in
     // `selected_unit` scope, `rustc`'s evaluated discriminants record the
     // 64-bit two's-complement discriminant alongside the signed 8-bit tag.
@@ -1254,7 +1255,7 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
         .unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["schema_version"], 5);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(
@@ -1303,25 +1304,53 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
     assert!(lean.contains("EnumTagRepr.zeroSized"), "{lean}");
     assert!(lean.contains("[42]"), "{lean}");
 
-    // Aggregates other than `()` (`AggregateKind::Adt`), including direct
-    // fieldless enum construction, payload-enum unit variants, 0-field
-    // structs, and non-local enums, must all fail closed.
-    let refused_cases: &[(&str, &[u8], &[&str], &str)] = &[
+    // Direct ADT aggregates for fieldless enums, payload enums, and unit
+    // structs are admitted in Tier 2.
+    let admitted_cases: &[(&str, &[u8], &[&str], &str)] = &[
         (
             "direct_narrow_signed_aggregate",
             b"#[repr(i8)]\n\
               pub enum NarrowSigned { Neg = -1, Pos = 1 }\n\
               pub fn make() -> NarrowSigned { NarrowSigned::Neg }\n",
             &["--select=make"],
-            "unsupported rvalue",
+            "Trusted.MirAst.AggregateKind.adtEnum",
         ),
         (
             "direct_single_zst_aggregate",
             b"pub enum Single { Only }\n\
               pub fn make() -> Single { Single::Only }\n",
             &["--scope=crate"],
-            "unsupported rvalue",
+            "Trusted.MirAst.EnumTagRepr.zeroSized",
         ),
+        (
+            "payload_unit_variant",
+            b"pub enum Payload { None, Some(u8) }\n\
+              pub fn f() -> Payload { Payload::None }\n",
+            &["--select=f"],
+            "Trusted.MirAst.AggregateKind.adtEnum",
+        ),
+        (
+            "unit_struct",
+            b"pub struct UnitStruct;\n\
+              pub fn f() -> UnitStruct { UnitStruct }\n",
+            &["--select=f"],
+            "Trusted.MirAst.MirTy.adtStruct",
+        ),
+    ];
+    for (name, source, scope_args, expected_lean) in admitted_cases {
+        let fixture = Capture::new(source);
+        let output = fixture.command().args(*scope_args).output().unwrap();
+        assert!(output.status.success(), "{name}: {output:?}");
+        let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+        assert!(
+            lean.contains(expected_lean),
+            "{name}: expected {expected_lean:?} in:\n{lean}"
+        );
+    }
+
+    // Unevaluated required constants, unions, unmodeled non-local enums, and
+    // generic ADTs in crate scope must still fail closed.
+    let refused_cases: &[(&str, &[u8], &[&str], &str)] = &[
         (
             "const_enum_required_consts",
             b"#[repr(i8)]\n\
@@ -1332,24 +1361,24 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
             "required constants are unavailable",
         ),
         (
-            "payload_unit_variant",
-            b"pub enum Payload { None, Some(u8) }\n\
-              pub fn f() -> Payload { Payload::None }\n",
+            "union_adt",
+            b"pub union U { pub a: u32, pub b: u32 }\n\
+              pub fn f(a: u32) -> U { U { a } }\n",
             &["--select=f"],
-            "enum payloads are unsupported",
-        ),
-        (
-            "unit_struct",
-            b"pub struct UnitStruct;\n\
-              pub fn f() -> UnitStruct { UnitStruct }\n",
-            &["--select=f"],
-            "unsupported type",
+            "union types are unsupported",
         ),
         (
             "non_local_enum",
             b"pub fn f() -> core::cmp::Ordering { core::cmp::Ordering::Less }\n",
             &["--scope=crate"],
             "unsupported type",
+        ),
+        (
+            "generic_struct_in_crate_scope",
+            b"pub struct Wrap<T>(pub T);\n\
+              pub fn f(x: u32) -> Wrap<u32> { Wrap(x) }\n",
+            &["--scope=crate"],
+            "unsupported type: T/#0",
         ),
     ];
     for (name, source, scope_args, expected) in refused_cases {
@@ -1513,8 +1542,8 @@ fn unmodeled_codegen_attributes_are_refused_in_selected_and_crate_scope() {
 
 #[test]
 fn drop_guard_struct_remains_refused_while_cleanup_blocks_are_modeled() {
-    // Tier 1 admits cleanup blocks (`BasicBlock.cleanup = true`) and
-    // `UnwindResume`, while structs and `Drop` terminators remain refused.
+    // Tier 2 admits structs and cleanup blocks (`BasicBlock.cleanup = true`)
+    // and `UnwindResume`, while `Drop` terminators remain refused.
     let source = b"pub struct Guard;\n\
         impl Drop for Guard { fn drop(&mut self) {} }\n\
         pub fn callee() {}\n\
@@ -1525,7 +1554,7 @@ fn drop_guard_struct_remains_refused_while_cleanup_blocks_are_modeled() {
     let failure = status(&output);
     assert_eq!(failure["status"], "unsupported", "{failure}");
     assert!(
-        failure.to_string().contains("unsupported type: Guard"),
+        failure.to_string().contains("unsupported terminator: drop"),
         "{failure}"
     );
     fixture.assert_no_capture_artifacts();
@@ -1760,7 +1789,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
         .output()
         .unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(fixture.manifest()["schema_version"], 4);
+    assert_eq!(fixture.manifest()["schema_version"], 5);
 
     // Replacing the driver symlink with a distinct regular file inode must fail
     // closed.
@@ -1827,7 +1856,7 @@ fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates
     let no_std_fixture = Capture::new(b"#![no_std]\npub fn selected(x: u64) -> u64 { x }\n");
     let output = no_std_fixture.selected_command().output().unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(no_std_fixture.manifest()["schema_version"], 4);
+    assert_eq!(no_std_fixture.manifest()["schema_version"], 5);
 
     let proc_macro_fixture = Capture::new(
         b"#![crate_type = \"proc-macro\"]\n\
@@ -2122,4 +2151,141 @@ fn assert_refuses_no_std_and_crate_local_panic_handler() {
         );
         bad.assert_no_capture_artifacts();
     }
+}
+
+#[test]
+fn tier2_structs_payload_enums_niche_arrays_and_builtins_capture_cleanly() {
+    // Exercise structs, inherent impl methods, single-variant and multi-variant
+    // payload enums (direct scalar tag and niche tag, including nested tuple
+    // niches), fixed-size arrays, repeat rvalues, downcast/index/constant-index
+    // projections, bounds checks in `#![no_std]`, and Tier 2 `core::num`
+    // builtins (`checked_add`, `checked_sub`, `checked_mul`, `to_le_bytes`,
+    // `from_le_bytes`), including the exact Starnix `U64Range` and Fuchsia
+    // `make_identity` shapes.
+    let source = b"\
+        #![no_std]\n\
+        pub struct U64Range {\n\
+            pub min: u64,\n\
+            pub max: u64,\n\
+        }\n\
+        impl U64Range {\n\
+            pub fn max_range() -> Self {\n\
+                Self { min: 0, max: u64::MAX }\n\
+            }\n\
+            pub fn add_range(self, rhs: Self) -> Self {\n\
+                let (min, min_overflow) = self.min.overflowing_add(rhs.min);\n\
+                let (max, max_overflow) = self.max.overflowing_add(rhs.max);\n\
+                if min_overflow != max_overflow {\n\
+                    Self::max_range()\n\
+                } else {\n\
+                    Self { min, max }\n\
+                }\n\
+            }\n\
+            pub fn mul_range(self, rhs: Self) -> Self {\n\
+                match (self.min.checked_mul(rhs.min), self.max.checked_mul(rhs.max)) {\n\
+                    (Some(min), Some(max)) => Self { min, max },\n\
+                    _ => Self::max_range(),\n\
+                }\n\
+            }\n\
+        }\n\
+        pub fn make_identity(length: u32, level: u64, offset: u64) -> [u8; 12] {\n\
+            let [o0, o1, o2, o3, o4, o5, o6, o7] = (offset | level).to_le_bytes();\n\
+            let [l0, l1, l2, l3] = length.to_le_bytes();\n\
+            [o0, o1, o2, o3, o4, o5, o6, o7, l0, l1, l2, l3]\n\
+        }\n\
+        pub enum WrapSingle { Only(u64) }\n\
+        pub fn tier2_kitchen_sink(\n\
+            flag: Option<bool>,\n\
+            nested: Option<(u64, bool)>,\n\
+            res: Result<u64, u32>,\n\
+            wrap: WrapSingle,\n\
+            idx: usize,\n\
+            a: u32,\n\
+            b: u32,\n\
+        ) -> (u64, [u8; 4]) {\n\
+            let base = match flag {\n\
+                Some(true) => 1,\n\
+                Some(false) => 2,\n\
+                None => 3,\n\
+            };\n\
+            let from_nested = match nested {\n\
+                Some((v, true)) => v,\n\
+                Some((v, false)) => v.wrapping_add(1),\n\
+                None => 0,\n\
+            };\n\
+            let from_res = match res {\n\
+                Ok(v) => v,\n\
+                Err(e) => e as u64,\n\
+            };\n\
+            let WrapSingle::Only(w) = wrap;\n\
+            let zeros = [0u8; 4];\n\
+            let elem = zeros[idx] as u64;\n\
+            let sum = a.checked_add(b);\n\
+            let diff = a.checked_sub(b);\n\
+            let bytes = match (sum, diff) {\n\
+                (Some(s), Some(d)) => (s ^ d).to_le_bytes(),\n\
+                _ => [1u8; 4],\n\
+            };\n\
+            let rt = u32::from_le_bytes(bytes) as u64;\n\
+            (base ^ from_nested ^ from_res ^ w ^ elem ^ rt, bytes)\n\
+        }\n";
+    let fixture = Capture::new(source);
+    let output = fixture
+        .command()
+        .args([
+            "--select=U64Range::add_range",
+            "--select=U64Range::mul_range",
+            "--select=make_identity",
+            "--select=tier2_kitchen_sink",
+        ])
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let manifest = fixture.manifest();
+    assert_eq!(manifest["schema_version"], 5);
+    let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
+    for needle in [
+        "Trusted.MirAst.MirTy.adtStruct",
+        "Trusted.MirAst.MirTy.enum",
+        "Trusted.MirAst.MirTy.array",
+        "Trusted.MirAst.EnumTagRepr.single",
+        "Trusted.MirAst.EnumTagRepr.scalar",
+        "Trusted.MirAst.EnumTagRepr.niche",
+        "Trusted.MirAst.ProjectionElem.downcast",
+        "Trusted.MirAst.ProjectionElem.index",
+        "Trusted.MirAst.ProjectionElem.constantIndex",
+        "Trusted.MirAst.AggregateKind.adtStruct",
+        "Trusted.MirAst.AggregateKind.array",
+        "Trusted.MirAst.Rvalue.repeat_",
+        "Trusted.MirAst.AssertKind.boundsCheck",
+        "Trusted.MirAst.CoreBuiltin.checkedAdd",
+        "Trusted.MirAst.CoreBuiltin.checkedSub",
+        "Trusted.MirAst.CoreBuiltin.checkedMul",
+        "Trusted.MirAst.CoreBuiltin.toLeBytes",
+        "Trusted.MirAst.CoreBuiltin.fromLeBytes",
+    ] {
+        assert!(
+            lean.contains(needle),
+            "expected {needle:?} in captured Lean:\n{lean}"
+        );
+    }
+
+    // Whole-crate scope also admits non-generic structs + inherent impls.
+    let whole_crate = Capture::new(
+        b"#![no_std]\n\
+          pub struct Pair { pub lo: u64, pub hi: u64 }\n\
+          impl Pair {\n\
+              pub fn make(lo: u64, hi: u64) -> Self { Self { lo, hi } }\n\
+              pub fn swap(self) -> Self { Self::make(self.hi, self.lo) }\n\
+          }\n",
+    );
+    let output = whole_crate.command().arg("--scope=crate").output().unwrap();
+    assert!(output.status.success(), "{output:?}");
+    assert_eq!(
+        whole_crate.manifest()["program"]["bodies"]
+            .as_array()
+            .unwrap()
+            .len(),
+        2
+    );
 }

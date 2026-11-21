@@ -26,8 +26,10 @@ pub fn tag(e: E) -> usize {
     }
 }
 
-// === case: enum_payload_rejected ===
-//@ fail(capture): "enum payloads are unsupported"
+// === case: enum_payload_supported ===
+//@ pass
+//@ mir-contains: "Trusted.MirAst.MirTy.enum"
+//@ mir-contains: "variantFields := [[(Trusted.MirAst.MirTy.int"
 
 pub enum E {
     A(usize),
@@ -35,6 +37,18 @@ pub enum E {
 }
 
 pub fn f(_e: E) {}
+
+// === case: union_rejected ===
+//@ fail(capture): "whole-crate obligation is unsupported: Union"
+
+pub union U {
+    a: usize,
+    b: u8,
+}
+
+pub fn id(x: usize) -> usize {
+    x
+}
 
 // === case: unsafe_trait_rejected ===
 //@ fail(capture): "whole-crate obligation is unsupported: Trait"

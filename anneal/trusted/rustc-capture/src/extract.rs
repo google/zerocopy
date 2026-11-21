@@ -6,13 +6,14 @@
 // This file may not be copied, modified, or distributed except according to
 // those terms.
 
-//! Direct translation of the admitted pointer-free Tier 1 MIR syntax.
+//! Direct translation of the admitted pointer-free Tier 2 MIR syntax.
 //! Unsupported variants remain errors; this adapter performs no control-flow
 //! or expression simplification.
 
 use std::collections::BTreeMap;
+use std::sync::Mutex;
 
-use rustc_abi::{ExternAbi, Integer, Primitive, TagEncoding, Variants};
+use rustc_abi::{ExternAbi, Integer, Primitive, Scalar, TagEncoding, Variants};
 use rustc_hir::attrs::{InlineAttr, OptimizeAttr};
 use rustc_middle::middle::codegen_fn_attrs::{
     CodegenFnAttrFlags, CodegenFnAttrs, SanitizerFnAttrs,
@@ -26,6 +27,10 @@ use sha2::{Digest, Sha256};
 use crate::ir::{self, ConstLit, IntTy, IntWidth};
 
 pub type Result<T> = std::result::Result<T, String>;
+
+/// Session-wide collision guard for monomorphized struct and enum nominal keys
+/// (`(is_struct, id) -> canonical_key`).
+static OBSERVED_ADT_IDS: Mutex<BTreeMap<(bool, u32), String>> = Mutex::new(BTreeMap::new());
 
 /// Pre-remapping terminator produced by [`body`] before `capture.rs` assigns
 /// deterministic `Program.bodies` indices to the transitive call closure.
@@ -224,30 +229,273 @@ fn parse_primitive_int_name(name: &str) -> Option<IntTy> {
     Some(IntTy { width, signed })
 }
 
-/// Extract the in-memory tag representation of a fieldless enum from `rustc`'s
+fn int_ty_from_abi(integer: Integer, signed: bool) -> IntTy {
+    let width = match integer {
+        Integer::I8 => IntWidth::I8,
+        Integer::I16 => IntWidth::I16,
+        Integer::I32 => IntWidth::I32,
+        Integer::I64 => IntWidth::I64,
+        Integer::I128 => IntWidth::I128,
+    };
+    IntTy { width, signed }
+}
+
+/// Canonical injective string key for an admitted `ir::Ty`, used when deriving
+/// nominal ADT IDs for monomorphized generic structs and enums.
+fn canonical_ty_key(ty: &ir::Ty) -> String {
+    match ty {
+        ir::Ty::Bool => "bool".into(),
+        ir::Ty::Unit => "unit".into(),
+        ir::Ty::Never => "never".into(),
+        ir::Ty::Int(ity) => format!(
+            "{}{}",
+            if ity.signed { "s" } else { "u" },
+            ity.width.lean_name()
+        ),
+        ir::Ty::Struct(sty) => format!("struct#{}", sty.id()),
+        ir::Ty::Enum(ety) => format!("enum#{}", ety.id()),
+        ir::Ty::Tuple { fields } => format!(
+            "tuple({})",
+            fields
+                .iter()
+                .map(canonical_ty_key)
+                .collect::<Vec<_>>()
+                .join(",")
+        ),
+        ir::Ty::Array { elem, len } => format!("array({};{})", canonical_ty_key(elem), len),
+    }
+}
+
+/// Register a derived ADT nominal key and fail closed if two distinct
+/// monomorphized ADT definitions ever hash to the same 32-bit key.
+fn register_adt_id(is_struct: bool, key: String, id: u32) -> Result<u32> {
+    let mut table = OBSERVED_ADT_IDS
+        .lock()
+        .map_err(|_| "ADT identity table mutex poisoned".to_string())?;
+    if let Some(prev) = table.get(&(is_struct, id)) {
+        if *prev != key {
+            return Err(format!(
+                "ADT identity collision: `{prev}` and `{key}` share id {id}"
+            ));
+        }
+    } else {
+        table.insert((is_struct, id), key);
+    }
+    Ok(id)
+}
+
+/// Derive a deterministic nominal `u32` ID for a monomorphized struct or enum.
+/// Non-generic local enums keep the exact `anneal:enum:v1:<item_identity>` hash
+/// input so existing fieldless enum IDs remain bit-for-bit identical.
+fn monomorphized_adt_id<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    def: DefId,
+    args: ty::GenericArgsRef<'tcx>,
+    is_struct: bool,
+    depth: usize,
+) -> Result<u32> {
+    let prefix = if is_struct {
+        "anneal:struct:v1:"
+    } else {
+        "anneal:enum:v1:"
+    };
+    let mut type_arg_keys = Vec::new();
+    for arg in args.iter() {
+        if arg.as_region().is_some() {
+            continue;
+        }
+        let Some(arg_ty) = arg.as_type() else {
+            return Err(format!(
+                "unsupported non-type generic argument `{arg:?}` on ADT `{}`",
+                canonical_def_path(tcx, def)
+            ));
+        };
+        let lowered = ty_inner(tcx, arg_ty, depth + 1)?;
+        type_arg_keys.push(canonical_ty_key(&lowered));
+    }
+    let key = if type_arg_keys.is_empty() {
+        format!("{prefix}{}", item_identity(tcx, def))
+    } else {
+        format!(
+            "{prefix}{}<{}>",
+            item_identity(tcx, def),
+            type_arg_keys.join(",")
+        )
+    };
+    let digest = Sha256::digest(key.as_bytes());
+    let id = u32::from_be_bytes([digest[0], digest[1], digest[2], digest[3]]);
+    register_adt_id(is_struct, key, id)
+}
+
+#[derive(Clone, Copy)]
+struct NicheTarget {
+    tag_size: u64,
+    tag_ty: IntTy,
+}
+
+/// Recursively locate the unique field/element index path inside a compound
+/// value type reaching a niche leaf scalar at byte offset `rel_offset`.
+fn descend_niche_path<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    rust_ty: ty::Ty<'tcx>,
+    ir_ty: &ir::Ty,
+    rel_offset: u64,
+    target: NicheTarget,
+    path: &mut Vec<u32>,
+    depth: usize,
+) -> Result<()> {
+    if depth > 64 {
+        return Err("niche path recursion limit exceeded".into());
+    }
+    let layout = tcx
+        .layout_of(TypingEnv::fully_monomorphized().as_query_input(rust_ty))
+        .map_err(|err| format!("failed to compute niche field layout for {rust_ty:?}: {err}"))?;
+    if ir::niche_leaf_matches_tag(target.tag_ty, ir_ty) {
+        if rel_offset == 0 && layout.size.bytes() == target.tag_size {
+            return Ok(());
+        }
+        return Err(format!(
+            "niche leaf {rust_ty:?} offset/size mismatch (rel_offset={rel_offset}, size={}, tag_size={})",
+            layout.size.bytes(),
+            target.tag_size
+        ));
+    }
+    match (*rust_ty.kind(), ir_ty) {
+        (ty::Tuple(elems), ir::Ty::Tuple { fields }) if elems.len() == fields.len() => {
+            let mut found: Option<(usize, u64)> = None;
+            for (idx, elem_ty) in elems.iter().enumerate() {
+                let field_offset = layout.fields.offset(idx).bytes();
+                let field_layout = tcx
+                    .layout_of(TypingEnv::fully_monomorphized().as_query_input(elem_ty))
+                    .map_err(|err| format!("failed to compute tuple niche field layout: {err}"))?;
+                let field_size = field_layout.size.bytes();
+                if field_size > 0
+                    && field_offset <= rel_offset
+                    && rel_offset + target.tag_size <= field_offset + field_size
+                {
+                    if found.is_some() {
+                        return Err("ambiguous overlapping niche field in tuple".into());
+                    }
+                    found = Some((idx, rel_offset - field_offset));
+                }
+            }
+            let Some((idx, next_offset)) = found else {
+                return Err(format!("could not locate niche inside tuple {rust_ty:?}"));
+            };
+            path.push(u32::try_from(idx).map_err(|_| "niche path index overflow".to_string())?);
+            descend_niche_path(
+                tcx,
+                elems[idx],
+                &fields[idx],
+                next_offset,
+                target,
+                path,
+                depth + 1,
+            )
+        }
+        (ty::Adt(adt, args), ir::Ty::Struct(sty)) if adt.is_struct() => {
+            let variant = adt.non_enum_variant();
+            if variant.fields.len() != sty.fields().len() {
+                return Err("struct niche field count mismatch".into());
+            }
+            let mut found: Option<(usize, ty::Ty<'tcx>, u64)> = None;
+            for (idx, field_def) in variant.fields.iter().enumerate() {
+                let field_offset = layout.fields.offset(idx).bytes();
+                let fty = tcx.normalize_erasing_regions(
+                    TypingEnv::fully_monomorphized(),
+                    field_def.ty(tcx, args),
+                );
+                let field_layout = tcx
+                    .layout_of(TypingEnv::fully_monomorphized().as_query_input(fty))
+                    .map_err(|err| format!("failed to compute struct niche field layout: {err}"))?;
+                let field_size = field_layout.size.bytes();
+                if field_size > 0
+                    && field_offset <= rel_offset
+                    && rel_offset + target.tag_size <= field_offset + field_size
+                {
+                    if found.is_some() {
+                        return Err("ambiguous overlapping niche field in struct".into());
+                    }
+                    found = Some((idx, fty, rel_offset - field_offset));
+                }
+            }
+            let Some((idx, fty, next_offset)) = found else {
+                return Err(format!("could not locate niche inside struct {rust_ty:?}"));
+            };
+            path.push(u32::try_from(idx).map_err(|_| "niche path index overflow".to_string())?);
+            descend_niche_path(
+                tcx,
+                fty,
+                &sty.fields()[idx],
+                next_offset,
+                target,
+                path,
+                depth + 1,
+            )
+        }
+        (ty::Array(elem_rust_ty, _), ir::Ty::Array { elem, len }) => {
+            let elem_layout = tcx
+                .layout_of(TypingEnv::fully_monomorphized().as_query_input(elem_rust_ty))
+                .map_err(|err| format!("failed to compute array niche element layout: {err}"))?;
+            let elem_size = elem_layout.size.bytes();
+            if elem_size == 0 {
+                return Err("cannot locate niche inside zero-sized array element".into());
+            }
+            let elem_idx = rel_offset / elem_size;
+            let inner_offset = rel_offset % elem_size;
+            if elem_idx >= *len || inner_offset + target.tag_size > elem_size {
+                return Err(format!("niche offset out of bounds in array {rust_ty:?}"));
+            }
+            let idx_u32 =
+                u32::try_from(elem_idx).map_err(|_| "array niche index exceeds u32".to_string())?;
+            path.push(idx_u32);
+            descend_niche_path(
+                tcx,
+                elem_rust_ty,
+                elem,
+                inner_offset,
+                target,
+                path,
+                depth + 1,
+            )
+        }
+        _ => Err(format!(
+            "unsupported niche container type {rust_ty:?} (ir {ir_ty:?})"
+        )),
+    }
+}
+
+/// Extract the in-memory tag representation of an enum from `rustc`'s
 /// monomorphized `Variants` layout (`Empty`, `Single { index }`, `Multiple`
-/// where "each variant comes with a *discriminant* ... encoded as a *tag* on
-/// the machine").
+/// with `TagEncoding::Direct` or `TagEncoding::Niche`).
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L1937-L1952
 fn enum_tag_repr<'tcx>(
     tcx: TyCtxt<'tcx>,
     t: ty::Ty<'tcx>,
-    variant_count: usize,
+    adt: ty::AdtDef<'tcx>,
+    args: ty::GenericArgsRef<'tcx>,
+    variant_fields: &[Vec<ir::Ty>],
 ) -> Result<ir::EnumTagRepr> {
     let layout = tcx
         .layout_of(TypingEnv::fully_monomorphized().as_query_input(t))
         .map_err(|err| format!("failed to compute enum layout for {t:?}: {err}"))?;
+    let variant_count = adt.variants().len();
+    let has_payload = variant_fields.iter().any(|fs| !fs.is_empty());
     match &layout.variants {
         Variants::Empty => Err(format!(
             "uninhabited zero-variant enums are unsupported: {t:?}"
         )),
         Variants::Single { index } => {
-            if index.as_usize() == 0 && layout.size.bytes() == 0 && variant_count == 1 {
+            if index.as_usize() == 0
+                && layout.size.bytes() == 0
+                && variant_count == 1
+                && !has_payload
+            {
                 Ok(ir::EnumTagRepr::ZeroSized)
             } else {
-                Err(format!(
-                    "non-zero-sized single-variant enum representations are unsupported: {t:?}"
-                ))
+                Ok(ir::EnumTagRepr::Single {
+                    variant: index.as_u32(),
+                })
             }
         }
         Variants::Multiple {
@@ -257,34 +505,124 @@ fn enum_tag_repr<'tcx>(
             ..
         } if tag_field.as_usize() == 0 => match tag.primitive() {
             Primitive::Int(integer, signed) => {
-                let width = match integer {
-                    Integer::I8 => IntWidth::I8,
-                    Integer::I16 => IntWidth::I16,
-                    Integer::I32 => IntWidth::I32,
-                    Integer::I64 => IntWidth::I64,
-                    Integer::I128 => IntWidth::I128,
-                };
-                Ok(ir::EnumTagRepr::Scalar(IntTy { width, signed }))
+                Ok(ir::EnumTagRepr::Scalar(int_ty_from_abi(integer, signed)))
             }
             other => Err(format!("non-integer enum tag primitive {other:?}: {t:?}")),
         },
+        Variants::Multiple {
+            tag,
+            tag_encoding:
+                TagEncoding::Niche {
+                    untagged_variant,
+                    niche_variants,
+                    niche_start,
+                },
+            tag_field,
+            variants,
+        } => {
+            let Scalar::Initialized {
+                value: Primitive::Int(integer, signed),
+                valid_range,
+            } = *tag
+            else {
+                return Err(format!("unsupported niche tag scalar {tag:?}: {t:?}"));
+            };
+            let tag_ty = int_ty_from_abi(integer, signed);
+            let tag_size = tag.size(&tcx.data_layout).bytes();
+            let tag_offset = layout.fields.offset(tag_field.as_usize()).bytes();
+            let untagged_idx = untagged_variant.as_usize();
+            let untagged_layout = &variants[*untagged_variant];
+            let untagged_def = adt.variant(*untagged_variant);
+            let untagged_ir_fields = variant_fields
+                .get(untagged_idx)
+                .ok_or_else(|| format!("untagged variant {untagged_idx} out of bounds"))?;
+            if untagged_def.fields.len() != untagged_ir_fields.len() {
+                return Err("untagged variant field count mismatch".into());
+            }
+            let mut found: Option<(usize, ty::Ty<'tcx>, u64)> = None;
+            for (idx, field_def) in untagged_def.fields.iter().enumerate() {
+                let field_offset =
+                    untagged_layout.field_offsets[rustc_abi::FieldIdx::from_usize(idx)].bytes();
+                let fty = tcx.normalize_erasing_regions(
+                    TypingEnv::fully_monomorphized(),
+                    field_def.ty(tcx, args),
+                );
+                let field_layout = tcx
+                    .layout_of(TypingEnv::fully_monomorphized().as_query_input(fty))
+                    .map_err(|err| {
+                        format!("failed to compute untagged variant field layout: {err}")
+                    })?;
+                let field_size = field_layout.size.bytes();
+                if field_size > 0
+                    && field_offset <= tag_offset
+                    && tag_offset + tag_size <= field_offset + field_size
+                {
+                    if found.is_some() {
+                        return Err(format!(
+                            "ambiguous overlapping niche field in untagged variant of {t:?}"
+                        ));
+                    }
+                    found = Some((idx, fty, tag_offset - field_offset));
+                }
+            }
+            let Some((first_idx, first_fty, rel_offset)) = found else {
+                return Err(format!(
+                    "could not locate niche field at offset {tag_offset} in {t:?}"
+                ));
+            };
+            let mut niche_path = vec![
+                u32::try_from(first_idx).map_err(|_| "niche path index overflow".to_string())?,
+            ];
+            descend_niche_path(
+                tcx,
+                first_fty,
+                &untagged_ir_fields[first_idx],
+                rel_offset,
+                NicheTarget { tag_size, tag_ty },
+                &mut niche_path,
+                0,
+            )?;
+            Ok(ir::EnumTagRepr::Niche {
+                tag: tag_ty,
+                valid_start: valid_range.start,
+                valid_end: valid_range.end,
+                niche_path,
+                untagged: untagged_variant.as_u32(),
+                start: niche_variants.start.as_u32(),
+                last: niche_variants.last.as_u32(),
+                niche_start: *niche_start,
+            })
+        }
         other => Err(format!("unsupported enum variant layout {other:?}: {t:?}")),
     }
 }
 
+/// Check whether an external ADT is one of the audited `core` ADTs admitted in
+/// Tier 2 (`core::option::Option` or `core::result::Result`).
+fn is_admitted_external_adt(tcx: TyCtxt<'_>, def: DefId) -> bool {
+    if def.is_local() || tcx.crate_name(def.krate) != sym::core {
+        return false;
+    }
+    matches!(
+        canonical_def_path(tcx, def).as_str(),
+        "core::option::Option" | "core::result::Result"
+    )
+}
+
 /// The type grammar is `TyKind` at the pinned compiler revision:
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs
-///
-/// Enum values in the owned syntax carry raw tag bits. The table below records
-/// the compiler's `Discr` ("Bit representation of the discriminant (e.g.,
-/// `-1i8` is `0xFF_u128`)") and layout tag representation separately because
-/// MIR warns: "the value of the discriminant is not the same thing as the
-/// variant index."
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/util.rs#L35-L39
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1433-L1443
 pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
-    // Rejecting unmodeled types is deliberate: replacing a pointer, struct, or
-    // payload ADT with a machine word would assign semantics the model lacks.
+    ty_inner(tcx, t, 0)
+}
+
+fn ty_inner<'tcx>(tcx: TyCtxt<'tcx>, raw_t: ty::Ty<'tcx>, depth: usize) -> Result<ir::Ty> {
+    if depth > 64 {
+        return Err(format!("type recursion limit exceeded for {raw_t:?}"));
+    }
+    let t = tcx.normalize_erasing_regions(
+        TypingEnv::fully_monomorphized(),
+        ty::Unnormalized::new_wip(raw_t),
+    );
     match *t.kind() {
         ty::Bool => Ok(ir::Ty::Bool),
         ty::Never => Ok(ir::Ty::Never),
@@ -292,47 +630,69 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
         ty::Tuple(elements) => {
             let fields = elements
                 .iter()
-                .map(|elem| ty(tcx, elem))
+                .map(|elem| ty_inner(tcx, elem, depth + 1))
                 .collect::<Result<Vec<_>>>()?;
             Ok(ir::Ty::Tuple { fields })
         }
         ty::Uint(_) | ty::Int(_) => Ok(ir::Ty::Int(int_ty(t)?)),
-        // `Trusted.MirAst.EnumTy` keys nominal enum identity by the `u32` that
-        // `enum_id` derives from the enum's semantic path, so the key does not
-        // move when unrelated items shift compiler indices. Admission requires
-        // non-generic (`args.is_empty()`) enums "defined in the crate currently
-        // being compiled" (`is_local()`). Their paths are crate-relative,
-        // phantom generic instantiations cannot share one key, and `capture.rs`
-        // can refuse a key shared by two local enum definitions.
-        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_span/src/def_id.rs#L291-L295
-        ty::Adt(adt, args) if adt.did().is_local() && adt.is_enum() && args.is_empty() => {
+        ty::Array(elem, len_const) => {
+            let norm_len = tcx.normalize_erasing_regions(
+                TypingEnv::fully_monomorphized(),
+                ty::Unnormalized::new_wip(len_const),
+            );
+            let len = norm_len
+                .try_to_target_usize(tcx)
+                .ok_or_else(|| format!("unevaluated array length constant in {t:?}"))?;
+            let elem_ty = ty_inner(tcx, elem, depth + 1)?;
+            Ok(ir::Ty::Array {
+                elem: Box::new(elem_ty),
+                len,
+            })
+        }
+        ty::Adt(adt, args)
+            if (adt.did().is_local() || is_admitted_external_adt(tcx, adt.did())) =>
+        {
+            if adt.is_union() {
+                return Err(format!("union types are unsupported: {t:?}"));
+            }
+            if adt.repr().simd() {
+                return Err(format!("SIMD struct types are unsupported: {t:?}"));
+            }
+            if adt.is_struct() {
+                let id = monomorphized_adt_id(tcx, adt.did(), args, true, depth)?;
+                let fields = adt
+                    .non_enum_variant()
+                    .fields
+                    .iter()
+                    .map(|field| ty_inner(tcx, field.ty(tcx, args).skip_norm_wip(), depth + 1))
+                    .collect::<Result<Vec<_>>>()?;
+                let sty = ir::StructTy::try_new(id, fields)
+                    .map_err(|reason| format!("{reason}: {t:?}"))?;
+                return Ok(ir::Ty::Struct(sty));
+            }
+            if !adt.is_enum() {
+                return Err(format!("unsupported ADT type: {t:?}"));
+            }
             if adt.variants().is_empty() {
                 return Err(format!(
                     "uninhabited zero-variant enums are unsupported: {t:?}"
                 ));
             }
-            // A fieldless enum has no "Fields of this variant" in any variant.
-            // Payload values have no tag-only scalar representation.
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/mod.rs#L1209-L1210
-            if adt
+            let id = monomorphized_adt_id(tcx, adt.did(), args, false, depth)?;
+            let variant_fields = adt
                 .variants()
                 .iter()
-                .any(|variant| !variant.fields.is_empty())
-            {
-                return Err(format!("enum payloads are unsupported: {t:?}"));
-            }
-            // `discriminant_ty` "Returns the type of the discriminant of this
-            // type": the `repr` integer, or `isize` by default. That is the
-            // "typeck type" of the discriminant; layout may store a smaller
-            // tag, which `enum_tag_repr` records separately.
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/sty.rs#L1682-L1685
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L198-L204
+                .map(|variant| {
+                    variant
+                        .fields
+                        .iter()
+                        .map(|field| ty_inner(tcx, field.ty(tcx, args).skip_norm_wip(), depth + 1))
+                        .collect::<Result<Vec<_>>>()
+                })
+                .collect::<Result<Vec<_>>>()?;
             let discr = int_ty(t.discriminant_ty(tcx))
                 .map_err(|err| format!("unsupported enum discriminant type for {t:?}: {err}"))?;
-            let tag_repr = enum_tag_repr(tcx, t, adt.variants().len())?;
-            // `discriminants` computes explicit and implicit discriminants;
-            // it is not safe to substitute the enumeration index here.
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/adt.rs#L660-L679
+            let tag_repr = enum_tag_repr(tcx, t, adt, args, &variant_fields)?;
             let discriminants = adt
                 .discriminants(tcx)
                 .map(|(_, entry)| {
@@ -342,7 +702,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
                     Ok(entry.val)
                 })
                 .collect::<Result<Vec<_>>>()?;
-            let ety = ir::EnumTy::try_new(enum_id(tcx, adt.did()), discr, tag_repr, discriminants)
+            let ety = ir::EnumTy::try_new(id, discr, tag_repr, discriminants, variant_fields)
                 .map_err(|reason| format!("{reason}: {t:?}"))?;
             Ok(ir::Ty::Enum(ety))
         }
@@ -350,9 +710,9 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
     }
 }
 
-/// `Place` has a local plus left-to-right projections. Tier 1 admits empty
-/// projections and tuple `Field(index, ty)` projections, preserving compiler
-/// local indices without renumbering.
+/// `Place` has a local plus left-to-right projections. Tier 2 admits `Field`,
+/// `Downcast`, `Index`, and `ConstantIndex`, preserving compiler local indices
+/// without renumbering.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1182-L1188
 fn place<'tcx>(tcx: TyCtxt<'tcx>, p: &mir::Place<'tcx>) -> Result<ir::Place> {
     let mut projection = Vec::with_capacity(p.projection.len());
@@ -362,6 +722,27 @@ fn place<'tcx>(tcx: TyCtxt<'tcx>, p: &mir::Place<'tcx>) -> Result<ir::Place> {
                 projection.push(ir::ProjectionElem::Field {
                     index: field_idx.as_u32(),
                     ty: ty(tcx, field_ty)?,
+                });
+            }
+            mir::ProjectionElem::Downcast(_, variant_idx) => {
+                projection.push(ir::ProjectionElem::Downcast {
+                    variant_idx: variant_idx.as_u32(),
+                });
+            }
+            mir::ProjectionElem::Index(local) => {
+                projection.push(ir::ProjectionElem::Index {
+                    local: local.as_u32(),
+                });
+            }
+            mir::ProjectionElem::ConstantIndex {
+                offset,
+                min_length,
+                from_end,
+            } => {
+                projection.push(ir::ProjectionElem::ConstantIndex {
+                    offset,
+                    min_length,
+                    from_end,
                 });
             }
             other => {
@@ -392,10 +773,6 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
             let width = match &t {
                 ir::Ty::Bool => 8,
                 ir::Ty::Unit => {
-                    // `ZeroSized` is documented as "Only for ZSTs." The
-                    // source type must independently be the empty tuple;
-                    // other zero-sized types do not acquire unit semantics.
-                    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/consts.rs#L38-L39
                     if matches!(
                         constant.const_,
                         mir::Const::Val(mir::ConstValue::ZeroSized, _)
@@ -414,12 +791,44 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
                 ir::Ty::Tuple { .. } => {
                     return Err("tuple constants are unsupported".into());
                 }
+                ir::Ty::Struct(_) => {
+                    if matches!(
+                        constant.const_,
+                        mir::Const::Val(mir::ConstValue::ZeroSized, _)
+                    ) {
+                        ir::validate_constant(&t, ConstLit::ZeroSized)?;
+                        return Ok(ir::Operand::Constant {
+                            ty: t,
+                            lit: ConstLit::ZeroSized,
+                        });
+                    }
+                    return Err("non-ZST struct constants are unsupported".into());
+                }
+                ir::Ty::Array { len: 0, .. } => {
+                    if matches!(
+                        constant.const_,
+                        mir::Const::Val(mir::ConstValue::ZeroSized, _)
+                    ) {
+                        return Ok(ir::Operand::Constant {
+                            ty: t,
+                            lit: ConstLit::ZeroSized,
+                        });
+                    }
+                    return Err(
+                        "zero-length array constant lacks the compiler ZeroSized representation"
+                            .into(),
+                    );
+                }
+                ir::Ty::Array { .. } => {
+                    return Err("non-empty array constants are unsupported".into());
+                }
                 ir::Ty::Enum(ety) => match ety.tag_repr() {
-                    ir::EnumTagRepr::ZeroSized => {
+                    ir::EnumTagRepr::ZeroSized | ir::EnumTagRepr::Single { .. } => {
                         if matches!(
                             constant.const_,
                             mir::Const::Val(mir::ConstValue::ZeroSized, _)
                         ) {
+                            ir::validate_constant(&t, ConstLit::ZeroSized)?;
                             return Ok(ir::Operand::Constant {
                                 ty: t,
                                 lit: ConstLit::ZeroSized,
@@ -431,30 +840,38 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
                         );
                     }
                     ir::EnumTagRepr::Scalar(tag) => tag.width.bits(),
+                    ir::EnumTagRepr::Niche { tag, .. } => tag.width.bits(),
                 },
             };
-            // Only already-valued integer scalars are admitted. In particular,
-            // do not evaluate an Unevaluated constant and silently substitute
-            // its result for an unrepresented constant obligation.
-            // `Scalar::Int` denotes "The raw bytes of a simple value";
-            // `try_to_scalar_int` excludes provenance-bearing pointers.
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/consts.rs
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/value.rs
-            let mir::Const::Val(value, _) = constant.const_ else {
-                return Err(format!("unsupported constant: {:?}", constant.const_));
+            // Admit already-valued integer scalars (including evaluated
+            // type-level `ValTreeKind::Leaf` constants emitted for fixed-array
+            // `BoundsCheck` lengths) and the closed allowlist of pure sysroot
+            // `core` primitive integer constants (`MIN`, `MAX`, `BITS`). Refuse
+            // all crate-local and other `Unevaluated` constants fail-closed.
+            let value = match constant.const_ {
+                mir::Const::Val(value, _) => value
+                    .try_to_scalar_int()
+                    .ok_or("only integer scalar constants are modeled")?,
+                mir::Const::Ty(_, c) => match c.kind() {
+                    ty::ConstKind::Value(cv) => match *cv.valtree {
+                        ty::ValTreeKind::Leaf(scalar_int) => *scalar_int,
+                        _ => return Err(format!("unsupported constant: {:?}", constant.const_)),
+                    },
+                    _ => return Err(format!("unsupported constant: {:?}", constant.const_)),
+                },
+                mir::Const::Unevaluated(uneval, const_ty) => {
+                    eval_admitted_core_scalar_const(tcx, uneval, const_ty, constant.span)
+                        .ok_or_else(|| format!("unsupported constant: {:?}", constant.const_))?
+                }
             };
-            let value = value
-                .try_to_scalar_int()
-                .ok_or("only integer scalar constants are modeled")?;
             if value.size().bits() != u64::from(width) {
                 return Err("scalar constant width disagrees with its type".into());
             }
-            Ok(ir::Operand::Constant {
-                ty: t,
-                lit: ConstLit::Scalar {
-                    bits: value.to_bits_unchecked(),
-                },
-            })
+            let lit = ConstLit::Scalar {
+                bits: value.to_bits_unchecked(),
+            };
+            ir::validate_constant(&t, lit)?;
+            Ok(ir::Operand::Constant { ty: t, lit })
         }
         other => Err(format!("unsupported operand: {other:?}")),
     }
@@ -522,23 +939,70 @@ fn bin_op(op: mir::BinOp) -> Result<ir::BinOp> {
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1410-L1443
 fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rvalue> {
     Ok(match value {
-        // Empty tuple aggregates (`()`) lower 1:1 to `ir::Rvalue::Unit`
-        // (`{"kind": "unit"}` in `capture.json`) and render 1:1 to
-        // `Trusted.MirAst.Rvalue.aggregateTuple []`. Non-empty tuple
-        // aggregates lower to `ir::Rvalue::AggregateTuple`. Non-tuple
-        // aggregates (enums, structs, arrays) remain refused fail-closed here.
-        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1445-L1453
-        mir::Rvalue::Aggregate(kind, operands) if matches!(**kind, mir::AggregateKind::Tuple) => {
-            if operands.is_empty() {
-                ir::Rvalue::Unit
-            } else {
-                let translated = operands
-                    .iter()
-                    .map(|op| operand(tcx, op))
-                    .collect::<Result<Vec<_>>>()?;
-                ir::Rvalue::AggregateTuple {
-                    operands: translated,
+        mir::Rvalue::Aggregate(kind, operands) => {
+            let translated = operands
+                .iter()
+                .map(|op| operand(tcx, op))
+                .collect::<Result<Vec<_>>>()?;
+            match &**kind {
+                mir::AggregateKind::Tuple => {
+                    if translated.is_empty() {
+                        ir::Rvalue::Unit
+                    } else {
+                        ir::Rvalue::Aggregate {
+                            aggregate_kind: ir::AggregateKind::Tuple,
+                            operands: translated,
+                        }
+                    }
                 }
+                mir::AggregateKind::Adt(adt_def_id, variant_idx, generic_args, _, active_field) => {
+                    if active_field.is_some() {
+                        return Err("union aggregates are unsupported".into());
+                    }
+                    let adt_def = tcx.adt_def(*adt_def_id);
+                    let adt_ty = ty::Ty::new_adt(tcx, adt_def, generic_args);
+                    match ty(tcx, adt_ty)? {
+                        ir::Ty::Struct(sty) => {
+                            if variant_idx.as_u32() != 0 {
+                                return Err("non-zero struct variant index".into());
+                            }
+                            ir::Rvalue::Aggregate {
+                                aggregate_kind: ir::AggregateKind::AdtStruct { sty },
+                                operands: translated,
+                            }
+                        }
+                        ir::Ty::Enum(ety) => ir::Rvalue::Aggregate {
+                            aggregate_kind: ir::AggregateKind::AdtEnum {
+                                ety,
+                                variant_idx: variant_idx.as_u32(),
+                            },
+                            operands: translated,
+                        },
+                        other => {
+                            return Err(format!("unexpected ADT aggregate type: {other:?}"));
+                        }
+                    }
+                }
+                mir::AggregateKind::Array(elem_ty) => ir::Rvalue::Aggregate {
+                    aggregate_kind: ir::AggregateKind::Array {
+                        elem_ty: ty(tcx, *elem_ty)?,
+                    },
+                    operands: translated,
+                },
+                other => return Err(format!("unsupported aggregate kind: {other:?}")),
+            }
+        }
+        mir::Rvalue::Repeat(op, count_const) => {
+            let norm_count = tcx.normalize_erasing_regions(
+                TypingEnv::fully_monomorphized(),
+                ty::Unnormalized::new_wip(*count_const),
+            );
+            let count = norm_count
+                .try_to_target_usize(tcx)
+                .ok_or_else(|| format!("unevaluated repeat count: {count_const:?}"))?;
+            ir::Rvalue::Repeat {
+                operand: operand(tcx, op)?,
+                count,
             }
         }
         mir::Rvalue::Use(op, with_retag) => ir::Rvalue::Use {
@@ -575,7 +1039,14 @@ fn statement<'tcx>(tcx: TyCtxt<'tcx>, stmt: &mir::StatementKind<'tcx>) -> Result
     Ok(match stmt {
         mir::StatementKind::Assign(value) => ir::Statement::Assign {
             place: place(tcx, &value.0)?,
-            value: rvalue(tcx, &value.1)?,
+            value: Box::new(rvalue(tcx, &value.1)?),
+        },
+        mir::StatementKind::SetDiscriminant {
+            place: p,
+            variant_index,
+        } => ir::Statement::SetDiscriminant {
+            place: place(tcx, p)?,
+            variant_idx: variant_index.as_u32(),
         },
         mir::StatementKind::StorageLive(local) => ir::Statement::StorageLive {
             local: local.as_u32(),
@@ -600,12 +1071,15 @@ fn unwind_action(unwind: mir::UnwindAction) -> ir::UnwindAction {
 /// Validate the implicit panic-handling path invoked when a MIR `Assert`
 /// fails at runtime:
 /// 1. `msg.panic_function()` must resolve to a non-local `core` lang item
-///    (blocking `#![no_core]` crates that define local `panic_const_*` lang
-///    items outside the verified call closure).
-/// 2. `LangItem::PanicImpl` (`#[panic_handler]`) must resolve to sysroot
-///    `std` (blocking `#![no_std]` crate-local panic handlers outside the
-///    verified closure and `#![no_std]` libraries whose downstream panic
-///    handler may abort or loop rather than unwinding to `.unwound`).
+///    (blocking `#![no_core]` crates that define local `panic_*` lang items
+///    outside the verified call closure).
+/// 2. For operand-free asserts (where `Trusted.MirSemantics` models failure by
+///    unwinding to `.unwound`), `LangItem::PanicImpl` (`#[panic_handler]`)
+///    must resolve to sysroot `std`. For `BoundsCheck`, `Trusted.MirSemantics`
+///    fails closed with `.fault .unsupported` on failure rather than modeling
+///    unwinding, so every verified execution must prove bounds checks never
+///    fail and `#![no_std]` crates without `std::panic_impl` are sound to
+///    admit.
 ///
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/terminator.rs#L948-L1005
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/block.rs#L1294-L1330
@@ -613,7 +1087,10 @@ fn validate_assert_panic_path<'tcx, O: std::fmt::Debug>(
     tcx: TyCtxt<'tcx>,
     msg: &mir::AssertKind<O>,
 ) -> Result<()> {
-    let panic_lang_item = msg.panic_function();
+    let panic_lang_item = match msg {
+        mir::AssertKind::BoundsCheck { .. } => rustc_hir::LangItem::PanicBoundsCheck,
+        _ => msg.panic_function(),
+    };
     let Some(panic_fn) = tcx.lang_items().get(panic_lang_item) else {
         return Err(format!(
             "missing panic lang item {panic_lang_item:?} for assert {msg:?}"
@@ -624,6 +1101,9 @@ fn validate_assert_panic_path<'tcx, O: std::fmt::Debug>(
             "assert panic lang item `{}` must resolve to sysroot `core`",
             canonical_def_path(tcx, panic_fn)
         ));
+    }
+    if matches!(msg, mir::AssertKind::BoundsCheck { .. }) {
+        return Ok(());
     }
     let Some(panic_impl) = tcx.lang_items().panic_impl() else {
         return Err(
@@ -643,7 +1123,7 @@ fn validate_assert_panic_path<'tcx, O: std::fmt::Debug>(
     Ok(())
 }
 
-/// Translate an admitted operand-free `mir::AssertKind` using `rustc`'s own
+/// Translate an admitted `mir::AssertKind` using `rustc`'s own
 /// `is_optional_overflow_check` predicate so `-Coverflow-checks=no` never
 /// disagrees with codegen.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/terminator.rs#L938-L946
@@ -667,6 +1147,7 @@ fn assert_kind<O: std::fmt::Debug>(
         mir::AssertKind::OverflowNeg(_) => Ok(ir::AssertKind::OverflowNeg),
         mir::AssertKind::DivisionByZero(_) => Ok(ir::AssertKind::DivisionByZero),
         mir::AssertKind::RemainderByZero(_) => Ok(ir::AssertKind::RemainderByZero),
+        mir::AssertKind::BoundsCheck { .. } => Ok(ir::AssertKind::BoundsCheck),
         mir::AssertKind::NullPointerDereference => Ok(ir::AssertKind::NullPointerDereference),
         other => Err(format!("unsupported assert kind: {other:?}")),
     }
@@ -730,13 +1211,24 @@ fn recognize_core_builtin<'tcx>(
             "overflowing_mul" => ir::CoreBuiltin::OverflowingMul,
             "saturating_add" => ir::CoreBuiltin::SaturatingAdd,
             "saturating_sub" => ir::CoreBuiltin::SaturatingSub,
+            "checked_add" => ir::CoreBuiltin::CheckedAdd,
+            "checked_sub" => ir::CoreBuiltin::CheckedSub,
+            "checked_mul" => ir::CoreBuiltin::CheckedMul,
             "leading_zeros" => ir::CoreBuiltin::LeadingZeros,
             "trailing_zeros" => ir::CoreBuiltin::TrailingZeros,
             "is_multiple_of" if !self_int_ty.signed => ir::CoreBuiltin::IsMultipleOf,
+            "to_le_bytes" => ir::CoreBuiltin::ToLeBytes,
+            "from_le_bytes" => ir::CoreBuiltin::FromLeBytes,
             _ => return Err(format!("unsupported core::num call `{path}`")),
         };
         let expected_self = ir::Ty::Int(self_int_ty);
-        if arg_tys.first().copied() != Some(&expected_self) {
+        if builtin == ir::CoreBuiltin::FromLeBytes {
+            if dst_ty != &expected_self {
+                return Err(format!(
+                    "core::num builtin `{path}` return type disagrees with destination"
+                ));
+            }
+        } else if arg_tys.first().copied() != Some(&expected_self) {
             return Err(format!(
                 "core::num builtin `{path}` receiver type disagrees with argument 0"
             ));
@@ -956,6 +1448,13 @@ pub fn enum_id(tcx: TyCtxt<'_>, def: DefId) -> u32 {
     u32::from_be_bytes([digest[0], digest[1], digest[2], digest[3]])
 }
 
+/// Key a crate-local struct for `Trusted.MirAst.StructTy.id`, paralleling
+/// [`enum_id`] with domain separation prefix `anneal:struct:v1:`.
+pub fn struct_id(tcx: TyCtxt<'_>, def: DefId) -> u32 {
+    let digest = Sha256::digest(format!("anneal:struct:v1:{}", item_identity(tcx, def)));
+    u32::from_be_bytes([digest[0], digest[1], digest[2], digest[3]])
+}
+
 /// The only codegen flags admitted: hints that change neither the captured
 /// body nor its entry contract.
 ///
@@ -1112,6 +1611,61 @@ fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
     Ok(())
 }
 
+/// Recognize and evaluate pure sysroot `core` primitive integer associated
+/// constants (`{u,i}{8,16,32,64,128,size}::{MIN,MAX,BITS}`). These constants
+/// are part of trusted `core`, contain no crate-local code, and cannot fail
+/// post-monomorphization evaluation.
+fn eval_admitted_core_scalar_const<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    uneval: mir::UnevaluatedConst<'tcx>,
+    const_ty: ty::Ty<'tcx>,
+    span: rustc_span::Span,
+) -> Option<ty::ScalarInt> {
+    if uneval.promoted.is_some() || !uneval.args.is_empty() || uneval.def.is_local() {
+        return None;
+    }
+    if tcx.crate_name(uneval.def.krate) != sym::core {
+        return None;
+    }
+    if !matches!(ty(tcx, const_ty), Ok(ir::Ty::Int(_))) {
+        return None;
+    }
+    let path = canonical_def_path(tcx, uneval.def);
+    let rest = path.strip_prefix("core::num::<impl ")?;
+    let (int_name, const_name) = rest.split_once(">::")?;
+    let is_prim_int = matches!(
+        int_name,
+        "u8" | "u16"
+            | "u32"
+            | "u64"
+            | "u128"
+            | "usize"
+            | "i8"
+            | "i16"
+            | "i32"
+            | "i64"
+            | "i128"
+            | "isize"
+    );
+    let is_const = matches!(const_name, "MIN" | "MAX" | "BITS");
+    if !(is_prim_int && is_const) {
+        return None;
+    }
+    tcx.const_eval_resolve(TypingEnv::fully_monomorphized(), uneval, span)
+        .ok()
+        .and_then(|val| val.try_to_scalar_int())
+}
+
+fn is_admitted_core_scalar_required_const<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    req: &mir::ConstOperand<'tcx>,
+) -> bool {
+    let mir::Const::Unevaluated(uneval, const_ty) = req.const_ else {
+        return false;
+    };
+    eval_admitted_core_scalar_const(tcx, uneval, const_ty, req.span).is_some()
+}
+
 /// Translate the provider's exact body. `required_consts` is explicitly
 /// "soundness-critical"; an unrepresented required constant is a refusal,
 /// independent of runtime preconditions or whether any return is reachable.
@@ -1129,8 +1683,13 @@ pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) ->
     if body.tainted_by_errors.is_some() || body.coroutine.is_some() || body.spread_arg.is_some() {
         return Err("tainted, coroutine or spread-argument body is unsupported".into());
     }
-    if !matches!(body.required_consts.as_deref(), Some([])) {
+    let Some(required_consts) = body.required_consts.as_deref() else {
         return Err("required constants are unavailable in the scalar model".into());
+    };
+    for req in required_consts {
+        if !is_admitted_core_scalar_required_const(tcx, req) {
+            return Err("required constants are unavailable in the scalar model".into());
+        }
     }
     if tcx.generics_of(def).count() != 0 {
         return Err("generic functions require quantified instantiation obligations".into());
@@ -1211,6 +1770,7 @@ mod tests {
                 signed: false,
             }),
             vec![0, 1],
+            vec![vec![], vec![]],
         )
         .unwrap();
         assert!(ir::check_use_retag(&ir::Ty::Enum(ety), true).is_ok());
@@ -1222,10 +1782,29 @@ mod tests {
             width: IntWidth::Isize,
             signed: true,
         };
-        assert!(ir::EnumTy::try_new(1, isize_discr, ir::EnumTagRepr::ZeroSized, vec![0]).is_ok());
-        assert!(ir::EnumTy::try_new(1, isize_discr, ir::EnumTagRepr::ZeroSized, vec![]).is_err());
         assert!(
-            ir::EnumTy::try_new(1, isize_discr, ir::EnumTagRepr::ZeroSized, vec![0, 1]).is_err()
+            ir::EnumTy::try_new(
+                1,
+                isize_discr,
+                ir::EnumTagRepr::ZeroSized,
+                vec![0],
+                vec![vec![]]
+            )
+            .is_ok()
+        );
+        assert!(
+            ir::EnumTy::try_new(1, isize_discr, ir::EnumTagRepr::ZeroSized, vec![], vec![])
+                .is_err()
+        );
+        assert!(
+            ir::EnumTy::try_new(
+                1,
+                isize_discr,
+                ir::EnumTagRepr::ZeroSized,
+                vec![0, 1],
+                vec![vec![], vec![]]
+            )
+            .is_err()
         );
         let i8_signed = ir::EnumTagRepr::Scalar(IntTy {
             width: IntWidth::I8,
@@ -1236,16 +1815,26 @@ mod tests {
             signed: false,
         });
         assert!(
-            ir::EnumTy::try_new(2, isize_discr, i8_signed, vec![u128::from(u64::MAX), 0, 1])
-                .is_ok()
+            ir::EnumTy::try_new(
+                2,
+                isize_discr,
+                i8_signed.clone(),
+                vec![u128::from(u64::MAX), 0, 1],
+                vec![vec![], vec![], vec![]],
+            )
+            .is_ok()
         );
-        assert!(ir::EnumTy::try_new(2, isize_discr, i8_signed, vec![7, 7]).is_err());
+        assert!(
+            ir::EnumTy::try_new(2, isize_discr, i8_signed, vec![7, 7], vec![vec![], vec![]])
+                .is_err()
+        );
         assert!(
             ir::EnumTy::try_new(
                 2,
                 isize_discr,
-                u8_unsigned,
-                vec![u128::from(u64::MAX), 0, 1]
+                u8_unsigned.clone(),
+                vec![u128::from(u64::MAX), 0, 1],
+                vec![vec![], vec![], vec![]],
             )
             .is_err()
         );
@@ -1257,7 +1846,8 @@ mod tests {
                     signed: false,
                 },
                 u8_unsigned,
-                vec![256]
+                vec![256],
+                vec![vec![]],
             )
             .is_err()
         );
@@ -1355,13 +1945,13 @@ mod tests {
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
                     place: ir::Place::local(0),
-                    value: ir::Rvalue::Use {
+                    value: Box::new(ir::Rvalue::Use {
                         operand: ir::Operand::Constant {
                             ty: u8_ty.clone(),
                             lit: ConstLit::Scalar { bits: 300 },
                         },
                         with_retag: false,
-                    },
+                    }),
                 }],
                 terminator: ir::Terminator::Ret,
                 cleanup: false,
@@ -1382,6 +1972,7 @@ mod tests {
                 signed: true,
             }),
             vec![u128::from(u64::MAX), 0, 1],
+            vec![vec![], vec![], vec![]],
         )
         .unwrap();
         let enum_ty = ir::Ty::Enum(signed_enum);
@@ -1392,13 +1983,13 @@ mod tests {
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
                     place: ir::Place::local(0),
-                    value: ir::Rvalue::Use {
+                    value: Box::new(ir::Rvalue::Use {
                         operand: ir::Operand::Constant {
                             ty: enum_ty.clone(),
                             lit: ConstLit::Scalar { bits: 256 },
                         },
                         with_retag: false,
-                    },
+                    }),
                 }],
                 terminator: ir::Terminator::Ret,
                 cleanup: false,
@@ -1415,13 +2006,13 @@ mod tests {
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
                     place: ir::Place::local(0),
-                    value: ir::Rvalue::Use {
+                    value: Box::new(ir::Rvalue::Use {
                         operand: ir::Operand::Constant {
                             ty: enum_ty.clone(),
                             lit: ConstLit::Scalar { bits: 5 },
                         },
                         with_retag: false,
-                    },
+                    }),
                 }],
                 terminator: ir::Terminator::Ret,
                 cleanup: false,
@@ -1438,13 +2029,13 @@ mod tests {
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
                     place: ir::Place::local(0),
-                    value: ir::Rvalue::Use {
+                    value: Box::new(ir::Rvalue::Use {
                         operand: ir::Operand::Constant {
                             ty: enum_ty,
                             lit: ConstLit::Scalar { bits: 0xff },
                         },
                         with_retag: false,
-                    },
+                    }),
                 }],
                 terminator: ir::Terminator::Ret,
                 cleanup: false,
@@ -1461,6 +2052,7 @@ mod tests {
                 },
                 ir::EnumTagRepr::ZeroSized,
                 vec![42],
+                vec![vec![]],
             )
             .unwrap(),
         );
@@ -1471,13 +2063,13 @@ mod tests {
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
                     place: ir::Place::local(0),
-                    value: ir::Rvalue::Use {
+                    value: Box::new(ir::Rvalue::Use {
                         operand: ir::Operand::Constant {
                             ty: zst_enum,
                             lit: ConstLit::ZeroSized,
                         },
                         with_retag: false,
-                    },
+                    }),
                 }],
                 terminator: ir::Terminator::Ret,
                 cleanup: false,
@@ -1506,9 +2098,9 @@ mod tests {
             vec![ir::Block {
                 statements: vec![ir::Statement::Assign {
                     place: ir::Place::local(0),
-                    value: ir::Rvalue::Discriminant {
+                    value: Box::new(ir::Rvalue::Discriminant {
                         place: ir::Place::local(1),
-                    },
+                    }),
                 }],
                 terminator: ir::Terminator::Ret,
                 cleanup: false,
@@ -1516,7 +2108,7 @@ mod tests {
             "rust-path-v1::non_enum_discr".into(),
         )
         .unwrap_err();
-        assert!(non_enum_discr.contains("requires a fieldless enum place"));
+        assert!(non_enum_discr.contains("requires an enum place"));
     }
 
     #[test]
@@ -1545,6 +2137,13 @@ mod tests {
             assert_kind(false, &div_zero).unwrap(),
             ir::AssertKind::DivisionByZero
         );
-        assert!(assert_kind(true, &bounds).is_err());
+        assert_eq!(
+            assert_kind(true, &bounds).unwrap(),
+            ir::AssertKind::BoundsCheck
+        );
+        assert_eq!(
+            assert_kind(false, &bounds).unwrap(),
+            ir::AssertKind::BoundsCheck
+        );
     }
 }

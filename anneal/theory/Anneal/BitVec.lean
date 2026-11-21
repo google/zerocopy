@@ -1506,6 +1506,103 @@ theorem range_add_no_overflow_sound {w : Nat}
     rw [toNat_add, toNat_add, nat_mod_eq_of_lt hlt_xy, nat_mod_eq_of_lt hno_ovf]
     exact h2
 
+private theorem nat_lt_of_add_lt_add_left {k a b : Nat}
+    (h : k + a < k + b) : a < b := by
+  induction k with
+  | zero =>
+    rw [Nat.zero_add, Nat.zero_add] at h
+    exact h
+  | succ k ih =>
+    rw [Nat.succ_add, Nat.succ_add] at h
+    exact ih (Nat.lt_of_succ_lt_succ h)
+
+private theorem nat_mod_sub_of_ge_lt_two_mul {m n : Nat}
+    (hge : m ≤ n) (hlt : n < m + m) :
+    Nat.mod n m = n - m := by
+  have hdecomp : n = m + (n - m) := Eq.symm (Nat.add_sub_of_le hge)
+  have hsub_lt : n - m < m := by
+    have h1 : m + (n - m) < m + m := by
+      rw [← hdecomp]
+      exact hlt
+    exact nat_lt_of_add_lt_add_left h1
+  have hmod : Nat.mod (m + (n - m)) m = n - m := by
+    rw [nat_add_mod_left]
+    exact nat_mod_eq_of_lt hsub_lt
+  rw [← hdecomp] at hmod
+  exact hmod
+
+/-- Soundness of unsigned interval addition when both endpoint sums wrap
+(`2^w ≤ a_lo.toNat + b_lo.toNat`). -/
+theorem range_add_both_overflow_sound {w : Nat}
+    {a_lo x a_hi b_lo y b_hi : BitVec w}
+    (ha_lo : a_lo ≤ x) (ha_hi : x ≤ a_hi)
+    (hb_lo : b_lo ≤ y) (hb_hi : y ≤ b_hi)
+    (hboth_ovf : Nat.pow 2 w ≤ a_lo.toNat + b_lo.toNat) :
+    a_lo + b_lo ≤ x + y ∧ x + y ≤ a_hi + b_hi := by
+  have h1 : a_lo.toNat + b_lo.toNat ≤ x.toNat + y.toNat :=
+    Nat.add_le_add ha_lo hb_lo
+  have h2 : x.toNat + y.toNat ≤ a_hi.toNat + b_hi.toNat :=
+    Nat.add_le_add ha_hi hb_hi
+  have hge_xy : Nat.pow 2 w ≤ x.toNat + y.toNat :=
+    Nat.le_trans hboth_ovf h1
+  have hge_hi : Nat.pow 2 w ≤ a_hi.toNat + b_hi.toNat :=
+    Nat.le_trans hge_xy h2
+  have hlt_hi : a_hi.toNat + b_hi.toNat < Nat.pow 2 w + Nat.pow 2 w :=
+    Nat.add_lt_add a_hi.isLt b_hi.isLt
+  have hlt_xy : x.toNat + y.toNat < Nat.pow 2 w + Nat.pow 2 w :=
+    Nat.lt_of_le_of_lt h2 hlt_hi
+  have hlt_lo : a_lo.toNat + b_lo.toNat < Nat.pow 2 w + Nat.pow 2 w :=
+    Nat.lt_of_le_of_lt h1 hlt_xy
+  constructor
+  · change (a_lo + b_lo).toNat ≤ (x + y).toNat
+    rw [toNat_add, toNat_add,
+      nat_mod_sub_of_ge_lt_two_mul hboth_ovf hlt_lo,
+      nat_mod_sub_of_ge_lt_two_mul hge_xy hlt_xy]
+    exact Nat.sub_le_sub_right h1 (Nat.pow 2 w)
+  · change (x + y).toNat ≤ (a_hi + b_hi).toNat
+    rw [toNat_add, toNat_add,
+      nat_mod_sub_of_ge_lt_two_mul hge_xy hlt_xy,
+      nat_mod_sub_of_ge_lt_two_mul hge_hi hlt_hi]
+    exact Nat.sub_le_sub_right h2 (Nat.pow 2 w)
+
+/-- Full soundness of unsigned wrapping interval addition: when lower- and
+upper-endpoint overflow bits match, `x + y` stays within
+`[a_lo + b_lo, a_hi + b_hi]`; when they differ, `[0, allOnes w]` encloses it.
+-/
+theorem range_add_sound {w : Nat}
+    {a_lo x a_hi b_lo y b_hi : BitVec w}
+    (ha_lo : a_lo ≤ x) (ha_hi : x ≤ a_hi)
+    (hb_lo : b_lo ≤ y) (hb_hi : y ≤ b_hi) :
+    let minOvf := decide (Nat.pow 2 w ≤ a_lo.toNat + b_lo.toNat)
+    let maxOvf := decide (Nat.pow 2 w ≤ a_hi.toNat + b_hi.toNat)
+    let resLo := if minOvf != maxOvf then BitVec.ofNat w 0 else a_lo + b_lo
+    let resHi := if minOvf != maxOvf then allOnes w else a_hi + b_hi
+    resLo ≤ x + y ∧ x + y ≤ resHi := by
+  dsimp only
+  cases Nat.lt_or_ge (a_hi.toNat + b_hi.toNat) (Nat.pow 2 w) with
+  | inl hhi_lt =>
+    have hlo_lt : a_lo.toNat + b_lo.toNat < Nat.pow 2 w :=
+      Nat.lt_of_le_of_lt (Nat.add_le_add (Nat.le_trans ha_lo ha_hi)
+        (Nat.le_trans hb_lo hb_hi)) hhi_lt
+    rw [decide_eq_false (Nat.not_le_of_gt hlo_lt),
+      decide_eq_false (Nat.not_le_of_gt hhi_lt)]
+    exact range_add_no_overflow_sound ha_lo ha_hi hb_lo hb_hi hhi_lt
+  | inr hhi_ge =>
+    rw [decide_eq_true hhi_ge]
+    cases Nat.lt_or_ge (a_lo.toNat + b_lo.toNat) (Nat.pow 2 w) with
+    | inl hlo_lt =>
+      rw [decide_eq_false (Nat.not_le_of_gt hlo_lt)]
+      constructor
+      · change (BitVec.ofNat w 0).toNat ≤ (x + y).toNat
+        rw [toNat_zero]
+        exact Nat.zero_le _
+      · change (x + y).toNat ≤ (allOnes w).toNat
+        rw [toNat_allOnes]
+        exact Nat.le_sub_one_of_lt (x + y).isLt
+    | inr hlo_ge =>
+      rw [decide_eq_true hlo_ge]
+      exact range_add_both_overflow_sound ha_lo ha_hi hb_lo hb_hi hlo_ge
+
 /-- Soundness of unsigned interval subtraction when `b_hi ≤ a_lo`. -/
 theorem range_sub_no_underflow_sound {w : Nat}
     {a_lo x a_hi b_lo y b_hi : BitVec w}

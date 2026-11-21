@@ -14,15 +14,13 @@ use std::path::PathBuf;
 
 use serde::{Serialize, Serializer};
 
-// Version 4 extends the typed IR JSON schema for Tier 1 MIR: `IntWidth::I128`,
-// non-empty `Ty::Tuple`, `Place` with `ProjectionElem::Field`, `UnOp`, full
-// scalar `BinOp` (`Div`, `Rem`, `*Unchecked`, `*WithOverflow`),
-// `CastKind::IntToInt`, `Rvalue::{Unary, Cast, AggregateTuple}`,
-// `Block.cleanup`, `UnwindAction`, operand-free `AssertKind`, audited
-// `CoreBuiltin`, `Terminator::{Assert, UnwindResume, Call, CallBuiltin}`,
-// decimal-string serialization for 128-bit payloads, and configurable
-// `overflow_checks`.
-pub const SCHEMA_VERSION: u32 = 4;
+// Version 5 extends the typed IR JSON schema for Tier 2 value-level MIR:
+// `StructTy`, payload `EnumTy.variant_fields`, `EnumTagRepr::{Single, Niche}`,
+// `Ty::{Struct, Array}`, `ProjectionElem::{Downcast, Index, ConstantIndex}`,
+// `Statement::SetDiscriminant`, `AggregateKind::{Tuple, AdtStruct, AdtEnum,
+// Array}`, `Rvalue::{Aggregate, Repeat}`, `AssertKind::BoundsCheck`, and
+// `CoreBuiltin::{CheckedAdd, CheckedSub, CheckedMul, ToLeBytes, FromLeBytes}`.
+pub const SCHEMA_VERSION: u32 = 5;
 pub const COMPILER_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 pub const COMPILER_VERSION: &str = "1.98.0-nightly (f8a08b688 2026-05-30)";
 
@@ -65,6 +63,10 @@ impl IntWidth {
         }
     }
 
+    pub const fn byte_size(self) -> u64 {
+        (self.bits() / 8) as u64
+    }
+
     pub const fn mask(self) -> u128 {
         match self {
             Self::I128 => u128::MAX,
@@ -90,11 +92,183 @@ pub struct IntTy {
     pub signed: bool,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum EnumTagRepr {
     ZeroSized,
+    Single {
+        variant: u32,
+    },
     Scalar(IntTy),
+    Niche {
+        tag: IntTy,
+        #[serde(serialize_with = "serialize_u128")]
+        valid_start: u128,
+        #[serde(serialize_with = "serialize_u128")]
+        valid_end: u128,
+        niche_path: Vec<u32>,
+        untagged: u32,
+        start: u32,
+        last: u32,
+        #[serde(serialize_with = "serialize_u128")]
+        niche_start: u128,
+    },
+}
+
+/// Inclusive wrapping-range membership check matching
+/// `Trusted.MirSemantics.wrappingRangeContains`.
+pub fn wrapping_range_contains(start: u128, end: u128, value: u128) -> bool {
+    if start <= end {
+        start <= value && value <= end
+    } else {
+        start <= value || value <= end
+    }
+}
+
+/// Parameters for decoding a niche-encoded enum tag scalar.
+pub struct NicheTagSpec {
+    pub tag_width: IntWidth,
+    pub valid_start: u128,
+    pub valid_end: u128,
+    pub untagged: u32,
+    pub start: u32,
+    pub last: u32,
+    pub niche_start: u128,
+    pub variant_count: usize,
+}
+
+/// Decode niche-encoded tag bits at `spec.tag_width`, matching
+/// `Trusted.MirSemantics.decodeNicheTagBits`.
+pub fn decode_niche_tag_bits(spec: &NicheTagSpec, bits: u128) -> Result<usize, String> {
+    let mask = spec.tag_width.mask();
+    let clean_bits = bits & mask;
+    let relative = clean_bits.wrapping_sub(spec.niche_start) & mask;
+    if relative <= u128::from(spec.last - spec.start) {
+        let index = u64::from(spec.start) + (relative as u64);
+        if index >= (1u64 << 32) || (index as usize) >= spec.variant_count {
+            return Err("niche tag decoded out-of-range variant index".into());
+        }
+        if !wrapping_range_contains(spec.valid_start, spec.valid_end, clean_bits) {
+            return Err("niche tag value outside declared valid range".into());
+        }
+        if index == u64::from(spec.untagged) {
+            return Err("niche tag value collides with untagged variant".into());
+        }
+        Ok(index as usize)
+    } else if !wrapping_range_contains(spec.valid_start, spec.valid_end, clean_bits) {
+        Err("niche tag value outside declared valid range".into())
+    } else {
+        Ok(spec.untagged as usize)
+    }
+}
+
+/// Validated struct descriptor matching `Trusted.MirAst.StructTy`.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+pub struct StructTy {
+    id: u32,
+    fields: Vec<Ty>,
+}
+
+impl StructTy {
+    pub fn try_new(id: u32, fields: Vec<Ty>) -> Result<Self, String> {
+        if u64::try_from(fields.len()).unwrap_or(u64::MAX) >= (1u64 << 32) {
+            return Err("struct field count is at or above 2^32".into());
+        }
+        for field in &fields {
+            validate_ty(field)?;
+        }
+        Ok(Self { id, fields })
+    }
+
+    pub fn id(&self) -> u32 {
+        self.id
+    }
+
+    pub fn fields(&self) -> &[Ty] {
+        &self.fields
+    }
+}
+
+/// Follow a field/element index path inside a `Ty` to resolve the leaf scalar
+/// type of an `EnumTagRepr::Niche` layout, matching
+/// `Trusted.MirSemantics.nicheResolveFromTy`.
+fn niche_resolve_from_ty<'a>(mut ty: &'a Ty, path: &[u32]) -> Option<&'a Ty> {
+    for &idx in path {
+        let idx_usize = idx as usize;
+        ty = match ty {
+            Ty::Struct(sty) => sty.fields().get(idx_usize)?,
+            Ty::Tuple { fields } => fields.get(idx_usize)?,
+            Ty::Array { elem, len } if u64::from(idx) < *len => elem.as_ref(),
+            _ => return None,
+        };
+    }
+    Some(ty)
+}
+
+/// Resolve a non-empty `niche_path` starting from the payload fields of an
+/// `untagged` enum variant, matching `Trusted.MirSemantics.nicheLeafTy?`.
+fn niche_leaf_ty<'a>(niche_path: &[u32], var_fields: &'a [Ty]) -> Option<&'a Ty> {
+    let (&first, rest) = niche_path.split_first()?;
+    let field_ty = var_fields.get(first as usize)?;
+    niche_resolve_from_ty(field_ty, rest)
+}
+
+/// Check that a niche leaf type carries a scalar tag matching `tag`, matching
+/// `Trusted.MirSemantics.nicheLeafMatchesTag`.
+pub fn niche_leaf_matches_tag(tag: IntTy, leaf: &Ty) -> bool {
+    match leaf {
+        Ty::Bool => tag.width == IntWidth::I8 && !tag.signed,
+        Ty::Int(ity) => *ity == tag,
+        Ty::Enum(inner) => match inner.tag_repr() {
+            EnumTagRepr::Scalar(inner_tag) => !inner.has_payload_fields() && *inner_tag == tag,
+            _ => false,
+        },
+        _ => false,
+    }
+}
+
+/// Structural uninhabitedness predicate matching
+/// `Trusted.MirSemantics.isTypeUninhabited`.
+pub fn is_type_uninhabited(ty: &Ty) -> bool {
+    match ty {
+        Ty::Bool | Ty::Int(_) | Ty::Unit => false,
+        Ty::Never => true,
+        Ty::Struct(sty) => sty.fields().iter().any(is_type_uninhabited),
+        Ty::Tuple { fields } => fields.iter().any(is_type_uninhabited),
+        Ty::Array { elem, len } => *len != 0 && is_type_uninhabited(elem),
+        Ty::Enum(ety) => {
+            ety.discriminants().is_empty()
+                || ety.variant_fields().len() != ety.discriminants().len()
+                || ety
+                    .variant_fields()
+                    .iter()
+                    .all(|fs| fs.iter().any(is_type_uninhabited))
+        }
+    }
+}
+
+/// Structural 0-byte ZST predicate matching
+/// `Trusted.MirSemantics.isZeroSizedTy`.
+pub fn is_zero_sized_ty(ty: &Ty) -> bool {
+    match ty {
+        Ty::Unit | Ty::Never => true,
+        Ty::Bool | Ty::Int(_) => false,
+        Ty::Struct(sty) => sty.fields().iter().all(is_zero_sized_ty),
+        Ty::Tuple { fields } => fields.iter().all(is_zero_sized_ty),
+        Ty::Array { elem, len } => *len == 0 || is_zero_sized_ty(elem),
+        Ty::Enum(ety) => match ety.tag_repr() {
+            EnumTagRepr::ZeroSized => {
+                ety.discriminants().len() == 1
+                    && ety.variant_fields().len() == 1
+                    && ety.variant_fields()[0].iter().all(is_zero_sized_ty)
+            }
+            EnumTagRepr::Single { variant } => ety
+                .variant_fields()
+                .get(*variant as usize)
+                .is_some_and(|fs| fs.iter().all(is_zero_sized_ty)),
+            EnumTagRepr::Scalar(_) | EnumTagRepr::Niche { .. } => false,
+        },
+    }
 }
 
 /// Recover discriminant bits from raw tag bits as `rustc` does for
@@ -117,17 +291,17 @@ fn tag_bits_to_discr_bits(tag: IntTy, discr_width: IntWidth, raw_tag: u128) -> u
     extended & discr_width.mask()
 }
 
-/// Validated fieldless enum descriptor matching `Trusted.MirAst.EnumTy` and
+/// Validated enum descriptor matching `Trusted.MirAst.EnumTy` and
 /// `Trusted.MirSemantics.enumAdmitted`.
 ///
 /// Private fields guarantee that every `EnumTy` instance is inhabited, has
 /// fewer than `2^32` variants, carries pairwise-distinct discriminants within
-/// `discr_width`, and round-trips losslessly through `tag_repr`.
+/// `discr_width`, carries explicit per-variant payload field types matching
+/// `discriminants.len()`, and satisfies its `tag_repr` layout invariants.
 ///
 /// `id` is the nominal key that Lean compares in enum type equality. Capture
-/// derives it with `extract::enum_id` from the enum's semantic path rather
-/// than from a compiler index, and refuses crates in which two local enums
-/// share a key. This constructor does not check how the key was derived.
+/// derives it deterministically from the enum's semantic path (and canonical
+/// type arguments for monomorphized generic enums) and refuses any collision.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct EnumTy {
     id: u32,
@@ -136,6 +310,7 @@ pub struct EnumTy {
     tag_repr: EnumTagRepr,
     #[serde(serialize_with = "serialize_u128_vec")]
     discriminants: Vec<u128>,
+    variant_fields: Vec<Vec<Ty>>,
 }
 
 impl EnumTy {
@@ -144,12 +319,21 @@ impl EnumTy {
         discr: IntTy,
         tag_repr: EnumTagRepr,
         discriminants: Vec<u128>,
+        variant_fields: Vec<Vec<Ty>>,
     ) -> Result<Self, String> {
         if discriminants.is_empty() {
             return Err("uninhabited zero-variant enums are unsupported".into());
         }
         if u64::try_from(discriminants.len()).unwrap_or(u64::MAX) >= (1u64 << 32) {
             return Err("enum variant count is at or above 2^32".into());
+        }
+        if variant_fields.len() != discriminants.len() {
+            return Err("enum variant_fields count disagrees with discriminants count".into());
+        }
+        for fields in &variant_fields {
+            for field in fields {
+                validate_ty(field)?;
+            }
         }
         let discr_mask = discr.width.mask();
         for &d in &discriminants {
@@ -161,22 +345,96 @@ impl EnumTy {
         if unique.len() != discriminants.len() {
             return Err("duplicate enum discriminants are unsupported".into());
         }
-        match tag_repr {
+        let has_payload = variant_fields.iter().any(|fs| !fs.is_empty());
+        let variant_uninhabited = |v: usize| -> bool {
+            variant_fields
+                .get(v)
+                .is_none_or(|fs| fs.iter().any(is_type_uninhabited))
+        };
+        match &tag_repr {
             EnumTagRepr::ZeroSized => {
-                if discriminants.len() != 1 {
-                    return Err("zero-sized enum tag requires a single variant".into());
+                if discriminants.len() != 1 || has_payload {
+                    return Err("zero-sized enum tag requires a single fieldless variant".into());
+                }
+            }
+            EnumTagRepr::Single { variant } => {
+                let v = *variant as usize;
+                if v >= discriminants.len() {
+                    return Err("single-variant enum tag index out of bounds".into());
+                }
+                for k in 0..discriminants.len() {
+                    if k != v && !variant_uninhabited(k) {
+                        return Err(
+                            "single-variant enum tag requires all other variants to be uninhabited"
+                                .into(),
+                        );
+                    }
                 }
             }
             EnumTagRepr::Scalar(tag) => {
                 let tag_mask = tag.width.mask();
                 for &d in &discriminants {
-                    let recovered = tag_bits_to_discr_bits(tag, discr.width, d & tag_mask);
+                    let recovered = tag_bits_to_discr_bits(*tag, discr.width, d & tag_mask);
                     if recovered != d {
                         return Err(
                             "enum discriminant does not round-trip through its tag representation"
                                 .into(),
                         );
                     }
+                }
+            }
+            EnumTagRepr::Niche {
+                tag,
+                valid_start,
+                valid_end,
+                niche_path,
+                untagged,
+                start,
+                last,
+                niche_start,
+            } => {
+                if niche_path.is_empty() {
+                    return Err("niche enum tag requires a non-empty niche_path".into());
+                }
+                let untagged_idx = *untagged as usize;
+                let start_idx = *start as usize;
+                let last_idx = *last as usize;
+                if untagged_idx >= discriminants.len()
+                    || last_idx >= discriminants.len()
+                    || start_idx > last_idx
+                {
+                    return Err("niche enum variant indices are out of bounds".into());
+                }
+                let tag_mask = tag.width.mask();
+                if *valid_start > tag_mask || *valid_end > tag_mask || *niche_start > tag_mask {
+                    return Err("niche enum tag bounds exceed tag width".into());
+                }
+                let span = u128::from(*last - *start);
+                if tag.width != IntWidth::I128 && span >= (1u128 << tag.width.bits()) {
+                    return Err("niche variant span exceeds tag width".into());
+                }
+                for k in 0..=span {
+                    let tag_val = niche_start.wrapping_add(k) & tag_mask;
+                    if !wrapping_range_contains(*valid_start, *valid_end, tag_val) {
+                        return Err("niche tag value falls outside valid_range".into());
+                    }
+                }
+                for (k, fields) in variant_fields.iter().enumerate() {
+                    if k == untagged_idx || variant_uninhabited(k) {
+                        continue;
+                    }
+                    if k < start_idx || k > last_idx || !fields.iter().all(is_zero_sized_ty) {
+                        return Err(
+                            "non-untagged niche variant must be uninhabited or ZST within niche range"
+                                .into(),
+                        );
+                    }
+                }
+                let Some(leaf_ty) = niche_leaf_ty(niche_path, &variant_fields[untagged_idx]) else {
+                    return Err("niche_path does not resolve inside untagged variant".into());
+                };
+                if !niche_leaf_matches_tag(*tag, leaf_ty) {
+                    return Err("niche leaf type disagrees with niche tag scalar".into());
                 }
             }
         }
@@ -186,6 +444,7 @@ impl EnumTy {
             discr_signed: discr.signed,
             tag_repr,
             discriminants,
+            variant_fields,
         })
     }
 
@@ -200,12 +459,35 @@ impl EnumTy {
         }
     }
 
-    pub fn tag_repr(&self) -> EnumTagRepr {
-        self.tag_repr
+    pub fn tag_repr(&self) -> &EnumTagRepr {
+        &self.tag_repr
     }
 
     pub fn discriminants(&self) -> &[u128] {
         &self.discriminants
+    }
+
+    pub fn variant_fields(&self) -> &[Vec<Ty>] {
+        &self.variant_fields
+    }
+
+    pub fn has_payload_fields(&self) -> bool {
+        self.variant_fields.iter().any(|fs| !fs.is_empty())
+    }
+
+    pub fn is_variant_uninhabited(&self, variant: usize) -> bool {
+        self.variant_fields
+            .get(variant)
+            .is_none_or(|fs| fs.iter().any(is_type_uninhabited))
+    }
+
+    /// True iff this enum matches `Trusted.MirSemantics.isOptionEnumForTy`
+    /// (`variant 0 = None []`, `variant 1 = Some [inner]`).
+    pub fn is_option_for(&self, inner: &Ty) -> bool {
+        self.discriminants.len() == 2
+            && self.variant_fields.len() == 2
+            && self.variant_fields[0].is_empty()
+            && self.variant_fields[1].as_slice() == std::slice::from_ref(inner)
     }
 }
 
@@ -216,8 +498,10 @@ pub enum Ty {
     Unit,
     Never,
     Int(IntTy),
+    Struct(StructTy),
     Enum(EnumTy),
     Tuple { fields: Vec<Ty> },
+    Array { elem: Box<Ty>, len: u64 },
 }
 
 impl Ty {
@@ -231,14 +515,21 @@ impl Ty {
     /// `WithRetag::Yes` sets `RetagMode::Default` during `copyOp`, which calls
     /// `retagSafePointer` only inside `ValidityVisitor::checkSafe` on safe
     /// pointers (`&T`, `&mut T`, `Box<T>`). For reference-free scalar, unit,
-    /// never, fieldless-enum, and tuple-of-retag-noop types, `WithRetag::Yes`
-    /// and `WithRetag::No` have identical semantics. Any future `Ty` variant
-    /// capable of carrying references or `Box` must return `false` so capture
-    /// fails closed rather than erasing active retags.
+    /// never, struct, enum, tuple, and array types composed of retag-noop
+    /// elements, `WithRetag::Yes` and `WithRetag::No` have identical semantics.
+    /// Any future `Ty` variant capable of carrying references or `Box` must
+    /// return `false` so capture fails closed rather than erasing active
+    /// retags.
     pub fn is_retag_noop(&self) -> bool {
         match self {
-            Self::Bool | Self::Unit | Self::Never | Self::Int(_) | Self::Enum(_) => true,
+            Self::Bool | Self::Unit | Self::Never | Self::Int(_) => true,
+            Self::Struct(sty) => sty.fields().iter().all(Self::is_retag_noop),
+            Self::Enum(ety) => ety
+                .variant_fields()
+                .iter()
+                .all(|fs| fs.iter().all(Self::is_retag_noop)),
             Self::Tuple { fields } => fields.iter().all(Self::is_retag_noop),
+            Self::Array { elem, .. } => elem.is_retag_noop(),
         }
     }
 }
@@ -247,7 +538,21 @@ impl Ty {
 /// uses `Ty::Unit`).
 pub fn validate_ty(ty: &Ty) -> Result<(), String> {
     match ty {
-        Ty::Bool | Ty::Unit | Ty::Never | Ty::Int(_) | Ty::Enum(_) => Ok(()),
+        Ty::Bool | Ty::Unit | Ty::Never | Ty::Int(_) => Ok(()),
+        Ty::Struct(sty) => {
+            for field in sty.fields() {
+                validate_ty(field)?;
+            }
+            Ok(())
+        }
+        Ty::Enum(ety) => {
+            for fields in ety.variant_fields() {
+                for field in fields {
+                    validate_ty(field)?;
+                }
+            }
+            Ok(())
+        }
         Ty::Tuple { fields } => {
             if fields.is_empty() {
                 return Err("empty tuple type must use Ty::Unit".into());
@@ -257,6 +562,7 @@ pub fn validate_ty(ty: &Ty) -> Result<(), String> {
             }
             Ok(())
         }
+        Ty::Array { elem, .. } => validate_ty(elem),
     }
 }
 
@@ -330,14 +636,39 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
             Ok(())
         }
         (Ty::Tuple { .. }, _) => Err("tuple constants are unsupported".into()),
-        (Ty::Enum(ety), lit) => match (ety.tag_repr, lit) {
+        (Ty::Struct(sty), ConstLit::ZeroSized) => {
+            if !is_type_uninhabited(ty) && sty.fields().iter().all(is_zero_sized_ty) {
+                Ok(())
+            } else {
+                Err("ZeroSized struct constant requires inhabited ZST struct".into())
+            }
+        }
+        (Ty::Struct(_), ConstLit::Scalar { .. }) => {
+            Err("scalar struct constants are unsupported".into())
+        }
+        (Ty::Array { len: 0, .. }, ConstLit::ZeroSized) => Ok(()),
+        (Ty::Array { .. }, _) => Err("non-empty array constants are unsupported".into()),
+        (Ty::Enum(ety), lit) => match (ety.tag_repr(), lit) {
             (EnumTagRepr::ZeroSized, ConstLit::ZeroSized) => Ok(()),
             (EnumTagRepr::ZeroSized, ConstLit::Scalar { .. }) => {
                 Err("zero-sized constant must use ZeroSized literal".into())
             }
-            (EnumTagRepr::Scalar(_), ConstLit::ZeroSized) => {
-                Err("ZeroSized constant requires unit or zero-sized enum type".into())
+            (EnumTagRepr::Single { variant }, ConstLit::ZeroSized) => {
+                let v = *variant as usize;
+                if !ety.is_variant_uninhabited(v)
+                    && ety.variant_fields().get(v).is_some_and(Vec::is_empty)
+                {
+                    Ok(())
+                } else {
+                    Err("ZeroSized single-variant enum constant requires fieldless variant".into())
+                }
             }
+            (EnumTagRepr::Single { .. }, ConstLit::Scalar { .. }) => {
+                Err("single-variant enum constant must use ZeroSized literal".into())
+            }
+            (EnumTagRepr::Scalar(_) | EnumTagRepr::Niche { .. }, ConstLit::ZeroSized) => Err(
+                "ZeroSized constant requires unit, ZST aggregate, or zero-sized enum type".into(),
+            ),
             (EnumTagRepr::Scalar(tag), ConstLit::Scalar { bits }) => {
                 if bits > tag.width.mask() {
                     return Err(format!(
@@ -345,11 +676,59 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
                         tag.width.bits()
                     ));
                 }
-                let discr = tag_bits_to_discr_bits(tag, ety.discr().width, bits);
-                if !ety.discriminants.contains(&discr) {
+                let discr = tag_bits_to_discr_bits(*tag, ety.discr().width, bits);
+                let Some(variant_idx) = ety.discriminants.iter().position(|&d| d == discr) else {
                     return Err(format!(
                         "enum tag constant {bits:#x} does not match any declared variant"
                     ));
+                };
+                if ety.is_variant_uninhabited(variant_idx)
+                    || !ety.variant_fields[variant_idx].is_empty()
+                {
+                    return Err(
+                        "scalar enum constant must denote an inhabited fieldless variant".into(),
+                    );
+                }
+                Ok(())
+            }
+            (
+                EnumTagRepr::Niche {
+                    tag,
+                    valid_start,
+                    valid_end,
+                    untagged,
+                    start,
+                    last,
+                    niche_start,
+                    ..
+                },
+                ConstLit::Scalar { bits },
+            ) => {
+                if bits > tag.width.mask() {
+                    return Err(format!(
+                        "niche enum constant {bits:#x} exceeds {}-bit tag width",
+                        tag.width.bits()
+                    ));
+                }
+                let variant_idx = decode_niche_tag_bits(
+                    &NicheTagSpec {
+                        tag_width: tag.width,
+                        valid_start: *valid_start,
+                        valid_end: *valid_end,
+                        untagged: *untagged,
+                        start: *start,
+                        last: *last,
+                        niche_start: *niche_start,
+                        variant_count: ety.discriminants.len(),
+                    },
+                    bits,
+                )?;
+                if ety.is_variant_uninhabited(variant_idx)
+                    || !ety.variant_fields[variant_idx].is_empty()
+                {
+                    return Err(
+                        "niche enum constant must denote an inhabited fieldless variant".into(),
+                    );
                 }
                 Ok(())
             }
@@ -362,7 +741,21 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ProjectionElem {
-    Field { index: u32, ty: Ty },
+    Field {
+        index: u32,
+        ty: Ty,
+    },
+    Downcast {
+        variant_idx: u32,
+    },
+    Index {
+        local: u32,
+    },
+    ConstantIndex {
+        offset: u64,
+        min_length: u64,
+        from_end: bool,
+    },
 }
 
 /// MIR place (`local` plus left-to-right `projection` elements) matching
@@ -383,24 +776,40 @@ impl Place {
     }
 }
 
+/// Intermediate projected place type matching `Trusted.MirSemantics.PlaceTy`.
+enum PlaceTy<'a> {
+    Ty(&'a Ty),
+    Variant(&'a EnumTy, usize),
+}
+
 /// Resolve and validate `place` against `local_tys`, mirroring
-/// `Trusted.MirSemantics.projectTy?`.
+/// `Trusted.MirSemantics.projectPlaceTy?` and `projectTy?`.
 pub fn project_place_ty<'a>(
     local_tys: &'a [Ty],
     place: &Place,
     role: &str,
 ) -> Result<&'a Ty, String> {
-    let mut current = local_tys
+    let base = local_tys
         .get(place.local as usize)
         .ok_or_else(|| format!("{role} local {} out of bounds", place.local))?;
+    let mut current = PlaceTy::Ty(base);
+    let usize_ty = Ty::Int(IntTy {
+        width: IntWidth::Isize,
+        signed: false,
+    });
     for elem in &place.projection {
         match elem {
             ProjectionElem::Field { index, ty: stated } => {
                 validate_ty(stated)?;
-                let Ty::Tuple { fields } = current else {
-                    return Err(format!(
-                        "{role} field projection requires tuple place, got {current:?}"
-                    ));
+                let fields: &[Ty] = match current {
+                    PlaceTy::Ty(Ty::Tuple { fields }) => fields,
+                    PlaceTy::Ty(Ty::Struct(sty)) => sty.fields(),
+                    PlaceTy::Variant(ety, v) => &ety.variant_fields()[v],
+                    PlaceTy::Ty(other) => {
+                        return Err(format!(
+                            "{role} field projection requires tuple, struct, or downcast enum place, got {other:?}"
+                        ));
+                    }
                 };
                 let field_ty = fields.get(*index as usize).ok_or_else(|| {
                     format!(
@@ -410,14 +819,71 @@ pub fn project_place_ty<'a>(
                 })?;
                 if field_ty != stated {
                     return Err(format!(
-                        "{role} field projection type {stated:?} disagrees with tuple field {field_ty:?}"
+                        "{role} field projection type {stated:?} disagrees with field {field_ty:?}"
                     ));
                 }
-                current = field_ty;
+                current = PlaceTy::Ty(field_ty);
+            }
+            ProjectionElem::Downcast { variant_idx } => {
+                let PlaceTy::Ty(Ty::Enum(ety)) = current else {
+                    return Err(format!("{role} downcast projection requires enum place"));
+                };
+                let v = *variant_idx as usize;
+                if v >= ety.discriminants().len() {
+                    return Err(format!(
+                        "{role} downcast variant index {variant_idx} out of bounds for {} variants",
+                        ety.discriminants().len()
+                    ));
+                }
+                current = PlaceTy::Variant(ety, v);
+            }
+            ProjectionElem::Index { local } => {
+                let PlaceTy::Ty(Ty::Array { elem, .. }) = current else {
+                    return Err(format!(
+                        "{role} index projection requires fixed array place"
+                    ));
+                };
+                let idx_ty = local_tys
+                    .get(*local as usize)
+                    .ok_or_else(|| format!("{role} index local {local} out of bounds"))?;
+                if *idx_ty != usize_ty {
+                    return Err(format!(
+                        "{role} index local {local} must have usize type, got {idx_ty:?}"
+                    ));
+                }
+                current = PlaceTy::Ty(elem.as_ref());
+            }
+            ProjectionElem::ConstantIndex {
+                offset,
+                min_length,
+                from_end,
+            } => {
+                let PlaceTy::Ty(Ty::Array { elem, .. }) = current else {
+                    return Err(format!(
+                        "{role} constant-index projection requires fixed array place"
+                    ));
+                };
+                if *from_end {
+                    if *offset == 0 || *offset > *min_length {
+                        return Err(format!(
+                            "{role} from-end constant-index offset {offset} invalid for min_length {min_length}"
+                        ));
+                    }
+                } else if *offset >= *min_length {
+                    return Err(format!(
+                        "{role} constant-index offset {offset} out of bounds for min_length {min_length}"
+                    ));
+                }
+                current = PlaceTy::Ty(elem.as_ref());
             }
         }
     }
-    Ok(current)
+    match current {
+        PlaceTy::Ty(res) => Ok(res),
+        PlaceTy::Variant(_, _) => Err(format!(
+            "{role} place cannot end in a bare downcast projection"
+        )),
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -486,6 +952,16 @@ pub enum CastKind {
     IntToInt,
 }
 
+/// Aggregate construction kinds matching `Trusted.MirAst.AggregateKind`.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize)]
+#[serde(tag = "kind", rename_all = "snake_case")]
+pub enum AggregateKind {
+    Tuple,
+    AdtStruct { sty: StructTy },
+    AdtEnum { ety: EnumTy, variant_idx: u32 },
+    Array { elem_ty: Ty },
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Rvalue {
@@ -508,8 +984,13 @@ pub enum Rvalue {
         operand: Operand,
         ty: Ty,
     },
-    AggregateTuple {
+    Aggregate {
+        aggregate_kind: AggregateKind,
         operands: Vec<Operand>,
+    },
+    Repeat {
+        operand: Operand,
+        count: u64,
     },
     Discriminant {
         place: Place,
@@ -519,7 +1000,8 @@ pub enum Rvalue {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Statement {
-    Assign { place: Place, value: Rvalue },
+    Assign { place: Place, value: Box<Rvalue> },
+    SetDiscriminant { place: Place, variant_idx: u32 },
     StorageLive { local: u32 },
     StorageDead { local: u32 },
     Nop,
@@ -534,8 +1016,9 @@ pub enum UnwindAction {
     Cleanup { block: u32 },
 }
 
-/// Admitted operand-free `AssertKind` variants matching
-/// `Trusted.MirSemantics.isOperandFreeAssertKind`.
+/// Admitted `AssertKind` variants matching `Trusted.MirAst.AssertKind`.
+/// Operand-free kinds model unwinding on failure; `BoundsCheck` fails closed in
+/// `Trusted.MirSemantics` unless proven in-bounds.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum AssertKind {
@@ -543,10 +1026,11 @@ pub enum AssertKind {
     OverflowNeg,
     DivisionByZero,
     RemainderByZero,
+    BoundsCheck,
     NullPointerDereference,
 }
 
-/// Audited `core::num` and `core::cmp` scalar/tuple builtins matching
+/// Audited `core::num` and `core::cmp` builtins matching
 /// `Trusted.MirAst.CoreBuiltin` 1-to-1.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
@@ -561,9 +1045,14 @@ pub enum CoreBuiltin {
     OverflowingMul,
     SaturatingAdd,
     SaturatingSub,
+    CheckedAdd,
+    CheckedSub,
+    CheckedMul,
     LeadingZeros,
     TrailingZeros,
     IsMultipleOf,
+    ToLeBytes,
+    FromLeBytes,
     CmpMin,
     CmpMax,
 }
@@ -581,9 +1070,14 @@ impl CoreBuiltin {
             Self::OverflowingMul => "overflowingMul",
             Self::SaturatingAdd => "saturatingAdd",
             Self::SaturatingSub => "saturatingSub",
+            Self::CheckedAdd => "checkedAdd",
+            Self::CheckedSub => "checkedSub",
+            Self::CheckedMul => "checkedMul",
             Self::LeadingZeros => "leadingZeros",
             Self::TrailingZeros => "trailingZeros",
             Self::IsMultipleOf => "isMultipleOf",
+            Self::ToLeBytes => "toLeBytes",
+            Self::FromLeBytes => "fromLeBytes",
             Self::CmpMin => "cmpMin",
             Self::CmpMax => "cmpMax",
         }
@@ -599,6 +1093,10 @@ pub fn validate_core_builtin_signature(
 ) -> Result<(), String> {
     let u32_ty = Ty::Int(IntTy {
         width: IntWidth::I32,
+        signed: false,
+    });
+    let u8_ty = Ty::Int(IntTy {
+        width: IntWidth::I8,
         signed: false,
     });
     match builtin {
@@ -648,6 +1146,24 @@ pub fn validate_core_builtin_signature(
             }
             Ok(())
         }
+        CoreBuiltin::CheckedAdd | CoreBuiltin::CheckedSub | CoreBuiltin::CheckedMul => {
+            let [Ty::Int(lhs), Ty::Int(rhs)] = arg_tys else {
+                return Err(format!(
+                    "builtin {builtin:?} requires two integer arguments"
+                ));
+            };
+            let Ty::Enum(ety) = dst_ty else {
+                return Err(format!(
+                    "builtin {builtin:?} requires Option<T> destination"
+                ));
+            };
+            if lhs != rhs || !ety.is_option_for(&Ty::Int(*lhs)) {
+                return Err(format!(
+                    "builtin {builtin:?} requires matching integer arguments and Option<T> destination"
+                ));
+            }
+            Ok(())
+        }
         CoreBuiltin::LeadingZeros | CoreBuiltin::TrailingZeros => {
             let [Ty::Int(_)] = arg_tys else {
                 return Err(format!("builtin {builtin:?} requires one integer argument"));
@@ -666,6 +1182,37 @@ pub fn validate_core_builtin_signature(
                     "builtin IsMultipleOf requires matching unsigned integer arguments and bool destination"
                         .into(),
                 );
+            }
+            Ok(())
+        }
+        CoreBuiltin::ToLeBytes => {
+            let [Ty::Int(src)] = arg_tys else {
+                return Err("builtin ToLeBytes requires one integer argument".into());
+            };
+            let expected_dst = Ty::Array {
+                elem: Box::new(u8_ty),
+                len: src.width.byte_size(),
+            };
+            if *dst_ty != expected_dst {
+                return Err(format!(
+                    "builtin ToLeBytes requires [u8; {}] destination",
+                    src.width.byte_size()
+                ));
+            }
+            Ok(())
+        }
+        CoreBuiltin::FromLeBytes => {
+            let [Ty::Array { elem, len }] = arg_tys else {
+                return Err("builtin FromLeBytes requires one [u8; N] array argument".into());
+            };
+            let Ty::Int(dst_int) = dst_ty else {
+                return Err("builtin FromLeBytes requires an integer destination".into());
+            };
+            if **elem != u8_ty || *len != dst_int.width.byte_size() {
+                return Err(format!(
+                    "builtin FromLeBytes requires [u8; {}] argument",
+                    dst_int.width.byte_size()
+                ));
             }
             Ok(())
         }
@@ -808,7 +1355,7 @@ impl Body {
                 match stmt {
                     Statement::Assign { place, value } => {
                         let dst_ty = project_place_ty(&local_tys, place, "assignment")?;
-                        match value {
+                        match value.as_ref() {
                             Rvalue::Unit => {
                                 if *dst_ty != Ty::Unit {
                                     return Err(
@@ -897,46 +1444,160 @@ impl Body {
                                     );
                                 }
                             }
-                            Rvalue::AggregateTuple { operands } => {
-                                if operands.is_empty() {
-                                    return Err(
-                                        "empty tuple aggregate must use Rvalue::Unit".into()
-                                    );
-                                }
-                                let Ty::Tuple { fields } = dst_ty else {
-                                    return Err(
-                                        "tuple aggregate requires tuple destination place".into()
-                                    );
-                                };
-                                if operands.len() != fields.len() {
-                                    return Err(
-                                        "tuple aggregate operand count disagrees with destination"
-                                            .into(),
-                                    );
-                                }
-                                for (op, field_ty) in operands.iter().zip(fields.iter()) {
-                                    let op_ty = check_operand(&local_tys, op)?;
-                                    if op_ty != field_ty {
+                            Rvalue::Aggregate {
+                                aggregate_kind,
+                                operands,
+                            } => match aggregate_kind {
+                                AggregateKind::Tuple => {
+                                    if operands.is_empty() {
                                         return Err(
-                                            "tuple aggregate operand type disagrees with field"
+                                            "empty tuple aggregate must use Rvalue::Unit".into()
+                                        );
+                                    }
+                                    let Ty::Tuple { fields } = dst_ty else {
+                                        return Err(
+                                            "tuple aggregate requires tuple destination place"
+                                                .into(),
+                                        );
+                                    };
+                                    if operands.len() != fields.len() {
+                                        return Err(
+                                            "tuple aggregate operand count disagrees with destination"
                                                 .into(),
                                         );
                                     }
+                                    for (op, field_ty) in operands.iter().zip(fields.iter()) {
+                                        let op_ty = check_operand(&local_tys, op)?;
+                                        if op_ty != field_ty {
+                                            return Err(
+                                                "tuple aggregate operand type disagrees with field"
+                                                    .into(),
+                                            );
+                                        }
+                                    }
+                                }
+                                AggregateKind::AdtStruct { sty } => {
+                                    let Ty::Struct(dst_sty) = dst_ty else {
+                                        return Err(
+                                            "struct aggregate requires struct destination place"
+                                                .into(),
+                                        );
+                                    };
+                                    if sty != dst_sty {
+                                        return Err(
+                                            "struct aggregate type disagrees with destination"
+                                                .into(),
+                                        );
+                                    }
+                                    if operands.len() != sty.fields().len() {
+                                        return Err(
+                                            "struct aggregate operand count disagrees with fields"
+                                                .into(),
+                                        );
+                                    }
+                                    for (op, field_ty) in operands.iter().zip(sty.fields().iter()) {
+                                        let op_ty = check_operand(&local_tys, op)?;
+                                        if op_ty != field_ty {
+                                            return Err(
+                                                "struct aggregate operand type disagrees with field"
+                                                    .into(),
+                                            );
+                                        }
+                                    }
+                                }
+                                AggregateKind::AdtEnum { ety, variant_idx } => {
+                                    let Ty::Enum(dst_ety) = dst_ty else {
+                                        return Err(
+                                            "enum aggregate requires enum destination place".into(),
+                                        );
+                                    };
+                                    if ety != dst_ety {
+                                        return Err(
+                                            "enum aggregate type disagrees with destination".into(),
+                                        );
+                                    }
+                                    let Some(var_fields) =
+                                        ety.variant_fields().get(*variant_idx as usize)
+                                    else {
+                                        return Err(format!(
+                                            "enum aggregate variant {variant_idx} out of bounds"
+                                        ));
+                                    };
+                                    if operands.len() != var_fields.len() {
+                                        return Err(
+                                            "enum aggregate operand count disagrees with variant"
+                                                .into(),
+                                        );
+                                    }
+                                    for (op, field_ty) in operands.iter().zip(var_fields.iter()) {
+                                        let op_ty = check_operand(&local_tys, op)?;
+                                        if op_ty != field_ty {
+                                            return Err(
+                                                "enum aggregate operand type disagrees with field"
+                                                    .into(),
+                                            );
+                                        }
+                                    }
+                                }
+                                AggregateKind::Array { elem_ty } => {
+                                    validate_ty(elem_ty)?;
+                                    let Ty::Array {
+                                        elem: dst_elem,
+                                        len,
+                                    } = dst_ty
+                                    else {
+                                        return Err(
+                                            "array aggregate requires array destination place"
+                                                .into(),
+                                        );
+                                    };
+                                    if elem_ty != dst_elem.as_ref() {
+                                        return Err(
+                                            "array aggregate element type disagrees with destination"
+                                                .into(),
+                                        );
+                                    }
+                                    if u64::try_from(operands.len()).unwrap_or(u64::MAX) != *len {
+                                        return Err(
+                                            "array aggregate length disagrees with destination"
+                                                .into(),
+                                        );
+                                    }
+                                    for op in operands {
+                                        let op_ty = check_operand(&local_tys, op)?;
+                                        if op_ty != elem_ty {
+                                            return Err(
+                                                "array aggregate operand type disagrees with element"
+                                                    .into(),
+                                            );
+                                        }
+                                    }
+                                }
+                            },
+                            Rvalue::Repeat { operand, count } => {
+                                let Ty::Array { elem, len } = dst_ty else {
+                                    return Err(
+                                        "repeat rvalue requires array destination place".into()
+                                    );
+                                };
+                                if count != len {
+                                    return Err(
+                                        "repeat rvalue count disagrees with array length".into()
+                                    );
+                                }
+                                let op_ty = check_operand(&local_tys, operand)?;
+                                if op_ty != elem.as_ref() {
+                                    return Err(
+                                        "repeat rvalue operand type disagrees with array element"
+                                            .into(),
+                                    );
                                 }
                             }
                             Rvalue::Discriminant { place: src } => {
-                                if !src.projection.is_empty() {
-                                    return Err(
-                                        "projected discriminant place is unsupported".into()
-                                    );
-                                }
                                 let Ty::Enum(ety) =
                                     project_place_ty(&local_tys, src, "discriminant")?
                                 else {
-                                    return Err(
-                                        "discriminant rvalue requires a fieldless enum place"
-                                            .into(),
-                                    );
+                                    return Err("discriminant rvalue requires an enum place".into());
                                 };
                                 if *dst_ty != Ty::Int(ety.discr()) {
                                     return Err(
@@ -945,6 +1606,19 @@ impl Body {
                                     );
                                 }
                             }
+                        }
+                    }
+                    Statement::SetDiscriminant { place, variant_idx } => {
+                        let Ty::Enum(ety) =
+                            project_place_ty(&local_tys, place, "set_discriminant")?
+                        else {
+                            return Err("SetDiscriminant requires an enum place".into());
+                        };
+                        if (*variant_idx as usize) >= ety.discriminants().len() {
+                            return Err(format!(
+                                "SetDiscriminant variant {variant_idx} out of bounds for {} variants",
+                                ety.discriminants().len()
+                            ));
                         }
                     }
                     Statement::StorageLive { local } => {
@@ -1254,13 +1928,13 @@ mod tests {
             vec![Block {
                 statements: vec![Statement::Assign {
                     place: Place::local(0),
-                    value: Rvalue::Use {
+                    value: Box::new(Rvalue::Use {
                         operand: Operand::Constant {
                             ty: Ty::Unit,
                             lit: ConstLit::ZeroSized,
                         },
                         with_retag: false,
-                    },
+                    }),
                 }],
                 terminator: Terminator::Ret,
                 cleanup: false,
@@ -1277,12 +1951,12 @@ mod tests {
             vec![Block {
                 statements: vec![Statement::Assign {
                     place: Place::local(0),
-                    value: Rvalue::Use {
+                    value: Box::new(Rvalue::Use {
                         operand: Operand::Copy {
                             place: Place::local(1),
                         },
                         with_retag: false,
-                    },
+                    }),
                 }],
                 terminator: Terminator::Ret,
                 cleanup: false,
@@ -1300,13 +1974,13 @@ mod tests {
                 vec![Block {
                     statements: vec![Statement::Assign {
                         place: Place::local(0),
-                        value: Rvalue::Use {
+                        value: Box::new(Rvalue::Use {
                             operand: Operand::Constant {
                                 ty: Ty::Unit,
                                 lit: ConstLit::ZeroSized,
                             },
                             with_retag: false,
-                        },
+                        }),
                     }],
                     terminator: Terminator::Ret,
                     cleanup: false,
@@ -1324,6 +1998,7 @@ mod tests {
             },
             EnumTagRepr::ZeroSized,
             vec![42],
+            vec![vec![]],
         )
         .unwrap();
         let discr_mismatch = Body::try_new(
@@ -1333,9 +2008,9 @@ mod tests {
             vec![Block {
                 statements: vec![Statement::Assign {
                     place: Place::local(0),
-                    value: Rvalue::Discriminant {
+                    value: Box::new(Rvalue::Discriminant {
                         place: Place::local(1),
-                    },
+                    }),
                 }],
                 terminator: Terminator::Ret,
                 cleanup: false,
@@ -1353,13 +2028,13 @@ mod tests {
                 vec![Block {
                     statements: vec![Statement::Assign {
                         place: Place::local(0),
-                        value: Rvalue::Use {
+                        value: Box::new(Rvalue::Use {
                             operand: Operand::Constant {
                                 ty: Ty::Enum(ety),
                                 lit: ConstLit::ZeroSized,
                             },
                             with_retag: false,
-                        },
+                        }),
                     }],
                     terminator: Terminator::Ret,
                     cleanup: false,
@@ -1381,6 +2056,7 @@ mod tests {
                 },
                 EnumTagRepr::ZeroSized,
                 vec![0],
+                vec![vec![]],
             )
             .unwrap(),
         );
@@ -1396,6 +2072,7 @@ mod tests {
                     signed: true,
                 }),
                 vec![u128::from(u64::MAX), 1],
+                vec![vec![], vec![]],
             )
             .unwrap(),
         );
@@ -1450,7 +2127,7 @@ mod tests {
             vec![Block {
                 statements: vec![Statement::Assign {
                     place: Place::local(0),
-                    value: Rvalue::Unit,
+                    value: Box::new(Rvalue::Unit),
                 }],
                 terminator: Terminator::Ret,
                 cleanup: false,
@@ -1467,7 +2144,7 @@ mod tests {
             vec![Block {
                 statements: vec![Statement::Assign {
                     place: Place::local(0),
-                    value: Rvalue::Unit,
+                    value: Box::new(Rvalue::Unit),
                 }],
                 terminator: Terminator::Ret,
                 cleanup: false,
@@ -1504,6 +2181,11 @@ mod tests {
             }),
             Ty::Tuple {
                 fields: vec![Ty::Bool, Ty::Unit],
+            },
+            Ty::Struct(StructTy::try_new(11, vec![Ty::Bool, Ty::Unit]).unwrap()),
+            Ty::Array {
+                elem: Box::new(Ty::Bool),
+                len: 4,
             },
         ] {
             assert!(ty.is_retag_noop(), "{ty:?}");

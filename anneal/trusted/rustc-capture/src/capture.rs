@@ -299,11 +299,19 @@ fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract
     match tcx.def_kind(def) {
         DefKind::Fn | DefKind::AssocFn if has_body => Ok(()),
         // `instantiate_identity` "Makes the identity replacement
-        // `T0 => T0, ..., TN => TN`", so a generic enum keeps its own
-        // parameters and `extract::ty` refuses it. The enum's own type has no
-        // projection for normalization to resolve.
+        // `T0 => T0, ..., TN => TN`", so a generic ADT keeps its own
+        // parameters and `extract::ty` refuses it. Non-generic admitted
+        // structs and enums pass here without fabricating a callable body.
         // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/binder.rs#L665-L673
-        DefKind::Enum => {
+        DefKind::Enum | DefKind::Struct => {
+            extract::ty(tcx, tcx.type_of(def).instantiate_identity().skip_norm_wip()).map(|_| ())
+        }
+        DefKind::Impl { of_trait: false } => {
+            if tcx.generics_of(def).count() != 0 {
+                return Err(
+                    "generic inherent impl block is unsupported in whole-crate scope".into(),
+                );
+            }
             extract::ty(tcx, tcx.type_of(def).instantiate_identity().skip_norm_wip()).map(|_| ())
         }
         other => Err(format!("whole-crate obligation is unsupported: {other:?}")),
@@ -663,6 +671,7 @@ fn collect(
     // enum. Distinct definitions can share a key through digest truncation or
     // an identical printed path.
     let mut enum_ids = BTreeMap::new();
+    let mut struct_ids = BTreeMap::new();
     for def in tcx.iter_local_def_id() {
         let path = tcx.def_path_str(def);
         let kind = tcx.def_kind(def);
@@ -671,6 +680,15 @@ fn collect(
             if let Some(previous) = enum_ids.insert(id, def) {
                 return Err(Failure::unsupported(format!(
                     "enum identity collision: {} and {path} share id {id}",
+                    tcx.def_path_str(previous)
+                )));
+            }
+        }
+        if matches!(kind, DefKind::Struct) {
+            let id = extract::struct_id(tcx, def.to_def_id());
+            if let Some(previous) = struct_ids.insert(id, def) {
+                return Err(Failure::unsupported(format!(
+                    "struct identity collision: {} and {path} share id {id}",
                     tcx.def_path_str(previous)
                 )));
             }
