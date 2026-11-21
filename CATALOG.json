@@ -29521,6 +29521,80 @@
         "verification/numerical"
       ]
     },
+    "dimensional-invariance-unit-typed-statements-affine-offsets-and-scale-dependent-claims": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2480359.2429082",
+            "path": "paper/popl049-atkey.tex",
+            "repository": "bobatkey/algebraically-indexed-types",
+            "revision": "d882ca31c8a08ecee6c0dfcfe883c1770d9b5da3"
+          },
+          "name": "Abstraction and Invariance for Algebraically Indexed Types (Atkey, Johann, Kennedy; POPL 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/263699.263761"
+          },
+          "name": "Relational Parametricity and Units of Measure (Kennedy; POPL 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1126/science.103.2684.677"
+          },
+          "name": "On the Theory of Scales of Measurement (Stevens; Science, 1946)"
+        },
+        {
+          "identity": {
+            "doi": "10.1037/h0043178"
+          },
+          "name": "On the Possible Psychophysical Laws (Luce; Psychological Review, 1959)"
+        },
+        {
+          "identity": {
+            "arxiv": "2609.38242",
+            "url": "https://arxiv.org/abs/2609.38242v1",
+            "version": "v1"
+          },
+          "name": "A Calculus for Units of Measure with Conversion (Allen; arXiv, 2026)"
+        },
+        {
+          "identity": {
+            "path": "docs/user/nonmult.rst",
+            "repository": "hgrecco/pint",
+            "revision": "af817a6094fbc40005fadd7bcc59b138dbff233e",
+            "version": "0.26.2"
+          },
+          "name": "Pint documentation, offset (non-multiplicative) units"
+        },
+        {
+          "identity": {
+            "paths": "docs/users_guide/framework_basics/the_affine_space.md; src/core/include/mp-units/math.h",
+            "repository": "mpusz/mp-units",
+            "revision": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+            "version": "v2.5.0"
+          },
+          "name": "mp-units documentation and math header, affine space of quantity points"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "pl/units-of-measure",
+        "pl/dimensional-analysis",
+        "pl/affine-spaces",
+        "pl/parametricity"
+      ]
+    },
     "direct-surface-operational-semantics-jscert-k-spectec-and-desugaring-proofs": {
       "observed_at": "2026-11-19",
       "subjects": [

@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "pl/units-of-measure",
+    "pl/dimensional-analysis",
+    "pl/affine-spaces",
+    "pl/parametricity"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Abstraction and Invariance for Algebraically Indexed Types (Atkey, Johann, Kennedy; POPL 2013)",
+      "identity": {
+        "doi": "10.1145/2480359.2429082",
+        "repository": "bobatkey/algebraically-indexed-types",
+        "revision": "d882ca31c8a08ecee6c0dfcfe883c1770d9b5da3",
+        "path": "paper/popl049-atkey.tex"
+      }
+    },
+    {
+      "name": "Relational Parametricity and Units of Measure (Kennedy; POPL 1997)",
+      "identity": {
+        "doi": "10.1145/263699.263761"
+      }
+    },
+    {
+      "name": "On the Theory of Scales of Measurement (Stevens; Science, 1946)",
+      "identity": {
+        "doi": "10.1126/science.103.2684.677"
+      }
+    },
+    {
+      "name": "On the Possible Psychophysical Laws (Luce; Psychological Review, 1959)",
+      "identity": {
+        "doi": "10.1037/h0043178"
+      }
+    },
+    {
+      "name": "A Calculus for Units of Measure with Conversion (Allen; arXiv, 2026)",
+      "identity": {
+        "arxiv": "2609.38242",
+        "version": "v1",
+        "url": "https://arxiv.org/abs/2609.38242v1"
+      }
+    },
+    {
+      "name": "Pint documentation, offset (non-multiplicative) units",
+      "identity": {
+        "repository": "hgrecco/pint",
+        "version": "0.26.2",
+        "revision": "af817a6094fbc40005fadd7bcc59b138dbff233e",
+        "path": "docs/user/nonmult.rst"
+      }
+    },
+    {
+      "name": "mp-units documentation and math header, affine space of quantity points",
+      "identity": {
+        "repository": "mpusz/mp-units",
+        "version": "v2.5.0",
+        "revision": "27d2def9082ce00d7eb4f75695dbead4a748f23f",
+        "paths": "docs/users_guide/framework_basics/the_affine_space.md; src/core/include/mp-units/math.h"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

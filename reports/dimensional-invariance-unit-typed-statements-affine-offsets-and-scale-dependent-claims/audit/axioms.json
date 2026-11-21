@@ -1,0 +1,1843 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Units.ADimChecked": [],
+    "Toy.Units.ADimChecked.add": [],
+    "Toy.Units.ADimChecked.below": [],
+    "Toy.Units.ADimChecked.below.add": [],
+    "Toy.Units.ADimChecked.below.casesOn": [],
+    "Toy.Units.ADimChecked.below.comb": [],
+    "Toy.Units.ADimChecked.below.div": [],
+    "Toy.Units.ADimChecked.below.lit": [],
+    "Toy.Units.ADimChecked.below.mul": [],
+    "Toy.Units.ADimChecked.below.rec": [],
+    "Toy.Units.ADimChecked.below.sub": [],
+    "Toy.Units.ADimChecked.below.var": [],
+    "Toy.Units.ADimChecked.brecOn": [],
+    "Toy.Units.ADimChecked.casesOn": [],
+    "Toy.Units.ADimChecked.comb": [],
+    "Toy.Units.ADimChecked.div": [],
+    "Toy.Units.ADimChecked.lit": [],
+    "Toy.Units.ADimChecked.mul": [],
+    "Toy.Units.ADimChecked.rec": [],
+    "Toy.Units.ADimChecked.recOn": [],
+    "Toy.Units.ADimChecked.sub": [],
+    "Toy.Units.ADimChecked.var": [],
+    "Toy.Units.ADimCheckedF": [],
+    "Toy.Units.ADimCheckedF.all": [],
+    "Toy.Units.ADimCheckedF.and": [],
+    "Toy.Units.ADimCheckedF.below": [],
+    "Toy.Units.ADimCheckedF.below.all": [],
+    "Toy.Units.ADimCheckedF.below.and": [],
+    "Toy.Units.ADimCheckedF.below.casesOn": [],
+    "Toy.Units.ADimCheckedF.below.eq": [],
+    "Toy.Units.ADimCheckedF.below.ex": [],
+    "Toy.Units.ADimCheckedF.below.le": [],
+    "Toy.Units.ADimCheckedF.below.not": [],
+    "Toy.Units.ADimCheckedF.below.or": [],
+    "Toy.Units.ADimCheckedF.below.rec": [],
+    "Toy.Units.ADimCheckedF.brecOn": [],
+    "Toy.Units.ADimCheckedF.casesOn": [],
+    "Toy.Units.ADimCheckedF.eq": [],
+    "Toy.Units.ADimCheckedF.ex": [],
+    "Toy.Units.ADimCheckedF.le": [],
+    "Toy.Units.ADimCheckedF.not": [],
+    "Toy.Units.ADimCheckedF.or": [],
+    "Toy.Units.ADimCheckedF.rec": [],
+    "Toy.Units.ADimCheckedF.recOn": [],
+    "Toy.Units.AExpr": [],
+    "Toy.Units.AExpr.add": [],
+    "Toy.Units.AExpr.add.elim": [],
+    "Toy.Units.AExpr.add.inj": [],
+    "Toy.Units.AExpr.add.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AExpr.add.noConfusion": [],
+    "Toy.Units.AExpr.add.sizeOf_spec": [],
+    "Toy.Units.AExpr.below": [],
+    "Toy.Units.AExpr.brecOn": [],
+    "Toy.Units.AExpr.brecOn.eq": [],
+    "Toy.Units.AExpr.brecOn.go": [],
+    "Toy.Units.AExpr.casesOn": [],
+    "Toy.Units.AExpr.comb": [],
+    "Toy.Units.AExpr.comb.elim": [],
+    "Toy.Units.AExpr.comb.inj": [],
+    "Toy.Units.AExpr.comb.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AExpr.comb.noConfusion": [],
+    "Toy.Units.AExpr.comb.sizeOf_spec": [],
+    "Toy.Units.AExpr.ctorElim": [],
+    "Toy.Units.AExpr.ctorElimType": [],
+    "Toy.Units.AExpr.ctorIdx": [],
+    "Toy.Units.AExpr.div": [],
+    "Toy.Units.AExpr.div.elim": [],
+    "Toy.Units.AExpr.div.inj": [],
+    "Toy.Units.AExpr.div.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AExpr.div.noConfusion": [],
+    "Toy.Units.AExpr.div.sizeOf_spec": [],
+    "Toy.Units.AExpr.evalIn": [],
+    "Toy.Units.AExpr.evalIn.eq_1": [],
+    "Toy.Units.AExpr.evalIn.eq_2": [],
+    "Toy.Units.AExpr.evalIn.eq_3": [],
+    "Toy.Units.AExpr.evalIn.eq_4": [],
+    "Toy.Units.AExpr.evalIn.eq_5": [],
+    "Toy.Units.AExpr.evalIn.eq_6": [],
+    "Toy.Units.AExpr.evalIn.eq_7": [],
+    "Toy.Units.AExpr.evalIn.eq_def": [],
+    "Toy.Units.AExpr.evalIn.match_1": [],
+    "Toy.Units.AExpr.evalIn_act": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.AExpr.lit": [],
+    "Toy.Units.AExpr.lit.elim": [],
+    "Toy.Units.AExpr.lit.inj": [],
+    "Toy.Units.AExpr.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AExpr.lit.noConfusion": [],
+    "Toy.Units.AExpr.lit.sizeOf_spec": [],
+    "Toy.Units.AExpr.mul": [],
+    "Toy.Units.AExpr.mul.elim": [],
+    "Toy.Units.AExpr.mul.inj": [],
+    "Toy.Units.AExpr.mul.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AExpr.mul.noConfusion": [],
+    "Toy.Units.AExpr.mul.sizeOf_spec": [],
+    "Toy.Units.AExpr.noConfusion": [],
+    "Toy.Units.AExpr.noConfusionType": [],
+    "Toy.Units.AExpr.rec": [],
+    "Toy.Units.AExpr.recOn": [],
+    "Toy.Units.AExpr.sub": [],
+    "Toy.Units.AExpr.sub.elim": [],
+    "Toy.Units.AExpr.sub.inj": [],
+    "Toy.Units.AExpr.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AExpr.sub.noConfusion": [],
+    "Toy.Units.AExpr.sub.sizeOf_spec": [],
+    "Toy.Units.AExpr.var": [],
+    "Toy.Units.AExpr.var.elim": [],
+    "Toy.Units.AExpr.var.inj": [],
+    "Toy.Units.AExpr.var.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AExpr.var.noConfusion": [],
+    "Toy.Units.AExpr.var.sizeOf_spec": [],
+    "Toy.Units.AFormula": [],
+    "Toy.Units.AFormula.all": [],
+    "Toy.Units.AFormula.all.elim": [],
+    "Toy.Units.AFormula.all.inj": [],
+    "Toy.Units.AFormula.all.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AFormula.all.noConfusion": [],
+    "Toy.Units.AFormula.all.sizeOf_spec": [],
+    "Toy.Units.AFormula.and": [],
+    "Toy.Units.AFormula.and.elim": [],
+    "Toy.Units.AFormula.and.inj": [],
+    "Toy.Units.AFormula.and.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AFormula.and.noConfusion": [],
+    "Toy.Units.AFormula.and.sizeOf_spec": [],
+    "Toy.Units.AFormula.below": [],
+    "Toy.Units.AFormula.brecOn": [],
+    "Toy.Units.AFormula.brecOn.eq": [],
+    "Toy.Units.AFormula.brecOn.go": [],
+    "Toy.Units.AFormula.casesOn": [],
+    "Toy.Units.AFormula.ctorElim": [],
+    "Toy.Units.AFormula.ctorElimType": [],
+    "Toy.Units.AFormula.ctorIdx": [],
+    "Toy.Units.AFormula.eq": [],
+    "Toy.Units.AFormula.eq.elim": [],
+    "Toy.Units.AFormula.eq.inj": [],
+    "Toy.Units.AFormula.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AFormula.eq.noConfusion": [],
+    "Toy.Units.AFormula.eq.sizeOf_spec": [],
+    "Toy.Units.AFormula.ex": [],
+    "Toy.Units.AFormula.ex.elim": [],
+    "Toy.Units.AFormula.ex.inj": [],
+    "Toy.Units.AFormula.ex.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AFormula.ex.noConfusion": [],
+    "Toy.Units.AFormula.ex.sizeOf_spec": [],
+    "Toy.Units.AFormula.holdsIn": [],
+    "Toy.Units.AFormula.holdsIn.eq_1": [],
+    "Toy.Units.AFormula.holdsIn.eq_2": [],
+    "Toy.Units.AFormula.holdsIn.eq_3": [],
+    "Toy.Units.AFormula.holdsIn.eq_4": [],
+    "Toy.Units.AFormula.holdsIn.eq_5": [],
+    "Toy.Units.AFormula.holdsIn.eq_6": [],
+    "Toy.Units.AFormula.holdsIn.eq_7": [],
+    "Toy.Units.AFormula.holdsIn.eq_def": [],
+    "Toy.Units.AFormula.holdsIn.match_1": [],
+    "Toy.Units.AFormula.le": [],
+    "Toy.Units.AFormula.le.elim": [],
+    "Toy.Units.AFormula.le.inj": [],
+    "Toy.Units.AFormula.le.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AFormula.le.noConfusion": [],
+    "Toy.Units.AFormula.le.sizeOf_spec": [],
+    "Toy.Units.AFormula.noConfusion": [],
+    "Toy.Units.AFormula.noConfusionType": [],
+    "Toy.Units.AFormula.not": [],
+    "Toy.Units.AFormula.not.elim": [],
+    "Toy.Units.AFormula.not.inj": [],
+    "Toy.Units.AFormula.not.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AFormula.not.noConfusion": [],
+    "Toy.Units.AFormula.not.sizeOf_spec": [],
+    "Toy.Units.AFormula.or": [],
+    "Toy.Units.AFormula.or.elim": [],
+    "Toy.Units.AFormula.or.inj": [],
+    "Toy.Units.AFormula.or.injEq": [
+      "propext"
+    ],
+    "Toy.Units.AFormula.or.noConfusion": [],
+    "Toy.Units.AFormula.or.sizeOf_spec": [],
+    "Toy.Units.AFormula.rec": [],
+    "Toy.Units.AFormula.recOn": [],
+    "Toy.Units.ASort": [],
+    "Toy.Units.ASort.act": [],
+    "Toy.Units.ASort.act.eq_1": [],
+    "Toy.Units.ASort.act.eq_2": [],
+    "Toy.Units.ASort.act.eq_3": [],
+    "Toy.Units.ASort.act.match_1": [],
+    "Toy.Units.ASort.casesOn": [],
+    "Toy.Units.ASort.ctorElim": [],
+    "Toy.Units.ASort.ctorElimType": [],
+    "Toy.Units.ASort.ctorIdx": [],
+    "Toy.Units.ASort.exp": [],
+    "Toy.Units.ASort.exp.match_1": [],
+    "Toy.Units.ASort.noConfusion": [],
+    "Toy.Units.ASort.noConfusionType": [],
+    "Toy.Units.ASort.num": [],
+    "Toy.Units.ASort.num.elim": [],
+    "Toy.Units.ASort.num.sizeOf_spec": [],
+    "Toy.Units.ASort.pt": [],
+    "Toy.Units.ASort.pt.elim": [],
+    "Toy.Units.ASort.pt.sizeOf_spec": [],
+    "Toy.Units.ASort.rec": [],
+    "Toy.Units.ASort.recOn": [],
+    "Toy.Units.ASort.vec": [],
+    "Toy.Units.ASort.vec.elim": [],
+    "Toy.Units.ASort.vec.sizeOf_spec": [],
+    "Toy.Units.AddAssocLaw": [],
+    "Toy.Units.AddCommLaw": [],
+    "Toy.Units.AddLeMonoLaw": [],
+    "Toy.Units.AddNegLaw": [],
+    "Toy.Units.AddZeroLaw": [],
+    "Toy.Units.AffineInvariant": [],
+    "Toy.Units.AllHomogeneous": [
+      "propext"
+    ],
+    "Toy.Units.CommRingLaws": [],
+    "Toy.Units.CommRingLaws.add_assoc": [],
+    "Toy.Units.CommRingLaws.add_comm": [],
+    "Toy.Units.CommRingLaws.add_neg": [],
+    "Toy.Units.CommRingLaws.add_zero": [],
+    "Toy.Units.CommRingLaws.casesOn": [],
+    "Toy.Units.CommRingLaws.distrib": [],
+    "Toy.Units.CommRingLaws.mk": [],
+    "Toy.Units.CommRingLaws.mul_assoc": [],
+    "Toy.Units.CommRingLaws.mul_comm": [],
+    "Toy.Units.CommRingLaws.mul_one": [],
+    "Toy.Units.CommRingLaws.rec": [],
+    "Toy.Units.CommRingLaws.recOn": [],
+    "Toy.Units.Ctx": [],
+    "Toy.Units.DefinableOnPos": [
+      "propext"
+    ],
+    "Toy.Units.Dim": [],
+    "Toy.Units.Dim.div": [],
+    "Toy.Units.Dim.div.eq_1": [],
+    "Toy.Units.Dim.mul": [],
+    "Toy.Units.Dim.mul.eq_1": [],
+    "Toy.Units.Dim.one": [],
+    "Toy.Units.Dim.one.eq_1": [],
+    "Toy.Units.Dim.pow": [],
+    "Toy.Units.Dim.pow.eq_1": [],
+    "Toy.Units.DistribLaw": [],
+    "Toy.Units.Env": [],
+    "Toy.Units.Expr": [],
+    "Toy.Units.Expr.add": [],
+    "Toy.Units.Expr.add.elim": [],
+    "Toy.Units.Expr.add.inj": [],
+    "Toy.Units.Expr.add.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Expr.add.noConfusion": [],
+    "Toy.Units.Expr.add.sizeOf_spec": [],
+    "Toy.Units.Expr.below": [],
+    "Toy.Units.Expr.brecOn": [],
+    "Toy.Units.Expr.brecOn.eq": [],
+    "Toy.Units.Expr.brecOn.go": [],
+    "Toy.Units.Expr.casesOn": [],
+    "Toy.Units.Expr.ctorElim": [],
+    "Toy.Units.Expr.ctorElimType": [],
+    "Toy.Units.Expr.ctorIdx": [],
+    "Toy.Units.Expr.dimlessLits": [],
+    "Toy.Units.Expr.dimlessLits.eq_1": [],
+    "Toy.Units.Expr.dimlessLits.eq_2": [],
+    "Toy.Units.Expr.dimlessLits.eq_3": [],
+    "Toy.Units.Expr.dimlessLits.eq_4": [],
+    "Toy.Units.Expr.dimlessLits.eq_5": [],
+    "Toy.Units.Expr.dimlessLits.eq_6": [],
+    "Toy.Units.Expr.dimlessLits.eq_7": [],
+    "Toy.Units.Expr.dimlessLits.eq_def": [],
+    "Toy.Units.Expr.div": [],
+    "Toy.Units.Expr.div.elim": [],
+    "Toy.Units.Expr.div.inj": [],
+    "Toy.Units.Expr.div.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Expr.div.noConfusion": [],
+    "Toy.Units.Expr.div.sizeOf_spec": [],
+    "Toy.Units.Expr.evalIn": [
+      "propext"
+    ],
+    "Toy.Units.Expr.evalIn.eq_1": [
+      "propext"
+    ],
+    "Toy.Units.Expr.evalIn.eq_2": [
+      "propext"
+    ],
+    "Toy.Units.Expr.evalIn.eq_3": [
+      "propext"
+    ],
+    "Toy.Units.Expr.evalIn.eq_4": [
+      "propext"
+    ],
+    "Toy.Units.Expr.evalIn.eq_5": [
+      "propext"
+    ],
+    "Toy.Units.Expr.evalIn.eq_6": [
+      "propext"
+    ],
+    "Toy.Units.Expr.evalIn.eq_7": [
+      "propext"
+    ],
+    "Toy.Units.Expr.evalIn.eq_def": [
+      "propext"
+    ],
+    "Toy.Units.Expr.evalIn.match_1": [],
+    "Toy.Units.Expr.isPolynomial": [],
+    "Toy.Units.Expr.lit": [],
+    "Toy.Units.Expr.lit.elim": [],
+    "Toy.Units.Expr.lit.inj": [],
+    "Toy.Units.Expr.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Expr.lit.noConfusion": [],
+    "Toy.Units.Expr.lit.sizeOf_spec": [],
+    "Toy.Units.Expr.mul": [],
+    "Toy.Units.Expr.mul.elim": [],
+    "Toy.Units.Expr.mul.inj": [],
+    "Toy.Units.Expr.mul.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Expr.mul.noConfusion": [],
+    "Toy.Units.Expr.mul.sizeOf_spec": [],
+    "Toy.Units.Expr.noConfusion": [],
+    "Toy.Units.Expr.noConfusionType": [],
+    "Toy.Units.Expr.onlyVar": [],
+    "Toy.Units.Expr.onlyVar.eq_1": [],
+    "Toy.Units.Expr.onlyVar.eq_2": [],
+    "Toy.Units.Expr.onlyVar.eq_3": [],
+    "Toy.Units.Expr.onlyVar.eq_4": [],
+    "Toy.Units.Expr.onlyVar.eq_5": [],
+    "Toy.Units.Expr.onlyVar.eq_6": [],
+    "Toy.Units.Expr.onlyVar.eq_7": [],
+    "Toy.Units.Expr.onlyVar.eq_def": [],
+    "Toy.Units.Expr.onlyVar.match_1": [],
+    "Toy.Units.Expr.rec": [],
+    "Toy.Units.Expr.recOn": [],
+    "Toy.Units.Expr.sub": [],
+    "Toy.Units.Expr.sub.elim": [],
+    "Toy.Units.Expr.sub.inj": [],
+    "Toy.Units.Expr.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Expr.sub.noConfusion": [],
+    "Toy.Units.Expr.sub.sizeOf_spec": [],
+    "Toy.Units.Expr.var": [],
+    "Toy.Units.Expr.var.elim": [],
+    "Toy.Units.Expr.var.inj": [],
+    "Toy.Units.Expr.var.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Expr.var.noConfusion": [],
+    "Toy.Units.Expr.var.sizeOf_spec": [],
+    "Toy.Units.Expr.zpow": [],
+    "Toy.Units.Expr.zpow.elim": [],
+    "Toy.Units.Expr.zpow.inj": [],
+    "Toy.Units.Expr.zpow.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Expr.zpow.noConfusion": [],
+    "Toy.Units.Expr.zpow.sizeOf_spec": [],
+    "Toy.Units.FieldLaws": [],
+    "Toy.Units.FieldLaws.casesOn": [],
+    "Toy.Units.FieldLaws.mk": [],
+    "Toy.Units.FieldLaws.mul_inv": [],
+    "Toy.Units.FieldLaws.rec": [],
+    "Toy.Units.FieldLaws.recOn": [],
+    "Toy.Units.FieldLaws.toCommRingLaws": [],
+    "Toy.Units.FieldLaws.zero_ne_one": [],
+    "Toy.Units.Formula": [],
+    "Toy.Units.Formula.all": [],
+    "Toy.Units.Formula.all.elim": [],
+    "Toy.Units.Formula.all.inj": [],
+    "Toy.Units.Formula.all.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Formula.all.noConfusion": [],
+    "Toy.Units.Formula.all.sizeOf_spec": [],
+    "Toy.Units.Formula.and": [],
+    "Toy.Units.Formula.and.elim": [],
+    "Toy.Units.Formula.and.inj": [],
+    "Toy.Units.Formula.and.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Formula.and.noConfusion": [],
+    "Toy.Units.Formula.and.sizeOf_spec": [],
+    "Toy.Units.Formula.below": [],
+    "Toy.Units.Formula.brecOn": [],
+    "Toy.Units.Formula.brecOn.eq": [],
+    "Toy.Units.Formula.brecOn.go": [],
+    "Toy.Units.Formula.casesOn": [],
+    "Toy.Units.Formula.ctorElim": [],
+    "Toy.Units.Formula.ctorElimType": [],
+    "Toy.Units.Formula.ctorIdx": [],
+    "Toy.Units.Formula.eq": [],
+    "Toy.Units.Formula.eq.elim": [],
+    "Toy.Units.Formula.eq.inj": [],
+    "Toy.Units.Formula.eq.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Formula.eq.noConfusion": [],
+    "Toy.Units.Formula.eq.sizeOf_spec": [],
+    "Toy.Units.Formula.ex": [],
+    "Toy.Units.Formula.ex.elim": [],
+    "Toy.Units.Formula.ex.inj": [],
+    "Toy.Units.Formula.ex.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Formula.ex.noConfusion": [],
+    "Toy.Units.Formula.ex.sizeOf_spec": [],
+    "Toy.Units.Formula.holdsIn": [
+      "propext"
+    ],
+    "Toy.Units.Formula.holdsIn.eq_1": [
+      "propext"
+    ],
+    "Toy.Units.Formula.holdsIn.eq_2": [
+      "propext"
+    ],
+    "Toy.Units.Formula.holdsIn.eq_3": [
+      "propext"
+    ],
+    "Toy.Units.Formula.holdsIn.eq_4": [
+      "propext"
+    ],
+    "Toy.Units.Formula.holdsIn.eq_5": [
+      "propext"
+    ],
+    "Toy.Units.Formula.holdsIn.eq_6": [
+      "propext"
+    ],
+    "Toy.Units.Formula.holdsIn.eq_7": [
+      "propext"
+    ],
+    "Toy.Units.Formula.holdsIn.eq_def": [
+      "propext"
+    ],
+    "Toy.Units.Formula.holdsIn.match_1": [],
+    "Toy.Units.Formula.le": [],
+    "Toy.Units.Formula.le.elim": [],
+    "Toy.Units.Formula.le.inj": [],
+    "Toy.Units.Formula.le.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Formula.le.noConfusion": [],
+    "Toy.Units.Formula.le.sizeOf_spec": [],
+    "Toy.Units.Formula.noConfusion": [],
+    "Toy.Units.Formula.noConfusionType": [],
+    "Toy.Units.Formula.not": [],
+    "Toy.Units.Formula.not.elim": [],
+    "Toy.Units.Formula.not.inj": [],
+    "Toy.Units.Formula.not.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Formula.not.noConfusion": [],
+    "Toy.Units.Formula.not.sizeOf_spec": [],
+    "Toy.Units.Formula.or": [],
+    "Toy.Units.Formula.or.elim": [],
+    "Toy.Units.Formula.or.inj": [],
+    "Toy.Units.Formula.or.injEq": [
+      "propext"
+    ],
+    "Toy.Units.Formula.or.noConfusion": [],
+    "Toy.Units.Formula.or.sizeOf_spec": [],
+    "Toy.Units.Formula.rec": [],
+    "Toy.Units.Formula.recOn": [],
+    "Toy.Units.GF2": [],
+    "Toy.Units.GF2J": [],
+    "Toy.Units.HasDim": [],
+    "Toy.Units.HasDim.add": [],
+    "Toy.Units.HasDim.below": [],
+    "Toy.Units.HasDim.below.add": [],
+    "Toy.Units.HasDim.below.casesOn": [],
+    "Toy.Units.HasDim.below.div": [],
+    "Toy.Units.HasDim.below.lit": [],
+    "Toy.Units.HasDim.below.mul": [],
+    "Toy.Units.HasDim.below.rec": [],
+    "Toy.Units.HasDim.below.sub": [],
+    "Toy.Units.HasDim.below.var": [],
+    "Toy.Units.HasDim.below.zpow": [],
+    "Toy.Units.HasDim.brecOn": [],
+    "Toy.Units.HasDim.casesOn": [],
+    "Toy.Units.HasDim.div": [],
+    "Toy.Units.HasDim.lit": [],
+    "Toy.Units.HasDim.mul": [],
+    "Toy.Units.HasDim.rec": [],
+    "Toy.Units.HasDim.recOn": [],
+    "Toy.Units.HasDim.sub": [],
+    "Toy.Units.HasDim.var": [],
+    "Toy.Units.HasDim.zpow": [],
+    "Toy.Units.HasPlainReading": [
+      "propext"
+    ],
+    "Toy.Units.HasSort": [],
+    "Toy.Units.HasSort.below": [],
+    "Toy.Units.HasSort.below.casesOn": [],
+    "Toy.Units.HasSort.below.combPt": [],
+    "Toy.Units.HasSort.below.lit": [],
+    "Toy.Units.HasSort.below.numAdd": [],
+    "Toy.Units.HasSort.below.numDiv": [],
+    "Toy.Units.HasSort.below.numMul": [],
+    "Toy.Units.HasSort.below.numMulVec": [],
+    "Toy.Units.HasSort.below.numSub": [],
+    "Toy.Units.HasSort.below.ptAddVec": [],
+    "Toy.Units.HasSort.below.ptSubPt": [],
+    "Toy.Units.HasSort.below.ptSubVec": [],
+    "Toy.Units.HasSort.below.rec": [],
+    "Toy.Units.HasSort.below.var": [],
+    "Toy.Units.HasSort.below.vecAdd": [],
+    "Toy.Units.HasSort.below.vecAddPt": [],
+    "Toy.Units.HasSort.below.vecDivNum": [],
+    "Toy.Units.HasSort.below.vecDivVec": [],
+    "Toy.Units.HasSort.below.vecMulNum": [],
+    "Toy.Units.HasSort.below.vecSub": [],
+    "Toy.Units.HasSort.brecOn": [],
+    "Toy.Units.HasSort.casesOn": [],
+    "Toy.Units.HasSort.combPt": [],
+    "Toy.Units.HasSort.lit": [],
+    "Toy.Units.HasSort.numAdd": [],
+    "Toy.Units.HasSort.numDiv": [],
+    "Toy.Units.HasSort.numMul": [],
+    "Toy.Units.HasSort.numMulVec": [],
+    "Toy.Units.HasSort.numSub": [],
+    "Toy.Units.HasSort.ptAddVec": [],
+    "Toy.Units.HasSort.ptSubPt": [],
+    "Toy.Units.HasSort.ptSubVec": [],
+    "Toy.Units.HasSort.rec": [],
+    "Toy.Units.HasSort.recOn": [],
+    "Toy.Units.HasSort.var": [],
+    "Toy.Units.HasSort.vecAdd": [],
+    "Toy.Units.HasSort.vecAddPt": [],
+    "Toy.Units.HasSort.vecDivNum": [],
+    "Toy.Units.HasSort.vecDivVec": [],
+    "Toy.Units.HasSort.vecMulNum": [],
+    "Toy.Units.HasSort.vecSub": [],
+    "Toy.Units.InvZeroLaw": [],
+    "Toy.Units.InvariantAt": [
+      "propext"
+    ],
+    "Toy.Units.L": [],
+    "Toy.Units.L.eq_1": [],
+    "Toy.Units.LeAntisymmLaw": [],
+    "Toy.Units.LeReflLaw": [],
+    "Toy.Units.LeTotalLaw": [],
+    "Toy.Units.LeTransLaw": [],
+    "Toy.Units.LtIffLaw": [],
+    "Toy.Units.MulAssocLaw": [],
+    "Toy.Units.MulCommLaw": [],
+    "Toy.Units.MulInvLaw": [],
+    "Toy.Units.MulNonnegLaw": [],
+    "Toy.Units.MulOneLaw": [],
+    "Toy.Units.OneVarLength": [],
+    "Toy.Units.OneVarLength.casesOn": [],
+    "Toy.Units.OneVarLength.ctx_x": [],
+    "Toy.Units.OneVarLength.dimless": [],
+    "Toy.Units.OneVarLength.mk": [],
+    "Toy.Units.OneVarLength.only_x": [],
+    "Toy.Units.OneVarLength.rec": [],
+    "Toy.Units.OneVarLength.recOn": [],
+    "Toy.Units.OneVarLength.typed": [],
+    "Toy.Units.OrderedFieldLaws": [],
+    "Toy.Units.OrderedFieldLaws.add_le_mono": [],
+    "Toy.Units.OrderedFieldLaws.casesOn": [],
+    "Toy.Units.OrderedFieldLaws.le_antisymm": [],
+    "Toy.Units.OrderedFieldLaws.le_refl": [],
+    "Toy.Units.OrderedFieldLaws.le_total": [],
+    "Toy.Units.OrderedFieldLaws.le_trans": [],
+    "Toy.Units.OrderedFieldLaws.lt_iff": [],
+    "Toy.Units.OrderedFieldLaws.mk": [],
+    "Toy.Units.OrderedFieldLaws.mul_nonneg": [],
+    "Toy.Units.OrderedFieldLaws.rec": [],
+    "Toy.Units.OrderedFieldLaws.recOn": [],
+    "Toy.Units.OrderedFieldLaws.toFieldLaws": [],
+    "Toy.Units.PointVectorTyped": [],
+    "Toy.Units.PointVectorTyped.all": [],
+    "Toy.Units.PointVectorTyped.and": [],
+    "Toy.Units.PointVectorTyped.below": [],
+    "Toy.Units.PointVectorTyped.below.all": [],
+    "Toy.Units.PointVectorTyped.below.and": [],
+    "Toy.Units.PointVectorTyped.below.casesOn": [],
+    "Toy.Units.PointVectorTyped.below.eq": [],
+    "Toy.Units.PointVectorTyped.below.ex": [],
+    "Toy.Units.PointVectorTyped.below.le": [],
+    "Toy.Units.PointVectorTyped.below.not": [],
+    "Toy.Units.PointVectorTyped.below.or": [],
+    "Toy.Units.PointVectorTyped.below.rec": [],
+    "Toy.Units.PointVectorTyped.brecOn": [],
+    "Toy.Units.PointVectorTyped.casesOn": [],
+    "Toy.Units.PointVectorTyped.eq": [],
+    "Toy.Units.PointVectorTyped.ex": [],
+    "Toy.Units.PointVectorTyped.le": [],
+    "Toy.Units.PointVectorTyped.not": [],
+    "Toy.Units.PointVectorTyped.or": [],
+    "Toy.Units.PointVectorTyped.rec": [],
+    "Toy.Units.PointVectorTyped.recOn": [],
+    "Toy.Units.PosAffineInvariant": [],
+    "Toy.Units.PosSituation": [],
+    "Toy.Units.PosUnitInvariant": [
+      "propext"
+    ],
+    "Toy.Units.Positive": [],
+    "Toy.Units.RatJ": [],
+    "Toy.Units.RatJ.add_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.RatJ.inv_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.RatJ.le_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.RatJ.lt_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.RatJ.mul_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.RatJ.neg_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.RatJ.ofRat": [],
+    "Toy.Units.RatJ.ofRat_inj": [],
+    "Toy.Units.RatJ.one_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.RatJ.toRat": [],
+    "Toy.Units.RatJ.zero_def": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ScalarOps": [],
+    "Toy.Units.ScalarOps.casesOn": [],
+    "Toy.Units.ScalarOps.ctorIdx": [],
+    "Toy.Units.ScalarOps.mk": [],
+    "Toy.Units.ScalarOps.mk.noConfusion": [],
+    "Toy.Units.ScalarOps.noConfusion": [],
+    "Toy.Units.ScalarOps.noConfusionType": [],
+    "Toy.Units.ScalarOps.rec": [],
+    "Toy.Units.ScalarOps.recOn": [],
+    "Toy.Units.ScalarOps.toAdd": [],
+    "Toy.Units.ScalarOps.toInv": [],
+    "Toy.Units.ScalarOps.toLE": [],
+    "Toy.Units.ScalarOps.toLT": [],
+    "Toy.Units.ScalarOps.toMul": [],
+    "Toy.Units.ScalarOps.toNeg": [],
+    "Toy.Units.ScalarOps.toOne": [],
+    "Toy.Units.ScalarOps.toZero": [],
+    "Toy.Units.UnitInvariant": [
+      "propext"
+    ],
+    "Toy.Units.WeightsSumOne": [],
+    "Toy.Units.WellTyped": [],
+    "Toy.Units.WellTypedAt": [],
+    "Toy.Units.WellTypedAt.all": [],
+    "Toy.Units.WellTypedAt.and": [],
+    "Toy.Units.WellTypedAt.below": [],
+    "Toy.Units.WellTypedAt.below.all": [],
+    "Toy.Units.WellTypedAt.below.and": [],
+    "Toy.Units.WellTypedAt.below.casesOn": [],
+    "Toy.Units.WellTypedAt.below.eq": [],
+    "Toy.Units.WellTypedAt.below.ex": [],
+    "Toy.Units.WellTypedAt.below.le": [],
+    "Toy.Units.WellTypedAt.below.not": [],
+    "Toy.Units.WellTypedAt.below.or": [],
+    "Toy.Units.WellTypedAt.below.rec": [],
+    "Toy.Units.WellTypedAt.brecOn": [],
+    "Toy.Units.WellTypedAt.casesOn": [],
+    "Toy.Units.WellTypedAt.eq": [],
+    "Toy.Units.WellTypedAt.ex": [],
+    "Toy.Units.WellTypedAt.le": [],
+    "Toy.Units.WellTypedAt.not": [],
+    "Toy.Units.WellTypedAt.or": [],
+    "Toy.Units.WellTypedAt.rec": [],
+    "Toy.Units.WellTypedAt.recOn": [],
+    "Toy.Units.ZeroNeOneLaw": [],
+    "Toy.Units.aDimChecked_mixed_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.aDimChecked_sum_example": [],
+    "Toy.Units.actA": [],
+    "Toy.Units.actA.eq_1": [],
+    "Toy.Units.actEnv": [
+      "propext"
+    ],
+    "Toy.Units.actEnv.eq_1": [
+      "propext"
+    ],
+    "Toy.Units.actEnv_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.act_comp": [],
+    "Toy.Units.act_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.act_inj": [],
+    "Toy.Units.act_le_iff": [
+      "propext"
+    ],
+    "Toy.Units.act_surj": [],
+    "Toy.Units.act_vec_no_offset": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneDimless": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneDimless.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneDimless_control": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneDimless_not_linear": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneJunk": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneJunk.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneJunk_oneVarLength": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneLength": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneLength.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneLength_control": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneLength_not_linear": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOneLength_not_oneVarLength": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.addOne_definableOnPos_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.add_le_add_iff_right'": [],
+    "Toy.Units.add_left_cancel'": [],
+    "Toy.Units.add_mul'": [],
+    "Toy.Units.add_right_cancel'": [],
+    "Toy.Units.affPosConst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.affPosConst.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.affPosConst_posAffineInvariant_not_affineInvariant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.affineInvariant_of_pointVectorTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.allHomogeneous_iff_fails_gf2J": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.allHomogeneous_iff_fails_zero_dims_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.allHomogeneous_iff_invZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.allHomogeneous_rat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.celsius": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.celsius.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.celsiusToFahrenheit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.celsiusToFahrenheit.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.celsiusToKelvin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.celsiusToKelvin.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.combSumLe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.combSumLe.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.combSumLe_weights_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.comb_pt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ctxDiv": [],
+    "Toy.Units.ctxDiv.eq_1": [],
+    "Toy.Units.ctxInvL": [],
+    "Toy.Units.ctxInvL.eq_1": [],
+    "Toy.Units.ctxL": [],
+    "Toy.Units.ctxL.eq_1": [],
+    "Toy.Units.ctx_eq_L_of_poly": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.cubeOverSquare": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.cubeOverSquare_oneVarLength": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.cubeSum": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.cubeSum.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.cubeSum_not_invariantAt_neg_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.cubeSum_not_wellTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.cubeSum_not_wellTyped_unitInvariant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.cubeSum_unitInvariant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.definableOnPos_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.definableOnPos_iff_fails_without_invZero_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.definableOnPos_max_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.definableOnPos_two_mul": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.dim_area_ne_length": [
+      "propext"
+    ],
+    "Toy.Units.dim_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.dim_mul_L_L_div_L": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.dim_one_mul_L": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.divEq": [],
+    "Toy.Units.divEq.eq_1": [],
+    "Toy.Units.divEq_not_invariant_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.divLe": [],
+    "Toy.Units.divLe.eq_1": [],
+    "Toy.Units.divLe_engine_tight_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.divLe_not_unitInvariant_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.divLe_wellTyped": [],
+    "Toy.Units.divXY": [],
+    "Toy.Units.divXY.eq_1": [],
+    "Toy.Units.divXY_not_homogeneous_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.dropUnitLe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.dropUnitLe.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.dropUnitLe_not_wellTyped_not_posUnitInvariant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.eqXY": [],
+    "Toy.Units.eqXY.eq_1": [],
+    "Toy.Units.eqXY_engine_tight_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.eqXY_not_invariantAt_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.eqXY_wellTypedAt_noOrder": [],
+    "Toy.Units.eq_inv_of_mul_eq_one'": [],
+    "Toy.Units.evalIn_act_eq_scaleOf_mul": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.evalIn_congr_of_onlyVar_dimless": [
+      "propext"
+    ],
+    "Toy.Units.evalIn_lit_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.evalIn_zero_of_dim_ne_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.finProd": [
+      "propext"
+    ],
+    "Toy.Units.finProd.eq_1": [
+      "propext"
+    ],
+    "Toy.Units.finProd.eq_2": [
+      "propext"
+    ],
+    "Toy.Units.finProd.eq_def": [
+      "propext"
+    ],
+    "Toy.Units.finProd.match_1": [],
+    "Toy.Units.finProd_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.finProd_inv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.finProd_mul": [
+      "propext"
+    ],
+    "Toy.Units.finProd_ne_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.finProd_one": [
+      "propext"
+    ],
+    "Toy.Units.finProd_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.finProd_zpow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.gf2J_eq_zero_or_one": [],
+    "Toy.Units.gf2J_fieldLaws": [],
+    "Toy.Units.gf2J_not_invZero": [],
+    "Toy.Units.gf2_fieldLaws": [],
+    "Toy.Units.gf2_invZero": [],
+    "Toy.Units.gf2_not_orderedFieldLaws": [],
+    "Toy.Units.gf2_one_add_one_eq_zero": [],
+    "Toy.Units.hasDim_add_inv": [],
+    "Toy.Units.hasDim_area_example": [],
+    "Toy.Units.hasDim_div_inv": [],
+    "Toy.Units.hasDim_lit_inv": [],
+    "Toy.Units.hasDim_mul_inv": [],
+    "Toy.Units.hasDim_sub_inv": [],
+    "Toy.Units.hasDim_sumMixed_none": [
+      "propext"
+    ],
+    "Toy.Units.hasDim_unique": [],
+    "Toy.Units.hasDim_var_inv": [],
+    "Toy.Units.hasDim_zpow_inv": [],
+    "Toy.Units.hasPlainReading_iff_posUnitInvariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.hasSort_ptSubPt_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.hasSort_sum_none": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.hasSort_var_inv": [],
+    "Toy.Units.instScalarOpsGF2": [],
+    "Toy.Units.instScalarOpsGF2J": [],
+    "Toy.Units.instScalarOpsRat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.instScalarOpsRatJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.intOps": [],
+    "Toy.Units.intOps_not_mulInv": [],
+    "Toy.Units.int_induction": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.invLLit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.invLLit.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.invLLit_not_homogeneous_zero_system_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.invVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.invVar.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.invVar_not_linear": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.inv_inv'": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.inv_inv_of_ne_zero'": [],
+    "Toy.Units.inv_mul_cancel'": [],
+    "Toy.Units.inv_ne_zero'": [],
+    "Toy.Units.inv_nonneg_of_pos'": [],
+    "Toy.Units.inv_one'": [],
+    "Toy.Units.inv_pos'": [],
+    "Toy.Units.invariantAt_all_wellTypedAt_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.invariantAt_of_wellTypedAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.invariantAt_of_wellTypedAt_noOrder_of_ne_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.le_of_lt'": [],
+    "Toy.Units.le_of_sub_nonneg'": [],
+    "Toy.Units.linearWitness": [],
+    "Toy.Units.linearWitness.eq_1": [],
+    "Toy.Units.linearWitness_oneVarLength": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.lt_of_le_of_ne'": [],
+    "Toy.Units.meanLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.meanLe_pointVectorTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.mul_eq_zero'": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.mul_inv'": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.mul_inv_of_ne_zero'": [],
+    "Toy.Units.mul_le_mul_left_iff'": [],
+    "Toy.Units.mul_le_mul_left_iff_forall_iff_pos": [],
+    "Toy.Units.mul_le_mul_of_nonneg_left'": [],
+    "Toy.Units.mul_left_cancel\u2080'": [],
+    "Toy.Units.mul_left_comm'": [],
+    "Toy.Units.mul_mul_mul_comm'": [],
+    "Toy.Units.mul_ne_zero'": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.mul_neg'": [],
+    "Toy.Units.mul_pos'": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.mul_zero'": [],
+    "Toy.Units.ne_of_lt'": [],
+    "Toy.Units.neg_add_cancel'": [],
+    "Toy.Units.neg_add_distrib'": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.neg_eq_of_add_eq_zero'": [],
+    "Toy.Units.neg_mul'": [],
+    "Toy.Units.neg_neg'": [],
+    "Toy.Units.neg_nonneg_of_nonpos'": [],
+    "Toy.Units.neg_zero'": [],
+    "Toy.Units.nonnegL": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonnegL.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonnegL2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonnegL2_invariantAt_neg_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonnegL_engine_tight_neg_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonnegL_hasPlainReading": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonnegL_noOrder_tight_neg_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonnegL_not_invariantAt_neg_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonnegL_not_wellTypedAt_noOrder": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonnegL_wellTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonvacuous_affine": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonvacuous_allHomogeneous_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonvacuous_characterization": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonvacuous_engine": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonvacuous_homogeneity": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonvacuous_noOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonvacuous_oneVarLength": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonvacuous_oneVarLength_gf2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonvacuous_poly": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.nonvacuous_unitInvariant_of_wellTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.not_allHomogeneous_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.not_definableOnPos_add_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.not_definableOnPos_max_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.npow": [],
+    "Toy.Units.npow.eq_1": [],
+    "Toy.Units.npow.eq_2": [],
+    "Toy.Units.npow.eq_def": [],
+    "Toy.Units.npow.match_1": [],
+    "Toy.Units.npow_add": [],
+    "Toy.Units.npow_mul_base": [],
+    "Toy.Units.npow_ne_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.npow_npow": [],
+    "Toy.Units.npow_one": [],
+    "Toy.Units.npow_one_base": [],
+    "Toy.Units.npow_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.npow_zero_base_succ": [],
+    "Toy.Units.oneVarLength_aux": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.oneVarLength_eval_eq_mul": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.oneVarLength_eval_eq_mul_of_ne_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.oneVarLength_poly_aux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.oneVarLength_poly_eval_eq_mul": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.one_add_one_ne_zero'": [],
+    "Toy.Units.one_mul'": [],
+    "Toy.Units.one_ne_zero'": [],
+    "Toy.Units.orderIff_fails_at_zero_factor": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.orderIff_fails_without_invZero_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.polyWitness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.polyWitness_oneVarLength": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.poly_dim_eq_nat_mul_ctx": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.posAffineInvariant_of_affineInvariant": [],
+    "Toy.Units.posConstFormula": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.posConstFormula.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.posConstFormula_posUnitInvariant_not_unitInvariant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.posUnitInvariant_iff_of_orderedField": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.posUnitInvariant_of_unitInvariant": [
+      "propext"
+    ],
+    "Toy.Units.positive_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ptLe": [],
+    "Toy.Units.ptLe.eq_1": [],
+    "Toy.Units.ptLe_not_invariant_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ptLe_pointVectorTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.pt_add_vec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.pt_sub_pt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.pt_sub_vec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.quantL": [],
+    "Toy.Units.quantL_wellTyped": [],
+    "Toy.Units.quantPt": [],
+    "Toy.Units.quantPt_pointVectorTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ratInvZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ratJLaws": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ratJ_not_invZero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ratLaws": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.rat_add_cube_nonpos_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ratioLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ratioLe.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ratioLe_not_affineInvariant_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.ratioLe_pointVectorTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.scaleOf": [
+      "propext"
+    ],
+    "Toy.Units.scaleOf_L": [
+      "propext"
+    ],
+    "Toy.Units.scaleOf_area_ne_length": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.scaleOf_const_unitDim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.scaleOf_dimOne": [
+      "propext"
+    ],
+    "Toy.Units.scaleOf_dimOne_fin1": [
+      "propext"
+    ],
+    "Toy.Units.scaleOf_dim_div": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.scaleOf_dim_mul": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.scaleOf_dim_pow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.scaleOf_div_L_L": [
+      "propext"
+    ],
+    "Toy.Units.scaleOf_mm_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.scaleOf_mul_L_L": [
+      "propext"
+    ],
+    "Toy.Units.scaleOf_mul_units": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.scaleOf_ne_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.scaleOf_one_dim": [
+      "propext"
+    ],
+    "Toy.Units.scaleOf_one_units": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.scaleOf_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sortsPt": [],
+    "Toy.Units.sortsPt.eq_1": [],
+    "Toy.Units.sqOverZero": [],
+    "Toy.Units.sqOverZero.eq_1": [],
+    "Toy.Units.sqOverZero_not_linear_ratJ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sqOverZero_oneVarLength": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sub_nonneg_of_le'": [],
+    "Toy.Units.sumMixed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumMixed.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumMixed_engine_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumMixed_flips": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumMixed_no_plainReading": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumMixed_not_wellTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumMixed_not_wellTyped_not_posUnitInvariant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumMixed_wellTyped_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumTemps": [],
+    "Toy.Units.sumTemps.eq_1": [],
+    "Toy.Units.sumTempsEnv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumTempsEnv.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumTemps_affine_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumTemps_celsius_kelvin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumTemps_dimChecked": [],
+    "Toy.Units.sumTemps_dimChecked_not_pointVectorTyped_not_posAffineInvariant": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.sumTemps_not_pointVectorTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.twoVarSum": [],
+    "Toy.Units.twoVarSum.eq_1": [],
+    "Toy.Units.twoVarSum_not_linear": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.unitChangeStep": [
+      "propext"
+    ],
+    "Toy.Units.unitChangeStep_example": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.unitChangeStep_readings_unchanged_not": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.unitDim": [
+      "propext"
+    ],
+    "Toy.Units.unitDim.eq_1": [
+      "propext"
+    ],
+    "Toy.Units.unitInvariant_of_wellTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.unitLe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.unitLe_wellTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.upd": [],
+    "Toy.Units.upd.eq_1": [],
+    "Toy.Units.upd_actA": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.upd_actEnv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.upd_eq_self_of_apply": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.upd_self": [
+      "propext"
+    ],
+    "Toy.Units.var_wrongDim_not_homogeneous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.vec_add_pt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.weightsSumOne_examples": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.wellTypedAt_eq_inv": [],
+    "Toy.Units.wellTypedAt_le_inv": [],
+    "Toy.Units.xTimesInvX": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.xTimesInvX.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.xTimesInvX_hasDim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.xTimesInvX_not_homogeneous_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.xTimesInvX_not_polynomial": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.xVar": [],
+    "Toy.Units.xVar.eq_1": [],
+    "Toy.Units.zero_add'": [],
+    "Toy.Units.zero_le_one'": [],
+    "Toy.Units.zero_lt_one'": [],
+    "Toy.Units.zero_mul'": [],
+    "Toy.Units.zpow": [],
+    "Toy.Units.zpow.eq_1": [],
+    "Toy.Units.zpow.eq_2": [],
+    "Toy.Units.zpow.match_1": [],
+    "Toy.Units.zpow_add": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.zpow_mul_base": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.zpow_ne_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.zpow_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.zpow_one": [],
+    "Toy.Units.zpow_one_base": [],
+    "Toy.Units.zpow_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.zpow_pred": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.zpow_succ": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Units.zpow_zero": [],
+    "Toy.Units.zpow_zpow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
