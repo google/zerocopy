@@ -48,8 +48,8 @@ What these results do *not* show is recorded under **Boundaries**, non-claims fi
 
 ### Reading the statements
 
-- **Quoting convention.** Every theorem statement below is the verbatim output of Lean's signature pretty-printer (`Lean.PrettyPrinter.ppSignature`, width 100, with `open Toy.Dataflow`) as printed by `lean/RevalidationAudit.lean`, with two edits: the keyword `theorem` is prepended (the pretty-printer prints only the name and the signature), and the declaration name is shown without its `Toy.Dataflow.` prefix. Definitions are quoted verbatim from the Lean sources, with their doc comments. The section variables `{n : Nat} {α : Type}` are implicit arguments of the definitions that mention `n` or `α`.
-- Lean's pretty-printer displays the `let` binders of a statement as `have` (for example in `strict_and_genKill_exactness_needs_least` and `diamond_entry_id_matters`); the printed statement is still the complete statement. It also hides instance arguments, so `kildall_decidableRel_irrelevant` displays both sides as `kildall L G fuel` although the left side uses the instance `d1` and the right side `d2`.
+- **Quoting convention.** Every theorem statement and every definition below is quoted verbatim from the Lean sources and is preceded by a comment `-- <file>:<first>-<last>` naming the quoted source lines. A theorem quote runs from the keyword `theorem` through the end of the statement; the proof is omitted. Definitions are quoted in full, with their doc comments. Declarations appear as written inside their source namespace, so their names omit the `Toy.Dataflow.` prefix (and an inner namespace prefix such as `Lat.` or `Flat.`), and they use the section variables of their file without restating them: `{n : Nat} {α : Type}` in `CFG.lean`, `MopMfp.lean` and `Kildall.lean` (plus `{G : CFG n α}` in namespace `Walk` of `CFG.lean`); `{α : Type} (L : Lat α)` in namespace `Lat` of `Lattice.lean` (with `L` implicit from line 86 on) and `{α : Type}` after it; `{α : Type}` in `Diamond.lean` (plus `(a : α) (g h f : α → α)` in its section `paths`); `{α : Type} (a : α) (g1 g2 h1 h2 f : α → α)` in section `diamond2` of `DiamondExamples.lean`. A section variable is an argument of each declaration that uses it.
+- Statements that begin with `let` binders (for example `strict_and_genKill_exactness_needs_least` and `diamond_entry_id_matters`) are quoted with those binders, through the end of the statement. Instance arguments appear where the source writes them: `kildall_decidableRel_irrelevant` states `@kildall n α L d1 G fuel = @kildall n α L d2 G fuel`, with the instance `d1` on the left side and `d2` on the right side.
 - `Fin n` numerals denote nodes; `x : Fin n → α` assigns a fact to the entry of every node. In `diamond a g h f` the nodes are `0` (entry, transfer `id`), `1` and `2` (branches, transfers `g` and `h`), `3` (join, transfer `f`) and `4` (exit); `x 4` is the fact after the join node's transfer.
 - Every theorem statement in this section has `Basis: execution (Lean kernel check)`; its axioms and hashes are listed under Evidence. Claims about real systems are confined to the separately labeled `Basis: derived (modeling bridge)` paragraphs.
 
@@ -60,6 +60,7 @@ What these results do *not* show is recorded under **Boundaries**, non-claims fi
 `Toy.Dataflow.Lat` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:17-23
 /-- The operations of a join-semilattice with bottom: an order relation `le`,
 a binary `join` (intended least upper bound), and a bottom element `bot`.
 No laws are bundled; see `Lat.IsJSL`. -/
@@ -72,6 +73,7 @@ structure Lat (α : Type) where
 `Toy.Dataflow.Lat.LeRefl` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:29-30
 /-- Reflexivity of `le`. -/
 def LeRefl : Prop := ∀ a, L.le a a
 ```
@@ -79,6 +81,7 @@ def LeRefl : Prop := ∀ a, L.le a a
 `Toy.Dataflow.Lat.LeTrans` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:32-33
 /-- Transitivity of `le`. -/
 def LeTrans : Prop := ∀ a b c, L.le a b → L.le b c → L.le a c
 ```
@@ -86,6 +89,7 @@ def LeTrans : Prop := ∀ a b c, L.le a b → L.le b c → L.le a c
 `Toy.Dataflow.Lat.LeAntisymm` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:35-36
 /-- Antisymmetry of `le`. -/
 def LeAntisymm : Prop := ∀ a b, L.le a b → L.le b a → a = b
 ```
@@ -93,6 +97,7 @@ def LeAntisymm : Prop := ∀ a b, L.le a b → L.le b a → a = b
 `Toy.Dataflow.Lat.JoinLeIff` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:38-40
 /-- `join a b` is a least upper bound of `a` and `b`:
 `join a b ≤ c` exactly when both `a ≤ c` and `b ≤ c`. -/
 def JoinLeIff : Prop := ∀ a b c, L.le (L.join a b) c ↔ (L.le a c ∧ L.le b c)
@@ -101,6 +106,7 @@ def JoinLeIff : Prop := ∀ a b c, L.le (L.join a b) c ↔ (L.le a c ∧ L.le b 
 `Toy.Dataflow.Lat.BotLe` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:42-43
 /-- `bot` is below every element. -/
 def BotLe : Prop := ∀ a, L.le L.bot a
 ```
@@ -108,6 +114,7 @@ def BotLe : Prop := ∀ a, L.le L.bot a
 `Toy.Dataflow.Lat.IsJSL` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:45-58
 /-- All join-semilattice-with-bottom laws: `le` is a partial order, `join` is the
 binary least upper bound, and `bot` is the least element. Each field is a
 separate named law.
@@ -127,6 +134,7 @@ structure IsJSL : Prop where
 `Toy.Dataflow.Lat.lt` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:60-61
 /-- Strict order: `le a b` and `a ≠ b`. -/
 def lt (a b : α) : Prop := L.le a b ∧ a ≠ b
 ```
@@ -134,6 +142,7 @@ def lt (a b : α) : Prop := L.le a b ∧ a ≠ b
 `Toy.Dataflow.Lat.AscendingChainCondition` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:63-65
 /-- Ascending chain condition: there is no infinite strictly ascending chain
 `a₀ < a₁ < a₂ < ⋯`. Stated as well-foundedness of the reversed strict order. -/
 def AscendingChainCondition : Prop := WellFounded (fun a b : α => L.lt b a)
@@ -142,6 +151,7 @@ def AscendingChainCondition : Prop := WellFounded (fun a b : α => L.lt b a)
 `Toy.Dataflow.Lat.HeightLe` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:67-70
 /-- Height bound `h`: every strictly ascending chain `c 0 < c 1 < ⋯ < c k` has at
 most `h` steps (`k ≤ h`). -/
 def HeightLe (h : Nat) : Prop :=
@@ -151,6 +161,7 @@ def HeightLe (h : Nat) : Prop :=
 `Toy.Dataflow.Lat.IsUB` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:72-73
 /-- `a` is an upper bound of the set `S` (a predicate). -/
 def IsUB (S : α → Prop) (a : α) : Prop := ∀ b, S b → L.le b a
 ```
@@ -158,6 +169,7 @@ def IsUB (S : α → Prop) (a : α) : Prop := ∀ b, S b → L.le b a
 `Toy.Dataflow.Lat.IsLUB` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:75-77
 /-- `a` is a least upper bound of the set `S`: an upper bound below every upper
 bound. This is how infinite joins (over unboundedly many paths) are specified. -/
 def IsLUB (S : α → Prop) (a : α) : Prop := L.IsUB S a ∧ ∀ u, L.IsUB S u → L.le a u
@@ -166,6 +178,7 @@ def IsLUB (S : α → Prop) (a : α) : Prop := L.IsUB S a ∧ ∀ u, L.IsUB S u 
 `Toy.Dataflow.Lat.joinList` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:79-82
 /-- Join of a finite list (`bot` for the empty list). -/
 def joinList : List α → α
   | [] => L.bot
@@ -175,6 +188,7 @@ def joinList : List α → α
 `Toy.Dataflow.Monotone` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:280-282
 /-- `f` is monotone: it preserves `le`. Monotone transfer functions are the
 setting of monotone dataflow frameworks. -/
 def Monotone (L : Lat α) (f : α → α) : Prop := ∀ a b, L.le a b → L.le (f a) (f b)
@@ -183,6 +197,7 @@ def Monotone (L : Lat α) (f : α → α) : Prop := ∀ a b, L.le a b → L.le (
 `Toy.Dataflow.Distributive` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:284-286
 /-- `f` distributes over binary joins: `f (a ⊔ b) = f a ⊔ f b`. This is the
 "distributive framework" condition (Kildall's "homomorphic" condition, dualized). -/
 def Distributive (L : Lat α) (f : α → α) : Prop := ∀ a b, f (L.join a b) = L.join (f a) (f b)
@@ -191,6 +206,7 @@ def Distributive (L : Lat α) (f : α → α) : Prop := ∀ a b, f (L.join a b) 
 `Toy.Dataflow.Strict` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:288-289
 /-- `f` is strict: it maps `bot` to `bot`. -/
 def Strict (L : Lat α) (f : α → α) : Prop := f L.bot = L.bot
 ```
@@ -198,6 +214,7 @@ def Strict (L : Lat α) (f : α → α) : Prop := f L.bot = L.bot
 `Toy.Dataflow.pwLat` (ToyDataflow/Lattice.lean):
 
 ```lean
+-- lean/ToyDataflow/Lattice.lean:209-213
 /-- The pointwise order, join and bottom on `Fin n → α`. -/
 def pwLat (n : Nat) {α : Type} (L : Lat α) : Lat (Fin n → α) where
   le x y := ∀ v, L.le (x v) (y v)
@@ -210,6 +227,7 @@ def pwLat (n : Nat) {α : Type} (L : Lat α) : Lat (Fin n → α) where
 `Toy.Dataflow.CFG` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:44-50
 /-- A finite control-flow graph with a node-indexed transfer function. The value
 `init` holds at the entry; `f u` is applied along every out-edge of `u`. -/
 structure CFG (n : Nat) (α : Type) where
@@ -222,6 +240,7 @@ structure CFG (n : Nat) (α : Type) where
 `Toy.Dataflow.Walk` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:52-55
 /-- A path from the entry of `G` to `v`, built by appending edges. -/
 inductive Walk (G : CFG n α) : Fin n → Type
   | nil : Walk G G.entry
@@ -231,6 +250,7 @@ inductive Walk (G : CFG n α) : Fin n → Type
 `Toy.Dataflow.Walk.val` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:61-65
 /-- The value of a path: the transfer functions of the nodes it leaves, composed
 in order and applied to `G.init`. -/
 def val : {v : Fin n} → Walk G v → α
@@ -241,6 +261,7 @@ def val : {v : Fin n} → Walk G v → α
 `Toy.Dataflow.Walk.pre` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:67-70
 /-- The nodes a path leaves, in order (all its nodes except the last). -/
 def pre : {v : Fin n} → Walk G v → List (Fin n)
   | _, .nil => []
@@ -250,6 +271,7 @@ def pre : {v : Fin n} → Walk G v → List (Fin n)
 `Toy.Dataflow.pathVals` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:85-86
 /-- The set of values of all paths from the entry to `v`. -/
 def pathVals (G : CFG n α) (v : Fin n) : α → Prop := fun b => ∃ p : Walk G v, p.val = b
 ```
@@ -257,6 +279,7 @@ def pathVals (G : CFG n α) (v : Fin n) : α → Prop := fun b => ∃ p : Walk G
 `Toy.Dataflow.IsMOPAt` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:88-91
 /-- MOP (join over all paths) at `v`: `m` is a least upper bound of the values of
 all paths from the entry to `v`. -/
 def IsMOPAt (L : Lat α) (G : CFG n α) (v : Fin n) (m : α) : Prop :=
@@ -266,6 +289,7 @@ def IsMOPAt (L : Lat α) (G : CFG n α) (v : Fin n) (m : α) : Prop :=
 `Toy.Dataflow.Reachable` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:93-94
 /-- `v` is reachable from the entry. -/
 def Reachable (G : CFG n α) (v : Fin n) : Prop := Nonempty (Walk G v)
 ```
@@ -273,6 +297,7 @@ def Reachable (G : CFG n α) (v : Fin n) : Prop := Nonempty (Walk G v)
 `Toy.Dataflow.AllReachable` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:96-97
 /-- Every node is reachable from the entry. -/
 def AllReachable (G : CFG n α) : Prop := ∀ v, Reachable G v
 ```
@@ -280,6 +305,7 @@ def AllReachable (G : CFG n α) : Prop := ∀ v, Reachable G v
 `Toy.Dataflow.IsSolution` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:99-102
 /-- `x` solves the dataflow inequations: `init ≤ x entry`, and
 `f u (x u) ≤ x w` for every edge `u → w`. -/
 def IsSolution (L : Lat α) (G : CFG n α) (x : Fin n → α) : Prop :=
@@ -289,6 +315,7 @@ def IsSolution (L : Lat α) (G : CFG n α) (x : Fin n → α) : Prop :=
 `Toy.Dataflow.IsLeastSolution` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:104-106
 /-- MFP: `x` is a solution that is pointwise below every solution. -/
 def IsLeastSolution (L : Lat α) (G : CFG n α) (x : Fin n → α) : Prop :=
   IsSolution L G x ∧ ∀ y, IsSolution L G y → ∀ v, L.le (x v) (y v)
@@ -297,6 +324,7 @@ def IsLeastSolution (L : Lat α) (G : CFG n α) (x : Fin n → α) : Prop :=
 `Toy.Dataflow.UnreachableStrict` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:108-112
 /-- Every node that is unreachable from the entry has a strict transfer function
 (`f u bot = bot`). Holds vacuously when all nodes are reachable, and holds when
 all transfer functions are strict. -/
@@ -307,6 +335,7 @@ def UnreachableStrict (L : Lat α) (G : CFG n α) : Prop :=
 `Toy.Dataflow.eqRHS` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:114-118
 /-- Right-hand side of the dataflow equation at `w`: `init` (if `w` is the entry)
 joined with `f u (x u)` for every edge `u → w` (listed with multiplicity). -/
 def eqRHS (L : Lat α) (G : CFG n α) (x : Fin n → α) (w : Fin n) : α :=
@@ -317,6 +346,7 @@ def eqRHS (L : Lat α) (G : CFG n α) (x : Fin n → α) (w : Fin n) : α :=
 `Toy.Dataflow.IsEquationSolution` (ToyDataflow/CFG.lean):
 
 ```lean
+-- lean/ToyDataflow/CFG.lean:120-122
 /-- `x` satisfies the dataflow equations with equality (a fixed point of `eqRHS`). -/
 def IsEquationSolution (L : Lat α) (G : CFG n α) (x : Fin n → α) : Prop :=
   ∀ w, x w = eqRHS L G x w
@@ -327,6 +357,7 @@ def IsEquationSolution (L : Lat α) (G : CFG n α) (x : Fin n → α) : Prop :=
 `Toy.Dataflow.diamond` (ToyDataflow/Diamond.lean):
 
 ```lean
+-- lean/ToyDataflow/Diamond.lean:31-37
 /-- The diamond CFG with initial value `a`, branch transfers `g`, `h`, and
 join-node transfer `f`. -/
 def diamond (a : α) (g h f : α → α) : CFG 5 α where
@@ -339,6 +370,7 @@ def diamond (a : α) (g h f : α → α) : CFG 5 α where
 `Toy.Dataflow.DiamondExact` (ToyDataflow/Diamond.lean):
 
 ```lean
+-- lean/ToyDataflow/Diamond.lean:202-206
 /-- MFP = MOP holds at every node of every diamond whose initial value lies in `I`
 and whose three transfers `g`, `h`, `f` are drawn from the family `F`. -/
 def DiamondExact (L : Lat α) (I : α → Prop) (F : (α → α) → Prop) : Prop :=
@@ -349,6 +381,7 @@ def DiamondExact (L : Lat α) (I : α → Prop) (F : (α → α) → Prop) : Pro
 `Toy.Dataflow.DistributiveOnRealizable` (ToyDataflow/Diamond.lean):
 
 ```lean
+-- lean/ToyDataflow/Diamond.lean:208-212
 /-- Every `f ∈ F` distributes over every *realizable* pair: a pair `(g a, h a)` of
 branch outputs with `g, h ∈ F` and `a ∈ I`. Weaker than distributivity over all
 pairs. -/
@@ -361,6 +394,7 @@ def DistributiveOnRealizable (L : Lat α) (I : α → Prop) (F : (α → α) →
 `Toy.Dataflow.bvLat` (ToyDataflow/GenKill.lean):
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:21-25
 /-- The bit-vector (powerset) lattice over `Fin k`: inclusion, union, empty set. -/
 def bvLat (k : Nat) : Lat (Fin k → Bool) where
   le a b := ∀ i, a i = true → b i = true
@@ -371,6 +405,7 @@ def bvLat (k : Nat) : Lat (Fin k → Bool) where
 `Toy.Dataflow.bvMustLat` (ToyDataflow/GenKill.lean):
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:155-160
 /-- Bit vectors ordered by reverse inclusion, with intersection as join and the full
 set as bottom: the orientation of must analyses such as available expressions. -/
 def bvMustLat (k : Nat) : Lat (Fin k → Bool) where
@@ -382,6 +417,7 @@ def bvMustLat (k : Nat) : Lat (Fin k → Bool) where
 `Toy.Dataflow.genKill` (ToyDataflow/GenKill.lean):
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:107-109
 /-- A gen/kill transfer function: `f a = (a \ kill) ∪ gen`. -/
 def genKill {k : Nat} (gen kill : Fin k → Bool) (a : Fin k → Bool) : Fin k → Bool :=
   fun i => (a i && !kill i) || gen i
@@ -392,6 +428,7 @@ def genKill {k : Nat} (gen kill : Fin k → Bool) (a : Fin k → Bool) : Fin k �
 `Toy.Dataflow.Flat` (ToyDataflow/ConstProp.lean):
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:24-29
 /-- The flat constant lattice over `Int`. -/
 inductive Flat where
   | bot
@@ -403,6 +440,7 @@ inductive Flat where
 `Toy.Dataflow.Flat.le` (ToyDataflow/ConstProp.lean):
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:33-34
 /-- `a ⊑ b`: `a` is `⊥`, or `b` is `⊤`, or they are equal. -/
 def le (a b : Flat) : Prop := a = bot ∨ b = top ∨ a = b
 ```
@@ -410,6 +448,7 @@ def le (a b : Flat) : Prop := a = bot ∨ b = top ∨ a = b
 `Toy.Dataflow.Flat.join` (ToyDataflow/ConstProp.lean):
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:38-44
 /-- Join: two different constants join to `⊤`. -/
 def join : Flat → Flat → Flat
   | bot, b => b
@@ -422,6 +461,7 @@ def join : Flat → Flat → Flat
 `Toy.Dataflow.Flat.add` (ToyDataflow/ConstProp.lean):
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:46-53
 /-- Abstract addition, strict in `⊥`. -/
 def add : Flat → Flat → Flat
   | bot, _ => bot
@@ -435,6 +475,7 @@ def add : Flat → Flat → Flat
 `Toy.Dataflow.St` (ToyDataflow/ConstProp.lean):
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:124-129
 /-- Abstract states for three variables `x, y, z` (pointwise lift of `Flat`). -/
 structure St where
   x : Flat
@@ -446,6 +487,7 @@ structure St where
 `Toy.Dataflow.cpLat` (ToyDataflow/ConstProp.lean):
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:131-135
 /-- The pointwise constant-propagation lattice on `{x, y, z}`. -/
 def cpLat : Lat St where
   le s t := Flat.le s.x t.x ∧ Flat.le s.y t.y ∧ Flat.le s.z t.z
@@ -456,6 +498,7 @@ def cpLat : Lat St where
 `Toy.Dataflow.assignYZ` (ToyDataflow/ConstProp.lean):
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:184-185
 /-- Transfer of `y := c; z := d`. -/
 def assignYZ (c d : Int) (s : St) : St := { s with y := .const c, z := .const d }
 ```
@@ -463,6 +506,7 @@ def assignYZ (c d : Int) (s : St) : St := { s with y := .const c, z := .const d 
 `Toy.Dataflow.assignXYZ` (ToyDataflow/ConstProp.lean):
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:187-188
 /-- Transfer of `x := y + z`. -/
 def assignXYZ (s : St) : St := { s with x := Flat.add s.y s.z }
 ```
@@ -470,6 +514,7 @@ def assignXYZ (s : St) : St := { s with x := Flat.add s.y s.z }
 `Toy.Dataflow.cpDiamond` (ToyDataflow/ConstProp.lean):
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:225-227
 /-- The constant-propagation diamond: branches `y := 1; z := 2` and
 `y := 2; z := 1`, then `x := y + z`, with arbitrary entry state `a`. -/
 def cpDiamond (a : St) : CFG 5 St := diamond a (assignYZ 1 2) (assignYZ 2 1) assignXYZ
@@ -478,6 +523,7 @@ def cpDiamond (a : St) : CFG 5 St := diamond a (assignYZ 1 2) (assignYZ 2 1) ass
 `Toy.Dataflow.copyXY` (ToyDataflow/ConstProp.lean):
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:204-205
 /-- Transfer of the copy `x := y`. -/
 def copyXY (s : St) : St := { s with x := s.y }
 ```
@@ -485,6 +531,7 @@ def copyXY (s : St) : St := { s with x := s.y }
 `Toy.Dataflow.setY` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:382-383
 /-- Transfer of `y := c`. -/
 def setY (c : Int) (s : St) : St := { s with y := .const c }
 ```
@@ -492,6 +539,7 @@ def setY (c : Int) (s : St) : St := { s with y := .const c }
 `Toy.Dataflow.setZ` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:385-386
 /-- Transfer of `z := c`. -/
 def setZ (c : Int) (s : St) : St := { s with z := .const c }
 ```
@@ -501,6 +549,7 @@ def setZ (c : Int) (s : St) : St := { s with z := .const c }
 `Toy.Dataflow.succs` (ToyDataflow/Kildall.lean):
 
 ```lean
+-- lean/ToyDataflow/Kildall.lean:31-33
 /-- Successors of `u` in the edge list (with multiplicity). -/
 def succs (G : CFG n α) (u : Fin n) : List (Fin n) :=
   (G.edges.filter (fun e => decide (e.1 = u))).map Prod.snd
@@ -509,6 +558,7 @@ def succs (G : CFG n α) (u : Fin n) : List (Fin n) :=
 `Toy.Dataflow.upd` (ToyDataflow/Kildall.lean):
 
 ```lean
+-- lean/ToyDataflow/Kildall.lean:28-29
 /-- Pointwise update. -/
 def upd (x : Fin n → α) (w : Fin n) (b : α) : Fin n → α := fun v => if v = w then b else x v
 ```
@@ -516,6 +566,7 @@ def upd (x : Fin n → α) (w : Fin n) (b : α) : Fin n → α := fun v => if v 
 `Toy.Dataflow.propagate` (ToyDataflow/Kildall.lean):
 
 ```lean
+-- lean/ToyDataflow/Kildall.lean:35-42
 /-- Propagate `out` into each listed successor, pushing every successor whose
 value is updated. -/
 def propagate (L : Lat α) [DecidableRel L.le] (out : α) :
@@ -529,6 +580,7 @@ def propagate (L : Lat α) [DecidableRel L.le] (out : α) :
 `Toy.Dataflow.kildallInit` (ToyDataflow/Kildall.lean):
 
 ```lean
+-- lean/ToyDataflow/Kildall.lean:54-56
 /-- Initial assignment: `init` at the entry, `bot` elsewhere. -/
 def kildallInit (L : Lat α) (G : CFG n α) : Fin n → α :=
   fun v => if v = G.entry then G.init else L.bot
@@ -537,6 +589,7 @@ def kildallInit (L : Lat α) (G : CFG n α) : Fin n → α :=
 `Toy.Dataflow.kildallLoop` (ToyDataflow/Kildall.lean):
 
 ```lean
+-- lean/ToyDataflow/Kildall.lean:44-52
 /-- The worklist loop; one unit of fuel per step (including the final step that
 observes an empty worklist). -/
 def kildallLoop (L : Lat α) [DecidableRel L.le] (G : CFG n α) :
@@ -551,6 +604,7 @@ def kildallLoop (L : Lat α) [DecidableRel L.le] (G : CFG n α) :
 `Toy.Dataflow.kildall` (ToyDataflow/Kildall.lean):
 
 ```lean
+-- lean/ToyDataflow/Kildall.lean:58-60
 /-- The solver: all nodes initially on the worklist. -/
 def kildall (L : Lat α) [DecidableRel L.le] (G : CFG n α) (fuel : Nat) : Option (Fin n → α) :=
   kildallLoop L G fuel (kildallInit L G) (List.finRange n)
@@ -561,155 +615,187 @@ def kildall (L : Lat α) [DecidableRel L.le] (G : CFG n α) (fuel : Nat) : Optio
 The lattice laws are tested by structures that violate exactly one law or a recorded set of laws (`*_law_profile`), and the lattice instances used by the witnesses are shown to satisfy the laws, the ascending chain condition and height bounds where claimed. These theorems are not referenced by a card, so no statement hash is recorded for them; they are covered by the package-wide axiom audit.
 
 ```lean
-theorem IsLeastSolution.unique {n : Nat} {α : Type} {L : Lat α} (hL : L.IsJSL) {G : CFG n α}
-  {x y : Fin n → α} (hx : IsLeastSolution L G x) (hy : IsLeastSolution L G y) : x = y
+-- lean/ToyDataflow/CFG.lean:195-196
+theorem IsLeastSolution.unique {L : Lat α} (hL : L.IsJSL) {G : CFG n α} {x y : Fin n → α}
+    (hx : IsLeastSolution L G x) (hy : IsLeastSolution L G y) : x = y
 ```
 
 ```lean
-theorem IsMOPAt.unique {n : Nat} {α : Type} {L : Lat α} (hL : L.IsJSL) {G : CFG n α}
-  {v : Fin n} {a b : α} (ha : IsMOPAt L G v a) (hb : IsMOPAt L G v b) : a = b
+-- lean/ToyDataflow/CFG.lean:201-202
+theorem IsMOPAt.unique {L : Lat α} (hL : L.IsJSL) {G : CFG n α} {v : Fin n} {a b : α}
+    (ha : IsMOPAt L G v a) (hb : IsMOPAt L G v b) : a = b
 ```
 
 ```lean
-theorem Lat.leTrans_of_leRefl_leAntisymm_joinLeIff {α : Type} {L : Lat α} (hrefl : L.LeRefl)
-  (hanti : L.LeAntisymm) (hjoin : L.JoinLeIff) : L.LeTrans
+-- lean/ToyDataflow/Lattice.lean:92-93
+theorem leTrans_of_leRefl_leAntisymm_joinLeIff (hrefl : L.LeRefl) (hanti : L.LeAntisymm)
+    (hjoin : L.JoinLeIff) : L.LeTrans
 ```
 
 ```lean
-theorem Walk.val_eq_foldl {n : Nat} {α : Type} {G : CFG n α} {v : Fin n} (p : Walk G v) :
-  p.val = List.foldl (fun a u => G.f u a) G.init p.pre
+-- lean/ToyDataflow/CFG.lean:77-78
+theorem val_eq_foldl {v : Fin n} (p : Walk G v) :
+    p.val = p.pre.foldl (fun a u => G.f u a) G.init
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:37
 theorem boolLat_heightLe_one : boolLat.HeightLe 1
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:29
 theorem boolLat_isJSL : boolLat.IsJSL
 ```
 
 ```lean
-theorem boolLat_not_heightLe_zero : ¬boolLat.HeightLe 0
+-- lean/ToyDataflow/LatticeExamples.lean:48
+theorem boolLat_not_heightLe_zero : ¬ boolLat.HeightLe 0
 ```
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:101
 theorem bvLat_heightLe (k : Nat) : (bvLat k).HeightLe k
 ```
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:31
 theorem bvLat_isJSL (k : Nat) : (bvLat k).IsJSL
 ```
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:163
 theorem bvMustLat_isJSL (k : Nat) : (bvMustLat k).IsJSL
 ```
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:159
 theorem cpLat_heightLe : cpLat.HeightLe 6
 ```
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:141
 theorem cpLat_isJSL : cpLat.IsJSL
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:175-177
 theorem fin4PreLat_law_profile :
-  fin4PreLat.LeRefl ∧
-    ¬fin4PreLat.LeTrans ∧ ¬fin4PreLat.LeAntisymm ∧ fin4PreLat.JoinLeIff ∧ fin4PreLat.BotLe
+    fin4PreLat.LeRefl ∧ ¬ fin4PreLat.LeTrans ∧ ¬ fin4PreLat.LeAntisymm ∧
+      fin4PreLat.JoinLeIff ∧ fin4PreLat.BotLe
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:509
 theorem finChainLat_heightLe (h : Nat) : (finChainLat h).HeightLe h
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:500
 theorem finChainLat_isJSL (h : Nat) : (finChainLat h).IsJSL
 ```
 
 ```lean
-theorem isMOPAt_bot_of_not_reachable {n : Nat} {α : Type} {L : Lat α} (hL : L.IsJSL)
-  {G : CFG n α} {v : Fin n} (hv : ¬Reachable G v) : IsMOPAt L G v L.bot
+-- lean/ToyDataflow/CFG.lean:190-191
+theorem isMOPAt_bot_of_not_reachable {L : Lat α} (hL : L.IsJSL) {G : CFG n α} {v : Fin n}
+    (hv : ¬ Reachable G v) : IsMOPAt L G v L.bot
 ```
 
 ```lean
-theorem isSolution_iff_eqRHS_le {n : Nat} {α : Type} {L : Lat α} (hL : L.IsJSL) (G : CFG n α)
-  (x : Fin n → α) : IsSolution L G x ↔ (pwLat n L).le (eqRHS L G x) x
+-- lean/ToyDataflow/CFG.lean:154-155
+theorem isSolution_iff_eqRHS_le {L : Lat α} (hL : L.IsJSL) (G : CFG n α) (x : Fin n → α) :
+    IsSolution L G x ↔ (pwLat n L).le (eqRHS L G x) x
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:65
 theorem natMaxLat_isJSL : natMaxLat.IsJSL
 ```
 
 ```lean
-theorem natMaxLat_not_acc : ¬natMaxLat.AscendingChainCondition
+-- lean/ToyDataflow/LatticeExamples.lean:74
+theorem natMaxLat_not_acc : ¬ natMaxLat.AscendingChainCondition
 ```
 
 ```lean
-theorem natMaxLat_not_heightLe (h : Nat) : ¬natMaxLat.HeightLe h
+-- lean/ToyDataflow/LatticeExamples.lean:84
+theorem natMaxLat_not_heightLe (h : Nat) : ¬ natMaxLat.HeightLe h
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:138-139
 theorem no_lat_violates_only_leTrans {α : Type} :
-  ¬∃ L, L.LeRefl ∧ ¬L.LeTrans ∧ L.LeAntisymm ∧ L.JoinLeIff ∧ L.BotLe
+    ¬ ∃ L : Lat α, L.LeRefl ∧ ¬ L.LeTrans ∧ L.LeAntisymm ∧ L.JoinLeIff ∧ L.BotLe
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:198-200
 theorem notAntisymmLat_law_profile :
-  notAntisymmLat.LeRefl ∧
-    notAntisymmLat.LeTrans ∧
-      ¬notAntisymmLat.LeAntisymm ∧ notAntisymmLat.JoinLeIff ∧ notAntisymmLat.BotLe
+    notAntisymmLat.LeRefl ∧ notAntisymmLat.LeTrans ∧ ¬ notAntisymmLat.LeAntisymm ∧
+      notAntisymmLat.JoinLeIff ∧ notAntisymmLat.BotLe
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:231-233
 theorem notBotLat_law_profile :
-  notBotLat.LeRefl ∧
-    notBotLat.LeTrans ∧ notBotLat.LeAntisymm ∧ notBotLat.JoinLeIff ∧ ¬notBotLat.BotLe
+    notBotLat.LeRefl ∧ notBotLat.LeTrans ∧ notBotLat.LeAntisymm ∧
+      notBotLat.JoinLeIff ∧ ¬ notBotLat.BotLe
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:215-217
 theorem notJoinLat_law_profile :
-  notJoinLat.LeRefl ∧
-    notJoinLat.LeTrans ∧ notJoinLat.LeAntisymm ∧ ¬notJoinLat.JoinLeIff ∧ notJoinLat.BotLe
+    notJoinLat.LeRefl ∧ notJoinLat.LeTrans ∧ notJoinLat.LeAntisymm ∧
+      ¬ notJoinLat.JoinLeIff ∧ notJoinLat.BotLe
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:101-103
 theorem notReflLat_law_profile :
-  ¬notReflLat.LeRefl ∧
-    notReflLat.LeTrans ∧ notReflLat.LeAntisymm ∧ notReflLat.JoinLeIff ∧ notReflLat.BotLe
+    ¬ notReflLat.LeRefl ∧ notReflLat.LeTrans ∧ notReflLat.LeAntisymm ∧
+      notReflLat.JoinLeIff ∧ notReflLat.BotLe
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:127-129
 theorem notTransLat_law_profile :
-  notTransLat.LeRefl ∧
-    ¬notTransLat.LeTrans ∧ notTransLat.LeAntisymm ∧ ¬notTransLat.JoinLeIff ∧ ¬notTransLat.BotLe
+    notTransLat.LeRefl ∧ ¬ notTransLat.LeTrans ∧ notTransLat.LeAntisymm ∧
+      ¬ notTransLat.JoinLeIff ∧ ¬ notTransLat.BotLe
 ```
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:247
 theorem omegaLat_isJSL : omegaLat.IsJSL
 ```
 
 ```lean
-theorem omegaLat_not_acc : ¬omegaLat.AscendingChainCondition
+-- lean/ToyDataflow/Examples.lean:257
+theorem omegaLat_not_acc : ¬ omegaLat.AscendingChainCondition
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:372
 theorem unboundedChainsLat_acc : unboundedChainsLat.AscendingChainCondition
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:315
 theorem unboundedChainsLat_isJSL : unboundedChainsLat.IsJSL
 ```
 
 ```lean
-theorem unboundedChainsLat_not_heightLe (h : Nat) : ¬unboundedChainsLat.HeightLe h
+-- lean/ToyDataflow/LatticeExamples.lean:429
+theorem unboundedChainsLat_not_heightLe (h : Nat) : ¬ unboundedChainsLat.HeightLe h
 ```
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:466
 theorem withBotIntLat_isJSL : withBotIntLat.IsJSL
 ```
 
 ```lean
-theorem withBotIntLat_not_acc : ¬withBotIntLat.AscendingChainCondition
+-- lean/ToyDataflow/LatticeExamples.lean:478
+theorem withBotIntLat_not_acc : ¬ withBotIntLat.AscendingChainCondition
 ```
 
 ### Results
@@ -723,15 +809,19 @@ theorem withBotIntLat_not_acc : ¬withBotIntLat.AscendingChainCondition
 **Lean statements.** Basis: execution (Lean kernel check).
 
 ```lean
-theorem walk_val_le_of_isSolution_of_monotone {n : Nat} {α : Type} (L : Lat α) (G : CFG n α)
-  (htrans : L.LeTrans) (hmono : ∀ (u : Fin n), Monotone L (G.f u)) {x : Fin n → α}
-  (hx : IsSolution L G x) {v : Fin n} (p : Walk G v) : L.le p.val (x v)
+-- lean/ToyDataflow/MopMfp.lean:22-25
+theorem walk_val_le_of_isSolution_of_monotone (L : Lat α) (G : CFG n α)
+    (htrans : L.LeTrans) (hmono : ∀ u, Monotone L (G.f u))
+    {x : Fin n → α} (hx : IsSolution L G x) {v : Fin n} (p : Walk G v) :
+    L.le p.val (x v)
 ```
 
 ```lean
-theorem mop_le_of_isSolution_of_monotone {n : Nat} {α : Type} (L : Lat α) (G : CFG n α)
-  (htrans : L.LeTrans) (hmono : ∀ (u : Fin n), Monotone L (G.f u)) {x : Fin n → α}
-  (hx : IsSolution L G x) {v : Fin n} {m : α} (hm : IsMOPAt L G v m) : L.le m (x v)
+-- lean/ToyDataflow/MopMfp.lean:33-36
+theorem mop_le_of_isSolution_of_monotone (L : Lat α) (G : CFG n α)
+    (htrans : L.LeTrans) (hmono : ∀ u, Monotone L (G.f u))
+    {x : Fin n → α} (hx : IsSolution L G x) {v : Fin n} {m : α}
+    (hm : IsMOPAt L G v m) : L.le m (x v)
 ```
 
 **Hypothesis ledger.**
@@ -776,37 +866,45 @@ theorem mop_le_of_isSolution_of_monotone {n : Nat} {α : Type} (L : Lat α) (G :
 **Lean statements.** Basis: execution (Lean kernel check).
 
 ```lean
-theorem isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict {n : Nat} {α : Type}
-  (L : Lat α) (G : CFG n α) (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
-  (hdist : ∀ (u : Fin n), Distributive L (G.f u)) (hstrict : UnreachableStrict L G) {x : Fin n → α}
-  (hx : IsLeastSolution L G x) (v : Fin n) : IsMOPAt L G v (x v)
+-- lean/ToyDataflow/MopMfp.lean:152-156
+theorem isMOPAt_of_isLeastSolution_of_distributive_of_unreachableStrict
+    (L : Lat α) (G : CFG n α) (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
+    (hdist : ∀ u, Distributive L (G.f u)) (hstrict : UnreachableStrict L G)
+    {x : Fin n → α} (hx : IsLeastSolution L G x) (v : Fin n) :
+    IsMOPAt L G v (x v)
 ```
 
 ```lean
-theorem isMOPAt_of_isLeastSolution_of_distributive_of_allReachable {n : Nat} {α : Type}
-  (L : Lat α) (G : CFG n α) (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
-  (hdist : ∀ (u : Fin n), Distributive L (G.f u)) (hreach : AllReachable G) {x : Fin n → α}
-  (hx : IsLeastSolution L G x) (v : Fin n) : IsMOPAt L G v (x v)
+-- lean/ToyDataflow/MopMfp.lean:183-187
+theorem isMOPAt_of_isLeastSolution_of_distributive_of_allReachable
+    (L : Lat α) (G : CFG n α) (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
+    (hdist : ∀ u, Distributive L (G.f u)) (hreach : AllReachable G)
+    {x : Fin n → α} (hx : IsLeastSolution L G x) (v : Fin n) :
+    IsMOPAt L G v (x v)
 ```
 
 ```lean
-theorem isMOPAt_of_isLeastSolution_of_distributive_of_strict {n : Nat} {α : Type} (L : Lat α)
-  (G : CFG n α) (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
-  (hdist : ∀ (u : Fin n), Distributive L (G.f u)) (hstrict : ∀ (u : Fin n), Strict L (G.f u))
-  {x : Fin n → α} (hx : IsLeastSolution L G x) (v : Fin n) : IsMOPAt L G v (x v)
+-- lean/ToyDataflow/MopMfp.lean:193-197
+theorem isMOPAt_of_isLeastSolution_of_distributive_of_strict
+    (L : Lat α) (G : CFG n α) (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
+    (hdist : ∀ u, Distributive L (G.f u)) (hstrict : ∀ u, Strict L (G.f u))
+    {x : Fin n → α} (hx : IsLeastSolution L G x) (v : Fin n) :
+    IsMOPAt L G v (x v)
 ```
 
 ```lean
-theorem exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict {n : Nat}
-  {α : Type} (L : Lat α) (G : CFG n α) (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
-  (hdist : ∀ (u : Fin n), Distributive L (G.f u)) (hstrict : UnreachableStrict L G) :
-  ∃ x, IsLeastSolution L G x ∧ ∀ (v : Fin n), IsMOPAt L G v (x v)
+-- lean/ToyDataflow/MopMfp.lean:204-207
+theorem exists_isLeastSolution_and_isMOPAt_of_distributive_of_unreachableStrict
+    (L : Lat α) (G : CFG n α) (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
+    (hdist : ∀ u, Distributive L (G.f u)) (hstrict : UnreachableStrict L G) :
+    ∃ x : Fin n → α, IsLeastSolution L G x ∧ ∀ v, IsMOPAt L G v (x v)
 ```
 
 ```lean
-theorem exists_isLeastSolution_of_monotone_of_acc {n : Nat} {α : Type} (L : Lat α)
-  (G : CFG n α) (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
-  (hmono : ∀ (u : Fin n), Monotone L (G.f u)) : ∃ x, IsLeastSolution L G x
+-- lean/ToyDataflow/MopMfp.lean:108-110
+theorem exists_isLeastSolution_of_monotone_of_acc (L : Lat α) (G : CFG n α)
+    (hL : L.IsJSL) (hacc : L.AscendingChainCondition) (hmono : ∀ u, Monotone L (G.f u)) :
+    ∃ x : Fin n → α, IsLeastSolution L G x
 ```
 
 **Hypothesis ledger.**
@@ -870,34 +968,42 @@ theorem exists_isLeastSolution_of_monotone_of_acc {n : Nat} {α : Type} (L : Lat
 **Lean statements.** Basis: execution (Lean kernel check).
 
 ```lean
-theorem diamondExact_iff_distributiveOnRealizable_of_monotone {α : Type} {L : Lat α}
-  (hL : L.IsJSL) (I : α → Prop) (F : (α → α) → Prop) (hmono : ∀ (φ : α → α), F φ → Monotone L φ) :
-  DiamondExact L I F ↔ DistributiveOnRealizable L I F
+-- lean/ToyDataflow/Diamond.lean:233-235
+theorem diamondExact_iff_distributiveOnRealizable_of_monotone {L : Lat α} (hL : L.IsJSL)
+    (I : α → Prop) (F : (α → α) → Prop) (hmono : ∀ φ, F φ → Monotone L φ) :
+    DiamondExact L I F ↔ DistributiveOnRealizable L I F
 ```
 
 ```lean
-theorem diamondExact_of_distributiveOnRealizable {α : Type} {L : Lat α} (hL : L.IsJSL)
-  {I : α → Prop} {F : (α → α) → Prop} (hd : DistributiveOnRealizable L I F) : DiamondExact L I F
+-- lean/ToyDataflow/Diamond.lean:215-217
+theorem diamondExact_of_distributiveOnRealizable {L : Lat α} (hL : L.IsJSL)
+    {I : α → Prop} {F : (α → α) → Prop} (hd : DistributiveOnRealizable L I F) :
+    DiamondExact L I F
 ```
 
 ```lean
-theorem distributiveOnRealizable_of_diamondExact_of_monotone {α : Type} {L : Lat α}
-  (hL : L.IsJSL) {I : α → Prop} {F : (α → α) → Prop} (hmono : ∀ (φ : α → α), F φ → Monotone L φ)
-  (he : DiamondExact L I F) : DistributiveOnRealizable L I F
+-- lean/ToyDataflow/Diamond.lean:223-225
+theorem distributiveOnRealizable_of_diamondExact_of_monotone {L : Lat α} (hL : L.IsJSL)
+    {I : α → Prop} {F : (α → α) → Prop} (hmono : ∀ φ, F φ → Monotone L φ)
+    (he : DiamondExact L I F) : DistributiveOnRealizable L I F
 ```
 
 ```lean
-theorem diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty {α : Type}
-  {L : Lat α} (hL : L.IsJSL) (I : α → Prop) (F : (α → α) → Prop)
-  (hmono : ∀ (φ : α → α), F φ → Monotone L φ) (hconst : ∀ (b : α), F fun x => b) (hI : ∃ a, I a) :
-  DiamondExact L I F ↔ ∀ (f : α → α), F f → Distributive L f
+-- lean/ToyDataflow/Diamond.lean:242-246
+theorem diamondExact_iff_distributive_of_monotone_of_const_mem_of_nonempty {L : Lat α}
+    (hL : L.IsJSL)
+    (I : α → Prop) (F : (α → α) → Prop) (hmono : ∀ φ, F φ → Monotone L φ)
+    (hconst : ∀ b, F (fun _ => b)) (hI : ∃ a, I a) :
+    DiamondExact L I F ↔ ∀ f, F f → Distributive L f
 ```
 
 ```lean
-theorem diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty {α : Type} {L : Lat α}
-  (hL : L.IsJSL) (hacc : L.AscendingChainCondition) (I : α → Prop) (F : (α → α) → Prop)
-  (hconst : ∀ (b : α), F fun x => b) (hI : ∃ a, I a) :
-  DiamondExact L I F ↔ ∀ (f : α → α), F f → Distributive L f
+-- lean/ToyDataflow/Diamond.lean:347-351
+theorem diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty {L : Lat α}
+    (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
+    (I : α → Prop) (F : (α → α) → Prop)
+    (hconst : ∀ b, F (fun _ => b)) (hI : ∃ a, I a) :
+    DiamondExact L I F ↔ ∀ f, F f → Distributive L f
 ```
 
 **Hypothesis ledger.**
@@ -954,24 +1060,24 @@ theorem diamondExact_iff_distributive_of_acc_of_const_mem_of_nonempty {α : Type
 **Lean statements.** Basis: execution (Lean kernel check).
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:237-240
 theorem cpDiamond_mfp_x_top_ne_mop_x_const3 (a : St) {x : Fin 5 → St}
-  (hx : IsLeastSolution cpLat (cpDiamond a) x) :
-  x 4 = { x := Flat.top, y := Flat.top, z := Flat.top } ∧
-    IsMOPAt cpLat (cpDiamond a) 4 { x := Flat.const 3, y := Flat.top, z := Flat.top } ∧
-      ¬IsMOPAt cpLat (cpDiamond a) 4 (x 4)
+    (hx : IsLeastSolution cpLat (cpDiamond a) x) :
+    x 4 = ⟨.top, .top, .top⟩ ∧ IsMOPAt cpLat (cpDiamond a) 4 ⟨.const 3, .top, .top⟩ ∧
+      ¬ IsMOPAt cpLat (cpDiamond a) 4 (x 4)
 ```
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:256-259
 theorem cpDiamond_exists_isLeastSolution_mfp_x_top_ne_mop_x_const3 (a : St) :
-  ∃ x,
-    IsLeastSolution cpLat (cpDiamond a) x ∧
-      x 4 = { x := Flat.top, y := Flat.top, z := Flat.top } ∧
-        IsMOPAt cpLat (cpDiamond a) 4 { x := Flat.const 3, y := Flat.top, z := Flat.top } ∧
-          ¬IsMOPAt cpLat (cpDiamond a) 4 (x 4)
+    ∃ x, IsLeastSolution cpLat (cpDiamond a) x ∧
+      x 4 = ⟨.top, .top, .top⟩ ∧ IsMOPAt cpLat (cpDiamond a) 4 ⟨.const 3, .top, .top⟩ ∧
+      ¬ IsMOPAt cpLat (cpDiamond a) 4 (x 4)
 ```
 
 ```lean
-theorem assignXYZ_not_distributive : ¬Distributive cpLat assignXYZ
+-- lean/ToyDataflow/ConstProp.lean:219
+theorem assignXYZ_not_distributive : ¬ Distributive cpLat assignXYZ
 ```
 
 The clause "the transfer of 'x := y + z' is monotone" of the plain claim is proved by the supporting theorem `assignXYZ_monotone` (statement under *Statements of counterexamples, witnesses, positive controls and supporting theorems*).
@@ -1008,39 +1114,47 @@ The clause "the transfer of 'x := y + z' is monotone" of the plain claim is prov
 **Lean statements.** Basis: execution (Lean kernel check).
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:112-113
 theorem genKill_distributive {k : Nat} (gen kill : Fin k → Bool) :
-  Distributive (bvLat k) (genKill gen kill)
+    Distributive (bvLat k) (genKill gen kill)
 ```
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:120-121
 theorem genKill_strict_iff {k : Nat} (gen kill : Fin k → Bool) :
-  Strict (bvLat k) (genKill gen kill) ↔ gen = fun x => false
+    Strict (bvLat k) (genKill gen kill) ↔ gen = fun _ => false
 ```
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:127-132
 theorem genKill_isMOPAt_of_isLeastSolution_of_unreachable_gen_empty {n k : Nat}
-  (G : CFG n (Fin k → Bool)) (gen kill : Fin n → Fin k → Bool)
-  (hG : ∀ (u : Fin n), G.f u = genKill (gen u) (kill u))
-  (hgen : ∀ (u : Fin n), ¬Reachable G u → gen u = fun x => false) {x : Fin n → Fin k → Bool}
-  (hx : IsLeastSolution (bvLat k) G x) (v : Fin n) : IsMOPAt (bvLat k) G v (x v)
+    (G : CFG n (Fin k → Bool)) (gen kill : Fin n → Fin k → Bool)
+    (hG : ∀ u, G.f u = genKill (gen u) (kill u))
+    (hgen : ∀ u, ¬ Reachable G u → gen u = fun _ => false)
+    {x : Fin n → Fin k → Bool} (hx : IsLeastSolution (bvLat k) G x) (v : Fin n) :
+    IsMOPAt (bvLat k) G v (x v)
 ```
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:141-146
 theorem genKill_exists_isLeastSolution_and_isMOPAt_of_unreachable_gen_empty {n k : Nat}
-  (G : CFG n (Fin k → Bool)) (gen kill : Fin n → Fin k → Bool)
-  (hG : ∀ (u : Fin n), G.f u = genKill (gen u) (kill u))
-  (hgen : ∀ (u : Fin n), ¬Reachable G u → gen u = fun x => false) :
-  ∃ x, IsLeastSolution (bvLat k) G x ∧ ∀ (v : Fin n), IsMOPAt (bvLat k) G v (x v)
+    (G : CFG n (Fin k → Bool)) (gen kill : Fin n → Fin k → Bool)
+    (hG : ∀ u, G.f u = genKill (gen u) (kill u))
+    (hgen : ∀ u, ¬ Reachable G u → gen u = fun _ => false) :
+    ∃ x : Fin n → Fin k → Bool, IsLeastSolution (bvLat k) G x ∧
+      ∀ v, IsMOPAt (bvLat k) G v (x v)
 ```
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:183-184
 theorem genKill_distributive_must {k : Nat} (gen kill : Fin k → Bool) :
-  Distributive (bvMustLat k) (genKill gen kill)
+    Distributive (bvMustLat k) (genKill gen kill)
 ```
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:192-193
 theorem genKill_strict_must_iff {k : Nat} (gen kill : Fin k → Bool) :
-  Strict (bvMustLat k) (genKill gen kill) ↔ ∀ (i : Fin k), kill i = true → gen i = true
+    Strict (bvMustLat k) (genKill gen kill) ↔ ∀ i, kill i = true → gen i = true
 ```
 
 **Hypothesis ledger.**
@@ -1080,28 +1194,33 @@ theorem genKill_strict_must_iff {k : Nat} (gen kill : Fin k → Bool) :
 **Lean statements.** Basis: execution (Lean kernel check).
 
 ```lean
-theorem kildall_isLeastSolution_of_monotone_of_eq_some {n : Nat} {α : Type} {L : Lat α}
-  [DecidableRel L.le] (hL : L.IsJSL) (G : CFG n α) (hmono : ∀ (u : Fin n), Monotone L (G.f u))
-  {fuel : Nat} {x : Fin n → α} (h : kildall L G fuel = some x) : IsLeastSolution L G x
+-- lean/ToyDataflow/Kildall.lean:185-187
+theorem kildall_isLeastSolution_of_monotone_of_eq_some {L : Lat α} [DecidableRel L.le]
+    (hL : L.IsJSL) (G : CFG n α) (hmono : ∀ u, Monotone L (G.f u)) {fuel : Nat}
+    {x : Fin n → α} (h : kildall L G fuel = some x) : IsLeastSolution L G x
 ```
 
 ```lean
-theorem kildall_isSolution_of_eq_some {n : Nat} {α : Type} {L : Lat α} [DecidableRel L.le]
-  (hL : L.IsJSL) (G : CFG n α) {fuel : Nat} {x : Fin n → α} (h : kildall L G fuel = some x) :
-  IsSolution L G x
+-- lean/ToyDataflow/Kildall.lean:236-238
+theorem kildall_isSolution_of_eq_some {L : Lat α} [DecidableRel L.le] (hL : L.IsJSL)
+    (G : CFG n α) {fuel : Nat} {x : Fin n → α} (h : kildall L G fuel = some x) :
+    IsSolution L G x
 ```
 
 ```lean
-theorem kildall_isSome_of_heightLe {n : Nat} {α : Type} {L : Lat α} [DecidableRel L.le]
-  (hL : L.IsJSL) (G : CFG n α) {h : Nat} (hh : L.HeightLe h) {fuel : Nat}
-  (hfuel : n * (h + 1) + 1 ≤ fuel) : (kildall L G fuel).isSome = true
+-- lean/ToyDataflow/Kildall.lean:390-392
+theorem kildall_isSome_of_heightLe {L : Lat α} [DecidableRel L.le] (hL : L.IsJSL)
+    (G : CFG n α) {h : Nat} (hh : L.HeightLe h) {fuel : Nat}
+    (hfuel : n * (h + 1) + 1 ≤ fuel) : (kildall L G fuel).isSome
 ```
 
 ```lean
-theorem kildall_eq_some_isLeastSolution_of_monotone_of_heightLe {n : Nat} {α : Type}
-  {L : Lat α} [DecidableRel L.le] (hL : L.IsJSL) (G : CFG n α)
-  (hmono : ∀ (u : Fin n), Monotone L (G.f u)) {h : Nat} (hh : L.HeightLe h) {fuel : Nat}
-  (hfuel : n * (h + 1) + 1 ≤ fuel) : ∃ x, kildall L G fuel = some x ∧ IsLeastSolution L G x
+-- lean/ToyDataflow/Kildall.lean:404-408
+theorem kildall_eq_some_isLeastSolution_of_monotone_of_heightLe {L : Lat α}
+    [DecidableRel L.le] (hL : L.IsJSL)
+    (G : CFG n α) (hmono : ∀ u, Monotone L (G.f u)) {h : Nat} (hh : L.HeightLe h)
+    {fuel : Nat} (hfuel : n * (h + 1) + 1 ≤ fuel) :
+    ∃ x, kildall L G fuel = some x ∧ IsLeastSolution L G x
 ```
 
 The last sentence of the plain claim (the fuel bound is attained) is proved by `kildall_fuel_bound_attained`, the counterexample recorded for `hfuel` in the hypothesis ledger below (statement under *Statements of counterexamples, witnesses, positive controls and supporting theorems*).
@@ -1160,11 +1279,12 @@ The last sentence of the plain claim (the fuel bound is attained) is proved by `
 **Lean statements.** Basis: execution (Lean kernel check).
 
 ```lean
-theorem kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe {n : Nat}
-  {α : Type} {L : Lat α} [DecidableRel L.le] (hL : L.IsJSL) (G : CFG n α)
-  (hdist : ∀ (u : Fin n), Distributive L (G.f u)) (hstrict : UnreachableStrict L G) {h : Nat}
-  (hh : L.HeightLe h) {fuel : Nat} (hfuel : n * (h + 1) + 1 ≤ fuel) :
-  ∃ x, kildall L G fuel = some x ∧ IsLeastSolution L G x ∧ ∀ (v : Fin n), IsMOPAt L G v (x v)
+-- lean/ToyDataflow/Kildall.lean:418-422
+theorem kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe
+    {L : Lat α} [DecidableRel L.le] (hL : L.IsJSL) (G : CFG n α)
+    (hdist : ∀ u, Distributive L (G.f u)) (hstrict : UnreachableStrict L G)
+    {h : Nat} (hh : L.HeightLe h) {fuel : Nat} (hfuel : n * (h + 1) + 1 ≤ fuel) :
+    ∃ x, kildall L G fuel = some x ∧ IsLeastSolution L G x ∧ ∀ v, IsMOPAt L G v (x v)
 ```
 
 **Hypothesis ledger.**
@@ -1216,15 +1336,14 @@ theorem kildall_eq_some_isMOPAt_of_distributive_of_unreachableStrict_of_heightLe
 **Lean statements.** Basis: execution (Lean kernel check).
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:434-440
 theorem exactness_needs_unreachableStrict :
-  (bvLat 1).IsJSL ∧
-    (bvLat 1).AscendingChainCondition ∧
-      (∀ (u : Fin 3), Distributive (bvLat 1) (ugCFG.f u)) ∧
-        (∀ (u : Fin 3), ugCFG.f u = genKill (ugGen u) (ugKill u)) ∧
-          ¬Reachable ugCFG 1 ∧
-            ¬UnreachableStrict (bvLat 1) ugCFG ∧
-              IsLeastSolution (bvLat 1) ugCFG ugSol ∧
-                Reachable ugCFG 2 ∧ ¬IsMOPAt (bvLat 1) ugCFG 2 (ugSol 2)
+    (bvLat 1).IsJSL ∧ (bvLat 1).AscendingChainCondition ∧
+      (∀ u, Distributive (bvLat 1) (ugCFG.f u)) ∧
+      (∀ u, ugCFG.f u = genKill (ugGen u) (ugKill u)) ∧
+      ¬ Reachable ugCFG 1 ∧ ¬ UnreachableStrict (bvLat 1) ugCFG ∧
+      IsLeastSolution (bvLat 1) ugCFG ugSol ∧ Reachable ugCFG 2 ∧
+      ¬ IsMOPAt (bvLat 1) ugCFG 2 (ugSol 2)
 ```
 
 The clause "MOP there is ∅" of the plain claim is proved by the supporting theorem `ugCFG_isMOPAt_two_empty` (statement under *Statements of counterexamples, witnesses, positive controls and supporting theorems*); `exactness_needs_unreachableStrict` above proves that the least solution's value `ugSol 2 = {0}` at node `2` is not MOP there.
@@ -1256,14 +1375,12 @@ The clause "MOP there is ∅" of the plain claim is proved by the supporting the
 **Lean statements.** Basis: execution (Lean kernel check).
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:311-315
 theorem exactness_needs_acc :
-  omegaLat.IsJSL ∧
-    ¬omegaLat.AscendingChainCondition ∧
-      (∀ (u : Fin 2), Distributive omegaLat (omegaCFG.f u)) ∧
-        AllReachable omegaCFG ∧
-          UnreachableStrict omegaLat omegaCFG ∧
-            IsLeastSolution omegaLat omegaCFG omegaSol ∧
-              IsMOPAt omegaLat omegaCFG 1 OmegaTwo.omega ∧ ¬IsMOPAt omegaLat omegaCFG 1 (omegaSol 1)
+    omegaLat.IsJSL ∧ ¬ omegaLat.AscendingChainCondition ∧
+      (∀ u, Distributive omegaLat (omegaCFG.f u)) ∧ AllReachable omegaCFG ∧
+      UnreachableStrict omegaLat omegaCFG ∧ IsLeastSolution omegaLat omegaCFG omegaSol ∧
+      IsMOPAt omegaLat omegaCFG 1 .omega ∧ ¬ IsMOPAt omegaLat omegaCFG 1 (omegaSol 1)
 ```
 
 The clause "every monotone map on it is distributive" of the plain claim is proved by the supporting theorem `omegaLat_monotone_distributive` (statement under *Statements of counterexamples, witnesses, positive controls and supporting theorems*).
@@ -1294,801 +1411,747 @@ Every Lean name referenced by a card other than its main statements, in alphabet
 `Lat.acc_of_heightLe` — cited in `kildall-computes-mop`.
 
 ```lean
-theorem Lat.acc_of_heightLe {α : Type} {L : Lat α} {h : Nat} (hh : L.HeightLe h) :
-  L.AscendingChainCondition
+-- lean/ToyDataflow/Lattice.lean:159
+theorem acc_of_heightLe {h : Nat} (hh : L.HeightLe h) : L.AscendingChainCondition
 ```
 
 `acc_strictly_weaker_than_heightLe` — cited in `mfp-eq-mop-exactness`; cited in `kildall-computes-mfp`; cited in `exactness-needs-acc`.
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:437-439
 theorem acc_strictly_weaker_than_heightLe :
-  unboundedChainsLat.IsJSL ∧
-    unboundedChainsLat.AscendingChainCondition ∧ ∀ (h : Nat), ¬unboundedChainsLat.HeightLe h
+    unboundedChainsLat.IsJSL ∧ unboundedChainsLat.AscendingChainCondition ∧
+      ∀ h, ¬ unboundedChainsLat.HeightLe h
 ```
 
 `assignXYZ_monotone` — cited in `constant-propagation-not-exact`.
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:214
 theorem assignXYZ_monotone : Monotone cpLat assignXYZ
 ```
 
 `assignYZ_distributive` — cited in `constant-propagation-not-exact`.
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:193
 theorem assignYZ_distributive (c d : Int) : Distributive cpLat (assignYZ c d)
 ```
 
 `assignYZ_not_strict` — cited in `constant-propagation-not-exact`.
 
 ```lean
-theorem assignYZ_not_strict (c d : Int) : ¬Strict cpLat (assignYZ c d)
+-- lean/ToyDataflow/ConstProp.lean:199
+theorem assignYZ_not_strict (c d : Int) : ¬ Strict cpLat (assignYZ c d)
 ```
 
 `cfg_empty_carrier_empty` — cited in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:36
 theorem cfg_empty_carrier_empty {n : Nat} (G : CFG n Empty) : False
 ```
 
 `cfg_zero_empty` — cited in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:31
 theorem cfg_zero_empty {α : Type} (G : CFG 0 α) : False
 ```
 
 `copyBit0_distributive` — cited in `gen-kill-distributive-and-exact`.
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:217
 theorem copyBit0_distributive : Distributive (bvLat 2) copyBit0
 ```
 
 `copyBit0_not_genKill` — cited in `gen-kill-distributive-and-exact`.
 
 ```lean
-theorem copyBit0_not_genKill :
-  ¬∃ gen kill, ∀ (a : Fin 2 → Bool), copyBit0 a = genKill gen kill a
+-- lean/ToyDataflow/GenKill.lean:221
+theorem copyBit0_not_genKill : ¬ ∃ gen kill, ∀ a, copyBit0 a = genKill gen kill a
 ```
 
 `copyXY_distributive` — cited in `constant-propagation-not-exact`.
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:210
 theorem copyXY_distributive : Distributive cpLat copyXY
 ```
 
 `cpDiamond_isLeastSolution` — non-vacuity witness of `constant-propagation-not-exact`.
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:229-230
 theorem cpDiamond_isLeastSolution (a : St) :
-  IsLeastSolution cpLat (cpDiamond a) (diamondSol cpLat a (assignYZ 1 2) (assignYZ 2 1) assignXYZ)
+    IsLeastSolution cpLat (cpDiamond a) (diamondSol cpLat a (assignYZ 1 2) (assignYZ 2 1) assignXYZ)
 ```
 
 `cpDiamond_mfp_needs_least` — counterexample for `hx` in `constant-propagation-not-exact`.
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:266-270
 theorem cpDiamond_mfp_needs_least (a : St) :
-  (¬IsLeastSolution cpLat (cpDiamond a) fun x =>
-        { x := Flat.const 3, y := Flat.top, z := Flat.top }) ∧
-    ¬((fun x => { x := Flat.const 3, y := Flat.top, z := Flat.top }) 4 =
-          { x := Flat.top, y := Flat.top, z := Flat.top } ∧
-        IsMOPAt cpLat (cpDiamond a) 4 { x := Flat.const 3, y := Flat.top, z := Flat.top } ∧
-          ¬IsMOPAt cpLat (cpDiamond a) 4
-              ((fun x => { x := Flat.const 3, y := Flat.top, z := Flat.top }) 4))
+    ¬ IsLeastSolution cpLat (cpDiamond a) (fun _ => ⟨.const 3, .top, .top⟩) ∧
+      ¬ ((fun _ => (⟨.const 3, .top, .top⟩ : St)) 4 = ⟨.top, .top, .top⟩ ∧
+        IsMOPAt cpLat (cpDiamond a) 4 ⟨.const 3, .top, .top⟩ ∧
+        ¬ IsMOPAt cpLat (cpDiamond a) 4 ((fun _ => (⟨.const 3, .top, .top⟩ : St)) 4))
 ```
 
 `cpDiamond_sameBranches_exact` — positive control of `constant-propagation-not-exact`.
 
 ```lean
+-- lean/ToyDataflow/ConstProp.lean:278-281
 theorem cpDiamond_sameBranches_exact (a : St) {x : Fin 5 → St}
-  (hx : IsLeastSolution cpLat (diamond a (assignYZ 1 2) (assignYZ 1 2) assignXYZ) x) :
-  (∀ (v : Fin 5), IsMOPAt cpLat (diamond a (assignYZ 1 2) (assignYZ 1 2) assignXYZ) v (x v)) ∧
-    (x 4).x = Flat.const 3
+    (hx : IsLeastSolution cpLat (diamond a (assignYZ 1 2) (assignYZ 1 2) assignXYZ) x) :
+    (∀ v, IsMOPAt cpLat (diamond a (assignYZ 1 2) (assignYZ 1 2) assignXYZ) v (x v)) ∧
+      (x 4).x = .const 3
 ```
 
 `cyclic_exactness_on_unboundedChainsLat` — non-vacuity witness of `mfp-eq-mop-exactness`; positive control of `exactness-needs-acc`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:242-248
 theorem cyclic_exactness_on_unboundedChainsLat (m : Nat) :
-  unboundedChainsLat.IsJSL ∧
-    unboundedChainsLat.AscendingChainCondition ∧
-      (∀ (h : Nat), ¬unboundedChainsLat.HeightLe h) ∧
-        (∀ (u : Fin 1), Distributive unboundedChainsLat ((stepMidCFG m).f u)) ∧
-          UnreachableStrict unboundedChainsLat (stepMidCFG m) ∧
-            ∃ x,
-              IsLeastSolution unboundedChainsLat (stepMidCFG m) x ∧
-                ∀ (v : Fin 1), IsMOPAt unboundedChainsLat (stepMidCFG m) v (x v)
+    unboundedChainsLat.IsJSL ∧ unboundedChainsLat.AscendingChainCondition ∧
+      (∀ h, ¬ unboundedChainsLat.HeightLe h) ∧
+      (∀ u, Distributive unboundedChainsLat ((stepMidCFG m).f u)) ∧
+      UnreachableStrict unboundedChainsLat (stepMidCFG m) ∧
+      ∃ x, IsLeastSolution unboundedChainsLat (stepMidCFG m) x ∧
+        ∀ v, IsMOPAt unboundedChainsLat (stepMidCFG m) v (x v)
 ```
 
 `diamondExact_const_mem_needs_monotone` — counterexample for `hmono` in `diamond-exactness-characterization`; counterexample for `hacc` in `diamond-exactness-characterization`.
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:33-39
 theorem diamondExact_const_mem_needs_monotone :
-  withBotIntLat.IsJSL ∧
-    ¬withBotIntLat.AscendingChainCondition ∧
-      (¬∀ (φ : WithBotInt → WithBotInt), wbNegFamily φ → Monotone withBotIntLat φ) ∧
-        (∀ (b : WithBotInt), wbNegFamily fun x => b) ∧
-          (∃ a, (fun x => True) a) ∧
-            DiamondExact withBotIntLat (fun x => True) wbNegFamily ∧
-              ¬∀ (f : WithBotInt → WithBotInt), wbNegFamily f → Distributive withBotIntLat f
+    withBotIntLat.IsJSL ∧ ¬ withBotIntLat.AscendingChainCondition ∧
+    ¬ (∀ φ, wbNegFamily φ → Monotone withBotIntLat φ) ∧
+    (∀ b, wbNegFamily (fun _ => b)) ∧
+    (∃ a : WithBotInt, (fun _ => True) a) ∧
+    DiamondExact withBotIntLat (fun _ => True) wbNegFamily ∧
+    ¬ (∀ f, wbNegFamily f → Distributive withBotIntLat f)
 ```
 
 `diamondExact_const_mem_nonvacuous` — non-vacuity witness of `diamond-exactness-characterization`; counterexample for `he` in `diamond-exactness-characterization`.
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:96-110
 theorem diamondExact_const_mem_nonvacuous :
-  ((bvLat 1).IsJSL ∧
-      (bvLat 1).AscendingChainCondition ∧
-        (∀ (φ : (Fin 1 → Bool) → Fin 1 → Bool),
-            (∃ gen kill, φ = genKill gen kill) → Monotone (bvLat 1) φ) ∧
-          (∀ (b : Fin 1 → Bool), ∃ gen kill, (fun x => b) = genKill gen kill) ∧
-            (∃ a, (fun x => True) a) ∧
-              (DiamondExact (bvLat 1) (fun x => True) fun φ => ∃ gen kill, φ = genKill gen kill) ∧
-                (DistributiveOnRealizable (bvLat 1) (fun x => True) fun φ =>
-                    ∃ gen kill, φ = genKill gen kill) ∧
-                  ∀ (f : (Fin 1 → Bool) → Fin 1 → Bool),
-                    (∃ gen kill, f = genKill gen kill) → Distributive (bvLat 1) f) ∧
-    cpLat.IsJSL ∧
-      cpLat.AscendingChainCondition ∧
-        (∀ (φ : St → St), (∃ b, φ = fun x => b) ∨ cpFamily φ → Monotone cpLat φ) ∧
-          (∀ (b : St), (∃ b', (fun x => b) = fun x => b') ∨ cpFamily fun x => b) ∧
-            (∃ a, (fun x => True) a) ∧
-              (¬DiamondExact cpLat (fun x => True) fun φ => (∃ b, φ = fun x => b) ∨ cpFamily φ) ∧
-                (¬DistributiveOnRealizable cpLat (fun x => True) fun φ =>
-                      (∃ b, φ = fun x => b) ∨ cpFamily φ) ∧
-                  ¬∀ (f : St → St), (∃ b, f = fun x => b) ∨ cpFamily f → Distributive cpLat f
+    ((bvLat 1).IsJSL ∧ (bvLat 1).AscendingChainCondition ∧
+        (∀ φ, (∃ gen kill, φ = genKill gen kill) → Monotone (bvLat 1) φ) ∧
+        (∀ b : Fin 1 → Bool, ∃ gen kill, (fun _ => b) = genKill gen kill) ∧
+        (∃ a : Fin 1 → Bool, (fun _ => True) a) ∧
+        DiamondExact (bvLat 1) (fun _ => True) (fun φ => ∃ gen kill, φ = genKill gen kill) ∧
+        DistributiveOnRealizable (bvLat 1) (fun _ => True) (fun φ => ∃ gen kill, φ = genKill gen kill) ∧
+        ∀ f, (∃ gen kill, f = genKill gen kill) → Distributive (bvLat 1) f) ∧
+      (cpLat.IsJSL ∧ cpLat.AscendingChainCondition ∧
+        (∀ φ, ((∃ b, φ = fun _ => b) ∨ cpFamily φ) → Monotone cpLat φ) ∧
+        (∀ b : St, (∃ b', (fun _ : St => b) = fun _ => b') ∨ cpFamily (fun _ => b)) ∧
+        (∃ a : St, (fun _ => True) a) ∧
+        ¬ DiamondExact cpLat (fun _ => True) (fun φ => (∃ b, φ = fun _ => b) ∨ cpFamily φ) ∧
+        ¬ DistributiveOnRealizable cpLat (fun _ => True) (fun φ => (∃ b, φ = fun _ => b) ∨ cpFamily φ) ∧
+        ¬ ∀ f, ((∃ b, f = fun _ => b) ∨ cpFamily f) → Distributive cpLat f)
 ```
 
 `diamondExact_const_needs_nonempty_init` — counterexample for `hI` in `diamond-exactness-characterization`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:619-624
 theorem diamondExact_const_needs_nonempty_init :
-  cpLat.IsJSL ∧
-    cpLat.AscendingChainCondition ∧
-      (¬∃ a, (fun x => False) a) ∧
-        (∀ (φ : St → St), (∃ b, φ = fun x => b) ∨ φ = assignXYZ → Monotone cpLat φ) ∧
-          (∀ (b : St), (∃ b', (fun x => b) = fun x => b') ∨ (fun x => b) = assignXYZ) ∧
-            (DiamondExact cpLat (fun x => False) fun φ => (∃ b, φ = fun x => b) ∨ φ = assignXYZ) ∧
-              ¬∀ (f : St → St), (∃ b, f = fun x => b) ∨ f = assignXYZ → Distributive cpLat f
+    cpLat.IsJSL ∧ cpLat.AscendingChainCondition ∧ ¬ (∃ a : St, (fun _ => False) a) ∧
+    (∀ φ, ((∃ b, φ = fun _ => b) ∨ φ = assignXYZ) → Monotone cpLat φ) ∧
+      (∀ b, (∃ b', (fun _ : St => b) = fun _ => b') ∨ (fun _ : St => b) = assignXYZ) ∧
+      DiamondExact cpLat (fun _ => False) (fun φ => (∃ b, φ = fun _ => b) ∨ φ = assignXYZ) ∧
+      ¬ (∀ f, ((∃ b, f = fun _ => b) ∨ f = assignXYZ) → Distributive cpLat f)
 ```
 
 `diamondExact_iff_nonvacuous` — non-vacuity witness of `diamond-exactness-characterization`; counterexample for `hd` in `diamond-exactness-characterization`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:595-600
 theorem diamondExact_iff_nonvacuous :
-  ((bvLat 1).IsJSL ∧
-      (∀ (φ : (Fin 1 → Bool) → Fin 1 → Bool),
-          (∃ gen kill, φ = genKill gen kill) → Monotone (bvLat 1) φ) ∧
-        DiamondExact (bvLat 1) (fun x => True) fun φ => ∃ gen kill, φ = genKill gen kill) ∧
-    cpLat.IsJSL ∧
-      (∀ (φ : St → St), cpFamily φ → Monotone cpLat φ) ∧
-        ¬DiamondExact cpLat (fun x => True) cpFamily
+    ((bvLat 1).IsJSL ∧
+        (∀ φ, (∃ gen kill, φ = genKill gen kill) → Monotone (bvLat 1) φ) ∧
+        DiamondExact (bvLat 1) (fun _ => True) (fun φ => ∃ gen kill, φ = genKill gen kill)) ∧
+      (cpLat.IsJSL ∧ (∀ φ, cpFamily φ → Monotone cpLat φ) ∧
+        ¬ DiamondExact cpLat (fun _ => True) cpFamily)
 ```
 
 `diamondExact_needs_distributiveOnRealizable` — counterexample for `hd` in `diamond-exactness-characterization`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:58-60
 theorem diamondExact_needs_distributiveOnRealizable :
-  cpLat.IsJSL ∧
-    ¬DistributiveOnRealizable cpLat (fun x => True) cpFamily ∧
-      ¬DiamondExact cpLat (fun x => True) cpFamily
+    cpLat.IsJSL ∧ ¬ DistributiveOnRealizable cpLat (fun _ => True) cpFamily ∧
+      ¬ DiamondExact cpLat (fun _ => True) cpFamily
 ```
 
 `diamondExact_needs_monotone` — counterexample for `hmono` in `diamond-exactness-characterization`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:551-554
 theorem diamondExact_needs_monotone :
-  boolLat.IsJSL ∧
-    (¬∀ (φ : Bool → Bool), idNotFamily φ → Monotone boolLat φ) ∧
-      DiamondExact boolLat (fun x => x = false) idNotFamily ∧
-        ¬DistributiveOnRealizable boolLat (fun x => x = false) idNotFamily
+    boolLat.IsJSL ∧ ¬ (∀ φ, idNotFamily φ → Monotone boolLat φ) ∧
+      DiamondExact boolLat (· = false) idNotFamily ∧
+      ¬ DistributiveOnRealizable boolLat (· = false) idNotFamily
 ```
 
 `diamondExact_not_exact_on_two_step_branches` — cited in `diamond-exactness-characterization`.
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:406-420
 theorem diamondExact_not_exact_on_two_step_branches :
-  cpLat.IsJSL ∧
-    cpLat.AscendingChainCondition ∧
-      (∀ (φ : St → St), twoStepFamily φ → Monotone cpLat φ) ∧
-        DiamondExact cpLat (fun x => x = { x := Flat.top, y := Flat.top, z := Flat.top })
-            twoStepFamily ∧
-          (∀ (v : Fin 7),
-              v ≠ 0 →
-                v ≠ 6 →
-                  twoStepFamily
-                    ((diamond2 { x := Flat.top, y := Flat.top, z := Flat.top } (setY 1) (setZ 2)
-                          (setY 2) (setZ 1) assignXYZ).f
-                      v)) ∧
-            IsLeastSolution cpLat
-                (diamond2 { x := Flat.top, y := Flat.top, z := Flat.top } (setY 1) (setZ 2) (setY 2)
-                  (setZ 1) assignXYZ)
-                (diamond2Sol cpLat { x := Flat.top, y := Flat.top, z := Flat.top } (setY 1) (setZ 2)
-                  (setY 2) (setZ 1) assignXYZ) ∧
-              diamond2Sol cpLat { x := Flat.top, y := Flat.top, z := Flat.top } (setY 1) (setZ 2)
-                    (setY 2) (setZ 1) assignXYZ 6 =
-                  { x := Flat.top, y := Flat.top, z := Flat.top } ∧
-                IsMOPAt cpLat
-                    (diamond2 { x := Flat.top, y := Flat.top, z := Flat.top } (setY 1) (setZ 2)
-                      (setY 2) (setZ 1) assignXYZ)
-                    6 { x := Flat.const 3, y := Flat.top, z := Flat.top } ∧
-                  ¬IsMOPAt cpLat
-                      (diamond2 { x := Flat.top, y := Flat.top, z := Flat.top } (setY 1) (setZ 2)
-                        (setY 2) (setZ 1) assignXYZ)
-                      6
-                      (diamond2Sol cpLat { x := Flat.top, y := Flat.top, z := Flat.top } (setY 1)
-                        (setZ 2) (setY 2) (setZ 1) assignXYZ 6)
+    cpLat.IsJSL ∧ cpLat.AscendingChainCondition ∧
+      (∀ φ, twoStepFamily φ → Monotone cpLat φ) ∧
+      DiamondExact cpLat (· = ⟨.top, .top, .top⟩) twoStepFamily ∧
+      (∀ v : Fin 7, v ≠ 0 → v ≠ 6 → twoStepFamily
+        ((diamond2 ⟨.top, .top, .top⟩ (setY 1) (setZ 2) (setY 2) (setZ 1) assignXYZ).f v)) ∧
+      IsLeastSolution cpLat
+        (diamond2 ⟨.top, .top, .top⟩ (setY 1) (setZ 2) (setY 2) (setZ 1) assignXYZ)
+        (diamond2Sol cpLat ⟨.top, .top, .top⟩ (setY 1) (setZ 2) (setY 2) (setZ 1) assignXYZ) ∧
+      diamond2Sol cpLat ⟨.top, .top, .top⟩ (setY 1) (setZ 2) (setY 2) (setZ 1) assignXYZ 6 =
+        ⟨.top, .top, .top⟩ ∧
+      IsMOPAt cpLat (diamond2 ⟨.top, .top, .top⟩ (setY 1) (setZ 2) (setY 2) (setZ 1) assignXYZ)
+        6 ⟨.const 3, .top, .top⟩ ∧
+      ¬ IsMOPAt cpLat (diamond2 ⟨.top, .top, .top⟩ (setY 1) (setZ 2) (setY 2) (setZ 1) assignXYZ)
+        6 (diamond2Sol cpLat ⟨.top, .top, .top⟩ (setY 1) (setZ 2) (setY 2) (setZ 1) assignXYZ 6)
 ```
 
 `diamondExact_singleton_of_not_distributive` — positive control of `diamond-exactness-characterization`; counterexample for `hconst` in `diamond-exactness-characterization`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:574-579
 theorem diamondExact_singleton_of_not_distributive :
-  cpLat.IsJSL ∧
-    cpLat.AscendingChainCondition ∧
-      (∀ (φ : St → St), φ = assignXYZ → Monotone cpLat φ) ∧
-        (∃ a, (fun x => True) a) ∧
-          (¬∀ (b : St), (fun x => b) = assignXYZ) ∧
-            (DiamondExact cpLat (fun x => True) fun φ => φ = assignXYZ) ∧
-              ¬Distributive cpLat assignXYZ
+    cpLat.IsJSL ∧ cpLat.AscendingChainCondition ∧
+      (∀ φ, φ = assignXYZ → Monotone cpLat φ) ∧ (∃ a : St, (fun _ => True) a) ∧
+      ¬ (∀ b : St, (fun _ : St => b) = assignXYZ) ∧
+      DiamondExact cpLat (fun _ => True) (fun φ => φ = assignXYZ) ∧
+      ¬ Distributive cpLat assignXYZ
 ```
 
 `diamond_entry_id_matters` — cited in `diamond-exactness-characterization`.
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:162-168
 theorem diamond_entry_id_matters :
-  have I := fun a => a = fun i => decide (i = 2);
-  (∀ (φ : (Fin 3 → Bool) → Fin 3 → Bool), bv3Family φ → Monotone (bvLat 3) φ) ∧
-    ¬DiamondExact (bvLat 3) I bv3Family ∧
-      ∀ (k : (Fin 3 → Bool) → Fin 3 → Bool) (a : Fin 3 → Bool)
-        (g h f : (Fin 3 → Bool) → Fin 3 → Bool),
-        bv3Family k →
-          I a →
-            bv3Family g →
-              bv3Family h →
-                bv3Family f →
-                  ∀ (x : Fin 5 → Fin 3 → Bool),
-                    IsLeastSolution (bvLat 3) (diamondWithEntry k a g h f) x →
-                      ∀ (v : Fin 5), IsMOPAt (bvLat 3) (diamondWithEntry k a g h f) v (x v)
+    let I : (Fin 3 → Bool) → Prop := fun a => a = fun i => decide (i = 2)
+    (∀ φ, bv3Family φ → Monotone (bvLat 3) φ) ∧
+      ¬ DiamondExact (bvLat 3) I bv3Family ∧
+      ∀ k a g h f, bv3Family k → I a → bv3Family g → bv3Family h → bv3Family f →
+        ∀ x, IsLeastSolution (bvLat 3) (diamondWithEntry k a g h f) x →
+          ∀ v, IsMOPAt (bvLat 3) (diamondWithEntry k a g h f) v (x v)
 ```
 
 `distributive_of_monotone_of_total` — cited in `exactness-needs-acc`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:272-274
 theorem distributive_of_monotone_of_total {α : Type} {L : Lat α} (hL : L.IsJSL)
-  (htot : ∀ (a b : α), L.le a b ∨ L.le b a) {f : α → α} (hf : Monotone L f) : Distributive L f
+    (htot : ∀ a b, L.le a b ∨ L.le b a) {f : α → α} (hf : Monotone L f) :
+    Distributive L f
 ```
 
 `exactness_corollaries_combined_counterexample` — counterexample for `hreach` in `mfp-eq-mop-exactness`; counterexample for `hstrict` in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:124-129
 theorem exactness_corollaries_combined_counterexample :
-  (bvLat 1).IsJSL ∧
-    (bvLat 1).AscendingChainCondition ∧
-      (∀ (u : Fin 3), Distributive (bvLat 1) (ugCFG.f u)) ∧
-        ¬AllReachable ugCFG ∧
-          (¬∀ (u : Fin 3), Strict (bvLat 1) (ugCFG.f u)) ∧
-            IsLeastSolution (bvLat 1) ugCFG ugSol ∧ ¬IsMOPAt (bvLat 1) ugCFG 2 (ugSol 2)
+    (bvLat 1).IsJSL ∧ (bvLat 1).AscendingChainCondition ∧
+      (∀ u, Distributive (bvLat 1) (ugCFG.f u)) ∧
+      ¬ AllReachable ugCFG ∧ ¬ (∀ u, Strict (bvLat 1) (ugCFG.f u)) ∧
+      IsLeastSolution (bvLat 1) ugCFG ugSol ∧
+      ¬ IsMOPAt (bvLat 1) ugCFG 2 (ugSol 2)
 ```
 
 `exactness_corollaries_need_allReachable_or_strict` — counterexample for `hreach` in `mfp-eq-mop-exactness`; counterexample for `hstrict` in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:377-379
 theorem exactness_corollaries_need_allReachable_or_strict :
-  ¬AllReachable ugCFG ∧
-    (¬∀ (u : Fin 3), Strict (bvLat 1) (ugCFG.f u)) ∧
-      IsLeastSolution (bvLat 1) ugCFG ugSol ∧ ¬IsMOPAt (bvLat 1) ugCFG 2 (ugSol 2)
+    ¬ AllReachable ugCFG ∧ ¬ (∀ u, Strict (bvLat 1) (ugCFG.f u)) ∧
+      IsLeastSolution (bvLat 1) ugCFG ugSol ∧ ¬ IsMOPAt (bvLat 1) ugCFG 2 (ugSol 2)
 ```
 
 `exactness_holds_on_unboundedChainsLat` — non-vacuity witness of `mfp-eq-mop-exactness`; cited in `kildall-computes-mfp`; positive control of `exactness-needs-acc`.
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:314-319
 theorem exactness_holds_on_unboundedChainsLat :
-  ∃ G x,
-    (∀ (u : Fin 2), Distributive unboundedChainsLat (G.f u)) ∧
+    ∃ (G : CFG 2 UnboundedChains) (x : Fin 2 → UnboundedChains),
+      (∀ u, Distributive unboundedChainsLat (G.f u)) ∧
       UnreachableStrict unboundedChainsLat G ∧
-        IsLeastSolution unboundedChainsLat G x ∧ ∀ (v : Fin 2), IsMOPAt unboundedChainsLat G v (x v)
+      IsLeastSolution unboundedChainsLat G x ∧
+      ∀ v, IsMOPAt unboundedChainsLat G v (x v)
 ```
 
 `exactness_needs_distributive` — cited in `mop-le-solution-soundness`; counterexample for `hdist` in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:365-374
 theorem exactness_needs_distributive :
-  cpLat.IsJSL ∧
-    cpLat.AscendingChainCondition ∧
-      AllReachable (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) ∧
-        UnreachableStrict cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) ∧
-          (∀ (u : Fin 5),
-              Monotone cpLat ((cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }).f u)) ∧
-            (¬∀ (u : Fin 5),
-                  Distributive cpLat
-                    ((cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }).f u)) ∧
-              IsLeastSolution cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top })
-                  (diamondSol cpLat { x := Flat.top, y := Flat.top, z := Flat.top } (assignYZ 1 2)
-                    (assignYZ 2 1) assignXYZ) ∧
-                ¬IsMOPAt cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) 4
-                    (diamondSol cpLat { x := Flat.top, y := Flat.top, z := Flat.top } (assignYZ 1 2)
-                      (assignYZ 2 1) assignXYZ 4)
+    cpLat.IsJSL ∧ cpLat.AscendingChainCondition ∧
+      AllReachable (cpDiamond ⟨.top, .top, .top⟩) ∧
+      UnreachableStrict cpLat (cpDiamond ⟨.top, .top, .top⟩) ∧
+      (∀ u, Monotone cpLat ((cpDiamond ⟨.top, .top, .top⟩).f u)) ∧
+      ¬ (∀ u, Distributive cpLat ((cpDiamond ⟨.top, .top, .top⟩).f u)) ∧
+      IsLeastSolution cpLat (cpDiamond ⟨.top, .top, .top⟩)
+        (diamondSol cpLat ⟨.top, .top, .top⟩ (assignYZ 1 2) (assignYZ 2 1) assignXYZ) ∧
+      ¬ IsMOPAt cpLat (cpDiamond ⟨.top, .top, .top⟩) 4
+        (diamondSol cpLat ⟨.top, .top, .top⟩ (assignYZ 1 2) (assignYZ 2 1) assignXYZ 4)
 ```
 
 `exactness_needs_least` — counterexample for `hx` in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:99-105
 theorem exactness_needs_least :
-  (bvLat 2).IsJSL ∧
-    (bvLat 2).AscendingChainCondition ∧
-      (∀ (u : Fin 2), Distributive (bvLat 2) (loopGK.f u)) ∧
-        UnreachableStrict (bvLat 2) loopGK ∧
-          AllReachable loopGK ∧
-            (IsSolution (bvLat 2) loopGK fun x x_1 => true) ∧
-              (¬IsLeastSolution (bvLat 2) loopGK fun x x_1 => true) ∧
-                ¬IsMOPAt (bvLat 2) loopGK 0 fun x => true
+    (bvLat 2).IsJSL ∧ (bvLat 2).AscendingChainCondition ∧
+      (∀ u, Distributive (bvLat 2) (loopGK.f u)) ∧ UnreachableStrict (bvLat 2) loopGK ∧
+      AllReachable loopGK ∧
+      IsSolution (bvLat 2) loopGK (fun _ _ => true) ∧
+      ¬ IsLeastSolution (bvLat 2) loopGK (fun _ _ => true) ∧
+      ¬ IsMOPAt (bvLat 2) loopGK 0 (fun _ => true)
 ```
 
 `exactness_nonvacuous` — non-vacuity witness of `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:55-58
 theorem exactness_nonvacuous :
-  (bvLat 2).IsJSL ∧
-    (bvLat 2).AscendingChainCondition ∧
-      (∀ (u : Fin 2), Distributive (bvLat 2) (loopGK.f u)) ∧
-        UnreachableStrict (bvLat 2) loopGK ∧
-          AllReachable loopGK ∧ IsLeastSolution (bvLat 2) loopGK loopGKSol
+    (bvLat 2).IsJSL ∧ (bvLat 2).AscendingChainCondition ∧
+      (∀ u, Distributive (bvLat 2) (loopGK.f u)) ∧ UnreachableStrict (bvLat 2) loopGK ∧
+      AllReachable loopGK ∧ IsLeastSolution (bvLat 2) loopGK loopGKSol
 ```
 
 `exists_exactness_combined_counterexamples` — counterexample for `hacc` in `mfp-eq-mop-exactness`; counterexample for `hdist` in `mfp-eq-mop-exactness`; counterexample for `hstrict` in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:71-86
 theorem exists_exactness_combined_counterexamples :
-  (omegaLat.IsJSL ∧
-      ¬omegaLat.AscendingChainCondition ∧
-        (∀ (u : Fin 2), Distributive omegaLat (omegaCFG.f u)) ∧
-          UnreachableStrict omegaLat omegaCFG ∧
-            ¬∃ x,
-                IsLeastSolution omegaLat omegaCFG x ∧
-                  ∀ (v : Fin 2), IsMOPAt omegaLat omegaCFG v (x v)) ∧
-    (cpLat.IsJSL ∧
-        cpLat.AscendingChainCondition ∧
-          (¬∀ (u : Fin 5),
-                Distributive cpLat
-                  ((cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }).f u)) ∧
-            UnreachableStrict cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) ∧
-              ¬∃ x,
-                  IsLeastSolution cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top })
-                      x ∧
-                    ∀ (v : Fin 5),
-                      IsMOPAt cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) v
-                        (x v)) ∧
-      (bvLat 1).IsJSL ∧
-        (bvLat 1).AscendingChainCondition ∧
-          (∀ (u : Fin 3), Distributive (bvLat 1) (ugCFG.f u)) ∧
-            ¬UnreachableStrict (bvLat 1) ugCFG ∧
-              ¬∃ x,
-                  IsLeastSolution (bvLat 1) ugCFG x ∧ ∀ (v : Fin 3), IsMOPAt (bvLat 1) ugCFG v (x v)
+    (omegaLat.IsJSL ∧ ¬ omegaLat.AscendingChainCondition ∧
+        (∀ u, Distributive omegaLat (omegaCFG.f u)) ∧
+        UnreachableStrict omegaLat omegaCFG ∧
+        ¬ ∃ x, IsLeastSolution omegaLat omegaCFG x ∧
+          ∀ v, IsMOPAt omegaLat omegaCFG v (x v)) ∧
+      (cpLat.IsJSL ∧ cpLat.AscendingChainCondition ∧
+        ¬ (∀ u, Distributive cpLat ((cpDiamond ⟨.top, .top, .top⟩).f u)) ∧
+        UnreachableStrict cpLat (cpDiamond ⟨.top, .top, .top⟩) ∧
+        ¬ ∃ x, IsLeastSolution cpLat (cpDiamond ⟨.top, .top, .top⟩) x ∧
+          ∀ v, IsMOPAt cpLat (cpDiamond ⟨.top, .top, .top⟩) v (x v)) ∧
+      ((bvLat 1).IsJSL ∧ (bvLat 1).AscendingChainCondition ∧
+        (∀ u, Distributive (bvLat 1) (ugCFG.f u)) ∧
+        ¬ UnreachableStrict (bvLat 1) ugCFG ∧
+        ¬ ∃ x, IsLeastSolution (bvLat 1) ugCFG x ∧
+          ∀ v, IsMOPAt (bvLat 1) ugCFG v (x v))
 ```
 
 `exists_exactness_counterexamples` — counterexample for `hacc` in `mfp-eq-mop-exactness`; counterexample for `hdist` in `mfp-eq-mop-exactness`; counterexample for `hstrict` in `mfp-eq-mop-exactness`; counterexample for `hG` in `gen-kill-distributive-and-exact`; counterexample for `hgen` in `gen-kill-distributive-and-exact`.
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:339-344
 theorem exists_exactness_counterexamples :
-  (¬∃ x, IsLeastSolution omegaLat omegaCFG x ∧ ∀ (v : Fin 2), IsMOPAt omegaLat omegaCFG v (x v)) ∧
-    (¬∃ x,
-          IsLeastSolution cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) x ∧
-            ∀ (v : Fin 5),
-              IsMOPAt cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) v (x v)) ∧
-      (¬∃ x, IsLeastSolution (bvLat 1) ugCFG x ∧ ∀ (v : Fin 3), IsMOPAt (bvLat 1) ugCFG v (x v)) ∧
-        ¬∃ x,
-            IsLeastSolution (bvLat 2) bbDiamond x ∧
-              ∀ (v : Fin 5), IsMOPAt (bvLat 2) bbDiamond v (x v)
+    (¬ ∃ x, IsLeastSolution omegaLat omegaCFG x ∧ ∀ v, IsMOPAt omegaLat omegaCFG v (x v)) ∧
+      (¬ ∃ x, IsLeastSolution cpLat (cpDiamond ⟨.top, .top, .top⟩) x ∧
+        ∀ v, IsMOPAt cpLat (cpDiamond ⟨.top, .top, .top⟩) v (x v)) ∧
+      (¬ ∃ x, IsLeastSolution (bvLat 1) ugCFG x ∧ ∀ v, IsMOPAt (bvLat 1) ugCFG v (x v)) ∧
+      (¬ ∃ x, IsLeastSolution (bvLat 2) bbDiamond x ∧ ∀ v, IsMOPAt (bvLat 2) bbDiamond v (x v))
 ```
 
 `exists_isLeastSolution_counterexamples` — counterexample for `hacc` in `mfp-eq-mop-exactness`; counterexample for `hmono` in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:360-365
 theorem exists_isLeastSolution_counterexamples :
-  (natMaxLat.IsJSL ∧
-      ¬natMaxLat.AscendingChainCondition ∧
-        (∀ (u : Fin 1), Monotone natMaxLat (succCFG.f u)) ∧
-          ¬∃ x, IsLeastSolution natMaxLat succCFG x) ∧
-    boolLat.IsJSL ∧
-      boolLat.AscendingChainCondition ∧
-        (¬∀ (u : Fin 5), Monotone boolLat ((diamond false id (fun b => !b) fun b => !b).f u)) ∧
-          ¬∃ x, IsLeastSolution boolLat (diamond false id (fun b => !b) fun b => !b) x
+    (natMaxLat.IsJSL ∧ ¬ natMaxLat.AscendingChainCondition ∧
+        (∀ u, Monotone natMaxLat (succCFG.f u)) ∧ ¬ ∃ x, IsLeastSolution natMaxLat succCFG x) ∧
+      (boolLat.IsJSL ∧ boolLat.AscendingChainCondition ∧
+        ¬ (∀ u, Monotone boolLat ((diamond false id (fun b => !b) (fun b => !b)).f u)) ∧
+        ¬ ∃ x, IsLeastSolution boolLat (diamond false id (fun b => !b) (fun b => !b)) x)
 ```
 
 `exists_isMOPAt_of_acc` — cited in `mop-le-solution-soundness`.
 
 ```lean
-theorem exists_isMOPAt_of_acc {n : Nat} {α : Type} (L : Lat α) (G : CFG n α) (hL : L.IsJSL)
-  (hacc : L.AscendingChainCondition) (v : Fin n) : ∃ m, IsMOPAt L G v m
+-- lean/ToyDataflow/MopMfp.lean:100-101
+theorem exists_isMOPAt_of_acc (L : Lat α) (G : CFG n α) (hL : L.IsJSL)
+    (hacc : L.AscendingChainCondition) (v : Fin n) : ∃ m, IsMOPAt L G v m
 ```
 
 `genKill_exactness_needs_genKill_form` — counterexample for `hG` in `gen-kill-distributive-and-exact`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:487-490
 theorem genKill_exactness_needs_genKill_form :
-  (bvLat 2).IsJSL ∧
-    AllReachable bbDiamond ∧
-      (∀ (u : Fin 5), Monotone (bvLat 2) (bbDiamond.f u)) ∧
-        (¬∃ gen kill, ∀ (a : Fin 2 → Bool), bbDiamond.f 3 a = genKill gen kill a) ∧
-          IsLeastSolution (bvLat 2) bbDiamond bbSol ∧ ¬IsMOPAt (bvLat 2) bbDiamond 4 (bbSol 4)
+    (bvLat 2).IsJSL ∧ AllReachable bbDiamond ∧ (∀ u, Monotone (bvLat 2) (bbDiamond.f u)) ∧
+      ¬ (∃ gen kill, ∀ a, bbDiamond.f 3 a = genKill gen kill a) ∧
+      IsLeastSolution (bvLat 2) bbDiamond bbSol ∧ ¬ IsMOPAt (bvLat 2) bbDiamond 4 (bbSol 4)
 ```
 
 `genKill_exactness_needs_unreachable_gen_empty` — counterexample for `hgen` in `gen-kill-distributive-and-exact`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:463-466
 theorem genKill_exactness_needs_unreachable_gen_empty :
-  (∀ (u : Fin 3), ugCFG.f u = genKill (ugGen u) (ugKill u)) ∧
-    (¬∀ (u : Fin 3), ¬Reachable ugCFG u → ugGen u = fun x => false) ∧
-      IsLeastSolution (bvLat 1) ugCFG ugSol ∧ ¬IsMOPAt (bvLat 1) ugCFG 2 (ugSol 2)
+    (∀ u, ugCFG.f u = genKill (ugGen u) (ugKill u)) ∧
+      ¬ (∀ u, ¬ Reachable ugCFG u → ugGen u = fun _ => false) ∧
+      IsLeastSolution (bvLat 1) ugCFG ugSol ∧ ¬ IsMOPAt (bvLat 1) ugCFG 2 (ugSol 2)
 ```
 
 `genKill_exactness_nonvacuous` — non-vacuity witness of `gen-kill-distributive-and-exact`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:77-80
 theorem genKill_exactness_nonvacuous :
-  (∀ (u : Fin 2), loopGK.f u = genKill (lgGen u) (lgKill u)) ∧
-    (∀ (u : Fin 2), ¬Reachable loopGK u → lgGen u = fun x => false) ∧
+    (∀ u, loopGK.f u = genKill (lgGen u) (lgKill u)) ∧
+      (∀ u, ¬ Reachable loopGK u → lgGen u = fun _ => false) ∧
       IsLeastSolution (bvLat 2) loopGK loopGKSol
 ```
 
 `genKill_exists_exactness_combined_counterexamples` — counterexample for `hG` in `gen-kill-distributive-and-exact`; counterexample for `hgen` in `gen-kill-distributive-and-exact`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:102-111
 theorem genKill_exists_exactness_combined_counterexamples :
-  ((∀ (gen kill : Fin 5 → Fin 2 → Bool),
-        (¬∀ (u : Fin 5), bbDiamond.f u = genKill (gen u) (kill u)) ∧
-          ∀ (u : Fin 5), ¬Reachable bbDiamond u → gen u = fun x => false) ∧
-      ¬∃ x,
-          IsLeastSolution (bvLat 2) bbDiamond x ∧
-            ∀ (v : Fin 5), IsMOPAt (bvLat 2) bbDiamond v (x v)) ∧
-    (∀ (u : Fin 3), ugCFG.f u = genKill (ugGen u) (ugKill u)) ∧
-      (¬∀ (u : Fin 3), ¬Reachable ugCFG u → ugGen u = fun x => false) ∧
-        ¬∃ x, IsLeastSolution (bvLat 1) ugCFG x ∧ ∀ (v : Fin 3), IsMOPAt (bvLat 1) ugCFG v (x v)
+    ((∀ gen kill : Fin 5 → Fin 2 → Bool,
+        ¬ (∀ u, bbDiamond.f u = genKill (gen u) (kill u)) ∧
+        (∀ u, ¬ Reachable bbDiamond u → gen u = fun _ => false)) ∧
+      ¬ ∃ x, IsLeastSolution (bvLat 2) bbDiamond x ∧
+        ∀ v, IsMOPAt (bvLat 2) bbDiamond v (x v)) ∧
+      ((∀ u, ugCFG.f u = genKill (ugGen u) (ugKill u)) ∧
+        ¬ (∀ u, ¬ Reachable ugCFG u → ugGen u = fun _ => false) ∧
+        ¬ ∃ x, IsLeastSolution (bvLat 1) ugCFG x ∧
+          ∀ v, IsMOPAt (bvLat 1) ugCFG v (x v))
 ```
 
 `genKill_killOnly_strict_may_not_must` — cited in `gen-kill-distributive-and-exact`.
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:205-207
 theorem genKill_killOnly_strict_may_not_must :
-  Strict (bvLat 1) (genKill (fun x => false) fun x => true) ∧
-    ¬Strict (bvMustLat 1) (genKill (fun x => false) fun x => true)
+    Strict (bvLat 1) (genKill (fun _ => false) (fun _ => true)) ∧
+      ¬ Strict (bvMustLat 1) (genKill (fun _ => false) (fun _ => true))
 ```
 
 `genKill_must_strict_nonempty_kill_nonvacuous` — non-vacuity witness of `gen-kill-distributive-and-exact`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:138-143
 theorem genKill_must_strict_nonempty_kill_nonvacuous :
-  have gen := fun i => decide (i = 0);
-  have kill := fun i => decide (i = 0);
-  (∃ i, kill i = true) ∧
-    Distributive (bvMustLat 2) (genKill gen kill) ∧ Strict (bvMustLat 2) (genKill gen kill)
+    let gen : Fin 2 → Bool := fun i => decide (i = 0)
+    let kill : Fin 2 → Bool := fun i => decide (i = 0)
+    (∃ i, kill i = true) ∧
+      Distributive (bvMustLat 2) (genKill gen kill) ∧
+      Strict (bvMustLat 2) (genKill gen kill)
 ```
 
 `isEquationSolution_of_isLeastSolution_of_monotone` — cited in `mop-le-solution-soundness`; cited in `diamond-exactness-characterization`; cited in `kildall-computes-mfp`.
 
 ```lean
-theorem isEquationSolution_of_isLeastSolution_of_monotone {n : Nat} {α : Type} {L : Lat α}
-  (hL : L.IsJSL) (G : CFG n α) (hmono : ∀ (u : Fin n), Monotone L (G.f u)) {x : Fin n → α}
-  (hx : IsLeastSolution L G x) : IsEquationSolution L G x
+-- lean/ToyDataflow/MopMfp.lean:137-139
+theorem isEquationSolution_of_isLeastSolution_of_monotone {L : Lat α} (hL : L.IsJSL)
+    (G : CFG n α) (hmono : ∀ u, Monotone L (G.f u)) {x : Fin n → α}
+    (hx : IsLeastSolution L G x) : IsEquationSolution L G x
 ```
 
 `kildall_acc_has_no_uniform_fuel` — cited in `mfp-eq-mop-exactness`; cited in `kildall-computes-mfp`; cited in `kildall-computes-mop`; cited in `exactness-needs-acc`.
 
 ```lean
+-- lean/ToyDataflow/KildallExamples.lean:231-234
 theorem kildall_acc_has_no_uniform_fuel :
-  unboundedChainsLat.IsJSL ∧
-    unboundedChainsLat.AscendingChainCondition ∧
-      ∀ (fuel : Nat),
-        ∃ G,
-          (∀ (u : Fin 1), Monotone unboundedChainsLat (G.f u)) ∧
-            kildall unboundedChainsLat G fuel = none
+    unboundedChainsLat.IsJSL ∧ unboundedChainsLat.AscendingChainCondition ∧
+      ∀ fuel : Nat, ∃ G : CFG 1 UnboundedChains,
+        (∀ u, Monotone unboundedChainsLat (G.f u)) ∧ kildall unboundedChainsLat G fuel = none
 ```
 
 `kildall_decidableRel_irrelevant` — cited in `kildall-computes-mfp`; cited in `kildall-computes-mop`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:43-45
 theorem kildall_decidableRel_irrelevant {n : Nat} {α : Type} {L : Lat α}
-  (d1 d2 : DecidableRel L.le) (G : CFG n α) (fuel : Nat) : kildall L G fuel = kildall L G fuel
+    (d1 d2 : DecidableRel L.le) (G : CFG n α) (fuel : Nat) :
+    @kildall n α L d1 G fuel = @kildall n α L d2 G fuel
 ```
 
 `kildall_fuel_bound_attained` — counterexample for `hfuel` in `kildall-computes-mfp`.
 
 ```lean
+-- lean/ToyDataflow/KildallExamples.lean:135-141
 theorem kildall_fuel_bound_attained (m h : Nat) :
-  (finChainLat h).IsJSL ∧
-    (∀ (u : Fin (m + 1)), Monotone (finChainLat h) ((selfLoopsCFG m h).f u)) ∧
-      (finChainLat h).HeightLe h ∧
-        ¬(m + 1) * (h + 1) + 1 ≤ (m + 1) * (h + 1) ∧
-          kildall (finChainLat h) (selfLoopsCFG m h) ((m + 1) * (h + 1)) = none ∧
-            (kildall (finChainLat h) (selfLoopsCFG m h) ((m + 1) * (h + 1) + 1)).isSome = true
+    (finChainLat h).IsJSL ∧
+    (∀ u, Monotone (finChainLat h) ((selfLoopsCFG m h).f u)) ∧
+    (finChainLat h).HeightLe h ∧
+    ¬ ((m + 1) * (h + 1) + 1 ≤ (m + 1) * (h + 1)) ∧
+    kildall (finChainLat h) (selfLoopsCFG m h) ((m + 1) * (h + 1)) = none ∧
+    (kildall (finChainLat h) (selfLoopsCFG m h) ((m + 1) * (h + 1) + 1)).isSome = true
 ```
 
 `kildall_isMOPAt_counterexamples` — counterexample for `hdist` in `kildall-computes-mop`; counterexample for `hstrict` in `kildall-computes-mop`; counterexample for `hh` in `kildall-computes-mop`; counterexample for `hfuel` in `kildall-computes-mop`.
 
 ```lean
+-- lean/ToyDataflow/KildallExamples.lean:277-300
 theorem kildall_isMOPAt_counterexamples :
-  (cpLat.IsJSL ∧
-      cpLat.HeightLe 6 ∧
-        5 * (6 + 1) + 1 ≤ 36 ∧
-          AllReachable (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) ∧
-            UnreachableStrict cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) ∧
-              (¬∀ (u : Fin 5),
-                    Distributive cpLat
-                      ((cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }).f u)) ∧
-                ¬∃ x,
-                    kildall cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) 36 =
-                        some x ∧
-                      IsLeastSolution cpLat
-                          (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top }) x ∧
-                        ∀ (v : Fin 5),
-                          IsMOPAt cpLat (cpDiamond { x := Flat.top, y := Flat.top, z := Flat.top })
-                            v (x v)) ∧
-    ((bvLat 1).IsJSL ∧
-        (bvLat 1).HeightLe 1 ∧
-          3 * (1 + 1) + 1 ≤ 7 ∧
-            (∀ (u : Fin 3), Distributive (bvLat 1) (ugCFG.f u)) ∧
-              ¬UnreachableStrict (bvLat 1) ugCFG ∧
-                ¬∃ x,
-                    kildall (bvLat 1) ugCFG 7 = some x ∧
-                      IsLeastSolution (bvLat 1) ugCFG x ∧
-                        ∀ (v : Fin 3), IsMOPAt (bvLat 1) ugCFG v (x v)) ∧
-      (natMaxLat.IsJSL ∧
-          (∀ (u : Fin 1), Distributive natMaxLat (succCFG.f u)) ∧
-            AllReachable succCFG ∧
-              UnreachableStrict natMaxLat succCFG ∧
-                (∀ (h : Nat), ¬natMaxLat.HeightLe h) ∧
-                  ∀ (fuel : Nat),
-                    ¬∃ x,
-                        kildall natMaxLat succCFG fuel = some x ∧
-                          IsLeastSolution natMaxLat succCFG x ∧
-                            ∀ (v : Fin 1), IsMOPAt natMaxLat succCFG v (x v)) ∧
-        ∀ (h : Nat),
-          (finChainLat h).IsJSL ∧
-            (∀ (u : Fin (0 + 1)), Distributive (finChainLat h) ((selfLoopsCFG 0 h).f u)) ∧
-              AllReachable (selfLoopsCFG 0 h) ∧
-                UnreachableStrict (finChainLat h) (selfLoopsCFG 0 h) ∧
-                  (finChainLat h).HeightLe h ∧
-                    ¬1 * (h + 1) + 1 ≤ 1 * (h + 1) ∧
-                      ¬∃ x,
-                          kildall (finChainLat h) (selfLoopsCFG 0 h) (1 * (h + 1)) = some x ∧
-                            IsLeastSolution (finChainLat h) (selfLoopsCFG 0 h) x ∧
-                              ∀ (v : Fin (0 + 1)),
-                                IsMOPAt (finChainLat h) (selfLoopsCFG 0 h) v (x v)
+    (cpLat.IsJSL ∧ cpLat.HeightLe 6 ∧ 5 * (6 + 1) + 1 ≤ 36 ∧
+        AllReachable (cpDiamond ⟨.top, .top, .top⟩) ∧
+        UnreachableStrict cpLat (cpDiamond ⟨.top, .top, .top⟩) ∧
+        ¬ (∀ u, Distributive cpLat ((cpDiamond ⟨.top, .top, .top⟩).f u)) ∧
+        ¬ ∃ x, kildall cpLat (cpDiamond ⟨.top, .top, .top⟩) 36 = some x ∧
+          IsLeastSolution cpLat (cpDiamond ⟨.top, .top, .top⟩) x ∧
+          ∀ v, IsMOPAt cpLat (cpDiamond ⟨.top, .top, .top⟩) v (x v)) ∧
+      ((bvLat 1).IsJSL ∧ (bvLat 1).HeightLe 1 ∧ 3 * (1 + 1) + 1 ≤ 7 ∧
+        (∀ u, Distributive (bvLat 1) (ugCFG.f u)) ∧ ¬ UnreachableStrict (bvLat 1) ugCFG ∧
+        ¬ ∃ x, kildall (bvLat 1) ugCFG 7 = some x ∧ IsLeastSolution (bvLat 1) ugCFG x ∧
+          ∀ v, IsMOPAt (bvLat 1) ugCFG v (x v)) ∧
+      (natMaxLat.IsJSL ∧ (∀ u, Distributive natMaxLat (succCFG.f u)) ∧ AllReachable succCFG ∧
+        UnreachableStrict natMaxLat succCFG ∧
+        (∀ h, ¬ natMaxLat.HeightLe h) ∧
+        ∀ fuel, ¬ ∃ x, kildall natMaxLat succCFG fuel = some x ∧
+          IsLeastSolution natMaxLat succCFG x ∧ ∀ v, IsMOPAt natMaxLat succCFG v (x v)) ∧
+      (∀ h, (finChainLat h).IsJSL ∧ (∀ u, Distributive (finChainLat h) ((selfLoopsCFG 0 h).f u)) ∧
+        AllReachable (selfLoopsCFG 0 h) ∧ UnreachableStrict (finChainLat h) (selfLoopsCFG 0 h) ∧
+        (finChainLat h).HeightLe h ∧
+        ¬ (1 * (h + 1) + 1 ≤ 1 * (h + 1)) ∧
+        ¬ ∃ x, kildall (finChainLat h) (selfLoopsCFG 0 h) (1 * (h + 1)) = some x ∧
+          IsLeastSolution (finChainLat h) (selfLoopsCFG 0 h) x ∧
+          ∀ v, IsMOPAt (finChainLat h) (selfLoopsCFG 0 h) v (x v))
 ```
 
 `kildall_isMOPAt_nonvacuous` — non-vacuity witness of `kildall-computes-mop`.
 
 ```lean
+-- lean/ToyDataflow/KildallExamples.lean:256-260
 theorem kildall_isMOPAt_nonvacuous :
-  (bvLat 2).IsJSL ∧
-    (∀ (u : Fin 2), Distributive (bvLat 2) (loopGK.f u)) ∧
-      UnreachableStrict (bvLat 2) loopGK ∧
-        (bvLat 2).HeightLe 2 ∧
-          2 * (2 + 1) + 1 ≤ 7 ∧
-            ∃ x,
-              kildall (bvLat 2) loopGK 7 = some x ∧
-                IsLeastSolution (bvLat 2) loopGK x ∧ ∀ (v : Fin 2), IsMOPAt (bvLat 2) loopGK v (x v)
+    (bvLat 2).IsJSL ∧ (∀ u, Distributive (bvLat 2) (loopGK.f u)) ∧
+      UnreachableStrict (bvLat 2) loopGK ∧ (bvLat 2).HeightLe 2 ∧ 2 * (2 + 1) + 1 ≤ 7 ∧
+      ∃ x, kildall (bvLat 2) loopGK 7 = some x ∧ IsLeastSolution (bvLat 2) loopGK x ∧
+        ∀ v, IsMOPAt (bvLat 2) loopGK v (x v)
 ```
 
 `kildall_needs_eq_some` — counterexample for `h` in `kildall-computes-mfp`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:731-736
 theorem kildall_needs_eq_some :
-  (bvLat 2).IsJSL ∧
-    (∀ (u : Fin 2), Monotone (bvLat 2) (loopGK.f u)) ∧
-      (kildall (bvLat 2) loopGK 7 ≠ some fun x x_1 => true) ∧
-        (¬IsLeastSolution (bvLat 2) loopGK fun x x_1 => true) ∧
-          (kildall (bvLat 2) loopGK 7 ≠ some fun x x_1 => false) ∧
-            ¬IsSolution (bvLat 2) loopGK fun x x_1 => false
+    (bvLat 2).IsJSL ∧ (∀ u, Monotone (bvLat 2) (loopGK.f u)) ∧
+      kildall (bvLat 2) loopGK 7 ≠ some (fun _ _ => true) ∧
+      ¬ IsLeastSolution (bvLat 2) loopGK (fun _ _ => true) ∧
+      kildall (bvLat 2) loopGK 7 ≠ some (fun _ _ => false) ∧
+      ¬ IsSolution (bvLat 2) loopGK (fun _ _ => false)
 ```
 
 `kildall_needs_heightLe` — counterexample for `hh` in `kildall-computes-mfp`; cited in `exactness-needs-acc`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:708-712
 theorem kildall_needs_heightLe :
-  natMaxLat.IsJSL ∧
-    (∀ (u : Fin 1), Monotone natMaxLat (succCFG.f u)) ∧
-      (∀ (u : Fin 1), Distributive natMaxLat (succCFG.f u)) ∧
-        AllReachable succCFG ∧
-          ¬natMaxLat.AscendingChainCondition ∧
-            (∀ (h : Nat), ¬natMaxLat.HeightLe h) ∧
-              ∀ (fuel : Nat), kildall natMaxLat succCFG fuel = none
+    natMaxLat.IsJSL ∧ (∀ u, Monotone natMaxLat (succCFG.f u)) ∧
+      (∀ u, Distributive natMaxLat (succCFG.f u)) ∧ AllReachable succCFG ∧
+      ¬ natMaxLat.AscendingChainCondition ∧ (∀ h, ¬ natMaxLat.HeightLe h) ∧
+      ∀ fuel, kildall natMaxLat succCFG fuel = none
 ```
 
 `kildall_needs_monotone` — counterexample for `hmono` in `kildall-computes-mfp`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:654-659
 theorem kildall_needs_monotone :
-  boolLat.IsJSL ∧
-    (¬∀ (u : Fin 2), Monotone boolLat (notCFG.f u)) ∧
-      boolLat.HeightLe 1 ∧
-        2 * (1 + 1) + 1 ≤ 10 ∧
-          (∃ x,
-              kildall boolLat notCFG 10 = some x ∧
-                (x 0, x 1) = (true, true) ∧
-                  IsSolution boolLat notCFG x ∧ ¬IsLeastSolution boolLat notCFG x) ∧
-            ¬∃ x, kildall boolLat notCFG 10 = some x ∧ IsLeastSolution boolLat notCFG x
+    boolLat.IsJSL ∧ ¬ (∀ u, Monotone boolLat (notCFG.f u)) ∧ boolLat.HeightLe 1 ∧
+      2 * (1 + 1) + 1 ≤ 10 ∧
+      (∃ x, kildall boolLat notCFG 10 = some x ∧ (x 0, x 1) = (true, true) ∧
+        IsSolution boolLat notCFG x ∧ ¬ IsLeastSolution boolLat notCFG x) ∧
+      ¬ ∃ x, kildall boolLat notCFG 10 = some x ∧ IsLeastSolution boolLat notCFG x
 ```
 
 `kildall_nonvacuous` — non-vacuity witness of `kildall-computes-mfp`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:750-754
 theorem kildall_nonvacuous :
-  (bvLat 2).IsJSL ∧
-    (∀ (u : Fin 2), Monotone (bvLat 2) (loopGK.f u)) ∧
-      (bvLat 2).HeightLe 2 ∧
-        2 * (2 + 1) + 1 ≤ 7 ∧
-          Option.map (fun x => (x 0 0, x 0 1, x 1 0, x 1 1)) (kildall (bvLat 2) loopGK 7) =
-            some (false, false, true, true)
+    (bvLat 2).IsJSL ∧ (∀ u, Monotone (bvLat 2) (loopGK.f u)) ∧ (bvLat 2).HeightLe 2 ∧
+      2 * (2 + 1) + 1 ≤ 7 ∧
+      (kildall (bvLat 2) loopGK 7).map (fun x => (x 0 0, x 0 1, x 1 0, x 1 1)) =
+        some (false, false, true, true)
 ```
 
 `monotone_of_diamondExact_of_acc_of_const_mem_of_nonempty` — cited in `diamond-exactness-characterization`.
 
 ```lean
-theorem monotone_of_diamondExact_of_acc_of_const_mem_of_nonempty {α : Type} {L : Lat α}
-  (hL : L.IsJSL) (hacc : L.AscendingChainCondition) {I : α → Prop} {F : (α → α) → Prop}
-  (hconst : ∀ (b : α), F fun x => b) (hI : ∃ a, I a) (he : DiamondExact L I F) (f : α → α) :
-  F f → Monotone L f
+-- lean/ToyDataflow/Diamond.lean:267-271
+theorem monotone_of_diamondExact_of_acc_of_const_mem_of_nonempty {L : Lat α}
+    (hL : L.IsJSL) (hacc : L.AscendingChainCondition)
+    {I : α → Prop} {F : (α → α) → Prop}
+    (hconst : ∀ b, F (fun _ => b)) (hI : ∃ a, I a)
+    (he : DiamondExact L I F) : ∀ f, F f → Monotone L f
 ```
 
 `monotone_of_distributive` — cited in `mfp-eq-mop-exactness`; cited in `kildall-computes-mop`.
 
 ```lean
-theorem monotone_of_distributive {α : Type} {L : Lat α} (hL : L.IsJSL) {f : α → α}
-  (hf : Distributive L f) : Monotone L f
+-- lean/ToyDataflow/Lattice.lean:292-293
+theorem monotone_of_distributive {L : Lat α} (hL : L.IsJSL) {f : α → α}
+    (hf : Distributive L f) : Monotone L f
 ```
 
 `notCFG_isLeastSolution_not_isEquationSolution` — cited in `mop-le-solution-soundness`; cited in `diamond-exactness-characterization`; cited in `kildall-computes-mfp`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:164-165
 theorem notCFG_isLeastSolution_not_isEquationSolution :
-  IsLeastSolution boolLat notCFG notSol ∧ ∀ (x : Fin 2 → Bool), ¬IsEquationSolution boolLat notCFG x
+    IsLeastSolution boolLat notCFG notSol ∧ ∀ x, ¬ IsEquationSolution boolLat notCFG x
 ```
 
 `omegaLat_monotone_distributive` — cited in `exactness-needs-acc`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:286-287
 theorem omegaLat_monotone_distributive (f : OmegaTwo → OmegaTwo) (hf : Monotone omegaLat f) :
-  Distributive omegaLat f
+    Distributive omegaLat f
 ```
 
 `omegaLat_total` — cited in `exactness-needs-acc`.
 
 ```lean
-theorem omegaLat_total (a b : OmegaTwo) : omegaLat.le a b ∨ omegaLat.le b a
+-- lean/ToyDataflow/CombinedWitnesses.lean:281
+theorem omegaLat_total : ∀ a b : OmegaTwo, omegaLat.le a b ∨ omegaLat.le b a
 ```
 
 `soundness_needs_isMOPAt` — counterexample for `hm` in `mop-le-solution-soundness`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:202-206
 theorem soundness_needs_isMOPAt :
-  (bvLat 2).LeTrans ∧
-    (∀ (u : Fin 2), Monotone (bvLat 2) (loopGK.f u)) ∧
+    (bvLat 2).LeTrans ∧ (∀ u, Monotone (bvLat 2) (loopGK.f u)) ∧
       IsSolution (bvLat 2) loopGK loopGKSol ∧
-        (¬IsMOPAt (bvLat 2) loopGK 0 fun x => true) ∧ ¬(bvLat 2).le (fun x => true) (loopGKSol 0)
+      ¬ IsMOPAt (bvLat 2) loopGK 0 (fun _ => true) ∧
+      ¬ (bvLat 2).le (fun _ => true) (loopGKSol 0)
 ```
 
 `soundness_needs_leTrans` — counterexample for `htrans` in `mop-le-solution-soundness`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:177-183
 theorem soundness_needs_leTrans :
-  ¬notTransLat.LeTrans ∧
-    (∀ (u : Fin 3), Monotone notTransLat (notTransCFG.f u)) ∧
-      (IsSolution notTransLat notTransCFG fun v => v) ∧
-        IsMOPAt notTransLat notTransCFG 2 0 ∧ ¬notTransLat.le 0 2 ∧ ∃ p, ¬notTransLat.le p.val 2
+    ¬ notTransLat.LeTrans ∧
+      (∀ u, Monotone notTransLat (notTransCFG.f u)) ∧
+      IsSolution notTransLat notTransCFG (fun v => v) ∧
+      IsMOPAt notTransLat notTransCFG 2 0 ∧
+      ¬ notTransLat.le 0 2 ∧
+      ∃ p : Walk notTransCFG 2, ¬ notTransLat.le p.val 2
 ```
 
 `soundness_needs_monotone` — counterexample for `hmono` in `mop-le-solution-soundness`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:143-146
 theorem soundness_needs_monotone :
-  boolLat.LeTrans ∧
-    (¬∀ (u : Fin 2), Monotone boolLat (notCFG.f u)) ∧
-      IsLeastSolution boolLat notCFG notSol ∧
-        IsMOPAt boolLat notCFG 1 true ∧
-          ¬boolLat.le true (notSol 1) ∧ ∃ p, ¬boolLat.le p.val (notSol 1)
+    boolLat.LeTrans ∧ ¬ (∀ u, Monotone boolLat (notCFG.f u)) ∧
+      IsLeastSolution boolLat notCFG notSol ∧ IsMOPAt boolLat notCFG 1 true ∧
+      ¬ boolLat.le true (notSol 1) ∧ ∃ p : Walk notCFG 1, ¬ boolLat.le p.val (notSol 1)
 ```
 
 `soundness_needs_solution` — counterexample for `hx` in `mop-le-solution-soundness`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:85-89
 theorem soundness_needs_solution :
-  (bvLat 2).LeTrans ∧
-    (∀ (u : Fin 2), Monotone (bvLat 2) (loopGK.f u)) ∧
-      (¬IsSolution (bvLat 2) loopGK fun x x_1 => false) ∧
-        IsMOPAt (bvLat 2) loopGK 1 (loopGKSol 1) ∧
-          (¬(bvLat 2).le (loopGKSol 1) fun x => false) ∧ ∃ p, ¬(bvLat 2).le p.val fun x => false
+    (bvLat 2).LeTrans ∧ (∀ u, Monotone (bvLat 2) (loopGK.f u)) ∧
+      ¬ IsSolution (bvLat 2) loopGK (fun _ _ => false) ∧
+      IsMOPAt (bvLat 2) loopGK 1 (loopGKSol 1) ∧ ¬ (bvLat 2).le (loopGKSol 1) (fun _ => false) ∧
+      ∃ p : Walk loopGK 1, ¬ (bvLat 2).le p.val (fun _ => false)
 ```
 
 `soundness_nonvacuous` — non-vacuity witness of `mop-le-solution-soundness`.
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:70-72
 theorem soundness_nonvacuous :
-  (bvLat 2).LeTrans ∧
-    (∀ (u : Fin 2), Monotone (bvLat 2) (loopGK.f u)) ∧
+    (bvLat 2).LeTrans ∧ (∀ u, Monotone (bvLat 2) (loopGK.f u)) ∧
       IsSolution (bvLat 2) loopGK loopGKSol ∧ IsMOPAt (bvLat 2) loopGK 1 (loopGKSol 1)
 ```
 
 `stepMid_distributive` — cited in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/CombinedWitnesses.lean:176
 theorem stepMid_distributive (m : Nat) : Distributive unboundedChainsLat (stepMid m)
 ```
 
 `strict_and_genKill_exactness_needs_least` — counterexample for `hx` in `mfp-eq-mop-exactness`; counterexample for `hx` in `gen-kill-distributive-and-exact`.
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:277-287
 theorem strict_and_genKill_exactness_needs_least :
-  have G :=
-    { edges := [(0, 0)], entry := 0, init := fun x => false,
-      f := fun x => genKill (fun x => false) fun x => false };
-  have x := fun x x_1 => true;
-  (bvLat 1).IsJSL ∧
-    (bvLat 1).AscendingChainCondition ∧
-      (∀ (u : Fin 1), Distributive (bvLat 1) (G.f u)) ∧
-        (∀ (u : Fin 1), Strict (bvLat 1) (G.f u)) ∧
-          AllReachable G ∧
-            (∀ (u : Fin 1), G.f u = genKill (fun x => false) fun x => false) ∧
-              (∀ (u : Fin 1), ¬Reachable G u → (fun x => false) = fun x => false) ∧
-                IsSolution (bvLat 1) G x ∧
-                  ¬IsLeastSolution (bvLat 1) G x ∧ ¬IsMOPAt (bvLat 1) G 0 (x 0)
+    let G : CFG 1 (Fin 1 → Bool) := ⟨[(0, 0)], 0, fun _ => false, fun _ => genKill (fun _ => false) (fun _ => false)⟩
+    let x : Fin 1 → Fin 1 → Bool := fun _ _ => true
+    (bvLat 1).IsJSL ∧ (bvLat 1).AscendingChainCondition ∧
+      (∀ u, Distributive (bvLat 1) (G.f u)) ∧
+      (∀ u, Strict (bvLat 1) (G.f u)) ∧
+      AllReachable G ∧
+      (∀ u, G.f u = genKill (fun _ => false) (fun _ => false)) ∧
+      (∀ u, ¬ Reachable G u → (fun _ : Fin 1 => false) = fun _ => false) ∧
+      IsSolution (bvLat 1) G x ∧ ¬ IsLeastSolution (bvLat 1) G x ∧
+      ¬ IsMOPAt (bvLat 1) G 0 (x 0)
 ```
 
 `strict_exactness_needs_acc` — counterexample for `hacc` in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:150-157
 theorem strict_exactness_needs_acc :
-  omegaLat.IsJSL ∧
-    ¬omegaLat.AscendingChainCondition ∧
-      (∀ (u : Fin 2), Distributive omegaLat (omegaStrictCFG.f u)) ∧
-        (∀ (u : Fin 2), Strict omegaLat (omegaStrictCFG.f u)) ∧
-          AllReachable omegaStrictCFG ∧
-            IsLeastSolution omegaLat omegaStrictCFG omegaStrictSol ∧
-              IsMOPAt omegaLat omegaStrictCFG 1 OmegaTwo.omega ∧
-                ¬IsMOPAt omegaLat omegaStrictCFG 1 (omegaStrictSol 1)
+    omegaLat.IsJSL ∧ ¬ omegaLat.AscendingChainCondition ∧
+      (∀ u, Distributive omegaLat (omegaStrictCFG.f u)) ∧
+      (∀ u, Strict omegaLat (omegaStrictCFG.f u)) ∧
+      AllReachable omegaStrictCFG ∧
+      IsLeastSolution omegaLat omegaStrictCFG omegaStrictSol ∧
+      IsMOPAt omegaLat omegaStrictCFG 1 .omega ∧
+      ¬ IsMOPAt omegaLat omegaStrictCFG 1 (omegaStrictSol 1)
 ```
 
 `strict_exactness_needs_distributive` — counterexample for `hdist` in `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:233-239
 theorem strict_exactness_needs_distributive :
-  (bvLat 2).IsJSL ∧
-    (bvLat 2).AscendingChainCondition ∧
-      AllReachable strictBBDiamond ∧
-        (∀ (u : Fin 5), Strict (bvLat 2) (strictBBDiamond.f u)) ∧
-          (∀ (u : Fin 5), Monotone (bvLat 2) (strictBBDiamond.f u)) ∧
-            (¬∀ (u : Fin 5), Distributive (bvLat 2) (strictBBDiamond.f u)) ∧
-              IsLeastSolution (bvLat 2) strictBBDiamond strictBBSol ∧
-                ¬IsMOPAt (bvLat 2) strictBBDiamond 4 (strictBBSol 4)
+    (bvLat 2).IsJSL ∧ (bvLat 2).AscendingChainCondition ∧
+      AllReachable strictBBDiamond ∧ (∀ u, Strict (bvLat 2) (strictBBDiamond.f u)) ∧
+      (∀ u, Monotone (bvLat 2) (strictBBDiamond.f u)) ∧
+      ¬ (∀ u, Distributive (bvLat 2) (strictBBDiamond.f u)) ∧
+      IsLeastSolution (bvLat 2) strictBBDiamond strictBBSol ∧
+      ¬ IsMOPAt (bvLat 2) strictBBDiamond 4 (strictBBSol 4)
 ```
 
 `strict_exactness_nonvacuous` — non-vacuity witness of `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:24-29
 theorem strict_exactness_nonvacuous :
-  (bvLat 2).IsJSL ∧
-    (bvLat 2).AscendingChainCondition ∧
-      (∀ (u : Fin 2), Distributive (bvLat 2) (strictLoopGK.f u)) ∧
-        (∀ (u : Fin 2), Strict (bvLat 2) (strictLoopGK.f u)) ∧
-          AllReachable strictLoopGK ∧ IsLeastSolution (bvLat 2) strictLoopGK strictLoopGKSol
+    (bvLat 2).IsJSL ∧ (bvLat 2).AscendingChainCondition ∧
+      (∀ u, Distributive (bvLat 2) (strictLoopGK.f u)) ∧
+      (∀ u, Strict (bvLat 2) (strictLoopGK.f u)) ∧
+      AllReachable strictLoopGK ∧
+      IsLeastSolution (bvLat 2) strictLoopGK strictLoopGKSol
 ```
 
 `ugCFG_isMOPAt_two_empty` — cited in `reachable-node-not-exact-unreachable-gen`.
 
 ```lean
-theorem ugCFG_isMOPAt_two_empty : IsMOPAt (bvLat 1) ugCFG 2 fun x => false
+-- lean/ToyDataflow/CombinedWitnesses.lean:263
+theorem ugCFG_isMOPAt_two_empty : IsMOPAt (bvLat 1) ugCFG 2 (fun _ => false)
 ```
 
 `unreachableStrict_strictly_between_nonvacuous` — non-vacuity witness of `mfp-eq-mop-exactness`.
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:59-65
 theorem unreachableStrict_strictly_between_nonvacuous :
-  (bvLat 1).IsJSL ∧
-    (bvLat 1).AscendingChainCondition ∧
-      (∀ (u : Fin 3), Distributive (bvLat 1) (midStrictCFG.f u)) ∧
-        UnreachableStrict (bvLat 1) midStrictCFG ∧
-          ¬AllReachable midStrictCFG ∧
-            (¬∀ (u : Fin 3), Strict (bvLat 1) (midStrictCFG.f u)) ∧
-              IsLeastSolution (bvLat 1) midStrictCFG midStrictSol
+    (bvLat 1).IsJSL ∧ (bvLat 1).AscendingChainCondition ∧
+      (∀ u, Distributive (bvLat 1) (midStrictCFG.f u)) ∧
+      UnreachableStrict (bvLat 1) midStrictCFG ∧
+      ¬ AllReachable midStrictCFG ∧
+      ¬ (∀ u, Strict (bvLat 1) (midStrictCFG.f u)) ∧
+      IsLeastSolution (bvLat 1) midStrictCFG midStrictSol
 ```
 
 ### Instances used by witnesses and counterexamples (quoted from the sources)
@@ -2096,6 +2159,7 @@ theorem unreachableStrict_strictly_between_nonvacuous :
 `Toy.Dataflow.boolLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:19-23
 /-- The two-point lattice `false < true` (one bit of a may-analysis). -/
 def boolLat : Lat Bool where
   le a b := a = true → b = true
@@ -2106,6 +2170,7 @@ def boolLat : Lat Bool where
 `Toy.Dataflow.natMaxLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:57-62
 /-- The natural numbers under `max`: a join-semilattice with bottom but with
 infinite ascending chains. -/
 def natMaxLat : Lat Nat where
@@ -2117,6 +2182,7 @@ def natMaxLat : Lat Nat where
 `Toy.Dataflow.finChainLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:491-495
 /-- Finite chain `0 < 1 < ... < h` of height `h`. -/
 def finChainLat (h : Nat) : Lat (Fin (h + 1)) where
   le a b := a.val ≤ b.val
@@ -2127,6 +2193,7 @@ def finChainLat (h : Nat) : Lat (Fin (h + 1)) where
 `Toy.Dataflow.OmegaTwo` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:213-218
 /-- The chain `0 < 1 < 2 < ⋯ < ω < ω+1`. -/
 inductive OmegaTwo where
   | fin (k : Nat)
@@ -2138,6 +2205,7 @@ inductive OmegaTwo where
 `Toy.Dataflow.OmegaTwo.le` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:222-228
 def le : OmegaTwo → OmegaTwo → Prop
   | fin a, fin b => a ≤ b
   | fin _, _ => True
@@ -2150,6 +2218,7 @@ def le : OmegaTwo → OmegaTwo → Prop
 `Toy.Dataflow.OmegaTwo.join` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:230-235
 def join : OmegaTwo → OmegaTwo → OmegaTwo
   | fin a, fin b => fin (max a b)
   | fin _, b => b
@@ -2161,6 +2230,7 @@ def join : OmegaTwo → OmegaTwo → OmegaTwo
 `Toy.Dataflow.OmegaTwo.succ` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:237-241
 /-- Successor on the chain: `k ↦ k + 1`, `ω ↦ ω + 1`, `ω + 1 ↦ ω + 1`. -/
 def succ : OmegaTwo → OmegaTwo
   | fin k => fin (k + 1)
@@ -2171,6 +2241,7 @@ def succ : OmegaTwo → OmegaTwo
 `Toy.Dataflow.OmegaTwo.succStrict` (ToyDataflow/ExactnessExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:92-96
 def OmegaTwo.succStrict : OmegaTwo → OmegaTwo
   | .fin 0 => .fin 0
   | .fin (k + 1) => .fin (k + 2)
@@ -2181,12 +2252,14 @@ def OmegaTwo.succStrict : OmegaTwo → OmegaTwo
 `Toy.Dataflow.omegaLat` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:245
 def omegaLat : Lat OmegaTwo := ⟨OmegaTwo.le, OmegaTwo.join, .fin 0⟩
 ```
 
 `Toy.Dataflow.UnboundedChains` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:265-272
 /-- Disjoint union of the finite chains `mid m 0 < mid m 1 < ... < mid m m`, one for
 each `m`, with a common `bot` and `top`. It satisfies the ascending chain condition
 but has no finite height bound (`unboundedChainsLat_acc`, `unboundedChainsLat_not_heightLe`). -/
@@ -2200,6 +2273,7 @@ inductive UnboundedChains where
 `Toy.Dataflow.UnboundedChains.le` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:276-280
 def le : UnboundedChains → UnboundedChains → Prop
   | bot, _ => True
   | _, top => True
@@ -2210,6 +2284,7 @@ def le : UnboundedChains → UnboundedChains → Prop
 `Toy.Dataflow.UnboundedChains.join` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:282-292
 def join : UnboundedChains → UnboundedChains → UnboundedChains
   | bot, b => b
   | a, bot => a
@@ -2226,6 +2301,7 @@ def join : UnboundedChains → UnboundedChains → UnboundedChains
 `Toy.Dataflow.unboundedChainsLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:301-302
 def unboundedChainsLat : Lat UnboundedChains :=
   ⟨UnboundedChains.le, UnboundedChains.join, .bot⟩
 ```
@@ -2233,6 +2309,7 @@ def unboundedChainsLat : Lat UnboundedChains :=
 `Toy.Dataflow.WithBotInt` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:444-448
 /-- `Int` with an explicit bottom element `⊥`. -/
 inductive WithBotInt where
   | bot
@@ -2243,6 +2320,7 @@ inductive WithBotInt where
 `Toy.Dataflow.WithBotInt.le` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:452-455
 def le : WithBotInt → WithBotInt → Prop
   | bot, _ => True
   | val _, bot => False
@@ -2252,6 +2330,7 @@ def le : WithBotInt → WithBotInt → Prop
 `Toy.Dataflow.WithBotInt.join` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:457-460
 def join : WithBotInt → WithBotInt → WithBotInt
   | bot, b => b
   | a, bot => a
@@ -2261,12 +2340,14 @@ def join : WithBotInt → WithBotInt → WithBotInt
 `Toy.Dataflow.withBotIntLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:464
 def withBotIntLat : Lat WithBotInt := ⟨WithBotInt.le, WithBotInt.join, .bot⟩
 ```
 
 `Toy.Dataflow.wbNeg` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:16-19
 /-- Negation on `Int ∪ {⊥}` (strict). -/
 def wbNeg : WithBotInt → WithBotInt
   | .bot => .bot
@@ -2276,6 +2357,7 @@ def wbNeg : WithBotInt → WithBotInt
 `Toy.Dataflow.notReflLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:91-92
 /-- Violates reflexivity only: `le a b := (a = false)`, so `true ≤ true` fails. -/
 def notReflLat : Lat Bool := { boolLat with le := fun a _ => a = false }
 ```
@@ -2283,6 +2365,7 @@ def notReflLat : Lat Bool := { boolLat with le := fun a _ => a = false }
 `Toy.Dataflow.notTransLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:110-116
 /-- Violates transitivity: `0 ≤ 1` and `1 ≤ 2` but not `0 ≤ 2`. It also violates
 `JoinLeIff` and `BotLe` (`notTransLat_law_profile`); violating `LeTrans` alone is
 impossible (`no_lat_violates_only_leTrans`). -/
@@ -2295,6 +2378,7 @@ def notTransLat : Lat (Fin 3) where
 `Toy.Dataflow.fin4PreLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:143-159
 /-- A preorder-like structure on `Fin 4` satisfying `LeRefl`, `JoinLeIff` and `BotLe`
 but neither `LeAntisymm` nor `LeTrans`: antisymmetry is needed to derive
 transitivity. -/
@@ -2317,6 +2401,7 @@ def fin4PreLat : Lat (Fin 4) where
 `Toy.Dataflow.notAntisymmLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:191-192
 /-- Violates antisymmetry (`le` is total). -/
 def notAntisymmLat : Lat Bool := { boolLat with le := fun _ _ => True }
 ```
@@ -2324,6 +2409,7 @@ def notAntisymmLat : Lat Bool := { boolLat with le := fun _ _ => True }
 `Toy.Dataflow.notJoinLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:207-208
 /-- Violates the join law: `join` is the left projection. -/
 def notJoinLat : Lat Bool := { boolLat with join := fun a _ => a }
 ```
@@ -2331,6 +2417,7 @@ def notJoinLat : Lat Bool := { boolLat with join := fun a _ => a }
 `Toy.Dataflow.notBotLat` (ToyDataflow/LatticeExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/LatticeExamples.lean:224-225
 /-- Violates the bottom law: `bot := true`. -/
 def notBotLat : Lat Bool := { boolLat with bot := true }
 ```
@@ -2338,6 +2425,7 @@ def notBotLat : Lat Bool := { boolLat with bot := true }
 `Toy.Dataflow.notTransCFG` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:170-171
 /-- Path `0 → 1 → 2` with identity transfers on the non-transitive `notTransLat`. -/
 def notTransCFG : CFG 3 (Fin 3) := ⟨[(0, 1), (1, 2)], 0, 0, fun _ => id⟩
 ```
@@ -2345,6 +2433,7 @@ def notTransCFG : CFG 3 (Fin 3) := ⟨[(0, 1), (1, 2)], 0, 0, fun _ => id⟩
 `Toy.Dataflow.notCFG` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:132-137
 /-- Entry `0` with a self-loop and an edge to `1`; every transfer is negation. -/
 def notCFG : CFG 2 Bool where
   edges := [(0, 0), (0, 1)]
@@ -2356,12 +2445,14 @@ def notCFG : CFG 2 Bool where
 `Toy.Dataflow.notSol` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:139
 def notSol : Fin 2 → Bool := fun v => decide (v = 0)
 ```
 
 `Toy.Dataflow.succCFG` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:679-680
 /-- `0 → 0` with transfer `n ↦ n + 1` on the natural numbers under `max`. -/
 def succCFG : CFG 1 Nat := ⟨[(0, 0)], 0, 0, fun _ n => n + 1⟩
 ```
@@ -2369,6 +2460,7 @@ def succCFG : CFG 1 Nat := ⟨[(0, 0)], 0, 0, fun _ n => n + 1⟩
 `Toy.Dataflow.loopGK` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:23-28
 /-- `0 → 1`, `1 → 1` (a loop), gen/kill transfers over `bvLat 2`. -/
 def loopGK : CFG 2 (Fin 2 → Bool) where
   edges := [(0, 1), (1, 1)]
@@ -2380,6 +2472,7 @@ def loopGK : CFG 2 (Fin 2 → Bool) where
 `Toy.Dataflow.lgGen` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:19-20
 /-- Node 0 generates bit 0; node 1 generates bit 1 and kills bit 0. -/
 def lgGen : Fin 2 → Fin 2 → Bool := fun u i => decide (i = u)
 ```
@@ -2387,12 +2480,14 @@ def lgGen : Fin 2 → Fin 2 → Bool := fun u i => decide (i = u)
 `Toy.Dataflow.lgKill` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:21
 def lgKill : Fin 2 → Fin 2 → Bool := fun u i => decide (u = 1 ∧ i = 0)
 ```
 
 `Toy.Dataflow.loopGKSol` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:30-31
 /-- Its least solution: `∅` at node 0, `{0, 1}` at node 1. -/
 def loopGKSol : Fin 2 → Fin 2 → Bool := fun v _ => decide (v = 1)
 ```
@@ -2400,6 +2495,7 @@ def loopGKSol : Fin 2 → Fin 2 → Bool := fun v _ => decide (v = 1)
 `Toy.Dataflow.strictLoopGK` (ToyDataflow/ExactnessExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:13-18
 /-- A gen/kill loop all of whose transfers are strict (empty gen sets). -/
 def strictLoopGK : CFG 2 (Fin 2 → Bool) where
   edges := [(0, 1), (1, 1)]
@@ -2411,12 +2507,14 @@ def strictLoopGK : CFG 2 (Fin 2 → Bool) where
 `Toy.Dataflow.strictLoopGKSol` (ToyDataflow/ExactnessExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:20
 def strictLoopGKSol : Fin 2 → Fin 2 → Bool := fun _ _ => true
 ```
 
 `Toy.Dataflow.ugCFG` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:392-398
 /-- Entry `0 → 2`; node `1` has no incoming edge (unreachable), generates the bit,
 and has an edge `1 → 2`. -/
 def ugCFG : CFG 3 (Fin 1 → Bool) where
@@ -2429,24 +2527,28 @@ def ugCFG : CFG 3 (Fin 1 → Bool) where
 `Toy.Dataflow.ugGen` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:389
 def ugGen : Fin 3 → Fin 1 → Bool := fun u _ => decide (u = 1)
 ```
 
 `Toy.Dataflow.ugKill` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:390
 def ugKill : Fin 3 → Fin 1 → Bool := fun _ _ => false
 ```
 
 `Toy.Dataflow.ugSol` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:400
 def ugSol : Fin 3 → Fin 1 → Bool := fun v _ => decide (v = 2)
 ```
 
 `Toy.Dataflow.midStrictCFG` (ToyDataflow/ExactnessExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:46-53
 /-- A CFG where `UnreachableStrict` holds but neither `AllReachable` nor
 `∀ u, Strict`: node 2 is unreachable (with empty gen), while node 0 is non-strict
 (gen `{0}`). -/
@@ -2460,12 +2562,14 @@ def midStrictCFG : CFG 3 (Fin 1 → Bool) where
 `Toy.Dataflow.midStrictSol` (ToyDataflow/ExactnessExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:55
 def midStrictSol : Fin 3 → Fin 1 → Bool := fun v _ => decide (v = 1)
 ```
 
 `Toy.Dataflow.omegaCFG` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:272-277
 /-- Entry `0 → 1`, loop `1 → 1` with transfer `succ`. -/
 def omegaCFG : CFG 2 OmegaTwo where
   edges := [(0, 1), (1, 1)]
@@ -2477,6 +2581,7 @@ def omegaCFG : CFG 2 OmegaTwo where
 `Toy.Dataflow.omegaSol` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:279-280
 /-- Least solution: `0` at node 0, `ω + 1` at node 1. -/
 def omegaSol : Fin 2 → OmegaTwo := fun v => if v = 1 then .omega1 else .fin 0
 ```
@@ -2484,6 +2589,7 @@ def omegaSol : Fin 2 → OmegaTwo := fun v => if v = 1 then .omega1 else .fin 0
 `Toy.Dataflow.omegaStrictCFG` (ToyDataflow/ExactnessExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:120-124
 def omegaStrictCFG : CFG 2 OmegaTwo where
   edges := [(0, 1), (1, 1)]
   entry := 0
@@ -2494,12 +2600,14 @@ def omegaStrictCFG : CFG 2 OmegaTwo where
 `Toy.Dataflow.omegaStrictSol` (ToyDataflow/ExactnessExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:126
 def omegaStrictSol : Fin 2 → OmegaTwo := fun v => if v = 1 then .omega1 else .fin 1
 ```
 
 `Toy.Dataflow.bothBits` (ToyDataflow/GenKill.lean):
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:228-229
 /-- "Both bits set", broadcast to both bits: monotone but not distributive. -/
 def bothBits (a : Fin 2 → Bool) : Fin 2 → Bool := fun _ => a 0 && a 1
 ```
@@ -2507,6 +2615,7 @@ def bothBits (a : Fin 2 → Bool) : Fin 2 → Bool := fun _ => a 0 && a 1
 `Toy.Dataflow.bbDiamond` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:474-478
 /-- Branches set bit 0 and bit 1 respectively (as gen/kill functions that kill
 everything); the join node computes `bothBits`, which is not gen/kill. -/
 def bbDiamond : CFG 5 (Fin 2 → Bool) :=
@@ -2517,6 +2626,7 @@ def bbDiamond : CFG 5 (Fin 2 → Bool) :=
 `Toy.Dataflow.bbSol` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:480-482
 def bbSol : Fin 5 → Fin 2 → Bool :=
   diamondSol (bvLat 2) (fun _ => false) (genKill (fun i => decide (i = 0)) (fun _ => true))
     (genKill (fun i => decide (i = 1)) (fun _ => true)) bothBits
@@ -2525,6 +2635,7 @@ def bbSol : Fin 5 → Fin 2 → Bool :=
 `Toy.Dataflow.strictBBDiamond` (ToyDataflow/ExactnessExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:218-222
 def strictBBDiamond : CFG 5 (Fin 2 → Bool) :=
   diamond (fun _ => true)
     (genKill (fun _ => false) (fun i => decide (i = 1)))
@@ -2535,6 +2646,7 @@ def strictBBDiamond : CFG 5 (Fin 2 → Bool) :=
 `Toy.Dataflow.strictBBSol` (ToyDataflow/ExactnessExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/ExactnessExamples.lean:224-228
 def strictBBSol : Fin 5 → Fin 2 → Bool :=
   diamondSol (bvLat 2) (fun _ => true)
     (genKill (fun _ => false) (fun i => decide (i = 1)))
@@ -2545,6 +2657,7 @@ def strictBBSol : Fin 5 → Fin 2 → Bool :=
 `Toy.Dataflow.diamondSol` (ToyDataflow/Diamond.lean):
 
 ```lean
+-- lean/ToyDataflow/Diamond.lean:39-41
 /-- The explicit least solution of the diamond (for monotone transfers). -/
 def diamondSol (L : Lat α) (a : α) (g h f : α → α) : Fin 5 → α :=
   fun v => if v = 3 then L.join (g a) (h a) else if v = 4 then f (L.join (g a) (h a)) else a
@@ -2553,6 +2666,7 @@ def diamondSol (L : Lat α) (a : α) (g h f : α → α) : Fin 5 → α :=
 `Toy.Dataflow.idNotFamily` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:522-523
 /-- The family `{id, not}` on `boolLat`. -/
 def idNotFamily : (Bool → Bool) → Prop := fun φ => φ = id ∨ φ = (fun b => !b)
 ```
@@ -2560,6 +2674,7 @@ def idNotFamily : (Bool → Bool) → Prop := fun φ => φ = id ∨ φ = (fun b 
 `Toy.Dataflow.wbNegFamily` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:21-23
 /-- All constants plus negation. -/
 def wbNegFamily : (WithBotInt → WithBotInt) → Prop :=
   fun φ => (∃ b, φ = fun _ => b) ∨ φ = wbNeg
@@ -2568,6 +2683,7 @@ def wbNegFamily : (WithBotInt → WithBotInt) → Prop :=
 `Toy.Dataflow.cpFamily` (ToyDataflow/Examples.lean):
 
 ```lean
+-- lean/ToyDataflow/Examples.lean:589-591
 /-- The constant-propagation family of the diamond program. -/
 def cpFamily : (St → St) → Prop :=
   fun φ => φ = assignYZ 1 2 ∨ φ = assignYZ 2 1 ∨ φ = assignXYZ
@@ -2576,6 +2692,7 @@ def cpFamily : (St → St) → Prop :=
 `Toy.Dataflow.twoStepFamily` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:394-396
 /-- Single-variable assignments `y := 1`, `z := 2`, `y := 2`, `z := 1`, `x := y + z`. -/
 def twoStepFamily : (St → St) → Prop :=
   fun φ => φ = setY 1 ∨ φ = setZ 2 ∨ φ = setY 2 ∨ φ = setZ 1 ∨ φ = assignXYZ
@@ -2584,6 +2701,7 @@ def twoStepFamily : (St → St) → Prop :=
 `Toy.Dataflow.diamond2` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:279-287
 /-- A two-path acyclic CFG with two transfers on each branch:
 `0 → 1 → 2 → 5`, `0 → 3 → 4 → 5`, `5 → 6`, with transfers `g1, g2` on the first
 branch, `h1, h2` on the second, `f` at the join node 5, and `id` at nodes 0 and 6. -/
@@ -2598,6 +2716,7 @@ def diamond2 {α : Type} (a : α) (g1 g2 h1 h2 f : α → α) : CFG 7 α where
 `Toy.Dataflow.diamond2Sol` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:289-293
 /-- The explicit least solution of `diamond2` (for monotone transfers). -/
 def diamond2Sol {α : Type} (L : Lat α) (a : α) (g1 g2 h1 h2 f : α → α) : Fin 7 → α :=
   fun v => if v = 2 then g1 a else if v = 4 then h1 a else
@@ -2608,6 +2727,7 @@ def diamond2Sol {α : Type} (L : Lat α) (a : α) (g1 g2 h1 h2 f : α → α) : 
 `Toy.Dataflow.diamondWithEntry` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:143-148
 /-- The diamond with an arbitrary entry transfer `k` instead of `id`. -/
 def diamondWithEntry {α : Type} (k : α → α) (a : α) (g h f : α → α) : CFG 5 α where
   edges := [(0, 1), (0, 2), (1, 3), (2, 3), (3, 4)]
@@ -2619,6 +2739,7 @@ def diamondWithEntry {α : Type} (k : α → α) (a : α) (g h f : α → α) : 
 `Toy.Dataflow.bv3G` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:150-151
 /-- Members of the family used in `diamond_entry_id_matters`. -/
 def bv3G (s : Fin 3 → Bool) : Fin 3 → Bool := fun i => decide (i = 0) && s 2
 ```
@@ -2626,18 +2747,21 @@ def bv3G (s : Fin 3 → Bool) : Fin 3 → Bool := fun i => decide (i = 0) && s 2
 `Toy.Dataflow.bv3H` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:152
 def bv3H (s : Fin 3 → Bool) : Fin 3 → Bool := fun i => decide (i = 1) && s 2
 ```
 
 `Toy.Dataflow.bv3F` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:153
 def bv3F (s : Fin 3 → Bool) : Fin 3 → Bool := fun _ => s 0 && s 1
 ```
 
 `Toy.Dataflow.bv3Family` (ToyDataflow/DiamondExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/DiamondExamples.lean:154-155
 def bv3Family : ((Fin 3 → Bool) → Fin 3 → Bool) → Prop :=
   fun φ => φ = bv3G ∨ φ = bv3H ∨ φ = bv3F
 ```
@@ -2645,6 +2769,7 @@ def bv3Family : ((Fin 3 → Bool) → Fin 3 → Bool) → Prop :=
 `Toy.Dataflow.satSucc` (ToyDataflow/KildallExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/KildallExamples.lean:14-16
 /-- Saturating successor on the chain `0 < 1 < ⋯ < h`. -/
 def satSucc (h : Nat) (a : Fin (h + 1)) : Fin (h + 1) :=
   if ha : a.val < h then ⟨a.val + 1, by omega⟩ else a
@@ -2653,6 +2778,7 @@ def satSucc (h : Nat) (a : Fin (h + 1)) : Fin (h + 1) :=
 `Toy.Dataflow.selfLoopsCFG` (ToyDataflow/KildallExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/KildallExamples.lean:23-28
 /-- `m + 1` nodes, each with a self-loop, transfer `satSucc h`. -/
 def selfLoopsCFG (m h : Nat) : CFG (m + 1) (Fin (h + 1)) where
   edges := (List.finRange (m + 1)).map (fun u => (u, u))
@@ -2664,6 +2790,7 @@ def selfLoopsCFG (m h : Nat) : CFG (m + 1) (Fin (h + 1)) where
 `Toy.Dataflow.stepMid` (ToyDataflow/KildallExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/KildallExamples.lean:156-165
 /-- Climb the chain `mid m 0 < ⋯ < mid m m` one step at a time. -/
 def stepMid (m : Nat) : UnboundedChains → UnboundedChains
   | .bot => .bot
@@ -2679,6 +2806,7 @@ def stepMid (m : Nat) : UnboundedChains → UnboundedChains
 `Toy.Dataflow.stepMidCFG` (ToyDataflow/KildallExamples.lean):
 
 ```lean
+-- lean/ToyDataflow/KildallExamples.lean:197-198
 def stepMidCFG (m : Nat) : CFG 1 UnboundedChains :=
   ⟨[(0, 0)], 0, .mid m 0, fun _ => stepMid m⟩
 ```
@@ -2686,6 +2814,7 @@ def stepMidCFG (m : Nat) : CFG 1 UnboundedChains :=
 `Toy.Dataflow.copyBit0` (ToyDataflow/GenKill.lean):
 
 ```lean
+-- lean/ToyDataflow/GenKill.lean:214-215
 /-- Copy bit 0 into both bits: distributive, but not of gen/kill form. -/
 def copyBit0 (a : Fin 2 → Bool) : Fin 2 → Bool := fun _ => a 0
 ```
