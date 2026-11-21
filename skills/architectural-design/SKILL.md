@@ -312,7 +312,7 @@ specification.
 ### Stage 3.1: Seal the two-sided contract $C = (C^+, C^-)$ and holdouts
 
 Before generating or inspecting candidate designs, freeze $C = (C^+, C^-)$ and
-the Discovery vs. Holdout partition:
+partition `WITNESSES.md` discovery cases from blind holdouts:
 
 1. **Freeze the Two-Sided Governing Contract $C = (C^+, C^-)$ in one artifact:**
    - **Keep $C^+$ (`C1`–`Ck`) outcome- and caller-boundary-only:** Because
@@ -328,44 +328,45 @@ the Discovery vs. Holdout partition:
      negative and scope constraints ($C^-$: fixed scope boundaries, out-of-scope
      threats, and retired prototype assumptions/non-goals from §1.2) inside the
      same Stage 3 contract artifact passed to every Phase 3 role (`Steward`,
-     `Brainstorm Dials`, `Architects`, `Challengers`, `Holdout Stitcher`, and
-     `Fresh Critics`) so isolated workers and holdout authors never read $C^+$
-     without $C^-$ or re-invent retired mechanisms.
+     `Brainstorm Dials`, `Architects`, `Adversary`, `Simplicity Auditor`,
+     `Holdout Evaluator`, and `Fresh Critics`) so isolated workers and holdout
+     authors never read $C^+$ without $C^-$ or re-invent retired mechanisms.
 2. **Isolated, scope-compliant holdout construction and storage:** Construct and
    scope-check the confirmation cases against *both* $C^+$ and $C^-$ *before*
    candidate brainstorming or synthesis begins:
    - **Multi-agent blind holdouts (`H1`–`Hm`):** Delegate construction and scope
-     verification of `H1`–`Hm` to an isolated `Steward` or `Holdout Stitcher`
-     context that receives only the Authoritative Target Baseline and the full
-     Two-Sided Contract $C = (C^+, C^-)$—explicitly forbidding holdouts that
-     demand retired prototype mechanisms or out-of-scope threats in $C^-$, and
-     withholding any caller-supplied candidate architectures on warm entry—while
-     keeping concrete holdout premises uninspected by the coordinating context
-     and candidate explorers. On hosts where sub-agents share a readable
-     filesystem (`swarm-model-refinement` Core Invariant 5), **never write
-     concrete bodies of unexposed blind holdouts into shared checkpoint
-     directories or Coordinator-read summaries while candidate synthesis or
-     repair remains open**: keep unexposed `H1`–`Hm` premises inside a
-     host-enforced read-isolated `Steward` / `Holdout Stitcher` context,
-     recording only non-revealing metadata (such as counts, scope-compliance
-     status, and violated contract clause IDs) in shared checkpoints alongside
-     any holdouts explicitly disclosed and reclassified as exposed design
-     witnesses under Invariant 3. If a host lacks read-isolated storage and
-     unexposed holdout bodies are written to a shared filesystem while synthesis
-     or repair remains open, forbid candidate and synthesizing contexts from
-     reading outside their briefed input paths and qualify those checks in Phase
-     4 as exposed to that host filesystem-isolation limit (treating any holdout
-     read by a candidate or synthesizing context as an exposed design witness).
-   - **Single-agent or Coordinator-authored scenarios (exposed design
-     witnesses):** Whenever single-agent execution or worker limits cause the
-     coordinating context to prepare or inspect scenarios and that same context
-     also develops, synthesizes, or revises the candidate, those scenarios
-     cannot serve as held-out or Architect-blind confirmation
-     (`model-refinement` treats any case known while developing or revising the
-     candidate as a design witness). Classify all Coordinator-known scenarios
-     strictly as **exposed design witnesses**; use an isolated unanchored `Fresh
-     Critic` when independent confirmation is needed and a sub-agent slot is
-     available, or report the single-context isolation limit in Phase 4
+     verification of `H1`–`Hm` to an isolated `Steward` context that receives
+     only the Authoritative Target Baseline and the full Two-Sided Contract
+     $C = (C^+, C^-)$—explicitly forbidding holdouts that demand retired
+     prototype mechanisms or out-of-scope threats in $C^-$, and withholding any
+     caller-supplied candidate architectures on warm entry—while keeping
+     concrete holdout premises uninspected by the coordinating context and
+     candidate explorers. Enforce `swarm-model-refinement`'s `Holdout Vault`
+     isolation (`sealed-file`—a cooperative same-UID envelope via host-supplied
+     `holdout-seal.py`—or `private-subagent` within one private
+     `Steward/Holdout` sub-agent): **never write plaintext
+     bodies of unexposed blind holdouts into shared checkpoint directories or
+     Coordinator-read summaries while candidate synthesis or repair remains
+     open**, recording only non-revealing metadata (such as counts,
+     scope-compliance status, `body_group` IDs, and violated contract clause
+     IDs) in shared checkpoints alongside any holdouts explicitly disclosed and
+     reclassified as `exposed-holdout` in `WITNESSES.md` under
+     `swarm-model-refinement`'s permanent universal exposure rule. Where neither
+     sealed-file handoff nor private-subagent isolation is supported (or the
+     full holdout set is Coordinator-visible upfront), set
+     `holdout mode = none`, forbid fabricating blind confirmation, and qualify
+     Phase 4 with zero blind confirmation (treating any holdout read by a
+     candidate or synthesizing context permanently as `exposed-holdout`).
+   - **Single-agent or Coordinator-authored scenarios (exposed witnesses):**
+     Whenever single-agent execution or worker limits cause the coordinating
+     context to prepare or inspect scenarios and that same context also
+     develops, synthesizes, or revises the candidate, those scenarios cannot
+     serve as held-out or Architect-blind confirmation (`model-refinement`
+     treats any case known while developing or revising the candidate as a
+     design witness). Record all Coordinator-known scenarios in `WITNESSES.md`
+     with tag `discovery` (never blind holdout); use an isolated unanchored
+     `Fresh Critic` when independent confirmation is needed and a sub-agent slot
+     is available, or report the single-context isolation limit in Phase 4
      (applying `model-refinement`'s single-agent convergence criteria when
      appropriate, or reporting a `bounded stop` if the task requires independent
      or held-out confirmation).
@@ -374,9 +375,9 @@ the Discovery vs. Holdout partition:
 
 Explore the design space across four creativity priors (`Dial 1`–`Dial 4`),
 supplying the Authoritative Target Baseline, the full two-sided governing
-contract $C = (C^+, C^-)$, the Exposed Discovery Set (never Blind Holdouts), and
-Phase 2 empirical findings. Require concrete data structures, state/data-flow
-boundaries, and trade-off accounting from each perspective:
+contract $C = (C^+, C^-)$, discovery witnesses in `WITNESSES.md` (never Blind
+Holdouts), and Phase 2 empirical findings. Require concrete data structures,
+state/data-flow boundaries, and trade-off accounting from each perspective:
 
 - **Dial 1 (Conservative / Textbook):** Proven, minimal-surprise mechanisms and
   standard idioms that satisfy $C$ with zero novel abstractions.
@@ -409,14 +410,15 @@ Run `swarm-model-refinement` (or single-agent `model-refinement` when scaled
 down for a bounded task) over the `Candidate Idea Pool` and the two-sided
 governing contract $C = (C^+, C^-)$:
 
-1. **Adversarial exploration, holdout stitching, and fresh criticism:** On the
-   multi-agent path, follow `swarm-model-refinement`'s epistemic barrier and
-   role-scaling rules—competing Architects (`α` minimization, `β`
-   generalization, `γ` incumbent/surgical baseline), targeted `Challengers`,
-   isolated `Holdout Stitcher` with cross-pass exposure accounting (verifying
-   that each `H1`–`Hm` complies with $C^-$ and disqualifying any holdout premise
-   that contradicts $C^-$), and per-pass newly spawned unanchored `Fresh
-   Critics`—under the persistence, sub-agent isolation, `depth-1`
+1. **Adversarial exploration, holdout evaluation, and fresh criticism:** On the
+   multi-agent path, follow `swarm-model-refinement`'s epistemic barrier,
+   capability-parity, and role-scaling rules—competing Architects (`α`
+   minimization, `β` generalization, `γ` incumbent/primitive baseline, optional
+   `δ`), single-pass ephemeral `Audit Critics` (`Adversary` and `Simplicity
+   Auditor`), isolated `Holdout Evaluator` with permanent exposure accounting
+   (verifying that each `H1`–`Hm` complies with $C^-$ and disqualifying any
+   holdout premise that contradicts $C^-$), and per-pass brand-new unanchored
+   `Fresh Critics`—under the persistence, sub-agent isolation, `depth-1`
    delegation-brief propagation, and ~10-minute heartbeat rules above. On the
    scaled-down single-agent path, apply `model-refinement`'s candidate
    comparison (including the incumbent), whole-model burden accounting, and
@@ -428,10 +430,10 @@ governing contract $C = (C^+, C^-)$:
    comparative evaluation against $C = (C^+, C^-)$ and whole-model burden and
    must actively adjudicate findings rather than uncritically accreting patches:
    - **Enforce $C^-$ (reject retired-assumption and out-of-scope creep):**
-     Evaluate every Challenger, Holdout, and Fresh Critic finding against both
-     $C^+$ and $C^-$. Refute and discard any demand that resurrects a Retired
-     Prototype Assumption, introduces an unconfirmed policy feature, or enforces
-     an out-of-scope threat excluded by $C^-$.
+     Evaluate every `Audit Critic`, `Holdout Evaluator`, and `Fresh Critic`
+     finding against both $C^+$ and $C^-$. Refute and discard any demand that
+     resurrects a Retired Prototype Assumption, introduces an unconfirmed policy
+     feature, or enforces an out-of-scope threat excluded by $C^-$.
    - **Detect and resolve critic-vs.-critic oscillations:** Maintain a
      cross-pass decision ledger. When Pass $k+1$'s critic flags a regression or
      burden shift caused by a change adopted in Pass $k$, do not oscillate or
@@ -450,21 +452,21 @@ governing contract $C = (C^+, C^-)$:
      candidates focused on the core semantic definitions and boundary types
      (verifying them with available typecheckers or LSP tools when within task
      authority) rather than hand-editing hundreds of lines of un-typechecked
-     boilerplate across passes. Instruct `Holdout Stitcher`, `Challengers`, and
-     `Fresh Critics` to trace the **literal written formal definitions**—
+     boilerplate across passes. Instruct `Holdout Evaluator`, `Audit Critics`,
+     and `Fresh Critics` to trace the **literal written formal definitions**—
      quantifier scopes, operator precedence (for example, `∃ x, A ∧ B → C` vs.
      `(∃ x, A ∧ B) → C`), parameter and index spaces, and state/type-argument
      threading—rather than relying on prose intent summaries. A prose-level
-     `Holdout Stitcher` `PASS` never overrides a concrete formal or mechanical
+     `Holdout Evaluator` `PASS` never overrides a concrete formal or mechanical
      counterexample.
    - **Enforce a bounded pass budget and route dispositions cleanly:**
      - **Local convergence (multi-agent `swarm-model-refinement` path):** Stop
        iterating and declare **local convergence** on $M^*$ once a complete pass
        on the unmutated candidate $M^*$ accepts no conceptual-model change—with
-       `Holdout Stitcher` and `Challengers` reporting zero contract ($C^+, C^-$)
-       or formal defects and that pass's newly spawned unanchored `Fresh Critic`
-       identifying no remaining defect or supportable improvement whose
-       whole-model benefit justifies another pass (after discarding $C^-$
+       `Holdout Evaluator` and `Audit Critics` reporting zero contract
+       ($C^+, C^-$) or formal defects and that pass's brand-new unanchored
+       `Fresh Critic` identifying no remaining defect or supportable improvement
+       whose whole-model benefit justifies another pass (after discarding $C^-$
        violations, unsubstantiated stylistic preferences, and repeats of
        already-adjudicated oscillation arguments that introduce no new
        counterexample or contract defect)—and the required **completion-boundary
@@ -472,7 +474,7 @@ governing contract $C = (C^+, C^-)$:
        to Stage 3.4.
      - **Local convergence (scaled-down single-agent `model-refinement` path):**
        When running the single-agent `model-refinement` branch (without separate
-       `Holdout Stitcher` or `Challenger` sub-agents), apply
+       `Holdout Evaluator` or `Audit Critic` sub-agents), apply
        `model-refinement`'s convergence criteria directly rather than
        fabricating multi-agent role reports: declare **local convergence** on
        $M^*$ once a complete verification pass over the unmutated candidate
@@ -556,26 +558,29 @@ Baseline in three steps:
         branch in §3.3.2, tracing literal formal definitions where present and
         completing the required **completion-boundary reread** with zero further
         conceptual-model changes): on the multi-agent path, re-verify
-        $M^{*\prime}$ against the Exposed Discovery Set, the Held-Out
-        Confirmation Set (`H1`–`Hm`, with cross-pass exposure accounting under
-        `swarm-model-refinement` Invariant 3), warm `Challengers`, the `Holdout
-        Stitcher`, and a newly spawned unanchored `Fresh Critic` (plus
-        mechanical checks where applicable); on the scaled-down single-agent
-        path, complete the full §3.3.2 `model-refinement` verification pass (and
-        an unanchored fresh-critic sub-agent when available) and calibrate Phase
-        4 claims to single-agent verification without claiming independent
-        multi-agent confirmation. **Self-review by the context that authored
-        $M^{*\prime}$ never qualifies as independent confirmation**, and any
-        scenario whose premise was known to the context that edited
-        $M^* \to M^{*\prime}$ is an exposed design witness for $M^{*\prime}$.
+        $M^{*\prime}$ against `WITNESSES.md`, the Held-Out Confirmation Set
+        (`H1`–`Hm`, with permanent exposure accounting under
+        `swarm-model-refinement`), single-pass `Audit Critics` (`Adversary` and
+        `Simplicity Auditor`), `Holdout Evaluator` (ephemeral in `sealed-file`
+        mode; `Steward/Holdout` Turn 2+ only in `private-subagent` mode), and a
+        brand-new unanchored `Fresh Critic` (plus mechanical checks where
+        applicable); on the scaled-down single-agent path, complete the full
+        §3.3.2 `model-refinement` verification pass (and an unanchored
+        fresh-critic sub-agent when available) and calibrate Phase 4 claims to
+        single-agent verification without claiming independent multi-agent
+        confirmation. **Self-review by the context that authored $M^{*\prime}$
+        never qualifies as independent confirmation**, and any scenario whose
+        premise was known to the context that edited $M^* \to M^{*\prime}$ is
+        permanently tagged `discovery` or `exposed-holdout` in `WITNESSES.md`
+        (never counted as unexposed confirmation).
      If re-confirmation exposes a defect in a Stage 3.4 modification, either
      **revert an optional Stage 3.4 pruning/simplification back to the
      already-confirmed Stage 3.3 model $M^*$**, or **repair $M^{*\prime}$**
-     (reclassifying any holdout whose failure guided the repair to the Exposed
-     Discovery Set under Invariant 3) and repeat sub-steps 1–2 on the repaired
-     model. If post-mutation re-confirmation is not performed or a defect
-     remains unresolved, report a **bounded stop** in Phase 4—never claim `local
-     convergence` for an unconfirmed post-Stage-3.3 mutation.
+     (reclassifying any holdout whose failure or disclosed trace guided the
+     repair as `exposed-holdout` in `WITNESSES.md`) and repeat sub-steps 1–2 on
+     the repaired model. If post-mutation re-confirmation is not performed or a
+     defect remains unresolved, report a **bounded stop** in Phase 4—never
+     claim `local convergence` for an unconfirmed post-Stage-3.3 mutation.
 
 ## Phase 4: Reader-oriented design specification and lifecycle boundary
 
@@ -634,11 +639,12 @@ Organize the design specification main body into five sections:
    reproducers), formal or type-checked properties, conceptual
    `model-refinement` arguments (calibrated as local convergence relative to
    tested candidates and evidence rather than a global minimum), unmeasured
-   implementation-cost estimates, and any remaining unverified assumptions or
-   Bounded-Stop limits. List all open human product-policy or semantic-default
-   decisions (including defaults over unified plumbing from Stage 3.4 Step 2 and
-   any proposed contract relaxations from Stage 3.4 Step 1) concisely with their
-   trade-offs and recommended default.
+   implementation-cost estimates, and any remaining unverified assumptions,
+   holdout isolation limits (such as cooperative same-UID `sealed-file`
+   confinement), or Bounded-Stop limits. List all open human product-policy or
+   semantic-default decisions (including defaults over unified plumbing from
+   Stage 3.4 Step 2 and any proposed contract relaxations from Stage 3.4 Step 1)
+   concisely with their trade-offs and recommended default.
 
 ### 4.2 Record rejected mechanisms in `Appendix A: Alternatives Considered`
 
