@@ -1,6 +1,3 @@
-$ lean --version
-Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
-$ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=true TailCallDropOrderAndV0Mangling.lean
 'TailCallMangle.become_frame_reuse_and_lifo_drops' depends on axioms: [propext, Quot.sound]
 'TailCallMangle.become_preserves_depth' depends on axioms: [propext, Quot.sound]
 'TailCallMangle.scopeWalk_eq_lifo' depends on axioms: [propext]
@@ -26,4 +23,3 @@ $ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=tru
 'TailCallMangle.digest_mangling_has_no_decoder' does not depend on any axioms
 'TailCallMangle.tower_bound_is_tight' depends on axioms: [propext]
 'TailCallMangle.digest64_mangling_collides' does not depend on any axioms
-exit status: 0

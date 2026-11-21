@@ -22,12 +22,12 @@ namespace TailCallMangle
 `erase`, or `flatten` is relied upon) -/
 
 /-- No element occurs twice. -/
-def Distinct {α : Type} : List α → Prop
+noncomputable def Distinct {α : Type} : List α → Prop
   | [] => True
   | a :: l => a ∉ l ∧ Distinct l
 
 /-- Remove the first occurrence of `a`. -/
-def removeFirst {α : Type} [DecidableEq α] (a : α) : List α → List α
+noncomputable def removeFirst {α : Type} [DecidableEq α] (a : α) : List α → List α
   | [] => []
   | x :: xs => if x = a then xs else x :: removeFirst a xs
 
@@ -125,12 +125,12 @@ structure State where
 abbrev Prog := Nat → List Stmt
 
 /-- The pointer argument handed to a callee: a pointer into the caller's frame, or none. -/
-def refArg (byRef : Bool) (callerId : Nat) : Option Nat :=
+noncomputable def refArg (byRef : Bool) (callerId : Nat) : Option Nat :=
   match byRef with
   | true => some callerId
   | false => none
 
-def stepFrame (P : Prog) (fr : Frame) (rest : List Frame) (nx : Nat) (tr : List Event) :
+noncomputable def stepFrame (P : Prog) (fr : Frame) (rest : List Frame) (nx : Nat) (tr : List Event) :
     Option State :=
   match fr.code with
   | [] => some ⟨rest, nx, tr⟩
@@ -147,12 +147,12 @@ def stepFrame (P : Prog) (fr : Frame) (rest : List Frame) (nx : Nat) (tr : List 
           else none
 
 /-- One machine step. `none` is undefined behaviour; an empty stack is a fixed point. -/
-def step (P : Prog) (s : State) : Option State :=
+noncomputable def step (P : Prog) (s : State) : Option State :=
   match s.stack with
   | [] => some s
   | fr :: rest => stepFrame P fr rest s.next s.trace
 
-def run (P : Prog) : Nat → State → Option State
+noncomputable def run (P : Prog) : Nat → State → Option State
   | 0, s => some s
   | n + 1, s => (step P s).bind (run P n)
 
@@ -197,7 +197,7 @@ theorem run_halted (P : Prog) (n nx : Nat) (tr : List Event) :
   | succ n ih => rw [run_succ]; exact ih
 
 /-- A straight-line block of observable statements. -/
-def effs (es : List Event) : List Stmt := es.map Stmt.eff
+noncomputable def effs (es : List Event) : List Stmt := es.map Stmt.eff
 
 theorem run_effs (P : Prog) (es : List Event) (k : List Stmt) (i : Nat) (r : Option Nat)
     (rest : List Frame) (nx : Nat) (tr : List Event) :
@@ -221,7 +221,7 @@ routine: walk the scopes innermost-first, emit the still-owned variables of each
 scope in reverse declaration order, then emit the tail call. `lifoDrops` is the
 specification: all still-owned variables in reverse declaration order. -/
 
-def flat : List (List Nat) → List Nat
+noncomputable def flat : List (List Nat) → List Nat
   | [] => []
   | s :: ss => s ++ flat ss
 
@@ -236,19 +236,19 @@ structure Scopes where
   params : List Nat
   blocks : List (List Nat)
 
-def Scopes.declOrder (sc : Scopes) : List Nat := sc.params ++ flat sc.blocks
+noncomputable def Scopes.declOrder (sc : Scopes) : List Nat := sc.params ++ flat sc.blocks
 
 /-- `r` has not been moved into the callee's arguments. -/
-def owned (moved : List Nat) (r : Nat) : Bool := !moved.contains r
+noncomputable def owned (moved : List Nat) (r : Nat) : Bool := !moved.contains r
 
-def lifoDrops (sc : Scopes) (moved : List Nat) : List Nat :=
+noncomputable def lifoDrops (sc : Scopes) (moved : List Nat) : List Nat :=
   (sc.declOrder.reverse).filter (owned moved)
 
-def scopeWalk (moved : List Nat) : List (List Nat) → List Nat
+noncomputable def scopeWalk (moved : List Nat) : List (List Nat) → List Nat
   | [] => []
   | s :: ss => (s.reverse).filter (owned moved) ++ scopeWalk moved ss
 
-def lowerBecome (sc : Scopes) (moved : List Nat) (f : Nat) (byRef : Bool) : List Stmt :=
+noncomputable def lowerBecome (sc : Scopes) (moved : List Nat) (f : Nat) (byRef : Bool) : List Stmt :=
   effs ((scopeWalk moved (sc.blocks.reverse ++ [sc.params])).map Event.drop)
     ++ [Stmt.tailcall f byRef]
 
@@ -406,7 +406,7 @@ theorem run_depth_le (P : Prog) (hP : ProgNoCall P) :
       exact Nat.le_trans (run_depth_le P hP n s1 s' h1.2 h') h1.1
 
 /-- The one-statement program in which every function's body is `st`. -/
-def loopProg (st : Stmt) : Prog := fun _ => [st]
+noncomputable def loopProg (st : Stmt) : Prog := fun _ => [st]
 
 /-- A self tail call runs forever at the depth it started with. -/
 theorem tail_loop_depth_const (n : Nat) :
@@ -717,7 +717,7 @@ theorem fresh_single (code : List Stmt) : Fresh ⟨[⟨0, code, none⟩], 1, []�
     ⟨(fun h => by cases h), trivial⟩⟩
 
 /-- Function 1 dereferences its pointer argument; everything else is empty. -/
-def refProg : Prog := fun g =>
+noncomputable def refProg : Prog := fun g =>
   match g with
   | 1 => [.useRef]
   | _ => []
@@ -730,7 +730,7 @@ theorem ce1_instance :
   ⟨rfl, rfl⟩
 
 /-- Function 1 emits `5` and tail-calls the empty function 2. -/
-def inlineProg : Prog := fun g =>
+noncomputable def inlineProg : Prog := fun g =>
   match g with
   | 1 => [.eff (.emit 5), .tailcall 2 false]
   | _ => []
@@ -753,43 +753,43 @@ theorem naive_inline_instance :
 Resource ids and the callee-body marker `9` are the digits used by the probe, and
 `logNumber` folds a trace into the decimal number the probe prints. -/
 
-def digit : Event → Nat
+noncomputable def digit : Event → Nat
   | .emit n => n
   | .drop r => r
 
-def logNumber (tr : List Event) : Nat := tr.foldl (fun acc e => acc * 10 + digit e) 0
+noncomputable def logNumber (tr : List Event) : Nat := tr.foldl (fun acc e => acc * 10 + digit e) 0
 
 /-- Stack depth before each of the first `n` steps, and after the last. -/
-def depths (P : Prog) : Nat → State → List Nat
+noncomputable def depths (P : Prog) : Nat → State → List Nat
   | 0, s => [s.stack.length]
   | n + 1, s =>
       s.stack.length :: (match step P s with
         | some s' => depths P n s'
         | none => [])
 
-def summary (o : Option State) : Option (Nat × Nat) :=
+noncomputable def summary (o : Option State) : Option (Nat × Nat) :=
   o.map (fun s => (s.stack.length, logNumber s.trace))
 
 /-- Function 1: one guard parameter `3`; function 2: two guard parameters `6`, `7`;
 function 3: one guard parameter `1` (the caller's own parameter, forwarded).
 A callee body logs `9`; its parameters are dropped in reverse order on exit. -/
-def scenarioProg : Prog := fun g =>
+noncomputable def scenarioProg : Prog := fun g =>
   match g with
   | 1 => [.eff (.emit 9), .eff (.drop 3)]
   | 2 => [.eff (.emit 9), .eff (.drop 7), .eff (.drop 6)]
   | 3 => [.eff (.emit 9), .eff (.drop 1)]
   | _ => []
 
-def frame0 (code : List Stmt) : State := ⟨[⟨0, code, none⟩], 1, []⟩
+noncomputable def frame0 (code : List Stmt) : State := ⟨[⟨0, code, none⟩], 1, []⟩
 
-def s1Become : State := frame0 (lowerBecome ⟨[1], [[2]]⟩ [] 1 false)
-def s1Plain : State := frame0 [.call 1 false, .eff (.drop 2), .eff (.drop 1)]
-def s1DropsAfterTailcall : State := frame0 [.tailcall 1 false, .eff (.drop 2), .eff (.drop 1)]
-def s2Become : State := frame0 (lowerBecome ⟨[1, 2], [[3], [4, 5]]⟩ [] 2 false)
-def s2Plain : State :=
+noncomputable def s1Become : State := frame0 (lowerBecome ⟨[1], [[2]]⟩ [] 1 false)
+noncomputable def s1Plain : State := frame0 [.call 1 false, .eff (.drop 2), .eff (.drop 1)]
+noncomputable def s1DropsAfterTailcall : State := frame0 [.tailcall 1 false, .eff (.drop 2), .eff (.drop 1)]
+noncomputable def s2Become : State := frame0 (lowerBecome ⟨[1, 2], [[3], [4, 5]]⟩ [] 2 false)
+noncomputable def s2Plain : State :=
   frame0 [.call 2 false, .eff (.drop 5), .eff (.drop 4), .eff (.drop 3), .eff (.drop 2),
     .eff (.drop 1)]
-def s3Forward : State := frame0 (lowerBecome ⟨[1], [[2]]⟩ [1] 3 false)
+noncomputable def s3Forward : State := frame0 (lowerBecome ⟨[1], [[2]]⟩ [1] 3 false)
 
 /-- **Counterexample 2 (dropping the caller's variables after the transfer).**
 Scenario 1 under three lowerings:
@@ -832,7 +832,22 @@ counts, not bytes. -/
 inductive TyTree where
   | leaf (n : Nat)
   | node (c : Nat) (l r : TyTree)
-  deriving DecidableEq
+
+noncomputable def TyTree.decEqTree : (a b : TyTree) → Decidable (a = b)
+  | .leaf n, .leaf m =>
+    match Nat.decEq n m with
+    | .isTrue h => .isTrue (by rw [h])
+    | .isFalse h => .isFalse (fun e => by cases e; exact h rfl)
+  | .leaf _, .node _ _ _ => .isFalse (fun e => by cases e)
+  | .node _ _ _, .leaf _ => .isFalse (fun e => by cases e)
+  | .node c₁ l₁ r₁, .node c₂ l₂ r₂ =>
+    match Nat.decEq c₁ c₂, TyTree.decEqTree l₁ l₂, TyTree.decEqTree r₁ r₂ with
+    | .isTrue hc, .isTrue hl, .isTrue hr => .isTrue (by rw [hc, hl, hr])
+    | .isFalse hc, _, _ => .isFalse (fun e => by cases e; exact hc rfl)
+    | _, .isFalse hl, _ => .isFalse (fun e => by cases e; exact hl rfl)
+    | _, _, .isFalse hr => .isFalse (fun e => by cases e; exact hr rfl)
+
+noncomputable instance : DecidableEq TyTree := TyTree.decEqTree
 
 inductive Tok where
   | leaf (n : Nat)
@@ -840,22 +855,22 @@ inductive Tok where
   | ref (i : Nat)
   deriving DecidableEq
 
-def naive : TyTree → List Tok
+noncomputable def naive : TyTree → List Tok
   | .leaf n => [.leaf n]
   | .node c l r => .node c :: (naive l ++ naive r)
 
-def findIdx (t : TyTree) : List TyTree → Option Nat
+noncomputable def findIdx (t : TyTree) : List TyTree → Option Nat
   | [] => none
   | x :: xs => if x = t then some 0 else (findIdx t xs).map (· + 1)
 
-def nth : List TyTree → Nat → Option TyTree
+noncomputable def nth : List TyTree → Nat → Option TyTree
   | [], _ => none
   | x :: _, 0 => some x
   | _ :: xs, i + 1 => nth xs i
 
 /-- Encode `t` given the table `d` of compound subtrees already emitted; returns the
 tokens and the extended table. -/
-def enc : TyTree → List TyTree → List Tok × List TyTree
+noncomputable def enc : TyTree → List TyTree → List Tok × List TyTree
   | .leaf n, d => ([.leaf n], d)
   | .node c l r, d =>
     match findIdx (.node c l r) d with
@@ -865,7 +880,7 @@ def enc : TyTree → List TyTree → List Tok × List TyTree
         (enc r (enc l d).2).2 ++ [.node c l r])
 
 /-- Decode one tree from the front of the token list, maintaining the same table. -/
-def dec : Nat → List Tok → List TyTree → Option (TyTree × List Tok × List TyTree)
+noncomputable def dec : Nat → List Tok → List TyTree → Option (TyTree × List Tok × List TyTree)
   | 0, _, _ => none
   | _ + 1, [], _ => none
   | _ + 1, .leaf n :: ts, d => some (.leaf n, ts, d)
@@ -881,9 +896,9 @@ def dec : Nat → List Tok → List TyTree → Option (TyTree × List Tok × Lis
       | none => none
       | some (r, ts2, d2) => some (.node c l r, ts2, d2 ++ [.node c l r])
 
-def encodeV0Dag (t : TyTree) : List Tok := (enc t []).1
+noncomputable def encodeV0Dag (t : TyTree) : List Tok := (enc t []).1
 
-def decodeV0Dag (ts : List Tok) : Option TyTree :=
+noncomputable def decodeV0Dag (ts : List Tok) : Option TyTree :=
   match dec ts.length ts [] with
   | some (t, [], _) => some t
   | _ => none
@@ -994,11 +1009,11 @@ theorem encodeV0Dag_injective (a b : TyTree) (h : encodeV0Dag a = encodeV0Dag b)
 /-! ### B.1  Size: linear in the number of distinct compound subtrees -/
 
 /-- Every compound subtree of `t`, once per occurrence. -/
-def subterms : TyTree → List TyTree
+noncomputable def subterms : TyTree → List TyTree
   | .leaf _ => []
   | .node c l r => .node c l r :: (subterms l ++ subterms r)
 
-def size : TyTree → Nat
+noncomputable def size : TyTree → Nat
   | .leaf _ => 1
   | .node _ l r => size l + size r + 1
 
@@ -1119,11 +1134,11 @@ theorem encodeV0Dag_length_le (t : TyTree) (m : List TyTree)
 
 /-- `tower 0` is a basic type; `tower (n+1)` applies constructor `0` to two copies of
 `tower n`. This is the `Pair<T, T>` family measured by the Rust probe. -/
-def tower : Nat → TyTree
+noncomputable def tower : Nat → TyTree
   | 0 => .leaf 0
   | n + 1 => .node 0 (tower n) (tower n)
 
-def leaves : TyTree → Nat
+noncomputable def leaves : TyTree → Nat
   | .leaf _ => 1
   | .node _ l r => leaves l + leaves r
 
@@ -1194,7 +1209,7 @@ theorem ce3_naive_tree_mangling_exponential_vs_v0_dag_linear :
     encodeV0Dag_tower_length 10, leaves_tower 10⟩
 
 /-- The distinct compound subtrees of `tower n`: `tower n, …, tower 1`. -/
-def towerList : Nat → List TyTree
+noncomputable def towerList : Nat → List TyTree
   | 0 => []
   | n + 1 => tower (n + 1) :: towerList n
 
@@ -1237,7 +1252,7 @@ theorem tower_bound_is_tight (n : Nat) :
 /-! ### B.3  Digest mangling is lossy for every digest of bounded range -/
 
 /-- Digest-style mangling: an item path plus a digest of the type argument. -/
-def legacyMangle (h : TyTree → Nat) (path : Nat) (t : TyTree) : Nat × Nat := (path, h t)
+noncomputable def legacyMangle (h : TyTree → Nat) (path : Nat) (t : TyTree) : Nat × Nat := (path, h t)
 
 theorem find_or_none {α : Type} (h : α → Nat) (v : Nat) :
     ∀ (l : List α), (∃ x, x ∈ l ∧ h x = v) ∨ (∀ x, x ∈ l → h x ≠ v)
@@ -1278,11 +1293,11 @@ theorem collision_of_small_range {α : Type} (h : α → Nat) :
         collision_of_small_range h ts (removeFirst (h t) m) hd.2 hin' hlt'
       exact ⟨a, b, List.Mem.tail _ ha, List.Mem.tail _ hb, hne, e⟩
 
-def leafList : Nat → List TyTree
+noncomputable def leafList : Nat → List TyTree
   | 0 => []
   | k + 1 => .leaf k :: leafList k
 
-def below : Nat → List Nat
+noncomputable def below : Nat → List Nat
   | 0 => []
   | k + 1 => k :: below k
 
