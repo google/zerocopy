@@ -8,7 +8,7 @@ instrumentation for CN specifications. It proves, against the declarative (exact
 meaning of the contracts, when an accepted run really satisfied every contract (soundness), when every
 satisfying run is accepted (completeness), how both depend on the precision of the contracts and on the
 monitor's footprint-computation strategy, and what must be assumed about uninstrumented (unannotated)
-code. All 20 results below are kernel-checked. They are statements about the toy model only.
+code. All 20 results below are kernel-checked. They are statements about the toy model; they neither establish nor refute the corresponding claims about Fulminate, CN, the `owned` primitive proposed for Rust contracts or its Miri prototype (the modeling-bridge claims B1–B5 under **Findings** argue such connections separately).
 
 * **R1a-greedy-footprints-are-witnesses.** For every contract of the toy assertion language (byte-ownership cells, pure conditions, separating conjunction, and arbitrary, possibly imprecise, disjunction), any footprint the greedy evaluator returns lists allocated bytes of the fragment whose restriction satisfies the contract.
 * **R1b-search-footprints-are-witnesses.** The same holds for the first footprint found by exhaustive backtracking search.
@@ -126,18 +126,23 @@ fragment; `none` means not part of it).
 **Assertions and their exact meaning.**
 
 ```lean
+-- lean/ToyMonitor/Basic.lean:70-74
 inductive Assn where
   | cell (p : Addr) (P : Val → Bool)
   | pure (b : Bool)
   | sep (A B : Assn)
   | or (A B : Assn)
 
+-- lean/ToyMonitor/Basic.lean:77
 def Assn.owned (p : Addr) : Assn := .cell p (fun _ => true)
 
+-- lean/ToyMonitor/Basic.lean:80
 def Assn.pointsTo (p : Addr) (v : Val) : Assn := .cell p (fun w => w == v)
 
+-- lean/ToyMonitor/Basic.lean:83
 def Assn.emp : Assn := .pure true
 
+-- lean/ToyMonitor/Basic.lean:88-93
 def sat : Assn → Heap → Prop
   | .cell p P, g => ∃ v, g p = some v ∧ P v = true ∧ ∀ a, a ≠ p → g a = none
   | .pure b, g => b = true ∧ ∀ a, g a = none
@@ -145,15 +150,19 @@ def sat : Assn → Heap → Prop
       sat A g₁ ∧ sat B g₂
   | .or A B, g => sat A g ∨ sat B g
 
+-- lean/ToyMonitor/Basic.lean:97-98
 def SepP (P R : Heap → Prop) (g : Heap) : Prop :=
   ∃ g₁ g₂, Heap.Disjoint g₁ g₂ ∧ (∀ a, g a = Heap.union g₁ g₂ a) ∧ P g₁ ∧ R g₂
 
+-- lean/ToyMonitor/Basic.lean:104-105
 def IsFootprint (A : Assn) (g : Heap) (F : List Addr) : Prop :=
   (∀ a ∈ F, (g a).isSome = true) ∧ sat A (g.restrict F)
 
+-- lean/ToyMonitor/Basic.lean:109-110
 def Precise (A : Assn) : Prop :=
   ∀ g g₁ g₂, Heap.Sub g₁ g → Heap.Sub g₂ g → sat A g₁ → sat A g₂ → g₁ = g₂
 
+-- lean/ToyMonitor/Basic.lean:119-123
 def DisjPrecise : Assn → Prop
   | .cell _ _ => True
   | .pure _ => True
@@ -165,13 +174,16 @@ def DisjPrecise : Assn → Prop
 caller's fragment only.
 
 ```lean
+-- lean/ToyMonitor/Strategy.lean:20-21
 def StrategySound (s : Strategy) : Prop :=
   ∀ A g F, s A g = some F → IsFootprint A g F
 
+-- lean/ToyMonitor/Strategy.lean:32-34
 def RecoversEveryWitness (s : Strategy) (A : Assn) : Prop :=
   ∀ g g', Heap.Sub g' g → sat A g' →
     ∃ F, s A g = some F ∧ (∀ a ∈ F, (g a).isSome = true) ∧ g.restrict F = g'
 
+-- lean/ToyMonitor/Strategy.lean:39-40
 def ExistsFootprintComplete (s : Strategy) (A : Assn) : Prop :=
   ∀ g g', Heap.Sub g' g → sat A g' → ∃ F, s A g = some F ∧ IsFootprint A g F
 ```
@@ -191,6 +203,7 @@ genuine footprint whenever one exists.
 **Programs, the monitor, and the meaning of contracts.**
 
 ```lean
+-- lean/ToyMonitor/Monitor.lean:27-35
 inductive Prog where
   | skip
   | read (a : Addr)
@@ -308,6 +321,7 @@ Each result below corresponds to one entry (card) of `results.json`; field value
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:128-129
 /-- **R1a.** Every footprint the greedy strategy returns is a genuine footprint. -/
 theorem fpGreedy_strategySound : StrategySound fpGreedy
 ```
@@ -341,6 +355,7 @@ theorem fpGreedy_strategySound : StrategySound fpGreedy
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:230-231
 /-- **R1b.** Every footprint the backtracking strategy returns is a genuine footprint. -/
 theorem fpSearch_strategySound : StrategySound fpSearch
 ```
@@ -374,6 +389,7 @@ theorem fpSearch_strategySound : StrategySound fpSearch
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:256-267
 /-- **R1 (monitor soundness).** If the strategy is sound, the monitor performs the leak
 check, and unannotated callees are checked as inlined, then a run accepted by the
 monitor satisfies every contract, with the monitor's own footprints as witnesses: at
@@ -391,7 +407,7 @@ theorem accepts_imp_satisfiesBy_of_strategySound
 * **With the key definitions unfolded** (`Fp A g F` abbreviates `IsFootprint A g F`, `Acc` abbreviates `Accepts`, `REW` abbreviates `RecoversEveryWitness`; all are quoted under *Model*):
 
 ```lean
-∀ s, (∀ A g F, s A g = some F → Fp A g F) →
+∀ s, (∀ A g F, s A g = some F → IsFootprint A g F) →
   ∀ cfg, cfg.leakCheck = true → cfg.checkUnannot = true →
   ∀ p h O, (monitorAux cfg s true p h (initOwn O) 0).isSome = true → SatisfiesBy s p h O
 -- where SatisfiesBy s demands, at every `call P Q body` run in a frame owning O:
@@ -427,6 +443,7 @@ theorem accepts_imp_satisfiesBy_of_strategySound
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:271-276
 /-- **R1′ (no false alarms relative to the monitor's own footprints).** Under any
 configuration and any strategy, a run that satisfies its contracts with the strategy's
 footprints is accepted. -/
@@ -463,6 +480,7 @@ theorem satisfiesBy_imp_accepts (s : Strategy) (cfg : MonCfg)
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:241-251
 /-- **R1-trusted (soundness under either policy for unannotated callees, assuming
 confinement when they are trusted).** If the strategy is sound and the monitor performs
 the leak check, then a run accepted by the monitor satisfies every contract with the
@@ -479,8 +497,8 @@ theorem accepts_imp_satisfiesBy_of_unannotConfined
 * **With the key definitions unfolded** (`Fp A g F` abbreviates `IsFootprint A g F`, `Acc` abbreviates `Accepts`, `REW` abbreviates `RecoversEveryWitness`; all are quoted under *Model*):
 
 ```lean
-∀ s, (∀ A g F, s A g = some F → Fp A g F) → ∀ cfg, cfg.leakCheck = true →
-  ∀ p h O, Acc cfg s p h O → (cfg.checkUnannot = false → UnannotConfinedAux s false p h O) →
+∀ s, (∀ A g F, s A g = some F → IsFootprint A g F) → ∀ cfg, cfg.leakCheck = true →
+  ∀ p h O, Accepts cfg s p h O → (cfg.checkUnannot = false → UnannotConfinedAux s false p h O) →
   SatisfiesBy s p h O
 -- where UnannotConfinedAux s u (u = "running inside an unannotated callee") requires
 --   read a / write a v :  u = true → a ∈ O ∧ (h a).isSome = true
@@ -514,6 +532,7 @@ theorem accepts_imp_satisfiesBy_of_unannotConfined
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:307-311
 /-- **Frame property.** If a run satisfies its contracts in a frame owning `O`, the run
 changes no byte outside `O`. In particular (applied to a callee) bytes not transferred
 to a callee are unchanged when it returns. -/
@@ -550,6 +569,7 @@ theorem satisfies_frame :
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:334-341
 /-- **Footprints witness the separating conjunction.** If the restriction of `g` to `F`
 satisfies `A`, then `g` satisfies `A ∗ R` where `R` holds of exactly the frame
 `g.remove F`, with the split exposed: the `A`-part is `g.restrict F` and the frame part
@@ -563,7 +583,7 @@ theorem restrict_witnesses_sep (A : Assn) (g : Heap) (F : List Addr)
 * **With the key definitions unfolded** (`Fp A g F` abbreviates `IsFootprint A g F`, `Acc` abbreviates `Accepts`, `REW` abbreviates `RecoversEveryWitness`; all are quoted under *Model*):
 
 ```lean
-∀ A g F, sat A (g.restrict F) →
+∀ (A : Assn) (g : Heap) (F : List Addr), sat A (g.restrict F) →
   ∃ g₁ g₂, (∀ a, g₁ a = none ∨ g₂ a = none) ∧ (∀ a, g a = Heap.union g₁ g₂ a) ∧
     (g₁ = g.restrict F ∧ sat A g₁) ∧ g₂ = g.remove F
 ```
@@ -591,6 +611,7 @@ theorem restrict_witnesses_sep (A : Assn) (g : Heap) (F : List Addr)
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:379-380
 /-- Disjunction-precise contracts are precise (precision is closed under `∗`). -/
 theorem precise_of_disjPrecise (A : Assn) (hA : DisjPrecise A) : Precise A
 ```
@@ -626,6 +647,7 @@ theorem precise_of_disjPrecise (A : Assn) (hA : DisjPrecise A) : Precise A
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:397-401
 /-- **R2a.** The greedy strategy recovers every witness of every disjunction-precise
 contract: whenever a sub-fragment of `g` satisfies `A`, the greedy footprint carves out
 exactly that sub-fragment. -/
@@ -663,6 +685,7 @@ theorem fpGreedy_recoversEveryWitness_of_disjPrecise (A : Assn) (hA : DisjPrecis
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:448-451
 /-- **R2b.** The backtracking strategy recovers every witness of every precise
 contract. -/
 theorem fpSearch_recoversEveryWitness_of_precise (A : Assn) (hA : Precise A) :
@@ -699,6 +722,7 @@ theorem fpSearch_recoversEveryWitness_of_precise (A : Assn) (hA : Precise A) :
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Examples.lean:313-315
 /-- Witness recovery (`RecoversEveryWitness`) is only possible for precise contracts
 (whatever the strategy): the single answer `s A g` must carve out every witness. -/
 theorem precise_of_recoversEveryWitness (s : Strategy) (A : Assn) (hc : RecoversEveryWitness s A) : Precise A
@@ -707,7 +731,7 @@ theorem precise_of_recoversEveryWitness (s : Strategy) (A : Assn) (hc : Recovers
 * **With the key definitions unfolded** (`Fp A g F` abbreviates `IsFootprint A g F`, `Acc` abbreviates `Accepts`, `REW` abbreviates `RecoversEveryWitness`; all are quoted under *Model*):
 
 ```lean
-∀ s A, REW s A → ∀ g g₁ g₂, Heap.Sub g₁ g → Heap.Sub g₂ g → sat A g₁ → sat A g₂ → g₁ = g₂
+∀ s A, RecoversEveryWitness s A → ∀ g g₁ g₂, Heap.Sub g₁ g → Heap.Sub g₂ g → sat A g₁ → sat A g₂ → g₁ = g₂
 ```
 
 * **Hypothesis ledger:**
@@ -733,6 +757,7 @@ theorem precise_of_recoversEveryWitness (s : Strategy) (A : Assn) (hc : Recovers
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:461-467
 /-- **R2c.** If the strategy recovers every witness of every contract of the program, a run that
 satisfies its contracts (angelic footprints) satisfies them with the strategy's
 footprints. -/
@@ -745,7 +770,7 @@ theorem satisfies_imp_satisfiesBy_of_recoversEveryWitness (s : Strategy)
 * **With the key definitions unfolded** (`Fp A g F` abbreviates `IsFootprint A g F`, `Acc` abbreviates `Accepts`, `REW` abbreviates `RecoversEveryWitness`; all are quoted under *Model*):
 
 ```lean
-∀ s p h O, (∀ A ∈ p.contracts, REW s A) → Satisfies p h O → SatisfiesBy s p h O
+∀ s p h O, (∀ A ∈ p.contracts, RecoversEveryWitness s A) → Satisfies p h O → SatisfiesBy s p h O
 -- p.contracts lists every pre- and postcondition occurring in p, including nested calls;
 -- Satisfies is SatisfiesBy with the footprint at each call chosen existentially (any F with
 -- Fp P (h.restrict O) F, Satisfies body h F, and Fp Q ((exec body h).restrict F) F).
@@ -775,6 +800,7 @@ theorem satisfies_imp_satisfiesBy_of_recoversEveryWitness (s : Strategy)
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:535-541
 /-- **R2 (greedy completeness).** If every contract of the program is
 disjunction-precise, the greedy monitor (under any configuration) accepts every run that
 satisfies its contracts. -/
@@ -815,6 +841,7 @@ theorem accepts_fpGreedy_of_satisfies_of_disjPrecise (cfg : MonCfg)
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:546-552
 /-- **R2 (search completeness).** If every contract of the program is precise, the
 backtracking monitor (under any configuration) accepts every run that satisfies its
 contracts. -/
@@ -855,6 +882,7 @@ theorem accepts_fpSearch_of_satisfies_of_precise (cfg : MonCfg)
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:557-562
 /-- **R2 (characterization, greedy).** For programs whose contracts are all
 disjunction-precise, the strict greedy monitor accepts a run iff the run satisfies its
 contracts. -/
@@ -894,6 +922,7 @@ theorem accepts_strict_fpGreedy_iff_satisfies_of_disjPrecise
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:568-572
 /-- **R2 (characterization, search).** For programs whose contracts are all precise,
 the strict backtracking monitor accepts a run iff the run satisfies its contracts. -/
 theorem accepts_strict_fpSearch_iff_satisfies_of_precise
@@ -931,6 +960,7 @@ theorem accepts_strict_fpSearch_iff_satisfies_of_precise
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:588-596
 /-- **R2 (impossibility).** For the imprecise contract `owned 0 ∨ owned 1`: the run
 whose callee reads byte `0` and the run whose callee reads byte `1` both satisfy their
 contracts (from the same heap and ownership), yet no sound strategy — under any monitor
@@ -948,8 +978,8 @@ theorem owned0_or_owned1_no_sound_strategy_accepts_both :
 -- C = or (owned 0) (owned 1);  runL = call C C (read 0);  runR = call C C (read 1);
 -- hTwo = {0 ↦ 0, 1 ↦ 0} (all other addresses unallocated)
 Satisfies runL hTwo [0, 1] ∧ Satisfies runR hTwo [0, 1] ∧
-  ∀ cfg s, (∀ A g F, s A g = some F → Fp A g F) →
-    ¬ (Acc cfg s runL hTwo [0, 1] ∧ Acc cfg s runR hTwo [0, 1])
+  ∀ cfg s, (∀ A g F, s A g = some F → IsFootprint A g F) →
+    ¬ (Accepts cfg s runL hTwo [0, 1] ∧ Accepts cfg s runR hTwo [0, 1])
 ```
 
 * **Hypothesis ledger:**
@@ -976,6 +1006,7 @@ Satisfies runL hTwo [0, 1] ∧ Satisfies runR hTwo [0, 1] ∧
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:669-676
 /-- **Counterexample (precise but not disjunction-precise, greedy).** `C'` is precise but
 has an imprecise inner disjunction. Greedy does not recover every witness of it, and the greedy monitor
 rejects a run that satisfies its contracts, while the backtracking monitor accepts it.
@@ -990,8 +1021,8 @@ theorem fpGreedy_rejects_satisfying_run_precise_not_disjPrecise :
 
 ```lean
 -- C' = sep (or (sep (owned 0) (owned 1)) (owned 0)) (owned 1);  runP = call C' C' skip
-Precise C' ∧ ¬ DisjPrecise C' ∧ ¬ REW fpGreedy C' ∧ Satisfies runP hTwo [0, 1] ∧
-  ¬ Acc ⟨true, true⟩ fpGreedy runP hTwo [0, 1] ∧ Acc ⟨true, true⟩ fpSearch runP hTwo [0, 1]
+Precise C' ∧ ¬ DisjPrecise C' ∧ ¬ RecoversEveryWitness fpGreedy C' ∧ Satisfies runP hTwo [0, 1] ∧
+  ¬ Accepts ⟨true, true⟩ fpGreedy runP hTwo [0, 1] ∧ Accepts ⟨true, true⟩ fpSearch runP hTwo [0, 1]
 ```
 
 * **Hypothesis ledger:** none (a closed statement about a concrete instance).
@@ -1011,6 +1042,7 @@ Precise C' ∧ ¬ DisjPrecise C' ∧ ¬ REW fpGreedy C' ∧ Satisfies runP hTwo 
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:802-816
 /-- **Result 3 (counterexample: trusted unannotated callees).** If unannotated callees
 are trusted (not checked), the monitor — with a sound strategy and the leak check —
 accepts a run in which an unannotated helper of a callee given only `owned 0` stores to
@@ -1033,11 +1065,11 @@ theorem trusted_unannot_write_outside_footprint_accepted :
 ```lean
 -- runTrusted = call (owned 0) (owned 0) (unannot (write 1 7));  trusted config = ⟨true, false⟩
 StrategySound fpAtom ∧ (⟨true, false⟩ : MonCfg).leakCheck = true ∧
-  Acc ⟨true, false⟩ fpAtom runTrusted hTwo [0, 1] ∧
+  Accepts ⟨true, false⟩ fpAtom runTrusted hTwo [0, 1] ∧
   ((⟨true, false⟩ : MonCfg).checkUnannot = false ∧ ¬ UnannotConfined fpAtom runTrusted hTwo [0, 1]) ∧
   ¬ SatisfiesBy fpAtom runTrusted hTwo [0, 1] ∧ ¬ Satisfies runTrusted hTwo [0, 1] ∧
   (fpAtom (owned 0) (hTwo.restrict [0, 1]) = some [0] ∧ 1 ∉ [0] ∧ exec runTrusted hTwo 1 ≠ hTwo 1) ∧
-  ¬ Acc ⟨true, true⟩ fpAtom runTrusted hTwo [0, 1]
+  ¬ Accepts ⟨true, true⟩ fpAtom runTrusted hTwo [0, 1]
 ```
 
 * **Hypothesis ledger:** none (a closed statement about a concrete instance).
@@ -1058,6 +1090,7 @@ StrategySound fpAtom ∧ (⟨true, false⟩ : MonCfg).leakCheck = true ∧
 * **Lean statement:**
 
 ```lean
+-- lean/ToyMonitor/Results.lean:782-793
 /-- **Counterexample (no leak check: stale depth-indexed ownership).** Without the leak
 check, a byte leaked by one callee stays attributed to call depth 1, and a later sibling
 callee at depth 1 — given only `owned 1` — reads byte `0` and is accepted. The second
@@ -1076,10 +1109,10 @@ theorem noLeakCheck_later_callee_inherits_leaked_byte :
 
 ```lean
 -- runStale = seq (call (owned 0) emp skip) (call (owned 1) (owned 1) (read 0));  config ⟨false, true⟩
-StrategySound fpAtom ∧ Acc ⟨false, true⟩ fpAtom runStale hTwo [0, 1] ∧
+StrategySound fpAtom ∧ Accepts ⟨false, true⟩ fpAtom runStale hTwo [0, 1] ∧
   ¬ Satisfies (call (owned 1) (owned 1) (read 0)) (exec (call (owned 0) emp skip) hTwo) [0, 1] ∧
   ¬ Satisfies runStale hTwo [0, 1] ∧ ¬ SatisfiesBy fpAtom runStale hTwo [0, 1] ∧
-  UnannotConfined fpAtom runStale hTwo [0, 1] ∧ ¬ Acc ⟨true, true⟩ fpAtom runStale hTwo [0, 1]
+  UnannotConfined fpAtom runStale hTwo [0, 1] ∧ ¬ Accepts ⟨true, true⟩ fpAtom runStale hTwo [0, 1]
 ```
 
 * **Hypothesis ledger:** none (a closed statement about a concrete instance).
@@ -1098,6 +1131,7 @@ Verbatim Lean source of every other name referenced in `results.json` (doc comme
 **`accepts_fpGreedy_call_C_C_skip_of_satisfies`** (`lean/ToyMonitor/Results.lean`; referenced by R2-recovers-every-witness-implies-precise (related); R2c-satisfies-implies-satisfiesBy-for-witness-recovering-strategies (related); R2-greedy-monitor-complete-for-disjPrecise-contracts (related); R2-greedy-characterization (related); R2-owned0-or-owned1-defeats-every-sound-online-strategy (related)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:704-711
 /-- Whole-program completeness of a monitor for one fixed program does not require
 precise contracts: the greedy monitor (under every configuration) accepts every
 satisfying run of `call C C skip`, whose contracts are both the imprecise `C`, because
@@ -1111,6 +1145,7 @@ theorem accepts_fpGreedy_call_C_C_skip_of_satisfies :
 **`accepts_fpGreedy_of_satisfies_of_disjPrecise_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R2-greedy-monitor-complete-for-disjPrecise-contracts (non-vacuity); R2-greedy-characterization (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:967-970
 /-- Non-vacuity for the greedy completeness and characterization theorems: a program
 whose precondition is a (precise) disjunction. -/
 theorem accepts_fpGreedy_of_satisfies_of_disjPrecise_nonvacuous :
@@ -1120,6 +1155,7 @@ theorem accepts_fpGreedy_of_satisfies_of_disjPrecise_nonvacuous :
 **`accepts_fpSearch_of_satisfies_of_precise_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R2-search-monitor-complete-for-precise-contracts (non-vacuity); R2-search-characterization (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:973-975
 /-- Non-vacuity for the search completeness and characterization theorems. -/
 theorem accepts_fpSearch_of_satisfies_of_precise_nonvacuous :
     (∀ A ∈ runP.contracts, Precise A) ∧ Satisfies runP hTwo [0, 1]
@@ -1128,6 +1164,7 @@ theorem accepts_fpSearch_of_satisfies_of_precise_nonvacuous :
 **`accepts_imp_satisfiesBy_of_strategySound_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R1-monitor-soundness (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:883-887
 /-- Non-vacuity for R1: all hypotheses hold for `fpAtom`, the strict configuration, and
 `progNV` (which contains a call and an unannotated helper). -/
 theorem accepts_imp_satisfiesBy_of_strategySound_nonvacuous :
@@ -1138,6 +1175,7 @@ theorem accepts_imp_satisfiesBy_of_strategySound_nonvacuous :
 **`accepts_imp_satisfiesBy_of_unannotConfined_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R1-trusted-soundness-under-unannot-confinement (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:899-906
 /-- Non-vacuity for R1-trusted: all hypotheses hold with unannotated callees trusted, for
 `progMixed`, whose unannotated helper both performs an (unchecked, confined) store and
 calls an annotated function (monitored). -/
@@ -1151,6 +1189,7 @@ theorem accepts_imp_satisfiesBy_of_unannotConfined_nonvacuous :
 **`accepts_strict_fpSearch_iff_satisfies_call_C_C_skip`** (`lean/ToyMonitor/Results.lean`; referenced by R2-search-monitor-complete-for-precise-contracts (related); R2-search-characterization (related)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:1107-1114
 /-- **A fixed program can be characterized despite imprecise contracts.** For
 `call C C skip`, whose contracts are all imprecise, the strict search monitor accepts a
 run if and only if the run satisfies its contracts. -/
@@ -1164,6 +1203,7 @@ theorem accepts_strict_fpSearch_iff_satisfies_call_C_C_skip :
 **`existsFootprintComplete_not_imp_precise`** (`lean/ToyMonitor/Results.lean`; referenced by R2-recovers-every-witness-implies-precise (related)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:698-701
 /-- Existential footprint completeness does not imply precision (unlike witness
 recovery, `precise_of_recoversEveryWitness`). -/
 theorem existsFootprintComplete_not_imp_precise :
@@ -1173,6 +1213,7 @@ theorem existsFootprintComplete_not_imp_precise :
 **`fpGreedy_recoversEveryWitness_CFlip_not_disjPrecise`** (`lean/ToyMonitor/Results.lean`; referenced by R2a-greedy-recovers-every-witness-for-disjPrecise (related)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:1025-1033
 /-- **`DisjPrecise` is not necessary for greedy witness recovery.** `CFlip` is
 satisfiable and precise but not `DisjPrecise`, and the left-biased `fpGreedy` still
 recovers every witness of it, while the right-biased `fpGreedyR` does not. -/
@@ -1187,6 +1228,7 @@ theorem fpGreedy_recoversEveryWitness_CFlip_not_disjPrecise :
 **`fpGreedy_recoversEveryWitness_of_disjPrecise_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R2a-greedy-recovers-every-witness-for-disjPrecise (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:932-936
 /-- Non-vacuity for R2a: all hypotheses (of the theorem and of the witness-recovery
 clause) hold for a disjunctive contract. -/
 theorem fpGreedy_recoversEveryWitness_of_disjPrecise_nonvacuous :
@@ -1197,6 +1239,7 @@ theorem fpGreedy_recoversEveryWitness_of_disjPrecise_nonvacuous :
 **`fpGreedy_rejects_satisfying_run_imprecise_contract`** (`lean/ToyMonitor/Results.lean`; referenced by R1a-greedy-footprints-are-witnesses (related); R2c-satisfies-implies-satisfiesBy-for-witness-recovering-strategies (counterexample to hc); R2-greedy-monitor-complete-for-disjPrecise-contracts (counterexample to hdp); R2-greedy-characterization (counterexample to hdp)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:644-651
 /-- **Counterexample (imprecise contract, greedy).** `owned 0 ∨ owned 1` is not
 disjunction-precise and greedy does not recover every witness of it; the run `runR` satisfies its
 contracts, but the greedy footprint (byte `0`) is not the one the callee uses, and the
@@ -1210,6 +1253,7 @@ theorem fpGreedy_rejects_satisfying_run_imprecise_contract :
 **`fpGreedy_strategySound_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R1a-greedy-footprints-are-witnesses (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:876-878
 /-- Non-vacuity for R1a: greedy computes a footprint for a contract mixing `∨` and `∗`. -/
 theorem fpGreedy_strategySound_nonvacuous :
     fpGreedy (.sep C (owned 1)) hTwo = some [0, 1]
@@ -1218,6 +1262,7 @@ theorem fpGreedy_strategySound_nonvacuous :
 **`fpGreedyR_strategySound`** (`lean/ToyMonitor/Results.lean`; referenced by R1a-greedy-footprints-are-witnesses (related)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:179-180
 /-- The right-biased greedy strategy is sound as well. -/
 theorem fpGreedyR_strategySound : StrategySound fpGreedyR
 ```
@@ -1225,6 +1270,7 @@ theorem fpGreedyR_strategySound : StrategySound fpGreedyR
 **`fpSearch_existsFootprintComplete`** (`lean/ToyMonitor/Results.lean`; referenced by R2b-search-recovers-every-witness-for-precise (related)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:687-690
 /-- The backtracking strategy is existentially footprint-complete for *every* assertion,
 precise or not: whenever a satisfying sub-fragment exists, it returns some genuine
 footprint (not necessarily the intended one). -/
@@ -1234,6 +1280,7 @@ theorem fpSearch_existsFootprintComplete (A : Assn) : ExistsFootprintComplete fp
 **`fpSearch_recoversEveryWitness_of_precise_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R2b-search-recovers-every-witness-for-precise (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:940-942
 /-- Non-vacuity for R2b: all hypotheses hold for the precise, not disjunction-precise `C'`. -/
 theorem fpSearch_recoversEveryWitness_of_precise_nonvacuous :
     Precise C' ∧ Heap.Sub hTwo hTwo ∧ sat C' hTwo
@@ -1242,6 +1289,7 @@ theorem fpSearch_recoversEveryWitness_of_precise_nonvacuous :
 **`fpSearch_rejects_satisfying_run_imprecise_contract`** (`lean/ToyMonitor/Results.lean`; referenced by R1b-search-footprints-are-witnesses (related); R2-search-monitor-complete-for-precise-contracts (counterexample to hp); R2-search-characterization (counterexample to hp)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:655-660
 /-- **Counterexample (imprecise contract, search).** `owned 0 ∨ owned 1` is not precise;
 `runR` satisfies its contracts but the backtracking monitor (first footprint found:
 byte `0`) rejects it. -/
@@ -1253,6 +1301,7 @@ theorem fpSearch_rejects_satisfying_run_imprecise_contract :
 **`fpSearch_strategySound_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R1b-search-footprints-are-witnesses (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:880-881
 /-- Non-vacuity for R1b: search computes a footprint for `C'`. -/
 theorem fpSearch_strategySound_nonvacuous : fpSearch C' hTwo = some [0, 1]
 ```
@@ -1260,6 +1309,7 @@ theorem fpSearch_strategySound_nonvacuous : fpSearch C' hTwo = some [0, 1]
 **`monitorAux_sound`** (`lean/ToyMonitor/Lemmas.lean`; referenced by R1-monitor-soundness (related)):
 
 ```lean
+-- lean/ToyMonitor/Lemmas.lean:299-311
 /-- Soundness of the monitor in both instrumentation modes. If the strategy is sound and
 the leak check is on, an accepted run (from a state satisfying the ownership-depth
 invariant) satisfies its contracts with the strategy's footprints and restores the
@@ -1278,6 +1328,7 @@ theorem monitorAux_sound (s : Strategy) (hs : StrategySound s) (cfg : MonCfg)
 The hypothesis `hinv` uses the ownership-depth invariant `OwnInv` (`lean/ToyMonitor/Lemmas.lean`):
 
 ```lean
+-- lean/ToyMonitor/Lemmas.lean:210-213
 /-- Ownership-depth invariant of the monitor in frame `d`: frame `d` owns exactly the
 addresses in `O`, and no byte is owned by a deeper frame. -/
 def OwnInv (o : Own) (d : Nat) (O : List Addr) : Prop :=
@@ -1287,6 +1338,7 @@ def OwnInv (o : Own) (d : Nat) (O : List Addr) : Prop :=
 **`noLeakCheck_accepts_leaky_post`** (`lean/ToyMonitor/Results.lean`; referenced by R1-monitor-soundness (counterexample to hleak); R1-trusted-soundness-under-unannot-confinement (counterexample to hleak)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:769-777
 /-- **Counterexample (no leak check: exactness).** Without the leak check, the monitor
 accepts a callee that receives `owned 0` and returns only `emp`, although the
 postcondition does not describe the callee's final fragment. All other hypotheses of R1
@@ -1301,6 +1353,7 @@ theorem noLeakCheck_accepts_leaky_post :
 **`not_precise_C`** (`lean/ToyMonitor/Examples.lean`; referenced by R2-disjPrecise-implies-precise (counterexample to hA); R2-recovers-every-witness-implies-precise (counterexample to hc)):
 
 ```lean
+-- lean/ToyMonitor/Examples.lean:214-216
 /-- Negative: `owned 0 ∨ owned 1` is not precise (in `hTwo` both one-cell fragments
 are witnesses). -/
 theorem not_precise_C : ¬ Precise C
@@ -1309,6 +1362,7 @@ theorem not_precise_C : ¬ Precise C
 **`not_recoversEveryWitness_fpGreedy_C`** (`lean/ToyMonitor/Examples.lean`; referenced by R2a-greedy-recovers-every-witness-for-disjPrecise (counterexample to hA)):
 
 ```lean
+-- lean/ToyMonitor/Examples.lean:289-291
 /-- Negative: `fpGreedy` does not recover every witness of `owned 0 ∨ owned 1` (it commits to
 `owned 0` even when the intended witness is the cell at `1`). -/
 theorem not_recoversEveryWitness_fpGreedy_C : ¬ RecoversEveryWitness fpGreedy C
@@ -1317,6 +1371,7 @@ theorem not_recoversEveryWitness_fpGreedy_C : ¬ RecoversEveryWitness fpGreedy C
 **`not_recoversEveryWitness_fpSearch_C`** (`lean/ToyMonitor/Examples.lean`; referenced by R2b-search-recovers-every-witness-for-precise (counterexample to hA)):
 
 ```lean
+-- lean/ToyMonitor/Examples.lean:301-303
 /-- Negative: `fpSearch` does not recover every witness of `owned 0 ∨ owned 1` either (its first
 footprint is the cell at `0`). -/
 theorem not_recoversEveryWitness_fpSearch_C : ¬ RecoversEveryWitness fpSearch C
@@ -1325,6 +1380,7 @@ theorem not_recoversEveryWitness_fpSearch_C : ¬ RecoversEveryWitness fpSearch C
 **`owned0_or_owned1_each_run_accepted_by_some_strategy`** (`lean/ToyMonitor/Results.lean`; referenced by R2-owned0-or-owned1-defeats-every-sound-online-strategy (positive control)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:615-624
 /-- **Positive control for the impossibility.** Swapping the quantifiers makes the
 conclusion fail: each of the two runs is accepted by some *sound* strategy (whose choices
 on that run are genuine footprints) — the left-biased greedy strategy accepts the first,
@@ -1340,6 +1396,7 @@ theorem owned0_or_owned1_each_run_accepted_by_some_strategy :
 **`owned0_or_owned1_no_sound_strategy_accepts_both_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R2-owned0-or-owned1-defeats-every-sound-online-strategy (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:981-986
 /-- Non-vacuity for the impossibility: a sound strategy that handles disjunction exists
 (so the hypothesis `StrategySound s` is satisfiable by a strategy that is not trivially
 rejecting `∨`), and both runs satisfy their contracts. -/
@@ -1351,6 +1408,7 @@ theorem owned0_or_owned1_no_sound_strategy_accepts_both_nonvacuous :
 **`owned0_or_owned1_unsound_strategy_accepts_both`** (`lean/ToyMonitor/Results.lean`; referenced by R2-owned0-or-owned1-defeats-every-sound-online-strategy (counterexample to StrategySound s)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:635-639
 /-- **Tightness of `StrategySound` in the impossibility.** An unsound strategy that
 always transfers both bytes gets both runs accepted. -/
 theorem owned0_or_owned1_unsound_strategy_accepts_both :
@@ -1361,6 +1419,7 @@ theorem owned0_or_owned1_unsound_strategy_accepts_both :
 **`precise_of_disjPrecise_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R2-disjPrecise-implies-precise (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:928-929
 /-- Non-vacuity for `precise_of_disjPrecise`: a disjunctive disjunction-precise contract. -/
 theorem precise_of_disjPrecise_nonvacuous : DisjPrecise (.or (pointsTo 0 0) (pointsTo 0 1))
 ```
@@ -1368,6 +1427,7 @@ theorem precise_of_disjPrecise_nonvacuous : DisjPrecise (.or (pointsTo 0 0) (poi
 **`precise_of_recoversEveryWitness_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R2-recovers-every-witness-implies-precise (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:924-925
 /-- Non-vacuity for `precise_of_recoversEveryWitness`. -/
 theorem precise_of_recoversEveryWitness_nonvacuous : RecoversEveryWitness fpAtom (owned 0)
 ```
@@ -1375,6 +1435,7 @@ theorem precise_of_recoversEveryWitness_nonvacuous : RecoversEveryWitness fpAtom
 **`read_unowned_rejected_and_unsatisfied`** (`lean/ToyMonitor/Results.lean`; referenced by R1-monitor-soundness (counterexample to hacc); R1prime-no-false-alarms-relative-to-own-footprints (counterexample to hsat); R1-trusted-soundness-under-unannot-confinement (counterexample to hacc); R2c-satisfies-implies-satisfiesBy-for-witness-recovering-strategies (counterexample to hsat); R2-greedy-monitor-complete-for-disjPrecise-contracts (counterexample to hsat); R2-search-monitor-complete-for-precise-contracts (counterexample to hsat)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:847-857
 /-- **Counterexample (acceptance / satisfaction premises).** Reading a byte the frame
 does not own is accepted by no monitor and satisfies no contract, while every other
 hypothesis of the soundness and completeness results holds: the confinement assumption
@@ -1391,6 +1452,7 @@ theorem read_unowned_rejected_and_unsatisfied :
 **`restrict_witnesses_sep_allows_unallocated_addrs`** (`lean/ToyMonitor/Results.lean`; referenced by R1-footprint-witnesses-separating-conjunction (related)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:1181-1187
 /-- `restrict_witnesses_sep` requires only `sat A (g.restrict F)`, which permits
 unallocated addresses in `F` (here `99`), unlike `IsFootprint`. -/
 theorem restrict_witnesses_sep_allows_unallocated_addrs :
@@ -1403,6 +1465,7 @@ theorem restrict_witnesses_sep_allows_unallocated_addrs :
 **`restrict_witnesses_sep_needs_sat`** (`lean/ToyMonitor/Results.lean`; referenced by R1-footprint-witnesses-separating-conjunction (counterexample to hA)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:354-359
 /-- **Counterexample (hypothesis of `restrict_witnesses_sep`).** `[0, 1]` does not carve
 an `owned 0` fragment out of `hTwo`, and the split it induces is not a witness. -/
 theorem restrict_witnesses_sep_needs_sat :
@@ -1414,6 +1477,7 @@ theorem restrict_witnesses_sep_needs_sat :
 **`restrict_witnesses_sep_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R1-footprint-witnesses-separating-conjunction (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:920-921
 /-- Non-vacuity for `restrict_witnesses_sep`. -/
 theorem restrict_witnesses_sep_nonvacuous : sat (owned 0) (hTwo.restrict [0])
 ```
@@ -1421,6 +1485,7 @@ theorem restrict_witnesses_sep_nonvacuous : sat (owned 0) (hTwo.restrict [0])
 **`satisfies_frame_needs_not_mem`** (`lean/ToyMonitor/Results.lean`; referenced by R1-frame-property (counterexample to a ∉ O)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:867-871
 /-- **Counterexample (`a ∉ O` in the frame property).** A run satisfying its contracts
 in frame `[0]` changes byte `0`, which is in the frame. -/
 theorem satisfies_frame_needs_not_mem :
@@ -1431,6 +1496,7 @@ theorem satisfies_frame_needs_not_mem :
 **`satisfies_frame_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R1-frame-property (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:915-917
 /-- Non-vacuity for the frame property: the run satisfies its contracts and byte `1` is
 outside the frame `[0]`. -/
 theorem satisfies_frame_nonvacuous : Satisfies progNV hOne [0] ∧ (1 : Addr) ∉ [0]
@@ -1439,6 +1505,7 @@ theorem satisfies_frame_nonvacuous : Satisfies progNV hOne [0] ∧ (1 : Addr) �
 **`satisfies_imp_satisfiesBy_of_recoversEveryWitness_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R2c-satisfies-implies-satisfiesBy-for-witness-recovering-strategies (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:946-948
 /-- Non-vacuity for R2c. -/
 theorem satisfies_imp_satisfiesBy_of_recoversEveryWitness_nonvacuous :
     (∀ A ∈ progNV.contracts, RecoversEveryWitness fpAtom A) ∧ Satisfies progNV hOne [0]
@@ -1447,6 +1514,7 @@ theorem satisfies_imp_satisfiesBy_of_recoversEveryWitness_nonvacuous :
 **`satisfiesBy_imp_accepts_nonvacuous`** (`lean/ToyMonitor/Results.lean`; referenced by R1prime-no-false-alarms-relative-to-own-footprints (non-vacuity)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:895-896
 /-- Non-vacuity for R1′. -/
 theorem satisfiesBy_imp_accepts_nonvacuous : SatisfiesBy fpAtom progNV hOne [0]
 ```
@@ -1454,6 +1522,7 @@ theorem satisfiesBy_imp_accepts_nonvacuous : SatisfiesBy fpAtom progNV hOne [0]
 **`trusted_monitor_checks_nested_annotated_call`** (`lean/ToyMonitor/Results.lean`; referenced by R1-trusted-soundness-under-unannot-confinement (related)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:825-832
 /-- **Trusted policy still monitors annotated callees.** An unannotated helper that
 performs no access at all but calls an annotated function whose precondition
 `pointsTo 0 1` is false: the run violates its contracts, the confinement assumption
@@ -1467,6 +1536,7 @@ theorem trusted_monitor_checks_nested_annotated_call :
 **`trusted_unannot_read_outside_footprint_accepted_heap_unchanged`** (`lean/ToyMonitor/Results.lean`; referenced by R1-trusted-soundness-under-unannot-confinement (related); R3-trusted-unannotated-callee-breaks-soundness (related)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:1161-1173
 /-- **Out-of-frame reads.** The unannotated helper of `pUnannotRead` reads a byte
 outside its frame: the heap is unchanged (so a check that only compares the heap before
 and after the call would pass), the monitor that trusts unannotated callees accepts the
@@ -1485,6 +1555,7 @@ theorem trusted_unannot_read_outside_footprint_accepted_heap_unchanged :
 **`unsound_strategy_accepts_contract_violating_run`** (`lean/ToyMonitor/Results.lean`; referenced by R1-monitor-soundness (counterexample to hs); R1-trusted-soundness-under-unannot-confinement (counterexample to hs)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:753-760
 /-- **Counterexample (unsound strategy).** With a strategy that transfers byte `0`
 without checking the precondition `pointsTo 0 1`, the strict monitor accepts a run
 whose precondition is false. All other hypotheses of R1 and R1-trusted hold. -/
@@ -1498,6 +1569,7 @@ theorem unsound_strategy_accepts_contract_violating_run :
 **`write_outside_frame_changes_byte`** (`lean/ToyMonitor/Results.lean`; referenced by R1-frame-property (counterexample to Satisfies p h O)):
 
 ```lean
+-- lean/ToyMonitor/Results.lean:368-372
 /-- **Counterexample (hypothesis of the frame property).** A store to a byte outside
 the frame changes that byte, and the run does not satisfy its contracts. -/
 theorem write_outside_frame_changes_byte :
@@ -1511,7 +1583,7 @@ theorem write_outside_frame_changes_byte :
 
 Non-claims come first. Two apply to every result:
 
-* **Toy model.** Toy model only: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). Nothing is claimed about Fulminate, CN, Miri or any implementation (any such connection is a separate modeling-bridge claim).
+* **Toy model.** Toy model: straight-line programs (no branching, loops, recursion, allocation, deallocation, concurrency), one address per byte, contracts without logical variables, value-binding resource outputs (CN's take, the let-bound results of owned in compiler-team #942), function parameters or return values, existentials, recursive predicates or iterated separating conjunction; ownership is whole (no fractional or read-only permissions) and there are no allocation-block tokens (alloc_block). These theorems neither establish nor refute the corresponding claims about Fulminate, CN, Miri or any other implementation; any such connection is a separate modeling-bridge claim.
 * **What "proved" means.** Every theorem is kernel-checked about the toy definitions quoted under
   **Findings** (`Basis: execution (Lean kernel check)`). It never means "true of a real system"; such
   connections are the separately labeled modeling-bridge claims B1–B5, whose basis is `derived`.
