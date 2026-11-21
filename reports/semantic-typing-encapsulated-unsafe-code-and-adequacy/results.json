@@ -558,7 +558,7 @@
     "lean": "Toy.SemType.synVal_rejects_checkedRead",
     "kind": "counterexample",
     "tier": "T1",
-    "plain_claim": "`checkedRead` is in the standard semantic interpretation of `int ⇒ int` at every world, but at no type and no world is it in the store-typed syntactic-typability interpretation `SynVal` (values typable by `HasTypeStore W []`), nor in the expression closure `safeAndIn (SynVal τ)`; so a model built from syntactic typability cannot certify this encapsulated library.",
+    "plain_claim": "`checkedRead` is in the standard semantic interpretation of `int ⇒ int` at every world, but at no type and no world is it in the store-typed syntactic-typability interpretation `SynVal` (values typable by `HasTypeStore W []`), nor in the expression closure `safeAndIn (SynVal τ)`; so the syntactic-typability interpretation `SynVal` (and its expression closure `safeAndIn (SynVal τ)`) cannot certify this encapsulated library.",
     "hypotheses": [],
     "depth": "shallow",
     "nonvacuity_witness": "Concrete library `checkedRead`, every world and type.",
@@ -571,7 +571,7 @@
       "Andrew K. Wright, Matthias Felleisen. \"A Syntactic Approach to Type Soundness.\" Information and Computation 115(1):38-94, November 1994. DOI 10.1006/inco.1994.1093. (syntactic soundness with store typing for references).",
       "Amin Timany, Robbert Krebbers, Derek Dreyer, Lars Birkedal. \"A Logical Approach to Type Soundness.\" Journal of the ACM 71(6), Article 40, November 2024. DOI 10.1145/3676954. Section 3.2 observes informally that syntactic type soundness offers no means to prove that the symbol ADT safely encapsulates assert. Verbatim: “But syntactic type soundness—by restricting attention to syntactically well-typed programs—does not offer us a means to prove this.” (Section 3.2, p. 40:15)"
     ],
-    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (A model built from syntactic typability can only certify libraries the syntactic system already accepts.)"
+    "design_question": "Rust's safety story rests on unsafe code encapsulated behind safe interfaces: a syntactic type system rejects the unsafe primitive, but a library using it internally can still be semantically well typed, and then every safe client is safe. What is the minimal formal content of semantic typing + adequacy + fundamental theorem, and which tempting shortcuts fail? (The interpretation `SynVal` contains exactly the values that the store-typed syntactic system accepts: `SynVal τ W v` iff `v` is a value with `HasTypeStore W [] v τ`, by `synVal_iff_isValue_and_hasTypeStore`.)"
   },
   {
     "id": "kripke-monotonicity",
