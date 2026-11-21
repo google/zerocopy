@@ -90303,6 +90303,53 @@
         "security/integer-promotion-allocation-overflow"
       ]
     },
+    "svadu-speculative-pte-accessed-writes-and-readonly-zicbom-invalidation-rollbacks": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "3142f66fd71c7ea0326b3687072318aedab587f8"
+          },
+          "name": "RISC-V Instruction Set Manual (Unprivileged and Privileged Specifications)"
+        },
+        {
+          "identity": {
+            "repository": "riscv/sail-riscv",
+            "revision": "71312d537fc10782c42b7303a611b923af0566d4"
+          },
+          "name": "Sail RISC-V Formal Architecture Specification"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/opensbi",
+            "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+          },
+          "name": "OpenSBI RISC-V Supervisor Binary Interface Firmware"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "aa31d5f8b151b786b748c6bfc9a8c4f1855c8adc"
+          },
+          "name": "Linux Kernel RISC-V Architecture Port"
+        },
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 Microkernel RISC-V Architecture Port"
+        }
+      ],
+      "topics": [
+        "isa/riscv",
+        "security/side-channels",
+        "systems/memory-management",
+        "systems/concurrency-weak-memory",
+        "verification/os-kernels"
+      ]
+    },
     "swscale-complete-pixel-format-matrix-polyphase-rescaling-and-spirv-cms-parity": {
       "observed_at": "2026-11-20",
       "subjects": [
