@@ -1,0 +1,36 @@
+$ lean --version
+Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
+$ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=true MaybeDanglingAttrsAndSroaSoundness.lean
+'MaybeDanglingModel.matrix_post_llvm23_opt2' does not depend on any axioms
+'MaybeDanglingModel.matrix_post_llvm22_opt2' does not depend on any axioms
+'MaybeDanglingModel.matrix_pre_opt2' does not depend on any axioms
+'MaybeDanglingModel.matrix_opt0' does not depend on any axioms
+'MaybeDanglingModel.pre_eq_post_erase_nofree' does not depend on any axioms
+'MaybeDanglingModel.llvmParamAttrsPre_eq' does not depend on any axioms
+'MaybeDanglingModel.isLikeMaybeDangling_iff' does not depend on any axioms
+'MaybeDanglingModel.validSlot_mono' depends on axioms: [propext]
+'MaybeDanglingModel.validSlot_eq_level' depends on axioms: [propext]
+'MaybeDanglingModel.levels_of_rows' does not depend on any axioms
+'MaybeDanglingModel.level_chain' depends on axioms: [propext]
+'MaybeDanglingModel.level_chain_strict' depends on axioms: [propext]
+'MaybeDanglingModel.lowering_sound_entry' depends on axioms: [propext]
+'MaybeDanglingModel.option_sizes_of_rows' does not depend on any axioms
+'MaybeDanglingModel.niche_preserved' does not depend on any axioms
+'MaybeDanglingModel.niche_lost_under_union' does not depend on any axioms
+'MaybeDanglingModel.null_not_valid_of_niche' depends on axioms: [propext]
+'MaybeDanglingModel.niche_roundtrip' depends on axioms: [propext]
+'MaybeDanglingModel.niche_ambiguous_for_maybe_uninit' depends on axioms: [propext]
+'MaybeDanglingModel.option_maybe_dangling_is_rawAligned' depends on axioms: [propext]
+'MaybeDanglingModel.run_strong' does not depend on any axioms
+'MaybeDanglingModel.spurious_read_sound' does not depend on any axioms
+'MaybeDanglingModel.info_agrees' does not depend on any axioms
+'MaybeDanglingModel.attrs_only_for_strong_kinds' depends on axioms: [propext]
+'MaybeDanglingModel.lowering_sound_call' depends on axioms: [propext]
+'MaybeDanglingModel.sroaValid_iff' depends on axioms: [propext]
+'MaybeDanglingModel.pre_predicate_admits_unsound_peel' depends on axioms: [propext]
+'MaybeDanglingModel.sroa_post_preserves' depends on axioms: [propext]
+'MaybeDanglingModel.ce1_sroa_flattening_maybe_dangling_introduces_dangling_ref_ub' depends on axioms: [propext]
+'MaybeDanglingModel.ce2_dereferenceable_on_shared_unsafecell_or_pinned_mut_unsound' does not depend on any axioms
+'MaybeDanglingModel.ce2_maybe_dangling_spurious_read_unsound' does not depend on any axioms
+'MaybeDanglingModel.ce3_null_or_unaligned_inside_maybe_dangling_violates_retained_scalar_validity' depends on axioms: [propext]
+exit status: 0

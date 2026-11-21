@@ -1,0 +1,222 @@
+{
+  "provenance": {
+    "what": "Output of an earlier run of a predecessor of probe_maybe_dangling_llvm_attrs_and_sroa.py (same nine signatures, five of the Miri programs, three SROA functions) on the toolchain named in rustc_version.",
+    "re_executed_for_this_package": false,
+    "why_not": "That toolchain was not installed on the host where this package was assembled; the probe was re-run there on rustc 1.98.0-nightly (14210df0e 2026-05-31) instead (see probe_result_rustc_1_98_0_nightly_14210df0e_llvm_22_1_6.json).",
+    "edits": "Values are verbatim. One top-level labelling key was dropped and the temporary-directory prefix inside two Miri diagnostic lines was replaced by <work>/."
+  },
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "part_a_llvm_attrs_and_niche": {
+    "option_sizes_stdout": "OPT_SIZES=[8, 8, 8, 8, 8, 8, 8, 8, 16]",
+    "llvm_signatures_opt2": {
+      "sig_1": {
+        "llvm_param": "ptr noalias nofree noundef readonly align 8 captures(address, read_provenance) dereferenceable(8) %x",
+        "has_noalias": true,
+        "has_readonly": true,
+        "has_dereferenceable": true,
+        "has_nonnull": false,
+        "has_noundef": true,
+        "has_align": true
+      },
+      "sig_2": {
+        "llvm_param": "ptr noalias nofree noundef align 8 dereferenceable(8) %x",
+        "has_noalias": true,
+        "has_readonly": false,
+        "has_dereferenceable": true,
+        "has_nonnull": false,
+        "has_noundef": true,
+        "has_align": true
+      },
+      "sig_3": {
+        "llvm_param": "ptr noundef nonnull align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": true,
+        "has_noundef": true,
+        "has_align": true
+      },
+      "sig_4": {
+        "llvm_param": "ptr noalias nofree noundef align 8 dereferenceable(8) %x",
+        "has_noalias": true,
+        "has_readonly": false,
+        "has_dereferenceable": true,
+        "has_nonnull": false,
+        "has_noundef": true,
+        "has_align": true
+      },
+      "sig_5": {
+        "llvm_param": "ptr noundef nonnull align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": true,
+        "has_noundef": true,
+        "has_align": true
+      },
+      "sig_6": {
+        "llvm_param": "ptr noalias nofree noundef readonly align 8 captures(address, read_provenance) dereferenceable(8) %x",
+        "has_noalias": true,
+        "has_readonly": true,
+        "has_dereferenceable": true,
+        "has_nonnull": false,
+        "has_noundef": true,
+        "has_align": true
+      },
+      "sig_7": {
+        "llvm_param": "ptr noundef nonnull align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": true,
+        "has_noundef": true,
+        "has_align": true
+      },
+      "sig_8": {
+        "llvm_param": "ptr noundef nonnull align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": true,
+        "has_noundef": true,
+        "has_align": true
+      },
+      "sig_9": {
+        "llvm_param": "ptr %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": false,
+        "has_noundef": false,
+        "has_align": false
+      }
+    },
+    "llvm_signatures_opt0": {
+      "sig_1": {
+        "llvm_param": "ptr align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": false,
+        "has_noundef": false,
+        "has_align": true
+      },
+      "sig_2": {
+        "llvm_param": "ptr align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": false,
+        "has_noundef": false,
+        "has_align": true
+      },
+      "sig_3": {
+        "llvm_param": "ptr align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": false,
+        "has_noundef": false,
+        "has_align": true
+      },
+      "sig_4": {
+        "llvm_param": "ptr align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": false,
+        "has_noundef": false,
+        "has_align": true
+      },
+      "sig_5": {
+        "llvm_param": "ptr align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": false,
+        "has_noundef": false,
+        "has_align": true
+      },
+      "sig_6": {
+        "llvm_param": "ptr align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": false,
+        "has_noundef": false,
+        "has_align": true
+      },
+      "sig_7": {
+        "llvm_param": "ptr align 8 %0",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": false,
+        "has_noundef": false,
+        "has_align": true
+      },
+      "sig_8": {
+        "llvm_param": "ptr align 8 %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": false,
+        "has_noundef": false,
+        "has_align": true
+      },
+      "sig_9": {
+        "llvm_param": "ptr %x",
+        "has_noalias": false,
+        "has_readonly": false,
+        "has_dereferenceable": false,
+        "has_nonnull": false,
+        "has_noundef": false,
+        "has_align": false
+      }
+    }
+  },
+  "part_b_miri_dangling": {
+    "plain_wrap_freed_box_ref_ub": {
+      "miri_rc": 1,
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type PlainWrap<&u64>: at .0, encountered a dangling reference (use-after-free)",
+        "  |                 ^ Undefined Behavior occurred here",
+        "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "manually_drop_freed_box_ref_ok": {
+      "miri_rc": 0,
+      "diag_head": []
+    },
+    "maybe_dangling_freed_box_ref_ok": {
+      "miri_rc": 0,
+      "diag_head": []
+    },
+    "maybe_dangling_misaligned_ref_still_ub": {
+      "miri_rc": 1,
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type std::mem::MaybeDangling<&u64>: at .0, encountered an unaligned reference (required 8 byte alignment but found 1)",
+        " --> <work>/maybe_dangling_misaligned_ref_still_ub.rs:5:45",
+        "5 | ...> = unsafe { core::mem::transmute(raw_unaligned) };",
+        "  |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here"
+      ]
+    },
+    "maybe_dangling_null_ref_niche_still_ub": {
+      "miri_rc": 1,
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type std::mem::MaybeDangling<&u64>: at .0, encountered a null reference",
+        " --> <work>/maybe_dangling_null_ref_niche_still_ub.rs:5:45",
+        "  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    }
+  },
+  "part_c_sroa_exclusion": {
+    "plain_wrap_after_sroa": "// MIR for `use_plain_wrap_sroa` after ScalarReplacementOfAggregates\n\nfn use_plain_wrap_sroa(_1: &u64, _2: u64) -> u64 {\n    debug r => _1;\n    debug k => _2;\n    let mut _0: u64;\n    let _3: PlainWrap<RefPair<'_>>;\n    let mut _4: RefPair<'_>;\n    let mut _5: &u64;\n    let mut _6: u64;\n    let mut _7: u64;\n    let _8: RefPair<'_>;\n    let _9: &u64;\n    let _10: u64;\n    let mut _11: &u64;\n    let mut _12: u64;\n    scope 1 {\n        debug (((w: PlainWrap<RefPair<'_>>).0: RefPair<'_>).0: &u64) => _9;\n        debug (((w: PlainWrap<RefPair<'_>>).0: RefPair<'_>).1: u64) => _10;\n    }\n\n    bb0: {\n        StorageLive(_9);\n        StorageLive(_10);\n        nop;\n        nop;\n        StorageLive(_11);\n        StorageLive(_12);\n        nop;\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _2;\n        _6 = Add(move _7, const 1_u64);\n        StorageDead(_7);\n        _11 = copy _5;\n        _12 = move _6;\n        nop;\n        StorageDead(_6);\n        StorageDead(_5);\n        _9 = move _11;\n        _10 = move _12;\n        nop;\n        nop;\n        StorageDead(_11);\n        StorageDead(_12);\n        nop;\n        _0 = copy _10;\n        StorageDead(_9);\n        StorageDead(_10);\n        nop;\n        nop;\n        return;\n    }\n}\n",
+    "manually_drop_after_sroa": "// MIR for `use_manually_drop_sroa` after ScalarReplacementOfAggregates\n\nfn use_manually_drop_sroa(_1: &u64, _2: u64) -> u64 {\n    debug r => _1;\n    debug k => _2;\n    let mut _0: u64;\n    let _3: std::mem::ManuallyDrop<RefPair<'_>>;\n    let mut _4: RefPair<'_>;\n    let mut _5: &u64;\n    let mut _6: u64;\n    let mut _7: u64;\n    let mut _8: RefPair<'_>;\n    let mut _9: std::mem::ManuallyDrop<RefPair<'_>>;\n    let mut _10: &u64;\n    let mut _11: u64;\n    scope 1 {\n        debug w => _3;\n        scope 3 (inlined ManuallyDrop::<RefPair<'_>>::into_inner) {\n        }\n    }\n    scope 2 (inlined ManuallyDrop::<RefPair<'_>>::new) {\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _2;\n        _6 = Add(move _7, const 1_u64);\n        StorageDead(_7);\n        _4 = RefPair::<'_>(copy _5, move _6);\n        StorageDead(_6);\n        StorageDead(_5);\n        _3 = ManuallyDrop::<RefPair<'_>> { value: copy _4 };\n        StorageDead(_4);\n        StorageLive(_10);\n        StorageLive(_11);\n        nop;\n        StorageLive(_9);\n        _9 = move _3;\n        _10 = move ((_9.0: RefPair<'_>).0: &u64);\n        _11 = move ((_9.0: RefPair<'_>).1: u64);\n        nop;\n        StorageDead(_9);\n        _0 = copy _11;\n        StorageDead(_10);\n        StorageDead(_11);\n        nop;\n        StorageDead(_3);\n        return;\n    }\n}\n",
+    "maybe_dangling_after_sroa": "// MIR for `use_maybe_dangling_excluded_sroa` after ScalarReplacementOfAggregates\n\nfn use_maybe_dangling_excluded_sroa(_1: &u64, _2: u64) -> u64 {\n    debug r => _1;\n    debug k => _2;\n    let mut _0: u64;\n    let _3: std::mem::MaybeDangling<RefPair<'_>>;\n    let mut _4: RefPair<'_>;\n    let mut _5: &u64;\n    let mut _6: u64;\n    let mut _7: u64;\n    let mut _8: RefPair<'_>;\n    let mut _9: std::mem::MaybeDangling<RefPair<'_>>;\n    let mut _10: &u64;\n    let mut _11: u64;\n    scope 1 {\n        debug w => _3;\n        scope 3 (inlined MaybeDangling::<RefPair<'_>>::into_inner) {\n            scope 4 {\n                scope 6 (inlined std::mem::forget::<MaybeDangling<RefPair<'_>>>) {\n                    scope 7 {\n                    }\n                    scope 8 (inlined ManuallyDrop::<MaybeDangling<RefPair<'_>>>::new) {\n                    }\n                }\n            }\n            scope 5 (inlined #[track_caller] std::ptr::read::<RefPair<'_>>) {\n            }\n        }\n    }\n    scope 2 (inlined MaybeDangling::<RefPair<'_>>::new) {\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _2;\n        _6 = Add(move _7, const 1_u64);\n        StorageDead(_7);\n        _4 = RefPair::<'_>(copy _5, move _6);\n        StorageDead(_6);\n        StorageDead(_5);\n        _3 = MaybeDangling::<RefPair<'_>>(copy _4);\n        StorageDead(_4);\n        StorageLive(_10);\n        StorageLive(_11);\n        nop;\n        StorageLive(_9);\n        _9 = move _3;\n        _10 = copy ((_9.0: RefPair<'_>).0: &u64);\n        _11 = copy ((_9.0: RefPair<'_>).1: u64);\n        nop;\n        StorageDead(_9);\n        _0 = copy _11;\n        StorageDead(_10);\n        StorageDead(_11);\n        nop;\n        StorageDead(_3);\n        return;\n    }\n}\n",
+    "plain_wrap_flattened_away": true,
+    "manually_drop_retained_unflattened": true,
+    "maybe_dangling_retained_unflattened": true
+  }
+}

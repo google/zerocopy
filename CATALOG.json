@@ -89627,6 +89627,73 @@
         "rustc/codegen"
       ]
     },
+    "rustc-maybe-dangling-interior-mutability-llvm-noalias-and-sroa-soundness": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rustc compiler and standard library source (later revision; toolchain of the retained execution record)"
+        },
+        {
+          "identity": {
+            "host": "x86_64-unknown-linux-gnu",
+            "llvm": "22.1.6",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rustc compiler, standard library and Miri (earlier revision; toolchain executed for this report)"
+        },
+        {
+          "identity": {
+            "path": "llvm/docs/LangRef.md",
+            "repository": "rust-lang/llvm-project",
+            "revision": "0a5579eb649d3634a9c30ac873300cc2944fa070"
+          },
+          "name": "LLVM Language Reference, LLVM 23 (src/llvm-project submodule of the later rustc revision)"
+        },
+        {
+          "identity": {
+            "path": "llvm/docs/LangRef.rst",
+            "repository": "rust-lang/llvm-project",
+            "revision": "08c84e69a84d95936296dfcab0e38b34100725d5"
+          },
+          "name": "LLVM Language Reference, LLVM 22 (src/llvm-project submodule of the earlier rustc revision)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR semantics and vendored interpreter model"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain used to check the mechanisation"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "verification"
+      ]
+    },
     "rustc-mir-artifact-export-settings-and-proof-binding": {
       "observed_at": "2026-11-13",
       "subjects": [

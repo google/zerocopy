@@ -1,0 +1,639 @@
+{
+  "probe": "probe_maybe_dangling_llvm_attrs_and_sroa.py",
+  "toolchain": {
+    "rustc_vV": [
+      "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+      "binary: rustc",
+      "commit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "commit-date: 2026-05-31",
+      "host: x86_64-unknown-linux-gnu",
+      "release: 1.98.0-nightly",
+      "LLVM version: 22.1.6"
+    ],
+    "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+  },
+  "part_a": {
+    "opt2_no_prepopulate": {
+      "rustc_flags": [
+        "-C",
+        "opt-level=2",
+        "-C",
+        "no-prepopulate-passes"
+      ],
+      "rustc_rc": 0,
+      "signatures": {
+        "sig_1": {
+          "rust_type": "&u64",
+          "llvm_param": "ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(8)",
+          "noalias": true,
+          "nofree": false,
+          "noundef": true,
+          "readonly": true,
+          "nonnull": false,
+          "align": true,
+          "captures": true,
+          "dereferenceable": true,
+          "dereferenceable_or_null": false
+        },
+        "sig_2": {
+          "rust_type": "&mut u64",
+          "llvm_param": "ptr noalias noundef align 8 dereferenceable(8)",
+          "noalias": true,
+          "nofree": false,
+          "noundef": true,
+          "readonly": false,
+          "nonnull": false,
+          "align": true,
+          "captures": false,
+          "dereferenceable": true,
+          "dereferenceable_or_null": false
+        },
+        "sig_3": {
+          "rust_type": "&UnsafeCell<u64>",
+          "llvm_param": "ptr noundef nonnull align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": true,
+          "readonly": false,
+          "nonnull": true,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_4": {
+          "rust_type": "&mut UnsafeCell<u64>",
+          "llvm_param": "ptr noalias noundef align 8 dereferenceable(8)",
+          "noalias": true,
+          "nofree": false,
+          "noundef": true,
+          "readonly": false,
+          "nonnull": false,
+          "align": true,
+          "captures": false,
+          "dereferenceable": true,
+          "dereferenceable_or_null": false
+        },
+        "sig_5": {
+          "rust_type": "&mut PinnedU64",
+          "llvm_param": "ptr noundef nonnull align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": true,
+          "readonly": false,
+          "nonnull": true,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_6": {
+          "rust_type": "PlainWrap<&u64>",
+          "llvm_param": "ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(8)",
+          "noalias": true,
+          "nofree": false,
+          "noundef": true,
+          "readonly": true,
+          "nonnull": false,
+          "align": true,
+          "captures": true,
+          "dereferenceable": true,
+          "dereferenceable_or_null": false
+        },
+        "sig_7": {
+          "rust_type": "ManuallyDrop<&u64>",
+          "llvm_param": "ptr noundef nonnull align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": true,
+          "readonly": false,
+          "nonnull": true,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_8": {
+          "rust_type": "MaybeDangling<&u64>",
+          "llvm_param": "ptr noundef nonnull align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": true,
+          "readonly": false,
+          "nonnull": true,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_9": {
+          "rust_type": "MaybeUninit<&u64>",
+          "llvm_param": "ptr",
+          "noalias": false,
+          "nofree": false,
+          "noundef": false,
+          "readonly": false,
+          "nonnull": false,
+          "align": false,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        }
+      }
+    },
+    "opt0": {
+      "rustc_flags": [
+        "-C",
+        "opt-level=0"
+      ],
+      "rustc_rc": 0,
+      "signatures": {
+        "sig_1": {
+          "rust_type": "&u64",
+          "llvm_param": "ptr align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": false,
+          "readonly": false,
+          "nonnull": false,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_2": {
+          "rust_type": "&mut u64",
+          "llvm_param": "ptr align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": false,
+          "readonly": false,
+          "nonnull": false,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_3": {
+          "rust_type": "&UnsafeCell<u64>",
+          "llvm_param": "ptr align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": false,
+          "readonly": false,
+          "nonnull": false,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_4": {
+          "rust_type": "&mut UnsafeCell<u64>",
+          "llvm_param": "ptr align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": false,
+          "readonly": false,
+          "nonnull": false,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_5": {
+          "rust_type": "&mut PinnedU64",
+          "llvm_param": "ptr align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": false,
+          "readonly": false,
+          "nonnull": false,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_6": {
+          "rust_type": "PlainWrap<&u64>",
+          "llvm_param": "ptr align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": false,
+          "readonly": false,
+          "nonnull": false,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_7": {
+          "rust_type": "ManuallyDrop<&u64>",
+          "llvm_param": "ptr align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": false,
+          "readonly": false,
+          "nonnull": false,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_8": {
+          "rust_type": "MaybeDangling<&u64>",
+          "llvm_param": "ptr align 8",
+          "noalias": false,
+          "nofree": false,
+          "noundef": false,
+          "readonly": false,
+          "nonnull": false,
+          "align": true,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        },
+        "sig_9": {
+          "rust_type": "MaybeUninit<&u64>",
+          "llvm_param": "ptr",
+          "noalias": false,
+          "nofree": false,
+          "noundef": false,
+          "readonly": false,
+          "nonnull": false,
+          "align": false,
+          "captures": false,
+          "dereferenceable": false,
+          "dereferenceable_or_null": false
+        }
+      }
+    },
+    "sizes": {
+      "rustc_rc": 0,
+      "run_rc": 0,
+      "stdout": [
+        "SIZES=[8, 8, 8, 8, 8, 8, 8, 8, 8]",
+        "OPT_SIZES=[8, 8, 8, 8, 8, 8, 8, 8, 16]"
+      ],
+      "sizes": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8
+      ],
+      "opt_sizes": [
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        8,
+        16
+      ],
+      "type_order": [
+        "&u64",
+        "&mut u64",
+        "&UnsafeCell<u64>",
+        "&mut UnsafeCell<u64>",
+        "&mut PinnedU64",
+        "PlainWrap<&u64>",
+        "ManuallyDrop<&u64>",
+        "MaybeDangling<&u64>",
+        "MaybeUninit<&u64>"
+      ]
+    }
+  },
+  "part_c": {
+    "rustc_flags": [
+      "-C",
+      "opt-level=2",
+      "-C",
+      "overflow-checks=off",
+      "-Zalways-encode-mir",
+      "-Zdump-mir=ScalarReplacementOfAggregates",
+      "-Zdump-mir-dir=<work>/mir_dump"
+    ],
+    "rustc_rc": 0,
+    "functions": {
+      "use_plain_wrap": {
+        "mir_before": "// MIR for `use_plain_wrap` before ScalarReplacementOfAggregates\n\nfn use_plain_wrap(_1: &u64, _2: u64) -> u64 {\n    debug r => _1;\n    debug k => _2;\n    let mut _0: u64;\n    let _3: PlainWrap<RefPair<'_>>;\n    let mut _4: RefPair<'_>;\n    let mut _5: &u64;\n    let mut _6: u64;\n    let mut _7: u64;\n    scope 1 {\n        debug w => _3;\n        let _8: &u64;\n        let _9: u64;\n        scope 2 {\n            debug _a => _8;\n            debug b => _9;\n        }\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _2;\n        _6 = Add(move _7, const 1_u64);\n        StorageDead(_7);\n        _4 = RefPair::<'_>(copy _5, move _6);\n        StorageDead(_6);\n        StorageDead(_5);\n        _3 = PlainWrap::<RefPair<'_>>(move _4);\n        StorageDead(_4);\n        StorageLive(_8);\n        _8 = copy ((_3.0: RefPair<'_>).0: &u64);\n        StorageLive(_9);\n        _9 = copy ((_3.0: RefPair<'_>).1: u64);\n        _0 = copy _9;\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageDead(_3);\n        return;\n    }\n}\n",
+        "mir_after": "// MIR for `use_plain_wrap` after ScalarReplacementOfAggregates\n\nfn use_plain_wrap(_1: &u64, _2: u64) -> u64 {\n    debug r => _1;\n    debug k => _2;\n    let mut _0: u64;\n    let _3: PlainWrap<RefPair<'_>>;\n    let mut _4: RefPair<'_>;\n    let mut _5: &u64;\n    let mut _6: u64;\n    let mut _7: u64;\n    let _10: RefPair<'_>;\n    let _11: &u64;\n    let _12: u64;\n    let mut _13: &u64;\n    let mut _14: u64;\n    scope 1 {\n        debug (((w: PlainWrap<RefPair<'_>>).0: RefPair<'_>).0: &u64) => _11;\n        debug (((w: PlainWrap<RefPair<'_>>).0: RefPair<'_>).1: u64) => _12;\n        let _8: &u64;\n        let _9: u64;\n        scope 2 {\n            debug _a => _8;\n            debug b => _9;\n        }\n    }\n\n    bb0: {\n        StorageLive(_11);\n        StorageLive(_12);\n        nop;\n        nop;\n        StorageLive(_13);\n        StorageLive(_14);\n        nop;\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _2;\n        _6 = Add(move _7, const 1_u64);\n        StorageDead(_7);\n        _13 = copy _5;\n        _14 = move _6;\n        nop;\n        StorageDead(_6);\n        StorageDead(_5);\n        _11 = move _13;\n        _12 = move _14;\n        nop;\n        nop;\n        StorageDead(_13);\n        StorageDead(_14);\n        nop;\n        StorageLive(_8);\n        _8 = copy _11;\n        StorageLive(_9);\n        _9 = copy _12;\n        _0 = copy _9;\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageDead(_11);\n        StorageDead(_12);\n        nop;\n        nop;\n        return;\n    }\n}\n",
+        "classification": {
+          "wrapper_typed_locals": [
+            "_3: PlainWrap"
+          ],
+          "debuginfo_fragments_through_wrapper": [
+            "PlainWrap => _11",
+            "PlainWrap => _12"
+          ],
+          "debuginfo_whole_locals": [
+            "r => _1",
+            "k => _2",
+            "_a => _8",
+            "b => _9"
+          ],
+          "field_copy_out_of_argument": false,
+          "whole_copy_of_argument": true,
+          "wrapper_local_was_fragmented": true
+        }
+      },
+      "use_manually_drop": {
+        "mir_before": "// MIR for `use_manually_drop` before ScalarReplacementOfAggregates\n\nfn use_manually_drop(_1: &u64, _2: u64) -> u64 {\n    debug r => _1;\n    debug k => _2;\n    let mut _0: u64;\n    let _3: std::mem::ManuallyDrop<RefPair<'_>>;\n    let mut _4: RefPair<'_>;\n    let mut _5: &u64;\n    let mut _6: u64;\n    let mut _7: u64;\n    let mut _10: RefPair<'_>;\n    let mut _11: std::mem::ManuallyDrop<RefPair<'_>>;\n    scope 1 {\n        debug w => _3;\n        let _8: &u64;\n        let _9: u64;\n        scope 2 {\n            debug _a => _8;\n            debug b => _9;\n        }\n        scope 5 (inlined ManuallyDrop::<RefPair<'_>>::into_inner) {\n            let mut _13: *const RefPair<'_>;\n            let mut _14: *const std::mem::ManuallyDrop<RefPair<'_>>;\n            scope 6 (inlined std::ptr::const_ptr::<impl *const ManuallyDrop<RefPair<'_>>>::cast::<RefPair<'_>>) {\n            }\n            scope 7 (inlined #[track_caller] std::ptr::const_ptr::<impl *const RefPair<'_>>::read) {\n                scope 8 (inlined #[track_caller] std::ptr::read::<RefPair<'_>>) {\n                }\n            }\n        }\n    }\n    scope 3 (inlined ManuallyDrop::<RefPair<'_>>::new) {\n        let mut _12: std::mem::MaybeDangling<RefPair<'_>>;\n        scope 4 (inlined MaybeDangling::<RefPair<'_>>::new) {\n        }\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _2;\n        _6 = Add(move _7, const 1_u64);\n        StorageDead(_7);\n        _4 = RefPair::<'_>(copy _5, move _6);\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_12);\n        _12 = MaybeDangling::<RefPair<'_>>(copy _4);\n        _3 = ManuallyDrop::<RefPair<'_>> { value: move _12 };\n        StorageDead(_12);\n        StorageDead(_4);\n        StorageLive(_10);\n        StorageLive(_11);\n        _11 = copy _3;\n        StorageLive(_13);\n        StorageLive(_14);\n        _14 = &raw const _11;\n        _13 = copy _14 as *const RefPair<'_> (PtrToPtr);\n        StorageDead(_14);\n        _10 = copy (*_13);\n        StorageDead(_13);\n        StorageDead(_11);\n        StorageLive(_8);\n        _8 = copy (_10.0: &u64);\n        StorageLive(_9);\n        _9 = copy (_10.1: u64);\n        StorageDead(_10);\n        _0 = copy _9;\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageDead(_3);\n        return;\n    }\n}\n",
+        "mir_after": "// MIR for `use_manually_drop` after ScalarReplacementOfAggregates\n\nfn use_manually_drop(_1: &u64, _2: u64) -> u64 {\n    debug r => _1;\n    debug k => _2;\n    let mut _0: u64;\n    let _3: std::mem::ManuallyDrop<RefPair<'_>>;\n    let mut _4: RefPair<'_>;\n    let mut _5: &u64;\n    let mut _6: u64;\n    let mut _7: u64;\n    let mut _10: RefPair<'_>;\n    let mut _11: std::mem::ManuallyDrop<RefPair<'_>>;\n    let mut _15: &u64;\n    let mut _16: u64;\n    scope 1 {\n        debug w => _3;\n        let _8: &u64;\n        let _9: u64;\n        scope 2 {\n            debug _a => _8;\n            debug b => _9;\n        }\n        scope 5 (inlined ManuallyDrop::<RefPair<'_>>::into_inner) {\n            let mut _13: *const RefPair<'_>;\n            let mut _14: *const std::mem::ManuallyDrop<RefPair<'_>>;\n            scope 6 (inlined std::ptr::const_ptr::<impl *const ManuallyDrop<RefPair<'_>>>::cast::<RefPair<'_>>) {\n            }\n            scope 7 (inlined #[track_caller] std::ptr::const_ptr::<impl *const RefPair<'_>>::read) {\n                scope 8 (inlined #[track_caller] std::ptr::read::<RefPair<'_>>) {\n                }\n            }\n        }\n    }\n    scope 3 (inlined ManuallyDrop::<RefPair<'_>>::new) {\n        let mut _12: std::mem::MaybeDangling<RefPair<'_>>;\n        scope 4 (inlined MaybeDangling::<RefPair<'_>>::new) {\n        }\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _2;\n        _6 = Add(move _7, const 1_u64);\n        StorageDead(_7);\n        _4 = RefPair::<'_>(copy _5, move _6);\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_12);\n        _12 = MaybeDangling::<RefPair<'_>>(copy _4);\n        _3 = ManuallyDrop::<RefPair<'_>> { value: move _12 };\n        StorageDead(_12);\n        StorageDead(_4);\n        StorageLive(_15);\n        StorageLive(_16);\n        nop;\n        StorageLive(_11);\n        _11 = copy _3;\n        StorageLive(_13);\n        StorageLive(_14);\n        _14 = &raw const _11;\n        _13 = copy _14 as *const RefPair<'_> (PtrToPtr);\n        StorageDead(_14);\n        _15 = copy ((*_13).0: &u64);\n        _16 = copy ((*_13).1: u64);\n        nop;\n        StorageDead(_13);\n        StorageDead(_11);\n        StorageLive(_8);\n        _8 = copy _15;\n        StorageLive(_9);\n        _9 = copy _16;\n        StorageDead(_15);\n        StorageDead(_16);\n        nop;\n        _0 = copy _9;\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageDead(_3);\n        return;\n    }\n}\n",
+        "classification": {
+          "wrapper_typed_locals": [
+            "_3: ManuallyDrop",
+            "_11: ManuallyDrop",
+            "_12: MaybeDangling"
+          ],
+          "debuginfo_fragments_through_wrapper": [],
+          "debuginfo_whole_locals": [
+            "r => _1",
+            "k => _2",
+            "w => _3",
+            "_a => _8",
+            "b => _9"
+          ],
+          "field_copy_out_of_argument": false,
+          "whole_copy_of_argument": true,
+          "wrapper_local_was_fragmented": false
+        }
+      },
+      "use_maybe_dangling": {
+        "mir_before": "// MIR for `use_maybe_dangling` before ScalarReplacementOfAggregates\n\nfn use_maybe_dangling(_1: &u64, _2: u64) -> u64 {\n    debug r => _1;\n    debug k => _2;\n    let mut _0: u64;\n    let _3: std::mem::MaybeDangling<RefPair<'_>>;\n    let mut _4: RefPair<'_>;\n    let mut _5: &u64;\n    let mut _6: u64;\n    let mut _7: u64;\n    let mut _10: RefPair<'_>;\n    let mut _11: std::mem::MaybeDangling<RefPair<'_>>;\n    scope 1 {\n        debug w => _3;\n        let _8: &u64;\n        let _9: u64;\n        scope 2 {\n            debug _a => _8;\n            debug b => _9;\n        }\n        scope 4 (inlined MaybeDangling::<RefPair<'_>>::into_inner) {\n            scope 5 {\n                scope 7 (inlined std::mem::forget::<MaybeDangling<RefPair<'_>>>) {\n                    scope 8 {\n                    }\n                    scope 9 (inlined ManuallyDrop::<MaybeDangling<RefPair<'_>>>::new) {\n                        scope 10 (inlined MaybeDangling::<MaybeDangling<RefPair<'_>>>::new) {\n                        }\n                    }\n                }\n            }\n            scope 6 (inlined #[track_caller] std::ptr::read::<RefPair<'_>>) {\n            }\n        }\n    }\n    scope 3 (inlined MaybeDangling::<RefPair<'_>>::new) {\n    }\n\n    bb0: {\n        StorageLive(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _2;\n        _6 = Add(move _7, const 1_u64);\n        StorageDead(_7);\n        _4 = RefPair::<'_>(copy _5, move _6);\n        StorageDead(_6);\n        StorageDead(_5);\n        _3 = MaybeDangling::<RefPair<'_>>(copy _4);\n        StorageDead(_4);\n        StorageLive(_10);\n        StorageLive(_11);\n        _11 = copy _3;\n        _10 = copy (_11.0: RefPair<'_>);\n        StorageDead(_11);\n        StorageLive(_8);\n        _8 = copy (_10.0: &u64);\n        StorageLive(_9);\n        _9 = copy (_10.1: u64);\n        StorageDead(_10);\n        _0 = copy _9;\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageDead(_3);\n        return;\n    }\n}\n",
+        "mir_after": "// MIR for `use_maybe_dangling` after ScalarReplacementOfAggregates\n\nfn use_maybe_dangling(_1: &u64, _2: u64) -> u64 {\n    debug r => _1;\n    debug k => _2;\n    let mut _0: u64;\n    let _3: std::mem::MaybeDangling<RefPair<'_>>;\n    let mut _4: RefPair<'_>;\n    let mut _5: &u64;\n    let mut _6: u64;\n    let mut _7: u64;\n    let mut _10: RefPair<'_>;\n    let mut _11: std::mem::MaybeDangling<RefPair<'_>>;\n    let mut _12: &u64;\n    let mut _13: u64;\n    let mut _14: RefPair<'_>;\n    let _15: RefPair<'_>;\n    let mut _16: &u64;\n    let mut _17: u64;\n    let _18: &u64;\n    let _19: u64;\n    let mut _20: &u64;\n    let mut _21: u64;\n    scope 1 {\n        debug (((w: MaybeDangling<RefPair<'_>>).0: RefPair<'_>).0: &u64) => _18;\n        debug (((w: MaybeDangling<RefPair<'_>>).0: RefPair<'_>).1: u64) => _19;\n        let _8: &u64;\n        let _9: u64;\n        scope 2 {\n            debug _a => _8;\n            debug b => _9;\n        }\n        scope 4 (inlined MaybeDangling::<RefPair<'_>>::into_inner) {\n            scope 5 {\n                scope 7 (inlined std::mem::forget::<MaybeDangling<RefPair<'_>>>) {\n                    scope 8 {\n                    }\n                    scope 9 (inlined ManuallyDrop::<MaybeDangling<RefPair<'_>>>::new) {\n                        scope 10 (inlined MaybeDangling::<MaybeDangling<RefPair<'_>>>::new) {\n                        }\n                    }\n                }\n            }\n            scope 6 (inlined #[track_caller] std::ptr::read::<RefPair<'_>>) {\n            }\n        }\n    }\n    scope 3 (inlined MaybeDangling::<RefPair<'_>>::new) {\n    }\n\n    bb0: {\n        StorageLive(_18);\n        StorageLive(_19);\n        nop;\n        nop;\n        StorageLive(_20);\n        StorageLive(_21);\n        nop;\n        StorageLive(_5);\n        _5 = copy _1;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _2;\n        _6 = Add(move _7, const 1_u64);\n        StorageDead(_7);\n        _20 = copy _5;\n        _21 = move _6;\n        nop;\n        StorageDead(_6);\n        StorageDead(_5);\n        _18 = copy _20;\n        _19 = copy _21;\n        nop;\n        nop;\n        StorageDead(_20);\n        StorageDead(_21);\n        nop;\n        StorageLive(_12);\n        StorageLive(_13);\n        nop;\n        StorageLive(_16);\n        StorageLive(_17);\n        nop;\n        nop;\n        _16 = copy _18;\n        _17 = copy _19;\n        nop;\n        nop;\n        _12 = copy _16;\n        _13 = copy _17;\n        nop;\n        StorageDead(_16);\n        StorageDead(_17);\n        nop;\n        nop;\n        StorageLive(_8);\n        _8 = copy _12;\n        StorageLive(_9);\n        _9 = copy _13;\n        StorageDead(_12);\n        StorageDead(_13);\n        nop;\n        _0 = copy _9;\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageDead(_18);\n        StorageDead(_19);\n        nop;\n        nop;\n        return;\n    }\n}\n",
+        "classification": {
+          "wrapper_typed_locals": [
+            "_3: MaybeDangling",
+            "_11: MaybeDangling"
+          ],
+          "debuginfo_fragments_through_wrapper": [
+            "MaybeDangling => _18",
+            "MaybeDangling => _19"
+          ],
+          "debuginfo_whole_locals": [
+            "r => _1",
+            "k => _2",
+            "_a => _8",
+            "b => _9"
+          ],
+          "field_copy_out_of_argument": false,
+          "whole_copy_of_argument": true,
+          "wrapper_local_was_fragmented": true
+        }
+      },
+      "copy_plain": {
+        "mir_before": "// MIR for `copy_plain` before ScalarReplacementOfAggregates\n\nfn copy_plain(_1: S<&u64>) -> () {\n    debug a => _1;\n    let mut _0: ();\n    let _2: S<&u64>;\n    scope 1 {\n        debug b => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "mir_after": "// MIR for `copy_plain` after ScalarReplacementOfAggregates\n\nfn copy_plain(_1: S<&u64>) -> () {\n    debug a => _1;\n    let mut _0: ();\n    let _2: S<&u64>;\n    let _3: &u64;\n    scope 1 {\n        debug ((b: S<&u64>).0: &u64) => _3;\n    }\n\n    bb0: {\n        StorageLive(_3);\n        nop;\n        _3 = copy (_1.0: &u64);\n        nop;\n        StorageDead(_3);\n        nop;\n        return;\n    }\n}\n",
+        "classification": {
+          "wrapper_typed_locals": [
+            "_2: S"
+          ],
+          "debuginfo_fragments_through_wrapper": [
+            "S => _3"
+          ],
+          "debuginfo_whole_locals": [
+            "a => _1"
+          ],
+          "field_copy_out_of_argument": true,
+          "whole_copy_of_argument": false,
+          "wrapper_local_was_fragmented": true
+        }
+      },
+      "copy_maybe_dangling": {
+        "mir_before": "// MIR for `copy_maybe_dangling` before ScalarReplacementOfAggregates\n\nfn copy_maybe_dangling(_1: MaybeDangling<&u64>) -> () {\n    debug a => _1;\n    let mut _0: ();\n    let _2: std::mem::MaybeDangling<&u64>;\n    scope 1 {\n        debug b => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "mir_after": "// MIR for `copy_maybe_dangling` after ScalarReplacementOfAggregates\n\nfn copy_maybe_dangling(_1: MaybeDangling<&u64>) -> () {\n    debug a => _1;\n    let mut _0: ();\n    let _2: std::mem::MaybeDangling<&u64>;\n    let _3: &u64;\n    scope 1 {\n        debug ((b: MaybeDangling<&u64>).0: &u64) => _3;\n    }\n\n    bb0: {\n        StorageLive(_3);\n        nop;\n        _3 = copy (_1.0: &u64);\n        nop;\n        StorageDead(_3);\n        nop;\n        return;\n    }\n}\n",
+        "classification": {
+          "wrapper_typed_locals": [
+            "_2: MaybeDangling"
+          ],
+          "debuginfo_fragments_through_wrapper": [
+            "MaybeDangling => _3"
+          ],
+          "debuginfo_whole_locals": [
+            "a => _1"
+          ],
+          "field_copy_out_of_argument": true,
+          "whole_copy_of_argument": false,
+          "wrapper_local_was_fragmented": true
+        }
+      },
+      "copy_manually_drop": {
+        "mir_before": "// MIR for `copy_manually_drop` before ScalarReplacementOfAggregates\n\nfn copy_manually_drop(_1: ManuallyDrop<&u64>) -> () {\n    debug a => _1;\n    let mut _0: ();\n    let _2: std::mem::ManuallyDrop<&u64>;\n    scope 1 {\n        debug b => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "mir_after": "// MIR for `copy_manually_drop` after ScalarReplacementOfAggregates\n\nfn copy_manually_drop(_1: ManuallyDrop<&u64>) -> () {\n    debug a => _1;\n    let mut _0: ();\n    let _2: std::mem::ManuallyDrop<&u64>;\n    let _3: std::mem::MaybeDangling<&u64>;\n    let _4: &u64;\n    scope 1 {\n        debug (((b: ManuallyDrop<&u64>).0: std::mem::MaybeDangling<&u64>).0: &u64) => _4;\n    }\n\n    bb0: {\n        StorageLive(_4);\n        nop;\n        nop;\n        _4 = copy ((_1.0: std::mem::MaybeDangling<&u64>).0: &u64);\n        nop;\n        nop;\n        StorageDead(_4);\n        nop;\n        nop;\n        return;\n    }\n}\n",
+        "classification": {
+          "wrapper_typed_locals": [
+            "_2: ManuallyDrop",
+            "_3: MaybeDangling"
+          ],
+          "debuginfo_fragments_through_wrapper": [
+            "ManuallyDrop => _4"
+          ],
+          "debuginfo_whole_locals": [
+            "a => _1"
+          ],
+          "field_copy_out_of_argument": true,
+          "whole_copy_of_argument": false,
+          "wrapper_local_was_fragmented": true
+        }
+      }
+    }
+  },
+  "part_b": {
+    "bare_ref_freed_box": {
+      "miri_flags": [],
+      "miri_rc": 1,
+      "errors": [
+        "error: Undefined Behavior: constructing invalid value of type &u64: encountered a dangling reference (use-after-free)",
+        "--> bare_ref_freed_box.rs:5:28",
+        "error: aborting due to 1 previous error"
+      ],
+      "expected_rc": 1
+    },
+    "plain_wrap_freed_box_ref": {
+      "miri_flags": [],
+      "miri_rc": 1,
+      "errors": [
+        "error: Undefined Behavior: constructing invalid value of type PlainWrap<&u64>: at .0, encountered a dangling reference (use-after-free)",
+        "--> plain_wrap_freed_box_ref.rs:7:39",
+        "error: aborting due to 1 previous error"
+      ],
+      "expected_rc": 1
+    },
+    "manually_drop_freed_box_ref": {
+      "miri_flags": [],
+      "miri_rc": 0,
+      "errors": [],
+      "expected_rc": 0
+    },
+    "maybe_dangling_freed_box_ref": {
+      "miri_flags": [],
+      "miri_rc": 0,
+      "errors": [],
+      "expected_rc": 0
+    },
+    "maybe_dangling_into_inner_freed_box_ref": {
+      "miri_flags": [],
+      "miri_rc": 1,
+      "errors": [
+        "error: Undefined Behavior: constructing invalid value of type &u64: encountered a dangling reference (use-after-free)",
+        "--> <toolchain-sysroot>/lib/rustlib/src/rust/library/core/src/mem/maybe_dangling.rs:108:26",
+        "error: aborting due to 1 previous error"
+      ],
+      "expected_rc": 1
+    },
+    "maybe_dangling_misaligned_ref": {
+      "miri_flags": [],
+      "miri_rc": 1,
+      "errors": [
+        "error: Undefined Behavior: constructing invalid value of type std::mem::MaybeDangling<&u64>: encountered an unaligned reference (required 8 byte alignment but found 1)",
+        "--> maybe_dangling_misaligned_ref.rs:5:43",
+        "error: aborting due to 1 previous error"
+      ],
+      "expected_rc": 1
+    },
+    "maybe_dangling_null_ref": {
+      "miri_flags": [],
+      "miri_rc": 1,
+      "errors": [
+        "error: Undefined Behavior: constructing invalid value of type std::mem::MaybeDangling<&u64>: encountered a null reference",
+        "--> maybe_dangling_null_ref.rs:5:43",
+        "error: aborting due to 1 previous error"
+      ],
+      "expected_rc": 1
+    },
+    "manually_drop_null_ref": {
+      "miri_flags": [],
+      "miri_rc": 1,
+      "errors": [
+        "error: Undefined Behavior: constructing invalid value of type std::mem::ManuallyDrop<&u64>: at .value, encountered a null reference",
+        "--> manually_drop_null_ref.rs:4:42",
+        "error: aborting due to 1 previous error"
+      ],
+      "expected_rc": 1
+    },
+    "maybe_uninit_null_and_uninit_ref": {
+      "miri_flags": [],
+      "miri_rc": 0,
+      "errors": [],
+      "expected_rc": 0
+    }
+  },
+  "part_d": {
+    "post_sroa_cleanup_passes_disabled": [
+      "SimplifyLocals-before-const-prop",
+      "DeadStoreElimination-initial",
+      "SimplifyLocals-after-value-numbering",
+      "DeadStoreElimination-final",
+      "SimplifyLocals-final",
+      "CopyProp",
+      "DestinationPropagation",
+      "SingleUseConsts"
+    ],
+    "outer_struct_with_maybe_dangling_field": {
+      "miri_default_mir_opt_level_0": {
+        "miri_flags": [],
+        "miri_rc": 0,
+        "errors": []
+      },
+      "mir_opt_level_2": {
+        "miri_flags": [
+          "-Zmir-opt-level=2"
+        ],
+        "miri_rc": 0,
+        "errors": []
+      },
+      "mir_opt_level_2_post_sroa_cleanup_disabled": {
+        "miri_flags": [
+          "-Zmir-opt-level=2",
+          "-Zmir-enable-passes=-SimplifyLocals-before-const-prop,-DeadStoreElimination-initial,-SimplifyLocals-after-value-numbering,-DeadStoreElimination-final,-SimplifyLocals-final,-CopyProp,-DestinationPropagation,-SingleUseConsts"
+        ],
+        "miri_rc": 1,
+        "errors": [
+          "error: Undefined Behavior: constructing invalid value of type &u64: encountered a dangling reference (use-after-free)",
+          "--> sroa_hazard_outer.rs:18:14",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ]
+      },
+      "mir_opt_level_2_post_sroa_cleanup_disabled_sroa_disabled": {
+        "miri_flags": [
+          "-Zmir-opt-level=2",
+          "-Zmir-enable-passes=-SimplifyLocals-before-const-prop,-DeadStoreElimination-initial,-SimplifyLocals-after-value-numbering,-DeadStoreElimination-final,-SimplifyLocals-final,-CopyProp,-DestinationPropagation,-SingleUseConsts",
+          "-Zmir-enable-passes=-ScalarReplacementOfAggregates"
+        ],
+        "miri_rc": 0,
+        "errors": []
+      },
+      "victim_mir_before_sroa": "// MIR for `victim` before ScalarReplacementOfAggregates\n\nfn victim() -> u64 {\n    let mut _0: u64;\n    let _1: std::boxed::Box<u64>;\n    let _3: &u64;\n    let _4: *const u64;\n    let mut _6: std::mem::MaybeDangling<RefPair<'_>>;\n    let mut _7: RefPair<'_>;\n    let mut _8: &u64;\n    let _9: ();\n    let mut _10: std::boxed::Box<u64>;\n    let mut _12: bool;\n    let mut _13: *const u64;\n    scope 1 {\n        debug b => _1;\n        let _2: &u64;\n        scope 2 {\n            debug r => _2;\n            let _5: Outer<'_>;\n            scope 3 {\n                debug o => _5;\n                let _11: Outer<'_>;\n                scope 4 {\n                    debug o2 => _11;\n                }\n            }\n        }\n    }\n\n    bb0: {\n        _12 = const false;\n        _12 = const true;\n        _1 = std::boxed::Box::<u64>::new(const 41_u64) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _13 = copy ((_1.0: std::ptr::Unique<u64>).0: std::ptr::NonNull<u64>) as *const u64 (Transmute);\n        _4 = copy _13;\n        _3 = &(*_4);\n        _2 = copy _3;\n        _8 = copy _2;\n        _7 = RefPair::<'_>(move _8, const 7_u64);\n        _6 = std::mem::MaybeDangling::<RefPair<'_>>::new(move _7) -> [return: bb2, unwind: bb6];\n    }\n\n    bb2: {\n        _5 = Outer::<'_> { md: move _6, tag: const 1_u64 };\n        _12 = const false;\n        _10 = move _1;\n        _9 = std::mem::drop::<std::boxed::Box<u64>>(move _10) -> [return: bb3, unwind: bb6];\n    }\n\n    bb3: {\n        _11 = move _5;\n        _0 = copy (_11.1: u64);\n        _12 = const false;\n        return;\n    }\n\n    bb4 (cleanup): {\n        resume;\n    }\n\n    bb5 (cleanup): {\n        drop(_1) -> [return: bb4, unwind terminate(cleanup)];\n    }\n\n    bb6 (cleanup): {\n        switchInt(copy _12) -> [0: bb4, otherwise: bb5];\n    }\n}\n",
+      "victim_mir_after_sroa": "// MIR for `victim` after ScalarReplacementOfAggregates\n\nfn victim() -> u64 {\n    let mut _0: u64;\n    let _1: std::boxed::Box<u64>;\n    let _3: &u64;\n    let _4: *const u64;\n    let mut _6: std::mem::MaybeDangling<RefPair<'_>>;\n    let mut _7: RefPair<'_>;\n    let mut _8: &u64;\n    let _9: ();\n    let mut _10: std::boxed::Box<u64>;\n    let mut _12: bool;\n    let mut _13: *const u64;\n    scope 1 {\n        debug b => _1;\n        let _2: &u64;\n        scope 2 {\n            debug r => _2;\n            let _5: Outer<'_>;\n            let _16: std::mem::MaybeDangling<RefPair<'_>>;\n            let _17: u64;\n            let _19: RefPair<'_>;\n            let _22: &u64;\n            let _23: u64;\n            scope 3 {\n                debug ((((o: Outer<'_>).0: std::mem::MaybeDangling<RefPair<'_>>).0: RefPair<'_>).0: &u64) => _22;\n                debug ((((o: Outer<'_>).0: std::mem::MaybeDangling<RefPair<'_>>).0: RefPair<'_>).1: u64) => _23;\n                debug ((o: Outer<'_>).1: u64) => _17;\n                let _11: Outer<'_>;\n                let _14: std::mem::MaybeDangling<RefPair<'_>>;\n                let _15: u64;\n                let _18: RefPair<'_>;\n                let _20: &u64;\n                let _21: u64;\n                scope 4 {\n                    debug ((((o2: Outer<'_>).0: std::mem::MaybeDangling<RefPair<'_>>).0: RefPair<'_>).0: &u64) => _20;\n                    debug ((((o2: Outer<'_>).0: std::mem::MaybeDangling<RefPair<'_>>).0: RefPair<'_>).1: u64) => _21;\n                    debug ((o2: Outer<'_>).1: u64) => _15;\n                }\n            }\n        }\n    }\n\n    bb0: {\n        _12 = const false;\n        _12 = const true;\n        _1 = std::boxed::Box::<u64>::new(const 41_u64) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _13 = copy ((_1.0: std::ptr::Unique<u64>).0: std::ptr::NonNull<u64>) as *const u64 (Transmute);\n        _4 = copy _13;\n        _3 = &(*_4);\n        _2 = copy _3;\n        _8 = copy _2;\n        _7 = RefPair::<'_>(move _8, const 7_u64);\n        _6 = std::mem::MaybeDangling::<RefPair<'_>>::new(move _7) -> [return: bb2, unwind: bb6];\n    }\n\n    bb2: {\n        _22 = move ((_6.0: RefPair<'_>).0: &u64);\n        _23 = move ((_6.0: RefPair<'_>).1: u64);\n        nop;\n        nop;\n        _17 = const 1_u64;\n        nop;\n        _12 = const false;\n        _10 = move _1;\n        _9 = std::mem::drop::<std::boxed::Box<u64>>(move _10) -> [return: bb3, unwind: bb6];\n    }\n\n    bb3: {\n        _20 = move _22;\n        _21 = move _23;\n        nop;\n        nop;\n        _15 = move _17;\n        nop;\n        _0 = copy _15;\n        _12 = const false;\n        return;\n    }\n\n    bb4 (cleanup): {\n        resume;\n    }\n\n    bb5 (cleanup): {\n        drop(_1) -> [return: bb4, unwind terminate(cleanup)];\n    }\n\n    bb6 (cleanup): {\n        switchInt(copy _12) -> [0: bb4, otherwise: bb5];\n    }\n}\n"
+    },
+    "outer_struct_with_plain_wrap_field_control": {
+      "miri_default_mir_opt_level_0": {
+        "miri_flags": [],
+        "miri_rc": 1,
+        "errors": [
+          "error: Undefined Behavior: constructing invalid value of type Outer<'_>: at .md.0.0, encountered a dangling reference (use-after-free)",
+          "--> sroa_hazard_outer_plain.rs:18:14",
+          "error: aborting due to 1 previous error"
+        ]
+      }
+    },
+    "upstream_issue_164176_reproducer": {
+      "miri_default_mir_opt_level_0": {
+        "miri_flags": [],
+        "miri_rc": 0,
+        "errors": []
+      },
+      "enable_inline": {
+        "miri_flags": [
+          "-Zmir-enable-passes=+Inline"
+        ],
+        "miri_rc": 0,
+        "errors": []
+      },
+      "enable_inline_and_sroa": {
+        "miri_flags": [
+          "-Zmir-enable-passes=+Inline,+ScalarReplacementOfAggregates"
+        ],
+        "miri_rc": 1,
+        "errors": [
+          "error: Undefined Behavior: trying to retag from <325> for Unique permission at alloc151[0x0], but that tag does not exist in the borrow stack for this location",
+          "--> sroa_hazard_upstream_issue.rs:11:17",
+          "error: aborting due to 1 previous error"
+        ]
+      }
+    }
+  },
+  "discriminators": {
+    "attr_matrix_matches_reference_modulo_nofree": true,
+    "nofree_emitted_on": [],
+    "opt0_matrix_matches_reference": true,
+    "option_sizes_match_reference": true,
+    "miri_validity_mismatches": [],
+    "sroa_fragments_plain_wrapper_local": true,
+    "sroa_fragments_maybe_dangling_local": true,
+    "sroa_fragments_manually_drop_local": false,
+    "sroa_rewrites_whole_copy_of_plain_argument": true,
+    "sroa_rewrites_whole_copy_of_maybe_dangling_argument": true,
+    "sroa_rewrites_whole_copy_of_manually_drop_argument": true,
+    "hazard_outer_rc": {
+      "miri_default_mir_opt_level_0": 0,
+      "mir_opt_level_2": 0,
+      "mir_opt_level_2_post_sroa_cleanup_disabled": 1,
+      "mir_opt_level_2_post_sroa_cleanup_disabled_sroa_disabled": 0
+    },
+    "hazard_outer_ub_only_with_sroa_and_no_cleanup": true,
+    "hazard_upstream_issue_rc": {
+      "miri_default_mir_opt_level_0": 0,
+      "enable_inline": 0,
+      "enable_inline_and_sroa": 1
+    }
+  },
+  "toolchain_independent_expectation_failures": []
+}
