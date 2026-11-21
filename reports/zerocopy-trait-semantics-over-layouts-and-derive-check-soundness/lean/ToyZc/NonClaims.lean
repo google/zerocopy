@@ -11,8 +11,8 @@ import ToyZc.KnownLayout
   model, the union derives' requirement that *every* field be `FromBytes` (`FromZeros`) is not
   necessary: one suitable field suffices for the semantic property.
 * `unaligned_check_conjuncts_necessary` (R7c): each conjunct of the modeled `Unaligned` derive's
-  struct (`repr(C)` and `repr(transparent)`), enum, and union checks is needed: a description that
-  fails only that conjunct has alignment greater than `1`.
+  struct (`repr(C)` and `repr(transparent)`), enum, and union checks is needed: for each conjunct
+  there is a description that fails only that conjunct and has alignment ≠ `1`.
 
 Not formalized at all (see the report's boundaries): pointer provenance (the model's bytes carry no
 provenance, and at the pinned commit zerocopy implements neither `FromBytes` nor `IntoBytes` for raw
@@ -109,8 +109,8 @@ theorem union_fromZeros_derive_not_necessary :
   decide
 
 /-- **R7c.** Each conjunct of the modeled `Unaligned` derive's checks (`implUnaligned`) is necessary:
-for each conjunct, a description satisfies every other conjunct of its check, fails that one, is
-rejected by the check, and has alignment greater than `1`. The checks are
+for each conjunct, there is a description (listed below) that satisfies every other conjunct of its
+check, fails that one, is rejected by the check, and has alignment ≠ `1`. The checks are
 `strct (.c m) fs`: `!m.isAlignGt1 && (m.isPacked1 || allUnaligned fs)`;
 `strct .transparent fs`: `allUnaligned fs`;
 `enm r vs`: `(r == .prim .u8 || r == .prim .i8) && variantsUnaligned vs`;

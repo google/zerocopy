@@ -943,7 +943,7 @@
     "lean": "Toy.Zc.unaligned_check_conjuncts_necessary",
     "kind": "counterexample",
     "tier": "T1",
-    "plain_claim": "In the model, each conjunct of the modeled Unaligned derive check implUnaligned is necessary: for repr(C) structs (no align(N>1); repr(packed) or all fields Unaligned), repr(transparent) structs (all fields Unaligned), enums (repr(u8)/repr(i8), shown for repr(u16) and repr(C); all fields Unaligned), and repr(C) unions (no align(N>1); repr(packed) or all fields Unaligned), a description satisfying every other conjunct of its check and failing that one is rejected and has modeled alignment greater than 1.",
+    "plain_claim": "In the model, each conjunct of the modeled Unaligned derive check implUnaligned is necessary: for each conjunct of its checks for repr(C) structs (no align(N>1); repr(packed) or all fields Unaligned), repr(transparent) structs (all fields Unaligned), enums (repr(u8)/repr(i8), shown for repr(u16) and repr(C); all fields Unaligned), and repr(C) unions (no align(N>1); repr(packed) or all fields Unaligned), there is a description (the witnesses in the Lean statement) that satisfies every other conjunct of its check, fails that one, is rejected, and has modeled alignment ≠ 1.",
     "hypotheses": [],
     "depth": "definitional",
     "nonvacuity_witness": "(counterexample)",
