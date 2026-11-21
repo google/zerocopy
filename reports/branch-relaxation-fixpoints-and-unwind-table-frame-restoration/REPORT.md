@@ -41,7 +41,7 @@ The non-claims of every result are listed first under **Boundaries**; read them 
 
 ### What the results apply to
 
-Every theorem in this package is a statement about the Lean definitions in `lean/ToyRelax/`, and only about them. The definitions are toy models chosen to isolate two questions; they are not production definitions and they mirror no particular implementation. All Lean sources are part of this package; no other package or external Lean library is needed.
+Every theorem in this package is a statement about the Lean definitions in `lean/ToyRelax/`; these theorems neither establish nor refute the corresponding claims about real assemblers, linkers, compiler-emitted call frame information or unwinders. The definitions are toy models chosen to isolate two questions; they are not production definitions and they mirror no particular implementation. All Lean sources are part of this package; no other package or external Lean library is needed.
 
 **Relaxation model (`lean/ToyRelax/Relax/Model.lean`, namespace `Toy.Relax`).** A toy model of span-dependent branch encoding in an assembler.
 
@@ -1407,7 +1407,7 @@ Each result does **not** show the following. The toy-model disclaimer repeated i
 * Simultaneous (Jacobi) updates only. A sequential pass that re-lays out the program after each promotion is not part of the model; a support check (Search/Sequential.lean, kernel-checked by decide, not a library result) shows that on [branch 3, branch 3, align 4] with short 1, long 2, reach 2 it stops at a different valid assignment (only branch 0 long) than the simultaneous passes (branches 0 and 1 long).
 * Two encodings per branch with unbounded long reach only: instruction sets with more than two branch sizes (where more passes can be needed) and long forms with a finite reach (where relaxation can fail) are not modeled.
 * No convergence or validity claim is made about LLVM's MCAssembler::relaxOnce, which updates offsets in place during a pass, also relaxes non-branch fragments (LEB128 values, CFI advance deltas, alignment), and stops a section after a pass count derived from its fragment count.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R1b** (`relax_valid_and_above_start`):
 
@@ -1415,7 +1415,7 @@ Each result does **not** show the following. The toy-model disclaimer repeated i
 * Valid does not mean least or smallest (R2e, R4b).
 * Asg.Le compares every index i : Nat; at non-branch positions and indices >= p.length relax keeps the values of a unchanged.
 * Two encodings per branch with unbounded long reach only: instruction sets with more than two branch sizes (where more passes can be needed) and long forms with a finite reach (where relaxation can fail) are not modeled.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R1c** (`relax_le_of_valid_of_le_of_distMonotone`):
 
@@ -1424,31 +1424,31 @@ Each result does **not** show the following. The toy-model disclaimer repeated i
 * Asg.Le compares total functions Nat -> Bool at every index, including non-branch and out-of-range indices that relax copies from a; a valid b that dominates a at every branch position but not at some irrelevant index does not satisfy a <= b (asgLe_compares_nonbranch_positions). The branch-restricted form is stated separately as the auxiliary lemma Toy.Relax.relax_leOnBranches_of_valid_of_leOnBranches_of_distMonotone.
 * A concrete sufficient condition for DistMonotone is no alignment directives together with shortSize <= longSize (R2b with R2c); the composed statement is the auxiliary lemma Toy.Relax.relax_le_of_valid_of_le_of_noAlign_of_short_le_long.
 * Says nothing about the assignment reached from a start that is not below b.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R1d** (`relaxLoop_numBranches_passes_insufficient`):
 
 * Shows the bound is attained for one program, not for every program.
 * No convergence or validity claim is made about LLVM's MCAssembler::relaxOnce, which updates offsets in place during a pass, also relaxes non-branch fragments (LEB128 values, CFI advance deltas, alignment), and stops a section after a pass count derived from its fragment count.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R2a** (`dist_le_dist_of_size_le_between`):
 
 * Uses the start-of-instruction displacement convention, under which a forward branch's own size lies in its interval; an end-of-instruction convention shifts which instruction's own size is in the interval (not formalized).
 * Indices >= p.length are clamped: the address of any such index is the end address of the program, so the distance to a target t >= p.length is the distance to the end.
 * Says nothing about how sizes depend on the assignment (R2b, R2c).
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R2b** (`distMonotone_of_sizesMonotone`):
 
 * The converse is not claimed: DistMonotone can hold while some size that no branch spans is non-monotone (distMonotone_short_le_long_without_sizesMonotone).
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R2c** (`sizesMonotone_of_noAlign_of_short_le_long`):
 
 * Alignment is the only address-dependent size in the toy; other address-dependent encodings (e.g. linker relaxation that deletes bytes) are not modeled.
 * Assemblers that hold alignment padding at a fixed upper bound until branch relaxation has stabilized and only then recompute it (as CakeML's lab_to_target does with label padding) do not face this non-monotonicity inside the loop; that strategy is not modeled.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R2e** (`align_padding_breaks_leastness`, `align_counterexample_still_terminates_valid`):
 
@@ -1456,20 +1456,20 @@ Each result does **not** show the following. The toy-model disclaimer repeated i
 * Simultaneous (Jacobi) updates only. A sequential pass that re-lays out the program after each promotion is not part of the model; a support check (Search/Sequential.lean, kernel-checked by decide, not a library result) shows that on [branch 3, branch 3, align 4] with short 1, long 2, reach 2 it stops at a different valid assignment (only branch 0 long) than the simultaneous passes (branches 0 and 1 long).
 * Assemblers that hold alignment padding at a fixed upper bound until branch relaxation has stabilized and only then recompute it (as CakeML's lab_to_target does with label padding) do not face this non-monotonicity inside the loop; that strategy is not modeled.
 * Does not show that any real assembler produces this layout.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R3a** (`growShrink_two_cycle_from_nonbottom_start`):
 
 * The oscillation uses a start that is not all-short; from all-short and under monotone distances grow-and-shrink cannot oscillate (R3b), while without monotone distances it can oscillate from all-short as well (R3c).
 * The counterfactual reading matters: reading branch i's distance from the current layout a instead differs on forward long branches, whose own size lies in their span; from the start of this instance, branch 1 is out of short reach in the current layout but fits when tentatively short (stepGS_decides_from_counterfactual_layout). The contrast definition stepGSCurrent, which reads the current layout, does not oscillate on this instance: from the same start it makes both branches long, a valid fixpoint (osc_stepGSCurrent_reaches_valid_fixpoint). No general result about stepGSCurrent is stated.
 * Two branches is the minimum number for any oscillation: with one branch, setShort a i makes the layout independent of a, so its decision is constant after one step - derived argument, not formalized; minimality in instruction count is not claimed.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R3b** (`iter_stepGS_allShort_eq_iter_step_of_distMonotone`):
 
 * Only for the all-short start; from other starts grow-and-shrink can oscillate even with monotone sizes (R3a).
 * Without DistMonotone, grow-and-shrink from all-short can demote and stop at a different valid fixpoint (align_growShrink_differs_from_growOnly, on [fixed 1, align 4, branch 0, align 4, branch 3] with short 1, long 2, reach 2) and can oscillate forever (R3c).
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R3c** (`align_growShrink_four_cycle_from_allShort`, `inverted_growShrink_two_cycle_from_allShort`):
 
@@ -1477,21 +1477,21 @@ Each result does **not** show the following. The toy-model disclaimer repeated i
 * The aligned 4-cycle depends on the counterfactual reading of stepGS: at {0}, branch 0's distance to its target is 3 in the current layout {0} (out of short reach 2) but 2 in the counterfactual layout setShort {0} 0 (within reach), so stepGS demotes branch 0 and returns to all-short (alignOsc_counterfactual_vs_current). A grow-and-shrink step that reads every distance from the current layout a instead (the contrast definition stepGSCurrent) does not oscillate on this program: from all-short it follows all-short, {1}, {0, 1}, {0} and then stays at {0}, a valid fixpoint, after 3 steps (alignOsc_stepGSCurrent_reaches_valid_fixpoint). The inverted-size 2-cycle on [fixed 2, branch 3, branch 0] also occurs under the current-layout reading (invOsc_stepGSCurrent_two_cycle). No general result about stepGSCurrent is stated.
 * Minimality is not claimed. Bounded search, not a proof (Search/LeastnessOptimality.lean): over all 3-instruction programs over {fixed 1, fixed 2, fixed 3, align 2, align 4} and branch targets 0-3, with 10 parameter sets all having shortSize <= longSize, the only oscillations from all-short are this program with long size 2 or 3 (short 1, reach 2).
 * Does not show that any real assembler uses grow-and-shrink relaxation; LLVM's relaxInstruction never demotes.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R4a** (`relax_allShort_totalSize_le_of_valid_of_distMonotone_of_short_le_long`):
 
 * Optimality is for this toy cost (sum of sizes) and reach model; it does not contradict NP-completeness results for general assembly-time operand expressions or jump chaining (Szymanski 1978; Leverett & Szymanski 1980), which are outside the model.
 * SizesMonotone (e.g. no alignment and shortSize <= longSize) is a sufficient single hypothesis, stated separately as the auxiliary lemma Toy.Relax.relax_allShort_totalSize_le_of_valid_of_sizesMonotone; DistMonotone with shortSize <= longSize is strictly weaker (distMonotone_short_le_long_without_sizesMonotone).
 * No complexity claim is made for programs without monotone distances.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R4b** (`align_padding_breaks_size_optimality`):
 
 * Does not claim NP-hardness of the alignment case.
 * Simultaneous (Jacobi) updates only. A sequential pass that re-lays out the program after each promotion is not part of the model; a support check (Search/Sequential.lean, kernel-checked by decide, not a library result) shows that on [branch 3, branch 3, align 4] with short 1, long 2, reach 2 it stops at a different valid assignment (only branch 0 long) than the simultaneous passes (branches 0 and 1 long).
 * Assemblers that hold alignment padding at a fixed upper bound until branch relaxation has stabilized and only then recompute it (as CakeML's lab_to_target does with label padding) do not face this non-monotonicity inside the loop; that strategy is not modeled.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R5** (`promote_relax_landsExactly_of_valid_of_sizesPositiveAt`):
 
@@ -1501,7 +1501,7 @@ Each result does **not** show the following. The toy-model disclaimer repeated i
 * Landing is stated for indices k <= p.length; a target index t >= p.length denotes the end of the program.
 * Says nothing about execution semantics beyond the landing index of each branch.
 * Two encodings per branch with unbounded long reach only: instruction sets with more than two branch sizes (where more passes can be needed) and long forms with a finite reach (where relaxation can fail) are not modeled.
-* Toy model only: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates); no property of a real assembler or linker is established by the Lean proofs, and every connection to a real toolchain is a separately labeled derived modeling bridge.
+* Toy model: the results apply to the Lean model Toy.Relax (two encodings per branch, instruction-index targets, simultaneous updates). These theorems neither establish nor refute the corresponding claims about real assemblers or linkers (such as LLVM's MC layer, CompCert's Branch_relaxation module or the CakeML lab_to_target loop); every connection to a real toolchain is a separately labeled derived modeling bridge.
 
 **R6a** (`genTable_correct_of_no_undefined`):
 
@@ -1512,25 +1512,25 @@ Each result does **not** show the following. The toy-model disclaimer repeated i
 * TableCorrect quantifies over every entry state, including ones a real ABI excludes (unaligned sp, arbitrary memory); registers and stack words are unbounded integers.
 * Does not claim the generator succeeds whenever a correct table exists (not stated; checker completeness R7b is about checking, not generation).
 * The relaxation model and the unwind-table model are independent: Toy.Unwind indexes table rows by operation count, not byte offset, so the effect of branch relaxation on CFI advance-location deltas (which real assemblers re-encode during relaxation) is not modeled.
-* Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs.
+* Toy model: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp). These theorems neither establish nor refute the corresponding claims about real compiler-emitted DWARF call frame information or real unwinders; every connection to them is a separately labeled derived modeling bridge.
 
 **R6b** (`offByOne_push_tables_incorrect`):
 
 * One concrete body; not a classification of all off-by-one faults.
-* Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs.
+* Toy model: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp). These theorems neither establish nor refute the corresponding claims about real compiler-emitted DWARF call frame information or real unwinders; every connection to them is a separately labeled derived modeling bridge.
 
 **R6c** (`missing_row_after_pop_incorrect`):
 
 * The fault here is the stale CFA rule; a stale register rule alone is not immediately wrong (R6d).
 * One concrete body.
-* Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs.
+* Toy model: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp). These theorems neither establish nor refute the corresponding claims about real compiler-emitted DWARF call frame information or real unwinders; every connection to them is a separately labeled derived modeling bridge.
 
 **R6d** (`stale_savedAt_after_pop_incorrect_after_slot_reuse`, `stale_savedAt_after_pop_correct_without_reuse`):
 
 * Concrete bodies only; not every later push makes the stale rule wrong (a push that stores the value register 3 had at entry leaves it correct).
 * Known not to apply where the freed slot below sp can be written without an operation of the body (for example by an asynchronous signal or interrupt frame on a stack without a protected red zone): the toy semantics has no such writes, and any write of a different value into the freed slot makes the stale rule wrong by the same mechanism as the first body. Derived (modeling bridge).
 * Does not say DW_CFA_restore or DW_CFA_same_value is unnecessary in practice.
-* Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs.
+* Toy model: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp). These theorems neither establish nor refute the corresponding claims about real compiler-emitted DWARF call frame information or real unwinders; every connection to them is a separately labeled derived modeling bridge.
 
 **R7a** (`checkTable_sound`):
 
@@ -1539,7 +1539,7 @@ Each result does **not** show the following. The toy-model disclaimer repeated i
 * Single-frame virtual unwinding only: TableCorrect does not forbid the body from writing into the caller's frame (addresses >= entry sp; tableCorrect_permits_caller_frame_write) and does not require the body to restore sp or any register by its end (tableCorrect_permits_unrestored_sp).
 * TableCorrect quantifies over every entry state, including ones a real ABI excludes (unaligned sp, arbitrary memory); registers and stack words are unbounded integers.
 * The relaxation model and the unwind-table model are independent: Toy.Unwind indexes table rows by operation count, not byte offset, so the effect of branch relaxation on CFI advance-location deltas (which real assemblers re-encode during relaxation) is not modeled.
-* Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs.
+* Toy model: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp). These theorems neither establish nor refute the corresponding claims about real compiler-emitted DWARF call frame information or real unwinders; every connection to them is a separately labeled derived modeling bridge.
 
 **R7b** (`checkTable_complete`):
 
@@ -1547,7 +1547,7 @@ Each result does **not** show the following. The toy-model disclaimer repeated i
 * The proof uses unbounded integers for registers and stack words; fixed-width machine words are not modeled. Whether completeness transfers to them is not examined (it needs an entry state whose register values avoid every constant the body writes).
 * Straight-line bodies only; no branches, loops, calls, frame-pointer-based CFA, register-to-register saves, val_offset rules or DWARF expressions.
 * Not a statement about real CFI validators.
-* Toy model only: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp); no property of real compiler-emitted CFI or of a real unwinder is established by the Lean proofs.
+* Toy model: the results apply to the Lean model Toy.Unwind (one straight-line body, word-addressed downward stack, no return-address slot, CFA = entry sp). These theorems neither establish nor refute the corresponding claims about real compiler-emitted DWARF call frame information or real unwinders; every connection to them is a separately labeled derived modeling bridge.
 
 ### Escape hatches
 
