@@ -1,0 +1,116 @@
+{
+  "topics": [
+    "domains/breast-cancer-risk-prediction",
+    "domains/population-screening-invitation-systems",
+    "verification/risk-model-calibration-and-external-validation",
+    "tooling/open-risk-model-implementations"
+  ],
+  "subjects": [
+    {
+      "name": "BCRA R package (Gail model / NCI BCRAT algorithm), CRAN read-only mirror",
+      "identity": {
+        "repository": "cran/BCRA",
+        "revision": "05bfdea1a18c78f411afa9c8c0fbcdf0ccae7499",
+        "version": "2.1.2"
+      }
+    },
+    {
+      "name": "bcra JavaScript port of the BCRA R package",
+      "identity": {
+        "repository": "epiverse/bcra-js",
+        "revision": "4a38d20753fc28e1e0416818cef698b28415da18",
+        "version": "1.0.1"
+      }
+    },
+    {
+      "name": "BOADICEA/CanRisk web services (bws)",
+      "identity": {
+        "repository": "CCGE-BOADICEA/bws",
+        "revision": "70aa1e618d8b0095d23be2804678ce7161aee34b"
+      }
+    },
+    {
+      "name": "Mirai mammography-based risk model code base",
+      "identity": {
+        "repository": "yala/Mirai",
+        "revision": "3904a9eaca046378a194b1eb8c62fa32f45ce83b"
+      }
+    },
+    {
+      "name": "Gail et al. 1989, individualized breast cancer probabilities (BCDDP)",
+      "identity": {
+        "doi": "10.1093/jnci/81.24.1879"
+      }
+    },
+    {
+      "name": "Costantino et al. 1999, validation of Gail models in the BCPT placebo arm",
+      "identity": {
+        "doi": "10.1093/jnci/91.18.1541"
+      }
+    },
+    {
+      "name": "Gail et al. 2007, CARE model for African American women",
+      "identity": {
+        "doi": "10.1093/jnci/djm223"
+      }
+    },
+    {
+      "name": "Banegas et al. 2016, Hispanic risk model",
+      "identity": {
+        "doi": "10.1093/jnci/djw215"
+      }
+    },
+    {
+      "name": "Tyrer, Duffy and Cuzick 2004, IBIS model",
+      "identity": {
+        "doi": "10.1002/sim.1668"
+      }
+    },
+    {
+      "name": "Lee et al. 2019, BOADICEA with PRS and risk factors",
+      "identity": {
+        "doi": "10.1038/s41436-018-0406-9"
+      }
+    },
+    {
+      "name": "Carver et al. 2021, CanRisk Tool",
+      "identity": {
+        "doi": "10.1158/1055-9965.EPI-20-1319"
+      }
+    },
+    {
+      "name": "Pal Choudhury et al. 2020, iCARE R package",
+      "identity": {
+        "doi": "10.1371/journal.pone.0228198"
+      }
+    },
+    {
+      "name": "Terry et al. 2019, 10-year performance of four breast cancer risk models",
+      "identity": {
+        "doi": "10.1016/S1470-2045(18)30902-1"
+      }
+    },
+    {
+      "name": "Yala et al. 2021, Mirai development and three-site test",
+      "identity": {
+        "doi": "10.1126/scitranslmed.aba4373"
+      }
+    },
+    {
+      "name": "Yala et al. 2022, Mirai seven-site validation",
+      "identity": {
+        "doi": "10.1200/JCO.21.01337"
+      }
+    },
+    {
+      "name": "The Independent Breast Screening Review 2018 (England)",
+      "identity": {
+        "document": "HC 1799",
+        "isbn": "978-1-5286-0913-5",
+        "url": "https://assets.publishing.service.gov.uk/media/5c123934ed915d0b8170d164/independent-breast-screening-review-report.pdf",
+        "date": "2018-12-13"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

@@ -1,0 +1,117 @@
+{
+  "topics": [
+    "verification/reduction-soundness-by-property-class",
+    "verification/fairness-and-scheduler-assumptions-in-theorems",
+    "tooling/mechanized-partial-order-reduction",
+    "pl/mover-types-and-atomic-action-calculi"
+  ],
+  "subjects": [
+    {
+      "name": "Archive of Formal Proofs mirror (Partial_Order_Reduction, Stuttering_Equivalence, CAVA_LTL_Modelchecker)",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720"
+      }
+    },
+    {
+      "name": "Armada (Cohen-Lamport reduction strategy and refinement specification)",
+      "identity": {
+        "repository": "microsoft/Armada",
+        "revision": "da7497dcf506417df1899ac58850706a31e3acd5"
+      }
+    },
+    {
+      "name": "Boogie / CIVL (mover checks and yield sufficiency)",
+      "identity": {
+        "repository": "boogie-org/boogie",
+        "revision": "99eebd60b8fc42c0ad3c95b6160ad88ac4f124dc"
+      }
+    },
+    {
+      "name": "Ironclad repository, IronFleet (trusted framework specs and IronRSL liveness assumptions)",
+      "identity": {
+        "repository": "microsoft/Ironclad",
+        "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691"
+      }
+    },
+    {
+      "name": "Brunner and Lammich, Formal Verification of an Executable LTL Model Checker with Partial Order Reduction (JAR 60(1), 2018)",
+      "identity": {
+        "doi": "10.1007/s10817-017-9418-4"
+      }
+    },
+    {
+      "name": "Peled, All from One, One for All: On Model Checking Using Representatives (CAV 1993)",
+      "identity": {
+        "doi": "10.1007/3-540-56922-7_34"
+      }
+    },
+    {
+      "name": "Peled and Wilke, Stutter-Invariant Temporal Properties Are Expressible Without the Next-Time Operator (IPL 63(5), 1997)",
+      "identity": {
+        "doi": "10.1016/S0020-0190(97)00133-6"
+      }
+    },
+    {
+      "name": "Gerth, Kuiper, Peled, Penczek, A Partial Order Approach to Branching Time Logic Model Checking (Information and Computation 150(2), 1999)",
+      "identity": {
+        "doi": "10.1006/inco.1998.2778"
+      }
+    },
+    {
+      "name": "Lamport, The Temporal Logic of Actions (TOPLAS 16(3), 1994)",
+      "identity": {
+        "doi": "10.1145/177492.177726"
+      }
+    },
+    {
+      "name": "Cohen and Lamport, Reduction in TLA (CONCUR 1998)",
+      "identity": {
+        "doi": "10.1007/BFb0055631"
+      }
+    },
+    {
+      "name": "Elmas, Qadeer, Tasiran, A Calculus of Atomic Actions (POPL 2009)",
+      "identity": {
+        "doi": "10.1145/1480881.1480885"
+      }
+    },
+    {
+      "name": "Kragl and Qadeer, Layered Concurrent Programs (CAV 2018)",
+      "identity": {
+        "doi": "10.1007/978-3-319-96145-3_5"
+      }
+    },
+    {
+      "name": "Kragl, Enea, Henzinger, Mutluergil, Qadeer, Inductive Sequentialization of Asynchronous Programs (PLDI 2020)",
+      "identity": {
+        "doi": "10.1145/3385412.3385980"
+      }
+    },
+    {
+      "name": "Hawblitzel et al., IronFleet: Proving Practical Distributed Systems Correct (SOSP 2015)",
+      "identity": {
+        "doi": "10.1145/2815400.2815428"
+      }
+    },
+    {
+      "name": "Lorch et al., Armada: Low-Effort Verification of High-Performance Concurrent Programs (PLDI 2020)",
+      "identity": {
+        "doi": "10.1145/3385412.3385971"
+      }
+    },
+    {
+      "name": "Apt, Francez, Katz, Appraising Fairness in Languages for Distributed Programming (Distributed Computing 2(4), 1988)",
+      "identity": {
+        "doi": "10.1007/BF01872848"
+      }
+    },
+    {
+      "name": "Lipton, Reduction: A Method of Proving Properties of Parallel Programs (CACM 18(12), 1975)",
+      "identity": {
+        "doi": "10.1145/361227.361234"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

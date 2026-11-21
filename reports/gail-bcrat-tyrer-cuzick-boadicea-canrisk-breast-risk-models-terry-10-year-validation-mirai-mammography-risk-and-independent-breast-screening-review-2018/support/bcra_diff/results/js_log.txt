@@ -1,0 +1,3 @@
+bcra VERSION 1.0.1
+TIMING calculateRisk on random set: n=2000 elapsed=0.010 s (5.1 us/profile)
+wrote 2374 rows

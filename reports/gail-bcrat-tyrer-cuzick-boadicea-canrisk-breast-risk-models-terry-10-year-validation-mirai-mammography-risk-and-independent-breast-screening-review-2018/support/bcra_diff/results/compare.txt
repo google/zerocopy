@@ -1,0 +1,52 @@
+[1] R(now) vs R-reference fixtures: rows=342 Error_Ind/NA mismatches=0 max|dAbsRisk|=5e-11 (percentage points)
+[2] R vs JS classification (frame mode):
+     edge     R accepts, JS rejects        6
+     edge     both reject                  11
+     edge     both valid, |d|<=1e-9        15
+     fixture  R accepts, JS rejects        1
+     fixture  both reject                  23
+     fixture  both valid, |d|<=1e-9        318
+     random   both valid, |d|<=1e-9        2000
+     max |dAbsRisk| by set where both valid: {'fixture': 4.75e-11, 'edge': 4.23e-12, 'random': 4.98e-11}
+     max |dAvgRisk| where both valid: 4.95e-11
+[3] Edge rows and every non-trivial disagreement:
+     ID | label | class | R.Error_Ind | R.NB_Cat | R.AF_Cat | R.AbsRisk | JS.success | JS.AbsRisk | JS.errors
+     284 | validation-errors:Negative biopsies | R accepts, JS rejects | 0 | 2 | 2 | 7.54082063321 | false |  | Invalid number of biopsies
+     10001 | N_Biop=-1 | R accepts, JS rejects | 0 | 2 | 2 | 7.54082063321 | false |  | Invalid number of biopsies
+     10002 | N_Biop=-5 | R accepts, JS rejects | 0 | 2 | 2 | 7.54082063321 | false |  | Invalid number of biopsies
+     10003 | N_Biop=1.5 | R accepts, JS rejects | 0 | 2 | 2 | 7.54082063321 | false |  | Invalid number of biopsies
+     10004 | N_Biop=150 | R accepts, JS rejects | 0 | 2 | 2 | 7.54082063321 | false |  | Invalid number of biopsies
+     10005 | N_Biop=98 | both valid, |d|<=1e-9 | 0 | 2 | 2 | 7.54082063321 | true | 7.540820633211894 | 
+     10006 | N_Biop=2 control | both valid, |d|<=1e-9 | 0 | 2 | 2 | 7.54082063321 | true | 7.540820633211894 | 
+     10007 | AgeMen=5 | both valid, |d|<=1e-9 | 0 | 1 | 2 | 4.94728834452 | true | 4.947288344519987 | 
+     10008 | AgeMen=0 | both reject | 1 | 1 | 2 | NA | false |  | Invalid age at menarche
+     10009 | AgeMen=13.5 | both valid, |d|<=1e-9 | 0 | 1 | 2 | 4.51362160729 | true | 4.513621607289703 | 
+     10010 | Age1st=-3 AgeMen=99 | both valid, |d|<=1e-9 | 0 | 1 | 0 | 3.89878217584 | true | 3.898782175840544 | 
+     10011 | N_Rels=1.5 | both reject | 1 | 1 | 2 | NA | false |  | Invalid number of relatives
+     10012 | N_Rels=150 | both reject | 1 | 1 | 2 | NA | false |  | Invalid number of relatives
+     10013 | Race2 Age1st>T1 | R accepts, JS rejects | 0 | 1 | 0 | 2.73005757281 | false |  | Age at first birth cannot be greater than initial age
+     10014 | Race1 Age1st>T1 control | both reject | 1 | 1 | NA | NA | false |  | Age at first birth cannot be greater than initial age
+     10015 | Race2 Age1st<AgeMen | R accepts, JS rejects | 0 | 1 | 0 | 2.73005757281 | false |  | Age at first birth cannot be less than age at menarche
+     10016 | Race2 AgeMen=10 | both valid, |d|<=1e-9 | 0 | 1 | 0 | 2.73005757281 | true | 2.7300575728142276 | 
+     10017 | Race=1.5 in frame | both reject | 1 | 1 | 2 | NA | false |  | Relative risk calculation failed for this race/ethnicity
+     10018 | Race=12 in frame | both reject | 1 | 1 | 2 | NA | false |  | Invalid race code. Must be between 1 and 11
+     10019 | all unknown (99) | both valid, |d|<=1e-9 | 0 | 0 | 0 | 0.894502598596 | true | 0.8945025985963768 | 
+     10020 | explicit lowest categories | both valid, |d|<=1e-9 | 0 | 0 | 0 | 0.894502598596 | true | 0.8945025985963768 | 
+     10021 | Race3 all unknown (99) | both valid, |d|<=1e-9 | 0 | 0 | 0 | 1.15387100777 | true | 1.1538710077723517 | 
+     10022 | Race3 explicit lowest | both valid, |d|<=1e-9 | 0 | 0 | 0 | 1.15387100777 | true | 1.1538710077723517 | 
+     10023 | Race3 N_Biop=0 HypPlas=1 | both reject | 1 | 0 | 1 | NA | false |  | Consistency error: If no biopsies; atypical hyperplasia must be not ap
+     10024 | HypPlas=0 | both valid, |d|<=1e-9 | 0 | 1 | 2 | 4.20444642724 | true | 4.204446427240492 | 
+     10025 | HypPlas=1 | both valid, |d|<=1e-9 | 0 | 1 | 2 | 8.06151506915 | true | 8.061515069151515 | 
+     10026 | crosses age 50 | both valid, |d|<=1e-9 | 0 | 1 | 2 | 0.522252348972 | true | 0.5222523489718316 | 
+     10027 | T1=20 T2=20.5 nulliparous | both valid, |d|<=1e-9 | 0 | 1 | 2 | 0.00148765660027 | true | 0.0014876566002685588 | 
+     10028 | solo Race=12 | both reject | 1 | 1 | 2 | NA | false |  | Invalid race code. Must be between 1 and 11
+     10029 | solo Race=0 | both reject | 1 | 1 | 2 | NA | false |  | Invalid race code. Must be between 1 and 11
+     10030 | solo Race=1.5 | both reject | 1 | 1 | 2 | NA | false |  | Relative risk calculation failed for this race/ethnicity
+     10031 | solo Race=-1 | both reject | 1 | 1 | 2 | NA | false |  | Invalid race code. Must be between 1 and 11
+     10032 | solo valid control | both valid, |d|<=1e-9 | 0 | 1 | 2 | 4.51362160729 | true | 4.513621607289703 | 
+[4] Solo (one-row data frame) runs in R:
+     10028 | solo Race=12 | Error_Ind=0 CharRace=?? RR1=NA AbsRisk= RError=ERROR: subscript out of bounds
+     10029 | solo Race=0 | Error_Ind=0 CharRace=?? RR1=NA AbsRisk= RError=ERROR: replacement has length zero
+     10030 | solo Race=1.5 | Error_Ind=0 CharRace=?? RR1=NA AbsRisk=NA RError=
+     10031 | solo Race=-1 | Error_Ind=0 CharRace=?? RR1=NA AbsRisk= RError=ERROR: number of items to replace is not a multiple of replacement length
+     10032 | solo valid control | Error_Ind=0 CharRace=Wh RR1=5.14079085052 AbsRisk=4.51362160729 RError=

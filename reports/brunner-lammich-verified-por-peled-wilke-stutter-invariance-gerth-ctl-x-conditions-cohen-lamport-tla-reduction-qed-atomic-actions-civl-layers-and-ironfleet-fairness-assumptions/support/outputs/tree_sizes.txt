@@ -1,0 +1,8 @@
+# Output of: python3 probes/tree_sizes.py (2026-11-21 UTC). Counts newline characters and bytes of files fetched at the pinned revisions.
+isabelle-prover/mirror-afp-devel@523cdc72b5ae thys/Partial_Order_Reduction (.thy): 24 files, 5758 lines, 260416 bytes
+isabelle-prover/mirror-afp-devel@523cdc72b5ae thys/Stuttering_Equivalence (.thy): 3 files, 1665 lines, 72769 bytes
+isabelle-prover/mirror-afp-devel@523cdc72b5ae thys/CAVA_LTL_Modelchecker/SM (.thy): 24 files, 6375 lines, 243199 bytes
+microsoft/Armada@da7497dcf506 Armada/strategies/reduction (.dfy): 9 files, 10292 lines, 505498 bytes
+microsoft/Ironclad@2fe4dcdc323b ironfleet/src/Dafny/Distributed/Common/Framework (.s.dfy): 6 files, 636 lines, 22708 bytes
+microsoft/Ironclad@2fe4dcdc323b ironfleet/src/Dafny/Distributed/Protocol/RSL/LivenessProof (.dfy): 36 files, 12389 lines, 525983 bytes
+boogie-org/boogie@99eebd60b8fc Source/Concurrency (.cs): 21 files, 7251 lines, 258454 bytes

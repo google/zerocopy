@@ -1,0 +1,93 @@
+{
+  "topics": [
+    "domains/public-warning-dissemination",
+    "domains/emergency-call-routing-reliability",
+    "security/cell-broadcast-alert-authentication",
+    "verification/alert-message-schema-validation"
+  ],
+  "subjects": [
+    {
+      "name": "Google Common Alerting Protocol library and validator application (archived repository)",
+      "identity": {
+        "repository": "google/cap-library",
+        "revision": "67dcf20373834725b15c5325a73f615d92a708fa"
+      }
+    },
+    {
+      "name": "OASIS Common Alerting Protocol",
+      "identity": {
+        "standard": "OASIS Common Alerting Protocol Version 1.2",
+        "version": "OASIS Standard, 01 July 2010",
+        "url": "http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.html"
+      }
+    },
+    {
+      "name": "FCC PSHSB report: April 2014 Multistate 911 Outage: Cause and Impact",
+      "identity": {
+        "document": "PS Docket No. 14-72; PSHSB Case File Nos. 14-CCR-0001-0007",
+        "url": "https://docs.fcc.gov/public/attachments/DOC-330012A1.pdf"
+      }
+    },
+    {
+      "name": "FCC PSHSB preliminary report: Hawaii Emergency Management Agency January 13, 2018 false ballistic missile alert",
+      "identity": {
+        "url": "https://docs.fcc.gov/public/attachments/DOC-348923A1.pdf",
+        "date": "2018-01-30"
+      }
+    },
+    {
+      "name": "Washington UTC staff investigation release on the December 2018 CenturyLink 911 outage",
+      "identity": {
+        "docket": "UT-181051",
+        "url": "https://www.utc.wa.gov/news/2020/centurylink-faces-72-million-penalty-2018-911-outage",
+        "date": "2020-12-22"
+      }
+    },
+    {
+      "name": "Lee et al. 2019, This Is Your President Speaking: Spoofing Alerts in 4G LTE Networks (full paper)",
+      "identity": {
+        "doi": "10.1145/3307334.3326082"
+      }
+    },
+    {
+      "name": "Hollingsworth et al. 2019, demo abstract of the same attack",
+      "identity": {
+        "doi": "10.1145/3307334.3328572"
+      }
+    },
+    {
+      "name": "3GPP study on security aspects of the Public Warning System",
+      "identity": {
+        "standard": "3GPP TR 33.969",
+        "version": "18.0.0 (ETSI TR 133 969 V18.0.0, 2024-04)",
+        "url": "https://www.etsi.org/deliver/etsi_tr/133900_133999/133969/18.00.00_60/tr_133969v180000p.pdf"
+      }
+    },
+    {
+      "name": "Abou Hasna, Chendeb and El Falou 2026, 5G emergency alert spoofing testbed and cross-cell verification",
+      "identity": {
+        "arxiv": "2604.24404v1",
+        "doi": "10.48550/arXiv.2604.24404"
+      }
+    },
+    {
+      "name": "Lindell and Perry 2012, Protective Action Decision Model",
+      "identity": {
+        "doi": "10.1111/j.1539-6924.2011.01647.x"
+      }
+    },
+    {
+      "name": "Sutton and Kuligowski 2019, alerts and warnings on short messaging channels",
+      "identity": {
+        "doi": "10.1061/(ASCE)NH.1527-6996.0000324"
+      }
+    },
+    {
+      "name": "Jones and Silver 2020, anxiety on Twitter after the 2018 Hawaii false missile alert",
+      "identity": {
+        "doi": "10.1037/amp0000495"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

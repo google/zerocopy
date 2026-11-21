@@ -1,0 +1,148 @@
+{
+  "topics": [
+    "isa/floating-point-control-state-abi-contracts",
+    "llvm/denormal-mode-function-attributes",
+    "runtimes/floating-point-environment-across-threads-signals-and-loading",
+    "pl/procedure-boundary-floating-point-modes"
+  ],
+  "subjects": [
+    {
+      "name": "Fortran 2023 working draft J3/23-007r1 (draft of ISO/IEC 1539-1), clause 17 and 18.10.3",
+      "identity": {
+        "repository": "j3-fortran/j3-papers",
+        "revision": "f052dca4c3d110465e3594b11c70dbc5c858d8fa",
+        "path": "papers/23-007r1.pdf",
+        "sha256": "78a264bc92c7cbce6e204b5a6da257d3e36fea608a851e45d020650f31cfbc43"
+      }
+    },
+    {
+      "name": "C11 committee draft N1570 (ISO/IEC 9899:2011 draft), 5.1.2.3 and 7.6",
+      "identity": {
+        "standard": "ISO/IEC 9899:2011 committee draft N1570",
+        "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf"
+      }
+    },
+    {
+      "name": "POSIX IEEE Std 1003.1-2017 (Base Specifications Issue 7, 2018 edition), pthread_create and signal concepts",
+      "identity": {
+        "standard": "IEEE Std 1003.1-2017",
+        "doi": "10.1109/IEEESTD.2018.8277153",
+        "url": "https://pubs.opengroup.org/onlinepubs/9699919799/functions/pthread_create.html"
+      }
+    },
+    {
+      "name": "System V ABI AMD64 Architecture Processor Supplement, register usage and process initialization",
+      "identity": {
+        "standard": "System V Application Binary Interface AMD64 Architecture Processor Supplement",
+        "version": "1.0 (master branch source, read 2026-11-21)",
+        "url": "https://gitlab.com/x86-psABIs/x86-64-ABI"
+      }
+    },
+    {
+      "name": "Microsoft x64 calling convention documentation (FPCSR and MXCSR sections)",
+      "identity": {
+        "repository": "MicrosoftDocs/cpp-docs",
+        "revision": "c40d993acf8dd1cc106257d11654f8dd1b761944",
+        "path": "docs/build/x64-calling-convention.md"
+      }
+    },
+    {
+      "name": "Arm Procedure Call Standard for AArch64 (AAPCS64), FPSR/FPCR rules",
+      "identity": {
+        "repository": "ARM-software/abi-aa",
+        "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7",
+        "path": "aapcs64/aapcs64.rst",
+        "version": "2026Q3"
+      }
+    },
+    {
+      "name": "LLVM (denormal_fpenv attribute, inline compatibility rule)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "04e0e9cc603537fbc16685f872fba17f937f90ff"
+      }
+    },
+    {
+      "name": "GCC (crtfastmath, x86 GNU/Linux math-file spec, gfortran IEEE entry/exit)",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "2fb8a47c8d94b257575fb6294b218be8dc81a8a3"
+      }
+    },
+    {
+      "name": "Linux kernel (x86 FPU state on clone and signal delivery)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    },
+    {
+      "name": "JUCE (ScopedNoDenormals and FloatVectorOperations)",
+      "identity": {
+        "repository": "juce-framework/JUCE",
+        "revision": "654bdbc7a9db0dae90849b44abe91f339e9f0768"
+      }
+    },
+    {
+      "name": "Julia (task-local floating-point control state, set_zero_subnormals)",
+      "identity": {
+        "repository": "JuliaLang/julia",
+        "revision": "cd4dedb3b5da854aa9609126a54d82ed7dfbd3d7"
+      }
+    },
+    {
+      "name": "Released toolchain used for execution probes: GCC and GNU Fortran",
+      "identity": {
+        "artifact": "Debian gcc and gfortran packages",
+        "version": "15.2.0-14"
+      }
+    },
+    {
+      "name": "Released toolchain used for execution probes: Clang and LLVM tools",
+      "identity": {
+        "artifact": "Debian clang-19, llvm-19 and llvm-21 packages",
+        "version": "clang 19.1.7 (10.1+build1); LLVM 19.1.7; LLVM 21.1.8"
+      }
+    },
+    {
+      "name": "Released C library and kernel on the execution host",
+      "identity": {
+        "artifact": "Debian glibc package and Linux kernel package",
+        "version": "glibc 2.43-7; Linux 7.1.6"
+      }
+    },
+    {
+      "name": "Brendan Dolan-Gavitt, Someone's Been Messing With My Subnormals! (survey of Python binary wheels)",
+      "identity": {
+        "url": "https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html",
+        "date": "2022-09-06"
+      }
+    },
+    {
+      "name": "GCC bug 55522 (-funsafe-math-optimizations is unexpectedly harmful, especially w/ -shared)",
+      "identity": {
+        "url": "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55522",
+        "status": "RESOLVED FIXED, target milestone 13.0"
+      }
+    },
+    {
+      "name": "Di Franco, Guo, Rubio-Gonzalez, A Comprehensive Study of Real-World Numerical Bug Characteristics (ASE 2017)",
+      "identity": {
+        "doi": "10.1109/ASE.2017.8115662"
+      }
+    },
+    {
+      "name": "Schwarz, Schmookler, Trong, FPU Implementations with Denormalized Numbers (IEEE Trans. Computers 54(7), 2005)",
+      "identity": {
+        "doi": "10.1109/TC.2005.118"
+      }
+    },
+    {
+      "name": "Andrysco et al., On Subnormal Floating Point and Abnormal Timing (IEEE S&P 2015)",
+      "identity": {
+        "doi": "10.1109/SP.2015.44"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

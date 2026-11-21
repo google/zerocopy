@@ -12772,6 +12772,123 @@
         "systems/compartmentalization"
       ]
     },
+    "brunner-lammich-verified-por-peled-wilke-stutter-invariance-gerth-ctl-x-conditions-cohen-lamport-tla-reduction-qed-atomic-actions-civl-layers-and-ironfleet-fairness-assumptions": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "isabelle-prover/mirror-afp-devel",
+            "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720"
+          },
+          "name": "Archive of Formal Proofs mirror (Partial_Order_Reduction, Stuttering_Equivalence, CAVA_LTL_Modelchecker)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/Armada",
+            "revision": "da7497dcf506417df1899ac58850706a31e3acd5"
+          },
+          "name": "Armada (Cohen-Lamport reduction strategy and refinement specification)"
+        },
+        {
+          "identity": {
+            "repository": "boogie-org/boogie",
+            "revision": "99eebd60b8fc42c0ad3c95b6160ad88ac4f124dc"
+          },
+          "name": "Boogie / CIVL (mover checks and yield sufficiency)"
+        },
+        {
+          "identity": {
+            "repository": "microsoft/Ironclad",
+            "revision": "2fe4dcdc323b92e93f759cc3e373521366b7f691"
+          },
+          "name": "Ironclad repository, IronFleet (trusted framework specs and IronRSL liveness assumptions)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-017-9418-4"
+          },
+          "name": "Brunner and Lammich, Formal Verification of an Executable LTL Model Checker with Partial Order Reduction (JAR 60(1), 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-56922-7_34"
+          },
+          "name": "Peled, All from One, One for All: On Model Checking Using Representatives (CAV 1993)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0020-0190(97)00133-6"
+          },
+          "name": "Peled and Wilke, Stutter-Invariant Temporal Properties Are Expressible Without the Next-Time Operator (IPL 63(5), 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1006/inco.1998.2778"
+          },
+          "name": "Gerth, Kuiper, Peled, Penczek, A Partial Order Approach to Branching Time Logic Model Checking (Information and Computation 150(2), 1999)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/177492.177726"
+          },
+          "name": "Lamport, The Temporal Logic of Actions (TOPLAS 16(3), 1994)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0055631"
+          },
+          "name": "Cohen and Lamport, Reduction in TLA (CONCUR 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1480881.1480885"
+          },
+          "name": "Elmas, Qadeer, Tasiran, A Calculus of Atomic Actions (POPL 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-96145-3_5"
+          },
+          "name": "Kragl and Qadeer, Layered Concurrent Programs (CAV 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3385980"
+          },
+          "name": "Kragl, Enea, Henzinger, Mutluergil, Qadeer, Inductive Sequentialization of Asynchronous Programs (PLDI 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2815400.2815428"
+          },
+          "name": "Hawblitzel et al., IronFleet: Proving Practical Distributed Systems Correct (SOSP 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3385412.3385971"
+          },
+          "name": "Lorch et al., Armada: Low-Effort Verification of High-Performance Concurrent Programs (PLDI 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF01872848"
+          },
+          "name": "Apt, Francez, Katz, Appraising Fairness in Languages for Distributed Programming (Distributed Computing 2(4), 1988)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/361227.361234"
+          },
+          "name": "Lipton, Reduction: A Method of Proving Properties of Parallel Programs (CACM 18(12), 1975)"
+        }
+      ],
+      "topics": [
+        "verification/reduction-soundness-by-property-class",
+        "verification/fairness-and-scheduler-assumptions-in-theorems",
+        "tooling/mechanized-partial-order-reduction",
+        "pl/mover-types-and-atomic-action-calculi"
+      ]
+    },
     "bulletin-17c-expected-moments-algorithm-multiple-grubbs-beck-low-outliers-l-moments-and-nonstationary-return-periods": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -30623,6 +30740,99 @@
         "verification/do178c-mode-transition-freedom"
       ]
     },
+    "fcc-911-outage-reports-hawaii-false-missile-alert-cap-1-2-validation-wea-lte-alert-spoofing-and-protective-action-decision-model": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/cap-library",
+            "revision": "67dcf20373834725b15c5325a73f615d92a708fa"
+          },
+          "name": "Google Common Alerting Protocol library and validator application (archived repository)"
+        },
+        {
+          "identity": {
+            "standard": "OASIS Common Alerting Protocol Version 1.2",
+            "url": "http://docs.oasis-open.org/emergency/cap/v1.2/CAP-v1.2-os.html",
+            "version": "OASIS Standard, 01 July 2010"
+          },
+          "name": "OASIS Common Alerting Protocol"
+        },
+        {
+          "identity": {
+            "document": "PS Docket No. 14-72; PSHSB Case File Nos. 14-CCR-0001-0007",
+            "url": "https://docs.fcc.gov/public/attachments/DOC-330012A1.pdf"
+          },
+          "name": "FCC PSHSB report: April 2014 Multistate 911 Outage: Cause and Impact"
+        },
+        {
+          "identity": {
+            "date": "2018-01-30",
+            "url": "https://docs.fcc.gov/public/attachments/DOC-348923A1.pdf"
+          },
+          "name": "FCC PSHSB preliminary report: Hawaii Emergency Management Agency January 13, 2018 false ballistic missile alert"
+        },
+        {
+          "identity": {
+            "date": "2020-12-22",
+            "docket": "UT-181051",
+            "url": "https://www.utc.wa.gov/news/2020/centurylink-faces-72-million-penalty-2018-911-outage"
+          },
+          "name": "Washington UTC staff investigation release on the December 2018 CenturyLink 911 outage"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3307334.3326082"
+          },
+          "name": "Lee et al. 2019, This Is Your President Speaking: Spoofing Alerts in 4G LTE Networks (full paper)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3307334.3328572"
+          },
+          "name": "Hollingsworth et al. 2019, demo abstract of the same attack"
+        },
+        {
+          "identity": {
+            "standard": "3GPP TR 33.969",
+            "url": "https://www.etsi.org/deliver/etsi_tr/133900_133999/133969/18.00.00_60/tr_133969v180000p.pdf",
+            "version": "18.0.0 (ETSI TR 133 969 V18.0.0, 2024-04)"
+          },
+          "name": "3GPP study on security aspects of the Public Warning System"
+        },
+        {
+          "identity": {
+            "arxiv": "2604.24404v1",
+            "doi": "10.48550/arXiv.2604.24404"
+          },
+          "name": "Abou Hasna, Chendeb and El Falou 2026, 5G emergency alert spoofing testbed and cross-cell verification"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/j.1539-6924.2011.01647.x"
+          },
+          "name": "Lindell and Perry 2012, Protective Action Decision Model"
+        },
+        {
+          "identity": {
+            "doi": "10.1061/(ASCE)NH.1527-6996.0000324"
+          },
+          "name": "Sutton and Kuligowski 2019, alerts and warnings on short messaging channels"
+        },
+        {
+          "identity": {
+            "doi": "10.1037/amp0000495"
+          },
+          "name": "Jones and Silver 2020, anxiety on Twitter after the 2018 Hawaii false missile alert"
+        }
+      ],
+      "topics": [
+        "domains/public-warning-dissemination",
+        "domains/emergency-call-routing-reliability",
+        "security/cell-broadcast-alert-authentication",
+        "verification/alert-message-schema-validation"
+      ]
+    },
     "ffmpeg-c-abi-libav-struct-layout-callbacks-and-rust-ffi-compatibility-layer": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -32312,6 +32522,154 @@
         "anneal/theory"
       ]
     },
+    "fortran-ieee-mode-restoration-windows-x64-mxcsr-nonvolatility-llvm-denormal-fpenv-attribute-linux-signal-fpu-reset-juce-scoped-no-denormals-and-pypi-subnormal-flush-study": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "path": "papers/23-007r1.pdf",
+            "repository": "j3-fortran/j3-papers",
+            "revision": "f052dca4c3d110465e3594b11c70dbc5c858d8fa",
+            "sha256": "78a264bc92c7cbce6e204b5a6da257d3e36fea608a851e45d020650f31cfbc43"
+          },
+          "name": "Fortran 2023 working draft J3/23-007r1 (draft of ISO/IEC 1539-1), clause 17 and 18.10.3"
+        },
+        {
+          "identity": {
+            "standard": "ISO/IEC 9899:2011 committee draft N1570",
+            "url": "https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1570.pdf"
+          },
+          "name": "C11 committee draft N1570 (ISO/IEC 9899:2011 draft), 5.1.2.3 and 7.6"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/IEEESTD.2018.8277153",
+            "standard": "IEEE Std 1003.1-2017",
+            "url": "https://pubs.opengroup.org/onlinepubs/9699919799/functions/pthread_create.html"
+          },
+          "name": "POSIX IEEE Std 1003.1-2017 (Base Specifications Issue 7, 2018 edition), pthread_create and signal concepts"
+        },
+        {
+          "identity": {
+            "standard": "System V Application Binary Interface AMD64 Architecture Processor Supplement",
+            "url": "https://gitlab.com/x86-psABIs/x86-64-ABI",
+            "version": "1.0 (master branch source, read 2026-11-21)"
+          },
+          "name": "System V ABI AMD64 Architecture Processor Supplement, register usage and process initialization"
+        },
+        {
+          "identity": {
+            "path": "docs/build/x64-calling-convention.md",
+            "repository": "MicrosoftDocs/cpp-docs",
+            "revision": "c40d993acf8dd1cc106257d11654f8dd1b761944"
+          },
+          "name": "Microsoft x64 calling convention documentation (FPCSR and MXCSR sections)"
+        },
+        {
+          "identity": {
+            "path": "aapcs64/aapcs64.rst",
+            "repository": "ARM-software/abi-aa",
+            "revision": "9f9e067e6c6a5d3c5c8326756500cdbd940b8ff7",
+            "version": "2026Q3"
+          },
+          "name": "Arm Procedure Call Standard for AArch64 (AAPCS64), FPSR/FPCR rules"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "04e0e9cc603537fbc16685f872fba17f937f90ff"
+          },
+          "name": "LLVM (denormal_fpenv attribute, inline compatibility rule)"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "2fb8a47c8d94b257575fb6294b218be8dc81a8a3"
+          },
+          "name": "GCC (crtfastmath, x86 GNU/Linux math-file spec, gfortran IEEE entry/exit)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux kernel (x86 FPU state on clone and signal delivery)"
+        },
+        {
+          "identity": {
+            "repository": "juce-framework/JUCE",
+            "revision": "654bdbc7a9db0dae90849b44abe91f339e9f0768"
+          },
+          "name": "JUCE (ScopedNoDenormals and FloatVectorOperations)"
+        },
+        {
+          "identity": {
+            "repository": "JuliaLang/julia",
+            "revision": "cd4dedb3b5da854aa9609126a54d82ed7dfbd3d7"
+          },
+          "name": "Julia (task-local floating-point control state, set_zero_subnormals)"
+        },
+        {
+          "identity": {
+            "artifact": "Debian gcc and gfortran packages",
+            "version": "15.2.0-14"
+          },
+          "name": "Released toolchain used for execution probes: GCC and GNU Fortran"
+        },
+        {
+          "identity": {
+            "artifact": "Debian clang-19, llvm-19 and llvm-21 packages",
+            "version": "clang 19.1.7 (10.1+build1); LLVM 19.1.7; LLVM 21.1.8"
+          },
+          "name": "Released toolchain used for execution probes: Clang and LLVM tools"
+        },
+        {
+          "identity": {
+            "artifact": "Debian glibc package and Linux kernel package",
+            "version": "glibc 2.43-7; Linux 7.1.6"
+          },
+          "name": "Released C library and kernel on the execution host"
+        },
+        {
+          "identity": {
+            "date": "2022-09-06",
+            "url": "https://moyix.blogspot.com/2022/09/someones-been-messing-with-my-subnormals.html"
+          },
+          "name": "Brendan Dolan-Gavitt, Someone's Been Messing With My Subnormals! (survey of Python binary wheels)"
+        },
+        {
+          "identity": {
+            "status": "RESOLVED FIXED, target milestone 13.0",
+            "url": "https://gcc.gnu.org/bugzilla/show_bug.cgi?id=55522"
+          },
+          "name": "GCC bug 55522 (-funsafe-math-optimizations is unexpectedly harmful, especially w/ -shared)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ASE.2017.8115662"
+          },
+          "name": "Di Franco, Guo, Rubio-Gonzalez, A Comprehensive Study of Real-World Numerical Bug Characteristics (ASE 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TC.2005.118"
+          },
+          "name": "Schwarz, Schmookler, Trong, FPU Implementations with Denormalized Numbers (IEEE Trans. Computers 54(7), 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2015.44"
+          },
+          "name": "Andrysco et al., On Subnormal Floating Point and Abnormal Timing (IEEE S&P 2015)"
+        }
+      ],
+      "topics": [
+        "isa/floating-point-control-state-abi-contracts",
+        "llvm/denormal-mode-function-attributes",
+        "runtimes/floating-point-environment-across-threads-signals-and-loading",
+        "pl/procedure-boundary-floating-point-modes"
+      ]
+    },
     "forward-progress-assumptions-side-effect-free-loop-deletion-and-slicing": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -33110,6 +33468,122 @@
         "systems/process-control",
         "build/hermeticity",
         "anneal/architecture"
+      ]
+    },
+    "gail-bcrat-tyrer-cuzick-boadicea-canrisk-breast-risk-models-terry-10-year-validation-mirai-mammography-risk-and-independent-breast-screening-review-2018": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cran/BCRA",
+            "revision": "05bfdea1a18c78f411afa9c8c0fbcdf0ccae7499",
+            "version": "2.1.2"
+          },
+          "name": "BCRA R package (Gail model / NCI BCRAT algorithm), CRAN read-only mirror"
+        },
+        {
+          "identity": {
+            "repository": "epiverse/bcra-js",
+            "revision": "4a38d20753fc28e1e0416818cef698b28415da18",
+            "version": "1.0.1"
+          },
+          "name": "bcra JavaScript port of the BCRA R package"
+        },
+        {
+          "identity": {
+            "repository": "CCGE-BOADICEA/bws",
+            "revision": "70aa1e618d8b0095d23be2804678ce7161aee34b"
+          },
+          "name": "BOADICEA/CanRisk web services (bws)"
+        },
+        {
+          "identity": {
+            "repository": "yala/Mirai",
+            "revision": "3904a9eaca046378a194b1eb8c62fa32f45ce83b"
+          },
+          "name": "Mirai mammography-based risk model code base"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/jnci/81.24.1879"
+          },
+          "name": "Gail et al. 1989, individualized breast cancer probabilities (BCDDP)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/jnci/91.18.1541"
+          },
+          "name": "Costantino et al. 1999, validation of Gail models in the BCPT placebo arm"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/jnci/djm223"
+          },
+          "name": "Gail et al. 2007, CARE model for African American women"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/jnci/djw215"
+          },
+          "name": "Banegas et al. 2016, Hispanic risk model"
+        },
+        {
+          "identity": {
+            "doi": "10.1002/sim.1668"
+          },
+          "name": "Tyrer, Duffy and Cuzick 2004, IBIS model"
+        },
+        {
+          "identity": {
+            "doi": "10.1038/s41436-018-0406-9"
+          },
+          "name": "Lee et al. 2019, BOADICEA with PRS and risk factors"
+        },
+        {
+          "identity": {
+            "doi": "10.1158/1055-9965.EPI-20-1319"
+          },
+          "name": "Carver et al. 2021, CanRisk Tool"
+        },
+        {
+          "identity": {
+            "doi": "10.1371/journal.pone.0228198"
+          },
+          "name": "Pal Choudhury et al. 2020, iCARE R package"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S1470-2045(18)30902-1"
+          },
+          "name": "Terry et al. 2019, 10-year performance of four breast cancer risk models"
+        },
+        {
+          "identity": {
+            "doi": "10.1126/scitranslmed.aba4373"
+          },
+          "name": "Yala et al. 2021, Mirai development and three-site test"
+        },
+        {
+          "identity": {
+            "doi": "10.1200/JCO.21.01337"
+          },
+          "name": "Yala et al. 2022, Mirai seven-site validation"
+        },
+        {
+          "identity": {
+            "date": "2018-12-13",
+            "document": "HC 1799",
+            "isbn": "978-1-5286-0913-5",
+            "url": "https://assets.publishing.service.gov.uk/media/5c123934ed915d0b8170d164/independent-breast-screening-review-report.pdf"
+          },
+          "name": "The Independent Breast Screening Review 2018 (England)"
+        }
+      ],
+      "topics": [
+        "domains/breast-cancer-risk-prediction",
+        "domains/population-screening-invitation-systems",
+        "verification/risk-model-calibration-and-external-validation",
+        "tooling/open-risk-model-implementations"
       ]
     },
     "galois-connections-best-abstract-transformers-and-fixpoint-transfer": {
@@ -67578,6 +68052,100 @@
         "verification/measurement-based-probabilistic-timing-soundness",
         "isa/interference-channel-characterization",
         "tooling/resource-stressing-benchmark-generation"
+      ]
+    },
+    "retort-lethality-ball-formula-general-method-weibull-survival-curves-baranyi-growth-model-combase-bioinactivation-and-21-cfr-113-low-acid-canned-foods": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "standard": "21 CFR Part 113 (sections 113.3, 113.40, 113.83, 113.87, 113.89)",
+            "text_examined_via": "https://www.law.cornell.edu/cfr/text/21/113.83",
+            "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-113",
+            "version": "section 113.83 as amended 76 FR 11922, 3 March 2011; text retrieved 2026-11-21"
+          },
+          "name": "US 21 CFR Part 113, thermally processed low-acid foods packaged in hermetically sealed containers"
+        },
+        {
+          "identity": {
+            "standard": "21 CFR 108.35",
+            "url": "https://www.law.cornell.edu/cfr/text/21/108.35",
+            "version": "text retrieved 2026-11-21"
+          },
+          "name": "US 21 CFR 108.35, thermal processing of low-acid foods (registration and process filing)"
+        },
+        {
+          "identity": {
+            "repository": "albgarre/bioinactivation",
+            "revision": "3ca6bffa464897bebc233ef32f1bd79748ace674",
+            "version": "1.3.0"
+          },
+          "name": "bioinactivation R package (microbial inactivation, isothermal and dynamic)"
+        },
+        {
+          "identity": {
+            "repository": "albgarre/biogrowth",
+            "revision": "63fabbdde5ccb76c94f60a4382d140f8cd5e1b69",
+            "version": "1.0.8"
+          },
+          "name": "biogrowth R package (population growth, isothermal and dynamic)"
+        },
+        {
+          "identity": {
+            "artifact": "docker.io/rocker/r-ver:4.4.2",
+            "config_digest": "sha256:191b6cde92f22175a96883430f3302e94ed556919bcaf85a36a3352ee75a75ab",
+            "version": "R 4.4.2 with deSolve 1.40, FME 1.3.6.3, MASS 7.3-61"
+          },
+          "name": "R runtime image used for execution"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0168-1605(01)00624-9"
+          },
+          "name": "Mafart, Couvert, Gaillard and Leguerinel 2002, Weibull sterility calculation"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/S0168-1605(01)00742-5"
+          },
+          "name": "van Boekel 2002, Weibull model for thermal inactivation of vegetative cells"
+        },
+        {
+          "identity": {
+            "doi": "10.1080/10408699891274246"
+          },
+          "name": "Peleg and Cole 1998, reinterpretation of microbial survival curves"
+        },
+        {
+          "identity": {
+            "doi": "10.1111/j.1365-2621.2003.tb09646.x"
+          },
+          "name": "Simpson, Almonacid and Teixeira 2003, Bigelow's general method revisited"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0168-1605(94)90157-0"
+          },
+          "name": "Baranyi and Roberts 1994, dynamic approach to predicting bacterial growth"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.foodres.2017.01.012"
+          },
+          "name": "Garre et al. 2017, Bioinactivation software"
+        },
+        {
+          "identity": {
+            "doi": "10.18637/jss.v107.i01"
+          },
+          "name": "Garre et al. 2023, biogrowth package paper"
+        }
+      ],
+      "topics": [
+        "domains/thermal-process-lethality",
+        "domains/predictive-food-microbiology",
+        "verification/non-log-linear-inactivation-models",
+        "tooling/open-predictive-microbiology-packages"
       ]
     },
     "reusable-holdout-thresholdout-ladder-leaderboards-and-clopper-pearson-zero-numerators": {

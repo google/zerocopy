@@ -1,0 +1,12 @@
+cold-spot temperature at end of heating: 120.15 C
+reference F0 (trapezoid, dt = 0.0002 min): 25.2444 min
+dt=0.5 min: left-rectangle 25.2372 (-0.03%)  trapezoid 25.2372 (-0.03%)  Simpson 25.2321 (-0.05%)
+dt=1.0 min: left-rectangle 25.2524 (+0.03%)  trapezoid 25.2524 (+0.03%)  Simpson nan (+nan%)
+dt=2.0 min: left-rectangle 25.1378 (-0.42%)  trapezoid 25.1378 (-0.42%)  Simpson nan (+nan%)
+dt=5.0 min: left-rectangle 25.9905 (+2.96%)  trapezoid 25.9905 (+2.96%)  Simpson nan (+nan%)
+sensor bias -0.5 C: F0 22.4991 (-10.87%); closed form 10**(-0.5/10)-1 = -10.87%
+sensor bias +0.5 C: F0 28.3247 (+12.20%); closed form 10**(0.5/10)-1 = +12.20%
+z= 8.0 C: F(121.1, z) 21.8040 min (-13.63% vs z=10)
+z=10.0 C: F(121.1, z) 25.2444 min (+0.00% vs z=10)
+z=12.0 C: F(121.1, z) 28.1738 min (+11.60% vs z=10)
+share of F0 delivered after steam-off (cooling): 21.10%

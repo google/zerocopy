@@ -1,0 +1,4 @@
+BCRA version: 2.1.2 
+TIMING all-rows frame (recode+RR+abs+avg): n=2374 elapsed=0.925 s
+TIMING absolute.risk on random set: n=2000 elapsed=0.313 s (156.5 us/profile)
+wrote 2379 rows

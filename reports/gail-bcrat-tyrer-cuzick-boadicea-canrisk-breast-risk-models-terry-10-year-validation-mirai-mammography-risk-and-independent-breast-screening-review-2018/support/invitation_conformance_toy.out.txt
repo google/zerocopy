@@ -1,0 +1,7 @@
+example born=1945-12-15 screen=2015-12-01 selection=2015-11-01: age=69 SPEC_71=True YOB_70=True AGEX_SEL(lower arm)=True
+example born=1945-12-15 screen=2015-12-01 selection=2016-01-04: age=69 SPEC_71=True YOB_70=True AGEX_SEL(lower arm)=False
+grid cases: 82368 (births=572 screens=48 offsets=[-45, 0, 45])
+SPEC_71 true & YOB_70 false:   4038   YOB_70 true & SPEC_71 false:      0
+YOB_70 true & AGEX_SEL false:    209   AGEX_SEL true & YOB_70 false:    416
+SPEC_71 true & AGEX_SEL false:   3849   AGEX_SEL true & SPEC_71 false:     18
+ages (at screening) where SPEC_71 includes but YOB_70 excludes: {70: 4038}

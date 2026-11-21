@@ -1,0 +1,94 @@
+{
+  "topics": [
+    "domains/thermal-process-lethality",
+    "domains/predictive-food-microbiology",
+    "verification/non-log-linear-inactivation-models",
+    "tooling/open-predictive-microbiology-packages"
+  ],
+  "subjects": [
+    {
+      "name": "US 21 CFR Part 113, thermally processed low-acid foods packaged in hermetically sealed containers",
+      "identity": {
+        "standard": "21 CFR Part 113 (sections 113.3, 113.40, 113.83, 113.87, 113.89)",
+        "url": "https://www.ecfr.gov/current/title-21/chapter-I/subchapter-B/part-113",
+        "text_examined_via": "https://www.law.cornell.edu/cfr/text/21/113.83",
+        "version": "section 113.83 as amended 76 FR 11922, 3 March 2011; text retrieved 2026-11-21"
+      }
+    },
+    {
+      "name": "US 21 CFR 108.35, thermal processing of low-acid foods (registration and process filing)",
+      "identity": {
+        "standard": "21 CFR 108.35",
+        "url": "https://www.law.cornell.edu/cfr/text/21/108.35",
+        "version": "text retrieved 2026-11-21"
+      }
+    },
+    {
+      "name": "bioinactivation R package (microbial inactivation, isothermal and dynamic)",
+      "identity": {
+        "repository": "albgarre/bioinactivation",
+        "revision": "3ca6bffa464897bebc233ef32f1bd79748ace674",
+        "version": "1.3.0"
+      }
+    },
+    {
+      "name": "biogrowth R package (population growth, isothermal and dynamic)",
+      "identity": {
+        "repository": "albgarre/biogrowth",
+        "revision": "63fabbdde5ccb76c94f60a4382d140f8cd5e1b69",
+        "version": "1.0.8"
+      }
+    },
+    {
+      "name": "R runtime image used for execution",
+      "identity": {
+        "artifact": "docker.io/rocker/r-ver:4.4.2",
+        "config_digest": "sha256:191b6cde92f22175a96883430f3302e94ed556919bcaf85a36a3352ee75a75ab",
+        "version": "R 4.4.2 with deSolve 1.40, FME 1.3.6.3, MASS 7.3-61"
+      }
+    },
+    {
+      "name": "Mafart, Couvert, Gaillard and Leguerinel 2002, Weibull sterility calculation",
+      "identity": {
+        "doi": "10.1016/S0168-1605(01)00624-9"
+      }
+    },
+    {
+      "name": "van Boekel 2002, Weibull model for thermal inactivation of vegetative cells",
+      "identity": {
+        "doi": "10.1016/S0168-1605(01)00742-5"
+      }
+    },
+    {
+      "name": "Peleg and Cole 1998, reinterpretation of microbial survival curves",
+      "identity": {
+        "doi": "10.1080/10408699891274246"
+      }
+    },
+    {
+      "name": "Simpson, Almonacid and Teixeira 2003, Bigelow's general method revisited",
+      "identity": {
+        "doi": "10.1111/j.1365-2621.2003.tb09646.x"
+      }
+    },
+    {
+      "name": "Baranyi and Roberts 1994, dynamic approach to predicting bacterial growth",
+      "identity": {
+        "doi": "10.1016/0168-1605(94)90157-0"
+      }
+    },
+    {
+      "name": "Garre et al. 2017, Bioinactivation software",
+      "identity": {
+        "doi": "10.1016/j.foodres.2017.01.012"
+      }
+    },
+    {
+      "name": "Garre et al. 2023, biogrowth package paper",
+      "identity": {
+        "doi": "10.18637/jss.v107.i01"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

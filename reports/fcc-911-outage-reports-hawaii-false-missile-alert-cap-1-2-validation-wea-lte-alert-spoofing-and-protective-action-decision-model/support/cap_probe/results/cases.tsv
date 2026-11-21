@@ -1,0 +1,30 @@
+case	spec_expectation
+c01_valid_baseline	valid
+c02_missing_identifier	invalid: identifier REQUIRED
+c03_sent_without_tz	invalid: sent must carry a time zone offset
+c04_sent_Z_suffix	invalid: CAP 1.2 says alphabetic time zone designators such as Z MUST NOT be used
+c05_update_without_references	valid per core spec (references optional); profiles may require
+c06_cancel_with_references	valid
+c07_circular_reference	semantically inconsistent: references itself
+c08_postdated_reference	semantically inconsistent: referenced message sent later
+c09_restriction_with_public_scope	inconsistent: restriction is used when scope is Restricted
+c10_restricted_scope_no_restriction	inconsistent: restriction should be present when scope is Restricted
+c11_private_scope_no_addresses	invalid: addresses REQUIRED when scope is Private
+c12_polygon_not_closed	invalid: first and last pairs must be equal
+c13_polygon_three_points	invalid: at least four coordinate pairs
+c14_polygon_bowtie	not ruled out by text; self-intersecting
+c15_polygon_antimeridian	valid small box crossing 180 degrees
+c16_circle_ok	valid
+c17_ceiling_without_altitude	invalid: ceiling MAY only be used with altitude
+c18_altitude_above_ceiling	inconsistent: altitude above ceiling
+c19_empty_language	invalid: language must be an RFC 3066 code
+c20_whitespace_language	invalid: language must be an RFC 3066 code
+c21_bad_language	invalid: language must be an RFC 3066 code
+c22_same_text_two_languages	suspicious: identical text under different languages
+c23_same_text_same_language	valid
+c24_html_in_description	text should be plain
+c25_expires_before_effective	semantically inconsistent: expires before effective
+c26_actual_status_exercise_text	schema-valid; status contradicts text
+c27_exercise_status_live_text	schema-valid; status contradicts text
+c28_no_info	valid per core spec (info optional)
+c29_bad_status_value	invalid: status enumeration

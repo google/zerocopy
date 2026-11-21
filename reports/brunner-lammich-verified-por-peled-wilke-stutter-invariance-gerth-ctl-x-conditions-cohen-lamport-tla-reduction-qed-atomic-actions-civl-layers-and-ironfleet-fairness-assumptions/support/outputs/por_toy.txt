@@ -1,0 +1,11 @@
+# Output of: python3 probes/por_toy.py  (Python 3.13.15, 2026-11-21 UTC). TOY MODEL, not a real model checker.
+Case 1 (ignoring problem): {'C0': True, 'C1': True, 'C2': True, 'C3': False, 'C4': True}
+  G !p holds in full graph:    False
+  G !p holds in reduced graph: True  <- wrong verdict when C3 is violated
+Case 2 (next-time operator): {'C0': True, 'C1': True, 'C2': True, 'C3': True, 'C4': True}
+  A(!X p) holds in full graph:    False
+  A(!X p) holds in reduced graph: True  <- C0-C3 hold, but !X p is not stutter-invariant
+Case 3 (branching time): {'C0': True, 'C1': True, 'C2': True, 'C3': True, 'C4': False}  <- C0-C3 hold; C4 (singleton) fails
+  EF(p & EF r1 & EF r2) at initial state, full    graph: True
+  EF(p & EF r1 & EF r2) at initial state, reduced graph: False
+  stutter-free visible traces equal (LTL-X view): True

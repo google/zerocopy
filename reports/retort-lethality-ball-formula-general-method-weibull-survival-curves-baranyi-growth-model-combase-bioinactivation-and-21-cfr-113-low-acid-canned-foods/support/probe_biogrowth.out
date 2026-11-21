@@ -1,0 +1,34 @@
+biogrowth 1.0.8 
+
+== A: log10 N predicted with logN0=2, max=8 (C=6), mu=0.4 log10/h, lambda=8 h ==
+     Baranyi modGompertz Logistic Trilinear
+t=0    2.000       2.000    2.095       2.0
+t=5    2.026       2.056    2.344       2.0
+t=10   2.864       2.905    3.125       2.8
+t=15   4.800       4.793    4.800       4.8
+t=20   6.773       6.405    6.611       6.8
+t=30   7.999       7.705    7.877       8.0
+time (h) to reach log10 N = 5:
+    Baranyi modGompertz    Logistic   Trilinear 
+      15.50       15.54       15.50       15.50 
+
+== B: Baranyi, mu = 0.4 interpreted as log10/h vs ln/h ==
+         [,1]  [,2]  [,3]  [,4]  [,5]  [,6]
+log10_mu    2 2.026 2.864 4.800 6.773 7.999
+ln_mu       2 2.101 2.503 3.241 4.088 5.819
+
+== C: Baranyi + CPM(T), 7 +/- 5 C daily sinusoid vs constant 7 C ==
+  time logN_fluct logN_const7
+1   24      2.009       2.003
+2   48      2.158       2.025
+3   72      3.007       2.166
+4   96      4.285       2.665
+
+== D: coverage of true time-to-log10N= 4  ( 12.999 h ) over 150 replicates ==
+Baranyi fit (misspecified): coverage=0.947 mean_estimate=13.058 h  (n ok=150)
+modGompertz fit (correct):  coverage=0.907 mean_estimate=13.054 h  (n ok=150)
+
+== D: coverage of true time-to-log10N= 7.5  ( 26.992 h ) over 150 replicates ==
+Baranyi fit (misspecified): coverage=0.580 mean_estimate=24.567 h  (n ok=150)
+modGompertz fit (correct):  coverage=0.887 mean_estimate=27.230 h  (n ok=150)
+elapsed (s): 130.6 

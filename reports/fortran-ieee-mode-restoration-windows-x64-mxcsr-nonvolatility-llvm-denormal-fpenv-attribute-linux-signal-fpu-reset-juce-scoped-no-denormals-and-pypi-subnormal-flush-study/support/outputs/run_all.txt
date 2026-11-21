@@ -1,0 +1,61 @@
+# Recorded output of probes/run_all.sh, 2026-11-21 (UTC), x86-64 KVM guest, Intel Xeon CPU family 6 model 106 (Ice Lake server), 2.60 GHz nominal.
+# Invocation: WORK=<scratch dir> PIN='taskset -c 5' sh probes/run_all.sh
+# Two host-identifying lines were normalized: the distribution-specific kernel and glibc build suffixes are elided.
+== host
+Linux 7.1.6 (distribution build suffix elided)
+model name	: Intel(R) Xeon(R) CPU @ 2.60GHz
+gcc (Debian 15.2.0-14) 15.2.0
+GNU Fortran (Debian 15.2.0-14) 15.2.0
+Debian clang version 19.1.7 (10.1+build1)
+ldd (Debian GLIBC 2.43-7, build suffix elided) 2.43
+== 1. thread creation, signal delivery, dlopen (MXCSR / x87 control word)
+startup:        MXCSR=0x1f80 x87CW=0x037f
+parent set:     MXCSR=0xbfe0 x87CW=0x067f
+new pthread:    MXCSR=0xbfe0 x87CW=0x067f
+in handler:     MXCSR=0x1f80 x87CW=0x037f
+after sigreturn:MXCSR=0xbfe0 x87CW=0x067f
+dlopen lib_gcc_plain.so                   ok: MXCSR before=0x1f80 after=0x1f80
+dlopen lib_gcc_ffastmath_shared.so        ok: MXCSR before=0x1f80 after=0x1f80
+dlopen lib_gcc_mdazftz_shared.so          ok: MXCSR before=0x1f80 after=0x9fc0
+dlopen lib_clang_ffastmath_shared.so      ok: MXCSR before=0x1f80 after=0x1f80
+== 2. MXCSR at main() for executables
+gcc -O2:                             MXCSR at main() = 0x1f80
+gcc -O2 -ffast-math:                 MXCSR at main() = 0x9fc0
+gcc -O2 -ffast-math -mno-daz-ftz:    MXCSR at main() = 0x1f80
+clang-19 -O2:                        MXCSR at main() = 0x1f80
+clang-19 -O2 -ffast-math:            MXCSR at main() = 0x9fc0
+gfortran -O2 -ffast-math: IEEE_GET_UNDERFLOW_MODE gradual = F
+gfortran -O2:             IEEE_GET_UNDERFLOW_MODE gradual = T
+== 3. Fortran procedure-boundary rules (gfortran)
+start nearest? T
+after IEEE-using callee set DOWN, caller nearest? T
+after non-IEEE Fortran callee -> C fesetround(FE_DOWNWARD): C fegetround()=1024
+after IEEE-using Fortran callee -> C fesetround(FE_DOWNWARD): C fegetround()=0
+  callee sees OVERFLOW flag on entry = F
+caller OVERFLOW flag after callee overflowed = T
+  callee sees OVERFLOW flag on entry = F
+caller OVERFLOW flag restored after quiet callee = T
+(FE_DOWNWARD = 1024, FE_TONEAREST = 0 on x86-64 glibc)
+== 4. LLVM IR denormal attributes, inlining, linking
+clang-19 :                               
+clang-19 -fdenormal-fp-math=preserve-sign: "denormal-fp-math"="preserve-sign,preserve-sign" 
+clang-19 -fdenormal-fp-math=dynamic:     "denormal-fp-math"="dynamic,dynamic" 
+clang-19 -ffast-math:                    
+LLVM version 19.1.7: caller(default ieee) -> callee(ps): calls left after inlining = 1 (llvm-link printed no diagnostic unless shown above)
+LLVM version 19.1.7: caller(default ieee) -> callee(dyn): calls left after inlining = 0 (llvm-link printed no diagnostic unless shown above)
+LLVM version 19.1.7: caller(default ieee) -> callee(ieee): calls left after inlining = 0 (llvm-link printed no diagnostic unless shown above)
+LLVM version 21.1.8: caller(default ieee) -> callee(ps): calls left after inlining = 1 (llvm-link printed no diagnostic unless shown above)
+LLVM version 21.1.8: caller(default ieee) -> callee(dyn): calls left after inlining = 0 (llvm-link printed no diagnostic unless shown above)
+LLVM version 21.1.8: caller(default ieee) -> callee(ieee): calls left after inlining = 0 (llvm-link printed no diagnostic unless shown above)
+== 5. subnormal operand cost (scalar SSE2 multiply)
+MXCSR=0x1fa2  chain normal 1.203 ns/op  chain subnormal 37.505 ns/op  indep normal 0.151 ns/op  indep subnormal 4.733 ns/op
+MXCSR=0x9fe0  chain normal 1.189 ns/op  chain subnormal 1.196 ns/op  indep normal 0.150 ns/op  indep subnormal 0.149 ns/op
+MXCSR=0x1fa2  chain normal 1.201 ns/op  chain subnormal 35.327 ns/op  indep normal 0.148 ns/op  indep subnormal 4.749 ns/op
+MXCSR=0x9fe0  chain normal 1.191 ns/op  chain subnormal 1.195 ns/op  indep normal 0.149 ns/op  indep subnormal 0.149 ns/op
+== 6. save+restore cost of control state
+stmxcsr + ldmxcsr                            median 4.76 ns per save+restore pair
+stmxcsr+fnstcw + ldmxcsr+fldcw               median 4.82 ns per save+restore pair
+fegetenv + fesetenv (glibc)                  median 143.51 ns per save+restore pair
+fegetround + fesetround (glibc)              median 11.96 ns per save+restore pair
+== 7. gfortran per-call cost of IEEE entry/exit
+median ns/call: plain=    2.70  ieee-module-using=  230.63  x=   7.389    

@@ -1,0 +1,41 @@
+bioinactivation 1.3.0 
+
+== A: final log10(N/N0), same thermal treatment with/without a 30 min cold lead-in ==
+             no_hold with_hold   delta
+Bigelow      -5.9880   -5.9880  0.0000
+Mafart_p0.5  -1.0138   -0.5389  0.4749
+Mafart_p1.0  -5.9880   -5.9880  0.0000
+Mafart_p1.5   0.0000       NaN     NaN
+Peleg_n0.5   -7.6417   -7.6417  0.0000
+Peleg_n1.5  -67.7621  -67.8235 -0.0614
+
+== B: dataset isothermal_inactivation: 68 rows; temps: 95,97,100,102,105,107 
+    Estimate Std. Error  t value     Pr(>|t|)
+z   7.760495  0.2441959 31.77979 9.990717e-42
+D_R 2.980496  0.1422392 20.95412 7.147921e-31
+           Estimate Std. Error  t value     Pr(>|t|)
+delta_ref 2.7591352 0.22418472 12.30742 1.223768e-18
+z         7.6285395 0.28497649 26.76901 8.130689e-37
+p         0.9298822 0.05835176 15.93580 3.893716e-24
+RSS Bigelow=15.2158  Mafart=14.8936 ; AIC Bigelow=-97.81 Mafart=-97.26
+reference process (80->100 C 5 min, 10 min hold, 100->80 C 5 min): log10 S Bigelow=-3.919 Mafart=-3.646
+  isothermal time at 100 C for  1 log reductions: Bigelow=2.980  Mafart=2.759 (ratio 0.926)
+  isothermal time at 100 C for  3 log reductions: Bigelow=8.941  Mafart=8.992 (ratio 1.006)
+  isothermal time at 100 C for  6 log reductions: Bigelow=17.883  Mafart=18.950 (ratio 1.060)
+  isothermal time at 100 C for 12 log reductions: Bigelow=35.766  Mafart=39.933 (ratio 1.117)
+
+== C: 95% band coverage of the TRUE log reduction at 70 C ( 300 replicates) ==
+   time true_log_diff bigelow_fit_coverage bigelow_mean_bias
+1  0.25        -0.287                0.000             0.207
+2  1.00        -0.660                0.000             0.338
+3  4.00        -1.516                0.913             0.228
+4  8.00        -2.297                0.843            -0.278
+5 16.00        -3.482                0.017            -1.669
+  weibull_fit_coverage
+1                0.940
+2                0.930
+3                0.923
+4                0.947
+5                0.930
+failed fits: Bigelow 0  Mafart 0 
+elapsed (s): 4.4 
