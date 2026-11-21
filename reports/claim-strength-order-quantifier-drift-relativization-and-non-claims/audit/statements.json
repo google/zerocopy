@@ -1,0 +1,1680 @@
+{
+  "statements": {
+    "Toy.ClaimStrength.A": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "767950bd1b7f8d0d22fd3f389e70e0c04f03082a38953c1c0b1b1a46e91883b4"
+    },
+    "Toy.ClaimStrength.Answer": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.ClaimStrength.AnswerKey": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "da46238a3c743dcbbc48f1d0d2464e94469b283ac56bf5ddb75aea16bf58d296"
+    },
+    "Toy.ClaimStrength.BB": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.ClaimStrength.Binder": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b5b87be8f8f501aa45ebe3c5bd924517a86ee6c518cbe4696d560447a851f73d"
+    },
+    "Toy.ClaimStrength.Checker": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.ClaimStrength.CheckerComplete": {
+      "closure_sha256": "a82590f90bae108019b632d5482b7ee08c79b30b7f59fc4c5171e3c4b2165571",
+      "closure_size": 2,
+      "statement_sha256": "2d3510a2a2042c62c1c2d337681e9720a494c6a67138261d90f2de2e83124150"
+    },
+    "Toy.ClaimStrength.CheckerSound": {
+      "closure_sha256": "a82590f90bae108019b632d5482b7ee08c79b30b7f59fc4c5171e3c4b2165571",
+      "closure_size": 2,
+      "statement_sha256": "2d3510a2a2042c62c1c2d337681e9720a494c6a67138261d90f2de2e83124150"
+    },
+    "Toy.ClaimStrength.Claim": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "da46238a3c743dcbbc48f1d0d2464e94469b283ac56bf5ddb75aea16bf58d296"
+    },
+    "Toy.ClaimStrength.ClosedUnderEntailmentIn": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "c60b06861cbdd821e15baff281a379ee8ac1e55860530705c3b949e8849f2a4d"
+    },
+    "Toy.ClaimStrength.Cls": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.ClaimStrength.Contradicted": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "12c6fcea22bf37ac03ba6bf6639b66890ff6618c980f741522760537d735bde7"
+    },
+    "Toy.ClaimStrength.Correct": {
+      "closure_sha256": "436d98f026e8ac651cd55d785a36c6cf5be741b3a9ea13cc37b8cc2fce970323",
+      "closure_size": 5,
+      "statement_sha256": "f63bd08a07bd5db0c7b39d1321ab79d6fd758b8112120761dd80f2a2cc6cbf48"
+    },
+    "Toy.ClaimStrength.Entails": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "ebfb10af5684e3fa3559bb6d87ebf5d93b15f24819f48705a2d98dbeef8350b8"
+    },
+    "Toy.ClaimStrength.Establishes": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "cf6ab6c4f54860f9718cc395baec2dfc20d86914ae9f274b5f8e82ee75a4b559"
+    },
+    "Toy.ClaimStrength.ExDomainsCovariant": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "99d5ee5e8264b304a4d5c548044c8ec381ded1f0fae15dbba25feadca9b9fd71"
+    },
+    "Toy.ClaimStrength.ExactlyOne3": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "5e180d8ae00e5587c1ff52008c8ae7fbf2f387d8e203a75769c114071de656b3"
+    },
+    "Toy.ClaimStrength.Frontier": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "1fe4e578a27a1498303f7785043668dc16f7d233bd02fdb4c986244ad7e2dd1d"
+    },
+    "Toy.ClaimStrength.Holds": {
+      "closure_sha256": "b748b8aca9d7960c4adf24a7e8920cfc186b456a5d061a76d5ace9f4f1d68c2a",
+      "closure_size": 7,
+      "statement_sha256": "c80b458c025c1830d3dbad35e9fc7f9d32c057fb804769a61023b405472b3fba"
+    },
+    "Toy.ClaimStrength.ImplExact": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "478b9695f5caf95e74de5d687c23958234a6466662abcb4212100ec5637badd7"
+    },
+    "Toy.ClaimStrength.ImplSound": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "478b9695f5caf95e74de5d687c23958234a6466662abcb4212100ec5637badd7"
+    },
+    "Toy.ClaimStrength.InclExact": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "3194597df57b35dab3c287005ac44b7786232b707e906cd3fa450e139c962f2b"
+    },
+    "Toy.ClaimStrength.InclSound": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "3194597df57b35dab3c287005ac44b7786232b707e906cd3fa450e139c962f2b"
+    },
+    "Toy.ClaimStrength.InstantiatedDomainsMeet": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "2fa1b7e47e95935d69d2b9e58e622725ecac5f9576914100a0945d3ad07394b3"
+    },
+    "Toy.ClaimStrength.KeyCorrect": {
+      "closure_sha256": "d9c59f6b323140cee91a920043ebac636aac72862f4ed8fd6af5b7da96693fe1",
+      "closure_size": 6,
+      "statement_sha256": "20dba76e593b288631ad4064cf1ea07ce40522f1c26dae94a69c15c31cfde978"
+    },
+    "Toy.ClaimStrength.MeetsExact": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "73a5a54848793298b450c721e175c2a4481e8b0ad2fb988c6a616316bc12e55c"
+    },
+    "Toy.ClaimStrength.MeetsSound": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "73a5a54848793298b450c721e175c2a4481e8b0ad2fb988c6a616316bc12e55c"
+    },
+    "Toy.ClaimStrength.Models": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "7b1dfed33f6cd05d61304130e317718f4bee955ec93bd55a83789f54b8ff8a2c"
+    },
+    "Toy.ClaimStrength.NegativeOverReading": {
+      "closure_sha256": "436d98f026e8ac651cd55d785a36c6cf5be741b3a9ea13cc37b8cc2fce970323",
+      "closure_size": 5,
+      "statement_sha256": "baf7db29fdca0971664b6dab7f2750e81d25751fa036ef5f48f11c8ca8f878b6"
+    },
+    "Toy.ClaimStrength.PositiveOverReading": {
+      "closure_sha256": "436d98f026e8ac651cd55d785a36c6cf5be741b3a9ea13cc37b8cc2fce970323",
+      "closure_size": 5,
+      "statement_sha256": "baf7db29fdca0971664b6dab7f2750e81d25751fa036ef5f48f11c8ca8f878b6"
+    },
+    "Toy.ClaimStrength.Precedes": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "06bbe5788953b66ac739247e9928fd56b3fc28fcb315be67c5592d4c42657f22"
+    },
+    "Toy.ClaimStrength.Prefix": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "f6f89b1e202b0402af79d58f047c64c0c027411fd8a20194e7a83a70d5bb9d4f"
+    },
+    "Toy.ClaimStrength.PrefixCrit": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "7a7c749fea9666b729fd6150a394d2e3709f5693b88f90ec1cb2bd9855ffb101"
+    },
+    "Toy.ClaimStrength.Prem": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.ClaimStrength.PremiseContravariant": {
+      "closure_sha256": "b748b8aca9d7960c4adf24a7e8920cfc186b456a5d061a76d5ace9f4f1d68c2a",
+      "closure_size": 7,
+      "statement_sha256": "b083ab51290d1698fc29c0082e690555467cac23349d6fe0d15a0f2bdc68e562"
+    },
+    "Toy.ClaimStrength.Quant": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.ClaimStrength.RCrit": {
+      "closure_sha256": "b748b8aca9d7960c4adf24a7e8920cfc186b456a5d061a76d5ace9f4f1d68c2a",
+      "closure_size": 7,
+      "statement_sha256": "625b19152ef3d97739f03a58d8453f3ca1b578bb9fafefaed2fed9fb883de752"
+    },
+    "Toy.ClaimStrength.REntails": {
+      "closure_sha256": "b748b8aca9d7960c4adf24a7e8920cfc186b456a5d061a76d5ace9f4f1d68c2a",
+      "closure_size": 7,
+      "statement_sha256": "c7ee10199277c6872375d91fa91a4832feed237800a99fc961bf47de55c66eef"
+    },
+    "Toy.ClaimStrength.SEntails": {
+      "closure_sha256": "ff123798b8ab9eb4cb64b51016d4ae17ce5493549a9bcc11c688331588011920",
+      "closure_size": 6,
+      "statement_sha256": "77f904d702bc2f2d18688e45131b49d885d4fa39d1b65f1204f44b660ad15f5a"
+    },
+    "Toy.ClaimStrength.SEntailsAt": {
+      "closure_sha256": "ff123798b8ab9eb4cb64b51016d4ae17ce5493549a9bcc11c688331588011920",
+      "closure_size": 6,
+      "statement_sha256": "ec31afeb0288cb7dcb7bcc5fcf75c4b540db82842fd454c1f0eb5166eb8c2f03"
+    },
+    "Toy.ClaimStrength.Satisfiable": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "136dc6e2f983779699fc868db28d7c60df8a50d58ae96824d5cf037f7a94a52b"
+    },
+    "Toy.ClaimStrength.Shape": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "61be59090710d4a135a3640220d25bc63ba3c7c379c005ae1a928fad6d9b9cc8"
+    },
+    "Toy.ClaimStrength.ShapeNF": {
+      "closure_sha256": "b748b8aca9d7960c4adf24a7e8920cfc186b456a5d061a76d5ace9f4f1d68c2a",
+      "closure_size": 7,
+      "statement_sha256": "44dcc51509a2c609db578d7fff74b6d7c684fcc2c501e312959b9e2d90d48ce7"
+    },
+    "Toy.ClaimStrength.SkolemOrderPreserved": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "7a7c749fea9666b729fd6150a394d2e3709f5693b88f90ec1cb2bd9855ffb101"
+    },
+    "Toy.ClaimStrength.Supported": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "12c6fcea22bf37ac03ba6bf6639b66890ff6618c980f741522760537d735bde7"
+    },
+    "Toy.ClaimStrength.TwoPoint": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "d81c4e60534bc373fecb0291097d869a4ba2c6bebafc3750f1da7ae8c6815e49"
+    },
+    "Toy.ClaimStrength.UnderReading": {
+      "closure_sha256": "436d98f026e8ac651cd55d785a36c6cf5be741b3a9ea13cc37b8cc2fce970323",
+      "closure_size": 5,
+      "statement_sha256": "baf7db29fdca0971664b6dab7f2750e81d25751fa036ef5f48f11c8ca8f878b6"
+    },
+    "Toy.ClaimStrength.Undetermined": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "12c6fcea22bf37ac03ba6bf6639b66890ff6618c980f741522760537d735bde7"
+    },
+    "Toy.ClaimStrength.UnivDomainsContravariant": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "99d5ee5e8264b304a4d5c548044c8ec381ded1f0fae15dbba25feadca9b9fd71"
+    },
+    "Toy.ClaimStrength.UnivReflected": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "7a7c749fea9666b729fd6150a394d2e3709f5693b88f90ec1cb2bd9855ffb101"
+    },
+    "Toy.ClaimStrength.WF": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "f013e15721555ff360aabf12e0530ef588884d48e422f4265bd7e0123b817d87"
+    },
+    "Toy.ClaimStrength.WorldIndependent": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "5a78119c17823d4dd9699d17d8ca0a6986b317a9805f378bd3f9f8b786e1689a"
+    },
+    "Toy.ClaimStrength.X": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "767950bd1b7f8d0d22fd3f389e70e0c04f03082a38953c1c0b1b1a46e91883b4"
+    },
+    "Toy.ClaimStrength.absolute_entails_relative": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "f4bbc9c2f8ee3fd400607e2e53a809cfa131d4e8d4371d63a8dcab90529c9149"
+    },
+    "Toy.ClaimStrength.absolute_entails_relative_nonvacuous": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "0beb81b214cfca836a38fe399fab116604ecb19d7a5face686c078ed018fb455"
+    },
+    "Toy.ClaimStrength.acceptAll": {
+      "closure_sha256": "a82590f90bae108019b632d5482b7ee08c79b30b7f59fc4c5171e3c4b2165571",
+      "closure_size": 2,
+      "statement_sha256": "f3879aa3f9ec90750005d7a367e1ca8efcfff43656cad8bb70fc1be75a5eee2e"
+    },
+    "Toy.ClaimStrength.andTable": {
+      "closure_sha256": "62f9234db4b05f6f62837850d92d4a329603e61df3e111193714d89e3544f357",
+      "closure_size": 4,
+      "statement_sha256": "c6bc19812adce16874b056614a2366a7a74eaf820e366af163615f2483d8d3f0"
+    },
+    "Toy.ClaimStrength.andTable_realizable": {
+      "closure_sha256": "db4c6d6c1f6d8f577c657c41f957ad58b77866a959b9cc922cf116210fd675a9",
+      "closure_size": 16,
+      "statement_sha256": "c2000907370cc01b70502e3ddff40cdce4401bd5469b2299471aa4008c0fcc4d"
+    },
+    "Toy.ClaimStrength.andTable_undetermined_cell_distinct": {
+      "closure_sha256": "d669e0c923af6bb8919d8167d6588da4a41a5d1eec5e07c23934d43880c2d5cb",
+      "closure_size": 14,
+      "statement_sha256": "387658890b87522f257d2442b8939aeaadd6ff198edbf8630217d78d6e783026"
+    },
+    "Toy.ClaimStrength.and_answer_hE_tight": {
+      "closure_sha256": "274113561d93cb51e0c2da25d47c6cfaabbac7abc95b8e2c11f86b7c80870dc5",
+      "closure_size": 16,
+      "statement_sha256": "e36c7e80362da358fa22ad059271cb75f9a7754667210e90336b9716bb0b6ca9"
+    },
+    "Toy.ClaimStrength.and_answer_h_tight": {
+      "closure_sha256": "9292a56b92bd9abfe0c24bc8bd64ee79d4e1c9be6dbd5f66579cebf0cc55054f",
+      "closure_size": 17,
+      "statement_sha256": "ad0265076eb4ff57695a8dba3122095b2b35cc5ed2145b1909953094a81ae16e"
+    },
+    "Toy.ClaimStrength.and_answer_h\u2081_tight": {
+      "closure_sha256": "9292a56b92bd9abfe0c24bc8bd64ee79d4e1c9be6dbd5f66579cebf0cc55054f",
+      "closure_size": 17,
+      "statement_sha256": "22bcc9bd4783a83639c79306584e14a5ae27e00847a33940d95541a241ee1e00"
+    },
+    "Toy.ClaimStrength.and_answer_h\u2082_tight": {
+      "closure_sha256": "9292a56b92bd9abfe0c24bc8bd64ee79d4e1c9be6dbd5f66579cebf0cc55054f",
+      "closure_size": 17,
+      "statement_sha256": "cc2ac3ebd27fbfc4d2162f07f6e0c9f651d7368598d9fd7c0860996a998e7620"
+    },
+    "Toy.ClaimStrength.and_answer_mem_andTable_of_satisfiable": {
+      "closure_sha256": "274113561d93cb51e0c2da25d47c6cfaabbac7abc95b8e2c11f86b7c80870dc5",
+      "closure_size": 16,
+      "statement_sha256": "d113481c00518d930955e5ff727d7cca6da4533f4895cb85286230f90dd282b7"
+    },
+    "Toy.ClaimStrength.and_answer_nonvacuous": {
+      "closure_sha256": "9f68cff97b6ddd0c2ab0412e009be52c2a147141b2a0fed6630efca40d31e752",
+      "closure_size": 17,
+      "statement_sha256": "38850f24afd4d33f0f699a3fc2a1f0fe1e2b0ce88e013c106b6eb1bb014808b7"
+    },
+    "Toy.ClaimStrength.answer_changes_ha'_tight": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "ee49180f07901fb8bcf2d70f904fa127e584e26c3c507f914887aae3aa79f410"
+    },
+    "Toy.ClaimStrength.answer_changes_ha_tight": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "3848425b9a0aed2841e2cfac8b0d425374877efc63b7f1ad5567ac271c39bfe6"
+    },
+    "Toy.ClaimStrength.answer_changes_hsat_tight": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "3e93c5a304b653bc874006ad215c68a2925ca51aa3d978e3b9751cc09ea2a5b3"
+    },
+    "Toy.ClaimStrength.answer_changes_hsub_tight": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "98f7e4f4df38dd01f72cf1f5ced7bb98c3b2729e3244754152330fddd3dcd32a"
+    },
+    "Toy.ClaimStrength.answer_changes_nonvacuous": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "4d392fdf07cb8cd1f20a9b878da8eabc1d9298b01742a2689eb1b750bb9ccbb3"
+    },
+    "Toy.ClaimStrength.answer_changes_only_from_undetermined_of_satisfiable": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "4d39a908ee776500dde1785e03fcc4aaf0869ff5ef0f6f7911de94588fed062e"
+    },
+    "Toy.ClaimStrength.bOf": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "a0e7325b06077367c8b0dedabec8bd7746050e2ff69ea917e1415e313507dce4"
+    },
+    "Toy.ClaimStrength.bvars": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "d71072ec9a544028168b6f583071184357b20da28e304e91a7ec71f3d3ee4339"
+    },
+    "Toy.ClaimStrength.candidates": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "f4b4d506138961e1d0e6bbdf7d168ac6f98d6939107b458aa90ff55c02c9cfab"
+    },
+    "Toy.ClaimStrength.canon": {
+      "closure_sha256": "29b6699a00e1921bf17ab3b88a2d3356ce7b2398911d8558892c8788517b514b",
+      "closure_size": 5,
+      "statement_sha256": "5bc25c9a8122e43754ee5fae95a10d1e64fd2459ee361f85202c8cbbdab092b5"
+    },
+    "Toy.ClaimStrength.characterization_entails_sufficient": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "f1f338a806de5c08da4908c0554c72c768edee2a65d75df1a0dfaf43b05e8d21"
+    },
+    "Toy.ClaimStrength.characterization_entails_sufficient_nonvacuous": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "84a338f30ac9b1f602956b746238efa2e241206c90c2a01c7a7598768931f0fb"
+    },
+    "Toy.ClaimStrength.checkerSound_example_pos": {
+      "closure_sha256": "76d471cd9255dfaa8c3d9cd40ef388f1e199ff76528324a0b005d5d86202da1f",
+      "closure_size": 6,
+      "statement_sha256": "fcf63c16041bfaedfcae3b6a7060a921272023f46c0f983243fc35c04915847f"
+    },
+    "Toy.ClaimStrength.checker_complete_not_sound": {
+      "closure_sha256": "c49fb531c9bc885ad92e2a17aacecdec4104feadcedf9f7a779ec772d51e32f3",
+      "closure_size": 8,
+      "statement_sha256": "88f374ee287d8d8f4102d5a1c057553d1b66d597cf1e4c1a970ff0b71b64e6fc"
+    },
+    "Toy.ClaimStrength.checker_complete_not_sound_witness": {
+      "closure_sha256": "a949067362160625299a587260c81fe4383219e48e509ed29262e23c0d3163f7",
+      "closure_size": 7,
+      "statement_sha256": "250edb7463dfd71f46368641d42a6fd558e944137a41b559f93a37d3c7d6ba3b"
+    },
+    "Toy.ClaimStrength.checker_sound_complete_entails_sound": {
+      "closure_sha256": "c49fb531c9bc885ad92e2a17aacecdec4104feadcedf9f7a779ec772d51e32f3",
+      "closure_size": 8,
+      "statement_sha256": "00b3529858b6edd23353dd982611cf7d404e2711e22874a2fc06196d4522829c"
+    },
+    "Toy.ClaimStrength.checker_sound_complete_nonvacuous": {
+      "closure_sha256": "9067dd904313c0f455dd24d791a34b88e81e4a89761e9d4d623ef810acfe9e55",
+      "closure_size": 7,
+      "statement_sha256": "281781b7ed17027be8d09e2bab0f2ca792c99d0b800b482d6e84727f6195d9d3"
+    },
+    "Toy.ClaimStrength.checker_sound_not_complete": {
+      "closure_sha256": "c49fb531c9bc885ad92e2a17aacecdec4104feadcedf9f7a779ec772d51e32f3",
+      "closure_size": 8,
+      "statement_sha256": "f2cc35151dd10dd7aba842c46fd28efc66daabaa14ac761b8124e4b46983d1ed"
+    },
+    "Toy.ClaimStrength.checker_sound_not_complete_witness": {
+      "closure_sha256": "2765cd89df997a2a7add6ec4ce4c3ff7da4a8ef39a367adf959a884711a8663f",
+      "closure_size": 7,
+      "statement_sha256": "e1dddee1e3cfc84fd00a4038599445f72c65ddab4aa07eb8179192069c371984"
+    },
+    "Toy.ClaimStrength.closed_forall_imp_exists_iff_nonempty": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "02d5e09433d26de0d113a967efb52392ddaff302cf8c6d4766bb1c8935b17cb8"
+    },
+    "Toy.ClaimStrength.clsI": {
+      "closure_sha256": "48b5be257108d7aa08d10bf7bccf36c8e3e2900d1d32604ff3c3142a642a9cf4",
+      "closure_size": 5,
+      "statement_sha256": "e29a9e639323a4bbcf94279819d610211afb4aaabb45700f38df850342f972af"
+    },
+    "Toy.ClaimStrength.clsIncl": {
+      "closure_sha256": "48b5be257108d7aa08d10bf7bccf36c8e3e2900d1d32604ff3c3142a642a9cf4",
+      "closure_size": 5,
+      "statement_sha256": "44983f869f51fd894d2f4968baf938e4e19417f453f12787e09013a78538c845"
+    },
+    "Toy.ClaimStrength.clsMeets": {
+      "closure_sha256": "48b5be257108d7aa08d10bf7bccf36c8e3e2900d1d32604ff3c3142a642a9cf4",
+      "closure_size": 5,
+      "statement_sha256": "44983f869f51fd894d2f4968baf938e4e19417f453f12787e09013a78538c845"
+    },
+    "Toy.ClaimStrength.conj_premise_not_disj": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "8393b69c9ffb23cc5c64ff8c64cde9150bf297fb19e3851b4d995dd109a6767a"
+    },
+    "Toy.ClaimStrength.conj_premise_not_disj_witness": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "d0d4e2fc7ea24d26493a45c18c5dfd24c1067b2252f45c57dbe689786e9a8d2d"
+    },
+    "Toy.ClaimStrength.contradicted_iff_supported_not": {
+      "closure_sha256": "b1fa6e5978acc19da6e6b1a3035e7f41f92c070c8ba0636a861c978e73f70a15",
+      "closure_size": 4,
+      "statement_sha256": "95a9b683abcfb6a64d14c7695801dcd945748597d03055b86a06883866fe017d"
+    },
+    "Toy.ClaimStrength.contradicted_jointly_without_single_claim": {
+      "closure_sha256": "4970fa35f75dbd728cf0970cd0a0b897fa305cc2c3249673c01018b03affba70",
+      "closure_size": 5,
+      "statement_sha256": "aa9a8200a6c4e1c60fe8f2e99c79eb86646dc666b3b28890ffcea5571122cb7d"
+    },
+    "Toy.ClaimStrength.contradicted_mono": {
+      "closure_sha256": "dc08fa2bce31a46f42ffdbcae555b91ab183549714122facdee09eac8f4ca957",
+      "closure_size": 3,
+      "statement_sha256": "58d8b931b52411660d7346bf79172ab05e7344a9746f3e5b0d53191bfb2d63d9"
+    },
+    "Toy.ClaimStrength.contradicted_mono_h_tight": {
+      "closure_sha256": "dc08fa2bce31a46f42ffdbcae555b91ab183549714122facdee09eac8f4ca957",
+      "closure_size": 3,
+      "statement_sha256": "f1801c2a15ba4f0ac814005c78785e123a8838ca93a9096cd1dd7cacfacbbb55"
+    },
+    "Toy.ClaimStrength.contradicted_mono_hsub_tight": {
+      "closure_sha256": "dc08fa2bce31a46f42ffdbcae555b91ab183549714122facdee09eac8f4ca957",
+      "closure_size": 3,
+      "statement_sha256": "96542b186ef90bc3a8c28dfa6f1efac81d8ab376c6a1d08ba14dbc04168f1769"
+    },
+    "Toy.ClaimStrength.contradicted_of_mem_entails_not": {
+      "closure_sha256": "b9fe8091d0de99ac627fd3974f89428ad13342735485b3da96676599c6591ca6",
+      "closure_size": 4,
+      "statement_sha256": "f69c79575a5ee60c92a8291e275e6f114700e34dd67ff4c100131b2f66f94e95"
+    },
+    "Toy.ClaimStrength.contradicted_of_mem_hc_tight": {
+      "closure_sha256": "b9fe8091d0de99ac627fd3974f89428ad13342735485b3da96676599c6591ca6",
+      "closure_size": 4,
+      "statement_sha256": "206dfc4143992156e29a64006843d3fcf16bf0d1e0e85599d5313751e7973a3a"
+    },
+    "Toy.ClaimStrength.contradicted_of_mem_hneg_tight": {
+      "closure_sha256": "b9fe8091d0de99ac627fd3974f89428ad13342735485b3da96676599c6591ca6",
+      "closure_size": 4,
+      "statement_sha256": "d8467aee0a635647520a75bae9709b14f87452d05284253581488c337e675f26"
+    },
+    "Toy.ClaimStrength.contradicted_of_mem_nonvacuous": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "7be3904138119478f794f41ea38b058c5920ae2f23e3d759466031f620abae41"
+    },
+    "Toy.ClaimStrength.correct_unique_hE_tight": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "67c6dabfcbf674219fd4428a56e27924e63cf84ace11188f70eab371b76f347f"
+    },
+    "Toy.ClaimStrength.correct_unique_ha_tight": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "92af5ee4f1d3afbf45e5efe44b4fc27bf10d99d86b395ca25cf85303e3d4f797"
+    },
+    "Toy.ClaimStrength.correct_unique_hb_tight": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "fa65d9e8b9e2e0b2dfbe89607c247d3a46a053fbbd3998cc414f22ab90b305d3"
+    },
+    "Toy.ClaimStrength.correct_unique_nonvacuous": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "143e720b67efb1e53351bcc7df36390103d9615bf2fa126d7ac1beb64791878d"
+    },
+    "Toy.ClaimStrength.correct_unique_of_satisfiable": {
+      "closure_sha256": "ad1106efbebcb1f66f2cb32c46b773fa8c7a06eddd5cdfe75c6b914cb0a15a62",
+      "closure_size": 14,
+      "statement_sha256": "5a04918ba3a63bfe96b10804b8ab77fd55fb04c990e2d06e3297139207fdacf0"
+    },
+    "Toy.ClaimStrength.counterexample_in_class_not_in_subclass": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "1a2926d9d03a395db018dc7f928d93d3726a7b4d9661f3264976e8945a2e390d"
+    },
+    "Toy.ClaimStrength.counterexample_in_class_not_in_subclass_witness": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "d87e325b8c68b59be3e795176b87ceb6260eaa2c5fbc559764bb131f5c370c23"
+    },
+    "Toy.ClaimStrength.counterexample_in_subclass_lifts": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "3141f61d0c994a211c8ea35c043b603bbe5494b8bf775812440d2636f48e9b49"
+    },
+    "Toy.ClaimStrength.counterexample_in_subclass_lifts_h_tight": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "26c9bab8907575893955dec34c7f09cc0cd6266c31272020a071b72d6726ce2a"
+    },
+    "Toy.ClaimStrength.counterexample_in_subclass_lifts_nonvacuous": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "f5654dbf89308e0cfd9a42593ddc18a51b8207e7b1a06cff80b7399e48e60a9c"
+    },
+    "Toy.ClaimStrength.disj_premise_entails_conj": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "0d57c57ab149606658360b0f8ee0c626c783723cf0f6b445d0a13c053d61446c"
+    },
+    "Toy.ClaimStrength.disj_premise_entails_conj_nonvacuous": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "434aa82c16012c3c146b92568abc066b77861f3a495a0cc21bde9cdd86905d74"
+    },
+    "Toy.ClaimStrength.domain_variance_nonvacuous": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "54e40aa22f8601c62350c3a7108250e3061d6c2a8135b82e01cd77b17406a5de"
+    },
+    "Toy.ClaimStrength.emptyI": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "22834ee05170fae229e1db52ce91b36c72af58647a007dece722e0d307061d35"
+    },
+    "Toy.ClaimStrength.emptyJ": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "a7fae823eb96b919ad2bf7b9475d016baecef839848aadb2dba376f3fc779f25"
+    },
+    "Toy.ClaimStrength.empty\u03c6": {
+      "closure_sha256": "b748b8aca9d7960c4adf24a7e8920cfc186b456a5d061a76d5ace9f4f1d68c2a",
+      "closure_size": 7,
+      "statement_sha256": "9fedebf6aa4333db86d55f51d00e908cbb9ab34e72346f5fa70d8b28b13ed49f"
+    },
+    "Toy.ClaimStrength.empty\u03c8": {
+      "closure_sha256": "b748b8aca9d7960c4adf24a7e8920cfc186b456a5d061a76d5ace9f4f1d68c2a",
+      "closure_size": 7,
+      "statement_sha256": "9fedebf6aa4333db86d55f51d00e908cbb9ab34e72346f5fa70d8b28b13ed49f"
+    },
+    "Toy.ClaimStrength.endorsement_respects_equivalence": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "16e89655f648691f60d75f6ef1a18bf94e946ffd8553d0123ef2c0b0d55beb84"
+    },
+    "Toy.ClaimStrength.endorsement_respects_equivalence_h\u2081_tight": {
+      "closure_sha256": "d8146353af6f1419ca04151f978033a24fef4ba6f6c1eb69f8540fe2b8a94f91",
+      "closure_size": 4,
+      "statement_sha256": "98ba7137c60da6fc304e2b73943bacda57d3ddae4a48f4f1ac36f2a4c09b2d63"
+    },
+    "Toy.ClaimStrength.endorsement_respects_equivalence_h\u2082_tight": {
+      "closure_sha256": "d8146353af6f1419ca04151f978033a24fef4ba6f6c1eb69f8540fe2b8a94f91",
+      "closure_size": 4,
+      "statement_sha256": "572f14cb00882744d51f7db9f4567e00feffb5a0ff72a8f8abab1572b8244ead"
+    },
+    "Toy.ClaimStrength.endorsement_respects_equivalence_nonvacuous": {
+      "closure_sha256": "a1e81b714e8c69d679c0df9af1bf7caf3a84a7bea7bfe62da0ff3436c07953b9",
+      "closure_size": 3,
+      "statement_sha256": "0bc168ed7a2c05409c479f8150c4a6b2a7d83cd875e5ed1dd2f49ba70c3caa6d"
+    },
+    "Toy.ClaimStrength.establishes_answer_key": {
+      "closure_sha256": "07f09cac15f00b6fb0c7d4fc272d2aefafb34c4fa6b64459b0b40ec1f67490dc",
+      "closure_size": 16,
+      "statement_sha256": "f33893c30fd413333beac3f2bd23b4622dca9329004ff3e5121f56f9340ca72f"
+    },
+    "Toy.ClaimStrength.establishes_answer_key_nonvacuous": {
+      "closure_sha256": "0522629101f1e608fa218885d2b8099880403b0faa10d7f61748f4244171b88b",
+      "closure_size": 7,
+      "statement_sha256": "56831470f9abd021377f1761e8d16d5079fe8d2c0b6497818044c63b7144b9f9"
+    },
+    "Toy.ClaimStrength.establishes_answer_key_tight": {
+      "closure_sha256": "07f09cac15f00b6fb0c7d4fc272d2aefafb34c4fa6b64459b0b40ec1f67490dc",
+      "closure_size": 16,
+      "statement_sha256": "bf7ab7f286e5b9bcf7ccf0a92a59f6444b9bda73c7d108b24e13450872f38560"
+    },
+    "Toy.ClaimStrength.establishes_contradicted_h_tight": {
+      "closure_sha256": "837fb022c01b6a0cd31655c8473d4faea37ebc4ba9bb36992866ea552a33da2c",
+      "closure_size": 5,
+      "statement_sha256": "a0b76653bf56eda3f93e93089aa14c8d50292a303a13ddc29cd4c50ec674d79d"
+    },
+    "Toy.ClaimStrength.establishes_contradicted_nonvacuous": {
+      "closure_sha256": "3a4056bb4132181169c15ec788e95df76278cb0fb765bbd174affcdcb241c71d",
+      "closure_size": 3,
+      "statement_sha256": "8822b4861dc70a4945d784c5e9c04f1bef46f379b14f9bc809d920a58c90bfcd"
+    },
+    "Toy.ClaimStrength.establishes_contradicted_of_unsupported": {
+      "closure_sha256": "837fb022c01b6a0cd31655c8473d4faea37ebc4ba9bb36992866ea552a33da2c",
+      "closure_size": 5,
+      "statement_sha256": "821805de6786e7c3ff6a50d1bedac0f8c725a3a5573ef2a5c32b15fa05b939e3"
+    },
+    "Toy.ClaimStrength.establishes_undetermined_key_never_correct": {
+      "closure_sha256": "07f09cac15f00b6fb0c7d4fc272d2aefafb34c4fa6b64459b0b40ec1f67490dc",
+      "closure_size": 16,
+      "statement_sha256": "c27a3680a960080bf8d874eaf0ce4dc90609610de2b06cfad52c360dc67bc143"
+    },
+    "Toy.ClaimStrength.establishes_worldIndependent": {
+      "closure_sha256": "17efcc77cd32e6ece749ac510ef1cb411ac24d006ca31fd09eb681710b51ed11",
+      "closure_size": 5,
+      "statement_sha256": "0ca40c146df389e5bb00237d862d190c2871ad22ed77659827891693a2adaf43"
+    },
+    "Toy.ClaimStrength.eval": {
+      "closure_sha256": "ff123798b8ab9eb4cb64b51016d4ae17ce5493549a9bcc11c688331588011920",
+      "closure_size": 6,
+      "statement_sha256": "0431ba49f4be9a8a73fc9ad78f0bf41df83f938bdce16ae1b90a83f5b2c2bd3f"
+    },
+    "Toy.ClaimStrength.evalR": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "d8fafeac8c06355b9562d520eca70da063538e3793184163466e5679e3417d54"
+    },
+    "Toy.ClaimStrength.evalR_of_valid": {
+      "closure_sha256": "c4e670f691d3de675d033ed28f9db470774558b6a5b75874d20ee73e983e53d1",
+      "closure_size": 16,
+      "statement_sha256": "92804d2d7e01e172cfe8a43780f78f5ad3e6fa0c57d6d57852d8fbe8860acf04"
+    },
+    "Toy.ClaimStrength.evalR_premise_pull_out": {
+      "closure_sha256": "c4e670f691d3de675d033ed28f9db470774558b6a5b75874d20ee73e983e53d1",
+      "closure_size": 16,
+      "statement_sha256": "5b22fcbc665c7f0fcd801f2da5221fb800134ca2b76210ba05cfbc65459acfd4"
+    },
+    "Toy.ClaimStrength.evalR_premise_pull_out_hind_tight": {
+      "closure_sha256": "f3c3e8cb4b7951d35b652cda40af3fd67b0c12b34d02f96bedfc80e7262b4de5",
+      "closure_size": 25,
+      "statement_sha256": "7659792e68d744063647923acddde91b7b5561b4daac17ebd5fe330b0f3dfc37"
+    },
+    "Toy.ClaimStrength.evalR_premise_pull_out_hne_tight": {
+      "closure_sha256": "f3c3e8cb4b7951d35b652cda40af3fd67b0c12b34d02f96bedfc80e7262b4de5",
+      "closure_size": 25,
+      "statement_sha256": "7b018763015b3f04d84b45034b80c16a2a8fee6bb68c16fde5a61e06932aa380"
+    },
+    "Toy.ClaimStrength.evalR_premise_pull_out_nonvacuous": {
+      "closure_sha256": "455726df1dc624277446bf16141eccb8f824d0a1ba3c893523c1445a0dcbea40",
+      "closure_size": 17,
+      "statement_sha256": "d668f2bd4712beaea9556417ad8f22988179a5c3af6936f9951e9323d69aeb15"
+    },
+    "Toy.ClaimStrength.eval_env_irrelevant_hcov_tight": {
+      "closure_sha256": "421cba61038821eeaeaa29b0c0028ef83f5be8cb4d38fb0fc3920298f2ed5294",
+      "closure_size": 19,
+      "statement_sha256": "fb48e402b965d2b08b06026a925bdd025c3bae155cc99941f2d7762f25e25c7a"
+    },
+    "Toy.ClaimStrength.eval_env_irrelevant_of_covers": {
+      "closure_sha256": "421cba61038821eeaeaa29b0c0028ef83f5be8cb4d38fb0fc3920298f2ed5294",
+      "closure_size": 19,
+      "statement_sha256": "a5f998734d2a7cbe5af1ec1c413d83d97f6dc6d252c0b83d479e788dc6b6814d"
+    },
+    "Toy.ClaimStrength.eval_env_irrelevant_of_covers_nonvacuous": {
+      "closure_sha256": "6de6f57ebcbfc16985e287cabf934bc8d7cafb64c05aec9b86751cb27d1eb224",
+      "closure_size": 8,
+      "statement_sha256": "fd7aace6ceeb811fe0177224c3ac5ff77bf853e70c38169da80887b820e16050"
+    },
+    "Toy.ClaimStrength.eval_subsingleton": {
+      "closure_sha256": "6ca1f509280163a80b6cb7498863f204aab1ee754aab5720fe01a8c35b80fd41",
+      "closure_size": 18,
+      "statement_sha256": "339bb825b5989b68bddcad7afe7134aab7f3eb9ccbf97185ae9d05d3e9a359f3"
+    },
+    "Toy.ClaimStrength.eval_subsingleton_tight": {
+      "closure_sha256": "e271b2f874161374ba991b8493592c09d32ad304cb25eb8715d455b6e8ab446f",
+      "closure_size": 19,
+      "statement_sha256": "704281cdd6ce8f08dfed84f91f4227010c2478f3c91073bb7f1cb5e6e945294d"
+    },
+    "Toy.ClaimStrength.evenChecker": {
+      "closure_sha256": "a82590f90bae108019b632d5482b7ee08c79b30b7f59fc4c5171e3c4b2165571",
+      "closure_size": 2,
+      "statement_sha256": "f3879aa3f9ec90750005d7a367e1ca8efcfff43656cad8bb70fc1be75a5eee2e"
+    },
+    "Toy.ClaimStrength.exactlyOne_answer_iff_satisfiable": {
+      "closure_sha256": "2db7d928281e7d27cd8e1ab63b3112c5384c477142a4c47208d214bb54ef842e",
+      "closure_size": 7,
+      "statement_sha256": "17957e644aba052617f0213ba5cdc6eba99a0bb38486d527221871bf25ec63b3"
+    },
+    "Toy.ClaimStrength.exactlyOne_nonvacuous": {
+      "closure_sha256": "ed19f085fcffb9d10c0cb129c460c70ec0587e828029156d6a543d582eb66272",
+      "closure_size": 6,
+      "statement_sha256": "767b4146f22a84eccafb9921ed96a3196d586cff876346d67f1fe5f6b235bf8b"
+    },
+    "Toy.ClaimStrength.exists_correct": {
+      "closure_sha256": "7791f574a62a6833a43ab18cf8d447487fc1639dc3e8f7b3fa637ad28744faeb",
+      "closure_size": 13,
+      "statement_sha256": "2865f40ec250e7e758b8cc4e2e7c496cf923ecab8f3aab662eb361578c68480d"
+    },
+    "Toy.ClaimStrength.exists_domain_entails_iff": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "badcadd0a676e8e881154132d1d5e8698e4d46b94019c8563a301966765256a2"
+    },
+    "Toy.ClaimStrength.exists_forall_sentails_forall_exists": {
+      "closure_sha256": "9857351d10ed78c77fc34cb09a44d2101a4fd710dc41c49146afe421505fe726",
+      "closure_size": 21,
+      "statement_sha256": "1bf921f3a3a58be64679a70b9b474827ed5296be71bb905162325442555d8bd5"
+    },
+    "Toy.ClaimStrength.exists_frontier_below": {
+      "closure_sha256": "ecc8b80a515bde255a1ed4320fcb398f70946c2d7d1725b9db32149b241f1140",
+      "closure_size": 5,
+      "statement_sha256": "14158c3e6ba9d2c381e9dfd43eaa87493ac3bbf360863d9617fd04c621283a57"
+    },
+    "Toy.ClaimStrength.exists_frontier_below_hns_tight": {
+      "closure_sha256": "e949838e7c27f5142fa66aca2036463fa29af62a06777c1b8e7a366467871bdd",
+      "closure_size": 9,
+      "statement_sha256": "53347b10cd895d2a9d5b58837ba06c256338c8e06cb3a66a9c1a25998b42695d"
+    },
+    "Toy.ClaimStrength.exists_frontier_below_hq_tight": {
+      "closure_sha256": "ecc8b80a515bde255a1ed4320fcb398f70946c2d7d1725b9db32149b241f1140",
+      "closure_size": 5,
+      "statement_sha256": "4509026df635686f1b7ee0b120d565d8ab6b86f6515d49a5fe2a9b512c7e62be"
+    },
+    "Toy.ClaimStrength.exists_frontier_below_nonvacuous": {
+      "closure_sha256": "fee025ceb57df4c303c1b314013e53220e7d13acb485f8d85de88d25b2a062be",
+      "closure_size": 7,
+      "statement_sha256": "77dbf3854dbdb63aa5ca4a01efc797ed1cf6a68aaf1858064a2bf8d17a0e4a6b"
+    },
+    "Toy.ClaimStrength.exists_not_sentails_forall": {
+      "closure_sha256": "9857351d10ed78c77fc34cb09a44d2101a4fd710dc41c49146afe421505fe726",
+      "closure_size": 21,
+      "statement_sha256": "66566ba7cfeb97adca9f18f37f4345e933e9c54c95ff717c43999814bb1775ce"
+    },
+    "Toy.ClaimStrength.exists_weakest": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "af3d66da94f1ec12b4d4b6f01517b296f85964c4f59253755797b59568001cb3"
+    },
+    "Toy.ClaimStrength.exists_weakest_nonvacuous": {
+      "closure_sha256": "421d043d1619d5f37027c0760ae1d96236f5a73d8ceee35ccb0d4f1368d24a89",
+      "closure_size": 5,
+      "statement_sha256": "98702c29767d756862948165953e598776dd31292bb5ed538e9f2331b1738696"
+    },
+    "Toy.ClaimStrength.exists_weakest_tight": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "42fcb97abad64253004679f8cd7909ebc999082db43d51b5649064a740f38326"
+    },
+    "Toy.ClaimStrength.forall_domain_entails_iff": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "55e9d776a0ac2997ef1f85f4bb05b583a7d6f1719deaeb857a1c1d07a59e4ccc"
+    },
+    "Toy.ClaimStrength.forall_exists_not_sentails_exists_forall": {
+      "closure_sha256": "9857351d10ed78c77fc34cb09a44d2101a4fd710dc41c49146afe421505fe726",
+      "closure_size": 21,
+      "statement_sha256": "c0f82ff7268ec79ce1474d841b1946c0719c13ac760121ee4dd7460bb281f9b2"
+    },
+    "Toy.ClaimStrength.forall_exists_not_sentails_exists_forall_witness": {
+      "closure_sha256": "45428fcc95919fd7125f4deb95a00bd70ff20133450de4f2a344dd6c661cefba",
+      "closure_size": 20,
+      "statement_sha256": "92f06d6f292fc9ca3a63931af43a2997ab4baa6a181b5cc84c9577c9257b73a0"
+    },
+    "Toy.ClaimStrength.forall_sentails_exists": {
+      "closure_sha256": "9857351d10ed78c77fc34cb09a44d2101a4fd710dc41c49146afe421505fe726",
+      "closure_size": 21,
+      "statement_sha256": "6a8d46d6381fc21db6b6acc8ed421626e0b55e82fbc703d3424476e37b39e8c8"
+    },
+    "Toy.ClaimStrength.frontier_test_detects_overreading": {
+      "closure_sha256": "398a78368d013f891c238c43385d6fab494fc6d3ae42665aabc99fc81310f3de",
+      "closure_size": 6,
+      "statement_sha256": "84ed5229c0c861e3a23564a04e6c8dc0db88df9874a38d8161c42912706c64a1"
+    },
+    "Toy.ClaimStrength.frontier_test_hclosed_tight": {
+      "closure_sha256": "6f6598ab378850bfadfb6f35ca08793dabb3eb857ae462488af65868667d774b",
+      "closure_size": 15,
+      "statement_sha256": "889931d8f696a63507a15a2333a3c83a73f877648d3c4c4d43fb325dea85312c"
+    },
+    "Toy.ClaimStrength.frontier_test_hfront_tight": {
+      "closure_sha256": "6f6598ab378850bfadfb6f35ca08793dabb3eb857ae462488af65868667d774b",
+      "closure_size": 15,
+      "statement_sha256": "dff8252b63123fe02866a31d7c790c7f52f35df5cfd53cf33fcba73bf5126600"
+    },
+    "Toy.ClaimStrength.frontier_test_no_positiveOverReading": {
+      "closure_sha256": "ce6346c48056d73eb0f2ab343f3cdf8d225c7c7a713d0fe2950109aa93838035",
+      "closure_size": 11,
+      "statement_sha256": "c626c0768edbbecd37c7a7d95475326a703a29b1ee7286040c3376e4f39decae"
+    },
+    "Toy.ClaimStrength.frontier_test_nonvacuous": {
+      "closure_sha256": "5c520f53f3c9aede5ca10d6262975c1d5dab7132d9a905780d6db47fc0c8369f",
+      "closure_size": 10,
+      "statement_sha256": "fe520bc0706bee291ee1d73b2ae8620cb5938fb0a754b989cd45879f454615d8"
+    },
+    "Toy.ClaimStrength.frontier_test_outside_candidates": {
+      "closure_sha256": "a63c50b8fb189849fe24317a6336024d9f6444f87025187e9743036c1ec81d27",
+      "closure_size": 8,
+      "statement_sha256": "3ffccf4b0acd825149dfca1560f980f4627281a4513d26af3aa9bfca587293de"
+    },
+    "Toy.ClaimStrength.holds_premise_on_existential_trivial": {
+      "closure_sha256": "37e5d0f538af8a0243537bfacb824398fdfae574d4cb825ed3b11781a5f304b2",
+      "closure_size": 38,
+      "statement_sha256": "2ac95a71990dbff23f729d348658c931a22eb4146939b81f990674afb6e96df7"
+    },
+    "Toy.ClaimStrength.incorrect_iff_reading_error": {
+      "closure_sha256": "49d4e104f0d426d4e249071d415f646e7ae25b42175312854c1740fdaa3e61de",
+      "closure_size": 16,
+      "statement_sha256": "574df77d48a4409f7aa3c7c783a9902666d9d29f297940c334bc6da0cc20837e"
+    },
+    "Toy.ClaimStrength.mono_nonvacuous": {
+      "closure_sha256": "b1fa6e5978acc19da6e6b1a3035e7f41f92c070c8ba0636a861c978e73f70a15",
+      "closure_size": 4,
+      "statement_sha256": "bf972825f234f286338d38b13d6e18a5889b378872126df4811d5fa9f182486c"
+    },
+    "Toy.ClaimStrength.nat_pointwise_bound_not_uniform": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "120836a7d452624c32d8b52e1fe08df75f6fdbab38dc25b6c8418cdba8a26b82"
+    },
+    "Toy.ClaimStrength.negAnswer": {
+      "closure_sha256": "62f9234db4b05f6f62837850d92d4a329603e61df3e111193714d89e3544f357",
+      "closure_size": 4,
+      "statement_sha256": "4020dee730d0719514be8d859474e5b9893c3cfb82e9c5defa8d6d4781e92171"
+    },
+    "Toy.ClaimStrength.neg_answer_correct": {
+      "closure_sha256": "5b10fa5577155f4bb9db497d7704cb8a19052ec921adb63702a048536f27b1c7",
+      "closure_size": 15,
+      "statement_sha256": "e6580ef73ad76c2e0d626b0cd0706ab955afcda6020a43693d61a57f135eb3b6"
+    },
+    "Toy.ClaimStrength.neg_answer_h_tight": {
+      "closure_sha256": "991df7e6db7fbd951594b588bd41dce9eb999eeda67c74f6beebb1e61cfe772d",
+      "closure_size": 16,
+      "statement_sha256": "0a0c94dfc3f49fa08526ea1ee6bc180b25d9d35078eb74dd613246b2394a227a"
+    },
+    "Toy.ClaimStrength.neg_answer_nonvacuous": {
+      "closure_sha256": "7791f574a62a6833a43ab18cf8d447487fc1639dc3e8f7b3fa637ad28744faeb",
+      "closure_size": 13,
+      "statement_sha256": "a5539e0546c4b4438311a3547d6c2321a2b9264d6a7eea4e64302157cda6db2d"
+    },
+    "Toy.ClaimStrength.nonempty_domains_h2\u03c6_tight": {
+      "closure_sha256": "0d7587fa259e29211dc0c8e8719be85ec34f6bf23a0e323f657b213e7d61f750",
+      "closure_size": 40,
+      "statement_sha256": "2fb4c297f1de35afacfdf9f5e2ee2ebb1b85719a2fbd21d7950222e827766b87"
+    },
+    "Toy.ClaimStrength.nonempty_domains_h2\u03c8_tight": {
+      "closure_sha256": "0d7587fa259e29211dc0c8e8719be85ec34f6bf23a0e323f657b213e7d61f750",
+      "closure_size": 40,
+      "statement_sha256": "15619040addf1647bb11c74b91039311bf9cd7ec5a6412bc535dabfd84f68bb4"
+    },
+    "Toy.ClaimStrength.nonempty_domains_hE_tight": {
+      "closure_sha256": "0d7587fa259e29211dc0c8e8719be85ec34f6bf23a0e323f657b213e7d61f750",
+      "closure_size": 40,
+      "statement_sha256": "9d7a2afa9cdd4095dcd6a774d55870e0bab806b8cb2bc6c6a4b29136870efeea"
+    },
+    "Toy.ClaimStrength.nonempty_domains_hp\u03c8_tight": {
+      "closure_sha256": "0d7587fa259e29211dc0c8e8719be85ec34f6bf23a0e323f657b213e7d61f750",
+      "closure_size": 40,
+      "statement_sha256": "289697f48932085df6977ce14d4cb1d2da4dc6c6c28de008b5e8d831f16ced68"
+    },
+    "Toy.ClaimStrength.nonempty_domains_h\u03b1_tight": {
+      "closure_sha256": "51fe861b03aa0648e17ec5d8247c07f21af84c6f0dcb6639e70077c69f5a5602",
+      "closure_size": 28,
+      "statement_sha256": "bd754a4eec4f500ac7427354a193ba1e444097c41a770ff0b2dfce5a28d42520"
+    },
+    "Toy.ClaimStrength.nonempty_domains_of_rEntails": {
+      "closure_sha256": "de1d5a40073d04096f0582df33119ef30d156ceb47ef763a89ad35f04c428e0f",
+      "closure_size": 23,
+      "statement_sha256": "a72192d5475f2860ee79aeff97e2e56032b44ef36ce71f6f1af7b3d5b9ffa60f"
+    },
+    "Toy.ClaimStrength.not_undetermined_of_unique_model": {
+      "closure_sha256": "ea1e4472c4c8fc01c5af949bac271729232c82a500e8813fa4cb146c89bf46fd",
+      "closure_size": 5,
+      "statement_sha256": "1c3a1b4127a284714567d117763add0ebc1bbe07fbe4a05969e3b8201669621e"
+    },
+    "Toy.ClaimStrength.not_undetermined_of_unique_model_hu_tight": {
+      "closure_sha256": "ea1e4472c4c8fc01c5af949bac271729232c82a500e8813fa4cb146c89bf46fd",
+      "closure_size": 5,
+      "statement_sha256": "901083fe1d77566dbc311710a51fbe759e65a2b24b36b414f42b24b8c18d3d7c"
+    },
+    "Toy.ClaimStrength.not_undetermined_of_unique_model_nonvacuous": {
+      "closure_sha256": "3085518c4ce94c25d48751faf056dea021e770f45a4636af4d5ad1226cc3ebd6",
+      "closure_size": 2,
+      "statement_sha256": "f892dff3e0eb3920f3e69840a2d902b7fea202c08064ac209ba11a290dafbf16"
+    },
+    "Toy.ClaimStrength.nv\u03c6": {
+      "closure_sha256": "eafc6f019430c452c1efb12431469374529939f45a9f1a470c9dba19fca7e05f",
+      "closure_size": 16,
+      "statement_sha256": "a82bac80f7b4bf8e0bd10c27791eab5c531e719730f48c638ac6b9f9787fb317"
+    },
+    "Toy.ClaimStrength.nv\u03c6D": {
+      "closure_sha256": "eafc6f019430c452c1efb12431469374529939f45a9f1a470c9dba19fca7e05f",
+      "closure_size": 16,
+      "statement_sha256": "a82bac80f7b4bf8e0bd10c27791eab5c531e719730f48c638ac6b9f9787fb317"
+    },
+    "Toy.ClaimStrength.nv\u03c8": {
+      "closure_sha256": "eafc6f019430c452c1efb12431469374529939f45a9f1a470c9dba19fca7e05f",
+      "closure_size": 16,
+      "statement_sha256": "a82bac80f7b4bf8e0bd10c27791eab5c531e719730f48c638ac6b9f9787fb317"
+    },
+    "Toy.ClaimStrength.nv\u03c8D": {
+      "closure_sha256": "eafc6f019430c452c1efb12431469374529939f45a9f1a470c9dba19fca7e05f",
+      "closure_size": 16,
+      "statement_sha256": "a82bac80f7b4bf8e0bd10c27791eab5c531e719730f48c638ac6b9f9787fb317"
+    },
+    "Toy.ClaimStrength.nv\u03c8Top": {
+      "closure_sha256": "eafc6f019430c452c1efb12431469374529939f45a9f1a470c9dba19fca7e05f",
+      "closure_size": 16,
+      "statement_sha256": "a82bac80f7b4bf8e0bd10c27791eab5c531e719730f48c638ac6b9f9787fb317"
+    },
+    "Toy.ClaimStrength.orTable": {
+      "closure_sha256": "62f9234db4b05f6f62837850d92d4a329603e61df3e111193714d89e3544f357",
+      "closure_size": 4,
+      "statement_sha256": "c6bc19812adce16874b056614a2366a7a74eaf820e366af163615f2483d8d3f0"
+    },
+    "Toy.ClaimStrength.orTable_realizable": {
+      "closure_sha256": "ed0332841180ec08c12b1da93ff579b493a2f94be2d0f8c87a71606dfc715fad",
+      "closure_size": 16,
+      "statement_sha256": "808c79a40a5f490d0c20d2cab44cc8701d6e2914a2b4ec38bc24ac64583888a8"
+    },
+    "Toy.ClaimStrength.orTable_undetermined_cell_distinct": {
+      "closure_sha256": "d669e0c923af6bb8919d8167d6588da4a41a5d1eec5e07c23934d43880c2d5cb",
+      "closure_size": 14,
+      "statement_sha256": "e70a8bf560f409a075906c75a584a4995c2f5b2157e2d758fe492215ea97670b"
+    },
+    "Toy.ClaimStrength.or_answer_hE_tight": {
+      "closure_sha256": "28ada497772dee1cb8a14e10adbce3d2e31704de5df67ace6e32dc00d1f3fd2e",
+      "closure_size": 16,
+      "statement_sha256": "5e15888125395584050bf95dbd179f68531d431e55b783b6af99ae51b2a0a533"
+    },
+    "Toy.ClaimStrength.or_answer_h_tight": {
+      "closure_sha256": "40adfcb0d202455ae420bcc5f3f5e24ff3124cdd46a17da57b6900062e2daaf9",
+      "closure_size": 17,
+      "statement_sha256": "ba940d991e44048ed82d5ee27256e9c7a315a65b19e401ad98f019e5ab5ac239"
+    },
+    "Toy.ClaimStrength.or_answer_h\u2081_tight": {
+      "closure_sha256": "40adfcb0d202455ae420bcc5f3f5e24ff3124cdd46a17da57b6900062e2daaf9",
+      "closure_size": 17,
+      "statement_sha256": "9117a1e2aa99c9040b4c7b66044d7afb05fb6dffd833f7c63a4e0b11cd2ea332"
+    },
+    "Toy.ClaimStrength.or_answer_h\u2082_tight": {
+      "closure_sha256": "40adfcb0d202455ae420bcc5f3f5e24ff3124cdd46a17da57b6900062e2daaf9",
+      "closure_size": 17,
+      "statement_sha256": "5f20cbc1d7ad38e241ef792cba4e83cf9851dabb2c3794b4dd6473d24b037086"
+    },
+    "Toy.ClaimStrength.or_answer_mem_orTable_of_satisfiable": {
+      "closure_sha256": "28ada497772dee1cb8a14e10adbce3d2e31704de5df67ace6e32dc00d1f3fd2e",
+      "closure_size": 16,
+      "statement_sha256": "c7c6f882a5f55a7441332f7110958d337c8774a48c3096e4f9ac836de3e30610"
+    },
+    "Toy.ClaimStrength.or_answer_nonvacuous": {
+      "closure_sha256": "9d764def0cafcf65abddf01a1c5bc5ab5cdf40bf38cf338bfb475fe80e10b8cc",
+      "closure_size": 15,
+      "statement_sha256": "8d79f32d28b52bba489c8b573619c315320563e0b758c8494acaa20c9ff4dd5d"
+    },
+    "Toy.ClaimStrength.pairAllB": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "0232e09c4dd0d8b3d99475e97235f7e3d151c0fa2413a98e0c2a6e5d5c22fa25"
+    },
+    "Toy.ClaimStrength.pointwise_bound_not_uniform": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "ae4c5628f5e7740d9d7795fd6170d609c6754207c6191749f34d390a097ac8fb"
+    },
+    "Toy.ClaimStrength.precL": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "18c22a7adec9894253656c8d37e52fdff9f893540324cf7aba20400a97693be6"
+    },
+    "Toy.ClaimStrength.prefixCritB": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "debb3970953a844e6f94b3af1a3f8c447811f4d29be9c466f4d5b0f870654bee"
+    },
+    "Toy.ClaimStrength.prefixCritB_exists_forall": {
+      "closure_sha256": "7ec0944bccbe07f92a8f107eafe48c18adac2e6b9fa326d15638fc79ea3792b0",
+      "closure_size": 24,
+      "statement_sha256": "cb8ca654e7e0683838c8e367d50c0063f5d7800c0f67a1b6d3b51433dfe1e692"
+    },
+    "Toy.ClaimStrength.prefixCritB_exists_forall_forall_exists": {
+      "closure_sha256": "7ec0944bccbe07f92a8f107eafe48c18adac2e6b9fa326d15638fc79ea3792b0",
+      "closure_size": 24,
+      "statement_sha256": "03690c4b319efec83fc814dc0e94b0db4d7ea7e1f353617790289845760a6fc3"
+    },
+    "Toy.ClaimStrength.prefixCritB_forall_exists": {
+      "closure_sha256": "7ec0944bccbe07f92a8f107eafe48c18adac2e6b9fa326d15638fc79ea3792b0",
+      "closure_size": 24,
+      "statement_sha256": "2d24f16edb43b1753cd97610a59445534e19bd45bdea4df18dc7f51592a4d1f7"
+    },
+    "Toy.ClaimStrength.prefixCritB_forall_exists_exists_forall": {
+      "closure_sha256": "7ec0944bccbe07f92a8f107eafe48c18adac2e6b9fa326d15638fc79ea3792b0",
+      "closure_size": 24,
+      "statement_sha256": "e08d2e99966aeb0b7633e49751ae29293dd66f5de50ae0804409f2018ce42c78"
+    },
+    "Toy.ClaimStrength.prefixCritB_iff": {
+      "closure_sha256": "adc3da05a345b179eb9d13d309ee55b378e7e09f8d5ca0527cde771150c0d029",
+      "closure_size": 26,
+      "statement_sha256": "11d3ca1c27dfac04d8959c51ba55aa1c15c8147ade726e9d85a6d146997007d6"
+    },
+    "Toy.ClaimStrength.prefixCritB_renamed_false": {
+      "closure_sha256": "7ec0944bccbe07f92a8f107eafe48c18adac2e6b9fa326d15638fc79ea3792b0",
+      "closure_size": 24,
+      "statement_sha256": "39ce6e1dc34021bae94a9771a520cf23bd67a081b7b7d6fa9c2f8ca4719f9030"
+    },
+    "Toy.ClaimStrength.prefixCrit_necessary_h_tight": {
+      "closure_sha256": "50cb2cbf37350ace410abbf72201ddf161d2e04940a8b0424274ee802e5e161d",
+      "closure_size": 33,
+      "statement_sha256": "d3621215cfb9d1f29512da2e47dfce58a34aece5a4d9591dd268f1d49afc10ae"
+    },
+    "Toy.ClaimStrength.prefixCrit_necessary_h\u03b1_tight": {
+      "closure_sha256": "50cb2cbf37350ace410abbf72201ddf161d2e04940a8b0424274ee802e5e161d",
+      "closure_size": 33,
+      "statement_sha256": "4ae97d61fc3f70d96a734e46da7803510f8ffcf46814fafe673f96d859cbee2a"
+    },
+    "Toy.ClaimStrength.prefixCrit_necessary_h\u03c6_tight": {
+      "closure_sha256": "50cb2cbf37350ace410abbf72201ddf161d2e04940a8b0424274ee802e5e161d",
+      "closure_size": 33,
+      "statement_sha256": "690b37b38c2bd76c02b8fe9bb1b30352e027f08e279b395bfe4bf0a3433ad8f2"
+    },
+    "Toy.ClaimStrength.prefixCrit_necessary_h\u03c8_tight": {
+      "closure_sha256": "50cb2cbf37350ace410abbf72201ddf161d2e04940a8b0424274ee802e5e161d",
+      "closure_size": 33,
+      "statement_sha256": "c08a9700e6e5c9744864b2479f735c5432d17299f72a87ef31a6b2efe6c20e5f"
+    },
+    "Toy.ClaimStrength.prefixCrit_necessary_nonvacuous": {
+      "closure_sha256": "9ca5e25f3cd41556bcdb4ab7dee465bf166d4761a1cd2019404ea749ded7950f",
+      "closure_size": 22,
+      "statement_sha256": "665b157354f5ecd15c18ea518d368376279f18411807c03f3ecba202ea6a086f"
+    },
+    "Toy.ClaimStrength.prefixCrit_necessary_of_two_point_nodup": {
+      "closure_sha256": "4a36b3cb7e2f6de1b2a136a56257b177501cc23c4e68757d925f6ad1b64a3cca",
+      "closure_size": 31,
+      "statement_sha256": "46d619a93797fe0157e26b3dad2bad10d8c261f0415c010cc049dea15fb90fb3"
+    },
+    "Toy.ClaimStrength.prefixCrit_part_i_tight": {
+      "closure_sha256": "ed5ba6f5baed0e24ad34e6ed8fcbc3db8b0184e52ef896163ef327ef73771c64",
+      "closure_size": 33,
+      "statement_sha256": "b306c4411e9259fa323fa1ab0f5b0f3f0979d38663c39c14c135a95a74d83a47"
+    },
+    "Toy.ClaimStrength.prefixCrit_part_ii_tight": {
+      "closure_sha256": "ed5ba6f5baed0e24ad34e6ed8fcbc3db8b0184e52ef896163ef327ef73771c64",
+      "closure_size": 33,
+      "statement_sha256": "8ea78c8e934892ed8190aa22fce6d118aaccc7f4f20a1831c444de149e84d00e"
+    },
+    "Toy.ClaimStrength.prefixCrit_sound_h\u03c6_tight": {
+      "closure_sha256": "f5be357287f7b66c8f69af54799990b721c78859bac6db26af673d8a0a0bc279",
+      "closure_size": 34,
+      "statement_sha256": "6814b449f8ed71de232f67a7c41c0d82e7dafad5a290693914aea493e494bb08"
+    },
+    "Toy.ClaimStrength.prefixCrit_sound_h\u03c8_tight_dup": {
+      "closure_sha256": "f5be357287f7b66c8f69af54799990b721c78859bac6db26af673d8a0a0bc279",
+      "closure_size": 34,
+      "statement_sha256": "0f8b1dc89ce2b6156dffaf49e7dba6bfcd1b9bf0c29449c5d2c8af486bd955c9"
+    },
+    "Toy.ClaimStrength.prefixCrit_sound_h\u03c8_tight_missing": {
+      "closure_sha256": "fd58706fd9ac06bc06184422d2a9ca38e0fcc342ea9ead3c39541558be74c21f",
+      "closure_size": 33,
+      "statement_sha256": "a726db0519428782dd5491f881033253d24275f122803c3d03829bb59eb1c150"
+    },
+    "Toy.ClaimStrength.prefixCrit_sound_nonvacuous": {
+      "closure_sha256": "d2940a61ed9eab40ce59b91bd4cda223e0de81d1cb55c6170af965e58f78c35c",
+      "closure_size": 33,
+      "statement_sha256": "e33b72f7e93eea8625961ba838a3432cbe5f0990d7943beadb35b38526e4eb64"
+    },
+    "Toy.ClaimStrength.prefixCrit_sound_of_nodup_wf": {
+      "closure_sha256": "300d2fef2171b2c12a7709d4cad6b37eb29a8975ed38683c49f3ec34bdf42065",
+      "closure_size": 32,
+      "statement_sha256": "b995340ac7e8f61b9aceee245a54cd9ec19b66858358c2a9980d760383f00401"
+    },
+    "Toy.ClaimStrength.premImpl": {
+      "closure_sha256": "02080271805b9836dcbec5b06595e51637a9a10c8faaa46c5849b6807fa09b2c",
+      "closure_size": 4,
+      "statement_sha256": "1744d673e3e8fb183df594df614889fa249e49c87cb031c5adbd9cc6df1cf5af"
+    },
+    "Toy.ClaimStrength.premJ": {
+      "closure_sha256": "02080271805b9836dcbec5b06595e51637a9a10c8faaa46c5849b6807fa09b2c",
+      "closure_size": 4,
+      "statement_sha256": "deeebac54e7e74f97072cdc415f5a1b6497f1c7db9ec5c67db5227ac4f1d1c6f"
+    },
+    "Toy.ClaimStrength.premise_entails_iff": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "4be8a8f12e12243e7fc959e217d67c383d55ff21b788107adc56a0d2168067e9"
+    },
+    "Toy.ClaimStrength.qOf": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "892d57ad7c78c3c0ba555ba70815ae1ec7d70e10f1f0f65bb39367db777d6282"
+    },
+    "Toy.ClaimStrength.qStrong": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "1450015f4d87e74e5d5ecc75b963bb018c9a51c5ae33dab92f753250a328a211"
+    },
+    "Toy.ClaimStrength.qTriv": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "1450015f4d87e74e5d5ecc75b963bb018c9a51c5ae33dab92f753250a328a211"
+    },
+    "Toy.ClaimStrength.qWeak": {
+      "closure_sha256": "bf116168e41a6f83f8ec03604cae7ba4bf639c0ad034c94dc19181033857c6da",
+      "closure_size": 1,
+      "statement_sha256": "1450015f4d87e74e5d5ecc75b963bb018c9a51c5ae33dab92f753250a328a211"
+    },
+    "Toy.ClaimStrength.quantify": {
+      "closure_sha256": "917dce36ee6ee267da5972f9329d969aa5954e297b94c1ceb4334ef9a220ac71",
+      "closure_size": 3,
+      "statement_sha256": "d395dd03481ebfe8b0a8ae4129e43dafed6e46af54c126e0c51798e7667b151b"
+    },
+    "Toy.ClaimStrength.rEntails_of_isEmpty": {
+      "closure_sha256": "44375d1807466191385e4e202cdbe7551185187cc55b01aa3999f9752a7247ca",
+      "closure_size": 22,
+      "statement_sha256": "802c61f06654602258b2a234af67656c1cc8619b26d799422aa95ed98fc29ab2"
+    },
+    "Toy.ClaimStrength.rEntails_of_isEmpty_tight": {
+      "closure_sha256": "c305f0f171890a8b11d95e7633ad24f7e87b907bebc81507a7deb2b95038777d",
+      "closure_size": 39,
+      "statement_sha256": "4452907113cdaf0b2a9f80f198ae10e9a88d9db741a5004b0a9e303c08642d39"
+    },
+    "Toy.ClaimStrength.range_entails_single": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "2bd229f8fd1a9015178e937e90dd64cec869420dbf6b43b291d1a5a9c9cbffef"
+    },
+    "Toy.ClaimStrength.range_entails_single_nonvacuous": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "a598b24f42b7e23d77095f79fd395f181d500d70fc6bd8cd83821e15a394b1ba"
+    },
+    "Toy.ClaimStrength.rcritB": {
+      "closure_sha256": "b748b8aca9d7960c4adf24a7e8920cfc186b456a5d061a76d5ace9f4f1d68c2a",
+      "closure_size": 7,
+      "statement_sha256": "5e727f06c9a37a1f8ac0daf5d97d9facb4820351accf60f0d7bbdab2e8282a42"
+    },
+    "Toy.ClaimStrength.rcritB_iff": {
+      "closure_sha256": "81ce0b711bccb9d9954c0ae391b5a23b15e8ba332880be603903c7c9522239ce",
+      "closure_size": 40,
+      "statement_sha256": "51a6171d97a3b038b94a1ba71fde6f481d8ef31c5d311d145d90c35793fa318f"
+    },
+    "Toy.ClaimStrength.rcrit_complete_hE_tight": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "0bf39c9678068f82f7ece5055a483ed798adc0813147c0c75af7e1f97c54de6b"
+    },
+    "Toy.ClaimStrength.rcrit_complete_h\u03b1_tight": {
+      "closure_sha256": "4f5897c505a8019ce2a7ddc15d03c778ca0563e81c7833e0bb52e059618224c9",
+      "closure_size": 48,
+      "statement_sha256": "2579f81234e0df1dacca223e3699263de1214ed629ce7761876fbab196cd02af"
+    },
+    "Toy.ClaimStrength.rcrit_complete_nonvacuous": {
+      "closure_sha256": "728a42057ae4a42d4a2974f2ae718eb4fc6cfce08abadfa5c157b0497d8246eb",
+      "closure_size": 62,
+      "statement_sha256": "44c68cbc3ec5d06bb28bbf1f53e3505b388eb0ecbb10af3a1c5d1e248aa498fe"
+    },
+    "Toy.ClaimStrength.rcrit_complete_nonvacuous_free_variable": {
+      "closure_sha256": "1ba0f90f99df99196710036604388986a5c4a2d96bb6361dd4f534fde7b1d8e6",
+      "closure_size": 76,
+      "statement_sha256": "514fd2c30e928a941c63a4dcee566b796a72d882e79514fca3d9bef604ff0946"
+    },
+    "Toy.ClaimStrength.rcrit_complete_of_nonempty_domains": {
+      "closure_sha256": "6e4666ca04357901b06d25410ff93dabc00a2b588a7fcb914c58a5cc7a822ab2",
+      "closure_size": 43,
+      "statement_sha256": "1dcb6058d400407cdf6773fe76bfe729dd7d65e64ed12f4105a89925bad67e60"
+    },
+    "Toy.ClaimStrength.rcrit_complete_polarized_two_point_premise_free": {
+      "closure_sha256": "6e4666ca04357901b06d25410ff93dabc00a2b588a7fcb914c58a5cc7a822ab2",
+      "closure_size": 43,
+      "statement_sha256": "b1033702b0a6363cb7f0957de9e3168134a2d3d60aa900713c10828d6acb567d"
+    },
+    "Toy.ClaimStrength.rcrit_complete_two_point_premise_free": {
+      "closure_sha256": "6e4666ca04357901b06d25410ff93dabc00a2b588a7fcb914c58a5cc7a822ab2",
+      "closure_size": 43,
+      "statement_sha256": "667257cdb86ab7c8ca75853d22e80af3ca71d909887b0520a3a2d01521b94458"
+    },
+    "Toy.ClaimStrength.rcrit_ex_domain_tight": {
+      "closure_sha256": "b99e3a9e5bc68d21f5509490d03686c9fc6da5e700d411844fa37a434be08312",
+      "closure_size": 74,
+      "statement_sha256": "4d3f4163fcf4334a8a20c76b2073f99dfe5949e4602807ebb7c7688486e426dd"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_empty_domain": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "70c2d8c04cf064f9277338fcc695660ebed84565768ef494ca06f066a6cec8e3"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_empty_universal_domain": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "f5b7ea322b9245a89c51b3f7bbb0cf4b91b51c7502739381526b4152336ee7e2"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_false_target_premise": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "3752d26642004614a8fab360a85c2bc4f5ffed3ea95019c0b9d8e7eb0f80732a"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_in_normal_form": {
+      "closure_sha256": "fd6dd74577ff656bca6192b6024325e2e5ad007779de58602e80e7447bc88df3",
+      "closure_size": 73,
+      "statement_sha256": "0e8b46b2c5669f9855b7ab2c44183af110f51209c81ce85e5f4a7552e6690303"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_inexact_impl": {
+      "closure_sha256": "a3a773194d16366ec4e7a124b8c964d8b62cacaace1e55795f78ea18861d2772",
+      "closure_size": 70,
+      "statement_sha256": "32aba4483d9c8f67b06aa5fd4dfa3c202867bfee4e3c88fca8d00564e318e9a1"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_inexact_incl": {
+      "closure_sha256": "d635a16c9581c2f1c2817e9e24b6ecb76db38c960a47e98d55eb73d4661a873a",
+      "closure_size": 74,
+      "statement_sha256": "4031c1aeccd496a2937361af451f61b1ac3c6b4d42ad8a9ab4bbec9495e4dd59"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_inexact_meets": {
+      "closure_sha256": "c77e4ace33122a5e353761646e27f855e57f4559ada0dd78e956f413a5e327f2",
+      "closure_size": 73,
+      "statement_sha256": "f7fe063869d5c8faf871402b7b410ff28042831898d5b347dce93ac8475bd84c"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_not_wf": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "c2207a80538abbf39c5465d042e7dd827563b8a5c34f521fd9087a8f4513a796"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_not_wf_target": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "5575c968406174c6eb4b1444f2d38f73252736f605797ad6645dba584a79fa7d"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_premise_as_domain": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "d634dcefb106fab44b0f765b2b22516edaf860bb27a1dd77535faf35bfe8d7c1"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_redundant_existential_premise": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "afbd22821edcd4ae3ce28ebe1594d00a6b97f05f495c51364e4acb468cb42cb9"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_singleton_domain": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "b7bfbacefcbac9edcfdb149c7ce0ceb00235f373dbe0f494d7e49d2a4aa46169"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_singleton_existential": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "9f693cd3091a321e9e07527036bb53c66ffeea73f68a06a72e8cb9f2e3cbea56"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_singleton_universal": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "b406b37db4cc90e332b6767055d0b14f380cb00d05555fd52b15a1c3e3386a52"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_target_premise_as_domain": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "6b588386a3ee98e4bd66277aca48730216892071a8cbdead30b0c3fc9878c9f7"
+    },
+    "Toy.ClaimStrength.rcrit_incomplete_target_premise_on_existential": {
+      "closure_sha256": "015915400869bb451b0cdf8cad4d5cf30e73c48a773d5ec9b30a5e2dc0c0e343",
+      "closure_size": 75,
+      "statement_sha256": "67949906e56fba91b6e56eb3c6dc4dfad088c718ce0e6b42812cfaec6f7b1b79"
+    },
+    "Toy.ClaimStrength.rcrit_meet_tight": {
+      "closure_sha256": "b99e3a9e5bc68d21f5509490d03686c9fc6da5e700d411844fa37a434be08312",
+      "closure_size": 74,
+      "statement_sha256": "c2e50e0f22168ef43c19fe0631d9acd9b01ab25319240145d3d36cdbbdf3c9bb"
+    },
+    "Toy.ClaimStrength.rcrit_part_i_tight": {
+      "closure_sha256": "3e447bd63fe92a65aae6b08e2c3ef28d0b887ee9afb83fc642db84649999e19a",
+      "closure_size": 73,
+      "statement_sha256": "05736ad0966e570d8ccfa89a6fcaa8f05a5150a275c423f82e1777c6af685f08"
+    },
+    "Toy.ClaimStrength.rcrit_part_ii_tight": {
+      "closure_sha256": "3e447bd63fe92a65aae6b08e2c3ef28d0b887ee9afb83fc642db84649999e19a",
+      "closure_size": 73,
+      "statement_sha256": "bdeca81c9331ff3b0abf9f82e2608e7be17002d74e0405718ddfa5c4c039f471"
+    },
+    "Toy.ClaimStrength.rcrit_premise_tight": {
+      "closure_sha256": "b99e3a9e5bc68d21f5509490d03686c9fc6da5e700d411844fa37a434be08312",
+      "closure_size": 74,
+      "statement_sha256": "bb2193e1a049f1310294a51b92cd38c678df98f566a2b87e316fa0c36b1461e5"
+    },
+    "Toy.ClaimStrength.rcrit_sound": {
+      "closure_sha256": "3db6696f7801e09d4d3c3bf858ce594db8ed0720724fe7c0369f76781df0cf2f",
+      "closure_size": 43,
+      "statement_sha256": "5fba7c773217bcbe1aa8468514402e9a04ea0a0ab7565b1b99d95f8fc7b7fd7e"
+    },
+    "Toy.ClaimStrength.rcrit_sound_hI_tight": {
+      "closure_sha256": "9dc3a23c4315f2dad6791d48f10861b6500ea9ec8bec46e4551ee6fcc56472eb",
+      "closure_size": 70,
+      "statement_sha256": "914cdc6c79042d375c9c7e80c76deea3c375aaa61d3d50b3be624afc505e8617"
+    },
+    "Toy.ClaimStrength.rcrit_sound_hJ_tight": {
+      "closure_sha256": "b206f51ab05eb50ae09c91f3d42121f21956a1636b261aa8dec149d480497fd2",
+      "closure_size": 69,
+      "statement_sha256": "3e3345acaea7f910811a41da7fda54c22fc0f2388ea412ab7811b28a721145be"
+    },
+    "Toy.ClaimStrength.rcrit_sound_hM_tight": {
+      "closure_sha256": "a06645121a4d2e1f12ebfb1ca79d1703c95334d24e956390575721572048e9a4",
+      "closure_size": 72,
+      "statement_sha256": "8e4243ab9c67b164935af688bee863ec6e8e743e30b942ae65b252d65564b577"
+    },
+    "Toy.ClaimStrength.rcrit_sound_h\u03c6_tight": {
+      "closure_sha256": "67b78d5503b192ba751fef473658b8848d60bc1771415f1684c753ae0ccc9fb2",
+      "closure_size": 75,
+      "statement_sha256": "b9ea458825be1f64dfb318d933fd6375349b334c506dea8daf76a48a8a15e206"
+    },
+    "Toy.ClaimStrength.rcrit_sound_h\u03c6_tight_missing": {
+      "closure_sha256": "67b78d5503b192ba751fef473658b8848d60bc1771415f1684c753ae0ccc9fb2",
+      "closure_size": 75,
+      "statement_sha256": "c98c3933ca7ef6e925f5a565cae9cb82bfc9530b7670a7ff321a36c7f348986f"
+    },
+    "Toy.ClaimStrength.rcrit_sound_h\u03c8_tight": {
+      "closure_sha256": "67b78d5503b192ba751fef473658b8848d60bc1771415f1684c753ae0ccc9fb2",
+      "closure_size": 75,
+      "statement_sha256": "736e156cc078f109358a16afcfb63bc6b9b132be5b500abf55a5e9603c3f5c70"
+    },
+    "Toy.ClaimStrength.rcrit_sound_h\u03c8_tight_missing": {
+      "closure_sha256": "67b78d5503b192ba751fef473658b8848d60bc1771415f1684c753ae0ccc9fb2",
+      "closure_size": 75,
+      "statement_sha256": "74b50c082630ff20c9185b065d63b8534062a0581447ee4eb09171ac183349b2"
+    },
+    "Toy.ClaimStrength.rcrit_sound_nonvacuous": {
+      "closure_sha256": "9ffe38d54471aa71879935c367f0cca86fad27a9375c240268549741e0bbc98e",
+      "closure_size": 77,
+      "statement_sha256": "96b86afb767e9b4c5211f3ee0b2583dceb1a93e76d254e46660635f804ed92d4"
+    },
+    "Toy.ClaimStrength.rcrit_sound_nonvacuous_domains": {
+      "closure_sha256": "11189effdd67503af1962d2ee1608f519d3ae0f788ed4fc9e50bfdcfe53e46c5",
+      "closure_size": 77,
+      "statement_sha256": "c6fae4eceaefc8936fd74a3595bb093ab9d81f5a41a9bda85005c46e539f377e"
+    },
+    "Toy.ClaimStrength.rcrit_univ_domain_tight": {
+      "closure_sha256": "b99e3a9e5bc68d21f5509490d03686c9fc6da5e700d411844fa37a434be08312",
+      "closure_size": 74,
+      "statement_sha256": "2c7bc46abfe495899e8e55210ca9b8486e8781c7af5e2939c04b33f138212c3c"
+    },
+    "Toy.ClaimStrength.relative_entails_absolute_iff": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "a19fe8feb1b4636bc5b68667535b89dde6a72316a9ef6e82a8f55e1706530bbd"
+    },
+    "Toy.ClaimStrength.relative_not_absolute": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "6d232377a20b313f0e0d5607be92ef9f02311e65c68759315a7f24c533e0535a"
+    },
+    "Toy.ClaimStrength.relative_not_absolute_witness": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "9a53a7dbab3f55655b9beb3a8ffb9864270a4bdf929c7361e84fd4633aed64ea"
+    },
+    "Toy.ClaimStrength.relative_to_assumption_not_absolute": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "7fe60bc2c7fefe8a16ce57372b43a36a95568483fc2ea2451f735c9af67192fb"
+    },
+    "Toy.ClaimStrength.relative_to_assumption_not_absolute_witness": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "0ad68606feaa7bea65aee58ef4bd4b19623d1bd0d4a243128c5308b304bcaa12"
+    },
+    "Toy.ClaimStrength.sentailsAt_iff_fixed_env_of_covers": {
+      "closure_sha256": "9cfac053d6de9d010a5b9683f5e8dbba7c6d9687d92ae4870c713de02f495d29",
+      "closure_size": 20,
+      "statement_sha256": "737a01a49d6faab44b63b8774c761f978bf1cf42cf4c958d54328a14e0d15cb3"
+    },
+    "Toy.ClaimStrength.sentailsAt_iff_h\u03b1_tight": {
+      "closure_sha256": "cf424bb373683bc67eb7ff18467d7233ba1cdaae3a4055a6f6b99abba5c31e28",
+      "closure_size": 39,
+      "statement_sha256": "3ff54e7a11183a267f8676678c59e974b846b8c6019eb15b5cd3f14fb0d504e5"
+    },
+    "Toy.ClaimStrength.sentailsAt_iff_h\u03c6_tight": {
+      "closure_sha256": "cf424bb373683bc67eb7ff18467d7233ba1cdaae3a4055a6f6b99abba5c31e28",
+      "closure_size": 39,
+      "statement_sha256": "8e92a579a2f729d9a5ed1402682412e59d2825cff5878b37922a7e2c089aeb52"
+    },
+    "Toy.ClaimStrength.sentailsAt_iff_h\u03c8_tight_dup": {
+      "closure_sha256": "cf424bb373683bc67eb7ff18467d7233ba1cdaae3a4055a6f6b99abba5c31e28",
+      "closure_size": 39,
+      "statement_sha256": "4181937ee0f8116bca6ea154a4f7374c3e2cb7a9ed4b94c82f944d7dbd99e31c"
+    },
+    "Toy.ClaimStrength.sentailsAt_iff_h\u03c8_tight_missing": {
+      "closure_sha256": "71e2894be5e0fd2868f1a5ca52cb22d3bcab13064fc3a49140974a1c0293d2e2",
+      "closure_size": 38,
+      "statement_sha256": "a97e0cb5f86f8f344fa88ef541bbacbb0cda7b7647039d3b906a90089cf127b7"
+    },
+    "Toy.ClaimStrength.sentailsAt_iff_nonvacuous": {
+      "closure_sha256": "f5be357287f7b66c8f69af54799990b721c78859bac6db26af673d8a0a0bc279",
+      "closure_size": 34,
+      "statement_sha256": "23e38573bc310b22e1ab961d95dc623cd35ac19043688b35d2a8ca5a3654c14e"
+    },
+    "Toy.ClaimStrength.sentailsAt_iff_prefixCritB_of_two_point_nodup_wf": {
+      "closure_sha256": "3b4745d09a2d067ff59a351547f27e6a5e7fd5004e8a337563cbf11d4523ef47",
+      "closure_size": 33,
+      "statement_sha256": "663ca6ce8ef2ec76e2a775d70286ba732bd34ff92cc1e0f8f6a09db5c9951a08"
+    },
+    "Toy.ClaimStrength.sentailsAt_iff_prefixCrit_of_two_point_nodup_wf": {
+      "closure_sha256": "300d2fef2171b2c12a7709d4cad6b37eb29a8975ed38683c49f3ec34bdf42065",
+      "closure_size": 32,
+      "statement_sha256": "8475aa40202ade62898f664e8a28f90a2e533c14ca17616983309f1225541c04"
+    },
+    "Toy.ClaimStrength.sentailsAt_of_isEmpty": {
+      "closure_sha256": "c04782cf870e43f0d3258137f286c4cc9eca2d15e3bbbcf7b7918bb8e9ba8e8a",
+      "closure_size": 19,
+      "statement_sha256": "d32ea12bb4c00578092775692060e6c123e49b15b5b89f02abbca667cd9773f4"
+    },
+    "Toy.ClaimStrength.sentailsAt_of_isEmpty_nonvacuous": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "f9d4c8c1346f09e2ce92c28de50f3ff39464823f95cbce5c135649712a204b34"
+    },
+    "Toy.ClaimStrength.sentailsAt_of_isEmpty_tight": {
+      "closure_sha256": "9857351d10ed78c77fc34cb09a44d2101a4fd710dc41c49146afe421505fe726",
+      "closure_size": 21,
+      "statement_sha256": "64ea42a4b31a36f0da32aee27bcee38379a9d0f79d95ec7ab5270a718855a131"
+    },
+    "Toy.ClaimStrength.sentailsAt_of_subsingleton": {
+      "closure_sha256": "c04782cf870e43f0d3258137f286c4cc9eca2d15e3bbbcf7b7918bb8e9ba8e8a",
+      "closure_size": 19,
+      "statement_sha256": "c94a77fed1ef500517dc18ed719dc67a2aa32c16a115e17ece85d31115fcea5b"
+    },
+    "Toy.ClaimStrength.sentailsAt_of_subsingleton_tight": {
+      "closure_sha256": "9857351d10ed78c77fc34cb09a44d2101a4fd710dc41c49146afe421505fe726",
+      "closure_size": 21,
+      "statement_sha256": "45de681b7e57e685fa69114272e8fbdfa962d24a0e3c71f0e612a25534803a29"
+    },
+    "Toy.ClaimStrength.sentails_iff_h\u03c6_tight": {
+      "closure_sha256": "25c6c6143ced97fa62bcb03071239b232dd14ff378cd7fb726b0c0addf899635",
+      "closure_size": 35,
+      "statement_sha256": "3d34b753aa8d9150abcf3ed7e061d3137962050aea8ab222c6de6bc3ea6d1a70"
+    },
+    "Toy.ClaimStrength.sentails_iff_h\u03c8_tight_dup": {
+      "closure_sha256": "25c6c6143ced97fa62bcb03071239b232dd14ff378cd7fb726b0c0addf899635",
+      "closure_size": 35,
+      "statement_sha256": "a732fc1f7b71fadc97e10a087022d0cadf3274a7616a4edaa0fb5041eb0da91c"
+    },
+    "Toy.ClaimStrength.sentails_iff_h\u03c8_tight_missing": {
+      "closure_sha256": "541826cd9f4529be4fa30c139399229f56a7af5a56e3c2a35139629ee7cf4db8",
+      "closure_size": 34,
+      "statement_sha256": "4898b1c7a0e7bb2f6f81e49e9a6129ce93df9d94ec887cdd6c5cccf9626fb9be"
+    },
+    "Toy.ClaimStrength.sentails_iff_nonvacuous": {
+      "closure_sha256": "25c6c6143ced97fa62bcb03071239b232dd14ff378cd7fb726b0c0addf899635",
+      "closure_size": 35,
+      "statement_sha256": "3bc35f51b854d634c1b0dd2cbda7d407bb51c8f7d810b72e6a15304e30e4b1c3"
+    },
+    "Toy.ClaimStrength.sentails_iff_prefixCrit_of_nodup_wf": {
+      "closure_sha256": "e72b2741556dc126d4fd4e81a79b84f7a9493323f352e64d57f8f2d0ffa9aa12",
+      "closure_size": 33,
+      "statement_sha256": "884a186f0c6caec04644ea82778219c192aacdad6bba599b6d580331692177c7"
+    },
+    "Toy.ClaimStrength.sentails_iff_twoPoint_types": {
+      "closure_sha256": "396716eaf6d37723e47b1363567b7b73e859667ba33503cd6d9d48ccec0421a5",
+      "closure_size": 20,
+      "statement_sha256": "477bbb6f7c5fc231c1969fd70368bdb409847d2054dd9a11c079b76a2c2ada86"
+    },
+    "Toy.ClaimStrength.single_counterexample_not_universal": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "290564d677171e67b69c2fcbb05d3e4a074e62cc9ef760fa3d1d32bc5ddd0af6"
+    },
+    "Toy.ClaimStrength.single_counterexample_not_universal_witness": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "1e30c4804c87b4628e8bcae6836438cbb1e58f5840a31d1b2736f1cacfebe95d"
+    },
+    "Toy.ClaimStrength.single_parameter_not_range": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "101c613db6e32182a808a4a8e682ae966a3ee5f29010ee2d519647eecd3047dc"
+    },
+    "Toy.ClaimStrength.single_parameter_not_range_witness": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "189566f9347cc1f6db6fce7ad3f90afbd70f041030f25b4cb9c2f48f4cf3c40b"
+    },
+    "Toy.ClaimStrength.subsingleton_nonvacuous": {
+      "closure_sha256": "9857351d10ed78c77fc34cb09a44d2101a4fd710dc41c49146afe421505fe726",
+      "closure_size": 21,
+      "statement_sha256": "56a73a11a39bdfcc654fd9a65d2aaf0ade5b5ed1183b52e19ca99c5c3dd2b465"
+    },
+    "Toy.ClaimStrength.sufficient_not_characterization": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "e562c552cee639e77ab921bbacd704da5f9789cb78b5c33c95bfb346a483a447"
+    },
+    "Toy.ClaimStrength.sufficient_not_characterization_witness": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "0fff70555b9af531a6a0e420916df36765dc9268aa0ce6e5d25de832aeeb779b"
+    },
+    "Toy.ClaimStrength.sufficient_not_converse": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "0b4f9cab218375a1a0400ab1438bf9de326e872c1a22790c7b3254dd7f687e10"
+    },
+    "Toy.ClaimStrength.sufficient_not_converse_witness": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "0dc9fde58c787d8d5030fabea94c537c8ee7c72fffd910fd81c8fd479ff6b96e"
+    },
+    "Toy.ClaimStrength.supported_mono": {
+      "closure_sha256": "3a4056bb4132181169c15ec788e95df76278cb0fb765bbd174affcdcb241c71d",
+      "closure_size": 3,
+      "statement_sha256": "a7cb5732bdfc59c340af5781c095e3afe17979361a3edad3f34a426ce6f6ba4f"
+    },
+    "Toy.ClaimStrength.supported_mono_h_tight": {
+      "closure_sha256": "3a4056bb4132181169c15ec788e95df76278cb0fb765bbd174affcdcb241c71d",
+      "closure_size": 3,
+      "statement_sha256": "6b32b104c43c14b0e7a8293ce410b744d860fd71cdbb20e645c86a0eb92d6267"
+    },
+    "Toy.ClaimStrength.supported_mono_hsub_tight": {
+      "closure_sha256": "3a4056bb4132181169c15ec788e95df76278cb0fb765bbd174affcdcb241c71d",
+      "closure_size": 3,
+      "statement_sha256": "04a1030d865a6774a65183b00c708da14229a9d4b3c0cb5bdfb0be47c9c0d419"
+    },
+    "Toy.ClaimStrength.undetermined_example_pos": {
+      "closure_sha256": "ea1e4472c4c8fc01c5af949bac271729232c82a500e8813fa4cb146c89bf46fd",
+      "closure_size": 5,
+      "statement_sha256": "7f946a431a33279558d798f79da7b0ea254a1bdb01341400a67ba49c69f1db43"
+    },
+    "Toy.ClaimStrength.undetermined_iff_exists_both": {
+      "closure_sha256": "ea1e4472c4c8fc01c5af949bac271729232c82a500e8813fa4cb146c89bf46fd",
+      "closure_size": 5,
+      "statement_sha256": "96ebe91372142f54ddc8de08ae062a3c61490307b5bb92d82e8c3bf20b72d959"
+    },
+    "Toy.ClaimStrength.undetermined_not_upward_closed": {
+      "closure_sha256": "76733e9725311586f866e1d1fe3c7bc27bfa53d13638b63b1fb58d7461ab287f",
+      "closure_size": 6,
+      "statement_sha256": "d13504ecada09c265de8fed987b8d79a3199ed6f172820e066f08965ebc86265"
+    },
+    "Toy.ClaimStrength.uniform_entails_pointwise": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "6540e306cf95a3532e092b59c07d0144790d669645bdeba87b80042384a20016"
+    },
+    "Toy.ClaimStrength.uniform_entails_pointwise_nonvacuous": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "0a564e8ba9920cb628b9a6a2be808e69868c8291a945c26d80803788d0b00109"
+    },
+    "Toy.ClaimStrength.universal_refutation_entails_single_of_nonempty": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "97cd821424e08065e7054c7297af2ff95cb5d72a67f04202b059cb00d542bb4f"
+    },
+    "Toy.ClaimStrength.universal_refutation_nonempty_tight": {
+      "closure_sha256": "cd9532577c46c0bbeeddbe056619d50d244bd87e23b4e301cdc251a9ef96d29e",
+      "closure_size": 2,
+      "statement_sha256": "77b3abadfec6037092a04f019f70ac35db6bf45ccd74d994642ad681b784e370"
+    },
+    "Toy.ClaimStrength.universal_refutation_nonvacuous": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "7ef55bcc2423b0e4a4d8646379c1ae110dfb5f25826685319ec72c11fe714aa3"
+    },
+    "Toy.ClaimStrength.universal_undetermined_until_counterexample": {
+      "closure_sha256": "ea1e4472c4c8fc01c5af949bac271729232c82a500e8813fa4cb146c89bf46fd",
+      "closure_size": 5,
+      "statement_sha256": "a6ac314ac0efa46e1a818c65c9898a0a73084aa19653459ec9dbb15de4f6afb0"
+    },
+    "Toy.ClaimStrength.unsatisfiable_hE_tight": {
+      "closure_sha256": "306266fe3560bb6b0b49c19bf964b6b7a29b9e2c2250f006306ac4df70753a2e",
+      "closure_size": 5,
+      "statement_sha256": "9959c592559dfd5ed42824ea2dca228cf6652c7d1a16b5187ec92d01b10b0440"
+    },
+    "Toy.ClaimStrength.unsatisfiable_nonvacuous": {
+      "closure_sha256": "4f42e09ef3985ce23210d3fcade8c02a9a72152471e1591871fca8f4f7959456",
+      "closure_size": 3,
+      "statement_sha256": "7fd7a0bed3ae668cdc45754ad3082cd3d97c77c3cbcecefa9a2a7183eba642c5"
+    },
+    "Toy.ClaimStrength.unsatisfiable_supported_and_contradicted": {
+      "closure_sha256": "306266fe3560bb6b0b49c19bf964b6b7a29b9e2c2250f006306ac4df70753a2e",
+      "closure_size": 5,
+      "statement_sha256": "f1b222ef6b3da374c4649a96067a19933d8460169f896bb4ca2813dcc917cae4"
+    },
+    "Toy.ClaimStrength.unsupported_not_imply_contradicted": {
+      "closure_sha256": "b1fa6e5978acc19da6e6b1a3035e7f41f92c070c8ba0636a861c978e73f70a15",
+      "closure_size": 4,
+      "statement_sha256": "8878d1c9cf5424bcced480858a4ef7a67bd8081f3547ee1ebad3cbd7a30607fd"
+    },
+    "Toy.ClaimStrength.unsupported_not_imply_contradicted_witness": {
+      "closure_sha256": "b1fa6e5978acc19da6e6b1a3035e7f41f92c070c8ba0636a861c978e73f70a15",
+      "closure_size": 4,
+      "statement_sha256": "ff0b96bd083fb20ab0e5608e110275581e9680784070b5419ef3947ad6e53c13"
+    },
+    "Toy.ClaimStrength.unsupported_of_contradicted_hE_tight": {
+      "closure_sha256": "306266fe3560bb6b0b49c19bf964b6b7a29b9e2c2250f006306ac4df70753a2e",
+      "closure_size": 5,
+      "statement_sha256": "35fe2f31c775aa31d6984c688d1f36cd74d4f3f909380bcddf4ced6e0c6a1ae2"
+    },
+    "Toy.ClaimStrength.unsupported_of_contradicted_hc_tight": {
+      "closure_sha256": "306266fe3560bb6b0b49c19bf964b6b7a29b9e2c2250f006306ac4df70753a2e",
+      "closure_size": 5,
+      "statement_sha256": "d9f5bcdc68549b181cbe3991633da74ee188fd00454ab788e619bce066fe6f8a"
+    },
+    "Toy.ClaimStrength.unsupported_of_contradicted_nonvacuous": {
+      "closure_sha256": "08c5cc1bf680b83f1be3c6b2c8ae5e553b465f441eef0e2bb5ba5fbd9dda30d5",
+      "closure_size": 4,
+      "statement_sha256": "36f37d914184e6b23bcd7ea93983d5e207bc91006fce2e98b889201defe1422d"
+    },
+    "Toy.ClaimStrength.unsupported_of_contradicted_of_satisfiable": {
+      "closure_sha256": "306266fe3560bb6b0b49c19bf964b6b7a29b9e2c2250f006306ac4df70753a2e",
+      "closure_size": 5,
+      "statement_sha256": "a55c86deffaeb19ecac8f3ab0afde68a6f4139d1ccc13bba62a65fa762878354"
+    },
+    "Toy.ClaimStrength.unsupported_of_entails": {
+      "closure_sha256": "d8bad440f0f02cfc4511a289cd00a4bc45a6f3c6de0a3f5e748e3342e99dcfa8",
+      "closure_size": 4,
+      "statement_sha256": "89135e3fd430af04f2be0739fb7e8627e734d55249c59e6d12ec5d3e6eb4f82e"
+    },
+    "Toy.ClaimStrength.unsupported_of_entails_h'_tight": {
+      "closure_sha256": "56dcf6b95c635ee81744ed2e54f9fdb79079fa92d2608b66d96891a794a59331",
+      "closure_size": 6,
+      "statement_sha256": "228be69600d5cccc8bfb3cd498f54519a55639507159540bdcba95ed3c7293a2"
+    },
+    "Toy.ClaimStrength.unsupported_of_entails_h_tight": {
+      "closure_sha256": "b6c98df4dcfe04dad5cf45ebbb0cdeb2bbec586e1fb7a33f3294055ab7fb105f",
+      "closure_size": 5,
+      "statement_sha256": "1bd9d9339890a0b3517c17d2d7be82ba6650756edd703f9ff3f73bb9bbd4417a"
+    },
+    "Toy.ClaimStrength.unsupported_of_entails_nonvacuous": {
+      "closure_sha256": "5816bd6a4bf2d671d1a3c234782bdf4ec3b2892c6e84aafb0f5e94719f73c8d0",
+      "closure_size": 6,
+      "statement_sha256": "5eb25352b2dbe07f76996ddd0b54fbc30f64b3fd05c5481a4aa87cb72466a43d"
+    },
+    "Toy.ClaimStrength.upd": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "98a8635c3280020db56030312f877ae99772c16fd2345b50d6d37f389f675bd2"
+    },
+    "Toy.ClaimStrength.wfB": {
+      "closure_sha256": "80e699e5593b9c9db2b9b20cd9483dc076ec88dc31f6715d124ff50ea0a45262",
+      "closure_size": 5,
+      "statement_sha256": "936d993f3a2222bcd97ce95ebb4f584f0e3f0b8472b9c33a1c2c524b7051f20b"
+    },
+    "Toy.ClaimStrength.wfB_iff": {
+      "closure_sha256": "36f67064ee9411730f6e951d1376f0bb1950889b4855a4b6a9695f76acc1fc75",
+      "closure_size": 10,
+      "statement_sha256": "bb615965b6cbd206791e2100359647cd00b3550e4f482352310dbf29286e3db5"
+    },
+    "Toy.ClaimStrength.worldIndependent_not_undetermined": {
+      "closure_sha256": "7421dddf0aabb1e97d8fc99ba56bda41a9be5b6ce3b955e5e7ca9732714dd055",
+      "closure_size": 6,
+      "statement_sha256": "8c0f461491e79a71ca1d1ed12f1067ffb5b729b654cc96d2059f9e0a8767187d"
+    },
+    "Toy.ClaimStrength.worldIndependent_tight": {
+      "closure_sha256": "7421dddf0aabb1e97d8fc99ba56bda41a9be5b6ce3b955e5e7ca9732714dd055",
+      "closure_size": 6,
+      "statement_sha256": "dcf7b792b7319f840ab649e9c70c567017e1ad997359ad8a953389b00b7e155a"
+    },
+    "Toy.ClaimStrength.zeroChecker": {
+      "closure_sha256": "a82590f90bae108019b632d5482b7ee08c79b30b7f59fc4c5171e3c4b2165571",
+      "closure_size": 2,
+      "statement_sha256": "f3879aa3f9ec90750005d7a367e1ca8efcfff43656cad8bb70fc1be75a5eee2e"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

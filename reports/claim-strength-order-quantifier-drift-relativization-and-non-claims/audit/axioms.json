@@ -1,0 +1,1883 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.ClaimStrength.A": [],
+    "Toy.ClaimStrength.Answer": [],
+    "Toy.ClaimStrength.Answer.casesOn": [],
+    "Toy.ClaimStrength.Answer.contradicted": [],
+    "Toy.ClaimStrength.Answer.contradicted.elim": [],
+    "Toy.ClaimStrength.Answer.contradicted.sizeOf_spec": [],
+    "Toy.ClaimStrength.Answer.ctorElim": [],
+    "Toy.ClaimStrength.Answer.ctorElimType": [],
+    "Toy.ClaimStrength.Answer.ctorIdx": [],
+    "Toy.ClaimStrength.Answer.noConfusion": [],
+    "Toy.ClaimStrength.Answer.noConfusionType": [],
+    "Toy.ClaimStrength.Answer.ofNat": [],
+    "Toy.ClaimStrength.Answer.ofNat_ctorIdx": [],
+    "Toy.ClaimStrength.Answer.rec": [],
+    "Toy.ClaimStrength.Answer.recOn": [],
+    "Toy.ClaimStrength.Answer.supported": [],
+    "Toy.ClaimStrength.Answer.supported.elim": [],
+    "Toy.ClaimStrength.Answer.supported.sizeOf_spec": [],
+    "Toy.ClaimStrength.Answer.undetermined": [],
+    "Toy.ClaimStrength.Answer.undetermined.elim": [],
+    "Toy.ClaimStrength.Answer.undetermined.sizeOf_spec": [],
+    "Toy.ClaimStrength.AnswerKey": [],
+    "Toy.ClaimStrength.BB": [],
+    "Toy.ClaimStrength.Binder": [],
+    "Toy.ClaimStrength.Binder.casesOn": [],
+    "Toy.ClaimStrength.Binder.ctorIdx": [],
+    "Toy.ClaimStrength.Binder.dom": [],
+    "Toy.ClaimStrength.Binder.mk": [],
+    "Toy.ClaimStrength.Binder.mk.inj": [],
+    "Toy.ClaimStrength.Binder.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.Binder.mk.noConfusion": [],
+    "Toy.ClaimStrength.Binder.mk.sizeOf_spec": [],
+    "Toy.ClaimStrength.Binder.noConfusion": [],
+    "Toy.ClaimStrength.Binder.noConfusionType": [],
+    "Toy.ClaimStrength.Binder.q": [],
+    "Toy.ClaimStrength.Binder.rec": [],
+    "Toy.ClaimStrength.Binder.recOn": [],
+    "Toy.ClaimStrength.Binder.var": [],
+    "Toy.ClaimStrength.Checker": [],
+    "Toy.ClaimStrength.Checker.accept": [],
+    "Toy.ClaimStrength.Checker.casesOn": [],
+    "Toy.ClaimStrength.Checker.ctorIdx": [],
+    "Toy.ClaimStrength.Checker.good": [],
+    "Toy.ClaimStrength.Checker.mk": [],
+    "Toy.ClaimStrength.Checker.mk.inj": [],
+    "Toy.ClaimStrength.Checker.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.Checker.mk.noConfusion": [],
+    "Toy.ClaimStrength.Checker.mk.sizeOf_spec": [],
+    "Toy.ClaimStrength.Checker.noConfusion": [],
+    "Toy.ClaimStrength.Checker.noConfusionType": [],
+    "Toy.ClaimStrength.Checker.rec": [],
+    "Toy.ClaimStrength.Checker.recOn": [],
+    "Toy.ClaimStrength.CheckerComplete": [],
+    "Toy.ClaimStrength.CheckerSound": [],
+    "Toy.ClaimStrength.Claim": [],
+    "Toy.ClaimStrength.ClosedUnderEntailmentIn": [],
+    "Toy.ClaimStrength.Cls": [],
+    "Toy.ClaimStrength.Cls.all": [],
+    "Toy.ClaimStrength.Cls.all.elim": [],
+    "Toy.ClaimStrength.Cls.all.sizeOf_spec": [],
+    "Toy.ClaimStrength.Cls.casesOn": [],
+    "Toy.ClaimStrength.Cls.ctorElim": [],
+    "Toy.ClaimStrength.Cls.ctorElimType": [],
+    "Toy.ClaimStrength.Cls.ctorIdx": [],
+    "Toy.ClaimStrength.Cls.empty": [],
+    "Toy.ClaimStrength.Cls.empty.elim": [],
+    "Toy.ClaimStrength.Cls.empty.sizeOf_spec": [],
+    "Toy.ClaimStrength.Cls.noConfusion": [],
+    "Toy.ClaimStrength.Cls.noConfusionType": [],
+    "Toy.ClaimStrength.Cls.ofNat": [],
+    "Toy.ClaimStrength.Cls.ofNat_ctorIdx": [],
+    "Toy.ClaimStrength.Cls.rec": [],
+    "Toy.ClaimStrength.Cls.recOn": [],
+    "Toy.ClaimStrength.Cls.zero": [],
+    "Toy.ClaimStrength.Cls.zero.elim": [],
+    "Toy.ClaimStrength.Cls.zero.sizeOf_spec": [],
+    "Toy.ClaimStrength.Cls.zeroOne": [],
+    "Toy.ClaimStrength.Cls.zeroOne.elim": [],
+    "Toy.ClaimStrength.Cls.zeroOne.sizeOf_spec": [],
+    "Toy.ClaimStrength.Contradicted": [],
+    "Toy.ClaimStrength.Correct": [],
+    "Toy.ClaimStrength.Correct.eq_1": [],
+    "Toy.ClaimStrength.Correct.eq_2": [],
+    "Toy.ClaimStrength.Correct.eq_3": [],
+    "Toy.ClaimStrength.Entails": [],
+    "Toy.ClaimStrength.Establishes": [],
+    "Toy.ClaimStrength.ExDomainsCovariant": [],
+    "Toy.ClaimStrength.ExactlyOne3": [],
+    "Toy.ClaimStrength.ExactlyOne3.eq_1": [],
+    "Toy.ClaimStrength.Frontier": [],
+    "Toy.ClaimStrength.Holds": [],
+    "Toy.ClaimStrength.ImplExact": [],
+    "Toy.ClaimStrength.ImplSound": [],
+    "Toy.ClaimStrength.InclExact": [],
+    "Toy.ClaimStrength.InclSound": [],
+    "Toy.ClaimStrength.InstantiatedDomainsMeet": [],
+    "Toy.ClaimStrength.KeyCorrect": [],
+    "Toy.ClaimStrength.MeetsExact": [],
+    "Toy.ClaimStrength.MeetsSound": [],
+    "Toy.ClaimStrength.Models": [],
+    "Toy.ClaimStrength.NegativeOverReading": [],
+    "Toy.ClaimStrength.NegativeOverReading.eq_1": [],
+    "Toy.ClaimStrength.PositiveOverReading": [],
+    "Toy.ClaimStrength.PositiveOverReading.eq_1": [],
+    "Toy.ClaimStrength.Precedes": [],
+    "Toy.ClaimStrength.Precedes.eq_1": [],
+    "Toy.ClaimStrength.Prefix": [],
+    "Toy.ClaimStrength.PrefixCrit": [],
+    "Toy.ClaimStrength.PrefixCrit.eq_1": [],
+    "Toy.ClaimStrength.Prem": [],
+    "Toy.ClaimStrength.Prem.atMostOne": [],
+    "Toy.ClaimStrength.Prem.atMostOne.elim": [],
+    "Toy.ClaimStrength.Prem.atMostOne.sizeOf_spec": [],
+    "Toy.ClaimStrength.Prem.bot": [],
+    "Toy.ClaimStrength.Prem.bot.elim": [],
+    "Toy.ClaimStrength.Prem.bot.sizeOf_spec": [],
+    "Toy.ClaimStrength.Prem.casesOn": [],
+    "Toy.ClaimStrength.Prem.ctorElim": [],
+    "Toy.ClaimStrength.Prem.ctorElimType": [],
+    "Toy.ClaimStrength.Prem.ctorIdx": [],
+    "Toy.ClaimStrength.Prem.noConfusion": [],
+    "Toy.ClaimStrength.Prem.noConfusionType": [],
+    "Toy.ClaimStrength.Prem.ofNat": [],
+    "Toy.ClaimStrength.Prem.ofNat_ctorIdx": [],
+    "Toy.ClaimStrength.Prem.rec": [],
+    "Toy.ClaimStrength.Prem.recOn": [],
+    "Toy.ClaimStrength.Prem.top": [],
+    "Toy.ClaimStrength.Prem.top.elim": [],
+    "Toy.ClaimStrength.Prem.top.sizeOf_spec": [],
+    "Toy.ClaimStrength.PremiseContravariant": [],
+    "Toy.ClaimStrength.PremiseContravariant.eq_1": [],
+    "Toy.ClaimStrength.Quant": [],
+    "Toy.ClaimStrength.Quant.all": [],
+    "Toy.ClaimStrength.Quant.all.elim": [],
+    "Toy.ClaimStrength.Quant.all.sizeOf_spec": [],
+    "Toy.ClaimStrength.Quant.casesOn": [],
+    "Toy.ClaimStrength.Quant.ctorElim": [],
+    "Toy.ClaimStrength.Quant.ctorElimType": [],
+    "Toy.ClaimStrength.Quant.ctorIdx": [],
+    "Toy.ClaimStrength.Quant.ex": [],
+    "Toy.ClaimStrength.Quant.ex.elim": [],
+    "Toy.ClaimStrength.Quant.ex.sizeOf_spec": [],
+    "Toy.ClaimStrength.Quant.noConfusion": [],
+    "Toy.ClaimStrength.Quant.noConfusionType": [],
+    "Toy.ClaimStrength.Quant.ofNat": [],
+    "Toy.ClaimStrength.Quant.ofNat_ctorIdx": [],
+    "Toy.ClaimStrength.Quant.rec": [],
+    "Toy.ClaimStrength.Quant.recOn": [],
+    "Toy.ClaimStrength.RCrit": [],
+    "Toy.ClaimStrength.RCrit.eq_1": [],
+    "Toy.ClaimStrength.REntails": [],
+    "Toy.ClaimStrength.SEntails": [],
+    "Toy.ClaimStrength.SEntailsAt": [],
+    "Toy.ClaimStrength.Satisfiable": [],
+    "Toy.ClaimStrength.Shape": [],
+    "Toy.ClaimStrength.Shape.casesOn": [],
+    "Toy.ClaimStrength.Shape.ctorIdx": [],
+    "Toy.ClaimStrength.Shape.mk": [],
+    "Toy.ClaimStrength.Shape.mk.inj": [],
+    "Toy.ClaimStrength.Shape.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.Shape.mk.noConfusion": [],
+    "Toy.ClaimStrength.Shape.mk.sizeOf_spec": [],
+    "Toy.ClaimStrength.Shape.noConfusion": [],
+    "Toy.ClaimStrength.Shape.noConfusionType": [],
+    "Toy.ClaimStrength.Shape.pre": [],
+    "Toy.ClaimStrength.Shape.prem": [],
+    "Toy.ClaimStrength.Shape.rec": [],
+    "Toy.ClaimStrength.Shape.recOn": [],
+    "Toy.ClaimStrength.ShapeNF": [],
+    "Toy.ClaimStrength.SkolemOrderPreserved": [],
+    "Toy.ClaimStrength.SkolemOrderPreserved.eq_1": [],
+    "Toy.ClaimStrength.Supported": [],
+    "Toy.ClaimStrength.TwoPoint": [],
+    "Toy.ClaimStrength.UnderReading": [],
+    "Toy.ClaimStrength.UnderReading.eq_1": [],
+    "Toy.ClaimStrength.Undetermined": [],
+    "Toy.ClaimStrength.Undetermined.eq_1": [],
+    "Toy.ClaimStrength.UnivDomainsContravariant": [],
+    "Toy.ClaimStrength.UnivReflected": [],
+    "Toy.ClaimStrength.UnivReflected.eq_1": [],
+    "Toy.ClaimStrength.WF": [],
+    "Toy.ClaimStrength.WF.eq_1": [],
+    "Toy.ClaimStrength.WorldIndependent": [],
+    "Toy.ClaimStrength.X": [],
+    "Toy.ClaimStrength.absolute_entails_relative": [],
+    "Toy.ClaimStrength.absolute_entails_relative_nonvacuous": [],
+    "Toy.ClaimStrength.acceptAll": [],
+    "Toy.ClaimStrength.allTwoB": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.allTwo_of_B": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.andTable": [],
+    "Toy.ClaimStrength.andTable.eq_1": [],
+    "Toy.ClaimStrength.andTable.eq_2": [],
+    "Toy.ClaimStrength.andTable.eq_3": [],
+    "Toy.ClaimStrength.andTable.eq_4": [],
+    "Toy.ClaimStrength.andTable.eq_5": [],
+    "Toy.ClaimStrength.andTable.match_1": [],
+    "Toy.ClaimStrength.andTable_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.andTable_example_pos": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.andTable_realizable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.andTable_realizable.match_1_1": [],
+    "Toy.ClaimStrength.andTable_undetermined_cell_distinct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.andTable_undetermined_cell_distinct.match_1_1": [],
+    "Toy.ClaimStrength.and_answer_hE_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.and_answer_hE_tight.match_1_1": [],
+    "Toy.ClaimStrength.and_answer_h_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.and_answer_h\u2081_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.and_answer_h\u2082_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.and_answer_mem_andTable_of_satisfiable": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.and_answer_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.answer_changes_ha'_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.answer_changes_ha_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.answer_changes_hsat_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.answer_changes_hsub_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.answer_changes_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.answer_changes_only_from_undetermined_of_satisfiable": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.bOf": [],
+    "Toy.ClaimStrength.bOf.eq_1": [],
+    "Toy.ClaimStrength.bOf.eq_2": [],
+    "Toy.ClaimStrength.bOf.eq_def": [],
+    "Toy.ClaimStrength.bOf.match_1": [],
+    "Toy.ClaimStrength.bOf_cons_eq": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.bOf_cons_ne": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.bOf_eq_none": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.bOf_eraseVar_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.bOf_eraseVar_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.bOf_eraseVar_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.bOf_of_mem": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.bOf_some": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.bool_twoPoint": [],
+    "Toy.ClaimStrength.bvars": [],
+    "Toy.ClaimStrength.bvars.eq_1": [],
+    "Toy.ClaimStrength.bvars_cons": [],
+    "Toy.ClaimStrength.bvars_eraseVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.candidates": [],
+    "Toy.ClaimStrength.candidates.eq_1": [],
+    "Toy.ClaimStrength.canon": [],
+    "Toy.ClaimStrength.canon.eq_1": [],
+    "Toy.ClaimStrength.canon.eq_2": [],
+    "Toy.ClaimStrength.canon.eq_3": [],
+    "Toy.ClaimStrength.canon.match_1": [],
+    "Toy.ClaimStrength.canon_correct": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.characterization_entails_sufficient": [],
+    "Toy.ClaimStrength.characterization_entails_sufficient_nonvacuous": [],
+    "Toy.ClaimStrength.checkerComplete_example_neg": [],
+    "Toy.ClaimStrength.checkerComplete_example_pos": [],
+    "Toy.ClaimStrength.checkerSound_example_neg": [],
+    "Toy.ClaimStrength.checkerSound_example_pos": [],
+    "Toy.ClaimStrength.checker_complete_not_sound": [],
+    "Toy.ClaimStrength.checker_complete_not_sound_witness": [],
+    "Toy.ClaimStrength.checker_sound_complete_entails_sound": [],
+    "Toy.ClaimStrength.checker_sound_complete_nonvacuous": [],
+    "Toy.ClaimStrength.checker_sound_not_complete": [],
+    "Toy.ClaimStrength.checker_sound_not_complete_witness": [],
+    "Toy.ClaimStrength.closed_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.closed_example_pos": [],
+    "Toy.ClaimStrength.closed_forall_imp_exists_iff_nonempty": [],
+    "Toy.ClaimStrength.closed_forall_imp_exists_iff_nonempty.match_1_1": [],
+    "Toy.ClaimStrength.closed_forall_imp_exists_iff_nonempty.match_1_3": [],
+    "Toy.ClaimStrength.clsI": [],
+    "Toy.ClaimStrength.clsI.eq_1": [],
+    "Toy.ClaimStrength.clsI.eq_2": [],
+    "Toy.ClaimStrength.clsI.eq_3": [],
+    "Toy.ClaimStrength.clsI.eq_4": [],
+    "Toy.ClaimStrength.clsI.match_1": [],
+    "Toy.ClaimStrength.clsIncl": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsIncl.eq_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsIncl.eq_2": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsIncl.eq_3": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsIncl.eq_4": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsIncl.eq_5": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsIncl.eq_6": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsIncl.eq_7": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsIncl.eq_8": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsIncl.match_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsIncl_exact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsMeets": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsMeets.eq_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsMeets.eq_2": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsMeets.eq_3": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsMeets.match_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsMeets_exact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsMeets_exact.match_1_10": [],
+    "Toy.ClaimStrength.clsMeets_exact.match_1_12": [],
+    "Toy.ClaimStrength.clsMeets_exact.match_1_14": [],
+    "Toy.ClaimStrength.clsMeets_exact.match_1_16": [],
+    "Toy.ClaimStrength.clsMeets_exact.match_1_18": [],
+    "Toy.ClaimStrength.clsMeets_exact.match_1_21": [],
+    "Toy.ClaimStrength.clsMeets_exact.match_1_23": [],
+    "Toy.ClaimStrength.clsTwo": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.clsTwo.match_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.conj_premise_not_disj": [],
+    "Toy.ClaimStrength.conj_premise_not_disj_witness": [],
+    "Toy.ClaimStrength.contradicted_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.contradicted_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.contradicted_iff_supported_not": [],
+    "Toy.ClaimStrength.contradicted_jointly_without_single_claim": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.contradicted_mono": [],
+    "Toy.ClaimStrength.contradicted_mono_h_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.contradicted_mono_hsub_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.contradicted_nil_iff": [],
+    "Toy.ClaimStrength.contradicted_of_mem_entails_not": [],
+    "Toy.ClaimStrength.contradicted_of_mem_hc_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.contradicted_of_mem_hneg_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.contradicted_of_mem_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.correct_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.correct_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.correct_nil_of_bool": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.correct_nil_of_bool.match_1_1": [],
+    "Toy.ClaimStrength.correct_unique_hE_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.correct_unique_hE_tight.match_1_1": [],
+    "Toy.ClaimStrength.correct_unique_ha_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.correct_unique_hb_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.correct_unique_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.correct_unique_of_satisfiable": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.counterexample_in_class_not_in_subclass": [],
+    "Toy.ClaimStrength.counterexample_in_class_not_in_subclass_witness": [],
+    "Toy.ClaimStrength.counterexample_in_subclass_lifts": [],
+    "Toy.ClaimStrength.counterexample_in_subclass_lifts.match_1_1": [],
+    "Toy.ClaimStrength.counterexample_in_subclass_lifts_h_tight": [],
+    "Toy.ClaimStrength.counterexample_in_subclass_lifts_nonvacuous": [],
+    "Toy.ClaimStrength.disj_premise_entails_conj": [],
+    "Toy.ClaimStrength.disj_premise_entails_conj_nonvacuous": [],
+    "Toy.ClaimStrength.domain_variance_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.emptyI": [],
+    "Toy.ClaimStrength.emptyJ": [],
+    "Toy.ClaimStrength.empty\u03c6": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.empty\u03c6.eq_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.empty\u03c8": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.empty\u03c8.eq_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.endorsement_respects_equivalence": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.endorsement_respects_equivalence_h\u2081_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.endorsement_respects_equivalence_h\u2082_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.endorsement_respects_equivalence_nonvacuous": [],
+    "Toy.ClaimStrength.entails_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.entails_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.entails_refl": [],
+    "Toy.ClaimStrength.entails_trans": [],
+    "Toy.ClaimStrength.eraseVar": [],
+    "Toy.ClaimStrength.eraseVar.eq_1": [],
+    "Toy.ClaimStrength.eraseVar_cons_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.eraseVar_cons_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.eraseVar_head": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.eraseVar_of_not_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.establishes_answer_key": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.establishes_answer_key_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.establishes_answer_key_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.establishes_contradicted_h_tight": [],
+    "Toy.ClaimStrength.establishes_contradicted_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.establishes_contradicted_of_unsupported": [],
+    "Toy.ClaimStrength.establishes_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.establishes_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.establishes_undetermined_key_never_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.establishes_worldIndependent": [],
+    "Toy.ClaimStrength.eval": [],
+    "Toy.ClaimStrength.eval.eq_1": [],
+    "Toy.ClaimStrength.evalR": [],
+    "Toy.ClaimStrength.evalR.match_1": [],
+    "Toy.ClaimStrength.evalR_agree": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_agree.match_1_1": [],
+    "Toy.ClaimStrength.evalR_all_front": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_all_front.match_1_1": [],
+    "Toy.ClaimStrength.evalR_elim_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_elim_all.match_1_1": [],
+    "Toy.ClaimStrength.evalR_env_irrelevant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_env_irrelevant.match_1_1": [],
+    "Toy.ClaimStrength.evalR_intro_ex": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_intro_ex.match_1_1": [],
+    "Toy.ClaimStrength.evalR_keepVars": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_keepVars.match_1_1": [],
+    "Toy.ClaimStrength.evalR_mono": [],
+    "Toy.ClaimStrength.evalR_mono.match_1_1": [],
+    "Toy.ClaimStrength.evalR_of_empty_univ": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_of_empty_univ.match_1_1": [],
+    "Toy.ClaimStrength.evalR_of_valid": [],
+    "Toy.ClaimStrength.evalR_of_valid.match_1_1": [],
+    "Toy.ClaimStrength.evalR_only_two_vars": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_only_two_vars_free": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_only_var": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_premise_pull_out": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_premise_pull_out.match_1_1": [],
+    "Toy.ClaimStrength.evalR_premise_pull_out_hind_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_premise_pull_out_hne_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_premise_pull_out_hne_tight.match_1_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.evalR_premise_pull_out_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.eval_cons_all": [],
+    "Toy.ClaimStrength.eval_cons_ex": [],
+    "Toy.ClaimStrength.eval_cons_ex.match_1_1": [],
+    "Toy.ClaimStrength.eval_cons_ex.match_1_3": [],
+    "Toy.ClaimStrength.eval_env_irrelevant_hcov_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.eval_env_irrelevant_of_covers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.eval_env_irrelevant_of_covers_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.eval_example_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.eval_example_pos": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.eval_iff_holds": [],
+    "Toy.ClaimStrength.eval_nil": [],
+    "Toy.ClaimStrength.eval_subsingleton": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.eval_subsingleton.match_1_1": [],
+    "Toy.ClaimStrength.eval_subsingleton_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.evenChecker": [],
+    "Toy.ClaimStrength.exDomains_eraseVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exDomains_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exDomains_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exDomains_iff_pairAllB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exTwoB": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.exTwo_of_B": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exactlyOne3_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.exactlyOne3_example_pos": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.exactlyOne_answer_iff_satisfiable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exactlyOne_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exists_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exists_domain_entails_iff": [],
+    "Toy.ClaimStrength.exists_forall_sentails_forall_exists": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exists_frontier_below": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exists_frontier_below_hns_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.exists_frontier_below_hq_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exists_frontier_below_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.exists_not_sentails_forall": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.exists_weakest": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.exists_weakest.match_1_1": [],
+    "Toy.ClaimStrength.exists_weakest_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.exists_weakest_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.fin1_eq_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.fin2_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.forall_domain_entails_iff": [],
+    "Toy.ClaimStrength.forall_exists_not_sentails_exists_forall": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.forall_exists_not_sentails_exists_forall_witness": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.forall_sentails_exists": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.frontier_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.frontier_example_pos": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.frontier_test_detects_overreading": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.frontier_test_hclosed_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.frontier_test_hfront_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.frontier_test_no_positiveOverReading": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.frontier_test_no_positiveOverReading.match_1_1": [],
+    "Toy.ClaimStrength.frontier_test_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.frontier_test_outside_candidates": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.holds_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.holds_example_pos": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.holds_premise_on_existential_trivial": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.holds_single": [],
+    "Toy.ClaimStrength.implExact_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.implExact_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.implSound_example_neg": [],
+    "Toy.ClaimStrength.implSound_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.implSound_premImpl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.inclExact_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.inclExact_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.inclSound_example_neg": [],
+    "Toy.ClaimStrength.inclSound_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.incorrect_iff_reading_error": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.instDecidableEqAnswer": [],
+    "Toy.ClaimStrength.instDecidableEqCls": [],
+    "Toy.ClaimStrength.instDecidableEqPrem": [],
+    "Toy.ClaimStrength.instDecidableEqQuant": [],
+    "Toy.ClaimStrength.instDecidablePrecedes": [],
+    "Toy.ClaimStrength.instReprAnswer": [],
+    "Toy.ClaimStrength.instReprAnswer.repr": [],
+    "Toy.ClaimStrength.instReprAnswer.repr.match_1": [],
+    "Toy.ClaimStrength.instReprCls": [],
+    "Toy.ClaimStrength.instReprCls.repr": [],
+    "Toy.ClaimStrength.instReprCls.repr.match_1": [],
+    "Toy.ClaimStrength.instReprPrem": [],
+    "Toy.ClaimStrength.instReprPrem.repr": [],
+    "Toy.ClaimStrength.instReprPrem.repr.match_1": [],
+    "Toy.ClaimStrength.instReprQuant": [],
+    "Toy.ClaimStrength.instReprQuant.repr": [],
+    "Toy.ClaimStrength.instReprQuant.repr.match_1": [],
+    "Toy.ClaimStrength.keepVars": [],
+    "Toy.ClaimStrength.keepVars.eq_1": [],
+    "Toy.ClaimStrength.keepVars_congr": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.keepVars_congr.match_1_1": [],
+    "Toy.ClaimStrength.keepVars_cons_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.keepVars_cons_pos": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.keepVars_nil_of": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.keepVars_nil_of.match_1_1": [],
+    "Toy.ClaimStrength.keepVars_pair": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.keepVars_pair.match_1_1": [],
+    "Toy.ClaimStrength.keepVars_single": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.keepVars_single.match_1_1": [],
+    "Toy.ClaimStrength.keyCorrect_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.keyCorrect_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.length_eraseVar_le": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.length_eraseVar_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.meet_eraseVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.meet_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.meet_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.meet_iff_pairAllB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.meetsExact_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.meetsExact_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.meetsSound_example_neg": [],
+    "Toy.ClaimStrength.meetsSound_example_neg.match_1_1": [],
+    "Toy.ClaimStrength.meetsSound_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.mem_bvars_eraseVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.mem_bvars_of_bOf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.models_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.models_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.models_nil": [],
+    "Toy.ClaimStrength.mono_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.nat_nonempty": [],
+    "Toy.ClaimStrength.nat_pointwise_bound_not_uniform": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.negAnswer": [],
+    "Toy.ClaimStrength.negAnswer.match_1": [],
+    "Toy.ClaimStrength.negAnswer_example_neg": [],
+    "Toy.ClaimStrength.negAnswer_example_pos": [],
+    "Toy.ClaimStrength.neg_answer_correct": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.neg_answer_h_tight": [],
+    "Toy.ClaimStrength.neg_answer_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.negativeOverReading_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.negativeOverReading_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.nil_of_no_vars": [],
+    "Toy.ClaimStrength.nodup_cons_iff": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.nodup_eraseVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.nonempty_domains_h2\u03c6_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.nonempty_domains_h2\u03c8_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.nonempty_domains_hE_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.nonempty_domains_hp\u03c8_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.nonempty_domains_h\u03b1_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.nonempty_domains_h\u03b1_tight.match_1_1": [],
+    "Toy.ClaimStrength.nonempty_domains_h\u03b1_tight.match_1_3": [],
+    "Toy.ClaimStrength.nonempty_domains_h\u03b1_tight.match_1_7": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.nonempty_domains_of_rEntails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.nonempty_domains_of_rEntails.match_1_1": [],
+    "Toy.ClaimStrength.not_evalR_of_empty_ex": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.not_evalR_of_empty_ex.match_1_1": [],
+    "Toy.ClaimStrength.not_evalR_of_unsat": [],
+    "Toy.ClaimStrength.not_evalR_of_unsat.match_1_1": [],
+    "Toy.ClaimStrength.not_twoPoint_empty": [],
+    "Toy.ClaimStrength.not_twoPoint_empty.match_1_1": [],
+    "Toy.ClaimStrength.not_twoPoint_zero": [],
+    "Toy.ClaimStrength.not_twoPoint_zero.match_1_1": [],
+    "Toy.ClaimStrength.not_undetermined_of_unique_model": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.not_undetermined_of_unique_model_hu_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.not_undetermined_of_unique_model_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.nv\u03c6": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.nv\u03c6D": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.nv\u03c8": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.nv\u03c8D": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.nv\u03c8Top": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.orTable": [],
+    "Toy.ClaimStrength.orTable.eq_1": [],
+    "Toy.ClaimStrength.orTable.eq_2": [],
+    "Toy.ClaimStrength.orTable.eq_3": [],
+    "Toy.ClaimStrength.orTable.eq_4": [],
+    "Toy.ClaimStrength.orTable.eq_5": [],
+    "Toy.ClaimStrength.orTable.match_1": [],
+    "Toy.ClaimStrength.orTable_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.orTable_example_pos": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.orTable_realizable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.orTable_realizable.match_1_1": [],
+    "Toy.ClaimStrength.orTable_undetermined_cell_distinct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.orTable_undetermined_cell_distinct.match_1_1": [],
+    "Toy.ClaimStrength.or_answer_hE_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.or_answer_hE_tight.match_1_1": [],
+    "Toy.ClaimStrength.or_answer_h_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.or_answer_h\u2081_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.or_answer_h\u2082_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.or_answer_mem_orTable_of_satisfiable": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.or_answer_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.or_answer_nonvacuous.match_1_1": [],
+    "Toy.ClaimStrength.pairAllB": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.pairAllB.eq_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.pairAllB.match_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.pairAllB_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.pointwise_bound_not_uniform": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.positiveOverReading_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.positiveOverReading_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.precL": [],
+    "Toy.ClaimStrength.precL.eq_1": [],
+    "Toy.ClaimStrength.precL.eq_2": [],
+    "Toy.ClaimStrength.precL.eq_def": [],
+    "Toy.ClaimStrength.precL.match_1": [],
+    "Toy.ClaimStrength.precL_antisymm": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.precL_cons_ne": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.precL_filter": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.precL_head": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.precL_mem_left": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.precL_mem_right": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.precL_total": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.precedes_eraseVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.precedes_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.precedes_example_pos": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCritB": [],
+    "Toy.ClaimStrength.prefixCritB.eq_1": [],
+    "Toy.ClaimStrength.prefixCritB_exists_forall": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCritB_exists_forall_forall_exists": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCritB_forall_exists": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCritB_forall_exists_exists_forall": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCritB_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCritB_renamed_false": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_eraseVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_necessary_h_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_necessary_h\u03b1_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_necessary_h\u03b1_tight.match_1_1": [],
+    "Toy.ClaimStrength.prefixCrit_necessary_h\u03c6_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_necessary_h\u03c8_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_necessary_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_necessary_of_two_point_nodup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_part_i_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_part_ii_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_sound_h\u03c6_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_sound_h\u03c8_tight_dup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_sound_h\u03c8_tight_missing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_sound_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.prefixCrit_sound_of_nodup_wf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.premImpl": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.premImpl.eq_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.premImpl.eq_2": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.premImpl.eq_3": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.premImpl.eq_4": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.premImpl.match_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.premImpl_exact": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.premJ": [],
+    "Toy.ClaimStrength.premJ.eq_1": [],
+    "Toy.ClaimStrength.premJ.eq_2": [],
+    "Toy.ClaimStrength.premJ.eq_3": [],
+    "Toy.ClaimStrength.premJ.match_1": [],
+    "Toy.ClaimStrength.premise_entails_iff": [],
+    "Toy.ClaimStrength.premise_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.premise_example_pos": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.qOf": [],
+    "Toy.ClaimStrength.qOf.eq_1": [],
+    "Toy.ClaimStrength.qOf_eq_some": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.qOf_eraseVar_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.qOf_eraseVar_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.qOf_of_bOf": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.qStrong": [],
+    "Toy.ClaimStrength.qStrong.eq_1": [],
+    "Toy.ClaimStrength.qStrong_entails_qWeak": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.qStrong_ne_qTriv": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.qStrong_ne_qWeak": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.qStrong_unsupported": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.qTriv": [],
+    "Toy.ClaimStrength.qTriv.eq_1": [],
+    "Toy.ClaimStrength.qWeak": [],
+    "Toy.ClaimStrength.qWeak.eq_1": [],
+    "Toy.ClaimStrength.qWeak_ne_qTriv": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.qWeak_not_entails_qStrong": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.qWeak_unsupported": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.quantify": [],
+    "Toy.ClaimStrength.quantify_congr": [],
+    "Toy.ClaimStrength.quantify_const": [],
+    "Toy.ClaimStrength.quantify_const.match_1_1": [],
+    "Toy.ClaimStrength.quantify_mono": [],
+    "Toy.ClaimStrength.rEntails_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.rEntails_example_pos": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.rEntails_of_isEmpty": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.rEntails_of_isEmpty_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.range_entails_single": [],
+    "Toy.ClaimStrength.range_entails_single_nonvacuous": [],
+    "Toy.ClaimStrength.rcritB": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcritB.eq_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcritB_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_complete_hE_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_complete_h\u03b1_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_complete_h\u03b1_tight.match_1_1": [],
+    "Toy.ClaimStrength.rcrit_complete_h\u03b1_tight.match_1_3": [],
+    "Toy.ClaimStrength.rcrit_complete_h\u03b1_tight.match_1_5": [],
+    "Toy.ClaimStrength.rcrit_complete_h\u03b1_tight.match_1_7": [],
+    "Toy.ClaimStrength.rcrit_complete_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_complete_nonvacuous_free_variable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_complete_of_nonempty_domains": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_complete_polarized_two_point_premise_free": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_complete_two_point_premise_free": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_complete_two_point_premise_free.match_1_1": [],
+    "Toy.ClaimStrength.rcrit_ex_domain_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_empty_domain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_empty_universal_domain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_false_target_premise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_in_normal_form": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_inexact_impl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_inexact_incl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_inexact_meets": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_not_wf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_not_wf_target": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_premise_as_domain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_redundant_existential_premise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_singleton_domain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_singleton_existential": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_singleton_universal": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_target_premise_as_domain": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_incomplete_target_premise_on_existential": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_meet_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_part_i_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_part_ii_tight": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_premise_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound_aux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound_hI_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound_hJ_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound_hM_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound_h\u03c6_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound_h\u03c6_tight_missing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound_h\u03c8_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound_h\u03c8_tight_missing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_sound_nonvacuous_domains": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rcrit_univ_domain_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.rejectAll": [],
+    "Toy.ClaimStrength.relative_entails_absolute_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.relative_not_absolute": [],
+    "Toy.ClaimStrength.relative_not_absolute_witness": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.relative_to_assumption_not_absolute": [],
+    "Toy.ClaimStrength.relative_to_assumption_not_absolute_witness": [],
+    "Toy.ClaimStrength.sameVars_eraseVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.satisfiable_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.satisfiable_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.satisfiable_of_not_contradicted": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.satisfiable_of_unsupported": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_iff_fixed_env_of_covers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_iff_h\u03b1_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_iff_h\u03c6_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_iff_h\u03c8_tight_dup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_iff_h\u03c8_tight_missing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_iff_prefixCritB_of_two_point_nodup_wf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_iff_prefixCrit_of_two_point_nodup_wf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_of_isEmpty": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_of_isEmpty_nonvacuous": [],
+    "Toy.ClaimStrength.sentailsAt_of_isEmpty_nonvacuous.match_1_1": [],
+    "Toy.ClaimStrength.sentailsAt_of_isEmpty_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_of_subsingleton": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentailsAt_of_subsingleton_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentails_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentails_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentails_iff_h\u03c6_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentails_iff_h\u03c8_tight_dup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentails_iff_h\u03c8_tight_missing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentails_iff_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentails_iff_prefixCrit_of_nodup_wf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sentails_iff_twoPoint_types": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.shadowed_exists_forall_sentailsAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.shapeNF_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.shapeNF_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.single_counterexample_not_universal": [],
+    "Toy.ClaimStrength.single_counterexample_not_universal_witness": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.single_parameter_not_range": [],
+    "Toy.ClaimStrength.single_parameter_not_range_witness": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.skolemOrder_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.skolemOrder_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.subsingleton_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.sufficient_not_characterization": [],
+    "Toy.ClaimStrength.sufficient_not_characterization_witness": [],
+    "Toy.ClaimStrength.sufficient_not_converse": [],
+    "Toy.ClaimStrength.sufficient_not_converse_witness": [],
+    "Toy.ClaimStrength.supported_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.supported_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.supported_mono": [],
+    "Toy.ClaimStrength.supported_mono_h_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.supported_mono_hsub_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.supported_nil_iff": [],
+    "Toy.ClaimStrength.toShape": [],
+    "Toy.ClaimStrength.trivI": [],
+    "Toy.ClaimStrength.trivJ": [],
+    "Toy.ClaimStrength.twoPoint_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.twoPoint_example_neg": [],
+    "Toy.ClaimStrength.twoPoint_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.twoPoint_of_clsTwo": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.twoPoint_zeroOne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.underReading_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.underReading_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.undetermined_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.undetermined_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.undetermined_iff_exists_both": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.undetermined_not_upward_closed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.uniform_entails_pointwise": [],
+    "Toy.ClaimStrength.uniform_entails_pointwise.match_1_1": [],
+    "Toy.ClaimStrength.uniform_entails_pointwise_nonvacuous": [],
+    "Toy.ClaimStrength.univDomains_eraseVar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.univDomains_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.univDomains_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.univDomains_iff_pairAllB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.univReflected_example_neg": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.univReflected_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.universal_refutation_entails_single_of_nonempty": [],
+    "Toy.ClaimStrength.universal_refutation_entails_single_of_nonempty.match_1_1": [],
+    "Toy.ClaimStrength.universal_refutation_nonempty_tight": [],
+    "Toy.ClaimStrength.universal_refutation_nonempty_tight.match_1_1": [],
+    "Toy.ClaimStrength.universal_refutation_nonempty_tight.match_1_3": [],
+    "Toy.ClaimStrength.universal_refutation_nonempty_tight.match_1_5": [],
+    "Toy.ClaimStrength.universal_refutation_nonvacuous": [],
+    "Toy.ClaimStrength.universal_undetermined_until_counterexample": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.unsatisfiable_hE_tight": [],
+    "Toy.ClaimStrength.unsatisfiable_nonvacuous": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.unsatisfiable_nonvacuous.match_1_1": [],
+    "Toy.ClaimStrength.unsatisfiable_supported_and_contradicted": [],
+    "Toy.ClaimStrength.unsupported_not_imply_contradicted": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.unsupported_not_imply_contradicted_witness": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.unsupported_of_contradicted_hE_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.unsupported_of_contradicted_hE_tight.match_1_1": [],
+    "Toy.ClaimStrength.unsupported_of_contradicted_hc_tight": [],
+    "Toy.ClaimStrength.unsupported_of_contradicted_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.unsupported_of_contradicted_of_satisfiable": [],
+    "Toy.ClaimStrength.unsupported_of_contradicted_of_satisfiable.match_1_1": [],
+    "Toy.ClaimStrength.unsupported_of_entails": [],
+    "Toy.ClaimStrength.unsupported_of_entails_h'_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.unsupported_of_entails_h_tight": [],
+    "Toy.ClaimStrength.unsupported_of_entails_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.upd": [],
+    "Toy.ClaimStrength.upd.eq_1": [],
+    "Toy.ClaimStrength.upd_comm": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.upd_ne": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.upd_same": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.upd_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.wfB": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.wfB.eq_1": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.wfB_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.wf_example_neg_dup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.wf_example_neg_missing": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.wf_example_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.worldIndependent_example_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.worldIndependent_example_pos": [],
+    "Toy.ClaimStrength.worldIndependent_not_undetermined": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ClaimStrength.worldIndependent_tight": [
+      "propext"
+    ],
+    "Toy.ClaimStrength.zeroChecker": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

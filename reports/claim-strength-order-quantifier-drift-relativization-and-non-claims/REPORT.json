@@ -1,0 +1,88 @@
+{
+  "topics": [
+    "lean",
+    "lean/mechanization",
+    "verification",
+    "verification/formalized-results",
+    "verification/claim-strength",
+    "verification/quantifier-prefix-entailment",
+    "verification/summary-over-reading"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Backdoor Sets of Quantified Boolean Formulas",
+      "identity": {
+        "doi": "10.1007/s10817-008-9114-5"
+      }
+    },
+    {
+      "name": "Quantifier Reordering for QBF",
+      "identity": {
+        "doi": "10.1007/s10817-015-9353-1"
+      }
+    },
+    {
+      "name": "Henkin quantifiers and Boolean formulae: A certification perspective of DQBF",
+      "identity": {
+        "doi": "10.1016/j.tcs.2013.12.020"
+      }
+    },
+    {
+      "name": "Finite partially-ordered quantification",
+      "identity": {
+        "doi": "10.2307/2271440"
+      }
+    },
+    {
+      "name": "Soundness and Completeness of an Axiom System for Program Verification",
+      "identity": {
+        "doi": "10.1137/0207005"
+      }
+    },
+    {
+      "name": "Singular Terms, Truth-Value Gaps, and Free Logic",
+      "identity": {
+        "doi": "10.2307/2024549"
+      }
+    },
+    {
+      "name": "Vagueness, truth and logic",
+      "identity": {
+        "doi": "10.1007/BF00485047"
+      }
+    },
+    {
+      "name": "Resolution of quantifier scope ambiguities",
+      "identity": {
+        "doi": "10.1016/0010-0277(93)90042-T"
+      }
+    },
+    {
+      "name": "A large annotated corpus for learning natural language inference",
+      "identity": {
+        "doi": "10.18653/v1/D15-1075"
+      }
+    },
+    {
+      "name": "FEVER: a Large-scale Dataset for Fact Extraction and VERification",
+      "identity": {
+        "doi": "10.18653/v1/N18-1074"
+      }
+    },
+    {
+      "name": "Generalization as search",
+      "identity": {
+        "doi": "10.1016/0004-3702(82)90040-6"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

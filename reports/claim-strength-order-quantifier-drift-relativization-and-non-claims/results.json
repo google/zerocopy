@@ -1,0 +1,1578 @@
+[
+ {
+  "id": "three-answers-exactly-one-iff-satisfiable",
+  "lean": [
+   "Toy.ClaimStrength.exactlyOne_answer_iff_satisfiable",
+   "Toy.ClaimStrength.unsatisfiable_supported_and_contradicted",
+   "Toy.ClaimStrength.correct_unique_of_satisfiable",
+   "Toy.ClaimStrength.exists_correct",
+   "Toy.ClaimStrength.incorrect_iff_reading_error"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "reference_point": true,
+  "tier_justification": "Textbook classification of a sentence relative to a theory (entailed, refuted, independent) restated for reports; the same three labels are used by natural-language-inference and fact-verification datasets.",
+  "plain_claim": "For every report E and claim q: exactly one of Supported E q, Contradicted E q, Undetermined E q holds if and only if E is satisfiable. If E is unsatisfiable, then q is both supported and contradicted. If E is satisfiable and both a and b are correct answers about q, then a = b. Some answer is always correct. For every E, q, a: a is incorrect iff a is a positive over-reading (answering supported for an unsupported claim), a negative over-reading (answering contradicted for a claim that is not contradicted), or an under-reading (answering undetermined for a claim that is supported or contradicted).",
+  "hypotheses": [
+   {
+    "name": "hE : ¬ Satisfiable E (in unsatisfiable_supported_and_contradicted)",
+    "purpose": "with a satisfiable report the conclusion fails: the empty report does not contradict True",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.unsatisfiable_hE_tight"
+    ],
+    "witness_class": "the empty report over Nat"
+   },
+   {
+    "name": "hE : Satisfiable E (in correct_unique_of_satisfiable)",
+    "purpose": "over an unsatisfiable report both supported and contradicted are correct, so two different answers are correct",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.correct_unique_hE_tight"
+    ],
+    "witness_class": "the unsatisfiable one-claim report [False] over Nat"
+   },
+   {
+    "name": "ha : Correct E q a (in correct_unique_of_satisfiable)",
+    "purpose": "an incorrect answer a can differ from a correct answer b",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.correct_unique_ha_tight"
+    ],
+    "witness_class": "a satisfiable one-claim report over Nat ([n ≤ 1], q = (n = 0), a = supported, b = undetermined)"
+   },
+   {
+    "name": "hb : Correct E q b (in correct_unique_of_satisfiable)",
+    "purpose": "an incorrect answer b can differ from a correct answer a",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.correct_unique_hb_tight"
+    ],
+    "witness_class": "a satisfiable one-claim report over Nat ([n ≤ 1], q = (n = 0), a = undetermined, b = supported)"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "E = [n ≤ 1] over Nat, q = (n = 0): satisfiable, and the unique correct answer is undetermined; [False] over Nat is unsatisfiable.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.exactlyOne_nonvacuous",
+   "Toy.ClaimStrength.unsatisfiable_nonvacuous",
+   "Toy.ClaimStrength.correct_unique_nonvacuous"
+  ],
+  "non_claims": [
+   "Vocabulary: 'supported' is Supported E q; 'unsupported' is ¬ Supported E q; 'contradicted' is Contradicted E q; 'undetermined' is Undetermined E q (unsupported and not contradicted). An unsupported claim of a satisfiable report can be contradicted; an undetermined claim cannot.",
+   "Supported is semantic (truth in every interpretation consistent with the report); nothing is claimed about computing answers or about what a reader can verify.",
+   "Exclusivity of the three answers holds if and only if the report is satisfiable (exactlyOne_answer_iff_satisfiable); with an unsatisfiable report every claim is both supported and contradicted and Undetermined never holds.",
+   "Over an interpretation type with no elements every report is unsatisfiable, so correct_unique_of_satisfiable has no instances there (not proved here as a separate theorem; immediate from the definition of Satisfiable).",
+   "The three reading-error predicates classify incorrect answers by which answer was given; they do not distinguish, for example, answering contradicted for a supported claim from answering contradicted for an undetermined claim (both are negative over-readings).",
+   "A report is the set of claims it establishes; hedges, scope statements, examples, and other prose of a real report are not modeled.",
+   "These are statements about the toy model (claims are arbitrary predicates on an arbitrary interpretation type; a report is identified with the finite list of claims it establishes); model–system relation: none proved; they neither establish nor refute the corresponding claims about natural-language reports, about any particular report, or about how readers reason."
+  ],
+  "prior_art": [
+   "H. B. Enderton, A Mathematical Introduction to Logic, 2nd ed., Harcourt/Academic Press, 2001, Chapter 2 (satisfiability and logical consequence); the classification is the textbook one. Chapter-level reference; section numbers not checked against a copy.",
+   "S. R. Bowman, G. Angeli, C. Potts, C. D. Manning, \"A large annotated corpus for learning natural language inference\", Proceedings of EMNLP 2015, pp. 632-642, doi:10.18653/v1/D15-1075 (three labels entailment / contradiction / neutral for premise-hypothesis pairs; the same trichotomy as supported / contradicted / undetermined).",
+   "J. Thorne, A. Vlachos, C. Christodoulopoulos, A. Mittal, \"FEVER: a large-scale dataset for Fact Extraction and VERification\", Proceedings of NAACL-HLT 2018, pp. 809-819, doi:10.18653/v1/N18-1074 (labels SUPPORTED / REFUTED / NOT ENOUGH INFO for claims against evidence)."
+  ],
+  "design_question": "Reference point: a definitional fact recorded so that other cards can cite it. How should the correct answer to a comprehension question about a report be defined, and which answers are well defined?",
+  "lean_names": [
+   "Toy.ClaimStrength.Answer",
+   "Toy.ClaimStrength.Claim",
+   "Toy.ClaimStrength.Contradicted",
+   "Toy.ClaimStrength.Correct",
+   "Toy.ClaimStrength.ExactlyOne3",
+   "Toy.ClaimStrength.Models",
+   "Toy.ClaimStrength.NegativeOverReading",
+   "Toy.ClaimStrength.PositiveOverReading",
+   "Toy.ClaimStrength.Satisfiable",
+   "Toy.ClaimStrength.Supported",
+   "Toy.ClaimStrength.UnderReading",
+   "Toy.ClaimStrength.Undetermined"
+  ]
+ },
+ {
+  "id": "answers-monotone-under-satisfiable-report-extension",
+  "lean": [
+   "Toy.ClaimStrength.supported_mono",
+   "Toy.ClaimStrength.contradicted_mono",
+   "Toy.ClaimStrength.answer_changes_only_from_undetermined_of_satisfiable"
+  ],
+  "kind": "theorem",
+  "tier": "T0",
+  "reference_point": true,
+  "tier_justification": "Monotonicity of classical consequence, specialized to the three answers.",
+  "plain_claim": "If every claim of E is in E', then a claim supported by E is supported by E' and a claim contradicted by E is contradicted by E'. If every claim of E is in E' and E' is satisfiable, then, whenever a correct answer about q for E differs from a correct answer about q for E', the E-answer is undetermined.",
+  "hypotheses": [
+   {
+    "name": "hsub : ∀ e ∈ E, e ∈ E' (in supported_mono)",
+    "purpose": "if E' drops a claim of E, a claim supported by E can be unsupported by E'",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.supported_mono_hsub_tight"
+    ],
+    "witness_class": "one-claim versus empty report over Nat"
+   },
+   {
+    "name": "h : Supported E q (in supported_mono)",
+    "purpose": "a claim that E does not support need not be supported by E'",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.supported_mono_h_tight"
+    ],
+    "witness_class": "the empty report extended to [n ≤ 1] over Nat, q = (n = 0)"
+   },
+   {
+    "name": "hsub : ∀ e ∈ E, e ∈ E' (in contradicted_mono)",
+    "purpose": "if E' drops a claim of E, a claim contradicted by E can be not contradicted by E'",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.contradicted_mono_hsub_tight"
+    ],
+    "witness_class": "one-claim versus empty report over Nat"
+   },
+   {
+    "name": "h : Contradicted E q (in contradicted_mono)",
+    "purpose": "a claim that E does not contradict need not be contradicted by E'",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.contradicted_mono_h_tight"
+    ],
+    "witness_class": "the empty report extended to [n ≤ 1] over Nat, q = (n = 0)"
+   },
+   {
+    "name": "hsub : ∀ e ∈ E, e ∈ E' (in answer_changes_only_from_undetermined_of_satisfiable)",
+    "purpose": "if E' drops a claim of E, a supported answer can change to undetermined",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.answer_changes_hsub_tight"
+    ],
+    "witness_class": "one-claim versus empty report over Nat"
+   },
+   {
+    "name": "hsat : Satisfiable E' (in answer_changes_only_from_undetermined_of_satisfiable; supported_mono and contradicted_mono have no such hypothesis)",
+    "purpose": "over an unsatisfiable extension a supported claim also becomes contradicted, so the answer contradicted is correct for E'",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.answer_changes_hsat_tight"
+    ],
+    "witness_class": "extending the empty report over Nat by False"
+   },
+   {
+    "name": "ha : Correct E q a (in answer_changes_only_from_undetermined_of_satisfiable)",
+    "purpose": "with an incorrect E-answer a (here contradicted) the conclusion fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.answer_changes_ha_tight"
+    ],
+    "witness_class": "the empty report extended to [n = 0] over Nat, q = (n = 0)"
+   },
+   {
+    "name": "ha' : Correct E' q a' (in answer_changes_only_from_undetermined_of_satisfiable)",
+    "purpose": "with an incorrect E'-answer a' (here contradicted) the conclusion fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.answer_changes_ha'_tight"
+    ],
+    "witness_class": "the empty report extended to [n = 0] over Nat, q = True"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "[] ⊆ [n = 0] over Nat: n = 0 moves from undetermined to supported (all hypotheses of answer_changes_only_from_undetermined_of_satisfiable hold); [n = 0] ⊆ [n = 0, n ≤ 5] with n ≤ 1 supported and n = 1 contradicted by the smaller report (all hypotheses of supported_mono and contradicted_mono hold).",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.answer_changes_nonvacuous",
+   "Toy.ClaimStrength.mono_nonvacuous"
+  ],
+  "non_claims": [
+   "Does not say that adding claims changes any answer; it bounds which changes are possible.",
+   "The theorems concern adding established claims; removing or weakening a claim can turn supported into undetermined (answer_changes_hsub_tight).",
+   "Without satisfiability of the extended report, a supported claim also becomes (vacuously) contradicted (answer_changes_hsat_tight).",
+   "These are statements about the toy model (claims are arbitrary predicates on an arbitrary interpretation type; a report is identified with the finite list of claims it establishes); model–system relation: none proved; they neither establish nor refute the corresponding claims about natural-language reports, about any particular report, or about how readers reason."
+  ],
+  "prior_art": [
+   "H. B. Enderton, A Mathematical Introduction to Logic, 2nd ed., Harcourt/Academic Press, 2001, Chapter 2 (monotonicity of logical consequence: adding hypotheses preserves consequences). Chapter-level reference."
+  ],
+  "design_question": "Reference point: a definitional fact recorded so that other cards can cite it. How should the correct answer to a comprehension question about a report be defined, and which answers are well defined?"
+ },
+ {
+  "id": "undetermined-iff-witnesses-both-ways",
+  "lean": [
+   "Toy.ClaimStrength.undetermined_iff_exists_both",
+   "Toy.ClaimStrength.contradicted_iff_supported_not",
+   "Toy.ClaimStrength.contradicted_of_mem_entails_not",
+   "Toy.ClaimStrength.contradicted_jointly_without_single_claim"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "reference_point": true,
+  "tier_justification": "Independence of a sentence from a theory restated for reports.",
+  "plain_claim": "Undetermined E q holds if and only if some interpretation consistent with E satisfies q and some interpretation consistent with E falsifies q; Contradicted E q is the same as Supported E (¬q); if c ∈ E and c entails ¬q (for example, an exhibited counterexample to a universal claim q), then q is contradicted; and over Nat the satisfiable report [n ≤ 1, 1 ≤ n] contradicts n = 0 ∨ n = 2 although neither of its claims alone entails the negation.",
+  "hypotheses": [
+   {
+    "name": "hc : c ∈ E (in contradicted_of_mem_entails_not)",
+    "purpose": "a claim entailing ¬q that is not established by the report does not contradict q",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.contradicted_of_mem_hc_tight"
+    ],
+    "witness_class": "the empty report over interpretations Nat → Prop"
+   },
+   {
+    "name": "hneg : Entails c (fun w => ¬ q w) (in contradicted_of_mem_entails_not)",
+    "purpose": "an established claim that does not rule out q need not contradict q",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.contradicted_of_mem_hneg_tight"
+    ],
+    "witness_class": "a one-claim report over interpretations Nat → Prop"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "Worlds are predicates P on Nat; E = [¬ P 0] contradicts q = (∀ m, P m).",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.contradicted_of_mem_nonvacuous",
+   "Toy.ClaimStrength.undetermined_example_pos"
+  ],
+  "non_claims": [
+   "Vocabulary: 'supported' is Supported E q; 'unsupported' is ¬ Supported E q; 'contradicted' is Contradicted E q; 'undetermined' is Undetermined E q (unsupported and not contradicted). An unsupported claim of a satisfiable report can be contradicted; an undetermined claim cannot.",
+   "The characterization is classical (proved with excluded middle) and gives no constructive witnesses.",
+   "A single established claim entailing ¬q is sufficient for 'contradicted' but not necessary: several claims of the report can jointly rule out q although none does alone (contradicted_jointly_without_single_claim). A counterexample to a different claim, or in a different class, does not by itself contradict q (see the drift cards).",
+   "These are statements about the toy model (claims are arbitrary predicates on an arbitrary interpretation type; a report is identified with the finite list of claims it establishes); model–system relation: none proved; they neither establish nor refute the corresponding claims about natural-language reports, about any particular report, or about how readers reason."
+  ],
+  "prior_art": [
+   "H. B. Enderton, A Mathematical Introduction to Logic, 2nd ed., Harcourt/Academic Press, 2001, Chapter 2 (a sentence is independent of a set of sentences when neither it nor its negation is a consequence). Chapter-level reference."
+  ],
+  "design_question": "Reference point: a definitional fact recorded so that other cards can cite it. How should the correct answer to a comprehension question about a report be defined, and which answers are well defined?",
+  "lean_names": [
+   "Toy.ClaimStrength.Entails"
+  ]
+ },
+ {
+  "id": "unsupported-does-not-imply-contradicted",
+  "lean": [
+   "Toy.ClaimStrength.unsupported_not_imply_contradicted",
+   "Toy.ClaimStrength.unsupported_not_imply_contradicted_witness",
+   "Toy.ClaimStrength.universal_undetermined_until_counterexample",
+   "Toy.ClaimStrength.unsupported_of_contradicted_of_satisfiable"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "reference_point": true,
+  "tier_justification": "Textbook distinction between 'not proved' and 'disproved', stated as a kernel-checked non-entailment with its valid converse.",
+  "plain_claim": "Over the interpretations Bool, it is not the case that for every report E and claim q, 'unsupported' (¬ Supported E q) implies 'contradicted': the empty report leaves q = (b = true) unsupported and not contradicted (unsupported_not_imply_contradicted_witness). With the predicates P on Nat as the interpretations, the universal claim 'every m satisfies P' is undetermined by the empty report and contradicted once the claim '¬ P 0' is added. Conversely, if q is contradicted by E and E is satisfiable, then q is unsupported.",
+  "hypotheses": [
+   {
+    "name": "hc : Contradicted E q (in unsupported_of_contradicted_of_satisfiable)",
+    "purpose": "a claim that is not contradicted can be supported",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.unsupported_of_contradicted_hc_tight"
+    ],
+    "witness_class": "the empty report over Nat, q = True"
+   },
+   {
+    "name": "hE : Satisfiable E (in unsupported_of_contradicted_of_satisfiable)",
+    "purpose": "an unsatisfiable report contradicts and supports every claim",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.unsupported_of_contradicted_hE_tight"
+    ],
+    "witness_class": "the unsatisfiable one-claim report [False] over Nat"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "E = [n = 0] over Nat contradicts q = (n = 1) and is satisfiable.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.unsupported_of_contradicted_nonvacuous"
+  ],
+  "non_claims": [
+   "Vocabulary: 'supported' is Supported E q; 'unsupported' is ¬ Supported E q; 'contradicted' is Contradicted E q; 'undetermined' is Undetermined E q (unsupported and not contradicted). An unsupported claim of a satisfiable report can be contradicted; an undetermined claim cannot.",
+   "A bare disclaimer in a report ('q is not established here') corresponds to ¬ Supported E q (unsupported), not to Undetermined E q: Undetermined additionally asserts ¬ Contradicted E q, i.e. that q is consistent with the established claims (undetermined_iff_exists_both). By the definition of NegativeOverReading, reading such a disclaimer as 'contradicted' is a negative over-reading exactly when q is not contradicted.",
+   "Does not say anything about whether an unsupported claim is true.",
+   "These are statements about the toy model (claims are arbitrary predicates on an arbitrary interpretation type; a report is identified with the finite list of claims it establishes); model–system relation: none proved; they neither establish nor refute the corresponding claims about natural-language reports, about any particular report, or about how readers reason."
+  ],
+  "prior_art": [
+   "H. P. Grice, \"Logic and Conversation\", in P. Cole and J. L. Morgan (eds.), Syntax and Semantics, Vol. 3: Speech Acts, Academic Press, New York, 1975, pp. 41-58 (first maxim of Quantity: a speaker who could have asserted q and did not may be taken to implicate that q does not hold; this motivates reading 'q is not established' as 'q is false'). Cited for the prose motivation of this drift; no formal statement is taken from it.",
+   "J. Thorne, A. Vlachos, C. Christodoulopoulos, A. Mittal, \"FEVER: a large-scale dataset for Fact Extraction and VERification\", Proceedings of NAACL-HLT 2018, pp. 809-819, doi:10.18653/v1/N18-1074 (the label NOT ENOUGH INFO is distinct from REFUTED)."
+  ],
+  "design_question": "Which recurring summary drifts turn a proved claim into a strictly stronger unproved one, and what is the weaker reading that does follow? Reference point: a definitional fact recorded so that other cards can cite it."
+ },
+ {
+  "id": "meta-level-questions-are-never-undetermined",
+  "lean": [
+   "Toy.ClaimStrength.worldIndependent_not_undetermined",
+   "Toy.ClaimStrength.establishes_worldIndependent",
+   "Toy.ClaimStrength.establishes_contradicted_of_unsupported",
+   "Toy.ClaimStrength.establishes_undetermined_key_never_correct",
+   "Toy.ClaimStrength.establishes_answer_key"
+  ],
+  "kind": "impossibility",
+  "tier": "T1",
+  "positive_control_lean": [
+   "Toy.ClaimStrength.worldIndependent_tight"
+  ],
+  "positive_control": "The object-level, world-dependent claim b = true over Bool is undetermined by the empty report.",
+  "tier_justification": "Folklore distinction between object-level and meta-level questions, made precise for answer keys.",
+  "plain_claim": "For every report E and every world-independent claim q (its truth does not depend on the interpretation), Undetermined E q is false, with no satisfiability assumption. The meta-level question 'E establishes q' (the constant claim Supported E q) is world-independent; if q is unsupported by E, it is contradicted. For every E and q, the one-entry answer key [(Establishes E q, undetermined)], which marks 'E establishes q' as undetermined, is incorrect; since KeyCorrect requires every entry of a key to be correct, every answer key containing that entry is incorrect as well (immediate from the definition of KeyCorrect, not stated as a separate theorem). If Undetermined E q, the answer key that marks 'E establishes q' as contradicted and q as undetermined is correct.",
+  "hypotheses": [
+   {
+    "name": "hq : WorldIndependent q (in worldIndependent_not_undetermined)",
+    "purpose": "a claim whose truth depends on the interpretation can be undetermined",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.worldIndependent_tight"
+    ],
+    "witness_class": "the empty report over Bool, q = (b = true)"
+   },
+   {
+    "name": "h : ¬ Supported E q (in establishes_contradicted_of_unsupported)",
+    "purpose": "if E supports q, the meta-level question 'E establishes q' is true, hence not contradicted",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.establishes_contradicted_h_tight"
+    ],
+    "witness_class": "the empty report over Nat, q = True"
+   },
+   {
+    "name": "h : Undetermined E q (in establishes_answer_key)",
+    "purpose": "if q is supported, the key entry 'E establishes q: contradicted' is incorrect",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.establishes_answer_key_tight"
+    ],
+    "witness_class": "the empty report over Nat, q = True"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "E = [n ≤ 1] over Nat leaves q = (n = 0) undetermined; the meta-level question is contradicted.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.establishes_answer_key_nonvacuous",
+   "Toy.ClaimStrength.establishes_contradicted_nonvacuous"
+  ],
+  "non_claims": [
+   "Vocabulary: 'supported' is Supported E q; 'unsupported' is ¬ Supported E q; 'contradicted' is Contradicted E q; 'undetermined' is Undetermined E q (unsupported and not contradicted). An unsupported claim of a satisfiable report can be contradicted; an undetermined claim cannot.",
+   "worldIndependent_not_undetermined has no satisfiability hypothesis: over an unsatisfiable report every claim is supported (unsatisfiable_supported_and_contradicted), so Undetermined fails there as well.",
+   "Does not say that 'not established' is a bad answer in ordinary language; it says that under this three-answer semantics a question about the report has a supported or contradicted answer, so an answer key using 'undetermined' for it is inconsistent with the semantics.",
+   "Escape hatches (not modeled, not proved here): the impossibility depends on fixing the whole report E outside the interpretation and on reading 'establishes' as semantic consequence Supported E q. If a reader sees an excerpt instead of the full report, so that the full report varies across the interpretations consistent with the prompt, or if 'establishes' means explicit derivation in an incomplete proof system, a question about what the report establishes need not be world-independent and can be undetermined.",
+   "Says nothing about which question phrasing readers find easier or less ambiguous.",
+   "These are statements about the toy model (claims are arbitrary predicates on an arbitrary interpretation type; a report is identified with the finite list of claims it establishes); model–system relation: none proved; they neither establish nor refute the corresponding claims about natural-language reports, about any particular report, or about how readers reason."
+  ],
+  "prior_art": [
+   "No specific prior statement located; elementary consequence of the definitions.",
+   "J. Thorne, A. Vlachos, C. Christodoulopoulos, A. Mittal, \"FEVER: a large-scale dataset for Fact Extraction and VERification\", Proceedings of NAACL-HLT 2018, pp. 809-819, doi:10.18653/v1/N18-1074 (fact-verification labels apply to object-level claims checked against evidence)."
+  ],
+  "design_question": "Which question forms make the correct answer ill-defined, and how should an answer key treat questions about the report itself?",
+  "lean_names": [
+   "Toy.ClaimStrength.AnswerKey",
+   "Toy.ClaimStrength.Establishes",
+   "Toy.ClaimStrength.KeyCorrect",
+   "Toy.ClaimStrength.WorldIndependent"
+  ]
+ },
+ {
+  "id": "compound-answer-tables-over-satisfiable-reports",
+  "lean": [
+   "Toy.ClaimStrength.and_answer_mem_andTable_of_satisfiable",
+   "Toy.ClaimStrength.andTable_realizable",
+   "Toy.ClaimStrength.andTable_undetermined_cell_distinct",
+   "Toy.ClaimStrength.or_answer_mem_orTable_of_satisfiable",
+   "Toy.ClaimStrength.orTable_realizable",
+   "Toy.ClaimStrength.orTable_undetermined_cell_distinct",
+   "Toy.ClaimStrength.neg_answer_correct",
+   "Toy.ClaimStrength.not_undetermined_of_unique_model"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "reference_point": true,
+  "tier_justification": "Re-derivation of the supervaluation pattern (van Fraassen 1966; Fine 1975) for the three answers.",
+  "plain_claim": "If E is satisfiable, q₁ has correct answer a₁, and q₂ has correct answer a₂, then the correct answer for q₁ ∧ q₂ lies in andTable a₁ a₂ and that for q₁ ∨ q₂ lies in orTable a₁ a₂: for ∧, contradicted if either conjunct is contradicted, the other conjunct's answer if one is supported, and undetermined or contradicted when both are undetermined; dually for ∨. Every answer listed in every cell occurs for some pair of claims over four interpretations (Bool × Bool) with the empty report; in the cell (undetermined, undetermined) both answers occur with distinct component claims. For every report, if a is a correct answer for q then negAnswer a (swapping supported and contradicted, keeping undetermined) is a correct answer for ¬q. For every element w₀ : W, if every interpretation consistent with E equals w₀ (so E has at most one consistent interpretation; E may also be unsatisfiable), then no claim is undetermined by E.",
+  "hypotheses": [
+   {
+    "name": "hE : Satisfiable E (in and_answer_mem_andTable_of_satisfiable)",
+    "purpose": "over an unsatisfiable report two answers are correct for each claim, and some combinations fall outside the table",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.and_answer_hE_tight"
+    ],
+    "witness_class": "the unsatisfiable one-claim report [False] over Nat"
+   },
+   {
+    "name": "h₁ : Correct E q₁ a₁ (in and_answer_mem_andTable_of_satisfiable)",
+    "purpose": "with an incorrect component answer a₁ the compound answer can lie outside the cell",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.and_answer_h₁_tight"
+    ],
+    "witness_class": "the empty report over Bool × Bool, q₁ = q₂ = True, a₁ = contradicted"
+   },
+   {
+    "name": "h₂ : Correct E q₂ a₂ (in and_answer_mem_andTable_of_satisfiable)",
+    "purpose": "with an incorrect component answer a₂ the compound answer can lie outside the cell",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.and_answer_h₂_tight"
+    ],
+    "witness_class": "the empty report over Bool × Bool, q₁ = q₂ = True, a₂ = contradicted"
+   },
+   {
+    "name": "h : Correct E (fun w => q₁ w ∧ q₂ w) a (in and_answer_mem_andTable_of_satisfiable)",
+    "purpose": "an incorrect compound answer can lie outside the cell",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.and_answer_h_tight"
+    ],
+    "witness_class": "the empty report over Bool × Bool, q₁ = q₂ = True, a = contradicted"
+   },
+   {
+    "name": "hE : Satisfiable E (in or_answer_mem_orTable_of_satisfiable)",
+    "purpose": "over an unsatisfiable report two answers are correct for each claim, and some combinations fall outside the table",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.or_answer_hE_tight"
+    ],
+    "witness_class": "the unsatisfiable one-claim report [False] over Nat"
+   },
+   {
+    "name": "h₁ : Correct E q₁ a₁ (in or_answer_mem_orTable_of_satisfiable)",
+    "purpose": "with an incorrect component answer a₁ the compound answer can lie outside the cell",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.or_answer_h₁_tight"
+    ],
+    "witness_class": "the empty report over Bool × Bool, q₁ = q₂ = False, a₁ = supported"
+   },
+   {
+    "name": "h₂ : Correct E q₂ a₂ (in or_answer_mem_orTable_of_satisfiable)",
+    "purpose": "with an incorrect component answer a₂ the compound answer can lie outside the cell",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.or_answer_h₂_tight"
+    ],
+    "witness_class": "the empty report over Bool × Bool, q₁ = q₂ = False, a₂ = supported"
+   },
+   {
+    "name": "h : Correct E (fun w => q₁ w ∨ q₂ w) a (in or_answer_mem_orTable_of_satisfiable)",
+    "purpose": "an incorrect compound answer can lie outside the cell",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.or_answer_h_tight"
+    ],
+    "witness_class": "the empty report over Bool × Bool, q₁ = q₂ = False, a = supported"
+   },
+   {
+    "name": "h : Correct E q a (in neg_answer_correct)",
+    "purpose": "from an incorrect answer a, negAnswer a can be incorrect for ¬q",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.neg_answer_h_tight"
+    ],
+    "witness_class": "the empty report over Bool × Bool, q = True, a = contradicted"
+   },
+   {
+    "name": "hu : ∀ w, Models E w → w = w₀ (in not_undetermined_of_unique_model)",
+    "purpose": "a report with two consistent interpretations can leave a claim undetermined",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.not_undetermined_of_unique_model_hu_tight"
+    ],
+    "witness_class": "the empty report over Bool (two consistent interpretations): hu fails for every w₀ : Bool, and b = true is undetermined"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Empty report over Bool × Bool (satisfiable): q₁ contradicted, q₂ = (first coordinate) undetermined, conjunction contradicted; q₁ = first coordinate and q₂ = its negation, both undetermined, disjunction supported; [n ≤ 1] over Nat for negation (n = 0 undetermined); [n = 0] over Nat, whose unique consistent interpretation is 0 (hu holds with w₀ = 0).",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.and_answer_nonvacuous",
+   "Toy.ClaimStrength.or_answer_nonvacuous",
+   "Toy.ClaimStrength.neg_answer_nonvacuous",
+   "Toy.ClaimStrength.not_undetermined_of_unique_model_nonvacuous"
+  ],
+  "non_claims": [
+   "Vocabulary: 'supported' is Supported E q; 'unsupported' is ¬ Supported E q; 'contradicted' is Contradicted E q; 'undetermined' is Undetermined E q (unsupported and not contradicted). An unsupported claim of a satisfiable report can be contradicted; an undetermined claim cannot.",
+   "Over an unsatisfiable report both supported and contradicted are correct for every claim, so negAnswer gives a correct answer for ¬q but not a unique one: uniqueness fails over the unsatisfiable report [False] (correct_unique_hE_tight) and holds over every satisfiable report (correct_unique_of_satisfiable).",
+   "Realizability is shown in one interpretation space with the empty report. For a fixed report, if a claim is undetermined, then the report has two consistent interpretations, one satisfying and one falsifying the claim (undetermined_iff_exists_both); not_undetermined_of_unique_model states the contrapositive for reports with at most one consistent interpretation.",
+   "Which answer occurs in the cell (undetermined, undetermined) depends on how the claims relate, not just on their answers; negation keeping 'undetermined' does not make it a truth value: q and ¬q are both undetermined while q ∨ ¬q is supported (or_answer_nonvacuous).",
+   "Does not say that readers answer compounds wrongly; it says the compound answer is not a function of the component answers in the cell (undetermined, undetermined): both compound answers occur there for undetermined components (andTable_undetermined_cell_distinct, orTable_undetermined_cell_distinct).",
+   "These are statements about the toy model (claims are arbitrary predicates on an arbitrary interpretation type; a report is identified with the finite list of claims it establishes); model–system relation: none proved; they neither establish nor refute the corresponding claims about natural-language reports, about any particular report, or about how readers reason."
+  ],
+  "prior_art": [
+   "B. C. van Fraassen, \"Singular terms, truth-value gaps, and free logic\", Journal of Philosophy 63(17):481-495, 1966, doi:10.2307/2024549 (supervaluations: a compound can be determinately true or false although a component has no truth value). Bibliographic record and the cited idea checked via secondary sources; the full text was not consulted.",
+   "K. Fine, \"Vagueness, truth and logic\", Synthese 30(3-4):265-300, 1975, doi:10.1007/BF00485047 (supervaluationist treatment in which compounds of indeterminate sentences need not be truth-functional, e.g. P or not-P is true though both disjuncts are indeterminate)."
+  ],
+  "design_question": "Reference point: a definitional fact recorded so that other cards can cite it. Which question forms make the correct answer ill-defined (compound questions about undetermined claims)?",
+  "lean_names": [
+   "Toy.ClaimStrength.BB",
+   "Toy.ClaimStrength.andTable",
+   "Toy.ClaimStrength.canon",
+   "Toy.ClaimStrength.negAnswer",
+   "Toy.ClaimStrength.orTable"
+  ]
+ },
+ {
+  "id": "prefix-criterion-sufficient-environment-semantics",
+  "lean": [
+   "Toy.ClaimStrength.prefixCrit_sound_of_nodup_wf",
+   "Toy.ClaimStrength.eval_env_irrelevant_of_covers",
+   "Toy.ClaimStrength.sentailsAt_of_isEmpty",
+   "Toy.ClaimStrength.closed_forall_imp_exists_iff_nonempty"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Skolem-dependency transfer between quantifier prefixes is folklore; this exact entailment criterion (with universal-to-existential weakening, over all matrices) was not located in the checked sources and is mechanized here.",
+  "plain_claim": "For quantifier prefixes φ and ψ on the variables Fin n, in front of the same uninterpreted matrix (variables matched by index), if no variable is bound twice in φ, every variable is bound exactly once in ψ, (i) every variable universal in ψ is universal in φ, and (ii) whenever v is existential in φ and u is universal in both with u bound before v in φ, u is also bound before v in ψ, then for every base type α, every matrix R and every environment ρ : Fin n → α, φ with R implies ψ with R (SEntailsAt α φ ψ). This holds vacuously when α is empty and n ≥ 1, where there is no environment and every pair satisfies SEntailsAt (sentailsAt_of_isEmpty). If a prefix binds every variable, its value does not depend on the environment. For every type α, (∀ P, (∀x, P x) → ∃x, P x) holds iff α is nonempty.",
+  "hypotheses": [
+   {
+    "name": "hφ : (bvars φ).Nodup (in prefixCrit_sound_of_nodup_wf)",
+    "purpose": "a repeated binder in φ shadows the first one, which the criterion reads; the entailment can then fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.prefixCrit_sound_hφ_tight"
+    ],
+    "witness_class": "one variable at Bool (φ = ∀x ∃x, ψ = ∀x)"
+   },
+   {
+    "name": "hψ : WF ψ — no repeated binder and every variable bound (in prefixCrit_sound_of_nodup_wf)",
+    "purpose": "a repeated binder in ψ shadows the first one; a variable left unbound by ψ behaves like an outermost universal; in both cases the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.prefixCrit_sound_hψ_tight_dup",
+     "Toy.ClaimStrength.prefixCrit_sound_hψ_tight_missing"
+    ],
+    "witness_class": "one variable at Bool (ψ = ∃x ∀x for the duplicate half; ψ empty with x free for the covering half)"
+   },
+   {
+    "name": "h : PrefixCrit φ ψ, part (i) UnivReflected (in prefixCrit_sound_of_nodup_wf)",
+    "purpose": "if a variable universal in ψ is existential in φ, the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.prefixCrit_part_i_tight"
+    ],
+    "witness_class": "one variable at Bool (∃x versus ∀x)"
+   },
+   {
+    "name": "h : PrefixCrit φ ψ, part (ii) SkolemOrderPreserved (in prefixCrit_sound_of_nodup_wf)",
+    "purpose": "if ψ moves an existential of φ before a universal it depends on, the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.prefixCrit_part_ii_tight"
+    ],
+    "witness_class": "two variables at Bool (∀x ∃y versus ∃y ∀x)"
+   },
+   {
+    "name": "hcov : ∀ v : Fin n, v ∈ bvars φ (in eval_env_irrelevant_of_covers)",
+    "purpose": "a variable left unbound takes its value from the environment",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.eval_env_irrelevant_hcov_tight"
+    ],
+    "witness_class": "one variable at Bool, empty prefix"
+   },
+   {
+    "name": "hα : α → False (in sentailsAt_of_isEmpty)",
+    "purpose": "over an inhabited base type the conclusion fails for ∃x versus ∀x",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.sentailsAt_of_isEmpty_tight"
+    ],
+    "witness_class": "Bool, one variable"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "φ = ∀x ∃y, ψ = ∃y ∃x on two variables: no repeated binder in φ, ψ well formed, criterion holds (x is instantiated), and φ is satisfiable at Bool; the prefix ∀x binds the single variable of Fin 1; Empty is empty.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.prefixCrit_sound_nonvacuous",
+   "Toy.ClaimStrength.eval_env_irrelevant_of_covers_nonvacuous",
+   "Toy.ClaimStrength.sentailsAt_of_isEmpty_nonvacuous"
+  ],
+  "non_claims": [
+   "SEntailsAt uses environment semantics: it quantifies over every matrix R and every environment ρ : Fin n → α. When α is empty and n ≥ 1 there is no environment, so SEntailsAt α φ ψ holds vacuously for every pair (sentailsAt_of_isEmpty); in particular the closed implication (∀x, P x) → ∃x, P x fails on an empty type (closed_forall_imp_exists_iff_nonempty) although SEntailsAt α [∀x] [∃x] holds there. For prefixes that bind every variable, SEntailsAt at α equals entailment at one fixed environment (sentailsAt_iff_fixed_env_of_covers), so the quantification over environments can make a difference for prefixes that leave a variable free and for an empty base type (sentailsAt_of_isEmpty).",
+   "No cardinality assumption is made. For an empty base type and n ≥ 1 the claim is vacuous (sentailsAt_of_isEmpty); the non-vacuity witness uses an inhabited base type.",
+   "The covering half of well-formedness is not assumed for φ: a variable free in φ behaves like an outermost universal that both sides share through the environment. It is assumed for ψ, where it is tight (prefixCrit_sound_hψ_tight_missing).",
+   "Variables are matched by index (Fin n), not up to renaming: the same prefix with renamed variables in front of the same matrix can fail the criterion (prefixCritB_renamed_false); formulas whose equality depends on a symmetry of the matrix are not recognized unless variables are aligned first (not proved here).",
+   "One sort and an arbitrary predicate as matrix; entailments that depend on the matrix (for a specific R) are outside the claim.",
+   "Does not give a normal form or characterize equivalence classes of prefixes.",
+   "Partially ordered (Henkin) prefixes and dependency-quantified formulas are not covered.",
+   "These are statements about a toy prefix language (a list of (quantifier, variable) pairs over one sort, in front of an uninterpreted matrix); model–system relation: none proved; they neither establish nor refute the corresponding claims about any real specification language."
+  ],
+  "prior_art": [
+   "M. Samer and S. Szeider, \"Backdoor Sets of Quantified Boolean Formulas\", Journal of Automated Reasoning 42(1):77-97, 2009, doi:10.1007/s10817-008-9114-5. Definition 2 (dependency schemes: the variables a variable may depend on can be shifted without changing the truth value of the formula, i.e. equivalence is preserved) and Definition 4 (the trivial dependency scheme relates every variable x, existential or universal, to all variables from the first later quantifier block of the other quantifier onward), checked in the authors' version. The trivial scheme therefore also constrains pairs with an existential variable before a universal one, as equivalence-preserving reordering requires. The criterion here constrains the pairs with a universal variable before an existential one, and no other pairs (the Skolem dependencies), because it characterizes one-way entailment, under which ∃y ∀x entails ∀x ∃y.",
+   "F. Slivovsky and S. Szeider, \"Quantifier Reordering for QBF\", Journal of Automated Reasoning 56(4):459-477, 2016, doi:10.1007/s10817-015-9353-1 (dependency schemes used to reorder the prefix of a fixed formula while preserving its truth value; checked against the publisher's abstract). Related but different: that work preserves the truth of one formula; the result here characterizes one-way entailment between two prefixes over all matrices, including universal-to-existential weakening.",
+   "H. B. Enderton, A Mathematical Introduction to Logic, 2nd ed., Harcourt/Academic Press, 2001, Section 4.2 \"Skolem functions\" (section number from secondary sources, not checked against a copy). The Skolem dependency of an existential variable on the universal variables before it is the relation that part (ii) of the criterion preserves; the proof here does not construct Skolem functions.",
+   "L. Henkin, \"Some remarks on infinitely long formulas\", in Infinitistic Methods (Proc. Symp. Foundations of Mathematics, Warsaw 1959), Pergamon/PWN, 1961, pp. 167-183 (partially ordered quantifier prefixes; bibliographic record from secondary sources). The prefixes treated here are linear.",
+   "W. J. Walkoe, Jr., \"Finite partially-ordered quantification\", Journal of Symbolic Logic 35(4):535-555, 1970, doi:10.2307/2271440 (partially ordered prefixes and their expressive power). Out of scope here: partially ordered prefixes; the prefixes treated here are linear.",
+   "V. Balabanov, H.-J. K. Chiang, J.-H. R. Jiang, \"Henkin quantifiers and Boolean formulae: A certification perspective of DQBF\", Theoretical Computer Science 523:86-100, 2014, doi:10.1016/j.tcs.2013.12.020 (Skolem-function certificates where each existential variable names the universals it may depend on; bibliographic record from index sources)."
+  ],
+  "design_question": "Is strength between quantifier-prefix claim shapes decidable and syntactically visible, so that a summary that reorders or flips quantifiers can be checked mechanically?",
+  "lean_names": [
+   "Toy.ClaimStrength.sentailsAt_iff_fixed_env_of_covers",
+   "Toy.ClaimStrength.Binder",
+   "Toy.ClaimStrength.Precedes",
+   "Toy.ClaimStrength.Prefix",
+   "Toy.ClaimStrength.PrefixCrit",
+   "Toy.ClaimStrength.Quant",
+   "Toy.ClaimStrength.SEntailsAt",
+   "Toy.ClaimStrength.SkolemOrderPreserved",
+   "Toy.ClaimStrength.UnivReflected",
+   "Toy.ClaimStrength.WF",
+   "Toy.ClaimStrength.bOf",
+   "Toy.ClaimStrength.bvars",
+   "Toy.ClaimStrength.eval",
+   "Toy.ClaimStrength.evalR",
+   "Toy.ClaimStrength.precL",
+   "Toy.ClaimStrength.qOf",
+   "Toy.ClaimStrength.quantify",
+   "Toy.ClaimStrength.upd"
+  ]
+ },
+ {
+  "id": "prefix-criterion-necessary-two-point-base",
+  "lean": [
+   "Toy.ClaimStrength.prefixCrit_necessary_of_two_point_nodup",
+   "Toy.ClaimStrength.sentailsAt_iff_prefixCrit_of_two_point_nodup_wf",
+   "Toy.ClaimStrength.sentails_iff_prefixCrit_of_nodup_wf",
+   "Toy.ClaimStrength.sentails_iff_twoPoint_types",
+   "Toy.ClaimStrength.sentailsAt_of_subsingleton",
+   "Toy.ClaimStrength.eval_subsingleton"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Folklore countermodels (x_v = c and x_v = g(x_u)) made precise and mechanized for arbitrary prefixes.",
+  "plain_claim": "For prefixes φ and ψ on the variables Fin n (same matrix, variables matched by index): (1) if no variable is bound twice in φ or in ψ, the base type α has two distinct elements, and SEntailsAt α φ ψ holds, then parts (i) and (ii) of the prefix criterion hold. (2) If no variable is bound twice in φ and every variable is bound exactly once in ψ, then for every base type α with two distinct elements, SEntailsAt α φ ψ holds iff the criterion holds. (3) If no variable is bound twice in φ and every variable is bound exactly once in ψ, then SEntails φ ψ (SEntailsAt at every base type) holds iff the criterion holds. (4) For all φ and ψ, SEntails φ ψ holds iff SEntailsAt α φ ψ holds at every base type α with two distinct elements. (5) If α has at most one element (Subsingleton α), then every prefix evaluates to its matrix at the environment, and SEntailsAt α φ ψ holds for all φ and ψ.",
+  "hypotheses": [
+   {
+    "name": "hα : ∃ a b : α, a ≠ b (in prefixCrit_necessary_of_two_point_nodup)",
+    "purpose": "on a one-element base type ∃x entails ∀x although the criterion fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.prefixCrit_necessary_hα_tight"
+    ],
+    "witness_class": "the one-element type Unit, one variable"
+   },
+   {
+    "name": "hφ : (bvars φ).Nodup (in prefixCrit_necessary_of_two_point_nodup)",
+    "purpose": "a repeated binder in φ shadows the first one, which the criterion reads",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.prefixCrit_necessary_hφ_tight"
+    ],
+    "witness_class": "one variable at Bool (φ = ∃x ∀x, ψ = ∀x)"
+   },
+   {
+    "name": "hψ : (bvars ψ).Nodup (in prefixCrit_necessary_of_two_point_nodup)",
+    "purpose": "a repeated binder in ψ shadows the first one, which the criterion reads",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.prefixCrit_necessary_hψ_tight"
+    ],
+    "witness_class": "one variable at Bool (φ = ∃x, ψ = ∀x ∃x)"
+   },
+   {
+    "name": "h : SEntailsAt α φ ψ (in prefixCrit_necessary_of_two_point_nodup)",
+    "purpose": "without the entailment the criterion can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.prefixCrit_necessary_h_tight"
+    ],
+    "witness_class": "two variables at Bool (∀x ∃y versus ∃y ∀x)"
+   },
+   {
+    "name": "hα : ∃ a b : α, a ≠ b (in sentailsAt_iff_prefixCrit_of_two_point_nodup_wf)",
+    "purpose": "on a one-element base type the entailment holds and the criterion fails, so the biconditional fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.sentailsAt_iff_hα_tight"
+    ],
+    "witness_class": "the one-element type Unit, one variable (φ = ∃x, ψ = ∀x)"
+   },
+   {
+    "name": "hφ : (bvars φ).Nodup (in sentailsAt_iff_prefixCrit_of_two_point_nodup_wf)",
+    "purpose": "with a repeated binder in φ the entailment holds and the criterion fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.sentailsAt_iff_hφ_tight"
+    ],
+    "witness_class": "one variable at Bool (φ = ∃x ∀x, ψ = ∀x)"
+   },
+   {
+    "name": "hψ : WF ψ (in sentailsAt_iff_prefixCrit_of_two_point_nodup_wf)",
+    "purpose": "with a repeated binder in ψ, or a variable left unbound by ψ, the criterion holds and the entailment fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.sentailsAt_iff_hψ_tight_dup",
+     "Toy.ClaimStrength.sentailsAt_iff_hψ_tight_missing"
+    ],
+    "witness_class": "one variable at Bool (φ = ∃x; ψ = ∃x ∀x for the duplicate half, ψ empty for the covering half)"
+   },
+   {
+    "name": "hφ : (bvars φ).Nodup (in sentails_iff_prefixCrit_of_nodup_wf)",
+    "purpose": "with a repeated binder in φ the entailment holds at every base type and the criterion fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.sentails_iff_hφ_tight"
+    ],
+    "witness_class": "one variable (φ = ∃x ∀x, ψ = ∀x)"
+   },
+   {
+    "name": "hψ : WF ψ (in sentails_iff_prefixCrit_of_nodup_wf)",
+    "purpose": "with a repeated binder in ψ, or a variable left unbound by ψ, the criterion holds and the entailment fails at Bool",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.sentails_iff_hψ_tight_dup",
+     "Toy.ClaimStrength.sentails_iff_hψ_tight_missing"
+    ],
+    "witness_class": "one variable, failure at Bool (φ = ∃x; ψ = ∃x ∀x for the duplicate half, ψ empty for the covering half)"
+   },
+   {
+    "name": "[Subsingleton α] (in sentailsAt_of_subsingleton)",
+    "purpose": "on a base type with two elements ∀x ∃y does not entail ∃y ∀x",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.sentailsAt_of_subsingleton_tight"
+    ],
+    "witness_class": "Bool, two variables"
+   },
+   {
+    "name": "[Subsingleton α] (in eval_subsingleton)",
+    "purpose": "on a base type with two elements ∀x (x = true) does not evaluate to its matrix at the environment x := true",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.eval_subsingleton_tight"
+    ],
+    "witness_class": "Bool, one variable"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "At Bool, ∃y ∀x versus ∀x ∃y: no repeated binders, ψ well formed, the entailment and the criterion hold (also at every base type); Unit is a subsingleton, and there ∃x entails ∀x.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.prefixCrit_necessary_nonvacuous",
+   "Toy.ClaimStrength.sentailsAt_iff_nonvacuous",
+   "Toy.ClaimStrength.sentails_iff_nonvacuous",
+   "Toy.ClaimStrength.subsingleton_nonvacuous"
+  ],
+  "non_claims": [
+   "SEntailsAt uses environment semantics: it quantifies over every matrix R and every environment ρ : Fin n → α. When α is empty and n ≥ 1 there is no environment, so SEntailsAt α φ ψ holds vacuously for every pair (sentailsAt_of_isEmpty); in particular the closed implication (∀x, P x) → ∃x, P x fails on an empty type (closed_forall_imp_exists_iff_nonempty) although SEntailsAt α [∀x] [∃x] holds there. For prefixes that bind every variable, SEntailsAt at α equals entailment at one fixed environment (sentailsAt_iff_fixed_env_of_covers), so the quantification over environments can make a difference for prefixes that leave a variable free and for an empty base type (sentailsAt_of_isEmpty).",
+   "Necessity uses arbitrary matrices; for a fixed matrix, entailment can hold without the criterion (for example any φ, ψ with the matrix True; not proved here as a separate theorem).",
+   "The countermodels use matrices built from equality with constants and a two-valued function of one variable; with a restricted matrix language (for example without equality, or with monotone matrices), necessity is not established here.",
+   "Variables are matched by index (Fin n), not up to renaming: the same prefix with renamed variables in front of the same matrix can fail the criterion (prefixCritB_renamed_false); formulas whose equality depends on a symmetry of the matrix are not recognized unless variables are aligned first (not proved here).",
+   "Base types range over Type (universe 0).",
+   "These are statements about a toy prefix language (a list of (quantifier, variable) pairs over one sort, in front of an uninterpreted matrix); model–system relation: none proved; they neither establish nor refute the corresponding claims about any real specification language or about how readers compare quantified sentences."
+  ],
+  "prior_art": [
+   "M. Samer and S. Szeider, \"Backdoor Sets of Quantified Boolean Formulas\", Journal of Automated Reasoning 42(1):77-97, 2009, doi:10.1007/s10817-008-9114-5. Definition 2 (dependency schemes: the variables a variable may depend on can be shifted without changing the truth value of the formula, i.e. equivalence is preserved) and Definition 4 (the trivial dependency scheme relates every variable x, existential or universal, to all variables from the first later quantifier block of the other quantifier onward), checked in the authors' version. The trivial scheme therefore also constrains pairs with an existential variable before a universal one, as equivalence-preserving reordering requires. The criterion here constrains the pairs with a universal variable before an existential one, and no other pairs (the Skolem dependencies), because it characterizes one-way entailment, under which ∃y ∀x entails ∀x ∃y.",
+   "F. Slivovsky and S. Szeider, \"Quantifier Reordering for QBF\", Journal of Automated Reasoning 56(4):459-477, 2016, doi:10.1007/s10817-015-9353-1 (dependency schemes used to reorder the prefix of a fixed formula while preserving its truth value; checked against the publisher's abstract). Related but different: that work preserves the truth of one formula; the result here characterizes one-way entailment between two prefixes over all matrices, including universal-to-existential weakening.",
+   "H. B. Enderton, A Mathematical Introduction to Logic, 2nd ed., Harcourt/Academic Press, 2001, Section 4.2 \"Skolem functions\" (section number from secondary sources, not checked against a copy). The Skolem dependency of an existential variable on the universal variables before it is the relation that part (ii) of the criterion preserves; the proof here does not construct Skolem functions."
+  ],
+  "design_question": "Is strength between quantifier-prefix claim shapes decidable and syntactically visible, so that a summary that reorders or flips quantifiers can be checked mechanically?",
+  "lean_names": [
+   "Toy.ClaimStrength.SEntails"
+  ]
+ },
+ {
+  "id": "prefix-entailment-decidable",
+  "lean": [
+   "Toy.ClaimStrength.prefixCritB_iff",
+   "Toy.ClaimStrength.wfB_iff",
+   "Toy.ClaimStrength.sentailsAt_iff_prefixCritB_of_two_point_nodup_wf",
+   "Toy.ClaimStrength.exists_forall_sentails_forall_exists",
+   "Toy.ClaimStrength.forall_exists_not_sentails_exists_forall",
+   "Toy.ClaimStrength.forall_exists_not_sentails_exists_forall_witness",
+   "Toy.ClaimStrength.forall_sentails_exists",
+   "Toy.ClaimStrength.exists_not_sentails_forall",
+   "Toy.ClaimStrength.prefixCritB_exists_forall_forall_exists",
+   "Toy.ClaimStrength.prefixCritB_forall_exists_exists_forall",
+   "Toy.ClaimStrength.prefixCritB_forall_exists",
+   "Toy.ClaimStrength.prefixCritB_exists_forall",
+   "Toy.ClaimStrength.prefixCritB_renamed_false",
+   "Toy.ClaimStrength.pointwise_bound_not_uniform",
+   "Toy.ClaimStrength.nat_pointwise_bound_not_uniform",
+   "Toy.ClaimStrength.uniform_entails_pointwise"
+  ],
+  "kind": "characterization",
+  "tier": "T1",
+  "tier_justification": "The decision procedure follows from the characterization; the one- and two-variable instances are textbook.",
+  "plain_claim": "The Boolean function prefixCritB satisfies prefixCritB φ ψ = true ↔ PrefixCrit φ ψ, and wfB φ = true ↔ WF φ. If the base type α has two distinct elements, no variable is bound twice in φ, and every variable is bound exactly once in ψ, then SEntailsAt α φ ψ holds iff prefixCritB φ ψ = true. On two variables: ∃y∀x entails ∀x∃y at every base type, and ∀x∃y does not entail ∃y∀x at Bool (countermodel: the matrix y = x, under which ∀x∃y holds and ∃y∀x fails; forall_exists_not_sentails_exists_forall_witness). On one variable: ∀x entails ∃x at every base type under environment semantics (vacuously when the type is empty), and ∃x does not entail ∀x at Bool. prefixCritB returns true / false on these four pairs, and false on ∀x₀∃x₁ versus ∀x₁∃x₀. Over relations on Nat, '∀x ∃n, R x n' does not entail '∃n ∀x, R x n' (countermodel R = ≤; in particular (∀x, ∃n, x ≤ n) → (∃n, ∀x, x ≤ n) is false over Nat), and '∃n ∀x' entails '∀x ∃n'.",
+  "hypotheses": [
+   {
+    "name": "hα : ∃ a b : α, a ≠ b (in sentailsAt_iff_prefixCritB_of_two_point_nodup_wf)",
+    "purpose": "on a one-element base type the entailment holds and prefixCritB returns false",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.sentailsAt_iff_hα_tight"
+    ],
+    "witness_class": "the one-element type Unit, one variable (φ = ∃x, ψ = ∀x)"
+   },
+   {
+    "name": "hφ : (bvars φ).Nodup (in sentailsAt_iff_prefixCritB_of_two_point_nodup_wf)",
+    "purpose": "with a repeated binder in φ the entailment holds and prefixCritB returns false",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.sentailsAt_iff_hφ_tight"
+    ],
+    "witness_class": "one variable at Bool (φ = ∃x ∀x, ψ = ∀x)"
+   },
+   {
+    "name": "hψ : WF ψ (in sentailsAt_iff_prefixCritB_of_two_point_nodup_wf)",
+    "purpose": "with a repeated binder in ψ, or a variable left unbound by ψ, prefixCritB returns true and the entailment fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.sentailsAt_iff_hψ_tight_dup",
+     "Toy.ClaimStrength.sentailsAt_iff_hψ_tight_missing"
+    ],
+    "witness_class": "one variable at Bool (φ = ∃x; ψ = ∃x ∀x for the duplicate half, ψ empty for the covering half)"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "At Bool, ∃y ∀x versus ∀x ∃y: every hypothesis holds and both sides hold; prefixCritB returns true on this pair (decide); the relation n = 0 on Nat has the uniform bound 0.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.sentailsAt_iff_nonvacuous",
+   "Toy.ClaimStrength.prefixCritB_exists_forall_forall_exists",
+   "Toy.ClaimStrength.uniform_entails_pointwise_nonvacuous"
+  ],
+  "non_claims": [
+   "No complexity bound is claimed (the function loops over pairs of variables and scans the prefix).",
+   "∀x entails ∃x at every base type because the environment supplies an element; on an empty base type the statement holds vacuously (sentailsAt_of_isEmpty), and the closed implication (∀x, P x) → ∃x, P x fails there (closed_forall_imp_exists_iff_nonempty).",
+   "prefixCritB decides strength between prefixes over all matrices; it does not decide entailment for a given matrix: for a specific relation the uniform bound can hold (uniform_entails_pointwise_nonvacuous).",
+   "Variables are matched by index (Fin n), not up to renaming: the same prefix with renamed variables in front of the same matrix can fail the criterion (prefixCritB_renamed_false); formulas whose equality depends on a symmetry of the matrix are not recognized unless variables are aligned first (not proved here).",
+   "These are statements about a toy prefix language (a list of (quantifier, variable) pairs over one sort, in front of an uninterpreted matrix); model–system relation: none proved; they neither establish nor refute the corresponding claims about any real specification language or about how readers compare quantified sentences."
+  ],
+  "prior_art": [
+   "M. Samer and S. Szeider, \"Backdoor Sets of Quantified Boolean Formulas\", Journal of Automated Reasoning 42(1):77-97, 2009, doi:10.1007/s10817-008-9114-5. Definition 2 (dependency schemes: the variables a variable may depend on can be shifted without changing the truth value of the formula, i.e. equivalence is preserved) and Definition 4 (the trivial dependency scheme relates every variable x, existential or universal, to all variables from the first later quantifier block of the other quantifier onward), checked in the authors' version. The trivial scheme therefore also constrains pairs with an existential variable before a universal one, as equivalence-preserving reordering requires. The criterion here constrains the pairs with a universal variable before an existential one, and no other pairs (the Skolem dependencies), because it characterizes one-way entailment, under which ∃y ∀x entails ∀x ∃y.",
+   "H. S. Kurtzman and M. C. MacDonald, \"Resolution of quantifier scope ambiguities\", Cognition 48(3):243-279, 1993, doi:10.1016/0010-0277(93)90042-T (experimental study of how readers resolve \"every ... a ...\" scope ambiguities; record and abstract from index sources). Cited for the prose motivation of the forall-exists / exists-forall drift."
+  ],
+  "design_question": "Is strength between quantifier-prefix claim shapes decidable and syntactically visible, so that a summary that reorders or flips quantifiers can be checked mechanically?",
+  "lean_names": [
+   "Toy.ClaimStrength.A",
+   "Toy.ClaimStrength.X",
+   "Toy.ClaimStrength.prefixCritB",
+   "Toy.ClaimStrength.wfB"
+  ]
+ },
+ {
+  "id": "domain-and-premise-variance",
+  "lean": [
+   "Toy.ClaimStrength.forall_domain_entails_iff",
+   "Toy.ClaimStrength.exists_domain_entails_iff",
+   "Toy.ClaimStrength.premise_entails_iff",
+   "Toy.ClaimStrength.relative_entails_absolute_iff",
+   "Toy.ClaimStrength.single_parameter_not_range",
+   "Toy.ClaimStrength.single_parameter_not_range_witness",
+   "Toy.ClaimStrength.range_entails_single",
+   "Toy.ClaimStrength.relative_not_absolute",
+   "Toy.ClaimStrength.relative_not_absolute_witness",
+   "Toy.ClaimStrength.relative_to_assumption_not_absolute",
+   "Toy.ClaimStrength.relative_to_assumption_not_absolute_witness",
+   "Toy.ClaimStrength.absolute_entails_relative",
+   "Toy.ClaimStrength.conj_premise_not_disj",
+   "Toy.ClaimStrength.conj_premise_not_disj_witness",
+   "Toy.ClaimStrength.disj_premise_entails_conj"
+  ],
+  "kind": "characterization",
+  "tier": "T0",
+  "reference_point": true,
+  "tier_justification": "Monotonicity of bounded quantifiers restated, with the drift instances it explains.",
+  "plain_claim": "For domains D, D' and premises H, H' on a type α: '∀x ∈ D, P x' entails '∀x ∈ D', P x' for every predicate P iff D' ⊆ D; '∃x ∈ D, P x' entails '∃x ∈ D', P x' for every P iff D ⊆ D'; '∀x, H x → C x' entails '∀x, H' x → C x' for every C iff H' ⊆ H; and '∀x, H x → C x' entails '∀x, C x' for every C iff H holds everywhere. Instances: over predicates P on Nat, 'P 2' does not entail '∀k ≥ 1, P k' (countermodel P k := k = 2; single_parameter_not_range_witness) while the converse holds; over pairs (H, C) of predicates on Nat, '∀x, H x → C x' does not entail '∀x, C x' (countermodel H = C = (· = 0); relative_not_absolute_witness) while '∀x, C x' entails '∀x, H x → C x' (absolute_entails_relative); over pairs (A, C) of propositions, 'A → C' does not entail 'C' (countermodel A = C = False; relative_to_assumption_not_absolute_witness); over triples (H₁, H₂, C) of propositions, 'H₁ ∧ H₂ → C' does not entail 'H₁ ∨ H₂ → C' (countermodel H₁ = True, H₂ = False, C = False; conj_premise_not_disj_witness) while the converse holds.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "Over Nat: '∀k ≥ 1, P k' entails '∀k = 2, P k', and '∃k = 2, P k' entails '∃k ≥ 1, P k'; the converse entailments hold at the interpretations P k := 1 ≤ k, (· = 0, True), (True, False, True).",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.domain_variance_nonvacuous",
+   "Toy.ClaimStrength.range_entails_single_nonvacuous",
+   "Toy.ClaimStrength.absolute_entails_relative_nonvacuous",
+   "Toy.ClaimStrength.disj_premise_entails_conj_nonvacuous"
+  ],
+  "non_claims": [
+   "No hypotheses: the four laws are biconditionals and the instances are closed statements.",
+   "Entailment is for every predicate (schematic); for a particular predicate the implication can hold although the domain condition fails (for example with the predicate True; not proved here as a separate theorem).",
+   "Does not say a range claim, absolute claim, or disjunctive-premise claim is false for the intended predicates; the countermodels show that it does not follow.",
+   "The propositional converse of relative_to_assumption_not_absolute, that 'C' entails 'A → C', is not stated as a theorem (not proved here); the converse that is stated is absolute_entails_relative, over pairs of predicates on Nat.",
+   "The four laws concern one quantifier; several quantifiers with domains are treated on the relativized-criterion cards.",
+   "The premise law and the universal-domain law are the same formal statement; they are listed separately for their two readings, not as two facts.",
+   "Relative completeness in the sense of Cook (1978) is a claim relative to an oracle and an expressiveness assumption. This card shows that a relative form does not entail the absolute form in general (relative_not_absolute); no relation between this toy model and Hoare logic is proved (model–system relation: none proved), and it neither establishes nor refutes any claim about Hoare logic.",
+   "These are statements about the toy model (claims are predicates on an arbitrary type, instantiated over Nat and Prop); model–system relation: none proved; they neither establish nor refute the corresponding claims about natural-language summaries, about any particular result, or about how readers reason."
+  ],
+  "prior_art": [
+   "No specific prior statement located; elementary consequence of the definitions.",
+   "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM J. Comput. 7(1):70-90, 1978, doi:10.1137/0207005 (completeness of Hoare logic relative to an oracle for the assertion theory under an expressiveness assumption: a standard example of a relativized completeness claim; record and abstract checked, full text not consulted). Cited as an example of a relative claim."
+  ],
+  "design_question": "Reference point: a definitional fact recorded so that other cards can cite it. Which recurring summary drifts turn a proved claim into a strictly stronger unproved one, and what is the weaker reading that does follow?"
+ },
+ {
+  "id": "drift-single-counterexample-versus-universal-or-subclass",
+  "lean": [
+   "Toy.ClaimStrength.single_counterexample_not_universal",
+   "Toy.ClaimStrength.single_counterexample_not_universal_witness",
+   "Toy.ClaimStrength.universal_refutation_entails_single_of_nonempty",
+   "Toy.ClaimStrength.counterexample_in_class_not_in_subclass",
+   "Toy.ClaimStrength.counterexample_in_class_not_in_subclass_witness",
+   "Toy.ClaimStrength.counterexample_in_subclass_lifts"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "reference_point": true,
+  "tier_justification": "Elementary quantifier facts, kernel-checked with natural countermodels.",
+  "plain_claim": "Over predicates P on Nat, a single counterexample ('∃m, ¬P m') does not entail a universal refutation ('∀m, ¬P m') (countermodel P m := m ≠ 0; single_counterexample_not_universal_witness), and a counterexample among all naturals does not give one among the even naturals (countermodel P m := m % 2 = 0, which fails at 1 and holds at every even number; counterexample_in_class_not_in_subclass_witness). Conversely, for every nonempty type α, '∀m, ¬P m' entails '∃m, ¬P m' over predicates P on α; and over predicates P on Nat, for classes K, K' of naturals such that every element of K' is in K, a counterexample in K' is one in K.",
+  "hypotheses": [
+   {
+    "name": "[Nonempty α] (in universal_refutation_entails_single_of_nonempty)",
+    "purpose": "over the empty type the universal refutation holds vacuously and no counterexample exists",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.universal_refutation_nonempty_tight"
+    ],
+    "witness_class": "the empty type Empty"
+   },
+   {
+    "name": "h : ∀ m, K' m → K m (in counterexample_in_subclass_lifts)",
+    "purpose": "if K' is not contained in K, a counterexample in K' need not give one in K",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.counterexample_in_subclass_lifts_h_tight"
+    ],
+    "witness_class": "predicates on Nat, K' = all naturals, K = even naturals"
+   }
+  ],
+  "depth": "definitional",
+  "nonvacuity_witness": "Even numbers inside all numbers; P m := m ≠ 0 has the even counterexample 0; Nat is nonempty and P := False is universally refuted.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.counterexample_in_subclass_lifts_nonvacuous",
+   "Toy.ClaimStrength.universal_refutation_nonvacuous"
+  ],
+  "non_claims": [
+   "An impossibility shown by one countermodel in a toy class does not, by itself, say anything about the intended class unless the countermodel is shown to lie in it.",
+   "Interpretations are predicates on Nat (or on a nonempty α for the universal-refutation converse); no claim about particular real counterexamples.",
+   "These are statements about the toy model (claims are predicates on Nat or on an arbitrary type); model–system relation: none proved; they neither establish nor refute the corresponding claims about natural-language summaries, about any particular result, or about how readers reason."
+  ],
+  "prior_art": [
+   "L. R. Horn, \"Toward a new taxonomy for pragmatic inference: Q-based and R-based implicature\", in D. Schiffrin (ed.), Meaning, Form, and Use in Context: Linguistic Applications (GURT 1984), Georgetown University Press, 1984, pp. 11-42 (distinguishes Q-based, upper-bounding implicature, where a weaker statement suggests the stronger one fails, from R-based enrichment, where a statement is read as a stronger, stereotypical proposition; bibliographic record and summary from secondary sources). Cited as prose motivation: the strengthening drifts here resemble R-based enrichment, not Quantity."
+  ],
+  "design_question": "Reference point: a definitional fact recorded so that other cards can cite it. Which recurring summary drifts turn a proved claim into a strictly stronger unproved one, and what is the weaker reading that does follow?"
+ },
+ {
+  "id": "drift-sufficient-versus-characterization",
+  "lean": [
+   "Toy.ClaimStrength.sufficient_not_characterization",
+   "Toy.ClaimStrength.sufficient_not_characterization_witness",
+   "Toy.ClaimStrength.sufficient_not_converse",
+   "Toy.ClaimStrength.sufficient_not_converse_witness",
+   "Toy.ClaimStrength.characterization_entails_sufficient",
+   "Toy.ClaimStrength.checker_sound_not_complete",
+   "Toy.ClaimStrength.checker_sound_not_complete_witness",
+   "Toy.ClaimStrength.checker_complete_not_sound",
+   "Toy.ClaimStrength.checker_complete_not_sound_witness",
+   "Toy.ClaimStrength.checker_sound_complete_entails_sound"
+  ],
+  "kind": "counterexample",
+  "tier": "T0",
+  "reference_point": true,
+  "tier_justification": "Elementary; kernel-checked countermodels.",
+  "plain_claim": "Over pairs (A, B) of propositions, 'A → B' does not entail 'A ↔ B' and does not entail 'B → A' (countermodel A = False, B = True; sufficient_not_characterization_witness, sufficient_not_converse_witness), while 'A ↔ B' entails 'A → B'. For checkers on Nat (an acceptance function and a goodness predicate), soundness ('accept → good') does not entail completeness ('good → accept') (countermodel zeroChecker, which accepts exactly the input 0, with the even numbers good; checker_sound_not_complete_witness), completeness does not entail soundness (countermodel acceptAll, which accepts every input, with no input good; checker_complete_not_sound_witness), and soundness-and-completeness entails soundness.",
+  "hypotheses": [],
+  "depth": "definitional",
+  "nonvacuity_witness": "The checker accepting exactly the even numbers is sound and complete and accepts 0; A = B = True is a characterization.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.checker_sound_complete_nonvacuous",
+   "Toy.ClaimStrength.characterization_entails_sufficient_nonvacuous",
+   "Toy.ClaimStrength.checkerSound_example_pos"
+  ],
+  "non_claims": [
+   "No hypotheses: every statement is closed.",
+   "Says nothing about any particular checker or verifier; the checker model has inputs Nat and an arbitrary goodness predicate.",
+   "Proving a checker sound and complete for one modeled property 'good' does not establish properties outside 'good' (not proved here).",
+   "These are statements about the toy model (propositions, and checkers on Nat with an arbitrary goodness predicate); model–system relation: none proved; they neither establish nor refute the corresponding claims about any particular checker or verifier, or about how readers reason."
+  ],
+  "prior_art": [
+   "M. L. Geis and A. M. Zwicky, \"On Invited Inferences\", Linguistic Inquiry 2(4):561-566, 1971 (conditional perfection: \"if p then q\" invites \"if not p then not q\"; bibliographic record and summary from secondary sources; the full text was not consulted). Cited for the prose motivation of the if/iff drift; no formal statement is taken from it."
+  ],
+  "design_question": "Reference point: a definitional fact recorded so that other cards can cite it. Which recurring summary drifts turn a proved claim into a strictly stronger unproved one, and what is the weaker reading that does follow?",
+  "lean_names": [
+   "Toy.ClaimStrength.Checker",
+   "Toy.ClaimStrength.CheckerComplete",
+   "Toy.ClaimStrength.CheckerSound",
+   "Toy.ClaimStrength.acceptAll",
+   "Toy.ClaimStrength.evenChecker",
+   "Toy.ClaimStrength.zeroChecker"
+  ]
+ },
+ {
+  "id": "relativized-criterion-sound",
+  "lean": [
+   "Toy.ClaimStrength.rcrit_sound",
+   "Toy.ClaimStrength.rcritB_iff",
+   "Toy.ClaimStrength.rEntails_of_isEmpty",
+   "Toy.ClaimStrength.evalR_premise_pull_out",
+   "Toy.ClaimStrength.holds_premise_on_existential_trivial"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Combines the prefix criterion with folklore monotonicity of bounded quantifiers; the overlap condition for instantiated variables and the mechanized proof are made precise here.",
+  "plain_claim": "For relativized shapes φ and ψ (a prefix whose binders carry named domain classes, plus one named premise, evaluated by Holds as Q₁x₁∈I k₁ … Qₘxₘ∈I kₘ (J p x⃗ → M x⃗)), if both prefixes bind every variable exactly once, the tables incl, meets, impl are sound for the interpretations I, J (incl k k' = true implies I k ⊆ I k'; meets k k' = true implies I k and I k' share an element; impl p p' = true implies J p ⊆ J p'), and RCrit incl meets impl φ ψ holds (the prefix criterion; incl ψ-domain φ-domain = true for each variable universal in ψ; incl φ-domain ψ-domain = true for each variable existential in φ; meets φ-domain ψ-domain = true for each variable universal in φ and existential in ψ; impl ψ.prem φ.prem = true), then for every matrix M and environment ρ, φ with M implies ψ with M. No cardinality or nonemptiness assumption; when α is empty and n ≥ 1 the conclusion holds vacuously (rEntails_of_isEmpty). RCrit is decided by rcritB. If every domain of a prefix is nonempty and the premise does not depend on the variables it binds, the premise can be pulled out of the prefix (evalR_premise_pull_out); over Nat the shape ∀x ∈ {0,1} ∃y ∈ Nat (x ≤ 1 ∧ y ≤ 1 → M) holds for every M.",
+  "hypotheses": [
+   {
+    "name": "hφ : WF φ.pre (in rcrit_sound)",
+    "purpose": "a repeated binder shadows the first one; a variable left unbound by φ takes an environment value that need not lie in the domain; in both cases the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_sound_hφ_tight",
+     "Toy.ClaimStrength.rcrit_sound_hφ_tight_missing"
+    ],
+    "witness_class": "one variable over Nat (φ = ∀x ∃x; φ empty with ψ = ∃x ∈ {0})"
+   },
+   {
+    "name": "hψ : WF ψ.pre (in rcrit_sound)",
+    "purpose": "a repeated binder shadows the first one; a variable left unbound by ψ behaves like an outer universal; in both cases the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_sound_hψ_tight",
+     "Toy.ClaimStrength.rcrit_sound_hψ_tight_missing"
+    ],
+    "witness_class": "one variable over Nat (ψ = ∃x ∀x; ψ empty)"
+   },
+   {
+    "name": "hI : InclSound I incl (in rcrit_sound)",
+    "purpose": "with an inclusion verdict that is not a true inclusion the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_sound_hI_tight"
+    ],
+    "witness_class": "one variable over Nat with the table 'everything included'"
+   },
+   {
+    "name": "hM : MeetsSound I meets (in rcrit_sound)",
+    "purpose": "with an overlap verdict that is not a true overlap the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_sound_hM_tight"
+    ],
+    "witness_class": "one variable over Nat with the table 'everything overlaps'"
+   },
+   {
+    "name": "hJ : ImplSound J impl (in rcrit_sound)",
+    "purpose": "with an implication verdict that is not a true implication the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_sound_hJ_tight"
+    ],
+    "witness_class": "one variable over Nat with the table 'every premise implies every other'"
+   },
+   {
+    "name": "h : RCrit incl meets impl φ ψ, part (i) UnivReflected (in rcrit_sound)",
+    "purpose": "if a variable universal in ψ is existential in φ, the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_part_i_tight"
+    ],
+    "witness_class": "one variable over Nat"
+   },
+   {
+    "name": "h : RCrit incl meets impl φ ψ, part (ii) SkolemOrderPreserved (in rcrit_sound)",
+    "purpose": "if ψ moves an existential of φ before a universal it depends on, the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_part_ii_tight"
+    ],
+    "witness_class": "two variables over Nat"
+   },
+   {
+    "name": "h : RCrit incl meets impl φ ψ, UnivDomainsContravariant (in rcrit_sound)",
+    "purpose": "if a universal domain of ψ is not included in the corresponding domain of φ, the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_univ_domain_tight"
+    ],
+    "witness_class": "one variable over Nat"
+   },
+   {
+    "name": "h : RCrit incl meets impl φ ψ, ExDomainsCovariant (in rcrit_sound)",
+    "purpose": "if an existential domain of φ is not included in the corresponding domain of ψ, the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_ex_domain_tight"
+    ],
+    "witness_class": "one variable over Nat"
+   },
+   {
+    "name": "h : RCrit incl meets impl φ ψ, InstantiatedDomainsMeet (in rcrit_sound)",
+    "purpose": "if the domains of a variable universal in φ and existential in ψ do not overlap, the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_meet_tight"
+    ],
+    "witness_class": "one variable over Nat"
+   },
+   {
+    "name": "h : RCrit incl meets impl φ ψ, PremiseContravariant (in rcrit_sound)",
+    "purpose": "if the premise of ψ does not imply that of φ, the entailment can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_premise_tight"
+    ],
+    "witness_class": "one variable over Nat"
+   },
+   {
+    "name": "hα : α → False (in rEntails_of_isEmpty)",
+    "purpose": "over an inhabited base type the conclusion fails for ∃x versus ∀x",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rEntails_of_isEmpty_tight"
+    ],
+    "witness_class": "Nat, one variable"
+   },
+   {
+    "name": "(∀ b ∈ pre, ∃ a, I b.dom a) — every domain of the prefix is nonempty (in evalR_premise_pull_out)",
+    "purpose": "an empty existential domain makes the left side false while the right side holds when the premise is false",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.evalR_premise_pull_out_hne_tight"
+    ],
+    "witness_class": "one existential variable over Nat with empty domain"
+   },
+   {
+    "name": "(∀ b ∈ pre, ∀ σ a, H (upd σ b.var a) ↔ H σ) — the premise does not depend on the variables bound in the prefix (in evalR_premise_pull_out)",
+    "purpose": "a premise on an existential variable can be falsified by the witness",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.evalR_premise_pull_out_hind_tight"
+    ],
+    "witness_class": "one existential variable over Nat with premise x ≤ 1"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "∃y ∈ {0,1} ∀x ∈ Nat (⊤ → M) entails ∀x ∈ Nat ∃y ∈ {0,1} (x ≤ 1 ∧ y ≤ 1 → M) (reordered prefix, stronger premise that restricts x), and ∃y ∈ {0} ∀x ∈ Nat (⊤ → M) entails ∀x ∈ {0,1} ∃y ∈ {0,1} (⊤ → M) (shrunk universal domain, grown existential domain); in both the source holds for M = True and the target fails for M = False, so the entailments are not degenerate. Empty is empty (rEntails_of_isEmpty). For evalR_premise_pull_out: two variables over Nat, prefix ∃y ∈ {0,1}, premise x ≤ 1 on the variable x left free by the prefix (not true at every assignment).",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.rcrit_sound_nonvacuous",
+   "Toy.ClaimStrength.rcrit_sound_nonvacuous_domains",
+   "Toy.ClaimStrength.sentailsAt_of_isEmpty_nonvacuous",
+   "Toy.ClaimStrength.evalR_premise_pull_out_nonvacuous"
+  ],
+  "non_claims": [
+   "In Holds the premise is an implication antecedent inside the scope of every binder, also existential ones: ∃y ∈ D (H → M) holds as soon as some y ∈ D falsifies H, so a premise that constrains an existentially bound variable is not a filter on witnesses and can make the shape valid (holds_premise_on_existential_trivial). Constraints on witnesses belong in binder domains. When the premise does not depend on the variables bound after a position and their domains are nonempty, it can be pulled out to that position (evalR_premise_pull_out).",
+   "Every 'tight' entry of this card's hypothesis ledger (under Findings) is witnessed in the stated class. RCrit is not complete outside the fragment of the completeness card (for example rcrit_incomplete_singleton_domain), so a failed criterion part does not by itself refute the entailment (see the incompleteness card).",
+   "Soundness is relative to the supplied tables; with unsound tables it fails (rcrit_sound_hI_tight, rcrit_sound_hM_tight, rcrit_sound_hJ_tight).",
+   "Domains and premises are interpreted and fixed; the matrix is the schematic component. The premise is one named predicate on full assignments; premises are not decomposed per variable.",
+   "No completeness claim on this card.",
+   "Toy signature in the examples: base type Nat, four classes, three premises.",
+   "These are statements about a toy language of relativized claim shapes (one sort, named domain classes, one named premise, an uninterpreted matrix); model–system relation: none proved; they neither establish nor refute the corresponding claims about any real specification language or natural-language summary."
+  ],
+  "prior_art": [
+   "M. Samer and S. Szeider, \"Backdoor Sets of Quantified Boolean Formulas\", Journal of Automated Reasoning 42(1):77-97, 2009, doi:10.1007/s10817-008-9114-5. Definition 2 (dependency schemes: the variables a variable may depend on can be shifted without changing the truth value of the formula, i.e. equivalence is preserved) and Definition 4 (the trivial dependency scheme relates every variable x, existential or universal, to all variables from the first later quantifier block of the other quantifier onward), checked in the authors' version. The trivial scheme therefore also constrains pairs with an existential variable before a universal one, as equivalence-preserving reordering requires. The criterion here constrains the pairs with a universal variable before an existential one, and no other pairs (the Skolem dependencies), because it characterizes one-way entailment, under which ∃y ∀x entails ∀x ∃y.",
+   "F. Slivovsky and S. Szeider, \"Quantifier Reordering for QBF\", Journal of Automated Reasoning 56(4):459-477, 2016, doi:10.1007/s10817-015-9353-1 (dependency schemes used to reorder the prefix of a fixed formula while preserving its truth value; checked against the publisher's abstract). Related but different: that work preserves the truth of one formula; the result here characterizes one-way entailment between two prefixes over all matrices, including universal-to-existential weakening.",
+   "S. A. Cook, \"Soundness and completeness of an axiom system for program verification\", SIAM J. Comput. 7(1):70-90, 1978, doi:10.1137/0207005 (completeness of Hoare logic relative to an oracle for the assertion theory under an expressiveness assumption: a standard example of a relativized completeness claim; record and abstract checked, full text not consulted). Cited as an example of a relative claim."
+  ],
+  "design_question": "For relativized claim shapes (domains and a premise), is strength decidable by a syntactic criterion, and where does the syntactic criterion stop being complete?",
+  "lean_names": [
+   "Toy.ClaimStrength.Cls",
+   "Toy.ClaimStrength.ExDomainsCovariant",
+   "Toy.ClaimStrength.Holds",
+   "Toy.ClaimStrength.ImplSound",
+   "Toy.ClaimStrength.InclSound",
+   "Toy.ClaimStrength.InstantiatedDomainsMeet",
+   "Toy.ClaimStrength.MeetsSound",
+   "Toy.ClaimStrength.Prem",
+   "Toy.ClaimStrength.PremiseContravariant",
+   "Toy.ClaimStrength.RCrit",
+   "Toy.ClaimStrength.REntails",
+   "Toy.ClaimStrength.Shape",
+   "Toy.ClaimStrength.UnivDomainsContravariant",
+   "Toy.ClaimStrength.clsI",
+   "Toy.ClaimStrength.nvφ",
+   "Toy.ClaimStrength.nvφD",
+   "Toy.ClaimStrength.nvψ",
+   "Toy.ClaimStrength.nvψD",
+   "Toy.ClaimStrength.pairAllB",
+   "Toy.ClaimStrength.premJ",
+   "Toy.ClaimStrength.rcritB"
+  ]
+ },
+ {
+  "id": "relativized-criterion-complete-polarized-two-point-premise-free",
+  "lean": [
+   "Toy.ClaimStrength.rcrit_complete_polarized_two_point_premise_free",
+   "Toy.ClaimStrength.nonempty_domains_of_rEntails"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Countermodel constructions generalize the unrelativized ones; mechanized here.",
+  "plain_claim": "If no variable is bound twice in the prefix of φ or of ψ (a prefix may leave variables unbound; they take their values from the environment), the tables incl, meets, impl are exact for I, J (incl k k' = true iff I k ⊆ I k'; meets k k' = true iff I k and I k' share an element; impl p p' = true iff J p ⊆ J p'), the base type α is nonempty, every existential domain of φ and every universal domain of ψ has at least two elements, and both premises hold at every assignment, then REntails I J φ ψ implies RCrit incl meets impl φ ψ. If α is nonempty, every existential domain of φ and every universal domain of ψ has at least two elements, the premise of ψ holds at every assignment, and REntails I J φ ψ holds, then every domain of φ and of ψ is nonempty (nonempty_domains_of_rEntails).",
+  "hypotheses": [
+   {
+    "name": "hφ : (bvars φ.pre).Nodup (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "with a repeated binder the criterion reads the shadowed first binder",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_incomplete_not_wf"
+    ],
+    "witness_class": "one variable over Nat, φ = ∃x ∀x"
+   },
+   {
+    "name": "hψ : (bvars ψ.pre).Nodup (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "with a repeated binder the criterion reads the shadowed first binder",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_incomplete_not_wf_target"
+    ],
+    "witness_class": "one variable over Nat, ψ = ∀x ∃x"
+   },
+   {
+    "name": "hI : InclExact I incl (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "a sound but inexact inclusion table misses true inclusions",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_incomplete_inexact_incl"
+    ],
+    "witness_class": "one variable over Nat, table 'equal classes'"
+   },
+   {
+    "name": "hM : MeetsExact I meets (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "a sound but inexact overlap table misses true overlaps",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_incomplete_inexact_meets"
+    ],
+    "witness_class": "one variable over Nat, table 'never'"
+   },
+   {
+    "name": "hJ : ImplExact J impl (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "a sound but inexact premise table misses true implications",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_incomplete_inexact_impl"
+    ],
+    "witness_class": "one variable over Nat, table 'never'"
+   },
+   {
+    "name": "hα : Nonempty α (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "over an empty base type REntails holds vacuously while the overlap part fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_complete_hα_tight"
+    ],
+    "witness_class": "the empty base type Empty, one variable"
+   },
+   {
+    "name": "h2φ : ∀ b ∈ φ.pre, b.q = .ex → TwoPoint (I b.dom) (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "with an empty or one-element existential domain in φ the entailment can hold while part (i) or (ii) fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_incomplete_empty_domain",
+     "Toy.ClaimStrength.rcrit_incomplete_singleton_existential"
+    ],
+    "witness_class": "one variable over Nat with an empty existential domain; two variables over Nat with a singleton existential domain"
+   },
+   {
+    "name": "h2ψ : ∀ b ∈ ψ.pre, b.q = .all → TwoPoint (I b.dom) (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "with an empty or one-element universal domain in ψ the entailment can hold while part (i) or (ii) fails",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_incomplete_empty_universal_domain",
+     "Toy.ClaimStrength.rcrit_incomplete_singleton_universal"
+    ],
+    "witness_class": "one variable over Nat with an empty universal domain; two variables over Nat with a singleton universal domain"
+   },
+   {
+    "name": "hpφ : ∀ σ, J φ.prem σ (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "a premise of φ can restrict a universal domain, or be implied by an existential domain",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_incomplete_premise_as_domain",
+     "Toy.ClaimStrength.rcrit_incomplete_redundant_existential_premise"
+    ],
+    "witness_class": "one variable over Nat (universal and existential binder respectively)"
+   },
+   {
+    "name": "hpψ : ∀ σ, J ψ.prem σ (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "a premise of ψ can restrict a universal domain, be unsatisfiable, or constrain an existential variable and so make ψ valid",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_incomplete_target_premise_as_domain",
+     "Toy.ClaimStrength.rcrit_incomplete_false_target_premise",
+     "Toy.ClaimStrength.rcrit_incomplete_target_premise_on_existential"
+    ],
+    "witness_class": "one variable over Nat (first two); two variables over Nat (third)"
+   },
+   {
+    "name": "h : REntails I J φ ψ (in rcrit_complete_polarized_two_point_premise_free)",
+    "purpose": "without the entailment the criterion can fail",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.rcrit_complete_hE_tight"
+    ],
+    "witness_class": "one variable over Nat"
+   },
+   {
+    "name": "hα : Nonempty α (in nonempty_domains_of_rEntails)",
+    "purpose": "over an empty base type every domain is empty while REntails holds vacuously",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.nonempty_domains_hα_tight"
+    ],
+    "witness_class": "the empty base type Empty, one variable (φ = ∀x, ψ = ∃x)"
+   },
+   {
+    "name": "h2φ : ∀ b ∈ φ.pre, b.q = .ex → TwoPoint (I b.dom) (in nonempty_domains_of_rEntails)",
+    "purpose": "an empty existential domain makes φ unsatisfiable, so φ entails ψ",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.nonempty_domains_h2φ_tight"
+    ],
+    "witness_class": "one variable over Nat, φ = ∃x ∈ ∅, ψ = ∀x ∈ {0,1}"
+   },
+   {
+    "name": "h2ψ : ∀ b ∈ ψ.pre, b.q = .all → TwoPoint (I b.dom) (in nonempty_domains_of_rEntails)",
+    "purpose": "an empty universal domain makes ψ valid, so φ entails ψ",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.nonempty_domains_h2ψ_tight"
+    ],
+    "witness_class": "one variable over Nat, φ = ∃x ∈ {0,1}, ψ = ∀x ∈ ∅"
+   },
+   {
+    "name": "hpψ : ∀ σ, J ψ.prem σ (in nonempty_domains_of_rEntails)",
+    "purpose": "an unsatisfiable premise makes ψ valid, so a φ with an empty universal domain entails ψ",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.nonempty_domains_hpψ_tight"
+    ],
+    "witness_class": "one variable over Nat, φ = ∀x ∈ ∅ (⊤ → M), ψ = ∀x ∈ Nat (⊥ → M)"
+   },
+   {
+    "name": "h : REntails I J φ ψ (in nonempty_domains_of_rEntails)",
+    "purpose": "without the entailment, φ may have an empty universal domain",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.nonempty_domains_hE_tight"
+    ],
+    "witness_class": "one variable over Nat, φ = ∀x ∈ ∅, ψ = ∀x ∈ {0,1}"
+   }
+  ],
+  "depth": "substantive",
+  "nonvacuity_witness": "∃y ∈ {0,1} ∀x ∈ Nat versus ∀x ∈ {0,1} ∃y ∈ Nat, both premises ⊤, base type Nat with exact tables: every hypothesis of both theorems holds, and the target fails for M = False. A second instance leaves a variable unbound: φ = ∀x ∈ Nat versus the empty prefix ψ (x free); every hypothesis holds although ψ is not well formed, and the entailment and the criterion hold.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.rcrit_complete_nonvacuous",
+   "Toy.ClaimStrength.rcrit_complete_nonvacuous_free_variable"
+  ],
+  "non_claims": [
+   "Every hypothesis listed is witnessed tight by an instance in which all other hypotheses of the same theorem hold. Well-formedness of the prefixes is not assumed; the theorem assumes that no prefix binds a variable twice, and it applies to shapes that leave variables unbound (rcrit_complete_nonvacuous_free_variable). Nonemptiness of the domains is not a hypothesis; it is derived (nonempty_domains_of_rEntails). Universal domains of φ and existential domains of ψ may have one element.",
+   "The fragment is premise-free in effect (both premises hold everywhere); with nontrivial premises the criterion is incomplete (incompleteness card).",
+   "Flagging every domain as nonempty (normal form ShapeNF) does not restore completeness (rcrit_incomplete_in_normal_form).",
+   "Completeness is for arbitrary matrices; for a fixed matrix it is not claimed.",
+   "In Holds the premise is an implication antecedent inside the scope of every binder, also existential ones: ∃y ∈ D (H → M) holds as soon as some y ∈ D falsifies H, so a premise that constrains an existentially bound variable is not a filter on witnesses and can make the shape valid (holds_premise_on_existential_trivial). Constraints on witnesses belong in binder domains. When the premise does not depend on the variables bound after a position and their domains are nonempty, it can be pulled out to that position (evalR_premise_pull_out).",
+   "The unpolarized form, with two-point domains everywhere and no hypothesis on α, is also proved (rcrit_complete_two_point_premise_free) and uses the same countermodel construction (rcrit_complete_of_nonempty_domains).",
+   "These are statements about a toy language of relativized claim shapes (one sort, named domain classes, one named premise, an uninterpreted matrix); model–system relation: none proved; they neither establish nor refute the corresponding claims about any real specification language or natural-language summary."
+  ],
+  "prior_art": [
+   "M. Samer and S. Szeider, \"Backdoor Sets of Quantified Boolean Formulas\", Journal of Automated Reasoning 42(1):77-97, 2009, doi:10.1007/s10817-008-9114-5. Definition 2 (dependency schemes: the variables a variable may depend on can be shifted without changing the truth value of the formula, i.e. equivalence is preserved) and Definition 4 (the trivial dependency scheme relates every variable x, existential or universal, to all variables from the first later quantifier block of the other quantifier onward), checked in the authors' version. The trivial scheme therefore also constrains pairs with an existential variable before a universal one, as equivalence-preserving reordering requires. The criterion here constrains the pairs with a universal variable before an existential one, and no other pairs (the Skolem dependencies), because it characterizes one-way entailment, under which ∃y ∀x entails ∀x ∃y."
+  ],
+  "design_question": "For relativized claim shapes (domains and a premise), is strength decidable by a syntactic criterion, and where does the syntactic criterion stop being complete?",
+  "lean_names": [
+   "Toy.ClaimStrength.rcrit_complete_two_point_premise_free",
+   "Toy.ClaimStrength.rcrit_complete_of_nonempty_domains",
+   "Toy.ClaimStrength.ImplExact",
+   "Toy.ClaimStrength.InclExact",
+   "Toy.ClaimStrength.MeetsExact",
+   "Toy.ClaimStrength.TwoPoint",
+   "Toy.ClaimStrength.nvψTop"
+  ]
+ },
+ {
+  "id": "relativized-criterion-incomplete-outside-fragment",
+  "lean": [
+   "Toy.ClaimStrength.rcrit_incomplete_empty_domain",
+   "Toy.ClaimStrength.rcrit_incomplete_singleton_existential",
+   "Toy.ClaimStrength.rcrit_incomplete_empty_universal_domain",
+   "Toy.ClaimStrength.rcrit_incomplete_singleton_universal",
+   "Toy.ClaimStrength.rcrit_incomplete_singleton_domain",
+   "Toy.ClaimStrength.rcrit_incomplete_in_normal_form",
+   "Toy.ClaimStrength.rcrit_incomplete_premise_as_domain",
+   "Toy.ClaimStrength.rcrit_incomplete_redundant_existential_premise",
+   "Toy.ClaimStrength.rcrit_incomplete_target_premise_as_domain",
+   "Toy.ClaimStrength.rcrit_incomplete_false_target_premise",
+   "Toy.ClaimStrength.rcrit_incomplete_target_premise_on_existential",
+   "Toy.ClaimStrength.rcrit_incomplete_not_wf",
+   "Toy.ClaimStrength.rcrit_incomplete_not_wf_target",
+   "Toy.ClaimStrength.rcrit_incomplete_inexact_incl",
+   "Toy.ClaimStrength.rcrit_incomplete_inexact_meets",
+   "Toy.ClaimStrength.rcrit_incomplete_inexact_impl",
+   "Toy.ClaimStrength.rcrit_complete_hα_tight"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "tier_justification": "Each failure is elementary; collected and kernel-checked.",
+  "plain_claim": "Outside the fragment of the completeness theorem the combined criterion is not complete. Over the base type Nat with the exact tables clsIncl, clsMeets, premImpl there are shapes for which the entailment holds for every matrix but the criterion fails, caused by: an empty or singleton existential domain in φ; an empty or singleton universal domain in ψ; a singleton domain on both sides (also with both shapes in normal form); a premise of φ that restricts a universal domain or is implied by an existential domain; a premise of ψ that restricts a universal domain, is unsatisfiable, or constrains an existential variable (making ψ valid); a repeated binder in φ or in ψ. Over Nat, with two-point domains, trivial premises and shapes without repeated binders, replacing one exact table by a sound but inexact one (inclusion 'equal classes', overlap 'never', implication 'never') also breaks completeness. Over the empty base type, with exact tables, ∀x entails ∃x vacuously while the criterion fails.",
+  "hypotheses": [],
+  "depth": "shallow",
+  "nonvacuity_witness": "Each listed theorem exhibits its instance.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.rcrit_incomplete_empty_domain"
+  ],
+  "non_claims": [
+   "These are the failures found; no claim that they exhaust the completeness failures for shapes with nontrivial premises.",
+   "No complete syntactic criterion for the full relativized fragment is given.",
+   "The soundness theorem is unaffected: in every listed instance the criterion fails, it does not hold wrongly.",
+   "rcrit_incomplete_singleton_domain violates two hypotheses of the completeness theorem at once; it is listed as a failure, not as a tightness witness.",
+   "In rcrit_incomplete_false_target_premise the source shape plays no role: every shape entails every shape whose premise is unsatisfiable and whose existential domains are nonempty (such as ∀x ∈ Nat (⊥ → M) here, by evalR_of_valid).",
+   "In Holds the premise is an implication antecedent inside the scope of every binder, also existential ones: ∃y ∈ D (H → M) holds as soon as some y ∈ D falsifies H, so a premise that constrains an existentially bound variable is not a filter on witnesses and can make the shape valid (holds_premise_on_existential_trivial). Constraints on witnesses belong in binder domains. When the premise does not depend on the variables bound after a position and their domains are nonempty, it can be pulled out to that position (evalR_premise_pull_out).",
+   "These are statements about a toy language of relativized claim shapes (one sort, named domain classes, one named premise, an uninterpreted matrix); model–system relation: none proved; they neither establish nor refute the corresponding claims about any real specification language or natural-language summary."
+  ],
+  "prior_art": [
+   "No specific prior statement located; elementary consequence of the definitions."
+  ],
+  "design_question": "For relativized claim shapes (domains and a premise), is strength decidable by a syntactic criterion, and where does the syntactic criterion stop being complete?",
+  "lean_names": [
+   "Toy.ClaimStrength.evalR_of_valid",
+   "Toy.ClaimStrength.ShapeNF",
+   "Toy.ClaimStrength.clsIncl",
+   "Toy.ClaimStrength.clsMeets",
+   "Toy.ClaimStrength.emptyI",
+   "Toy.ClaimStrength.emptyJ",
+   "Toy.ClaimStrength.emptyφ",
+   "Toy.ClaimStrength.emptyψ",
+   "Toy.ClaimStrength.premImpl"
+  ]
+ },
+ {
+  "id": "frontier-testing-detects-overreading-for-closed-readers",
+  "lean": [
+   "Toy.ClaimStrength.unsupported_of_entails",
+   "Toy.ClaimStrength.exists_weakest",
+   "Toy.ClaimStrength.exists_frontier_below",
+   "Toy.ClaimStrength.frontier_test_detects_overreading",
+   "Toy.ClaimStrength.frontier_test_no_positiveOverReading",
+   "Toy.ClaimStrength.undetermined_not_upward_closed",
+   "Toy.ClaimStrength.endorsement_respects_equivalence",
+   "Toy.ClaimStrength.frontier_test_outside_candidates"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "tier_justification": "Minimal elements of a finite preorder applied to unsupported claims; the closure assumption and its countermodel are made precise here.",
+  "plain_claim": "For a report E, a finite candidate list Q, and a reader's endorsement predicate End: if q is unsupported and q' entails q, then q' is unsupported; every nonempty list of claims has an entailment-weakest element; if q ∈ Q is unsupported, it entails some frontier candidate (a weakest unsupported candidate); and if End is closed under entailment among the candidates and endorses no frontier candidate, then every candidate End endorses is supported, so answering 'supported' for an endorsed candidate is never a positive over-reading. Undetermined claims are not closed upward in strength; every End treats logically equivalent claims alike; and the test says nothing about claims outside Q.",
+  "hypotheses": [
+   {
+    "name": "h : ¬ Supported E q (in unsupported_of_entails)",
+    "purpose": "if q is supported, a stronger claim can be supported too",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.unsupported_of_entails_h_tight"
+    ],
+    "witness_class": "the empty report over Nat"
+   },
+   {
+    "name": "h' : Entails q' q (in unsupported_of_entails)",
+    "purpose": "a claim that does not entail q can be supported although q is not",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.unsupported_of_entails_h'_tight"
+    ],
+    "witness_class": "the empty report over Nat"
+   },
+   {
+    "name": "L ≠ [] (in exists_weakest)",
+    "purpose": "the empty list has no element",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.exists_weakest_tight"
+    ],
+    "witness_class": "the empty list of claims over Nat"
+   },
+   {
+    "name": "hq : q ∈ Q (in exists_frontier_below)",
+    "purpose": "for a claim outside Q no frontier candidate below it need exist",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.exists_frontier_below_hq_tight"
+    ],
+    "witness_class": "a one-candidate list over Nat, empty report"
+   },
+   {
+    "name": "hns : ¬ Supported E q (in exists_frontier_below)",
+    "purpose": "a supported claim entails no unsupported claim",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.exists_frontier_below_hns_tight"
+    ],
+    "witness_class": "three candidates over Nat, empty report"
+   },
+   {
+    "name": "hclosed : ClosedUnderEntailmentIn Q End (in frontier_test_detects_overreading)",
+    "purpose": "a reader who endorses a strong claim without its weaker consequences can avoid the frontier",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.frontier_test_hclosed_tight"
+    ],
+    "witness_class": "three candidates over Nat, empty report"
+   },
+   {
+    "name": "hfront : ∀ q, Frontier E Q q → ¬ End q (in frontier_test_detects_overreading)",
+    "purpose": "a closed reader that endorses a frontier candidate endorses an unsupported candidate",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.frontier_test_hfront_tight"
+    ],
+    "witness_class": "three candidates over Nat, empty report"
+   },
+   {
+    "name": "hclosed : ClosedUnderEntailmentIn Q End (in frontier_test_no_positiveOverReading)",
+    "purpose": "a reader who endorses a strong claim without its weaker consequences can avoid the frontier",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.frontier_test_hclosed_tight"
+    ],
+    "witness_class": "three candidates over Nat, empty report"
+   },
+   {
+    "name": "hfront : ∀ q, Frontier E Q q → ¬ End q (in frontier_test_no_positiveOverReading)",
+    "purpose": "a closed reader that endorses a frontier candidate endorses an unsupported candidate",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.frontier_test_hfront_tight"
+    ],
+    "witness_class": "three candidates over Nat, empty report"
+   },
+   {
+    "name": "h₁ : Entails q₁ q₂ (in endorsement_respects_equivalence)",
+    "purpose": "a predicate can separate claims that are not equivalent",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.endorsement_respects_equivalence_h₁_tight"
+    ],
+    "witness_class": "claims over Nat: q₁ = qWeak (n ≠ 0), q₂ = qStrong (n = 1)"
+   },
+   {
+    "name": "h₂ : Entails q₂ q₁ (in endorsement_respects_equivalence)",
+    "purpose": "a predicate can separate claims that are not equivalent",
+    "tightness": "tight",
+    "counterexample": [
+     "Toy.ClaimStrength.endorsement_respects_equivalence_h₂_tight"
+    ],
+    "witness_class": "claims over Nat: q₁ = qStrong (n = 1), q₂ = qWeak (n ≠ 0)"
+   }
+  ],
+  "depth": "shallow",
+  "nonvacuity_witness": "Empty report over Nat, candidates [n = 1, n ≠ 0, True], frontier {n ≠ 0}; the reader endorsing exactly the supported candidates satisfies both hypotheses.",
+  "nonvacuity_witness_lean": [
+   "Toy.ClaimStrength.frontier_test_nonvacuous",
+   "Toy.ClaimStrength.unsupported_of_entails_nonvacuous",
+   "Toy.ClaimStrength.exists_frontier_below_nonvacuous",
+   "Toy.ClaimStrength.exists_weakest_nonvacuous",
+   "Toy.ClaimStrength.endorsement_respects_equivalence_nonvacuous"
+  ],
+  "non_claims": [
+   "Vocabulary: 'supported' is Supported E q; 'unsupported' is ¬ Supported E q; 'contradicted' is Contradicted E q; 'undetermined' is Undetermined E q (unsupported and not contradicted). An unsupported claim of a satisfiable report can be contradicted; an undetermined claim cannot.",
+   "Upward closure holds for unsupported claims, not for undetermined ones: strengthening an undetermined claim can make it contradicted (undetermined_not_upward_closed).",
+   "Real readers need not endorse all entailed candidates; for a reader whose endorsements are not closed under entailment, frontier questions can miss over-reading (frontier_test_hclosed_tight).",
+   "Because claims are predicates, every endorsement predicate treats logically equivalent claims alike (endorsement_respects_equivalence); framing effects between equivalent phrasings are not representable.",
+   "The test covers the candidates in Q: an unsupported claim outside Q is not detected even for a closed reader (frontier_test_outside_candidates). When the unsupported candidates are pairwise incomparable, every one of them is a frontier candidate and the test saves no questions (not proved here).",
+   "The theorems concern positive over-reading (endorsing unsupported claims); they neither establish nor refute any detection property for negative over-reading or under-reading (not proved here).",
+   "Entailment is semantic; whether a reader recognizes entailments is not modeled.",
+   "These are statements about the toy model (claims are arbitrary predicates on an arbitrary interpretation type; a report is identified with the finite list of claims it establishes); model–system relation: none proved; they neither establish nor refute the corresponding claims about natural-language reports, about any particular report, or about how readers reason."
+  ],
+  "prior_art": [
+   "T. M. Mitchell, \"Generalization as search\", Artificial Intelligence 18(2):203-226, 1982, doi:10.1016/0004-3702(82)90040-6 (a version space of hypotheses ordered by generality is represented by its boundary sets of maximally general and maximally specific members; the frontier here is the analogous boundary of the unsupported candidates under entailment).",
+   "L. R. Horn, \"Toward a new taxonomy for pragmatic inference: Q-based and R-based implicature\", in D. Schiffrin (ed.), Meaning, Form, and Use in Context: Linguistic Applications (GURT 1984), Georgetown University Press, 1984, pp. 11-42 (distinguishes Q-based, upper-bounding implicature, where a weaker statement suggests the stronger one fails, from R-based enrichment, where a statement is read as a stronger, stereotypical proposition; bibliographic record and summary from secondary sources). Cited as prose motivation: the strengthening drifts here resemble R-based enrichment, not Quantity."
+  ],
+  "design_question": "Which comprehension questions detect over-reading most efficiently?",
+  "lean_names": [
+   "Toy.ClaimStrength.ClosedUnderEntailmentIn",
+   "Toy.ClaimStrength.Frontier",
+   "Toy.ClaimStrength.candidates",
+   "Toy.ClaimStrength.qStrong",
+   "Toy.ClaimStrength.qTriv",
+   "Toy.ClaimStrength.qWeak"
+  ]
+ }
+]

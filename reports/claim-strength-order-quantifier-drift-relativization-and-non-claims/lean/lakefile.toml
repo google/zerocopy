@@ -1,0 +1,6 @@
+name = "claim_strength"
+version = "0.1.0"
+defaultTargets = ["ClaimStrength"]
+
+[[lean_lib]]
+name = "ClaimStrength"
