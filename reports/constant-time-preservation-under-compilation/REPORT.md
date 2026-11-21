@@ -12,7 +12,7 @@ This package is a kernel-checked Lean 4 theory (namespace `Toy.CT`, core Lean on
 - **Result 4b (counterexample).** Concretely, the deterministic constant-time source `constOneStep` is forward-simulated (`StepLeakSim`, identity step map) by the nondeterministic target `nondetSecretBranchTarget`, with `FunctionallyCorrect`, yet `LeakageDetermined` and `ConstantTime` of the target both fail; the determinized target satisfies both.
 - **Result 5 (theorem, reference point).** `LeakageDetermined` composes: from `M₁` to `M₂` via `f` and from `M₂` to `M₃` via `g` gives `M₁` to `M₃` via `fun pub tr => g pub (f pub tr)`; the proof is definitional.
 
-What these results do **not** show is listed per result at the start of `## Boundaries`; read the relevant non-claims before relying on any result.
+What these results do **not** show is listed per result at the start of `## Boundaries`; read the relevant non-claims before relying on any result. Model–system relation: none proved (the step simulations of Results 3 and 4b relate a source machine and a target machine that are both instances of the package's own `Machine` structure; no theorem relates the model to a real compiler, ISA or hardware model). These are statements about the toy model; they neither establish nor refute the corresponding claims about CompCert or other production compilers and their passes, or about the leakage of real ISAs and hardware; the modeling-bridge paragraphs under **Findings** argue the connection separately.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
