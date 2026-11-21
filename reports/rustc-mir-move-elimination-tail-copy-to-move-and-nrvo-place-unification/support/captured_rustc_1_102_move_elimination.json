@@ -1,0 +1,115 @@
+{
+  "provenance": {
+    "what": "Execution capture of the nrvo_and_swap probe program (default pipeline vs -Z mir-move-elimination=yes) and of a per-pass MIR census of the zerocopy crate, taken with a rustc build that implements -Z mir-move-elimination.",
+    "capture_file_last_modified": "2026-11-21",
+    "rustc_version_verbose": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+    "preserved_fields": "part_a_nrvo_and_swap and part_b_zerocopy_move_elimination are byte-for-byte the captured values.",
+    "not_recorded_in_capture": [
+      "the exact rustc command lines",
+      "the Rust source text of the probe program",
+      "the zerocopy revision and cfg flags used for the census",
+      "the regular expressions behind the census counters",
+      "Miri flags (only the exit code miri_rc was kept)"
+    ]
+  },
+  "part_a_nrvo_and_swap": {
+    "default_no_move_elim": {
+      "native_stdout": "NRVO_AND_SWAP_OK",
+      "miri_rc": 0,
+      "nrvo_asm_has_memcpy": true,
+      "nrvo_asm_has_8k_stack_sub": false,
+      "nrvo_asm": "_RNvCsl5daPm4LJip_13nrvo_and_swap24make_borrowed_array_nrvo:\n\t.cfi_startproc\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\tsubq\t$4096, %rsp\n\t.cfi_adjust_cfa_offset 4096\n\tmovq\t$0, (%rsp)\n\tsubq\t$4096, %rsp\n\t.cfi_adjust_cfa_offset 4096\n\tmovq\t$0, (%rsp)\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 8224\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\tmovq\t%rdi, %rbx\n\tleaq\t9(%rsp), %rdi\n\tmovl\t$8191, %edx\n\txorl\t%esi, %esi\n\tcallq\t*memset@GOTPCREL(%rip)\n\tleaq\t8(%rsp), %r14\n\tmovq\t%r14, %rdi\n\tcallq\t_RNvCsl5daPm4LJip_13nrvo_and_swap8fill_buf\n\tmovl\t$8192, %edx\n\tmovq\t%rbx, %rdi\n\tmovq\t%r14, %rsi\n\tcallq\t*memcpy@GOTPCREL(%rip)\n\tmovq\t%rbx, %rax\n\taddq\t$8200, %rsp\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end7:\n\t.size\t_RNvCsl5daPm4LJip_13nrvo_and_swap24make_borrowed_array_nrvo, .Lfunc_end7-_RNvCsl5daPm4LJip_13nrvo_and_swap24make_borrowed_array_nrvo\n\t.cfi_endproc\n",
+      "nrvo_final_mir": "// MIR for `make_borrowed_array_nrvo` after SimplifyLocals-final\n\nfn make_borrowed_array_nrvo(_1: u8) -> [u8; 8192] {\n    debug seed => _1;\n    let mut _0: [u8; 8192];\n    let mut _2: [u8; 8192];\n    let _3: ();\n    let mut _4: &mut [u8; 8192];\n    scope 1 {\n        debug buf => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = [const 0_u8; 8192];\n        StorageLive(_4);\n        _4 = &mut _2;\n        _3 = fill_buf(move _4, move _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+      "swap_final_mir": "// MIR for `swap_big_pair_fields` after SimplifyLocals-final\n\nfn swap_big_pair_fields(_1: BigPair) -> BigPair {\n    debug p => _1;\n    let mut _0: BigPair;\n    let mut _2: [u64; 4];\n    let mut _3: [u64; 4];\n    scope 1 {\n        debug q => _1;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy (_1.1: [u64; 4]);\n        StorageLive(_3);\n        _3 = copy (_1.0: [u64; 4]);\n        _1 = BigPair { a: move _2, b: move _3 };\n        StorageDead(_3);\n        StorageDead(_2);\n        _0 = copy _1;\n        return;\n    }\n}\n"
+    },
+    "enabled_move_elim": {
+      "native_stdout": "NRVO_AND_SWAP_OK",
+      "miri_rc": 0,
+      "nrvo_asm_has_memcpy": false,
+      "nrvo_asm_has_8k_stack_sub": false,
+      "nrvo_asm": "_RNvCsl5daPm4LJip_13nrvo_and_swap24make_borrowed_array_nrvo:\n\t.cfi_startproc\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 16\n\t.cfi_offset %rbx, -16\n\tmovq\t%rdi, %rbx\n\tincq\t%rdi\n\tmovl\t$8191, %edx\n\txorl\t%esi, %esi\n\tcallq\t*memset@GOTPCREL(%rip)\n\tmovq\t%rbx, %rdi\n\tcallq\t_RNvCsl5daPm4LJip_13nrvo_and_swap8fill_buf\n\tmovq\t%rbx, %rax\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end7:\n\t.size\t_RNvCsl5daPm4LJip_13nrvo_and_swap24make_borrowed_array_nrvo, .Lfunc_end7-_RNvCsl5daPm4LJip_13nrvo_and_swap24make_borrowed_array_nrvo\n\t.cfi_endproc\n",
+      "nrvo_final_mir": "// MIR for `make_borrowed_array_nrvo` after SimplifyLocals-final\n\nfn make_borrowed_array_nrvo(_1: u8) -> [u8; 8192] {\n    debug seed => _1;\n    let mut _0: [u8; 8192];\n    let _2: ();\n    let mut _3: &mut [u8; 8192];\n    scope 1 {\n        debug buf => _0;\n    }\n\n    bb0: {\n        _0 = [const 0_u8; 8192];\n        StorageLive(_3);\n        _3 = &mut _0;\n        StorageLive(_2);\n        _2 = fill_buf(move _3, move _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_2);\n        StorageDead(_3);\n        return;\n    }\n}\n",
+      "swap_final_mir": "// MIR for `swap_big_pair_fields` after SimplifyLocals-final\n\nfn swap_big_pair_fields(_1: BigPair) -> BigPair {\n    debug p => _1;\n    let mut _0: BigPair;\n    let _2: BigPair;\n    scope 1 {\n        debug q => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        (_2.0: [u64; 4]) = copy (_1.1: [u64; 4]);\n        (_2.1: [u64; 4]) = no_retag move (_1.0: [u64; 4]);\n        _1 = move _2;\n        StorageDead(_2);\n        _0 = move _1;\n        return;\n    }\n}\n"
+    }
+  },
+  "part_b_zerocopy_move_elimination": {
+    "TailCopyToMove": {
+      "before": {
+        "bodies": 4302,
+        "locals": 29733,
+        "assigns": 20618,
+        "copy_assigns": 7070,
+        "move_assigns": 1315,
+        "storage_ops": 31171
+      },
+      "after": {
+        "bodies": 4302,
+        "locals": 29733,
+        "assigns": 20618,
+        "copy_assigns": 6960,
+        "move_assigns": 1425,
+        "storage_ops": 31171
+      },
+      "delta": {
+        "bodies": 0,
+        "locals": 0,
+        "assigns": 0,
+        "copy_assigns": -110,
+        "move_assigns": 110,
+        "storage_ops": 0
+      }
+    },
+    "MoveElimination": {
+      "before": {
+        "bodies": 4302,
+        "locals": 29733,
+        "assigns": 20618,
+        "copy_assigns": 6960,
+        "move_assigns": 1425,
+        "storage_ops": 31171
+      },
+      "after": {
+        "bodies": 4302,
+        "locals": 29733,
+        "assigns": 16839,
+        "copy_assigns": 4557,
+        "move_assigns": 801,
+        "storage_ops": 30512
+      },
+      "delta": {
+        "bodies": 0,
+        "locals": 0,
+        "assigns": -3779,
+        "copy_assigns": -2403,
+        "move_assigns": -624,
+        "storage_ops": -659
+      }
+    },
+    "SimplifyLocals-final": {
+      "before": {
+        "bodies": 4302,
+        "locals": 29733,
+        "assigns": 16839,
+        "copy_assigns": 4557,
+        "move_assigns": 801,
+        "storage_ops": 30512
+      },
+      "after": {
+        "bodies": 4302,
+        "locals": 22825,
+        "assigns": 16839,
+        "copy_assigns": 4557,
+        "move_assigns": 801,
+        "storage_ops": 30512
+      },
+      "delta": {
+        "bodies": 0,
+        "locals": -6908,
+        "assigns": 0,
+        "copy_assigns": 0,
+        "move_assigns": 0,
+        "storage_ops": 0
+      }
+    }
+  }
+}

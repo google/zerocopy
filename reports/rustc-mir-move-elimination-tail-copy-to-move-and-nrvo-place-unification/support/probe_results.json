@@ -1,0 +1,330 @@
+{
+  "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "mir_move_elimination_flag": {
+    "flag": "-Zmir-move-elimination=yes",
+    "accepted_by_this_rustc": false,
+    "rejection_message": "error: unknown unstable option: `mir-move-elimination`"
+  },
+  "arms_run": [
+    "default"
+  ],
+  "miri_available": true,
+  "miri_note": "",
+  "sources": {
+    "nrvo_and_swap.rs": "use std::hint::black_box;\n\n#[inline(never)]\nfn fill_buf(buf: &mut [u8; 8192], seed: u8) {\n    buf[0] = seed;\n    buf[8191] = seed.wrapping_add(1);\n}\n\n#[inline(never)]\nfn make_borrowed_array_nrvo(seed: u8) -> [u8; 8192] {\n    let mut buf = [0u8; 8192];\n    fill_buf(&mut buf, seed);\n    buf\n}\n\n#[derive(Clone, Copy, PartialEq, Debug)]\nstruct BigPair {\n    a: [u64; 4],\n    b: [u64; 4],\n}\n\n#[inline(never)]\nfn swap_big_pair_fields(mut p: BigPair) -> BigPair {\n    let q = BigPair { a: p.b, b: p.a };\n    p = q;\n    p\n}\n\nfn main() {\n    let r = make_borrowed_array_nrvo(7);\n    assert_eq!((r[0], r[1], r[8191]), (7, 0, 8));\n    let p = BigPair { a: [1, 2, 3, 4], b: [5, 6, 7, 8] };\n    let q = swap_big_pair_fields(black_box(p));\n    assert_eq!(q, BigPair { a: [5, 6, 7, 8], b: [1, 2, 3, 4] });\n    println!(\"NRVO_AND_SWAP_OK\");\n}\n",
+    "address_and_alias_controls.rs": "use std::hint::black_box;\n\n// Control 1: the array is never borrowed, so the default pipeline already builds it\n// in the return place.\n#[inline(never)]\nfn make_unborrowed_array_nrvo(seed: u8) -> [u8; 8192] {\n    let mut buf = [0u8; 8192];\n    buf[0] = seed;\n    buf[8191] = seed.wrapping_add(1);\n    buf\n}\n\n#[derive(Clone, Copy, PartialEq, Debug)]\nstruct BigPair {\n    a: [u64; 4],\n    b: [u64; 4],\n}\n\n// Control 2: the swapped aggregate is assigned straight back into its own source.\n#[inline(never)]\nfn swap_big_pair_in_place(mut p: BigPair) -> BigPair {\n    p = BigPair { a: p.b, b: p.a };\n    p\n}\n\n#[inline(never)]\nfn observe(p: &mut [u8; 64]) -> usize {\n    p[0] = p[0].wrapping_add(1);\n    black_box(p as *mut [u8; 64] as usize)\n}\n\n// Control 3: `a` and `b` are both address-observed, are connected by a copy, and are\n// live at the same time.  They must keep distinct addresses in every arm.\n#[inline(never)]\nfn two_borrowed_locals_overlap(seed: u8) -> (bool, u8, u8) {\n    let mut a = [seed; 64];\n    let pa = observe(&mut a);\n    let mut b = a;\n    let pb = observe(&mut b);\n    let pa2 = observe(&mut a);\n    (pa != pb && pa == pa2, a[0], b[0])\n}\n\n// Control 4: the copy of `a` is followed by a read through an opaque raw pointer to\n// `a` (the `black_box` keeps the read indirect in optimized MIR), so the copy is not a\n// final use and must stay a copy.\n#[inline(never)]\nfn return_after_indirect_read(seed: u8) -> ([u8; 64], u8) {\n    let mut a = [seed; 64];\n    let p = black_box(&mut a as *mut [u8; 64]);\n    observe(unsafe { &mut *p });\n    let r = a;\n    let last = unsafe { (*p)[0] };\n    (r, last)\n}\n\nfn main() {\n    let u = make_unborrowed_array_nrvo(black_box(9));\n    assert_eq!((u[0], u[1], u[8191]), (9, 0, 10));\n    let p = BigPair { a: [1, 2, 3, 4], b: [5, 6, 7, 8] };\n    let q = swap_big_pair_in_place(black_box(p));\n    assert_eq!(q, BigPair { a: [5, 6, 7, 8], b: [1, 2, 3, 4] });\n    let (distinct, a0, b0) = two_borrowed_locals_overlap(black_box(40));\n    assert!(distinct, \"address-observed locals that are live together must not share an address\");\n    assert_eq!((a0, b0), (42, 42));\n    let (r, last) = return_after_indirect_read(black_box(3));\n    assert_eq!((r[0], r[63], last), (4, 3, 4));\n    println!(\"CONTROLS_OK distinct={distinct}\");\n}\n"
+  },
+  "part_a_nrvo_and_swap": {
+    "default": {
+      "rustc_flags": [
+        "--edition=2021",
+        "-Copt-level=2",
+        "-Csymbol-mangling-version=v0"
+      ],
+      "compile_rc": 0,
+      "compile_stderr_head": [],
+      "native_rc": 0,
+      "native_stdout": "NRVO_AND_SWAP_OK",
+      "native_stderr_head": [],
+      "dumped_passes": [
+        "DestinationPropagation",
+        "SimplifyLocals-final"
+      ],
+      "functions": {
+        "make_borrowed_array_nrvo": {
+          "final_mir": "// MIR for `make_borrowed_array_nrvo` after SimplifyLocals-final\n\nfn make_borrowed_array_nrvo(_1: u8) -> [u8; 8192] {\n    debug seed => _1;\n    let mut _0: [u8; 8192];\n    let mut _2: [u8; 8192];\n    let _3: ();\n    let mut _4: &mut [u8; 8192];\n    scope 1 {\n        debug buf => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = [const 0_u8; 8192];\n        StorageLive(_4);\n        _4 = &mut _2;\n        _3 = fill_buf(move _4, move _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        _0 = copy _2;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+          "DestinationPropagation_changed_body": false
+        },
+        "swap_big_pair_fields": {
+          "final_mir": "// MIR for `swap_big_pair_fields` after SimplifyLocals-final\n\nfn swap_big_pair_fields(_1: BigPair) -> BigPair {\n    debug p => _1;\n    let mut _0: BigPair;\n    let mut _2: [u64; 4];\n    let mut _3: [u64; 4];\n    scope 1 {\n        debug q => _1;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy (_1.1: [u64; 4]);\n        StorageLive(_3);\n        _3 = copy (_1.0: [u64; 4]);\n        _1 = BigPair { a: move _2, b: move _3 };\n        StorageDead(_3);\n        StorageDead(_2);\n        _0 = copy _1;\n        return;\n    }\n}\n",
+          "DestinationPropagation_changed_body": true,
+          "DestinationPropagation_after_mir": "// MIR for `swap_big_pair_fields` after DestinationPropagation\n\nfn swap_big_pair_fields(_1: BigPair) -> BigPair {\n    debug p => _1;\n    let mut _0: BigPair;\n    let _2: BigPair;\n    let mut _3: [u64; 4];\n    let mut _4: [u64; 4];\n    scope 1 {\n        debug q => _1;\n    }\n\n    bb0: {\n        nop;\n        StorageLive(_3);\n        _3 = copy (_1.1: [u64; 4]);\n        StorageLive(_4);\n        _4 = copy (_1.0: [u64; 4]);\n        _1 = BigPair { a: move _3, b: move _4 };\n        StorageDead(_4);\n        StorageDead(_3);\n        nop;\n        _0 = copy _1;\n        nop;\n        return;\n    }\n}\n"
+        }
+      },
+      "asm": {
+        "make_borrowed_array_nrvo": {
+          "asm": "_RNvCsdBCnZZ2ORyd_13nrvo_and_swap24make_borrowed_array_nrvo:\n\t.cfi_startproc\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\tsubq\t$4096, %rsp\n\t.cfi_adjust_cfa_offset 4096\n\tmovq\t$0, (%rsp)\n\tsubq\t$4096, %rsp\n\t.cfi_adjust_cfa_offset 4096\n\tmovq\t$0, (%rsp)\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 8224\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\tmovq\t%rdi, %rbx\n\tleaq\t9(%rsp), %rdi\n\tmovl\t$8191, %edx\n\txorl\t%esi, %esi\n\tcallq\t*memset@GOTPCREL(%rip)\n\tleaq\t8(%rsp), %r14\n\tmovq\t%r14, %rdi\n\tcallq\t_RNvCsdBCnZZ2ORyd_13nrvo_and_swap8fill_buf\n\tmovl\t$8192, %edx\n\tmovq\t%rbx, %rdi\n\tmovq\t%r14, %rsi\n\tcallq\t*memcpy@GOTPCREL(%rip)\n\tmovq\t%rbx, %rax\n\taddq\t$8200, %rsp\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end7:\n\t.size\t_RNvCsdBCnZZ2ORyd_13nrvo_and_swap24make_borrowed_array_nrvo, .Lfunc_end7-_RNvCsdBCnZZ2ORyd_13nrvo_and_swap24make_borrowed_array_nrvo\n\t.cfi_endproc\n",
+          "metrics": {
+            "found": true,
+            "max_cfa_offset_bytes": 8224,
+            "memcpy_calls": 1,
+            "memset_calls": 1,
+            "stack_probe_steps_4096": 2,
+            "pushq_count": 3,
+            "instruction_lines": 24
+          }
+        },
+        "swap_big_pair_fields": {
+          "asm": "_RNvCsdBCnZZ2ORyd_13nrvo_and_swap20swap_big_pair_fields:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tmovups\t(%rsi), %xmm0\n\tmovups\t16(%rsi), %xmm1\n\tmovaps\t%xmm1, -24(%rsp)\n\tmovaps\t%xmm0, -40(%rsp)\n\tmovups\t32(%rsi), %xmm0\n\tmovups\t48(%rsi), %xmm1\n\tmovups\t%xmm0, (%rsi)\n\tmovups\t%xmm1, 16(%rsi)\n\tmovaps\t-40(%rsp), %xmm0\n\tmovaps\t-24(%rsp), %xmm1\n\tmovups\t%xmm0, 32(%rsi)\n\tmovups\t%xmm1, 48(%rsi)\n\tmovups\t(%rsi), %xmm0\n\tmovups\t16(%rsi), %xmm1\n\tmovups\t32(%rsi), %xmm2\n\tmovups\t48(%rsi), %xmm3\n\tmovups\t%xmm3, 48(%rdi)\n\tmovups\t%xmm2, 32(%rdi)\n\tmovups\t%xmm1, 16(%rdi)\n\tmovups\t%xmm0, (%rdi)\n\tretq\n.Lfunc_end6:\n\t.size\t_RNvCsdBCnZZ2ORyd_13nrvo_and_swap20swap_big_pair_fields, .Lfunc_end6-_RNvCsdBCnZZ2ORyd_13nrvo_and_swap20swap_big_pair_fields\n\t.cfi_endproc\n",
+          "metrics": {
+            "found": true,
+            "max_cfa_offset_bytes": 8,
+            "memcpy_calls": 0,
+            "memset_calls": 0,
+            "stack_probe_steps_4096": 0,
+            "pushq_count": 0,
+            "instruction_lines": 22
+          }
+        }
+      },
+      "stack_sizes_section": {
+        "compile_rc": 0,
+        "llvm_readobj_rc": 0,
+        "bytes_by_function": {
+          "make_borrowed_array_nrvo": 8216,
+          "swap_big_pair_fields": 0
+        }
+      },
+      "miri": {
+        "miri_default": {
+          "flags": [],
+          "rc": 0,
+          "stdout": "NRVO_AND_SWAP_OK",
+          "undefined_behavior_reported": false,
+          "mir_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_mir_opt_level_2": {
+          "flags": [
+            "-Zmir-opt-level=2"
+          ],
+          "rc": 0,
+          "stdout": "NRVO_AND_SWAP_OK",
+          "undefined_behavior_reported": false,
+          "mir_opt_warning_emitted": true,
+          "diag_head": [
+            "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best."
+          ]
+        },
+        "miri_mir_opt_level_2_preserve_ub": {
+          "flags": [
+            "-Zmir-preserve-ub=yes",
+            "-Zmir-opt-level=2"
+          ],
+          "rc": 0,
+          "stdout": "NRVO_AND_SWAP_OK",
+          "undefined_behavior_reported": false,
+          "mir_opt_warning_emitted": true,
+          "diag_head": [
+            "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best."
+          ]
+        }
+      }
+    }
+  },
+  "part_b_address_and_alias_controls": {
+    "default": {
+      "rustc_flags": [
+        "--edition=2021",
+        "-Copt-level=2",
+        "-Csymbol-mangling-version=v0"
+      ],
+      "compile_rc": 0,
+      "compile_stderr_head": [],
+      "native_rc": 0,
+      "native_stdout": "CONTROLS_OK distinct=true",
+      "native_stderr_head": [],
+      "dumped_passes": [
+        "DestinationPropagation",
+        "SimplifyLocals-final"
+      ],
+      "functions": {
+        "make_unborrowed_array_nrvo": {
+          "final_mir": "// MIR for `make_unborrowed_array_nrvo` after SimplifyLocals-final\n\nfn make_unborrowed_array_nrvo(_1: u8) -> [u8; 8192] {\n    debug seed => _1;\n    let mut _0: [u8; 8192];\n    let mut _2: u8;\n    scope 1 {\n        debug buf => _0;\n        scope 2 (inlined core::num::<impl u8>::wrapping_add) {\n        }\n    }\n\n    bb0: {\n        _0 = [const 0_u8; 8192];\n        _0[0 of 1] = copy _1;\n        StorageLive(_2);\n        _2 = Add(copy _1, const 1_u8);\n        _0[8191 of 8192] = move _2;\n        StorageDead(_2);\n        return;\n    }\n}\n",
+          "DestinationPropagation_changed_body": true,
+          "DestinationPropagation_after_mir": "// MIR for `make_unborrowed_array_nrvo` after DestinationPropagation\n\nfn make_unborrowed_array_nrvo(_1: u8) -> [u8; 8192] {\n    debug seed => _1;\n    let mut _0: [u8; 8192];\n    let mut _2: [u8; 8192];\n    let mut _3: u8;\n    scope 1 {\n        debug buf => _0;\n        scope 2 (inlined core::num::<impl u8>::wrapping_add) {\n        }\n    }\n\n    bb0: {\n        nop;\n        _0 = [const 0_u8; 8192];\n        _0[0 of 1] = copy _1;\n        StorageLive(_3);\n        _3 = Add(copy _1, const 1_u8);\n        _0[8191 of 8192] = move _3;\n        StorageDead(_3);\n        nop;\n        nop;\n        return;\n    }\n}\n"
+        },
+        "swap_big_pair_in_place": {
+          "final_mir": "// MIR for `swap_big_pair_in_place` after SimplifyLocals-final\n\nfn swap_big_pair_in_place(_1: BigPair) -> BigPair {\n    debug p => _1;\n    let mut _0: BigPair;\n    let mut _2: [u64; 4];\n    let mut _3: [u64; 4];\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy (_1.1: [u64; 4]);\n        StorageLive(_3);\n        _3 = copy (_1.0: [u64; 4]);\n        _1 = BigPair { a: move _2, b: move _3 };\n        StorageDead(_3);\n        StorageDead(_2);\n        _0 = copy _1;\n        return;\n    }\n}\n",
+          "DestinationPropagation_changed_body": true,
+          "DestinationPropagation_after_mir": "// MIR for `swap_big_pair_in_place` after DestinationPropagation\n\nfn swap_big_pair_in_place(_1: BigPair) -> BigPair {\n    debug p => _1;\n    let mut _0: BigPair;\n    let mut _2: BigPair;\n    let mut _3: [u64; 4];\n    let mut _4: [u64; 4];\n\n    bb0: {\n        nop;\n        StorageLive(_3);\n        _3 = copy (_1.1: [u64; 4]);\n        StorageLive(_4);\n        _4 = copy (_1.0: [u64; 4]);\n        _1 = BigPair { a: move _3, b: move _4 };\n        StorageDead(_4);\n        StorageDead(_3);\n        nop;\n        nop;\n        _0 = copy _1;\n        return;\n    }\n}\n"
+        },
+        "two_borrowed_locals_overlap": {
+          "final_mir": "// MIR for `two_borrowed_locals_overlap` after SimplifyLocals-final\n\nfn two_borrowed_locals_overlap(_1: u8) -> (bool, u8, u8) {\n    debug seed => _1;\n    let mut _0: (bool, u8, u8);\n    let mut _2: [u8; 64];\n    let mut _4: &mut [u8; 64];\n    let mut _7: &mut [u8; 64];\n    let mut _9: &mut [u8; 64];\n    let mut _10: bool;\n    let mut _11: bool;\n    let mut _12: u8;\n    let mut _13: u8;\n    scope 1 {\n        debug a => _2;\n        let _3: usize;\n        scope 2 {\n            debug pa => _3;\n            let mut _5: [u8; 64];\n            scope 3 {\n                debug b => _5;\n                let _6: usize;\n                scope 4 {\n                    debug pb => _6;\n                    let _8: usize;\n                    scope 5 {\n                        debug pa2 => _8;\n                    }\n                }\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = [copy _1; 64];\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = &mut _2;\n        _3 = observe(move _4) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageLive(_5);\n        _5 = copy _2;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = &mut _5;\n        _6 = observe(move _7) -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        StorageDead(_7);\n        StorageLive(_8);\n        StorageLive(_9);\n        _9 = &mut _2;\n        _8 = observe(move _9) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        StorageDead(_9);\n        StorageLive(_10);\n        StorageLive(_11);\n        _11 = Ne(copy _3, copy _6);\n        switchInt(move _11) -> [0: bb5, otherwise: bb4];\n    }\n\n    bb4: {\n        _10 = Eq(copy _3, copy _8);\n        goto -> bb6;\n    }\n\n    bb5: {\n        _10 = const false;\n        goto -> bb6;\n    }\n\n    bb6: {\n        StorageDead(_11);\n        StorageLive(_12);\n        _12 = copy _2[0 of 1];\n        StorageLive(_13);\n        _13 = copy _5[0 of 1];\n        _0 = (move _10, move _12, move _13);\n        StorageDead(_13);\n        StorageDead(_12);\n        StorageDead(_10);\n        StorageDead(_8);\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageDead(_3);\n        StorageDead(_2);\n        return;\n    }\n}\n",
+          "DestinationPropagation_changed_body": false
+        },
+        "return_after_indirect_read": {
+          "final_mir": "// MIR for `return_after_indirect_read` after SimplifyLocals-final\n\nfn return_after_indirect_read(_1: u8) -> ([u8; 64], u8) {\n    debug seed => _1;\n    let mut _0: ([u8; 64], u8);\n    let mut _2: [u8; 64];\n    let mut _4: *mut [u8; 64];\n    let _5: usize;\n    let mut _6: &mut [u8; 64];\n    scope 1 {\n        debug a => _2;\n        let _3: *mut [u8; 64];\n        scope 2 {\n            debug p => _3;\n            let _7: [u8; 64];\n            scope 3 {\n                debug r => _7;\n                let _8: u8;\n                scope 4 {\n                    debug last => _8;\n                }\n            }\n        }\n        scope 5 (inlined std::hint::black_box::<*mut [u8; 64]>) {\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = [copy _1; 64];\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = &raw mut _2;\n        _3 = std::intrinsics::black_box::<*mut [u8; 64]>(move _4) -> [return: bb2, unwind unreachable];\n    }\n\n    bb1: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_7);\n        _7 = copy _2;\n        StorageLive(_8);\n        _8 = copy (*_3)[0 of 1];\n        _0 = (copy _7, copy _8);\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageDead(_3);\n        StorageDead(_2);\n        return;\n    }\n\n    bb2: {\n        StorageDead(_4);\n        StorageLive(_5);\n        StorageLive(_6);\n        _6 = &mut (*_3);\n        _5 = observe(move _6) -> [return: bb1, unwind continue];\n    }\n}\n",
+          "DestinationPropagation_changed_body": false
+        }
+      },
+      "asm": {
+        "make_unborrowed_array_nrvo": {
+          "asm": "_RNvCskKrExdYq5aU_26address_and_alias_controls26make_unborrowed_array_nrvo:\n\t.cfi_startproc\n\tpushq\t%r14\n\t.cfi_def_cfa_offset 16\n\tpushq\t%rbx\n\t.cfi_def_cfa_offset 24\n\tpushq\t%rax\n\t.cfi_def_cfa_offset 32\n\t.cfi_offset %rbx, -24\n\t.cfi_offset %r14, -16\n\tmovl\t%esi, %ebx\n\tmovq\t%rdi, %r14\n\tincq\t%rdi\n\tmovl\t$8190, %edx\n\txorl\t%esi, %esi\n\tcallq\t*memset@GOTPCREL(%rip)\n\tmovb\t%bl, (%r14)\n\tincb\t%bl\n\tmovb\t%bl, 8191(%r14)\n\tmovq\t%r14, %rax\n\taddq\t$8, %rsp\n\t.cfi_def_cfa_offset 24\n\tpopq\t%rbx\n\t.cfi_def_cfa_offset 16\n\tpopq\t%r14\n\t.cfi_def_cfa_offset 8\n\tretq\n.Lfunc_end8:\n\t.size\t_RNvCskKrExdYq5aU_26address_and_alias_controls26make_unborrowed_array_nrvo, .Lfunc_end8-_RNvCskKrExdYq5aU_26address_and_alias_controls26make_unborrowed_array_nrvo\n\t.cfi_endproc\n",
+          "metrics": {
+            "found": true,
+            "max_cfa_offset_bytes": 32,
+            "memcpy_calls": 0,
+            "memset_calls": 1,
+            "stack_probe_steps_4096": 0,
+            "pushq_count": 3,
+            "instruction_lines": 17
+          }
+        }
+      },
+      "stack_sizes_section": {
+        "compile_rc": 0,
+        "llvm_readobj_rc": 0,
+        "bytes_by_function": {
+          "make_unborrowed_array_nrvo": 24
+        }
+      },
+      "miri": {
+        "miri_default": {
+          "flags": [],
+          "rc": 0,
+          "stdout": "CONTROLS_OK distinct=true",
+          "undefined_behavior_reported": false,
+          "mir_opt_warning_emitted": false,
+          "diag_head": []
+        },
+        "miri_mir_opt_level_2": {
+          "flags": [
+            "-Zmir-opt-level=2"
+          ],
+          "rc": 0,
+          "stdout": "CONTROLS_OK distinct=true",
+          "undefined_behavior_reported": false,
+          "mir_opt_warning_emitted": true,
+          "diag_head": [
+            "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best."
+          ]
+        },
+        "miri_mir_opt_level_2_preserve_ub": {
+          "flags": [
+            "-Zmir-preserve-ub=yes",
+            "-Zmir-opt-level=2"
+          ],
+          "rc": 0,
+          "stdout": "CONTROLS_OK distinct=true",
+          "undefined_behavior_reported": false,
+          "mir_opt_warning_emitted": true,
+          "diag_head": [
+            "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best."
+          ]
+        }
+      }
+    }
+  },
+  "part_c_comparison_with_preserved_capture": {
+    "capture_present": true,
+    "capture_rustc": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+    "default": {
+      "compared": true,
+      "nrvo_final_mir_identical": true,
+      "swap_final_mir_identical": true,
+      "nrvo_asm_identical_modulo_crate_hash_and_labels": true,
+      "capture_nrvo_asm_metrics": {
+        "found": true,
+        "max_cfa_offset_bytes": 8224,
+        "memcpy_calls": 1,
+        "memset_calls": 1,
+        "stack_probe_steps_4096": 2,
+        "pushq_count": 3,
+        "instruction_lines": 24
+      }
+    },
+    "mir_move_elimination": {
+      "compared": false,
+      "reason": "arm not run by this probe"
+    },
+    "capture_metrics_recomputed": {
+      "default_no_move_elim": {
+        "found": true,
+        "max_cfa_offset_bytes": 8224,
+        "memcpy_calls": 1,
+        "memset_calls": 1,
+        "stack_probe_steps_4096": 2,
+        "pushq_count": 3,
+        "instruction_lines": 24
+      },
+      "enabled_move_elim": {
+        "found": true,
+        "max_cfa_offset_bytes": 16,
+        "memcpy_calls": 0,
+        "memset_calls": 1,
+        "stack_probe_steps_4096": 0,
+        "pushq_count": 1,
+        "instruction_lines": 11
+      }
+    }
+  },
+  "part_d_zerocopy_pass_census": {
+    "zerocopy_package_version": "0.8.64",
+    "zerocopy_git_revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+    "zerocopy_src_dirty": false,
+    "extra_cfgs": [
+      "--cfg",
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "counter_definitions": "Text counters over MIR dump files.\n\nbodies       : number of files\nlocals       : `let [mut] _N: T;` declarations\nassigns      : `<place> = <rvalue>;` statements (terminators with `->` excluded)\ncopy_assigns : assigns whose rvalue is exactly `copy <place>`\nmove_assigns : assigns whose rvalue is exactly `[no_retag ]move <place>`\nstorage_ops  : `StorageLive(_N);` and `StorageDead(_N);`\n",
+    "arms": {
+      "default": {
+        "rustc_flags": [
+          "--edition=2021",
+          "--crate-name=zerocopy",
+          "--crate-type=lib",
+          "-Copt-level=2",
+          "-Zmir-opt-level=2",
+          "--cfg",
+          "no_zerocopy_allocator_api_1_100_0"
+        ],
+        "compile_rc": 0,
+        "DestinationPropagation": {
+          "before": {
+            "bodies": 4476,
+            "locals": 21677,
+            "assigns": 16653,
+            "copy_assigns": 2991,
+            "move_assigns": 972,
+            "storage_ops": 29642
+          },
+          "after": {
+            "bodies": 4476,
+            "locals": 21677,
+            "assigns": 16035,
+            "copy_assigns": 2447,
+            "move_assigns": 898,
+            "storage_ops": 27245
+          },
+          "delta": {
+            "bodies": 0,
+            "locals": 0,
+            "assigns": -618,
+            "copy_assigns": -544,
+            "move_assigns": -74,
+            "storage_ops": -2397
+          },
+          "bodies_changed_by_pass": 483
+        },
+        "SimplifyLocals-final": {
+          "before": {
+            "bodies": 4476,
+            "locals": 21677,
+            "assigns": 16035,
+            "copy_assigns": 2447,
+            "move_assigns": 898,
+            "storage_ops": 27245
+          },
+          "after": {
+            "bodies": 4476,
+            "locals": 20053,
+            "assigns": 16035,
+            "copy_assigns": 2447,
+            "move_assigns": 898,
+            "storage_ops": 27019
+          },
+          "delta": {
+            "bodies": 0,
+            "locals": -1624,
+            "assigns": 0,
+            "copy_assigns": 0,
+            "move_assigns": 0,
+            "storage_ops": -226
+          },
+          "bodies_changed_by_pass": 760
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "file_name": "MoveEliminationAndTailCopySoundness.lean",
+  "file_bytes": 80075,
+  "file_lines": 1826,
+  "file_sha256": "1c8fb3947c41cd329972131eb39fb879aeddb492aeee7cceb52bbe68e8308c73",
+  "flags": [
+    "-M2048",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "ran_under_resource_wrapper": true,
+  "main_exit_code": 0,
+  "main_stdout": "",
+  "main_stderr": "",
+  "axiom_audit_exit_code": 0,
+  "env_unsafe_decl_count": 0,
+  "forbidden_token_counts": {
+    "sorry": 0,
+    "admit": 0,
+    "omega": 0,
+    "bv_decide": 0,
+    "native_decide": 0,
+    "partial_def": 0,
+    "unsafe_rec": 0,
+    "classical_choice": 0,
+    "axiom_decl": 0,
+    "implemented_by": 0,
+    "extern_attr": 0
+  },
+  "theorems_audited": 27,
+  "axioms_by_theorem": {
+    "MoveEliminationAndTailCopySoundness.Unify.nrvo_model_rows_disjoint": [],
+    "MoveEliminationAndTailCopySoundness.Places.unifyPlaces_transitive_example": [],
+    "MoveEliminationAndTailCopySoundness.Fixup.aliasFixup_three_field_rotation_instance": [],
+    "MoveEliminationAndTailCopySoundness.Fixup.aliasFixup_identity_field_dropped_instance": [],
+    "MoveEliminationAndTailCopySoundness.Tail.tailCopyToMove_exact_return_value_and_memory_equivalence": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Tail.tailCopyToMove_ub_iff": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Tail.tailCopyToMove_preserves_return_and_heap": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Tail.tailCopyToMove_equivalence_without_borrowed_write_stop": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Tail.ce1_tail_copy_to_move_past_indirect_borrow_read_unsound": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Tail.tail_rewrites_borrowed_local_return": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Tail.tail_stops_at_borrowed_destination": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Unify.step_refines": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Unify.moveElimination_value_and_address_bisimulation": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Unify.moveElimination_original_choices_valid": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Unify.moveElimination_return_observation": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Unify.Row.disjoint_sound": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Unify.early_end_late_start_disjoint": [
+      "propext"
+    ],
+    "MoveEliminationAndTailCopySoundness.Unify.disjointLiveRanges_sound": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Unify.nrvo_model_instance": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Unify.ce2_unifying_overlapping_address_observed_locals_breaks_ptr_inequality": [
+      "propext"
+    ],
+    "MoveEliminationAndTailCopySoundness.Places.resolve_projectDeeper": [
+      "propext"
+    ],
+    "MoveEliminationAndTailCopySoundness.Places.resolve_reaches_unmapped": [
+      "propext"
+    ],
+    "MoveEliminationAndTailCopySoundness.Places.unifyPlaces_idempotent": [
+      "propext"
+    ],
+    "MoveEliminationAndTailCopySoundness.Fixup.aliasFixup_emits_nonoverlapping_copies": [
+      "propext",
+      "Quot.sound"
+    ],
+    "MoveEliminationAndTailCopySoundness.Fixup.aliasFixup_pair_matches_specification": [
+      "propext"
+    ],
+    "MoveEliminationAndTailCopySoundness.Fixup.aliasFixup_self_swap_correct": [
+      "propext"
+    ],
+    "MoveEliminationAndTailCopySoundness.Fixup.ce3_aggregate_self_swap_without_aliasing_fixup_clobbers_field": [
+      "propext"
+    ]
+  },
+  "forbidden_axioms_found": [],
+  "all_checks_passed": true
+}
