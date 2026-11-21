@@ -10,10 +10,12 @@ realizations (topological orders, one scratch location, swaps, xor-swaps), and l
 impossibility results for an isolated cycle. The second is sub-register *lanes*: bit ranges of an
 `n`-bit word, written either by a preserve-upper write (`putLane`, the other bits are kept) or by
 a zero-extending write (`writeZext`, the whole word is replaced), with their lens laws,
-commutation and framing conditions, and parallel moves between lanes. There are 21 results. All
-are theorems about these toy models; these theorems neither establish nor refute the
-corresponding claims about a production compiler or about x86-64 or AArch64 hardware, and every
-connection to them is a separately labelled modeling bridge under **Findings**.
+commutation and framing conditions, and parallel moves between lanes. There are 21 results.
+Model–system relation: none proved (no theorem relates these models to CompCert's or CakeML's
+parallel-move definitions or to x86-64 or AArch64 register semantics). All are theorems about
+these toy models; these theorems neither establish nor refute the corresponding claims about a
+production compiler or about x86-64 or AArch64 hardware, and every connection to them is a
+separately labelled modeling bridge under **Findings**.
 
 *An agent relying on a result from this package must quote its plain-language claim and the relevant hypotheses and non-claims, not just its name or a paraphrase.*
 
@@ -31,13 +33,13 @@ The results (the plain-language claim of each card, verbatim):
 
 6. **`cycle-with-scratch-upper-bound`** (T0, theorem). For a nonempty duplicate-free cycle l0, ..., l(k-1) with k ≥ 1 (each l(i+1) receives the old value of l(i), and l0 receives the old value of l(k-1)) and a scratch location tmp outside it, the k + 1 moves tmp := l(k-1); l(k-1) := l(k-2); ...; l1 := l0; l0 := tmp realize the cycle at every location other than tmp, from every store.
 
-7. **`cycle-with-scratch-lower-bound`** (T1, theorem). Let ls be a duplicate-free cycle of length k ≥ 2 and tmp a location outside it. (a) Every sequence of plain moves (over any locations) that, from a given injective store σ, produces the cycle's target at every location other than tmp has at least k + 1 moves. (b) Over any value type with two distinct values, every sequence of plain moves that produces the cycle's target at every location other than tmp from every store has at least k + 1 moves.
+7. **`cycle-with-scratch-lower-bound`** (T1, theorem). Let ls be an isolated duplicate-free cycle of length k ≥ 2 (the parallel move consists of exactly the cycle's moves cycleMoves ls) and tmp a location outside it. (a) Every sequence of plain moves (over any locations) that, from a given injective store σ, produces the cycle's target at every location other than tmp has at least k + 1 moves. (b) Over any value type with two distinct values, every sequence of plain moves that produces the cycle's target at every location other than tmp from every store has at least k + 1 moves.
 
 8. **`cycle-without-scratch-impossible`** (T1, impossibility). Let ls be an isolated duplicate-free cycle of length k ≥ 2, that is, the parallel move consists of exactly the cycle's moves cycleMoves ls, so its target leaves every location outside ls unchanged (for example a parallel swap [(a,b),(b,a)] with a ≠ b). (a) For a given injective store σ, no sequence of plain moves, over any locations, turns σ exactly (at every location) into the cycle's target. (b) Over any location type and any value type with two distinct values, no single sequence of plain moves turns every store exactly into the cycle's target.
 
 9. **`cycle-with-swaps-upper-bound`** (T0, theorem). For a duplicate-free cycle l0, ..., l(k-1), the swaps (l0,l1), (l0,l2), ..., (l0,l(k-1)), executed in order, realize the cycle exactly at every location, from every store; there are ls.length - 1 of them, which is k - 1 for k ≥ 1 and 0 for the empty list (truncated subtraction).
 
-10. **`cycle-with-swaps-lower-bound`** (T0, theorem). Let ls be a duplicate-free cycle of length k. (a) Every list of swaps (over any locations) that turns a given injective store σ exactly into the cycle's target has at least ls.length - 1 swaps. (b) Over a value type with two distinct values, every list of swaps that turns every store exactly into the cycle's target has at least ls.length - 1 swaps. (ls.length - 1 is k - 1 for k ≥ 1 and 0 for k = 0.)
+10. **`cycle-with-swaps-lower-bound`** (T0, theorem). Let ls be an isolated duplicate-free cycle of length k (the parallel move consists of exactly the cycle's moves cycleMoves ls). (a) Every list of swaps (over any locations) that turns a given injective store σ exactly into the cycle's target has at least ls.length - 1 swaps. (b) Over a value type with two distinct values, every list of swaps that turns every store exactly into the cycle's target has at least ls.length - 1 swaps. (ls.length - 1 is k - 1 for k ≥ 1 and 0 for k = 0.)
 
 11. **`xor-swap-correct-iff-distinct-or-zero`** (T0, characterization). Over w-bit words, the sequence a ^= b; b ^= a; a ^= b exchanges the contents of locations a and b when a ≠ b, and when a = b it sets that location to zero and leaves all others unchanged; hence it equals the true swap exactly when a ≠ b or the aliased (common) operand holds zero.
 
@@ -833,7 +835,7 @@ Basis: derived (modeling bridge) — A rotation of registers (for example a call
 #### 7. `cycle-with-scratch-lower-bound`
 
 - **Kind and tier:** theorem; T1. Boissinot et al. state that their sequentialization 'requires the minimum number of copies' (without proof); this mechanizes the isolated-cycle lower bound with explicit hypotheses, per injective store and uniformly over all stores.
-- **Plain claim:** Let ls be a duplicate-free cycle of length k ≥ 2 and tmp a location outside it. (a) Every sequence of plain moves (over any locations) that, from a given injective store σ, produces the cycle's target at every location other than tmp has at least k + 1 moves. (b) Over any value type with two distinct values, every sequence of plain moves that produces the cycle's target at every location other than tmp from every store has at least k + 1 moves.
+- **Plain claim:** Let ls be an isolated duplicate-free cycle of length k ≥ 2 (the parallel move consists of exactly the cycle's moves cycleMoves ls) and tmp a location outside it. (a) Every sequence of plain moves (over any locations) that, from a given injective store σ, produces the cycle's target at every location other than tmp has at least k + 1 moves. (b) Over any value type with two distinct values, every sequence of plain moves that produces the cycle's target at every location other than tmp from every store has at least k + 1 moves.
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.cycle_length_add_one_le_of_injective_of_realizes_off_tmp`, `Toy.ParMove.cycle_length_add_one_le_of_two_values_of_realizes_off_tmp`.
 
 ```lean
@@ -965,7 +967,7 @@ Basis: derived (modeling bridge) — A rotation of registers (for example a call
 #### 10. `cycle-with-swaps-lower-bound`
 
 - **Kind and tier:** theorem; T0. Classical: a k-cycle is not a product of fewer than k - 1 transpositions; mechanized by a union-find potential.
-- **Plain claim:** Let ls be a duplicate-free cycle of length k. (a) Every list of swaps (over any locations) that turns a given injective store σ exactly into the cycle's target has at least ls.length - 1 swaps. (b) Over a value type with two distinct values, every list of swaps that turns every store exactly into the cycle's target has at least ls.length - 1 swaps. (ls.length - 1 is k - 1 for k ≥ 1 and 0 for k = 0.)
+- **Plain claim:** Let ls be an isolated duplicate-free cycle of length k (the parallel move consists of exactly the cycle's moves cycleMoves ls). (a) Every list of swaps (over any locations) that turns a given injective store σ exactly into the cycle's target has at least ls.length - 1 swaps. (b) Over a value type with two distinct values, every list of swaps that turns every store exactly into the cycle's target has at least ls.length - 1 swaps. (ls.length - 1 is k - 1 for k ≥ 1 and 0 for k = 0.)
 - **Lean statement** (verbatim; proofs omitted): `Toy.ParMove.cycle_length_sub_one_le_of_injective_of_runSwaps`, `Toy.ParMove.cycle_length_sub_one_le_of_two_values_of_runSwaps`.
 
 ```lean

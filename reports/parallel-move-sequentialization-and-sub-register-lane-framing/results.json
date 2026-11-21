@@ -334,7 +334,7 @@
     "kind": "theorem",
     "tier": "T1",
     "tier_justification": "Boissinot et al. state that their sequentialization 'requires the minimum number of copies' (without proof); this mechanizes the isolated-cycle lower bound with explicit hypotheses, per injective store and uniformly over all stores.",
-    "plain_claim": "Let ls be a duplicate-free cycle of length k ≥ 2 and tmp a location outside it. (a) Every sequence of plain moves (over any locations) that, from a given injective store σ, produces the cycle's target at every location other than tmp has at least k + 1 moves. (b) Over any value type with two distinct values, every sequence of plain moves that produces the cycle's target at every location other than tmp from every store has at least k + 1 moves.",
+    "plain_claim": "Let ls be an isolated duplicate-free cycle of length k ≥ 2 (the parallel move consists of exactly the cycle's moves cycleMoves ls) and tmp a location outside it. (a) Every sequence of plain moves (over any locations) that, from a given injective store σ, produces the cycle's target at every location other than tmp has at least k + 1 moves. (b) Over any value type with two distinct values, every sequence of plain moves that produces the cycle's target at every location other than tmp from every store has at least k + 1 moves.",
     "statement": "(a) ls.Nodup → 2 ≤ ls.length → tmp ∉ ls → Function.Injective σ → (∀ l ≠ tmp, runSeq ms σ l = pmove (cycleMoves ls) σ l) → ls.length + 1 ≤ ms.length;  (b) (a b : V) → a ≠ b → ls.Nodup → 2 ≤ ls.length → tmp ∉ ls → (∀ σ : Loc → V, ∀ l ≠ tmp, runSeq ms σ l = pmove (cycleMoves ls) σ l) → ls.length + 1 ≤ ms.length",
     "hypotheses": [
       {
@@ -575,7 +575,7 @@
     "kind": "theorem",
     "tier": "T0",
     "tier_justification": "Classical: a k-cycle is not a product of fewer than k - 1 transpositions; mechanized by a union-find potential.",
-    "plain_claim": "Let ls be a duplicate-free cycle of length k. (a) Every list of swaps (over any locations) that turns a given injective store σ exactly into the cycle's target has at least ls.length - 1 swaps. (b) Over a value type with two distinct values, every list of swaps that turns every store exactly into the cycle's target has at least ls.length - 1 swaps. (ls.length - 1 is k - 1 for k ≥ 1 and 0 for k = 0.)",
+    "plain_claim": "Let ls be an isolated duplicate-free cycle of length k (the parallel move consists of exactly the cycle's moves cycleMoves ls). (a) Every list of swaps (over any locations) that turns a given injective store σ exactly into the cycle's target has at least ls.length - 1 swaps. (b) Over a value type with two distinct values, every list of swaps that turns every store exactly into the cycle's target has at least ls.length - 1 swaps. (ls.length - 1 is k - 1 for k ≥ 1 and 0 for k = 0.)",
     "statement": "(a) ls.Nodup → Function.Injective σ → runSwaps ss σ = pmove (cycleMoves ls) σ → ls.length - 1 ≤ ss.length;  (b) (a b : V) → a ≠ b → ls.Nodup → (∀ σ : Loc → V, runSwaps ss σ = pmove (cycleMoves ls) σ) → ls.length - 1 ≤ ss.length",
     "hypotheses": [
       {
