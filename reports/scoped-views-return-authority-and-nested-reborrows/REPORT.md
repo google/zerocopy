@@ -397,12 +397,11 @@ are tracked: the bytes that different views hold for one address need not agree.
   decremented) if `c` is shared; then `c.active := false`. Nothing about `c`'s own cells or
   descendants is checked. Root views (no parent) can never be ended.
 
-*Proved adequacy lemmas:* `endRaw_isSome_iff : (endRaw s c r).isSome ↔ NaiveAuthority s c`;
+*Proved adequacy lemmas:* `endRaw_isSome_iff (s : State) (c : ViewId) (r : Addr → Byte) : (endRaw s c r).isSome = true ↔ NaiveAuthority s c`;
 `endRaw_eq_none_of_parentOf_eq_none` (roots); `read_isSome_imp_isActive`,
 `write_isSome_imp_isActive` (access requires activity — the first clause of the safety property
 holds by construction); `isActive_lt_size`, `covers_lt_width` (bounded quantifiers below are
-exact); `writeExclusive_iff_unbounded : WriteExclusive s ↔ ∀ v w a, v ≠ w → s.canWrite v a = true →
-s.canRead w a = false` (the bounded definition of `WriteExclusive`, quoted below, is equivalent to
+exact); `writeExclusive_iff_unbounded (s : State) : WriteExclusive s ↔ ∀ v w a, v ≠ w → s.canWrite v a = true → s.canRead w a = false` (the bounded definition of `WriteExclusive`, quoted below, is equivalent to
 its unbounded form).
 
 *Operation examples* (`Authority.lean`): `borrow_s0`, `borrow_s1` (succeed), `borrow_s1_A_none`
@@ -413,10 +412,12 @@ its unbounded form).
 evaluate the access, level, counting and domain functions on the named states:
 
 ```lean
+-- lean/ToyViews/Authority.lean:253-256
 theorem access_examples :
     s1.canWrite 1 0 = true ∧ s1.canRead 0 0 = false ∧ t1.canRead 0 0 = true ∧
     t1.canWrite 0 0 = false ∧ t1.canRead 1 0 = true ∧ t1.canWrite 1 0 = false ∧
     (s1e 0).canRead 1 0 = false ∧ s1.level 1 0 = 2 ∧ t1.level 0 0 = 1 ∧ s1.level 0 0 = 0
+-- lean/ToyViews/Authority.lean:260-263
 theorem count_domain_examples :
     u2.activeSharedChildren 0 0 = 2 ∧ u2e.activeSharedChildren 0 0 = 1 ∧
     t2.activeSharedChildren 0 0 = 1 ∧ (w2.view? 1).map View.domain = some [0] ∧
@@ -580,14 +581,17 @@ the inductive relation `ProperDesc` by an explicit list `S` of views that contai
 the ended view (resp. of `u`) and every child of a member of `S`:
 
 ```lean
+-- lean/ToyViews/Authority.lean:18-20
 theorem ProperDesc.mem_of_closed {s : State} {c : ViewId} {S : List ViewId}
     (h : ∀ d < s.size, ∀ p, s.parentOf d = some p → (p = c ∨ p ∈ S) → d ∈ S) :
     ∀ {d}, ProperDesc s d c → d ∈ S
+-- lean/ToyViews/Authority.lean:33-37
 theorem returnAuthority_of_closed {s : State} {c : ViewId} (S : List ViewId)
     (hS : ∀ d < s.size, ∀ p, s.parentOf d = some p → (p = c ∨ p ∈ S) → d ∈ S)
     (hA : ∀ d ∈ S, s.isActive d = true → ∀ a < s.width, s.covers c a = true →
       s.covers d a = false) :
     ReturnAuthority s c
+-- lean/ToyViews/Authority.lean:119-124
 theorem noResurrection_of_closed {s s' : State} (S : ViewId → List ViewId)
     (hS : ∀ u < s'.size, ∀ d < s'.size, ∀ p, s'.parentOf d = some p → (p = u ∨ p ∈ S u) →
       d ∈ S u)
@@ -621,8 +625,10 @@ theorem noResurrection_of_closed {s s' : State} (S : ViewId → List ViewId)
 `false`), `endRaw_modeOf`, `endRaw_baselineOf`, and the two global-law frame lemmas
 
 ```lean
+-- lean/ToyViews/Frame.lean:303-304
 theorem endRaw_preserves_parentLt {s s' : State} {c : ViewId} {r : Addr → Byte}
     (hlt : ParentLt s) (hend : endRaw s c r = some s') : ParentLt s'
+-- lean/ToyViews/Frame.lean:312-313
 theorem endRaw_preserves_rootsDisjoint {s s' : State} {c : ViewId} {r : Addr → Byte}
     (hrd : RootsDisjoint s) (hend : endRaw s c r = some s') : RootsDisjoint s'
 ```
@@ -697,7 +703,7 @@ prototype discussed under *Modeling bridge* states it as a separate conjunct of 
 genuine steps but not scoped runs, by `ScopedRun.isActive_eq`; and `s2` cannot reach `s1`, by
 `ScopedRun.size_le`). Proved helpers: `openScopeShape_of_borrow`, `openScopeShape_of_share`,
 `OpenScopeShape.isActive_old`, `write_isActive`, `ScopedRun.size_le`,
-`ScopedRun.isActive_eq : ScopedRun s s' → s'.isActive u = if u < s.size then s.isActive u else false`
+`ScopedRun.isActive_eq {s s' : State} (h : ScopedRun s s') (u : ViewId) : s'.isActive u = (if u < s.size then s.isActive u else false)`
 (a scoped run keeps every old view's activity and leaves every new view inactive; proved directly
 by induction, independently of R3),
 `parentsExist_of_parentLt_of_parentsStable`, `returnAuthority_vacuous_of_ge_size`,
@@ -772,6 +778,7 @@ Common design question (all cards except R5a and R5b): A memory model that lends
 **Lean statement** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Naive.lean:22-29
 -- Toy.Views.Ex.naive_end_breaks_safety_of_nested_exclusive_reborrow   (ToyViews/Naive.lean:22)
 theorem naive_end_breaks_safety_of_nested_exclusive_reborrow (r : Addr → Byte) :
     borrow s0 0 [0] = some s1 ∧ borrow s1 1 [0] = some s2 ∧
@@ -857,6 +864,7 @@ def NoResurrection (s s' : State) : Prop :=
 **Positive control** (Lean statement):
 
 ```lean
+-- lean/ToyViews/Naive.lean:41-44
 -- Toy.Views.Ex.naive_end_safe_without_nested_reborrow   (ToyViews/Naive.lean:41)
 theorem naive_end_safe_without_nested_reborrow (r : Addr → Byte) :
     LoanTreeInv s1 ∧ NaiveAuthority s1 1 ∧ ReturnAuthority s1 1 ∧
@@ -888,6 +896,7 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statement** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Naive.lean:55-60
 -- Toy.Views.Ex.naive_end_breaks_safety_of_nested_shared_reborrow   (ToyViews/Naive.lean:55)
 theorem naive_end_breaks_safety_of_nested_shared_reborrow (r : Addr → Byte) :
     share s0 0 [0] = some t1 ∧ share t1 1 [0] = some t2 ∧
@@ -971,6 +980,7 @@ def NoResurrection (s s' : State) : Prop :=
 **Positive control** (Lean statement):
 
 ```lean
+-- lean/ToyViews/Naive.lean:70-72
 -- Toy.Views.Ex.naive_end_safe_without_nested_shared_reborrow   (ToyViews/Naive.lean:70)
 theorem naive_end_safe_without_nested_shared_reborrow (r : Addr → Byte) :
     LoanTreeInv t1 ∧ NaiveAuthority t1 1 ∧ ReturnAuthority t1 1 ∧
@@ -1000,6 +1010,7 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statements** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/EndSafe.lean:20-25
 -- Toy.Views.endRaw_preserves_localLoanLaws_and_noResurrection_of_returnAuthority   (ToyViews/EndSafe.lean:20)
 theorem endRaw_preserves_localLoanLaws_and_noResurrection_of_returnAuthority
     {s s' : State} {c : ViewId} {r : Addr → Byte}
@@ -1008,6 +1019,7 @@ theorem endRaw_preserves_localLoanLaws_and_noResurrection_of_returnAuthority
     (hauth : ReturnAuthority s c) (hend : endRaw s c r = some s') :
     LocalLoanLaws s' ∧ NoResurrection s s'
 
+-- lean/ToyViews/EndSafe.lean:32-35
 -- Toy.Views.endRaw_preserves_loanTreeInv_and_noResurrection_of_returnAuthority   (ToyViews/EndSafe.lean:32)
 theorem endRaw_preserves_loanTreeInv_and_noResurrection_of_returnAuthority
     {s s' : State} {c : ViewId} {r : Addr → Byte}
@@ -1113,6 +1125,7 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statement** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/EndSafe.lean:45-49
 -- Toy.Views.writeExclusive_of_loanTree_laws   (ToyViews/EndSafe.lean:45)
 theorem writeExclusive_of_loanTree_laws {s : State}
     (hlt : ParentLt s) (hpc : ParentCoversActive s) (hecl : ExclChildLoaned s)
@@ -1192,6 +1205,7 @@ Basis: execution (Lean kernel check) — every Lean name of this card, with the 
 **Lean statement** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/EndSafe.lean:56-62
 -- Toy.Views.endRaw_writeExclusive_of_loanTree_laws_of_returnAuthority   (ToyViews/EndSafe.lean:56)
 theorem endRaw_writeExclusive_of_loanTree_laws_of_returnAuthority
     {s s' : State} {c : ViewId} {r : Addr → Byte}
@@ -1277,12 +1291,14 @@ Basis: execution (Lean kernel check) — every Lean name of this card, with the 
 **Lean statements** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/EndSafe.lean:76-79
 -- Toy.Views.returnAuthority_of_localReturnCheck_of_parentCoversActive_exclChildLoaned_depthCounts   (ToyViews/EndSafe.lean:76)
 theorem returnAuthority_of_localReturnCheck_of_parentCoversActive_exclChildLoaned_depthCounts
     {s : State} {c : ViewId}
     (hpc : ParentCoversActive s) (hecl : ExclChildLoaned s) (hdc : DepthCounts s)
     (hloc : LocalReturnCheck s c) : ReturnAuthority s c
 
+-- lean/ToyViews/EndSafe.lean:87-92
 -- Toy.Views.endRaw_preserves_localLoanLaws_and_noResurrection_of_localReturnCheck   (ToyViews/EndSafe.lean:87)
 theorem endRaw_preserves_localLoanLaws_and_noResurrection_of_localReturnCheck
     {s s' : State} {c : ViewId} {r : Addr → Byte}
@@ -1371,9 +1387,11 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statements** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Closed.lean:99
 -- Toy.Views.closedViews_refl   (ToyViews/Closed.lean:99)
 theorem closedViews_refl (s : State) : ClosedViews s s
 
+-- lean/ToyViews/Closed.lean:104-105
 -- Toy.Views.closedViews_trans   (ToyViews/Closed.lean:104)
 theorem closedViews_trans {s₀ s₁ s₂ : State} (h₁ : ClosedViews s₀ s₁) (h₂ : ClosedViews s₁ s₂) :
     ClosedViews s₀ s₂
@@ -1425,11 +1443,13 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statements** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Closed.lean:126-128
 -- Toy.Views.returnAuthority_of_closedViews_of_parentsExist   (ToyViews/Closed.lean:126)
 theorem returnAuthority_of_closedViews_of_parentsExist {s₀ s₁ : State} {v : ViewId}
     (hpe : ParentsExist s₀) (hauth : ReturnAuthority s₀ v) (hcv : ClosedViews s₀ s₁) :
     ReturnAuthority s₁ v
 
+-- lean/ToyViews/Closed.lean:197-199
 -- Toy.Views.returnAuthority_of_closedViews_of_parentCoversActive   (ToyViews/Closed.lean:197)
 theorem returnAuthority_of_closedViews_of_parentCoversActive {s₀ s₁ : State} {v : ViewId}
     (hpc : ParentCoversActive s₁) (hauth : ReturnAuthority s₀ v) (hcv : ClosedViews s₀ s₁) :
@@ -1495,16 +1515,19 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statements** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Closed.lean:283-285
 -- Toy.Views.closedViews_of_fresh_scope   (ToyViews/Closed.lean:283)
 theorem closedViews_of_fresh_scope {s s₁ s₂ s₃ : State} {r : Addr → Byte}
     (hop : OpenScopeShape s s₁) (hin : ClosedViews s₁ s₂)
     (he : endRaw s₂ s.size r = some s₃) : ClosedViews s s₃
 
+-- lean/ToyViews/Closed.lean:479-481
 -- Toy.Views.closedViews_of_borrow_scope   (ToyViews/Closed.lean:479)
 theorem closedViews_of_borrow_scope {s s₁ s₂ s₃ : State} {p : ViewId} {A : List Addr}
     {r : Addr → Byte} (hb : borrow s p A = some s₁) (hin : ClosedViews s₁ s₂)
     (he : endRaw s₂ s.size r = some s₃) : ClosedViews s s₃
 
+-- lean/ToyViews/Closed.lean:485-487
 -- Toy.Views.closedViews_of_share_scope   (ToyViews/Closed.lean:485)
 theorem closedViews_of_share_scope {s s₁ s₂ s₃ : State} {p : ViewId} {A : List Addr}
     {r : Addr → Byte} (hb : share s p A = some s₁) (hin : ClosedViews s₁ s₂)
@@ -1563,6 +1586,7 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statement** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Closed.lean:491-492
 -- Toy.Views.closedViews_of_write   (ToyViews/Closed.lean:491)
 theorem closedViews_of_write {s s' : State} {v : ViewId} {a : Addr} {b : Byte}
     (hw : write s v a b = some s') : ClosedViews s s'
@@ -1613,6 +1637,7 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statement** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Closed.lean:548-553
 -- Toy.Views.endRaw_preserves_localLoanLaws_and_noResurrection_of_returnAuthority_before_closedViews   (ToyViews/Closed.lean:548)
 theorem endRaw_preserves_localLoanLaws_and_noResurrection_of_returnAuthority_before_closedViews
     {s₀ s₁ s₂ : State} {c : ViewId} {r : Addr → Byte}
@@ -1713,9 +1738,11 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statements** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Closed.lean:571
 -- Toy.Views.closedViews_of_scopedRun   (ToyViews/Closed.lean:571)
 theorem closedViews_of_scopedRun {s s' : State} (h : ScopedRun s s') : ClosedViews s s'
 
+-- lean/ToyViews/Closed.lean:581-583
 -- Toy.Views.returnAuthority_of_scopedRun_of_parentCoversActive   (ToyViews/Closed.lean:581)
 theorem returnAuthority_of_scopedRun_of_parentCoversActive {s₀ s₁ : State} {v : ViewId}
     (hpc : ParentCoversActive s₁) (hauth : ReturnAuthority s₀ v) (hrun : ScopedRun s₀ s₁) :
@@ -1787,6 +1814,7 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statements** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Closed.lean:906-911
 -- Toy.Views.Ex.returnAuthority_lost_without_newViewsInactive   (ToyViews/Closed.lean:906)
 theorem returnAuthority_lost_without_newViewsInactive (r : Addr → Byte) :
     ParentsExist s1 ∧ ReturnAuthority s1 1 ∧
@@ -1795,6 +1823,7 @@ theorem returnAuthority_lost_without_newViewsInactive (r : Addr → Byte) :
     LoanTreeInv s2 ∧ endRaw s2 1 r = some (s3 (r 0)) ∧ ¬ LocalLoanLaws (s3 (r 0)) ∧
     ¬ LoanTreeInv (s3 (r 0))
 
+-- lean/ToyViews/Closed.lean:917-922
 -- Toy.Views.Ex.returnAuthority_lost_without_parentsStable   (ToyViews/Closed.lean:917)
 theorem returnAuthority_lost_without_parentsStable :
     ParentsExist u2 ∧ ReturnAuthority u2 1 ∧
@@ -1803,6 +1832,7 @@ theorem returnAuthority_lost_without_parentsStable :
     LoanTreeInv u2 ∧ LoanTreeInv t2 ∧ endRaw t2 1 (fun _ => 0) = some t3 ∧
     ¬ LocalLoanLaws t3 ∧ ¬ LoanTreeInv t3
 
+-- lean/ToyViews/Closed.lean:928-933
 -- Toy.Views.Ex.returnAuthority_lost_without_activityStable   (ToyViews/Closed.lean:928)
 theorem returnAuthority_lost_without_activityStable (r : Addr → Byte) :
     ParentsExist aS0 ∧ ReturnAuthority aS0 1 ∧
@@ -1811,6 +1841,7 @@ theorem returnAuthority_lost_without_activityStable (r : Addr → Byte) :
     LoanTreeInv s2 ∧ endRaw s2 1 r = some (s3 (r 0)) ∧ ¬ LocalLoanLaws (s3 (r 0)) ∧
     ¬ LoanTreeInv (s3 (r 0))
 
+-- lean/ToyViews/Closed.lean:940-945
 -- Toy.Views.Ex.returnAuthority_lost_without_domainsStable   (ToyViews/Closed.lean:940)
 theorem returnAuthority_lost_without_domainsStable (r : Addr → Byte) :
     ParentsExist e2 ∧ ReturnAuthority e2 1 ∧
@@ -1903,6 +1934,7 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statement** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Closed.lean:1019-1021
 -- Toy.Views.Ex.closedViews_not_necessary_for_returnAuthority   (ToyViews/Closed.lean:1019)
 theorem closedViews_not_necessary_for_returnAuthority :
     LoanTreeInv g1 ∧ LoanTreeInv g1r ∧ ReturnAuthority g1 1 ∧ ReturnAuthority g1r 1 ∧
@@ -1989,6 +2021,7 @@ Basis: derived (modeling bridge) — every statement in this card about the Aene
 **Lean statement** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Counting.lean:19-22
 -- Toy.Views.canWrite_iff_excl_and_no_active_shared_children_of_depthCounts   (ToyViews/Counting.lean:19)
 theorem canWrite_iff_excl_and_no_active_shared_children_of_depthCounts
     {s : State} {v : ViewId} {a : Addr} (hdc : DepthCounts s)
@@ -2037,6 +2070,7 @@ Basis: execution (Lean kernel check) — every Lean name of this card, with the 
 **Lean statement** (namespace `Toy.Views`; `Ex.` names are in `Toy.Views.Ex`):
 
 ```lean
+-- lean/ToyViews/Counting.lean:97-102
 -- Toy.Views.Ex.depthCounts_survives_naive_shared_end_while_writeExclusive_fails   (ToyViews/Counting.lean:97)
 theorem depthCounts_survives_naive_shared_end_while_writeExclusive_fails (r : Addr → Byte) :
     LoanTreeInv t2 ∧ t2.activeSharedChildren 0 0 = 1 ∧ t2.activeSharedChildren 1 0 = 1 ∧
@@ -2112,6 +2146,7 @@ def LocalReturnCheck (s : State) (c : ViewId) : Prop :=
 **Positive control** (Lean statement):
 
 ```lean
+-- lean/ToyViews/Counting.lean:108-110
 -- Toy.Views.Ex.parent_counter_zero_means_no_reader_without_nesting   (ToyViews/Counting.lean:108)
 theorem parent_counter_zero_means_no_reader_without_nesting (r : Addr → Byte) :
     endRaw t1 1 r = some t1e ∧ t1e.activeSharedChildren 0 0 = 0 ∧ t1e.canWrite 0 0 = true ∧
@@ -2237,7 +2272,7 @@ Each list states what the result does *not* show. These come first because the r
 - A global post-step check that rejects any end whose result is not write-exclusive would refuse this particular step (s3 is not write-exclusive), but single-step write exclusivity and no-resurrection are not an inductive criterion on their own (naive_shared_end_hidden_by_sibling_reader).
 - The naive rule tested is the strictest parent-side rule considered: the child and its parent must be active and the parent must hold each of the child's cells as an outstanding loan; any more permissive parent-side rule admits the same trace.
 - The toy end operation merges 'retire the child' and 'restore the parent'; models that separate them may fail differently (e.g. restoring the parent while the child stays active) but are not analysed.
-- Only the safety property defined here (write exclusivity, no resurrection) is violated; no claim about undefined behaviour in Rust or any particular aliasing model.
+- The property shown violated is the safety property defined here (write exclusivity, no resurrection); this neither establishes nor refutes undefined behaviour in Rust or under any particular aliasing model.
 - Models neither physical allocation lifetime ('alive') nor deallocation.
 
 #### R1b (`R1b-naive-end-unsound-nested-shared`)
@@ -2391,7 +2426,8 @@ the assumptions whose change defeats the negative conclusion:
 ### Attractive stronger conclusions that are not established
 
 - That any of these results holds for Rust, for the Aeneas semantics, for the prototype described
-  under *Modeling bridge*, or for any production memory model. Only the toy model is formalized.
+  under *Modeling bridge*, or for any production memory model. The theorems are statements about
+  the toy model; they neither establish nor refute these claims.
 - That the loan-tree invariant is an invariant of the whole toy step relation: preservation is
   proved only for `endRaw` under return authority (R2a); for `borrow`, `share` and `write` it is
   supported only by the bounded search above. Consequently there is no theorem that every state

@@ -20,7 +20,7 @@
    "A global post-step check that rejects any end whose result is not write-exclusive would refuse this particular step (s3 is not write-exclusive), but single-step write exclusivity and no-resurrection are not an inductive criterion on their own (naive_shared_end_hidden_by_sibling_reader).",
    "The naive rule tested is the strictest parent-side rule considered: the child and its parent must be active and the parent must hold each of the child's cells as an outstanding loan; any more permissive parent-side rule admits the same trace.",
    "The toy end operation merges 'retire the child' and 'restore the parent'; models that separate them may fail differently (e.g. restoring the parent while the child stays active) but are not analysed.",
-   "Only the safety property defined here (write exclusivity, no resurrection) is violated; no claim about undefined behaviour in Rust or any particular aliasing model.",
+   "The property shown violated is the safety property defined here (write exclusivity, no resurrection); this neither establishes nor refutes undefined behaviour in Rust or under any particular aliasing model.",
    "Models neither physical allocation lifetime ('alive') nor deallocation."
   ],
   "prior_art": [
