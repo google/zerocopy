@@ -94145,6 +94145,103 @@
         "verification/orderbook-conservation-and-liveness"
       ]
     },
+    "scalarpair-register-lowering-refinement-init-uniform-scalars-and-provenance-boundaries": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc (rustc_abi scalar and backend-representation documentation; const-eval interpreter)"
+        },
+        {
+          "identity": {
+            "path": "spec/lang/representation.md",
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "MiniRust specification (value representation)"
+        },
+        {
+          "identity": {
+            "path": "llvm/docs/LangRef.md",
+            "repository": "llvm/llvm-project",
+            "revision": "a2f1d1aeb6f5c700ac9a15592b6f81c3ec41e6c6"
+          },
+          "name": "LLVM Language Reference Manual"
+        },
+        {
+          "identity": {
+            "path": "src/behavior-considered-undefined.md",
+            "repository": "rust-lang/reference",
+            "revision": "bcd62f35e8bf480ec5b0fa569b6d12ea5924030c"
+          },
+          "name": "The Rust Reference, Behavior considered undefined"
+        },
+        {
+          "identity": {
+            "path": "common/Memdata.v",
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert memory data model (Memdata.v)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-008-9099-0"
+          },
+          "name": "Formal verification of a C-like memory model and its uses for verifying program transformations (JAR 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062343"
+          },
+          "name": "Taming Undefined Behavior in LLVM (PLDI 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454030"
+          },
+          "name": "Alive2: Bounded Translation Validation for LLVM (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2737924.2738005"
+          },
+          "name": "A Formal C Memory Model Supporting Integer-Pointer Casts (PLDI 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9496-y"
+          },
+          "name": "CompCertS: A Memory-Aware Verified C Compiler Using a Pointer as Integer Semantics (JAR 2019)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/backend-representation",
+        "compilers/register-lowering",
+        "lean",
+        "lean/mechanization",
+        "pl",
+        "pl/abstract-bytes",
+        "pl/pointer-provenance",
+        "pl/uninitialized-memory",
+        "pl/unions",
+        "verification",
+        "verification/formalized-results",
+        "verification/refinement"
+      ]
+    },
     "scc-condensation-and-mutual-recursion-fixpoint-summaries": {
       "observed_at": "2026-11-20",
       "subjects": [

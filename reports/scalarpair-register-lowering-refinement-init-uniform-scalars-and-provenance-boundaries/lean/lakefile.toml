@@ -1,0 +1,5 @@
+name = "toy_repr_lower"
+defaultTargets = ["ToyReprLower"]
+
+[[lean_lib]]
+name = "ToyReprLower"

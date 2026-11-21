@@ -1,0 +1,1478 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.ReprLower.AByte": [],
+    "Toy.ReprLower.AByte.bits": [],
+    "Toy.ReprLower.AByte.bits.elim": [],
+    "Toy.ReprLower.AByte.bits.inj": [],
+    "Toy.ReprLower.AByte.bits.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.bits.noConfusion": [],
+    "Toy.ReprLower.AByte.bits.sizeOf_spec": [],
+    "Toy.ReprLower.AByte.casesOn": [],
+    "Toy.ReprLower.AByte.ctorElim": [],
+    "Toy.ReprLower.AByte.ctorElimType": [],
+    "Toy.ReprLower.AByte.ctorIdx": [],
+    "Toy.ReprLower.AByte.data": [],
+    "Toy.ReprLower.AByte.data.eq_1": [],
+    "Toy.ReprLower.AByte.data.eq_2": [],
+    "Toy.ReprLower.AByte.data.eq_3": [],
+    "Toy.ReprLower.AByte.isBits": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isBits.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isBits.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isBits.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isFrag": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isFrag.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isFrag.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isFrag.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isInit": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isInit.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isInit.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.isInit.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.leb": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.leb.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.leb.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.leb.eq_3": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.leb.eq_4": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.leb.eq_5": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.leb.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.leb_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.leb_uninit_iff": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.noConfusion": [],
+    "Toy.ReprLower.AByte.noConfusionType": [],
+    "Toy.ReprLower.AByte.ptrFrag": [],
+    "Toy.ReprLower.AByte.ptrFrag.elim": [],
+    "Toy.ReprLower.AByte.ptrFrag.inj": [],
+    "Toy.ReprLower.AByte.ptrFrag.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.AByte.ptrFrag.noConfusion": [],
+    "Toy.ReprLower.AByte.ptrFrag.sizeOf_spec": [],
+    "Toy.ReprLower.AByte.rec": [],
+    "Toy.ReprLower.AByte.recOn": [],
+    "Toy.ReprLower.AByte.uninit": [],
+    "Toy.ReprLower.AByte.uninit.elim": [],
+    "Toy.ReprLower.AByte.uninit.sizeOf_spec": [],
+    "Toy.ReprLower.AByte.uninit_leb": [
+      "propext"
+    ],
+    "Toy.ReprLower.BRepr": [],
+    "Toy.ReprLower.BRepr.casesOn": [],
+    "Toy.ReprLower.BRepr.comps": [],
+    "Toy.ReprLower.BRepr.comps.eq_1": [],
+    "Toy.ReprLower.BRepr.comps.eq_2": [],
+    "Toy.ReprLower.BRepr.comps.eq_3": [],
+    "Toy.ReprLower.BRepr.comps.match_1": [],
+    "Toy.ReprLower.BRepr.ctorElim": [],
+    "Toy.ReprLower.BRepr.ctorElimType": [],
+    "Toy.ReprLower.BRepr.ctorIdx": [],
+    "Toy.ReprLower.BRepr.inExtent": [],
+    "Toy.ReprLower.BRepr.inExtent.eq_1": [],
+    "Toy.ReprLower.BRepr.inExtent.eq_2": [],
+    "Toy.ReprLower.BRepr.inExtent.eq_3": [],
+    "Toy.ReprLower.BRepr.inExtent.match_1": [],
+    "Toy.ReprLower.BRepr.memory": [],
+    "Toy.ReprLower.BRepr.memory.elim": [],
+    "Toy.ReprLower.BRepr.memory.sizeOf_spec": [],
+    "Toy.ReprLower.BRepr.noConfusion": [],
+    "Toy.ReprLower.BRepr.noConfusionType": [],
+    "Toy.ReprLower.BRepr.pair": [],
+    "Toy.ReprLower.BRepr.pair.elim": [],
+    "Toy.ReprLower.BRepr.pair.inj": [],
+    "Toy.ReprLower.BRepr.pair.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.BRepr.pair.noConfusion": [],
+    "Toy.ReprLower.BRepr.pair.sizeOf_spec": [],
+    "Toy.ReprLower.BRepr.rec": [],
+    "Toy.ReprLower.BRepr.recOn": [],
+    "Toy.ReprLower.BRepr.scalar": [],
+    "Toy.ReprLower.BRepr.scalar.elim": [],
+    "Toy.ReprLower.BRepr.scalar.inj": [],
+    "Toy.ReprLower.BRepr.scalar.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.BRepr.scalar.noConfusion": [],
+    "Toy.ReprLower.BRepr.scalar.sizeOf_spec": [],
+    "Toy.ReprLower.BytesLe": [
+      "propext"
+    ],
+    "Toy.ReprLower.CastAgrees": [
+      "propext"
+    ],
+    "Toy.ReprLower.CastRefines": [
+      "propext"
+    ],
+    "Toy.ReprLower.DisciplineCompat": [],
+    "Toy.ReprLower.DisciplineCompat.eq_1": [],
+    "Toy.ReprLower.DisciplineCompat.eq_2": [],
+    "Toy.ReprLower.DisciplineCompat.eq_3": [],
+    "Toy.ReprLower.DisciplineCompat.match_1": [],
+    "Toy.ReprLower.DisciplineCompatAnyLen": [],
+    "Toy.ReprLower.DisciplineCompatAnyLen.eq_1": [],
+    "Toy.ReprLower.DisciplineCompatAnyLen.eq_2": [],
+    "Toy.ReprLower.DisciplineCompatAnyLen.eq_3": [],
+    "Toy.ReprLower.FieldwiseUninhabited": [],
+    "Toy.ReprLower.InitUniform": [
+      "propext"
+    ],
+    "Toy.ReprLower.InitUniform.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.Lowered": [],
+    "Toy.ReprLower.Lowered.casesOn": [],
+    "Toy.ReprLower.Lowered.ctorElim": [],
+    "Toy.ReprLower.Lowered.ctorElimType": [],
+    "Toy.ReprLower.Lowered.ctorIdx": [],
+    "Toy.ReprLower.Lowered.mem": [],
+    "Toy.ReprLower.Lowered.mem.elim": [],
+    "Toy.ReprLower.Lowered.mem.inj": [],
+    "Toy.ReprLower.Lowered.mem.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.Lowered.mem.noConfusion": [],
+    "Toy.ReprLower.Lowered.mem.sizeOf_spec": [],
+    "Toy.ReprLower.Lowered.noConfusion": [],
+    "Toy.ReprLower.Lowered.noConfusionType": [],
+    "Toy.ReprLower.Lowered.one": [],
+    "Toy.ReprLower.Lowered.one.elim": [],
+    "Toy.ReprLower.Lowered.one.inj": [],
+    "Toy.ReprLower.Lowered.one.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.Lowered.one.noConfusion": [],
+    "Toy.ReprLower.Lowered.one.sizeOf_spec": [],
+    "Toy.ReprLower.Lowered.rec": [],
+    "Toy.ReprLower.Lowered.recOn": [],
+    "Toy.ReprLower.Lowered.two": [],
+    "Toy.ReprLower.Lowered.two.elim": [],
+    "Toy.ReprLower.Lowered.two.inj": [],
+    "Toy.ReprLower.Lowered.two.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.Lowered.two.noConfusion": [],
+    "Toy.ReprLower.Lowered.two.sizeOf_spec": [],
+    "Toy.ReprLower.OutLe": [
+      "propext"
+    ],
+    "Toy.ReprLower.OutLe.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.OutLe.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.OutLe.eq_3": [
+      "propext"
+    ],
+    "Toy.ReprLower.OutLe.match_1": [],
+    "Toy.ReprLower.OutsideExtentsUninit": [
+      "propext"
+    ],
+    "Toy.ReprLower.Prim": [],
+    "Toy.ReprLower.Prim.casesOn": [],
+    "Toy.ReprLower.Prim.ctorElim": [],
+    "Toy.ReprLower.Prim.ctorElimType": [],
+    "Toy.ReprLower.Prim.ctorIdx": [],
+    "Toy.ReprLower.Prim.int": [],
+    "Toy.ReprLower.Prim.int.elim": [],
+    "Toy.ReprLower.Prim.int.inj": [],
+    "Toy.ReprLower.Prim.int.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.Prim.int.noConfusion": [],
+    "Toy.ReprLower.Prim.int.sizeOf_spec": [],
+    "Toy.ReprLower.Prim.noConfusion": [],
+    "Toy.ReprLower.Prim.noConfusionType": [],
+    "Toy.ReprLower.Prim.ptr": [],
+    "Toy.ReprLower.Prim.ptr.elim": [],
+    "Toy.ReprLower.Prim.ptr.inj": [],
+    "Toy.ReprLower.Prim.ptr.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.Prim.ptr.noConfusion": [],
+    "Toy.ReprLower.Prim.ptr.sizeOf_spec": [],
+    "Toy.ReprLower.Prim.rec": [],
+    "Toy.ReprLower.Prim.recOn": [],
+    "Toy.ReprLower.Prim.size": [],
+    "Toy.ReprLower.Prim.size.eq_1": [],
+    "Toy.ReprLower.Prim.size.eq_2": [],
+    "Toy.ReprLower.ProvCoherent": [
+      "propext"
+    ],
+    "Toy.ReprLower.ProvCoherent.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.RVal": [],
+    "Toy.ReprLower.RVal.casesOn": [],
+    "Toy.ReprLower.RVal.ctorElim": [],
+    "Toy.ReprLower.RVal.ctorElimType": [],
+    "Toy.ReprLower.RVal.ctorIdx": [],
+    "Toy.ReprLower.RVal.int": [],
+    "Toy.ReprLower.RVal.int.elim": [],
+    "Toy.ReprLower.RVal.int.inj": [],
+    "Toy.ReprLower.RVal.int.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.RVal.int.noConfusion": [],
+    "Toy.ReprLower.RVal.int.sizeOf_spec": [],
+    "Toy.ReprLower.RVal.noConfusion": [],
+    "Toy.ReprLower.RVal.noConfusionType": [],
+    "Toy.ReprLower.RVal.poison": [],
+    "Toy.ReprLower.RVal.poison.elim": [],
+    "Toy.ReprLower.RVal.poison.sizeOf_spec": [],
+    "Toy.ReprLower.RVal.ptr": [],
+    "Toy.ReprLower.RVal.ptr.elim": [],
+    "Toy.ReprLower.RVal.ptr.inj": [],
+    "Toy.ReprLower.RVal.ptr.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.RVal.ptr.noConfusion": [],
+    "Toy.ReprLower.RVal.ptr.sizeOf_spec": [],
+    "Toy.ReprLower.RVal.raw": [],
+    "Toy.ReprLower.RVal.raw.elim": [],
+    "Toy.ReprLower.RVal.raw.inj": [],
+    "Toy.ReprLower.RVal.raw.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.RVal.raw.noConfusion": [],
+    "Toy.ReprLower.RVal.raw.sizeOf_spec": [],
+    "Toy.ReprLower.RVal.rec": [],
+    "Toy.ReprLower.RVal.recOn": [],
+    "Toy.ReprLower.RangeIncl": [
+      "propext"
+    ],
+    "Toy.ReprLower.RangeIncl.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.RoundTripRefines": [
+      "propext"
+    ],
+    "Toy.ReprLower.Scalar": [],
+    "Toy.ReprLower.Scalar.casesOn": [],
+    "Toy.ReprLower.Scalar.ctorElim": [],
+    "Toy.ReprLower.Scalar.ctorElimType": [],
+    "Toy.ReprLower.Scalar.ctorIdx": [],
+    "Toy.ReprLower.Scalar.initialized": [],
+    "Toy.ReprLower.Scalar.initialized.elim": [],
+    "Toy.ReprLower.Scalar.initialized.inj": [],
+    "Toy.ReprLower.Scalar.initialized.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.Scalar.initialized.noConfusion": [],
+    "Toy.ReprLower.Scalar.initialized.sizeOf_spec": [],
+    "Toy.ReprLower.Scalar.noConfusion": [],
+    "Toy.ReprLower.Scalar.noConfusionType": [],
+    "Toy.ReprLower.Scalar.prim": [],
+    "Toy.ReprLower.Scalar.prim.eq_1": [],
+    "Toy.ReprLower.Scalar.prim.eq_2": [],
+    "Toy.ReprLower.Scalar.prim.match_1": [],
+    "Toy.ReprLower.Scalar.rec": [],
+    "Toy.ReprLower.Scalar.recOn": [],
+    "Toy.ReprLower.Scalar.size": [],
+    "Toy.ReprLower.Scalar.size.eq_1": [],
+    "Toy.ReprLower.Scalar.union": [],
+    "Toy.ReprLower.Scalar.union.elim": [],
+    "Toy.ReprLower.Scalar.union.inj": [],
+    "Toy.ReprLower.Scalar.union.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.Scalar.union.noConfusion": [],
+    "Toy.ReprLower.Scalar.union.sizeOf_spec": [],
+    "Toy.ReprLower.UField": [],
+    "Toy.ReprLower.UField.casesOn": [],
+    "Toy.ReprLower.UField.ctorIdx": [],
+    "Toy.ReprLower.UField.mk": [],
+    "Toy.ReprLower.UField.mk.inj": [],
+    "Toy.ReprLower.UField.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.UField.mk.noConfusion": [],
+    "Toy.ReprLower.UField.mk.sizeOf_spec": [],
+    "Toy.ReprLower.UField.noConfusion": [],
+    "Toy.ReprLower.UField.noConfusionType": [],
+    "Toy.ReprLower.UField.off": [],
+    "Toy.ReprLower.UField.rec": [],
+    "Toy.ReprLower.UField.recOn": [],
+    "Toy.ReprLower.UField.size": [],
+    "Toy.ReprLower.UField.valid": [],
+    "Toy.ReprLower.UnionTy": [],
+    "Toy.ReprLower.UnionTy.casesOn": [],
+    "Toy.ReprLower.UnionTy.ctorIdx": [],
+    "Toy.ReprLower.UnionTy.fields": [],
+    "Toy.ReprLower.UnionTy.mk": [],
+    "Toy.ReprLower.UnionTy.mk.inj": [],
+    "Toy.ReprLower.UnionTy.mk.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.UnionTy.mk.noConfusion": [],
+    "Toy.ReprLower.UnionTy.mk.sizeOf_spec": [],
+    "Toy.ReprLower.UnionTy.noConfusion": [],
+    "Toy.ReprLower.UnionTy.noConfusionType": [],
+    "Toy.ReprLower.UnionTy.rec": [],
+    "Toy.ReprLower.UnionTy.recOn": [],
+    "Toy.ReprLower.UnionTy.size": [],
+    "Toy.ReprLower.UnionValidity": [],
+    "Toy.ReprLower.Val": [],
+    "Toy.ReprLower.Val.casesOn": [],
+    "Toy.ReprLower.Val.ctorElim": [],
+    "Toy.ReprLower.Val.ctorElimType": [],
+    "Toy.ReprLower.Val.ctorIdx": [],
+    "Toy.ReprLower.Val.int": [],
+    "Toy.ReprLower.Val.int.elim": [],
+    "Toy.ReprLower.Val.int.inj": [],
+    "Toy.ReprLower.Val.int.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.Val.int.noConfusion": [],
+    "Toy.ReprLower.Val.int.sizeOf_spec": [],
+    "Toy.ReprLower.Val.leb": [
+      "propext"
+    ],
+    "Toy.ReprLower.Val.leb.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.Val.leb.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.Val.leb.eq_3": [
+      "propext"
+    ],
+    "Toy.ReprLower.Val.leb.eq_4": [
+      "propext"
+    ],
+    "Toy.ReprLower.Val.leb.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.Val.noConfusion": [],
+    "Toy.ReprLower.Val.noConfusionType": [],
+    "Toy.ReprLower.Val.ptr": [],
+    "Toy.ReprLower.Val.ptr.elim": [],
+    "Toy.ReprLower.Val.ptr.inj": [],
+    "Toy.ReprLower.Val.ptr.injEq": [
+      "propext"
+    ],
+    "Toy.ReprLower.Val.ptr.noConfusion": [],
+    "Toy.ReprLower.Val.ptr.sizeOf_spec": [],
+    "Toy.ReprLower.Val.rec": [],
+    "Toy.ReprLower.Val.recOn": [],
+    "Toy.ReprLower.allBits": [
+      "propext"
+    ],
+    "Toy.ReprLower.allBits.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.allBits_allInit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.allBits_map_bits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.allInit": [
+      "propext"
+    ],
+    "Toy.ReprLower.allInit.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.allInit_datas_of_bytesLeb": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.allInit_datas_of_bytesLeb.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.allInit_map_bits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.allInit_replicate_uninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.allInit_seg_place_one_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.allUninit": [],
+    "Toy.ReprLower.allUninit.eq_1": [],
+    "Toy.ReprLower.allUninit_any_isFrag": [
+      "propext"
+    ],
+    "Toy.ReprLower.attachProvCast": [
+      "propext"
+    ],
+    "Toy.ReprLower.attachProvCast.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.bits_data_leb_of_isInit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_bits_ptrFrag_attach": [
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_getD": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_getD.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_length": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_place_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_place_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_place_one.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_seg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_seg_take_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLe_take_raise_lower_scalar_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb": [
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb.eq_3": [
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb.eq_def": [
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb_iff_getD": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb_map_bits_datas": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb_map_bits_datas_left": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb_refl": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb_replicate_uninit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.bytesLeb_replicate_uninit_left": [
+      "propext"
+    ],
+    "Toy.ReprLower.castAgrees_scalar_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.castRefines_unequal_widths_and_wider_than_value": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.cex_fieldwiseGate_never_fires": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_initialized_lowering_width_zero": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.cex_initialized_lowering_width_zero.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_initialized_lowering_width_zero.match_1_3": [],
+    "Toy.ReprLower.cex_mergeWrite_hx": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_mergeWrite_size_lt": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_noundef_width_zero": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_pair_hlen": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_pair_out_of_range": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_pair_overlap": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_pair_padding_carries_bytes": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_pair_partial_init": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_pair_ptr_split_across_boundary": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_readWider_hin": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_readWider_hj": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_pair_discipline": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_pair_discipline_b": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_pair_offset_mismatch": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_pair_out_of_bounds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_pair_overlap": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_pair_width_mismatch": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_pair_width_mismatch_b": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_scalar_hn_length_indep": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_scalar_hn_length_indep.match_1_1": [],
+    "Toy.ReprLower.cex_regCast_scalar_wider_than_value": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_scalar_width_mismatch": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_scalar_width_zero": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_regCast_scalar_width_zero.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_scalar_frags_under_int": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_scalar_hlen": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_scalar_mixed_provenance_ptr": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_scalar_out_of_range": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_scalar_padding_carries_bytes": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_scalar_partial_init": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_typedReads_without_bytesLe": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_union_covers_value_hlen": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_union_size_lt": [
+      "propext"
+    ],
+    "Toy.ReprLower.cex_unreachableRewrite_gate_false": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.cex_unreachableRewrite_gate_false.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.chunkAt": [
+      "propext"
+    ],
+    "Toy.ReprLower.chunkAt.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.chunkAt.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.chunkAt.eq_def": [
+      "propext"
+    ],
+    "Toy.ReprLower.chunkAt.match_1": [],
+    "Toy.ReprLower.chunkAt_one": [
+      "propext"
+    ],
+    "Toy.ReprLower.chunkAt_two": [
+      "propext"
+    ],
+    "Toy.ReprLower.coherentFor": [
+      "propext"
+    ],
+    "Toy.ReprLower.coherentFor.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.coherentFor.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.coherentFor.match_1": [],
+    "Toy.ReprLower.datas": [],
+    "Toy.ReprLower.datas.eq_1": [],
+    "Toy.ReprLower.datas_map_bits": [
+      "propext"
+    ],
+    "Toy.ReprLower.emptyRange": [],
+    "Toy.ReprLower.emptyUnionValidity": [],
+    "Toy.ReprLower.eq_of_bytesLeb_of_fragsFrom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.ext_getD": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.fieldwiseUninhabited_gate_not_refinement_of_trivialValidity": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragProv": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragProv.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragProv.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragProv.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragsFrom": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragsFrom.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragsFrom.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragsFrom.eq_3": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragsFrom.eq_def": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragsFrom.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragsFrom_allInit": [
+      "propext"
+    ],
+    "Toy.ReprLower.fragsList": [],
+    "Toy.ReprLower.fragsList.eq_1": [],
+    "Toy.ReprLower.fragsList.eq_2": [],
+    "Toy.ReprLower.fragsList.eq_def": [],
+    "Toy.ReprLower.fragsList.match_1": [],
+    "Toy.ReprLower.fragsList_datas": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.fullRange": [],
+    "Toy.ReprLower.gate_refines_of_emptyValidity": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.gatedUnreachable": [],
+    "Toy.ReprLower.gatedUnreachable.eq_1": [],
+    "Toy.ReprLower.getD_eq_uninit_of_le": [
+      "propext"
+    ],
+    "Toy.ReprLower.getD_fragsList_data": [
+      "propext"
+    ],
+    "Toy.ReprLower.getD_map_bits": [
+      "propext"
+    ],
+    "Toy.ReprLower.getD_place": [
+      "propext"
+    ],
+    "Toy.ReprLower.getD_raise_regCast_nonpoison": [
+      "propext"
+    ],
+    "Toy.ReprLower.getD_seg": [
+      "propext"
+    ],
+    "Toy.ReprLower.getD_zero_raiseScalar_ne_frag1": [
+      "propext"
+    ],
+    "Toy.ReprLower.hasUndef": [
+      "propext"
+    ],
+    "Toy.ReprLower.hasUndef.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.hasUndef.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.hasUndef.eq_3": [
+      "propext"
+    ],
+    "Toy.ReprLower.hasUndef.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.initUniformAt": [
+      "propext"
+    ],
+    "Toy.ReprLower.initUniformAt.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.initUniformAt.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.initUniformAt.match_1": [],
+    "Toy.ReprLower.initialized_allUninit_roundTrips_but_noundef_ub": [
+      "propext"
+    ],
+    "Toy.ReprLower.initialized_lowering_not_refines_some_union_value": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.initialized_lowering_refines_plain_in_range_value": [
+      "propext"
+    ],
+    "Toy.ReprLower.instDecidableBytesLe": [
+      "propext"
+    ],
+    "Toy.ReprLower.instDecidableEqAByte": [],
+    "Toy.ReprLower.instDecidableEqAByte.decEq": [],
+    "Toy.ReprLower.instDecidableEqAByte.decEq.match_1": [],
+    "Toy.ReprLower.instDecidableEqLowered": [],
+    "Toy.ReprLower.instDecidableEqLowered.decEq": [],
+    "Toy.ReprLower.instDecidableEqLowered.decEq.match_1": [],
+    "Toy.ReprLower.instDecidableEqPrim": [],
+    "Toy.ReprLower.instDecidableEqPrim.decEq": [],
+    "Toy.ReprLower.instDecidableEqPrim.decEq.match_1": [],
+    "Toy.ReprLower.instDecidableEqRVal": [],
+    "Toy.ReprLower.instDecidableEqRVal.decEq": [],
+    "Toy.ReprLower.instDecidableEqRVal.decEq.match_1": [],
+    "Toy.ReprLower.instDecidableEqVal": [],
+    "Toy.ReprLower.instDecidableEqVal.decEq": [],
+    "Toy.ReprLower.instDecidableEqVal.decEq.match_1": [],
+    "Toy.ReprLower.instDecidableOutLe": [
+      "propext"
+    ],
+    "Toy.ReprLower.instReprAByte": [],
+    "Toy.ReprLower.instReprAByte.repr": [],
+    "Toy.ReprLower.instReprAByte.repr.match_1": [],
+    "Toy.ReprLower.instReprLowered": [
+      "propext"
+    ],
+    "Toy.ReprLower.instReprLowered.repr": [
+      "propext"
+    ],
+    "Toy.ReprLower.instReprLowered.repr.match_1": [],
+    "Toy.ReprLower.instReprPrim": [],
+    "Toy.ReprLower.instReprPrim.repr": [],
+    "Toy.ReprLower.instReprPrim.repr.match_1": [],
+    "Toy.ReprLower.instReprRVal": [
+      "propext"
+    ],
+    "Toy.ReprLower.instReprRVal.repr": [
+      "propext"
+    ],
+    "Toy.ReprLower.instReprRVal.repr.match_1": [],
+    "Toy.ReprLower.instReprVal": [
+      "propext"
+    ],
+    "Toy.ReprLower.instReprVal.repr": [
+      "propext"
+    ],
+    "Toy.ReprLower.instReprVal.repr.match_1": [],
+    "Toy.ReprLower.laneSelect": [],
+    "Toy.ReprLower.laneSelect.eq_1": [],
+    "Toy.ReprLower.laneSelect_writeMask_shiftIn_eq_writeBytes": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.len2Range": [],
+    "Toy.ReprLower.len2Range.eq_1": [],
+    "Toy.ReprLower.length_fragsList": [
+      "propext"
+    ],
+    "Toy.ReprLower.length_ge_regCastScalar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.length_le_raiseScalar_lowerScalar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.length_le_regCastScalar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.length_place": [
+      "propext"
+    ],
+    "Toy.ReprLower.length_raiseScalar_lowerScalar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.length_raiseScalar_lowerScalar_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.length_raiseScalar_ptrLower": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.length_raiseScalar_regCastScalar": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.length_seg": [
+      "propext"
+    ],
+    "Toy.ReprLower.lower": [
+      "propext"
+    ],
+    "Toy.ReprLower.lower.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.lower.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.lower.eq_3": [
+      "propext"
+    ],
+    "Toy.ReprLower.lower.match_1": [],
+    "Toy.ReprLower.lowerScalar": [
+      "propext"
+    ],
+    "Toy.ReprLower.lowerScalar.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.lowerScalar.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.lowerScalar.eq_3": [
+      "propext"
+    ],
+    "Toy.ReprLower.lowerScalar.match_1": [],
+    "Toy.ReprLower.lowerScalar_initialized_ne_raw": [
+      "propext"
+    ],
+    "Toy.ReprLower.map_bits_datas_of_allBits": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.memory_roundTrip_refines": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.mergeWrite": [
+      "propext"
+    ],
+    "Toy.ReprLower.mergeWrite.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.mergeWrite.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.mergeWrite.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.moveThenRet": [],
+    "Toy.ReprLower.moveThenRet.eq_1": [],
+    "Toy.ReprLower.neverUnion": [],
+    "Toy.ReprLower.neverUnion.eq_1": [],
+    "Toy.ReprLower.nicheInheritingMove": [],
+    "Toy.ReprLower.nicheInheriting_union_move_ub_after_valid_field_write": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonZeroRange": [],
+    "Toy.ReprLower.nonZeroU8Field": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonZeroU8Field.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_fieldwiseGate": [],
+    "Toy.ReprLower.nonvacuous_initialized_lowering_union_value": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_memory_roundTrip": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_mergeWrite": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_noundef_initialized": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_noundef_union": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_pair_roundTrip": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_readWider": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_regCast_pair": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_regCast_pair_anyLen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_regCast_scalar": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_scalar_roundTrip": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_typedReads_mono": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_unionMove_readField": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_union_covers_value": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_union_roundTrip": [
+      "propext"
+    ],
+    "Toy.ReprLower.nonvacuous_unreachableRewrite_iff": [],
+    "Toy.ReprLower.nonvacuous_writeBytes_frame": [
+      "propext"
+    ],
+    "Toy.ReprLower.noundef_on_union_scalar_introduces_ub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.noundef_passes_initialized_nonpoison": [
+      "propext"
+    ],
+    "Toy.ReprLower.nzOrU8": [
+      "propext"
+    ],
+    "Toy.ReprLower.pair_bytesLe_roundTrip_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.pair_conditions_of_roundTrip_refines": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.pair_roundTrip_refines_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.pair_roundTrip_refines_of_conditions": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.passArg": [
+      "propext"
+    ],
+    "Toy.ReprLower.passArg.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.passArg_noundef_union_eq_none_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.place": [
+      "propext"
+    ],
+    "Toy.ReprLower.place.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.place_one_inj": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.provCoherentAt": [
+      "propext"
+    ],
+    "Toy.ReprLower.provCoherentAt.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.provCoherentAt.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.provenanceAttachingCast_differs_from_transmute": [
+      "propext"
+    ],
+    "Toy.ReprLower.provenanceStripping_register_not_refines": [
+      "propext"
+    ],
+    "Toy.ReprLower.ptrLower": [
+      "propext"
+    ],
+    "Toy.ReprLower.ptrLower.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.ptrLower_map_bits": [
+      "propext"
+    ],
+    "Toy.ReprLower.ptrProv": [
+      "propext"
+    ],
+    "Toy.ReprLower.ptrProv.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.ptrProv.match_1": [],
+    "Toy.ReprLower.ptrProv_cases": [
+      "propext"
+    ],
+    "Toy.ReprLower.ptrProv_map_bits": [
+      "propext"
+    ],
+    "Toy.ReprLower.ptrProv_of_bytesLeb": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.raise": [
+      "propext"
+    ],
+    "Toy.ReprLower.raise.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.raise.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.raise.eq_3": [
+      "propext"
+    ],
+    "Toy.ReprLower.raise.eq_4": [
+      "propext"
+    ],
+    "Toy.ReprLower.raise.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.raiseScalar": [],
+    "Toy.ReprLower.raiseScalar.eq_1": [],
+    "Toy.ReprLower.raiseScalar.eq_2": [],
+    "Toy.ReprLower.raiseScalar.eq_3": [],
+    "Toy.ReprLower.raiseScalar.eq_4": [],
+    "Toy.ReprLower.raiseScalar.eq_5": [],
+    "Toy.ReprLower.raiseScalar.match_1": [],
+    "Toy.ReprLower.raiseScalar_ptrLower_cases": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.raise_lower_bytesLe_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.raise_lower_raise_bytesLe_raise_regCast": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.raise_lower_replicate_uninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.raise_regCast_eq_raise_lower_raise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.rangeInclAt": [
+      "propext"
+    ],
+    "Toy.ReprLower.rangeInclAt.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.rangeInclAt.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.readField": [],
+    "Toy.ReprLower.readInt": [
+      "propext"
+    ],
+    "Toy.ReprLower.readInt.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.readInt_readPtr_width_zero": [
+      "propext"
+    ],
+    "Toy.ReprLower.readPtr": [
+      "propext"
+    ],
+    "Toy.ReprLower.readPtr.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.readWider_after_partial_write": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.readWider_after_partial_write.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCast": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCast.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCast.eq_2": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCast.eq_3": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCast.eq_4": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCast.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCastScalar": [],
+    "Toy.ReprLower.regCastScalar.eq_1": [],
+    "Toy.ReprLower.regCastScalar.eq_2": [],
+    "Toy.ReprLower.regCastScalar.eq_3": [],
+    "Toy.ReprLower.regCastScalar.eq_4": [],
+    "Toy.ReprLower.regCastScalar.eq_5": [],
+    "Toy.ReprLower.regCastScalar.eq_6": [],
+    "Toy.ReprLower.regCastScalar.eq_7": [],
+    "Toy.ReprLower.regCastScalar.match_1": [],
+    "Toy.ReprLower.regCastScalar.match_3": [],
+    "Toy.ReprLower.regCastScalarStrip": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCastScalarStrip.match_1": [],
+    "Toy.ReprLower.regCastScalarStrip.match_3": [],
+    "Toy.ReprLower.regCastStrip_width1_union_to_initialized_agrees": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCastStrip_width1_union_to_initialized_agrees.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_int_to_ptr_agrees": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_pair_agrees_despite_offset_mismatch_of_empty_range": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_pair_agrees_despite_offset_mismatch_of_empty_range.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_pair_agrees_of_offsetEq_disciplineCompat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_pair_agrees_of_offsetEq_disciplineCompatAnyLen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_pair_to_union_scalar_across_padding_disagrees": [
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_pair_to_union_scalar_agrees_no_padding_instance": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_pair_to_union_scalar_agrees_of_no_padding": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_scalar_agrees_iff_disciplineCompat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_scalar_agrees_of_disciplineCompat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_scalar_refines_transmute": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.regCast_union_to_initialized_refines_not_agrees": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.scalar_bytesLe_roundTrip_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.scalar_conditions_of_roundTrip_refines": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.scalar_roundTrip_refines_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.seg": [],
+    "Toy.ReprLower.seg.eq_1": [],
+    "Toy.ReprLower.seg_place_one": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.seg_place_one_eq_take_of_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.seg_place_two_a": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.seg_place_two_b": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.seg_place_two_concat": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.shiftIn": [
+      "propext"
+    ],
+    "Toy.ReprLower.shiftIn.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.stripProv": [
+      "propext"
+    ],
+    "Toy.ReprLower.stripProv.match_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.take_raise_regCast_eq_of_anyLen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.trivialUnionValidity": [],
+    "Toy.ReprLower.trivialUnionValidity.eq_1": [],
+    "Toy.ReprLower.typedReads_agree_without_bytesLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.typedReads_mono_of_bytesLe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.typedReads_mono_of_bytesLe.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.u8Field": [
+      "propext"
+    ],
+    "Toy.ReprLower.unionMove": [],
+    "Toy.ReprLower.unionMove.eq_1": [],
+    "Toy.ReprLower.unionMove_trivial_defined_iff_size_and_readField_ub_iff_invalid": [
+      "propext"
+    ],
+    "Toy.ReprLower.unionRegister_mergeWrite_eq_memoryWrite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.union_scalar_roundTrip_refines_iff_outsideExtentsUninit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.union_scalar_roundTrip_refines_of_covers_value": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.union_wholeValue_inhabited_of_trivialValidity": [
+      "propext"
+    ],
+    "Toy.ReprLower.unreachableRewrite_refines_iff_no_wholeValue_valid": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.wholeRegisterWrite_no_constant_fill_refines_partial_write": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.wholeRegisterWrite_uninit_and_zero_fills_instance": [
+      "propext"
+    ],
+    "Toy.ReprLower.wholeWrite": [
+      "propext"
+    ],
+    "Toy.ReprLower.wholeWrite.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.wholeWrite_bits0_incomparable_with_partial": [
+      "propext"
+    ],
+    "Toy.ReprLower.wholeWrite_eq_writeBytes_of_full_width": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.wholeWrite_full_width_instance": [
+      "propext"
+    ],
+    "Toy.ReprLower.wholeWrite_init_fill_never_strictly_less_defined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.wholeWrite_init_fill_never_strictly_less_defined.match_1_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.wholeWrite_uninit_eq_writeBytes_of_untouched_uninit": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.wholeWrite_uninit_fill_strictly_less_defined_instance": [
+      "propext"
+    ],
+    "Toy.ReprLower.wholeWrite_untouched_uninit_instance": [
+      "propext"
+    ],
+    "Toy.ReprLower.writeBytes": [
+      "propext"
+    ],
+    "Toy.ReprLower.writeBytes.eq_1": [
+      "propext"
+    ],
+    "Toy.ReprLower.writeBytes_frame": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.ReprLower.writeMask": [],
+    "Toy.ReprLower.writeMask.eq_1": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
