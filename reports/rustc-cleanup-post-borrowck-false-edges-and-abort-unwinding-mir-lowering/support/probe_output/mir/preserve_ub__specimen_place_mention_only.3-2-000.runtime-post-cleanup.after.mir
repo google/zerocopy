@@ -1,0 +1,14 @@
+// MIR for `specimen_place_mention_only` after runtime-post-cleanup
+
+fn specimen_place_mention_only(_1: *const bool) -> () {
+    debug p => _1;
+    let mut _0: ();
+    scope 1 {
+    }
+
+    bb0: {
+        PlaceMention((*_1));
+        _0 = const ();
+        return;
+    }
+}

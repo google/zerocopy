@@ -1,0 +1,148 @@
+// MIR for `specimen_ascribe_and_ptr_coercions` before CleanupPostBorrowck
+
+| User Type Annotations
+| 0: user_ty: Canonical { value: Ty(&u32), max_universe: U0, var_kinds: [Region(U0)] }, span: support/specimens/mir_pipeline_specimens.rs:67:12: 67:16, inferred_ty: &u32
+| 1: user_ty: Canonical { value: Ty(&u32), max_universe: U0, var_kinds: [Region(U0)] }, span: support/specimens/mir_pipeline_specimens.rs:67:12: 67:16, inferred_ty: &u32
+| 2: user_ty: Canonical { value: Ty(u32), max_universe: U0, var_kinds: [] }, span: support/specimens/mir_pipeline_specimens.rs:68:12: 68:15, inferred_ty: u32
+| 3: user_ty: Canonical { value: Ty(u32), max_universe: U0, var_kinds: [] }, span: support/specimens/mir_pipeline_specimens.rs:68:12: 68:15, inferred_ty: u32
+| 4: user_ty: Canonical { value: Ty(&[u32; 3]), max_universe: U0, var_kinds: [Region(U0)] }, span: support/specimens/mir_pipeline_specimens.rs:69:18: 69:27, inferred_ty: &[u32; 3]
+| 5: user_ty: Canonical { value: Ty(&[u32; 3]), max_universe: U0, var_kinds: [Region(U0)] }, span: support/specimens/mir_pipeline_specimens.rs:69:18: 69:27, inferred_ty: &[u32; 3]
+| 6: user_ty: Canonical { value: Ty(*const u32), max_universe: U0, var_kinds: [] }, span: support/specimens/mir_pipeline_specimens.rs:70:21: 70:31, inferred_ty: *const u32
+| 7: user_ty: Canonical { value: Ty(*const u32), max_universe: U0, var_kinds: [] }, span: support/specimens/mir_pipeline_specimens.rs:70:21: 70:31, inferred_ty: *const u32
+| 8: user_ty: Canonical { value: Ty(&[u32]), max_universe: U0, var_kinds: [Region(U0)] }, span: support/specimens/mir_pipeline_specimens.rs:71:20: 71:26, inferred_ty: &[u32]
+| 9: user_ty: Canonical { value: Ty(&[u32]), max_universe: U0, var_kinds: [Region(U0)] }, span: support/specimens/mir_pipeline_specimens.rs:71:20: 71:26, inferred_ty: &[u32]
+| 10: user_ty: Canonical { value: Ty(*const u32), max_universe: U0, var_kinds: [] }, span: support/specimens/mir_pipeline_specimens.rs:72:19: 72:29, inferred_ty: *const u32
+| 11: user_ty: Canonical { value: Ty(*const u32), max_universe: U0, var_kinds: [] }, span: support/specimens/mir_pipeline_specimens.rs:72:19: 72:29, inferred_ty: *const u32
+| 12: user_ty: Canonical { value: Ty(*mut [u32; 3]), max_universe: U0, var_kinds: [] }, span: support/specimens/mir_pipeline_specimens.rs:73:18: 73:31, inferred_ty: *mut [u32; 3]
+| 13: user_ty: Canonical { value: Ty(*mut [u32; 3]), max_universe: U0, var_kinds: [] }, span: support/specimens/mir_pipeline_specimens.rs:73:18: 73:31, inferred_ty: *mut [u32; 3]
+| 14: user_ty: Canonical { value: Ty(*const [u32; 3]), max_universe: U0, var_kinds: [] }, span: support/specimens/mir_pipeline_specimens.rs:74:20: 74:35, inferred_ty: *const [u32; 3]
+| 15: user_ty: Canonical { value: Ty(*const [u32; 3]), max_universe: U0, var_kinds: [] }, span: support/specimens/mir_pipeline_specimens.rs:74:20: 74:35, inferred_ty: *const [u32; 3]
+|
+fn specimen_ascribe_and_ptr_coercions(_1: &mut [u32; 3], _2: &u32) -> *const u32 {
+    debug buf => _1;
+    debug x => _2;
+    let mut _0: *const u32;
+    let _3: &u32 as UserTypeProjection { base: UserType(0), projs: [] };
+    let mut _7: *const [u32; 3];
+    let mut _9: &[u32; 3];
+    let mut _11: &[u32];
+    let mut _14: *mut [u32; 3];
+    let mut _15: (u32, *const u32, *const [u32; 3], *const u32);
+    let mut _16: u32;
+    let mut _17: *const u32;
+    let mut _18: *const [u32; 3];
+    let mut _19: *const u32;
+    scope 1 {
+        debug a => _3;
+        let _4: u32 as UserTypeProjection { base: UserType(2), projs: [] };
+        scope 2 {
+            debug b => _4;
+            let _5: &[u32; 3] as UserTypeProjection { base: UserType(4), projs: [] };
+            scope 3 {
+                debug arr_ref => _5;
+                let _6: *const u32 as UserTypeProjection { base: UserType(6), projs: [] };
+                scope 4 {
+                    debug arr_to_ptr => _6;
+                    let _8: &[u32] as UserTypeProjection { base: UserType(8), projs: [] };
+                    scope 5 {
+                        debug slice_ref => _8;
+                        let _10: *const u32 as UserTypeProjection { base: UserType(10), projs: [] };
+                        scope 6 {
+                            debug elem_ptr => _10;
+                            let _12: *mut [u32; 3] as UserTypeProjection { base: UserType(12), projs: [] };
+                            scope 7 {
+                                debug raw_mut => _12;
+                                let _13: *const [u32; 3] as UserTypeProjection { base: UserType(14), projs: [] };
+                                scope 8 {
+                                    debug raw_const => _13;
+                                    scope 9 {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_3);
+        _3 = &(*_2);
+        FakeRead(ForLet(None), _3);
+        AscribeUserType(_3, o, UserTypeProjection { base: UserType(1), projs: [] });
+        StorageLive(_4);
+        _4 = copy (*_3);
+        FakeRead(ForLet(None), _4);
+        AscribeUserType(_4, o, UserTypeProjection { base: UserType(3), projs: [] });
+        StorageLive(_5);
+        _5 = &(*_1);
+        FakeRead(ForLet(None), _5);
+        AscribeUserType(_5, o, UserTypeProjection { base: UserType(5), projs: [] });
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = &raw const (*_5);
+        _6 = move _7 as *const u32 (PointerCoercion(ArrayToPointer, AsCast));
+        StorageDead(_7);
+        FakeRead(ForLet(None), _6);
+        AscribeUserType(_6, o, UserTypeProjection { base: UserType(7), projs: [] });
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = &(*_5);
+        _8 = move _9 as &[u32] (PointerCoercion(Unsize, Implicit));
+        StorageDead(_9);
+        FakeRead(ForLet(None), _8);
+        AscribeUserType(_8, o, UserTypeProjection { base: UserType(9), projs: [] });
+        StorageLive(_10);
+        StorageLive(_11);
+        _11 = &(*_8);
+        _10 = core::slice::<impl [u32]>::as_ptr(move _11) -> [return: bb1, unwind: bb2];
+    }
+
+    bb1: {
+        StorageDead(_11);
+        FakeRead(ForLet(None), _10);
+        AscribeUserType(_10, o, UserTypeProjection { base: UserType(11), projs: [] });
+        StorageLive(_12);
+        _12 = &raw mut (*_1);
+        FakeRead(ForLet(None), _12);
+        AscribeUserType(_12, o, UserTypeProjection { base: UserType(13), projs: [] });
+        StorageLive(_13);
+        StorageLive(_14);
+        _14 = copy _12;
+        _13 = move _14 as *const [u32; 3] (PointerCoercion(MutToConstPointer, Implicit));
+        StorageDead(_14);
+        FakeRead(ForLet(None), _13);
+        AscribeUserType(_13, o, UserTypeProjection { base: UserType(15), projs: [] });
+        StorageLive(_15);
+        StorageLive(_16);
+        _16 = copy _4;
+        StorageLive(_17);
+        _17 = copy _6;
+        StorageLive(_18);
+        _18 = copy _13;
+        StorageLive(_19);
+        _19 = copy _10;
+        _15 = (move _16, move _17, move _18, move _19);
+        StorageDead(_19);
+        StorageDead(_18);
+        StorageDead(_17);
+        StorageDead(_16);
+        PlaceMention(_15);
+        StorageDead(_15);
+        _0 = copy _6;
+        StorageDead(_13);
+        StorageDead(_12);
+        StorageDead(_10);
+        StorageDead(_8);
+        StorageDead(_6);
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageDead(_3);
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+}

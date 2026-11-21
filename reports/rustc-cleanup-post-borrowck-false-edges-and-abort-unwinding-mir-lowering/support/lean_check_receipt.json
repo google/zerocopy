@@ -1,0 +1,125 @@
+{
+ "audit": {
+  "exit_code": 0,
+  "peak_rss_kb": 1584692,
+  "print_axioms": {
+   "MirCleanupLowering.abortRewriteOnly_exact_analysis_equiv": [
+    "propext"
+   ],
+   "MirCleanupLowering.abortRewriteOnly_nonpanicking_equiv": [
+    "propext"
+   ],
+   "MirCleanupLowering.abortUnwindingCalls_exact_analysis_equiv": [
+    "propext"
+   ],
+   "MirCleanupLowering.abortUnwindingCalls_nonpanicking_equiv": [
+    "propext"
+   ],
+   "MirCleanupLowering.assignCopy_rejects_invalid_pointee": [
+    "propext"
+   ],
+   "MirCleanupLowering.ce1a_uncertified_fakeread_uninit_scrutinee": [
+    "propext"
+   ],
+   "MirCleanupLowering.ce1b_uncertified_fakeread_invalid_discriminant": [
+    "propext"
+   ],
+   "MirCleanupLowering.ce1c_guard_mutation_bypasses_erased_fake_borrow": [
+    "propext"
+   ],
+   "MirCleanupLowering.ce2_mutant_cleanup_to_continue_causes_abi_ub": [
+    "propext"
+   ],
+   "MirCleanupLowering.ce3_nounwind_violation_hits_unreachable_ub": [
+    "propext"
+   ],
+   "MirCleanupLowering.cleanupPostBorrowck_certified_equiv": [
+    "propext"
+   ],
+   "MirCleanupLowering.cleanupPostBorrowck_certified_iff": [
+    "propext"
+   ],
+   "MirCleanupLowering.cleanupPostBorrowck_syntax_valid": [
+    "propext"
+   ],
+   "MirCleanupLowering.cleanupPostBorrowck_unguarded_exact_equiv": [
+    "propext"
+   ],
+   "MirCleanupLowering.compactReachableBody_bisim": [
+    "propext"
+   ],
+   "MirCleanupLowering.execStmtList_removePlaceMention_refines": [
+    "propext"
+   ],
+   "MirCleanupLowering.full_analysis_to_runtime_lowering_sound": [
+    "propext"
+   ],
+   "MirCleanupLowering.placeMention_checks_pointer_local": [
+    "propext"
+   ],
+   "MirCleanupLowering.placeMention_ignores_invalid_pointee": [
+    "propext"
+   ],
+   "MirCleanupLowering.unreachable_blocks_dropped_by_compaction": [
+    "propext"
+   ]
+  },
+  "summary": {
+   "axioms_used": [
+    "propext"
+   ],
+   "constants": 1222,
+   "constructors": 81,
+   "definitions": 594,
+   "inductive_types": 21,
+   "recursors": 21,
+   "theorems": 505,
+   "theorems_without_axioms": 371,
+   "violations": 0
+  },
+  "violation_lines": [],
+  "wall_seconds": 5.347
+ },
+ "audit_module": "support/CleanupPostBorrowckAudit.lean",
+ "compile": {
+  "errors": 0,
+  "exit_code": 0,
+  "olean_bytes": 8867696,
+  "peak_rss_kb": 767304,
+  "wall_seconds": 21.601,
+  "warnings": 0
+ },
+ "compile_flags": [
+  "-DElab.async=false",
+  "-Ddebug.skipKernelTC=false",
+  "-DwarningAsError=true"
+ ],
+ "forbidden_token_counts": {
+  "Classical": 0,
+  "_unsafe_rec": 0,
+  "admit": 0,
+  "axiom": 0,
+  "bv_decide": 0,
+  "extern": 0,
+  "implemented_by": 0,
+  "native_decide": 0,
+  "omega": 0,
+  "opaque": 0,
+  "partial": 0,
+  "sorry": 0,
+  "unsafe": 0
+ },
+ "generated_on": "2026-11-21",
+ "imports": [],
+ "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+ "module": "support/CleanupPostBorrowckAndAbortCalls.lean",
+ "passed": true,
+ "schema": "lean-check-receipt/1",
+ "source_bytes": 202947,
+ "source_def_keywords": 82,
+ "source_inductive_keywords": 21,
+ "source_lines": 4589,
+ "source_public_theorem_keywords": 20,
+ "source_sha256": "06fffdfdcd655c461548e725e4b534ada81f7863b7196f9bd612d76f18a021eb",
+ "source_theorem_keywords": 122
+}

@@ -1,0 +1,38 @@
+// MIR for `caller_extern_c_calls_foreign_c_nounwind_with_drop` after AbortUnwindingCalls
+
+fn caller_extern_c_calls_foreign_c_nounwind_with_drop(_1: &mut u32, _2: u32) -> u32 {
+    debug log => _1;
+    debug x => _2;
+    let mut _0: u32;
+    let _3: DropGuard<'_>;
+    let mut _4: &mut u32;
+    let mut _5: u32;
+    scope 1 {
+        debug _g => _3;
+    }
+
+    bb0: {
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = &mut (*_1);
+        _3 = DropGuard::<'_>(move _4, const 16_u32);
+        StorageDead(_4);
+        StorageLive(_5);
+        _5 = copy _2;
+        _0 = opaque_c_nounwind(move _5) -> [return: bb1, unwind unreachable];
+    }
+
+    bb1: {
+        StorageDead(_5);
+        drop(_3) -> [return: bb2, unwind: bb3];
+    }
+
+    bb2: {
+        StorageDead(_3);
+        return;
+    }
+
+    bb3 (cleanup): {
+        terminate(abi);
+    }
+}

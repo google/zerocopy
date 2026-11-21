@@ -1,0 +1,53 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (rustc 1.98.0-nightly 2026-05-31: CleanupPostBorrowck, RemovePlaceMention, AbortUnwindingCalls, MIR validator, Miri interpreter, fn_can_unwind)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+      }
+    },
+    {
+      "name": "rust-lang/rust (upstream HEAD snapshot audited for PassPolicy, CoverageKind::is_removed_after_analysis, and fn_sig_abi updates)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+      }
+    },
+    {
+      "name": "rust-lang/reference (panic strategy and FFI unwinding chapters)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "joshlf/anneal (Trusted.MirAst and Trusted.MirSemantics for Runtime(PostCleanup) MIR)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (v4.34.1 kernel checker and elaborator)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

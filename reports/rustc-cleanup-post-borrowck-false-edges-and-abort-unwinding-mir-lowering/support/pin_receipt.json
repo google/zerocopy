@@ -1,0 +1,254 @@
+{
+ "commits": [
+  {
+   "api_sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "committer_date": "2026-05-31T20:13:59Z",
+   "is_40_hex": true,
+   "pinned_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "repository": "rust-lang/rust",
+   "subject_line": "Auto merge of #157219 - jhpratt:rollup-70ooTMg, r=jhpratt",
+   "verified": true
+  },
+  {
+   "api_sha": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+   "committer_date": "2026-11-20T16:58:50Z",
+   "is_40_hex": true,
+   "pinned_revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+   "repository": "rust-lang/rust",
+   "subject_line": "Auto merge of #166265 - JonathanBrouwer:rollup-T0yDJSJ, r=JonathanBrouwer",
+   "verified": true
+  },
+  {
+   "api_sha": "ad35aca481751a06afeb23820a672b0f3b11a476",
+   "committer_date": "2026-05-14T17:00:42Z",
+   "is_40_hex": true,
+   "pinned_revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+   "repository": "rust-lang/reference",
+   "subject_line": "Merge pull request #2271 from arpitjain099/chore/ci-permissions",
+   "verified": true
+  },
+  {
+   "api_sha": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "committer_date": "2026-11-19T21:39:21Z",
+   "is_40_hex": true,
+   "pinned_revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "repository": "joshlf/anneal",
+   "subject_line": "[theory] Bridge PureLift onto Trusted MIR semantics (#266)",
+   "verified": true
+  },
+  {
+   "api_sha": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "committer_date": "2026-09-24T17:27:27Z",
+   "is_40_hex": true,
+   "pinned_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "repository": "leanprover/lean4",
+   "subject_line": "chore: prepare release",
+   "verified": true
+  }
+ ],
+ "files": [
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/cleanup_post_borrowck.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 404,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/remove_false_edges.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 404
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/abort_unwinding_calls.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/remove_place_mention.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/remove_noop_landing_pads.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/simplify.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/deref_separator.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/validate.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/lib.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/pass_manager.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_middle/src/mir/mod.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_middle/src/mir/syntax.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_middle/src/ty/layout.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_const_eval/src/interpret/step.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/cleanup_post_borrowck.rs",
+   "repository": "rust-lang/rust",
+   "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+   "status": 200
+  },
+  {
+   "expected_status": 404,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/remove_false_edges.rs",
+   "repository": "rust-lang/rust",
+   "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+   "status": 404
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/abort_unwinding_calls.rs",
+   "repository": "rust-lang/rust",
+   "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/remove_place_mention.rs",
+   "repository": "rust-lang/rust",
+   "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/remove_noop_landing_pads.rs",
+   "repository": "rust-lang/rust",
+   "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/validate.rs",
+   "repository": "rust-lang/rust",
+   "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "compiler/rustc_middle/src/mir/coverage.rs",
+   "repository": "rust-lang/rust",
+   "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "src/panic.md",
+   "repository": "rust-lang/reference",
+   "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "src/items/external-blocks.md",
+   "repository": "rust-lang/reference",
+   "revision": "ad35aca481751a06afeb23820a672b0f3b11a476",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "trusted/lean/Trusted/MirAst.lean",
+   "repository": "joshlf/anneal",
+   "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_subjects": true,
+   "path": "trusted/lean/Trusted/MirSemantics.lean",
+   "repository": "joshlf/anneal",
+   "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "status": 200
+  }
+ ],
+ "generated_on": "2026-11-21",
+ "passed": true,
+ "schema": "pin-receipt/1"
+}

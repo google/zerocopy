@@ -1,0 +1,130 @@
+// MIR for `specimen_ascribe_and_ptr_coercions` after CleanupPostBorrowck
+
+fn specimen_ascribe_and_ptr_coercions(_1: &mut [u32; 3], _2: &u32) -> *const u32 {
+    debug buf => _1;
+    debug x => _2;
+    let mut _0: *const u32;
+    let _3: &u32;
+    let mut _7: *const [u32; 3];
+    let mut _9: &[u32; 3];
+    let mut _11: &[u32];
+    let mut _14: *mut [u32; 3];
+    let mut _15: (u32, *const u32, *const [u32; 3], *const u32);
+    let mut _16: u32;
+    let mut _17: *const u32;
+    let mut _18: *const [u32; 3];
+    let mut _19: *const u32;
+    scope 1 {
+        debug a => _3;
+        let _4: u32;
+        scope 2 {
+            debug b => _4;
+            let _5: &[u32; 3];
+            scope 3 {
+                debug arr_ref => _5;
+                let _6: *const u32;
+                scope 4 {
+                    debug arr_to_ptr => _6;
+                    let _8: &[u32];
+                    scope 5 {
+                        debug slice_ref => _8;
+                        let _10: *const u32;
+                        scope 6 {
+                            debug elem_ptr => _10;
+                            let _12: *mut [u32; 3];
+                            scope 7 {
+                                debug raw_mut => _12;
+                                let _13: *const [u32; 3];
+                                scope 8 {
+                                    debug raw_const => _13;
+                                    scope 9 {
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_3);
+        _3 = &(*_2);
+        nop;
+        nop;
+        StorageLive(_4);
+        _4 = copy (*_3);
+        nop;
+        nop;
+        StorageLive(_5);
+        _5 = &(*_1);
+        nop;
+        nop;
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = &raw const (*_5);
+        _6 = move _7 as *const u32 (PtrToPtr);
+        StorageDead(_7);
+        nop;
+        nop;
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = &(*_5);
+        _8 = move _9 as &[u32] (PointerCoercion(Unsize, Implicit));
+        StorageDead(_9);
+        nop;
+        nop;
+        StorageLive(_10);
+        StorageLive(_11);
+        _11 = &(*_8);
+        _10 = core::slice::<impl [u32]>::as_ptr(move _11) -> [return: bb1, unwind: bb2];
+    }
+
+    bb1: {
+        StorageDead(_11);
+        nop;
+        nop;
+        StorageLive(_12);
+        _12 = &raw mut (*_1);
+        nop;
+        nop;
+        StorageLive(_13);
+        StorageLive(_14);
+        _14 = copy _12;
+        _13 = move _14 as *const [u32; 3] (PtrToPtr);
+        StorageDead(_14);
+        nop;
+        nop;
+        StorageLive(_15);
+        StorageLive(_16);
+        _16 = copy _4;
+        StorageLive(_17);
+        _17 = copy _6;
+        StorageLive(_18);
+        _18 = copy _13;
+        StorageLive(_19);
+        _19 = copy _10;
+        _15 = (move _16, move _17, move _18, move _19);
+        StorageDead(_19);
+        StorageDead(_18);
+        StorageDead(_17);
+        StorageDead(_16);
+        PlaceMention(_15);
+        StorageDead(_15);
+        _0 = copy _6;
+        StorageDead(_13);
+        StorageDead(_12);
+        StorageDead(_10);
+        StorageDead(_8);
+        StorageDead(_6);
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageDead(_3);
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+}
