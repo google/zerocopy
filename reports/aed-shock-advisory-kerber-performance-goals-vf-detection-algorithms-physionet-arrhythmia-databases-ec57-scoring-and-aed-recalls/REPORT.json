@@ -1,0 +1,175 @@
+{
+  "topics": [
+    "domains/aed-shock-advisory-algorithms",
+    "verification/arrhythmia-database-benchmarking",
+    "domains/medical-device-recall-evidence",
+    "tooling/ecg-annotation-comparison-scoring"
+  ],
+  "subjects": [
+    {
+      "name": "WFDB Software Package (C library and bxb/epicmp/sumstats EC38/EC57 comparators)",
+      "identity": {
+        "repository": "bemoody/wfdb",
+        "revision": "de6b1d3981d69060e6a4d1b4e86375fb0d3ed2d1",
+        "version": "10.7.0"
+      }
+    },
+    {
+      "name": "wfdb-python (processing/evaluate.py annotation comparator, processing/qrs.py)",
+      "identity": {
+        "repository": "MIT-LCP/wfdb-python",
+        "revision": "cc9f94fcc8bc938c6fb6cb40fb61c85b33e9404e"
+      }
+    },
+    {
+      "name": "py-ecg-detectors (open QRS detector implementations)",
+      "identity": {
+        "repository": "berndporr/py-ecg-detectors",
+        "revision": "f39354cb686710f8e243e214b94fda0914fff656"
+      }
+    },
+    {
+      "name": "ohca-vs-public-dbs (published code for Figuera et al. 2016 VF-detection features, bootstrap, and feature selection)",
+      "identity": {
+        "repository": "FelipeURJC/ohca-vs-public-dbs",
+        "revision": "4d799e936fea095db4aba3d08bfdc0aabffc29be"
+      }
+    },
+    {
+      "name": "Kerber et al. 1997 AHA statement on AED arrhythmia analysis algorithm performance",
+      "identity": {
+        "doi": "10.1161/01.CIR.95.6.1677"
+      }
+    },
+    {
+      "name": "FDA PMA P160033 Summary of Safety and Effectiveness Data (reproduces Kerber performance-goal table)",
+      "identity": {
+        "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf16/P160033b.pdf",
+        "pma": "P160033"
+      }
+    },
+    {
+      "name": "AHA Automated External Defibrillator Symposium summary and recommendations (2025)",
+      "identity": {
+        "doi": "10.1161/JAHA.124.039291"
+      }
+    },
+    {
+      "name": "21 CFR 870.5310 Automated external defibrillator system",
+      "identity": {
+        "standard": "21 CFR 870.5310",
+        "version": "as amended at 80 FR 5682, Feb. 3, 2015"
+      }
+    },
+    {
+      "name": "FDA final order: Effective Date of Requirement for Premarket Approval for AED Systems",
+      "identity": {
+        "standard": "80 FR 4783 (FR Doc 2015-01619); republished 80 FR 5674 (FR Doc 2015-02049)",
+        "docket": "FDA-2013-N-0234"
+      }
+    },
+    {
+      "name": "IEC 60601-2-4 particular requirements for cardiac defibrillators",
+      "identity": {
+        "standard": "IEC 60601-2-4:2010+AMD1:2018 CSV",
+        "version": "edition 3.1, 2018-02-28",
+        "isbn": "9782832254134"
+      }
+    },
+    {
+      "name": "ANSI/AAMI EC57 testing and reporting performance results of cardiac rhythm and ST segment measurement algorithms",
+      "identity": {
+        "standard": "ANSI/AAMI EC57:2012/(R)2020",
+        "doi": "10.2345/9781570204784"
+      }
+    },
+    {
+      "name": "MIT-BIH Arrhythmia Database",
+      "identity": {
+        "doi": "10.13026/C2F305",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "name": "MIT-BIH Malignant Ventricular Arrhythmia Database",
+      "identity": {
+        "doi": "10.13026/C22P44",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "name": "Creighton University Ventricular Tachyarrhythmia Database",
+      "identity": {
+        "doi": "10.13026/C2X59M",
+        "version": "1.0.0"
+      }
+    },
+    {
+      "name": "Thakor, Zhu, Pan 1990 sequential hypothesis testing VT/VF detector",
+      "identity": {
+        "doi": "10.1109/10.58594"
+      }
+    },
+    {
+      "name": "Clayton, Murray, Campbell 1993 comparison of four VF recognition techniques",
+      "identity": {
+        "doi": "10.1007/BF02446668"
+      }
+    },
+    {
+      "name": "Jekova and Krasteva 2004 real-time VF/VT detection",
+      "identity": {
+        "doi": "10.1088/0967-3334/25/5/007"
+      }
+    },
+    {
+      "name": "Amann, Tratnig, Unterkofler 2005 reliability of VF detection algorithms for AEDs",
+      "identity": {
+        "doi": "10.1186/1475-925X-4-60"
+      }
+    },
+    {
+      "name": "Figuera et al. 2016 machine learning for shockable-rhythm detection in AEDs",
+      "identity": {
+        "doi": "10.1371/journal.pone.0159654"
+      }
+    },
+    {
+      "name": "Ruiz de Gauna et al. 2014 rhythm analysis during cardiopulmonary resuscitation review",
+      "identity": {
+        "doi": "10.1155/2014/386010"
+      }
+    },
+    {
+      "name": "Zijlstra et al. 2017 AED and operator performance in out-of-hospital cardiac arrest",
+      "identity": {
+        "doi": "10.1016/j.resuscitation.2017.05.017"
+      }
+    },
+    {
+      "name": "DeLuca et al. 2012 AED device failures reported to FDA (MAUDE)",
+      "identity": {
+        "doi": "10.1016/j.annemergmed.2011.07.022"
+      }
+    },
+    {
+      "name": "Shah and Maisel 2006 recalls and safety alerts affecting AEDs",
+      "identity": {
+        "doi": "10.1001/jama.296.6.655"
+      }
+    },
+    {
+      "name": "Goldberger et al. 2000 PhysioBank, PhysioToolkit, and PhysioNet",
+      "identity": {
+        "doi": "10.1161/01.CIR.101.23.e215"
+      }
+    },
+    {
+      "name": "Moody and Mark 2001 impact of the MIT-BIH Arrhythmia Database",
+      "identity": {
+        "doi": "10.1109/51.932724"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

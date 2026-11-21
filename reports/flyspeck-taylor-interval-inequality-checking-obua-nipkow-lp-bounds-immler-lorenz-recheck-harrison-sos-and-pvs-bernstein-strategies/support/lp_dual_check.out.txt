@@ -1,0 +1,16 @@
+combined inequality: 0*x + 0*y <= -1487/5000
+as decimal rhs: -0.2974
+INFEASIBILITY CERTIFIED
+check time: 57.4 microseconds
+mutant entry 1 +1e-05: rejected (residual coefficient x=1/100000 y=-71/5000000)
+mutant entry 1 -1e-05: rejected (residual coefficient x=-1/100000 y=71/5000000)
+mutant entry 2 +1e-05: rejected (residual coefficient x=1/100000 y=1/100000)
+mutant entry 2 -1e-05: rejected (residual coefficient x=-1/100000 y=-1/100000)
+mutant entry 3 +1e-05: rejected (residual coefficient x=1/100000 y=0)
+mutant entry 3 -1e-05: rejected (residual coefficient x=-1/100000 y=0)
+mutant entry 4 +1e-05: rejected (residual coefficient x=1/100000 y=0)
+mutant entry 4 -1e-05: rejected (residual coefficient x=-1/100000 y=0)
+mutant entry 5 +1e-05: rejected (residual coefficient x=0 y=1/100000)
+mutant entry 5 -1e-05: rejected (residual coefficient x=0 y=-1/100000)
+mutant entry 7 +1e-05: ACCEPTED (rhs=-1487/5000)
+mutant entry 7 -1e-05: ACCEPTED (rhs=-1487/5000)

@@ -1,0 +1,132 @@
+{
+  "topics": [
+    "verification/path-sensitive-typestate-cost",
+    "pl/accumulation-typestate-without-aliasing",
+    "rust/path-sensitive-mir-ownership-checkers",
+    "tooling/disjunct-bounded-symbolic-memory-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "Infer (Pulse disjunctive analysis) source at HEAD",
+      "identity": {
+        "repository": "facebook/infer",
+        "revision": "2ebceff7ce3c93480bbc0e8d09d11aeec53595d8"
+      }
+    },
+    {
+      "name": "Infer release v1.3.0 (executed Linux binary)",
+      "identity": {
+        "repository": "facebook/infer",
+        "revision": "410a6d9394b9c9794bf9469ee0e1aa8d3ae91031",
+        "version": "v1.3.0",
+        "artifact": "infer-linux-x86_64-v1.3.0.tar.xz",
+        "sha256": "02be62ba931cb43e2d42bbf7abf4bd9a410cf8464cce5453934e25c90a825850"
+      }
+    },
+    {
+      "name": "Checker Framework (Resource Leak Checker) source at HEAD",
+      "identity": {
+        "repository": "typetools/checker-framework",
+        "revision": "dda43ee4bda793c37f869e0d1cc8f017ed6b0763"
+      }
+    },
+    {
+      "name": "Checker Framework release 4.4.0 (executed)",
+      "identity": {
+        "repository": "typetools/checker-framework",
+        "revision": "160337829f7bf7ecce26e6cebf3816f1549a57ab",
+        "version": "checker-framework-4.4.0",
+        "artifact": "checker-framework-4.4.0.zip",
+        "sha256": "8205c76033b2c2d21cd3fe800fff8b2a22a3ff552ec0fe7672638621e54bd8a2"
+      }
+    },
+    {
+      "name": "RAPx (contains the SafeDrop checker and path enumerator)",
+      "identity": {
+        "repository": "Artisan-Lab/RAPx",
+        "revision": "9f6ec20c48694037fc3835cd15bdc9791f4d027c"
+      }
+    },
+    {
+      "name": "MirChecker (rust-mir-checker)",
+      "identity": {
+        "repository": "lizhuohua/rust-mir-checker",
+        "revision": "2a8c4632902497fc92b9b61f7fa5c4d4f52f578e"
+      }
+    },
+    {
+      "name": "Strom, Yemini: Typestate (IEEE TSE SE-12(1), 1986)",
+      "identity": {
+        "doi": "10.1109/TSE.1986.6312929"
+      }
+    },
+    {
+      "name": "Das, Lerner, Seigle: ESP: Path-Sensitive Program Verification in Polynomial Time (PLDI 2002)",
+      "identity": {
+        "doi": "10.1145/512529.512538"
+      }
+    },
+    {
+      "name": "Xie, Aiken: Scalable Error Detection Using Boolean Satisfiability (POPL 2005)",
+      "identity": {
+        "doi": "10.1145/1040305.1040334"
+      }
+    },
+    {
+      "name": "Xie, Aiken: Context- and Path-Sensitive Memory Leak Detection (ESEC/FSE 2005)",
+      "identity": {
+        "doi": "10.1145/1081706.1081728"
+      }
+    },
+    {
+      "name": "Bierhoff, Aldrich: Modular Typestate Checking of Aliased Objects (OOPSLA 2007)",
+      "identity": {
+        "doi": "10.1145/1297027.1297050"
+      }
+    },
+    {
+      "name": "Dillig, Dillig, Aiken: Sound, Complete and Scalable Path-Sensitive Analysis (PLDI 2008)",
+      "identity": {
+        "doi": "10.1145/1375581.1375615"
+      }
+    },
+    {
+      "name": "Fink, Yahav, Dor, Ramalingam, Geay: Effective Typestate Verification in the Presence of Aliasing (TOSEM 17(2), 2008)",
+      "identity": {
+        "doi": "10.1145/1348250.1348255"
+      }
+    },
+    {
+      "name": "Kellogg, Shadab, Sridharan, Ernst: Lightweight and Modular Resource Leak Verification (ESEC/FSE 2021)",
+      "identity": {
+        "doi": "10.1145/3468264.3468576"
+      }
+    },
+    {
+      "name": "Kellogg, Shadab, Sridharan, Ernst: Accumulation Analysis (ECOOP 2022, LIPIcs 222)",
+      "identity": {
+        "doi": "10.4230/LIPIcs.ECOOP.2022.10"
+      }
+    },
+    {
+      "name": "Le, Raad, Villard, Berdine, Dreyer, O'Hearn: Finding Real Bugs in Big Programs with Incorrectness Logic (PACMPL 6(OOPSLA1), 2022)",
+      "identity": {
+        "doi": "10.1145/3527325"
+      }
+    },
+    {
+      "name": "Cui, Chen, Xu, Zhou: SafeDrop (TOSEM 32(4), 2023); arXiv v2 read",
+      "identity": {
+        "doi": "10.1145/3542948",
+        "arxiv": "2103.15420v2"
+      }
+    },
+    {
+      "name": "Li, Wang, Sun, Lui: MirChecker: Detecting Bugs in Rust Programs via Static Analysis (CCS 2021)",
+      "identity": {
+        "doi": "10.1145/3460120.3484541"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

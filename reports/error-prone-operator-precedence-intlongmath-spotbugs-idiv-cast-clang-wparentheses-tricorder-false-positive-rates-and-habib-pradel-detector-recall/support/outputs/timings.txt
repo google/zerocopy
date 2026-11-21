@@ -1,0 +1,20 @@
+Timing (single runs; host class: x86-64 Linux workstation, 96 logical CPUs; /usr/bin/time -f 'WALL %e s MAXRSS %M KB')
+gcc -std=c17 -fsyntax-only -Wall probe.c: WALL 0.00 s MAXRSS 13892 KB
+gcc -std=c17 -fsyntax-only -Wall probe.c: WALL 0.00 s MAXRSS 13844 KB
+gcc -std=c17 -fsyntax-only -Wall probe.c: WALL 0.00 s MAXRSS 13836 KB
+gcc -std=c17 -fsyntax-only probe.c: WALL 0.01 s MAXRSS 13000 KB
+gcc -std=c17 -fsyntax-only probe.c: WALL 0.00 s MAXRSS 12952 KB
+gcc -std=c17 -fsyntax-only probe.c: WALL 0.00 s MAXRSS 13032 KB
+cargo clippy -q (warm deps, touch src/lib.rs): WALL 0.09 s MAXRSS 125816 KB
+cargo clippy -q (warm deps, touch src/lib.rs): WALL 0.16 s MAXRSS 106460 KB
+cargo clippy -q (warm deps, touch src/lib.rs): WALL 0.07 s MAXRSS 108220 KB
+cargo check -q (touch src/lib.rs): WALL 0.07 s MAXRSS 113244 KB
+cargo check -q (touch src/lib.rs): WALL 0.04 s MAXRSS 90320 KB
+cargo check -q (touch src/lib.rs): WALL 0.04 s MAXRSS 89700 KB
+javac --release 17 -d jcls Probe.java: WALL 0.66 s MAXRSS 107644 KB
+javac --release 17 -d jcls Probe.java: WALL 0.88 s MAXRSS 105192 KB
+javac --release 17 -d jcls Probe.java: WALL 0.73 s MAXRSS 103376 KB
+java -jar spotbugs-4.10.5/lib/spotbugs.jar -textui -effort:max -xml:withMessages ... jcls (1 class): run A WALL 2.64 s MAXRSS 618360 KB; run B WALL 4.18 s MAXRSS 618268 KB
+java -jar spotbugs-4.10.5/lib/spotbugs.jar -textui -effort:max -low -xml:withMessages ... jcls (1 class): run A WALL 2.67 s MAXRSS 631516 KB; run B WALL 4.10 s MAXRSS 531448 KB
+SpotBugs self-reported FindBugsSummary (default mode): run A cpu_seconds 9.89 clock_seconds 1.36 peak_mbytes 269.18; run B cpu_seconds 14.44 clock_seconds 1.94 peak_mbytes 269.35
+Notes: gcc, cargo and javac timings were taken before the last two cases were appended to probe.c, probe_lints.rs and Probe.java. MAXRSS is GNU time's maximum resident set size (largest single process in the tree); cargo timings measure an incremental re-check of one crate of under 25 lines with dependencies already built; JVM start-up is included in the SpotBugs and javac wall times.

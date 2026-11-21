@@ -1,0 +1,105 @@
+== indep_N2_K3_por
+	+ Partial Order Reduction
+State-vector 20 byte, depth reached 10, errors: 0
+       11 states, stored
+       11 transitions (= stored+matched)
+  133.536	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.03 maxrss_kb=137548
+== indep_N2_K3_nored
+State-vector 20 byte, depth reached 10, errors: 0
+       31 states, stored
+       51 transitions (= stored+matched)
+  132.773	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.04 maxrss_kb=135552
+== indep_N3_K3_por
+	+ Partial Order Reduction
+State-vector 28 byte, depth reached 15, errors: 0
+       16 states, stored
+       16 transitions (= stored+matched)
+  133.536	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.03 maxrss_kb=138312
+== indep_N3_K3_nored
+State-vector 28 byte, depth reached 15, errors: 0
+      156 states, stored
+      376 transitions (= stored+matched)
+  132.773	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.03 maxrss_kb=136980
+== indep_N4_K3_por
+	+ Partial Order Reduction
+State-vector 36 byte, depth reached 20, errors: 0
+       21 states, stored
+       21 transitions (= stored+matched)
+  133.536	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.03 maxrss_kb=138212
+== indep_N4_K3_nored
+State-vector 36 byte, depth reached 20, errors: 0
+      781 states, stored
+     2501 transitions (= stored+matched)
+  132.773	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.03 maxrss_kb=137052
+== indep_N5_K3_por
+	+ Partial Order Reduction
+State-vector 44 byte, depth reached 25, errors: 0
+       26 states, stored
+       26 transitions (= stored+matched)
+  133.536	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.03 maxrss_kb=138060
+== indep_N5_K3_nored
+State-vector 44 byte, depth reached 25, errors: 0
+     3906 states, stored
+    15626 transitions (= stored+matched)
+  132.871	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.03 maxrss_kb=137280
+== indep_N6_K3_por
+	+ Partial Order Reduction
+State-vector 52 byte, depth reached 30, errors: 0
+       31 states, stored
+       31 transitions (= stored+matched)
+  133.536	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.05 maxrss_kb=137984
+== indep_N6_K3_nored
+State-vector 52 byte, depth reached 30, errors: 0
+    19531 states, stored
+    93751 transitions (= stored+matched)
+  133.359	total actual memory usage
+pan: elapsed time 0.01 seconds
+wall_s=0.04 maxrss_kb=137720
+== ignoring_por
+	+ Partial Order Reduction
+State-vector 20 byte, depth reached 3, errors: 1
+        4 states, stored
+        6 transitions (= stored+matched)
+  128.730	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.04 maxrss_kb=133228
+== ignoring_nored
+State-vector 20 byte, depth reached 1, errors: 1
+        2 states, stored
+        2 transitions (= stored+matched)
+  128.653	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.03 maxrss_kb=132332
+== nexttime_por
+	+ Partial Order Reduction
+State-vector 36 byte, depth reached 2, errors: 0
+        2 states, stored (4 visited)
+        4 transitions (= visited+matched)
+  128.730	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.03 maxrss_kb=133272
+== nexttime_nored
+State-vector 36 byte, depth reached 2, errors: 1
+        2 states, stored
+        2 transitions (= stored+matched)
+  128.730	total actual memory usage
+pan: elapsed time 0 seconds
+wall_s=0.03 maxrss_kb=133196

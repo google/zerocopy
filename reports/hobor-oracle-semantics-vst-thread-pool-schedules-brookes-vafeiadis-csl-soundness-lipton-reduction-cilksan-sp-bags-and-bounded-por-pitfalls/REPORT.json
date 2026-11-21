@@ -1,0 +1,158 @@
+{
+  "topics": [
+    "verification/scheduler-model-completeness",
+    "pl/nested-parallel-composition-semantics",
+    "verification/reduction-and-determinacy-theorems",
+    "tooling/schedule-reduced-exploration-soundness"
+  ],
+  "subjects": [
+    {
+      "name": "VST concurrent hybrid machines (explicit schedules, coarse-to-fine safety)",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "d50ac1969f9f6586621895eb043ccf08a165f731"
+      }
+    },
+    {
+      "name": "Iris program logic and HeapLang (GitHub mirror of gitlab.mpi-sws.org/iris/iris)",
+      "identity": {
+        "repository": "rocq-iris/iris",
+        "revision": "2fe2f450add5678d9a2492343c638ccdb428a677"
+      }
+    },
+    {
+      "name": "OpenCilk productivity tools (Cilksan SP-bags race detector)",
+      "identity": {
+        "repository": "OpenCilk/productivity-tools",
+        "revision": "3049053b784bc37d2ce9ff4449c7985703957006"
+      }
+    },
+    {
+      "name": "Spin model checker (built from source, Spin Version 6.5.3)",
+      "identity": {
+        "repository": "nimble-code/Spin",
+        "revision": "e21106ff7e58afe79275b3ca10179556afa97aa2",
+        "version": "6.5.3"
+      }
+    },
+    {
+      "name": "byacc parser generator (used only to build Spin)",
+      "identity": {
+        "repository": "ThomasDickey/byacc-snapshots",
+        "revision": "7856d035dd27104782612818630adc5011214c31"
+      }
+    },
+    {
+      "name": "Loom concurrency permutation tester",
+      "identity": {
+        "repository": "tokio-rs/loom",
+        "revision": "9d549cd5357a5485900f4c53951fc1726319659f"
+      }
+    },
+    {
+      "name": "Hobor, Appel, Zappa Nardelli: Oracle Semantics for Concurrent Separation Logic (ESOP 2008)",
+      "identity": {
+        "doi": "10.1007/978-3-540-78739-6_27"
+      }
+    },
+    {
+      "name": "Brookes: A Semantics for Concurrent Separation Logic (TCS 375, 2007)",
+      "identity": {
+        "doi": "10.1016/j.tcs.2006.12.034"
+      }
+    },
+    {
+      "name": "Vafeiadis: Concurrent Separation Logic and Operational Semantics (MFPS 2011, ENTCS 276)",
+      "identity": {
+        "doi": "10.1016/j.entcs.2011.09.029"
+      }
+    },
+    {
+      "name": "Lipton: Reduction: A Method of Proving Properties of Parallel Programs (CACM 18(12), 1975)",
+      "identity": {
+        "doi": "10.1145/361227.361234"
+      }
+    },
+    {
+      "name": "Steele: Making Asynchronous Parallelism Safe for the World (POPL 1990)",
+      "identity": {
+        "doi": "10.1145/96709.96731"
+      }
+    },
+    {
+      "name": "Feng, Leiserson: Efficient Detection of Determinacy Races in Cilk Programs (SPAA 1997)",
+      "identity": {
+        "doi": "10.1145/258492.258493"
+      }
+    },
+    {
+      "name": "Valmari: Stubborn Sets for Reduced State Space Generation (LNCS 483, 1991)",
+      "identity": {
+        "doi": "10.1007/3-540-53863-1_36"
+      }
+    },
+    {
+      "name": "Flanagan, Godefroid: Dynamic Partial-Order Reduction for Model Checking Software (POPL 2005)",
+      "identity": {
+        "doi": "10.1145/1040305.1040315"
+      }
+    },
+    {
+      "name": "Musuvathi, Qadeer: Iterative Context Bounding for Systematic Testing of Multithreaded Programs (PLDI 2007)",
+      "identity": {
+        "doi": "10.1145/1250734.1250785"
+      }
+    },
+    {
+      "name": "Coons, Musuvathi, McKinley: Bounded Partial-Order Reduction (OOPSLA 2013)",
+      "identity": {
+        "doi": "10.1145/2509136.2509556"
+      }
+    },
+    {
+      "name": "Abdulla, Aronis, Jonsson, Sagonas: Source Sets (JACM 64(4), 2017); conference version Optimal Dynamic Partial Order Reduction (POPL 2014) read",
+      "identity": {
+        "doi": "10.1145/3073408",
+        "conference_version_doi": "10.1145/2535838.2535845"
+      }
+    },
+    {
+      "name": "Sarkar et al.: The Semantics of x86-CC Multiprocessor Machine Code (POPL 2009)",
+      "identity": {
+        "doi": "10.1145/1480881.1480929"
+      }
+    },
+    {
+      "name": "Owens, Sarkar, Sewell: A Better x86 Memory Model: x86-TSO (TPHOLs 2009)",
+      "identity": {
+        "doi": "10.1007/978-3-642-03359-9_27"
+      }
+    },
+    {
+      "name": "Sevcik et al.: CompCertTSO (JACM 60(3), 2013); POPL 2011 version read",
+      "identity": {
+        "doi": "10.1145/2487241.2487248",
+        "conference_version_doi": "10.1145/1926385.1926393"
+      }
+    },
+    {
+      "name": "Gu et al.: Certified Concurrent Abstraction Layers (PLDI 2018)",
+      "identity": {
+        "doi": "10.1145/3192366.3192381"
+      }
+    },
+    {
+      "name": "Jung et al.: Iris from the Ground Up (JFP 28, 2018)",
+      "identity": {
+        "doi": "10.1017/S0956796818000151"
+      }
+    },
+    {
+      "name": "Holzmann, Peled: An Improvement in Formal Verification (FORTE 1994)",
+      "identity": {
+        "doi": "10.1007/978-0-387-34878-0_13"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

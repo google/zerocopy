@@ -1,0 +1,18 @@
+reference beats: 110000 test beats: 109372 record samples: 39704444
+220044 big.atr
+218788 big.tst
+bxb wall=0.00s maxrss=1636kB
+bxb wall=0.00s maxrss=1636kB
+bxb wall=0.00s maxrss=1604kB
+         Algorithm
+      n+f+q    v  o+x
+     ________________
+  N  | 97120    0 12880
+  V  |    0    0    0
+ F+Q |    0    0    0
+ O+X | 12252    0
+--
+bxb 20 runs (incl. process start): min 7.5 ms, median 7.9 ms
+Comparitor window_width=54: tp=95287 fp=14085 fn=14713 Se=0.8662 +P=0.8712 best-of-3 0.22s
+Comparitor window_width=55: tp=97120 fp=12252 fn=12880 Se=0.8829 +P=0.8880 best-of-3 0.22s
+python maxrss=52356kB

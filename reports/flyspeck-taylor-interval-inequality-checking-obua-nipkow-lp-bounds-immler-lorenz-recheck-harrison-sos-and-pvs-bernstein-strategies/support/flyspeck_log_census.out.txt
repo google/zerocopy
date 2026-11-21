@@ -1,0 +1,24 @@
+repository flyspeck/flyspeck @ 32948714cdf06d700af2c993c9a92b7b551d7af5
+log files fetched: 2456
+digest entries (theorem_nonlinear_digest.hl): 23242
+
+[first-run(output+out-extra)]
+  stdout files            : 1238
+  distinct cases with Time: 23237
+  sum of per-case Time    : 18021958 s = 5006.1 h
+  median / p99 / max case : 404.4 s / 6252.0 s / 19541.2 s
+  FAILURE / ERROR lines   : 85 / 23 (failed cases were re-run in later batches)
+  'Loading time' lines    : 873, mean 540.3 s, sum 131.0 h
+  cases also in digest    : 23237
+
+[second-run(urban/out)]
+  stdout files            : 1218
+  distinct cases with Time: 23237
+  sum of per-case Time    : 33389493 s = 9274.9 h
+  median / p99 / max case : 839.2 s / 9957.1 s / 32676.4 s
+  FAILURE / ERROR lines   : 0 / 0 (failed cases were re-run in later batches)
+  'Loading time' lines    : 609, mean 999.5 s, sum 169.1 h
+  cases also in digest    : 23237
+
+cases common to both runs: 23237
+digest entries in neither run: ['(prep-GRKIBMP B V2,0)', '(prep-OMKYNLT 3336871894,0)', '(prep-QZECFIC wt0 corner,0)', '(prep-TSKAJXY-IYOUOBF sharp v2,0)', '(prep-TSKAJXY-RIBCYXU sharp,0)']

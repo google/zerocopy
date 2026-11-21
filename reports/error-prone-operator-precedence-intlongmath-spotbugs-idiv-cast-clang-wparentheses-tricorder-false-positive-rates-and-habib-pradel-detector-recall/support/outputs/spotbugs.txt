@@ -1,0 +1,32 @@
+SpotBugs 4.10.5; classes compiled with: javac --release 17 -Xlint:all -g -d jcls Probe.java
+
+$ java -jar spotbugs-4.10.5/lib/spotbugs.jar -textui -effort:max -xml:withMessages -output sb.xml jcls
+FindBugsSummary: {'total_classes': '1', 'total_bugs': '8', 'cpu_seconds': '14.44', 'clock_seconds': '1.94', 'peak_mbytes': '269.35', 'priority_1': '3', 'priority_2': '5', 'priority_3': None}
+WALL 4.18 s MAXRSS 618268 KB
+type | priority | rank | category | method | source line
+BSHIFT_WRONG_ADD_PRIORITY | 1 | 10 | CORRECTNESS | hashCode | 30
+BSHIFT_WRONG_ADD_PRIORITY | 2 | 12 | CORRECTNESS | c02b_shl_vs_add_const8 | 9
+ICAST_IDIV_CAST_TO_DOUBLE | 2 | 17 | STYLE | c17_idiv_implicit_to_double | 18
+ICAST_IDIV_CAST_TO_DOUBLE | 2 | 17 | STYLE | c18_idiv_cast_to_double | 19
+ICAST_IDIV_CAST_TO_DOUBLE | 2 | 17 | STYLE | c18c_ldiv_cast_to_double | 21
+ICAST_INTEGER_MULTIPLY_CAST_TO_LONG | 1 | 15 | STYLE | c19b_imul_param_const | 24
+ICAST_INTEGER_MULTIPLY_CAST_TO_LONG | 2 | 17 | STYLE | c19_imul_to_long | 23
+ICAST_INT_CAST_TO_DOUBLE_PASSED_TO_CEIL | 1 | 7 | CORRECTNESS | c18d_idiv_then_ceil | 22
+
+$ java -jar spotbugs-4.10.5/lib/spotbugs.jar -textui -effort:max -low -xml:withMessages -output sb-low.xml jcls
+FindBugsSummary: {'total_classes': '1', 'total_bugs': '13', 'cpu_seconds': '12.00', 'clock_seconds': '1.56', 'peak_mbytes': '230.31', 'priority_1': '3', 'priority_2': '5', 'priority_3': '5'}
+WALL 4.10 s MAXRSS 531448 KB
+type | priority | rank | category | method | source line
+BSHIFT_WRONG_ADD_PRIORITY | 1 | 10 | CORRECTNESS | hashCode | 30
+BSHIFT_WRONG_ADD_PRIORITY | 2 | 12 | CORRECTNESS | c02b_shl_vs_add_const8 | 9
+BSHIFT_WRONG_ADD_PRIORITY | 3 | 15 | CORRECTNESS | c02_shl_vs_add_const_left | 7
+HE_HASHCODE_USE_OBJECT_EQUALS | 3 | 19 | BAD_PRACTICE | hashCode | 30
+ICAST_IDIV_CAST_TO_DOUBLE | 2 | 17 | STYLE | c17_idiv_implicit_to_double | 18
+ICAST_IDIV_CAST_TO_DOUBLE | 2 | 17 | STYLE | c18_idiv_cast_to_double | 19
+ICAST_IDIV_CAST_TO_DOUBLE | 2 | 17 | STYLE | c18c_ldiv_cast_to_double | 21
+ICAST_INTEGER_MULTIPLY_CAST_TO_LONG | 1 | 15 | STYLE | c19b_imul_param_const | 24
+ICAST_INTEGER_MULTIPLY_CAST_TO_LONG | 2 | 17 | STYLE | c19_imul_to_long | 23
+ICAST_INT_CAST_TO_DOUBLE_PASSED_TO_CEIL | 1 | 7 | CORRECTNESS | c18d_idiv_then_ceil | 22
+NS_NON_SHORT_CIRCUIT | 3 | 20 | STYLE | c01j_bitand_bool_vs_eq | 17
+UWF_UNWRITTEN_FIELD | 3 | 15 | CORRECTNESS | (field) | 30
+UWF_UNWRITTEN_FIELD | 3 | 15 | CORRECTNESS | (field) | 30

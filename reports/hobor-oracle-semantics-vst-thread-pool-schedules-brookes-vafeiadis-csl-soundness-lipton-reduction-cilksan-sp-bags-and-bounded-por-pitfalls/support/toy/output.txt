@@ -1,0 +1,31 @@
+=== (a || b) || c, disjoint alloc/free
+full     traces=  90 finals=[(('x', 0), ('y', 0), ('z', 0))] peak=3 missing_vs_full=0
+onebit   traces=  24 finals=[(('x', 0), ('y', 0), ('z', 0))] peak=2 missing_vs_full=66
+         e.g. missing: a:alloc b:alloc a:free b:free c:alloc c:free
+         e.g. missing: a:alloc b:alloc a:free c:alloc b:free c:free
+         e.g. missing: a:alloc b:alloc a:free c:alloc c:free b:free
+pathsel  traces=  90 finals=[(('x', 0), ('y', 0), ('z', 0))] peak=3 missing_vs_full=0
+
+=== a || (b || c), disjoint alloc/free
+full     traces=  90 finals=[(('x', 0), ('y', 0), ('z', 0))] peak=3 missing_vs_full=0
+onebit   traces=  24 finals=[(('x', 0), ('y', 0), ('z', 0))] peak=2 missing_vs_full=66
+         e.g. missing: a:alloc b:alloc a:free b:free c:alloc c:free
+         e.g. missing: a:alloc b:alloc a:free c:alloc b:free c:free
+         e.g. missing: a:alloc b:alloc a:free c:alloc c:free b:free
+pathsel  traces=  90 finals=[(('x', 0), ('y', 0), ('z', 0))] peak=3 missing_vs_full=0
+
+=== (a || b) || c, racy writes
+full     traces=   6 finals=[(('m', 1),), (('m', 2),), (('m', 3),)] peak=0 missing_vs_full=0
+onebit   traces=   4 finals=[(('m', 1),), (('m', 2),), (('m', 3),)] peak=0 missing_vs_full=2
+         e.g. missing: b:write a:write c:write
+         e.g. missing: b:write c:write a:write
+pathsel  traces=   6 finals=[(('m', 1),), (('m', 2),), (('m', 3),)] peak=0 missing_vs_full=0
+
+=== ((a || b) || c) || d, disjoint writes
+full     traces=  24 finals=[(('a', 1), ('b', 1), ('c', 1), ('d', 1))] peak=0 missing_vs_full=0
+onebit   traces=   8 finals=[(('a', 1), ('b', 1), ('c', 1), ('d', 1))] peak=0 missing_vs_full=16
+         e.g. missing: a:write c:write b:write d:write
+         e.g. missing: a:write c:write d:write b:write
+         e.g. missing: b:write a:write c:write d:write
+pathsel  traces=  24 finals=[(('a', 1), ('b', 1), ('c', 1), ('d', 1))] peak=0 missing_vs_full=0
+

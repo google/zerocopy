@@ -1,0 +1,19 @@
+# host: Intel Xeon CPU @ 2.60GHz, 96 logical CPUs, x86-64 Linux VM; GCC 15.2.0 (Debian); observed 2026-11-21
+8fbcc215b4ecb6b15c0d2588658a1f7b3ab1629b3e0a7f189b823a7571397df5  wfdb.tar.gz
+# make -C lib install MFLAGS=-std=gnu89
+real	0m1.825s
+user	0m1.626s
+sys	0m0.158s
+# make bxb epicmp wrann rdann sumstats MFLAGS=-std=gnu89 (in app/)
+real	0m0.838s
+user	0m0.708s
+sys	0m0.125s
+# binary sizes (bytes)
+329512 bxb
+312832 epicmp
+294864 rdann
+311896 sumstats
+282584 wrann
+   text	   data	    bss	    dec	    hex	filename
+ 109895	   2908	   2344	 115147	  1c1cb	bxb
+ 100230	   2748	   3112	 106090	  19e6a	epicmp

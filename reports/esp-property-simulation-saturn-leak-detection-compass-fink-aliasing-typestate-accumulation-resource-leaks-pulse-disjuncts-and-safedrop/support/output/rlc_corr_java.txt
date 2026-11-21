@@ -1,0 +1,15 @@
+Corr.java:10: error: [required.method.not.called] [required.method.not.called]
+    FileInputStream f = new FileInputStream(name);
+                    ^
+Corr.java:17: error: [required.method.not.called] [required.method.not.called]
+    FileInputStream f = new FileInputStream(name);
+                    ^
+Corr.java:26: error: [required.method.not.called] [required.method.not.called]
+    if (b) f = new FileInputStream(name);
+             ^
+Corr.java:38: error: [required.method.not.called] [required.method.not.called]
+    FileInputStream f = new FileInputStream(name);
+                    ^
+4 errors
+Command exited with non-zero status 1
+wall_s=3.06 maxrss_kb=289928

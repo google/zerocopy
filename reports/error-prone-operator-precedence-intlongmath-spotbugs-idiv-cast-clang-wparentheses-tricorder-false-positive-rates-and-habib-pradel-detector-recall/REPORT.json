@@ -1,0 +1,172 @@
+{
+  "topics": [
+    "tooling/bug-pattern-checker-field-evaluations",
+    "pl/operator-precedence-diagnostics",
+    "compilers/integer-division-and-widening-warnings",
+    "verification/static-analysis-false-positive-measurement"
+  ],
+  "subjects": [
+    {
+      "name": "Error Prone (OperatorPrecedence, IntLongMath, NarrowCalculation, ConstantOverflow source)",
+      "identity": {
+        "repository": "google/error-prone",
+        "revision": "d37bcb8d89b21dd64b762274c7fb96967a3cba80"
+      }
+    },
+    {
+      "name": "SpotBugs detector source (IDivResultCastToDouble, FindPuzzlers)",
+      "identity": {
+        "repository": "spotbugs/spotbugs",
+        "revision": "f4544188eb473d60221572fc0d5645325c8b18eb"
+      }
+    },
+    {
+      "name": "SpotBugs 4.10.5 release (executed)",
+      "identity": {
+        "repository": "spotbugs/spotbugs",
+        "revision": "6816eb256805aa6eed1dced23e6a4aea08cc6660",
+        "version": "4.10.5",
+        "artifact": "spotbugs-4.10.5.tgz",
+        "sha256": "cce3244900cc215ccd9f5a8db29ed9468fc47824faf662f4fad005343d96007e"
+      }
+    },
+    {
+      "name": "Clang and clang-tidy source (-Wparentheses family, SemaExpr.cpp)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "25b1c803e1e1504f6dc11f7afd68e65ad3ee5964"
+      }
+    },
+    {
+      "name": "GCC 15.2.0 upstream source (c-family/c-warn.cc)",
+      "identity": {
+        "repository": "gcc-mirror/gcc",
+        "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+        "tag": "releases/gcc-15.2.0"
+      }
+    },
+    {
+      "name": "GCC binary (executed)",
+      "identity": {
+        "version": "gcc (Debian 15.2.0-14) 15.2.0"
+      }
+    },
+    {
+      "name": "Clippy source (precedence, precedence_bits, integer_division)",
+      "identity": {
+        "repository": "rust-lang/rust-clippy",
+        "revision": "663e7ca4f8e69efa893b816140889b4a40c65f74"
+      }
+    },
+    {
+      "name": "rustc and Clippy nightly toolchain (executed)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "clippy_version": "clippy 0.1.101 (3ef0c22cdb 2026-11-11)"
+      }
+    },
+    {
+      "name": "javac (executed)",
+      "identity": {
+        "version": "javac 27.0.1"
+      }
+    },
+    {
+      "name": "Swift Evolution SE-0077 Improved operator declarations",
+      "identity": {
+        "repository": "swiftlang/swift-evolution",
+        "revision": "d8a2ff1f9c95e11772e99574fc4853da924f9a68",
+        "path": "proposals/0077-operator-precedence.md"
+      }
+    },
+    {
+      "name": "Swift standard library precedence groups and diagnostics",
+      "identity": {
+        "repository": "swiftlang/swift",
+        "revision": "2d2f72d90982a9510260acefde67c8fcc1db04c5"
+      }
+    },
+    {
+      "name": "Habib-Pradel static bug checker study artifact",
+      "identity": {
+        "repository": "sola-da/StaticBugCheckers",
+        "revision": "e3bd772b9151722f0683e8037bcd1af1f8fa4142"
+      }
+    },
+    {
+      "name": "Hovemeyer and Pugh, Finding Bugs Is Easy (SIGPLAN Notices 2004)",
+      "identity": {
+        "doi": "10.1145/1052883.1052895"
+      }
+    },
+    {
+      "name": "Ayewah et al., Evaluating Static Analysis Defect Warnings on Production Software (PASTE 2007)",
+      "identity": {
+        "doi": "10.1145/1251535.1251536"
+      }
+    },
+    {
+      "name": "Kim and Ernst, Which Warnings Should I Fix First? (ESEC/FSE 2007)",
+      "identity": {
+        "doi": "10.1145/1287624.1287633"
+      }
+    },
+    {
+      "name": "Ayewah et al., Using Static Analysis to Find Bugs (IEEE Software 2008)",
+      "identity": {
+        "doi": "10.1109/MS.2008.130"
+      }
+    },
+    {
+      "name": "Heckman and Williams, Actionable Alert Identification Techniques SLR (IST 2011)",
+      "identity": {
+        "doi": "10.1016/j.infsof.2010.12.007"
+      }
+    },
+    {
+      "name": "Aftandilian et al., Building Useful Program Analysis Tools Using an Extensible Java Compiler (SCAM 2012)",
+      "identity": {
+        "doi": "10.1109/SCAM.2012.28"
+      }
+    },
+    {
+      "name": "Johnson et al., Why Don't Software Developers Use Static Analysis Tools to Find Bugs? (ICSE 2013)",
+      "identity": {
+        "doi": "10.1109/ICSE.2013.6606613"
+      }
+    },
+    {
+      "name": "Rahman et al., Comparing Static Bug Finders and Statistical Prediction (ICSE 2014)",
+      "identity": {
+        "doi": "10.1145/2568225.2568269"
+      }
+    },
+    {
+      "name": "Sadowski et al., Tricorder: Building a Program Analysis Ecosystem (ICSE 2015)",
+      "identity": {
+        "doi": "10.1109/ICSE.2015.76"
+      }
+    },
+    {
+      "name": "Beller et al., Analyzing the State of Static Analysis (SANER 2016)",
+      "identity": {
+        "doi": "10.1109/SANER.2016.105"
+      }
+    },
+    {
+      "name": "Sadowski et al., Lessons from Building Static Analysis Tools at Google (CACM 2018)",
+      "identity": {
+        "doi": "10.1145/3188720"
+      }
+    },
+    {
+      "name": "Habib and Pradel, How Many of All Bugs Do We Find? (ASE 2018)",
+      "identity": {
+        "doi": "10.1145/3238147.3238213"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

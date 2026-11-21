@@ -1,0 +1,80 @@
+$ gcc --version | head -1
+gcc (Debian 15.2.0-14) 15.2.0
+
+$ gcc -std=c17 -fsyntax-only  probe.c
+probe.c:25:77: warning: integer overflow in expression of type ‘int’ results in ‘500654080’ [-Woverflow]
+[exit 0]
+
+$ gcc -std=c17 -fsyntax-only -Wall probe.c
+probe.c:6:58: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+probe.c:7:62: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+probe.c:8:62: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+probe.c:9:53: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+probe.c:10:57: warning: suggest parentheses around arithmetic in operand of ‘|’ [-Wparentheses]
+probe.c:11:57: warning: suggest parentheses around arithmetic in operand of ‘|’ [-Wparentheses]
+probe.c:12:58: warning: suggest parentheses around arithmetic in operand of ‘^’ [-Wparentheses]
+probe.c:14:59: warning: suggest parentheses around ‘+’ in operand of ‘&’ [-Wparentheses]
+probe.c:17:52: warning: comparisons like ‘X<=Y<=Z’ do not have their mathematical meaning [-Wparentheses]
+probe.c:20:46: warning: logical not is only applied to the left hand side of comparison [-Wlogical-not-parentheses]
+probe.c:20:43: note: add parentheses around left hand side expression to silence this warning
+probe.c:21:44: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+probe.c:25:77: warning: integer overflow in expression of type ‘int’ results in ‘500654080’ [-Woverflow]
+probe.c:26:57: warning: suggest parentheses around comparison in operand of ‘|’ [-Wparentheses]
+probe.c:27:50: warning: suggest parentheses around ‘-’ inside ‘>>’ [-Wparentheses]
+probe.c:28:58: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+[exit 0]
+
+$ gcc -std=c17 -fsyntax-only -Wall -Wextra probe.c
+probe.c:6:58: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+probe.c:7:62: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+probe.c:8:62: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+probe.c:9:53: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+probe.c:10:57: warning: suggest parentheses around arithmetic in operand of ‘|’ [-Wparentheses]
+probe.c:11:57: warning: suggest parentheses around arithmetic in operand of ‘|’ [-Wparentheses]
+probe.c:12:58: warning: suggest parentheses around arithmetic in operand of ‘^’ [-Wparentheses]
+probe.c:14:59: warning: suggest parentheses around ‘+’ in operand of ‘&’ [-Wparentheses]
+probe.c:17:52: warning: comparisons like ‘X<=Y<=Z’ do not have their mathematical meaning [-Wparentheses]
+probe.c:20:46: warning: logical not is only applied to the left hand side of comparison [-Wlogical-not-parentheses]
+probe.c:20:43: note: add parentheses around left hand side expression to silence this warning
+probe.c:21:44: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+probe.c:25:77: warning: integer overflow in expression of type ‘int’ results in ‘500654080’ [-Woverflow]
+probe.c:26:57: warning: suggest parentheses around comparison in operand of ‘|’ [-Wparentheses]
+probe.c:27:50: warning: suggest parentheses around ‘-’ inside ‘>>’ [-Wparentheses]
+probe.c:28:58: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+[exit 0]
+
+$ gcc -std=c17 -fsyntax-only -Wparentheses probe.c
+probe.c:6:58: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+probe.c:7:62: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+probe.c:8:62: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+probe.c:9:53: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+probe.c:10:57: warning: suggest parentheses around arithmetic in operand of ‘|’ [-Wparentheses]
+probe.c:11:57: warning: suggest parentheses around arithmetic in operand of ‘|’ [-Wparentheses]
+probe.c:12:58: warning: suggest parentheses around arithmetic in operand of ‘^’ [-Wparentheses]
+probe.c:14:59: warning: suggest parentheses around ‘+’ in operand of ‘&’ [-Wparentheses]
+probe.c:17:52: warning: comparisons like ‘X<=Y<=Z’ do not have their mathematical meaning [-Wparentheses]
+probe.c:21:44: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+probe.c:25:77: warning: integer overflow in expression of type ‘int’ results in ‘500654080’ [-Woverflow]
+probe.c:26:57: warning: suggest parentheses around comparison in operand of ‘|’ [-Wparentheses]
+probe.c:27:50: warning: suggest parentheses around ‘-’ inside ‘>>’ [-Wparentheses]
+probe.c:28:58: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+[exit 0]
+
+$ gcc -std=c17 -fsyntax-only -Wall -Wextra -Wconversion probe.c
+probe.c:6:58: warning: suggest parentheses around comparison in operand of ‘&’ [-Wparentheses]
+probe.c:7:62: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+probe.c:8:62: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+probe.c:9:53: warning: suggest parentheses around ‘&&’ within ‘||’ [-Wparentheses]
+probe.c:10:57: warning: suggest parentheses around arithmetic in operand of ‘|’ [-Wparentheses]
+probe.c:11:57: warning: suggest parentheses around arithmetic in operand of ‘|’ [-Wparentheses]
+probe.c:12:58: warning: suggest parentheses around arithmetic in operand of ‘^’ [-Wparentheses]
+probe.c:14:59: warning: suggest parentheses around ‘+’ in operand of ‘&’ [-Wparentheses]
+probe.c:17:52: warning: comparisons like ‘X<=Y<=Z’ do not have their mathematical meaning [-Wparentheses]
+probe.c:20:46: warning: logical not is only applied to the left hand side of comparison [-Wlogical-not-parentheses]
+probe.c:20:43: note: add parentheses around left hand side expression to silence this warning
+probe.c:21:44: warning: suggest parentheses around assignment used as truth value [-Wparentheses]
+probe.c:25:77: warning: integer overflow in expression of type ‘int’ results in ‘500654080’ [-Woverflow]
+probe.c:26:57: warning: suggest parentheses around comparison in operand of ‘|’ [-Wparentheses]
+probe.c:27:50: warning: suggest parentheses around ‘-’ inside ‘>>’ [-Wparentheses]
+probe.c:28:58: warning: suggest parentheses around ‘+’ inside ‘<<’ [-Wparentheses]
+[exit 0]

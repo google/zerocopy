@@ -1,0 +1,375 @@
+$ rustc -V; cargo clippy -V
+rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)
+clippy 0.1.101 (3ef0c22cdb 2026-11-11)
+
+$ cargo clippy -q (defaults)
+warning: operator precedence might not be obvious
+ --> src/lib.rs:6:59
+  |
+6 | pub fn c02_shl_vs_add_const_left(x: u32, y: u32) -> u32 { x << 16 + y }
+  |                                                           ^^^^^^^^^^^ help: consider parenthesizing your expression: `x << (16 + y)`
+  |
+  = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+  = note: `#[warn(clippy::precedence)]` on by default
+
+warning: operator precedence might not be obvious
+ --> src/lib.rs:7:60
+  |
+7 | pub fn c03_shl_vs_add_const_right(x: u32, y: u32) -> u32 { x << y + 16 }
+  |                                                            ^^^^^^^^^^^ help: consider parenthesizing your expression: `x << (y + 16)`
+  |
+  = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+
+warning: operator precedence might not be obvious
+  --> src/lib.rs:12:59
+   |
+12 | pub fn c09_bitand_vs_add(a: u32, b: u32, c: u32) -> u32 { a & b + c }
+   |                                                           ^^^^^^^^^ help: consider parenthesizing your expression: `a & (b + c)`
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+
+warning: operator precedence might not be obvious
+  --> src/lib.rs:14:48
+   |
+14 | pub fn c11_rem_vs_shl(a: u32, b: u32) -> u32 { a % b << 2 }
+   |                                                ^^^^^^^^^^ help: consider parenthesizing your expression: `(a % b) << 2`
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+
+warning: operator precedence might not be obvious
+  --> src/lib.rs:18:48
+   |
+18 | pub fn c22_shr_vs_sub(x: u32, y: u32) -> u32 { x >> y - 1 }
+   |                                                ^^^^^^^^^^ help: consider parenthesizing your expression: `x >> (y - 1)`
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+
+warning: operator precedence might not be obvious
+  --> src/lib.rs:20:56
+   |
+20 | pub fn c02b_shl_vs_add_const8(x: u32, y: u32) -> u32 { x << 8 + y }
+   |                                                        ^^^^^^^^^^ help: consider parenthesizing your expression: `x << (8 + y)`
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+
+[exit 0]
+
+$ cargo clippy -q -- -W clippy::precedence_bits -W clippy::integer_division -W clippy::pedantic
+warning: operator precedence might not be obvious
+ --> src/lib.rs:6:59
+  |
+6 | pub fn c02_shl_vs_add_const_left(x: u32, y: u32) -> u32 { x << 16 + y }
+  |                                                           ^^^^^^^^^^^ help: consider parenthesizing your expression: `x << (16 + y)`
+  |
+  = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+  = note: `#[warn(clippy::precedence)]` on by default
+
+warning: operator precedence might not be obvious
+ --> src/lib.rs:7:60
+  |
+7 | pub fn c03_shl_vs_add_const_right(x: u32, y: u32) -> u32 { x << y + 16 }
+  |                                                            ^^^^^^^^^^^ help: consider parenthesizing your expression: `x << (y + 16)`
+  |
+  = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+
+warning: operator precedence might not be obvious
+  --> src/lib.rs:11:59
+   |
+11 | pub fn c08_bitand_vs_shl(a: u32, b: u32, c: u32) -> u32 { a & b << c }
+   |                                                           ^^^^^^^^^^ help: consider parenthesizing your expression: `a & (b << c)`
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence_bits
+   = note: requested on the command line with `-W clippy::precedence-bits`
+
+warning: operator precedence might not be obvious
+  --> src/lib.rs:12:59
+   |
+12 | pub fn c09_bitand_vs_add(a: u32, b: u32, c: u32) -> u32 { a & b + c }
+   |                                                           ^^^^^^^^^ help: consider parenthesizing your expression: `a & (b + c)`
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+
+warning: operator precedence might not be obvious
+  --> src/lib.rs:14:48
+   |
+14 | pub fn c11_rem_vs_shl(a: u32, b: u32) -> u32 { a % b << 2 }
+   |                                                ^^^^^^^^^^ help: consider parenthesizing your expression: `(a % b) << 2`
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+
+warning: operator precedence might not be obvious
+  --> src/lib.rs:18:48
+   |
+18 | pub fn c22_shr_vs_sub(x: u32, y: u32) -> u32 { x >> y - 1 }
+   |                                                ^^^^^^^^^^ help: consider parenthesizing your expression: `x >> (y - 1)`
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+
+warning: operator precedence might not be obvious
+  --> src/lib.rs:20:56
+   |
+20 | pub fn c02b_shl_vs_add_const8(x: u32, y: u32) -> u32 { x << 8 + y }
+   |                                                        ^^^^^^^^^^ help: consider parenthesizing your expression: `x << (8 + y)`
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#precedence
+
+warning: this function could have a `#[must_use]` attribute
+ --> src/lib.rs:5:8
+  |
+5 | pub fn c01_bitand_vs_eq(a: u32, b: u32, c: u32) -> bool { a & b == c }
+  |        ^^^^^^^^^^^^^^^^
+  |
+  = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+  = note: `-W clippy::must-use-candidate` implied by `-W clippy::pedantic`
+  = help: to override `-W clippy::pedantic` add `#[allow(clippy::must_use_candidate)]`
+help: add the attribute
+  |
+5 + #[must_use]
+6 | pub fn c01_bitand_vs_eq(a: u32, b: u32, c: u32) -> bool { a & b == c }
+  |
+
+warning: this function could have a `#[must_use]` attribute
+ --> src/lib.rs:6:8
+  |
+6 | pub fn c02_shl_vs_add_const_left(x: u32, y: u32) -> u32 { x << 16 + y }
+  |        ^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+  |
+6 + #[must_use]
+7 | pub fn c02_shl_vs_add_const_left(x: u32, y: u32) -> u32 { x << 16 + y }
+  |
+
+warning: this function could have a `#[must_use]` attribute
+ --> src/lib.rs:7:8
+  |
+7 | pub fn c03_shl_vs_add_const_right(x: u32, y: u32) -> u32 { x << y + 16 }
+  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  |
+  = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+  |
+7 + #[must_use]
+8 | pub fn c03_shl_vs_add_const_right(x: u32, y: u32) -> u32 { x << y + 16 }
+  |
+
+warning: this function could have a `#[must_use]` attribute
+ --> src/lib.rs:8:8
+  |
+8 | pub fn c04_land_in_lor(a: bool, b: bool, c: bool) -> bool { a && b || c }
+  |        ^^^^^^^^^^^^^^^
+  |
+  = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+  |
+8 + #[must_use]
+9 | pub fn c04_land_in_lor(a: bool, b: bool, c: bool) -> bool { a && b || c }
+  |
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:9:8
+   |
+ 9 | pub fn c05_bitand_in_bitor(a: u32, b: u32, c: u32) -> u32 { a & b | c }
+   |        ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+ 9 + #[must_use]
+10 | pub fn c05_bitand_in_bitor(a: u32, b: u32, c: u32) -> u32 { a & b | c }
+   |
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:10:8
+   |
+10 | pub fn c06_bitxor_in_bitor(a: u32, b: u32, c: u32) -> u32 { a ^ b | c }
+   |        ^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+10 + #[must_use]
+11 | pub fn c06_bitxor_in_bitor(a: u32, b: u32, c: u32) -> u32 { a ^ b | c }
+   |
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:11:8
+   |
+11 | pub fn c08_bitand_vs_shl(a: u32, b: u32, c: u32) -> u32 { a & b << c }
+   |        ^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+11 + #[must_use]
+12 | pub fn c08_bitand_vs_shl(a: u32, b: u32, c: u32) -> u32 { a & b << c }
+   |
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:12:8
+   |
+12 | pub fn c09_bitand_vs_add(a: u32, b: u32, c: u32) -> u32 { a & b + c }
+   |        ^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+12 + #[must_use]
+13 | pub fn c09_bitand_vs_add(a: u32, b: u32, c: u32) -> u32 { a & b + c }
+   |
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:13:8
+   |
+13 | pub fn c10_mul_vs_add_control(a: u32, b: u32, c: u32) -> u32 { a * b + c }
+   |        ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+13 + #[must_use]
+14 | pub fn c10_mul_vs_add_control(a: u32, b: u32, c: u32) -> u32 { a * b + c }
+   |
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:14:8
+   |
+14 | pub fn c11_rem_vs_shl(a: u32, b: u32) -> u32 { a % b << 2 }
+   |        ^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+14 + #[must_use]
+15 | pub fn c11_rem_vs_shl(a: u32, b: u32) -> u32 { a % b << 2 }
+   |
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:15:8
+   |
+15 | pub fn c17_idiv_cast_to_f64(i: i32, j: i32) -> f64 { (i / j) as f64 }
+   |        ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+15 + #[must_use]
+16 | pub fn c17_idiv_cast_to_f64(i: i32, j: i32) -> f64 { (i / j) as f64 }
+   |
+
+warning: casts from `i32` to `f64` can be expressed infallibly using `From`
+  --> src/lib.rs:15:54
+   |
+15 | pub fn c17_idiv_cast_to_f64(i: i32, j: i32) -> f64 { (i / j) as f64 }
+   |                                                      ^^^^^^^^^^^^^^
+   |
+   = help: an `as` cast can become silently lossy if the types change in the future
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#cast_lossless
+   = note: `-W clippy::cast-lossless` implied by `-W clippy::pedantic`
+   = help: to override `-W clippy::pedantic` add `#[allow(clippy::cast_lossless)]`
+help: use `f64::from` instead
+   |
+15 - pub fn c17_idiv_cast_to_f64(i: i32, j: i32) -> f64 { (i / j) as f64 }
+15 + pub fn c17_idiv_cast_to_f64(i: i32, j: i32) -> f64 { f64::from(i / j) }
+   |
+
+warning: integer division
+  --> src/lib.rs:15:54
+   |
+15 | pub fn c17_idiv_cast_to_f64(i: i32, j: i32) -> f64 { (i / j) as f64 }
+   |                                                      ^^^^^^^
+   |
+   = help: division of integers may cause loss of precision. consider using floats
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#integer_division
+   = note: requested on the command line with `-W clippy::integer-division`
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:16:8
+   |
+16 | pub fn c17b_idiv_from_to_f64(i: i32, j: i32) -> f64 { f64::from(i / j) }
+   |        ^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+16 + #[must_use]
+17 | pub fn c17b_idiv_from_to_f64(i: i32, j: i32) -> f64 { f64::from(i / j) }
+   |
+
+warning: integer division
+  --> src/lib.rs:16:65
+   |
+16 | pub fn c17b_idiv_from_to_f64(i: i32, j: i32) -> f64 { f64::from(i / j) }
+   |                                                                 ^^^^^
+   |
+   = help: division of integers may cause loss of precision. consider using floats
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#integer_division
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:17:8
+   |
+17 | pub fn c19_imul_cast_to_i64(i: i32, j: i32) -> i64 { (i * j) as i64 }
+   |        ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+17 + #[must_use]
+18 | pub fn c19_imul_cast_to_i64(i: i32, j: i32) -> i64 { (i * j) as i64 }
+   |
+
+warning: casts from `i32` to `i64` can be expressed infallibly using `From`
+  --> src/lib.rs:17:54
+   |
+17 | pub fn c19_imul_cast_to_i64(i: i32, j: i32) -> i64 { (i * j) as i64 }
+   |                                                      ^^^^^^^^^^^^^^
+   |
+   = help: an `as` cast can become silently lossy if the types change in the future
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#cast_lossless
+help: use `i64::from` instead
+   |
+17 - pub fn c19_imul_cast_to_i64(i: i32, j: i32) -> i64 { (i * j) as i64 }
+17 + pub fn c19_imul_cast_to_i64(i: i32, j: i32) -> i64 { i64::from(i * j) }
+   |
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:18:8
+   |
+18 | pub fn c22_shr_vs_sub(x: u32, y: u32) -> u32 { x >> y - 1 }
+   |        ^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+18 + #[must_use]
+19 | pub fn c22_shr_vs_sub(x: u32, y: u32) -> u32 { x >> y - 1 }
+   |
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:19:8
+   |
+19 | pub fn c07_bitand_in_bitxor(a: u32, b: u32, c: u32) -> u32 { a & b ^ c }
+   |        ^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+19 + #[must_use]
+20 | pub fn c07_bitand_in_bitxor(a: u32, b: u32, c: u32) -> u32 { a & b ^ c }
+   |
+
+warning: this function could have a `#[must_use]` attribute
+  --> src/lib.rs:20:8
+   |
+20 | pub fn c02b_shl_vs_add_const8(x: u32, y: u32) -> u32 { x << 8 + y }
+   |        ^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://clippy.rust-lang.org/main/index.html#must_use_candidate
+help: add the attribute
+   |
+20 + #[must_use]
+21 | pub fn c02b_shl_vs_add_const8(x: u32, y: u32) -> u32 { x << 8 + y }
+   |
+
+[exit 0]

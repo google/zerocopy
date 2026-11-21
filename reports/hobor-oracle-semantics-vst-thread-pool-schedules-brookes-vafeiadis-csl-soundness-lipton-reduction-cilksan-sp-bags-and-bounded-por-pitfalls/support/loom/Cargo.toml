@@ -1,0 +1,7 @@
+[package]
+name = "loom-preemption-probe"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+loom = { git = "https://github.com/tokio-rs/loom", rev = "9d549cd5357a5485900f4c53951fc1726319659f" }

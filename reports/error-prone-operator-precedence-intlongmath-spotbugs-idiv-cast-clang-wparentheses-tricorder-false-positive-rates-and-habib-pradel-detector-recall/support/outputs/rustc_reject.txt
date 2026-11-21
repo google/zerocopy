@@ -1,0 +1,103 @@
+$ rustc -V
+rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)
+$ rustc --edition 2024 --crate-type lib --emit=metadata -o reject.rmeta probe_reject.rs
+error: comparison operators cannot be chained
+ --> probe_reject.rs:3:59
+  |
+3 | pub fn c12_chained_lt(a: i32, b: i32, c: i32) -> bool { a < b < c }
+  |                                                           ^   ^
+  |
+  = help: use `::<...>` instead of `<...>` to specify lifetime, type, or const arguments
+  = help: or use `(...)` if you meant to specify fn arguments
+help: split the comparison into two
+  |
+3 | pub fn c12_chained_lt(a: i32, b: i32, c: i32) -> bool { a < b && b < c }
+  |                                                               ++++
+
+error[E0308]: mismatched types
+ --> probe_reject.rs:4:70
+  |
+4 | ...> i64 { let l: i64 = i * j; l }
+  |                   ---   ^^^^^ expected `i64`, found `i32`
+  |                   |
+  |                   expected due to this
+  |
+help: you can convert an `i32` to an `i64`
+  |
+4 | pub fn c19_imul_implicit_widen(i: i32, j: i32) -> i64 { let l: i64 = (i * j).into(); l }
+  |                                                                      +     ++++++++
+
+error[E0308]: mismatched types
+ --> probe_reject.rs:5:70
+  |
+5 | ...> f64 { let d: f64 = i / j; d }
+  |                   ---   ^^^^^ expected `f64`, found `i32`
+  |                   |
+  |                   expected due to this
+  |
+help: you can convert an `i32` to an `f64`, producing the floating point representation of the integer
+  |
+5 | pub fn c17_idiv_implicit_float(i: i32, j: i32) -> f64 { let d: f64 = (i / j).into(); d }
+  |                                                                      +     ++++++++
+
+error[E0277]: cannot add `bool` to `i32`
+   --> probe_reject.rs:6:51
+    |
+  6 | ...) -> i32 { if a + (b > 0) { 1 } else { 2 } }
+    |                    ^ no implementation for `i32 + bool`
+    |
+    = help: the trait `Add<bool>` is not implemented for `i32`
+help: the following other types implement trait `Add<Rhs>`
+   --> $RUSTUP_HOME/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/arith.rs:98:9
+    |
+ 98 |         const impl Add for $t {
+    |         ^^^^^^^^^^^^^^^^^^^^^ `i32` implements `Add`
+...
+113 | add_impl! { usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 f16 f32 f64 f128 }
+    | ---------------------------------------------------------------------------------- in this macro invocation
+    |
+   ::: $RUSTUP_HOME/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/internal_macros.rs:22:9
+    |
+ 22 |         const impl $imp<$u> for &$t {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ `&i32` implements `Add<i32>`
+...
+ 33 |         const impl $imp<&$u> for $t {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ `i32` implements `Add<&i32>`
+...
+ 44 |         const impl $imp<&$u> for &$t {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `&i32` implements `Add`
+    = note: this error originates in the macro `add_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0277]: no implementation for `i32 & bool`
+   --> probe_reject.rs:7:54
+    |
+  7 | ...) -> i32 { if a & (b > 0) { 1 } else { 2 } }
+    |                    ^ no implementation for `i32 & bool`
+    |
+    = help: the trait `BitAnd<bool>` is not implemented for `i32`
+help: the following other types implement trait `BitAnd<Rhs>`
+   --> $RUSTUP_HOME/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/ops/bit.rs:183:9
+    |
+183 |         const impl BitAnd for $t {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^ `i32` implements `BitAnd`
+...
+196 | bitand_impl! { bool usize u8 u16 u32 u64 u128 isize i8 i16 i32 i64 i128 }
+    | ------------------------------------------------------------------------- in this macro invocation
+    |
+   ::: $RUSTUP_HOME/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/internal_macros.rs:22:9
+    |
+ 22 |         const impl $imp<$u> for &$t {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ `&i32` implements `BitAnd<i32>`
+...
+ 33 |         const impl $imp<&$u> for $t {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^ `i32` implements `BitAnd<&i32>`
+...
+ 44 |         const impl $imp<&$u> for &$t {
+    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `&i32` implements `BitAnd`
+    = note: this error originates in the macro `bitand_impl` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error: aborting due to 5 previous errors
+
+Some errors have detailed explanations: E0277, E0308.
+For more information about an error, try `rustc --explain E0277`.
+[exit 1]

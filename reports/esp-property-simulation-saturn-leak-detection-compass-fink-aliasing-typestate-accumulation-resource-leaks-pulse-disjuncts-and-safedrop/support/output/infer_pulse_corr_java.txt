@@ -1,0 +1,12 @@
+#0
+Corr.java:39: error: Resource Leak(PULSE_RESOURCE_LEAK)
+  Resource dynamically allocated by constructor `java.io.FileInputStream()` on line 38 is not closed after the last access at line 39. 
+  37.     static void leakBug(String name, boolean b) throws IOException {
+  38.       FileInputStream f = new FileInputStream(name);
+  39. >     if (b) f.close();
+  40.     }
+  41.   }
+
+Found 1 issue
+          Issue Type(ISSUED_TYPE_ID): #
+  Resource Leak(PULSE_RESOURCE_LEAK): 1

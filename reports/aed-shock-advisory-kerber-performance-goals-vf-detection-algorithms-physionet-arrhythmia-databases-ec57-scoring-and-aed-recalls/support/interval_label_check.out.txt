@@ -1,0 +1,16 @@
+study                  m    est printed           n    x | Wald          Wilson        Clopper-P    
+Eilevstjonn MC-RAMP    Se  96.7 (87.6-98.0)        92   89 | ( 93.1-100.4)  ( 90.8- 98.9)  ( 90.8- 99.3) 
+Eilevstjonn MC-RAMP    Sp  79.9 (73.3-85.2)       174  139 | ( 73.9- 85.8)  ( 73.3- 85.2)* ( 73.2- 85.6) 
+Ruiz de Gauna Kalman   Se  90.1 (83.6-94.2)       131  118 | ( 85.0- 95.2)  ( 83.8- 94.1)  ( 83.6- 94.6) 
+Ruiz de Gauna Kalman   Sp  80.4 (75.9-84.3)       347  279 | ( 76.2- 84.6)  ( 75.9- 84.2)* ( 75.8- 84.4)*
+Aramendi LMS           Se  95.4 (88.4-98.6)        87   83 | ( 91.0- 99.8)  ( 88.8- 98.2)  ( 88.6- 98.7) 
+Aramendi LMS           Sp  86.3 (81.8-89.9)       285  246 | ( 82.3- 90.3)  ( 81.8- 89.8)* ( 81.8- 90.1) 
+Tan ART                Se  92.1 (86.8-95.5)       114  105 | ( 87.2- 97.1)  ( 85.7- 95.8)  ( 85.5- 96.3) 
+Tan ART                Sp  90.5 (89.7-91.2) sym  4155 3760 | ( 89.6- 91.4)  ( 89.6- 91.3)* ( 89.6- 91.4) 
+Li direct              Se  93.3 (92.0-94.4)      1256 1172 | ( 91.9- 94.7)  ( 91.8- 94.6)  ( 91.8- 94.6) 
+Li direct              Sp  88.6 (86.8-90.2)       964  854 | ( 86.6- 90.6)  ( 86.4- 90.4)  ( 86.4- 90.5) 
+Krasteva direct        Se  90.1 (85.6-94.6) sym   172  155 | ( 85.7- 94.6)* ( 84.7- 93.7)  ( 84.6- 94.1) 
+Krasteva direct        Sp  86.1 (83.6-88.7) sym   721  621 | ( 83.6- 88.7)* ( 83.4- 88.5)  ( 83.4- 88.6) 
+
+rows reproduced within +/-0.15 points (marked *): {'Wald': 2, 'Wilson': 4, 'Clopper-P': 1} of 12
+printed intervals symmetric about the estimate (Wald intervals must be): 3 of 12

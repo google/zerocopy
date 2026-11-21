@@ -1,0 +1,13 @@
+# rustc: rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)
+# cargo: cargo 1.102.0-nightly (c07ac2c4d 2026-11-06)
+# loom: git rev 9d549cd5357a5485900f4c53951fc1726319659f
+LOOM_MAX_PREEMPTIONS=0 assertion=on failure_found=false executions_explored=3
+LOOM_MAX_PREEMPTIONS=1 assertion=on failure_found=false executions_explored=21
+LOOM_MAX_PREEMPTIONS=2 assertion=on failure_found=true executions_explored=30
+LOOM_MAX_PREEMPTIONS=3 assertion=on failure_found=true executions_explored=49
+LOOM_MAX_PREEMPTIONS=unset assertion=on failure_found=true executions_explored=73
+LOOM_MAX_PREEMPTIONS=0 assertion=off failure_found=false executions_explored=3
+LOOM_MAX_PREEMPTIONS=1 assertion=off failure_found=false executions_explored=21
+LOOM_MAX_PREEMPTIONS=2 assertion=off failure_found=false executions_explored=69
+LOOM_MAX_PREEMPTIONS=3 assertion=off failure_found=false executions_explored=150
+LOOM_MAX_PREEMPTIONS=unset assertion=off failure_found=false executions_explored=234

@@ -1,0 +1,149 @@
+=== P1 matching window (record win, 360 Hz, offsets 0,20,35,36,53,54,55,-53,-54,-55 samples)
+N(110520)/O(110520)
+O(110575)/N(110575)
+O(111545)/N(111545)
+N(111600)/O(111600)
+N(114120)/O(114120)
+O(114175)/N(114175)
+O(115145)/N(115145)
+N(115200)/O(115200)
+N(117720)/O(117720)
+O(117775)/N(117775)
+O(118745)/N(118745)
+N(118800)/O(118800)
+N(121320)/O(121320)
+O(121375)/N(121375)
+O(122345)/N(122345)
+N(122400)/O(122400)
+N(124920)/O(124920)
+O(124975)/N(124975)
+O(125945)/N(125945)
+N(126000)/O(126000)
+N(128520)/O(128520)
+O(128575)/N(128575)
+O(129545)/N(129545)
+N(129600)/O(129600)
+Beat-by-beat comparison results for record win
+Reference annotator: atr
+     Test annotator: tst
+
+               Algorithm
+        n    v    f    q    o    x
+   _______________________________
+ N |   48    0    0    0   12    0
+ V |    0    0    0    0    0    0
+ F |    0    0    0    0    0    0
+ Q |    0    0    0    0    0    0
+ O |   12    0    0    0
+ X |    0    0    0    0
+
+           QRS sensitivity:  80.00% (48/60)
+ QRS positive predictivity:  80.00% (48/60)
+           VEB sensitivity:      -  (0/0)
+ VEB positive predictivity:      -  (0/0)
+   VEB false positive rate:  0.000% (0/60)
+
+
+  Beats missed in shutdown:   0.00% (0/60)
+      N missed in shutdown:   0.00% (0/60)
+      V missed in shutdown:      -  (0/0)
+      F missed in shutdown:      -  (0/0)
+       Total shutdown time:     0 seconds
+=== P1b same, nonstandard window -w 0.1 (36 samples)
+bxb: (warning) nonstandard comparison selected
+Beat-by-beat comparison results for record win
+Reference annotator: atr
+     Test annotator: tst
+
+               Algorithm
+        n    v    f    q    o    x
+   _______________________________
+ N |   24    0    0    0   36    0
+ V |    0    0    0    0    0    0
+ F |    0    0    0    0    0    0
+ Q |    0    0    0    0    0    0
+ O |   36    0    0    0
+ X |    0    0    0    0
+
+           QRS sensitivity:  40.00% (24/60)
+ QRS positive predictivity:  40.00% (24/60)
+           VEB sensitivity:      -  (0/0)
+ VEB positive predictivity:      -  (0/0)
+   VEB false positive rate:  0.000% (0/60)
+
+
+  Beats missed in shutdown:   0.00% (0/60)
+      N missed in shutdown:   0.00% (0/60)
+      V missed in shutdown:      -  (0/0)
+      F missed in shutdown:      -  (0/0)
+       Total shutdown time:     0 seconds
+=== P2 beats inside reference VF (record vfx)
+Beat-by-beat comparison results for record vfx
+Reference annotator: atr
+     Test annotator: tst
+
+               Algorithm
+        n    v    f    q    o    x
+   _______________________________
+ N |   39    0    0    0    0    0
+ V |    0    0    0    0    0    0
+ F |    0    0    0    0    0    0
+ Q |    0    0    0    0    0    0
+ O |    0    0    0    0
+ X |    0    0    0    0
+
+           QRS sensitivity: 100.00% (39/39)
+ QRS positive predictivity: 100.00% (39/39)
+           VEB sensitivity:      -  (0/0)
+ VEB positive predictivity:      -  (0/0)
+   VEB false positive rate:  0.000% (0/39)
+
+
+  Beats missed in shutdown:   0.00% (0/39)
+      N missed in shutdown:   0.00% (0/39)
+      V missed in shutdown:      -  (0/0)
+      F missed in shutdown:      -  (0/0)
+       Total shutdown time:     0 seconds
+=== P3 learning period (record lrn; test misses every beat before 300 s)
+ N |   61    0    0    0    0    0
+           QRS sensitivity: 100.00% (61/61)
+ QRS positive predictivity: 100.00% (61/61)
+--- P3b same record with -f 0 (nonstandard: include learning period)
+bxb: (warning) nonstandard comparison selected
+ N |   61    0    0    0  290    0
+           QRS sensitivity:  17.38% (61/351)
+ QRS positive predictivity: 100.00% (61/61)
+=== P4 gross vs average (records agA, agB) via bxb -l and sumstats
+Record Nn' Vn' Fn' On'  Nv   Vv  Fv' Ov' No' Vo' Fo'  Q Se   Q +P   V Se   V +P  V FPR
+ agA    59   0   0   0   0    0   0   0   1   0   0  98.33 100.00      -      -  0.000
+ agB     3   0   0   0   0    0   0   0   3   0   0  50.00 100.00      -      -  0.000
+______________________________________________________________________________________
+Sum      62   0   0   0   0    0   0   0   4   0   0
+Gross                                                   93.94 100.00      -      -  0.000
+Average                                                 74.17 100.00      -      -  0.000
+Total QRS complexes: 66  Total VEBs: 0
+
+Summary of results from 2 records
+=== P5 VF episode scoring (record epi)
+VF episode-by-episode comparison results for record epi
+Reference annotator: atr
+     Test annotator: tst
+
+           Episode sensitivity:  50% (1/2)
+ Episode positive predictivity:  33% (1/3)
+          Duration sensitivity:   0% (0:00.103/0:40.000)
+Duration positive predictivity:   1% (0:00.103/0:12.103)
+Duration of reference episodes:      0:40.000
+     Duration of test episodes:      0:12.103
+--- P5b with -I 3 (exclude episodes shorter than 3 s from all statistics; nonstandard)
+epicmp: (warning) nonstandard comparison selected
+VF episode-by-episode comparison results for record epi
+Reference annotator: atr
+     Test annotator: tst
+
+           Episode sensitivity:  50% (1/2)
+ Episode positive predictivity:  50% (1/2)
+          Duration sensitivity:   0% (0:00.103/0:40.000)
+Duration positive predictivity:   1% (0:00.103/0:10.103)
+Duration of reference episodes:      0:40.000
+     Duration of test episodes:      0:10.103

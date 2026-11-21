@@ -1,0 +1,9 @@
+producer: t = -1.664675657612 (with 1e-9 noise), lambda_min(Q) at optimum = 0.727255, 7.201 ms
+exact rational of the float t has denominator 2^51
+checker: accepted with common denominator 1, t = -2, 0.142 ms
+   2 * (1*x^2 + 1/2*xy + -1*y^2)^2
+   5/2 * (0*x^2 + 1*xy + 2/5*y^2)^2
+   13/5 * (0*x^2 + 0*xy + 1*y^2)^2
+mutant t = -499999/1000000: rejected (not PSD)
+mutant t = 1/2: rejected (not PSD)
+PSD interval check: t=-1/2 -> not PSD ; t=-1 -> PSD

@@ -1,0 +1,95 @@
+{
+  "topics": [
+    "verification/independent-numerical-certificate-checking",
+    "verification/formally-rechecked-computer-assisted-proofs",
+    "tooling/sum-of-squares-certificate-validation",
+    "runtimes/certificate-checking-cost-ratios",
+    "verification/trusted-computing-base",
+    "verification/interval-and-taylor-arithmetic-in-proof-assistants"
+  ],
+  "subjects": [
+    {
+      "name": "Flyspeck formal proof of the Kepler conjecture (HOL Light scripts, formal_lp, nonlinear-inequality run logs)",
+      "identity": {
+        "repository": "flyspeck/flyspeck",
+        "revision": "32948714cdf06d700af2c993c9a92b7b551d7af5"
+      }
+    },
+    {
+      "name": "formal_ineqs: HOL Light verifier for nonlinear inequalities with formal Taylor interval arithmetic",
+      "identity": {
+        "repository": "monadius/formal_ineqs",
+        "revision": "2abe797285b3eb57e13988bc45d1747414e638f6"
+      }
+    },
+    {
+      "name": "Archive of Formal Proofs (read-only mirror): Ordinary_Differential_Equations incl. Ex/Lorenz, and Flyspeck-Tame",
+      "identity": {
+        "repository": "isabelle-prover/mirror-afp-devel",
+        "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720"
+      }
+    },
+    {
+      "name": "HOL Light (Examples/sos.ml sums-of-squares procedure)",
+      "identity": {
+        "repository": "jrh13/hol-light",
+        "revision": "1a0c0e6b182cd9e271946ba8d78f7942619f4acb"
+      }
+    },
+    {
+      "name": "NLCertify nonlinear-inequality certification tool with Coq back end",
+      "identity": {
+        "repository": "thery/nlcertify",
+        "revision": "939cc52ba65d09eceb5fc76d2f657a66ccbc60ea"
+      }
+    },
+    {
+      "name": "NASA PVS Library (Bernstein and interval_arith strategies)",
+      "identity": {
+        "repository": "nasa/pvslib",
+        "revision": "d70ebfc8fcd562699aea4bcccbaf3d2c4d66796f"
+      }
+    },
+    {
+      "name": "Hales et al., A formal proof of the Kepler conjecture (Forum of Mathematics, Pi 5, 2017)",
+      "identity": {
+        "doi": "10.1017/fmp.2017.1",
+        "arxiv": "1501.02155v1"
+      }
+    },
+    {
+      "name": "Hales, Harrison, McLaughlin, Nipkow, Obua, Zumkeller, A revision of the proof of the Kepler conjecture (Discrete Comput. Geom. 44, 2010)",
+      "identity": {
+        "doi": "10.1007/s00454-009-9148-4",
+        "arxiv": "0902.0350v1"
+      }
+    },
+    {
+      "name": "Solovyev and Hales, Formal verification of nonlinear inequalities with Taylor interval approximations (NFM 2013)",
+      "identity": {
+        "doi": "10.1007/978-3-642-38088-4_26",
+        "arxiv": "1301.1702v1"
+      }
+    },
+    {
+      "name": "Immler, A verified ODE solver and the Lorenz attractor (J. Autom. Reasoning 61, 2018)",
+      "identity": {
+        "doi": "10.1007/s10817-017-9448-y"
+      }
+    },
+    {
+      "name": "Harrison, Verifying nonlinear real formulas via sums of squares (TPHOLs 2007)",
+      "identity": {
+        "doi": "10.1007/978-3-540-74591-4_9"
+      }
+    },
+    {
+      "name": "Magron, Allamigeon, Gaubert, Werner, Formal proofs for nonlinear optimization (J. Formalized Reasoning 8(1), 2015)",
+      "identity": {
+        "doi": "10.6092/issn.1972-5787/4319",
+        "arxiv": "1404.7282v4"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

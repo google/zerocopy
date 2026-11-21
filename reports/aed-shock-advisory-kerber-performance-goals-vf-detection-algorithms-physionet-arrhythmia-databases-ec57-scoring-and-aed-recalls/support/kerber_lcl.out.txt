@@ -1,0 +1,24 @@
+one-sided 90% LCL recomputation (z = 1.2816)
+rhythm                        n  goal  pub  Wald@goal Wilson@goal CP x=floor  CP x=ceil Wald x=floor
+Coarse VF                   200  0.90   87      87.28       86.95      86.72      86.72        87.28
+Rapid VT                     50  0.75   67      67.15       66.44      64.40      66.53        66.05
+NSR                         100  0.99   97      97.72       96.72      96.17      96.17        97.72
+AF/SB/SVT/block/IVR/PVCs     30  0.95   88      89.90       87.18      83.22      87.64        87.50
+Asystole                    100  0.95   92      92.21       91.41      90.92      90.92        92.21
+
+CP continuous / Agresti-Coull values:
+  Coarse VF                  pub  87  CPcont  86.72  AC  86.93
+  Rapid VT                   pub  67  CPcont  65.46  AC  66.40
+  NSR                        pub  97  CPcont  96.17  AC  96.52
+  AF/SB/SVT/block/IVR/PVCs   pub  88  CPcont  85.39  AC  86.72
+  Asystole                   pub  92  CPcont  90.92  AC  91.32
+
+which constructions reproduce the published integer LCL?
+(rounded = round-half-up to integer percent; truncated = floor)
+  Wald@goal              rounded: 3/5 YYnnY   truncated: 4/5 YYYnY
+  Wilson@goal            rounded: 2/5 YnYnn   truncated: 0/5 nnnnn
+  CP x=floor(goal*n)     rounded: 1/5 Ynnnn   truncated: 0/5 nnnnn
+  CP x=ceil(goal*n)      rounded: 3/5 YYnYn   truncated: 0/5 nnnnn
+  Wald x=floor(goal*n)   rounded: 2/5 YnnnY   truncated: 3/5 YnYnY
+  CP continuous x=goal*n rounded: 1/5 Ynnnn   truncated: 0/5 nnnnn
+  Agresti-Coull@goal     rounded: 2/5 YnYnn   truncated: 0/5 nnnnn

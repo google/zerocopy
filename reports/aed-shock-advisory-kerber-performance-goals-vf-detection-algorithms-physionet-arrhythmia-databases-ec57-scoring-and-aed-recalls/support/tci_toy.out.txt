@@ -1,0 +1,19 @@
+TCI toy model (fs=250 Hz, 8-s segments); Thakor/Amann rule: TCI < 400 ms -> VF/VT branch
+sinusoids (phase 0.3 rad):
+  f=1.0 Hz ( 60/min): TCI=1000.0 ms  1000/f=1000.0  -> SR
+  f=1.5 Hz ( 90/min): TCI= 503.6 ms  1000/f= 666.7  -> SR
+  f=2.0 Hz (120/min): TCI= 500.0 ms  1000/f= 500.0  -> SR
+  f=2.4 Hz (144/min): TCI= 386.6 ms  1000/f= 416.7  -> VF/VT branch
+  f=2.5 Hz (150/min): TCI= 334.1 ms  1000/f= 400.0  -> VF/VT branch
+  f=2.6 Hz (156/min): TCI= 385.3 ms  1000/f= 384.6  -> VF/VT branch
+  f=3.0 Hz (180/min): TCI= 333.3 ms  1000/f= 333.3  -> VF/VT branch
+  f=4.0 Hz (240/min): TCI= 250.0 ms  1000/f= 250.0  -> VF/VT branch
+  f=5.0 Hz (300/min): TCI= 200.0 ms  1000/f= 200.0  -> VF/VT branch
+Gaussian pulse trains (sigma 12 ms), i.e. narrow regular 'beats':
+   60/min: TCI=1000.0 ms -> SR
+  100/min: TCI= 600.1 ms -> SR
+  150/min: TCI= 400.0 ms -> SR
+  180/min: TCI= 333.3 ms -> VF/VT branch
+  240/min: TCI= 250.0 ms -> VF/VT branch
+flat (constant) 8-s segment:
+  IndexError: no threshold crossing in the middle 1-s stage

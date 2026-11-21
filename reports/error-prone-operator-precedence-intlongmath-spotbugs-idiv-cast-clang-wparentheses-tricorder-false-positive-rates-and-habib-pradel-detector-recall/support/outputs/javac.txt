@@ -1,0 +1,27 @@
+$ javac -version
+javac 27.0.1
+$ javac --release 17 -Xlint:all -g -d jcls Probe.java
+[exit 0]
+$ javac --release 17 -d jrej ProbeReject.java
+ProbeReject.java:4: error: bad operand types for binary operator '&'
+  static boolean c01_bitand_vs_eq(int a, int b, int c) { return a & b == c; }
+                                                                  ^
+  first type:  int
+  second type: boolean
+ProbeReject.java:5: error: bad operand types for binary operator '<'
+  static boolean c12_chained_lt(int a, int b, int c) { return a < b < c; }
+                                                                    ^
+  first type:  boolean
+  second type: int
+ProbeReject.java:6: error: bad operand types for binary operator '+'
+  static int c13_add_vs_ternary(int a, int b) { return a + (b > 0) ? 1 : 2; }
+                                                         ^
+  first type:  int
+  second type: boolean
+ProbeReject.java:7: error: bad operand types for binary operator '&'
+  static int c14_bitand_vs_ternary(int a, int b) { return a & (b > 0) ? 1 : 2; }
+                                                            ^
+  first type:  int
+  second type: boolean
+4 errors
+[exit 1]

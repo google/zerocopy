@@ -1,0 +1,10 @@
+evaluate.py sha256: ec8f41f5b826305d66e90b1ea3eab630e4ff025d9e4549fe070a6b5a1a4597bd
+numpy 2.3.5
+record win: offsets cycle [0, 20, 35, 36, 53, 54, 55, -53, -54, -55] (samples at 360 Hz)
+  window_width=36: tp=18 fp=42 fn=42 Se=0.3000 +P=0.3000 matched offsets=[0, 20, 35]
+  window_width=54: tp=36 fp=24 fn=24 Se=0.6000 +P=0.6000 matched offsets=[-53, 0, 20, 35, 36, 53]
+  window_width=55: tp=48 fp=12 fn=12 Se=0.8000 +P=0.8000 matched offsets=[-54, -53, 0, 20, 35, 36, 53, 54]
+  note: int(0.1*360) = 36 (window used by benchmark_mitdb)
+record agA: tp=59 fn=1 Se=0.9833
+record agB: tp=3 fn=3 Se=0.5000
+per-record mean Se (as in benchmark_mitdb) = 0.7417; gross Se = 0.9394

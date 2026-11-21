@@ -367,6 +367,181 @@
         "verification/program-logics"
       ]
     },
+    "aed-shock-advisory-kerber-performance-goals-vf-detection-algorithms-physionet-arrhythmia-databases-ec57-scoring-and-aed-recalls": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "bemoody/wfdb",
+            "revision": "de6b1d3981d69060e6a4d1b4e86375fb0d3ed2d1",
+            "version": "10.7.0"
+          },
+          "name": "WFDB Software Package (C library and bxb/epicmp/sumstats EC38/EC57 comparators)"
+        },
+        {
+          "identity": {
+            "repository": "MIT-LCP/wfdb-python",
+            "revision": "cc9f94fcc8bc938c6fb6cb40fb61c85b33e9404e"
+          },
+          "name": "wfdb-python (processing/evaluate.py annotation comparator, processing/qrs.py)"
+        },
+        {
+          "identity": {
+            "repository": "berndporr/py-ecg-detectors",
+            "revision": "f39354cb686710f8e243e214b94fda0914fff656"
+          },
+          "name": "py-ecg-detectors (open QRS detector implementations)"
+        },
+        {
+          "identity": {
+            "repository": "FelipeURJC/ohca-vs-public-dbs",
+            "revision": "4d799e936fea095db4aba3d08bfdc0aabffc29be"
+          },
+          "name": "ohca-vs-public-dbs (published code for Figuera et al. 2016 VF-detection features, bootstrap, and feature selection)"
+        },
+        {
+          "identity": {
+            "doi": "10.1161/01.CIR.95.6.1677"
+          },
+          "name": "Kerber et al. 1997 AHA statement on AED arrhythmia analysis algorithm performance"
+        },
+        {
+          "identity": {
+            "pma": "P160033",
+            "url": "https://www.accessdata.fda.gov/cdrh_docs/pdf16/P160033b.pdf"
+          },
+          "name": "FDA PMA P160033 Summary of Safety and Effectiveness Data (reproduces Kerber performance-goal table)"
+        },
+        {
+          "identity": {
+            "doi": "10.1161/JAHA.124.039291"
+          },
+          "name": "AHA Automated External Defibrillator Symposium summary and recommendations (2025)"
+        },
+        {
+          "identity": {
+            "standard": "21 CFR 870.5310",
+            "version": "as amended at 80 FR 5682, Feb. 3, 2015"
+          },
+          "name": "21 CFR 870.5310 Automated external defibrillator system"
+        },
+        {
+          "identity": {
+            "docket": "FDA-2013-N-0234",
+            "standard": "80 FR 4783 (FR Doc 2015-01619); republished 80 FR 5674 (FR Doc 2015-02049)"
+          },
+          "name": "FDA final order: Effective Date of Requirement for Premarket Approval for AED Systems"
+        },
+        {
+          "identity": {
+            "isbn": "9782832254134",
+            "standard": "IEC 60601-2-4:2010+AMD1:2018 CSV",
+            "version": "edition 3.1, 2018-02-28"
+          },
+          "name": "IEC 60601-2-4 particular requirements for cardiac defibrillators"
+        },
+        {
+          "identity": {
+            "doi": "10.2345/9781570204784",
+            "standard": "ANSI/AAMI EC57:2012/(R)2020"
+          },
+          "name": "ANSI/AAMI EC57 testing and reporting performance results of cardiac rhythm and ST segment measurement algorithms"
+        },
+        {
+          "identity": {
+            "doi": "10.13026/C2F305",
+            "version": "1.0.0"
+          },
+          "name": "MIT-BIH Arrhythmia Database"
+        },
+        {
+          "identity": {
+            "doi": "10.13026/C22P44",
+            "version": "1.0.0"
+          },
+          "name": "MIT-BIH Malignant Ventricular Arrhythmia Database"
+        },
+        {
+          "identity": {
+            "doi": "10.13026/C2X59M",
+            "version": "1.0.0"
+          },
+          "name": "Creighton University Ventricular Tachyarrhythmia Database"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/10.58594"
+          },
+          "name": "Thakor, Zhu, Pan 1990 sequential hypothesis testing VT/VF detector"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BF02446668"
+          },
+          "name": "Clayton, Murray, Campbell 1993 comparison of four VF recognition techniques"
+        },
+        {
+          "identity": {
+            "doi": "10.1088/0967-3334/25/5/007"
+          },
+          "name": "Jekova and Krasteva 2004 real-time VF/VT detection"
+        },
+        {
+          "identity": {
+            "doi": "10.1186/1475-925X-4-60"
+          },
+          "name": "Amann, Tratnig, Unterkofler 2005 reliability of VF detection algorithms for AEDs"
+        },
+        {
+          "identity": {
+            "doi": "10.1371/journal.pone.0159654"
+          },
+          "name": "Figuera et al. 2016 machine learning for shockable-rhythm detection in AEDs"
+        },
+        {
+          "identity": {
+            "doi": "10.1155/2014/386010"
+          },
+          "name": "Ruiz de Gauna et al. 2014 rhythm analysis during cardiopulmonary resuscitation review"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.resuscitation.2017.05.017"
+          },
+          "name": "Zijlstra et al. 2017 AED and operator performance in out-of-hospital cardiac arrest"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.annemergmed.2011.07.022"
+          },
+          "name": "DeLuca et al. 2012 AED device failures reported to FDA (MAUDE)"
+        },
+        {
+          "identity": {
+            "doi": "10.1001/jama.296.6.655"
+          },
+          "name": "Shah and Maisel 2006 recalls and safety alerts affecting AEDs"
+        },
+        {
+          "identity": {
+            "doi": "10.1161/01.CIR.101.23.e215"
+          },
+          "name": "Goldberger et al. 2000 PhysioBank, PhysioToolkit, and PhysioNet"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/51.932724"
+          },
+          "name": "Moody and Mark 2001 impact of the MIT-BIH Arrhythmia Database"
+        }
+      ],
+      "topics": [
+        "domains/aed-shock-advisory-algorithms",
+        "verification/arrhythmia-database-benchmarking",
+        "domains/medical-device-recall-evidence",
+        "tooling/ecg-annotation-comparison-scoring"
+      ]
+    },
     "aeneas-architecture-translation-pipeline-and-pure-extraction": {
       "observed_at": "2026-10-15",
       "subjects": [
@@ -28342,6 +28517,178 @@
         "build"
       ]
     },
+    "error-prone-operator-precedence-intlongmath-spotbugs-idiv-cast-clang-wparentheses-tricorder-false-positive-rates-and-habib-pradel-detector-recall": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/error-prone",
+            "revision": "d37bcb8d89b21dd64b762274c7fb96967a3cba80"
+          },
+          "name": "Error Prone (OperatorPrecedence, IntLongMath, NarrowCalculation, ConstantOverflow source)"
+        },
+        {
+          "identity": {
+            "repository": "spotbugs/spotbugs",
+            "revision": "f4544188eb473d60221572fc0d5645325c8b18eb"
+          },
+          "name": "SpotBugs detector source (IDivResultCastToDouble, FindPuzzlers)"
+        },
+        {
+          "identity": {
+            "artifact": "spotbugs-4.10.5.tgz",
+            "repository": "spotbugs/spotbugs",
+            "revision": "6816eb256805aa6eed1dced23e6a4aea08cc6660",
+            "sha256": "cce3244900cc215ccd9f5a8db29ed9468fc47824faf662f4fad005343d96007e",
+            "version": "4.10.5"
+          },
+          "name": "SpotBugs 4.10.5 release (executed)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "25b1c803e1e1504f6dc11f7afd68e65ad3ee5964"
+          },
+          "name": "Clang and clang-tidy source (-Wparentheses family, SemaExpr.cpp)"
+        },
+        {
+          "identity": {
+            "repository": "gcc-mirror/gcc",
+            "revision": "5115c7e447fc07457443df874bf57840e8316d5f",
+            "tag": "releases/gcc-15.2.0"
+          },
+          "name": "GCC 15.2.0 upstream source (c-family/c-warn.cc)"
+        },
+        {
+          "identity": {
+            "version": "gcc (Debian 15.2.0-14) 15.2.0"
+          },
+          "name": "GCC binary (executed)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust-clippy",
+            "revision": "663e7ca4f8e69efa893b816140889b4a40c65f74"
+          },
+          "name": "Clippy source (precedence, precedence_bits, integer_division)"
+        },
+        {
+          "identity": {
+            "clippy_version": "clippy 0.1.101 (3ef0c22cdb 2026-11-11)",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rustc and Clippy nightly toolchain (executed)"
+        },
+        {
+          "identity": {
+            "version": "javac 27.0.1"
+          },
+          "name": "javac (executed)"
+        },
+        {
+          "identity": {
+            "path": "proposals/0077-operator-precedence.md",
+            "repository": "swiftlang/swift-evolution",
+            "revision": "d8a2ff1f9c95e11772e99574fc4853da924f9a68"
+          },
+          "name": "Swift Evolution SE-0077 Improved operator declarations"
+        },
+        {
+          "identity": {
+            "repository": "swiftlang/swift",
+            "revision": "2d2f72d90982a9510260acefde67c8fcc1db04c5"
+          },
+          "name": "Swift standard library precedence groups and diagnostics"
+        },
+        {
+          "identity": {
+            "repository": "sola-da/StaticBugCheckers",
+            "revision": "e3bd772b9151722f0683e8037bcd1af1f8fa4142"
+          },
+          "name": "Habib-Pradel static bug checker study artifact"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1052883.1052895"
+          },
+          "name": "Hovemeyer and Pugh, Finding Bugs Is Easy (SIGPLAN Notices 2004)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1251535.1251536"
+          },
+          "name": "Ayewah et al., Evaluating Static Analysis Defect Warnings on Production Software (PASTE 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1287624.1287633"
+          },
+          "name": "Kim and Ernst, Which Warnings Should I Fix First? (ESEC/FSE 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/MS.2008.130"
+          },
+          "name": "Ayewah et al., Using Static Analysis to Find Bugs (IEEE Software 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.infsof.2010.12.007"
+          },
+          "name": "Heckman and Williams, Actionable Alert Identification Techniques SLR (IST 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SCAM.2012.28"
+          },
+          "name": "Aftandilian et al., Building Useful Program Analysis Tools Using an Extensible Java Compiler (SCAM 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSE.2013.6606613"
+          },
+          "name": "Johnson et al., Why Don't Software Developers Use Static Analysis Tools to Find Bugs? (ICSE 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2568225.2568269"
+          },
+          "name": "Rahman et al., Comparing Static Bug Finders and Statistical Prediction (ICSE 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSE.2015.76"
+          },
+          "name": "Sadowski et al., Tricorder: Building a Program Analysis Ecosystem (ICSE 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SANER.2016.105"
+          },
+          "name": "Beller et al., Analyzing the State of Static Analysis (SANER 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3188720"
+          },
+          "name": "Sadowski et al., Lessons from Building Static Analysis Tools at Google (CACM 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3238147.3238213"
+          },
+          "name": "Habib and Pradel, How Many of All Bugs Do We Find? (ASE 2018)"
+        }
+      ],
+      "topics": [
+        "tooling/bug-pattern-checker-field-evaluations",
+        "pl/operator-precedence-diagnostics",
+        "compilers/integer-division-and-widening-warnings",
+        "verification/static-analysis-false-positive-measurement"
+      ]
+    },
     "escrow-calculi-for-crdt-collaborative-editing-of-linear-capabilities": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -28426,6 +28773,138 @@
         "tooling/live-programming",
         "verification",
         "verification/model-checking"
+      ]
+    },
+    "esp-property-simulation-saturn-leak-detection-compass-fink-aliasing-typestate-accumulation-resource-leaks-pulse-disjuncts-and-safedrop": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "facebook/infer",
+            "revision": "2ebceff7ce3c93480bbc0e8d09d11aeec53595d8"
+          },
+          "name": "Infer (Pulse disjunctive analysis) source at HEAD"
+        },
+        {
+          "identity": {
+            "artifact": "infer-linux-x86_64-v1.3.0.tar.xz",
+            "repository": "facebook/infer",
+            "revision": "410a6d9394b9c9794bf9469ee0e1aa8d3ae91031",
+            "sha256": "02be62ba931cb43e2d42bbf7abf4bd9a410cf8464cce5453934e25c90a825850",
+            "version": "v1.3.0"
+          },
+          "name": "Infer release v1.3.0 (executed Linux binary)"
+        },
+        {
+          "identity": {
+            "repository": "typetools/checker-framework",
+            "revision": "dda43ee4bda793c37f869e0d1cc8f017ed6b0763"
+          },
+          "name": "Checker Framework (Resource Leak Checker) source at HEAD"
+        },
+        {
+          "identity": {
+            "artifact": "checker-framework-4.4.0.zip",
+            "repository": "typetools/checker-framework",
+            "revision": "160337829f7bf7ecce26e6cebf3816f1549a57ab",
+            "sha256": "8205c76033b2c2d21cd3fe800fff8b2a22a3ff552ec0fe7672638621e54bd8a2",
+            "version": "checker-framework-4.4.0"
+          },
+          "name": "Checker Framework release 4.4.0 (executed)"
+        },
+        {
+          "identity": {
+            "repository": "Artisan-Lab/RAPx",
+            "revision": "9f6ec20c48694037fc3835cd15bdc9791f4d027c"
+          },
+          "name": "RAPx (contains the SafeDrop checker and path enumerator)"
+        },
+        {
+          "identity": {
+            "repository": "lizhuohua/rust-mir-checker",
+            "revision": "2a8c4632902497fc92b9b61f7fa5c4d4f52f578e"
+          },
+          "name": "MirChecker (rust-mir-checker)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.1986.6312929"
+          },
+          "name": "Strom, Yemini: Typestate (IEEE TSE SE-12(1), 1986)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/512529.512538"
+          },
+          "name": "Das, Lerner, Seigle: ESP: Path-Sensitive Program Verification in Polynomial Time (PLDI 2002)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1040305.1040334"
+          },
+          "name": "Xie, Aiken: Scalable Error Detection Using Boolean Satisfiability (POPL 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1081706.1081728"
+          },
+          "name": "Xie, Aiken: Context- and Path-Sensitive Memory Leak Detection (ESEC/FSE 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1297027.1297050"
+          },
+          "name": "Bierhoff, Aldrich: Modular Typestate Checking of Aliased Objects (OOPSLA 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1375581.1375615"
+          },
+          "name": "Dillig, Dillig, Aiken: Sound, Complete and Scalable Path-Sensitive Analysis (PLDI 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1348250.1348255"
+          },
+          "name": "Fink, Yahav, Dor, Ramalingam, Geay: Effective Typestate Verification in the Presence of Aliasing (TOSEM 17(2), 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3468264.3468576"
+          },
+          "name": "Kellogg, Shadab, Sridharan, Ernst: Lightweight and Modular Resource Leak Verification (ESEC/FSE 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ECOOP.2022.10"
+          },
+          "name": "Kellogg, Shadab, Sridharan, Ernst: Accumulation Analysis (ECOOP 2022, LIPIcs 222)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3527325"
+          },
+          "name": "Le, Raad, Villard, Berdine, Dreyer, O'Hearn: Finding Real Bugs in Big Programs with Incorrectness Logic (PACMPL 6(OOPSLA1), 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2103.15420v2",
+            "doi": "10.1145/3542948"
+          },
+          "name": "Cui, Chen, Xu, Zhou: SafeDrop (TOSEM 32(4), 2023); arXiv v2 read"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3460120.3484541"
+          },
+          "name": "Li, Wang, Sun, Lui: MirChecker: Detecting Bugs in Rust Programs via Static Analysis (CCS 2021)"
+        }
+      ],
+      "topics": [
+        "verification/path-sensitive-typestate-cost",
+        "pl/accumulation-typestate-without-aliasing",
+        "rust/path-sensitive-mir-ownership-checkers",
+        "tooling/disjunct-bounded-symbolic-memory-analysis"
       ]
     },
     "ethos-cpc-signatures-blake3-dilithium-hashing-and-vipr-watermarks": {
@@ -30882,6 +31361,101 @@
         "pl/refinement-types",
         "rustc/mir",
         "verification/certificates"
+      ]
+    },
+    "flyspeck-taylor-interval-inequality-checking-obua-nipkow-lp-bounds-immler-lorenz-recheck-harrison-sos-and-pvs-bernstein-strategies": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "flyspeck/flyspeck",
+            "revision": "32948714cdf06d700af2c993c9a92b7b551d7af5"
+          },
+          "name": "Flyspeck formal proof of the Kepler conjecture (HOL Light scripts, formal_lp, nonlinear-inequality run logs)"
+        },
+        {
+          "identity": {
+            "repository": "monadius/formal_ineqs",
+            "revision": "2abe797285b3eb57e13988bc45d1747414e638f6"
+          },
+          "name": "formal_ineqs: HOL Light verifier for nonlinear inequalities with formal Taylor interval arithmetic"
+        },
+        {
+          "identity": {
+            "repository": "isabelle-prover/mirror-afp-devel",
+            "revision": "523cdc72b5ae4a91c9ab8e1025d4a30b40472720"
+          },
+          "name": "Archive of Formal Proofs (read-only mirror): Ordinary_Differential_Equations incl. Ex/Lorenz, and Flyspeck-Tame"
+        },
+        {
+          "identity": {
+            "repository": "jrh13/hol-light",
+            "revision": "1a0c0e6b182cd9e271946ba8d78f7942619f4acb"
+          },
+          "name": "HOL Light (Examples/sos.ml sums-of-squares procedure)"
+        },
+        {
+          "identity": {
+            "repository": "thery/nlcertify",
+            "revision": "939cc52ba65d09eceb5fc76d2f657a66ccbc60ea"
+          },
+          "name": "NLCertify nonlinear-inequality certification tool with Coq back end"
+        },
+        {
+          "identity": {
+            "repository": "nasa/pvslib",
+            "revision": "d70ebfc8fcd562699aea4bcccbaf3d2c4d66796f"
+          },
+          "name": "NASA PVS Library (Bernstein and interval_arith strategies)"
+        },
+        {
+          "identity": {
+            "arxiv": "1501.02155v1",
+            "doi": "10.1017/fmp.2017.1"
+          },
+          "name": "Hales et al., A formal proof of the Kepler conjecture (Forum of Mathematics, Pi 5, 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "0902.0350v1",
+            "doi": "10.1007/s00454-009-9148-4"
+          },
+          "name": "Hales, Harrison, McLaughlin, Nipkow, Obua, Zumkeller, A revision of the proof of the Kepler conjecture (Discrete Comput. Geom. 44, 2010)"
+        },
+        {
+          "identity": {
+            "arxiv": "1301.1702v1",
+            "doi": "10.1007/978-3-642-38088-4_26"
+          },
+          "name": "Solovyev and Hales, Formal verification of nonlinear inequalities with Taylor interval approximations (NFM 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-017-9448-y"
+          },
+          "name": "Immler, A verified ODE solver and the Lorenz attractor (J. Autom. Reasoning 61, 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-74591-4_9"
+          },
+          "name": "Harrison, Verifying nonlinear real formulas via sums of squares (TPHOLs 2007)"
+        },
+        {
+          "identity": {
+            "arxiv": "1404.7282v4",
+            "doi": "10.6092/issn.1972-5787/4319"
+          },
+          "name": "Magron, Allamigeon, Gaubert, Werner, Formal proofs for nonlinear optimization (J. Formalized Reasoning 8(1), 2015)"
+        }
+      ],
+      "topics": [
+        "verification/independent-numerical-certificate-checking",
+        "verification/formally-rechecked-computer-assisted-proofs",
+        "tooling/sum-of-squares-certificate-validation",
+        "runtimes/certificate-checking-cost-ratios",
+        "verification/trusted-computing-base",
+        "verification/interval-and-taylor-arithmetic-in-proof-assistants"
       ]
     },
     "formal-isa-models-x86-64-i386-and-aarch64-coverage": {
@@ -35466,6 +36040,164 @@
         "verification/total-correctness",
         "pl/axiomatic-semantics",
         "pl/program-logics"
+      ]
+    },
+    "hobor-oracle-semantics-vst-thread-pool-schedules-brookes-vafeiadis-csl-soundness-lipton-reduction-cilksan-sp-bags-and-bounded-por-pitfalls": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "d50ac1969f9f6586621895eb043ccf08a165f731"
+          },
+          "name": "VST concurrent hybrid machines (explicit schedules, coarse-to-fine safety)"
+        },
+        {
+          "identity": {
+            "repository": "rocq-iris/iris",
+            "revision": "2fe2f450add5678d9a2492343c638ccdb428a677"
+          },
+          "name": "Iris program logic and HeapLang (GitHub mirror of gitlab.mpi-sws.org/iris/iris)"
+        },
+        {
+          "identity": {
+            "repository": "OpenCilk/productivity-tools",
+            "revision": "3049053b784bc37d2ce9ff4449c7985703957006"
+          },
+          "name": "OpenCilk productivity tools (Cilksan SP-bags race detector)"
+        },
+        {
+          "identity": {
+            "repository": "nimble-code/Spin",
+            "revision": "e21106ff7e58afe79275b3ca10179556afa97aa2",
+            "version": "6.5.3"
+          },
+          "name": "Spin model checker (built from source, Spin Version 6.5.3)"
+        },
+        {
+          "identity": {
+            "repository": "ThomasDickey/byacc-snapshots",
+            "revision": "7856d035dd27104782612818630adc5011214c31"
+          },
+          "name": "byacc parser generator (used only to build Spin)"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/loom",
+            "revision": "9d549cd5357a5485900f4c53951fc1726319659f"
+          },
+          "name": "Loom concurrency permutation tester"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-78739-6_27"
+          },
+          "name": "Hobor, Appel, Zappa Nardelli: Oracle Semantics for Concurrent Separation Logic (ESOP 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.tcs.2006.12.034"
+          },
+          "name": "Brookes: A Semantics for Concurrent Separation Logic (TCS 375, 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.entcs.2011.09.029"
+          },
+          "name": "Vafeiadis: Concurrent Separation Logic and Operational Semantics (MFPS 2011, ENTCS 276)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/361227.361234"
+          },
+          "name": "Lipton: Reduction: A Method of Proving Properties of Parallel Programs (CACM 18(12), 1975)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/96709.96731"
+          },
+          "name": "Steele: Making Asynchronous Parallelism Safe for the World (POPL 1990)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/258492.258493"
+          },
+          "name": "Feng, Leiserson: Efficient Detection of Determinacy Races in Cilk Programs (SPAA 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/3-540-53863-1_36"
+          },
+          "name": "Valmari: Stubborn Sets for Reduced State Space Generation (LNCS 483, 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1040305.1040315"
+          },
+          "name": "Flanagan, Godefroid: Dynamic Partial-Order Reduction for Model Checking Software (POPL 2005)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1250734.1250785"
+          },
+          "name": "Musuvathi, Qadeer: Iterative Context Bounding for Systematic Testing of Multithreaded Programs (PLDI 2007)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2509136.2509556"
+          },
+          "name": "Coons, Musuvathi, McKinley: Bounded Partial-Order Reduction (OOPSLA 2013)"
+        },
+        {
+          "identity": {
+            "conference_version_doi": "10.1145/2535838.2535845",
+            "doi": "10.1145/3073408"
+          },
+          "name": "Abdulla, Aronis, Jonsson, Sagonas: Source Sets (JACM 64(4), 2017); conference version Optimal Dynamic Partial Order Reduction (POPL 2014) read"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1480881.1480929"
+          },
+          "name": "Sarkar et al.: The Semantics of x86-CC Multiprocessor Machine Code (POPL 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-03359-9_27"
+          },
+          "name": "Owens, Sarkar, Sewell: A Better x86 Memory Model: x86-TSO (TPHOLs 2009)"
+        },
+        {
+          "identity": {
+            "conference_version_doi": "10.1145/1926385.1926393",
+            "doi": "10.1145/2487241.2487248"
+          },
+          "name": "Sevcik et al.: CompCertTSO (JACM 60(3), 2013); POPL 2011 version read"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3192366.3192381"
+          },
+          "name": "Gu et al.: Certified Concurrent Abstraction Layers (PLDI 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000151"
+          },
+          "name": "Jung et al.: Iris from the Ground Up (JFP 28, 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-0-387-34878-0_13"
+          },
+          "name": "Holzmann, Peled: An Improvement in Formal Verification (FORTE 1994)"
+        }
+      ],
+      "topics": [
+        "verification/scheduler-model-completeness",
+        "pl/nested-parallel-composition-semantics",
+        "verification/reduction-and-determinacy-theorems",
+        "tooling/schedule-reduced-exploration-soundness"
       ]
     },
     "hol-zero-pollack-audits-doc-gen4-rendered-code-leanblueprint-statement-links-and-minif2f-putnambench-corrections": {
