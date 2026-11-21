@@ -52,7 +52,7 @@ inductive Val where
   | ptr (addr : Nat)
 
 /-- The bit pattern a `SwitchInt` or an integer comparison observes. -/
-def Val.bits : Val → Option Nat
+noncomputable def Val.bits : Val → Option Nat
   | .int n => some n
   | .bool true => some 1
   | .bool false => some 0
@@ -64,7 +64,7 @@ structure State where
   locals : Local → Option Val
   mem : Nat → Option Nat
 
-def State.setLocal (σ : State) (l : Local) (v : Val) : State :=
+noncomputable def State.setLocal (σ : State) (l : Local) (v : Val) : State :=
   { σ with locals := fun x => if x = l then some v else σ.locals x }
 
 inductive Operand where
@@ -73,25 +73,25 @@ inductive Operand where
   | const (v : Val)
 
 /-- `Operand::to_copy`: a `Move` becomes a `Copy`, everything else is unchanged. -/
-def Operand.toCopy : Operand → Operand
+noncomputable def Operand.toCopy : Operand → Operand
   | .move l => .copy l
   | .copy l => .copy l
   | .const v => .const v
 
 /-- The operand reads no local at or above `tmp`. -/
-def Operand.readsBelow (tmp : Local) : Operand → Prop
+noncomputable def Operand.readsBelow (tmp : Local) : Operand → Prop
   | .copy l => l < tmp
   | .move l => l < tmp
   | .const _ => True
 
 /-- Operand evaluation. As in the rustc interpreter, a `Move` operand reads the
 local without de-initializing it. -/
-def evalOperand (σ : State) : Operand → Option Val
+noncomputable def evalOperand (σ : State) : Operand → Option Val
   | .copy l => σ.locals l
   | .move l => σ.locals l
   | .const v => some v
 
-def discrBits (σ : State) (op : Operand) : Option Nat :=
+noncomputable def discrBits (σ : State) (op : Operand) : Option Nat :=
   match evalOperand σ op with
   | some v => v.bits
   | none => none
@@ -100,7 +100,7 @@ inductive CmpOp where
   | eq
   | ne
 
-def cmpBits : CmpOp → Nat → Nat → Bool
+noncomputable def cmpBits : CmpOp → Nat → Nat → Bool
   | .eq, m, n => decide (m = n)
   | .ne, m, n => !decide (m = n)
 
@@ -108,7 +108,7 @@ inductive Rvalue where
   | use (op : Operand)
   | cmp (c : CmpOp) (lhs rhs : Operand)
 
-def evalRvalue (σ : State) : Rvalue → Option Val
+noncomputable def evalRvalue (σ : State) : Rvalue → Option Val
   | .use op => evalOperand σ op
   | .cmp c a b =>
     match discrBits σ a, discrBits σ b with
@@ -125,22 +125,22 @@ structure Layout where
   sizeBound : Nat
 
 /-- All `n` slots starting at `a` lie inside live allocations. -/
-def rangeMapped (m : Nat → Option Nat) (a : Nat) : Nat → Bool
+noncomputable def rangeMapped (m : Nat → Option Nat) (a : Nat) : Nat → Bool
   | 0 => true
   | n + 1 => (m a).isSome && rangeMapped m (a + 1) n
 
-def disjointRanges (src dst size : Nat) : Bool :=
+noncomputable def disjointRanges (src dst size : Nat) : Bool :=
   decide (src + size ≤ dst) || decide (dst + size ≤ src)
 
 /-- Memory after copying `size` slots from `src` to `dst`. -/
-def copySlots (m : Nat → Option Nat) (src dst size : Nat) : Nat → Option Nat :=
+noncomputable def copySlots (m : Nat → Option Nat) (src dst size : Nat) : Nat → Option Nat :=
   fun a => if dst ≤ a ∧ a < dst + size then m (src + (a - dst)) else m a
 
 /-- `copy_intrinsic` followed by `mem_copy`, in interpreter order: total size,
 alignment of `src`, alignment of `dst`, then (only for a non-empty copy) both
 ranges dereferenceable and the two ranges disjoint. `none` is undefined
 behaviour. -/
-def execCopy (lay : Layout) (σ : State) (src dst count : Nat) : Option State :=
+noncomputable def execCopy (lay : Layout) (σ : State) (src dst count : Nat) : Option State :=
   if lay.sizeBound < count * lay.elemSize then none
   else if src % lay.align ≠ 0 then none
   else if dst % lay.align ≠ 0 then none
@@ -293,19 +293,19 @@ inductive Outcome where
   | jump (b : Block) (σ : State)
   | done (σ : State)
 
-def Outcome.isUb : Outcome → Bool
+noncomputable def Outcome.isUb : Outcome → Bool
   | .ub => true
   | .jump _ _ => false
   | .done _ => false
 
 /-- `NonDivergingIntrinsic::Assume`: the operand must evaluate to `true`;
 `false` (and anything that is not a boolean) is undefined behaviour. -/
-def execAssume (σ : State) (op : Operand) : Option State :=
+noncomputable def execAssume (σ : State) (op : Operand) : Option State :=
   match evalOperand σ op with
   | some (.bool true) => some σ
   | _ => none
 
-def execStmt (σ : State) : Statement → Option State
+noncomputable def execStmt (σ : State) : Statement → Option State
   | .assign dst rv =>
     match evalRvalue σ rv with
     | some v => some (σ.setLocal dst v)
@@ -317,7 +317,7 @@ def execStmt (σ : State) : Statement → Option State
     | _, _, _ => none
   | .nop => some σ
 
-def execStmts (σ : State) : List Statement → Option State
+noncomputable def execStmts (σ : State) : List Statement → Option State
   | [] => some σ
   | s :: rest =>
     match execStmt σ s with
@@ -326,12 +326,12 @@ def execStmts (σ : State) : List Statement → Option State
 
 /-- `SwitchTargets::target_for_value`: first arm whose value matches, else
 `otherwise`. -/
-def lookup (targets : List (Nat × Block)) (otherwise : Block) (d : Nat) : Block :=
+noncomputable def lookup (targets : List (Nat × Block)) (otherwise : Block) (d : Nat) : Block :=
   match targets with
   | [] => otherwise
   | (v, b) :: rest => if d = v then b else lookup rest otherwise d
 
-def execTerm (σ : State) : Terminator → Outcome
+noncomputable def execTerm (σ : State) : Terminator → Outcome
   | .goto b => .jump b σ
   | .switchInt discr targets otherwise =>
     match discrBits σ discr with
@@ -340,7 +340,7 @@ def execTerm (σ : State) : Terminator → Outcome
   | .unreachable => .ub
   | .ret => .done σ
 
-def execBlock (σ : State) (stmts : List Statement) (term : Terminator) : Outcome :=
+noncomputable def execBlock (σ : State) (stmts : List Statement) (term : Terminator) : Outcome :=
   match execStmts σ stmts with
   | some σ' => execTerm σ' term
   | none => .ub
@@ -602,17 +602,17 @@ theorem doomed_never_done {body : Body} {b : Block} (h : Doomed body b) (σ σ' 
 `tmp = <Eq|Ne>(copy discr, const v); assume(move tmp)`. The constant stands for
 `Const::from_scalar(.., Scalar::from_uint(v, discr_size), discr_ty)`: a constant
 of the discriminant's own type whose bit pattern is `v`. -/
-def assumeCmp (c : CmpOp) (discr : Operand) (v : Nat) (tmp : Local) : List Statement :=
+noncomputable def assumeCmp (c : CmpOp) (discr : Operand) (v : Nat) (tmp : Local) : List Statement :=
   [.assign tmp (.cmp c discr.toCopy (.const (.int v))), .assume (.move tmp)]
 
 /-- One `Ne` assumption per removed arm, each with its own fresh temporary. -/
-def neAssumes (discr : Operand) : List (Nat × Block) → Local → List Statement
+noncomputable def neAssumes (discr : Operand) : List (Nat × Block) → Local → List Statement
   | [], _ => []
   | (v, _) :: rest, tmp => assumeCmp .ne discr v tmp ++ neAssumes discr rest (tmp + 1)
 
 /-- Case split of `remove_successors_from_switch` on `(num_targets,
 otherwise_unreachable)`, where `num_targets = reach.length + 1`. -/
-def pruneCore (discr : Operand) (otherwise : Block) (tmp : Local) :
+noncomputable def pruneCore (discr : Operand) (otherwise : Block) (tmp : Local) :
     Bool → List (Nat × Block) → List (Nat × Block) → List Statement × Terminator
   | true, [], _ => ([], .unreachable)
   | true, [(v, t)], _ => (assumeCmp .eq discr v tmp, .goto t)
@@ -625,22 +625,22 @@ def pruneCore (discr : Operand) (otherwise : Block) (tmp : Local) :
 the list of statements appended to the block and its new terminator. When no
 arm is removed the result is the original terminator with no new statement,
 which is the pass's "nothing has changed" exit. -/
-def pruneSwitch (U : Block → Bool) (discr : Operand) (targets : List (Nat × Block))
+noncomputable def pruneSwitch (U : Block → Bool) (discr : Operand) (targets : List (Nat × Block))
     (otherwise : Block) (tmp : Local) : List Statement × Terminator :=
   pruneCore discr otherwise tmp (U otherwise)
     (targets.filter (fun p => !U p.2)) (targets.filter (fun p => U p.2))
 
 /-- Entering a flagged block is undefined behaviour (see `doomed_reaches_ub`). -/
-def collapse (U : Block → Bool) : Outcome → Outcome
+noncomputable def collapse (U : Block → Bool) : Outcome → Outcome
   | .jump b σ => if U b = true then .ub else .jump b σ
   | .ub => .ub
   | .done σ => .done σ
 
 /-- The two states agree on memory and on every local below `tmp`. -/
-def AgreeBelow (tmp : Local) (σ σ' : State) : Prop :=
+noncomputable def AgreeBelow (tmp : Local) (σ σ' : State) : Prop :=
   (∀ l, l < tmp → σ'.locals l = σ.locals l) ∧ σ'.mem = σ.mem
 
-def OutcomeEquiv (tmp : Local) : Outcome → Outcome → Prop
+noncomputable def OutcomeEquiv (tmp : Local) : Outcome → Outcome → Prop
   | .ub, .ub => True
   | .jump b σ, .jump b' σ' => b = b' ∧ AgreeBelow tmp σ σ'
   | .done σ, .done σ' => AgreeBelow tmp σ σ'
@@ -768,7 +768,7 @@ theorem exec_neAssumes_none (discr : Operand) (v : Nat) (b : Block)
 
 /-- The block produced by the pass: original statements are untouched, so only
 the appended statements and the new terminator are run here. -/
-def prunedOutcome (U : Block → Bool) (σ : State) (discr : Operand)
+noncomputable def prunedOutcome (U : Block → Bool) (σ : State) (discr : Operand)
     (targets : List (Nat × Block)) (otherwise : Block) (tmp : Local) : Outcome :=
   execBlock σ (pruneSwitch U discr targets otherwise tmp).1
     (pruneSwitch U discr targets otherwise tmp).2
@@ -1188,7 +1188,7 @@ theorem assume_as_switch_gadget (U : Block → Bool) (σ : State) (op : Operand)
 
 /-- Removes the first occurrence of `v` (the list stands for the set
 `allowed_variants`; `remove` on a set and on a duplicate-free list agree). -/
-def eraseVal (v : Nat) : List Nat → List Nat
+noncomputable def eraseVal (v : Nat) : List Nat → List Nat
   | [] => []
   | a :: rest => if a = v then rest else a :: eraseVal v rest
 
@@ -1230,7 +1230,7 @@ theorem mem_of_mem_eraseVal (v d : Nat) :
 the set of discriminants of inhabited variants is redirected to the unreachable
 block `u`; a matching discriminant is removed from the set. Returns the new
 arms and the inhabited discriminants that no arm covers. -/
-def markArms (u : Block) : List Nat → List (Nat × Block) → List (Nat × Block) × List Nat
+noncomputable def markArms (u : Block) : List Nat → List (Nat × Block) → List (Nat × Block) × List Nat
   | allowed, [] => ([], allowed)
   | allowed, (v, t) :: rest =>
     if v ∈ allowed then
@@ -1243,7 +1243,7 @@ def markArms (u : Block) : List Nat → List (Nat × Block) → List (Nat × Blo
 is uncovered and `otherwise` is not already an empty unreachable block, the
 uncovered discriminant (if any) gets an explicit arm to the old `otherwise` and
 `otherwise` becomes the unreachable block. -/
-def enumCore (otherwise u : Block) (arms : List (Nat × Block)) :
+noncomputable def enumCore (otherwise u : Block) (arms : List (Nat × Block)) :
     List Nat → Bool → List (Nat × Block) × Block
   | [], false => (arms, u)
   | [w], false => (arms ++ [(w, otherwise)], u)
@@ -1251,7 +1251,7 @@ def enumCore (otherwise u : Block) (arms : List (Nat × Block)) :
   | [_], true => (arms, otherwise)
   | _ :: _ :: _, _ => (arms, otherwise)
 
-def enumBranching (allowed : List Nat) (targets : List (Nat × Block))
+noncomputable def enumBranching (allowed : List Nat) (targets : List (Nat × Block))
     (otherwise u : Block) (otherwiseAlreadyUnreachable : Bool) :
     List (Nat × Block) × Block :=
   enumCore otherwise u (markArms u allowed targets).1 (markArms u allowed targets).2
@@ -1425,19 +1425,19 @@ theorem enumBranching_forged_hits_unreachable (allowed : List Nat)
 /-! ## Section 8: golden specimens and sharpness counterexamples -/
 
 /-- Flags exactly the listed blocks. -/
-def flagged (bs : List Block) : Block → Bool := fun b => decide (b ∈ bs)
+noncomputable def flagged (bs : List Block) : Block → Bool := fun b => decide (b ∈ bs)
 
 /-- Local `l` holds `v`; every other local is uninitialized; no memory is mapped. -/
-def stateWith (l : Local) (v : Val) : State :=
+noncomputable def stateWith (l : Local) (v : Val) : State :=
   { locals := fun x => if x = l then some v else none, mem := fun _ => none }
 
-def emptyState : State := { locals := fun _ => none, mem := fun _ => none }
+noncomputable def emptyState : State := { locals := fun _ => none, mem := fun _ => none }
 
 /-- Slots `16 .. 47` are mapped and hold their own address. -/
-def mappedState : State :=
+noncomputable def mappedState : State :=
   { locals := fun _ => none, mem := fun a => if 16 ≤ a ∧ a < 48 then some a else none }
 
-def u64Layout : Layout := { elemSize := 8, align := 8, sizeBound := 4096 }
+noncomputable def u64Layout : Layout := { elemSize := 8, align := 8, sizeBound := 4096 }
 
 /-! ### Golden specimens: `pruneSwitch` reproduces what rustc emitted
 
@@ -1562,11 +1562,11 @@ theorem ce2_statement_level :
         = false :=
   ⟨rfl, rfl, rfl, rfl, rfl⟩
 
-def ce3Targets : List (Nat × Block) := [(0, 4), (1, 3), (2, 2)]
+noncomputable def ce3Targets : List (Nat × Block) := [(0, 4), (1, 3), (2, 2)]
 
 /-- `UnreachableEnumBranching` output for an enum whose variants `0` and `2` are
 inhabited and whose variant `1` is not; block `9` is the unreachable block. -/
-def ce3New : List (Nat × Block) × Block := enumBranching [0, 2] ce3Targets 7 9 false
+noncomputable def ce3New : List (Nat × Block) × Block := enumBranching [0, 2] ce3Targets 7 9 false
 
 /-- A forged discriminant (the uninhabited variant `1`, or the out-of-range
 value `5`) runs ordinary code in the original body but enters the unreachable
