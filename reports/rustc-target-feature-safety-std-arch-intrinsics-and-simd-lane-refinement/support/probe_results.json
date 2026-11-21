@@ -1,0 +1,672 @@
+{
+  "host_cpu": {
+    "arch": "x86_64",
+    "feature_presence": {
+      "avx": true,
+      "avx2": true,
+      "avx512bw": false,
+      "avx512f": false,
+      "avx512vl": false,
+      "bmi1": true,
+      "bmi2": true,
+      "fma": true,
+      "sse": true,
+      "sse2": true,
+      "sse4_1": true,
+      "sse4_2": true,
+      "ssse3": true
+    },
+    "model_name": "Intel(R) Xeon(R) CPU @ 2.20GHz"
+  },
+  "part1_target_feature_and_stdarch_matrix": {
+    "s01_avx2_calls_avx2_and_sse41_and_blend_safe": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "run_stdout": "s01_ok=107"
+    },
+    "s02_avx2_calls_avx512f_without_unsafe": {
+      "compile_rc": 1,
+      "error_code": "E0133",
+      "message": "call to function `avx512_callee` with `#[target_feature]` is unsafe and requires unsafe function or block",
+      "notes": []
+    },
+    "s03_baseline_calls_avx2_even_with_cli_target_feature": {
+      "compile_rc": 1,
+      "error_code": "E0133",
+      "message": "call to function `avx2_callee` with `#[target_feature]` is unsafe and requires unsafe function or block",
+      "notes": [
+        "= note: the avx2 target feature being enabled in the build configuration does not remove the requirement to list it in `#[target_feature]`"
+      ]
+    },
+    "s04_baseline_coerces_avx2_to_safe_fnptr": {
+      "compile_rc": 1,
+      "error_code": "E0308",
+      "message": "mismatched types",
+      "notes": [
+        "= note: expected fn pointer `fn(_) -> _`",
+        "= note: functions with `#[target_feature]` can only be coerced to `unsafe` function pointers"
+      ]
+    },
+    "s05_baseline_coerces_avx2_to_unsafe_fnptr": {
+      "compile_rc": 0
+    },
+    "s06_avx2_reifies_avx2_to_safe_fnptr_witness": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "run_stdout": "s06_ok=41"
+    },
+    "s07_avx2_fndef_implements_fn_trait_inside_avx2": {
+      "compile_rc": 1,
+      "error_code": "E0277",
+      "message": "expected a `Fn(u32)` closure, found `#[target_features] fn(u32) -> u32 {avx2_callee}`",
+      "notes": [
+        "= note: `#[target_feature]` functions do not implement the `Fn` traits",
+        "= note: try casting the function to a `fn` pointer or wrapping it in a closure",
+        "note: required by a bound in `apply_fn`"
+      ]
+    },
+    "s08_target_feature_on_safe_trait_impl_method": {
+      "compile_rc": 1,
+      "error_code": "unnumbered",
+      "message": "`#[target_feature(..)]` cannot be applied to safe trait method",
+      "notes": [
+        "note: type in trait",
+        "= note: expected signature `fn(&AvxImpl, _) -> _`"
+      ]
+    },
+    "s09_inline_always_with_target_feature": {
+      "compile_rc": 1,
+      "error_code": "unnumbered",
+      "message": "cannot use `#[inline(always)]` with `#[target_feature]`",
+      "notes": [
+        "= note: See this issue for full discussion: https://github.com/rust-lang/rust/issues/145574"
+      ]
+    },
+    "s10_legacy_const_generics_imm8_256_oob": {
+      "compile_rc": 1,
+      "error_code": "E0080",
+      "message": "evaluation panicked: IMM8 doesn't fit in 8 bits (unsigned)",
+      "notes": [
+        "= note: this error originates in the macro `$crate::panic::panic_2021` which comes from the expansion of the macro `static_assert_uimm_bits` (in Nightly builds, run with -Z macro-backtrace for more info)",
+        "note: erroneous constant encountered",
+        "= note: this note originates in the macro `static_assert` which comes from the expansion of the macro `static_assert_uimm_bits` (in Nightly builds, run with -Z macro-backtrace for more info)",
+        "note: the above error was encountered while instantiating `fn _mm256_blend_epi32::<256>`"
+      ]
+    },
+    "s11_legacy_const_generics_runtime_arg": {
+      "compile_rc": 1,
+      "error_code": "E0435",
+      "message": "attempt to use a non-constant value in a constant",
+      "notes": []
+    },
+    "s12_aarch64_sve2_sve_fp16_neon_lattice": {
+      "fp16_to_neon_compile_rc": 0,
+      "llvm_target_features_by_fn": {
+        "aarch64_fp16_leaf": "+v8a,+outline-atomics,+fullfp16,+neon,+fp-armv8",
+        "aarch64_neon_leaf": "+v8a,+outline-atomics,+neon,+fp-armv8",
+        "aarch64_sve2_top": "+v8a,+outline-atomics,+neon,+fp-armv8,+sve,+sve2",
+        "aarch64_sve_mid": "+v8a,+outline-atomics,+neon,+fp-armv8,+sve"
+      },
+      "sve2_to_sve_to_neon_compile_rc": 0,
+      "sve_calling_fp16_compile_rc": 1,
+      "sve_calling_fp16_diagnostic": {
+        "error_code": "E0133",
+        "message": "call to function `aarch64_fp16_leaf` with `#[target_feature]` is unsafe and requires unsafe function or block",
+        "notes": []
+      },
+      "sve_calling_sve2_error": {
+        "error_code": "E0133",
+        "message": "call to function `aarch64_sve2_top` with `#[target_feature]` is unsafe and requires unsafe function or block",
+        "notes": []
+      },
+      "sve_calling_sve2_without_unsafe_compile_rc": 1
+    }
+  },
+  "part2_dynamic_dispatch_inlining_and_sigill": {
+    "guarded_dynamic_dispatch": {
+      "O2": {
+        "compile_rc": 0,
+        "llvm_ir_summary": {
+          "avx2_kernel_entry": {
+            "attr_group": "attributes #3",
+            "has_inlinehint": true,
+            "has_noinline": false,
+            "ir_contains_avx2_helper_call": false,
+            "ir_contains_call_to_kernel": false,
+            "ir_contains_sse41_helper_call": false,
+            "target_features": "+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3"
+          },
+          "avx512_kernel_entry": {
+            "attr_group": "attributes #4",
+            "has_inlinehint": true,
+            "has_noinline": false,
+            "ir_contains_avx2_helper_call": false,
+            "ir_contains_call_to_kernel": false,
+            "ir_contains_sse41_helper_call": false,
+            "target_features": "+avx,+avx2,+avx512f,+f16c,+fma,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3"
+          },
+          "baseline_dispatch_avx2": {
+            "attr_group": "attributes #1",
+            "has_inlinehint": false,
+            "has_noinline": true,
+            "ir_contains_avx2_helper_call": false,
+            "ir_contains_call_to_kernel": true,
+            "ir_contains_sse41_helper_call": false,
+            "target_features": null
+          },
+          "baseline_dispatch_avx512f": {
+            "attr_group": "attributes #1",
+            "has_inlinehint": false,
+            "has_noinline": true,
+            "ir_contains_avx2_helper_call": false,
+            "ir_contains_call_to_kernel": true,
+            "ir_contains_sse41_helper_call": false,
+            "target_features": null
+          }
+        },
+        "mir_inliner_observations": {
+          "baseline_dispatch_mir_preserved_avx2_kernel_call": true,
+          "baseline_dispatch_mir_preserved_avx512_kernel_call": true,
+          "mir_inlined_equal_feature_stdarch_mm256_add_epi32": true,
+          "mir_inlined_equal_feature_stdarch_mm256_extracti128": true,
+          "mir_preserved_subset_avx_mm256_castsi256_si128_call": true,
+          "mir_preserved_subset_sse2_mm_add_epi32_call": true,
+          "mir_preserved_subset_sse41_helper_call": true
+        },
+        "run_rc": 0,
+        "run_stdout": "dispatch_avx2=230 dispatch_avx512f=152",
+        "x86_64_asm_summary": {
+          "avx2_kernel_entry": {
+            "call_or_tailjmp_insns": [],
+            "sample_vector_insns": [
+              "vmovdqu\t(%rdi), %ymm0",
+              "vmovd\t%esi, %xmm1",
+              "vpbroadcastd\t%xmm1, %ymm1",
+              "vpxor\t%ymm1, %ymm0, %ymm1",
+              "vpbroadcastd\t.LCPI4_0(%rip), %ymm2",
+              "vpblendd\t$170, %ymm1, %ymm0, %ymm0",
+              "vpaddd\t%ymm2, %ymm0, %ymm0",
+              "vextracti128\t$1, %ymm0, %xmm1"
+            ],
+            "symbol_matched": true,
+            "total_insns": 14,
+            "vex_or_evex_insns_count": 13,
+            "ymm_insns_count": 7,
+            "zmm_insns_count": 0
+          },
+          "avx512_kernel_entry": {
+            "call_or_tailjmp_insns": [],
+            "sample_vector_insns": [
+              "vpbroadcastd\t%esi, %zmm0",
+              "vpxord\t(%rdi), %zmm0, %zmm0",
+              "vpternlogd\t$255, %zmm1, %zmm1, %zmm1",
+              "vpsubd\t%zmm1, %zmm0, %zmm0",
+              "vextracti64x4\t$1, %zmm0, %ymm1",
+              "vpaddd\t%zmm1, %zmm0, %zmm0",
+              "vextracti128\t$1, %ymm0, %xmm1",
+              "vpaddd\t%xmm1, %xmm0, %xmm0"
+            ],
+            "symbol_matched": true,
+            "total_insns": 15,
+            "vex_or_evex_insns_count": 14,
+            "ymm_insns_count": 2,
+            "zmm_insns_count": 6
+          },
+          "baseline_dispatch_avx2": {
+            "call_or_tailjmp_insns": [
+              "callq\t*_RNvNtNtCseeka07IAQW_10std_detect6detect5cache21detect_and_initialize@GOTPCREL(%rip)",
+              "jmp\t_RNvCs5LbMX22npaD_11dispatch_o217avx2_kernel_entry"
+            ],
+            "sample_vector_insns": [],
+            "symbol_matched": true,
+            "total_insns": 29,
+            "vex_or_evex_insns_count": 0,
+            "ymm_insns_count": 0,
+            "zmm_insns_count": 0
+          },
+          "baseline_dispatch_avx512f": {
+            "call_or_tailjmp_insns": [
+              "callq\t*_RNvNtNtCseeka07IAQW_10std_detect6detect5cache21detect_and_initialize@GOTPCREL(%rip)",
+              "jmp\t_RNvCs5LbMX22npaD_11dispatch_o219avx512_kernel_entry"
+            ],
+            "sample_vector_insns": [],
+            "symbol_matched": true,
+            "total_insns": 68,
+            "vex_or_evex_insns_count": 0,
+            "ymm_insns_count": 0,
+            "zmm_insns_count": 0
+          }
+        }
+      },
+      "O3": {
+        "compile_rc": 0,
+        "llvm_ir_summary": {
+          "avx2_kernel_entry": {
+            "attr_group": "attributes #3",
+            "has_inlinehint": true,
+            "has_noinline": false,
+            "ir_contains_avx2_helper_call": false,
+            "ir_contains_call_to_kernel": false,
+            "ir_contains_sse41_helper_call": false,
+            "target_features": "+avx,+avx2,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3"
+          },
+          "avx512_kernel_entry": {
+            "attr_group": "attributes #4",
+            "has_inlinehint": true,
+            "has_noinline": false,
+            "ir_contains_avx2_helper_call": false,
+            "ir_contains_call_to_kernel": false,
+            "ir_contains_sse41_helper_call": false,
+            "target_features": "+avx,+avx2,+avx512f,+f16c,+fma,+sse,+sse2,+sse3,+sse4.1,+sse4.2,+crc32,+ssse3"
+          },
+          "baseline_dispatch_avx2": {
+            "attr_group": "attributes #1",
+            "has_inlinehint": false,
+            "has_noinline": true,
+            "ir_contains_avx2_helper_call": false,
+            "ir_contains_call_to_kernel": true,
+            "ir_contains_sse41_helper_call": false,
+            "target_features": null
+          },
+          "baseline_dispatch_avx512f": {
+            "attr_group": "attributes #1",
+            "has_inlinehint": false,
+            "has_noinline": true,
+            "ir_contains_avx2_helper_call": false,
+            "ir_contains_call_to_kernel": true,
+            "ir_contains_sse41_helper_call": false,
+            "target_features": null
+          }
+        },
+        "mir_inliner_observations": {
+          "baseline_dispatch_mir_preserved_avx2_kernel_call": true,
+          "baseline_dispatch_mir_preserved_avx512_kernel_call": true,
+          "mir_inlined_equal_feature_stdarch_mm256_add_epi32": true,
+          "mir_inlined_equal_feature_stdarch_mm256_extracti128": true,
+          "mir_preserved_subset_avx_mm256_castsi256_si128_call": true,
+          "mir_preserved_subset_sse2_mm_add_epi32_call": true,
+          "mir_preserved_subset_sse41_helper_call": true
+        },
+        "run_rc": 0,
+        "run_stdout": "dispatch_avx2=230 dispatch_avx512f=152",
+        "x86_64_asm_summary": {
+          "avx2_kernel_entry": {
+            "call_or_tailjmp_insns": [],
+            "sample_vector_insns": [
+              "vmovdqu\t(%rdi), %ymm0",
+              "vmovd\t%esi, %xmm1",
+              "vpbroadcastd\t%xmm1, %ymm1",
+              "vpxor\t%ymm1, %ymm0, %ymm1",
+              "vpbroadcastd\t.LCPI4_0(%rip), %ymm2",
+              "vpblendd\t$170, %ymm1, %ymm0, %ymm0",
+              "vpaddd\t%ymm2, %ymm0, %ymm0",
+              "vextracti128\t$1, %ymm0, %xmm1"
+            ],
+            "symbol_matched": true,
+            "total_insns": 14,
+            "vex_or_evex_insns_count": 13,
+            "ymm_insns_count": 7,
+            "zmm_insns_count": 0
+          },
+          "avx512_kernel_entry": {
+            "call_or_tailjmp_insns": [],
+            "sample_vector_insns": [
+              "vpbroadcastd\t%esi, %zmm0",
+              "vpxord\t(%rdi), %zmm0, %zmm0",
+              "vpternlogd\t$255, %zmm1, %zmm1, %zmm1",
+              "vpsubd\t%zmm1, %zmm0, %zmm0",
+              "vextracti64x4\t$1, %zmm0, %ymm1",
+              "vpaddd\t%zmm1, %zmm0, %zmm0",
+              "vextracti128\t$1, %ymm0, %xmm1",
+              "vpaddd\t%xmm1, %xmm0, %xmm0"
+            ],
+            "symbol_matched": true,
+            "total_insns": 15,
+            "vex_or_evex_insns_count": 14,
+            "ymm_insns_count": 2,
+            "zmm_insns_count": 6
+          },
+          "baseline_dispatch_avx2": {
+            "call_or_tailjmp_insns": [
+              "callq\t*_RNvNtNtCseeka07IAQW_10std_detect6detect5cache21detect_and_initialize@GOTPCREL(%rip)",
+              "jmp\t_RNvCs54Lf2Lq64UF_11dispatch_o317avx2_kernel_entry"
+            ],
+            "sample_vector_insns": [],
+            "symbol_matched": true,
+            "total_insns": 29,
+            "vex_or_evex_insns_count": 0,
+            "ymm_insns_count": 0,
+            "zmm_insns_count": 0
+          },
+          "baseline_dispatch_avx512f": {
+            "call_or_tailjmp_insns": [
+              "jmp\t_RNvCs54Lf2Lq64UF_11dispatch_o319avx512_kernel_entry",
+              "callq\t*_RNvNtNtCseeka07IAQW_10std_detect6detect5cache21detect_and_initialize@GOTPCREL(%rip)"
+            ],
+            "sample_vector_insns": [],
+            "symbol_matched": true,
+            "total_insns": 40,
+            "vex_or_evex_insns_count": 0,
+            "ymm_insns_count": 0,
+            "zmm_insns_count": 0
+          }
+        }
+      }
+    },
+    "hardware_counterfactuals": {
+      "ce1_unchecked_cross_feature_inlining_and_licm_hoisting": {
+        "all_runtime_guards_false": true,
+        "caller_zmm_insns": [
+          "vpbroadcastd\t%ecx, %zmm0",
+          "vpxord\t(%rdx), %zmm0, %zmm0",
+          "vpaddd\t.LCPI5_0(%rip){1to16}, %zmm0, %zmm0",
+          "vextracti64x4\t$1, %zmm0, %ymm1",
+          "vpaddd\t%zmm1, %zmm0, %zmm0",
+          "vpbroadcastd\t%ecx, %zmm1",
+          "vpbroadcastd\t.LCPI5_1(%rip), %zmm2",
+          "vpmovsxbd\t(%rdi,%rax), %zmm6"
+        ],
+        "caller_zmm_insns_count": 36,
+        "compile_rc": 0,
+        "execution_returncode": -4,
+        "terminated_by_sigill": true
+      },
+      "ce2_forged_safe_fnptr_coercion_bypass": {
+        "compile_rc": 0,
+        "execution_returncode": -4,
+        "terminated_by_sigill": true
+      },
+      "host_supports_avx512f": false
+    }
+  },
+  "part3_portable_simd_intrinsics": {
+    "execution_rc": 0,
+    "execution_stdout": "portable_simd_parity_ok=256_patterns_plus_masked_mem_plus_i16x10_pad32",
+    "mcp838_simd_field_projection_ban": {
+      "compile_rc": 101,
+      "validator_diagnostic": "Projecting into SIMD type U32x4 is banned by MCP#838"
+    },
+    "oob_shuffle_compile_fail": {
+      "compile_rc": 1,
+      "error_code": "E0511",
+      "message": "invalid monomorphization of `simd_shuffle` intrinsic: SIMD index #3 is out of bounds (limit 8)",
+      "notes": [
+        "= note: using it is strongly discouraged",
+        "= note: `#[warn(internal_features)]` on by default",
+        "= note: using it is strongly discouraged"
+      ]
+    },
+    "positive_suite_compile_rc": 0,
+    "positive_suite_o0_ir_rc": 0,
+    "post_opt_ll_masked_intrinsics_decls": [
+      "declare <8 x i32> @llvm.masked.load.v8i32.p0(ptr captures(none), <8 x i1>, <8 x i32>) #11",
+      "declare void @llvm.masked.store.v8i32.p0(<8 x i32>, ptr captures(none), <8 x i1>) #12"
+    ],
+    "repr_simd_nonpow2_padding_i16x10": {
+      "array_i16x10_size_bytes": 20,
+      "simd_i16x10_align_bytes": 32,
+      "simd_i16x10_size_bytes": 32,
+      "verified_at_runtime": true
+    },
+    "rustc_codegen_llvm_o0_ir_instructions": {
+      "kernel_avx2_bitmask_u16": [
+        "%1 = lshr <16 x i8> %0, splat (i8 7)",
+        "%2 = trunc <16 x i8> %1 to <16 x i1>",
+        "%_0 = bitcast <16 x i1> %2 to i16"
+      ],
+      "kernel_avx2_cast_widen_add": [
+        "%sw = sext <8 x i16> %0 to <8 x i32>",
+        "%uw = zext <8 x i16> %1 to <8 x i32>",
+        "%2 = add <8 x i32> %sw, %uw"
+      ],
+      "kernel_avx2_masked_load_store": [
+        "%2 = lshr <8 x i32> %0, splat (i32 31)",
+        "%3 = trunc <8 x i32> %2 to <8 x i1>",
+        "%4 = call <8 x i32> @llvm.masked.load.v8i32.p0(ptr align 1 %src, <8 x i1> %3, <8 x i32> %1)",
+        "%7 = lshr <8 x i32> %5, splat (i32 31)",
+        "%8 = trunc <8 x i32> %7 to <8 x i1>",
+        "call void @llvm.masked.store.v8i32.p0(<8 x i32> %6, ptr align 1 %dst, <8 x i1> %8)"
+      ],
+      "kernel_avx2_select_bitmask_u8x16": [
+        "%2 = bitcast i16 %mask_bits to <16 x i1>",
+        "%3 = select <16 x i1> %2, <16 x i8> %0, <16 x i8> %1"
+      ],
+      "kernel_avx2_select_vec_u8x16": [
+        "%3 = lshr <16 x i8> %0, splat (i8 7)",
+        "%4 = trunc <16 x i8> %3 to <16 x i1>",
+        "%5 = select <16 x i1> %4, <16 x i8> %1, <16 x i8> %2"
+      ],
+      "kernel_bitmask_nonpow2_10lanes": [
+        "%2 = lshr <10 x i16> %1, splat (i16 15)",
+        "%3 = trunc <10 x i16> %2 to <10 x i1>",
+        "%4 = bitcast <10 x i1> %3 to i10",
+        "%_2 = zext i10 %4 to i16",
+        "%6 = lshr <10 x i16> %5, splat (i16 15)",
+        "%7 = trunc <10 x i16> %6 to <10 x i1>",
+        "%8 = bitcast <10 x i1> %7 to i10",
+        "%9 = zext i10 %8 to i16"
+      ],
+      "kernel_sse2_bitmask_bytes": [
+        "%2 = lshr <16 x i8> %1, splat (i8 7)",
+        "%3 = trunc <16 x i8> %2 to <16 x i1>",
+        "%4 = bitcast <16 x i1> %3 to i16"
+      ],
+      "kernel_sse2_shuffle_u32x4": [
+        "%2 = shufflevector <4 x i32> %0, <4 x i32> %1, <4 x i32> <i32 3, i32 4, i32 1, i32 6>"
+      ]
+    },
+    "x86_64_o2_disassembly_by_kernel": {
+      "kernel_avx2_bitmask_u16": [
+        "vmovdqa\t(%rdi), %xmm0",
+        "vpmovmskb\t%xmm0, %eax",
+        "retq"
+      ],
+      "kernel_avx2_cast_widen_add": [
+        "vpmovsxwd\t(%rsi), %ymm0",
+        "vpmovzxwd\t(%rdx), %ymm1",
+        "movq\t%rdi, %rax",
+        "vpaddd\t%ymm0, %ymm1, %ymm0",
+        "vmovdqa\t%ymm0, (%rdi)",
+        "vzeroupper",
+        "retq"
+      ],
+      "kernel_avx2_masked_load_store": [
+        "movq\t%rdi, %rax",
+        "vmovdqa\t(%rsi), %ymm0",
+        "vpmaskmovd\t(%rdx), %ymm0, %ymm1",
+        "vmovaps\t(%r8), %ymm2",
+        "vblendvps\t%ymm0, %ymm1, %ymm2, %ymm1",
+        "vmovaps\t%ymm1, (%rdi)",
+        "vpmaskmovd\t%ymm1, %ymm0, (%rcx)",
+        "vzeroupper",
+        "retq"
+      ],
+      "kernel_avx2_select_bitmask_u8x16": [
+        "vmovd\t%esi, %xmm0",
+        "vpshufb\t.LCPI21_0(%rip), %xmm0, %xmm0",
+        "vmovdqa\t(%rcx), %xmm1",
+        "vpbroadcastq\t.LCPI21_1(%rip), %xmm2",
+        "vpand\t%xmm2, %xmm0, %xmm0",
+        "vpcmpeqb\t%xmm2, %xmm0, %xmm0",
+        "vpblendvb\t%xmm0, (%rdx), %xmm1, %xmm0",
+        "movq\t%rdi, %rax",
+        "vmovdqa\t%xmm0, (%rdi)",
+        "retq"
+      ],
+      "kernel_avx2_select_vec_u8x16": [
+        "vmovdqa\t(%rsi), %xmm0",
+        "vmovdqa\t(%rcx), %xmm1",
+        "vpblendvb\t%xmm0, (%rdx), %xmm1, %xmm0",
+        "movq\t%rdi, %rax",
+        "vmovdqa\t%xmm0, (%rdi)",
+        "retq"
+      ],
+      "kernel_bitmask_nonpow2_10lanes": [
+        "movdqa\t(%rdi), %xmm0",
+        "packsswb\t16(%rdi), %xmm0",
+        "pmovmskb\t%xmm0, %ecx",
+        "andl\t$1023, %ecx",
+        "movl\t%ecx, %eax",
+        "shll\t$16, %eax",
+        "orl\t%ecx, %eax",
+        "retq"
+      ],
+      "kernel_sse2_bitmask_bytes": [
+        "movdqa\t(%rdi), %xmm0",
+        "pmovmskb\t%xmm0, %eax",
+        "retq"
+      ],
+      "kernel_sse2_shuffle_u32x4": [
+        "pshufd\t$232, (%rdx), %xmm0",
+        "pshufd\t$231, (%rsi), %xmm1",
+        "movq\t%rdi, %rax",
+        "punpckldq\t%xmm0, %xmm1",
+        "movdqa\t%xmm1, (%rdi)",
+        "retq"
+      ]
+    }
+  },
+  "part4_sysroot_stdarch_and_simd_census": {
+    "available": true,
+    "core_arch_by_subdir": {
+      "aarch64": {
+        "rs_files": 13,
+        "rustc_legacy_const_generics_attrs": 597,
+        "safe_pub_intrinsic_wrappers": 1954,
+        "static_assert_simm_bits_calls": 0,
+        "static_assert_uimm_bits_calls": 398,
+        "target_feature_attrs": 7835,
+        "unsafe_pub_intrinsic_wrappers": 251
+      },
+      "riscv64": {
+        "rs_files": 2,
+        "rustc_legacy_const_generics_attrs": 1,
+        "safe_pub_intrinsic_wrappers": 0,
+        "static_assert_simm_bits_calls": 0,
+        "static_assert_uimm_bits_calls": 0,
+        "target_feature_attrs": 11,
+        "unsafe_pub_intrinsic_wrappers": 0
+      },
+      "riscv_shared": {
+        "rs_files": 4,
+        "rustc_legacy_const_generics_attrs": 2,
+        "safe_pub_intrinsic_wrappers": 0,
+        "static_assert_simm_bits_calls": 0,
+        "static_assert_uimm_bits_calls": 0,
+        "target_feature_attrs": 14,
+        "unsafe_pub_intrinsic_wrappers": 0
+      },
+      "wasm32": {
+        "rs_files": 5,
+        "rustc_legacy_const_generics_attrs": 2,
+        "safe_pub_intrinsic_wrappers": 7,
+        "static_assert_simm_bits_calls": 0,
+        "static_assert_uimm_bits_calls": 0,
+        "target_feature_attrs": 281,
+        "unsafe_pub_intrinsic_wrappers": 16
+      },
+      "x86": {
+        "rs_files": 50,
+        "rustc_legacy_const_generics_attrs": 1494,
+        "safe_pub_intrinsic_wrappers": 5586,
+        "static_assert_simm_bits_calls": 0,
+        "static_assert_uimm_bits_calls": 887,
+        "target_feature_attrs": 6179,
+        "unsafe_pub_intrinsic_wrappers": 562
+      },
+      "x86_64": {
+        "rs_files": 23,
+        "rustc_legacy_const_generics_attrs": 60,
+        "safe_pub_intrinsic_wrappers": 92,
+        "static_assert_simm_bits_calls": 0,
+        "static_assert_uimm_bits_calls": 68,
+        "target_feature_attrs": 139,
+        "unsafe_pub_intrinsic_wrappers": 51
+      }
+    },
+    "core_intrinsics_scalable_simd_count": 0,
+    "core_intrinsics_scalable_simd_names": [],
+    "core_intrinsics_simd_count": 75,
+    "core_intrinsics_simd_names": [
+      "simd_insert",
+      "simd_extract",
+      "simd_insert_dyn",
+      "simd_extract_dyn",
+      "simd_splat",
+      "simd_add",
+      "simd_sub",
+      "simd_mul",
+      "simd_div",
+      "simd_rem",
+      "simd_shl",
+      "simd_shr",
+      "simd_funnel_shl",
+      "simd_funnel_shr",
+      "simd_carryless_mul",
+      "simd_and",
+      "simd_or",
+      "simd_xor",
+      "simd_cast",
+      "simd_as",
+      "simd_neg",
+      "simd_fabs",
+      "simd_minimum_number_nsz",
+      "simd_maximum_number_nsz",
+      "simd_eq",
+      "simd_ne",
+      "simd_lt",
+      "simd_le",
+      "simd_gt",
+      "simd_ge",
+      "simd_shuffle",
+      "simd_gather",
+      "simd_scatter",
+      "simd_masked_load",
+      "simd_masked_store",
+      "simd_saturating_add",
+      "simd_saturating_sub",
+      "simd_reduce_add_ordered",
+      "simd_reduce_add_unordered",
+      "simd_reduce_mul_ordered",
+      "simd_reduce_mul_unordered",
+      "simd_reduce_all",
+      "simd_reduce_any",
+      "simd_reduce_max",
+      "simd_reduce_min",
+      "simd_reduce_and",
+      "simd_reduce_or",
+      "simd_reduce_xor",
+      "simd_bitmask",
+      "simd_select",
+      "simd_select_bitmask",
+      "simd_arith_offset",
+      "simd_cast_ptr",
+      "simd_expose_provenance",
+      "simd_with_exposed_provenance",
+      "simd_bswap",
+      "simd_bitreverse",
+      "simd_ctlz",
+      "simd_ctpop",
+      "simd_cttz",
+      "simd_ceil",
+      "simd_floor",
+      "simd_round",
+      "simd_round_ties_even",
+      "simd_trunc",
+      "simd_fsqrt",
+      "simd_fma",
+      "simd_relaxed_fma",
+      "simd_fsin",
+      "simd_fcos",
+      "simd_fexp",
+      "simd_fexp2",
+      "simd_flog10",
+      "simd_flog2",
+      "simd_flog"
+    ]
+  },
+  "toolchain": {
+    "disassembler_available": true,
+    "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+  }
+}
