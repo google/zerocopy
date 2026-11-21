@@ -268,7 +268,7 @@
   "kind": "theorem",
   "tier": "T1",
   "tier_justification": "Folklore (diverse checkers re-checking the same artifact catch defects they do not share), made precise for one pair of defects.",
-  "plain_claim": "For every rule table R, the same-artifact quorum of the arity-trusting re-checker and the missing-guard mutant of the recomputing re-checker, both reading the identical certificate (translation of proof objects `tr = id`), is faithful to R, although for the standard rules neither member is faithful and their separate-artifact quorum accepts `[] ⊢ ⊥`.",
+  "plain_claim": "With the translation of proof objects `tr = id` (both members read the identical certificate), for every rule table R the same-artifact quorum of the arity-trusting re-checker and the missing-guard mutant of the recomputing re-checker is faithful to R, although for the standard rules neither member is faithful and their separate-artifact quorum accepts `[] ⊢ ⊥`; under the translator `exploitTranslator`, which shows each member a certificate that exploits its own defect, the same quorum for the standard rules accepts `[] ⊢ ⊥` and is not faithful to them (`shared_artifact_quorum_of_disjoint_defects_accepts_bot_under_exploit_translator`).",
   "hypotheses": [],
   "depth": "shallow",
   "depth_justification": "Two routine inductions over the certificate list: a certificate accepted by the trusting re-checker passes every hypothesis guard, and on such certificates the mutant runs exactly like the recomputing re-checker.",
