@@ -447,31 +447,37 @@ statement hash, but like every declaration of the `Toy` library they appear in t
 `slice_partial_bwd`: `Quot.sound`, `propext`).
 
 ```lean
+-- lean/Toy/Progress/BigStep.lean:128-129
 -- lean/Toy/Progress/BigStep.lean lines 128-129
 theorem termsWith_iff_bigStep {c : Cmd} {s s' : State} {t : List Val} :
     TermsWith c s t s' ↔ BigStep c s t s'
 
+-- lean/Toy/Progress/BigStep.lean:384
 -- lean/Toy/Progress/BigStep.lean line 384
 theorem reach_iff_partial {c : Cmd} {s : State} {t : List Val} : Reach c s t ↔ Partial c s t
 
+-- lean/Toy/Progress/Slicing.lean:200-203
 -- lean/Toy/Progress/Slicing.lean lines 200-203
 theorem slice_bigStep_fwd {ts : Bool} {c : Cmd} {s : State} {t : List Val} {s₁ : State}
     (hB : BigStep c s t s₁) :
     ∀ {R R' : VarSet} {c' : Cmd} {s' : State}, IsSlice ts R c c' R' → AgreeOn R' s s' →
       ∃ s₁', BigStep c' s' t s₁' ∧ AgreeOn R s₁ s₁'
 
+-- lean/Toy/Progress/Slicing.lean:279-282
 -- lean/Toy/Progress/Slicing.lean lines 279-282
 theorem slice_partial_fwd {ts : Bool} {c : Cmd} {s : State} {t : List Val}
     (hP : Partial c s t) :
     ∀ {R R' : VarSet} {c' : Cmd} {s' : State}, IsSlice ts R c c' R' → AgreeOn R' s s' →
       Partial c' s' t
 
+-- lean/Toy/Progress/Slicing.lean:342-345
 -- lean/Toy/Progress/Slicing.lean lines 342-345
 theorem slice_bigStep_bwd {c' : Cmd} {s' : State} {t : List Val} {s₁' : State}
     (hB : BigStep c' s' t s₁') :
     ∀ {R R' : VarSet} {c : Cmd} {s : State}, IsSlice true R c c' R' → AgreeOn R' s s' →
       ∃ s₁, BigStep c s t s₁ ∧ AgreeOn R s₁ s₁'
 
+-- lean/Toy/Progress/Slicing.lean:413-415
 -- lean/Toy/Progress/Slicing.lean lines 413-415
 theorem slice_partial_bwd {c' : Cmd} {s' : State} {t : List Val} (hP : Partial c' s' t) :
     ∀ {R R' : VarSet} {c : Cmd} {s : State}, IsSlice true R c c' R' → AgreeOn R' s s' →
@@ -501,6 +507,7 @@ Every theorem in this section: `Basis: execution (Lean kernel check)` — proved
 **Lean statement**, `lean/Toy/Progress/Deletion.lean` line 140:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:140-144
 theorem loopDeletion_spin_not_refines_divergenceObservable (mp : Bool) :
     (∀ s, ObsBeh (.emit (.num 1)) s (.term [1]) ∧
           ObsBeh (.seq (spin mp) (.emit (.num 1))) s (.div []) ∧
@@ -517,6 +524,7 @@ The theorem itself is the witness (it has no hypotheses).
 **Positive control.** Under the forward-progress semantics the same deletion is a refinement. `loopDeletion_spin_refines_forwardProgress`, `lean/Toy/Progress/Deletion.lean` line 154:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:154-155
 theorem loopDeletion_spin_refines_forwardProgress (mp : Bool) :
     Refines FPBeh (.seq (spin mp) (.emit (.num 1))) (.emit (.num 1))
 ```
@@ -545,6 +553,7 @@ theorem loopDeletion_spin_refines_forwardProgress (mp : Bool) :
 **Lean statement**, `lean/Toy/Progress/Deletion.lean` line 164:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:164-167
 theorem deleteEmitFreeLoop_withDeadWrites_refines_forwardProgress
     (p k : Cmd) (mp : Bool) (b : Exp) (body : Cmd)
     (hEmit : EmitFree body) (hDead : DeadAfterPrefix p body.writes k) :
@@ -561,6 +570,7 @@ theorem deleteEmitFreeLoop_withDeadWrites_refines_forwardProgress
 Counterexample for `hEmit`, `lean/Toy/Progress/Deletion.lean` line 233:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:233-236
 theorem deleteLoop_forwardProgress_needs_emitFree :
     DeadAfterPrefix (.assign 0 (.num 0)) emitBody.writes .skip ∧
     ¬ Refines FPBeh (.seq (.assign 0 (.num 0)) (.seq (.loop false x0IsZero emitBody) .skip))
@@ -570,6 +580,7 @@ theorem deleteLoop_forwardProgress_needs_emitFree :
 Counterexample for `hDead`, `lean/Toy/Progress/Deletion.lean` line 243:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:243-247
 theorem deleteLoop_forwardProgress_needs_deadWrites :
     EmitFree resetBody ∧
     ¬ Refines FPBeh
@@ -582,6 +593,7 @@ theorem deleteLoop_forwardProgress_needs_deadWrites :
 `deleteLoop_hypotheses_nonvacuous`, `lean/Toy/Progress/Deletion.lean` line 191:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:191-193
 theorem deleteLoop_hypotheses_nonvacuous :
     EmitFree countBody ∧ DeadAfterPrefix .skip countBody.writes (.emit (.var 0)) ∧
     ReachableAt .skip (fun _ => 0) ∧ ¬ Terminates countLoop (fun _ => 0)
@@ -590,10 +602,12 @@ theorem deleteLoop_hypotheses_nonvacuous :
 **Companion theorems cited by this card** (statement hashes recorded under **Evidence**):
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:63-64
 -- lean/Toy/Progress/Deletion.lean line 63
 theorem deadAfterPrefix_of_deadAtEntry (p : Cmd) {X : List Var} {k : Cmd}
     (h : DeadAtEntry X k) : DeadAfterPrefix p X k
 
+-- lean/Toy/Progress/Deletion.lean:76-77
 -- lean/Toy/Progress/Deletion.lean line 76
 theorem deadAfterPrefix_example_not_deadAtEntry :
     ¬ DeadAtEntry countBody.writes guardedEmit ∧ DeadAfterPrefix setX2 countBody.writes guardedEmit
@@ -625,6 +639,7 @@ theorem deadAfterPrefix_example_not_deadAtEntry :
 **Lean statement**, `lean/Toy/Progress/Deletion.lean` line 259:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:259-264
 theorem deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff
     (p k : Cmd) (mp : Bool) (b : Exp) (body : Cmd)
     (hEmit : EmitFree body) (hDead : DeadAfterPrefix p body.writes k) :
@@ -643,6 +658,7 @@ theorem deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff
 Counterexample for `hEmit`, `lean/Toy/Progress/Deletion.lean` line 321:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:321-326
 theorem deleteLoop_divergenceObservable_iff_needs_emitFree :
     DeadAfterPrefix (.assign 0 (.num 0)) emitBody.writes .skip ∧
     ¬ (Refines ObsBeh (.seq (.assign 0 (.num 0)) (.seq (.loop false x0IsZero emitBody) .skip))
@@ -654,6 +670,7 @@ theorem deleteLoop_divergenceObservable_iff_needs_emitFree :
 Counterexample for `hDead`, `lean/Toy/Progress/Deletion.lean` line 336:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:336-343
 theorem deleteLoop_divergenceObservable_iff_needs_deadWrites :
     EmitFree resetBody ∧
     ¬ (Refines ObsBeh
@@ -669,6 +686,7 @@ theorem deleteLoop_divergenceObservable_iff_needs_deadWrites :
 `deleteLoop_iff_terminates_nonvacuous`, `lean/Toy/Progress/Deletion.lean` line 389:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:389-395
 theorem deleteLoop_iff_terminates_nonvacuous :
     EmitFree countBody ∧ DeadAfterPrefix (.assign 0 (.num 1)) countBody.writes (.emit (.var 0)) ∧
     (∀ s₁, ReachableAt (.assign 0 (.num 1)) s₁ → ¬ ObsBeh (.emit (.var 0)) s₁ (.div [])) ∧
@@ -681,13 +699,16 @@ theorem deleteLoop_iff_terminates_nonvacuous :
 **Companion theorems cited by this card** (statement hashes recorded under **Evidence**):
 
 ```lean
+-- lean/Toy/Progress/BigStep.lean:627-628
 -- lean/Toy/Progress/BigStep.lean line 627
 theorem refines_obsBeh_iff_equiv (src tgt : Cmd) :
     Refines ObsBeh src tgt ↔ ∀ s b, ObsBeh src s b ↔ ObsBeh tgt s b
 
+-- lean/Toy/Progress/BigStep.lean:597
 -- lean/Toy/Progress/BigStep.lean line 597
 theorem obsBeh_exists (c : Cmd) (s : State) : ∃ b, ObsBeh c s b
 
+-- lean/Toy/Progress/BigStep.lean:557-558
 -- lean/Toy/Progress/BigStep.lean line 557
 theorem obsBeh_unique {c : Cmd} {s : State} {b₁ b₂ : Beh} (h₁ : ObsBeh c s b₁)
     (h₂ : ObsBeh c s b₂) : b₁ = b₂
@@ -716,6 +737,7 @@ theorem obsBeh_unique {c : Cmd} {s : State} {b₁ b₂ : Beh} (h₁ : ObsBeh c s
 **Lean statement**, `lean/Toy/Progress/Deletion.lean` line 355:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:355-358
 theorem deleteLoop_refines_divergenceObservable_without_termination :
     EmitFree .skip ∧ DeadAfterPrefix .skip Cmd.skip.writes (spin false) ∧
     Refines ObsBeh (.seq .skip (.seq (spin false) (spin false))) (.seq .skip (spin false)) ∧
@@ -731,6 +753,7 @@ The theorem itself is the witness (it has no hypotheses).
 **Positive control.** With the continuation `emit 1` instead of a silent loop, deleting `while 1 do skip` is not a divergence-observable refinement. `loopDeletion_spin_not_refines_divergenceObservable`, `lean/Toy/Progress/Deletion.lean` line 140:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:140-144
 theorem loopDeletion_spin_not_refines_divergenceObservable (mp : Bool) :
     (∀ s, ObsBeh (.emit (.num 1)) s (.term [1]) ∧
           ObsBeh (.seq (spin mp) (.emit (.num 1))) s (.div []) ∧
@@ -759,6 +782,7 @@ theorem loopDeletion_spin_not_refines_divergenceObservable (mp : Bool) :
 **Lean statement**, `lean/Toy/Progress/Deletion.lean` line 374:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:374-379
 theorem deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff_terminates
     (p k : Cmd) (mp : Bool) (b : Exp) (body : Cmd)
     (hEmit : EmitFree body) (hDead : DeadAfterPrefix p body.writes k)
@@ -778,6 +802,7 @@ theorem deleteEmitFreeLoop_withDeadWrites_refines_divergenceObservable_iff_termi
 Counterexample for `hEmit`, `lean/Toy/Progress/Deletion.lean` line 433:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:433-439
 theorem deleteLoop_iff_terminates_needs_emitFree :
     DeadAfterPrefix (.assign 0 (.num 0)) emitBody.writes .skip ∧
     (∀ s₁, ReachableAt (.assign 0 (.num 0)) s₁ → ¬ ObsBeh .skip s₁ (.div [])) ∧
@@ -790,6 +815,7 @@ theorem deleteLoop_iff_terminates_needs_emitFree :
 Counterexample for `hDead`, `lean/Toy/Progress/Deletion.lean` line 449:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:449-456
 theorem deleteLoop_iff_terminates_needs_deadWrites :
     EmitFree resetBody ∧
     (∀ s₁, ReachableAt (.assign 0 (.num 0)) s₁ → ¬ ObsBeh (.emit (.var 0)) s₁ (.div [])) ∧
@@ -803,6 +829,7 @@ theorem deleteLoop_iff_terminates_needs_deadWrites :
 Counterexample for `hNoSilentK`, `lean/Toy/Progress/Deletion.lean` line 410:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:410-413
 theorem deleteLoop_iff_terminates_needs_continuation_not_silent :
     EmitFree .skip ∧ DeadAfterPrefix .skip Cmd.skip.writes (spin false) ∧
     ¬ (Refines ObsBeh (.seq .skip (.seq (spin false) (spin false))) (.seq .skip (spin false)) ↔
@@ -814,6 +841,7 @@ theorem deleteLoop_iff_terminates_needs_continuation_not_silent :
 `deleteLoop_iff_terminates_nonvacuous`, `lean/Toy/Progress/Deletion.lean` line 389:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:389-395
 theorem deleteLoop_iff_terminates_nonvacuous :
     EmitFree countBody ∧ DeadAfterPrefix (.assign 0 (.num 1)) countBody.writes (.emit (.var 0)) ∧
     (∀ s₁, ReachableAt (.assign 0 (.num 1)) s₁ → ¬ ObsBeh (.emit (.var 0)) s₁ (.div [])) ∧
@@ -826,11 +854,13 @@ theorem deleteLoop_iff_terminates_nonvacuous :
 **Companion theorems cited by this card** (statement hashes recorded under **Evidence**):
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:420-422
 -- lean/Toy/Progress/Deletion.lean line 420
 theorem noSilentK_admits_emit_then_spin (s : State) :
     ¬ ObsBeh (.seq (.emit (.num 1)) (spin false)) s (.div []) ∧
     SilentlyDiverges (.seq (.emit (.num 1)) (spin false)) s
 
+-- lean/Toy/Progress/BigStep.lean:627-628
 -- lean/Toy/Progress/BigStep.lean line 627
 theorem refines_obsBeh_iff_equiv (src tgt : Cmd) :
     Refines ObsBeh src tgt ↔ ∀ s b, ObsBeh src s b ↔ ObsBeh tgt s b
@@ -860,6 +890,7 @@ The second conjunct is existential. A concrete witness pair is `while 1 do skip 
 **Lean statement**, `lean/Toy/Progress/Deletion.lean` line 474:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:474-476
 theorem refines_forwardProgress_of_refines_divergenceObservable_strict :
     (∀ src tgt, Refines ObsBeh src tgt → Refines FPBeh src tgt) ∧
     ∃ src tgt, Refines FPBeh src tgt ∧ ¬ Refines ObsBeh src tgt
@@ -872,6 +903,7 @@ theorem refines_forwardProgress_of_refines_divergenceObservable_strict :
 `refines_divergenceObservable_example`, `lean/Toy/Progress/Deletion.lean` line 497:
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:497-498
 theorem refines_divergenceObservable_example :
     Refines ObsBeh (.seq (.assign 1 (.num 5)) (.emit (.num 1))) (.emit (.num 1))
 ```
@@ -879,22 +911,27 @@ theorem refines_divergenceObservable_example :
 **Companion theorems cited by this card** (statement hashes recorded under **Evidence**):
 
 ```lean
+-- lean/Toy/Progress/Deletion.lean:466-467
 -- lean/Toy/Progress/Deletion.lean line 466
 theorem refines_forwardProgress_of_refines_divergenceObservable (src tgt : Cmd)
     (h : Refines ObsBeh src tgt) : Refines FPBeh src tgt
 
+-- lean/Toy/Progress/Deletion.lean:485-486
 -- lean/Toy/Progress/Deletion.lean line 485
 theorem refines_divergenceObservable_not_imp_refines_mixed :
     Refines ObsBeh (spin false) (spin true) ∧ ¬ Refines MixedBeh (spin false) (spin true)
 
+-- lean/Toy/Progress/BigStep.lean:627-628
 -- lean/Toy/Progress/BigStep.lean line 627
 theorem refines_obsBeh_iff_equiv (src tgt : Cmd) :
     Refines ObsBeh src tgt ↔ ∀ s b, ObsBeh src s b ↔ ObsBeh tgt s b
 
+-- lean/Toy/Progress/Deletion.lean:154-155
 -- lean/Toy/Progress/Deletion.lean line 154
 theorem loopDeletion_spin_refines_forwardProgress (mp : Bool) :
     Refines FPBeh (.seq (spin mp) (.emit (.num 1))) (.emit (.num 1))
 
+-- lean/Toy/Progress/Deletion.lean:140-144
 -- lean/Toy/Progress/Deletion.lean line 140
 theorem loopDeletion_spin_not_refines_divergenceObservable (mp : Bool) :
     (∀ s, ObsBeh (.emit (.num 1)) s (.term [1]) ∧
@@ -902,6 +939,7 @@ theorem loopDeletion_spin_not_refines_divergenceObservable (mp : Bool) :
           ¬ ObsBeh (.seq (spin mp) (.emit (.num 1))) s (.term [1])) ∧
     ¬ Refines ObsBeh (.seq (spin mp) (.emit (.num 1))) (.emit (.num 1))
 
+-- lean/Toy/Progress/Deletion.lean:507
 -- lean/Toy/Progress/Deletion.lean line 507
 theorem refines_forwardProgress_needs_hypothesis : ¬ Refines FPBeh .skip (.emit (.num 1))
 ```
@@ -928,6 +966,7 @@ theorem refines_forwardProgress_needs_hypothesis : ¬ Refines FPBeh .skip (.emit
 **Lean statement**, `lean/Toy/Progress/Slicing.lean` line 467:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:467-469
 theorem classicSlice_preserves_terminating_traces (c c' : Cmd)
     (hSlice : IsClassicSlice c c') :
     ∀ s t, ObsBeh c s (.term t) → ObsBeh c' s (.term t)
@@ -942,6 +981,7 @@ theorem classicSlice_preserves_terminating_traces (c c' : Cmd)
 Counterexample for `hSlice`, `lean/Toy/Progress/Slicing.lean` line 487:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:487-490
 theorem classicSlice_preserves_terminating_traces_needs_slice :
     ¬ IsClassicSlice (.emit (.num 1)) .skip ∧
     ObsBeh (.emit (.num 1)) (fun _ => 0) (.term [1]) ∧
@@ -953,6 +993,7 @@ theorem classicSlice_preserves_terminating_traces_needs_slice :
 `classicSlice_preserves_terminating_traces_nonvacuous`, `lean/Toy/Progress/Slicing.lean` line 478:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:478-480
 theorem classicSlice_preserves_terminating_traces_nonvacuous :
     IsClassicSlice (.seq countLoop (.emit (.num 1))) (.seq .skip (.emit (.num 1))) ∧
     ObsBeh (.seq countLoop (.emit (.num 1))) (fun _ => 1) (.term [1])
@@ -961,6 +1002,7 @@ theorem classicSlice_preserves_terminating_traces_nonvacuous :
 **Companion theorems cited by this card** (statement hashes recorded under **Evidence**):
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:110
 -- lean/Toy/Progress/Slicing.lean line 110
 theorem isClassicSlice_refl (c : Cmd) : IsClassicSlice c c
 ```
@@ -992,6 +1034,7 @@ theorem isClassicSlice_refl (c : Cmd) : IsClassicSlice c c
 **Lean statement**, `lean/Toy/Progress/Slicing.lean` line 500:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:500-504
 theorem classicSlice_spin_terminates_while_original_diverges :
     IsClassicSlice (.seq (spin false) (.emit (.num 1))) (.seq .skip (.emit (.num 1))) ∧
     (∀ s, ObsBeh (.seq (spin false) (.emit (.num 1))) s (.div []) ∧
@@ -1008,6 +1051,7 @@ The theorem itself is the witness (it has no hypotheses).
 **Positive control.** No termination-guarded slice drops the loop, so the same pair is excluded by the termination-guarded slice relation. `not_isTerminationSensitiveSlice_spin`, `lean/Toy/Progress/Slicing.lean` line 151:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:151-153
 theorem not_isTerminationSensitiveSlice_spin :
     ¬ IsTerminationSensitiveSlice (.seq (spin false) (.emit (.num 1)))
       (.seq .skip (.emit (.num 1)))
@@ -1038,6 +1082,7 @@ theorem not_isTerminationSensitiveSlice_spin :
 **Lean statement**, `lean/Toy/Progress/Slicing.lean` line 521:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:521-523
 theorem terminationSensitiveSlice_preserves_obsBeh (c c' : Cmd)
     (hSlice : IsTerminationSensitiveSlice c c') :
     ∀ s b, ObsBeh c' s b ↔ ObsBeh c s b
@@ -1052,6 +1097,7 @@ theorem terminationSensitiveSlice_preserves_obsBeh (c c' : Cmd)
 Counterexample for `hSlice`, `lean/Toy/Progress/Slicing.lean` line 541:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:541-544
 theorem terminationSensitiveSlice_needs_terminationSensitivity :
     IsClassicSlice (.seq (spin false) (.emit (.num 1))) (.seq .skip (.emit (.num 1))) ∧
     ¬ (∀ s b, ObsBeh (.seq .skip (.emit (.num 1))) s b ↔
@@ -1063,6 +1109,7 @@ theorem terminationSensitiveSlice_needs_terminationSensitivity :
 `terminationSensitiveSlice_preserves_obsBeh_nonvacuous`, `lean/Toy/Progress/Slicing.lean` line 534:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:534-536
 theorem terminationSensitiveSlice_preserves_obsBeh_nonvacuous :
     IsTerminationSensitiveSlice (.seq countLoop (.emit (.num 1)))
       (.seq (.loop false x0IsZero .skip) (.emit (.num 1)))
@@ -1071,14 +1118,17 @@ theorem terminationSensitiveSlice_preserves_obsBeh_nonvacuous :
 **Companion theorems cited by this card** (statement hashes recorded under **Evidence**):
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:163-165
 -- lean/Toy/Progress/Slicing.lean line 163
 theorem isTerminationSensitiveSlice_drops_terminating_loop :
     IsTerminationSensitiveSlice (.seq (.loop false x0IsZero resetBody) (.emit (.num 1)))
       (.seq .skip (.emit (.num 1)))
 
+-- lean/Toy/Progress/Slicing.lean:112
 -- lean/Toy/Progress/Slicing.lean line 112
 theorem isTerminationSensitiveSlice_refl (c : Cmd) : IsTerminationSensitiveSlice c c
 
+-- lean/Toy/Progress/BigStep.lean:627-628
 -- lean/Toy/Progress/BigStep.lean line 627
 theorem refines_obsBeh_iff_equiv (src tgt : Cmd) :
     Refines ObsBeh src tgt ↔ ∀ s b, ObsBeh src s b ↔ ObsBeh tgt s b
@@ -1113,6 +1163,7 @@ Explanation (no additional claim): the typical way in which c silently diverges 
 **Lean statement**, `lean/Toy/Progress/Slicing.lean` line 553:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:553-554
 theorem classicSlice_refines_forwardProgress (c c' : Cmd)
     (hSlice : IsClassicSlice c c') : Refines FPBeh c c'
 ```
@@ -1126,6 +1177,7 @@ theorem classicSlice_refines_forwardProgress (c c' : Cmd)
 Counterexample for `hSlice`, `lean/Toy/Progress/Slicing.lean` line 601:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:601-604
 theorem classicSlice_refines_forwardProgress_needs_slice :
     ¬ IsClassicSlice (.seq (.assign 0 (.num 5)) (.emit (.var 0)))
       (.seq .skip (.emit (.var 0))) ∧
@@ -1137,6 +1189,7 @@ theorem classicSlice_refines_forwardProgress_needs_slice :
 `classicSlice_refines_forwardProgress_nonvacuous`, `lean/Toy/Progress/Slicing.lean` line 594:
 
 ```lean
+-- lean/Toy/Progress/Slicing.lean:594-595
 theorem classicSlice_refines_forwardProgress_nonvacuous :
     IsClassicSlice (.seq countLoop (.emit (.num 1))) (.seq .skip (.emit (.num 1)))
 ```
@@ -1144,16 +1197,19 @@ theorem classicSlice_refines_forwardProgress_nonvacuous :
 **Companion theorems cited by this card** (statement hashes recorded under **Evidence**):
 
 ```lean
+-- lean/Toy/Progress/Characterizations.lean:21-23
 -- lean/Toy/Progress/Characterizations.lean line 21
 theorem refines_fpBeh_iff_silentlyDiverges_or_obsBeh_iff (src tgt : Cmd) :
     Refines FPBeh src tgt ↔
       ∀ s, SilentlyDiverges src s ∨ ∀ b, ObsBeh tgt s b ↔ ObsBeh src s b
 
+-- lean/Toy/Progress/Characterizations.lean:60-62
 -- lean/Toy/Progress/Characterizations.lean line 60
 theorem classicSlice_silentlyDiverges_or_obsBeh_iff (c c' : Cmd)
     (hSlice : IsClassicSlice c c') :
     ∀ s, SilentlyDiverges c s ∨ ∀ b, ObsBeh c' s b ↔ ObsBeh c s b
 
+-- lean/Toy/Progress/Slicing.lean:279-282
 -- lean/Toy/Progress/Slicing.lean line 279
 theorem slice_partial_fwd {ts : Bool} {c : Cmd} {s : State} {t : List Val}
     (hP : Partial c s t) :
@@ -1189,6 +1245,7 @@ quoted there under *Supporting lemmas cited by name*.
 **Lean statement**, `lean/Toy/Progress/Mixing.lean` line 200:
 
 ```lean
+-- lean/Toy/Progress/Mixing.lean:200-202
 theorem mixedBeh_markAll_restricts (c : Cmd) (s : State) (b : Beh) :
     (MixedBeh (c.markAll true) s b ↔ FPBeh c s b) ∧
     (MixedBeh (c.markAll false) s b ↔ ObsBeh c s b)
@@ -1201,6 +1258,7 @@ theorem mixedBeh_markAll_restricts (c : Cmd) (s : State) (b : Beh) :
 `mixedBeh_markAll_nonvacuous`, `lean/Toy/Progress/Mixing.lean` line 209:
 
 ```lean
+-- lean/Toy/Progress/Mixing.lean:209-215
 theorem mixedBeh_markAll_nonvacuous (s : State) :
     (MixedBeh ((Cmd.seq .skip (.seq (spin false) (.emit (.num 1)))).markAll true) s
         (.term [42]) ∧
@@ -1213,34 +1271,42 @@ theorem mixedBeh_markAll_nonvacuous (s : State) :
 **Companion theorems cited by this card** (statement hashes recorded under **Evidence**):
 
 ```lean
+-- lean/Toy/Progress/Mixing.lean:170-171
 -- lean/Toy/Progress/Mixing.lean line 170
 theorem mixedBeh_markAll_true_iff_fpBeh (c : Cmd) (s : State) (b : Beh) :
     MixedBeh (c.markAll true) s b ↔ FPBeh c s b
 
+-- lean/Toy/Progress/Mixing.lean:191-192
 -- lean/Toy/Progress/Mixing.lean line 191
 theorem mixedBeh_markAll_false_iff_obsBeh (c : Cmd) (s : State) (b : Beh) :
     MixedBeh (c.markAll false) s b ↔ ObsBeh c s b
 
+-- lean/Toy/Progress/Mixing.lean:163
 -- lean/Toy/Progress/Mixing.lean line 163
 theorem fpBeh_of_mixedBeh {c : Cmd} {s : State} {b : Beh} (h : MixedBeh c s b) : FPBeh c s b
 
+-- lean/Toy/Progress/Examples.lean:213-214
 -- lean/Toy/Progress/Examples.lean line 213
 theorem not_progressViolation_flaggedOverUnflagged {s : State} (h0 : s 0 = 0) :
     ¬ ProgressViolation flaggedOverUnflagged s
 
+-- lean/Toy/Progress/Examples.lean:233-234
 -- lean/Toy/Progress/Examples.lean line 233
 theorem mixedBeh_flaggedOverUnflagged {s : State} (h0 : s 0 = 0) (b : Beh) :
     MixedBeh flaggedOverUnflagged s b ↔ b = .div []
 
+-- lean/Toy/Progress/Examples.lean:256-257
 -- lean/Toy/Progress/Examples.lean line 256
 theorem progressViolation_unflaggedOverFlagged {s : State} (h0 : s 0 = 0) :
     ProgressViolation unflaggedOverFlagged s
 
+-- lean/Toy/Progress/Iteration.lean:165-167
 -- lean/Toy/Progress/Iteration.lean line 165
 theorem exists_head_silentlyIterates : ∀ (c : Cmd) (s : State), SilentlyDiverges c s →
     ∃ n mp b body, (run n c s).1.head = .loop mp b body ∧
       SilentlyIterates b body (run n c s).2.1
 
+-- lean/Toy/Progress/Iteration.lean:108-109
 -- lean/Toy/Progress/Iteration.lean line 108
 theorem silentlyDiverges_of_progressViolation {c : Cmd} {s : State}
     (h : ProgressViolation c s) : SilentlyDiverges c s
@@ -1269,6 +1335,7 @@ theorem silentlyDiverges_of_progressViolation {c : Cmd} {s : State}
 **Lean statement**, `lean/Toy/Progress/Mixing.lean` line 235:
 
 ```lean
+-- lean/Toy/Progress/Mixing.lean:235-240
 theorem inlineUnmarked_divergenceObservableCallee_not_refines :
     (∀ s, ¬ ProgressViolation (hazardSite.linked spinFn) s ∧
           ProgressViolation (hazardSite.inlineUnmarked spinFn) s) ∧
@@ -1286,6 +1353,7 @@ The theorem itself is the witness (it has no hypotheses).
 **Positive control.** Attribute-dropping inlining of the same call site introduces no progress violation and is a per-loop refinement of the linked program. `inlineDroppingAttr_hazard_defined`, `lean/Toy/Progress/Mixing.lean` line 259:
 
 ```lean
+-- lean/Toy/Progress/Mixing.lean:259-261
 theorem inlineDroppingAttr_hazard_defined :
     (∀ s, ¬ ProgressViolation (hazardSite.inlineDroppingAttr spinFn) s) ∧
     Refines MixedBeh (hazardSite.linked spinFn) (hazardSite.inlineDroppingAttr spinFn)
@@ -1316,6 +1384,7 @@ theorem inlineDroppingAttr_hazard_defined :
 **Lean statement**, `lean/Toy/Progress/Mixing.lean` line 278:
 
 ```lean
+-- lean/Toy/Progress/Mixing.lean:278-279
 theorem inlineDroppingAttr_refines_linked (cs : CallSite) (g : Fn) :
     Refines MixedBeh (cs.linked g) (cs.inlineDroppingAttr g)
 ```
@@ -1327,6 +1396,7 @@ theorem inlineDroppingAttr_refines_linked (cs : CallSite) (g : Fn) :
 `inlineDroppingAttr_callerLoop_nonvacuous`, `lean/Toy/Progress/Mixing.lean` line 292:
 
 ```lean
+-- lean/Toy/Progress/Mixing.lean:292-296
 theorem inlineDroppingAttr_callerLoop_nonvacuous :
     callerLoopSite.inlineDroppingAttr spinFn ≠ callerLoopSite.linked spinFn ∧
     (∀ s, ProgressViolation (callerLoopSite.linked spinFn) s) ∧
