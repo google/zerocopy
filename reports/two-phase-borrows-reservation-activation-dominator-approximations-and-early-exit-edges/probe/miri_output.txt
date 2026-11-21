@@ -1,0 +1,73 @@
+$ rustup run nightly-2026-09-30 rustc -vV
+rustc 1.101.0-nightly (5c543b0b8 2026-09-29)
+binary: rustc
+commit-hash: 5c543b0b8c73c7b72bc8284ced4fb22ead15734d
+commit-date: 2026-09-29
+host: x86_64-unknown-linux-gnu
+release: 1.101.0-nightly
+LLVM version: 23.1.1
+$ MIRIFLAGS=-Zmiri-tree-borrows cargo +nightly-2026-09-30 miri run --bin issue
+error: Undefined Behavior: write access through <502> at alloc206[0x4] is forbidden
+  --> src/issue.rs:10:5
+   |
+10 |     *r.unwrap() = 2;
+   |     ^^^^^^^^^^^^^^^ Undefined Behavior occurred here
+   |
+   = help: this indicates a potential bug in the program: it performed an invalid operation, but the Tree Borrows rules it violated are still experimental
+   = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/tree-borrows.md for further information
+   = help: the accessed tag <502> is a child of the conflicting tag <469>
+   = help: the conflicting tag <469> has state Frozen which forbids this child write access
+help: the accessed tag <502> was created here
+  --> src/issue.rs:10:6
+   |
+10 |     *r.unwrap() = 2;
+   |      ^^^^^^^^^^
+help: the conflicting tag <469> was created here, in the initial state Reserved
+  --> src/issue.rs:6:18
+   |
+ 6 |         r = Some(v.insert(match true { false => break 'b, true => 1 }));
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: the conflicting tag <469> later transitioned to Unique due to a child write access at offsets [0x0..0x8]
+  --> src/issue.rs:6:18
+   |
+ 6 |         r = Some(v.insert(match true { false => break 'b, true => 1 }));
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: this transition corresponds to the first write to a 2-phase borrowed mutable reference
+help: the conflicting tag <469> later transitioned to Frozen due to a reborrow (acting as a foreign read access) at offsets [0x0..0x8]
+  --> src/issue.rs:8:13
+   |
+ 8 |     let s = &v;              // accepted; should be E0502
+   |             ^^
+   = help: this transition corresponds to a loss of write permissions
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to 1 previous error
+
+$ cargo +nightly-2026-09-30 miri run --bin issue   (default: Stacked Borrows)
+error: Undefined Behavior: trying to retag from <518> for Unique permission at alloc206[0x4], but that tag does not exist in the borrow stack for this location
+  --> src/issue.rs:10:6
+   |
+10 |     *r.unwrap() = 2;
+   |      ^
+   |      |
+   |      this error occurs as part of retag at alloc206[0x4..0x8]
+   |      while retagging field .<enum-variant(Some)>.0
+   |
+   = help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental
+   = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information
+help: <518> was created by a Unique retag at offsets [0x4..0x8]
+  --> src/issue.rs:6:9
+   |
+ 6 |         r = Some(v.insert(match true { false => break 'b, true => 1 }));
+   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: <518> was later invalidated at offsets [0x0..0x8] by a SharedReadOnly retag
+  --> src/issue.rs:8:13
+   |
+ 8 |     let s = &v;              // accepted; should be E0502
+   |             ^^
+
+note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace
+
+error: aborting due to 1 previous error
+

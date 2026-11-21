@@ -1,0 +1,19 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/dataflow",
+    "compilers/dominators",
+    "rustc/borrowck",
+    "rustc/borrowck/two-phase-borrows"
+  ],
+  "subjects": [
+    {"name": "Lean 4 toolchain", "identity": {"repository": "leanprover/lean4", "version": "v4.34.1", "revision": "5045d0056413266e57c625dcd7c365b10e377c52"}},
+    {"name": "rustc borrow checker (is_active)", "identity": {"repository": "rust-lang/rust", "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"}},
+    {"name": "RFC 2025 (nested method calls)", "identity": {"repository": "rust-lang/rfcs", "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4", "path": "text/2025-nested-method-calls.md"}},
+    {"name": "Tree Borrows", "identity": {"doi": "10.1145/3735592"}},
+    {"name": "rustc nightly used for the reproducer run", "identity": {"repository": "rust-lang/rust", "revision": "8eb778d04094d3af4b26580cab327e0413eb1e02"}},
+    {"name": "rustc nightly with Miri used for the Miri run on the reproducer", "identity": {"repository": "rust-lang/rust", "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d"}}
+  ],
+  "observed_at": "2026-11-21"
+}

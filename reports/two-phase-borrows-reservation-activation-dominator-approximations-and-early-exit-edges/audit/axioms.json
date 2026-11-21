@@ -1,0 +1,1667 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.TwoPhase.Accepts": [
+      "propext"
+    ],
+    "Toy.TwoPhase.ActivationStaysReachable": [],
+    "Toy.TwoPhase.Acyclic": [],
+    "Toy.TwoPhase.AlwaysActiveAccepts": [
+      "propext"
+    ],
+    "Toy.TwoPhase.CleanupReadsUnderDeadLoan": [
+      "propext"
+    ],
+    "Toy.TwoPhase.DfStable": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Dom": [],
+    "Toy.TwoPhase.DomGuard": [],
+    "Toy.TwoPhase.DomRegionReachesA": [],
+    "Toy.TwoPhase.DominatorAccepts": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Edges": [],
+    "Toy.TwoPhase.ExactPhaseAccepts": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Flagged": [
+      "propext"
+    ],
+    "Toy.TwoPhase.GenReach": [
+      "propext"
+    ],
+    "Toy.TwoPhase.IsActiveDom": [],
+    "Toy.TwoPhase.IsCleanup": [],
+    "Toy.TwoPhase.IsWalk": [],
+    "Toy.TwoPhase.IsWalk.match_1": [],
+    "Toy.TwoPhase.IterDataflowAccepts": [
+      "propext"
+    ],
+    "Toy.TwoPhase.LiteralRepairBAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.LoanLive": [
+      "propext"
+    ],
+    "Toy.TwoPhase.MaybeActive": [
+      "propext"
+    ],
+    "Toy.TwoPhase.NoUnwind": [],
+    "Toy.TwoPhase.Op": [],
+    "Toy.TwoPhase.Op.activate": [],
+    "Toy.TwoPhase.Op.activate.elim": [],
+    "Toy.TwoPhase.Op.activate.sizeOf_spec": [],
+    "Toy.TwoPhase.Op.borrowShared": [],
+    "Toy.TwoPhase.Op.borrowShared.elim": [],
+    "Toy.TwoPhase.Op.borrowShared.inj": [],
+    "Toy.TwoPhase.Op.borrowShared.injEq": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Op.borrowShared.noConfusion": [],
+    "Toy.TwoPhase.Op.borrowShared.sizeOf_spec": [],
+    "Toy.TwoPhase.Op.casesOn": [],
+    "Toy.TwoPhase.Op.ctorElim": [],
+    "Toy.TwoPhase.Op.ctorElimType": [],
+    "Toy.TwoPhase.Op.ctorIdx": [],
+    "Toy.TwoPhase.Op.endLoan": [],
+    "Toy.TwoPhase.Op.endLoan.elim": [],
+    "Toy.TwoPhase.Op.endLoan.sizeOf_spec": [],
+    "Toy.TwoPhase.Op.isRead": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Op.isRead.eq_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Op.isRead.eq_2": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Op.isRead.eq_3": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Op.isRead.match_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Op.noConfusion": [],
+    "Toy.TwoPhase.Op.noConfusionType": [],
+    "Toy.TwoPhase.Op.nop": [],
+    "Toy.TwoPhase.Op.nop.elim": [],
+    "Toy.TwoPhase.Op.nop.sizeOf_spec": [],
+    "Toy.TwoPhase.Op.readX": [],
+    "Toy.TwoPhase.Op.readX.elim": [],
+    "Toy.TwoPhase.Op.readX.sizeOf_spec": [],
+    "Toy.TwoPhase.Op.rec": [],
+    "Toy.TwoPhase.Op.recOn": [],
+    "Toy.TwoPhase.Op.reserve": [],
+    "Toy.TwoPhase.Op.reserve.elim": [],
+    "Toy.TwoPhase.Op.reserve.sizeOf_spec": [],
+    "Toy.TwoPhase.Op.useShared": [],
+    "Toy.TwoPhase.Op.useShared.elim": [],
+    "Toy.TwoPhase.Op.useShared.inj": [],
+    "Toy.TwoPhase.Op.useShared.injEq": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Op.useShared.noConfusion": [],
+    "Toy.TwoPhase.Op.useShared.sizeOf_spec": [],
+    "Toy.TwoPhase.Op.writeThrough": [],
+    "Toy.TwoPhase.Op.writeThrough.elim": [],
+    "Toy.TwoPhase.Op.writeThrough.sizeOf_spec": [],
+    "Toy.TwoPhase.Op.writeX": [],
+    "Toy.TwoPhase.Op.writeX.elim": [],
+    "Toy.TwoPhase.Op.writeX.sizeOf_spec": [],
+    "Toy.TwoPhase.Outcome": [],
+    "Toy.TwoPhase.Outcome.casesOn": [],
+    "Toy.TwoPhase.Outcome.ctorElim": [],
+    "Toy.TwoPhase.Outcome.ctorElimType": [],
+    "Toy.TwoPhase.Outcome.ctorIdx": [],
+    "Toy.TwoPhase.Outcome.halt": [],
+    "Toy.TwoPhase.Outcome.halt.elim": [],
+    "Toy.TwoPhase.Outcome.halt.sizeOf_spec": [],
+    "Toy.TwoPhase.Outcome.noConfusion": [],
+    "Toy.TwoPhase.Outcome.noConfusionType": [],
+    "Toy.TwoPhase.Outcome.ok": [],
+    "Toy.TwoPhase.Outcome.ok.elim": [],
+    "Toy.TwoPhase.Outcome.ok.inj": [],
+    "Toy.TwoPhase.Outcome.ok.injEq": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Outcome.ok.noConfusion": [],
+    "Toy.TwoPhase.Outcome.ok.sizeOf_spec": [],
+    "Toy.TwoPhase.Outcome.rec": [],
+    "Toy.TwoPhase.Outcome.recOn": [],
+    "Toy.TwoPhase.Outcome.ub": [],
+    "Toy.TwoPhase.Outcome.ub.elim": [],
+    "Toy.TwoPhase.Outcome.ub.sizeOf_spec": [],
+    "Toy.TwoPhase.PDom": [],
+    "Toy.TwoPhase.PathVia": [],
+    "Toy.TwoPhase.Perm": [],
+    "Toy.TwoPhase.Perm.active": [],
+    "Toy.TwoPhase.Perm.active.elim": [],
+    "Toy.TwoPhase.Perm.active.sizeOf_spec": [],
+    "Toy.TwoPhase.Perm.casesOn": [],
+    "Toy.TwoPhase.Perm.ctorElim": [],
+    "Toy.TwoPhase.Perm.ctorElimType": [],
+    "Toy.TwoPhase.Perm.ctorIdx": [],
+    "Toy.TwoPhase.Perm.frozen": [],
+    "Toy.TwoPhase.Perm.frozen.elim": [],
+    "Toy.TwoPhase.Perm.frozen.sizeOf_spec": [],
+    "Toy.TwoPhase.Perm.invalid": [],
+    "Toy.TwoPhase.Perm.invalid.elim": [],
+    "Toy.TwoPhase.Perm.invalid.sizeOf_spec": [],
+    "Toy.TwoPhase.Perm.noConfusion": [],
+    "Toy.TwoPhase.Perm.noConfusionType": [],
+    "Toy.TwoPhase.Perm.none": [],
+    "Toy.TwoPhase.Perm.none.elim": [],
+    "Toy.TwoPhase.Perm.none.sizeOf_spec": [],
+    "Toy.TwoPhase.Perm.ofNat": [],
+    "Toy.TwoPhase.Perm.ofNat_ctorIdx": [],
+    "Toy.TwoPhase.Perm.rec": [],
+    "Toy.TwoPhase.Perm.recOn": [],
+    "Toy.TwoPhase.Perm.reserved": [],
+    "Toy.TwoPhase.Perm.reserved.elim": [],
+    "Toy.TwoPhase.Perm.reserved.sizeOf_spec": [],
+    "Toy.TwoPhase.Prog": [],
+    "Toy.TwoPhase.Prog.A": [],
+    "Toy.TwoPhase.Prog.R": [],
+    "Toy.TwoPhase.Prog.casesOn": [],
+    "Toy.TwoPhase.Prog.ctorIdx": [],
+    "Toy.TwoPhase.Prog.edges": [],
+    "Toy.TwoPhase.Prog.edges.eq_1": [],
+    "Toy.TwoPhase.Prog.entry": [],
+    "Toy.TwoPhase.Prog.hRA": [],
+    "Toy.TwoPhase.Prog.isKill": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Prog.isKill.eq_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Prog.isKill.match_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Prog.isUse": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Prog.isUse.eq_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Prog.isUse.match_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Prog.mk": [],
+    "Toy.TwoPhase.Prog.mk.inj": [],
+    "Toy.TwoPhase.Prog.mk.injEq": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Prog.mk.noConfusion": [],
+    "Toy.TwoPhase.Prog.mk.sizeOf_spec": [],
+    "Toy.TwoPhase.Prog.noConfusion": [],
+    "Toy.TwoPhase.Prog.noConfusionType": [],
+    "Toy.TwoPhase.Prog.op": [],
+    "Toy.TwoPhase.Prog.op.eq_1": [],
+    "Toy.TwoPhase.Prog.rec": [],
+    "Toy.TwoPhase.Prog.recOn": [],
+    "Toy.TwoPhase.Prog.stmt": [],
+    "Toy.TwoPhase.Prog.succ": [],
+    "Toy.TwoPhase.Prog.unw": [],
+    "Toy.TwoPhase.RState": [],
+    "Toy.TwoPhase.RState.casesOn": [],
+    "Toy.TwoPhase.RState.ctorIdx": [],
+    "Toy.TwoPhase.RState.init": [],
+    "Toy.TwoPhase.RState.init.eq_1": [],
+    "Toy.TwoPhase.RState.mk": [],
+    "Toy.TwoPhase.RState.mk.inj": [],
+    "Toy.TwoPhase.RState.mk.injEq": [
+      "propext"
+    ],
+    "Toy.TwoPhase.RState.mk.noConfusion": [],
+    "Toy.TwoPhase.RState.mk.sizeOf_spec": [],
+    "Toy.TwoPhase.RState.noConfusion": [],
+    "Toy.TwoPhase.RState.noConfusionType": [],
+    "Toy.TwoPhase.RState.perm": [],
+    "Toy.TwoPhase.RState.rec": [],
+    "Toy.TwoPhase.RState.recOn": [],
+    "Toy.TwoPhase.RState.setSh": [],
+    "Toy.TwoPhase.RState.setSh.eq_1": [],
+    "Toy.TwoPhase.RState.setSh.eq_2": [],
+    "Toy.TwoPhase.RState.setSh.match_1": [],
+    "Toy.TwoPhase.RState.sh": [],
+    "Toy.TwoPhase.RState.sh.eq_1": [],
+    "Toy.TwoPhase.RState.sh.eq_2": [],
+    "Toy.TwoPhase.RState.sh.match_1": [],
+    "Toy.TwoPhase.RState.sh0": [],
+    "Toy.TwoPhase.RState.sh1": [],
+    "Toy.TwoPhase.ReachesUB": [
+      "propext"
+    ],
+    "Toy.TwoPhase.ReentryFree": [],
+    "Toy.TwoPhase.RepairBAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.RepairCAccepts": [
+      "propext"
+    ],
+    "Toy.TwoPhase.RunInv": [
+      "propext"
+    ],
+    "Toy.TwoPhase.SRef": [],
+    "Toy.TwoPhase.SRef.casesOn": [],
+    "Toy.TwoPhase.SRef.ctorElim": [],
+    "Toy.TwoPhase.SRef.ctorElimType": [],
+    "Toy.TwoPhase.SRef.ctorIdx": [],
+    "Toy.TwoPhase.SRef.noConfusion": [],
+    "Toy.TwoPhase.SRef.noConfusionType": [],
+    "Toy.TwoPhase.SRef.ofNat": [],
+    "Toy.TwoPhase.SRef.ofNat_ctorIdx": [],
+    "Toy.TwoPhase.SRef.rec": [],
+    "Toy.TwoPhase.SRef.recOn": [],
+    "Toy.TwoPhase.SRef.s0": [],
+    "Toy.TwoPhase.SRef.s0.elim": [],
+    "Toy.TwoPhase.SRef.s0.sizeOf_spec": [],
+    "Toy.TwoPhase.SRef.s1": [],
+    "Toy.TwoPhase.SRef.s1.elim": [],
+    "Toy.TwoPhase.SRef.s1.sizeOf_spec": [],
+    "Toy.TwoPhase.SSt": [],
+    "Toy.TwoPhase.SSt.casesOn": [],
+    "Toy.TwoPhase.SSt.created": [],
+    "Toy.TwoPhase.SSt.ctorIdx": [],
+    "Toy.TwoPhase.SSt.dirty": [],
+    "Toy.TwoPhase.SSt.markWrite": [],
+    "Toy.TwoPhase.SSt.mk": [],
+    "Toy.TwoPhase.SSt.mk.inj": [],
+    "Toy.TwoPhase.SSt.mk.injEq": [
+      "propext"
+    ],
+    "Toy.TwoPhase.SSt.mk.noConfusion": [],
+    "Toy.TwoPhase.SSt.mk.sizeOf_spec": [],
+    "Toy.TwoPhase.SSt.noConfusion": [],
+    "Toy.TwoPhase.SSt.noConfusionType": [],
+    "Toy.TwoPhase.SSt.rec": [],
+    "Toy.TwoPhase.SSt.recOn": [],
+    "Toy.TwoPhase.Safe": [
+      "propext"
+    ],
+    "Toy.TwoPhase.SharedLive": [],
+    "Toy.TwoPhase.Stmt": [],
+    "Toy.TwoPhase.Stmt.borrowShared": [],
+    "Toy.TwoPhase.Stmt.borrowShared.elim": [],
+    "Toy.TwoPhase.Stmt.borrowShared.inj": [],
+    "Toy.TwoPhase.Stmt.borrowShared.injEq": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Stmt.borrowShared.noConfusion": [],
+    "Toy.TwoPhase.Stmt.borrowShared.sizeOf_spec": [],
+    "Toy.TwoPhase.Stmt.casesOn": [],
+    "Toy.TwoPhase.Stmt.ctorElim": [],
+    "Toy.TwoPhase.Stmt.ctorElimType": [],
+    "Toy.TwoPhase.Stmt.ctorIdx": [],
+    "Toy.TwoPhase.Stmt.endLoan": [],
+    "Toy.TwoPhase.Stmt.endLoan.elim": [],
+    "Toy.TwoPhase.Stmt.endLoan.sizeOf_spec": [],
+    "Toy.TwoPhase.Stmt.noConfusion": [],
+    "Toy.TwoPhase.Stmt.noConfusionType": [],
+    "Toy.TwoPhase.Stmt.nop": [],
+    "Toy.TwoPhase.Stmt.nop.elim": [],
+    "Toy.TwoPhase.Stmt.nop.sizeOf_spec": [],
+    "Toy.TwoPhase.Stmt.readX": [],
+    "Toy.TwoPhase.Stmt.readX.elim": [],
+    "Toy.TwoPhase.Stmt.readX.sizeOf_spec": [],
+    "Toy.TwoPhase.Stmt.rec": [],
+    "Toy.TwoPhase.Stmt.recOn": [],
+    "Toy.TwoPhase.Stmt.useShared": [],
+    "Toy.TwoPhase.Stmt.useShared.elim": [],
+    "Toy.TwoPhase.Stmt.useShared.inj": [],
+    "Toy.TwoPhase.Stmt.useShared.injEq": [
+      "propext"
+    ],
+    "Toy.TwoPhase.Stmt.useShared.noConfusion": [],
+    "Toy.TwoPhase.Stmt.useShared.sizeOf_spec": [],
+    "Toy.TwoPhase.Stmt.writeThrough": [],
+    "Toy.TwoPhase.Stmt.writeThrough.elim": [],
+    "Toy.TwoPhase.Stmt.writeThrough.sizeOf_spec": [],
+    "Toy.TwoPhase.Stmt.writeX": [],
+    "Toy.TwoPhase.Stmt.writeX.elim": [],
+    "Toy.TwoPhase.Stmt.writeX.sizeOf_spec": [],
+    "Toy.TwoPhase.accepts_not_read": [
+      "propext"
+    ],
+    "Toy.TwoPhase.accepts_not_sharedLive_A": [
+      "propext"
+    ],
+    "Toy.TwoPhase.accepts_not_writeX": [
+      "propext"
+    ],
+    "Toy.TwoPhase.accepts_of_phase_imp": [
+      "propext"
+    ],
+    "Toy.TwoPhase.activationStaysReachable_neg_diverge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.activationStaysReachable_neg_exit": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.activationStaysReachable_neg_loopBack": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.activationStaysReachable_of_acyclic_pdom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.activationStaysReachable_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.activationStaysReachable_pos_argLoop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.activationStaysReachable_pos_continue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.activationStaysReachable_tight_pLoopBack": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.acyclic_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.acyclic_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.acyclic_pdom_hypotheses_hold_pPush": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.acyclic_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.acyclic_tight_pLoop1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.alwaysActiveAccepts_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.alwaysActiveAccepts_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.certOK": [
+      "propext"
+    ],
+    "Toy.TwoPhase.cleanupReadsUnderDeadLoan_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.cleanupReadsUnderDeadLoan_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.closeIter": [],
+    "Toy.TwoPhase.closeIter.eq_1": [],
+    "Toy.TwoPhase.closeIter.eq_2": [],
+    "Toy.TwoPhase.closeIter.eq_def": [],
+    "Toy.TwoPhase.closeIter.match_1": [],
+    "Toy.TwoPhase.closeIter_eq_filter": [],
+    "Toy.TwoPhase.closeIter_filter_self": [
+      "propext"
+    ],
+    "Toy.TwoPhase.closeIter_length_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.closeIter_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.closeIter_mono_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.closeIter_n_closed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.closeStep": [],
+    "Toy.TwoPhase.closeStep.eq_1": [],
+    "Toy.TwoPhase.closeStep_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfIter": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfIter.eq_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfIter.eq_2": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfIter.eq_def": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfIter.match_1": [],
+    "Toy.TwoPhase.dfIter_filter_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfIter_length_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfIter_length_or_stable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfIter_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfIter_mono.match_1_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfIter_mono_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfMaybeActive": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfMaybeActive_hypotheses_hold_pBreak": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfMaybeActive_iff_genReach": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfMaybeActive_iff_maybeActive_of_activation_reachable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfMaybeActive_ne_maybeActive_pUnreachA": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfMaybeActive_neg": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfMaybeActive_of_maybeActive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfMaybeActive_pos": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfOut": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfOut.match_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfOut_eq_true_iff": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfStable_n": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfStable_of_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfStable_succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dfStep": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfStep.eq_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.dfStep_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.domGuard_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.domGuard_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.domGuard_pos_argLoop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.domGuard_pos_continue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.domRegionReachesA_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.domRegionReachesA_of_activationStaysReachable": [],
+    "Toy.TwoPhase.domRegionReachesA_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dom_iff_not_pathVia": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dom_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dom_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dom_unreachable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dominatorAccepts_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dominatorAccepts_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dominatorAccepts_safe_of_reentryFree_activationStaysReachable_cleanupReadsUnderDeadLoan": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dominatorAccepts_safe_of_reentryFree_activationStaysReachable_noUnwind": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dominatorAccepts_safe_pLoopOK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.dominatorAccepts_tight_pWriteDuringRes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.edges_eq_succ_of_noUnwind": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.exactPhaseAccepts_hypotheses_hold_pPush": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.exactPhaseAccepts_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.exactPhaseAccepts_no_active_live_shared": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.exactPhaseAccepts_not_iterDataflowAccepts_pUnreachMerge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.exactPhaseAccepts_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.exactPhaseAccepts_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.exactPhaseAccepts_tight_pBreak": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.exec": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec.eq_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec.eq_2": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec.eq_3": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec.eq_4": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec.eq_5": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec.eq_6": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec.eq_7": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec.eq_8": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec.eq_9": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec.match_1": [],
+    "Toy.TwoPhase.exec.match_3": [],
+    "Toy.TwoPhase.exec.match_5": [],
+    "Toy.TwoPhase.exec_foreignRead_of_reserved": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec_foreignRead_of_reserved_hypotheses_hold_pPush": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exec_readX_active_freezes": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exists_split_last": [
+      "propext"
+    ],
+    "Toy.TwoPhase.exists_split_last.match_1_1": [],
+    "Toy.TwoPhase.explore": [
+      "propext"
+    ],
+    "Toy.TwoPhase.explore.match_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.explore.match_4": [],
+    "Toy.TwoPhase.filter_length_lt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.filter_length_lt.match_1_1": [],
+    "Toy.TwoPhase.foreignRead": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignRead.eq_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignRead.eq_2": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignRead.match_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignRead_ne_active": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignWrite": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignWrite.eq_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignWrite.eq_2": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignWrite.eq_3": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignWrite.eq_4": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignWrite.match_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.foreignWrite_ne_active": [
+      "propext"
+    ],
+    "Toy.TwoPhase.genReach_of_mem_dfIter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.genReach_of_mem_dfIter.match_1_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.guardedDomPhase": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.head?_append_cons": [],
+    "Toy.TwoPhase.head?_append_pair": [],
+    "Toy.TwoPhase.instDecidableAcceptsOfDecidablePredFin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableActivationStaysReachable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableAcyclic": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableAlwaysActiveAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableCleanupReadsUnderDeadLoan": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableDom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableDomGuard": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableDomRegionReachesA": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableDominatorAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableEqOp": [],
+    "Toy.TwoPhase.instDecidableEqOp.decEq": [],
+    "Toy.TwoPhase.instDecidableEqOp.decEq.match_1": [],
+    "Toy.TwoPhase.instDecidableEqOutcome": [],
+    "Toy.TwoPhase.instDecidableEqOutcome.decEq": [],
+    "Toy.TwoPhase.instDecidableEqOutcome.decEq.match_1": [],
+    "Toy.TwoPhase.instDecidableEqPerm": [],
+    "Toy.TwoPhase.instDecidableEqRState": [],
+    "Toy.TwoPhase.instDecidableEqRState.decEq": [],
+    "Toy.TwoPhase.instDecidableEqRState.decEq.match_1": [],
+    "Toy.TwoPhase.instDecidableEqSRef": [],
+    "Toy.TwoPhase.instDecidableEqSSt": [],
+    "Toy.TwoPhase.instDecidableEqSSt.decEq": [],
+    "Toy.TwoPhase.instDecidableEqSSt.decEq.match_1": [],
+    "Toy.TwoPhase.instDecidableEqStmt": [],
+    "Toy.TwoPhase.instDecidableEqStmt.decEq": [],
+    "Toy.TwoPhase.instDecidableEqStmt.decEq.match_1": [],
+    "Toy.TwoPhase.instDecidableExactPhaseAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableFlaggedOfDecidablePredFin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableIsActiveDom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableIsCleanup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableIsWalk": [
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableIterDataflowAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableLiteralRepairBAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableLoanLive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableMaybeActive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableNoUnwind": [],
+    "Toy.TwoPhase.instDecidablePDom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidablePathVia": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidablePredFinGuardedDomPhase": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidablePredFinLiteralPdomPhase": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableReachesUB": [
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableReentryFree": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableRepairBAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableRepairCAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instDecidableSharedLive": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.instReprOp": [],
+    "Toy.TwoPhase.instReprOp.repr": [],
+    "Toy.TwoPhase.instReprOp.repr.match_1": [],
+    "Toy.TwoPhase.instReprOutcome": [],
+    "Toy.TwoPhase.instReprOutcome.repr": [],
+    "Toy.TwoPhase.instReprOutcome.repr.match_1": [],
+    "Toy.TwoPhase.instReprPerm": [],
+    "Toy.TwoPhase.instReprPerm.repr": [],
+    "Toy.TwoPhase.instReprPerm.repr.match_1": [],
+    "Toy.TwoPhase.instReprRState": [],
+    "Toy.TwoPhase.instReprRState.repr": [],
+    "Toy.TwoPhase.instReprSRef": [],
+    "Toy.TwoPhase.instReprSRef.repr": [],
+    "Toy.TwoPhase.instReprSRef.repr.match_1": [],
+    "Toy.TwoPhase.instReprSSt": [],
+    "Toy.TwoPhase.instReprSSt.repr": [],
+    "Toy.TwoPhase.instReprStmt": [],
+    "Toy.TwoPhase.instReprStmt.repr": [],
+    "Toy.TwoPhase.instReprStmt.repr.match_1": [],
+    "Toy.TwoPhase.isActiveDom_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isActiveDom_of_maybeActive_of_acyclic_pdom_noUnwind": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isActiveDom_of_maybeActive_of_domRegion": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isActiveDom_of_maybeActive_of_domRegion.match_1_1": [],
+    "Toy.TwoPhase.isActiveDom_of_maybeActive_of_reentryFree_activationStaysReachable_noUnwind": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isActiveDom_of_maybeActive_of_reentryFree_activationStaysReachable_not_isCleanup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isActiveDom_of_maybeActive_of_reentryFree_domRegionReachesA_noUnwind": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isActiveDom_of_maybeActive_of_succWalks": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isActiveDom_of_maybeActive_of_succWalks.match_1_1": [],
+    "Toy.TwoPhase.isActiveDom_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isCleanup_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isCleanup_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isKill_R": [
+      "propext"
+    ],
+    "Toy.TwoPhase.isUse_A": [
+      "propext"
+    ],
+    "Toy.TwoPhase.isWalk_append_pair": [],
+    "Toy.TwoPhase.isWalk_append_pair.match_1_1": [],
+    "Toy.TwoPhase.isWalk_join": [],
+    "Toy.TwoPhase.isWalk_join.match_1_1": [],
+    "Toy.TwoPhase.isWalk_ne_nil": [],
+    "Toy.TwoPhase.isWalk_ne_nil.match_1_1": [],
+    "Toy.TwoPhase.isWalk_neg": [
+      "propext"
+    ],
+    "Toy.TwoPhase.isWalk_pos": [
+      "propext"
+    ],
+    "Toy.TwoPhase.isWalk_prefix": [],
+    "Toy.TwoPhase.isWalk_prefix.match_1_1": [],
+    "Toy.TwoPhase.isWalk_succ_of_not_isCleanup": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.isWalk_succ_of_not_isCleanup.match_1_1": [],
+    "Toy.TwoPhase.isWalk_suffix": [],
+    "Toy.TwoPhase.isWalk_suffix.match_1_1": [],
+    "Toy.TwoPhase.isWalk_tail": [],
+    "Toy.TwoPhase.isWalk_tail.match_1_1": [],
+    "Toy.TwoPhase.iterDataflowAccepts_exactPhaseAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.iterDataflowAccepts_hypotheses_hold_pPush": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.iterDataflowAccepts_iff_exactPhaseAccepts_of_activation_reachable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.iterDataflowAccepts_iff_hypotheses_hold_pPush": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.iterDataflowAccepts_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.iterDataflowAccepts_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.iterDataflowAccepts_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.iterDataflowAccepts_tight_pBreak": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.length_closeIter_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.length_dfIter_le": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.length_le_of_nodup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.length_or_stable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.literalPdomPhase": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.literalRepairB_rejects_pBreak": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.literalRepairB_unsound_pLoopBack": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.loanLive_iff": [
+      "propext"
+    ],
+    "Toy.TwoPhase.loanLive_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.loanLive_neg_at_R": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.loanLive_of_isUse": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.loanLive_of_pathVia": [
+      "propext"
+    ],
+    "Toy.TwoPhase.loanLive_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.loanLive_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_in_fact_pLoopOK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_neg_endLoan": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_of_activation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_pEndBeforeA_run_init": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_tight_pCleanupRead": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_tight_pLoopOK": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.maybeActive_tight_pPush": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.mem_closeIter_of_walk": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.mem_closeIter_of_walk.match_1_1": [],
+    "Toy.TwoPhase.mem_closeIter_zero": [
+      "propext"
+    ],
+    "Toy.TwoPhase.mem_closeStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.mem_dfIter_n_of_genReach": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.mem_dfIter_n_of_mem": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.mem_dfIter_of_walk": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.mem_dfIter_of_walk.match_1_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.mem_dfStep": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.mkEdges": [
+      "propext"
+    ],
+    "Toy.TwoPhase.mkStmt": [
+      "propext"
+    ],
+    "Toy.TwoPhase.ne_R_of_not_isKill": [
+      "propext"
+    ],
+    "Toy.TwoPhase.noUnwind_neg": [
+      "propext"
+    ],
+    "Toy.TwoPhase.noUnwind_pos": [
+      "propext"
+    ],
+    "Toy.TwoPhase.nodup_closeIter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.nodup_dfIter": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.nodup_of_isWalk_acyclic": [
+      "propext"
+    ],
+    "Toy.TwoPhase.nodup_of_isWalk_acyclic.match_1_1": [],
+    "Toy.TwoPhase.notCleanup_hypotheses_hold_pCleanupRead": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.not_isCleanup_of_cleanupReadsUnderDeadLoan": [
+      "propext"
+    ],
+    "Toy.TwoPhase.not_isCleanup_of_noUnwind": [
+      "propext"
+    ],
+    "Toy.TwoPhase.not_safe_of_reachesUB": [
+      "propext"
+    ],
+    "Toy.TwoPhase.op_A": [
+      "propext"
+    ],
+    "Toy.TwoPhase.op_eq_activate_iff": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pArgLoop": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pBreak": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pBreakDead": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pBreakHoisted": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pBreakHoisted_rejected": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pBreakWrite": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pBreakWrite_rejected": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pBreak_dominatorAccepts_unsafe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pCleanup": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pCleanupRead": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pCleanupRead_hypotheses_hold_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pCleanup_dominatorAccepts_unsafe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pContinue": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pDiverge": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pEndBeforeA": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pEndThenRead": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pJoin": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pJoin_safe_exactPhaseAccepts_not_dominatorAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pJoin_separates_domRegionReachesA": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pLoop1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pLoopBack": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pLoopOK": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pPush": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pPush_safe_accepted": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pSharedDuringRes": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pSharedDuringRes_ub_rejected": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pUnreachA": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pUnreachMerge": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pWriteDuringRes": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pWriteDuringRes_ub_rejected": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pathViaB": [],
+    "Toy.TwoPhase.pathViaB_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pathVia_cons": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pathVia_mono": [],
+    "Toy.TwoPhase.pathVia_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pathVia_of_mem_closeIter": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pathVia_of_mem_closeIter.match_1_1": [],
+    "Toy.TwoPhase.pathVia_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pathVia_refl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pathVia_snoc": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pathVia_split": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pathVia_to_A_of_acyclic_pdom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pathVia_trans": [
+      "propext"
+    ],
+    "Toy.TwoPhase.pdom_iff_not_pathVia": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pdom_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pdom_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.pdom_tight_pBreak": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.perm_setSh": [],
+    "Toy.TwoPhase.prog_one_uninhabited": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.prog_zero_uninhabited": [],
+    "Toy.TwoPhase.rdomA_apdomR_noUnwind_insufficient_pLoop1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.rdomA_apdomR_noUnwind_reentryFree_insufficient_pDiverge": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.rdomA_apdomR_noUnwind_reentryFree_insufficient_pLoopBack": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.reentryFree_activationStaysReachable_hypotheses_hold_pArgLoop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.reentryFree_activationStaysReachable_hypotheses_hold_pContinue": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.reentryFree_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.reentryFree_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.reentryFree_of_acyclic": [],
+    "Toy.TwoPhase.reentryFree_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.reentryFree_tight_pLoop1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairBAccepts_exactPhaseAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairBAccepts_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairBAccepts_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairBAccepts_pos_noGuard": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairBAccepts_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairBAccepts_tight_pBreak": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairCAccepts_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairCAccepts_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairCAccepts_pos_argLoop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairCAccepts_repairBAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairCAccepts_tight_pJoin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.repairs_strict": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.run": [
+      "propext"
+    ],
+    "Toy.TwoPhase.run.eq_1": [
+      "propext"
+    ],
+    "Toy.TwoPhase.run.eq_2": [
+      "propext"
+    ],
+    "Toy.TwoPhase.run.eq_def": [
+      "propext"
+    ],
+    "Toy.TwoPhase.run.match_1": [],
+    "Toy.TwoPhase.runInv_dirty_carry": [
+      "propext"
+    ],
+    "Toy.TwoPhase.runInv_init": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.runInv_not_ub": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.runInv_step": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.run_activate_marks_shared_dirty": [
+      "propext"
+    ],
+    "Toy.TwoPhase.run_halt_reserved_writeThrough": [
+      "propext"
+    ],
+    "Toy.TwoPhase.run_ne_ub_of_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.run_ne_ub_of_runInv": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.safe_neg": [
+      "propext"
+    ],
+    "Toy.TwoPhase.safe_of_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.safe_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.sh_setSh_ne": [
+      "propext"
+    ],
+    "Toy.TwoPhase.sh_setSh_self": [],
+    "Toy.TwoPhase.sharedLive_iff": [
+      "propext"
+    ],
+    "Toy.TwoPhase.sharedLive_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.sharedLive_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.sharedLive_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.sharedLive_step": [
+      "propext"
+    ],
+    "Toy.TwoPhase.stable_n": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.stable_of_le": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.stable_succ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.unwinding_tight_pCleanup": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.TwoPhase.walk_eq_dropLast_append": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

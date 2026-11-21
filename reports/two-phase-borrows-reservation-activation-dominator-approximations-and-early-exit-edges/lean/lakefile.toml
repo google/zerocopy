@@ -1,0 +1,5 @@
+name = "toy_two_phase"
+defaultTargets = ["ToyTwoPhase"]
+
+[[lean_lib]]
+name = "ToyTwoPhase"

@@ -1,0 +1,845 @@
+[
+  {
+    "id": "R1a",
+    "lean": "Toy.TwoPhase.dfMaybeActive_iff_maybeActive_of_activation_reachable",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every toy program in which A is reachable from the entry, and every node L, the forward may-analysis (generate at A, kill at R and at endLoan, join by disjunction over all edges, n iterations from all-false) yields true at L exactly when MaybeActive p L holds; both are in-facts, describing the point just before L executes.",
+    "hypotheses": [
+      {
+        "name": "hreach : PathVia p.edges (fun _ => true) p.entry p.A",
+        "purpose": "the analysis also propagates facts generated at an unreachable A, which no walk from the entry supports",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.dfMaybeActive_ne_maybeActive_pUnreachA",
+        "tightness_witness_class": "a 5-node program without cycles in which A is unreachable"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "A is reachable in pBreak, and the equivalence holds at all 8 nodes.",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.dfMaybeActive_hypotheses_hold_pBreak",
+    "lean_names": [
+      "Toy.TwoPhase.dfMaybeActive",
+      "Toy.TwoPhase.dfIter",
+      "Toy.TwoPhase.dfStep",
+      "Toy.TwoPhase.dfOut",
+      "Toy.TwoPhase.MaybeActive",
+      "Toy.TwoPhase.PathVia",
+      "Toy.TwoPhase.maybeActive_iff",
+      "Toy.TwoPhase.GenReach",
+      "Toy.TwoPhase.dfMaybeActive_iff_genReach",
+      "Toy.TwoPhase.dfMaybeActive_of_maybeActive",
+      "Toy.TwoPhase.pUnreachA",
+      "Toy.TwoPhase.pBreak",
+      "Toy.TwoPhase.maybeActive_in_fact_pLoopOK",
+      "Toy.TwoPhase.maybeActive_pEndBeforeA_run_init",
+      "Toy.TwoPhase.pEndBeforeA",
+      "Toy.TwoPhase.pLoopOK",
+      "Toy.TwoPhase.dfMaybeActive_ne_maybeActive_pUnreachA",
+      "Toy.TwoPhase.dfMaybeActive_hypotheses_hold_pBreak"
+    ],
+    "non_claims": [
+      "dfMaybeActive p L and MaybeActive p L are in-facts, not out-facts: in pLoopOK, MaybeActive holds at R and fails at A (maybeActive_in_fact_pLoopOK).",
+      "MaybeActive is a path fact, not a semantic one: it does not check that R executed before the A it starts from, so it can hold where the permission of r is never active (maybeActive_pEndBeforeA_run_init).",
+      "It is not a statement about rustc's Borrows analysis (compiler/rustc_borrowck/src/dataflow.rs), a gen/kill dataflow over borrows that kills a borrow where it goes out of scope, a different fact (source).",
+      "Without hreach, the one-way implication MaybeActive p L \u2192 dfMaybeActive p L = true still holds (dfMaybeActive_of_maybeActive); the converse fails (dfMaybeActive_ne_maybeActive_pUnreachA).",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "G. A. Kildall, \"A Unified Approach to Global Program Optimization\", POPL 1973, pp. 194-206, https://doi.org/10.1145/512927.512945",
+      "J. B. Kam, J. D. Ullman, \"Monotone Data Flow Analysis Frameworks\", Acta Informatica 7(3), 1977, pp. 305-317, https://doi.org/10.1007/BF00290339",
+      "X. Leroy, \"Formal Verification of a Realistic Compiler\", Commun. ACM 52(7), 2009, pp. 107-115, https://doi.org/10.1145/1538788.1538814 (CompCert; Kildall's solver mechanized in backend/Kildall.v)"
+    ],
+    "design_question": "Can the path-level phase fact be computed by an ordinary forward dataflow pass?"
+  },
+  {
+    "id": "R1b",
+    "lean": "Toy.TwoPhase.exactPhaseAccepts_safe",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every toy program (loops and unwinding edges allowed): if the exact-phase checker accepts it \u2014 no writeX under a live loan, no read of x (readX, borrowShared) under a live loan where MaybeActive holds, and no shared reference live at A \u2014 then no walk from the entry reaches UB in the reference semantics.",
+    "hypotheses": [
+      {
+        "name": "h : ExactPhaseAccepts p",
+        "purpose": "the checker's verdict (the premise)",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.exactPhaseAccepts_tight_pBreak",
+        "tightness_witness_class": "an 8-node acyclic program without unwinding edges"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "v.push(v.len()) (pPush), which reads during the reservation, is accepted; without two-phase treatment it is rejected (alwaysActiveAccepts_neg).",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.exactPhaseAccepts_hypotheses_hold_pPush",
+    "lean_names": [
+      "Toy.TwoPhase.ExactPhaseAccepts",
+      "Toy.TwoPhase.Accepts",
+      "Toy.TwoPhase.Flagged",
+      "Toy.TwoPhase.Safe",
+      "Toy.TwoPhase.exec",
+      "Toy.TwoPhase.run",
+      "Toy.TwoPhase.RunInv",
+      "Toy.TwoPhase.runInv_init",
+      "Toy.TwoPhase.runInv_step",
+      "Toy.TwoPhase.run_ne_ub_of_runInv",
+      "Toy.TwoPhase.exactPhaseAccepts_no_active_live_shared",
+      "Toy.TwoPhase.LoanLive",
+      "Toy.TwoPhase.SharedLive",
+      "Toy.TwoPhase.pPush",
+      "Toy.TwoPhase.safe_neg",
+      "Toy.TwoPhase.alwaysActiveAccepts_neg",
+      "Toy.TwoPhase.exactPhaseAccepts_tight_pBreak",
+      "Toy.TwoPhase.exactPhaseAccepts_hypotheses_hold_pPush",
+      "Toy.TwoPhase.AlwaysActiveAccepts",
+      "Toy.TwoPhase.Edges",
+      "Toy.TwoPhase.IsWalk",
+      "Toy.TwoPhase.Op",
+      "Toy.TwoPhase.Op.isRead",
+      "Toy.TwoPhase.Outcome",
+      "Toy.TwoPhase.Perm",
+      "Toy.TwoPhase.Prog",
+      "Toy.TwoPhase.Prog.edges",
+      "Toy.TwoPhase.Prog.isKill",
+      "Toy.TwoPhase.Prog.isUse",
+      "Toy.TwoPhase.Prog.op",
+      "Toy.TwoPhase.RState",
+      "Toy.TwoPhase.RState.init",
+      "Toy.TwoPhase.RState.setSh",
+      "Toy.TwoPhase.RState.sh",
+      "Toy.TwoPhase.SRef",
+      "Toy.TwoPhase.SSt",
+      "Toy.TwoPhase.Stmt",
+      "Toy.TwoPhase.activationStaysReachable_neg_diverge",
+      "Toy.TwoPhase.activationStaysReachable_neg_exit",
+      "Toy.TwoPhase.activationStaysReachable_neg_loopBack",
+      "Toy.TwoPhase.activationStaysReachable_pos",
+      "Toy.TwoPhase.acyclic_iff",
+      "Toy.TwoPhase.acyclic_neg",
+      "Toy.TwoPhase.acyclic_pos",
+      "Toy.TwoPhase.alwaysActiveAccepts_pos",
+      "Toy.TwoPhase.cleanupReadsUnderDeadLoan_neg",
+      "Toy.TwoPhase.cleanupReadsUnderDeadLoan_pos",
+      "Toy.TwoPhase.dfMaybeActive_pos",
+      "Toy.TwoPhase.domGuard_neg",
+      "Toy.TwoPhase.domGuard_pos",
+      "Toy.TwoPhase.domGuard_pos_argLoop",
+      "Toy.TwoPhase.dom_iff_not_pathVia",
+      "Toy.TwoPhase.dom_neg",
+      "Toy.TwoPhase.dom_pos",
+      "Toy.TwoPhase.dom_unreachable",
+      "Toy.TwoPhase.dominatorAccepts_pos",
+      "Toy.TwoPhase.exactPhaseAccepts_pos",
+      "Toy.TwoPhase.exec_foreignRead_of_reserved",
+      "Toy.TwoPhase.exec_foreignRead_of_reserved_hypotheses_hold_pPush",
+      "Toy.TwoPhase.exec_readX_active_freezes",
+      "Toy.TwoPhase.foreignRead",
+      "Toy.TwoPhase.isActiveDom_neg",
+      "Toy.TwoPhase.isActiveDom_pos",
+      "Toy.TwoPhase.isCleanup_neg",
+      "Toy.TwoPhase.isCleanup_pos",
+      "Toy.TwoPhase.iterDataflowAccepts_pos",
+      "Toy.TwoPhase.loanLive_iff",
+      "Toy.TwoPhase.loanLive_neg",
+      "Toy.TwoPhase.loanLive_neg_at_R",
+      "Toy.TwoPhase.loanLive_pos",
+      "Toy.TwoPhase.maybeActive_neg",
+      "Toy.TwoPhase.maybeActive_pos",
+      "Toy.TwoPhase.pathViaB",
+      "Toy.TwoPhase.pathViaB_iff",
+      "Toy.TwoPhase.pdom_iff_not_pathVia",
+      "Toy.TwoPhase.pdom_neg",
+      "Toy.TwoPhase.pdom_pos",
+      "Toy.TwoPhase.prog_one_uninhabited",
+      "Toy.TwoPhase.prog_zero_uninhabited",
+      "Toy.TwoPhase.reentryFree_neg",
+      "Toy.TwoPhase.reentryFree_pos",
+      "Toy.TwoPhase.run_halt_reserved_writeThrough",
+      "Toy.TwoPhase.safe_pos",
+      "Toy.TwoPhase.sharedLive_iff",
+      "Toy.TwoPhase.sharedLive_neg",
+      "Toy.TwoPhase.exactPhaseAccepts_neg",
+      "Toy.TwoPhase.iterDataflowAccepts_neg",
+      "Toy.TwoPhase.dominatorAccepts_neg",
+      "Toy.TwoPhase.dfMaybeActive_neg",
+      "Toy.TwoPhase.domGuard_pos_continue"
+    ],
+    "non_claims": [
+      "Safety relies on the toy rule that writeThrough while r is none or reserved halts instead of being UB; under a rule making that UB, the program 0 \u2192 R=1 \u2192 2: writeThrough \u2192 A=3 (no access to x) would be accepted and unsafe (not proved here).",
+      "Safe models one two-phase loan r with one reservation node and one activation node; it does not cover several interacting loans, a two-phase borrow whose single use is not an activation (rustc's TwoPhaseActivation::NotActivated case), or conflicts between shared references and direct writes to x.",
+      "useShared s on a never-created s is treated as a plain foreign read; programs are not required to create s before using it.",
+      "R1b concerns the exact-phase checker, whose phase test is the walk-defined MaybeActive; the iterative checker is treated in R1c and R1d.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "RFC 2025 (rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/2025-nested-method-calls.md, feature name nested_method_call)",
+      "N. Villani, J. Hostert, D. Dreyer, R. Jung, \"Tree Borrows\", Proc. ACM Program. Lang. 9 (PLDI), Article 188, 2025, https://doi.org/10.1145/3735592 (operational semantics mechanized in Rocq)",
+      "S. Ho, J. Protzenko, \"Aeneas: Rust Verification by Functional Translation\", Proc. ACM Program. Lang. 6 (ICFP), Article 116, 2022, https://doi.org/10.1145/3547647 (preprint arXiv:2206.07185): reserved borrows in a value-level semantics"
+    ],
+    "design_question": "Is phase information (plus the activation check) enough to justify reads during a reservation?"
+  },
+  {
+    "id": "R1c",
+    "lean": [
+      "Toy.TwoPhase.iterDataflowAccepts_exactPhaseAccepts",
+      "Toy.TwoPhase.iterDataflowAccepts_safe"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every toy program: if the iterative dataflow checker (phase test dfMaybeActive) accepts it, then the exact-phase checker accepts it, and no walk from the entry reaches UB.",
+    "hypotheses": [
+      {
+        "name": "h : IterDataflowAccepts p",
+        "purpose": "the checker's verdict (the premise)",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.iterDataflowAccepts_tight_pBreak",
+        "tightness_witness_class": "an 8-node acyclic program without unwinding edges"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pPush is accepted by the iterative dataflow checker.",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.iterDataflowAccepts_hypotheses_hold_pPush",
+    "lean_names": [
+      "Toy.TwoPhase.IterDataflowAccepts",
+      "Toy.TwoPhase.accepts_of_phase_imp",
+      "Toy.TwoPhase.dfMaybeActive_of_maybeActive",
+      "Toy.TwoPhase.iterDataflowAccepts_tight_pBreak",
+      "Toy.TwoPhase.iterDataflowAccepts_hypotheses_hold_pPush"
+    ],
+    "non_claims": [
+      "Without A reachable, the converse inclusion can fail (R1d): pUnreachMerge is accepted by the exact-phase checker and rejected by the iterative one (exactPhaseAccepts_not_iterDataflowAccepts_pUnreachMerge).",
+      "Safety relies on the toy rule that writeThrough while r is none or reserved halts instead of being UB; under a rule making that UB, the program 0 \u2192 R=1 \u2192 2: writeThrough \u2192 A=3 (no access to x) would be accepted and unsafe (not proved here).",
+      "Safe models one two-phase loan r with one reservation node and one activation node; it does not cover several interacting loans, a two-phase borrow whose single use is not an activation (rustc's TwoPhaseActivation::NotActivated case), or conflicts between shared references and direct writes to x.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "G. A. Kildall, \"A Unified Approach to Global Program Optimization\", POPL 1973, pp. 194-206, https://doi.org/10.1145/512927.512945",
+      "RFC 2025 (rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/2025-nested-method-calls.md, feature name nested_method_call)"
+    ],
+    "design_question": "Is a checker built on an ordinary forward dataflow pass sound against the reference semantics?"
+  },
+  {
+    "id": "R1d",
+    "lean": "Toy.TwoPhase.iterDataflowAccepts_iff_exactPhaseAccepts_of_activation_reachable",
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every toy program in which A is reachable from the entry, the iterative dataflow checker accepts it if and only if the exact-phase checker accepts it.",
+    "hypotheses": [
+      {
+        "name": "hreach : PathVia p.edges (fun _ => true) p.entry p.A",
+        "purpose": "with A unreachable the iterative analysis over-reports and its checker rejects more",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.exactPhaseAccepts_not_iterDataflowAccepts_pUnreachMerge",
+        "tightness_witness_class": "a 5-node program without cycles in which A is unreachable"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "A is reachable in pPush.",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.iterDataflowAccepts_iff_hypotheses_hold_pPush",
+    "lean_names": [
+      "Toy.TwoPhase.pUnreachMerge",
+      "Toy.TwoPhase.explore",
+      "Toy.TwoPhase.safe_of_cert",
+      "Toy.TwoPhase.certOK",
+      "Toy.TwoPhase.exactPhaseAccepts_not_iterDataflowAccepts_pUnreachMerge",
+      "Toy.TwoPhase.iterDataflowAccepts_iff_hypotheses_hold_pPush"
+    ],
+    "non_claims": [
+      "When A is unreachable, the converse of R1c can fail (exactPhaseAccepts_not_iterDataflowAccepts_pUnreachMerge).",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "G. A. Kildall, \"A Unified Approach to Global Program Optimization\", POPL 1973, pp. 194-206, https://doi.org/10.1145/512927.512945",
+      "J. B. Kam, J. D. Ullman, \"Monotone Data Flow Analysis Frameworks\", Acta Informatica 7(3), 1977, pp. 305-317, https://doi.org/10.1007/BF00290339"
+    ],
+    "design_question": "Does the iterative pass lose precision against the walk-defined phase test?"
+  },
+  {
+    "id": "R2",
+    "lean": [
+      "Toy.TwoPhase.rdomA_apdomR_noUnwind_reentryFree_insufficient_pLoopBack",
+      "Toy.TwoPhase.rdomA_apdomR_noUnwind_insufficient_pLoop1",
+      "Toy.TwoPhase.rdomA_apdomR_noUnwind_reentryFree_insufficient_pDiverge"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "There is a 7-node looping toy program (pLoopBack) in which R dominates A, A post-dominates R along normal edges, there are no unwinding edges, and every normal walk from A back to A passes R, yet at the read at node 4 the loan is live and may be active while the dominator test calls it reserved, the dominator checker accepts, and the walk 0,1,2,3,4,5 reaches UB. Two further programs show the same: pLoop1 (5 nodes; A re-enters the region without passing R, while ActivationStaysReachable holds) and pDiverge (7 nodes; the break target enters a cycle from which A is unreachable).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "positive_control": "pLoopOK, a looping program satisfying DomGuard, is accepted by the dominator checker and is safe.",
+    "positive_control_lean": "Toy.TwoPhase.dominatorAccepts_safe_pLoopOK",
+    "lean_names": [
+      "Toy.TwoPhase.pLoopBack",
+      "Toy.TwoPhase.pLoop1",
+      "Toy.TwoPhase.pDiverge",
+      "Toy.TwoPhase.Dom",
+      "Toy.TwoPhase.PDom",
+      "Toy.TwoPhase.NoUnwind",
+      "Toy.TwoPhase.ReentryFree",
+      "Toy.TwoPhase.ActivationStaysReachable",
+      "Toy.TwoPhase.IsActiveDom",
+      "Toy.TwoPhase.DominatorAccepts",
+      "Toy.TwoPhase.ReachesUB",
+      "Toy.TwoPhase.DomGuard",
+      "Toy.TwoPhase.dominatorAccepts_safe_pLoopOK"
+    ],
+    "non_claims": [
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. The package does not claim that rustc accepts any program corresponding to pLoopBack, pLoop1 or pDiverge. Model\u2013system relation: none proved.",
+      "Escape hatches: the three counterexamples are excluded by an acyclic normal CFG (R2a), and by ReentryFree together with ActivationStaysReachable and no unwinding edges (R2b, R2c). Excluding infeasible paths by a path-sensitive analysis is not examined.",
+      "R2 does not refute the dominator test under those stronger conditions (R2a, R2b)."
+    ],
+    "prior_art": [
+      "A. Podgurski, L. A. Clarke, \"A Formal Model of Program Dependences and Its Implications for Software Testing, Debugging, and Maintenance\", IEEE TSE 16(9), 1990, pp. 965-979, https://doi.org/10.1109/32.58784 (weak control dependence via strong post-dominance, which bounds path length and so accounts for loops)",
+      "V. P. Ranganath, T. Amtoft, A. Banerjee, J. Hatcliff, M. B. Dwyer, \"A New Foundation for Control Dependence and Slicing for Modern Program Structures\", ACM TOPLAS 29(5), Article 27, 2007, https://doi.org/10.1145/1275497.1275502 (control dependence for CFGs with non-termination and no unique exit)",
+      "D. Wasserrab, \"Towards Certified Slicing\", Archive of Formal Proofs, 2008, https://isa-afp.org/entries/Slicing.html (post-dominance and weak control dependence mechanized in Isabelle/HOL)"
+    ],
+    "design_question": "Which CFG conditions make the dominator phase test sound?"
+  },
+  {
+    "id": "R2a",
+    "lean": "Toy.TwoPhase.isActiveDom_of_maybeActive_of_acyclic_pdom_noUnwind",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For a toy program whose normal-edge CFG is acyclic, in which A post-dominates R along normal edges and which has no unwinding edges, at every node where the loan may be active the dominator test calls the loan active.",
+    "hypotheses": [
+      {
+        "name": "hac : Acyclic p.succ",
+        "purpose": "back edges let A reach the region without R",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.acyclic_tight_pLoop1",
+        "tightness_witness_class": "a 5-node program whose normal CFG has one cycle (A \u2192 2) and no unwinding edges"
+      },
+      {
+        "name": "hpd : PDom p.succ p.A p.R",
+        "purpose": "an early exit from between R and A creates a join reached both from the region and from after A",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.pdom_tight_pBreak",
+        "tightness_witness_class": "an 8-node acyclic program without unwinding edges"
+      },
+      {
+        "name": "hnu : NoUnwind p",
+        "purpose": "unwinding edges into a shared cleanup block create such a join; dominance uses all edges",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.unwinding_tight_pCleanup",
+        "tightness_witness_class": "a 9-node program with acyclic normal edges and two unwinding edges into one cleanup block"
+      },
+      {
+        "name": "hL : MaybeActive p L",
+        "purpose": "between R and A the dominator test calls the loan reserved",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.maybeActive_tight_pPush",
+        "tightness_witness_class": "a 5-node straight-line program without unwinding edges"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pPush satisfies all hypotheses, at node 4.",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.acyclic_pdom_hypotheses_hold_pPush",
+    "lean_names": [
+      "Toy.TwoPhase.Acyclic",
+      "Toy.TwoPhase.reentryFree_of_acyclic",
+      "Toy.TwoPhase.activationStaysReachable_of_acyclic_pdom",
+      "Toy.TwoPhase.isActiveDom_of_maybeActive_of_succWalks",
+      "Toy.TwoPhase.edges_eq_succ_of_noUnwind",
+      "Toy.TwoPhase.pCleanup",
+      "Toy.TwoPhase.acyclic_tight_pLoop1",
+      "Toy.TwoPhase.pdom_tight_pBreak",
+      "Toy.TwoPhase.unwinding_tight_pCleanup",
+      "Toy.TwoPhase.maybeActive_tight_pPush",
+      "Toy.TwoPhase.acyclic_pdom_hypotheses_hold_pPush"
+    ],
+    "non_claims": [
+      "R dominating A is not a hypothesis. In the toy this is possible because IsActiveDom p L holds wherever R does not strictly dominate L and exec .activate on a none permission is a no-op; this neither establishes nor refutes that R dominating A can be dropped in rustc or in a semantics where activating an unreserved borrow is UB.",
+      "Liveness is not a hypothesis.",
+      "It says nothing about cyclic CFGs; R2 shows PDom is then insufficient.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396",
+      "A. Podgurski, L. A. Clarke, \"A Formal Model of Program Dependences and Its Implications for Software Testing, Debugging, and Maintenance\", IEEE TSE 16(9), 1990, pp. 965-979, https://doi.org/10.1109/32.58784 (weak control dependence via strong post-dominance, which bounds path length and so accounts for loops)"
+    ],
+    "design_question": "Which CFG conditions make the dominator phase test sound?"
+  },
+  {
+    "id": "R2b",
+    "lean": "Toy.TwoPhase.isActiveDom_of_maybeActive_of_reentryFree_activationStaysReachable_noUnwind",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For a toy program in which every normal walk from A back to A passes R (ReentryFree), every node x \u2260 R reached from a normal successor y \u2260 R of R along normal edges without passing A or R before x can still reach A along normal edges without passing R (ActivationStaysReachable), and which has no unwinding edges, at every node where the loan may be active the dominator test calls the loan active.",
+    "hypotheses": [
+      {
+        "name": "hre : ReentryFree p",
+        "purpose": "A re-entering the region without R reaches region nodes after activation",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.reentryFree_tight_pLoop1",
+        "tightness_witness_class": "a 5-node program whose normal CFG has one cycle (A \u2192 2) and no unwinding edges"
+      },
+      {
+        "name": "hasr : ActivationStaysReachable p",
+        "purpose": "an early exit, an exit back to R from a region node that cannot reach A without passing R, or a region from which A is unreachable creates a join reachable from both sides",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.activationStaysReachable_tight_pLoopBack",
+        "tightness_witness_class": "a 7-node program whose break target loops back to R, with no unwinding edges"
+      },
+      {
+        "name": "hnu : NoUnwind p",
+        "purpose": "as in R2a",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.unwinding_tight_pCleanup",
+        "tightness_witness_class": "a 9-node program with acyclic normal edges and two unwinding edges into one cleanup block"
+      },
+      {
+        "name": "hL : MaybeActive p L",
+        "purpose": "between R and A the dominator test calls the loan reserved",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.maybeActive_tight_pLoopOK",
+        "tightness_witness_class": "a 6-node program with one cycle through R and no unwinding edges"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "pArgLoop (a loop between R and A; cyclic normal CFG) satisfies all hypotheses, at node 4.",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.reentryFree_activationStaysReachable_hypotheses_hold_pArgLoop",
+    "lean_names": [
+      "Toy.TwoPhase.pArgLoop",
+      "Toy.TwoPhase.reentryFree_iff",
+      "Toy.TwoPhase.activationStaysReachable_pos_argLoop",
+      "Toy.TwoPhase.pLoopOK",
+      "Toy.TwoPhase.reentryFree_tight_pLoop1",
+      "Toy.TwoPhase.activationStaysReachable_tight_pLoopBack",
+      "Toy.TwoPhase.unwinding_tight_pCleanup",
+      "Toy.TwoPhase.maybeActive_tight_pLoopOK",
+      "Toy.TwoPhase.reentryFree_activationStaysReachable_hypotheses_hold_pArgLoop",
+      "Toy.TwoPhase.pContinue",
+      "Toy.TwoPhase.activationStaysReachable_pos_continue",
+      "Toy.TwoPhase.reentryFree_activationStaysReachable_hypotheses_hold_pContinue",
+      "Toy.TwoPhase.DomRegionReachesA",
+      "Toy.TwoPhase.domRegionReachesA_of_activationStaysReachable",
+      "Toy.TwoPhase.isActiveDom_of_maybeActive_of_domRegion",
+      "Toy.TwoPhase.isActiveDom_of_maybeActive_of_reentryFree_domRegionReachesA_noUnwind",
+      "Toy.TwoPhase.pJoin_separates_domRegionReachesA",
+      "Toy.TwoPhase.domRegionReachesA_pos",
+      "Toy.TwoPhase.domRegionReachesA_neg"
+    ],
+    "non_claims": [
+      "ActivationStaysReachable is a reachability condition over nondeterministic branching: it does not ask loops between R and A to terminate, and it admits a loop inside the argument from which A stays reachable (activationStaysReachable_pos_argLoop) and a continue back to R from a region node that can still reach A without passing R (reentryFree_activationStaysReachable_hypotheses_hold_pContinue: pContinue satisfies all hypotheses at node 4, satisfies DomGuard, is accepted by the dominator checker and by repairs (b) and (c), and is safe).",
+      "R dominating A is not a hypothesis. In the toy this is possible because IsActiveDom p L holds wherever R does not strictly dominate L and exec .activate on a none permission is a no-op; this neither establishes nor refutes that R dominating A can be dropped in rustc or in a semantics where activating an unreserved borrow is UB.",
+      "ActivationStaysReachable is a sufficient condition, not the weakest condition on the CFG alone: DomRegionReachesA, its restriction to nodes dominated by R along normal edges, is strictly weaker (pJoin_separates_domRegionReachesA) and also yields the conclusion together with ReentryFree and no unwinding edges (isActiveDom_of_maybeActive_of_reentryFree_domRegionReachesA_noUnwind, by the same walk argument, isActiveDom_of_maybeActive_of_domRegion). No minimality claim is made for either condition. Each listed hypothesis is tight in the sense of the ledger.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396",
+      "A. Podgurski, L. A. Clarke, \"A Formal Model of Program Dependences and Its Implications for Software Testing, Debugging, and Maintenance\", IEEE TSE 16(9), 1990, pp. 965-979, https://doi.org/10.1109/32.58784 (weak control dependence via strong post-dominance, which bounds path length and so accounts for loops)",
+      "V. P. Ranganath, T. Amtoft, A. Banerjee, J. Hatcliff, M. B. Dwyer, \"A New Foundation for Control Dependence and Slicing for Modern Program Structures\", ACM TOPLAS 29(5), Article 27, 2007, https://doi.org/10.1145/1275497.1275502 (control dependence for CFGs with non-termination and no unique exit)"
+    ],
+    "design_question": "Which CFG conditions make the dominator phase test sound?"
+  },
+  {
+    "id": "R2c",
+    "lean": "Toy.TwoPhase.dominatorAccepts_safe_of_reentryFree_activationStaysReachable_noUnwind",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For a toy program satisfying ReentryFree and ActivationStaysReachable and having no unwinding edges: if the dominator checker accepts it, then no walk from the entry reaches UB.",
+    "hypotheses": [
+      {
+        "name": "hre : ReentryFree p",
+        "purpose": "as R2b",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.reentryFree_tight_pLoop1",
+        "tightness_witness_class": "a 5-node program whose normal CFG has one cycle (A \u2192 2) and no unwinding edges"
+      },
+      {
+        "name": "hasr : ActivationStaysReachable p",
+        "purpose": "as R2b",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.activationStaysReachable_tight_pLoopBack",
+        "tightness_witness_class": "a 7-node program whose break target loops back to R, with no unwinding edges"
+      },
+      {
+        "name": "hnu : NoUnwind p",
+        "purpose": "as R2b",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.unwinding_tight_pCleanup",
+        "tightness_witness_class": "a 9-node program with acyclic normal edges and two unwinding edges into one cleanup block"
+      },
+      {
+        "name": "h : DominatorAccepts p",
+        "purpose": "the checker's verdict (the premise)",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.dominatorAccepts_tight_pWriteDuringRes",
+        "tightness_witness_class": "a 5-node straight-line program without unwinding edges"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pLoopOK satisfies DomGuard (all three CFG conditions), is accepted, and is safe.",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.dominatorAccepts_safe_pLoopOK",
+    "lean_names": [
+      "Toy.TwoPhase.pWriteDuringRes",
+      "Toy.TwoPhase.reentryFree_tight_pLoop1",
+      "Toy.TwoPhase.activationStaysReachable_tight_pLoopBack",
+      "Toy.TwoPhase.unwinding_tight_pCleanup",
+      "Toy.TwoPhase.dominatorAccepts_tight_pWriteDuringRes",
+      "Toy.TwoPhase.dominatorAccepts_safe_pLoopOK"
+    ],
+    "non_claims": [
+      "Safety relies on the toy rule that writeThrough while r is none or reserved halts instead of being UB; under a rule making that UB, the program 0 \u2192 R=1 \u2192 2: writeThrough \u2192 A=3 (no access to x) would be accepted and unsafe (not proved here).",
+      "Safe models one two-phase loan r with one reservation node and one activation node; it does not cover several interacting loans, a two-phase borrow whose single use is not an activation (rustc's TwoPhaseActivation::NotActivated case), or conflicts between shared references and direct writes to x.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396",
+      "RFC 2025 (rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/2025-nested-method-calls.md, feature name nested_method_call)"
+    ],
+    "design_question": "Which CFG conditions make the dominator phase test sound?"
+  },
+  {
+    "id": "R3",
+    "lean": "Toy.TwoPhase.pBreak_dominatorAccepts_unsafe",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "In the 8-node acyclic program pBreak (no unwinding edges, R dominates A, ReentryFree), the edge 2 \u2192 4 from between R and A to the join 4 (the break) makes A fail to post-dominate R; at the join, R strictly dominates it and A does not, so the dominator test calls the loan reserved although it is live and may be active; the dominator checker accepts, the exact-phase checker rejects, the fall-through walk 0,1,2,3,4,5,6 (which does not take the edge 2 \u2192 4) reaches UB, and the walk that takes the break halts at the write through r.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "positive_control": "pBreakHoisted_rejected (break hoisted above R: A post-dominates R, DomGuard holds, the exact-phase and dominator checkers reject) and pBreakWrite_rejected (a write at the join: the exact-phase and dominator checkers reject).",
+    "positive_control_lean": [
+      "Toy.TwoPhase.pBreakHoisted_rejected",
+      "Toy.TwoPhase.pBreakWrite_rejected"
+    ],
+    "lean_names": [
+      "Toy.TwoPhase.pBreakHoisted",
+      "Toy.TwoPhase.pBreakWrite",
+      "Toy.TwoPhase.pBreakDead",
+      "Toy.TwoPhase.repairs_strict",
+      "Toy.TwoPhase.pBreakHoisted_rejected",
+      "Toy.TwoPhase.pBreakWrite_rejected"
+    ],
+    "non_claims": [
+      "pBreak does not show that every early exit between R and A causes UB: pBreakDead, in which r is dead at the join, is safe and accepted (repairs_strict).",
+      "It does not show that early exits to an exit node are the only shape that defeats the dominator test: loops (R2) and unwinding edges (R7b) are others.",
+      "The toy program is not a translation of the issue's Rust program; the correspondence is a modeling bridge (Evidence, modeling bridges).",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust#160598, \"is_active can be unsound when the activation does not dominate the reservation\", https://github.com/rust-lang/rust/issues/160598 (open at fetch, 2026-11-21)",
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396"
+    ],
+    "design_question": "Where does the dominator test fail on structured code?"
+  },
+  {
+    "id": "R4",
+    "lean": "Toy.TwoPhase.pJoin_safe_exactPhaseAccepts_not_dominatorAccepts",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "The 8-node program pJoin, in which R dominates A, is safe and accepted by the exact-phase checker but rejected by the dominator checker: its join 5 is reached from a path without R (no loan) and from the reserved region (loan reserved, not active), so R does not strictly dominate it. The write through r at node 6 executes with r active on the walk through A; on the two walks that reach node 6 without A, that write halts.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "positive_control": "pPush is safe and accepted by the exact-phase and dominator checkers.",
+    "positive_control_lean": "Toy.TwoPhase.pPush_safe_accepted",
+    "lean_names": [
+      "Toy.TwoPhase.pJoin",
+      "Toy.TwoPhase.pEndThenRead",
+      "Toy.TwoPhase.maybeActive_neg_endLoan",
+      "Toy.TwoPhase.pPush_safe_accepted"
+    ],
+    "non_claims": [
+      "pJoin's safety relies on the halting rule for writeThrough on the two walks that reach node 6 without A (proved in the theorem).",
+      "No incompleteness witness satisfying DomGuard is given. A straight-line program that reads after endLoan and then writes through r without a new reservation (the shape of pEndThenRead) is accepted by the exact-phase checker and rejected by the dominator checker because the toy LoanLive has no forward in-scope component (not proved here); it is not recorded as a result.",
+      "Incompleteness relative to the exact-phase checker in the toy; the size of the gap on real programs is not examined.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396"
+    ],
+    "design_question": "Does the dominator approximation lose precision in both directions?"
+  },
+  {
+    "id": "R5a",
+    "lean": [
+      "Toy.TwoPhase.repairBAccepts_exactPhaseAccepts",
+      "Toy.TwoPhase.repairBAccepts_safe"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every toy program: if repair (b) (the dominator test when DomGuard holds, otherwise every loan counts as active) accepts it, then the exact-phase checker accepts it, and no walk from the entry reaches UB.",
+    "hypotheses": [
+      {
+        "name": "h : RepairBAccepts p",
+        "purpose": "the repair's verdict (the premise)",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.repairBAccepts_tight_pBreak",
+        "tightness_witness_class": "an 8-node acyclic program without unwinding edges"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pLoopOK (DomGuard holds) is accepted by repair (b); repairBAccepts_pos_noGuard shows acceptance of pBreakDead, where DomGuard fails.",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.repairBAccepts_pos",
+    "lean_names": [
+      "Toy.TwoPhase.RepairBAccepts",
+      "Toy.TwoPhase.guardedDomPhase",
+      "Toy.TwoPhase.repairBAccepts_pos_noGuard",
+      "Toy.TwoPhase.repairBAccepts_neg",
+      "Toy.TwoPhase.repairBAccepts_tight_pBreak",
+      "Toy.TwoPhase.repairBAccepts_pos"
+    ],
+    "non_claims": [
+      "Safety relies on the toy rule that writeThrough while r is none or reserved halts instead of being UB; under a rule making that UB, the program 0 \u2192 R=1 \u2192 2: writeThrough \u2192 A=3 (no access to x) would be accepted and unsafe (not proved here).",
+      "Safe models one two-phase loan r with one reservation node and one activation node; it does not cover several interacting loans, a two-phase borrow whose single use is not an activation (rustc's TwoPhaseActivation::NotActivated case), or conflicts between shared references and direct writes to x.",
+      "Repair (b) falls back to treating every loan as active when DomGuard fails; on such programs it rejects reads during a reservation (repairBAccepts_neg).",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396"
+    ],
+    "design_question": "How do candidate repairs compare in what they accept?"
+  },
+  {
+    "id": "R5c",
+    "lean": [
+      "Toy.TwoPhase.repairCAccepts_repairBAccepts",
+      "Toy.TwoPhase.repairs_strict"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every toy program: if repair (c) (reject when DomGuard fails, otherwise the dominator checker) accepts it, then repair (b) accepts it \u2014 by construction, since both use the guard DomGuard. Both inclusions repair (c) \u2286 repair (b) \u2286 exact-phase checker are strict: pJoin (8 nodes) is safe and accepted by the exact-phase checker but not by repair (b); the break-in-argument program pBreakDead (6 nodes), in which r is dead at the join, is safe and accepted by the exact-phase checker and by repair (b) but not by repair (c).",
+    "hypotheses": [
+      {
+        "name": "h : RepairCAccepts p",
+        "purpose": "the repair's verdict (premise of the inclusion)",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.repairCAccepts_tight_pJoin",
+        "tightness_witness_class": "an 8-node acyclic program without unwinding edges"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "pLoopOK is accepted by repair (c); so is the loop-in-argument program pArgLoop (repairCAccepts_pos_argLoop).",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.repairCAccepts_pos",
+    "lean_names": [
+      "Toy.TwoPhase.RepairCAccepts",
+      "Toy.TwoPhase.repairCAccepts_pos_argLoop",
+      "Toy.TwoPhase.repairCAccepts_neg",
+      "Toy.TwoPhase.repairCAccepts_tight_pJoin",
+      "Toy.TwoPhase.repairCAccepts_pos"
+    ],
+    "non_claims": [
+      "The inclusion repair (c) \u2286 repair (b) holds because both use DomGuard; the strict ordering is proved for this package's definitions and neither establishes nor refutes comparability between other formulations of \"reject early exits\" and guarded dominator repairs.",
+      "A literal form of repair (c) \u2014 reject when some edge leaves the region of nodes reachable from R avoiding A other than into A \u2014 would accept pLoop1 (no such edge) and pDiverge (the cycle stays inside the region), both unsafe and accepted by the dominator checker (R2); no literal repair (c) checker is defined in Lean (not proved here).",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396"
+    ],
+    "design_question": "How do candidate repairs compare in what they accept?"
+  },
+  {
+    "id": "R5d",
+    "lean": "Toy.TwoPhase.literalRepairB_unsound_pLoopBack",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "The literal repair (b) \u2014 the dominator test guarded by A post-dominating R along normal edges, otherwise every loan counts as active \u2014 accepts the 7-node looping program pLoopBack, which reaches UB on the walk 0,1,2,3,4,5.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "positive_control": "the literal repair (b) rejects the early-exit program pBreak, where its guard fails.",
+    "positive_control_lean": "Toy.TwoPhase.literalRepairB_rejects_pBreak",
+    "lean_names": [
+      "Toy.TwoPhase.LiteralRepairBAccepts",
+      "Toy.TwoPhase.literalPdomPhase",
+      "Toy.TwoPhase.literalRepairB_rejects_pBreak"
+    ],
+    "non_claims": [
+      "The guarded repair with DomGuard (R5a) is sound; the counterexample concerns the guard A post-dominates R alone.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396",
+      "A. Podgurski, L. A. Clarke, \"A Formal Model of Program Dependences and Its Implications for Software Testing, Debugging, and Maintenance\", IEEE TSE 16(9), 1990, pp. 965-979, https://doi.org/10.1109/32.58784 (weak control dependence via strong post-dominance, which bounds path length and so accounts for loops)"
+    ],
+    "design_question": "How do candidate repairs compare in what they accept?"
+  },
+  {
+    "id": "R6b",
+    "lean": "Toy.TwoPhase.pWriteDuringRes_ub_rejected",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "In the 5-node pWriteDuringRes, a write to x during the reservation is followed by the activation; the walk 0,1,2,3 reaches UB at the activation; the exact-phase and dominator checkers flag the write, although neither phase test calls the loan active there.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "positive_control": "pPush (a read, not a write, during the reservation) is safe and accepted by the exact-phase and dominator checkers.",
+    "positive_control_lean": "Toy.TwoPhase.pPush_safe_accepted",
+    "lean_names": [
+      "Toy.TwoPhase.pWriteDuringRes",
+      "Toy.TwoPhase.foreignWrite",
+      "Toy.TwoPhase.pPush_safe_accepted"
+    ],
+    "non_claims": [
+      "Tree Borrows' conflicted flag, protectors and interior mutability are not modeled.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "RFC 2025 (rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/2025-nested-method-calls.md, feature name nested_method_call)",
+      "N. Villani, J. Hostert, D. Dreyer, R. Jung, \"Tree Borrows\", Proc. ACM Program. Lang. 9 (PLDI), Article 188, 2025, https://doi.org/10.1145/3735592 (operational semantics mechanized in Rocq)"
+    ],
+    "design_question": "What may a reservation permit, measured against a reference aliasing semantics?"
+  },
+  {
+    "id": "R6c",
+    "lean": "Toy.TwoPhase.pSharedDuringRes_ub_rejected",
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "In the 5-node pSharedDuringRes, a shared reference created during the reservation is used after the activation; the walk 0,1,2,3,4 reaches UB at the use (the activation is a write through r); the exact-phase and dominator checkers reject, and for each of these two checkers a node is flagged if and only if it is A (the activation check).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "positive_control": "pPush is safe and accepted by the exact-phase and dominator checkers.",
+    "positive_control_lean": "Toy.TwoPhase.pPush_safe_accepted",
+    "lean_names": [
+      "Toy.TwoPhase.pSharedDuringRes",
+      "Toy.TwoPhase.SSt.markWrite",
+      "Toy.TwoPhase.run_activate_marks_shared_dirty",
+      "Toy.TwoPhase.sharedLive_pos",
+      "Toy.TwoPhase.pPush_safe_accepted"
+    ],
+    "non_claims": [
+      "In Tree Borrows, a foreign read on a protected Reserved reference sets its conflicted flag, and a later local write is then UB (Tree Borrows \u00a73.1, documentation); the toy omits protectors and conflicted and so does not model protected function-argument references.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "RFC 2025 (rust-lang/rfcs f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/2025-nested-method-calls.md, feature name nested_method_call)",
+      "N. Villani, J. Hostert, D. Dreyer, R. Jung, \"Tree Borrows\", Proc. ACM Program. Lang. 9 (PLDI), Article 188, 2025, https://doi.org/10.1145/3735592 (operational semantics mechanized in Rocq)"
+    ],
+    "design_question": "What may a reservation permit, measured against a reference aliasing semantics?"
+  },
+  {
+    "id": "R7a",
+    "lean": "Toy.TwoPhase.isActiveDom_of_maybeActive_of_reentryFree_activationStaysReachable_not_isCleanup",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For a toy program (unwinding edges allowed) in which every normal walk from A back to A passes R (ReentryFree) and every node x \u2260 R reached from a normal successor y \u2260 R of R along normal edges without passing A or R before x can still reach A along normal edges without passing R (ActivationStaysReachable), at every node L that is not a cleanup node and where the loan may be active, the dominator test (dominance over all edges) calls the loan active.",
+    "hypotheses": [
+      {
+        "name": "hre : ReentryFree p",
+        "purpose": "as R2b",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.reentryFree_tight_pLoop1",
+        "tightness_witness_class": "a 5-node program whose normal CFG has one cycle (A \u2192 2) and no unwinding edges"
+      },
+      {
+        "name": "hasr : ActivationStaysReachable p",
+        "purpose": "as R2b",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.activationStaysReachable_tight_pLoopBack",
+        "tightness_witness_class": "a 7-node program whose break target loops back to R, with no unwinding edges"
+      },
+      {
+        "name": "hnc : \u00ac IsCleanup p L",
+        "purpose": "a cleanup block joins walks from before and after A",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.unwinding_tight_pCleanup",
+        "tightness_witness_class": "a 9-node program with acyclic normal edges and two unwinding edges into one cleanup block"
+      },
+      {
+        "name": "hL : MaybeActive p L",
+        "purpose": "between R and A the dominator test calls the loan reserved",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.maybeActive_tight_pCleanupRead",
+        "tightness_witness_class": "an 8-node program with acyclic normal edges and two unwinding edges"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pCleanupRead has unwinding edges and satisfies all hypotheses at node 4.",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.notCleanup_hypotheses_hold_pCleanupRead",
+    "lean_names": [
+      "Toy.TwoPhase.IsCleanup",
+      "Toy.TwoPhase.isWalk_succ_of_not_isCleanup",
+      "Toy.TwoPhase.pCleanupRead",
+      "Toy.TwoPhase.reentryFree_tight_pLoop1",
+      "Toy.TwoPhase.activationStaysReachable_tight_pLoopBack",
+      "Toy.TwoPhase.unwinding_tight_pCleanup",
+      "Toy.TwoPhase.maybeActive_tight_pCleanupRead",
+      "Toy.TwoPhase.notCleanup_hypotheses_hold_pCleanupRead"
+    ],
+    "non_claims": [
+      "IsCleanup marks every node reachable from the target of any unwinding edge, including edges whose source is unreachable from the entry, and including normal code reached from a cleanup block.",
+      "R7a, R7b and R7c neither establish nor refute whether real MIR cleanup code (which runs drop glue rather than arbitrary reads and writes through r) can defeat rustc's is_active.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396"
+    ],
+    "design_question": "Is \"ignoring unwinding edges\" safe, and under what condition?"
+  },
+  {
+    "id": "R7b",
+    "lean": "Toy.TwoPhase.pCleanup_dominatorAccepts_unsafe",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "The 9-node pCleanup, satisfying ReentryFree and ActivationStaysReachable, has a cleanup block shared by an unwinding edge before A and one after A that reads x while r is live; there the dominator test calls the loan reserved, the dominator checker accepts, and the walk 0,1,2,3,4,6,7 reaches UB.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "positive_control": "pCleanupRead, whose cleanup block reads x after the last use of r, satisfies CleanupReadsUnderDeadLoan, is accepted and is safe.",
+    "positive_control_lean": "Toy.TwoPhase.pCleanupRead_hypotheses_hold_safe",
+    "lean_names": [
+      "Toy.TwoPhase.CleanupReadsUnderDeadLoan",
+      "Toy.TwoPhase.pCleanupRead_hypotheses_hold_safe"
+    ],
+    "non_claims": [
+      "Cleanup is modeled as ordinary nodes reached through unwinding edges; whether real MIR cleanup code can take the shape of pCleanup (a read of the borrowed place followed by a write through r) is not examined.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396"
+    ],
+    "design_question": "Is \"ignoring unwinding edges\" safe, and under what condition?"
+  },
+  {
+    "id": "R7c",
+    "lean": "Toy.TwoPhase.dominatorAccepts_safe_of_reentryFree_activationStaysReachable_cleanupReadsUnderDeadLoan",
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For a toy program (unwinding edges allowed) satisfying ReentryFree and ActivationStaysReachable along normal edges, in which no cleanup node reads x while r is live: if the dominator checker accepts it, then no walk from the entry reaches UB.",
+    "hypotheses": [
+      {
+        "name": "hre : ReentryFree p",
+        "purpose": "as R2b",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.reentryFree_tight_pLoop1",
+        "tightness_witness_class": "a 5-node program whose normal CFG has one cycle (A \u2192 2) and no unwinding edges"
+      },
+      {
+        "name": "hasr : ActivationStaysReachable p",
+        "purpose": "as R2b",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.activationStaysReachable_tight_pLoopBack",
+        "tightness_witness_class": "a 7-node program whose break target loops back to R, with no unwinding edges"
+      },
+      {
+        "name": "hcl : CleanupReadsUnderDeadLoan p",
+        "purpose": "a cleanup block reading x under a live loan joins walks from before and after A",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.unwinding_tight_pCleanup",
+        "tightness_witness_class": "a 9-node program with acyclic normal edges and two unwinding edges into one cleanup block"
+      },
+      {
+        "name": "h : DominatorAccepts p",
+        "purpose": "the checker's verdict (the premise)",
+        "tightness": "tight",
+        "counterexample": "Toy.TwoPhase.dominatorAccepts_tight_pWriteDuringRes",
+        "tightness_witness_class": "a 5-node straight-line program without unwinding edges"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "pCleanupRead has unwinding edges, satisfies all hypotheses (including acceptance, with a read during the reservation at node 2), and is safe.",
+    "nonvacuity_witness_lean": "Toy.TwoPhase.pCleanupRead_hypotheses_hold_safe",
+    "lean_names": [
+      "Toy.TwoPhase.not_isCleanup_of_cleanupReadsUnderDeadLoan",
+      "Toy.TwoPhase.reentryFree_tight_pLoop1",
+      "Toy.TwoPhase.activationStaysReachable_tight_pLoopBack",
+      "Toy.TwoPhase.unwinding_tight_pCleanup",
+      "Toy.TwoPhase.dominatorAccepts_tight_pWriteDuringRes",
+      "Toy.TwoPhase.pCleanupRead_hypotheses_hold_safe"
+    ],
+    "non_claims": [
+      "Safety relies on the toy rule that writeThrough while r is none or reserved halts instead of being UB; under a rule making that UB, the program 0 \u2192 R=1 \u2192 2: writeThrough \u2192 A=3 (no access to x) would be accepted and unsafe (not proved here).",
+      "Safe models one two-phase loan r with one reservation node and one activation node; it does not cover several interacting loans, a two-phase borrow whose single use is not an activation (rustc's TwoPhaseActivation::NotActivated case), or conflicts between shared references and direct writes to x.",
+      "R7c holds because CleanupReadsUnderDeadLoan makes every read of x under a live loan a non-cleanup node, where R7a applies.",
+      "These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc's borrow checker. Model\u2013system relation: none proved."
+    ],
+    "prior_art": [
+      "rust-lang/rust 26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_borrowck/src/path_utils.rs L60-120 (is_active; assumption comment L88-93); compiler/rustc_borrowck/src/lib.rs L1323-1328 (check_access_for_conflict); compiler/rustc_borrowck/src/polonius/legacy/loan_invalidations.rs L390-396"
+    ],
+    "design_question": "Is \"ignoring unwinding edges\" safe, and under what condition?"
+  }
+]

@@ -101400,6 +101400,62 @@
         "tooling/proof-engineering"
       ]
     },
+    "two-phase-borrows-reservation-activation-dominator-approximations-and-early-exit-edges": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc borrow checker (is_active)"
+        },
+        {
+          "identity": {
+            "path": "text/2025-nested-method-calls.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "RFC 2025 (nested method calls)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3735592"
+          },
+          "name": "Tree Borrows"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8eb778d04094d3af4b26580cab327e0413eb1e02"
+          },
+          "name": "rustc nightly used for the reproducer run"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5c543b0b8c73c7b72bc8284ced4fb22ead15734d"
+          },
+          "name": "rustc nightly with Miri used for the Miri run on the reproducer"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/dataflow",
+        "compilers/dominators",
+        "rustc/borrowck",
+        "rustc/borrowck/two-phase-borrows"
+      ]
+    },
     "two-phase-thinlto-import-budgeting-generic-dedup-and-post-inline-pruning": {
       "observed_at": "2026-11-14",
       "subjects": [

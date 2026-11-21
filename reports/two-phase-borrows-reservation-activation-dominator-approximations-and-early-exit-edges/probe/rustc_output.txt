@@ -1,0 +1,11 @@
+$ rustup run nightly-2026-11-13 rustc -vV
+rustc 1.102.0-nightly (8eb778d04 2026-11-12)
+binary: rustc
+commit-hash: 8eb778d04094d3af4b26580cab327e0413eb1e02
+commit-date: 2026-11-12
+host: x86_64-unknown-linux-gnu
+release: 1.102.0-nightly
+LLVM version: 23.1.5
+$ rustc --edition 2021 issue.rs && ./issue
+Some(1) Some(2)
+exit=0
