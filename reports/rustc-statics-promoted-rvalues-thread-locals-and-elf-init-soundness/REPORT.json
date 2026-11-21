@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/linking",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/codegen",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and standard library (rustc / libstd)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+      }
+    },
+    {
+      "name": "LLVM compiler infrastructure and LLD ELF linker (upstream llvmorg-22.1.6)",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "fc4aad7b5db3fff421df9a9637605b9ca5667881",
+        "release_tag": "llvmorg-22.1.6"
+      }
+    },
+    {
+      "name": "Rust LLVM/LLD fork bundled with rustc 1.98.0-nightly",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+        "component": "LLVM 22.1.6 / rust-lld"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "ad35aca481751a06afeb23820a672b0f3b11a476"
+      }
+    },
+    {
+      "name": "Anneal Lean 4 verification trust boundary and MIR model",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel typechecker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "GNU Binutils ELF toolchain (readelf, ld)",
+      "identity": {
+        "package": "GNU Binutils for Debian",
+        "version": "2.47",
+        "architecture": "x86_64-unknown-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

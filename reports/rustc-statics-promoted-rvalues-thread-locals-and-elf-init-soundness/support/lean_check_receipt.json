@@ -1,0 +1,55 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "file": "support/StaticsPromotedsAndTlsSoundness.lean",
+  "sha256": "7020a5d5433fb68ea8ecfbee994a3e5b07ff4091049c56501a434db4ef552614",
+  "line_count": 1311,
+  "flags": [
+    "-M2048",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "wall_clock_sec": 3.9478,
+  "max_rss_kib": 527368,
+  "source_banned_token_counts": {
+    "sorry": 0,
+    "omega": 0,
+    "bv_decide": 0,
+    "native_decide": 0,
+    "Classical.choice": 0,
+    "partial_def": 0,
+    "unsafe_def": 0,
+    "user_axiom": 0,
+    "user_opaque": 0
+  },
+  "kernel_environment_stats": {
+    "namespace_constants": 845,
+    "is_unsafe": 0,
+    "is_partial": 0,
+    "unsafe_rec_helpers": 0,
+    "user_axioms": 0
+  },
+  "theorem_axiom_footprints": [
+    "'StaticsPromotedsAndTlsSoundness.zero_freeze_static_lands_in_rodata_not_bss' does not depend on any axioms",
+    "'StaticsPromotedsAndTlsSoundness.zero_freeze_tls_lands_in_tdata_not_tbss' does not depend on any axioms",
+    "'StaticsPromotedsAndTlsSoundness.pointer_bearing_freeze_static_lands_in_data_rel_ro_under_pic' does not depend on any axioms",
+    "'StaticsPromotedsAndTlsSoundness.relro_writable_during_reloc_and_frozen_at_runtime' does not depend on any axioms",
+    "'StaticsPromotedsAndTlsSoundness.running_trace_preserves_rodata_and_dataRelRo' does not depend on any axioms",
+    "'StaticsPromotedsAndTlsSoundness.canPromoteRef_implies_ctfe_total' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.promote_rvalue_observational_equivalence' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.pt_tls_instantiate_length' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.pt_tls_tdata_prefix_exact' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.pt_tls_tbss_zero_exact' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.elf_tls_four_models_address_equivalent' does not depend on any axioms",
+    "'StaticsPromotedsAndTlsSoundness.pt_tls_spawn_fresh_template_sound' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.pt_tls_cross_thread_noninterference' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.tls_dtor_lifo_order_and_reentrant_access_safety' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.used_linker_shf_gnu_retain_survives_gc_sections' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.init_array_section_survives_gc_sections' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.init_array_runs_before_main' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.ce1_promoting_unsafecell_into_rodata_unsound' depends on axioms: [propext]",
+    "'StaticsPromotedsAndTlsSoundness.ce2_used_compiler_dropped_by_linker_gc' depends on axioms: [propext]"
+  ],
+  "forbidden_axioms_present": false,
+  "all_checks_passed": true
+}

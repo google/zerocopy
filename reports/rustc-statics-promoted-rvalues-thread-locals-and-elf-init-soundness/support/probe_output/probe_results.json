@@ -1,0 +1,908 @@
+{
+  "toolchain": {
+    "rustc_vV": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "readelf_version": "GNU readelf (GNU Binutils for Debian) 2.47",
+    "gnu_ld_version": "GNU ld (GNU Binutils for Debian) 2.47",
+    "rustc_print_tls_models": "Available TLS models:\n    global-dynamic\n    local-dynamic\n    initial-exec\n    local-exec\n    emulated"
+  },
+  "s1_promote_consts_mir": {
+    "compile_rc": 0,
+    "after_mir_file_count": 11,
+    "functions": {
+      "promo_arith_and_index": {
+        "found_after_mir": true,
+        "before_lines": 70,
+        "after_lines": 69,
+        "promoted_ref_count": 1,
+        "promoted_indices": [
+          "0"
+        ],
+        "has_runtime_div": true,
+        "has_runtime_checked_pos_call": false,
+        "storage_live_before": 7,
+        "storage_live_after": 6
+      },
+      "promo_empty_mut_slice": {
+        "found_after_mir": true,
+        "before_lines": 46,
+        "after_lines": 45,
+        "promoted_ref_count": 1,
+        "promoted_indices": [
+          "0"
+        ],
+        "has_runtime_div": false,
+        "has_runtime_checked_pos_call": false,
+        "storage_live_before": 5,
+        "storage_live_after": 4
+      },
+      "promo_multiuse_temp": {
+        "found_after_mir": true,
+        "before_lines": 44,
+        "after_lines": 43,
+        "promoted_ref_count": 1,
+        "promoted_indices": [
+          "0"
+        ],
+        "has_runtime_div": false,
+        "has_runtime_checked_pos_call": false,
+        "storage_live_before": 5,
+        "storage_live_after": 4
+      },
+      "reject_unsafecell": {
+        "found_after_mir": true,
+        "before_lines": 71,
+        "after_lines": 71,
+        "promoted_ref_count": 0,
+        "promoted_indices": [],
+        "has_runtime_div": false,
+        "has_runtime_checked_pos_call": false,
+        "storage_live_before": 8,
+        "storage_live_after": 8
+      },
+      "reject_needs_drop": {
+        "found_after_mir": true,
+        "before_lines": 30,
+        "after_lines": 30,
+        "promoted_ref_count": 0,
+        "promoted_indices": [],
+        "has_runtime_div": false,
+        "has_runtime_checked_pos_call": false,
+        "storage_live_before": 2,
+        "storage_live_after": 2
+      },
+      "reject_fallible_div_and_oob": {
+        "found_after_mir": true,
+        "before_lines": 175,
+        "after_lines": 177,
+        "promoted_ref_count": 1,
+        "promoted_indices": [
+          "0"
+        ],
+        "has_runtime_div": true,
+        "has_runtime_checked_pos_call": false,
+        "storage_live_before": 20,
+        "storage_live_after": 20
+      },
+      "reject_nested_oob_index": {
+        "found_after_mir": true,
+        "before_lines": 69,
+        "after_lines": 69,
+        "promoted_ref_count": 0,
+        "promoted_indices": [],
+        "has_runtime_div": false,
+        "has_runtime_checked_pos_call": false,
+        "storage_live_before": 6,
+        "storage_live_after": 6
+      },
+      "reject_const_fn_in_fn": {
+        "found_after_mir": true,
+        "before_lines": 29,
+        "after_lines": 29,
+        "promoted_ref_count": 0,
+        "promoted_indices": [],
+        "has_runtime_div": false,
+        "has_runtime_checked_pos_call": true,
+        "storage_live_before": 2,
+        "storage_live_after": 2
+      },
+      "SAFE_PROMO_IN_CONST": {
+        "found_after_mir": true,
+        "before_lines": 64,
+        "after_lines": 64,
+        "promoted_ref_count": 1,
+        "promoted_indices": [
+          "0"
+        ],
+        "has_runtime_div": false,
+        "has_runtime_checked_pos_call": true,
+        "storage_live_before": 6,
+        "storage_live_after": 5
+      }
+    }
+  },
+  "s2_global_alloc_and_elf_sections": {
+    "llvm_ir_globals": {
+      "IMMUT_SCALAR_STATIC": "@IMMUT_SCALAR_STATIC = dso_local constant [64 x i8] c\"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB\", align 1",
+      "ZERO_IMMUT_STATIC": "@ZERO_IMMUT_STATIC = dso_local constant [64 x i8] zeroinitializer, align 1",
+      "MUT_NONZERO_STATIC": "@MUT_NONZERO_STATIC = global [8 x i8] c\"\\88wfUD3\\22\\11\", align 8",
+      "MUT_ZERO_STATIC": "@MUT_ZERO_STATIC = global [8 x i8] zeroinitializer, align 8",
+      "RELRO_PTR_STATIC": "@RELRO_PTR_STATIC = constant <{ [8 x i8], ptr, ptr }> <{ [8 x i8] c\"\\01\\00\\00ORLER\", ptr @IMMUT_SCALAR_STATIC, ptr @_RNvCsaeRqkUsip5i_32s2_global_alloc_and_elf_sections8relro_cb }>, align 8",
+      "TLS_NONZERO_CELL": "@TLS_NONZERO_CELL = thread_local local_unnamed_addr global [8 x i8] c\"\\BE\\BA\\FE\\CA\\EF\\BE\\AD\\DE\", align 8",
+      "TLS_ZERO_CELL": "@TLS_ZERO_CELL = thread_local local_unnamed_addr global [8 x i8] zeroinitializer, align 8",
+      "TLS_ZERO_FREEZE": "@TLS_ZERO_FREEZE = thread_local local_unnamed_addr constant [8 x i8] zeroinitializer, align 8",
+      "PROMOTED_0x99_ARRAY": "@alloc_bde32f2cd95635c0bd39db1e531c95c0 = private unnamed_addr constant [32 x i8] c\"\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\\99\", align 1"
+    },
+    "pic_obj_sections_selected": {
+      ".rodata.IMMUT_SCALAR_STATIC": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000527",
+        "size_bytes": "64",
+        "flags": "A"
+      },
+      ".rodata.ZERO_IMMUT_STATIC": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000567",
+        "size_bytes": "64",
+        "flags": "A"
+      },
+      ".data.MUT_NONZERO_STATIC": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x0005a8",
+        "size_bytes": "8",
+        "flags": "WA"
+      },
+      ".bss.MUT_ZERO_STATIC": {
+        "type": "NOBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x0005b0",
+        "size_bytes": "8",
+        "flags": "WA"
+      },
+      ".data.rel.ro.RELRO_PTR_STATIC": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x0005b0",
+        "size_bytes": "24",
+        "flags": "WA"
+      },
+      ".tdata.TLS_NONZERO_CELL": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x0005c8",
+        "size_bytes": "8",
+        "flags": "WAT"
+      },
+      ".tbss.TLS_ZERO_CELL": {
+        "type": "NOBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x0005d0",
+        "size_bytes": "8",
+        "flags": "WAT"
+      },
+      ".tdata.TLS_ZERO_FREEZE": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x0005d0",
+        "size_bytes": "8",
+        "flags": "WAT"
+      },
+      ".data.rel.ro..Lvtable.1": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x0005d8",
+        "size_bytes": "48",
+        "flags": "WA"
+      },
+      ".rodata..Lalloc_db5711d80d15626a811a0c23556e1ec5": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000608",
+        "size_bytes": "6",
+        "flags": "A"
+      },
+      ".rodata.cst32": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x00060e",
+        "size_bytes": "32",
+        "flags": "AM"
+      },
+      ".rodata.str1.1": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x00062e",
+        "size_bytes": "267",
+        "flags": "AMS"
+      },
+      ".rodata.cst8": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000740",
+        "size_bytes": "32",
+        "flags": "AM"
+      },
+      ".rodata..Lalloc_a6d5f5b2440b52e3eb4081fb56124657": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000760",
+        "size_bytes": "12",
+        "flags": "A"
+      },
+      ".rodata..Lalloc_3cde7112bda2ec1b25814bd4b1d48e50": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x00076c",
+        "size_bytes": "11",
+        "flags": "A"
+      },
+      ".data.rel.ro..Lalloc_55c31915afebd94d2a8945451e19f42b": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000778",
+        "size_bytes": "24",
+        "flags": "WA"
+      },
+      ".data.rel.ro..Lalloc_98058a8036d0c0bd98c04890f8edf659": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000790",
+        "size_bytes": "24",
+        "flags": "WA"
+      },
+      ".data.rel.ro..Lalloc_333c123c46bdfe4ac99ba1f99d65cbd9": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x0007a8",
+        "size_bytes": "24",
+        "flags": "WA"
+      },
+      ".data.rel.ro..Lalloc_a6a1ad3c9d4e51ac7f01fb824f5a6b54": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x0007c0",
+        "size_bytes": "24",
+        "flags": "WA"
+      },
+      ".data.DW.ref.rust_eh_personality": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x0007d8",
+        "size_bytes": "8",
+        "flags": "WAG"
+      }
+    },
+    "pic_obj_symbols": {
+      "IMMUT_SCALAR_STATIC": {
+        "value": "0x0000000000000000",
+        "size": "64",
+        "type": "OBJECT",
+        "bind": "GLOBAL",
+        "vis": "DEFAULT",
+        "ndx": "18",
+        "name": "IMMUT_SCALAR_STATIC"
+      },
+      "ZERO_IMMUT_STATIC": {
+        "value": "0x0000000000000000",
+        "size": "64",
+        "type": "OBJECT",
+        "bind": "GLOBAL",
+        "vis": "DEFAULT",
+        "ndx": "19",
+        "name": "ZERO_IMMUT_STATIC"
+      },
+      "RELRO_PTR_STATIC": {
+        "value": "0x0000000000000000",
+        "size": "24",
+        "type": "OBJECT",
+        "bind": "GLOBAL",
+        "vis": "DEFAULT",
+        "ndx": "22",
+        "name": "RELRO_PTR_STATIC"
+      },
+      "MUT_NONZERO_STATIC": {
+        "value": "0x0000000000000000",
+        "size": "8",
+        "type": "OBJECT",
+        "bind": "GLOBAL",
+        "vis": "DEFAULT",
+        "ndx": "20",
+        "name": "MUT_NONZERO_STATIC"
+      },
+      "MUT_ZERO_STATIC": {
+        "value": "0x0000000000000000",
+        "size": "8",
+        "type": "OBJECT",
+        "bind": "GLOBAL",
+        "vis": "DEFAULT",
+        "ndx": "21",
+        "name": "MUT_ZERO_STATIC"
+      },
+      "TLS_NONZERO_CELL": {
+        "value": "0x0000000000000000",
+        "size": "8",
+        "type": "TLS",
+        "bind": "GLOBAL",
+        "vis": "DEFAULT",
+        "ndx": "24",
+        "name": "TLS_NONZERO_CELL"
+      },
+      "TLS_ZERO_CELL": {
+        "value": "0x0000000000000000",
+        "size": "8",
+        "type": "TLS",
+        "bind": "GLOBAL",
+        "vis": "DEFAULT",
+        "ndx": "25",
+        "name": "TLS_ZERO_CELL"
+      },
+      "TLS_ZERO_FREEZE": {
+        "value": "0x0000000000000000",
+        "size": "8",
+        "type": "TLS",
+        "bind": "GLOBAL",
+        "vis": "DEFAULT",
+        "ndx": "26",
+        "name": "TLS_ZERO_FREEZE"
+      }
+    },
+    "pic_obj_reloc_counts": {
+      "R_X86_64_GOTPCREL": 21,
+      "R_X86_64_PC32": 25,
+      "R_X86_64_PLT32": 6,
+      "R_X86_64_GOTTPOFF": 2,
+      "R_X86_64_64": 10
+    },
+    "static_model_relro_section": {
+      ".rodata.RELRO_PTR_STATIC": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000580",
+        "size_bytes": "24",
+        "flags": "A"
+      },
+      ".rela.rodata.RELRO_PTR_STATIC": {
+        "type": "RELA",
+        "addr": "0x0000000000000000",
+        "offset": "0x001290",
+        "size_bytes": "48",
+        "flags": "I"
+      }
+    },
+    "linked_lld_segments": {
+      "PT_TLS": {
+        "offset": "0x050d00",
+        "vaddr": "0x0000000000052d00",
+        "paddr": "0x0000000000052d00",
+        "filesz_tdata": "40",
+        "memsz_total": "96",
+        "tbss_bytes": "56",
+        "flags": "R"
+      },
+      "PT_GNU_RELRO": {
+        "offset": "0x050d00",
+        "vaddr": "0x0000000000052d00",
+        "filesz": "10032",
+        "memsz": "13056",
+        "flags": "R"
+      }
+    },
+    "linked_lld_sections_key": {
+      ".rodata": {
+        "type": "PROGBITS",
+        "addr": "0x00000000000076e0",
+        "offset": "0x0076e0",
+        "size_bytes": "22448",
+        "flags": "AMS"
+      },
+      ".data.rel.ro": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000052d40",
+        "offset": "0x050d40",
+        "size_bytes": "7232",
+        "flags": "WA"
+      },
+      ".data": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000056430",
+        "offset": "0x053430",
+        "size_bytes": "2504",
+        "flags": "WA"
+      },
+      ".bss": {
+        "type": "NOBITS",
+        "addr": "0x0000000000056df8",
+        "offset": "0x053df8",
+        "size_bytes": "210",
+        "flags": "WA"
+      },
+      ".tdata": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000052d00",
+        "offset": "0x050d00",
+        "size_bytes": "40",
+        "flags": "WAT"
+      },
+      ".tbss": {
+        "type": "NOBITS",
+        "addr": "0x0000000000052d28",
+        "offset": "0x050d28",
+        "size_bytes": "56",
+        "flags": "WAT"
+      }
+    },
+    "linked_lld_dyn_relocs": {
+      "R_X86_64_RELATIVE": 570,
+      "R_X86_64_GLOB_DAT": 66,
+      "R_X86_64_JUMP_SLOT": 2
+    },
+    "linked_gnu_bfd_rc": 0,
+    "linked_gnu_bfd_segments": {
+      "PT_TLS": {
+        "offset": "0x052958",
+        "vaddr": "0x0000000000052958",
+        "paddr": "0x0000000000052958",
+        "filesz_tdata": "40",
+        "memsz_total": "96",
+        "tbss_bytes": "56",
+        "flags": "R"
+      },
+      "PT_GNU_RELRO": {
+        "offset": "0x052958",
+        "vaddr": "0x0000000000052958",
+        "filesz": "9896",
+        "memsz": "9896",
+        "flags": "R"
+      }
+    },
+    "runtime_modes": {
+      "normal_rc": 0,
+      "normal_addresses_runtime": {
+        "ro_addr": "0x55d5bf5b26e0",
+        "zero_immut_addr": "0x55d5bf5b2720",
+        "relro_addr": "0x55d5bf5fdd40",
+        "data_addr": "0x55d5bf601438",
+        "bss_addr": "0x55d5bf601e00",
+        "promo_addr": "0x55d5bf5b2760"
+      },
+      "write_rodata_rc": -11,
+      "write_relro_rc": -11
+    }
+  },
+  "s3_tls_models_x86_64": {
+    "global-dynamic": {
+      "cdylib_obj_rc": 0,
+      "cdylib_obj_reloc_counts": {
+        "R_X86_64_TLSGD": 2,
+        "R_X86_64_PLT32": 2,
+        "R_X86_64_PC32": 1
+      },
+      "cdylib_obj_read_tls_pair_disasm": [
+        "0000000000000000 <read_tls_pair>:",
+        "0:\t53                   \tpush   %rbx",
+        "1:\t66 48 8d 3d 00 00 00 \tdata16 lea 0x0(%rip),%rdi        # 9 <read_tls_pair+0x9>",
+        "8:\t00",
+        "5: R_X86_64_TLSGD\tTLS_MODEL_A-0x4",
+        "9:\t66 66 48 e8 00 00 00 \tdata16 data16 rex.W call 11 <read_tls_pair+0x11>",
+        "10:\t00",
+        "d: R_X86_64_PLT32\t__tls_get_addr-0x4",
+        "11:\t48 89 c3             \tmov    %rax,%rbx",
+        "14:\t66 48 8d 3d 00 00 00 \tdata16 lea 0x0(%rip),%rdi        # 1c <read_tls_pair+0x1c>",
+        "1b:\t00",
+        "18: R_X86_64_TLSGD\tTLS_MODEL_B-0x4",
+        "1c:\t66 66 48 e8 00 00 00 \tdata16 data16 rex.W call 24 <read_tls_pair+0x24>",
+        "23:\t00",
+        "20: R_X86_64_PLT32\t__tls_get_addr-0x4",
+        "24:\t48 8b 08             \tmov    (%rax),%rcx",
+        "27:\t48 8d 51 03          \tlea    0x3(%rcx),%rdx",
+        "2b:\t48 89 10             \tmov    %rdx,(%rax)",
+        "2e:\t48 03 0b             \tadd    (%rbx),%rcx",
+        "31:\t48 89 c8             \tmov    %rcx,%rax",
+        "34:\t5b                   \tpop    %rbx",
+        "35:\tc3                   \tret"
+      ],
+      "bin_obj_rc": 0,
+      "llvm_ir_tls_decls": [
+        "@TLS_MODEL_A = thread_local local_unnamed_addr global [8 x i8] c\"\\08\\07\\06\\05\\04\\03\\02\\01\", align 8",
+        "@TLS_MODEL_B = thread_local local_unnamed_addr global [8 x i8] zeroinitializer, align 8"
+      ],
+      "bin_obj_reloc_counts": {
+        "R_X86_64_PC32": 15,
+        "R_X86_64_GOTPCREL": 5,
+        "R_X86_64_PLT32": 4,
+        "R_X86_64_GOTTPOFF": 2,
+        "R_X86_64_64": 5
+      },
+      "bin_obj_read_tls_pair_disasm": [
+        "0000000000000000 <read_tls_pair>:",
+        "0:\t48 8b 0d 00 00 00 00 \tmov    0x0(%rip),%rcx        # 7 <read_tls_pair+0x7>",
+        "3: R_X86_64_GOTTPOFF\tTLS_MODEL_A-0x4",
+        "7:\t48 8b 15 00 00 00 00 \tmov    0x0(%rip),%rdx        # e <read_tls_pair+0xe>",
+        "a: R_X86_64_GOTTPOFF\tTLS_MODEL_B-0x4",
+        "e:\t64 48 8b 02          \tmov    %fs:(%rdx),%rax",
+        "12:\t48 8d 70 03          \tlea    0x3(%rax),%rsi",
+        "16:\t64 48 89 32          \tmov    %rsi,%fs:(%rdx)",
+        "1a:\t64 48 03 01          \tadd    %fs:(%rcx),%rax",
+        "1e:\tc3                   \tret"
+      ],
+      "pie_link_rc": 0,
+      "pie_exec_rc": 0,
+      "pie_exec_stdout": "TLS_MODEL_OK r1=0x102030405060708 r2=0x10203040506070b",
+      "pie_pt_tls": {
+        "offset": "0x050180",
+        "vaddr": "0x0000000000052180",
+        "paddr": "0x0000000000052180",
+        "filesz_tdata": "40",
+        "memsz_total": "96",
+        "tbss_bytes": "56",
+        "flags": "R"
+      },
+      "pie_read_tls_pair_disasm": [
+        "0000000000013e80 <read_tls_pair>:",
+        "13e80:\t48 c7 c1 a0 ff ff ff \tmov    $0xffffffffffffffa0,%rcx",
+        "13e87:\t48 c7 c2 c8 ff ff ff \tmov    $0xffffffffffffffc8,%rdx",
+        "13e8e:\t64 48 8b 02          \tmov    %fs:(%rdx),%rax",
+        "13e92:\t48 8d 70 03          \tlea    0x3(%rax),%rsi",
+        "13e96:\t64 48 89 32          \tmov    %rsi,%fs:(%rdx)",
+        "13e9a:\t64 48 03 01          \tadd    %fs:(%rcx),%rax",
+        "13e9e:\tc3                   \tret",
+        "13e9f:\tcc                   \tint3"
+      ],
+      "cdylib_link_rc": 0,
+      "cdylib_dyn_relocs": {
+        "R_X86_64_RELATIVE": 479,
+        "R_X86_64_DTPMOD64": 5,
+        "R_X86_64_GLOB_DAT": 48,
+        "R_X86_64_DTPOFF64": 2,
+        "R_X86_64_JUMP_SLOT": 3
+      },
+      "cdylib_error_excerpt": ""
+    },
+    "local-dynamic": {
+      "cdylib_obj_rc": 0,
+      "cdylib_obj_reloc_counts": {
+        "R_X86_64_TLSLD": 1,
+        "R_X86_64_PLT32": 1,
+        "R_X86_64_DTPOFF32": 3,
+        "R_X86_64_PC32": 1
+      },
+      "cdylib_obj_read_tls_pair_disasm": [
+        "0000000000000000 <read_tls_pair>:",
+        "0:\t50                   \tpush   %rax",
+        "1:\t48 8d 3d 00 00 00 00 \tlea    0x0(%rip),%rdi        # 8 <read_tls_pair+0x8>",
+        "4: R_X86_64_TLSLD\tTLS_MODEL_A-0x4",
+        "8:\te8 00 00 00 00       \tcall   d <read_tls_pair+0xd>",
+        "9: R_X86_64_PLT32\t__tls_get_addr-0x4",
+        "d:\t48 8b 90 00 00 00 00 \tmov    0x0(%rax),%rdx",
+        "10: R_X86_64_DTPOFF32\tTLS_MODEL_B",
+        "14:\t48 8d 72 03          \tlea    0x3(%rdx),%rsi",
+        "18:\t48 89 b0 00 00 00 00 \tmov    %rsi,0x0(%rax)",
+        "1b: R_X86_64_DTPOFF32\tTLS_MODEL_B",
+        "1f:\t48 03 90 00 00 00 00 \tadd    0x0(%rax),%rdx",
+        "22: R_X86_64_DTPOFF32\tTLS_MODEL_A",
+        "26:\t48 89 d0             \tmov    %rdx,%rax",
+        "29:\t59                   \tpop    %rcx",
+        "2a:\tc3                   \tret"
+      ],
+      "bin_obj_rc": 0,
+      "llvm_ir_tls_decls": [
+        "@TLS_MODEL_A = thread_local(localdynamic) local_unnamed_addr global [8 x i8] c\"\\08\\07\\06\\05\\04\\03\\02\\01\", align 8",
+        "@TLS_MODEL_B = thread_local(localdynamic) local_unnamed_addr global [8 x i8] zeroinitializer, align 8"
+      ],
+      "bin_obj_reloc_counts": {
+        "R_X86_64_PC32": 15,
+        "R_X86_64_GOTPCREL": 5,
+        "R_X86_64_PLT32": 4,
+        "R_X86_64_GOTTPOFF": 2,
+        "R_X86_64_64": 5
+      },
+      "bin_obj_read_tls_pair_disasm": [
+        "0000000000000000 <read_tls_pair>:",
+        "0:\t48 8b 0d 00 00 00 00 \tmov    0x0(%rip),%rcx        # 7 <read_tls_pair+0x7>",
+        "3: R_X86_64_GOTTPOFF\tTLS_MODEL_A-0x4",
+        "7:\t48 8b 15 00 00 00 00 \tmov    0x0(%rip),%rdx        # e <read_tls_pair+0xe>",
+        "a: R_X86_64_GOTTPOFF\tTLS_MODEL_B-0x4",
+        "e:\t64 48 8b 02          \tmov    %fs:(%rdx),%rax",
+        "12:\t48 8d 70 03          \tlea    0x3(%rax),%rsi",
+        "16:\t64 48 89 32          \tmov    %rsi,%fs:(%rdx)",
+        "1a:\t64 48 03 01          \tadd    %fs:(%rcx),%rax",
+        "1e:\tc3                   \tret"
+      ],
+      "pie_link_rc": 0,
+      "pie_exec_rc": 0,
+      "pie_exec_stdout": "TLS_MODEL_OK r1=0x102030405060708 r2=0x10203040506070b",
+      "pie_pt_tls": {
+        "offset": "0x050180",
+        "vaddr": "0x0000000000052180",
+        "paddr": "0x0000000000052180",
+        "filesz_tdata": "40",
+        "memsz_total": "96",
+        "tbss_bytes": "56",
+        "flags": "R"
+      },
+      "pie_read_tls_pair_disasm": [
+        "0000000000013e80 <read_tls_pair>:",
+        "13e80:\t48 c7 c1 a0 ff ff ff \tmov    $0xffffffffffffffa0,%rcx",
+        "13e87:\t48 c7 c2 c8 ff ff ff \tmov    $0xffffffffffffffc8,%rdx",
+        "13e8e:\t64 48 8b 02          \tmov    %fs:(%rdx),%rax",
+        "13e92:\t48 8d 70 03          \tlea    0x3(%rax),%rsi",
+        "13e96:\t64 48 89 32          \tmov    %rsi,%fs:(%rdx)",
+        "13e9a:\t64 48 03 01          \tadd    %fs:(%rcx),%rax",
+        "13e9e:\tc3                   \tret",
+        "13e9f:\tcc                   \tint3"
+      ],
+      "cdylib_link_rc": 0,
+      "cdylib_dyn_relocs": {
+        "R_X86_64_RELATIVE": 479,
+        "R_X86_64_DTPMOD64": 3,
+        "R_X86_64_GLOB_DAT": 48,
+        "R_X86_64_JUMP_SLOT": 3
+      },
+      "cdylib_error_excerpt": ""
+    },
+    "initial-exec": {
+      "cdylib_obj_rc": 0,
+      "cdylib_obj_reloc_counts": {
+        "R_X86_64_GOTTPOFF": 2,
+        "R_X86_64_PC32": 1
+      },
+      "cdylib_obj_read_tls_pair_disasm": [
+        "0000000000000000 <read_tls_pair>:",
+        "0:\t48 8b 0d 00 00 00 00 \tmov    0x0(%rip),%rcx        # 7 <read_tls_pair+0x7>",
+        "3: R_X86_64_GOTTPOFF\tTLS_MODEL_A-0x4",
+        "7:\t48 8b 15 00 00 00 00 \tmov    0x0(%rip),%rdx        # e <read_tls_pair+0xe>",
+        "a: R_X86_64_GOTTPOFF\tTLS_MODEL_B-0x4",
+        "e:\t64 48 8b 02          \tmov    %fs:(%rdx),%rax",
+        "12:\t48 8d 70 03          \tlea    0x3(%rax),%rsi",
+        "16:\t64 48 89 32          \tmov    %rsi,%fs:(%rdx)",
+        "1a:\t64 48 03 01          \tadd    %fs:(%rcx),%rax",
+        "1e:\tc3                   \tret"
+      ],
+      "bin_obj_rc": 0,
+      "llvm_ir_tls_decls": [
+        "@TLS_MODEL_A = thread_local(initialexec) local_unnamed_addr global [8 x i8] c\"\\08\\07\\06\\05\\04\\03\\02\\01\", align 8",
+        "@TLS_MODEL_B = thread_local(initialexec) local_unnamed_addr global [8 x i8] zeroinitializer, align 8"
+      ],
+      "bin_obj_reloc_counts": {
+        "R_X86_64_PC32": 15,
+        "R_X86_64_GOTPCREL": 5,
+        "R_X86_64_PLT32": 4,
+        "R_X86_64_GOTTPOFF": 2,
+        "R_X86_64_64": 5
+      },
+      "bin_obj_read_tls_pair_disasm": [
+        "0000000000000000 <read_tls_pair>:",
+        "0:\t48 8b 0d 00 00 00 00 \tmov    0x0(%rip),%rcx        # 7 <read_tls_pair+0x7>",
+        "3: R_X86_64_GOTTPOFF\tTLS_MODEL_A-0x4",
+        "7:\t48 8b 15 00 00 00 00 \tmov    0x0(%rip),%rdx        # e <read_tls_pair+0xe>",
+        "a: R_X86_64_GOTTPOFF\tTLS_MODEL_B-0x4",
+        "e:\t64 48 8b 02          \tmov    %fs:(%rdx),%rax",
+        "12:\t48 8d 70 03          \tlea    0x3(%rax),%rsi",
+        "16:\t64 48 89 32          \tmov    %rsi,%fs:(%rdx)",
+        "1a:\t64 48 03 01          \tadd    %fs:(%rcx),%rax",
+        "1e:\tc3                   \tret"
+      ],
+      "pie_link_rc": 0,
+      "pie_exec_rc": 0,
+      "pie_exec_stdout": "TLS_MODEL_OK r1=0x102030405060708 r2=0x10203040506070b",
+      "pie_pt_tls": {
+        "offset": "0x050180",
+        "vaddr": "0x0000000000052180",
+        "paddr": "0x0000000000052180",
+        "filesz_tdata": "40",
+        "memsz_total": "96",
+        "tbss_bytes": "56",
+        "flags": "R"
+      },
+      "pie_read_tls_pair_disasm": [
+        "0000000000013e80 <read_tls_pair>:",
+        "13e80:\t48 c7 c1 a0 ff ff ff \tmov    $0xffffffffffffffa0,%rcx",
+        "13e87:\t48 c7 c2 c8 ff ff ff \tmov    $0xffffffffffffffc8,%rdx",
+        "13e8e:\t64 48 8b 02          \tmov    %fs:(%rdx),%rax",
+        "13e92:\t48 8d 70 03          \tlea    0x3(%rax),%rsi",
+        "13e96:\t64 48 89 32          \tmov    %rsi,%fs:(%rdx)",
+        "13e9a:\t64 48 03 01          \tadd    %fs:(%rcx),%rax",
+        "13e9e:\tc3                   \tret",
+        "13e9f:\tcc                   \tint3"
+      ],
+      "cdylib_link_rc": 0,
+      "cdylib_dyn_relocs": {
+        "R_X86_64_RELATIVE": 479,
+        "R_X86_64_DTPMOD64": 3,
+        "R_X86_64_GLOB_DAT": 48,
+        "R_X86_64_TPOFF64": 2,
+        "R_X86_64_JUMP_SLOT": 3
+      },
+      "cdylib_error_excerpt": ""
+    },
+    "local-exec": {
+      "cdylib_obj_rc": 0,
+      "cdylib_obj_reloc_counts": {
+        "R_X86_64_TPOFF32": 3,
+        "R_X86_64_PC32": 1
+      },
+      "cdylib_obj_read_tls_pair_disasm": [
+        "0000000000000000 <read_tls_pair>:",
+        "0:\t64 48 8b 04 25 00 00 \tmov    %fs:0x0,%rax",
+        "7:\t00 00",
+        "5: R_X86_64_TPOFF32\tTLS_MODEL_B",
+        "9:\t48 8d 48 03          \tlea    0x3(%rax),%rcx",
+        "d:\t64 48 89 0c 25 00 00 \tmov    %rcx,%fs:0x0",
+        "14:\t00 00",
+        "12: R_X86_64_TPOFF32\tTLS_MODEL_B",
+        "16:\t64 48 03 04 25 00 00 \tadd    %fs:0x0,%rax",
+        "1d:\t00 00",
+        "1b: R_X86_64_TPOFF32\tTLS_MODEL_A",
+        "1f:\tc3                   \tret"
+      ],
+      "bin_obj_rc": 0,
+      "llvm_ir_tls_decls": [
+        "@TLS_MODEL_A = thread_local(localexec) local_unnamed_addr global [8 x i8] c\"\\08\\07\\06\\05\\04\\03\\02\\01\", align 8",
+        "@TLS_MODEL_B = thread_local(localexec) local_unnamed_addr global [8 x i8] zeroinitializer, align 8"
+      ],
+      "bin_obj_reloc_counts": {
+        "R_X86_64_PC32": 15,
+        "R_X86_64_GOTPCREL": 5,
+        "R_X86_64_PLT32": 4,
+        "R_X86_64_TPOFF32": 3,
+        "R_X86_64_64": 5
+      },
+      "bin_obj_read_tls_pair_disasm": [
+        "0000000000000000 <read_tls_pair>:",
+        "0:\t64 48 8b 04 25 00 00 \tmov    %fs:0x0,%rax",
+        "7:\t00 00",
+        "5: R_X86_64_TPOFF32\tTLS_MODEL_B",
+        "9:\t48 8d 48 03          \tlea    0x3(%rax),%rcx",
+        "d:\t64 48 89 0c 25 00 00 \tmov    %rcx,%fs:0x0",
+        "14:\t00 00",
+        "12: R_X86_64_TPOFF32\tTLS_MODEL_B",
+        "16:\t64 48 03 04 25 00 00 \tadd    %fs:0x0,%rax",
+        "1d:\t00 00",
+        "1b: R_X86_64_TPOFF32\tTLS_MODEL_A",
+        "1f:\tc3                   \tret"
+      ],
+      "pie_link_rc": 0,
+      "pie_exec_rc": 0,
+      "pie_exec_stdout": "TLS_MODEL_OK r1=0x102030405060708 r2=0x10203040506070b",
+      "pie_pt_tls": {
+        "offset": "0x050180",
+        "vaddr": "0x0000000000052180",
+        "paddr": "0x0000000000052180",
+        "filesz_tdata": "40",
+        "memsz_total": "96",
+        "tbss_bytes": "56",
+        "flags": "R"
+      },
+      "pie_read_tls_pair_disasm": [
+        "0000000000013e80 <read_tls_pair>:",
+        "13e80:\t64 48 8b 04 25 c8 ff \tmov    %fs:0xffffffffffffffc8,%rax",
+        "13e87:\tff ff",
+        "13e89:\t48 8d 48 03          \tlea    0x3(%rax),%rcx",
+        "13e8d:\t64 48 89 0c 25 c8 ff \tmov    %rcx,%fs:0xffffffffffffffc8",
+        "13e94:\tff ff",
+        "13e96:\t64 48 03 04 25 a0 ff \tadd    %fs:0xffffffffffffffa0,%rax",
+        "13e9d:\tff ff",
+        "13e9f:\tc3                   \tret"
+      ],
+      "cdylib_link_rc": 1,
+      "cdylib_dyn_relocs": {},
+      "cdylib_error_excerpt": "error: linking with `cc` failed: exit status: 1\n  |\n  = note:  \"cc\" \"-Wl,--version-script=<TMP>/s3/local-exec/rustcGX5B6Q/list\" \"-Wl,--no-undefined-version\" \"-m64\" \"<TMP>/s3/local-exec/rustcGX5B6Q/symbols.o\" \"<2 object files omitted>\" \"-Wl,--as-needed\" \"-Wl,-Bstatic\" \"<sysroot>/lib/rustlib/x86_64-unknown-linux-gnu/lib/{libstd-*,libpanic_unwind-*,libobject-*,libmemchr-*,libaddr2line-*,libgimli-*,libcfg_if-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libminiz_oxide-*,libadler2-*,libunwind-*,liblibc-*,libru"
+    }
+  },
+  "s4_used_compiler_vs_linker_and_init_array": {
+    "llvm_ir_lines": [
+      "@INIT_ARRAY_CTOR = dso_local constant ptr @_RNvCs8f4jqyAtVJ2_41s4_used_compiler_vs_linker_and_init_array13pre_main_ctor, section \".init_array\", align 8",
+      "@USED_BARE = constant [8 x i8] c\"\\88\\88wwffUU\", section \".custom_bare\", align 8",
+      "@USED_COMP = constant [8 x i8] c\"\\DD\\DD\\CC\\CC\\BB\\BB\\AA\\AA\", section \".custom_comp\", align 8",
+      "@USED_LINK = constant [8 x i8] c\"DD33\\22\\22\\11\\11\", section \".custom_link\", align 8",
+      "@llvm.used = appending global [3 x ptr] [ptr @INIT_ARRAY_CTOR, ptr @USED_BARE, ptr @USED_LINK], section \"llvm.metadata\"",
+      "@llvm.compiler.used = appending global [1 x ptr] [ptr @USED_COMP], section \"llvm.metadata\""
+    ],
+    "obj_sections": {
+      ".init_array": {
+        "type": "INIT_ARRAY",
+        "addr": "0x0000000000000000",
+        "offset": "0x000148",
+        "size_bytes": "8",
+        "flags": "WAR"
+      },
+      ".custom_bare": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000150",
+        "size_bytes": "8",
+        "flags": "AR"
+      },
+      ".custom_comp": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000158",
+        "size_bytes": "8",
+        "flags": "A"
+      },
+      ".custom_link": {
+        "type": "PROGBITS",
+        "addr": "0x0000000000000000",
+        "offset": "0x000160",
+        "size_bytes": "8",
+        "flags": "AR"
+      }
+    },
+    "linked_by_linker": {
+      "rust_lld": {
+        "link_rc": 0,
+        "exec_rc": 0,
+        "exec_stdout": "CTOR_OBSERVED=0xc070000000000001",
+        "sections_present": {
+          ".custom_plain": false,
+          ".custom_comp": false,
+          ".custom_link": true,
+          ".custom_bare": true,
+          ".init_array": true
+        },
+        "symbols_present": {
+          "PLAIN_UNUSED": false,
+          "USED_COMP": false,
+          "USED_LINK": true,
+          "USED_BARE": true,
+          "INIT_ARRAY_CTOR": true
+        },
+        "init_array_sec": {
+          "type": "INIT_ARRAY",
+          "addr": "0x0000000000052188",
+          "offset": "0x050188",
+          "size_bytes": "24",
+          "flags": "WAo"
+        }
+      },
+      "gnu_ld": {
+        "link_rc": 0,
+        "exec_rc": 0,
+        "exec_stdout": "CTOR_OBSERVED=0xc070000000000001",
+        "sections_present": {
+          ".custom_plain": false,
+          ".custom_comp": false,
+          ".custom_link": true,
+          ".custom_bare": true,
+          ".init_array": true
+        },
+        "symbols_present": {
+          "PLAIN_UNUSED": false,
+          "USED_COMP": false,
+          "USED_LINK": true,
+          "USED_BARE": true,
+          "INIT_ARRAY_CTOR": true
+        },
+        "init_array_sec": {
+          "type": "INIT_ARRAY",
+          "addr": "0x0000000000052a28",
+          "offset": "0x051a28",
+          "size_bytes": "24",
+          "flags": "WAo"
+        }
+      }
+    },
+    "rlib_member_extraction_boundary": {
+      "unreferenced_rlib_contains_DEP_INIT": false,
+      "referenced_rlib_exec_rc": 0,
+      "referenced_rlib_exec_stdout": "DEP_FLAG=0x77"
+    }
+  },
+  "s5_tls_multithread_and_lifo_drop_order": {
+    "compile_rc": 0,
+    "exec_rc": 0,
+    "exec_stdout": "TLS_MT_OK threads=[(4097, 8193, 70), (4098, 8194, 71), (4099, 8195, 72), (4100, 8196, 73)] events_a=[\"drop:T3\", \"reentrant_t3_ok:false\", \"drop:T2\", \"drop:T1\", \"drop:T_LATE\"] events_b=[\"drop:T2\", \"drop:T1\", \"drop:T3\", \"reentrant_t3_ok:false\"] events_unused=[]",
+    "pt_tls_segment": {
+      "offset": "0x05d200",
+      "vaddr": "0x000000000005f200",
+      "paddr": "0x000000000005f200",
+      "filesz_tdata": "96",
+      "memsz_total": "344",
+      "tbss_bytes": "248",
+      "flags": "R"
+    },
+    "uses_weak_cxa_thread_atexit_impl_sym": true
+  }
+}
