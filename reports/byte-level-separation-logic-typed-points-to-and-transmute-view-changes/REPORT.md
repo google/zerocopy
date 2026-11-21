@@ -11,7 +11,12 @@ typed points-to assertions built from a byte representation `r = (encode, decode
 when struct ownership splits into field ownership plus padding, when a transmute is a pure
 *view change* (an entailment between typed points-to at the same address), how read-only typed
 views coexist, and which byte-level and typed commands satisfy the frame rule. Everything is a
-toy model; see **Applicability** for what it is meant to capture and the known gaps. The
+toy model; see **Applicability** for what it is meant to capture and the known gaps.
+Model–system relation: none proved. These are statements about the toy model; they neither
+establish nor refute the corresponding claims about Rust types under MiniRust's semantics,
+zerocopy's `transmute_ref!` and `transmute_mut!` macros, or the byte-level separation logics of
+verifiers such as VST and CN; the modeling-bridge paragraphs under **Findings** argue the
+connection separately. The
 representation vocabulary (abstract bytes, the three laws `DecodeMono`, `DecodeEncode`,
 `EncodeLeast`, `IntoBytes`, `FromBytes`, `transmute`) and the separation-structure vocabulary
 (commands, triples, `SafetyMono`, `FrameProp`, `FrameRuleSound`) are copied unchanged from two
