@@ -1,0 +1,35 @@
+{
+  "zerocopy_inline_call_census": {
+    "before_force_inline": {
+      "bodies": 4304,
+      "call_free_bodies": 2440,
+      "call_free_pct": 56.69,
+      "total_call_terminators": 5448
+    },
+    "before_inline": {
+      "bodies": 4302,
+      "call_free_bodies": 2440,
+      "call_free_pct": 56.72,
+      "total_call_terminators": 5446
+    },
+    "after_inline": {
+      "bodies": 4302,
+      "call_free_bodies": 3064,
+      "call_free_pct": 71.22,
+      "total_call_terminators": 2955
+    },
+    "newly_call_free_bodies": 624,
+    "eliminated_call_terminators": 2491
+  },
+  "target_feature_inline_guard": {
+    "baseline_caller_retains_call_after_mir_inline": true,
+    "matching_avx2_caller_inlines_body": true
+  },
+  "unwind_cleanup_splicing": {
+    "native_stdout": "OK=78 OK_DROPS=21 CAUGHT_ERR=true PANIC_DROPS=21",
+    "miri_stdout": "OK=78 OK_DROPS=21 CAUGHT_ERR=true PANIC_DROPS=21",
+    "outer_before_has_inner_call": true,
+    "outer_after_inlined_inner_call": false,
+    "outer_after_mir_head": "// MIR for `outer_caller_with_guard` after Inline\n\nfn outer_caller_with_guard(_1: bool) -> u64 {\n    debug should_panic => _1;\n    let mut _0: u64;\n    let _2: Guard;\n    let mut _3: u64;\n    let mut _4: bool;\n    scope 1 {\n        debug _g_outer => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = Guard(const 1_usize);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        _3 = inner_unwinding_callee(move _4) -> [return: bb1, unwind: bb3];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        _0 = Add(move _3, const 1_u64);\n        StorageDead(_3);\n        drop(_2) -> [return: bb2, unwind: bb4];\n    }\n\n    bb2: {\n        StorageDead(_2);\n        return;\n    }\n\n    bb3 (cleanup): {\n        drop(_2) -> [return: bb4, unwind terminate(cleanup)];\n    }\n\n    bb4 (cleanup): {\n        resume;\n    }\n}"
+  }
+}
