@@ -1,0 +1,808 @@
+[
+  {
+    "id": "link-sync-iff-ref-send",
+    "lean": "Toy.SendSync.semSync_iff_semSend_ref",
+    "lean_names": [
+      "Toy.SendSync.semSync_ref_iff",
+      "Toy.SendSync.semSend_refMut_iff",
+      "Toy.SendSync.semSync_refMut_iff"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every toy type `T`, `SemSync T` holds if and only if `SemSend (.ref T)` holds, with no assumption: the footprint of `.ref T` is defined from the shared footprint of `T` (`own := shr T`, `alias := shr T ++ alias T`), and the equivalence holds by `Iff.rfl`. Companions, for every toy type `U`: `SemSync (.ref U)` holds if and only if `SemSync U` holds (`semSync_ref_iff`, a short race decomposition); `SemSend (.refMut U)` holds if and only if `SemSend U` holds, and `SemSync (.refMut U)` holds if and only if `SemSync U` holds (`semSend_refMut_iff`, `semSync_refMut_iff`, both by `Iff.rfl` because `fp (.refMut U)` is defined as `fp U`).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "`.plain` satisfies both sides.",
+    "nonvacuity_witness_lean": "Toy.SendSync.semSync_iff_semSend_ref_nonvacuous",
+    "non_claims": [
+      "Proved by `Iff.rfl`: the link is a consequence of how the footprint of `.ref T` is chosen, not a property discovered about an independent semantics of `Send`.",
+      "A different but plausible choice, for example letting the lender of a borrow keep `alias T` without `shr T`, would break the link (not proved here).",
+      "`fp (.refMut U)` is defined as `fp U`, so the model does not distinguish owning a `U` from holding `&mut U`. In Rust, ownership moves through `&mut T` by `mem::swap`/`mem::replace`, and dropping `&mut MutexGuard` does not unlock; the definition collapses this into the owner capabilities of `U` (for example `SemSend (.refMut (.guard .plain))` fails through the guard's own release event, not through a swap, by `semSend_refMut_iff` and `not_semSend_guard`).",
+      "Locations are path-relative: a location names the value at a position, not a particular value moved into or out of it over time (for example by `mem::replace` through `&mut T` or through a guard).",
+      "In Rust, `unsafe impl<T: Sync + PointeeSized> Send for &T {}` gives `T: Sync` ⇒ `&T: Send`; whether rustc's trait solver derives `T: Sync` from a where-clause `&'a T: Send` is not addressed. Sending `&'a T` to `std::thread::spawn` also needs `'a = 'static` unless scoped threads are used; lifetimes are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/marker.rs: `pub unsafe auto trait Send` (line 92); `impl<T: PointeeSized> !Send for *const T {}` (line 97); `unsafe impl<T: Sync + PointeeSized> Send for &T {}` (line 105); `Sync` documentation (lines 511-539): \"The precise definition is: a type `T` is [`Sync`] if and only if `&T` is [`Send`]\", \"`&mut T` is [`Send`] if and only if `T` is [`Send`]\", \"`&T` and `&mut T` are [`Sync`] if and only if `T` is [`Sync`]\"; `pub unsafe auto trait Sync` (line 657); `impl<T: PointeeSized> !Sync for *const T {}` (line 672).",
+      "Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer. \"RustBelt: Securing the Foundations of the Rust Programming Language.\" Proc. ACM Program. Lang. 2(POPL), Article 66, January 2018. DOI 10.1145/3158154. Section 1.2 (Challenge #3) and Section 4.1: a type is Send if its ownership predicate does not depend on the thread-identifier parameter; Section 4.3 (\"Interpreting shared references\"): Sync means that the sharing predicate does not depend on the thread identifier, and the ownership predicate of a shared reference is defined from the sharing predicate; Section 2.5.1: \"&T is Send if and only if T is Sync\". RustBelt's predicates are thread-indexed Iris predicates, not race-freedom scenarios as in this package.",
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example).",
+      "Rust RFC 0458 \"Send Improvements\", rust-lang/rfcs commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/0458-send-improvements.md (start date 2014-11-10): makes `&T` `Send` if and only if `T` is `Sync` (lines 11-16, with `unsafe impl<'a, T> Send for &'a T where T: Sync + 'a {}` at line 15), and argues with its `RcMut` example (line 95; code at lines 169-182) that `Sync` does not imply `Send`."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "structural-soundness",
+    "lean": "Toy.SendSync.autoCheck_sound_of_tableSound_of_implsSound",
+    "lean_names": [
+      "Toy.SendSync.autoCheck_std_sound_of_implsSound",
+      "Toy.SendSync.rule_holds_of_eval",
+      "Toy.SendSync.rcSendTable",
+      "Toy.SendSync.TableSound",
+      "Toy.SendSync.ImplsSound"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "For every impl table `tb` with `TableSound tb` (each primitive rule, when its condition holds of the argument's semantic `SemSend`/`SemSync`, yields the semantic property of the primitive type) and every toy type `T` with `ImplsSound T` (every unsafe `Sync` impl on a wrapper node of `T` is semantically justified), `(autoCheck tb T).1 = true` implies `SemSend T` and `(autoCheck tb T).2 = true` implies `SemSync T`. Corollary (`autoCheck_std_sound_of_implsSound`): for every toy type `T` with `ImplsSound T`, the same two implications hold for `stdTable`. Step lemma (`rule_holds_of_eval`): if a rule evaluates to `true` on Boolean verdicts that imply propositions `S` and `Y`, its propositional condition holds of `S` and `Y`.",
+    "hypotheses": [
+      {
+        "name": "htb : TableSound tb",
+        "purpose": "The table's declared impls for the primitives must be semantically sound.",
+        "tightness": "tight",
+        "counterexample": "Toy.SendSync.autoCheck_sound_tableSound_tight",
+        "witness_class": "a concrete table (`rcSendTable`) and a concrete type (`.rc .plain`)"
+      },
+      {
+        "name": "ImplsSound T",
+        "purpose": "Unsafe `Sync` impls on wrappers bypass the structural rule and must be justified.",
+        "tightness": "tight",
+        "counterexample": "Toy.SendSync.autoCheck_sound_implsSound_tight",
+        "witness_class": "a concrete wrapper type (`.wrap (.cell .plain) .full true`) with `stdTable`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`stdTable` with `T = .arc (.mutex (.cell .plain))`, which the checker accepts for both traits.",
+    "nonvacuity_witness_lean": "Toy.SendSync.autoCheck_sound_nonvacuous",
+    "non_claims": [
+      "This card states soundness; it does not say the checker accepts every semantically `Send`/`Sync` type; see `autoCheck_std_incomplete` and `autoCheck_std_exact_of_wrapFree`.",
+      "The structural constructors `.box`, `.ref`, `.refMut`, `.prod`, `.sum` and the wrapper rule are fixed in `autoCheck`; the six primitive rules are the table parameters. Unsafe `Send` impls are not modelled.",
+      "The tightness witnesses use one concrete type each (`.rc .plain` with `rcSendTable`; `.wrap (.cell .plain) .full true` with `stdTable`).",
+      "`Ty` is finite and monomorphic: it has no recursive types (for which rustc resolves auto traits coinductively), no generic user wrappers, no negative impls on user types, no multi-field wrappers, and no `UnsafeCell`, raw pointers, `PhantomData`, `dyn Trait`, closures or `async` futures. The theorem neither establishes nor refutes anything about those.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "The Rust Reference, rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/special-types-and-traits.md, rules `lang-types.auto-traits.*` (lines 156-181): automatic implementation for `&T`, `&mut T` and aggregates (\"Structs, enums, unions, and tuples implement the trait if all of their fields do\"), suppression of the automatic implementation by a generic impl (\"the standard library implements `Send` for all `&T` where `T` is `Sync`\"), and negative impls.",
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example).",
+      "RustBelt (Jung, Jourdan, Krebbers, Dreyer, POPL 2018, DOI 10.1145/3158154), Section 1.2 and Section 6: a Coq proof of the soundness of the type system (fundamental theorem and adequacy, Section 7) and of the verification conditions of libraries that use unsafe code, including `Arc`, `Rc`, `Cell`, `RefCell`, `Mutex` and `RwLock`; Section 6.1 notes that its model of `Cell<T>` is never Sync and that \"Cell<T> is Send if and only if T is\"; Section 6.2 concludes that `mutex(τ)` is both Send and Sync when τ is Send. RustBelt proves sufficiency (soundness of the impls and typing rules); it does not state impossibility theorems of the form proved here.",
+      "Rust RFC 0019 \"Opt-in Built-in Traits\", rust-lang/rfcs commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/0019-opt-in-builtin-traits.md (start date 2014-09-18): `Send` and `Share` (later renamed `Sync`) become library traits with default (structural) impls and negative impls."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "std-table-sound",
+    "lean": "Toy.SendSync.stdTable_sound",
+    "lean_names": [
+      "Toy.SendSync.stdTable",
+      "Toy.SendSync.stdTable_positive_rules_nonvacuous",
+      "Toy.SendSync.tableSound_noImplTable",
+      "Toy.SendSync.noImplTable",
+      "Toy.SendSync.autoCheck_std_cell_eq_refCell"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "The table `stdTable` (`Cell`/`RefCell`: `Send` if the argument is `Send`, never `Sync`; `Rc`: neither; `Arc`: both if the argument is `Send` and `Sync`; `Mutex`: both if the argument is `Send`; `MutexGuard`: never `Send`, `Sync` if the argument is `Sync`) satisfies `TableSound`. Each of its seven positive rules (`allowed = true`) has its condition met at the argument `plain`, and the primitive over `plain` then has the semantic property (`stdTable_positive_rules_nonvacuous`). Companion (`autoCheck_std_cell_eq_refCell`): for every toy type `U`, `autoCheck stdTable (.cell U) = autoCheck stdTable (.refCell U)`, by `rfl`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Closed statement; the seven positive rules fire at argument `plain` with true conclusions.",
+    "nonvacuity_witness_lean": "Toy.SendSync.stdTable_positive_rules_nonvacuous",
+    "non_claims": [
+      "`stdTable` transcribes the documented impl bounds of the cited standard-library revision; that transcription is a modeling bridge, not a checked fact.",
+      "`TableSound` constrains positive rules alone: the table with no positive rule satisfies it too (`tableSound_noImplTable`). That `stdTable`'s rules accept every semantically `Send`/`Sync` wrapper-free type is the separate result `autoCheck_std_exact_of_wrapFree`.",
+      "`RwLock` is not in the table. In the cited standard library `RwLock<T>: Sync` requires `T: Send + Sync`, unlike `Mutex<T>: Sync`, which requires `T: Send`; the `Mutex` rule is not a statement about reader-writer locks.",
+      "`Kind.atomic` treats atomic read-modify-writes as pairwise non-conflicting and has no memory orderings, so the `Arc` rule here is independent of orderings. This neither establishes nor refutes the soundness of an `Arc` implementation with particular orderings; for example, rust-lang/rust issue 51780, \"Insufficient synchronization in `Arc::get_mut`\" (https://github.com/rust-lang/rust/issues/51780, opened 2018-06-25, closed 2018-07-06), reports a race between two accesses to the content of an `Arc`, which the issue attributes to `Arc::get_mut` reading the strong count with a relaxed load (it proposes an acquire load).",
+      "Allocator parameters (`A: Allocator + Send + Sync` on `Arc`) and `?Sized` are not modelled.",
+      "`stdTable` gives `Cell` and `RefCell` the same rules, as the cited standard library gives them the same impl bounds, so the checker does not distinguish `.cell U` from `.refCell U` (`autoCheck_std_cell_eq_refCell`). `SemSend` and `SemSync` of the bare types agree as well (`cell_refCell_semSend_semSync_agree`); under a read-only wrapper the semantics separates them (`wrap_readOnly_cell_refCell_differ`).",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `unsafe impl<T: ?Sized> Send for Cell<T> where T: Send {}` (line 320); `impl<T: ?Sized> !Sync for Cell<T> {}` (line 328); `unsafe impl<T: ?Sized> Send for RefCell<T> where T: Send {}` (line 1439); `impl<T: ?Sized> !Sync for RefCell<T> {}` (line 1442).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `impl<T: ?Sized> !Sync for UnsafeCell<T> {}` (line 2316); lines 322-326 note that `Cell`'s explicit negative impl is redundant because `Cell` wraps `UnsafeCell`.",
+      "Rust alloc library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/alloc/src/rc.rs: `impl<T: ?Sized, A: Allocator> !Send for Rc<T, A> {}` (line 334); `impl<T: ?Sized, A: Allocator> !Sync for Rc<T, A> {}` (line 342); and library/core/src/marker.rs lines 74-79 (the `Send` documentation's example of two threads updating an `Rc` reference count).",
+      "Rust alloc library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/alloc/src/sync.rs: `unsafe impl<T: ?Sized + Sync + Send, A: Allocator + Send + Sync> Send for Arc<T, A> {}` (line 284) and the same bounds for `Sync` (line 286); the \"Thread Safety\" documentation (lines 124-147) explains with `Arc<RefCell<T>>` why `T: Sync` is required.",
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/mutex.rs: `unsafe impl<T: ?Sized + Send> Send for Mutex<T> {}` (line 238, rationale lines 233-235: the owned `T` can be acquired via `into_inner`); `unsafe impl<T: ?Sized + Send> Sync for Mutex<T> {}` (line 257, rationale lines 240-254, citing `Mutex<Rc<_>>` and noting \"it is not necessary for `T` to be `Sync`\").",
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/mutex.rs: `impl<T: ?Sized> !Send for MutexGuard<'_, T> {}` (line 289; lines 282-287: \"On platforms that use POSIX threads ... there is a requirement to release mutex locks on the same thread they were acquired\"); `unsafe impl<T: ?Sized + Sync> Sync for MutexGuard<'_, T> {}` (line 294; lines 291-292: a `&T` is obtainable from `&MutexGuard` via `Deref`).",
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/rwlock.rs: `unsafe impl<T: ?Sized + Send> Send for RwLock<T> {}` (line 104); `unsafe impl<T: ?Sized + Send + Sync> Sync for RwLock<T> {}` (line 107); `RwLockReadGuard` and `RwLockWriteGuard` are `!Send` (lines 140, 168) and `Sync` when `T: Sync` (lines 143, 171).",
+      "RustBelt (Jung, Jourdan, Krebbers, Dreyer, POPL 2018, DOI 10.1145/3158154), Section 1.2 and Section 6: a Coq proof of the soundness of the type system (fundamental theorem and adequacy, Section 7) and of the verification conditions of libraries that use unsafe code, including `Arc`, `Rc`, `Cell`, `RefCell`, `Mutex` and `RwLock`; Section 6.1 notes that its model of `Cell<T>` is never Sync and that \"Cell<T> is Send if and only if T is\"; Section 6.2 concludes that `mutex(τ)` is both Send and Sync when τ is Send. RustBelt proves sufficiency (soundness of the impls and typing rules); it does not state impossibility theorems of the form proved here.",
+      "Hoang-Hai Dang, Jacques-Henri Jourdan, Jan-Oliver Kaiser, Derek Dreyer. \"RustBelt Meets Relaxed Memory.\" Proc. ACM Program. Lang. 4(POPL), Article 34, January 2020. DOI 10.1145/3371102. Section 1 and Section 5.3: re-verifies RustBelt's library proofs, including `Arc`, under a relaxed-memory semantics. The model here has no memory orderings."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "std-checker-exact-wrap-free",
+    "lean": "Toy.SendSync.autoCheck_std_exact_of_wrapFree",
+    "lean_names": [
+      "Toy.SendSync.WrapFree"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every toy type `T` with `WrapFree T` (no user wrapper node), `(autoCheck stdTable T).1 = true` holds if and only if `SemSend T`, and `(autoCheck stdTable T).2 = true` holds if and only if `SemSync T`.",
+    "hypotheses": [
+      {
+        "name": "WrapFree T",
+        "purpose": "User wrappers can restrict their shared API below what the structural rule assumes.",
+        "tightness": "tight",
+        "counterexample": "Toy.SendSync.autoCheck_std_exact_wrapFree_tight",
+        "witness_class": "a concrete type with one wrapper node (`.wrap (.cell .plain) .readOnly false`)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`.arc (.mutex (.cell .plain))` is wrapper-free.",
+    "nonvacuity_witness_lean": "Toy.SendSync.autoCheck_std_exact_nonvacuous",
+    "non_claims": [
+      "Exactness holds for the toy primitives and the footprints chosen for them; it does not say that the standard library's bounds are necessary for the real types.",
+      "The tightness witness is a read-only wrapper over `Cell<plain>` without an unsafe impl; the same type witnesses `autoCheck_std_incomplete`. With the unsafe impl flag set, wrappers can also make the checker accept a type that is not semantically `Sync` (`autoCheck_sound_implsSound_tight`).",
+      "Exactness on `WrapFree` types is a property of `Toy.SendSync`. In Rust, other constructs make auto-trait verdicts differ from data-race freedom, for example `PhantomData<Cell<u32>>`, a zero-sized `Cell<()>`, enums with uninhabited variants, and raw pointers (`*const T` is `!Send` and `!Sync` by negative impls); none of these is modelled, and the theorem neither establishes nor refutes anything about them.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `unsafe impl<T: ?Sized> Send for Cell<T> where T: Send {}` (line 320); `impl<T: ?Sized> !Sync for Cell<T> {}` (line 328); `unsafe impl<T: ?Sized> Send for RefCell<T> where T: Send {}` (line 1439); `impl<T: ?Sized> !Sync for RefCell<T> {}` (line 1442).",
+      "Rust alloc library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/alloc/src/rc.rs: `impl<T: ?Sized, A: Allocator> !Send for Rc<T, A> {}` (line 334); `impl<T: ?Sized, A: Allocator> !Sync for Rc<T, A> {}` (line 342); and library/core/src/marker.rs lines 74-79 (the `Send` documentation's example of two threads updating an `Rc` reference count).",
+      "Rust alloc library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/alloc/src/sync.rs: `unsafe impl<T: ?Sized + Sync + Send, A: Allocator + Send + Sync> Send for Arc<T, A> {}` (line 284) and the same bounds for `Sync` (line 286); the \"Thread Safety\" documentation (lines 124-147) explains with `Arc<RefCell<T>>` why `T: Sync` is required.",
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/mutex.rs: `unsafe impl<T: ?Sized + Send> Send for Mutex<T> {}` (line 238, rationale lines 233-235: the owned `T` can be acquired via `into_inner`); `unsafe impl<T: ?Sized + Send> Sync for Mutex<T> {}` (line 257, rationale lines 240-254, citing `Mutex<Rc<_>>` and noting \"it is not necessary for `T` to be `Sync`\").",
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/mutex.rs: `impl<T: ?Sized> !Send for MutexGuard<'_, T> {}` (line 289; lines 282-287: \"On platforms that use POSIX threads ... there is a requirement to release mutex locks on the same thread they were acquired\"); `unsafe impl<T: ?Sized + Sync> Sync for MutexGuard<'_, T> {}` (line 294; lines 291-292: a `&T` is obtainable from `&MutexGuard` via `Deref`).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/marker.rs: `pub unsafe auto trait Send` (line 92); `impl<T: PointeeSized> !Send for *const T {}` (line 97); `unsafe impl<T: Sync + PointeeSized> Send for &T {}` (line 105); `Sync` documentation (lines 511-539): \"The precise definition is: a type `T` is [`Sync`] if and only if `&T` is [`Send`]\", \"`&mut T` is [`Send`] if and only if `T` is [`Send`]\", \"`&T` and `&mut T` are [`Sync`] if and only if `T` is [`Sync`]\"; `pub unsafe auto trait Sync` (line 657); `impl<T: PointeeSized> !Sync for *const T {}` (line 672)."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "cell-send-iff",
+    "lean": "Toy.SendSync.semSend_cell_iff",
+    "lean_names": [
+      "Toy.SendSync.semSend_refCell_iff",
+      "Toy.SendSync.cell_plain_semSend_not_semSync",
+      "Toy.SendSync.cell_refCell_semSend_semSync_agree"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every toy type `U`, `SemSend (.cell U)` holds if and only if `SemSend U` holds; the same holds for `.refCell U` (`semSend_refCell_iff`). Consequently, for every toy type `U`, `SemSend (.cell U)` holds if and only if `SemSend (.refCell U)` holds, and `SemSync (.cell U)` holds if and only if `SemSync (.refCell U)` holds (`cell_refCell_semSend_semSync_agree`; both sides of the second fail, by `not_semSync_cell` and `not_semSync_refCell`). Instance: `Cell<plain>` is semantically `Send` and not semantically `Sync` (`cell_plain_semSend_not_semSync`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`U = .plain`: `Cell<plain>` is semantically `Send`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.cell_plain_semSend_not_semSync",
+    "non_claims": [
+      "`Cell<U>` is not semantically `Send` for every `U`: for `U = .rc .plain` it is not (by this card and `not_semSend_rc`).",
+      "The owner footprint of `.cell U` is the cell's storage plus the owner capabilities of `U`; its shared footprint is the same list (a shared reference reaches the content through `Cell::get`, `replace`, `set`, `take`). The owner footprint of `.refCell U` is the owner capabilities of `U` (reached without the flag, as by `RefCell::get_mut` and `into_inner`) followed by its shared footprint: borrow-flag reads and writes, the shared capabilities of `U` (shared borrow), and the owner capabilities of `U` under the claim `held [] .fresh` (mutable borrow). Both characterizations depend on the owner capabilities of `U` and its aliases.",
+      "The two footprints differ (`fp_shr_cell_ne_refCell_plain`), but `SemSend` and `SemSync` of the bare types do not separate `Cell<U>` from `RefCell<U>` for any `U` (`cell_refCell_semSend_semSync_agree`), and the standard-table checker gives them the same verdicts (`autoCheck_std_cell_eq_refCell`). The model separates them under a read-only wrapper (`wrap_readOnly_cell_refCell_differ`, card `wrap-refcell-obligation`).",
+      "`RefCell`'s `Ref`/`RefMut` guards are not modelled as types. The claim `held [] .fresh` on accesses under a mutable borrow treats the borrow flag as a lock with one exclusive holder, a modeling choice; shared borrows carry no claim. In Rust the flag is a non-atomic `Cell<BorrowCounter>` and `RefCell<T>` is not `Sync`; in the model the flag's unclaimed reads and writes make `.refCell U` not semantically `Sync` (`not_semSync_refCell`).",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `unsafe impl<T: ?Sized> Send for Cell<T> where T: Send {}` (line 320); `impl<T: ?Sized> !Sync for Cell<T> {}` (line 328); `unsafe impl<T: ?Sized> Send for RefCell<T> where T: Send {}` (line 1439); `impl<T: ?Sized> !Sync for RefCell<T> {}` (line 1442).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `Cell::set` (line 436, in `impl<T> Cell<T>` at line 404), `Cell::replace` (line 513), `Cell::get` (line 555, in `impl<T: Copy> Cell<T>` at line 539), `Cell::take` (line 674): every one takes `&self` and moves, copies or drops the content; `RefCell::try_borrow_unguarded` (line 1395, an `unsafe fn`) reads the borrow flag (line 1396) without updating it.",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `pub struct RefCell<T: ?Sized>` (line 852) has the borrow flag field `borrow: Cell<BorrowCounter>` (line 853); `RefCell::borrow(&self) -> Ref<'_, T>` (line 1124, through `try_borrow` at line 1161) and `RefCell::borrow_mut(&self) -> RefMut<'_, T>` (line 1224, through `try_borrow_mut` at line 1258) update the flag; `RefCell::replace` (line 1028, body `mem::replace(&mut self.borrow_mut(), t)` at line 1029), `replace_with` (line 1052), `swap` (line 1082) and `take` (line 1433, which calls `replace`) borrow mutably; `RefCell::get_mut(&mut self)` (line 1333) and `into_inner(self)` (line 998) reach the content without the flag; `RefCell::try_borrow_unguarded` (line 1395, an `unsafe fn`) reads the flag (line 1396) without updating it.",
+      "RustBelt (Jung, Jourdan, Krebbers, Dreyer, POPL 2018, DOI 10.1145/3158154), Section 1.2 and Section 6: a Coq proof of the soundness of the type system (fundamental theorem and adequacy, Section 7) and of the verification conditions of libraries that use unsafe code, including `Arc`, `Rc`, `Cell`, `RefCell`, `Mutex` and `RwLock`; Section 6.1 notes that its model of `Cell<T>` is never Sync and that \"Cell<T> is Send if and only if T is\"; Section 6.2 concludes that `mutex(τ)` is both Send and Sync when τ is Send. RustBelt proves sufficiency (soundness of the impls and typing rules); it does not state impossibility theorems of the form proved here.",
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example)."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "cell-not-sync",
+    "lean": "Toy.SendSync.not_semSync_cell",
+    "lean_names": [
+      "Toy.SendSync.not_semSync_refCell",
+      "Toy.SendSync.mutex_cell_rc_plain_not_semSync"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "For every toy type `U`, `SemSync (.cell U)` fails (and so does `SemSync (.refCell U)`): two threads holding a shared reference can both write the cell's storage (resp. the borrow flag) with no claim, a data race.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Universally quantified negative statement; instance `U = .plain`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.cell_plain_semSend_not_semSync",
+    "positive_control_lean": "Toy.SendSync.cell_positive_control",
+    "non_claims": [
+      "The race needs no synchronization snapshot beyond the trivial one: the two writes carry no claims.",
+      "Escape hatches, for `U = .plain` (`cell_positive_control`): hiding the cell's writes behind a read-only wrapper, or putting the cell behind a mutex. Neither works for every `U`: `Mutex<Cell<Rc<plain>>>` is not semantically `Sync` (`mutex_cell_rc_plain_not_semSync`), and a read-only wrapper over `Cell<U>` is semantically `Sync` exactly when `OwnReadsRaceFree U` holds (`semSync_wrap_cell_readOnly_iff_ownReadsRaceFree`). Atomics, zero-sized content and `SyncUnsafeCell` are not modelled.",
+      "A read-only view drops every write, including metadata writes, and every access under a mutable borrow: `SemSync (.wrap (.refCell .plain) .readOnly u)` holds (`semSync_wrap_refCell_plain_readOnly`), which models a wrapper that never writes the borrow flag (such as one exposing the unsafe `RefCell::try_borrow_unguarded`), not one exposing `RefCell::borrow`, which writes the flag. For `RefCell<U>` the read-only wrapper is semantically `Sync` exactly when `ShrReadsRaceFree U` holds (`semSync_wrap_refCell_readOnly_iff_shrReadsRaceFree`).",
+      "RustBelt models `Cell<T>` with a thread-dependent sharing predicate (Section 6.1); it does not state an impossibility theorem of this form.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `unsafe impl<T: ?Sized> Send for Cell<T> where T: Send {}` (line 320); `impl<T: ?Sized> !Sync for Cell<T> {}` (line 328); `unsafe impl<T: ?Sized> Send for RefCell<T> where T: Send {}` (line 1439); `impl<T: ?Sized> !Sync for RefCell<T> {}` (line 1442).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `impl<T: ?Sized> !Sync for UnsafeCell<T> {}` (line 2316); lines 322-326 note that `Cell`'s explicit negative impl is redundant because `Cell` wraps `UnsafeCell`.",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `pub struct RefCell<T: ?Sized>` (line 852) has the borrow flag field `borrow: Cell<BorrowCounter>` (line 853); `RefCell::borrow(&self) -> Ref<'_, T>` (line 1124, through `try_borrow` at line 1161) and `RefCell::borrow_mut(&self) -> RefMut<'_, T>` (line 1224, through `try_borrow_mut` at line 1258) update the flag; `RefCell::replace` (line 1028, body `mem::replace(&mut self.borrow_mut(), t)` at line 1029), `replace_with` (line 1052), `swap` (line 1082) and `take` (line 1433, which calls `replace`) borrow mutably; `RefCell::get_mut(&mut self)` (line 1333) and `into_inner(self)` (line 998) reach the content without the flag; `RefCell::try_borrow_unguarded` (line 1395, an `unsafe fn`) reads the flag (line 1396) without updating it.",
+      "Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer. \"RustBelt: Securing the Foundations of the Rust Programming Language.\" Proc. ACM Program. Lang. 2(POPL), Article 66, January 2018. DOI 10.1145/3158154. Section 1.2 (Challenge #3) and Section 4.1: a type is Send if its ownership predicate does not depend on the thread-identifier parameter; Section 4.3 (\"Interpreting shared references\"): Sync means that the sharing predicate does not depend on the thread identifier, and the ownership predicate of a shared reference is defined from the sharing predicate; Section 2.5.1: \"&T is Send if and only if T is Sync\". RustBelt's predicates are thread-indexed Iris predicates, not race-freedom scenarios as in this package.",
+      "RustBelt (Jung, Jourdan, Krebbers, Dreyer, POPL 2018, DOI 10.1145/3158154), Section 1.2 and Section 6: a Coq proof of the soundness of the type system (fundamental theorem and adequacy, Section 7) and of the verification conditions of libraries that use unsafe code, including `Arc`, `Rc`, `Cell`, `RefCell`, `Mutex` and `RwLock`; Section 6.1 notes that its model of `Cell<T>` is never Sync and that \"Cell<T> is Send if and only if T is\"; Section 6.2 concludes that `mutex(τ)` is both Send and Sync when τ is Send. RustBelt proves sufficiency (soundness of the impls and typing rules); it does not state impossibility theorems of the form proved here.",
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example)."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "rc-neither",
+    "lean": "Toy.SendSync.not_semSend_rc_and_not_semSync_rc",
+    "lean_names": [
+      "Toy.SendSync.not_semSend_rc",
+      "Toy.SendSync.not_semSync_rc",
+      "Toy.SendSync.rc_plain_neither"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "For every toy type `U`, neither `SemSend (.rc U)` nor `SemSync (.rc U)` holds: two handles (one per thread, both holding the allocation, claim `via []`) can both write the non-atomic count.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Universally quantified negative statement; instance `U = .plain`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.rc_plain_neither",
+    "positive_control_lean": "Toy.SendSync.arc_plain_nonvacuous",
+    "non_claims": [
+      "The witnessing snapshot has both threads holding a handle to the allocation; that a Rust program reaches that state by cloning and transferring one clone is a modeling-bridge remark (not proved here).",
+      "Escape hatches: an atomic count (`arc_plain_nonvacuous`); and the impossibility assumes that another handle may remain on the origin thread (`(fp (.rc U)).alias` contains the handle capabilities). A design that statically guarantees uniqueness (no other clone exists, as after a successful `Rc::try_unwrap`) is outside this statement (not proved here).",
+      "`Kind.atomic` has no memory orderings: the positive control does not establish that an atomic count with particular orderings avoids data races on the content; for example, rust-lang/rust issue 51780, \"Insufficient synchronization in `Arc::get_mut`\" (https://github.com/rust-lang/rust/issues/51780, opened 2018-06-25, closed 2018-07-06), reports a race between two accesses to the content of an `Arc`, which the issue attributes to `Arc::get_mut` reading the strong count with a relaxed load (it proposes an acquire load).",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust alloc library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/alloc/src/rc.rs: `impl<T: ?Sized, A: Allocator> !Send for Rc<T, A> {}` (line 334); `impl<T: ?Sized, A: Allocator> !Sync for Rc<T, A> {}` (line 342); and library/core/src/marker.rs lines 74-79 (the `Send` documentation's example of two threads updating an `Rc` reference count).",
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example).",
+      "RustBelt (Jung, Jourdan, Krebbers, Dreyer, POPL 2018, DOI 10.1145/3158154), Section 1.2 and Section 6: a Coq proof of the soundness of the type system (fundamental theorem and adequacy, Section 7) and of the verification conditions of libraries that use unsafe code, including `Arc`, `Rc`, `Cell`, `RefCell`, `Mutex` and `RwLock`; Section 6.1 notes that its model of `Cell<T>` is never Sync and that \"Cell<T> is Send if and only if T is\"; Section 6.2 concludes that `mutex(τ)` is both Send and Sync when τ is Send. RustBelt proves sufficiency (soundness of the impls and typing rules); it does not state impossibility theorems of the form proved here.",
+      "Hoang-Hai Dang, Jacques-Henri Jourdan, Jan-Oliver Kaiser, Derek Dreyer. \"RustBelt Meets Relaxed Memory.\" Proc. ACM Program. Lang. 4(POPL), Article 34, January 2020. DOI 10.1145/3371102. Section 1 and Section 5.3: re-verifies RustBelt's library proofs, including `Arc`, under a relaxed-memory semantics. The model here has no memory orderings."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "arc-send-iff",
+    "lean": "Toy.SendSync.semSend_arc_iff",
+    "lean_names": [
+      "Toy.SendSync.semSync_arc_iff",
+      "Toy.SendSync.arc_race_iff",
+      "Toy.SendSync.arc_cell_plain_content_not_semSync_arc_neither",
+      "Toy.SendSync.arc_guard_plain_content_not_semSend_arc_neither",
+      "Toy.SendSync.arc_wrap_rc_none_content_not_semSend_arc_neither"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every toy type `U`, `SemSend (.arc U)` holds if and only if both `SemSend U` and `SemSync U` hold, and `SemSync (.arc U)` holds if and only if both `SemSend U` and `SemSync U` hold (`semSync_arc_iff`); `arc_race_iff` decomposes the transfer race of `.arc U` into the races of `U`. Neither conjunct follows from the other: `Arc<Cell<plain>>` (content `SemSend`, not `SemSync`; `arc_cell_plain_content_not_semSync_arc_neither`), `Arc<MutexGuard<plain>>` (content `SemSync`, not `SemSend`, by release affinity; `arc_guard_plain_content_not_semSend_arc_neither`) and `Arc` of a wrapper around `Rc<plain>` exposing nothing, for either impl flag (content `SemSync`, not `SemSend`, by a data race, while the transfer of the `Arc` makes no foreign release; `arc_wrap_rc_none_content_not_semSend_arc_neither`) are neither semantically `Send` nor semantically `Sync`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`U = .plain`: all four propositions hold.",
+    "nonvacuity_witness_lean": "Toy.SendSync.arc_plain_nonvacuous",
+    "non_claims": [
+      "The `SemSend U` requirement of `SemSync (.arc U)` uses a snapshot in which the other thread is the unique holder of the allocation and owns the content. Modeling bridge (not proved here): in Rust, if `Arc<U>` were `Sync` without `U: Send`, a thread holding `&Arc<U>` could clone an owned handle, keep it beyond the origin thread's handles (for example in a pool thread's storage), and drop the last handle, dropping the `U` on a thread that did not create it; moving a clone to a third thread is not the mechanism, since that move would itself need `Arc<U>: Send`. Movement of handles between threads other than the origin thread is collapsed into the two-thread check.",
+      "`Kind.atomic` treats atomic count updates as pairwise non-conflicting and has no memory orderings (`Relaxed`, `Acquire`, `Release`, `SeqCst`); the characterization neither establishes nor refutes that an `Arc` implementation with particular orderings is free of data races; for example, rust-lang/rust issue 51780, \"Insufficient synchronization in `Arc::get_mut`\" (https://github.com/rust-lang/rust/issues/51780, opened 2018-06-25, closed 2018-07-06), reports a race between two accesses to the content of an `Arc`, which the issue attributes to `Arc::get_mut` reading the strong count with a relaxed load (it proposes an acquire load).",
+      "Weak references (`Weak`) and allocator parameters are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust alloc library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/alloc/src/sync.rs: `unsafe impl<T: ?Sized + Sync + Send, A: Allocator + Send + Sync> Send for Arc<T, A> {}` (line 284) and the same bounds for `Sync` (line 286); the \"Thread Safety\" documentation (lines 124-147) explains with `Arc<RefCell<T>>` why `T: Sync` is required.",
+      "Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer. \"RustBelt: Securing the Foundations of the Rust Programming Language.\" Proc. ACM Program. Lang. 2(POPL), Article 66, January 2018. DOI 10.1145/3158154. Section 1.2 (Challenge #3) and Section 4.1: a type is Send if its ownership predicate does not depend on the thread-identifier parameter; Section 4.3 (\"Interpreting shared references\"): Sync means that the sharing predicate does not depend on the thread identifier, and the ownership predicate of a shared reference is defined from the sharing predicate; Section 2.5.1: \"&T is Send if and only if T is Sync\". RustBelt's predicates are thread-indexed Iris predicates, not race-freedom scenarios as in this package.",
+      "RustBelt (Jung, Jourdan, Krebbers, Dreyer, POPL 2018, DOI 10.1145/3158154), Section 1.2 and Section 6: a Coq proof of the soundness of the type system (fundamental theorem and adequacy, Section 7) and of the verification conditions of libraries that use unsafe code, including `Arc`, `Rc`, `Cell`, `RefCell`, `Mutex` and `RwLock`; Section 6.1 notes that its model of `Cell<T>` is never Sync and that \"Cell<T> is Send if and only if T is\"; Section 6.2 concludes that `mutex(τ)` is both Send and Sync when τ is Send. RustBelt proves sufficiency (soundness of the impls and typing rules); it does not state impossibility theorems of the form proved here.",
+      "Hoang-Hai Dang, Jacques-Henri Jourdan, Jan-Oliver Kaiser, Derek Dreyer. \"RustBelt Meets Relaxed Memory.\" Proc. ACM Program. Lang. 4(POPL), Article 34, January 2020. DOI 10.1145/3371102. Section 1 and Section 5.3: re-verifies RustBelt's library proofs, including `Arc`, under a relaxed-memory semantics. The model here has no memory orderings."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "mutex-sync-iff",
+    "lean": "Toy.SendSync.semSync_mutex_iff",
+    "lean_names": [
+      "Toy.SendSync.semSend_mutex_iff",
+      "Toy.SendSync.mutex_cell_plain_semSync_content_not_semSync",
+      "Toy.SendSync.mutex_rc_plain_content_not_semSend_mutex_neither"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every toy type `U`, `SemSync (.mutex U)` holds if and only if `SemSend U` holds, and `SemSend (.mutex U)` holds if and only if `SemSend U` holds (`semSend_mutex_iff`). `SemSync U` is not needed: `Mutex<Cell<plain>>` is semantically `Sync` while `Cell<plain>` is not (`mutex_cell_plain_semSync_content_not_semSync`); with non-`SemSend` content `Rc<plain>`, `Mutex<Rc<plain>>` is neither (`mutex_rc_plain_content_not_semSend_mutex_neither`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`U = .cell .plain`: `Cell<plain>` is semantically `Send`, and `Mutex<Cell<plain>>` is semantically `Sync` though `Cell<plain>` is not.",
+    "nonvacuity_witness_lean": "Toy.SendSync.mutex_cell_plain_semSync_content_not_semSync",
+    "non_claims": [
+      "Lock-protected accesses on the two threads are excluded because a snapshot has one lock holder; the model does not represent acquisition and release steps, poisoning, or deadlock. The release of a `fresh` acquisition is never foreign (`nfr_example_fresh_release`).",
+      "The rule is specific to an exclusive lock. It is not a statement about reader-writer locks: in the cited standard library `RwLock<T>: Sync` requires `T: Send + Sync`, and `RwLock` is not modelled.",
+      "Locations are path-relative: content moved into or out of the mutex (for example by `mem::replace` through a guard) keeps the path of its position; its own alias capabilities carry no lock claim, so they still conflict with the lock-protected accesses.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/mutex.rs: `unsafe impl<T: ?Sized + Send> Send for Mutex<T> {}` (line 238, rationale lines 233-235: the owned `T` can be acquired via `into_inner`); `unsafe impl<T: ?Sized + Send> Sync for Mutex<T> {}` (line 257, rationale lines 240-254, citing `Mutex<Rc<_>>` and noting \"it is not necessary for `T` to be `Sync`\").",
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/rwlock.rs: `unsafe impl<T: ?Sized + Send> Send for RwLock<T> {}` (line 104); `unsafe impl<T: ?Sized + Send + Sync> Sync for RwLock<T> {}` (line 107); `RwLockReadGuard` and `RwLockWriteGuard` are `!Send` (lines 140, 168) and `Sync` when `T: Sync` (lines 143, 171).",
+      "RustBelt (Jung, Jourdan, Krebbers, Dreyer, POPL 2018, DOI 10.1145/3158154), Section 1.2 and Section 6: a Coq proof of the soundness of the type system (fundamental theorem and adequacy, Section 7) and of the verification conditions of libraries that use unsafe code, including `Arc`, `Rc`, `Cell`, `RefCell`, `Mutex` and `RwLock`; Section 6.1 notes that its model of `Cell<T>` is never Sync and that \"Cell<T> is Send if and only if T is\"; Section 6.2 concludes that `mutex(τ)` is both Send and Sync when τ is Send. RustBelt proves sufficiency (soundness of the impls and typing rules); it does not state impossibility theorems of the form proved here."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "guard-sync-iff",
+    "lean": "Toy.SendSync.semSync_guard_iff",
+    "lean_names": [
+      "Toy.SendSync.guard_sync_examples"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every toy type `U`, `SemSync (.guard U)` holds if and only if `SemSync U` holds. Instances (`guard_sync_examples`): `MutexGuard<plain>` is semantically `Sync`; `Cell<plain>` is not semantically `Sync`, and neither is `MutexGuard<Cell<plain>>`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`U = .plain`: `plain` and `MutexGuard<plain>` are semantically `Sync`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.guard_plain_semSync_not_semSend",
+    "non_claims": [
+      "Accesses made through the same guard on two threads are not excluded by the lock (one acquisition); accesses by other lockers are.",
+      "Sharing `&MutexGuard<'a, T>` with another thread in Rust also needs the lifetimes to outlive the other thread (scoped threads); lifetimes are not modelled. `RwLockReadGuard`/`RwLockWriteGuard` are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/mutex.rs: `impl<T: ?Sized> !Send for MutexGuard<'_, T> {}` (line 289; lines 282-287: \"On platforms that use POSIX threads ... there is a requirement to release mutex locks on the same thread they were acquired\"); `unsafe impl<T: ?Sized + Sync> Sync for MutexGuard<'_, T> {}` (line 294; lines 291-292: a `&T` is obtainable from `&MutexGuard` via `Deref`).",
+      "rust-lang/rust issue 41622, \"MutexGuard<Cell<i32>> must not be Sync\" (https://github.com/rust-lang/rust/issues/41622, opened 2017-04-29, closed 2017-05-03; read on 2026-11-21): it reports that `MutexGuard<Cell<i32>>` satisfied the `Sync` bound at the time, which permitted a data race; RustBelt (POPL 2018, Section 1.1 and Section 1.2) cites it; at the commit above the impl reads `unsafe impl<T: ?Sized + Sync> Sync for MutexGuard<'_, T> {}` with `#[stable(feature = \"mutexguard\", since = \"1.19.0\")]` (library/std/src/sync/poison/mutex.rs lines 291-294).",
+      "RustBelt (Jung, Jourdan, Krebbers, Dreyer, POPL 2018, DOI 10.1145/3158154), Section 1.2 and Section 6: a Coq proof of the soundness of the type system (fundamental theorem and adequacy, Section 7) and of the verification conditions of libraries that use unsafe code, including `Arc`, `Rc`, `Cell`, `RefCell`, `Mutex` and `RwLock`; Section 6.1 notes that its model of `Cell<T>` is never Sync and that \"Cell<T> is Send if and only if T is\"; Section 6.2 concludes that `mutex(τ)` is both Send and Sync when τ is Send. RustBelt proves sufficiency (soundness of the impls and typing rules); it does not state impossibility theorems of the form proved here."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "guard-not-send",
+    "lean": "Toy.SendSync.not_semSend_guard",
+    "lean_names": [
+      "Toy.SendSync.guard_transfer_race_iff",
+      "Toy.SendSync.guard_rc_plain_transfer_race",
+      "Toy.SendSync.guard_plain_semSync_not_semSend",
+      "Toy.SendSync.fp_relNamesAcq",
+      "Toy.SendSync.RelNamesAcq"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "Under the model's release-affinity rule (`NoForeignRelease`: every acquisition that a release event executed by the other thread names, by a claim `held l a` on the event's own location `l`, was made by the other thread; every release event of every model footprint names an acquisition, by `fp_relNamesAcq`; a guard's acquisition was made by the origin thread), `SemSend (.guard U)` fails for every toy type `U`, because the guard's owner footprint contains the release of its own acquisition. Companion (`guard_transfer_race_iff`): for every `U`, the transfer race of `.guard U` holds if and only if the transfer race of `U` holds. Companion (`fp_relNamesAcq`): for every toy type `T`, every release event of `(fp T).own`, `(fp T).shr` and `(fp T).alias` carries a claim `held l a` on its own location `l` (`RelNamesAcq`), so release affinity constrains every release event of the model's footprints.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Universally quantified negative statement; instance `U = .plain`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.guard_plain_semSync_not_semSend",
+    "positive_control_lean": "Toy.SendSync.guard_plain_transfer_race_free",
+    "non_claims": [
+      "Depth: `not_semSend_guard` is a membership check against the definition of `fp (.guard U)` (definitional); the companion `guard_transfer_race_iff` is a shallow race decomposition, and the companion `fp_relNamesAcq` is shallow (an induction on the toy type that combines list-membership facts about `place` and `++` at each constructor).",
+      "For content `U` whose transfer is race-free (for example `SemSend` content such as `.plain`), the guard's failure comes from the release-affinity conjunct alone (`guard_plain_transfer_race_free`). For content whose transfer races (for example `.rc .plain`), the guard's transfer races as well (`guard_rc_plain_transfer_race`, by `guard_transfer_race_iff`).",
+      "Dropping the release-affinity rule (as for lock implementations without a same-thread unlock requirement) does not make `MutexGuard<U>` `Send` for every `U`: by `guard_transfer_race_iff`, race-free transfer of the guard is equivalent to race-free transfer of `U` (`guard_rc_plain_transfer_race`). Platforms or lock libraries without the requirement are not modelled.",
+      "`NoForeignRelease` inspects the acquisition named by the release event's `held` claim on its own location (`Acq.maker`) and accepts a release event without such a claim (`nfr_example_unnamed_release`); no footprint of the model contains one (`fp_relNamesAcq`). The thread executing every checked event is the other thread, and every guard reachable from the value is taken to be created by the origin thread.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/mutex.rs: `impl<T: ?Sized> !Send for MutexGuard<'_, T> {}` (line 289; lines 282-287: \"On platforms that use POSIX threads ... there is a requirement to release mutex locks on the same thread they were acquired\"); `unsafe impl<T: ?Sized + Sync> Sync for MutexGuard<'_, T> {}` (line 294; lines 291-292: a `&T` is obtainable from `&MutexGuard` via `Deref`)."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "false-rule-sync-implies-send",
+    "lean": "Toy.SendSync.not_forall_semSync_imp_semSend",
+    "lean_names": [
+      "Toy.SendSync.wrap_rc_none_semSync_not_semSend",
+      "Toy.SendSync.guard_plain_own_not_subset_shr"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "It is not the case that every toy type `T` with `SemSync T` has `SemSend T`; witnesses: `.guard .plain`, and the guard-free `.wrap (.rc .plain) .none u` for either `u` (`wrap_rc_none_semSync_not_semSend`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Witness `.guard .plain`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.guard_plain_semSync_not_semSend",
+    "positive_control_lean": "Toy.SendSync.semSync_imp_semSend_of_own_subset_shr",
+    "non_claims": [
+      "The guard witness violates the positive control's hypothesis (`guard_plain_own_not_subset_shr`).",
+      "The guard-free witness is a wrapper with no shared API, the pattern of the standard library's unstable `SyncView`. Other `Sync`-but-not-`Send` patterns (such as a `Deref`-only wrapper over `Rc<T>` with `T: Sync`) are not modelled, since the model offers no view that exposes the content of an `Rc` without its count.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/mutex.rs: `impl<T: ?Sized> !Send for MutexGuard<'_, T> {}` (line 289; lines 282-287: \"On platforms that use POSIX threads ... there is a requirement to release mutex locks on the same thread they were acquired\"); `unsafe impl<T: ?Sized + Sync> Sync for MutexGuard<'_, T> {}` (line 294; lines 291-292: a `&T` is obtainable from `&MutexGuard` via `Deref`).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/sync/sync_view.rs: `unsafe impl<T: ?Sized> Sync for SyncView<T> {}` (lines 108-109: the impl at line 109, marked as unstable feature `exclusive_wrapper` by the attribute at line 108), justified because \"a `&SyncView<T>` for non-`Sync` `T` has no API whatsoever\" (lines 13-21).",
+      "Rust RFC 0458 \"Send Improvements\", rust-lang/rfcs commit f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4, text/0458-send-improvements.md (start date 2014-11-10): makes `&T` `Send` if and only if `T` is `Sync` (lines 11-16, with `unsafe impl<'a, T> Send for &'a T where T: Sync + 'a {}` at line 15), and argues with its `RcMut` example (line 95; code at lines 169-182) that `Sync` does not imply `Send`."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "false-rule-send-implies-sync",
+    "lean": "Toy.SendSync.not_forall_semSend_imp_semSync",
+    "lean_names": [
+      "Toy.SendSync.cell_plain_shr_has_write"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "It is not the case that every toy type `T` with `SemSend T` has `SemSync T`; witness: `.cell .plain`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Witness `.cell .plain`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.cell_plain_semSend_not_semSync",
+    "positive_control_lean": "Toy.SendSync.semSend_imp_semSync_of_shr_no_write",
+    "non_claims": [
+      "The witness violates the positive control's hypothesis (`cell_plain_shr_has_write`).",
+      "Whether a Rust type \"looks immutable\" is a property of its signatures, which the model does not represent; the positive control is about the footprint, not about signatures (for example a type with a `&self` method that updates an internal `Cell` cache has a write in its shared footprint).",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `unsafe impl<T: ?Sized> Send for Cell<T> where T: Send {}` (line 320); `impl<T: ?Sized> !Sync for Cell<T> {}` (line 328); `unsafe impl<T: ?Sized> Send for RefCell<T> where T: Send {}` (line 1439); `impl<T: ?Sized> !Sync for RefCell<T> {}` (line 1442).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/marker.rs: `pub unsafe auto trait Send` (line 92); `impl<T: PointeeSized> !Send for *const T {}` (line 97); `unsafe impl<T: Sync + PointeeSized> Send for &T {}` (line 105); `Sync` documentation (lines 511-539): \"The precise definition is: a type `T` is [`Sync`] if and only if `&T` is [`Send`]\", \"`&mut T` is [`Send`] if and only if `T` is [`Send`]\", \"`&T` and `&mut T` are [`Sync`] if and only if `T` is [`Sync`]\"; `pub unsafe auto trait Sync` (line 657); `impl<T: PointeeSized> !Sync for *const T {}` (line 672)."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "shared-write-free-send-implies-sync",
+    "lean": "Toy.SendSync.semSend_imp_semSync_of_shr_no_write",
+    "lean_names": [
+      "Toy.SendSync.shr_subset_own",
+      "Toy.SendSync.arc_plain_shr_has_write_semSync"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every toy type `T` whose shared footprint `(fp T).shr` contains no write event (hypothesis `hro`) and which satisfies `SemSend T` (hypothesis `hs`), `SemSync T` holds.",
+    "hypotheses": [
+      {
+        "name": "hro : ∀ e ∈ (fp T).shr, e.kind.isWrite = false",
+        "purpose": "A write in the shared footprint can race with another sharer even when transfer is race-free.",
+        "tightness": "tight",
+        "counterexample": "Toy.SendSync.cell_plain_semSend_not_semSync",
+        "witness_class": "an instance with `T = .cell .plain` (`SemSend` holds, `SemSync` fails)"
+      },
+      {
+        "name": "hs : SemSend T",
+        "purpose": "A write-free shared footprint can still race with alias capabilities (writes by other handles).",
+        "tightness": "tight",
+        "counterexample": "Toy.SendSync.semSend_imp_semSync_of_shr_no_write_semSend_tight",
+        "witness_class": "an instance with `T = .wrap (.rc .plain) .readOnly false` (`hro` holds, `SemSync` fails)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`T = .plain`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.semSend_imp_semSync_of_shr_no_write_nonvacuous",
+    "non_claims": [
+      "Relies on `shr_subset_own` (an owner can do everything a sharer can), which holds for every toy type by construction of `fp`.",
+      "Atomic accesses count as writes here (`Kind.isWrite`), so the hypothesis excludes them.",
+      "`hro` is sufficient, not necessary: `Arc<plain>` has an atomic write in its shared footprint and is semantically `Sync` (`arc_plain_shr_has_write_semSync`). A weaker hypothesis excluding non-atomic writes alone is not stated here.",
+      "A write-free shared footprint without `SemSend T` does not give `SemSync T` (`semSend_imp_semSync_of_shr_no_write_semSend_tight`).",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/marker.rs: `pub unsafe auto trait Send` (line 92); `impl<T: PointeeSized> !Send for *const T {}` (line 97); `unsafe impl<T: Sync + PointeeSized> Send for &T {}` (line 105); `Sync` documentation (lines 511-539): \"The precise definition is: a type `T` is [`Sync`] if and only if `&T` is [`Send`]\", \"`&mut T` is [`Send`] if and only if `T` is [`Send`]\", \"`&T` and `&mut T` are [`Sync`] if and only if `T` is [`Sync`]\"; `pub unsafe auto trait Sync` (line 657); `impl<T: PointeeSized> !Sync for *const T {}` (line 672).",
+      "The Rust Reference, rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/special-types-and-traits.md: rule `lang-types.auto-traits.auto-impl` (lines 161-162): \"If no explicit implementation or negative implementation is written out for an auto trait for a given type, then the compiler implements it automatically according to the following rules:\"; rule `lang-types.auto-traits.aggregate` (lines 170-171): \"Structs, enums, unions, and tuples implement the trait if all of their fields do.\""
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "own-in-shared-sync-implies-send",
+    "lean": "Toy.SendSync.semSync_imp_semSend_of_own_subset_shr",
+    "lean_names": [
+      "Toy.SendSync.plain_own_not_subset_shr_semSend"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every toy type `T` whose owner footprint `(fp T).own` is contained in its shared footprint `(fp T).shr` (hypothesis `hsub`) and which satisfies `SemSync T` (hypothesis `hy`), `SemSend T` holds.",
+    "hypotheses": [
+      {
+        "name": "hsub : ∀ e ∈ (fp T).own, e ∈ (fp T).shr",
+        "purpose": "Owner-only capabilities can fail on transfer while sharing is fine: a guard's release (`.guard .plain`), or an owner-only handle whose alias races (the guard-free `.wrap (.rc .plain) .none false`, `wrap_rc_none_semSync_not_semSend`).",
+        "tightness": "tight",
+        "counterexample": "Toy.SendSync.guard_plain_semSync_not_semSend",
+        "witness_class": "an instance with `T = .guard .plain` (`SemSync` holds, `SemSend` fails)"
+      },
+      {
+        "name": "hy : SemSync T",
+        "purpose": "Equal owner and shared footprints can both race with alias capabilities.",
+        "tightness": "tight",
+        "counterexample": "Toy.SendSync.semSync_imp_semSend_of_own_subset_shr_semSync_tight",
+        "witness_class": "an instance with `T = .rc .plain` (`hsub` holds, `SemSend` fails)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`T = .arc .plain`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.semSync_imp_semSend_of_own_subset_shr_nonvacuous",
+    "non_claims": [
+      "The hypothesis `hsub` holds for `.cell`, `.rc`, `.arc` and `.ref` nodes of the model (their `own` and `shr` coincide by definition of `fp`), not in general for `.refCell` nodes, whose owner footprint adds flag-free access to the content (`fp_refCell_plain`); it is not claimed for any Rust type.",
+      "`hsub` is sufficient, not necessary: `plain` has an owner-only write and is semantically `Send` (`plain_own_not_subset_shr_semSend`).",
+      "`own ⊆ shr` without `SemSync T` does not give `SemSend T` (`semSync_imp_semSend_of_own_subset_shr_semSync_tight`).",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/marker.rs: `pub unsafe auto trait Send` (line 92); `impl<T: PointeeSized> !Send for *const T {}` (line 97); `unsafe impl<T: Sync + PointeeSized> Send for &T {}` (line 105); `Sync` documentation (lines 511-539): \"The precise definition is: a type `T` is [`Sync`] if and only if `&T` is [`Send`]\", \"`&mut T` is [`Send`] if and only if `T` is [`Send`]\", \"`&T` and `&mut T` are [`Sync`] if and only if `T` is [`Sync`]\"; `pub unsafe auto trait Sync` (line 657); `impl<T: PointeeSized> !Sync for *const T {}` (line 672).",
+      "Rust std library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/std/src/sync/poison/mutex.rs: `impl<T: ?Sized> !Send for MutexGuard<'_, T> {}` (line 289; lines 282-287: \"On platforms that use POSIX threads ... there is a requirement to release mutex locks on the same thread they were acquired\"); `unsafe impl<T: ?Sized + Sync> Sync for MutexGuard<'_, T> {}` (line 294; lines 291-292: a `&T` is obtainable from `&MutexGuard` via `Deref`)."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "unsafe-sync-obligation",
+    "lean": "Toy.SendSync.semSync_wrap_iff_syncObligation",
+    "lean_names": [
+      "Toy.SendSync.SyncObligation",
+      "Toy.SendSync.semSync_wrap_full_iff",
+      "Toy.SendSync.unsafeSync_wrap_cell_full_accepted_but_racy"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every field type `f`, view `v` and impl flag `u`, `SemSync (.wrap f v u)` holds if and only if `SyncObligation f v` holds (every conflicting pair formed by an exposed shared capability on the other thread and an exposed shared capability or an alias capability of the field on the origin thread is never simultaneously enabled, and no exposed capability makes the other thread release an acquisition it did not make); this restates the definition of `SemSync` for wrappers, and the flag `u` does not occur on the right-hand side. Companion (`semSync_wrap_full_iff`): for every `f` and `u`, `SemSync (.wrap f .full u)` holds if and only if `SemSync f` holds, by `Iff.rfl`. When the obligation fails, the checker still accepts the unsafe impl: for `.wrap (.cell .plain) .full true`, `autoCheck stdTable` returns `true` for `Sync`, and the wrapper's shared footprint races with its shared and alias footprints (`unsafeSync_wrap_cell_full_accepted_but_racy`).",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "`f = .cell .plain`, `v = .readOnly`: `SyncObligation (.cell .plain) .readOnly` holds.",
+    "nonvacuity_witness_lean": "Toy.SendSync.syncObligation_nonvacuous",
+    "non_claims": [
+      "Reference point: `semSync_wrap_iff_syncObligation` is the unfolded definition of `SemSync` for wrappers (depth definitional: it moves a negation across two existentials), kept so that the obligation of an unsafe `Sync` impl has a name; `semSync_wrap_full_iff` is definitional too. The wrapper results with content are the cards `wrap-view-restriction`, `wrap-cell-obligation`, `wrap-refcell-obligation` and `wrap-rc-obligation`.",
+      "Views filter capability events one at a time. `.readOnly` keeps exactly the `rd` events that need no acquisition by the executing thread (`Ev.acquires`): it drops lock releases, atomic updates and metadata writes, and every access that first requires locking a mutex or registering a mutable borrow in a `RefCell`'s flag. For `RefCell<U>` it keeps the borrow-flag reads and the reads through the shared capabilities of `U` (`semSync_wrap_refCell_readOnly_iff_shrReadsRaceFree`), which models an API that never writes the borrow flag (such as one exposing the unsafe `RefCell::try_borrow_unguarded`), not one exposing `RefCell::borrow`, which writes the flag. Of a `Mutex` it keeps nothing (`expose_readOnly_mutex_example`).",
+      "The wrapper has a single field and can only restrict shared capabilities; wrappers that achieve `Sync` by adding synchronization (locks, atomics, thread-identity checks), multi-field invariants, safety invariants beyond data-race freedom, unsafe `Send` impls and wrappers that restrict their owner API are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/sync/sync_view.rs: `unsafe impl<T: ?Sized> Sync for SyncView<T> {}` (lines 108-109: the impl at line 109, marked as unstable feature `exclusive_wrapper` by the attribute at line 108), justified because \"a `&SyncView<T>` for non-`Sync` `T` has no API whatsoever\" (lines 13-21).",
+      "Ralf Jung, Jacques-Henri Jourdan, Robbert Krebbers, Derek Dreyer. \"RustBelt: Securing the Foundations of the Rust Programming Language.\" Proc. ACM Program. Lang. 2(POPL), Article 66, January 2018. DOI 10.1145/3158154. Section 1.2 (Challenge #3) and Section 4.1: a type is Send if its ownership predicate does not depend on the thread-identifier parameter; Section 4.3 (\"Interpreting shared references\"): Sync means that the sharing predicate does not depend on the thread identifier, and the ownership predicate of a shared reference is defined from the sharing predicate; Section 2.5.1: \"&T is Send if and only if T is Sync\". RustBelt's predicates are thread-indexed Iris predicates, not race-freedom scenarios as in this package."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "wrap-view-restriction",
+    "lean": "Toy.SendSync.semSync_wrap_of_semSync",
+    "lean_names": [
+      "Toy.SendSync.semSync_wrap_none"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every field type `f`, view `v` and impl flag `u` such that `SemSync f` holds (hypothesis), `SemSync (.wrap f v u)` holds: restricting the shared capabilities of a semantically `Sync` field by any view keeps the wrapper semantically `Sync`. Companion (`semSync_wrap_none`), with no hypothesis: for every `f` and `u`, `SemSync (.wrap f .none u)` holds.",
+    "hypotheses": [
+      {
+        "name": "SemSync f",
+        "purpose": "A view that keeps a racing pair of the field's shared capabilities (for example the full view) keeps the race.",
+        "tightness": "tight",
+        "counterexample": "Toy.SendSync.semSync_wrap_of_semSync_tight",
+        "witness_class": "an instance with `f = .cell .plain`, `v = .full`, `u = false` (`SemSync f` fails and `SemSync (.wrap f v u)` fails)"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`f = .arc .plain`, `v = .readOnly`, `u = false`: `SemSync (.arc .plain)` holds, and so does `SemSync (.wrap (.arc .plain) .readOnly false)`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.semSync_wrap_of_semSync_nonvacuous",
+    "non_claims": [
+      "Depth: `semSync_wrap_of_semSync` is shallow (every view exposes a sublist of the field's shared capabilities, and races and release affinity are monotone in the lists); `semSync_wrap_none` is shallow (the empty view exposes no event).",
+      "The converse does not hold: a read-only wrapper over `Cell<plain>` is semantically `Sync` (`cell_positive_control`) although `Cell<plain>` is not (`not_semSync_cell`). The cards `wrap-cell-obligation`, `wrap-refcell-obligation` and `wrap-rc-obligation` characterize, for their fields, when a restricted view of a field that is not semantically `Sync` is semantically `Sync`.",
+      "Restriction is a filter of the field's shared capabilities; the wrapper's owner and alias capabilities are those of its field. Wrappers that add synchronization or restrict their owner API are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/sync/sync_view.rs: `unsafe impl<T: ?Sized> Sync for SyncView<T> {}` (lines 108-109: the impl at line 109, marked as unstable feature `exclusive_wrapper` by the attribute at line 108), justified because \"a `&SyncView<T>` for non-`Sync` `T` has no API whatsoever\" (lines 13-21)."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "wrap-cell-obligation",
+    "lean": "Toy.SendSync.semSync_wrap_cell_readOnly_iff_ownReadsRaceFree",
+    "lean_names": [
+      "Toy.SendSync.not_semSync_wrap_cell_full",
+      "Toy.SendSync.semSync_wrap_none",
+      "Toy.SendSync.OwnReadsRaceFree",
+      "Toy.SendSync.ownReadsRaceFree_of_semSend",
+      "Toy.SendSync.ownReadsRaceFree_guard_iff",
+      "Toy.SendSync.wrap_cell_ref_cell_readOnly_not_semSync",
+      "Toy.SendSync.wrap_cell_guard_plain_readOnly_semSync",
+      "Toy.SendSync.wrap_arc_cell_readOnly_not_semSync"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every toy type `U` and flag `u`, a read-only wrapper over `Cell<U>` is semantically `Sync`, `SemSync (.wrap (.cell U) .readOnly u)`, if and only if `OwnReadsRaceFree U` holds: reads through the owner capabilities of `U` that a read-only view keeps (no access under an acquisition by the executing thread), executed by the other thread, race with no alias capability of `U`. A wrapper exposing the full shared API of `Cell<U>` is never semantically `Sync` (`not_semSync_wrap_cell_full`), and one exposing nothing always is (`semSync_wrap_none`). `SemSend U` implies `OwnReadsRaceFree U` (`ownReadsRaceFree_of_semSend`) and is not equivalent to it: `MutexGuard<plain>` is not semantically `Send`, satisfies `OwnReadsRaceFree`, and the read-only wrapper over `Cell<MutexGuard<plain>>` is semantically `Sync` for either flag (`wrap_cell_guard_plain_readOnly_semSync`). `OwnReadsRaceFree (.guard U)` holds if and only if `OwnReadsRaceFree U` holds (`ownReadsRaceFree_guard_iff`). For `U = .ref (.cell .plain)` the condition fails and, for either flag, the read-only wrapper over `Cell<U>` is not semantically `Sync` (`wrap_cell_ref_cell_readOnly_not_semSync`); for either flag, a read-only wrapper over `Arc<Cell<plain>>` is not semantically `Sync` either (`wrap_arc_cell_readOnly_not_semSync`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`U = .plain`: `OwnReadsRaceFree .plain` holds, and the read-only wrapper over `Cell<plain>` is semantically `Sync`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.wrap_cell_plain_readOnly_nonvacuous",
+    "non_claims": [
+      "A shared reference to `Cell<U>` reaches the owner capabilities of `U` (`Cell::get` copies the content out for `Copy` content; `Cell::replace`, `set` and `take` move it out or drop it). The view keeps the non-acquiring `rd` events (`Ev.acquires = false`) among them, including such reads through a copied-out reference, and drops every `rd` event that carries a `fresh` claim (`Ev.acquires = true`), such as a read that first locks a `Mutex` reached through a copied-out reference (for example, the read-only view of the shared footprint of `Mutex<&Cell<plain>>` is empty: `expose_readOnly_mutex_example`). Because of this filter, `OwnReadsRaceFree U` is not the same as race freedom of the transfer of `U`: for a guard-free content whose owner capabilities include accesses under such a lock (for example a reference to `Mutex<&Cell<plain>>`), the transfer of `U` can race through those accesses while `OwnReadsRaceFree U` holds (not proved here). A Rust wrapper whose `get` hands out a `Copy` value that permits writes (for example `&'a Cell<u32>`) does not have a read-only capability set in this sense; for that content the model's read-only wrapper already fails to be semantically `Sync` (`wrap_cell_ref_cell_readOnly_not_semSync`), because reads of the inner cell race with writes by the lender of the reference.",
+      "The characterization is for a wrapper that owns the cell directly. Hiding writes on a wrapper around a cell shared through other handles does not help: a read-only wrapper over `Arc<Cell<plain>>` is not semantically `Sync` (`wrap_arc_cell_readOnly_not_semSync`).",
+      "The characterization is specific to `Cell`. For a read-only wrapper over `RefCell<U>` the condition is `ShrReadsRaceFree U` (card `wrap-refcell-obligation`), which is implied by `OwnReadsRaceFree U` and differs from it (`wrap_readOnly_cell_refCell_differ`).",
+      "Locations are path-relative: values copied or moved out of the cell keep the path of the content position. This identification makes reads through a copied-out reference visible to the content's aliases; it also identifies an independent copy of plain data with the content position, which can only add conflicts (for `U = .plain` the content has no aliases, so none arise).",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `unsafe impl<T: ?Sized> Send for Cell<T> where T: Send {}` (line 320); `impl<T: ?Sized> !Sync for Cell<T> {}` (line 328); `unsafe impl<T: ?Sized> Send for RefCell<T> where T: Send {}` (line 1439); `impl<T: ?Sized> !Sync for RefCell<T> {}` (line 1442).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `Cell::set` (line 436, in `impl<T> Cell<T>` at line 404), `Cell::replace` (line 513), `Cell::get` (line 555, in `impl<T: Copy> Cell<T>` at line 539), `Cell::take` (line 674): every one takes `&self` and moves, copies or drops the content; `RefCell::try_borrow_unguarded` (line 1395, an `unsafe fn`) reads the borrow flag (line 1396) without updating it."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "wrap-refcell-obligation",
+    "lean": "Toy.SendSync.semSync_wrap_refCell_readOnly_iff_shrReadsRaceFree",
+    "lean_names": [
+      "Toy.SendSync.ShrReadsRaceFree",
+      "Toy.SendSync.expose_readOnly_refCell_shr",
+      "Toy.SendSync.shrReadsRaceFree_of_ownReadsRaceFree",
+      "Toy.SendSync.wrap_readOnly_cell_refCell_differ",
+      "Toy.SendSync.wrap_refCell_ref_cell_readOnly_not_semSync",
+      "Toy.SendSync.semSync_wrap_refCell_plain_readOnly"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every toy type `U` and flag `u`, a read-only wrapper over `RefCell<U>` is semantically `Sync`, `SemSync (.wrap (.refCell U) .readOnly u)`, if and only if `ShrReadsRaceFree U` holds: reads through the shared capabilities of `U` that a read-only view keeps, executed by the other thread, race with no alias capability of `U`. For every `U`, the read-only view of the shared footprint of `RefCell<U>` is the borrow-flag read followed by the read-only view of the shared capabilities of `U` placed at the content position (`expose_readOnly_refCell_shr`): the flag write and every access under a mutable borrow are dropped. For every `U`, `OwnReadsRaceFree U` implies `ShrReadsRaceFree U` (`shrReadsRaceFree_of_ownReadsRaceFree`). The two conditions differ: for `W = .wrap (.ref (.cell .plain)) .none false`, `OwnReadsRaceFree W` fails and `ShrReadsRaceFree W` holds, and for either flag `u` the read-only wrapper over `Cell<W>` is not semantically `Sync` while the read-only wrapper over `RefCell<W>` is (`wrap_readOnly_cell_refCell_differ`). For `U = .ref (.cell .plain)`, `ShrReadsRaceFree U` fails and, for either flag, the read-only wrapper over `RefCell<U>` is not semantically `Sync` (`wrap_refCell_ref_cell_readOnly_not_semSync`); for `U = .plain` and either flag it is semantically `Sync` (`semSync_wrap_refCell_plain_readOnly`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`U = .plain`: `ShrReadsRaceFree .plain` holds, and the read-only wrapper over `RefCell<plain>` is semantically `Sync`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.wrap_refCell_plain_readOnly_nonvacuous",
+    "non_claims": [
+      "The read-only view models a wrapper whose API never writes the borrow flag, such as one exposing the unsafe `RefCell::try_borrow_unguarded`. A wrapper exposing `RefCell::borrow` writes the flag and is not read-only in this sense; with the full view a wrapper over `RefCell<U>` is not semantically `Sync` for any `U` (`semSync_wrap_full_iff` with `not_semSync_refCell`).",
+      "The view keeps the non-acquiring `rd` events (`Ev.acquires = false`) of the shared capabilities of `U`, including such reads through references handed out by the content, and drops their writes like the others. It also drops every `rd` event that carries a `fresh` claim (`Ev.acquires = true`), that is, every read that first needs a lock acquisition or a mutable borrow by the executing thread; for example, the read-only view of the shared footprint of `Mutex<&Cell<plain>>` is empty (`expose_readOnly_mutex_example`). As for `Cell`, a Rust API that hands out a reference permitting writes does not have a read-only capability set in this sense.",
+      "The separating content `W` is a wrapper around `&Cell<plain>` that exposes nothing through a shared reference while its owner can use the inner cell. A shared reference to `Cell<W>` reaches the owner capabilities of `W` (in Rust, `Cell::get` copies a `Copy` value out), whereas a shared borrow of `RefCell<W>` reaches its shared capabilities alone. Whether a particular Rust type corresponds to `W` is a modeling-bridge question (not proved here).",
+      "Locations are path-relative, as for `Cell`: capabilities reached through the shared borrow keep the path of the content position.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example).",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `pub struct RefCell<T: ?Sized>` (line 852) has the borrow flag field `borrow: Cell<BorrowCounter>` (line 853); `RefCell::borrow(&self) -> Ref<'_, T>` (line 1124, through `try_borrow` at line 1161) and `RefCell::borrow_mut(&self) -> RefMut<'_, T>` (line 1224, through `try_borrow_mut` at line 1258) update the flag; `RefCell::replace` (line 1028, body `mem::replace(&mut self.borrow_mut(), t)` at line 1029), `replace_with` (line 1052), `swap` (line 1082) and `take` (line 1433, which calls `replace`) borrow mutably; `RefCell::get_mut(&mut self)` (line 1333) and `into_inner(self)` (line 998) reach the content without the flag; `RefCell::try_borrow_unguarded` (line 1395, an `unsafe fn`) reads the flag (line 1396) without updating it.",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/cell.rs: `Cell::set` (line 436, in `impl<T> Cell<T>` at line 404), `Cell::replace` (line 513), `Cell::get` (line 555, in `impl<T: Copy> Cell<T>` at line 539), `Cell::take` (line 674): every one takes `&self` and moves, copies or drops the content; `RefCell::try_borrow_unguarded` (line 1395, an `unsafe fn`) reads the borrow flag (line 1396) without updating it."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "wrap-rc-obligation",
+    "lean": "Toy.SendSync.semSync_wrap_rc_iff",
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every toy type `U`, view `v` and flag `u`, `SemSync (.wrap (.rc U) v u)` holds if and only if `v = .none`: a read-only view still exposes the non-atomic count read, which races with count writes through other handles.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`v = .none`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.wrap_rc_none_semSync_not_semSend",
+    "non_claims": [
+      "The `.readOnly` view keeps the non-acquiring `rd` events (`Ev.acquires = false`) of the field's shared footprint, including the count read and such reads available after obtaining a unique handle; it drops every `rd` event that carries a `fresh` claim (`Ev.acquires = true`), such as a read that first locks a `Mutex` or registers a mutable borrow in a `RefCell` inside the content. A view exposing the content without the count is not offered by the model.",
+      "In Rust, `Rc::strong_count` and `Rc::weak_count` read the non-atomic count, while `Deref::deref` for `Rc` reads no count. A wrapper exposing `Deref` alone (no `Clone`, no count readers) avoids the count race and is a different design, which the model does not represent; it neither establishes nor refutes anything about it.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "Rust alloc library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/alloc/src/rc.rs: `impl<T: ?Sized, A: Allocator> !Send for Rc<T, A> {}` (line 334); `impl<T: ?Sized, A: Allocator> !Sync for Rc<T, A> {}` (line 342); and library/core/src/marker.rs lines 74-79 (the `Send` documentation's example of two threads updating an `Rc` reference count).",
+      "Rust alloc library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/alloc/src/rc.rs: `Rc::strong_count` (lines 1897-1899) returns `this.inner().strong()` (line 1898), a read of the non-atomic count; `Rc::weak_count` (line 1879); `Deref::deref` for `Rc` (lines 2535-2541) returns `&self.inner().value` and reads no count.",
+      "Rust core library, rust-lang/rust commit 0ef1bc386059596dada8fb65b50425aab2ea637a (tag 1.100.0), library/core/src/sync/sync_view.rs: `unsafe impl<T: ?Sized> Sync for SyncView<T> {}` (lines 108-109: the impl at line 109, marked as unstable feature `exclusive_wrapper` by the attribute at line 108), justified because \"a `&SyncView<T>` for non-`Sync` `T` has no API whatsoever\" (lines 13-21)."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "checker-incomplete",
+    "lean": "Toy.SendSync.autoCheck_std_incomplete",
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "The wrapper `.wrap (.cell .plain) .readOnly false` (no unsafe impl) satisfies `SemSync`, and its shared reference satisfies `SemSend`, while `autoCheck stdTable` rejects both.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "Concrete closed statement.",
+    "nonvacuity_witness_lean": "Toy.SendSync.autoCheck_std_incomplete",
+    "non_claims": [
+      "Together with `autoCheck_std_sound_of_implsSound`, the standard-table checker is sound on every type satisfying `ImplsSound` and incomplete on types with wrappers; on wrapper-free types it is exact (`autoCheck_std_exact_of_wrapFree`). Without `ImplsSound` it can accept types that are not semantically `Sync` (`autoCheck_sound_implsSound_tight`).",
+      "The witness is shared with `autoCheck_std_exact_wrapFree_tight` (the tightness of `WrapFree`); this card adds the shared-reference conjunct. In Rust an `unsafe impl Sync` on such a wrapper is how the gap is bridged; this card does not claim that wrappers are the only source of incompleteness in Rust (`PhantomData`, zero-sized types, uninhabited variants and raw pointers are not modelled).",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "The Rust Reference, rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/special-types-and-traits.md, rules `lang-types.auto-traits.*` (lines 156-181): automatic implementation for `&T`, `&mut T` and aggregates (\"Structs, enums, unions, and tuples implement the trait if all of their fields do\"), suppression of the automatic implementation by a generic impl (\"the standard library implements `Send` for all `&T` where `T` is `Sync`\"), and negative impls.",
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example)."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "structural-constructors",
+    "lean": "Toy.SendSync.semSend_prod_iff",
+    "lean_names": [
+      "Toy.SendSync.semSync_prod_iff",
+      "Toy.SendSync.semSend_sum_iff",
+      "Toy.SendSync.semSync_sum_iff",
+      "Toy.SendSync.semSend_box_iff",
+      "Toy.SendSync.semSync_box_iff",
+      "Toy.SendSync.semSend_wrap_iff",
+      "Toy.SendSync.fp_sum_eq_prod"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For all toy types `A` and `B`, `SemSend (.prod A B)` holds if and only if `SemSend A` and `SemSend B` hold, and `SemSync (.prod A B)` holds if and only if `SemSync A` and `SemSync B` hold (`semSync_prod_iff`); the same two characterizations hold for `.sum A B` (`semSend_sum_iff`, `semSync_sum_iff`, which reuse the product proofs because `fp (.sum A B) = fp (.prod A B)` for all `A` and `B`, by `rfl`: `fp_sum_eq_prod`). For every toy type `U`, `SemSend (.box U) ↔ SemSend U` and `SemSync (.box U) ↔ SemSync U` (`semSend_box_iff`, `semSync_box_iff`), and for every view `v` and flag `u`, `SemSend (.wrap U v u) ↔ SemSend U` (`semSend_wrap_iff`); these three hold by `Iff.rfl`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`A = B = .plain`.",
+    "nonvacuity_witness_lean": "Toy.SendSync.prod_plain_nonvacuous",
+    "non_claims": [
+      "Depth: the product characterizations are shallow (race decomposition over disjoint paths); the `.box` and `.wrap` companions are definitional (`Iff.rfl`), and the `.sum` companions are the product proofs (`fp_sum_eq_prod`).",
+      "The footprint of `.sum A B` is that of `.prod A B`: no discriminant, no variant exclusivity, and no uninhabited variants; enums with an uninhabited non-`Send` variant are not modelled.",
+      "Rust's `Box<T, A>` also depends on the allocator `A`, which is not modelled. `semSend_wrap_iff` holds by `Iff.rfl` because wrappers cannot restrict their owner or drop capabilities in this model; wrappers that soundly `unsafe impl Send` by restricting ownership are not modelled. Unions, trait objects, closures and futures are not modelled.",
+      "Cross-component races are impossible because components occupy disjoint paths.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "The Rust Reference, rust-lang/reference commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/special-types-and-traits.md, rules `lang-types.auto-traits.*` (lines 156-181): automatic implementation for `&T`, `&mut T` and aggregates (\"Structs, enums, unions, and tuples implement the trait if all of their fields do\"), suppression of the automatic implementation by a generic impl (\"the standard library implements `Send` for all `&T` where `T` is `Sync`\"), and negative impls.",
+      "RustBelt (Jung, Jourdan, Krebbers, Dreyer, POPL 2018, DOI 10.1145/3158154), Section 4.2: products are interpreted by separating conjunction of the components' ownership predicates, and owned pointers by the ownership predicate of the pointee, so thread independence of the components gives thread independence of the product."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  },
+  {
+    "id": "definition-examples",
+    "lean": [
+      "Toy.SendSync.compatible_example_via_via",
+      "Toy.SendSync.not_compatible_example_uniq_via",
+      "Toy.SendSync.race_example_write_read",
+      "Toy.SendSync.race_example_locked_vs_unlocked",
+      "Toy.SendSync.not_race_example_read_read",
+      "Toy.SendSync.not_race_example_atomic_atomic",
+      "Toy.SendSync.not_race_example_locked_writes",
+      "Toy.SendSync.nfr_example",
+      "Toy.SendSync.nfr_example_fresh_release",
+      "Toy.SendSync.nfr_example_precondition",
+      "Toy.SendSync.nfr_example_unnamed_release",
+      "Toy.SendSync.relNamesAcq_example",
+      "Toy.SendSync.not_nfr_example",
+      "Toy.SendSync.not_nfr_example_placed",
+      "Toy.SendSync.expose_readOnly_example",
+      "Toy.SendSync.expose_readOnly_example_acquires",
+      "Toy.SendSync.expose_readOnly_mutex_example",
+      "Toy.SendSync.fp_cell_plain",
+      "Toy.SendSync.fp_refCell_plain",
+      "Toy.SendSync.fp_shr_cell_ne_refCell_plain",
+      "Toy.SendSync.semSend_examples",
+      "Toy.SendSync.not_semSend_examples",
+      "Toy.SendSync.semSync_examples",
+      "Toy.SendSync.not_semSync_examples",
+      "Toy.SendSync.autoCheck_examples",
+      "Toy.SendSync.not_tableSound_rcSendTable",
+      "Toy.SendSync.tableSound_noImplTable",
+      "Toy.SendSync.implsSound_examples",
+      "Toy.SendSync.wrapFree_examples",
+      "Toy.SendSync.not_syncObligation_cell_full",
+      "Toy.SendSync.ownReadsRaceFree_examples",
+      "Toy.SendSync.shrReadsRaceFree_examples"
+    ],
+    "lean_names": [
+      "Toy.SendSync.Path",
+      "Toy.SendSync.Tid",
+      "Toy.SendSync.Tid.flip",
+      "Toy.SendSync.Acq",
+      "Toy.SendSync.Claim",
+      "Toy.SendSync.Claim.path",
+      "Toy.SendSync.Kind",
+      "Toy.SendSync.Kind.isAccess",
+      "Toy.SendSync.Kind.isWrite",
+      "Toy.SendSync.Kind.isAtomic",
+      "Toy.SendSync.Kind.isRead",
+      "Toy.SendSync.Ev",
+      "Toy.SendSync.Claim.isFresh",
+      "Toy.SendSync.Ev.acquires",
+      "Toy.SendSync.Holder",
+      "Toy.SendSync.Snap",
+      "Toy.SendSync.Acq.holder",
+      "Toy.SendSync.Sat",
+      "Toy.SendSync.SatAll",
+      "Toy.SendSync.Compatible",
+      "Toy.SendSync.Concurrent",
+      "Toy.SendSync.Conflicting",
+      "Toy.SendSync.Race",
+      "Toy.SendSync.Acq.maker",
+      "Toy.SendSync.NoForeignRelease",
+      "Toy.SendSync.RelNamesAcq",
+      "Toy.SendSync.Holder.reloc",
+      "Toy.SendSync.Acq.reloc",
+      "Toy.SendSync.Claim.reloc",
+      "Toy.SendSync.Ev.place",
+      "Toy.SendSync.place",
+      "Toy.SendSync.rootEv",
+      "Toy.SendSync.View",
+      "Toy.SendSync.View.expose",
+      "Toy.SendSync.Ty",
+      "Toy.SendSync.Fp",
+      "Toy.SendSync.fp",
+      "Toy.SendSync.SemSend",
+      "Toy.SendSync.SemSync",
+      "Toy.SendSync.Prim",
+      "Toy.SendSync.Prim.apply",
+      "Toy.SendSync.Rule",
+      "Toy.SendSync.Rule.eval",
+      "Toy.SendSync.Rule.Holds",
+      "Toy.SendSync.Table",
+      "Toy.SendSync.stdTable",
+      "Toy.SendSync.autoCheck",
+      "Toy.SendSync.TableSound",
+      "Toy.SendSync.ImplsSound",
+      "Toy.SendSync.WrapFree",
+      "Toy.SendSync.SyncObligation",
+      "Toy.SendSync.OwnReadsRaceFree",
+      "Toy.SendSync.ShrReadsRaceFree",
+      "Toy.SendSync.rcSendTable",
+      "Toy.SendSync.noImplTable"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "plain_claim": "The core definitions admit their intended positive examples and reject their intended negative examples: `Race`, `Compatible`, `NoForeignRelease`, `RelNamesAcq`, `View.expose` (with `Ev.acquires`), `fp`, `SemSend`, `SemSync`, `autoCheck`, `TableSound`, `ImplsSound`, `WrapFree`, `SyncObligation`, `OwnReadsRaceFree` and `ShrReadsRaceFree`, each on the concrete instances stated in the listed theorems. Every listed theorem is a closed statement about concrete instances.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "Closed statements about concrete instances; for example `semSend_examples` (five concrete types are semantically `Send`).",
+    "nonvacuity_witness_lean": "Toy.SendSync.semSend_examples",
+    "non_claims": [
+      "Reference point: these theorems test the definitions on concrete instances; they carry no general claim. Universally quantified facts about the definitions (for example `fp_sum_eq_prod`, `fp_relNamesAcq`, `autoCheck_std_cell_eq_refCell`) are companions of other cards.",
+      "Model–system relation: none proved. These are statements about the toy capability model `Toy.SendSync`; they neither establish nor refute the corresponding claims about Rust's `Send` and `Sync` traits, rustc's auto-trait implementation, or the standard library types `Cell`, `RefCell`, `Rc`, `Arc`, `Mutex`, `MutexGuard`."
+    ],
+    "prior_art": [
+      "The Rustonomicon, chapter \"Send and Sync\", rust-lang/nomicon commit b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6, src/send-and-sync.md: lines 8-9 (\"A type is Send if it is safe to send it to another thread\"; \"T is Sync if and only if `&T` is Send\"); lines 20-29 (automatic derivation; `Cell`/`RefCell` not Sync; `Rc` neither); lines 177-205 (the obligations argued for `unsafe impl Send`/`Sync` on the `Carton` example)."
+    ],
+    "design_question": "Rust's `Send` and `Sync` are auto traits computed structurally with manual unsafe impls, and `T: Sync` is defined as `&T: Send`. What does each trait certify in a model with threads, shared references and interior mutability; when are the structural rules sound; which primitives need opt-outs/opt-ins and why; and which tempting rules are false?"
+  }
+]

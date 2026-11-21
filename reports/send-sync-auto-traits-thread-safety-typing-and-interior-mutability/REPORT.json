@@ -1,0 +1,67 @@
+{
+  "topics": [
+    "lean",
+    "lean/mechanization",
+    "pl",
+    "pl/auto-traits",
+    "pl/interior-mutability",
+    "pl/thread-safety-typing",
+    "pl/capabilities",
+    "pl/rust-send-sync",
+    "verification",
+    "verification/formalized-results",
+    "verification/data-race-freedom"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust standard library source (core, alloc, std)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.100.0",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a"
+      }
+    },
+    {
+      "name": "The Rustonomicon",
+      "identity": {
+        "repository": "rust-lang/nomicon",
+        "revision": "b0bb569883a3e65ab19d4f1adf1b8dbc1629d0a6"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Rust RFCs 0019 (Opt-in Built-in Traits) and 0458 (Send Improvements)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language (POPL 2018)",
+      "identity": {
+        "doi": "10.1145/3158154"
+      }
+    },
+    {
+      "name": "RustBelt Meets Relaxed Memory (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371102"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

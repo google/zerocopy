@@ -1,0 +1,920 @@
+{
+  "statements": {
+    "Toy.SendSync.Acq": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.Acq.holder": {
+      "closure_sha256": "18a963683118779a407f26f39f2fad327f2b029c5a97280bc534d8d9e1b448e0",
+      "closure_size": 10,
+      "statement_sha256": "bb2b14caff2998fb51d8b0495c720054584c710a7f227a5094bb8711124c669b"
+    },
+    "Toy.SendSync.Acq.maker": {
+      "closure_sha256": "353b15047493ffaeace6830acea18c83e7c915f315105889ee2e5eb1610349a1",
+      "closure_size": 7,
+      "statement_sha256": "f223f0375e3eb629ded40aba2ce9b11eb965b17b4d6aa4d73fa0ab9cc4635f1a"
+    },
+    "Toy.SendSync.Acq.reloc": {
+      "closure_sha256": "53d360b8e9c969da60ebcf9f4519a2c234f48db2fe18fafb66262be8ec9a389a",
+      "closure_size": 4,
+      "statement_sha256": "146ec80e9343b08009ad4c95b800b9318c5777e1eccd602e8abc5d109c5a6690"
+    },
+    "Toy.SendSync.Claim": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.Claim.isFresh": {
+      "closure_sha256": "64750f7933ca69919ca91d90835db8c6b843640e62ba2e88cc5eafa467f227ea",
+      "closure_size": 8,
+      "statement_sha256": "cda071246e39b3e11d243f9859ba2bab254405e133a3b17df03b77419f4c8db9"
+    },
+    "Toy.SendSync.Claim.path": {
+      "closure_sha256": "64750f7933ca69919ca91d90835db8c6b843640e62ba2e88cc5eafa467f227ea",
+      "closure_size": 8,
+      "statement_sha256": "b4e2d07473105f1b2696dbf6e854c95a9bb0ce23e647985d79ebde5a15df4b34"
+    },
+    "Toy.SendSync.Claim.reloc": {
+      "closure_sha256": "64750f7933ca69919ca91d90835db8c6b843640e62ba2e88cc5eafa467f227ea",
+      "closure_size": 8,
+      "statement_sha256": "2f51fb112b034f7609b43584c8275019705483a659a51d299611ce3b4a092155"
+    },
+    "Toy.SendSync.Compatible": {
+      "closure_sha256": "64750f7933ca69919ca91d90835db8c6b843640e62ba2e88cc5eafa467f227ea",
+      "closure_size": 8,
+      "statement_sha256": "f760b7ebcb8e3fe8a4e53f902cc16d48c97d4619a673b96f7dc0736dfe6cf08a"
+    },
+    "Toy.SendSync.Concurrent": {
+      "closure_sha256": "eab84d5089f79393dfc116bd5490102af9121812babfe622e352fd864a7687cd",
+      "closure_size": 15,
+      "statement_sha256": "89fa3b5003a9339801d5bedd68203be8e125c42ce739b8ae4418de1a0bc3a5bb"
+    },
+    "Toy.SendSync.Conflicting": {
+      "closure_sha256": "eab84d5089f79393dfc116bd5490102af9121812babfe622e352fd864a7687cd",
+      "closure_size": 15,
+      "statement_sha256": "89fa3b5003a9339801d5bedd68203be8e125c42ce739b8ae4418de1a0bc3a5bb"
+    },
+    "Toy.SendSync.Ev": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.Ev.acquires": {
+      "closure_sha256": "eab84d5089f79393dfc116bd5490102af9121812babfe622e352fd864a7687cd",
+      "closure_size": 15,
+      "statement_sha256": "73388b8b64f413836fa43ec8805103bf364768e21bdb257f886cd3b229e0030f"
+    },
+    "Toy.SendSync.Ev.place": {
+      "closure_sha256": "eab84d5089f79393dfc116bd5490102af9121812babfe622e352fd864a7687cd",
+      "closure_size": 15,
+      "statement_sha256": "5f088556acf510a7b3e2a5ac6cd295fac9bf6b9f7f37087d70c07f2969a65cbe"
+    },
+    "Toy.SendSync.Fp": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.Holder": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.Holder.reloc": {
+      "closure_sha256": "d12b8d05164af70154f308d5e4515865e76e5b1e9efc48f8424e8c3eee8ad672",
+      "closure_size": 7,
+      "statement_sha256": "b238cf905c1d0d7f0e6460f303ee07a8197d8cb75448de6af018a89b2181875d"
+    },
+    "Toy.SendSync.ImplsSound": {
+      "closure_sha256": "6b2cb26a6a7ccad941a8cb0f1e6a2b85c4ade694fae5f0d35275fd2176eff931",
+      "closure_size": 18,
+      "statement_sha256": "dc67da8ced1b590f01d5242db8dd7fa6e991dc37a0588c071969b36443542ee5"
+    },
+    "Toy.SendSync.Kind": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.Kind.isAccess": {
+      "closure_sha256": "5a87e3a7125d20de5f60a0ee9889e38f7530dcbf36f584dd2b207c3a0d09790e",
+      "closure_size": 5,
+      "statement_sha256": "b17170a61d8582b722c1cf20538768796c89a057edd7d7e8c316490755bf2cda"
+    },
+    "Toy.SendSync.Kind.isAtomic": {
+      "closure_sha256": "5a87e3a7125d20de5f60a0ee9889e38f7530dcbf36f584dd2b207c3a0d09790e",
+      "closure_size": 5,
+      "statement_sha256": "b17170a61d8582b722c1cf20538768796c89a057edd7d7e8c316490755bf2cda"
+    },
+    "Toy.SendSync.Kind.isRead": {
+      "closure_sha256": "5a87e3a7125d20de5f60a0ee9889e38f7530dcbf36f584dd2b207c3a0d09790e",
+      "closure_size": 5,
+      "statement_sha256": "b17170a61d8582b722c1cf20538768796c89a057edd7d7e8c316490755bf2cda"
+    },
+    "Toy.SendSync.Kind.isWrite": {
+      "closure_sha256": "5a87e3a7125d20de5f60a0ee9889e38f7530dcbf36f584dd2b207c3a0d09790e",
+      "closure_size": 5,
+      "statement_sha256": "b17170a61d8582b722c1cf20538768796c89a057edd7d7e8c316490755bf2cda"
+    },
+    "Toy.SendSync.NoForeignRelease": {
+      "closure_sha256": "687ede777b4daa517c5e24135014c0d38e87b4a20f446a3b06b90679ed14fd65",
+      "closure_size": 18,
+      "statement_sha256": "06d4c9c4c91bdfb8ed8a8fc5208011f55234b0d676ae6803478b34cdc71485c3"
+    },
+    "Toy.SendSync.OwnReadsRaceFree": {
+      "closure_sha256": "6b2cb26a6a7ccad941a8cb0f1e6a2b85c4ade694fae5f0d35275fd2176eff931",
+      "closure_size": 18,
+      "statement_sha256": "ca9f73fadbd3f4b7b7d05884afbe86c93bc8c642b578b06f3b080e5709afb015"
+    },
+    "Toy.SendSync.Path": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.Prim": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.Prim.apply": {
+      "closure_sha256": "e146e838f5d002d83550feb605f2e9746230dcf0d7cb4673387c33fc55ce0af1",
+      "closure_size": 25,
+      "statement_sha256": "b9743c58aab97c4fb7d8c02b16432e3fa7e835732b1196c2190503cbc9e59c9d"
+    },
+    "Toy.SendSync.Race": {
+      "closure_sha256": "eab84d5089f79393dfc116bd5490102af9121812babfe622e352fd864a7687cd",
+      "closure_size": 15,
+      "statement_sha256": "5e22743989be380ecd10f0df6f3f83db282a7f2b8d859fa0f39b55eb3e656ee7"
+    },
+    "Toy.SendSync.RelNamesAcq": {
+      "closure_sha256": "eab84d5089f79393dfc116bd5490102af9121812babfe622e352fd864a7687cd",
+      "closure_size": 15,
+      "statement_sha256": "c4462a412d0b1da6ef2acd622d7ebb02575b6ff241dd0a64c86f30e9096e250d"
+    },
+    "Toy.SendSync.Rule": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.Rule.Holds": {
+      "closure_sha256": "684753013ffddf448f9640c5a9c7ce484590e245029e08b7b28bb93b4179143f",
+      "closure_size": 2,
+      "statement_sha256": "e1dc5ee6999a9b006832ae81e20eff084098d40823fc1285433d168ed2f0137c"
+    },
+    "Toy.SendSync.Rule.eval": {
+      "closure_sha256": "684753013ffddf448f9640c5a9c7ce484590e245029e08b7b28bb93b4179143f",
+      "closure_size": 2,
+      "statement_sha256": "55aa3c936237a1e16adb8959d2f18986b5bb0982a37fb4f15cafef6f8266477c"
+    },
+    "Toy.SendSync.Sat": {
+      "closure_sha256": "5ca5bfcbd69dfa50523b6f8321c44f4dde5ebc0cddf6ee872fdf8c53010a7527",
+      "closure_size": 16,
+      "statement_sha256": "56eaf8bb796f9a18f09e16ab15a9fae535d2f521ddf161d02d205181effd24c9"
+    },
+    "Toy.SendSync.SatAll": {
+      "closure_sha256": "5ca5bfcbd69dfa50523b6f8321c44f4dde5ebc0cddf6ee872fdf8c53010a7527",
+      "closure_size": 16,
+      "statement_sha256": "d281b9e6fd70df2abbfec6d2f8dc71413bfc6297473a471434669e76396f1209"
+    },
+    "Toy.SendSync.SemSend": {
+      "closure_sha256": "6b2cb26a6a7ccad941a8cb0f1e6a2b85c4ade694fae5f0d35275fd2176eff931",
+      "closure_size": 18,
+      "statement_sha256": "3723a0791d672df43b8a441bc415c676e1f8f47fccc252b9aba8b28128fe2877"
+    },
+    "Toy.SendSync.SemSync": {
+      "closure_sha256": "6b2cb26a6a7ccad941a8cb0f1e6a2b85c4ade694fae5f0d35275fd2176eff931",
+      "closure_size": 18,
+      "statement_sha256": "3723a0791d672df43b8a441bc415c676e1f8f47fccc252b9aba8b28128fe2877"
+    },
+    "Toy.SendSync.ShrReadsRaceFree": {
+      "closure_sha256": "6b2cb26a6a7ccad941a8cb0f1e6a2b85c4ade694fae5f0d35275fd2176eff931",
+      "closure_size": 18,
+      "statement_sha256": "ca9f73fadbd3f4b7b7d05884afbe86c93bc8c642b578b06f3b080e5709afb015"
+    },
+    "Toy.SendSync.Snap": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.SyncObligation": {
+      "closure_sha256": "6b2cb26a6a7ccad941a8cb0f1e6a2b85c4ade694fae5f0d35275fd2176eff931",
+      "closure_size": 18,
+      "statement_sha256": "b33d429df43c4edaf08320ab2602eb19fb060f500c3b968001b91cab4b353cb6"
+    },
+    "Toy.SendSync.Table": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.TableSound": {
+      "closure_sha256": "30740ea48fe3e7ce5fae84902c9ae3857d905c92e3a7a41e0aec74bfd44f2a15",
+      "closure_size": 11,
+      "statement_sha256": "1872b3f7aaf93c6fedf1179ccca4bab45dfc880bd97477923742f486f349d3c3"
+    },
+    "Toy.SendSync.Tid": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.Tid.flip": {
+      "closure_sha256": "8aa1a71fc7a1879db58ac04932d89e6dd99f675fe5b757b258bfbec739313e82",
+      "closure_size": 3,
+      "statement_sha256": "bfc241eab65751b405f0524ab829309aea00bf3aa7ac4c912adefa274cf3a7f6"
+    },
+    "Toy.SendSync.Ty": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.View": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.SendSync.View.expose": {
+      "closure_sha256": "c6839aac3f1da623981711e7677b890786d7dbb6619340588022a34b292a423e",
+      "closure_size": 19,
+      "statement_sha256": "8a2ad1eefd7b035e0afab5009e69d129bafd080778de7fc7450e946a93ddd70c"
+    },
+    "Toy.SendSync.WrapFree": {
+      "closure_sha256": "6b2cb26a6a7ccad941a8cb0f1e6a2b85c4ade694fae5f0d35275fd2176eff931",
+      "closure_size": 18,
+      "statement_sha256": "dc67da8ced1b590f01d5242db8dd7fa6e991dc37a0588c071969b36443542ee5"
+    },
+    "Toy.SendSync.arc_cell_plain_content_not_semSync_arc_neither": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "80ebece88a0ba0c08e731ecd50be5727e3c96ec7bed351e10a341aca2f160a7e"
+    },
+    "Toy.SendSync.arc_guard_plain_content_not_semSend_arc_neither": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "22a30acf7f383ee8e907450653482af39c2a27a5432b06516de3399450aad479"
+    },
+    "Toy.SendSync.arc_plain_nonvacuous": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "f79e31ec809e4ad49a0360ab61e0aae45cd5428af55fb56f378ffd31ecb6df79"
+    },
+    "Toy.SendSync.arc_plain_shr_has_write_semSync": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "de175db23ea14b194e287a647cc1d669ebcce804c5986d26dc1ad48442efb80c"
+    },
+    "Toy.SendSync.arc_race_iff": {
+      "closure_sha256": "f991b1ec68391c4ffee26e34f94ab7b4d9ef8a1342ed5e90945f31167f565eb8",
+      "closure_size": 107,
+      "statement_sha256": "fbcb3348a7f77ef0c8fb9397faad44820b97597fc3d7809b594a7ce05d9fa68d"
+    },
+    "Toy.SendSync.arc_wrap_rc_none_content_not_semSend_arc_neither": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "271a4b1647a12de5e95fafc8ad498537278af04252e62731cea28e51a514b2e0"
+    },
+    "Toy.SendSync.autoCheck": {
+      "closure_sha256": "30331a72b2baba89ded0d99559f5a1634258ffcce4270f9ae3b970a221bafb6a",
+      "closure_size": 29,
+      "statement_sha256": "dc51d476712b020701d1cf7c5819ad3de04f172564fce3b18ab8d866968787fd"
+    },
+    "Toy.SendSync.autoCheck_examples": {
+      "closure_sha256": "a2cf8cc38403cc4293b91add699bee3dc81cb2125cc9a2db7e3d267b7bd35e7b",
+      "closure_size": 47,
+      "statement_sha256": "012bec0146fd7523da35b0868a3efb99c63bf8e843bc5fbf3e084d49ece26538"
+    },
+    "Toy.SendSync.autoCheck_sound_implsSound_tight": {
+      "closure_sha256": "da11945afb1bc894151876de0462b5900eb2e4b8e742061619207fa04ceef521",
+      "closure_size": 138,
+      "statement_sha256": "23b6812f5cc9e8c383edc65f4eb2281d0c05326e8d480f8fcb602c3e8a093f77"
+    },
+    "Toy.SendSync.autoCheck_sound_nonvacuous": {
+      "closure_sha256": "bd5afa0bf19f95fdf0234be11a1d187536f20ef6411ab86c77346eb2d60b80e6",
+      "closure_size": 140,
+      "statement_sha256": "f08850a2dde5ac0509d0a05ae5e6ec13615292273239148c77f4736b0dc61606"
+    },
+    "Toy.SendSync.autoCheck_sound_of_tableSound_of_implsSound": {
+      "closure_sha256": "b1c2c957fec57ef0a740c62451da7dfb5d03ff7ad24b26cdf77136617ed20344",
+      "closure_size": 138,
+      "statement_sha256": "d53aff23954d6f6df3187decee808493a2aa1633eb98f657317407001c5a2ba6"
+    },
+    "Toy.SendSync.autoCheck_sound_tableSound_tight": {
+      "closure_sha256": "1332ed794d9d3f9cd0b94340f98ceefc0163945171177d521e7b385cd7388657",
+      "closure_size": 141,
+      "statement_sha256": "b0ccffc229fe6429c1d584411da3bfe66b76f516773928b42ee7335c4512153d"
+    },
+    "Toy.SendSync.autoCheck_std_cell_eq_refCell": {
+      "closure_sha256": "a2cf8cc38403cc4293b91add699bee3dc81cb2125cc9a2db7e3d267b7bd35e7b",
+      "closure_size": 47,
+      "statement_sha256": "dbe24be182d5ee9b5389ce5ead0730b17742a134780c0a029405653bfa5af983"
+    },
+    "Toy.SendSync.autoCheck_std_exact_nonvacuous": {
+      "closure_sha256": "5bd7b251b86f7effb9518bd99f8d911d6d9a8236db2db81a48ee1ed1ad7cfbff",
+      "closure_size": 26,
+      "statement_sha256": "574fbdd316412f4730ea6e62e07604f0964a703b9724b74ccba0ff5431333739"
+    },
+    "Toy.SendSync.autoCheck_std_exact_of_wrapFree": {
+      "closure_sha256": "0260d591b31837fbbb52bf62126ebdaacb23d8fc6f6a5b3af977d7e38ae94c5b",
+      "closure_size": 136,
+      "statement_sha256": "2247c1c5dc36db5fbd9427b2b9e11cb2d4bdcd39b0a313c580fc7a502975c388"
+    },
+    "Toy.SendSync.autoCheck_std_exact_wrapFree_tight": {
+      "closure_sha256": "9abd9ed2fff4dcf5285d991d89e67bc3cc1772fff3ec2cdd0741d00ed1d5fe28",
+      "closure_size": 133,
+      "statement_sha256": "16b4c293850e1f2e63ff5ffae11f63ea80d4ee5e4b079cb85c42aa21c9b64eed"
+    },
+    "Toy.SendSync.autoCheck_std_incomplete": {
+      "closure_sha256": "99a40a4c80fb542018410a14cd80a106e6524ef63de3369fc332d99d28494620",
+      "closure_size": 134,
+      "statement_sha256": "bcf0550b9a11f79207905f9e994af75a3b2a9beb34e23228db84dccb7f05f983"
+    },
+    "Toy.SendSync.autoCheck_std_sound_of_implsSound": {
+      "closure_sha256": "61778e151bf36feca2df2dbb182a3ce913d82ba1a62fc0589a3a37234ecb4e80",
+      "closure_size": 136,
+      "statement_sha256": "98345696a98596cad7b1449aa3c568bedf4741352f75a4963972fe8af0d2b6c6"
+    },
+    "Toy.SendSync.cell_plain_semSend_not_semSync": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "50f83aa66421a104847f877b286ae201a1df61a0c20c1cae02cea141349575bd"
+    },
+    "Toy.SendSync.cell_plain_shr_has_write": {
+      "closure_sha256": "844f183b30d290b3d2a02b0f963e0402b981d3237eb196c7be4f2b6adae5c67e",
+      "closure_size": 80,
+      "statement_sha256": "4d0173bc8a591efc972951665961faee1cc1f79801c659761a4faf9ee2e6f07e"
+    },
+    "Toy.SendSync.cell_positive_control": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "a753871ddd25c39a64d01df5110049531e70f9266cf84b8fee0b925bf3de55fe"
+    },
+    "Toy.SendSync.cell_refCell_semSend_semSync_agree": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "aed956846ef32436ac8463cbe2aca5d260bfc9f9d017ed9f0db9e4c9fed3bb10"
+    },
+    "Toy.SendSync.compatible_example_via_via": {
+      "closure_sha256": "fbebb3b4ec93284c6fc1e8cdcb5a7846d4dc9914aa776804ba1761cdb644a372",
+      "closure_size": 32,
+      "statement_sha256": "4f4766e21a40b2bba474bb4c890ea4f818356b4987cb550fff0c86681cba1e88"
+    },
+    "Toy.SendSync.expose_readOnly_example": {
+      "closure_sha256": "32da328cd63b8c5fb2cdc524e510e9261315aa4dc5987d635fb0f610de930d00",
+      "closure_size": 43,
+      "statement_sha256": "15b0541f5bc326e6e7bc84e126f8f7346e734a08ea3f2b82fd76218f48eb2fb0"
+    },
+    "Toy.SendSync.expose_readOnly_example_acquires": {
+      "closure_sha256": "32da328cd63b8c5fb2cdc524e510e9261315aa4dc5987d635fb0f610de930d00",
+      "closure_size": 43,
+      "statement_sha256": "df41fe0e298b286520a4864e313b89a6f46064db7d5a74f8db92a56e38e94632"
+    },
+    "Toy.SendSync.expose_readOnly_mutex_example": {
+      "closure_sha256": "403fbbefa1d64cefb50c15e1198f813e8c081045ffc021a59e33cb3b6afab9fe",
+      "closure_size": 77,
+      "statement_sha256": "eb90bab801ae88853c97a40da6932d8f8af84e1b282ac372c21672875019e462"
+    },
+    "Toy.SendSync.expose_readOnly_refCell_shr": {
+      "closure_sha256": "403fbbefa1d64cefb50c15e1198f813e8c081045ffc021a59e33cb3b6afab9fe",
+      "closure_size": 77,
+      "statement_sha256": "648c63a2e56d6a0ad84a24a2aa38b6021e5127abfa353e38dc2b9f4211dccaf7"
+    },
+    "Toy.SendSync.fp": {
+      "closure_sha256": "2cbec1297759824de27ac4ae85902805de8b1e3f549d68cf94d3f57a6d6afe1a",
+      "closure_size": 35,
+      "statement_sha256": "2ce91283174e21f1092d18bc9664c1c06174f0e15c5553c2263f2fcbe93393b0"
+    },
+    "Toy.SendSync.fp_cell_plain": {
+      "closure_sha256": "403fbbefa1d64cefb50c15e1198f813e8c081045ffc021a59e33cb3b6afab9fe",
+      "closure_size": 77,
+      "statement_sha256": "ae77c64521471235f02dff9aed8224560ad8f09ca6830d450042877ed0ac0576"
+    },
+    "Toy.SendSync.fp_refCell_plain": {
+      "closure_sha256": "403fbbefa1d64cefb50c15e1198f813e8c081045ffc021a59e33cb3b6afab9fe",
+      "closure_size": 77,
+      "statement_sha256": "bc26828c401d203ba35ff21b5d799b12c27d34f5f3fa893cf1ac6fa17021f349"
+    },
+    "Toy.SendSync.fp_relNamesAcq": {
+      "closure_sha256": "d01476fd9df5dd86fa1a916d8fea2d41e5700f248e66e27d7a20f6f4f44ad33b",
+      "closure_size": 78,
+      "statement_sha256": "d8d1387d1b5e57d5fb004abf6191b07f803e8129a2572324c25db325807c2c00"
+    },
+    "Toy.SendSync.fp_shr_cell_ne_refCell_plain": {
+      "closure_sha256": "403fbbefa1d64cefb50c15e1198f813e8c081045ffc021a59e33cb3b6afab9fe",
+      "closure_size": 77,
+      "statement_sha256": "ddf03a19b44d6c91cc0094edf96d712b47a7cd03c6ba6a23f8a59e022f578d6e"
+    },
+    "Toy.SendSync.fp_sum_eq_prod": {
+      "closure_sha256": "403fbbefa1d64cefb50c15e1198f813e8c081045ffc021a59e33cb3b6afab9fe",
+      "closure_size": 77,
+      "statement_sha256": "11286dcc6876d8530130b71fc6311199062e57edbce3c851db0dca1ad73cdaa9"
+    },
+    "Toy.SendSync.guard_plain_own_not_subset_shr": {
+      "closure_sha256": "403fbbefa1d64cefb50c15e1198f813e8c081045ffc021a59e33cb3b6afab9fe",
+      "closure_size": 77,
+      "statement_sha256": "2eeaeb309f281705465dbccf5e69e6b395f474384f707d9a69ce1776a3b035bb"
+    },
+    "Toy.SendSync.guard_plain_semSync_not_semSend": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "5440d28893d80acc58be8354ae458689dcf1eec5b0105cd5522ebc41fa0a2d47"
+    },
+    "Toy.SendSync.guard_plain_transfer_race_free": {
+      "closure_sha256": "f991b1ec68391c4ffee26e34f94ab7b4d9ef8a1342ed5e90945f31167f565eb8",
+      "closure_size": 107,
+      "statement_sha256": "8f36aba8b6a481d7145a8b2c7c4c5f247a1170475cc968823f62c91773a38b93"
+    },
+    "Toy.SendSync.guard_rc_plain_transfer_race": {
+      "closure_sha256": "f991b1ec68391c4ffee26e34f94ab7b4d9ef8a1342ed5e90945f31167f565eb8",
+      "closure_size": 107,
+      "statement_sha256": "3e0ab6cafade8403bf9b8238bd0d1481e85e4b77dcd2f7885a2338f1d0aba263"
+    },
+    "Toy.SendSync.guard_sync_examples": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "21dd8c9cb87a3135b3167c79e63944ef012fab966950b3476e6c60678c3abd4d"
+    },
+    "Toy.SendSync.guard_transfer_race_iff": {
+      "closure_sha256": "f991b1ec68391c4ffee26e34f94ab7b4d9ef8a1342ed5e90945f31167f565eb8",
+      "closure_size": 107,
+      "statement_sha256": "a2fad513728ab64f1a1abfac8b3a4d4c404c908d123b9bc127692be03650c8b4"
+    },
+    "Toy.SendSync.implsSound_examples": {
+      "closure_sha256": "f42c38801d9f6faa8f8d59f5c22b367e97335c1641177840284f7472f7ead4f2",
+      "closure_size": 112,
+      "statement_sha256": "57696d5f8c3ae232313fd83882a14db6f0329001af38da6652579c3e800bf222"
+    },
+    "Toy.SendSync.mutex_cell_plain_semSync_content_not_semSync": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "d3aff872129d265029775e9c7d931284388698dd7cda9b562b88696fdd08072e"
+    },
+    "Toy.SendSync.mutex_cell_rc_plain_not_semSync": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "3491579a5a1815606fffa5c4bb072eaee31c964c957424374fbcff74389e6e9b"
+    },
+    "Toy.SendSync.mutex_rc_plain_content_not_semSend_mutex_neither": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "1ef2aa213057ff18f27e852c9ce2e7366ead54a45626b6c8b077f36116574aea"
+    },
+    "Toy.SendSync.nfr_example": {
+      "closure_sha256": "c5beec1a8e9a1ef8fd54bf7ff29dc6a76057751dfece31b224b3eda10bd9d4a2",
+      "closure_size": 27,
+      "statement_sha256": "68f6a1eacf065e35f9ac85213e50f8850650e1e1de6fc3d8a7bb75da760fbfe2"
+    },
+    "Toy.SendSync.nfr_example_fresh_release": {
+      "closure_sha256": "c5beec1a8e9a1ef8fd54bf7ff29dc6a76057751dfece31b224b3eda10bd9d4a2",
+      "closure_size": 27,
+      "statement_sha256": "f0555057056720d80a62861cc1cb0aff0b380bae9f3b0c4a7c1a20abb0344a34"
+    },
+    "Toy.SendSync.nfr_example_precondition": {
+      "closure_sha256": "23e1bbfc7e702ee8db476325023402f24593149afcf8687740bf00e03520bd0a",
+      "closure_size": 26,
+      "statement_sha256": "0bb13b9586a892cfced17cbfeba0a5d99d662c8810d291120da8bdde057c5feb"
+    },
+    "Toy.SendSync.nfr_example_unnamed_release": {
+      "closure_sha256": "b12588dc98a0389a526949d85cc0136360072156dc08132b22a3e41f9dec2591",
+      "closure_size": 28,
+      "statement_sha256": "7342617e048a64e875add706cedde7a02814ec869081914f0880aef48c6fd79f"
+    },
+    "Toy.SendSync.noImplTable": {
+      "closure_sha256": "30740ea48fe3e7ce5fae84902c9ae3857d905c92e3a7a41e0aec74bfd44f2a15",
+      "closure_size": 11,
+      "statement_sha256": "702d6d8eb15415cd8368c30b3d7051d580ac0ff00f5869f20f97049d4290f556"
+    },
+    "Toy.SendSync.not_compatible_example_uniq_via": {
+      "closure_sha256": "fbebb3b4ec93284c6fc1e8cdcb5a7846d4dc9914aa776804ba1761cdb644a372",
+      "closure_size": 32,
+      "statement_sha256": "d2db292b730cdacb6f23d0a1a74995cdaa30f8ff9f375ff1e6391d7dffb72838"
+    },
+    "Toy.SendSync.not_forall_semSend_imp_semSync": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "a19acb116bf553a3167c9eb04c0aea8d5918bd0ebd26ebf73bd1917d84071646"
+    },
+    "Toy.SendSync.not_forall_semSync_imp_semSend": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "7e4241fe10c49105ba20be0b455c76576b9531a480afb896b54db8ad645d476e"
+    },
+    "Toy.SendSync.not_nfr_example": {
+      "closure_sha256": "c5beec1a8e9a1ef8fd54bf7ff29dc6a76057751dfece31b224b3eda10bd9d4a2",
+      "closure_size": 27,
+      "statement_sha256": "fcbf1fd6b51345b516bc3029a8d254a112bcc1fc977deba7c7b9f28683ddd944"
+    },
+    "Toy.SendSync.not_nfr_example_placed": {
+      "closure_sha256": "23e1bbfc7e702ee8db476325023402f24593149afcf8687740bf00e03520bd0a",
+      "closure_size": 26,
+      "statement_sha256": "e884eda566df5a8b6c95a4c33404dc9e1fa2912cb8535bb6bac415f37458ae8a"
+    },
+    "Toy.SendSync.not_race_example_atomic_atomic": {
+      "closure_sha256": "8abd4c0718dab906627e6fbfb540b06d9a0e029db79ca4a2b06d7d47656bb198",
+      "closure_size": 58,
+      "statement_sha256": "47df1e089a46ecc41e10967c52438362498612d2cdc415f88cc76cf613df8d35"
+    },
+    "Toy.SendSync.not_race_example_locked_writes": {
+      "closure_sha256": "8abd4c0718dab906627e6fbfb540b06d9a0e029db79ca4a2b06d7d47656bb198",
+      "closure_size": 58,
+      "statement_sha256": "ad1db6d814e402ce318f8a3193306f18cbabade3d6b55b8350d907ae7e2ce261"
+    },
+    "Toy.SendSync.not_race_example_read_read": {
+      "closure_sha256": "8abd4c0718dab906627e6fbfb540b06d9a0e029db79ca4a2b06d7d47656bb198",
+      "closure_size": 58,
+      "statement_sha256": "17e58786cf8c966f9affa73ece39fd0ca2f9cf1c41432fa57d2337bb5f534733"
+    },
+    "Toy.SendSync.not_semSend_examples": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "8aca4c42efcbe4f499d4fe7f5433247e95cc31af54c1bbe35d654c5185a56694"
+    },
+    "Toy.SendSync.not_semSend_guard": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "33e74378b60eebb41c33ce65901ef7bfe30d7ff4eab072250a9ce6948450b340"
+    },
+    "Toy.SendSync.not_semSend_rc": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "3cf3b35259b7de9f73d667dda165c77a048f5e9822b68427db51e92d40eb3f9c"
+    },
+    "Toy.SendSync.not_semSend_rc_and_not_semSync_rc": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "55940b8b9bd79bb4a70f515335d4af45f780cf15348e2b3c3d3d8005c44f4715"
+    },
+    "Toy.SendSync.not_semSync_cell": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "6ec922914cbd69f0e86e7f305541672ac786ea4ef07a0ec6825c6ff8d08b9d04"
+    },
+    "Toy.SendSync.not_semSync_examples": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "fc392e9e262f81b00b7af0883dfb55ea62d360f2d3b337ca2a4d0920524778d8"
+    },
+    "Toy.SendSync.not_semSync_rc": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "ed53924264aa5460b7f6933337b92e2c7590ad9dd2acb61d25898e6f22ab7660"
+    },
+    "Toy.SendSync.not_semSync_refCell": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "beed799376a362c3e4bbc193d3ceb215382f6a75336e448be7005e126dfb1c6f"
+    },
+    "Toy.SendSync.not_semSync_wrap_cell_full": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "bcb8299fffd3fcf4526a6abba4f2a3b51340e6ea559f0b1788b8699c3094ce75"
+    },
+    "Toy.SendSync.not_syncObligation_cell_full": {
+      "closure_sha256": "d45842423a1f44376b04f54f1532629d1af0a0c3166cf4082d183d2fbfed2c5b",
+      "closure_size": 109,
+      "statement_sha256": "26ec49b66dcbdc08594a0736d0104e6727af2aef286846d6abe7bc96285b744f"
+    },
+    "Toy.SendSync.not_tableSound_rcSendTable": {
+      "closure_sha256": "bb411953f51aaa166a3357d0163b44c58b9fc5689ecd70da0251250de9df2e70",
+      "closure_size": 140,
+      "statement_sha256": "b4f4bc6057b16a1ce6a8050c5f6aaa6068bd96dcc04c7414fd0d185575e7e62b"
+    },
+    "Toy.SendSync.ownReadsRaceFree_examples": {
+      "closure_sha256": "91493070ea96600b8812f89794cf7c5cd8648340965b013cd83897475f810929",
+      "closure_size": 108,
+      "statement_sha256": "86f12d3ecefe9d42a7477a65f9a943f240d5141d596c444da859169435e3bd22"
+    },
+    "Toy.SendSync.ownReadsRaceFree_guard_iff": {
+      "closure_sha256": "91493070ea96600b8812f89794cf7c5cd8648340965b013cd83897475f810929",
+      "closure_size": 108,
+      "statement_sha256": "b5486b895ffc01caf6bd9aa499a7d8e11b1a193ee7890089b32e5ef8a9284a77"
+    },
+    "Toy.SendSync.ownReadsRaceFree_of_semSend": {
+      "closure_sha256": "2bb4005e1231a1f41d7a8126a49c9e6255a37dc3c42641ac72d76ee9e49d8edd",
+      "closure_size": 111,
+      "statement_sha256": "110f6417548eba99c6cd85f96e489e14073d7423e2491003b7b88a726975ec5e"
+    },
+    "Toy.SendSync.place": {
+      "closure_sha256": "eab84d5089f79393dfc116bd5490102af9121812babfe622e352fd864a7687cd",
+      "closure_size": 15,
+      "statement_sha256": "81c52fd963e56eb445c957372955afe6a55aee46898fb1a499de1ac6f68babb1"
+    },
+    "Toy.SendSync.plain_own_not_subset_shr_semSend": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "c9a4b0f989fe5d2cafcc8c58b5d39a6d2e733dd0a5b3ada1bfef967f32585654"
+    },
+    "Toy.SendSync.prod_plain_nonvacuous": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "829920a1370589a629a46380b4c7993a43d87ab97c17e40d35f63f59a28198ea"
+    },
+    "Toy.SendSync.race_example_locked_vs_unlocked": {
+      "closure_sha256": "8abd4c0718dab906627e6fbfb540b06d9a0e029db79ca4a2b06d7d47656bb198",
+      "closure_size": 58,
+      "statement_sha256": "08e7fc32d112c2139d7cbeed2b2f4440a83b4f626ae555d9268c6bd0644fabaf"
+    },
+    "Toy.SendSync.race_example_write_read": {
+      "closure_sha256": "8abd4c0718dab906627e6fbfb540b06d9a0e029db79ca4a2b06d7d47656bb198",
+      "closure_size": 58,
+      "statement_sha256": "fb63b3d72ee187d48ebeb12b4a9a68f9e61792cd004f3ae15340799099858488"
+    },
+    "Toy.SendSync.rcSendTable": {
+      "closure_sha256": "30740ea48fe3e7ce5fae84902c9ae3857d905c92e3a7a41e0aec74bfd44f2a15",
+      "closure_size": 11,
+      "statement_sha256": "702d6d8eb15415cd8368c30b3d7051d580ac0ff00f5869f20f97049d4290f556"
+    },
+    "Toy.SendSync.rc_plain_neither": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "51361207c21c72bd74719da8c91e5dfc6f9ab80993005a77059ba894f5f78803"
+    },
+    "Toy.SendSync.relNamesAcq_example": {
+      "closure_sha256": "c0c85e88973f657d217c32050d2e6d96605431f974ec467e0499b0398c6cece9",
+      "closure_size": 20,
+      "statement_sha256": "e1d9b02be18cc449b0c56bd0d1d659b793dcf1bd67eb9c11e9db78f0dce0b917"
+    },
+    "Toy.SendSync.rootEv": {
+      "closure_sha256": "eab84d5089f79393dfc116bd5490102af9121812babfe622e352fd864a7687cd",
+      "closure_size": 15,
+      "statement_sha256": "c6c8d13bac94c7daf135773d090b420ad92ee420bd765157221da9a1bd659ef8"
+    },
+    "Toy.SendSync.rule_holds_of_eval": {
+      "closure_sha256": "084c693450a005568e05429caad2f49a3ca8f79c6205b45d5d330a0a594a3dc9",
+      "closure_size": 7,
+      "statement_sha256": "f7da1ae1c0a0e5c443941f0d1b64e4478df5b5678aeb9cb797c11a313112b4f2"
+    },
+    "Toy.SendSync.semSend_arc_iff": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "f24ba94e54d3b8f36e37d288cd514300361fdda9b14a28caec0b9fac03ebb0fb"
+    },
+    "Toy.SendSync.semSend_box_iff": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "aeaa69d80304a54627c95660158284d5d9c0013e097756aeaba506e2cebe3fba"
+    },
+    "Toy.SendSync.semSend_cell_iff": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "dbba7491cc37cee5461e30c3689c1d6ef90872461d7ee77258835ce89884c74d"
+    },
+    "Toy.SendSync.semSend_examples": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "1bfc938851e8486738db73449a6829bf01b3947a554f124b396557e873f7827d"
+    },
+    "Toy.SendSync.semSend_imp_semSync_of_shr_no_write": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "ae94de95a4e8dd7a146f6d0549367a7226c686640015f0a9ab093a18dbec0323"
+    },
+    "Toy.SendSync.semSend_imp_semSync_of_shr_no_write_nonvacuous": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "b7ea24c105423315e9b2015725fbae7cdb8bf23ad9aa6339b4c6bf42dab2e15c"
+    },
+    "Toy.SendSync.semSend_imp_semSync_of_shr_no_write_semSend_tight": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "9893c244ecc40d7f91c6231a186165f4ba16b640010e9bee6537cebf76219db3"
+    },
+    "Toy.SendSync.semSend_mutex_iff": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "6cf44550be927ab363f0f017f361a5923d5c2f2ccc2abcede78f17631e6ab285"
+    },
+    "Toy.SendSync.semSend_prod_iff": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "c2f7dea22ef2c296087c4c5865519a9378cccf57bac14144d44d33abef07a5ba"
+    },
+    "Toy.SendSync.semSend_refCell_iff": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "c3dce9b4e79079f69be30cb67ea1eace6295b96438f637bec2a05b7817a1e111"
+    },
+    "Toy.SendSync.semSend_refMut_iff": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "8778c9c0ea6f4fc101e341630f463aac2657953710a5fefe6ba861339049a4f6"
+    },
+    "Toy.SendSync.semSend_sum_iff": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "dac7508c0cbe86045f6f4deb0b470a27537adcfa81169bf96c7ccffb7528a97e"
+    },
+    "Toy.SendSync.semSend_wrap_iff": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "aee2becb46dbf88c4a375311788176b357717067afc9ba7a2eba9161154aa5b6"
+    },
+    "Toy.SendSync.semSync_arc_iff": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "f04925b814090a28e93e862a279a31e2c7389edaa762e6da2a753f1a5487f9e0"
+    },
+    "Toy.SendSync.semSync_box_iff": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "af40b5781df8faa7788fdf2f355b8767222f18456a484a71e4c4c5a22fec943e"
+    },
+    "Toy.SendSync.semSync_examples": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "54728c9e7f9d9367e51d95c493dd94fa78af2ba361dbf1571b5dbbb490ca1a11"
+    },
+    "Toy.SendSync.semSync_guard_iff": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "f79671a4adda19257d672cb593674e688fd9048164d1ec5dc43869361c483b5c"
+    },
+    "Toy.SendSync.semSync_iff_semSend_ref": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "620ceed23f7d87ca64a46589531a15c8096c282c946787d6cf4e52ec16752b50"
+    },
+    "Toy.SendSync.semSync_iff_semSend_ref_nonvacuous": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "18d713ec8bb9fcbc8a998af7cfbf11aa06e652382e23ce03fcff5329d2abf64c"
+    },
+    "Toy.SendSync.semSync_imp_semSend_of_own_subset_shr": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "531c2e88b64a9620186006c53218fbcdbad998a18ff62e7155adfcc272a812f3"
+    },
+    "Toy.SendSync.semSync_imp_semSend_of_own_subset_shr_nonvacuous": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "936060009bfcee99bc69d1953230c78db7e1a7744c9b188cfc81802720daa337"
+    },
+    "Toy.SendSync.semSync_imp_semSend_of_own_subset_shr_semSync_tight": {
+      "closure_sha256": "98abfbd8f1031acf90152fd5055e9ee533db023b1d839a224c2c790b15ddb5ce",
+      "closure_size": 110,
+      "statement_sha256": "4f952188b6fdd9fa8adf37f022f92f718f2f8a98653c5bdda50d8f4329cc04b7"
+    },
+    "Toy.SendSync.semSync_mutex_iff": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "28d0777827a263032f7e35e348a415b3be459849c795cfd08fe3e92ccbc8bf05"
+    },
+    "Toy.SendSync.semSync_prod_iff": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "64b03041cce611a3de2412ef230ac44ef30285ac7cd4768d1b9510058bcc6179"
+    },
+    "Toy.SendSync.semSync_refMut_iff": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "c5287e84ef63213019d929d57a504b187e605e3c5830f0a8d4ca2e5660eab31f"
+    },
+    "Toy.SendSync.semSync_ref_iff": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "10605ff2167bc3dcc8bc0062e0ea75e8aba9105b51c26e33c58656461be2530d"
+    },
+    "Toy.SendSync.semSync_sum_iff": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "a6adc05f75c42d6b7a5769ca24a8f2523927392d99da49ee4a20aa51498a7673"
+    },
+    "Toy.SendSync.semSync_wrap_cell_readOnly_iff_ownReadsRaceFree": {
+      "closure_sha256": "474ec21aaab77d396d52993c0ee6288132ff067b30cf8574d43a706cca580dc1",
+      "closure_size": 111,
+      "statement_sha256": "3007ed89e1bc18905e5b7ded55f1f1898c3675dd0abd9d4d676159adcb43a6ee"
+    },
+    "Toy.SendSync.semSync_wrap_full_iff": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "48d65c73457eba97a23f24fa8dbfe7f296ada2a289ec2ac5891f286ed061fc1f"
+    },
+    "Toy.SendSync.semSync_wrap_iff_syncObligation": {
+      "closure_sha256": "20fc5c5a56270315eb9f246914ed55d0fa89aeacbc6fdde2bcb42c37b56fdb94",
+      "closure_size": 111,
+      "statement_sha256": "44011b031541cd155a1a038acca45c8fdd4c8f07a3e23f2017ccb802c60ad05f"
+    },
+    "Toy.SendSync.semSync_wrap_none": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "b18b4d240f10e00d0f749127dcf2ba33560dfd1489817f523147c35e85c40ae7"
+    },
+    "Toy.SendSync.semSync_wrap_of_semSync": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "74cb744dc79e7bf71f02953358eedea01c61ca13f13284cc4fcedde7d947c13f"
+    },
+    "Toy.SendSync.semSync_wrap_of_semSync_nonvacuous": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "ab64bf284018f6c7877f98c1a4270d3bed2a23f5a583524ffdead2c60395a039"
+    },
+    "Toy.SendSync.semSync_wrap_of_semSync_tight": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "36956792640e73a5d5004bc4b3c6230b4a403b8c330168962248484b7e4741d9"
+    },
+    "Toy.SendSync.semSync_wrap_rc_iff": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "94354d5e9440bd7d27cb7393a19e76f79bc6fc6ec376ed3b47f6eb9d8f1eef9a"
+    },
+    "Toy.SendSync.semSync_wrap_refCell_plain_readOnly": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "c35d61ba1ae8ae432665e958b0dbcec1275c73e64c2ad1f947075fa88b349c74"
+    },
+    "Toy.SendSync.semSync_wrap_refCell_readOnly_iff_shrReadsRaceFree": {
+      "closure_sha256": "0a1f1e4b08280b13a368c6f12fb7293cb02c3b54a31c518543ee1c0d21162d0c",
+      "closure_size": 111,
+      "statement_sha256": "300807de32dca963e3e4aeeb108b15ededa65e59c9330f1d41085e7788c9ecc4"
+    },
+    "Toy.SendSync.shrReadsRaceFree_examples": {
+      "closure_sha256": "8ea8eefb7ca38f90351ac9f382ae75089e8a743fe71ea9224aa51476775d30e9",
+      "closure_size": 108,
+      "statement_sha256": "045381c8ca4ceefdb360b33ab9b109762eaf60ef53cfcb4e5ba10f994ce391c9"
+    },
+    "Toy.SendSync.shrReadsRaceFree_of_ownReadsRaceFree": {
+      "closure_sha256": "b2b11ce42366f7ce0c5fb00ebf420ed90f34ecf46180e137cde48fb5d7b5619f",
+      "closure_size": 109,
+      "statement_sha256": "4f5e590b73fac51f04877ec21c21cedad64b193004c8e7c0cf2837853cb8cd54"
+    },
+    "Toy.SendSync.shr_subset_own": {
+      "closure_sha256": "403fbbefa1d64cefb50c15e1198f813e8c081045ffc021a59e33cb3b6afab9fe",
+      "closure_size": 77,
+      "statement_sha256": "90d0598227cef08333c297957c2aa283febe25648978564604feba378fb60bdf"
+    },
+    "Toy.SendSync.stdTable": {
+      "closure_sha256": "30740ea48fe3e7ce5fae84902c9ae3857d905c92e3a7a41e0aec74bfd44f2a15",
+      "closure_size": 11,
+      "statement_sha256": "702d6d8eb15415cd8368c30b3d7051d580ac0ff00f5869f20f97049d4290f556"
+    },
+    "Toy.SendSync.stdTable_positive_rules_nonvacuous": {
+      "closure_sha256": "3f18005709a482b38734e2ad904d055dbd0142a194378fd83680e2f2743700ac",
+      "closure_size": 134,
+      "statement_sha256": "31ff66681afac89913959ece40a4c998931d56b9daa896c75091343c3a6f680f"
+    },
+    "Toy.SendSync.stdTable_sound": {
+      "closure_sha256": "c602cbb922e36bf60e49a2c640c0859188cb7ec5261a133c0bab704c746e039b",
+      "closure_size": 135,
+      "statement_sha256": "1c7948e0aebf32fa4304c057e2df5f75f0b4b37003861ac90e4ad3b76671733e"
+    },
+    "Toy.SendSync.syncObligation_nonvacuous": {
+      "closure_sha256": "d45842423a1f44376b04f54f1532629d1af0a0c3166cf4082d183d2fbfed2c5b",
+      "closure_size": 109,
+      "statement_sha256": "cb8d4e5575965dddd18db9be8396c7fef0ddb94d183136b52f56781854f8bb0d"
+    },
+    "Toy.SendSync.tableSound_noImplTable": {
+      "closure_sha256": "30a4e16815013ce44298e6bd342db2e06dbb85a59e7eb59345a66aad3e8bd310",
+      "closure_size": 134,
+      "statement_sha256": "7b0d6e0a0fada6c42effa36ea0651b4083dc996e280a3197fea2ced4d1daa043"
+    },
+    "Toy.SendSync.unsafeSync_wrap_cell_full_accepted_but_racy": {
+      "closure_sha256": "4fc9142aa617496b5750e2c85dbd4222ce8c9145556ab3e3e2dc074ade4e38ca",
+      "closure_size": 130,
+      "statement_sha256": "29d90233ad310eb884c7e2e40c0ae1547e5dd58cf1a0f112f90c154192599251"
+    },
+    "Toy.SendSync.wrapFree_examples": {
+      "closure_sha256": "5bd7b251b86f7effb9518bd99f8d911d6d9a8236db2db81a48ee1ed1ad7cfbff",
+      "closure_size": 26,
+      "statement_sha256": "274e100f33a8ea8018f83f8339cc1cea88652aee1c09e75b713ee48a273d86a6"
+    },
+    "Toy.SendSync.wrap_arc_cell_readOnly_not_semSync": {
+      "closure_sha256": "7f0fe3b1db041c6aa049e1b61bf750aa28d29364ba50ae23baca5ea95e70b291",
+      "closure_size": 110,
+      "statement_sha256": "94ab34725c3bc9cb13d4a5a1a3924db9b30af28091f1003bc17a0cdf5ecb6441"
+    },
+    "Toy.SendSync.wrap_cell_guard_plain_readOnly_semSync": {
+      "closure_sha256": "8a60acfdc8dbb1e971e88967f02fc810a518793d40a5e3372c8a2af18e745eab",
+      "closure_size": 112,
+      "statement_sha256": "4a4c6d2549f795c6d2a5f0c01e7f4ee6e6124c137af45763eb6466406d5a2637"
+    },
+    "Toy.SendSync.wrap_cell_plain_readOnly_nonvacuous": {
+      "closure_sha256": "474ec21aaab77d396d52993c0ee6288132ff067b30cf8574d43a706cca580dc1",
+      "closure_size": 111,
+      "statement_sha256": "8c4b06932e71456cc4d0200a023d9abecf512e09c22dae2f886ab932e4575a1e"
+    },
+    "Toy.SendSync.wrap_cell_ref_cell_readOnly_not_semSync": {
+      "closure_sha256": "474ec21aaab77d396d52993c0ee6288132ff067b30cf8574d43a706cca580dc1",
+      "closure_size": 111,
+      "statement_sha256": "245c448e69d1321aabd357112cb18cc12a71903ffbf828ed8c3078e2a912db03"
+    },
+    "Toy.SendSync.wrap_rc_none_semSync_not_semSend": {
+      "closure_sha256": "cceba79b2527622d62ebd46dc51978e5940f7eaa89b9a8a46e76289bdb50bdee",
+      "closure_size": 111,
+      "statement_sha256": "82877dfb19b213c0d0dada02edce4e307c93abfde791aefedc10cddc595a2893"
+    },
+    "Toy.SendSync.wrap_readOnly_cell_refCell_differ": {
+      "closure_sha256": "021293f4939407ae0deee90961a8a39aa4609010aafc270cb5b5187bd8256c4f",
+      "closure_size": 112,
+      "statement_sha256": "38605f13729ca6ae49d2d3cf749d19e94899153d92c3085aa07443bf71539d81"
+    },
+    "Toy.SendSync.wrap_refCell_plain_readOnly_nonvacuous": {
+      "closure_sha256": "0a1f1e4b08280b13a368c6f12fb7293cb02c3b54a31c518543ee1c0d21162d0c",
+      "closure_size": 111,
+      "statement_sha256": "b921e9fdd31a2082ecd8b866c44ef9a01c31c4fd180d338ae77bf81446e5cfb4"
+    },
+    "Toy.SendSync.wrap_refCell_ref_cell_readOnly_not_semSync": {
+      "closure_sha256": "0a1f1e4b08280b13a368c6f12fb7293cb02c3b54a31c518543ee1c0d21162d0c",
+      "closure_size": 111,
+      "statement_sha256": "42458e666303a068540917e1a90f291b959f36b30f98631b9256f7591848eb1d"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

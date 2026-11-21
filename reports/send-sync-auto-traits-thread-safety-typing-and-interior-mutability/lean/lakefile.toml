@@ -1,0 +1,6 @@
+name = "toy_send_sync"
+version = "0.1.0"
+defaultTargets = ["ToySendSync"]
+
+[[lean_lib]]
+name = "ToySendSync"

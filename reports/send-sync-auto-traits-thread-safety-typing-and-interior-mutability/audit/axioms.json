@@ -1,0 +1,1352 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.SendSync.Acq": [],
+    "Toy.SendSync.Acq.casesOn": [],
+    "Toy.SendSync.Acq.ctorElim": [],
+    "Toy.SendSync.Acq.ctorElimType": [],
+    "Toy.SendSync.Acq.ctorIdx": [],
+    "Toy.SendSync.Acq.fresh": [],
+    "Toy.SendSync.Acq.fresh.elim": [],
+    "Toy.SendSync.Acq.fresh.sizeOf_spec": [],
+    "Toy.SendSync.Acq.guard": [],
+    "Toy.SendSync.Acq.guard.elim": [],
+    "Toy.SendSync.Acq.guard.inj": [],
+    "Toy.SendSync.Acq.guard.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Acq.guard.noConfusion": [],
+    "Toy.SendSync.Acq.guard.sizeOf_spec": [],
+    "Toy.SendSync.Acq.holder": [],
+    "Toy.SendSync.Acq.holder.eq_1": [],
+    "Toy.SendSync.Acq.holder.eq_2": [],
+    "Toy.SendSync.Acq.maker": [],
+    "Toy.SendSync.Acq.noConfusion": [],
+    "Toy.SendSync.Acq.noConfusionType": [],
+    "Toy.SendSync.Acq.rec": [],
+    "Toy.SendSync.Acq.recOn": [],
+    "Toy.SendSync.Acq.reloc": [],
+    "Toy.SendSync.Acq.reloc.eq_1": [],
+    "Toy.SendSync.Acq.reloc.eq_2": [],
+    "Toy.SendSync.Claim": [],
+    "Toy.SendSync.Claim.casesOn": [],
+    "Toy.SendSync.Claim.ctorElim": [],
+    "Toy.SendSync.Claim.ctorElimType": [],
+    "Toy.SendSync.Claim.ctorIdx": [],
+    "Toy.SendSync.Claim.held": [],
+    "Toy.SendSync.Claim.held.elim": [],
+    "Toy.SendSync.Claim.held.inj": [],
+    "Toy.SendSync.Claim.held.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Claim.held.noConfusion": [],
+    "Toy.SendSync.Claim.held.sizeOf_spec": [],
+    "Toy.SendSync.Claim.isFresh": [
+      "propext"
+    ],
+    "Toy.SendSync.Claim.isFresh.eq_1": [
+      "propext"
+    ],
+    "Toy.SendSync.Claim.isFresh.eq_2": [
+      "propext"
+    ],
+    "Toy.SendSync.Claim.isFresh.match_1": [
+      "propext"
+    ],
+    "Toy.SendSync.Claim.noConfusion": [],
+    "Toy.SendSync.Claim.noConfusionType": [],
+    "Toy.SendSync.Claim.path": [],
+    "Toy.SendSync.Claim.path.eq_1": [],
+    "Toy.SendSync.Claim.path.eq_2": [],
+    "Toy.SendSync.Claim.path.eq_3": [],
+    "Toy.SendSync.Claim.rec": [],
+    "Toy.SendSync.Claim.recOn": [],
+    "Toy.SendSync.Claim.reloc": [],
+    "Toy.SendSync.Claim.reloc.eq_1": [],
+    "Toy.SendSync.Claim.reloc.eq_2": [],
+    "Toy.SendSync.Claim.reloc.eq_3": [],
+    "Toy.SendSync.Claim.uniq": [],
+    "Toy.SendSync.Claim.uniq.elim": [],
+    "Toy.SendSync.Claim.uniq.inj": [],
+    "Toy.SendSync.Claim.uniq.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Claim.uniq.noConfusion": [],
+    "Toy.SendSync.Claim.uniq.sizeOf_spec": [],
+    "Toy.SendSync.Claim.via": [],
+    "Toy.SendSync.Claim.via.elim": [],
+    "Toy.SendSync.Claim.via.inj": [],
+    "Toy.SendSync.Claim.via.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Claim.via.noConfusion": [],
+    "Toy.SendSync.Claim.via.sizeOf_spec": [],
+    "Toy.SendSync.Compatible": [],
+    "Toy.SendSync.Concurrent": [],
+    "Toy.SendSync.Conflicting": [
+      "propext"
+    ],
+    "Toy.SendSync.Conflicting.eq_1": [
+      "propext"
+    ],
+    "Toy.SendSync.Ev": [],
+    "Toy.SendSync.Ev.acquires": [
+      "propext"
+    ],
+    "Toy.SendSync.Ev.acquires.eq_1": [
+      "propext"
+    ],
+    "Toy.SendSync.Ev.casesOn": [],
+    "Toy.SendSync.Ev.claims": [],
+    "Toy.SendSync.Ev.ctorIdx": [],
+    "Toy.SendSync.Ev.kind": [],
+    "Toy.SendSync.Ev.loc": [],
+    "Toy.SendSync.Ev.mk": [],
+    "Toy.SendSync.Ev.mk.inj": [],
+    "Toy.SendSync.Ev.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ev.mk.noConfusion": [],
+    "Toy.SendSync.Ev.mk.sizeOf_spec": [],
+    "Toy.SendSync.Ev.noConfusion": [],
+    "Toy.SendSync.Ev.noConfusionType": [],
+    "Toy.SendSync.Ev.place": [],
+    "Toy.SendSync.Ev.place.eq_1": [],
+    "Toy.SendSync.Ev.rec": [],
+    "Toy.SendSync.Ev.recOn": [],
+    "Toy.SendSync.Fp": [],
+    "Toy.SendSync.Fp.alias": [],
+    "Toy.SendSync.Fp.casesOn": [],
+    "Toy.SendSync.Fp.ctorIdx": [],
+    "Toy.SendSync.Fp.mk": [],
+    "Toy.SendSync.Fp.mk.inj": [],
+    "Toy.SendSync.Fp.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Fp.mk.noConfusion": [],
+    "Toy.SendSync.Fp.mk.sizeOf_spec": [],
+    "Toy.SendSync.Fp.noConfusion": [],
+    "Toy.SendSync.Fp.noConfusionType": [],
+    "Toy.SendSync.Fp.own": [],
+    "Toy.SendSync.Fp.rec": [],
+    "Toy.SendSync.Fp.recOn": [],
+    "Toy.SendSync.Fp.shr": [],
+    "Toy.SendSync.Holder": [],
+    "Toy.SendSync.Holder.casesOn": [],
+    "Toy.SendSync.Holder.ctorElim": [],
+    "Toy.SendSync.Holder.ctorElimType": [],
+    "Toy.SendSync.Holder.ctorIdx": [],
+    "Toy.SendSync.Holder.guard": [],
+    "Toy.SendSync.Holder.guard.elim": [],
+    "Toy.SendSync.Holder.guard.inj": [],
+    "Toy.SendSync.Holder.guard.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Holder.guard.noConfusion": [],
+    "Toy.SendSync.Holder.guard.sizeOf_spec": [],
+    "Toy.SendSync.Holder.noConfusion": [],
+    "Toy.SendSync.Holder.noConfusionType": [],
+    "Toy.SendSync.Holder.rec": [],
+    "Toy.SendSync.Holder.recOn": [],
+    "Toy.SendSync.Holder.reloc": [],
+    "Toy.SendSync.Holder.thread": [],
+    "Toy.SendSync.Holder.thread.elim": [],
+    "Toy.SendSync.Holder.thread.inj": [],
+    "Toy.SendSync.Holder.thread.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Holder.thread.noConfusion": [],
+    "Toy.SendSync.Holder.thread.sizeOf_spec": [],
+    "Toy.SendSync.Holder.unreloc": [],
+    "Toy.SendSync.Holder.unreloc.eq_1": [],
+    "Toy.SendSync.Holder.unreloc.eq_2": [],
+    "Toy.SendSync.Holder.unreloc.eq_3": [],
+    "Toy.SendSync.Holder.unreloc.match_1": [],
+    "Toy.SendSync.ImplsSound": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind": [],
+    "Toy.SendSync.Kind.atomic": [],
+    "Toy.SendSync.Kind.atomic.elim": [],
+    "Toy.SendSync.Kind.atomic.sizeOf_spec": [],
+    "Toy.SendSync.Kind.casesOn": [],
+    "Toy.SendSync.Kind.ctorElim": [],
+    "Toy.SendSync.Kind.ctorElimType": [],
+    "Toy.SendSync.Kind.ctorIdx": [],
+    "Toy.SendSync.Kind.isAccess": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isAccess.match_1": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isAtomic": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isAtomic.match_1": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isRead": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isRead.eq_1": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isRead.eq_2": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isRead.match_1": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isWrite": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isWrite.eq_1": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isWrite.eq_2": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isWrite.eq_3": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.isWrite.match_1": [
+      "propext"
+    ],
+    "Toy.SendSync.Kind.noConfusion": [],
+    "Toy.SendSync.Kind.noConfusionType": [],
+    "Toy.SendSync.Kind.ofNat": [],
+    "Toy.SendSync.Kind.ofNat_ctorIdx": [],
+    "Toy.SendSync.Kind.rd": [],
+    "Toy.SendSync.Kind.rd.elim": [],
+    "Toy.SendSync.Kind.rd.sizeOf_spec": [],
+    "Toy.SendSync.Kind.rec": [],
+    "Toy.SendSync.Kind.recOn": [],
+    "Toy.SendSync.Kind.rel": [],
+    "Toy.SendSync.Kind.rel.elim": [],
+    "Toy.SendSync.Kind.rel.sizeOf_spec": [],
+    "Toy.SendSync.Kind.wr": [],
+    "Toy.SendSync.Kind.wr.elim": [],
+    "Toy.SendSync.Kind.wr.sizeOf_spec": [],
+    "Toy.SendSync.NoForeignRelease": [],
+    "Toy.SendSync.OwnReadsRaceFree": [
+      "propext"
+    ],
+    "Toy.SendSync.Path": [],
+    "Toy.SendSync.Prim": [],
+    "Toy.SendSync.Prim.apply": [],
+    "Toy.SendSync.Prim.apply.match_1": [],
+    "Toy.SendSync.Prim.arc": [],
+    "Toy.SendSync.Prim.arc.elim": [],
+    "Toy.SendSync.Prim.arc.sizeOf_spec": [],
+    "Toy.SendSync.Prim.casesOn": [],
+    "Toy.SendSync.Prim.cell": [],
+    "Toy.SendSync.Prim.cell.elim": [],
+    "Toy.SendSync.Prim.cell.sizeOf_spec": [],
+    "Toy.SendSync.Prim.ctorElim": [],
+    "Toy.SendSync.Prim.ctorElimType": [],
+    "Toy.SendSync.Prim.ctorIdx": [],
+    "Toy.SendSync.Prim.guard": [],
+    "Toy.SendSync.Prim.guard.elim": [],
+    "Toy.SendSync.Prim.guard.sizeOf_spec": [],
+    "Toy.SendSync.Prim.mutex": [],
+    "Toy.SendSync.Prim.mutex.elim": [],
+    "Toy.SendSync.Prim.mutex.sizeOf_spec": [],
+    "Toy.SendSync.Prim.noConfusion": [],
+    "Toy.SendSync.Prim.noConfusionType": [],
+    "Toy.SendSync.Prim.ofNat": [],
+    "Toy.SendSync.Prim.ofNat_ctorIdx": [],
+    "Toy.SendSync.Prim.rc": [],
+    "Toy.SendSync.Prim.rc.elim": [],
+    "Toy.SendSync.Prim.rc.sizeOf_spec": [],
+    "Toy.SendSync.Prim.rec": [],
+    "Toy.SendSync.Prim.recOn": [],
+    "Toy.SendSync.Prim.refCell": [],
+    "Toy.SendSync.Prim.refCell.elim": [],
+    "Toy.SendSync.Prim.refCell.sizeOf_spec": [],
+    "Toy.SendSync.Race": [
+      "propext"
+    ],
+    "Toy.SendSync.RelNamesAcq": [],
+    "Toy.SendSync.Rule": [],
+    "Toy.SendSync.Rule.Holds": [],
+    "Toy.SendSync.Rule.Holds.eq_1": [],
+    "Toy.SendSync.Rule.allowed": [],
+    "Toy.SendSync.Rule.casesOn": [],
+    "Toy.SendSync.Rule.ctorIdx": [],
+    "Toy.SendSync.Rule.eval": [],
+    "Toy.SendSync.Rule.eval.eq_1": [],
+    "Toy.SendSync.Rule.mk": [],
+    "Toy.SendSync.Rule.mk.inj": [],
+    "Toy.SendSync.Rule.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Rule.mk.noConfusion": [],
+    "Toy.SendSync.Rule.mk.sizeOf_spec": [],
+    "Toy.SendSync.Rule.needSend": [],
+    "Toy.SendSync.Rule.needSync": [],
+    "Toy.SendSync.Rule.noConfusion": [],
+    "Toy.SendSync.Rule.noConfusionType": [],
+    "Toy.SendSync.Rule.rec": [],
+    "Toy.SendSync.Rule.recOn": [],
+    "Toy.SendSync.Sat": [],
+    "Toy.SendSync.Sat.eq_1": [],
+    "Toy.SendSync.Sat.eq_2": [],
+    "Toy.SendSync.Sat.eq_3": [],
+    "Toy.SendSync.SatAll": [],
+    "Toy.SendSync.SemSend": [
+      "propext"
+    ],
+    "Toy.SendSync.SemSend.eq_1": [
+      "propext"
+    ],
+    "Toy.SendSync.SemSync": [
+      "propext"
+    ],
+    "Toy.SendSync.SemSync.eq_1": [
+      "propext"
+    ],
+    "Toy.SendSync.ShrReadsRaceFree": [
+      "propext"
+    ],
+    "Toy.SendSync.Snap": [],
+    "Toy.SendSync.Snap.casesOn": [],
+    "Toy.SendSync.Snap.ctorIdx": [],
+    "Toy.SendSync.Snap.glue": [],
+    "Toy.SendSync.Snap.glue.eq_1": [],
+    "Toy.SendSync.Snap.glue.match_1": [],
+    "Toy.SendSync.Snap.holds": [],
+    "Toy.SendSync.Snap.just": [],
+    "Toy.SendSync.Snap.just.eq_1": [],
+    "Toy.SendSync.Snap.just.eq_2": [],
+    "Toy.SendSync.Snap.just.eq_3": [],
+    "Toy.SendSync.Snap.just.match_1": [],
+    "Toy.SendSync.Snap.lock": [],
+    "Toy.SendSync.Snap.mk": [],
+    "Toy.SendSync.Snap.mk.inj": [],
+    "Toy.SendSync.Snap.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Snap.mk.noConfusion": [],
+    "Toy.SendSync.Snap.mk.sizeOf_spec": [],
+    "Toy.SendSync.Snap.noConfusion": [],
+    "Toy.SendSync.Snap.noConfusionType": [],
+    "Toy.SendSync.Snap.rec": [],
+    "Toy.SendSync.Snap.recOn": [],
+    "Toy.SendSync.Snap.unplace": [],
+    "Toy.SendSync.Snap.unplace.eq_1": [],
+    "Toy.SendSync.SyncObligation": [
+      "propext"
+    ],
+    "Toy.SendSync.Table": [],
+    "Toy.SendSync.Table.casesOn": [],
+    "Toy.SendSync.Table.ctorIdx": [],
+    "Toy.SendSync.Table.mk": [],
+    "Toy.SendSync.Table.mk.inj": [],
+    "Toy.SendSync.Table.mk.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Table.mk.noConfusion": [],
+    "Toy.SendSync.Table.mk.sizeOf_spec": [],
+    "Toy.SendSync.Table.noConfusion": [],
+    "Toy.SendSync.Table.noConfusionType": [],
+    "Toy.SendSync.Table.rec": [],
+    "Toy.SendSync.Table.recOn": [],
+    "Toy.SendSync.Table.send": [],
+    "Toy.SendSync.Table.sync": [],
+    "Toy.SendSync.TableSound": [
+      "propext"
+    ],
+    "Toy.SendSync.Tid": [],
+    "Toy.SendSync.Tid.casesOn": [],
+    "Toy.SendSync.Tid.ctorElim": [],
+    "Toy.SendSync.Tid.ctorElimType": [],
+    "Toy.SendSync.Tid.ctorIdx": [],
+    "Toy.SendSync.Tid.flip": [],
+    "Toy.SendSync.Tid.flip.eq_1": [],
+    "Toy.SendSync.Tid.flip.eq_2": [],
+    "Toy.SendSync.Tid.noConfusion": [],
+    "Toy.SendSync.Tid.noConfusionType": [],
+    "Toy.SendSync.Tid.ofNat": [],
+    "Toy.SendSync.Tid.ofNat_ctorIdx": [],
+    "Toy.SendSync.Tid.origin": [],
+    "Toy.SendSync.Tid.origin.elim": [],
+    "Toy.SendSync.Tid.origin.sizeOf_spec": [],
+    "Toy.SendSync.Tid.other": [],
+    "Toy.SendSync.Tid.other.elim": [],
+    "Toy.SendSync.Tid.other.sizeOf_spec": [],
+    "Toy.SendSync.Tid.rec": [],
+    "Toy.SendSync.Tid.recOn": [],
+    "Toy.SendSync.Ty": [],
+    "Toy.SendSync.Ty.arc": [],
+    "Toy.SendSync.Ty.arc.elim": [],
+    "Toy.SendSync.Ty.arc.inj": [],
+    "Toy.SendSync.Ty.arc.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.arc.noConfusion": [],
+    "Toy.SendSync.Ty.arc.sizeOf_spec": [],
+    "Toy.SendSync.Ty.below": [],
+    "Toy.SendSync.Ty.box": [],
+    "Toy.SendSync.Ty.box.elim": [],
+    "Toy.SendSync.Ty.box.inj": [],
+    "Toy.SendSync.Ty.box.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.box.noConfusion": [],
+    "Toy.SendSync.Ty.box.sizeOf_spec": [],
+    "Toy.SendSync.Ty.brecOn": [],
+    "Toy.SendSync.Ty.brecOn.eq": [],
+    "Toy.SendSync.Ty.brecOn.go": [],
+    "Toy.SendSync.Ty.casesOn": [],
+    "Toy.SendSync.Ty.cell": [],
+    "Toy.SendSync.Ty.cell.elim": [],
+    "Toy.SendSync.Ty.cell.inj": [],
+    "Toy.SendSync.Ty.cell.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.cell.noConfusion": [],
+    "Toy.SendSync.Ty.cell.sizeOf_spec": [],
+    "Toy.SendSync.Ty.ctorElim": [],
+    "Toy.SendSync.Ty.ctorElimType": [],
+    "Toy.SendSync.Ty.ctorIdx": [],
+    "Toy.SendSync.Ty.guard": [],
+    "Toy.SendSync.Ty.guard.elim": [],
+    "Toy.SendSync.Ty.guard.inj": [],
+    "Toy.SendSync.Ty.guard.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.guard.noConfusion": [],
+    "Toy.SendSync.Ty.guard.sizeOf_spec": [],
+    "Toy.SendSync.Ty.mutex": [],
+    "Toy.SendSync.Ty.mutex.elim": [],
+    "Toy.SendSync.Ty.mutex.inj": [],
+    "Toy.SendSync.Ty.mutex.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.mutex.noConfusion": [],
+    "Toy.SendSync.Ty.mutex.sizeOf_spec": [],
+    "Toy.SendSync.Ty.noConfusion": [],
+    "Toy.SendSync.Ty.noConfusionType": [],
+    "Toy.SendSync.Ty.plain": [],
+    "Toy.SendSync.Ty.plain.elim": [],
+    "Toy.SendSync.Ty.plain.sizeOf_spec": [],
+    "Toy.SendSync.Ty.prod": [],
+    "Toy.SendSync.Ty.prod.elim": [],
+    "Toy.SendSync.Ty.prod.inj": [],
+    "Toy.SendSync.Ty.prod.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.prod.noConfusion": [],
+    "Toy.SendSync.Ty.prod.sizeOf_spec": [],
+    "Toy.SendSync.Ty.rc": [],
+    "Toy.SendSync.Ty.rc.elim": [],
+    "Toy.SendSync.Ty.rc.inj": [],
+    "Toy.SendSync.Ty.rc.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.rc.noConfusion": [],
+    "Toy.SendSync.Ty.rc.sizeOf_spec": [],
+    "Toy.SendSync.Ty.rec": [],
+    "Toy.SendSync.Ty.recOn": [],
+    "Toy.SendSync.Ty.ref": [],
+    "Toy.SendSync.Ty.ref.elim": [],
+    "Toy.SendSync.Ty.ref.inj": [],
+    "Toy.SendSync.Ty.ref.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.ref.noConfusion": [],
+    "Toy.SendSync.Ty.ref.sizeOf_spec": [],
+    "Toy.SendSync.Ty.refCell": [],
+    "Toy.SendSync.Ty.refCell.elim": [],
+    "Toy.SendSync.Ty.refCell.inj": [],
+    "Toy.SendSync.Ty.refCell.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.refCell.noConfusion": [],
+    "Toy.SendSync.Ty.refCell.sizeOf_spec": [],
+    "Toy.SendSync.Ty.refMut": [],
+    "Toy.SendSync.Ty.refMut.elim": [],
+    "Toy.SendSync.Ty.refMut.inj": [],
+    "Toy.SendSync.Ty.refMut.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.refMut.noConfusion": [],
+    "Toy.SendSync.Ty.refMut.sizeOf_spec": [],
+    "Toy.SendSync.Ty.sum": [],
+    "Toy.SendSync.Ty.sum.elim": [],
+    "Toy.SendSync.Ty.sum.inj": [],
+    "Toy.SendSync.Ty.sum.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.sum.noConfusion": [],
+    "Toy.SendSync.Ty.sum.sizeOf_spec": [],
+    "Toy.SendSync.Ty.wrap": [],
+    "Toy.SendSync.Ty.wrap.elim": [],
+    "Toy.SendSync.Ty.wrap.inj": [],
+    "Toy.SendSync.Ty.wrap.injEq": [
+      "propext"
+    ],
+    "Toy.SendSync.Ty.wrap.noConfusion": [],
+    "Toy.SendSync.Ty.wrap.sizeOf_spec": [],
+    "Toy.SendSync.View": [],
+    "Toy.SendSync.View.casesOn": [],
+    "Toy.SendSync.View.ctorElim": [],
+    "Toy.SendSync.View.ctorElimType": [],
+    "Toy.SendSync.View.ctorIdx": [],
+    "Toy.SendSync.View.expose": [
+      "propext"
+    ],
+    "Toy.SendSync.View.expose.eq_1": [
+      "propext"
+    ],
+    "Toy.SendSync.View.expose.eq_2": [
+      "propext"
+    ],
+    "Toy.SendSync.View.expose.eq_3": [
+      "propext"
+    ],
+    "Toy.SendSync.View.expose.match_1": [],
+    "Toy.SendSync.View.full": [],
+    "Toy.SendSync.View.full.elim": [],
+    "Toy.SendSync.View.full.sizeOf_spec": [],
+    "Toy.SendSync.View.noConfusion": [],
+    "Toy.SendSync.View.noConfusionType": [],
+    "Toy.SendSync.View.none": [],
+    "Toy.SendSync.View.none.elim": [],
+    "Toy.SendSync.View.none.sizeOf_spec": [],
+    "Toy.SendSync.View.ofNat": [],
+    "Toy.SendSync.View.ofNat_ctorIdx": [],
+    "Toy.SendSync.View.readOnly": [],
+    "Toy.SendSync.View.readOnly.elim": [],
+    "Toy.SendSync.View.readOnly.sizeOf_spec": [],
+    "Toy.SendSync.View.rec": [],
+    "Toy.SendSync.View.recOn": [],
+    "Toy.SendSync.WrapFree": [],
+    "Toy.SendSync.acq_maker_reloc": [],
+    "Toy.SendSync.acquires_place": [
+      "propext"
+    ],
+    "Toy.SendSync.arc_cell_plain_content_not_semSync_arc_neither": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.arc_guard_plain_content_not_semSend_arc_neither": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.arc_plain_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.arc_plain_shr_has_write_semSync": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.arc_race_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.arc_wrap_rc_none_content_not_semSend_arc_neither": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.autoCheck": [],
+    "Toy.SendSync.autoCheck.eq_1": [],
+    "Toy.SendSync.autoCheck.eq_10": [],
+    "Toy.SendSync.autoCheck.eq_11": [],
+    "Toy.SendSync.autoCheck.eq_12": [],
+    "Toy.SendSync.autoCheck.eq_13": [],
+    "Toy.SendSync.autoCheck.eq_2": [],
+    "Toy.SendSync.autoCheck.eq_3": [],
+    "Toy.SendSync.autoCheck.eq_4": [],
+    "Toy.SendSync.autoCheck.eq_5": [],
+    "Toy.SendSync.autoCheck.eq_6": [],
+    "Toy.SendSync.autoCheck.eq_7": [],
+    "Toy.SendSync.autoCheck.eq_8": [],
+    "Toy.SendSync.autoCheck.eq_9": [],
+    "Toy.SendSync.autoCheck.eq_def": [],
+    "Toy.SendSync.autoCheck_examples": [],
+    "Toy.SendSync.autoCheck_sound_implsSound_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.autoCheck_sound_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.autoCheck_sound_of_tableSound_of_implsSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.autoCheck_sound_tableSound_tight": [
+      "propext"
+    ],
+    "Toy.SendSync.autoCheck_std_cell_eq_refCell": [],
+    "Toy.SendSync.autoCheck_std_exact_nonvacuous": [],
+    "Toy.SendSync.autoCheck_std_exact_of_wrapFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.autoCheck_std_exact_wrapFree_tight": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.autoCheck_std_incomplete": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.autoCheck_std_sound_of_implsSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.cell_plain_semSend_not_semSync": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.cell_plain_shr_has_write": [
+      "propext"
+    ],
+    "Toy.SendSync.cell_positive_control": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.cell_refCell_semSend_semSync_agree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.claim_isFresh_reloc": [
+      "propext"
+    ],
+    "Toy.SendSync.compatible_example_via_via": [
+      "propext"
+    ],
+    "Toy.SendSync.compatible_guard_guard": [
+      "propext"
+    ],
+    "Toy.SendSync.compatible_nil_nil": [],
+    "Toy.SendSync.compatible_place": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.compatible_single_nil": [
+      "propext"
+    ],
+    "Toy.SendSync.compatible_via_via": [
+      "propext"
+    ],
+    "Toy.SendSync.conflicting_place": [
+      "propext"
+    ],
+    "Toy.SendSync.expose_readOnly_append": [
+      "propext"
+    ],
+    "Toy.SendSync.expose_readOnly_example": [
+      "propext"
+    ],
+    "Toy.SendSync.expose_readOnly_example_acquires": [
+      "propext"
+    ],
+    "Toy.SendSync.expose_readOnly_kind": [
+      "propext"
+    ],
+    "Toy.SendSync.expose_readOnly_mutex_example": [
+      "propext"
+    ],
+    "Toy.SendSync.expose_readOnly_place": [
+      "propext"
+    ],
+    "Toy.SendSync.expose_readOnly_place_fresh": [
+      "propext"
+    ],
+    "Toy.SendSync.expose_readOnly_refCell_shr": [
+      "propext"
+    ],
+    "Toy.SendSync.expose_subset": [
+      "propext"
+    ],
+    "Toy.SendSync.fp": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_1": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_10": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_11": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_12": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_13": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_2": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_3": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_4": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_5": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_6": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_7": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_8": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_9": [
+      "propext"
+    ],
+    "Toy.SendSync.fp.eq_def": [
+      "propext"
+    ],
+    "Toy.SendSync.fp_cell_plain": [
+      "propext"
+    ],
+    "Toy.SendSync.fp_refCell_plain": [
+      "propext"
+    ],
+    "Toy.SendSync.fp_relNamesAcq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.fp_shr_cell_ne_refCell_plain": [
+      "propext"
+    ],
+    "Toy.SendSync.fp_sum_eq_prod": [
+      "propext"
+    ],
+    "Toy.SendSync.guard_plain_own_not_subset_shr": [
+      "propext"
+    ],
+    "Toy.SendSync.guard_plain_semSync_not_semSend": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.guard_plain_transfer_race_free": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.guard_rc_plain_transfer_race": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.guard_sync_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.guard_transfer_race_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.holder_reloc_acq": [],
+    "Toy.SendSync.holder_unreloc_acq": [
+      "propext"
+    ],
+    "Toy.SendSync.implsSound_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.instDecidableConflicting": [
+      "propext"
+    ],
+    "Toy.SendSync.instDecidableEqAcq": [],
+    "Toy.SendSync.instDecidableEqAcq.decEq": [],
+    "Toy.SendSync.instDecidableEqAcq.decEq.match_1": [],
+    "Toy.SendSync.instDecidableEqClaim": [],
+    "Toy.SendSync.instDecidableEqClaim.decEq": [],
+    "Toy.SendSync.instDecidableEqClaim.decEq.match_1": [],
+    "Toy.SendSync.instDecidableEqEv": [],
+    "Toy.SendSync.instDecidableEqEv.decEq": [],
+    "Toy.SendSync.instDecidableEqEv.decEq.match_1": [],
+    "Toy.SendSync.instDecidableEqHolder": [],
+    "Toy.SendSync.instDecidableEqHolder.decEq": [],
+    "Toy.SendSync.instDecidableEqHolder.decEq.match_1": [],
+    "Toy.SendSync.instDecidableEqKind": [],
+    "Toy.SendSync.instDecidableEqPrim": [],
+    "Toy.SendSync.instDecidableEqRule": [],
+    "Toy.SendSync.instDecidableEqRule.decEq": [],
+    "Toy.SendSync.instDecidableEqRule.decEq.match_1": [],
+    "Toy.SendSync.instDecidableEqTid": [],
+    "Toy.SendSync.instDecidableEqTy": [],
+    "Toy.SendSync.instDecidableEqTy.decEq": [],
+    "Toy.SendSync.instDecidableEqTy.decEq.match_1": [],
+    "Toy.SendSync.instDecidableEqView": [],
+    "Toy.SendSync.instReprAcq": [
+      "propext"
+    ],
+    "Toy.SendSync.instReprAcq.repr": [
+      "propext"
+    ],
+    "Toy.SendSync.instReprAcq.repr.match_1": [],
+    "Toy.SendSync.instReprClaim": [
+      "propext"
+    ],
+    "Toy.SendSync.instReprClaim.repr": [
+      "propext"
+    ],
+    "Toy.SendSync.instReprClaim.repr.match_1": [],
+    "Toy.SendSync.instReprEv": [
+      "propext"
+    ],
+    "Toy.SendSync.instReprEv.repr": [
+      "propext"
+    ],
+    "Toy.SendSync.instReprFp": [
+      "propext"
+    ],
+    "Toy.SendSync.instReprFp.repr": [
+      "propext"
+    ],
+    "Toy.SendSync.instReprHolder": [
+      "propext"
+    ],
+    "Toy.SendSync.instReprHolder.repr": [
+      "propext"
+    ],
+    "Toy.SendSync.instReprHolder.repr.match_1": [],
+    "Toy.SendSync.instReprKind": [],
+    "Toy.SendSync.instReprKind.repr": [],
+    "Toy.SendSync.instReprKind.repr.match_1": [],
+    "Toy.SendSync.instReprPrim": [],
+    "Toy.SendSync.instReprPrim.repr": [],
+    "Toy.SendSync.instReprPrim.repr.match_1": [],
+    "Toy.SendSync.instReprRule": [],
+    "Toy.SendSync.instReprRule.repr": [],
+    "Toy.SendSync.instReprTid": [],
+    "Toy.SendSync.instReprTid.repr": [],
+    "Toy.SendSync.instReprTid.repr.match_1": [],
+    "Toy.SendSync.instReprTy": [],
+    "Toy.SendSync.instReprTy.repr": [],
+    "Toy.SendSync.instReprTy.repr.match_1": [],
+    "Toy.SendSync.instReprView": [],
+    "Toy.SendSync.instReprView.repr": [],
+    "Toy.SendSync.instReprView.repr.match_1": [],
+    "Toy.SendSync.loc_arcRoot": [],
+    "Toy.SendSync.loc_cellRoot": [],
+    "Toy.SendSync.loc_guardRoot": [],
+    "Toy.SendSync.loc_mutexRoot": [],
+    "Toy.SendSync.mutex_cell_plain_semSync_content_not_semSync": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.mutex_cell_rc_plain_not_semSync": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.mutex_rc_plain_content_not_semSend_mutex_neither": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.nfr_append": [
+      "propext"
+    ],
+    "Toy.SendSync.nfr_arcRoot": [],
+    "Toy.SendSync.nfr_cellRoot": [],
+    "Toy.SendSync.nfr_example": [],
+    "Toy.SendSync.nfr_example_fresh_release": [
+      "propext"
+    ],
+    "Toy.SendSync.nfr_example_precondition": [
+      "propext"
+    ],
+    "Toy.SendSync.nfr_example_unnamed_release": [
+      "propext"
+    ],
+    "Toy.SendSync.nfr_expose_readOnly": [
+      "propext"
+    ],
+    "Toy.SendSync.nfr_mono": [],
+    "Toy.SendSync.nfr_mutexRoot": [
+      "propext"
+    ],
+    "Toy.SendSync.nfr_nil": [],
+    "Toy.SendSync.nfr_of_no_rel": [],
+    "Toy.SendSync.nfr_place": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.nfr_place_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.nfr_place_guard": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.nfr_place_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.nfr_place_uniq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.nfr_place_via": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.nfr_shr_of_own": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.noImplTable": [],
+    "Toy.SendSync.not_compatible_example_uniq_via": [
+      "propext"
+    ],
+    "Toy.SendSync.not_compatible_fresh_fresh": [
+      "propext"
+    ],
+    "Toy.SendSync.not_compatible_guard_fresh": [
+      "propext"
+    ],
+    "Toy.SendSync.not_compatible_uniq_uniq": [
+      "propext"
+    ],
+    "Toy.SendSync.not_compatible_uniq_via": [
+      "propext"
+    ],
+    "Toy.SendSync.not_compatible_via_uniq": [
+      "propext"
+    ],
+    "Toy.SendSync.not_forall_semSend_imp_semSync": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_forall_semSync_imp_semSend": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_nfr_example": [
+      "propext"
+    ],
+    "Toy.SendSync.not_nfr_example_placed": [
+      "propext"
+    ],
+    "Toy.SendSync.not_nfr_guardRoot": [
+      "propext"
+    ],
+    "Toy.SendSync.not_race_arcRoot_arcRoot": [
+      "propext"
+    ],
+    "Toy.SendSync.not_race_example_atomic_atomic": [
+      "propext"
+    ],
+    "Toy.SendSync.not_race_example_locked_writes": [
+      "propext"
+    ],
+    "Toy.SendSync.not_race_example_read_read": [
+      "propext"
+    ],
+    "Toy.SendSync.not_race_expose_readOnly": [
+      "propext"
+    ],
+    "Toy.SendSync.not_race_mutexRoot_mutexRoot": [
+      "propext"
+    ],
+    "Toy.SendSync.not_race_of_no_conflict": [
+      "propext"
+    ],
+    "Toy.SendSync.not_race_place_01": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_race_place_10": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_race_place_fresh_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_race_place_guard_fresh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_race_place_ne": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_race_place_root": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_race_place_uniq_uniq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_race_place_uniq_via": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_race_place_via_uniq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_race_root_place": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.not_semSend_examples": [
+      "propext"
+    ],
+    "Toy.SendSync.not_semSend_guard": [
+      "propext"
+    ],
+    "Toy.SendSync.not_semSend_rc": [
+      "propext"
+    ],
+    "Toy.SendSync.not_semSend_rc_and_not_semSync_rc": [
+      "propext"
+    ],
+    "Toy.SendSync.not_semSync_cell": [
+      "propext"
+    ],
+    "Toy.SendSync.not_semSync_examples": [
+      "propext"
+    ],
+    "Toy.SendSync.not_semSync_rc": [
+      "propext"
+    ],
+    "Toy.SendSync.not_semSync_refCell": [
+      "propext"
+    ],
+    "Toy.SendSync.not_semSync_wrap_cell_full": [
+      "propext"
+    ],
+    "Toy.SendSync.not_syncObligation_cell_full": [
+      "propext"
+    ],
+    "Toy.SendSync.not_tableSound_rcSendTable": [
+      "propext"
+    ],
+    "Toy.SendSync.ownReadsRaceFree_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.ownReadsRaceFree_guard_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.ownReadsRaceFree_of_semSend": [
+      "propext"
+    ],
+    "Toy.SendSync.place": [],
+    "Toy.SendSync.place.eq_1": [],
+    "Toy.SendSync.place_subset": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.plain_own_not_subset_shr_semSend": [
+      "propext"
+    ],
+    "Toy.SendSync.prod_plain_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.race_append_left": [
+      "propext"
+    ],
+    "Toy.SendSync.race_append_right": [
+      "propext"
+    ],
+    "Toy.SendSync.race_example_locked_vs_unlocked": [
+      "propext"
+    ],
+    "Toy.SendSync.race_example_write_read": [
+      "propext"
+    ],
+    "Toy.SendSync.race_mono": [
+      "propext"
+    ],
+    "Toy.SendSync.race_nil_left": [
+      "propext"
+    ],
+    "Toy.SendSync.race_nil_right": [
+      "propext"
+    ],
+    "Toy.SendSync.race_place": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.race_place_fresh_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.race_place_guard_guard": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.race_place_guard_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.race_place_nil_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.race_place_single_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.race_place_uniq_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.race_place_via_nil": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.race_place_via_via": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.rcSendTable": [],
+    "Toy.SendSync.rc_plain_neither": [
+      "propext"
+    ],
+    "Toy.SendSync.relNamesAcq_append": [
+      "propext"
+    ],
+    "Toy.SendSync.relNamesAcq_example": [
+      "propext"
+    ],
+    "Toy.SendSync.relNamesAcq_of_no_rel": [],
+    "Toy.SendSync.relNamesAcq_place": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.rootEv": [],
+    "Toy.SendSync.rootEv.eq_1": [],
+    "Toy.SendSync.rule_holds_of_eval": [
+      "propext"
+    ],
+    "Toy.SendSync.sat_glue_reloc": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.sat_glue_root": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.sat_just": [
+      "propext"
+    ],
+    "Toy.SendSync.sat_unplace": [
+      "propext"
+    ],
+    "Toy.SendSync.semSend_arc_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSend_box_iff": [
+      "propext"
+    ],
+    "Toy.SendSync.semSend_cell_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSend_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSend_imp_semSync_of_shr_no_write": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSend_imp_semSync_of_shr_no_write_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SendSync.semSend_imp_semSync_of_shr_no_write_semSend_tight": [
+      "propext"
+    ],
+    "Toy.SendSync.semSend_mutex_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSend_plain": [
+      "propext"
+    ],
+    "Toy.SendSync.semSend_prod_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSend_refCell_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSend_refMut_iff": [
+      "propext"
+    ],
+    "Toy.SendSync.semSend_sum_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSend_wrap_iff": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_arc_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSync_box_iff": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_examples": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSync_guard_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSync_iff_semSend_ref": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_iff_semSend_ref_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_imp_semSend_of_own_subset_shr": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_imp_semSend_of_own_subset_shr_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSync_imp_semSend_of_own_subset_shr_semSync_tight": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_mutex_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSync_plain": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_prod_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSync_refMut_iff": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_ref_iff": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_sum_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_cell_readOnly_iff_ownReadsRaceFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_full_iff": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_iff_syncObligation": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_iff_syncObligation.match_1_1": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_none": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_of_semSync": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_of_semSync_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_of_semSync_tight": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_rc_iff": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_refCell_plain_readOnly": [
+      "propext"
+    ],
+    "Toy.SendSync.semSync_wrap_refCell_readOnly_iff_shrReadsRaceFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.shrReadsRaceFree_examples": [
+      "propext"
+    ],
+    "Toy.SendSync.shrReadsRaceFree_of_ownReadsRaceFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.shr_subset_own": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.stdTable": [],
+    "Toy.SendSync.stdTable.eq_1": [],
+    "Toy.SendSync.stdTable_positive_rules_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.stdTable_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.syncObligation_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.tableSound_noImplTable": [
+      "propext"
+    ],
+    "Toy.SendSync.unsafeSync_wrap_cell_full_accepted_but_racy": [
+      "propext"
+    ],
+    "Toy.SendSync.wrapFree_examples": [],
+    "Toy.SendSync.wrap_arc_cell_readOnly_not_semSync": [
+      "propext"
+    ],
+    "Toy.SendSync.wrap_cell_guard_plain_readOnly_semSync": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.wrap_cell_plain_readOnly_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.wrap_cell_ref_cell_readOnly_not_semSync": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.wrap_rc_none_semSync_not_semSend": [
+      "propext"
+    ],
+    "Toy.SendSync.wrap_readOnly_cell_refCell_differ": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.SendSync.wrap_refCell_plain_readOnly_nonvacuous": [
+      "propext"
+    ],
+    "Toy.SendSync.wrap_refCell_ref_cell_readOnly_not_semSync": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
