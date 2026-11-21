@@ -119,8 +119,10 @@ trusted/correspondence/Trusted/ Correspondence TCB specification (Pass 2)
 
 correspondence/Anneal/          Untrusted correspondence proof (Pass 2)
   MirCorrespondence/            Modular proofs (Codec, SimHelpers, ScalarEquiv,
-                                EnumEquiv, MemRoundTrip, RvalueStep,
-                                StmtTermStep, InitAndSim, Canaries)
+                                EnumEquiv, MemAlloc, ValidateLocal, ByteCodec,
+                                RetPlace, CopyReturnScalar, CopyReturnPair,
+                                MemRoundTrip, RvalueStep, StmtTermStep,
+                                InitAndSim, Canaries)
   MirCorrespondenceProof.lean   Public re-exports of all 37 locked witnesses
 
 trusted/audit/                  anneal-audit CLI, auditor library, and inspector

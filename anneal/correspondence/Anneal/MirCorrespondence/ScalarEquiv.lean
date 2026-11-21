@@ -16,8 +16,6 @@ import Init.Control.Except
 import Trusted
 import Trusted.Correspondence
 import Anneal.MirWp
-import Anneal.MirCorrespondence.Codec
-import Anneal.MirCorrespondence.SimHelpers
 
 namespace Anneal.MirCorrespondence
 

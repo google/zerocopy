@@ -74,15 +74,21 @@ const CORRESPONDENCE_ADAPTER_PATHS: &[&str] = &[
 ];
 const CORRESPONDENCE_PROOF_DIR: &str = "correspondence";
 const CORRESPONDENCE_PROOF_PATHS: &[&str] = &[
+    "correspondence/Anneal/MirCorrespondence/ByteCodec.lean",
     "correspondence/Anneal/MirCorrespondence/Canaries.lean",
     "correspondence/Anneal/MirCorrespondence/Codec.lean",
+    "correspondence/Anneal/MirCorrespondence/CopyReturnPair.lean",
+    "correspondence/Anneal/MirCorrespondence/CopyReturnScalar.lean",
     "correspondence/Anneal/MirCorrespondence/EnumEquiv.lean",
     "correspondence/Anneal/MirCorrespondence/InitAndSim.lean",
+    "correspondence/Anneal/MirCorrespondence/MemAlloc.lean",
     "correspondence/Anneal/MirCorrespondence/MemRoundTrip.lean",
+    "correspondence/Anneal/MirCorrespondence/RetPlace.lean",
     "correspondence/Anneal/MirCorrespondence/RvalueStep.lean",
     "correspondence/Anneal/MirCorrespondence/ScalarEquiv.lean",
     "correspondence/Anneal/MirCorrespondence/SimHelpers.lean",
     "correspondence/Anneal/MirCorrespondence/StmtTermStep.lean",
+    "correspondence/Anneal/MirCorrespondence/ValidateLocal.lean",
     "correspondence/Anneal/MirCorrespondenceProof.lean",
 ];
 const TRUSTED_LEAN_PREFIX: &str = "trusted/lean/";
@@ -105,15 +111,21 @@ pub const PROVENANCE_SOURCES: &[&str] = &[
     "trusted/correspondence/Trusted/Correspondence/Eval.lean",
     "trusted/correspondence/Trusted/Correspondence/Simulation.lean",
     "trusted/correspondence/Trusted/Correspondence/State.lean",
+    "correspondence/Anneal/MirCorrespondence/ByteCodec.lean",
     "correspondence/Anneal/MirCorrespondence/Canaries.lean",
     "correspondence/Anneal/MirCorrespondence/Codec.lean",
+    "correspondence/Anneal/MirCorrespondence/CopyReturnPair.lean",
+    "correspondence/Anneal/MirCorrespondence/CopyReturnScalar.lean",
     "correspondence/Anneal/MirCorrespondence/EnumEquiv.lean",
     "correspondence/Anneal/MirCorrespondence/InitAndSim.lean",
+    "correspondence/Anneal/MirCorrespondence/MemAlloc.lean",
     "correspondence/Anneal/MirCorrespondence/MemRoundTrip.lean",
+    "correspondence/Anneal/MirCorrespondence/RetPlace.lean",
     "correspondence/Anneal/MirCorrespondence/RvalueStep.lean",
     "correspondence/Anneal/MirCorrespondence/ScalarEquiv.lean",
     "correspondence/Anneal/MirCorrespondence/SimHelpers.lean",
     "correspondence/Anneal/MirCorrespondence/StmtTermStep.lean",
+    "correspondence/Anneal/MirCorrespondence/ValidateLocal.lean",
     "correspondence/Anneal/MirCorrespondenceProof.lean",
 ];
 /// Describes what the Pass 2 provenance does and does not certify, matching

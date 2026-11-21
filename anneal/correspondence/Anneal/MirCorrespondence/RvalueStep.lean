@@ -20,7 +20,7 @@ import Anneal.MirCorrespondence.Codec
 import Anneal.MirCorrespondence.SimHelpers
 import Anneal.MirCorrespondence.ScalarEquiv
 import Anneal.MirCorrespondence.EnumEquiv
-import Anneal.MirCorrespondence.MemRoundTrip
+import Anneal.MirCorrespondence.ValidateLocal
 
 namespace Anneal.MirCorrespondence
 
