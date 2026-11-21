@@ -48,6 +48,28 @@ jobs:
         with:
           ref: ${{ inputs.branch }}
           persist-credentials: false
+          fetch-depth: 0 # Include release tags and the history of other branches.
+
+      - name: Reject versions already in Git history
+        env:
+          VERSION: ${{ inputs.version }}
+        run: |
+          tag="v$VERSION"
+          if git show-ref --verify --quiet "refs/tags/$tag"; then
+            printf 'Version %s already has release tag %s.\n' "$VERSION" "$tag" >&2
+            exit 1
+          fi
+
+          version_pattern=$(printf '%s' "$VERSION" | sed 's/[][\\.^$*+?(){}|]/\\&/g')
+          commit=$(git log --all --full-history --diff-merges=first-parent --root \
+            -1 --no-patch --format=%h -G "^version = \"$version_pattern\"$" -- \
+            Cargo.toml zerocopy-derive/Cargo.toml \
+            zerocopy/Cargo.toml zerocopy/zerocopy-derive/Cargo.toml)
+          if [ -n "$commit" ]; then
+            printf 'Version %s already appears in Git history (commit %s).\n' "$VERSION" "$commit" >&2
+            exit 1
+          fi
+
       - name: Overwrite Cargo.toml files
         env:
           VERSION: ${{ inputs.version }}
