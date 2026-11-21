@@ -1,0 +1,2653 @@
+{
+ "checks": [
+  {
+   "check": "A.o0.exit_status_zero",
+   "detail": 0,
+   "passed": true
+  },
+  {
+   "check": "A.o0.no_layout_mismatch_no_unknown_free_no_bad_request",
+   "detail": {
+    "bad_align_calls": 0,
+    "layout_mismatches": 0,
+    "oversize_calls": 0,
+    "table_overflows": 0,
+    "unknown_frees": 0,
+    "zero_size_calls": 0
+   },
+   "passed": true
+  },
+  {
+   "check": "A.o0.zst_box_unit",
+   "passed": true
+  },
+  {
+   "check": "A.o0.zst_box_align64",
+   "passed": true
+  },
+  {
+   "check": "A.o0.zst_vec_unit_capacity",
+   "passed": true
+  },
+  {
+   "check": "A.o0.sized_box_roundtrip",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_new_uninit_dropped",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_new_uninit_mid_init_panic",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_new_uninit_completed",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_write_uninit",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_partial_move_then_panic_forget",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_partial_move_then_panic_keep",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_partial_move_no_panic",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_move_both_fields_then_panic",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_full_move_out",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_argument_panics_before_allocation",
+   "passed": true
+  },
+  {
+   "check": "A.o0.vec_macro_literal",
+   "passed": true
+  },
+  {
+   "check": "A.o0.boxed_slice_and_dyn_dealloc",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_leak",
+   "passed": true
+  },
+  {
+   "check": "A.o0.box_into_raw_from_raw",
+   "passed": true
+  },
+  {
+   "check": "A.o0.vec_growth_realloc",
+   "passed": true
+  },
+  {
+   "check": "A.o0.vec_try_reserve_refused",
+   "passed": true
+  },
+  {
+   "check": "A.o0.zst_addresses_equal_alignment",
+   "passed": true
+  },
+  {
+   "check": "A.o0.zst_scenarios_reach_allocator_zero_times",
+   "passed": true
+  },
+  {
+   "check": "A.o0.zst_vec_capacity_is_usize_max",
+   "passed": true
+  },
+  {
+   "check": "A.o0.every_dealloc_layout_equals_its_alloc_layout",
+   "passed": true
+  },
+  {
+   "check": "A.o0.vec_try_reserve_refused_returns_err_without_abort",
+   "passed": true
+  },
+  {
+   "check": "A.o3.exit_status_zero",
+   "detail": 0,
+   "passed": true
+  },
+  {
+   "check": "A.o3.no_layout_mismatch_no_unknown_free_no_bad_request",
+   "detail": {
+    "bad_align_calls": 0,
+    "layout_mismatches": 0,
+    "oversize_calls": 0,
+    "table_overflows": 0,
+    "unknown_frees": 0,
+    "zero_size_calls": 0
+   },
+   "passed": true
+  },
+  {
+   "check": "A.o3.zst_box_unit",
+   "passed": true
+  },
+  {
+   "check": "A.o3.zst_box_align64",
+   "passed": true
+  },
+  {
+   "check": "A.o3.zst_vec_unit_capacity",
+   "passed": true
+  },
+  {
+   "check": "A.o3.sized_box_roundtrip",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_new_uninit_dropped",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_new_uninit_mid_init_panic",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_new_uninit_completed",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_write_uninit",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_partial_move_then_panic_forget",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_partial_move_then_panic_keep",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_partial_move_no_panic",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_move_both_fields_then_panic",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_full_move_out",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_argument_panics_before_allocation",
+   "passed": true
+  },
+  {
+   "check": "A.o3.vec_macro_literal",
+   "passed": true
+  },
+  {
+   "check": "A.o3.boxed_slice_and_dyn_dealloc",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_leak",
+   "passed": true
+  },
+  {
+   "check": "A.o3.box_into_raw_from_raw",
+   "passed": true
+  },
+  {
+   "check": "A.o3.vec_growth_realloc",
+   "passed": true
+  },
+  {
+   "check": "A.o3.vec_try_reserve_refused",
+   "passed": true
+  },
+  {
+   "check": "A.o3.zst_addresses_equal_alignment",
+   "passed": true
+  },
+  {
+   "check": "A.o3.zst_scenarios_reach_allocator_zero_times",
+   "passed": true
+  },
+  {
+   "check": "A.o3.zst_vec_capacity_is_usize_max",
+   "passed": true
+  },
+  {
+   "check": "A.o3.every_dealloc_layout_equals_its_alloc_layout",
+   "passed": true
+  },
+  {
+   "check": "A.o3.vec_try_reserve_refused_returns_err_without_abort",
+   "passed": true
+  },
+  {
+   "check": "B.default.shim_object_defines_four_methods_and_marker",
+   "detail": {
+    "defined": {
+     "__rust_alloc": "T",
+     "__rust_alloc_zeroed": "T",
+     "__rust_dealloc": "T",
+     "__rust_no_alloc_shim_is_unstable_v2": "T",
+     "__rust_realloc": "T"
+    },
+    "undefined": [
+     "__rdl_alloc",
+     "__rdl_alloc_zeroed",
+     "__rdl_dealloc",
+     "__rdl_realloc"
+    ]
+   },
+   "passed": true
+  },
+  {
+   "check": "B.default.shim_object_forwards_to_rdl",
+   "passed": true
+  },
+  {
+   "check": "B.default.error_handler_defined_in_executable_not_in_shim",
+   "passed": true
+  },
+  {
+   "check": "B.global.shim_object_defines_only_marker",
+   "detail": {
+    "defined": {
+     "__rust_no_alloc_shim_is_unstable_v2": "T"
+    },
+    "undefined": []
+   },
+   "passed": true
+  },
+  {
+   "check": "B.global.crate_object_defines_four_methods",
+   "detail": {
+    "defined": {
+     "__rust_alloc": "T",
+     "__rust_alloc_zeroed": "T",
+     "__rust_dealloc": "T",
+     "__rust_realloc": "T"
+    },
+    "undefined": [
+     "__rust_no_alloc_shim_is_unstable_v2"
+    ]
+   },
+   "passed": true
+  },
+  {
+   "check": "B.global.no_rdl_symbols_referenced_by_shim_or_crate",
+   "passed": true
+  },
+  {
+   "check": "B.absent_symbols",
+   "detail": [],
+   "passed": true
+  },
+  {
+   "check": "B.ir.alloc_attributes",
+   "detail": {
+    "alloc_family": "__rust_alloc",
+    "alloc_variant_zeroed": true,
+    "allockind": "alloc,uninitialized,aligned",
+    "allocsize": "0",
+    "kind": "declare",
+    "nounwind": true,
+    "params": "i64 noundef, i64 allocalign noundef range(i64 1, -9223372036854775807)",
+    "return": "noalias noundef ptr"
+   },
+   "passed": true
+  },
+  {
+   "check": "B.ir.dealloc_attributes",
+   "detail": {
+    "alloc_family": "__rust_alloc",
+    "alloc_variant_zeroed": false,
+    "allockind": "free",
+    "allocsize": null,
+    "kind": "declare",
+    "nounwind": true,
+    "params": "ptr allocptr noundef nonnull captures(address), i64 noundef, i64 noundef range(i64 1, -9223372036854775807)",
+    "return": "void"
+   },
+   "passed": true
+  },
+  {
+   "check": "B.ir.marker_has_no_allocator_attributes",
+   "detail": {
+    "alloc_family": null,
+    "alloc_variant_zeroed": false,
+    "allockind": null,
+    "allocsize": null,
+    "kind": "declare",
+    "nounwind": true,
+    "params": "",
+    "return": "void"
+   },
+   "passed": true
+  },
+  {
+   "check": "B.ir.unpinned_roundtrip_allocation_removed_marker_call_kept",
+   "detail": {
+    "callees_in_order": [
+     "__rust_no_alloc_shim_is_unstable_v2"
+    ],
+    "stores_inttoptr_1": false
+   },
+   "passed": true
+  },
+  {
+   "check": "B.ir.pinned_roundtrip_calls_marker_then_alloc_then_dealloc",
+   "detail": {
+    "callees_in_order": [
+     "llvm.lifetime.start.p0",
+     "__rust_no_alloc_shim_is_unstable_v2",
+     "__rust_alloc",
+     "_RNvNtCs<h>_5alloc5alloc18handle_alloc_error",
+     "__rust_dealloc",
+     "llvm.lifetime.end.p0"
+    ],
+    "stores_inttoptr_1": false
+   },
+   "passed": true
+  },
+  {
+   "check": "B.ir.zst_box_has_no_allocator_call_and_stores_address_1",
+   "detail": {
+    "callees_in_order": [
+     "llvm.lifetime.start.p0",
+     "llvm.lifetime.end.p0"
+    ],
+    "stores_inttoptr_1": true
+   },
+   "passed": true
+  },
+  {
+   "check": "B.expansion.four_functions_with_alignment_typed_align",
+   "detail": {
+    "__rust_alloc": "size: usize, align: ::core::mem::Alignment",
+    "__rust_alloc_zeroed": "size: usize, align: ::core::mem::Alignment",
+    "__rust_dealloc": "ptr: *mut u8, size: usize, align: ::core::mem::Alignment",
+    "__rust_realloc": "ptr: *mut u8, size: usize, align: ::core::mem::Alignment, new_size: usize"
+   },
+   "passed": true
+  },
+  {
+   "check": "C.no_legacy_box_names_in_any_dump",
+   "detail": {
+    "NullaryOp": 0,
+    "ShallowInitBox": 0,
+    "SizeOf(": 0,
+    "box_free": 0,
+    "exchange_malloc": 0
+   },
+   "passed": true
+  },
+  {
+   "check": "C.write_via_move_is_an_assignment_in_built_mir",
+   "passed": true
+  },
+  {
+   "check": "C.box_new.is_an_ordinary_call_in_built_and_default_optimized_mir",
+   "detail": {
+    "built_calls_box_new": true,
+    "final_opt0_calls_box_new": true,
+    "final_opt3_calls_box_new": true,
+    "forced_inline_calls_box_new": false,
+    "forced_inline_calls_box_new_uninit_with_layout_16_8": true,
+    "forced_inline_has_deref_assignment": true,
+    "forced_inline_has_transmute_to_box": true,
+    "forced_inline_scope_inlined_box_new": true,
+    "forced_inline_store_block_has_transmute_and_returns_without_unwind_edge": true
+   },
+   "passed": true
+  },
+  {
+   "check": "C.box_new.inlined_body_is_box_new_uninit_then_store_then_transmute",
+   "detail": {
+    "built_calls_box_new": true,
+    "final_opt0_calls_box_new": true,
+    "final_opt3_calls_box_new": true,
+    "forced_inline_calls_box_new": false,
+    "forced_inline_calls_box_new_uninit_with_layout_16_8": true,
+    "forced_inline_has_deref_assignment": true,
+    "forced_inline_has_transmute_to_box": true,
+    "forced_inline_scope_inlined_box_new": true,
+    "forced_inline_store_block_has_transmute_and_returns_without_unwind_edge": true
+   },
+   "passed": true
+  },
+  {
+   "check": "C.partial_move.open_drop_never_drops_moved_field",
+   "detail": {
+    "after_box_drop_calls": 3,
+    "after_box_drop_calls_in_cleanup": 2,
+    "after_box_drop_calls_on_normal_path": 1,
+    "after_drop_flag_assignments": 0,
+    "after_drops_of_moved_field_0": 0,
+    "after_drops_of_remaining_field_1": 3,
+    "after_moved_out_local_dropped_in_cleanup": 1,
+    "after_pointer_transmutes": 2,
+    "after_remaining_field_drops_in_cleanup": 2,
+    "after_whole_box_drop_terminators": 0,
+    "before_whole_box_drop_terminators": 2
+   },
+   "passed": true
+  },
+  {
+   "check": "C.partial_move.remaining_field_dropped_on_normal_and_unwind_paths",
+   "detail": {
+    "after_box_drop_calls": 3,
+    "after_box_drop_calls_in_cleanup": 2,
+    "after_box_drop_calls_on_normal_path": 1,
+    "after_drop_flag_assignments": 0,
+    "after_drops_of_moved_field_0": 0,
+    "after_drops_of_remaining_field_1": 3,
+    "after_moved_out_local_dropped_in_cleanup": 1,
+    "after_pointer_transmutes": 2,
+    "after_remaining_field_drops_in_cleanup": 2,
+    "after_whole_box_drop_terminators": 0,
+    "before_whole_box_drop_terminators": 2
+   },
+   "passed": true
+  },
+  {
+   "check": "C.partial_move.box_destructor_called_on_normal_and_unwind_paths",
+   "detail": {
+    "after_box_drop_calls": 3,
+    "after_box_drop_calls_in_cleanup": 2,
+    "after_box_drop_calls_on_normal_path": 1,
+    "after_drop_flag_assignments": 0,
+    "after_drops_of_moved_field_0": 0,
+    "after_drops_of_remaining_field_1": 3,
+    "after_moved_out_local_dropped_in_cleanup": 1,
+    "after_pointer_transmutes": 2,
+    "after_remaining_field_drops_in_cleanup": 2,
+    "after_whole_box_drop_terminators": 0,
+    "before_whole_box_drop_terminators": 2
+   },
+   "passed": true
+  },
+  {
+   "check": "C.partial_move.static_case_needs_no_drop_flag",
+   "detail": {
+    "after_box_drop_calls": 3,
+    "after_box_drop_calls_in_cleanup": 2,
+    "after_box_drop_calls_on_normal_path": 1,
+    "after_drop_flag_assignments": 0,
+    "after_drops_of_moved_field_0": 0,
+    "after_drops_of_remaining_field_1": 3,
+    "after_moved_out_local_dropped_in_cleanup": 1,
+    "after_pointer_transmutes": 2,
+    "after_remaining_field_drops_in_cleanup": 2,
+    "after_whole_box_drop_terminators": 0,
+    "before_whole_box_drop_terminators": 2
+   },
+   "passed": true
+  },
+  {
+   "check": "C.conditional_partial_move.uses_drop_flag_for_field_0",
+   "detail": {
+    "after_box_drop_calls": 3,
+    "after_drop_flag_assignments": 3,
+    "after_drops_of_field_0": 3,
+    "after_drops_of_field_1": 3,
+    "after_switch_on_flag": 3
+   },
+   "passed": true
+  },
+  {
+   "check": "C.uninit_mid_init.cleanup_drops_the_box_and_no_field",
+   "detail": {
+    "after_box_type_is_maybe_uninit": true,
+    "after_field_drops": 0,
+    "after_has_drop_flag_switch": true,
+    "after_whole_box_drops_in_cleanup": 1
+   },
+   "passed": true
+  },
+  {
+   "check": "C.full_move_out.frees_box_without_dropping_content",
+   "detail": {
+    "after_box_drop_calls": 2,
+    "after_field_or_content_drops": 0,
+    "after_moves_whole_content": true
+   },
+   "passed": true
+  },
+  {
+   "check": "C.box_deref_elaborated_to_transmuted_raw_pointer",
+   "detail": {
+    "after_transmutes_nonnull_to_raw": true,
+    "before_derefs_box_directly": true
+   },
+   "passed": true
+  },
+  {
+   "check": "C.vec_literal_uses_new_uninit_and_in_place_store",
+   "detail": {
+    "built_assigns_through_box": true,
+    "built_calls_box_assume_init_into_vec_unsafe": true,
+    "built_calls_box_new_uninit": true,
+    "built_mentions_write_box_via_move_call": false
+   },
+   "passed": true
+  },
+  {
+   "check": "C.box_new_zst.still_calls_box_new_uninit_with_size_0_and_stores_nothing",
+   "detail": {
+    "forced_inline_calls_box_new_uninit_with_layout_0_1": true,
+    "forced_inline_has_deref_assignment": false,
+    "forced_inline_has_transmute_to_box": true
+   },
+   "passed": true
+  },
+  {
+   "check": "D.ub_dealloc_wrong_align.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ub_dealloc_wrong_size.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ub_alloc_zero_size.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ub_dealloc_zst_dangling.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ub_box_from_raw_wrong_layout.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ub_box_from_raw_wrong_align_only.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ub_full_drop_after_partial_move.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ub_full_drop_of_uninit_box.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ub_double_free.rs",
+   "passed": true
+  },
+  {
+   "check": "D.leak_uninit_box_unwind_owning_field.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ok_partial_move_unwind.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ok_uninit_box_unwind_plain_fields.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ok_zst_box_and_vec.rs",
+   "passed": true
+  },
+  {
+   "check": "D.ok_box_lifecycle.rs",
+   "passed": true
+  },
+  {
+   "check": "E.box.aborts_with_allocation_failure_message",
+   "detail": {
+    "exit_status": null,
+    "signal": "SIGABRT",
+    "stderr": [
+     "memory allocation of 2199023255552 bytes failed",
+     "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+    ],
+    "stdout": []
+   },
+   "passed": true
+  },
+  {
+   "check": "E.vec.aborts_with_allocation_failure_message",
+   "detail": {
+    "exit_status": null,
+    "signal": "SIGABRT",
+    "stderr": [
+     "memory allocation of 2199023255552 bytes failed",
+     "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+    ],
+    "stdout": []
+   },
+   "passed": true
+  },
+  {
+   "check": "E.try_reserve.returns_err_and_exits_normally",
+   "detail": {
+    "exit_status": 0,
+    "signal": null,
+    "stderr": [],
+    "stdout": [
+     "try_reserve_exact is_err=true refused_calls=1"
+    ]
+   },
+   "passed": true
+  },
+  {
+   "check": "E.raw.returns_null_and_exits_normally",
+   "detail": {
+    "exit_status": 0,
+    "signal": null,
+    "stderr": [],
+    "stdout": [
+     "raw alloc is_null=true refused_calls=1"
+    ]
+   },
+   "passed": true
+  },
+  {
+   "check": "E.overflow.panics_with_capacity_overflow",
+   "detail": {
+    "exit_status": 101,
+    "signal": null,
+    "stderr": [
+     "thread 'main' (<tid>) panicked at <rust-src>/library/alloc/src/raw_vec/mod.rs:28:5:",
+     "capacity overflow",
+     "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+    ],
+    "stdout": []
+   },
+   "passed": true
+  }
+ ],
+ "generated_on": "2026-11-21",
+ "part_a_runtime_accounting": {
+  "opt_level_0": {
+   "exit_status": 0,
+   "panic_runtime_events": [
+    [
+     "alloc",
+     16,
+     8
+    ],
+    [
+     "alloc",
+     56,
+     8
+    ],
+    [
+     "dealloc",
+     56,
+     8
+    ],
+    [
+     "dealloc",
+     16,
+     8
+    ]
+   ],
+   "scenarios": {
+    "_start": {},
+    "_totals": {
+     "bad_align_calls": 0,
+     "layout_mismatches": 0,
+     "oversize_calls": 0,
+     "table_overflows": 0,
+     "unknown_frees": 0,
+     "zero_size_calls": 0
+    },
+    "box_argument_panics_before_allocation": {
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 8,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 16
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 16
+      }
+     ],
+     "other_allocs": 2,
+     "other_deallocs": 2,
+     "panicked": true,
+     "refused": 0
+    },
+    "box_full_move_out": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "18": 1,
+      "19": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0,
+     "tag_sum": 37
+    },
+    "box_into_raw_from_raw": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "30": 1,
+      "31": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "box_leak": {
+     "align64_allocs": 1,
+     "align64_deallocs": 0,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0,
+     "tag_sum": 57
+    },
+    "box_move_both_fields_then_panic": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "16": 1,
+      "17": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 16
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "alloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "dealloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 16
+      }
+     ],
+     "other_allocs": 2,
+     "other_deallocs": 2,
+     "panicked": true,
+     "refused": 0
+    },
+    "box_new_uninit_completed": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "5": 1,
+      "6": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "panicked": false,
+     "refused": 0
+    },
+    "box_new_uninit_dropped": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "box_new_uninit_mid_init_panic": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 16
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "alloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "dealloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 16
+      }
+     ],
+     "other_allocs": 2,
+     "other_deallocs": 2,
+     "panicked": true,
+     "refused": 0
+    },
+    "box_partial_move_no_panic": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "14": 1,
+      "15": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "panicked": false,
+     "refused": 0
+    },
+    "box_partial_move_then_panic_forget": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "11": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 16
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "alloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "dealloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 16
+      }
+     ],
+     "other_allocs": 2,
+     "other_deallocs": 2,
+     "panicked": true,
+     "refused": 0
+    },
+    "box_partial_move_then_panic_keep": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "12": 1,
+      "13": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 16
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "alloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "dealloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 16
+      }
+     ],
+     "other_allocs": 2,
+     "other_deallocs": 2,
+     "panicked": true,
+     "refused": 0
+    },
+    "box_write_uninit": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "7": 1,
+      "8": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "boxed_slice_and_dyn_dealloc": {
+     "align64_allocs": 2,
+     "align64_deallocs": 2,
+     "drops_by_tag": {
+      "23": 1,
+      "24": 1,
+      "25": 1,
+      "26": 1,
+      "27": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 192
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 192
+      },
+      {
+       "align": 64,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0,
+     "tag_sum": 53
+    },
+    "sized_box_roundtrip": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "aligned_to_64": true,
+     "drops_by_tag": {
+      "1": 1,
+      "2": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "unpinned_box_roundtrip": {
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 8,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 64
+      },
+      {
+       "align": 8,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 64
+      }
+     ],
+     "other_allocs": 1,
+     "other_deallocs": 1,
+     "refused": 0,
+     "sum": 24
+    },
+    "vec_growth_realloc": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "32": 1,
+      "33": 1,
+      "34": 1,
+      "35": 1,
+      "36": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 256
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "new_size": 512,
+       "op": "realloc",
+       "refused": false,
+       "size": 256
+      },
+      {
+       "align": 64,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 512
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "vec_macro_literal": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "capacity": 3,
+     "drops_by_tag": {
+      "20": 1,
+      "21": 1,
+      "22": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 192
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 192
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "vec_try_reserve_refused": {
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "capacity_after": 0,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 1,
+       "block": -1,
+       "op": "alloc",
+       "refused": true,
+       "size": 2199023255552
+      }
+     ],
+     "is_err": true,
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "over_isize_max_is_err": true,
+     "refused": 1
+    },
+    "zst_box_align64": {
+     "addr_align64": 64,
+     "addr_align8": 8,
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "drops_by_tag": {},
+     "dyn_addr": 64,
+     "events": [],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "zst_box_unit": {
+     "addr": 1,
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "drops_by_tag": {},
+     "events": [],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "zst_vec_unit_capacity": {
+     "addr": 1,
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "capacity_is_usize_max": true,
+     "drops_by_tag": {},
+     "events": [],
+     "len": 1000000,
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    }
+   }
+  },
+  "opt_level_3": {
+   "exit_status": 0,
+   "panic_runtime_events": [
+    [
+     "alloc",
+     16,
+     8
+    ],
+    [
+     "alloc",
+     56,
+     8
+    ],
+    [
+     "dealloc",
+     56,
+     8
+    ],
+    [
+     "dealloc",
+     16,
+     8
+    ]
+   ],
+   "scenarios": {
+    "_start": {},
+    "_totals": {
+     "bad_align_calls": 0,
+     "layout_mismatches": 0,
+     "oversize_calls": 0,
+     "table_overflows": 0,
+     "unknown_frees": 0,
+     "zero_size_calls": 0
+    },
+    "box_argument_panics_before_allocation": {
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 8,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 16
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 16
+      }
+     ],
+     "other_allocs": 2,
+     "other_deallocs": 2,
+     "panicked": true,
+     "refused": 0
+    },
+    "box_full_move_out": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "18": 1,
+      "19": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0,
+     "tag_sum": 37
+    },
+    "box_into_raw_from_raw": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "30": 1,
+      "31": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "box_leak": {
+     "align64_allocs": 1,
+     "align64_deallocs": 0,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0,
+     "tag_sum": 57
+    },
+    "box_move_both_fields_then_panic": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "16": 1,
+      "17": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 16
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "alloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "dealloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 16
+      }
+     ],
+     "other_allocs": 2,
+     "other_deallocs": 2,
+     "panicked": true,
+     "refused": 0
+    },
+    "box_new_uninit_completed": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "5": 1,
+      "6": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "panicked": false,
+     "refused": 0
+    },
+    "box_new_uninit_dropped": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "box_new_uninit_mid_init_panic": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 16
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "alloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "dealloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 16
+      }
+     ],
+     "other_allocs": 2,
+     "other_deallocs": 2,
+     "panicked": true,
+     "refused": 0
+    },
+    "box_partial_move_no_panic": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "14": 1,
+      "15": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "panicked": false,
+     "refused": 0
+    },
+    "box_partial_move_then_panic_forget": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "11": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 16
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "alloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "dealloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 16
+      }
+     ],
+     "other_allocs": 2,
+     "other_deallocs": 2,
+     "panicked": true,
+     "refused": 0
+    },
+    "box_partial_move_then_panic_keep": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "12": 1,
+      "13": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 16
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "alloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 8,
+       "block": 2,
+       "op": "dealloc",
+       "refused": false,
+       "size": 56
+      },
+      {
+       "align": 8,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 16
+      }
+     ],
+     "other_allocs": 2,
+     "other_deallocs": 2,
+     "panicked": true,
+     "refused": 0
+    },
+    "box_write_uninit": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "7": 1,
+      "8": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "boxed_slice_and_dyn_dealloc": {
+     "align64_allocs": 2,
+     "align64_deallocs": 2,
+     "drops_by_tag": {
+      "23": 1,
+      "24": 1,
+      "25": 1,
+      "26": 1,
+      "27": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 192
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 192
+      },
+      {
+       "align": 64,
+       "block": 1,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0,
+     "tag_sum": 53
+    },
+    "sized_box_roundtrip": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "aligned_to_64": true,
+     "drops_by_tag": {
+      "1": 1,
+      "2": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 128
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 128
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "unpinned_box_roundtrip": {
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 8,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 64
+      },
+      {
+       "align": 8,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 64
+      }
+     ],
+     "other_allocs": 1,
+     "other_deallocs": 1,
+     "refused": 0,
+     "sum": 24
+    },
+    "vec_growth_realloc": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "drops_by_tag": {
+      "32": 1,
+      "33": 1,
+      "34": 1,
+      "35": 1,
+      "36": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 256
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "new_size": 512,
+       "op": "realloc",
+       "refused": false,
+       "size": 256
+      },
+      {
+       "align": 64,
+       "block": 1,
+       "op": "dealloc",
+       "refused": false,
+       "size": 512
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "vec_macro_literal": {
+     "align64_allocs": 1,
+     "align64_deallocs": 1,
+     "capacity": 3,
+     "drops_by_tag": {
+      "20": 1,
+      "21": 1,
+      "22": 1
+     },
+     "events": [
+      {
+       "align": 64,
+       "block": 0,
+       "op": "alloc",
+       "refused": false,
+       "size": 192
+      },
+      {
+       "align": 64,
+       "block": 0,
+       "op": "dealloc",
+       "refused": false,
+       "size": 192
+      }
+     ],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "vec_try_reserve_refused": {
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "capacity_after": 0,
+     "drops_by_tag": {},
+     "events": [
+      {
+       "align": 1,
+       "block": -1,
+       "op": "alloc",
+       "refused": true,
+       "size": 2199023255552
+      }
+     ],
+     "is_err": true,
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "over_isize_max_is_err": true,
+     "refused": 1
+    },
+    "zst_box_align64": {
+     "addr_align64": 64,
+     "addr_align8": 8,
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "drops_by_tag": {},
+     "dyn_addr": 64,
+     "events": [],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "zst_box_unit": {
+     "addr": 1,
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "drops_by_tag": {},
+     "events": [],
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    },
+    "zst_vec_unit_capacity": {
+     "addr": 1,
+     "align64_allocs": 0,
+     "align64_deallocs": 0,
+     "capacity_is_usize_max": true,
+     "drops_by_tag": {},
+     "events": [],
+     "len": 1000000,
+     "other_allocs": 0,
+     "other_deallocs": 0,
+     "refused": 0
+    }
+   }
+  },
+  "unpinned_box_roundtrip_allocator_calls": {
+   "note": "with a #[global_allocator] defined in the same crate",
+   "opt_level_0": 2,
+   "opt_level_3": 2
+  }
+ },
+ "part_b_symbols_and_ir": {
+  "absent_symbols_checked": [
+   "__rust_alloc_error_handler_should_panic_v2",
+   "__rust_alloc_error_handler_should_panic",
+   "__rust_no_alloc_shim_is_unstable",
+   "__rg_alloc",
+   "__rg_dealloc",
+   "__rg_oom",
+   "__rdl_oom"
+  ],
+  "default_allocator": {
+   "allocator_shim_object": {
+    "defined": {
+     "__rust_alloc": "T",
+     "__rust_alloc_zeroed": "T",
+     "__rust_dealloc": "T",
+     "__rust_no_alloc_shim_is_unstable_v2": "T",
+     "__rust_realloc": "T"
+    },
+    "undefined": [
+     "__rdl_alloc",
+     "__rdl_alloc_zeroed",
+     "__rdl_dealloc",
+     "__rdl_realloc"
+    ]
+   },
+   "crate_object": {
+    "defined": {},
+    "undefined": [
+     "__rust_alloc",
+     "__rust_dealloc",
+     "__rust_no_alloc_shim_is_unstable_v2",
+     "__rust_realloc"
+    ]
+   },
+   "linked_executable": {
+    "defined": {
+     "__rdl_alloc": "t",
+     "__rdl_alloc_zeroed": "t",
+     "__rdl_dealloc": "t",
+     "__rdl_realloc": "t",
+     "__rust_alloc": "T",
+     "__rust_alloc_error_handler": "T",
+     "__rust_alloc_zeroed": "T",
+     "__rust_dealloc": "T",
+     "__rust_drop_panic": "T",
+     "__rust_foreign_exception": "T",
+     "__rust_no_alloc_shim_is_unstable_v2": "T",
+     "__rust_panic_cleanup": "T",
+     "__rust_realloc": "T",
+     "__rust_start_panic": "T",
+     "rust_begin_unwind": "T",
+     "rust_panic": "T"
+    },
+    "undefined": []
+   },
+   "llvm_ir": {
+    "functions": {
+     "pinned_roundtrip": {
+      "callees_in_order": [
+       "llvm.lifetime.start.p0",
+       "__rust_no_alloc_shim_is_unstable_v2",
+       "__rust_alloc",
+       "_RNvNtCs<h>_5alloc5alloc18handle_alloc_error",
+       "__rust_dealloc",
+       "llvm.lifetime.end.p0"
+      ],
+      "stores_inttoptr_1": false
+     },
+     "unpinned_roundtrip": {
+      "callees_in_order": [
+       "__rust_no_alloc_shim_is_unstable_v2"
+      ],
+      "stores_inttoptr_1": false
+     },
+     "zst_box": {
+      "callees_in_order": [
+       "llvm.lifetime.start.p0",
+       "llvm.lifetime.end.p0"
+      ],
+      "stores_inttoptr_1": true
+     }
+    },
+    "internal_allocator_symbols": {
+     "__rust_alloc": {
+      "alloc_family": "__rust_alloc",
+      "alloc_variant_zeroed": true,
+      "allockind": "alloc,uninitialized,aligned",
+      "allocsize": "0",
+      "kind": "declare",
+      "nounwind": true,
+      "params": "i64 noundef, i64 allocalign noundef range(i64 1, -9223372036854775807)",
+      "return": "noalias noundef ptr"
+     },
+     "__rust_dealloc": {
+      "alloc_family": "__rust_alloc",
+      "alloc_variant_zeroed": false,
+      "allockind": "free",
+      "allocsize": null,
+      "kind": "declare",
+      "nounwind": true,
+      "params": "ptr allocptr noundef nonnull captures(address), i64 noundef, i64 noundef range(i64 1, -9223372036854775807)",
+      "return": "void"
+     },
+     "__rust_no_alloc_shim_is_unstable_v2": {
+      "alloc_family": null,
+      "alloc_variant_zeroed": false,
+      "allockind": null,
+      "allocsize": null,
+      "kind": "declare",
+      "nounwind": true,
+      "params": "",
+      "return": "void"
+     },
+     "__rust_realloc": {
+      "alloc_family": "__rust_alloc",
+      "alloc_variant_zeroed": false,
+      "allockind": "realloc,aligned",
+      "allocsize": "3",
+      "kind": "declare",
+      "nounwind": true,
+      "params": "ptr allocptr noundef nonnull, i64 noundef, i64 allocalign noundef range(i64 1, -9223372036854775807), i64 noundef",
+      "return": "noalias noundef ptr"
+     }
+    }
+   },
+   "mangled_names": {
+    "__rdl_alloc": "_RNvCs<crate-hash>_7___rustc11___rdl_alloc",
+    "__rdl_alloc_zeroed": "_RNvCs<crate-hash>_7___rustc18___rdl_alloc_zeroed",
+    "__rdl_dealloc": "_RNvCs<crate-hash>_7___rustc13___rdl_dealloc",
+    "__rdl_realloc": "_RNvCs<crate-hash>_7___rustc13___rdl_realloc",
+    "__rust_alloc": "_RNvCs<crate-hash>_7___rustc12___rust_alloc",
+    "__rust_alloc_error_handler": "_RNvCs<crate-hash>_7___rustc26___rust_alloc_error_handler",
+    "__rust_alloc_zeroed": "_RNvCs<crate-hash>_7___rustc19___rust_alloc_zeroed",
+    "__rust_dealloc": "_RNvCs<crate-hash>_7___rustc14___rust_dealloc",
+    "__rust_drop_panic": "_RNvCs<crate-hash>_7___rustc17___rust_drop_panic",
+    "__rust_foreign_exception": "_RNvCs<crate-hash>_7___rustc24___rust_foreign_exception",
+    "__rust_no_alloc_shim_is_unstable_v2": "_RNvCs<crate-hash>_7___rustc35___rust_no_alloc_shim_is_unstable_v2",
+    "__rust_panic_cleanup": "_RNvCs<crate-hash>_7___rustc20___rust_panic_cleanup",
+    "__rust_realloc": "_RNvCs<crate-hash>_7___rustc14___rust_realloc",
+    "__rust_start_panic": "_RNvCs<crate-hash>_7___rustc18___rust_start_panic"
+   },
+   "object_count": 2
+  },
+  "global_allocator": {
+   "allocator_shim_object": {
+    "defined": {
+     "__rust_no_alloc_shim_is_unstable_v2": "T"
+    },
+    "undefined": []
+   },
+   "crate_object": {
+    "defined": {
+     "__rust_alloc": "T",
+     "__rust_alloc_zeroed": "T",
+     "__rust_dealloc": "T",
+     "__rust_realloc": "T"
+    },
+    "undefined": [
+     "__rust_no_alloc_shim_is_unstable_v2"
+    ]
+   },
+   "linked_executable": {
+    "defined": {
+     "__rust_alloc": "t",
+     "__rust_alloc_error_handler": "T",
+     "__rust_alloc_zeroed": "t",
+     "__rust_dealloc": "t",
+     "__rust_drop_panic": "T",
+     "__rust_foreign_exception": "T",
+     "__rust_no_alloc_shim_is_unstable_v2": "T",
+     "__rust_panic_cleanup": "T",
+     "__rust_realloc": "t",
+     "__rust_start_panic": "T",
+     "rust_begin_unwind": "T",
+     "rust_panic": "T"
+    },
+    "undefined": []
+   },
+   "llvm_ir": {
+    "internal_allocator_symbols": {
+     "__rust_alloc": {
+      "alloc_family": "__rust_alloc",
+      "alloc_variant_zeroed": false,
+      "allockind": "alloc,uninitialized,aligned",
+      "allocsize": "0",
+      "kind": "define",
+      "nounwind": true,
+      "params": "i64 noundef %size, i64 allocalign noundef range(i64 1, -9223372036854775807) %align",
+      "return": "hidden noalias noundef ptr"
+     },
+     "__rust_alloc_zeroed": {
+      "alloc_family": "__rust_alloc",
+      "alloc_variant_zeroed": false,
+      "allockind": "alloc,zeroed,aligned",
+      "allocsize": "0",
+      "kind": "define",
+      "nounwind": true,
+      "params": "i64 noundef %size, i64 allocalign noundef range(i64 1, -9223372036854775807) %align",
+      "return": "hidden noalias noundef ptr"
+     },
+     "__rust_dealloc": {
+      "alloc_family": "__rust_alloc",
+      "alloc_variant_zeroed": false,
+      "allockind": "free",
+      "allocsize": null,
+      "kind": "define",
+      "nounwind": true,
+      "params": "ptr allocptr noundef captures(address) %ptr, i64 noundef %size, i64 noundef range(i64 1, -9223372036854775807) %align",
+      "return": "hidden void"
+     },
+     "__rust_no_alloc_shim_is_unstable_v2": {
+      "alloc_family": null,
+      "alloc_variant_zeroed": false,
+      "allockind": null,
+      "allocsize": null,
+      "kind": "declare",
+      "nounwind": true,
+      "params": "",
+      "return": "void"
+     },
+     "__rust_realloc": {
+      "alloc_family": "__rust_alloc",
+      "alloc_variant_zeroed": false,
+      "allockind": "realloc,aligned",
+      "allocsize": "3",
+      "kind": "define",
+      "nounwind": false,
+      "params": "ptr allocptr noundef %ptr, i64 noundef %size, i64 allocalign noundef range(i64 1, -9223372036854775807) %align, i64 noundef %new_size",
+      "return": "hidden noalias noundef ptr"
+     }
+    }
+   },
+   "mangled_names": {
+    "__rust_alloc": "_RNvCs<crate-hash>_7___rustc12___rust_alloc",
+    "__rust_alloc_error_handler": "_RNvCs<crate-hash>_7___rustc26___rust_alloc_error_handler",
+    "__rust_alloc_zeroed": "_RNvCs<crate-hash>_7___rustc19___rust_alloc_zeroed",
+    "__rust_dealloc": "_RNvCs<crate-hash>_7___rustc14___rust_dealloc",
+    "__rust_drop_panic": "_RNvCs<crate-hash>_7___rustc17___rust_drop_panic",
+    "__rust_foreign_exception": "_RNvCs<crate-hash>_7___rustc24___rust_foreign_exception",
+    "__rust_no_alloc_shim_is_unstable_v2": "_RNvCs<crate-hash>_7___rustc35___rust_no_alloc_shim_is_unstable_v2",
+    "__rust_panic_cleanup": "_RNvCs<crate-hash>_7___rustc20___rust_panic_cleanup",
+    "__rust_realloc": "_RNvCs<crate-hash>_7___rustc14___rust_realloc",
+    "__rust_start_panic": "_RNvCs<crate-hash>_7___rustc18___rust_start_panic"
+   },
+   "object_count": 2
+  },
+  "global_allocator_expansion_signatures": {
+   "__rust_alloc": "size: usize, align: ::core::mem::Alignment",
+   "__rust_alloc_zeroed": "size: usize, align: ::core::mem::Alignment",
+   "__rust_dealloc": "ptr: *mut u8, size: usize, align: ::core::mem::Alignment",
+   "__rust_realloc": "ptr: *mut u8, size: usize, align: ::core::mem::Alignment, new_size: usize"
+  }
+ },
+ "part_c_mir": {
+  "configurations": {
+   "opt_level_0": "-C opt-level=0",
+   "opt_level_3": "-C opt-level=3",
+   "opt_level_3_forced_mir_inline": "-C opt-level=3 -Zinline-mir=yes -Zinline-mir-threshold=10000 -Zinline-mir-hint-threshold=10000"
+  },
+  "dump_files_kept": [
+   "mir/opt_level_0/box_conditional_partial_move.ElaborateBoxDerefs.after.mir",
+   "mir/opt_level_0/box_conditional_partial_move.ElaborateBoxDerefs.before.mir",
+   "mir/opt_level_0/box_conditional_partial_move.ElaborateDrops.after.mir",
+   "mir/opt_level_0/box_conditional_partial_move.ElaborateDrops.before.mir",
+   "mir/opt_level_0/box_conditional_partial_move.built.mir",
+   "mir/opt_level_0/box_deref_read.ElaborateBoxDerefs.after.mir",
+   "mir/opt_level_0/box_deref_read.ElaborateBoxDerefs.before.mir",
+   "mir/opt_level_0/box_deref_read.ElaborateDrops.after.mir",
+   "mir/opt_level_0/box_deref_read.ElaborateDrops.before.mir",
+   "mir/opt_level_0/box_deref_read.built.mir",
+   "mir/opt_level_0/box_full_move_out.ElaborateBoxDerefs.after.mir",
+   "mir/opt_level_0/box_full_move_out.ElaborateBoxDerefs.before.mir",
+   "mir/opt_level_0/box_full_move_out.ElaborateDrops.after.mir",
+   "mir/opt_level_0/box_full_move_out.ElaborateDrops.before.mir",
+   "mir/opt_level_0/box_full_move_out.built.mir",
+   "mir/opt_level_0/box_new_sized.ElaborateBoxDerefs.after.mir",
+   "mir/opt_level_0/box_new_sized.ElaborateBoxDerefs.before.mir",
+   "mir/opt_level_0/box_new_sized.ElaborateDrops.after.mir",
+   "mir/opt_level_0/box_new_sized.ElaborateDrops.before.mir",
+   "mir/opt_level_0/box_new_sized.built.mir",
+   "mir/opt_level_0/box_new_uninit_mid_init.ElaborateBoxDerefs.after.mir",
+   "mir/opt_level_0/box_new_uninit_mid_init.ElaborateBoxDerefs.before.mir",
+   "mir/opt_level_0/box_new_uninit_mid_init.ElaborateDrops.after.mir",
+   "mir/opt_level_0/box_new_uninit_mid_init.ElaborateDrops.before.mir",
+   "mir/opt_level_0/box_new_uninit_mid_init.built.mir",
+   "mir/opt_level_0/box_new_zst.ElaborateBoxDerefs.after.mir",
+   "mir/opt_level_0/box_new_zst.ElaborateBoxDerefs.before.mir",
+   "mir/opt_level_0/box_new_zst.ElaborateDrops.after.mir",
+   "mir/opt_level_0/box_new_zst.ElaborateDrops.before.mir",
+   "mir/opt_level_0/box_new_zst.built.mir",
+   "mir/opt_level_0/box_partial_move.ElaborateBoxDerefs.after.mir",
+   "mir/opt_level_0/box_partial_move.ElaborateBoxDerefs.before.mir",
+   "mir/opt_level_0/box_partial_move.ElaborateDrops.after.mir",
+   "mir/opt_level_0/box_partial_move.ElaborateDrops.before.mir",
+   "mir/opt_level_0/box_partial_move.built.mir",
+   "mir/opt_level_0/box_plain_drop.ElaborateBoxDerefs.after.mir",
+   "mir/opt_level_0/box_plain_drop.ElaborateBoxDerefs.before.mir",
+   "mir/opt_level_0/box_plain_drop.ElaborateDrops.after.mir",
+   "mir/opt_level_0/box_plain_drop.ElaborateDrops.before.mir",
+   "mir/opt_level_0/box_plain_drop.built.mir",
+   "mir/opt_level_0/final.mir",
+   "mir/opt_level_0/vec_literal.ElaborateBoxDerefs.after.mir",
+   "mir/opt_level_0/vec_literal.ElaborateBoxDerefs.before.mir",
+   "mir/opt_level_0/vec_literal.ElaborateDrops.after.mir",
+   "mir/opt_level_0/vec_literal.ElaborateDrops.before.mir",
+   "mir/opt_level_0/vec_literal.built.mir",
+   "mir/opt_level_0/write_via_move_direct.ElaborateBoxDerefs.after.mir",
+   "mir/opt_level_0/write_via_move_direct.ElaborateBoxDerefs.before.mir",
+   "mir/opt_level_0/write_via_move_direct.ElaborateDrops.after.mir",
+   "mir/opt_level_0/write_via_move_direct.ElaborateDrops.before.mir",
+   "mir/opt_level_0/write_via_move_direct.built.mir",
+   "mir/opt_level_3/final.mir",
+   "mir/opt_level_3_forced_mir_inline/box_new_sized.final.mir",
+   "mir/opt_level_3_forced_mir_inline/box_new_zst.final.mir"
+  ],
+  "functions": {
+   "box_conditional_partial_move": {
+    "after_box_drop_calls": 3,
+    "after_drop_flag_assignments": 3,
+    "after_drops_of_field_0": 3,
+    "after_drops_of_field_1": 3,
+    "after_switch_on_flag": 3
+   },
+   "box_deref_read": {
+    "after_transmutes_nonnull_to_raw": true,
+    "before_derefs_box_directly": true
+   },
+   "box_full_move_out": {
+    "after_box_drop_calls": 2,
+    "after_field_or_content_drops": 0,
+    "after_moves_whole_content": true
+   },
+   "box_new_sized": {
+    "built_calls_box_new": true,
+    "final_opt0_calls_box_new": true,
+    "final_opt3_calls_box_new": true,
+    "forced_inline_calls_box_new": false,
+    "forced_inline_calls_box_new_uninit_with_layout_16_8": true,
+    "forced_inline_has_deref_assignment": true,
+    "forced_inline_has_transmute_to_box": true,
+    "forced_inline_scope_inlined_box_new": true,
+    "forced_inline_store_block_has_transmute_and_returns_without_unwind_edge": true
+   },
+   "box_new_uninit_mid_init": {
+    "after_box_type_is_maybe_uninit": true,
+    "after_field_drops": 0,
+    "after_has_drop_flag_switch": true,
+    "after_whole_box_drops_in_cleanup": 1
+   },
+   "box_new_zst": {
+    "forced_inline_calls_box_new_uninit_with_layout_0_1": true,
+    "forced_inline_has_deref_assignment": false,
+    "forced_inline_has_transmute_to_box": true
+   },
+   "box_partial_move": {
+    "after_box_drop_calls": 3,
+    "after_box_drop_calls_in_cleanup": 2,
+    "after_box_drop_calls_on_normal_path": 1,
+    "after_drop_flag_assignments": 0,
+    "after_drops_of_moved_field_0": 0,
+    "after_drops_of_remaining_field_1": 3,
+    "after_moved_out_local_dropped_in_cleanup": 1,
+    "after_pointer_transmutes": 2,
+    "after_remaining_field_drops_in_cleanup": 2,
+    "after_whole_box_drop_terminators": 0,
+    "before_whole_box_drop_terminators": 2
+   },
+   "vec_literal": {
+    "built_assigns_through_box": true,
+    "built_calls_box_assume_init_into_vec_unsafe": true,
+    "built_calls_box_new_uninit": true,
+    "built_mentions_write_box_via_move_call": false
+   },
+   "write_via_move_direct": {
+    "built_has_plain_assignment": true,
+    "built_mentions_write_via_move_call": false
+   }
+  },
+  "legacy_name_occurrences_in_all_dumps": {
+   "NullaryOp": 0,
+   "ShallowInitBox": 0,
+   "SizeOf(": 0,
+   "box_free": 0,
+   "exchange_malloc": 0
+  }
+ },
+ "part_d_miri": {
+  "cases": {
+   "leak_uninit_box_unwind_owning_field.rs": {
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expected_pattern": "error: memory leaked: alloc\\d+ \\(Rust heap, size: 8, align: 8\\)",
+    "first_error_line": "error: memory leaked: alloc298 (Rust heap, size: 8, align: 8), allocated here:",
+    "leak_reported": true,
+    "pattern_matched": true,
+    "undefined_behavior_reported": false
+   },
+   "ok_box_lifecycle.rs": {
+    "exit_status": 0,
+    "expected_exit_status": 0,
+    "expected_pattern": "^ok$",
+    "first_error_line": null,
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": false
+   },
+   "ok_partial_move_unwind.rs": {
+    "exit_status": 0,
+    "expected_exit_status": 0,
+    "expected_pattern": "^ok$",
+    "first_error_line": null,
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": false
+   },
+   "ok_uninit_box_unwind_plain_fields.rs": {
+    "exit_status": 0,
+    "expected_exit_status": 0,
+    "expected_pattern": "^ok$",
+    "first_error_line": null,
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": false
+   },
+   "ok_zst_box_and_vec.rs": {
+    "exit_status": 0,
+    "expected_exit_status": 0,
+    "expected_pattern": "^ok$",
+    "first_error_line": null,
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": false
+   },
+   "ub_alloc_zero_size.rs": {
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expected_pattern": "Undefined Behavior: creating allocation with size 0",
+    "first_error_line": "error: Undefined Behavior: creating allocation with size 0",
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": true
+   },
+   "ub_box_from_raw_wrong_align_only.rs": {
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expected_pattern": "Undefined Behavior: incorrect layout on deallocation: alloc\\d+ has size 8 and alignment 8, but gave size 8 and alignment 1",
+    "first_error_line": "error: Undefined Behavior: incorrect layout on deallocation: alloc235 has size 8 and alignment 8, but gave size 8 and alignment 1",
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": true
+   },
+   "ub_box_from_raw_wrong_layout.rs": {
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expected_pattern": "Undefined Behavior: incorrect layout on deallocation: alloc\\d+ has size 8 and alignment 8, but gave size 4 and alignment 4",
+    "first_error_line": "error: Undefined Behavior: incorrect layout on deallocation: alloc235 has size 8 and alignment 8, but gave size 4 and alignment 4",
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": true
+   },
+   "ub_dealloc_wrong_align.rs": {
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expected_pattern": "Undefined Behavior: incorrect layout on deallocation: alloc\\d+ has size 8 and alignment 8, but gave size 8 and alignment 4",
+    "first_error_line": "error: Undefined Behavior: incorrect layout on deallocation: alloc232 has size 8 and alignment 8, but gave size 8 and alignment 4",
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": true
+   },
+   "ub_dealloc_wrong_size.rs": {
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expected_pattern": "Undefined Behavior: incorrect layout on deallocation: alloc\\d+ has size 8 and alignment 8, but gave size 16 and alignment 8",
+    "first_error_line": "error: Undefined Behavior: incorrect layout on deallocation: alloc232 has size 8 and alignment 8, but gave size 16 and alignment 8",
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": true
+   },
+   "ub_dealloc_zst_dangling.rs": {
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expected_pattern": "Undefined Behavior: pointer not dereferenceable: pointer must point to some allocation, but got 0x1\\[noalloc\\] which is a dangling pointer",
+    "first_error_line": "error: Undefined Behavior: pointer not dereferenceable: pointer must point to some allocation, but got 0x1[noalloc] which is a dangling pointer (it has no provenance)",
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": true
+   },
+   "ub_double_free.rs": {
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expected_pattern": "Undefined Behavior: memory access failed: alloc\\d+ has been freed, so this pointer is dangling",
+    "first_error_line": "error: Undefined Behavior: memory access failed: alloc232 has been freed, so this pointer is dangling",
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": true
+   },
+   "ub_full_drop_after_partial_move.rs": {
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expected_pattern": "Undefined Behavior: memory access failed: alloc\\d+ has been freed, so this pointer is dangling",
+    "first_error_line": "error: Undefined Behavior: memory access failed: alloc235 has been freed, so this pointer is dangling",
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": true
+   },
+   "ub_full_drop_of_uninit_box.rs": {
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "expected_pattern": "Undefined Behavior: reading memory at alloc\\d+\\[0x8\\.\\.0x10\\], but memory is uninitialized",
+    "first_error_line": "error: Undefined Behavior: reading memory at alloc235[0x8..0x10], but memory is uninitialized at [0x8..0x10], and this operation requires initialized memory",
+    "leak_reported": false,
+    "pattern_matched": true,
+    "undefined_behavior_reported": true
+   }
+  },
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+ },
+ "part_e_allocation_failure": {
+  "box": {
+   "exit_status": null,
+   "signal": "SIGABRT",
+   "stderr": [
+    "memory allocation of 2199023255552 bytes failed",
+    "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+   ],
+   "stdout": []
+  },
+  "overflow": {
+   "exit_status": 101,
+   "signal": null,
+   "stderr": [
+    "thread 'main' (<tid>) panicked at <rust-src>/library/alloc/src/raw_vec/mod.rs:28:5:",
+    "capacity overflow",
+    "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+   ],
+   "stdout": []
+  },
+  "raw": {
+   "exit_status": 0,
+   "signal": null,
+   "stderr": [],
+   "stdout": [
+    "raw alloc is_null=true refused_calls=1"
+   ]
+  },
+  "try_reserve": {
+   "exit_status": 0,
+   "signal": null,
+   "stderr": [],
+   "stdout": [
+    "try_reserve_exact is_err=true refused_calls=1"
+   ]
+  },
+  "vec": {
+   "exit_status": null,
+   "signal": "SIGABRT",
+   "stderr": [
+    "memory allocation of 2199023255552 bytes failed",
+    "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+   ],
+   "stdout": []
+  }
+ },
+ "schema": "allocator-box-probe/1",
+ "summary": {
+  "checks": 101,
+  "failed": [],
+  "passed": true
+ },
+ "toolchain": {
+  "LLVM version": "22.1.6",
+  "binary": "rustc",
+  "commit-date": "2026-05-31",
+  "commit-hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "host": "x86_64-unknown-linux-gnu",
+  "nm": "GNU nm (GNU Binutils for Debian) 2.47",
+  "release": "1.98.0-nightly",
+  "version_line": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+ }
+}

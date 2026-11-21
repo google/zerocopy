@@ -1,0 +1,681 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn <impl at specimens/mir_specimens.rs:19:1: 19:22>::drop(_1: &mut Counted) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let _2: usize;
+    let mut _3: usize;
+
+    bb0: {
+        _3 = copy ((*_1).0: usize);
+        _2 = std::hint::black_box::<usize>(move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn maybe_panic(_1: bool) -> () {
+    debug yes => _1;
+    let mut _0: ();
+    let _2: !;
+    let mut _3: std::fmt::Arguments<'_>;
+
+    bb0: {
+        switchInt(copy _1) -> [0: bb3, otherwise: bb1];
+    }
+
+    bb1: {
+        _3 = Arguments::<'_>::from_str(const "deliberate panic") -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        _2 = panic_fmt(move _3) -> unwind continue;
+    }
+
+    bb3: {
+        return;
+    }
+}
+
+alloc1 (size: 16, align: 1) {
+    64 65 6c 69 62 65 72 61 74 65 20 70 61 6e 69 63 │ deliberate panic
+}
+
+fn box_new_sized(_1: Pair) -> Box<Pair> {
+    debug p => _1;
+    let mut _0: std::boxed::Box<Pair>;
+
+    bb0: {
+        _0 = Box::<Pair>::new(copy _1) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn box_new_zst() -> Box<()> {
+    let mut _0: std::boxed::Box<()>;
+
+    bb0: {
+        _0 = Box::<()>::new(const ()) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn write_via_move_direct(_1: *mut Pair, _2: Pair) -> () {
+    debug ptr => _1;
+    debug value => _2;
+    let mut _0: ();
+    let mut _3: *const ();
+    let mut _4: usize;
+    let mut _5: usize;
+    let mut _6: usize;
+    let mut _7: bool;
+    let mut _8: *const ();
+    let mut _9: usize;
+    let mut _10: bool;
+    let mut _11: bool;
+    let mut _12: bool;
+    let mut _13: bool;
+
+    bb0: {
+        _3 = copy _1 as *const () (PtrToPtr);
+        _4 = copy _3 as usize (Transmute);
+        _5 = Sub(const <Pair as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _6 = BitAnd(copy _4, copy _5);
+        _7 = Eq(copy _6, const 0_usize);
+        assert(copy _7, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <Pair as std::mem::SizedTypeProperties>::ALIGN, copy _4) -> [success: bb1, unwind unreachable];
+    }
+
+    bb1: {
+        _8 = copy _1 as *const () (PtrToPtr);
+        _9 = copy _8 as usize (Transmute);
+        _10 = Ne(const <Pair as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _11 = Eq(copy _9, const 0_usize);
+        _12 = BitAnd(copy _11, copy _10);
+        _13 = Not(copy _12);
+        assert(copy _13, "null pointer dereference occurred") -> [success: bb2, unwind unreachable];
+    }
+
+    bb2: {
+        (*_1) = move _2;
+        return;
+    }
+}
+
+fn box_new_uninit_mid_init(_1: bool) -> Box<Pair> {
+    debug should_panic => _1;
+    let mut _0: std::boxed::Box<Pair>;
+    let mut _2: std::boxed::Box<std::mem::MaybeUninit<Pair>>;
+    let _3: ();
+    let mut _4: *mut Counted;
+    let mut _5: *mut Pair;
+    let mut _6: &mut std::mem::MaybeUninit<Pair>;
+    let mut _7: Counted;
+    let _8: ();
+    let _9: ();
+    let mut _10: *mut Counted;
+    let mut _11: *mut Pair;
+    let mut _12: &mut std::mem::MaybeUninit<Pair>;
+    let mut _13: Counted;
+    let mut _14: std::boxed::Box<std::mem::MaybeUninit<Pair>>;
+    let mut _15: bool;
+    let mut _16: *const std::mem::MaybeUninit<Pair>;
+    let mut _17: *const std::mem::MaybeUninit<Pair>;
+    scope 1 {
+        debug b => _2;
+        let mut _18: *const ();
+        let mut _19: usize;
+        let mut _20: usize;
+        let mut _21: usize;
+        let mut _22: bool;
+        let mut _23: *const ();
+        let mut _24: usize;
+        let mut _25: usize;
+        let mut _26: usize;
+        let mut _27: bool;
+        let mut _28: *const ();
+        let mut _29: usize;
+        let mut _30: bool;
+        let mut _31: bool;
+        let mut _32: bool;
+        let mut _33: *const ();
+        let mut _34: usize;
+        let mut _35: bool;
+        let mut _36: bool;
+        let mut _37: bool;
+    }
+
+    bb0: {
+        _15 = const false;
+        _15 = const true;
+        _2 = Box::<Pair>::new_uninit() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _16 = copy ((_2.0: std::ptr::Unique<std::mem::MaybeUninit<Pair>>).0: std::ptr::NonNull<std::mem::MaybeUninit<Pair>>) as *const std::mem::MaybeUninit<Pair> (Transmute);
+        _23 = copy _16 as *const () (PtrToPtr);
+        _24 = copy _23 as usize (Transmute);
+        _25 = Sub(const <std::mem::MaybeUninit<Pair> as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _26 = BitAnd(copy _24, copy _25);
+        _27 = Eq(copy _26, const 0_usize);
+        assert(copy _27, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <std::mem::MaybeUninit<Pair> as std::mem::SizedTypeProperties>::ALIGN, copy _24) -> [success: bb12, unwind unreachable];
+    }
+
+    bb2: {
+        _4 = &raw mut ((*_5).0: Counted);
+        _7 = Counted { tag: const 1_usize };
+        _3 = std::ptr::mut_ptr::<impl *mut Counted>::write(move _4, move _7) -> [return: bb3, unwind: bb10];
+    }
+
+    bb3: {
+        _8 = maybe_panic(copy _1) -> [return: bb4, unwind: bb10];
+    }
+
+    bb4: {
+        _17 = copy ((_2.0: std::ptr::Unique<std::mem::MaybeUninit<Pair>>).0: std::ptr::NonNull<std::mem::MaybeUninit<Pair>>) as *const std::mem::MaybeUninit<Pair> (Transmute);
+        _18 = copy _17 as *const () (PtrToPtr);
+        _19 = copy _18 as usize (Transmute);
+        _20 = Sub(const <std::mem::MaybeUninit<Pair> as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _21 = BitAnd(copy _19, copy _20);
+        _22 = Eq(copy _21, const 0_usize);
+        assert(copy _22, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <std::mem::MaybeUninit<Pair> as std::mem::SizedTypeProperties>::ALIGN, copy _19) -> [success: bb11, unwind unreachable];
+    }
+
+    bb5: {
+        _10 = &raw mut ((*_11).1: Counted);
+        _13 = Counted { tag: const 2_usize };
+        _9 = std::ptr::mut_ptr::<impl *mut Counted>::write(move _10, move _13) -> [return: bb6, unwind: bb10];
+    }
+
+    bb6: {
+        _15 = const false;
+        _14 = move _2;
+        _0 = Box::<MaybeUninit<Pair>>::assume_init(move _14) -> [return: bb7, unwind: bb10];
+    }
+
+    bb7: {
+        _15 = const false;
+        return;
+    }
+
+    bb8 (cleanup): {
+        resume;
+    }
+
+    bb9 (cleanup): {
+        drop(_2) -> [return: bb8, unwind terminate(cleanup)];
+    }
+
+    bb10 (cleanup): {
+        switchInt(copy _15) -> [0: bb8, otherwise: bb9];
+    }
+
+    bb11: {
+        _33 = copy _17 as *const () (PtrToPtr);
+        _34 = copy _33 as usize (Transmute);
+        _35 = Eq(copy _34, const 0_usize);
+        _36 = BitAnd(copy _35, const true);
+        _37 = Not(copy _36);
+        assert(copy _37, "null pointer dereference occurred") -> [success: bb14, unwind unreachable];
+    }
+
+    bb12: {
+        _28 = copy _16 as *const () (PtrToPtr);
+        _29 = copy _28 as usize (Transmute);
+        _30 = Eq(copy _29, const 0_usize);
+        _31 = BitAnd(copy _30, const true);
+        _32 = Not(copy _31);
+        assert(copy _32, "null pointer dereference occurred") -> [success: bb13, unwind unreachable];
+    }
+
+    bb13: {
+        _6 = &mut (*_16);
+        _5 = MaybeUninit::<Pair>::as_mut_ptr(move _6) -> [return: bb2, unwind: bb10];
+    }
+
+    bb14: {
+        _12 = &mut (*_17);
+        _11 = MaybeUninit::<Pair>::as_mut_ptr(move _12) -> [return: bb5, unwind: bb10];
+    }
+}
+
+fn box_partial_move(_1: Box<Pair>, _2: bool) -> Counted {
+    debug b => _1;
+    debug should_panic => _2;
+    let mut _0: Counted;
+    let _3: Counted;
+    let _4: ();
+    let mut _5: &mut std::boxed::Box<Pair>;
+    let mut _6: ();
+    let mut _7: &mut std::boxed::Box<Pair>;
+    let mut _8: ();
+    let mut _9: *const Pair;
+    let mut _10: &mut std::boxed::Box<Pair>;
+    let mut _11: ();
+    let mut _12: *const Pair;
+    let mut _13: *const Pair;
+    let mut _14: *const ();
+    let mut _15: usize;
+    let mut _16: usize;
+    let mut _17: usize;
+    let mut _18: bool;
+    let mut _19: *const ();
+    let mut _20: usize;
+    let mut _21: bool;
+    let mut _22: bool;
+    let mut _23: bool;
+    let mut _24: bool;
+    scope 1 {
+        debug first => _3;
+    }
+
+    bb0: {
+        _13 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        _14 = copy _13 as *const () (PtrToPtr);
+        _15 = copy _14 as usize (Transmute);
+        _16 = Sub(const <Pair as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _17 = BitAnd(copy _15, copy _16);
+        _18 = Eq(copy _17, const 0_usize);
+        assert(copy _18, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <Pair as std::mem::SizedTypeProperties>::ALIGN, copy _15) -> [success: bb9, unwind unreachable];
+    }
+
+    bb1: {
+        _0 = move _3;
+        _9 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        drop(((*_9).1: Counted)) -> [return: bb6, unwind: bb5];
+    }
+
+    bb2 (cleanup): {
+        drop(_3) -> [return: bb8, unwind terminate(cleanup)];
+    }
+
+    bb3 (cleanup): {
+        resume;
+    }
+
+    bb4: {
+        return;
+    }
+
+    bb5 (cleanup): {
+        _7 = &mut _1;
+        _8 = <Box<Pair> as Drop>::drop(move _7) -> [return: bb11, unwind terminate(cleanup)];
+    }
+
+    bb6: {
+        _5 = &mut _1;
+        _6 = <Box<Pair> as Drop>::drop(move _5) -> [return: bb4, unwind continue];
+    }
+
+    bb7 (cleanup): {
+        _10 = &mut _1;
+        _11 = <Box<Pair> as Drop>::drop(move _10) -> [return: bb12, unwind terminate(cleanup)];
+    }
+
+    bb8 (cleanup): {
+        _12 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        drop(((*_12).1: Counted)) -> [return: bb7, unwind terminate(cleanup)];
+    }
+
+    bb9: {
+        _19 = copy _13 as *const () (PtrToPtr);
+        _20 = copy _19 as usize (Transmute);
+        _21 = Ne(const <Pair as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _22 = Eq(copy _20, const 0_usize);
+        _23 = BitAnd(copy _22, copy _21);
+        _24 = Not(copy _23);
+        assert(copy _24, "null pointer dereference occurred") -> [success: bb10, unwind unreachable];
+    }
+
+    bb10: {
+        _3 = move ((*_13).0: Counted);
+        _4 = maybe_panic(copy _2) -> [return: bb1, unwind: bb2];
+    }
+
+    bb11 (cleanup): {
+        goto -> bb3;
+    }
+
+    bb12 (cleanup): {
+        goto -> bb3;
+    }
+}
+
+fn box_conditional_partial_move(_1: Box<Pair>, _2: bool) -> Option<Counted> {
+    debug b => _1;
+    debug take => _2;
+    let mut _0: std::option::Option<Counted>;
+    let _3: std::option::Option<Counted>;
+    let mut _4: Counted;
+    let _5: ();
+    let mut _6: bool;
+    let mut _7: &mut std::boxed::Box<Pair>;
+    let mut _8: ();
+    let mut _9: &mut std::boxed::Box<Pair>;
+    let mut _10: ();
+    let mut _11: *const Pair;
+    let mut _12: &mut std::boxed::Box<Pair>;
+    let mut _13: ();
+    let mut _14: *const Pair;
+    let mut _15: *const Pair;
+    let mut _16: *const ();
+    let mut _17: usize;
+    let mut _18: usize;
+    let mut _19: usize;
+    let mut _20: bool;
+    let mut _21: *const ();
+    let mut _22: usize;
+    let mut _23: bool;
+    let mut _24: bool;
+    let mut _25: bool;
+    let mut _26: bool;
+    scope 1 {
+        debug r => _3;
+    }
+
+    bb0: {
+        _6 = const false;
+        _6 = const true;
+        switchInt(copy _2) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        _6 = const false;
+        _15 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        _16 = copy _15 as *const () (PtrToPtr);
+        _17 = copy _16 as usize (Transmute);
+        _18 = Sub(const <Pair as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _19 = BitAnd(copy _17, copy _18);
+        _20 = Eq(copy _19, const 0_usize);
+        assert(copy _20, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <Pair as std::mem::SizedTypeProperties>::ALIGN, copy _17) -> [success: bb17, unwind unreachable];
+    }
+
+    bb2: {
+        _3 = Option::<Counted>::None;
+        goto -> bb3;
+    }
+
+    bb3: {
+        _5 = maybe_panic(copy _2) -> [return: bb4, unwind: bb5];
+    }
+
+    bb4: {
+        _0 = move _3;
+        _11 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        switchInt(copy _6) -> [0: bb11, otherwise: bb12];
+    }
+
+    bb5 (cleanup): {
+        drop(_3) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+
+    bb7: {
+        return;
+    }
+
+    bb8 (cleanup): {
+        _9 = &mut _1;
+        _10 = <Box<Pair> as Drop>::drop(move _9) -> [return: bb19, unwind terminate(cleanup)];
+    }
+
+    bb9: {
+        _7 = &mut _1;
+        _8 = <Box<Pair> as Drop>::drop(move _7) -> [return: bb7, unwind continue];
+    }
+
+    bb10 (cleanup): {
+        drop(((*_11).1: Counted)) -> [return: bb8, unwind terminate(cleanup)];
+    }
+
+    bb11: {
+        drop(((*_11).1: Counted)) -> [return: bb9, unwind: bb8];
+    }
+
+    bb12: {
+        drop(((*_11).0: Counted)) -> [return: bb11, unwind: bb10];
+    }
+
+    bb13 (cleanup): {
+        _12 = &mut _1;
+        _13 = <Box<Pair> as Drop>::drop(move _12) -> [return: bb20, unwind terminate(cleanup)];
+    }
+
+    bb14 (cleanup): {
+        drop(((*_14).1: Counted)) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb15 (cleanup): {
+        drop(((*_14).0: Counted)) -> [return: bb14, unwind terminate(cleanup)];
+    }
+
+    bb16 (cleanup): {
+        _14 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        switchInt(copy _6) -> [0: bb14, otherwise: bb15];
+    }
+
+    bb17: {
+        _21 = copy _15 as *const () (PtrToPtr);
+        _22 = copy _21 as usize (Transmute);
+        _23 = Ne(const <Pair as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _24 = Eq(copy _22, const 0_usize);
+        _25 = BitAnd(copy _24, copy _23);
+        _26 = Not(copy _25);
+        assert(copy _26, "null pointer dereference occurred") -> [success: bb18, unwind unreachable];
+    }
+
+    bb18: {
+        _4 = move ((*_15).0: Counted);
+        _3 = Option::<Counted>::Some(move _4);
+        goto -> bb3;
+    }
+
+    bb19 (cleanup): {
+        goto -> bb6;
+    }
+
+    bb20 (cleanup): {
+        goto -> bb6;
+    }
+}
+
+fn box_full_move_out(_1: Box<Pair>) -> Pair {
+    debug b => _1;
+    let mut _0: Pair;
+    let mut _2: &mut std::boxed::Box<Pair>;
+    let mut _3: ();
+    let mut _4: *const Pair;
+    let mut _5: *const ();
+    let mut _6: usize;
+    let mut _7: usize;
+    let mut _8: usize;
+    let mut _9: bool;
+    let mut _10: *const ();
+    let mut _11: usize;
+    let mut _12: bool;
+    let mut _13: bool;
+    let mut _14: bool;
+    let mut _15: bool;
+
+    bb0: {
+        _4 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        _5 = copy _4 as *const () (PtrToPtr);
+        _6 = copy _5 as usize (Transmute);
+        _7 = Sub(const <Pair as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _8 = BitAnd(copy _6, copy _7);
+        _9 = Eq(copy _8, const 0_usize);
+        assert(copy _9, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <Pair as std::mem::SizedTypeProperties>::ALIGN, copy _6) -> [success: bb2, unwind unreachable];
+    }
+
+    bb1: {
+        return;
+    }
+
+    bb2: {
+        _10 = copy _4 as *const () (PtrToPtr);
+        _11 = copy _10 as usize (Transmute);
+        _12 = Ne(const <Pair as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _13 = Eq(copy _11, const 0_usize);
+        _14 = BitAnd(copy _13, copy _12);
+        _15 = Not(copy _14);
+        assert(copy _15, "null pointer dereference occurred") -> [success: bb3, unwind unreachable];
+    }
+
+    bb3: {
+        _0 = move (*_4);
+        _2 = &mut _1;
+        _3 = <Box<Pair> as Drop>::drop(move _2) -> [return: bb1, unwind continue];
+    }
+}
+
+fn box_plain_drop(_1: Box<Pair>) -> () {
+    debug b => _1;
+    let mut _0: ();
+
+    bb0: {
+        _0 = std::mem::drop::<Box<Pair>>(copy _1) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn box_deref_read(_1: &Box<usize>) -> usize {
+    debug b => _1;
+    let mut _0: usize;
+    let mut _2: std::boxed::Box<usize>;
+    let mut _3: *const usize;
+    let mut _4: *const ();
+    let mut _5: usize;
+    let mut _6: usize;
+    let mut _7: usize;
+    let mut _8: bool;
+    let mut _9: *const ();
+    let mut _10: usize;
+    let mut _11: bool;
+    let mut _12: bool;
+    let mut _13: bool;
+    let mut _14: bool;
+
+    bb0: {
+        _2 = no_retag copy (*_1);
+        _3 = copy ((_2.0: std::ptr::Unique<usize>).0: std::ptr::NonNull<usize>) as *const usize (Transmute);
+        _4 = copy _3 as *const () (PtrToPtr);
+        _5 = copy _4 as usize (Transmute);
+        _6 = Sub(const <usize as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _7 = BitAnd(copy _5, copy _6);
+        _8 = Eq(copy _7, const 0_usize);
+        assert(copy _8, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <usize as std::mem::SizedTypeProperties>::ALIGN, copy _5) -> [success: bb1, unwind unreachable];
+    }
+
+    bb1: {
+        _9 = copy _3 as *const () (PtrToPtr);
+        _10 = copy _9 as usize (Transmute);
+        _11 = Ne(const <usize as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _12 = Eq(copy _10, const 0_usize);
+        _13 = BitAnd(copy _12, copy _11);
+        _14 = Not(copy _13);
+        assert(copy _14, "null pointer dereference occurred") -> [success: bb2, unwind unreachable];
+    }
+
+    bb2: {
+        _0 = copy (*_3);
+        return;
+    }
+}
+
+fn vec_literal(_1: Counted, _2: Counted) -> Vec<Counted> {
+    debug a => _1;
+    debug b => _2;
+    let mut _0: std::vec::Vec<Counted>;
+    let mut _3: std::boxed::Box<std::mem::MaybeUninit<[Counted; 2]>>;
+    let mut _4: Counted;
+    let mut _5: Counted;
+    let mut _6: bool;
+    let mut _7: bool;
+    let mut _8: *const std::mem::MaybeUninit<[Counted; 2]>;
+    let mut _9: *const ();
+    let mut _10: usize;
+    let mut _11: usize;
+    let mut _12: usize;
+    let mut _13: bool;
+    let mut _14: *const ();
+    let mut _15: usize;
+    let mut _16: bool;
+    let mut _17: bool;
+    let mut _18: bool;
+    let mut _19: bool;
+
+    bb0: {
+        _7 = const false;
+        _6 = const false;
+        _7 = const true;
+        _6 = const true;
+        _3 = Box::<[Counted; 2]>::new_uninit() -> [return: bb1, unwind: bb6];
+    }
+
+    bb1: {
+        _7 = const false;
+        _4 = move _1;
+        _6 = const false;
+        _5 = move _2;
+        _8 = copy ((_3.0: std::ptr::Unique<std::mem::MaybeUninit<[Counted; 2]>>).0: std::ptr::NonNull<std::mem::MaybeUninit<[Counted; 2]>>) as *const std::mem::MaybeUninit<[Counted; 2]> (Transmute);
+        _9 = copy _8 as *const () (PtrToPtr);
+        _10 = copy _9 as usize (Transmute);
+        _11 = Sub(const <std::mem::MaybeUninit<[Counted; 2]> as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);
+        _12 = BitAnd(copy _10, copy _11);
+        _13 = Eq(copy _12, const 0_usize);
+        assert(copy _13, "misaligned pointer dereference: address must be a multiple of {} but is {}", const <std::mem::MaybeUninit<[Counted; 2]> as std::mem::SizedTypeProperties>::ALIGN, copy _10) -> [success: bb8, unwind unreachable];
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3 (cleanup): {
+        switchInt(copy _7) -> [0: bb4, otherwise: bb7];
+    }
+
+    bb4 (cleanup): {
+        resume;
+    }
+
+    bb5 (cleanup): {
+        drop(_2) -> [return: bb3, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        switchInt(copy _6) -> [0: bb3, otherwise: bb5];
+    }
+
+    bb7 (cleanup): {
+        drop(_1) -> [return: bb4, unwind terminate(cleanup)];
+    }
+
+    bb8: {
+        _14 = copy _8 as *const () (PtrToPtr);
+        _15 = copy _14 as usize (Transmute);
+        _16 = Ne(const <std::mem::MaybeUninit<[Counted; 2]> as std::mem::SizedTypeProperties>::SIZE, const 0_usize);
+        _17 = Eq(copy _15, const 0_usize);
+        _18 = BitAnd(copy _17, copy _16);
+        _19 = Not(copy _18);
+        assert(copy _19, "null pointer dereference occurred") -> [success: bb9, unwind unreachable];
+    }
+
+    bb9: {
+        ((((*_8).1: std::mem::ManuallyDrop<[Counted; 2]>).0: std::mem::MaybeDangling<[Counted; 2]>).0: [Counted; 2]) = [move _4, move _5];
+        _0 = std::boxed::box_assume_init_into_vec_unsafe::<Counted, 2>(copy _3) -> [return: bb2, unwind: bb6];
+    }
+}

@@ -1,0 +1,19 @@
+fn box_new_zst() -> Box<()> {
+    let mut _0: std::boxed::Box<()>;
+    scope 1 (inlined Box::<()>::new) {
+        let mut _1: *mut u8;
+        scope 2 {
+        }
+    }
+
+    bb0: {
+        StorageLive(_1);
+        _1 = boxed::box_new_uninit(const Layout {{ size: 0_usize, align: std::mem::Alignment {{ _inner_repr_trick: mem::alignment::AlignmentEnum::_Align1Shl0 }} }}) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _0 = copy _1 as std::boxed::Box<()> (Transmute);
+        StorageDead(_1);
+        return;
+    }
+}

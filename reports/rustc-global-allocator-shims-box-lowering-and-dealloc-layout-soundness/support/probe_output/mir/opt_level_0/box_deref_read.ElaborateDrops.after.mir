@@ -1,0 +1,13 @@
+// MIR for `box_deref_read` after ElaborateDrops
+
+fn box_deref_read(_1: &Box<usize>) -> usize {
+    debug b => _1;
+    let mut _0: usize;
+    let mut _2: std::boxed::Box<usize>;
+
+    bb0: {
+        _2 = deref_copy (*_1);
+        _0 = copy (*_2);
+        return;
+    }
+}

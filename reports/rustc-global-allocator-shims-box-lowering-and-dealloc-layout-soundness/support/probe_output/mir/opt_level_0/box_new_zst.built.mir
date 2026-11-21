@@ -1,0 +1,24 @@
+// MIR for `box_new_zst` after built
+
+| User Type Annotations
+| 0: user_ty: Canonical { value: TypeOf(DefId(3:682 ~ alloc[60cf]::boxed::{impl#0}::new), UserArgs { args: [^c_0], user_self_ty: Some(UserSelfTy { impl_def_id: DefId(3:680 ~ alloc[60cf]::boxed::{impl#0}), self_ty: std::boxed::Box<^c_1, ^c_2> }) }), max_universe: U0, var_kinds: [Ty { ui: U0, sub_root: 0 }, Ty { ui: U0, sub_root: 1 }, Ty { ui: U0, sub_root: 2 }] }, span: specimens/mir_specimens.rs:46:5: 46:13, inferred_ty: fn(()) -> std::boxed::Box<()> {std::boxed::Box::<()>::new}
+|
+fn box_new_zst() -> Box<()> {
+    let mut _0: std::boxed::Box<()>;
+    let mut _1: ();
+
+    bb0: {
+        StorageLive(_1);
+        _1 = ();
+        _0 = Box::<()>::new(move _1) -> [return: bb1, unwind: bb2];
+    }
+
+    bb1: {
+        StorageDead(_1);
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+}

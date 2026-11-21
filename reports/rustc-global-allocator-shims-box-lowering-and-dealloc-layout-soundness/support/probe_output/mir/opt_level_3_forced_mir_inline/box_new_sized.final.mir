@@ -1,0 +1,37 @@
+fn box_new_sized(_1: Pair) -> Box<Pair> {
+    debug p => _1;
+    let mut _0: std::boxed::Box<Pair>;
+    let mut _2: Pair;
+    scope 1 (inlined Box::<Pair>::new) {
+        let mut _3: *mut Pair;
+        let mut _4: *mut u8;
+        scope 2 {
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = move _1;
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = boxed::box_new_uninit(const Layout {{ size: 16_usize, align: std::mem::Alignment {{ _inner_repr_trick: mem::alignment::AlignmentEnum::_Align1Shl3 }} }}) -> [return: bb1, unwind: bb3];
+    }
+
+    bb1: {
+        _3 = copy _4 as *mut Pair (PtrToPtr);
+        (*_3) = move _2;
+        _0 = copy _4 as std::boxed::Box<Pair> (Transmute);
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+
+    bb3 (cleanup): {
+        drop(_2) -> [return: bb2, unwind terminate(cleanup)];
+    }
+}

@@ -1,0 +1,11 @@
+// MIR for `box_deref_read` after built
+
+fn box_deref_read(_1: &Box<usize>) -> usize {
+    debug b => _1;
+    let mut _0: usize;
+
+    bb0: {
+        _0 = copy (*(*_1));
+        return;
+    }
+}

@@ -1,0 +1,19 @@
+// MIR for `box_full_move_out` after built
+
+fn box_full_move_out(_1: Box<Pair>) -> Pair {
+    debug b => _1;
+    let mut _0: Pair;
+
+    bb0: {
+        _0 = move (*_1);
+        drop(_1) -> [return: bb1, unwind: bb2];
+    }
+
+    bb1: {
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+}

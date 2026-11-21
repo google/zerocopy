@@ -1,0 +1,132 @@
+// MIR for `box_new_uninit_mid_init` after ElaborateBoxDerefs
+
+fn box_new_uninit_mid_init(_1: bool) -> Box<Pair> {
+    debug should_panic => _1;
+    let mut _0: std::boxed::Box<Pair>;
+    let mut _2: std::boxed::Box<std::mem::MaybeUninit<Pair>>;
+    let _3: ();
+    let mut _4: *mut Counted;
+    let mut _5: *mut Pair;
+    let mut _6: &mut std::mem::MaybeUninit<Pair>;
+    let mut _7: Counted;
+    let _8: ();
+    let mut _9: bool;
+    let _10: ();
+    let mut _11: *mut Counted;
+    let mut _12: *mut Pair;
+    let mut _13: &mut std::mem::MaybeUninit<Pair>;
+    let mut _14: Counted;
+    let mut _15: std::boxed::Box<std::mem::MaybeUninit<Pair>>;
+    let mut _16: bool;
+    let mut _17: *const std::mem::MaybeUninit<Pair>;
+    let mut _18: *const std::mem::MaybeUninit<Pair>;
+    scope 1 {
+        debug b => _2;
+    }
+
+    bb0: {
+        _16 = const false;
+        StorageLive(_2);
+        _16 = const true;
+        _2 = Box::<Pair>::new_uninit() -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        _17 = copy ((_2.0: std::ptr::Unique<std::mem::MaybeUninit<Pair>>).0: std::ptr::NonNull<std::mem::MaybeUninit<Pair>>) as *const std::mem::MaybeUninit<Pair> (Transmute);
+        _6 = &mut (*_17);
+        _5 = MaybeUninit::<Pair>::as_mut_ptr(move _6) -> [return: bb2, unwind: bb12];
+    }
+
+    bb2: {
+        StorageDead(_6);
+        _4 = &raw mut ((*_5).0: Counted);
+        StorageLive(_7);
+        _7 = Counted { tag: const 1_usize };
+        _3 = std::ptr::mut_ptr::<impl *mut Counted>::write(move _4, move _7) -> [return: bb3, unwind: bb11];
+    }
+
+    bb3: {
+        StorageDead(_7);
+        StorageDead(_4);
+        StorageDead(_5);
+        StorageDead(_3);
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = copy _1;
+        _8 = maybe_panic(move _9) -> [return: bb4, unwind: bb12];
+    }
+
+    bb4: {
+        StorageDead(_9);
+        StorageDead(_8);
+        StorageLive(_10);
+        StorageLive(_11);
+        StorageLive(_12);
+        StorageLive(_13);
+        _18 = copy ((_2.0: std::ptr::Unique<std::mem::MaybeUninit<Pair>>).0: std::ptr::NonNull<std::mem::MaybeUninit<Pair>>) as *const std::mem::MaybeUninit<Pair> (Transmute);
+        _13 = &mut (*_18);
+        _12 = MaybeUninit::<Pair>::as_mut_ptr(move _13) -> [return: bb5, unwind: bb12];
+    }
+
+    bb5: {
+        StorageDead(_13);
+        _11 = &raw mut ((*_12).1: Counted);
+        StorageLive(_14);
+        _14 = Counted { tag: const 2_usize };
+        _10 = std::ptr::mut_ptr::<impl *mut Counted>::write(move _11, move _14) -> [return: bb6, unwind: bb10];
+    }
+
+    bb6: {
+        StorageDead(_14);
+        StorageDead(_11);
+        StorageDead(_12);
+        StorageDead(_10);
+        StorageLive(_15);
+        _16 = const false;
+        _15 = move _2;
+        _0 = Box::<MaybeUninit<Pair>>::assume_init(move _15) -> [return: bb7, unwind: bb9];
+    }
+
+    bb7: {
+        StorageDead(_15);
+        goto -> bb8;
+    }
+
+    bb8: {
+        _16 = const false;
+        StorageDead(_2);
+        return;
+    }
+
+    bb9 (cleanup): {
+        goto -> bb12;
+    }
+
+    bb10 (cleanup): {
+        goto -> bb12;
+    }
+
+    bb11 (cleanup): {
+        goto -> bb12;
+    }
+
+    bb12 (cleanup): {
+        goto -> bb15;
+    }
+
+    bb13 (cleanup): {
+        resume;
+    }
+
+    bb14 (cleanup): {
+        drop(_2) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb15 (cleanup): {
+        switchInt(copy _16) -> [0: bb13, otherwise: bb14];
+    }
+}

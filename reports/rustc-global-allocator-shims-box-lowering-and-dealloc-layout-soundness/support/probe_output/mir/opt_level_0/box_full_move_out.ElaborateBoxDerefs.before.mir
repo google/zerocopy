@@ -1,0 +1,42 @@
+// MIR for `box_full_move_out` before ElaborateBoxDerefs
+
+fn box_full_move_out(_1: Box<Pair>) -> Pair {
+    debug b => _1;
+    let mut _0: Pair;
+    let mut _2: &mut std::boxed::Box<Pair>;
+    let mut _3: ();
+    let mut _4: &mut std::boxed::Box<Pair>;
+    let mut _5: ();
+    let mut _6: *const Pair;
+
+    bb0: {
+        _0 = move (*_1);
+        goto -> bb6;
+    }
+
+    bb1: {
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+
+    bb3: {
+        goto -> bb1;
+    }
+
+    bb4: {
+        _2 = &mut _1;
+        _3 = <Box<Pair> as Drop>::drop(move _2) -> [return: bb3, unwind: bb2];
+    }
+
+    bb5: {
+        goto -> bb4;
+    }
+
+    bb6: {
+        _6 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        goto -> bb5;
+    }
+}

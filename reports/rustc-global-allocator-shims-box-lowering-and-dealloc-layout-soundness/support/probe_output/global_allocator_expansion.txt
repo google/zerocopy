@@ -1,0 +1,37 @@
+static GLOBAL: Forward = Forward;
+const _: () =
+    {
+        #[rustc_std_internal_symbol]
+        #[rustc_allocator]
+        unsafe fn __rust_alloc(size: usize, align: ::core::mem::Alignment)
+            -> *mut u8 {
+            ::core::alloc::GlobalAlloc::alloc(&GLOBAL,
+                ::core::alloc::Layout::from_size_alignment_unchecked(size,
+                    align))
+        }
+        #[rustc_std_internal_symbol]
+        #[rustc_deallocator]
+        unsafe fn __rust_dealloc(ptr: *mut u8, size: usize,
+            align: ::core::mem::Alignment) -> () {
+            ::core::alloc::GlobalAlloc::dealloc(&GLOBAL, ptr,
+                ::core::alloc::Layout::from_size_alignment_unchecked(size,
+                    align))
+        }
+        #[rustc_std_internal_symbol]
+        #[rustc_reallocator]
+        unsafe fn __rust_realloc(ptr: *mut u8, size: usize,
+            align: ::core::mem::Alignment, new_size: usize) -> *mut u8 {
+            ::core::alloc::GlobalAlloc::realloc(&GLOBAL, ptr,
+                ::core::alloc::Layout::from_size_alignment_unchecked(size,
+                    align), new_size)
+        }
+        #[rustc_std_internal_symbol]
+        #[rustc_allocator_zeroed]
+        unsafe fn __rust_alloc_zeroed(size: usize,
+            align: ::core::mem::Alignment) -> *mut u8 {
+            ::core::alloc::GlobalAlloc::alloc_zeroed(&GLOBAL,
+                ::core::alloc::Layout::from_size_alignment_unchecked(size,
+                    align))
+        }
+    };
+fn main() {}

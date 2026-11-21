@@ -1,0 +1,164 @@
+// MIR for `box_conditional_partial_move` before ElaborateBoxDerefs
+
+fn box_conditional_partial_move(_1: Box<Pair>, _2: bool) -> Option<Counted> {
+    debug b => _1;
+    debug take => _2;
+    let mut _0: std::option::Option<Counted>;
+    let _3: std::option::Option<Counted>;
+    let mut _4: bool;
+    let mut _5: Counted;
+    let _6: ();
+    let mut _7: bool;
+    let mut _8: bool;
+    let mut _9: &mut std::boxed::Box<Pair>;
+    let mut _10: ();
+    let mut _11: &mut std::boxed::Box<Pair>;
+    let mut _12: ();
+    let mut _13: *const Pair;
+    let mut _14: &mut std::boxed::Box<Pair>;
+    let mut _15: ();
+    let mut _16: *const Pair;
+    scope 1 {
+        debug r => _3;
+    }
+
+    bb0: {
+        _8 = const false;
+        _8 = const true;
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = copy _2;
+        switchInt(move _4) -> [0: bb3, otherwise: bb1];
+    }
+
+    bb1: {
+        StorageLive(_5);
+        _8 = const false;
+        _5 = move ((*_1).0: Counted);
+        _3 = Option::<Counted>::Some(move _5);
+        goto -> bb2;
+    }
+
+    bb2: {
+        StorageDead(_5);
+        goto -> bb4;
+    }
+
+    bb3: {
+        _3 = Option::<Counted>::None;
+        goto -> bb4;
+    }
+
+    bb4: {
+        StorageDead(_4);
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = copy _2;
+        _6 = maybe_panic(move _7) -> [return: bb5, unwind: bb8];
+    }
+
+    bb5: {
+        StorageDead(_7);
+        StorageDead(_6);
+        _0 = move _3;
+        goto -> bb6;
+    }
+
+    bb6: {
+        StorageDead(_3);
+        goto -> bb21;
+    }
+
+    bb7: {
+        return;
+    }
+
+    bb8 (cleanup): {
+        drop(_3) -> [return: bb9, unwind terminate(cleanup)];
+    }
+
+    bb9 (cleanup): {
+        goto -> bb28;
+    }
+
+    bb10 (cleanup): {
+        resume;
+    }
+
+    bb11: {
+        goto -> bb7;
+    }
+
+    bb12: {
+        _9 = &mut _1;
+        _10 = <Box<Pair> as Drop>::drop(move _9) -> [return: bb11, unwind: bb10];
+    }
+
+    bb13 (cleanup): {
+        _11 = &mut _1;
+        _12 = <Box<Pair> as Drop>::drop(move _11) -> [return: bb10, unwind terminate(cleanup)];
+    }
+
+    bb14: {
+        goto -> bb18;
+    }
+
+    bb15: {
+        goto -> bb12;
+    }
+
+    bb16 (cleanup): {
+        drop(((*_13).1: Counted)) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb17: {
+        drop(((*_13).1: Counted)) -> [return: bb15, unwind: bb13];
+    }
+
+    bb18: {
+        goto -> bb20;
+    }
+
+    bb19: {
+        drop(((*_13).0: Counted)) -> [return: bb17, unwind: bb16];
+    }
+
+    bb20: {
+        switchInt(copy _8) -> [0: bb17, otherwise: bb19];
+    }
+
+    bb21: {
+        _13 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        goto -> bb14;
+    }
+
+    bb22 (cleanup): {
+        _14 = &mut _1;
+        _15 = <Box<Pair> as Drop>::drop(move _14) -> [return: bb10, unwind terminate(cleanup)];
+    }
+
+    bb23 (cleanup): {
+        goto -> bb25;
+    }
+
+    bb24 (cleanup): {
+        drop(((*_16).1: Counted)) -> [return: bb22, unwind terminate(cleanup)];
+    }
+
+    bb25 (cleanup): {
+        goto -> bb27;
+    }
+
+    bb26 (cleanup): {
+        drop(((*_16).0: Counted)) -> [return: bb24, unwind terminate(cleanup)];
+    }
+
+    bb27 (cleanup): {
+        switchInt(copy _8) -> [0: bb24, otherwise: bb26];
+    }
+
+    bb28 (cleanup): {
+        _16 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        goto -> bb23;
+    }
+}

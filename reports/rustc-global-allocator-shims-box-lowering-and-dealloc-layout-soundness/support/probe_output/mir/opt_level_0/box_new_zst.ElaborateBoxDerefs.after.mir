@@ -1,0 +1,17 @@
+// MIR for `box_new_zst` after ElaborateBoxDerefs
+
+fn box_new_zst() -> Box<()> {
+    let mut _0: std::boxed::Box<()>;
+    let mut _1: ();
+
+    bb0: {
+        StorageLive(_1);
+        _1 = ();
+        _0 = Box::<()>::new(move _1) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_1);
+        return;
+    }
+}

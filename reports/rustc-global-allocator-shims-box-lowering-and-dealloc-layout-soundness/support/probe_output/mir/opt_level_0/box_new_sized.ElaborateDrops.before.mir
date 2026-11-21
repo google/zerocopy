@@ -1,0 +1,34 @@
+// MIR for `box_new_sized` before ElaborateDrops
+
+fn box_new_sized(_1: Pair) -> Box<Pair> {
+    debug p => _1;
+    let mut _0: std::boxed::Box<Pair>;
+    let mut _2: Pair;
+
+    bb0: {
+        StorageLive(_2);
+        _2 = move _1;
+        _0 = Box::<Pair>::new(move _2) -> [return: bb1, unwind: bb3];
+    }
+
+    bb1: {
+        StorageDead(_2);
+        drop(_1) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3 (cleanup): {
+        drop(_2) -> [return: bb4, unwind terminate(cleanup)];
+    }
+
+    bb4 (cleanup): {
+        drop(_1) -> [return: bb5, unwind terminate(cleanup)];
+    }
+
+    bb5 (cleanup): {
+        resume;
+    }
+}

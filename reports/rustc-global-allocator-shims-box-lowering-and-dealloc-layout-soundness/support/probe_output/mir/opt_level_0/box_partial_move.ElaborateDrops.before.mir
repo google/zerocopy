@@ -1,0 +1,50 @@
+// MIR for `box_partial_move` before ElaborateDrops
+
+fn box_partial_move(_1: Box<Pair>, _2: bool) -> Counted {
+    debug b => _1;
+    debug should_panic => _2;
+    let mut _0: Counted;
+    let _3: Counted;
+    let _4: ();
+    let mut _5: bool;
+    scope 1 {
+        debug first => _3;
+    }
+
+    bb0: {
+        StorageLive(_3);
+        _3 = move ((*_1).0: Counted);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy _2;
+        _4 = maybe_panic(move _5) -> [return: bb1, unwind: bb4];
+    }
+
+    bb1: {
+        StorageDead(_5);
+        StorageDead(_4);
+        _0 = move _3;
+        drop(_3) -> [return: bb2, unwind: bb5];
+    }
+
+    bb2: {
+        StorageDead(_3);
+        drop(_1) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        return;
+    }
+
+    bb4 (cleanup): {
+        drop(_3) -> [return: bb5, unwind terminate(cleanup)];
+    }
+
+    bb5 (cleanup): {
+        drop(_1) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+}

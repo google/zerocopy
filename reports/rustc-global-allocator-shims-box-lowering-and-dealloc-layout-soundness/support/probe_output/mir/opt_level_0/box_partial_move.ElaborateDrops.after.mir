@@ -1,0 +1,123 @@
+// MIR for `box_partial_move` after ElaborateDrops
+
+fn box_partial_move(_1: Box<Pair>, _2: bool) -> Counted {
+    debug b => _1;
+    debug should_panic => _2;
+    let mut _0: Counted;
+    let _3: Counted;
+    let _4: ();
+    let mut _5: bool;
+    let mut _6: &mut std::boxed::Box<Pair>;
+    let mut _7: ();
+    let mut _8: &mut std::boxed::Box<Pair>;
+    let mut _9: ();
+    let mut _10: *const Pair;
+    let mut _11: &mut std::boxed::Box<Pair>;
+    let mut _12: ();
+    let mut _13: *const Pair;
+    scope 1 {
+        debug first => _3;
+    }
+
+    bb0: {
+        StorageLive(_3);
+        _3 = move ((*_1).0: Counted);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy _2;
+        _4 = maybe_panic(move _5) -> [return: bb1, unwind: bb4];
+    }
+
+    bb1: {
+        StorageDead(_5);
+        StorageDead(_4);
+        _0 = move _3;
+        goto -> bb2;
+    }
+
+    bb2: {
+        StorageDead(_3);
+        goto -> bb16;
+    }
+
+    bb3: {
+        return;
+    }
+
+    bb4 (cleanup): {
+        drop(_3) -> [return: bb5, unwind terminate(cleanup)];
+    }
+
+    bb5 (cleanup): {
+        goto -> bb21;
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+
+    bb7: {
+        goto -> bb3;
+    }
+
+    bb8: {
+        _6 = &mut _1;
+        _7 = <Box<Pair> as Drop>::drop(move _6) -> [return: bb7, unwind: bb6];
+    }
+
+    bb9 (cleanup): {
+        _8 = &mut _1;
+        _9 = <Box<Pair> as Drop>::drop(move _8) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb10: {
+        goto -> bb15;
+    }
+
+    bb11: {
+        goto -> bb8;
+    }
+
+    bb12 (cleanup): {
+        drop(((*_10).1: Counted)) -> [return: bb9, unwind terminate(cleanup)];
+    }
+
+    bb13 (cleanup): {
+        goto -> bb12;
+    }
+
+    bb14: {
+        drop(((*_10).1: Counted)) -> [return: bb11, unwind: bb9];
+    }
+
+    bb15: {
+        goto -> bb14;
+    }
+
+    bb16: {
+        _10 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        goto -> bb10;
+    }
+
+    bb17 (cleanup): {
+        _11 = &mut _1;
+        _12 = <Box<Pair> as Drop>::drop(move _11) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb18 (cleanup): {
+        goto -> bb20;
+    }
+
+    bb19 (cleanup): {
+        drop(((*_13).1: Counted)) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb20 (cleanup): {
+        goto -> bb19;
+    }
+
+    bb21 (cleanup): {
+        _13 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        goto -> bb18;
+    }
+}

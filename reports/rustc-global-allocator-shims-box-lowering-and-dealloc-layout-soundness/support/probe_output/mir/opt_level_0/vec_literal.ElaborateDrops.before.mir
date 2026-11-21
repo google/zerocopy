@@ -1,0 +1,79 @@
+// MIR for `vec_literal` before ElaborateDrops
+
+fn vec_literal(_1: Counted, _2: Counted) -> Vec<Counted> {
+    debug a => _1;
+    debug b => _2;
+    let mut _0: std::vec::Vec<Counted>;
+    let mut _3: std::boxed::Box<std::mem::MaybeUninit<[Counted; 2]>>;
+    let mut _4: std::boxed::Box<std::mem::MaybeUninit<[Counted; 2]>>;
+    let mut _5: Counted;
+    let mut _6: Counted;
+
+    bb0: {
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = Box::<[Counted; 2]>::new_uninit() -> [return: bb1, unwind: bb11];
+    }
+
+    bb1: {
+        StorageLive(_5);
+        _5 = move _1;
+        StorageLive(_6);
+        _6 = move _2;
+        ((((*_4).1: std::mem::ManuallyDrop<[Counted; 2]>).0: std::mem::MaybeDangling<[Counted; 2]>).0: [Counted; 2]) = [move _5, move _6];
+        drop(_6) -> [return: bb2, unwind: bb9];
+    }
+
+    bb2: {
+        StorageDead(_6);
+        drop(_5) -> [return: bb3, unwind: bb10];
+    }
+
+    bb3: {
+        StorageDead(_5);
+        _3 = move _4;
+        drop(_4) -> [return: bb4, unwind: bb8];
+    }
+
+    bb4: {
+        StorageDead(_4);
+        _0 = std::boxed::box_assume_init_into_vec_unsafe::<Counted, 2>(move _3) -> [return: bb5, unwind: bb8];
+    }
+
+    bb5: {
+        StorageDead(_3);
+        drop(_2) -> [return: bb6, unwind: bb12];
+    }
+
+    bb6: {
+        drop(_1) -> [return: bb7, unwind continue];
+    }
+
+    bb7: {
+        return;
+    }
+
+    bb8 (cleanup): {
+        drop(_3) -> [return: bb11, unwind terminate(cleanup)];
+    }
+
+    bb9 (cleanup): {
+        drop(_5) -> [return: bb10, unwind terminate(cleanup)];
+    }
+
+    bb10 (cleanup): {
+        drop(_4) -> [return: bb11, unwind terminate(cleanup)];
+    }
+
+    bb11 (cleanup): {
+        drop(_2) -> [return: bb12, unwind terminate(cleanup)];
+    }
+
+    bb12 (cleanup): {
+        drop(_1) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb13 (cleanup): {
+        resume;
+    }
+}

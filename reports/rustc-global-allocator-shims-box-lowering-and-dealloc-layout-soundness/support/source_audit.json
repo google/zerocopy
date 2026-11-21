@@ -1,0 +1,3064 @@
+{
+ "commits": [
+  {
+   "api_sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "committer_date": "2026-05-31T20:13:59Z",
+   "is_40_hex": true,
+   "pinned_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "repository": "rust-lang/rust",
+   "subject_line": "Auto merge of #157219 - jhpratt:rollup-70ooTMg, r=jhpratt",
+   "verified": true
+  },
+  {
+   "api_sha": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "committer_date": "2026-11-11T17:59:24Z",
+   "is_40_hex": true,
+   "pinned_revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "repository": "rust-lang/rust",
+   "subject_line": "Auto merge of #165821 - JonathanBrouwer:rollup-TeJSwaI, r=JonathanBrouwer",
+   "verified": true
+  },
+  {
+   "api_sha": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "committer_date": "2026-11-19T21:39:21Z",
+   "is_40_hex": true,
+   "pinned_revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "repository": "joshlf/anneal",
+   "subject_line": "[theory] Bridge PureLift onto Trusted MIR semantics (#266)",
+   "verified": true
+  },
+  {
+   "api_sha": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "committer_date": "2026-09-24T17:27:27Z",
+   "is_40_hex": true,
+   "pinned_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "repository": "leanprover/lean4",
+   "subject_line": "chore: prepare release",
+   "verified": true
+  }
+ ],
+ "files": [
+  {
+   "anchors": [],
+   "content": "1.98.0",
+   "expected_status": 200,
+   "lines": 1,
+   "passed": true,
+   "path": "src/version",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "8ea6f063ece943ddaded07875067285559e2730965a6e5e7f151d3522f50f5ff",
+   "status": 200
+  },
+  {
+   "anchors": [],
+   "content": "1.102.0",
+   "expected_status": 200,
+   "lines": 1,
+   "passed": true,
+   "path": "src/version",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "50d45e654632c03c90fdb9f2f1c817ea0c484aee8b6ac63d848edfbd485c7ae9",
+   "status": 200
+  },
+  {
+   "anchors": [],
+   "expected_status": 404,
+   "passed": true,
+   "path": "compiler/rustc_allocator/src/lib.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 404
+  },
+  {
+   "anchors": [],
+   "expected_status": 404,
+   "passed": true,
+   "path": "compiler/rustc_allocator/src/lib.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "status": 404
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker name",
+     "lines": [
+      21
+     ],
+     "occurrences": 1,
+     "text": "pub const NO_ALLOC_SHIM_IS_UNSTABLE: &str = \"__rust_no_alloc_shim_is_unstable_v2\";"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "global prefix",
+     "lines": [
+      13
+     ],
+     "occurrences": 1,
+     "text": "format!(\"__rust_{base}\")"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "default prefix",
+     "lines": [
+      17
+     ],
+     "occurrences": 1,
+     "text": "format!(\"__rdl_{base}\")"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "method table",
+     "lines": [
+      60
+     ],
+     "occurrences": 1,
+     "text": "pub static ALLOCATOR_METHODS: &[AllocatorMethod] = &["
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no should_panic symbol",
+     "lines": [],
+     "occurrences": 0,
+     "text": "should_panic"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no OomStrategy",
+     "lines": [],
+     "occurrences": 0,
+     "text": "OomStrategy"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 92,
+   "passed": true,
+   "path": "compiler/rustc_ast/src/expand/allocator.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "0082dfbd78e0fff17f18f10570b37fa668a86ae388a7faae074149aa9851e4c7",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker name",
+     "lines": [
+      21
+     ],
+     "occurrences": 1,
+     "text": "pub const NO_ALLOC_SHIM_IS_UNSTABLE: &str = \"__rust_no_alloc_shim_is_unstable_v2\";"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "global prefix",
+     "lines": [
+      13
+     ],
+     "occurrences": 1,
+     "text": "format!(\"__rust_{base}\")"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "default prefix",
+     "lines": [
+      17
+     ],
+     "occurrences": 1,
+     "text": "format!(\"__rdl_{base}\")"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "method table",
+     "lines": [
+      60
+     ],
+     "occurrences": 1,
+     "text": "pub static ALLOCATOR_METHODS: &[AllocatorMethod] = &["
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no should_panic symbol",
+     "lines": [],
+     "occurrences": 0,
+     "text": "should_panic"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no OomStrategy",
+     "lines": [],
+     "occurrences": 0,
+     "text": "OomStrategy"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 92,
+   "passed": true,
+   "path": "compiler/rustc_ast/src/expand/allocator.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "0082dfbd78e0fff17f18f10570b37fa668a86ae388a7faae074149aa9851e4c7",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "internal symbol attribute",
+     "lines": [
+      119
+     ],
+     "occurrences": 1,
+     "text": "self.cx.attr_word(sym::rustc_std_internal_symbol, self.span)"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "allocator attribute",
+     "lines": [
+      112
+     ],
+     "occurrences": 1,
+     "text": "sym::alloc => sym::rustc_allocator,"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "deallocator attribute",
+     "lines": [
+      113
+     ],
+     "occurrences": 1,
+     "text": "sym::dealloc => sym::rustc_deallocator,"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "layout rebuilt from size and alignment",
+     "lines": [
+      144
+     ],
+     "occurrences": 1,
+     "text": "sym::from_size_alignment_unchecked"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "function names",
+     "lines": [
+      88
+     ],
+     "occurrences": 1,
+     "text": "global_fn_name(method.name)"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 199,
+   "passed": true,
+   "path": "compiler/rustc_builtin_macros/src/global_allocator.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "ca9032264be1a17fc7710e0177a2e3b126fda42e0dd0af3fd8304498bd78e59a",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "internal symbol attribute",
+     "lines": [
+      114
+     ],
+     "occurrences": 1,
+     "text": "self.cx.attr_word(sym::rustc_std_internal_symbol, self.span)"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "allocator attribute",
+     "lines": [
+      107
+     ],
+     "occurrences": 1,
+     "text": "sym::alloc => sym::rustc_allocator,"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "deallocator attribute",
+     "lines": [
+      108
+     ],
+     "occurrences": 1,
+     "text": "sym::dealloc => sym::rustc_deallocator,"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "layout rebuilt from size and alignment",
+     "lines": [
+      135
+     ],
+     "occurrences": 1,
+     "text": "sym::from_size_alignment_unchecked"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "function names",
+     "lines": [
+      86
+     ],
+     "occurrences": 1,
+     "text": "global_fn_name(method.name)"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 187,
+   "passed": true,
+   "path": "compiler/rustc_builtin_macros/src/global_allocator.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "05848fd95b86a6e7e98457d33d2e932be549a088f64019c5c03c19313f1c9791",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "generated handler",
+     "lines": [
+      59
+     ],
+     "occurrences": 1,
+     "text": "// unsafe fn __rust_alloc_error_handler(size: usize, align: usize) -> ! {"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 100,
+   "passed": true,
+   "path": "compiler/rustc_builtin_macros/src/alloc_error_handler.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "302faa2431df69635b5a58663f501028ce4b53b96fc2f71708d843e2d6e79670",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "generated handler",
+     "lines": [
+      55
+     ],
+     "occurrences": 1,
+     "text": "// unsafe fn __rust_alloc_error_handler(size: usize, align: usize) -> ! {"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 92,
+   "passed": true,
+   "path": "compiler/rustc_builtin_macros/src/alloc_error_handler.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "00fa46bc6d2046d08471a7c6e465c91c024f9369366126790ee562868a501b34",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "shim contents",
+     "lines": [
+      670
+     ],
+     "occurrences": 1,
+     "text": "pub fn allocator_shim_contents("
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "methods only for the default allocator",
+     "lines": [
+      673
+     ],
+     "occurrences": 1,
+     "text": "if kind == AllocatorKind::Default {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "handler only for the default handler",
+     "lines": [
+      679
+     ],
+     "occurrences": 1,
+     "text": "if tcx.alloc_error_handler_kind(()).unwrap() == AllocatorKind::Default {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "shim module",
+     "lines": [
+      734
+     ],
+     "occurrences": 1,
+     "text": "backend.codegen_allocator(tcx, &llmod_id, &allocator_shim_contents(tcx, kind));"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1176,
+   "passed": true,
+   "path": "compiler/rustc_codegen_ssa/src/base.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "7251bf7b57f5ba1250a27731289fada7033d077bd207d187c8779384b57f74bb",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "shim contents",
+     "lines": [
+      692
+     ],
+     "occurrences": 1,
+     "text": "pub fn allocator_shim_contents("
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "methods only for the default allocator",
+     "lines": [
+      695
+     ],
+     "occurrences": 1,
+     "text": "if kind == AllocatorKind::Default {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "handler only for the default handler",
+     "lines": [
+      701
+     ],
+     "occurrences": 1,
+     "text": "if tcx.alloc_error_handler_kind(()).unwrap() == AllocatorKind::Default {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "shim module",
+     "lines": [
+      756
+     ],
+     "occurrences": 1,
+     "text": "backend.codegen_allocator(tcx, &llmod_id, &allocator_shim_contents(tcx, kind));"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1261,
+   "passed": true,
+   "path": "compiler/rustc_codegen_ssa/src/base.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "030efd51fbbb183e48d988811036e977ce8aca3e04b75a99a3efe33550b6c27c",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker comment",
+     "lines": [
+      89
+     ],
+     "occurrences": 1,
+     "text": "// __rust_no_alloc_shim_is_unstable_v2"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker definition",
+     "lines": [
+      93
+     ],
+     "occurrences": 1,
+     "text": "&mangle_internal_symbol(tcx, NO_ALLOC_SHIM_IS_UNSTABLE),"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "wrapper source name",
+     "lines": [
+      64
+     ],
+     "occurrences": 1,
+     "text": "let from_name = mangle_internal_symbol(tcx, &global_fn_name(method.name));"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "wrapper target name",
+     "lines": [
+      65
+     ],
+     "occurrences": 1,
+     "text": "let to_name = mangle_internal_symbol(tcx, &default_fn_name(method.name));"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "tail call",
+     "lines": [
+      174
+     ],
+     "occurrences": 1,
+     "text": "llvm::LLVMSetTailCall(ret, TRUE);"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 184,
+   "passed": true,
+   "path": "compiler/rustc_codegen_llvm/src/allocator.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "35d8bafbc6a4b9dce5329a03118fac1d505f5e53506bda1a22f0415fa0ea3b47",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker comment",
+     "lines": [
+      90
+     ],
+     "occurrences": 1,
+     "text": "// __rust_no_alloc_shim_is_unstable_v2"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker definition",
+     "lines": [
+      94
+     ],
+     "occurrences": 1,
+     "text": "&mangle_internal_symbol(tcx, NO_ALLOC_SHIM_IS_UNSTABLE),"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "wrapper source name",
+     "lines": [
+      65
+     ],
+     "occurrences": 1,
+     "text": "let from_name = mangle_internal_symbol(tcx, &global_fn_name(method.name));"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "wrapper target name",
+     "lines": [
+      66
+     ],
+     "occurrences": 1,
+     "text": "let to_name = mangle_internal_symbol(tcx, &default_fn_name(method.name));"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "tail call",
+     "lines": [
+      175
+     ],
+     "occurrences": 1,
+     "text": "llvm::LLVMSetTailCall(ret, TRUE);"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 185,
+   "passed": true,
+   "path": "compiler/rustc_codegen_llvm/src/allocator.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "ae124926a79ddd4620c21b42793cda7f8f3cea473b0fd0f84638fe3b8ad3e2be",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "alloc family",
+     "lines": [
+      400
+     ],
+     "occurrences": 1,
+     "text": "llvm::CreateAttrStringValue(llcx, \"alloc-family\", \"__rust_alloc\")"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "free kind",
+     "lines": [
+      551
+     ],
+     "occurrences": 1,
+     "text": "to_add.push(llvm::CreateAllocKindAttr(cx.llcx, AllocKindFlags::Free));"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "alloc size",
+     "lines": [
+      520
+     ],
+     "occurrences": 1,
+     "text": "to_add.push(llvm::CreateAllocSizeAttr(cx.llcx, 0));"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 618,
+   "passed": true,
+   "path": "compiler/rustc_codegen_llvm/src/attributes.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "a1d6ab331a8e5a638a91e539c7a747ba739f7e40cb4d330d9e5473c8ae58aa57",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "alloc family",
+     "lines": [
+      496
+     ],
+     "occurrences": 1,
+     "text": "llvm::CreateAttrStringValue(llcx, \"alloc-family\", \"__rust_alloc\")"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "free kind",
+     "lines": [
+      652
+     ],
+     "occurrences": 1,
+     "text": "to_add.push(llvm::CreateAllocKindAttr(cx.llcx, AllocKindFlags::Free));"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "alloc size",
+     "lines": [
+      621
+     ],
+     "occurrences": 1,
+     "text": "to_add.push(llvm::CreateAllocSizeAttr(cx.llcx, 0));"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 726,
+   "passed": true,
+   "path": "compiler/rustc_codegen_llvm/src/attributes.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "40b1e49c84f414f6723793dba378c806be548a02f68888b21b20a76824470ac9",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "internal symbol mangling",
+     "lines": [
+      87
+     ],
+     "occurrences": 1,
+     "text": "pub fn mangle_internal_symbol"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "pseudo crate",
+     "lines": [
+      124
+     ],
+     "occurrences": 1,
+     "text": "__rustc"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1027,
+   "passed": true,
+   "path": "compiler/rustc_symbol_mangling/src/v0.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "800c29d6c361de3ebb4bcc7f1ad10a3eab96d9a749edabdbcaf8d0b015d3a03d",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "internal symbol mangling",
+     "lines": [
+      144
+     ],
+     "occurrences": 1,
+     "text": "pub fn mangle_internal_symbol"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "pseudo crate",
+     "lines": [
+      185
+     ],
+     "occurrences": 1,
+     "text": "__rustc"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1122,
+   "passed": true,
+   "path": "compiler/rustc_symbol_mangling/src/v0.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "f26c3b2bd0a18147b2f359489810302d90616b5aa19c4ae78903f9573dc138c6",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "alloc declaration",
+     "lines": [
+      22
+     ],
+     "occurrences": 1,
+     "text": "fn __rust_alloc(size: usize, align: Alignment) -> *mut u8;"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dealloc declaration",
+     "lines": [
+      26
+     ],
+     "occurrences": 1,
+     "text": "fn __rust_dealloc(ptr: NonNull<u8>, size: usize, align: Alignment);"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker declaration",
+     "lines": [
+      43
+     ],
+     "occurrences": 1,
+     "text": "fn __rust_no_alloc_shim_is_unstable_v2();"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker call",
+     "lines": [
+      99,
+      196
+     ],
+     "occurrences": 2,
+     "text": "        __rust_no_alloc_shim_is_unstable_v2();"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker rationale",
+     "lines": [
+      97,
+      194
+     ],
+     "occurrences": 2,
+     "text": "// Make sure we don't accidentally allow omitting the allocator shim in"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "zero size allocate",
+     "lines": [
+      207,
+      391
+     ],
+     "occurrences": 2,
+     "text": "0 => Ok(layout.dangling_ptr().cast_slice(0)),"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "zero size deallocate",
+     "lines": [
+      220,
+      409
+     ],
+     "occurrences": 2,
+     "text": "        if layout.size() != 0 {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "handler declaration",
+     "lines": [
+      510
+     ],
+     "occurrences": 1,
+     "text": "fn __rust_alloc_error_handler(size: usize, align: usize) -> !;"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "default handler",
+     "lines": [
+      572
+     ],
+     "occurrences": 1,
+     "text": "pub unsafe fn __rdl_alloc_error_handler(size: usize, _align: usize) -> ! {"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no should_panic symbol",
+     "lines": [],
+     "occurrences": 0,
+     "text": "should_panic"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no exchange_malloc",
+     "lines": [],
+     "occurrences": 0,
+     "text": "exchange_malloc"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no box_free",
+     "lines": [],
+     "occurrences": 0,
+     "text": "box_free"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 578,
+   "passed": true,
+   "path": "library/alloc/src/alloc.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "699c02fe7844cd9490905545e503fec56552be2a34d50a79242852739483889b",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "alloc declaration",
+     "lines": [
+      22
+     ],
+     "occurrences": 1,
+     "text": "fn __rust_alloc(size: usize, align: Alignment) -> *mut u8;"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dealloc declaration",
+     "lines": [
+      26
+     ],
+     "occurrences": 1,
+     "text": "fn __rust_dealloc(ptr: NonNull<u8>, size: usize, align: Alignment);"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker declaration",
+     "lines": [
+      43
+     ],
+     "occurrences": 1,
+     "text": "fn __rust_no_alloc_shim_is_unstable_v2();"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker call",
+     "lines": [
+      156,
+      321
+     ],
+     "occurrences": 2,
+     "text": "        __rust_no_alloc_shim_is_unstable_v2();"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker rationale",
+     "lines": [
+      154,
+      319
+     ],
+     "occurrences": 2,
+     "text": "// Make sure we don't accidentally allow omitting the allocator shim in"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "zero size allocate",
+     "lines": [
+      332,
+      516
+     ],
+     "occurrences": 2,
+     "text": "0 => Ok(layout.dangling_ptr().cast_slice(0)),"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "zero size deallocate",
+     "lines": [
+      345,
+      534
+     ],
+     "occurrences": 2,
+     "text": "        if layout.size() != 0 {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "handler declaration",
+     "lines": [
+      636
+     ],
+     "occurrences": 1,
+     "text": "fn __rust_alloc_error_handler(size: usize, align: usize) -> !;"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "default handler",
+     "lines": [
+      698
+     ],
+     "occurrences": 1,
+     "text": "pub unsafe fn __rdl_alloc_error_handler(size: usize, _align: usize) -> ! {"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no should_panic symbol",
+     "lines": [],
+     "occurrences": 0,
+     "text": "should_panic"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no exchange_malloc",
+     "lines": [],
+     "occurrences": 0,
+     "text": "exchange_malloc"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no box_free",
+     "lines": [],
+     "occurrences": 0,
+     "text": "box_free"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 707,
+   "passed": true,
+   "path": "library/alloc/src/alloc.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "23aed03dcac1e233f4139f5f41cfd40c312e3a45a635aa40547dc81139102066",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_new_uninit is not const",
+     "lines": [
+      247
+     ],
+     "occurrences": 1,
+     "text": "fn box_new_uninit(layout: Layout) -> *mut u8 {"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "box_new_uninit const",
+     "lines": [],
+     "occurrences": 0,
+     "text": "const fn box_new_uninit(layout: Layout) -> *mut u8 {"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 2487,
+   "passed": true,
+   "path": "library/alloc/src/boxed.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "1f6e4bbdb6025d8dd92546e3171b4e98d961e966757034622113f1edd7834d92",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_new_uninit const",
+     "lines": [
+      322
+     ],
+     "occurrences": 1,
+     "text": "const fn box_new_uninit(layout: Layout) -> *mut u8 {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_new_uninit zero size return",
+     "lines": [
+      324
+     ],
+     "occurrences": 1,
+     "text": "        return layout.dangling_ptr().as_ptr();"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 2708,
+   "passed": true,
+   "path": "library/alloc/src/boxed.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "28dbdbf513203785ff66200c836c3b19ae8921e0be20dd9470c477ebf0518441",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_new_uninit allocates through Global",
+     "lines": [
+      248
+     ],
+     "occurrences": 1,
+     "text": "    match Global.allocate(layout) {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_new_uninit failure",
+     "lines": [
+      250,
+      583,
+      651,
+      842
+     ],
+     "occurrences": 4,
+     "text": "        Err(_) => handle_alloc_error(layout),"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_new_uninit not MIR-inlined",
+     "lines": [
+      244
+     ],
+     "occurrences": 1,
+     "text": "#[rustc_no_mir_inline]"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Box::new allocates",
+     "lines": [
+      286
+     ],
+     "occurrences": 1,
+     "text": "let ptr = box_new_uninit(<T as SizedTypeProperties>::LAYOUT) as *mut T;"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Box::new no-panic comment",
+     "lines": [
+      287
+     ],
+     "occurrences": 1,
+     "text": "// Nothing below can panic so we do not have to worry about deallocating `ptr`."
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Box::new stores",
+     "lines": [
+      289
+     ],
+     "occurrences": 1,
+     "text": "unsafe { core::intrinsics::write_via_move(ptr, x) };"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Box::new transmutes",
+     "lines": [
+      291
+     ],
+     "occurrences": 1,
+     "text": "unsafe { mem::transmute(ptr) }"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "new_uninit transmutes",
+     "lines": [
+      317
+     ],
+     "occurrences": 1,
+     "text": "unsafe { mem::transmute(box_new_uninit(<T as SizedTypeProperties>::LAYOUT)) }"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "vec helper",
+     "lines": [
+      262
+     ],
+     "occurrences": 1,
+     "text": "fn box_assume_init_into_vec_unsafe<T, const N: usize>("
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Drop impl",
+     "lines": [
+      1948
+     ],
+     "occurrences": 1,
+     "text": "unsafe impl<#[may_dangle] T: ?Sized, A: Allocator> Drop for Box<T, A> {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Drop impl comment",
+     "lines": [
+      1951
+     ],
+     "occurrences": 1,
+     "text": "// the T in the Box is dropped by the compiler before the destructor is run"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Drop impl layout",
+     "lines": [
+      1956
+     ],
+     "occurrences": 1,
+     "text": "Layout::for_value_raw(ptr.as_ptr())"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Drop impl deallocate",
+     "lines": [
+      1958
+     ],
+     "occurrences": 1,
+     "text": "self.1.deallocate(From::from(ptr.cast()), layout);"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no rustc_box",
+     "lines": [],
+     "occurrences": 0,
+     "text": "rustc_box"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no exchange_malloc",
+     "lines": [],
+     "occurrences": 0,
+     "text": "exchange_malloc"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no box_free",
+     "lines": [],
+     "occurrences": 0,
+     "text": "box_free"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 2487,
+   "passed": true,
+   "path": "library/alloc/src/boxed.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "1f6e4bbdb6025d8dd92546e3171b4e98d961e966757034622113f1edd7834d92",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_new_uninit allocates through Global",
+     "lines": [
+      326
+     ],
+     "occurrences": 1,
+     "text": "    match Global.allocate(layout) {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_new_uninit failure",
+     "lines": [
+      328,
+      592,
+      655,
+      932
+     ],
+     "occurrences": 4,
+     "text": "        Err(_) => handle_alloc_error(layout),"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_new_uninit not MIR-inlined",
+     "lines": [
+      318
+     ],
+     "occurrences": 1,
+     "text": "#[rustc_no_mir_inline]"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Box::new allocates",
+     "lines": [
+      370
+     ],
+     "occurrences": 1,
+     "text": "let ptr = box_new_uninit(<T as SizedTypeProperties>::LAYOUT) as *mut T;"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Box::new no-panic comment",
+     "lines": [
+      371
+     ],
+     "occurrences": 1,
+     "text": "// Nothing below can panic so we do not have to worry about deallocating `ptr`."
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Box::new stores",
+     "lines": [
+      373
+     ],
+     "occurrences": 1,
+     "text": "unsafe { core::intrinsics::write_via_move(ptr, x) };"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Box::new transmutes",
+     "lines": [
+      375
+     ],
+     "occurrences": 1,
+     "text": "unsafe { mem::transmute(ptr) }"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "new_uninit transmutes",
+     "lines": [
+      402
+     ],
+     "occurrences": 1,
+     "text": "unsafe { mem::transmute(box_new_uninit(<T as SizedTypeProperties>::LAYOUT)) }"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "vec helper",
+     "lines": [
+      341
+     ],
+     "occurrences": 1,
+     "text": "fn box_assume_init_into_vec_unsafe<T, const N: usize>("
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Drop impl",
+     "lines": [
+      2126
+     ],
+     "occurrences": 1,
+     "text": "unsafe impl<#[may_dangle] T: ?Sized, A: Allocator> Drop for Box<T, A> {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Drop impl comment",
+     "lines": [
+      2129
+     ],
+     "occurrences": 1,
+     "text": "// the T in the Box is dropped by the compiler before the destructor is run"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Drop impl layout",
+     "lines": [
+      2136
+     ],
+     "occurrences": 1,
+     "text": "Layout::for_value_raw(ptr.as_ptr())"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Drop impl deallocate",
+     "lines": [
+      2142
+     ],
+     "occurrences": 1,
+     "text": "self.1.deallocate(From::from(ptr.cast()), layout);"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no rustc_box",
+     "lines": [],
+     "occurrences": 0,
+     "text": "rustc_box"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no exchange_malloc",
+     "lines": [],
+     "occurrences": 0,
+     "text": "exchange_malloc"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no box_free",
+     "lines": [],
+     "occurrences": 0,
+     "text": "box_free"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 2708,
+   "passed": true,
+   "path": "library/alloc/src/boxed.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "28dbdbf513203785ff66200c836c3b19ae8921e0be20dd9470c477ebf0518441",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "write_box_via_move",
+     "lines": [
+      15
+     ],
+     "occurrences": 1,
+     "text": "pub fn write_box_via_move<T>(b: Box<MaybeUninit<T>>, x: T) -> Box<MaybeUninit<T>>;"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 15,
+   "passed": true,
+   "path": "library/alloc/src/intrinsics.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "34b7553382f3bf9cb13a7c6b95fe3aed6034d51770cb8b0b06647d4663e79807",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "write_box_via_move",
+     "lines": [
+      15
+     ],
+     "occurrences": 1,
+     "text": "pub fn write_box_via_move<T>(b: Box<MaybeUninit<T>>, x: T) -> Box<MaybeUninit<T>>;"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 15,
+   "passed": true,
+   "path": "library/alloc/src/intrinsics.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "34b7553382f3bf9cb13a7c6b95fe3aed6034d51770cb8b0b06647d4663e79807",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "vec literal helper",
+     "lines": [
+      58
+     ],
+     "occurrences": 1,
+     "text": "$crate::boxed::box_assume_init_into_vec_unsafe("
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "vec literal store",
+     "lines": [
+      59
+     ],
+     "occurrences": 1,
+     "text": "$crate::intrinsics::write_box_via_move($crate::boxed::Box::new_uninit(), [$($x),+])"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 117,
+   "passed": true,
+   "path": "library/alloc/src/macros.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "f6fe370fdf7b25b129e5b3264c8280c569ed230a400f8fc9f88a32167597c03e",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "vec literal helper",
+     "lines": [
+      59
+     ],
+     "occurrences": 1,
+     "text": "$crate::boxed::box_assume_init_into_vec_unsafe("
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "vec literal store",
+     "lines": [
+      60
+     ],
+     "occurrences": 1,
+     "text": "$crate::intrinsics::write_box_via_move($crate::boxed::Box::new_uninit(), [$($x),+])"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 119,
+   "passed": true,
+   "path": "library/alloc/src/macros.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "3be9ba15fbf24413bd9477c021e4799df989d066e3db404a3ddeba593ae96b46",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "write_via_move",
+     "lines": [
+      2217
+     ],
+     "occurrences": 1,
+     "text": "pub const unsafe fn write_via_move<T>(ptr: *mut T, value: T);"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 3662,
+   "passed": true,
+   "path": "library/core/src/intrinsics/mod.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "03dda038cf27a27058e4e3476b5eee5605e712112c2093f8218d4708036947fe",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "write_via_move",
+     "lines": [
+      2298
+     ],
+     "occurrences": 1,
+     "text": "pub const unsafe fn write_via_move<T>(ptr: *mut T, value: T);"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 3683,
+   "passed": true,
+   "path": "library/core/src/intrinsics/mod.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "c2324b0e038e2c4d83ccc32c590851c389c0289ca56d2c85cffb5ec8a4053fce",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dangling_ptr",
+     "lines": [
+      270
+     ],
+     "occurrences": 1,
+     "text": "pub const fn dangling_ptr(&self) -> NonNull<u8> {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dangling address is the alignment",
+     "lines": [
+      271
+     ],
+     "occurrences": 1,
+     "text": "NonNull::without_provenance(self.align.as_nonzero_usize())"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "maximum size",
+     "lines": [
+      97
+     ],
+     "occurrences": 1,
+     "text": "unsafe { unchecked_sub(isize::MAX as usize + 1, alignment.as_usize()) }"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "alignment field",
+     "lines": [
+      41
+     ],
+     "occurrences": 1,
+     "text": "    align: Alignment,"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 617,
+   "passed": true,
+   "path": "library/core/src/alloc/layout.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "19119ede8a60d1a989f907118f9e7f36e24434b8e931875f66a379b856784124",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dangling_ptr",
+     "lines": [
+      276
+     ],
+     "occurrences": 1,
+     "text": "pub const fn dangling_ptr(&self) -> NonNull<u8> {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dangling address is the alignment",
+     "lines": [
+      277
+     ],
+     "occurrences": 1,
+     "text": "NonNull::without_provenance(self.align.as_nonzero_usize())"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "maximum size",
+     "lines": [
+      97
+     ],
+     "occurrences": 1,
+     "text": "unsafe { unchecked_sub(isize::MAX as usize + 1, alignment.as_usize()) }"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "alignment field",
+     "lines": [
+      41
+     ],
+     "occurrences": 1,
+     "text": "    align: Alignment,"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 623,
+   "passed": true,
+   "path": "library/core/src/alloc/layout.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "7d8670965bf5979fab4e2581fe4cc38129e1ba5923c5967aae7de36cfe424245",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "alloc zero size",
+     "lines": [
+      152
+     ],
+     "occurrences": 1,
+     "text": "/// `layout` must have non-zero size. Attempting to allocate for a zero-sized `layout` will"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dealloc live block",
+     "lines": [
+      186
+     ],
+     "occurrences": 1,
+     "text": "/// * `ptr` is a block of memory currently allocated via this allocator and,"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dealloc same layout",
+     "lines": [
+      188
+     ],
+     "occurrences": 1,
+     "text": "/// * `layout` is the same layout that was used to allocate that block of"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "no unwinding",
+     "lines": [
+      90
+     ],
+     "occurrences": 1,
+     "text": "/// * It's undefined behavior if global allocators unwind."
+    }
+   ],
+   "expected_status": 200,
+   "lines": 303,
+   "passed": true,
+   "path": "library/core/src/alloc/global.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "3c33d30d18b51d866ea3d6a76599fe1daa884addf79c189ff05f5008d3d40ee2",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "alloc zero size",
+     "lines": [
+      197
+     ],
+     "occurrences": 1,
+     "text": "/// `layout` must have non-zero size. Attempting to allocate for a zero-sized `layout` will"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dealloc live block",
+     "lines": [
+      231
+     ],
+     "occurrences": 1,
+     "text": "/// * `ptr` is a block of memory currently allocated via this allocator and,"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dealloc same layout",
+     "lines": [
+      233
+     ],
+     "occurrences": 1,
+     "text": "/// * `layout` is the same layout that was used to allocate that block of"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "no unwinding",
+     "lines": [
+      158
+     ],
+     "occurrences": 1,
+     "text": "/// * It's undefined behavior if global allocators unwind."
+    }
+   ],
+   "expected_status": 200,
+   "lines": 417,
+   "passed": true,
+   "path": "library/core/src/alloc/global.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "d5eb650234e55742cec9bdff8dad0afe187c71b19dce914e7cd1285649dd78c3",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "allocations may not happen",
+     "lines": [
+      98
+     ],
+     "occurrences": 1,
+     "text": "/// * You must not rely on allocations actually happening, even if there are explicit"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no statement about merging",
+     "lines": [],
+     "occurrences": 0,
+     "text": "merge multiple allocation operations"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 303,
+   "passed": true,
+   "path": "library/core/src/alloc/global.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "3c33d30d18b51d866ea3d6a76599fe1daa884addf79c189ff05f5008d3d40ee2",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "allocator may be skipped",
+     "lines": [
+      99
+     ],
+     "occurrences": 1,
+     "text": "/// - Allocation functions may non-deterministically entirely skip the underlying allocator, e.g. if the"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "allocations may be merged",
+     "lines": [
+      101
+     ],
+     "occurrences": 1,
+     "text": "///   also merge multiple allocation operations into one, as long as it can also adjust all"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "allocations may not happen",
+     "lines": [
+      129
+     ],
+     "occurrences": 1,
+     "text": "/// The first point means that you cannot rely on global allocations actually happening, even if"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "only the global functions may free",
+     "lines": [
+      107
+     ],
+     "occurrences": 1,
+     "text": "///   freed by invoking [`dealloc`] or [`realloc`]. In particular, passing a pointer to such an"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 417,
+   "passed": true,
+   "path": "library/core/src/alloc/global.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "d5eb650234e55742cec9bdff8dad0afe187c71b19dce914e7cd1285649dd78c3",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "std handler attribute",
+     "lines": [
+      364,
+      421
+     ],
+     "occurrences": 2,
+     "text": "#[alloc_error_handler]"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "std handler",
+     "lines": [
+      423
+     ],
+     "occurrences": 1,
+     "text": "pub fn rust_oom(layout: Layout) -> ! {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "failure message",
+     "lines": [
+      379
+     ],
+     "occurrences": 1,
+     "text": "rtprintpanic!(\"memory allocation of {} bytes failed\\n\", layout.size());"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "abort",
+     "lines": [
+      429
+     ],
+     "occurrences": 1,
+     "text": "        crate::process::abort()"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "default alloc",
+     "lines": [
+      450
+     ],
+     "occurrences": 1,
+     "text": "pub unsafe extern \"C\" fn __rdl_alloc(size: usize, align: usize) -> *mut u8 {"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 490,
+   "passed": true,
+   "path": "library/std/src/alloc.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "2d22c4f49121716ba9eda233d097746c11e51b387a868f5fce83d6f1e52becf6",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "std handler attribute",
+     "lines": [
+      384,
+      441
+     ],
+     "occurrences": 2,
+     "text": "#[alloc_error_handler]"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "std handler",
+     "lines": [
+      443
+     ],
+     "occurrences": 1,
+     "text": "pub fn rust_oom(layout: Layout) -> ! {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "failure message",
+     "lines": [
+      399
+     ],
+     "occurrences": 1,
+     "text": "rtprintpanic!(\"memory allocation of {} bytes failed\\n\", layout.size());"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "abort",
+     "lines": [
+      449
+     ],
+     "occurrences": 1,
+     "text": "        crate::process::abort()"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "default alloc",
+     "lines": [
+      474
+     ],
+     "occurrences": 1,
+     "text": "pub unsafe extern \"C\" fn __rdl_alloc(size: usize, align: usize) -> *mut u8 {"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 519,
+   "passed": true,
+   "path": "library/std/src/alloc.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "38dd751d452adea7bd2974653b1e85aa443807a65ae5aafe301934080ac875a5",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "std provides the default allocator",
+     "lines": [
+      436
+     ],
+     "occurrences": 1,
+     "text": "#![default_lib_allocator]"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 798,
+   "passed": true,
+   "path": "library/std/src/lib.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "dcb51aa89225619738e6f373603408599bc3a94b605c2e1a7a853a34656de67f",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "std provides the default allocator",
+     "lines": [
+      443
+     ],
+     "occurrences": 1,
+     "text": "#![default_lib_allocator]"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 819,
+   "passed": true,
+   "path": "library/std/src/lib.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "6ebc3f9c7987f20ef32dc225abd8a630044021dc72669b639dac165a23fd6b5a",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "allocator kind decision",
+     "lines": [
+      1080
+     ],
+     "occurrences": 1,
+     "text": "fn inject_allocator_crate(&mut self, tcx: TyCtxt<'_>, krate: &ast::Crate) {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "global kind",
+     "lines": [
+      1157
+     ],
+     "occurrences": 1,
+     "text": "self.allocator_kind = Some(AllocatorKind::Global);"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "default kind",
+     "lines": [
+      1168
+     ],
+     "occurrences": 1,
+     "text": "self.allocator_kind = Some(AllocatorKind::Default);"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1524,
+   "passed": true,
+   "path": "compiler/rustc_metadata/src/creader.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "47c4dbff8ae5416e92640af4098cff13477082e35fb3999bfca576c3df22626a",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "allocator kind decision",
+     "lines": [
+      1157
+     ],
+     "occurrences": 1,
+     "text": "fn inject_allocator_crate(&mut self, tcx: TyCtxt<'_>, krate: &ast::Crate) {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "global kind",
+     "lines": [
+      1238
+     ],
+     "occurrences": 1,
+     "text": "self.allocator_kind = Some(AllocatorKind::Global);"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "default kind",
+     "lines": [
+      1249
+     ],
+     "occurrences": 1,
+     "text": "self.allocator_kind = Some(AllocatorKind::Default);"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1501,
+   "passed": true,
+   "path": "compiler/rustc_metadata/src/creader.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "5ad69fef2068ce2cff4a1ab21659359270770e4ee69fa840558a29a3fb706539",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "zero-sized capacity",
+     "lines": [
+      619
+     ],
+     "occurrences": 1,
+     "text": "if elem_size == 0 { usize::MAX } else { self.cap.as_inner() }"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 902,
+   "passed": true,
+   "path": "library/alloc/src/raw_vec/mod.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "0d884b28022c36443478717ef3f776a80d65f7f9742ec2ef6927a50ae94efe14",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "zero-sized capacity",
+     "lines": [
+      640
+     ],
+     "occurrences": 1,
+     "text": "if elem_size == 0 { usize::MAX } else { self.cap.as_inner() }"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 941,
+   "passed": true,
+   "path": "library/alloc/src/raw_vec/mod.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "b8f2f10976bdcaa9c455c47303d67d2804db323a650ff90ccc26e56cd9b841b1",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "write_via_move lowering",
+     "lines": [
+      408
+     ],
+     "occurrences": 1,
+     "text": "// `write_via_move(ptr, val)` becomes `*ptr = val` but without any dropping."
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "write_box_via_move lowering",
+     "lines": [
+      425
+     ],
+     "occurrences": 1,
+     "text": "sym::write_box_via_move => {"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 938,
+   "passed": true,
+   "path": "compiler/rustc_mir_build/src/builder/expr/into.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "5ebe490441df23049ab5f0f21c970e723230d91947b74c3443a3d3eeeb416439",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "write_via_move lowering",
+     "lines": [
+      419
+     ],
+     "occurrences": 1,
+     "text": "// `write_via_move(ptr, val)` becomes `*ptr = val` but without any dropping."
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "write_box_via_move lowering",
+     "lines": [
+      437
+     ],
+     "occurrences": 1,
+     "text": "sym::write_box_via_move => {"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 949,
+   "passed": true,
+   "path": "compiler/rustc_mir_build/src/builder/expr/into.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "b6bce36a5a65e038b34bd6bb71b8d291e86ff1aad9b6b08ec6708b0e209d695b",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "already lowered",
+     "lines": [
+      183
+     ],
+     "occurrences": 1,
+     "text": "// `write_via_move` is already lowered during MIR building."
+    }
+   ],
+   "expected_status": 200,
+   "lines": 344,
+   "passed": true,
+   "path": "compiler/rustc_mir_transform/src/lower_intrinsics.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "43ded1a837c5430a5cc1d34123ab1d0a01fdb93cfe5464370eb00b4960a9e470",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "already lowered",
+     "lines": [
+      206
+     ],
+     "occurrences": 1,
+     "text": "// `write_via_move` is already lowered during MIR building."
+    }
+   ],
+   "expected_status": 200,
+   "lines": 368,
+   "passed": true,
+   "path": "compiler/rustc_mir_transform/src/lower_intrinsics.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "7f30dec1f5b9e540d62765f3a7eb5ba74e922492a911660aed515c1c1046fe45",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box contents",
+     "lines": [
+      737
+     ],
+     "occurrences": 1,
+     "text": "fn open_drop_for_box_contents("
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box special case",
+     "lines": [
+      801
+     ],
+     "occurrences": 1,
+     "text": "            let destructor_block = if adt.is_box() {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "contents before destructor",
+     "lines": [
+      802
+     ],
+     "occurrences": 1,
+     "text": "// we need to drop the inside of the box before running the destructor"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "deref subpath",
+     "lines": [
+      759
+     ],
+     "occurrences": 1,
+     "text": "let interior_path = self.elaborator.deref_subpath(self.path);"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "destructor call",
+     "lines": [
+      966
+     ],
+     "occurrences": 1,
+     "text": "fn destructor_call_block_sync(&mut self, succ: BasicBlock, unwind: Unwind) -> BasicBlock {"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no box_free",
+     "lines": [],
+     "occurrences": 0,
+     "text": "box_free"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1424,
+   "passed": true,
+   "path": "compiler/rustc_mir_transform/src/elaborate_drop.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "b9f090d0b18d76ce4bb126a8cf50315983052a35d70fcc4a680358061f1bc472",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box contents",
+     "lines": [
+      976
+     ],
+     "occurrences": 1,
+     "text": "fn open_drop_for_box_contents("
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box special case",
+     "lines": [
+      1036
+     ],
+     "occurrences": 1,
+     "text": "            let destructor_block = if adt.is_box() {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "contents before destructor",
+     "lines": [
+      1037
+     ],
+     "occurrences": 1,
+     "text": "// we need to drop the inside of the box before running the destructor"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "deref subpath",
+     "lines": [
+      998
+     ],
+     "occurrences": 1,
+     "text": "let interior_path = self.elaborator.deref_subpath(self.path);"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "destructor call",
+     "lines": [
+      1209
+     ],
+     "occurrences": 1,
+     "text": "fn destructor_call_block_sync(&mut self, succ: BasicBlock, unwind: Unwind) -> BasicBlock {"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no box_free",
+     "lines": [],
+     "occurrences": 0,
+     "text": "box_free"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1671,
+   "passed": true,
+   "path": "compiler/rustc_mir_transform/src/elaborate_drop.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "1a0f9cb6dd0ce2fa851428001feb7bca47bfcf4e173b16ed01381f0c3c3a26ba",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "cast kind",
+     "lines": [
+      74
+     ],
+     "occurrences": 1,
+     "text": "CastKind::Transmute,"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no dedicated cast kind",
+     "lines": [],
+     "occurrences": 0,
+     "text": "BoxDerefTransmute"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 167,
+   "passed": true,
+   "path": "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "b5a87c4d9a45ab4c0ef61c9aab5820cb568f1adc04b42d1a993df09002db8ade",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "dedicated cast kind",
+     "lines": [
+      67
+     ],
+     "occurrences": 1,
+     "text": "Rvalue::Cast(CastKind::BoxDerefTransmute, Operand::Copy(field_place), ptr_ty),"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 157,
+   "passed": true,
+   "path": "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "d2e5beeb5588a3b1c94f4087c9afbec28f6c66d5bf1c11e1af2302d67ef90fa4",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "purpose",
+     "lines": [
+      1
+     ],
+     "occurrences": 1,
+     "text": "//! This pass transforms derefs of Box into a deref of the pointer inside Box."
+    }
+   ],
+   "expected_status": 200,
+   "lines": 167,
+   "passed": true,
+   "path": "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "b5a87c4d9a45ab4c0ef61c9aab5820cb568f1adc04b42d1a993df09002db8ade",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "purpose",
+     "lines": [
+      1
+     ],
+     "occurrences": 1,
+     "text": "//! This pass transforms derefs of Box into a deref of the pointer inside Box."
+    }
+   ],
+   "expected_status": 200,
+   "lines": 157,
+   "passed": true,
+   "path": "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "d2e5beeb5588a3b1c94f4087c9afbec28f6c66d5bf1c11e1af2302d67ef90fa4",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "drop elaboration pass",
+     "lines": [
+      634
+     ],
+     "occurrences": 1,
+     "text": "        &elaborate_drops::ElaborateDrops,"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box deref pass",
+     "lines": [
+      645
+     ],
+     "occurrences": 1,
+     "text": "        &elaborate_box_derefs::ElaborateBoxDerefs,"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 841,
+   "passed": true,
+   "path": "compiler/rustc_mir_transform/src/lib.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "290cc1a5de94f2a52cfc889f1e57c401a1f96adf815955cc67389e239659d559",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "drop elaboration pass",
+     "lines": [
+      663
+     ],
+     "occurrences": 1,
+     "text": "        &elaborate_drops::ElaborateDrops,"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box deref pass",
+     "lines": [
+      674
+     ],
+     "occurrences": 1,
+     "text": "        &elaborate_box_derefs::ElaborateBoxDerefs,"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 855,
+   "passed": true,
+   "path": "compiler/rustc_mir_transform/src/lib.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "16aad377ca3dccd2b436be7cd3a1a07b925301d3521c908f0195357d88091912",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Rvalue",
+     "lines": [
+      1363
+     ],
+     "occurrences": 1,
+     "text": "pub enum Rvalue<'tcx> {"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no ShallowInitBox",
+     "lines": [],
+     "occurrences": 0,
+     "text": "ShallowInitBox"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no NullaryOp",
+     "lines": [],
+     "occurrences": 0,
+     "text": "NullaryOp"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1762,
+   "passed": true,
+   "path": "compiler/rustc_middle/src/mir/syntax.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "dd77a1dddc833bf073bec4b35274d5f519819f2e309f48411371e2e9cd376679",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Rvalue",
+     "lines": [
+      1367
+     ],
+     "occurrences": 1,
+     "text": "pub enum Rvalue<'tcx> {"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no ShallowInitBox",
+     "lines": [],
+     "occurrences": 0,
+     "text": "ShallowInitBox"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no NullaryOp",
+     "lines": [],
+     "occurrences": 0,
+     "text": "NullaryOp"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1773,
+   "passed": true,
+   "path": "compiler/rustc_middle/src/mir/syntax.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "9524753adde68df0bdccbfaf43390ad5cb0aaf9401f6f6c9dc1f273a27fa936e",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "layout check",
+     "lines": [
+      426
+     ],
+     "occurrences": 1,
+     "text": "\"incorrect layout on deallocation: {alloc_id} has size {size} and alignment {align}, but gave size {size_found} and alignment {align_found}\","
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1732,
+   "passed": true,
+   "path": "compiler/rustc_const_eval/src/interpret/memory.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "7dba2ce3639c5e1f65a2e88f8abfcbcba7f46d14e2b5b0cff56f533d3fbc4772",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "layout check",
+     "lines": [
+      426
+     ],
+     "occurrences": 1,
+     "text": "\"incorrect layout on deallocation: {alloc_id} has size {size} and alignment {align}, but gave size {size_found} and alignment {align_found}\","
+    }
+   ],
+   "expected_status": 200,
+   "lines": 1722,
+   "passed": true,
+   "path": "compiler/rustc_const_eval/src/interpret/memory.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "c7f7e660f829dbe07b6d2905bf292fc5138cffcf8e3e3f44e30b2c085e7d1e2c",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "zero size check",
+     "lines": [
+      92
+     ],
+     "occurrences": 1,
+     "text": "throw_ub_format!(\"creating allocation with size 0\");"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "request check",
+     "lines": [
+      89
+     ],
+     "occurrences": 1,
+     "text": "fn check_rust_alloc_request(&self, size: u64, align: u64) -> InterpResult<'tcx> {"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 294,
+   "passed": true,
+   "path": "src/tools/miri/src/shims/alloc.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "c584cb4289ffb13fbdafdc503050c6ae7c500e1e4e983ae9d46dd984cc27fc60",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "zero size check",
+     "lines": [
+      92
+     ],
+     "occurrences": 1,
+     "text": "throw_ub_format!(\"creating allocation with size 0\");"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "request check",
+     "lines": [
+      89
+     ],
+     "occurrences": 1,
+     "text": "fn check_rust_alloc_request(&self, size: u64, align: u64) -> InterpResult<'tcx> {"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 300,
+   "passed": true,
+   "path": "src/tools/miri/src/shims/alloc.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "842fc86c629c38a00ef997a17d30d82ed53439705ae45ab08f46bf3f2772b69d",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker shim",
+     "lines": [
+      308
+     ],
+     "occurrences": 1,
+     "text": ".mangle_internal_symbol(NO_ALLOC_SHIM_IS_UNSTABLE) => {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker rationale",
+     "lines": [
+      309
+     ],
+     "occurrences": 1,
+     "text": "// This is a no-op shim that only exists to prevent making the allocator shims"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 889,
+   "passed": true,
+   "path": "src/tools/miri/src/shims/foreign_items.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "102c341b952c3a0b47f879452c2a81ca062a693d52a15dec368d3cc05590c82b",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker shim",
+     "lines": [
+      318
+     ],
+     "occurrences": 1,
+     "text": ".mangle_internal_symbol(NO_ALLOC_SHIM_IS_UNSTABLE) => {"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "marker rationale",
+     "lines": [
+      319
+     ],
+     "occurrences": 1,
+     "text": "// This is a no-op shim that only exists to prevent making the allocator shims"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 954,
+   "passed": true,
+   "path": "src/tools/miri/src/shims/foreign_items.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "e30066bb0995baf2b87f7b313b8530f4d04af6d383b4d99186d92f58b4ae8c6d",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_syntax removal note",
+     "lines": [
+      69
+     ],
+     "occurrences": 1,
+     "text": "(removed, box_syntax, \"1.70.0\", Some(49733), Some(\"replaced with `#[rustc_box]`\"), 108471),"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 316,
+   "passed": true,
+   "path": "compiler/rustc_feature/src/removed.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "a6a8c701d5ea5ea525dace061a7276202ec557d93477dd82275031b64daf5938",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "box_syntax removal note",
+     "lines": [
+      72
+     ],
+     "occurrences": 1,
+     "text": "(removed, box_syntax, \"1.70.0\", Some(49733), Some(\"replaced with `#[rustc_box]`\"), 108471),"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 327,
+   "passed": true,
+   "path": "compiler/rustc_feature/src/removed.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "d8f6aa4fc27ff61a307fe39353782cbe45be8fc0748fa6399bfe664ad00a6222",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "stale mention of exchange_malloc",
+     "lines": [
+      26
+     ],
+     "occurrences": 1,
+     "text": "exchange_malloc"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "stale mention of box_free",
+     "lines": [
+      27
+     ],
+     "occurrences": 1,
+     "text": "box_free"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 67,
+   "passed": true,
+   "path": "src/doc/rustc-dev-guide/src/lang-items.md",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "sha256": "95fa207264d5aab64161b89b1f020134995918a9177e24b993323e93cf0d4f87",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "stale mention of exchange_malloc",
+     "lines": [
+      27
+     ],
+     "occurrences": 1,
+     "text": "exchange_malloc"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "stale mention of box_free",
+     "lines": [
+      27
+     ],
+     "occurrences": 1,
+     "text": "box_free"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 68,
+   "passed": true,
+   "path": "src/doc/rustc-dev-guide/src/lang-items.md",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "sha256": "78370ad307f75e40ee7d098b244ef638aaaafbfc32b0b419afe18ffb539d0a12",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "Rvalue",
+     "lines": [
+      620
+     ],
+     "occurrences": 1,
+     "text": "inductive Rvalue where"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "unsupported rvalue",
+     "lines": [
+      612
+     ],
+     "occurrences": 1,
+     "text": "- `.unsupported` represents all other `Rvalue` variants (`Repeat`,"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "terminators",
+     "lines": [
+      785
+     ],
+     "occurrences": 1,
+     "text": "inductive TerminatorKind where"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "unsupported terminators",
+     "lines": [
+      783
+     ],
+     "occurrences": 1,
+     "text": "(`UnwindTerminate`, `Drop`, indirect `Call`, `TailCall`, `Yield`,"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "quoted rustc revision",
+     "lines": [
+      43,
+      57,
+      65,
+      96,
+      103,
+      111,
+      119,
+      126
+     ],
+     "occurrences": 42,
+     "text": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "struct types are unsupported",
+     "lines": [
+      309
+     ],
+     "occurrences": 1,
+     "text": "non-fieldless-enum `Adt`"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no ShallowInitBox",
+     "lines": [],
+     "occurrences": 0,
+     "text": "ShallowInitBox"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 944,
+   "passed": true,
+   "path": "trusted/lean/Trusted/MirAst.lean",
+   "repository": "joshlf/anneal",
+   "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "sha256": "71b57539fa1d462e1e856db4d7b0c7a260f7c39255c05cf489cfe87edc1a77c8",
+   "status": 200
+  },
+  {
+   "anchors": [
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "caller memory must be empty",
+     "lines": [
+      803
+     ],
+     "occurrences": 1,
+     "text": "  else if !q.callerMem.allocations.isEmpty then"
+    },
+    {
+     "expected": "present",
+     "found": "present",
+     "label": "calls fault as unsupported",
+     "lines": [
+      1568
+     ],
+     "occurrences": 1,
+     "text": "  | .unwindResume | .assert _ _ _ _ _ | .call _ _ _ _ _ | .unsupported =>"
+    },
+    {
+     "expected": "absent",
+     "found": "absent",
+     "label": "no heap allocation primitive",
+     "lines": [],
+     "occurrences": 0,
+     "text": "__rust_alloc"
+    }
+   ],
+   "expected_status": 200,
+   "lines": 2681,
+   "passed": true,
+   "path": "trusted/lean/Trusted/MirSemantics.lean",
+   "repository": "joshlf/anneal",
+   "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "sha256": "b8378127ea7b81b473a5f86cd164df430feb56296cbbbe57457cc2b125316c0a",
+   "status": 200
+  }
+ ],
+ "generated_on": "2026-11-21",
+ "passed": true,
+ "schema": "source-audit/1",
+ "summary": {
+  "anchors": 221,
+  "commits": 4,
+  "failed": [],
+  "file_checks": 70
+ }
+}

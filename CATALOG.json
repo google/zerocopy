@@ -85757,6 +85757,54 @@
         "verification/empirical-evaluation"
       ]
     },
+    "rustc-global-allocator-shims-box-lowering-and-dealloc-layout-soundness": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rust-lang/rust (rustc 1.98.0-nightly 2026-05-31: allocator shim codegen, #[global_allocator] expansion, liballoc Box and alloc, MIR drop and Box-deref elaboration, Miri allocator shims) - source read and toolchain executed"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly 2026-11-11: the same files) - source read only"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (Trusted.MirAst and Trusted.MirSemantics)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (v4.34.1)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "verification"
+      ]
+    },
     "rustc-inline-asm-register-clobber-framing-and-compiler-builtins-verification": {
       "observed_at": "2026-11-21",
       "subjects": [

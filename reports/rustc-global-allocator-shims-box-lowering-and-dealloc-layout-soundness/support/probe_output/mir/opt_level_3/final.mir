@@ -1,0 +1,790 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+fn <impl at specimens/mir_specimens.rs:19:1: 19:22>::drop(_1: &mut Counted) -> () {
+    debug self => _1;
+    let mut _0: ();
+    let _2: usize;
+    let mut _3: usize;
+    scope 1 (inlined std::hint::black_box::<usize>) {
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = copy ((*_1).0: usize);
+        _2 = std::intrinsics::black_box::<usize>(move _3) -> [return: bb1, unwind unreachable];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+fn maybe_panic(_1: bool) -> () {
+    debug yes => _1;
+    let mut _0: ();
+    let _2: !;
+    let mut _3: std::fmt::Arguments<'_>;
+    let mut _4: &str;
+    scope 1 (inlined Arguments::<'_>::from_str) {
+        let mut _5: std::ptr::NonNull<u8>;
+        let mut _6: *const u8;
+        let mut _7: std::ptr::NonNull<core::fmt::rt::Argument<'_>>;
+        let mut _8: usize;
+        let mut _9: usize;
+        let mut _10: usize;
+        scope 2 (inlined core::str::<impl str>::as_ptr) {
+            let mut _11: *const str;
+        }
+        scope 3 (inlined core::str::<impl str>::len) {
+            let _12: &[u8];
+            scope 4 (inlined core::str::<impl str>::as_bytes) {
+            }
+        }
+    }
+
+    bb0: {
+        switchInt(copy _1) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = const "deliberate panic";
+        StorageLive(_5);
+        StorageLive(_6);
+        StorageLive(_11);
+        _11 = &raw const (*_4);
+        _6 = copy _11 as *const u8 (PtrToPtr);
+        StorageDead(_11);
+        _5 = copy _6 as std::ptr::NonNull<u8> (Transmute);
+        StorageDead(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        StorageLive(_9);
+        StorageLive(_10);
+        StorageLive(_12);
+        _12 = const "deliberate panic" as &[u8] (Transmute);
+        _10 = PtrMetadata(copy _12);
+        StorageDead(_12);
+        _9 = Shl(move _10, const 1_i32);
+        StorageDead(_10);
+        _8 = BitOr(move _9, const 1_usize);
+        StorageDead(_9);
+        _7 = move _8 as std::ptr::NonNull<core::fmt::rt::Argument<'_>> (Transmute);
+        StorageDead(_8);
+        _3 = Arguments::<'_> { template: move _5, args: move _7 };
+        StorageDead(_7);
+        StorageDead(_5);
+        StorageDead(_4);
+        _2 = panic_fmt(move _3) -> unwind continue;
+    }
+
+    bb2: {
+        return;
+    }
+}
+
+alloc1 (size: 16, align: 1) {
+    64 65 6c 69 62 65 72 61 74 65 20 70 61 6e 69 63 │ deliberate panic
+}
+
+fn box_new_sized(_1: Pair) -> Box<Pair> {
+    debug p => _1;
+    let mut _0: std::boxed::Box<Pair>;
+
+    bb0: {
+        _0 = Box::<Pair>::new(move _1) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn box_new_zst() -> Box<()> {
+    let mut _0: std::boxed::Box<()>;
+
+    bb0: {
+        _0 = Box::<()>::new(const ()) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn write_via_move_direct(_1: *mut Pair, _2: Pair) -> () {
+    debug ptr => _1;
+    debug value => _2;
+    let mut _0: ();
+
+    bb0: {
+        (*_1) = move _2;
+        return;
+    }
+}
+
+fn box_new_uninit_mid_init(_1: bool) -> Box<Pair> {
+    debug should_panic => _1;
+    let mut _0: std::boxed::Box<Pair>;
+    let mut _2: std::boxed::Box<std::mem::MaybeUninit<Pair>>;
+    let mut _3: *mut Pair;
+    let _4: ();
+    let mut _5: *mut Pair;
+    let mut _6: std::boxed::Box<std::mem::MaybeUninit<Pair>>;
+    let mut _7: *const std::mem::MaybeUninit<Pair>;
+    let mut _8: *const std::mem::MaybeUninit<Pair>;
+    scope 1 {
+        debug b => _2;
+        scope 3 (inlined MaybeUninit::<Pair>::as_mut_ptr) {
+            let mut _10: *mut std::mem::MaybeUninit<Pair>;
+        }
+        scope 4 (inlined #[track_caller] std::ptr::mut_ptr::<impl *mut Counted>::write) {
+            scope 5 (inlined #[track_caller] std::ptr::write::<Counted>) {
+            }
+        }
+        scope 6 (inlined MaybeUninit::<Pair>::as_mut_ptr) {
+            let mut _11: *mut std::mem::MaybeUninit<Pair>;
+        }
+        scope 7 (inlined #[track_caller] std::ptr::mut_ptr::<impl *mut Counted>::write) {
+            scope 8 (inlined #[track_caller] std::ptr::write::<Counted>) {
+            }
+        }
+        scope 9 (inlined Box::<MaybeUninit<Pair>>::assume_init) {
+        }
+    }
+    scope 2 (inlined Box::<Pair>::new_uninit) {
+        let mut _9: *mut u8;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_9);
+        _9 = boxed::box_new_uninit(const Layout {{ size: 16_usize, align: std::mem::Alignment {{ _inner_repr_trick: mem::alignment::AlignmentEnum::_Align1Shl3 }} }}) -> [return: bb4, unwind continue];
+    }
+
+    bb1: {
+        _8 = copy ((_2.0: std::ptr::Unique<std::mem::MaybeUninit<Pair>>).0: std::ptr::NonNull<std::mem::MaybeUninit<Pair>>) as *const std::mem::MaybeUninit<Pair> (Transmute);
+        StorageLive(_11);
+        _11 = &raw mut (*_8);
+        _5 = copy _11 as *mut Pair (PtrToPtr);
+        StorageDead(_11);
+        ((*_5).1: Counted) = const Counted {{ tag: 2_usize }};
+        StorageLive(_6);
+        _6 = move _2;
+        _0 = copy _6 as std::boxed::Box<Pair> (Transmute);
+        StorageDead(_6);
+        StorageDead(_2);
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+
+    bb3 (cleanup): {
+        drop(_2) -> [return: bb2, unwind terminate(cleanup)];
+    }
+
+    bb4: {
+        _2 = copy _9 as std::boxed::Box<std::mem::MaybeUninit<Pair>> (Transmute);
+        StorageDead(_9);
+        _7 = copy ((_2.0: std::ptr::Unique<std::mem::MaybeUninit<Pair>>).0: std::ptr::NonNull<std::mem::MaybeUninit<Pair>>) as *const std::mem::MaybeUninit<Pair> (Transmute);
+        StorageLive(_10);
+        _10 = &raw mut (*_7);
+        _3 = copy _10 as *mut Pair (PtrToPtr);
+        StorageDead(_10);
+        ((*_3).0: Counted) = const Counted {{ tag: 1_usize }};
+        _4 = maybe_panic(move _1) -> [return: bb1, unwind: bb3];
+    }
+}
+
+alloc73 (size: 16, align: 8) {
+    08 00 00 00 00 00 00 00 10 00 00 00 00 00 00 00 │ ................
+}
+
+fn box_partial_move(_1: Box<Pair>, _2: bool) -> Counted {
+    debug b => _1;
+    debug should_panic => _2;
+    let mut _0: Counted;
+    let _3: Counted;
+    let _4: ();
+    let mut _5: &mut std::boxed::Box<Pair>;
+    let mut _6: ();
+    let mut _7: *const Pair;
+    let mut _8: &mut std::boxed::Box<Pair>;
+    let mut _9: ();
+    let mut _10: *const Pair;
+    let mut _11: *const Pair;
+    scope 1 {
+        debug first => _3;
+    }
+    scope 2 (inlined <Box<Pair> as Drop>::drop) {
+        let _12: ();
+        let _14: std::ptr::NonNull<Pair>;
+        scope 3 {
+            scope 4 {
+                scope 17 (inlined Layout::size) {
+                }
+                scope 18 (inlined std::ptr::Unique::<Pair>::cast::<u8>) {
+                    let mut _13: std::ptr::NonNull<u8>;
+                    scope 19 (inlined NonNull::<Pair>::cast::<u8>) {
+                        scope 20 (inlined NonNull::<Pair>::as_ptr) {
+                        }
+                    }
+                }
+                scope 21 (inlined <NonNull<u8> as From<std::ptr::Unique<u8>>>::from) {
+                    scope 22 (inlined std::ptr::Unique::<u8>::as_non_null_ptr) {
+                    }
+                }
+                scope 23 (inlined <std::alloc::Global as Allocator>::deallocate) {
+                    scope 24 (inlined std::alloc::Global::deallocate_impl) {
+                        scope 25 (inlined std::alloc::Global::deallocate_impl_runtime) {
+                            scope 26 (inlined Layout::size) {
+                            }
+                            scope 27 (inlined alloc::alloc::dealloc_nonnull) {
+                                scope 28 (inlined Layout::size) {
+                                }
+                                scope 29 (inlined Layout::alignment) {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            scope 5 (inlined std::ptr::Unique::<Pair>::as_ptr) {
+                scope 6 (inlined NonNull::<Pair>::as_ptr) {
+                }
+            }
+            scope 7 (inlined Layout::for_value_raw::<Pair>) {
+                scope 8 {
+                    scope 16 (inlined #[track_caller] Layout::from_size_alignment_unchecked) {
+                    }
+                }
+                scope 9 (inlined size_of_val_raw::<Pair>) {
+                }
+                scope 10 (inlined std::mem::Alignment::of_val_raw::<Pair>) {
+                    scope 11 {
+                        scope 13 (inlined #[track_caller] std::mem::Alignment::new_unchecked) {
+                            scope 14 (inlined ub_checks::check_language_ub) {
+                                scope 15 (inlined ub_checks::check_language_ub::runtime) {
+                                }
+                            }
+                        }
+                    }
+                    scope 12 (inlined align_of_val_raw::<Pair>) {
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_3);
+        _11 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        _3 = move ((*_11).0: Counted);
+        _4 = maybe_panic(move _2) -> [return: bb1, unwind: bb2];
+    }
+
+    bb1: {
+        _0 = move _3;
+        StorageDead(_3);
+        _7 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        drop(((*_7).1: Counted)) -> [return: bb5, unwind: bb4];
+    }
+
+    bb2 (cleanup): {
+        drop(_3) -> [return: bb7, unwind terminate(cleanup)];
+    }
+
+    bb3 (cleanup): {
+        resume;
+    }
+
+    bb4 (cleanup): {
+        _5 = &mut _1;
+        _6 = <Box<Pair> as Drop>::drop(move _5) -> [return: bb9, unwind terminate(cleanup)];
+    }
+
+    bb5: {
+        StorageLive(_13);
+        StorageLive(_14);
+        _14 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>);
+        _13 = copy _14 as std::ptr::NonNull<u8> (Transmute);
+        _12 = alloc::alloc::__rust_dealloc(move _13, const 16_usize, const std::mem::Alignment {{ _inner_repr_trick: mem::alignment::AlignmentEnum::_Align1Shl3 }}) -> [return: bb8, unwind unreachable];
+    }
+
+    bb6 (cleanup): {
+        _8 = &mut _1;
+        _9 = <Box<Pair> as Drop>::drop(move _8) -> [return: bb10, unwind terminate(cleanup)];
+    }
+
+    bb7 (cleanup): {
+        _10 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        drop(((*_10).1: Counted)) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb8: {
+        StorageDead(_14);
+        StorageDead(_13);
+        return;
+    }
+
+    bb9 (cleanup): {
+        goto -> bb3;
+    }
+
+    bb10 (cleanup): {
+        goto -> bb3;
+    }
+}
+
+fn box_conditional_partial_move(_1: Box<Pair>, _2: bool) -> Option<Counted> {
+    debug b => _1;
+    debug take => _2;
+    let mut _0: std::option::Option<Counted>;
+    let _3: std::option::Option<Counted>;
+    let mut _4: Counted;
+    let _5: ();
+    let mut _6: bool;
+    let mut _7: &mut std::boxed::Box<Pair>;
+    let mut _8: ();
+    let mut _9: *const Pair;
+    let mut _10: &mut std::boxed::Box<Pair>;
+    let mut _11: ();
+    let mut _12: *const Pair;
+    let mut _13: *const Pair;
+    scope 1 {
+        debug r => _3;
+    }
+    scope 2 (inlined <Box<Pair> as Drop>::drop) {
+        let _14: ();
+        let _16: std::ptr::NonNull<Pair>;
+        scope 3 {
+            scope 4 {
+                scope 17 (inlined Layout::size) {
+                }
+                scope 18 (inlined std::ptr::Unique::<Pair>::cast::<u8>) {
+                    let mut _15: std::ptr::NonNull<u8>;
+                    scope 19 (inlined NonNull::<Pair>::cast::<u8>) {
+                        scope 20 (inlined NonNull::<Pair>::as_ptr) {
+                        }
+                    }
+                }
+                scope 21 (inlined <NonNull<u8> as From<std::ptr::Unique<u8>>>::from) {
+                    scope 22 (inlined std::ptr::Unique::<u8>::as_non_null_ptr) {
+                    }
+                }
+                scope 23 (inlined <std::alloc::Global as Allocator>::deallocate) {
+                    scope 24 (inlined std::alloc::Global::deallocate_impl) {
+                        scope 25 (inlined std::alloc::Global::deallocate_impl_runtime) {
+                            scope 26 (inlined Layout::size) {
+                            }
+                            scope 27 (inlined alloc::alloc::dealloc_nonnull) {
+                                scope 28 (inlined Layout::size) {
+                                }
+                                scope 29 (inlined Layout::alignment) {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            scope 5 (inlined std::ptr::Unique::<Pair>::as_ptr) {
+                scope 6 (inlined NonNull::<Pair>::as_ptr) {
+                }
+            }
+            scope 7 (inlined Layout::for_value_raw::<Pair>) {
+                scope 8 {
+                    scope 16 (inlined #[track_caller] Layout::from_size_alignment_unchecked) {
+                    }
+                }
+                scope 9 (inlined size_of_val_raw::<Pair>) {
+                }
+                scope 10 (inlined std::mem::Alignment::of_val_raw::<Pair>) {
+                    scope 11 {
+                        scope 13 (inlined #[track_caller] std::mem::Alignment::new_unchecked) {
+                            scope 14 (inlined ub_checks::check_language_ub) {
+                                scope 15 (inlined ub_checks::check_language_ub::runtime) {
+                                }
+                            }
+                        }
+                    }
+                    scope 12 (inlined align_of_val_raw::<Pair>) {
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        _6 = const true;
+        StorageLive(_3);
+        switchInt(copy _2) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _6 = const false;
+        _13 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        _4 = move ((*_13).0: Counted);
+        _3 = Option::<Counted>::Some(move _4);
+        StorageDead(_4);
+        _5 = maybe_panic(move _2) -> [return: bb14, unwind: bb3];
+    }
+
+    bb2: {
+        _3 = const Option::<Counted>::None;
+        _5 = maybe_panic(move _2) -> [return: bb15, unwind: bb3];
+    }
+
+    bb3 (cleanup): {
+        drop(_3) -> [return: bb12, unwind terminate(cleanup)];
+    }
+
+    bb4 (cleanup): {
+        resume;
+    }
+
+    bb5 (cleanup): {
+        _7 = &mut _1;
+        _8 = <Box<Pair> as Drop>::drop(move _7) -> [return: bb16, unwind terminate(cleanup)];
+    }
+
+    bb6: {
+        StorageLive(_15);
+        StorageLive(_16);
+        _16 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>);
+        _15 = copy _16 as std::ptr::NonNull<u8> (Transmute);
+        _14 = alloc::alloc::__rust_dealloc(move _15, const 16_usize, const std::mem::Alignment {{ _inner_repr_trick: mem::alignment::AlignmentEnum::_Align1Shl3 }}) -> [return: bb13, unwind unreachable];
+    }
+
+    bb7 (cleanup): {
+        drop(((*_9).1: Counted)) -> [return: bb5, unwind terminate(cleanup)];
+    }
+
+    bb8: {
+        drop(((*_9).1: Counted)) -> [return: bb6, unwind: bb5];
+    }
+
+    bb9 (cleanup): {
+        _10 = &mut _1;
+        _11 = <Box<Pair> as Drop>::drop(move _10) -> [return: bb17, unwind terminate(cleanup)];
+    }
+
+    bb10 (cleanup): {
+        drop(((*_12).1: Counted)) -> [return: bb9, unwind terminate(cleanup)];
+    }
+
+    bb11 (cleanup): {
+        drop(((*_12).0: Counted)) -> [return: bb10, unwind terminate(cleanup)];
+    }
+
+    bb12 (cleanup): {
+        _12 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        switchInt(copy _6) -> [0: bb10, otherwise: bb11];
+    }
+
+    bb13: {
+        StorageDead(_16);
+        StorageDead(_15);
+        return;
+    }
+
+    bb14: {
+        _0 = move _3;
+        StorageDead(_3);
+        _9 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        goto -> bb8;
+    }
+
+    bb15: {
+        _0 = move _3;
+        StorageDead(_3);
+        _9 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        drop(((*_9).0: Counted)) -> [return: bb8, unwind: bb7];
+    }
+
+    bb16 (cleanup): {
+        goto -> bb4;
+    }
+
+    bb17 (cleanup): {
+        goto -> bb4;
+    }
+}
+
+alloc88 (size: 16, align: 8) {
+    00 00 00 00 00 00 00 00 __ __ __ __ __ __ __ __ │ ........░░░░░░░░
+}
+
+fn box_full_move_out(_1: Box<Pair>) -> Pair {
+    debug b => _1;
+    let mut _0: Pair;
+    let mut _2: *const Pair;
+    scope 1 (inlined <Box<Pair> as Drop>::drop) {
+        let _3: ();
+        let _5: std::ptr::NonNull<Pair>;
+        scope 2 {
+            scope 3 {
+                scope 16 (inlined Layout::size) {
+                }
+                scope 17 (inlined std::ptr::Unique::<Pair>::cast::<u8>) {
+                    let mut _4: std::ptr::NonNull<u8>;
+                    scope 18 (inlined NonNull::<Pair>::cast::<u8>) {
+                        scope 19 (inlined NonNull::<Pair>::as_ptr) {
+                        }
+                    }
+                }
+                scope 20 (inlined <NonNull<u8> as From<std::ptr::Unique<u8>>>::from) {
+                    scope 21 (inlined std::ptr::Unique::<u8>::as_non_null_ptr) {
+                    }
+                }
+                scope 22 (inlined <std::alloc::Global as Allocator>::deallocate) {
+                    scope 23 (inlined std::alloc::Global::deallocate_impl) {
+                        scope 24 (inlined std::alloc::Global::deallocate_impl_runtime) {
+                            scope 25 (inlined Layout::size) {
+                            }
+                            scope 26 (inlined alloc::alloc::dealloc_nonnull) {
+                                scope 27 (inlined Layout::size) {
+                                }
+                                scope 28 (inlined Layout::alignment) {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            scope 4 (inlined std::ptr::Unique::<Pair>::as_ptr) {
+                scope 5 (inlined NonNull::<Pair>::as_ptr) {
+                }
+            }
+            scope 6 (inlined Layout::for_value_raw::<Pair>) {
+                scope 7 {
+                    scope 15 (inlined #[track_caller] Layout::from_size_alignment_unchecked) {
+                    }
+                }
+                scope 8 (inlined size_of_val_raw::<Pair>) {
+                }
+                scope 9 (inlined std::mem::Alignment::of_val_raw::<Pair>) {
+                    scope 10 {
+                        scope 12 (inlined #[track_caller] std::mem::Alignment::new_unchecked) {
+                            scope 13 (inlined ub_checks::check_language_ub) {
+                                scope 14 (inlined ub_checks::check_language_ub::runtime) {
+                                }
+                            }
+                        }
+                    }
+                    scope 11 (inlined align_of_val_raw::<Pair>) {
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        _2 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>) as *const Pair (Transmute);
+        _0 = move (*_2);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy ((_1.0: std::ptr::Unique<Pair>).0: std::ptr::NonNull<Pair>);
+        _4 = copy _5 as std::ptr::NonNull<u8> (Transmute);
+        _3 = alloc::alloc::__rust_dealloc(move _4, const 16_usize, const std::mem::Alignment {{ _inner_repr_trick: mem::alignment::AlignmentEnum::_Align1Shl3 }}) -> [return: bb1, unwind unreachable];
+    }
+
+    bb1: {
+        StorageDead(_5);
+        StorageDead(_4);
+        return;
+    }
+}
+
+fn box_plain_drop(_1: Box<Pair>) -> () {
+    debug b => _1;
+    let mut _0: ();
+    let mut _2: std::boxed::Box<Pair>;
+    scope 1 (inlined std::mem::drop::<Box<Pair>>) {
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = move _1;
+        drop(_2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_2);
+        return;
+    }
+}
+
+fn box_deref_read(_1: &Box<usize>) -> usize {
+    debug b => _1;
+    let mut _0: usize;
+    let mut _2: *const usize;
+    let mut _3: std::ptr::NonNull<usize>;
+
+    bb0: {
+        _3 = no_retag copy (((*_1).0: std::ptr::Unique<usize>).0: std::ptr::NonNull<usize>);
+        _2 = copy _3 as *const usize (Transmute);
+        _0 = copy (*_2);
+        return;
+    }
+}
+
+fn vec_literal(_1: Counted, _2: Counted) -> Vec<Counted> {
+    debug a => _1;
+    debug b => _2;
+    let mut _0: std::vec::Vec<Counted>;
+    let mut _3: std::boxed::Box<std::mem::MaybeUninit<[Counted; 2]>>;
+    let mut _4: Counted;
+    let mut _5: Counted;
+    let mut _6: *const std::mem::MaybeUninit<[Counted; 2]>;
+    scope 1 (inlined Box::<[Counted; 2]>::new_uninit) {
+        let mut _7: *mut u8;
+    }
+    scope 2 (inlined std::boxed::box_assume_init_into_vec_unsafe::<Counted, 2>) {
+        let mut _8: std::boxed::Box<[Counted]>;
+        let mut _9: std::boxed::Box<[Counted; 2]>;
+        let mut _19: std::ptr::NonNull<[Counted]>;
+        scope 3 (inlined Box::<MaybeUninit<[Counted; 2]>>::assume_init) {
+        }
+        scope 4 (inlined std::slice::<impl [Counted]>::into_vec::<std::alloc::Global>) {
+            let _10: usize;
+            let mut _11: *mut Counted;
+            let mut _12: *const [Counted];
+            scope 5 {
+                scope 6 {
+                    scope 18 (inlined Vec::<Counted>::from_raw_parts_in) {
+                        let mut _14: alloc::raw_vec::RawVec<Counted>;
+                        scope 19 (inlined alloc::raw_vec::RawVec::<Counted>::from_raw_parts_in) {
+                            let mut _16: alloc::raw_vec::RawVecInner;
+                            scope 20 {
+                                let _15: core::num::niche_types::UsizeNoHighBit;
+                                scope 21 {
+                                    scope 25 (inlined alloc::raw_vec::RawVecInner::from_raw_parts_in) {
+                                        let mut _17: std::ptr::Unique<u8>;
+                                        scope 26 (inlined std::ptr::Unique::<u8>::new_unchecked) {
+                                            let mut _18: std::ptr::NonNull<u8>;
+                                            scope 27 (inlined #[track_caller] NonNull::<u8>::new_unchecked) {
+                                                scope 28 (inlined ub_checks::check_language_ub) {
+                                                    scope 29 (inlined ub_checks::check_language_ub::runtime) {
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                scope 23 (inlined alloc::raw_vec::new_cap::<Counted>) {
+                                    scope 24 (inlined core::num::niche_types::UsizeNoHighBit::new_unchecked) {
+                                    }
+                                }
+                            }
+                            scope 22 (inlined std::ptr::mut_ptr::<impl *mut Counted>::cast::<u8>) {
+                            }
+                        }
+                    }
+                }
+                scope 7 (inlined Box::<[Counted]>::into_raw_with_allocator) {
+                    scope 8 {
+                        let _13: *mut [Counted];
+                        scope 9 {
+                            scope 10 {
+                            }
+                            scope 15 (inlined <ManuallyDrop<Box<[Counted]>> as Deref>::deref) {
+                                scope 16 (inlined MaybeDangling::<Box<[Counted]>>::as_ref) {
+                                }
+                            }
+                            scope 17 (inlined #[track_caller] std::ptr::read::<std::alloc::Global>) {
+                            }
+                        }
+                        scope 13 (inlined <ManuallyDrop<Box<[Counted]>> as DerefMut>::deref_mut) {
+                            scope 14 (inlined MaybeDangling::<Box<[Counted]>>::as_mut) {
+                            }
+                        }
+                    }
+                    scope 11 (inlined ManuallyDrop::<Box<[Counted]>>::new) {
+                        scope 12 (inlined MaybeDangling::<Box<[Counted]>>::new) {
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_3);
+        _7 = boxed::box_new_uninit(const Layout {{ size: 16_usize, align: std::mem::Alignment {{ _inner_repr_trick: mem::alignment::AlignmentEnum::_Align1Shl3 }} }}) -> [return: bb4, unwind: bb3];
+    }
+
+    bb1 (cleanup): {
+        drop(_1) -> [return: bb2, unwind terminate(cleanup)];
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+
+    bb3 (cleanup): {
+        drop(_2) -> [return: bb1, unwind terminate(cleanup)];
+    }
+
+    bb4: {
+        _3 = copy _7 as std::boxed::Box<std::mem::MaybeUninit<[Counted; 2]>> (Transmute);
+        StorageLive(_4);
+        _4 = move _1;
+        StorageLive(_5);
+        _5 = move _2;
+        _6 = copy ((_3.0: std::ptr::Unique<std::mem::MaybeUninit<[Counted; 2]>>).0: std::ptr::NonNull<std::mem::MaybeUninit<[Counted; 2]>>) as *const std::mem::MaybeUninit<[Counted; 2]> (Transmute);
+        ((((*_6).1: std::mem::ManuallyDrop<[Counted; 2]>).0: std::mem::MaybeDangling<[Counted; 2]>).0: [Counted; 2]) = [move _4, move _5];
+        StorageDead(_5);
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageLive(_19);
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = copy _7 as std::boxed::Box<[Counted; 2]> (Transmute);
+        _8 = move _9 as std::boxed::Box<[Counted]> (PointerCoercion(Unsize, AsCast));
+        StorageDead(_9);
+        _19 = move ((_8.0: std::ptr::Unique<[Counted]>).0: std::ptr::NonNull<[Counted]>);
+        StorageLive(_12);
+        StorageLive(_13);
+        StorageLive(_10);
+        _12 = copy _19 as *const [Counted] (Transmute);
+        _10 = PtrMetadata(copy _12);
+        _13 = &raw mut (*_12);
+        StorageLive(_11);
+        _11 = copy _13 as *mut Counted (PtrToPtr);
+        StorageLive(_14);
+        StorageLive(_15);
+        _15 = copy _10 as core::num::niche_types::UsizeNoHighBit (Transmute);
+        StorageLive(_16);
+        StorageLive(_17);
+        StorageLive(_18);
+        _18 = copy _11 as std::ptr::NonNull<u8> (Transmute);
+        _17 = std::ptr::Unique::<u8> { pointer: move _18, _marker: const PhantomData::<u8> };
+        StorageDead(_18);
+        _16 = alloc::raw_vec::RawVecInner { ptr: move _17, cap: copy _15, alloc: const std::alloc::Global };
+        StorageDead(_17);
+        _14 = alloc::raw_vec::RawVec::<Counted> { inner: move _16, _marker: const PhantomData::<Counted> };
+        StorageDead(_16);
+        StorageDead(_15);
+        _0 = Vec::<Counted> { buf: move _14, len: copy _10 };
+        StorageDead(_14);
+        StorageDead(_11);
+        StorageDead(_10);
+        StorageDead(_13);
+        StorageDead(_12);
+        StorageDead(_8);
+        StorageDead(_19);
+        return;
+    }
+}
+
+alloc115 (size: 16, align: 8) {
+    08 00 00 00 00 00 00 00 10 00 00 00 00 00 00 00 │ ................
+}

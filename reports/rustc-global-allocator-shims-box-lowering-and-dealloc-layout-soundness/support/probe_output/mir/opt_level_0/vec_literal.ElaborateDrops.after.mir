@@ -1,0 +1,103 @@
+// MIR for `vec_literal` after ElaborateDrops
+
+fn vec_literal(_1: Counted, _2: Counted) -> Vec<Counted> {
+    debug a => _1;
+    debug b => _2;
+    let mut _0: std::vec::Vec<Counted>;
+    let mut _3: std::boxed::Box<std::mem::MaybeUninit<[Counted; 2]>>;
+    let mut _4: std::boxed::Box<std::mem::MaybeUninit<[Counted; 2]>>;
+    let mut _5: Counted;
+    let mut _6: Counted;
+    let mut _7: bool;
+    let mut _8: bool;
+
+    bb0: {
+        _8 = const false;
+        _7 = const false;
+        _8 = const true;
+        _7 = const true;
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = Box::<[Counted; 2]>::new_uninit() -> [return: bb1, unwind: bb11];
+    }
+
+    bb1: {
+        StorageLive(_5);
+        _8 = const false;
+        _5 = move _1;
+        StorageLive(_6);
+        _7 = const false;
+        _6 = move _2;
+        ((((*_4).1: std::mem::ManuallyDrop<[Counted; 2]>).0: std::mem::MaybeDangling<[Counted; 2]>).0: [Counted; 2]) = [move _5, move _6];
+        goto -> bb2;
+    }
+
+    bb2: {
+        StorageDead(_6);
+        goto -> bb3;
+    }
+
+    bb3: {
+        StorageDead(_5);
+        _3 = move _4;
+        goto -> bb4;
+    }
+
+    bb4: {
+        StorageDead(_4);
+        _0 = std::boxed::box_assume_init_into_vec_unsafe::<Counted, 2>(move _3) -> [return: bb5, unwind: bb8];
+    }
+
+    bb5: {
+        StorageDead(_3);
+        goto -> bb6;
+    }
+
+    bb6: {
+        goto -> bb7;
+    }
+
+    bb7: {
+        return;
+    }
+
+    bb8 (cleanup): {
+        goto -> bb11;
+    }
+
+    bb9 (cleanup): {
+        goto -> bb10;
+    }
+
+    bb10 (cleanup): {
+        goto -> bb11;
+    }
+
+    bb11 (cleanup): {
+        goto -> bb15;
+    }
+
+    bb12 (cleanup): {
+        goto -> bb17;
+    }
+
+    bb13 (cleanup): {
+        resume;
+    }
+
+    bb14 (cleanup): {
+        drop(_2) -> [return: bb12, unwind terminate(cleanup)];
+    }
+
+    bb15 (cleanup): {
+        switchInt(copy _7) -> [0: bb12, otherwise: bb14];
+    }
+
+    bb16 (cleanup): {
+        drop(_1) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb17 (cleanup): {
+        switchInt(copy _8) -> [0: bb13, otherwise: bb16];
+    }
+}

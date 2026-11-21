@@ -1,0 +1,34 @@
+// MIR for `box_plain_drop` after ElaborateDrops
+
+fn box_plain_drop(_1: Box<Pair>) -> () {
+    debug b => _1;
+    let mut _0: ();
+    let mut _2: std::boxed::Box<Pair>;
+
+    bb0: {
+        StorageLive(_2);
+        _2 = move _1;
+        _0 = std::mem::drop::<Box<Pair>>(move _2) -> [return: bb1, unwind: bb3];
+    }
+
+    bb1: {
+        StorageDead(_2);
+        goto -> bb2;
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3 (cleanup): {
+        goto -> bb4;
+    }
+
+    bb4 (cleanup): {
+        goto -> bb5;
+    }
+
+    bb5 (cleanup): {
+        resume;
+    }
+}
