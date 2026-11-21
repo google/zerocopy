@@ -1,0 +1,29 @@
+case                                       class (report)         MMS     max|rel| worst     R(5.5e-06) R(0.001) R(0.01) R(0.1)
+E.1 incorrect array index                  OAM (consistency)      det    3.900e+01 v L2      FLAG     FLAG     FLAG     FLAG    
+E.2 duplicate index                        OAM (consistency)      det    5.160e+02 E max     FLAG     FLAG     FLAG     FLAG    
+E.3 incorrect constant                     OAM (consistency)      det    1.779e+02 v max     FLAG     FLAG     FLAG     FLAG    
+E.4 incorrect do-loop range                OAM                    det    1.079e+03 rho max   FLAG     FLAG     FLAG     FLAG    
+E.5 uninitialized variable                 static                 det    1.850e+02 E L2      FLAG     FLAG     FLAG     FLAG    
+E.6 swapped arrays in argument list        formal                 miss   0.000e+00 v max     pass     pass     pass     pass    
+E.7 swapped loop indices                   divergence             det    1.728e+03 v L2      FLAG     FLAG     FLAG     FLAG    
+E.8 incorrect sign                         OAM                    det    2.491e+03 E L2      FLAG     FLAG     FLAG     FLAG    
+E.9 incorrect operator position            OAM (consistency)      det    5.545e+02 u L2      FLAG     FLAG     FLAG     FLAG    
+E.10 parenthesis in unused corner stencil  formal                 miss   0.000e+00 v max     pass     pass     pass     pass    
+E.11 differencing-scheme mistake           OAM (consistency)      det    1.427e+03 rho L2    FLAG     FLAG     FLAG     FLAG    
+E.12 logical IF in convergence check       formal                 miss   1.200e-06 rho max   pass     pass     pass     pass    
+E.13 no mistake (placebo)                  none                   miss   0.000e+00 v max     pass     pass     pass     pass    
+E.14 incorrect relaxation factor           efficiency             miss   0.000e+00 v max     pass     pass     pass     pass    
+E.15 incorrect differencing (dx for dy)    OAM                    det    1.786e+01 E max     FLAG     FLAG     FLAG     FLAG    
+E.16 missing term                          OAM (consistency)      det    2.335e+01 E max     FLAG     FLAG     FLAG     FLAG    
+E.17 one distorted grid point              OAM (max norm only)    det    2.309e+00 v max     FLAG     FLAG     FLAG     FLAG    
+E.18 operator in unused output routine     formal                 miss   0.000e+00 v max     pass     pass     pass     pass    
+E.19 grid size changed by one              formal (per report)    miss   2.233e-01 v L2      FLAG     FLAG     FLAG     FLAG    
+E.20 redundant do loop                     efficiency or formal   miss   0.000e+00 v max     pass     pass     pass     pass    
+E.21 time step x0.5 (steady problem)       formal                 miss   0.000e+00 v max     pass     pass     pass     pass    
+
+cases where single-mesh regression verdict == MMS verdict (of 21): {'5.5e-06': 20, '0.001': 20, '0.01': 20, '0.1': 20}
+
+41x33 density norms for cases identical on 11x9 (relative deviation from verified code):
+  E.12  L2 3.99e-06   max 6.08e-06
+  E.14  L2 7.58e-05   max 7.70e-05
+  E.21  L2 3.99e-05   max 4.86e-05

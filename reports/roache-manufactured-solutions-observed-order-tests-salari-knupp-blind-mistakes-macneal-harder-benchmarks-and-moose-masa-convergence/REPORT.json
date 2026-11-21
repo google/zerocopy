@@ -1,0 +1,79 @@
+{
+  "topics": [
+    "verification/order-of-accuracy-code-verification",
+    "domains/manufactured-solution-test-suites",
+    "tooling/convergence-rate-test-harnesses",
+    "verification/finite-element-benchmark-problems",
+    "verification/discretization-uncertainty-gci"
+  ],
+  "subjects": [
+    {
+      "name": "MOOSE framework: python/mms package and TestHarness MMSTest/CSVDiff testers",
+      "identity": {
+        "repository": "idaholab/moose",
+        "revision": "8bd2be95dfbe80e93b76ada74775630e9e6a040c",
+        "paths": "python/mms/, python/TestHarness/testers/MMSTest.py, python/TestHarness/testers/FileTester.py, python/mooseutils/mooseutils.py, test/tests/time_integrators/bdf2/"
+      }
+    },
+    {
+      "name": "MASA manufactured and analytical solution library",
+      "identity": {
+        "repository": "manufactured-solutions/MASA",
+        "revision": "9c31838b49501d7925b60006b59b8a39c3ea4a73",
+        "version": "0.51"
+      }
+    },
+    {
+      "name": "Salari and Knupp, Code Verification by the Method of Manufactured Solutions (Sandia report)",
+      "identity": {
+        "doi": "10.2172/759450",
+        "report_number": "SAND2000-1444"
+      }
+    },
+    {
+      "name": "Roy, Nelson, Smith, Ober, Verification of Euler/Navier-Stokes codes using the method of manufactured solutions",
+      "identity": {
+        "doi": "10.1002/fld.660"
+      }
+    },
+    {
+      "name": "Celik et al., Procedure for Estimation and Reporting of Uncertainty Due to Discretization in CFD Applications",
+      "identity": {
+        "doi": "10.1115/1.2960953"
+      }
+    },
+    {
+      "name": "Roache, Code Verification by the Method of Manufactured Solutions (abstract only)",
+      "identity": {
+        "doi": "10.1115/1.1436090"
+      }
+    },
+    {
+      "name": "Roache, Perspective: A Method for Uniform Reporting of Grid Refinement Studies (abstract only)",
+      "identity": {
+        "doi": "10.1115/1.2910291"
+      }
+    },
+    {
+      "name": "Mallikarjuna Rao and Shrinivasa, A set of pathological tests to validate new finite elements",
+      "identity": {
+        "doi": "10.1007/BF02703459"
+      }
+    },
+    {
+      "name": "Abaqus Benchmarks Manual, section 2.3.7 Analysis of a twisted beam",
+      "identity": {
+        "url": "http://abaqusdocs.eait.uq.edu.au/v6.11/books/bmk/ch02s03ach148.html",
+        "version": "Abaqus 6.11"
+      }
+    },
+    {
+      "name": "OptiStruct verification problem OS-V: 0760 MacNeal-Harder Solid Patch Test",
+      "identity": {
+        "url": "https://help.altair.com/hwsolvers/os/topics/solvers/os/elements_macneal_harder_solid_patch_test_verification_r.htm",
+        "version": "OptiStruct 2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

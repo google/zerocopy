@@ -1,0 +1,57 @@
+blob paths: 48408
+spec files: 3099; python files under /tests/: 638
+== tester 'type =' declarations in spec files
+   5212 Exodiff
+   4133 CSVDiff
+   2771 RunException
+   1040 RunApp
+   1028 PetscJacobianTester
+    353 JSONDiff
+    293 PythonUnitTest
+    217 MMSTest
+    148 CheckFiles
+    117 ImageDiff
+     55 RunCommand
+     21 AnalyzeJacobian
+     19 XMLDiff
+      7 TaoGradientTester
+      3 SignalTester
+== python test files importing mms: 139
+== python test files using label_to_slope: 57
+== fuzzyAbsoluteEqual(...) assertion forms
+     56 fuzzyAbsoluteEqual(value, 2.0, 0.1)
+     18 fuzzyAbsoluteEqual(value, 1.0, 0.1)
+     14 fuzzyAbsoluteEqual(value, 2.0, 0.25)
+     11 fuzzyAbsoluteEqual(value, 1.0, 0.25)
+      7 fuzzyAbsoluteEqual(value, 3.0, 0.1)
+      7 fuzzyAbsoluteEqual(value, 1.0, 0.05)
+      6 fuzzyAbsoluteEqual(value, 2.0, 0.05)
+      3 fuzzyAbsoluteEqual(value, 2.0, 0.3)
+      3 fuzzyAbsoluteEqual(value, 2.0, 0.2)
+      3 fuzzyAbsoluteEqual(value, 1.5, 0.25)
+      2 fuzzyAbsoluteEqual(value, 1.5, 0.1)
+      2 fuzzyAbsoluteEqual(value, 1.0, 0.2)
+      2 fuzzyAbsoluteEqual(slope, expected, tolerance)
+      1 fuzzyAbsoluteEqual(value, velocity_order, velocity_tol)
+      1 fuzzyAbsoluteEqual(value, pressure_order, pressure_tol)
+      1 fuzzyAbsoluteEqual(value, expected_order, tolerance)
+      1 fuzzyAbsoluteEqual(value, 3.0, 0.25)
+      1 fuzzyAbsoluteEqual(value, 2.0, 0.31)
+      1 fuzzyAbsoluteEqual(value, 2.0, 0.26)
+      1 fuzzyAbsoluteEqual(value, 2.0, 0.15)
+      1 fuzzyAbsoluteEqual(value, 1.5, 0.3)
+      1 fuzzyAbsoluteEqual(slope, 2.0, 0.2)
+      1 fuzzyAbsoluteEqual(figure.label_to_slope["L2_vel_z"], 2.0, 0.1)
+      1 fuzzyAbsoluteEqual(figure.label_to_slope["L2_vel_r"], 2.0, 0.1)
+      1 fuzzyAbsoluteEqual(figure.label_to_slope["L2_pressure"], 1.0, 0.1)
+== num_fitted_points values
+     19 num_fitted_points=2
+    186 num_fitted_points=3
+== literal refinement counts in run_spatial/run_temporal calls
+      2 3
+     13 4
+     12 5
+     10 6
+     17 7
+      1 8
+      3 9

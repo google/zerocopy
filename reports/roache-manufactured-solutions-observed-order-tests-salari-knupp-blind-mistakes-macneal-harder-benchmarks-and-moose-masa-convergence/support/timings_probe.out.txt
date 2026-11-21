@@ -1,0 +1,5 @@
+import mms (sympy, pandas, matplotlib): 0.78 s
+evaluate() 1-D ADR: min 0.0009 s median 0.0009 s (5 calls, one process; sympy caches)
+evaluate() 3-D transient ADR: min 0.0020 s median 0.0020 s (5 calls, one process; sympy caches)
+fparser length of the 3-D source term: 250 chars
+np.polyfit(log10 h, log10 e, 1) on 3 points: 27.9 us per call

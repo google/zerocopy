@@ -1,0 +1,19 @@
+== P1 run_spatial with explicit csv= argument
+EXCEPTION: UnboundLocalError - cannot access local variable 'fcsv' where it is not associated with a value
+== P2 run_temporal: recorded dt versus dt passed to each run
+dt passed to runs : [0.1, 0.05, 0.025]
+x column recorded : [0.05, 0.025, 0.0125] (column name 'h')
+slope vs recorded x = 2.000000 ; slope vs passed dt = 2.000000
+== P3 missing-CSV error message
+EXCEPTION: OSError - The CSV output does not exist: None
+== P4 evaluate(): -div(k*grad(u)) + c*diff(u,x) + r*u with k = 1 + x/2
+fparser(f) = c*(exp(x)*sin(3*x) + 3*exp(x)*cos(3*x)) + r*exp(x)*sin(3*x) - ((1/2)*x + 1)*(-8*exp(x)*sin(3*x) + 6*exp(x)*cos(3*x)) - 1/2*exp(x)*sin(3*x) - 3/2*exp(x)*cos(3*x)
+evaluate() minus hand derivation simplifies to: 0
+== P5 ConvergencePlot._fit on synthetic data (slope 2 by construction)
+label_to_slope: {'toy': np.float64(2.00804)}
+== P6 test_mms.py::testExceptions vs a no-op _check_reserved mutant
+upstream test         original evaluate.py -> testExceptions: run=1 failures=0 errors=0
+upstream test         mutant   evaluate.py -> testExceptions: run=1 failures=0 errors=1
+   last line: NameError: name 'k' is not defined
+test with k declared  original evaluate.py -> testExceptions: run=1 failures=0 errors=0
+test with k declared  mutant   evaluate.py -> testExceptions: run=1 failures=0 errors=0

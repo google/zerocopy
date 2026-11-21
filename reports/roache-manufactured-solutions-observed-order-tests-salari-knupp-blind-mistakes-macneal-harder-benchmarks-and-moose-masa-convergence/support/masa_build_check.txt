@@ -1,0 +1,42 @@
+MASA build and regression-suite run (manufactured-solutions/MASA @ 9c31838b49501d7925b60006b59b8a39c3ea4a73)
+
+Host class: x86_64 Linux workstation, Intel Xeon @ 2.60GHz, 96 logical CPUs, 236 GiB RAM.
+Toolchain: g++/gcc (Debian 15.2.0-14) 15.2.0, GNU Fortran 15.2.0, autoconf 2.72, automake 1.18.1.
+MetaPhysicL: not installed (configure: "optional MetaPhysicL library not found").
+
+Source: https://codeload.github.com/manufactured-solutions/MASA/tar.gz/9c31838b49501d7925b60006b59b8a39c3ea4a73
+extracted to /tmp/masa (fresh copy for the timed run).
+
+Commands and results (wall time and peak RSS from GNU time -f "%e s %M KB"):
+
+  ./bootstrap                                             3.92 s   19,384 KB
+  ./configure --prefix=/tmp/masa_install                  configure FAILED without PYTHON set:
+        "checking for python... no"
+        "configure: error: Giving up, python development not available"
+        (python interfaces were NOT requested; see configure.ac lines 102-115)
+  PYTHON=/usr/bin/python3 ./configure --prefix=/tmp/masa_install
+                                                          9.81 s  104,964 KB
+  make -j8                                               11.52 s  165,676 KB
+  make -j8 check                                          FAILED to compile tests/c_source.c:
+        c_source.c:79:9: error: implicit declaration of function 'masa_eval_2d_grad_w';
+        did you mean 'masa_eval_2d_grad_p'? [-Wimplicit-function-declaration]
+  make -j8 check CFLAGS="-O0 -fno-unsafe-math-optimizations -Dgnu_compiler -Wno-error=implicit-function-declaration"
+                                                          6.77 s  130,316 KB
+        examples/: # TOTAL: 23  # PASS: 23  # SKIP: 0  # FAIL: 0
+        tests/:    # TOTAL: 57  # PASS: 50  # SKIP: 7  # FAIL: 0
+        skipped: ad_euler ad_cns ad_ins ad_cns_crossterm ad_cns_les ad_divgradsimple ns3d_incompbouss
+
+Artifact size:
+  src/.libs/libmasa-0.51.so   2,497,848 bytes
+  size(1): text 2,164,666  data 89,064  bss 152
+
+Relevant source lines at the pinned revision:
+  src/masa.h.in:1157  extern double masa_eval_2d_grad_u(double x,double y,int direction);
+  src/masa.h.in:1175  extern double masa_eval_2d_grad_v(double x,double y,int direction);
+  src/masa.h.in:1193  extern double masa_eval_3d_grad_w(double x,double y,double z,int direction);
+  src/masa.h.in:1212  extern double masa_eval_2d_grad_p(double x,double y,int direction);
+  src/masa.h.in:1237  extern double masa_eval_2d_grad_rho(double x,double y,int direction);
+      (no declaration of masa_eval_2d_grad_w in the C header)
+  src/cmasa.cpp:229   extern "C" double masa_eval_2d_grad_w   (double x,double y,int i){return(masa_eval_grad_w<double>  (x,y,i));}
+  tests/c_source.c:79   out = masa_eval_2d_grad_w(x,x,i);
+  tests/c_source.c:80   nancheck(out);

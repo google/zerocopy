@@ -1,0 +1,32 @@
+Levels N = [8, 16, 32, 64, 128, 256, 512] ; gold mesh N = 32
+Order acceptance A: |p - 2| < 0.1 on a least-squares fit of the 3 finest levels
+Regression R(tau): max per-node relative difference vs gold (correct code, N=32) <= tau
+case    mistake                                           pL2    pLinf  pL2last eL2(N=512) A       regr diff R(5.5e-6) R(1e-2)  
+M0      correct discretization                          2.003    2.000    2.002  1.202e-06 pass     0.00e+00 pass      pass     
+M1      k at node, not faces (drops k' u' term)        -0.001   -0.000   -0.001  5.024e-02 FAIL     3.56e-02 FAIL      FAIL     
+M2      first-order upwind advection                    1.000    1.001    1.000  7.035e-04 FAIL     7.66e-03 FAIL      pass     
+M3      reaction on lagged node u[i-1]                  1.009    1.011    1.006  2.445e-04 FAIL     3.82e-03 FAIL      pass     
+M4      first-order one-sided Neumann row               0.963    0.960    0.976  5.734e-05 FAIL     1.33e-03 FAIL      pass     
+M5      source evaluated at x+h/2                       1.004    1.004    1.003  1.330e-03 FAIL     1.96e-02 FAIL      FAIL     
+M6/c=2  advection sign flipped, test uses c=2          -0.001   -0.000   -0.000  1.099e-01 FAIL     1.08e-01 FAIL      FAIL     
+M6/c=0  advection sign flipped, test uses c=0           2.004    2.000    2.003  8.921e-07 pass     0.00e+00 pass      pass     
+M8      formal: unused diagnostic wrong                 2.003    2.000    2.002  1.202e-06 pass     0.00e+00 pass      pass     
+M9a     diffusivity scaled by (1+1e-4)                  0.255    0.309    0.109  3.503e-05 FAIL     2.43e-05 FAIL      pass     
+M9b     diffusivity scaled by (1+1e-7)                  1.989    1.993    1.980  1.227e-06 pass     2.43e-08 pass      pass     
+
+Per-level L2 errors (selected cases):
+  M0   eL2 = 5.299e-03 1.279e-03 3.136e-04 7.762e-05 1.931e-05 4.814e-06 1.202e-06
+       pairwise orders = 2.051 2.028 2.014 2.007 2.004 2.002
+  M1   eL2 = 5.192e-02 5.021e-02 5.004e-02 5.011e-02 5.017e-02 5.021e-02 5.024e-02
+       pairwise orders = 0.048 0.005 -0.002 -0.002 -0.001 -0.001
+  M9a  eL2 = 5.322e-03 1.303e-03 3.389e-04 1.049e-04 4.990e-05 3.777e-05 3.503e-05
+       pairwise orders = 2.030 1.943 1.691 1.072 0.402 0.109
+  M9b  eL2 = 5.299e-03 1.279e-03 3.136e-04 7.764e-05 1.933e-05 4.839e-06 1.227e-06
+       pairwise orders = 2.051 2.028 2.014 2.006 1.998 1.980
+
+Iterative solver (SOR) in place of the direct solver, levels up to N=128:
+  SOR w=1.9 rtol=1e-12                         p(3 finest)=2.011 pairwise=2.05 2.03 2.01 2.01 iters=[270, 270, 270, 790, 3410] regr diff(N=32)=4.54e-13 wall=0.6s
+  SOR w=1.5 rtol=1e-12 (efficiency mistake)    p(3 finest)=2.011 pairwise=2.05 2.03 2.01 2.01 iters=[80, 370, 1460, 5640, 21600] regr diff(N=32)=1.54e-11 wall=3.8s
+  SOR w=1.9 rtol=1e-6 (loose tolerance)        p(3 finest)=0.908 pairwise=2.05 2.03 1.79 0.02 iters=[150, 140, 130, 360, 1420] regr diff(N=32)=5.02e-07 wall=0.2s
+
+Wall time of the 7-level direct-solver study (M0): 0.079 s; single N=32 solve: 0.0045 s

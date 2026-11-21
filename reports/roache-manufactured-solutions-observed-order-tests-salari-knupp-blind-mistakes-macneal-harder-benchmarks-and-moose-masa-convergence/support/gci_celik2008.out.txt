@@ -1,0 +1,4 @@
+case                                  r21    r32      p   phi_ext     ea%   eext%    GCI% | published (p, phi_ext, ea%, eext%, GCI%)
+reattachment length (monotonic)     1.500  1.333  1.534    6.1685    1.50    1.71    2.17 | (1.53, 6.1685, 1.5, 1.7, 2.2)
+axial velocity (p < 1)              2.000  2.143  0.752   10.8801    0.58    0.85    1.07 | (0.75, 10.8801, 0.6, 0.9, 1.1)
+axial velocity (oscillatory)        2.000  2.143  1.508    6.0269    0.70    0.38    0.47 | (1.51, 6.0269, 0.7, 0.4, 0.5)
