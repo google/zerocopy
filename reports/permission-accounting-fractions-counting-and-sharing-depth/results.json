@@ -902,7 +902,7 @@
     "kind": "impossibility",
     "tier": "T1",
     "tier_justification": "Bornat et al. Section 9 note that fractional proofs need not know how many times a permission will be split; the impossibility contrasting with counting sources, with its explicit witness (an n-way split of the complement, itself a T0-level corollary of R2b), is made precise here.",
-    "plain_claim": "There is no non-exclusive fractional permission p and number N such that every list of non-empty pieces completing p to the full permission has at most N elements; explicitly, for every p other than 1 and every n >= 1, the halving split of 1 - p into n pieces gives n non-empty pieces that together with p pool to 1. Unlike a counting source, no non-exclusive fractional piece bounds the number of other holders (the exclusive piece 1 bounds them by 0).",
+    "plain_claim": "There is no non-exclusive fractional permission p and number N such that every list of non-empty pieces completing p to the full permission has at most N elements; explicitly, for every p other than 1 and every n >= 1, the halving split of 1 - p into n pieces gives n non-empty pieces that together with p pool to 1. Unlike a counting source, no non-exclusive fractional piece bounds the number of other holders (the exclusive piece 1 bounds them by 0: fracAlg_full_bounds_outstanding_pieces).",
     "hypotheses": [
       {
         "name": "¬ fracAlg.Exclusive p (inside the existential)",
