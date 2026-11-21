@@ -30193,6 +30193,77 @@
         "verification/parallel-disjointness-proofs"
       ]
     },
+    "drop-check-may-dangle-and-destructor-soundness-for-generic-containers": {
+      "observed_at": "2026-11-21",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "path": "text/0769-sound-generic-drop.md; text/1238-nonparametric-dropck.md; text/1327-dropck-param-eyepatch.md; text/1857-stabilize-drop-order.md; text/2094-nll.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "Rust RFCs 769, 1238, 1327, 1857 and 2094"
+        },
+        {
+          "identity": {
+            "path": "src/dropck.md",
+            "repository": "rust-lang/nomicon",
+            "revision": "3c17036782395893fdc639185da1783065ec4571"
+          },
+          "name": "The Rustonomicon, Drop Check"
+        },
+        {
+          "identity": {
+            "path": "src/phantom-data.md",
+            "repository": "rust-lang/nomicon",
+            "revision": "84f9ba51efd903d5d46c44274be6f98d528e8d66"
+          },
+          "name": "The Rustonomicon, PhantomData"
+        },
+        {
+          "identity": {
+            "path": "src/borrow-check/drop-check.md",
+            "repository": "rust-lang/rustc-dev-guide",
+            "revision": "5ac3dc3cc93fcb4c04bdf0821dc17282ee614089"
+          },
+          "name": "Rust Compiler Development Guide, Drop Check"
+        },
+        {
+          "identity": {
+            "path": "src/destructors.md",
+            "repository": "rust-lang/reference",
+            "revision": "84dc36ff4712fad6829b6063cd4acbcaf5381708"
+          },
+          "name": "The Rust Reference, Destructors"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: Securing the Foundations of the Rust Programming Language"
+        }
+      ],
+      "topics": [
+        "lean",
+        "lean/mechanization",
+        "verification",
+        "verification/formalized-results",
+        "verification/type-soundness",
+        "pl",
+        "pl/drop-check",
+        "pl/destructors",
+        "pl/ownership",
+        "pl/lifetimes"
+      ]
+    },
     "drop-flag-elaboration-partial-moves-and-unwind-cleanup-exactly-once-destruction": {
       "observed_at": "2026-11-21",
       "subjects": [

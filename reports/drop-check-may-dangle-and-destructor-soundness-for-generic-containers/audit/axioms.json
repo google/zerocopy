@@ -1,0 +1,863 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Dropck.DanglePolicy": [],
+    "Toy.Dropck.DanglePolicy.casesOn": [],
+    "Toy.Dropck.DanglePolicy.ctorElim": [],
+    "Toy.Dropck.DanglePolicy.ctorElimType": [],
+    "Toy.Dropck.DanglePolicy.ctorIdx": [],
+    "Toy.Dropck.DanglePolicy.deepNoDrop": [],
+    "Toy.Dropck.DanglePolicy.deepNoDrop.elim": [],
+    "Toy.Dropck.DanglePolicy.deepNoDrop.sizeOf_spec": [],
+    "Toy.Dropck.DanglePolicy.headNoDrop": [],
+    "Toy.Dropck.DanglePolicy.headNoDrop.elim": [],
+    "Toy.Dropck.DanglePolicy.headNoDrop.sizeOf_spec": [],
+    "Toy.Dropck.DanglePolicy.noConfusion": [],
+    "Toy.Dropck.DanglePolicy.noConfusionType": [],
+    "Toy.Dropck.DanglePolicy.noUseSuffices": [],
+    "Toy.Dropck.DanglePolicy.noUseSuffices.elim": [],
+    "Toy.Dropck.DanglePolicy.noUseSuffices.sizeOf_spec": [],
+    "Toy.Dropck.DanglePolicy.ofNat": [],
+    "Toy.Dropck.DanglePolicy.ofNat_ctorIdx": [],
+    "Toy.Dropck.DanglePolicy.ownsRecurse": [],
+    "Toy.Dropck.DanglePolicy.ownsRecurse.elim": [],
+    "Toy.Dropck.DanglePolicy.ownsRecurse.sizeOf_spec": [],
+    "Toy.Dropck.DanglePolicy.rec": [],
+    "Toy.Dropck.DanglePolicy.recOn": [],
+    "Toy.Dropck.DropBehavior": [],
+    "Toy.Dropck.DropBehavior.casesOn": [],
+    "Toy.Dropck.DropBehavior.ctorIdx": [],
+    "Toy.Dropck.DropBehavior.dropsElems": [],
+    "Toy.Dropck.DropBehavior.hasDrop": [],
+    "Toy.Dropck.DropBehavior.mk": [],
+    "Toy.Dropck.DropBehavior.mk.inj": [],
+    "Toy.Dropck.DropBehavior.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Dropck.DropBehavior.mk.noConfusion": [],
+    "Toy.Dropck.DropBehavior.mk.sizeOf_spec": [],
+    "Toy.Dropck.DropBehavior.noConfusion": [],
+    "Toy.Dropck.DropBehavior.noConfusionType": [],
+    "Toy.Dropck.DropBehavior.rec": [],
+    "Toy.Dropck.DropBehavior.recOn": [],
+    "Toy.Dropck.DropBehavior.usesT": [],
+    "Toy.Dropck.DropDecl": [],
+    "Toy.Dropck.DropDecl.casesOn": [],
+    "Toy.Dropck.DropDecl.ctorIdx": [],
+    "Toy.Dropck.DropDecl.mayDangle": [],
+    "Toy.Dropck.DropDecl.mk": [],
+    "Toy.Dropck.DropDecl.mk.inj": [],
+    "Toy.Dropck.DropDecl.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Dropck.DropDecl.mk.noConfusion": [],
+    "Toy.Dropck.DropDecl.mk.sizeOf_spec": [],
+    "Toy.Dropck.DropDecl.noConfusion": [],
+    "Toy.Dropck.DropDecl.noConfusionType": [],
+    "Toy.Dropck.DropDecl.ownsT": [],
+    "Toy.Dropck.DropDecl.rec": [],
+    "Toy.Dropck.DropDecl.recOn": [],
+    "Toy.Dropck.DropImpl": [],
+    "Toy.Dropck.DropImpl.beh": [],
+    "Toy.Dropck.DropImpl.casesOn": [],
+    "Toy.Dropck.DropImpl.ctorIdx": [],
+    "Toy.Dropck.DropImpl.decl": [],
+    "Toy.Dropck.DropImpl.mk": [],
+    "Toy.Dropck.DropImpl.mk.inj": [],
+    "Toy.Dropck.DropImpl.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Dropck.DropImpl.mk.noConfusion": [],
+    "Toy.Dropck.DropImpl.mk.sizeOf_spec": [],
+    "Toy.Dropck.DropImpl.noConfusion": [],
+    "Toy.Dropck.DropImpl.noConfusionType": [],
+    "Toy.Dropck.DropImpl.rec": [],
+    "Toy.Dropck.DropImpl.recOn": [],
+    "Toy.Dropck.DropSafe": [
+      "propext"
+    ],
+    "Toy.Dropck.DropSafe.eq_1": [
+      "propext"
+    ],
+    "Toy.Dropck.GlueVisible": [],
+    "Toy.Dropck.GlueVisible.eq_1": [],
+    "Toy.Dropck.ImplTable": [],
+    "Toy.Dropck.LifetimesInScope": [],
+    "Toy.Dropck.MayDangleDropsNothing": [],
+    "Toy.Dropck.MayDangleHonest": [],
+    "Toy.Dropck.OwnsDeclared": [],
+    "Toy.Dropck.Prog": [],
+    "Toy.Dropck.Prog.casesOn": [],
+    "Toy.Dropck.Prog.ctorIdx": [],
+    "Toy.Dropck.Prog.locals": [],
+    "Toy.Dropck.Prog.mk": [],
+    "Toy.Dropck.Prog.mk.inj": [],
+    "Toy.Dropck.Prog.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Dropck.Prog.mk.noConfusion": [],
+    "Toy.Dropck.Prog.mk.sizeOf_spec": [],
+    "Toy.Dropck.Prog.noConfusion": [],
+    "Toy.Dropck.Prog.noConfusionType": [],
+    "Toy.Dropck.Prog.rec": [],
+    "Toy.Dropck.Prog.recOn": [],
+    "Toy.Dropck.Ty": [],
+    "Toy.Dropck.Ty.app": [],
+    "Toy.Dropck.Ty.app.elim": [],
+    "Toy.Dropck.Ty.app.inj": [],
+    "Toy.Dropck.Ty.app.injEq": [
+      "propext"
+    ],
+    "Toy.Dropck.Ty.app.noConfusion": [],
+    "Toy.Dropck.Ty.app.sizeOf_spec": [],
+    "Toy.Dropck.Ty.below": [],
+    "Toy.Dropck.Ty.brecOn": [],
+    "Toy.Dropck.Ty.brecOn.eq": [],
+    "Toy.Dropck.Ty.brecOn.go": [],
+    "Toy.Dropck.Ty.casesOn": [],
+    "Toy.Dropck.Ty.ctorElim": [],
+    "Toy.Dropck.Ty.ctorElimType": [],
+    "Toy.Dropck.Ty.ctorIdx": [],
+    "Toy.Dropck.Ty.int": [],
+    "Toy.Dropck.Ty.int.elim": [],
+    "Toy.Dropck.Ty.int.sizeOf_spec": [],
+    "Toy.Dropck.Ty.noConfusion": [],
+    "Toy.Dropck.Ty.noConfusionType": [],
+    "Toy.Dropck.Ty.rec": [],
+    "Toy.Dropck.Ty.recOn": [],
+    "Toy.Dropck.Ty.ref": [],
+    "Toy.Dropck.Ty.ref.elim": [],
+    "Toy.Dropck.Ty.ref.inj": [],
+    "Toy.Dropck.Ty.ref.injEq": [
+      "propext"
+    ],
+    "Toy.Dropck.Ty.ref.noConfusion": [],
+    "Toy.Dropck.Ty.ref.sizeOf_spec": [],
+    "Toy.Dropck.Val": [],
+    "Toy.Dropck.Val.below": [],
+    "Toy.Dropck.Val.below_1": [],
+    "Toy.Dropck.Val.brecOn": [],
+    "Toy.Dropck.Val.brecOn.eq": [],
+    "Toy.Dropck.Val.brecOn.go": [],
+    "Toy.Dropck.Val.brecOn_1": [],
+    "Toy.Dropck.Val.brecOn_1.eq": [],
+    "Toy.Dropck.Val.brecOn_1.go": [],
+    "Toy.Dropck.Val.casesOn": [],
+    "Toy.Dropck.Val.ctorElim": [],
+    "Toy.Dropck.Val.ctorElimType": [],
+    "Toy.Dropck.Val.ctorIdx": [],
+    "Toy.Dropck.Val.int": [],
+    "Toy.Dropck.Val.int.elim": [],
+    "Toy.Dropck.Val.int.inj": [],
+    "Toy.Dropck.Val.int.injEq": [
+      "propext"
+    ],
+    "Toy.Dropck.Val.int.noConfusion": [],
+    "Toy.Dropck.Val.int.sizeOf_spec": [],
+    "Toy.Dropck.Val.noConfusion": [],
+    "Toy.Dropck.Val.noConfusionType": [],
+    "Toy.Dropck.Val.obj": [],
+    "Toy.Dropck.Val.obj.elim": [],
+    "Toy.Dropck.Val.obj.inj": [],
+    "Toy.Dropck.Val.obj.injEq": [
+      "propext"
+    ],
+    "Toy.Dropck.Val.obj.noConfusion": [],
+    "Toy.Dropck.Val.obj.sizeOf_spec": [],
+    "Toy.Dropck.Val.rec": [],
+    "Toy.Dropck.Val.recOn": [],
+    "Toy.Dropck.Val.rec_1": [],
+    "Toy.Dropck.Val.ref": [],
+    "Toy.Dropck.Val.ref.elim": [],
+    "Toy.Dropck.Val.ref.inj": [],
+    "Toy.Dropck.Val.ref.injEq": [
+      "propext"
+    ],
+    "Toy.Dropck.Val.ref.noConfusion": [],
+    "Toy.Dropck.Val.ref.sizeOf_spec": [],
+    "Toy.Dropck.ValuesHaveTypes": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsFrom": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsFrom.eq_1": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsFrom.eq_2": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsFrom.eq_def": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsFrom.match_1": [],
+    "Toy.Dropck.acceptsFrom_eq_strict_eraseMayDangle": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsFrom_eq_strict_eraseMayDangle.match_1_1": [],
+    "Toy.Dropck.acceptsFrom_getElem?": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.acceptsFrom_getElem?.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsFrom_mono": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsFrom_mono.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsP": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsP_deepNoDrop_sound_of_mayDangleHonest_glueVisible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.acceptsP_headNoDrop_of_deepNoDrop": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsP_noUseSuffices_of_acceptsP": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsP_of_acceptsStrict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.acceptsP_sound_of_mayDangleHonest_dropsNothing_glueVisible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.acceptsP_sound_of_mayDangleHonest_dropsNothing_glueVisible_via_acceptsStrict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_accepts_pReferentFirst": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_eraseMayDangleToPlain_of_noUseSuffices": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_neg": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_pos": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_rejects_dropSafe_pContainer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_rejects_unsafe_pOwnedReader": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_sound_hypotheses_hold_pReferentFirst": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_sound_of_glueVisible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_unsound_without_glueVisible": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_unsound_without_lifetimesInScope": [
+      "propext"
+    ],
+    "Toy.Dropck.acceptsStrict_unsound_without_valuesHaveTypes": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_eq_acceptsStrict_eraseMayDangle": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_ignores_undropped": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_incomplete_pEmptyOwnedReader": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_neg": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_of_acceptsP_deepNoDrop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.accepts_of_acceptsStrict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.accepts_of_acceptsStrict_counterexample_pOwnedReader": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_pos": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_rejects_unsafe_pOwnedReader": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_sound_hypotheses_hold_pContainer": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_sound_of_mayDangleHonest_ownsDeclared_glueVisible": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.accepts_unsound_without_glueVisible": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_unsound_without_lifetimesInScope": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_unsound_without_mayDangleHonest": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_unsound_without_ownsDeclared": [
+      "propext"
+    ],
+    "Toy.Dropck.accepts_unsound_without_valuesHaveTypes": [
+      "propext"
+    ],
+    "Toy.Dropck.behOf": [],
+    "Toy.Dropck.behOf.eq_1": [],
+    "Toy.Dropck.behOf_mkTbl_vecMD_eq_vecStrict": [
+      "Quot.sound"
+    ],
+    "Toy.Dropck.behOf_mkTbl_vecMD_eq_vecStrict.match_1_1": [],
+    "Toy.Dropck.declOrder": [],
+    "Toy.Dropck.declOrder_three": [],
+    "Toy.Dropck.deepHasNoDrop": [
+      "propext"
+    ],
+    "Toy.Dropck.deepHasNoDrop.eq_1": [
+      "propext"
+    ],
+    "Toy.Dropck.deepHasNoDrop.eq_2": [
+      "propext"
+    ],
+    "Toy.Dropck.deepHasNoDrop.eq_def": [
+      "propext"
+    ],
+    "Toy.Dropck.deepHasNoDrop_neg": [
+      "propext"
+    ],
+    "Toy.Dropck.deepHasNoDrop_pos": [
+      "propext"
+    ],
+    "Toy.Dropck.deepNoDrop_inclusions_counterexample_pOwnedReader": [
+      "propext"
+    ],
+    "Toy.Dropck.deepNoDrop_rejects_accepted_safe_pManuallyDropReader": [
+      "propext"
+    ],
+    "Toy.Dropck.deepNoDrop_rejects_accepted_safe_pNestedVec": [
+      "propext"
+    ],
+    "Toy.Dropck.deepNoDrop_rejects_unsafe_pNestedReader": [
+      "propext"
+    ],
+    "Toy.Dropck.deepNoDrop_sound_hypotheses_hold_pContainer_vecNoOwn": [
+      "propext"
+    ],
+    "Toy.Dropck.deepNoDrop_unsound_without_glueVisible": [
+      "propext"
+    ],
+    "Toy.Dropck.deepNoDrop_unsound_without_lifetimesInScope": [
+      "propext"
+    ],
+    "Toy.Dropck.deepNoDrop_unsound_without_mayDangleHonest": [
+      "propext"
+    ],
+    "Toy.Dropck.deepNoDrop_unsound_without_valuesHaveTypes": [
+      "propext"
+    ],
+    "Toy.Dropck.dropAll": [],
+    "Toy.Dropck.dropAll.eq_1": [],
+    "Toy.Dropck.dropAll.eq_2": [],
+    "Toy.Dropck.dropAll.eq_def": [],
+    "Toy.Dropck.dropAll_eq_eraseMayDangle": [
+      "propext"
+    ],
+    "Toy.Dropck.dropAll_eq_eraseMayDangle.match_1": [],
+    "Toy.Dropck.dropAll_eq_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.dropAll_eq_true.match_1_1": [],
+    "Toy.Dropck.dropOrder_matters_pReaderAfter": [
+      "propext"
+    ],
+    "Toy.Dropck.dropSafe_eraseMayDangleToPlain_iff": [
+      "propext"
+    ],
+    "Toy.Dropck.dropSafe_eraseMayDangle_iff": [
+      "propext"
+    ],
+    "Toy.Dropck.dropSafe_ignores_undropped": [
+      "propext"
+    ],
+    "Toy.Dropck.dropSafe_neg": [
+      "propext"
+    ],
+    "Toy.Dropck.dropSafe_neg_self": [
+      "propext"
+    ],
+    "Toy.Dropck.dropSafe_of_acceptsP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.dropSafe_pos": [
+      "propext"
+    ],
+    "Toy.Dropck.dropSafe_stripDangle": [
+      "propext"
+    ],
+    "Toy.Dropck.dropVal": [],
+    "Toy.Dropck.dropVal.eq_1": [],
+    "Toy.Dropck.dropVal.eq_2": [],
+    "Toy.Dropck.dropVal.eq_3": [],
+    "Toy.Dropck.dropVal.eq_def": [],
+    "Toy.Dropck.dropVal_eq_eraseMayDangle": [
+      "propext"
+    ],
+    "Toy.Dropck.dropVal_eq_eraseMayDangle.match_1": [],
+    "Toy.Dropck.dropVal_neg_glue": [],
+    "Toy.Dropck.dropVal_neg_using": [],
+    "Toy.Dropck.dropVal_of_deepHasNoDrop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.dropVal_of_deepHasNoDrop.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dropck.dropVal_of_dropckP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.dropVal_of_dropckP.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dropck.dropVal_of_lifetimes_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.dropVal_of_lifetimes_live.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dropck.dropVal_pos_ignoring": [],
+    "Toy.Dropck.dropckP": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP.eq_1": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP.eq_2": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP.eq_3": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP.eq_4": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP.eq_5": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP.eq_6": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP.eq_def": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_headNoDrop_of_deepNoDrop": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_mono": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_mono.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_noUseSuffices_of_dropckP": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_of_lifetimes_ok": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_of_lifetimes_ok.match_1_1": [],
+    "Toy.Dropck.dropckP_of_strip": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_of_strip.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_ownsRecurse_eq_strict_eraseMayDangle": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_ownsRecurse_eq_strict_eraseMayDangle.match_1_1": [],
+    "Toy.Dropck.dropckP_ownsRecurse_of_deepHasNoDrop": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_ownsRecurse_of_deepHasNoDrop.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dropck.dropckP_ownsRecurse_of_deepNoDrop": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.dropck_deepNoDrop_exempt": [
+      "propext"
+    ],
+    "Toy.Dropck.dropck_deepNoDrop_fallback": [
+      "propext"
+    ],
+    "Toy.Dropck.dropck_deepNoDrop_neg": [
+      "propext"
+    ],
+    "Toy.Dropck.dropck_headNoDrop_neg": [
+      "propext"
+    ],
+    "Toy.Dropck.dropck_headNoDrop_pos": [
+      "propext"
+    ],
+    "Toy.Dropck.dropck_neg": [
+      "propext"
+    ],
+    "Toy.Dropck.dropck_noUseSuffices_pos": [
+      "propext"
+    ],
+    "Toy.Dropck.dropck_pos": [
+      "propext"
+    ],
+    "Toy.Dropck.dropsNothing_rejects_unsafe_pReaderAfter": [
+      "propext"
+    ],
+    "Toy.Dropck.dropsNothing_sound_hypotheses_hold_pOwnedReader_rawVec": [
+      "propext"
+    ],
+    "Toy.Dropck.dropsNothing_unsound_without_glueVisible": [
+      "propext"
+    ],
+    "Toy.Dropck.dropsNothing_unsound_without_lifetimesInScope": [
+      "propext"
+    ],
+    "Toy.Dropck.dropsNothing_unsound_without_mayDangleDropsNothing": [
+      "propext"
+    ],
+    "Toy.Dropck.dropsNothing_unsound_without_mayDangleDropsNothing_headNoDrop": [
+      "propext"
+    ],
+    "Toy.Dropck.dropsNothing_unsound_without_mayDangleDropsNothing_ownsRecurse": [
+      "propext"
+    ],
+    "Toy.Dropck.dropsNothing_unsound_without_mayDangleHonest": [
+      "propext"
+    ],
+    "Toy.Dropck.dropsNothing_unsound_without_valuesHaveTypes": [
+      "propext"
+    ],
+    "Toy.Dropck.eraseMayDangle": [],
+    "Toy.Dropck.eraseMayDangle.eq_1": [],
+    "Toy.Dropck.eraseMayDangleToPlain": [],
+    "Toy.Dropck.eraseMayDangleToPlain.eq_1": [],
+    "Toy.Dropck.glueVisible_eraseMayDangleToPlain": [
+      "propext"
+    ],
+    "Toy.Dropck.glueVisible_eraseMayDangle_iff": [
+      "propext"
+    ],
+    "Toy.Dropck.glueVisible_neg": [],
+    "Toy.Dropck.glueVisible_pos": [],
+    "Toy.Dropck.hasTy": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTy.eq_1": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTy.eq_2": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTy.eq_3": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTy.eq_4": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTy.eq_def": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTy.match_1": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTyAll": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTyAll.eq_1": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTyAll.eq_2": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTyAll.eq_def": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTyAll.match_1": [],
+    "Toy.Dropck.hasTyAll_eq_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.hasTyAll_eq_true.match_1_1": [],
+    "Toy.Dropck.hasTy_app": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.hasTy_int": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTy_neg": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTy_pos": [
+      "propext"
+    ],
+    "Toy.Dropck.hasTy_ref": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.headHasNoDrop": [
+      "propext"
+    ],
+    "Toy.Dropck.headHasNoDrop.eq_1": [
+      "propext"
+    ],
+    "Toy.Dropck.headHasNoDrop.eq_2": [
+      "propext"
+    ],
+    "Toy.Dropck.headHasNoDrop.match_1": [
+      "propext"
+    ],
+    "Toy.Dropck.headHasNoDrop_neg": [
+      "propext"
+    ],
+    "Toy.Dropck.headHasNoDrop_of_deepHasNoDrop": [
+      "propext"
+    ],
+    "Toy.Dropck.headHasNoDrop_of_deepHasNoDrop.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dropck.headHasNoDrop_pos": [
+      "propext"
+    ],
+    "Toy.Dropck.headNoDrop_accepts_safe_pNestedReader_rawVec": [
+      "propext"
+    ],
+    "Toy.Dropck.headNoDrop_accepts_unsafe_pNestedReader": [
+      "propext"
+    ],
+    "Toy.Dropck.hiddenGlue": [],
+    "Toy.Dropck.honest_rawVec": [],
+    "Toy.Dropck.honest_vecMD": [],
+    "Toy.Dropck.honest_vecStrict": [],
+    "Toy.Dropck.instDecidableDropSafe": [
+      "propext"
+    ],
+    "Toy.Dropck.instDecidableEqDanglePolicy": [],
+    "Toy.Dropck.instDecidableEqDropBehavior": [],
+    "Toy.Dropck.instDecidableEqDropBehavior.decEq": [],
+    "Toy.Dropck.instDecidableEqDropBehavior.decEq.match_1": [],
+    "Toy.Dropck.instDecidableEqDropDecl": [],
+    "Toy.Dropck.instDecidableEqDropDecl.decEq": [],
+    "Toy.Dropck.instDecidableEqDropDecl.decEq.match_1": [],
+    "Toy.Dropck.instDecidableEqDropImpl": [],
+    "Toy.Dropck.instDecidableEqDropImpl.decEq": [],
+    "Toy.Dropck.instDecidableEqDropImpl.decEq.match_1": [],
+    "Toy.Dropck.instDecidableEqTy": [],
+    "Toy.Dropck.instDecidableEqTy.decEq": [],
+    "Toy.Dropck.instDecidableEqTy.decEq.match_1": [],
+    "Toy.Dropck.instDecidableGlueVisible": [],
+    "Toy.Dropck.instDecidableLifetimesInScope": [],
+    "Toy.Dropck.instDecidableMayDangleDropsNothing": [],
+    "Toy.Dropck.instDecidableMayDangleHonest": [],
+    "Toy.Dropck.instDecidableOwnsDeclared": [],
+    "Toy.Dropck.instDecidableValuesHaveTypes": [
+      "propext"
+    ],
+    "Toy.Dropck.instReprDanglePolicy": [],
+    "Toy.Dropck.instReprDanglePolicy.repr": [],
+    "Toy.Dropck.instReprDanglePolicy.repr.match_1": [],
+    "Toy.Dropck.instReprDropBehavior": [],
+    "Toy.Dropck.instReprDropBehavior.repr": [],
+    "Toy.Dropck.instReprDropDecl": [],
+    "Toy.Dropck.instReprDropDecl.repr": [],
+    "Toy.Dropck.instReprDropImpl": [],
+    "Toy.Dropck.instReprDropImpl.repr": [],
+    "Toy.Dropck.instReprTy": [],
+    "Toy.Dropck.instReprTy.repr": [],
+    "Toy.Dropck.instReprTy.repr.match_1": [],
+    "Toy.Dropck.liar": [],
+    "Toy.Dropck.liarRaw": [],
+    "Toy.Dropck.lifetimes": [],
+    "Toy.Dropck.lifetimes.eq_1": [],
+    "Toy.Dropck.lifetimes.eq_2": [],
+    "Toy.Dropck.lifetimes.eq_3": [],
+    "Toy.Dropck.lifetimes.eq_def": [],
+    "Toy.Dropck.lifetimes.match_1": [],
+    "Toy.Dropck.lifetimesInScope_neg": [],
+    "Toy.Dropck.lifetimesInScope_pos": [],
+    "Toy.Dropck.lifetimes_length_le_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.lifetimes_length_le_one.match_1_1": [],
+    "Toy.Dropck.live": [],
+    "Toy.Dropck.live.eq_1": [],
+    "Toy.Dropck.live_neg_absent": [],
+    "Toy.Dropck.live_neg_dead": [],
+    "Toy.Dropck.live_pos": [],
+    "Toy.Dropck.mayDangleDropsNothing_neg": [],
+    "Toy.Dropck.mayDangleDropsNothing_pos": [],
+    "Toy.Dropck.mayDangleHonest_neg": [],
+    "Toy.Dropck.mayDangleHonest_pos": [],
+    "Toy.Dropck.mkTbl": [],
+    "Toy.Dropck.mkTbl.match_1": [],
+    "Toy.Dropck.mkTbl_all": [],
+    "Toy.Dropck.mkTbl_all.match_1_1": [],
+    "Toy.Dropck.noUseSuffices_accepts_safe_pOwnedReader_rawVec": [
+      "propext"
+    ],
+    "Toy.Dropck.noUseSuffices_accepts_unsafe_pOwnedReader": [
+      "propext"
+    ],
+    "Toy.Dropck.noUseSuffices_inclusion_counterexample_pReaderAfter": [
+      "propext"
+    ],
+    "Toy.Dropck.nonStrictOutlives_accepts_unsafe_pSelfReader": [
+      "propext"
+    ],
+    "Toy.Dropck.observe": [],
+    "Toy.Dropck.observe.eq_1": [],
+    "Toy.Dropck.observe.eq_2": [],
+    "Toy.Dropck.observe.eq_3": [],
+    "Toy.Dropck.observe.eq_def": [],
+    "Toy.Dropck.observe.match_1": [],
+    "Toy.Dropck.observeAll": [],
+    "Toy.Dropck.observeAll.eq_1": [],
+    "Toy.Dropck.observeAll.eq_2": [],
+    "Toy.Dropck.observeAll.eq_def": [],
+    "Toy.Dropck.observeAll.match_1": [],
+    "Toy.Dropck.observeAll_eq_true": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.observeAll_eq_true.match_1_1": [],
+    "Toy.Dropck.observe_neg": [],
+    "Toy.Dropck.observe_of_lifetimes_live": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.observe_of_lifetimes_live.match_1_1": [
+      "propext"
+    ],
+    "Toy.Dropck.observe_pos": [],
+    "Toy.Dropck.outlives": [],
+    "Toy.Dropck.outlives.eq_1": [],
+    "Toy.Dropck.outlivesNonStrict": [],
+    "Toy.Dropck.outlivesNonStrict_self": [],
+    "Toy.Dropck.outlives_neg": [],
+    "Toy.Dropck.outlives_neg_self": [],
+    "Toy.Dropck.outlives_pos": [],
+    "Toy.Dropck.ownsDeclared_neg": [],
+    "Toy.Dropck.ownsDeclared_pos": [],
+    "Toy.Dropck.pContainer": [],
+    "Toy.Dropck.pEmptyOwnedReader": [],
+    "Toy.Dropck.pIllTyped": [],
+    "Toy.Dropck.pManuallyDropReader": [],
+    "Toy.Dropck.pNestedReader": [],
+    "Toy.Dropck.pNestedVec": [],
+    "Toy.Dropck.pOutOfScope": [],
+    "Toy.Dropck.pOutOfScopeReader": [],
+    "Toy.Dropck.pOwnedReader": [],
+    "Toy.Dropck.pOwnedReaderAfter": [],
+    "Toy.Dropck.pReaderAfter": [],
+    "Toy.Dropck.pRefToRef": [],
+    "Toy.Dropck.pRefToRef_accepted_and_dropSafe": [
+      "propext"
+    ],
+    "Toy.Dropck.pReferentFirst": [],
+    "Toy.Dropck.pSelfReader": [],
+    "Toy.Dropck.plain": [],
+    "Toy.Dropck.plain.eq_1": [],
+    "Toy.Dropck.policy_inclusion_premises_hold": [
+      "propext"
+    ],
+    "Toy.Dropck.policy_separations_mkTbl_vecMD": [
+      "propext"
+    ],
+    "Toy.Dropck.rawVec": [],
+    "Toy.Dropck.reader": [],
+    "Toy.Dropck.revDeclOrder": [],
+    "Toy.Dropck.revDeclOrder_three": [],
+    "Toy.Dropck.runDrops": [
+      "propext"
+    ],
+    "Toy.Dropck.runDrops.eq_1": [
+      "propext"
+    ],
+    "Toy.Dropck.runDrops.eq_2": [
+      "propext"
+    ],
+    "Toy.Dropck.runDrops.eq_def": [
+      "propext"
+    ],
+    "Toy.Dropck.runDrops.match_1": [],
+    "Toy.Dropck.runDrops.match_3": [],
+    "Toy.Dropck.runDrops_eq_eraseMayDangle": [
+      "propext"
+    ],
+    "Toy.Dropck.runDrops_eq_eraseMayDangle.match_1_1": [],
+    "Toy.Dropck.runDrops_of_each": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.runDrops_of_each.match_1_1": [],
+    "Toy.Dropck.sound_policies_reject_pOwnedReader_pNestedReader": [
+      "propext"
+    ],
+    "Toy.Dropck.stripDangle": [],
+    "Toy.Dropck.stripDangle.eq_1": [],
+    "Toy.Dropck.stripDangle_erases": [],
+    "Toy.Dropck.takeWhile_ne_append_of_not_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.takeWhile_ne_append_of_not_mem.match_1_1": [],
+    "Toy.Dropck.typed_getElem?": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Dropck.valuesHaveTypes_neg": [
+      "propext"
+    ],
+    "Toy.Dropck.valuesHaveTypes_pos": [
+      "propext"
+    ],
+    "Toy.Dropck.vecMD": [],
+    "Toy.Dropck.vecNoOwn": [],
+    "Toy.Dropck.vecStrict": [],
+    "Toy.Dropck.wrap": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

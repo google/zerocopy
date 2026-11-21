@@ -1,0 +1,71 @@
+{
+  "topics": [
+    "lean",
+    "lean/mechanization",
+    "verification",
+    "verification/formalized-results",
+    "verification/type-soundness",
+    "pl",
+    "pl/drop-check",
+    "pl/destructors",
+    "pl/ownership",
+    "pl/lifetimes"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust RFCs 769, 1238, 1327, 1857 and 2094",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4",
+        "path": "text/0769-sound-generic-drop.md; text/1238-nonparametric-dropck.md; text/1327-dropck-param-eyepatch.md; text/1857-stabilize-drop-order.md; text/2094-nll.md"
+      }
+    },
+    {
+      "name": "The Rustonomicon, Drop Check",
+      "identity": {
+        "repository": "rust-lang/nomicon",
+        "revision": "3c17036782395893fdc639185da1783065ec4571",
+        "path": "src/dropck.md"
+      }
+    },
+    {
+      "name": "The Rustonomicon, PhantomData",
+      "identity": {
+        "repository": "rust-lang/nomicon",
+        "revision": "84f9ba51efd903d5d46c44274be6f98d528e8d66",
+        "path": "src/phantom-data.md"
+      }
+    },
+    {
+      "name": "Rust Compiler Development Guide, Drop Check",
+      "identity": {
+        "repository": "rust-lang/rustc-dev-guide",
+        "revision": "5ac3dc3cc93fcb4c04bdf0821dc17282ee614089",
+        "path": "src/borrow-check/drop-check.md"
+      }
+    },
+    {
+      "name": "The Rust Reference, Destructors",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "84dc36ff4712fad6829b6063cd4acbcaf5381708",
+        "path": "src/destructors.md"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language",
+      "identity": {
+        "doi": "10.1145/3158154"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}
