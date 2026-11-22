@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/theory",
+    "compilers",
+    "compilers/query-optimization",
+    "domains",
+    "domains/sql-engines",
+    "lean/mechanization",
+    "minirust",
+    "pl/undefined-behavior",
+    "rust",
+    "rust/unsafe",
+    "smt",
+    "smt/quantifier-triggers",
+    "verification",
+    "verification/floating-point",
+    "verification/soundness"
+  ],
+  "subjects": [
+    {
+      "name": "GoogleSQL C++ analyzer, evaluator, and type system",
+      "identity": {
+        "repository": "google/googlesql",
+        "revision": "762ca7a16f2b555c85b6f9250c713a82bd1052d6"
+      }
+    },
+    {
+      "name": "Apache Arrow Rust columnar arrays",
+      "identity": {
+        "repository": "apache/arrow-rs",
+        "revision": "e02da695a51d1a941fd99beb91a0afbb00d49cdc"
+      }
+    },
+    {
+      "name": "Apache DataFusion SQL query engine",
+      "identity": {
+        "repository": "apache/datafusion",
+        "revision": "77611de53e6a5300a0b7888ad093739e3065a84a"
+      }
+    },
+    {
+      "name": "Verus deductive Rust verifier",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "1ce6a59bd72713cf486a7660097fe5ac57519617"
+      }
+    },
+    {
+      "name": "lean-miri Rust operational memory model",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "Anneal MIR trusted boundary and pure-lift bridge",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 proof kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

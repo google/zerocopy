@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/architecture",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/jit",
+    "ffi",
+    "isa",
+    "isa/x86-64",
+    "lean/mechanization",
+    "llvm",
+    "llvm/mlir",
+    "rust",
+    "rust/abi",
+    "rustc",
+    "security",
+    "security/kcfi",
+    "verification",
+    "verification/jit"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM and MLIR CRunnerUtils / ExecutionEngine",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "faf262703dfc53f2fc7a877c32a1ba8c462ed343"
+      }
+    },
+    {
+      "name": "LLVM static compiler (llc x86_64 backend)",
+      "identity": {
+        "tool": "llc",
+        "version": "Debian LLVM 21.1.8",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Rust nightly compiler with KCFI sanitizer",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+      }
+    },
+    {
+      "name": "Anneal MIR trusted boundary and auditor",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 proof kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

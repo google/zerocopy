@@ -43399,6 +43399,79 @@
         "tooling/fuzzing"
       ]
     },
+    "googlesql-resolved-ast-float-nan-ordering-join-mirroring-and-ghost-real-unsoundness": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/googlesql",
+            "revision": "762ca7a16f2b555c85b6f9250c713a82bd1052d6"
+          },
+          "name": "GoogleSQL C++ analyzer, evaluator, and type system"
+        },
+        {
+          "identity": {
+            "repository": "apache/arrow-rs",
+            "revision": "e02da695a51d1a941fd99beb91a0afbb00d49cdc"
+          },
+          "name": "Apache Arrow Rust columnar arrays"
+        },
+        {
+          "identity": {
+            "repository": "apache/datafusion",
+            "revision": "77611de53e6a5300a0b7888ad093739e3065a84a"
+          },
+          "name": "Apache DataFusion SQL query engine"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "1ce6a59bd72713cf486a7660097fe5ac57519617"
+          },
+          "name": "Verus deductive Rust verifier"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "lean-miri Rust operational memory model"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR trusted boundary and pure-lift bridge"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 proof kernel"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/theory",
+        "compilers",
+        "compilers/query-optimization",
+        "domains",
+        "domains/sql-engines",
+        "lean/mechanization",
+        "minirust",
+        "pl/undefined-behavior",
+        "rust",
+        "rust/unsafe",
+        "smt",
+        "smt/quantifier-triggers",
+        "verification",
+        "verification/floating-point",
+        "verification/soundness"
+      ]
+    },
     "gotpcrelx-tlsdesc-linker-relaxations-ifunc-ordering-and-linksem-slack": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -63704,6 +63777,69 @@
         "systems/distributed-ml",
         "pl/dependent-shapes",
         "verification/tensor-sharding"
+      ]
+    },
+    "mlir-llvm-jit-i1-struct-return-abi-kcfi-preambles-and-branchless-idiv": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "faf262703dfc53f2fc7a877c32a1ba8c462ed343"
+          },
+          "name": "LLVM and MLIR CRunnerUtils / ExecutionEngine"
+        },
+        {
+          "identity": {
+            "target": "x86_64-unknown-linux-gnu",
+            "tool": "llc",
+            "version": "Debian LLVM 21.1.8"
+          },
+          "name": "LLVM static compiler (llc x86_64 backend)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "Rust nightly compiler with KCFI sanitizer"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR trusted boundary and auditor"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 proof kernel"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/architecture",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/jit",
+        "ffi",
+        "isa",
+        "isa/x86-64",
+        "lean/mechanization",
+        "llvm",
+        "llvm/mlir",
+        "rust",
+        "rust/abi",
+        "rustc",
+        "security",
+        "security/kcfi",
+        "verification",
+        "verification/jit"
       ]
     },
     "mls-treekem-epoch-commits-fido2-webauthn-passkeys-and-bgp-rpki-rov-leaks": {
