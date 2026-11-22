@@ -28,7 +28,7 @@ section PartA
 variable {σ : Type} [DecidableEq σ]
 
 /-- Membership in a list standing for an `FxHashSet<Option<Symbol>>`. -/
-def memB (v : Option σ) : List (Option σ) → Bool
+noncomputable def memB (v : Option σ) : List (Option σ) → Bool
   | [] => false
   | x :: xs => decide (x = v) || memB v xs
 
@@ -51,25 +51,25 @@ namespace ExpectedValues
 
 /-- The accumulation performed by `parse_check_cfg` on an existing entry:
 `Some ∪ Some`, and `Any` as soon as either side is `Any`. -/
-def join : ExpectedValues σ → ExpectedValues σ → ExpectedValues σ
+noncomputable def join : ExpectedValues σ → ExpectedValues σ → ExpectedValues σ
   | .some a, .some b => .some (a ++ b)
   | _, _ => .any
 
 /-- `Some(∅)`, produced by `cfg(name, values())`. -/
-def bot : ExpectedValues σ := .some []
+noncomputable def bot : ExpectedValues σ := .some []
 
-def isAny : ExpectedValues σ → Bool
+noncomputable def isAny : ExpectedValues σ → Bool
   | .any => true
   | .some _ => false
 
 /-- Does the entry make `#[cfg(name)]` / `#[cfg(name = "v")]` expected? -/
-def accepts : ExpectedValues σ → Option σ → Bool
+noncomputable def accepts : ExpectedValues σ → Option σ → Bool
   | .some vals, v => memB v vals
   | .any, _ => true
 
 /-- Observational equality: the same `Any` status and the same accepted values.
 This is extensionality of the underlying hash set. -/
-def Equiv (a b : ExpectedValues σ) : Prop :=
+noncomputable def Equiv (a b : ExpectedValues σ) : Prop :=
   a.isAny = b.isAny ∧ ∀ v, a.accepts v = b.accepts v
 
 theorem Equiv.refl (a : ExpectedValues σ) : Equiv a a := ⟨rfl, fun _ => rfl⟩
@@ -139,7 +139,7 @@ theorem join_congr {a a' b b' : ExpectedValues σ} (ha : Equiv a a') (hb : Equiv
    fun v => by rw [accepts_join, accepts_join, ha.2 v, hb.2 v]⟩
 
 /-- The induced order. -/
-def le (a b : ExpectedValues σ) : Prop := Equiv (join a b) b
+noncomputable def le (a b : ExpectedValues σ) : Prop := Equiv (join a b) b
 
 theorem bot_le (a : ExpectedValues σ) : le bot a := by
   show Equiv (join bot a) a
@@ -170,7 +170,7 @@ inductive SpecValues (σ : Type) where
   | values (vs : List (Option σ))
   | anyValues
 
-def SpecValues.toExpected : SpecValues σ → ExpectedValues σ
+noncomputable def SpecValues.toExpected : SpecValues σ → ExpectedValues σ
   | .values vs => .some vs
   | .anyValues => .any
 
@@ -186,7 +186,7 @@ structure CheckCfg (σ : Type) where
   expecteds : σ → Option (ExpectedValues σ)
 
 /-- The `.and_modify(..).or_insert_with(..)` chain of `parse_check_cfg`, arm by arm. -/
-def mergeEntry : Option (ExpectedValues σ) → SpecValues σ → ExpectedValues σ
+noncomputable def mergeEntry : Option (ExpectedValues σ) → SpecValues σ → ExpectedValues σ
   | none, .values vs => .some vs
   | none, .anyValues => .any
   | some (.some old), .values vs => .some (old ++ vs)
@@ -203,20 +203,20 @@ theorem mergeEntry_some (e : ExpectedValues σ) (s : SpecValues σ) :
     mergeEntry (some e) s = e.join s.toExpected := by
   cases e <;> cases s <;> rfl
 
-def insertName (vals : SpecValues σ) (m : σ → Option (ExpectedValues σ)) (name : σ) :
+noncomputable def insertName (vals : SpecValues σ) (m : σ → Option (ExpectedValues σ)) (name : σ) :
     σ → Option (ExpectedValues σ) :=
   fun k => if k = name then some (mergeEntry (m k) vals) else m k
 
-def applySpec (cc : CheckCfg σ) : Spec σ → CheckCfg σ
+noncomputable def applySpec (cc : CheckCfg σ) : Spec σ → CheckCfg σ
   | .names ns vals => { cc with expecteds := ns.foldl (insertName vals) cc.expecteds }
   | .anyNames => { cc with exhaustiveNames := false }
 
 /-- State before the first argument: `exhaustive_names = !specs.is_empty()`. -/
-def CheckCfg.init (enabled : Bool) : CheckCfg σ :=
+noncomputable def CheckCfg.init (enabled : Bool) : CheckCfg σ :=
   { exhaustiveNames := enabled, expecteds := fun _ => none }
 
 /-- `rustc_interface::interface::parse_check_cfg`: a left fold over the arguments. -/
-def parseCheckCfg (specs : List (Spec σ)) : CheckCfg σ :=
+noncomputable def parseCheckCfg (specs : List (Spec σ)) : CheckCfg σ :=
   specs.foldl applySpec (CheckCfg.init (!specs.isEmpty))
 
 inductive Verdict where
@@ -226,7 +226,7 @@ inductive Verdict where
   deriving DecidableEq, Repr
 
 /-- The `unexpected_cfgs` decision in `parse_name_value`. -/
-def lint (cc : CheckCfg σ) (name : σ) (value : Option σ) : Verdict :=
+noncomputable def lint (cc : CheckCfg σ) (name : σ) (value : Option σ) : Verdict :=
   match cc.expecteds name with
   | some (.some vals) => if memB value vals then .ok else .unexpectedValue
   | some .any => .ok
@@ -234,9 +234,9 @@ def lint (cc : CheckCfg σ) (name : σ) (value : Option σ) : Verdict :=
 
 /-! ### Observables of a lookup table -/
 
-def present (m : σ → Option (ExpectedValues σ)) (k : σ) : Bool := (m k).isSome
+noncomputable def present (m : σ → Option (ExpectedValues σ)) (k : σ) : Bool := (m k).isSome
 
-def okAt (m : σ → Option (ExpectedValues σ)) (k : σ) (v : Option σ) : Bool :=
+noncomputable def okAt (m : σ → Option (ExpectedValues σ)) (k : σ) (v : Option σ) : Bool :=
   match m k with
   | some e => e.accepts v
   | none => false
@@ -254,20 +254,20 @@ theorem lint_eq_obs (cc : CheckCfg σ) (name : σ) (value : Option σ) :
     | some vals => rfl
     | any => rfl
 
-def memName (k : σ) : List σ → Bool
+noncomputable def memName (k : σ) : List σ → Bool
   | [] => false
   | n :: ns => decide (k = n) || memName k ns
 
-def Spec.mentions : Spec σ → σ → Bool
+noncomputable def Spec.mentions : Spec σ → σ → Bool
   | .names ns _, k => memName k ns
   | .anyNames, _ => false
 
 /-- The argument makes `(k, v)` expected. -/
-def Spec.grants : Spec σ → σ → Option σ → Bool
+noncomputable def Spec.grants : Spec σ → σ → Option σ → Bool
   | .names ns vals, k, v => memName k ns && vals.toExpected.accepts v
   | .anyNames, _, _ => false
 
-def Spec.isAnyNames : Spec σ → Bool
+noncomputable def Spec.isAnyNames : Spec σ → Bool
   | .anyNames => true
   | .names _ _ => false
 
@@ -442,7 +442,7 @@ structure WellKnown (σ : Type) where
 /-- `self.expecteds.entry(name).or_insert_with(init)` followed by `.extend(ext)`
 (`extend` is a no-op on `Any`).  A pre-existing user entry keeps its own values:
 `init` is *not* added to it. -/
-def fillOne (m : σ → Option (ExpectedValues σ)) (w : WellKnown σ) :
+noncomputable def fillOne (m : σ → Option (ExpectedValues σ)) (w : WellKnown σ) :
     σ → Option (ExpectedValues σ) :=
   fun k =>
     if k = w.name then
@@ -452,12 +452,12 @@ def fillOne (m : σ → Option (ExpectedValues σ)) (w : WellKnown σ) :
         | some .any => .any)
     else m k
 
-def fillWellKnown (wk : List (WellKnown σ)) (cc : CheckCfg σ) : CheckCfg σ :=
+noncomputable def fillWellKnown (wk : List (WellKnown σ)) (cc : CheckCfg σ) : CheckCfg σ :=
   { cc with expecteds := wk.foldl fillOne cc.expecteds }
 
 /-- The configuration the lint consults.  `fill_well_known` returns early when
 no `--check-cfg` argument was given. -/
-def checkConfig (wk : List (WellKnown σ)) (specs : List (Spec σ)) : CheckCfg σ :=
+noncomputable def checkConfig (wk : List (WellKnown σ)) (specs : List (Spec σ)) : CheckCfg σ :=
   if specs.isEmpty then CheckCfg.init false else fillWellKnown wk (parseCheckCfg specs)
 
 theorem present_fillOne (m : σ → Option (ExpectedValues σ)) (w : WellKnown σ) (k : σ) :
@@ -487,7 +487,7 @@ theorem okAt_fillOne (m : σ → Option (ExpectedValues σ)) (w : WellKnown σ) 
   · rw [ite_eq_right h, decide_eq_false h, Bool.false_and, Bool.or_false]
 
 /-- Two tables with the same observables. -/
-def ObsEq (m₁ m₂ : σ → Option (ExpectedValues σ)) : Prop :=
+noncomputable def ObsEq (m₁ m₂ : σ → Option (ExpectedValues σ)) : Prop :=
   ∀ k, present m₁ k = present m₂ k ∧ ∀ v, okAt m₁ k v = okAt m₂ k v
 
 theorem obsEq_fillOne {m₁ m₂ : σ → Option (ExpectedValues σ)} (h : ObsEq m₁ m₂)
@@ -631,7 +631,7 @@ inductive BuiltinCfg where
   deriving DecidableEq, Repr
 
 /-- Membership in `default_configuration(sess)`. -/
-def flagSets (f : SessionFlags) : BuiltinCfg → Bool
+noncomputable def flagSets (f : SessionFlags) : BuiltinCfg → Bool
   | .debugAssertions => f.debugAssertions
   | .overflowChecks => f.overflowChecks
   | .ubChecks => f.ubChecks
@@ -652,7 +652,7 @@ def flagSets (f : SessionFlags) : BuiltinCfg → Bool
 
 /-- The match arms of `disallow_cfgs`.  `test` is deliberately exempt, and the bare
 form of `target_has_atomic` is not matched (only `(target_has_atomic, Some(_))` is). -/
-def gated : BuiltinCfg → Bool
+noncomputable def gated : BuiltinCfg → Bool
   | .test => false
   | .targetHasAtomicBare => false
   | _ => true
@@ -664,16 +664,16 @@ inductive Atom where
   deriving DecidableEq, Repr
 
 /-- The crate configuration: `--cfg` entries together with `default_configuration`. -/
-def cfgActive (f : SessionFlags) (user : List Atom) : Atom → Prop
+noncomputable def cfgActive (f : SessionFlags) (user : List Atom) : Atom → Prop
   | .builtin b => flagSets f b = true ∨ Atom.builtin b ∈ user
   | .userSpace n => Atom.userSpace n ∈ user
 
-def isGatedAtom : Atom → Bool
+noncomputable def isGatedAtom : Atom → Bool
   | .builtin b => gated b
   | .userSpace _ => false
 
 /-- `disallow_cfgs`: the `--cfg` entries reported by `explicit_builtin_cfgs_in_flags`. -/
-def disallowBuiltinCfgs : List Atom → List Atom
+noncomputable def disallowBuiltinCfgs : List Atom → List Atom
   | [] => []
   | a :: rest => if isGatedAtom a then a :: disallowBuiltinCfgs rest else disallowBuiltinCfgs rest
 
@@ -713,11 +713,11 @@ theorem disallow_nil_iff (user : List Atom) :
 
 /-- Coherence for the cfgs the gate is meant to protect: the cfg is active exactly
 when the controlling flag (or target fact) says so. -/
-def Coherent (f : SessionFlags) (user : List Atom) : Prop :=
+noncomputable def Coherent (f : SessionFlags) (user : List Atom) : Prop :=
   ∀ b, gated b = true → (cfgActive f user (.builtin b) ↔ flagSets f b = true)
 
 /-- A gated builtin pair passed on the command line although the flags do not imply it. -/
-def Spoofed (f : SessionFlags) (a : Atom) : Prop :=
+noncomputable def Spoofed (f : SessionFlags) (a : Atom) : Prop :=
   ∃ b, a = .builtin b ∧ gated b = true ∧ flagSets f b = false
 
 /-- **Exact characterisation of coherence.** -/
@@ -771,14 +771,14 @@ inductive LintLevel where
   | allow | warn | deny | forbid
   deriving DecidableEq, Repr
 
-def LintLevel.isError : LintLevel → Bool
+noncomputable def LintLevel.isError : LintLevel → Bool
   | .deny => true
   | .forbid => true
   | _ => false
 
 /-- The gate is a lint: the session is rejected only if the effective level of
 `explicit_builtin_cfgs_in_flags` is an error level. -/
-def sessionAccepted (lvl : LintLevel) (user : List Atom) : Prop :=
+noncomputable def sessionAccepted (lvl : LintLevel) (user : List Atom) : Prop :=
   lvl.isError = true → disallowBuiltinCfgs user = []
 
 theorem accepted_at_deny_implies_coherent (f : SessionFlags) (user : List Atom)
@@ -786,9 +786,9 @@ theorem accepted_at_deny_implies_coherent (f : SessionFlags) (user : List Atom)
   disallow_empty_implies_coherent f user (h rfl)
 
 /-- What `core::intrinsics::ub_checks()` evaluates to in generated code: `sess.ub_checks()`. -/
-def codegenUbChecks (f : SessionFlags) : Bool := f.ubChecks
+noncomputable def codegenUbChecks (f : SessionFlags) : Bool := f.ubChecks
 
-def flagsAllOff : SessionFlags :=
+noncomputable def flagsAllOff : SessionFlags :=
   { debugAssertions := false, overflowChecks := false, ubChecks := false, contractChecks := false,
     panic := .unwind, sanitizers := [], procMacroCrate := false, testHarness := false,
     familyUnix := true, familyWindows := false, bareHasAtomic := false }
@@ -910,24 +910,24 @@ structure CodegenOpts where
   targetCpu : Option Cpu
   cmpxchg16b : Bool
 
-def lookupCpu (c : Cpu) : List (Cpu × (Nat × Nat)) → Option (Nat × Nat)
+noncomputable def lookupCpu (c : Cpu) : List (Cpu × (Nat × Nat)) → Option (Nat × Nat)
   | [] => none
   | (c', w) :: rest => if c = c' then some w else lookupCpu c rest
 
 /-- `Target::atomic_widths(cpu)`; with an empty table this is the pair
 `(min_atomic_width(), max_atomic_width())` of earlier compilers. -/
-def atomicWidths (t : AtomicTarget) (cpu : Cpu) : Nat × Nat :=
+noncomputable def atomicWidths (t : AtomicTarget) (cpu : Cpu) : Nat × Nat :=
   match lookupCpu cpu t.perCpuAtomicWidths with
   | some w => w
   | none => (t.minAtomicWidth.getD 8, t.maxAtomicWidth.getD t.pointerWidth)
 
 /-- The `insert_atomic` closure. -/
-def insertAtomic (t : AtomicTarget) (v : AVal) (i align : Nat) : List (AKey × AVal) :=
+noncomputable def insertAtomic (t : AtomicTarget) (v : AVal) (i align : Nat) : List (AKey × AVal) :=
   (if t.atomicCas then [(AKey.cas, v)] else [])
     ++ (if align = i then [(AKey.primAlign, v)] else [])
     ++ [(AKey.loadStore, v)]
 
-def perWidth (t : AtomicTarget) (lo hi i : Nat) : List (AKey × AVal) :=
+noncomputable def perWidth (t : AtomicTarget) (lo hi i : Nat) : List (AKey × AVal) :=
   if lo ≤ i ∧ i ≤ hi then
     insertAtomic t (.bits i) i (t.intAlignBits i)
       ++ (if t.pointerWidth = i then insertAtomic t .ptr i t.pointerAlignBits else [])
@@ -935,7 +935,7 @@ def perWidth (t : AtomicTarget) (lo hi i : Nat) : List (AKey × AVal) :=
 
 /-- The `target_has_atomic*` part of `default_configuration`.  The option record is
 consulted only through the CPU *name*; target features are never read. -/
-def atomicCfgs (t : AtomicTarget) (nightly : Bool) (o : CodegenOpts) : List (AKey × AVal) :=
+noncomputable def atomicCfgs (t : AtomicTarget) (nightly : Bool) (o : CodegenOpts) : List (AKey × AVal) :=
   let w := atomicWidths t (o.targetCpu.getD t.defaultCpu)
   let anyWidth := [8, 16, 32, 64, 128].any (fun i => decide (w.1 ≤ i ∧ i ≤ w.2))
   (if nightly && anyWidth then
@@ -944,36 +944,36 @@ def atomicCfgs (t : AtomicTarget) (nightly : Bool) (o : CodegenOpts) : List (AKe
     ++ perWidth t w.1 w.2 8 ++ perWidth t w.1 w.2 16 ++ perWidth t w.1 w.2 32
     ++ perWidth t w.1 w.2 64 ++ perWidth t w.1 w.2 128
 
-def naturalAlign : Nat → Nat := fun i => i
+noncomputable def naturalAlign : Nat → Nat := fun i => i
 
 /-- `i686-unknown-linux-gnu`: `max_atomic_width = Some(64)`; the data layout does not
 override `i64`, whose default ABI alignment is 32 bits. -/
-def i686LinuxGnu : AtomicTarget :=
+noncomputable def i686LinuxGnu : AtomicTarget :=
   { pointerWidth := 32, defaultCpu := .pentium4, minAtomicWidth := none, maxAtomicWidth := some 64,
     perCpuAtomicWidths := [], atomicCas := true,
     intAlignBits := fun i => if i = 64 then 32 else i, pointerAlignBits := 32 }
 
 /-- `x86_64-unknown-linux-gnu`: `max_atomic_width = Some(64)`. -/
-def x86_64LinuxGnu : AtomicTarget :=
+noncomputable def x86_64LinuxGnu : AtomicTarget :=
   { pointerWidth := 64, defaultCpu := .x86_64, minAtomicWidth := none, maxAtomicWidth := some 64,
     perCpuAtomicWidths := [], atomicCas := true, intAlignBits := naturalAlign,
     pointerAlignBits := 64 }
 
 /-- `x86_64-apple-darwin` and `x86_64-pc-windows-msvc`: `max_atomic_width = Some(128)`. -/
-def x86_64Max128 : AtomicTarget :=
+noncomputable def x86_64Max128 : AtomicTarget :=
   { x86_64LinuxGnu with defaultCpu := .penryn, maxAtomicWidth := some 128 }
 
 /-- `thumbv6m-none-eabi`: `atomic_cas = false`, default maximum (pointer width). -/
-def thumbv6m : AtomicTarget :=
+noncomputable def thumbv6m : AtomicTarget :=
   { pointerWidth := 32, defaultCpu := .generic, minAtomicWidth := none, maxAtomicWidth := none,
     perCpuAtomicWidths := [], atomicCas := false, intAlignBits := naturalAlign,
     pointerAlignBits := 32 }
 
 /-- `riscv32imc-unknown-none-elf`: `max_atomic_width = Some(32)`, `atomic_cas = false`. -/
-def riscv32imc : AtomicTarget := { thumbv6m with maxAtomicWidth := some 32 }
+noncomputable def riscv32imc : AtomicTarget := { thumbv6m with maxAtomicWidth := some 32 }
 
 /-- `m68k-unknown-linux-gnu`: 32-bit integers and pointers are 16-bit aligned. -/
-def m68kLinuxGnu : AtomicTarget :=
+noncomputable def m68kLinuxGnu : AtomicTarget :=
   { pointerWidth := 32, defaultCpu := .generic, minAtomicWidth := none, maxAtomicWidth := some 32,
     perCpuAtomicWidths := [], atomicCas := true,
     intAlignBits := fun i => if i = 32 then 16 else if i = 64 then 16 else i,
@@ -981,15 +981,15 @@ def m68kLinuxGnu : AtomicTarget :=
 
 /-- BPF targets after 2026-11-09: `(8, 64)` by default, `(8, 0)` (an empty range)
 for the CPU names `v1`, `v2`, `v3` and `generic`. -/
-def bpfPerCpu : AtomicTarget :=
+noncomputable def bpfPerCpu : AtomicTarget :=
   { pointerWidth := 64, defaultCpu := .generic, minAtomicWidth := some 8, maxAtomicWidth := some 64,
     perCpuAtomicWidths := [(.bpfV3, (8, 0)), (.generic, (8, 0))], atomicCas := false,
     intAlignBits := naturalAlign, pointerAlignBits := 64 }
 
-def baseOpts : CodegenOpts := { targetCpu := none, cmpxchg16b := false }
+noncomputable def baseOpts : CodegenOpts := { targetCpu := none, cmpxchg16b := false }
 
 /-- Set equality of two finite lists. -/
-def sameSet (a b : List (AKey × AVal)) : Bool :=
+noncomputable def sameSet (a b : List (AKey × AVal)) : Bool :=
   a.all (fun e => decide (e ∈ b)) && b.all (fun e => decide (e ∈ a))
 
 /-- The model reproduces the `rustc --print cfg` lines observed for `i686-unknown-linux-gnu`. -/
@@ -1100,7 +1100,7 @@ section PartD
 
 /-- First-wins on optional fields: the behaviour of `merge` in the attribute parser
 and of `CustomDiagnostic::update`. -/
-def firstWins {α : Type} : Option α → Option α → Option α
+noncomputable def firstWins {α : Type} : Option α → Option α → Option α
   | some a, _ => some a
   | none, b => b
 
@@ -1130,7 +1130,7 @@ structure Directive (μ φ : Type) where
 variable {μ φ ρ : Type}
 
 /-- `merge_directives(first, later)` when `first` is already present. -/
-def Directive.merge (a b : Directive μ φ) : Directive μ φ :=
+noncomputable def Directive.merge (a b : Directive μ φ) : Directive μ φ :=
   { isRustcAttr := a.isRustcAttr || b.isRustcAttr
     filters := a.filters ++ b.filters
     message := firstWins a.message b.message
@@ -1139,7 +1139,7 @@ def Directive.merge (a b : Directive μ φ) : Directive μ φ :=
     parentLabel := firstWins a.parentLabel b.parentLabel }
 
 /-- `Directive::default()`. -/
-def emptyDirective : Directive μ φ :=
+noncomputable def emptyDirective : Directive μ φ :=
   { isRustcAttr := false, filters := [], message := none, label := none, notes := [],
     parentLabel := none }
 
@@ -1189,10 +1189,10 @@ theorem ce_directiveMerge_not_idempotent :
      parentLabel := none }, by decide⟩
 
 /-- Stacked attributes: a left fold from the identity. -/
-def mergeAll (ds : List (Directive μ φ)) : Directive μ φ := ds.foldl Directive.merge emptyDirective
+noncomputable def mergeAll (ds : List (Directive μ φ)) : Directive μ φ := ds.foldl Directive.merge emptyDirective
 
 /-- The parser's accumulator `Option<(Span, Directive)>`, starting at `None`. -/
-def mergeInto : Option (Directive μ φ) → Directive μ φ → Option (Directive μ φ)
+noncomputable def mergeInto : Option (Directive μ φ) → Directive μ φ → Option (Directive μ φ)
   | none, d => some d
   | some a, d => some (a.merge d)
 
@@ -1210,15 +1210,15 @@ theorem foldl_mergeInto (d : Directive μ φ) (ds : List (Directive μ φ)) :
   rw [directiveMerge_empty_left]
   exact foldl_mergeInto_some ds d
 
-def firstMessage : List (Directive μ φ) → Option μ
+noncomputable def firstMessage : List (Directive μ φ) → Option μ
   | [] => none
   | d :: ds => firstWins d.message (firstMessage ds)
 
-def firstLabel : List (Directive μ φ) → Option μ
+noncomputable def firstLabel : List (Directive μ φ) → Option μ
   | [] => none
   | d :: ds => firstWins d.label (firstLabel ds)
 
-def allNotes : List (Directive μ φ) → List μ
+noncomputable def allNotes : List (Directive μ φ) → List μ
   | [] => []
   | d :: ds => d.notes ++ allNotes ds
 
@@ -1264,18 +1264,18 @@ structure CustomDiagnostic (ρ : Type) where
   parentLabel : Option ρ
 
 /-- `CustomDiagnostic::update`: fill unset fields, extend notes. -/
-def CustomDiagnostic.update (fmt : μ → ρ) (cd : CustomDiagnostic ρ) (d : Directive μ φ) :
+noncomputable def CustomDiagnostic.update (fmt : μ → ρ) (cd : CustomDiagnostic ρ) (d : Directive μ φ) :
     CustomDiagnostic ρ :=
   { message := firstWins cd.message (d.message.map fmt)
     label := firstWins cd.label (d.label.map fmt)
     notes := cd.notes ++ d.notes.map fmt
     parentLabel := firstWins cd.parentLabel (d.parentLabel.map fmt) }
 
-def CustomDiagnostic.empty : CustomDiagnostic ρ :=
+noncomputable def CustomDiagnostic.empty : CustomDiagnostic ρ :=
   { message := none, label := none, notes := [], parentLabel := none }
 
 /-- Formatting one directive. -/
-def render (fmt : μ → ρ) (d : Directive μ φ) : CustomDiagnostic ρ :=
+noncomputable def render (fmt : μ → ρ) (d : Directive μ φ) : CustomDiagnostic ρ :=
   { message := d.message.map fmt, label := d.label.map fmt, notes := d.notes.map fmt,
     parentLabel := d.parentLabel.map fmt }
 
@@ -1336,18 +1336,18 @@ inductive Cause (π ι : Type) where
 /-- The loop of `TypeErrCtxt::apply_do_not_recommend`: walk the chain leaf → root and,
 at every `ImplDerived` whose impl carries the attribute, replace the reported
 obligation by that impl's parent predicate and the cause by the parent's cause. -/
-def applyDnr (dnr : ι → Bool) : π × List (Cause π ι) → List (Cause π ι) → π × List (Cause π ι)
+noncomputable def applyDnr (dnr : ι → Bool) : π × List (Cause π ι) → List (Cause π ι) → π × List (Cause π ι)
   | cur, [] => cur
   | cur, .implDerived impl parent :: rest =>
     if dnr impl then applyDnr dnr (parent, rest) rest else applyDnr dnr cur rest
   | cur, .otherDerived :: rest => applyDnr dnr cur rest
 
 /-- The reported predicate and its remaining cause chain. -/
-def report (dnr : ι → Bool) (leaf : π) (chain : List (Cause π ι)) : π × List (Cause π ι) :=
+noncomputable def report (dnr : ι → Bool) (leaf : π) (chain : List (Cause π ι)) : π × List (Cause π ι) :=
   applyDnr dnr (leaf, chain) chain
 
 /-- The marked frame closest to the root, with the chain above it. -/
-def lastDnr (dnr : ι → Bool) : List (Cause π ι) → Option (π × List (Cause π ι))
+noncomputable def lastDnr (dnr : ι → Bool) : List (Cause π ι) → Option (π × List (Cause π ι))
   | [] => none
   | c :: rest =>
     match lastDnr dnr rest with
@@ -1411,7 +1411,7 @@ theorem report_eq (dnr : ι → Bool) (leaf : π) (chain : List (Cause π ι)) :
   applyDnr_eq dnr (leaf, chain) chain
 
 /-- No marked impl frame in a chain. -/
-def dnrFree (dnr : ι → Bool) : List (Cause π ι) → Bool
+noncomputable def dnrFree (dnr : ι → Bool) : List (Cause π ι) → Bool
   | [] => true
   | .implDerived impl _ :: rest => !dnr impl && dnrFree dnr rest
   | .otherDerived :: rest => dnrFree dnr rest
@@ -1521,13 +1521,13 @@ theorem report_idempotent (dnr : ι → Bool) (leaf : π) (chain : List (Cause �
 
 /-- The proof-tree walk of the next-generation solver, root → leaf: stop at the first
 goal whose candidate is a marked impl and report that goal. -/
-def firstDnrFromRoot (dnr : ι → Bool) : List (Cause π ι) → Option π
+noncomputable def firstDnrFromRoot (dnr : ι → Bool) : List (Cause π ι) → Option π
   | [] => none
   | .implDerived impl parent :: rest =>
     if dnr impl then some parent else firstDnrFromRoot dnr rest
   | .otherDerived :: rest => firstDnrFromRoot dnr rest
 
-def headDnr (dnr : ι → Bool) : Cause π ι → Option π
+noncomputable def headDnr (dnr : ι → Bool) : Cause π ι → Option π
   | .implDerived impl parent => if dnr impl then some parent else none
   | .otherDerived => none
 
@@ -1608,12 +1608,12 @@ inductive Impl where
   | ab | bc
   deriving DecidableEq, Repr
 
-def probeChain : List (Cause Pred Impl) := [.implDerived .ab .u8B, .implDerived .bc .u8C]
+noncomputable def probeChain : List (Cause Pred Impl) := [.implDerived .ab .u8B, .implDerived .bc .u8C]
 
-def markNone : Impl → Bool := fun _ => false
-def markInner : Impl → Bool := fun i => decide (i = .ab)
-def markOuter : Impl → Bool := fun i => decide (i = .bc)
-def markBoth : Impl → Bool := fun _ => true
+noncomputable def markNone : Impl → Bool := fun _ => false
+noncomputable def markInner : Impl → Bool := fun i => decide (i = .ab)
+noncomputable def markOuter : Impl → Bool := fun i => decide (i = .bc)
+noncomputable def markBoth : Impl → Bool := fun _ => true
 
 /-- The four attribute placements give the leaf predicates `A`, `B`, `C`, `C` and the
 "required for" chains of length 2, 1, 0, 0. -/

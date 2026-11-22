@@ -55,7 +55,7 @@ Each `deref!(...)` arm allocates its own temporary and invokes `derefOp`
 against the current store `σ`, backtracking to remaining arms on pattern or
 guard failure and hitting `TerminatorKind::Unreachable` (`unreachableUB`) if
 all arms fail. -/
-def evalDecisionTree {S V T R : Type}
+noncomputable def evalDecisionTree {S V T R : Type}
     (derefOp : S → V → T × S) (σ : S) (v : V) :
     List (MatchArm S T R) → MatchOutcome R S
   | [] => .unreachableUB σ
@@ -82,7 +82,7 @@ def evalDecisionTree {S V T R : Type}
 
 /-- Idealized single-deref semantics for unguarded matches: evaluates
 `derefOp` once on the initial store and checks arms against the cached target. -/
-def evalSingleDeref {S V T R : Type}
+noncomputable def evalSingleDeref {S V T R : Type}
     (derefOp : S → V → T × S) (σ : S) (v : V) (arms : List (MatchArm S T R)) :
     Option R :=
   let t := (derefOp σ v).1
@@ -107,7 +107,7 @@ structure DerefPureRel {S V T : Type} (Eqv : S → S → Prop)
 /-- Guard stability invariant enforced by `FakeBorrowKind::Deep`
 (`compiler/rustc_mir_build/src/builder/matches/util.rs`): every guard preserves
 the store relation `Eqv` (preventing mutation of the scrutinee's deref target). -/
-def DeepFakeBorrowGuards {S T R : Type} (Eqv : S → S → Prop) :
+noncomputable def DeepFakeBorrowGuards {S T R : Type} (Eqv : S → S → Prop) :
     List (MatchArm S T R) → Prop
   | [] => True
   | arm :: rest =>
@@ -117,17 +117,17 @@ def DeepFakeBorrowGuards {S T R : Type} (Eqv : S → S → Prop) :
 
 /-- Static exhaustiveness checked by `rustc_pattern_analysis`: for every possible
 dereferenced target value `t : T`, some unguarded arm in `arms` matches `t`. -/
-def ArmMatchesTarget {S T R : Type} (arm : MatchArm S T R) (t : T) : Prop :=
+noncomputable def ArmMatchesTarget {S T R : Type} (arm : MatchArm S T R) (t : T) : Prop :=
   arm.guard = none ∧
   match arm.pat with
   | .wildPat => True
   | .derefPat pred => pred t = true
 
-def ExhaustiveForTarget {S T R : Type} (t : T) : List (MatchArm S T R) → Prop
+noncomputable def ExhaustiveForTarget {S T R : Type} (t : T) : List (MatchArm S T R) → Prop
   | [] => False
   | arm :: rest => ArmMatchesTarget arm t ∨ ExhaustiveForTarget t rest
 
-def ExhaustiveArms {S T R : Type} (arms : List (MatchArm S T R)) : Prop :=
+noncomputable def ExhaustiveArms {S T R : Type} (arms : List (MatchArm S T R)) : Prop :=
   ∀ t : T, ExhaustiveForTarget t arms
 
 /-- Inductive helper: if the current store `σ` is `Eqv`-related to `σ₀`, and the
@@ -250,11 +250,11 @@ theorem derefPure_decision_tree_no_ub {S V T R : Type}
   cases hUb
 
 /-- Predicate asserting that no arm in the list carries a match guard. -/
-def AllUnguarded {S T R : Type} : List (MatchArm S T R) → Prop
+noncomputable def AllUnguarded {S T R : Type} : List (MatchArm S T R) → Prop
   | [] => True
   | arm :: rest => arm.guard = none ∧ AllUnguarded rest
 
-def outcomeResult {R S : Type} : MatchOutcome R S → Option R
+noncomputable def outcomeResult {R S : Type} : MatchOutcome R S → Option R
   | .matched r _ => some r
   | .unreachableUB _ => none
 
@@ -311,11 +311,11 @@ theorem derefPure_unguarded_matches_single_deref {S V T R : Type}
 
 /-- Stateful impure `Deref` toggling a `Cell<Bool>` on every deref call
 (exact model of `LyingToggle` in `probe_deref_patterns_and_arbitrary_self.py`). -/
-def toggleDeref : Bool → Unit → Bool × Bool
+noncomputable def toggleDeref : Bool → Unit → Bool × Bool
   | s, () => (s, !s)
 
 /-- Exhaustive unguarded 2-arm boolean match: `[deref!(true) => 1, deref!(false) => 2]`. -/
-def boolDerefArms : List (MatchArm Bool Bool Nat) :=
+noncomputable def boolDerefArms : List (MatchArm Bool Bool Nat) :=
   [ { pat := .derefPat (fun b => b == true),  guard := none, result := 1 }
   , { pat := .derefPat (fun b => b == false), guard := none, result := 2 } ]
 
@@ -335,7 +335,7 @@ theorem ce_impure_deref_breaks_exhaustiveness :
   · exact ⟨trivial, trivial, trivial⟩
 
 /-- Pure `Box<bool>` dereference satisfying `DerefPureRel Eq`. -/
-def pureBoxDeref : Bool → Unit → Bool × Bool
+noncomputable def pureBoxDeref : Bool → Unit → Bool × Bool
   | s, () => (s, s)
 
 theorem pureBoxDeref_is_pure : DerefPureRel Eq pureBoxDeref where
@@ -347,7 +347,7 @@ theorem pureBoxDeref_is_pure : DerefPureRel Eq pureBoxDeref where
 /-- Exact formalization of the `compiler/rustc_mir_build/src/builder/matches/util.rs`
 guard-mutation exploit when only shallow fake borrows are taken:
 `match b { deref!(true) => 1, _ if { *b = true; false } => 2, deref!(false) => 3 }`. -/
-def mutatingGuardArms : List (MatchArm Bool Bool Nat) :=
+noncomputable def mutatingGuardArms : List (MatchArm Bool Bool Nat) :=
   [ { pat := .derefPat (fun b => b == true),  guard := none, result := 1 }
   , { pat := .wildPat, guard := some (fun _ => (false, true)), result := 2 }
   , { pat := .derefPat (fun b => b == false), guard := none, result := 3 } ]
@@ -379,7 +379,7 @@ inductive RefKind where
   | reborrowPin
   deriving DecidableEq, Repr
 
-def RefKind.rank : RefKind → Nat
+noncomputable def RefKind.rank : RefKind → Nat
   | .byVal       => 0
   | .sharedRef   => 1
   | .mutRef      => 2
@@ -393,7 +393,7 @@ inductive CandKind where
   | extension
   deriving DecidableEq, Repr
 
-def CandKind.rank : CandKind → Nat
+noncomputable def CandKind.rank : CandKind → Nat
   | .inherent  => 0
   | .extension => 1
 
@@ -417,7 +417,7 @@ structure MethodCandidate where
   deriving DecidableEq, Repr
 
 /-- Whether a `RefKind` adjustment is permitted on `step` (`probe.rs:1596, 1721-1727`). -/
-def stepAllowsRefKind (step : ProbeStep) : RefKind → Bool
+noncomputable def stepAllowsRefKind (step : ProbeStep) : RefKind → Bool
   | .byVal       => !step.unsize
   | .sharedRef   => true
   | .mutRef      => true
@@ -425,7 +425,7 @@ def stepAllowsRefKind (step : ProbeStep) : RefKind → Bool
   | .reborrowPin => !step.unsize
 
 /-- Whether a candidate matches `(step, rk, ck)` (`probe.rs:1589-1765`). -/
-def candidateMatches (step : ProbeStep) (rk : RefKind) (ck : CandKind)
+noncomputable def candidateMatches (step : ProbeStep) (rk : RefKind) (ck : CandKind)
     (c : MethodCandidate) : Bool :=
   stepAllowsRefKind step rk &&
   (c.kind == ck) &&
@@ -435,7 +435,7 @@ def candidateMatches (step : ProbeStep) (rk : RefKind) (ck : CandKind)
 /-- Anti-shadowing filter (`PickConstraintsForShadowed::candidate_may_shadow`,
 `probe.rs:190-215`): matches inherent candidates with strictly deeper
 `receiverSteps` and distinct `id`. -/
-def candidateMayShadow (shadower : MethodCandidate) (c : MethodCandidate) : Bool :=
+noncomputable def candidateMayShadow (shadower : MethodCandidate) (c : MethodCandidate) : Bool :=
   (c.id != shadower.id) &&
   (c.kind == .inherent) &&
   (shadower.receiverSteps < c.receiverSteps)
@@ -455,7 +455,7 @@ inductive ProbeOutcome where
   deriving DecidableEq, Repr
 
 /-- Pick unique matching candidate for fixed `(step, rk, ck)` or report ambiguity. -/
-def considerCandidates (step : ProbeStep) (rk : RefKind) (ck : CandKind)
+noncomputable def considerCandidates (step : ProbeStep) (rk : RefKind) (ck : CandKind)
     (cands : List MethodCandidate) (stepIdx : Nat) : ProbeOutcome :=
   match cands.filter (candidateMatches step rk ck) with
   | [] => .notFound
@@ -463,7 +463,7 @@ def considerCandidates (step : ProbeStep) (rk : RefKind) (ck : CandKind)
   | _ :: _ :: _ => .ambiguity
 
 /-- Search `.inherent` strictly before `.extension` (`probe.rs:1750-1764`). -/
-def pickMethod (step : ProbeStep) (rk : RefKind)
+noncomputable def pickMethod (step : ProbeStep) (rk : RefKind)
     (cands : List MethodCandidate) (stepIdx : Nat) : ProbeOutcome :=
   match considerCandidates step rk .inherent cands stepIdx with
   | .notFound => considerCandidates step rk .extension cands stepIdx
@@ -471,7 +471,7 @@ def pickMethod (step : ProbeStep) (rk : RefKind)
 
 /-- Check whether `shadower` shadows an inherent autoref'd method at `targetRk`
 (`check_for_shadowed_autorefd_method`, `probe.rs:1496-1581`). -/
-def hasShadowedAutoref (shadower : MethodCandidate) (step : ProbeStep)
+noncomputable def hasShadowedAutoref (shadower : MethodCandidate) (step : ProbeStep)
     (targetRk : RefKind) (cands : List MethodCandidate) : Bool :=
   (cands.filter (fun c =>
     candidateMatches step targetRk .inherent c && candidateMayShadow shadower c)).isEmpty == false
@@ -480,7 +480,7 @@ def hasShadowedAutoref (shadower : MethodCandidate) (step : ProbeStep)
 `byVal` -> (anti-shadow check on `sharedRef`,`mutRef`) ->
 `sharedRef` -> (anti-shadow check on `mutRef`) ->
 `mutRef` -> `constPtr` -> `reborrowPin`. -/
-def pickAtStep (step : ProbeStep) (cands : List MethodCandidate)
+noncomputable def pickAtStep (step : ProbeStep) (cands : List MethodCandidate)
     (arbitrarySelfTypes : Bool) (stepIdx : Nat) : ProbeOutcome :=
   match pickMethod step .byVal cands stepIdx with
   | .picked p =>
@@ -509,12 +509,12 @@ def pickAtStep (step : ProbeStep) (cands : List MethodCandidate)
       | res => res
 
 /-- Eligibility predicate matching `probe.rs:1356, 1361`. -/
-def stepEligible (step : ProbeStep) : Bool :=
+noncomputable def stepEligible (step : ProbeStep) : Bool :=
   step.reachableViaDeref && !step.fromUnsafeDeref
 
 /-- Walk `steps` in order starting at index `baseIdx`, skipping ineligible steps,
 and return the first non-`.notFound` outcome (`Iterator::find_map` in `probe.rs:1363`). -/
-def probePickAux (cands : List MethodCandidate) (arbitrarySelfTypes : Bool) :
+noncomputable def probePickAux (cands : List MethodCandidate) (arbitrarySelfTypes : Bool) :
     Nat → List ProbeStep → ProbeOutcome
   | _, [] => .notFound
   | idx, step :: rest =>
@@ -525,13 +525,13 @@ def probePickAux (cands : List MethodCandidate) (arbitrarySelfTypes : Bool) :
     else
       probePickAux cands arbitrarySelfTypes (idx + 1) rest
 
-def probePick (steps : List ProbeStep) (cands : List MethodCandidate)
+noncomputable def probePick (steps : List ProbeStep) (cands : List MethodCandidate)
     (arbitrarySelfTypes : Bool) : ProbeOutcome :=
   probePickAux cands arbitrarySelfTypes 0 steps
 
 /-- Lexicographic priority order on `(stepIdx, refKind, candKind)`:
 smaller key has strictly higher precedence. -/
-def ProbePriorityLe (idx₁ : Nat) (rk₁ : RefKind) (ck₁ : CandKind)
+noncomputable def ProbePriorityLe (idx₁ : Nat) (rk₁ : RefKind) (ck₁ : CandKind)
     (idx₂ : Nat) (rk₂ : RefKind) (ck₂ : CandKind) : Prop :=
   idx₁ < idx₂ ∨
   (idx₁ = idx₂ ∧ (rk₁.rank < rk₂.rank ∨ (rk₁.rank = rk₂.rank ∧ ck₁.rank ≤ ck₂.rank)))
@@ -800,7 +800,7 @@ theorem pickAtStep_picked_spec
           | reborrowPin => exact Or.inr ⟨by rw [hR], hMin c hCMem hCMatch⟩
 
 /-- Total structural indexed lookup in `List`. -/
-def listGetOpt {α : Type} : List α → Nat → Option α
+noncomputable def listGetOpt {α : Type} : List α → Nat → Option α
   | [], _ => none
   | x :: _, 0 => some x
   | _ :: xs, n + 1 => listGetOpt xs n
@@ -1047,49 +1047,49 @@ structure ReceiverLayout where
 
 /-- Number of ABI machine words occupied by `L` when instantiated with a wide
 `dyn Trait` pointee (`isWide = true`) vs a concrete sized pointee (`isWide = false`). -/
-def fieldWords (isWide : Bool) : FieldKind → Nat
+noncomputable def fieldWords (isWide : Bool) : FieldKind → Nat
   | .coercedPtr          => if isWide then 2 else 1
   | .phantomData         => 0
   | .oneZst _            => 0
   | .nonZstData k        => k + 1
 
-def fieldsWordCount (isWide : Bool) : List FieldKind → Nat
+noncomputable def fieldsWordCount (isWide : Bool) : List FieldKind → Nat
   | [] => 0
   | f :: fs => fieldWords isWide f + fieldsWordCount isWide fs
 
-def abiWordCount (isWide : Bool) (L : ReceiverLayout) : Nat :=
+noncomputable def abiWordCount (isWide : Bool) (L : ReceiverLayout) : Nat :=
   fieldsWordCount isWide L.fields
 
 /-- Exact word-level ABI serialization of a receiver value `P<T>` given the
 pointer's ABI words (`[dataPtr, vtablePtr]` when wide, `[dataPtr]` when thin)
 and a payload tag word for any non-ZST extra field. -/
-def encodeFields (ptrWords : List Nat) (tagWord : Nat) : List FieldKind → List Nat
+noncomputable def encodeFields (ptrWords : List Nat) (tagWord : Nat) : List FieldKind → List Nat
   | [] => []
   | .coercedPtr :: fs => ptrWords ++ encodeFields ptrWords tagWord fs
   | .phantomData :: fs => encodeFields ptrWords tagWord fs
   | .oneZst _ :: fs => encodeFields ptrWords tagWord fs
   | .nonZstData k :: fs => List.replicate (k + 1) tagWord ++ encodeFields ptrWords tagWord fs
 
-def encodeReceiver (L : ReceiverLayout) (ptrWords : List Nat) (tagWord : Nat) : List Nat :=
+noncomputable def encodeReceiver (L : ReceiverLayout) (ptrWords : List Nat) (tagWord : Nat) : List Nat :=
   encodeFields ptrWords tagWord L.fields
 
 /-- Hardwired compiler vtable dispatch shim (`library/core/src/ops/unsize.rs:89-106`,
 `coherence/builtin.rs:322-329`): treats the wide receiver ABI identically to a
 single `(dataPtr, vtablePtr)` pair, stripping `vtablePtr` and passing `[dataPtr]`
 as the thin receiver to the concrete monomorphized callee. -/
-def vtableShimNarrow : List Nat → Option (List Nat)
+noncomputable def vtableShimNarrow : List Nat → Option (List Nat)
   | [dataPtr, _vtablePtr] => some [dataPtr]
   | _ => none
 
 /-- Count of coerced pointer fields in a struct. -/
-def countCoercedPtrs : List FieldKind → Nat
+noncomputable def countCoercedPtrs : List FieldKind → Nat
   | [] => 0
   | .coercedPtr :: fs => countCoercedPtrs fs + 1
   | _ :: fs => countCoercedPtrs fs
 
 /-- Every non-`coercedPtr` field is either `PhantomData` or a 1-ZST that does
 not mention type parameters (`coherence/builtin.rs:374-411`). -/
-def allNonCoercedFieldsAllowed : List FieldKind → Prop
+noncomputable def allNonCoercedFieldsAllowed : List FieldKind → Prop
   | [] => True
   | .coercedPtr :: fs => allNonCoercedFieldsAllowed fs
   | .phantomData :: fs => allNonCoercedFieldsAllowed fs
@@ -1194,7 +1194,7 @@ theorem dispatchFromDyn_vtable_call_sound (L : ReceiverLayout)
 /-- Concrete model of `struct NonDynHandle<T: ?Sized> { ptr: *const T, tag: u32 }`:
 a completely valid `core::ops::Receiver<Target = T>` that does NOT satisfy
 `DispatchFromDyn` because of its extra non-ZST `tag: u32` field. -/
-def nonDynHandleLayout : ReceiverLayout :=
+noncomputable def nonDynHandleLayout : ReceiverLayout :=
   { repr := .reprRust, fields := [.coercedPtr, .nonZstData 0] }
 
 /-- **Theorem 3b (`ce_non_layout_isomorphic_receiver_breaks_vtable_call`)**:
@@ -1218,7 +1218,7 @@ theorem ce_non_layout_isomorphic_receiver_breaks_vtable_call :
 
 /-- Sharpness Counterexample 3c: `#[repr(C)]` single-pointer wrapper is rejected
 by `SatisfiesDispatchFromDyn` (`coherence/builtin.rs:364-366`, `E0378`). -/
-def reprCHandleLayout : ReceiverLayout :=
+noncomputable def reprCHandleLayout : ReceiverLayout :=
   { repr := .reprC, fields := [.coercedPtr] }
 
 theorem ce_repr_c_receiver_rejected_by_dispatch_from_dyn :
@@ -1229,7 +1229,7 @@ theorem ce_repr_c_receiver_rejected_by_dispatch_from_dyn :
 
 /-- Sharpness Counterexample 3d: a 1-ZST field mentioning a type parameter
 (`oneZst true`) is rejected by `SatisfiesDispatchFromDyn` (`coherence/builtin.rs:394-403`). -/
-def paramZstHandleLayout : ReceiverLayout :=
+noncomputable def paramZstHandleLayout : ReceiverLayout :=
   { repr := .reprRust, fields := [.coercedPtr, .oneZst true] }
 
 theorem ce_zst_type_param_rejected_by_dispatch_from_dyn :
