@@ -1,0 +1,245 @@
+{
+  "observed_at_utc": "2026-11-22T07:15:16Z",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "rustc_commit_hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "part_a_three_way_hygiene_matrix": {
+    "macro_rules_semi_opaque": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "LOCAL_HYG=(100,7) ITEM_CALLSITE=999 LABEL_HYG=42 LABEL_BIDIR=99"
+    },
+    "decl_macro_opaque_pub_defsite": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "OPAQUE_LOCAL=(100,7) OPAQUE_ITEM_DEFSITE=10 OPAQUE_LABEL=55"
+    },
+    "decl_macro_opaque_priv_fn_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error: type `fn() -> u32 {helper}` is private\n --> <workdir>/a2_decl_priv_fn.rs:6:29\n  |\n6 |     pub macro m_priv_fn() { helper() }\n  |                             ^^^^^^ private type\n...\n9 | fn main() { println!(\"{}\", def_mod::m_priv_fn!()); }\n  |                            --------------------- in this macro invocation\n  |\n  = note: this error originates in the macro `def_mod::m_priv_fn` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error"
+    },
+    "decl_macro_opaque_priv_const_ok": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "OPAQUE_PRIV_CONST=777"
+    },
+    "decl_macro_opaque_priv_static_ok": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "OPAQUE_PRIV_STATIC=888"
+    },
+    "decl_macro_opaque_priv_fn_via_fnptr_const_ok": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "OPAQUE_PRIV_FNPTR=10"
+    },
+    "decl_macro_opaque_priv_struct_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error: type `Hidden` is private\n  --> <workdir>/a2_decl_priv_struct.rs:9:44\n   |\n 9 |     pub macro m_priv_struct() { Hidden(42).get() }\n   |                                            ^^^ private type\n...\n12 | fn main() { println!(\"{}\", def_mod::m_priv_struct!()); }\n   |                            ------------------------- in this macro invocation\n   |\n   = note: this error originates in the macro `def_mod::m_priv_struct` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error"
+    },
+    "proc_macro_crate_build": {
+      "compile_rc": 0,
+      "stderr_head": ""
+    },
+    "proc_macro_call_site_captures_local": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "PM_CALL=77"
+    },
+    "proc_macro_mixed_site_isolates_local": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0425]: cannot find value `x` in this scope\n --> <workdir>/a3_pm_mixed_err.rs:2:38\n  |\n2 | fn main() { let x: u32 = 77; let _ = pm_hyg::read_x_mixed_site!(); }\n  |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope\n  |\nhelp: an identifier with the same name exists, but is not accessible due to macro hygiene\n --> <workdir>/a3_pm_mixed_err.rs:2:17\n  |\n2 | fn main() { let x: u32 = 77; let _ = pm_hyg::read_x_mixed_site!(); }\n  |                 ^\n  = note: this error originates in the macro `pm_hyg::read_x_mixed_site` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0425`."
+    },
+    "proc_macro_def_site_isolates_local": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0425]: cannot find value `x` in this scope\n --> <workdir>/a3_pm_def_err.rs:2:38\n  |\n2 | fn main() { let x: u32 = 77; let _ = pm_hyg::read_x_def_site!(); }\n  |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope\n  |\nhelp: an identifier with the same name exists, but is not accessible due to macro hygiene\n --> <workdir>/a3_pm_def_err.rs:2:17\n  |\n2 | fn main() { let x: u32 = 77; let _ = pm_hyg::read_x_def_site!(); }\n  |                 ^\n  = note: this error originates in the macro `pm_hyg::read_x_def_site` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0425`."
+    },
+    "proc_macro_mixed_site_resolves_item_at_callsite": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "PM_MIXED_ITEM=321 CALLER_X=77"
+    },
+    "proc_macro_def_site_isolates_callsite_item": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0425]: cannot find function `caller_item` in this scope\n --> <workdir>/a3_pm_def_item_err.rs:4:21\n  |\n3 | fn caller_item() -> u32 { 321 }\n  |    ----------- you might have meant to refer to this function\n4 | fn main() { let _ = pm_hyg::call_item_def_site!(); }\n  |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope\n  |\n  = note: this error originates in the macro `pm_hyg::call_item_def_site` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0425`."
+    }
+  },
+  "part_b_cross_crate_dollar_crate_vs_decl_macro": {
+    "upstream_build_rc": 0,
+    "macro_rules_dollar_crate_pub": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "DC_PUB=200"
+    },
+    "macro_rules_dollar_crate_priv_fn_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0603]: function `secret_helper` is private\n --> <workdir>/b2_priv_fn.rs:1:21\n  |\n1 | fn main() { let _ = up_mac::call_priv_via_dollar_crate!(); }\n  |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ private function\n  |\nnote: the function `secret_helper` is defined here\n --> <workdir>/up_mac.rs:5:1\n  |\n5 | fn secret_helper() -> u32 { 404 }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^\n  = note: this error originates in the macro `up_mac::call_priv_via_dollar_crate` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0603`."
+    },
+    "macro_rules_dollar_crate_priv_const_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0603]: constant `UPSTREAM_SECRET_CONST` is private\n --> <workdir>/b2_priv_const.rs:1:21\n  |\n1 | fn main() { let _ = up_mac::read_priv_const_via_dollar_crate!(); }\n  |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ private constant\n  |\nnote: the constant `UPSTREAM_SECRET_CONST` is defined here\n --> <workdir>/up_mac.rs:6:1\n  |\n6 | const UPSTREAM_SECRET_CONST: u32 = 505;\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  = note: this error originates in the macro `up_mac::read_priv_const_via_dollar_crate` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0603`."
+    },
+    "decl_macro_upstream_pub_fn_ok": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "DECL_PUB=200"
+    },
+    "decl_macro_upstream_priv_fn_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error: type `fn() -> u32 {up_mac::secret_helper}` is private\n --> <workdir>/b3_decl_priv_fn.rs:1:38\n  |\n1 | fn main() { println!(\"DECL_PRIV={}\", up_mac::call_priv_via_decl_macro!()); }\n  |                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ private type\n  |\n  = note: this error originates in the macro `up_mac::call_priv_via_decl_macro` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error"
+    },
+    "decl_macro_upstream_priv_const_ok": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "DECL_PRIV_CONST=505"
+    },
+    "decl_macro_upstream_priv_static_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error: static `up_mac::UPSTREAM_SECRET_STATIC` is private\n --> <workdir>/b3_decl_priv_static.rs:1:45\n  |\n1 | ...={}\", up_mac::read_priv_static_via_decl_macro!()); }\n  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ private static\n  |\n  = note: this error originates in the macro `up_mac::read_priv_static_via_decl_macro` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error"
+    },
+    "decl_macro_upstream_priv_fnptr_mir_missing": {
+      "compile_rc": 1,
+      "stderr_head": "error: missing optimized MIR for `up_mac::secret_helper` in the crate `up_mac`\n  |\nnote: missing optimized MIR for this item (was the crate `up_mac` compiled with `--emit=metadata`?)\n --> <workdir>/up_mac.rs:5:1\n  |\n5 | fn secret_helper() -> u32 { 404 }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error"
+    }
+  },
+  "part_c_edition2021_vs_2024_expr_and_recursion_limit": {
+    "ed2021_expr_const_block": {
+      "compile_rc": 1,
+      "stderr_head": "error: no rules expected keyword `const`\n --> <workdir>/c1_2021_const.rs:2:24\n  |\n1 | macro_rules! m { ($e:expr) => { $e }; }\n  | -------------- when calling this macro\n2 | fn main() { let v = m!(const { 1 + 2 }); println!(\"EXPR_CONST={}\", v); }\n  |                        ^^^^^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr`\n --> <workdir>/c1_2021_const.rs:1:19\n  |\n1 | macro_rules! m { ($e:expr) => { $e }; }\n  |                   ^^^^^^^\n\nerror: aborting due to 1 previous error"
+    },
+    "ed2024_expr_const_block": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "EXPR_CONST=3"
+    },
+    "ed2021_expr_underscore": {
+      "compile_rc": 1,
+      "stderr_head": "error: no rules expected reserved identifier `_`\n --> <workdir>/c2_2021_under.rs:2:16\n  |\n1 | macro_rules! m { ($e:expr) => { $e = 9 }; }\n  | -------------- when calling this macro\n2 | fn main() { m!(_); println!(\"EXPR_UNDERSCORE_OK\"); }\n  |                ^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr`\n --> <workdir>/c2_2021_under.rs:1:19\n  |\n1 | macro_rules! m { ($e:expr) => { $e = 9 }; }\n  |                   ^^^^^^^\n\nerror: aborting due to 1 previous error"
+    },
+    "ed2024_expr_underscore": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "EXPR_UNDERSCORE_OK"
+    },
+    "ed2024_expr_2021_rejects_const_block": {
+      "compile_rc": 1,
+      "stderr_head": "error: no rules expected keyword `const`\n --> <workdir>/c3_2024_e2021_const.rs:2:24\n  |\n1 | macro_rules! m { ($e:expr_2021) => { $e }; }\n  | -------------- when calling this macro\n2 | fn main() { let _ = m!(const { 1 + 2 }); }\n  |                        ^^^^^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr_2021`\n --> <workdir>/c3_2024_e2021_const.rs:1:19\n  |\n1 | macro_rules! m { ($e:expr_2021) => { $e }; }\n  |                   ^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error"
+    },
+    "ed2024_expr_2021_rejects_underscore": {
+      "compile_rc": 1,
+      "stderr_head": "error: no rules expected reserved identifier `_`\n --> <workdir>/c3_2024_e2021_under.rs:2:16\n  |\n1 | macro_rules! m { ($e:expr_2021) => { $e = 9 }; }\n  | -------------- when calling this macro\n2 | fn main() { m!(_); }\n  |                ^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr_2021`\n --> <workdir>/c3_2024_e2021_under.rs:1:19\n  |\n1 | macro_rules! m { ($e:expr_2021) => { $e = 9 }; }\n  |                   ^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error"
+    },
+    "ed2024_expr_2021_accepts_regular_expr": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "EXPR_2021_ADD=3"
+    },
+    "cross_edition_def2021_call2024_const_block": {
+      "compile_rc": 1,
+      "stderr_head": "error: no rules expected keyword `const`\n --> <workdir>/c3_def21_call24.rs:1:47\n  |\n1 | fn main() { println!(\"XED={}\", ed21_mac::m21!(const { 1 + 2 })); }\n  |                                               ^^^^^ no rules expected this token in macro call\n  |\nnote: while trying to match meta-variable `$e:expr`\n --> <workdir>/ed21_mac.rs:1:37\n  |\n1 | #[macro_export] macro_rules! m21 { ($e:expr) => { $e }; }\n  |                                     ^^^^^^^\n\nerror: aborting due to 1 previous error"
+    },
+    "cross_edition_def2024_call2021_const_block": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "XED=3"
+    },
+    "recursion_nested_println_depth_124": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "REC=124:124"
+    },
+    "recursion_nested_println_depth_125": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "REC=125:125"
+    },
+    "recursion_nested_println_depth_126": {
+      "compile_rc": 1,
+      "stderr_head": "error: recursion limit reached while expanding `count!`\n --> <workdir>/c4_rec_nested_126.rs:1:66\n  |\n1 | ...ize }; (+ $($rest:tt)*) => { 1 + count!($($rest)*) }; }\n  |                                     ^^^^^^^^^^^^^^^^^\n2 | ...\", count!(+ + + + + + + + + ... + + + + + + + + + + + +)); }\n  |       -------------------------...------------------------- in this macro invocation\n  |\n  = help: consider increasing the recursion limit by adding a `#![recursion_limit = \"256\"]` attribute to your crate (`c4_rec_nested_126`)\n  = note: this error originates in the macro `count` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error"
+    },
+    "recursion_nested_println_depth_127": {
+      "compile_rc": 1,
+      "stderr_head": "error: recursion limit reached while expanding `count!`\n --> <workdir>/c4_rec_nested_127.rs:1:66\n  |\n1 | ...ize }; (+ $($rest:tt)*) => { 1 + count!($($rest)*) }; }\n  |                                     ^^^^^^^^^^^^^^^^^\n2 | ...\", count!(+ + + + + + + + + ... + + + + + + + + + + + +)); }\n  |       -------------------------...------------------------- in this macro invocation\n  |\n  = help: consider increasing the recursion limit by adding a `#![recursion_limit = \"256\"]` attribute to your crate (`c4_rec_nested_127`)\n  = note: this error originates in the macro `count` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error"
+    },
+    "recursion_toplevel_depth_125": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "REC_TOP=125:125"
+    },
+    "recursion_toplevel_depth_126": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "REC_TOP=126:126"
+    },
+    "recursion_toplevel_depth_127": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "REC_TOP=127:127"
+    },
+    "recursion_toplevel_depth_128": {
+      "compile_rc": 1,
+      "stderr_head": "error: recursion limit reached while expanding `count!`\n --> <workdir>/c4_rec_top_128.rs:1:66\n  |\n1 | ...t { () => { 0usize }; (+ $($rest:tt)*) => { 1 + count!($($rest)*) }; }\n  |                                                    ^^^^^^^^^^^^^^^^^\n2 | ... = count!(+ + + + + + + + + ... + + + + + + + + + + + +); p...\n  |       -------------------------...------------------------- in this macro invocation\n  |\n  = help: consider increasing the recursion limit by adding a `#![recursion_limit = \"256\"]` attribute to your crate (`c4_rec_top_128`)\n  = note: this error originates in the macro `count` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error"
+    },
+    "recursion_toplevel_depth_129": {
+      "compile_rc": 1,
+      "stderr_head": "error: recursion limit reached while expanding `count!`\n --> <workdir>/c4_rec_top_129.rs:1:66\n  |\n1 | ...t { () => { 0usize }; (+ $($rest:tt)*) => { 1 + count!($($rest)*) }; }\n  |                                                    ^^^^^^^^^^^^^^^^^\n2 | ... = count!(+ + + + + + + + + ... + + + + + + + + + + + +); p...\n  |       -------------------------...------------------------- in this macro invocation\n  |\n  = help: consider increasing the recursion limit by adding a `#![recursion_limit = \"256\"]` attribute to your crate (`c4_rec_top_129`)\n  = note: this error originates in the macro `count` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error"
+    },
+    "recursion_nested_println_depth_126_limit_256": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "REC_RAISED=126:126"
+    }
+  },
+  "part_d_proc_macro_nondeterminism_repro_cliff": {
+    "proc_macro_build_rc": 0,
+    "runs": {
+      "impure_run1_nonce_111111": {
+        "rc": 0,
+        "sha256": "a1a4579654aea87214f770341140a4d4a243fdfcfdd45e9216587d50bc4c5602",
+        "bytes": 984
+      },
+      "impure_run2_nonce_111111": {
+        "rc": 0,
+        "sha256": "a1a4579654aea87214f770341140a4d4a243fdfcfdd45e9216587d50bc4c5602",
+        "bytes": 984
+      },
+      "impure_run3_nonce_222222": {
+        "rc": 0,
+        "sha256": "83fde0ee05988105d6e2ecbe3b478462ac537b3ff8e3050353151fbb1244e391",
+        "bytes": 984
+      },
+      "pure_run1_nonce_111111": {
+        "rc": 0,
+        "sha256": "1c64303330ec09bd1178dee691c0f6c731b7babbcf368fe37e788f63b25ef9f9",
+        "bytes": 984
+      },
+      "pure_run2_nonce_222222": {
+        "rc": 0,
+        "sha256": "1c64303330ec09bd1178dee691c0f6c731b7babbcf368fe37e788f63b25ef9f9",
+        "bytes": 984
+      }
+    },
+    "same_env_bit_exact": true,
+    "diff_env_breaks_reproducibility": true,
+    "pure_proc_macro_env_invariant": true
+  }
+}
