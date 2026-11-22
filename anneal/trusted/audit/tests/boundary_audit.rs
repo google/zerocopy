@@ -1015,6 +1015,82 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
     );
 }
 
+#[test]
+fn rejects_reserved_kernel_roots_and_user_splitter_children_in_theory() {
+    let mut fix = TempFixture::new(Some(
+        "-- anneal-trust-tier: vetted\nprelude\nimport Init.Prelude\nimport Trusted.MirAst\n",
+    ));
+    fs::create_dir_all(fix.root.join("trusted/lean/Trusted")).unwrap();
+    fs::write(
+        fix.root.join("trusted/lean/Trusted/MirAst.lean"),
+        b"-- anneal-trust-tier: candidate:mir_ast\n\
+          prelude\nimport Init.Prelude\n\
+          namespace Trusted.MirAst\n\
+          structure Place where\n  localId : Nat\n\
+          end Trusted.MirAst\n",
+    )
+    .unwrap();
+    fs::create_dir_all(fix.root.join("theory")).unwrap();
+
+    // (a) `def Nat.gcd`, `theorem Nat.gcd` (kernel-accelerated),
+    // `theorem Nat.fakeThm` (non-accelerated `.thmInfo` in `Nat`),
+    // `private def Nat.privFake`, and `def Int8.fake` in `theory/` must all be
+    // rejected by `validateRepoConstant` with exit code 1.
+    for (theory_src, expected_msg) in [
+        (
+            "prelude\nimport Trusted\nnamespace Nat\ndef gcd : Nat := 0\nend Nat\n",
+            "repository module Anneal cannot declare constant Nat.gcd in reserved kernel namespace Nat",
+        ),
+        (
+            "prelude\nimport Trusted\nnamespace Nat\ntheorem gcd : True := True.intro\nend Nat\n",
+            "repository module Anneal cannot declare constant Nat.gcd in reserved kernel namespace Nat",
+        ),
+        (
+            "prelude\nimport Trusted\nnamespace Nat\ntheorem fakeThm : True := True.intro\nend Nat\n",
+            "repository module Anneal cannot declare constant Nat.fakeThm in reserved kernel namespace Nat",
+        ),
+        (
+            "prelude\nimport Trusted\nnamespace Nat\nprivate def privFake : Nat := 0\nend Nat\n",
+            "in reserved kernel namespace Nat",
+        ),
+        (
+            "prelude\nimport Trusted\nnamespace Int8\ndef fake : Nat := 0\nend Int8\n",
+            "repository module Anneal cannot declare constant Int8.fake in reserved kernel namespace Int8",
+        ),
+        // (b) User-authored declaration beneath `<CompoundConst>.splitter`
+        // (`Trusted.MirAst.Place` is an already-imported compound `Trusted`
+        // constant) must be rejected by `isGeneratedSplitterSubtree`.
+        (
+            "prelude\nimport Trusted\n\
+             namespace Trusted.MirAst.Place.splitter\n\
+             private def evil : Nat := 0\n\
+             end Trusted.MirAst.Place.splitter\n",
+            "non-Trusted module Anneal cannot declare constant",
+        ),
+    ] {
+        fs::write(fix.root.join("theory/Anneal.lean"), theory_src).unwrap();
+        let err = fix.check_expected(Some(1), Some("audit"), Some(true)).unwrap_err();
+        assert!(
+            err.message.starts_with("policy:") && err.message.contains(expected_msg),
+            "expected `{expected_msg}`, got: {err}"
+        );
+    }
+
+    // `theorem Nat.land` collides with `foundation-lock.json`'s
+    // `Init.Data.Nat.Bitwise.Basic` and is rejected even earlier by
+    // `importModules`.
+    fs::write(
+        fix.root.join("theory/Anneal.lean"),
+        "prelude\nimport Trusted\nnamespace Nat\ntheorem land : True := True.intro\nend Nat\n",
+    )
+    .unwrap();
+    let err_land = fix.check_expected(Some(2), Some("audit"), Some(true)).unwrap_err();
+    assert!(
+        err_land.message.contains("already contains 'Nat.land'"),
+        "expected Nat.land collision rejection, got: {err_land}"
+    );
+}
+
 /// Verifies that `verify_upstream_pin` and `Checker::run()` enforce
 /// `vendor/lean-miri/UPSTREAM_PIN.json` and reject whole-directory deletion,
 /// missing manifests, modified or unlisted `.lean` files, symlinks,
@@ -5333,11 +5409,12 @@ fn rejects_forged_ill_typed_correspondence_declaration_during_replay() {
 ///
 /// `Lean.saveModuleData` forges a `Trusted.Correspondence.olean` (header
 /// importing only `Init.Core`) whose sole constant is a verbatim copy of the
-/// `.sysrootFoundation` theorem `Prod.fst_swap` from `Init.Data.Prod`, and an
-/// empty `Anneal.MirCorrespondenceProof.olean` whose header imports
-/// `Init.Data.Prod`. `Lean.importModules` admits the duplicate theorem and
-/// attributes it to `Trusted.Correspondence`, which loads first, so the
-/// inventory, origin, and edge checks pass and only the shadow check in
+/// `.sysrootFoundation` theorem `Add.add_eq_hAdd` from `Init.MethodSpecsSimp`
+/// (whose `Add` root is outside `reservedKernelRoots` so `validateRepoConstant`
+/// admits it), and an empty `Anneal.MirCorrespondenceProof.olean` whose header
+/// imports `Init.MethodSpecsSimp`. `Lean.importModules` admits the duplicate
+/// theorem and attributes it to `Trusted.Correspondence`, which loads first,
+/// so the inventory, origin, and edge checks pass and only the shadow check in
 /// `replayCorrAndVendor` rejects it.
 #[test]
 fn rejects_repository_constant_shadowing_sysroot_declaration() {
@@ -5366,11 +5443,11 @@ fn rejects_repository_constant_shadowing_sysroot_declaration() {
              open Lean\n\
              def main : IO Unit := do\n\
                initSearchPath (System.FilePath.mk {:?})\n\
-               let env ← importModules #[{{ module := `Init.Data.Prod }}] {{}} \
+               let env ← importModules #[{{ module := `Init.MethodSpecsSimp }}] {{}} \
                  (trustLevel := 0) (plugins := #[]) (loadExts := false) \
                  (level := .private)\n\
-               let some ci := env.checked.get.find? `Prod.fst_swap \
-                 | throw (IO.userError \"missing sysroot theorem Prod.fst_swap\")\n\
+               let some ci := env.checked.get.find? `Add.add_eq_hAdd \
+                 | throw (IO.userError \"missing sysroot theorem Add.add_eq_hAdd\")\n\
                let corrMd : ModuleData := {{\n\
                  isModule := false\n\
                  imports := #[{{ module := `Init.Core }}]\n\
@@ -5382,7 +5459,7 @@ fn rejects_repository_constant_shadowing_sysroot_declaration() {
                saveModuleData (System.FilePath.mk {:?}) `Trusted.Correspondence corrMd\n\
                let proofMd : ModuleData := {{\n\
                  isModule := false\n\
-                 imports := #[{{ module := `Init.Data.Prod }}]\n\
+                 imports := #[{{ module := `Init.MethodSpecsSimp }}]\n\
                  constNames := #[]\n\
                  constants := #[]\n\
                  extraConstNames := #[]\n\
@@ -5416,7 +5493,7 @@ fn rejects_repository_constant_shadowing_sysroot_declaration() {
     assert_eq!(err.phase, "correspondence-audit", "unexpected phase: {err}");
     assert!(
         err.message
-            .contains("repository constant Prod.fst_swap shadows vendor/sysroot declaration"),
+            .contains("repository constant Add.add_eq_hAdd shadows vendor/sysroot declaration"),
         "unexpected error: {err}"
     );
 }

@@ -207,12 +207,13 @@ the boundary controls detailed below across Pass 1 (core repository
 
 The repository auditor and the target verifier share toolchain admission and
 staging code in [`trusted/cargo-anneal/`](../trusted/cargo-anneal). The
-target checker authenticates a narrower library import closure, separately
-checks specification and proof dependencies, and replays the accepted
-theorem against the bound obligation. The target checker runs on the
-operator's host, so only use it with source and proof input you trust to
-elaborate there. The repository correspondence audit retains its existing
-OS isolation for the reference model.
+target checker authenticates a narrower library import closure (or dynamically
+discovers and records the `Init.*`/`Std.*` sysroot import closure when opted in
+with `--allow-unpinned-lean`), separately checks specification and proof
+dependencies, and replays the accepted theorem against the bound obligation.
+The target checker runs on the operator's host, so only use it with source and
+proof input you trust to elaborate there. The repository correspondence audit
+retains its existing OS isolation for the reference model.
 
 ### Cargo workspace containment
 

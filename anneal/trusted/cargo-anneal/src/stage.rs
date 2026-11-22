@@ -26,9 +26,10 @@ use serde::Deserialize;
 use serde_json::json;
 
 use crate::toolchain::{
-    AdmittedToolchain, CompiledInspectorPaths, Failure, FoundationLock, ImportEdge, Json,
-    LibraryLock, ModuleArtifacts, OLEAN_PARTS, PARTS, ParallelDagPlan, TOOLCHAIN,
-    default_lean_path, is_sha256_hex, regular, run_parallel_dag, sha256_file, stage_regular_file,
+    AdmittedToolchain, CompiledInspectorPaths, FOUNDATION_AXIOMS, Failure, FoundationLock,
+    ImportEdge, Json, LibraryLock, ModuleArtifacts, OLEAN_PARTS, PARTS, ParallelDagPlan,
+    TOOLCHAIN, default_lean_path, is_sha256_hex, regular, run_parallel_dag,
+    scan_sysroot_package_roots, sha256_file_deref, stage_regular_file, transitive_import_closure,
     verify_installed_module_record,
 };
 
@@ -150,12 +151,23 @@ fn check_lean_output(
 
 fn write_setup_json_to_stage(
     stage: &Path,
-    artifacts: &BTreeMap<String, ModuleArtifacts>,
+    adm: &AdmittedToolchain,
     module: &str,
     imports: &[ImportEdge],
 ) -> Result<PathBuf, Failure> {
-    let import_arts: BTreeMap<&str, [&[String]; 2]> =
-        artifacts.iter().map(|(k, v)| (k.as_str(), v.to_wire())).collect();
+    let import_arts: BTreeMap<&str, [&[String]; 2]> = if adm.unpinned {
+        let closure = transitive_import_closure(&adm.graph, imports);
+        let mut filtered = BTreeMap::new();
+        for dep in &closure {
+            let (key, arts) = adm.artifacts.get_key_value(dep.as_str()).ok_or_else(|| {
+                Failure::operational("setup", format!("missing artifact for import {dep}"))
+            })?;
+            filtered.insert(key.as_str(), arts.to_wire());
+        }
+        filtered
+    } else {
+        adm.artifacts.iter().map(|(k, v)| (k.as_str(), v.to_wire())).collect()
+    };
     let setup_obj = json!({
         "name": module,
         "isModule": false,
@@ -176,12 +188,13 @@ fn build_lean_compile_args(
     setup_path: &Path,
     output: &Path,
     src_path: &Path,
+    mem_limit_mb: u32,
     warn_as_err: bool,
     target_rejection: bool,
 ) -> Vec<String> {
     let mut compile_args = vec![
         "-j1".to_string(),
-        "-M2048".to_string(),
+        format!("-M{mem_limit_mb}"),
         "-t0".to_string(),
         "-DElab.async=false".to_string(),
         "-Ddebug.skipKernelTC=false".to_string(),
@@ -241,6 +254,8 @@ pub struct Checker {
     environment: BTreeMap<String, String>,
     counter: usize,
     admitted: Option<AdmittedToolchain>,
+    allow_unpinned_lean: bool,
+    lean_memory_mb: Option<u32>,
 }
 
 impl Checker {
@@ -307,7 +322,77 @@ impl Checker {
             environment,
             counter: 0,
             admitted: None,
+            allow_unpinned_lean: false,
+            lean_memory_mb: None,
         })
+    }
+
+    /// Configure an explicit Lean `-M` memory limit in MiB.
+    ///
+    /// Correspondence modes (`correspondence-preflight`,
+    /// `correspondence-audit`) enforce an 8192 MiB floor, and unpinned
+    /// `resolve-imports` enforces a 4096 MiB floor; module compilation and
+    /// `target-audit` use the explicit override directly when set.
+    pub fn set_lean_memory_limit_mb(&mut self, mb: Option<u32>) {
+        assert!(mb.is_none_or(|m| m > 0), "Lean memory limit must be positive");
+        self.lean_memory_mb = mb;
+    }
+
+    /// Configure whether unpinned Lean toolchain admission (`resolve-imports`,
+    /// 6-module `{Init.Prelude, Init.Core}` foundation closure, nullable
+    /// sysroot `sourceSha256`, and 4096 MB `resolve-imports` / `Std`-closure
+    /// default memory caps) is permitted.
+    pub fn set_allow_unpinned_lean(&mut self, allow: bool) {
+        assert!(
+            self.admitted.is_none() || self.allow_unpinned_lean == allow,
+            "cannot change unpinned Lean admission policy after tool admission"
+        );
+        self.allow_unpinned_lean = allow;
+    }
+
+    /// Return whether unpinned Lean toolchain admission is enabled.
+    pub fn allow_unpinned_lean(&self) -> bool {
+        self.allow_unpinned_lean
+    }
+
+    /// Return the effective Lean memory cap in MiB for `mode`, combining the
+    /// configured override with mode-specific floors and closure defaults.
+    pub fn effective_lean_memory_limit_mb(&self, mode: Option<&str>) -> u32 {
+        if matches!(mode, Some("correspondence-preflight" | "correspondence-audit")) {
+            self.lean_memory_mb.map_or(8192, |mb| mb.max(8192))
+        } else if matches!(mode, Some("resolve-imports" | "compile-inspector"))
+            && self.allow_unpinned_lean
+        {
+            self.lean_memory_mb.map_or(4096, |mb| mb.max(4096))
+        } else if let Some(mb) = self.lean_memory_mb {
+            mb
+        } else {
+            self.default_lean_memory_limit_mb(mode)
+        }
+    }
+
+    /// Return the default Lean memory cap in MiB for the active host policy,
+    /// admitted library closure, and optional inspector mode.
+    ///
+    /// - Correspondence modes (`correspondence-preflight`,
+    ///   `correspondence-audit`) default to 8192 MiB.
+    /// - Unpinned `resolve-imports` runs before the library closure is known
+    ///   and defaults to 4096 MiB so `Init`+`Std` import graphs do not OOM.
+    /// - Compilation (`None`) and `target-audit` default to 4096 MiB whenever
+    ///   the admitted library closure contains any `Std` module, and 2048 MiB
+    ///   for `Init`-only runs.
+    pub fn default_lean_memory_limit_mb(&self, mode: Option<&str>) -> u32 {
+        if matches!(mode, Some("correspondence-preflight" | "correspondence-audit")) {
+            8192
+        } else if (mode == Some("resolve-imports") && self.allow_unpinned_lean)
+            || self.admitted.as_ref().is_some_and(|adm| {
+                adm.library_modules.iter().any(|m| m == "Std" || m.starts_with("Std."))
+            })
+        {
+            4096
+        } else {
+            2048
+        }
     }
 
     /// Return the canonicalized bundle or repository root directory.
@@ -333,6 +418,89 @@ impl Checker {
     pub fn next_counter(&mut self) -> usize {
         self.counter += 1;
         self.counter
+    }
+
+    /// Return the selected Lean executable path.
+    pub(crate) fn lean_path(&self) -> &Path {
+        &self.lean
+    }
+
+    /// Copy compiled `.olean`, `.olean.server`, and `.olean.private` files
+    /// from `self.stage/target-lib` into `dest`, preserving subdirectories.
+    ///
+    /// Returns `Ok(false)` when `target-lib` does not exist (for example after
+    /// an early preflight failure before compilation produced any artifacts).
+    pub fn export_target_oleans(&self, dest: &Path) -> Result<bool, Failure> {
+        let src = self.stage.join("target-lib");
+        match fs::symlink_metadata(&src) {
+            Err(e) if e.kind() == io::ErrorKind::NotFound => return Ok(false),
+            Err(e) => {
+                return Err(Failure::operational(
+                    "export-lean-lib",
+                    format!("cannot inspect {}: {e}", src.display()),
+                ));
+            }
+            Ok(meta) if meta.file_type().is_symlink() || !meta.file_type().is_dir() => {
+                return Err(Failure::operational(
+                    "export-lean-lib",
+                    format!("unexpected non-directory {}", src.display()),
+                ));
+            }
+            Ok(_) => {}
+        }
+        let mut exported = false;
+        for entry in walkdir::WalkDir::new(&src).min_depth(1).follow_links(false) {
+            let entry =
+                entry.map_err(|e| Failure::operational("export-lean-lib", e.to_string()))?;
+            if entry.file_type().is_symlink() {
+                return Err(Failure::operational(
+                    "export-lean-lib",
+                    format!("unexpected symlink in target-lib: {}", entry.path().display()),
+                ));
+            }
+            if entry.file_type().is_dir() {
+                continue;
+            }
+            if !entry.file_type().is_file() {
+                return Err(Failure::operational(
+                    "export-lean-lib",
+                    format!(
+                        "unexpected non-regular file in target-lib: {}",
+                        entry.path().display()
+                    ),
+                ));
+            }
+            let Some(name) = entry.file_name().to_str() else {
+                continue;
+            };
+            if !(name.ends_with(".olean")
+                || name.ends_with(".olean.server")
+                || name.ends_with(".olean.private"))
+            {
+                continue;
+            }
+            let rel = entry
+                .path()
+                .strip_prefix(&src)
+                .map_err(|e| Failure::operational("export-lean-lib", e.to_string()))?;
+            let target = dest.join(rel);
+            if let Some(parent) = target.parent() {
+                fs::create_dir_all(parent).map_err(|e| {
+                    Failure::operational(
+                        "export-lean-lib",
+                        format!("cannot create {}: {e}", parent.display()),
+                    )
+                })?;
+            }
+            fs::copy(entry.path(), &target).map_err(|e| {
+                Failure::operational(
+                    "export-lean-lib",
+                    format!("cannot copy {}: {e}", entry.path().display()),
+                )
+            })?;
+            exported = true;
+        }
+        Ok(exported)
     }
 
     /// Return `true` if Lean compilation has started on the current stage.
@@ -418,6 +586,9 @@ impl Checker {
         let inspector_src = self.root.join("trusted/audit/TrustedBoundary.lean");
         let inspector = self.stage.join("src/TrustedBoundary.lean");
         let inspector_sha256 = stage_regular_file(&inspector_src, &inspector, "tool-snapshot")?;
+        if self.allow_unpinned_lean {
+            return self.tool_admission_unpinned(inspector, inspector_sha256);
+        }
 
         let source = self.root.join("trusted/lean");
         let lock_path = source.join("foundation-lock.json");
@@ -456,7 +627,7 @@ impl Checker {
         // https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/stdlib.make.in#L188-L190
         // https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/stdlib.make.in#L157-L163
         // https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/CMakeLists.txt#L859-L872
-        let lean_sha = sha256_file(&self.lean, "toolchain")?;
+        let lean_sha = sha256_file_deref(&self.lean, "toolchain")?;
         if !parsed_lock.distributions.values().any(|s| s.eq_ignore_ascii_case(&lean_sha)) {
             return Err(Failure::new(
                 2,
@@ -538,6 +709,48 @@ impl Checker {
             artifacts,
             library_lock,
             library_modules: BTreeSet::new(),
+            unpinned: false,
+            sysroot_package_roots: BTreeSet::new(),
+            unpinned_records: BTreeMap::new(),
+            lean_binary_sha256: None,
+        });
+        Ok(self.admitted.as_mut().unwrap())
+    }
+
+    fn tool_admission_unpinned(
+        &mut self,
+        inspector: PathBuf,
+        inspector_sha256: String,
+    ) -> Result<&mut AdmittedToolchain, Failure> {
+        let lean_binary_sha256 = sha256_file_deref(&self.lean, "toolchain")
+            .map_err(|e| Failure::operational("toolchain", e.message))?;
+        let version = self.process("version", &["--version".to_string()])?.trim().to_string();
+        let prefix_raw =
+            self.process("prefix", &["--print-prefix".to_string()])?.trim().to_string();
+        let prefix = fs::canonicalize(&prefix_raw)
+            .map_err(|e| Failure::new(2, "toolchain", format!("cannot resolve prefix: {e}")))?;
+        let sysroot_package_roots = scan_sysroot_package_roots(&prefix, "toolchain")?;
+        let axioms = FOUNDATION_AXIOMS
+            .iter()
+            .map(|(name, module)| ((*name).to_string(), (*module).to_string()))
+            .collect();
+        self.admitted = Some(AdmittedToolchain {
+            inspector,
+            inspector_sha256,
+            lean_sha256: lean_binary_sha256.clone(),
+            compiled_inspector: None,
+            version,
+            prefix,
+            axioms,
+            foundation_graph: BTreeMap::new(),
+            graph: BTreeMap::new(),
+            artifacts: BTreeMap::new(),
+            library_lock: None,
+            library_modules: BTreeSet::new(),
+            unpinned: true,
+            sysroot_package_roots,
+            unpinned_records: BTreeMap::new(),
+            lean_binary_sha256: Some(lean_binary_sha256),
         });
         Ok(self.admitted.as_mut().unwrap())
     }
@@ -617,7 +830,7 @@ impl Checker {
         imports: &[ImportEdge],
     ) -> Result<PathBuf, Failure> {
         let adm = self.admitted()?;
-        write_setup_json_to_stage(&self.stage, &adm.artifacts, module, imports)
+        write_setup_json_to_stage(&self.stage, adm, module, imports)
     }
 
     /// Compile a single staged `.lean` source file into
@@ -644,6 +857,7 @@ impl Checker {
             &setup_path,
             &output,
             src_path,
+            self.effective_lean_memory_limit_mb(None),
             warn_as_err,
             target_rejection,
         );
@@ -692,6 +906,7 @@ impl Checker {
         self.execution_began = true;
         self.counter += order.len();
 
+        let mem_limit_mb = self.effective_lean_memory_limit_mb(None);
         let lean = &self.lean;
         let stage = &self.stage;
         let environment = &self.environment;
@@ -710,8 +925,7 @@ impl Checker {
                 let module = &order[idx];
                 let edge_list = &imports[module];
                 let src_path = &sources[module];
-                let setup_path =
-                    write_setup_json_to_stage(stage, &adm.artifacts, module, edge_list)?;
+                let setup_path = write_setup_json_to_stage(stage, adm, module, edge_list)?;
                 let output =
                     stage.join(lib_subdir).join(format!("{}.olean", module.replace('.', "/")));
                 if let Some(parent) = output.parent() {
@@ -722,6 +936,7 @@ impl Checker {
                     &setup_path,
                     &output,
                     src_path,
+                    mem_limit_mb,
                     warn_as_err,
                     target_rejection,
                 );
@@ -753,7 +968,7 @@ impl Checker {
 
     /// Compile `TrustedBoundary.lean` once per
     /// `(lean_sha256, sysroot_prefix, inspector_sha256)` using the admitted
-    /// pinned `lean` binary and materialize the `.olean` plus a 1-line
+    /// `lean` binary and materialize the `.olean` plus a 1-line
     /// `import TrustedBoundary` runner in `<stage>/inspector-lib`.
     fn ensure_compiled_inspector(&mut self) -> Result<CompiledInspectorPaths, Failure> {
         let (key, inspector) = {
@@ -780,6 +995,8 @@ impl Checker {
             .create(&lib_dir)
             .map_err(|e| Failure::operational("compile-inspector", e.to_string()))?;
 
+        let mem_limit =
+            format!("-M{}", self.effective_lean_memory_limit_mb(Some("compile-inspector")));
         let mut populate = || -> Result<PathBuf, Failure> {
             let cached = {
                 let mut guard = slot.lock().unwrap_or_else(|e| e.into_inner());
@@ -797,7 +1014,7 @@ impl Checker {
                         "compile-inspector",
                         &[
                             "-j1".to_string(),
-                            "-M2048".to_string(),
+                            mem_limit.clone(),
                             "-t0".to_string(),
                             "-DElab.async=false".to_string(),
                             "-Ddebug.skipKernelTC=false".to_string(),
@@ -895,25 +1112,27 @@ impl Checker {
         fs::write(&request_path, req_bytes)
             .map_err(|e| Failure::new(2, mode, format!("cannot write request: {e}")))?;
 
-        // Keep Pass 1 (`preflight`, `audit`) and target modes (`headers`,
-        // `target-audit`) capped at `-M2048` over untrusted code, raising the
-        // limit to `-M8192` only for Pass 2 (`correspondence-preflight`,
-        // `correspondence-audit`) when loading the 160-module `lean-miri` and
-        // `Lean.*` closure environment.
-        let mem_limit = match mode {
-            "correspondence-preflight" | "correspondence-audit" => "-M8192",
-            _ => "-M2048",
-        };
+        // Keep Pass 1 (`preflight`, `audit`) and `Init`-only target runs capped
+        // at `-M2048` over untrusted code, unpinned `resolve-imports` and
+        // `Std`-importing target runs at `-M4096`, and Pass 2
+        // (`correspondence-preflight`, `correspondence-audit`) at `-M8192` for
+        // the 160-module `lean-miri` and `Lean.*` closure.
+        let mem_limit = format!("-M{}", self.effective_lean_memory_limit_mb(Some(mode)));
         let args = vec![
             "-j1".to_string(),
-            mem_limit.to_string(),
+            mem_limit,
             "--run".to_string(),
             compiled.runner.to_string_lossy().into_owned(),
             request_path.to_string_lossy().into_owned(),
             result_path.to_string_lossy().into_owned(),
         ];
-        // Bootstrap only from the stage. The inspector resets Lean's search
-        // path before loading modules described by the request.
+        // `LEAN_PATH` uses the delimiter-free relative path `"inspector-lib"`
+        // (resolved against `current_dir(&self.stage)`) so host `TMPDIR`
+        // characters such as `:` cannot split `LEAN_PATH` or leak external
+        // directories. `TrustedBoundary.run` immediately calls
+        // `initHermeticSearchPath`, which resets `Lean.searchPathRef` from
+        // `sysroot` (and explicit staged `searchPath` entries) without reading
+        // `LEAN_PATH` before loading any foundation, repo, or vendor module.
         let output = self
             .launch_lean_with_path(&args, Some(OsStr::new("inspector-lib")))
             .map_err(|e| Failure::new(2, mode, format!("could not execute Lean: {e}")))?;
@@ -1219,26 +1438,191 @@ mod process_tests {
             ])
         );
         assert!(output.stderr.is_empty());
+    }
 
-        // Passing an explicit hermetic `LEAN_PATH` exposes only that path while
-        // keeping ambient `LEAN_PATH`, `ELAN_TOOLCHAIN`, and `LD_PRELOAD`
-        // stripped.
-        let with_path = checker
-            .launch_lean_with_path(&[], Some(std::ffi::OsStr::new("/staged/inspector-lib")))
-            .unwrap();
-        assert!(with_path.status.success());
-        let env_with_path = String::from_utf8(with_path.stdout).unwrap();
-        assert_eq!(
-            env_with_path.lines().collect::<BTreeSet<_>>(),
-            BTreeSet::from([
-                "HOME=/selected/home",
-                "LANG=C",
-                "LC_ALL=C",
-                "LEAN_PATH=/staged/inspector-lib",
-                "PATH=/usr/bin:/bin",
-                "TMPDIR=/selected/tmp",
-            ])
+    #[test]
+    fn default_memory_limits_match_pinned_unpinned_and_correspondence_policies() {
+        let checkout = tempfile::tempdir().unwrap();
+        let mut checker = shell_checker(checkout.path());
+        assert!(!checker.allow_unpinned_lean());
+        assert_eq!(checker.default_lean_memory_limit_mb(None), 2048);
+        assert_eq!(checker.default_lean_memory_limit_mb(Some("target-audit")), 2048);
+        assert_eq!(checker.default_lean_memory_limit_mb(Some("correspondence-preflight")), 8192);
+        assert_eq!(checker.default_lean_memory_limit_mb(Some("correspondence-audit")), 8192);
+
+        checker.set_allow_unpinned_lean(true);
+        assert!(checker.allow_unpinned_lean());
+        assert_eq!(checker.default_lean_memory_limit_mb(Some("resolve-imports")), 4096);
+        // Before admitting any `Std` library module (or for `Init`-only runs),
+        // compile and `target-audit` stay capped at 2048 MiB.
+        assert_eq!(checker.default_lean_memory_limit_mb(None), 2048);
+        assert_eq!(checker.default_lean_memory_limit_mb(Some("target-audit")), 2048);
+
+        // Once the admitted library closure includes a `Std` module, both
+        // compilation and `target-audit` rise to 4096 MiB.
+        checker.admitted = Some(AdmittedToolchain {
+            inspector: checkout.path().join("TrustedBoundary.lean"),
+            inspector_sha256: "0".repeat(64),
+            lean_sha256: "0".repeat(64),
+            compiled_inspector: None,
+            version: "Lean 4.35".to_string(),
+            prefix: checkout.path().to_path_buf(),
+            axioms: Vec::new(),
+            foundation_graph: BTreeMap::new(),
+            graph: BTreeMap::new(),
+            artifacts: BTreeMap::new(),
+            library_lock: None,
+            library_modules: BTreeSet::from(["Init.Data.BitVec.Basic".to_string()]),
+            unpinned: true,
+            sysroot_package_roots: BTreeSet::new(),
+            unpinned_records: BTreeMap::new(),
+            lean_binary_sha256: None,
+        });
+        assert_eq!(checker.default_lean_memory_limit_mb(None), 2048);
+        assert_eq!(checker.default_lean_memory_limit_mb(Some("target-audit")), 2048);
+
+        checker.admitted.as_mut().unwrap().library_modules.insert("Std.Data.HashMap".to_string());
+        assert_eq!(checker.default_lean_memory_limit_mb(None), 4096);
+        assert_eq!(checker.default_lean_memory_limit_mb(Some("target-audit")), 4096);
+        assert_eq!(checker.default_lean_memory_limit_mb(Some("correspondence-preflight")), 8192);
+        assert_eq!(checker.default_lean_memory_limit_mb(Some("correspondence-audit")), 8192);
+    }
+
+    #[test]
+    fn unpinned_setup_json_filters_import_arts_to_transitive_closure() {
+        let dir = tempfile::tempdir().unwrap();
+        let root = fs::canonicalize(dir.path()).unwrap();
+        let prefix = root.join("sysroot");
+        fs::create_dir_all(prefix.join("lib/lean")).unwrap();
+        for name in ["A", "B", "C", "D", "Unrelated"] {
+            fs::write(prefix.join("lib/lean").join(format!("{name}.olean")), name).unwrap();
+        }
+        let lean = root.join("lean");
+        fs::write(
+            &lean,
+            format!(
+                "#!/bin/sh\ncase \"$1\" in\n--version) printf 'Lean 4.35\\n' ;;\n\
+                 --print-prefix) printf '%s\\n' '{}' ;;\n*) exit 0 ;;\nesac\n",
+                prefix.display()
+            ),
+        )
+        .unwrap();
+        use std::os::unix::fs::PermissionsExt;
+        fs::set_permissions(&lean, fs::Permissions::from_mode(0o755)).unwrap();
+        let inspector = root.join("trusted/audit/TrustedBoundary.lean");
+        fs::create_dir_all(inspector.parent().unwrap()).unwrap();
+        fs::write(&inspector, "-- stub\n").unwrap();
+
+        let mut checker = Checker::new_with_env(&root, Some(&lean), []).unwrap();
+        checker.set_allow_unpinned_lean(true);
+        let adm = checker.tool_admission().unwrap();
+        for name in ["A", "B", "C", "D", "Unrelated"] {
+            let p = prefix
+                .join("lib/lean")
+                .join(format!("{name}.olean"))
+                .to_string_lossy()
+                .into_owned();
+            adm.artifacts.insert(
+                name.to_string(),
+                ModuleArtifacts { olean_parts: vec![p], ir_parts: Vec::new() },
+            );
+        }
+        adm.graph.insert(
+            "A".to_string(),
+            vec![
+                ImportEdge {
+                    module: "B".to_string(),
+                    import_all: false,
+                    is_exported: false,
+                    is_meta: false,
+                },
+                ImportEdge {
+                    module: "C".to_string(),
+                    import_all: false,
+                    is_exported: true,
+                    is_meta: true,
+                },
+            ],
         );
-        assert!(with_path.stderr.is_empty());
+        adm.graph.insert(
+            "B".to_string(),
+            vec![ImportEdge {
+                module: "D".to_string(),
+                import_all: false,
+                is_exported: true,
+                is_meta: false,
+            }],
+        );
+        adm.graph.insert("C".to_string(), Vec::new());
+        adm.graph.insert("D".to_string(), Vec::new());
+        adm.graph.insert("Unrelated".to_string(), Vec::new());
+
+        let setup_path = checker
+            .write_setup_json(
+                "Target",
+                &[ImportEdge {
+                    module: "A".to_string(),
+                    import_all: false,
+                    is_exported: true,
+                    is_meta: false,
+                }],
+            )
+            .unwrap();
+        let setup: Json = serde_json::from_slice(&fs::read(setup_path).unwrap()).unwrap();
+        let keys: BTreeSet<String> =
+            setup["importArts"].as_object().unwrap().keys().cloned().collect();
+        assert_eq!(
+            keys,
+            BTreeSet::from(["A".to_string(), "B".to_string(), "C".to_string(), "D".to_string(),])
+        );
+    }
+
+    #[test]
+    fn effective_memory_limits_respect_floors_and_explicit_overrides() {
+        let checkout = tempfile::tempdir().unwrap();
+        let mut checker = shell_checker(checkout.path());
+        checker.set_allow_unpinned_lean(true);
+        checker.set_lean_memory_limit_mb(Some(1024));
+        assert_eq!(checker.effective_lean_memory_limit_mb(None), 1024);
+        assert_eq!(checker.effective_lean_memory_limit_mb(Some("target-audit")), 1024);
+        // Floors hold for resolve-imports (4096) and correspondence (8192).
+        assert_eq!(checker.effective_lean_memory_limit_mb(Some("resolve-imports")), 4096);
+        assert_eq!(checker.effective_lean_memory_limit_mb(Some("correspondence-preflight")), 8192);
+        assert_eq!(checker.effective_lean_memory_limit_mb(Some("correspondence-audit")), 8192);
+
+        checker.set_lean_memory_limit_mb(Some(12288));
+        assert_eq!(checker.effective_lean_memory_limit_mb(None), 12288);
+        assert_eq!(checker.effective_lean_memory_limit_mb(Some("resolve-imports")), 12288);
+        assert_eq!(checker.effective_lean_memory_limit_mb(Some("correspondence-audit")), 12288);
+    }
+
+    #[test]
+    fn export_target_oleans_handles_absent_dir_and_filters_non_olean_artifacts() {
+        let checkout = tempfile::tempdir().unwrap();
+        let checker = shell_checker(checkout.path());
+        let dest = checkout.path().join("lean-lib");
+
+        // Absent target-lib returns Ok(false) without ENOENT.
+        assert!(!checker.export_target_oleans(&dest).unwrap());
+        assert!(!dest.exists());
+
+        let target_lib = checker.stage.join("target-lib");
+        fs::create_dir_all(target_lib.join("Trusted")).unwrap();
+        fs::write(target_lib.join("Trusted/MirAst.olean"), b"olean").unwrap();
+        fs::write(target_lib.join("Trusted/MirAst.olean.server"), b"server").unwrap();
+        fs::write(target_lib.join("Trusted/MirAst.olean.private"), b"priv").unwrap();
+        fs::write(target_lib.join("Trusted/MirAst.ir"), b"ir").unwrap();
+        fs::write(target_lib.join("Trusted/MirAst.ir.sig"), b"irsig").unwrap();
+        fs::write(target_lib.join("lean-toolchain"), b"lean4:v4.34.1").unwrap();
+        fs::write(target_lib.join("Proof.olean"), b"proof").unwrap();
+
+        assert!(checker.export_target_oleans(&dest).unwrap());
+        assert_eq!(fs::read(dest.join("Trusted/MirAst.olean")).unwrap(), b"olean");
+        assert_eq!(fs::read(dest.join("Trusted/MirAst.olean.server")).unwrap(), b"server");
+        assert_eq!(fs::read(dest.join("Trusted/MirAst.olean.private")).unwrap(), b"priv");
+        assert_eq!(fs::read(dest.join("Proof.olean")).unwrap(), b"proof");
+        assert!(!dest.join("Trusted/MirAst.ir").exists());
+        assert!(!dest.join("Trusted/MirAst.ir.sig").exists());
+        assert!(!dest.join("lean-toolchain").exists());
     }
 }

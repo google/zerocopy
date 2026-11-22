@@ -484,7 +484,7 @@ anneal/
 │   ├── audit/                      # CI .olean replay & boundary auditor
 │   │   ├── src/                    # anneal-audit binary & UPSTREAM_PIN pin
 │   │   └── TrustedBoundary.lean    # Syntactic preflight & kernel DAG inspector
-│   └── cargo-anneal/               # Current toolchain setup CLI
+│   └── cargo-anneal/               # Toolchain setup & target verification CLI
 ├── vendor/
 │   └── lean-miri/                  # Pinned lean-miri snapshot (M_ref)
 │       └── UPSTREAM_PIN.json       # Upstream & patch digests (pinned in audit)
@@ -555,10 +555,12 @@ A Rust crate's semantics depend on the exact compiler flags passed by Cargo:
 `--cfg` predicates, enabled Cargo features, `--target` triple and data layout,
 edition settings, and resolved dependency crate hashes.
 
-Rather than parsing `.rs` files standalone, `cargo anneal` drives extraction
-through Cargo (setting `RUSTC_WORKSPACE_WRAPPER`) so that `rustc-capture`
-receives the exact command-line invocation and environment variables that a
-standard `cargo build` or `cargo check` passes to `rustc`.
+Rather than parsing `.rs` files standalone, `cargo anneal` accepts an explicit
+configured compilation (`--request` or `verify rustc`, passing exact compiler
+flags and crate configuration to `rustc-capture`), or discovers library entry
+inputs via `cargo metadata` (`--manifest-path`, for dependency-free,
+feature-free libraries under Anneal's fixed x86-64 Linux scalar profile). Full
+Cargo build-graph interception (via `RUSTC_WORKSPACE_WRAPPER`) is planned.
 
 ### Guarding against post-monomorphization and late compiler errors
 

@@ -432,6 +432,15 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         self.assertIn('"$ANNEAL_TEST_CARGO_ANNEAL" /cargo-anneal', alpha_step["run"])
         self.assertNotIn("cargo build", alpha_step["run"])
 
+        starnix_step = next(
+            s for s in jobs["installed-smoke"]["steps"]
+            if s.get("id") == "starnix"
+        )
+        self.assertIn("ci/verify_starnix_e2e.py", starnix_step["run"])
+        self.assertIn("--fetch-only", starnix_step["run"])
+        self.assertIn("bwrap --unshare-all", starnix_step["run"])
+        self.assertIn('--cli "$ANNEAL_TEST_CARGO_ANNEAL"', starnix_step["run"])
+
     def test_parallel_workspace_tests_job_wired_into_gate_and_isolated(self):
         jobs = self.workflow["jobs"]
         for parallel_job in ("installed-smoke", "workspace-tests"):
@@ -456,7 +465,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         # and workspace-tests must strip Actions tokens.
         for job_name, min_run_steps in (
             ("test-and-verify", 6),
-            ("installed-smoke", 11),
+            ("installed-smoke", 12),
             ("workspace-tests", 7),
         ):
             steps_list = jobs[job_name]["steps"]

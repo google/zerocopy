@@ -8,9 +8,11 @@
 
 //! Command behavior through direct invocation and Cargo's subcommand dispatch.
 
-use std::env;
-use std::path::Path;
-use std::process::{Command, Output};
+use std::{
+    env,
+    path::Path,
+    process::{Command, Output},
+};
 
 #[derive(Clone, Copy, Debug)]
 enum Route {
@@ -20,30 +22,18 @@ enum Route {
 
 fn command(route: Route, workdir: &Path) -> Command {
     let binary = Path::new(env!("CARGO_BIN_EXE_cargo-anneal"));
-    assert!(
-        binary.is_file(),
-        "missing test binary: {}",
-        binary.display()
-    );
+    assert!(binary.is_file(), "missing test binary: {}", binary.display());
     let mut command = match route {
         Route::Direct => Command::new(binary),
         Route::Cargo => {
             let mut command = Command::new(env!("CARGO"));
             command.arg("anneal");
             command.env("CARGO_HOME", workdir.join("cargo-home"));
-            let mut paths = vec![
-                binary
-                    .parent()
-                    .expect("test binary has a parent")
-                    .to_path_buf(),
-            ];
+            let mut paths = vec![binary.parent().expect("test binary has a parent").to_path_buf()];
             if let Some(path) = env::var_os("PATH") {
                 paths.extend(env::split_paths(&path));
             }
-            command.env(
-                "PATH",
-                env::join_paths(paths).expect("construct subcommand search path"),
-            );
+            command.env("PATH", env::join_paths(paths).expect("construct subcommand search path"));
             command
         }
     };
@@ -74,8 +64,15 @@ fn help_and_version_work_through_direct_and_cargo_invocation() {
             &["help"],
             &["-h"],
             &["--help"],
+            #[cfg(feature = "setup")]
             &["setup", "-h"],
+            #[cfg(feature = "setup")]
             &["setup", "--help"],
+            #[cfg(feature = "setup")]
+            &["help", "setup"],
+            &["verify", "-h"],
+            &["verify", "--help"],
+            &["help", "verify"],
         ] {
             let output = command(route, project.path())
                 .args(args)
@@ -89,12 +86,7 @@ fn help_and_version_work_through_direct_and_cargo_invocation() {
                 .arg(arg)
                 .output()
                 .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
-            assert_result(
-                &output,
-                0,
-                &format!("cargo-anneal {}", env!("CARGO_PKG_VERSION")),
-                "",
-            );
+            assert_result(&output, 0, &format!("cargo-anneal {}", env!("CARGO_PKG_VERSION")), "");
             assert!(output.stderr.is_empty(), "{output:?}");
         }
     }
@@ -165,8 +157,16 @@ fn malformed_arguments_fail_through_direct_and_cargo_invocation() {
         for args in [
             &["unknown"][..],
             &["--unknown"],
+            #[cfg(not(feature = "setup"))]
+            &["setup"],
+            #[cfg(feature = "setup")]
             &["setup", "--unknown"],
+            #[cfg(feature = "setup")]
             &["setup", "--local-archive"],
+            &["verify"],
+            &["verify", "--request"],
+            &["verify", "--request", "request.json", "--unknown"],
+            &["verify", "--request", "request.json", "--manifest-path", "Cargo.toml"],
         ] {
             let output = command(route, project.path())
                 .args(args)
@@ -178,27 +178,27 @@ fn malformed_arguments_fail_through_direct_and_cargo_invocation() {
     }
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", feature = "setup"))]
 fn local_archive(path: &Path) {
+    archive_entries(path, &[("marker.txt", b"current-run CLI archive", 0o644)]);
+}
+
+#[cfg(all(target_os = "linux", feature = "setup"))]
+fn archive_entries(path: &Path, entries: &[(&str, &[u8], u32)]) {
     let file = std::fs::File::create(path).expect("create archive");
     let encoder = zstd::Encoder::new(file, 1).expect("create compressor");
     let mut archive = tar::Builder::new(encoder);
-    let contents = b"current-run CLI archive";
-    let mut header = tar::Header::new_gnu();
-    header.set_size(contents.len() as u64);
-    header.set_mode(0o644);
-    header.set_cksum();
-    archive
-        .append_data(&mut header, "marker.txt", contents.as_slice())
-        .expect("write archive marker");
-    archive
-        .into_inner()
-        .expect("finish tar archive")
-        .finish()
-        .expect("finish compressed archive");
+    for (name, contents, mode) in entries {
+        let mut header = tar::Header::new_gnu();
+        header.set_size(contents.len() as u64);
+        header.set_mode(*mode);
+        header.set_cksum();
+        archive.append_data(&mut header, name, *contents).expect("write archive fixture");
+    }
+    archive.into_inner().expect("finish tar archive").finish().expect("finish compressed archive");
 }
 
-#[cfg(target_os = "linux")]
+#[cfg(all(target_os = "linux", feature = "setup"))]
 #[test]
 fn setup_uses_fresh_child_cache_for_each_invocation() {
     let project = tempfile::tempdir().expect("create external working directory");
@@ -223,10 +223,17 @@ fn setup_uses_fresh_child_cache_for_each_invocation() {
                 .strip_prefix("Installed Anneal toolchain at ")
                 .expect("setup reports its installation root"),
         );
-        assert!(
-            installed.starts_with(cache.path()),
-            "{}",
-            installed.display()
+        assert!(installed.starts_with(cache.path()), "{}", installed.display());
+        let [expected_cache_base, _home_base] = cargo_anneal::default_lean_search_bases_from_env(
+            Some(cache.path().as_os_str()),
+            std::env::var_os("HOME").as_deref(),
+        );
+        assert_eq!(
+            installed.parent(),
+            Some(expected_cache_base.as_path()),
+            "exocrate UserGlobal install {} must live under default Lean cache base {}",
+            installed.display(),
+            expected_cache_base.display()
         );
         assert_eq!(
             std::fs::read(installed.join("marker.txt")).expect("read installed current-run marker"),
@@ -249,5 +256,638 @@ fn setup_uses_fresh_child_cache_for_each_invocation() {
             assert!(output.stdout.is_empty(), "{output:?}");
         }
         assert!(installed.join("marker.txt").is_file());
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn rejects_non_utf8_artifact_paths_before_staging_or_retention() {
+    use std::{ffi::OsString, fs, os::unix::ffi::OsStringExt};
+
+    let project = tempfile::tempdir().expect("create artifact-path fixture");
+    let request = project.path().join("request.json");
+    let request_bytes = b"not JSON\n";
+    fs::write(&request, request_bytes).unwrap();
+    for route in [Route::Direct, Route::Cargo] {
+        let absent = project.path().join(OsString::from_vec(
+            format!("{route:?}-new-").into_bytes().into_iter().chain([0xff]).collect(),
+        ));
+        let existing = project.path().join(OsString::from_vec(
+            format!("{route:?}-existing-").into_bytes().into_iter().chain([0xff]).collect(),
+        ));
+        fs::create_dir(&existing).unwrap();
+        fs::write(existing.join("keep"), b"caller evidence").unwrap();
+        for destination in [&absent, &existing] {
+            let mut cmd = command(route, project.path());
+            cmd.arg("verify").arg("--request").arg(&request).arg("--artifacts").arg(destination);
+            #[cfg(not(feature = "setup"))]
+            cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+            let output = cmd.output().unwrap();
+            assert_result(&output, 2, "", "");
+            assert!(output.stderr.is_empty(), "{output:?}");
+            let receipt: serde_json::Value = serde_json::from_slice(&output.stdout)
+                .expect("invalid artifact path returns a JSON receipt");
+            assert_eq!(receipt["schema_version"], 2);
+            assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
+            assert!(receipt.get("tainted").is_none(), "{receipt}");
+            assert_eq!(receipt["status"], "tool_failed");
+            assert_eq!(receipt["phase"], "retention");
+            assert_eq!(receipt["detail"], "artifact destination path must be UTF-8");
+            assert!(receipt.get("artifacts").is_none(), "{receipt}");
+            assert!(!absent.exists());
+            assert_eq!(fs::read(existing.join("keep")).unwrap(), b"caller evidence");
+            assert_eq!(fs::read_dir(&existing).unwrap().count(), 1);
+            assert_eq!(fs::read(&request).unwrap(), request_bytes);
+        }
+        // A missing temp parent would fail stage creation. The encoding check
+        // must run first, without reading a request or creating either path.
+        let missing_tmp = project.path().join(format!("{route:?}-missing-temp"));
+        let mut cmd = command(route, project.path());
+        cmd.env("TMPDIR", &missing_tmp)
+            .arg("verify")
+            .arg("--request")
+            .arg(project.path().join("missing-request"))
+            .arg("--artifacts")
+            .arg(&absent);
+        #[cfg(not(feature = "setup"))]
+        cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let output = cmd.output().unwrap();
+        assert_result(&output, 2, "", "");
+        let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(receipt["schema_version"], 2);
+        assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
+        assert_eq!(receipt["phase"], "retention");
+        assert_eq!(receipt["detail"], "artifact destination path must be UTF-8");
+        assert!(!missing_tmp.exists());
+        assert!(!absent.exists());
+
+        // UTF-8 paths retain the normal rejected-request evidence and receipt.
+        // This control needs no compiler or Lean process.
+        let ordinary = project.path().join(format!("{route:?}-ordinary-evidence"));
+        let mut cmd = command(route, project.path());
+        cmd.arg("verify").arg("--request").arg(&request).arg("--artifacts").arg(&ordinary);
+        #[cfg(not(feature = "setup"))]
+        cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+        let output = cmd.output().unwrap();
+        assert_result(&output, 1, "", "");
+        assert!(output.stderr.is_empty(), "{output:?}");
+        let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(receipt["schema_version"], 2);
+        assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
+        assert_eq!(receipt["status"], "unsupported");
+        assert_eq!(receipt["phase"], "request");
+        assert_eq!(receipt["artifacts"].as_str(), ordinary.to_str());
+        assert!(ordinary.is_dir());
+        assert_eq!(fs::read(&request).unwrap(), request_bytes);
+    }
+}
+
+#[test]
+fn early_verification_failures_have_versioned_receipts() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let existing = project.path().join("existing");
+    fs::create_dir(&existing).unwrap();
+    fs::write(existing.join("keep"), b"caller evidence").unwrap();
+    for route in [Route::Direct, Route::Cargo] {
+        for phase in ["staging", "retention"] {
+            let mut child = command(route, project.path());
+            child.arg("verify").arg("--request").arg(&request);
+            #[cfg(not(feature = "setup"))]
+            child.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+            if phase == "staging" {
+                child.env("TMPDIR", project.path().join("missing-temp"));
+            } else {
+                child.arg("--artifacts").arg(&existing);
+            }
+            let output = child.output().unwrap();
+            assert_result(&output, 2, "", "");
+            assert!(output.stderr.is_empty(), "{output:?}");
+            let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+            assert_eq!(receipt["schema_version"], 2, "{receipt}");
+            assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
+            assert!(receipt.get("tainted").is_none(), "{receipt}");
+            assert_eq!(receipt["status"], "tool_failed");
+            assert_eq!(receipt["phase"], phase);
+            assert_eq!(fs::read(existing.join("keep")).unwrap(), b"caller evidence");
+            assert_eq!(fs::read_dir(&existing).unwrap().count(), 1);
+        }
+    }
+}
+
+#[cfg(all(target_os = "linux", feature = "setup"))]
+#[test]
+fn capture_discovery_prefers_explicit_then_installed_then_sibling() {
+    use std::{fs, os::unix::fs::PermissionsExt};
+    let project = tempfile::tempdir().unwrap();
+    let bin = project.path().join("bin");
+    fs::create_dir(&bin).unwrap();
+    let cli = bin.join("cargo-anneal");
+    fs::copy(env!("CARGO_BIN_EXE_cargo-anneal"), &cli).unwrap();
+    let script = |label| {
+        format!(
+            "#!/bin/sh\nprintf '%s\\n' '{{\"status\":\"unsupported\",\"detail\":\"{label}\"}}'\nexit 2\n"
+        )
+    };
+    for (path, label) in
+        [(bin.join("anneal-rustc-capture"), "sibling"), (bin.join("explicit"), "explicit")]
+    {
+        fs::write(&path, script(label)).unwrap();
+        fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
+    }
+    let archive = project.path().join("tools.tar.zst");
+    let cached = script("installed");
+    archive_entries(
+        &archive,
+        &[
+            ("bin/anneal-rustc-capture", cached.as_bytes(), 0o755),
+            ("rust/marker", b"paired sysroot", 0o644),
+        ],
+    );
+    let cache = project.path().join("cache");
+    let setup = Command::new(&cli)
+        .current_dir(project.path())
+        .env("XDG_CACHE_HOME", &cache)
+        .args(["setup", "--local-archive"])
+        .arg(&archive)
+        .output()
+        .unwrap();
+    assert_result(&setup, 0, "Installed Anneal toolchain at ", "");
+    let rust = project.path().join("rust");
+    fs::create_dir(&rust).unwrap();
+    fs::write(rust.join("lib.rs"), b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    let request = project.path().join("request.json");
+    fs::write(
+        &request,
+        serde_json::to_vec(&serde_json::json!({
+            "schema_version":1,
+            "compilation":{"source_root":rust,"crate_root":"lib.rs","crate_name":"fixture",
+                "edition":"2024","target":"x86_64-unknown-linux-gnu","source_files":["lib.rs"]},
+            "scope":{"kind":"crate"},"proof":{"source_root":"unused","sources":[]}
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+    // These fixture tools refuse capture. Their marker diagnoses selection;
+    // they cannot produce a fake verification result and never start Lean.
+    for expected in ["installed", "explicit", "sibling"] {
+        let mut child = Command::new(&cli);
+        child.current_dir(project.path()).arg("verify").arg("--request").arg(&request);
+        child.env(
+            "XDG_CACHE_HOME",
+            if expected == "sibling" { project.path().join("empty-cache") } else { cache.clone() },
+        );
+        if expected == "explicit" {
+            child.arg("--capture").arg(bin.join("explicit")).arg("--sysroot").arg(project.path());
+        }
+        let output = child.output().unwrap();
+        assert_result(&output, 1, "", "");
+        let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(receipt["schema_version"], 2);
+        assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
+        assert_eq!(receipt["phase"], "capture", "{receipt}");
+        let detail: serde_json::Value =
+            serde_json::from_str(receipt["detail"].as_str().unwrap()).unwrap();
+        assert_eq!(detail["detail"], expected, "{receipt}");
+    }
+    let help = Command::new(&cli).args(["verify", "--help"]).output().unwrap();
+    assert_result(&help, 0, "defaults to the installed bundle, then a sibling", "");
+}
+
+#[test]
+fn cargo_shortcut_declares_only_its_documented_source_namespace() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let package = project.path().join("package");
+    fs::create_dir_all(package.join("src")).unwrap();
+    fs::create_dir(package.join("proof")).unwrap();
+    fs::create_dir(package.join(".hidden")).unwrap();
+    fs::create_dir(package.join("target")).unwrap();
+    fs::write(
+        package.join("Cargo.toml"),
+        "[package]\nname = \"source_namespace\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    fs::write(package.join("src/lib.rs"), b"pub fn zero() -> u64 { include!(\"zero.inc\") }\n")
+        .unwrap();
+    fs::write(package.join("src/unused.rs"), b"unused declared input\n").unwrap();
+    fs::write(package.join("src/zero.inc"), b"0u64\n").unwrap();
+    fs::write(package.join(".hidden/ignored.rs"), b"not a shortcut input\n").unwrap();
+    fs::write(package.join("target/ignored.rs"), b"not a shortcut input\n").unwrap();
+    fs::write(package.join("proof/Spec.lean"), b"not compiled by this check\n").unwrap();
+    let evidence = project.path().join("evidence");
+    // A missing capture tool stops after request construction and staging,
+    // so this checks actual shortcut inventory without compiling the fixture.
+    let mut child = command(Route::Direct, project.path());
+    let mut paths = vec![Path::new(env!("CARGO")).parent().unwrap().to_path_buf()];
+    if let Some(path) = env::var_os("PATH") {
+        paths.extend(env::split_paths(&path));
+    }
+    child
+        .env("PATH", env::join_paths(paths).unwrap())
+        .arg("verify")
+        .arg("--manifest-path")
+        .arg(package.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(package.join("proof"))
+        .arg("--capture")
+        .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path())
+        .arg("--artifacts")
+        .arg(&evidence);
+    #[cfg(not(feature = "setup"))]
+    child.arg("--lean").arg(project.path().join("missing-lean"));
+    let output = child.output().unwrap();
+    assert_result(&output, 2, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["schema_version"], 2);
+    assert_eq!(receipt["taint_reasons"], serde_json::json!([]));
+    assert_eq!(receipt["phase"], "capture-tool", "{receipt}");
+    let request: serde_json::Value =
+        serde_json::from_slice(&fs::read(evidence.join("request.json")).unwrap()).unwrap();
+    assert_eq!(
+        request["compilation"]["source_files"],
+        serde_json::json!(["src/lib.rs", "src/unused.rs"])
+    );
+    assert!(!evidence.join("rust/src/zero.inc").exists());
+    assert!(!evidence.join("rust/.hidden").exists());
+    assert!(!evidence.join("rust/target").exists());
+    assert!(!evidence.join("rust/proof").exists());
+}
+
+#[cfg(not(feature = "setup"))]
+#[test]
+fn verify_without_setup_feature_requires_explicit_tool_paths() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let rust = project.path().join("rust");
+    fs::create_dir(&rust).unwrap();
+    fs::write(rust.join("lib.rs"), b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    let request = project.path().join("request.json");
+    fs::write(
+        &request,
+        serde_json::to_vec(&serde_json::json!({
+            "schema_version": 1,
+            "compilation": {
+                "source_root": rust,
+                "crate_root": "lib.rs",
+                "crate_name": "fixture",
+                "edition": "2024",
+                "target": "x86_64-unknown-linux-gnu",
+                "source_files": ["lib.rs"]
+            },
+            "scope": {"kind": "crate"},
+            "proof": {"source_root": "unused", "sources": []}
+        }))
+        .unwrap(),
+    )
+    .unwrap();
+
+    for route in [Route::Direct, Route::Cargo] {
+        for extra in [&[][..], &["--capture", "cap", "--sysroot", "sys"], &["--lean", "lean"]] {
+            let mut cmd = command(route, project.path());
+            cmd.arg("verify").arg("--request").arg(&request).args(extra);
+            let output = cmd.output().unwrap();
+            assert_result(&output, 2, "", "error:");
+            assert!(output.stdout.is_empty(), "{output:?}");
+        }
+    }
+}
+
+#[test]
+fn host_policy_conflicts_exit_2_on_stderr_with_empty_stdout() {
+    let project = tempfile::tempdir().unwrap();
+    let base_rustc = [
+        "verify",
+        "rustc",
+        "lib.rs",
+        "--crate-name",
+        "fixture",
+        "--spec-file",
+        "Spec=Spec.lean",
+        "--proof-file",
+        "Proof=Proof.lean",
+    ];
+
+    let bad_cases: Vec<Vec<&str>> = vec![
+        vec!["verify", "--request", "r.json", "--export-lean-lib"],
+        vec!["verify", "--request", "r.json", "--capture", "cap", "--lean", "lean"],
+        vec!["verify", "--request", "r.json", "--sysroot", "sys", "--lean", "lean"],
+        vec![
+            "verify",
+            "--request",
+            "r.json",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--allow-unpinned-lean",
+        ],
+        vec![
+            "verify",
+            "--request",
+            "r.json",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--lean",
+            "lean",
+            "--lean-memory-mb",
+            "0",
+        ],
+        vec![
+            "verify",
+            "--request",
+            "r.json",
+            "--capture",
+            "cap",
+            "--sysroot",
+            "sys",
+            "--lean",
+            "lean",
+            "--select",
+            "foo",
+        ],
+        [
+            &[
+                "verify",
+                "--request",
+                "r.json",
+                "--capture",
+                "cap",
+                "--sysroot",
+                "sys",
+                "--lean",
+                "lean",
+            ][..],
+            &base_rustc[1..],
+        ]
+        .concat(),
+        [
+            &[
+                "verify",
+                "--manifest-path",
+                "Cargo.toml",
+                "--proof-dir",
+                "proof",
+                "--capture",
+                "cap",
+                "--sysroot",
+                "sys",
+                "--lean",
+                "lean",
+            ][..],
+            &base_rustc[1..],
+        ]
+        .concat(),
+        [
+            &base_rustc[..],
+            &[
+                "--capture",
+                "cap",
+                "--sysroot",
+                "sys",
+                "--lean",
+                "lean",
+                "--spec-file",
+                "Spec=Other.lean",
+            ],
+        ]
+        .concat(),
+        [
+            &base_rustc[..],
+            &["--capture", "cap", "--sysroot", "sys", "--lean", "lean", "--export-lean-lib"],
+        ]
+        .concat(),
+    ];
+
+    for args in bad_cases {
+        let output = command(Route::Direct, project.path()).args(&args).output().unwrap();
+        assert_result(&output, 2, "", "error:");
+        assert!(output.stdout.is_empty(), "{args:?}: {output:?}");
+    }
+}
+
+#[test]
+fn unpinned_policy_taint_emits_stderr_banner_and_v2_failure_receipt() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+    let missing_tmp = project.path().join("missing-tmp");
+
+    let mut cmd = command(Route::Direct, project.path());
+    cmd.env("TMPDIR", &missing_tmp).args(["verify", "--request"]).arg(&request).args([
+        "--allow-unpinned-lean",
+        "--lean",
+        "custom-lean",
+        "--capture",
+        "cap",
+        "--sysroot",
+        "sys",
+    ]);
+    let output = cmd.output().unwrap();
+    assert_result(&output, 2, "", "TAINTED");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(receipt["taint_reasons"], serde_json::json!(["unpinned_lean"]), "{receipt}");
+    assert!(receipt.get("tainted").is_none(), "{receipt}");
+    assert!(receipt.get("unpinned_lean").is_none(), "{receipt}");
+    assert_eq!(receipt["phase"], "staging");
+}
+
+#[cfg(feature = "setup")]
+#[test]
+fn setup_allows_independent_lean_override_without_capture_pair() {
+    use std::fs;
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    fs::write(&request, b"not JSON\n").unwrap();
+
+    // `--lean` alone without `--capture`/`--sysroot` must pass CLI host-policy
+    // validation when `setup` is enabled and reach `verify::main`.
+    let output = command(Route::Direct, project.path())
+        .args(["verify", "--request"])
+        .arg(&request)
+        .args(["--lean", "custom-lean"])
+        .output()
+        .unwrap();
+    assert_result(&output, 1, "", "");
+    assert!(output.stderr.is_empty(), "{output:?}");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(receipt["status"], "unsupported");
+    assert_eq!(receipt["phase"], "request");
+}
+
+#[cfg(unix)]
+#[test]
+fn rustc_mode_stages_symlinks_strict_roles_and_rejects_fifos() {
+    use std::{fs, os::unix::fs::symlink};
+
+    let project = tempfile::tempdir().unwrap();
+    let cas = project.path().join("cas");
+    fs::create_dir(&cas).unwrap();
+    fs::write(cas.join("a.rs"), b"pub mod sub;\n").unwrap();
+    fs::write(cas.join("b.rs"), b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    fs::write(cas.join("spec.lean"), b"-- spec\n").unwrap();
+    fs::write(cas.join("proof.lean"), b"-- proof\n").unwrap();
+
+    let runfiles = project.path().join("runfiles/crate/src");
+    fs::create_dir_all(&runfiles).unwrap();
+    symlink(cas.join("a.rs"), runfiles.join("lib.rs")).unwrap();
+    symlink(cas.join("b.rs"), runfiles.join("sub.rs")).unwrap();
+    symlink(cas.join("spec.lean"), runfiles.join("Contract.lean")).unwrap();
+    symlink(cas.join("proof.lean"), runfiles.join("Spec.Helper.lean")).unwrap();
+
+    let evidence = project.path().join("evidence");
+    // Host flags passed both BEFORE and AFTER `rustc` must work.
+    let output = command(Route::Direct, project.path())
+        .arg("verify")
+        .arg("--capture")
+        .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path())
+        .arg("rustc")
+        .arg(runfiles.join("lib.rs"))
+        .args(["--crate-name", "sample", "--source-file"])
+        .arg(runfiles.join("sub.rs"))
+        .arg("--spec-file")
+        .arg(format!("Contract={}", runfiles.join("Contract.lean").display()))
+        .arg("--proof-file")
+        .arg(format!("Spec.Helper={}", runfiles.join("Spec.Helper.lean").display()))
+        .args([
+            "--spec-decl",
+            "Contract:StarnixEbpf.Contract.specs",
+            "--theorem",
+            "Spec.Helper:Proof.custom",
+            "--lean",
+        ])
+        .arg(project.path().join("missing-lean"))
+        .arg("--artifacts")
+        .arg(&evidence)
+        .output()
+        .unwrap();
+    assert_result(&output, 2, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
+    assert_eq!(receipt["schema_version"], 2, "{receipt}");
+    assert_eq!(receipt["phase"], "capture-tool", "{receipt}");
+    let req: serde_json::Value =
+        serde_json::from_slice(&fs::read(evidence.join("request.json")).unwrap()).unwrap();
+    assert_eq!(req["compilation"]["source_root"], "rust");
+    assert_eq!(req["compilation"]["crate_root"], "lib.rs");
+    assert_eq!(req["compilation"]["source_files"], serde_json::json!(["lib.rs", "sub.rs"]));
+    assert_eq!(req["proof"]["source_root"], "authored");
+    assert_eq!(req["proof"]["specification_module"], "Contract");
+    assert_eq!(req["proof"]["specification"], "StarnixEbpf.Contract.specs");
+    assert_eq!(req["proof"]["theorem_module"], "Spec.Helper");
+    assert_eq!(req["proof"]["theorem"], "Proof.custom");
+    assert_eq!(
+        req["proof"]["sources"],
+        serde_json::json!([
+            {"module": "Contract", "path": "Contract.lean", "role": "specification"},
+            {"module": "Spec.Helper", "path": "Spec/Helper.lean", "role": "proof"},
+        ])
+    );
+
+    // FIFO symlink target must fail immediately without hanging.
+    let fifo = project.path().join("pipe.rs");
+    assert!(Command::new("mkfifo").arg(&fifo).status().unwrap().success());
+    let fifo_link = runfiles.join("fifo.rs");
+    symlink(&fifo, &fifo_link).unwrap();
+    let fifo_out = command(Route::Direct, project.path())
+        .arg("verify")
+        .arg("--capture")
+        .arg(project.path().join("missing-capture"))
+        .arg("--sysroot")
+        .arg(project.path())
+        .arg("--lean")
+        .arg(project.path().join("missing-lean"))
+        .arg("rustc")
+        .arg(&fifo_link)
+        .args(["--crate-name", "sample", "--spec-file"])
+        .arg(format!("Spec={}", runfiles.join("Contract.lean").display()))
+        .arg("--proof-file")
+        .arg(format!("Proof={}", runfiles.join("Spec.Helper.lean").display()))
+        .output()
+        .unwrap();
+    assert_result(&fifo_out, 1, "", "");
+    let fifo_receipt: serde_json::Value = serde_json::from_slice(&fifo_out.stdout).unwrap();
+    assert_eq!(fifo_receipt["status"], "unsupported");
+    assert_eq!(fifo_receipt["phase"], "inputs");
+}
+
+#[test]
+fn rustc_mode_rejects_reserved_or_mismatched_proof_modules_before_capture() {
+    use std::fs;
+
+    let project = tempfile::tempdir().unwrap();
+    let lib = project.path().join("lib.rs");
+    let spec = project.path().join("Spec.lean");
+    let proof = project.path().join("Proof.lean");
+    fs::write(&lib, b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    fs::write(&spec, b"-- spec\n").unwrap();
+    fs::write(&proof, b"-- proof\n").unwrap();
+
+    // Reserved module name (`Trusted`) must be rejected before capture.
+    let reserved_out = command(Route::Direct, project.path())
+        .args(["verify", "rustc"])
+        .arg(&lib)
+        .args(["--crate-name", "sample", "--spec-file"])
+        .arg(format!("Trusted={}", spec.display()))
+        .arg("--proof-file")
+        .arg(format!("Proof={}", proof.display()))
+        .args([
+            "--spec-decl",
+            "Trusted:Trusted.specs",
+            "--capture",
+            "missing-capture",
+            "--sysroot",
+            "missing-sysroot",
+            "--lean",
+            "missing-lean",
+        ])
+        .output()
+        .unwrap();
+    assert_result(&reserved_out, 1, "", "");
+    let reserved_receipt: serde_json::Value = serde_json::from_slice(&reserved_out.stdout).unwrap();
+    assert_eq!(reserved_receipt["status"], "unsupported");
+    assert_eq!(reserved_receipt["phase"], "proof");
+
+    // Unknown `--spec-decl` module or role mismatch must be rejected early
+    // before capture runs.
+    for extra in [
+        &["--spec-decl", "Missing:Missing.specs"][..],
+        &["--theorem", "Missing:Missing.verify"][..],
+        &["--spec-decl", "Proof:Proof.specs"][..],
+        &["--theorem", "Spec:Spec.verify"][..],
+    ] {
+        let out = command(Route::Direct, project.path())
+            .args(["verify", "rustc"])
+            .arg(&lib)
+            .args(["--crate-name", "sample", "--spec-file"])
+            .arg(format!("Spec={}", spec.display()))
+            .arg("--proof-file")
+            .arg(format!("Proof={}", proof.display()))
+            .args(extra)
+            .args([
+                "--capture",
+                "missing-capture",
+                "--sysroot",
+                "missing-sysroot",
+                "--lean",
+                "missing-lean",
+            ])
+            .output()
+            .unwrap();
+        assert_result(&out, 1, "", "");
+        let receipt: serde_json::Value = serde_json::from_slice(&out.stdout).unwrap();
+        assert_eq!(receipt["status"], "unsupported", "{extra:?}: {receipt}");
+        assert_eq!(receipt["phase"], "proof", "{extra:?}: {receipt}");
     }
 }
