@@ -2712,6 +2712,7 @@ mod tests {
         assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
         assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
         assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
+        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -2727,6 +2728,7 @@ mod tests {
         assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-loopinv");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
@@ -2739,6 +2741,7 @@ mod tests {
         assert!(!export_dir.join("Anneal/PTree.olean").exists());
         assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
         assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
+        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 
@@ -2841,6 +2844,7 @@ mod tests {
         assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
         assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
         assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
+        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -2854,6 +2858,7 @@ mod tests {
         assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-spineforce");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
@@ -2864,6 +2869,7 @@ mod tests {
         assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
         assert!(!export_dir.join("Anneal/BitVec.olean").exists());
         assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
+        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 
@@ -3010,6 +3016,7 @@ mod tests {
         assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
         assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
         assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -3023,6 +3030,7 @@ mod tests {
         assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-ptree");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
@@ -3033,6 +3041,7 @@ mod tests {
         assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
         assert!(!export_dir.join("Anneal/BitVec.olean").exists());
         assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
+        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 
@@ -3171,6 +3180,7 @@ mod tests {
         assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
         assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
         assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
+        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -3184,6 +3194,7 @@ mod tests {
         assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-bit-trie-lrat");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
@@ -3194,6 +3205,7 @@ mod tests {
         assert!(!export_dir.join("Anneal/PTree.olean").exists());
         assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
         assert!(!export_dir.join("Anneal/BitVec.olean").exists());
+        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 
@@ -3294,6 +3306,7 @@ mod tests {
         assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
         assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
         assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
+        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -3303,6 +3316,7 @@ mod tests {
         assert!(checker.stage.join("target-lib/Anneal/LinearArith.olean").is_file());
         assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/InitLemmas.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
@@ -3312,6 +3326,7 @@ mod tests {
         assert!(export_dir.join("Anneal/LinearArith.olean").is_file());
         assert!(!export_dir.join("Anneal/PTree.olean").exists());
         assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
+        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
         assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
         assert!(!export_dir.join("Anneal/MirWp.olean").exists());
         assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
@@ -3368,5 +3383,126 @@ mod tests {
         assert_eq!(err_missing.code, 1, "expected elaboration failure: {err_missing}");
         assert_eq!(err_missing.phase, "compile-Captured", "{err_missing}");
         assert!(err_missing.message.contains("Fields missing: `scope`"), "{err_missing}");
+    }
+
+    #[test]
+    fn live_demand_driven_init_lemmas_three_axiom_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-init-lemmas"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Data.Nat.Div.Basic\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.specs (_ : Nat) : Prop :=\n  \
+                     (∀ (a b : Bool), (a && b) = true → a = true ∧ b = true) ∧\n  \
+                     (∀ n : Nat, 0 < Nat.pow 2 n) ∧\n  \
+                     (∀ m n : Nat, Nat.div n 2 = Nat.div m 2 → Nat.mod n 2 = Nat.mod m 2 → n = m)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.InitLemmas\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                     have _ := Anneal.InitLemmas.canary_list_ops_edge\n  \
+                     exact ⟨fun _ _ h => ⟨Anneal.InitLemmas.bool_and_left h,\n    \
+                       Anneal.InitLemmas.bool_and_right h⟩,\n    \
+                       Anneal.InitLemmas.nat_two_pow_pos,\n    \
+                       fun m n hd hm => Anneal.InitLemmas.div2_mod2_inj m n hd hm⟩\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req, false);
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(sources.contains("Anneal.InitLemmas"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
+        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
+        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
+        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
+        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
+        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        assert!(checker.stage.join("target-lib/Anneal/InitLemmas.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        let export_dir = base.join("export-with-init-lemmas");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        assert!(export_dir.join("Anneal/InitLemmas.olean").is_file());
+        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
+        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
+        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
+        assert!(!export_dir.join("Anneal/PTree.olean").exists());
+        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
+        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
+        assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 }

@@ -20,6 +20,7 @@ import Anneal.LinearArith
 import Anneal.SpineForce
 import Anneal.PTree
 import Anneal.BitTrieLrat
+import Anneal.InitLemmas
 import Anneal.MirTotal
 import Anneal.Core
 import Anneal.PureLift
@@ -32,11 +33,11 @@ namespace Anneal
 Umbrella module for Anneal's untrusted proof theory (`theory/`), re-exporting
 `Trusted`, the reusable 3-axiom proof libraries (`Anneal.NatBitwise`,
 `Anneal.BitVec`, `Anneal.BitVecArith`, `Anneal.LeBytes`, `Anneal.ListChunks`,
-`Anneal.LoopInv`, `Anneal.LinearArith`, `Anneal.SpineForce`, `Anneal.PTree`, and
-`Anneal.BitTrieLrat`), the fuel-bounded MIR weakest-precondition machinery
-(`Anneal.MirWp`), the computable MIR step mirrors and unbounded-depth bridges
-(`Anneal.MirTotal`), the block-tree, separation-logic, and stage-cut core
-(`Anneal.Core`), and `Anneal.PureLift`.
+`Anneal.LoopInv`, `Anneal.LinearArith`, `Anneal.SpineForce`, `Anneal.PTree`,
+`Anneal.BitTrieLrat`, and `Anneal.InitLemmas`), the fuel-bounded MIR
+weakest-precondition machinery (`Anneal.MirWp`), the computable MIR step
+mirrors and unbounded-depth bridges (`Anneal.MirTotal`), the block-tree,
+separation-logic, and stage-cut core (`Anneal.Core`), and `Anneal.PureLift`.
 -/
 
 end Anneal
