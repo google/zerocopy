@@ -168,15 +168,12 @@ or audit them is permitted).
     `-- anneal-trust-tier: candidate:<feature>`.
   - Never demote an existing `vetted` module to `candidate:<feature>`.
   - `vetted` modules must never import or reference `candidate:<feature>`
-    modules or constants (`theory/` or downstream `candidate` modules import
-    `candidate:<feature>` submodules directly rather than routing them through
-    a `vetted` umbrella). Note that `checkTierReferences` currently enforces
-    constant-level isolation only: in `trusted/audit/tests/boundary_audit.rs`,
-    Case 1 rejects a `vetted` constant referencing a `candidate` constant while
-    Case 2 still allows a declaration-free `vetted` `Trusted.lean` umbrella to
-    import a `candidate` submodule. Enforce module-level `import` isolation
-    manually during Pass 2 until mechanized in `TrustedBoundary.lean` and Case
-    2 is flipped to a negative test.
+    modules or constants, or Pass 2 non-foundation modules (`theory/` or
+    downstream `candidate` modules import `candidate:<feature>` submodules
+    directly rather than routing them through a `vetted` umbrella). Both
+    module-import and constant-reference isolation are mechanically enforced
+    across preflight and audit gates by `checkPreflightTierImports`,
+    `importViolation?`, and `edgeViolation?` (`checkDeclarationEdges`).
   - Any `candidate:<feature> -> vetted` promotion triggers a full Pass 2 audit
     of the entire module as if newly authored, even with zero AST edits.
 - **100% mechanical TCB reachability and parsimony:** Every declaration in
@@ -228,7 +225,8 @@ or audit them is permitted).
   `TrustedBoundary.lean` allowlists and checks (non-exhaustively:
   `allowedCommandKinds`, `allowedDeclarationKinds`, `allowedAttributeNames`,
   `allowedTrustedSyntaxKinds`, `allowedTheoryTacticKinds`, `SourceRole`,
-  `inspectNodeKind`, `inspectSyntax`, `validateLocalConstant`,
+  `inspectNodeKind`, `inspectSyntax`, `checkPreflightTierImports`,
+  `importViolation?`, `edgeViolation?`, `validateLocalConstant`,
   `checkTierReferences`, `validateGraph`, `validCandidateFeatures`) or
   `trusted/lean/foundation-lock.json` policy fields (`axioms`, `distributions`,
   `graph`, `modules`, `schema`, `toolchain`, and digests).

@@ -566,6 +566,7 @@ fn rejects_forbidden_syntax_and_attributes_without_executing_eval() {
         let err = checker
             .inspect(InspectorRequest::Preflight {
                 sources: vec![("Trusted".to_string(), neg_path)],
+                base_trusted_sources: Vec::new(),
             })
             .expect_err(&format!("expected preflight rejection for {label}"));
         assert_eq!(err.code, 1, "unexpected code for {label}: {err}");
@@ -585,6 +586,7 @@ fn rejects_forbidden_syntax_and_attributes_without_executing_eval() {
     checker
         .inspect(InspectorRequest::Preflight {
             sources: vec![("Anneal".to_string(), theory_pos_path)],
+            base_trusted_sources: Vec::new(),
         })
         .expect("expected theory module with `by rfl` to pass preflight");
 
@@ -616,6 +618,7 @@ fn rejects_forbidden_syntax_and_attributes_without_executing_eval() {
         let err = checker
             .inspect(InspectorRequest::Preflight {
                 sources: vec![("Anneal".to_string(), neg_path)],
+                base_trusted_sources: Vec::new(),
             })
             .expect_err(&format!("expected preflight rejection for {label}"));
         assert_eq!(err.code, 1, "unexpected code for {label}: {err}");
@@ -928,19 +931,28 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     );
 }
 
-/// Verifies module-level trust-tier non-contamination and `Trusted` namespace
+/// Verifies module-level trust-tier non-contamination (both syntactic
+/// `"preflight"` and compiled `.olean` `"audit"`) and `Trusted` namespace
 /// hygiene:
-/// - A `vetted` module referencing a `candidate:<feature>` constant is rejected
-///   during `"audit"`.
-/// - A `candidate:<feature>` module referencing a `vetted` or `candidate:*`
-///   constant passes during `"audit"`.
+/// - A `vetted` module importing a `candidate:<feature>` module—whether or not
+///   it references any candidate constant—is rejected during `"preflight"`
+///   before Lean compiles the file.
+/// - Bypassing `"preflight"` to present a compiled `.olean` with a
+///   declaration-free `vetted -> candidate` import is still rejected by
+///   `RepoOrigin.importViolation?` in `"audit"`, and a forged `.olean` whose
+///   header omits the import while referencing a candidate constant is still
+///   rejected by `RepoOrigin.edgeViolation?`.
+/// - A `vetted` umbrella importing only `vetted` submodules, with a
+///   `candidate:<feature>` module importing a `vetted` submodule and
+///   `theory/Anneal.lean` importing both directly, passes `"audit"`.
 /// - A `theory/Anneal.lean` module attempting to declare a constant inside the
 ///   reserved `Trusted` namespace (or an `opaque` constant) is rejected during
 ///   `"audit"`.
 #[test]
 fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
-    // 1. A vetted module (`Trusted.lean`) referencing a candidate constant in
-    // `Trusted/Cand.lean` is rejected during `"audit"`.
+    // 1a. A vetted module (`Trusted.lean`) importing and referencing a
+    // candidate constant in `Trusted/Cand.lean` is rejected during
+    // `"preflight"` before compilation starts.
     let mut f_contam = TempFixture::new(Some(&format!(
         "{HEADER}import Trusted.Cand\nnamespace Trusted\ndef badVetted : Prop := candHelper\nend Trusted\n"
     )));
@@ -950,20 +962,241 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
         b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\nnamespace Trusted\ndef candHelper : Prop := True\nend Trusted\n",
     )
     .unwrap();
-    let err_contam = f_contam.check_expected(Some(1), Some("audit"), Some(true)).unwrap_err();
+    let err_contam = f_contam.check_expected(Some(1), Some("preflight"), Some(false)).unwrap_err();
     assert!(
         err_contam.message.contains(
-            "vetted constant Trusted.badVetted references candidate:mir_semantics constant Trusted.candHelper"
+            "vetted module Trusted cannot import candidate:mir_semantics module Trusted.Cand"
         ),
         "unexpected error: {err_contam}"
     );
 
-    // 2. Umbrella `Trusted.lean` (`vetted`) importing `Trusted.VettedSub`
-    // (`vetted`) and `Trusted.Cand` (`candidate:mir_semantics`), where
-    // `Trusted.Cand` references `Trusted.VettedSub` and `theory/Anneal.lean`
-    // references both, passes cleanly.
-    let mut f_ok =
-        TempFixture::new(Some(&format!("{HEADER}import Trusted.VettedSub\nimport Trusted.Cand\n")));
+    // 1b. Even a declaration-free `vetted` umbrella `Trusted.lean` importing a
+    // `candidate:<feature>` module is rejected during `"preflight"` before
+    // compilation starts.
+    let mut f_decl_free = TempFixture::new(Some(&format!("{HEADER}import Trusted.Cand\n")));
+    fs::create_dir_all(f_decl_free.root.join("trusted/lean/Trusted")).unwrap();
+    fs::write(
+        f_decl_free.root.join("trusted/lean/Trusted/Cand.lean"),
+        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\nnamespace Trusted\ndef candHelper : Prop := True\nend Trusted\n",
+    )
+    .unwrap();
+    let err_decl_free =
+        f_decl_free.check_expected(Some(1), Some("preflight"), Some(false)).unwrap_err();
+    assert!(
+        err_decl_free.message.contains(
+            "vetted module Trusted cannot import candidate:mir_semantics module Trusted.Cand"
+        ),
+        "unexpected error: {err_decl_free}"
+    );
+
+    // 1c. Direct Lean `"preflight"` sensitivity check (independent of Rust's
+    // `check_preflight_tier_imports` in `preflight_and_order_modules`): calling
+    // `InspectorRequest::Preflight` directly rejects declaration-free
+    // `vetted -> candidate` and `vetted -> theory` imports inside
+    // `TrustedBoundary.lean`'s `checkPreflightTierImports`.
+    let mut checker_lean_pf = Checker::new(&f_decl_free.root, None).unwrap();
+    checker_lean_pf.tool_admission().unwrap();
+    let lean_pf_trusted = checker_lean_pf.stage().join("pf-trusted.lean");
+    let lean_pf_cand = checker_lean_pf.stage().join("pf-cand.lean");
+    fs::write(&lean_pf_trusted, format!("{HEADER}import Trusted.Cand\n")).unwrap();
+    fs::write(
+        &lean_pf_cand,
+        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\n",
+    )
+    .unwrap();
+    let err_lean_pf = checker_lean_pf
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![
+                ("Trusted".to_string(), lean_pf_trusted),
+                ("Trusted.Cand".to_string(), lean_pf_cand),
+            ],
+            base_trusted_sources: Vec::new(),
+        })
+        .unwrap_err();
+    assert_eq!(err_lean_pf.code, 1, "unexpected code: {err_lean_pf}");
+    assert_eq!(err_lean_pf.phase, "preflight", "unexpected phase: {err_lean_pf}");
+    assert!(
+        err_lean_pf.message.contains(
+            "vetted module Trusted cannot import candidate:mir_semantics module Trusted.Cand"
+        ),
+        "unexpected Lean preflight error: {err_lean_pf}"
+    );
+
+    let lean_pf_trusted_theory = checker_lean_pf.stage().join("pf-trusted-theory.lean");
+    let lean_pf_theory = checker_lean_pf.stage().join("pf-theory.lean");
+    fs::write(&lean_pf_trusted_theory, format!("{HEADER}import Anneal.Helper\n")).unwrap();
+    fs::write(&lean_pf_theory, b"prelude\nimport Init.NotationExtra\n").unwrap();
+    let err_lean_pf_theory = checker_lean_pf
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![
+                ("Trusted".to_string(), lean_pf_trusted_theory),
+                ("Anneal.Helper".to_string(), lean_pf_theory),
+            ],
+            base_trusted_sources: Vec::new(),
+        })
+        .unwrap_err();
+    assert_eq!(err_lean_pf_theory.code, 1, "unexpected theory code: {err_lean_pf_theory}");
+    assert_eq!(err_lean_pf_theory.phase, "preflight", "unexpected phase: {err_lean_pf_theory}");
+    assert!(
+        err_lean_pf_theory
+            .message
+            .contains("vetted module Trusted cannot import non-foundation module Anneal.Helper"),
+        "unexpected Lean preflight theory error: {err_lean_pf_theory}"
+    );
+
+    // 1d. Authenticating staged `base_trusted_sources` (`"baseSources"`) in
+    // `InspectorRequest::Preflight` accepts a `vetted` correspondence source
+    // importing a `vetted` on-disk base module, rejects importing an on-disk
+    // `candidate` base module, rejects non-`Trusted`, foundation-named,
+    // malformed-syntax, or duplicate `base_trusted_sources` entries, and
+    // rejects duplicate or base-colliding `sources`.
+    let lean_pf_base_vetted = checker_lean_pf.stage().join("pf-base-vetted.lean");
+    let lean_pf_base_cand = checker_lean_pf.stage().join("pf-base-cand.lean");
+    let lean_pf_base_theory = checker_lean_pf.stage().join("pf-base-theory.lean");
+    let lean_pf_base_tactic = checker_lean_pf.stage().join("pf-base-tactic.lean");
+    fs::write(&lean_pf_base_vetted, HEADER.as_bytes()).unwrap();
+    fs::write(
+        &lean_pf_base_cand,
+        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\n",
+    )
+    .unwrap();
+    fs::write(&lean_pf_base_theory, b"prelude\nimport Init.NotationExtra\n").unwrap();
+    fs::write(&lean_pf_base_tactic, format!("{HEADER}theorem bad : Eq 0 0 := by rfl\n")).unwrap();
+    let pf_base_sources = vec![
+        ("Trusted.Base".to_string(), lean_pf_base_vetted.clone()),
+        ("Trusted.Cand".to_string(), lean_pf_base_cand.clone()),
+    ];
+    let lean_pf_corr_ok = checker_lean_pf.stage().join("pf-corr-ok.lean");
+    fs::write(&lean_pf_corr_ok, format!("{HEADER}import Trusted.Base\n")).unwrap();
+    checker_lean_pf
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_ok.clone())],
+            base_trusted_sources: pf_base_sources.clone(),
+        })
+        .expect("vetted source importing vetted base module in baseSources must pass");
+
+    let lean_pf_corr_bad = checker_lean_pf.stage().join("pf-corr-bad.lean");
+    fs::write(&lean_pf_corr_bad, format!("{HEADER}import Trusted.Cand\n")).unwrap();
+    let err_pf_base_cand = checker_lean_pf
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_bad)],
+            base_trusted_sources: pf_base_sources.clone(),
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_base_cand.code, 1, "unexpected code: {err_pf_base_cand}");
+    assert_eq!(err_pf_base_cand.phase, "preflight");
+    assert!(
+        err_pf_base_cand.message.contains(
+            "vetted module Trusted.Correspondence cannot import candidate:mir_semantics module Trusted.Cand"
+        ),
+        "unexpected base-candidate error: {err_pf_base_cand}"
+    );
+
+    let err_pf_non_trusted_base = checker_lean_pf
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_ok.clone())],
+            base_trusted_sources: vec![("Anneal.Helper".to_string(), lean_pf_base_theory)],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_non_trusted_base.code, 1);
+    assert_eq!(err_pf_non_trusted_base.phase, "preflight");
+    assert!(
+        err_pf_non_trusted_base.message.contains("non-Trusted base preflight source Anneal.Helper"),
+        "unexpected non-Trusted base source error: {err_pf_non_trusted_base}"
+    );
+
+    let err_pf_foundation_base = checker_lean_pf
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_ok.clone())],
+            base_trusted_sources: vec![("Init.Core".to_string(), lean_pf_base_vetted.clone())],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_foundation_base.code, 1);
+    assert_eq!(err_pf_foundation_base.phase, "preflight");
+    assert!(
+        err_pf_foundation_base.message.contains("non-Trusted base preflight source Init.Core"),
+        "unexpected foundation base source error: {err_pf_foundation_base}"
+    );
+
+    let err_pf_dup_base = checker_lean_pf
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_ok.clone())],
+            base_trusted_sources: vec![
+                ("Trusted.Base".to_string(), lean_pf_base_cand),
+                ("Trusted.Base".to_string(), lean_pf_base_vetted),
+            ],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_dup_base.code, 1);
+    assert_eq!(err_pf_dup_base.phase, "preflight");
+    assert!(
+        err_pf_dup_base.message.contains("duplicate base preflight source module Trusted.Base"),
+        "unexpected duplicate base source error: {err_pf_dup_base}"
+    );
+
+    let err_pf_bad_base_syntax = checker_lean_pf
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![("Trusted.Correspondence".to_string(), lean_pf_corr_ok)],
+            base_trusted_sources: vec![("Trusted.Base".to_string(), lean_pf_base_tactic)],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_bad_base_syntax.code, 1);
+    assert_eq!(err_pf_bad_base_syntax.phase, "preflight");
+
+    let lean_pf_override = checker_lean_pf.stage().join("pf-override.lean");
+    fs::write(&lean_pf_override, HEADER.as_bytes()).unwrap();
+    let lean_pf_user = checker_lean_pf.stage().join("pf-user.lean");
+    fs::write(&lean_pf_user, format!("{HEADER}import Trusted.Cand\n")).unwrap();
+    let err_pf_collision = checker_lean_pf
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![
+                ("Trusted.Cand".to_string(), lean_pf_override),
+                ("Trusted.Correspondence".to_string(), lean_pf_user.clone()),
+            ],
+            base_trusted_sources: pf_base_sources,
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_collision.code, 1, "unexpected collision code: {err_pf_collision}");
+    assert_eq!(err_pf_collision.phase, "preflight");
+    assert!(
+        err_pf_collision
+            .message
+            .contains("preflight source module Trusted.Cand collides with base module"),
+        "unexpected base collision error: {err_pf_collision}"
+    );
+
+    let lean_pf_dup_cand = checker_lean_pf.stage().join("pf-dup-cand.lean");
+    let lean_pf_dup_vetted = checker_lean_pf.stage().join("pf-dup-vetted.lean");
+    let lean_pf_dup_caller = checker_lean_pf.stage().join("pf-dup-caller.lean");
+    fs::write(
+        &lean_pf_dup_cand,
+        b"-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.NotationExtra\n",
+    )
+    .unwrap();
+    fs::write(&lean_pf_dup_vetted, HEADER.as_bytes()).unwrap();
+    fs::write(&lean_pf_dup_caller, format!("{HEADER}import Trusted.Dup\n")).unwrap();
+    let err_pf_dup = checker_lean_pf
+        .inspect(InspectorRequest::Preflight {
+            sources: vec![
+                ("Trusted.Dup".to_string(), lean_pf_dup_cand),
+                ("Trusted.Dup".to_string(), lean_pf_dup_vetted),
+                ("Trusted.DupCaller".to_string(), lean_pf_dup_caller),
+            ],
+            base_trusted_sources: Vec::new(),
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_dup.code, 1, "unexpected duplicate code: {err_pf_dup}");
+    assert_eq!(err_pf_dup.phase, "preflight");
+    assert!(
+        err_pf_dup.message.contains("duplicate preflight source module Trusted.Dup"),
+        "unexpected duplicate error: {err_pf_dup}"
+    );
+
+    // 2. `Trusted.lean` (`vetted`) importing only `Trusted.VettedSub`
+    // (`vetted`), `Trusted.Cand` (`candidate:mir_semantics`) importing
+    // `Trusted.VettedSub`, and `theory/Anneal.lean` importing `Trusted` and
+    // `Trusted.Cand` directly passes cleanly.
+    let mut f_ok = TempFixture::new(Some(&format!("{HEADER}import Trusted.VettedSub\n")));
     fs::create_dir_all(f_ok.root.join("trusted/lean/Trusted")).unwrap();
     fs::write(
         f_ok.root.join("trusted/lean/Trusted/VettedSub.lean"),
@@ -978,11 +1211,132 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
     fs::create_dir_all(f_ok.root.join("theory")).unwrap();
     fs::write(
         f_ok.root.join("theory/Anneal.lean"),
-        b"prelude\nimport Trusted\nnamespace Anneal\ntheorem uses_both : Trusted.candProp := True.intro\nend Anneal\n",
+        b"prelude\nimport Trusted\nimport Trusted.Cand\nnamespace Anneal\ntheorem uses_both : Trusted.candProp := True.intro\nend Anneal\n",
     )
     .unwrap();
-    let rep_ok = f_ok.check_expected(None, None, None).unwrap();
+    let mut checker_ok = Checker::new(&f_ok.root, None).unwrap();
+    checker_ok.set_require_mir_wp(false);
+    let rep_ok = checker_ok.run().unwrap();
     assert_eq!(rep_ok.get("replay"), Some(&json!(true)));
+
+    // 2b. Defense in depth in `"audit"`: bypassing `"preflight"` with a
+    // compiled declaration-free `vetted` module whose `.olean` header imports
+    // `Trusted.Cand` is rejected by `RepoOrigin.importViolation?`.
+    let stage = checker_ok.stage().to_path_buf();
+    let trusted_lib = stage.join("lib");
+    compile_forged_module(
+        &mut checker_ok,
+        &stage.join("src/forged-tier"),
+        &trusted_lib,
+        &["Trusted.Cand"],
+        "Trusted.VettedImportsCand",
+        "prelude\nimport Init.Core\nimport Trusted.Cand\n",
+    );
+    let err_audit_imp = checker_ok
+        .inspect(InspectorRequest::Audit {
+            trusted: vec![
+                "Trusted".to_string(),
+                "Trusted.VettedSub".to_string(),
+                "Trusted.Cand".to_string(),
+                "Trusted.VettedImportsCand".to_string(),
+            ],
+            theory: vec!["Anneal".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                ("Trusted.VettedSub".to_string(), TrustTier::Vetted),
+                ("Trusted.Cand".to_string(), TrustTier::Candidate(CandidateFeature::MirSemantics)),
+                ("Trusted.VettedImportsCand".to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!(err_audit_imp.code, 1, "unexpected code: {err_audit_imp}");
+    assert_eq!(err_audit_imp.phase, "audit", "unexpected phase: {err_audit_imp}");
+    assert!(
+        err_audit_imp.message.contains(
+            "vetted module Trusted.VettedImportsCand cannot import candidate:mir_semantics module Trusted.Cand"
+        ),
+        "unexpected audit import error: {err_audit_imp}"
+    );
+
+    // 2c. Defense in depth in `"audit"`: a forged `vetted` `.olean` whose
+    // header imports only `Init.Core` (bypassing `RepoOrigin.importViolation?`)
+    // while referencing `Trusted.candProp` is still rejected by
+    // `RepoOrigin.edgeViolation?`.
+    let forged_edge_mod = "Trusted.ForgedVettedEdge";
+    let forged_edge_out = trusted_lib.join("Trusted/ForgedVettedEdge.olean");
+    run_lean_script(
+        &mut checker_ok,
+        "gen-forged-vetted-edge",
+        &stage.join("gen_forged_vetted_edge.lean"),
+        &format!(
+            "import Lean.Environment\n\
+             open Lean\n\
+             def main : IO Unit := do\n\
+               let ci : ConstantInfo := .defnInfo {{\n\
+                 name := `Trusted.ForgedVettedEdge.x\n\
+                 levelParams := []\n\
+                 type := .sort .zero\n\
+                 value := .const `Trusted.candProp []\n\
+                 hints := .abbrev\n\
+                 safety := .safe\n\
+                 all := [`Trusted.ForgedVettedEdge.x]\n\
+               }}\n\
+               let md : ModuleData := {{\n\
+                 isModule := false\n\
+                 imports := #[{{ module := `Init.Core }}]\n\
+                 constNames := #[`Trusted.ForgedVettedEdge.x]\n\
+                 constants := #[ci]\n\
+                 extraConstNames := #[]\n\
+                 entries := #[]\n\
+               }}\n\
+               saveModuleData (System.FilePath.mk {:?}) `Trusted.ForgedVettedEdge md\n",
+            forged_edge_out.to_string_lossy()
+        ),
+    );
+    let core_edge = vec![ImportEdge {
+        module: "Init.Core".to_string(),
+        import_all: false,
+        is_exported: true,
+        is_meta: false,
+    }];
+    let forged_arts = ModuleArtifacts::from_available(
+        &BTreeMap::from([("olean", forged_edge_out.to_string_lossy().into_owned())]),
+        "test",
+        String::new,
+    )
+    .unwrap();
+    {
+        let adm = checker_ok.admitted_mut().unwrap();
+        adm.graph.remove("Trusted.VettedImportsCand");
+        adm.artifacts.remove("Trusted.VettedImportsCand");
+        adm.graph.insert(forged_edge_mod.to_string(), core_edge);
+        adm.artifacts.insert(forged_edge_mod.to_string(), forged_arts);
+    }
+    let err_audit_edge = checker_ok
+        .inspect(InspectorRequest::Audit {
+            trusted: vec![
+                "Trusted".to_string(),
+                "Trusted.VettedSub".to_string(),
+                "Trusted.Cand".to_string(),
+                forged_edge_mod.to_string(),
+            ],
+            theory: vec!["Anneal".to_string()],
+            module_tiers: BTreeMap::from([
+                ("Trusted".to_string(), TrustTier::Vetted),
+                ("Trusted.VettedSub".to_string(), TrustTier::Vetted),
+                ("Trusted.Cand".to_string(), TrustTier::Candidate(CandidateFeature::MirSemantics)),
+                (forged_edge_mod.to_string(), TrustTier::Vetted),
+            ]),
+        })
+        .unwrap_err();
+    assert_eq!(err_audit_edge.code, 1, "unexpected code: {err_audit_edge}");
+    assert_eq!(err_audit_edge.phase, "audit", "unexpected phase: {err_audit_edge}");
+    assert!(
+        err_audit_edge.message.contains(
+            "vetted constant Trusted.ForgedVettedEdge.x references candidate:mir_semantics constant Trusted.candProp"
+        ),
+        "unexpected audit edge error: {err_audit_edge}"
+    );
 
     // 3. `theory/Anneal.lean` attempting to declare a constant inside the
     // reserved `Trusted` namespace is rejected during `"audit"`.
@@ -1015,11 +1369,131 @@ fn enforces_module_level_trust_tiers_and_namespace_hygiene() {
     );
 }
 
+/// Pins end-to-end Pass 2 `baseSources` forwarding across
+/// [`Checker::run_correspondence_with_closure`] and
+/// `preflight_and_order_modules`:
+/// - a `vetted` Pass 2 module importing a `vetted` Pass 1 base module passes
+///   Pass 2 `"preflight"`, `"correspondence-preflight"`, and sandboxed
+///   compilation into `lib/` before failing later in `"correspondence-audit"`
+///   on the synthetic empty Miri closure; and
+/// - a `vetted` Pass 2 module importing a `candidate:*` Pass 1 base module is
+///   rejected in phase `"preflight"` before Pass 2 compilation.
+#[test]
+fn preflights_pass2_vetted_imports_against_authenticated_pass1_base_sources() {
+    let setup_pass1 = |corr_import: &str| {
+        let fix = TempFixture::new(None);
+        fs::create_dir_all(fix.root.join("trusted/lean/Trusted")).unwrap();
+        fs::write(
+            fix.root.join("trusted/lean/Trusted/VettedBase.lean"),
+            b"-- anneal-trust-tier: vetted\n\
+              prelude\nimport Init.Core\n\
+              namespace Trusted.VettedBase\n\
+              def ok : Nat := 1\n\
+              end Trusted.VettedBase\n",
+        )
+        .unwrap();
+        fs::write(
+            fix.root.join("trusted/lean/Trusted/CandBase.lean"),
+            b"-- anneal-trust-tier: candidate:mir_semantics\n\
+              prelude\nimport Init.Core\n\
+              namespace Trusted.CandBase\n\
+              def cand : Nat := 2\n\
+              end Trusted.CandBase\n",
+        )
+        .unwrap();
+        let mut checker = Checker::new(&fix.root, None).unwrap();
+        checker.set_require_mir_wp(false);
+        checker.run().unwrap();
+
+        let vendor_dir = fix.root.join("synthetic-miri");
+        fs::create_dir_all(&vendor_dir).unwrap();
+        let corr_trusted = fix.root.join("trusted/correspondence/Trusted/Correspondence.lean");
+        let corr_proof = fix.root.join("correspondence/Anneal/MirCorrespondenceProof.lean");
+        fs::create_dir_all(corr_trusted.parent().unwrap()).unwrap();
+        fs::create_dir_all(corr_proof.parent().unwrap()).unwrap();
+        fs::write(
+            &corr_trusted,
+            format!(
+                "-- anneal-trust-tier: vetted\n\
+                 prelude\nimport Init.Core\nimport {corr_import}\n\
+                 namespace Trusted.Correspondence\n\
+                 def corrOk : Nat := 0\n\
+                 end Trusted.Correspondence\n"
+            ),
+        )
+        .unwrap();
+        fs::write(
+            &corr_proof,
+            "prelude\nimport Init.Core\nimport Trusted.Correspondence\n\
+             namespace Anneal.MirCorrespondenceProof\n\
+             def proofOk : Nat := Trusted.Correspondence.corrOk\n\
+             end Anneal.MirCorrespondenceProof\n",
+        )
+        .unwrap();
+        let base_tiers = BTreeMap::from([
+            ("Trusted".to_string(), TrustTier::Vetted),
+            ("Trusted.VettedBase".to_string(), TrustTier::Vetted),
+            ("Trusted.CandBase".to_string(), TrustTier::Candidate(CandidateFeature::MirSemantics)),
+        ]);
+        (fix, checker, vendor_dir, base_tiers)
+    };
+
+    // Case 1: `vetted` Pass 2 importing `vetted` Pass 1 base module passes
+    // `"preflight"` and `"correspondence-preflight"` and compiles Pass 2.
+    let (_fix_ok, mut checker_ok, vendor_ok, base_tiers_ok) = setup_pass1("Trusted.VettedBase");
+    let err_ok = checker_ok
+        .run_correspondence_with_closure(
+            &base_tiers_ok,
+            &vendor_ok,
+            "synthetic-commit",
+            &[],
+            &BTreeMap::new(),
+        )
+        .unwrap_err();
+    assert_eq!(err_ok.code, 1, "unexpected error: {err_ok}");
+    assert_eq!(
+        err_ok.phase, "correspondence-audit",
+        "vetted -> vetted Pass 2 import must clear preflight and compile: {err_ok}"
+    );
+    assert!(
+        checker_ok.stage().join("lib/Trusted/Correspondence.olean").exists(),
+        "Pass 2 Trusted.Correspondence must compile when importing vetted Pass 1 module"
+    );
+    assert!(
+        checker_ok.stage().join("theory-lib/Anneal/MirCorrespondenceProof.olean").exists(),
+        "Pass 2 Anneal.MirCorrespondenceProof must compile after preflight passes"
+    );
+
+    // Case 2: `vetted` Pass 2 importing `candidate` Pass 1 base module fails in
+    // phase `"preflight"` before Pass 2 compilation.
+    let (_fix_bad, mut checker_bad, vendor_bad, base_tiers_bad) = setup_pass1("Trusted.CandBase");
+    let err_bad = checker_bad
+        .run_correspondence_with_closure(
+            &base_tiers_bad,
+            &vendor_bad,
+            "synthetic-commit",
+            &[],
+            &BTreeMap::new(),
+        )
+        .unwrap_err();
+    assert_eq!(err_bad.code, 1, "unexpected error: {err_bad}");
+    assert_eq!(err_bad.phase, "preflight", "expected preflight failure: {err_bad}");
+    assert!(
+        err_bad.message.contains(
+            "vetted module Trusted.Correspondence cannot import candidate:mir_semantics module Trusted.CandBase"
+        ),
+        "unexpected error: {err_bad}"
+    );
+    assert!(
+        !checker_bad.stage().join("lib/Trusted/Correspondence.olean").exists(),
+        "Pass 2 Trusted.Correspondence must not compile on vetted -> candidate import"
+    );
+}
+
 #[test]
 fn rejects_reserved_kernel_roots_and_user_splitter_children_in_theory() {
-    let mut fix = TempFixture::new(Some(
-        "-- anneal-trust-tier: vetted\nprelude\nimport Init.Prelude\nimport Trusted.MirAst\n",
-    ));
+    let mut fix =
+        TempFixture::new(Some("-- anneal-trust-tier: vetted\nprelude\nimport Init.Prelude\n"));
     fs::create_dir_all(fix.root.join("trusted/lean/Trusted")).unwrap();
     fs::write(
         fix.root.join("trusted/lean/Trusted/MirAst.lean"),
@@ -1061,7 +1535,7 @@ fn rejects_reserved_kernel_roots_and_user_splitter_children_in_theory() {
         // (`Trusted.MirAst.Place` is an already-imported compound `Trusted`
         // constant) must be rejected by `isGeneratedSplitterSubtree`.
         (
-            "prelude\nimport Trusted\n\
+            "prelude\nimport Trusted\nimport Trusted.MirAst\n\
              namespace Trusted.MirAst.Place.splitter\n\
              private def evil : Nat := 0\n\
              end Trusted.MirAst.Place.splitter\n",
@@ -4593,7 +5067,8 @@ fn rejects_correspondence_audit_violations_and_sysroot_mismatch() {
     compile_aux(
         &mut checker,
         "Trusted.CandHelper",
-        "prelude\nimport Init.Core\nnamespace Trusted.CandHelper\ndef h : Nat := 1\nend Trusted.CandHelper\n",
+        "-- anneal-trust-tier: candidate:mir_semantics\n\
+         prelude\nimport Init.Core\nnamespace Trusted.CandHelper\ndef h : Nat := 1\nend Trusted.CandHelper\n",
     );
     compile_aux(
         &mut checker,
@@ -4703,7 +5178,8 @@ fn rejects_correspondence_audit_violations_and_sysroot_mismatch() {
         "unexpected foreign-module error: {err_foreign}"
     );
 
-    // 3a. `CorrOrigin.edgeViolation?`: vetted -> candidate.
+    // 3a. `CorrOrigin.importViolation?`: vetted -> candidate (rejected before
+    // `checkDeclarationEdges` inspects the constant reference).
     let err_vetted_cand = checker
         .inspect(InspectorRequest::CorrespondenceAudit {
             search_path: search.clone(),
@@ -4726,14 +5202,16 @@ fn rejects_correspondence_audit_violations_and_sysroot_mismatch() {
             ]),
         })
         .unwrap_err();
+    assert_eq!(err_vetted_cand.code, 1, "unexpected vetted->cand code: {err_vetted_cand}");
     assert!(
         err_vetted_cand.message.contains(
-            "vetted constant Trusted.VettedRefsCand.x references candidate:mir_semantics constant"
+            "vetted module Trusted.VettedRefsCand cannot import candidate:mir_semantics module Trusted.CandHelper"
         ),
         "unexpected vetted->cand error: {err_vetted_cand}"
     );
 
-    // 3b. `CorrOrigin.edgeViolation?`: vetted -> vendorMiri.
+    // 3b. `CorrOrigin.importViolation?`: vetted -> vendorMiri (rejected before
+    // `checkDeclarationEdges` inspects the constant reference).
     let err_vetted_miri = checker
         .inspect(InspectorRequest::CorrespondenceAudit {
             search_path: search.clone(),
@@ -4748,12 +5226,318 @@ fn rejects_correspondence_audit_violations_and_sysroot_mismatch() {
             ]),
         })
         .unwrap_err();
+    assert_eq!(err_vetted_miri.code, 1, "unexpected vetted->miri code: {err_vetted_miri}");
     assert!(
         err_vetted_miri.message.contains(
-            "vetted constant Trusted.VettedRefsMiri.x references non-foundation constant Miri.Child.c"
+            "vetted module Trusted.VettedRefsMiri cannot import non-foundation module Miri.Child"
         ),
         "unexpected vetted->miri error: {err_vetted_miri}"
     );
+
+    // 3a-edge & 3b-edge. `CorrOrigin.edgeViolation?` defense in depth: forged
+    // `vetted` `.olean` headers importing only `Init.Core` while referencing
+    // `Trusted.CandHelper.h` or `Miri.Child.c` remain rejected by
+    // `checkDeclarationEdges`.
+    let stage = checker.stage().to_path_buf();
+    for (forged_mod, ref_const, extra_trusted, expected_msg) in [
+        (
+            "Trusted.ForgedCorrVettedCand",
+            "Trusted.CandHelper.h",
+            true,
+            "vetted constant Trusted.ForgedCorrVettedCand.x references candidate:mir_semantics constant Trusted.CandHelper.h",
+        ),
+        (
+            "Trusted.ForgedCorrVettedMiri",
+            "Miri.Child.c",
+            false,
+            "vetted constant Trusted.ForgedCorrVettedMiri.x references non-foundation constant Miri.Child.c",
+        ),
+    ] {
+        let out = search[0].join(format!("{}.olean", forged_mod.replace('.', "/")));
+        fs::create_dir_all(out.parent().unwrap()).unwrap();
+        run_lean_script(
+            &mut checker,
+            &format!("gen-{forged_mod}"),
+            &stage.join(format!("gen_{}.lean", forged_mod.replace('.', "_"))),
+            &format!(
+                "import Lean.Environment\n\
+                 open Lean\n\
+                 def main : IO Unit := do\n\
+                   let ci : ConstantInfo := .defnInfo {{\n\
+                     name := `{forged_mod}.x\n\
+                     levelParams := []\n\
+                     type := .const `Nat []\n\
+                     value := .const `{ref_const} []\n\
+                     hints := .abbrev\n\
+                     safety := .safe\n\
+                     all := [`{forged_mod}.x]\n\
+                   }}\n\
+                   let md : ModuleData := {{\n\
+                     isModule := false\n\
+                     imports := #[{{ module := `Init.Core }}]\n\
+                     constNames := #[`{forged_mod}.x]\n\
+                     constants := #[ci]\n\
+                     extraConstNames := #[]\n\
+                     entries := #[]\n\
+                   }}\n\
+                   saveModuleData (System.FilePath.mk {:?}) `{forged_mod} md\n",
+                out.to_string_lossy()
+            ),
+        );
+        let mut trusted_mods = vec!["Trusted".to_string(), forged_mod.to_string()];
+        let mut tiers = BTreeMap::from([
+            ("Trusted".to_string(), TrustTier::Vetted),
+            (forged_mod.to_string(), TrustTier::Vetted),
+        ]);
+        if extra_trusted {
+            trusted_mods.push("Trusted.CandHelper".to_string());
+            tiers.insert(
+                "Trusted.CandHelper".to_string(),
+                TrustTier::Candidate(CandidateFeature::MirSemantics),
+            );
+        }
+        let err_edge = checker
+            .inspect(InspectorRequest::CorrespondenceAudit {
+                search_path: search.clone(),
+                trusted: trusted_mods,
+                corr_trusted: Vec::new(),
+                theory: Vec::new(),
+                corr_theory: Vec::new(),
+                vendor_miri: vec!["Miri.Child".to_string()],
+                module_tiers: tiers,
+            })
+            .unwrap_err();
+        assert_eq!(err_edge.code, 1, "unexpected forged edge code for {forged_mod}: {err_edge}");
+        assert!(
+            err_edge.message.contains(expected_msg),
+            "unexpected forged edge error for {forged_mod}: {err_edge}"
+        );
+    }
+
+    // 3d. `"correspondence-preflight"` rejects a declaration-free `vetted`
+    // Pass 2 source importing a Pass 1 `candidate:mir_semantics` module, a
+    // `vendor/lean-miri` module, or a Pass 1 `.repo .theory` module
+    // (`Anneal.Helper`) before compilation, deriving Pass 1 base tiers
+    // directly from staged `"baseSources"` rather than a caller map.
+    let trusted_base_src = checker.modules()["Trusted"].clone();
+    let cand_helper_src = aux_src.join("Trusted/CandHelper.lean");
+    let corr_pf_dir = stage.join("src/corr-pf-tier");
+    fs::create_dir_all(&corr_pf_dir).unwrap();
+    let corr_vetted_cand_src = corr_pf_dir.join("CorrVettedCand.lean");
+    fs::write(
+        &corr_vetted_cand_src,
+        "-- anneal-trust-tier: vetted\nprelude\nimport Init.Core\nimport Trusted.CandHelper\n",
+    )
+    .unwrap();
+    let err_pf_cand = checker
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string(), "Trusted.CandHelper".to_string()],
+            theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            base_trusted_sources: vec![
+                ("Trusted".to_string(), trusted_base_src.clone()),
+                ("Trusted.CandHelper".to_string(), cand_helper_src.clone()),
+            ],
+            sources: vec![("Trusted.CorrVettedCand".to_string(), corr_vetted_cand_src.clone())],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_cand.code, 1, "unexpected corr-pf cand code: {err_pf_cand}");
+    assert_eq!(err_pf_cand.phase, "correspondence-preflight");
+    assert!(
+        err_pf_cand.message.contains(
+            "vetted module Trusted.CorrVettedCand cannot import candidate:mir_semantics module Trusted.CandHelper"
+        ),
+        "unexpected corr-pf cand error: {err_pf_cand}"
+    );
+
+    let corr_vetted_miri_src = corr_pf_dir.join("CorrVettedMiri.lean");
+    fs::write(
+        &corr_vetted_miri_src,
+        "-- anneal-trust-tier: vetted\nprelude\nimport Init.Core\nimport Miri.Child\n",
+    )
+    .unwrap();
+    let err_pf_miri = checker
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            base_trusted_sources: vec![("Trusted".to_string(), trusted_base_src.clone())],
+            sources: vec![("Trusted.CorrVettedMiri".to_string(), corr_vetted_miri_src)],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_miri.code, 1, "unexpected corr-pf miri code: {err_pf_miri}");
+    assert_eq!(err_pf_miri.phase, "correspondence-preflight");
+    assert!(
+        err_pf_miri.message.contains(
+            "vetted module Trusted.CorrVettedMiri cannot import non-foundation module Miri.Child"
+        ),
+        "unexpected corr-pf miri error: {err_pf_miri}"
+    );
+
+    let corr_vetted_theory_src = corr_pf_dir.join("CorrVettedTheory.lean");
+    fs::write(
+        &corr_vetted_theory_src,
+        "-- anneal-trust-tier: vetted\nprelude\nimport Init.Core\nimport Anneal.Helper\n",
+    )
+    .unwrap();
+    let err_pf_theory = checker
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            theory: vec!["Anneal.Helper".to_string()],
+            vendor_miri: vec!["Miri.Child".to_string()],
+            base_trusted_sources: vec![("Trusted".to_string(), trusted_base_src.clone())],
+            sources: vec![("Trusted.CorrVettedTheory".to_string(), corr_vetted_theory_src)],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_theory.code, 1, "unexpected corr-pf theory code: {err_pf_theory}");
+    assert_eq!(err_pf_theory.phase, "correspondence-preflight");
+    assert!(
+        err_pf_theory.message.contains(
+            "vetted module Trusted.CorrVettedTheory cannot import non-foundation module Anneal.Helper"
+        ),
+        "unexpected corr-pf theory error: {err_pf_theory}"
+    );
+
+    // Reject a direct `"correspondence-preflight"` caller that submits a
+    // vetted source colliding with an already-loaded Pass 1 `candidate`
+    // module (`Trusted.CandHelper`), or submits missing, extra, duplicate,
+    // non-`Trusted`, or tactic-contaminated `base_trusted_sources`.
+    let corr_fake_cand_src = corr_pf_dir.join("FakeCandHelper.lean");
+    fs::write(&corr_fake_cand_src, b"-- anneal-trust-tier: vetted\nprelude\nimport Init.Core\n")
+        .unwrap();
+    let corr_vetted_cand_src2 = corr_pf_dir.join("CorrVettedCand2.lean");
+    fs::write(
+        &corr_vetted_cand_src2,
+        b"-- anneal-trust-tier: vetted\nprelude\nimport Init.Core\nimport Trusted.CandHelper\n",
+    )
+    .unwrap();
+    let err_pf_cand_collision = checker
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string(), "Trusted.CandHelper".to_string()],
+            theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            base_trusted_sources: vec![
+                ("Trusted".to_string(), trusted_base_src.clone()),
+                ("Trusted.CandHelper".to_string(), cand_helper_src.clone()),
+            ],
+            sources: vec![
+                ("Trusted.CandHelper".to_string(), corr_fake_cand_src),
+                ("Trusted.CorrVettedCand".to_string(), corr_vetted_cand_src2),
+            ],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_cand_collision.code, 1, "unexpected collision code: {err_pf_cand_collision}");
+    assert_eq!(err_pf_cand_collision.phase, "correspondence-preflight");
+    assert!(
+        err_pf_cand_collision
+            .message
+            .contains("preflight source module Trusted.CandHelper collides with base module"),
+        "unexpected corr-pf collision error: {err_pf_cand_collision}"
+    );
+
+    let err_pf_missing_base = checker
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string(), "Trusted.CandHelper".to_string()],
+            theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            base_trusted_sources: vec![("Trusted".to_string(), trusted_base_src.clone())],
+            sources: vec![("Trusted.CorrVettedCand".to_string(), corr_vetted_cand_src.clone())],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_missing_base.code, 1);
+    assert_eq!(err_pf_missing_base.phase, "correspondence-preflight");
+    assert!(
+        err_pf_missing_base
+            .message
+            .contains("missing base preflight source for Trusted module Trusted.CandHelper"),
+        "unexpected corr-pf missing base error: {err_pf_missing_base}"
+    );
+
+    let err_pf_extra_base = checker
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            base_trusted_sources: vec![
+                ("Trusted".to_string(), trusted_base_src.clone()),
+                ("Trusted.CandHelper".to_string(), cand_helper_src),
+            ],
+            sources: vec![("Trusted.CorrVettedCand".to_string(), corr_vetted_cand_src.clone())],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_extra_base.code, 1);
+    assert_eq!(err_pf_extra_base.phase, "correspondence-preflight");
+    assert!(
+        err_pf_extra_base.message.contains(
+            "extra base preflight source Trusted.CandHelper missing from trusted inventory"
+        ),
+        "unexpected corr-pf extra base error: {err_pf_extra_base}"
+    );
+
+    let err_pf_dup_base = checker
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            base_trusted_sources: vec![
+                ("Trusted".to_string(), trusted_base_src.clone()),
+                ("Trusted".to_string(), trusted_base_src.clone()),
+            ],
+            sources: vec![("Trusted.CorrVettedCand".to_string(), corr_vetted_cand_src.clone())],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_dup_base.code, 1);
+    assert_eq!(err_pf_dup_base.phase, "correspondence-preflight");
+    assert!(
+        err_pf_dup_base.message.contains("duplicate base preflight source module Trusted"),
+        "unexpected corr-pf duplicate base error: {err_pf_dup_base}"
+    );
+
+    let err_pf_non_trusted_base = checker
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            base_trusted_sources: vec![
+                ("Trusted".to_string(), trusted_base_src),
+                ("Anneal.Helper".to_string(), aux_src.join("Anneal/Helper.lean")),
+            ],
+            sources: vec![("Trusted.CorrVettedCand".to_string(), corr_vetted_cand_src.clone())],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_non_trusted_base.code, 1);
+    assert_eq!(err_pf_non_trusted_base.phase, "correspondence-preflight");
+    assert!(
+        err_pf_non_trusted_base.message.contains("non-Trusted base preflight source Anneal.Helper"),
+        "unexpected corr-pf non-Trusted base error: {err_pf_non_trusted_base}"
+    );
+
+    let bad_base_tactic_src = corr_pf_dir.join("BadBaseTactic.lean");
+    fs::write(
+        &bad_base_tactic_src,
+        b"-- anneal-trust-tier: vetted\nprelude\nimport Init.Core\ntheorem bad : Eq 0 0 := by rfl\n",
+    )
+    .unwrap();
+    let err_pf_tactic_base = checker
+        .inspect(InspectorRequest::CorrespondencePreflight {
+            search_path: search.clone(),
+            trusted: vec!["Trusted".to_string()],
+            theory: Vec::new(),
+            vendor_miri: vec!["Miri.Child".to_string()],
+            base_trusted_sources: vec![("Trusted".to_string(), bad_base_tactic_src)],
+            sources: vec![("Trusted.CorrVettedCand".to_string(), corr_vetted_cand_src)],
+        })
+        .unwrap_err();
+    assert_eq!(err_pf_tactic_base.code, 1);
+    assert_eq!(err_pf_tactic_base.phase, "correspondence-preflight");
 
     // 3c. `CorrOrigin.importViolation?`: candidate Trusted -> theory. The
     // compiled `.olean` header import of `Anneal.Helper` is rejected before
@@ -5602,16 +6386,18 @@ fn rejects_pass2_lean_syntax_extensions_in_correspondence_preflight() {
     checker
         .inspect(InspectorRequest::Preflight {
             sources: vec![("Anneal.BadThrowError".to_string(), bad_throw_theory.clone())],
+            base_trusted_sources: Vec::new(),
         })
         .expect("foundation-only preflight parses `throwError` as a plain identifier");
 
+    let trusted_base_src = checker.modules()["Trusted"].clone();
     let run_corr_pf = |chk: &mut Checker, module: &str, path: &Path| {
         chk.inspect(InspectorRequest::CorrespondencePreflight {
             search_path: vec![trusted_lib.clone(), vendor_lib.clone()],
             trusted: vec!["Trusted".to_string()],
             theory: Vec::new(),
             vendor_miri: vec!["Miri.ImportLean".to_string()],
-            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            base_trusted_sources: vec![("Trusted".to_string(), trusted_base_src.clone())],
             sources: vec![(module.to_string(), path.to_path_buf())],
         })
     };
@@ -5727,13 +6513,14 @@ fn rejects_scoped_syntax_and_extensions_in_preflight() {
     fs::create_dir_all(src_dir.join("Anneal")).unwrap();
     fs::create_dir_all(src_dir.join("Trusted")).unwrap();
 
+    let trusted_base_src = checker.modules()["Trusted"].clone();
     let run_corr_pf = |chk: &mut Checker, module: &str, path: &Path| {
         chk.inspect(InspectorRequest::CorrespondencePreflight {
             search_path: vec![trusted_lib.clone(), theory_lib.clone(), vendor_lib.clone()],
             trusted: vec!["Trusted".to_string()],
             theory: vec!["Anneal".to_string(), "Anneal.DecoyNs".to_string()],
             vendor_miri: vec!["Miri.ScopedExt".to_string()],
-            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            base_trusted_sources: vec![("Trusted".to_string(), trusted_base_src.clone())],
             sources: vec![(module.to_string(), path.to_path_buf())],
         })
     };
@@ -7116,6 +7903,7 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
          def c : Nat := Miri.InitHost.ok\n",
     )
     .unwrap();
+    let trusted_base_src = prebuild.modules()["Trusted"].clone();
     let err_pf = prebuild
         .inspect(InspectorRequest::CorrespondencePreflight {
             search_path: vec![
@@ -7126,7 +7914,7 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
             trusted: vec!["Trusted".to_string()],
             theory: vec![],
             vendor_miri: vec!["Miri.InitHost".to_string()],
-            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            base_trusted_sources: vec![("Trusted".to_string(), trusted_base_src.clone())],
             sources: vec![("Trusted.Correspondence".to_string(), sample_src.clone())],
         })
         .unwrap_err();
@@ -7192,7 +7980,7 @@ fn sandboxes_pass2_preflight_and_compilation_against_host_and_stage_writes() {
             trusted: vec!["Trusted".to_string()],
             theory: vec![],
             vendor_miri: vec!["Miri.InitDrop".to_string()],
-            module_tiers: BTreeMap::from([("Trusted".to_string(), TrustTier::Vetted)]),
+            base_trusted_sources: vec![("Trusted".to_string(), trusted_base_src)],
             sources: vec![("Trusted.DropTest".to_string(), sample_drop_src)],
         })
         .unwrap_err();
@@ -7526,21 +8314,64 @@ fn precompiled_inspector_handles_colon_in_tmpdir_and_drops_lean_path() {
 /// Repository auditing (`Checker::run`) restricts imports in `trusted/lean/`
 /// and `theory/` to `foundation-lock.json` even when
 /// `trusted/audit/library-lock.json` is present (`library-lock.json` applies
-/// exclusively to `targetAudit`).
+/// exclusively to `targetAudit`), while `vetted` modules are rejected even
+/// earlier at tier-import preflight for non-foundation `Init.*` imports.
 #[test]
 fn rejects_library_lock_imports_in_repository_audit() {
     let checkout = repo_root();
-    let mut fix = TempFixture::new(Some(
+
+    let mut vetted_fix = TempFixture::new(Some(
         "-- anneal-trust-tier: vetted\nprelude\nimport Init.Data.BitVec.Lemmas\n",
     ));
     fs::copy(
         checkout.join("trusted/audit/library-lock.json"),
-        fix.root.join("trusted/audit/library-lock.json"),
+        vetted_fix.root.join("trusted/audit/library-lock.json"),
     )
     .unwrap();
-    let err = fix.check_expected(Some(1), Some("preflight"), Some(false)).unwrap_err();
+    let err = vetted_fix.check_expected(Some(1), Some("preflight"), Some(false)).unwrap_err();
+    assert!(
+        err.message.contains(
+            "vetted module Trusted cannot import non-foundation module Init.Data.BitVec.Lemmas"
+        ),
+        "unexpected error: {err}"
+    );
+
+    let mut cand_fix = TempFixture::new(Some(
+        "-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.Data.BitVec.Lemmas\n",
+    ));
+    fs::copy(
+        checkout.join("trusted/audit/library-lock.json"),
+        cand_fix.root.join("trusted/audit/library-lock.json"),
+    )
+    .unwrap();
+    let err = cand_fix.check_expected(Some(1), Some("preflight"), Some(false)).unwrap_err();
     assert!(
         err.message.contains("foreign/missing import Init.Data.BitVec.Lemmas in Trusted"),
+        "unexpected error: {err}"
+    );
+
+    let mut theory_fix = TempFixture::new(Some(
+        "-- anneal-trust-tier: candidate:mir_semantics\nprelude\nimport Init.Core\n",
+    ));
+    fs::copy(
+        checkout.join("trusted/audit/library-lock.json"),
+        theory_fix.root.join("trusted/audit/library-lock.json"),
+    )
+    .unwrap();
+    fs::create_dir_all(theory_fix.root.join("theory/Anneal")).unwrap();
+    fs::write(
+        theory_fix.root.join("theory/Anneal/Helper.lean"),
+        "prelude\nimport Init.Data.BitVec.Lemmas\n",
+    )
+    .unwrap();
+    fs::write(
+        theory_fix.root.join("theory/Anneal.lean"),
+        "prelude\nimport Init.Core\nimport Anneal.Helper\n",
+    )
+    .unwrap();
+    let err = theory_fix.check_expected(Some(1), Some("preflight"), Some(false)).unwrap_err();
+    assert!(
+        err.message.contains("foreign/missing import Init.Data.BitVec.Lemmas in Anneal.Helper"),
         "unexpected error: {err}"
     );
 }

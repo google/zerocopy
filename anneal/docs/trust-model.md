@@ -269,7 +269,15 @@ classifies each source file into a `SourceRole` (`trusted (tier : TrustTier)`
 vs. `theory`) and validates the module header and every top-level command in a
 single top-down traversal (`inspectSyntax` and `inspectNodeKind`) against a
 closed, role-aware `SyntaxNodeKind` allowlist in every applicable preflight
-environment:
+environment, while `checkPreflightTierImports` (mirrored by Rust
+`check_preflight_tier_imports` in Pass 1 and Pass 2 preflight, with Pass 1
+base `Trusted` source files authenticated directly from disk via
+`"baseSources"` across both `"preflight"` and `"correspondence-preflight"`
+and duplicate, missing/extra, or base-colliding module names rejected before
+compilation) enforces a positive allowlist for `vetted` modules: a `vetted`
+module may import only locked foundation modules and other `vetted` modules,
+rejecting `candidate:<feature>`, `.repo .theory`, `.vendorMiri`,
+`.sysrootFoundation`, and any unknown non-foundation module before compilation:
 
 - **`SourceRole.trusted` (`trusted/lean/` and `trusted/correspondence/`):**
   Restricted to `allowedTrustedSyntaxKinds`—pure declarations, types, and
@@ -308,7 +316,8 @@ kernel-level audit:
    (`verifyAndCollectLocals`):** Verifies that only allowlisted modules are
    loaded; rejects compiled `.olean` header imports violating
    `RepoOrigin.importViolation?` (for example, a `Trusted` module importing a
-   `theory/` module); verifies that every constant's recorded module origin
+   `theory/` module, or a `vetted` `Trusted` module importing a `candidate:*`
+   module); verifies that every constant's recorded module origin
    (`env.getModuleIdxFor?`) matches its module's `RepoOrigin`; forbids
    non-`Trusted` modules from declaring constants in the `Trusted` root
    namespace (`(privateToUserName ci.name).getRoot == `Trusted`) or `opaque`
@@ -448,7 +457,9 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    `trustLevel := 0`, `plugins := #[]`, and `loadExts := false`, partitions
    modules into `CorrOrigin` (`.foundation`, `.sysrootFoundation`,
    `.vendorMiri`, `.repo (.trusted tier | .theory)`), checks header imports
-   (`CorrOrigin.importViolation?`), declaration edges
+   (`CorrOrigin.importViolation?`, rejecting `vetted` imports of
+   `candidate:*`, `vendor/lean-miri/`, or non-foundation sysroot modules,
+   besides `Trusted` -> `theory/` imports), declaration edges
    (`CorrOrigin.edgeViolation?`), and `.vendorMiri` global inventory and purity
    (forbidding same-module duplicates, non-identical cross-module duplicates,
    external declarations in `Trusted` or `Anneal`, and any `axiom`, `unsafe`,

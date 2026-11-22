@@ -491,15 +491,16 @@ allowlists:
   and any `Trusted.lean` umbrella import requires promoting those modules from
   `candidate:*` to `vetted` first. `anneal-audit` discovers candidate modules
   by walking `trusted/lean/` directly and mechanically enforces tier isolation
-  at the **declaration-edge level** (`checkDeclarationEdges` with
-  `RepoOrigin.edgeViolation?` and `CorrOrigin.edgeViolation?` forbids any
-  `vetted` *declaration* from referencing a `candidate:*` declaration); because
-  module-level import isolation between `vetted` and `candidate:*` modules is
-  currently a known temporary enforcement gap
-  (`enforces_module_level_trust_tiers_and_namespace_hygiene` in
-  `boundary_audit.rs` still allows a declaration-free `Trusted.lean` umbrella
-  import), Pass 2 human review enforces module-level import isolation manually
-  until `anneal-audit` and that test are hardened.
+  at **both** the module-header import level (`checkPreflightTierImports` in
+  `"preflight"` / `"correspondence-preflight"`, `check_preflight_tier_imports`
+  in Pass 2 preflight, and `RepoOrigin.importViolation?` /
+  `CorrOrigin.importViolation?` on compiled `.olean` headers) and the
+  declaration-edge level (`checkDeclarationEdges` with
+  `RepoOrigin.edgeViolation?` and `CorrOrigin.edgeViolation?`). In
+  `boundary_audit.rs`, `enforces_module_level_trust_tiers_and_namespace_hygiene`
+  and `rejects_correspondence_audit_violations_and_sysroot_mismatch` verify
+  rejection of even declaration-free `vetted` imports of `candidate:*` (and in
+  Pass 2, non-foundation) modules.
 - **Tactic-free, `deriving`-free `Trusted.*` definitions:**
   `Trusted/MirAst.lean`, `Trusted/MirSemantics.lean`, and
   `Trusted/Correspondence.lean` start with `prelude`, import locked modules

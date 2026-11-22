@@ -245,23 +245,31 @@ def RepoOrigin.edgeViolation? (cName : Name) (src : RepoOrigin)
 /-- Return `none` when the compiled `.olean` header of Pass 1 module `m` in
 `src` may import module `imp` in `dst`, or `some message` when forbidden.
 
-Module imports are coarser than constant references: the `vetted` umbrella
-`Trusted.lean` imports `candidate:<feature>` modules without referencing their
-constants, and `edgeViolation?` separately checks every constant reference.
-Imports still preserve origin separation:
+Module imports mirror the `RepoOrigin.edgeViolation?` authority boundary:
 
 - `.foundation` modules import only `.foundation` modules.
-- `.trusted _` modules never import `.theory` modules. -/
+- `.trusted .vetted` modules import only `.foundation` and `.trusted .vetted`
+  modules (never `.trusted (.candidate _)` or `.theory`).
+- `.trusted (.candidate _)` modules import `.foundation` and `.trusted _`
+  modules, never `.theory`.
+- `.theory` modules may import `.foundation` or any `.repo _` module.
+
+`edgeViolation?` separately checks every constant reference across admitted
+imports as defense in depth. -/
 def RepoOrigin.importViolation? (m : Name) (src : RepoOrigin) (imp : Name)
     (dst : RepoOrigin) : Option String :=
   match src, dst with
   | .foundation, .foundation => none
   | .foundation, .repo _ =>
     some s!"foundation module {m} cannot import {imp}"
+  | .repo (.trusted .vetted), .foundation
+  | .repo (.trusted .vetted), .repo (.trusted .vetted) => none
+  | .repo (.trusted .vetted), .repo (.trusted depTier) =>
+    some s!"vetted module {m} cannot import {depTier.render} module {imp}"
   | .repo (.trusted _), .repo .theory =>
     some s!"Trusted module {m} cannot import non-Trusted module {imp}"
-  | .repo (.trusted _), .foundation | .repo (.trusted _), .repo (.trusted _) =>
-    none
+  | .repo (.trusted (.candidate _)), .foundation
+  | .repo (.trusted (.candidate _)), .repo (.trusted _) => none
   | .repo .theory, .foundation | .repo .theory, .repo _ => none
 
 /-- Partitions every loaded module in Pass 2 (`"correspondence-audit"`). -/
@@ -322,8 +330,11 @@ def CorrOrigin.edgeViolation? (cName : Name) (src : CorrOrigin)
 - External origins never import repository modules: `.foundation` imports only
   `.foundation`, `.sysrootFoundation` imports only `.foundation` and
   `.sysrootFoundation`, and `.vendorMiri` imports no `.repo _` module.
-- `.trusted _` modules never import `.theory` modules (including `theory/`
-  modules such as `Anneal.MirWp` and every `correspondence/` module).
+- `.trusted .vetted` modules import only `.foundation` and `.trusted .vetted`
+  modules (never `.sysrootFoundation`, `.vendorMiri`,
+  `.trusted (.candidate _)`, or `.theory`).
+- `.trusted (.candidate _)` modules never import `.theory` modules (including
+  `theory/` modules such as `Anneal.MirWp` and every `correspondence/` module).
 
 As in `RepoOrigin.importViolation?`, `edgeViolation?` separately checks every
 constant reference across an admitted import. -/
@@ -342,11 +353,19 @@ def CorrOrigin.importViolation? (m : Name) (src : CorrOrigin) (imp : Name)
   | .vendorMiri, .vendorMiri => none
   | .vendorMiri, .repo _ =>
     some s!"vendor Miri module {m} cannot import {imp}"
+  | .repo (.trusted .vetted), .foundation
+  | .repo (.trusted .vetted), .repo (.trusted .vetted) => none
+  | .repo (.trusted .vetted), .sysrootFoundation
+  | .repo (.trusted .vetted), .vendorMiri =>
+    some s!"vetted module {m} cannot import non-foundation module {imp}"
+  | .repo (.trusted .vetted), .repo (.trusted depTier) =>
+    some s!"vetted module {m} cannot import {depTier.render} module {imp}"
   | .repo (.trusted _), .repo .theory =>
     some s!"Trusted module {m} cannot import non-Trusted module {imp}"
-  | .repo (.trusted _), .foundation | .repo (.trusted _), .sysrootFoundation
-  | .repo (.trusted _), .vendorMiri | .repo (.trusted _), .repo (.trusted _) =>
-    none
+  | .repo (.trusted (.candidate _)), .foundation
+  | .repo (.trusted (.candidate _)), .sysrootFoundation
+  | .repo (.trusted (.candidate _)), .vendorMiri
+  | .repo (.trusted (.candidate _)), .repo (.trusted _) => none
   | .repo .theory, .foundation | .repo .theory, .sysrootFoundation
   | .repo .theory, .vendorMiri | .repo .theory, .repo _ => none
 
@@ -704,13 +723,17 @@ def isValidSourceIdent (id : Name) : Bool :=
        | .str .anonymous seg => !seg.isEmpty && seg != "_root_"
        | _ => false)
 
+/-- Return `true` iff `moduleName` belongs to the `Trusted` root namespace
+(`Trusted` or `Trusted.*`). -/
+def isTrustedModuleName (moduleName : Name) : Bool :=
+  moduleName == `Trusted || moduleName.getRoot == `Trusted
+
 /-- Determine the `SourceRole` of `moduleName` from its name and the
 `-- anneal-trust-tier: <tier>` directive in `text`. Every `Trusted` module must
 declare a single valid `TrustTier`, and non-`Trusted` (`theory/` and
 `correspondence/`) modules may not declare one. -/
 def extractSourceRole (moduleName : Name) (text : String) : IO SourceRole := do
-  let isTrustedModule :=
-    moduleName == `Trusted || moduleName.getRoot == `Trusted
+  let isTrustedModule := isTrustedModuleName moduleName
   let directives := (text.splitOn "\n").filterMap fun rawLine =>
     (rawLine.trimAscii.toString.dropPrefix? "-- anneal-trust-tier:").map
       (·.trimAscii.toString)
@@ -1067,11 +1090,62 @@ partial def parseAndInspectCommands (ctx : Parser.InputContext)
   parseAndInspectCommands ctx scopedNamespaces scopedPrefixes nextEnv nextScopes
     moduleName allowedKinds nextState nextMessages
 
+/-- Parsed header and tier metadata produced by `inspectSource` for one
+repository `.lean` source file during `"preflight"` or
+`"correspondence-preflight"`. -/
+structure InspectedSource where
+  moduleName : Name
+  imports : Array Import
+  role : SourceRole
+
+/-- Render an `InspectedSource` in the JSON wire format expected by
+`anneal-audit`. -/
+def InspectedSource.renderJson (s : InspectedSource) : Json :=
+  Json.mkObj [
+    ("module", toJson s.moduleName),
+    ("imports", toJson s.imports),
+    ("trustTier", toJson s.role.renderTier?)]
+
+/-- Enforce module-level trust-tier import isolation across preflighted sources
+before compilation: reject duplicate `sources` entries and any source colliding
+with `reservedModules` or `baseTiers`, then verify that every `vetted` module
+imports `imp` if and only if `imp` belongs to `foundationSet` or another
+`vetted` `Trusted` module (rejecting every `candidate:<feature>`,
+`.repo .theory`, `.vendorMiri`, `.sysrootFoundation`, or unknown import
+uniformly before compilation). -/
+def checkPreflightTierImports (inspected : Array InspectedSource)
+    (foundationSet : NameSet)
+    (baseTiers : Std.HashMap Name TrustTier := {})
+    (reservedModules : NameSet := {}) : IO Unit := do
+  let mut seen : NameSet := {}
+  let mut tiers := baseTiers
+  for s in inspected do
+    if seen.contains s.moduleName then
+      fail s!"duplicate preflight source module {s.moduleName}"
+    if reservedModules.contains s.moduleName ||
+        baseTiers.contains s.moduleName then
+      fail s!"preflight source module {s.moduleName} collides with base module"
+    seen := seen.insert s.moduleName
+    if let .trusted tier := s.role then
+      tiers := tiers.insert s.moduleName tier
+  for s in inspected do
+    if s.role == .trusted .vetted then
+      for imp in s.imports do
+        if !foundationSet.contains imp.module then
+          match tiers.get? imp.module with
+          | some .vetted => pure ()
+          | some depTier =>
+            fail (s!"vetted module {s.moduleName} cannot import " ++
+              s!"{depTier.render} module {imp.module}")
+          | none =>
+            fail (s!"vetted module {s.moduleName} cannot import " ++
+              s!"non-foundation module {imp.module}")
+
 /-- Parse and validate a single repository `.lean` source file during
 `"preflight"` or `"correspondence-preflight"`. -/
 def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
     (parserEnv : Environment) (moduleName : Name)
-    (path : System.FilePath) : IO Json := do
+    (path : System.FilePath) : IO InspectedSource := do
   let text ← IO.FS.readFile path
   let role ← extractSourceRole moduleName text
   let allowedKinds := role.allowedSyntaxKinds
@@ -1088,10 +1162,7 @@ def inspectSource (scopedNamespaces scopedPrefixes : NameSet)
     { header := "", currNamespace := .anonymous, openDecls := [] }
   parseAndInspectCommands ctx scopedNamespaces scopedPrefixes parserEnv
     [rootScope] moduleName allowedKinds initial log
-  return Json.mkObj [
-    ("module", toJson moduleName),
-    ("imports", toJson imports),
-    ("trustTier", toJson role.renderTier?)]
+  return { moduleName, imports, role }
 
 /-- Read only a source header (`"headers"`). Target elaboration is deliberately
 separate from repository command admission: authored macros and tactics may use
@@ -1204,20 +1275,61 @@ def insertRole (roles : Std.HashMap Name ρ) (m : Name) (role : ρ)
   if roles.contains m then fail s!"{dupPrefix} {m}"
   return roles.insert m role
 
+/-- Validate `"moduleTiers"` entries into a deduplicated `TrustTier` map using
+`validateModule` to enforce mode-specific module-name admissibility. -/
+def parseTierEntries (tierEntries : Array (String × String))
+    (validateModule : Name → IO Unit) :
+    IO (Std.HashMap Name TrustTier) :=
+  tierEntries.foldlM (init := ({} : Std.HashMap Name TrustTier))
+    fun acc (mStr, rawTier) => do
+      let m := mStr.toName
+      if acc.contains m then fail s!"duplicate module tier for {m}"
+      validateModule m
+      let some tier := TrustTier.parse? rawTier
+        | fail s!"invalid trust tier {rawTier} for {m}"
+      return acc.insert m tier
+
 /-- Parse `"moduleTiers"` and verify that every entry names a distinct module in
 `trusted` with a valid `TrustTier`. -/
 def parseModuleTiers (j : Json) (trusted : Array Name) :
     IO (Std.HashMap Name TrustTier) := do
   let tierEntries ← field (α := Array (String × String)) j "moduleTiers"
-  tierEntries.foldlM (init := ({} : Std.HashMap Name TrustTier))
-    fun acc (mStr, rawTier) => do
-      let m := mStr.toName
-      if acc.contains m then fail s!"duplicate module tier for {m}"
-      unless trusted.contains m do
-        fail s!"trust tier declared for non-Trusted module {m}"
-      let some tier := TrustTier.parse? rawTier
-        | fail s!"invalid trust tier {rawTier} for {m}"
-      return acc.insert m tier
+  parseTierEntries tierEntries fun m => do
+    unless trusted.contains m do
+      fail s!"trust tier declared for non-Trusted module {m}"
+
+/-- Parse optional `"baseSources"` (`Array (String × String)`) passed to
+`"preflight"` for already-staged Pass 1 `Trusted` modules, rejecting any
+non-`Trusted`, foundation-colliding, or duplicate entry, and authenticate each
+entry's syntax, header, and `-- anneal-trust-tier:` directive directly from
+disk via `inspectSource`. -/
+def inspectPreflightBaseSources (j : Json)
+    (scopedNamespaces scopedPrefixes : NameSet)
+    (parserEnv : Environment) (foundationSet : NameSet) :
+    IO (Std.HashMap Name TrustTier × NameSet) := do
+  match j.getObjVal? "baseSources" with
+  | .error _ => return ({}, foundationSet)
+  | .ok _ =>
+    let entries ← field (α := Array (String × String)) j "baseSources"
+    let mut baseTiers : Std.HashMap Name TrustTier := {}
+    let mut reservedModules := foundationSet
+    for (baseModStr, basePath) in entries do
+      let m := baseModStr.toName
+      unless isTrustedModuleName m do
+        fail s!"non-Trusted base preflight source {m}"
+      if foundationSet.contains m then
+        fail s!"base preflight source {m} collides with foundation module"
+      if baseTiers.contains m then
+        fail s!"duplicate base preflight source module {m}"
+      let baseInspected ←
+        inspectSource scopedNamespaces scopedPrefixes parserEnv m basePath
+      match baseInspected.role with
+      | .trusted tier =>
+        baseTiers := baseTiers.insert m tier
+        reservedModules := reservedModules.insert m
+      | .theory =>
+        fail s!"non-Trusted base preflight source {m}"
+    return (baseTiers, reservedModules)
 
 /-- Enforce the logical safety preconditions required before passing any
 non-foundation `ConstantInfo` to `Kernel.Environment.replay`: no `unsafe` or
@@ -1854,11 +1966,11 @@ package from the pinned toolchain. Admission only classifies these modules;
 `closureCorr` rejects any `unsafe` or `partial` constant that the
 correspondence cone reaches, and `verifyAndCollectCorrLocals` rejects any of
 their constants in the reserved `Trusted` or `Anneal` namespaces. -/
-def classifyCorrModules (j : Json) (env : Environment)
-    (foundation trusted theory vendorMiri : Array Name) :
+def classifyCorrModulesWithTiers (j : Json) (env : Environment)
+    (foundation trusted theory vendorMiri : Array Name)
+    (tierMap : Std.HashMap Name TrustTier) :
     IO (Std.HashMap Name CorrOrigin) := do
   let sysrootFoundation ← names j "sysrootFoundation"
-  let tierMap ← parseModuleTiers j trusted
   let roles0 := foundation.foldl (init := ({} : Std.HashMap Name CorrOrigin))
     fun acc m => acc.insert m .foundation
   let roles1 ← trusted.foldlM (init := roles0) fun acc m => do
@@ -1880,6 +1992,14 @@ def classifyCorrModules (j : Json) (env : Environment)
     unless roles4.contains m.module do
       fail s!"foreign module {m.module} in correspondence environment"
   return roles4
+
+/-- Classify Pass 2 modules using `moduleTiers` from the compiled `.olean`
+audit request (`classifyCorrModulesWithTiers`). -/
+def classifyCorrModules (j : Json) (env : Environment)
+    (foundation trusted theory vendorMiri : Array Name) :
+    IO (Std.HashMap Name CorrOrigin) := do
+  let tierMap ← parseModuleTiers j trusted
+  classifyCorrModulesWithTiers j env foundation trusted theory vendorMiri tierMap
 
 /-- Return `true` if `n` is `sorryAx` or one of the `Init.Core`
 compiler-reflection primitives whose use trusts the Lean compiler and runtime
@@ -2574,14 +2694,31 @@ def preflightCorrespondence (j : Json) (foundation : Array Name) : IO Json := do
   let theory ← names j "theory"
   let vendorMiri ← names j "vendorMiri"
   let sources ← field (α := Array (String × String)) j "sources"
+  let foundationSet : NameSet := .ofList foundation.toList
+  let (baseTiers, reservedBaseModules) ← do
+    let baseParserEnv ← importCorrEnv foundation true
+    let baseScopedNs ← collectScopedExtensionNamespaces baseParserEnv
+    let baseScopedPrefixes := collectScopedNamespacePrefixes baseScopedNs
+    inspectPreflightBaseSources j baseScopedNs baseScopedPrefixes
+      baseParserEnv foundationSet
+  for (m, _) in baseTiers do
+    unless trusted.contains m do
+      fail s!"extra base preflight source {m} missing from trusted inventory"
+  for m in trusted do
+    unless baseTiers.contains m do
+      fail s!"missing base preflight source for Trusted module {m}"
   let env ← importCorrEnv (foundation ++ trusted ++ theory ++ vendorMiri) true
-  discard <| classifyCorrModules j env foundation trusted theory vendorMiri
+  let baseRoles ← classifyCorrModulesWithTiers j env foundation trusted theory
+    vendorMiri baseTiers
+  let reservedModules := baseRoles.fold (init := reservedBaseModules)
+    fun acc m _ => acc.insert m
   let scopedNamespaces ← collectScopedExtensionNamespaces env
   let scopedPrefixes := collectScopedNamespacePrefixes scopedNamespaces
-  let headers ←
+  let inspected ←
     sources.mapM fun (n, p) =>
       inspectSource scopedNamespaces scopedPrefixes env n.toName p
-  return Json.mkObj [("headers", .arr headers)]
+  checkPreflightTierImports inspected foundationSet baseTiers reservedModules
+  return Json.mkObj [("headers", .arr (inspected.map InspectedSource.renderJson))]
 
 /-- Collect validated `.repo`, correspondence, and `.vendorMiri` inventories
 from the full Pass 2 environment in a dedicated scope so `env` can be released
@@ -3071,16 +3208,23 @@ def run (j : Json) : IO Json := do
     return Json.mkObj [("graph", sortedGraph)]
   | "preflight" =>
     let foundation ← names j "foundation"
+    let foundationSet : NameSet := .ofList foundation.toList
     initHermeticSearchPath sysrootStr
     let env ← importEnv j foundation true
     validateGraph j env
     let scopedNamespaces ← collectScopedExtensionNamespaces env
     let scopedPrefixes := collectScopedNamespacePrefixes scopedNamespaces
+    let (baseTiers, reservedModules) ←
+      inspectPreflightBaseSources j scopedNamespaces scopedPrefixes env
+        foundationSet
     let sources ← field (α := Array (String × String)) j "sources"
-    let headers ←
+    let inspected ←
       sources.mapM fun (n, p) =>
         inspectSource scopedNamespaces scopedPrefixes env n.toName p
-    return Json.mkObj [("headers", .arr headers), ("graph", graph env)]
+    checkPreflightTierImports inspected foundationSet baseTiers reservedModules
+    return Json.mkObj [
+      ("headers", .arr (inspected.map InspectedSource.renderJson)),
+      ("graph", graph env)]
   | "correspondence-preflight" =>
     let foundation ← names j "foundation"
     let spRaw ← field (α := Array String) j "searchPath"

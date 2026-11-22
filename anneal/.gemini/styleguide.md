@@ -137,15 +137,14 @@ never proves defect absence or substitutes for CI or merge gates.
     comments with verbatim upstream quotes and resolved pinned SHAs. Every new
     module starts as `-- anneal-trust-tier: candidate:<feature>`. Never demote
     an existing `vetted` module to `candidate:<feature>`. `vetted` modules must
-    never import or reference `candidate` modules or constants (`theory/` or
-    downstream `candidate` modules import `candidate` submodules directly;
-    `checkTierReferences` currently enforces constant-level isolation only and
-    `boundary_audit.rs` Case 2 still allows a declaration-free `Trusted.lean`
-    umbrella import, so enforce module-level import isolation manually in Pass
-    2 until mechanized and Case 2 is flipped). Any `candidate -> vetted`
-    promotion triggers full Pass 2 audit even without AST edits. Every
-    declaration in `trusted/lean/` (`vetted` and `candidate`, including
-    existing ones whose callers changed) must remain 100% mechanically
+    never import or reference `candidate` modules or constants, or Pass 2
+    non-foundation modules (`theory/` or downstream `candidate` modules import
+    `candidate` submodules directly; enforced at module-import and
+    constant-reference levels by `checkPreflightTierImports`,
+    `importViolation?`, and `edgeViolation?` via `checkDeclarationEdges`). Any
+    `candidate -> vetted` promotion triggers full Pass 2 audit even without AST
+    edits. Every declaration in `trusted/lean/` (`vetted` and `candidate`,
+    including existing ones whose callers changed) must remain 100% mechanically
     transitively reachable from the claim/auditor root set (`Trusted.Crate`,
     `Trusted.CrateTheorem`, `Trusted.VerificationResult`, and constants emitted
     by `trusted/rustc-capture/` or named by `trusted/audit/`), verified via
@@ -171,8 +170,9 @@ never proves defect absence or substitutes for CI or merge gates.
       `allowedCommandKinds`, `allowedDeclarationKinds`,
       `allowedAttributeNames`, `allowedTrustedSyntaxKinds`,
       `allowedTheoryTacticKinds`, `SourceRole`, `inspectNodeKind`,
-      `inspectSyntax`, `validateLocalConstant`, `checkTierReferences`,
-      `validateGraph`, `validCandidateFeatures`) and
+      `inspectSyntax`, `checkPreflightTierImports`, `importViolation?`,
+      `edgeViolation?`, `checkDeclarationEdges`, `validateLocalConstant`,
+      `checkTierReferences`, `validateGraph`, `validCandidateFeatures`) and
       `trusted/lean/foundation-lock.json` fields (`axioms`, `distributions`,
       `graph`, `modules`, `schema`, `toolchain`, digests).
     - Preserve `.olean` audit-mode loading (`trustLevel := 0`, `plugins := #[]`,
