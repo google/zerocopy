@@ -1,0 +1,23 @@
+// MIR for `safe_tf_add` after runtime-post-cleanup
+
+fn safe_tf_add(_1: std::arch::x86_64::__m256i, _2: std::arch::x86_64::__m256i) -> std::arch::x86_64::__m256i {
+    debug a => _1;
+    debug b => _2;
+    let mut _0: std::arch::x86_64::__m256i;
+    let mut _3: std::arch::x86_64::__m256i;
+    let mut _4: std::arch::x86_64::__m256i;
+
+    bb0: {
+        StorageLive(_3);
+        _3 = copy _1;
+        StorageLive(_4);
+        _4 = copy _2;
+        _0 = std::arch::x86_64::_mm256_add_epi8(move _3, move _4) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_4);
+        StorageDead(_3);
+        return;
+    }
+}

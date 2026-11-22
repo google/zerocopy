@@ -1,0 +1,61 @@
+// MIR for `safe_tf_caller` after runtime-post-cleanup
+
+fn safe_tf_caller(_1: *const std::arch::x86_64::__m256i) -> std::arch::x86_64::__m256i {
+    debug p => _1;
+    let mut _0: std::arch::x86_64::__m256i;
+    let _2: std::arch::x86_64::__m256i;
+    let mut _3: *const std::arch::x86_64::__m256i;
+    let mut _5: *const std::arch::x86_64::__m256i;
+    let mut _6: std::arch::x86_64::__m256i;
+    let mut _7: std::arch::x86_64::__m256i;
+    let mut _8: std::arch::x86_64::__m256i;
+    let mut _9: std::arch::x86_64::__m256i;
+    scope 1 {
+        debug a => _2;
+        let _4: std::arch::x86_64::__m256i;
+        scope 2 {
+            debug b => _4;
+        }
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = copy _1;
+        _2 = std::arch::x86_64::_mm256_loadu_si256(move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy _1;
+        _4 = std::arch::x86_64::_mm256_load_si256(move _5) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_5);
+        StorageLive(_6);
+        _6 = copy _2;
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = copy _2;
+        StorageLive(_9);
+        _9 = copy _4;
+        _7 = std::arch::x86_64::_mm256_shuffle_epi8(move _8, move _9) -> [return: bb3, unwind continue];
+    }
+
+    bb3: {
+        StorageDead(_9);
+        StorageDead(_8);
+        _0 = safe_tf_add(move _6, move _7) -> [return: bb4, unwind continue];
+    }
+
+    bb4: {
+        StorageDead(_7);
+        StorageDead(_6);
+        StorageDead(_4);
+        StorageDead(_2);
+        return;
+    }
+}

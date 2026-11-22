@@ -1,0 +1,42 @@
+// MIR for `avx512_ops` after runtime-post-cleanup
+
+fn avx512_ops(_1: u64, _2: std::arch::x86_64::__m512i, _3: std::arch::x86_64::__m512i) -> std::arch::x86_64::__m512i {
+    debug mask => _1;
+    debug idx => _2;
+    debug v => _3;
+    let mut _0: std::arch::x86_64::__m512i;
+    let _4: std::arch::x86_64::__m512i;
+    let mut _5: u64;
+    let mut _6: std::arch::x86_64::__m512i;
+    let mut _7: std::arch::x86_64::__m512i;
+    let mut _8: std::arch::x86_64::__m512i;
+    scope 1 {
+        debug e => _4;
+    }
+
+    bb0: {
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy _1;
+        StorageLive(_6);
+        _6 = copy _3;
+        _4 = std::arch::x86_64::_mm512_maskz_expand_epi8(move _5, move _6) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_6);
+        StorageDead(_5);
+        StorageLive(_7);
+        _7 = copy _2;
+        StorageLive(_8);
+        _8 = copy _4;
+        _0 = std::arch::x86_64::_mm512_permutexvar_epi8(move _7, move _8) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_8);
+        StorageDead(_7);
+        StorageDead(_4);
+        return;
+    }
+}

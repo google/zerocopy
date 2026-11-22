@@ -1,0 +1,59 @@
+{
+  "topics": [
+    "rust/simd",
+    "rust/target-feature",
+    "rustc/mir",
+    "rustc/stdarch",
+    "isa/simd",
+    "isa/x86-64",
+    "isa/aarch64",
+    "isa/riscv64",
+    "isa/wasm",
+    "kraken/isa-coverage",
+    "anneal/mir-semantics",
+    "anneal/tcb-audit",
+    "verification/rust"
+  ],
+  "subjects": [
+    {
+      "name": "Anneal MIR capture, trusted Lean 4 semantics, and vendored lean-miri SIMD interpreter",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "d2f63ce1c3c04ffabb4442b028caf612c9508387",
+        "subpath": "anneal"
+      }
+    },
+    {
+      "name": "rustc nightly compiler (Runtime PostCleanup MIR lowering for target_feature, std_detect, and core::arch SIMD)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.102.0-nightly",
+        "commit_short": "3ef0c22cd",
+        "commit_date": "2026-11-11"
+      }
+    },
+    {
+      "name": "Kraken Lean 4 x86-64 and AArch64 assembly semantics",
+      "identity": {
+        "repository": "AeneasVerif/kraken",
+        "revision": "4a6ec0c61b189c53911903c4c0d129d6e78c05f6"
+      }
+    },
+    {
+      "name": "vsimd runtime SIMD dispatch crate",
+      "identity": {
+        "repository": "Nugine/simd",
+        "crate": "vsimd",
+        "version": "0.8.0"
+      }
+    },
+    {
+      "name": "Rust Reference (target_feature attribute, RFC 2396 safe target-feature calls, and ABI rules)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "a286e1ecb8ce193d50056e4bb042eea9b23876ef"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
