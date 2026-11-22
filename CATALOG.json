@@ -93309,6 +93309,54 @@
         "verification"
       ]
     },
+    "rustc-rmeta-mir-encoding-symbol-export-crate-types-and-share-generics": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (14210df0e 2026-05-31), LLVM 22.1.6, host x86_64-unknown-linux-gnu"
+          },
+          "name": "rustc 1.98.0-nightly (nightly-2026-06-01): source and executed toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e"
+          },
+          "name": "rustc source at the default-branch head of 2026-11-21"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR AST, capture driver, and Lean audit boundary"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1 (x86_64-unknown-linux-gnu)"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover and standalone kernel"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "verification"
+      ]
+    },
     "rustc-seven-release-postcleanup-mir-schema-drift-and-capture-compatibility": {
       "observed_at": "2026-11-20",
       "subjects": [

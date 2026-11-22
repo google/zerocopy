@@ -1,0 +1,564 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "host": "x86_64-unknown-linux-gnu",
+  "part_a_crate_types_and_symbol_export": {
+    "rlib": {
+      "file_bytes": 15008,
+      "archive_member_count": 3,
+      "archive_members_head": [
+        {
+          "name": "lib.rmeta",
+          "size_bytes": 6960
+        },
+        {
+          "name": "lib.rmeta-link",
+          "size_bytes": 640
+        },
+        {
+          "name": "libupstream.upstream.1e512f4d352cfed9-cgu.0.rcgu.o",
+          "size_bytes": 6752
+        }
+      ],
+      "lib_rmeta_bytes": 6960,
+      "has_lib_rmeta_link": true,
+      "lib_rmeta_link_bytes": 640,
+      "has_c_api_no_mangle": true,
+      "has_custom_c_export_sym": true,
+      "has_CUSTOM_SEC_VAL": true,
+      "has_upstream_instantiate_u32_global": true,
+      "has_upstream_instantiate_u32_any": true,
+      "weak_c_hook_lines": [
+        "0000000000000000 W weak_c_hook"
+      ],
+      "has_my_custom_sec": true,
+      "lib_rmeta_link_has_section": true
+    },
+    "dylib": {
+      "file_bytes": 5443368,
+      "defined_dyn_symbol_count": 1771,
+      "has_c_api_no_mangle": true,
+      "has_custom_c_export_sym": true,
+      "has_CUSTOM_SEC_VAL": true,
+      "has_upstream_instantiate_u32": true,
+      "has_rust_metadata_symbol": true,
+      "weak_c_hook_lines": [
+        "0000000000076af0 W weak_c_hook"
+      ],
+      "has_my_custom_sec": true,
+      "upstream_matching_dyn_symbols": [
+        "0000000000041468 R CUSTOM_SEC_VAL",
+        "00000000000769f0 T _RINvCs2BnozHpfEvZ_8upstream16generic_noinlinemEB2_",
+        "0000000000076a50 T _RNvCs2BnozHpfEvZ_8upstream20rust_marked_noinline",
+        "0000000000076a60 T _RNvCs2BnozHpfEvZ_8upstream24upstream_instantiate_u32",
+        "0000000000076ad0 T c_api_no_mangle",
+        "0000000000076ae0 T custom_c_export_sym",
+        "0000000000000000 N rust_metadata_upstream_1e512f4d352cfed9",
+        "0000000000076af0 W weak_c_hook"
+      ]
+    },
+    "cdylib": {
+      "file_bytes": 4324488,
+      "defined_dyn_symbol_count": 4,
+      "has_c_api_no_mangle": true,
+      "has_custom_c_export_sym": true,
+      "has_CUSTOM_SEC_VAL": true,
+      "has_upstream_instantiate_u32": false,
+      "has_rust_metadata_symbol": false,
+      "weak_c_hook_lines": [
+        "0000000000011930 W weak_c_hook"
+      ],
+      "has_my_custom_sec": true,
+      "all_defined_dyn_symbols": [
+        "0000000000003ed8 R CUSTOM_SEC_VAL",
+        "0000000000011910 T c_api_no_mangle",
+        "0000000000011920 T custom_c_export_sym",
+        "0000000000011930 W weak_c_hook"
+      ]
+    },
+    "staticlib": {
+      "file_bytes": 22048330,
+      "archive_member_count": 329,
+      "archive_members_head": [
+        {
+          "name": "libupstream.upstream.1e512f4d352cfed9-cgu.0.rcgu.o",
+          "size_bytes": 1504
+        },
+        {
+          "name": "libupstream.cg195v12qtu343e1jztbfyx6f.rcgu.o",
+          "size_bytes": 2568
+        },
+        {
+          "name": "std-ebc3593764c44f83.std.b67b1f443dfd2e41-cgu.0.rcgu.o",
+          "size_bytes": 11608808
+        },
+        {
+          "name": "panic_unwind-9d4f3ec686d9142f.panic_unwind.b72b7a6d973c1d06-cgu.0.rcgu.o",
+          "size_bytes": 34064
+        },
+        {
+          "name": "object-8de40983a2c457e0.object.82119a443884521-cgu.0.rcgu.o",
+          "size_bytes": 158904
+        },
+        {
+          "name": "memchr-922d6e4fee61ca5e.memchr.f04052098ad5b36f-cgu.0.rcgu.o",
+          "size_bytes": 410848
+        }
+      ],
+      "lib_rmeta_bytes": null,
+      "has_lib_rmeta_link": false,
+      "lib_rmeta_link_bytes": null,
+      "has_c_api_no_mangle": true,
+      "has_custom_c_export_sym": true,
+      "has_CUSTOM_SEC_VAL": true,
+      "has_upstream_instantiate_u32_global": false,
+      "has_upstream_instantiate_u32_any": false,
+      "weak_c_hook_lines": [
+        "0000000000000000 W weak_c_hook"
+      ],
+      "has_my_custom_sec": true
+    },
+    "combined_cdylib_and_rlib": {
+      "cdylib_defined_dyn_symbol_count": 4,
+      "cdylib_all_defined_dyn_symbols": [
+        "0000000000003ed8 R CUSTOM_SEC_VAL",
+        "0000000000011900 T c_api_no_mangle",
+        "0000000000011910 T custom_c_export_sym",
+        "0000000000011920 W weak_c_hook"
+      ],
+      "cdylib_has_upstream_instantiate_u32": false,
+      "rlib_has_lib_rmeta": true,
+      "rlib_has_lib_rmeta_link": true,
+      "rlib_has_upstream_instantiate_u32_global": true
+    },
+    "weak_c_hook_strong_override_test": {
+      "link_and_exec_ok": true,
+      "stdout": "1004:6:0x1122334455667788",
+      "expected": "1004:6:0x1122334455667788",
+      "strong_override_won": true
+    }
+  },
+  "part_b_rmeta_should_encode_mir": {
+    "default_non_incr": {
+      "lib_rmeta_bytes": 6960,
+      "ds_call_unmarked_calls_external": false,
+      "ds_call_marked_inline_calls_external": false,
+      "ds_call_marked_noinline_calls_external": true,
+      "ds_rust_marked_noinline_decls_and_defs": [
+        "declare noundef i32 @_RNvCs2BnozHpfEvZ_8upstream20rust_marked_noinline(i32 noundef) unnamed_addr #2"
+      ],
+      "ds_call_unmarked_ir_snippet": [
+        "define noundef i32 @ds_call_unmarked(i32 noundef %x) unnamed_addr #0 {",
+        "start:",
+        "%_2 = mul i32 %x, 5",
+        "%_0 = add i32 %_2, 7",
+        "ret i32 %_0",
+        "}"
+      ],
+      "ds_call_marked_inline_ir_snippet": [
+        "define noundef i32 @ds_call_marked_inline(i32 noundef %x) unnamed_addr #0 {",
+        "start:",
+        "%_2 = mul i32 %x, 11",
+        "%_0 = add i32 %_2, 13",
+        "ret i32 %_0",
+        "}"
+      ]
+    },
+    "threshold_never": {
+      "lib_rmeta_bytes": 6784,
+      "ds_call_unmarked_calls_external": true,
+      "ds_call_marked_inline_calls_external": false,
+      "ds_call_marked_noinline_calls_external": true,
+      "ds_rust_marked_noinline_decls_and_defs": [
+        "declare noundef i32 @_RNvCs2BnozHpfEvZ_8upstream20rust_marked_noinline(i32 noundef) unnamed_addr #2"
+      ],
+      "ds_call_unmarked_ir_snippet": [
+        "define noundef i32 @ds_call_unmarked(i32 noundef %x) unnamed_addr #1 personality ptr @rust_eh_personality {",
+        "start:",
+        "; invoke upstream::rust_unmarked_leaf",
+        "%_0 = invoke noundef i32 @_RNvCs2BnozHpfEvZ_8upstream18rust_unmarked_leaf(i32 noundef %x)",
+        "to label %bb1 unwind label %terminate",
+        "terminate:                                        ; preds = %start",
+        "%0 = landingpad { ptr, i32 }",
+        "filter [0 x ptr] zeroinitializer",
+        "; call core::panicking::panic_cannot_unwind",
+        "tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind() #5",
+        "unreachable",
+        "bb1:                                              ; preds = %start",
+        "ret i32 %_0",
+        "}"
+      ],
+      "ds_call_marked_inline_ir_snippet": [
+        "define noundef i32 @ds_call_marked_inline(i32 noundef %x) unnamed_addr #0 {",
+        "start:",
+        "%_2 = mul i32 %x, 11",
+        "%_0 = add i32 %_2, 13",
+        "ret i32 %_0",
+        "}"
+      ]
+    },
+    "incremental_default": {
+      "lib_rmeta_bytes": 6768,
+      "ds_call_unmarked_calls_external": true,
+      "ds_call_marked_inline_calls_external": false,
+      "ds_call_marked_noinline_calls_external": true,
+      "ds_rust_marked_noinline_decls_and_defs": [
+        "declare noundef i32 @_RNvCs2BnozHpfEvZ_8upstream20rust_marked_noinline(i32 noundef) unnamed_addr #2"
+      ],
+      "ds_call_unmarked_ir_snippet": [
+        "define noundef i32 @ds_call_unmarked(i32 noundef %x) unnamed_addr #1 personality ptr @rust_eh_personality {",
+        "start:",
+        "; invoke upstream::rust_unmarked_leaf",
+        "%_0 = invoke noundef i32 @_RNvCs2BnozHpfEvZ_8upstream18rust_unmarked_leaf(i32 noundef %x)",
+        "to label %bb1 unwind label %terminate",
+        "terminate:                                        ; preds = %start",
+        "%0 = landingpad { ptr, i32 }",
+        "filter [0 x ptr] zeroinitializer",
+        "; call core::panicking::panic_cannot_unwind",
+        "tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind() #5",
+        "unreachable",
+        "bb1:                                              ; preds = %start",
+        "ret i32 %_0",
+        "}"
+      ],
+      "ds_call_marked_inline_ir_snippet": [
+        "define noundef i32 @ds_call_marked_inline(i32 noundef %x) unnamed_addr #0 {",
+        "start:",
+        "%_2 = mul i32 %x, 11",
+        "%_0 = add i32 %_2, 13",
+        "ret i32 %_0",
+        "}"
+      ]
+    },
+    "incremental_always_encode_mir": {
+      "lib_rmeta_bytes": 8608,
+      "ds_call_unmarked_calls_external": true,
+      "ds_call_marked_inline_calls_external": false,
+      "ds_call_marked_noinline_calls_external": true,
+      "ds_rust_marked_noinline_decls_and_defs": [
+        "declare noundef i32 @_RNvCs2BnozHpfEvZ_8upstream20rust_marked_noinline(i32 noundef) unnamed_addr #2"
+      ],
+      "ds_call_unmarked_ir_snippet": [
+        "define noundef i32 @ds_call_unmarked(i32 noundef %x) unnamed_addr #1 personality ptr @rust_eh_personality {",
+        "start:",
+        "; invoke upstream::rust_unmarked_leaf",
+        "%_0 = invoke noundef i32 @_RNvCs2BnozHpfEvZ_8upstream18rust_unmarked_leaf(i32 noundef %x)",
+        "to label %bb1 unwind label %terminate",
+        "terminate:                                        ; preds = %start",
+        "%0 = landingpad { ptr, i32 }",
+        "filter [0 x ptr] zeroinitializer",
+        "; call core::panicking::panic_cannot_unwind",
+        "tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind() #5",
+        "unreachable",
+        "bb1:                                              ; preds = %start",
+        "ret i32 %_0",
+        "}"
+      ],
+      "ds_call_marked_inline_ir_snippet": [
+        "define noundef i32 @ds_call_marked_inline(i32 noundef %x) unnamed_addr #0 {",
+        "start:",
+        "%_2 = mul i32 %x, 11",
+        "%_0 = add i32 %_2, 13",
+        "ret i32 %_0",
+        "}"
+      ]
+    },
+    "incremental_always_encode_mir_plus_ds_inline_mir": {
+      "lib_rmeta_bytes": 8608,
+      "ds_call_unmarked_calls_external": true,
+      "ds_call_marked_inline_calls_external": false,
+      "ds_call_marked_noinline_calls_external": true,
+      "ds_rust_marked_noinline_decls_and_defs": [
+        "declare noundef i32 @_RNvCs2BnozHpfEvZ_8upstream20rust_marked_noinline(i32 noundef) unnamed_addr #2"
+      ],
+      "ds_call_unmarked_ir_snippet": [
+        "define noundef i32 @ds_call_unmarked(i32 noundef %x) unnamed_addr #1 personality ptr @rust_eh_personality {",
+        "start:",
+        "; invoke upstream::rust_unmarked_leaf",
+        "%_0 = invoke noundef i32 @_RNvCs2BnozHpfEvZ_8upstream18rust_unmarked_leaf(i32 noundef %x)",
+        "to label %bb1 unwind label %terminate",
+        "terminate:                                        ; preds = %start",
+        "%0 = landingpad { ptr, i32 }",
+        "filter [0 x ptr] zeroinitializer",
+        "; call core::panicking::panic_cannot_unwind",
+        "tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind() #5",
+        "unreachable",
+        "bb1:                                              ; preds = %start",
+        "ret i32 %_0",
+        "}"
+      ],
+      "ds_call_marked_inline_ir_snippet": [
+        "define noundef i32 @ds_call_marked_inline(i32 noundef %x) unnamed_addr #0 {",
+        "start:",
+        "%_2 = mul i32 %x, 11",
+        "%_0 = add i32 %_2, 13",
+        "ret i32 %_0",
+        "}"
+      ]
+    },
+    "incremental_threshold_always": {
+      "lib_rmeta_bytes": 8168,
+      "ds_call_unmarked_calls_external": false,
+      "ds_call_marked_inline_calls_external": false,
+      "ds_call_marked_noinline_calls_external": true,
+      "ds_rust_marked_noinline_decls_and_defs": [
+        "define internal fastcc noundef i32 @_RNvCs2BnozHpfEvZ_8upstream20rust_marked_noinline(i32 noundef %x) unnamed_addr #0 {"
+      ],
+      "ds_call_unmarked_ir_snippet": [
+        "define noundef i32 @ds_call_unmarked(i32 noundef %x) unnamed_addr #1 {",
+        "start:",
+        "%_2 = mul i32 %x, 5",
+        "%_0 = add i32 %_2, 7",
+        "ret i32 %_0",
+        "}"
+      ],
+      "ds_call_marked_inline_ir_snippet": [
+        "define noundef i32 @ds_call_marked_inline(i32 noundef %x) unnamed_addr #1 {",
+        "start:",
+        "%_2 = mul i32 %x, 11",
+        "%_0 = add i32 %_2, 13",
+        "ret i32 %_0",
+        "}"
+      ]
+    }
+  },
+  "part_c_share_generics": {
+    "O0_share_generics_yes": {
+      "upstream_rlib_generic_symbols": [
+        "0000000000000000 T _RINvCs2BnozHpfEvZ_8upstream14generic_sharedmEB2_",
+        "0000000000000000 T _RINvCs2BnozHpfEvZ_8upstream16generic_noinlinemEB2_",
+        "0000000000000000 T _RINvCs2BnozHpfEvZ_8upstream17generic_tiny_leafmEB2_"
+      ],
+      "generic_shared_u32": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 1,
+        "ir_lines": [
+          "declare i64 @_RINvCs2BnozHpfEvZ_8upstream14generic_sharedmEB2_(i32, i32) unnamed_addr #0"
+        ],
+        "instantiating_crate_suffixes": [
+          "EB2_"
+        ]
+      },
+      "generic_noinline_u32": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 1,
+        "ir_lines": [
+          "declare i64 @_RINvCs2BnozHpfEvZ_8upstream16generic_noinlinemEB2_(i32, i32) unnamed_addr #1"
+        ],
+        "instantiating_crate_suffixes": [
+          "EB2_"
+        ]
+      },
+      "generic_shared_u64": {
+        "defined_external": 1,
+        "defined_internal": 0,
+        "declared_external": 0,
+        "ir_lines": [
+          "define i64 @_RINvCs2BnozHpfEvZ_8upstream14generic_sharedyECs4SvsyqRUztB_2ds(i64 %x, i64 %y) unnamed_addr #0 {"
+        ],
+        "instantiating_crate_suffixes": [
+          "ECs4SvsyqRUztB_2ds"
+        ]
+      },
+      "generic_noinline_u64": {
+        "defined_external": 1,
+        "defined_internal": 0,
+        "declared_external": 0,
+        "ir_lines": [
+          "define i64 @_RINvCs2BnozHpfEvZ_8upstream16generic_noinlineyECs4SvsyqRUztB_2ds(i64 %x, i64 %y) unnamed_addr #1 {"
+        ],
+        "instantiating_crate_suffixes": [
+          "ECs4SvsyqRUztB_2ds"
+        ]
+      },
+      "generic_tiny_leaf_u32": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 1,
+        "ir_lines": [
+          "declare i32 @_RINvCs2BnozHpfEvZ_8upstream17generic_tiny_leafmEB2_(i32, i32) unnamed_addr #0"
+        ],
+        "instantiating_crate_suffixes": [
+          "EB2_"
+        ]
+      },
+      "link_and_exec_ok": true,
+      "runtime_output": "10075270606862590662:5324056682298506799"
+    },
+    "O0_share_generics_no": {
+      "upstream_rlib_generic_symbols": [
+        "0000000000000000 t _RINvCs2BnozHpfEvZ_8upstream14generic_sharedmEB2_",
+        "0000000000000000 T _RINvCs2BnozHpfEvZ_8upstream16generic_noinlinemEB2_",
+        "0000000000000000 t _RINvCs2BnozHpfEvZ_8upstream17generic_tiny_leafmEB2_"
+      ],
+      "generic_shared_u32": {
+        "defined_external": 0,
+        "defined_internal": 1,
+        "declared_external": 0,
+        "ir_lines": [
+          "define internal i64 @_RINvCs2BnozHpfEvZ_8upstream14generic_sharedmECs4SvsyqRUztB_2ds(i32 %x, i32 %y) unnamed_addr #0 {"
+        ],
+        "instantiating_crate_suffixes": [
+          "ECs4SvsyqRUztB_2ds"
+        ]
+      },
+      "generic_noinline_u32": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 1,
+        "ir_lines": [
+          "declare i64 @_RINvCs2BnozHpfEvZ_8upstream16generic_noinlinemEB2_(i32, i32) unnamed_addr #1"
+        ],
+        "instantiating_crate_suffixes": [
+          "EB2_"
+        ]
+      },
+      "generic_shared_u64": {
+        "defined_external": 0,
+        "defined_internal": 1,
+        "declared_external": 0,
+        "ir_lines": [
+          "define internal i64 @_RINvCs2BnozHpfEvZ_8upstream14generic_sharedyECs4SvsyqRUztB_2ds(i64 %x, i64 %y) unnamed_addr #0 {"
+        ],
+        "instantiating_crate_suffixes": [
+          "ECs4SvsyqRUztB_2ds"
+        ]
+      },
+      "generic_noinline_u64": {
+        "defined_external": 1,
+        "defined_internal": 0,
+        "declared_external": 0,
+        "ir_lines": [
+          "define i64 @_RINvCs2BnozHpfEvZ_8upstream16generic_noinlineyECs4SvsyqRUztB_2ds(i64 %x, i64 %y) unnamed_addr #1 {"
+        ],
+        "instantiating_crate_suffixes": [
+          "ECs4SvsyqRUztB_2ds"
+        ]
+      },
+      "generic_tiny_leaf_u32": {
+        "defined_external": 0,
+        "defined_internal": 1,
+        "declared_external": 0,
+        "ir_lines": [
+          "define internal i32 @_RINvCs2BnozHpfEvZ_8upstream17generic_tiny_leafmECs4SvsyqRUztB_2ds(i32 %x, i32 %y) unnamed_addr #0 {"
+        ],
+        "instantiating_crate_suffixes": [
+          "ECs4SvsyqRUztB_2ds"
+        ]
+      },
+      "link_and_exec_ok": true,
+      "runtime_output": "10075270606862590662:5324056682298506799"
+    },
+    "O2_share_generics_yes": {
+      "upstream_rlib_generic_symbols": [
+        "0000000000000000 T _RINvCs2BnozHpfEvZ_8upstream14generic_sharedmEB2_",
+        "0000000000000000 T _RINvCs2BnozHpfEvZ_8upstream16generic_noinlinemEB2_"
+      ],
+      "generic_shared_u32": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 1,
+        "ir_lines": [
+          "declare noundef i64 @_RINvCs2BnozHpfEvZ_8upstream14generic_sharedmEB2_(i32 noundef, i32 noundef) unnamed_addr #0"
+        ],
+        "instantiating_crate_suffixes": [
+          "EB2_"
+        ]
+      },
+      "generic_noinline_u32": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 1,
+        "ir_lines": [
+          "declare noundef i64 @_RINvCs2BnozHpfEvZ_8upstream16generic_noinlinemEB2_(i32 noundef, i32 noundef) unnamed_addr #1"
+        ],
+        "instantiating_crate_suffixes": [
+          "EB2_"
+        ]
+      },
+      "generic_shared_u64": {
+        "defined_external": 1,
+        "defined_internal": 0,
+        "declared_external": 0,
+        "ir_lines": [
+          "define noundef i64 @_RINvCs2BnozHpfEvZ_8upstream14generic_sharedyECs4SvsyqRUztB_2ds(i64 noundef %x, i64 noundef %y) unnamed_addr #0 {"
+        ],
+        "instantiating_crate_suffixes": [
+          "ECs4SvsyqRUztB_2ds"
+        ]
+      },
+      "generic_noinline_u64": {
+        "defined_external": 1,
+        "defined_internal": 0,
+        "declared_external": 0,
+        "ir_lines": [
+          "define noundef i64 @_RINvCs2BnozHpfEvZ_8upstream16generic_noinlineyECs4SvsyqRUztB_2ds(i64 noundef %x, i64 noundef %y) unnamed_addr #1 {"
+        ],
+        "instantiating_crate_suffixes": [
+          "ECs4SvsyqRUztB_2ds"
+        ]
+      },
+      "generic_tiny_leaf_u32": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 0,
+        "ir_lines": [],
+        "instantiating_crate_suffixes": []
+      },
+      "link_and_exec_ok": true,
+      "runtime_output": "10075270606862590662:5324056682298506799"
+    },
+    "O2_share_generics_no": {
+      "upstream_rlib_generic_symbols": [
+        "0000000000000000 T _RINvCs2BnozHpfEvZ_8upstream16generic_noinlinemEB2_"
+      ],
+      "generic_shared_u32": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 0,
+        "ir_lines": [],
+        "instantiating_crate_suffixes": []
+      },
+      "generic_noinline_u32": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 1,
+        "ir_lines": [
+          "declare noundef i64 @_RINvCs2BnozHpfEvZ_8upstream16generic_noinlinemEB2_(i32 noundef, i32 noundef) unnamed_addr #0"
+        ],
+        "instantiating_crate_suffixes": [
+          "EB2_"
+        ]
+      },
+      "generic_shared_u64": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 0,
+        "ir_lines": [],
+        "instantiating_crate_suffixes": []
+      },
+      "generic_noinline_u64": {
+        "defined_external": 1,
+        "defined_internal": 0,
+        "declared_external": 0,
+        "ir_lines": [
+          "define noundef i64 @_RINvCs2BnozHpfEvZ_8upstream16generic_noinlineyECs4SvsyqRUztB_2ds(i64 noundef %x, i64 noundef %y) unnamed_addr #0 {"
+        ],
+        "instantiating_crate_suffixes": [
+          "ECs4SvsyqRUztB_2ds"
+        ]
+      },
+      "generic_tiny_leaf_u32": {
+        "defined_external": 0,
+        "defined_internal": 0,
+        "declared_external": 0,
+        "ir_lines": [],
+        "instantiating_crate_suffixes": []
+      },
+      "link_and_exec_ok": true,
+      "runtime_output": "10075270606862590662:5324056682298506799"
+    },
+    "all_modes_runtime_identical": true
+  }
+}

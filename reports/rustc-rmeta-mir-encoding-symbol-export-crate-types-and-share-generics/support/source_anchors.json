@@ -1,0 +1,879 @@
+{
+  "sources": [
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_codegen_ssa/src/back/symbol_export.rs",
+      "anchors": [
+        {
+          "line": 25,
+          "text": "fn threshold(tcx: TyCtxt<'_>) -> SymbolExportLevel {"
+        },
+        {
+          "line": 29,
+          "text": "fn crate_export_threshold(crate_type: CrateType) -> SymbolExportLevel {"
+        },
+        {
+          "line": 31,
+          "text": "CrateType::Executable | CrateType::StaticLib | CrateType::ProcMacro | CrateType::Cdylib => {"
+        },
+        {
+          "line": 34,
+          "text": "CrateType::Rlib | CrateType::Dylib | CrateType::Sdylib => SymbolExportLevel::Rust,"
+        },
+        {
+          "line": 38,
+          "text": "pub fn crates_export_threshold(crate_types: &[CrateType]) -> SymbolExportLevel {"
+        },
+        {
+          "line": 96,
+          "text": "if tcx.cross_crate_inlinable(def_id) { None } else { Some(def_id) }"
+        },
+        {
+          "line": 154,
+          "text": "fn is_reachable_non_generic_provider_local(tcx: TyCtxt<'_>, def_id: LocalDefId) -> bool {"
+        },
+        {
+          "line": 231,
+          "text": "fn exported_generic_symbols_provider_local<'tcx>("
+        },
+        {
+          "line": 290,
+          "text": "if data.linkage != Linkage::External {"
+        },
+        {
+          "line": 303,
+          "text": "if tcx.codegen_fn_attrs(mono_item.def_id()).inline"
+        },
+        {
+          "line": 398,
+          "text": "fn upstream_monomorphizations_provider("
+        },
+        {
+          "line": 441,
+          "text": "if tcx.stable_crate_id(other_cnum) > tcx.stable_crate_id(cnum) {"
+        },
+        {
+          "line": 520,
+          "text": "fn symbol_export_level(tcx: TyCtxt<'_>, sym_def_id: DefId) -> SymbolExportLevel {"
+        },
+        {
+          "line": 532,
+          "text": "if is_extern && !std_internal && !eii {"
+        },
+        {
+          "line": 549,
+          "text": "pub(crate) fn symbol_name_for_instance_in_crate<'tcx>("
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_middle/src/middle/exported_symbols.rs",
+      "anchors": [
+        {
+          "line": 12,
+          "text": "pub enum SymbolExportLevel {"
+        },
+        {
+          "line": 18,
+          "text": "pub fn is_below_threshold(self, threshold: SymbolExportLevel) -> bool {"
+        },
+        {
+          "line": 19,
+          "text": "threshold == SymbolExportLevel::Rust // export everything from Rust dylibs"
+        },
+        {
+          "line": 38,
+          "text": "pub struct SymbolExportInfo {"
+        },
+        {
+          "line": 86,
+          "text": "pub fn metadata_symbol_name(tcx: TyCtxt<'_>) -> String {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_middle/src/middle/codegen_fn_attrs.rs",
+      "anchors": [
+        {
+          "line": 249,
+          "text": "pub fn contains_extern_indicator(&self) -> bool {"
+        },
+        {
+          "line": 254,
+          "text": "self.flags.contains(CodegenFnAttrFlags::NO_MANGLE)"
+        },
+        {
+          "line": 263,
+          "text": "None | Some(Linkage::Internal) => false,"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_metadata/src/rmeta/encoder.rs",
+      "anchors": [
+        {
+          "line": 1102,
+          "text": "fn should_encode_mir("
+        },
+        {
+          "line": 1109,
+          "text": "DefKind::Ctor(_, _) => (true, false),"
+        },
+        {
+          "line": 1116,
+          "text": "DefKind::Closure if tcx.is_coroutine(def_id.to_def_id()) => (false, true),"
+        },
+        {
+          "line": 1117,
+          "text": "DefKind::SyntheticCoroutineBody => (false, true),"
+        },
+        {
+          "line": 1120,
+          "text": "let opt = tcx.sess.opts.unstable_opts.always_encode_mir"
+        },
+        {
+          "line": 1124,
+          "text": "|| tcx.cross_crate_inlinable(def_id)));"
+        },
+        {
+          "line": 1126,
+          "text": "let is_const_fn = tcx.is_const_fn(def_id.to_def_id());"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_mir_transform/src/cross_crate_inline.rs",
+      "anchors": [
+        {
+          "line": 18,
+          "text": "fn cross_crate_inlinable(tcx: TyCtxt<'_>, def_id: LocalDefId) -> bool {"
+        },
+        {
+          "line": 22,
+          "text": "if codegen_fn_attrs.contains_extern_indicator() {"
+        },
+        {
+          "line": 34,
+          "text": "if tcx.sess.opts.unstable_opts.cross_crate_inline_threshold == InliningThreshold::Always {"
+        },
+        {
+          "line": 49,
+          "text": "InlineAttr::Never => return false,"
+        },
+        {
+          "line": 50,
+          "text": "InlineAttr::Hint | InlineAttr::Always | InlineAttr::Force { .. } => return true,"
+        },
+        {
+          "line": 73,
+          "text": "if tcx.sess.opts.incremental.is_some() {"
+        },
+        {
+          "line": 100,
+          "text": "checker.calls == 0"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_mir_transform/src/inline.rs",
+      "anchors": [
+        {
+          "line": 731,
+          "text": "if !inliner.tcx().is_mir_available(callee_def_id) {"
+        },
+        {
+          "line": 835,
+          "text": "if !is_generic && !tcx.cross_crate_inlinable(callsite.callee.def_id()) {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_monomorphize/src/collector.rs",
+      "anchors": [
+        {
+          "line": 1047,
+          "text": "fn should_codegen_locally<'tcx>(tcx: TyCtxt<'tcx>, instance: Instance<'tcx>) -> bool {"
+        },
+        {
+          "line": 1070,
+          "text": "if tcx.is_reachable_non_generic(def_id) || instance.upstream_monomorphization(tcx).is_some() {"
+        },
+        {
+          "line": 1082,
+          "text": "if !tcx.is_mir_available(def_id) && !matches!(tcx.def_kind(def_id), DefKind::Ctor(..)) {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_monomorphize/src/partitioning.rs",
+      "anchors": [
+        {
+          "line": 213,
+          "text": "let can_export_generics = cx.tcx.local_crate_exports_generics();"
+        },
+        {
+          "line": 214,
+          "text": "let always_export_generics = can_export_generics && cx.tcx.sess.opts.share_generics();"
+        },
+        {
+          "line": 597,
+          "text": "data.linkage = Linkage::Internal;"
+        },
+        {
+          "line": 742,
+          "text": "fn mono_item_linkage_and_visibility<'tcx>("
+        },
+        {
+          "line": 749,
+          "text": "if let Some(explicit_linkage) = mono_item.explicit_linkage(tcx) {"
+        },
+        {
+          "line": 777,
+          "text": "fn mono_item_visibility<'tcx>("
+        },
+        {
+          "line": 844,
+          "text": "&& tcx.codegen_fn_attrs(def_id).inline == InlineAttr::Never))"
+        },
+        {
+          "line": 933,
+          "text": "fn default_visibility(tcx: TyCtxt<'_>, id: DefId, is_generic: bool) -> Visibility {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_middle/src/mono.rs",
+      "anchors": [
+        {
+          "line": 132,
+          "text": "pub fn instantiation_mode(&self, tcx: TyCtxt<'tcx>) -> InstantiationMode {"
+        },
+        {
+          "line": 192,
+          "text": "if !tcx.cross_crate_inlinable(instance.def_id()) && !instance.def.requires_inline(tcx) {"
+        },
+        {
+          "line": 223,
+          "text": "if let InlineAttr::Never = codegen_fn_attrs.inline"
+        },
+        {
+          "line": 232,
+          "text": "OptLevel::No => InstantiationMode::GloballyShared { may_conflict: true },"
+        },
+        {
+          "line": 237,
+          "text": "pub fn explicit_linkage(&self, tcx: TyCtxt<'tcx>) -> Option<Linkage> {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_symbol_mangling/src/lib.rs",
+      "anchors": [
+        {
+          "line": 126,
+          "text": "fn symbol_name_provider<'tcx>(tcx: TyCtxt<'tcx>, instance: Instance<'tcx>) -> ty::SymbolName<'tcx> {"
+        },
+        {
+          "line": 134,
+          "text": "instance.upstream_monomorphization(tcx).unwrap_or(LOCAL_CRATE)"
+        },
+        {
+          "line": 259,
+          "text": "let avoid_cross_crate_conflicts = is_generic(instance) || is_globally_shared_function;"
+        },
+        {
+          "line": 261,
+          "text": "let instantiating_crate = avoid_cross_crate_conflicts.then(compute_instantiating_crate);"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_symbol_mangling/src/v0.rs",
+      "anchors": [
+        {
+          "line": 25,
+          "text": "pub(super) fn mangle<'tcx>("
+        },
+        {
+          "line": 81,
+          "text": "if let Some(instantiating_crate) = instantiating_crate {"
+        },
+        {
+          "line": 82,
+          "text": "p.print_def_path(instantiating_crate.as_def_id(), &[]).unwrap();"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_codegen_ssa/src/back/link.rs",
+      "anchors": [
+        {
+          "line": 300,
+          "text": "fn link_rlib<'a>("
+        },
+        {
+          "line": 323,
+          "text": "let metadata_link_file = if matches!(flavor, RlibFlavor::Normal) {"
+        },
+        {
+          "line": 500,
+          "text": "fn link_staticlib("
+        },
+        {
+          "line": 534,
+          "text": "if fname == METADATA_FILENAME || fname == rmeta_link::FILENAME {"
+        },
+        {
+          "line": 2508,
+          "text": "cmd.export_symbols(tmpdir, crate_type, &export_symbols);"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_codegen_ssa/src/back/linker.rs",
+      "anchors": [
+        {
+          "line": 341,
+          "text": "fn export_symbols("
+        },
+        {
+          "line": 1795,
+          "text": "pub(crate) fn exported_symbols("
+        },
+        {
+          "line": 1828,
+          "text": "fn exported_symbols_for_non_proc_macro("
+        },
+        {
+          "line": 1833,
+          "text": "let export_threshold = symbol_export::crates_export_threshold(&[crate_type]);"
+        },
+        {
+          "line": 1838,
+          "text": "if info.level.is_below_threshold(export_threshold) && !tcx.is_compiler_builtins(cnum) {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_codegen_ssa/src/back/rmeta_link.rs",
+      "anchors": [
+        {
+          "line": 14,
+          "text": "pub(crate) const FILENAME: &str = \"lib.rmeta-link\";"
+        },
+        {
+          "line": 15,
+          "text": "pub(crate) const SECTION: &str = \".rmeta-link\";"
+        },
+        {
+          "line": 17,
+          "text": "pub struct RmetaLink {"
+        },
+        {
+          "line": 18,
+          "text": "pub rust_object_files: Vec<String>,"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "path": "compiler/rustc_session/src/config.rs",
+      "anchors": [
+        {
+          "line": 1463,
+          "text": "pub fn share_generics(&self) -> bool {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_codegen_ssa/src/back/symbol_export.rs",
+      "anchors": [
+        {
+          "line": 31,
+          "text": "fn threshold(tcx: TyCtxt<'_>) -> SymbolExportLevel {"
+        },
+        {
+          "line": 35,
+          "text": "fn crate_export_threshold(crate_type: CrateType) -> SymbolExportLevel {"
+        },
+        {
+          "line": 37,
+          "text": "CrateType::Executable | CrateType::StaticLib | CrateType::ProcMacro | CrateType::Cdylib => {"
+        },
+        {
+          "line": 40,
+          "text": "CrateType::Rlib | CrateType::Dylib | CrateType::Sdylib => SymbolExportLevel::Rust,"
+        },
+        {
+          "line": 44,
+          "text": "pub fn crates_export_threshold(crate_types: &[CrateType]) -> SymbolExportLevel {"
+        },
+        {
+          "line": 180,
+          "text": "fn is_reachable_non_generic_provider_local(tcx: TyCtxt<'_>, def_id: LocalDefId) -> bool {"
+        },
+        {
+          "line": 309,
+          "text": "fn exported_generic_symbols_provider_local<'tcx>("
+        },
+        {
+          "line": 383,
+          "text": "if data.linkage != Linkage::External {"
+        },
+        {
+          "line": 398,
+          "text": "if tcx.codegen_fn_attrs(mono_item.def_id()).inline == InlineAttr::Never {"
+        },
+        {
+          "line": 504,
+          "text": "fn upstream_monomorphizations_provider("
+        },
+        {
+          "line": 555,
+          "text": "if tcx.stable_crate_id(other_cnum) > tcx.stable_crate_id(cnum) {"
+        },
+        {
+          "line": 634,
+          "text": "fn symbol_export_level(tcx: TyCtxt<'_>, sym_def_id: DefId) -> SymbolExportLevel {"
+        },
+        {
+          "line": 646,
+          "text": "if is_extern && !std_internal && !eii {"
+        },
+        {
+          "line": 663,
+          "text": "pub(crate) fn symbol_name_for_instance_in_crate<'tcx>("
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_middle/src/middle/exported_symbols.rs",
+      "anchors": [
+        {
+          "line": 12,
+          "text": "pub enum SymbolExportLevel {"
+        },
+        {
+          "line": 18,
+          "text": "pub fn is_below_threshold(self, threshold: SymbolExportLevel) -> bool {"
+        },
+        {
+          "line": 19,
+          "text": "threshold == SymbolExportLevel::Rust // export everything from Rust dylibs"
+        },
+        {
+          "line": 38,
+          "text": "pub struct SymbolExportInfo {"
+        },
+        {
+          "line": 86,
+          "text": "pub fn metadata_symbol_name(tcx: TyCtxt<'_>) -> String {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_middle/src/middle/codegen_fn_attrs.rs",
+      "anchors": [
+        {
+          "line": 269,
+          "text": "pub fn contains_extern_indicator(&self) -> bool {"
+        },
+        {
+          "line": 284,
+          "text": "None | Some(Linkage::Internal) => false,"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_metadata/src/rmeta/encoder.rs",
+      "anchors": [
+        {
+          "line": 1175,
+          "text": "fn should_encode_mir("
+        },
+        {
+          "line": 1184,
+          "text": "DefKind::Ctor(_, _) => (true, false),"
+        },
+        {
+          "line": 1188,
+          "text": "DefKind::Closure if tcx.is_coroutine(def_id.to_def_id()) => (false, true),"
+        },
+        {
+          "line": 1189,
+          "text": "DefKind::SyntheticCoroutineBody => (false, true),"
+        },
+        {
+          "line": 1192,
+          "text": "let opt = tcx.sess.opts.unstable_opts.always_encode_mir"
+        },
+        {
+          "line": 1195,
+          "text": "|| tcx.cross_crate_inlinable(def_id)));"
+        },
+        {
+          "line": 1200,
+          "text": "let is_const_fn = tcx.is_const_fn(def_id.to_def_id());"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_mir_transform/src/cross_crate_inline.rs",
+      "anchors": [
+        {
+          "line": 18,
+          "text": "fn cross_crate_inlinable(tcx: TyCtxt<'_>, def_id: LocalDefId) -> bool {"
+        },
+        {
+          "line": 22,
+          "text": "if codegen_fn_attrs.contains_extern_indicator() {"
+        },
+        {
+          "line": 34,
+          "text": "if tcx.sess.opts.unstable_opts.cross_crate_inline_threshold == InliningThreshold::Always {"
+        },
+        {
+          "line": 55,
+          "text": "InlineAttr::Never => return false,"
+        },
+        {
+          "line": 56,
+          "text": "InlineAttr::Hint | InlineAttr::Always | InlineAttr::Force { .. } => return true,"
+        },
+        {
+          "line": 85,
+          "text": "if tcx.sess.opts.incremental.is_some() {"
+        },
+        {
+          "line": 113,
+          "text": "checker.calls == 0"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_mir_transform/src/inline.rs",
+      "anchors": [
+        {
+          "line": 726,
+          "text": "if !inliner.tcx().is_mir_available(callee_def_id) {"
+        },
+        {
+          "line": 832,
+          "text": "if !is_generic && !tcx.cross_crate_inlinable(callsite.callee.def_id()) {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_monomorphize/src/collector.rs",
+      "anchors": [
+        {
+          "line": 1083,
+          "text": "fn should_codegen_locally<'tcx>(tcx: TyCtxt<'tcx>, instance: Instance<'tcx>) -> bool {"
+        },
+        {
+          "line": 1106,
+          "text": "if tcx.is_reachable_non_generic(def_id) || instance.upstream_monomorphization(tcx).is_some() {"
+        },
+        {
+          "line": 1118,
+          "text": "if !tcx.is_mir_available(def_id) && !matches!(tcx.def_kind(def_id), DefKind::Ctor(..)) {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_monomorphize/src/partitioning.rs",
+      "anchors": [
+        {
+          "line": 213,
+          "text": "let can_export_generics = cx.tcx.local_crate_exports_generics();"
+        },
+        {
+          "line": 214,
+          "text": "let always_export_generics = can_export_generics && cx.tcx.sess.opts.share_generics();"
+        },
+        {
+          "line": 610,
+          "text": "data.linkage = Linkage::Internal;"
+        },
+        {
+          "line": 757,
+          "text": "fn mono_item_linkage_and_visibility<'tcx>("
+        },
+        {
+          "line": 764,
+          "text": "if let Some(explicit_linkage) = mono_item.explicit_linkage(tcx) {"
+        },
+        {
+          "line": 803,
+          "text": "fn mono_item_visibility<'tcx>("
+        },
+        {
+          "line": 882,
+          "text": "&& tcx.codegen_fn_attrs(def_id).inline == InlineAttr::Never))"
+        },
+        {
+          "line": 971,
+          "text": "fn default_visibility(tcx: TyCtxt<'_>, id: DefId, is_generic: bool) -> Visibility {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_middle/src/mono.rs",
+      "anchors": [
+        {
+          "line": 132,
+          "text": "pub fn instantiation_mode(&self, tcx: TyCtxt<'tcx>) -> InstantiationMode {"
+        },
+        {
+          "line": 192,
+          "text": "if !tcx.cross_crate_inlinable(instance.def_id()) && !instance.def.requires_inline(tcx) {"
+        },
+        {
+          "line": 223,
+          "text": "if let InlineAttr::Never = codegen_fn_attrs.inline"
+        },
+        {
+          "line": 232,
+          "text": "OptLevel::No => InstantiationMode::GloballyShared { may_conflict: true },"
+        },
+        {
+          "line": 237,
+          "text": "pub fn explicit_linkage(&self, tcx: TyCtxt<'tcx>) -> Option<Linkage> {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_symbol_mangling/src/lib.rs",
+      "anchors": [
+        {
+          "line": 146,
+          "text": "fn symbol_name_provider<'tcx>(tcx: TyCtxt<'tcx>, instance: Instance<'tcx>) -> ty::SymbolName<'tcx> {"
+        },
+        {
+          "line": 136,
+          "text": "Some(instance.upstream_monomorphization(tcx).unwrap_or(LOCAL_CRATE))"
+        },
+        {
+          "line": 290,
+          "text": "let avoid_cross_crate_conflicts = is_generic(instance) || is_globally_shared_function;"
+        },
+        {
+          "line": 292,
+          "text": "let instantiating_crate = avoid_cross_crate_conflicts.then(compute_instantiating_crate);"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_symbol_mangling/src/v0.rs",
+      "anchors": [
+        {
+          "line": 25,
+          "text": "pub(super) fn mangle<'tcx>("
+        },
+        {
+          "line": 87,
+          "text": "if let Some(instantiating_crate) = instantiating_crate {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_codegen_ssa/src/back/link.rs",
+      "anchors": [
+        {
+          "line": 540,
+          "text": "fn link_rlib<'a>("
+        },
+        {
+          "line": 569,
+          "text": "let metadata_link_file = if matches!(flavor, RlibFlavor::Normal) {"
+        },
+        {
+          "line": 749,
+          "text": "fn link_staticlib("
+        },
+        {
+          "line": 794,
+          "text": "if fname == METADATA_FILENAME || fname == rmeta_link::FILENAME {"
+        },
+        {
+          "line": 2957,
+          "text": "cmd.export_symbols(tmpdir, crate_type, &export_symbols);"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_codegen_ssa/src/back/linker.rs",
+      "anchors": [
+        {
+          "line": 338,
+          "text": "fn export_symbols(&mut self, tmpdir: &Path, crate_type: CrateType, symbols: &[SymbolExport]);"
+        },
+        {
+          "line": 1668,
+          "text": "pub(crate) fn exported_symbols(tcx: TyCtxt<'_>, crate_type: CrateType) -> Vec<SymbolExport> {"
+        },
+        {
+          "line": 1709,
+          "text": "fn exported_symbols_for_non_proc_macro("
+        },
+        {
+          "line": 1714,
+          "text": "let export_threshold = symbol_export::crates_export_threshold(&[crate_type]);"
+        },
+        {
+          "line": 1719,
+          "text": "if info.level.is_below_threshold(export_threshold) && !tcx.is_compiler_builtins(cnum) {"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_codegen_ssa/src/back/rmeta_link.rs",
+      "anchors": [
+        {
+          "line": 22,
+          "text": "pub(crate) const FILENAME: &str = \"lib.rmeta-link\";"
+        },
+        {
+          "line": 23,
+          "text": "pub(crate) const SECTION: &str = \".rmeta-link\";"
+        },
+        {
+          "line": 25,
+          "text": "pub struct RmetaLink {"
+        },
+        {
+          "line": 26,
+          "text": "pub rust_object_files: Vec<String>,"
+        }
+      ]
+    },
+    {
+      "repository": "rust-lang/rust",
+      "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+      "path": "compiler/rustc_session/src/config.rs",
+      "anchors": [
+        {
+          "line": 1599,
+          "text": "pub fn share_generics(&self) -> bool {"
+        }
+      ]
+    },
+    {
+      "repository": "joshlf/anneal",
+      "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "path": "trusted/rustc-capture/src/driver.rs",
+      "anchors": [
+        {
+          "line": 25,
+          "text": "const COMPILER_VERSION: &str = \"1.98.0-nightly (f8a08b688 2026-05-30)\";"
+        },
+        {
+          "line": 75,
+          "text": "fn after_analysis<'tcx>(&mut self, _: &interface::Compiler, tcx: TyCtxt<'tcx>) -> Compilation {"
+        },
+        {
+          "line": 79,
+          "text": "// No compiler data or verification obligation is extracted here."
+        }
+      ]
+    },
+    {
+      "repository": "joshlf/anneal",
+      "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "path": "trusted/lean/Trusted/MirAst.lean",
+      "anchors": [
+        {
+          "line": 99,
+          "text": "abbrev DefId := Nat"
+        },
+        {
+          "line": 933,
+          "text": "`Place::projection`). Likewise, when `scope = .crate`, completeness of `bodies`"
+        },
+        {
+          "line": 935,
+          "text": "is an external producer obligation, not checked by `Trusted.MirSemantics`"
+        },
+        {
+          "line": 937,
+          "text": "structure Program where"
+        }
+      ]
+    },
+    {
+      "repository": "joshlf/anneal",
+      "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "path": "trusted/audit/TrustedBoundary.lean",
+      "anchors": [
+        {
+          "line": 1117,
+          "text": "def ensureReplayableConstant (unsafeLabel : String) (ctxSuffix : String)"
+        },
+        {
+          "line": 1119,
+          "text": "if ci.isUnsafe || ci.isPartial then"
+        },
+        {
+          "line": 1615,
+          "text": "def forbiddenVendorCompilerRefs : List Name :="
+        }
+      ]
+    }
+  ]
+}
