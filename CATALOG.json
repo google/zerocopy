@@ -97406,6 +97406,54 @@
         "verification"
       ]
     },
+    "rustc-query-engine-red-green-ich-ensure-ok-and-cycle-recovery-soundness": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "host": "x86_64-unknown-linux-gnu",
+            "llvm_version": "22.1.6",
+            "release": "1.98.0-nightly (14210df0e 2026-05-31)",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "rustc (executed nightly toolchain)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+          },
+          "name": "rustc (upstream source cross-check)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted boundary and compiler capture"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-real-pgo-lto-and-cgu-runtime-performance-budget": {
       "observed_at": "2026-11-20",
       "subjects": [

@@ -1,0 +1,703 @@
+{
+  "toolchain": {
+    "rustc_vV": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "release": "1.98.0-nightly",
+    "commit_hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "llvm_version": "22.1.6"
+  },
+  "suite2_incremental_early_cutoff_and_dep_graph": {
+    "session1_rev1": {
+      "rc": 0,
+      "total_node_count": 1112,
+      "total_edge_count": 2767,
+      "stderr_summary_lines": [
+        "[incremental] Total Node Count: 1112",
+        "[incremental] Total Edge Count: 2767"
+      ],
+      "stderr_line_count": 188
+    },
+    "session2_rev2_early_cutoff": {
+      "rc": 0,
+      "total_node_count": 1118,
+      "total_edge_count": 2823,
+      "stderr_summary_lines": [
+        "[incremental] session directory: 5 files hard-linked",
+        "[incremental] session directory: 0 files copied",
+        "[incremental] Total Node Count: 1118",
+        "[incremental] Total Edge Count: 2823"
+      ],
+      "stderr_line_count": 190
+    },
+    "session3_rev3_noop_verify_ich": {
+      "rc": 0,
+      "total_node_count": 1115,
+      "total_edge_count": 2804,
+      "stderr_summary_lines": [
+        "[incremental] session directory: 5 files hard-linked",
+        "[incremental] session directory: 0 files copied",
+        "[incremental] Total Node Count: 1115",
+        "[incremental] Total Edge Count: 2804"
+      ],
+      "stderr_line_count": 190
+    },
+    "session_cache_files_bytes": {
+      "<cgu>.o": 4464,
+      "dep-graph.bin": 47391,
+      "metadata.rmeta": 2454,
+      "query-cache.bin": 4535,
+      "work-products.bin": 184,
+      "<session>.lock": 0
+    },
+    "commandline_hash_mismatch_rejected": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "[incremental] session directory: 5 files hard-linked",
+        "[incremental] session directory: 0 files copied",
+        "[incremental] completely ignoring cache because of differing commandline arguments",
+        "error: we asserted that an existing incremental cache directory should be successfully loaded, but it was not",
+        "",
+        "error: aborting due to 1 previous error",
+        ""
+      ]
+    },
+    "ensure_ok_skips_typeck_root_disk_load_rev1_rc": 0,
+    "ensure_ok_skips_typeck_root_disk_load": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "error: `typeck_root(caller_reused)` should have been loaded from disk but it was not",
+        "  --> <TMP>/lib_skip.rs:13:1",
+        "   |",
+        "13 | pub fn caller_reused(x: u32) -> u32 {",
+        "   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "",
+        "error: aborting due to 1 previous error",
+        ""
+      ]
+    },
+    "positive_control_optimized_mir_loaded_from_disk_rev1_rc": 0,
+    "positive_control_optimized_mir_loaded_from_disk": {
+      "rc": 0,
+      "stdout_lines": [],
+      "stderr_lines": []
+    },
+    "dep_graph_paths_without_incr_silently_skipped": {
+      "rc": 0,
+      "stdout_lines": [],
+      "stderr_lines": []
+    },
+    "dep_graph_paths_with_incr": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "error: OK",
+        " --> <TMP>/paths.rs:9:30",
+        "  |",
+        "9 | #[rustc_then_this_would_need(typeck_root)]",
+        "  |                              ^^^^^^^^^^^",
+        "",
+        "error: no path from `body_only_src` to `typeck_root`",
+        "  --> <TMP>/paths.rs:14:30",
+        "   |",
+        "14 | #[rustc_then_this_would_need(typeck_root)]",
+        "   |                              ^^^^^^^^^^^",
+        "",
+        "error: aborting due to 2 previous errors",
+        ""
+      ]
+    }
+  },
+  "suite3_cycle_recovery_and_depth_limit_matrix": {
+    "default_const_cycle_e0391": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "error[E0391]: cycle detected when simplifying constant for the type system `A`",
+        " --> <TMP>/default_const_cycle_e0391.rs:1:1",
+        "  |",
+        "1 | pub const A: usize = B + 1;",
+        "  | ^^^^^^^^^^^^^^^^^^",
+        "  |",
+        "note: ...which requires const-evaluating + checking `A`...",
+        " --> <TMP>/default_const_cycle_e0391.rs:1:22",
+        "  |",
+        "1 | pub const A: usize = B + 1;",
+        "  |                      ^",
+        "note: ...which requires simplifying constant for the type system `B`...",
+        " --> <TMP>/default_const_cycle_e0391.rs:2:1",
+        "  |",
+        "2 | pub const B: usize = A + 1;",
+        "  | ^^^^^^^^^^^^^^^^^^",
+        "note: ...which requires const-evaluating + checking `B`...",
+        " --> <TMP>/default_const_cycle_e0391.rs:2:22",
+        "  |",
+        "2 | pub const B: usize = A + 1;",
+        "  |                      ^",
+        "  = note: ...which again requires simplifying constant for the type system `A`, completing the cycle",
+        "  = note: cycle used when running analysis passes on crate `default_const_cycle_e0391`",
+        "  = note: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information",
+        "",
+        "error: aborting due to 1 previous error",
+        "",
+        "For more information about this error, try `rustc --explain E0391`."
+      ]
+    },
+    "type_alias_cycle_e0391": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "error[E0391]: cycle detected when expanding type alias `AliasA`",
+        " --> <TMP>/type_alias_cycle_e0391.rs:1:19",
+        "  |",
+        "1 | pub type AliasA = AliasB;",
+        "  |                   ^^^^^^",
+        "  |",
+        "note: ...which requires expanding type alias `AliasB`...",
+        " --> <TMP>/type_alias_cycle_e0391.rs:2:19",
+        "  |",
+        "2 | pub type AliasB = AliasA;",
+        "  |                   ^^^^^^",
+        "  = note: ...which again requires expanding type alias `AliasA`, completing the cycle",
+        "  = note: type aliases cannot be recursive",
+        "  = help: consider using a struct, enum, or union instead to break the cycle",
+        "  = help: see <https://doc.rust-lang.org/reference/types.html#recursive-types> for more information",
+        "note: cycle used when checking that `AliasA` is well-formed",
+        " --> <TMP>/type_alias_cycle_e0391.rs:1:1",
+        "  |",
+        "1 | pub type AliasA = AliasB;",
+        "  | ^^^^^^^^^^^^^^^",
+        "  = note: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information",
+        "",
+        "error: aborting due to 1 previous error",
+        "",
+        "For more information about this error, try `rustc --explain E0391`."
+      ]
+    },
+    "variances_of_delayed_to_e0072": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "error[E0072]: recursive type `Rec` has infinite size",
+        " --> <TMP>/variances_of_delayed_to_e0072.rs:1:1",
+        "  |",
+        "1 | pub struct Rec<T>(pub Rec<T>, pub *const T);",
+        "  | ^^^^^^^^^^^^^^^^^     ------ recursive without indirection",
+        "  |",
+        "help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle",
+        "  |",
+        "1 | pub struct Rec<T>(pub Box<Rec<T>>, pub *const T);",
+        "  |                       ++++      +",
+        "",
+        "error: aborting due to 1 previous error",
+        "",
+        "For more information about this error, try `rustc --explain E0072`."
+      ]
+    },
+    "mutual_adt_cycle_e0072_span_rotation": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "error[E0072]: recursive types `Second` and `First` have infinite size",
+        " --> <TMP>/mutual_adt_cycle_e0072_span_rotation.rs:1:1",
+        "  |",
+        "1 | pub struct Second<T>(pub First<T>, pub *const T);",
+        "  | ^^^^^^^^^^^^^^^^^^^^     -------- recursive without indirection",
+        "2 | pub struct First<T>(pub Second<T>, pub *const T);",
+        "  | ^^^^^^^^^^^^^^^^^^^     --------- recursive without indirection",
+        "  |",
+        "help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle",
+        "  |",
+        "1 ~ pub struct Second<T>(pub Box<First<T>>, pub *const T);",
+        "2 ~ pub struct First<T>(pub Box<Second<T>>, pub *const T);",
+        "  |",
+        "",
+        "error: aborting due to 1 previous error",
+        "",
+        "For more information about this error, try `rustc --explain E0072`."
+      ]
+    },
+    "layout_of_async_fn_cycle_e0733": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "error[E0733]: recursion in an async fn requires boxing",
+        " --> <TMP>/layout_of_async_fn_cycle_e0733.rs:1:1",
+        "  |",
+        "1 | pub async fn ping(n: u32) -> u32 {",
+        "  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "2 |     if n == 0 { 0 } else { pong(n - 1).await }",
+        "  |                            ----------------- recursive call here",
+        "  |",
+        "note: which leads to this async fn",
+        " --> <TMP>/layout_of_async_fn_cycle_e0733.rs:4:1",
+        "  |",
+        "4 | pub async fn pong(n: u32) -> u32 {",
+        "  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^",
+        "5 |     ping(n).await",
+        "  |     ------------- ...leading to this recursive call",
+        "  = note: a recursive `async fn` call must introduce indirection such as `Box::pin` to avoid an infinitely sized future",
+        "",
+        "error: aborting due to 1 previous error",
+        "",
+        "For more information about this error, try `rustc --explain E0733`."
+      ]
+    },
+    "depth_limit_4_layout_of_doubles_to_8": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "error: queries overflow the depth limit!",
+        "    --> <RUST_SYSROOT>/lib/rustlib/src/rust/library/core/src/mem/mod.rs:1379:5",
+        "     |",
+        "1379 |     const SIZE: usize = intrinsics::size_of::<Self>();",
+        "     |     ^^^^^^^^^^^^^^^^^",
+        "     |",
+        "     = help: consider increasing the recursion limit by adding a `#![recursion_limit = \"8\"]` attribute to your crate (`depth_limit_4_layout_of_doubles_to_8`)",
+        "     = note: query depth increased by 4 when computing layout of `Layer<Layer<Layer<Layer<Layer<Layer<u8>>>>>>`",
+        "",
+        "error: aborting due to 1 previous error",
+        ""
+      ]
+    },
+    "depth_limit_0_const_eval_special_cases_to_2": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "error: queries overflow the depth limit!",
+        " --> <TMP>/depth_limit_0_const_eval_special_cases_to_2.rs:3:1",
+        "  |",
+        "3 | pub const C1: usize = C2 + 1;",
+        "  | ^^^^^^^^^^^^^^^^^^^",
+        "  |",
+        "  = help: consider increasing the recursion limit by adding a `#![recursion_limit = \"2\"]` attribute to your crate (`depth_limit_0_const_eval_special_cases_to_2`)",
+        "  = note: query depth increased by 1 when computing layout of `usize`",
+        "",
+        "error: aborting due to 1 previous error",
+        ""
+      ]
+    },
+    "variances_of_delayed_to_e0072_incremental": {
+      "rc": 1,
+      "stdout_lines": [],
+      "stderr_lines": [
+        "error[E0072]: recursive type `Rec` has infinite size",
+        " --> <TMP>/variances_of_delayed_to_e0072.rs:1:1",
+        "  |",
+        "1 | pub struct Rec<T>(pub Rec<T>, pub *const T);",
+        "  | ^^^^^^^^^^^^^^^^^     ------ recursive without indirection",
+        "  |",
+        "help: insert some indirection (e.g., a `Box`, `Rc`, or `&`) to break the cycle",
+        "  |",
+        "1 | pub struct Rec<T>(pub Box<Rec<T>>, pub *const T);",
+        "  |                       ++++      +",
+        "",
+        "error: aborting due to 1 previous error",
+        "",
+        "For more information about this error, try `rustc --explain E0072`."
+      ]
+    },
+    "failed_session_dep_graph_persisted": false
+  },
+  "suite1_queries_rs_modifier_census_head": {
+    "source_path": "compiler/rustc_middle/src/queries.rs",
+    "total_queries": 330,
+    "modifier_counts": {
+      "arena_cache": 53,
+      "cache_on_disk": 58,
+      "depth_limit": 2,
+      "eval_always": 38,
+      "feedable": 27,
+      "handle_cycle_error": 5,
+      "no_force": 2,
+      "no_hash": 10,
+      "separate_provide_extern": 119
+    },
+    "intersections": {
+      "eval_always_and_cache_on_disk": [],
+      "feedable_and_no_hash": [
+        "crate_for_resolver"
+      ],
+      "feedable_and_cache_on_disk": [
+        "type_of",
+        "generics_of",
+        "explicit_item_bounds",
+        "explicit_item_self_bounds",
+        "explicit_clauses_of",
+        "inferred_outlives_of",
+        "associated_item",
+        "eval_static_initializer",
+        "def_span",
+        "def_ident_span",
+        "codegen_fn_attrs"
+      ],
+      "handle_cycle_error_all": [
+        "check_representability",
+        "check_representability_adt_ty",
+        "variances_of",
+        "fn_sig",
+        "layout_of"
+      ],
+      "handle_cycle_error_and_no_force": [
+        "check_representability",
+        "check_representability_adt_ty"
+      ],
+      "no_force_all": [
+        "check_representability",
+        "check_representability_adt_ty"
+      ],
+      "depth_limit_all": [
+        "eval_to_const_value_raw",
+        "layout_of"
+      ],
+      "no_hash_all": [
+        "resolver_for_lowering_raw",
+        "index_ast",
+        "params_in_repr",
+        "thir_body",
+        "mir_drops_elaborated_and_const_checked",
+        "mir_promoted",
+        "erase_and_anonymize_regions_ty",
+        "evaluate_root_goal_for_proof_tree_raw",
+        "crate_for_resolver",
+        "diagnostic_hir_wf_check"
+      ],
+      "eval_always_all": [
+        "env_var_os",
+        "resolver_for_lowering_raw",
+        "index_ast",
+        "source_span",
+        "lower_to_hir",
+        "hir_crate_items",
+        "analysis",
+        "check_expectations",
+        "skippable_lints",
+        "effective_visibilities",
+        "has_global_allocator",
+        "has_alloc_error_handler",
+        "extern_crate",
+        "crate_hash",
+        "crate_host_hash",
+        "extra_filename",
+        "crate_extern_paths",
+        "crate_dep_kind",
+        "get_lang_items",
+        "all_diagnostic_items",
+        "all_canonical_symbols",
+        "missing_extern_crate_item",
+        "used_crate_source",
+        "used_crate_source_flags",
+        "debugger_visualizers",
+        "postorder_cnums",
+        "is_private_dep",
+        "allocator_kind",
+        "alloc_error_handler_kind",
+        "crates",
+        "used_crates",
+        "collect_and_partition_mono_items",
+        "all_rust_target_features",
+        "implied_target_features",
+        "diagnostic_hir_wf_check",
+        "doc_link_resolutions",
+        "doc_link_traits_in_scope",
+        "all_fake_doc_items"
+      ]
+    },
+    "key_query_locations": {
+      "analysis": {
+        "lines": "406-412",
+        "modifiers": [
+          "eval_always"
+        ]
+      },
+      "hir_owner": {
+        "lines": "241-244",
+        "modifiers": [
+          "feedable"
+        ]
+      },
+      "typeck_root": {
+        "lines": "1253-1256",
+        "modifiers": [
+          "cache_on_disk"
+        ]
+      },
+      "optimized_mir": {
+        "lines": "734-738",
+        "modifiers": [
+          "cache_on_disk",
+          "separate_provide_extern"
+        ]
+      },
+      "mir_built": {
+        "lines": "649-652",
+        "modifiers": [
+          "feedable"
+        ]
+      },
+      "mir_promoted": {
+        "lines": "677-683",
+        "modifiers": [
+          "no_hash"
+        ]
+      },
+      "mir_drops_elaborated_and_const_checked": {
+        "lines": "664-667",
+        "modifiers": [
+          "no_hash"
+        ]
+      },
+      "fn_sig": {
+        "lines": "1197-1202",
+        "modifiers": [
+          "cache_on_disk",
+          "handle_cycle_error",
+          "separate_provide_extern"
+        ]
+      },
+      "variances_of": {
+        "lines": "1050-1055",
+        "modifiers": [
+          "cache_on_disk",
+          "handle_cycle_error",
+          "separate_provide_extern"
+        ]
+      },
+      "check_representability": {
+        "lines": "594-601",
+        "modifiers": [
+          "handle_cycle_error",
+          "no_force"
+        ]
+      },
+      "check_representability_adt_ty": {
+        "lines": "605-609",
+        "modifiers": [
+          "handle_cycle_error",
+          "no_force"
+        ]
+      },
+      "layout_of": {
+        "lines": "1787-1793",
+        "modifiers": [
+          "depth_limit",
+          "handle_cycle_error"
+        ]
+      },
+      "eval_to_const_value_raw": {
+        "lines": "1389-1397",
+        "modifiers": [
+          "depth_limit",
+          "cache_on_disk"
+        ]
+      },
+      "crate_for_resolver": {
+        "lines": "2711-2715",
+        "modifiers": [
+          "feedable",
+          "no_hash"
+        ]
+      }
+    },
+    "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+  },
+  "suite1_queries_rs_modifier_census_executed": {
+    "source_path": "compiler/rustc_middle/src/queries.rs",
+    "total_queries": 317,
+    "modifier_counts": {
+      "arena_cache": 52,
+      "cache_on_disk": 57,
+      "depth_limit": 2,
+      "eval_always": 36,
+      "feedable": 27,
+      "handle_cycle_error": 5,
+      "no_force": 2,
+      "no_hash": 9,
+      "separate_provide_extern": 114
+    },
+    "intersections": {
+      "eval_always_and_cache_on_disk": [],
+      "feedable_and_no_hash": [
+        "crate_for_resolver"
+      ],
+      "feedable_and_cache_on_disk": [
+        "type_of",
+        "generics_of",
+        "explicit_item_bounds",
+        "explicit_item_self_bounds",
+        "explicit_predicates_of",
+        "inferred_outlives_of",
+        "associated_item",
+        "eval_static_initializer",
+        "def_span",
+        "def_ident_span",
+        "codegen_fn_attrs"
+      ],
+      "handle_cycle_error_all": [
+        "check_representability",
+        "check_representability_adt_ty",
+        "variances_of",
+        "fn_sig",
+        "layout_of"
+      ],
+      "handle_cycle_error_and_no_force": [
+        "check_representability",
+        "check_representability_adt_ty"
+      ],
+      "no_force_all": [
+        "check_representability",
+        "check_representability_adt_ty"
+      ],
+      "depth_limit_all": [
+        "eval_to_const_value_raw",
+        "layout_of"
+      ],
+      "no_hash_all": [
+        "resolver_for_lowering_raw",
+        "params_in_repr",
+        "thir_body",
+        "mir_drops_elaborated_and_const_checked",
+        "mir_promoted",
+        "erase_and_anonymize_regions_ty",
+        "evaluate_root_goal_for_proof_tree_raw",
+        "crate_for_resolver",
+        "diagnostic_hir_wf_check"
+      ],
+      "eval_always_all": [
+        "env_var_os",
+        "resolver_for_lowering_raw",
+        "source_span",
+        "hir_crate",
+        "lower_delayed_owner",
+        "hir_crate_items",
+        "analysis",
+        "check_expectations",
+        "lints_that_dont_need_to_run",
+        "effective_visibilities",
+        "has_global_allocator",
+        "has_alloc_error_handler",
+        "extern_crate",
+        "crate_hash",
+        "crate_host_hash",
+        "extra_filename",
+        "crate_extern_paths",
+        "crate_dep_kind",
+        "get_lang_items",
+        "all_diagnostic_items",
+        "missing_extern_crate_item",
+        "used_crate_source",
+        "debugger_visualizers",
+        "postorder_cnums",
+        "is_private_dep",
+        "allocator_kind",
+        "alloc_error_handler_kind",
+        "crates",
+        "used_crates",
+        "collect_and_partition_mono_items",
+        "rust_target_features",
+        "implied_target_features",
+        "diagnostic_hir_wf_check",
+        "global_backend_features",
+        "doc_link_resolutions",
+        "doc_link_traits_in_scope"
+      ]
+    },
+    "key_query_locations": {
+      "analysis": {
+        "lines": "380-386",
+        "modifiers": [
+          "eval_always"
+        ]
+      },
+      "hir_owner": {
+        "lines": "218-221",
+        "modifiers": [
+          "feedable"
+        ]
+      },
+      "typeck_root": {
+        "lines": "1207-1210",
+        "modifiers": [
+          "cache_on_disk"
+        ]
+      },
+      "optimized_mir": {
+        "lines": "708-712",
+        "modifiers": [
+          "cache_on_disk",
+          "separate_provide_extern"
+        ]
+      },
+      "mir_built": {
+        "lines": "623-626",
+        "modifiers": [
+          "feedable"
+        ]
+      },
+      "mir_promoted": {
+        "lines": "651-657",
+        "modifiers": [
+          "no_hash"
+        ]
+      },
+      "mir_drops_elaborated_and_const_checked": {
+        "lines": "638-641",
+        "modifiers": [
+          "no_hash"
+        ]
+      },
+      "fn_sig": {
+        "lines": "1151-1156",
+        "modifiers": [
+          "cache_on_disk",
+          "handle_cycle_error",
+          "separate_provide_extern"
+        ]
+      },
+      "variances_of": {
+        "lines": "1018-1023",
+        "modifiers": [
+          "cache_on_disk",
+          "handle_cycle_error",
+          "separate_provide_extern"
+        ]
+      },
+      "check_representability": {
+        "lines": "568-575",
+        "modifiers": [
+          "handle_cycle_error",
+          "no_force"
+        ]
+      },
+      "check_representability_adt_ty": {
+        "lines": "579-583",
+        "modifiers": [
+          "handle_cycle_error",
+          "no_force"
+        ]
+      },
+      "layout_of": {
+        "lines": "1737-1743",
+        "modifiers": [
+          "depth_limit",
+          "handle_cycle_error"
+        ]
+      },
+      "eval_to_const_value_raw": {
+        "lines": "1344-1352",
+        "modifiers": [
+          "depth_limit",
+          "cache_on_disk"
+        ]
+      },
+      "crate_for_resolver": {
+        "lines": "2580-2584",
+        "modifiers": [
+          "feedable",
+          "no_hash"
+        ]
+      }
+    },
+    "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+  }
+}
