@@ -20,11 +20,15 @@ use std::{
     io::{self, Read as _},
     num::NonZero,
     path::{Component, Path, PathBuf},
-    sync::{Condvar, Mutex},
+    sync::{
+        Condvar, Mutex,
+        atomic::{AtomicUsize, Ordering},
+    },
 };
 
 use serde::{Deserialize, Serialize};
 use sha2::{Digest, Sha256};
+use walkdir::WalkDir;
 
 /// Represents a JSON value at the `TrustedBoundary.lean` IPC boundary.
 pub type Json = serde_json::Value;
@@ -72,14 +76,12 @@ pub const LOCKED_LEAN_SHA256: [&str; 4] = [
 /// `.olean.private` artifacts in the pinned Lean 4.34.1 toolchain, computed
 /// over sorted `"{rel_path}:{sha256}\n"` lines.
 ///
-/// Verifying this digest before `"correspondence-audit"` ensures that every
-/// `.sysrootFoundation` module loaded by `vendor/lean-miri` is
-/// cryptographically authenticated to the pinned toolchain rather than checked
-/// only by path existence.
-///
-/// Target verification does not check this manifest. Of these sysroot modules,
-/// it hashes only those in `foundation-lock.json` and the imported
-/// `library-lock.json` modules.
+/// Pinned `Checker::tool_admission` verifies this manifest before running
+/// `TrustedBoundary.lean` (so both `anneal-audit` Pass 1/2 and
+/// `cargo-anneal verify` authenticate the sysroot `.olean` dependency cone of
+/// the standalone inspector), and `anneal-audit` Pass 2 additionally extracts
+/// the sorted `.sysrootFoundation` module list before compiling or loading
+/// `.vendorMiri` and `.sysrootFoundation` modules.
 pub const LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256: &str =
     "2fa0ec692ae74051072ed105a66054843dcb711eb702bb64dc7947b96ea4fcdf";
 
@@ -817,6 +819,193 @@ pub fn is_lean_ident(s: &str) -> bool {
     let mut chars = s.chars();
     chars.next().is_some_and(|first| first.is_ascii_alphabetic())
         && chars.all(|c| c.is_ascii_alphanumeric() || c == '_')
+}
+
+fn walk_and_hash_sysroot_dir(
+    lib_dir: &Path,
+    foundation_modules: &BTreeSet<String>,
+    phase: &str,
+) -> Result<(String, BTreeSet<String>), Failure> {
+    let mut files_to_hash: Vec<(String, PathBuf)> = Vec::new();
+    let mut modules: BTreeSet<String> = BTreeSet::new();
+    for pkg in ["Init", "Std", "Lean"] {
+        for ext in OLEAN_PARTS {
+            let rel = format!("{pkg}.{ext}");
+            let path = lib_dir.join(&rel);
+            match fs::symlink_metadata(&path) {
+                Ok(meta) => {
+                    let ft = meta.file_type();
+                    if ft.is_symlink() {
+                        return Err(Failure::policy(
+                            phase,
+                            format!("symlink forbidden in sysroot: {}", path.display()),
+                        ));
+                    }
+                    if !ft.is_file() {
+                        return Err(Failure::policy(
+                            phase,
+                            format!("unexpected file type in sysroot: {}", path.display()),
+                        ));
+                    }
+                    files_to_hash.push((rel, path));
+                    if ext == "olean" && !foundation_modules.contains(pkg) {
+                        modules.insert(pkg.to_string());
+                    }
+                }
+                Err(e) if e.kind() == io::ErrorKind::NotFound => {}
+                Err(e) => {
+                    return Err(Failure::policy(
+                        phase,
+                        format!("cannot inspect sysroot {}: {e}", path.display()),
+                    ));
+                }
+            }
+        }
+        let pkg_dir = lib_dir.join(pkg);
+        for item in WalkDir::new(&pkg_dir).follow_links(false) {
+            let item = item.map_err(|e| {
+                Failure::policy(phase, format!("cannot walk sysroot {}: {e}", pkg_dir.display()))
+            })?;
+            let ft = item.file_type();
+            if ft.is_symlink() {
+                return Err(Failure::policy(
+                    phase,
+                    format!("symlink forbidden in sysroot: {}", item.path().display()),
+                ));
+            }
+            if ft.is_dir() {
+                continue;
+            }
+            if !ft.is_file() {
+                return Err(Failure::policy(
+                    phase,
+                    format!("unexpected file type in sysroot: {}", item.path().display()),
+                ));
+            }
+            let rel_path = item.path().strip_prefix(lib_dir).map_err(|e| {
+                Failure::operational(phase, format!("invalid sysroot relative path: {e}"))
+            })?;
+            let mut segs = Vec::new();
+            for comp in rel_path.components() {
+                let Component::Normal(os) = comp else {
+                    return Err(Failure::policy(
+                        phase,
+                        format!("invalid path component in {}", item.path().display()),
+                    ));
+                };
+                let Some(s) = os.to_str() else {
+                    return Err(Failure::policy(
+                        phase,
+                        format!("non-UTF-8 path in sysroot: {}", item.path().display()),
+                    ));
+                };
+                segs.push(s);
+            }
+            let rel_str = segs.join("/");
+            let is_olean_part = OLEAN_PARTS.iter().any(|ext| rel_str.ends_with(&format!(".{ext}")));
+            if is_olean_part {
+                if let Some(stem) = rel_str.strip_suffix(".olean") {
+                    let mod_name = stem.replace('/', ".");
+                    if !mod_name.split('.').all(is_lean_ident) {
+                        return Err(Failure::policy(
+                            phase,
+                            format!("invalid sysroot module identifier: {mod_name}"),
+                        ));
+                    }
+                    if !foundation_modules.contains(&mod_name) {
+                        modules.insert(mod_name);
+                    }
+                }
+                files_to_hash.push((rel_str, item.path().to_path_buf()));
+            }
+        }
+    }
+
+    // Hash the validated regular files across up to 4 bounded worker threads,
+    // then reassemble digests in deterministic index order so both the
+    // canonical `BTreeMap` manifest and the first reported error match a
+    // single-threaded walk.
+    let workers = std::thread::available_parallelism()
+        .map(NonZero::get)
+        .unwrap_or(1)
+        .min(4)
+        .min(files_to_hash.len());
+    let mut entries: BTreeMap<String, String> = BTreeMap::new();
+    if workers <= 1 {
+        for (rel, path) in files_to_hash {
+            let sha = sha256_file(&path, phase)?;
+            entries.insert(rel, sha);
+        }
+    } else {
+        let next_idx = AtomicUsize::new(0);
+        let min_err_idx = AtomicUsize::new(usize::MAX);
+        let outcomes: Mutex<Vec<(usize, Result<String, Failure>)>> =
+            Mutex::new(Vec::with_capacity(files_to_hash.len()));
+        std::thread::scope(|scope| {
+            for _ in 0..workers {
+                scope.spawn(|| {
+                    let mut local = Vec::new();
+                    loop {
+                        let idx = next_idx.fetch_add(1, Ordering::Relaxed);
+                        if idx >= files_to_hash.len() || idx > min_err_idx.load(Ordering::Relaxed) {
+                            break;
+                        }
+                        let res = sha256_file(&files_to_hash[idx].1, phase);
+                        if res.is_err() {
+                            min_err_idx.fetch_min(idx, Ordering::Relaxed);
+                        }
+                        local.push((idx, res));
+                    }
+                    outcomes.lock().unwrap_or_else(|e| e.into_inner()).extend(local);
+                });
+            }
+        });
+        let mut collected = outcomes.into_inner().unwrap_or_else(|e| e.into_inner());
+        collected.sort_unstable_by_key(|(idx, _)| *idx);
+        for (idx, res) in collected {
+            let sha = res?;
+            entries.insert(files_to_hash[idx].0.clone(), sha);
+        }
+    }
+
+    let mut manifest = String::new();
+    for (rel, sha) in &entries {
+        manifest.push_str(rel);
+        manifest.push(':');
+        manifest.push_str(sha);
+        manifest.push('\n');
+    }
+    Ok((sha256_bytes(manifest.as_bytes()), modules))
+}
+
+/// Authenticate every `Init`, `Std`, and `Lean` `.olean`/`.olean.server`/
+/// `.olean.private` artifact under `lib_dir` against `expected_manifest_sha`
+/// and return the sorted `.sysrootFoundation` module names (excluding
+/// `foundation_modules`).
+pub fn verify_sysroot_foundation_dir(
+    lib_dir: &Path,
+    foundation_modules: &BTreeSet<String>,
+    expected_manifest_sha: &str,
+) -> Result<Vec<String>, Failure> {
+    let phase = "sysroot-foundation";
+    let (actual_manifest_sha, modules) =
+        walk_and_hash_sysroot_dir(lib_dir, foundation_modules, phase)?;
+    if !actual_manifest_sha.eq_ignore_ascii_case(expected_manifest_sha) {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "sysroot Init/Std/Lean .olean manifest SHA-256 mismatch: expected {expected_manifest_sha}, got {actual_manifest_sha}"
+            ),
+        ));
+    }
+    Ok(modules.into_iter().collect())
+}
+
+#[cfg(test)]
+pub(crate) fn compute_sysroot_manifest_sha256_for_test(lib_dir: &Path) -> String {
+    walk_and_hash_sysroot_dir(lib_dir, &BTreeSet::new(), "sysroot-foundation")
+        .expect("test sysroot directory should hash cleanly")
+        .0
 }
 
 /// Return `true` if `rel` consists exclusively of normal path components (no

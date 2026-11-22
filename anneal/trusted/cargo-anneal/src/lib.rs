@@ -17,9 +17,12 @@
 //! and verifies exact definitional equality against the canonical obligation.
 //!
 //! Admission hashes the `lean` executable, the `foundation-lock.json` modules,
-//! and the imported `library-lock.json` modules. The Lean shared libraries and
-//! other sysroot modules are identified only by `lean --version`, under the
-//! uncompromised execution environment that `THREAT_MODEL.md` assumes.
+//! the sysroot `{Init,Std,Lean}*` `.olean` manifest
+//! (`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`), and the imported
+//! `library-lock.json` modules. Sysroot `.ir`/`.ir.sig` companions outside the
+//! locks and the Lean shared libraries are identified only by
+//! `lean --version`, under the uncompromised execution environment that
+//! `THREAT_MODEL.md` assumes.
 
 #[doc(hidden)]
 pub mod bundle;
@@ -37,6 +40,6 @@ pub use toolchain::{
     default_compile_workers, default_lean_search_bases_from_env, is_clean_relative_path,
     is_lean_ident, is_sha256_hex, read_regular_file_deref, read_regular_file_strict, regular,
     run_parallel_dag, sha256_bytes, sha256_file, sha256_file_deref, stage_regular_file,
-    topo_sort_modules,
+    topo_sort_modules, verify_sysroot_foundation_dir,
 };
 pub use toolchain::{Failure, Json, default_lean_path};

@@ -27,10 +27,10 @@ use serde_json::json;
 
 use crate::toolchain::{
     AdmittedToolchain, CompiledInspectorPaths, FOUNDATION_AXIOMS, Failure, FoundationLock,
-    ImportEdge, Json, LibraryLock, ModuleArtifacts, OLEAN_PARTS, PARTS, ParallelDagPlan,
-    TOOLCHAIN, default_lean_path, is_sha256_hex, regular, run_parallel_dag,
-    scan_sysroot_package_roots, sha256_file_deref, stage_regular_file, transitive_import_closure,
-    verify_installed_module_record,
+    ImportEdge, Json, LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, LibraryLock, ModuleArtifacts,
+    OLEAN_PARTS, PARTS, ParallelDagPlan, TOOLCHAIN, default_lean_path, is_sha256_hex, regular,
+    run_parallel_dag, scan_sysroot_package_roots, sha256_file_deref, stage_regular_file,
+    transitive_import_closure, verify_installed_module_record, verify_sysroot_foundation_dir,
 };
 
 /// Cache key for precompiled `TrustedBoundary.olean` artifacts held in process
@@ -256,6 +256,8 @@ pub struct Checker {
     admitted: Option<AdmittedToolchain>,
     allow_unpinned_lean: bool,
     lean_memory_mb: Option<u32>,
+    #[cfg(test)]
+    expected_sysroot_manifest_sha256_for_test: Option<String>,
 }
 
 impl Checker {
@@ -324,7 +326,14 @@ impl Checker {
             admitted: None,
             allow_unpinned_lean: false,
             lean_memory_mb: None,
+            #[cfg(test)]
+            expected_sysroot_manifest_sha256_for_test: None,
         })
+    }
+
+    #[cfg(test)]
+    pub(crate) fn set_expected_sysroot_manifest_sha256_for_test(&mut self, sha: impl Into<String>) {
+        self.expected_sysroot_manifest_sha256_for_test = Some(sha.into());
     }
 
     /// Configure an explicit Lean `-M` memory limit in MiB.
@@ -571,16 +580,21 @@ impl Checker {
 
     /// Stage `TrustedBoundary.lean`, validate `lean-toolchain`,
     /// `foundation-lock.json`, and the `library-lock.json` catalog when
-    /// present, and compare the `lean` executable and every
-    /// `foundation-lock.json` source and `.olean`/`.ir` artifact with its
-    /// locked SHA-256 digest.
+    /// present, and compare the `lean` executable, every
+    /// `foundation-lock.json` source and `.olean`/`.ir` artifact, and the
+    /// sysroot `{Init,Std,Lean}*` `.olean` manifest against their locked
+    /// SHA-256 digests.
     ///
-    /// The Lean shared libraries that the executable loads, which contain the
-    /// kernel and elaborator, and the sysroot modules outside the locks are
-    /// not hashed. Only `lean --version` identifies them, so their integrity
-    /// rests on the uncompromised execution environment that
-    /// `THREAT_MODEL.md` assumes. Library digests are checked later, when
-    /// target imports reach them.
+    /// Authenticating the sysroot `{Init,Std,Lean}*` `.olean`, `.olean.server`,
+    /// and `.olean.private` manifest here covers the compiled `.olean*` modules
+    /// loaded by the standalone inspector (`TrustedBoundary.lean`) before any
+    /// inspector mode executes. Sysroot `.ir`/`.ir.sig` companions outside
+    /// `foundation-lock.json` and `library-lock.json`, as well as the Lean
+    /// shared libraries that the executable loads (which contain the kernel and
+    /// elaborator), remain unhashed and identified only by `lean --version`, so
+    /// their integrity rests on the uncompromised execution environment that
+    /// `THREAT_MODEL.md` assumes. Library source/`.ir` digests are checked
+    /// later, when target imports reach them.
     #[doc(hidden)]
     pub fn tool_admission(&mut self) -> Result<&mut AdmittedToolchain, Failure> {
         let inspector_src = self.root.join("trusted/audit/TrustedBoundary.lean");
@@ -665,6 +679,21 @@ impl Checker {
             let mod_arts = verify_installed_module_record(&prefix, module, record, "foundation")?;
             artifacts.insert(module.clone(), mod_arts);
         }
+
+        let foundation_modules: BTreeSet<String> = parsed_lock.modules.keys().cloned().collect();
+        #[cfg(test)]
+        let expected_sysroot_sha = self
+            .expected_sysroot_manifest_sha256_for_test
+            .as_deref()
+            .unwrap_or(LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256);
+        #[cfg(not(test))]
+        let expected_sysroot_sha = LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256;
+        verify_sysroot_foundation_dir(
+            &prefix.join("lib/lean"),
+            &foundation_modules,
+            expected_sysroot_sha,
+        )
+        .map_err(|err| Failure::new(err.code, "toolchain", err.message))?;
 
         let library_lock_path = self.root.join("trusted/audit/library-lock.json");
         let library_lock = if fs::symlink_metadata(&library_lock_path).is_ok() {

@@ -206,14 +206,19 @@ the boundary controls detailed below across Pass 1 (core repository
 `trusted/correspondence/`, and `correspondence/`).
 
 The repository auditor and the target verifier share toolchain admission and
-staging code in [`trusted/cargo-anneal/`](../trusted/cargo-anneal). The
-target checker authenticates a narrower library import closure (or dynamically
-discovers and records the `Init.*`/`Std.*` sysroot import closure when opted in
-with `--allow-unpinned-lean`), separately checks specification and proof
-dependencies, and replays the accepted theorem against the bound obligation.
-The target checker runs on the operator's host, so only use it with source and
-proof input you trust to elaborate there. The repository correspondence audit
-retains its existing OS isolation for the reference model.
+staging code in [`trusted/cargo-anneal/`](../trusted/cargo-anneal). In pinned
+mode, tool admission authenticates the `Init`/`Std`/`Lean` sysroot `.olean`
+companion manifest (`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`) while leaving
+sysroot `.ir`/`.ir.sig` companions outside `foundation-lock.json` unhashed
+(`lean --version` only), and the target checker additionally verifies the
+narrower imported `library-lock.json` source and companion digests (or
+dynamically discovers and records the `Init.*`/`Std.*` sysroot import closure
+when opted in with `--allow-unpinned-lean`), separately checks specification and
+proof dependencies, and replays the accepted theorem against the bound
+obligation. The target checker runs on the operator's host, so only use it with
+source and proof input you trust to elaborate there. The repository
+correspondence audit retains its existing OS isolation for the reference
+model.
 
 ### Cargo workspace containment
 
@@ -602,11 +607,13 @@ To include these files in `trusted/`'s effective TCB without relocating them,
   executable and all `Init.*` prelude source and `.olean` companion files,
   verified by both the Nix toolchain build (`flake.nix`) and `anneal-audit`.
 - **`LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`**
-  (`trusted/cargo-anneal/src/toolchain.rs`): Pins one SHA-256 digest over the sorted
-  `"{rel_path}:{sha256}"` lines of every `{Init,Std,Lean}*` `.olean`,
+  (`trusted/cargo-anneal/src/toolchain.rs`): Pins one SHA-256 digest over the
+  sorted `"{rel_path}:{sha256}"` lines of every `{Init,Std,Lean}*` `.olean`,
   `.olean.server`, and `.olean.private` file in the pinned toolchain's
-  `lib/lean/`, verified by Pass 2 before compiling or loading `.vendorMiri`
-  and `.sysrootFoundation` modules.
+  `lib/lean/`, verified by `Checker::tool_admission()` before invoking
+  `TrustedBoundary.lean` (protecting both `anneal-audit` and pinned
+  `cargo-anneal verify`) and reused by Pass 2 before compiling or loading
+  `.vendorMiri` and `.sysrootFoundation` modules.
 - **[`UPSTREAM_PIN.json`](../vendor/lean-miri/UPSTREAM_PIN.json)**
   (`vendor/lean-miri/UPSTREAM_PIN.json`):
   Pins the upstream commit and SHA-256 digest of every file in

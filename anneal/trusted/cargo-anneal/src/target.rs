@@ -798,12 +798,12 @@ fn hash_admitted_module_artifacts(
 // compiler request; reaching one fails with status 3.
 #[cfg(all(test, unix))]
 mod admission_tests {
-    use std::fs;
+    use std::{fs, os::unix::fs::symlink};
 
     use serde_json::json;
 
     use super::*;
-    use crate::toolchain::TOOLCHAIN;
+    use crate::toolchain::{TOOLCHAIN, compute_sysroot_manifest_sha256_for_test};
 
     const VERSION: &str = "Lean (version 4.34.1, synthetic admission fixture)";
     const FOUNDATION: &str = "Init.Prelude";
@@ -852,6 +852,7 @@ mod admission_tests {
         prefix: PathBuf,
         lean: PathBuf,
         records: BTreeMap<&'static str, Json>,
+        sysroot_manifest_sha256: String,
     }
 
     impl Toolchain {
@@ -891,6 +892,13 @@ exit 3
                 .into_iter()
                 .map(|module| (module, install(&prefix, module)))
                 .collect();
+            for dir_rel in ["Init", "Std", "Lean"] {
+                fs::create_dir_all(prefix.join("lib/lean").join(dir_rel)).unwrap();
+            }
+            fs::write(prefix.join("lib/lean/Lean/Replay.olean"), b"synthetic lean replay\n")
+                .unwrap();
+            let sysroot_manifest_sha256 =
+                compute_sysroot_manifest_sha256_for_test(&prefix.join("lib/lean"));
             let foundation_lock = json!({
                 "schema": 1,
                 "toolchain": TOOLCHAIN,
@@ -908,7 +916,7 @@ exit 3
                 fs::create_dir_all(path.parent().unwrap()).unwrap();
                 fs::write(path, contents).unwrap();
             }
-            Self { _dir: dir, base, root, prefix, lean, records }
+            Self { _dir: dir, base, root, prefix, lean, records, sysroot_manifest_sha256 }
         }
 
         /// Return a valid catalog in which `LIBRARY_USER` imports `LIBRARY`.
@@ -933,7 +941,10 @@ exit 3
         }
 
         fn checker(&self) -> Checker {
-            Checker::new_with_env(&self.root, Some(self.lean.as_path()), []).unwrap()
+            let mut checker =
+                Checker::new_with_env(&self.root, Some(self.lean.as_path()), []).unwrap();
+            checker.set_expected_sysroot_manifest_sha256_for_test(&self.sysroot_manifest_sha256);
+            checker
         }
 
         /// Return a request whose five sources pass target input admission.
@@ -1120,8 +1131,27 @@ exit 3
         );
         assert!(admitted.artifacts.contains_key(LIBRARY));
 
+        // Prepare a second admitted checker before mutating disk bytes so we
+        // also exercise post-admission `admit_libraries` enforcement without
+        // cache hits from the control run's `library_modules`.
+        let mut toctou_checker = toolchain.checker();
+        toctou_checker.tool_admission().unwrap();
+
         let olean = toolchain.prefix.join("lib/lean/Init/Data/BitVec/Basic.olean");
         fs::write(&olean, b"changed library artifact").unwrap();
+        // A fresh checker rejects the altered sysroot `.olean` manifest in
+        // `tool_admission` before library resolution begins.
+        for root in [LIBRARY, LIBRARY_USER] {
+            let err = admit(&toolchain, root).unwrap_err();
+            assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
+            assert!(
+                err.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+                "{root}: {err}"
+            );
+        }
+        // The pre-admitted checker still catches the post-admission TOCTOU
+        // artifact swap in `admit_libraries` when a target import reaches the
+        // library or a module that imports it.
         let expected = Failure::operational(
             "library",
             format!(
@@ -1131,10 +1161,52 @@ exit 3
                 sha256_file(&olean, "fixture").unwrap()
             ),
         );
-        // Both the library and a library that imports it reach the change.
         for root in [LIBRARY, LIBRARY_USER] {
-            assert_eq!(admit(&toolchain, root), Err(expected.clone()), "{root}");
+            assert_eq!(
+                toctou_checker.admit_libraries([root.to_owned()]),
+                Err(expected.clone()),
+                "{root}"
+            );
         }
+    }
+
+    /// Tampering with, removing, or symlinking sysroot `{Std,Lean}` `.olean`
+    /// files outside `foundation-lock.json` and `library-lock.json` must reject
+    /// during pinned `tool_admission` before any inspector invocation runs.
+    #[test]
+    fn tool_admission_rejects_tampered_lean_sysroot_before_inspector_runs() {
+        let toolchain = Toolchain::new();
+        let request = toolchain.request();
+        let replay_olean = toolchain.prefix.join("lib/lean/Lean/Replay.olean");
+
+        fs::write(&replay_olean, b"tampered lean replay\n").unwrap();
+        let mut checker = toolchain.checker();
+        let err = checker.run_target(&request).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
+        assert!(
+            err.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+            "{err}"
+        );
+        assert!(!checker.execution_began());
+
+        fs::remove_file(&replay_olean).unwrap();
+        let mut checker = toolchain.checker();
+        let err = checker.run_target(&request).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
+        assert!(
+            err.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+            "{err}"
+        );
+        assert!(!checker.execution_began());
+
+        let toolchain = Toolchain::new();
+        let target = toolchain.prefix.join("lib/lean/Lean/Replay.olean");
+        symlink(&target, toolchain.prefix.join("lib/lean/Std/Link.olean")).unwrap();
+        let mut checker = toolchain.checker();
+        let err = checker.run_target(&request).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
+        assert!(err.message.contains("symlink forbidden in sysroot"), "{err}");
+        assert!(!checker.execution_began());
     }
 
     /// Each reached record also binds its source bytes and the absence of
@@ -1675,6 +1747,109 @@ exit 3
         let pinned_report = pinned.run_target(&eq_def_req).unwrap();
         assert_eq!(pinned_report["replay"], Json::Bool(true));
         assert_eq!(pinned_report["exactType"], Json::Bool(true));
+    }
+
+    fn copy_dir_filtered(src: &Path, dst: &Path, olean_only: bool) {
+        for entry in walkdir::WalkDir::new(src).follow_links(false) {
+            let entry = entry.unwrap();
+            let rel = entry.path().strip_prefix(src).unwrap();
+            let out = dst.join(rel);
+            let ft = entry.file_type();
+            if ft.is_dir() {
+                fs::create_dir_all(&out).unwrap();
+            } else if ft.is_file() {
+                let keep = !olean_only
+                    || crate::toolchain::OLEAN_PARTS
+                        .iter()
+                        .any(|ext| out.to_string_lossy().ends_with(&format!(".{ext}")));
+                if keep {
+                    fs::hard_link(entry.path(), &out)
+                        .or_else(|_| fs::copy(entry.path(), &out).map(|_| ()))
+                        .unwrap();
+                }
+            }
+        }
+    }
+
+    /// Real-sysroot negative test: keep the pinned `bin/lean` executable and
+    /// all `foundation-lock.json` (`Init.*`) artifacts intact, confirm
+    /// untampered admission passes `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`,
+    /// then corrupt `Lean/Replay.olean` and assert pinned `tool_admission`
+    /// rejects with policy exit code `1` and phase `"toolchain"` before
+    /// `TrustedBoundary.lean` runs (`execution_began == false`).
+    #[test]
+    fn tool_admission_rejects_tampered_real_lean_sysroot_before_inspector_runs() {
+        let real_lean = fs::canonicalize(installed_lean()).unwrap();
+        let real_prefix_out =
+            std::process::Command::new(&real_lean).arg("--print-prefix").output().unwrap();
+        assert!(real_prefix_out.status.success());
+        let real_prefix = PathBuf::from(String::from_utf8(real_prefix_out.stdout).unwrap().trim());
+
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let syn_prefix = base.join("sysroot");
+        let copied_lean = syn_prefix.join("bin/lean");
+        fs::create_dir_all(copied_lean.parent().unwrap()).unwrap();
+        fs::copy(&real_lean, &copied_lean).unwrap();
+        fs::set_permissions(&copied_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+        copy_dir_filtered(
+            &real_prefix.join("src/lean/Init"),
+            &syn_prefix.join("src/lean/Init"),
+            false,
+        );
+        let dst_lib_lean = syn_prefix.join("lib/lean");
+        fs::create_dir_all(&dst_lib_lean).unwrap();
+        for entry in fs::read_dir(real_prefix.join("lib/lean")).unwrap() {
+            let entry = entry.unwrap();
+            let name = entry.file_name();
+            let name_str = name.to_string_lossy();
+            let src_path = entry.path();
+            let dst_path = dst_lib_lean.join(&name);
+            if matches!(name_str.as_ref(), "Init" | "Std" | "Lean") {
+                copy_dir_filtered(&src_path, &dst_path, name_str != "Init");
+            } else if ["Init.", "Std.", "Lean."].iter().any(|p| name_str.starts_with(p)) {
+                if fs::symlink_metadata(&src_path).unwrap().file_type().is_file() {
+                    fs::copy(&src_path, &dst_path).unwrap();
+                }
+            } else {
+                symlink(&src_path, &dst_path).unwrap();
+            }
+        }
+
+        // Control: untampered copy passes full pinned admission against
+        // `LOCKED_LEAN_SHA256`, `foundation-lock.json`, and
+        // `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`.
+        let mut control = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        control.tool_admission().unwrap();
+        assert!(!control.execution_began());
+
+        // Attack: corrupt `Lean/Replay.olean` while keeping `bin/lean` and
+        // all `Init.*` artifacts untouched (unlink first so hardlinks never
+        // mutate the real sysroot).
+        let replay_olean = dst_lib_lean.join("Lean/Replay.olean");
+        assert!(replay_olean.is_file(), "missing {}", replay_olean.display());
+        fs::remove_file(&replay_olean).unwrap();
+        fs::write(&replay_olean, b"tampered lean replay\n").unwrap();
+
+        let req = minimal_request(&base.join("req"), None);
+        let mut tampered_target = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        let err = tampered_target.run_target(&req).unwrap_err();
+        assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
+        assert!(
+            err.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+            "{err}"
+        );
+        assert!(!tampered_target.execution_began());
+
+        let mut tampered_adm = Checker::new(&repo_root(), Some(&copied_lean)).unwrap();
+        let err_adm = tampered_adm.tool_admission().unwrap_err();
+        assert_eq!((err_adm.code, err_adm.phase.as_str()), (1, "toolchain"), "{err_adm}");
+        assert!(
+            err_adm.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+            "{err_adm}"
+        );
+        assert!(!tampered_adm.execution_began());
     }
 }
 
