@@ -1,0 +1,84 @@
+{
+  "topics": [
+    "ffi/hardware-software",
+    "isa/aarch64",
+    "isa/riscv64",
+    "isa/x86-64",
+    "lean/mechanization",
+    "rust/unsafe",
+    "systems/dma-coherence",
+    "systems/iommu-iotlb",
+    "systems/pcie-mmio",
+    "verification/mmio-dma",
+    "verification/refinement",
+    "verification/trust-boundaries"
+  ],
+  "subjects": [
+    {
+      "name": "PCI Express Base Specification (Transaction Ordering, Posted Writes, Non-Posted Read-Back, and Producer-Consumer Model)",
+      "identity": {
+        "publisher": "PCI-SIG",
+        "sections": "Chapter 2 (Transaction Ordering: Posted Memory Writes, Non-Posted Reads, Completions, Rule A2a/A2b Relaxed Ordering)",
+        "specification": "PCI Express Base Specification Rev 5.0 / 6.0"
+      }
+    },
+    {
+      "name": "Linux kernel MMIO ordering, DMA API, SWIOTLB bounce buffers, and IOMMU sync drivers",
+      "identity": {
+        "paths": "include/asm-generic/io.h, arch/arm64/include/asm/io.h, arch/arm64/include/asm/barrier.h, arch/riscv/include/asm/mmio.h, arch/x86/mm/pat/set_memory.c, kernel/dma/direct.h, kernel/dma/swiotlb.c, drivers/iommu/intel/dmar.c, drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c, Documentation/driver-api/device-io.rst, Documentation/core-api/dma-api-howto.rst",
+        "repository": "torvalds/linux",
+        "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+      }
+    },
+    {
+      "name": "Arm System Memory Management Unit Architecture Specification (SMMUv3)",
+      "identity": {
+        "publisher": "Arm Limited",
+        "sections": "CMD_TLBI_*, CMD_ATC_INV, and CMD_SYNC completion semantics",
+        "specification": "ARM IHI 0070"
+      }
+    },
+    {
+      "name": "Intel Virtualization Technology for Directed I/O (VT-d) Architecture Specification",
+      "identity": {
+        "publisher": "Intel Corporation",
+        "sections": "Section 6.5 (Queued Invalidation Interface, IOTLB Invalidate, and Invalidation Wait Descriptor 6.5.2.8)",
+        "specification": "Intel VT-d Architecture Specification Rev 4.1+"
+      }
+    },
+    {
+      "name": "RISC-V IOMMU Architecture Specification v1.0 and Zicbom Cache-Block Management Extension",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-iommu",
+        "specification": "RISC-V IOMMU v1.0 (IOTINVAL.VMA, ATS.INVAL, IOFENCE.C) and RISC-V CMO Zicbom (cbo.clean, cbo.flush, cbo.inval)"
+      }
+    },
+    {
+      "name": "seL4 formal verification repository (l4v machine_state and X64 VT-d capability boundary)",
+      "identity": {
+        "doi": "10.1145/2560537",
+        "paths": "spec/machine/MachineMonad.thy, spec/abstract/X64/ArchVSpace_A.thy",
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "Bedrock2 end-to-end verified embedded system ExtSpec memory-ownership transfer",
+      "identity": {
+        "doi": "10.1145/3453483.3454069",
+        "paths": "bedrock2/src/bedrock2/Semantics.v",
+        "repository": "mit-plv/bedrock2",
+        "revision": "0005c47b5eaa720bdcb9b94aceaca9f42726b861"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

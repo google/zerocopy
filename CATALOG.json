@@ -37347,6 +37347,90 @@
         "verification"
       ]
     },
+    "discharging-nodma-opaquemmio-dma-tiers-iotlb-revocation-and-posted-mmio-ordering": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "publisher": "PCI-SIG",
+            "sections": "Chapter 2 (Transaction Ordering: Posted Memory Writes, Non-Posted Reads, Completions, Rule A2a/A2b Relaxed Ordering)",
+            "specification": "PCI Express Base Specification Rev 5.0 / 6.0"
+          },
+          "name": "PCI Express Base Specification (Transaction Ordering, Posted Writes, Non-Posted Read-Back, and Producer-Consumer Model)"
+        },
+        {
+          "identity": {
+            "paths": "include/asm-generic/io.h, arch/arm64/include/asm/io.h, arch/arm64/include/asm/barrier.h, arch/riscv/include/asm/mmio.h, arch/x86/mm/pat/set_memory.c, kernel/dma/direct.h, kernel/dma/swiotlb.c, drivers/iommu/intel/dmar.c, drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c, Documentation/driver-api/device-io.rst, Documentation/core-api/dma-api-howto.rst",
+            "repository": "torvalds/linux",
+            "revision": "4405c18c95d2d0f99f6c581ef0ee8591a1aa6ccd"
+          },
+          "name": "Linux kernel MMIO ordering, DMA API, SWIOTLB bounce buffers, and IOMMU sync drivers"
+        },
+        {
+          "identity": {
+            "publisher": "Arm Limited",
+            "sections": "CMD_TLBI_*, CMD_ATC_INV, and CMD_SYNC completion semantics",
+            "specification": "ARM IHI 0070"
+          },
+          "name": "Arm System Memory Management Unit Architecture Specification (SMMUv3)"
+        },
+        {
+          "identity": {
+            "publisher": "Intel Corporation",
+            "sections": "Section 6.5 (Queued Invalidation Interface, IOTLB Invalidate, and Invalidation Wait Descriptor 6.5.2.8)",
+            "specification": "Intel VT-d Architecture Specification Rev 4.1+"
+          },
+          "name": "Intel Virtualization Technology for Directed I/O (VT-d) Architecture Specification"
+        },
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-iommu",
+            "specification": "RISC-V IOMMU v1.0 (IOTINVAL.VMA, ATS.INVAL, IOFENCE.C) and RISC-V CMO Zicbom (cbo.clean, cbo.flush, cbo.inval)"
+          },
+          "name": "RISC-V IOMMU Architecture Specification v1.0 and Zicbom Cache-Block Management Extension"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2560537",
+            "paths": "spec/machine/MachineMonad.thy, spec/abstract/X64/ArchVSpace_A.thy",
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4 formal verification repository (l4v machine_state and X64 VT-d capability boundary)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454069",
+            "paths": "bedrock2/src/bedrock2/Semantics.v",
+            "repository": "mit-plv/bedrock2",
+            "revision": "0005c47b5eaa720bdcb9b94aceaca9f42726b861"
+          },
+          "name": "Bedrock2 end-to-end verified embedded system ExtSpec memory-ownership transfer"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        }
+      ],
+      "topics": [
+        "ffi/hardware-software",
+        "isa/aarch64",
+        "isa/riscv64",
+        "isa/x86-64",
+        "lean/mechanization",
+        "rust/unsafe",
+        "systems/dma-coherence",
+        "systems/iommu-iotlb",
+        "systems/pcie-mmio",
+        "verification/mmio-dma",
+        "verification/refinement",
+        "verification/trust-boundaries"
+      ]
+    },
     "distributed-clock-synchronization-truetime-ptp-and-uncertainty-time-types": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -70496,6 +70580,92 @@
         "runtimes/synchronization"
       ]
     },
+    "multicore-tlb-shootdowns-break-before-make-and-asid-rollover-contracts": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "specification": "Arm DDI 0487 (VMSA Break-Before-Make, FEAT_BBM / ID_AA64MMFR2_EL1.BBM, TLBI ISH / DSB ISH / ISB, TLB conflict aborts)"
+          },
+          "name": "Arm Architecture Reference Manual for A-profile architecture (Arm DDI 0487)"
+        },
+        {
+          "identity": {
+            "specification": "Intel SDM Vol. 3A \u00a74.10 (Caching Translation Information, Paging-Structure Caches, INVLPG, INVPCID, \u00a74.10.4.2 Recommended Invalidation)"
+          },
+          "name": "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 3A"
+        },
+        {
+          "identity": {
+            "repository": "riscv/riscv-isa-manual",
+            "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+          },
+          "name": "RISC-V Instruction Set Manual, Volume II: Privileged Architecture (SFENCE.VMA, Svinval, multi-entry TLB rules)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-non-isa/riscv-sbi-doc",
+            "revision": "8a545effe9b50484ff897d9815d7d9015cdef203"
+          },
+          "name": "RISC-V Supervisor Binary Interface Specification (RFENCE Extension EID 0x52464E43)"
+        },
+        {
+          "identity": {
+            "repository": "riscv-software-src/opensbi",
+            "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+          },
+          "name": "OpenSBI Firmware Implementation (synchronous RFENCE tlb_sync)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+          },
+          "name": "Linux Kernel MMU Gather, Shootdown, FEAT_BBM, ASID/PCID Rollover, and Membarrier Subsystems"
+        },
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4 Microkernel SMP RISC-V and ARM64 VSpace and TLB Shootdown Code"
+        },
+        {
+          "identity": {
+            "arxiv": "2203.00642",
+            "doi": "10.1007/978-3-030-99336-8_6",
+            "venue": "ESOP 2022"
+          },
+          "name": "Relaxed Virtual Memory in Armv8-A (Simner et al.)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-019-09539-7",
+            "venue": "Journal of Automated Reasoning 64(6):911-945"
+          },
+          "name": "Formal Reasoning Under Cached Address Translation (Syeda and Klein)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Theorem Prover"
+        }
+      ],
+      "topics": [
+        "isa/aarch64",
+        "isa/riscv64",
+        "isa/x86-64",
+        "runtimes/jit",
+        "systems/os-kernels",
+        "systems/os-verification",
+        "verification/concurrency",
+        "verification/hardware",
+        "verification/semantics"
+      ]
+    },
     "murray-intransitive-unwinding-speculative-constant-time-and-fuel-time-credits": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -98195,6 +98365,80 @@
         "rustc",
         "rustc/codegen",
         "verification"
+      ]
+    },
+    "rustc-llvm-constant-time-codegen-dit-contracts-and-step-vs-wcet-honesty-ladder": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11), LLVM 23.1.5"
+          },
+          "name": "rustc (LLVM 23.1.5)"
+        },
+        {
+          "identity": {
+            "package": "Debian LLVM llc",
+            "targets": "aarch64-unknown-none, riscv64-unknown-none-elf",
+            "version": "21.1.8"
+          },
+          "name": "LLVM llc cross-target backend"
+        },
+        {
+          "identity": {
+            "document": "Arm Architecture Reference Manual for A-profile architecture (DDI 0487)",
+            "feature": "FEAT_DIT (Armv8.4-A mandatory)"
+          },
+          "name": "Arm Architecture Reference Manual FEAT_DIT (PSTATE.DIT)"
+        },
+        {
+          "identity": {
+            "document": "Intel Data Operand Independent Timing ISA Guidance (ID 768873) and Documented DOIT Instructions (ID 759656)",
+            "msr": "IA32_ARCH_CAPABILITIES (0x10A) bit 12; IA32_UARCH_MISC_CTL (0x1B01) bit 0"
+          },
+          "name": "Intel Data Operand Independent Timing (DOIT) ISA Guidance"
+        },
+        {
+          "identity": {
+            "extension": "Zkt",
+            "specification": "RISC-V Cryptography Extensions Volume I: Scalar & Entropy Source Instructions",
+            "version": "v1.0.1"
+          },
+          "name": "RISC-V Cryptography Extensions Volume I (Zkt)"
+        },
+        {
+          "identity": {
+            "dois": "10.1109/SP.2013.35; 10.1145/3265723.3265724; 10.1145/3302424.3303976; 10.1109/TC.2022.3212636"
+          },
+          "name": "seL4 Information Flow and Time Protection Literature"
+        },
+        {
+          "identity": {
+            "dois": "10.1145/1347375.1347389; 10.1109/RTSS.2011.38; 10.1109/RTAS.2016.7461326; 10.4230/OASIcs.WCET.2018.8; 10.1145/3428272"
+          },
+          "name": "WCET and Verified Cost-Semantics Literature (aiT, CompCert-WCET, seL4 WCET, CakeML)"
+        },
+        {
+          "identity": {
+            "release": "v4.34.1",
+            "repository": "leanprover/lean4"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "compilers/constant-time",
+        "isa/data-independent-timing",
+        "lean/mechanization",
+        "llvm/constant-time",
+        "rustc/codegen",
+        "security/constant-time",
+        "security/timing-channels",
+        "systems/time-protection",
+        "verification/noninterference",
+        "verification/wcet"
       ]
     },
     "rustc-llvm-free-sysroot-cranelift-gcc-and-host-tools-audit": {

@@ -1,0 +1,86 @@
+{
+  "topics": [
+    "isa/aarch64",
+    "isa/riscv64",
+    "isa/x86-64",
+    "runtimes/jit",
+    "systems/os-kernels",
+    "systems/os-verification",
+    "verification/concurrency",
+    "verification/hardware",
+    "verification/semantics"
+  ],
+  "subjects": [
+    {
+      "name": "Arm Architecture Reference Manual for A-profile architecture (Arm DDI 0487)",
+      "identity": {
+        "specification": "Arm DDI 0487 (VMSA Break-Before-Make, FEAT_BBM / ID_AA64MMFR2_EL1.BBM, TLBI ISH / DSB ISH / ISB, TLB conflict aborts)"
+      }
+    },
+    {
+      "name": "Intel 64 and IA-32 Architectures Software Developer's Manual, Volume 3A",
+      "identity": {
+        "specification": "Intel SDM Vol. 3A §4.10 (Caching Translation Information, Paging-Structure Caches, INVLPG, INVPCID, §4.10.4.2 Recommended Invalidation)"
+      }
+    },
+    {
+      "name": "RISC-V Instruction Set Manual, Volume II: Privileged Architecture (SFENCE.VMA, Svinval, multi-entry TLB rules)",
+      "identity": {
+        "repository": "riscv/riscv-isa-manual",
+        "revision": "c05f1725f25526dd8463bac6ca75cfcfbee17d05"
+      }
+    },
+    {
+      "name": "RISC-V Supervisor Binary Interface Specification (RFENCE Extension EID 0x52464E43)",
+      "identity": {
+        "repository": "riscv-non-isa/riscv-sbi-doc",
+        "revision": "8a545effe9b50484ff897d9815d7d9015cdef203"
+      }
+    },
+    {
+      "name": "OpenSBI Firmware Implementation (synchronous RFENCE tlb_sync)",
+      "identity": {
+        "repository": "riscv-software-src/opensbi",
+        "revision": "61f1973bd50338b36c52dc34006f76d464ca4f34"
+      }
+    },
+    {
+      "name": "Linux Kernel MMU Gather, Shootdown, FEAT_BBM, ASID/PCID Rollover, and Membarrier Subsystems",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "5f22fb20497f4983094131f00a734362300d22d2"
+      }
+    },
+    {
+      "name": "seL4 Microkernel SMP RISC-V and ARM64 VSpace and TLB Shootdown Code",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "Relaxed Virtual Memory in Armv8-A (Simner et al.)",
+      "identity": {
+        "arxiv": "2203.00642",
+        "doi": "10.1007/978-3-030-99336-8_6",
+        "venue": "ESOP 2022"
+      }
+    },
+    {
+      "name": "Formal Reasoning Under Cached Address Translation (Syeda and Klein)",
+      "identity": {
+        "doi": "10.1007/s10817-019-09539-7",
+        "venue": "Journal of Automated Reasoning 64(6):911-945"
+      }
+    },
+    {
+      "name": "Lean 4 Theorem Prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

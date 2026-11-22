@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "compilers/constant-time",
+    "isa/data-independent-timing",
+    "lean/mechanization",
+    "llvm/constant-time",
+    "rustc/codegen",
+    "security/constant-time",
+    "security/timing-channels",
+    "systems/time-protection",
+    "verification/noninterference",
+    "verification/wcet"
+  ],
+  "subjects": [
+    {
+      "name": "rustc (LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11), LLVM 23.1.5"
+      }
+    },
+    {
+      "name": "LLVM llc cross-target backend",
+      "identity": {
+        "package": "Debian LLVM llc",
+        "version": "21.1.8",
+        "targets": "aarch64-unknown-none, riscv64-unknown-none-elf"
+      }
+    },
+    {
+      "name": "Arm Architecture Reference Manual FEAT_DIT (PSTATE.DIT)",
+      "identity": {
+        "document": "Arm Architecture Reference Manual for A-profile architecture (DDI 0487)",
+        "feature": "FEAT_DIT (Armv8.4-A mandatory)"
+      }
+    },
+    {
+      "name": "Intel Data Operand Independent Timing (DOIT) ISA Guidance",
+      "identity": {
+        "document": "Intel Data Operand Independent Timing ISA Guidance (ID 768873) and Documented DOIT Instructions (ID 759656)",
+        "msr": "IA32_ARCH_CAPABILITIES (0x10A) bit 12; IA32_UARCH_MISC_CTL (0x1B01) bit 0"
+      }
+    },
+    {
+      "name": "RISC-V Cryptography Extensions Volume I (Zkt)",
+      "identity": {
+        "specification": "RISC-V Cryptography Extensions Volume I: Scalar & Entropy Source Instructions",
+        "version": "v1.0.1",
+        "extension": "Zkt"
+      }
+    },
+    {
+      "name": "seL4 Information Flow and Time Protection Literature",
+      "identity": {
+        "dois": "10.1109/SP.2013.35; 10.1145/3265723.3265724; 10.1145/3302424.3303976; 10.1109/TC.2022.3212636"
+      }
+    },
+    {
+      "name": "WCET and Verified Cost-Semantics Literature (aiT, CompCert-WCET, seL4 WCET, CakeML)",
+      "identity": {
+        "dois": "10.1145/1347375.1347389; 10.1109/RTSS.2011.38; 10.1109/RTAS.2016.7461326; 10.4230/OASIcs.WCET.2018.8; 10.1145/3428272"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "release": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
