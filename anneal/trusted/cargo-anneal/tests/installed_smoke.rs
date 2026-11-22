@@ -32,11 +32,15 @@ mod setup;
 mod support;
 
 use std::{
+    collections::{BTreeMap, BTreeSet, VecDeque},
     env, fs,
     path::{Path, PathBuf},
     time::Duration,
 };
 
+use cargo_anneal::{
+    Failure, ImportEdge, ParallelDagPlan, is_lean_ident, run_parallel_dag, topo_sort_modules,
+};
 use serde_json::{Value, json};
 use support::{
     CaseDirectory, Invocation, ProcessOutcome, RunDirectory, TestResult, select_cases, write_json,
@@ -135,7 +139,7 @@ fn run_smoke(run: &RunDirectory) -> TestResult {
                 .expect("installation selected above");
             match name {
                 "bundled-cargo-check" => bundled_cargo_case(case, root),
-                "lean-file" => lean_case(case, root),
+                "lean-file" => lean_case(case, root, jobs),
                 "driver-callback" => driver_case(case, root),
                 "rustdoc-html" => rustdoc_case(case, root),
                 "audit-accepted" | "audit-rejected" | "audit-missing-lean" => {
@@ -260,49 +264,370 @@ fn cargo_case(name: &str, case: &mut CaseDirectory) -> TestResult {
 }
 
 #[cfg(target_os = "linux")]
-fn cargo_setup_failure(case: &mut CaseDirectory, cargo: &Path) -> TestResult {
-    case.write("invalid.tar.zst", b"invalid local toolchain archive")?;
-    let cache = case.path().join("cache");
-    fs::create_dir(&cache).map_err(|error| format!("create fresh setup cache: {error}"))?;
-    let mut command = Invocation::new(cargo, &["setup", "--local-archive", "invalid.tar.zst"]);
-    // Exocrate's user-global location honors XDG_CACHE_HOME on Linux. A
-    // fresh child cache prevents an existing installation from hiding failure.
+fn write_test_archive(path: &Path, marker: &[u8]) -> TestResult {
+    let file = fs::File::create(path)
+        .map_err(|error| format!("create test archive {}: {error}", path.display()))?;
+    let encoder =
+        zstd::Encoder::new(file, 1).map_err(|error| format!("create zstd encoder: {error}"))?;
+    let mut archive = tar::Builder::new(encoder);
+    let mut header = tar::Header::new_gnu();
+    header.set_size(marker.len() as u64);
+    header.set_mode(0o644);
+    header.set_cksum();
+    archive
+        .append_data(&mut header, "marker.txt", marker)
+        .map_err(|error| format!("append marker to test archive: {error}"))?;
+    archive
+        .into_inner()
+        .map_err(|error| format!("finish tar archive: {error}"))?
+        .finish()
+        .map_err(|error| format!("finish zstd archive: {error}"))?;
+    Ok(())
+}
+
+#[cfg(target_os = "linux")]
+fn run_local_setup(
+    case: &mut CaseDirectory,
+    cargo: &Path,
+    cache: &Path,
+    archive_arg: &str,
+) -> TestResult<ProcessOutcome> {
+    let mut command = Invocation::new(cargo, &["setup", "--local-archive", archive_arg]);
+    // Exocrate's user-global location honors XDG_CACHE_HOME on Linux.
     command
         .environment
-        .insert("XDG_CACHE_HOME".into(), text_path(&cache)?);
-    let out = case.run(&command)?;
-    out.expect_code(1)?;
+        .insert("XDG_CACHE_HOME".into(), text_path(cache)?);
+    case.run(&command)
+}
+
+#[cfg(target_os = "linux")]
+fn cargo_setup_failure(case: &mut CaseDirectory, cargo: &Path) -> TestResult {
+    case.write("invalid.tar.zst", b"invalid local toolchain archive")?;
+    let v1_archive = case.path().join("valid-v1.tar.zst");
+    let v2_archive = case.path().join("valid-v2.tar.zst");
+    write_test_archive(&v1_archive, b"installed smoke v1")?;
+    write_test_archive(&v2_archive, b"installed smoke v2")?;
+
+    let fresh_cache = case.path().join("fresh-cache");
+    fs::create_dir(&fresh_cache).map_err(|error| format!("create fresh setup cache: {error}"))?;
+    let fresh_fail = run_local_setup(case, cargo, &fresh_cache, "invalid.tar.zst")?;
+    fresh_fail.expect_code(1)?;
     require_text(
-        &out.stderr,
+        &fresh_fail.stderr,
         "error: failed to install Anneal toolchain:",
-        &out,
+        &fresh_fail,
     )?;
-    if !out.stdout.is_empty() {
+    if !fresh_fail.stdout.is_empty() {
         return Err(format!(
             "failed setup unexpectedly wrote stdout: {}",
-            out.describe()
+            fresh_fail.describe()
         ));
+    }
+
+    let cache = case.path().join("reinstall-cache");
+    fs::create_dir(&cache).map_err(|error| format!("create reinstall cache: {error}"))?;
+    let v1_out = run_local_setup(case, cargo, &cache, "valid-v1.tar.zst")?;
+    v1_out.expect_code(0)?;
+    let v1_stdout = String::from_utf8(v1_out.stdout.clone())
+        .map_err(|error| format!("setup stdout is not UTF-8: {error}"))?;
+    let installed_root = PathBuf::from(
+        v1_stdout
+            .trim_end()
+            .strip_prefix("Installed Anneal toolchain at ")
+            .ok_or_else(|| format!("unexpected setup output: {}", v1_out.describe()))?,
+    );
+    if !installed_root.starts_with(&cache) {
+        return Err(format!(
+            "setup installed outside XDG_CACHE_HOME: {}",
+            installed_root.display()
+        ));
+    }
+    if fs::read(installed_root.join("marker.txt")).ok().as_deref() != Some(b"installed smoke v1") {
+        return Err("v1 archive marker missing after initial setup".into());
+    }
+
+    let v2_out = run_local_setup(case, cargo, &cache, "valid-v2.tar.zst")?;
+    v2_out.expect_code(0)?;
+    require_text(&v2_out.stdout, "Installed Anneal toolchain at ", &v2_out)?;
+    if fs::read(installed_root.join("marker.txt")).ok().as_deref() != Some(b"installed smoke v2") {
+        return Err("reinstall with new local archive did not replace existing toolchain".into());
+    }
+
+    for bad_arg in ["invalid.tar.zst", "missing.tar.zst"] {
+        let out = run_local_setup(case, cargo, &cache, bad_arg)?;
+        out.expect_code(1)?;
+        require_text(
+            &out.stderr,
+            "error: failed to install Anneal toolchain:",
+            &out,
+        )?;
+        if !out.stdout.is_empty() {
+            return Err(format!(
+                "failed reinstall ({bad_arg}) unexpectedly wrote stdout: {}",
+                out.describe()
+            ));
+        }
+        if fs::read(installed_root.join("marker.txt")).ok().as_deref()
+            != Some(b"installed smoke v2")
+        {
+            return Err(format!(
+                "failed reinstall ({bad_arg}) damaged existing installation"
+            ));
+        }
     }
     Ok(())
 }
 
-fn lean_case(case: &mut CaseDirectory, root: &Path) -> TestResult {
+fn next_lean_header_token(
+    bytes: &[u8],
+    pos: &mut usize,
+    module: &str,
+) -> TestResult<Option<String>> {
+    loop {
+        while *pos < bytes.len() && bytes[*pos].is_ascii_whitespace() {
+            *pos += 1;
+        }
+        if *pos >= bytes.len() {
+            return Ok(None);
+        }
+        if bytes[*pos..].starts_with(b"--") {
+            *pos += 2;
+            while *pos < bytes.len() && bytes[*pos] != b'\n' {
+                *pos += 1;
+            }
+            continue;
+        }
+        if bytes[*pos..].starts_with(b"/-") {
+            *pos += 2;
+            let mut depth = 1usize;
+            while depth > 0 {
+                if *pos + 1 >= bytes.len() {
+                    return Err(format!("unclosed block comment in Lean header of {module}"));
+                }
+                if bytes[*pos..].starts_with(b"/-") {
+                    depth += 1;
+                    *pos += 2;
+                } else if bytes[*pos..].starts_with(b"-/") {
+                    depth -= 1;
+                    *pos += 2;
+                } else {
+                    *pos += 1;
+                }
+            }
+            continue;
+        }
+        break;
+    }
+    let start = *pos;
+    while *pos < bytes.len()
+        && !bytes[*pos].is_ascii_whitespace()
+        && !bytes[*pos..].starts_with(b"--")
+        && !bytes[*pos..].starts_with(b"/-")
+    {
+        *pos += 1;
+    }
+    let token = std::str::from_utf8(&bytes[start..*pos])
+        .map_err(|error| format!("non-UTF-8 token in Lean header of {module}: {error}"))?;
+    Ok(Some(token.to_owned()))
+}
+
+fn lean_header_imports(source: &str, module: &str) -> TestResult<Vec<String>> {
+    let bytes = source.as_bytes();
+    let mut pos = 0;
+    let mut imports = Vec::new();
+    let mut expecting_import_target = false;
+    while let Some(token) = next_lean_header_token(bytes, &mut pos, module)? {
+        if expecting_import_target {
+            if token == "all" {
+                continue;
+            }
+            if token.split('.').any(|seg| !is_lean_ident(seg)) {
+                return Err(format!(
+                    "unexpected import module name {token:?} in {module}"
+                ));
+            }
+            imports.push(token);
+            expecting_import_target = false;
+        } else if token == "import" {
+            expecting_import_target = true;
+        } else if matches!(token.as_str(), "prelude" | "module" | "public" | "meta") {
+            continue;
+        } else {
+            break;
+        }
+    }
+    if expecting_import_target {
+        return Err(format!("truncated import statement in header of {module}"));
+    }
+    Ok(imports)
+}
+
+fn resolve_packaged_lean_source(
+    trusted_root: &Path,
+    theory_root: &Path,
+    module: &str,
+) -> TestResult<(PathBuf, PathBuf)> {
+    if module.split('.').any(|seg| !is_lean_ident(seg)) {
+        return Err(format!("invalid packaged Lean module name {module:?}"));
+    }
+    let rel = PathBuf::from(format!("{}.lean", module.replace('.', "/")));
+    let trusted_path = trusted_root.join(&rel);
+    let theory_path = theory_root.join(&rel);
+    match (trusted_path.is_file(), theory_path.is_file()) {
+        (true, true) => Err(format!(
+            "ambiguous packaged Lean module {module} in both trusted/lean and theory"
+        )),
+        (true, false) => Ok((trusted_root.to_path_buf(), trusted_path)),
+        (false, true) => Ok((theory_root.to_path_buf(), theory_path)),
+        (false, false) => Err(format!(
+            "missing packaged Lean module source for {module} ({})",
+            rel.display()
+        )),
+    }
+}
+
+fn lean_case(case: &mut CaseDirectory, root: &Path, jobs: usize) -> TestResult {
     let lean = root.join("lean/bin/lean");
     version(case, &lean, "Lean (version 4.34.1")?;
-    case.copy(
-        &root.join("share/anneal/trusted/lean/lean-toolchain"),
-        "toolchain/lean-toolchain",
+    case.copy(&root.join("share/anneal/trusted/lean"), "trusted/lean")?;
+    case.copy(&root.join("share/anneal/theory"), "theory")?;
+
+    let trusted_root = case.path().join("trusted/lean");
+    let theory_root = case.path().join("theory");
+    let mut sources: BTreeMap<String, (PathBuf, PathBuf)> = BTreeMap::new();
+    let mut imports_map: BTreeMap<String, Vec<ImportEdge>> = BTreeMap::new();
+    let mut queue = VecDeque::from([String::from("Anneal")]);
+    while let Some(module) = queue.pop_front() {
+        if sources.contains_key(&module) {
+            continue;
+        }
+        let (root_dir, src_path) =
+            resolve_packaged_lean_source(&trusted_root, &theory_root, &module)?;
+        let content = fs::read_to_string(&src_path)
+            .map_err(|error| format!("read {}: {error}", src_path.display()))?;
+        let raw_imports = lean_header_imports(&content, &module)?;
+        let mut edges = Vec::with_capacity(raw_imports.len());
+        for dep in raw_imports {
+            let is_init = dep == "Init" || dep.starts_with("Init.");
+            let is_packaged = dep == "Trusted"
+                || dep.starts_with("Trusted.")
+                || dep == "Anneal"
+                || dep.starts_with("Anneal.");
+            if !is_init && !is_packaged {
+                return Err(format!(
+                    "unexpected non-Init/Trusted/Anneal import {dep} in {module}"
+                ));
+            }
+            if is_packaged && !sources.contains_key(&dep) {
+                queue.push_back(dep.clone());
+            }
+            edges.push(ImportEdge {
+                module: dep,
+                import_all: false,
+                is_exported: true,
+                is_meta: false,
+            });
+        }
+        sources.insert(module.clone(), (root_dir, src_path));
+        imports_map.insert(module, edges);
+    }
+
+    let pending: BTreeSet<String> = sources.keys().cloned().collect();
+    let order = topo_sort_modules(
+        pending,
+        &imports_map,
+        "import cycle in packaged Anneal Lean sources",
+    )
+    .map_err(|error| error.to_string())?;
+    let plan = ParallelDagPlan::from_module_order(
+        &order,
+        &imports_map,
+        "lean-file",
+        "import cycle in packaged Anneal Lean sources",
+    )
+    .map_err(|error| error.to_string())?;
+
+    let lean_lib = case.path().join("lean-lib");
+    fs::create_dir(&lean_lib).map_err(|error| format!("create lean-lib: {error}"))?;
+    for module in &order {
+        let olean = lean_lib.join(format!("{}.olean", module.replace('.', "/")));
+        if let Some(parent) = olean.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|error| format!("create {}: {error}", parent.display()))?;
+        }
+    }
+
+    let lean_path_env = text_path(&lean_lib)?;
+    let shared_case = &*case;
+    let mut shared = ();
+    run_parallel_dag(
+        &plan,
+        jobs,
+        "lean-file",
+        "packaged Lean compile worker panicked",
+        &mut shared,
+        |_, idx| Ok(idx),
+        |_, idx| {
+            let module = &order[idx];
+            let (root_dir, src_path) = &sources[module];
+            let olean_out = lean_lib.join(format!("{}.olean", module.replace('.', "/")));
+            let mut command = Invocation::new(
+                &lean,
+                &[
+                    "-j1",
+                    "-DElab.async=false",
+                    "-Ddebug.skipKernelTC=false",
+                    "-R",
+                    &text_path(root_dir).map_err(|e| Failure::operational("lean-file", e))?,
+                    "-o",
+                    &text_path(&olean_out).map_err(|e| Failure::operational("lean-file", e))?,
+                    &text_path(src_path).map_err(|e| Failure::operational("lean-file", e))?,
+                ],
+            );
+            command
+                .environment
+                .insert("LEAN_PATH".into(), lean_path_env.clone());
+            let out = shared_case
+                .run_shared(&command)
+                .map_err(|e| Failure::operational("lean-file", e))?;
+            out.expect_code(0)
+                .map_err(|e| Failure::operational("lean-file", e))
+        },
+        |_, _, ()| Ok(()),
+    )
+    .map_err(|error| error.to_string())?;
+
+    for required in ["Trusted.olean", "Anneal.olean"] {
+        if !lean_lib.join(required).is_file() {
+            return Err(format!("missing compiled packaged module {required}"));
+        }
+    }
+
+    case.write(
+        "Small.lean",
+        b"prelude\nimport Anneal\n\n\
+          example (c : Trusted.MirSemantics.Crate) : Prop :=\n\
+          \x20 Trusted.MirSemantics.CrateTheorem c\n\n\
+          example := @Anneal.MirWp.wpProg\n\
+          example := @Anneal.MirWp.wellFormed_and_spec_of_wp\n\
+          example := @Anneal.PureLift.mirBitWidth\n\
+          example := @Anneal.LoopInv.wpUntil\n\
+          example := @Anneal.MirTotal.wpProg_of_evalMirFuelTotal\n",
     )?;
-    case.copy(
-        &root.join("share/anneal/theory/Anneal.lean"),
-        "theory/Anneal.lean",
-    )?;
-    case.copy(
-        &root.join("share/anneal/theory/Anneal/MirWp.lean"),
-        "theory/Anneal/MirWp.lean",
-    )?;
-    case.write("Small.lean", b"example (n : Nat) : n = n := rfl\n")?;
-    let out = case.run(&Invocation::new(&lean, &["Small.lean"]))?;
+    let mut small = Invocation::new(
+        &lean,
+        &[
+            "-j1",
+            "-DElab.async=false",
+            "-Ddebug.skipKernelTC=false",
+            "-DwarningAsError=true",
+            "-R",
+            &text_path(case.path())?,
+            "Small.lean",
+        ],
+    );
+    small.environment.insert("LEAN_PATH".into(), lean_path_env);
+    let out = case.run(&small)?;
     out.expect_code(0)
 }
 

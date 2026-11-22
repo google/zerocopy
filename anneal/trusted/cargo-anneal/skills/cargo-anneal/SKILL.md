@@ -21,11 +21,13 @@ an isolated execution environment when working with untrusted inputs.
 Identify the Rust function or crate scope, the intended property, and any
 caller preconditions. If the project has a request and proof for that claim,
 use them with its toolchain. If setup is needed, run `cargo anneal setup` for a
-published build, or select a matching local archive with
-`cargo anneal setup --local-archive <path>`. Use the same user and cache for
-setup and verification. Setup can reuse an existing installation. To select a
-specific archive on Linux, point `XDG_CACHE_HOME` at a fresh directory. Builds
-compiled with `--no-default-features` omit `setup` and require explicit
+published build (reusing an existing cached installation for this version), or
+run `cargo anneal setup --local-archive <path>` to install a local archive and
+replace any existing installation for this version. Use the same user and cache
+for setup and verification; the cache lock coordinates concurrent runs so each
+`verify` observes one complete toolchain. To keep an existing cached
+installation untouched on Linux, point `XDG_CACHE_HOME` at a separate directory.
+Builds compiled with `--no-default-features` omit `setup` and require explicit
 `--capture`, `--sysroot`, and `--lean` paths.
 
 Run the request, save stdout to a new receipt file, and record the exit status.

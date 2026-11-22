@@ -24,21 +24,25 @@
         x86_64-linux = {
           rustSha256 = "sha256-MmvOgC3shIOVMWT1MTRajw8JuLwRk/P3LsmGVslNGKw=";
           leanPlatform = "linux";
+          leanLockTriple = "x86_64-unknown-linux-gnu";
           leanSha256 = "47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4";
         };
         aarch64-linux = {
           rustSha256 = "sha256-gWFajI7TJyjslQLZm4VWBBsKA6nYe1lNQwrgUp2hwSA=";
           leanPlatform = "linux_aarch64";
+          leanLockTriple = "aarch64-unknown-linux-gnu";
           leanSha256 = "fdb974c2cdb4627e090d5d4007b913e09d13c4868720fb5594e22808b3de9e37";
         };
         x86_64-darwin = {
           rustSha256 = "sha256-dBLHRLo3omD7KRq0D8lzg6XiQfDKWOMD6YTrLQhEneo=";
           leanPlatform = "darwin";
+          leanLockTriple = "x86_64-apple-darwin";
           leanSha256 = "c2fee70250444e46c1106a27bddfef948d1e563eef431eaac05bb946b2f73d3a";
         };
         aarch64-darwin = {
           rustSha256 = "sha256-X7ndqbjsmnjL6KZzNCxkVFJPzAsAjUqerD/wc1rxK5E=";
           leanPlatform = "darwin_aarch64";
+          leanLockTriple = "arm64-apple-darwin";
           leanSha256 = "65f22a4f047738ec742667b3247e836a86ebf06eabc12655c3dee00637e37866";
         };
       };
@@ -216,7 +220,24 @@
               mkdir -p "$out"
               tar --zstd --strip-components=1 -xf "$src" -C "$out"
 
-              expected_lean_sha="$(jq -er --arg prefix "Lean (version ${leanVersion}, ${pkgs.stdenv.hostPlatform.config}" '.distributions | to_entries[] | select(.key | startswith($prefix)).value' "$lockFile")"
+              # Match Lean's reported distribution triple rather than Nix's
+              # `hostPlatform.config` (`aarch64-apple-darwin` vs Lean's
+              # `arm64-apple-darwin...`) and fail closed unless one entry
+              # matches.
+              expected_lean_sha="$(jq -er --arg prefix "Lean (version ${leanVersion}, ${platform.leanLockTriple}" '
+                [
+                  .distributions | to_entries[]
+                  | select(
+                      (.key | startswith($prefix))
+                      and ((.key | ltrimstr($prefix)) | test("^([0-9]+(\\.[0-9]+)*)?, "))
+                    )
+                ] as $matches
+                | if ($matches | length) == 1 then
+                    $matches[0].value
+                  else
+                    error("expected unique distribution match for \($prefix), found \($matches | length)")
+                  end
+              ' "$lockFile")"
               actual_lean_sha="$(sha256sum "$out/bin/lean" | awk '{print $1}')"
               if [ "$actual_lean_sha" != "$expected_lean_sha" ]; then
                 echo "ERROR: bin/lean SHA-256 mismatch ($actual_lean_sha != $expected_lean_sha)" >&2
@@ -459,8 +480,14 @@
             '';
           };
 
-          # Release regressions need only Python and the pinned YAML parser.
-          release-check-python = pkgs.python3.withPackages (p: [ p.pyyaml ]);
+          # Release regressions need Python, the pinned YAML parser, and jq.
+          release-check-python = pkgs.symlinkJoin {
+            name = "anneal-release-check-python";
+            paths = [
+              (pkgs.python3.withPackages (p: [ p.pyyaml ]))
+              pkgs.jq
+            ];
+          };
 
           default = self.packages.${system}.omnibus-archive;
         });

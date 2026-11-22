@@ -16,6 +16,7 @@ use std::io::Write;
 use std::path::{Component, Path, PathBuf};
 use std::process::{Command, ExitStatus, Stdio};
 use std::sync::Mutex;
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::time::Duration;
 
 use serde_json::{Value, json};
@@ -101,7 +102,7 @@ impl RunDirectory {
             path,
             run_root: self.path(),
             timeout: self.timeout,
-            next_command: 0,
+            next_command: AtomicUsize::new(0),
         })
     }
 
@@ -188,7 +189,7 @@ pub struct CaseDirectory<'run> {
     path: PathBuf,
     run_root: &'run Path,
     timeout: Duration,
-    next_command: usize,
+    next_command: AtomicUsize,
 }
 
 impl CaseDirectory<'_> {
@@ -208,17 +209,21 @@ impl CaseDirectory<'_> {
     }
 
     pub fn run(&mut self, invocation: &Invocation) -> TestResult<ProcessOutcome> {
+        self.run_shared(invocation)
+    }
+
+    pub fn run_shared(&self, invocation: &Invocation) -> TestResult<ProcessOutcome> {
         if !invocation.executable.is_absolute() {
             return Err(format!(
                 "tool path must be absolute: {}",
                 invocation.executable.display()
             ));
         }
+        let command_index = self.next_command.fetch_add(1, Ordering::Relaxed);
         let logs = owned_path(
             &self.path,
-            Path::new(&format!("commands/{:04}", self.next_command)),
+            Path::new(&format!("commands/{command_index:04}")),
         )?;
-        self.next_command += 1;
         fs::create_dir_all(logs.parent().unwrap())
             .map_err(|error| format!("create command parent: {error}"))?;
         // Command logs are fresh destinations, not reusable fixture paths.
