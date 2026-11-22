@@ -1,0 +1,217 @@
+{
+  "cases": {
+    "c1_same_cgu_define_extern_weak_sigill": {
+      "fn_same_cgu": {
+        "codegen_rc": -4,
+        "codegen_stderr_head": "error: rustc interrupted by SIGILL, printing backtrace\n\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x3c95e1c) [0x7f3e80895e1c]\n/usr/lib/x86_64-linux-gnu/libc.so.6(+0x40b70) [0x7f3e7ca49b70]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(+0x97cde5b) [0x7f3e7b9cde5b]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm10AsmPrinter16emitFunctionBodyEv+0x33) [0x7f3e7b2d38bf]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(+0x882903b) [0x7f3e7aa2903b]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm13FPPassManager13runOnFunctionERNS_8FunctionE+0x8e1) [0x7f3e7aa26de1]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm13FPPassManager11runOnModuleERNS_6ModuleE+0x28) [0x7f3e7aa2643e]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm6legacy15PassManagerImpl3runERNS_6ModuleE+0x2b0) [0x7f3e7b0271c6]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x65dd545) [0x7f3e831dd545]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x65dcfed) [0x7f3e831dcfed]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x65d4490) [0x7f3e831d4490]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(_RINvNtNtCsfFlbQN6m3JZ_3std3sys9backtrace28___rust_begin_short_backtraceNCINvNtNtCsch5XbMWiSyy_17rustc_codegen_ssa4back5write10spawn_workNtCs2Mx0pLZkJpq_18rustc_codegen_llvm18LlvmCodegenBackendE0uEB2c_+0x1e6) [0x7f3e83385036]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x6784bc7) [0x7f3e83384bc7]",
+        "emit_ir_rc": 0,
+        "emitted_ir_lines": [
+          "@_rust_extern_with_linkage_bfb4c4b058e63ff9_present_fn = internal global ptr @present_fn",
+          "  %_21 = icmp eq i64 ptrtoint (ptr @_rust_extern_with_linkage_bfb4c4b058e63ff9_present_fn to i64), 0",
+          "  %f = load ptr, ptr @_rust_extern_with_linkage_bfb4c4b058e63ff9_present_fn, align 8",
+          "define extern_weak dso_local i32 @present_fn() unnamed_addr #3 {"
+        ],
+        "llvm_as_roundtrip": {
+          "available": true,
+          "rc": 1,
+          "stderr": "<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-as: <TMP>/same_cgu_fn.ll:318:8: error: invalid linkage for function definition\ndefine extern_weak dso_local i32 @present_fn() unnamed_addr #3 {\n       ^"
+        },
+        "verify_llvm_ir_rc": -4,
+        "verify_llvm_ir_stderr_head": "error: rustc interrupted by SIGILL, printing backtrace\n\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x3c95e1c) [0x7fc807c95e1c]\n/usr/lib/x86_64-linux-gnu/libc.so.6(+0x40b70) [0x7fc803e49b70]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(+0x97cde5b) [0x7fc802dcde5b]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm10AsmPrinter16emitFunctionBodyEv+0x33) [0x7fc8026d38bf]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(+0x882903b) [0x7fc801e2903b]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm13FPPassManager13runOnFunctionERNS_8FunctionE+0x8e1) [0x7fc801e26de1]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm13FPPassManager11runOnModuleERNS_6ModuleE+0x28) [0x7fc801e2643e]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm6legacy15PassManagerImpl3runERNS_6ModuleE+0x2b0) [0x7fc8024271c6]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x65dd545) [0x7fc80a5dd545]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x65dcfed) [0x7fc80a5dcfed]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x65d4490) [0x7fc80a5d4490]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(_RINvNtNtCsfFlbQN6m3JZ_3std3sys9backtrace28___rust_begin_short_backtraceNCINvNtNtCsch5XbMWiSyy_17rustc_codegen_ssa4back5write10spawn_workNtCs2Mx0pLZkJpq_18rustc_codegen_llvm18LlvmCodegenBackendE0uEB2c_+0x1e6) [0x7fc80a785036]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x6784bc7) [0x7fc80a784bc7]"
+      },
+      "separate_crate_control": {
+        "app_rc": 0,
+        "prov_rc": 0,
+        "stdout": "PRESENT=Some(77)"
+      },
+      "static_same_cgu": {
+        "codegen_rc": -4,
+        "codegen_stderr_head": "error: rustc interrupted by SIGILL, printing backtrace\n\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x3c95e1c) [0x7fa2d2a95e1c]\n/usr/lib/x86_64-linux-gnu/libc.so.6(+0x40b70) [0x7fa2cec25b70]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(+0x97cc8c6) [0x7fa2cdbcc8c6]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm10AsmPrinter18emitGlobalVariableEPKNS_14GlobalVariableE+0x297) [0x7fa2cce5dd69]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(+0x9346b8c) [0x7fa2cd746b8c]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm13FPPassManager14doFinalizationERNS_6ModuleE+0x2a) [0x7fa2ccc2ee84]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/libLLVM.so.22.1-rust-1.98.0-nightly(_ZN4llvm6legacy15PassManagerImpl3runERNS_6ModuleE+0x3e1) [0x7fa2cd2272f7]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x65dd545) [0x7fa2d53dd545]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x65dcfed) [0x7fa2d53dcfed]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x65d4490) [0x7fa2d53d4490]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(_RINvNtNtCsfFlbQN6m3JZ_3std3sys9backtrace28___rust_begin_short_backtraceNCINvNtNtCsch5XbMWiSyy_17rustc_codegen_ssa4back5write10spawn_workNtCs2Mx0pLZkJpq_18rustc_codegen_llvm18LlvmCodegenBackendE0uEB2c_+0x1e6) [0x7fa2d5585036]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x6784bc7) [0x7fa2d5584bc7]\n<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/librustc_driver-845f1164de5a76fb.so(+0x678876c) [0x7fa2d558876c]",
+        "emit_ir_rc": 0,
+        "emitted_ir_lines": [
+          "@PRESENT_DATA = extern_weak constant [4 x i8] c\"*\\00\\00\\00\", align 4",
+          "@_rust_extern_with_linkage_ff2dbc1ac127dc26_PRESENT_DATA = internal global ptr @PRESENT_DATA",
+          "  %_28 = icmp eq i64 ptrtoint (ptr @_rust_extern_with_linkage_ff2dbc1ac127dc26_PRESENT_DATA to i64), 0",
+          "  %p = load ptr, ptr @_rust_extern_with_linkage_ff2dbc1ac127dc26_PRESENT_DATA, align 8"
+        ],
+        "llvm_as_roundtrip": {
+          "available": true,
+          "rc": 1,
+          "stderr": "<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/bin/llvm-as: <TMP>/same_cgu_data.ll:9:47: error: expected top-level entity\n@PRESENT_DATA = extern_weak constant [4 x i8] c\"*\\00\\00\\00\", align 4\n                                              ^"
+        }
+      }
+    },
+    "c2_cross_crate_extern_weak_native_vs_miri": {
+      "miri_rc": 0,
+      "miri_stderr": "",
+      "miri_stdout": "PRESENT=None MISSING=None SAME_SLOT=true BUILTIN_STRLEN=Some(5)",
+      "native_rc": 0,
+      "native_stderr": "",
+      "native_stdout": "PRESENT=Some(77) MISSING=None SAME_SLOT=false BUILTIN_STRLEN=Some(5)"
+    },
+    "c3_weak_linkage_inline_warning_contradiction": {
+      "default_o0": {
+        "bin_rc": 0,
+        "flags": [
+          "-C",
+          "opt-level=0"
+        ],
+        "lib_rc": 0,
+        "stdout": "CALLERS=(99, 99, 10) DIRECT=(99, 99, 99)",
+        "warnings": [
+          "warning: `#[inline]` is ignored on externally exported functions",
+          "  = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`",
+          "warning: `#[inline]` is ignored on externally exported functions",
+          "   = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`",
+          "warning: 2 warnings emitted"
+        ]
+      },
+      "default_o2": {
+        "bin_rc": 0,
+        "flags": [
+          "-C",
+          "opt-level=2"
+        ],
+        "ir_fn_lines": [
+          "define noundef i32 @_RNvCsgeTccqgSQnL_8weak_lib10call_plain() unnamed_addr #0 {",
+          "  %_0 = tail call noundef i32 @weak_plain() #4",
+          "define noundef i32 @_RNvCsgeTccqgSQnL_8weak_lib11call_always() unnamed_addr #1 {",
+          "define noundef i32 @_RNvCsgeTccqgSQnL_8weak_lib9call_hint() unnamed_addr #0 {",
+          "  %_0 = tail call noundef i32 @weak_hint() #5",
+          "define weak noundef i32 @weak_always() unnamed_addr #2 {",
+          "define weak noundef i32 @weak_hint() unnamed_addr #3 {",
+          "define weak noundef i32 @weak_plain() unnamed_addr #0 {"
+        ],
+        "ir_inline_attr_groups": [
+          "attributes #2 = { alwaysinline nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "attributes #3 = { inlinehint nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "attributes #5 = { inlinehint nounwind }"
+        ],
+        "lib_rc": 0,
+        "rlib_nm_weak_syms": [
+          "libweak_lib.weak_lib.bd28c4df7d46d0a3-cgu.0.rcgu.o:",
+          "0000000000000000 T _RNvCsgeTccqgSQnL_8weak_lib10call_plain",
+          "0000000000000000 T _RNvCsgeTccqgSQnL_8weak_lib11call_always",
+          "0000000000000000 T _RNvCsgeTccqgSQnL_8weak_lib9call_hint",
+          "0000000000000000 W weak_always",
+          "0000000000000000 W weak_hint",
+          "0000000000000000 W weak_plain"
+        ],
+        "stdout": "CALLERS=(99, 99, 10) DIRECT=(99, 99, 99)",
+        "warnings": [
+          "warning: `#[inline]` is ignored on externally exported functions",
+          "  = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`",
+          "warning: `#[inline]` is ignored on externally exported functions",
+          "   = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`",
+          "warning: 2 warnings emitted"
+        ]
+      },
+      "mir_opt0_o0": {
+        "bin_rc": 0,
+        "flags": [
+          "-Z",
+          "mir-opt-level=0",
+          "-C",
+          "opt-level=0"
+        ],
+        "ir_fn_lines": [
+          "define i32 @_RNvCsgeTccqgSQnL_8weak_lib10call_plain() unnamed_addr #0 {",
+          "  %_0 = call i32 @weak_plain() #4",
+          "define i32 @_RNvCsgeTccqgSQnL_8weak_lib11call_always() unnamed_addr #0 {",
+          "define i32 @_RNvCsgeTccqgSQnL_8weak_lib9call_hint() unnamed_addr #0 {",
+          "  %_0 = call i32 @weak_hint() #5",
+          "define weak i32 @weak_always() unnamed_addr #1 {",
+          "define weak i32 @weak_hint() unnamed_addr #2 {",
+          "define weak i32 @weak_plain() unnamed_addr #3 {"
+        ],
+        "ir_inline_attr_groups": [
+          "attributes #1 = { alwaysinline nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "attributes #2 = { inlinehint nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\" }",
+          "attributes #5 = { inlinehint nounwind }"
+        ],
+        "lib_rc": 0,
+        "rlib_nm_weak_syms": [
+          "libweak_lib.weak_lib.bd28c4df7d46d0a3-cgu.0.rcgu.o:",
+          "0000000000000000 T _RNvCsgeTccqgSQnL_8weak_lib10call_plain",
+          "0000000000000000 T _RNvCsgeTccqgSQnL_8weak_lib11call_always",
+          "0000000000000000 T _RNvCsgeTccqgSQnL_8weak_lib9call_hint",
+          "0000000000000000 W weak_always",
+          "0000000000000000 W weak_hint",
+          "0000000000000000 W weak_plain"
+        ],
+        "stdout": "CALLERS=(99, 99, 10) DIRECT=(99, 99, 99)",
+        "warnings": [
+          "warning: `#[inline]` is ignored on externally exported functions",
+          "  = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`",
+          "warning: `#[inline]` is ignored on externally exported functions",
+          "   = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`",
+          "warning: 2 warnings emitted"
+        ]
+      },
+      "no_inline_llvm_o0": {
+        "bin_rc": 0,
+        "flags": [
+          "-Z",
+          "inline-llvm=no",
+          "-C",
+          "opt-level=0"
+        ],
+        "lib_rc": 0,
+        "stdout": "CALLERS=(99, 99, 99) DIRECT=(99, 99, 99)",
+        "warnings": [
+          "warning: `#[inline]` is ignored on externally exported functions",
+          "  = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`",
+          "warning: `#[inline]` is ignored on externally exported functions",
+          "   = help: externally exported functions are functions with `#[no_mangle]`, `#[export_name]`, or `#[linkage]`",
+          "warning: 2 warnings emitted"
+        ]
+      }
+    },
+    "c4_eii_default_vs_override_native_and_miri": {
+      "duplicate_explicit_compile_error": {
+        "rc": 1,
+        "stderr": "error: multiple implementations of `#[dup_hook]`\n  --> <TMP>/dup_eii.rs:7:1\n   |\n 7 | fn impl_a(x: i32) -> i32 { x + 1 }\n   | ^^^^^^^^^^^^^^^^^^^^^^^^ first implemented here in crate `dup_eii`\n...\n10 | fn impl_b(x: i32) -> i32 { x + 2 }\n   | ------------------------ also implemented here in crate `dup_eii`\n   |\n   = help: an \"externally implementable item\" can only have a single implementation in the final artifact. When multiple implementations are found, also in different crates, they conflict\n\nerror: aborting due to 1 previous error"
+      },
+      "hook_api_ir_defs": [
+        "define i32 @_RNvNvCsg5WoKAGzz6R_8hook_api1__12compute_hook(i32 %x) unnamed_addr #0 {",
+        "define linkonce i32 @_RNvCsg5WoKAGzz6R_8hook_api12compute_hook(i32 %0) unnamed_addr #0 {"
+      ],
+      "miri_default": {
+        "rc": 1,
+        "stderr": "error: unsupported operation: can't call foreign function `_RNvCs2bD5bhQkSQu_8hook_api12compute_hook` on OS `linux`\n --> hook_api/src/lib.rs:9:5\n  |\n9 |     compute_hook(x)\n  |     ^^^^^^^^^^^^^^^ unsupported operation occurred here\n  |\n  = help: this means the program tried to do something Miri does not support; it does not indicate a bug in the program\n  = note: stack backtrace:\n          0: hook_api::invoke\n              at hook_api/src/lib.rs:9:5: 9:20\n          1: main\n              at app_default/src/main.rs:2:28: 2:47\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+        "stdout": ""
+      },
+      "miri_override": {
+        "rc": 1,
+        "stderr": "error: unsupported operation: can't call foreign function `_RNvCs2bD5bhQkSQu_8hook_api12compute_hook` on OS `linux`\n --> hook_api/src/lib.rs:9:5\n  |\n9 |     compute_hook(x)\n  |     ^^^^^^^^^^^^^^^ unsupported operation occurred here\n  |\n  = help: this means the program tried to do something Miri does not support; it does not indicate a bug in the program\n  = note: stack backtrace:\n          0: hook_api::invoke\n              at hook_api/src/lib.rs:9:5: 9:20\n          1: main\n              at app_override/src/main.rs:9:29: 9:48\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+        "stdout": ""
+      },
+      "native_default_debug": {
+        "rc": 0,
+        "stdout": "DEFAULT=15"
+      },
+      "native_default_release": {
+        "rc": 0,
+        "stdout": "DEFAULT=15"
+      },
+      "native_override_debug": {
+        "rc": 0,
+        "stdout": "OVERRIDE=905"
+      },
+      "native_override_release": {
+        "rc": 0,
+        "stdout": "OVERRIDE=905"
+      },
+      "native_same_crate_override": {
+        "rc": 0,
+        "stdout": "SAME_CRATE_OVERRIDE=705"
+      },
+      "same_crate_ir_defs": [
+        "define hidden i32 @_RNvCscNtYg2vSlvG_4main14local_override(i32 %x) unnamed_addr #1 {",
+        "define dso_local i32 @_RNvCscNtYg2vSlvG_4main10local_hook(i32 %0) unnamed_addr #1 {"
+      ]
+    }
+  },
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+}
