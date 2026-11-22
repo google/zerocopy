@@ -1,0 +1,18 @@
+$ lean --version
+Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
+
+$ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=true EarlyOtherwiseBranchAndFfiUnwindSoundness.lean
+'EobFfi.eob_current_guard_introduces_uninit_and_deadLocal_ub' depends on axioms: [propext]
+'EobFfi.eob_repaired_definite_init_sound_iff' depends on axioms: [propext]
+'EobFfi.eob_exhaustive_parent_refines' depends on axioms: [propext]
+'EobFfi.eob_unchangedArgument_sound' depends on axioms: [propext]
+'EobFfi.simplifyComparisonIntegral_sound_iff' depends on axioms: [propext]
+'EobFfi.sciKeepMove_ub_under_move_deinit' depends on axioms: [propext]
+'EobFfi.crossCrateLink_no_uncaught_foreign_unwind_in_abort_crate' depends on axioms: [propext, Quot.sound]
+'EobFfi.unchecked_link_admits_foreign_unwind_into_abort_crate' depends on axioms: [propext]
+'EobFfi.no_panic_runtime_link_is_unchecked' depends on axioms: [propext]
+'EobFfi.compilerBuiltins_exemption_is_trusted' depends on axioms: [propext]
+'EobFfi.linkMatrix' depends on axioms: [propext]
+audit ok: 646 declarations in EobFfi (197 theorems); axioms used: [Quot.sound, propext]; unsafe recursion helpers in this module: 0; imported constants in EobFfi: 0
+environment: 661 constants declared by this module; 208024 imported constants, of which 3016 are unsafe recursion helpers of the imported libraries
+exit status: 0

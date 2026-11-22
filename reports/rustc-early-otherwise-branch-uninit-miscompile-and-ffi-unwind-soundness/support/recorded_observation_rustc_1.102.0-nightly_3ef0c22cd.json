@@ -1,0 +1,76 @@
+{
+  "probe_id": "E3-74",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "eob_uninit_hoist_miscompile": {
+    "mir_opt_0": {
+      "validate_mir_rc": 0,
+      "miri_rc": 0,
+      "miri_stdout": "OUT=42",
+      "miri_ub": false,
+      "silicon_O2_rc": 0,
+      "silicon_O2_stdout": "OUT=42",
+      "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef i32 @eob_silicon_miscompile(i32 noundef %_1) unnamed_addr #3 !guid !18 {\nstart:\n  ret i32 42\n}"
+    },
+    "mir_opt_1": {
+      "validate_mir_rc": 0,
+      "miri_rc": 0,
+      "miri_stdout": "OUT=42",
+      "miri_ub": false,
+      "silicon_O2_rc": 0,
+      "silicon_O2_stdout": "OUT=42",
+      "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef i32 @eob_silicon_miscompile(i32 noundef %_1) unnamed_addr #3 !guid !18 {\nstart:\n  ret i32 42\n}"
+    },
+    "mir_opt_2": {
+      "validate_mir_rc": 0,
+      "miri_rc": 1,
+      "miri_stdout": "",
+      "miri_ub": true,
+      "silicon_O2_rc": 0,
+      "silicon_O2_stdout": "OUT=0",
+      "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse noreturn nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef i32 @eob_silicon_miscompile(i32 noundef %_1) unnamed_addr #3 !guid !18 {\nstart:\n  unreachable\n}"
+    }
+  },
+  "eob_dead_local_hoist_ub": {
+    "mir_opt_0": {
+      "validate_mir_rc": 0,
+      "miri_rc": 0,
+      "miri_stdout": "OUT=42",
+      "miri_ub": false,
+      "silicon_O2_rc": 0,
+      "silicon_O2_stdout": "OUT=42",
+      "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef i32 @eob_dead_local_ub(i32 noundef %_1) unnamed_addr #3 !guid !18 {\nstart:\n  ret i32 42\n}"
+    },
+    "mir_opt_1": {
+      "validate_mir_rc": 0,
+      "miri_rc": 0,
+      "miri_stdout": "OUT=42",
+      "miri_ub": false,
+      "silicon_O2_rc": 0,
+      "silicon_O2_stdout": "OUT=42",
+      "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef i32 @eob_dead_local_ub(i32 noundef %_1) unnamed_addr #3 !guid !18 {\nstart:\n  ret i32 42\n}"
+    },
+    "mir_opt_2": {
+      "validate_mir_rc": 0,
+      "miri_rc": 1,
+      "miri_stdout": "",
+      "miri_ub": true,
+      "silicon_O2_rc": 0,
+      "silicon_O2_stdout": "OUT=0",
+      "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse noreturn nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef i32 @eob_dead_local_ub(i32 noundef %_1) unnamed_addr #3 !guid !18 {\nstart:\n  unreachable\n}"
+    }
+  },
+  "ffi_unwind_required_panic_strategy": {
+    "unwind_rlib_no_ffi_into_abort_bin": {
+      "up_rc": 0,
+      "up_stderr": "",
+      "down_link_rc": 0,
+      "down_stderr": ""
+    },
+    "unwind_rlib_with_c_unwind_into_abort_bin": {
+      "up_rc": 0,
+      "up_stderr": "",
+      "down_link_rc": 1,
+      "down_stderr": "error: the crate `ffi_up` requires panic strategy `unwind` which is incompatible with this crate's strategy of `abort`\n\nerror: aborting due to 1 previous error\n"
+    }
+  }
+}

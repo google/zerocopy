@@ -1,0 +1,1606 @@
+{
+  "early_otherwise_branch": {
+    "eob_dead_local": {
+      "function": "eob_dead_local_ub",
+      "miri": {
+        "mir_opt_0": {
+          "flags": [
+            "-Zmir-opt-level=0"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "OUT(99)=42\nOUT(1)=10\nOUT(2)=20\nOUT(7)=42\n",
+          "miri_ub": null
+        },
+        "mir_opt_1": {
+          "flags": [
+            "-Zmir-opt-level=1"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "OUT(99)=42\nOUT(1)=10\nOUT(2)=20\nOUT(7)=42\n",
+          "miri_ub": null
+        },
+        "mir_opt_2": {
+          "flags": [
+            "-Zmir-opt-level=2"
+          ],
+          "miri_errors": [
+            "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> eob_dead_local.rs:23:13\n   |\n23 | /             match q {\n24 | |                 1 => bb1,\n25 | |                 2 => bb2,\n26 | |                 _ => bb5,\n27 | |             }\n   | |_____________^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: eob_dead_local_ub\n               at eob_dead_local.rs:23:13: 27:14\n           1: main\n               at eob_dead_local.rs:61:35: 61:78\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+            "error: aborting due to 1 previous error; 1 warning emitted"
+          ],
+          "miri_rc": 1,
+          "miri_stdout": "",
+          "miri_ub": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory"
+        },
+        "mir_opt_2_storage_markers_kept": {
+          "flags": [
+            "-Zmir-opt-level=2",
+            "-C",
+            "opt-level=2"
+          ],
+          "miri_errors": [
+            "error: Undefined Behavior: accessing a dead local variable\n  --> eob_dead_local.rs:23:13\n   |\n23 | /             match q {\n24 | |                 1 => bb1,\n25 | |                 2 => bb2,\n26 | |                 _ => bb5,\n27 | |             }\n   | |_____________^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: eob_dead_local_ub\n               at eob_dead_local.rs:23:13: 27:14\n           1: main\n               at eob_dead_local.rs:61:35: 61:78\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+            "error: aborting due to 1 previous error; 2 warnings emitted"
+          ],
+          "miri_rc": 1,
+          "miri_stdout": "",
+          "miri_ub": "error: Undefined Behavior: accessing a dead local variable"
+        },
+        "mir_opt_2_without_early_otherwise_branch": {
+          "flags": [
+            "-Zmir-opt-level=2",
+            "-Zmir-enable-passes=-EarlyOtherwiseBranch"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "OUT(99)=42\nOUT(1)=10\nOUT(2)=20\nOUT(7)=42\n",
+          "miri_ub": null
+        }
+      },
+      "native": {
+        "mir_opt_0": {
+          "asm_direct_calls_to_fn": 4,
+          "asm_fn_instructions": [
+            "xorl\t%ecx, %ecx",
+            "cmpl\t$1, %edi",
+            "setne\t%cl",
+            "shll\t$5, %ecx",
+            "orl\t$10, %ecx",
+            "cmpl\t$2, %edi",
+            "movl\t$20, %eax",
+            "cmovnel\t%ecx, %eax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=0",
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef range(i32 10, 43) i32 @eob_dead_local_ub(i32 noundef %_1) unnamed_addr #3 {\nstart:\n  %switch.selectcmp = icmp eq i32 %_1, 1\n  %switch.select = select i1 %switch.selectcmp, i32 10, i32 42\n  %switch.selectcmp4 = icmp eq i32 %_1, 2\n  %switch.select5 = select i1 %switch.selectcmp4, i32 20, i32 %switch.select\n  ret i32 %switch.select5\n}\n",
+          "mir_fn": "fn eob_dead_local_ub(_1: u32) -> u32 {\n    let mut _0: u32;\n    let mut _2: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [99: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageLive(_2);\n        _2 = copy _1;\n        goto -> bb2;\n    }\n\n    bb2: {\n        switchInt(copy _1) -> [1: bb3, 2: bb4, otherwise: bb7];\n    }\n\n    bb3: {\n        switchInt(copy _2) -> [1: bb5, otherwise: bb7];\n    }\n\n    bb4: {\n        switchInt(copy _2) -> [2: bb6, otherwise: bb7];\n    }\n\n    bb5: {\n        StorageDead(_2);\n        _0 = const 10_u32;\n        return;\n    }\n\n    bb6: {\n        StorageDead(_2);\n        _0 = const 20_u32;\n        return;\n    }\n\n    bb7: {\n        StorageDead(_2);\n        _0 = const 42_u32;\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "OUT(99)=42\nOUT(1)=10\nOUT(2)=20\nOUT(7)=42\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "mir_opt_1": {
+          "asm_direct_calls_to_fn": 4,
+          "asm_fn_instructions": [
+            "xorl\t%ecx, %ecx",
+            "cmpl\t$1, %edi",
+            "setne\t%cl",
+            "shll\t$5, %ecx",
+            "orl\t$10, %ecx",
+            "cmpl\t$2, %edi",
+            "movl\t$20, %eax",
+            "cmovnel\t%ecx, %eax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=1",
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef range(i32 10, 43) i32 @eob_dead_local_ub(i32 noundef %_1) unnamed_addr #3 {\nstart:\n  %switch.selectcmp = icmp eq i32 %_1, 1\n  %switch.select = select i1 %switch.selectcmp, i32 10, i32 42\n  %switch.selectcmp4 = icmp eq i32 %_1, 2\n  %switch.select5 = select i1 %switch.selectcmp4, i32 20, i32 %switch.select\n  ret i32 %switch.select5\n}\n",
+          "mir_fn": "fn eob_dead_local_ub(_1: u32) -> u32 {\n    let mut _0: u32;\n    let mut _2: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [99: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageLive(_2);\n        _2 = copy _1;\n        goto -> bb2;\n    }\n\n    bb2: {\n        switchInt(copy _1) -> [1: bb3, 2: bb4, otherwise: bb7];\n    }\n\n    bb3: {\n        switchInt(copy _2) -> [1: bb5, otherwise: bb7];\n    }\n\n    bb4: {\n        switchInt(copy _2) -> [2: bb6, otherwise: bb7];\n    }\n\n    bb5: {\n        StorageDead(_2);\n        _0 = const 10_u32;\n        return;\n    }\n\n    bb6: {\n        StorageDead(_2);\n        _0 = const 20_u32;\n        return;\n    }\n\n    bb7: {\n        StorageDead(_2);\n        _0 = const 42_u32;\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "OUT(99)=42\nOUT(1)=10\nOUT(2)=20\nOUT(7)=42\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "mir_opt_2": {
+          "asm_direct_calls_to_fn": 4,
+          "asm_fn_instructions": [
+            "cmpl\t$2, %edi",
+            "movl\t$20, %eax",
+            "movl\t$42, %ecx",
+            "cmovel\t%eax, %ecx",
+            "cmpl\t$1, %edi",
+            "movl\t$10, %eax",
+            "cmovnel\t%ecx, %eax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=2",
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef range(i32 10, 43) i32 @eob_dead_local_ub(i32 noundef %_1) unnamed_addr #3 {\nstart:\n  %switch.selectcmp = icmp eq i32 %_1, 2\n  %switch.select = select i1 %switch.selectcmp, i32 20, i32 42\n  %switch.selectcmp3 = icmp eq i32 %_1, 1\n  %switch.select4 = select i1 %switch.selectcmp3, i32 10, i32 %switch.select\n  ret i32 %switch.select4\n}\n",
+          "mir_fn": "fn eob_dead_local_ub(_1: u32) -> u32 {\n    let mut _0: u32;\n    let mut _2: u32;\n    let mut _3: bool;\n\n    bb0: {\n        switchInt(copy _1) -> [99: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageLive(_2);\n        _2 = copy _1;\n        goto -> bb2;\n    }\n\n    bb2: {\n        _3 = Ne(copy _1, copy _2);\n        switchInt(move _3) -> [0: bb6, otherwise: bb5];\n    }\n\n    bb3: {\n        StorageDead(_2);\n        _0 = const 10_u32;\n        return;\n    }\n\n    bb4: {\n        StorageDead(_2);\n        _0 = const 20_u32;\n        return;\n    }\n\n    bb5: {\n        StorageDead(_2);\n        _0 = const 42_u32;\n        return;\n    }\n\n    bb6: {\n        switchInt(copy _1) -> [1: bb3, 2: bb4, otherwise: bb5];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": 0,
+          "run_stdout": "OUT(99)=42\nOUT(1)=10\nOUT(2)=20\nOUT(7)=42\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "mir_opt_2_without_early_otherwise_branch": {
+          "asm_direct_calls_to_fn": 4,
+          "asm_fn_instructions": [
+            "xorl\t%ecx, %ecx",
+            "cmpl\t$1, %edi",
+            "setne\t%cl",
+            "shll\t$5, %ecx",
+            "orl\t$10, %ecx",
+            "cmpl\t$2, %edi",
+            "movl\t$20, %eax",
+            "cmovnel\t%ecx, %eax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=2",
+            "-C",
+            "opt-level=2",
+            "-Z",
+            "mir-enable-passes=-EarlyOtherwiseBranch"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef range(i32 10, 43) i32 @eob_dead_local_ub(i32 noundef %_1) unnamed_addr #3 {\nstart:\n  %switch.selectcmp = icmp eq i32 %_1, 1\n  %switch.select = select i1 %switch.selectcmp, i32 10, i32 42\n  %switch.selectcmp4 = icmp eq i32 %_1, 2\n  %switch.select5 = select i1 %switch.selectcmp4, i32 20, i32 %switch.select\n  ret i32 %switch.select5\n}\n",
+          "mir_fn": "fn eob_dead_local_ub(_1: u32) -> u32 {\n    let mut _0: u32;\n    let mut _2: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [99: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageLive(_2);\n        _2 = copy _1;\n        goto -> bb2;\n    }\n\n    bb2: {\n        switchInt(copy _1) -> [1: bb3, 2: bb4, otherwise: bb7];\n    }\n\n    bb3: {\n        switchInt(copy _2) -> [1: bb5, otherwise: bb7];\n    }\n\n    bb4: {\n        switchInt(copy _2) -> [2: bb6, otherwise: bb7];\n    }\n\n    bb5: {\n        StorageDead(_2);\n        _0 = const 10_u32;\n        return;\n    }\n\n    bb6: {\n        StorageDead(_2);\n        _0 = const 20_u32;\n        return;\n    }\n\n    bb7: {\n        StorageDead(_2);\n        _0 = const 42_u32;\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "OUT(99)=42\nOUT(1)=10\nOUT(2)=20\nOUT(7)=42\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        }
+      }
+    },
+    "eob_never_initialized_local": {
+      "function": "eob_silicon_miscompile",
+      "miri": {
+        "mir_opt_0": {
+          "flags": [
+            "-Zmir-opt-level=0"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "OUT=42\n",
+          "miri_ub": null
+        },
+        "mir_opt_1": {
+          "flags": [
+            "-Zmir-opt-level=1"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "OUT=42\n",
+          "miri_ub": null
+        },
+        "mir_opt_2": {
+          "flags": [
+            "-Zmir-opt-level=2"
+          ],
+          "miri_errors": [
+            "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> eob_never_init.rs:12:13\n   |\n12 | /             match q {\n13 | |                 1 => bb1,\n14 | |                 2 => bb2,\n15 | |                 _ => bb5,\n16 | |             }\n   | |_____________^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: eob_silicon_miscompile\n               at eob_never_init.rs:12:13: 16:14\n           1: main\n               at eob_never_init.rs:47:24: 47:49\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+            "error: aborting due to 1 previous error; 1 warning emitted"
+          ],
+          "miri_rc": 1,
+          "miri_stdout": "",
+          "miri_ub": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory"
+        },
+        "mir_opt_2_storage_markers_kept": {
+          "flags": [
+            "-Zmir-opt-level=2",
+            "-C",
+            "opt-level=2"
+          ],
+          "miri_errors": [
+            "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> eob_never_init.rs:12:13\n   |\n12 | /             match q {\n13 | |                 1 => bb1,\n14 | |                 2 => bb2,\n15 | |                 _ => bb5,\n16 | |             }\n   | |_____________^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: eob_silicon_miscompile\n               at eob_never_init.rs:12:13: 16:14\n           1: main\n               at eob_never_init.rs:47:24: 47:49\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+            "error: aborting due to 1 previous error; 2 warnings emitted"
+          ],
+          "miri_rc": 1,
+          "miri_stdout": "",
+          "miri_ub": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory"
+        },
+        "mir_opt_2_without_early_otherwise_branch": {
+          "flags": [
+            "-Zmir-opt-level=2",
+            "-Zmir-enable-passes=-EarlyOtherwiseBranch"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "OUT=42\n",
+          "miri_ub": null
+        }
+      },
+      "native": {
+        "mir_opt_0": {
+          "asm_direct_calls_to_fn": 0,
+          "asm_fn_instructions": [
+            "movl\t$42, %eax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=0",
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef i32 @eob_silicon_miscompile(i32 noundef %_1) unnamed_addr #3 {\nstart:\n  ret i32 42\n}\n",
+          "mir_fn": "fn eob_silicon_miscompile(_1: u32) -> u32 {\n    let mut _0: u32;\n    let mut _2: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb5];\n    }\n\n    bb1: {\n        switchInt(copy _2) -> [1: bb3, otherwise: bb5];\n    }\n\n    bb2: {\n        switchInt(copy _2) -> [2: bb4, otherwise: bb5];\n    }\n\n    bb3: {\n        _0 = const 10_u32;\n        return;\n    }\n\n    bb4: {\n        _0 = const 20_u32;\n        return;\n    }\n\n    bb5: {\n        _0 = const 42_u32;\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "OUT=42\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "mir_opt_1": {
+          "asm_direct_calls_to_fn": 0,
+          "asm_fn_instructions": [
+            "movl\t$42, %eax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=1",
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef i32 @eob_silicon_miscompile(i32 noundef %_1) unnamed_addr #3 {\nstart:\n  ret i32 42\n}\n",
+          "mir_fn": "fn eob_silicon_miscompile(_1: u32) -> u32 {\n    let mut _0: u32;\n    let mut _2: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb5];\n    }\n\n    bb1: {\n        switchInt(copy _2) -> [1: bb3, otherwise: bb5];\n    }\n\n    bb2: {\n        switchInt(copy _2) -> [2: bb4, otherwise: bb5];\n    }\n\n    bb3: {\n        _0 = const 10_u32;\n        return;\n    }\n\n    bb4: {\n        _0 = const 20_u32;\n        return;\n    }\n\n    bb5: {\n        _0 = const 42_u32;\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "OUT=42\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "mir_opt_2": {
+          "asm_direct_calls_to_fn": 0,
+          "asm_fn_instructions": [
+            "ud2"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=2",
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse noreturn nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef i32 @eob_silicon_miscompile(i32 noundef %_1) unnamed_addr #3 {\nstart:\n  unreachable\n}\n",
+          "mir_fn": "fn eob_silicon_miscompile(_1: u32) -> u32 {\n    let mut _0: u32;\n    let mut _2: u32;\n    let mut _3: bool;\n\n    bb0: {\n        _3 = Ne(copy _1, copy _2);\n        switchInt(move _3) -> [0: bb4, otherwise: bb3];\n    }\n\n    bb1: {\n        _0 = const 10_u32;\n        return;\n    }\n\n    bb2: {\n        _0 = const 20_u32;\n        return;\n    }\n\n    bb3: {\n        _0 = const 42_u32;\n        return;\n    }\n\n    bb4: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb3];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": 0,
+          "run_stdout": "OUT=21878\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "mir_opt_2_without_early_otherwise_branch": {
+          "asm_direct_calls_to_fn": 0,
+          "asm_fn_instructions": [
+            "movl\t$42, %eax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=2",
+            "-C",
+            "opt-level=2",
+            "-Z",
+            "mir-enable-passes=-EarlyOtherwiseBranch"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef i32 @eob_silicon_miscompile(i32 noundef %_1) unnamed_addr #3 {\nstart:\n  ret i32 42\n}\n",
+          "mir_fn": "fn eob_silicon_miscompile(_1: u32) -> u32 {\n    let mut _0: u32;\n    let mut _2: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb5];\n    }\n\n    bb1: {\n        switchInt(copy _2) -> [1: bb3, otherwise: bb5];\n    }\n\n    bb2: {\n        switchInt(copy _2) -> [2: bb4, otherwise: bb5];\n    }\n\n    bb3: {\n        _0 = const 10_u32;\n        return;\n    }\n\n    bb4: {\n        _0 = const 20_u32;\n        return;\n    }\n\n    bb5: {\n        _0 = const 42_u32;\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "OUT=42\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        }
+      }
+    },
+    "eob_surface_deref": {
+      "function": "foo",
+      "miri": {
+        "mir_opt_0": {
+          "flags": [
+            "-Zmir-opt-level=0"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "foo(3,null)=999\n",
+          "miri_ub": null
+        },
+        "mir_opt_2_default_preserve_ub": {
+          "flags": [
+            "-Zmir-opt-level=2"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "foo(3,null)=999\n",
+          "miri_ub": null
+        },
+        "mir_opt_2_preserve_ub_off": {
+          "flags": [
+            "-Zmir-opt-level=2",
+            "-Zmir-preserve-ub=no"
+          ],
+          "miri_errors": [
+            "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer\n --> eob_surface_deref.rs:7:9\n  |\n7 |         match q {\n  |         ^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: foo\n              at eob_surface_deref.rs:7:9: 7:16\n          1: main\n              at eob_surface_deref.rs:19:22: 19:31\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+            "error: aborting due to 1 previous error; 1 warning emitted"
+          ],
+          "miri_rc": 1,
+          "miri_stdout": "",
+          "miri_ub": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer"
+        },
+        "mir_opt_2_preserve_ub_off_without_early_otherwise_branch": {
+          "flags": [
+            "-Zmir-opt-level=2",
+            "-Zmir-preserve-ub=no",
+            "-Zmir-enable-passes=-EarlyOtherwiseBranch"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "foo(3,null)=999\n",
+          "miri_ub": null
+        }
+      },
+      "native": {
+        "opt_level_0": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "movq\t%rdi, -24(%rsp)",
+            "movq\t%rsi, -16(%rsp)",
+            "subq\t$1, %rdi",
+            "je\t.LBB12_2",
+            "jmp\t.LBB12_7",
+            "movq\t-24(%rsp), %rax",
+            "subq\t$2, %rax",
+            "je\t.LBB12_3",
+            "jmp\t.LBB12_1",
+            "movq\t$999, -8(%rsp)",
+            "jmp\t.LBB12_5",
+            "movq\t-16(%rsp), %rax",
+            "cmpq\t$1, (%rax)",
+            "je\t.LBB12_4",
+            "jmp\t.LBB12_1",
+            "movq\t-16(%rsp), %rax",
+            "cmpq\t$2, (%rax)",
+            "je\t.LBB12_6",
+            "jmp\t.LBB12_1",
+            "movq\t$100, -8(%rsp)",
+            "movq\t-8(%rsp), %rax",
+            "retq",
+            "movq\t$200, -8(%rsp)",
+            "jmp\t.LBB12_5"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=0"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nonlazybind uwtable\ndefine dso_local i64 @foo(i64 %q, ptr %p) unnamed_addr #2 {\nstart:\n  %_0 = alloca [8 x i8], align 8\n  switch i64 %q, label %bb5 [\n    i64 1, label %bb2\n    i64 2, label %bb1\n  ]\n\nbb5:                                              ; preds = %bb1, %bb2, %start\n  store i64 999, ptr %_0, align 8\n  br label %bb6\n\nbb2:                                              ; preds = %start\n  %0 = load i64, ptr %p, align 8\n  %1 = icmp eq i64 %0, 1\n  br i1 %1, label %bb3, label %bb5\n\nbb1:                                              ; preds = %start\n  %2 = load i64, ptr %p, align 8\n  %3 = icmp eq i64 %2, 2\n  br i1 %3, label %bb4, label %bb5\n\nbb3:                                              ; preds = %bb2\n  store i64 100, ptr %_0, align 8\n  br label %bb6\n\nbb6:                                              ; preds = %bb5, %bb4, %bb3\n  %4 = load i64, ptr %_0, align 8\n  ret i64 %4\n\nbb4:                                              ; preds = %bb1\n  store i64 200, ptr %_0, align 8\n  br label %bb6\n}\n",
+          "mir_fn": "fn foo(_1: u64, _2: *const u64) -> u64 {\n    debug q => _1;\n    debug p => _2;\n    let mut _0: u64;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb5];\n    }\n\n    bb1: {\n        switchInt(copy (*_2)) -> [2: bb4, otherwise: bb5];\n    }\n\n    bb2: {\n        switchInt(copy (*_2)) -> [1: bb3, otherwise: bb5];\n    }\n\n    bb3: {\n        _0 = const 100_u64;\n        goto -> bb6;\n    }\n\n    bb4: {\n        _0 = const 200_u64;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 999_u64;\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "foo(3,null)=999\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_0_mir_opt_2": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "movq\t%rdi, -16(%rsp)",
+            "cmpq\t(%rsi), %rdi",
+            "jne\t.LBB12_2",
+            "movq\t-16(%rsp), %rax",
+            "subq\t$1, %rax",
+            "je\t.LBB12_3",
+            "jmp\t.LBB12_6",
+            "movq\t-16(%rsp), %rax",
+            "subq\t$2, %rax",
+            "je\t.LBB12_4",
+            "jmp\t.LBB12_2",
+            "movq\t$999, -8(%rsp)",
+            "jmp\t.LBB12_5",
+            "movq\t$100, -8(%rsp)",
+            "jmp\t.LBB12_5",
+            "movq\t$200, -8(%rsp)",
+            "movq\t-8(%rsp), %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=0",
+            "-Z",
+            "mir-opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nonlazybind uwtable\ndefine dso_local i64 @foo(i64 %q, ptr %p) unnamed_addr #2 {\nstart:\n  %_0 = alloca [8 x i8], align 8\n  %0 = load i64, ptr %p, align 8\n  %_3 = icmp ne i64 %q, %0\n  br i1 %_3, label %bb3, label %bb5\n\nbb5:                                              ; preds = %start\n  switch i64 %q, label %bb3 [\n    i64 1, label %bb1\n    i64 2, label %bb2\n  ]\n\nbb3:                                              ; preds = %bb5, %start\n  store i64 999, ptr %_0, align 8\n  br label %bb4\n\nbb1:                                              ; preds = %bb5\n  store i64 100, ptr %_0, align 8\n  br label %bb4\n\nbb2:                                              ; preds = %bb5\n  store i64 200, ptr %_0, align 8\n  br label %bb4\n\nbb4:                                              ; preds = %bb3, %bb2, %bb1\n  %1 = load i64, ptr %_0, align 8\n  ret i64 %1\n}\n",
+          "mir_fn": "fn foo(_1: u64, _2: *const u64) -> u64 {\n    debug q => _1;\n    debug p => _2;\n    let mut _0: u64;\n    let mut _3: bool;\n\n    bb0: {\n        _3 = Ne(copy _1, copy (*_2));\n        switchInt(move _3) -> [0: bb5, otherwise: bb3];\n    }\n\n    bb1: {\n        _0 = const 100_u64;\n        goto -> bb4;\n    }\n\n    bb2: {\n        _0 = const 200_u64;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _0 = const 999_u64;\n        goto -> bb4;\n    }\n\n    bb4: {\n        return;\n    }\n\n    bb5: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb3];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": -11,
+          "run_stdout": "",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_0_mir_opt_2_preserve_ub": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "movq\t%rdi, -24(%rsp)",
+            "movq\t%rsi, -16(%rsp)",
+            "subq\t$1, %rdi",
+            "je\t.LBB12_2",
+            "jmp\t.LBB12_7",
+            "movq\t-24(%rsp), %rax",
+            "subq\t$2, %rax",
+            "je\t.LBB12_3",
+            "jmp\t.LBB12_1",
+            "movq\t$999, -8(%rsp)",
+            "jmp\t.LBB12_5",
+            "movq\t-16(%rsp), %rax",
+            "cmpq\t$1, (%rax)",
+            "je\t.LBB12_4",
+            "jmp\t.LBB12_1",
+            "movq\t-16(%rsp), %rax",
+            "cmpq\t$2, (%rax)",
+            "je\t.LBB12_6",
+            "jmp\t.LBB12_1",
+            "movq\t$100, -8(%rsp)",
+            "movq\t-8(%rsp), %rax",
+            "retq",
+            "movq\t$200, -8(%rsp)",
+            "jmp\t.LBB12_5"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=0",
+            "-Z",
+            "mir-opt-level=2",
+            "-Z",
+            "mir-preserve-ub"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nonlazybind uwtable\ndefine dso_local i64 @foo(i64 %q, ptr %p) unnamed_addr #2 {\nstart:\n  %_0 = alloca [8 x i8], align 8\n  switch i64 %q, label %bb5 [\n    i64 1, label %bb2\n    i64 2, label %bb1\n  ]\n\nbb5:                                              ; preds = %bb1, %bb2, %start\n  store i64 999, ptr %_0, align 8\n  br label %bb6\n\nbb2:                                              ; preds = %start\n  %0 = load i64, ptr %p, align 8\n  %1 = icmp eq i64 %0, 1\n  br i1 %1, label %bb3, label %bb5\n\nbb1:                                              ; preds = %start\n  %2 = load i64, ptr %p, align 8\n  %3 = icmp eq i64 %2, 2\n  br i1 %3, label %bb4, label %bb5\n\nbb3:                                              ; preds = %bb2\n  store i64 100, ptr %_0, align 8\n  br label %bb6\n\nbb6:                                              ; preds = %bb5, %bb4, %bb3\n  %4 = load i64, ptr %_0, align 8\n  ret i64 %4\n\nbb4:                                              ; preds = %bb1\n  store i64 200, ptr %_0, align 8\n  br label %bb6\n}\n",
+          "mir_fn": "fn foo(_1: u64, _2: *const u64) -> u64 {\n    debug q => _1;\n    debug p => _2;\n    let mut _0: u64;\n\n    bb0: {\n        PlaceMention(_1);\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb5];\n    }\n\n    bb1: {\n        PlaceMention((*_2));\n        switchInt(copy (*_2)) -> [2: bb4, otherwise: bb5];\n    }\n\n    bb2: {\n        PlaceMention((*_2));\n        switchInt(copy (*_2)) -> [1: bb3, otherwise: bb5];\n    }\n\n    bb3: {\n        _0 = const 100_u64;\n        goto -> bb6;\n    }\n\n    bb4: {\n        _0 = const 200_u64;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 999_u64;\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "foo(3,null)=999\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_1": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "cmpq\t$2, %rdi",
+            "movl\t$200, %ecx",
+            "movl\t$999, %edx",
+            "cmovneq\t%rdx, %rcx",
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %eax",
+            "cmovneq\t%rcx, %rax",
+            "cmpq\t(%rsi), %rdi",
+            "cmovneq\t%rdx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=1"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(argmem: read) uwtable\ndefine dso_local noundef range(i64 100, 1000) i64 @foo(i64 noundef %q, ptr noundef readonly captures(none) %p) unnamed_addr #3 {\nstart:\n  %0 = load i64, ptr %p, align 8, !noundef !6\n  %_3.not = icmp eq i64 %q, %0\n  %switch.selectcmp = icmp eq i64 %q, 2\n  %switch.select = select i1 %switch.selectcmp, i64 200, i64 999\n  %switch.selectcmp1 = icmp eq i64 %q, 1\n  %switch.select2 = select i1 %switch.selectcmp1, i64 100, i64 %switch.select\n  %_0.sroa.0.0 = select i1 %_3.not, i64 %switch.select2, i64 999\n  ret i64 %_0.sroa.0.0\n}\n",
+          "mir_fn": "fn foo(_1: u64, _2: *const u64) -> u64 {\n    debug q => _1;\n    debug p => _2;\n    let mut _0: u64;\n    let mut _3: bool;\n\n    bb0: {\n        _3 = Ne(copy _1, copy (*_2));\n        switchInt(move _3) -> [0: bb5, otherwise: bb3];\n    }\n\n    bb1: {\n        _0 = const 100_u64;\n        goto -> bb4;\n    }\n\n    bb2: {\n        _0 = const 200_u64;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _0 = const 999_u64;\n        goto -> bb4;\n    }\n\n    bb4: {\n        return;\n    }\n\n    bb5: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb3];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": -11,
+          "run_stdout": "",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_2": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "cmpq\t$2, %rdi",
+            "movl\t$200, %ecx",
+            "movl\t$999, %edx",
+            "cmovneq\t%rdx, %rcx",
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %eax",
+            "cmovneq\t%rcx, %rax",
+            "cmpq\t(%rsi), %rdi",
+            "cmovneq\t%rdx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(argmem: read) uwtable\ndefine dso_local noundef range(i64 100, 1000) i64 @foo(i64 noundef %q, ptr noundef readonly captures(none) %p) unnamed_addr #3 {\nstart:\n  %0 = load i64, ptr %p, align 8, !noundef !6\n  %_3.not = icmp eq i64 %q, %0\n  %switch.selectcmp = icmp eq i64 %q, 2\n  %switch.select = select i1 %switch.selectcmp, i64 200, i64 999\n  %switch.selectcmp1 = icmp eq i64 %q, 1\n  %switch.select2 = select i1 %switch.selectcmp1, i64 100, i64 %switch.select\n  %_0.sroa.0.0 = select i1 %_3.not, i64 %switch.select2, i64 999\n  ret i64 %_0.sroa.0.0\n}\n",
+          "mir_fn": "fn foo(_1: u64, _2: *const u64) -> u64 {\n    debug q => _1;\n    debug p => _2;\n    let mut _0: u64;\n    let mut _3: bool;\n\n    bb0: {\n        _3 = Ne(copy _1, copy (*_2));\n        switchInt(move _3) -> [0: bb5, otherwise: bb3];\n    }\n\n    bb1: {\n        _0 = const 100_u64;\n        goto -> bb4;\n    }\n\n    bb2: {\n        _0 = const 200_u64;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _0 = const 999_u64;\n        goto -> bb4;\n    }\n\n    bb4: {\n        return;\n    }\n\n    bb5: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb3];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": -11,
+          "run_stdout": "",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_3": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "cmpq\t$2, %rdi",
+            "movl\t$200, %ecx",
+            "movl\t$999, %edx",
+            "cmovneq\t%rdx, %rcx",
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %eax",
+            "cmovneq\t%rcx, %rax",
+            "cmpq\t(%rsi), %rdi",
+            "cmovneq\t%rdx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=3"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(argmem: read) uwtable\ndefine dso_local noundef range(i64 100, 1000) i64 @foo(i64 noundef %q, ptr noundef readonly captures(none) %p) unnamed_addr #3 {\nstart:\n  %0 = load i64, ptr %p, align 8, !noundef !6\n  %_3.not = icmp eq i64 %q, %0\n  %switch.selectcmp = icmp eq i64 %q, 2\n  %switch.select = select i1 %switch.selectcmp, i64 200, i64 999\n  %switch.selectcmp1 = icmp eq i64 %q, 1\n  %switch.select2 = select i1 %switch.selectcmp1, i64 100, i64 %switch.select\n  %_0.sroa.0.0 = select i1 %_3.not, i64 %switch.select2, i64 999\n  ret i64 %_0.sroa.0.0\n}\n",
+          "mir_fn": "fn foo(_1: u64, _2: *const u64) -> u64 {\n    debug q => _1;\n    debug p => _2;\n    let mut _0: u64;\n    let mut _3: bool;\n\n    bb0: {\n        _3 = Ne(copy _1, copy (*_2));\n        switchInt(move _3) -> [0: bb5, otherwise: bb3];\n    }\n\n    bb1: {\n        _0 = const 100_u64;\n        goto -> bb4;\n    }\n\n    bb2: {\n        _0 = const 200_u64;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _0 = const 999_u64;\n        goto -> bb4;\n    }\n\n    bb4: {\n        return;\n    }\n\n    bb5: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb3];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": -11,
+          "run_stdout": "",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_3_without_early_otherwise_branch": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "cmpq\t$1, %rdi",
+            "je\t.LBB5_1",
+            "movl\t$999, %eax",
+            "cmpq\t$2, %rdi",
+            "jne\t.LBB5_5",
+            "movl\t$200, %ecx",
+            "jmp\t.LBB5_4",
+            "movl\t$100, %ecx",
+            "cmpq\t%rdi, (%rsi)",
+            "movl\t$999, %eax",
+            "cmoveq\t%rcx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=3",
+            "-Z",
+            "mir-enable-passes=-EarlyOtherwiseBranch"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(argmem: read) uwtable\ndefine dso_local noundef range(i64 100, 1000) i64 @foo(i64 noundef %q, ptr noundef readonly captures(none) %p) unnamed_addr #3 {\nstart:\n  switch i64 %q, label %bb6 [\n    i64 1, label %bb6.sink.split\n    i64 2, label %bb1\n  ]\n\nbb1:                                              ; preds = %start\n  br label %bb6.sink.split\n\nbb6.sink.split:                                   ; preds = %start, %bb1\n  %.sink2 = phi i64 [ 200, %bb1 ], [ 100, %start ]\n  %0 = load i64, ptr %p, align 8, !noundef !6\n  %1 = icmp eq i64 %0, %q\n  %spec.select1 = select i1 %1, i64 %.sink2, i64 999\n  br label %bb6\n\nbb6:                                              ; preds = %bb6.sink.split, %start\n  %_0.sroa.0.0 = phi i64 [ 999, %start ], [ %spec.select1, %bb6.sink.split ]\n  ret i64 %_0.sroa.0.0\n}\n",
+          "mir_fn": "fn foo(_1: u64, _2: *const u64) -> u64 {\n    debug q => _1;\n    debug p => _2;\n    let mut _0: u64;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb5];\n    }\n\n    bb1: {\n        switchInt(copy (*_2)) -> [2: bb4, otherwise: bb5];\n    }\n\n    bb2: {\n        switchInt(copy (*_2)) -> [1: bb3, otherwise: bb5];\n    }\n\n    bb3: {\n        _0 = const 100_u64;\n        goto -> bb6;\n    }\n\n    bb4: {\n        _0 = const 200_u64;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 999_u64;\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "foo(3,null)=999\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_s": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "cmpq\t$2, %rdi",
+            "movl\t$200, %ecx",
+            "movl\t$999, %edx",
+            "cmovneq\t%rdx, %rcx",
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %eax",
+            "cmovneq\t%rcx, %rax",
+            "cmpq\t(%rsi), %rdi",
+            "cmovneq\t%rdx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=s"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind optsize willreturn memory(argmem: read) uwtable\ndefine dso_local noundef range(i64 100, 1000) i64 @foo(i64 noundef %q, ptr noundef readonly captures(none) %p) unnamed_addr #3 {\nstart:\n  %0 = load i64, ptr %p, align 8, !noundef !6\n  %_3.not = icmp eq i64 %q, %0\n  %switch.selectcmp = icmp eq i64 %q, 2\n  %switch.select = select i1 %switch.selectcmp, i64 200, i64 999\n  %switch.selectcmp1 = icmp eq i64 %q, 1\n  %switch.select2 = select i1 %switch.selectcmp1, i64 100, i64 %switch.select\n  %_0.sroa.0.0 = select i1 %_3.not, i64 %switch.select2, i64 999\n  ret i64 %_0.sroa.0.0\n}\n",
+          "mir_fn": "fn foo(_1: u64, _2: *const u64) -> u64 {\n    debug q => _1;\n    debug p => _2;\n    let mut _0: u64;\n    let mut _3: bool;\n\n    bb0: {\n        _3 = Ne(copy _1, copy (*_2));\n        switchInt(move _3) -> [0: bb5, otherwise: bb3];\n    }\n\n    bb1: {\n        _0 = const 100_u64;\n        goto -> bb4;\n    }\n\n    bb2: {\n        _0 = const 200_u64;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _0 = const 999_u64;\n        goto -> bb4;\n    }\n\n    bb4: {\n        return;\n    }\n\n    bb5: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb3];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": -11,
+          "run_stdout": "",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        }
+      }
+    },
+    "eob_surface_union": {
+      "function": "foo",
+      "miri": {
+        "mir_opt_0": {
+          "flags": [
+            "-Zmir-opt-level=0"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "miri_ub": null
+        },
+        "mir_opt_2_default_preserve_ub": {
+          "flags": [
+            "-Zmir-opt-level=2"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "miri_ub": null
+        },
+        "mir_opt_2_preserve_ub_off": {
+          "flags": [
+            "-Zmir-opt-level=2",
+            "-Zmir-preserve-ub=no"
+          ],
+          "miri_errors": [
+            "error: Undefined Behavior: reading memory at alloc190[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory\n  --> eob_surface_union.rs:21:9\n   |\n21 |         match q {\n   |         ^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: foo\n               at eob_surface_union.rs:21:9: 21:16\n           1: main\n               at eob_surface_union.rs:38:35: 38:52\n\nUninitialized memory occurred at alloc190[0x0..0x8], in this allocation:\nalloc190 (stack variable, size: 8, align: 8) {\n    __ __ __ __ __ __ __ __                         \u2502 \u2591\u2591\u2591\u2591\u2591\u2591\u2591\u2591\n}\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+            "error: aborting due to 1 previous error; 1 warning emitted"
+          ],
+          "miri_rc": 1,
+          "miri_stdout": "",
+          "miri_ub": "error: Undefined Behavior: reading memory at alloc190[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory"
+        },
+        "mir_opt_2_preserve_ub_off_without_early_otherwise_branch": {
+          "flags": [
+            "-Zmir-opt-level=2",
+            "-Zmir-preserve-ub=no",
+            "-Zmir-enable-passes=-EarlyOtherwiseBranch"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "miri_ub": null
+        }
+      },
+      "native": {
+        "opt_level_0": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "subq\t$24, %rsp",
+            "movq\t%rdi, (%rsp)",
+            "subq\t$1, %rdi",
+            "je\t.LBB19_2",
+            "jmp\t.LBB19_9",
+            "movq\t(%rsp), %rax",
+            "subq\t$2, %rax",
+            "je\t.LBB19_3",
+            "jmp\t.LBB19_1",
+            "callq\t_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union",
+            "movq\t(%rsp), %rax",
+            "movq\t$999, 16(%rsp)",
+            "subq\t$1, %rax",
+            "je\t.LBB19_5",
+            "jmp\t.LBB19_10",
+            "movq\t(%rsp), %rax",
+            "subq\t$2, %rax",
+            "je\t.LBB19_6",
+            "jmp\t.LBB19_4",
+            "movq\t$1, 8(%rsp)",
+            "jmp\t.LBB19_1",
+            "movq\t$2, 8(%rsp)",
+            "jmp\t.LBB19_1",
+            "movq\t16(%rsp), %rax",
+            "addq\t$24, %rsp",
+            "retq",
+            "cmpq\t$1, 8(%rsp)",
+            "je\t.LBB19_7",
+            "jmp\t.LBB19_4",
+            "cmpq\t$2, 8(%rsp)",
+            "je\t.LBB19_8",
+            "jmp\t.LBB19_4",
+            "movq\t$100, 16(%rsp)",
+            "jmp\t.LBB19_4",
+            "movq\t$200, 16(%rsp)",
+            "jmp\t.LBB19_4"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=0"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nonlazybind uwtable\ndefine dso_local i64 @foo(i64 %q) unnamed_addr #2 {\nstart:\n  %r = alloca [8 x i8], align 8\n  %u = alloca [8 x i8], align 8\n  switch i64 %q, label %bb3 [\n    i64 1, label %bb2\n    i64 2, label %bb1\n  ]\n\nbb3:                                              ; preds = %bb1, %bb2, %start\n; call core::hint::black_box::<()>\n  call void @_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union() #9\n  store i64 999, ptr %r, align 8\n  switch i64 %q, label %bb9 [\n    i64 1, label %bb6\n    i64 2, label %bb5\n  ]\n\nbb2:                                              ; preds = %start\n  store i64 1, ptr %u, align 8\n  br label %bb3\n\nbb1:                                              ; preds = %start\n  store i64 2, ptr %u, align 8\n  br label %bb3\n\nbb9:                                              ; preds = %bb8, %bb5, %bb7, %bb6, %bb3\n  %_0 = load i64, ptr %r, align 8\n  ret i64 %_0\n\nbb6:                                              ; preds = %bb3\n  %0 = load i64, ptr %u, align 8\n  %1 = icmp eq i64 %0, 1\n  br i1 %1, label %bb7, label %bb9\n\nbb5:                                              ; preds = %bb3\n  %2 = load i64, ptr %u, align 8\n  %3 = icmp eq i64 %2, 2\n  br i1 %3, label %bb8, label %bb9\n\nbb7:                                              ; preds = %bb6\n  store i64 100, ptr %r, align 8\n  br label %bb9\n\nbb8:                                              ; preds = %bb5\n  store i64 200, ptr %r, align 8\n  br label %bb9\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    debug q => _1;\n    let mut _0: u64;\n    let mut _2: U;\n    let _3: ();\n    scope 1 {\n        debug u => _2;\n        let mut _4: u64;\n        scope 2 {\n            debug r => _4;\n        }\n    }\n\n    bb0: {\n        _2 = U { a: const () };\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb3];\n    }\n\n    bb1: {\n        (_2.0: u64) = const 2_u64;\n        goto -> bb3;\n    }\n\n    bb2: {\n        (_2.0: u64) = const 1_u64;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        _4 = const 999_u64;\n        switchInt(copy _1) -> [1: bb6, 2: bb5, otherwise: bb9];\n    }\n\n    bb5: {\n        switchInt(copy (_2.0: u64)) -> [2: bb8, otherwise: bb9];\n    }\n\n    bb6: {\n        switchInt(copy (_2.0: u64)) -> [1: bb7, otherwise: bb9];\n    }\n\n    bb7: {\n        _4 = const 100_u64;\n        goto -> bb9;\n    }\n\n    bb8: {\n        _4 = const 200_u64;\n        goto -> bb9;\n    }\n\n    bb9: {\n        _0 = copy _4;\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_0_mir_opt_2": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "subq\t$24, %rsp",
+            "movq\t%rdi, (%rsp)",
+            "subq\t$1, %rdi",
+            "je\t.LBB19_2",
+            "jmp\t.LBB19_8",
+            "movq\t(%rsp), %rax",
+            "subq\t$2, %rax",
+            "je\t.LBB19_3",
+            "jmp\t.LBB19_1",
+            "callq\t_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union",
+            "movq\t(%rsp), %rax",
+            "movq\t$999, 8(%rsp)",
+            "cmpq\t16(%rsp), %rax",
+            "jne\t.LBB19_7",
+            "jmp\t.LBB19_6",
+            "movq\t$1, 16(%rsp)",
+            "callq\t_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union",
+            "movq\t$999, 8(%rsp)",
+            "jmp\t.LBB19_4",
+            "movq\t$2, 16(%rsp)",
+            "callq\t_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union",
+            "movq\t$999, 8(%rsp)",
+            "jmp\t.LBB19_5",
+            "movq\t$100, 8(%rsp)",
+            "jmp\t.LBB19_7",
+            "movq\t$200, 8(%rsp)",
+            "jmp\t.LBB19_7",
+            "movq\t(%rsp), %rax",
+            "subq\t$1, %rax",
+            "je\t.LBB19_4",
+            "jmp\t.LBB19_9",
+            "movq\t(%rsp), %rax",
+            "subq\t$2, %rax",
+            "je\t.LBB19_5",
+            "jmp\t.LBB19_7",
+            "movq\t8(%rsp), %rax",
+            "addq\t$24, %rsp",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=0",
+            "-Z",
+            "mir-opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nonlazybind uwtable\ndefine dso_local i64 @foo(i64 %q) unnamed_addr #2 {\nstart:\n  %u = alloca [8 x i8], align 8\n  %r = alloca [8 x i8], align 8\n  switch i64 %q, label %bb3 [\n    i64 1, label %bb2\n    i64 2, label %bb1\n  ]\n\nbb3:                                              ; preds = %start\n; call core::hint::black_box::<()>\n  call void @_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union() #9\n  store i64 999, ptr %r, align 8\n  %0 = load i64, ptr %u, align 8\n  %_4 = icmp ne i64 %q, %0\n  br i1 %_4, label %bb7, label %bb10\n\nbb2:                                              ; preds = %start\n  store i64 1, ptr %u, align 8\n; call core::hint::black_box::<()>\n  call void @_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union() #9\n  store i64 999, ptr %r, align 8\n  br label %bb5\n\nbb1:                                              ; preds = %start\n  store i64 2, ptr %u, align 8\n; call core::hint::black_box::<()>\n  call void @_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union() #9\n  store i64 999, ptr %r, align 8\n  br label %bb6\n\nbb5:                                              ; preds = %bb10, %bb2\n  store i64 100, ptr %r, align 8\n  br label %bb7\n\nbb6:                                              ; preds = %bb10, %bb1\n  store i64 200, ptr %r, align 8\n  br label %bb7\n\nbb10:                                             ; preds = %bb3\n  switch i64 %q, label %bb7 [\n    i64 1, label %bb5\n    i64 2, label %bb6\n  ]\n\nbb7:                                              ; preds = %bb6, %bb5, %bb10, %bb3\n  %1 = load i64, ptr %r, align 8\n  ret i64 %1\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    debug q => _1;\n    let mut _0: u64;\n    let mut _2: U;\n    let _3: ();\n    let mut _4: bool;\n    scope 1 {\n        debug u => _2;\n        scope 2 {\n            debug r => _0;\n        }\n    }\n\n    bb0: {\n        _2 = const <uninit>;\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb3];\n    }\n\n    bb1: {\n        (_2.0: u64) = const 2_u64;\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb8, unwind continue];\n    }\n\n    bb2: {\n        (_2.0: u64) = const 1_u64;\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb9, unwind continue];\n    }\n\n    bb3: {\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        _0 = const 999_u64;\n        _4 = Ne(copy _1, copy (_2.0: u64));\n        switchInt(move _4) -> [0: bb10, otherwise: bb7];\n    }\n\n    bb5: {\n        _0 = const 100_u64;\n        goto -> bb7;\n    }\n\n    bb6: {\n        _0 = const 200_u64;\n        goto -> bb7;\n    }\n\n    bb7: {\n        return;\n    }\n\n    bb8: {\n        _0 = const 999_u64;\n        goto -> bb6;\n    }\n\n    bb9: {\n        _0 = const 999_u64;\n        goto -> bb5;\n    }\n\n    bb10: {\n        switchInt(copy _1) -> [1: bb5, 2: bb6, otherwise: bb7];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_0_mir_opt_2_preserve_ub": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "subq\t$24, %rsp",
+            "movq\t%rdi, (%rsp)",
+            "subq\t$1, %rdi",
+            "je\t.LBB19_2",
+            "jmp\t.LBB19_9",
+            "movq\t(%rsp), %rax",
+            "subq\t$2, %rax",
+            "je\t.LBB19_3",
+            "jmp\t.LBB19_1",
+            "callq\t_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union",
+            "movq\t(%rsp), %rax",
+            "movq\t$999, 8(%rsp)",
+            "subq\t$1, %rax",
+            "je\t.LBB19_7",
+            "jmp\t.LBB19_10",
+            "movq\t(%rsp), %rax",
+            "subq\t$2, %rax",
+            "je\t.LBB19_8",
+            "jmp\t.LBB19_6",
+            "movq\t$1, 16(%rsp)",
+            "callq\t_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union",
+            "movq\t$999, 8(%rsp)",
+            "jmp\t.LBB19_4",
+            "movq\t$2, 16(%rsp)",
+            "callq\t_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union",
+            "movq\t$999, 8(%rsp)",
+            "jmp\t.LBB19_5",
+            "movq\t$100, 8(%rsp)",
+            "jmp\t.LBB19_6",
+            "movq\t$200, 8(%rsp)",
+            "movq\t8(%rsp), %rax",
+            "addq\t$24, %rsp",
+            "retq",
+            "cmpq\t$1, 16(%rsp)",
+            "je\t.LBB19_4",
+            "jmp\t.LBB19_6",
+            "cmpq\t$2, 16(%rsp)",
+            "je\t.LBB19_5",
+            "jmp\t.LBB19_6"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=0",
+            "-Z",
+            "mir-opt-level=2",
+            "-Z",
+            "mir-preserve-ub"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nonlazybind uwtable\ndefine dso_local i64 @foo(i64 %q) unnamed_addr #2 {\nstart:\n  %u = alloca [8 x i8], align 8\n  %r = alloca [8 x i8], align 8\n  switch i64 %q, label %bb3 [\n    i64 1, label %bb2\n    i64 2, label %bb1\n  ]\n\nbb3:                                              ; preds = %start\n; call core::hint::black_box::<()>\n  call void @_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union() #9\n  store i64 999, ptr %r, align 8\n  switch i64 %q, label %bb9 [\n    i64 1, label %bb6\n    i64 2, label %bb5\n  ]\n\nbb2:                                              ; preds = %start\n  store i64 1, ptr %u, align 8\n; call core::hint::black_box::<()>\n  call void @_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union() #9\n  store i64 999, ptr %r, align 8\n  br label %bb7\n\nbb1:                                              ; preds = %start\n  store i64 2, ptr %u, align 8\n; call core::hint::black_box::<()>\n  call void @_RINvNtCs8b4M6GsfcPr_4core4hint9black_boxuECskSwoXIHcnj2_17eob_surface_union() #9\n  store i64 999, ptr %r, align 8\n  br label %bb8\n\nbb7:                                              ; preds = %bb6, %bb2\n  store i64 100, ptr %r, align 8\n  br label %bb9\n\nbb8:                                              ; preds = %bb5, %bb1\n  store i64 200, ptr %r, align 8\n  br label %bb9\n\nbb9:                                              ; preds = %bb8, %bb5, %bb7, %bb6, %bb3\n  %0 = load i64, ptr %r, align 8\n  ret i64 %0\n\nbb6:                                              ; preds = %bb3\n  %1 = load i64, ptr %u, align 8\n  %2 = icmp eq i64 %1, 1\n  br i1 %2, label %bb7, label %bb9\n\nbb5:                                              ; preds = %bb3\n  %3 = load i64, ptr %u, align 8\n  %4 = icmp eq i64 %3, 2\n  br i1 %4, label %bb8, label %bb9\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    debug q => _1;\n    let mut _0: u64;\n    let mut _2: U;\n    let _3: ();\n    scope 1 {\n        debug u => _2;\n        scope 2 {\n            debug r => _0;\n        }\n    }\n\n    bb0: {\n        _2 = const <uninit>;\n        PlaceMention(_1);\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb3];\n    }\n\n    bb1: {\n        (_2.0: u64) = const 2_u64;\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb10, unwind continue];\n    }\n\n    bb2: {\n        (_2.0: u64) = const 1_u64;\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb11, unwind continue];\n    }\n\n    bb3: {\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        _0 = const 999_u64;\n        PlaceMention(_1);\n        switchInt(copy _1) -> [1: bb6, 2: bb5, otherwise: bb9];\n    }\n\n    bb5: {\n        PlaceMention((_2.0: u64));\n        switchInt(copy (_2.0: u64)) -> [2: bb8, otherwise: bb9];\n    }\n\n    bb6: {\n        PlaceMention((_2.0: u64));\n        switchInt(copy (_2.0: u64)) -> [1: bb7, otherwise: bb9];\n    }\n\n    bb7: {\n        _0 = const 100_u64;\n        goto -> bb9;\n    }\n\n    bb8: {\n        _0 = const 200_u64;\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10: {\n        _0 = const 999_u64;\n        PlaceMention(_1);\n        PlaceMention((_2.0: u64));\n        goto -> bb8;\n    }\n\n    bb11: {\n        _0 = const 999_u64;\n        PlaceMention(_1);\n        PlaceMention((_2.0: u64));\n        goto -> bb7;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_1": {
+          "asm_direct_calls_to_fn": 5,
+          "asm_fn_instructions": [
+            "#APP",
+            "#NO_APP",
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %ecx",
+            "movl\t$200, %eax",
+            "cmoveq\t%rcx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=1"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nounwind nonlazybind uwtable\ndefine dso_local noundef range(i64 100, 201) i64 @foo(i64 noundef %q) unnamed_addr #3 {\nstart:\n  tail call void asm sideeffect \"\", \"~{memory}\"() #7\n  %0 = icmp eq i64 %q, 1\n  %. = select i1 %0, i64 100, i64 200\n  ret i64 %.\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    debug q => _1;\n    let mut _0: u64;\n    let mut _2: U;\n    let _3: ();\n    let mut _4: bool;\n    scope 1 {\n        debug u => _2;\n        scope 2 {\n            debug r => _0;\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = const <uninit>;\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb3];\n    }\n\n    bb1: {\n        (_2.0: u64) = const 2_u64;\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb8, unwind continue];\n    }\n\n    bb2: {\n        (_2.0: u64) = const 1_u64;\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb9, unwind continue];\n    }\n\n    bb3: {\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        _0 = const 999_u64;\n        _4 = Ne(copy _1, copy (_2.0: u64));\n        switchInt(move _4) -> [0: bb10, otherwise: bb7];\n    }\n\n    bb5: {\n        _0 = const 100_u64;\n        goto -> bb7;\n    }\n\n    bb6: {\n        _0 = const 200_u64;\n        goto -> bb7;\n    }\n\n    bb7: {\n        StorageDead(_2);\n        return;\n    }\n\n    bb8: {\n        _0 = const 999_u64;\n        goto -> bb6;\n    }\n\n    bb9: {\n        _0 = const 999_u64;\n        goto -> bb5;\n    }\n\n    bb10: {\n        switchInt(copy _1) -> [1: bb5, 2: bb6, otherwise: bb7];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=200\nfoo(1)=100\nfoo(2)=200\nfoo(3)=200\nfoo(18446744073709551615)=200\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_2": {
+          "asm_direct_calls_to_fn": 5,
+          "asm_fn_instructions": [
+            "#APP",
+            "#NO_APP",
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %ecx",
+            "movl\t$200, %eax",
+            "cmoveq\t%rcx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nounwind nonlazybind uwtable\ndefine dso_local noundef range(i64 100, 201) i64 @foo(i64 noundef %q) unnamed_addr #3 {\nstart:\n  tail call void asm sideeffect \"\", \"~{memory}\"() #7\n  %0 = icmp eq i64 %q, 1\n  %. = select i1 %0, i64 100, i64 200\n  ret i64 %.\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    debug q => _1;\n    let mut _0: u64;\n    let mut _2: U;\n    let _3: ();\n    let mut _4: bool;\n    scope 1 {\n        debug u => _2;\n        scope 2 {\n            debug r => _0;\n        }\n        scope 3 (inlined std::hint::black_box::<()>) {\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = const <uninit>;\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb3];\n    }\n\n    bb1: {\n        (_2.0: u64) = const 2_u64;\n        _3 = std::intrinsics::black_box::<()>(const ()) -> [return: bb8, unwind unreachable];\n    }\n\n    bb2: {\n        (_2.0: u64) = const 1_u64;\n        _3 = std::intrinsics::black_box::<()>(const ()) -> [return: bb9, unwind unreachable];\n    }\n\n    bb3: {\n        _3 = std::intrinsics::black_box::<()>(const ()) -> [return: bb7, unwind unreachable];\n    }\n\n    bb4: {\n        _0 = const 100_u64;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 200_u64;\n        goto -> bb6;\n    }\n\n    bb6: {\n        StorageDead(_2);\n        return;\n    }\n\n    bb7: {\n        _0 = const 999_u64;\n        _4 = Ne(copy _1, copy (_2.0: u64));\n        switchInt(move _4) -> [0: bb10, otherwise: bb6];\n    }\n\n    bb8: {\n        _0 = const 999_u64;\n        goto -> bb5;\n    }\n\n    bb9: {\n        _0 = const 999_u64;\n        goto -> bb4;\n    }\n\n    bb10: {\n        switchInt(copy _1) -> [1: bb4, 2: bb5, otherwise: bb6];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=200\nfoo(1)=100\nfoo(2)=200\nfoo(3)=200\nfoo(18446744073709551615)=200\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_3": {
+          "asm_direct_calls_to_fn": 5,
+          "asm_fn_instructions": [
+            "#APP",
+            "#NO_APP",
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %ecx",
+            "movl\t$200, %eax",
+            "cmoveq\t%rcx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=3"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nounwind nonlazybind uwtable\ndefine dso_local noundef range(i64 100, 201) i64 @foo(i64 noundef %q) unnamed_addr #3 {\nstart:\n  tail call void asm sideeffect \"\", \"~{memory}\"() #7\n  %0 = icmp eq i64 %q, 1\n  %. = select i1 %0, i64 100, i64 200\n  ret i64 %.\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    debug q => _1;\n    let mut _0: u64;\n    let mut _2: U;\n    let _3: ();\n    let mut _4: bool;\n    scope 1 {\n        debug u => _2;\n        scope 2 {\n            debug r => _0;\n        }\n        scope 3 (inlined std::hint::black_box::<()>) {\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = const <uninit>;\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb3];\n    }\n\n    bb1: {\n        (_2.0: u64) = const 2_u64;\n        _3 = std::intrinsics::black_box::<()>(const ()) -> [return: bb8, unwind unreachable];\n    }\n\n    bb2: {\n        (_2.0: u64) = const 1_u64;\n        _3 = std::intrinsics::black_box::<()>(const ()) -> [return: bb9, unwind unreachable];\n    }\n\n    bb3: {\n        _3 = std::intrinsics::black_box::<()>(const ()) -> [return: bb7, unwind unreachable];\n    }\n\n    bb4: {\n        _0 = const 100_u64;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 200_u64;\n        goto -> bb6;\n    }\n\n    bb6: {\n        StorageDead(_2);\n        return;\n    }\n\n    bb7: {\n        _0 = const 999_u64;\n        _4 = Ne(copy _1, copy (_2.0: u64));\n        switchInt(move _4) -> [0: bb10, otherwise: bb6];\n    }\n\n    bb8: {\n        _0 = const 999_u64;\n        goto -> bb5;\n    }\n\n    bb9: {\n        _0 = const 999_u64;\n        goto -> bb4;\n    }\n\n    bb10: {\n        switchInt(copy _1) -> [1: bb4, 2: bb5, otherwise: bb6];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=200\nfoo(1)=100\nfoo(2)=200\nfoo(3)=200\nfoo(18446744073709551615)=200\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_3_without_early_otherwise_branch": {
+          "asm_direct_calls_to_fn": 5,
+          "asm_fn_instructions": [
+            "#APP",
+            "#NO_APP",
+            "cmpq\t$2, %rdi",
+            "movl\t$200, %eax",
+            "movl\t$999, %ecx",
+            "cmoveq\t%rax, %rcx",
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %eax",
+            "cmovneq\t%rcx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=3",
+            "-Z",
+            "mir-enable-passes=-EarlyOtherwiseBranch"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nounwind nonlazybind uwtable\ndefine dso_local noundef range(i64 100, 1000) i64 @foo(i64 noundef %q) unnamed_addr #3 {\nstart:\n  tail call void asm sideeffect \"\", \"~{memory}\"() #7\n  %switch.selectcmp = icmp eq i64 %q, 2\n  %switch.select = select i1 %switch.selectcmp, i64 200, i64 999\n  %switch.selectcmp1 = icmp eq i64 %q, 1\n  %switch.select2 = select i1 %switch.selectcmp1, i64 100, i64 %switch.select\n  ret i64 %switch.select2\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    debug q => _1;\n    let mut _0: u64;\n    let mut _2: U;\n    let _3: ();\n    scope 1 {\n        debug u => _2;\n        scope 2 {\n            debug r => _0;\n        }\n        scope 3 (inlined std::hint::black_box::<()>) {\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = const <uninit>;\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb3];\n    }\n\n    bb1: {\n        (_2.0: u64) = const 2_u64;\n        _3 = std::intrinsics::black_box::<()>(const ()) -> [return: bb10, unwind unreachable];\n    }\n\n    bb2: {\n        (_2.0: u64) = const 1_u64;\n        _3 = std::intrinsics::black_box::<()>(const ()) -> [return: bb11, unwind unreachable];\n    }\n\n    bb3: {\n        _3 = std::intrinsics::black_box::<()>(const ()) -> [return: bb9, unwind unreachable];\n    }\n\n    bb4: {\n        switchInt(copy (_2.0: u64)) -> [2: bb7, otherwise: bb8];\n    }\n\n    bb5: {\n        switchInt(copy (_2.0: u64)) -> [1: bb6, otherwise: bb8];\n    }\n\n    bb6: {\n        _0 = const 100_u64;\n        goto -> bb8;\n    }\n\n    bb7: {\n        _0 = const 200_u64;\n        goto -> bb8;\n    }\n\n    bb8: {\n        StorageDead(_2);\n        return;\n    }\n\n    bb9: {\n        _0 = const 999_u64;\n        switchInt(copy _1) -> [1: bb5, 2: bb4, otherwise: bb8];\n    }\n\n    bb10: {\n        _0 = const 999_u64;\n        goto -> bb7;\n    }\n\n    bb11: {\n        _0 = const 999_u64;\n        goto -> bb6;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "opt_level_s": {
+          "asm_direct_calls_to_fn": 1,
+          "asm_fn_instructions": [
+            "#APP",
+            "#NO_APP",
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %ecx",
+            "movl\t$200, %eax",
+            "cmoveq\t%rcx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-C",
+            "opt-level=s"
+          ],
+          "llvm_ir_fn": "; Function Attrs: noinline nounwind nonlazybind optsize uwtable\ndefine dso_local noundef range(i64 100, 201) i64 @foo(i64 noundef %q) unnamed_addr #3 {\nstart:\n  tail call void asm sideeffect \"\", \"~{memory}\"() #7\n  %0 = icmp eq i64 %q, 1\n  %. = select i1 %0, i64 100, i64 200\n  ret i64 %.\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    debug q => _1;\n    let mut _0: u64;\n    let mut _2: U;\n    let _3: ();\n    let mut _4: bool;\n    scope 1 {\n        debug u => _2;\n        scope 2 {\n            debug r => _0;\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = const <uninit>;\n        switchInt(copy _1) -> [1: bb2, 2: bb1, otherwise: bb3];\n    }\n\n    bb1: {\n        (_2.0: u64) = const 2_u64;\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb8, unwind continue];\n    }\n\n    bb2: {\n        (_2.0: u64) = const 1_u64;\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb9, unwind continue];\n    }\n\n    bb3: {\n        _3 = std::hint::black_box::<()>(const ()) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        _0 = const 999_u64;\n        _4 = Ne(copy _1, copy (_2.0: u64));\n        switchInt(move _4) -> [0: bb10, otherwise: bb7];\n    }\n\n    bb5: {\n        _0 = const 100_u64;\n        goto -> bb7;\n    }\n\n    bb6: {\n        _0 = const 200_u64;\n        goto -> bb7;\n    }\n\n    bb7: {\n        StorageDead(_2);\n        return;\n    }\n\n    bb8: {\n        _0 = const 999_u64;\n        goto -> bb6;\n    }\n\n    bb9: {\n        _0 = const 999_u64;\n        goto -> bb5;\n    }\n\n    bb10: {\n        switchInt(copy _1) -> [1: bb5, 2: bb6, otherwise: bb7];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=200\nfoo(1)=100\nfoo(2)=200\nfoo(3)=200\nfoo(18446744073709551615)=200\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        }
+      }
+    },
+    "eob_upstream_custom_mir": {
+      "function": "foo",
+      "miri": {
+        "mir_opt_0": {
+          "flags": [
+            "-Zmir-opt-level=0"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "miri_ub": null
+        },
+        "mir_opt_1": {
+          "flags": [
+            "-Zmir-opt-level=1"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "miri_ub": null
+        },
+        "mir_opt_2": {
+          "flags": [
+            "-Zmir-opt-level=2"
+          ],
+          "miri_errors": [
+            "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> eob_upstream_custom_mir.rs:29:13\n   |\n29 | /             match q {\n30 | |                 1 => bb1,\n31 | |                 2 => bb2,\n32 | |                 _ => bb5,\n33 | |             }\n   | |_____________^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: foo\n               at eob_upstream_custom_mir.rs:29:13: 33:14\n           1: main\n               at eob_upstream_custom_mir.rs:64:35: 64:52\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+            "error: aborting due to 1 previous error; 1 warning emitted"
+          ],
+          "miri_rc": 1,
+          "miri_stdout": "",
+          "miri_ub": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory"
+        },
+        "mir_opt_2_storage_markers_kept": {
+          "flags": [
+            "-Zmir-opt-level=2",
+            "-C",
+            "opt-level=2"
+          ],
+          "miri_errors": [
+            "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory\n  --> eob_upstream_custom_mir.rs:29:13\n   |\n29 | /             match q {\n30 | |                 1 => bb1,\n31 | |                 2 => bb2,\n32 | |                 _ => bb5,\n33 | |             }\n   | |_____________^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: foo\n               at eob_upstream_custom_mir.rs:29:13: 33:14\n           1: main\n               at eob_upstream_custom_mir.rs:64:35: 64:52\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+            "error: aborting due to 1 previous error; 2 warnings emitted"
+          ],
+          "miri_rc": 1,
+          "miri_stdout": "",
+          "miri_ub": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory"
+        },
+        "mir_opt_2_without_early_otherwise_branch": {
+          "flags": [
+            "-Zmir-opt-level=2",
+            "-Zmir-enable-passes=-EarlyOtherwiseBranch"
+          ],
+          "miri_errors": [],
+          "miri_rc": 0,
+          "miri_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "miri_ub": null
+        }
+      },
+      "native": {
+        "mir_opt_0": {
+          "asm_direct_calls_to_fn": 5,
+          "asm_fn_instructions": [
+            "cmpq\t$2, %rdi",
+            "movl\t$200, %ecx",
+            "movl\t$999, %edx",
+            "cmovneq\t%rdx, %rcx",
+            "decq\t%rdi",
+            "movl\t$100, %eax",
+            "cmovneq\t%rcx, %rax",
+            "cmpq\t$2, %rdi",
+            "cmovaeq\t%rdx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=0",
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef range(i64 100, 1000) i64 @foo(i64 noundef %_1) unnamed_addr #3 {\nstart:\n  %_1.off = add i64 %_1, -1\n  %switch = icmp ult i64 %_1.off, 2\n  %switch.selectcmp = icmp eq i64 %_1, 2\n  %switch.select = select i1 %switch.selectcmp, i64 200, i64 999\n  %switch.selectcmp4 = icmp eq i64 %_1, 1\n  %switch.select5 = select i1 %switch.selectcmp4, i64 100, i64 %switch.select\n  %common.ret.op = select i1 %switch, i64 %switch.select5, i64 999\n  ret i64 %common.ret.op\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    let mut _0: u64;\n    let mut _2: u64;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb3];\n    }\n\n    bb1: {\n        _2 = const 1_u64;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _2 = const 2_u64;\n        goto -> bb3;\n    }\n\n    bb3: {\n        switchInt(copy _1) -> [1: bb4, 2: bb5, otherwise: bb8];\n    }\n\n    bb4: {\n        switchInt(copy _2) -> [1: bb6, otherwise: bb8];\n    }\n\n    bb5: {\n        switchInt(copy _2) -> [2: bb7, otherwise: bb8];\n    }\n\n    bb6: {\n        _0 = const 100_u64;\n        return;\n    }\n\n    bb7: {\n        _0 = const 200_u64;\n        return;\n    }\n\n    bb8: {\n        _0 = const 999_u64;\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "mir_opt_1": {
+          "asm_direct_calls_to_fn": 5,
+          "asm_fn_instructions": [
+            "cmpq\t$2, %rdi",
+            "movl\t$200, %ecx",
+            "movl\t$999, %edx",
+            "cmovneq\t%rdx, %rcx",
+            "decq\t%rdi",
+            "movl\t$100, %eax",
+            "cmovneq\t%rcx, %rax",
+            "cmpq\t$2, %rdi",
+            "cmovaeq\t%rdx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=1",
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef range(i64 100, 1000) i64 @foo(i64 noundef %_1) unnamed_addr #3 {\nstart:\n  %_1.off = add i64 %_1, -1\n  %switch = icmp ult i64 %_1.off, 2\n  %switch.selectcmp = icmp eq i64 %_1, 2\n  %switch.select = select i1 %switch.selectcmp, i64 200, i64 999\n  %switch.selectcmp4 = icmp eq i64 %_1, 1\n  %switch.select5 = select i1 %switch.selectcmp4, i64 100, i64 %switch.select\n  %common.ret.op = select i1 %switch, i64 %switch.select5, i64 999\n  ret i64 %common.ret.op\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    let mut _0: u64;\n    let mut _2: u64;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb3];\n    }\n\n    bb1: {\n        _2 = const 1_u64;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _2 = const 2_u64;\n        goto -> bb3;\n    }\n\n    bb3: {\n        switchInt(copy _1) -> [1: bb4, 2: bb5, otherwise: bb8];\n    }\n\n    bb4: {\n        switchInt(copy _2) -> [1: bb6, otherwise: bb8];\n    }\n\n    bb5: {\n        switchInt(copy _2) -> [2: bb7, otherwise: bb8];\n    }\n\n    bb6: {\n        _0 = const 100_u64;\n        return;\n    }\n\n    bb7: {\n        _0 = const 200_u64;\n        return;\n    }\n\n    bb8: {\n        _0 = const 999_u64;\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "mir_opt_2": {
+          "asm_direct_calls_to_fn": 5,
+          "asm_fn_instructions": [
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %ecx",
+            "movl\t$200, %eax",
+            "cmoveq\t%rcx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=2",
+            "-C",
+            "opt-level=2"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef range(i64 100, 201) i64 @foo(i64 noundef %_1) unnamed_addr #3 {\nstart:\n  %0 = icmp eq i64 %_1, 1\n  %. = select i1 %0, i64 100, i64 200\n  ret i64 %.\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    let mut _0: u64;\n    let mut _2: u64;\n    let mut _3: bool;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb3];\n    }\n\n    bb1: {\n        goto -> bb4;\n    }\n\n    bb2: {\n        goto -> bb5;\n    }\n\n    bb3: {\n        _3 = Ne(copy _1, copy _2);\n        switchInt(move _3) -> [0: bb7, otherwise: bb6];\n    }\n\n    bb4: {\n        _0 = const 100_u64;\n        return;\n    }\n\n    bb5: {\n        _0 = const 200_u64;\n        return;\n    }\n\n    bb6: {\n        _0 = const 999_u64;\n        return;\n    }\n\n    bb7: {\n        switchInt(copy _1) -> [1: bb4, 2: bb5, otherwise: bb6];\n    }\n}\n",
+          "mir_has_hoisted_ne": true,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=200\nfoo(1)=100\nfoo(2)=200\nfoo(3)=200\nfoo(18446744073709551615)=200\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        },
+        "mir_opt_2_without_early_otherwise_branch": {
+          "asm_direct_calls_to_fn": 5,
+          "asm_fn_instructions": [
+            "cmpq\t$2, %rdi",
+            "movl\t$200, %eax",
+            "movl\t$999, %ecx",
+            "cmoveq\t%rax, %rcx",
+            "cmpq\t$1, %rdi",
+            "movl\t$100, %eax",
+            "cmovneq\t%rcx, %rax",
+            "retq"
+          ],
+          "flags": [
+            "-Z",
+            "mir-opt-level=2",
+            "-C",
+            "opt-level=2",
+            "-Z",
+            "mir-enable-passes=-EarlyOtherwiseBranch"
+          ],
+          "llvm_ir_fn": "; Function Attrs: mustprogress nofree noinline norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable\ndefine dso_local noundef range(i64 100, 1000) i64 @foo(i64 noundef %_1) unnamed_addr #3 {\nstart:\n  %switch.selectcmp = icmp eq i64 %_1, 2\n  %switch.select = select i1 %switch.selectcmp, i64 200, i64 999\n  %switch.selectcmp3 = icmp eq i64 %_1, 1\n  %switch.select4 = select i1 %switch.selectcmp3, i64 100, i64 %switch.select\n  ret i64 %switch.select4\n}\n",
+          "mir_fn": "fn foo(_1: u64) -> u64 {\n    let mut _0: u64;\n    let mut _2: u64;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb1, 2: bb2, otherwise: bb3];\n    }\n\n    bb1: {\n        goto -> bb6;\n    }\n\n    bb2: {\n        goto -> bb7;\n    }\n\n    bb3: {\n        switchInt(copy _1) -> [1: bb4, 2: bb5, otherwise: bb8];\n    }\n\n    bb4: {\n        switchInt(copy _2) -> [1: bb6, otherwise: bb8];\n    }\n\n    bb5: {\n        switchInt(copy _2) -> [2: bb7, otherwise: bb8];\n    }\n\n    bb6: {\n        _0 = const 100_u64;\n        return;\n    }\n\n    bb7: {\n        _0 = const 200_u64;\n        return;\n    }\n\n    bb8: {\n        _0 = const 999_u64;\n        return;\n    }\n}\n",
+          "mir_has_hoisted_ne": false,
+          "run_rc": 0,
+          "run_stdout": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+          "rustc_errors": [],
+          "rustc_rc": 0
+        }
+      }
+    }
+  },
+  "ffi_unwind_link_matrix": [
+    {
+      "downstream_errors": [],
+      "downstream_link_rc": 0,
+      "downstream_panic": "abort",
+      "ffi_unwind_calls_lint": [],
+      "run_rc": 0,
+      "run_stdout": "OUT=42\n",
+      "upstream_call_terminators": [
+        "_0 = core::num::<impl u32>::wrapping_add(copy _1, const 1_u32) -> [return: bb1, unwind continue];"
+      ],
+      "upstream_crate": "pure_rust",
+      "upstream_errors": [],
+      "upstream_panic": "unwind",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 0
+    },
+    {
+      "downstream_errors": [
+        "error: the crate `ffi_up` requires panic strategy `unwind` which is incompatible with this crate's strategy of `abort`",
+        "error: aborting due to 1 previous error"
+      ],
+      "downstream_link_rc": 1,
+      "downstream_panic": "abort",
+      "ffi_unwind_calls_lint": [
+        "call to foreign function with FFI-unwind ABI"
+      ],
+      "upstream_call_terminators": [
+        "_0 = may_throw(copy _1) -> [return: bb1, unwind continue];"
+      ],
+      "upstream_crate": "c_unwind_foreign_call",
+      "upstream_errors": [],
+      "upstream_panic": "unwind",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 0
+    },
+    {
+      "downstream_errors": [],
+      "downstream_link_rc": 0,
+      "downstream_panic": "abort",
+      "ffi_unwind_calls_lint": [],
+      "run_rc": 0,
+      "run_stdout": "OUT=41\n",
+      "upstream_call_terminators": [
+        "_0 = may_throw(copy _1) -> [return: bb1, unwind unreachable];"
+      ],
+      "upstream_crate": "c_foreign_call",
+      "upstream_errors": [],
+      "upstream_panic": "unwind",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 0
+    },
+    {
+      "downstream_errors": [],
+      "downstream_link_rc": 0,
+      "downstream_panic": "abort",
+      "ffi_unwind_calls_lint": [],
+      "run_rc": 0,
+      "run_stdout": "OUT=41\n",
+      "upstream_call_terminators": [
+        "_0 = guarded(copy _1) -> [return: bb1, unwind unreachable];",
+        "_0 = may_throw(copy _1) -> [return: bb1, unwind terminate(abi)];"
+      ],
+      "upstream_crate": "c_unwind_foreign_call_inside_extern_c_body",
+      "upstream_errors": [],
+      "upstream_panic": "unwind",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 1
+    },
+    {
+      "downstream_errors": [
+        "error: the crate `ffi_up` requires panic strategy `unwind` which is incompatible with this crate's strategy of `abort`",
+        "error: aborting due to 1 previous error"
+      ],
+      "downstream_link_rc": 1,
+      "downstream_panic": "abort",
+      "ffi_unwind_calls_lint": [
+        "call to function pointer with FFI-unwind ABI"
+      ],
+      "upstream_call_terminators": [
+        "_0 = call_ptr(move _2, copy _1) -> [return: bb1, unwind continue];",
+        "_0 = copy _1(copy _2) -> [return: bb1, unwind continue];"
+      ],
+      "upstream_crate": "c_unwind_fn_pointer_call",
+      "upstream_errors": [],
+      "upstream_panic": "unwind",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 0
+    },
+    {
+      "downstream_errors": [],
+      "downstream_link_rc": 0,
+      "downstream_panic": "abort",
+      "ffi_unwind_calls_lint": [],
+      "run_rc": 0,
+      "run_stdout": "OUT=41\n",
+      "upstream_call_terminators": [
+        "_0 = rust_defined(copy _1) -> [return: bb1, unwind continue];"
+      ],
+      "upstream_crate": "c_unwind_rust_defined_callee",
+      "upstream_errors": [],
+      "upstream_panic": "unwind",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 0
+    },
+    {
+      "downstream_errors": [
+        "error: the crate `ffi_up` requires panic strategy `unwind` which is incompatible with this crate's strategy of `abort`",
+        "error: aborting due to 1 previous error"
+      ],
+      "downstream_link_rc": 1,
+      "downstream_panic": "abort",
+      "ffi_unwind_calls_lint": [
+        "call to inline assembly that may unwind"
+      ],
+      "upstream_call_terminators": [],
+      "upstream_crate": "inline_asm_may_unwind",
+      "upstream_errors": [],
+      "upstream_panic": "unwind",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 0
+    },
+    {
+      "downstream_errors": [],
+      "downstream_link_rc": 0,
+      "downstream_panic": "unwind",
+      "ffi_unwind_calls_lint": [
+        "call to foreign function with FFI-unwind ABI"
+      ],
+      "run_rc": 0,
+      "run_stdout": "OUT=41\n",
+      "upstream_call_terminators": [
+        "_0 = may_throw(copy _1) -> [return: bb1, unwind continue];"
+      ],
+      "upstream_crate": "c_unwind_foreign_call",
+      "upstream_errors": [],
+      "upstream_panic": "unwind",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 0
+    },
+    {
+      "downstream_errors": [],
+      "downstream_link_rc": 0,
+      "downstream_panic": "abort",
+      "ffi_unwind_calls_lint": [],
+      "run_rc": 0,
+      "run_stdout": "OUT=41\n",
+      "upstream_call_terminators": [
+        "_0 = may_throw(copy _1) -> [return: bb1, unwind: bb2];"
+      ],
+      "upstream_crate": "c_unwind_foreign_call",
+      "upstream_errors": [],
+      "upstream_panic": "abort",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 1
+    },
+    {
+      "downstream_errors": [
+        "error: the crate `ffi_up` requires panic strategy `abort` which is incompatible with this crate's strategy of `unwind`",
+        "error: aborting due to 1 previous error"
+      ],
+      "downstream_link_rc": 1,
+      "downstream_panic": "unwind",
+      "ffi_unwind_calls_lint": [],
+      "upstream_call_terminators": [
+        "_0 = may_throw(copy _1) -> [return: bb1, unwind: bb2];"
+      ],
+      "upstream_crate": "c_unwind_foreign_call",
+      "upstream_errors": [],
+      "upstream_panic": "abort",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 1
+    },
+    {
+      "downstream_errors": [
+        "error: the crate `ffi_up` requires panic strategy `abort` which is incompatible with this crate's strategy of `unwind`",
+        "error: aborting due to 1 previous error"
+      ],
+      "downstream_link_rc": 1,
+      "downstream_panic": "unwind",
+      "ffi_unwind_calls_lint": [],
+      "upstream_call_terminators": [
+        "_0 = core::num::<impl u32>::wrapping_add(copy _1, const 1_u32) -> [return: bb1, unwind unreachable];"
+      ],
+      "upstream_crate": "pure_rust",
+      "upstream_errors": [],
+      "upstream_panic": "abort",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 0
+    },
+    {
+      "downstream_errors": [],
+      "downstream_link_rc": 0,
+      "downstream_panic": "abort",
+      "ffi_unwind_calls_lint": [],
+      "run_rc": 0,
+      "run_stdout": "OUT=42\n",
+      "upstream_call_terminators": [
+        "_0 = core::num::<impl u32>::wrapping_add(copy _1, const 1_u32) -> [return: bb1, unwind unreachable];"
+      ],
+      "upstream_crate": "pure_rust",
+      "upstream_errors": [],
+      "upstream_panic": "abort",
+      "upstream_rc": 0,
+      "upstream_terminate_abi_sites": 0
+    }
+  ],
+  "ffi_unwind_no_std_link": {
+    "downstream_call_terminators": [
+      "_2 = entry(move _3) -> [return: bb2, unwind unreachable];"
+    ],
+    "downstream_errors": [],
+    "downstream_link_rc": 0,
+    "downstream_panic": "abort",
+    "run_rc": 0,
+    "upstream_call_terminators": [
+      "_0 = may_throw(copy _1) -> [return: bb1, unwind continue];"
+    ],
+    "upstream_errors": [],
+    "upstream_panic": "unwind",
+    "upstream_rc": 0
+  },
+  "host_machine": "x86_64",
+  "host_sysname": "Linux",
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "simplify_comparison_integral": {
+    "miri": {
+      "pass_off": {
+        "flags": [
+          "-Zmir-opt-level=0"
+        ],
+        "miri_errors": [],
+        "miri_rc": 0,
+        "miri_stdout": "x=43 S1=1 S2=0 S3=1 S4=1\nx=7 S1=0 S2=1 S3=0 S4=0\n",
+        "miri_ub": null
+      },
+      "pass_on": {
+        "flags": [
+          "-Zmir-opt-level=0",
+          "-Zmir-enable-passes=+SimplifyComparisonIntegral"
+        ],
+        "miri_errors": [],
+        "miri_rc": 0,
+        "miri_stdout": "x=43 S1=1 S2=0 S3=1 S4=1\nx=7 S1=0 S2=1 S3=0 S4=0\n",
+        "miri_ub": null
+      },
+      "pass_on_storage_markers_kept": {
+        "flags": [
+          "-Zmir-opt-level=0",
+          "-Zmir-enable-passes=+SimplifyComparisonIntegral",
+          "-C",
+          "opt-level=2"
+        ],
+        "miri_errors": [],
+        "miri_rc": 0,
+        "miri_stdout": "x=43 S1=1 S2=0 S3=1 S4=1\nx=7 S1=0 S2=1 S3=0 S4=0\n",
+        "miri_ub": null
+      }
+    },
+    "native": {
+      "pass_off": {
+        "flags": [
+          "-Z",
+          "mir-opt-level=0"
+        ],
+        "mir": {
+          "sci_hand_written_double_move": {
+            "bb0": "    bb0: {\n        _2 = Eq(move _1, const 43_i32);\n        switchInt(move _1) -> [43: bb1, otherwise: bb2];\n    }\n",
+            "bb1": "    bb1: {\n        _0 = const 1_i32;\n        return;\n    }\n",
+            "bb2": "    bb2: {\n        _0 = const 0_i32;\n        return;\n    }\n"
+          },
+          "sci_move_cmp_copy_switch": {
+            "bb0": "    bb0: {\n        _2 = Eq(move _1, const 43_i32);\n        switchInt(copy _2) -> [1: bb1, otherwise: bb2];\n    }\n",
+            "bb1": "    bb1: {\n        _0 = const 1_i32;\n        return;\n    }\n",
+            "bb2": "    bb2: {\n        _0 = const 0_i32;\n        return;\n    }\n"
+          },
+          "sci_move_cmp_move_switch": {
+            "bb0": "    bb0: {\n        _2 = Ne(move _1, const 43_i32);\n        switchInt(move _2) -> [1: bb1, otherwise: bb2];\n    }\n",
+            "bb1": "    bb1: {\n        _0 = const 1_i32;\n        return;\n    }\n",
+            "bb2": "    bb2: {\n        _0 = const 0_i32;\n        return;\n    }\n"
+          },
+          "sci_storage_dead_between": {
+            "bb0": "    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _3 = Eq(move _2, const 43_i32);\n        StorageDead(_2);\n        switchInt(copy _3) -> [1: bb1, otherwise: bb2];\n    }\n",
+            "bb1": "    bb1: {\n        _0 = const 1_i32;\n        return;\n    }\n",
+            "bb2": "    bb2: {\n        _0 = const 0_i32;\n        return;\n    }\n"
+          }
+        },
+        "run_rc": 0,
+        "run_stdout": "x=43 S1=1 S2=0 S3=1 S4=1\nx=7 S1=0 S2=1 S3=0 S4=0\n",
+        "rustc_errors": [],
+        "rustc_rc": 0
+      },
+      "pass_on": {
+        "flags": [
+          "-Z",
+          "mir-opt-level=0",
+          "-Z",
+          "mir-enable-passes=+SimplifyComparisonIntegral"
+        ],
+        "mir": {
+          "sci_hand_written_double_move": {
+            "bb0": "    bb0: {\n        _2 = Eq(move _1, const 43_i32);\n        switchInt(move _1) -> [43: bb1, otherwise: bb2];\n    }\n",
+            "bb1": "    bb1: {\n        _0 = const 1_i32;\n        return;\n    }\n",
+            "bb2": "    bb2: {\n        _0 = const 0_i32;\n        return;\n    }\n"
+          },
+          "sci_move_cmp_copy_switch": {
+            "bb0": "    bb0: {\n        _2 = Eq(copy _1, const 43_i32);\n        switchInt(copy _1) -> [43: bb1, otherwise: bb2];\n    }\n",
+            "bb1": "    bb1: {\n        _0 = const 1_i32;\n        return;\n    }\n",
+            "bb2": "    bb2: {\n        _0 = const 0_i32;\n        return;\n    }\n"
+          },
+          "sci_move_cmp_move_switch": {
+            "bb0": "    bb0: {\n        nop;\n        switchInt(copy _1) -> [43: bb2, otherwise: bb1];\n    }\n",
+            "bb1": "    bb1: {\n        _0 = const 1_i32;\n        return;\n    }\n",
+            "bb2": "    bb2: {\n        _0 = const 0_i32;\n        return;\n    }\n"
+          },
+          "sci_storage_dead_between": {
+            "bb0": "    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        _3 = Eq(copy _2, const 43_i32);\n        nop;\n        switchInt(copy _2) -> [43: bb1, otherwise: bb2];\n    }\n",
+            "bb1": "    bb1: {\n        StorageDead(_2);\n        _0 = const 1_i32;\n        return;\n    }\n",
+            "bb2": "    bb2: {\n        StorageDead(_2);\n        _0 = const 0_i32;\n        return;\n    }\n"
+          }
+        },
+        "run_rc": 0,
+        "run_stdout": "x=43 S1=1 S2=0 S3=1 S4=1\nx=7 S1=0 S2=1 S3=0 S4=0\n",
+        "rustc_errors": [],
+        "rustc_rc": 0
+      }
+    }
+  },
+  "summary": {
+    "eob_dead_local": {
+      "hoisted_at_mir_opt_2": true,
+      "miri_ub_mir_opt_0": null,
+      "miri_ub_mir_opt_2": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory",
+      "miri_ub_mir_opt_2_storage_markers_kept": "error: Undefined Behavior: accessing a dead local variable",
+      "miri_ub_mir_opt_2_without_pass": null,
+      "native_output_changes_with_pass": false,
+      "native_stdout_mir_opt_0": "OUT(99)=42\nOUT(1)=10\nOUT(2)=20\nOUT(7)=42\n",
+      "native_stdout_mir_opt_2": "OUT(99)=42\nOUT(1)=10\nOUT(2)=20\nOUT(7)=42\n",
+      "native_stdout_mir_opt_2_without_pass": "OUT(99)=42\nOUT(1)=10\nOUT(2)=20\nOUT(7)=42\n"
+    },
+    "eob_never_initialized_local": {
+      "hoisted_at_mir_opt_2": true,
+      "miri_ub_mir_opt_0": null,
+      "miri_ub_mir_opt_2": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory",
+      "miri_ub_mir_opt_2_storage_markers_kept": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory",
+      "miri_ub_mir_opt_2_without_pass": null,
+      "native_output_changes_with_pass": true,
+      "native_stdout_mir_opt_0": "OUT=42\n",
+      "native_stdout_mir_opt_2": "OUT=21878\n",
+      "native_stdout_mir_opt_2_without_pass": "OUT=42\n"
+    },
+    "eob_surface_deref": {
+      "hoisted_at_opt_level_0_mir_opt_2": true,
+      "hoisted_at_opt_level_0_mir_opt_2_preserve_ub": false,
+      "hoisted_at_opt_level_3": true,
+      "miri_ub_mir_opt_0": null,
+      "miri_ub_mir_opt_2_default_preserve_ub": null,
+      "miri_ub_mir_opt_2_preserve_ub_off": "error: Undefined Behavior: memory access failed: attempting to access 8 bytes, but got null pointer",
+      "miri_ub_mir_opt_2_preserve_ub_off_without_pass": null,
+      "native_run_rc_opt_level_3": -11,
+      "native_stdout_opt_level_0": "foo(3,null)=999\n",
+      "native_stdout_opt_level_1": "",
+      "native_stdout_opt_level_2": "",
+      "native_stdout_opt_level_3": "",
+      "native_stdout_opt_level_3_without_pass": "foo(3,null)=999\n",
+      "native_stdout_opt_level_s": ""
+    },
+    "eob_surface_union": {
+      "hoisted_at_opt_level_0_mir_opt_2": true,
+      "hoisted_at_opt_level_0_mir_opt_2_preserve_ub": false,
+      "hoisted_at_opt_level_3": true,
+      "miri_ub_mir_opt_0": null,
+      "miri_ub_mir_opt_2_default_preserve_ub": null,
+      "miri_ub_mir_opt_2_preserve_ub_off": "error: Undefined Behavior: reading memory at alloc190[0x0..0x8], but memory is uninitialized at [0x0..0x8], and this operation requires initialized memory",
+      "miri_ub_mir_opt_2_preserve_ub_off_without_pass": null,
+      "native_run_rc_opt_level_3": 0,
+      "native_stdout_opt_level_0": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+      "native_stdout_opt_level_1": "foo(0)=200\nfoo(1)=100\nfoo(2)=200\nfoo(3)=200\nfoo(18446744073709551615)=200\n",
+      "native_stdout_opt_level_2": "foo(0)=200\nfoo(1)=100\nfoo(2)=200\nfoo(3)=200\nfoo(18446744073709551615)=200\n",
+      "native_stdout_opt_level_3": "foo(0)=200\nfoo(1)=100\nfoo(2)=200\nfoo(3)=200\nfoo(18446744073709551615)=200\n",
+      "native_stdout_opt_level_3_without_pass": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+      "native_stdout_opt_level_s": "foo(0)=200\nfoo(1)=100\nfoo(2)=200\nfoo(3)=200\nfoo(18446744073709551615)=200\n"
+    },
+    "eob_upstream_custom_mir": {
+      "hoisted_at_mir_opt_2": true,
+      "miri_ub_mir_opt_0": null,
+      "miri_ub_mir_opt_2": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory",
+      "miri_ub_mir_opt_2_storage_markers_kept": "error: Undefined Behavior: using uninitialized data, but this operation requires initialized memory",
+      "miri_ub_mir_opt_2_without_pass": null,
+      "native_output_changes_with_pass": true,
+      "native_stdout_mir_opt_0": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n",
+      "native_stdout_mir_opt_2": "foo(0)=200\nfoo(1)=100\nfoo(2)=200\nfoo(3)=200\nfoo(18446744073709551615)=200\n",
+      "native_stdout_mir_opt_2_without_pass": "foo(0)=999\nfoo(1)=100\nfoo(2)=200\nfoo(3)=999\nfoo(18446744073709551615)=999\n"
+    },
+    "ffi_link_matrix": [
+      {
+        "downstream_panic": "abort",
+        "error": null,
+        "links": true,
+        "upstream_crate": "pure_rust",
+        "upstream_panic": "unwind"
+      },
+      {
+        "downstream_panic": "abort",
+        "error": "error: the crate `ffi_up` requires panic strategy `unwind` which is incompatible with this crate's strategy of `abort`",
+        "links": false,
+        "upstream_crate": "c_unwind_foreign_call",
+        "upstream_panic": "unwind"
+      },
+      {
+        "downstream_panic": "abort",
+        "error": null,
+        "links": true,
+        "upstream_crate": "c_foreign_call",
+        "upstream_panic": "unwind"
+      },
+      {
+        "downstream_panic": "abort",
+        "error": null,
+        "links": true,
+        "upstream_crate": "c_unwind_foreign_call_inside_extern_c_body",
+        "upstream_panic": "unwind"
+      },
+      {
+        "downstream_panic": "abort",
+        "error": "error: the crate `ffi_up` requires panic strategy `unwind` which is incompatible with this crate's strategy of `abort`",
+        "links": false,
+        "upstream_crate": "c_unwind_fn_pointer_call",
+        "upstream_panic": "unwind"
+      },
+      {
+        "downstream_panic": "abort",
+        "error": null,
+        "links": true,
+        "upstream_crate": "c_unwind_rust_defined_callee",
+        "upstream_panic": "unwind"
+      },
+      {
+        "downstream_panic": "abort",
+        "error": "error: the crate `ffi_up` requires panic strategy `unwind` which is incompatible with this crate's strategy of `abort`",
+        "links": false,
+        "upstream_crate": "inline_asm_may_unwind",
+        "upstream_panic": "unwind"
+      },
+      {
+        "downstream_panic": "unwind",
+        "error": null,
+        "links": true,
+        "upstream_crate": "c_unwind_foreign_call",
+        "upstream_panic": "unwind"
+      },
+      {
+        "downstream_panic": "abort",
+        "error": null,
+        "links": true,
+        "upstream_crate": "c_unwind_foreign_call",
+        "upstream_panic": "abort"
+      },
+      {
+        "downstream_panic": "unwind",
+        "error": "error: the crate `ffi_up` requires panic strategy `abort` which is incompatible with this crate's strategy of `unwind`",
+        "links": false,
+        "upstream_crate": "c_unwind_foreign_call",
+        "upstream_panic": "abort"
+      },
+      {
+        "downstream_panic": "unwind",
+        "error": "error: the crate `ffi_up` requires panic strategy `abort` which is incompatible with this crate's strategy of `unwind`",
+        "links": false,
+        "upstream_crate": "pure_rust",
+        "upstream_panic": "abort"
+      },
+      {
+        "downstream_panic": "abort",
+        "error": null,
+        "links": true,
+        "upstream_crate": "pure_rust",
+        "upstream_panic": "abort"
+      }
+    ],
+    "ffi_no_std_unwind_rlib_with_ffi_unwind_call_into_abort_binary_links": true
+  }
+}
