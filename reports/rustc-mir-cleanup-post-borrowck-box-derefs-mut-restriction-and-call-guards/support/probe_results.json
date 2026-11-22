@@ -1,0 +1,629 @@
+{
+  "rustc_vv": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "probes": {
+    "cleanup_post_borrowck": {
+      "rc": 0,
+      "stderr": "",
+      "before_file": "cleanup_probe.cleanup_full_matrix.2-1-002.CleanupPostBorrowck.before.mir",
+      "after_file": "cleanup_probe.cleanup_full_matrix.2-1-002.CleanupPostBorrowck.after.mir",
+      "before_metrics": {
+        "fake_read": 12,
+        "fake_borrow": 1,
+        "ascribe_user_type": 5,
+        "user_ty_decl": 10,
+        "false_edge": 2,
+        "false_unwind": 1,
+        "coercion_array_to_ptr": 1,
+        "coercion_mut_to_const": 1,
+        "coercion_unsize": 1,
+        "ptr_to_ptr": 0,
+        "nop_stmts": 0,
+        "goto_terms": 6,
+        "bb_count": 25
+      },
+      "after_metrics": {
+        "fake_read": 0,
+        "fake_borrow": 0,
+        "ascribe_user_type": 0,
+        "user_ty_decl": 0,
+        "false_edge": 0,
+        "false_unwind": 0,
+        "coercion_array_to_ptr": 0,
+        "coercion_mut_to_const": 0,
+        "coercion_unsize": 1,
+        "ptr_to_ptr": 2,
+        "nop_stmts": 18,
+        "goto_terms": 9,
+        "bb_count": 25
+      },
+      "coverage_branch_probe": {
+        "rc": 0,
+        "before_file": "cleanup_probe.cov_branch.2-1-002.CleanupPostBorrowck.before.mir",
+        "after_file": "cleanup_probe.cov_branch.2-1-002.CleanupPostBorrowck.after.mir",
+        "before": {
+          "block_marker": 4,
+          "span_marker": 0,
+          "point_marker": 0,
+          "virtual_counter": 7,
+          "nop_stmts": 0
+        },
+        "after": {
+          "block_marker": 0,
+          "span_marker": 0,
+          "point_marker": 0,
+          "virtual_counter": 7,
+          "nop_stmts": 4
+        }
+      },
+      "before_excerpt": "// MIR for `cleanup_full_matrix` before CleanupPostBorrowck\n\n| User Type Annotations\n| 0: user_ty: Canonical { value: Ty(u32), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/cleanup_probe.rs:13:20: 13:23, inferred_ty: u32\n| 1: user_ty: Canonical { value: Ty(u32), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/cleanup_probe.rs:13:20: 13:23, inferred_ty: u32\n| 2: user_ty: Canonical { value: Ty(*const u32), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/cleanup_probe.rs:14:16: 14:26, inferred_ty: *const u32\n| 3: user_ty: Canonical { value: Ty(*const u32), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/cleanup_probe.rs:14:16: 14:26, inferred_ty: *const u32\n| 4: user_ty: Canonical { value: Ty(*mut u32), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/cleanup_probe.rs:15:16: 15:24, inferred_ty: *mut u32\n| 5: user_ty: Canonical { value: Ty(*mut u32), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/cleanup_probe.rs:15:16: 15:24, inferred_ty: *mut u32\n| 6: user_ty: Canonical { value: Ty(*const u32), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/cleanup_probe.rs:16:18: 16:28, inferred_ty: *const u32\n| 7: user_ty: Canonical { value: Ty(*const u32), max_universe: U0, var_kinds: [] }, span: <TMPDIR>/cleanup_probe.rs:16:18: 16:28, inferred_ty: *const u32\n| 8: user_ty: Canonical { value: Ty(&[u32]), max_universe: U0, var_kinds: [Region(U0)] }, span: <TMPDIR>/cleanup_probe.rs:17:16: 17:22, inferred_ty: &[u32]\n| 9: user_ty: Canonical { value: Ty(&[u32]), max_universe: U0, var_kinds: [Region(U0)] }, span: <TMPDIR>/cleanup_probe.rs:17:16: 17:22, inferred_ty: &[u32]\n|\nfn cleanup_full_matrix(_1: Option<&u32>, _2: &[u32; 4], _3: &mut u32) -> u32 {\n    debug opt => _1;\n    debug arr => _2;\n    debug m => _3;\n    let mut _0: u32;\n    let _4: DropGuard;\n    let mut _7: *const [u32; 4];\n    let mut _10: *mut u32;\n    let mut _12: &[u32; 4];\n    let mut _14: &std::option::Option<&u32>;\n    let mut _15: isize;\n    let mut _18: bool;\n    let mut _19: u32;\n    let mut _21: u32;\n    let mut _23: u32;\n    let _24: ();\n    let mut _25: ();\n    let _26: ();\n    let mut _27: bool;\n    let mut _28: u32;\n    let mut _29: !;\n    let mut _30: (u32, bool);\n    let mut _32: u32;\n    let mut _33: u32;\n    let mut _34: u32;\n    let mut _35: u32;\n    let mut _36: u32;\n    let mut _37: u32;\n    let mut _38: usize;\n    let mut _39: &[u32];\n    let _40: ();\n    let mut _41: u32;\n    let mut _42: u32;\n    let mut _43: u32;\n    let mut _44: u32;\n    let mut _45: u32;\n    scope 1 {\n        debug _g => _4;\n        let _5: u32 as UserTypeProjection { base: UserType(0), projs: [] };\n        scope 2 {\n            debug typed_val => _5;\n            let _6: *const u32 as UserTypeProjection { base: UserType(2), projs: [] };\n            scope 3 {\n                debug p_arr => _6;\n                let _8: *mut u32 as UserTypeProjection { base: UserType(4), projs: [] };\n                scope 4 {\n                    debug p_mut => _8;\n                    let _9: *const u32 as UserTypeProjection { base: UserType(6), projs: [] };\n                    scope 5 {\n                        debug p_const => _9;\n                        let _11: &[u32] as UserTypeProjection { base: UserType(8), projs: [] };\n                        scope 6 {\n                            debug slice => _11;\n                            let _13: u32;\n                            let _16: &u32;\n                            let _17: &&u32;\n                            let _20: &u32;\n                            scope 7 {\n                                debug matched => _13;\n                                let mut _22: u32;\n                                scope 10 {\n                                    debug cnt => _22;\n                                    let mut _31: u32;\n                                    scope 11 {\n                                        debug sum => _31;\n                                    }\n                                }\n                            }\n                            scope 8 {\n                                debug v => _16;\n                                debug v => _17;\n                            }\n                            scope 9 {\n                                debug v => _20;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_4);\n        _4 = DropGuard;\n        FakeRead(ForLet(None), _4);\n        StorageLive(_5);\n        _5 = copy (*_3);\n        FakeRead(ForLet(None), _5);\n        AscribeUserType(_5, o, UserTypeProjection { base: UserType(1), projs: [] });\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = &raw const (*_2);\n        _6 = move _7 as *const u32 (PointerCoercion(ArrayToPointer, AsCast));\n        StorageDead(_7);\n        FakeRead(ForLet(None), _6);\n        AscribeUserType(_6, o, UserTypeProjection { base: UserType(3), projs: [] });\n        StorageLive(_8);\n        _8 = &raw mut (*_3);\n        FakeRead(ForLet(None), _8);\n        AscribeUserType(_8, o, UserTypeProjection { base: UserType(5), projs: [] });",
+      "after_excerpt": "// MIR for `cleanup_full_matrix` after CleanupPostBorrowck\n\nfn cleanup_full_matrix(_1: Option<&u32>, _2: &[u32; 4], _3: &mut u32) -> u32 {\n    debug opt => _1;\n    debug arr => _2;\n    debug m => _3;\n    let mut _0: u32;\n    let _4: DropGuard;\n    let mut _7: *const [u32; 4];\n    let mut _10: *mut u32;\n    let mut _12: &[u32; 4];\n    let mut _14: &std::option::Option<&u32>;\n    let mut _15: isize;\n    let mut _18: bool;\n    let mut _19: u32;\n    let mut _21: u32;\n    let mut _23: u32;\n    let _24: ();\n    let mut _25: ();\n    let _26: ();\n    let mut _27: bool;\n    let mut _28: u32;\n    let mut _29: !;\n    let mut _30: (u32, bool);\n    let mut _32: u32;\n    let mut _33: u32;\n    let mut _34: u32;\n    let mut _35: u32;\n    let mut _36: u32;\n    let mut _37: u32;\n    let mut _38: usize;\n    let mut _39: &[u32];\n    let _40: ();\n    let mut _41: u32;\n    let mut _42: u32;\n    let mut _43: u32;\n    let mut _44: u32;\n    let mut _45: u32;\n    scope 1 {\n        debug _g => _4;\n        let _5: u32;\n        scope 2 {\n            debug typed_val => _5;\n            let _6: *const u32;\n            scope 3 {\n                debug p_arr => _6;\n                let _8: *mut u32;\n                scope 4 {\n                    debug p_mut => _8;\n                    let _9: *const u32;\n                    scope 5 {\n                        debug p_const => _9;\n                        let _11: &[u32];\n                        scope 6 {\n                            debug slice => _11;\n                            let _13: u32;\n                            let _16: &u32;\n                            let _17: &&u32;\n                            let _20: &u32;\n                            scope 7 {\n                                debug matched => _13;\n                                let mut _22: u32;\n                                scope 10 {\n                                    debug cnt => _22;\n                                    let mut _31: u32;\n                                    scope 11 {\n                                        debug sum => _31;\n                                    }\n                                }\n                            }\n                            scope 8 {\n                                debug v => _16;\n                                debug v => _17;\n                            }\n                            scope 9 {\n                                debug v => _20;\n                            }\n                        }\n                    }\n                }\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_4);\n        _4 = DropGuard;\n        nop;\n        StorageLive(_5);\n        _5 = copy (*_3);\n        nop;\n        nop;\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = &raw const (*_2);\n        _6 = move _7 as *const u32 (PtrToPtr);\n        StorageDead(_7);\n        nop;\n        nop;\n        StorageLive(_8);\n        _8 = &raw mut (*_3);\n        nop;\n        nop;\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = copy _8;\n        _9 = move _10 as *const u32 (PtrToPtr);\n        StorageDead(_10);\n        nop;\n        nop;\n        StorageLive(_11);\n        StorageLive(_12);\n        _12 = &(*_2);\n        _11 = move _12 as &[u32] (PointerCoercion(Unsize, Implicit));\n        StorageDead(_12);"
+    },
+    "elaborate_box_derefs": {
+      "rc": 0,
+      "stderr": "",
+      "before_file": "box_deref_probe.box_tuple_and_nested.2-2-009.ElaborateBoxDerefs.before.mir",
+      "after_file": "box_deref_probe.box_tuple_and_nested.2-2-009.ElaborateBoxDerefs.after.mir",
+      "uses_box_deref_transmute": false,
+      "uses_generic_transmute": true,
+      "uses_box_raw": false,
+      "uses_unique_nonnull_chain": true,
+      "cast_lines_after": [
+        "_26 = copy ((_1.0: std::ptr::Unique<(u32, u32)>).0: std::ptr::NonNull<(u32, u32)>) as *const (u32, u32) (Transmute);",
+        "_27 = copy ((_1.0: std::ptr::Unique<(u32, u32)>).0: std::ptr::NonNull<(u32, u32)>) as *const (u32, u32) (Transmute);",
+        "_28 = copy ((_2.0: std::ptr::Unique<std::boxed::Box<u32>>).0: std::ptr::NonNull<std::boxed::Box<u32>>) as *const std::boxed::Box<u32> (Transmute);",
+        "_29 = copy ((_23.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>) as *const u32 (Transmute);",
+        "_30 = copy ((_2.0: std::ptr::Unique<std::boxed::Box<u32>>).0: std::ptr::NonNull<std::boxed::Box<u32>>) as *const std::boxed::Box<u32> (Transmute);",
+        "_31 = copy ((_24.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>) as *const u32 (Transmute);",
+        "_32 = copy ((_3.0: std::ptr::Unique<[u32]>).0: std::ptr::NonNull<[u32]>) as *const [u32] (Transmute);",
+        "_33 = copy ((_3.0: std::ptr::Unique<[u32]>).0: std::ptr::NonNull<[u32]>) as *const [u32] (Transmute);",
+        "_34 = copy ((_3.0: std::ptr::Unique<[u32]>).0: std::ptr::NonNull<[u32]>) as *const [u32] (Transmute);",
+        "_35 = copy ((_4.0: std::ptr::Unique<()>).0: std::ptr::NonNull<()>) as *const () (Transmute);",
+        "_36 = copy ((_1.0: std::ptr::Unique<(u32, u32)>).0: std::ptr::NonNull<(u32, u32)>) as *const (u32, u32) (Transmute);",
+        "_37 = copy ((_1.0: std::ptr::Unique<(u32, u32)>).0: std::ptr::NonNull<(u32, u32)>) as *const (u32, u32) (Transmute);",
+        "_38 = copy ((_2.0: std::ptr::Unique<std::boxed::Box<u32>>).0: std::ptr::NonNull<std::boxed::Box<u32>>) as *const std::boxed::Box<u32> (Transmute);",
+        "_39 = copy ((_25.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>) as *const u32 (Transmute);"
+      ],
+      "var_debug_before_file": "box_deref_probe.custom_box_var_debug.2-2-009.ElaborateBoxDerefs.before.mir",
+      "var_debug_after_file": "box_deref_probe.custom_box_var_debug.2-2-009.ElaborateBoxDerefs.after.mir",
+      "var_debug_before_lines": [
+        "debug inner => (*_1);"
+      ],
+      "var_debug_after_lines": [
+        "debug inner => (*((((_1.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>).0: (*const u32) is !null).0: *const u32));"
+      ],
+      "var_debug_has_pattern_not_null": true,
+      "var_debug_after_mir": "// MIR for `custom_box_var_debug` after ElaborateBoxDerefs\n\nfn custom_box_var_debug(_1: Box<u32>) -> u32 {\n    debug inner => (*((((_1.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>).0: (*const u32) is !null).0: *const u32));\n    let mut _0: u32;\n    let mut _2: *const u32;\n\n    bb0: {\n        _2 = copy ((_1.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>) as *const u32 (Transmute);\n        _0 = copy (*_2);\n        return;\n    }\n}\n",
+      "before_excerpt": "// MIR for `box_tuple_and_nested` before ElaborateBoxDerefs\n\nfn box_tuple_and_nested(_1: Box<(u32, u32)>, _2: Box<Box<u32>>, _3: Box<[u32]>, _4: Box<()>) -> u32 {\n    debug b => _1;\n    debug bb => _2;\n    debug bs => _3;\n    debug bz => _4;\n    let mut _0: u32;\n    let mut _5: u32;\n    let mut _6: u32;\n    let mut _7: u32;\n    let mut _8: u32;\n    let _9: u32;\n    let mut _10: bool;\n    let mut _11: &[u32];\n    let _12: usize;\n    let mut _13: *const [u32];\n    let mut _14: usize;\n    let mut _15: bool;\n    let mut _17: u32;\n    let mut _18: u32;\n    let mut _19: u32;\n    let mut _20: u32;\n    let mut _21: u32;\n    let mut _22: u32;\n    let mut _23: std::boxed::Box<u32>;\n    let mut _24: std::boxed::Box<u32>;\n    let mut _25: std::boxed::Box<u32>;\n    scope 1 {\n        debug first => _9;\n        let _16: ();\n        scope 2 {\n            debug _u => _16;\n        }\n    }\n\n    bb0: {\n        StorageLive(_5);\n        StorageLive(_6);\n        _6 = copy ((*_1).0: u32);\n        _5 = core::num::<impl u32>::wrapping_add(move _6, const 10_u32) -> [return: bb1, unwind: bb15];\n    }\n\n    bb1: {\n        StorageDead(_6);\n        ((*_1).0: u32) = move _5;\n        StorageDead(_5);\n        StorageLive(_7);\n        StorageLive(_8);\n        _23 = no_retag copy (*_2);\n        _8 = copy (*_23);\n        _7 = core::num::<impl u32>::wrapping_add(move _8, const 5_u32) -> [return: bb2, unwind: bb15];\n    }\n\n    bb2: {\n        StorageDead(_8);\n        _24 = no_retag copy (*_2);\n        (*_24) = move _7;\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        StorageLive(_11);\n        _11 = &(*_3);\n        _10 = core::slice::<impl [u32]>::is_empty(move _11) -> [return: bb3, unwind: bb15];\n    }\n\n    bb3: {\n        switchInt(move _10) -> [0: bb5, otherwise: bb4];\n    }\n\n    bb4: {\n        StorageDead(_11);\n        _9 = const 0_u32;\n        goto -> bb7;\n    }\n\n    bb5: {\n        StorageDead(_11);\n        StorageLive(_12);\n        _12 = const 0_usize;",
+      "after_excerpt": "// MIR for `box_tuple_and_nested` after ElaborateBoxDerefs\n\nfn box_tuple_and_nested(_1: Box<(u32, u32)>, _2: Box<Box<u32>>, _3: Box<[u32]>, _4: Box<()>) -> u32 {\n    debug b => _1;\n    debug bb => _2;\n    debug bs => _3;\n    debug bz => _4;\n    let mut _0: u32;\n    let mut _5: u32;\n    let mut _6: u32;\n    let mut _7: u32;\n    let mut _8: u32;\n    let _9: u32;\n    let mut _10: bool;\n    let mut _11: &[u32];\n    let _12: usize;\n    let mut _13: *const [u32];\n    let mut _14: usize;\n    let mut _15: bool;\n    let mut _17: u32;\n    let mut _18: u32;\n    let mut _19: u32;\n    let mut _20: u32;\n    let mut _21: u32;\n    let mut _22: u32;\n    let mut _23: std::boxed::Box<u32>;\n    let mut _24: std::boxed::Box<u32>;\n    let mut _25: std::boxed::Box<u32>;\n    let mut _26: *const (u32, u32);\n    let mut _27: *const (u32, u32);\n    let mut _28: *const std::boxed::Box<u32>;\n    let mut _29: *const u32;\n    let mut _30: *const std::boxed::Box<u32>;\n    let mut _31: *const u32;\n    let mut _32: *const [u32];\n    let mut _33: *const [u32];\n    let mut _34: *const [u32];\n    let mut _35: *const ();\n    let mut _36: *const (u32, u32);\n    let mut _37: *const (u32, u32);\n    let mut _38: *const std::boxed::Box<u32>;\n    let mut _39: *const u32;\n    scope 1 {\n        debug first => _9;\n        let _16: ();\n        scope 2 {\n            debug _u => _16;\n        }\n    }\n\n    bb0: {\n        StorageLive(_5);\n        StorageLive(_6);\n        _26 = copy ((_1.0: std::ptr::Unique<(u32, u32)>).0: std::ptr::NonNull<(u32, u32)>) as *const (u32, u32) (Transmute);\n        _6 = copy ((*_26).0: u32);\n        _5 = core::num::<impl u32>::wrapping_add(move _6, const 10_u32) -> [return: bb1, unwind: bb15];\n    }\n\n    bb1: {\n        StorageDead(_6);\n        _27 = copy ((_1.0: std::ptr::Unique<(u32, u32)>).0: std::ptr::NonNull<(u32, u32)>) as *const (u32, u32) (Transmute);\n        ((*_27).0: u32) = move _5;\n        StorageDead(_5);\n        StorageLive(_7);\n        StorageLive(_8);\n        _28 = copy ((_2.0: std::ptr::Unique<std::boxed::Box<u32>>).0: std::ptr::NonNull<std::boxed::Box<u32>>) as *const std::boxed::Box<u32> (Transmute);\n        _23 = no_retag copy (*_28);\n        _29 = copy ((_23.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>) as *const u32 (Transmute);\n        _8 = copy (*_29);\n        _7 = core::num::<impl u32>::wrapping_add(move _8, const 5_u32) -> [return: bb2, unwind: bb15];\n    }\n\n    bb2: {\n        StorageDead(_8);\n        _30 = copy ((_2.0: std::ptr::Unique<std::boxed::Box<u32>>).0: std::ptr::NonNull<std::boxed::Box<u32>>) as *const std::boxed::Box<u32> (Transmute);\n        _24 = no_retag copy (*_30);\n        _31 = copy ((_24.0: std::ptr::Unique<u32>).0: std::ptr::NonNull<u32>) as *const u32 (Transmute);\n        (*_31) = move _7;\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        StorageLive(_11);\n        _32 = copy ((_3.0: std::ptr::Unique<[u32]>).0: std::ptr::NonNull<[u32]>) as *const [u32] (Transmute);\n        _11 = &(*_32);\n        _10 = core::slice::<impl [u32]>::is_empty(move _11) -> [return: bb3, unwind: bb15];\n    }\n\n    bb3: {\n        switchInt(move _10) -> [0: bb5, otherwise: bb4];\n    }\n\n    bb4: {\n        StorageDead(_11);\n        _9 = const 0_u32;\n        goto -> bb7;\n    }\n\n    bb5: {\n        StorageDead(_11);\n        StorageLive(_12);"
+    },
+    "miri_box_deref": {
+      "native_ok": {
+        "rc": 0,
+        "stdout": "CHECKSUM=60"
+      },
+      "miri_stacked_borrows_ok": {
+        "rc": 0,
+        "stdout": "CHECKSUM=60"
+      },
+      "miri_tree_borrows_ok": {
+        "rc": 0,
+        "stdout": "CHECKSUM=60"
+      },
+      "miri_dangling_box_ub": {
+        "rc": 1,
+        "detected_ub": true,
+        "stderr_excerpt": "   Compiling miri_box_ub_dangling v0.1.0 (<TMPDIR>/miri_box_ub_dangling)\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_box_ub_dangling`\nerror: Undefined Behavior: constructing invalid value of type std::boxed::Box<u32>: encountered a dangling box (use-after-free)\n     |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n     = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\nerror: aborting due to 1 previous error"
+      },
+      "miri_unaligned_box_ub": {
+        "rc": 1,
+        "detected_ub": true,
+        "stderr_excerpt": "   Compiling miri_box_ub_unaligned v0.1.0 (<TMPDIR>/miri_box_ub_unaligned)\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/miri_box_ub_unaligned`\nerror: Undefined Behavior: constructing invalid value of type std::boxed::Box<u32>: encountered an unaligned box (required 4 byte alignment but found 1)\n9 |         let bad_box: Box<u32> = std::mem::transmute(unaligned_ptr);\n  |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\nerror: aborting due to 1 previous error"
+      },
+      "miri_box_transmute_raw_deref_discriminator": {
+        "rc": 0,
+        "stdout": "UNALIGNED_BOX_RAW_DEREF_MOD4=1",
+        "detected_ub": false,
+        "stderr_excerpt": ""
+      }
+    },
+    "check_mut_restriction": {
+      "status": "syntax_accepted_lint_absent_fail_open",
+      "all_expectations_matched": false,
+      "cases": {
+        "direct_field_mut_err": {
+          "expected_error": true,
+          "rc": 0,
+          "matched_expectation": false,
+          "stderr": "warning: the feature `mut_restriction` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/mut_res_direct_field_mut_err.rs:2:12\n  |\n2 | #![feature(mut_restriction)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: see issue #105077 <https://github.com/rust-lang/rust/issues/105077> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+        },
+        "index_proj_field_mut_err": {
+          "expected_error": true,
+          "rc": 0,
+          "matched_expectation": false,
+          "stderr": "warning: the feature `mut_restriction` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/mut_res_index_proj_field_mut_err.rs:2:12\n  |\n2 | #![feature(mut_restriction)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: see issue #105077 <https://github.com/rust-lang/rust/issues/105077> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+        },
+        "struct_aggregate_err": {
+          "expected_error": true,
+          "rc": 0,
+          "matched_expectation": false,
+          "stderr": "warning: the feature `mut_restriction` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/mut_res_struct_aggregate_err.rs:2:12\n  |\n2 | #![feature(mut_restriction)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: see issue #105077 <https://github.com/rust-lang/rust/issues/105077> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+        },
+        "tuple_ctor_fn_val_err": {
+          "expected_error": true,
+          "rc": 0,
+          "matched_expectation": false,
+          "stderr": "warning: the feature `mut_restriction` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/mut_res_tuple_ctor_fn_val_err.rs:2:12\n  |\n2 | #![feature(mut_restriction)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: see issue #105077 <https://github.com/rust-lang/rust/issues/105077> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+        },
+        "whole_struct_overwrite_allowed": {
+          "expected_error": false,
+          "rc": 0,
+          "matched_expectation": true,
+          "stderr": "warning: the feature `mut_restriction` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/mut_res_whole_struct_overwrite_allowed.rs:2:12\n  |\n2 | #![feature(mut_restriction)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: see issue #105077 <https://github.com/rust-lang/rust/issues/105077> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+        },
+        "union_unrestricted_field_allowed": {
+          "expected_error": false,
+          "rc": 0,
+          "matched_expectation": true,
+          "stderr": "warning: the feature `mut_restriction` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/mut_res_union_unrestricted_field_allowed.rs:2:12\n  |\n2 | #![feature(mut_restriction)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: see issue #105077 <https://github.com/rust-lang/rust/issues/105077> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+        },
+        "union_restricted_field_err": {
+          "expected_error": true,
+          "rc": 0,
+          "matched_expectation": false,
+          "stderr": "warning: the feature `mut_restriction` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/mut_res_union_restricted_field_err.rs:2:12\n  |\n2 | #![feature(mut_restriction)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: see issue #105077 <https://github.com/rust-lang/rust/issues/105077> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+        }
+      }
+    },
+    "call_guards_and_landing_pads": {
+      "rc_unwind": 0,
+      "stderr_unwind": "",
+      "rc_abort": 0,
+      "stderr_abort": "",
+      "functions": {
+        "critical_noop_lp": {
+          "unwind_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.critical_noop_lp.2-1-003.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.critical_noop_lp.2-1-003.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 2,
+              "cleanup_after": 0,
+              "continue_before": 0,
+              "continue_after": 2
+            },
+            {
+              "before_file": "call_guards_probe.critical_noop_lp.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.critical_noop_lp.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 0,
+              "cleanup_after": 0,
+              "continue_before": 1,
+              "continue_after": 1
+            }
+          ],
+          "unwind_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.critical_noop_lp.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.critical_noop_lp.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 5,
+              "bb_after": 5,
+              "split_delta": 0
+            },
+            {
+              "before_file": "call_guards_probe.critical_noop_lp.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.critical_noop_lp.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 4,
+              "bb_after": 4,
+              "split_delta": 0
+            }
+          ],
+          "abort_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.critical_noop_lp.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.critical_noop_lp.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 0,
+              "cleanup_after": 0,
+              "continue_before": 0,
+              "continue_after": 0
+            }
+          ],
+          "abort_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.critical_noop_lp.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.critical_noop_lp.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 6,
+              "bb_after": 7,
+              "split_delta": 1
+            },
+            {
+              "before_file": "call_guards_probe.critical_noop_lp.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.critical_noop_lp.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 4,
+              "bb_after": 4,
+              "split_delta": 0
+            }
+          ],
+          "final_cg_before_mir": "// MIR for `critical_noop_lp` before AddCallGuards\n\nfn critical_noop_lp(_1: bool) -> u32 {\n    debug b => _1;\n    let mut _0: u32;\n    let _2: u32;\n    scope 1 {\n        debug r => _2;\n        scope 2 (inlined core::num::<impl u32>::wrapping_add) {\n        }\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _2 = may_unwind(const 1_u32) -> [return: bb3, unwind continue];\n    }\n\n    bb2: {\n        _2 = const 0_u32;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _0 = Add(copy _2, const 2_u32);\n        return;\n    }\n}\n",
+          "final_cg_after_mir": "// MIR for `critical_noop_lp` after AddCallGuards\n\nfn critical_noop_lp(_1: bool) -> u32 {\n    debug b => _1;\n    let mut _0: u32;\n    let _2: u32;\n    scope 1 {\n        debug r => _2;\n        scope 2 (inlined core::num::<impl u32>::wrapping_add) {\n        }\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _2 = may_unwind(const 1_u32) -> [return: bb3, unwind continue];\n    }\n\n    bb2: {\n        _2 = const 0_u32;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _0 = Add(copy _2, const 2_u32);\n        return;\n    }\n}\n"
+        },
+        "critical_real_drop_guard": {
+          "unwind_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.critical_real_drop_guard.2-1-003.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.critical_real_drop_guard.2-1-003.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 3,
+              "cleanup_after": 2,
+              "continue_before": 0,
+              "continue_after": 1
+            },
+            {
+              "before_file": "call_guards_probe.critical_real_drop_guard.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.critical_real_drop_guard.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 2,
+              "cleanup_after": 1,
+              "continue_before": 0,
+              "continue_after": 1
+            }
+          ],
+          "unwind_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.critical_real_drop_guard.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.critical_real_drop_guard.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 8,
+              "bb_after": 9,
+              "split_delta": 1
+            },
+            {
+              "before_file": "call_guards_probe.critical_real_drop_guard.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.critical_real_drop_guard.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 7,
+              "bb_after": 8,
+              "split_delta": 1
+            }
+          ],
+          "abort_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.critical_real_drop_guard.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.critical_real_drop_guard.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 0,
+              "cleanup_after": 0,
+              "continue_before": 0,
+              "continue_after": 0
+            }
+          ],
+          "abort_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.critical_real_drop_guard.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.critical_real_drop_guard.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 8,
+              "bb_after": 9,
+              "split_delta": 1
+            },
+            {
+              "before_file": "call_guards_probe.critical_real_drop_guard.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.critical_real_drop_guard.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 5,
+              "bb_after": 5,
+              "split_delta": 0
+            }
+          ],
+          "final_cg_before_mir": "// MIR for `critical_real_drop_guard` before AddCallGuards\n\nfn critical_real_drop_guard(_1: bool) -> u32 {\n    debug b => _1;\n    let mut _0: u32;\n    let _2: Guard;\n    scope 1 {\n        debug _g => _2;\n        let _3: u32;\n        scope 2 {\n            debug r => _3;\n            scope 3 (inlined core::num::<impl u32>::wrapping_add) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = const Guard(7_u32);\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _3 = may_unwind(const 1_u32) -> [return: bb3, unwind: bb5];\n    }\n\n    bb2: {\n        _3 = const 0_u32;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _0 = Add(copy _3, const 2_u32);\n        drop(_2) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        StorageDead(_2);\n        return;\n    }\n\n    bb5 (cleanup): {\n        drop(_2) -> [return: bb6, unwind terminate(cleanup)];\n    }\n\n    bb6 (cleanup): {\n        resume;\n    }\n}\n",
+          "final_cg_after_mir": "// MIR for `critical_real_drop_guard` after AddCallGuards\n\nfn critical_real_drop_guard(_1: bool) -> u32 {\n    debug b => _1;\n    let mut _0: u32;\n    let _2: Guard;\n    scope 1 {\n        debug _g => _2;\n        let _3: u32;\n        scope 2 {\n            debug r => _3;\n            scope 3 (inlined core::num::<impl u32>::wrapping_add) {\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = const Guard(7_u32);\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _3 = may_unwind(const 1_u32) -> [return: bb7, unwind: bb5];\n    }\n\n    bb2: {\n        _3 = const 0_u32;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _0 = Add(copy _3, const 2_u32);\n        drop(_2) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        StorageDead(_2);\n        return;\n    }\n\n    bb5 (cleanup): {\n        drop(_2) -> [return: bb6, unwind terminate(cleanup)];\n    }\n\n    bb6 (cleanup): {\n        resume;\n    }\n\n    bb7: {\n        goto -> bb3;\n    }\n}\n"
+        },
+        "non_critical_invoke_single_pred": {
+          "unwind_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.non_critical_invoke_single_pred.2-1-003.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.non_critical_invoke_single_pred.2-1-003.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 3,
+              "cleanup_after": 2,
+              "continue_before": 0,
+              "continue_after": 1
+            },
+            {
+              "before_file": "call_guards_probe.non_critical_invoke_single_pred.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.non_critical_invoke_single_pred.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 2,
+              "cleanup_after": 1,
+              "continue_before": 0,
+              "continue_after": 1
+            }
+          ],
+          "unwind_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.non_critical_invoke_single_pred.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.non_critical_invoke_single_pred.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 6,
+              "bb_after": 6,
+              "split_delta": 0
+            },
+            {
+              "before_file": "call_guards_probe.non_critical_invoke_single_pred.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.non_critical_invoke_single_pred.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 5,
+              "bb_after": 5,
+              "split_delta": 0
+            }
+          ],
+          "abort_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.non_critical_invoke_single_pred.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.non_critical_invoke_single_pred.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 0,
+              "cleanup_after": 0,
+              "continue_before": 0,
+              "continue_after": 0
+            }
+          ],
+          "abort_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.non_critical_invoke_single_pred.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.non_critical_invoke_single_pred.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 6,
+              "bb_after": 6,
+              "split_delta": 0
+            },
+            {
+              "before_file": "call_guards_probe.non_critical_invoke_single_pred.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.non_critical_invoke_single_pred.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 3,
+              "bb_after": 3,
+              "split_delta": 0
+            }
+          ]
+        },
+        "asm_label_with_output": {
+          "unwind_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.asm_label_with_output.2-1-003.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_label_with_output.2-1-003.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 1,
+              "cleanup_after": 0,
+              "continue_before": 0,
+              "continue_after": 1
+            },
+            {
+              "before_file": "call_guards_probe.asm_label_with_output.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_label_with_output.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 0,
+              "cleanup_after": 0,
+              "continue_before": 0,
+              "continue_after": 0
+            }
+          ],
+          "unwind_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.asm_label_with_output.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_label_with_output.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 7,
+              "bb_after": 8,
+              "split_delta": 1
+            },
+            {
+              "before_file": "call_guards_probe.asm_label_with_output.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_label_with_output.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 4,
+              "bb_after": 5,
+              "split_delta": 1
+            }
+          ],
+          "abort_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.asm_label_with_output.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_label_with_output.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 0,
+              "cleanup_after": 0,
+              "continue_before": 0,
+              "continue_after": 0
+            }
+          ],
+          "abort_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.asm_label_with_output.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_label_with_output.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 8,
+              "bb_after": 9,
+              "split_delta": 1
+            },
+            {
+              "before_file": "call_guards_probe.asm_label_with_output.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_label_with_output.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 4,
+              "bb_after": 5,
+              "split_delta": 1
+            }
+          ],
+          "final_cg_before_mir": "// MIR for `asm_label_with_output` before AddCallGuards\n\nfn asm_label_with_output(_1: bool, _2: u64) -> u64 {\n    debug b => _1;\n    debug x => _2;\n    let mut _0: u64;\n    let mut _3: u64;\n    scope 1 (inlined core::num::<impl u64>::wrapping_add) {\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb3, otherwise: bb1];\n    }\n\n    bb1: {\n        asm!(\"add {0}, 1\njmp {1}\", inout(reg) copy _2 => _2, label 1, options()) -> [return: bb3, label: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        StorageLive(_3);\n        _3 = Add(copy _2, const 10_u64);\n        _2 = move _3;\n        StorageDead(_3);\n        goto -> bb3;\n    }\n\n    bb3: {\n        _0 = copy _2;\n        return;\n    }\n}\n",
+          "final_cg_after_mir": "// MIR for `asm_label_with_output` after AddCallGuards\n\nfn asm_label_with_output(_1: bool, _2: u64) -> u64 {\n    debug b => _1;\n    debug x => _2;\n    let mut _0: u64;\n    let mut _3: u64;\n    scope 1 (inlined core::num::<impl u64>::wrapping_add) {\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb3, otherwise: bb1];\n    }\n\n    bb1: {\n        asm!(\"add {0}, 1\njmp {1}\", inout(reg) copy _2 => _2, label 1, options()) -> [return: bb4, label: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        StorageLive(_3);\n        _3 = Add(copy _2, const 10_u64);\n        _2 = move _3;\n        StorageDead(_3);\n        goto -> bb3;\n    }\n\n    bb3: {\n        _0 = copy _2;\n        return;\n    }\n\n    bb4: {\n        goto -> bb3;\n    }\n}\n"
+        },
+        "asm_label_no_output": {
+          "unwind_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.asm_label_no_output.2-1-003.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_label_no_output.2-1-003.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 0,
+              "cleanup_after": 0,
+              "continue_before": 0,
+              "continue_after": 0
+            },
+            {
+              "before_file": "call_guards_probe.asm_label_no_output.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_label_no_output.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 0,
+              "cleanup_after": 0,
+              "continue_before": 0,
+              "continue_after": 0
+            }
+          ],
+          "unwind_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.asm_label_no_output.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_label_no_output.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 6,
+              "bb_after": 6,
+              "split_delta": 0
+            },
+            {
+              "before_file": "call_guards_probe.asm_label_no_output.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_label_no_output.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 4,
+              "bb_after": 4,
+              "split_delta": 0
+            }
+          ],
+          "abort_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.asm_label_no_output.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_label_no_output.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 0,
+              "cleanup_after": 0,
+              "continue_before": 0,
+              "continue_after": 0
+            }
+          ],
+          "abort_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.asm_label_no_output.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_label_no_output.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 6,
+              "bb_after": 6,
+              "split_delta": 0
+            },
+            {
+              "before_file": "call_guards_probe.asm_label_no_output.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_label_no_output.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 4,
+              "bb_after": 4,
+              "split_delta": 0
+            }
+          ]
+        },
+        "asm_may_unwind_with_output": {
+          "unwind_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_with_output.2-1-003.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_with_output.2-1-003.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 2,
+              "cleanup_after": 1,
+              "continue_before": 0,
+              "continue_after": 1
+            },
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_with_output.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_with_output.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 2,
+              "cleanup_after": 1,
+              "continue_before": 0,
+              "continue_after": 1
+            }
+          ],
+          "unwind_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_with_output.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_with_output.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 8,
+              "bb_after": 8,
+              "split_delta": 0
+            },
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_with_output.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_with_output.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 6,
+              "bb_after": 7,
+              "split_delta": 1
+            }
+          ],
+          "abort_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_with_output.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_with_output.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 1,
+              "cleanup_after": 1,
+              "continue_before": 0,
+              "continue_after": 0
+            }
+          ],
+          "abort_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_with_output.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_with_output.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 8,
+              "bb_after": 8,
+              "split_delta": 0
+            },
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_with_output.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_with_output.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 6,
+              "bb_after": 7,
+              "split_delta": 1
+            }
+          ],
+          "final_cg_before_mir": "// MIR for `asm_may_unwind_with_output` before AddCallGuards\n\nfn asm_may_unwind_with_output(_1: bool, _2: u64) -> u64 {\n    debug b => _1;\n    debug x => _2;\n    let mut _0: u64;\n    let _3: Guard;\n    scope 1 {\n        debug _g => _3;\n    }\n\n    bb0: {\n        StorageLive(_3);\n        _3 = const Guard(11_u32);\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        asm!(\"add {0}, 1\", inout(reg) copy _2 => _2, options(MAY_UNWIND)) -> [return: bb2, unwind: bb4];\n    }\n\n    bb2: {\n        _0 = copy _2;\n        drop(_3) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        StorageDead(_3);\n        return;\n    }\n\n    bb4 (cleanup): {\n        drop(_3) -> [return: bb5, unwind terminate(cleanup)];\n    }\n\n    bb5 (cleanup): {\n        resume;\n    }\n}\n",
+          "final_cg_after_mir": "// MIR for `asm_may_unwind_with_output` after AddCallGuards\n\nfn asm_may_unwind_with_output(_1: bool, _2: u64) -> u64 {\n    debug b => _1;\n    debug x => _2;\n    let mut _0: u64;\n    let _3: Guard;\n    scope 1 {\n        debug _g => _3;\n    }\n\n    bb0: {\n        StorageLive(_3);\n        _3 = const Guard(11_u32);\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        asm!(\"add {0}, 1\", inout(reg) copy _2 => _2, options(MAY_UNWIND)) -> [return: bb6, unwind: bb4];\n    }\n\n    bb2: {\n        _0 = copy _2;\n        drop(_3) -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        StorageDead(_3);\n        return;\n    }\n\n    bb4 (cleanup): {\n        drop(_3) -> [return: bb5, unwind terminate(cleanup)];\n    }\n\n    bb5 (cleanup): {\n        resume;\n    }\n\n    bb6: {\n        goto -> bb2;\n    }\n}\n"
+        },
+        "asm_may_unwind_no_output": {
+          "unwind_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_no_output.2-1-003.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_no_output.2-1-003.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 2,
+              "cleanup_after": 1,
+              "continue_before": 0,
+              "continue_after": 1
+            },
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_no_output.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_no_output.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 2,
+              "cleanup_after": 1,
+              "continue_before": 0,
+              "continue_after": 1
+            }
+          ],
+          "unwind_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_no_output.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_no_output.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 8,
+              "bb_after": 8,
+              "split_delta": 0
+            },
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_no_output.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_no_output.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 7,
+              "bb_after": 7,
+              "split_delta": 0
+            }
+          ],
+          "abort_remove_noop_lp": [
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_no_output.3-2-026.RemoveNoopLandingPads.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_no_output.3-2-026.RemoveNoopLandingPads.after.mir",
+              "cleanup_before": 1,
+              "cleanup_after": 1,
+              "continue_before": 0,
+              "continue_after": 0
+            }
+          ],
+          "abort_add_call_guards": [
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_no_output.2-2-001.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_no_output.2-2-001.AddCallGuards.after.mir",
+              "bb_before": 8,
+              "bb_after": 8,
+              "split_delta": 0
+            },
+            {
+              "before_file": "call_guards_probe.asm_may_unwind_no_output.3-2-032.AddCallGuards.before.mir",
+              "after_file": "call_guards_probe.asm_may_unwind_no_output.3-2-032.AddCallGuards.after.mir",
+              "bb_before": 7,
+              "bb_after": 7,
+              "split_delta": 0
+            }
+          ]
+        }
+      }
+    }
+  }
+}

@@ -101210,6 +101210,62 @@
         "verification"
       ]
     },
+    "rustc-mir-cleanup-post-borrowck-box-derefs-mut-restriction-and-call-guards": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ce66487ebbd7541212d22d01c39a808057d69f1f"
+          },
+          "name": "rustc (rust-lang/rust HEAD)"
+        },
+        {
+          "identity": {
+            "host": "x86_64-unknown-linux-gnu",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "rustc 1.98.0-nightly (14210df0e 2026-05-31); miri 0.1.0 (14210df0e2 2026-05-31); LLVM 22.1.6"
+          },
+          "name": "rustc and Miri 1.98.0-nightly"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR semantics and boundary audit"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and elaborator"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-mir-construct-semantics-miri-minirust-and-codegen": {
       "observed_at": "2026-11-13",
       "subjects": [
