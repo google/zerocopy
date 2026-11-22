@@ -1,0 +1,2441 @@
+{
+ "invariant_checks": [
+  {
+   "check": "A1 model == rustc on every named check-cfg case",
+   "holds": true
+  },
+  {
+   "check": "A2 values(any()) absorbs in both orders",
+   "holds": true
+  },
+  {
+   "check": "A3 two --check-cfg flags union their values",
+   "holds": true
+  },
+  {
+   "check": "A4 cfg(name) alone expects only the bare form",
+   "holds": true
+  },
+  {
+   "check": "A5 120 orders of five specs give one verdict vector",
+   "holds": true
+  },
+  {
+   "check": "A6 seeded random differential test has no mismatch",
+   "holds": true
+  },
+  {
+   "check": "A7 tool cfgs miri/clippy/doc/doctest/rustfmt are well-known",
+   "holds": true
+  },
+  {
+   "check": "A8 `test` is not well-known under --check-cfg=cfg()",
+   "holds": true
+  },
+  {
+   "check": "A9 no --check-cfg flag means no unexpected_cfgs lint",
+   "holds": true
+  },
+  {
+   "check": "A10 user values on bare well-known name shadow the implicit none()",
+   "holds": true
+  },
+  {
+   "check": "A11 user values on valued well-known name are unioned",
+   "holds": true
+  },
+  {
+   "check": "B1 gated builtin cfgs are rejected at the default lint level",
+   "holds": true
+  },
+  {
+   "check": "B2 test, tool cfgs and unmatched shapes are accepted",
+   "holds": true
+  },
+  {
+   "check": "B3 baseline_default_flags: cfg view equals codegen view",
+   "holds": true
+  },
+  {
+   "check": "B3 baseline_all_checks_off: cfg view equals codegen view",
+   "holds": true
+  },
+  {
+   "check": "B3 baseline_all_checks_on: cfg view equals codegen view",
+   "holds": true
+  },
+  {
+   "check": "B4 spoof rejected at default level",
+   "holds": true
+  },
+  {
+   "check": "B5 spoof_with_A_lint: accepted and cfg(ub_checks) diverges from intrinsic",
+   "holds": true
+  },
+  {
+   "check": "B5 spoof_with_W_lint: accepted and cfg(ub_checks) diverges from intrinsic",
+   "holds": true
+  },
+  {
+   "check": "B5 spoof_with_cap_lints_allow: accepted and cfg(ub_checks) diverges from intrinsic",
+   "holds": true
+  },
+  {
+   "check": "B5 spoof_with_cap_lints_warn: accepted and cfg(ub_checks) diverges from intrinsic",
+   "holds": true
+  },
+  {
+   "check": "B5 spoof_with_in_source_allow: accepted and cfg(ub_checks) diverges from intrinsic",
+   "holds": true
+  },
+  {
+   "check": "B6 immediate-abort prints both panic values",
+   "holds": true
+  },
+  {
+   "check": "B7 kernel-address prints sanitize=\"address\"",
+   "holds": true
+  },
+  {
+   "check": "B9 --print cfg shows a spoofed ub_checks and reports nothing",
+   "holds": true
+  },
+  {
+   "check": "B8 bare target_has_atomic can be injected on a no-CAS target",
+   "holds": true
+  },
+  {
+   "check": "C1 i686: CAS at 64 without primitive alignment at 64",
+   "holds": true
+  },
+  {
+   "check": "C2 thumbv6m_none_eabi: load/store without CAS",
+   "holds": true
+  },
+  {
+   "check": "C2 riscv32imc_unknown_none_elf: load/store without CAS",
+   "holds": true
+  },
+  {
+   "check": "C3 x86_64_unknown_linux_gnu: no 128-bit atomic cfg",
+   "holds": true
+  },
+  {
+   "check": "C3 x86_64_unknown_linux_gnu_target_cpu_x86_64_v3: no 128-bit atomic cfg",
+   "holds": true
+  },
+  {
+   "check": "C3 x86_64_unknown_linux_gnu_target_feature_cmpxchg16b: no 128-bit atomic cfg",
+   "holds": true
+  },
+  {
+   "check": "C4 x86-64-v3 enables cmpxchg16b without enabling atomic 128",
+   "holds": true
+  },
+  {
+   "check": "C5 x86_64_apple_darwin: 128-bit atomic cfg present",
+   "holds": true
+  },
+  {
+   "check": "C5 x86_64_pc_windows_msvc: 128-bit atomic cfg present",
+   "holds": true
+  },
+  {
+   "check": "C6 census: CAS and primitive-alignment sets are subsets of load/store set",
+   "holds": true
+  },
+  {
+   "check": "C7 cfg_select!, cfg(target()), cfg(version()), cfg_accessible evaluate as expected",
+   "holds": true
+  },
+  {
+   "check": "C8 cfg_select! needs no feature gate, also in forced-stable mode",
+   "holds": true
+  },
+  {
+   "check": "C9 target(..), version(..), cfg_accessible are E0658 without their gates",
+   "holds": true
+  },
+  {
+   "check": "D1 unknown/un-gated/malformed/misplaced diagnostic attributes compile with warnings only",
+   "holds": true
+  },
+  {
+   "check": "D2 the same crate fails under -D warnings",
+   "holds": true
+  },
+  {
+   "check": "D3 first attribute wins message and label; notes concatenate in order",
+   "holds": true
+  },
+  {
+   "check": "D4 swapping the attributes changes message, label and note order",
+   "holds": true
+  },
+  {
+   "check": "D5 identical notes are emitted twice",
+   "holds": true
+  },
+  {
+   "check": "D6 later attributes fill options the earlier ones left unset",
+   "holds": true
+  },
+  {
+   "check": "D7 on_unimplemented on a trait alias is ignored",
+   "holds": true
+  },
+  {
+   "check": "D8 current_solver: reported predicate is the head of the outermost do_not_recommend impl",
+   "holds": true
+  },
+  {
+   "check": "D8 next_solver: reported predicate is the head of the outermost do_not_recommend impl",
+   "holds": true
+  },
+  {
+   "check": "D9 on_move: {Self} is the bare item name and {G} the instantiated argument",
+   "holds": true
+  },
+  {
+   "check": "D10 un-gated on_move is a warning, never E0658",
+   "holds": true
+  }
+ ],
+ "observed_at_utc": "2026-11-22T09:52:57Z",
+ "part_a_check_cfg": {
+  "deny_unexpected_cfgs": {
+   "error_count": 4,
+   "rc": 1
+  },
+  "named_cases": {
+   "any_names": {
+    "check_cfg": [
+     "cfg(any())"
+    ],
+    "model": [
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok"
+    ],
+    "observed": [
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok"
+    ],
+    "rc": 0
+   },
+   "any_names_plus_values": {
+    "check_cfg": [
+     "cfg(any())",
+     "cfg(mode, values(\"alpha\"))"
+    ],
+    "model": [
+     "ok",
+     "unexpected_value",
+     "unexpected_value",
+     "ok",
+     "ok",
+     "ok",
+     "ok"
+    ],
+    "observed": [
+     "ok",
+     "unexpected_value",
+     "unexpected_value",
+     "ok",
+     "ok",
+     "ok",
+     "ok"
+    ],
+    "rc": 0
+   },
+   "any_then_some": {
+    "check_cfg": [
+     "cfg(mode, values(any()))",
+     "cfg(mode, values(\"alpha\"))"
+    ],
+    "model": [
+     "ok",
+     "ok",
+     "ok",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "observed": [
+     "ok",
+     "ok",
+     "ok",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "rc": 0
+   },
+   "bare_name_is_values_none": {
+    "check_cfg": [
+     "cfg(mode)"
+    ],
+    "model": [
+     "unexpected_value",
+     "unexpected_value",
+     "ok",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "observed": [
+     "unexpected_value",
+     "unexpected_value",
+     "ok",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "rc": 0
+   },
+   "empty_cfg": {
+    "check_cfg": [
+     "cfg()"
+    ],
+    "model": [
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "observed": [
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "rc": 0
+   },
+   "empty_values": {
+    "check_cfg": [
+     "cfg(mode, values())"
+    ],
+    "model": [
+     "unexpected_value",
+     "unexpected_value",
+     "unexpected_value",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "observed": [
+     "unexpected_value",
+     "unexpected_value",
+     "unexpected_value",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "rc": 0
+   },
+   "multi_name": {
+    "check_cfg": [
+     "cfg(mode, lvl, values(\"x\"))"
+    ],
+    "model": [
+     "unexpected_value",
+     "unexpected_value",
+     "unexpected_value",
+     "ok",
+     "unexpected_value",
+     "unexpected_value",
+     "unexpected_name"
+    ],
+    "observed": [
+     "unexpected_value",
+     "unexpected_value",
+     "unexpected_value",
+     "ok",
+     "unexpected_value",
+     "unexpected_value",
+     "unexpected_name"
+    ],
+    "rc": 0
+   },
+   "no_check_cfg": {
+    "check_cfg": [],
+    "model": [
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok"
+    ],
+    "observed": [
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok",
+     "ok"
+    ],
+    "rc": 0
+   },
+   "none_and_alpha": {
+    "check_cfg": [
+     "cfg(mode, values(none(), \"alpha\"))"
+    ],
+    "model": [
+     "ok",
+     "unexpected_value",
+     "ok",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "observed": [
+     "ok",
+     "unexpected_value",
+     "ok",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "rc": 0
+   },
+   "only_alpha": {
+    "check_cfg": [
+     "cfg(mode, values(\"alpha\"))"
+    ],
+    "model": [
+     "ok",
+     "unexpected_value",
+     "unexpected_value",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "observed": [
+     "ok",
+     "unexpected_value",
+     "unexpected_value",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "rc": 0
+   },
+   "some_then_any": {
+    "check_cfg": [
+     "cfg(mode, values(\"alpha\"))",
+     "cfg(mode, values(any()))"
+    ],
+    "model": [
+     "ok",
+     "ok",
+     "ok",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "observed": [
+     "ok",
+     "ok",
+     "ok",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "rc": 0
+   },
+   "union_two_flags": {
+    "check_cfg": [
+     "cfg(mode, values(\"alpha\"))",
+     "cfg(mode, values(\"beta\", none()))"
+    ],
+    "model": [
+     "ok",
+     "ok",
+     "ok",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "observed": [
+     "ok",
+     "ok",
+     "ok",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name",
+     "unexpected_name"
+    ],
+    "rc": 0
+   }
+  },
+  "permutation_invariance": {
+   "distinct_verdict_vectors": 1,
+   "model_disagreements": 0,
+   "orders_run": 120,
+   "specs": [
+    "cfg(mode, values(\"alpha\"))",
+    "cfg(mode, values(\"beta\"))",
+    "cfg(lvl, values(any()))",
+    "cfg(lvl, values(\"x\"))",
+    "cfg(mode)"
+   ],
+   "verdict_vector": [
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "ok",
+    "unexpected_name"
+   ]
+  },
+  "predicates": [
+   "mode=\"alpha\"",
+   "mode=\"beta\"",
+   "mode",
+   "lvl=\"x\"",
+   "lvl=\"y\"",
+   "lvl",
+   "other"
+  ],
+  "random_differential": {
+   "mismatches": [],
+   "seed": 20261122,
+   "trials": 80
+  },
+  "well_known_under_empty_cfg": {
+   "rc": 0,
+   "verdicts": {
+    "clippy": "ok",
+    "debug_assertions": "ok",
+    "doc": "ok",
+    "doctest": "ok",
+    "feature": "unexpected_name",
+    "miri": "ok",
+    "panic": "unexpected_value",
+    "proc_macro": "ok",
+    "rust_analyzer": "unexpected_name",
+    "rustfmt": "ok",
+    "target_has_atomic": "ok",
+    "test": "unexpected_name",
+    "unix": "ok",
+    "windows": "ok"
+   }
+  },
+  "well_known_user_interaction": {
+   "baseline_empty_cfg": {
+    "check_cfg": [
+     "cfg()"
+    ],
+    "expected_values_notes": {
+     "panic = \"zzz\"": [
+      "expected values for `panic` are: `abort`, `immediate-abort`, and `unwind`"
+     ]
+    },
+    "rc": 0,
+    "verdicts": {
+     "debug_assertions": "ok",
+     "panic = \"abort\"": "ok",
+     "panic = \"zzz\"": "unexpected_value",
+     "target_os = \"linux\"": "ok",
+     "target_os = \"myos\"": "unexpected_value",
+     "unix": "ok"
+    }
+   },
+   "user_any_on_valued_well_known_panic": {
+    "check_cfg": [
+     "cfg(panic, values(any()))"
+    ],
+    "expected_values_notes": {},
+    "rc": 0,
+    "verdicts": {
+     "debug_assertions": "ok",
+     "panic = \"abort\"": "ok",
+     "panic = \"zzz\"": "ok",
+     "target_os = \"linux\"": "ok",
+     "target_os = \"myos\"": "unexpected_value",
+     "unix": "ok"
+    }
+   },
+   "user_values_on_bare_well_known_debug_assertions": {
+    "check_cfg": [
+     "cfg(debug_assertions, values(\"x\"))"
+    ],
+    "expected_values_notes": {
+     "debug_assertions": [
+      "expected values for `debug_assertions` are: `x`"
+     ],
+     "panic = \"zzz\"": [
+      "expected values for `panic` are: `abort`, `immediate-abort`, and `unwind`"
+     ]
+    },
+    "rc": 0,
+    "verdicts": {
+     "debug_assertions": "unexpected_value",
+     "panic = \"abort\"": "ok",
+     "panic = \"zzz\"": "unexpected_value",
+     "target_os = \"linux\"": "ok",
+     "target_os = \"myos\"": "unexpected_value",
+     "unix": "ok"
+    }
+   },
+   "user_values_on_bare_well_known_unix": {
+    "check_cfg": [
+     "cfg(unix, values(\"x\"))"
+    ],
+    "expected_values_notes": {
+     "panic = \"zzz\"": [
+      "expected values for `panic` are: `abort`, `immediate-abort`, and `unwind`"
+     ],
+     "unix": [
+      "expected values for `unix` are: `x`"
+     ]
+    },
+    "rc": 0,
+    "verdicts": {
+     "debug_assertions": "ok",
+     "panic = \"abort\"": "ok",
+     "panic = \"zzz\"": "unexpected_value",
+     "target_os = \"linux\"": "ok",
+     "target_os = \"myos\"": "unexpected_value",
+     "unix": "unexpected_value"
+    }
+   },
+   "user_values_on_valued_well_known_panic": {
+    "check_cfg": [
+     "cfg(panic, values(\"zzz\"))"
+    ],
+    "expected_values_notes": {},
+    "rc": 0,
+    "verdicts": {
+     "debug_assertions": "ok",
+     "panic = \"abort\"": "ok",
+     "panic = \"zzz\"": "ok",
+     "target_os = \"linux\"": "ok",
+     "target_os = \"myos\"": "unexpected_value",
+     "unix": "ok"
+    }
+   },
+   "user_values_on_valued_well_known_target_os": {
+    "check_cfg": [
+     "cfg(target_os, values(\"myos\"))"
+    ],
+    "expected_values_notes": {
+     "panic = \"zzz\"": [
+      "expected values for `panic` are: `abort`, `immediate-abort`, and `unwind`"
+     ]
+    },
+    "rc": 0,
+    "verdicts": {
+     "debug_assertions": "ok",
+     "panic = \"abort\"": "ok",
+     "panic = \"zzz\"": "unexpected_value",
+     "target_os = \"linux\"": "ok",
+     "target_os = \"myos\"": "ok",
+     "unix": "ok"
+    }
+   }
+  },
+  "well_known_without_check_cfg": {
+   "rc": 0,
+   "verdicts": {
+    "clippy": "ok",
+    "debug_assertions": "ok",
+    "doc": "ok",
+    "doctest": "ok",
+    "feature": "ok",
+    "miri": "ok",
+    "panic": "ok",
+    "proc_macro": "ok",
+    "rust_analyzer": "ok",
+    "rustfmt": "ok",
+    "target_has_atomic": "ok",
+    "test": "ok",
+    "unix": "ok",
+    "windows": "ok"
+   }
+  }
+ },
+ "part_b_builtin_cfgs_on_cli": {
+  "cli_cfg_matrix": {
+   "anneal_driver_test": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "clippy": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "contract_checks": {
+    "controlled_by": "config `contract_checks` is only supposed to be controlled by `-Z contract-checks`",
+    "level": "error",
+    "message": "unexpected `--cfg contract_checks` flag",
+    "rc": 1
+   },
+   "debug_assertions": {
+    "controlled_by": "config `debug_assertions` is only supposed to be controlled by `-C debug-assertions`",
+    "level": "error",
+    "message": "unexpected `--cfg debug_assertions` flag",
+    "rc": 1
+   },
+   "doc": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "doctest": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "feature=\"x\"": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "fmt_debug=\"full\"": {
+    "controlled_by": "config `fmt_debug` is only supposed to be controlled by `-Z fmt-debug`",
+    "level": "error",
+    "message": "unexpected `--cfg fmt_debug=\"full\"` flag",
+    "rc": 1
+   },
+   "miri": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "overflow_checks": {
+    "controlled_by": "config `overflow_checks` is only supposed to be controlled by `-C overflow-checks`",
+    "level": "error",
+    "message": "unexpected `--cfg overflow_checks` flag",
+    "rc": 1
+   },
+   "overflow_checks=\"x\"": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "panic": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "panic=\"abort\"": {
+    "controlled_by": "config `panic` is only supposed to be controlled by `-C panic`",
+    "level": "error",
+    "message": "unexpected `--cfg panic=\"abort\"` flag",
+    "rc": 1
+   },
+   "panic=\"immediate-abort\"": {
+    "controlled_by": "config `panic` is only supposed to be controlled by `-C panic`",
+    "level": "error",
+    "message": "unexpected `--cfg panic=\"immediate-abort\"` flag",
+    "rc": 1
+   },
+   "panic=\"unwind\"": {
+    "controlled_by": "config `panic` is only supposed to be controlled by `-C panic`",
+    "level": "error",
+    "message": "unexpected `--cfg panic=\"unwind\"` flag",
+    "rc": 1
+   },
+   "panic=\"zzz\"": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "proc_macro": {
+    "controlled_by": "config `proc_macro` is only supposed to be controlled by `--crate-type proc-macro`",
+    "level": "error",
+    "message": "unexpected `--cfg proc_macro` flag",
+    "rc": 1
+   },
+   "relocation_model=\"pic\"": {
+    "controlled_by": "config `relocation_model` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg relocation_model=\"pic\"` flag",
+    "rc": 1
+   },
+   "rust_analyzer": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "rustfmt": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "sanitize=\"address\"": {
+    "controlled_by": "config `sanitize` is only supposed to be controlled by `-Z sanitizer`",
+    "level": "error",
+    "message": "unexpected `--cfg sanitize=\"address\"` flag",
+    "rc": 1
+   },
+   "target_arch": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "target_arch=\"x86_64\"": {
+    "controlled_by": "config `target_arch` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg target_arch=\"x86_64\"` flag",
+    "rc": 1
+   },
+   "target_family=\"unix\"": {
+    "controlled_by": "config `target_family` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg target_family=\"unix\"` flag",
+    "rc": 1
+   },
+   "target_feature=\"avx2\"": {
+    "controlled_by": "config `target_feature` is only supposed to be controlled by `-C target-feature`",
+    "level": "error",
+    "message": "unexpected `--cfg target_feature=\"avx2\"` flag",
+    "rc": 1
+   },
+   "target_has_atomic": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "target_has_atomic=\"128\"": {
+    "controlled_by": "config `target_has_atomic` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg target_has_atomic=\"128\"` flag",
+    "rc": 1
+   },
+   "target_has_atomic_load_store": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "target_has_atomic_load_store=\"8\"": {
+    "controlled_by": "config `target_has_atomic_load_store` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg target_has_atomic_load_store=\"8\"` flag",
+    "rc": 1
+   },
+   "target_has_atomic_primitive_alignment=\"8\"": {
+    "controlled_by": "config `target_has_atomic_primitive_alignment` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg target_has_atomic_primitive_alignment=\"8\"` flag",
+    "rc": 1
+   },
+   "target_os": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "target_os=\"linux\"": {
+    "controlled_by": "config `target_os` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg target_os=\"linux\"` flag",
+    "rc": 1
+   },
+   "target_pointer_width=\"64\"": {
+    "controlled_by": "config `target_pointer_width` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg target_pointer_width=\"64\"` flag",
+    "rc": 1
+   },
+   "target_thread_local": {
+    "controlled_by": "config `target_thread_local` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg target_thread_local` flag",
+    "rc": 1
+   },
+   "test": {
+    "controlled_by": null,
+    "level": null,
+    "message": null,
+    "rc": 0
+   },
+   "ub_checks": {
+    "controlled_by": "config `ub_checks` is only supposed to be controlled by `-Z ub-checks`",
+    "level": "error",
+    "message": "unexpected `--cfg ub_checks` flag",
+    "rc": 1
+   },
+   "unix": {
+    "controlled_by": "config `unix` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg unix` flag",
+    "rc": 1
+   },
+   "windows": {
+    "controlled_by": "config `windows` is only supposed to be controlled by `--target`",
+    "level": "error",
+    "message": "unexpected `--cfg windows` flag",
+    "rc": 1
+   }
+  },
+  "gate_diagnostic_children": [
+   {
+    "level": "note",
+    "message": "config `ub_checks` is only supposed to be controlled by `-Z ub-checks`"
+   },
+   {
+    "level": "note",
+    "message": "manually setting a built-in cfg can and does create incoherent behaviors"
+   },
+   {
+    "level": "note",
+    "message": "`#[deny(explicit_builtin_cfgs_in_flags)]` on by default"
+   }
+  ],
+  "lint_level_bypass": {
+   "baseline_all_checks_off": {
+    "argv": [
+     "rustc",
+     "--edition",
+     "2024",
+     "--error-format=json",
+     "-o",
+     "probe_bin",
+     "coherence.rs",
+     "-Zub-checks=no",
+     "-Coverflow-checks=off",
+     "-Cdebug-assertions=off"
+    ],
+    "gate_diagnostic_count": 0,
+    "gate_diagnostic_levels": [],
+    "program_output": {
+     "cfg_debug_assertions": "false",
+     "cfg_overflow_checks": "false",
+     "cfg_ub_checks": "false",
+     "intrinsic_ub_checks": "false",
+     "overflow_add_panicked": "false"
+    },
+    "rc": 0
+   },
+   "baseline_all_checks_on": {
+    "argv": [
+     "rustc",
+     "--edition",
+     "2024",
+     "--error-format=json",
+     "-o",
+     "probe_bin",
+     "coherence.rs",
+     "-Zub-checks=yes",
+     "-Coverflow-checks=on",
+     "-Cdebug-assertions=on"
+    ],
+    "gate_diagnostic_count": 0,
+    "gate_diagnostic_levels": [],
+    "program_output": {
+     "cfg_debug_assertions": "true",
+     "cfg_overflow_checks": "true",
+     "cfg_ub_checks": "true",
+     "intrinsic_ub_checks": "true",
+     "overflow_add_panicked": "true"
+    },
+    "rc": 0
+   },
+   "baseline_default_flags": {
+    "argv": [
+     "rustc",
+     "--edition",
+     "2024",
+     "--error-format=json",
+     "-o",
+     "probe_bin",
+     "coherence.rs"
+    ],
+    "gate_diagnostic_count": 0,
+    "gate_diagnostic_levels": [],
+    "program_output": {
+     "cfg_debug_assertions": "true",
+     "cfg_overflow_checks": "true",
+     "cfg_ub_checks": "true",
+     "intrinsic_ub_checks": "true",
+     "overflow_add_panicked": "true"
+    },
+    "rc": 0
+   },
+   "spoof_at_default_lint_level": {
+    "argv": [
+     "rustc",
+     "--edition",
+     "2024",
+     "--error-format=json",
+     "-o",
+     "probe_bin",
+     "coherence.rs",
+     "-Zub-checks=no",
+     "-Coverflow-checks=off",
+     "-Cdebug-assertions=off",
+     "--cfg",
+     "ub_checks",
+     "--cfg",
+     "overflow_checks",
+     "--cfg",
+     "debug_assertions"
+    ],
+    "gate_diagnostic_count": 3,
+    "gate_diagnostic_levels": [
+     "error"
+    ],
+    "program_output": null,
+    "rc": 1
+   },
+   "spoof_with_A_lint": {
+    "argv": [
+     "rustc",
+     "--edition",
+     "2024",
+     "--error-format=json",
+     "-o",
+     "probe_bin",
+     "coherence.rs",
+     "-Zub-checks=no",
+     "-Coverflow-checks=off",
+     "-Cdebug-assertions=off",
+     "--cfg",
+     "ub_checks",
+     "--cfg",
+     "overflow_checks",
+     "--cfg",
+     "debug_assertions",
+     "-A",
+     "explicit_builtin_cfgs_in_flags"
+    ],
+    "gate_diagnostic_count": 0,
+    "gate_diagnostic_levels": [],
+    "program_output": {
+     "cfg_debug_assertions": "true",
+     "cfg_overflow_checks": "true",
+     "cfg_ub_checks": "true",
+     "intrinsic_ub_checks": "false",
+     "overflow_add_panicked": "false"
+    },
+    "rc": 0
+   },
+   "spoof_with_W_lint": {
+    "argv": [
+     "rustc",
+     "--edition",
+     "2024",
+     "--error-format=json",
+     "-o",
+     "probe_bin",
+     "coherence.rs",
+     "-Zub-checks=no",
+     "-Coverflow-checks=off",
+     "-Cdebug-assertions=off",
+     "--cfg",
+     "ub_checks",
+     "--cfg",
+     "overflow_checks",
+     "--cfg",
+     "debug_assertions",
+     "-W",
+     "explicit_builtin_cfgs_in_flags"
+    ],
+    "gate_diagnostic_count": 3,
+    "gate_diagnostic_levels": [
+     "warning"
+    ],
+    "program_output": {
+     "cfg_debug_assertions": "true",
+     "cfg_overflow_checks": "true",
+     "cfg_ub_checks": "true",
+     "intrinsic_ub_checks": "false",
+     "overflow_add_panicked": "false"
+    },
+    "rc": 0
+   },
+   "spoof_with_cap_lints_allow": {
+    "argv": [
+     "rustc",
+     "--edition",
+     "2024",
+     "--error-format=json",
+     "-o",
+     "probe_bin",
+     "coherence.rs",
+     "-Zub-checks=no",
+     "-Coverflow-checks=off",
+     "-Cdebug-assertions=off",
+     "--cfg",
+     "ub_checks",
+     "--cfg",
+     "overflow_checks",
+     "--cfg",
+     "debug_assertions",
+     "--cap-lints",
+     "allow"
+    ],
+    "gate_diagnostic_count": 0,
+    "gate_diagnostic_levels": [],
+    "program_output": {
+     "cfg_debug_assertions": "true",
+     "cfg_overflow_checks": "true",
+     "cfg_ub_checks": "true",
+     "intrinsic_ub_checks": "false",
+     "overflow_add_panicked": "false"
+    },
+    "rc": 0
+   },
+   "spoof_with_cap_lints_warn": {
+    "argv": [
+     "rustc",
+     "--edition",
+     "2024",
+     "--error-format=json",
+     "-o",
+     "probe_bin",
+     "coherence.rs",
+     "-Zub-checks=no",
+     "-Coverflow-checks=off",
+     "-Cdebug-assertions=off",
+     "--cfg",
+     "ub_checks",
+     "--cfg",
+     "overflow_checks",
+     "--cfg",
+     "debug_assertions",
+     "--cap-lints",
+     "warn"
+    ],
+    "gate_diagnostic_count": 3,
+    "gate_diagnostic_levels": [
+     "warning"
+    ],
+    "program_output": {
+     "cfg_debug_assertions": "true",
+     "cfg_overflow_checks": "true",
+     "cfg_ub_checks": "true",
+     "intrinsic_ub_checks": "false",
+     "overflow_add_panicked": "false"
+    },
+    "rc": 0
+   },
+   "spoof_with_in_source_allow": {
+    "argv": [
+     "rustc",
+     "--edition",
+     "2024",
+     "--error-format=json",
+     "-o",
+     "probe_bin",
+     "coherence_allow.rs",
+     "-Zub-checks=no",
+     "-Coverflow-checks=off",
+     "-Cdebug-assertions=off",
+     "--cfg",
+     "ub_checks",
+     "--cfg",
+     "overflow_checks",
+     "--cfg",
+     "debug_assertions"
+    ],
+    "gate_diagnostic_count": 0,
+    "gate_diagnostic_levels": [],
+    "program_output": {
+     "cfg_debug_assertions": "true",
+     "cfg_overflow_checks": "true",
+     "cfg_ub_checks": "true",
+     "intrinsic_ub_checks": "false",
+     "overflow_add_panicked": "false"
+    },
+    "rc": 0
+   }
+  },
+  "print_cfg": {
+   "bare_target_has_atomic_on_thumbv6m": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "thumbv6m-none-eabi"
+    ],
+    "errors": [],
+    "lines": [
+     "target_has_atomic_load_store"
+    ],
+    "rc": 0
+   },
+   "bare_target_has_atomic_on_thumbv6m_spoofed": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "thumbv6m-none-eabi",
+     "--cfg",
+     "target_has_atomic"
+    ],
+    "errors": [],
+    "lines": [
+     "target_has_atomic",
+     "target_has_atomic_load_store"
+    ],
+    "rc": 0
+   },
+   "panic_abort": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Cpanic=abort"
+    ],
+    "errors": [],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"abort\"",
+     "ub_checks"
+    ],
+    "rc": 0
+   },
+   "panic_immediate_abort": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Zunstable-options",
+     "-Cpanic=immediate-abort"
+    ],
+    "errors": [],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"abort\"",
+     "panic=\"immediate-abort\"",
+     "ub_checks"
+    ],
+    "rc": 0
+   },
+   "panic_immediate_abort_without_unstable_options": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Cpanic=immediate-abort"
+    ],
+    "errors": [
+     "error: `-Cpanic=immediate-abort` requires `-Zunstable-options` and a nightly compiler"
+    ],
+    "lines": [],
+    "rc": 1
+   },
+   "panic_unwind": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Cpanic=unwind"
+    ],
+    "errors": [],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"unwind\"",
+     "ub_checks"
+    ],
+    "rc": 0
+   },
+   "sanitizer_address": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Zsanitizer=address"
+    ],
+    "errors": [],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"unwind\"",
+     "sanitize=\"address\"",
+     "ub_checks"
+    ],
+    "rc": 0
+   },
+   "sanitizer_address_leak": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Zsanitizer=address,leak"
+    ],
+    "errors": [],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"unwind\"",
+     "sanitize=\"address\"",
+     "sanitize=\"leak\"",
+     "ub_checks"
+    ],
+    "rc": 0
+   },
+   "sanitizer_hwaddress_aarch64_linux": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Zsanitizer=hwaddress",
+     "--target",
+     "aarch64-unknown-linux-gnu"
+    ],
+    "errors": [],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"unwind\"",
+     "sanitize=\"hwaddress\"",
+     "ub_checks"
+    ],
+    "rc": 0
+   },
+   "sanitizer_kernel_address_on_unsupported_host_target": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Zsanitizer=kernel-address"
+    ],
+    "errors": [
+     "error: kernel-address sanitizer is not supported for this target",
+     "error: aborting due to 1 previous error"
+    ],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"unwind\"",
+     "sanitize=\"address\"",
+     "ub_checks"
+    ],
+    "rc": 1
+   },
+   "sanitizer_kernel_address_x86_64_unknown_none": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Zsanitizer=kernel-address",
+     "--target",
+     "x86_64-unknown-none"
+    ],
+    "errors": [],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"abort\"",
+     "sanitize=\"address\"",
+     "ub_checks"
+    ],
+    "rc": 0
+   },
+   "sanitizer_kernel_hwaddress_aarch64_none": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Zsanitizer=kernel-hwaddress",
+     "--target",
+     "aarch64-unknown-none"
+    ],
+    "errors": [],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"abort\"",
+     "sanitize=\"hwaddress\"",
+     "ub_checks"
+    ],
+    "rc": 0
+   },
+   "spoofed_ub_checks_in_print_mode": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Zub-checks=no",
+     "--cfg",
+     "ub_checks"
+    ],
+    "errors": [],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"unwind\"",
+     "ub_checks"
+    ],
+    "rc": 0
+   },
+   "ub_checks_off_in_print_mode": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "-Zub-checks=no"
+    ],
+    "errors": [],
+    "lines": [
+     "debug_assertions",
+     "overflow_checks",
+     "panic=\"unwind\""
+    ],
+    "rc": 0
+   }
+  }
+ },
+ "part_c_atomics_and_predicates": {
+  "all_builtin_targets_census": {
+   "cas_superset_violations": [],
+   "cas_without_primitive_alignment": {
+    "128": [
+     "s390x-unknown-linux-gnu",
+     "s390x-unknown-linux-musl",
+     "s390x-unknown-none-softfloat"
+    ],
+    "32": [
+     "m68k-unknown-linux-gnu",
+     "m68k-unknown-none-elf"
+    ],
+    "64": [
+     "armv7s-apple-ios",
+     "i386-apple-ios",
+     "i586-unknown-linux-gnu",
+     "i586-unknown-linux-musl",
+     "i586-unknown-netbsd",
+     "i586-unknown-redox",
+     "i686-apple-darwin",
+     "i686-linux-android",
+     "i686-pc-nto-qnx700",
+     "i686-unknown-freebsd",
+     "i686-unknown-haiku",
+     "i686-unknown-helenos",
+     "i686-unknown-hurd-gnu",
+     "i686-unknown-linux-gnu",
+     "i686-unknown-linux-musl",
+     "i686-unknown-netbsd",
+     "i686-unknown-openbsd",
+     "i686-wrs-vxworks"
+    ],
+    "ptr": [
+     "m68k-unknown-linux-gnu",
+     "m68k-unknown-none-elf"
+    ]
+   },
+   "has_atomic_128": [
+    "aarch64-apple-darwin",
+    "aarch64-apple-ios",
+    "aarch64-apple-ios-macabi",
+    "aarch64-apple-ios-sim",
+    "aarch64-apple-tvos",
+    "aarch64-apple-tvos-sim",
+    "aarch64-apple-visionos",
+    "aarch64-apple-visionos-sim",
+    "aarch64-apple-watchos",
+    "aarch64-apple-watchos-sim",
+    "aarch64-kmc-solid_asp3",
+    "aarch64-linux-android",
+    "aarch64-nintendo-switch-freestanding",
+    "aarch64-pc-windows-gnullvm",
+    "aarch64-pc-windows-msvc",
+    "aarch64-unknown-freebsd",
+    "aarch64-unknown-fuchsia",
+    "aarch64-unknown-helenos",
+    "aarch64-unknown-hermit",
+    "aarch64-unknown-illumos",
+    "aarch64-unknown-linux-gnu",
+    "aarch64-unknown-linux-gnu_ilp32",
+    "aarch64-unknown-linux-musl",
+    "aarch64-unknown-linux-ohos",
+    "aarch64-unknown-managarm-mlibc",
+    "aarch64-unknown-netbsd",
+    "aarch64-unknown-none",
+    "aarch64-unknown-none-softfloat",
+    "aarch64-unknown-nto-qnx700",
+    "aarch64-unknown-nto-qnx710",
+    "aarch64-unknown-nto-qnx710_iosock",
+    "aarch64-unknown-nto-qnx800",
+    "aarch64-unknown-nuttx",
+    "aarch64-unknown-openbsd",
+    "aarch64-unknown-redox",
+    "aarch64-unknown-teeos",
+    "aarch64-unknown-trusty",
+    "aarch64-unknown-uefi",
+    "aarch64-uwp-windows-msvc",
+    "aarch64-wrs-vxworks",
+    "aarch64_be-unknown-hermit",
+    "aarch64_be-unknown-linux-gnu",
+    "aarch64_be-unknown-linux-gnu_ilp32",
+    "aarch64_be-unknown-linux-musl",
+    "aarch64_be-unknown-netbsd",
+    "aarch64_be-unknown-none-softfloat",
+    "aarch64v8r-unknown-none",
+    "aarch64v8r-unknown-none-softfloat",
+    "arm64_32-apple-watchos",
+    "arm64e-apple-darwin",
+    "arm64e-apple-ios",
+    "arm64e-apple-tvos",
+    "arm64ec-pc-windows-msvc",
+    "s390x-unknown-linux-gnu",
+    "s390x-unknown-linux-musl",
+    "s390x-unknown-none-softfloat",
+    "x86_64-apple-darwin",
+    "x86_64-apple-ios",
+    "x86_64-apple-ios-macabi",
+    "x86_64-apple-tvos",
+    "x86_64-apple-watchos-sim",
+    "x86_64-pc-windows-gnu",
+    "x86_64-pc-windows-gnullvm",
+    "x86_64-pc-windows-msvc",
+    "x86_64-unknown-fuchsia",
+    "x86_64-uwp-windows-gnu",
+    "x86_64-uwp-windows-msvc",
+    "x86_64h-apple-darwin"
+   ],
+   "load_store_without_cas": [
+    "avr-none",
+    "bpfeb-unknown-none",
+    "bpfel-unknown-none",
+    "riscv32e-unknown-none-elf",
+    "riscv32em-unknown-none-elf",
+    "riscv32emc-unknown-none-elf",
+    "riscv32i-unknown-none-elf",
+    "riscv32im-unknown-none-elf",
+    "riscv32imc-unknown-none-elf",
+    "riscv64im-unknown-none-elf",
+    "thumbv6m-none-eabi",
+    "xtensa-esp32s2-none-elf"
+   ],
+   "no_atomics": [
+    "armv4t-none-eabi",
+    "armv5te-none-eabi",
+    "mipsel-sony-psx",
+    "msp430-none-elf",
+    "thumbv4t-none-eabi",
+    "thumbv5te-none-eabi"
+   ],
+   "print_cfg_failures": [],
+   "targets": 322
+  },
+  "atomic_matrix": {
+   "aarch64_unknown_linux_gnu": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "aarch64-unknown-linux-gnu"
+    ],
+    "bare_target_has_atomic": true,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": false,
+    "target_has_atomic": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_load_store": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ]
+   },
+   "bpfel_unknown_none": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "bpfel-unknown-none"
+    ],
+    "bare_target_has_atomic": false,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": false,
+    "target_has_atomic": [],
+    "target_has_atomic_load_store": [
+     "64",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "64",
+     "ptr"
+    ]
+   },
+   "bpfel_unknown_none_target_cpu_v4": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "bpfel-unknown-none",
+     "-Ctarget-cpu=v4"
+    ],
+    "bare_target_has_atomic": false,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": false,
+    "target_has_atomic": [],
+    "target_has_atomic_load_store": [
+     "64",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "64",
+     "ptr"
+    ]
+   },
+   "i686_unknown_linux_gnu": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "i686-unknown-linux-gnu"
+    ],
+    "bare_target_has_atomic": true,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": false,
+    "target_has_atomic": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_load_store": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "16",
+     "32",
+     "8",
+     "ptr"
+    ]
+   },
+   "m68k_unknown_linux_gnu": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "m68k-unknown-linux-gnu"
+    ],
+    "bare_target_has_atomic": true,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": false,
+    "target_has_atomic": [
+     "16",
+     "32",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_load_store": [
+     "16",
+     "32",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "16",
+     "8"
+    ]
+   },
+   "riscv32imc_unknown_none_elf": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "riscv32imc-unknown-none-elf"
+    ],
+    "bare_target_has_atomic": false,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": false,
+    "target_has_atomic": [],
+    "target_has_atomic_load_store": [
+     "16",
+     "32",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "16",
+     "32",
+     "8",
+     "ptr"
+    ]
+   },
+   "s390x_unknown_linux_gnu": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "s390x-unknown-linux-gnu"
+    ],
+    "bare_target_has_atomic": true,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": false,
+    "target_has_atomic": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_load_store": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ]
+   },
+   "thumbv6m_none_eabi": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "thumbv6m-none-eabi"
+    ],
+    "bare_target_has_atomic": false,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": false,
+    "target_has_atomic": [],
+    "target_has_atomic_load_store": [
+     "16",
+     "32",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "16",
+     "32",
+     "8",
+     "ptr"
+    ]
+   },
+   "x86_64_apple_darwin": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "x86_64-apple-darwin"
+    ],
+    "bare_target_has_atomic": true,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": true,
+    "target_has_atomic": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_load_store": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ]
+   },
+   "x86_64_pc_windows_msvc": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "x86_64-pc-windows-msvc"
+    ],
+    "bare_target_has_atomic": true,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": true,
+    "target_has_atomic": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_load_store": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "128",
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ]
+   },
+   "x86_64_unknown_linux_gnu": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "x86_64-unknown-linux-gnu"
+    ],
+    "bare_target_has_atomic": true,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": false,
+    "target_has_atomic": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_load_store": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ]
+   },
+   "x86_64_unknown_linux_gnu_target_cpu_x86_64_v3": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "x86_64-unknown-linux-gnu",
+     "-Ctarget-cpu=x86-64-v3"
+    ],
+    "bare_target_has_atomic": true,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": true,
+    "target_has_atomic": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_load_store": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ]
+   },
+   "x86_64_unknown_linux_gnu_target_feature_cmpxchg16b": {
+    "argv": [
+     "rustc",
+     "--print",
+     "cfg",
+     "--target",
+     "x86_64-unknown-linux-gnu",
+     "-Ctarget-feature=+cmpxchg16b"
+    ],
+    "bare_target_has_atomic": true,
+    "bare_target_has_atomic_load_store": true,
+    "errors": [],
+    "rc": 0,
+    "target_feature_cmpxchg16b": true,
+    "target_has_atomic": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_load_store": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ],
+    "target_has_atomic_primitive_alignment": [
+     "16",
+     "32",
+     "64",
+     "8",
+     "ptr"
+    ]
+   }
+  },
+  "cfg_select_arms_are_check_cfg_linted": {
+   "rc": 0,
+   "unexpected_cfgs": [
+    "unexpected `cfg` condition name: `zzz_unknown`"
+   ]
+  },
+  "cfg_select_without_feature": {
+   "forced_stable": {
+    "env": {
+     "RUSTC_BOOTSTRAP": "-1"
+    },
+    "program_output": {
+     "SELECTED": "unix"
+    },
+    "rc": 0
+   },
+   "nightly": {
+    "program_output": {
+     "SELECTED": "unix"
+    },
+    "rc": 0
+   }
+  },
+  "host_print_cfg_nightly_vs_forced_stable": {
+   "env_for_forced_stable": {
+    "RUSTC_BOOTSTRAP": "-1"
+   },
+   "only_on_forced_stable": [],
+   "only_on_nightly": [
+    "emscripten_wasm_eh",
+    "fmt_debug=\"full\"",
+    "overflow_checks",
+    "relocation_model=\"pic\"",
+    "target_feature=\"x87\"",
+    "target_has_atomic",
+    "target_has_atomic_load_store",
+    "target_has_atomic_load_store=\"16\"",
+    "target_has_atomic_load_store=\"32\"",
+    "target_has_atomic_load_store=\"64\"",
+    "target_has_atomic_load_store=\"8\"",
+    "target_has_atomic_load_store=\"ptr\"",
+    "target_has_reliable_f128",
+    "target_has_reliable_f16",
+    "target_has_reliable_f16_math",
+    "target_object_format=\"elf\"",
+    "target_thread_local",
+    "ub_checks"
+   ],
+   "rc": [
+    0,
+    0
+   ]
+  },
+  "predicates_with_feature_gates": {
+   "program_output": {
+    "ACCESSIBLE_SIZE_OF": "true",
+    "CFG_SELECT": "p64",
+    "CFG_SELECT_FIRST_MATCH": "first",
+    "COMPACT_TARGET": "true",
+    "COMPACT_TARGET_NEG": "false",
+    "VERSION_1_250": "false",
+    "VERSION_1_90": "true",
+    "VERSION_BOGUS": "false"
+   },
+   "rc": 0,
+   "warnings": [
+    "unknown version literal format, assuming it refers to a future version",
+    "unreachable configuration predicate"
+   ]
+  },
+  "predicates_without_feature_gates": {
+   "E0658_messages": {
+    "`cfg(version)` is experimental and subject to change": 3,
+    "compact `cfg(target(..))` is experimental and subject to change": 2,
+    "use of unstable library feature `cfg_accessible`: `cfg_accessible` is not fully implemented": 2
+   },
+   "rc": 1
+  }
+ },
+ "part_d_diagnostic_attributes": {
+  "do_not_recommend_chain": {
+   "inner_false_outer_false": {
+    "current_solver": {
+     "message": "the trait bound `u8: C` is not satisfied",
+     "primary_labels": [
+      "the trait `A` is not implemented for `u8`"
+     ],
+     "rc": 1,
+     "required_for_notes": [
+      "required for `u8` to implement `B`",
+      "required for `u8` to implement `C`"
+     ]
+    },
+    "do_not_recommend_on_impl_B_for_A": false,
+    "do_not_recommend_on_impl_C_for_B": false,
+    "next_solver": {
+     "message": "the trait bound `u8: C` is not satisfied",
+     "primary_labels": [
+      "the trait `A` is not implemented for `u8`"
+     ],
+     "rc": 1,
+     "required_for_notes": [
+      "required for `u8` to implement `B`",
+      "required for `u8` to implement `C`"
+     ]
+    }
+   },
+   "inner_false_outer_true": {
+    "current_solver": {
+     "message": "the trait bound `u8: C` is not satisfied",
+     "primary_labels": [
+      "the trait `C` is not implemented for `u8`"
+     ],
+     "rc": 1,
+     "required_for_notes": []
+    },
+    "do_not_recommend_on_impl_B_for_A": false,
+    "do_not_recommend_on_impl_C_for_B": true,
+    "next_solver": {
+     "message": "the trait bound `u8: C` is not satisfied",
+     "primary_labels": [
+      "the trait `C` is not implemented for `u8`"
+     ],
+     "rc": 1,
+     "required_for_notes": []
+    }
+   },
+   "inner_true_outer_false": {
+    "current_solver": {
+     "message": "the trait bound `u8: C` is not satisfied",
+     "primary_labels": [
+      "the trait `B` is not implemented for `u8`"
+     ],
+     "rc": 1,
+     "required_for_notes": [
+      "required for `u8` to implement `C`"
+     ]
+    },
+    "do_not_recommend_on_impl_B_for_A": true,
+    "do_not_recommend_on_impl_C_for_B": false,
+    "next_solver": {
+     "message": "the trait bound `u8: C` is not satisfied",
+     "primary_labels": [
+      "the trait `B` is not implemented for `u8`"
+     ],
+     "rc": 1,
+     "required_for_notes": [
+      "required for `u8` to implement `C`"
+     ]
+    }
+   },
+   "inner_true_outer_true": {
+    "current_solver": {
+     "message": "the trait bound `u8: C` is not satisfied",
+     "primary_labels": [
+      "the trait `C` is not implemented for `u8`"
+     ],
+     "rc": 1,
+     "required_for_notes": []
+    },
+    "do_not_recommend_on_impl_B_for_A": true,
+    "do_not_recommend_on_impl_C_for_B": true,
+    "next_solver": {
+     "message": "the trait bound `u8: C` is not satisfied",
+     "primary_labels": [
+      "the trait `C` is not implemented for `u8`"
+     ],
+     "rc": 1,
+     "required_for_notes": []
+    }
+   }
+  },
+  "on_move_with_feature": {
+   "E0382_message": "MOVE_MSG Self=`LinearToken` This=`LinearToken` this=`{this}` G=`u32` Bad=`{BadArg}`",
+   "format_warning_help": [
+    "expect either a generic argument name or `{Self}` as format argument"
+   ],
+   "format_warnings": [
+    "unknown parameter `BadArg`",
+    "unknown parameter `this`"
+   ],
+   "notes": [
+    "MOVE_NOTE_1",
+    "MOVE_NOTE_2"
+   ],
+   "primary_labels": [
+    "value used here after move"
+   ],
+   "rc": 1,
+   "secondary_labels": [
+    "value moved here",
+    "MOVE_LBL"
+   ]
+  },
+  "on_move_without_feature": {
+   "E0382_message": "use of moved value: `tok`",
+   "hard_error_codes": [
+    "E0382"
+   ],
+   "rc": 1,
+   "unknown_attribute_warnings": [
+    "unknown diagnostic attribute"
+   ]
+  },
+  "stacked_on_unimplemented": {
+   "duplicates_inside_one_attribute": {
+    "E0277": {
+     "ignored_option_warnings": [
+      "`message` is ignored due to previous definition of `message`"
+     ],
+     "message": "M_A",
+     "notes": [
+      "N1",
+      "N2"
+     ],
+     "primary_labels": [
+      "the trait `Tr` is not implemented for `u8`"
+     ]
+    },
+    "attributes": [
+     "note = \"N1\", note = \"N2\", message = \"M_A\", message = \"M_B\""
+    ],
+    "rc": 1
+   },
+   "first_second_third": {
+    "E0277": {
+     "ignored_option_warnings": [
+      "`label` is ignored due to previous definition of `label`",
+      "`message` is ignored due to previous definition of `message`"
+     ],
+     "message": "FIRST_MSG for `u8`",
+     "notes": [
+      "NOTE_ONE",
+      "NOTE_TWO",
+      "NOTE_THREE"
+     ],
+     "primary_labels": [
+      "FIRST_LBL"
+     ]
+    },
+    "attributes": [
+     "message = \"FIRST_MSG for `{Self}`\", label = \"FIRST_LBL\", note = \"NOTE_ONE\"",
+     "message = \"SECOND_MSG\", label = \"SECOND_LBL\", note = \"NOTE_TWO\"",
+     "note = \"NOTE_THREE\""
+    ],
+    "rc": 1
+   },
+   "first_then_second": {
+    "E0277": {
+     "ignored_option_warnings": [
+      "`label` is ignored due to previous definition of `label`",
+      "`message` is ignored due to previous definition of `message`"
+     ],
+     "message": "FIRST_MSG for `u8`",
+     "notes": [
+      "NOTE_ONE",
+      "NOTE_TWO"
+     ],
+     "primary_labels": [
+      "FIRST_LBL"
+     ]
+    },
+    "attributes": [
+     "message = \"FIRST_MSG for `{Self}`\", label = \"FIRST_LBL\", note = \"NOTE_ONE\"",
+     "message = \"SECOND_MSG\", label = \"SECOND_LBL\", note = \"NOTE_TWO\""
+    ],
+    "rc": 1
+   },
+   "identical_note_twice": {
+    "E0277": {
+     "ignored_option_warnings": [],
+     "message": "the trait bound `u8: Tr` is not satisfied",
+     "notes": [
+      "SAME_NOTE",
+      "SAME_NOTE"
+     ],
+     "primary_labels": [
+      "the trait `Tr` is not implemented for `u8`"
+     ]
+    },
+    "attributes": [
+     "note = \"SAME_NOTE\"",
+     "note = \"SAME_NOTE\""
+    ],
+    "rc": 1
+   },
+   "label_filled_by_later_attribute": {
+    "E0277": {
+     "ignored_option_warnings": [],
+     "message": "LATER_MSG",
+     "notes": [
+      "N0"
+     ],
+     "primary_labels": [
+      "LATER_LBL"
+     ]
+    },
+    "attributes": [
+     "note = \"N0\"",
+     "label = \"LATER_LBL\"",
+     "message = \"LATER_MSG\""
+    ],
+    "rc": 1
+   },
+   "only_malformed_option_then_real": {
+    "E0277": {
+     "ignored_option_warnings": [],
+     "message": "FIRST_MSG for `u8`",
+     "notes": [
+      "NOTE_ONE"
+     ],
+     "primary_labels": [
+      "FIRST_LBL"
+     ]
+    },
+    "attributes": [
+     "bogus = \"x\"",
+     "message = \"FIRST_MSG for `{Self}`\", label = \"FIRST_LBL\", note = \"NOTE_ONE\""
+    ],
+    "rc": 1
+   },
+   "second_then_first": {
+    "E0277": {
+     "ignored_option_warnings": [
+      "`label` is ignored due to previous definition of `label`",
+      "`message` is ignored due to previous definition of `message`"
+     ],
+     "message": "SECOND_MSG",
+     "notes": [
+      "NOTE_TWO",
+      "NOTE_ONE"
+     ],
+     "primary_labels": [
+      "SECOND_LBL"
+     ]
+    },
+    "attributes": [
+     "message = \"SECOND_MSG\", label = \"SECOND_LBL\", note = \"NOTE_TWO\"",
+     "message = \"FIRST_MSG for `{Self}`\", label = \"FIRST_LBL\", note = \"NOTE_ONE\""
+    ],
+    "rc": 1
+   },
+   "third_first_second": {
+    "E0277": {
+     "ignored_option_warnings": [
+      "`label` is ignored due to previous definition of `label`",
+      "`message` is ignored due to previous definition of `message`"
+     ],
+     "message": "FIRST_MSG for `u8`",
+     "notes": [
+      "NOTE_THREE",
+      "NOTE_ONE",
+      "NOTE_TWO"
+     ],
+     "primary_labels": [
+      "FIRST_LBL"
+     ]
+    },
+    "attributes": [
+     "note = \"NOTE_THREE\"",
+     "message = \"FIRST_MSG for `{Self}`\", label = \"FIRST_LBL\", note = \"NOTE_ONE\"",
+     "message = \"SECOND_MSG\", label = \"SECOND_LBL\", note = \"NOTE_TWO\""
+    ],
+    "rc": 1
+   }
+  },
+  "trait_alias_on_unimplemented": {
+   "E0277_message": "the trait bound `u8: MyAlias` is not satisfied",
+   "E0277_notes": [
+    "required for `u8` to implement `MyAlias`",
+    "required by a bound in `need_alias`"
+   ],
+   "custom_text_used_in_E0277": false,
+   "misplaced_warnings": [
+    "`#[diagnostic::on_unimplemented]` can only be applied to trait definitions"
+   ],
+   "rc": 1
+  },
+  "unknown_and_malformed_allow_group": {
+   "diagnostics": [],
+   "rc": 0
+  },
+  "unknown_and_malformed_default_levels": {
+   "diagnostics": [
+    "warning[malformed_diagnostic_attributes]: `#[diagnostic::do_not_recommend]` does not expect any arguments",
+    "warning[malformed_diagnostic_attributes]: malformed `diagnostic::on_unimplemented` attribute",
+    "warning[misplaced_diagnostic_attributes]: `#[diagnostic::do_not_recommend]` can only be placed on trait implementations",
+    "warning[unknown_diagnostic_attributes]: unknown diagnostic attribute",
+    "warning[unknown_diagnostic_attributes]: unknown diagnostic attribute"
+   ],
+   "feature_help": [
+    "add `#![feature(diagnostic_on_move)]` to the crate attributes to enable"
+   ],
+   "hard_errors": [],
+   "rc": 0
+  },
+  "unknown_and_malformed_deny_warnings": {
+   "diagnostics": [
+    "error[malformed_diagnostic_attributes]: `#[diagnostic::do_not_recommend]` does not expect any arguments",
+    "error[malformed_diagnostic_attributes]: malformed `diagnostic::on_unimplemented` attribute",
+    "error[misplaced_diagnostic_attributes]: `#[diagnostic::do_not_recommend]` can only be placed on trait implementations",
+    "error[unknown_diagnostic_attributes]: unknown diagnostic attribute",
+    "error[unknown_diagnostic_attributes]: unknown diagnostic attribute"
+   ],
+   "rc": 1
+  },
+  "unknown_and_malformed_forced_stable": {
+   "diagnostics": [
+    "warning[malformed_diagnostic_attributes]: `#[diagnostic::do_not_recommend]` does not expect any arguments",
+    "warning[malformed_diagnostic_attributes]: malformed `diagnostic::on_unimplemented` attribute",
+    "warning[misplaced_diagnostic_attributes]: `#[diagnostic::do_not_recommend]` can only be placed on trait implementations",
+    "warning[unknown_diagnostic_attributes]: unknown diagnostic attribute",
+    "warning[unknown_diagnostic_attributes]: unknown diagnostic attribute"
+   ],
+   "env": {
+    "RUSTC_BOOTSTRAP": "-1"
+   },
+   "feature_help": [],
+   "rc": 0
+  }
+ },
+ "probe": "probe_check_cfg_and_diagnostic_attrs.py",
+ "rustc_version_verbose": [
+  "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "binary: rustc",
+  "commit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "commit-date: 2026-05-31",
+  "host: x86_64-unknown-linux-gnu",
+  "release: 1.98.0-nightly",
+  "LLVM version: 22.1.6"
+ ],
+ "subprocess_calls": 662,
+ "version_discriminators": {
+  "bpfel_cpu_v4_load_store_widths": [
+   "64",
+   "ptr"
+  ],
+  "bpfel_default_cpu_load_store_widths": [
+   "64",
+   "ptr"
+  ],
+  "host_nightly_prints_emscripten_wasm_eh": true,
+  "host_prints_target_has_threads": false,
+  "on_move_lowercase_this_is_substituted": false,
+  "on_move_uppercase_This_is_substituted": true,
+  "rust_analyzer_is_well_known": false
+ }
+}

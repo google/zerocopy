@@ -90538,6 +90538,86 @@
         "verification"
       ]
     },
+    "rustc-check-cfg-semilattice-builtin-coherence-and-diagnostic-attribute-algebra": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "nightly-2026-06-01-x86_64-unknown-linux-gnu",
+            "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rustc 1.98.0-nightly (executed by the probe)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)"
+          },
+          "name": "rustc 1.98.0-nightly (compiler pinned by Anneal; source compared)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rustc 1.102.0-nightly (source audited; prior observation preserved)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "repository": "rust-lang/rust",
+            "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+          },
+          "name": "rustc main branch head on the observation date (source audited)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs (3368 diagnostic attribute namespace, 2397 do_not_recommend, 3013 conditional compilation checking)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (attributes/diagnostics.md)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/frontend",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/lint",
+        "verification"
+      ]
+    },
     "rustc-cleanup-post-borrowck-false-edges-and-abort-unwinding-mir-lowering": {
       "observed_at": "2026-11-21",
       "subjects": [

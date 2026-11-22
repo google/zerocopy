@@ -1,0 +1,207 @@
+{
+ "resolved_on": "2026-11-22",
+ "method": [
+  "GET /repos/{owner}/{repo}/commits/{ref}",
+  "GET /repos/{owner}/{repo}/compare/{base}...{head}",
+  "GET /repos/{owner}/{repo}/commits?sha={head}&path={path}&since={date}"
+ ],
+ "commits": [
+  {
+   "repository": "rust-lang/rust",
+   "role": "R98a: compiler pinned by joshlf/anneal at c131b320 (COMPILER_VERSION 1.98.0-nightly (f8a08b688 2026-05-30)); source compared with R98",
+   "sha": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+   "commit_date": "2026-05-30T17:09:19Z",
+   "title": "Auto merge of #157161 - JonathanBrouwer:rollup-3MNUPwu, r=JonathanBrouwer"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "R98: rustc 1.98.0-nightly (14210df0e 2026-05-31), the toolchain executed by the probe",
+   "sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "commit_date": "2026-05-31T20:13:59Z",
+   "title": "Auto merge of #157219 - jhpratt:rollup-70ooTMg, r=jhpratt"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "R102: rustc 1.102.0-nightly (3ef0c22cd 2026-11-11); source audited",
+   "sha": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "commit_date": "2026-11-11T17:59:24Z",
+   "title": "Auto merge of #165821 - JonathanBrouwer:rollup-TeJSwaI, r=JonathanBrouwer"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "Rmain: head of branch main when observed; source audited",
+   "sha": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1",
+   "commit_date": "2026-11-22T00:04:39Z",
+   "title": "Auto merge of #166268 - flip1995:clippy-subtree-update, r=Manishearth"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "on main; merge base of 49d7345 and R102; read for the placeholder spelling only",
+   "sha": "ada41e1ce81819f01577c0ee40ccbd6fc41384e8",
+   "commit_date": "2026-09-11T10:47:32Z",
+   "title": "Auto merge of #162631 - JonathanBrouwer:rollup-YFp9vQG, r=JonathanBrouwer"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "NOT on main: resolvable only through the fork network; 3 commits above ada41e1ce; changes only compiler/rustc_transmute/src/layout/tree.rs",
+   "sha": "49d734536222bf28bb6d07d885b3a81d145981da",
+   "commit_date": "2026-09-11T16:23:06Z",
+   "title": "Reuse computed layouts in transmutability tree conversion"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "renames non-generic diagnostic placeholders to snake_case ({This} -> {this}, {ItemContext} -> {item_context})",
+   "sha": "8def69b4a70c099548c747bf83f5869ba3d4fb4b",
+   "commit_date": "2026-10-13T16:13:08Z",
+   "title": "convert non-generic diagnostic attribute placeholders to snake_case"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "adds rust_analyzer to the well-known check-cfg names",
+   "sha": "0166f5056a311d91cd38a8e3199a7ae8b84a05c4",
+   "commit_date": "2026-08-10T21:55:50Z",
+   "title": "Add rust_analyzer to check-cfg names"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "introduces per_cpu_atomic_widths and Target::atomic_widths(cpu)",
+   "sha": "78fda199166913f9c3e34c0fb1ec27f511f82f42",
+   "commit_date": "2026-11-09T16:29:34Z",
+   "title": "BPF: Define max/min atomic width per CPU version"
+  },
+  {
+   "repository": "joshlf/anneal",
+   "role": "consumer examined",
+   "sha": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "commit_date": "2026-11-19T21:39:21Z",
+   "title": "[theory] Bridge PureLift onto Trusted MIR semantics (#266)"
+  },
+  {
+   "repository": "leanprover/lean4",
+   "role": "tag v4.34.1",
+   "sha": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "commit_date": "2026-09-24T17:27:27Z",
+   "title": "chore: prepare release"
+  },
+  {
+   "repository": "rust-lang/rfcs",
+   "role": "text/3368-diagnostic-attribute-namespace.md, text/2397-do-not-recommend.md, text/3013-conditional-compilation-checking.md, text/3399-cfg-attribute-in-where.md",
+   "sha": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+   "commit_date": "2026-11-14T17:21:49Z",
+   "title": "Rename RFC to correct number"
+  },
+  {
+   "repository": "rust-lang/reference",
+   "role": "src/attributes/diagnostics.md",
+   "sha": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+   "commit_date": "2026-11-17T20:49:56Z",
+   "title": "Merge pull request #2327 from tshepang/patch-2"
+  }
+ ],
+ "ancestry": [
+  {
+   "repository": "rust-lang/rust",
+   "base": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+   "head": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": "ahead",
+   "ahead_by": 69,
+   "behind_by": 0,
+   "merge_base": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "base": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "head": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "status": "ahead",
+   "ahead_by": 18861,
+   "behind_by": 0,
+   "merge_base": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "base": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "head": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1",
+   "status": "ahead",
+   "ahead_by": 2474,
+   "behind_by": 0,
+   "merge_base": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1"
+  },
+  {
+   "repository": "rust-lang/rust",
+   "base": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "head": "49d734536222bf28bb6d07d885b3a81d145981da",
+   "status": "diverged",
+   "ahead_by": 3,
+   "behind_by": 7061,
+   "merge_base": "ada41e1ce81819f01577c0ee40ccbd6fc41384e8"
+  }
+ ],
+ "path_history": [
+  {
+   "repository": "rust-lang/rust",
+   "head": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "path": "compiler/rustc_attr_parsing/src/attributes/diagnostic/mod.rs",
+   "since": "2026-09-11T00:00:00Z",
+   "commits": [
+    {
+     "sha": "8def69b4a70c099548c747bf83f5869ba3d4fb4b",
+     "commit_date": "2026-10-13T16:13:08Z",
+     "title": "convert non-generic diagnostic attribute placeholders to snake_case"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "head": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "path": "compiler/rustc_session/src/config/cfg.rs",
+   "since": "2026-05-31T00:00:00Z",
+   "commits": [
+    {
+     "sha": "78fda199166913f9c3e34c0fb1ec27f511f82f42",
+     "commit_date": "2026-11-09T16:29:34Z",
+     "title": "BPF: Define max/min atomic width per CPU version"
+    },
+    {
+     "sha": "bc22034eb8bcf62c84e809015f50e3acd27d9995",
+     "commit_date": "2026-11-01T01:50:51Z",
+     "title": "Replace `AbiAlign` with `Align` in `pointer_align{,_in}`"
+    },
+    {
+     "sha": "3d8a17acdb677ce68d3c73a47ab76448b51e5c09",
+     "commit_date": "2026-10-06T11:23:04Z",
+     "title": "Make partial `-Z stack-protector` a future-compat warning by default in all editions"
+    },
+    {
+     "sha": "c56a9917d80ad618d18888b14b55895a6838cd66",
+     "commit_date": "2026-09-21T07:57:52Z",
+     "title": "Wire up f16b in backends"
+    },
+    {
+     "sha": "0166f5056a311d91cd38a8e3199a7ae8b84a05c4",
+     "commit_date": "2026-08-10T21:55:50Z",
+     "title": "Add rust_analyzer to check-cfg names"
+    },
+    {
+     "sha": "8bb9f279a9c384960b8c13b5c70d97d1b4d64067",
+     "commit_date": "2026-08-06T12:45:53Z",
+     "title": "refactor handling of target features in Session"
+    },
+    {
+     "sha": "f779a137cbcdc5819598a0a8a5a9edfb47687546",
+     "commit_date": "2026-07-13T20:31:25Z",
+     "title": "Rename `rustc_session/src/errors.rs` into `rustc_session/src/diagnostics.rs`"
+    },
+    {
+     "sha": "26e35d93dcc8e7b3285c51ee316d6914f304be15",
+     "commit_date": "2026-07-05T19:29:08Z",
+     "title": "Add and use cfg(target_has_threads) to enforce no_thread impl usage"
+    },
+    {
+     "sha": "9b7623a1621a3fedd1eb7f3cdac4b48e9f819013",
+     "commit_date": "2026-06-02T17:56:40Z",
+     "title": "Remove -Zemscripten-wasm-eh"
+    }
+   ]
+  }
+ ]
+}

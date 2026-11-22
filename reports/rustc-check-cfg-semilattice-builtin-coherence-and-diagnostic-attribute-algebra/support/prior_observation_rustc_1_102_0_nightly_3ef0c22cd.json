@@ -1,0 +1,293 @@
+{
+ "limitations": [
+  "The program that produced this record is not preserved and its exact rustc command lines were not recorded.",
+  "Check-cfg cases report rc=1 with `error:` diagnostics, so the lint `unexpected_cfgs` was evidently raised to an error level by a flag that is not recorded.",
+  "Boolean fields named has_* were computed by substring search over the whole stderr text, which also contains echoed source lines; has_alias_custom_msg and has_second_msg are true only because the attribute text is echoed in a warning. Rely on the quoted stderr text, not on those booleans.",
+  "The field rust_repo_head_inspected names commit 49d734536222bf28bb6d07d885b3a81d145981da, which is not an ancestor of the compiler that produced the record (see REPORT.md, Evidence).",
+  "The -Zsanitizer=kernel-address line was captured on a target that rejects that sanitizer; the cfg line is printed before the error."
+ ],
+ "record": {
+  "part_a_check_cfg_semilattice_and_well_known_asymmetry": {
+   "any_then_some_absorbs_to_top": {
+    "rc": 0,
+    "stderr_first": "",
+    "unexpected_count": 0
+   },
+   "cfg_test_excluded_from_well_known_under_empty_check_cfg": {
+    "rc": 1,
+    "stderr_head": "error: unexpected `cfg` condition name: `test`\n --> <TMP>/wk_test.rs:2:7\n  |\n2 | #[cfg(test)] pub fn t() {}\n  |       ^^^^\n  |"
+   },
+   "none_and_alpha_rejects_beta": {
+    "rc": 1,
+    "stderr_first": "error: unexpected `cfg` condition value: `beta`",
+    "unexpected_count": 1
+   },
+   "only_alpha_rejects_beta_and_none": {
+    "rc": 1,
+    "stderr_first": "error: unexpected `cfg` condition value: `beta`",
+    "unexpected_count": 2
+   },
+   "some_then_any_absorbs_to_top": {
+    "rc": 0,
+    "stderr_first": "",
+    "unexpected_count": 0
+   },
+   "tool_cfgs_miri_clippy_ra_doc_under_empty_check_cfg": {
+    "rc": 0,
+    "stderr": ""
+   },
+   "union_two_flags_accepts_all_three": {
+    "rc": 0,
+    "stderr_first": "",
+    "unexpected_count": 0
+   }
+  },
+  "part_b_disallow_cfgs_coherence_and_panic_sanitizer_folding": {
+   "cli_cfg__contract_checks": {
+    "first_err": "error: unexpected `--cfg contract_checks` flag",
+    "rc": 1
+   },
+   "cli_cfg__overflow_checks": {
+    "first_err": "error: unexpected `--cfg overflow_checks` flag",
+    "rc": 1
+   },
+   "cli_cfg__panic=\"abort\"": {
+    "first_err": "error: unexpected `--cfg panic=\"abort\"` flag",
+    "rc": 1
+   },
+   "cli_cfg__sanitize=\"address\"": {
+    "first_err": "error: unexpected `--cfg sanitize=\"address\"` flag",
+    "rc": 1
+   },
+   "cli_cfg__test": {
+    "first_err": "",
+    "rc": 0
+   },
+   "cli_cfg__ub_checks": {
+    "first_err": "error: unexpected `--cfg ub_checks` flag",
+    "rc": 1
+   },
+   "cli_cfg__unix": {
+    "first_err": "error: unexpected `--cfg unix` flag",
+    "rc": 1
+   },
+   "panic_immediate_abort_print_cfg": [
+    "panic=\"abort\"",
+    "panic=\"immediate-abort\""
+   ],
+   "sanitizer_kernel_address_print_cfg": [
+    "sanitize=\"address\""
+   ]
+  },
+  "part_c_atomic_cfg_matrix_and_cfg_select_version_accessible": {
+   "atomic_matrix": {
+    "aarch64_linux_has_128": [
+     "target_has_atomic",
+     "target_has_atomic=\"128\"",
+     "target_has_atomic=\"16\"",
+     "target_has_atomic=\"32\"",
+     "target_has_atomic=\"64\"",
+     "target_has_atomic=\"8\"",
+     "target_has_atomic=\"ptr\"",
+     "target_has_atomic_load_store",
+     "target_has_atomic_load_store=\"128\"",
+     "target_has_atomic_load_store=\"16\"",
+     "target_has_atomic_load_store=\"32\"",
+     "target_has_atomic_load_store=\"64\"",
+     "target_has_atomic_load_store=\"8\"",
+     "target_has_atomic_load_store=\"ptr\"",
+     "target_has_atomic_primitive_alignment=\"128\"",
+     "target_has_atomic_primitive_alignment=\"16\"",
+     "target_has_atomic_primitive_alignment=\"32\"",
+     "target_has_atomic_primitive_alignment=\"64\"",
+     "target_has_atomic_primitive_alignment=\"8\"",
+     "target_has_atomic_primitive_alignment=\"ptr\""
+    ],
+    "i686_linux_64_cas_without_prim_align": [
+     "target_has_atomic",
+     "target_has_atomic=\"16\"",
+     "target_has_atomic=\"32\"",
+     "target_has_atomic=\"64\"",
+     "target_has_atomic=\"8\"",
+     "target_has_atomic=\"ptr\"",
+     "target_has_atomic_load_store",
+     "target_has_atomic_load_store=\"16\"",
+     "target_has_atomic_load_store=\"32\"",
+     "target_has_atomic_load_store=\"64\"",
+     "target_has_atomic_load_store=\"8\"",
+     "target_has_atomic_load_store=\"ptr\"",
+     "target_has_atomic_primitive_alignment=\"16\"",
+     "target_has_atomic_primitive_alignment=\"32\"",
+     "target_has_atomic_primitive_alignment=\"8\"",
+     "target_has_atomic_primitive_alignment=\"ptr\""
+    ],
+    "riscv32imc_load_store_only_no_cas": [
+     "target_has_atomic_load_store",
+     "target_has_atomic_load_store=\"16\"",
+     "target_has_atomic_load_store=\"32\"",
+     "target_has_atomic_load_store=\"8\"",
+     "target_has_atomic_load_store=\"ptr\"",
+     "target_has_atomic_primitive_alignment=\"16\"",
+     "target_has_atomic_primitive_alignment=\"32\"",
+     "target_has_atomic_primitive_alignment=\"8\"",
+     "target_has_atomic_primitive_alignment=\"ptr\""
+    ],
+    "thumbv6m_load_store_only_no_cas": [
+     "target_has_atomic_load_store",
+     "target_has_atomic_load_store=\"16\"",
+     "target_has_atomic_load_store=\"32\"",
+     "target_has_atomic_load_store=\"8\"",
+     "target_has_atomic_load_store=\"ptr\"",
+     "target_has_atomic_primitive_alignment=\"16\"",
+     "target_has_atomic_primitive_alignment=\"32\"",
+     "target_has_atomic_primitive_alignment=\"8\"",
+     "target_has_atomic_primitive_alignment=\"ptr\""
+    ],
+    "x86_64_apple_darwin_has_128": [
+     "target_feature=\"cmpxchg16b\"",
+     "target_has_atomic",
+     "target_has_atomic=\"128\"",
+     "target_has_atomic=\"16\"",
+     "target_has_atomic=\"32\"",
+     "target_has_atomic=\"64\"",
+     "target_has_atomic=\"8\"",
+     "target_has_atomic=\"ptr\"",
+     "target_has_atomic_load_store",
+     "target_has_atomic_load_store=\"128\"",
+     "target_has_atomic_load_store=\"16\"",
+     "target_has_atomic_load_store=\"32\"",
+     "target_has_atomic_load_store=\"64\"",
+     "target_has_atomic_load_store=\"8\"",
+     "target_has_atomic_load_store=\"ptr\"",
+     "target_has_atomic_primitive_alignment=\"128\"",
+     "target_has_atomic_primitive_alignment=\"16\"",
+     "target_has_atomic_primitive_alignment=\"32\"",
+     "target_has_atomic_primitive_alignment=\"64\"",
+     "target_has_atomic_primitive_alignment=\"8\"",
+     "target_has_atomic_primitive_alignment=\"ptr\""
+    ],
+    "x86_64_linux_baseline": [
+     "target_has_atomic",
+     "target_has_atomic=\"16\"",
+     "target_has_atomic=\"32\"",
+     "target_has_atomic=\"64\"",
+     "target_has_atomic=\"8\"",
+     "target_has_atomic=\"ptr\"",
+     "target_has_atomic_load_store",
+     "target_has_atomic_load_store=\"16\"",
+     "target_has_atomic_load_store=\"32\"",
+     "target_has_atomic_load_store=\"64\"",
+     "target_has_atomic_load_store=\"8\"",
+     "target_has_atomic_load_store=\"ptr\"",
+     "target_has_atomic_primitive_alignment=\"16\"",
+     "target_has_atomic_primitive_alignment=\"32\"",
+     "target_has_atomic_primitive_alignment=\"64\"",
+     "target_has_atomic_primitive_alignment=\"8\"",
+     "target_has_atomic_primitive_alignment=\"ptr\""
+    ],
+    "x86_64_linux_v3_cmpxchg16b_still_no_128": [
+     "target_feature=\"cmpxchg16b\"",
+     "target_has_atomic",
+     "target_has_atomic=\"16\"",
+     "target_has_atomic=\"32\"",
+     "target_has_atomic=\"64\"",
+     "target_has_atomic=\"8\"",
+     "target_has_atomic=\"ptr\"",
+     "target_has_atomic_load_store",
+     "target_has_atomic_load_store=\"16\"",
+     "target_has_atomic_load_store=\"32\"",
+     "target_has_atomic_load_store=\"64\"",
+     "target_has_atomic_load_store=\"8\"",
+     "target_has_atomic_load_store=\"ptr\"",
+     "target_has_atomic_primitive_alignment=\"16\"",
+     "target_has_atomic_primitive_alignment=\"32\"",
+     "target_has_atomic_primitive_alignment=\"64\"",
+     "target_has_atomic_primitive_alignment=\"8\"",
+     "target_has_atomic_primitive_alignment=\"ptr\""
+    ],
+    "x86_64_windows_msvc_has_128": [
+     "target_feature=\"cmpxchg16b\"",
+     "target_has_atomic",
+     "target_has_atomic=\"128\"",
+     "target_has_atomic=\"16\"",
+     "target_has_atomic=\"32\"",
+     "target_has_atomic=\"64\"",
+     "target_has_atomic=\"8\"",
+     "target_has_atomic=\"ptr\"",
+     "target_has_atomic_load_store",
+     "target_has_atomic_load_store=\"128\"",
+     "target_has_atomic_load_store=\"16\"",
+     "target_has_atomic_load_store=\"32\"",
+     "target_has_atomic_load_store=\"64\"",
+     "target_has_atomic_load_store=\"8\"",
+     "target_has_atomic_load_store=\"ptr\"",
+     "target_has_atomic_primitive_alignment=\"128\"",
+     "target_has_atomic_primitive_alignment=\"16\"",
+     "target_has_atomic_primitive_alignment=\"32\"",
+     "target_has_atomic_primitive_alignment=\"64\"",
+     "target_has_atomic_primitive_alignment=\"8\"",
+     "target_has_atomic_primitive_alignment=\"ptr\""
+    ]
+   },
+   "runtime_predicates": {
+    "cfg_select_no_feature_1.99.1_rc": 0,
+    "cfg_select_no_feature_nightly_rc": 0,
+    "rc": 0,
+    "stdout": "CFG_SELECT=p64 COMPACT_TGT=true VER_1_99=true VER_1_250=false ACC_SIZE_OF=true"
+   }
+  },
+  "part_d_diagnostic_namespace_forward_compat_and_merge_algebra": {
+   "do_not_recommend_False": {
+    "mentions_inner_trait_in_chain": true,
+    "rc": 1,
+    "stderr": "error[E0277]: the trait bound `u8: OuterTrait` is not satisfied\n --> <TMP>/dnr_False.rs:7:33\n  |\n7 | pub fn fail_call() { need_outer(0_u8); }\n  |                      ---------- ^^^^ the trait `InnerTrait` is not implemented for `u8`\n  |                      |\n  |                      required by a bound introduced by this call\n  |\nhelp: this trait has no implementations, consider adding one\n --> <TMP>/dnr_False.rs:2:1\n  |\n2 | pub trait InnerTrait {}\n  | ^^^^^^^^^^^^^^^^^^^^\nnote: required for `u8` to implement `OuterTrait`\n --> <TMP>/dnr_False.rs:5:21\n  |\n5 | impl<T: InnerTrait> OuterTrait for T {}\n  |         ----------  ^^^^^^^^^^     ^\n  |         |\n  |         unsatisfied trait bound introduced here\nnote: required by a bound in `need_outer`\n --> <TMP>/dnr_False.rs:6:22\n  |\n6 | pub fn need_outer<T: OuterTrait>(_: T) {}\n  |                      ^^^^^^^^^^ required by this bound in `need_outer`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+   },
+   "do_not_recommend_True": {
+    "mentions_inner_trait_in_chain": false,
+    "rc": 1,
+    "stderr": "error[E0277]: the trait bound `u8: OuterTrait` is not satisfied\n --> <TMP>/dnr_True.rs:7:33\n  |\n7 | pub fn fail_call() { need_outer(0_u8); }\n  |                      ---------- ^^^^ the trait `OuterTrait` is not implemented for `u8`\n  |                      |\n  |                      required by a bound introduced by this call\n  |\nnote: required by a bound in `need_outer`\n --> <TMP>/dnr_True.rs:6:22\n  |\n6 | pub fn need_outer<T: OuterTrait>(_: T) {}\n  |                      ^^^^^^^^^^ required by this bound in `need_outer`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+   },
+   "feature_diagnostic_on_move_self_and_this_contradiction": {
+    "has_custom_move_msg": false,
+    "has_custom_move_note": true,
+    "rc": 1,
+    "stderr": "warning: unknown parameter `This`\n --> <TMP>/d_move.rs:3:50\n  |\n3 |     message = \"CustomMoveMsg: `{Self}` (trying `{This}` vs `{BadArg}`) ca...\n  |                                                  ^^^^\n  |\n  = help: expect either a generic argument name or `{Self}` as format argument\n  = note: `#[warn(malformed_diagnostic_format_literals)]` (part of `#[warn(unknown_or_malformed_diagnostic_attributes)]`) on by default\n\nwarning: unknown parameter `BadArg`\n --> <TMP>/d_move.rs:3:62\n  |\n3 |     message = \"CustomMoveMsg: `{Self}` (trying `{This}` vs `{BadArg}`) ca...\n  |                                                              ^^^^^^\n  |\n  = help: expect either a generic argument name or `{Self}` as format argument\n\nerror[E0382]: CustomMoveMsg: `LinearToken` (trying `{This}` vs `{BadArg}`) cannot be used after transfer\n  --> <TMP>/d_move.rs:10:13\n   |\n 8 | pub fn use_twice(tok: LinearToken<u32>) -> (LinearToken<u32>, LinearToke...\n   |                  --- move occurs because `tok` has type `LinearToken<u32>`, which does not implement the `Copy` trait\n 9 |     let a = tok;\n   |             --- value moved here\n10 |     let b = tok;\n   |             ^^^ value used here after move\n   |\n   = note: CustomMoveNote: call `.reborrow()` instead\nnote: if `LinearToken<u32>` implemented `Clone`, you could clone the value\n  --> <TMP>/d_move.rs:6:1\n   |\n 6 | pub struct LinearToken<G>(pub G);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^ consider implementing `Clone` for this type\n...\n 9 |     let a = tok;\n   |             --- you could clone this value\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\nFor more information about this error, try `rustc --explain E0382`.\n",
+    "warns_this_unknown_despite_help_claiming_this_allowed": false
+   },
+   "stacked_on_unimplemented_merge_algebra": {
+    "has_first_msg": true,
+    "has_malformed_dup_warning": true,
+    "has_note_one": true,
+    "has_note_two": true,
+    "has_second_msg": true,
+    "rc": 1,
+    "stderr_excerpt": "warning: `message` is ignored due to previous definition of `message`\n --> <TMP>/d2.rs:3:32\n  |\n2 | ..._unimplemented(message = \"FIRST_MSG for `{Self}`\", label = \"FIRST_LBL\"...\n  |                   ---------------------------------- `message` is first declared here\n3 | ..._unimplemented(message = \"SECOND_MSG_IGNORED\", label = \"SECOND_LBL_IGN...\n  |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `message` is later redundantly declared here\n  |\n  = note: `#[warn(malformed_diagnostic_attributes)]` (part of `#[warn(unknown_or_malformed_diagnostic_attributes)]`) on by default\n\nwarning: `label` is ignored due to previous definition of `label`\n --> <TMP>/d2.rs:3:64\n  |\n2 | ...T_MSG for `{Self}`\", label = \"FIRST_LBL\", note = \"NOTE_ONE\")]\n  |                         ------------------- `label` is first declared here\n3 | ...ND_MSG_IGNORED\", label = \"SECOND_LBL_IGNORED\", no"
+   },
+   "trait_alias_on_unimplemented_ignored_noop": {
+    "has_alias_custom_msg": true,
+    "rc": 1,
+    "stderr_excerpt": "warning: the `diagnostic::on_unimplemented` attribute cannot be used on trait aliases\n --> <TMP>/d_ta.rs:3:3\n  |\n3 | #[diagnostic::on_unimplemented(message = \"ALIAS_CUSTOM_MSG\")]\n  |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n4 | pub trait MyAlias = Base;\n  |\n  = help: the `diagnostic::on_unimplemented` attribute can only be applied to traits\n  = note: `#[warn(misplaced_diagnostic_attributes)]` (part of `#[warn(unknown_or_malformed_diagnostic_attributes)]`) on by default\n\nerror[E0277]: the trait bound `u8: MyAlias` is not satisfied\n --> <TMP>/d_ta.rs:6:34\n  |\n6 | pub fn call_alias() { need_alias(7_u8); }\n  |                       ---------- ^^^^ the trait `MyAlias` is not implement"
+   },
+   "unknown_and_ungated_diagnostic_attrs_compile_rc0": {
+    "rc": 0,
+    "warnings": [
+     "warning: unknown diagnostic attribute",
+     "warning: unknown diagnostic attribute",
+     "warning: 2 warnings emitted"
+    ]
+   }
+  },
+  "rust_repo_head_inspected": "49d734536222bf28bb6d07d885b3a81d145981da"
+ },
+ "recorded_at_utc": "2026-11-21T20:37:05Z",
+ "rustc_version_verbose": [
+  "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+  "binary: rustc",
+  "commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+  "commit-date: 2026-11-11",
+  "host: x86_64-unknown-linux-gnu",
+  "release: 1.102.0-nightly",
+  "LLVM version: 23.1.5"
+ ],
+ "what_this_is": "Earlier observations made with rustc 1.102.0-nightly (3ef0c22cd 2026-11-11) on x86_64-unknown-linux-gnu, preserved as a specimen. They were NOT re-executed for the report in this package: that toolchain was not installed on the host where probe_results.json was produced."
+}

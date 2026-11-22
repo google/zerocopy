@@ -1,0 +1,105 @@
+'CfgModel.memB_append' does not depend on any axioms
+'CfgModel.ExpectedValues.Equiv.refl' does not depend on any axioms
+'CfgModel.ExpectedValues.Equiv.symm' does not depend on any axioms
+'CfgModel.ExpectedValues.Equiv.trans' does not depend on any axioms
+'CfgModel.ExpectedValues.isAny_join' depends on axioms: [propext]
+'CfgModel.ExpectedValues.accepts_join' depends on axioms: [propext]
+'CfgModel.ExpectedValues.join_assoc' depends on axioms: [propext]
+'CfgModel.ExpectedValues.join_comm' depends on axioms: [propext]
+'CfgModel.ExpectedValues.join_idem' depends on axioms: [propext]
+'CfgModel.ExpectedValues.join_any_left' depends on axioms: [propext]
+'CfgModel.ExpectedValues.join_any_right' depends on axioms: [propext]
+'CfgModel.ExpectedValues.join_bot_left' depends on axioms: [propext]
+'CfgModel.ExpectedValues.join_bot_right' depends on axioms: [propext]
+'CfgModel.ExpectedValues.join_congr' depends on axioms: [propext]
+'CfgModel.ExpectedValues.bot_le' depends on axioms: [propext]
+'CfgModel.ExpectedValues.le_any' depends on axioms: [propext]
+'CfgModel.ExpectedValues.le_refl' depends on axioms: [propext]
+'CfgModel.ExpectedValues.le_antisymm' depends on axioms: [propext]
+'CfgModel.ExpectedValues.le_join_left' depends on axioms: [propext]
+'CfgModel.ExpectedValues.any_ne_some' does not depend on any axioms
+'CfgModel.mergeEntry_none' does not depend on any axioms
+'CfgModel.mergeEntry_some' depends on axioms: [propext]
+'CfgModel.lint_eq_obs' does not depend on any axioms
+'CfgModel.present_insertName' does not depend on any axioms
+'CfgModel.okAt_insertName' depends on axioms: [propext]
+'CfgModel.present_foldl_insertName' does not depend on any axioms
+'CfgModel.okAt_foldl_insertName' depends on axioms: [propext]
+'CfgModel.present_applySpec' does not depend on any axioms
+'CfgModel.okAt_applySpec' depends on axioms: [propext]
+'CfgModel.exhaustive_applySpec' does not depend on any axioms
+'CfgModel.present_foldl_applySpec' does not depend on any axioms
+'CfgModel.okAt_foldl_applySpec' depends on axioms: [propext]
+'CfgModel.exhaustive_foldl_applySpec' does not depend on any axioms
+'CfgModel.any_perm' does not depend on any axioms
+'CfgModel.isEmpty_perm' does not depend on any axioms
+'CfgModel.lint_parse' depends on axioms: [propext]
+'CfgModel.checkCfg_fold_perm_invariant' depends on axioms: [propext]
+'CfgModel.checkCfg_duplicate_spec' depends on axioms: [propext]
+'CfgModel.present_fillOne' does not depend on any axioms
+'CfgModel.okAt_fillOne' does not depend on any axioms
+'CfgModel.obsEq_fillOne' does not depend on any axioms
+'CfgModel.obsEq_foldl_fillOne' does not depend on any axioms
+'CfgModel.lint_congr' does not depend on any axioms
+'CfgModel.obsEq_parse_of_perm' depends on axioms: [propext]
+'CfgModel.exhaustive_parse_of_perm' does not depend on any axioms
+'CfgModel.checkConfig_perm_invariant' depends on axioms: [propext]
+'CfgModel.only_alpha_rejects_beta_and_bare' does not depend on any axioms
+'CfgModel.any_absorbs_both_orders' does not depend on any axioms
+'CfgModel.no_specs_no_lint' does not depend on any axioms
+'CfgModel.ce_wellKnown_fill_shadows_bare_form' depends on axioms: [propext]
+'CfgModel.wellKnown_fill_unions_valued_names' does not depend on any axioms
+'CfgModel.disallow_nil_iff' depends on axioms: [propext]
+'CfgModel.coherentSession_iff_no_spoofed_builtin_cfg' depends on axioms: [propext]
+'CfgModel.disallow_empty_implies_coherent' depends on axioms: [propext]
+'CfgModel.ubChecks_coherent_of_gate' depends on axioms: [propext]
+'CfgModel.accepted_at_deny_implies_coherent' depends on axioms: [propext]
+'CfgModel.ce1_spoofed_cli_ub_checks_diverges_from_codegen' depends on axioms: [propext]
+'CfgModel.gate_strictly_conservative' depends on axioms: [propext]
+'CfgModel.test_cfg_is_exempt' depends on axioms: [propext]
+'CfgModel.ce_gate_gap_bare_target_has_atomic' depends on axioms: [propext]
+'CfgModel.immediate_abort_sets_both_panic_cfgs' does not depend on any axioms
+'CfgModel.panic_abort_cfg_not_injective' does not depend on any axioms
+'CfgModel.kernel_sanitizers_fold' does not depend on any axioms
+'CfgModel.i686_model_matches_print_cfg' depends on axioms: [propext]
+'CfgModel.x86_64_linux_model_matches_print_cfg' depends on axioms: [propext]
+'CfgModel.thumbv6m_model_matches_print_cfg' depends on axioms: [propext]
+'CfgModel.m68k_model_matches_print_cfg' depends on axioms: [propext]
+'CfgModel.ce2_i686_atomic64_has_cas_without_primitive_align' depends on axioms: [propext]
+'CfgModel.m68k_ptr_cas_without_primitive_align' depends on axioms: [propext]
+'CfgModel.load_store_without_cas' depends on axioms: [propext]
+'CfgModel.ce3_x86_64_linux_cx16_still_lacks_atomic128_due_to_static_target_max' depends on axioms: [propext]
+'CfgModel.atomicCfgs_ignores_target_features' does not depend on any axioms
+'CfgModel.per_cpu_table_changes_atomic_cfgs' depends on axioms: [propext]
+'CfgModel.bare_entries_are_nightly_only' depends on axioms: [propext]
+'CfgModel.firstWins_eq_or' does not depend on any axioms
+'CfgModel.firstWins_assoc' does not depend on any axioms
+'CfgModel.firstWins_none_right' does not depend on any axioms
+'CfgModel.firstWins_idem' does not depend on any axioms
+'CfgModel.directiveMerge_assoc' depends on axioms: [propext]
+'CfgModel.directiveMerge_empty_left' does not depend on any axioms
+'CfgModel.directiveMerge_empty_right' depends on axioms: [propext]
+'CfgModel.ce_directiveMerge_noncomm' does not depend on any axioms
+'CfgModel.ce_directiveMerge_not_idempotent' does not depend on any axioms
+'CfgModel.foldl_mergeInto_some' does not depend on any axioms
+'CfgModel.foldl_mergeInto' does not depend on any axioms
+'CfgModel.foldl_merge_message' does not depend on any axioms
+'CfgModel.foldl_merge_label' does not depend on any axioms
+'CfgModel.foldl_merge_notes' depends on axioms: [propext]
+'CfgModel.mergeAll_spec' depends on axioms: [propext]
+'CfgModel.map_firstWins' does not depend on any axioms
+'CfgModel.update_render_eq_render_merge' depends on axioms: [propext]
+'CfgModel.render_empty' does not depend on any axioms
+'CfgModel.foldl_update_render' depends on axioms: [propext]
+'CfgModel.eval_sequence_eq_render_mergeAll' depends on axioms: [propext]
+'CfgModel.applyDnr_eq' does not depend on any axioms
+'CfgModel.report_eq' does not depend on any axioms
+'CfgModel.lastDnr_none_iff' does not depend on any axioms
+'CfgModel.lastDnr_some_rest_free' does not depend on any axioms
+'CfgModel.report_chain_dnrFree' does not depend on any axioms
+'CfgModel.report_unchanged_of_dnrFree' does not depend on any axioms
+'CfgModel.report_idempotent' does not depend on any axioms
+'CfgModel.firstDnrFromRoot_append_single' does not depend on any axioms
+'CfgModel.lastDnr_fst_eq_firstFromRoot' depends on axioms: [propext]
+'CfgModel.report_pred_eq_topDown' depends on axioms: [propext]
+'CfgModel.probe_chain_reports' does not depend on any axioms
