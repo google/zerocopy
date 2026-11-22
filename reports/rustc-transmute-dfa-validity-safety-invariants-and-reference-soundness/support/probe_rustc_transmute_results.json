@@ -1,0 +1,852 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "core_case_count": 38,
+  "core_solver_divergences": 11,
+  "core_cases": {
+    "bool_to_u8_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "u8_to_bool_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `bool`",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `bool`",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "u8_to_bool_validity": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "two_only_to_bool_validity": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `TwoOnly` cannot be safely transmuted into `bool`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_two_only_to_bool_validity/lib_legacy.long-type-5704049605197947817.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `TwoOnly` cannot be safely transmuted into `bool`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_two_only_to_bool_validity/lib_next.long-type-5448986258165728771.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "zero_or_one_to_bool_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "bool_to_zero_or_one_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `bool` cannot be safely transmuted into `ZeroOrOne`",
+        "|              ^^^^^^^^^ `ZeroOrOne` may carry safety invariants",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `bool` cannot be safely transmuted into `ZeroOrOne`",
+        "|              ^^^^^^^^^ `ZeroOrOne` may carry safety invariants",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "bool_to_zero_or_one_safety": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "u32_to_u8_prefix_trunc_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "u8_to_u16_too_big_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `u16`",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `u16`",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "u8_to_padded_align2_safety": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "u8_to_padded_align2_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `PaddedAlign2`",
+        "|           ^^^^^^^^^^^^ `PaddedAlign2` may carry safety invariants",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `PaddedAlign2`",
+        "|           ^^^^^^^^^^^^ `PaddedAlign2` may carry safety invariants",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "has_pad_to_u8_arr4_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `HasPad` cannot be safely transmuted into `[u8; 4]`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_has_pad_to_u8_arr4_nothing/lib_legacy.long-type-17819654718675992896.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `HasPad` cannot be safely transmuted into `[u8; 4]`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_has_pad_to_u8_arr4_nothing/lib_next.long-type-1795366038423493875.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "has_pad_to_mu_arr4_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `HasPad` cannot be safely transmuted into `[MaybeUninit<u8>; 4]`",
+        "|                       ^^^^^^^^^^^^^^^^^^^^ `[MaybeUninit<u8>; 4]` may carry safety invariants",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_has_pad_to_mu_arr4_nothing/lib_legacy.long-type-627351676445096729.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `HasPad` cannot be safely transmuted into `[MaybeUninit<u8>; 4]`",
+        "|                       ^^^^^^^^^^^^^^^^^^^^ `[MaybeUninit<u8>; 4]` may carry safety invariants",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_has_pad_to_mu_arr4_nothing/lib_next.long-type-5406734324471915417.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "has_pad_to_mu_arr4_safety": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "u8_to_plain_struct_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `PlainU8`",
+        "|                ^^^^^^^ `PlainU8` may carry safety invariants",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `PlainU8`",
+        "|                ^^^^^^^ `PlainU8` may carry safety invariants",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "u8_to_plain_struct_safety": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "opt_nonzero_u8_to_u8_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `Option<NonZero<u8>>` cannot be safely transmuted into `u8`",
+        "|                               ^^ analyzing the transmutability of `Option<NonZero<u8>>` is not yet supported",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_opt_nonzero_u8_to_u8_nothing/lib_legacy.long-type-13290190190393422973.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `Option<NonZero<u8>>` cannot be safely transmuted into `u8`",
+        "|                               ^^ analyzing the transmutability of `Option<NonZero<u8>>` is not yet supported",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_opt_nonzero_u8_to_u8_nothing/lib_next.long-type-4136023295986434645.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "u8_to_opt_nonzero_u8_safety": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `Option<NonZero<u8>>`",
+        "|                       ^^^^^^^^^^^^^^^^^^^ analyzing the transmutability of `Option<NonZero<u8>>` is not yet supported",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_u8_to_opt_nonzero_u8_safety/lib_legacy.long-type-6686193509318658919.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `Option<NonZero<u8>>`",
+        "|                       ^^^^^^^^^^^^^^^^^^^ analyzing the transmutability of `Option<NonZero<u8>>` is not yet supported",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_u8_to_opt_nonzero_u8_safety/lib_next.long-type-5914234388992633423.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "void_to_u128_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "u8_to_void_all_assumes": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `Void`",
+        "|                                     ^^^^ `Void` is uninhabited",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `Void`",
+        "|                                     ^^^^ `Void` is uninhabited",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_bool_to_ref_u8_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&bool` cannot be safely transmuted into `&u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a bool, Assume { alignment: false, lifetimes: false, safety: false, validity: false }>` is not implemented for `&'a u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_bool_to_ref_u8_nothing/lib_next.long-type-13136250339485462068.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_u8_to_ref_mut_u8_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `&u8` cannot be safely transmuted into `&mut u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_u8_to_ref_mut_u8_nothing/lib_legacy.long-type-11580951853988203485.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `&u8` cannot be safely transmuted into `&mut u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_u8_to_ref_mut_u8_nothing/lib_next.long-type-16547187031013537945.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_mut_u8_to_ref_u8_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&mut u8` cannot be safely transmuted into `&u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a mut u8, Assume { alignment: false, lifetimes: false, safety: false, validity: false }>` is not implemented for `&'a u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_mut_u8_to_ref_u8_nothing/lib_next.long-type-6004295265382278817.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_mut_u32_to_ref_mut_u8_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `u32`",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `&mut u32` cannot be safely transmuted into `&mut u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a mut u32, Assume { alignment: false, lifetimes: false, safety: false, validity: false }>` is not implemented for `&'a mut u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_mut_u32_to_ref_mut_u8_nothing/lib_next.long-type-7529542182907966406.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_u32_to_ref_u8_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&u32` cannot be safely transmuted into `&u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a u32, Assume { alignment: false, lifetimes: false, safety: false, validity: false }>` is not implemented for `&'a u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_u32_to_ref_u8_nothing/lib_next.long-type-1114300523873516793.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_u8_arr2_to_ref_u16_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `&[u8; 2]` cannot be safely transmuted into `&u16`",
+        "|                             ^^^^^^^ the minimum alignment of `&[u8; 2]` (1) should be greater than that of `&u16` (2)",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_u8_arr2_to_ref_u16_nothing/lib_legacy.long-type-14780944423216780915.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `&[u8; 2]` cannot be safely transmuted into `&u16`",
+        "|                             ^^^^^^^ the minimum alignment of `&[u8; 2]` (1) should be greater than that of `&u16` (2)",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_u8_arr2_to_ref_u16_nothing/lib_next.long-type-2731196158744089046.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_u8_arr2_to_ref_u16_align": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&[u8; 2]` cannot be safely transmuted into `&u16`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a [u8; 2], Assume { alignment: true, lifetimes: false, safety: false, validity: false }>` is not implemented for `&'a u16`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_u8_arr2_to_ref_u16_align/lib_next.long-type-22081888734574219.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_static_to_ref_a_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&u8` cannot be safely transmuted into `&u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'static u8, Assume { alignment: false, lifetimes: false, safety: false, validity: false }>` is not implemented for `&'a u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_static_to_ref_a_nothing/lib_next.long-type-18158914836575046704.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_a_to_ref_static_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error: lifetime may not live long enough",
+        "|       -- lifetime `'a` defined here            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ requires that `'a` must outlive `'static`",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `&u8` cannot be safely transmuted into `&u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a u8, Assume { alignment: false, lifetimes: false, safety: false, validity: false }>` is not implemented for `&'static u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_a_to_ref_static_nothing/lib_next.long-type-7186506738833063578.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_a_to_ref_static_lifetimes": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&u8` cannot be safely transmuted into `&u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a u8, Assume { alignment: false, lifetimes: true, safety: false, validity: false }>` is not implemented for `&'static u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_a_to_ref_static_lifetimes/lib_next.long-type-9342954114001170735.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_u8_to_ref_cell_u8_safety": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: the trait bound `UnsafeCell<u8>: Freeze` is not satisfied in `Cell<u8>`",
+        "= help: within `Cell<u8>`, the nightly-only, unstable trait `Freeze` is not implemented for `UnsafeCell<u8>`",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `&u8` cannot be safely transmuted into `&Cell<u8>`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a u8, Assume { alignment: false, lifetimes: false, safety: true, validity: false }>` is not implemented for `&'a Cell<u8>`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_u8_to_ref_cell_u8_safety/lib_next.long-type-16173038990461121333.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_cell_u8_to_ref_u8_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&Cell<u8>` cannot be safely transmuted into `&u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a Cell<u8>, Assume { alignment: false, lifetimes: false, safety: false, validity: false }>` is not implemented for `&'a u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_cell_u8_to_ref_u8_nothing/lib_next.long-type-15768783186238508005.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_cell_u8_to_ref_cell_u8_safety": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: the trait bound `UnsafeCell<u8>: Freeze` is not satisfied in `Cell<u8>`",
+        "= help: within `Cell<u8>`, the nightly-only, unstable trait `Freeze` is not implemented for `UnsafeCell<u8>`",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `&Cell<u8>` cannot be safely transmuted into `&Cell<u8>`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a Cell<u8>, Assume { alignment: false, lifetimes: false, safety: true, validity: false }>` is not implemented for `&'a Cell<u8>`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_cell_u8_to_ref_cell_u8_safety/lib_next.long-type-4131465697444659885.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_mut_cell_u8_to_ref_u8_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&mut Cell<u8>` cannot be safely transmuted into `&u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a mut Cell<u8>, Assume { alignment: false, lifetimes: false, safety: false, validity: false }>` is not implemented for `&'a u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_mut_cell_u8_to_ref_u8_nothing/lib_next.long-type-8466529570272516550.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_mut_u8_to_ref_cell_u8_safety": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: the trait bound `UnsafeCell<u8>: Freeze` is not satisfied in `Cell<u8>`",
+        "= help: within `Cell<u8>`, the nightly-only, unstable trait `Freeze` is not implemented for `UnsafeCell<u8>`",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `&mut u8` cannot be safely transmuted into `&Cell<u8>`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a mut u8, Assume { alignment: false, lifetimes: false, safety: true, validity: false }>` is not implemented for `&'a Cell<u8>`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_mut_u8_to_ref_cell_u8_safety/lib_next.long-type-14036833541109821464.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_unsafecell_u8_to_ref_u8_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&UnsafeCell<u8>` cannot be safely transmuted into `&u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a UnsafeCell<u8>, Assume { alignment: false, lifetimes: false, safety: false, validity: false }>` is not implemented for `&'a u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_unsafecell_u8_to_ref_u8_nothing/lib_next.long-type-1635944020945273649.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ref_mut_cell_u8_to_ref_mut_u8_safety": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&mut Cell<u8>` cannot be safely transmuted into `&mut u8`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a mut Cell<u8>, Assume { alignment: false, lifetimes: false, safety: true, validity: false }>` is not implemented for `&'a mut u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_ref_mut_cell_u8_to_ref_mut_u8_safety/lib_next.long-type-2166872706537944456.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "coinductive_node_a_to_node_b_safety": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&NodeA<'_>` cannot be safely transmuted into `&NodeB<'_>`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a NodeA<'a>, Assume { alignment: false, lifetimes: false, safety: true, validity: false }>` is not implemented for `&'a NodeB<'a>`",
+        "= note: the full name for the type has been written to '<TMPDIR>/core_coinductive_node_a_to_node_b_safety/lib_next.long-type-1654651844329960910.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    }
+  },
+  "extended_case_count": 14,
+  "extended_solver_divergences": 1,
+  "extended_cases": {
+    "nonzero_u8_to_u8_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `NonZero<u8>` cannot be safely transmuted into `u8`",
+        "|                               ^^ analyzing the transmutability of `NonZero<u8>` is not yet supported",
+        "= note: the full name for the type has been written to '<TMPDIR>/ext_nonzero_u8_to_u8_nothing/lib_legacy.long-type-2521102071667661355.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `NonZero<u8>` cannot be safely transmuted into `u8`",
+        "|                               ^^ analyzing the transmutability of `NonZero<u8>` is not yet supported",
+        "= note: the full name for the type has been written to '<TMPDIR>/ext_nonzero_u8_to_u8_nothing/lib_next.long-type-14063145510059056982.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "opt_bool_to_u8_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "u8_to_opt_bool_safety_validity": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "u8_to_mu_u8_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `MaybeUninit<u8>`",
+        "|        ^^^^^^^^^^^^^^^ `MaybeUninit<u8>` may carry safety invariants",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `u8` cannot be safely transmuted into `MaybeUninit<u8>`",
+        "|        ^^^^^^^^^^^^^^^ `MaybeUninit<u8>` may carry safety invariants",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "u8_to_mu_u8_safety": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "mu_u8_to_u8_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `MaybeUninit<u8>` cannot be safely transmuted into `u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/ext_mu_u8_to_u8_nothing/lib_legacy.long-type-6546502160238331846.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `MaybeUninit<u8>` cannot be safely transmuted into `u8`",
+        "= note: the full name for the type has been written to '<TMPDIR>/ext_mu_u8_to_u8_nothing/lib_next.long-type-12467015787827523506.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "mu_u8_to_u8_validity": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "char_to_u32_nothing": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "u32_to_char_nothing": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: `u32` cannot be safely transmuted into `char`",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `u32` cannot be safely transmuted into `char`",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "u32_to_char_validity": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    },
+    "ref_mut_u8_to_ref_mut_cell_u8_safety": {
+      "legacy_ok": true,
+      "next_solver_ok": false,
+      "solver_divergence": true,
+      "legacy_errors": [],
+      "next_errors": [
+        "error[E0277]: `&mut u8` cannot be safely transmuted into `&mut Cell<u8>`",
+        "= help: the nightly-only, unstable trait `TransmuteFrom<&'a mut u8, Assume { alignment: false, lifetimes: false, safety: true, validity: false }>` is not implemented for `&'a mut Cell<u8>`",
+        "= note: the full name for the type has been written to '<TMPDIR>/ext_ref_mut_u8_to_ref_mut_cell_u8_safety/lib_next.long-type-4053224436888363117.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "ifany_as_ifall_ref_union_safety": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: the trait bound `UnsafeCell<u8>: Freeze` is not satisfied in `Cell<u8>`",
+        "= help: within `Cell<u8>`, the nightly-only, unstable trait `Freeze` is not implemented for `UnsafeCell<u8>`",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `&u8` cannot be safely transmuted into `DstRefUnion<'_>`",
+        "= note: the full name for the type has been written to '<TMPDIR>/ext_ifany_as_ifall_ref_union_safety/lib_next.long-type-560096389751564936.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "answer_or_ref_first_safety_validity": {
+      "legacy_ok": false,
+      "next_solver_ok": false,
+      "solver_divergence": false,
+      "legacy_errors": [
+        "error[E0277]: the trait bound `UnsafeCell<u8>: Freeze` is not satisfied in `Cell<u8>`",
+        "= help: within `Cell<u8>`, the nightly-only, unstable trait `Freeze` is not implemented for `UnsafeCell<u8>`",
+        "error: aborting due to 1 previous error"
+      ],
+      "next_errors": [
+        "error[E0277]: `SrcMixRefFirst<'_>` cannot be safely transmuted into `DstMixRefFirst<'_>`",
+        "= note: the full name for the type has been written to '<TMPDIR>/ext_answer_or_ref_first_safety_validity/lib_next.long-type-6598333971454951747.txt'",
+        "= note: consider using `--verbose` to print the full type name to the console",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "answer_or_byte_first_safety_validity": {
+      "legacy_ok": true,
+      "next_solver_ok": true,
+      "solver_divergence": false,
+      "legacy_errors": [],
+      "next_errors": []
+    }
+  },
+  "miri_union_transmute_exec": {
+    "rc": 0,
+    "stdout": "EXT=66 TRUNC=0x44",
+    "ub_lines": [],
+    "stderr_tail": [
+      "   Compiling tx_miri_union v0.1.0 (<TMPDIR>/tx_miri_union)",
+      "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.29s",
+      "     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/tx_miri_union`"
+    ]
+  },
+  "issue_164247_cell_to_ref_soundness_repro": {
+    "native_O0": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stdout": "BEFORE=7 AFTER=99 CELL=99"
+    },
+    "native_O2": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stdout": "BEFORE=7 AFTER=7 CELL=99"
+    },
+    "llvm_ir_O2_observe_alias": [
+      "define internal fastcc noundef range(i24 6488064, 6553600) i24 @_RNvCsgfC7Vt8Orkn_14repro164247_ir13observe_alias(ptr noundef nonnull writeonly captures(none) initializes((0, 1)) %cell, ptr noalias noundef nonnull readonly captures(none) dereferenceable(1) %ro) unnamed_addr #3 {"
+    ],
+    "miri_stacked_borrows_protected": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: not granting access to tag <353> because that would remove [SharedReadOnly for <346>] which is strongly protected",
+        "|                               ^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental",
+        "help: <353> was created by a SharedReadWrite retag at offsets [0x0..0x1]"
+      ],
+      "stderr_tail": [
+        "                at src/main.rs:18:21: 18:45",
+        "",
+        "note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+        "",
+        "error: aborting due to 1 previous error",
+        ""
+      ]
+    },
+    "miri_tree_borrows_protected": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: write access through <341> at alloc158[0x0] is forbidden",
+        "|                                                 ^^^ Undefined Behavior occurred here",
+        "= help: this indicates a potential bug in the program: it performed an invalid operation, but the Tree Borrows rules it violated are still experimental",
+        "= help: this foreign write access would cause the protected tag <331> (currently Frozen) to become Disabled",
+        "= help: protected tags must never be Disabled",
+        "help: the protected tag <331> was created here, in the initial state Frozen"
+      ],
+      "stderr_tail": [
+        "                at src/main.rs:18:21: 18:45",
+        "",
+        "note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+        "",
+        "error: aborting due to 1 previous error",
+        ""
+      ]
+    },
+    "miri_stacked_borrows_unprotected": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: attempting a read access using <341> at alloc158[0x0], but that tag does not exist in the borrow stack for this location",
+        "= help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental",
+        "help: <341> was created by a SharedReadOnly retag at offsets [0x0..0x1]"
+      ],
+      "stderr_tail": [
+        "   |     ^^^^^^^^^^^^",
+        "",
+        "note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+        "",
+        "error: aborting due to 1 previous error",
+        ""
+      ]
+    },
+    "miri_tree_borrows_unprotected": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: read access through <326> at alloc158[0x0] is forbidden",
+        "|                 ^^^ Undefined Behavior occurred here",
+        "= help: this indicates a potential bug in the program: it performed an invalid operation, but the Tree Borrows rules it violated are still experimental",
+        "= help: the accessed tag <326> has state Disabled which forbids this child read access",
+        "help: the accessed tag <326> was created here, in the initial state Frozen",
+        "help: the accessed tag <326> later transitioned to Disabled due to a foreign write access at offsets [0x0..0x1]"
+      ],
+      "stderr_tail": [
+        "   = help: this transition corresponds to a loss of read permissions",
+        "",
+        "note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+        "",
+        "error: aborting due to 1 previous error",
+        ""
+      ]
+    }
+  },
+  "ref_aliasing_boundary_probes": {
+    "mut_cell_to_ref_sb": {
+      "rc": 0,
+      "stdout": "MUT_CELL_TO_REF=42",
+      "ub_lines": [],
+      "stderr_tail": [
+        "   Compiling mut_cell_sb v0.1.0 (<TMPDIR>/mut_cell_sb)",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.22s",
+        "     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/mut_cell_sb`"
+      ]
+    },
+    "mut_cell_to_ref_tb": {
+      "rc": 0,
+      "stdout": "MUT_CELL_TO_REF=42",
+      "ub_lines": [],
+      "stderr_tail": [
+        "   Compiling mut_cell_tb v0.1.0 (<TMPDIR>/mut_cell_tb)",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s",
+        "     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/mut_cell_tb`"
+      ]
+    },
+    "cell_first_prefix_sb": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: attempting a read access using <341> at alloc158[0x0], but that tag does not exist in the borrow stack for this location",
+        "= help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental",
+        "help: <341> was created by a SharedReadOnly retag at offsets [0x0..0x1]"
+      ],
+      "stderr_tail": [
+        "   |     ^^^^^^^^^^^",
+        "",
+        "note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+        "",
+        "error: aborting due to 1 previous error",
+        ""
+      ]
+    },
+    "cell_first_prefix_tb": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: read access through <326> at alloc158[0x0] is forbidden",
+        "|             ^^^ Undefined Behavior occurred here",
+        "= help: this indicates a potential bug in the program: it performed an invalid operation, but the Tree Borrows rules it violated are still experimental",
+        "= help: the accessed tag <326> has state Disabled which forbids this child read access",
+        "help: the accessed tag <326> was created here, in the initial state Frozen",
+        "help: the accessed tag <326> later transitioned to Disabled due to a foreign write access at offsets [0x0..0x1]"
+      ],
+      "stderr_tail": [
+        "   = help: this transition corresponds to a loss of read permissions",
+        "",
+        "note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+        "",
+        "error: aborting due to 1 previous error",
+        ""
+      ]
+    },
+    "cell_second_prefix_sb": {
+      "rc": 0,
+      "stdout": "CELL_SECOND B=7 A=7 CELL=99",
+      "ub_lines": [],
+      "stderr_tail": [
+        "   Compiling cell_second_sb v0.1.0 (<TMPDIR>/cell_second_sb)",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.25s",
+        "     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/cell_second_sb`"
+      ]
+    },
+    "cell_second_prefix_tb": {
+      "rc": 0,
+      "stdout": "CELL_SECOND B=7 A=7 CELL=99",
+      "ub_lines": [],
+      "stderr_tail": [
+        "   Compiling cell_second_tb v0.1.0 (<TMPDIR>/cell_second_tb)",
+        "    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.32s",
+        "     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/cell_second_tb`"
+      ]
+    }
+  }
+}
