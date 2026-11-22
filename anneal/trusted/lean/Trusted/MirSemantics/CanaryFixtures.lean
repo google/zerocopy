@@ -69,6 +69,7 @@ noncomputable def u8Val (n : Nat) : Val := scalarNatVal .i8 false n
 `fn binop(a: lhsTy, b: rhsTy) -> retTy { _0 = op(copy _1, copy _2); return }` -/
 noncomputable def mkBinOpProg (op : BinOp) (retTy lhsTy rhsTy : MirTy) :
     Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -85,6 +86,7 @@ noncomputable def mkBinOpProg (op : BinOp) (retTy lhsTy rhsTy : MirTy) :
 /-- Single-block unary-operator test program:
 `fn unop(a: ty) -> ty { _0 = op(copy _1); return }` -/
 noncomputable def mkUnOpProg (op : UnOp) (ty : MirTy) : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -110,6 +112,7 @@ noncomputable def queryAdd30_12 : Query :=
 /-- Canary `D2` (`ok` pole):
 `fn empty() { return }` (`_0 : ()` live-initialized as a 0-byte ZST). -/
 noncomputable def progEmptyUnitFn : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -131,6 +134,7 @@ noncomputable def queryEmpty : Query := { args := [] }
 branch arm (`10u32 -> bb2 -> 100u32`) and the `otherwise` fallback arm
 (`_ -> bb3 -> 200u32`). -/
 noncomputable def progStmtsAndCf : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -197,6 +201,7 @@ noncomputable def IntWidthBoundaryCanary (w : IntWidth) : Prop :=
 /-- Canary `D3` (`undefined` pole):
 `fn div_zero(a: u32) -> u32 { _0 = a / 0; return }` -/
 noncomputable def progDivByZero : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -226,6 +231,7 @@ noncomputable def querySignedRemOverflowI8 : Query :=
 /-- Canary `D5` (`unsupported` pole):
 unmodeled statement `.unsupported` steps to `.fault .unsupported`. -/
 noncomputable def progUnsupported : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -249,6 +255,7 @@ noncomputable def queryU32MaxPlusOne : Query :=
 /-- Program reading a local after `StatementKind.storageDead`:
 `StorageLive(_1); _1 = const 7u32; StorageDead(_1); _0 = copy _1; return`. -/
 noncomputable def progStorageDeadReadUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -270,6 +277,7 @@ noncomputable def progStorageDeadReadUb : Program where
 `fn f(_1: u32) -> u32 { StorageLive(_2); _2 = copy _1; _0 = copy _2;
 StorageDead(_2); return }`. -/
 noncomputable def progMemLifecycle : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -294,6 +302,7 @@ noncomputable def queryMemLifecycle : Query :=
 /-- Uninitialized-read program (`CanaryMemoryLifecycleAnnealClaim`):
 `fn f() -> u32 { StorageLive(_1); _0 = copy _1; return }`. -/
 noncomputable def progMemUninitRead : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -310,6 +319,7 @@ noncomputable def progMemUninitRead : Program where
 
 /-- Program executing `StatementKind.storageDead 0` on the return place `_0`. -/
 noncomputable def progStorageDeadReturnPlaceUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -323,6 +333,7 @@ noncomputable def progStorageDeadReturnPlaceUb : Program where
 
 /-- Program executing `TerminatorKind.unreachable`. -/
 noncomputable def progUnreachableUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -358,6 +369,7 @@ noncomputable def canarySignedTagEnumTy : EnumTy := {
 /-- Positive canary program decoding `const ReprU8::B` (`.scalar 20`, variant 1)
 and reading `Rvalue.discriminant` into a `u8` return place `_0`. -/
 noncomputable def progEnumExplicitReprU8 : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -379,6 +391,7 @@ noncomputable def progEnumExplicitReprU8 : Program where
 `0xff = 255`, sign-extended to `-1isize = 2^64 - 1`) and reading
 `Rvalue.discriminant` into an `isize` return place `_0`. -/
 noncomputable def progEnumSignedTagIsize : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -409,6 +422,7 @@ noncomputable def canarySingleZstEnumTy : EnumTy := {
 /-- Positive canary `fn() -> Single { return }` returning an inhabited ZST
 1-variant enum without an explicit assignment to `_0`. -/
 noncomputable def progZstSingleEnumImplicitRet : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -423,6 +437,7 @@ noncomputable def progZstSingleEnumImplicitRet : Program where
 /-- Positive canary exercising `StorageLive`, `Operand.move` (non-deinitializing
 on ZST), `ConstLit.zeroSized`, and `Rvalue.discriminant` on `Single`. -/
 noncomputable def progZstSingleEnumMoveAndDiscr : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -453,6 +468,7 @@ noncomputable def progZstSingleEnumMoveAndDiscr : Program where
 /-- Negative UB canary: `ConstLit.scalar 1` on `ReprU8 { A = 10, B = 20 }` is an
 invalid enum tag (not variant index 1!) and faults with `.undefined`. -/
 noncomputable def progEnumInvalidTagConstUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -472,6 +488,7 @@ noncomputable def progEnumInvalidTagConstUb : Program where
 /-- Negative UB canary: reading `Rvalue.discriminant` from an uninitialized
 scalar-tagged enum local faults with `.undefined`. -/
 noncomputable def progEnumUninitDiscrUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -492,6 +509,7 @@ and `_0` moved into memory, it moves out of an `.indirect` local, writes an
 `.indirect` local, re-runs `StorageLive` on an `.indirect` local, and returns
 from an `.indirect` `_0`. -/
 noncomputable def progMemIndirectOps : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -510,6 +528,7 @@ noncomputable def progMemIndirectOps : Program where
 `fn f() -> u32 { StorageLive(_1); _0 = copy _1; return }` with `_1: bool`.
 The `bool` source does not match the `u32` destination. -/
 noncomputable def progMemIllTypedUse : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -528,6 +547,7 @@ noncomputable def progMemIllTypedUse : Program where
 `fn f() -> bool { StorageLive(_1); _0 = Not(copy _1); return }` with
 `_1: ReprU8`. An enum is not primitive-readable, so `Not` cannot read it. -/
 noncomputable def progMemNonPrimitiveUnOp : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -552,6 +572,7 @@ noncomputable def overflowPairTy (ty : MirTy) : MirTy := .tuple [ty, .bool]
 /-- Single-block integer-cast test program:
 `fn cast(a: srcTy) -> dstTy { _0 = copy _1 as dstTy (IntToInt); return }` -/
 noncomputable def mkIntToIntCastProg (srcTy dstTy : MirTy) : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -569,6 +590,7 @@ noncomputable def mkIntToIntCastProg (srcTy dstTy : MirTy) : Program where
 `fn f(a: ty, b: ty) -> i8 { _3 = Cmp(copy _1, copy _2);
 _0 = discriminant(_3); return }` -/
 noncomputable def mkCmpDiscriminantProg (ty : MirTy) : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -587,6 +609,7 @@ noncomputable def mkCmpDiscriminantProg (ty : MirTy) : Program where
 `fn f(c: char) -> u32 { switchInt(copy _1) -> [97 ('a'): bb1, otherwise: bb2] }`
 where `bb1` returns `1u32` and `bb2` returns `2u32`. -/
 noncomputable def progCharSwitch : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -621,6 +644,7 @@ noncomputable def progCharSwitch : Program where
 scalar value, so the constant `_0 = const 0xD800 as char` is an invalid `char`
 and faults with `.undefined`. -/
 noncomputable def progInvalidCharConstUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -638,6 +662,7 @@ noncomputable def progInvalidCharConstUb : Program where
 /-- Negative UB canary: a `char` switch whose case value `0xD800` is not a
 Unicode scalar value faults with `.undefined` when the case is compared. -/
 noncomputable def progInvalidCharSwitchCaseUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -665,6 +690,7 @@ noncomputable def progInvalidCharSwitchCaseUb : Program where
 (`fn f() -> u32 { StorageLive(_1); _0 = copy _1 as u32; return }`) faults with
 `.undefined`. -/
 noncomputable def progCastUninitSourceUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{

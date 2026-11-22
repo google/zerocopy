@@ -66,6 +66,7 @@ def mkProgNestedRefPair (dstTy srcTy : MirTy) : Program :=
               terminator := .return_
               cleanup := false }] }]
     entryDefId := 0
+    scope := .unit
     pointerWidthBits := 64
     mirProfileVersion := 1 }
 
@@ -152,6 +153,7 @@ def canaryAddWithOverflowProg : Program :=
               terminator := .return_
               cleanup := false }] }]
     entryDefId := 0
+    scope := .unit
     pointerWidthBits := 64
     mirProfileVersion := 1 }
 
@@ -170,6 +172,7 @@ def canaryUncheckedOverflowProg : Program :=
               terminator := .return_
               cleanup := false }] }]
     entryDefId := 0
+    scope := .unit
     pointerWidthBits := 64
     mirProfileVersion := 1 }
 

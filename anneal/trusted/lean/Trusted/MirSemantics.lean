@@ -481,24 +481,28 @@ noncomputable def CanaryCrateAndBodyVerifiedAnnealClaim : Prop :=
       }
     } ∧
   ¬ BodyVerified {
+      scope := .unit
       pointerWidthBits := 64
       mirProfileVersion := 1
       bodies := [canaryUnsafeGuardedBody false]
     } 0
       (canaryUnsafeGuardedBody false) (fun _ => False) ∧
   ¬ BodyVerified {
+      scope := .unit
       pointerWidthBits := 64
       mirProfileVersion := 1
       bodies := [canaryNeverParamBody true]
     } 0
       (canaryNeverParamBody true) (fun _ => True) ∧
   ¬ BodyVerified {
+      scope := .unit
       pointerWidthBits := 64
       mirProfileVersion := 1
       bodies := [canarySafeUnitBody, canaryUnsafeGuardedBody false]
     } 0
       (canaryUnsafeGuardedBody false) (fun _ => True) ∧
   ¬ BodyVerified {
+      scope := .unit
       pointerWidthBits := 64
       mirProfileVersion := 1
       bodies := [canaryUnsafeGuardedBody false]

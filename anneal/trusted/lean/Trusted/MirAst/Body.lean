@@ -140,19 +140,18 @@ the MIR semantic profile version `mirProfileVersion`, and the capture scope
    `initRefState` fail closed with `FaultKind.unsupported` (`.blocked`)
    whenever `p.mirProfileVersion ≠ 1`.
 
-**Producer obligations:** `Program.pointerWidthBits` and
-`Program.mirProfileVersion` carry no defaults so every `Program` literal (both
-hand-written canaries and serialized captures) must state the target layout and
-profile contract explicitly rather than silently inheriting accepted values.
+**Producer obligations:** `Program.pointerWidthBits`,
+`Program.mirProfileVersion`, and `Program.scope` carry no defaults so every
+`Program` literal (both hand-written canaries and serialized captures) must
+state the target layout, profile contract, and intended verification scope
+explicitly rather than silently inheriting accepted or `.unit` values.
 The remaining Lean field defaults across `Trusted.MirAst` exist solely for
 concise hand-written canary literals. Two defaults equal unprojected/non-cleanup
 values (`BasicBlock.cleanup := false` and `Place.projection := []`), and
 `Program.entryDefId := 0` selects body `0` as the entry point. The remaining
-three defaults (`Program.scope := .unit`, `Body.isUnsafe := false`, and
-`Body.identity := ""`) fail closed (`scope := .unit` rejects `CrateTheorem` and
-admits only the weaker `UnitTheorem` claim, `isUnsafe := false` withholds
-caller safety preconditions, and `identity := ""` is rejected by
-`BodyStaticAdmitted`). Any serializer or MIR producer (such as
+two defaults (`Body.isUnsafe := false` and `Body.identity := ""`) fail closed
+(`isUnsafe := false` withholds caller safety preconditions, and `identity := ""`
+is rejected by `BodyStaticAdmitted`). Any serializer or MIR producer (such as
 `anneal-rustc-capture`) MUST explicitly populate all of these fields—
 `pointerWidthBits` (from the compiled target's data layout),
 `mirProfileVersion` (from the capture profile contract), `scope`, `entryDefId`,
@@ -167,6 +166,6 @@ structure Program where
   entryDefId : DefId := 0
   pointerWidthBits : Nat
   mirProfileVersion : Nat
-  scope : VerificationScope := .unit
+  scope : VerificationScope
 
 end Trusted.MirAst
