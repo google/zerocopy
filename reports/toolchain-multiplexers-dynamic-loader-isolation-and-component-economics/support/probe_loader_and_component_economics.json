@@ -1,0 +1,908 @@
+{
+  "host": {
+    "os": "Linux",
+    "arch": "x86_64",
+    "kernel": "7.1.6-x86_64",
+    "python": "3.13.15"
+  },
+  "probe1_glibc_rpath_and_maps_closure": {
+    "host_ldd_version": "ldd (GNU libc) 2.43",
+    "patchelf_version": "patchelf 0.15.2",
+    "toolchains": {
+      "nightly_main": {
+        "headline": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "commit_hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "llvm_version": "23.1.5",
+        "driver_so": "librustc_driver-789fff502791d0da.so",
+        "driver_elf": {
+          "dt_rpath": null,
+          "dt_runpath": "$ORIGIN/../lib",
+          "dt_soname": "librustc_driver-789fff502791d0da.so",
+          "dt_needed": [
+            "libLLVM.so.23.1-rust-1.102.0-nightly",
+            "libdl.so.2",
+            "libgcc_s.so.1",
+            "librt.so.1",
+            "libpthread.so.0",
+            "libc.so.6",
+            "ld-linux-x86-64.so.2"
+          ]
+        },
+        "llvm_so": "libLLVM.so.23.1-rust-1.102.0-nightly",
+        "llvm_sha256_prefix16": "e504d51948337472"
+      },
+      "nightly_2026_11_20_poison": {
+        "headline": "rustc 1.102.0-nightly (6905905bb 2026-11-19)",
+        "commit_hash": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+        "llvm_version": "23.1.6",
+        "llvm_so": "libLLVM.so.23.1-rust-1.102.0-nightly",
+        "llvm_sha256_prefix16": "d57545f290b3417c"
+      },
+      "nightly_2026_11_13_collision": {
+        "headline": "rustc 1.102.0-nightly (8eb778d04 2026-11-12)",
+        "commit_hash": "8eb778d04094d3af4b26580cab327e0413eb1e02",
+        "llvm_version": "23.1.5",
+        "llvm_so": "libLLVM.so.23.1-rust-1.102.0-nightly"
+      }
+    },
+    "shared_llvm_soname_equal": true,
+    "case_a_exe_dt_rpath_only": {
+      "exe_elf": {
+        "dt_rpath": "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib",
+        "dt_runpath": null,
+        "dt_soname": null,
+        "dt_needed": [
+          "librustc_driver-789fff502791d0da.so",
+          "libgcc_s.so.1",
+          "libc.so.6"
+        ]
+      },
+      "driver_elf": {
+        "dt_rpath": null,
+        "dt_runpath": "$ORIGIN/../lib",
+        "dt_soname": "librustc_driver-789fff502791d0da.so",
+        "dt_needed": [
+          "libLLVM.so.23.1-rust-1.102.0-nightly",
+          "libdl.so.2",
+          "libgcc_s.so.1",
+          "librt.so.1",
+          "libpthread.so.0",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ]
+      },
+      "result": {
+        "returncode": 0,
+        "report": "CAPTURE_REPORT ok=true version_str=Some(\"1.102.0-nightly (3ef0c22cd 2026-11-11)\") bodies=2 bbs=21 stmts=96 terms=21 crates=19",
+        "mapped_so": [
+          "<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so"
+        ],
+        "ld_debug_excerpt": [
+          "915288:\tfind library=librustc_driver-789fff502791d0da.so [0]; searching",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib\t\t(RPATH from file <TMPDIR>/capture_case_a)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4/librustc_driver-789fff502791d0da.so",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3/librustc_driver-789fff502791d0da.so",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2/librustc_driver-789fff502791d0da.so",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib\t\t(RPATH from file <TMPDIR>/capture_case_a)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/libgcc_s.so.1",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4/libgcc_s.so.1",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3/libgcc_s.so.1",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2/libgcc_s.so.1",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/libgcc_s.so.1",
+          "915288:\t  trying file=/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib\t\t(RPATH from file <TMPDIR>/capture_case_a)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/libc.so.6",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/libc.so.6",
+          "915288:\t  trying file=/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "915288:\tfind library=libLLVM.so.23.1-rust-1.102.0-nightly [0]; searching",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/libdl.so.2",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v4/libdl.so.2",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v3/libdl.so.2",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v2/libdl.so.2",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/libdl.so.2",
+          "915288:\t  trying file=/usr/lib/x86_64-linux-gnu/libdl.so.2",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/librt.so.1",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/librt.so.1",
+          "915288:\t  trying file=/usr/lib/x86_64-linux-gnu/librt.so.1",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/libpthread.so.0",
+          "915288:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so)",
+          "915288:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/libpthread.so.0",
+          "915288:\t  trying file=/usr/lib/x86_64-linux-gnu/libpthread.so.0"
+        ]
+      },
+      "driver_only_maps_check_passes_falsely": true,
+      "full_closure_maps_check_passes": false
+    },
+    "case_b_both_exe_and_driver_dt_rpath": {
+      "exe_elf": {
+        "dt_rpath": "<TMPDIR>/staged_nightly/lib",
+        "dt_runpath": null,
+        "dt_soname": null,
+        "dt_needed": [
+          "librustc_driver-789fff502791d0da.so",
+          "libgcc_s.so.1",
+          "libc.so.6"
+        ]
+      },
+      "driver_elf": {
+        "dt_rpath": "$ORIGIN/../lib",
+        "dt_runpath": null,
+        "dt_soname": "librustc_driver-789fff502791d0da.so",
+        "dt_needed": [
+          "libLLVM.so.23.1-rust-1.102.0-nightly",
+          "libdl.so.2",
+          "libgcc_s.so.1",
+          "librt.so.1",
+          "libpthread.so.0",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ]
+      },
+      "result": {
+        "returncode": 0,
+        "report": "CAPTURE_REPORT ok=true version_str=Some(\"1.102.0-nightly (3ef0c22cd 2026-11-11)\") bodies=2 bbs=21 stmts=96 terms=21 crates=19",
+        "mapped_so": [
+          "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "<TMPDIR>/staged_nightly/lib/librustc_driver-789fff502791d0da.so"
+        ],
+        "ld_debug_excerpt": [
+          "915389:\tfind library=librustc_driver-789fff502791d0da.so [0]; searching",
+          "915389:\t search path=<TMPDIR>/staged_nightly/lib/glibc-hwcaps/x86-64-v4:<TMPDIR>/staged_nightly/lib/glibc-hwcaps/x86-64-v3:<TMPDIR>/staged_nightly/lib/glibc-hwcaps/x86-64-v2:<TMPDIR>/staged_nightly/lib\t\t(RPATH from file <TMPDIR>/capture_case_b)",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/glibc-hwcaps/x86-64-v4/librustc_driver-789fff502791d0da.so",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/glibc-hwcaps/x86-64-v3/librustc_driver-789fff502791d0da.so",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/glibc-hwcaps/x86-64-v2/librustc_driver-789fff502791d0da.so",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/librustc_driver-789fff502791d0da.so",
+          "915389:\t search path=<TMPDIR>/staged_nightly/lib\t\t(RPATH from file <TMPDIR>/capture_case_b)",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/libgcc_s.so.1",
+          "915389:\t search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+          "915389:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4/libgcc_s.so.1",
+          "915389:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3/libgcc_s.so.1",
+          "915389:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2/libgcc_s.so.1",
+          "915389:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/libgcc_s.so.1",
+          "915389:\t  trying file=/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "915389:\t search path=<TMPDIR>/staged_nightly/lib\t\t(RPATH from file <TMPDIR>/capture_case_b)",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/libc.so.6",
+          "915389:\t search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+          "915389:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/libc.so.6",
+          "915389:\t  trying file=/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "915389:\tfind library=libLLVM.so.23.1-rust-1.102.0-nightly [0]; searching",
+          "915389:\t search path=<TMPDIR>/staged_nightly/lib/../lib/glibc-hwcaps/x86-64-v4:<TMPDIR>/staged_nightly/lib/../lib/glibc-hwcaps/x86-64-v3:<TMPDIR>/staged_nightly/lib/../lib/glibc-hwcaps/x86-64-v2:<TMPDIR>/staged_nightly/lib/../lib\t\t(RPATH from file <TMPDIR>/staged_nightly/lib/librustc_driver-789fff502791d0da.so)",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/../lib/glibc-hwcaps/x86-64-v4/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/../lib/glibc-hwcaps/x86-64-v3/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/../lib/glibc-hwcaps/x86-64-v2/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/../lib/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "915389:\t search path=<TMPDIR>/staged_nightly/lib/../lib\t\t(RPATH from file <TMPDIR>/staged_nightly/lib/librustc_driver-789fff502791d0da.so)",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/../lib/libdl.so.2",
+          "915389:\t search path=<TMPDIR>/staged_nightly/lib\t\t(RPATH from file <TMPDIR>/capture_case_b)",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/libdl.so.2",
+          "915389:\t search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+          "915389:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/libdl.so.2",
+          "915389:\t  trying file=/usr/lib/x86_64-linux-gnu/libdl.so.2",
+          "915389:\t search path=<TMPDIR>/staged_nightly/lib/../lib\t\t(RPATH from file <TMPDIR>/staged_nightly/lib/librustc_driver-789fff502791d0da.so)",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/../lib/librt.so.1",
+          "915389:\t search path=<TMPDIR>/staged_nightly/lib\t\t(RPATH from file <TMPDIR>/capture_case_b)",
+          "915389:\t  trying file=<TMPDIR>/staged_nightly/lib/librt.so.1",
+          "915389:\t search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+          "915389:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/lib/librt.so.1",
+          "915389:\t  trying file=/usr/lib/x86_64-linux-gnu/librt.so.1",
+          "915389:\t search path=<TMPDIR>/staged_nightly/lib/../lib\t\t(RPATH from file <TMPDIR>/staged_nightly/lib/librustc_driver-789fff502791d0da.so)"
+        ]
+      }
+    },
+    "case_c_parent_scrubs_llp_plus_full_maps_closure": {
+      "exe_elf": {
+        "dt_rpath": null,
+        "dt_runpath": "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib",
+        "dt_soname": null,
+        "dt_needed": [
+          "librustc_driver-789fff502791d0da.so",
+          "libgcc_s.so.1",
+          "libc.so.6"
+        ]
+      },
+      "result": {
+        "returncode": 0,
+        "report": "CAPTURE_REPORT ok=true version_str=Some(\"1.102.0-nightly (3ef0c22cd 2026-11-11)\") bodies=2 bbs=21 stmts=96 terms=21 crates=19",
+        "mapped_so": [
+          "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so"
+        ],
+        "ld_debug_excerpt": [
+          "915581:\tfind library=librustc_driver-789fff502791d0da.so [0]; searching",
+          "915581:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib\t\t(RUNPATH from file <TMPDIR>/capture_base)",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4/librustc_driver-789fff502791d0da.so",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3/librustc_driver-789fff502791d0da.so",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2/librustc_driver-789fff502791d0da.so",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so",
+          "915581:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib\t\t(RUNPATH from file <TMPDIR>/capture_base)",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/libgcc_s.so.1",
+          "915581:\t  trying file=/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+          "915581:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib\t\t(RUNPATH from file <TMPDIR>/capture_base)",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/libc.so.6",
+          "915581:\t  trying file=/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "915581:\tfind library=libLLVM.so.23.1-rust-1.102.0-nightly [0]; searching",
+          "915581:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so)",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v4/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v3/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v2/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/libLLVM.so.23.1-rust-1.102.0-nightly",
+          "915581:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so)",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/libdl.so.2",
+          "915581:\t  trying file=/usr/lib/x86_64-linux-gnu/libdl.so.2",
+          "915581:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so)",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/librt.so.1",
+          "915581:\t  trying file=/usr/lib/x86_64-linux-gnu/librt.so.1",
+          "915581:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/librustc_driver-789fff502791d0da.so)",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/libpthread.so.0",
+          "915581:\t  trying file=/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+          "915581:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/x86_64-unknown-linux-gnu\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/libLLVM.so.23.1-rust-1.102.0-nightly)",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/glibc-hwcaps/x86-64-v4/libm.so.6",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/glibc-hwcaps/x86-64-v3/libm.so.6",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/glibc-hwcaps/x86-64-v2/libm.so.6",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/libm.so.6",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v4/libm.so.6",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v3/libm.so.6",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v2/libm.so.6",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/x86_64-unknown-linux-gnu/libm.so.6",
+          "915581:\t  trying file=/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "915581:\t search path=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/libLLVM.so.23.1-rust-1.102.0-nightly)",
+          "915581:\t  trying file=<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/lib/../lib/../lib/libz.so.1",
+          "915581:\t  trying file=/usr/lib/x86_64-linux-gnu/libz.so.1"
+        ]
+      },
+      "full_closure_maps_check_passes": true
+    }
+  },
+  "probe2_monorepo_abi_and_version_formats": {
+    "installed_toolchains_abi": {
+      "stable_1_100_0": {
+        "rustc_vv": {
+          "headline": "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+          "raw": "rustc 1.100.0 (0ef1bc386 2026-11-09)\nbinary: rustc\ncommit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a\ncommit-date: 2026-11-09\nhost: x86_64-unknown-linux-gnu\nrelease: 1.100.0\nLLVM version: 23.1.5",
+          "binary": "rustc",
+          "commit-hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+          "commit-date": "2026-11-09",
+          "host": "x86_64-unknown-linux-gnu",
+          "release": "1.100.0",
+          "LLVM version": "23.1.5"
+        },
+        "driver_filename": "librustc_driver-62d0ff9ea62999cc.so",
+        "driver_soname": "librustc_driver-62d0ff9ea62999cc.so",
+        "run_compiler_exported_symbols": [
+          "_RNvCscKux0ZQCX4Q_17rustc_driver_impl12run_compiler",
+          "_RNvNvNtCs57538JTOQuS_15rustc_interface9interface12run_compiler10___CALLSITE",
+          "_RNvNvNvNtCs57538JTOQuS_15rustc_interface9interface12run_compiler10___CALLSITE4META"
+        ]
+      },
+      "nightly_2026_11_11": {
+        "rustc_vv": {
+          "headline": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+          "raw": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+          "binary": "rustc",
+          "commit-hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+          "commit-date": "2026-11-11",
+          "host": "x86_64-unknown-linux-gnu",
+          "release": "1.102.0-nightly",
+          "LLVM version": "23.1.5"
+        },
+        "driver_filename": "librustc_driver-789fff502791d0da.so",
+        "driver_soname": "librustc_driver-789fff502791d0da.so",
+        "run_compiler_exported_symbols": [
+          "_RNvNvNtCs8Kx2m4sh1OY_15rustc_interface9interface12run_compiler10___CALLSITE",
+          "_RNvNvNvNtCs8Kx2m4sh1OY_15rustc_interface9interface12run_compiler10___CALLSITE4META"
+        ]
+      },
+      "local_stage1_dev_build": {
+        "rustc_vv": {
+          "headline": "rustc 1.100.0-dev",
+          "raw": "rustc 1.100.0-dev\nbinary: rustc\ncommit-hash: unknown\ncommit-date: unknown\nhost: x86_64-unknown-linux-gnu\nrelease: 1.100.0-dev\nLLVM version: 23.1.1",
+          "binary": "rustc",
+          "commit-hash": "unknown",
+          "commit-date": "unknown",
+          "host": "x86_64-unknown-linux-gnu",
+          "release": "1.100.0-dev",
+          "LLVM version": "23.1.1"
+        },
+        "driver_filename": "librustc_driver-b261f72c6e040587.so",
+        "driver_soname": "librustc_driver-b261f72c6e040587.so",
+        "run_compiler_exported_symbols": [
+          "_RNvCslWlegFwsaFS_17rustc_driver_impl12run_compiler",
+          "_RNvNvNtCs3vVfvFZkSIe_15rustc_interface9interface12run_compiler10___CALLSITE",
+          "_RNvNvNvNtCs3vVfvFZkSIe_15rustc_interface9interface12run_compiler10___CALLSITE4META"
+        ]
+      }
+    },
+    "controlled_cfg_version_and_metadata_mangling_matrix": {
+      "upstream_baseline": {
+        "flags": [
+          "-Cmetadata=nightly1.102.0",
+          "-Csymbol-mangling-version=v0"
+        ],
+        "cfg_version_simulated": "1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "exported_symbol": "_RNvCsdPlp0IeVrYh_11mock_driver18run_compiler_entry"
+      },
+      "same_sha_chromium_description": {
+        "flags": [
+          "-Cmetadata=nightly1.102.0",
+          "-Csymbol-mangling-version=v0"
+        ],
+        "cfg_version_simulated": "1.102.0-nightly (3ef0c22cd 2026-11-11) (3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1-1-llvmorg-23 chromium)",
+        "exported_symbol": "_RNvCs1dFbv31IN5J_11mock_driver18run_compiler_entry"
+      },
+      "same_sha_omit_git_hash": {
+        "flags": [
+          "-Cmetadata=nightly1.102.0",
+          "-Csymbol-mangling-version=v0"
+        ],
+        "cfg_version_simulated": "1.102.0-nightly",
+        "exported_symbol": "_RNvCs1eSHgjnL34m_11mock_driver18run_compiler_entry"
+      },
+      "same_sha_dev_channel_metadata": {
+        "flags": [
+          "-Cmetadata=dev1.102.0",
+          "-Csymbol-mangling-version=v0"
+        ],
+        "cfg_version_simulated": "1.102.0-dev",
+        "exported_symbol": "_RNvCs7AmVuOeRGaO_11mock_driver18run_compiler_entry"
+      },
+      "legacy_mangling_upstream": {
+        "flags": [
+          "-Cmetadata=nightly1.102.0",
+          "-Csymbol-mangling-version=legacy",
+          "-Zunstable-options"
+        ],
+        "cfg_version_simulated": "1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "exported_symbol": "_ZN11mock_driver18run_compiler_entry17h033da3230c7128d1E"
+      },
+      "legacy_mangling_chromium_description": {
+        "flags": [
+          "-Cmetadata=nightly1.102.0",
+          "-Csymbol-mangling-version=legacy",
+          "-Zunstable-options"
+        ],
+        "cfg_version_simulated": "1.102.0-nightly (3ef0c22cd 2026-11-11) (3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1-1-llvmorg-23 chromium)",
+        "exported_symbol": "_ZN11mock_driver18run_compiler_entry17ha083e0d64a48a70cE"
+      }
+    },
+    "runtime_override_version_string_vv": "rustc 1.99.9-custom-monorepo\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.99.9-custom-monorepo\nLLVM version: 23.1.5"
+  },
+  "probe3_component_economics": {
+    "upstream_channel_manifests": {
+      "channel_rust_1_100_0": {
+        "manifest_url": "https://static.rust-lang.org/dist/channel-rust-1.100.0.toml",
+        "manifest_sha256": "3051e859570f64a8c5acb9d09e87425db52c7d97287c67e8f6d57d7d34ef9258",
+        "manifest_date": "2026-11-12",
+        "target": "x86_64-unknown-linux-gnu",
+        "components": {
+          "rustc": {
+            "version": "1.100.0 (0ef1bc386 2026-11-09)",
+            "git_commit_hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-12/rustc-1.100.0-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "f1d0b1dec81dab6f523cd098507763487b0d4bd7fd2c87582f154128719be03b",
+            "xz_compressed_bytes": 84955936,
+            "xz_compressed_mib": 81.02,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-12/rustc-1.100.0-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "67b0e85ff4b3eee83c48b8ae1da10dd0bcd60b43d02cd0e7df78c59d19f6b960",
+            "gz_compressed_bytes": 143589524,
+            "gz_compressed_mib": 136.94
+          },
+          "rust-std": {
+            "version": "1.100.0 (0ef1bc386 2026-11-09)",
+            "git_commit_hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-12/rust-std-1.100.0-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "4591b6486594ded52ecd6135db95bf9355bbd3ca7a380888b141528bbcf9a5d4",
+            "xz_compressed_bytes": 31283108,
+            "xz_compressed_mib": 29.83,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-12/rust-std-1.100.0-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "61eb09d68b338e230d698716927bd4623049c9910ef4a4972e66d763d66ed9e1",
+            "gz_compressed_bytes": 50206772,
+            "gz_compressed_mib": 47.88
+          },
+          "rustc-dev": {
+            "version": "1.100.0 (0ef1bc386 2026-11-09)",
+            "git_commit_hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-12/rustc-dev-1.100.0-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "d392d050c615f9aa85b46e6267c1d2a72ca41d8b2216a13895c872a2ee18cac6",
+            "xz_compressed_bytes": 122021200,
+            "xz_compressed_mib": 116.37,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-12/rustc-dev-1.100.0-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "8a20bdcdab6894aab1aaf1c1c2f28918fd7e4dc268287bc5c1484f03676d0d2e",
+            "gz_compressed_bytes": 221116662,
+            "gz_compressed_mib": 210.87
+          },
+          "cargo": {
+            "version": "0.101.0 (3acc79c0c 2026-11-05)",
+            "git_commit_hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-12/cargo-1.100.0-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "7e29ce07d7c6e92d1826870575ba27d57fff6cb3e754aa57d99099cb88fab35d",
+            "xz_compressed_bytes": 10946408,
+            "xz_compressed_mib": 10.44,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-12/cargo-1.100.0-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "4e7fc3cbe98e23c88a3c6ce37f834e3ffbc91536789782c4c4a9670df6b16a49",
+            "gz_compressed_bytes": 14503535,
+            "gz_compressed_mib": 13.83
+          },
+          "rust-src": {
+            "version": "1.100.0 (0ef1bc386 2026-11-09)",
+            "git_commit_hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-12/rust-src-1.100.0.tar.xz",
+            "xz_sha256": "107afa7819b500c573b21a160b08f1a20bc2dfd99550717e1ffbbdb09da7ec6e",
+            "xz_compressed_bytes": 5943864,
+            "xz_compressed_mib": 5.67,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-12/rust-src-1.100.0.tar.gz",
+            "gz_sha256": "f37ba90547b1075da3a0953742cab9f9e33b5c08bce747bb0ff8382537b2fa8c",
+            "gz_compressed_bytes": 9520317,
+            "gz_compressed_mib": 9.08
+          }
+        }
+      },
+      "channel_rust_nightly_2026_11_12": {
+        "manifest_url": "https://static.rust-lang.org/dist/2026-11-12/channel-rust-nightly.toml",
+        "manifest_sha256": "0e29758e4495709044396db6992e8bc44cd0109e7dbb21e430216cf368ac6c9d",
+        "manifest_date": "2026-11-12",
+        "target": "x86_64-unknown-linux-gnu",
+        "components": {
+          "rustc": {
+            "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)",
+            "git_commit_hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-12/rustc-nightly-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "67e94fee687d6fc8bbbf515f1bd67cead67334252bff3a015c7dcfb0e5beaa81",
+            "xz_compressed_bytes": 85223784,
+            "xz_compressed_mib": 81.28,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-12/rustc-nightly-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "1feac3bcf70235e24ffb651bb4c74eb173428b599191d0514d615a596fa39d8a",
+            "gz_compressed_bytes": 144900517,
+            "gz_compressed_mib": 138.19
+          },
+          "rust-std": {
+            "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)",
+            "git_commit_hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-12/rust-std-nightly-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "7c4e2d7e7f8826e34fb82a8ecac1bd954d8396186d1efe7f2a87116a1b036fc6",
+            "xz_compressed_bytes": 31970112,
+            "xz_compressed_mib": 30.49,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-12/rust-std-nightly-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "6c75478b095794571d69085c837b69af847ea7ecb513773a7cf7ea56c6db4a05",
+            "gz_compressed_bytes": 51199737,
+            "gz_compressed_mib": 48.83
+          },
+          "rustc-dev": {
+            "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)",
+            "git_commit_hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-12/rustc-dev-nightly-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "f4b3b21222355e7648e8762e620c8f1ee747bd64454c4f962c4741903773e609",
+            "xz_compressed_bytes": 123379324,
+            "xz_compressed_mib": 117.66,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-12/rustc-dev-nightly-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "0c3f5ed05edeeba6a410ffcf66fbe2382aaf715de854687795b3f6481c1f93f1",
+            "gz_compressed_bytes": 224885337,
+            "gz_compressed_mib": 214.47
+          },
+          "cargo": {
+            "version": "0.102.0-nightly (c07ac2c4d 2026-11-06)",
+            "git_commit_hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-12/cargo-nightly-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "19a2f257172cbdadf5bc1fe4fa43be51202e0b65690eac6ba09efd73b631a88b",
+            "xz_compressed_bytes": 10822836,
+            "xz_compressed_mib": 10.32,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-12/cargo-nightly-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "ca0d733f56ffc0535c3707de3b56f574ecdce3a1b441ac47e535302a02ad9379",
+            "gz_compressed_bytes": 14420692,
+            "gz_compressed_mib": 13.75
+          },
+          "rust-src": {
+            "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)",
+            "git_commit_hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-12/rust-src-nightly.tar.xz",
+            "xz_sha256": "2ff616c155a39eac35c582aed87095560a88fd059c12abd7b23b9c371293aaa1",
+            "xz_compressed_bytes": 6034488,
+            "xz_compressed_mib": 5.75,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-12/rust-src-nightly.tar.gz",
+            "gz_sha256": "04b70ffd5317df47dc6abe4f08ade5ac1480d4b413e5f35fbf7d960a575293bc",
+            "gz_compressed_bytes": 9647754,
+            "gz_compressed_mib": 9.2
+          }
+        }
+      },
+      "channel_rust_nightly_latest": {
+        "manifest_url": "https://static.rust-lang.org/dist/channel-rust-nightly.toml",
+        "manifest_sha256": "3b5026f77235db090f9e521e01d1dd61d5dc076d41f0e81f23bdd0fa0ac18a50",
+        "manifest_date": "2026-11-22",
+        "target": "x86_64-unknown-linux-gnu",
+        "components": {
+          "rustc": {
+            "version": "1.102.0-nightly (bdf712ee8 2026-11-21)",
+            "git_commit_hash": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-22/rustc-nightly-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "cfc878d124f5ff637f0d816b72772cd269069472f8d5907bb68abea72a1ddbd9",
+            "xz_compressed_bytes": 84547756,
+            "xz_compressed_mib": 80.63,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-22/rustc-nightly-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "ecc4c3ac78e752df655bd46798fcc95a5a3985ac34675d5c9a24d6a81da1c9e4",
+            "gz_compressed_bytes": 144086044,
+            "gz_compressed_mib": 137.41
+          },
+          "rust-std": {
+            "version": "1.102.0-nightly (bdf712ee8 2026-11-21)",
+            "git_commit_hash": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-22/rust-std-nightly-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "662b0da353d5c2639ee037c610d992087c5a49937a0f14880721153c0ad362f3",
+            "xz_compressed_bytes": 31926536,
+            "xz_compressed_mib": 30.45,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-22/rust-std-nightly-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "93d0d0b33ef331dd87b7732db491ed9bc123d74dcd29d630651c98e6ff3b7755",
+            "gz_compressed_bytes": 51175190,
+            "gz_compressed_mib": 48.8
+          },
+          "rustc-dev": {
+            "version": "1.102.0-nightly (bdf712ee8 2026-11-21)",
+            "git_commit_hash": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-22/rustc-dev-nightly-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "0000ee671cd2342af146f2652d0c57ad4d6741c76eb7b5057f284d08917f1679",
+            "xz_compressed_bytes": 119113224,
+            "xz_compressed_mib": 113.6,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-22/rustc-dev-nightly-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "116bcaea18b550be8b0f87d5e98b1423f5166dde1af1327424fbead13e2cba41",
+            "gz_compressed_bytes": 215628135,
+            "gz_compressed_mib": 205.64
+          },
+          "cargo": {
+            "version": "0.103.0-nightly (f93c676e3 2026-11-15)",
+            "git_commit_hash": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-22/cargo-nightly-x86_64-unknown-linux-gnu.tar.xz",
+            "xz_sha256": "d5b0e2c7ee673120d79b3023a129632550a0338c82a1166f400ab92e1db85219",
+            "xz_compressed_bytes": 10735784,
+            "xz_compressed_mib": 10.24,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-22/cargo-nightly-x86_64-unknown-linux-gnu.tar.gz",
+            "gz_sha256": "50ebbe1e3adc4fd3d51bc4602e93907a94a6e8b12e46ae1d09dce4b4b47a2066",
+            "gz_compressed_bytes": 14288540,
+            "gz_compressed_mib": 13.63
+          },
+          "rust-src": {
+            "version": "1.102.0-nightly (bdf712ee8 2026-11-21)",
+            "git_commit_hash": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+            "xz_url": "https://static.rust-lang.org/dist/2026-11-22/rust-src-nightly.tar.xz",
+            "xz_sha256": "61454d11f9dc0c930ad7fc5f1b3cb63c835e116b43669d8b99600f8440df9557",
+            "xz_compressed_bytes": 6055376,
+            "xz_compressed_mib": 5.77,
+            "gz_url": "https://static.rust-lang.org/dist/2026-11-22/rust-src-nightly.tar.gz",
+            "gz_sha256": "6c07d21cede18b0c5c9c6a6fc7a30a0c2f0ed7f609fd5bf7b4fb8202cc2882ac",
+            "gz_compressed_bytes": 9786221,
+            "gz_compressed_mib": 9.33
+          }
+        }
+      }
+    },
+    "installed_stable_1_100_0_components": {
+      "rustc-x86_64-unknown-linux-gnu": {
+        "present": true,
+        "file_count": 40,
+        "installed_bytes": 422451133,
+        "installed_mib": 402.88,
+        "top_extensions_bytes": {
+          ".100.0-stable": 208242288,
+          ".so": 164092624,
+          "<bin>": 33308808,
+          ".html": 15817122,
+          ".lld": 743744,
+          ".py": 105704,
+          ".0-or-later.txt": 34795,
+          ".0.txt": 32412
+        }
+      },
+      "rust-std-x86_64-unknown-linux-gnu": {
+        "present": true,
+        "file_count": 63,
+        "installed_bytes": 168145260,
+        "installed_mib": 160.36,
+        "top_extensions_bytes": {
+          ".rmeta": 113827580,
+          ".rlib": 36787550,
+          ".asan.a": 3675706,
+          ".tsan.a": 3266760,
+          ".msan.a": 3023090,
+          ".so": 2841496,
+          ".lsan.a": 1249460,
+          ".dfsan.a": 1190740
+        }
+      },
+      "rustc-dev-x86_64-unknown-linux-gnu": {
+        "present": true,
+        "file_count": 3220,
+        "installed_bytes": 673263211,
+        "installed_mib": 642.07,
+        "top_extensions_bytes": {
+          ".so": 315551312,
+          ".rmeta": 308724068,
+          ".rs": 34634591,
+          ".rlib": 13232584,
+          ".md": 492728,
+          ".lock": 197475,
+          ".cpp": 162867,
+          ".toml": 103364
+        }
+      },
+      "cargo-x86_64-unknown-linux-gnu": {
+        "present": true,
+        "file_count": 44,
+        "installed_bytes": 36605223,
+        "installed_mib": 34.91,
+        "top_extensions_bytes": {
+          "<bin>": 36216724,
+          ".1": 383822,
+          ".md": 4677
+        }
+      },
+      "llvm-tools-preview-x86_64-unknown-linux-gnu": {
+        "present": true,
+        "file_count": 17,
+        "installed_bytes": 216577307,
+        "installed_mib": 206.54,
+        "top_extensions_bytes": {
+          ".100.0-stable": 208242288,
+          "<bin>": 8334976,
+          ".0-stable.so": 43
+        }
+      }
+    },
+    "installed_stable_1_100_0_rustc_lib_files": {
+      "librustc_driver-*.so": [
+        {
+          "name": "librustc_driver-62d0ff9ea62999cc.so",
+          "bytes": 164092624,
+          "mib": 156.49
+        }
+      ],
+      "libLLVM*.so*": [
+        {
+          "name": "libLLVM-23-rust-1.100.0-stable.so",
+          "bytes": 43,
+          "mib": 0.0
+        },
+        {
+          "name": "libLLVM.so.23.1-rust-1.100.0-stable",
+          "bytes": 208242288,
+          "mib": 198.6
+        }
+      ],
+      "libstd-*.so": []
+    },
+    "installed_nightly_2026_11_11_components": {
+      "rustc-x86_64-unknown-linux-gnu": {
+        "present": true,
+        "file_count": 42,
+        "installed_bytes": 425400882,
+        "installed_mib": 405.69,
+        "top_extensions_bytes": {
+          ".102.0-nightly": 208261552,
+          ".so": 165349728,
+          "<bin>": 33073168,
+          ".html": 17718887,
+          ".lld": 743520,
+          ".py": 112700,
+          ".0-or-later.txt": 34795,
+          ".0.txt": 32412
+        }
+      },
+      "rust-std-x86_64-unknown-linux-gnu": {
+        "present": true,
+        "file_count": 64,
+        "installed_bytes": 148451676,
+        "installed_mib": 141.57,
+        "top_extensions_bytes": {
+          ".rmeta": 93583694,
+          ".rlib": 37227148,
+          ".asan.a": 3675706,
+          ".tsan.a": 3266760,
+          ".msan.a": 3023090,
+          ".so": 2916608,
+          ".lsan.a": 1249436,
+          ".dfsan.a": 1190740
+        }
+      },
+      "rustc-dev-x86_64-unknown-linux-gnu": {
+        "present": true,
+        "file_count": 3263,
+        "installed_bytes": 624005105,
+        "installed_mib": 595.1,
+        "top_extensions_bytes": {
+          ".so": 318697552,
+          ".rmeta": 256392117,
+          ".rs": 35215720,
+          ".rlib": 12545216,
+          ".md": 493094,
+          ".lock": 196140,
+          ".cpp": 155355,
+          ".toml": 104205
+        }
+      },
+      "cargo-x86_64-unknown-linux-gnu": {
+        "present": true,
+        "file_count": 44,
+        "installed_bytes": 37225557,
+        "installed_mib": 35.5,
+        "top_extensions_bytes": {
+          "<bin>": 36837058,
+          ".1": 383822,
+          ".md": 4677
+        }
+      },
+      "rust-src": {
+        "present": true,
+        "file_count": 3811,
+        "installed_bytes": 74056540,
+        "installed_mib": 70.63,
+        "top_extensions_bytes": {
+          ".rs": 56471255,
+          ".xml": 6673004,
+          ".json": 5281167,
+          ".spec.yml": 1287901,
+          ".h": 1276567,
+          ".md": 608856,
+          "<bin>": 426582,
+          ".hpp": 398192
+        }
+      }
+    },
+    "driver_compile_and_runtime_benchmarks": {
+      "stable_1_100_0": {
+        "rustc_vv_headline": "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+        "rustc_bootstrap_env_required": true,
+        "first_compile_wall_ms": 592.15,
+        "first_compile_peak_rss_kib": 318152,
+        "first_compile_peak_rss_mib": 310.7,
+        "warm_compile_wall_ms_runs": [
+          398.91,
+          364.48,
+          377.13
+        ],
+        "warm_compile_wall_ms_median": 377.13,
+        "warm_compile_peak_rss_kib_median": 317996,
+        "unstripped_binary_bytes": 35048,
+        "stripped_binary_bytes": 25320,
+        "stripped_binary_kib": 24.73
+      },
+      "nightly_2026_11_11": {
+        "rustc_vv_headline": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "rustc_bootstrap_env_required": false,
+        "first_compile_wall_ms": 399.33,
+        "first_compile_peak_rss_kib": 307364,
+        "first_compile_peak_rss_mib": 300.16,
+        "warm_compile_wall_ms_runs": [
+          382.21,
+          389.62,
+          387.85
+        ],
+        "warm_compile_wall_ms_median": 387.85,
+        "warm_compile_peak_rss_kib_median": 307324,
+        "unstripped_binary_bytes": 35032,
+        "stripped_binary_bytes": 25296,
+        "stripped_binary_kib": 24.7
+      },
+      "zero_rustc_dev_runtime_proofs": {
+        "official_1_100_0_toolchain_without_rustc_dev": {
+          "has_manifest_rustc_dev": false,
+          "librustc_rlib_rmeta_count": 10,
+          "returncode": 0,
+          "stdout": [
+            "CAPTURE_REPORT ok=true version_str=Some(\"1.100.0 (0ef1bc386 2026-11-09)\") bodies=2 bbs=21 stmts=96 terms=21 crates=19",
+            "MAPPED_SO <RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.100.0-stable",
+            "MAPPED_SO <RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/lib/librustc_driver-62d0ff9ea62999cc.so"
+          ]
+        },
+        "staged_sysroot_with_only_rustc_and_rust_std_manifests": {
+          "librustc_rlib_rmeta_count": 10,
+          "returncode": 0,
+          "stdout": [
+            "CAPTURE_REPORT ok=true version_str=Some(\"1.100.0 (0ef1bc386 2026-11-09)\") bodies=2 bbs=21 stmts=96 terms=21 crates=19",
+            "MAPPED_SO <RUSTUP_HOME>/toolchains/stable-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.100.0-stable",
+            "MAPPED_SO <RUSTUP_HOME>/toolchains/stable-x86_64-unknown-linux-gnu/lib/librustc_driver-62d0ff9ea62999cc.so"
+          ]
+        }
+      }
+    }
+  },
+  "probe4_filesearch_and_sysroot_audit": {
+    "at_fdcwd_symlink_sysroot_matrix": [
+      {
+        "toolchain": "1.56.0-x86_64-unknown-linux-gnu",
+        "headline": "rustc 1.56.0 (09c42c458 2021-10-18)",
+        "commit_hash": "09c42c45858d5f3aedfa670698275303a3d19afa",
+        "cas_sysroot_expected": "<TMPDIR>/cas_1.56.0-x86_64-unknown-linux-gnu",
+        "real_dll_sysroot": "<RUSTUP_HOME>/toolchains/1.56.0-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_lacks_lib_rustlib": "<RUSTUP_HOME>/toolchains/1.56.0-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_has_decoy_lib_rustlib": "<TMPDIR>/cas_1.56.0-x86_64-unknown-linux-gnu",
+        "at_fdcwd_bug_present": true
+      },
+      {
+        "toolchain": "1.61.0-x86_64-unknown-linux-gnu",
+        "headline": "rustc 1.61.0 (fe5b13d68 2022-05-18)",
+        "commit_hash": "fe5b13d681f25ee6474be29d748c65adcd91f69e",
+        "cas_sysroot_expected": "<TMPDIR>/cas_1.61.0-x86_64-unknown-linux-gnu",
+        "real_dll_sysroot": "<RUSTUP_HOME>/toolchains/1.61.0-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_lacks_lib_rustlib": "<RUSTUP_HOME>/toolchains/1.61.0-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_has_decoy_lib_rustlib": "<TMPDIR>/cas_1.61.0-x86_64-unknown-linux-gnu",
+        "at_fdcwd_bug_present": true
+      },
+      {
+        "toolchain": "1.78.0-x86_64-unknown-linux-gnu",
+        "headline": "rustc 1.78.0 (9b00956e5 2024-04-29)",
+        "commit_hash": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+        "cas_sysroot_expected": "<TMPDIR>/cas_1.78.0-x86_64-unknown-linux-gnu",
+        "real_dll_sysroot": "<RUSTUP_HOME>/toolchains/1.78.0-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_lacks_lib_rustlib": "<RUSTUP_HOME>/toolchains/1.78.0-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_has_decoy_lib_rustlib": "<TMPDIR>/cas_1.78.0-x86_64-unknown-linux-gnu",
+        "at_fdcwd_bug_present": true
+      },
+      {
+        "toolchain": "1.84.0-x86_64-unknown-linux-gnu",
+        "headline": "rustc 1.84.0 (9fc6b4312 2025-01-07)",
+        "commit_hash": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+        "cas_sysroot_expected": "<TMPDIR>/cas_1.84.0-x86_64-unknown-linux-gnu",
+        "real_dll_sysroot": "<RUSTUP_HOME>/toolchains/1.84.0-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_lacks_lib_rustlib": "<RUSTUP_HOME>/toolchains/1.84.0-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_has_decoy_lib_rustlib": "<TMPDIR>/cas_1.84.0-x86_64-unknown-linux-gnu",
+        "at_fdcwd_bug_present": true
+      },
+      {
+        "toolchain": "1.93.1-x86_64-unknown-linux-gnu",
+        "headline": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+        "commit_hash": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+        "cas_sysroot_expected": "<TMPDIR>/cas_1.93.1-x86_64-unknown-linux-gnu",
+        "real_dll_sysroot": "<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_lacks_lib_rustlib": "<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_has_decoy_lib_rustlib": "<TMPDIR>/cas_1.93.1-x86_64-unknown-linux-gnu",
+        "at_fdcwd_bug_present": true
+      },
+      {
+        "toolchain": "1.100.0-x86_64-unknown-linux-gnu",
+        "headline": "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+        "commit_hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "cas_sysroot_expected": "<TMPDIR>/cas_1.100.0-x86_64-unknown-linux-gnu",
+        "real_dll_sysroot": "<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_lacks_lib_rustlib": "<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_has_decoy_lib_rustlib": "<TMPDIR>/cas_1.100.0-x86_64-unknown-linux-gnu",
+        "at_fdcwd_bug_present": true
+      },
+      {
+        "toolchain": "nightly-x86_64-unknown-linux-gnu",
+        "headline": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "commit_hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "cas_sysroot_expected": "<TMPDIR>/cas_nightly-x86_64-unknown-linux-gnu",
+        "real_dll_sysroot": "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_lacks_lib_rustlib": "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu",
+        "printed_sysroot_when_cwd_has_decoy_lib_rustlib": "<TMPDIR>/cas_nightly-x86_64-unknown-linux-gnu",
+        "at_fdcwd_bug_present": true
+      }
+    ],
+    "sealed_sysroot_isolation_probes": {
+      "empty_sealed_sysroot_core_lookup": {
+        "returncode": 1,
+        "fails_closed_without_default_fallback": true,
+        "stderr_first_line": "error[E0463]: can't find crate for `core`"
+      },
+      "sealed_sysroot_without_proc_macro_lookup": {
+        "returncode": 1,
+        "fails_closed_without_default_fallback": true,
+        "stderr_first_line": "error[E0463]: can't find crate for `proc_macro`"
+      },
+      "sealed_sysroot_without_bin_tools_rust_lld_fallback": {
+        "has_bin_dir_in_sealed_sysroot": false,
+        "returncode": 0,
+        "falls_back_to_sysroot_default_via_all_paths": true,
+        "stderr": ""
+      }
+    }
+  }
+}

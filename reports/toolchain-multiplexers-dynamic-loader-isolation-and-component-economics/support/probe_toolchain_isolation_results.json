@@ -1,0 +1,281 @@
+{
+  "host": {
+    "platform": "linux",
+    "python": "3.13.15"
+  },
+  "part_a_go_toolchain": {
+    "go_version": "go version go1.27.3 linux/amd64",
+    "build_n_lang_matrix": [
+      {
+        "go_directive": "1.21",
+        "GOTOOLCHAIN": "local",
+        "returncode": 0,
+        "lang_flags": [
+          "-lang=go1.21",
+          "-lang=go1.27"
+        ],
+        "goversion_flags": [
+          "-goversion go1.27.3"
+        ],
+        "sample_compile_line": "/usr/lib/go-1.27/pkg/tool/linux_amd64/compile -o $WORK/b001/_pkg_.a -trimpath \"$WORK/b001=>\" -p main -lang=go1.21 -complete -buildid zz-FBhPnWGW-PI2-o0Gm/zz-FBhPnWGW-PI2-o0Gm -goversion go1.27.3 -c=96 -nolocalimports -importcfg $WORK/b001/importcfg -pack ./main.go"
+      },
+      {
+        "go_directive": "1.21",
+        "GOTOOLCHAIN": "path",
+        "returncode": 0,
+        "lang_flags": [
+          "-lang=go1.21",
+          "-lang=go1.27"
+        ],
+        "goversion_flags": [
+          "-goversion go1.27.3"
+        ],
+        "sample_compile_line": "/usr/lib/go-1.27/pkg/tool/linux_amd64/compile -o $WORK/b001/_pkg_.a -trimpath \"$WORK/b001=>\" -p main -lang=go1.21 -complete -buildid mbBHLmcTW3lmwRjLRqk7/mbBHLmcTW3lmwRjLRqk7 -goversion go1.27.3 -c=96 -nolocalimports -importcfg $WORK/b001/importcfg -pack ./main.go"
+      },
+      {
+        "go_directive": "1.24",
+        "GOTOOLCHAIN": "local",
+        "returncode": 0,
+        "lang_flags": [
+          "-lang=go1.24",
+          "-lang=go1.27"
+        ],
+        "goversion_flags": [
+          "-goversion go1.27.3"
+        ],
+        "sample_compile_line": "/usr/lib/go-1.27/pkg/tool/linux_amd64/compile -o $WORK/b001/_pkg_.a -trimpath \"$WORK/b001=>\" -p main -lang=go1.24 -complete -buildid OdH79zdDPptBrCK5Y6Ka/OdH79zdDPptBrCK5Y6Ka -goversion go1.27.3 -c=96 -nolocalimports -importcfg $WORK/b001/importcfg -pack ./main.go"
+      },
+      {
+        "go_directive": "1.24",
+        "GOTOOLCHAIN": "path",
+        "returncode": 0,
+        "lang_flags": [
+          "-lang=go1.24",
+          "-lang=go1.27"
+        ],
+        "goversion_flags": [
+          "-goversion go1.27.3"
+        ],
+        "sample_compile_line": "/usr/lib/go-1.27/pkg/tool/linux_amd64/compile -o $WORK/b001/_pkg_.a -trimpath \"$WORK/b001=>\" -p main -lang=go1.24 -complete -buildid -fBqA8cv9NRMc3DYMeed/-fBqA8cv9NRMc3DYMeed -goversion go1.27.3 -c=96 -nolocalimports -importcfg $WORK/b001/importcfg -pack ./main.go"
+      }
+    ],
+    "language_vs_stdlib_gating": [
+      {
+        "go_directive": "1.21",
+        "go122_syntax_build_rc": 1,
+        "go122_syntax_build_stderr": "# example.com/gate\n./main.go:7:12: cannot range over 3 (untyped int constant): requires go1.22 or later (-lang was set to go1.21; check go.mod)",
+        "go123_stdlib_only_build_rc": 0,
+        "go123_stdlib_only_vet_rc": 1,
+        "go123_stdlib_only_vet_stderr": "main.go:6:13: slices.Backward requires go1.23 or later (module is go1.21)"
+      },
+      {
+        "go_directive": "1.24",
+        "go122_syntax_build_rc": 0,
+        "go122_syntax_build_stderr": "",
+        "go123_stdlib_only_build_rc": 0,
+        "go123_stdlib_only_vet_rc": 0,
+        "go123_stdlib_only_vet_stderr": ""
+      }
+    ],
+    "higher_toolchain_diagnostics": [
+      {
+        "scenario": "toolchain_go1.99.0_only",
+        "GOTOOLCHAIN": "local",
+        "returncode": 0,
+        "stderr": "go: default toolchain set to go1.27.3 from GOTOOLCHAIN=local\ngo: using local toolchain go1.27.3\nmkdir -p $WORK/b001/\n\n#\n# example.com/hi\n#\n\ncat >$WORK/b001/importcfg << 'EOF' # internal\n# import config\npackagefile runtime=<TMPDIR>/gocache/2c/2cbdc26e510f5cfa1828131a4c05283e752a396e8f152d7a2263e309d1b4dcba-d\nEOF\ncd <TMPDIR>/toolchain_go1.99.0_only\n/usr/lib/go-1.27/pkg/tool/linux_amd64/compile -o $WORK/b001/_pkg_.a -trimpath \"$WORK/b001=>\" -p main -lang=go1.24 -complete -buildid FdHy8EcjiH3e3Da21Gnv/FdHy8EcjiH3e3Da21Gnv -goversion go1.27.3 -c=96 -nolocalimports -importcfg $WORK/b001/importcfg -pack ./main.go\ngo tool buildid -w $WORK/b001/_pkg_.a # internal\ncat >$WORK/b001/importcfg.link << 'EOF' # internal\npackagefile example.com/hi=$WORK/b001/_pkg_.a\npackagefile runtime=<TMPDIR>/gocache/2c/2cbdc26e510f5cfa1828131a4c05283e752a396e8f152d7a2263e309d1b4dcba-d\npackagefile internal/abi=<TMPDIR>/gocache/7e/7e4bd0b9141a4f5924379d19804a998b0b7e46f658d5fb41c00e123ebdb8789b-d\npackagefile internal/bytealg=<TMPDIR>/gocache/15/15569fc719e4253389a092d0465cbdad3eea142c45fb79474be175e1d5beec6c-d\npackagefile internal/byteorder=<TMPDIR>/gocache/4c/4c09e1f99e8d38df565dd6a48b52be1a3894c36f718818c5a571cc0646f9ab47-d\npackagefile internal/chacha8rand=<TMPDIR>/gocache/54/54bde8261184e4602ff3596a2e7eeb14fdef74dfb57d967e1768f875a8316f22-d\npackagefile internal/coverage/rtcov=<TMPDIR>/gocache/13/139fe16f2052587a3cfc136a0daf9a83712539c8ed23852892e6b97985985840-d\npackagefile internal/cpu=<TMPDIR>/gocache/42/429f6d6fb9b836ae51b532f686669b082218785f437d90dba98d6a96600fc750-d\npackagefile internal/goarch=<TMPDIR>/gocache/aa/aa0409cde7f3cfbec048585d6eb0c770a0782c76ae4d78b2bb39c8ab802e80fd-d\npackagefile internal/godebugs=<TMPDIR>/gocache/99/99f0ad79a2754ef4f71d0745219f3bc231319aa291a435e79701824229e94eda-d\npackagefile internal/goexperiment=<TMPDIR>/gocache/5b/5b495eac724d9f3d00a65e4fa7df9b0cbc31316b64ac783619e1f05b66f4f85c-d\npackagefile internal/goos=<TMPDIR>/gocache/c5/c53fe03fbe1ac2541c07baa9ea8eeb339eb1fd4cc06dcbe752dab0bff7f42a26-d\npackagefile internal/profilerecord=<TMPDIR>/gocache/7b/7b256dc573cbf47d0e59350263658a755b95d078767864d4ea1606b20329e817-d\npackagefile internal/runtime/atomic=<TMPDIR>/gocache/3b/3b612906b3fd17e85d37ebf16a975e445941981a6c8e3836ff598ccf42f17469-d\npackagefile internal/runtime/cgroup=<TMPDIR>/gocache/38/38b699a13dd5e526ae24cfa0d79e00fc2fabc956e41478033bda58747f09b8d8-d\npackagefile internal/runtime/exithook=<TMPDIR>/gocache/15/1504483de27408257e31696489481c19933bd2e5b3837a37e46bcc1b52f4be4f-d\npackagefile internal/runtime/gc=<TMPDIR>/gocache/59/59042b06f6259ca91165afc39d1174c699182a551d0293affa5b72d311b230ce-d\npackagefile internal/runtime/gc/scan=<TMPDIR>/gocache/79/79736c9755a0a6946ee8c140e4a998708669f3fa9f4933e064c463e7937e159b-d\npackagefile internal/runtime/maps=<TMPDIR>/gocache/d4/d40b532e6fc7280fcfc7716aa368e0e6e42981ebc1f34bf0fcc93cf0307e088b-d\npackagefile internal/runtime/math=<TMPDIR>/gocache/89/89ad8b29175bc9cd1022e5bfc400cbd20480756026655328b0d9d50fa41d97ed-d\npackagefile internal/runtime/pprof/label=<TMPDIR>/gocache/25/25a014e732cb9d82192cbc7e4bcfce4936cc9d6d07bf867bc738bb527997f68d-d\npackagefile internal/runtime/sys=<TMPDIR>/gocache/04/04c86eb8fac6d7c6044c7aa5f2425a6348724871e401e6416fb578853168431e-d\npackagefile internal/runtime/syscall/linux=<TMPDIR>/gocache/47/47ebe32676a9b5cebcfe663c228b01be43f2456ba611106dfe910dc11ef7847b-d\npackagefile internal/strconv=<TMPDIR>/gocache/5a/5a70b4d54ea61cc4a758d88b4322ddaed6bea3ef2befa38bd5cce2975a9d5676-d\npackagefile internal/stringslite=<TMPDIR>/gocache/88/8832dbc5902b306c2609cb3e3609325115869588e4906d9c49ab907c4142ab5c-d\npackagefile internal/trace/tracev2=<TMPDIR>/gocache/87/87cefed30ba27c7ecdc09b2a735fd340bd4978d2c6e240e1e486004c28960931-d\npackagefile math/bits=<TMPDIR>/gocache/4c/4cc1df7620212c502349250d3abf9fe9e9438c0239a2a0d4a5d25667087946bf-d\npackagefile internal/asan=<TMPDIR>/gocache/0a/0ac57e99cb918a91d6d2939bcabf03a8875e3757ad25e374cdddc9556c1039c6-d\npackagefile internal/msan=<TMPDIR>/gocache/c4/c464920af47467691bb2251fff00b751ca373fa88e0ed05d17dfe9cfb6340385-d\npackagefile internal/race=<TMPDIR>/gocache/1e/1e67af730b907dd4d96718f387cd78ab29e66347c8ac0a2144e3be8f4400ce6b-d\nmodinfo \"0w\\xaf\\f\\x92t\\b\\x02A\\xe1\\xc1\\a\\xe6\\xd6\\x18\\xe6path\\texample.com/hi\\nmod\\texample.com/hi\\t(devel)\\t\\nbuild\\t-buildmode=exe\\nbuild\\t-compiler=gc\\nbuild\\tDefaultGODEBUG=containermaxprocs=0,cryptocustomrand=1,decoratemappings=0,httpservecontentmaxranges=1,tlssecpmlkem=0,tlssha1=1,tracebacklabels=0,updatemaxprocs=0,urlstrictcolons=0,x509sha256skid=0,x509sslcertoverrideplatform=0\\nbuild\\tCGO_ENABLED=1\\nbuild\\tCGO_CFLAGS=\\nbuild\\tCGO_CPPFLAGS=\\nbuild\\tCGO_CXXFLAGS=\\nbuild\\tCGO_LDFLAGS=\\nbuild\\tGOARCH=amd64\\nbuild\\tGOOS=linux\\nbuild\\tGOAMD64=v1\\n\\xf92C1\\x86\\x18 r\\x00\\x82B\\x10A\\x16\\xd8\\xf2\"\nEOF\nmkdir -p $WORK/b001/exe/\ncd .\nGOROOT='/usr/lib/go-1.27' /usr/lib/go-1.27/pkg/tool/linux_amd64/link -o $WORK/b001/exe/a.out -importcfg $WORK/b001/importcfg.link -X=runtime.godebugDefault=containermaxprocs=0,cryptocustomrand=1,decoratemappings=0,httpservecontentmaxranges=1,tlssecpmlkem=0,tlssha1=1,tracebacklabels=0,updatemaxprocs=0,urlstrictcolons=0,x509sha256skid=0,x509sslcertoverrideplatform=0 -buildmode=exe -buildid=pRvKI-LX2dzVMR9GA2rR/FdHy8EcjiH3e3Da21Gnv/FdHy8EcjiH3e3Da21Gnv/pRvKI-LX2dzVMR9GA2rR -extld=x86_64-linux-gnu-gcc $WORK/b001/_pkg_.a\ngo tool buildid -w $WORK/b001/exe/a.out # internal\nmv $WORK/b001/exe/a.out hi\nrm -rf $WORK/b001/"
+      },
+      {
+        "scenario": "toolchain_go1.99.0_only",
+        "GOTOOLCHAIN": "path",
+        "returncode": 1,
+        "stderr": "go: upgrading toolchain to go1.99.0 (required by toolchain line in go.mod; upgrade allowed by GOTOOLCHAIN=path)\ngo: cannot find \"go1.99.0\" in PATH"
+      },
+      {
+        "scenario": "toolchain_go1.99.0_only",
+        "GOTOOLCHAIN": "auto",
+        "returncode": 1,
+        "stderr": "go: upgrading toolchain to go1.99.0 (required by toolchain line in go.mod; upgrade allowed by GOTOOLCHAIN=auto)\ngo: downloading go1.99.0 (linux/amd64)\ngo: download go1.99.0 for linux/amd64: toolchain not available"
+      },
+      {
+        "scenario": "go_1.99.0_directive",
+        "GOTOOLCHAIN": "local",
+        "returncode": 1,
+        "stderr": "go: default toolchain set to go1.27.3 from GOTOOLCHAIN=local\ngo: using local toolchain go1.27.3\ngo: go.mod requires go >= 1.99.0 (running go 1.27.3; GOTOOLCHAIN=local)"
+      },
+      {
+        "scenario": "go_1.99.0_directive",
+        "GOTOOLCHAIN": "path",
+        "returncode": 1,
+        "stderr": "go: upgrading toolchain to go1.99.0 (required by toolchain line in go.mod; upgrade allowed by GOTOOLCHAIN=path)\ngo: cannot find \"go1.99.0\" in PATH"
+      },
+      {
+        "scenario": "go_1.99.0_directive",
+        "GOTOOLCHAIN": "auto",
+        "returncode": 1,
+        "stderr": "go: upgrading toolchain to go1.99.0 (required by toolchain line in go.mod; upgrade allowed by GOTOOLCHAIN=auto)\ngo: downloading go1.99.0 (linux/amd64)\ngo: download go1.99.0 for linux/amd64: toolchain not available"
+      }
+    ],
+    "internal_sentinels": {
+      "switch_count_100": {
+        "returncode": 1,
+        "stderr": "go: switching from go1.27.3 to go1.99.0 [depth 100]\ngo: too many toolchain switches"
+      },
+      "switch_version_mismatch": {
+        "returncode": 1,
+        "stderr": "go: toolchain go1.27.3 invoked to provide go1.99.0"
+      },
+      "gosumdb_off_rejection": {
+        "returncode": 1,
+        "stderr": "go: downloading go1.99.0 (linux/amd64)\ngo: download go1.99.0 for linux/amd64: toolchain not available"
+      }
+    }
+  },
+  "part_b_rustup_elan_ldso": {
+    "rustup_run_1_93_1_env": {
+      "RUSTUP_TOOLCHAIN": "1.93.1-x86_64-unknown-linux-gnu",
+      "RUSTUP_HOME": "<RUSTUP_HOME>",
+      "CARGO_HOME": "<CARGO_HOME>",
+      "RUST_RECURSION_COUNT": "1",
+      "LD_LIBRARY_PATH": "<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib",
+      "PATH_first_entry": "<CALLER_PATH_HEAD>",
+      "sysroot_1_93_1": "<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu",
+      "sysroot_1_100_0": "<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu"
+    },
+    "direct_rustc_1_100_0_with_ld_library_path_1_93_1": {
+      "returncode": 0,
+      "stdout": "rustc 1.100.0 (0ef1bc386 2026-11-09)\nbinary: rustc\ncommit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a\ncommit-date: 2026-11-09\nhost: x86_64-unknown-linux-gnu\nrelease: 1.100.0\nLLVM version: 23.1.5",
+      "ld_debug_trace": [
+        "find library=librustc_driver-62d0ff9ea62999cc.so [0]; searching",
+        "search path=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+        "trying file=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4/librustc_driver-62d0ff9ea62999cc.so",
+        "trying file=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3/librustc_driver-62d0ff9ea62999cc.so",
+        "trying file=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2/librustc_driver-62d0ff9ea62999cc.so",
+        "trying file=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/librustc_driver-62d0ff9ea62999cc.so",
+        "search path=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc)",
+        "trying file=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v4/librustc_driver-62d0ff9ea62999cc.so",
+        "trying file=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v3/librustc_driver-62d0ff9ea62999cc.so",
+        "trying file=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v2/librustc_driver-62d0ff9ea62999cc.so",
+        "trying file=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/librustc_driver-62d0ff9ea62999cc.so",
+        "search path=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+        "search path=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc)",
+        "find library=libLLVM.so.23.1-rust-1.100.0-stable [0]; searching",
+        "trying file=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.100.0-stable",
+        "search path=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/librustc_driver-62d0ff9ea62999cc.so)",
+        "trying file=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/glibc-hwcaps/x86-64-v4/libLLVM.so.23.1-rust-1.100.0-stable",
+        "trying file=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/glibc-hwcaps/x86-64-v3/libLLVM.so.23.1-rust-1.100.0-stable",
+        "trying file=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/glibc-hwcaps/x86-64-v2/libLLVM.so.23.1-rust-1.100.0-stable",
+        "trying file=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/libLLVM.so.23.1-rust-1.100.0-stable",
+        "search path=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/librustc_driver-62d0ff9ea62999cc.so)",
+        "search path=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/../lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/../lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/../lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/../lib:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/../lib/x86_64-unknown-linux-gnu\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/libLLVM.so.23.1-rust-1.100.0-stable)",
+        "search path=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/libLLVM.so.23.1-rust-1.100.0-stable)",
+        "calling init: <RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/../lib/libLLVM.so.23.1-rust-1.100.0-stable",
+        "calling init: <RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/../lib/librustc_driver-62d0ff9ea62999cc.so"
+      ]
+    },
+    "cross_nightly_same_soname_llvm_hijack": {
+      "host_toolchain_A": "nightly-2026-11-12",
+      "child_toolchain_B": "nightly-2026-11-20",
+      "returncode": 0,
+      "stdout": "rustc 1.102.0-nightly (6905905bb 2026-11-19)\nbinary: rustc\ncommit-hash: 6905905bb7727fd0f9223f5fdc9ad4e62236d5a2\ncommit-date: 2026-11-19\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+      "calling_init_objects": [
+        "calling init: <RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.102.0-nightly",
+        "calling init: <RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/librustc_driver-600b678858a96040.so"
+      ],
+      "hijacked_llvm_from_toolchain_A": true,
+      "driver_from_toolchain_B": true,
+      "ld_debug_trace": [
+        "find library=librustc_driver-600b678858a96040.so [0]; searching",
+        "search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+        "trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v4/librustc_driver-600b678858a96040.so",
+        "trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v3/librustc_driver-600b678858a96040.so",
+        "trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/glibc-hwcaps/x86-64-v2/librustc_driver-600b678858a96040.so",
+        "trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/librustc_driver-600b678858a96040.so",
+        "search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/rustc)",
+        "trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v4/librustc_driver-600b678858a96040.so",
+        "trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v3/librustc_driver-600b678858a96040.so",
+        "trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/glibc-hwcaps/x86-64-v2/librustc_driver-600b678858a96040.so",
+        "trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/librustc_driver-600b678858a96040.so",
+        "search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib\t\t(LD_LIBRARY_PATH)",
+        "search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/rustc)",
+        "find library=libLLVM.so.23.1-rust-1.102.0-nightly [0]; searching",
+        "trying file=<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.102.0-nightly",
+        "search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/../lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/../lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/../lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/librustc_driver-600b678858a96040.so)",
+        "search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/../lib/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/../lib:<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v4:<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v3:<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/../lib/x86_64-unknown-linux-gnu/glibc-hwcaps/x86-64-v2:<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/../lib/x86_64-unknown-linux-gnu\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.102.0-nightly)",
+        "search path=<RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/../lib\t\t(RUNPATH from file <RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.102.0-nightly)",
+        "calling init: <RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.102.0-nightly",
+        "calling init: <RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/librustc_driver-600b678858a96040.so",
+        "calling fini: <RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/../lib/librustc_driver-600b678858a96040.so [0]",
+        "calling fini: <RUSTUP_HOME>/toolchains/nightly-2026-11-12-x86_64-unknown-linux-gnu/lib/libLLVM.so.23.1-rust-1.102.0-nightly [0]"
+      ]
+    },
+    "cross_lean_unhashed_soname_hijack": {
+      "clean_v4_35_0_stdout": "Lean (version 4.35.0, x86_64-unknown-linux-gnu, commit eb6cafb7290e8bd5f2937522d8d804f58f02bafc, Release)",
+      "poisoned_with_v4_34_1_ld_library_path_rc": 0,
+      "poisoned_stdout": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+      "poisoned_diagnostics_and_inits": [
+        "calling init: <ELAN_HOME>/toolchains/leanprover--lean4---v4.34.1/lib/lean/libleanshared.so",
+        "calling init: <ELAN_HOME>/toolchains/leanprover--lean4---v4.34.1/lib/lean/libleanshared_1.so",
+        "calling init: <ELAN_HOME>/toolchains/leanprover--lean4---v4.34.1/lib/lean/libleanshared_2.so",
+        "calling init: <ELAN_HOME>/toolchains/leanprover--lean4---v4.34.1/lib/lean/libInit_shared.so"
+      ]
+    },
+    "cargo_inheritance_matrix": {
+      "clean_proxy_cargo": {
+        "returncode": 0,
+        "invoked_cargo_binary": "<CARGO_HOME>/bin/cargo",
+        "cargo_binary_intrinsic_version": "cargo 1.102.0-nightly (c07ac2c4d 2026-11-06)",
+        "observed_rustc_versions_in_vv": [],
+        "build_rs_env_warnings": [
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc",
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_LD_LP=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/lib",
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_RUSTUP_TC=1.100.0-x86_64-unknown-linux-gnu",
+          "warning: victim_crate@0.1.0: BUILD_RS_RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc",
+          "warning: victim_crate@0.1.0: BUILD_RS_LD_LP=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib:<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/lib",
+          "warning: victim_crate@0.1.0: BUILD_RS_RUSTUP_TC=1.100.0-x86_64-unknown-linux-gnu"
+        ]
+      },
+      "poisoned_proxy_cargo_under_rustup_1_93_1_env": {
+        "returncode": 0,
+        "invoked_cargo_binary": "<CARGO_HOME>/bin/cargo",
+        "cargo_binary_intrinsic_version": "cargo 1.102.0-nightly (c07ac2c4d 2026-11-06)",
+        "observed_rustc_versions_in_vv": [],
+        "build_rs_env_warnings": [
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_RUSTC=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/bin/rustc",
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_LD_LP=<TMPDIR>/target_proxy_hijack/debug/deps:<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib:<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib",
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_RUSTUP_TC=1.93.1-x86_64-unknown-linux-gnu",
+          "warning: victim_crate@0.1.0: BUILD_RS_RUSTC=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/bin/rustc",
+          "warning: victim_crate@0.1.0: BUILD_RS_LD_LP=<TMPDIR>/target_proxy_hijack/debug/deps:<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib:<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib",
+          "warning: victim_crate@0.1.0: BUILD_RS_RUSTUP_TC=1.93.1-x86_64-unknown-linux-gnu"
+        ]
+      },
+      "poisoned_direct_cargo_1_100_0_under_rustup_1_93_1_env": {
+        "returncode": 0,
+        "invoked_cargo_binary": "<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/cargo",
+        "cargo_binary_intrinsic_version": "cargo 1.100.0 (3acc79c0c 2026-11-05)",
+        "observed_rustc_versions_in_vv": [],
+        "build_rs_env_warnings": [
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_RUSTC=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/bin/rustc",
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_LD_LP=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib:<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib",
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_RUSTUP_TC=1.93.1-x86_64-unknown-linux-gnu",
+          "warning: victim_crate@0.1.0: BUILD_RS_RUSTC=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/bin/rustc",
+          "warning: victim_crate@0.1.0: BUILD_RS_LD_LP=<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib:<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/lib",
+          "warning: victim_crate@0.1.0: BUILD_RS_RUSTUP_TC=1.93.1-x86_64-unknown-linux-gnu"
+        ]
+      },
+      "scrubbed_hermetic_direct_cargo_1_100_0_with_explicit_RUSTC": {
+        "returncode": 0,
+        "invoked_cargo_binary": "<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/cargo",
+        "cargo_binary_intrinsic_version": "cargo 1.100.0 (3acc79c0c 2026-11-05)",
+        "observed_rustc_versions_in_vv": [],
+        "build_rs_env_warnings": [
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc",
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_LD_LP=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib",
+          "[victim_crate 0.1.0] cargo:warning=BUILD_RS_RUSTUP_TC=",
+          "warning: victim_crate@0.1.0: BUILD_RS_RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc",
+          "warning: victim_crate@0.1.0: BUILD_RS_LD_LP=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib",
+          "warning: victim_crate@0.1.0: BUILD_RS_RUSTUP_TC="
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,3314 @@
+{
+  "schema": "rustc-mir-scaling-and-cfg-matrix-v1",
+  "generated_at_utc": "2026-11-22T17:40:24Z",
+  "part1_four_tier_scaling_census": {
+    "elapsed_seconds": 41.68,
+    "revisions": [
+      {
+        "release": "1.78.0",
+        "sha": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+        "commit_date": "2024-04-29T14:01:42Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.79.0",
+        "sha": "129f3b9964af4d4a709d1383930ade12dfe7c081",
+        "commit_date": "2024-06-10T08:33:35Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.80.0",
+        "sha": "051478957371ee0084a7c0913941d2a8c4757bb9",
+        "commit_date": "2024-07-21T15:48:16Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.81.0",
+        "sha": "eeb90cda1969383f56a2637cbd3037bdf598841c",
+        "commit_date": "2024-09-04T15:07:06Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.82.0",
+        "sha": "f6e511eec7342f59a25f7c0534f1dbea00d01b14",
+        "commit_date": "2024-10-15T17:22:50Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.83.0",
+        "sha": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+        "commit_date": "2024-11-26T10:12:09Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.84.0",
+        "sha": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+        "commit_date": "2025-01-07T01:26:09Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.85.0",
+        "sha": "4d91de4e48198da2e33413efdcd9cd2cc0c46688",
+        "commit_date": "2025-02-17T18:17:27Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.86.0",
+        "sha": "05f9846f893b09a1be1fc8560e33fc3c815cfecb",
+        "commit_date": "2025-03-31T21:37:24Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.87.0",
+        "sha": "17067e9ac6d7ecb70e50f92c1944e545188d2359",
+        "commit_date": "2025-05-09T20:37:37Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.88.0",
+        "sha": "6b00bc3880198600130e1cf62b8f8a93494488cc",
+        "commit_date": "2025-06-23T19:24:54Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.89.0",
+        "sha": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+        "commit_date": "2025-08-04T12:20:29Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.90.0",
+        "sha": "1159e78c4747b02ef996e55082b704c09b970588",
+        "commit_date": "2025-09-14T15:05:11Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.91.0",
+        "sha": "f8297e351a40c1439a467bbbb6879088047f50b3",
+        "commit_date": "2025-10-28T16:34:16Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.92.0",
+        "sha": "ded5c06cf21d2b93bffd5d884aa6e96934ee4234",
+        "commit_date": "2025-12-08T12:52:32Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.93.0",
+        "sha": "254b59607d4417e9dffbc307138ae5c86280fe4c",
+        "commit_date": "2026-01-19T16:34:28Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.94.0",
+        "sha": "4a4ef493e3a1488c6e321570238084b38948f6db",
+        "commit_date": "2026-03-02T23:18:25Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.95.0",
+        "sha": "59807616e1fa2540724bfbac14d7976d7e4a3860",
+        "commit_date": "2026-04-14T19:55:32Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.96.0",
+        "sha": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+        "commit_date": "2026-05-25T23:21:07Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.97.0",
+        "sha": "2d8144b7880597b6e6d3dfd63a9a9efae3f533d3",
+        "commit_date": "2026-07-07T01:27:02Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.98.0",
+        "sha": "88d9e12ae178fab0fb5cc050a94da85685d449ea",
+        "commit_date": "2026-08-18T19:58:58Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.99.0",
+        "sha": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "commit_date": "2026-09-28T18:24:15Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.100.0",
+        "sha": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "commit_date": "2026-11-09T22:11:55Z",
+        "channel": "stable"
+      },
+      {
+        "release": "1.102.0-nightly",
+        "sha": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "commit_date": "2026-11-11T17:59:24Z",
+        "channel": "nightly"
+      }
+    ],
+    "intra_nightly_revision": {
+      "release": "1.102.0-nightly-2026-11-19",
+      "sha": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+      "commit_date": "2026-11-19T17:33:07Z",
+      "channel": "nightly"
+    },
+    "rates": {
+      "horizon_days": 926.17,
+      "horizon_years": 2.5357,
+      "stable_minor_releases": 23,
+      "total_points_measured": 24,
+      "adjacent_transitions": 23,
+      "tier1_releases": {
+        "count": 24,
+        "transitions": 23,
+        "releases_per_year": 9.07
+      },
+      "tier2_driver_api_breaks": {
+        "total_events_across_6_subsurfaces": 19,
+        "events_affecting_minimal_capture_driver": 14,
+        "breaks_per_transition_full": 0.826,
+        "breaks_per_transition_minimal": 0.609,
+        "breaks_per_year_full": 7.49,
+        "breaks_per_year_minimal": 5.52
+      },
+      "tier3_mir_ast_schema_deltas": {
+        "total_declaration_mutations": 44,
+        "runtime_postcleanup_reachable_mutations": 36,
+        "runtime_postcleanup_operational_mutations": 34,
+        "transitions_with_any_ast_delta": 18,
+        "deltas_per_transition_total": 1.913,
+        "deltas_per_transition_reachable": 1.565,
+        "deltas_per_year_total": 17.35,
+        "deltas_per_year_reachable": 14.2
+      },
+      "tier4_operational_semantic_deltas": {
+        "total_events": 16,
+        "deltas_per_transition": 0.696,
+        "deltas_per_year": 6.31
+      },
+      "adapter_loc_scaling": {
+        "prototype_dialect_rs_non_comment_loc": 164,
+        "prototype_toolchains_spanned": 10,
+        "prototype_minor_cycles_spanned": 12,
+        "measured_adapter_loc_per_minor_release": 13.67,
+        "estimated_24_release_adapter_loc": 314
+      }
+    },
+    "tier2_breaks": [
+      {
+        "id": "T2-01",
+        "transition": "1.78.0 -> 1.79.0",
+        "subsurface": "(c) TyKind",
+        "summary": "TyKind::RawPtr(TypeAndMut<I>) split into RawPtr(I::Ty, Mutability) + TyKind::Pat(I::Ty, I::Pat) added",
+        "commit": "7be0dbe77292de955da02fe1de1626bdd2e4cc0a",
+        "extra_commits": [
+          "84acfe86dec370028987c205e7ba32cc5796d9b0"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-02",
+        "transition": "1.79.0 -> 1.80.0",
+        "subsurface": "(c) TyKind",
+        "summary": "TyKind::FnPtr(PolyFnSig) -> FnPtr(Binder<I, FnSig<I>>) and Alias(AliasKind, ..) -> Alias(AliasTyKind, AliasTy<I>)",
+        "commit": "3bcdf3058ef3eaef5042661cf8301acfbcddce65",
+        "extra_commits": [],
+        "affects_minimal_scalar_adt_driver": false
+      },
+      {
+        "id": "T2-03",
+        "transition": "1.80.0 -> 1.81.0",
+        "subsurface": "(e) GlobalAlloc",
+        "summary": "GlobalAlloc::Function(Instance<'tcx>) tuple variant -> struct variant Function { instance, unique }",
+        "commit": "41b98da42d0500e38b9dd85c82110ba177ac4de1",
+        "extra_commits": [],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-04",
+        "transition": "1.81.0 -> 1.82.0",
+        "subsurface": "(c)/(e) TyKind & GlobalAlloc",
+        "summary": "TyKind::FnPtr split into (Binder<I, FnSigTys<I>>, FnHeader<I>); GlobalAlloc::Function removed `unique` field",
+        "commit": "c4717cc9d15d30e08f03f51845c950175979bcc4",
+        "extra_commits": [
+          "5cab8ae4a4a033acb25d629871deb24db19b638b"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-05",
+        "transition": "1.82.0 -> 1.83.0",
+        "subsurface": "(a)/(e) RunCompiler & GlobalAlloc",
+        "summary": "RunCompiler<'a, 'b> -> RunCompiler<'a>; GlobalAlloc::VTable Option<PolyExistentialTraitRef> -> &List<PolyExistentialPredicate>",
+        "commit": "072bf482c98d0f33d8456c6000babf315b63e104",
+        "extra_commits": [
+          "018ba0528fa5d22712397e520351295f8582a525"
+        ],
+        "affects_minimal_scalar_adt_driver": false
+      },
+      {
+        "id": "T2-06",
+        "transition": "1.83.0 -> 1.84.0",
+        "subsurface": "(c)/(d) TypingEnv & rustc_abi extraction",
+        "summary": "rustc_target::abi extracted to extern crate rustc_abi (Abi -> BackendRepr, Aggregate -> Memory); ParamEnvAnd replaced by TypingEnv / PseudoCanonicalInput in tcx.layout_of",
+        "commit": "10721909f29024ba56a9ce667da8652a99a04784",
+        "extra_commits": [
+          "236fe33345072e6363560fd2b535a10947af86f7",
+          "7086dd83cca1cf694c7bd171efbf262fa8ffb4aa",
+          "9cba14b95bb07a5b31ed1aac2bf4eadd248232da"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-07",
+        "transition": "1.84.0 -> 1.85.0",
+        "subsurface": "(a)/(c)/(d) Callbacks::after_analysis, Variants::Empty, TyKind::UnsafeBinder",
+        "summary": "Callbacks::after_analysis & after_expansion changed third param from &'tcx Queries<'tcx> to TyCtxt<'tcx>; Variants::Empty added for 0-variant enums; TyKind::UnsafeBinder added",
+        "commit": "3b02a3309e12906a455eb128a0aa74c6a6afc932",
+        "extra_commits": [
+          "b795264daa2d411fa232a3de51cc4b0ef8c86a33",
+          "e023590de407f417e0f3da675a372eca7acf60c6",
+          "9a1c5eb5b385adb3cd04af0049cbf5c225cefdc3"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-08",
+        "transition": "1.85.0 -> 1.86.0",
+        "subsurface": "(a)/(f) RunCompiler removal -> run_compiler",
+        "summary": "rustc_driver::RunCompiler struct removed and replaced by rustc_driver::run_compiler(&[String], &mut (dyn Callbacks + Send)); Callbacks::after_crate_root_parsing(&mut ast::Crate)",
+        "commit": "a77776cc1d7c599f4ff9355ffe01bad2e2b5bbad",
+        "extra_commits": [],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-09",
+        "transition": "1.86.0 -> 1.87.0",
+        "subsurface": "(d) BackendRepr & LayoutData",
+        "summary": "BackendRepr::Uninhabited removed (moved to LayoutData.uninhabited: bool); BackendRepr::Vector renamed to SimdVector",
+        "commit": "7ba3d7b54e7688f6f1a0fd22fe274ee7b06fea3e",
+        "extra_commits": [
+          "aac65f562b3e9351d4a4336c270ce13c130de467"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-10",
+        "transition": "1.88.0 -> 1.89.0",
+        "subsurface": "(d) LayoutData.align & Variants::Multiple.tag_field",
+        "summary": "LayoutData.align changed from AbiAndPrefAlign to AbiAlign (removing preferred align); Variants::Multiple.tag_field changed from usize to FieldIdx",
+        "commit": "2e1965831526407bada7abec631d7b7e9f6cbc7d",
+        "extra_commits": [
+          "ee9901e65c78f70b93dab5bd1e04bd77273b7c40"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-11",
+        "transition": "1.89.0 -> 1.90.0",
+        "subsurface": "(e) ConstValue::Slice & GlobalAlloc::TypeId",
+        "summary": "ConstValue::Slice { data: ConstAllocation, meta } changed to Slice { alloc_id: AllocId, meta }; GlobalAlloc::TypeId { ty } added",
+        "commit": "9ff071219bca913e45235568defadd5ab840c50a",
+        "extra_commits": [
+          "486ffda9dcd0d4ef0a09d81e6ce5f241e77526a1"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-12",
+        "transition": "1.91.0 -> 1.92.0",
+        "subsurface": "(c) TyKind::Dynamic & TyKind::Bound",
+        "summary": "TyKind::Dynamic dropped DynKind (3-tuple -> 2-tuple); TyKind::Bound changed DebruijnIndex -> BoundVarIndexKind",
+        "commit": "26f3337d4eda0ba22b615744fda0185d0ee344b1",
+        "extra_commits": [],
+        "affects_minimal_scalar_adt_driver": false
+      },
+      {
+        "id": "T2-13",
+        "transition": "1.93.0 -> 1.94.0",
+        "subsurface": "(a)/(d) catch_with_exit_code -> ExitCode & FieldsShape::Arbitrary",
+        "summary": "rustc_driver::catch_with_exit_code return type changed from i32 to std::process::ExitCode; FieldsShape::Arbitrary memory_index replaced by inverse in_memory_order; BackendRepr::ScalableVector added",
+        "commit": "6d36c8a5fc4dd9ad3a4cf95ca31ecdc7f06bafc1",
+        "extra_commits": [
+          "b31ee3af9c67c777143c0b6707a4439c78391b69"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-14",
+        "transition": "1.95.0 -> 1.96.0",
+        "subsurface": "(c)/(d) TyKind::Alias & BackendRepr::SimdScalableVector",
+        "summary": "TyKind::Alias(AliasTyKind, AliasTy<I>) collapsed to Alias(AliasTy<I>); BackendRepr::ScalableVector -> SimdScalableVector",
+        "commit": "cf96c5fa87f6805a382d4c6a9082c9777a404b5f",
+        "extra_commits": [
+          "db5e2dc248fe5bb26f70d7baec46a3bca9fa3e1d"
+        ],
+        "affects_minimal_scalar_adt_driver": false
+      },
+      {
+        "id": "T2-15",
+        "transition": "1.96.0 -> 1.97.0",
+        "subsurface": "(d) Variants::Multiple.variants",
+        "summary": "Variants::Multiple.variants changed element type from LayoutData<FieldIdx, VariantIdx> to VariantLayout<FieldIdx>",
+        "commit": "1162bdc1f3fe4a85f6b1d217578f40669c43aeb5",
+        "extra_commits": [
+          "0569574938af400dfbfd88fea5a402a52f4cb4cf"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-16",
+        "transition": "1.97.0 -> 1.98.0",
+        "subsurface": "(c) TyKind::Alias(IsRigid, AliasTy<I>)",
+        "summary": "TyKind::Alias gained IsRigid marker field: Alias(AliasTy<I>) -> Alias(IsRigid, AliasTy<I>)",
+        "commit": "3dbe96a5a1b3e0e9cf8b9f0db1e7e4a5af58bf08",
+        "extra_commits": [],
+        "affects_minimal_scalar_adt_driver": false
+      },
+      {
+        "id": "T2-17",
+        "transition": "1.98.0 -> 1.99.0",
+        "subsurface": "(c)/(d) TyKind::FnDef Binder & BackendRepr::ScalarPair",
+        "summary": "TyKind::FnDef wrapped GenericArgs in Binder<I, I::GenericArgs>; BackendRepr::ScalarPair(Scalar, Scalar) -> struct ScalarPair { a, b, b_offset }",
+        "commit": "8fb83aba335e79dfb6843ec40c21b37f5f85a772",
+        "extra_commits": [
+          "2efdc665a7809236738262ea13e5e3f1db204fd4"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-18",
+        "transition": "1.99.0 -> 1.100.0",
+        "subsurface": "(e) Scalar::Ptr NonZero<u8>",
+        "summary": "mir::interpret::Scalar::Ptr(Pointer<Prov>, u8) changed pointer-size field to NonZero<u8>",
+        "commit": "d802d17e292ff782d346e0353af3a37dcb5ca12f",
+        "extra_commits": [],
+        "affects_minimal_scalar_adt_driver": true
+      },
+      {
+        "id": "T2-19",
+        "transition": "1.100.0 -> 1.102.0-nightly",
+        "subsurface": "(a)/(d) compiler_entrypoint & LayoutData.align: Align",
+        "summary": "rustc_driver::run_compiler renamed to compiler_entrypoint; LayoutData.align changed from AbiAlign (.abi) to Align (+ repr_c: bool)",
+        "commit": "c39fbc44eb0f296a7ad161eee642e8bcd2a82235",
+        "extra_commits": [
+          "81330f91e512e79001654f32843633dc21c42117"
+        ],
+        "affects_minimal_scalar_adt_driver": true
+      }
+    ],
+    "tier3_transitions": [
+      {
+        "transition": "1.78.0 -> 1.79.0",
+        "old_sha": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+        "new_sha": "129f3b9964af4d4a709d1383930ade12dfe7c081",
+        "delta_count": 5,
+        "deltas": {
+          "Body": {
+            "change": "mutated",
+            "old_count": 18,
+            "new_count": 19,
+            "removed": [],
+            "added": [
+              "pub mentioned_items: Vec<Spanned<MentionedItem<'tcx>>>"
+            ],
+            "reachable_in_runtime_postcleanup": false,
+            "reason": "Metadata/coverage/debuginfo struct fields on Body/BasicBlockData; zero operational MIR control/dataflow impact."
+          },
+          "StatementKind": {
+            "change": "mutated",
+            "old_count": 13,
+            "new_count": 13,
+            "removed": [
+              "Coverage(Box<Coverage>)"
+            ],
+            "added": [
+              "Coverage(CoverageKind)"
+            ],
+            "reachable_in_runtime_postcleanup": false,
+            "reason": "Coverage statement payload wrapper/formatting refactor; non-operational instrumentation."
+          },
+          "CastKind": {
+            "change": "mutated",
+            "old_count": 11,
+            "new_count": 11,
+            "removed": [
+              "PointerExposeAddress",
+              "PointerFromExposedAddress"
+            ],
+            "added": [
+              "PointerExposeProvenance",
+              "PointerWithExposedProvenance"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "BinOp": {
+            "change": "mutated",
+            "old_count": 22,
+            "new_count": 23,
+            "removed": [],
+            "added": [
+              "Cmp"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "NullOp": {
+            "change": "mutated",
+            "old_count": 4,
+            "new_count": 4,
+            "removed": [
+              "UbCheck(UbKind)"
+            ],
+            "added": [
+              "UbChecks"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.79.0 -> 1.80.0",
+        "old_sha": "129f3b9964af4d4a709d1383930ade12dfe7c081",
+        "new_sha": "051478957371ee0084a7c0913941d2a8c4757bb9",
+        "delta_count": 3,
+        "deltas": {
+          "Rvalue": {
+            "change": "mutated",
+            "old_count": 15,
+            "new_count": 14,
+            "removed": [
+              "CheckedBinaryOp(BinOp, Box<(Operand<'tcx>, Operand<'tcx>)>)"
+            ],
+            "added": [],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "BinOp": {
+            "change": "mutated",
+            "old_count": 23,
+            "new_count": 26,
+            "removed": [],
+            "added": [
+              "AddWithOverflow",
+              "SubWithOverflow",
+              "MulWithOverflow"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "UnOp": {
+            "change": "mutated",
+            "old_count": 2,
+            "new_count": 3,
+            "removed": [],
+            "added": [
+              "PtrMetadata"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.80.0 -> 1.81.0",
+        "old_sha": "051478957371ee0084a7c0913941d2a8c4757bb9",
+        "new_sha": "eeb90cda1969383f56a2637cbd3037bdf598841c",
+        "delta_count": 2,
+        "deltas": {
+          "Body": {
+            "change": "mutated",
+            "old_count": 19,
+            "new_count": 19,
+            "removed": [
+              "pub coverage_branch_info: Option<Box<coverage::BranchInfo>>"
+            ],
+            "added": [
+              "pub coverage_info_hi: Option<Box<coverage::CoverageInfoHi>>"
+            ],
+            "reachable_in_runtime_postcleanup": false,
+            "reason": "Metadata/coverage/debuginfo struct fields on Body/BasicBlockData; zero operational MIR control/dataflow impact."
+          },
+          "TerminatorKind": {
+            "change": "mutated",
+            "old_count": 14,
+            "new_count": 15,
+            "removed": [
+              "Call { func: Operand<'tcx>, args: Vec<Spanned<Operand<'tcx>>>, destination: Place<'tcx>, target: Option<BasicBlock>, unwind: UnwindAction, call_source: CallSource, fn_span: Span, }",
+              "InlineAsm { template: &'tcx [InlineAsmTemplatePiece], operands: Vec<InlineAsmOperand<'tcx>>, options: InlineAsmOptions, line_spans: &'tcx [Span], targets: Vec<BasicBlock>, unwind: UnwindAction, }"
+            ],
+            "added": [
+              "Call { func: Operand<'tcx>, args: Box<[Spanned<Operand<'tcx>>]>, destination: Place<'tcx>, target: Option<BasicBlock>, unwind: UnwindAction, call_source: CallSource, fn_span: Span, }",
+              "TailCall { func: Operand<'tcx>, args: Box<[Spanned<Operand<'tcx>>]>, fn_span: Span, }",
+              "InlineAsm { template: &'tcx [InlineAsmTemplatePiece], operands: Box<[InlineAsmOperand<'tcx>]>, options: InlineAsmOptions, line_spans: &'tcx [Span], targets: Box<[BasicBlock]>, unwind: UnwindAction, }"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.81.0 -> 1.82.0",
+        "old_sha": "eeb90cda1969383f56a2637cbd3037bdf598841c",
+        "new_sha": "f6e511eec7342f59a25f7c0534f1dbea00d01b14",
+        "delta_count": 2,
+        "deltas": {
+          "Body": {
+            "change": "mutated",
+            "old_count": 19,
+            "new_count": 19,
+            "removed": [
+              "pub required_consts: Vec<ConstOperand<'tcx>>",
+              "pub mentioned_items: Vec<Spanned<MentionedItem<'tcx>>>"
+            ],
+            "added": [
+              "pub required_consts: Option<Vec<ConstOperand<'tcx>>>",
+              "pub mentioned_items: Option<Vec<Spanned<MentionedItem<'tcx>>>>"
+            ],
+            "reachable_in_runtime_postcleanup": false,
+            "reason": "Metadata/coverage/debuginfo struct fields on Body/BasicBlockData; zero operational MIR control/dataflow impact."
+          },
+          "Rvalue": {
+            "change": "mutated",
+            "old_count": 14,
+            "new_count": 14,
+            "removed": [
+              "AddressOf(Mutability, Place<'tcx>)"
+            ],
+            "added": [
+              "RawPtr(Mutability, Place<'tcx>)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.82.0 -> 1.83.0",
+        "old_sha": "f6e511eec7342f59a25f7c0534f1dbea00d01b14",
+        "new_sha": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+        "delta_count": 2,
+        "deltas": {
+          "TerminatorKind": {
+            "change": "mutated",
+            "old_count": 15,
+            "new_count": 15,
+            "removed": [
+              "InlineAsm { template: &'tcx [InlineAsmTemplatePiece], operands: Box<[InlineAsmOperand<'tcx>]>, options: InlineAsmOptions, line_spans: &'tcx [Span], targets: Box<[BasicBlock]>, unwind: UnwindAction, }"
+            ],
+            "added": [
+              "InlineAsm { asm_macro: InlineAsmMacro, template: &'tcx [InlineAsmTemplatePiece], operands: Box<[InlineAsmOperand<'tcx>]>, options: InlineAsmOptions, line_spans: &'tcx [Span], targets: Box<[BasicBlock]>, unwind: UnwindAction, }"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "CastKind": {
+            "change": "mutated",
+            "old_count": 11,
+            "new_count": 10,
+            "removed": [
+              "PointerCoercion(PointerCoercion)",
+              "DynStar"
+            ],
+            "added": [
+              "PointerCoercion(PointerCoercion, CoercionSource)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.83.0 -> 1.84.0",
+        "old_sha": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+        "new_sha": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+        "delta_count": 1,
+        "deltas": {
+          "StatementKind": {
+            "change": "mutated",
+            "old_count": 13,
+            "new_count": 14,
+            "removed": [],
+            "added": [
+              "BackwardIncompatibleDropHint { place: Box<Place<'tcx>>, reason: BackwardIncompatibleDropReason, }"
+            ],
+            "reachable_in_runtime_postcleanup": false,
+            "reason": "Replaced with Nop in CleanupPostBorrowck (rustc_mir_transform/src/cleanup_post_borrowck.rs:36) before Runtime(PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.84.0 -> 1.85.0",
+        "old_sha": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+        "new_sha": "4d91de4e48198da2e33413efdcd9cd2cc0c46688",
+        "delta_count": 0,
+        "deltas": {}
+      },
+      {
+        "transition": "1.85.0 -> 1.86.0",
+        "old_sha": "4d91de4e48198da2e33413efdcd9cd2cc0c46688",
+        "new_sha": "05f9846f893b09a1be1fc8560e33fc3c815cfecb",
+        "delta_count": 4,
+        "deltas": {
+          "Rvalue": {
+            "change": "mutated",
+            "old_count": 14,
+            "new_count": 15,
+            "removed": [
+              "RawPtr(Mutability, Place<'tcx>)"
+            ],
+            "added": [
+              "RawPtr(RawPtrKind, Place<'tcx>)",
+              "WrapUnsafeBinder(Operand<'tcx>, Ty<'tcx>)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "ProjectionElem": {
+            "change": "mutated",
+            "old_count": 8,
+            "new_count": 9,
+            "removed": [],
+            "added": [
+              "UnwrapUnsafeBinder(T)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "NullOp": {
+            "change": "mutated",
+            "old_count": 4,
+            "new_count": 5,
+            "removed": [],
+            "added": [
+              "ContractChecks"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "AssertKind": {
+            "change": "mutated",
+            "old_count": 8,
+            "new_count": 9,
+            "removed": [],
+            "added": [
+              "NullPointerDereference"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.86.0 -> 1.87.0",
+        "old_sha": "05f9846f893b09a1be1fc8560e33fc3c815cfecb",
+        "new_sha": "17067e9ac6d7ecb70e50f92c1944e545188d2359",
+        "delta_count": 0,
+        "deltas": {}
+      },
+      {
+        "transition": "1.87.0 -> 1.88.0",
+        "old_sha": "17067e9ac6d7ecb70e50f92c1944e545188d2359",
+        "new_sha": "6b00bc3880198600130e1cf62b8f8a93494488cc",
+        "delta_count": 2,
+        "deltas": {
+          "TerminatorKind": {
+            "change": "mutated",
+            "old_count": 15,
+            "new_count": 15,
+            "removed": [
+              "Drop { place: Place<'tcx>, target: BasicBlock, unwind: UnwindAction, replace: bool }"
+            ],
+            "added": [
+              "Drop { place: Place<'tcx>, target: BasicBlock, unwind: UnwindAction, replace: bool, drop: Option<BasicBlock>, async_fut: Option<Local>, }"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "AssertKind": {
+            "change": "mutated",
+            "old_count": 9,
+            "new_count": 10,
+            "removed": [],
+            "added": [
+              "ResumedAfterDrop(CoroutineKind)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.88.0 -> 1.89.0",
+        "old_sha": "6b00bc3880198600130e1cf62b8f8a93494488cc",
+        "new_sha": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+        "delta_count": 0,
+        "deltas": {}
+      },
+      {
+        "transition": "1.89.0 -> 1.90.0",
+        "old_sha": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+        "new_sha": "1159e78c4747b02ef996e55082b704c09b970588",
+        "delta_count": 1,
+        "deltas": {
+          "AssertKind": {
+            "change": "mutated",
+            "old_count": 10,
+            "new_count": 11,
+            "removed": [],
+            "added": [
+              "InvalidEnumConstruction(O)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.90.0 -> 1.91.0",
+        "old_sha": "1159e78c4747b02ef996e55082b704c09b970588",
+        "new_sha": "f8297e351a40c1439a467bbbb6879088047f50b3",
+        "delta_count": 0,
+        "deltas": {}
+      },
+      {
+        "transition": "1.91.0 -> 1.92.0",
+        "old_sha": "f8297e351a40c1439a467bbbb6879088047f50b3",
+        "new_sha": "ded5c06cf21d2b93bffd5d884aa6e96934ee4234",
+        "delta_count": 5,
+        "deltas": {
+          "BasicBlockData": {
+            "change": "mutated",
+            "old_count": 3,
+            "new_count": 4,
+            "removed": [],
+            "added": [
+              "pub after_last_stmt_debuginfos: StmtDebugInfos<'tcx>"
+            ],
+            "reachable_in_runtime_postcleanup": false,
+            "reason": "Metadata/coverage/debuginfo struct fields on Body/BasicBlockData; zero operational MIR control/dataflow impact."
+          },
+          "StatementKind": {
+            "change": "mutated",
+            "old_count": 14,
+            "new_count": 13,
+            "removed": [
+              "Deinit(Box<Place<'tcx>>)"
+            ],
+            "added": [],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "Rvalue": {
+            "change": "mutated",
+            "old_count": 15,
+            "new_count": 14,
+            "removed": [
+              "Len(Place<'tcx>)"
+            ],
+            "added": [],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "ProjectionElem": {
+            "change": "mutated",
+            "old_count": 9,
+            "new_count": 8,
+            "removed": [
+              "Subtype(T)"
+            ],
+            "added": [],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "CastKind": {
+            "change": "mutated",
+            "old_count": 10,
+            "new_count": 11,
+            "removed": [],
+            "added": [
+              "Subtype"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.92.0 -> 1.93.0",
+        "old_sha": "ded5c06cf21d2b93bffd5d884aa6e96934ee4234",
+        "new_sha": "254b59607d4417e9dffbc307138ae5c86280fe4c",
+        "delta_count": 3,
+        "deltas": {
+          "Rvalue": {
+            "change": "mutated",
+            "old_count": 14,
+            "new_count": 14,
+            "removed": [
+              "NullaryOp(NullOp<'tcx>, Ty<'tcx>)"
+            ],
+            "added": [
+              "NullaryOp(NullOp)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "NullOp": {
+            "change": "mutated",
+            "old_count": 5,
+            "new_count": 1,
+            "removed": [
+              "SizeOf",
+              "AlignOf",
+              "OffsetOf(&'tcx List<(VariantIdx, FieldIdx)>)",
+              "UbChecks",
+              "ContractChecks"
+            ],
+            "added": [
+              "RuntimeChecks(RuntimeChecks)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "RuntimeChecks": {
+            "change": "added_type",
+            "added": [
+              "UbChecks",
+              "ContractChecks",
+              "OverflowChecks"
+            ],
+            "removed": [],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.93.0 -> 1.94.0",
+        "old_sha": "254b59607d4417e9dffbc307138ae5c86280fe4c",
+        "new_sha": "4a4ef493e3a1488c6e321570238084b38948f6db",
+        "delta_count": 3,
+        "deltas": {
+          "Rvalue": {
+            "change": "mutated",
+            "old_count": 14,
+            "new_count": 13,
+            "removed": [
+              "NullaryOp(NullOp)"
+            ],
+            "added": [],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "Operand": {
+            "change": "mutated",
+            "old_count": 3,
+            "new_count": 4,
+            "removed": [],
+            "added": [
+              "RuntimeChecks(RuntimeChecks)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "NullOp": {
+            "change": "removed_type",
+            "added": [],
+            "removed": [
+              "RuntimeChecks(RuntimeChecks)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.94.0 -> 1.95.0",
+        "old_sha": "4a4ef493e3a1488c6e321570238084b38948f6db",
+        "new_sha": "59807616e1fa2540724bfbac14d7976d7e4a3860",
+        "delta_count": 1,
+        "deltas": {
+          "Rvalue": {
+            "change": "mutated",
+            "old_count": 13,
+            "new_count": 12,
+            "removed": [
+              "ShallowInitBox(Operand<'tcx>, Ty<'tcx>)"
+            ],
+            "added": [],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.95.0 -> 1.96.0",
+        "old_sha": "59807616e1fa2540724bfbac14d7976d7e4a3860",
+        "new_sha": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+        "delta_count": 0,
+        "deltas": {}
+      },
+      {
+        "transition": "1.96.0 -> 1.97.0",
+        "old_sha": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+        "new_sha": "2d8144b7880597b6e6d3dfd63a9a9efae3f533d3",
+        "delta_count": 4,
+        "deltas": {
+          "StatementKind": {
+            "change": "mutated",
+            "old_count": 13,
+            "new_count": 12,
+            "removed": [
+              "Retag(RetagKind, Box<Place<'tcx>>)"
+            ],
+            "added": [],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "Rvalue": {
+            "change": "mutated",
+            "old_count": 12,
+            "new_count": 13,
+            "removed": [
+              "Use(Operand<'tcx>)"
+            ],
+            "added": [
+              "Use(Operand<'tcx>, WithRetag)",
+              "Reborrow(Ty<'tcx>, Mutability, Place<'tcx>)"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "RetagKind": {
+            "change": "removed_type",
+            "added": [],
+            "removed": [
+              "FnEntry",
+              "TwoPhase",
+              "Raw",
+              "Default"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "WithRetag": {
+            "change": "added_type",
+            "added": [
+              "Yes",
+              "No"
+            ],
+            "removed": [],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.97.0 -> 1.98.0",
+        "old_sha": "2d8144b7880597b6e6d3dfd63a9a9efae3f533d3",
+        "new_sha": "88d9e12ae178fab0fb5cc050a94da85685d449ea",
+        "delta_count": 1,
+        "deltas": {
+          "TerminatorKind": {
+            "change": "mutated",
+            "old_count": 15,
+            "new_count": 15,
+            "removed": [
+              "Drop { place: Place<'tcx>, target: BasicBlock, unwind: UnwindAction, replace: bool, drop: Option<BasicBlock>, async_fut: Option<Local>, }"
+            ],
+            "added": [
+              "Drop { place: Place<'tcx>, target: BasicBlock, unwind: UnwindAction, replace: bool, drop: Option<BasicBlock>, }"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": false,
+            "reason": "Struct-variant field change on TerminatorKind::Drop breaks exhaustive pattern matching in capture drivers, though Drop.drop is asserted None in runtime MIR (step.rs:654-657)."
+          }
+        }
+      },
+      {
+        "transition": "1.98.0 -> 1.99.0",
+        "old_sha": "88d9e12ae178fab0fb5cc050a94da85685d449ea",
+        "new_sha": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "delta_count": 2,
+        "deltas": {
+          "CastKind": {
+            "change": "mutated",
+            "old_count": 11,
+            "new_count": 12,
+            "removed": [],
+            "added": [
+              "BoxDerefTransmute"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          },
+          "AssertKind": {
+            "change": "mutated",
+            "old_count": 11,
+            "new_count": 12,
+            "removed": [],
+            "added": [
+              "NullReferenceConstructed"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": true,
+            "reason": "Construct or variant signature reachable in MirPhase::Runtime(RuntimePhase::PostCleanup)."
+          }
+        }
+      },
+      {
+        "transition": "1.99.0 -> 1.100.0",
+        "old_sha": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "new_sha": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "delta_count": 2,
+        "deltas": {
+          "Body": {
+            "change": "mutated",
+            "old_count": 19,
+            "new_count": 19,
+            "removed": [
+              "pub coverage_info_hi: Option<Box<coverage::CoverageInfoHi>>",
+              "pub function_coverage_info: Option<Box<coverage::FunctionCoverageInfo>>"
+            ],
+            "added": [
+              "pub coverage_early_info: Option<Box<coverage::CoverageEarlyInfo>>",
+              "pub coverage_mir_info: Option<Box<coverage::CoverageMirInfo>>"
+            ],
+            "reachable_in_runtime_postcleanup": false,
+            "reason": "Metadata/coverage/debuginfo struct fields on Body/BasicBlockData; zero operational MIR control/dataflow impact."
+          },
+          "ProjectionElem": {
+            "change": "mutated",
+            "old_count": 8,
+            "new_count": 9,
+            "removed": [],
+            "added": [
+              "PhantomDeref"
+            ],
+            "reachable_in_runtime_postcleanup": false,
+            "reason": "Pre-borrowck reborrow placeholder; ICEs if present after borrowck (rustc_const_eval/src/interpret/projection.rs:414-415)."
+          }
+        }
+      },
+      {
+        "transition": "1.100.0 -> 1.102.0-nightly",
+        "old_sha": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "new_sha": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "delta_count": 1,
+        "deltas": {
+          "TerminatorKind": {
+            "change": "mutated",
+            "old_count": 15,
+            "new_count": 15,
+            "removed": [
+              "Goto { target: BasicBlock }"
+            ],
+            "added": [
+              "Goto { target: BasicBlock, loop_hint_attrs: ThinVec<UnrollAttr> }"
+            ],
+            "reachable_in_runtime_postcleanup": true,
+            "operational_in_runtime_postcleanup": false,
+            "reason": "Struct-variant field addition on TerminatorKind::Goto breaks `{ target }` destructuring in capture drivers, though ignored operationally (step.rs:563)."
+          }
+        }
+      }
+    ],
+    "tier4_semantic_deltas": [
+      {
+        "id": "T4-01",
+        "transition": "1.78.0 -> 1.79.0",
+        "category": "operator_and_provenance",
+        "summary": "Three-way integer comparison `BinOp::Cmp` (-1/0/+1 `Ordering`) + `CastKind::PointerExposeProvenance`/`PointerWithExposedProvenance` + unified `NullOp::UbChecks`",
+        "commit": "3da115a93b782796e3d267266b4241e5258f1fef",
+        "extra_commits": [
+          "989660c3e6efc1c5eb2e822f68863df7d06cbcb4",
+          "61775304200826b412f18fc87218161fb8a0dc5c"
+        ]
+      },
+      {
+        "id": "T4-02",
+        "transition": "1.79.0 -> 1.80.0",
+        "category": "operator_and_pointer_offset",
+        "summary": "`Rvalue::CheckedBinaryOp` folded into `Rvalue::BinaryOp(AddWithOverflow|SubWithOverflow|MulWithOverflow)` + `UnOp::PtrMetadata` + `offset`/`offset_from` permits 0-byte offset on arbitrary dangling/null pointers + `Drop` always evaluates place",
+        "commit": "95c0e5c6a86ca467b0fb7043bd56dee82418ac5f",
+        "extra_commits": [
+          "459ce3f6bb5d8827835ed9b9f916eb189420b38a",
+          "5c33a5690de89587b645fb0e7b657fe545e4d0e8",
+          "86a933a5743afe4117fdde5bdf04ba1baa634715"
+        ]
+      },
+      {
+        "id": "T4-03",
+        "transition": "1.80.0 -> 1.81.0",
+        "category": "storage_lifecycle_and_shift_ub",
+        "summary": "`StorageLive` on an already-live local changed from Immediate UB to storage refresh (deallocate + reallocate uninit); signed negative shift offsets defined via `rem_euclid`; `offset_from` allows equal addresses across allocations; `TerminatorKind::TailCall`",
+        "commit": "9b05e154f39f1a413ebc09c8f1dd751f991b3bba",
+        "extra_commits": [
+          "669a40006bf3494b0d320fb77bf39cc19a6c5bc4",
+          "f6c377c350d7946881449daac2039a09b1734b46",
+          "484152d562f6babaacb3fae08cc5f70ee550e9ee"
+        ]
+      },
+      {
+        "id": "T4-04",
+        "transition": "1.81.0 -> 1.82.0",
+        "category": "provenance_and_intrinsics",
+        "summary": "`raw_eq` on bytes carrying pointer provenance relaxed from UB to defined at runtime (`const-eval` still errors); `raw_eq` enforces alignment check; `UbChecks` evaluated per defining crate rather than caller crate",
+        "commit": "f97aba2271baf1876940b42cc68f1b60ac97bf98",
+        "extra_commits": [
+          "e17be955bbd5c0fa6e95805a2cb96946262cd75b",
+          "7ea2981605ef13f713f42e877c4c31b059cb1ebe"
+        ]
+      },
+      {
+        "id": "T4-05",
+        "transition": "1.82.0 -> 1.83.0",
+        "category": "typed_copy_padding_and_provenance",
+        "summary": "Typed copies strip pointer provenance on non-pointer scalar subfields (`reset_provenance`) and `Box<ZST>` validity updated for zero-sized allocation rules",
+        "commit": "cbdcbf0d6a586792c5e0a0b8965a3179bac56120",
+        "extra_commits": [
+          "05ffd446a9b2d2c67c450bea4180eb4790939e07"
+        ]
+      },
+      {
+        "id": "T4-06",
+        "transition": "1.84.0 -> 1.85.0",
+        "category": "nonoverlapping_swap_ub",
+        "summary": "`typed_swap_nonoverlapping` detects aliasing/overlap UB even for scalar immediates (previously skipped overlap check on non-memory scalar path)",
+        "commit": "335f7f59c1a4ffa0483f936a905b25f2f58c0263",
+        "extra_commits": []
+      },
+      {
+        "id": "T4-07",
+        "transition": "1.85.0 -> 1.86.0",
+        "category": "float_nondeterminism_and_unsafe_binders",
+        "summary": "Operational `f32`/`f64` `minnum`/`maxnum` NaN payload/sign made non-deterministic; `WrapUnsafeBinder`/`UnwrapUnsafeBinder` operational semantics added; slice indexing lowered via `PtrMetadata`",
+        "commit": "d98270b07a04178b019d8317d146eb3dd1afface",
+        "extra_commits": [
+          "fc1a9186dcdad111fd99ddd38bd961a8a205c380",
+          "057313b7a607513d6c1aa82e454e2370025f3b9a"
+        ]
+      },
+      {
+        "id": "T4-08",
+        "transition": "1.90.0 -> 1.91.0",
+        "category": "call_aliasing_and_fn_align",
+        "summary": "In-place `Move` call arguments and return-place aliasing made UB when passing identical/overlapping locals; function allocations no longer carry spurious alignment in Miri/CTFE",
+        "commit": "ece1397e3ff40e7f8a411981844a8214659da970",
+        "extra_commits": [
+          "7dfbc0ac1435b76bce4b6baf1ce1b3f7080538e1",
+          "78bdd86c676a4e08849677c351591db3564d87e8",
+          "f554c79ef819cbc0f9983d0d5306cd7a9bfea6d8"
+        ]
+      },
+      {
+        "id": "T4-09",
+        "transition": "1.91.0 -> 1.92.0",
+        "category": "deinit_removal_and_aggregate_init",
+        "summary": "`StatementKind::Deinit` and `Rvalue::Len` removed from runtime MIR (`write_uninit` lowered differently); overlapping aggregate field initialization fixed; `ProjectionElem::Subtype` -> `CastKind::Subtype`",
+        "commit": "b7c2b3dc80e03dbbde6ff869c1f975c036703590",
+        "extra_commits": [
+          "53b91ea87fe4b430c33bd22dfdaaa6289bf9466a",
+          "8ecda4b7f866d77d4a87c5b5bc601d4078841093",
+          "aa5a21450a070fdea66a07d3cab3b69e6735c328"
+        ]
+      },
+      {
+        "id": "T4-10",
+        "transition": "1.92.0 -> 1.93.0",
+        "category": "offset_of_and_scalar_pair_padding",
+        "summary": "`NullOp::OffsetOf` removed and lowered to explicit compile-time constant sums; writing a `ScalarPair` resets uninitialized padding across the full destination range",
+        "commit": "72444372ae6900792ae53bec89c2ab442d589a71",
+        "extra_commits": [
+          "324e47ba2b3d2f211e4125d0b6c8fe3ceee35e91"
+        ]
+      },
+      {
+        "id": "T4-11",
+        "transition": "1.93.0 -> 1.94.0",
+        "category": "nullary_op_to_operand_runtime_checks",
+        "summary": "`Rvalue::NullaryOp` eliminated (`SizeOf`/`AlignOf` folded to constants; `RuntimeChecks` moved into `Operand::RuntimeChecks`)",
+        "commit": "1a227bd47ff200975f4afb287ec725861ab8b87a",
+        "extra_commits": [
+          "6319bee585561a078de4a0f8d07d567ce69cf12c"
+        ]
+      },
+      {
+        "id": "T4-12",
+        "transition": "1.94.0 -> 1.95.0",
+        "category": "box_init_and_padding_copy",
+        "summary": "`Rvalue::ShallowInitBox` removed in favor of `write_via_move` / `write_box_via_move` intrinsics; typed copies with padding preserve byte-level mem-to-mem representation",
+        "commit": "6d4b1b38e76c0858c8e98f89afa37535261749ca",
+        "extra_commits": [
+          "93d45480aa6db1009ebf67b845d8e9b995f46f56",
+          "635bacf46627409cb4569b93d38bdf23282966f3"
+        ]
+      },
+      {
+        "id": "T4-13",
+        "transition": "1.96.0 -> 1.97.0",
+        "category": "implicit_retagging_semantics",
+        "summary": "`StatementKind::Retag` removed; `Rvalue::Use(op, WithRetag::Yes|No)` makes typed copies implicitly retag references/boxes unless marked `WithRetag::No`",
+        "commit": "e402c1edf047a23b0cfef40c6097d1caa294050b",
+        "extra_commits": [
+          "c6befd82cea3ce6322ec7384c10cdfe9dd2fd957"
+        ]
+      },
+      {
+        "id": "T4-14",
+        "transition": "1.98.0 -> 1.99.0",
+        "category": "call_eval_order_and_box_deref_ub",
+        "summary": "`TerminatorKind::Call` operational order flipped to evaluate `destination` place BEFORE `func` and `args`; `CastKind::BoxDerefTransmute` makes invalid-`Box<T>` deref cast immediate UB; cast inputs and dereferenced pointers validated",
+        "commit": "752a91064f4297df39b7215bd9ba30bdd8145661",
+        "extra_commits": [
+          "fcf68f21cf2f50e824bc4054ca4f46f0dd8ce42f",
+          "b3724b650ef1fc5fcdf348e4077e68715596f888",
+          "14d28b13c77ecc83458f26cfff5cd4b56b852d29"
+        ]
+      },
+      {
+        "id": "T4-15",
+        "transition": "1.99.0 -> 1.100.0",
+        "category": "never_type_and_infallible_alias",
+        "summary": "Never type `!` stabilized (`!`-fallback on all editions) and `core::convert::Infallible = !` aliased (flipping observable runtime `TypeId::of::<Infallible>() == TypeId::of::<!>()` from `false` to `true`)",
+        "commit": "cfc82ebbfc6098a18fa09457e6f966cc237577bb",
+        "extra_commits": [
+          "e7769602aca3770e8d8ea55716becb22e839a579",
+          "dd132214ed3e2415da4292fec21f564f4496baa5"
+        ]
+      },
+      {
+        "id": "T4-16",
+        "transition": "1.100.0 -> 1.102.0-nightly",
+        "category": "union_padding_copy_overlap_and_inline_asm_order",
+        "summary": "Newly constructed unions explicitly reset padding bytes to `Uninit`; `copy_nonoverlapping` checks overlap even when `src` is fully `Uninit`; `write_bytes` checks alignment; `InlineAsm` destination places evaluated before inputs; `Box<T>` inner wrapper changed from `Unique<T>` to `BoxRaw<T>`",
+        "commit": "e7007d3aaaa6a6ca1bcd95f1f10c9411693a3628",
+        "extra_commits": [
+          "50871c88373cb15c35226246bcbee10ce5712691",
+          "50031dfd7825adc0da3918230a141971ac578bf7",
+          "834e5b6caa3a365dc242d61425308c25b3af9b5e",
+          "5d260fd3da7b0165d6365adab12746bfc389d913"
+        ]
+      }
+    ],
+    "verified_commits": {
+      "018ba0528fa5d22712397e520351295f8582a525": {
+        "sha": "018ba0528fa5d22712397e520351295f8582a525",
+        "date": "2024-10-04T14:06:48+02:00",
+        "subject": "Use wide pointers consistenly across the compiler"
+      },
+      "0569574938af400dfbfd88fea5a402a52f4cb4cf": {
+        "sha": "0569574938af400dfbfd88fea5a402a52f4cb4cf",
+        "date": "2026-05-15T04:34:51+02:00",
+        "subject": "Store `FieldsShape::Arbitrary` fields directly in `VariantLayout`"
+      },
+      "057313b7a607513d6c1aa82e454e2370025f3b9a": {
+        "sha": "057313b7a607513d6c1aa82e454e2370025f3b9a",
+        "date": "2025-01-27T23:42:47Z",
+        "subject": "Reapply \"Auto merge of #133734 - scottmcm:lower-indexing-to-ptrmetadata, r=davidtwco,RalfJung\""
+      },
+      "05ffd446a9b2d2c67c450bea4180eb4790939e07": {
+        "sha": "05ffd446a9b2d2c67c450bea4180eb4790939e07",
+        "date": "2024-08-29T16:06:20+02:00",
+        "subject": "Box validity: update for new zero-sized rules"
+      },
+      "072bf482c98d0f33d8456c6000babf315b63e104": {
+        "sha": "072bf482c98d0f33d8456c6000babf315b63e104",
+        "date": "2024-09-13T15:36:55+10:00",
+        "subject": "Remove unnecessary lifetime from `RunCompiler`."
+      },
+      "10721909f29024ba56a9ce667da8652a99a04784": {
+        "sha": "10721909f29024ba56a9ce667da8652a99a04784",
+        "date": "2024-10-11T17:41:52-07:00",
+        "subject": "compiler: Wire `{TyAnd,}Layout` into `rustc_abi`"
+      },
+      "1162bdc1f3fe4a85f6b1d217578f40669c43aeb5": {
+        "sha": "1162bdc1f3fe4a85f6b1d217578f40669c43aeb5",
+        "date": "2026-05-15T04:34:48+02:00",
+        "subject": "Remove redundant `VariantLayout.variants` field"
+      },
+      "14d28b13c77ecc83458f26cfff5cd4b56b852d29": {
+        "sha": "14d28b13c77ecc83458f26cfff5cd4b56b852d29",
+        "date": "2026-08-01T09:27:16+02:00",
+        "subject": "miri: ensure validity of references and pointers we dereference"
+      },
+      "1a227bd47ff200975f4afb287ec725861ab8b87a": {
+        "sha": "1a227bd47ff200975f4afb287ec725861ab8b87a",
+        "date": "2025-12-14T17:25:51Z",
+        "subject": "Replace Rvalue::NullaryOp by a variant in mir::ConstValue."
+      },
+      "236fe33345072e6363560fd2b535a10947af86f7": {
+        "sha": "236fe33345072e6363560fd2b535a10947af86f7",
+        "date": "2024-11-03T13:38:47-08:00",
+        "subject": "compiler: Directly use rustc_abi in metadata and middle"
+      },
+      "26f3337d4eda0ba22b615744fda0185d0ee344b1": {
+        "sha": "26f3337d4eda0ba22b615744fda0185d0ee344b1",
+        "date": "2025-09-17T04:46:46+02:00",
+        "subject": "Remove `DynKind`"
+      },
+      "2e1965831526407bada7abec631d7b7e9f6cbc7d": {
+        "sha": "2e1965831526407bada7abec631d7b7e9f6cbc7d",
+        "date": "2025-06-08T16:41:46-07:00",
+        "subject": "Remove rustc's notion of \"preferred\" alignment AKA `__alignof`"
+      },
+      "2efdc665a7809236738262ea13e5e3f1db204fd4": {
+        "sha": "2efdc665a7809236738262ea13e5e3f1db204fd4",
+        "date": "2026-07-07T01:15:36-07:00",
+        "subject": "Carry the `b_offset` inside `BackendRepr::ScalarPair`"
+      },
+      "324e47ba2b3d2f211e4125d0b6c8fe3ceee35e91": {
+        "sha": "324e47ba2b3d2f211e4125d0b6c8fe3ceee35e91",
+        "date": "2025-11-15T10:09:43+01:00",
+        "subject": "when writing a scalar pair, always reset the entire destination range"
+      },
+      "335f7f59c1a4ffa0483f936a905b25f2f58c0263": {
+        "sha": "335f7f59c1a4ffa0483f936a905b25f2f58c0263",
+        "date": "2024-12-25T16:01:26+01:00",
+        "subject": "swap_typed_nonoverlapping: properly detect overlap even when swapping scalar values"
+      },
+      "3b02a3309e12906a455eb128a0aa74c6a6afc932": {
+        "sha": "3b02a3309e12906a455eb128a0aa74c6a6afc932",
+        "date": "2024-11-09T18:43:29Z",
+        "subject": "Pass TyCtxt instead of Queries to the after_analysis callbacks"
+      },
+      "3bcdf3058ef3eaef5042661cf8301acfbcddce65": {
+        "sha": "3bcdf3058ef3eaef5042661cf8301acfbcddce65",
+        "date": "2024-05-13T11:59:42-04:00",
+        "subject": "split out AliasTy -> AliasTerm"
+      },
+      "3da115a93b782796e3d267266b4241e5258f1fef": {
+        "sha": "3da115a93b782796e3d267266b4241e5258f1fef",
+        "date": "2024-03-23T23:23:41-07:00",
+        "subject": "Add+Use `mir::BinOp::Cmp`"
+      },
+      "3dbe96a5a1b3e0e9cf8b9f0db1e7e4a5af58bf08": {
+        "sha": "3dbe96a5a1b3e0e9cf8b9f0db1e7e4a5af58bf08",
+        "date": "2026-06-25T17:12:10+08:00",
+        "subject": "add IsRigid marker to TyKind::Alias and constants"
+      },
+      "41b98da42d0500e38b9dd85c82110ba177ac4de1": {
+        "sha": "41b98da42d0500e38b9dd85c82110ba177ac4de1",
+        "date": "2024-07-02T21:05:30+02:00",
+        "subject": "Miri function identity hack: account for possible inlining"
+      },
+      "459ce3f6bb5d8827835ed9b9f916eb189420b38a": {
+        "sha": "459ce3f6bb5d8827835ed9b9f916eb189420b38a",
+        "date": "2024-05-28T09:28:51-07:00",
+        "subject": "Add an intrinsic for `ptr::metadata`"
+      },
+      "484152d562f6babaacb3fae08cc5f70ee550e9ee": {
+        "sha": "484152d562f6babaacb3fae08cc5f70ee550e9ee",
+        "date": "2024-07-07T17:11:04+02:00",
+        "subject": "Support tail calls in mir via `TerminatorKind::TailCall`"
+      },
+      "486ffda9dcd0d4ef0a09d81e6ce5f241e77526a1": {
+        "sha": "486ffda9dcd0d4ef0a09d81e6ce5f241e77526a1",
+        "date": "2025-07-09T16:37:11Z",
+        "subject": "Add opaque TypeId handles for CTFE"
+      },
+      "50031dfd7825adc0da3918230a141971ac578bf7": {
+        "sha": "50031dfd7825adc0da3918230a141971ac578bf7",
+        "date": "2026-10-26T17:12:58+01:00",
+        "subject": "miri: add missing alignment check in write_bytes"
+      },
+      "50871c88373cb15c35226246bcbee10ce5712691": {
+        "sha": "50871c88373cb15c35226246bcbee10ce5712691",
+        "date": "2026-10-26T16:48:41+01:00",
+        "subject": "copy_nonoverlapping: dont skip ovelrap check when src is fully uninit"
+      },
+      "53b91ea87fe4b430c33bd22dfdaaa6289bf9466a": {
+        "sha": "53b91ea87fe4b430c33bd22dfdaaa6289bf9466a",
+        "date": "2025-09-16T22:23:19Z",
+        "subject": "Remove Rvalue::Len."
+      },
+      "5c33a5690de89587b645fb0e7b657fe545e4d0e8": {
+        "sha": "5c33a5690de89587b645fb0e7b657fe545e4d0e8",
+        "date": "2024-05-13T07:59:16+02:00",
+        "subject": "offset, offset_from: allow zero-byte offset on arbitrary pointers"
+      },
+      "5cab8ae4a4a033acb25d629871deb24db19b638b": {
+        "sha": "5cab8ae4a4a033acb25d629871deb24db19b638b",
+        "date": "2024-08-06T19:09:31+02:00",
+        "subject": "miri: make vtable addresses not globally unique"
+      },
+      "5d260fd3da7b0165d6365adab12746bfc389d913": {
+        "sha": "5d260fd3da7b0165d6365adab12746bfc389d913",
+        "date": "2026-10-10T19:15:58+02:00",
+        "subject": "Replace `Unique` in `Box` with a `(NonNull, PhantomData)` wrapper"
+      },
+      "61775304200826b412f18fc87218161fb8a0dc5c": {
+        "sha": "61775304200826b412f18fc87218161fb8a0dc5c",
+        "date": "2024-03-23T18:45:05+01:00",
+        "subject": "refactor check_{lang,library}_ub: use a single intrinsic, put policy into library"
+      },
+      "6319bee585561a078de4a0f8d07d567ce69cf12c": {
+        "sha": "6319bee585561a078de4a0f8d07d567ce69cf12c",
+        "date": "2025-12-14T17:25:53Z",
+        "subject": "Introduce Operand::RuntimeChecks."
+      },
+      "635bacf46627409cb4569b93d38bdf23282966f3": {
+        "sha": "635bacf46627409cb4569b93d38bdf23282966f3",
+        "date": "2026-01-19T17:56:45+01:00",
+        "subject": "const-eval: always do mem-to-mem copies if there might be padding involved"
+      },
+      "669a40006bf3494b0d320fb77bf39cc19a6c5bc4": {
+        "sha": "669a40006bf3494b0d320fb77bf39cc19a6c5bc4",
+        "date": "2024-06-14T11:52:00+02:00",
+        "subject": "MIR Shl/Shr: the offset can be computed with rem_euclid"
+      },
+      "6d36c8a5fc4dd9ad3a4cf95ca31ecdc7f06bafc1": {
+        "sha": "6d36c8a5fc4dd9ad3a4cf95ca31ecdc7f06bafc1",
+        "date": "2026-01-23T21:04:27Z",
+        "subject": "Return ExitCode from rustc_driver::main"
+      },
+      "6d4b1b38e76c0858c8e98f89afa37535261749ca": {
+        "sha": "6d4b1b38e76c0858c8e98f89afa37535261749ca",
+        "date": "2026-02-17T11:25:50Z",
+        "subject": "Remove ShallowInitBox."
+      },
+      "7086dd83cca1cf694c7bd171efbf262fa8ffb4aa": {
+        "sha": "7086dd83cca1cf694c7bd171efbf262fa8ffb4aa",
+        "date": "2024-10-29T14:56:00-07:00",
+        "subject": "compiler: `rustc_abi::Abi` => `BackendRepr`"
+      },
+      "72444372ae6900792ae53bec89c2ab442d589a71": {
+        "sha": "72444372ae6900792ae53bec89c2ab442d589a71",
+        "date": "2025-11-18T00:10:03Z",
+        "subject": "Replace OffsetOf by an actual sum."
+      },
+      "752a91064f4297df39b7215bd9ba30bdd8145661": {
+        "sha": "752a91064f4297df39b7215bd9ba30bdd8145661",
+        "date": "2026-05-03T10:05:27+02:00",
+        "subject": "MIR Call terminator: evaluate destination place before arguments"
+      },
+      "78bdd86c676a4e08849677c351591db3564d87e8": {
+        "sha": "78bdd86c676a4e08849677c351591db3564d87e8",
+        "date": "2025-08-22T10:21:33+02:00",
+        "subject": "miri: also detect aliasing of in-place argument and return place"
+      },
+      "7ba3d7b54e7688f6f1a0fd22fe274ee7b06fea3e": {
+        "sha": "7ba3d7b54e7688f6f1a0fd22fe274ee7b06fea3e",
+        "date": "2025-02-20T13:27:32-06:00",
+        "subject": "Remove `BackendRepr::Uninhabited`, replaced with an `uninhabited: bool` field in `LayoutData`."
+      },
+      "7be0dbe77292de955da02fe1de1626bdd2e4cc0a": {
+        "sha": "7be0dbe77292de955da02fe1de1626bdd2e4cc0a",
+        "date": "2024-03-22T11:13:29-04:00",
+        "subject": "Make RawPtr take Ty and Mutbl separately"
+      },
+      "7dfbc0ac1435b76bce4b6baf1ce1b3f7080538e1": {
+        "sha": "7dfbc0ac1435b76bce4b6baf1ce1b3f7080538e1",
+        "date": "2025-08-19T08:36:58+02:00",
+        "subject": "miri: detect passing the same local twice as an in-place argument"
+      },
+      "7ea2981605ef13f713f42e877c4c31b059cb1ebe": {
+        "sha": "7ea2981605ef13f713f42e877c4c31b059cb1ebe",
+        "date": "2024-08-26T13:56:40+02:00",
+        "subject": "const-eval: do not make UbChecks behavior depend on current crate's flags"
+      },
+      "81330f91e512e79001654f32843633dc21c42117": {
+        "sha": "81330f91e512e79001654f32843633dc21c42117",
+        "date": "2026-11-03T13:50:22Z",
+        "subject": "Replace `AbiAlign` with `Align` in `LayoutData`"
+      },
+      "834e5b6caa3a365dc242d61425308c25b3af9b5e": {
+        "sha": "834e5b6caa3a365dc242d61425308c25b3af9b5e",
+        "date": "2026-11-08T17:06:27Z",
+        "subject": "Document and correct assignment order for yield and inline-asm."
+      },
+      "84acfe86dec370028987c205e7ba32cc5796d9b0": {
+        "sha": "84acfe86dec370028987c205e7ba32cc5796d9b0",
+        "date": "2024-04-08T12:02:19Z",
+        "subject": "Actually create ranged int types in the type system."
+      },
+      "86a933a5743afe4117fdde5bdf04ba1baa634715": {
+        "sha": "86a933a5743afe4117fdde5bdf04ba1baa634715",
+        "date": "2024-05-04T19:59:11+02:00",
+        "subject": "interpret: Drop: always evaluate place"
+      },
+      "8ecda4b7f866d77d4a87c5b5bc601d4078841093": {
+        "sha": "8ecda4b7f866d77d4a87c5b5bc601d4078841093",
+        "date": "2025-09-10T15:59:11+02:00",
+        "subject": "interpret: fix overlapping aggregate initialization"
+      },
+      "8fb83aba335e79dfb6843ec40c21b37f5f85a772": {
+        "sha": "8fb83aba335e79dfb6843ec40c21b37f5f85a772",
+        "date": "2026-07-10T14:53:35-04:00",
+        "subject": "place FnDef behind a binder, instantiate w/ Dummy"
+      },
+      "93d45480aa6db1009ebf67b845d8e9b995f46f56": {
+        "sha": "93d45480aa6db1009ebf67b845d8e9b995f46f56",
+        "date": "2026-02-16T08:44:56+01:00",
+        "subject": "replace box_new in Box::new with write_via_move"
+      },
+      "95c0e5c6a86ca467b0fb7043bd56dee82418ac5f": {
+        "sha": "95c0e5c6a86ca467b0fb7043bd56dee82418ac5f",
+        "date": "2024-05-17T20:33:02-07:00",
+        "subject": "Remove `Rvalue::CheckedBinaryOp`"
+      },
+      "989660c3e6efc1c5eb2e822f68863df7d06cbcb4": {
+        "sha": "989660c3e6efc1c5eb2e822f68863df7d06cbcb4",
+        "date": "2024-04-03T16:00:38+02:00",
+        "subject": "rename `expose_addr` to `expose_provenance`"
+      },
+      "9a1c5eb5b385adb3cd04af0049cbf5c225cefdc3": {
+        "sha": "9a1c5eb5b385adb3cd04af0049cbf5c225cefdc3",
+        "date": "2024-12-22T21:57:57Z",
+        "subject": "Begin to implement type system layer of unsafe binders"
+      },
+      "9b05e154f39f1a413ebc09c8f1dd751f991b3bba": {
+        "sha": "9b05e154f39f1a413ebc09c8f1dd751f991b3bba",
+        "date": "2024-06-08T12:24:48+02:00",
+        "subject": "StorageLive: refresh storage (instead of UB) when local is already live"
+      },
+      "9cba14b95bb07a5b31ed1aac2bf4eadd248232da": {
+        "sha": "9cba14b95bb07a5b31ed1aac2bf4eadd248232da",
+        "date": "2024-11-18T10:38:56+01:00",
+        "subject": "use `TypingEnv` when no `infcx` is available"
+      },
+      "9ff071219bca913e45235568defadd5ab840c50a": {
+        "sha": "9ff071219bca913e45235568defadd5ab840c50a",
+        "date": "2025-07-23T23:54:37Z",
+        "subject": "Give an AllocId to ConstValue::Slice."
+      },
+      "a77776cc1d7c599f4ff9355ffe01bad2e2b5bbad": {
+        "sha": "a77776cc1d7c599f4ff9355ffe01bad2e2b5bbad",
+        "date": "2025-01-23T09:38:58Z",
+        "subject": "Remove RunCompiler"
+      },
+      "aa5a21450a070fdea66a07d3cab3b69e6735c328": {
+        "sha": "aa5a21450a070fdea66a07d3cab3b69e6735c328",
+        "date": "2025-09-26T01:25:26-07:00",
+        "subject": "ProjectionElem::Subtype -> CastKind::Subtype"
+      },
+      "aac65f562b3e9351d4a4336c270ce13c130de467": {
+        "sha": "aac65f562b3e9351d4a4336c270ce13c130de467",
+        "date": "2025-02-28T17:17:45+01:00",
+        "subject": "rename BackendRepr::Vector \u2192 SimdVector"
+      },
+      "b31ee3af9c67c777143c0b6707a4439c78391b69": {
+        "sha": "b31ee3af9c67c777143c0b6707a4439c78391b69",
+        "date": "2025-12-18T22:25:34+01:00",
+        "subject": "layout: Store inverse memory index in `FieldsShape::Arbitrary`"
+      },
+      "b3724b650ef1fc5fcdf348e4077e68715596f888": {
+        "sha": "b3724b650ef1fc5fcdf348e4077e68715596f888",
+        "date": "2026-08-01T09:27:16+02:00",
+        "subject": "also validate the inputs of casts"
+      },
+      "b795264daa2d411fa232a3de51cc4b0ef8c86a33": {
+        "sha": "b795264daa2d411fa232a3de51cc4b0ef8c86a33",
+        "date": "2024-12-12T11:11:12Z",
+        "subject": "Pass TyCtxt rather than Queries to after_expansion"
+      },
+      "b7c2b3dc80e03dbbde6ff869c1f975c036703590": {
+        "sha": "b7c2b3dc80e03dbbde6ff869c1f975c036703590",
+        "date": "2025-10-10T12:57:24Z",
+        "subject": "Remove StatementKind::Deinit."
+      },
+      "c39fbc44eb0f296a7ad161eee642e8bcd2a82235": {
+        "sha": "c39fbc44eb0f296a7ad161eee642e8bcd2a82235",
+        "date": "2026-10-02T12:00:55+02:00",
+        "subject": "Rename `rustc_driver::run_compiler` to `compiler_entrypoint`"
+      },
+      "c4717cc9d15d30e08f03f51845c950175979bcc4": {
+        "sha": "c4717cc9d15d30e08f03f51845c950175979bcc4",
+        "date": "2024-08-09T14:33:25+10:00",
+        "subject": "Shrink `TyKind::FnPtr`."
+      },
+      "c6befd82cea3ce6322ec7384c10cdfe9dd2fd957": {
+        "sha": "c6befd82cea3ce6322ec7384c10cdfe9dd2fd957",
+        "date": "2026-04-12T09:07:07+08:00",
+        "subject": "fix: add aliasing rules for Box"
+      },
+      "cbdcbf0d6a586792c5e0a0b8965a3179bac56120": {
+        "sha": "cbdcbf0d6a586792c5e0a0b8965a3179bac56120",
+        "date": "2024-09-08T16:53:23+02:00",
+        "subject": "interpret: reset provenance on typed copies"
+      },
+      "cf96c5fa87f6805a382d4c6a9082c9777a404b5f": {
+        "sha": "cf96c5fa87f6805a382d4c6a9082c9777a404b5f",
+        "date": "2026-04-06T15:05:46+02:00",
+        "subject": "`ty::Alias` refactor: change APIs"
+      },
+      "cfc82ebbfc6098a18fa09457e6f966cc237577bb": {
+        "sha": "cfc82ebbfc6098a18fa09457e6f966cc237577bb",
+        "date": "2026-08-24T19:04:01+02:00",
+        "subject": "Make `Infallible = !`"
+      },
+      "d802d17e292ff782d346e0353af3a37dcb5ca12f": {
+        "sha": "d802d17e292ff782d346e0353af3a37dcb5ca12f",
+        "date": "2026-08-27T17:47:22+02:00",
+        "subject": "try to reduce impact of scalar size checks"
+      },
+      "d98270b07a04178b019d8317d146eb3dd1afface": {
+        "sha": "d98270b07a04178b019d8317d146eb3dd1afface",
+        "date": "2025-01-31T11:56:02+01:00",
+        "subject": "miri: make float min/max non-deterministic"
+      },
+      "db5e2dc248fe5bb26f70d7baec46a3bca9fa3e1d": {
+        "sha": "db5e2dc248fe5bb26f70d7baec46a3bca9fa3e1d",
+        "date": "2026-03-10T11:52:22Z",
+        "subject": "abi: s/ScalableVector/SimdScalableVector"
+      },
+      "dd132214ed3e2415da4292fec21f564f4496baa5": {
+        "sha": "dd132214ed3e2415da4292fec21f564f4496baa5",
+        "date": "2026-09-01T08:57:20-05:00",
+        "subject": "Dogfood never type in std"
+      },
+      "e023590de407f417e0f3da675a372eca7acf60c6": {
+        "sha": "e023590de407f417e0f3da675a372eca7acf60c6",
+        "date": "2024-12-18T11:01:54+01:00",
+        "subject": "make no-variant types a dedicated Variants variant"
+      },
+      "e17be955bbd5c0fa6e95805a2cb96946262cd75b": {
+        "sha": "e17be955bbd5c0fa6e95805a2cb96946262cd75b",
+        "date": "2024-08-27T19:29:52+02:00",
+        "subject": "interpret: add missing alignment check in raw_eq"
+      },
+      "e402c1edf047a23b0cfef40c6097d1caa294050b": {
+        "sha": "e402c1edf047a23b0cfef40c6097d1caa294050b",
+        "date": "2026-05-02T17:40:33+02:00",
+        "subject": "miri: remove retag statements, make typed copies retag implicitly instead"
+      },
+      "e7007d3aaaa6a6ca1bcd95f1f10c9411693a3628": {
+        "sha": "e7007d3aaaa6a6ca1bcd95f1f10c9411693a3628",
+        "date": "2026-11-09T18:14:26+01:00",
+        "subject": "interpret: ensure newly created unions have uninit in their padding"
+      },
+      "e7769602aca3770e8d8ea55716becb22e839a579": {
+        "sha": "e7769602aca3770e8d8ea55716becb22e839a579",
+        "date": "2026-08-24T19:22:20Z",
+        "subject": "Auto merge of #155499 - WaffleLapkin:stabilize-never-type, r=JonathanBrouwer"
+      },
+      "ece1397e3ff40e7f8a411981844a8214659da970": {
+        "sha": "ece1397e3ff40e7f8a411981844a8214659da970",
+        "date": "2025-08-18T19:45:29+02:00",
+        "subject": "interpret: fix in-place return place semantics when the return place expression is a local variable"
+      },
+      "ee9901e65c78f70b93dab5bd1e04bd77273b7c40": {
+        "sha": "ee9901e65c78f70b93dab5bd1e04bd77273b7c40",
+        "date": "2025-06-03T23:42:21-07:00",
+        "subject": "Change `tag_field` to `FieldIdx` in `Variants::Multiple`"
+      },
+      "f554c79ef819cbc0f9983d0d5306cd7a9bfea6d8": {
+        "sha": "f554c79ef819cbc0f9983d0d5306cd7a9bfea6d8",
+        "date": "2025-07-31T12:50:40-05:00",
+        "subject": "Do not give function allocations alignment in consteval or miri."
+      },
+      "f6c377c350d7946881449daac2039a09b1734b46": {
+        "sha": "f6c377c350d7946881449daac2039a09b1734b46",
+        "date": "2024-07-06T17:14:26+02:00",
+        "subject": "offset_from intrinsic: always allow pointers to point to the same address"
+      },
+      "f97aba2271baf1876940b42cc68f1b60ac97bf98": {
+        "sha": "f97aba2271baf1876940b42cc68f1b60ac97bf98",
+        "date": "2024-07-31T20:26:20+02:00",
+        "subject": "raw_eq: using it on bytes with provenance is not UB (outside const-eval)"
+      },
+      "fc1a9186dcdad111fd99ddd38bd961a8a205c380": {
+        "sha": "fc1a9186dcdad111fd99ddd38bd961a8a205c380",
+        "date": "2025-01-31T17:19:53Z",
+        "subject": "Implement MIR, CTFE, and codegen for unsafe binders"
+      },
+      "fcf68f21cf2f50e824bc4054ca4f46f0dd8ce42f": {
+        "sha": "fcf68f21cf2f50e824bc4054ca4f46f0dd8ce42f",
+        "date": "2026-08-01T09:27:16+02:00",
+        "subject": "introduce a new CastKind for ElaborateBoxDerefs"
+      }
+    }
+  },
+  "part2_multi_version_rustc_private_matrix": {
+    "cfg_version_truth_table": [
+      {
+        "toolchain": "1.78.0",
+        "rustc_version": "rustc 1.78.0 (9b00956e5 2024-04-29)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": false,
+          "v1_95": false,
+          "v1_97": false,
+          "v1_99_1": false,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "1.80",
+        "rustc_version": "rustc 1.80.1 (3f5fd8dd4 2024-08-06)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": false,
+          "v1_95": false,
+          "v1_97": false,
+          "v1_99_1": false,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "1.84.0",
+        "rustc_version": "rustc 1.84.0 (9fc6b4312 2025-01-07)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": false,
+          "v1_97": false,
+          "v1_99_1": false,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "1.93.1",
+        "rustc_version": "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": false,
+          "v1_97": false,
+          "v1_99_1": false,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "1.96.0",
+        "rustc_version": "rustc 1.96.0 (ac68faa20 2026-05-25)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": false,
+          "v1_99_1": false,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "1.99.1",
+        "rustc_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": true,
+          "v1_99_1": true,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "1.100.0",
+        "rustc_version": "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": true,
+          "v1_99_1": true,
+          "v1_100": true,
+          "v1_100_0": true,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "stable",
+        "rustc_version": "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": true,
+          "v1_99_1": true,
+          "v1_100": true,
+          "v1_100_0": true,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "stage1",
+        "rustc_version": "rustc 1.100.0-dev",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": true,
+          "v1_99_1": true,
+          "v1_100": true,
+          "v1_100_0": true,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "nightly-2026-02-07",
+        "rustc_version": "rustc 1.95.0-nightly (efc9e1b50 2026-02-06)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": false,
+          "v1_99_1": false,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "nightly-2026-02-23",
+        "rustc_version": "rustc 1.95.0-nightly (c78a29473 2026-02-22)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": false,
+          "v1_99_1": false,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "nightly-2026-04-12",
+        "rustc_version": "rustc 1.97.0-nightly (bf4fbfb7a 2026-04-11)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": true,
+          "v1_99_1": false,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "toolchain": "nightly",
+        "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": true,
+          "v1_99_1": true,
+          "v1_100": true,
+          "v1_100_0": true,
+          "v1_102": true
+        }
+      },
+      {
+        "toolchain": "nightly-2026-11-20",
+        "rustc_version": "rustc 1.102.0-nightly (6905905bb 2026-11-19)",
+        "rc": 0,
+        "evaluations": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": true,
+          "v1_99_1": true,
+          "v1_100": true,
+          "v1_100_0": true,
+          "v1_102": true
+        }
+      }
+    ],
+    "cfg_version_override_spoofing": [
+      {
+        "override_env": "1.78.0-custom",
+        "evaluations_on_1_100_0": {
+          "v1_78": true,
+          "v1_84": false,
+          "v1_95": false,
+          "v1_97": false,
+          "v1_99_1": false,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "override_env": "1.999.0",
+        "evaluations_on_1_100_0": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": true,
+          "v1_99_1": true,
+          "v1_100": true,
+          "v1_100_0": true,
+          "v1_102": true
+        }
+      },
+      {
+        "override_env": "0.0.0",
+        "evaluations_on_1_100_0": {
+          "v1_78": false,
+          "v1_84": false,
+          "v1_95": false,
+          "v1_97": false,
+          "v1_99_1": false,
+          "v1_100": false,
+          "v1_100_0": false,
+          "v1_102": false
+        }
+      },
+      {
+        "override_env": "non-semver-custom",
+        "evaluations_on_1_100_0": {
+          "v1_78": true,
+          "v1_84": true,
+          "v1_95": true,
+          "v1_97": true,
+          "v1_99_1": true,
+          "v1_100": true,
+          "v1_100_0": true,
+          "v1_102": false
+        }
+      }
+    ],
+    "cfg_version_midcycle_rustc_private_probes": [
+      {
+        "toolchain": "nightly-2026-02-07",
+        "rc": 0,
+        "errors": []
+      },
+      {
+        "toolchain": "nightly-2026-04-12",
+        "rc": 1,
+        "errors": [
+          "error[E0023]: this pattern has 2 fields, but the corresponding tuple variant has 1 field",
+          "error: aborting due to 1 previous error",
+          "For more information about this error, try `rustc --explain E0023`."
+        ]
+      },
+      {
+        "toolchain": "nightly-2026-05-31",
+        "rc": 0,
+        "errors": []
+      },
+      {
+        "toolchain": "stable",
+        "rc": 0,
+        "errors": []
+      },
+      {
+        "toolchain": "nightly",
+        "rc": 0,
+        "errors": []
+      }
+    ],
+    "cfg_version_assume_incomplete_release_probes": [
+      {
+        "toolchain": "stable",
+        "flags": [],
+        "rc": 0,
+        "errors": []
+      },
+      {
+        "toolchain": "nightly",
+        "flags": [],
+        "rc": 0,
+        "errors": []
+      },
+      {
+        "toolchain": "stable",
+        "flags": [
+          "-Z",
+          "assume-incomplete-release"
+        ],
+        "rc": 0,
+        "errors": []
+      },
+      {
+        "toolchain": "nightly",
+        "flags": [
+          "-Z",
+          "assume-incomplete-release"
+        ],
+        "rc": 1,
+        "errors": [
+          "error[E0425]: cannot find function `run_compiler` in crate `rustc_driver`",
+          "error: aborting due to 1 previous error",
+          "For more information about this error, try `rustc --explain E0425`."
+        ]
+      }
+    ],
+    "cfg_accessible_matrix": [
+      {
+        "case": "external_module_type_present",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 0,
+            "errors": []
+          },
+          "1.99.1": {
+            "rc": 0,
+            "errors": []
+          },
+          "stable": {
+            "rc": 0,
+            "errors": []
+          },
+          "nightly": {
+            "rc": 0,
+            "errors": []
+          }
+        }
+      },
+      {
+        "case": "external_fn_compiler_entrypoint",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 0,
+            "errors": []
+          },
+          "1.99.1": {
+            "rc": 0,
+            "errors": []
+          },
+          "stable": {
+            "rc": 0,
+            "errors": []
+          },
+          "nightly": {
+            "rc": 0,
+            "errors": []
+          }
+        }
+      },
+      {
+        "case": "external_enum_variant_box_deref_transmute",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "1.99.1": {
+            "rc": 0,
+            "errors": []
+          },
+          "stable": {
+            "rc": 0,
+            "errors": []
+          },
+          "nightly": {
+            "rc": 0,
+            "errors": []
+          }
+        }
+      },
+      {
+        "case": "external_enum_variant_phantom_deref",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "1.99.1": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "stable": {
+            "rc": 0,
+            "errors": []
+          },
+          "nightly": {
+            "rc": 0,
+            "errors": []
+          }
+        }
+      },
+      {
+        "case": "external_missing_intermediate_module",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "1.99.1": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "stable": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "nightly": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          }
+        }
+      },
+      {
+        "case": "local_crate_enum_variant",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 0,
+            "errors": []
+          },
+          "1.99.1": {
+            "rc": 0,
+            "errors": []
+          },
+          "stable": {
+            "rc": 0,
+            "errors": []
+          },
+          "nightly": {
+            "rc": 0,
+            "errors": []
+          }
+        }
+      },
+      {
+        "case": "struct_field_synthetic",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "1.99.1": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "stable": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "nightly": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          }
+        }
+      },
+      {
+        "case": "enum_variant_field_goto_loop_hint_attrs",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "1.99.1": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "stable": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "nightly": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          }
+        }
+      },
+      {
+        "case": "inherent_method_tyctxt_mir_query",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "1.99.1": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "stable": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "nightly": {
+            "rc": 1,
+            "errors": [
+              "error: not sure whether the path is accessible or not",
+              "error: aborting due to 1 previous error"
+            ]
+          }
+        }
+      },
+      {
+        "case": "cfg_not_negation_attempt",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 1,
+            "errors": [
+              "error[E0537]: invalid predicate `cfg_accessible`",
+              "error: aborting due to 1 previous error",
+              "For more information about this error, try `rustc --explain E0537`."
+            ]
+          },
+          "1.99.1": {
+            "rc": 1,
+            "errors": [
+              "error[E0539]: malformed `cfg` attribute input",
+              "error: aborting due to 1 previous error",
+              "For more information about this error, try `rustc --explain E0539`."
+            ]
+          },
+          "stable": {
+            "rc": 1,
+            "errors": [
+              "error[E0539]: malformed `cfg` attribute input",
+              "error: aborting due to 1 previous error",
+              "For more information about this error, try `rustc --explain E0539`."
+            ]
+          },
+          "nightly": {
+            "rc": 1,
+            "errors": [
+              "error[E0539]: malformed `cfg` attribute input",
+              "error: aborting due to 1 previous error",
+              "For more information about this error, try `rustc --explain E0539`."
+            ]
+          }
+        }
+      },
+      {
+        "case": "match_arm_position_attempt",
+        "results": {
+          "nightly-2026-05-31": {
+            "rc": 1,
+            "errors": [
+              "error: expected non-macro attribute, found attribute macro `cfg_accessible`",
+              "error[E0599]: no variant, associated function, or constant named `BoxDerefTransmute` found for enum `rustc_middle::mir::CastKind` in the current scope",
+              "error: aborting due to 2 previous errors"
+            ]
+          },
+          "1.99.1": {
+            "rc": 1,
+            "errors": [
+              "error: expected non-macro attribute, found attribute macro `cfg_accessible`",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "stable": {
+            "rc": 1,
+            "errors": [
+              "error: expected non-macro attribute, found attribute macro `cfg_accessible`",
+              "error: aborting due to 1 previous error"
+            ]
+          },
+          "nightly": {
+            "rc": 1,
+            "errors": [
+              "error: expected non-macro attribute, found attribute macro `cfg_accessible`",
+              "error: aborting due to 1 previous error"
+            ]
+          }
+        }
+      }
+    ],
+    "explicit_dialect_10_compiler_runs": [
+      {
+        "toolchain": "nightly-2025-08-20",
+        "rustc_version": "rustc 1.91.0-nightly (05f5a58e8 2025-08-19)",
+        "commit_sha": "05f5a58e84a9c3a68586d70bf3d7442c571e379e",
+        "dialect": "mir_1_91_93",
+        "compile_rc": 0,
+        "exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 0,
+          "uses_explicit_no": 0,
+          "uses_legacy": 13,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 0,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      },
+      {
+        "toolchain": "nightly-2025-11-23",
+        "rustc_version": "rustc 1.93.0-nightly (94b49fd99 2025-11-22)",
+        "commit_sha": "94b49fd998d6723e0a9240a7cff5f9df37b84dd8",
+        "dialect": "mir_1_91_93",
+        "compile_rc": 0,
+        "exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 0,
+          "uses_explicit_no": 0,
+          "uses_legacy": 14,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 0,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      },
+      {
+        "toolchain": "nightly-2026-02-07",
+        "rustc_version": "rustc 1.95.0-nightly (efc9e1b50 2026-02-06)",
+        "commit_sha": "efc9e1b50cbf2cede7ebe25f0a1fc64fd8b3e942",
+        "dialect": "mir_1_94_96",
+        "compile_rc": 0,
+        "exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 0,
+          "uses_explicit_no": 0,
+          "uses_legacy": 14,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 0,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      },
+      {
+        "toolchain": "nightly-2026-04-12",
+        "rustc_version": "rustc 1.97.0-nightly (bf4fbfb7a 2026-04-11)",
+        "commit_sha": "bf4fbfb7a18d74e7cd8eef93af7329c58fbb5344",
+        "dialect": "mir_1_94_96",
+        "compile_rc": 0,
+        "exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 0,
+          "uses_explicit_no": 0,
+          "uses_legacy": 14,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 0,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      },
+      {
+        "toolchain": "nightly-2026-05-31",
+        "rustc_version": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+        "commit_sha": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "dialect": "mir_1_97_98",
+        "compile_rc": 0,
+        "exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 13,
+          "uses_explicit_no": 1,
+          "uses_legacy": 0,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 0,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      },
+      {
+        "toolchain": "nightly-2026-06-01",
+        "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+        "commit_sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "dialect": "mir_1_97_98",
+        "compile_rc": 0,
+        "exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 13,
+          "uses_explicit_no": 1,
+          "uses_legacy": 0,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 0,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      },
+      {
+        "toolchain": "1.99.1",
+        "rustc_version": "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+        "commit_sha": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "dialect": "mir_1_99",
+        "compile_rc": 0,
+        "exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 13,
+          "uses_explicit_no": 1,
+          "uses_legacy": 0,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 1,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      },
+      {
+        "toolchain": "stable",
+        "rustc_version": "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+        "commit_sha": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "dialect": "mir_1_100",
+        "compile_rc": 0,
+        "exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 13,
+          "uses_explicit_no": 1,
+          "uses_legacy": 0,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 1,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      },
+      {
+        "toolchain": "nightly",
+        "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "commit_sha": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "dialect": "mir_1_102_nightly",
+        "compile_rc": 0,
+        "exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 13,
+          "uses_explicit_no": 1,
+          "uses_legacy": 0,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 1,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      },
+      {
+        "toolchain": "nightly-2026-11-13",
+        "rustc_version": "rustc 1.102.0-nightly (8eb778d04 2026-11-12)",
+        "commit_sha": "8eb778d04094d3af4b26580cab327e0413eb1e02",
+        "dialect": "mir_1_102_nightly",
+        "compile_rc": 0,
+        "exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 13,
+          "uses_explicit_no": 1,
+          "uses_legacy": 0,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 1,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      }
+    ],
+    "explicit_dialect_cargo_builds": [
+      {
+        "toolchain": "stable",
+        "dialect": "mir_1_100",
+        "cargo_build_rc": 0,
+        "binary_exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 13,
+          "uses_explicit_no": 1,
+          "uses_legacy": 0,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 1,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      },
+      {
+        "toolchain": "nightly",
+        "dialect": "mir_1_102_nightly",
+        "cargo_build_rc": 0,
+        "binary_exec_rc": 0,
+        "captured_mir_metrics": {
+          "bodies": 1,
+          "bbs": 10,
+          "uses_implicit_yes": 13,
+          "uses_explicit_no": 1,
+          "uses_legacy": 0,
+          "legacy_retag_stmts": 0,
+          "box_deref_casts": 1,
+          "gotos_plain": 2,
+          "gotos_hinted": 0,
+          "return_ty_sizes": [
+            8
+          ],
+          "return_ty_aligns": [
+            8
+          ],
+          "ext_crates": 19
+        }
+      }
+    ],
+    "explicit_dialect_fail_closed_guards": [
+      {
+        "case": "missing_dialect_cfg",
+        "rc": 1,
+        "errors": [
+          "error: exactly one known `--cfg anneal_mir_dialect=\"...\"` must be passed",
+          "24 | compile_error!(\"exactly one known `--cfg anneal_mir_dialect=\\\"...\\\"` must be passed\");",
+          "error[E0308]: mismatched types",
+          "error: aborting due to 2 previous errors",
+          "For more information about this error, try `rustc --explain E0308`."
+        ]
+      },
+      {
+        "case": "typo_dialect_cfg",
+        "rc": 1,
+        "errors": [
+          "error: exactly one known `--cfg anneal_mir_dialect=\"...\"` must be passed",
+          "24 | compile_error!(\"exactly one known `--cfg anneal_mir_dialect=\\\"...\\\"` must be passed\");",
+          "error[E0308]: mismatched types",
+          "error: aborting due to 2 previous errors",
+          "For more information about this error, try `rustc --explain E0308`."
+        ]
+      }
+    ],
+    "prototype_loc": {
+      "dialect_rs_total_lines": 177,
+      "dialect_rs_non_empty_non_comment_loc": 164,
+      "main_rs_total_lines": 147,
+      "main_rs_non_empty_non_comment_loc": 139
+    }
+  },
+  "part3_seven_era_capability_driver_and_glob_shadowing": {
+    "cfg_version": {
+      "1.94.1-tarball": {
+        "vv_head": "rustc 1.94.1 (e408947bf 2026-03-25) (built from a source tarball)",
+        "matched": [
+          "1.94"
+        ]
+      },
+      "1.95.0-nightly-2026-02-07": {
+        "vv_head": "rustc 1.95.0-nightly (efc9e1b50 2026-02-06)",
+        "matched": [
+          "1.94",
+          "1.95"
+        ]
+      },
+      "1.97.0-nightly-2026-04-12": {
+        "vv_head": "rustc 1.97.0-nightly (bf4fbfb7a 2026-04-11)",
+        "matched": [
+          "1.94",
+          "1.95",
+          "1.97"
+        ]
+      },
+      "1.98.0-nightly-2026-05-31": {
+        "vv_head": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+        "matched": [
+          "1.94",
+          "1.95",
+          "1.97",
+          "1.98"
+        ]
+      },
+      "1.100.0-nightly-2026-09-17": {
+        "vv_head": "rustc 1.100.0-nightly (923c95cdf 2026-09-16)",
+        "matched": [
+          "1.94",
+          "1.95",
+          "1.97",
+          "1.98",
+          "1.99",
+          "1.100"
+        ]
+      },
+      "1.100.0-stable": {
+        "vv_head": "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+        "matched": [
+          "1.94",
+          "1.95",
+          "1.97",
+          "1.98",
+          "1.99",
+          "1.100"
+        ]
+      },
+      "1.102.0-nightly-2026-11-11": {
+        "vv_head": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "matched": [
+          "1.94",
+          "1.95",
+          "1.97",
+          "1.98",
+          "1.99",
+          "1.100",
+          "1.101",
+          "1.102"
+        ]
+      },
+      "stage1-1.100.0-dev": {
+        "vv_head": "rustc 1.100.0-dev",
+        "matched": [
+          "1.94",
+          "1.95",
+          "1.97",
+          "1.98",
+          "1.99",
+          "1.100"
+        ]
+      }
+    },
+    "cfg_accessible": {
+      "type_path_rustc_abi": {
+        "1.94.1-tarball": {
+          "rc": 0,
+          "stdout": "compiled"
+        },
+        "1.98.0-nightly-2026-05-31": {
+          "rc": 0,
+          "stdout": "compiled"
+        },
+        "1.100.0-stable": {
+          "rc": 0,
+          "stdout": "compiled"
+        },
+        "1.102.0-nightly-2026-11-11": {
+          "rc": 0,
+          "stdout": "compiled"
+        }
+      },
+      "negated_cfg_accessible_invalid": {
+        "1.94.1-tarball": {
+          "rc": 1,
+          "stderr_head": [
+            "error[E0537]: invalid predicate `cfg_accessible`",
+            " --> /tmp/<scratch>/ca_negated_cfg_accessible_invalid.rs:3:11",
+            "  |",
+            "3 | #[cfg(not(cfg_accessible(rustc_driver::run_compiler)))]"
+          ]
+        },
+        "1.98.0-nightly-2026-05-31": {
+          "rc": 1,
+          "stderr_head": [
+            "error[E0537]: invalid predicate `cfg_accessible`",
+            " --> /tmp/<scratch>/ca_negated_cfg_accessible_invalid.rs:3:11",
+            "  |",
+            "3 | #[cfg(not(cfg_accessible(rustc_driver::run_compiler)))]"
+          ]
+        },
+        "1.100.0-stable": {
+          "rc": 1,
+          "stderr_head": [
+            "error[E0539]: malformed `cfg` attribute input",
+            " --> /tmp/<scratch>/ca_negated_cfg_accessible_invalid.rs:3:3",
+            "  |",
+            "3 | #[cfg(not(cfg_accessible(rustc_driver::run_compiler)))]"
+          ]
+        },
+        "1.102.0-nightly-2026-11-11": {
+          "rc": 1,
+          "stderr_head": [
+            "error[E0539]: malformed `cfg` attribute input",
+            " --> /tmp/<scratch>/ca_negated_cfg_accessible_invalid.rs:3:3",
+            "  |",
+            "3 | #[cfg(not(cfg_accessible(rustc_driver::run_compiler)))]"
+          ]
+        }
+      },
+      "fn_compiler_entrypoint": {
+        "1.94.1-tarball": {
+          "rc": 0,
+          "stdout": "present=false"
+        },
+        "1.98.0-nightly-2026-05-31": {
+          "rc": 0,
+          "stdout": "present=false"
+        },
+        "1.100.0-stable": {
+          "rc": 0,
+          "stdout": "present=false"
+        },
+        "1.102.0-nightly-2026-11-11": {
+          "rc": 0,
+          "stdout": "present=true"
+        }
+      },
+      "enum_variant_retag": {
+        "1.94.1-tarball": {
+          "rc": 0,
+          "stdout": "present=true"
+        },
+        "1.98.0-nightly-2026-05-31": {
+          "rc": 1,
+          "stderr_head": [
+            "error: not sure whether the path is accessible or not",
+            " --> /tmp/<scratch>/ca_enum_variant_retag.rs:8:22",
+            "  |",
+            "8 |     #[cfg_accessible(rustc_middle::mir::StatementKind::Retag)]"
+          ]
+        },
+        "1.100.0-stable": {
+          "rc": 1,
+          "stderr_head": [
+            "error: not sure whether the path is accessible or not",
+            " --> /tmp/<scratch>/ca_enum_variant_retag.rs:8:22",
+            "  |",
+            "8 |     #[cfg_accessible(rustc_middle::mir::StatementKind::Retag)]"
+          ]
+        },
+        "1.102.0-nightly-2026-11-11": {
+          "rc": 1,
+          "stderr_head": [
+            "error: not sure whether the path is accessible or not",
+            " --> /tmp/<scratch>/ca_enum_variant_retag.rs:8:22",
+            "  |",
+            "8 |     #[cfg_accessible(rustc_middle::mir::StatementKind::Retag)]"
+          ]
+        }
+      },
+      "enum_variant_box_deref_transmute": {
+        "1.94.1-tarball": {
+          "rc": 1,
+          "stderr_head": [
+            "error: not sure whether the path is accessible or not",
+            " --> /tmp/<scratch>/ca_enum_variant_box_deref_transmute.rs:8:22",
+            "  |",
+            "8 |     #[cfg_accessible(rustc_middle::mir::CastKind::BoxDerefTransmute)]"
+          ]
+        },
+        "1.98.0-nightly-2026-05-31": {
+          "rc": 1,
+          "stderr_head": [
+            "error: not sure whether the path is accessible or not",
+            " --> /tmp/<scratch>/ca_enum_variant_box_deref_transmute.rs:8:22",
+            "  |",
+            "8 |     #[cfg_accessible(rustc_middle::mir::CastKind::BoxDerefTransmute)]"
+          ]
+        },
+        "1.100.0-stable": {
+          "rc": 0,
+          "stdout": "present=true"
+        },
+        "1.102.0-nightly-2026-11-11": {
+          "rc": 0,
+          "stdout": "present=true"
+        }
+      },
+      "enum_struct_field_loop_hint_attrs": {
+        "1.94.1-tarball": {
+          "rc": 1,
+          "stderr_head": [
+            "error: not sure whether the path is accessible or not",
+            " --> /tmp/<scratch>/ca_enum_struct_field_loop_hint_attrs.rs:8:22",
+            "  |",
+            "8 | ...ssible(rustc_middle::mir::TerminatorKind::Goto::loop_hint_attrs)]"
+          ]
+        },
+        "1.98.0-nightly-2026-05-31": {
+          "rc": 1,
+          "stderr_head": [
+            "error: not sure whether the path is accessible or not",
+            " --> /tmp/<scratch>/ca_enum_struct_field_loop_hint_attrs.rs:8:22",
+            "  |",
+            "8 | ...ssible(rustc_middle::mir::TerminatorKind::Goto::loop_hint_attrs)]"
+          ]
+        },
+        "1.100.0-stable": {
+          "rc": 1,
+          "stderr_head": [
+            "error: not sure whether the path is accessible or not",
+            " --> /tmp/<scratch>/ca_enum_struct_field_loop_hint_attrs.rs:8:22",
+            "  |",
+            "8 | ...ssible(rustc_middle::mir::TerminatorKind::Goto::loop_hint_attrs)]"
+          ]
+        },
+        "1.102.0-nightly-2026-11-11": {
+          "rc": 1,
+          "stderr_head": [
+            "error: not sure whether the path is accessible or not",
+            " --> /tmp/<scratch>/ca_enum_struct_field_loop_hint_attrs.rs:8:22",
+            "  |",
+            "8 | ...ssible(rustc_middle::mir::TerminatorKind::Goto::loop_hint_attrs)]"
+          ]
+        }
+      }
+    },
+    "seven_era_driver": [
+      {
+        "toolchain": "1.94.1-tarball",
+        "vv_head": "rustc 1.94.1 (e408947bf 2026-03-25) (built from a source tarball)",
+        "cfgs": [
+          "--cfg=dialect_has_stmt_retag",
+          "--cfg=dialect_run_compiler_fn"
+        ],
+        "compile_rc": 0,
+        "compile_ms": 971.7,
+        "binary_bytes": 48392,
+        "run_rc": 0,
+        "trunk_json": {
+          "rustc_version_str": "1.94.1 (e408947bf 2026-03-25) (built from a source tarball)",
+          "used_crates": 19,
+          "bodies": [
+            {
+              "fn": "borrow_roundtrip",
+              "bbs": 2,
+              "assigns": 3,
+              "retags": 0,
+              "terms": [
+                "Call",
+                "Return"
+              ]
+            },
+            {
+              "fn": "clamp_u32",
+              "bbs": 7,
+              "assigns": 9,
+              "retags": 0,
+              "terms": [
+                "SwitchInt",
+                "Goto",
+                "SwitchInt",
+                "Goto",
+                "Goto",
+                "Goto",
+                "Return"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "toolchain": "1.95.0-nightly-2026-02-07",
+        "vv_head": "rustc 1.95.0-nightly (efc9e1b50 2026-02-06)",
+        "cfgs": [
+          "--cfg=dialect_has_stmt_retag",
+          "--cfg=dialect_run_compiler_fn"
+        ],
+        "compile_rc": 0,
+        "compile_ms": 364.9,
+        "binary_bytes": 38560,
+        "run_rc": 0,
+        "trunk_json": {
+          "rustc_version_str": "1.95.0-nightly (efc9e1b50 2026-02-06)",
+          "used_crates": 19,
+          "bodies": [
+            {
+              "fn": "borrow_roundtrip",
+              "bbs": 2,
+              "assigns": 3,
+              "retags": 0,
+              "terms": [
+                "Call",
+                "Return"
+              ]
+            },
+            {
+              "fn": "clamp_u32",
+              "bbs": 7,
+              "assigns": 9,
+              "retags": 0,
+              "terms": [
+                "SwitchInt",
+                "Goto",
+                "SwitchInt",
+                "Goto",
+                "Goto",
+                "Goto",
+                "Return"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "toolchain": "1.97.0-nightly-2026-04-12",
+        "vv_head": "rustc 1.97.0-nightly (bf4fbfb7a 2026-04-11)",
+        "cfgs": [
+          "--cfg=dialect_has_stmt_retag",
+          "--cfg=dialect_run_compiler_fn"
+        ],
+        "compile_rc": 0,
+        "compile_ms": 381.7,
+        "binary_bytes": 38784,
+        "run_rc": 0,
+        "trunk_json": {
+          "rustc_version_str": "1.97.0-nightly (bf4fbfb7a 2026-04-11)",
+          "used_crates": 19,
+          "bodies": [
+            {
+              "fn": "borrow_roundtrip",
+              "bbs": 2,
+              "assigns": 3,
+              "retags": 0,
+              "terms": [
+                "Call",
+                "Return"
+              ]
+            },
+            {
+              "fn": "clamp_u32",
+              "bbs": 7,
+              "assigns": 9,
+              "retags": 0,
+              "terms": [
+                "SwitchInt",
+                "Goto",
+                "SwitchInt",
+                "Goto",
+                "Goto",
+                "Goto",
+                "Return"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "toolchain": "1.98.0-nightly-2026-05-31",
+        "vv_head": "rustc 1.98.0-nightly (f8a08b688 2026-05-30)",
+        "cfgs": [
+          "--cfg=dialect_use_has_with_retag",
+          "--cfg=dialect_run_compiler_fn"
+        ],
+        "compile_rc": 0,
+        "compile_ms": 389.3,
+        "binary_bytes": 36656,
+        "run_rc": 0,
+        "trunk_json": {
+          "rustc_version_str": "1.98.0-nightly (f8a08b688 2026-05-30)",
+          "used_crates": 19,
+          "bodies": [
+            {
+              "fn": "borrow_roundtrip",
+              "bbs": 2,
+              "assigns": 3,
+              "retags": 3,
+              "terms": [
+                "Call",
+                "Return"
+              ]
+            },
+            {
+              "fn": "clamp_u32",
+              "bbs": 7,
+              "assigns": 9,
+              "retags": 7,
+              "terms": [
+                "SwitchInt",
+                "Goto",
+                "SwitchInt",
+                "Goto",
+                "Goto",
+                "Goto",
+                "Return"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "toolchain": "1.100.0-nightly-2026-09-17",
+        "vv_head": "rustc 1.100.0-nightly (923c95cdf 2026-09-16)",
+        "cfgs": [
+          "--cfg=dialect_use_has_with_retag",
+          "--cfg=dialect_run_compiler_fn"
+        ],
+        "compile_rc": 0,
+        "compile_ms": 321.9,
+        "binary_bytes": 35744,
+        "run_rc": 0,
+        "trunk_json": {
+          "rustc_version_str": "1.100.0-nightly (923c95cdf 2026-09-16)",
+          "used_crates": 19,
+          "bodies": [
+            {
+              "fn": "borrow_roundtrip",
+              "bbs": 2,
+              "assigns": 3,
+              "retags": 3,
+              "terms": [
+                "Call",
+                "Return"
+              ]
+            },
+            {
+              "fn": "clamp_u32",
+              "bbs": 7,
+              "assigns": 9,
+              "retags": 7,
+              "terms": [
+                "SwitchInt",
+                "Goto",
+                "SwitchInt",
+                "Goto",
+                "Goto",
+                "Goto",
+                "Return"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "toolchain": "1.100.0-stable",
+        "vv_head": "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+        "cfgs": [
+          "--cfg=dialect_use_has_with_retag",
+          "--cfg=dialect_run_compiler_fn"
+        ],
+        "compile_rc": 0,
+        "compile_ms": 315.3,
+        "binary_bytes": 35616,
+        "run_rc": 0,
+        "trunk_json": {
+          "rustc_version_str": "1.100.0 (0ef1bc386 2026-11-09)",
+          "used_crates": 19,
+          "bodies": [
+            {
+              "fn": "borrow_roundtrip",
+              "bbs": 2,
+              "assigns": 3,
+              "retags": 3,
+              "terms": [
+                "Call",
+                "Return"
+              ]
+            },
+            {
+              "fn": "clamp_u32",
+              "bbs": 7,
+              "assigns": 9,
+              "retags": 7,
+              "terms": [
+                "SwitchInt",
+                "Goto",
+                "SwitchInt",
+                "Goto",
+                "Goto",
+                "Goto",
+                "Return"
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "toolchain": "1.102.0-nightly-2026-11-11",
+        "vv_head": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "cfgs": [
+          "--cfg=dialect_use_has_with_retag",
+          "--cfg=dialect_entrypoint_fn"
+        ],
+        "compile_rc": 0,
+        "compile_ms": 343.9,
+        "binary_bytes": 35976,
+        "run_rc": 0,
+        "trunk_json": {
+          "rustc_version_str": "1.102.0-nightly (3ef0c22cd 2026-11-11)",
+          "used_crates": 19,
+          "bodies": [
+            {
+              "fn": "borrow_roundtrip",
+              "bbs": 2,
+              "assigns": 3,
+              "retags": 3,
+              "terms": [
+                "Call",
+                "Return"
+              ]
+            },
+            {
+              "fn": "clamp_u32",
+              "bbs": 7,
+              "assigns": 9,
+              "retags": 7,
+              "terms": [
+                "SwitchInt",
+                "Goto",
+                "SwitchInt",
+                "Goto",
+                "Goto",
+                "Goto",
+                "Return"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

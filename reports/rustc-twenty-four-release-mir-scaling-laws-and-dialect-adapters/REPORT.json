@@ -1,0 +1,330 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/ir-evolution",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "rust",
+    "rustc",
+    "rustc/conditional-compilation",
+    "rustc/mir",
+    "rustc/rustc-private",
+    "tooling",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (rustc 1.78.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+        "version": "1.78.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.79.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "129f3b9964af4d4a709d1383930ade12dfe7c081",
+        "version": "1.79.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.80.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "051478957371ee0084a7c0913941d2a8c4757bb9",
+        "version": "1.80.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.80.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3f5fd8dd41153bc5fdca9427e9e05be2c767ba23",
+        "version": "1.80.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.81.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "eeb90cda1969383f56a2637cbd3037bdf598841c",
+        "version": "1.81.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.82.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f6e511eec7342f59a25f7c0534f1dbea00d01b14",
+        "version": "1.82.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.83.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+        "version": "1.83.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.84.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+        "version": "1.84.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.85.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "4d91de4e48198da2e33413efdcd9cd2cc0c46688",
+        "version": "1.85.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.86.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "05f9846f893b09a1be1fc8560e33fc3c815cfecb",
+        "version": "1.86.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.87.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "17067e9ac6d7ecb70e50f92c1944e545188d2359",
+        "version": "1.87.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.88.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "6b00bc3880198600130e1cf62b8f8a93494488cc",
+        "version": "1.88.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.89.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+        "version": "1.89.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.90.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "1159e78c4747b02ef996e55082b704c09b970588",
+        "version": "1.90.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.91.0-nightly, 2025-08-19)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "05f5a58e84a9c3a68586d70bf3d7442c571e379e",
+        "version": "1.91.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.91.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8297e351a40c1439a467bbbb6879088047f50b3",
+        "version": "1.91.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.92.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ded5c06cf21d2b93bffd5d884aa6e96934ee4234",
+        "version": "1.92.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.93.0-nightly, 2025-11-22)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "94b49fd998d6723e0a9240a7cff5f9df37b84dd8",
+        "version": "1.93.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.93.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "254b59607d4417e9dffbc307138ae5c86280fe4c",
+        "version": "1.93.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.93.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+        "version": "1.93.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.94.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "4a4ef493e3a1488c6e321570238084b38948f6db",
+        "version": "1.94.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.94.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "e408947bfd200af42db322daf0fadfe7e26d3bd1",
+        "version": "1.94.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.95.0-nightly, 2026-02-06)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "efc9e1b50cbf2cede7ebe25f0a1fc64fd8b3e942",
+        "version": "1.95.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.95.0-nightly, 2026-02-22)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c78a29473a68f07012904af11c92ecffa68fcc75",
+        "version": "1.95.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.95.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "59807616e1fa2540724bfbac14d7976d7e4a3860",
+        "version": "1.95.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.96.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+        "version": "1.96.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.97.0-nightly, 2026-04-11)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "bf4fbfb7a18d74e7cd8eef93af7329c58fbb5344",
+        "version": "1.97.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.97.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "2d8144b7880597b6e6d3dfd63a9a9efae3f533d3",
+        "version": "1.97.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.98.0-nightly, 2026-05-30)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.98.0-nightly, 2026-05-31)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.98.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "88d9e12ae178fab0fb5cc050a94da85685d449ea",
+        "version": "1.98.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.99.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.99.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.100.0-nightly, 2026-09-16)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+        "version": "1.100.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.100.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.102.0-nightly, 2026-11-11)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.102.0-nightly, 2026-11-12)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8eb778d04094d3af4b26580cab327e0413eb1e02",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.102.0-nightly, 2026-11-19)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "dtolnay/rustversion (rustversion 1.0.23)",
+      "identity": {
+        "repository": "dtolnay/rustversion",
+        "revision": "3a7c76605450b9a7299c6502a421909de9126a59",
+        "version": "1.0.23"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

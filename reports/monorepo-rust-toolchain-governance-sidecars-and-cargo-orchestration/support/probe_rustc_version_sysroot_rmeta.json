@@ -1,0 +1,54 @@
+{
+  "rustc_path": "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu/bin/rustc",
+  "vv_default": [
+    "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+    "binary: rustc",
+    "commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+    "commit-date: 2026-11-11",
+    "host: x86_64-unknown-linux-gnu",
+    "release: 1.102.0-nightly",
+    "LLVM version: 23.1.5"
+  ],
+  "vv_override": [
+    "rustc 1.99.0-monorepo-custom (deadbeef 2026-11-22)",
+    "binary: rustc",
+    "commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+    "commit-date: 2026-11-11",
+    "host: x86_64-unknown-linux-gnu",
+    "release: 1.99.0-monorepo-custom (deadbeef 2026-11-22)",
+    "LLVM version: 23.1.5"
+  ],
+  "sysroot_discovery": {
+    "real_sysroot": "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu",
+    "case_2a_cas_symlink_with_lib_rustlib_from_clean_cwd": "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu",
+    "case_2a_fell_back_to_dladdr_due_to_relative_path_bug": true,
+    "case_2b_cas_symlink_without_rustlib_from_clean_cwd": "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu",
+    "case_2b_cas_symlink_without_rustlib_from_cwd_with_lib_rustlib": "<TMPDIR>/cas_no_rustlib",
+    "case_2b_cwd_hijacked_sysroot_to_cas_dir": true,
+    "case_2c_regular_bin_with_symlinked_libs": "<RUSTUP_HOME>/toolchains/nightly-x86_64-unknown-linux-gnu",
+    "case_2c_canonicalized_dladdr_to_real_sysroot": true
+  },
+  "rmeta_header_probe": {
+    "rmeta_size_bytes": 2172,
+    "magic_bytes_hex": "727573740000000c",
+    "metadata_version": 12,
+    "root_pos": 1445,
+    "unhashed_pos": 1793,
+    "svh_128bit_le_hex": "dd312aaa7a1c22af0c58f39224ee65ec",
+    "embedded_rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+    "rmeta_with_RUSTC_OVERRIDE_VERSION_STRING": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+    "override_env_affects_rmeta": false,
+    "embedded_version_offset": 41,
+    "version_mismatch_exit_code": 1,
+    "version_mismatch_stderr_first_lines": [
+      "error[E0514]: found crate `dep` compiled by an incompatible version of rustc",
+      " --> <TMPDIR>/user.rs:2:24",
+      "  |",
+      "2 | pub fn call() -> u32 { dep::add(1, 2) }",
+      "  |                        ^^^",
+      "  |",
+      "  = note: the following crate versions were found:",
+      "          crate `dep` compiled by rustc 1.102.0-nightly (3ef0c22cd 2026-11-1X): <TMPDIR>/libdep_tampered.rmeta"
+    ]
+  }
+}

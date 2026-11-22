@@ -1,0 +1,242 @@
+{
+  "topics": [
+    "build/hermeticity",
+    "build/nix",
+    "build/toolchain-multiplexers",
+    "cargo",
+    "compilers/toolchain-distribution",
+    "lean",
+    "llvm",
+    "runtimes/dynamic-linking",
+    "rust",
+    "rustc/driver",
+    "rustc/sysroot",
+    "security/supply-chain",
+    "security/tcb-hazards",
+    "systems/elf",
+    "tooling/elan",
+    "tooling/rustup",
+    "verification/compiler-verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustup toolchain multiplexer",
+      "identity": {
+        "repository": "rust-lang/rustup",
+        "revision": "edbc831cec44dc2858a4a4dce768c74361d027dc",
+        "version": "1.29.3"
+      }
+    },
+    {
+      "name": "Go toolchain selector and module fetcher",
+      "identity": {
+        "repository": "golang/go",
+        "revision": "2aae1000ea1d4b28923b96db28acf4e3b99d6aff",
+        "version": "go1.27.3"
+      }
+    },
+    {
+      "name": "zigup compiler manager",
+      "identity": {
+        "repository": "marler8997/zigup",
+        "revision": "659aa0024ad2139c5d45ad1f4663834f14972c67"
+      }
+    },
+    {
+      "name": "anyzig universal Zig launcher",
+      "identity": {
+        "repository": "marler8997/anyzig",
+        "revision": "847a1628dd81f0b17335a024b16c97d4a03fabcb"
+      }
+    },
+    {
+      "name": "Bazel rules_rust toolchain registration and sysroot rules",
+      "identity": {
+        "repository": "bazelbuild/rules_rust",
+        "revision": "5d99ff2e58d1a0c9387fc4945029df11144bc8a3"
+      }
+    },
+    {
+      "name": "rust-overlay Nix Rust toolchain aggregator",
+      "identity": {
+        "repository": "oxalica/rust-overlay",
+        "revision": "5aa410a1df0e4e9c25f3818320651c2bddf66aff"
+      }
+    },
+    {
+      "name": "fenix Nix Rust toolchain aggregator",
+      "identity": {
+        "repository": "nix-community/fenix",
+        "revision": "012c1a71bd93921f320def3d0e586cc4dd332b65"
+      }
+    },
+    {
+      "name": "elan Lean 4 toolchain multiplexer",
+      "identity": {
+        "repository": "leanprover/elan",
+        "revision": "3d5138e1526a569a23901b8ee559032793cf445e",
+        "version": "v4.2.1"
+      }
+    },
+    {
+      "name": "Corepack Node.js package-manager shim",
+      "identity": {
+        "repository": "nodejs/corepack",
+        "revision": "4210ff8b4dba03ab347098c3f59225f34cb05652",
+        "version": "v0.35.0"
+      }
+    },
+    {
+      "name": "Bazelisk launcher",
+      "identity": {
+        "repository": "bazelbuild/bazelisk",
+        "revision": "1e6aaf11d51e83ec8d18e66b461f49d4b7877321",
+        "version": "v1.28.1"
+      }
+    },
+    {
+      "name": "python-build-standalone relocatable CPython builds",
+      "identity": {
+        "repository": "astral-sh/python-build-standalone",
+        "revision": "98b27f721dbc67ded8c7d562aa5dd60c5507eda0"
+      }
+    },
+    {
+      "name": "uv Python toolchain discovery and managed runtime",
+      "identity": {
+        "repository": "astral-sh/uv",
+        "revision": "264d8b4a5e10d195d2cc2a34dffa807cfbe6298c"
+      }
+    },
+    {
+      "name": "Zig compiler bundled glibc ABI table",
+      "identity": {
+        "repository": "ziglang/zig",
+        "revision": "e4cbd752c8c05f131051f8c873cff7823177d7d3",
+        "version": "0.15.2"
+      }
+    },
+    {
+      "name": "GNU C Library dynamic linker (ld.so)",
+      "identity": {
+        "repository": "bminor/glibc",
+        "revision": "04e750e75b73957cf1c791535a3f4319534a52fc"
+      }
+    },
+    {
+      "name": "Rust compiler (CAS symlink sysroot introduction)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3f679fef23cd006c336e2a4f7c6707e119d22206",
+        "version": "1.50.0"
+      }
+    },
+    {
+      "name": "Rust compiler (filesearch.rs AT_FDCWD relative rustlib regression)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b7c5599d22018ab6be88442c4668bc1697f85b8e",
+        "version": "1.54.0"
+      }
+    },
+    {
+      "name": "Rust compiler (1.56.0 release)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "09c42c45858d5f3aedfa670698275303a3d19afa",
+        "version": "1.56.0"
+      }
+    },
+    {
+      "name": "Rust compiler (1.61.0 release)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "fe5b13d681f25ee6474be29d748c65adcd91f69e",
+        "version": "1.61.0"
+      }
+    },
+    {
+      "name": "Rust compiler (1.78.0 release)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+        "version": "1.78.0"
+      }
+    },
+    {
+      "name": "Rust compiler (relative_target_rustlib_path rename)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b4c439c3de913953a2968c6917e125fafaacf886",
+        "version": "1.80.0"
+      }
+    },
+    {
+      "name": "Rust compiler (1.84.0 release)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+        "version": "1.84.0"
+      }
+    },
+    {
+      "name": "Rust compiler (1.93.1 release)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+        "version": "1.93.1"
+      }
+    },
+    {
+      "name": "Rust compiler (1.100.0 stable release and Channel v2 manifest)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0",
+        "channel_manifest_sha256": "3051e859570f64a8c5acb9d09e87425db52c7d97287c67e8f6d57d7d34ef9258"
+      }
+    },
+    {
+      "name": "Rust compiler (1.102.0-nightly 2026-11-11 and Channel v2 manifest)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (2026-11-11)",
+        "channel_manifest_sha256": "0e29758e4495709044396db6992e8bc44cd0109e7dbb21e430216cf368ac6c9d"
+      }
+    },
+    {
+      "name": "Rust compiler (1.102.0-nightly 2026-11-12 colliding libLLVM SONAME)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8eb778d04094d3af4b26580cab327e0413eb1e02",
+        "version": "1.102.0-nightly (2026-11-12)"
+      }
+    },
+    {
+      "name": "Rust compiler (1.102.0-nightly 2026-11-19 colliding libLLVM SONAME)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+        "version": "1.102.0-nightly (2026-11-19)"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (v4.34.1)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover (v4.35.0)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

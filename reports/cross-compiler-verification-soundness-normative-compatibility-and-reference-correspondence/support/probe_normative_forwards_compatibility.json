@@ -1,0 +1,574 @@
+{
+  "toolchains": [
+    {
+      "toolchain_dir": "1.78.0-x86_64-unknown-linux-gnu",
+      "rustc_vV": [
+        "rustc 1.78.0 (9b00956e5 2024-04-29)",
+        "binary: rustc",
+        "commit-hash: 9b00956e56009bab2aa15d7bff10916599e3d6d6",
+        "commit-date: 2024-04-29",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.78.0",
+        "LLVM version: 18.1.2"
+      ],
+      "config": "default",
+      "flags": [],
+      "runtime_envelope": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "cat_a_repr_c": true,
+          "cat_a_transparent": true,
+          "cat_a_repr_u8": true,
+          "cat_a_packed": true,
+          "cat_a_npo": true,
+          "rr_size": 16,
+          "rr_offsets": [
+            0,
+            8,
+            12,
+            14,
+            15
+          ],
+          "rr8_size": 8,
+          "rr8_offsets": [
+            6,
+            0,
+            4,
+            7
+          ],
+          "infallible_type_name": "core::convert::Infallible"
+        }
+      },
+      "never_typeid": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "infallible_eq_never": false
+        }
+      },
+      "zerocopy_padding_free_guard": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "compiled_size": 16
+        }
+      }
+    },
+    {
+      "toolchain_dir": "1.84.0-x86_64-unknown-linux-gnu",
+      "rustc_vV": [
+        "rustc 1.84.0 (9fc6b4312 2025-01-07)",
+        "binary: rustc",
+        "commit-hash: 9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+        "commit-date: 2025-01-07",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.84.0",
+        "LLVM version: 19.1.5"
+      ],
+      "config": "default",
+      "flags": [],
+      "runtime_envelope": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "cat_a_repr_c": true,
+          "cat_a_transparent": true,
+          "cat_a_repr_u8": true,
+          "cat_a_packed": true,
+          "cat_a_npo": true,
+          "rr_size": 16,
+          "rr_offsets": [
+            0,
+            8,
+            12,
+            14,
+            15
+          ],
+          "rr8_size": 8,
+          "rr8_offsets": [
+            6,
+            0,
+            4,
+            7
+          ],
+          "infallible_type_name": "core::convert::Infallible"
+        }
+      },
+      "never_typeid": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "infallible_eq_never": false
+        }
+      },
+      "zerocopy_padding_free_guard": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "compiled_size": 16
+        }
+      }
+    },
+    {
+      "toolchain_dir": "1.93.1-x86_64-unknown-linux-gnu",
+      "rustc_vV": [
+        "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+        "binary: rustc",
+        "commit-hash: 01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+        "commit-date: 2026-02-11",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.93.1",
+        "LLVM version: 21.1.8"
+      ],
+      "config": "default",
+      "flags": [],
+      "runtime_envelope": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "cat_a_repr_c": true,
+          "cat_a_transparent": true,
+          "cat_a_repr_u8": true,
+          "cat_a_packed": true,
+          "cat_a_npo": true,
+          "rr_size": 16,
+          "rr_offsets": [
+            0,
+            8,
+            12,
+            14,
+            15
+          ],
+          "rr8_size": 8,
+          "rr8_offsets": [
+            6,
+            0,
+            4,
+            7
+          ],
+          "infallible_type_name": "core::convert::Infallible"
+        }
+      },
+      "never_typeid": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "infallible_eq_never": false
+        }
+      },
+      "zerocopy_padding_free_guard": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "compiled_size": 16
+        }
+      }
+    },
+    {
+      "toolchain_dir": "1.96.0-x86_64-unknown-linux-gnu",
+      "rustc_vV": [
+        "rustc 1.96.0 (ac68faa20 2026-05-25)",
+        "binary: rustc",
+        "commit-hash: ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+        "commit-date: 2026-05-25",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.96.0",
+        "LLVM version: 22.1.2"
+      ],
+      "config": "default",
+      "flags": [],
+      "runtime_envelope": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "cat_a_repr_c": true,
+          "cat_a_transparent": true,
+          "cat_a_repr_u8": true,
+          "cat_a_packed": true,
+          "cat_a_npo": true,
+          "rr_size": 16,
+          "rr_offsets": [
+            0,
+            8,
+            12,
+            14,
+            15
+          ],
+          "rr8_size": 8,
+          "rr8_offsets": [
+            6,
+            0,
+            4,
+            7
+          ],
+          "infallible_type_name": "core::convert::Infallible"
+        }
+      },
+      "never_typeid": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "infallible_eq_never": false
+        }
+      },
+      "zerocopy_padding_free_guard": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "compiled_size": 16
+        }
+      }
+    },
+    {
+      "toolchain_dir": "1.99.1-x86_64-unknown-linux-gnu",
+      "rustc_vV": [
+        "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+        "binary: rustc",
+        "commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "commit-date: 2026-10-13",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.99.1",
+        "LLVM version: 23.1.1"
+      ],
+      "config": "default",
+      "flags": [],
+      "runtime_envelope": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "cat_a_repr_c": true,
+          "cat_a_transparent": true,
+          "cat_a_repr_u8": true,
+          "cat_a_packed": true,
+          "cat_a_npo": true,
+          "rr_size": 16,
+          "rr_offsets": [
+            0,
+            8,
+            12,
+            14,
+            15
+          ],
+          "rr8_size": 8,
+          "rr8_offsets": [
+            6,
+            0,
+            4,
+            7
+          ],
+          "infallible_type_name": "core::convert::Infallible"
+        }
+      },
+      "never_typeid": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "infallible_eq_never": false
+        }
+      },
+      "zerocopy_padding_free_guard": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "compiled_size": 16
+        }
+      }
+    },
+    {
+      "toolchain_dir": "1.100.0-x86_64-unknown-linux-gnu",
+      "rustc_vV": [
+        "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+        "binary: rustc",
+        "commit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "commit-date: 2026-11-09",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.100.0",
+        "LLVM version: 23.1.5"
+      ],
+      "config": "default",
+      "flags": [],
+      "runtime_envelope": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "cat_a_repr_c": true,
+          "cat_a_transparent": true,
+          "cat_a_repr_u8": true,
+          "cat_a_packed": true,
+          "cat_a_npo": true,
+          "rr_size": 16,
+          "rr_offsets": [
+            0,
+            8,
+            12,
+            14,
+            15
+          ],
+          "rr8_size": 8,
+          "rr8_offsets": [
+            6,
+            0,
+            4,
+            7
+          ],
+          "infallible_type_name": "!"
+        }
+      },
+      "never_typeid": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "infallible_eq_never": true
+        }
+      },
+      "zerocopy_padding_free_guard": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "compiled_size": 16
+        }
+      }
+    },
+    {
+      "toolchain_dir": "nightly-x86_64-unknown-linux-gnu",
+      "rustc_vV": [
+        "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "binary: rustc",
+        "commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "commit-date: 2026-11-11",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.102.0-nightly",
+        "LLVM version: 23.1.5"
+      ],
+      "config": "default",
+      "flags": [],
+      "runtime_envelope": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "cat_a_repr_c": true,
+          "cat_a_transparent": true,
+          "cat_a_repr_u8": true,
+          "cat_a_packed": true,
+          "cat_a_npo": true,
+          "rr_size": 16,
+          "rr_offsets": [
+            0,
+            8,
+            12,
+            14,
+            15
+          ],
+          "rr8_size": 8,
+          "rr8_offsets": [
+            6,
+            0,
+            4,
+            7
+          ],
+          "infallible_type_name": "!"
+        }
+      },
+      "never_typeid": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "infallible_eq_never": true
+        }
+      },
+      "zerocopy_padding_free_guard": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "compiled_size": 16
+        }
+      }
+    },
+    {
+      "toolchain_dir": "nightly-x86_64-unknown-linux-gnu",
+      "rustc_vV": [
+        "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "binary: rustc",
+        "commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "commit-date: 2026-11-11",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.102.0-nightly",
+        "LLVM version: 23.1.5"
+      ],
+      "config": "randomize_seed_7",
+      "flags": [
+        "-Zrandomize-layout",
+        "-Zlayout-seed=7"
+      ],
+      "runtime_envelope": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "cat_a_repr_c": true,
+          "cat_a_transparent": true,
+          "cat_a_repr_u8": true,
+          "cat_a_packed": true,
+          "cat_a_npo": true,
+          "rr_size": 24,
+          "rr_offsets": [
+            0,
+            12,
+            8,
+            10,
+            16
+          ],
+          "rr8_size": 16,
+          "rr8_offsets": [
+            9,
+            4,
+            0,
+            8
+          ],
+          "infallible_type_name": "!"
+        }
+      },
+      "never_typeid": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "infallible_eq_never": true
+        }
+      },
+      "zerocopy_padding_free_guard": {
+        "compiled": false,
+        "rustc_rc": 1,
+        "stderr_head": [
+          "error[E0277]: the trait bound `(): PaddingFree<ReprRustAccidentallyUnpadded, 8>` is not satisfied",
+          "  --> /tmp/tmp49ysgj3h/nightly_x86_64_unknown_linux_gnu_randomize_seed_7_zc.rs:22:5",
+          "   |",
+          "22 |     (): PaddingFree<ReprRustAccidentallyUnpadded, PADDING>,",
+          "   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound",
+          "   |",
+          "help: the trait `PaddingFree<ReprRustAccidentallyUnpadded, 8>` is not implemented for `()`",
+          "      but trait `PaddingFree<ReprRustAccidentallyUnpadded, 0>` is implemented for it"
+        ]
+      }
+    },
+    {
+      "toolchain_dir": "nightly-x86_64-unknown-linux-gnu",
+      "rustc_vV": [
+        "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "binary: rustc",
+        "commit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "commit-date: 2026-11-11",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.102.0-nightly",
+        "LLVM version: 23.1.5"
+      ],
+      "config": "randomize_seed_42",
+      "flags": [
+        "-Zrandomize-layout",
+        "-Zlayout-seed=42"
+      ],
+      "runtime_envelope": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "cat_a_repr_c": true,
+          "cat_a_transparent": true,
+          "cat_a_repr_u8": true,
+          "cat_a_packed": true,
+          "cat_a_npo": true,
+          "rr_size": 16,
+          "rr_offsets": [
+            0,
+            8,
+            12,
+            15,
+            14
+          ],
+          "rr8_size": 16,
+          "rr8_offsets": [
+            8,
+            4,
+            2,
+            0
+          ],
+          "infallible_type_name": "!"
+        }
+      },
+      "never_typeid": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "infallible_eq_never": true
+        }
+      },
+      "zerocopy_padding_free_guard": {
+        "compiled": false,
+        "rustc_rc": 1,
+        "stderr_head": [
+          "error[E0277]: the trait bound `(): PaddingFree<ReprRustAccidentallyUnpadded, 8>` is not satisfied",
+          "  --> /tmp/tmp49ysgj3h/nightly_x86_64_unknown_linux_gnu_randomize_seed_42_zc.rs:22:5",
+          "   |",
+          "22 |     (): PaddingFree<ReprRustAccidentallyUnpadded, PADDING>,",
+          "   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsatisfied trait bound",
+          "   |",
+          "help: the trait `PaddingFree<ReprRustAccidentallyUnpadded, 8>` is not implemented for `()`",
+          "      but trait `PaddingFree<ReprRustAccidentallyUnpadded, 0>` is implemented for it"
+        ]
+      }
+    }
+  ],
+  "edition_drop_order": {
+    "1.93.1-x86_64-unknown-linux-gnu": {
+      "edition_2021": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "drop_order": [
+            "block_local",
+            "tail_temp"
+          ]
+        }
+      },
+      "edition_2024_stdout": "{\"drop_order\":[\"tail_temp\", \"block_local\"]}"
+    },
+    "1.100.0-x86_64-unknown-linux-gnu": {
+      "edition_2021": {
+        "compiled": true,
+        "rustc_rc": 0,
+        "run_rc": 0,
+        "result": {
+          "drop_order": [
+            "block_local",
+            "tail_temp"
+          ]
+        }
+      },
+      "edition_2024_stdout": "{\"drop_order\":[\"tail_temp\", \"block_local\"]}"
+    }
+  }
+}

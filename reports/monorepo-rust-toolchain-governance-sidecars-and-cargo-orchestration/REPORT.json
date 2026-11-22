@@ -1,0 +1,319 @@
+{
+  "topics": [
+    "build",
+    "build/bazel",
+    "build/buck2",
+    "build/monorepo",
+    "build/rbe",
+    "cargo",
+    "cargo/fingerprints",
+    "cargo/lockfile",
+    "cargo/msrv",
+    "cargo/rustc-wrapper",
+    "cargo/workspaces",
+    "compilers",
+    "compilers/abi",
+    "ffi",
+    "rust",
+    "rust/linux-kernel",
+    "rustc",
+    "rustc/metadata",
+    "rustc/rustc-private",
+    "rustc/symbol-mangling",
+    "systems",
+    "tooling",
+    "tooling/sidecars",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (rmeta check_compatibility, bootstrap CFG_VERSION/GitInfo, and filesearch.rs)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.102.0-nightly, 2026-11-11)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.102.0-nightly, nightly-2026-11-20)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.100.0 stable, StableCrateId, and symbol mangling)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.93.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+        "version": "1.93.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.84.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+        "version": "1.84.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.83.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+        "version": "1.83.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.80.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3f5fd8dd41153bc5fdca9427e9e05be2c767ba23",
+        "version": "1.80.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.79.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "129f3b9964af4d4a709d1383930ade12dfe7c081",
+        "version": "1.79.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.78.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+        "version": "1.78.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.61.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "fe5b13d681f25ee6474be29d748c65adcd91f69e",
+        "version": "1.61.0"
+      }
+    },
+    {
+      "name": "rust-lang/cargo (cargo 1.100.0 orchestrator, wrapper dispatch, and fingerprinting)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "3acc79c0c841844675bc53a605922dbfc441e750",
+        "version": "1.100.0"
+      }
+    },
+    {
+      "name": "rust-lang/cargo (compilation_files compute_metadata and __CARGO_DEFAULT_LIB_METADATA)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "930a674da900a73c1dfbe16be62c42e75bdfdfc0"
+      }
+    },
+    {
+      "name": "rust-lang/cargo (cargo 1.102.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/cargo (cargo 1.93.1)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "083ac5135f967fd9dc906ab057a2315861c7a80d",
+        "version": "1.93.1"
+      }
+    },
+    {
+      "name": "rust-lang/cargo (cargo 1.84.0)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "66221abdeca2002d318fde6efff516aab091df0e",
+        "version": "1.84.0"
+      }
+    },
+    {
+      "name": "rust-lang/cargo (cargo 1.83.0 lockfile v4 default writer)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "5ffbef3211a8c378857905775a15c5b32a174d3b",
+        "version": "1.83.0"
+      }
+    },
+    {
+      "name": "rust-lang/cargo (cargo 1.80.1)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "37629051518c3df9ac2c1744589362a02ecafa99",
+        "version": "1.80.1"
+      }
+    },
+    {
+      "name": "rust-lang/cargo (cargo 1.79.0)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "ffa9cf99a594e59032757403d4c780b46dc2c43a",
+        "version": "1.79.0"
+      }
+    },
+    {
+      "name": "rust-lang/cargo (cargo 1.78.0 lockfile v4 reader introduction)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "54d8815d04fa3816edc207bbc4dd36bf18014dbc",
+        "version": "1.78.0"
+      }
+    },
+    {
+      "name": "rust-lang/cargo (cargo 1.61.0)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "a028ae42fc1376571de836be702e840ca8e060c2",
+        "version": "1.61.0"
+      }
+    },
+    {
+      "name": "Linux kernel Rust-for-Linux build and toolchain system",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "4843f6873f7c4835e62f2c73ba0fd538e57a2f22"
+      }
+    },
+    {
+      "name": "Chromium Rust toolchain, Crubit co-roll, and gnrt scripts",
+      "identity": {
+        "repository": "https://chromium.googlesource.com/chromium/src.git",
+        "revision": "183a8b1a836ad889170030ba672f52b1cd1e1a53"
+      }
+    },
+    {
+      "name": "chromium/chromium (tools/rust custom description and git-commit-info audit)",
+      "identity": {
+        "repository": "chromium/chromium",
+        "revision": "3e444ebf85072674e30c258999e37bdacc0e610f"
+      }
+    },
+    {
+      "name": "Fuchsia Rust toolchain documentation and RBE remote wrapper",
+      "identity": {
+        "repository": "https://fuchsia.googlesource.com/fuchsia",
+        "revision": "aac6734b50c4da0dd6ab7f79d7c842e0e2b794bb"
+      }
+    },
+    {
+      "name": "Fuchsia infrastructure rust_toolchain recipe and generate_config.py",
+      "identity": {
+        "repository": "https://fuchsia.googlesource.com/infra/recipes",
+        "revision": "320982b8c818a5de7956ed2f8ceedb18a953c1ed"
+      }
+    },
+    {
+      "name": "Android AOSP Soong Rust build rules and Clippy/Kythe actions",
+      "identity": {
+        "repository": "https://android.googlesource.com/platform/build/soong",
+        "revision": "d046c2afef086a35d24222b09f4d2c4914e8a2a5"
+      }
+    },
+    {
+      "name": "Android AOSP Rust toolchain builder",
+      "identity": {
+        "repository": "https://android.googlesource.com/toolchain/android_rust",
+        "revision": "c4dbee9ebc9af3d3084786951ca129b72ee916ff"
+      }
+    },
+    {
+      "name": "google/crubit (bidirectional C++/Rust bindings generator)",
+      "identity": {
+        "repository": "google/crubit",
+        "revision": "5f9ae7da1aa70e5a1c0e536baf32e5ec56a7c003"
+      }
+    },
+    {
+      "name": "kythe/kythe (.kzip compilation pack specification and Rust extractor)",
+      "identity": {
+        "repository": "kythe/kythe",
+        "revision": "69141f022689a611e8a4a1d9b08a3783a2e8a9ed"
+      }
+    },
+    {
+      "name": "github/codeql (Rust extractor and fixed toolchain override)",
+      "identity": {
+        "repository": "github/codeql",
+        "revision": "aafa7deeff16c1e3c4e356eabec46cbca2dc09e3"
+      }
+    },
+    {
+      "name": "bazelbuild/rules_rust (multi-toolchain resolution, clippy, and rust-analyzer aspects)",
+      "identity": {
+        "repository": "bazelbuild/rules_rust",
+        "revision": "5d99ff2e58d1a0c9387fc4945029df11144bc8a3"
+      }
+    },
+    {
+      "name": "facebook/buck2 (prelude/rust toolchains, proc-macro plugins, and MetadataKind channels)",
+      "identity": {
+        "repository": "facebook/buck2",
+        "revision": "442fa89105d3b684efc0a65631f76aaecfe32211"
+      }
+    },
+    {
+      "name": "dtolnay/cargo-llvm-lines (cargo rustc leaf IR emission orchestrator)",
+      "identity": {
+        "repository": "dtolnay/cargo-llvm-lines",
+        "revision": "d08bcd4d116abfea9e50141d5d68aae6a120e868",
+        "version": "0.4.48"
+      }
+    },
+    {
+      "name": "taiki-e/cargo-hack (multi-version rustup run and manifest/lockfile restore)",
+      "identity": {
+        "repository": "taiki-e/cargo-hack",
+        "revision": "e2406853bfaf79711b2b5b1a7ca6e2ce1eee2395",
+        "version": "0.6.46"
+      }
+    },
+    {
+      "name": "foresterre/cargo-msrv (toolchain bisection and --ignore-lockfile)",
+      "identity": {
+        "repository": "foresterre/cargo-msrv",
+        "revision": "b00b71b0948cdd7a09473a32b78ecd0ca7b5f98e"
+      }
+    },
+    {
+      "name": "obi1kenobi/cargo-semver-checks (encoded rustflags decoding and witness environment scrubbing)",
+      "identity": {
+        "repository": "obi1kenobi/cargo-semver-checks",
+        "revision": "8ffc535d0dbd24fce5a0a30261e7005305205ef7"
+      }
+    },
+    {
+      "name": "Software Engineering at Google (Winters, Manshreck, Wright, 2020, Ch. 21 Dependency Management)",
+      "identity": {
+        "isbn": "978-1-492-08279-8",
+        "publisher": "O'Reilly Media",
+        "year": "2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

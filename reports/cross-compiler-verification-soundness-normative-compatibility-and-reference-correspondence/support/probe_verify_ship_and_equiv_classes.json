@@ -1,0 +1,396 @@
+{
+  "toolchains": {
+    "1.78.0": {
+      "commit": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+      "rustc_vV": [
+        "rustc 1.78.0 (9b00956e5 2024-04-29)",
+        "binary: rustc",
+        "commit-hash: 9b00956e56009bab2aa15d7bff10916599e3d6d6",
+        "commit-date: 2024-04-29",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.78.0",
+        "LLVM version: 18.1.2"
+      ],
+      "runtime": {
+        "type_name_infallible": "core::convert::Infallible",
+        "type_name_never": "!",
+        "type_id_infallible_eq_never": "false",
+        "repr_rust_size": "16",
+        "repr_rust_align": "8",
+        "repr_rust_offsets": "14,0,12,8,15",
+        "repr_c_offsets": "0,8,16,20,24",
+        "opt_nonnull_size": "8",
+        "cf_opt_infallible_size": "8"
+      },
+      "runtime_randomized_seed7": null,
+      "slice_from_raw_parts_null_zero_len_aborted_debug": true,
+      "slice_from_raw_parts_null_zero_len_diag": "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+      "pme_u32_rc": 1,
+      "pme_u64_dead_branch_rc": 1,
+      "pme_u64_err_head": "error[E0658]: inline-const is experimental",
+      "diverging_fallback_rc": 0,
+      "diverging_fallback_diag_head": ""
+    },
+    "1.84.0": {
+      "commit": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+      "rustc_vV": [
+        "rustc 1.84.0 (9fc6b4312 2025-01-07)",
+        "binary: rustc",
+        "commit-hash: 9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+        "commit-date: 2025-01-07",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.84.0",
+        "LLVM version: 19.1.5"
+      ],
+      "runtime": {
+        "type_name_infallible": "core::convert::Infallible",
+        "type_name_never": "!",
+        "type_id_infallible_eq_never": "false",
+        "repr_rust_size": "16",
+        "repr_rust_align": "8",
+        "repr_rust_offsets": "14,0,12,8,15",
+        "repr_c_offsets": "0,8,16,20,24",
+        "opt_nonnull_size": "8",
+        "cf_opt_infallible_size": "8"
+      },
+      "runtime_randomized_seed7": null,
+      "slice_from_raw_parts_null_zero_len_aborted_debug": true,
+      "slice_from_raw_parts_null_zero_len_diag": "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+      "pme_u32_rc": 0,
+      "pme_u64_dead_branch_rc": 1,
+      "pme_u64_err_head": "error[E0080]: evaluation of `dead_generic_pme::<u64>::{constant#0}` failed",
+      "diverging_fallback_rc": 0,
+      "diverging_fallback_diag_head": "warning: this function depends on never type fallback being `()`"
+    },
+    "1.93.1": {
+      "commit": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+      "rustc_vV": [
+        "rustc 1.93.1 (01f6ddf75 2026-02-11)",
+        "binary: rustc",
+        "commit-hash: 01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+        "commit-date: 2026-02-11",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.93.1",
+        "LLVM version: 21.1.8"
+      ],
+      "runtime": {
+        "type_name_infallible": "core::convert::Infallible",
+        "type_name_never": "!",
+        "type_id_infallible_eq_never": "false",
+        "repr_rust_size": "16",
+        "repr_rust_align": "8",
+        "repr_rust_offsets": "14,0,12,8,15",
+        "repr_c_offsets": "0,8,16,20,24",
+        "opt_nonnull_size": "8",
+        "cf_opt_infallible_size": "8"
+      },
+      "runtime_randomized_seed7": null,
+      "slice_from_raw_parts_null_zero_len_aborted_debug": true,
+      "slice_from_raw_parts_null_zero_len_diag": "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+      "pme_u32_rc": 0,
+      "pme_u64_dead_branch_rc": 1,
+      "pme_u64_err_head": "error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() <= 4",
+      "diverging_fallback_rc": 1,
+      "diverging_fallback_diag_head": "error: this function depends on never type fallback being `()`"
+    },
+    "1.94.0": {
+      "commit": "4a4ef493e3a1488c6e321570238084b38948f6db",
+      "rustc_vV": [
+        "rustc 1.94.0 (4a4ef493e 2026-03-02)",
+        "binary: rustc",
+        "commit-hash: 4a4ef493e3a1488c6e321570238084b38948f6db",
+        "commit-date: 2026-03-02",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.94.0",
+        "LLVM version: 21.1.8"
+      ],
+      "runtime": {
+        "type_name_infallible": "core::convert::Infallible",
+        "type_name_never": "!",
+        "type_id_infallible_eq_never": "false",
+        "repr_rust_size": "16",
+        "repr_rust_align": "8",
+        "repr_rust_offsets": "14,0,12,8,15",
+        "repr_c_offsets": "0,8,16,20,24",
+        "opt_nonnull_size": "8",
+        "cf_opt_infallible_size": "8"
+      },
+      "runtime_randomized_seed7": null,
+      "slice_from_raw_parts_null_zero_len_aborted_debug": true,
+      "slice_from_raw_parts_null_zero_len_diag": "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+      "pme_u32_rc": 0,
+      "pme_u64_dead_branch_rc": 1,
+      "pme_u64_err_head": "error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() <= 4",
+      "diverging_fallback_rc": 1,
+      "diverging_fallback_diag_head": "error: this function depends on never type fallback being `()`"
+    },
+    "1.96.0": {
+      "commit": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+      "rustc_vV": [
+        "rustc 1.96.0 (ac68faa20 2026-05-25)",
+        "binary: rustc",
+        "commit-hash: ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+        "commit-date: 2026-05-25",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.96.0",
+        "LLVM version: 22.1.2"
+      ],
+      "runtime": {
+        "type_name_infallible": "core::convert::Infallible",
+        "type_name_never": "!",
+        "type_id_infallible_eq_never": "false",
+        "repr_rust_size": "16",
+        "repr_rust_align": "8",
+        "repr_rust_offsets": "14,0,12,8,15",
+        "repr_c_offsets": "0,8,16,20,24",
+        "opt_nonnull_size": "8",
+        "cf_opt_infallible_size": "8"
+      },
+      "runtime_randomized_seed7": null,
+      "slice_from_raw_parts_null_zero_len_aborted_debug": true,
+      "slice_from_raw_parts_null_zero_len_diag": "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+      "pme_u32_rc": 0,
+      "pme_u64_dead_branch_rc": 1,
+      "pme_u64_err_head": "error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() <= 4",
+      "diverging_fallback_rc": 1,
+      "diverging_fallback_diag_head": "error: this function depends on never type fallback being `()`"
+    },
+    "1.99.0": {
+      "commit": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+      "rustc_vV": [
+        "rustc 1.99.0 (b940084d7 2026-09-28)",
+        "binary: rustc",
+        "commit-hash: b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "commit-date: 2026-09-28",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.99.0",
+        "LLVM version: 23.1.1"
+      ],
+      "runtime": {
+        "type_name_infallible": "core::convert::Infallible",
+        "type_name_never": "!",
+        "type_id_infallible_eq_never": "false",
+        "repr_rust_size": "16",
+        "repr_rust_align": "8",
+        "repr_rust_offsets": "14,0,12,8,15",
+        "repr_c_offsets": "0,8,16,20,24",
+        "opt_nonnull_size": "8",
+        "cf_opt_infallible_size": "8"
+      },
+      "runtime_randomized_seed7": null,
+      "slice_from_raw_parts_null_zero_len_aborted_debug": true,
+      "slice_from_raw_parts_null_zero_len_diag": "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+      "pme_u32_rc": 0,
+      "pme_u64_dead_branch_rc": 1,
+      "pme_u64_err_head": "error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() <= 4",
+      "diverging_fallback_rc": 1,
+      "diverging_fallback_diag_head": "error: this function depends on never type fallback being `()`"
+    },
+    "1.99.1": {
+      "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "rustc_vV": [
+        "rustc 1.99.1 (58cf8f9c3 2026-10-13)",
+        "binary: rustc",
+        "commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "commit-date: 2026-10-13",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.99.1",
+        "LLVM version: 23.1.1"
+      ],
+      "runtime": {
+        "type_name_infallible": "core::convert::Infallible",
+        "type_name_never": "!",
+        "type_id_infallible_eq_never": "false",
+        "repr_rust_size": "16",
+        "repr_rust_align": "8",
+        "repr_rust_offsets": "14,0,12,8,15",
+        "repr_c_offsets": "0,8,16,20,24",
+        "opt_nonnull_size": "8",
+        "cf_opt_infallible_size": "8"
+      },
+      "runtime_randomized_seed7": null,
+      "slice_from_raw_parts_null_zero_len_aborted_debug": true,
+      "slice_from_raw_parts_null_zero_len_diag": "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+      "pme_u32_rc": 0,
+      "pme_u64_dead_branch_rc": 1,
+      "pme_u64_err_head": "error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() <= 4",
+      "diverging_fallback_rc": 1,
+      "diverging_fallback_diag_head": "error: this function depends on never type fallback being `()`"
+    },
+    "1.100.0": {
+      "commit": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+      "rustc_vV": [
+        "rustc 1.100.0 (0ef1bc386 2026-11-09)",
+        "binary: rustc",
+        "commit-hash: 0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "commit-date: 2026-11-09",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.100.0",
+        "LLVM version: 23.1.5"
+      ],
+      "runtime": {
+        "type_name_infallible": "!",
+        "type_name_never": "!",
+        "type_id_infallible_eq_never": "true",
+        "repr_rust_size": "16",
+        "repr_rust_align": "8",
+        "repr_rust_offsets": "14,0,12,8,15",
+        "repr_c_offsets": "0,8,16,20,24",
+        "opt_nonnull_size": "8",
+        "cf_opt_infallible_size": "8"
+      },
+      "runtime_randomized_seed7": null,
+      "slice_from_raw_parts_null_zero_len_aborted_debug": true,
+      "slice_from_raw_parts_null_zero_len_diag": "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+      "pme_u32_rc": 0,
+      "pme_u64_dead_branch_rc": 1,
+      "pme_u64_err_head": "error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() <= 4",
+      "diverging_fallback_rc": 1,
+      "diverging_fallback_diag_head": "error[E0277]: the trait bound `!: DefaultUnit` is not satisfied"
+    },
+    "nightly-2026-11-20": {
+      "commit": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+      "rustc_vV": [
+        "rustc 1.102.0-nightly (6905905bb 2026-11-19)",
+        "binary: rustc",
+        "commit-hash: 6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+        "commit-date: 2026-11-19",
+        "host: x86_64-unknown-linux-gnu",
+        "release: 1.102.0-nightly",
+        "LLVM version: 23.1.6"
+      ],
+      "runtime": {
+        "type_name_infallible": "!",
+        "type_name_never": "!",
+        "type_id_infallible_eq_never": "true",
+        "repr_rust_size": "16",
+        "repr_rust_align": "8",
+        "repr_rust_offsets": "14,0,12,8,15",
+        "repr_c_offsets": "0,8,16,20,24",
+        "opt_nonnull_size": "8",
+        "cf_opt_infallible_size": "8"
+      },
+      "runtime_randomized_seed7": {
+        "type_name_infallible": "!",
+        "type_name_never": "!",
+        "type_id_infallible_eq_never": "true",
+        "repr_rust_size": "24",
+        "repr_rust_align": "8",
+        "repr_rust_offsets": "16,8,0,4,17",
+        "repr_c_offsets": "0,8,16,20,24",
+        "opt_nonnull_size": "8",
+        "cf_opt_infallible_size": "8"
+      },
+      "slice_from_raw_parts_null_zero_len_aborted_debug": true,
+      "slice_from_raw_parts_null_zero_len_diag": "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+      "pme_u32_rc": 0,
+      "pme_u64_dead_branch_rc": 1,
+      "pme_u64_err_head": "error[E0080]: evaluation panicked: assertion failed: core::mem::size_of::<T>() <= 4",
+      "diverging_fallback_rc": 1,
+      "diverging_fallback_diag_head": "error[E0277]: the trait bound `!: DefaultUnit` is not satisfied"
+    }
+  },
+  "rlib_cross_link": [
+    {
+      "producer": "1.93.1",
+      "consumer": "1.94.0",
+      "rc": 1,
+      "stderr_first_line": "error[E0514]: found crate `dep` compiled by an incompatible version of rustc"
+    },
+    {
+      "producer": "1.99.1",
+      "consumer": "1.100.0",
+      "rc": 1,
+      "stderr_first_line": "error[E0514]: found crate `dep` compiled by an incompatible version of rustc"
+    },
+    {
+      "producer": "1.100.0",
+      "consumer": "nightly-2026-11-20",
+      "rc": 1,
+      "stderr_first_line": "error[E0514]: found crate `dep` compiled by an incompatible version of rustc"
+    }
+  ],
+  "bounded_git_objects": {
+    "1.78.0": {
+      "commit": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+      "objects": {
+        "compiler/rustc_middle/src/mir/syntax.rs": "0ab797134c0afddba04a14b36285743a3e90e8c1",
+        "compiler/rustc_const_eval/src/interpret": "b89dea55402407336589dd4240dc90b66074f566",
+        "compiler/rustc_abi/src": "8aa40558a14737ae62c47f83fe3611419cce4eca",
+        "library/core/src/convert/mod.rs": "63fd23ea9a9d355db626069499be4be686d3579e"
+      }
+    },
+    "1.84.0": {
+      "commit": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+      "objects": {
+        "compiler/rustc_middle/src/mir/syntax.rs": "fea940ea47c47e47fb5c1177c86af3ae213d5d49",
+        "compiler/rustc_const_eval/src/interpret": "9142875ff42f0a9267e7a00daaee495f1114ab92",
+        "compiler/rustc_abi/src": "38b974b1639a7ef4be076cda171fb94faeee8c17",
+        "library/core/src/convert/mod.rs": "432e55e8c9a4cbb5f0d2dadae1e8601db9c4e37e"
+      }
+    },
+    "1.93.1": {
+      "commit": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+      "objects": {
+        "compiler/rustc_middle/src/mir/syntax.rs": "204ad4815147b46360334e6f295a97e18ec8af15",
+        "compiler/rustc_const_eval/src/interpret": "2f8efa331ceda8fa753e1aff2989b8e6330f7e53",
+        "compiler/rustc_abi/src": "ccd705e69193ba714b428984632148850456f790",
+        "library/core/src/convert/mod.rs": "89cda30c03036e26704e1f4b505805b571b42be9"
+      }
+    },
+    "1.94.0": {
+      "commit": "4a4ef493e3a1488c6e321570238084b38948f6db",
+      "objects": {
+        "compiler/rustc_middle/src/mir/syntax.rs": "6ec874fb15f7155c5ec1239f7cac548459200dc4",
+        "compiler/rustc_const_eval/src/interpret": "1ca6125d306ee7ded7951b3187cf90d49b354826",
+        "compiler/rustc_abi/src": "58eaf08ac2089e1bd551148ab56bb2da86913506",
+        "library/core/src/convert/mod.rs": "ef4ab15f93c0b454bc4e2334a920b3923d19e7c6"
+      }
+    },
+    "1.96.0": {
+      "commit": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+      "objects": {
+        "compiler/rustc_middle/src/mir/syntax.rs": "455089f285d17c51ad48ef5f0bc357534b5f6915",
+        "compiler/rustc_const_eval/src/interpret": "934d46763ba9c36d4e5424d54dd334772f00d1ec",
+        "compiler/rustc_abi/src": "1890b534d54f908353a44fc3b7eb73bc3b3477d1",
+        "library/core/src/convert/mod.rs": "ef4ab15f93c0b454bc4e2334a920b3923d19e7c6"
+      }
+    },
+    "1.99.0": {
+      "commit": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+      "objects": {
+        "compiler/rustc_middle/src/mir/syntax.rs": "4e2d16625266cf505f00275f5c0ba52713e68be1",
+        "compiler/rustc_const_eval/src/interpret": "4840404acb814fbcc0ce17e108fdfac8205aadad",
+        "compiler/rustc_abi/src": "56b68c74138f0ac37e404a00fc33bd3678abd460",
+        "library/core/src/convert/mod.rs": "912623b73050e7936a1fbadee6018e57466ba097"
+      }
+    },
+    "1.99.1": {
+      "commit": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "objects": {
+        "compiler/rustc_middle/src/mir/syntax.rs": "4e2d16625266cf505f00275f5c0ba52713e68be1",
+        "compiler/rustc_const_eval/src/interpret": "4840404acb814fbcc0ce17e108fdfac8205aadad",
+        "compiler/rustc_abi/src": "56b68c74138f0ac37e404a00fc33bd3678abd460",
+        "library/core/src/convert/mod.rs": "912623b73050e7936a1fbadee6018e57466ba097"
+      }
+    },
+    "1.100.0": {
+      "commit": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+      "objects": {
+        "compiler/rustc_middle/src/mir/syntax.rs": "6bb0190cd70b81fee71348e000e5d133b2f25d46",
+        "compiler/rustc_const_eval/src/interpret": "7bfdd4df52e5477b04351729dd2947a99e725e29",
+        "compiler/rustc_abi/src": "1f6c6df5f816885093f8db2267416ea4819ca1a0",
+        "library/core/src/convert/mod.rs": "c86c70b5c4ca160ec2996b49a6b1b50877f04051"
+      }
+    },
+    "nightly-2026-11-20": {
+      "commit": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+      "objects": {
+        "compiler/rustc_middle/src/mir/syntax.rs": "7db6a7390d539f100332d9f38a49be2c6c7d7348",
+        "compiler/rustc_const_eval/src/interpret": "362696018bf8da2d791c3d39906a740a2b1e00b2",
+        "compiler/rustc_abi/src": "bc69a55121b3fd60d46497a368702392fe91fe77",
+        "library/core/src/convert/mod.rs": "c86c70b5c4ca160ec2996b49a6b1b50877f04051"
+      }
+    }
+  }
+}

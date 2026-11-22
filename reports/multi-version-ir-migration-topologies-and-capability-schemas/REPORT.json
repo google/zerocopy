@@ -1,0 +1,200 @@
+{
+  "topics": [
+    "compilers",
+    "compilers/ir-migration",
+    "compilers/bytecode-versioning",
+    "rustc",
+    "rustc/mir",
+    "rustc/editions",
+    "rust",
+    "llvm",
+    "llvm/bitcode",
+    "llvm/mlir",
+    "charon",
+    "charon/llbc",
+    "aeneas",
+    "pl",
+    "pl/ast-evolution",
+    "verification",
+    "verification/rust",
+    "anneal",
+    "anneal/architecture"
+  ],
+  "subjects": [
+    {
+      "name": "OCaml Migrate Parsetree v1 multi-version AST driver and pairwise functor chain",
+      "identity": {
+        "repository": "ocaml-ppx/ocaml-migrate-parsetree",
+        "revision": "1d72648812bb235d1576f483cacdf546e25c03d8",
+        "version": "v1.8.0"
+      }
+    },
+    {
+      "name": "OCaml Migrate Parsetree post-v2.4.0 deprecation revision",
+      "identity": {
+        "repository": "ocaml-ppx/ocaml-migrate-parsetree",
+        "revision": "5cb1140405820b9e8c751aada2268d3585b40d25"
+      }
+    },
+    {
+      "name": "ppxlib OCaml_502 trunk AST, Astlib pairwise migrations, and synthetic tunnel encodings",
+      "identity": {
+        "repository": "ocaml-ppx/ppxlib",
+        "revision": "11a46ff72c2cd8bc02068654950c2573746adff5"
+      }
+    },
+    {
+      "name": "LLVM BitcodeReader/AutoUpgrade and MLIR BytecodeDialectInterface/DialectConversion",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "2252e5dc213dd1402eb8942de5fa1608b7460d50"
+      }
+    },
+    {
+      "name": "Scala 3 TASTy TastyFormat and TastyHeaderUnpickler",
+      "identity": {
+        "repository": "scala/scala3",
+        "revision": "ff8f3950da9d83b44df246ad32d5882c259a28bb",
+        "tasty_version": "28.11-1"
+      }
+    },
+    {
+      "name": "WebAssembly formal specification and OCaml reference binary decoder/validator",
+      "identity": {
+        "repository": "WebAssembly/spec",
+        "revision": "6fca707686ed4f36a1e30ec2ae7d3dd32b276704"
+      }
+    },
+    {
+      "name": "wasm-tools wasmparser WasmFeatures multi-proposal bitflag validator",
+      "identity": {
+        "repository": "bytecodealliance/wasm-tools",
+        "revision": "97a984fd8eb54c055b2516af16489cf4cbf05065"
+      }
+    },
+    {
+      "name": "Charon ULLBC/LLBC CrateData exporter and charon-ml versioned deserializer",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "b23c297f57c0b2072de7967c7f17088db0278a8c",
+        "version": "0.1.324"
+      }
+    },
+    {
+      "name": "rust-analyzer per-Span EditionedFileId/SyntaxContextData hygiene and edition-free MIR",
+      "identity": {
+        "repository": "rust-lang/rust-analyzer",
+        "revision": "37721d141370e0904033f7fc3a3abe11c446c4c1"
+      }
+    },
+    {
+      "name": "Frama-C Machdep.mach YAML target/compiler capability record and builtin environment",
+      "identity": {
+        "url": "https://git.frama-c.com/pub/frama-c.git",
+        "revision": "189053d4a2bd460c5c557dba8569474ff0419e73"
+      }
+    },
+    {
+      "name": "SPIR-V Unified1 headers and binary grammar",
+      "identity": {
+        "repository": "KhronosGroup/SPIRV-Headers",
+        "revision": "fb1379425b16e58dcbdda7be0f8604a7f5cdce78",
+        "version": "1.6.rev7"
+      }
+    },
+    {
+      "name": "SPIRV-Tools binary parser and two-sided OpCapability validator",
+      "identity": {
+        "repository": "KhronosGroup/SPIRV-Tools",
+        "revision": "3c8fd35297315682906894621677f1b7003461ef"
+      }
+    },
+    {
+      "name": "rustc Edition hygiene, AST/HIR/THIR edition desugaring, and CleanupPostBorrowck",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+      }
+    },
+    {
+      "name": "rustc 1.93.1 MIR schema pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+        "version": "1.93.1"
+      }
+    },
+    {
+      "name": "rustc 1.94.0 MIR schema pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "4a4ef493e3a1488c6e321570238084b38948f6db",
+        "version": "1.94.0"
+      }
+    },
+    {
+      "name": "rustc 1.96.0 MIR schema pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+        "version": "1.96.0"
+      }
+    },
+    {
+      "name": "rustc 1.98.0-nightly (2026-05-30) MIR schema pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "rustc 1.99.0 MIR schema pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "rustc 1.99.1 MIR schema pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rustc 1.101.0-nightly (2026-10-20) non-linear DAG MIR schema pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+        "version": "1.101.0-nightly"
+      }
+    },
+    {
+      "name": "rustc 1.100.0 MIR schema pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0"
+      }
+    },
+    {
+      "name": "rustc 1.102.0-nightly (2026-11-11) MIR schema pin",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "Anneal rustc-capture and Trusted.MirAst / Trusted.MirSemantics baseline",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

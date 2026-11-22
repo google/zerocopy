@@ -1,0 +1,1594 @@
+{
+  "host_triple": "x86_64-unknown-linux-gnu",
+  "toolchains": {
+    "1.61.0-x86_64-unknown-linux-gnu": {
+      "rustc_release": "1.61.0",
+      "rustc_commit": "fe5b13d681f25ee6474be29d748c65adcd91f69e",
+      "cargo_release": "1.61.0",
+      "cargo_commit": "a028ae42fc1376571de836be702e840ca8e060c2"
+    },
+    "1.78.0-x86_64-unknown-linux-gnu": {
+      "rustc_release": "1.78.0",
+      "rustc_commit": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+      "cargo_release": "1.78.0",
+      "cargo_commit": "54d8815d04fa3816edc207bbc4dd36bf18014dbc"
+    },
+    "1.79.0-x86_64-unknown-linux-gnu": {
+      "rustc_release": "1.79.0",
+      "rustc_commit": "129f3b9964af4d4a709d1383930ade12dfe7c081",
+      "cargo_release": "1.79.0",
+      "cargo_commit": "ffa9cf99a594e59032757403d4c780b46dc2c43a"
+    },
+    "1.80-x86_64-unknown-linux-gnu": {
+      "rustc_release": "1.80.1",
+      "rustc_commit": "3f5fd8dd41153bc5fdca9427e9e05be2c767ba23",
+      "cargo_release": "1.80.1",
+      "cargo_commit": "37629051518c3df9ac2c1744589362a02ecafa99"
+    },
+    "1.83.0-x86_64-unknown-linux-gnu": {
+      "rustc_release": "1.83.0",
+      "rustc_commit": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+      "cargo_release": "1.83.0",
+      "cargo_commit": "5ffbef3211a8c378857905775a15c5b32a174d3b"
+    },
+    "1.84.0-x86_64-unknown-linux-gnu": {
+      "rustc_release": "1.84.0",
+      "rustc_commit": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+      "cargo_release": "1.84.0",
+      "cargo_commit": "66221abdeca2002d318fde6efff516aab091df0e"
+    },
+    "1.93.1-x86_64-unknown-linux-gnu": {
+      "rustc_release": "1.93.1",
+      "rustc_commit": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+      "cargo_release": "1.93.1",
+      "cargo_commit": "083ac5135f967fd9dc906ab057a2315861c7a80d"
+    },
+    "1.100.0-x86_64-unknown-linux-gnu": {
+      "rustc_release": "1.100.0",
+      "rustc_commit": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+      "cargo_release": "1.100.0",
+      "cargo_commit": "3acc79c0c841844675bc53a605922dbfc441e750"
+    },
+    "nightly-2026-11-20-x86_64-unknown-linux-gnu": {
+      "rustc_release": "1.102.0-nightly",
+      "rustc_commit": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+      "cargo_release": "1.102.0-nightly",
+      "cargo_commit": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20"
+    }
+  },
+  "experiment_1_decoupled_cargo_and_lockfile_msrv": {
+    "natural_lockfile_version_with_msrv_1_78": "version = 3",
+    "exp1a_native_cargo_on_v4_plus_2024_sibling": {
+      "1.61.0-x86_64-unknown-linux-gnu": {
+        "returncode": 101,
+        "summary": "error: failed to load manifest for workspace member `<TMPDIR>/ws/crate_2024_sibling` | Caused by: | Caused by: | Caused by:"
+      },
+      "1.78.0-x86_64-unknown-linux-gnu": {
+        "returncode": 101,
+        "summary": "error: failed to load manifest for workspace member `<TMPDIR>/ws/crate_2024_sibling` | Caused by: | Caused by: | feature `edition2024` is required"
+      },
+      "1.79.0-x86_64-unknown-linux-gnu": {
+        "returncode": 101,
+        "summary": "error: failed to load manifest for workspace member `<TMPDIR>/ws/crate_2024_sibling` | Caused by: | Caused by: | feature `edition2024` is required"
+      },
+      "1.80-x86_64-unknown-linux-gnu": {
+        "returncode": 101,
+        "summary": "error: failed to load manifest for workspace member `<TMPDIR>/ws/crate_2024_sibling` | Caused by: | Caused by: | feature `edition2024` is required"
+      },
+      "1.83.0-x86_64-unknown-linux-gnu": {
+        "returncode": 101,
+        "summary": "error: failed to load manifest for workspace member `<TMPDIR>/ws/crate_2024_sibling` | Caused by: | Caused by: | feature `edition2024` is required"
+      },
+      "1.84.0-x86_64-unknown-linux-gnu": {
+        "returncode": 101,
+        "summary": "error: failed to load manifest for workspace member `<TMPDIR>/ws/crate_2024_sibling` | Caused by: | Caused by: | feature `edition2024` is required"
+      },
+      "1.93.1-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      },
+      "1.100.0-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      },
+      "nightly-2026-11-20-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      }
+    },
+    "exp1a_native_cargo_on_v4_without_2024_sibling": {
+      "1.61.0-x86_64-unknown-linux-gnu": {
+        "returncode": 101,
+        "summary": "error: failed to parse lock file at: <TMPDIR>/ws_no_2024/Cargo.lock | Caused by: | lock file version `4` was found, but this version of Cargo does not understand this lock file, perhaps Cargo needs to be updated?"
+      },
+      "1.78.0-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      },
+      "1.79.0-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      },
+      "1.80-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      },
+      "1.83.0-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      },
+      "1.84.0-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      },
+      "1.93.1-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      },
+      "1.100.0-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      },
+      "nightly-2026-11-20-x86_64-unknown-linux-gnu": {
+        "returncode": 0,
+        "summary": "ok"
+      }
+    },
+    "exp1b_cargo_1_100_driving_older_rustc_direct": {
+      "1.61.0-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.61.0",
+        "returncode": 101,
+        "compiled_crates": [],
+        "summary": "error: failed to run `rustc` to learn about target-specific information | Caused by: | process didn't exit successfully: `<TMPDIR>/wrappers/strip_wrapper.py <RUSTUP_HOME>/toolchains/1.61.0-x86_64-unknown-linux-gnu/bin/rustc - --crate-name ___ --print=file-names --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings` (exit status: 1) | error: unknown print request `split-debuginfo`"
+      },
+      "1.78.0-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.78.0",
+        "returncode": 101,
+        "compiled_crates": [
+          "ws_lib_dep",
+          "build_script_build",
+          "my_proc_macro",
+          "build_script_build"
+        ],
+        "summary": "error: the `-Z unstable-options` flag must also be passed to enable the flag `check-cfg` | error: the `-Z unstable-options` flag must also be passed to enable the flag `check-cfg` | error: the `-Z unstable-options` flag must also be passed to enable the flag `check-cfg` | error: the `-Z unstable-options` flag must also be passed to enable the flag `check-cfg` | error: could not compile `my_proc_macro` (lib) | Caused by:"
+      },
+      "1.79.0-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.79.0",
+        "returncode": 0,
+        "compiled_crates": [
+          "build_script_build",
+          "build_script_build",
+          "ws_lib_dep",
+          "my_proc_macro",
+          "ext_dep",
+          "dep_with_build_rs",
+          "crate_msrv"
+        ],
+        "summary": "ok"
+      },
+      "1.80-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.80.1",
+        "returncode": 0,
+        "compiled_crates": [
+          "my_proc_macro",
+          "ws_lib_dep",
+          "build_script_build",
+          "build_script_build",
+          "ext_dep",
+          "dep_with_build_rs",
+          "crate_msrv"
+        ],
+        "summary": "ok"
+      },
+      "1.83.0-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.83.0",
+        "returncode": 0,
+        "compiled_crates": [
+          "build_script_build",
+          "build_script_build",
+          "my_proc_macro",
+          "ws_lib_dep",
+          "dep_with_build_rs",
+          "ext_dep",
+          "crate_msrv"
+        ],
+        "summary": "ok"
+      },
+      "1.84.0-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.84.0",
+        "returncode": 0,
+        "compiled_crates": [
+          "my_proc_macro",
+          "build_script_build",
+          "ws_lib_dep",
+          "build_script_build",
+          "ext_dep",
+          "dep_with_build_rs",
+          "crate_msrv"
+        ],
+        "summary": "ok"
+      },
+      "1.93.1-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.93.1",
+        "returncode": 0,
+        "compiled_crates": [
+          "ws_lib_dep",
+          "build_script_build",
+          "build_script_build",
+          "my_proc_macro",
+          "ext_dep",
+          "dep_with_build_rs",
+          "crate_msrv"
+        ],
+        "summary": "ok"
+      },
+      "1.100.0-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.100.0",
+        "returncode": 0,
+        "compiled_crates": [
+          "build_script_build",
+          "my_proc_macro",
+          "ws_lib_dep",
+          "build_script_build",
+          "ext_dep",
+          "dep_with_build_rs",
+          "crate_msrv"
+        ],
+        "summary": "ok"
+      },
+      "nightly-2026-11-20-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.102.0-nightly",
+        "returncode": 0,
+        "compiled_crates": [
+          "build_script_build",
+          "build_script_build",
+          "my_proc_macro",
+          "ws_lib_dep",
+          "dep_with_build_rs",
+          "ext_dep",
+          "crate_msrv"
+        ],
+        "summary": "ok"
+      }
+    },
+    "exp1c_cargo_1_100_driving_pre_1_80_rustc_with_check_cfg_stripped": {
+      "1.61.0-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.61.0",
+        "returncode": 101,
+        "compiled_crates": [],
+        "summary": "error: failed to run `rustc` to learn about target-specific information | Caused by: | process didn't exit successfully: `<TMPDIR>/wrappers/strip_wrapper.py <RUSTUP_HOME>/toolchains/1.61.0-x86_64-unknown-linux-gnu/bin/rustc - --crate-name ___ --print=file-names --crate-type bin --crate-type rlib --crate-type dylib --crate-type cdylib --crate-type staticlib --crate-type proc-macro --print=sysroot --print=split-debuginfo --print=crate-name --print=cfg -Wwarnings` (exit status: 1) | error: unknown print request `split-debuginfo`"
+      },
+      "1.78.0-x86_64-unknown-linux-gnu": {
+        "rustc_release": "1.78.0",
+        "returncode": 101,
+        "compiled_crates": [
+          "build_script_build",
+          "build_script_build",
+          "ws_lib_dep",
+          "my_proc_macro"
+        ],
+        "summary": "error: the `-Z unstable-options` flag must also be passed to enable the flag `--json=unused-externs` | error: could not compile `my_proc_macro` (lib) due to 1 previous error | error: could not compile `ext_dep` (build script) due to 1 previous error | error: could not compile `ws_lib_dep` (lib) due to 1 previous error | error: could not compile `dep_with_build_rs` (build script) due to 1 previous error"
+      },
+      "1.78.0-x86_64-unknown-linux-gnu_plus_strip_json_unused_externs": {
+        "rustc_release": "1.78.0",
+        "returncode": 0,
+        "compiled_crates": [
+          "build_script_build",
+          "my_proc_macro",
+          "build_script_build",
+          "ws_lib_dep",
+          "dep_with_build_rs",
+          "ext_dep",
+          "crate_msrv"
+        ],
+        "summary": "ok"
+      }
+    },
+    "exp1d_msrv_validation_against_rustc_vv": {
+      "cargo_1_100_with_rustc_1_80_on_pkg_msrv_1_85": {
+        "returncode": 101,
+        "summary": "error: rustc 1.80.1 is not supported by the following package:"
+      },
+      "cargo_1_100_with_rustc_1_84_and_ignore_rust_version_on_2024_crate": {
+        "returncode": 101,
+        "summary": "error: the crate requires edition 2024, but the latest edition supported by this Rust version is 2021 | error: could not compile `crate_2024_sibling` (lib) | Caused by:"
+      }
+    }
+  },
+  "experiment_2_wrapper_matrix_and_proc_macro_abi": {
+    "exp2a_invocation_matrix": {
+      "rustc_wrapper_no_target": {
+        "returncode": 0,
+        "invocations": [
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "my_proc_macro",
+            "crate_types": [
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ws_lib_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "dep_with_build_rs",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ext_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "crate_msrv",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": true,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          }
+        ],
+        "build_script_runtime_env": [
+          "pkg=dep_with_build_rs|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=<TMPDIR>/wrappers/outer_rustc_wrapper.py|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS=",
+          "pkg=ext_dep|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=<TMPDIR>/wrappers/outer_rustc_wrapper.py|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS="
+        ]
+      },
+      "ws_wrapper_no_target": {
+        "returncode": 0,
+        "invocations": [
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ws_lib_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "my_proc_macro",
+            "crate_types": [
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "dep_with_build_rs",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "crate_msrv",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": true,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          }
+        ],
+        "build_script_runtime_env": [
+          "pkg=ext_dep|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS=",
+          "pkg=dep_with_build_rs|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=|RUSTC_WORKSPACE_WRAPPER=<TMPDIR>/wrappers/inner_ws_wrapper.py|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS="
+        ]
+      },
+      "ws_wrapper_with_target": {
+        "returncode": 0,
+        "invocations": [
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "my_proc_macro",
+            "crate_types": [
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ws_lib_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "dep_with_build_rs",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "crate_msrv",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": true,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          }
+        ],
+        "build_script_runtime_env": [
+          "pkg=ext_dep|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS=",
+          "pkg=dep_with_build_rs|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=|RUSTC_WORKSPACE_WRAPPER=<TMPDIR>/wrappers/inner_ws_wrapper.py|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS="
+        ]
+      },
+      "both_wrappers_with_target": {
+        "returncode": 0,
+        "invocations": [
+          {
+            "sub_prog": "inner_ws_wrapper.py",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "inner_ws_wrapper.py",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "inner_ws_wrapper.py",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "inner_ws_wrapper.py",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "inner_ws_wrapper.py",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ws_lib_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "inner_ws_wrapper.py",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "my_proc_macro",
+            "crate_types": [
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "inner_ws_wrapper.py",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ws_lib_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "my_proc_macro",
+            "crate_types": [
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ext_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "inner_ws_wrapper.py",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "dep_with_build_rs",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "dep_with_build_rs",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "inner_ws_wrapper.py",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "crate_msrv",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": true,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "crate_msrv",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": true,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": false
+          }
+        ],
+        "build_script_runtime_env": [
+          "pkg=ext_dep|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=<TMPDIR>/wrappers/outer_rustc_wrapper.py|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS=",
+          "pkg=dep_with_build_rs|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=<TMPDIR>/wrappers/outer_rustc_wrapper.py|RUSTC_WORKSPACE_WRAPPER=<TMPDIR>/wrappers/inner_ws_wrapper.py|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS="
+        ]
+      },
+      "ambient_rustflags_no_target_default_applies_to_host": {
+        "returncode": 0,
+        "invocations": [
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "my_proc_macro",
+            "crate_types": [
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ws_lib_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ext_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "dep_with_build_rs",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "crate_msrv",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": true,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          }
+        ],
+        "build_script_runtime_env": [
+          "pkg=ext_dep|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=<TMPDIR>/wrappers/outer_rustc_wrapper.py|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS=--cfg=from_ambient_rustflags",
+          "pkg=dep_with_build_rs|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=<TMPDIR>/wrappers/outer_rustc_wrapper.py|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS=--cfg=from_ambient_rustflags"
+        ]
+      },
+      "ambient_rustflags_with_explicit_target": {
+        "returncode": 0,
+        "invocations": [
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ws_lib_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "my_proc_macro",
+            "crate_types": [
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ext_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "dep_with_build_rs",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "crate_msrv",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": true,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": true
+          }
+        ],
+        "build_script_runtime_env": [
+          "pkg=ext_dep|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=<TMPDIR>/wrappers/outer_rustc_wrapper.py|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS=--cfg=from_ambient_rustflags",
+          "pkg=dep_with_build_rs|RUSTC=<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=<TMPDIR>/wrappers/outer_rustc_wrapper.py|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS=--cfg=from_ambient_rustflags"
+        ]
+      },
+      "nightly_target_applies_to_host_false_no_target": {
+        "returncode": 0,
+        "invocations": [
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": true,
+            "crate_name": "___",
+            "crate_types": [
+              "bin",
+              "rlib",
+              "dylib",
+              "cdylib",
+              "staticlib",
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": true,
+            "target_flag": "x86_64-unknown-linux-gnu",
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": true,
+            "is_probe_print": false,
+            "crate_name": null,
+            "crate_types": [],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ws_lib_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "build_script_build",
+            "crate_types": [
+              "bin"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "my_proc_macro",
+            "crate_types": [
+              "proc-macro"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": false
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "ext_dep",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "dep_with_build_rs",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": false,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          },
+          {
+            "sub_prog": "rustc",
+            "is_probe_vV": false,
+            "is_probe_print": false,
+            "crate_name": "crate_msrv",
+            "crate_types": [
+              "lib"
+            ],
+            "has_primary_pkg": true,
+            "has_target_flag": false,
+            "target_flag": null,
+            "has_ambient_rustflag": true
+          }
+        ],
+        "build_script_runtime_env": [
+          "pkg=ext_dep|RUSTC=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=<TMPDIR>/wrappers/outer_rustc_wrapper.py|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS=--cfg=from_ambient_rustflags",
+          "pkg=dep_with_build_rs|RUSTC=<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/rustc|RUSTC_WRAPPER=<TMPDIR>/wrappers/outer_rustc_wrapper.py|RUSTC_WORKSPACE_WRAPPER=|RUSTFLAGS=|CARGO_ENCODED_RUSTFLAGS=--cfg=from_ambient_rustflags"
+        ]
+      }
+    },
+    "exp2b_proc_macro_and_build_rs_abi_survival": {
+      "force_emit_metadata_all": {
+        "returncode": 101,
+        "mir_receipts": [],
+        "second_incremental_run_compiled_crates": null,
+        "summary": "error: failed to run custom build command for `dep_with_build_rs v0.1.0 (<TMPDIR>/ws/dep_with_build_rs)` | Caused by: | could not execute process `<TMPDIR>/exp2b_targets/force_emit_metadata_all/debug/build/dep_with_build_rs/2d676b39caba5909/out/build_script_build` (never executed) | Caused by: | No such file or directory (os error 2)"
+      },
+      "force_emit_metadata_skip_build_rs": {
+        "returncode": 101,
+        "mir_receipts": [],
+        "second_incremental_run_compiled_crates": null,
+        "summary": "error: extern location for my_proc_macro does not exist: <TMPDIR>/exp2b_targets/force_emit_metadata_skip_build_rs/debug/build/my_proc_macro/345782a920ab8ac5/out/libmy_proc_macro-345782a920ab8ac5.so | error: could not compile `crate_msrv` (lib) due to 1 previous error"
+      },
+      "inject_unstable_z_flag_all_stable": {
+        "returncode": 101,
+        "mir_receipts": [],
+        "second_incremental_run_compiled_crates": null,
+        "summary": "error: the option `Z` is only accepted on the nightly compiler | error: the option `Z` is only accepted on the nightly compiler | error: 1 nightly option was parsed | error: 1 nightly option was parsed | error: the option `Z` is only accepted on the nightly compiler | error: 1 nightly option was parsed"
+      },
+      "inject_unstable_z_flag_target_only_nightly": {
+        "returncode": 0,
+        "mir_receipts": [],
+        "second_incremental_run_compiled_crates": null,
+        "summary": "ok"
+      },
+      "stop_on_build_rs": {
+        "returncode": 101,
+        "mir_receipts": [],
+        "second_incremental_run_compiled_crates": null,
+        "summary": "error: failed to run custom build command for `dep_with_build_rs v0.1.0 (<TMPDIR>/ws/dep_with_build_rs)` | Caused by: | could not execute process `<TMPDIR>/exp2b_targets/stop_on_build_rs/debug/build/dep_with_build_rs/2d676b39caba5909/out/build_script_build` (never executed) | Caused by: | No such file or directory (os error 2)"
+      },
+      "stop_on_proc_macro": {
+        "returncode": 101,
+        "mir_receipts": [],
+        "second_incremental_run_compiled_crates": null,
+        "summary": "error: extern location for my_proc_macro does not exist: <TMPDIR>/exp2b_targets/stop_on_proc_macro/debug/build/my_proc_macro/345782a920ab8ac5/out/libmy_proc_macro-345782a920ab8ac5.so | error: could not compile `crate_msrv` (lib) due to 1 previous error"
+      },
+      "stop_on_ws_lib_dep": {
+        "returncode": 101,
+        "mir_receipts": [],
+        "second_incremental_run_compiled_crates": null,
+        "summary": "error: extern location for ws_lib_dep does not exist: <TMPDIR>/exp2b_targets/stop_on_ws_lib_dep/x86_64-unknown-linux-gnu/debug/build/ws_lib_dep/96999d6bcefb213d/out/libws_lib_dep-96999d6bcefb213d.rmeta | error: could not compile `crate_msrv` (lib) due to 1 previous error"
+      },
+      "stop_on_primary_only": {
+        "returncode": 0,
+        "mir_receipts": [],
+        "second_incremental_run_compiled_crates": [
+          "crate_msrv"
+        ],
+        "summary": "ok"
+      },
+      "host_passthrough_target_continue": {
+        "returncode": 0,
+        "mir_receipts": [
+          "crate_msrv.mir.json",
+          "dep_with_build_rs.mir.json",
+          "ws_lib_dep.mir.json"
+        ],
+        "second_incremental_run_compiled_crates": null,
+        "summary": "ok"
+      }
+    }
+  },
+  "experiment_3_concurrent_readonly_and_fingerprints": {
+    "exp3a_concurrent_readonly_workspace_runs": {
+      "readonly_enforced_chmod_a_minus_w": true,
+      "wall_clock_seconds_4_way_parallel": 0.54,
+      "per_toolchain": {
+        "1.84.0-x86_64-unknown-linux-gnu": {
+          "returncode": 0,
+          "rustc_info_cached": true,
+          "mir_receipts": [
+            "crate_msrv.mir.json",
+            "dep_with_build_rs.mir.json",
+            "ws_lib_dep.mir.json"
+          ],
+          "stderr_summary": "ok"
+        },
+        "1.93.1-x86_64-unknown-linux-gnu": {
+          "returncode": 0,
+          "rustc_info_cached": true,
+          "mir_receipts": [
+            "crate_msrv.mir.json",
+            "dep_with_build_rs.mir.json",
+            "ws_lib_dep.mir.json"
+          ],
+          "stderr_summary": "ok"
+        },
+        "1.100.0-x86_64-unknown-linux-gnu": {
+          "returncode": 0,
+          "rustc_info_cached": true,
+          "mir_receipts": [
+            "crate_msrv.mir.json",
+            "dep_with_build_rs.mir.json",
+            "ws_lib_dep.mir.json"
+          ],
+          "stderr_summary": "ok"
+        },
+        "nightly-2026-11-20-x86_64-unknown-linux-gnu": {
+          "returncode": 0,
+          "rustc_info_cached": true,
+          "mir_receipts": [
+            "crate_msrv.mir.json",
+            "dep_with_build_rs.mir.json",
+            "ws_lib_dep.mir.json"
+          ],
+          "stderr_summary": "ok"
+        }
+      }
+    },
+    "exp3b_fingerprint_cache_traps_and_remedies": {
+      "post_hoc_rustc_wrapper_on_warm_target_dir": {
+        "probe_vV_count": 2,
+        "probe_print_count": 1,
+        "compiled_crates": []
+      },
+      "post_hoc_rustc_workspace_wrapper_on_warm_target_dir": {
+        "probe_vV_count": 2,
+        "probe_print_count": 1,
+        "compiled_crates": [
+          "my_proc_macro",
+          "build_script_build",
+          "ws_lib_dep",
+          "dep_with_build_rs",
+          "crate_msrv"
+        ]
+      },
+      "initial_ws_wrapper_run_v1": {
+        "probe_vV_count": 2,
+        "probe_print_count": 2,
+        "compiled_crates": [
+          "build_script_build",
+          "my_proc_macro",
+          "ws_lib_dep",
+          "dep_with_build_rs",
+          "crate_msrv"
+        ]
+      },
+      "unhashed_MY_VERIFIER_ARGS_changed_v2": {
+        "probe_vV_count": 0,
+        "probe_print_count": 0,
+        "compiled_crates": []
+      },
+      "wrapper_mtime_bumped_without_vv_change": {
+        "probe_vV_count": 2,
+        "probe_print_count": 2,
+        "compiled_crates": []
+      },
+      "remedy_a_encoded_rustflags_c_metadata_with_target": {
+        "probe_vV_count": 0,
+        "probe_print_count": 1,
+        "compiled_crates": [
+          "dep_with_build_rs",
+          "ws_lib_dep",
+          "crate_msrv"
+        ]
+      },
+      "remedy_b_cargo_cache_rustc_info_0_plus_vv_digest": {
+        "probe_vV_count": 2,
+        "probe_print_count": 2,
+        "compiled_crates": [
+          "my_proc_macro",
+          "build_script_build",
+          "ws_lib_dep",
+          "dep_with_build_rs",
+          "crate_msrv"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,1045 @@
+{
+  "probe": "rust-analyzer-proc-macro-srv-compatibility-matrix",
+  "wire_request_ndjson": "{\"ApiVersionCheck\":{}}",
+  "results": [
+    {
+      "toolchain": "1.61.0",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.61.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.61.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.61.0",
+      "rustc_commit_hash": "fe5b13d681f25ee6474be29d748c65adcd91f69e",
+      "rustc_commit_date": "2022-05-18",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "14.0.0",
+      "srv_libexec_present": false,
+      "srv_bin_present": false,
+      "srv_path": null,
+      "without_env_gate": null,
+      "with_hyphen_env_gate": null,
+      "with_canonical_space_env_gate": null,
+      "negotiated_api_version": null
+    },
+    {
+      "toolchain": "1.78.0",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.78.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.78.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.78.0",
+      "rustc_commit_hash": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+      "rustc_commit_date": "2024-04-29",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "18.1.2",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.78.0-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-d6f66a8619a171d6.so",
+        "libstd-d2ef02247056996e.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": false,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":4}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a347d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 4,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":4}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "",
+        "decoded_postcard_bytes": null,
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "1.80",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.80-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.80-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.80.1",
+      "rustc_commit_hash": "3f5fd8dd41153bc5fdca9427e9e05be2c767ba23",
+      "rustc_commit_date": "2024-08-06",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "18.1.7",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.80-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-a30ca400d2857f33.so",
+        "libstd-52417a9a08ba8fb9.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": false,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":4}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a347d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 4,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":4}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "",
+        "decoded_postcard_bytes": null,
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "1.84.0",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.84.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.84.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.84.0",
+      "rustc_commit_hash": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+      "rustc_commit_date": "2025-01-07",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "19.1.5",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.84.0-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-7bea7fca18409d2b.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": false,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":5}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a357d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 5,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":5}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "",
+        "decoded_postcard_bytes": null,
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "1.93.1",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.93.1",
+      "rustc_commit_hash": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+      "rustc_commit_date": "2026-02-11",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "21.1.8",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.93.1-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-905b238d8a512824.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "This is an IDE implementation detail, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE.\nNote that this tool's API is highly unstable and may break without prior notice",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": true,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 6,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "rust-analyzer-proc-macro-srv 1.93.1 (01f6ddf 2026-02-11)",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":6}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 2,
+        "stdout_hex": "",
+        "decoded_postcard_bytes": null,
+        "stderr": "error: one of the values isn't valid for an argument"
+      }
+    },
+    {
+      "toolchain": "1.96.0",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.96.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.96.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.96.0",
+      "rustc_commit_hash": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+      "rustc_commit_date": "2026-05-25",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "22.1.2",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.96.0-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-4d71126a08f22b4a.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "This is an IDE implementation detail, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE.\nNote that this tool's API is highly unstable and may break without prior notice",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": true,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 6,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "rust-analyzer-proc-macro-srv 1.96.0 (ac68faa 2026-05-25)",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":6}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "0401020600",
+        "decoded_postcard_bytes": [
+          1,
+          2,
+          6
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "1.99.1",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.99.1-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.99.1-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.99.1",
+      "rustc_commit_hash": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "rustc_commit_date": "2026-10-13",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "23.1.1",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.99.1-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-7ed0375ae352bd75.so",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "This is an IDE implementation detail, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE.\nNote that this tool's API is highly unstable and may break without prior notice",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": true,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 6,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "rust-analyzer-proc-macro-srv 1.99.1 (58cf8f9 2026-10-13)",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":6}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "0401010600",
+        "decoded_postcard_bytes": [
+          1,
+          1,
+          6
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "1.100.0",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.100.0",
+      "rustc_commit_hash": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+      "rustc_commit_date": "2026-11-09",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "23.1.5",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.100.0-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-62d0ff9ea62999cc.so",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "This is an IDE implementation detail, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE.\nNote that this tool's API is highly unstable and may break without prior notice",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": true,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 6,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "rust-analyzer-proc-macro-srv 1.100.0 (0ef1bc3 2026-11-09)",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":6}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "0401010600",
+        "decoded_postcard_bytes": [
+          1,
+          1,
+          6
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "nightly-2025-03-02",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/nightly-2025-03-02-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/nightly-2025-03-02-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.87.0-nightly",
+      "rustc_commit_hash": "8c392966a013fd8a09e6b78b3c8d6e442bc278e1",
+      "rustc_commit_date": "2025-03-01",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "20.1.0",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/nightly-2025-03-02-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-e3b06f91230294e6.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "This is an IDE implementation detail, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE.\nNote that this tool's API is highly unstable and may break without prior notice",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":5}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a357d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": true,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":5}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a357d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 5,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":5}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "",
+        "decoded_postcard_bytes": null,
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "nightly-2026-05-31",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/nightly-2026-05-31-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/nightly-2026-05-31-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.98.0-nightly",
+      "rustc_commit_hash": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "rustc_commit_date": "2026-05-30",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "22.1.6",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/nightly-2026-05-31-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-5d5a3c5207375ffc.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "This is an IDE implementation detail, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE.\nNote that this tool's API is highly unstable and may break without prior notice",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": true,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 6,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "rust-analyzer-proc-macro-srv 1.98.0-nightly (f8a08b6 2026-05-30)",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":6}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "0401020600",
+        "decoded_postcard_bytes": [
+          1,
+          2,
+          6
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "nightly-2026-11-20",
+      "primary_target": true,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.102.0-nightly",
+      "rustc_commit_hash": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+      "rustc_commit_date": "2026-11-19",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "23.1.6",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/nightly-2026-11-20-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-600b678858a96040.so",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "This is an IDE implementation detail, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE.\nNote that this tool's API is highly unstable and may break without prior notice",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": true,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 6,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "rust-analyzer-proc-macro-srv 1.102.0-nightly (6905905 2026-11-19)",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":6}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "0401010600",
+        "decoded_postcard_bytes": [
+          1,
+          1,
+          6
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "1.56.0",
+      "primary_target": false,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.56.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.56.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.56.0",
+      "rustc_commit_hash": "09c42c45858d5f3aedfa670698275303a3d19afa",
+      "rustc_commit_date": "2021-10-18",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "13.0.0",
+      "srv_libexec_present": false,
+      "srv_bin_present": false,
+      "srv_path": null,
+      "without_env_gate": null,
+      "with_hyphen_env_gate": null,
+      "with_canonical_space_env_gate": null,
+      "negotiated_api_version": null
+    },
+    {
+      "toolchain": "1.79.0",
+      "primary_target": false,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.79.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.79.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.79.0",
+      "rustc_commit_hash": "129f3b9964af4d4a709d1383930ade12dfe7c081",
+      "rustc_commit_date": "2024-06-10",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "18.1.7",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.79.0-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-1ccb730c51a3970e.so",
+        "libstd-d5189b81a4fa4d36.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": false,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":4}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a347d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 4,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":4}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "",
+        "decoded_postcard_bytes": null,
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "1.81.0",
+      "primary_target": false,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.81.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.81.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.81.0",
+      "rustc_commit_hash": "eeb90cda1969383f56a2637cbd3037bdf598841c",
+      "rustc_commit_date": "2024-09-04",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "18.1.7",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.81.0-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-3f4ebb066deec3c0.so",
+        "libstd-1c4b19562077c20d.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": false,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":4}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a347d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 4,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":4}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "",
+        "decoded_postcard_bytes": null,
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "1.83.0",
+      "primary_target": false,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.83.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.83.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.83.0",
+      "rustc_commit_hash": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+      "rustc_commit_date": "2024-11-26",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "19.1.1",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.83.0-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-a1396821e0813435.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "If you're rust-analyzer, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE='this is unstable'.\nIf not, you probably shouldn't use this tool. But do what you want: I'm an error message, not a cop.",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": false,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":5}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a357d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 5,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":5}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "",
+        "decoded_postcard_bytes": null,
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "1.94.0",
+      "primary_target": false,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.94.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.94.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.94.0",
+      "rustc_commit_hash": "4a4ef493e3a1488c6e321570238084b38948f6db",
+      "rustc_commit_date": "2026-03-02",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "21.1.8",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.94.0-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-24b10b5e3eb5af70.so",
+        "libdl.so.2",
+        "libgcc_s.so.1",
+        "libpthread.so.0",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "This is an IDE implementation detail, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE.\nNote that this tool's API is highly unstable and may break without prior notice",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": true,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 6,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "rust-analyzer-proc-macro-srv 1.94.0 (4a4ef49 2026-03-02)",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":6}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "0401020600",
+        "decoded_postcard_bytes": [
+          1,
+          2,
+          6
+        ],
+        "stderr": ""
+      }
+    },
+    {
+      "toolchain": "1.99.0",
+      "primary_target": false,
+      "installed": true,
+      "rustc_path": "<RUSTUP_HOME>/toolchains/1.99.0-x86_64-unknown-linux-gnu/bin/rustc",
+      "sysroot": "<RUSTUP_HOME>/toolchains/1.99.0-x86_64-unknown-linux-gnu",
+      "rustc_release": "1.99.0",
+      "rustc_commit_hash": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+      "rustc_commit_date": "2026-09-28",
+      "rustc_host": "x86_64-unknown-linux-gnu",
+      "llvm_version": "23.1.1",
+      "srv_libexec_present": true,
+      "srv_bin_present": false,
+      "srv_path": "<RUSTUP_HOME>/toolchains/1.99.0-x86_64-unknown-linux-gnu/libexec/rust-analyzer-proc-macro-srv",
+      "dt_needed": [
+        "librustc_driver-999a121de2f042be.so",
+        "libgcc_s.so.1",
+        "libc.so.6"
+      ],
+      "links_librustc_driver_dylib": true,
+      "without_env_gate": {
+        "exit_code": 122,
+        "stdout_utf8": "",
+        "stdout_hex": "",
+        "stderr_utf8": "This is an IDE implementation detail, you can use this tool by exporting RUST_ANALYZER_INTERNALS_DO_NOT_USE.\nNote that this tool's API is highly unstable and may break without prior notice",
+        "timed_out": false
+      },
+      "with_hyphen_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "hyphen_env_gate_accepted": true,
+      "with_canonical_space_env_gate": {
+        "exit_code": 0,
+        "stdout_utf8": "{\"ApiVersionCheck\":6}",
+        "stdout_hex": "7b2241706956657273696f6e436865636b223a367d0a",
+        "stderr_utf8": "",
+        "timed_out": false
+      },
+      "negotiated_api_version": 6,
+      "cli_version_flag": {
+        "exit_code": 0,
+        "stdout": "rust-analyzer-proc-macro-srv 1.99.0 (b940084 2026-09-28)",
+        "stderr": ""
+      },
+      "set_config_rust_analyzer_spans": {
+        "exit_code": 0,
+        "stdout_lines": [
+          "{\"ApiVersionCheck\":6}",
+          "{\"SetConfig\":{\"span_mode\":\"RustAnalyzer\"}}"
+        ]
+      },
+      "bidirectional_postcard_probe": {
+        "request_cobs_hex": "01020200",
+        "exit_code": 0,
+        "stdout_hex": "0401010600",
+        "decoded_postcard_bytes": [
+          1,
+          1,
+          6
+        ],
+        "stderr": ""
+      }
+    }
+  ]
+}

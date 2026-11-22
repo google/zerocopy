@@ -32052,6 +32052,309 @@
         "compilers/c-to-rust-ownership-classification"
       ]
     },
+    "cross-compiler-verification-soundness-normative-compatibility-and-reference-correspondence": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "AbsInt/CompCert (verified C compiler and Clight frontend)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229",
+            "repository": "CakeML/cakeml",
+            "revision": "ae0f9538560c769b9b1b567ceb280eccd798e9ab"
+          },
+          "name": "CakeML/cakeml (verified self-bootstrapping ML compiler in HOL4)"
+        },
+        {
+          "identity": {
+            "repository": "AdaCore/spark2014",
+            "revision": "d737789cf270fb29659d176793c9a40b7ae16714",
+            "why3_submodule_revision": "02050ad2905bc0f54e7efdf7ad809cfee7a67fef"
+          },
+          "name": "AdaCore/spark2014 (GNATprove and gnat2why formal verification toolset)"
+        },
+        {
+          "identity": {
+            "revision": "189053d4a2bd460c5c557dba8569474ff0419e73",
+            "url": "https://git.frama-c.com/pub/frama-c.git"
+          },
+          "name": "Frama-C (upstream GitLab repository with YAML machdep and WP memory models)"
+        },
+        {
+          "identity": {
+            "repository": "Frama-C/Frama-C-snapshot",
+            "revision": "639a3647736bf8ac127d00ebe4c4c259f75f9b87"
+          },
+          "name": "Frama-C/Frama-C-snapshot (historical GitHub mirror)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/seL4",
+            "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+          },
+          "name": "seL4/seL4 (microkernel C source and KernelBinaryVerificationBuild flags)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+          },
+          "name": "seL4/l4v (Isabelle/HOL proofs, asmrefine export, and AutoCorres)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2491956.2462183",
+            "repository": "seL4/graph-refine",
+            "revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4"
+          },
+          "name": "seL4/graph-refine (SydTV-GL binary translation validator)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/seL4-CAmkES-L4v-dockerfiles",
+            "revision": "9089989e1557dfa11334e9b3809032d863d53a24"
+          },
+          "name": "seL4/seL4-CAmkES-L4v-dockerfiles (pinned GCC and SMT verification containers)"
+        },
+        {
+          "identity": {
+            "repository": "seL4/docs",
+            "revision": "97021d2f0b9458703d2254a34553a57f1f2ec3a1"
+          },
+          "name": "seL4/docs (verified architecture and toolchain matrix)"
+        },
+        {
+          "identity": {
+            "repository": "PrincetonUniversity/VST",
+            "revision": "d50ac1969f9f6586621895eb043ccf08a165f731"
+          },
+          "name": "PrincetonUniversity/VST (Verified Software Toolchain in Coq/Rocq)"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "1ce6a59bd72713cf486a7660097fe5ac57519617"
+          },
+          "name": "verus-lang/verus (Verus deductive Rust verifier and vstd std_specs)"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+          },
+          "name": "creusot-rs/creusot (Creusot Rust verifier, extern_spec!, and Coma backend)"
+        },
+        {
+          "identity": {
+            "repository": "minirust/minirust",
+            "revision": "063d784186d3252bee242217f218223205c0b568"
+          },
+          "name": "minirust/minirust (mechanized operational reference specification for Rust)"
+        },
+        {
+          "identity": {
+            "repository": "rems-project/sail",
+            "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+          },
+          "name": "rems-project/sail (ISA specification language and Lean 4 backend)"
+        },
+        {
+          "identity": {
+            "repository": "WasmCert/WasmCert-Coq",
+            "revision": "58a3d3f8b7af4dc8aa9351f254a9e672643b21f8"
+          },
+          "name": "WasmCert/WasmCert-Coq (Coq mechanization of WebAssembly)"
+        },
+        {
+          "identity": {
+            "repository": "WasmCert/WasmCert-Isabelle",
+            "revision": "d9b4659c8b38879a5fc7e0213950751a61091908"
+          },
+          "name": "WasmCert/WasmCert-Isabelle (Isabelle/HOL mechanization of WebAssembly)"
+        },
+        {
+          "identity": {
+            "repository": "runtimeverification/k",
+            "revision": "4a46d1231473b599c699160132fd6e76a5c46406"
+          },
+          "name": "runtimeverification/k (K Framework operational semantics platform)"
+        },
+        {
+          "identity": {
+            "repository": "kframework/c-semantics",
+            "revision": "e6879d14455771aa0cb3e3d201131d4d763a73a2"
+          },
+          "name": "kframework/c-semantics (K C11 semantics and compiler profiles)"
+        },
+        {
+          "identity": {
+            "repository": "runtimeverification/wasm-semantics",
+            "revision": "212271bd434bd402e27c42f6416854342733386d"
+          },
+          "name": "runtimeverification/wasm-semantics (KWasm semantics)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "rust-lang/reference (The Rust Reference normative specification)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "rust-lang/rfcs (RFC 1122 Language SemVer and RFC 1105 API Evolution)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "b4c1107fa213ab01d860d6cb24a12fd0834f0df7"
+          },
+          "name": "google/zerocopy (forwards-compatibility policy and PaddingFree trait guards)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (MIR semantics TCB and lean-miri correspondence harness)"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "proofs-rs/lean-miri (Lean 4 reference MIR interpreter)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (Lean 4 v4.34.1 kernel checking support formalizations)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+            "version": "1.78.0"
+          },
+          "name": "rust-lang/rust (rustc 1.78.0, LLVM 18.1.2)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+            "version": "1.84.0"
+          },
+          "name": "rust-lang/rust (rustc 1.84.0, LLVM 19.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+            "version": "1.93.1"
+          },
+          "name": "rust-lang/rust (rustc 1.93.1, LLVM 21.1.8)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4a4ef493e3a1488c6e321570238084b38948f6db",
+            "version": "1.94.0"
+          },
+          "name": "rust-lang/rust (rustc 1.94.0, LLVM 21.1.8)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+            "version": "1.96.0"
+          },
+          "name": "rust-lang/rust (rustc 1.96.0, LLVM 22.1.2)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "rust-lang/rust (rustc 1.99.0, LLVM 23.1.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rust-lang/rust (rustc 1.99.1, LLVM 23.1.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "rust-lang/rust (rustc 1.100.0, LLVM 23.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly 2026-11-11, LLVM 23.1.5)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly 2026-11-19, LLVM 23.1.6)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/correspondence",
+        "anneal/forward-compatibility",
+        "anneal/tcb-audit",
+        "compilers",
+        "compilers/translation-validation",
+        "compilers/verified-rustc",
+        "isa/sail",
+        "lean",
+        "lean/mechanization",
+        "minirust",
+        "minirust/semantics",
+        "pl",
+        "pl/operational-semantics",
+        "rust",
+        "rust/layout",
+        "rust/semver",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
+        "security",
+        "security/tcb-hazards",
+        "verification",
+        "verification/compcert",
+        "verification/compiler-verification",
+        "verification/program-logics",
+        "verification/reference-model",
+        "verification/soundness",
+        "zerocopy",
+        "zerocopy/soundness-policy"
+      ]
+    },
     "cross-crate-thinlto-anneal-mir-summary-certificates-and-import-replay": {
       "observed_at": "2026-11-14",
       "subjects": [
@@ -68272,6 +68575,325 @@
         "pl/polymorphic-recursion"
       ]
     },
+    "monorepo-rust-toolchain-governance-sidecars-and-cargo-orchestration": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+          },
+          "name": "rust-lang/rust (rmeta check_compatibility, bootstrap CFG_VERSION/GitInfo, and filesearch.rs)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly, 2026-11-11)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly, nightly-2026-11-20)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "rust-lang/rust (rustc 1.100.0 stable, StableCrateId, and symbol mangling)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+            "version": "1.93.1"
+          },
+          "name": "rust-lang/rust (rustc 1.93.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+            "version": "1.84.0"
+          },
+          "name": "rust-lang/rust (rustc 1.84.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+            "version": "1.83.0"
+          },
+          "name": "rust-lang/rust (rustc 1.83.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3f5fd8dd41153bc5fdca9427e9e05be2c767ba23",
+            "version": "1.80.1"
+          },
+          "name": "rust-lang/rust (rustc 1.80.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "129f3b9964af4d4a709d1383930ade12dfe7c081",
+            "version": "1.79.0"
+          },
+          "name": "rust-lang/rust (rustc 1.79.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+            "version": "1.78.0"
+          },
+          "name": "rust-lang/rust (rustc 1.78.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "fe5b13d681f25ee6474be29d748c65adcd91f69e",
+            "version": "1.61.0"
+          },
+          "name": "rust-lang/rust (rustc 1.61.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "3acc79c0c841844675bc53a605922dbfc441e750",
+            "version": "1.100.0"
+          },
+          "name": "rust-lang/cargo (cargo 1.100.0 orchestrator, wrapper dispatch, and fingerprinting)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "930a674da900a73c1dfbe16be62c42e75bdfdfc0"
+          },
+          "name": "rust-lang/cargo (compilation_files compute_metadata and __CARGO_DEFAULT_LIB_METADATA)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "f93c676e3e7ab1aee08dc95d869700f6b99a1a20",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/cargo (cargo 1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "083ac5135f967fd9dc906ab057a2315861c7a80d",
+            "version": "1.93.1"
+          },
+          "name": "rust-lang/cargo (cargo 1.93.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "66221abdeca2002d318fde6efff516aab091df0e",
+            "version": "1.84.0"
+          },
+          "name": "rust-lang/cargo (cargo 1.84.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "5ffbef3211a8c378857905775a15c5b32a174d3b",
+            "version": "1.83.0"
+          },
+          "name": "rust-lang/cargo (cargo 1.83.0 lockfile v4 default writer)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "37629051518c3df9ac2c1744589362a02ecafa99",
+            "version": "1.80.1"
+          },
+          "name": "rust-lang/cargo (cargo 1.80.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "ffa9cf99a594e59032757403d4c780b46dc2c43a",
+            "version": "1.79.0"
+          },
+          "name": "rust-lang/cargo (cargo 1.79.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "54d8815d04fa3816edc207bbc4dd36bf18014dbc",
+            "version": "1.78.0"
+          },
+          "name": "rust-lang/cargo (cargo 1.78.0 lockfile v4 reader introduction)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "a028ae42fc1376571de836be702e840ca8e060c2",
+            "version": "1.61.0"
+          },
+          "name": "rust-lang/cargo (cargo 1.61.0)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "4843f6873f7c4835e62f2c73ba0fd538e57a2f22"
+          },
+          "name": "Linux kernel Rust-for-Linux build and toolchain system"
+        },
+        {
+          "identity": {
+            "repository": "https://chromium.googlesource.com/chromium/src.git",
+            "revision": "183a8b1a836ad889170030ba672f52b1cd1e1a53"
+          },
+          "name": "Chromium Rust toolchain, Crubit co-roll, and gnrt scripts"
+        },
+        {
+          "identity": {
+            "repository": "chromium/chromium",
+            "revision": "3e444ebf85072674e30c258999e37bdacc0e610f"
+          },
+          "name": "chromium/chromium (tools/rust custom description and git-commit-info audit)"
+        },
+        {
+          "identity": {
+            "repository": "https://fuchsia.googlesource.com/fuchsia",
+            "revision": "aac6734b50c4da0dd6ab7f79d7c842e0e2b794bb"
+          },
+          "name": "Fuchsia Rust toolchain documentation and RBE remote wrapper"
+        },
+        {
+          "identity": {
+            "repository": "https://fuchsia.googlesource.com/infra/recipes",
+            "revision": "320982b8c818a5de7956ed2f8ceedb18a953c1ed"
+          },
+          "name": "Fuchsia infrastructure rust_toolchain recipe and generate_config.py"
+        },
+        {
+          "identity": {
+            "repository": "https://android.googlesource.com/platform/build/soong",
+            "revision": "d046c2afef086a35d24222b09f4d2c4914e8a2a5"
+          },
+          "name": "Android AOSP Soong Rust build rules and Clippy/Kythe actions"
+        },
+        {
+          "identity": {
+            "repository": "https://android.googlesource.com/toolchain/android_rust",
+            "revision": "c4dbee9ebc9af3d3084786951ca129b72ee916ff"
+          },
+          "name": "Android AOSP Rust toolchain builder"
+        },
+        {
+          "identity": {
+            "repository": "google/crubit",
+            "revision": "5f9ae7da1aa70e5a1c0e536baf32e5ec56a7c003"
+          },
+          "name": "google/crubit (bidirectional C++/Rust bindings generator)"
+        },
+        {
+          "identity": {
+            "repository": "kythe/kythe",
+            "revision": "69141f022689a611e8a4a1d9b08a3783a2e8a9ed"
+          },
+          "name": "kythe/kythe (.kzip compilation pack specification and Rust extractor)"
+        },
+        {
+          "identity": {
+            "repository": "github/codeql",
+            "revision": "aafa7deeff16c1e3c4e356eabec46cbca2dc09e3"
+          },
+          "name": "github/codeql (Rust extractor and fixed toolchain override)"
+        },
+        {
+          "identity": {
+            "repository": "bazelbuild/rules_rust",
+            "revision": "5d99ff2e58d1a0c9387fc4945029df11144bc8a3"
+          },
+          "name": "bazelbuild/rules_rust (multi-toolchain resolution, clippy, and rust-analyzer aspects)"
+        },
+        {
+          "identity": {
+            "repository": "facebook/buck2",
+            "revision": "442fa89105d3b684efc0a65631f76aaecfe32211"
+          },
+          "name": "facebook/buck2 (prelude/rust toolchains, proc-macro plugins, and MetadataKind channels)"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/cargo-llvm-lines",
+            "revision": "d08bcd4d116abfea9e50141d5d68aae6a120e868",
+            "version": "0.4.48"
+          },
+          "name": "dtolnay/cargo-llvm-lines (cargo rustc leaf IR emission orchestrator)"
+        },
+        {
+          "identity": {
+            "repository": "taiki-e/cargo-hack",
+            "revision": "e2406853bfaf79711b2b5b1a7ca6e2ce1eee2395",
+            "version": "0.6.46"
+          },
+          "name": "taiki-e/cargo-hack (multi-version rustup run and manifest/lockfile restore)"
+        },
+        {
+          "identity": {
+            "repository": "foresterre/cargo-msrv",
+            "revision": "b00b71b0948cdd7a09473a32b78ecd0ca7b5f98e"
+          },
+          "name": "foresterre/cargo-msrv (toolchain bisection and --ignore-lockfile)"
+        },
+        {
+          "identity": {
+            "repository": "obi1kenobi/cargo-semver-checks",
+            "revision": "8ffc535d0dbd24fce5a0a30261e7005305205ef7"
+          },
+          "name": "obi1kenobi/cargo-semver-checks (encoded rustflags decoding and witness environment scrubbing)"
+        },
+        {
+          "identity": {
+            "isbn": "978-1-492-08279-8",
+            "publisher": "O'Reilly Media",
+            "year": "2020"
+          },
+          "name": "Software Engineering at Google (Winters, Manshreck, Wright, 2020, Ch. 21 Dependency Management)"
+        }
+      ],
+      "topics": [
+        "build",
+        "build/bazel",
+        "build/buck2",
+        "build/monorepo",
+        "build/rbe",
+        "cargo",
+        "cargo/fingerprints",
+        "cargo/lockfile",
+        "cargo/msrv",
+        "cargo/rustc-wrapper",
+        "cargo/workspaces",
+        "compilers",
+        "compilers/abi",
+        "ffi",
+        "rust",
+        "rust/linux-kernel",
+        "rustc",
+        "rustc/metadata",
+        "rustc/rustc-private",
+        "rustc/symbol-mangling",
+        "systems",
+        "tooling",
+        "tooling/sidecars",
+        "verification"
+      ]
+    },
     "montague-syntactic-modality-hbl-derivability-and-arithmetized-godel-mechanizations": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -69067,6 +69689,459 @@
         "ffi/gc-interop",
         "runtimes/interop",
         "ffi/bridges"
+      ]
+    },
+    "multi-version-compiler-internal-plugin-and-driver-architectures": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "trailofbits/dylint",
+            "revision": "8cf8a6b17ea73364123226e7678aafbe0edc68c5",
+            "version": "v6.4.0"
+          },
+          "name": "trailofbits/dylint (dylint v6.4.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "37721d141370e0904033f7fc3a3abe11c446c4c1"
+          },
+          "name": "rust-lang/rust-analyzer (proc-macro-api and proc-macro-srv)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "09c42c45858d5f3aedfa670698275303a3d19afa",
+            "version": "1.56.0"
+          },
+          "name": "rust-lang/rust (rustc 1.56.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "fe5b13d681f25ee6474be29d748c65adcd91f69e",
+            "version": "1.61.0"
+          },
+          "name": "rust-lang/rust (rustc 1.61.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+            "version": "1.78.0"
+          },
+          "name": "rust-lang/rust (rustc 1.78.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "129f3b9964af4d4a709d1383930ade12dfe7c081",
+            "version": "1.79.0"
+          },
+          "name": "rust-lang/rust (rustc 1.79.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3f5fd8dd41153bc5fdca9427e9e05be2c767ba23",
+            "version": "1.80.1"
+          },
+          "name": "rust-lang/rust (rustc 1.80.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "eeb90cda1969383f56a2637cbd3037bdf598841c",
+            "version": "1.81.0"
+          },
+          "name": "rust-lang/rust (rustc 1.81.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+            "version": "1.83.0"
+          },
+          "name": "rust-lang/rust (rustc 1.83.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+            "version": "1.84.0"
+          },
+          "name": "rust-lang/rust (rustc 1.84.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8c392966a013fd8a09e6b78b3c8d6e442bc278e1",
+            "version": "1.87.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.87.0-nightly, nightly-2025-03-02)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+            "version": "1.93.1"
+          },
+          "name": "rust-lang/rust (rustc 1.93.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4a4ef493e3a1488c6e321570238084b38948f6db",
+            "version": "1.94.0"
+          },
+          "name": "rust-lang/rust (rustc 1.94.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+            "version": "1.96.0"
+          },
+          "name": "rust-lang/rust (rustc 1.96.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.98.0-nightly, nightly-2026-05-31)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "rust-lang/rust (rustc 1.99.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rust-lang/rust (rustc 1.99.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "rust-lang/rust (rustc 1.100.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly, nightly-2026-11-20)"
+        },
+        {
+          "identity": {
+            "repository": "haskell/haskell-language-server",
+            "revision": "e16aefda7eebe4a0831ccc1749ba2a04e99640c1"
+          },
+          "name": "haskell/haskell-language-server (wrapper router and ghcide)"
+        },
+        {
+          "identity": {
+            "repository": "haskell/hie-bios",
+            "revision": "84bf87a89d3b15679a7606563f5d940ddf38caf1"
+          },
+          "name": "haskell/hie-bios (GHC cradle discovery and runtime probing)"
+        },
+        {
+          "identity": {
+            "repository": "include-what-you-use/include-what-you-use",
+            "revision": "6447692226d6e826f77f9d8a05da490d78f8e977",
+            "version": "0.27-dev"
+          },
+          "name": "include-what-you-use/include-what-you-use (Clang LibTooling lockstep driver)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "2252e5dc213dd1402eb8942de5fa1608b7460d50"
+          },
+          "name": "llvm/llvm-project (Clang libclang, LibTooling, clangd, and clang-tidy)"
+        },
+        {
+          "identity": {
+            "repository": "google/error-prone",
+            "revision": "d37bcb8d89b21dd64b762274c7fb96967a3cba80"
+          },
+          "name": "google/error-prone (javac internal TaskListener plugin)"
+        },
+        {
+          "identity": {
+            "repository": "semgrep/semgrep",
+            "revision": "c4dbe9ee2fc6d0022ba02ef6b97c5954ed9549e3"
+          },
+          "name": "semgrep/semgrep (compiler-decoupled tree-sitter to AST_generic analyzer)"
+        },
+        {
+          "identity": {
+            "repository": "model-checking/kani",
+            "revision": "87c87010eda7797d7fa14033ca68bcbe17184a63"
+          },
+          "name": "model-checking/kani (Rust formal verifier driver and cargo orchestration)"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "1ce6a59bd72713cf486a7660097fe5ac57519617"
+          },
+          "name": "verus-lang/verus (cargo-verus and rust_verify driver)"
+        },
+        {
+          "identity": {
+            "repository": "creusot-rs/creusot",
+            "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+          },
+          "name": "creusot-rs/creusot (cargo-creusot, creusot-install, and creusot-rustc)"
+        },
+        {
+          "identity": {
+            "repository": "viperproject/prusti-dev",
+            "revision": "d1196b5dd0c5874969d1913b33a48022f4236913"
+          },
+          "name": "viperproject/prusti-dev (cargo-prusti and prusti-rustc driver)"
+        },
+        {
+          "identity": {
+            "repository": "flux-rs/flux",
+            "revision": "828d6086c94a1171fce81fab449ace2abc9e1540"
+          },
+          "name": "flux-rs/flux (cargo-flux and flux-driver)"
+        }
+      ],
+      "topics": [
+        "cargo",
+        "cargo/workspaces",
+        "compilers",
+        "compilers/driver-architecture",
+        "compilers/plugins",
+        "llvm",
+        "llvm/clang",
+        "rust",
+        "rust/proc-macro",
+        "rustc",
+        "rustc/driver",
+        "rustc/rustc-private",
+        "tooling",
+        "tooling/lsp",
+        "tooling/multi-version",
+        "verification",
+        "verification/rust-verifiers"
+      ]
+    },
+    "multi-version-ir-migration-topologies-and-capability-schemas": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "ocaml-ppx/ocaml-migrate-parsetree",
+            "revision": "1d72648812bb235d1576f483cacdf546e25c03d8",
+            "version": "v1.8.0"
+          },
+          "name": "OCaml Migrate Parsetree v1 multi-version AST driver and pairwise functor chain"
+        },
+        {
+          "identity": {
+            "repository": "ocaml-ppx/ocaml-migrate-parsetree",
+            "revision": "5cb1140405820b9e8c751aada2268d3585b40d25"
+          },
+          "name": "OCaml Migrate Parsetree post-v2.4.0 deprecation revision"
+        },
+        {
+          "identity": {
+            "repository": "ocaml-ppx/ppxlib",
+            "revision": "11a46ff72c2cd8bc02068654950c2573746adff5"
+          },
+          "name": "ppxlib OCaml_502 trunk AST, Astlib pairwise migrations, and synthetic tunnel encodings"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "2252e5dc213dd1402eb8942de5fa1608b7460d50"
+          },
+          "name": "LLVM BitcodeReader/AutoUpgrade and MLIR BytecodeDialectInterface/DialectConversion"
+        },
+        {
+          "identity": {
+            "repository": "scala/scala3",
+            "revision": "ff8f3950da9d83b44df246ad32d5882c259a28bb",
+            "tasty_version": "28.11-1"
+          },
+          "name": "Scala 3 TASTy TastyFormat and TastyHeaderUnpickler"
+        },
+        {
+          "identity": {
+            "repository": "WebAssembly/spec",
+            "revision": "6fca707686ed4f36a1e30ec2ae7d3dd32b276704"
+          },
+          "name": "WebAssembly formal specification and OCaml reference binary decoder/validator"
+        },
+        {
+          "identity": {
+            "repository": "bytecodealliance/wasm-tools",
+            "revision": "97a984fd8eb54c055b2516af16489cf4cbf05065"
+          },
+          "name": "wasm-tools wasmparser WasmFeatures multi-proposal bitflag validator"
+        },
+        {
+          "identity": {
+            "repository": "AeneasVerif/charon",
+            "revision": "b23c297f57c0b2072de7967c7f17088db0278a8c",
+            "version": "0.1.324"
+          },
+          "name": "Charon ULLBC/LLBC CrateData exporter and charon-ml versioned deserializer"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust-analyzer",
+            "revision": "37721d141370e0904033f7fc3a3abe11c446c4c1"
+          },
+          "name": "rust-analyzer per-Span EditionedFileId/SyntaxContextData hygiene and edition-free MIR"
+        },
+        {
+          "identity": {
+            "revision": "189053d4a2bd460c5c557dba8569474ff0419e73",
+            "url": "https://git.frama-c.com/pub/frama-c.git"
+          },
+          "name": "Frama-C Machdep.mach YAML target/compiler capability record and builtin environment"
+        },
+        {
+          "identity": {
+            "repository": "KhronosGroup/SPIRV-Headers",
+            "revision": "fb1379425b16e58dcbdda7be0f8604a7f5cdce78",
+            "version": "1.6.rev7"
+          },
+          "name": "SPIR-V Unified1 headers and binary grammar"
+        },
+        {
+          "identity": {
+            "repository": "KhronosGroup/SPIRV-Tools",
+            "revision": "3c8fd35297315682906894621677f1b7003461ef"
+          },
+          "name": "SPIRV-Tools binary parser and two-sided OpCapability validator"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+          },
+          "name": "rustc Edition hygiene, AST/HIR/THIR edition desugaring, and CleanupPostBorrowck"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+            "version": "1.93.1"
+          },
+          "name": "rustc 1.93.1 MIR schema pin"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4a4ef493e3a1488c6e321570238084b38948f6db",
+            "version": "1.94.0"
+          },
+          "name": "rustc 1.94.0 MIR schema pin"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+            "version": "1.96.0"
+          },
+          "name": "rustc 1.96.0 MIR schema pin"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc 1.98.0-nightly (2026-05-30) MIR schema pin"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "rustc 1.99.0 MIR schema pin"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rustc 1.99.1 MIR schema pin"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+            "version": "1.101.0-nightly"
+          },
+          "name": "rustc 1.101.0-nightly (2026-10-20) non-linear DAG MIR schema pin"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "rustc 1.100.0 MIR schema pin"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc 1.102.0-nightly (2026-11-11) MIR schema pin"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal rustc-capture and Trusted.MirAst / Trusted.MirSemantics baseline"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/ir-migration",
+        "compilers/bytecode-versioning",
+        "rustc",
+        "rustc/mir",
+        "rustc/editions",
+        "rust",
+        "llvm",
+        "llvm/bitcode",
+        "llvm/mlir",
+        "charon",
+        "charon/llbc",
+        "aeneas",
+        "pl",
+        "pl/ast-evolution",
+        "verification",
+        "verification/rust",
+        "anneal",
+        "anneal/architecture"
       ]
     },
     "multicore-interrupt-controllers-plic-claim-complete-and-shared-mmio-ordering": {
@@ -101347,6 +102422,336 @@
         "verification"
       ]
     },
+    "rustc-twenty-four-release-mir-scaling-laws-and-dialect-adapters": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+            "version": "1.78.0"
+          },
+          "name": "rust-lang/rust (rustc 1.78.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "129f3b9964af4d4a709d1383930ade12dfe7c081",
+            "version": "1.79.0"
+          },
+          "name": "rust-lang/rust (rustc 1.79.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "051478957371ee0084a7c0913941d2a8c4757bb9",
+            "version": "1.80.0"
+          },
+          "name": "rust-lang/rust (rustc 1.80.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3f5fd8dd41153bc5fdca9427e9e05be2c767ba23",
+            "version": "1.80.1"
+          },
+          "name": "rust-lang/rust (rustc 1.80.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "eeb90cda1969383f56a2637cbd3037bdf598841c",
+            "version": "1.81.0"
+          },
+          "name": "rust-lang/rust (rustc 1.81.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f6e511eec7342f59a25f7c0534f1dbea00d01b14",
+            "version": "1.82.0"
+          },
+          "name": "rust-lang/rust (rustc 1.82.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "90b35a6239c3d8bdabc530a6a0816f7ff89a0aaf",
+            "version": "1.83.0"
+          },
+          "name": "rust-lang/rust (rustc 1.83.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+            "version": "1.84.0"
+          },
+          "name": "rust-lang/rust (rustc 1.84.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4d91de4e48198da2e33413efdcd9cd2cc0c46688",
+            "version": "1.85.0"
+          },
+          "name": "rust-lang/rust (rustc 1.85.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "05f9846f893b09a1be1fc8560e33fc3c815cfecb",
+            "version": "1.86.0"
+          },
+          "name": "rust-lang/rust (rustc 1.86.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "17067e9ac6d7ecb70e50f92c1944e545188d2359",
+            "version": "1.87.0"
+          },
+          "name": "rust-lang/rust (rustc 1.87.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "6b00bc3880198600130e1cf62b8f8a93494488cc",
+            "version": "1.88.0"
+          },
+          "name": "rust-lang/rust (rustc 1.88.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "29483883eed69d5fb4db01964cdf2af4d86e9cb2",
+            "version": "1.89.0"
+          },
+          "name": "rust-lang/rust (rustc 1.89.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "1159e78c4747b02ef996e55082b704c09b970588",
+            "version": "1.90.0"
+          },
+          "name": "rust-lang/rust (rustc 1.90.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "05f5a58e84a9c3a68586d70bf3d7442c571e379e",
+            "version": "1.91.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.91.0-nightly, 2025-08-19)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8297e351a40c1439a467bbbb6879088047f50b3",
+            "version": "1.91.0"
+          },
+          "name": "rust-lang/rust (rustc 1.91.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ded5c06cf21d2b93bffd5d884aa6e96934ee4234",
+            "version": "1.92.0"
+          },
+          "name": "rust-lang/rust (rustc 1.92.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "94b49fd998d6723e0a9240a7cff5f9df37b84dd8",
+            "version": "1.93.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.93.0-nightly, 2025-11-22)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "254b59607d4417e9dffbc307138ae5c86280fe4c",
+            "version": "1.93.0"
+          },
+          "name": "rust-lang/rust (rustc 1.93.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+            "version": "1.93.1"
+          },
+          "name": "rust-lang/rust (rustc 1.93.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "4a4ef493e3a1488c6e321570238084b38948f6db",
+            "version": "1.94.0"
+          },
+          "name": "rust-lang/rust (rustc 1.94.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "e408947bfd200af42db322daf0fadfe7e26d3bd1",
+            "version": "1.94.1"
+          },
+          "name": "rust-lang/rust (rustc 1.94.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "efc9e1b50cbf2cede7ebe25f0a1fc64fd8b3e942",
+            "version": "1.95.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.95.0-nightly, 2026-02-06)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c78a29473a68f07012904af11c92ecffa68fcc75",
+            "version": "1.95.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.95.0-nightly, 2026-02-22)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "59807616e1fa2540724bfbac14d7976d7e4a3860",
+            "version": "1.95.0"
+          },
+          "name": "rust-lang/rust (rustc 1.95.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+            "version": "1.96.0"
+          },
+          "name": "rust-lang/rust (rustc 1.96.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "bf4fbfb7a18d74e7cd8eef93af7329c58fbb5344",
+            "version": "1.97.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.97.0-nightly, 2026-04-11)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "2d8144b7880597b6e6d3dfd63a9a9efae3f533d3",
+            "version": "1.97.0"
+          },
+          "name": "rust-lang/rust (rustc 1.97.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.98.0-nightly, 2026-05-30)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.98.0-nightly, 2026-05-31)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "88d9e12ae178fab0fb5cc050a94da85685d449ea",
+            "version": "1.98.0"
+          },
+          "name": "rust-lang/rust (rustc 1.98.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+            "version": "1.99.0"
+          },
+          "name": "rust-lang/rust (rustc 1.99.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+            "version": "1.99.1"
+          },
+          "name": "rust-lang/rust (rustc 1.99.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "923c95cdf5ba65cea505aa2ea829f578e1506ed8",
+            "version": "1.100.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.100.0-nightly, 2026-09-16)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "rust-lang/rust (rustc 1.100.0)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly, 2026-11-11)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8eb778d04094d3af4b26580cab327e0413eb1e02",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly, 2026-11-12)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly, 2026-11-19)"
+        },
+        {
+          "identity": {
+            "repository": "dtolnay/rustversion",
+            "revision": "3a7c76605450b9a7299c6502a421909de9126a59",
+            "version": "1.0.23"
+          },
+          "name": "dtolnay/rustversion (rustversion 1.0.23)"
+        }
+      ],
+      "topics": [
+        "compilers",
+        "compilers/ir-evolution",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "rust",
+        "rustc",
+        "rustc/conditional-compilation",
+        "rustc/mir",
+        "rustc/rustc-private",
+        "tooling",
+        "verification"
+      ]
+    },
     "rustc-union-layout-scalar-union-abi-inhabitedness-and-byte-semantics": {
       "observed_at": "2026-11-22",
       "subjects": [
@@ -113020,6 +114425,248 @@
         "runtimes/async-io-completion",
         "security/parser-differentials",
         "pl/policy-evaluation"
+      ]
+    },
+    "toolchain-multiplexers-dynamic-loader-isolation-and-component-economics": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rustup",
+            "revision": "edbc831cec44dc2858a4a4dce768c74361d027dc",
+            "version": "1.29.3"
+          },
+          "name": "rustup toolchain multiplexer"
+        },
+        {
+          "identity": {
+            "repository": "golang/go",
+            "revision": "2aae1000ea1d4b28923b96db28acf4e3b99d6aff",
+            "version": "go1.27.3"
+          },
+          "name": "Go toolchain selector and module fetcher"
+        },
+        {
+          "identity": {
+            "repository": "marler8997/zigup",
+            "revision": "659aa0024ad2139c5d45ad1f4663834f14972c67"
+          },
+          "name": "zigup compiler manager"
+        },
+        {
+          "identity": {
+            "repository": "marler8997/anyzig",
+            "revision": "847a1628dd81f0b17335a024b16c97d4a03fabcb"
+          },
+          "name": "anyzig universal Zig launcher"
+        },
+        {
+          "identity": {
+            "repository": "bazelbuild/rules_rust",
+            "revision": "5d99ff2e58d1a0c9387fc4945029df11144bc8a3"
+          },
+          "name": "Bazel rules_rust toolchain registration and sysroot rules"
+        },
+        {
+          "identity": {
+            "repository": "oxalica/rust-overlay",
+            "revision": "5aa410a1df0e4e9c25f3818320651c2bddf66aff"
+          },
+          "name": "rust-overlay Nix Rust toolchain aggregator"
+        },
+        {
+          "identity": {
+            "repository": "nix-community/fenix",
+            "revision": "012c1a71bd93921f320def3d0e586cc4dd332b65"
+          },
+          "name": "fenix Nix Rust toolchain aggregator"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/elan",
+            "revision": "3d5138e1526a569a23901b8ee559032793cf445e",
+            "version": "v4.2.1"
+          },
+          "name": "elan Lean 4 toolchain multiplexer"
+        },
+        {
+          "identity": {
+            "repository": "nodejs/corepack",
+            "revision": "4210ff8b4dba03ab347098c3f59225f34cb05652",
+            "version": "v0.35.0"
+          },
+          "name": "Corepack Node.js package-manager shim"
+        },
+        {
+          "identity": {
+            "repository": "bazelbuild/bazelisk",
+            "revision": "1e6aaf11d51e83ec8d18e66b461f49d4b7877321",
+            "version": "v1.28.1"
+          },
+          "name": "Bazelisk launcher"
+        },
+        {
+          "identity": {
+            "repository": "astral-sh/python-build-standalone",
+            "revision": "98b27f721dbc67ded8c7d562aa5dd60c5507eda0"
+          },
+          "name": "python-build-standalone relocatable CPython builds"
+        },
+        {
+          "identity": {
+            "repository": "astral-sh/uv",
+            "revision": "264d8b4a5e10d195d2cc2a34dffa807cfbe6298c"
+          },
+          "name": "uv Python toolchain discovery and managed runtime"
+        },
+        {
+          "identity": {
+            "repository": "ziglang/zig",
+            "revision": "e4cbd752c8c05f131051f8c873cff7823177d7d3",
+            "version": "0.15.2"
+          },
+          "name": "Zig compiler bundled glibc ABI table"
+        },
+        {
+          "identity": {
+            "repository": "bminor/glibc",
+            "revision": "04e750e75b73957cf1c791535a3f4319534a52fc"
+          },
+          "name": "GNU C Library dynamic linker (ld.so)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3f679fef23cd006c336e2a4f7c6707e119d22206",
+            "version": "1.50.0"
+          },
+          "name": "Rust compiler (CAS symlink sysroot introduction)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b7c5599d22018ab6be88442c4668bc1697f85b8e",
+            "version": "1.54.0"
+          },
+          "name": "Rust compiler (filesearch.rs AT_FDCWD relative rustlib regression)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "09c42c45858d5f3aedfa670698275303a3d19afa",
+            "version": "1.56.0"
+          },
+          "name": "Rust compiler (1.56.0 release)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "fe5b13d681f25ee6474be29d748c65adcd91f69e",
+            "version": "1.61.0"
+          },
+          "name": "Rust compiler (1.61.0 release)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+            "version": "1.78.0"
+          },
+          "name": "Rust compiler (1.78.0 release)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "b4c439c3de913953a2968c6917e125fafaacf886",
+            "version": "1.80.0"
+          },
+          "name": "Rust compiler (relative_target_rustlib_path rename)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+            "version": "1.84.0"
+          },
+          "name": "Rust compiler (1.84.0 release)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+            "version": "1.93.1"
+          },
+          "name": "Rust compiler (1.93.1 release)"
+        },
+        {
+          "identity": {
+            "channel_manifest_sha256": "3051e859570f64a8c5acb9d09e87425db52c7d97287c67e8f6d57d7d34ef9258",
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "version": "1.100.0"
+          },
+          "name": "Rust compiler (1.100.0 stable release and Channel v2 manifest)"
+        },
+        {
+          "identity": {
+            "channel_manifest_sha256": "0e29758e4495709044396db6992e8bc44cd0109e7dbb21e430216cf368ac6c9d",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (2026-11-11)"
+          },
+          "name": "Rust compiler (1.102.0-nightly 2026-11-11 and Channel v2 manifest)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8eb778d04094d3af4b26580cab327e0413eb1e02",
+            "version": "1.102.0-nightly (2026-11-12)"
+          },
+          "name": "Rust compiler (1.102.0-nightly 2026-11-12 colliding libLLVM SONAME)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+            "version": "1.102.0-nightly (2026-11-19)"
+          },
+          "name": "Rust compiler (1.102.0-nightly 2026-11-19 colliding libLLVM SONAME)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover (v4.34.1)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 theorem prover (v4.35.0)"
+        }
+      ],
+      "topics": [
+        "build/hermeticity",
+        "build/nix",
+        "build/toolchain-multiplexers",
+        "cargo",
+        "compilers/toolchain-distribution",
+        "lean",
+        "llvm",
+        "runtimes/dynamic-linking",
+        "rust",
+        "rustc/driver",
+        "rustc/sysroot",
+        "security/supply-chain",
+        "security/tcb-hazards",
+        "systems/elf",
+        "tooling/elan",
+        "tooling/rustup",
+        "verification/compiler-verification"
       ]
     },
     "topological-brep-cad-persistent-naming-and-fabrication-compilers": {

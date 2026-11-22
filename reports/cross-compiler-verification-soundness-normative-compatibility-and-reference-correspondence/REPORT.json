@@ -1,0 +1,303 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/correspondence",
+    "anneal/forward-compatibility",
+    "anneal/tcb-audit",
+    "compilers",
+    "compilers/translation-validation",
+    "compilers/verified-rustc",
+    "isa/sail",
+    "lean",
+    "lean/mechanization",
+    "minirust",
+    "minirust/semantics",
+    "pl",
+    "pl/operational-semantics",
+    "rust",
+    "rust/layout",
+    "rust/semver",
+    "rust/unsafe",
+    "rustc",
+    "rustc/mir",
+    "security",
+    "security/tcb-hazards",
+    "verification",
+    "verification/compcert",
+    "verification/compiler-verification",
+    "verification/program-logics",
+    "verification/reference-model",
+    "verification/soundness",
+    "zerocopy",
+    "zerocopy/soundness-policy"
+  ],
+  "subjects": [
+    {
+      "name": "AbsInt/CompCert (verified C compiler and Clight frontend)",
+      "identity": {
+        "repository": "AbsInt/CompCert",
+        "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+      }
+    },
+    {
+      "name": "CakeML/cakeml (verified self-bootstrapping ML compiler in HOL4)",
+      "identity": {
+        "repository": "CakeML/cakeml",
+        "revision": "ae0f9538560c769b9b1b567ceb280eccd798e9ab",
+        "doi": "10.1017/S0956796818000229"
+      }
+    },
+    {
+      "name": "AdaCore/spark2014 (GNATprove and gnat2why formal verification toolset)",
+      "identity": {
+        "repository": "AdaCore/spark2014",
+        "revision": "d737789cf270fb29659d176793c9a40b7ae16714",
+        "why3_submodule_revision": "02050ad2905bc0f54e7efdf7ad809cfee7a67fef"
+      }
+    },
+    {
+      "name": "Frama-C (upstream GitLab repository with YAML machdep and WP memory models)",
+      "identity": {
+        "url": "https://git.frama-c.com/pub/frama-c.git",
+        "revision": "189053d4a2bd460c5c557dba8569474ff0419e73"
+      }
+    },
+    {
+      "name": "Frama-C/Frama-C-snapshot (historical GitHub mirror)",
+      "identity": {
+        "repository": "Frama-C/Frama-C-snapshot",
+        "revision": "639a3647736bf8ac127d00ebe4c4c259f75f9b87"
+      }
+    },
+    {
+      "name": "seL4/seL4 (microkernel C source and KernelBinaryVerificationBuild flags)",
+      "identity": {
+        "repository": "seL4/seL4",
+        "revision": "08c7e5fddb3111ff377745c8eefb07feb5c4cfb7"
+      }
+    },
+    {
+      "name": "seL4/l4v (Isabelle/HOL proofs, asmrefine export, and AutoCorres)",
+      "identity": {
+        "repository": "seL4/l4v",
+        "revision": "b0fe7693ca5943e08c49e038d33fd64dc7dfa72e"
+      }
+    },
+    {
+      "name": "seL4/graph-refine (SydTV-GL binary translation validator)",
+      "identity": {
+        "repository": "seL4/graph-refine",
+        "revision": "33d94bbdd6448ada368d4d925935e8cfdf7d93b4",
+        "doi": "10.1145/2491956.2462183"
+      }
+    },
+    {
+      "name": "seL4/seL4-CAmkES-L4v-dockerfiles (pinned GCC and SMT verification containers)",
+      "identity": {
+        "repository": "seL4/seL4-CAmkES-L4v-dockerfiles",
+        "revision": "9089989e1557dfa11334e9b3809032d863d53a24"
+      }
+    },
+    {
+      "name": "seL4/docs (verified architecture and toolchain matrix)",
+      "identity": {
+        "repository": "seL4/docs",
+        "revision": "97021d2f0b9458703d2254a34553a57f1f2ec3a1"
+      }
+    },
+    {
+      "name": "PrincetonUniversity/VST (Verified Software Toolchain in Coq/Rocq)",
+      "identity": {
+        "repository": "PrincetonUniversity/VST",
+        "revision": "d50ac1969f9f6586621895eb043ccf08a165f731"
+      }
+    },
+    {
+      "name": "verus-lang/verus (Verus deductive Rust verifier and vstd std_specs)",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "1ce6a59bd72713cf486a7660097fe5ac57519617"
+      }
+    },
+    {
+      "name": "creusot-rs/creusot (Creusot Rust verifier, extern_spec!, and Coma backend)",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+      }
+    },
+    {
+      "name": "minirust/minirust (mechanized operational reference specification for Rust)",
+      "identity": {
+        "repository": "minirust/minirust",
+        "revision": "063d784186d3252bee242217f218223205c0b568"
+      }
+    },
+    {
+      "name": "rems-project/sail (ISA specification language and Lean 4 backend)",
+      "identity": {
+        "repository": "rems-project/sail",
+        "revision": "97aa617dcd4d01575f773cb58ea1e8686858c8c2"
+      }
+    },
+    {
+      "name": "WasmCert/WasmCert-Coq (Coq mechanization of WebAssembly)",
+      "identity": {
+        "repository": "WasmCert/WasmCert-Coq",
+        "revision": "58a3d3f8b7af4dc8aa9351f254a9e672643b21f8"
+      }
+    },
+    {
+      "name": "WasmCert/WasmCert-Isabelle (Isabelle/HOL mechanization of WebAssembly)",
+      "identity": {
+        "repository": "WasmCert/WasmCert-Isabelle",
+        "revision": "d9b4659c8b38879a5fc7e0213950751a61091908"
+      }
+    },
+    {
+      "name": "runtimeverification/k (K Framework operational semantics platform)",
+      "identity": {
+        "repository": "runtimeverification/k",
+        "revision": "4a46d1231473b599c699160132fd6e76a5c46406"
+      }
+    },
+    {
+      "name": "kframework/c-semantics (K C11 semantics and compiler profiles)",
+      "identity": {
+        "repository": "kframework/c-semantics",
+        "revision": "e6879d14455771aa0cb3e3d201131d4d763a73a2"
+      }
+    },
+    {
+      "name": "runtimeverification/wasm-semantics (KWasm semantics)",
+      "identity": {
+        "repository": "runtimeverification/wasm-semantics",
+        "revision": "212271bd434bd402e27c42f6416854342733386d"
+      }
+    },
+    {
+      "name": "rust-lang/reference (The Rust Reference normative specification)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "rust-lang/rfcs (RFC 1122 Language SemVer and RFC 1105 API Evolution)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "google/zerocopy (forwards-compatibility policy and PaddingFree trait guards)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "b4c1107fa213ab01d860d6cb24a12fd0834f0df7"
+      }
+    },
+    {
+      "name": "joshlf/anneal (MIR semantics TCB and lean-miri correspondence harness)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "proofs-rs/lean-miri (Lean 4 reference MIR interpreter)",
+      "identity": {
+        "repository": "proofs-rs/lean-miri",
+        "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (Lean 4 v4.34.1 kernel checking support formalizations)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.78.0, LLVM 18.1.2)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "9b00956e56009bab2aa15d7bff10916599e3d6d6",
+        "version": "1.78.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.84.0, LLVM 19.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "9fc6b43126469e3858e2fe86cafb4f0fd5068869",
+        "version": "1.84.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.93.1, LLVM 21.1.8)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+        "version": "1.93.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.94.0, LLVM 21.1.8)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "4a4ef493e3a1488c6e321570238084b38948f6db",
+        "version": "1.94.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.96.0, LLVM 22.1.2)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+        "version": "1.96.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.99.0, LLVM 23.1.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+        "version": "1.99.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.99.1, LLVM 23.1.1)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+        "version": "1.99.1"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.100.0, LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "version": "1.100.0"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.102.0-nightly 2026-11-11, LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc 1.102.0-nightly 2026-11-19, LLVM 23.1.6)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+        "version": "1.102.0-nightly"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

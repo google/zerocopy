@@ -1,0 +1,1024 @@
+{
+  "schema": "ir-migration-topologies-probe/2",
+  "studied_pins_linear": [
+    {
+      "index": 0,
+      "label": "1.93.1",
+      "commit_sha": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+      "commit_or_release_date": "2026-02-11",
+      "channel": "stable",
+      "present_variants": [
+        "Rvalue::NullaryOp",
+        "Rvalue::ShallowInitBox",
+        "StatementKind::Retag",
+        "Rvalue::Use(Operand)",
+        "TerminatorKind::Goto{target}"
+      ]
+    },
+    {
+      "index": 1,
+      "label": "1.94.0",
+      "commit_sha": "4a4ef493e3a1488c6e321570238084b38948f6db",
+      "commit_or_release_date": "2026-03-02",
+      "channel": "stable",
+      "present_variants": [
+        "Operand::RuntimeChecks",
+        "Rvalue::ShallowInitBox",
+        "StatementKind::Retag",
+        "Rvalue::Use(Operand)",
+        "TerminatorKind::Goto{target}"
+      ]
+    },
+    {
+      "index": 2,
+      "label": "1.96.0",
+      "commit_sha": "ac68faa20c58cbccd01ee7208bf3b6e93a7d7f96",
+      "commit_or_release_date": "2026-05-25",
+      "channel": "stable",
+      "present_variants": [
+        "Operand::RuntimeChecks",
+        "StatementKind::Retag",
+        "Rvalue::Use(Operand)",
+        "TerminatorKind::Goto{target}"
+      ]
+    },
+    {
+      "index": 3,
+      "label": "1.98.0-nightly",
+      "commit_sha": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "commit_or_release_date": "2026-05-30",
+      "channel": "nightly",
+      "present_variants": [
+        "Operand::RuntimeChecks",
+        "Rvalue::Use(Operand,WithRetag)",
+        "Rvalue::Reborrow",
+        "TerminatorKind::Goto{target}"
+      ]
+    },
+    {
+      "index": 4,
+      "label": "1.99.0",
+      "commit_sha": "b940084d7eb6a299eb4bfeb8e34901bc051e7ac4",
+      "commit_or_release_date": "2026-09-28",
+      "channel": "stable",
+      "present_variants": [
+        "Operand::RuntimeChecks",
+        "Rvalue::Use(Operand,WithRetag)",
+        "Rvalue::Reborrow",
+        "AssertKind::NullReferenceConstructed",
+        "CastKind::BoxDerefTransmute",
+        "TerminatorKind::Goto{target}"
+      ]
+    },
+    {
+      "index": 5,
+      "label": "1.99.1",
+      "commit_sha": "58cf8f9c35b355199727627d07ae34a4e2846d67",
+      "commit_or_release_date": "2026-10-13",
+      "channel": "stable",
+      "present_variants": [
+        "Operand::RuntimeChecks",
+        "Rvalue::Use(Operand,WithRetag)",
+        "Rvalue::Reborrow",
+        "AssertKind::NullReferenceConstructed",
+        "CastKind::BoxDerefTransmute",
+        "TerminatorKind::Goto{target}"
+      ]
+    },
+    {
+      "index": 6,
+      "label": "1.100.0",
+      "commit_sha": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+      "commit_or_release_date": "2026-11-09",
+      "channel": "stable",
+      "present_variants": [
+        "Operand::RuntimeChecks",
+        "Rvalue::Use(Operand,WithRetag)",
+        "Rvalue::Reborrow",
+        "AssertKind::NullReferenceConstructed",
+        "CastKind::BoxDerefTransmute",
+        "ProjectionElem::PhantomDeref",
+        "TerminatorKind::Goto{target}"
+      ]
+    },
+    {
+      "index": 7,
+      "label": "1.102.0-nightly",
+      "commit_sha": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+      "commit_or_release_date": "2026-11-11",
+      "channel": "nightly",
+      "present_variants": [
+        "Operand::RuntimeChecks",
+        "Rvalue::Use(Operand,WithRetag)",
+        "Rvalue::Reborrow",
+        "AssertKind::NullReferenceConstructed",
+        "CastKind::BoxDerefTransmute",
+        "ProjectionElem::PhantomDeref",
+        "TerminatorKind::Goto{target,loop_hint_attrs}"
+      ]
+    }
+  ],
+  "studied_pin_nonlinear_witness": {
+    "index": -1,
+    "label": "1.101.0-nightly-2026-10-20",
+    "commit_sha": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+    "commit_or_release_date": "2026-10-20",
+    "channel": "nightly",
+    "present_variants": [
+      "Operand::RuntimeChecks",
+      "Rvalue::Use(Operand,WithRetag)",
+      "Rvalue::Reborrow",
+      "AssertKind::NullReferenceConstructed",
+      "CastKind::BoxDerefTransmute",
+      "ProjectionElem::PhantomDeref",
+      "TerminatorKind::Goto{target,loop_hint_attrs}"
+    ]
+  },
+  "syntax_mutations_count_structural": 9,
+  "syntax_mutations_atomic_entries": [
+    {
+      "mutation_id": "M1_remove_nullary_op",
+      "enum_name": "Rvalue",
+      "kind": "remove_variant",
+      "variant_before": "Rvalue::NullaryOp(NullOp)",
+      "variant_after": null,
+      "introduced_in_label": "1.94.0",
+      "causal_commit": "1a227bd47ff200975f4afb287ec725861ab8b87a",
+      "pr_number": 148766,
+      "semantic_class": "operational_removed",
+      "live_corpus_bodies_affected": 0
+    },
+    {
+      "mutation_id": "M2_add_runtime_checks",
+      "enum_name": "Operand",
+      "kind": "add_variant",
+      "variant_before": null,
+      "variant_after": "Operand::RuntimeChecks(RuntimeChecks)",
+      "introduced_in_label": "1.94.0",
+      "causal_commit": "6319bee585561a078de4a0f8d07d567ce69cf12c",
+      "pr_number": 148766,
+      "semantic_class": "operational_added",
+      "live_corpus_bodies_affected": 0
+    },
+    {
+      "mutation_id": "M3_remove_shallow_init_box",
+      "enum_name": "Rvalue",
+      "kind": "remove_variant",
+      "variant_before": "Rvalue::ShallowInitBox(Operand, Ty)",
+      "variant_after": null,
+      "introduced_in_label": "1.96.0",
+      "causal_commit": "6d4b1b38e76c0858c8e98f89afa37535261749ca",
+      "pr_number": 152758,
+      "semantic_class": "operational_removed",
+      "live_corpus_bodies_affected": 0
+    },
+    {
+      "mutation_id": "M4_remove_stmt_retag",
+      "enum_name": "StatementKind",
+      "kind": "remove_variant",
+      "variant_before": "StatementKind::Retag(RetagKind, Box<Place>)",
+      "variant_after": null,
+      "introduced_in_label": "1.98.0-nightly",
+      "causal_commit": "e402c1edf047a23b0cfef40c6097d1caa294050b",
+      "pr_number": 154341,
+      "semantic_class": "operational_split_fused",
+      "live_corpus_bodies_affected": 0
+    },
+    {
+      "mutation_id": "M5_widen_rvalue_use_with_retag",
+      "enum_name": "Rvalue",
+      "kind": "widen_variant_payload",
+      "variant_before": "Rvalue::Use(Operand)",
+      "variant_after": "Rvalue::Use(Operand, WithRetag)",
+      "introduced_in_label": "1.98.0-nightly",
+      "causal_commit": "e402c1edf047a23b0cfef40c6097d1caa294050b",
+      "pr_number": 154341,
+      "semantic_class": "operational_split_fused",
+      "live_corpus_bodies_affected": 126
+    },
+    {
+      "mutation_id": "M6_add_rvalue_reborrow",
+      "enum_name": "Rvalue",
+      "kind": "add_variant",
+      "variant_before": null,
+      "variant_after": "Rvalue::Reborrow(Ty, Mutability, Place)",
+      "introduced_in_label": "1.98.0-nightly",
+      "causal_commit": "2d88ee87ddaa584a19e438528f60f825f735076a",
+      "pr_number": 156290,
+      "semantic_class": "operational_added",
+      "live_corpus_bodies_affected": 0
+    },
+    {
+      "mutation_id": "M7_add_assert_null_ref",
+      "enum_name": "AssertKind",
+      "kind": "add_variant",
+      "variant_before": null,
+      "variant_after": "AssertKind::NullReferenceConstructed",
+      "introduced_in_label": "1.99.0",
+      "causal_commit": "1a982425b6699f2b26552c6b44cc979a3d84543b",
+      "pr_number": 158796,
+      "semantic_class": "operational_added",
+      "live_corpus_bodies_affected": 0
+    },
+    {
+      "mutation_id": "M8_add_cast_box_deref_transmute",
+      "enum_name": "CastKind",
+      "kind": "add_variant",
+      "variant_before": null,
+      "variant_after": "CastKind::BoxDerefTransmute",
+      "introduced_in_label": "1.99.0",
+      "causal_commit": "fcf68f21cf2f50e824bc4054ca4f46f0dd8ce42f",
+      "pr_number": 160339,
+      "semantic_class": "operational_added",
+      "live_corpus_bodies_affected": 5
+    },
+    {
+      "mutation_id": "M9a_add_proj_phantom_deref",
+      "enum_name": "ProjectionElem",
+      "kind": "add_variant",
+      "variant_before": null,
+      "variant_after": "ProjectionElem::PhantomDeref",
+      "introduced_in_label": "1.100.0",
+      "causal_commit": "5686e563774cd9e8bfba79d3ab1167fe198e9e78",
+      "pr_number": 159103,
+      "semantic_class": "operational_added",
+      "live_corpus_bodies_affected": 0
+    },
+    {
+      "mutation_id": "M9b_widen_goto_loop_hint_attrs",
+      "enum_name": "TerminatorKind",
+      "kind": "widen_struct_hint",
+      "variant_before": "TerminatorKind::Goto{target}",
+      "variant_after": "TerminatorKind::Goto{target,loop_hint_attrs}",
+      "introduced_in_label": "1.102.0-nightly",
+      "causal_commit": "ec45ecffeee8ba13e42a7f45b6cdad3155ebd146",
+      "pr_number": 163931,
+      "semantic_class": "non_operational_hint",
+      "live_corpus_bodies_affected": 0
+    }
+  ],
+  "scaling_and_allocation_metrics": {
+    "num_linear_pins": 8,
+    "total_pins_including_nonlinear_nightly": 9,
+    "corpus_bodies_per_pin": 782,
+    "strict_9_pin_variant_intersection": [],
+    "topologies": {
+      "T1_latest_canonical_raw_ir": {
+        "canonical_target_pin": "1.102.0-nightly",
+        "evaluator_and_proof_engines_to_maintain": 1,
+        "evaluator_proof_churn_on_compiler_bump": true,
+        "deleted_historical_variants_unrepresentable": [
+          "Rvalue::ShallowInitBox(Operand, Ty)",
+          "StatementKind::Retag(RetagKind, Box<Place>)"
+        ],
+        "handles_nonlinear_release_dag_cleanly": false
+      },
+      "T2_oldest_or_intersection_ir": {
+        "canonical_target_pin": "1.93.1",
+        "evaluator_and_proof_engines_to_maintain": 1,
+        "strict_9_pin_intersection_count": 0,
+        "live_corpus_bodies_affected_by_missing_newer_forms": 126,
+        "live_memchr_bodies_rejected_on_box_deref_transmute": 5,
+        "handles_nonlinear_release_dag_cleanly": false
+      },
+      "T3_pairwise_stepwise_migration_chain": {
+        "T3a_unidir_chain_to_latest": {
+          "migration_modules_to_maintain": 7,
+          "ast_to_ast_hops_by_pin": {
+            "1.93.1": 7,
+            "1.94.0": 6,
+            "1.96.0": 5,
+            "1.98.0-nightly": 4,
+            "1.99.0": 3,
+            "1.99.1": 2,
+            "1.100.0": 1,
+            "1.102.0-nightly": 0
+          },
+          "max_ast_to_ast_hops": 7,
+          "mean_ast_to_ast_hops": 3.5,
+          "total_extra_body_allocations_across_8_pins_on_782_bodies": 21896,
+          "handles_nonlinear_release_dag_cleanly": false
+        },
+        "T3b_omp_v1_bidir_heterogeneous_chain": {
+          "migration_modules_to_maintain": 14,
+          "worst_case_roundtrip_hops_latest_with_v0_plugin": 14,
+          "extra_body_allocations_per_782_body_crate_worst_case": 10948,
+          "unrelated_code_newer_syntax_crash": true,
+          "handles_nonlinear_release_dag_cleanly": false
+        },
+        "T3c_ppxlib_lagging_hub_pairwise_chain": {
+          "hub_pin": "1.98.0-nightly",
+          "migration_modules_to_maintain_unidir": 7,
+          "migration_modules_to_maintain_bidir": 14,
+          "unidir_hops_by_pin": {
+            "1.93.1": 3,
+            "1.94.0": 2,
+            "1.96.0": 1,
+            "1.98.0-nightly": 0,
+            "1.99.0": 1,
+            "1.99.1": 2,
+            "1.100.0": 3,
+            "1.102.0-nightly": 4
+          },
+          "bidir_roundtrip_hops_by_pin": {
+            "1.93.1": 6,
+            "1.94.0": 4,
+            "1.96.0": 2,
+            "1.98.0-nightly": 0,
+            "1.99.0": 2,
+            "1.99.1": 4,
+            "1.100.0": 6,
+            "1.102.0-nightly": 8
+          },
+          "max_unidir_hops": 4,
+          "max_bidir_hops": 8,
+          "total_extra_body_allocations_unidir_across_8_pins": 12512,
+          "total_extra_body_allocations_bidir_across_8_pins": 25024,
+          "newer_pins_requiring_tunnel_or_failing": [
+            "1.99.0",
+            "1.99.1",
+            "1.100.0",
+            "1.102.0-nightly"
+          ],
+          "live_memchr_bodies_broken_or_tunneled_on_1_99_plus": 5,
+          "handles_nonlinear_release_dag_cleanly": false
+        }
+      },
+      "T4_direct_spoke_to_superset_trunk": {
+        "spoke_emitters_by_pin": 9,
+        "distinct_syntax_equivalence_classes_among_8_pins": 7,
+        "distinct_syntax_equivalence_classes_among_all_9_pins": 7,
+        "evaluator_and_proof_engines_to_maintain": 1,
+        "ast_to_ast_hops_by_pin": {
+          "1.93.1": 0,
+          "1.94.0": 0,
+          "1.96.0": 0,
+          "1.98.0-nightly": 0,
+          "1.99.0": 0,
+          "1.99.1": 0,
+          "1.100.0": 0,
+          "1.102.0-nightly": 0
+        },
+        "max_ast_to_ast_hops": 0,
+        "direct_tyctxt_to_trunk_passes_per_pin": 1,
+        "total_extra_body_allocations_across_8_pins_on_782_bodies": 0,
+        "synthetic_tunnel_attributes": 0,
+        "handles_nonlinear_release_dag_cleanly": true,
+        "supports_zero_edit_cross_pin_proof_reuse": true
+      },
+      "T5_separate_per_version_irs_and_evaluators": {
+        "disjoint_ast_and_evaluator_stacks_all_9_pins": 9,
+        "disjoint_ast_and_evaluator_stacks_syntax_deduped": 7,
+        "reference_correspondence_proofs_to_maintain": 9,
+        "ast_to_ast_hops": 0,
+        "lossy_specimens": 0,
+        "handles_nonlinear_release_dag_cleanly": true,
+        "supports_zero_edit_cross_pin_proof_reuse": false
+      }
+    },
+    "nonlinear_dag_witness": {
+      "earlier_calendar_pin": "1.101.0-nightly-2026-10-20",
+      "earlier_calendar_sha": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+      "earlier_calendar_date": "2026-10-20",
+      "later_calendar_pin": "1.100.0",
+      "later_calendar_sha": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+      "later_calendar_date": "2026-11-09",
+      "oscillating_variants_under_date_order": [
+        "TerminatorKind::Goto{target,loop_hint_attrs}",
+        "TerminatorKind::Goto{target}"
+      ],
+      "explanation": "`8144389c` (2026-10-20 nightly) carries `Goto { target, loop_hint_attrs }` (`ec45ecff`, 2026-10-07), whereas `1.100.0` (`0ef1bc38`, released 2026-11-09 from the earlier beta branch) has `PhantomDeref` (`5686e563`, 2026-08-27) without `loop_hint_attrs`. Calendar ordering oscillates `+loop_hint_attrs -> -loop_hint_attrs -> +loop_hint_attrs`; spoke-to-superset-trunk lowers both in 1 hop with 0 oscillation."
+    }
+  },
+  "specimen_evaluations": {
+    "T1_latest_canonical_raw_ir": [
+      {
+        "specimen": "S1_scalar_copy_legacy",
+        "origin_pin": "1.93.1",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S2_ref_copy_legacy",
+        "origin_pin": "1.96.0",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S3_explicit_fn_entry_retag",
+        "origin_pin": "1.96.0",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": true,
+        "lossy_or_hazard_reason": "Removed variant `StatementKind::Retag` (`e402c1ed`) has no `StatementKind` representation in `1.98+` `syntax.rs`: dropping it is UNSOUND for aliasing UB, while synthesizing `_tmp = Use(Copy(_1), WithRetag::Yes)` mutates `LocalDecls`."
+      },
+      {
+        "specimen": "S4_nullary_op_ub_checks",
+        "origin_pin": "1.93.1",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S5_shallow_init_box",
+        "origin_pin": "1.94.0",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": true,
+        "lossy_or_hazard_reason": "Removed variant `Rvalue::ShallowInitBox` (`6d4b1b38`) has no 1:1 Rvalue in `1.96.0+` `syntax.rs`; requires multi-statement ADT/transmute synthesis or abort."
+      },
+      {
+        "specimen": "S6_operand_runtime_checks",
+        "origin_pin": "1.94.0",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S7_use_with_retag_no",
+        "origin_pin": "1.99.0",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S8_use_with_retag_yes_ref",
+        "origin_pin": "1.99.0",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S9_box_deref_transmute",
+        "origin_pin": "1.99.0",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S10_null_ref_assert_and_phantom_deref",
+        "origin_pin": "1.100.0",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S11_goto_with_loop_hint_attrs",
+        "origin_pin": "1.102.0-nightly",
+        "canonical_pin": "1.102.0-nightly",
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      }
+    ],
+    "T2_oldest_or_intersection_ir": [
+      {
+        "specimen": "S1_scalar_copy_legacy",
+        "origin_pin": "1.93.1",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S2_ref_copy_legacy",
+        "origin_pin": "1.96.0",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S3_explicit_fn_entry_retag",
+        "origin_pin": "1.96.0",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S4_nullary_op_ub_checks",
+        "origin_pin": "1.93.1",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S5_shallow_init_box",
+        "origin_pin": "1.94.0",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S6_operand_runtime_checks",
+        "origin_pin": "1.94.0",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": true,
+        "lossy_or_hazard_reason": "Construct `Operand::RuntimeChecks(UbChecks)` from `1.94.0` is absent in `1.93.1` and in the 9-pin common intersection; erasing it sacrifices soundness or rejects newer crates."
+      },
+      {
+        "specimen": "S7_use_with_retag_no",
+        "origin_pin": "1.99.0",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": true,
+        "lossy_or_hazard_reason": "Construct `Rvalue::Use(Copy(&T), WithRetag::No)` from `1.99.0` is absent in `1.93.1` and in the 9-pin common intersection; erasing it sacrifices soundness or rejects newer crates."
+      },
+      {
+        "specimen": "S8_use_with_retag_yes_ref",
+        "origin_pin": "1.99.0",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": true,
+        "lossy_or_hazard_reason": "Oldest `1.93.1` `Rvalue::Use(Operand)` lacks `WithRetag`: collapsing `WithRetag::Yes` into plain `Use` silently drops implicit reference retagging (UNSOUND), whereas synthesizing separate `StatementKind::Retag` alters statement indices."
+      },
+      {
+        "specimen": "S9_box_deref_transmute",
+        "origin_pin": "1.99.0",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": true,
+        "lossy_or_hazard_reason": "`CastKind::BoxDerefTransmute` (`fcf68f21`, `1.99.0+`) is absent in `1.93.1` and the common intersection, rejecting 5 / 641 live `memchr` bodies."
+      },
+      {
+        "specimen": "S10_null_ref_assert_and_phantom_deref",
+        "origin_pin": "1.100.0",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": true,
+        "lossy_or_hazard_reason": "Construct `AssertKind::NullReferenceConstructed+ProjectionElem::PhantomDeref` from `1.100.0` is absent in `1.93.1` and in the 9-pin common intersection; erasing it sacrifices soundness or rejects newer crates."
+      },
+      {
+        "specimen": "S11_goto_with_loop_hint_attrs",
+        "origin_pin": "1.102.0-nightly",
+        "target_pin": "1.93.1",
+        "cannot_represent_in_oldest_or_intersection": true,
+        "lossy_or_hazard_reason": "Strict syntactic intersection lacks `loop_hint_attrs`; erasing non-operational hints is sound for verification but loses round-trip AST fidelity."
+      }
+    ],
+    "T3a_pairwise_chain_to_latest_raw_ast": [
+      {
+        "specimen": "S1_scalar_copy_legacy",
+        "origin_pin": "1.93.1",
+        "target_pin": "1.102.0-nightly",
+        "hops": 7,
+        "intermediate_ast_allocations": 6,
+        "total_full_body_copies": 7,
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S2_ref_copy_legacy",
+        "origin_pin": "1.96.0",
+        "target_pin": "1.102.0-nightly",
+        "hops": 5,
+        "intermediate_ast_allocations": 4,
+        "total_full_body_copies": 5,
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S3_explicit_fn_entry_retag",
+        "origin_pin": "1.96.0",
+        "target_pin": "1.102.0-nightly",
+        "hops": 5,
+        "intermediate_ast_allocations": 4,
+        "total_full_body_copies": 5,
+        "cannot_represent_in_latest_raw_ast": true,
+        "lossy_or_hazard_reason": "Removed variant `StatementKind::Retag` (`e402c1ed`) has no `StatementKind` representation in `1.98+` `syntax.rs`: dropping it is UNSOUND for aliasing UB, while synthesizing `_tmp = Use(Copy(_1), WithRetag::Yes)` mutates `LocalDecls`."
+      },
+      {
+        "specimen": "S4_nullary_op_ub_checks",
+        "origin_pin": "1.93.1",
+        "target_pin": "1.102.0-nightly",
+        "hops": 7,
+        "intermediate_ast_allocations": 6,
+        "total_full_body_copies": 7,
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S5_shallow_init_box",
+        "origin_pin": "1.94.0",
+        "target_pin": "1.102.0-nightly",
+        "hops": 6,
+        "intermediate_ast_allocations": 5,
+        "total_full_body_copies": 6,
+        "cannot_represent_in_latest_raw_ast": true,
+        "lossy_or_hazard_reason": "Removed variant `Rvalue::ShallowInitBox` (`6d4b1b38`) has no 1:1 Rvalue in `1.96.0+` `syntax.rs`; requires multi-statement ADT/transmute synthesis or abort."
+      },
+      {
+        "specimen": "S6_operand_runtime_checks",
+        "origin_pin": "1.94.0",
+        "target_pin": "1.102.0-nightly",
+        "hops": 6,
+        "intermediate_ast_allocations": 5,
+        "total_full_body_copies": 6,
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S7_use_with_retag_no",
+        "origin_pin": "1.99.0",
+        "target_pin": "1.102.0-nightly",
+        "hops": 3,
+        "intermediate_ast_allocations": 2,
+        "total_full_body_copies": 3,
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S8_use_with_retag_yes_ref",
+        "origin_pin": "1.99.0",
+        "target_pin": "1.102.0-nightly",
+        "hops": 3,
+        "intermediate_ast_allocations": 2,
+        "total_full_body_copies": 3,
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S9_box_deref_transmute",
+        "origin_pin": "1.99.0",
+        "target_pin": "1.102.0-nightly",
+        "hops": 3,
+        "intermediate_ast_allocations": 2,
+        "total_full_body_copies": 3,
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S10_null_ref_assert_and_phantom_deref",
+        "origin_pin": "1.100.0",
+        "target_pin": "1.102.0-nightly",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "total_full_body_copies": 1,
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      },
+      {
+        "specimen": "S11_goto_with_loop_hint_attrs",
+        "origin_pin": "1.102.0-nightly",
+        "target_pin": "1.102.0-nightly",
+        "hops": 0,
+        "intermediate_ast_allocations": 0,
+        "total_full_body_copies": 0,
+        "cannot_represent_in_latest_raw_ast": false,
+        "lossy_or_hazard_reason": null
+      }
+    ],
+    "T3c_lagging_hub_1_98_unidir": [
+      {
+        "specimen": "S1_scalar_copy_legacy",
+        "origin_pin": "1.93.1",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 3,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S2_ref_copy_legacy",
+        "origin_pin": "1.96.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 1,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S3_explicit_fn_entry_retag",
+        "origin_pin": "1.96.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 1,
+        "requires_synthetic_tunnel_or_migration_error": true,
+        "hazard": "Legacy construct `StatementKind::Retag(FnEntry, _1)` from `1.96.0` was deleted before hub `1.98.0-nightly`."
+      },
+      {
+        "specimen": "S4_nullary_op_ub_checks",
+        "origin_pin": "1.93.1",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 3,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S5_shallow_init_box",
+        "origin_pin": "1.94.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 2,
+        "requires_synthetic_tunnel_or_migration_error": true,
+        "hazard": "Legacy construct `Rvalue::ShallowInitBox(ptr, T)` from `1.94.0` was deleted before hub `1.98.0-nightly`."
+      },
+      {
+        "specimen": "S6_operand_runtime_checks",
+        "origin_pin": "1.94.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 2,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S7_use_with_retag_no",
+        "origin_pin": "1.99.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 1,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S8_use_with_retag_yes_ref",
+        "origin_pin": "1.99.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 1,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S9_box_deref_transmute",
+        "origin_pin": "1.99.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 1,
+        "requires_synthetic_tunnel_or_migration_error": true,
+        "hazard": "Construct `CastKind::BoxDerefTransmute` from `1.99.0` does not exist in lagging hub `1.98.0-nightly`: downgrade either raises `Migration_error` (blocking 5/641 `memchr` bodies on `BoxDerefTransmute`) or requires `ppxlib.migration.*`-style synthetic attribute/extension tunneling."
+      },
+      {
+        "specimen": "S10_null_ref_assert_and_phantom_deref",
+        "origin_pin": "1.100.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 3,
+        "requires_synthetic_tunnel_or_migration_error": true,
+        "hazard": "Construct `AssertKind::NullReferenceConstructed+ProjectionElem::PhantomDeref` from `1.100.0` does not exist in lagging hub `1.98.0-nightly`: downgrade either raises `Migration_error` (blocking 5/641 `memchr` bodies on `BoxDerefTransmute`) or requires `ppxlib.migration.*`-style synthetic attribute/extension tunneling."
+      },
+      {
+        "specimen": "S11_goto_with_loop_hint_attrs",
+        "origin_pin": "1.102.0-nightly",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": false,
+        "hops": 4,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      }
+    ],
+    "T3c_lagging_hub_1_98_bidir_roundtrip": [
+      {
+        "specimen": "S1_scalar_copy_legacy",
+        "origin_pin": "1.93.1",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 6,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S2_ref_copy_legacy",
+        "origin_pin": "1.96.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 2,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S3_explicit_fn_entry_retag",
+        "origin_pin": "1.96.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 2,
+        "requires_synthetic_tunnel_or_migration_error": true,
+        "hazard": "Legacy construct `StatementKind::Retag(FnEntry, _1)` from `1.96.0` was deleted before hub `1.98.0-nightly`."
+      },
+      {
+        "specimen": "S4_nullary_op_ub_checks",
+        "origin_pin": "1.93.1",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 6,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S5_shallow_init_box",
+        "origin_pin": "1.94.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 4,
+        "requires_synthetic_tunnel_or_migration_error": true,
+        "hazard": "Legacy construct `Rvalue::ShallowInitBox(ptr, T)` from `1.94.0` was deleted before hub `1.98.0-nightly`."
+      },
+      {
+        "specimen": "S6_operand_runtime_checks",
+        "origin_pin": "1.94.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 4,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S7_use_with_retag_no",
+        "origin_pin": "1.99.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 2,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S8_use_with_retag_yes_ref",
+        "origin_pin": "1.99.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 2,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": null
+      },
+      {
+        "specimen": "S9_box_deref_transmute",
+        "origin_pin": "1.99.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 2,
+        "requires_synthetic_tunnel_or_migration_error": true,
+        "hazard": "Construct `CastKind::BoxDerefTransmute` from `1.99.0` does not exist in lagging hub `1.98.0-nightly`: downgrade either raises `Migration_error` (blocking 5/641 `memchr` bodies on `BoxDerefTransmute`) or requires `ppxlib.migration.*`-style synthetic attribute/extension tunneling."
+      },
+      {
+        "specimen": "S10_null_ref_assert_and_phantom_deref",
+        "origin_pin": "1.100.0",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 6,
+        "requires_synthetic_tunnel_or_migration_error": true,
+        "hazard": "Construct `AssertKind::NullReferenceConstructed+ProjectionElem::PhantomDeref` from `1.100.0` does not exist in lagging hub `1.98.0-nightly`: downgrade either raises `Migration_error` (blocking 5/641 `memchr` bodies on `BoxDerefTransmute`) or requires `ppxlib.migration.*`-style synthetic attribute/extension tunneling."
+      },
+      {
+        "specimen": "S11_goto_with_loop_hint_attrs",
+        "origin_pin": "1.102.0-nightly",
+        "hub_pin": "1.98.0-nightly",
+        "round_trip": true,
+        "hops": 8,
+        "requires_synthetic_tunnel_or_migration_error": false,
+        "hazard": "Downgrading `Goto { loop_hint_attrs }` to `1.98` drops `#[loop_match]` attributes unless tunneled."
+      }
+    ],
+    "T4_spoke_to_superset_trunk_with_capabilities": [
+      {
+        "specimen": "S1_scalar_copy_legacy",
+        "origin_pin": "1.93.1",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": false,
+        "trunk_node": "TrunkRvalue::Use(op, with_retag=False)",
+        "required_capability": "CAP_CORE_SCALAR_CFG",
+        "disposition_under_v1_scalar_caps": "admitted_exact",
+        "disposition_under_full_caps": "admitted_exact"
+      },
+      {
+        "specimen": "S2_ref_copy_legacy",
+        "origin_pin": "1.96.0",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": false,
+        "trunk_node": "TrunkRvalue::Use(op, with_retag=False)",
+        "required_capability": "CAP_STACKED_OR_TREE_RETAG",
+        "disposition_under_v1_scalar_caps": "fail_closed_unsupported(CAP_STACKED_OR_TREE_RETAG)",
+        "disposition_under_full_caps": "admitted_exact"
+      },
+      {
+        "specimen": "S3_explicit_fn_entry_retag",
+        "origin_pin": "1.96.0",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": false,
+        "trunk_node": "TrunkStmt::Retag(FnEntry, _1)",
+        "required_capability": "CAP_STACKED_OR_TREE_RETAG",
+        "disposition_under_v1_scalar_caps": "fail_closed_unsupported(CAP_STACKED_OR_TREE_RETAG)",
+        "disposition_under_full_caps": "admitted_exact"
+      },
+      {
+        "specimen": "S4_nullary_op_ub_checks",
+        "origin_pin": "1.93.1",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": false,
+        "trunk_node": "TrunkOperand::RuntimeChecks(UbChecks)",
+        "required_capability": "CAP_RUNTIME_CHECKS_FLAG",
+        "disposition_under_v1_scalar_caps": "fail_closed_unsupported(CAP_RUNTIME_CHECKS_FLAG)",
+        "disposition_under_full_caps": "admitted_exact"
+      },
+      {
+        "specimen": "S5_shallow_init_box",
+        "origin_pin": "1.94.0",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": false,
+        "trunk_node": "TrunkRvalue::ShallowInitBox(ptr, T)",
+        "required_capability": "CAP_BOX_ALLOC_LAYOUT",
+        "disposition_under_v1_scalar_caps": "fail_closed_unsupported(CAP_BOX_ALLOC_LAYOUT)",
+        "disposition_under_full_caps": "admitted_exact"
+      },
+      {
+        "specimen": "S6_operand_runtime_checks",
+        "origin_pin": "1.94.0",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": false,
+        "trunk_node": "TrunkOperand::RuntimeChecks(UbChecks)",
+        "required_capability": "CAP_RUNTIME_CHECKS_FLAG",
+        "disposition_under_v1_scalar_caps": "fail_closed_unsupported(CAP_RUNTIME_CHECKS_FLAG)",
+        "disposition_under_full_caps": "admitted_exact"
+      },
+      {
+        "specimen": "S7_use_with_retag_no",
+        "origin_pin": "1.99.0",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": false,
+        "trunk_node": "TrunkRvalue::Use(op, with_retag=False)",
+        "required_capability": "CAP_STACKED_OR_TREE_RETAG",
+        "disposition_under_v1_scalar_caps": "fail_closed_unsupported(CAP_STACKED_OR_TREE_RETAG)",
+        "disposition_under_full_caps": "admitted_exact"
+      },
+      {
+        "specimen": "S8_use_with_retag_yes_ref",
+        "origin_pin": "1.99.0",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": false,
+        "trunk_node": "TrunkRvalue::Use(op, with_retag=True)",
+        "required_capability": "CAP_STACKED_OR_TREE_RETAG",
+        "disposition_under_v1_scalar_caps": "fail_closed_unsupported(CAP_STACKED_OR_TREE_RETAG)",
+        "disposition_under_full_caps": "admitted_exact"
+      },
+      {
+        "specimen": "S9_box_deref_transmute",
+        "origin_pin": "1.99.0",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": false,
+        "trunk_node": "TrunkRvalue::Cast(BoxDerefTransmute, op, ty)",
+        "required_capability": "CAP_BOX_ALLOC_LAYOUT",
+        "disposition_under_v1_scalar_caps": "fail_closed_unsupported(CAP_BOX_ALLOC_LAYOUT)",
+        "disposition_under_full_caps": "admitted_exact"
+      },
+      {
+        "specimen": "S10_null_ref_assert_and_phantom_deref",
+        "origin_pin": "1.100.0",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": false,
+        "trunk_node": "TrunkAssert::NullReferenceConstructed + TrunkProj::PhantomDeref",
+        "required_capability": "CAP_CUSTOM_REBORROW",
+        "disposition_under_v1_scalar_caps": "fail_closed_unsupported(CAP_CUSTOM_REBORROW)",
+        "disposition_under_full_caps": "admitted_exact"
+      },
+      {
+        "specimen": "S11_goto_with_loop_hint_attrs",
+        "origin_pin": "1.102.0-nightly",
+        "hops": 1,
+        "intermediate_ast_allocations": 0,
+        "synthetic_tunnel_attrs": 0,
+        "lossy_or_unsound": false,
+        "erased_non_operational_hint": true,
+        "trunk_node": "TrunkTerm::Goto(target)",
+        "required_capability": "CAP_CORE_SCALAR_CFG",
+        "disposition_under_v1_scalar_caps": "admitted_exact",
+        "disposition_under_full_caps": "admitted_exact"
+      }
+    ]
+  },
+  "summary_counts": {
+    "specimens_total": 11,
+    "T1_unrepresentable_in_latest_raw_ast": 2,
+    "T2_unrepresentable_in_oldest_or_intersection": 6,
+    "T3c_lagging_hub_tunnel_or_error_unidir": 4,
+    "T3c_lagging_hub_hazards_bidir": 5,
+    "T4_lossy_or_unsound": 0,
+    "T4_admitted_under_v1_scalar_caps": 2,
+    "T4_fail_closed_under_v1_scalar_caps": 9,
+    "T5_evaluator_and_proof_stack_multiplier_9_pins": 9,
+    "T5_evaluator_and_proof_stack_multiplier_syntax_deduped": 7
+  }
+}
