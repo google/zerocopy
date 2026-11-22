@@ -1,0 +1,144 @@
+{
+ "elaborate_box_derefs": {
+  "after_mir": [
+   "// MIR for `read_box_u64` after ElaborateBoxDerefs",
+   "",
+   "fn read_box_u64(_1: &Box<u64>) -> u64 {",
+   "    debug b => _1;",
+   "    let mut _0: u64;",
+   "    let mut _2: std::boxed::Box<u64>;",
+   "    let mut _3: *const u64;",
+   "",
+   "    bb0: {",
+   "        _2 = no_retag copy (*_1);",
+   "        _3 = copy (_2.0: std::boxed::BoxRaw<u64>) as *const u64 (BoxDerefTransmute);",
+   "        _0 = copy (*_3);",
+   "        return;",
+   "    }",
+   "}"
+  ],
+  "before_mir": [
+   "// MIR for `read_box_u64` before ElaborateBoxDerefs",
+   "",
+   "fn read_box_u64(_1: &Box<u64>) -> u64 {",
+   "    debug b => _1;",
+   "    let mut _0: u64;",
+   "    let mut _2: std::boxed::Box<u64>;",
+   "",
+   "    bb0: {",
+   "        _2 = no_retag copy (*_1);",
+   "        _0 = copy (*_2);",
+   "        return;",
+   "    }",
+   "}"
+  ],
+  "function": "read_box_u64 (signature and body as shown in the MIR below)"
+ },
+ "how_to_read": [
+  "Use only as corroboration of what the source at the same commit says.",
+  "The numeric fields cannot be interpreted beyond face value because the probe functions that produced them are not preserved; they are NOT comparable with probe_results_rustc_14210df0e.json, which comes from different probe functions.",
+  "To turn this record into a reproducible observation, run probe_boxraw_call_guards_and_pipeline_closure.py with the toolchain named below."
+ ],
+ "notes_on_other_fields": [
+  "critical_call_edges: the recorded call case shows 5 blocks before and after, i.e. that probe function had no critical call edge; the asm-label case shows 6 -> 7.",
+  "multiple_return_terminators.returns_at_mir_opt2 = 0 was computed from a dump of the pass itself; the pass does not run (and therefore produces no dump) below MIR opt level 4, so 0 here means 'no dump', not 'no return terminators'.",
+  "remove_unneeded_drops_opaque_rpit: no Drop terminator before or after; that probe function did not exercise the pass."
+ ],
+ "other_recorded_fields_verbatim": {
+  "constructor_reify_miri_rc": 0,
+  "critical_call_edges": {
+   "asm_label_bbs_after_initial": 7,
+   "asm_label_bbs_before_initial": 6,
+   "call_bbs_after_initial": 5,
+   "call_bbs_before_initial": 5
+  },
+  "multiple_return_terminators": {
+   "opt4_after_mir": [
+    "// MIR for `multi_return_branch` after MultipleReturnTerminators",
+    "",
+    "fn multi_return_branch(_1: u32) -> u32 {",
+    "    debug x => _1;",
+    "    let mut _0: u32;",
+    "",
+    "    bb0: {",
+    "        switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];",
+    "    }",
+    "",
+    "    bb1: {",
+    "        _0 = const 30_u32;",
+    "        return;",
+    "    }",
+    "",
+    "    bb2: {",
+    "        _0 = const 20_u32;",
+    "        return;",
+    "    }",
+    "",
+    "    bb3: {",
+    "        _0 = const 10_u32;",
+    "        return;",
+    "    }",
+    "}"
+   ],
+   "returns_at_mir_opt2": 0,
+   "returns_at_mir_opt4": 3
+  },
+  "remove_unneeded_drops_opaque_rpit": {
+   "after_mir": [
+    "// MIR for `drop_opaque_caller` after RemoveUnneededDrops",
+    "",
+    "fn drop_opaque_caller() -> u32 {",
+    "    let mut _0: u32;",
+    "    let _1: u32;",
+    "    scope 1 {",
+    "        debug _x => _1;",
+    "    }",
+    "    scope 2 (inlined mk_opaque_u32) {",
+    "    }",
+    "",
+    "    bb0: {",
+    "        StorageLive(_1);",
+    "        _1 = const 42_u32;",
+    "        _0 = const 99_u32;",
+    "        StorageDead(_1);",
+    "        return;",
+    "    }",
+    "}"
+   ],
+   "before_mir": [
+    "// MIR for `drop_opaque_caller` before RemoveUnneededDrops",
+    "",
+    "fn drop_opaque_caller() -> u32 {",
+    "    let mut _0: u32;",
+    "    let _1: u32;",
+    "    scope 1 {",
+    "        debug _x => _1;",
+    "    }",
+    "    scope 2 (inlined mk_opaque_u32) {",
+    "    }",
+    "",
+    "    bb0: {",
+    "        StorageLive(_1);",
+    "        _1 = const 42_u32;",
+    "        _0 = const 99_u32;",
+    "        StorageDead(_1);",
+    "        return;",
+    "    }",
+    "}"
+   ],
+   "had_drop_before": false,
+   "has_drop_after": false
+  }
+ },
+ "record_kind": "Output of an earlier run of a similar probe on a different toolchain. It was NOT re-executed while this report was written, and the Rust source and command lines that produced it were not retained with it.",
+ "schema": "retained-execution-record/1",
+ "toolchain": {
+  "LLVM version": "23.1.5",
+  "binary": "rustc",
+  "commit-date": "2026-11-11",
+  "commit-hash": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+  "host": "x86_64-unknown-linux-gnu",
+  "release": "1.102.0-nightly",
+  "version_line": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)"
+ }
+}

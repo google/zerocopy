@@ -1,0 +1,4097 @@
+{
+ "census": [
+  {
+   "module": "abort_unwinding_calls",
+   "pass": "AbortUnwindingCalls",
+   "scheduled_at": [
+    "coroutine.rs:1293",
+    "coroutine/drop.rs:702",
+    "lib.rs:640",
+    "shim.rs:153",
+    "shim.rs:177",
+    "shim.rs:198",
+    "shim.rs:242",
+    "shim/async_destructor_ctor.rs:32"
+   ]
+  },
+  {
+   "module": "add_call_guards",
+   "pass": "AddCallGuards::AllCallEdges",
+   "scheduled_at": []
+  },
+  {
+   "module": "add_call_guards",
+   "pass": "AddCallGuards::CriticalCallEdges",
+   "scheduled_at": [
+    "lib.rs:629",
+    "lib.rs:765",
+    "shim.rs:154",
+    "shim.rs:178",
+    "shim.rs:199",
+    "shim.rs:243",
+    "shim/async_destructor_ctor.rs:33"
+   ]
+  },
+  {
+   "module": "add_moves_for_packed_drops",
+   "pass": "AddMovesForPackedDrops",
+   "scheduled_at": [
+    "lib.rs:643",
+    "shim.rs:236"
+   ]
+  },
+  {
+   "module": "add_subtyping_projections",
+   "pass": "Subtyper",
+   "scheduled_at": [
+    "lib.rs:633"
+   ]
+  },
+  {
+   "module": "check_inline",
+   "pass": "CheckForceInline",
+   "scheduled_at": [
+    "lib.rs:406"
+   ]
+  },
+  {
+   "module": "check_call_recursion",
+   "pass": "CheckCallRecursion",
+   "scheduled_at": [
+    "lib.rs:407"
+   ]
+  },
+  {
+   "module": "check_call_recursion",
+   "pass": "CheckDropRecursion",
+   "scheduled_at": [
+    "lib.rs:636"
+   ]
+  },
+  {
+   "module": "check_alignment",
+   "pass": "CheckAlignment",
+   "scheduled_at": [
+    "lib.rs:695"
+   ]
+  },
+  {
+   "module": "check_enums",
+   "pass": "CheckEnums",
+   "scheduled_at": [
+    "lib.rs:697"
+   ]
+  },
+  {
+   "module": "check_const_item_mutation",
+   "pass": "CheckConstItemMutation",
+   "scheduled_at": [
+    "lib.rs:409"
+   ]
+  },
+  {
+   "module": "check_null",
+   "pass": "CheckNull",
+   "scheduled_at": [
+    "lib.rs:696"
+   ]
+  },
+  {
+   "module": "check_packed_ref",
+   "pass": "CheckPackedRef",
+   "scheduled_at": [
+    "lib.rs:408"
+   ]
+  },
+  {
+   "module": "cleanup_post_borrowck",
+   "pass": "CleanupPostBorrowck",
+   "scheduled_at": [
+    "lib.rs:610"
+   ]
+  },
+  {
+   "module": "copy_prop",
+   "pass": "CopyProp",
+   "scheduled_at": [
+    "lib.rs:758"
+   ]
+  },
+  {
+   "module": "coroutine",
+   "pass": "StateTransform",
+   "scheduled_at": [
+    "lib.rs:646",
+    "shim.rs:201"
+   ]
+  },
+  {
+   "module": "coverage",
+   "pass": "InstrumentCoverage",
+   "scheduled_at": [
+    "lib.rs:472"
+   ]
+  },
+  {
+   "module": "ctfe_limit",
+   "pass": "CtfeLimit",
+   "scheduled_at": [
+    "lib.rs:508"
+   ]
+  },
+  {
+   "module": "dataflow_const_prop",
+   "pass": "DataflowConstProp",
+   "scheduled_at": [
+    "lib.rs:747"
+   ]
+  },
+  {
+   "module": "dead_store_elimination",
+   "pass": "DeadStoreElimination::Initial",
+   "scheduled_at": [
+    "lib.rs:740"
+   ]
+  },
+  {
+   "module": "dead_store_elimination",
+   "pass": "DeadStoreElimination::Final",
+   "scheduled_at": [
+    "lib.rs:759"
+   ]
+  },
+  {
+   "module": "deref_separator",
+   "pass": "Derefer",
+   "scheduled_at": [
+    "lib.rs:613"
+   ]
+  },
+  {
+   "module": "dest_prop",
+   "pass": "DestinationPropagation",
+   "scheduled_at": [
+    "lib.rs:760"
+   ]
+  },
+  {
+   "module": "early_otherwise_branch",
+   "pass": "EarlyOtherwiseBranch",
+   "scheduled_at": [
+    "lib.rs:751"
+   ]
+  },
+  {
+   "module": "erase_deref_temps",
+   "pass": "EraseDerefTemps",
+   "scheduled_at": [
+    "lib.rs:644"
+   ]
+  },
+  {
+   "module": "elaborate_box_derefs",
+   "pass": "ElaborateBoxDerefs",
+   "scheduled_at": [
+    "lib.rs:645"
+   ]
+  },
+  {
+   "module": "elaborate_drops",
+   "pass": "ElaborateDrops",
+   "scheduled_at": [
+    "lib.rs:634"
+   ]
+  },
+  {
+   "module": "function_item_references",
+   "pass": "FunctionItemReferences",
+   "scheduled_at": [
+    "lib.rs:410"
+   ]
+  },
+  {
+   "module": "gvn",
+   "pass": "GVN",
+   "scheduled_at": [
+    "lib.rs:741"
+   ]
+  },
+  {
+   "module": "inline",
+   "pass": "Inline",
+   "scheduled_at": [
+    "lib.rs:709"
+   ]
+  },
+  {
+   "module": "inline",
+   "pass": "ForceInline",
+   "scheduled_at": [
+    "lib.rs:707",
+    "shim.rs:241"
+   ]
+  },
+  {
+   "module": "impossible_predicates",
+   "pass": "ImpossiblePredicates",
+   "scheduled_at": [
+    "lib.rs:609"
+   ]
+  },
+  {
+   "module": "instsimplify",
+   "pass": "InstSimplify::BeforeInline",
+   "scheduled_at": [
+    "lib.rs:705",
+    "shim.rs:239"
+   ]
+  },
+  {
+   "module": "instsimplify",
+   "pass": "InstSimplify::AfterSimplifyCfg",
+   "scheduled_at": [
+    "lib.rs:727"
+   ]
+  },
+  {
+   "module": "jump_threading",
+   "pass": "JumpThreading",
+   "scheduled_at": [
+    "lib.rs:750"
+   ]
+  },
+  {
+   "module": "known_panics_lint",
+   "pass": "KnownPanicsLint",
+   "scheduled_at": [
+    "lib.rs:647"
+   ]
+  },
+  {
+   "module": "large_enums",
+   "pass": "EnumSizeOpt",
+   "scheduled_at": [
+    "lib.rs:763"
+   ]
+  },
+  {
+   "module": "lower_intrinsics",
+   "pass": "LowerIntrinsics",
+   "scheduled_at": [
+    "lib.rs:655"
+   ]
+  },
+  {
+   "module": "lower_slice_len",
+   "pass": "LowerSliceLenCalls",
+   "scheduled_at": [
+    "lib.rs:702"
+   ]
+  },
+  {
+   "module": "match_branches",
+   "pass": "MatchBranchSimplification",
+   "scheduled_at": [
+    "lib.rs:746"
+   ]
+  },
+  {
+   "module": "mentioned_items",
+   "pass": "MentionedItems",
+   "scheduled_at": [
+    "shim.rs:152",
+    "shim.rs:176",
+    "shim.rs:197",
+    "shim.rs:235"
+   ]
+  },
+  {
+   "module": "multiple_return_terminators",
+   "pass": "MultipleReturnTerminators",
+   "scheduled_at": [
+    "lib.rs:723",
+    "lib.rs:762"
+   ]
+  },
+  {
+   "module": "post_drop_elaboration",
+   "pass": "CheckLiveDrops",
+   "scheduled_at": [
+    "lib.rs:588"
+   ]
+  },
+  {
+   "module": "prettify",
+   "pass": "ReorderBasicBlocks",
+   "scheduled_at": [
+    "lib.rs:767"
+   ]
+  },
+  {
+   "module": "prettify",
+   "pass": "ReorderLocals",
+   "scheduled_at": [
+    "lib.rs:768"
+   ]
+  },
+  {
+   "module": "promote_consts",
+   "pass": "PromoteTemps",
+   "scheduled_at": [
+    "lib.rs:472"
+   ]
+  },
+  {
+   "module": "ref_prop",
+   "pass": "ReferencePropagation",
+   "scheduled_at": [
+    "lib.rs:737"
+   ]
+  },
+  {
+   "module": "remove_noop_landing_pads",
+   "pass": "RemoveNoopLandingPads",
+   "scheduled_at": [
+    "lib.rs:611",
+    "lib.rs:754",
+    "shim.rs:237"
+   ]
+  },
+  {
+   "module": "remove_place_mention",
+   "pass": "RemovePlaceMention",
+   "scheduled_at": [
+    "lib.rs:656"
+   ]
+  },
+  {
+   "module": "remove_storage_markers",
+   "pass": "RemoveStorageMarkers",
+   "scheduled_at": [
+    "lib.rs:714"
+   ]
+  },
+  {
+   "module": "remove_uninit_drops",
+   "pass": "RemoveUninitDrops",
+   "scheduled_at": [
+    "lib.rs:586"
+   ]
+  },
+  {
+   "module": "remove_unneeded_drops",
+   "pass": "RemoveUnneededDrops",
+   "scheduled_at": [
+    "lib.rs:717"
+   ]
+  },
+  {
+   "module": "remove_zsts",
+   "pass": "RemoveZsts",
+   "scheduled_at": [
+    "lib.rs:716"
+   ]
+  },
+  {
+   "module": "required_consts",
+   "pass": "RequiredConstsVisitor",
+   "scheduled_at": []
+  },
+  {
+   "module": "post_analysis_normalize",
+   "pass": "PostAnalysisNormalize",
+   "scheduled_at": [
+    "lib.rs:631"
+   ]
+  },
+  {
+   "module": "sanity_check",
+   "pass": "SanityCheck",
+   "scheduled_at": [
+    "lib.rs:413"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyCfg::Initial",
+   "scheduled_at": [
+    "lib.rs:412"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyCfg::PromoteConsts",
+   "scheduled_at": [
+    "lib.rs:472"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyCfg::RemoveFalseEdges",
+   "scheduled_at": [
+    "lib.rs:587"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyCfg::PostAnalysis",
+   "scheduled_at": [
+    "lib.rs:612"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyCfg::PreOptimizations",
+   "scheduled_at": [
+    "lib.rs:657"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyCfg::Final",
+   "scheduled_at": [
+    "lib.rs:755"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyCfg::MakeShim",
+   "scheduled_at": [
+    "shim.rs:200",
+    "shim.rs:238",
+    "shim/async_destructor_ctor.rs:31"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyCfg::AfterUnreachableEnumBranching",
+   "scheduled_at": [
+    "lib.rs:722"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyLocals::BeforeConstProp",
+   "scheduled_at": [
+    "lib.rs:739"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyLocals::AfterGVN",
+   "scheduled_at": [
+    "lib.rs:742"
+   ]
+  },
+  {
+   "module": "simplify",
+   "pass": "SimplifyLocals::Final",
+   "scheduled_at": [
+    "lib.rs:761"
+   ]
+  },
+  {
+   "module": "simplify_branches",
+   "pass": "SimplifyConstCondition::AfterInstSimplify",
+   "scheduled_at": [
+    "lib.rs:736"
+   ]
+  },
+  {
+   "module": "simplify_branches",
+   "pass": "SimplifyConstCondition::AfterConstProp",
+   "scheduled_at": [
+    "lib.rs:749"
+   ]
+  },
+  {
+   "module": "simplify_branches",
+   "pass": "SimplifyConstCondition::Final",
+   "scheduled_at": [
+    "lib.rs:753"
+   ]
+  },
+  {
+   "module": "simplify_comparison_integral",
+   "pass": "SimplifyComparisonIntegral",
+   "scheduled_at": [
+    "lib.rs:752"
+   ]
+  },
+  {
+   "module": "single_use_consts",
+   "pass": "SingleUseConsts",
+   "scheduled_at": [
+    "lib.rs:748"
+   ]
+  },
+  {
+   "module": "sroa",
+   "pass": "ScalarReplacementOfAggregates",
+   "scheduled_at": [
+    "lib.rs:738"
+   ]
+  },
+  {
+   "module": "strip_debuginfo",
+   "pass": "StripDebugInfo",
+   "scheduled_at": [
+    "lib.rs:757"
+   ]
+  },
+  {
+   "module": "ssa_range_prop",
+   "pass": "SsaRangePropagation",
+   "scheduled_at": [
+    "lib.rs:745"
+   ]
+  },
+  {
+   "module": "unreachable_enum_branching",
+   "pass": "UnreachableEnumBranching",
+   "scheduled_at": [
+    "lib.rs:720"
+   ]
+  },
+  {
+   "module": "unreachable_prop",
+   "pass": "UnreachablePropagation",
+   "scheduled_at": [
+    "lib.rs:721"
+   ]
+  },
+  {
+   "module": "validate",
+   "pass": "Validator",
+   "scheduled_at": []
+  }
+ ],
+ "commit": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+ "crate_path": "compiler/rustc_mir_transform/src",
+ "declared": [
+  {
+   "module": "abort_unwinding_calls",
+   "type": "AbortUnwindingCalls",
+   "variants": []
+  },
+  {
+   "module": "add_call_guards",
+   "type": "AddCallGuards",
+   "variants": [
+    "AllCallEdges",
+    "CriticalCallEdges"
+   ]
+  },
+  {
+   "module": "add_moves_for_packed_drops",
+   "type": "AddMovesForPackedDrops",
+   "variants": []
+  },
+  {
+   "module": "add_subtyping_projections",
+   "type": "Subtyper",
+   "variants": []
+  },
+  {
+   "module": "check_inline",
+   "type": "CheckForceInline",
+   "variants": []
+  },
+  {
+   "module": "check_call_recursion",
+   "type": "CheckCallRecursion",
+   "variants": []
+  },
+  {
+   "module": "check_call_recursion",
+   "type": "CheckDropRecursion",
+   "variants": []
+  },
+  {
+   "module": "check_alignment",
+   "type": "CheckAlignment",
+   "variants": []
+  },
+  {
+   "module": "check_enums",
+   "type": "CheckEnums",
+   "variants": []
+  },
+  {
+   "module": "check_const_item_mutation",
+   "type": "CheckConstItemMutation",
+   "variants": []
+  },
+  {
+   "module": "check_null",
+   "type": "CheckNull",
+   "variants": []
+  },
+  {
+   "module": "check_packed_ref",
+   "type": "CheckPackedRef",
+   "variants": []
+  },
+  {
+   "module": "cleanup_post_borrowck",
+   "type": "CleanupPostBorrowck",
+   "variants": []
+  },
+  {
+   "module": "copy_prop",
+   "type": "CopyProp",
+   "variants": []
+  },
+  {
+   "module": "coroutine",
+   "type": "StateTransform",
+   "variants": []
+  },
+  {
+   "module": "coverage",
+   "type": "InstrumentCoverage",
+   "variants": []
+  },
+  {
+   "module": "ctfe_limit",
+   "type": "CtfeLimit",
+   "variants": []
+  },
+  {
+   "module": "dataflow_const_prop",
+   "type": "DataflowConstProp",
+   "variants": []
+  },
+  {
+   "module": "dead_store_elimination",
+   "type": "DeadStoreElimination",
+   "variants": [
+    "Initial",
+    "Final"
+   ]
+  },
+  {
+   "module": "deref_separator",
+   "type": "Derefer",
+   "variants": []
+  },
+  {
+   "module": "dest_prop",
+   "type": "DestinationPropagation",
+   "variants": []
+  },
+  {
+   "module": "early_otherwise_branch",
+   "type": "EarlyOtherwiseBranch",
+   "variants": []
+  },
+  {
+   "module": "erase_deref_temps",
+   "type": "EraseDerefTemps",
+   "variants": []
+  },
+  {
+   "module": "elaborate_box_derefs",
+   "type": "ElaborateBoxDerefs",
+   "variants": []
+  },
+  {
+   "module": "elaborate_drops",
+   "type": "ElaborateDrops",
+   "variants": []
+  },
+  {
+   "module": "function_item_references",
+   "type": "FunctionItemReferences",
+   "variants": []
+  },
+  {
+   "module": "gvn",
+   "type": "GVN",
+   "variants": []
+  },
+  {
+   "module": "inline",
+   "type": "Inline",
+   "variants": []
+  },
+  {
+   "module": "inline",
+   "type": "ForceInline",
+   "variants": []
+  },
+  {
+   "module": "impossible_predicates",
+   "type": "ImpossiblePredicates",
+   "variants": []
+  },
+  {
+   "module": "instsimplify",
+   "type": "InstSimplify",
+   "variants": [
+    "BeforeInline",
+    "AfterSimplifyCfg"
+   ]
+  },
+  {
+   "module": "jump_threading",
+   "type": "JumpThreading",
+   "variants": []
+  },
+  {
+   "module": "known_panics_lint",
+   "type": "KnownPanicsLint",
+   "variants": []
+  },
+  {
+   "module": "large_enums",
+   "type": "EnumSizeOpt",
+   "variants": []
+  },
+  {
+   "module": "lower_intrinsics",
+   "type": "LowerIntrinsics",
+   "variants": []
+  },
+  {
+   "module": "lower_slice_len",
+   "type": "LowerSliceLenCalls",
+   "variants": []
+  },
+  {
+   "module": "match_branches",
+   "type": "MatchBranchSimplification",
+   "variants": []
+  },
+  {
+   "module": "mentioned_items",
+   "type": "MentionedItems",
+   "variants": []
+  },
+  {
+   "module": "multiple_return_terminators",
+   "type": "MultipleReturnTerminators",
+   "variants": []
+  },
+  {
+   "module": "post_drop_elaboration",
+   "type": "CheckLiveDrops",
+   "variants": []
+  },
+  {
+   "module": "prettify",
+   "type": "ReorderBasicBlocks",
+   "variants": []
+  },
+  {
+   "module": "prettify",
+   "type": "ReorderLocals",
+   "variants": []
+  },
+  {
+   "module": "promote_consts",
+   "type": "PromoteTemps",
+   "variants": []
+  },
+  {
+   "module": "ref_prop",
+   "type": "ReferencePropagation",
+   "variants": []
+  },
+  {
+   "module": "remove_noop_landing_pads",
+   "type": "RemoveNoopLandingPads",
+   "variants": []
+  },
+  {
+   "module": "remove_place_mention",
+   "type": "RemovePlaceMention",
+   "variants": []
+  },
+  {
+   "module": "remove_storage_markers",
+   "type": "RemoveStorageMarkers",
+   "variants": []
+  },
+  {
+   "module": "remove_uninit_drops",
+   "type": "RemoveUninitDrops",
+   "variants": []
+  },
+  {
+   "module": "remove_unneeded_drops",
+   "type": "RemoveUnneededDrops",
+   "variants": []
+  },
+  {
+   "module": "remove_zsts",
+   "type": "RemoveZsts",
+   "variants": []
+  },
+  {
+   "module": "required_consts",
+   "type": "RequiredConstsVisitor",
+   "variants": []
+  },
+  {
+   "module": "post_analysis_normalize",
+   "type": "PostAnalysisNormalize",
+   "variants": []
+  },
+  {
+   "module": "sanity_check",
+   "type": "SanityCheck",
+   "variants": []
+  },
+  {
+   "module": "simplify",
+   "type": "SimplifyCfg",
+   "variants": [
+    "Initial",
+    "PromoteConsts",
+    "RemoveFalseEdges",
+    "PostAnalysis",
+    "PreOptimizations",
+    "Final",
+    "MakeShim",
+    "AfterUnreachableEnumBranching"
+   ]
+  },
+  {
+   "module": "simplify",
+   "type": "SimplifyLocals",
+   "variants": [
+    "BeforeConstProp",
+    "AfterGVN",
+    "Final"
+   ]
+  },
+  {
+   "module": "simplify_branches",
+   "type": "SimplifyConstCondition",
+   "variants": [
+    "AfterInstSimplify",
+    "AfterConstProp",
+    "Final"
+   ]
+  },
+  {
+   "module": "simplify_comparison_integral",
+   "type": "SimplifyComparisonIntegral",
+   "variants": []
+  },
+  {
+   "module": "single_use_consts",
+   "type": "SingleUseConsts",
+   "variants": []
+  },
+  {
+   "module": "sroa",
+   "type": "ScalarReplacementOfAggregates",
+   "variants": []
+  },
+  {
+   "module": "strip_debuginfo",
+   "type": "StripDebugInfo",
+   "variants": []
+  },
+  {
+   "module": "ssa_range_prop",
+   "type": "SsaRangePropagation",
+   "variants": []
+  },
+  {
+   "module": "unreachable_enum_branching",
+   "type": "UnreachableEnumBranching",
+   "variants": []
+  },
+  {
+   "module": "unreachable_prop",
+   "type": "UnreachablePropagation",
+   "variants": []
+  },
+  {
+   "module": "validate",
+   "type": "Validator",
+   "variants": []
+  }
+ ],
+ "file_count": 92,
+ "line_counts": {
+  "add_call_guards.rs": 136,
+  "elaborate_box_derefs.rs": 167,
+  "lib.rs": 841,
+  "multiple_return_terminators.rs": 41,
+  "remove_unneeded_drops.rs": 45
+ },
+ "list_parser_cross_check": {
+  "coroutine.rs": {
+   "parsed_entries": 1,
+   "solo_entry_lines": 0,
+   "solo_entry_lines_not_parsed": []
+  },
+  "coroutine/drop.rs": {
+   "parsed_entries": 1,
+   "solo_entry_lines": 0,
+   "solo_entry_lines_not_parsed": []
+  },
+  "lib.rs": {
+   "parsed_entries": 76,
+   "solo_entry_lines": 71,
+   "solo_entry_lines_not_parsed": []
+  },
+  "shim.rs": {
+   "parsed_entries": 19,
+   "solo_entry_lines": 19,
+   "solo_entry_lines_not_parsed": []
+  },
+  "shim/async_destructor_ctor.rs": {
+   "parsed_entries": 3,
+   "solo_entry_lines": 3,
+   "solo_entry_lines_not_parsed": []
+  }
+ },
+ "lists": [
+  {
+   "enclosing_fn": "create_coroutine_resume_function",
+   "entries": [
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&abort_unwinding_calls::AbortUnwindingCalls",
+     "line": 1293,
+     "module": "abort_unwinding_calls",
+     "policy": {
+      "file": "abort_unwinding_calls.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        141,
+        143
+       ]
+      }
+     },
+     "type": "AbortUnwindingCalls",
+     "variant": null,
+     "wrapper": null
+    }
+   ],
+   "file": "coroutine.rs",
+   "first_line": 1293,
+   "pass_manager_call": "run_passes_no_validate",
+   "phase_change_argument": "None"
+  },
+  {
+   "enclosing_fn": "create_coroutine_drop_shim_async",
+   "entries": [
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&abort_unwinding_calls::AbortUnwindingCalls",
+     "line": 702,
+     "module": "abort_unwinding_calls",
+     "policy": {
+      "file": "abort_unwinding_calls.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        141,
+        143
+       ]
+      }
+     },
+     "type": "AbortUnwindingCalls",
+     "variant": null,
+     "wrapper": null
+    }
+   ],
+   "file": "coroutine/drop.rs",
+   "first_line": 702,
+   "pass_manager_call": "run_passes_no_validate",
+   "phase_change_argument": "None"
+  },
+  {
+   "enclosing_fn": "mir_built",
+   "entries": [
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "self.0.is_enabled(sess)",
+      "wrapper_note": "MirLint behind the `Lint` adapter (cannot mutate the body)"
+     },
+     "expr": "&Lint(check_inline::CheckForceInline)",
+     "line": 406,
+     "module": "check_inline",
+     "policy": {
+      "file": "pass_manager.rs",
+      "is_enabled": {
+       "code": "self.0.is_enabled(sess)",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        155,
+        157
+       ]
+      },
+      "via": "Lint<T> adapter"
+     },
+     "type": "CheckForceInline",
+     "variant": null,
+     "wrapper": "Lint"
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "self.0.is_enabled(sess)",
+      "wrapper_note": "MirLint behind the `Lint` adapter (cannot mutate the body)"
+     },
+     "expr": "&Lint(check_call_recursion::CheckCallRecursion)",
+     "line": 407,
+     "module": "check_call_recursion",
+     "policy": {
+      "file": "pass_manager.rs",
+      "is_enabled": {
+       "code": "self.0.is_enabled(sess)",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        155,
+        157
+       ]
+      },
+      "via": "Lint<T> adapter"
+     },
+     "type": "CheckCallRecursion",
+     "variant": null,
+     "wrapper": "Lint"
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "self.0.is_enabled(sess)",
+      "wrapper_note": "MirLint behind the `Lint` adapter (cannot mutate the body)"
+     },
+     "expr": "&Lint(check_packed_ref::CheckPackedRef)",
+     "line": 408,
+     "module": "check_packed_ref",
+     "policy": {
+      "file": "pass_manager.rs",
+      "is_enabled": {
+       "code": "self.0.is_enabled(sess)",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        155,
+        157
+       ]
+      },
+      "via": "Lint<T> adapter"
+     },
+     "type": "CheckPackedRef",
+     "variant": null,
+     "wrapper": "Lint"
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "self.0.is_enabled(sess)",
+      "wrapper_note": "MirLint behind the `Lint` adapter (cannot mutate the body)"
+     },
+     "expr": "&Lint(check_const_item_mutation::CheckConstItemMutation)",
+     "line": 409,
+     "module": "check_const_item_mutation",
+     "policy": {
+      "file": "pass_manager.rs",
+      "is_enabled": {
+       "code": "self.0.is_enabled(sess)",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        155,
+        157
+       ]
+      },
+      "via": "Lint<T> adapter"
+     },
+     "type": "CheckConstItemMutation",
+     "variant": null,
+     "wrapper": "Lint"
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "self.0.is_enabled(sess)",
+      "wrapper_note": "MirLint behind the `Lint` adapter (cannot mutate the body)"
+     },
+     "expr": "&Lint(function_item_references::FunctionItemReferences)",
+     "line": 410,
+     "module": "function_item_references",
+     "policy": {
+      "file": "pass_manager.rs",
+      "is_enabled": {
+       "code": "self.0.is_enabled(sess)",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        155,
+        157
+       ]
+      },
+      "via": "Lint<T> adapter"
+     },
+     "type": "FunctionItemReferences",
+     "variant": null,
+     "wrapper": "Lint"
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&simplify::SimplifyCfg::Initial",
+     "line": 412,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        101,
+        103
+       ]
+      }
+     },
+     "type": "SimplifyCfg",
+     "variant": "Initial",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "self.0.is_enabled(sess)",
+      "wrapper_note": "MirLint behind the `Lint` adapter (cannot mutate the body)"
+     },
+     "expr": "&Lint(sanity_check::SanityCheck)",
+     "line": 413,
+     "module": "sanity_check",
+     "policy": {
+      "file": "pass_manager.rs",
+      "is_enabled": {
+       "code": "self.0.is_enabled(sess)",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        155,
+        157
+       ]
+      },
+      "via": "Lint<T> adapter"
+     },
+     "type": "SanityCheck",
+     "variant": null,
+     "wrapper": "Lint"
+    }
+   ],
+   "file": "lib.rs",
+   "first_line": 406,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "None"
+  },
+  {
+   "enclosing_fn": "mir_promoted",
+   "entries": [
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&promote_pass",
+     "line": 472,
+     "local_var": "promote_pass",
+     "module": "promote_consts",
+     "policy": {
+      "file": "promote_consts.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        64,
+        66
+       ]
+      }
+     },
+     "type": "PromoteTemps",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&simplify::SimplifyCfg::PromoteConsts",
+     "line": 472,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        101,
+        103
+       ]
+      }
+     },
+     "type": "SimplifyCfg",
+     "variant": "PromoteConsts",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.instrument_coverage()"
+     },
+     "expr": "&coverage::InstrumentCoverage",
+     "line": 472,
+     "module": "coverage",
+     "policy": {
+      "file": "coverage/mod.rs",
+      "is_enabled": {
+       "code": "sess.instrument_coverage()",
+       "comment": "",
+       "lines": [
+        27,
+        29
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        58,
+        60
+       ]
+      }
+     },
+     "type": "InstrumentCoverage",
+     "variant": null,
+     "wrapper": null
+    }
+   ],
+   "file": "lib.rs",
+   "first_line": 472,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "Some(MirPhase::Analysis(AnalysisPhase::Initial))"
+  },
+  {
+   "enclosing_fn": "inner_mir_for_ctfe",
+   "entries": [
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&ctfe_limit::CtfeLimit",
+     "line": 508,
+     "module": "ctfe_limit",
+     "policy": {
+      "file": "ctfe_limit.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        40,
+        42
+       ]
+      }
+     },
+     "type": "CtfeLimit",
+     "variant": null,
+     "wrapper": null
+    }
+   ],
+   "file": "lib.rs",
+   "first_line": 508,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "None"
+  },
+  {
+   "enclosing_fn": "run_analysis_to_runtime_passes",
+   "entries": [
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&remove_uninit_drops::RemoveUninitDrops",
+     "line": 586,
+     "module": "remove_uninit_drops",
+     "policy": {
+      "file": "remove_uninit_drops.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        67,
+        69
+       ]
+      }
+     },
+     "type": "RemoveUninitDrops",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&simplify::SimplifyCfg::RemoveFalseEdges",
+     "line": 587,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        101,
+        103
+       ]
+      }
+     },
+     "type": "SimplifyCfg",
+     "variant": "RemoveFalseEdges",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "self.0.is_enabled(sess)",
+      "wrapper_note": "MirLint behind the `Lint` adapter (cannot mutate the body)"
+     },
+     "expr": "&Lint(post_drop_elaboration::CheckLiveDrops)",
+     "line": 588,
+     "module": "post_drop_elaboration",
+     "policy": {
+      "file": "pass_manager.rs",
+      "is_enabled": {
+       "code": "self.0.is_enabled(sess)",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        155,
+        157
+       ]
+      },
+      "via": "Lint<T> adapter"
+     },
+     "type": "CheckLiveDrops",
+     "variant": null,
+     "wrapper": "Lint"
+    }
+   ],
+   "file": "lib.rs",
+   "first_line": 586,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "None"
+  },
+  {
+   "enclosing_fn": "run_analysis_cleanup_passes",
+   "entries": [
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&impossible_predicates::ImpossiblePredicates",
+     "line": 609,
+     "module": "impossible_predicates",
+     "policy": {
+      "file": "impossible_predicates.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        74,
+        76
+       ]
+      }
+     },
+     "type": "ImpossiblePredicates",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&cleanup_post_borrowck::CleanupPostBorrowck",
+     "line": 610,
+     "module": "cleanup_post_borrowck",
+     "policy": {
+      "file": "cleanup_post_borrowck.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        88,
+        90
+       ]
+      }
+     },
+     "type": "CleanupPostBorrowck",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.panic_strategy().unwinds()"
+     },
+     "expr": "&remove_noop_landing_pads::RemoveNoopLandingPads",
+     "line": 611,
+     "module": "remove_noop_landing_pads",
+     "policy": {
+      "file": "remove_noop_landing_pads.rs",
+      "is_enabled": {
+       "code": "sess.panic_strategy().unwinds()",
+       "comment": "",
+       "lines": [
+        14,
+        16
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        80,
+        82
+       ]
+      }
+     },
+     "type": "RemoveNoopLandingPads",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&simplify::SimplifyCfg::PostAnalysis",
+     "line": 612,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        101,
+        103
+       ]
+      }
+     },
+     "type": "SimplifyCfg",
+     "variant": "PostAnalysis",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&deref_separator::Derefer",
+     "line": 613,
+     "module": "deref_separator",
+     "policy": {
+      "file": "deref_separator.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        104,
+        106
+       ]
+      }
+     },
+     "type": "Derefer",
+     "variant": null,
+     "wrapper": null
+    }
+   ],
+   "file": "lib.rs",
+   "first_line": 609,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "Some(MirPhase::Analysis(AnalysisPhase::PostCleanup))"
+  },
+  {
+   "enclosing_fn": "run_runtime_lowering_passes",
+   "entries": [
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&add_call_guards::CriticalCallEdges",
+     "line": 629,
+     "module": "add_call_guards",
+     "policy": {
+      "file": "add_call_guards.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        125,
+        127
+       ]
+      }
+     },
+     "type": "AddCallGuards",
+     "variant": "CriticalCallEdges",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&post_analysis_normalize::PostAnalysisNormalize",
+     "line": 631,
+     "module": "post_analysis_normalize",
+     "policy": {
+      "file": "post_analysis_normalize.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        19,
+        21
+       ]
+      }
+     },
+     "type": "PostAnalysisNormalize",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&add_subtyping_projections::Subtyper",
+     "line": 633,
+     "module": "add_subtyping_projections",
+     "policy": {
+      "file": "add_subtyping_projections.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        68,
+        70
+       ]
+      }
+     },
+     "type": "Subtyper",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&elaborate_drops::ElaborateDrops",
+     "line": 634,
+     "module": "elaborate_drops",
+     "policy": {
+      "file": "elaborate_drops.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        91,
+        93
+       ]
+      }
+     },
+     "type": "ElaborateDrops",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "self.0.is_enabled(sess)",
+      "wrapper_note": "MirLint behind the `Lint` adapter (cannot mutate the body)"
+     },
+     "expr": "&Lint(check_call_recursion::CheckDropRecursion)",
+     "line": 636,
+     "module": "check_call_recursion",
+     "policy": {
+      "file": "pass_manager.rs",
+      "is_enabled": {
+       "code": "self.0.is_enabled(sess)",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        155,
+        157
+       ]
+      },
+      "via": "Lint<T> adapter"
+     },
+     "type": "CheckDropRecursion",
+     "variant": null,
+     "wrapper": "Lint"
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&abort_unwinding_calls::AbortUnwindingCalls",
+     "line": 640,
+     "module": "abort_unwinding_calls",
+     "policy": {
+      "file": "abort_unwinding_calls.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        141,
+        143
+       ]
+      }
+     },
+     "type": "AbortUnwindingCalls",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&add_moves_for_packed_drops::AddMovesForPackedDrops",
+     "line": 643,
+     "module": "add_moves_for_packed_drops",
+     "policy": {
+      "file": "add_moves_for_packed_drops.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        72,
+        74
+       ]
+      }
+     },
+     "type": "AddMovesForPackedDrops",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&erase_deref_temps::EraseDerefTemps",
+     "line": 644,
+     "module": "erase_deref_temps",
+     "policy": {
+      "file": "erase_deref_temps.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        40,
+        42
+       ]
+      }
+     },
+     "type": "EraseDerefTemps",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&elaborate_box_derefs::ElaborateBoxDerefs",
+     "line": 645,
+     "module": "elaborate_box_derefs",
+     "policy": {
+      "file": "elaborate_box_derefs.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        164,
+        166
+       ]
+      }
+     },
+     "type": "ElaborateBoxDerefs",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&coroutine::StateTransform",
+     "line": 646,
+     "module": "coroutine",
+     "policy": {
+      "file": "coroutine.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        1667,
+        1669
+       ]
+      }
+     },
+     "type": "StateTransform",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "self.0.is_enabled(sess)",
+      "wrapper_note": "MirLint behind the `Lint` adapter (cannot mutate the body)"
+     },
+     "expr": "&Lint(known_panics_lint::KnownPanicsLint)",
+     "line": 647,
+     "module": "known_panics_lint",
+     "policy": {
+      "file": "pass_manager.rs",
+      "is_enabled": {
+       "code": "self.0.is_enabled(sess)",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        155,
+        157
+       ]
+      },
+      "via": "Lint<T> adapter"
+     },
+     "type": "KnownPanicsLint",
+     "variant": null,
+     "wrapper": "Lint"
+    }
+   ],
+   "file": "lib.rs",
+   "first_line": 629,
+   "pass_manager_call": "run_passes_no_validate",
+   "phase_change_argument": "Some(MirPhase::Runtime(RuntimePhase::Initial))"
+  },
+  {
+   "enclosing_fn": "run_runtime_cleanup_passes",
+   "entries": [
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&lower_intrinsics::LowerIntrinsics",
+     "line": 655,
+     "module": "lower_intrinsics",
+     "policy": {
+      "file": "lower_intrinsics.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        341,
+        343
+       ]
+      }
+     },
+     "type": "LowerIntrinsics",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "!sess.opts.unstable_opts.mir_preserve_ub"
+     },
+     "expr": "&remove_place_mention::RemovePlaceMention",
+     "line": 656,
+     "module": "remove_place_mention",
+     "policy": {
+      "file": "remove_place_mention.rs",
+      "is_enabled": {
+       "code": "!sess.opts.unstable_opts.mir_preserve_ub",
+       "comment": "",
+       "lines": [
+        10,
+        12
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        24,
+        26
+       ]
+      }
+     },
+     "type": "RemovePlaceMention",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&simplify::SimplifyCfg::PreOptimizations",
+     "line": 657,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        101,
+        103
+       ]
+      }
+     },
+     "type": "SimplifyCfg",
+     "variant": "PreOptimizations",
+     "wrapper": null
+    }
+   ],
+   "file": "lib.rs",
+   "first_line": 655,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "Some(MirPhase::Runtime(RuntimePhase::PostCleanup))"
+  },
+  {
+   "enclosing_fn": "run_optimization_passes",
+   "entries": [
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.ub_checks()"
+     },
+     "expr": "&check_alignment::CheckAlignment",
+     "line": 695,
+     "module": "check_alignment",
+     "policy": {
+      "file": "check_alignment.rs",
+      "is_enabled": {
+       "code": "sess.ub_checks()",
+       "comment": "",
+       "lines": [
+        15,
+        17
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        35,
+        37
+       ]
+      }
+     },
+     "type": "CheckAlignment",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.ub_checks()"
+     },
+     "expr": "&check_null::CheckNull",
+     "line": 696,
+     "module": "check_null",
+     "policy": {
+      "file": "check_null.rs",
+      "is_enabled": {
+       "code": "sess.ub_checks()",
+       "comment": "",
+       "lines": [
+        13,
+        15
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        27,
+        29
+       ]
+      }
+     },
+     "type": "CheckNull",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.ub_checks()"
+     },
+     "expr": "&check_enums::CheckEnums",
+     "line": 697,
+     "module": "check_enums",
+     "policy": {
+      "file": "check_enums.rs",
+      "is_enabled": {
+       "code": "sess.ub_checks()",
+       "comment": "",
+       "lines": [
+        18,
+        20
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        111,
+        113
+       ]
+      }
+     },
+     "type": "CheckEnums",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0"
+     },
+     "expr": "&lower_slice_len::LowerSliceLenCalls",
+     "line": 702,
+     "module": "lower_slice_len",
+     "policy": {
+      "file": "lower_slice_len.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0",
+       "comment": "",
+       "lines": [
+        11,
+        13
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        30,
+        32
+       ]
+      }
+     },
+     "type": "LowerSliceLenCalls",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0"
+     },
+     "expr": "&instsimplify::InstSimplify::BeforeInline",
+     "line": 705,
+     "module": "instsimplify",
+     "policy": {
+      "file": "instsimplify.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0",
+       "comment": "",
+       "lines": [
+        28,
+        30
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        66,
+        68
+       ]
+      }
+     },
+     "type": "InstSimplify",
+     "variant": "BeforeInline",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "true"
+     },
+     "expr": "&inline::ForceInline",
+     "line": 707,
+     "module": "inline",
+     "policy": {
+      "can_be_overridden": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        88,
+        90
+       ]
+      },
+      "file": "inline.rs",
+      "is_enabled": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        84,
+        86
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        92,
+        94
+       ]
+      }
+     },
+     "type": "ForceInline",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "if let Some(enabled) = sess.opts.unstable_opts.inline_mir { return enabled; } match sess.mir_opt_level() { 0 | 1 => false, 2 => { (sess.opts.optimize == OptLevel::More || sess.opts.optimize == OptLevel::Aggressive) && sess.opts.incremental == None } _ => true, }"
+     },
+     "expr": "&inline::Inline",
+     "line": 709,
+     "module": "inline",
+     "policy": {
+      "file": "inline.rs",
+      "is_enabled": {
+       "code": "if let Some(enabled) = sess.opts.unstable_opts.inline_mir { return enabled; } match sess.mir_opt_level() { 0 | 1 => false, 2 => { (sess.opts.optimize == OptLevel::More || sess.opts.optimize == OptLevel::Aggressive) && sess.opts.incremental == None } _ => true, }",
+       "comment": "",
+       "lines": [
+        46,
+        59
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        70,
+        72
+       ]
+      }
+     },
+     "type": "Inline",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0 && !sess.emit_lifetime_markers()"
+     },
+     "expr": "&remove_storage_markers::RemoveStorageMarkers",
+     "line": 714,
+     "module": "remove_storage_markers",
+     "policy": {
+      "file": "remove_storage_markers.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0 && !sess.emit_lifetime_markers()",
+       "comment": "",
+       "lines": [
+        10,
+        12
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        26,
+        28
+       ]
+      }
+     },
+     "type": "RemoveStorageMarkers",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0"
+     },
+     "expr": "&remove_zsts::RemoveZsts",
+     "line": 716,
+     "module": "remove_zsts",
+     "policy": {
+      "file": "remove_zsts.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0",
+       "comment": "",
+       "lines": [
+        10,
+        12
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        31,
+        33
+       ]
+      }
+     },
+     "type": "RemoveZsts",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&remove_unneeded_drops::RemoveUnneededDrops",
+     "line": 717,
+     "module": "remove_unneeded_drops",
+     "policy": {
+      "file": "remove_unneeded_drops.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        42,
+        44
+       ]
+      }
+     },
+     "type": "RemoveUnneededDrops",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0"
+     },
+     "expr": "&unreachable_enum_branching::UnreachableEnumBranching",
+     "line": 720,
+     "module": "unreachable_enum_branching",
+     "policy": {
+      "file": "unreachable_enum_branching.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0",
+       "comment": "",
+       "lines": [
+        80,
+        82
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        173,
+        175
+       ]
+      }
+     },
+     "type": "UnreachableEnumBranching",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 2,
+      "other_conditions": null
+     },
+     "expr": "&unreachable_prop::UnreachablePropagation",
+     "line": 721,
+     "module": "unreachable_prop",
+     "policy": {
+      "file": "unreachable_prop.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 2",
+       "comment": "Enable only under -Zmir-opt-level=2 as this can make programs less debuggable.",
+       "lines": [
+        17,
+        20
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        59,
+        61
+       ]
+      }
+     },
+     "type": "UnreachablePropagation",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 1,
+      "other_conditions": null,
+      "wrapper_note": "wrapped in WithMinOptLevel(1, _)"
+     },
+     "expr": "&o1(simplify::SimplifyCfg::AfterUnreachableEnumBranching)",
+     "line": 722,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        101,
+        103
+       ]
+      }
+     },
+     "type": "SimplifyCfg",
+     "variant": "AfterUnreachableEnumBranching",
+     "wrapper": "o1"
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 4,
+      "other_conditions": null
+     },
+     "expr": "&multiple_return_terminators::MultipleReturnTerminators",
+     "line": 723,
+     "module": "multiple_return_terminators",
+     "policy": {
+      "file": "multiple_return_terminators.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 4",
+       "comment": "",
+       "lines": [
+        13,
+        15
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        38,
+        40
+       ]
+      }
+     },
+     "type": "MultipleReturnTerminators",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0"
+     },
+     "expr": "&instsimplify::InstSimplify::AfterSimplifyCfg",
+     "line": 727,
+     "module": "instsimplify",
+     "policy": {
+      "file": "instsimplify.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0",
+       "comment": "",
+       "lines": [
+        28,
+        30
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        66,
+        68
+       ]
+      }
+     },
+     "type": "InstSimplify",
+     "variant": "AfterSimplifyCfg",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 1,
+      "other_conditions": null,
+      "wrapper_note": "wrapped in WithMinOptLevel(1, _)"
+     },
+     "expr": "&o1(simplify_branches::SimplifyConstCondition::AfterInstSimplify)",
+     "line": 736,
+     "module": "simplify_branches",
+     "policy": {
+      "file": "simplify_branches.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        95,
+        97
+       ]
+      }
+     },
+     "type": "SimplifyConstCondition",
+     "variant": "AfterInstSimplify",
+     "wrapper": "o1"
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 2,
+      "other_conditions": null
+     },
+     "expr": "&ref_prop::ReferencePropagation",
+     "line": 737,
+     "module": "ref_prop",
+     "policy": {
+      "file": "ref_prop.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 2",
+       "comment": "",
+       "lines": [
+        75,
+        77
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        86,
+        88
+       ]
+      }
+     },
+     "type": "ReferencePropagation",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 2,
+      "other_conditions": null
+     },
+     "expr": "&sroa::ScalarReplacementOfAggregates",
+     "line": 738,
+     "module": "sroa",
+     "policy": {
+      "file": "sroa.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 2",
+       "comment": "",
+       "lines": [
+        18,
+        20
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        53,
+        55
+       ]
+      }
+     },
+     "type": "ScalarReplacementOfAggregates",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0"
+     },
+     "expr": "&simplify::SimplifyLocals::BeforeConstProp",
+     "line": 739,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0",
+       "comment": "",
+       "lines": [
+        430,
+        432
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        461,
+        463
+       ]
+      }
+     },
+     "type": "SimplifyLocals",
+     "variant": "BeforeConstProp",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 2,
+      "other_conditions": null
+     },
+     "expr": "&dead_store_elimination::DeadStoreElimination::Initial",
+     "line": 740,
+     "module": "dead_store_elimination",
+     "policy": {
+      "file": "dead_store_elimination.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 2",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        156,
+        158
+       ]
+      }
+     },
+     "type": "DeadStoreElimination",
+     "variant": "Initial",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 2,
+      "other_conditions": null
+     },
+     "expr": "&gvn::GVN",
+     "line": 741,
+     "module": "gvn",
+     "policy": {
+      "file": "gvn.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 2",
+       "comment": "",
+       "lines": [
+        130,
+        132
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        189,
+        191
+       ]
+      }
+     },
+     "type": "GVN",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0"
+     },
+     "expr": "&simplify::SimplifyLocals::AfterGVN",
+     "line": 742,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0",
+       "comment": "",
+       "lines": [
+        430,
+        432
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        461,
+        463
+       ]
+      }
+     },
+     "type": "SimplifyLocals",
+     "variant": "AfterGVN",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 1"
+     },
+     "expr": "&ssa_range_prop::SsaRangePropagation",
+     "line": 745,
+     "module": "ssa_range_prop",
+     "policy": {
+      "file": "ssa_range_prop.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 1",
+       "comment": "",
+       "lines": [
+        27,
+        29
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        46,
+        48
+       ]
+      }
+     },
+     "type": "SsaRangePropagation",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 2,
+      "other_conditions": null
+     },
+     "expr": "&match_branches::MatchBranchSimplification",
+     "line": 746,
+     "module": "match_branches",
+     "policy": {
+      "file": "match_branches.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 2",
+       "comment": "Enable only under -Zmir-opt-level=2 as this can make programs less debuggable.",
+       "lines": [
+        16,
+        19
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        36,
+        38
+       ]
+      }
+     },
+     "type": "MatchBranchSimplification",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 3,
+      "other_conditions": null
+     },
+     "expr": "&dataflow_const_prop::DataflowConstProp",
+     "line": 747,
+     "module": "dataflow_const_prop",
+     "policy": {
+      "file": "dataflow_const_prop.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 3",
+       "comment": "",
+       "lines": [
+        38,
+        40
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        79,
+        81
+       ]
+      }
+     },
+     "type": "DataflowConstProp",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0"
+     },
+     "expr": "&single_use_consts::SingleUseConsts",
+     "line": 748,
+     "module": "single_use_consts",
+     "policy": {
+      "file": "single_use_consts.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0",
+       "comment": "",
+       "lines": [
+        27,
+        29
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        91,
+        93
+       ]
+      }
+     },
+     "type": "SingleUseConsts",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 1,
+      "other_conditions": null,
+      "wrapper_note": "wrapped in WithMinOptLevel(1, _)"
+     },
+     "expr": "&o1(simplify_branches::SimplifyConstCondition::AfterConstProp)",
+     "line": 749,
+     "module": "simplify_branches",
+     "policy": {
+      "file": "simplify_branches.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        95,
+        97
+       ]
+      }
+     },
+     "type": "SimplifyConstCondition",
+     "variant": "AfterConstProp",
+     "wrapper": "o1"
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 2,
+      "other_conditions": "if sess.target.is_like_gpu { return false; }"
+     },
+     "expr": "&jump_threading::JumpThreading",
+     "line": 750,
+     "module": "jump_threading",
+     "policy": {
+      "file": "jump_threading.rs",
+      "is_enabled": {
+       "code": "if sess.target.is_like_gpu { return false; } sess.mir_opt_level() >= 2",
+       "comment": "Jump threading can duplicate calls in control-flow. This leads to incorrect code when done for so called \"convergent\" operations on GPU targets, similar to how inline assembly cannot be duplicated on all targets. Conservatively prevent this by disabling the pass. See also issue #137086.",
+       "lines": [
+        78,
+        88
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        152,
+        154
+       ]
+      }
+     },
+     "type": "JumpThreading",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 2,
+      "other_conditions": null
+     },
+     "expr": "&early_otherwise_branch::EarlyOtherwiseBranch",
+     "line": 751,
+     "module": "early_otherwise_branch",
+     "policy": {
+      "file": "early_otherwise_branch.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 2",
+       "comment": "",
+       "lines": [
+        96,
+        98
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        200,
+        202
+       ]
+      }
+     },
+     "type": "EarlyOtherwiseBranch",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 1"
+     },
+     "expr": "&simplify_comparison_integral::SimplifyComparisonIntegral",
+     "line": 752,
+     "module": "simplify_comparison_integral",
+     "policy": {
+      "file": "simplify_comparison_integral.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 1",
+       "comment": "",
+       "lines": [
+        31,
+        33
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        150,
+        152
+       ]
+      }
+     },
+     "type": "SimplifyComparisonIntegral",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 1,
+      "other_conditions": null,
+      "wrapper_note": "wrapped in WithMinOptLevel(1, _)"
+     },
+     "expr": "&o1(simplify_branches::SimplifyConstCondition::Final)",
+     "line": 753,
+     "module": "simplify_branches",
+     "policy": {
+      "file": "simplify_branches.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        95,
+        97
+       ]
+      }
+     },
+     "type": "SimplifyConstCondition",
+     "variant": "Final",
+     "wrapper": "o1"
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": 1,
+      "other_conditions": "sess.panic_strategy().unwinds()",
+      "wrapper_note": "wrapped in WithMinOptLevel(1, _)"
+     },
+     "expr": "&o1(remove_noop_landing_pads::RemoveNoopLandingPads)",
+     "line": 754,
+     "module": "remove_noop_landing_pads",
+     "policy": {
+      "file": "remove_noop_landing_pads.rs",
+      "is_enabled": {
+       "code": "sess.panic_strategy().unwinds()",
+       "comment": "",
+       "lines": [
+        14,
+        16
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        80,
+        82
+       ]
+      }
+     },
+     "type": "RemoveNoopLandingPads",
+     "variant": null,
+     "wrapper": "o1"
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 1,
+      "other_conditions": null,
+      "wrapper_note": "wrapped in WithMinOptLevel(1, _)"
+     },
+     "expr": "&o1(simplify::SimplifyCfg::Final)",
+     "line": 755,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        101,
+        103
+       ]
+      }
+     },
+     "type": "SimplifyCfg",
+     "variant": "Final",
+     "wrapper": "o1"
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.opts.unstable_opts.mir_strip_debuginfo != MirStripDebugInfo::None"
+     },
+     "expr": "&strip_debuginfo::StripDebugInfo",
+     "line": 757,
+     "module": "strip_debuginfo",
+     "policy": {
+      "file": "strip_debuginfo.rs",
+      "is_enabled": {
+       "code": "sess.opts.unstable_opts.mir_strip_debuginfo != MirStripDebugInfo::None",
+       "comment": "",
+       "lines": [
+        13,
+        15
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        38,
+        40
+       ]
+      }
+     },
+     "type": "StripDebugInfo",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 1,
+      "other_conditions": null
+     },
+     "expr": "&copy_prop::CopyProp",
+     "line": 758,
+     "module": "copy_prop",
+     "policy": {
+      "file": "copy_prop.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 1",
+       "comment": "",
+       "lines": [
+        24,
+        26
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        99,
+        101
+       ]
+      }
+     },
+     "type": "CopyProp",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 2,
+      "other_conditions": null
+     },
+     "expr": "&dead_store_elimination::DeadStoreElimination::Final",
+     "line": 759,
+     "module": "dead_store_elimination",
+     "policy": {
+      "file": "dead_store_elimination.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 2",
+       "comment": "",
+       "lines": [
+        143,
+        145
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        156,
+        158
+       ]
+      }
+     },
+     "type": "DeadStoreElimination",
+     "variant": "Final",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 2,
+      "other_conditions": null
+     },
+     "expr": "&dest_prop::DestinationPropagation",
+     "line": 760,
+     "module": "dest_prop",
+     "policy": {
+      "file": "dest_prop.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 2",
+       "comment": "",
+       "lines": [
+        155,
+        157
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        236,
+        238
+       ]
+      }
+     },
+     "type": "DestinationPropagation",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0"
+     },
+     "expr": "&simplify::SimplifyLocals::Final",
+     "line": 761,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0",
+       "comment": "",
+       "lines": [
+        430,
+        432
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        461,
+        463
+       ]
+      }
+     },
+     "type": "SimplifyLocals",
+     "variant": "Final",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 4,
+      "other_conditions": null
+     },
+     "expr": "&multiple_return_terminators::MultipleReturnTerminators",
+     "line": 762,
+     "module": "multiple_return_terminators",
+     "policy": {
+      "file": "multiple_return_terminators.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() >= 4",
+       "comment": "",
+       "lines": [
+        13,
+        15
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        38,
+        40
+       ]
+      }
+     },
+     "type": "MultipleReturnTerminators",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": 3,
+      "other_conditions": "sess.opts.unstable_opts.unsound_mir_opts &&"
+     },
+     "constructed_with_fields": "{ discrepancy: 128 }",
+     "expr": "&large_enums::EnumSizeOpt { discrepancy: 128 }",
+     "line": 763,
+     "module": "large_enums",
+     "policy": {
+      "file": "large_enums.rs",
+      "is_enabled": {
+       "code": "sess.opts.unstable_opts.unsound_mir_opts && sess.mir_opt_level() >= 3",
+       "comment": "There are some differences in behavior on wasm and ARM that are not properly understood, so we conservatively treat this optimization as unsound: https://github.com/rust-lang/rust/issues/154413",
+       "lines": [
+        34,
+        39
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        169,
+        171
+       ]
+      }
+     },
+     "type": "EnumSizeOpt",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&add_call_guards::CriticalCallEdges",
+     "line": 765,
+     "module": "add_call_guards",
+     "policy": {
+      "file": "add_call_guards.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        125,
+        127
+       ]
+      }
+     },
+     "type": "AddCallGuards",
+     "variant": "CriticalCallEdges",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "false"
+     },
+     "expr": "&prettify::ReorderBasicBlocks",
+     "line": 767,
+     "module": "prettify",
+     "policy": {
+      "file": "prettify.rs",
+      "is_enabled": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        21,
+        23
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        39,
+        41
+       ]
+      }
+     },
+     "type": "ReorderBasicBlocks",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "false"
+     },
+     "expr": "&prettify::ReorderLocals",
+     "line": 768,
+     "module": "prettify",
+     "policy": {
+      "file": "prettify.rs",
+      "is_enabled": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        53,
+        55
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        93,
+        95
+       ]
+      }
+     },
+     "type": "ReorderLocals",
+     "variant": null,
+     "wrapper": null
+    }
+   ],
+   "file": "lib.rs",
+   "first_line": 695,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "Some(MirPhase::Runtime(RuntimePhase::Optimized))"
+  },
+  {
+   "enclosing_fn": "make_shim",
+   "entries": [
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "true"
+     },
+     "expr": "&mentioned_items::MentionedItems",
+     "line": 152,
+     "module": "mentioned_items",
+     "policy": {
+      "file": "mentioned_items.rs",
+      "is_enabled": {
+       "code": "true",
+       "comment": "If this pass is skipped the collector assume that nothing got mentioned! We could potentially skip it in opt-level 0 if we are sure that opt-level will never *remove* uses of anything, but that still seems fragile. Furthermore, even debug builds use level 1, so special-casing level 0 is just not worth it.",
+       "lines": [
+        17,
+        23
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        31,
+        33
+       ]
+      }
+     },
+     "type": "MentionedItems",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&abort_unwinding_calls::AbortUnwindingCalls",
+     "line": 153,
+     "module": "abort_unwinding_calls",
+     "policy": {
+      "file": "abort_unwinding_calls.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        141,
+        143
+       ]
+      }
+     },
+     "type": "AbortUnwindingCalls",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&add_call_guards::CriticalCallEdges",
+     "line": 154,
+     "module": "add_call_guards",
+     "policy": {
+      "file": "add_call_guards.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        125,
+        127
+       ]
+      }
+     },
+     "type": "AddCallGuards",
+     "variant": "CriticalCallEdges",
+     "wrapper": null
+    }
+   ],
+   "file": "shim.rs",
+   "first_line": 152,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "Some(MirPhase::Runtime(RuntimePhase::Optimized))"
+  },
+  {
+   "enclosing_fn": "make_shim",
+   "entries": [
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "true"
+     },
+     "expr": "&mentioned_items::MentionedItems",
+     "line": 176,
+     "module": "mentioned_items",
+     "policy": {
+      "file": "mentioned_items.rs",
+      "is_enabled": {
+       "code": "true",
+       "comment": "If this pass is skipped the collector assume that nothing got mentioned! We could potentially skip it in opt-level 0 if we are sure that opt-level will never *remove* uses of anything, but that still seems fragile. Furthermore, even debug builds use level 1, so special-casing level 0 is just not worth it.",
+       "lines": [
+        17,
+        23
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        31,
+        33
+       ]
+      }
+     },
+     "type": "MentionedItems",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&abort_unwinding_calls::AbortUnwindingCalls",
+     "line": 177,
+     "module": "abort_unwinding_calls",
+     "policy": {
+      "file": "abort_unwinding_calls.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        141,
+        143
+       ]
+      }
+     },
+     "type": "AbortUnwindingCalls",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&add_call_guards::CriticalCallEdges",
+     "line": 178,
+     "module": "add_call_guards",
+     "policy": {
+      "file": "add_call_guards.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        125,
+        127
+       ]
+      }
+     },
+     "type": "AddCallGuards",
+     "variant": "CriticalCallEdges",
+     "wrapper": null
+    }
+   ],
+   "file": "shim.rs",
+   "first_line": 176,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "Some(MirPhase::Runtime(RuntimePhase::PostCleanup))"
+  },
+  {
+   "enclosing_fn": "make_shim",
+   "entries": [
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "true"
+     },
+     "expr": "&mentioned_items::MentionedItems",
+     "line": 197,
+     "module": "mentioned_items",
+     "policy": {
+      "file": "mentioned_items.rs",
+      "is_enabled": {
+       "code": "true",
+       "comment": "If this pass is skipped the collector assume that nothing got mentioned! We could potentially skip it in opt-level 0 if we are sure that opt-level will never *remove* uses of anything, but that still seems fragile. Furthermore, even debug builds use level 1, so special-casing level 0 is just not worth it.",
+       "lines": [
+        17,
+        23
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        31,
+        33
+       ]
+      }
+     },
+     "type": "MentionedItems",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&abort_unwinding_calls::AbortUnwindingCalls",
+     "line": 198,
+     "module": "abort_unwinding_calls",
+     "policy": {
+      "file": "abort_unwinding_calls.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        141,
+        143
+       ]
+      }
+     },
+     "type": "AbortUnwindingCalls",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&add_call_guards::CriticalCallEdges",
+     "line": 199,
+     "module": "add_call_guards",
+     "policy": {
+      "file": "add_call_guards.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        125,
+        127
+       ]
+      }
+     },
+     "type": "AddCallGuards",
+     "variant": "CriticalCallEdges",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&simplify::SimplifyCfg::MakeShim",
+     "line": 200,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        101,
+        103
+       ]
+      }
+     },
+     "type": "SimplifyCfg",
+     "variant": "MakeShim",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&crate::coroutine::StateTransform",
+     "line": 201,
+     "module": "coroutine",
+     "policy": {
+      "file": "coroutine.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        1667,
+        1669
+       ]
+      }
+     },
+     "type": "StateTransform",
+     "variant": null,
+     "wrapper": null
+    }
+   ],
+   "file": "shim.rs",
+   "first_line": 197,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "Some(MirPhase::Runtime(RuntimePhase::PostCleanup))"
+  },
+  {
+   "enclosing_fn": "make_shim",
+   "entries": [
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "true"
+     },
+     "expr": "&mentioned_items::MentionedItems",
+     "line": 235,
+     "module": "mentioned_items",
+     "policy": {
+      "file": "mentioned_items.rs",
+      "is_enabled": {
+       "code": "true",
+       "comment": "If this pass is skipped the collector assume that nothing got mentioned! We could potentially skip it in opt-level 0 if we are sure that opt-level will never *remove* uses of anything, but that still seems fragile. Furthermore, even debug builds use level 1, so special-casing level 0 is just not worth it.",
+       "lines": [
+        17,
+        23
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        31,
+        33
+       ]
+      }
+     },
+     "type": "MentionedItems",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&add_moves_for_packed_drops::AddMovesForPackedDrops",
+     "line": 236,
+     "module": "add_moves_for_packed_drops",
+     "policy": {
+      "file": "add_moves_for_packed_drops.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        72,
+        74
+       ]
+      }
+     },
+     "type": "AddMovesForPackedDrops",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.panic_strategy().unwinds()"
+     },
+     "expr": "&remove_noop_landing_pads::RemoveNoopLandingPads",
+     "line": 237,
+     "module": "remove_noop_landing_pads",
+     "policy": {
+      "file": "remove_noop_landing_pads.rs",
+      "is_enabled": {
+       "code": "sess.panic_strategy().unwinds()",
+       "comment": "",
+       "lines": [
+        14,
+        16
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        80,
+        82
+       ]
+      }
+     },
+     "type": "RemoveNoopLandingPads",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&simplify::SimplifyCfg::MakeShim",
+     "line": 238,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        101,
+        103
+       ]
+      }
+     },
+     "type": "SimplifyCfg",
+     "variant": "MakeShim",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": "sess.mir_opt_level() > 0"
+     },
+     "expr": "&instsimplify::InstSimplify::BeforeInline",
+     "line": 239,
+     "module": "instsimplify",
+     "policy": {
+      "file": "instsimplify.rs",
+      "is_enabled": {
+       "code": "sess.mir_opt_level() > 0",
+       "comment": "",
+       "lines": [
+        28,
+        30
+       ]
+      },
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        66,
+        68
+       ]
+      }
+     },
+     "type": "InstSimplify",
+     "variant": "BeforeInline",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "conditional",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": "true"
+     },
+     "expr": "&inline::ForceInline",
+     "line": 241,
+     "module": "inline",
+     "policy": {
+      "can_be_overridden": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        88,
+        90
+       ]
+      },
+      "file": "inline.rs",
+      "is_enabled": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        84,
+        86
+       ]
+      },
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        92,
+        94
+       ]
+      }
+     },
+     "type": "ForceInline",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&abort_unwinding_calls::AbortUnwindingCalls",
+     "line": 242,
+     "module": "abort_unwinding_calls",
+     "policy": {
+      "file": "abort_unwinding_calls.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        141,
+        143
+       ]
+      }
+     },
+     "type": "AbortUnwindingCalls",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&add_call_guards::CriticalCallEdges",
+     "line": 243,
+     "module": "add_call_guards",
+     "policy": {
+      "file": "add_call_guards.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        125,
+        127
+       ]
+      }
+     },
+     "type": "AddCallGuards",
+     "variant": "CriticalCallEdges",
+     "wrapper": null
+    }
+   ],
+   "file": "shim.rs",
+   "first_line": 235,
+   "pass_manager_call": "run_passes_no_validate",
+   "phase_change_argument": "Some(MirPhase::Runtime(RuntimePhase::Optimized))"
+  },
+  {
+   "enclosing_fn": "build_async_destructor_ctor_shim",
+   "entries": [
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=false",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&simplify::SimplifyCfg::MakeShim",
+     "line": 31,
+     "module": "simplify",
+     "policy": {
+      "file": "simplify.rs",
+      "is_required": {
+       "code": "false",
+       "comment": "",
+       "lines": [
+        101,
+        103
+       ]
+      }
+     },
+     "type": "SimplifyCfg",
+     "variant": "MakeShim",
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&abort_unwinding_calls::AbortUnwindingCalls",
+     "line": 32,
+     "module": "abort_unwinding_calls",
+     "policy": {
+      "file": "abort_unwinding_calls.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        141,
+        143
+       ]
+      }
+     },
+     "type": "AbortUnwindingCalls",
+     "variant": null,
+     "wrapper": null
+    },
+    {
+     "classification": {
+      "default": "on at every MIR opt level (default `is_enabled`)",
+      "kind": "is_required=true",
+      "min_mir_opt_level": null,
+      "other_conditions": null
+     },
+     "expr": "&add_call_guards::CriticalCallEdges",
+     "line": 33,
+     "module": "add_call_guards",
+     "policy": {
+      "file": "add_call_guards.rs",
+      "is_required": {
+       "code": "true",
+       "comment": "",
+       "lines": [
+        125,
+        127
+       ]
+      }
+     },
+     "type": "AddCallGuards",
+     "variant": "CriticalCallEdges",
+     "wrapper": null
+    }
+   ],
+   "file": "shim/async_destructor_ctor.rs",
+   "first_line": 31,
+   "pass_manager_call": "run_passes",
+   "phase_change_argument": "None"
+  }
+ ],
+ "schema": "rustc-mir-pass-pipeline/1",
+ "sha256": {
+  "add_call_guards.rs": "cad94c231eb02db94c95bbe4689731d4ceac1f91d2b36016537aeb0ed924561d",
+  "deref_separator.rs": "e9f9f392fab59b56bb17fd45ba0d92cfc8c45424b8088cd6aa7f5b4c6cc8831b",
+  "elaborate_box_derefs.rs": "b5a87c4d9a45ab4c0ef61c9aab5820cb568f1adc04b42d1a993df09002db8ade",
+  "erase_deref_temps.rs": "1a163cf0e065a60ba1f2696d4cfb62a5da60e95be1cca9782df57cd2868e1e1a",
+  "lib.rs": "290cc1a5de94f2a52cfc889f1e57c401a1f96adf815955cc67389e239659d559",
+  "multiple_return_terminators.rs": "f53841f509fee4d85b31310d96ece145597fd03b51df1b7cf5d0b40cfb705b55",
+  "pass_manager.rs": "e9ee6c9ec5a78f180e06954645aeebe842a4fce0d0562c086be88e2f6cbff6ec",
+  "remove_unneeded_drops.rs": "c939ec3b3b7c77549b765c6011e334b394e73b78748a279d4aae7d690e416b9a",
+  "shim.rs": "304355520f317e018c848a8c50b59c8324fb03c169c9bf4063b589f374fad267",
+  "validate.rs": "43ef84a47a3d66a08a875ac620d43cced665226a07bdfcf9a329c435075fcfbf"
+ },
+ "summary": {
+  "declared_never_scheduled_in_a_pass_list": [
+   "AddCallGuards::AllCallEdges",
+   "RequiredConstsVisitor",
+   "Validator"
+  ],
+  "declared_pass_names": 78,
+  "entries_in_lib_rs_lists": 76,
+  "entries_in_other_files": 24,
+  "entries_referring_to_undeclared_names": []
+ }
+}

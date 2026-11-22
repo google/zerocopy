@@ -1,0 +1,1244 @@
+{
+ "box_deref_lowering_era": "Transmute-of-Unique-NonNull",
+ "checks": {
+  "asm_goto_with_output_critical_edge_split_by_first_add_call_guards": {
+   "held": true
+  },
+  "asm_goto_with_output_critical_edges_split_by_last_add_call_guards": {
+   "held": true
+  },
+  "box_deref_is_lowered_to_a_raw_pointer_cast": {
+   "held": true
+  },
+  "call_without_unwind_edge_is_never_split": {
+   "held": true
+  },
+  "constructors_have_at_most_one_mir_dump_while_ordinary_fns_have_many": {
+   "held": true
+  },
+  "drop_of_string_is_kept": {
+   "held": true
+  },
+  "drop_of_u32_after_inlining_is_removed": {
+   "held": true
+  },
+  "level_2_keeps_one_return_and_does_not_run_the_pass": {
+   "held": true
+  },
+  "level_4_duplicates_the_return_into_each_arm": {
+   "held": true
+  },
+  "miri_accepts_constructor_reification_box_deref_and_drops": {
+   "held": true
+  },
+  "miri_like_flags_do_not_run_inline_gvn_or_multiple_return_terminators": {
+   "held": true
+  },
+  "miri_like_flags_still_run_add_call_guards_twice_and_remove_unneeded_drops": {
+   "held": true
+  },
+  "miri_reports_ub_for_a_load_through_a_dangling_box": {
+   "held": true
+  },
+  "simplify_cfg_pre_optimizations_undoes_the_split": {
+   "held": true
+  },
+  "unwinding_call_critical_edge_split_again_by_last_add_call_guards": {
+   "held": true
+  },
+  "unwinding_call_critical_edge_split_by_first_add_call_guards": {
+   "held": true
+  }
+ },
+ "commands": {
+  "mir_opt_level_2": {
+   "argv": [
+    "<rustc>",
+    "../probe.rs",
+    "--edition",
+    "2024",
+    "-C",
+    "panic=unwind",
+    "-C",
+    "opt-level=3",
+    "-Zmir-opt-level=2",
+    "-Zdump-mir=all",
+    "-Zdump-mir-dir=mir",
+    "--emit=mir=probe.mir"
+   ],
+   "asm_feature_gate": "feature(asm_goto_with_outputs)",
+   "cwd": "<workdir>/mir_opt_level_2",
+   "exit_code": 0
+  },
+  "mir_opt_level_4": {
+   "argv": [
+    "<rustc>",
+    "../probe.rs",
+    "--edition",
+    "2024",
+    "-C",
+    "panic=unwind",
+    "-C",
+    "opt-level=3",
+    "-Zmir-opt-level=4",
+    "-Zdump-mir=all",
+    "-Zdump-mir-dir=mir",
+    "--emit=mir=probe.mir"
+   ],
+   "asm_feature_gate": "feature(asm_goto_with_outputs)",
+   "cwd": "<workdir>/mir_opt_level_4",
+   "exit_code": 0
+  },
+  "miri_like_flags": {
+   "argv": [
+    "<rustc>",
+    "../probe.rs",
+    "--edition",
+    "2024",
+    "-C",
+    "panic=unwind",
+    "-Zmir-opt-level=0",
+    "-Zmir-preserve-ub",
+    "-Zmir-enable-passes=-CheckAlignment,-CheckNull,-CheckEnums",
+    "-Zdump-mir=all",
+    "-Zdump-mir-dir=mir",
+    "--emit=mir=probe.mir"
+   ],
+   "asm_feature_gate": "feature(asm_goto_with_outputs)",
+   "cwd": "<workdir>/miri_like_flags",
+   "exit_code": 0
+  },
+  "unoptimized_default": {
+   "argv": [
+    "<rustc>",
+    "../probe.rs",
+    "--edition",
+    "2024",
+    "-C",
+    "panic=unwind",
+    "-Zdump-mir=all",
+    "-Zdump-mir-dir=mir",
+    "--emit=mir=probe.mir"
+   ],
+   "asm_feature_gate": "feature(asm_goto_with_outputs)",
+   "cwd": "<workdir>/unoptimized_default",
+   "exit_code": 0
+  }
+ },
+ "dangling_box_place_only_summary": {
+  "exit_codes": {
+   "aliasing_model_disabled": 0,
+   "stacked_borrows_default": 0,
+   "tree_borrows": 0
+  },
+  "note": "Observation only. Whether UB is reported here depends on how this toolchain lowers Box derefs (see box_deref_lowering_era); this script does not assert an expected outcome for it.",
+  "ub_reported": {
+   "aliasing_model_disabled": false,
+   "stacked_borrows_default": false,
+   "tree_borrows": false
+  }
+ },
+ "dump_sequences_crit_call": {
+  "mir_opt_level_2": [
+   "1-1-000.built",
+   "1-1-005.SimplifyCfg-initial",
+   "1-1-007.PromoteTemps",
+   "1-1-008.SimplifyCfg-promote-consts",
+   "2-1-000.analysis",
+   "2-1-001.ImpossiblePredicates",
+   "2-1-002.CleanupPostBorrowck",
+   "2-1-003.RemoveNoopLandingPads",
+   "2-1-004.SimplifyCfg-post-analysis",
+   "2-1-005.Derefer",
+   "2-2-000.analysis-post-cleanup",
+   "2-2-001.AddCallGuards",
+   "2-2-002.PostAnalysisNormalize",
+   "2-2-003.Subtyper",
+   "2-2-004.ElaborateDrops",
+   "2-2-006.AbortUnwindingCalls",
+   "2-2-007.AddMovesForPackedDrops",
+   "2-2-008.EraseDerefTemps",
+   "2-2-009.ElaborateBoxDerefs",
+   "2-2-010.StateTransform",
+   "3-1-000.runtime",
+   "3-1-001.LowerIntrinsics",
+   "3-1-002.RemovePlaceMention",
+   "3-1-003.SimplifyCfg-pre-optimizations",
+   "3-2-000.runtime-post-cleanup",
+   "3-2-001.LowerSliceLenCalls",
+   "3-2-002.InstSimplify-before-inline",
+   "3-2-003.ForceInline",
+   "3-2-004.Inline",
+   "3-2-005.RemoveZsts",
+   "3-2-006.RemoveUnneededDrops",
+   "3-2-007.UnreachableEnumBranching",
+   "3-2-008.UnreachablePropagation",
+   "3-2-009.SimplifyCfg-after-unreachable-enum-branching",
+   "3-2-010.InstSimplify-after-simplifycfg",
+   "3-2-011.SimplifyConstCondition-after-inst-simplify",
+   "3-2-012.ReferencePropagation",
+   "3-2-013.ScalarReplacementOfAggregates",
+   "3-2-014.SimplifyLocals-before-const-prop",
+   "3-2-015.DeadStoreElimination-initial",
+   "3-2-016.GVN",
+   "3-2-017.SimplifyLocals-after-value-numbering",
+   "3-2-018.SsaRangePropagation",
+   "3-2-019.MatchBranchSimplification",
+   "3-2-020.SingleUseConsts",
+   "3-2-021.SimplifyConstCondition-after-const-prop",
+   "3-2-022.JumpThreading",
+   "3-2-023.EarlyOtherwiseBranch",
+   "3-2-024.SimplifyComparisonIntegral",
+   "3-2-025.SimplifyConstCondition-final",
+   "3-2-026.RemoveNoopLandingPads",
+   "3-2-027.SimplifyCfg-final",
+   "3-2-028.CopyProp",
+   "3-2-029.DeadStoreElimination-final",
+   "3-2-030.DestinationPropagation",
+   "3-2-031.SimplifyLocals-final",
+   "3-2-032.AddCallGuards",
+   "3-3-000.runtime-optimized"
+  ],
+  "mir_opt_level_4": [
+   "1-1-000.built",
+   "1-1-005.SimplifyCfg-initial",
+   "1-1-007.PromoteTemps",
+   "1-1-008.SimplifyCfg-promote-consts",
+   "2-1-000.analysis",
+   "2-1-001.ImpossiblePredicates",
+   "2-1-002.CleanupPostBorrowck",
+   "2-1-003.RemoveNoopLandingPads",
+   "2-1-004.SimplifyCfg-post-analysis",
+   "2-1-005.Derefer",
+   "2-2-000.analysis-post-cleanup",
+   "2-2-001.AddCallGuards",
+   "2-2-002.PostAnalysisNormalize",
+   "2-2-003.Subtyper",
+   "2-2-004.ElaborateDrops",
+   "2-2-006.AbortUnwindingCalls",
+   "2-2-007.AddMovesForPackedDrops",
+   "2-2-008.EraseDerefTemps",
+   "2-2-009.ElaborateBoxDerefs",
+   "2-2-010.StateTransform",
+   "3-1-000.runtime",
+   "3-1-001.LowerIntrinsics",
+   "3-1-002.RemovePlaceMention",
+   "3-1-003.SimplifyCfg-pre-optimizations",
+   "3-2-000.runtime-post-cleanup",
+   "3-2-001.LowerSliceLenCalls",
+   "3-2-002.InstSimplify-before-inline",
+   "3-2-003.ForceInline",
+   "3-2-004.Inline",
+   "3-2-005.RemoveZsts",
+   "3-2-006.RemoveUnneededDrops",
+   "3-2-007.UnreachableEnumBranching",
+   "3-2-008.UnreachablePropagation",
+   "3-2-009.SimplifyCfg-after-unreachable-enum-branching",
+   "3-2-010.MultipleReturnTerminators",
+   "3-2-011.InstSimplify-after-simplifycfg",
+   "3-2-012.SimplifyConstCondition-after-inst-simplify",
+   "3-2-013.ReferencePropagation",
+   "3-2-014.ScalarReplacementOfAggregates",
+   "3-2-015.SimplifyLocals-before-const-prop",
+   "3-2-016.DeadStoreElimination-initial",
+   "3-2-017.GVN",
+   "3-2-018.SimplifyLocals-after-value-numbering",
+   "3-2-019.SsaRangePropagation",
+   "3-2-020.MatchBranchSimplification",
+   "3-2-021.DataflowConstProp",
+   "3-2-022.SingleUseConsts",
+   "3-2-023.SimplifyConstCondition-after-const-prop",
+   "3-2-024.JumpThreading",
+   "3-2-025.EarlyOtherwiseBranch",
+   "3-2-026.SimplifyComparisonIntegral",
+   "3-2-027.SimplifyConstCondition-final",
+   "3-2-028.RemoveNoopLandingPads",
+   "3-2-029.SimplifyCfg-final",
+   "3-2-030.CopyProp",
+   "3-2-031.DeadStoreElimination-final",
+   "3-2-032.DestinationPropagation",
+   "3-2-033.SimplifyLocals-final",
+   "3-2-034.MultipleReturnTerminators",
+   "3-2-035.AddCallGuards",
+   "3-3-000.runtime-optimized"
+  ],
+  "miri_like_flags": [
+   "1-1-000.built",
+   "1-1-005.SimplifyCfg-initial",
+   "1-1-007.PromoteTemps",
+   "1-1-008.SimplifyCfg-promote-consts",
+   "2-1-000.analysis",
+   "2-1-001.ImpossiblePredicates",
+   "2-1-002.CleanupPostBorrowck",
+   "2-1-003.RemoveNoopLandingPads",
+   "2-1-004.SimplifyCfg-post-analysis",
+   "2-1-005.Derefer",
+   "2-2-000.analysis-post-cleanup",
+   "2-2-001.AddCallGuards",
+   "2-2-002.PostAnalysisNormalize",
+   "2-2-003.Subtyper",
+   "2-2-004.ElaborateDrops",
+   "2-2-006.AbortUnwindingCalls",
+   "2-2-007.AddMovesForPackedDrops",
+   "2-2-008.EraseDerefTemps",
+   "2-2-009.ElaborateBoxDerefs",
+   "2-2-010.StateTransform",
+   "3-1-000.runtime",
+   "3-1-001.LowerIntrinsics",
+   "3-1-002.SimplifyCfg-pre-optimizations",
+   "3-2-000.runtime-post-cleanup",
+   "3-2-001.ForceInline",
+   "3-2-002.RemoveUnneededDrops",
+   "3-2-003.AddCallGuards",
+   "3-3-000.runtime-optimized"
+  ],
+  "unoptimized_default": [
+   "1-1-000.built",
+   "1-1-005.SimplifyCfg-initial",
+   "1-1-007.PromoteTemps",
+   "1-1-008.SimplifyCfg-promote-consts",
+   "2-1-000.analysis",
+   "2-1-001.ImpossiblePredicates",
+   "2-1-002.CleanupPostBorrowck",
+   "2-1-003.RemoveNoopLandingPads",
+   "2-1-004.SimplifyCfg-post-analysis",
+   "2-1-005.Derefer",
+   "2-2-000.analysis-post-cleanup",
+   "2-2-001.AddCallGuards",
+   "2-2-002.PostAnalysisNormalize",
+   "2-2-003.Subtyper",
+   "2-2-004.ElaborateDrops",
+   "2-2-006.AbortUnwindingCalls",
+   "2-2-007.AddMovesForPackedDrops",
+   "2-2-008.EraseDerefTemps",
+   "2-2-009.ElaborateBoxDerefs",
+   "2-2-010.StateTransform",
+   "3-1-000.runtime",
+   "3-1-001.LowerIntrinsics",
+   "3-1-002.RemovePlaceMention",
+   "3-1-003.SimplifyCfg-pre-optimizations",
+   "3-2-000.runtime-post-cleanup",
+   "3-2-001.CheckAlignment",
+   "3-2-002.CheckNull",
+   "3-2-003.CheckEnums",
+   "3-2-004.LowerSliceLenCalls",
+   "3-2-005.InstSimplify-before-inline",
+   "3-2-006.ForceInline",
+   "3-2-007.RemoveStorageMarkers",
+   "3-2-008.RemoveZsts",
+   "3-2-009.RemoveUnneededDrops",
+   "3-2-010.UnreachableEnumBranching",
+   "3-2-011.SimplifyCfg-after-unreachable-enum-branching",
+   "3-2-012.InstSimplify-after-simplifycfg",
+   "3-2-013.SimplifyConstCondition-after-inst-simplify",
+   "3-2-014.SimplifyLocals-before-const-prop",
+   "3-2-015.SimplifyLocals-after-value-numbering",
+   "3-2-016.SingleUseConsts",
+   "3-2-017.SimplifyConstCondition-after-const-prop",
+   "3-2-018.SimplifyConstCondition-final",
+   "3-2-019.RemoveNoopLandingPads",
+   "3-2-020.SimplifyCfg-final",
+   "3-2-021.CopyProp",
+   "3-2-022.SimplifyLocals-final",
+   "3-2-023.AddCallGuards",
+   "3-3-000.runtime-optimized"
+  ]
+ },
+ "levels": {
+  "mir_opt_level_2": {
+   "compiled": true,
+   "constructors": {
+    "dump_files_for_ordinary_fn_reify_ctors": 110,
+    "dump_files_per_constructor": {
+     "E-V-{constructor#0}": {
+      "dump_files": 1,
+      "dumps": [
+       "1-1-000.built"
+      ]
+     },
+     "Guard-{constructor#0}": {
+      "dump_files": 1,
+      "dumps": [
+       "1-1-000.built"
+      ]
+     },
+     "Pair-{constructor#0}": {
+      "dump_files": 1,
+      "dumps": [
+       "1-1-000.built"
+      ]
+     }
+    },
+    "emitted_mir_for_Pair_ctor": [
+     [
+      "fn Pair(_1: u32, _2: u32) -> Pair {",
+      "    let mut _0: Pair;",
+      "",
+      "    bb0: {",
+      "        _0 = Pair(move _1, move _2);",
+      "        return;",
+      "    }",
+      "}"
+     ],
+     [
+      "fn Pair(_1: u32, _2: u32) -> Pair {",
+      "    let mut _0: Pair;",
+      "",
+      "    bb0: {",
+      "        _0 = Pair(move _1, move _2);",
+      "        return;",
+      "    }",
+      "}"
+     ]
+    ]
+   },
+   "critical_call_edges": {
+    "asm_goto_out": {
+     "add_call_guards_runs": [
+      {
+       "blocks_after": 4,
+       "blocks_before": 3,
+       "dump": "2-2-001.AddCallGuards"
+      },
+      {
+       "blocks_after": 4,
+       "blocks_before": 2,
+       "dump": "3-2-032.AddCallGuards"
+      }
+     ],
+     "first_run_before_body": [
+      "fn asm_goto_out(_1: u64) -> u64 {",
+      "    bb0: {",
+      "        _5 = copy _1;",
+      "        _4 = const ();",
+      "        asm!(\"mov {1}, {0}",
+      "test {0}, {0}",
+      "jnz {2}\", in(reg) move _5, out(reg) _2, label 1, options(NOSTACK)) -> [return: bb1, label: bb2, unwind unreachable];",
+      "    bb1: {",
+      "        _3 = const ();",
+      "        _0 = copy _2;",
+      "        return;",
+      "    bb2: {",
+      "        _6 = const ();",
+      "        goto -> bb1;"
+     ],
+     "first_run_lines_only_after": [
+      "jnz {2}\", in(reg) move _5, out(reg) _2, label 1, options(NOSTACK)) -> [return: bb3, label: bb2, unwind unreachable];",
+      "    bb3: {"
+     ],
+     "last_run_after_body": [
+      "fn asm_goto_out(_1: u64) -> u64 {",
+      "    bb0: {",
+      "        asm!(\"mov {1}, {0}",
+      "test {0}, {0}",
+      "jnz {2}\", in(reg) copy _1, out(reg) _0, label 1, options(NOSTACK)) -> [return: bb2, label: bb3, unwind unreachable];",
+      "    bb1: {",
+      "        return;",
+      "    bb2: {",
+      "        goto -> bb1;",
+      "    bb3: {",
+      "        goto -> bb1;"
+     ],
+     "last_run_before_body": [
+      "fn asm_goto_out(_1: u64) -> u64 {",
+      "    bb0: {",
+      "        asm!(\"mov {1}, {0}",
+      "test {0}, {0}",
+      "jnz {2}\", in(reg) copy _1, out(reg) _0, label 1, options(NOSTACK)) -> [return: bb1, label: bb1, unwind unreachable];",
+      "    bb1: {",
+      "        return;"
+     ],
+     "present": true,
+     "simplify_cfg_pre_optimizations": [
+      {
+       "blocks_after": 3,
+       "blocks_before": 4,
+       "dump": "3-1-003.SimplifyCfg-pre-optimizations"
+      }
+     ]
+    },
+    "crit_call": {
+     "add_call_guards_runs": [
+      {
+       "blocks_after": 8,
+       "blocks_before": 7,
+       "dump": "2-2-001.AddCallGuards"
+      },
+      {
+       "blocks_after": 8,
+       "blocks_before": 7,
+       "dump": "3-2-032.AddCallGuards"
+      }
+     ],
+     "first_run_before_body": [
+      "fn crit_call(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        _2 = Guard(const 1_u32);",
+      "        _4 = copy _1;",
+      "        switchInt(move _4) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _3 = opaque(const 1_u32) -> [return: bb3, unwind: bb5];",
+      "    bb2: {",
+      "        _3 = const 7_u32;",
+      "        goto -> bb3;",
+      "    bb3: {",
+      "        _0 = copy _3;",
+      "        drop(_2) -> [return: bb4, unwind continue];",
+      "    bb4: {",
+      "        return;",
+      "    bb5 (cleanup): {",
+      "        drop(_2) -> [return: bb6, unwind terminate(cleanup)];",
+      "    bb6 (cleanup): {",
+      "        resume;"
+     ],
+     "first_run_lines_only_after": [
+      "        _3 = opaque(const 1_u32) -> [return: bb7, unwind: bb5];",
+      "    bb7: {"
+     ],
+     "last_run_after_body": [
+      "fn crit_call(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        _2 = const Guard(1_u32);",
+      "        switchInt(copy _1) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _0 = opaque(const 1_u32) -> [return: bb7, unwind: bb5];",
+      "    bb2: {",
+      "        _0 = const 7_u32;",
+      "        goto -> bb3;",
+      "    bb3: {",
+      "        drop(_2) -> [return: bb4, unwind continue];",
+      "    bb4: {",
+      "        return;",
+      "    bb5 (cleanup): {",
+      "        drop(_2) -> [return: bb6, unwind terminate(cleanup)];",
+      "    bb6 (cleanup): {",
+      "        resume;",
+      "    bb7: {",
+      "        goto -> bb3;"
+     ],
+     "last_run_before_body": [
+      "fn crit_call(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        _2 = const Guard(1_u32);",
+      "        switchInt(copy _1) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _0 = opaque(const 1_u32) -> [return: bb3, unwind: bb5];",
+      "    bb2: {",
+      "        _0 = const 7_u32;",
+      "        goto -> bb3;",
+      "    bb3: {",
+      "        drop(_2) -> [return: bb4, unwind continue];",
+      "    bb4: {",
+      "        return;",
+      "    bb5 (cleanup): {",
+      "        drop(_2) -> [return: bb6, unwind terminate(cleanup)];",
+      "    bb6 (cleanup): {",
+      "        resume;"
+     ],
+     "present": true,
+     "simplify_cfg_pre_optimizations": [
+      {
+       "blocks_after": 7,
+       "blocks_before": 8,
+       "dump": "3-1-003.SimplifyCfg-pre-optimizations"
+      }
+     ]
+    },
+    "noncrit_call_no_unwind_edge": {
+     "add_call_guards_runs": [
+      {
+       "blocks_after": 4,
+       "blocks_before": 4,
+       "dump": "2-2-001.AddCallGuards"
+      },
+      {
+       "blocks_after": 4,
+       "blocks_before": 4,
+       "dump": "3-2-032.AddCallGuards"
+      }
+     ],
+     "first_run_before_body": [
+      "fn noncrit_call_no_unwind_edge(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        _3 = copy _1;",
+      "        switchInt(move _3) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _2 = opaque(const 1_u32) -> [return: bb3, unwind continue];",
+      "    bb2: {",
+      "        _2 = const 7_u32;",
+      "        goto -> bb3;",
+      "    bb3: {",
+      "        _0 = copy _2;",
+      "        return;"
+     ],
+     "first_run_lines_only_after": [],
+     "last_run_after_body": [
+      "fn noncrit_call_no_unwind_edge(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        switchInt(copy _1) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _0 = opaque(const 1_u32) -> [return: bb3, unwind continue];",
+      "    bb2: {",
+      "        _0 = const 7_u32;",
+      "        goto -> bb3;",
+      "    bb3: {",
+      "        return;"
+     ],
+     "last_run_before_body": [
+      "fn noncrit_call_no_unwind_edge(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        switchInt(copy _1) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _0 = opaque(const 1_u32) -> [return: bb3, unwind continue];",
+      "    bb2: {",
+      "        _0 = const 7_u32;",
+      "        goto -> bb3;",
+      "    bb3: {",
+      "        return;"
+     ],
+     "present": true,
+     "simplify_cfg_pre_optimizations": [
+      {
+       "blocks_after": 4,
+       "blocks_before": 4,
+       "dump": "3-1-003.SimplifyCfg-pre-optimizations"
+      }
+     ]
+    }
+   },
+   "elaborate_box_derefs": {
+    "read_box_u64": {
+     "after_body": [
+      "fn read_box_u64(_1: &Box<u64>) -> u64 {",
+      "    bb0: {",
+      "        _2 = no_retag copy (*_1);",
+      "        _3 = copy ((_2.0: std::ptr::Unique<u64>).0: std::ptr::NonNull<u64>) as *const u64 (Transmute);",
+      "        _0 = copy (*_3);",
+      "        return;"
+     ],
+     "before_body": [
+      "fn read_box_u64(_1: &Box<u64>) -> u64 {",
+      "    bb0: {",
+      "        _2 = no_retag copy (*_1);",
+      "        _0 = copy (*_2);",
+      "        return;"
+     ],
+     "cast_lines": [
+      "_3 = copy ((_2.0: std::ptr::Unique<u64>).0: std::ptr::NonNull<u64>) as *const u64 (Transmute);"
+     ],
+     "era": "Transmute-of-Unique-NonNull"
+    },
+    "write_box_u64": {
+     "after_body": [
+      "fn write_box_u64(_1: &mut Box<u64>, _2: u64) -> () {",
+      "    bb0: {",
+      "        _3 = copy _2;",
+      "        _4 = no_retag copy (*_1);",
+      "        _5 = copy ((_4.0: std::ptr::Unique<u64>).0: std::ptr::NonNull<u64>) as *const u64 (Transmute);",
+      "        (*_5) = move _3;",
+      "        _0 = const ();",
+      "        return;"
+     ],
+     "before_body": [
+      "fn write_box_u64(_1: &mut Box<u64>, _2: u64) -> () {",
+      "    bb0: {",
+      "        _3 = copy _2;",
+      "        _4 = no_retag copy (*_1);",
+      "        (*_4) = move _3;",
+      "        _0 = const ();",
+      "        return;"
+     ],
+     "cast_lines": [
+      "_5 = copy ((_4.0: std::ptr::Unique<u64>).0: std::ptr::NonNull<u64>) as *const u64 (Transmute);"
+     ],
+     "era": "Transmute-of-Unique-NonNull"
+    }
+   },
+   "multiple_return_terminators": {
+    "optimized_body": [
+     "fn multi_return_branch(_1: u32) -> u32 {",
+     "    bb0: {",
+     "        switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];",
+     "    bb1: {",
+     "        _0 = const 30_u32;",
+     "        goto -> bb4;",
+     "    bb2: {",
+     "        _0 = const 20_u32;",
+     "        goto -> bb4;",
+     "    bb3: {",
+     "        _0 = const 10_u32;",
+     "        goto -> bb4;",
+     "    bb4: {",
+     "        return;"
+    ],
+    "pass_dump_files": 0,
+    "return_terminators_in_optimized_mir": 1
+   },
+   "remove_unneeded_drops": {
+    "drop_caller_string": {
+     "after_body": [
+      "fn drop_caller_string(_1: String) -> u32 {",
+      "    bb0: {",
+      "        nop;",
+      "        _3 = move _1;",
+      "        drop(_3) -> [return: bb2, unwind: bb1];",
+      "    bb1 (cleanup): {",
+      "        resume;",
+      "    bb2: {",
+      "        nop;",
+      "        _0 = const 1_u32;",
+      "        return;"
+     ],
+     "before_body": [
+      "fn drop_caller_string(_1: String) -> u32 {",
+      "    bb0: {",
+      "        nop;",
+      "        _3 = move _1;",
+      "        drop(_3) -> [return: bb2, unwind: bb1];",
+      "    bb1 (cleanup): {",
+      "        resume;",
+      "    bb2: {",
+      "        nop;",
+      "        _0 = const 1_u32;",
+      "        return;"
+     ],
+     "blocks_after": 3,
+     "blocks_before": 3,
+     "drop_terminators_after": 1,
+     "drop_terminators_before": 1,
+     "dump": "3-2-006.RemoveUnneededDrops",
+     "ran": true
+    },
+    "drop_caller_u32": {
+     "after_body": [
+      "fn drop_caller_u32(_1: u32) -> u32 {",
+      "    bb0: {",
+      "        _3 = copy _1;",
+      "        _4 = copy _1;",
+      "        _5 = const 1_u32;",
+      "        _0 = Add(copy _4, copy _5);",
+      "        return;"
+     ],
+     "before_body": [
+      "fn drop_caller_u32(_1: u32) -> u32 {",
+      "    bb0: {",
+      "        nop;",
+      "        _3 = copy _1;",
+      "        drop(_3) -> [return: bb1, unwind continue];",
+      "    bb1: {",
+      "        nop;",
+      "        _4 = copy _1;",
+      "        _5 = const 1_u32;",
+      "        _0 = Add(copy _4, copy _5);",
+      "        return;"
+     ],
+     "blocks_after": 1,
+     "blocks_before": 2,
+     "drop_terminators_after": 0,
+     "drop_terminators_before": 1,
+     "dump": "3-2-006.RemoveUnneededDrops",
+     "ran": true
+    }
+   }
+  },
+  "mir_opt_level_4": {
+   "compiled": true,
+   "constructors": {
+    "dump_files_for_ordinary_fn_reify_ctors": 116,
+    "dump_files_per_constructor": {
+     "E-V-{constructor#0}": {
+      "dump_files": 1,
+      "dumps": [
+       "1-1-000.built"
+      ]
+     },
+     "Guard-{constructor#0}": {
+      "dump_files": 1,
+      "dumps": [
+       "1-1-000.built"
+      ]
+     },
+     "Pair-{constructor#0}": {
+      "dump_files": 1,
+      "dumps": [
+       "1-1-000.built"
+      ]
+     }
+    },
+    "emitted_mir_for_Pair_ctor": [
+     [
+      "fn Pair(_1: u32, _2: u32) -> Pair {",
+      "    let mut _0: Pair;",
+      "",
+      "    bb0: {",
+      "        _0 = Pair(move _1, move _2);",
+      "        return;",
+      "    }",
+      "}"
+     ],
+     [
+      "fn Pair(_1: u32, _2: u32) -> Pair {",
+      "    let mut _0: Pair;",
+      "",
+      "    bb0: {",
+      "        _0 = Pair(move _1, move _2);",
+      "        return;",
+      "    }",
+      "}"
+     ]
+    ]
+   },
+   "critical_call_edges": {
+    "asm_goto_out": {
+     "add_call_guards_runs": [
+      {
+       "blocks_after": 4,
+       "blocks_before": 3,
+       "dump": "2-2-001.AddCallGuards"
+      },
+      {
+       "blocks_after": 4,
+       "blocks_before": 2,
+       "dump": "3-2-035.AddCallGuards"
+      }
+     ],
+     "first_run_before_body": [
+      "fn asm_goto_out(_1: u64) -> u64 {",
+      "    bb0: {",
+      "        _5 = copy _1;",
+      "        _4 = const ();",
+      "        asm!(\"mov {1}, {0}",
+      "test {0}, {0}",
+      "jnz {2}\", in(reg) move _5, out(reg) _2, label 1, options(NOSTACK)) -> [return: bb1, label: bb2, unwind unreachable];",
+      "    bb1: {",
+      "        _3 = const ();",
+      "        _0 = copy _2;",
+      "        return;",
+      "    bb2: {",
+      "        _6 = const ();",
+      "        goto -> bb1;"
+     ],
+     "first_run_lines_only_after": [
+      "jnz {2}\", in(reg) move _5, out(reg) _2, label 1, options(NOSTACK)) -> [return: bb3, label: bb2, unwind unreachable];",
+      "    bb3: {"
+     ],
+     "last_run_after_body": [
+      "fn asm_goto_out(_1: u64) -> u64 {",
+      "    bb0: {",
+      "        asm!(\"mov {1}, {0}",
+      "test {0}, {0}",
+      "jnz {2}\", in(reg) copy _1, out(reg) _0, label 1, options(NOSTACK)) -> [return: bb2, label: bb3, unwind unreachable];",
+      "    bb1: {",
+      "        return;",
+      "    bb2: {",
+      "        goto -> bb1;",
+      "    bb3: {",
+      "        goto -> bb1;"
+     ],
+     "last_run_before_body": [
+      "fn asm_goto_out(_1: u64) -> u64 {",
+      "    bb0: {",
+      "        asm!(\"mov {1}, {0}",
+      "test {0}, {0}",
+      "jnz {2}\", in(reg) copy _1, out(reg) _0, label 1, options(NOSTACK)) -> [return: bb1, label: bb1, unwind unreachable];",
+      "    bb1: {",
+      "        return;"
+     ],
+     "present": true,
+     "simplify_cfg_pre_optimizations": [
+      {
+       "blocks_after": 3,
+       "blocks_before": 4,
+       "dump": "3-1-003.SimplifyCfg-pre-optimizations"
+      }
+     ]
+    },
+    "crit_call": {
+     "add_call_guards_runs": [
+      {
+       "blocks_after": 8,
+       "blocks_before": 7,
+       "dump": "2-2-001.AddCallGuards"
+      },
+      {
+       "blocks_after": 8,
+       "blocks_before": 7,
+       "dump": "3-2-035.AddCallGuards"
+      }
+     ],
+     "first_run_before_body": [
+      "fn crit_call(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        _2 = Guard(const 1_u32);",
+      "        _4 = copy _1;",
+      "        switchInt(move _4) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _3 = opaque(const 1_u32) -> [return: bb3, unwind: bb5];",
+      "    bb2: {",
+      "        _3 = const 7_u32;",
+      "        goto -> bb3;",
+      "    bb3: {",
+      "        _0 = copy _3;",
+      "        drop(_2) -> [return: bb4, unwind continue];",
+      "    bb4: {",
+      "        return;",
+      "    bb5 (cleanup): {",
+      "        drop(_2) -> [return: bb6, unwind terminate(cleanup)];",
+      "    bb6 (cleanup): {",
+      "        resume;"
+     ],
+     "first_run_lines_only_after": [
+      "        _3 = opaque(const 1_u32) -> [return: bb7, unwind: bb5];",
+      "    bb7: {"
+     ],
+     "last_run_after_body": [
+      "fn crit_call(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        _2 = const Guard(1_u32);",
+      "        switchInt(copy _1) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _0 = opaque(const 1_u32) -> [return: bb7, unwind: bb5];",
+      "    bb2: {",
+      "        _0 = const 7_u32;",
+      "        goto -> bb3;",
+      "    bb3: {",
+      "        drop(_2) -> [return: bb4, unwind continue];",
+      "    bb4: {",
+      "        return;",
+      "    bb5 (cleanup): {",
+      "        drop(_2) -> [return: bb6, unwind terminate(cleanup)];",
+      "    bb6 (cleanup): {",
+      "        resume;",
+      "    bb7: {",
+      "        goto -> bb3;"
+     ],
+     "last_run_before_body": [
+      "fn crit_call(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        _2 = const Guard(1_u32);",
+      "        switchInt(copy _1) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _0 = opaque(const 1_u32) -> [return: bb3, unwind: bb5];",
+      "    bb2: {",
+      "        _0 = const 7_u32;",
+      "        goto -> bb3;",
+      "    bb3: {",
+      "        drop(_2) -> [return: bb4, unwind continue];",
+      "    bb4: {",
+      "        return;",
+      "    bb5 (cleanup): {",
+      "        drop(_2) -> [return: bb6, unwind terminate(cleanup)];",
+      "    bb6 (cleanup): {",
+      "        resume;"
+     ],
+     "present": true,
+     "simplify_cfg_pre_optimizations": [
+      {
+       "blocks_after": 7,
+       "blocks_before": 8,
+       "dump": "3-1-003.SimplifyCfg-pre-optimizations"
+      }
+     ]
+    },
+    "noncrit_call_no_unwind_edge": {
+     "add_call_guards_runs": [
+      {
+       "blocks_after": 4,
+       "blocks_before": 4,
+       "dump": "2-2-001.AddCallGuards"
+      },
+      {
+       "blocks_after": 4,
+       "blocks_before": 4,
+       "dump": "3-2-035.AddCallGuards"
+      }
+     ],
+     "first_run_before_body": [
+      "fn noncrit_call_no_unwind_edge(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        _3 = copy _1;",
+      "        switchInt(move _3) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _2 = opaque(const 1_u32) -> [return: bb3, unwind continue];",
+      "    bb2: {",
+      "        _2 = const 7_u32;",
+      "        goto -> bb3;",
+      "    bb3: {",
+      "        _0 = copy _2;",
+      "        return;"
+     ],
+     "first_run_lines_only_after": [],
+     "last_run_after_body": [
+      "fn noncrit_call_no_unwind_edge(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        switchInt(copy _1) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _0 = opaque(const 1_u32) -> [return: bb3, unwind continue];",
+      "    bb2: {",
+      "        _0 = const 7_u32;",
+      "        return;",
+      "    bb3: {",
+      "        return;"
+     ],
+     "last_run_before_body": [
+      "fn noncrit_call_no_unwind_edge(_1: bool) -> u32 {",
+      "    bb0: {",
+      "        switchInt(copy _1) -> [0: bb2, otherwise: bb1];",
+      "    bb1: {",
+      "        _0 = opaque(const 1_u32) -> [return: bb3, unwind continue];",
+      "    bb2: {",
+      "        _0 = const 7_u32;",
+      "        return;",
+      "    bb3: {",
+      "        return;"
+     ],
+     "present": true,
+     "simplify_cfg_pre_optimizations": [
+      {
+       "blocks_after": 4,
+       "blocks_before": 4,
+       "dump": "3-1-003.SimplifyCfg-pre-optimizations"
+      }
+     ]
+    }
+   },
+   "elaborate_box_derefs": {
+    "read_box_u64": {
+     "after_body": [
+      "fn read_box_u64(_1: &Box<u64>) -> u64 {",
+      "    bb0: {",
+      "        _2 = no_retag copy (*_1);",
+      "        _3 = copy ((_2.0: std::ptr::Unique<u64>).0: std::ptr::NonNull<u64>) as *const u64 (Transmute);",
+      "        _0 = copy (*_3);",
+      "        return;"
+     ],
+     "before_body": [
+      "fn read_box_u64(_1: &Box<u64>) -> u64 {",
+      "    bb0: {",
+      "        _2 = no_retag copy (*_1);",
+      "        _0 = copy (*_2);",
+      "        return;"
+     ],
+     "cast_lines": [
+      "_3 = copy ((_2.0: std::ptr::Unique<u64>).0: std::ptr::NonNull<u64>) as *const u64 (Transmute);"
+     ],
+     "era": "Transmute-of-Unique-NonNull"
+    },
+    "write_box_u64": {
+     "after_body": [
+      "fn write_box_u64(_1: &mut Box<u64>, _2: u64) -> () {",
+      "    bb0: {",
+      "        _3 = copy _2;",
+      "        _4 = no_retag copy (*_1);",
+      "        _5 = copy ((_4.0: std::ptr::Unique<u64>).0: std::ptr::NonNull<u64>) as *const u64 (Transmute);",
+      "        (*_5) = move _3;",
+      "        _0 = const ();",
+      "        return;"
+     ],
+     "before_body": [
+      "fn write_box_u64(_1: &mut Box<u64>, _2: u64) -> () {",
+      "    bb0: {",
+      "        _3 = copy _2;",
+      "        _4 = no_retag copy (*_1);",
+      "        (*_4) = move _3;",
+      "        _0 = const ();",
+      "        return;"
+     ],
+     "cast_lines": [
+      "_5 = copy ((_4.0: std::ptr::Unique<u64>).0: std::ptr::NonNull<u64>) as *const u64 (Transmute);"
+     ],
+     "era": "Transmute-of-Unique-NonNull"
+    }
+   },
+   "multiple_return_terminators": {
+    "optimized_body": [
+     "fn multi_return_branch(_1: u32) -> u32 {",
+     "    bb0: {",
+     "        switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];",
+     "    bb1: {",
+     "        _0 = const 30_u32;",
+     "        return;",
+     "    bb2: {",
+     "        _0 = const 20_u32;",
+     "        return;",
+     "    bb3: {",
+     "        _0 = const 10_u32;",
+     "        return;"
+    ],
+    "pass_dump_files": 4,
+    "return_terminators_in_optimized_mir": 3
+   },
+   "remove_unneeded_drops": {
+    "drop_caller_string": {
+     "after_body": [
+      "fn drop_caller_string(_1: String) -> u32 {",
+      "    bb0: {",
+      "        nop;",
+      "        _3 = move _1;",
+      "        drop(_3) -> [return: bb2, unwind: bb1];",
+      "    bb1 (cleanup): {",
+      "        resume;",
+      "    bb2: {",
+      "        nop;",
+      "        _0 = const 1_u32;",
+      "        return;"
+     ],
+     "before_body": [
+      "fn drop_caller_string(_1: String) -> u32 {",
+      "    bb0: {",
+      "        nop;",
+      "        _3 = move _1;",
+      "        drop(_3) -> [return: bb2, unwind: bb1];",
+      "    bb1 (cleanup): {",
+      "        resume;",
+      "    bb2: {",
+      "        nop;",
+      "        _0 = const 1_u32;",
+      "        return;"
+     ],
+     "blocks_after": 3,
+     "blocks_before": 3,
+     "drop_terminators_after": 1,
+     "drop_terminators_before": 1,
+     "dump": "3-2-006.RemoveUnneededDrops",
+     "ran": true
+    },
+    "drop_caller_u32": {
+     "after_body": [
+      "fn drop_caller_u32(_1: u32) -> u32 {",
+      "    bb0: {",
+      "        _3 = copy _1;",
+      "        _4 = copy _1;",
+      "        _5 = const 1_u32;",
+      "        _0 = Add(copy _4, copy _5);",
+      "        return;"
+     ],
+     "before_body": [
+      "fn drop_caller_u32(_1: u32) -> u32 {",
+      "    bb0: {",
+      "        nop;",
+      "        _3 = copy _1;",
+      "        drop(_3) -> [return: bb1, unwind continue];",
+      "    bb1: {",
+      "        nop;",
+      "        _4 = copy _1;",
+      "        _5 = const 1_u32;",
+      "        _0 = Add(copy _4, copy _5);",
+      "        return;"
+     ],
+     "blocks_after": 1,
+     "blocks_before": 2,
+     "drop_terminators_after": 0,
+     "drop_terminators_before": 1,
+     "dump": "3-2-006.RemoveUnneededDrops",
+     "ran": true
+    }
+   }
+  }
+ },
+ "miri": {
+  "constructors_box_and_drops": {
+   "argv": [
+    "<miri>",
+    "miri_main.rs",
+    "--edition",
+    "2024",
+    "--sysroot",
+    "<miri-sysroot>"
+   ],
+   "exit_code": 0,
+   "first_error_line": null,
+   "stdout_last_line": "miri_main ok"
+  },
+  "dangling_box_load_control": {
+   "argv": [
+    "<miri>",
+    "dangling_box_load.rs",
+    "--edition",
+    "2024",
+    "--sysroot",
+    "<miri-sysroot>"
+   ],
+   "exit_code": 1,
+   "first_error_line": "error: Undefined Behavior: memory access failed: alloc235 has been freed, so this pointer is dangling",
+   "stdout_last_line": null
+  },
+  "dangling_box_place_only": {
+   "aliasing_model_disabled": {
+    "argv": [
+     "<miri>",
+     "dangling_box_place.rs",
+     "--edition",
+     "2024",
+     "--sysroot",
+     "<miri-sysroot>",
+     "-Zmiri-disable-stacked-borrows"
+    ],
+    "exit_code": 0,
+    "first_error_line": null,
+    "stdout_last_line": null
+   },
+   "stacked_borrows_default": {
+    "argv": [
+     "<miri>",
+     "dangling_box_place.rs",
+     "--edition",
+     "2024",
+     "--sysroot",
+     "<miri-sysroot>"
+    ],
+    "exit_code": 0,
+    "first_error_line": null,
+    "stdout_last_line": null
+   },
+   "tree_borrows": {
+    "argv": [
+     "<miri>",
+     "dangling_box_place.rs",
+     "--edition",
+     "2024",
+     "--sysroot",
+     "<miri-sysroot>",
+     "-Zmiri-tree-borrows"
+    ],
+    "exit_code": 0,
+    "first_error_line": null,
+    "stdout_last_line": null
+   }
+  },
+  "miri_version_line": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "status": "ran"
+ },
+ "schema": "probe-boxraw-call-guards/1",
+ "summary": {
+  "failed": [],
+  "held": [
+   "asm_goto_with_output_critical_edge_split_by_first_add_call_guards",
+   "asm_goto_with_output_critical_edges_split_by_last_add_call_guards",
+   "box_deref_is_lowered_to_a_raw_pointer_cast",
+   "call_without_unwind_edge_is_never_split",
+   "constructors_have_at_most_one_mir_dump_while_ordinary_fns_have_many",
+   "drop_of_string_is_kept",
+   "drop_of_u32_after_inlining_is_removed",
+   "level_2_keeps_one_return_and_does_not_run_the_pass",
+   "level_4_duplicates_the_return_into_each_arm",
+   "miri_accepts_constructor_reification_box_deref_and_drops",
+   "miri_like_flags_do_not_run_inline_gvn_or_multiple_return_terminators",
+   "miri_like_flags_still_run_add_call_guards_twice_and_remove_unneeded_drops",
+   "miri_reports_ub_for_a_load_through_a_dangling_box",
+   "simplify_cfg_pre_optimizations_undoes_the_split",
+   "unwinding_call_critical_edge_split_again_by_last_add_call_guards",
+   "unwinding_call_critical_edge_split_by_first_add_call_guards"
+  ],
+  "skipped": []
+ },
+ "toolchain": {
+  "LLVM version": "22.1.6",
+  "binary": "rustc",
+  "commit-date": "2026-05-31",
+  "commit-hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+  "host": "x86_64-unknown-linux-gnu",
+  "release": "1.98.0-nightly",
+  "version_line": "rustc 1.98.0-nightly (14210df0e 2026-05-31)"
+ }
+}

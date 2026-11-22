@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc (rust-lang/rust, tip of main on 2026-11-21; source audit, all line citations)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e"
+      }
+    },
+    {
+      "name": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11) (source cross-check; retained execution record)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rustc 1.98.0-nightly (14210df0e 2026-05-31) with its Miri (source; rustc and Miri executed)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly",
+        "host": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "rustc 1.98.0-nightly (f8a08b688 2026-05-30) (compiler pinned by Anneal's capture driver; one source file compared)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Anneal (trusted MIR syntax and capture driver)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

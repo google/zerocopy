@@ -1,0 +1,1546 @@
+{
+ "anchors": [
+  {
+   "file": "compiler/rustc_mir_transform/src/pass_manager.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     88
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     88
+    ]
+   },
+   "literal": "pub(crate) enum PassPolicy {",
+   "what": "definition of PassPolicy"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/pass_manager.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     91
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     91
+    ]
+   },
+   "literal": "They must not remove any UB, as they will",
+   "what": "Required: must not remove UB"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/pass_manager.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     114
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": []
+   },
+   "literal": "fn is_required(&self) -> bool;",
+   "what": "older API: is_required"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/pass_manager.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     214
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     253
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     256
+    ]
+   },
+   "literal": "pub(super) fn should_run_pass<'tcx, P>(",
+   "what": "should_run_pass"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/pass_manager.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     357
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     402
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     409
+    ]
+   },
+   "literal": "|| new_phase == MirPhase::Runtime(RuntimePhase::Optimized);",
+   "what": "MIR is always validated on the change to Runtime(Optimized)"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     384
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     395
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     395
+    ]
+   },
+   "literal": "fn mir_built(",
+   "what": "mir_built"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     422
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     436
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     436
+    ]
+   },
+   "literal": "fn mir_promoted(",
+   "what": "mir_promoted"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     343
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     354
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     354
+    ]
+   },
+   "literal": "if let Some((CtorKind::Fn, ctor_def_id)) = variant.ctor",
+   "what": "mir_keys adds fn-like constructors"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     427
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     441
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     441
+    ]
+   },
+   "literal": "debug_assert!(!tcx.is_constructor(def.to_def_id()));",
+   "what": "mir_promoted never sees constructors"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     495
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     512
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     512
+    ]
+   },
+   "literal": "return shim::build_adt_ctor(tcx, def.to_def_id());",
+   "what": "mir_for_ctfe of a constructor"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     572
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     608
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     608
+    ]
+   },
+   "literal": "pub fn run_analysis_to_runtime_passes<'tcx>(",
+   "what": "run_analysis_to_runtime_passes"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     607
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     642
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     642
+    ]
+   },
+   "literal": "fn run_analysis_cleanup_passes<'tcx>(",
+   "what": "run_analysis_cleanup_passes"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     613
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     648
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     648
+    ]
+   },
+   "literal": "&deref_separator::Derefer,",
+   "what": "Derefer scheduled"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     631
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     660
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     655
+    ]
+   },
+   "literal": "post_analysis_normalize::PostAnalysisNormalize",
+   "what": "PostAnalysisNormalize scheduled"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     626
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     655
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     659
+    ]
+   },
+   "literal": "fn run_runtime_lowering_passes<'tcx>(",
+   "what": "run_runtime_lowering_passes"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     629,
+     765
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     658,
+     780
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     662,
+     782
+    ]
+   },
+   "literal": "&add_call_guards::CriticalCallEdges,",
+   "what": "CriticalCallEdges scheduled (all occurrences)"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     644
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     673
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     675
+    ]
+   },
+   "literal": "&erase_deref_temps::EraseDerefTemps,",
+   "what": "EraseDerefTemps scheduled"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     645
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     674
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     676
+    ]
+   },
+   "literal": "&elaborate_box_derefs::ElaborateBoxDerefs,",
+   "what": "ElaborateBoxDerefs scheduled"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     653
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     682
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     684
+    ]
+   },
+   "literal": "fn run_runtime_cleanup_passes<'tcx>(",
+   "what": "run_runtime_cleanup_passes"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     657
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     686
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     688
+    ]
+   },
+   "literal": "&simplify::SimplifyCfg::PreOptimizations,",
+   "what": "SimplifyCfg::PreOptimizations scheduled"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     675
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     698
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     700
+    ]
+   },
+   "literal": "pub(crate) fn run_optimization_passes<'tcx>(",
+   "what": "run_optimization_passes"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     717
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     731
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     733
+    ]
+   },
+   "literal": "&remove_unneeded_drops::RemoveUnneededDrops,",
+   "what": "RemoveUnneededDrops scheduled"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     723,
+     762
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     737,
+     778
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     739,
+     780
+    ]
+   },
+   "literal": "&multiple_return_terminators::MultipleReturnTerminators,",
+   "what": "MultipleReturnTerminators scheduled (all occurrences)"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     776
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     790
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     792
+    ]
+   },
+   "literal": "fn optimized_mir(tcx: TyCtxt<'_>, did: LocalDefId) -> &Body<'_> {",
+   "what": "optimized_mir"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     782
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     796
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     798
+    ]
+   },
+   "literal": "return tcx.mir_for_ctfe(did);",
+   "what": "optimized_mir of a constructor"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     788
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     802
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     804
+    ]
+   },
+   "literal": "fn inner_optimized_mir(",
+   "what": "inner_optimized_mir"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     67
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     67
+    ]
+   },
+   "literal": "CastKind::BoxDerefTransmute",
+   "what": "cast kind used by the pass"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     74
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": []
+   },
+   "literal": "CastKind::Transmute,",
+   "what": "cast kind used by the pass (older)"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     60
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     60
+    ]
+   },
+   "literal": "// Project to the first field (a `BoxRaw`), then transmute that.",
+   "what": "projection comment"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     61,
+     134
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     52,
+     120
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     52,
+     120
+    ]
+   },
+   "literal": "&& let Some(boxed_ty) = base_ty.boxed_ty()",
+   "what": "only Box-typed bases"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     68
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     58
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     58
+    ]
+   },
+   "literal": "let ptr_local = self.patch.new_temp(ptr_ty, source_info.span);",
+   "what": "fresh temporary per elaborated deref"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     155
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     155
+    ]
+   },
+   "literal": "PassPolicy::Required",
+   "what": "policy"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/deref_separator.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     25
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     26
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     26
+    ]
+   },
+   "literal": "&& place.projection[1..].contains(&ProjectionElem::Deref)",
+   "what": "Derefer: non-leading derefs only"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/deref_separator.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     59
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     60
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     60
+    ]
+   },
+   "literal": "Rvalue::CopyForDeref(deref_place)",
+   "what": "Derefer emits CopyForDeref"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/erase_deref_temps.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     21
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     23
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     23
+    ]
+   },
+   "literal": "*rvalue = Rvalue::Use(Operand::Copy(place), WithRetag::No)",
+   "what": "EraseDerefTemps: CopyForDeref becomes a no-retag copy"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/add_call_guards.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     16
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     16
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     16
+    ]
+   },
+   "literal": "//! NOTE: Simplify CFG will happily undo most of the work this pass does.",
+   "what": "module doc"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/add_call_guards.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     32
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     34
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     34
+    ]
+   },
+   "literal": "let mut pred_count = IndexVec::from_elem(0u8, &body.basic_blocks);",
+   "what": "pred_count"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/add_call_guards.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     49
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     51
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     51
+    ]
+   },
+   "literal": "if pred_count[destination] > 1",
+   "what": "Call criterion"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/add_call_guards.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     50
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     52
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     52
+    ]
+   },
+   "literal": "&& (generates_invoke(unwind) || self == &AllCallEdges) =>",
+   "what": "Call criterion"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/add_call_guards.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     67
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     69
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     69
+    ]
+   },
+   "literal": "if has_outputs && (has_labels || generates_invoke(unwind)) {",
+   "what": "InlineAsm criterion"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/add_call_guards.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     69
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     71
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     71
+    ]
+   },
+   "literal": "if pred_count[*target] > 1 {",
+   "what": "InlineAsm per-target criterion"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/add_call_guards.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     131
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     135
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     135
+    ]
+   },
+   "literal": "fn generates_invoke(unwind: UnwindAction) -> bool {",
+   "what": "generates_invoke"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/remove_unneeded_drops.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     27
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     28
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     28
+    ]
+   },
+   "literal": "if ty.needs_drop(tcx, typing_env) {",
+   "what": "needs_drop test"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/remove_unneeded_drops.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     38
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     39
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     39
+    ]
+   },
+   "literal": "simplify_cfg(tcx, body);",
+   "what": "follow-up CFG simplification"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/remove_unneeded_drops.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     44
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     44
+    ]
+   },
+   "literal": "PassPolicy::optional(true)",
+   "what": "policy"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/multiple_return_terminators.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     22
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     22
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     22
+    ]
+   },
+   "literal": "if bb.statements.is_empty() && bb.terminator().kind == TerminatorKind::Return {",
+   "what": "simple return test"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/multiple_return_terminators.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     31
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     31
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     31
+    ]
+   },
+   "literal": "bb.terminator_mut().kind = TerminatorKind::Return;",
+   "what": "rewrite"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/multiple_return_terminators.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     35
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     35
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     35
+    ]
+   },
+   "literal": "simplify::remove_dead_blocks(body)",
+   "what": "follow-up"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/multiple_return_terminators.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     14
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     14
+    ]
+   },
+   "literal": "PassPolicy::optional(ctx.mir_opt_level() >= 4)",
+   "what": "policy"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/multiple_return_terminators.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     14
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": []
+   },
+   "literal": "sess.mir_opt_level() >= 4",
+   "what": "policy (older API)"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/validate.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     278
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     277
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     277
+    ]
+   },
+   "literal": "fn is_critical_call_edge(&self, target: Option<BasicBlock>, unwind: UnwindAction) -> bool {",
+   "what": "validator: critical call edge"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/validate.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     392
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     397
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     397
+    ]
+   },
+   "literal": "\"encountered critical edge in `Call` terminator {:?}\",",
+   "what": "validator failure message"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/validate.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     1440
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     1440
+    ]
+   },
+   "literal": "\"Cannot BoxDerefTransmute to non-pointer type {target_type}\"",
+   "what": "validator: cast target"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/shim.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     1043
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     1009
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     1011
+    ]
+   },
+   "literal": "pub(super) fn build_adt_ctor(tcx: TyCtxt<'_>, ctor_id: DefId) -> Body<'_> {",
+   "what": "build_adt_ctor"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/shim.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     1079
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     1081
+    ]
+   },
+   "literal": "// We don't pass any passes here, we just force a phase change to `Optimized`.",
+   "what": "constructor body: no passes"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/shim.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     1113
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": []
+   },
+   "literal": "crate::pass_manager::dump_mir_for_phase_change(tcx, &body);",
+   "what": "constructor body (older)"
+  },
+  {
+   "file": "compiler/rustc_mir_transform/src/shim.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     154,
+     178,
+     199,
+     243
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     117,
+     141,
+     161,
+     198
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     117,
+     141,
+     161,
+     198
+    ]
+   },
+   "literal": "&add_call_guards::CriticalCallEdges,",
+   "what": "CriticalCallEdges in shim pass lists"
+  },
+  {
+   "file": "compiler/rustc_middle/src/mir/syntax.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     1528
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     1528
+    ]
+   },
+   "literal": "    BoxDerefTransmute,",
+   "what": "CastKind::BoxDerefTransmute"
+  },
+  {
+   "file": "compiler/rustc_middle/src/mir/syntax.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     1521
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     1521
+    ]
+   },
+   "literal": "    /// A special transmute used by elaborated `box` deref's to turn the inner pointer into a raw",
+   "what": "CastKind::BoxDerefTransmute doc"
+  },
+  {
+   "file": "compiler/rustc_middle/src/mir/syntax.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     139
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     141
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     141
+    ]
+   },
+   "literal": "    /// * [`ProjectionElem::Deref`] of `Box`",
+   "what": "RuntimePhase::PostCleanup forbids Deref of Box"
+  },
+  {
+   "file": "compiler/rustc_middle/src/mir/syntax.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     952
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     952
+    ]
+   },
+   "literal": "        /// written-to when execution continues with `targets`.",
+   "what": "InlineAsm outputs are written when continuing to targets"
+  },
+  {
+   "file": "compiler/rustc_const_eval/src/interpret/cast.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     206
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     206
+    ]
+   },
+   "literal": "                if matches!(cast_kind, CastKind::BoxDerefTransmute) {",
+   "what": "interpreter: extra UB check"
+  },
+  {
+   "file": "compiler/rustc_const_eval/src/interpret/place.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     466
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     468
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     468
+    ]
+   },
+   "literal": "    pub fn deref_pointer(",
+   "what": "deref_pointer"
+  },
+  {
+   "file": "compiler/rustc_const_eval/src/interpret/place.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     490
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     490
+    ]
+   },
+   "literal": "            if ptr_ty.is_ref() || ptr_ty.is_box() {",
+   "what": "deref_pointer: checks for references and boxes only"
+  },
+  {
+   "file": "compiler/rustc_const_eval/src/interpret/place.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     471
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": []
+   },
+   "literal": "            // Derefer should have removed all Box derefs.",
+   "what": "deref_pointer (older): Box derefs are a compiler bug here; no validity check"
+  },
+  {
+   "file": "compiler/rustc_const_eval/src/interpret/cast.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     213
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     213
+    ]
+   },
+   "literal": "                    self.deref_pointer(&ptr)?;",
+   "what": "interpreter: BoxDerefTransmute dereferences the input as a Box"
+  },
+  {
+   "file": "compiler/rustc_codegen_ssa/src/mir/block.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     245
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     275
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     277
+    ]
+   },
+   "literal": "            let invokeret = bx.invoke(",
+   "what": "invoke"
+  },
+  {
+   "file": "compiler/rustc_codegen_ssa/src/mir/block.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     261
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     292
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     294
+    ]
+   },
+   "literal": "                bx.switch_to_block(fx.llbb(target));",
+   "what": "the result store is emitted into the target block"
+  },
+  {
+   "file": "compiler/rustc_codegen_ssa/src/mir/block.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     266
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     297
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     299
+    ]
+   },
+   "literal": "                fx.store_return(bx, ret_dest, &fn_abi.ret, invokeret);",
+   "what": "store of the invoke result"
+  },
+  {
+   "file": "compiler/rustc_codegen_llvm/src/asm.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     346
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     380
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     380
+    ]
+   },
+   "literal": "        // Write results to outputs. We need to do this for all possible control flow.",
+   "what": "callbr outputs stored in every destination"
+  },
+  {
+   "file": "compiler/rustc_codegen_llvm/src/asm.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     509
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     586
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     615
+    ]
+   },
+   "literal": "        bx.callbr(fty, None, None, v, inputs, dest.unwrap(), labels, None, None)",
+   "what": "callbr"
+  },
+  {
+   "file": "library/alloc/src/boxed.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     238
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     238
+    ]
+   },
+   "literal": "struct BoxRaw<T: ?Sized> {",
+   "what": "BoxRaw"
+  },
+  {
+   "file": "library/alloc/src/boxed.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     311
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     311
+    ]
+   },
+   "literal": ">(BoxRaw<T>, A);",
+   "what": "Box field 0 is BoxRaw"
+  },
+  {
+   "file": "library/alloc/src/boxed.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     237
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": []
+   },
+   "literal": ">(Unique<T>, A);",
+   "what": "Box field 0 is Unique (older)"
+  },
+  {
+   "file": "library/core/src/ptr/non_null.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     75
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     79
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     79
+    ]
+   },
+   "literal": "pattern_type!(*const T is !null),",
+   "what": "NonNull wraps a pattern type"
+  },
+  {
+   "file": "compiler/rustc_middle/src/ty/util.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     1297
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     1336
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     1346
+    ]
+   },
+   "literal": "    pub fn needs_drop(self, tcx: TyCtxt<'tcx>, typing_env: ty::TypingEnv<'tcx>) -> bool {",
+   "what": "needs_drop"
+  },
+  {
+   "file": "compiler/rustc_middle/src/ty/util.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     616
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     650
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     651
+    ]
+   },
+   "literal": "    pub fn is_constructor(self, def_id: DefId) -> bool {",
+   "what": "is_constructor"
+  },
+  {
+   "file": "compiler/rustc_session/src/config.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     123
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     123
+    ]
+   },
+   "literal": "    pub fn mir_opt_level(&self) -> usize {",
+   "what": "OptLevel::mir_opt_level"
+  },
+  {
+   "file": "src/tools/miri/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     183
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     200
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     200
+    ]
+   },
+   "literal": "pub const MIRI_DEFAULT_ARGS: &[&str] = &[",
+   "what": "Miri default rustc args"
+  },
+  {
+   "file": "src/tools/miri/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     188
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     205
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     205
+    ]
+   },
+   "literal": "    \"-Zmir-opt-level=0\",",
+   "what": "Miri: MIR opt level 0"
+  },
+  {
+   "file": "src/tools/miri/src/lib.rs",
+   "lines": {
+    "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": [
+     187
+    ],
+    "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": [
+     204
+    ],
+    "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": [
+     204
+    ]
+   },
+   "literal": "    \"-Zmir-preserve-ub\",",
+   "what": "Miri: preserve UB"
+  }
+ ],
+ "commits": [
+  "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+  "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+  "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+ ],
+ "files": {
+  "compiler/rustc_codegen_llvm/src/asm.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 1468,
+    "sha256": "1a7dffc5c1c2637c9fc35053e6eaf08c70822b969a188841ee304a63fdd779aa"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 1708,
+    "sha256": "1fc45949d70fdf92cf00d30b1775c07955def67e406ac797cbe8eacba822513e"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 1737,
+    "sha256": "04d0a692743648980f5f3effb2939d318ec08237857695cbdee45ab556b0331a"
+   }
+  },
+  "compiler/rustc_codegen_ssa/src/mir/block.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 2270,
+    "sha256": "6af025b8d9e853c7c52a0a28f49fffabb7d796a10b73272506d73898ca51ba84"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 2589,
+    "sha256": "767ae815f836749244cef8a0d5791edae71cecbad323d0ea5be3b02cb18fe8c4"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 2620,
+    "sha256": "6da8857c922ec2dec335a7d24bc2913636882d6f86bfed25055fd0f638a1c04b"
+   }
+  },
+  "compiler/rustc_const_eval/src/interpret/cast.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 517,
+    "sha256": "4327b0a709acfe6cfd6de74ad41dd80e36cc19e0b05e24a85ec3d762ccc8eda3"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 589,
+    "sha256": "b5f353cc273575127f5e511ee17d027f921a48056d12858f0530002f3f5c8507"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 589,
+    "sha256": "b5f353cc273575127f5e511ee17d027f921a48056d12858f0530002f3f5c8507"
+   }
+  },
+  "compiler/rustc_const_eval/src/interpret/place.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 1133,
+    "sha256": "a83e327d759f2efdf7523c35c38d68d7860c3a71cabdb92ae4a04db732562cbe"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 1202,
+    "sha256": "4ea546755ee59cd03781ca1a57b957be607693065bcec82b980809e3ead8da16"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 1202,
+    "sha256": "4ea546755ee59cd03781ca1a57b957be607693065bcec82b980809e3ead8da16"
+   }
+  },
+  "compiler/rustc_middle/src/mir/syntax.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 1762,
+    "sha256": "dd77a1dddc833bf073bec4b35274d5f519819f2e309f48411371e2e9cd376679"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 1773,
+    "sha256": "9524753adde68df0bdccbfaf43390ad5cb0aaf9401f6f6c9dc1f273a27fa936e"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 1773,
+    "sha256": "9524753adde68df0bdccbfaf43390ad5cb0aaf9401f6f6c9dc1f273a27fa936e"
+   }
+  },
+  "compiler/rustc_middle/src/ty/util.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 1700,
+    "sha256": "93f6972390232b577dfa6b8ac346461cf92c3911bcba34158dd2a877caf427fc"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 1746,
+    "sha256": "17fda76bf74b1d8aa445dc56d0c413e9c171292b78c6fadd7131898e1b319b8d"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 1769,
+    "sha256": "e6dfa44f37917d891e129eff44c6e8e289a098dcf0ec68c127edf59a456c8b78"
+   }
+  },
+  "compiler/rustc_mir_transform/src/add_call_guards.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 136,
+    "sha256": "cad94c231eb02db94c95bbe4689731d4ceac1f91d2b36016537aeb0ed924561d"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 140,
+    "sha256": "a6696e4689006d3617d68aa02594b3409a622a865a44f3969555cc4554f30185"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 140,
+    "sha256": "a6696e4689006d3617d68aa02594b3409a622a865a44f3969555cc4554f30185"
+   }
+  },
+  "compiler/rustc_mir_transform/src/deref_separator.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 107,
+    "sha256": "e9f9f392fab59b56bb17fd45ba0d92cfc8c45424b8088cd6aa7f5b4c6cc8831b"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 109,
+    "sha256": "07388f9dc0ecd615a41386e08bf31ee8a1bfd6f6710a4ff86f8f296c3b676825"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 109,
+    "sha256": "07388f9dc0ecd615a41386e08bf31ee8a1bfd6f6710a4ff86f8f296c3b676825"
+   }
+  },
+  "compiler/rustc_mir_transform/src/elaborate_box_derefs.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 167,
+    "sha256": "b5a87c4d9a45ab4c0ef61c9aab5820cb568f1adc04b42d1a993df09002db8ade"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 157,
+    "sha256": "d2e5beeb5588a3b1c94f4087c9afbec28f6c66d5bf1c11e1af2302d67ef90fa4"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 157,
+    "sha256": "d2e5beeb5588a3b1c94f4087c9afbec28f6c66d5bf1c11e1af2302d67ef90fa4"
+   }
+  },
+  "compiler/rustc_mir_transform/src/erase_deref_temps.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 43,
+    "sha256": "1a163cf0e065a60ba1f2696d4cfb62a5da60e95be1cca9782df57cd2868e1e1a"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 46,
+    "sha256": "be8dd95f96c2050a4c86b23f4437d37f4c68b8e5362ddb10d39835e21e47175c"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 46,
+    "sha256": "be8dd95f96c2050a4c86b23f4437d37f4c68b8e5362ddb10d39835e21e47175c"
+   }
+  },
+  "compiler/rustc_mir_transform/src/lib.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 841,
+    "sha256": "290cc1a5de94f2a52cfc889f1e57c401a1f96adf815955cc67389e239659d559"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 855,
+    "sha256": "16aad377ca3dccd2b436be7cd3a1a07b925301d3521c908f0195357d88091912"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 857,
+    "sha256": "5c22db2a51be80b49a6d3dd0e8dd3c37af8bb8daf060a02dcbd79ae48e00c8ba"
+   }
+  },
+  "compiler/rustc_mir_transform/src/multiple_return_terminators.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 41,
+    "sha256": "f53841f509fee4d85b31310d96ece145597fd03b51df1b7cf5d0b40cfb705b55"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 37,
+    "sha256": "43bc605dfd5e8bc6c8b075095ebcbfb91b94262a3abaca6ced1a2d8a126c46ad"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 37,
+    "sha256": "43bc605dfd5e8bc6c8b075095ebcbfb91b94262a3abaca6ced1a2d8a126c46ad"
+   }
+  },
+  "compiler/rustc_mir_transform/src/pass_manager.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 422,
+    "sha256": "e9ee6c9ec5a78f180e06954645aeebe842a4fce0d0562c086be88e2f6cbff6ec"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 457,
+    "sha256": "9b9d297df2f2561d166c9006cd4574d4038881dce22597e458648e67700a9e32"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 464,
+    "sha256": "474ba7b9c6ba64ae6e2793298935a6f0f7c7af45cdcbd421c5b7fa0103e148fe"
+   }
+  },
+  "compiler/rustc_mir_transform/src/remove_unneeded_drops.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 45,
+    "sha256": "c939ec3b3b7c77549b765c6011e334b394e73b78748a279d4aae7d690e416b9a"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 46,
+    "sha256": "5027818b187c9bd567fa772306e477e9d9d38ec5dde2bed709604ed4265347f1"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 46,
+    "sha256": "5027818b187c9bd567fa772306e477e9d9d38ec5dde2bed709604ed4265347f1"
+   }
+  },
+  "compiler/rustc_mir_transform/src/shim.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 1267,
+    "sha256": "304355520f317e018c848a8c50b59c8324fb03c169c9bf4063b589f374fad267"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 1298,
+    "sha256": "7d23d8ab663c8bcfdea9e94131d86ed1d472aa2066d5064a388ba54de788ceba"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 1332,
+    "sha256": "4750713f61973e1960fc11a3370cfca3d1e90566cc684379ed03715dba919bfc"
+   }
+  },
+  "compiler/rustc_mir_transform/src/validate.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 1683,
+    "sha256": "43ef84a47a3d66a08a875ac620d43cced665226a07bdfcf9a329c435075fcfbf"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 1712,
+    "sha256": "104a1c607b11fca20e053513c3f98a201922ac13377ca0e1f85d7bbbcc7ed589"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 1712,
+    "sha256": "d1a767a805041ee039f9e7bb9c35a352ce552e32382800ad997672ad5a4c04a5"
+   }
+  },
+  "compiler/rustc_session/src/config.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 3390,
+    "sha256": "2d271f8b83acff0ce1081f69c9f36d23743a7e720921f79993b7ab863aa12a5c"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 3867,
+    "sha256": "20518f46c9a57d05f1353c1fcc2b3f8108b09c99efd87d6f009b71254441dcaf"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 3914,
+    "sha256": "28d07396104899c35f12800f15c68ccecab26c6a66ebf9d3bc54c952b0f093ad"
+   }
+  },
+  "library/alloc/src/boxed.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 2487,
+    "sha256": "1f6e4bbdb6025d8dd92546e3171b4e98d961e966757034622113f1edd7834d92"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 2708,
+    "sha256": "28dbdbf513203785ff66200c836c3b19ae8921e0be20dd9470c477ebf0518441"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 2708,
+    "sha256": "28dbdbf513203785ff66200c836c3b19ae8921e0be20dd9470c477ebf0518441"
+   }
+  },
+  "library/core/src/ptr/non_null.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 1775,
+    "sha256": "adba64467653633cfa3fe0bbe6eec6f6d723221396b529c92d51eb9e39ba8cdd"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 1761,
+    "sha256": "5f541852dfb7fe7ed40303d9bed7e5344e79c98c0634eceb1790f620af509064"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 1761,
+    "sha256": "738a2987e72bbfd0412cecdb3922f948120dc05b99293de0f8f0a436ebde36a4"
+   }
+  },
+  "src/tools/miri/src/lib.rs": {
+   "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65": {
+    "lines": 200,
+    "sha256": "77d6e8dde3770eb613cf7be23c6c89a784967a7bbb76639def015b4fce95b481"
+   },
+   "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1": {
+    "lines": 218,
+    "sha256": "5218d5bc71e866d03722563279fe4e6042a918388728b43bbc7e9d86034c8aa9"
+   },
+   "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e": {
+    "lines": 218,
+    "sha256": "5218d5bc71e866d03722563279fe4e6042a918388728b43bbc7e9d86034c8aa9"
+   }
+  }
+ },
+ "schema": "source-anchors/1"
+}
