@@ -13082,6 +13082,101 @@
         "verification"
       ]
     },
+    "anneal-trusted-mir-local-refs-raw-ptr-tree-borrows-and-refprop-bridge": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal Trusted.MirAst, Trusted.MirSemantics, and TrustedBoundary.lean Pass 1 TCB"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "Vendored lean-miri operational reference & Tree Borrows semantics (Permissions, AllocationAccess, Place, Rvalue, ValidityMachine)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973"
+          },
+          "name": "rustc_mir_transform ReferencePropagation source reference (ref_prop.rs)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc 1.102.0-nightly & Miri live execution toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rustc_const_eval & MIR reference revision pinned by Anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "57cef100c3801df512085bf83ec29bbcaae9efae",
+            "version": "0.8.48"
+          },
+          "name": "zerocopy crate MIR ReferencePropagation & RemoveZsts census subject"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 primary kernel and TrustedBoundary Pass 1 replay toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 cross-version kernel verification toolchain"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4export",
+            "revision": "5a9a355dc6c5fd82b69058d433e2ae2e8dfbf8fe",
+            "version": "3.1.0"
+          },
+          "name": "lean4export NDJSON kernel declaration exporter"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "f55114afa24efe39e007f62d31b7e8ac4243f2a6",
+            "version": "0.4.19"
+          },
+          "name": "nanoda_lib independent Rust external Lean 4 kernel typechecker"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/theory",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "anneal-trusted-mir-movetocopy-and-storage-elision-refinement-bridge": {
       "observed_at": "2026-11-20",
       "subjects": [
