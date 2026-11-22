@@ -101089,6 +101089,61 @@
         "verification"
       ]
     },
+    "rustc-mir-check-inline-cross-crate-inline-ctfe-limit-and-drop-pruning": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ce66487ebbd7541212d22d01c39a808057d69f1f"
+          },
+          "name": "rust-lang/rust upstream source reference (CtfeLimit, CheckForceInline, CrossCrateInline, RemoveUninitDrops, RemoveUnneededDrops, MIR pass pipeline, and CTFE step counter)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rustc nightly toolchain (host differential probe execution and source-diff baseline, LLVM 22.1.6)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (normative inline/cold codegen attributes, const-eval, and destructor operation rules)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (Trusted.MirAst, Trusted.MirSemantics, Trusted.Correspondence, TrustedBoundary.lean, and anneal-rustc-capture)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 theorem prover kernel"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-mir-check-recursion-known-panics-fn-item-refs-and-tail-drop-lint": {
       "observed_at": "2026-11-22",
       "subjects": [

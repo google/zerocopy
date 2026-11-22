@@ -1,0 +1,296 @@
+{
+  "check_force_inline": {
+    "c_variadic_err": {
+      "extracted_reason": "C variadic",
+      "rc": 1,
+      "stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/cfi_c_variadic_err/c_variadic_err.rs:1:12\n  |\n1 | #![feature(rustc_attrs, c_variadic)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: `var_forced` is incompatible with `#[rustc_force_inline]`\n --> <TMP>/cfi_c_variadic_err/c_variadic_err.rs:2:1\n  |\n2 | #[rustc_force_inline]\n  | ^^^^^^^^^^^^^^^^^^^^^\n3 | pub unsafe extern \"C\" fn var_forced(_x: u32, mut _ap: ...) -> u32 { 0 }\n  | ----------------------------------------------------------------- `var_forced` defined here\n  |\n  = note: incompatible due to: C variadic\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n"
+    },
+    "cold_err": {
+      "extracted_reason": "cold",
+      "rc": 1,
+      "stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/cfi_cold_err/cold_err.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: `cold_forced` is incompatible with `#[rustc_force_inline]`\n --> <TMP>/cfi_cold_err/cold_err.rs:2:1\n  |\n2 | #[rustc_force_inline]\n  | ^^^^^^^^^^^^^^^^^^^^^\n3 | #[cold]\n4 | pub fn cold_forced() -> u32 { 1 }\n  | --------------------------- `cold_forced` defined here\n  |\n  = note: incompatible due to: cold\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n"
+    },
+    "intrinsic_without_body_err": {
+      "extracted_reason": "callee is an intrinsic without fallback body",
+      "rc": 1,
+      "stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/cfi_intrinsic_without_body_err/intrinsic_without_body_err.rs:1:12\n  |\n1 | #![feature(rustc_attrs, intrinsics)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/cfi_intrinsic_without_body_err/intrinsic_without_body_err.rs:1:25\n  |\n1 | #![feature(rustc_attrs, intrinsics)]\n  |                         ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nerror: `unreachable` is incompatible with `#[rustc_force_inline]`\n --> <TMP>/cfi_intrinsic_without_body_err/intrinsic_without_body_err.rs:3:1\n  |\n3 | #[rustc_force_inline]\n  | ^^^^^^^^^^^^^^^^^^^^^\n4 | pub unsafe fn unreachable() -> !;\n  | --------------------------------- `unreachable` defined here\n  |\n  = note: incompatible due to: callee is an intrinsic without fallback body\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\n"
+    },
+    "no_mir_inline_err": {
+      "extracted_reason": "#[rustc_no_mir_inline]",
+      "rc": 1,
+      "stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/cfi_no_mir_inline_err/no_mir_inline_err.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: `no_mir_forced` is incompatible with `#[rustc_force_inline]`\n --> <TMP>/cfi_no_mir_inline_err/no_mir_inline_err.rs:2:1\n  |\n2 | #[rustc_force_inline]\n  | ^^^^^^^^^^^^^^^^^^^^^\n3 | #[rustc_no_mir_inline]\n4 | pub fn no_mir_forced() -> u32 { 1 }\n  | ----------------------------- `no_mir_forced` defined here\n  |\n  = note: incompatible due to: #[rustc_no_mir_inline]\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n"
+    },
+    "plain_ok": {
+      "extracted_reason": null,
+      "rc": 0,
+      "stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/cfi_plain_ok/plain_ok.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "priority_cold_before_tailcall": {
+      "extracted_reason": "cold",
+      "rc": 1,
+      "stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/cfi_priority_cold_before_tailcall/priority_cold_before_tailcall.rs:1:12\n  |\n1 | #![feature(rustc_attrs, explicit_tail_calls)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `explicit_tail_calls` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/cfi_priority_cold_before_tailcall/priority_cold_before_tailcall.rs:1:25\n  |\n1 | #![feature(rustc_attrs, explicit_tail_calls)]\n  |                         ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #112788 <https://github.com/rust-lang/rust/issues/112788> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: `cold_and_tail` is incompatible with `#[rustc_force_inline]`\n --> <TMP>/cfi_priority_cold_before_tailcall/priority_cold_before_tailcall.rs:3:1\n  |\n3 | #[rustc_force_inline]\n  | ^^^^^^^^^^^^^^^^^^^^^\n4 | #[cold]\n5 | pub fn cold_and_tail(x: u32) -> u32 { become helper(x) }\n  | ----------------------------------- `cold_and_tail` defined here\n  |\n  = note: incompatible due to: cold\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\n"
+    },
+    "priority_no_mir_before_cold": {
+      "extracted_reason": "#[rustc_no_mir_inline]",
+      "rc": 1,
+      "stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/cfi_priority_no_mir_before_cold/priority_no_mir_before_cold.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: `both_forced` is incompatible with `#[rustc_force_inline]`\n --> <TMP>/cfi_priority_no_mir_before_cold/priority_no_mir_before_cold.rs:2:1\n  |\n2 | #[rustc_force_inline]\n  | ^^^^^^^^^^^^^^^^^^^^^\n...\n5 | pub fn both_forced() -> u32 { 1 }\n  | --------------------------- `both_forced` defined here\n  |\n  = note: incompatible due to: #[rustc_no_mir_inline]\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n"
+    },
+    "tailcall_err": {
+      "extracted_reason": "can't inline functions with tail calls",
+      "rc": 1,
+      "stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/cfi_tailcall_err/tailcall_err.rs:1:12\n  |\n1 | #![feature(rustc_attrs, explicit_tail_calls)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `explicit_tail_calls` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/cfi_tailcall_err/tailcall_err.rs:1:25\n  |\n1 | #![feature(rustc_attrs, explicit_tail_calls)]\n  |                         ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #112788 <https://github.com/rust-lang/rust/issues/112788> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: `tail_forced` is incompatible with `#[rustc_force_inline]`\n --> <TMP>/cfi_tailcall_err/tailcall_err.rs:3:1\n  |\n3 | #[rustc_force_inline]\n  | ^^^^^^^^^^^^^^^^^^^^^\n4 | pub fn tail_forced(x: u32) -> u32 { become helper(x) }\n  | --------------------------------- `tail_forced` defined here\n  |\n  = note: incompatible due to: can't inline functions with tail calls\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\n"
+    }
+  },
+  "cross_crate_inline": {
+    "default_threshold_100": {
+      "consumer_rc": 0,
+      "dep_rc": 0,
+      "mir_inlined_in_consumer": {
+        "drop_caller": false,
+        "f16_sig_bypass": true,
+        "inline_never_leaf": false,
+        "medium_leaf": true,
+        "no_mangle_leaf": false,
+        "non_leaf_caller": false,
+        "raw_eq_intrinsic_caller": true,
+        "small_leaf": true
+      }
+    },
+    "dep_raw_eq_optimized_mir_check": {
+      "optimized_mir": "fn raw_eq_intrinsic_caller(_1: &[u32; 5], _2: &[u32; 5]) -> bool {\n    debug a => _1;\n    debug b => _2;\n    let mut _0: bool;\n\n    bb0: {\n        _0 = raw_eq::<[u32; 5]>(move _1, move _2) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        return;\n    }\n}\n",
+      "rc": 0,
+      "retains_raw_eq_call_terminator": true
+    },
+    "hint_mostly_unused": {
+      "consumer_rc": 0,
+      "dep_rc": 0,
+      "mir_inlined_in_consumer": {
+        "drop_caller": true,
+        "f16_sig_bypass": true,
+        "inline_never_leaf": false,
+        "medium_leaf": true,
+        "no_mangle_leaf": false,
+        "non_leaf_caller": true,
+        "raw_eq_intrinsic_caller": true,
+        "small_leaf": true
+      }
+    },
+    "incremental_enabled": {
+      "consumer_rc": 0,
+      "dep_rc": 0,
+      "mir_inlined_in_consumer": {
+        "drop_caller": false,
+        "f16_sig_bypass": true,
+        "inline_never_leaf": false,
+        "medium_leaf": false,
+        "no_mangle_leaf": false,
+        "non_leaf_caller": false,
+        "raw_eq_intrinsic_caller": false,
+        "small_leaf": false
+      }
+    },
+    "threshold_5": {
+      "consumer_rc": 0,
+      "dep_rc": 0,
+      "mir_inlined_in_consumer": {
+        "drop_caller": false,
+        "f16_sig_bypass": true,
+        "inline_never_leaf": false,
+        "medium_leaf": false,
+        "no_mangle_leaf": false,
+        "non_leaf_caller": false,
+        "raw_eq_intrinsic_caller": true,
+        "small_leaf": true
+      }
+    },
+    "threshold_always": {
+      "consumer_rc": 0,
+      "dep_rc": 0,
+      "mir_inlined_in_consumer": {
+        "drop_caller": true,
+        "f16_sig_bypass": true,
+        "inline_never_leaf": false,
+        "medium_leaf": true,
+        "no_mangle_leaf": false,
+        "non_leaf_caller": true,
+        "raw_eq_intrinsic_caller": true,
+        "small_leaf": true
+      }
+    },
+    "threshold_never": {
+      "consumer_rc": 0,
+      "dep_rc": 0,
+      "mir_inlined_in_consumer": {
+        "drop_caller": false,
+        "f16_sig_bypass": true,
+        "inline_never_leaf": false,
+        "medium_leaf": false,
+        "no_mangle_leaf": false,
+        "non_leaf_caller": false,
+        "raw_eq_intrinsic_caller": false,
+        "small_leaf": false
+      }
+    }
+  },
+  "ctfe_limit": {
+    "irreducible_bounded_built": {
+      "after_mir": "// MIR for `built_irreducible_bounded` after CtfeLimit\n\nfn built_irreducible_bounded(_1: bool) -> u32 {\n    let mut _0: u32;\n    let mut _2: u32;\n\n    bb0: {\n        _2 = const 0_u32;\n        switchInt(copy _1) -> [1: bb1, otherwise: bb2];\n    }\n\n    bb1: {\n        _2 = Add(copy _2, const 1_u32);\n        goto -> bb2;\n    }\n\n    bb2: {\n        _2 = Add(copy _2, const 1_u32);\n        switchInt(copy _2) -> [100: bb3, otherwise: bb1];\n    }\n\n    bb3: {\n        _0 = copy _2;\n        return;\n    }\n}\n",
+      "after_mir_file": "ctfe_irr_bounded.built_irreducible_bounded.3-2-001.CtfeLimit.after.mir",
+      "const_eval_counter_count": 0,
+      "rc": 0,
+      "stderr": "warning: the feature `custom_mir` is internal to the compiler or standard library\n --> <TMP>/ctfe_irr_bounded/irr_bounded.rs:1:12\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |            ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> <TMP>/ctfe_irr_bounded/irr_bounded.rs:1:24\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |                        ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: 2 warnings emitted\n\n",
+      "timed_out": false
+    },
+    "irreducible_collapsible_built_caught": {
+      "caught_long_running_lint": true,
+      "const_eval_counter_count": 1,
+      "ctfe_limit_after": "// MIR for `collapsible_inf_irr` after CtfeLimit\n\nfn collapsible_inf_irr(_1: bool) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        goto -> bb1;\n    }\n\n    bb1: {\n        ConstEvalCounter;\n        goto -> bb1;\n    }\n}\n",
+      "rc": 1,
+      "simplify_initial_after": "// MIR for `collapsible_inf_irr` after SimplifyCfg-initial\n\nfn collapsible_inf_irr(_1: bool) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb1, otherwise: bb1];\n    }\n\n    bb1: {\n        goto -> bb1;\n    }\n}\n",
+      "simplify_initial_before": "// MIR for `collapsible_inf_irr` before SimplifyCfg-initial\n\nfn collapsible_inf_irr(_1: bool) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [1: bb1, otherwise: bb2];\n    }\n\n    bb1: {\n        goto -> bb2;\n    }\n\n    bb2: {\n        goto -> bb1;\n    }\n}\n",
+      "stderr": "warning: the feature `custom_mir` is internal to the compiler or standard library\n --> <TMP>/ctfe_irr_collapsible/irr_collapsible.rs:1:12\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |            ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> <TMP>/ctfe_irr_collapsible/irr_collapsible.rs:1:24\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |                        ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nerror: constant evaluation is taking a long time\n  --> <TMP>/ctfe_irr_collapsible/irr_collapsible.rs:16:13\n   |\n16 |             Goto(bb2)\n   |             ^^^^^^^^^\n   |\n   = note: this lint makes sure the compiler doesn't get stuck due to infinite loops in const eval.\n           If your compilation actually takes a long time, you can safely allow the lint\nhelp: the constant being evaluated\n  --> <TMP>/ctfe_irr_collapsible/irr_collapsible.rs:24:1\n   |\n24 | pub const COLLAPSIBLE_INF: u32 = collapsible_inf_irr(true);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nnote: the lint level is defined here\n  --> <TMP>/ctfe_irr_collapsible/irr_collapsible.rs:2:9\n   |\n 2 | #![deny(long_running_const_eval)]\n   |         ^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\n",
+      "timed_out": false
+    },
+    "irreducible_noncollapsible_built_hang": {
+      "after_mir": "// MIR for `noncollapsible_inf_irr` after CtfeLimit\n\nfn noncollapsible_inf_irr(_1: bool) -> u32 {\n    let mut _0: u32;\n    let mut _2: u32;\n\n    bb0: {\n        _2 = const 0_u32;\n        switchInt(copy _1) -> [1: bb1, otherwise: bb2];\n    }\n\n    bb1: {\n        _2 = Add(copy _2, const 1_u32);\n        goto -> bb2;\n    }\n\n    bb2: {\n        _2 = Add(copy _2, const 3_u32);\n        goto -> bb1;\n    }\n}\n",
+      "after_mir_file": "ctfe_irr_noncollapsible.noncollapsible_inf_irr.3-2-001.CtfeLimit.after.mir",
+      "const_eval_counter_count": 0,
+      "rc": null,
+      "stderr": "warning: the feature `custom_mir` is internal to the compiler or standard library\n --> <TMP>/ctfe_irr_noncollapsible/irr_noncollapsible.rs:1:12\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |            ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> <TMP>/ctfe_irr_noncollapsible/irr_noncollapsible.rs:1:24\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |                        ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\n",
+      "timed_out": true,
+      "timeout_sec": 2.5
+    },
+    "reducible_bounded_built": {
+      "after_mir": "// MIR for `reducible_loop` after CtfeLimit\n\nfn reducible_loop() -> u32 {\n    let mut _0: u32;\n    let mut _1: u32;\n\n    bb0: {\n        _1 = const 0_u32;\n        goto -> bb1;\n    }\n\n    bb1: {\n        _1 = Add(copy _1, const 1_u32);\n        ConstEvalCounter;\n        switchInt(copy _1) -> [10: bb2, otherwise: bb1];\n    }\n\n    bb2: {\n        _0 = copy _1;\n        return;\n    }\n}\n",
+      "after_mir_file": "ctfe_red_bounded.reducible_loop.3-2-001.CtfeLimit.after.mir",
+      "const_eval_counter_count": 1,
+      "rc": 0,
+      "stderr": "warning: the feature `custom_mir` is internal to the compiler or standard library\n --> <TMP>/ctfe_reducible_bounded/reducible_bounded.rs:1:12\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |            ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> <TMP>/ctfe_reducible_bounded/reducible_bounded.rs:1:24\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |                        ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: 2 warnings emitted\n\n",
+      "timed_out": false
+    },
+    "reducible_infinite_caught": {
+      "after_mir": "// MIR for `reducible_inf` after CtfeLimit\n\nfn reducible_inf() -> u32 {\n    let mut _0: u32;\n    let mut _1: u32;\n\n    bb0: {\n        _1 = const 0_u32;\n        goto -> bb1;\n    }\n\n    bb1: {\n        _1 = Add(copy _1, const 1_u32);\n        ConstEvalCounter;\n        goto -> bb1;\n    }\n}\n",
+      "caught_long_running_lint": true,
+      "const_eval_counter_count": 1,
+      "rc": 1,
+      "stderr": "warning: the feature `custom_mir` is internal to the compiler or standard library\n --> <TMP>/ctfe_reducible_inf/reducible_inf.rs:1:12\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |            ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> <TMP>/ctfe_reducible_inf/reducible_inf.rs:1:24\n  |\n1 | #![feature(custom_mir, core_intrinsics)]\n  |                        ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nerror: constant evaluation is taking a long time\n  --> <TMP>/ctfe_reducible_inf/reducible_inf.rs:16:13\n   |\n16 |             Goto(bb1)\n   |             ^^^^^^^^^\n   |\n   = note: this lint makes sure the compiler doesn't get stuck due to infinite loops in const eval.\n           If your compilation actually takes a long time, you can safely allow the lint\nhelp: the constant being evaluated\n  --> <TMP>/ctfe_reducible_inf/reducible_inf.rs:21:1\n   |\n21 | pub const REDUCIBLE_INF: u32 = reducible_inf();\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nnote: the lint level is defined here\n  --> <TMP>/ctfe_reducible_inf/reducible_inf.rs:2:9\n   |\n 2 | #![deny(long_running_const_eval)]\n   |         ^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\n",
+      "timed_out": false
+    }
+  },
+  "drop_pruning": {
+    "remove_uninit_drops_partial_one_live_rejected": {
+      "after_blocks": 8,
+      "after_drop_count": 2,
+      "before_blocks": 8,
+      "before_drop_count": 5,
+      "rc": 1,
+      "stderr": "error[E0493]: destructor of `Pair` cannot be evaluated at compile-time\n  --> <TMP>/rud_partial_one_live/partial_one_live.rs:8:36\n   |\n 8 | pub const fn partial_move_one_live(p: Pair) -> u32 {\n   |                                    ^ the destructor for this type cannot be evaluated in constant functions\n...\n13 | }\n   | - value is dropped here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0493`.\n"
+    },
+    "remove_uninit_drops_with_feature_opt0": {
+      "dumped_files": [
+        "rud_with_feature_opt0.R1.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt0.R1.2-2-001.RemoveUninitDrops.before.mir",
+        "rud_with_feature_opt0.R2.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt0.R2.2-2-001.RemoveUninitDrops.before.mir",
+        "rud_with_feature_opt0.R3.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt0.R3.2-2-001.RemoveUninitDrops.before.mir",
+        "rud_with_feature_opt0.partial_move_both_fields.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt0.partial_move_both_fields.2-2-001.RemoveUninitDrops.before.mir",
+        "rud_with_feature_opt0.uninit_drop_branch.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt0.uninit_drop_branch.2-2-001.RemoveUninitDrops.before.mir",
+        "rud_with_feature_opt0.{impl#0}-drop.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt0.{impl#0}-drop.2-2-001.RemoveUninitDrops.before.mir"
+      ],
+      "functions": {
+        "partial_move_both_fields": {
+          "after_blocks": 13,
+          "after_drop_count": 2,
+          "after_mir": "// MIR for `partial_move_both_fields` after RemoveUninitDrops\n\nfn partial_move_both_fields(_1: Pair) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let _2: NonConstDrop;\n    let mut _5: u32;\n    let mut _6: u32;\n    let _7: ();\n    let mut _8: NonConstDrop;\n    let _9: ();\n    let mut _10: NonConstDrop;\n    scope 1 {\n        debug a => _2;\n        let _3: NonConstDrop;\n        scope 2 {\n            debug b => _3;\n            let _4: u32;\n            scope 3 {\n                debug res => _4;\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = move (_1.0: NonConstDrop);\n        StorageLive(_3);\n        _3 = move (_1.1: NonConstDrop);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy (_2.0: u32);\n        StorageLive(_6);\n        _6 = copy (_3.0: u32);\n        _4 = core::num::<impl u32>::wrapping_add(move _5, move _6) -> [return: bb1, unwind: bb9];\n    }\n\n    bb1: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = move _2;\n        _7 = std::mem::forget::<NonConstDrop>(move _8) -> [return: bb2, unwind: bb8];\n    }\n\n    bb2: {\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = move _3;\n        _9 = std::mem::forget::<NonConstDrop>(move _10) -> [return: bb3, unwind: bb7];\n    }\n\n    bb3: {\n        StorageDead(_10);\n        StorageDead(_9);\n        _0 = copy _4;\n        StorageDead(_4);\n        goto -> bb4;\n    }\n\n    bb4: {\n        StorageDead(_3);\n        goto -> bb5;\n    }\n\n    bb5: {\n        StorageDead(_2);\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7 (cleanup): {\n        goto -> bb9;\n    }\n\n    bb8 (cleanup): {\n        goto -> bb9;\n    }\n\n    bb9 (cleanup): {\n        drop(_3) -> [return: bb10, unwind terminate(cleanup)];\n    }\n\n    bb10 (cleanup): {\n        drop(_2) -> [return: bb11, unwind terminate(cleanup)];\n    }\n\n    bb11 (cleanup): {\n        goto -> bb12;\n    }\n\n    bb12 (cleanup): {\n        resume;\n    }\n}\n",
+          "before_blocks": 13,
+          "before_drop_count": 8,
+          "before_mir": "// MIR for `partial_move_both_fields` before RemoveUninitDrops\n\nfn partial_move_both_fields(_1: Pair) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let _2: NonConstDrop;\n    let mut _5: u32;\n    let mut _6: u32;\n    let _7: ();\n    let mut _8: NonConstDrop;\n    let _9: ();\n    let mut _10: NonConstDrop;\n    scope 1 {\n        debug a => _2;\n        let _3: NonConstDrop;\n        scope 2 {\n            debug b => _3;\n            let _4: u32;\n            scope 3 {\n                debug res => _4;\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = move (_1.0: NonConstDrop);\n        StorageLive(_3);\n        _3 = move (_1.1: NonConstDrop);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy (_2.0: u32);\n        StorageLive(_6);\n        _6 = copy (_3.0: u32);\n        _4 = core::num::<impl u32>::wrapping_add(move _5, move _6) -> [return: bb1, unwind: bb9];\n    }\n\n    bb1: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = move _2;\n        _7 = std::mem::forget::<NonConstDrop>(move _8) -> [return: bb2, unwind: bb8];\n    }\n\n    bb2: {\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = move _3;\n        _9 = std::mem::forget::<NonConstDrop>(move _10) -> [return: bb3, unwind: bb7];\n    }\n\n    bb3: {\n        StorageDead(_10);\n        StorageDead(_9);\n        _0 = copy _4;\n        StorageDead(_4);\n        drop(_3) -> [return: bb4, unwind: bb10];\n    }\n\n    bb4: {\n        StorageDead(_3);\n        drop(_2) -> [return: bb5, unwind: bb11];\n    }\n\n    bb5: {\n        StorageDead(_2);\n        drop(_1) -> [return: bb6, unwind continue];\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7 (cleanup): {\n        drop(_10) -> [return: bb9, unwind terminate(cleanup)];\n    }\n\n    bb8 (cleanup): {\n        drop(_8) -> [return: bb9, unwind terminate(cleanup)];\n    }\n\n    bb9 (cleanup): {\n        drop(_3) -> [return: bb10, unwind terminate(cleanup)];\n    }\n\n    bb10 (cleanup): {\n        drop(_2) -> [return: bb11, unwind terminate(cleanup)];\n    }\n\n    bb11 (cleanup): {\n        drop(_1) -> [return: bb12, unwind terminate(cleanup)];\n    }\n\n    bb12 (cleanup): {\n        resume;\n    }\n}\n"
+        },
+        "uninit_drop_branch": {
+          "after_blocks": 13,
+          "after_drop_count": 1,
+          "after_mir": "// MIR for `uninit_drop_branch` after RemoveUninitDrops\n\nfn uninit_drop_branch(_1: bool) -> u32 {\n    debug take => _1;\n    let mut _0: u32;\n    let _2: NonConstDrop;\n    let _3: ();\n    let mut _4: bool;\n    let mut _5: !;\n    let mut _6: NonConstDrop;\n    let _8: ();\n    let mut _9: NonConstDrop;\n    scope 1 {\n        debug x => _2;\n        let _7: u32;\n        scope 2 {\n            debug v => _7;\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        switchInt(move _4) -> [0: bb6, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageLive(_6);\n        _6 = NonConstDrop(const 42_u32);\n        goto -> bb2;\n    }\n\n    bb2: {\n        _2 = move _6;\n        goto -> bb4;\n    }\n\n    bb3 (cleanup): {\n        _2 = move _6;\n        goto -> bb11;\n    }\n\n    bb4: {\n        StorageDead(_6);\n        StorageLive(_7);\n        _7 = copy (_2.0: u32);\n        StorageLive(_8);\n        StorageLive(_9);\n        _9 = move _2;\n        _8 = std::mem::forget::<NonConstDrop>(move _9) -> [return: bb5, unwind: bb10];\n    }\n\n    bb5: {\n        StorageDead(_9);\n        StorageDead(_8);\n        _0 = copy _7;\n        StorageDead(_7);\n        StorageDead(_4);\n        StorageDead(_3);\n        goto -> bb8;\n    }\n\n    bb6: {\n        _3 = const ();\n        StorageDead(_4);\n        StorageDead(_3);\n        _0 = const 0_u32;\n        goto -> bb7;\n    }\n\n    bb7: {\n        StorageDead(_2);\n        goto -> bb9;\n    }\n\n    bb8: {\n        StorageDead(_2);\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10 (cleanup): {\n        goto -> bb11;\n    }\n\n    bb11 (cleanup): {\n        drop(_2) -> [return: bb12, unwind terminate(cleanup)];\n    }\n\n    bb12 (cleanup): {\n        resume;\n    }\n}\n",
+          "before_blocks": 13,
+          "before_drop_count": 7,
+          "before_mir": "// MIR for `uninit_drop_branch` before RemoveUninitDrops\n\nfn uninit_drop_branch(_1: bool) -> u32 {\n    debug take => _1;\n    let mut _0: u32;\n    let _2: NonConstDrop;\n    let _3: ();\n    let mut _4: bool;\n    let mut _5: !;\n    let mut _6: NonConstDrop;\n    let _8: ();\n    let mut _9: NonConstDrop;\n    scope 1 {\n        debug x => _2;\n        let _7: u32;\n        scope 2 {\n            debug v => _7;\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        switchInt(move _4) -> [0: bb6, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageLive(_6);\n        _6 = NonConstDrop(const 42_u32);\n        drop(_2) -> [return: bb2, unwind: bb3];\n    }\n\n    bb2: {\n        _2 = move _6;\n        drop(_6) -> [return: bb4, unwind: bb11];\n    }\n\n    bb3 (cleanup): {\n        _2 = move _6;\n        drop(_6) -> [return: bb11, unwind terminate(cleanup)];\n    }\n\n    bb4: {\n        StorageDead(_6);\n        StorageLive(_7);\n        _7 = copy (_2.0: u32);\n        StorageLive(_8);\n        StorageLive(_9);\n        _9 = move _2;\n        _8 = std::mem::forget::<NonConstDrop>(move _9) -> [return: bb5, unwind: bb10];\n    }\n\n    bb5: {\n        StorageDead(_9);\n        StorageDead(_8);\n        _0 = copy _7;\n        StorageDead(_7);\n        StorageDead(_4);\n        StorageDead(_3);\n        drop(_2) -> [return: bb8, unwind continue];\n    }\n\n    bb6: {\n        _3 = const ();\n        StorageDead(_4);\n        StorageDead(_3);\n        _0 = const 0_u32;\n        drop(_2) -> [return: bb7, unwind continue];\n    }\n\n    bb7: {\n        StorageDead(_2);\n        goto -> bb9;\n    }\n\n    bb8: {\n        StorageDead(_2);\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10 (cleanup): {\n        drop(_9) -> [return: bb11, unwind terminate(cleanup)];\n    }\n\n    bb11 (cleanup): {\n        drop(_2) -> [return: bb12, unwind terminate(cleanup)];\n    }\n\n    bb12 (cleanup): {\n        resume;\n    }\n}\n"
+        }
+      },
+      "rc": 0,
+      "stderr": ""
+    },
+    "remove_uninit_drops_with_feature_opt3": {
+      "dumped_files": [
+        "rud_with_feature_opt3.R1.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt3.R1.2-2-001.RemoveUninitDrops.before.mir",
+        "rud_with_feature_opt3.R2.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt3.R2.2-2-001.RemoveUninitDrops.before.mir",
+        "rud_with_feature_opt3.R3.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt3.R3.2-2-001.RemoveUninitDrops.before.mir",
+        "rud_with_feature_opt3.partial_move_both_fields.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt3.partial_move_both_fields.2-2-001.RemoveUninitDrops.before.mir",
+        "rud_with_feature_opt3.uninit_drop_branch.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt3.uninit_drop_branch.2-2-001.RemoveUninitDrops.before.mir",
+        "rud_with_feature_opt3.{impl#0}-drop.2-2-001.RemoveUninitDrops.after.mir",
+        "rud_with_feature_opt3.{impl#0}-drop.2-2-001.RemoveUninitDrops.before.mir"
+      ],
+      "functions": {
+        "partial_move_both_fields": {
+          "after_blocks": 13,
+          "after_drop_count": 2,
+          "after_mir": "// MIR for `partial_move_both_fields` after RemoveUninitDrops\n\nfn partial_move_both_fields(_1: Pair) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let _2: NonConstDrop;\n    let mut _5: u32;\n    let mut _6: u32;\n    let _7: ();\n    let mut _8: NonConstDrop;\n    let _9: ();\n    let mut _10: NonConstDrop;\n    scope 1 {\n        debug a => _2;\n        let _3: NonConstDrop;\n        scope 2 {\n            debug b => _3;\n            let _4: u32;\n            scope 3 {\n                debug res => _4;\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = move (_1.0: NonConstDrop);\n        StorageLive(_3);\n        _3 = move (_1.1: NonConstDrop);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy (_2.0: u32);\n        StorageLive(_6);\n        _6 = copy (_3.0: u32);\n        _4 = core::num::<impl u32>::wrapping_add(move _5, move _6) -> [return: bb1, unwind: bb9];\n    }\n\n    bb1: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = move _2;\n        _7 = std::mem::forget::<NonConstDrop>(move _8) -> [return: bb2, unwind: bb8];\n    }\n\n    bb2: {\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = move _3;\n        _9 = std::mem::forget::<NonConstDrop>(move _10) -> [return: bb3, unwind: bb7];\n    }\n\n    bb3: {\n        StorageDead(_10);\n        StorageDead(_9);\n        _0 = copy _4;\n        StorageDead(_4);\n        goto -> bb4;\n    }\n\n    bb4: {\n        StorageDead(_3);\n        goto -> bb5;\n    }\n\n    bb5: {\n        StorageDead(_2);\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7 (cleanup): {\n        goto -> bb9;\n    }\n\n    bb8 (cleanup): {\n        goto -> bb9;\n    }\n\n    bb9 (cleanup): {\n        drop(_3) -> [return: bb10, unwind terminate(cleanup)];\n    }\n\n    bb10 (cleanup): {\n        drop(_2) -> [return: bb11, unwind terminate(cleanup)];\n    }\n\n    bb11 (cleanup): {\n        goto -> bb12;\n    }\n\n    bb12 (cleanup): {\n        resume;\n    }\n}\n",
+          "before_blocks": 13,
+          "before_drop_count": 8,
+          "before_mir": "// MIR for `partial_move_both_fields` before RemoveUninitDrops\n\nfn partial_move_both_fields(_1: Pair) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let _2: NonConstDrop;\n    let mut _5: u32;\n    let mut _6: u32;\n    let _7: ();\n    let mut _8: NonConstDrop;\n    let _9: ();\n    let mut _10: NonConstDrop;\n    scope 1 {\n        debug a => _2;\n        let _3: NonConstDrop;\n        scope 2 {\n            debug b => _3;\n            let _4: u32;\n            scope 3 {\n                debug res => _4;\n            }\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        _2 = move (_1.0: NonConstDrop);\n        StorageLive(_3);\n        _3 = move (_1.1: NonConstDrop);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy (_2.0: u32);\n        StorageLive(_6);\n        _6 = copy (_3.0: u32);\n        _4 = core::num::<impl u32>::wrapping_add(move _5, move _6) -> [return: bb1, unwind: bb9];\n    }\n\n    bb1: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_7);\n        StorageLive(_8);\n        _8 = move _2;\n        _7 = std::mem::forget::<NonConstDrop>(move _8) -> [return: bb2, unwind: bb8];\n    }\n\n    bb2: {\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = move _3;\n        _9 = std::mem::forget::<NonConstDrop>(move _10) -> [return: bb3, unwind: bb7];\n    }\n\n    bb3: {\n        StorageDead(_10);\n        StorageDead(_9);\n        _0 = copy _4;\n        StorageDead(_4);\n        drop(_3) -> [return: bb4, unwind: bb10];\n    }\n\n    bb4: {\n        StorageDead(_3);\n        drop(_2) -> [return: bb5, unwind: bb11];\n    }\n\n    bb5: {\n        StorageDead(_2);\n        drop(_1) -> [return: bb6, unwind continue];\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7 (cleanup): {\n        drop(_10) -> [return: bb9, unwind terminate(cleanup)];\n    }\n\n    bb8 (cleanup): {\n        drop(_8) -> [return: bb9, unwind terminate(cleanup)];\n    }\n\n    bb9 (cleanup): {\n        drop(_3) -> [return: bb10, unwind terminate(cleanup)];\n    }\n\n    bb10 (cleanup): {\n        drop(_2) -> [return: bb11, unwind terminate(cleanup)];\n    }\n\n    bb11 (cleanup): {\n        drop(_1) -> [return: bb12, unwind terminate(cleanup)];\n    }\n\n    bb12 (cleanup): {\n        resume;\n    }\n}\n"
+        },
+        "uninit_drop_branch": {
+          "after_blocks": 13,
+          "after_drop_count": 1,
+          "after_mir": "// MIR for `uninit_drop_branch` after RemoveUninitDrops\n\nfn uninit_drop_branch(_1: bool) -> u32 {\n    debug take => _1;\n    let mut _0: u32;\n    let _2: NonConstDrop;\n    let _3: ();\n    let mut _4: bool;\n    let mut _5: !;\n    let mut _6: NonConstDrop;\n    let _8: ();\n    let mut _9: NonConstDrop;\n    scope 1 {\n        debug x => _2;\n        let _7: u32;\n        scope 2 {\n            debug v => _7;\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        switchInt(move _4) -> [0: bb6, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageLive(_6);\n        _6 = NonConstDrop(const 42_u32);\n        goto -> bb2;\n    }\n\n    bb2: {\n        _2 = move _6;\n        goto -> bb4;\n    }\n\n    bb3 (cleanup): {\n        _2 = move _6;\n        goto -> bb11;\n    }\n\n    bb4: {\n        StorageDead(_6);\n        StorageLive(_7);\n        _7 = copy (_2.0: u32);\n        StorageLive(_8);\n        StorageLive(_9);\n        _9 = move _2;\n        _8 = std::mem::forget::<NonConstDrop>(move _9) -> [return: bb5, unwind: bb10];\n    }\n\n    bb5: {\n        StorageDead(_9);\n        StorageDead(_8);\n        _0 = copy _7;\n        StorageDead(_7);\n        StorageDead(_4);\n        StorageDead(_3);\n        goto -> bb8;\n    }\n\n    bb6: {\n        _3 = const ();\n        StorageDead(_4);\n        StorageDead(_3);\n        _0 = const 0_u32;\n        goto -> bb7;\n    }\n\n    bb7: {\n        StorageDead(_2);\n        goto -> bb9;\n    }\n\n    bb8: {\n        StorageDead(_2);\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10 (cleanup): {\n        goto -> bb11;\n    }\n\n    bb11 (cleanup): {\n        drop(_2) -> [return: bb12, unwind terminate(cleanup)];\n    }\n\n    bb12 (cleanup): {\n        resume;\n    }\n}\n",
+          "before_blocks": 13,
+          "before_drop_count": 7,
+          "before_mir": "// MIR for `uninit_drop_branch` before RemoveUninitDrops\n\nfn uninit_drop_branch(_1: bool) -> u32 {\n    debug take => _1;\n    let mut _0: u32;\n    let _2: NonConstDrop;\n    let _3: ();\n    let mut _4: bool;\n    let mut _5: !;\n    let mut _6: NonConstDrop;\n    let _8: ();\n    let mut _9: NonConstDrop;\n    scope 1 {\n        debug x => _2;\n        let _7: u32;\n        scope 2 {\n            debug v => _7;\n        }\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = copy _1;\n        switchInt(move _4) -> [0: bb6, otherwise: bb1];\n    }\n\n    bb1: {\n        StorageLive(_6);\n        _6 = NonConstDrop(const 42_u32);\n        drop(_2) -> [return: bb2, unwind: bb3];\n    }\n\n    bb2: {\n        _2 = move _6;\n        drop(_6) -> [return: bb4, unwind: bb11];\n    }\n\n    bb3 (cleanup): {\n        _2 = move _6;\n        drop(_6) -> [return: bb11, unwind terminate(cleanup)];\n    }\n\n    bb4: {\n        StorageDead(_6);\n        StorageLive(_7);\n        _7 = copy (_2.0: u32);\n        StorageLive(_8);\n        StorageLive(_9);\n        _9 = move _2;\n        _8 = std::mem::forget::<NonConstDrop>(move _9) -> [return: bb5, unwind: bb10];\n    }\n\n    bb5: {\n        StorageDead(_9);\n        StorageDead(_8);\n        _0 = copy _7;\n        StorageDead(_7);\n        StorageDead(_4);\n        StorageDead(_3);\n        drop(_2) -> [return: bb8, unwind continue];\n    }\n\n    bb6: {\n        _3 = const ();\n        StorageDead(_4);\n        StorageDead(_3);\n        _0 = const 0_u32;\n        drop(_2) -> [return: bb7, unwind continue];\n    }\n\n    bb7: {\n        StorageDead(_2);\n        goto -> bb9;\n    }\n\n    bb8: {\n        StorageDead(_2);\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10 (cleanup): {\n        drop(_9) -> [return: bb11, unwind terminate(cleanup)];\n    }\n\n    bb11 (cleanup): {\n        drop(_2) -> [return: bb12, unwind terminate(cleanup)];\n    }\n\n    bb12 (cleanup): {\n        resume;\n    }\n}\n"
+        }
+      },
+      "rc": 0,
+      "stderr": ""
+    },
+    "remove_uninit_drops_without_feature_opt0": {
+      "dumped_files": [],
+      "functions": {
+        "partial_move_both_fields": {
+          "after_blocks": 0,
+          "after_drop_count": 0,
+          "after_mir": "",
+          "before_blocks": 0,
+          "before_drop_count": 0,
+          "before_mir": ""
+        },
+        "uninit_drop_branch": {
+          "after_blocks": 0,
+          "after_drop_count": 0,
+          "after_mir": "",
+          "before_blocks": 0,
+          "before_drop_count": 0,
+          "before_mir": ""
+        }
+      },
+      "rc": 1,
+      "stderr": "error[E0493]: destructor of `Pair` cannot be evaluated at compile-time\n  --> <TMP>/rud_without_feature_opt0/without_feature_opt0.rs:20:39\n   |\n20 | pub const fn partial_move_both_fields(p: Pair) -> u32 {\n   |                                       ^ the destructor for this type cannot be evaluated in constant functions\n...\n27 | }\n   | - value is dropped here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0493`.\n"
+    },
+    "remove_unneeded_drops_generic_inlined_u32": {
+      "after_blocks": 1,
+      "after_drop_count": 0,
+      "after_mir": "// MIR for `call_u32` after RemoveUnneededDrops\n\nfn call_u32(_1: u32) -> () {\n    debug x => _1;\n    let mut _0: ();\n    let _2: ();\n    let mut _3: u32;\n    scope 1 (inlined consume_generic::<u32>) {\n        let _4: u32;\n        scope 2 {\n        }\n    }\n\n    bb0: {\n        StorageLive(_3);\n        _3 = copy _1;\n        StorageLive(_4);\n        _4 = move _3;\n        StorageDead(_4);\n        StorageDead(_3);\n        return;\n    }\n}\n",
+      "before_blocks": 2,
+      "before_drop_count": 1,
+      "before_mir": "// MIR for `call_u32` before RemoveUnneededDrops\n\nfn call_u32(_1: u32) -> () {\n    debug x => _1;\n    let mut _0: ();\n    let _2: ();\n    let mut _3: u32;\n    scope 1 (inlined consume_generic::<u32>) {\n        let _4: u32;\n        scope 2 {\n        }\n    }\n\n    bb0: {\n        nop;\n        StorageLive(_3);\n        _3 = copy _1;\n        StorageLive(_4);\n        _4 = move _3;\n        drop(_4) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_4);\n        StorageDead(_3);\n        nop;\n        nop;\n        return;\n    }\n}\n",
+      "rc": 0,
+      "stderr": ""
+    }
+  },
+  "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+}
