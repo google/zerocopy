@@ -1,0 +1,229 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "cases": {
+    "derefer_and_erase_deref_temps": {
+      "compile_rc": 0,
+      "compile_stderr_excerpt": [],
+      "native_rc": 0,
+      "native_stdout": "NESTED_MUT_DEREF=33 TRIPLE_DEREF=42",
+      "nested_mut_raw_split": {
+        "nested_deref_before_derefer": 2,
+        "nested_deref_after_derefer": 0,
+        "deref_copy_after_derefer": 2,
+        "deref_copy_after_erase": 0,
+        "no_retag_copy_after_erase": 2,
+        "no_retag_copy_in_runtime_post_cleanup": 2,
+        "deref_copy_lines": [
+          "_7 = deref_copy (*_1);",
+          "_8 = deref_copy (*_1);"
+        ],
+        "no_retag_lines": [
+          "_7 = no_retag copy (*_1);",
+          "_8 = no_retag copy (*_1);"
+        ]
+      },
+      "nested_mut_triple_deref": {
+        "nested_deref_before_derefer": 8,
+        "nested_deref_after_derefer": 0,
+        "deref_copy_after_derefer": 16,
+        "deref_copy_after_erase": 0,
+        "no_retag_copy_after_erase": 16,
+        "deref_copy_lines": [
+          "_7 = deref_copy (*_1);",
+          "_8 = deref_copy (*_7);",
+          "_9 = deref_copy (*_1);",
+          "_10 = deref_copy (*_9);",
+          "_11 = deref_copy (*_1);",
+          "_12 = deref_copy (*_11);",
+          "_13 = deref_copy (*_1);",
+          "_14 = deref_copy (*_13);",
+          "_15 = deref_copy (*_1);",
+          "_16 = deref_copy (*_15);",
+          "_17 = deref_copy (*_1);",
+          "_18 = deref_copy (*_17);",
+          "_19 = deref_copy (*_1);",
+          "_20 = deref_copy (*_19);",
+          "_21 = deref_copy (*_1);",
+          "_22 = deref_copy (*_21);"
+        ],
+        "no_retag_lines": [
+          "_7 = no_retag copy (*_1);",
+          "_8 = no_retag copy (*_7);",
+          "_9 = no_retag copy (*_1);",
+          "_10 = no_retag copy (*_9);",
+          "_11 = no_retag copy (*_1);",
+          "_12 = no_retag copy (*_11);",
+          "_13 = no_retag copy (*_1);",
+          "_14 = no_retag copy (*_13);",
+          "_15 = no_retag copy (*_1);",
+          "_16 = no_retag copy (*_15);",
+          "_17 = no_retag copy (*_1);",
+          "_18 = no_retag copy (*_17);",
+          "_19 = no_retag copy (*_1);",
+          "_20 = no_retag copy (*_19);",
+          "_21 = no_retag copy (*_1);",
+          "_22 = no_retag copy (*_21);"
+        ]
+      },
+      "custom_with_retag_yes_mir_excerpt": [
+        "_2 = copy (*_1);",
+        "_4 = &raw mut ((*_2).0: u32);",
+        "_3 = copy (*_1);",
+        "_5 = &raw mut ((*_3).1: u32);"
+      ],
+      "miri_with_retag_no": {
+        "stacked_borrows_rc": 0,
+        "stacked_borrows_stdout": "NESTED_MUT_DEREF=33 TRIPLE_DEREF=42",
+        "tree_borrows_rc": 0,
+        "tree_borrows_stdout": "NESTED_MUT_DEREF=33 TRIPLE_DEREF=42"
+      },
+      "miri_with_retag_yes_counterexample": {
+        "stacked_borrows_rc": 1,
+        "stacked_borrows_ub_lines": [
+          "error: Undefined Behavior: attempting a read access using <1579> at alloc776[0x0], but that tag does not exist in the borrow stack for this location",
+          "help: <1579> was created by a SharedReadWrite retag at offsets [0x0..0x4]",
+          "help: <1579> was later invalidated at offsets [0x0..0x8] by a Unique retag"
+        ],
+        "tree_borrows_rc": 1,
+        "tree_borrows_ub_lines": [
+          "error: Undefined Behavior: write access through <1537> at alloc776[0x0] is forbidden",
+          "= help: the accessed tag <1537> has state Frozen which forbids this child write access",
+          "help: the accessed tag <1537> was created here, in the initial state Reserved",
+          "help: the accessed tag <1537> later transitioned to Unique due to a child write access at offsets [0x0..0x4]",
+          "help: the accessed tag <1537> later transitioned to Frozen due to a reborrow (acting as a foreign read access) at offsets [0x0..0x8]"
+        ]
+      }
+    },
+    "subtyper_hrtb_cast": {
+      "compile_rc": 0,
+      "native_rc": 0,
+      "native_stdout": "SUBTYPER=99 K=7 COLLAPSE=99 TYPEID_DIFF=true VAR=99",
+      "miri_rc": 0,
+      "miri_stdout": "SUBTYPER=99 K=7 COLLAPSE=99 TYPEID_DIFF=true VAR=99",
+      "functions": {
+        "hrtb_tuple_coerce": {
+          "subtype_cast_in_analysis_post_cleanup": 0,
+          "subtype_cast_in_subtyper_after": 1,
+          "subtype_cast_in_runtime_post_cleanup": 1,
+          "subtype_cast_lines": [
+            "_3 = move _10 as (fn(&u8) -> &u8, u32) (Subtype);"
+          ]
+        },
+        "hrtb_binder_collapse": {
+          "subtype_cast_in_analysis_post_cleanup": 0,
+          "subtype_cast_in_subtyper_after": 1,
+          "subtype_cast_in_runtime_post_cleanup": 1,
+          "subtype_cast_lines": [
+            "_4 = move _9 as for<'a> fn(&'a u8, &'a u8) -> &'a u8 (Subtype);"
+          ]
+        },
+        "hrtb_typeid_split": {
+          "subtype_cast_in_analysis_post_cleanup": 0,
+          "subtype_cast_in_subtyper_after": 1,
+          "subtype_cast_in_runtime_post_cleanup": 1,
+          "subtype_cast_lines": [
+            "_2 = move _9 as fn(&u8) -> &u8 (Subtype);"
+          ]
+        },
+        "plain_region_variance": {
+          "subtype_cast_in_analysis_post_cleanup": 0,
+          "subtype_cast_in_subtyper_after": 0,
+          "subtype_cast_in_runtime_post_cleanup": 0,
+          "subtype_cast_lines": []
+        }
+      },
+      "disable_pass_under_validate_mir": {
+        "disable_Derefer": {
+          "rc": 101,
+          "validate_mir_rejected": true,
+          "diagnostic_excerpt": [
+            "error: internal compiler error: <rustc-src>/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:21 ~ main[9511]::main)) (after pass LowerIntrinsics) at bb4[28]:",
+            "                                place (*(_24.0: &u8)) has deref as a later projection (it is only permitted as the first projection)"
+          ]
+        },
+        "disable_EraseDerefTemps": {
+          "rc": 101,
+          "validate_mir_rejected": true,
+          "diagnostic_excerpt": [
+            "error: internal compiler error: <rustc-src>/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:21 ~ main[9511]::main)) (after pass LowerIntrinsics) at bb4[28]:",
+            "                                `CopyForDeref` should have been removed in runtime MIR",
+            "note: compiler flags: -Z validate-mir -Z mir-enable-passes=-EraseDerefTemps"
+          ]
+        },
+        "disable_Subtyper": {
+          "rc": 0,
+          "validate_mir_rejected": false,
+          "diagnostic_excerpt": []
+        }
+      }
+    },
+    "lint_and_remove_uninhabited_visibility_split": {
+      "visibly_uninhabited_pub_void": {
+        "rc": 0,
+        "warnings": [
+          "warning: unreachable expression",
+          "warning: unused variable: `x`",
+          "warning: 2 warnings emitted"
+        ],
+        "errors": [],
+        "built_after_call_terminators": [
+          "_2 = make_pub_void() -> bb2;"
+        ],
+        "call_has_return_target": false
+      },
+      "privately_uninhabited_outside_mod": {
+        "rc": 1,
+        "warnings": [],
+        "errors": [
+          "error[E0381]: used binding `x` isn't initialized",
+          "error: aborting due to 1 previous error"
+        ],
+        "built_after_call_terminators": [
+          "_2 = make_priv_void() -> [return: bb1, unwind: bb2];"
+        ],
+        "call_has_return_target": true
+      },
+      "privately_uninhabited_inside_mod_and_child": {
+        "rc": 0,
+        "warnings": [
+          "warning: unreachable expression",
+          "warning: unused variable: `x`",
+          "warning: unreachable expression",
+          "warning: unused variable: `x`",
+          "warning: 4 warnings emitted"
+        ],
+        "errors": [],
+        "built_after_call_terminators": [
+          "_2 = make_priv_void() -> bb2;",
+          "_2 = make_priv_void() -> bb2;"
+        ],
+        "call_has_return_target": false
+      },
+      "opsem_uninhabited_but_visibility_inhabited_ref": {
+        "rc": 1,
+        "warnings": [],
+        "errors": [
+          "error[E0381]: used binding `x` isn't initialized",
+          "error: aborting due to 1 previous error"
+        ],
+        "built_after_call_terminators": [
+          "_2 = make_ref_void() -> [return: bb1, unwind: bb2];"
+        ],
+        "call_has_return_target": true
+      },
+      "enclosing_uninhabited_return_lint_suppression": {
+        "rc": 0,
+        "warnings": [
+          "warning: unused variable: `x`",
+          "warning: 1 warning emitted"
+        ],
+        "errors": [],
+        "built_after_call_terminators": [
+          "_2 = make_pub_void() -> bb7;"
+        ],
+        "call_has_return_target": false
+      }
+    }
+  }
+}
