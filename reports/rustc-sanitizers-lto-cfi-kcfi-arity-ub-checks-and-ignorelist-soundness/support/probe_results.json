@@ -1,0 +1,1998 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "probe_1_ub_checks": {
+    "ub_yes_O0": {
+      "compile_rc": 0,
+      "compile_stderr_lines": 4,
+      "llvm_ir": {
+        "deref_read_u32": {
+          "lines": 28,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking30panic_null_pointer_dereference",
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking36panic_misaligned_pointer_dereference"
+          ]
+        },
+        "borrow_field_u8": {
+          "lines": 17,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking30panic_null_pointer_dereference"
+          ]
+        },
+        "deref_zst_null": {
+          "lines": 27,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking30panic_null_pointer_dereference",
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking36panic_misaligned_pointer_dereference"
+          ]
+        },
+        "borrow_zst_null": {
+          "lines": 27,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking30panic_null_pointer_dereference",
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking36panic_misaligned_pointer_dereference"
+          ]
+        },
+        "transmute_direct_enum": {
+          "lines": 21,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking31panic_invalid_enum_construction"
+          ]
+        },
+        "transmute_niche_opt_bool": {
+          "lines": 15,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking31panic_invalid_enum_construction"
+          ]
+        },
+        "transmute_multibyte_niche": {
+          "lines": 26,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking31panic_invalid_enum_construction",
+            "llvm.memcpy.p0.p0.i64"
+          ]
+        },
+        "transmute_uninhabited": {
+          "lines": 12,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking31panic_invalid_enum_construction"
+          ]
+        },
+        "transmute_single_wrap_bool": {
+          "lines": 5,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "transmute_raw_bool": {
+          "lines": 5,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "ptr_read_direct_enum": {
+          "lines": 29,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking30panic_null_pointer_dereference",
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking36panic_misaligned_pointer_dereference"
+          ]
+        },
+        "call_unreachable_unchecked": {
+          "lines": 22,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind"
+          ]
+        },
+        "make_slice_raw": {
+          "lines": 18,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind"
+          ]
+        }
+      },
+      "mir_ub_passes": {
+        "deref_read_u32": {
+          "CheckAlignment": {
+            "assert_count": 1,
+            "assert_markers": [
+              "misaligned pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "borrow_field_u8": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 1,
+            "assert_markers": [
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 1,
+            "assert_markers": [
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "deref_zst_null": {
+          "CheckAlignment": {
+            "assert_count": 1,
+            "assert_markers": [
+              "misaligned pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "borrow_zst_null": {
+          "CheckAlignment": {
+            "assert_count": 1,
+            "assert_markers": [
+              "misaligned pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "transmute_direct_enum": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 1,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "transmute_niche_opt_bool": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 1,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "transmute_multibyte_niche": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 1,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": true
+          }
+        },
+        "transmute_uninhabited": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 1,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "transmute_single_wrap_bool": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "transmute_raw_bool": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "ptr_read_direct_enum": {
+          "CheckAlignment": {
+            "assert_count": 1,
+            "assert_markers": [
+              "misaligned pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "call_unreachable_unchecked": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "make_slice_raw": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        }
+      },
+      "runtime": {
+        "misaligned_u32": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:29:14:",
+            "misaligned pointer dereference: address must be a multiple of 0x4 but is <ADDR>",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "borrow_u8_misaligned_struct": {
+          "rc": 0,
+          "stdout": "BYTE=85",
+          "stderr_head": []
+        },
+        "borrow_u8_null_struct": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:35:27:",
+            "null pointer dereference occurred",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "deref_zst_null": {
+          "rc": 0,
+          "stdout": "ZST_DEREF_OK",
+          "stderr_head": []
+        },
+        "borrow_zst_null": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:48:27:",
+            "null pointer dereference occurred",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "direct_enum_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:55:14:",
+            "trying to construct an enum from an invalid value 0x2",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "niche_opt_bool_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:61:14:",
+            "trying to construct an enum from an invalid value 0x3",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "uninhabited_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:73:14:",
+            "trying to construct an enum from an invalid value 0x0",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "single_wrap_bool_bad": {
+          "rc": 0,
+          "stdout": "SINGLE_WRAP_RAW=0",
+          "stderr_head": []
+        },
+        "raw_bool_bad": {
+          "rc": 0,
+          "stdout": "RAW_BOOL=0",
+          "stderr_head": []
+        },
+        "ptr_read_enum_bad": {
+          "rc": 0,
+          "stdout": "PTR_READ_ENUM=0",
+          "stderr_head": []
+        },
+        "slice_null_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:107:22:",
+            "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+            ""
+          ]
+        },
+        "unreachable_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:98:18:",
+            "unsafe precondition(s) violated: hint::unreachable_unchecked must never be reached",
+            ""
+          ]
+        }
+      }
+    },
+    "ub_yes_O2": {
+      "compile_rc": 0,
+      "compile_stderr_lines": 4,
+      "llvm_ir": {
+        "deref_read_u32": {
+          "lines": 25,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking30panic_null_pointer_dereference",
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking36panic_misaligned_pointer_dereference"
+          ]
+        },
+        "borrow_field_u8": {
+          "lines": 14,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking30panic_null_pointer_dereference"
+          ]
+        },
+        "deref_zst_null": {
+          "lines": 4,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "borrow_zst_null": {
+          "lines": 13,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking30panic_null_pointer_dereference"
+          ]
+        },
+        "transmute_direct_enum": {
+          "lines": 15,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking31panic_invalid_enum_construction"
+          ]
+        },
+        "transmute_niche_opt_bool": {
+          "lines": 14,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking31panic_invalid_enum_construction"
+          ]
+        },
+        "transmute_multibyte_niche": {
+          "lines": 16,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking31panic_invalid_enum_construction"
+          ]
+        },
+        "transmute_uninhabited": {
+          "lines": 6,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking31panic_invalid_enum_construction"
+          ]
+        },
+        "transmute_single_wrap_bool": null,
+        "transmute_raw_bool": {
+          "lines": 7,
+          "has_unreachable": false,
+          "calls": [
+            "llvm.assume"
+          ]
+        },
+        "ptr_read_direct_enum": {
+          "lines": 15,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking30panic_null_pointer_dereference"
+          ]
+        },
+        "call_unreachable_unchecked": {
+          "lines": 12,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNvNtCs8b4M6GsfcPr_4core4hint21unreachable_unchecked18precondition_check"
+          ]
+        },
+        "make_slice_raw": {
+          "lines": 15,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking18panic_nounwind_fmt"
+          ]
+        }
+      },
+      "mir_ub_passes": {
+        "deref_read_u32": {
+          "CheckAlignment": {
+            "assert_count": 1,
+            "assert_markers": [
+              "misaligned pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "borrow_field_u8": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 1,
+            "assert_markers": [
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 1,
+            "assert_markers": [
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "deref_zst_null": {
+          "CheckAlignment": {
+            "assert_count": 1,
+            "assert_markers": [
+              "misaligned pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "borrow_zst_null": {
+          "CheckAlignment": {
+            "assert_count": 1,
+            "assert_markers": [
+              "misaligned pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "transmute_direct_enum": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 1,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "transmute_niche_opt_bool": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 1,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "transmute_multibyte_niche": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 1,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": true
+          }
+        },
+        "transmute_uninhabited": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 1,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "transmute_single_wrap_bool": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "transmute_raw_bool": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "ptr_read_direct_enum": {
+          "CheckAlignment": {
+            "assert_count": 1,
+            "assert_markers": [
+              "misaligned pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 2,
+            "assert_markers": [
+              "misaligned pointer dereference",
+              "null pointer dereference"
+            ],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "call_unreachable_unchecked": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        },
+        "make_slice_raw": {
+          "CheckAlignment": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckNull": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          },
+          "CheckEnums": {
+            "assert_count": 0,
+            "assert_markers": [],
+            "has_maybe_uninit_subslice": false
+          }
+        }
+      },
+      "runtime": {
+        "misaligned_u32": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:29:14:",
+            "misaligned pointer dereference: address must be a multiple of 0x4 but is <ADDR>",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "borrow_u8_misaligned_struct": {
+          "rc": 0,
+          "stdout": "BYTE=85",
+          "stderr_head": []
+        },
+        "borrow_u8_null_struct": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:35:27:",
+            "null pointer dereference occurred",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "deref_zst_null": {
+          "rc": 0,
+          "stdout": "ZST_DEREF_OK",
+          "stderr_head": []
+        },
+        "borrow_zst_null": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:48:27:",
+            "null pointer dereference occurred",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "direct_enum_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:55:14:",
+            "trying to construct an enum from an invalid value 0x2",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "niche_opt_bool_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:61:14:",
+            "trying to construct an enum from an invalid value 0x3",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "uninhabited_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:73:14:",
+            "trying to construct an enum from an invalid value 0x0",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+          ]
+        },
+        "single_wrap_bool_bad": {
+          "rc": 0,
+          "stdout": "SINGLE_WRAP_RAW=0",
+          "stderr_head": []
+        },
+        "raw_bool_bad": {
+          "rc": 0,
+          "stdout": "RAW_BOOL=0",
+          "stderr_head": []
+        },
+        "ptr_read_enum_bad": {
+          "rc": 0,
+          "stdout": "PTR_READ_ENUM=2",
+          "stderr_head": []
+        },
+        "slice_null_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:107:22:",
+            "unsafe precondition(s) violated: slice::from_raw_parts requires the pointer to be aligned and non-null, and the total size of the slice not to exceed `isize::MAX`",
+            ""
+          ]
+        },
+        "unreachable_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:98:18:",
+            "unsafe precondition(s) violated: hint::unreachable_unchecked must never be reached",
+            ""
+          ]
+        }
+      }
+    },
+    "ub_no_O0": {
+      "compile_rc": 0,
+      "compile_stderr_lines": 4,
+      "llvm_ir": {
+        "deref_read_u32": {
+          "lines": 5,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "borrow_field_u8": {
+          "lines": 5,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "deref_zst_null": {
+          "lines": 4,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "borrow_zst_null": {
+          "lines": 4,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "transmute_direct_enum": {
+          "lines": 5,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "transmute_niche_opt_bool": {
+          "lines": 4,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "transmute_multibyte_niche": {
+          "lines": 11,
+          "has_unreachable": false,
+          "calls": [
+            "llvm.memcpy.p0.p0.i64"
+          ]
+        },
+        "transmute_uninhabited": {
+          "lines": 4,
+          "has_unreachable": true,
+          "calls": []
+        },
+        "transmute_single_wrap_bool": {
+          "lines": 5,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "transmute_raw_bool": {
+          "lines": 5,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "ptr_read_direct_enum": {
+          "lines": 6,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "call_unreachable_unchecked": {
+          "lines": 22,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind"
+          ]
+        },
+        "make_slice_raw": {
+          "lines": 18,
+          "has_unreachable": true,
+          "calls": [
+            "_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind"
+          ]
+        }
+      },
+      "mir_ub_passes": {},
+      "runtime": {
+        "misaligned_u32": {
+          "rc": 0,
+          "stdout": "VAL=119",
+          "stderr_head": []
+        },
+        "borrow_u8_misaligned_struct": {
+          "rc": 0,
+          "stdout": "BYTE=85",
+          "stderr_head": []
+        },
+        "borrow_u8_null_struct": {
+          "rc": 0,
+          "stdout": "PTR=0x4",
+          "stderr_head": []
+        },
+        "deref_zst_null": {
+          "rc": 0,
+          "stdout": "ZST_DEREF_OK",
+          "stderr_head": []
+        },
+        "borrow_zst_null": {
+          "rc": 0,
+          "stdout": "ZST_BORROW=0x0",
+          "stderr_head": []
+        },
+        "direct_enum_bad": {
+          "rc": 0,
+          "stdout": "ENUM=0",
+          "stderr_head": []
+        },
+        "niche_opt_bool_bad": {
+          "rc": 0,
+          "stdout": "OPT=Some(true)",
+          "stderr_head": []
+        },
+        "uninhabited_bad": {
+          "rc": -4,
+          "stdout": "",
+          "stderr_head": []
+        },
+        "single_wrap_bool_bad": {
+          "rc": 0,
+          "stdout": "SINGLE_WRAP_RAW=0",
+          "stderr_head": []
+        },
+        "raw_bool_bad": {
+          "rc": 0,
+          "stdout": "RAW_BOOL=0",
+          "stderr_head": []
+        },
+        "ptr_read_enum_bad": {
+          "rc": 0,
+          "stdout": "PTR_READ_ENUM=0",
+          "stderr_head": []
+        },
+        "slice_null_bad": {
+          "rc": 0,
+          "stdout": "SLICE_LEN=0",
+          "stderr_head": []
+        },
+        "unreachable_bad": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at <TMP>/probe1/ub_probe.rs:98:18:",
+            "unsafe precondition(s) violated: hint::unreachable_unchecked must never be reached",
+            ""
+          ]
+        }
+      }
+    },
+    "ub_no_O2": {
+      "compile_rc": 0,
+      "compile_stderr_lines": 4,
+      "llvm_ir": {
+        "deref_read_u32": {
+          "lines": 5,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "borrow_field_u8": {
+          "lines": 5,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "deref_zst_null": {
+          "lines": 4,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "borrow_zst_null": {
+          "lines": 4,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "transmute_direct_enum": {
+          "lines": 7,
+          "has_unreachable": false,
+          "calls": [
+            "llvm.assume"
+          ]
+        },
+        "transmute_niche_opt_bool": {
+          "lines": 6,
+          "has_unreachable": false,
+          "calls": [
+            "llvm.assume"
+          ]
+        },
+        "transmute_multibyte_niche": {
+          "lines": 4,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "transmute_uninhabited": {
+          "lines": 4,
+          "has_unreachable": true,
+          "calls": []
+        },
+        "transmute_single_wrap_bool": null,
+        "transmute_raw_bool": null,
+        "ptr_read_direct_enum": {
+          "lines": 6,
+          "has_unreachable": false,
+          "calls": []
+        },
+        "call_unreachable_unchecked": {
+          "lines": 4,
+          "has_unreachable": true,
+          "calls": []
+        },
+        "make_slice_raw": {
+          "lines": 4,
+          "has_unreachable": false,
+          "calls": []
+        }
+      },
+      "mir_ub_passes": {},
+      "runtime": {
+        "misaligned_u32": {
+          "rc": 0,
+          "stdout": "VAL=119",
+          "stderr_head": []
+        },
+        "borrow_u8_misaligned_struct": {
+          "rc": 0,
+          "stdout": "BYTE=85",
+          "stderr_head": []
+        },
+        "borrow_u8_null_struct": {
+          "rc": 0,
+          "stdout": "PTR=0x4",
+          "stderr_head": []
+        },
+        "deref_zst_null": {
+          "rc": 0,
+          "stdout": "ZST_DEREF_OK",
+          "stderr_head": []
+        },
+        "borrow_zst_null": {
+          "rc": 0,
+          "stdout": "ZST_BORROW=0x0",
+          "stderr_head": []
+        },
+        "direct_enum_bad": {
+          "rc": 0,
+          "stdout": "ENUM=0",
+          "stderr_head": []
+        },
+        "niche_opt_bool_bad": {
+          "rc": 0,
+          "stdout": "OPT=Some(true)",
+          "stderr_head": []
+        },
+        "uninhabited_bad": {
+          "skipped_reason": "omitted at ub-checks=no -O2 where llvm unreachable allows arbitrary codegen"
+        },
+        "single_wrap_bool_bad": {
+          "rc": 0,
+          "stdout": "SINGLE_WRAP_RAW=0",
+          "stderr_head": []
+        },
+        "raw_bool_bad": {
+          "rc": 0,
+          "stdout": "RAW_BOOL=0",
+          "stderr_head": []
+        },
+        "ptr_read_enum_bad": {
+          "rc": 0,
+          "stdout": "PTR_READ_ENUM=2",
+          "stderr_head": []
+        },
+        "slice_null_bad": {
+          "rc": 0,
+          "stdout": "SLICE_LEN=0",
+          "stderr_head": []
+        },
+        "unreachable_bad": {
+          "skipped_reason": "omitted at ub-checks=no -O2 where llvm unreachable allows arbitrary codegen"
+        }
+      }
+    },
+    "miri_oracle": {
+      "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+      "cases": {
+        "misaligned_u32": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: accessing memory based on pointer with alignment 1, but alignment 4 is required",
+            "|              ^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        },
+        "borrow_u8_misaligned_struct": {
+          "rc": 0,
+          "stdout": "BYTE=85",
+          "ub_detected": false,
+          "ub_summary": []
+        },
+        "borrow_u8_null_struct": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: in-bounds pointer arithmetic failed: attempting to offset pointer by 4 bytes, but got null pointer",
+            "|                           ^^^^^^^^^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        },
+        "deref_zst_null": {
+          "rc": 0,
+          "stdout": "ZST_DEREF_OK",
+          "ub_detected": false,
+          "ub_summary": []
+        },
+        "borrow_zst_null": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: constructing invalid value of type &(): encountered a null reference",
+            "|                           ^^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        },
+        "direct_enum_bad": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: constructing invalid value of type DirectEnum: at .<enum-tag>, encountered 0x02, but expected a valid enum tag",
+            "|              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        },
+        "niche_opt_bool_bad": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: constructing invalid value of type std::option::Option<bool>: at .<enum-tag>, encountered 0x03, but expected a valid enum tag",
+            "|              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        },
+        "uninhabited_bad": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: constructing invalid value of type EmptyEnum: encountered a value of zero-variant enum `EmptyEnum`",
+            "|              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        },
+        "single_wrap_bool_bad": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: constructing invalid value of type SingleWrapBool: at .0, encountered 0x02, but expected a boolean",
+            "|              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        },
+        "raw_bool_bad": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: constructing invalid value of type bool: encountered 0x02, but expected a boolean",
+            "|              ^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        },
+        "ptr_read_enum_bad": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: constructing invalid value of type DirectEnum: at .<enum-tag>, encountered 0x02, but expected a valid enum tag",
+            "|              ^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        },
+        "slice_null_bad": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: constructing invalid value of type &[u8]: encountered a null reference",
+            "|                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        },
+        "unreachable_bad": {
+          "rc": 1,
+          "stdout": "",
+          "ub_detected": true,
+          "ub_summary": [
+            "error: Undefined Behavior: entering unreachable code",
+            "|                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+            "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+            "error: aborting due to 1 previous error"
+          ]
+        }
+      }
+    }
+  },
+  "probe_2_lto_cfi_vs_kcfi": {
+    "lto_cfi_pre_lto_lib": {
+      "compile_rc": 0,
+      "compile_stderr": "",
+      "ir_signals": {
+        "type_test_count": 4,
+        "has_kcfi_arity_module_flag": false,
+        "has_cfi_canonical_jump_tables_flag": true,
+        "has_split_lto_unit_flag": true,
+        "type_mds_sample": [
+          "_ZTSFu3i32PFS_PKS_ES1_E",
+          "_ZTSFu3i32PFS_PKS_ES1_E.normalized",
+          "_ZTSFu3i32PFS_S_S_ES_S_E",
+          "_ZTSFu3i32PFS_S_S_ES_S_E.normalized",
+          "_ZTSFu3i32PFS_S_S_S_ES_S_S_E",
+          "_ZTSFu3i32PFS_S_S_S_ES_S_S_E.normalized",
+          "_ZTSFu3i32PKS_E",
+          "_ZTSFu3i32PKS_E.normalized",
+          "_ZTSFu3i32PKu2u8E",
+          "_ZTSFu3i32PKu2u8E.normalized",
+          "_ZTSFu3i32PKvE.generalized",
+          "_ZTSFu3i32PKvE.normalized.generalized",
+          "_ZTSFu3i32PKvS1_E.generalized",
+          "_ZTSFu3i32PKvS1_E.normalized.generalized",
+          "_ZTSFu3i32PKvS_S_E.generalized",
+          "_ZTSFu3i32PKvS_S_E.normalized.generalized",
+          "_ZTSFu3i32PKvS_S_S_E.generalized",
+          "_ZTSFu3i32PKvS_S_S_E.normalized.generalized",
+          "_ZTSFu3i32S_S_E",
+          "_ZTSFu3i32S_S_E.generalized"
+        ],
+        "all_type_md_count": 30,
+        "kcfi_type_md_refs": 0,
+        "kcfi_bundles": [],
+        "call_indirect_i32_ptr_ir": "define noundef i32 @call_indirect_i32_ptr(ptr noundef nonnull %f, ptr noundef %p) unnamed_addr #0 !type !6 !type !7 !type !8 !type !9 {\nstart:\n  %0 = tail call i1 @llvm.type.test(ptr nonnull %f, metadata !\"_ZTSFu3i32PKS_E\")\n  br i1 %0, label %type_test.pass, label %type_test.fail\n\ntype_test.pass:                                   ; preds = %start\n  %_0 = tail call noundef i32 %f(ptr noundef %p) #5\n  ret i32 %_0\n\ntype_test.fail:                                   ; preds = %start\n  tail call void @llvm.trap()\n  unreachable\n}",
+        "target_i32_ptr_header": "define noundef i32 @target_i32_ptr(ptr noundef readonly captures(none) %p) unnamed_addr #1 !type !18 !type !19 !type !20 !type !21 {",
+        "target_u8_ptr_header": "define noundef range(i32 20, 276) i32 @target_u8_ptr(ptr noundef readonly captures(none) %p) unnamed_addr #1 !type !31 !type !19 !type !32 !type !21 {"
+      }
+    },
+    "lto_cfi_default": {
+      "compile_rc": 0,
+      "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: 1 warning emitted",
+      "ir_signals": {
+        "type_test_count": 0,
+        "has_kcfi_arity_module_flag": false,
+        "has_cfi_canonical_jump_tables_flag": true,
+        "has_split_lto_unit_flag": true,
+        "type_mds_sample": [
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3dynIu35NtNtCs8b4M6GsfcPs_4core3fmt7Displayu6regionEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIS2_EEE",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3dynIu35NtNtCs8b4M6GsfcPs_4core3fmt7Displayu6regionEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIS2_EEE.normalized",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3refIu3strEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIu6regionEEE",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3refIu3strEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIu6regionEEE.normalized",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIvEU3mutS1_E.generalized",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIvEU3mutS1_E.normalized.generalized",
+          "_ZTSFu3i32PFS_PKS_ES1_E",
+          "_ZTSFu3i32PFS_PKS_ES1_E.normalized",
+          "_ZTSFu3i32PFS_S_S_ES_S_E",
+          "_ZTSFu3i32PFS_S_S_ES_S_E.normalized",
+          "_ZTSFu3i32PFS_S_S_S_ES_S_S_E",
+          "_ZTSFu3i32PFS_S_S_S_ES_S_S_E.normalized",
+          "_ZTSFu3i32PKS_E",
+          "_ZTSFu3i32PKS_E.normalized",
+          "_ZTSFu3i32PKu2u8E",
+          "_ZTSFu3i32PKu2u8E.normalized",
+          "_ZTSFu3i32PKvE.generalized",
+          "_ZTSFu3i32PKvE.normalized.generalized",
+          "_ZTSFu3i32PKvS1_E.generalized",
+          "_ZTSFu3i32PKvS1_E.normalized.generalized"
+        ],
+        "all_type_md_count": 48,
+        "kcfi_type_md_refs": 0,
+        "kcfi_bundles": [],
+        "call_indirect_i32_ptr_ir": "define dso_local noundef i32 @call_indirect_i32_ptr(ptr noundef nonnull readonly captures(address) %f, ptr noundef %p) unnamed_addr #3 !type !622 !type !623 !type !624 !type !625 {\nstart:\n  %0 = icmp eq ptr %f, @.cfi.jumptable.1\n  br i1 %0, label %type_test.pass, label %type_test.fail\n\ntype_test.pass:                                   ; preds = %start\n  %_0 = tail call noundef i32 @.cfi.jumptable.1(ptr noundef %p) #64\n  ret i32 %_0\n\ntype_test.fail:                                   ; preds = %start\n  tail call void @llvm.trap()\n  unreachable\n}",
+        "target_i32_ptr_header": null,
+        "target_u8_ptr_header": "define dso_local noundef range(i32 20, 276) i32 @target_u8_ptr(ptr noundef readonly captures(none) %p) unnamed_addr #5 !type !646 !type !635 !type !647 !type !637 {"
+      },
+      "asm_signals": {
+        "has_cfi_jt": true,
+        "ud2_count": 54,
+        "jt_and_kcfi_lines": [
+          "leaq\t.L.cfi.jumptable.1(%rip), %rax",
+          "jmp\t.L.cfi.jumptable.1",
+          "leaq\t.L.cfi.jumptable(%rip), %rax",
+          "jmp\t.L.cfi.jumptable",
+          ".section\t.text..L.cfi.jumptable,\"ax\",@progbits",
+          ".type\t.L.cfi.jumptable,@function",
+          ".L.cfi.jumptable:",
+          ".size\t.L.cfi.jumptable, .Lfunc_end13-.L.cfi.jumptable",
+          ".section\t.text..L.cfi.jumptable.1,\"ax\",@progbits",
+          ".type\t.L.cfi.jumptable.1,@function",
+          ".L.cfi.jumptable.1:",
+          ".size\t.L.cfi.jumptable.1, .Lfunc_end14-.L.cfi.jumptable.1",
+          "target_two_args = .L.cfi.jumptable",
+          "target_i32_ptr = .L.cfi.jumptable.1"
+        ],
+        "kcfi_preambles": {}
+      },
+      "runtime": {
+        "valid": {
+          "rc": 0,
+          "stdout": "OK=42",
+          "stderr": ""
+        },
+        "valid_two_args": {
+          "rc": 0,
+          "stdout": "TWO=42",
+          "stderr": ""
+        },
+        "ptr_mismatch": {
+          "rc": -4,
+          "stdout": "",
+          "stderr": ""
+        },
+        "arity_mismatch": {
+          "rc": -4,
+          "stdout": "",
+          "stderr": ""
+        }
+      }
+    },
+    "lto_cfi_generalize_ptrs": {
+      "compile_rc": 0,
+      "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: 1 warning emitted",
+      "ir_signals": {
+        "type_test_count": 0,
+        "has_kcfi_arity_module_flag": false,
+        "has_cfi_canonical_jump_tables_flag": true,
+        "has_split_lto_unit_flag": true,
+        "type_mds_sample": [
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3dynIu35NtNtCs8b4M6GsfcPs_4core3fmt7Displayu6regionEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIS2_EEE",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3dynIu35NtNtCs8b4M6GsfcPs_4core3fmt7Displayu6regionEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIS2_EEE.normalized",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3refIu3strEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIu6regionEEE",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3refIu3strEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIu6regionEEE.normalized",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIvEU3mutS1_E.generalized",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIvEU3mutS1_E.normalized.generalized",
+          "_ZTSFu3i32PFS_PKS_ES1_E",
+          "_ZTSFu3i32PFS_PKS_ES1_E.normalized",
+          "_ZTSFu3i32PFS_S_S_ES_S_E",
+          "_ZTSFu3i32PFS_S_S_ES_S_E.normalized",
+          "_ZTSFu3i32PFS_S_S_S_ES_S_S_E",
+          "_ZTSFu3i32PFS_S_S_S_ES_S_S_E.normalized",
+          "_ZTSFu3i32PKS_E",
+          "_ZTSFu3i32PKS_E.normalized",
+          "_ZTSFu3i32PKu2u8E",
+          "_ZTSFu3i32PKu2u8E.normalized",
+          "_ZTSFu3i32PKvE.generalized",
+          "_ZTSFu3i32PKvE.normalized.generalized",
+          "_ZTSFu3i32PKvS1_E.generalized",
+          "_ZTSFu3i32PKvS1_E.normalized.generalized"
+        ],
+        "all_type_md_count": 48,
+        "kcfi_type_md_refs": 0,
+        "kcfi_bundles": [],
+        "call_indirect_i32_ptr_ir": "define dso_local noundef i32 @call_indirect_i32_ptr(ptr noundef nonnull %f, ptr noundef %p) unnamed_addr #3 !type !622 !type !623 !type !624 !type !625 {\nstart:\n  %0 = ptrtoint ptr %f to i64\n  %1 = sub i64 ptrtoint (ptr getelementptr (i8, ptr @.cfi.jumptable.1, i64 8) to i64), %0\n  %2 = tail call i64 @llvm.fshl.i64(i64 %1, i64 %1, i64 61)\n  %3 = icmp ult i64 %2, 2\n  br i1 %3, label %type_test.pass, label %type_test.fail\n\ntype_test.pass:                                   ; preds = %start\n  %_0 = tail call noundef i32 %f(ptr noundef %p) #64\n  ret i32 %_0\n\ntype_test.fail:                                   ; preds = %start\n  tail call void @llvm.trap()\n  unreachable\n}",
+        "target_i32_ptr_header": null,
+        "target_u8_ptr_header": null
+      },
+      "asm_signals": {
+        "has_cfi_jt": true,
+        "ud2_count": 54,
+        "jt_and_kcfi_lines": [
+          "leaq\t.L.cfi.jumptable.1(%rip), %rcx",
+          "leaq\t.L.cfi.jumptable(%rip), %rax",
+          "jmp\t.L.cfi.jumptable",
+          ".section\t.text..L.cfi.jumptable,\"ax\",@progbits",
+          ".type\t.L.cfi.jumptable,@function",
+          ".L.cfi.jumptable:",
+          ".size\t.L.cfi.jumptable, .Lfunc_end13-.L.cfi.jumptable",
+          ".section\t.text..L.cfi.jumptable.1,\"ax\",@progbits",
+          ".type\t.L.cfi.jumptable.1,@function",
+          ".L.cfi.jumptable.1:",
+          ".size\t.L.cfi.jumptable.1, .Lfunc_end14-.L.cfi.jumptable.1",
+          "target_two_args = .L.cfi.jumptable",
+          "target_i32_ptr = .L.cfi.jumptable.1",
+          "target_u8_ptr = .L.cfi.jumptable.1+8"
+        ],
+        "kcfi_preambles": {}
+      },
+      "runtime": {
+        "valid": {
+          "rc": 0,
+          "stdout": "OK=42",
+          "stderr": ""
+        },
+        "valid_two_args": {
+          "rc": 0,
+          "stdout": "TWO=42",
+          "stderr": ""
+        },
+        "ptr_mismatch": {
+          "rc": 0,
+          "stdout": "PTR_MISMATCH=27",
+          "stderr": ""
+        },
+        "arity_mismatch": {
+          "rc": -4,
+          "stdout": "",
+          "stderr": ""
+        }
+      }
+    },
+    "lto_cfi_no_canon_jt": {
+      "compile_rc": 0,
+      "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: 1 warning emitted",
+      "ir_signals": {
+        "type_test_count": 0,
+        "has_kcfi_arity_module_flag": false,
+        "has_cfi_canonical_jump_tables_flag": false,
+        "has_split_lto_unit_flag": true,
+        "type_mds_sample": [
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3dynIu35NtNtCs8b4M6GsfcPs_4core3fmt7Displayu6regionEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIS2_EEE",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3dynIu35NtNtCs8b4M6GsfcPs_4core3fmt7Displayu6regionEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIS2_EEE.normalized",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3refIu3strEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIu6regionEEE",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIu3refIu3strEEU3mutu3refIu37NtNtCs8b4M6GsfcPs_4core3fmt9FormatterIu6regionEEE.normalized",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIvEU3mutS1_E.generalized",
+          "_ZTSFu37NtNtCs8b4M6GsfcPs_4core6result6ResultIvu33NtNtCs8b4M6GsfcPs_4core3fmt5ErrorEu3refIvEU3mutS1_E.normalized.generalized",
+          "_ZTSFu3i32PFS_PKS_ES1_E",
+          "_ZTSFu3i32PFS_PKS_ES1_E.normalized",
+          "_ZTSFu3i32PFS_S_S_ES_S_E",
+          "_ZTSFu3i32PFS_S_S_ES_S_E.normalized",
+          "_ZTSFu3i32PFS_S_S_S_ES_S_S_E",
+          "_ZTSFu3i32PFS_S_S_S_ES_S_S_E.normalized",
+          "_ZTSFu3i32PKS_E",
+          "_ZTSFu3i32PKS_E.normalized",
+          "_ZTSFu3i32PKu2u8E",
+          "_ZTSFu3i32PKu2u8E.normalized",
+          "_ZTSFu3i32PKvE.generalized",
+          "_ZTSFu3i32PKvE.normalized.generalized",
+          "_ZTSFu3i32PKvS1_E.generalized",
+          "_ZTSFu3i32PKvS1_E.normalized.generalized"
+        ],
+        "all_type_md_count": 48,
+        "kcfi_type_md_refs": 0,
+        "kcfi_bundles": [],
+        "call_indirect_i32_ptr_ir": "define dso_local noundef i32 @call_indirect_i32_ptr(ptr noundef nonnull readonly captures(address) %f, ptr noundef %p) unnamed_addr #3 !type !621 !type !622 !type !623 !type !624 {\nstart:\n  %0 = icmp eq ptr %f, @.cfi.jumptable.1\n  br i1 %0, label %type_test.pass, label %type_test.fail\n\ntype_test.pass:                                   ; preds = %start\n  %_0 = tail call noundef i32 @.cfi.jumptable.1(ptr noundef %p) #64\n  ret i32 %_0\n\ntype_test.fail:                                   ; preds = %start\n  tail call void @llvm.trap()\n  unreachable\n}",
+        "target_i32_ptr_header": null,
+        "target_u8_ptr_header": "define dso_local noundef range(i32 20, 276) i32 @target_u8_ptr(ptr noundef readonly captures(none) %p) unnamed_addr #5 !type !645 !type !634 !type !646 !type !636 {"
+      },
+      "asm_signals": {
+        "has_cfi_jt": true,
+        "ud2_count": 54,
+        "jt_and_kcfi_lines": [
+          "leaq\t.L.cfi.jumptable.1(%rip), %rax",
+          "jmp\t.L.cfi.jumptable.1",
+          "leaq\t.L.cfi.jumptable(%rip), %rax",
+          "jmp\t.L.cfi.jumptable",
+          ".section\t.text..L.cfi.jumptable,\"ax\",@progbits",
+          ".type\t.L.cfi.jumptable,@function",
+          ".L.cfi.jumptable:",
+          ".size\t.L.cfi.jumptable, .Lfunc_end13-.L.cfi.jumptable",
+          ".section\t.text..L.cfi.jumptable.1,\"ax\",@progbits",
+          ".type\t.L.cfi.jumptable.1,@function",
+          ".L.cfi.jumptable.1:",
+          ".size\t.L.cfi.jumptable.1, .Lfunc_end14-.L.cfi.jumptable.1",
+          "target_two_args = .L.cfi.jumptable",
+          "target_i32_ptr = .L.cfi.jumptable.1"
+        ],
+        "kcfi_preambles": {}
+      },
+      "runtime": {
+        "valid": {
+          "rc": 0,
+          "stdout": "OK=42",
+          "stderr": ""
+        },
+        "valid_two_args": {
+          "rc": 0,
+          "stdout": "TWO=42",
+          "stderr": ""
+        },
+        "ptr_mismatch": {
+          "rc": -4,
+          "stdout": "",
+          "stderr": ""
+        },
+        "arity_mismatch": {
+          "rc": -4,
+          "stdout": "",
+          "stderr": ""
+        }
+      }
+    },
+    "kcfi_default": {
+      "compile_rc": 0,
+      "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: 1 warning emitted",
+      "ir_signals": {
+        "type_test_count": 0,
+        "has_kcfi_arity_module_flag": false,
+        "has_cfi_canonical_jump_tables_flag": false,
+        "has_split_lto_unit_flag": false,
+        "type_mds_sample": [],
+        "all_type_md_count": 0,
+        "kcfi_type_md_refs": 8,
+        "kcfi_bundles": [
+          "-1789026986",
+          "124123658",
+          "1248878270"
+        ],
+        "call_indirect_i32_ptr_ir": "define noundef i32 @call_indirect_i32_ptr(ptr noundef nonnull readonly captures(none) %f, ptr noundef %p) unnamed_addr #0 !kcfi_type !5 {\nstart:\n  %_0 = tail call noundef i32 %f(ptr noundef %p) #3 [ \"kcfi\"(i32 124123658) ]\n  ret i32 %_0\n}",
+        "target_i32_ptr_header": "define noundef i32 @target_i32_ptr(ptr noundef readonly captures(none) %p) unnamed_addr #1 !kcfi_type !8 {",
+        "target_u8_ptr_header": "define noundef range(i32 20, 276) i32 @target_u8_ptr(ptr noundef readonly captures(none) %p) unnamed_addr #1 !kcfi_type !12 {"
+      },
+      "asm_signals": {
+        "has_cfi_jt": false,
+        "ud2_count": 3,
+        "jt_and_kcfi_lines": [
+          ".section\t.kcfi_traps,\"ao\",@progbits,.text.call_indirect_i32_ptr",
+          ".section\t.kcfi_traps,\"ao\",@progbits,.text.call_indirect_three_args",
+          ".section\t.kcfi_traps,\"ao\",@progbits,.text.call_indirect_two_args"
+        ],
+        "kcfi_preambles": {
+          "target_zero_args": {
+            "movl": [
+              "movl\t$3525342048, %eax",
+              "movl\t$11, %eax"
+            ],
+            "lines": [
+              "__cfi_target_zero_args:",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "movl\t$3525342048, %eax",
+              ".Lcfi_func_end7:",
+              ".size\t__cfi_target_zero_args, .Lcfi_func_end7-__cfi_target_zero_args",
+              "target_zero_args:",
+              ".cfi_startproc",
+              "movl\t$11, %eax"
+            ]
+          },
+          "target_i32_ptr": {
+            "movl": [
+              "movl\t$124123658, %eax",
+              "movl\t(%rdi), %eax"
+            ],
+            "lines": [
+              "__cfi_target_i32_ptr:",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "movl\t$124123658, %eax",
+              ".Lcfi_func_end3:",
+              ".size\t__cfi_target_i32_ptr, .Lcfi_func_end3-__cfi_target_i32_ptr",
+              "target_i32_ptr:",
+              ".cfi_startproc",
+              "movl\t(%rdi), %eax"
+            ]
+          },
+          "target_two_args": {
+            "movl": [
+              "movl\t$2505940310, %eax"
+            ],
+            "lines": [
+              "__cfi_target_two_args:",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "movl\t$2505940310, %eax",
+              ".Lcfi_func_end5:",
+              ".size\t__cfi_target_two_args, .Lcfi_func_end5-__cfi_target_two_args",
+              "target_two_args:",
+              ".cfi_startproc",
+              "leal\t(%rdi,%rsi), %eax"
+            ]
+          },
+          "target_three_args": {
+            "movl": [
+              "movl\t$1248878270, %eax"
+            ],
+            "lines": [
+              "__cfi_target_three_args:",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "movl\t$1248878270, %eax",
+              ".Lcfi_func_end4:",
+              ".size\t__cfi_target_three_args, .Lcfi_func_end4-__cfi_target_three_args",
+              "target_three_args:",
+              ".cfi_startproc",
+              "leal\t(%rdi,%rsi), %eax"
+            ]
+          }
+        }
+      }
+    },
+    "kcfi_arity": {
+      "compile_rc": 0,
+      "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: 1 warning emitted",
+      "ir_signals": {
+        "type_test_count": 0,
+        "has_kcfi_arity_module_flag": true,
+        "has_cfi_canonical_jump_tables_flag": false,
+        "has_split_lto_unit_flag": false,
+        "type_mds_sample": [],
+        "all_type_md_count": 0,
+        "kcfi_type_md_refs": 8,
+        "kcfi_bundles": [
+          "-1789026986",
+          "124123658",
+          "1248878270"
+        ],
+        "call_indirect_i32_ptr_ir": "define noundef i32 @call_indirect_i32_ptr(ptr noundef nonnull readonly captures(none) %f, ptr noundef %p) unnamed_addr #0 !kcfi_type !6 {\nstart:\n  %_0 = tail call noundef i32 %f(ptr noundef %p) #3 [ \"kcfi\"(i32 124123658) ]\n  ret i32 %_0\n}",
+        "target_i32_ptr_header": "define noundef i32 @target_i32_ptr(ptr noundef readonly captures(none) %p) unnamed_addr #1 !kcfi_type !9 {",
+        "target_u8_ptr_header": "define noundef range(i32 20, 276) i32 @target_u8_ptr(ptr noundef readonly captures(none) %p) unnamed_addr #1 !kcfi_type !13 {"
+      },
+      "asm_signals": {
+        "has_cfi_jt": false,
+        "ud2_count": 3,
+        "jt_and_kcfi_lines": [
+          ".section\t.kcfi_traps,\"ao\",@progbits,.text.call_indirect_i32_ptr",
+          ".section\t.kcfi_traps,\"ao\",@progbits,.text.call_indirect_three_args",
+          ".section\t.kcfi_traps,\"ao\",@progbits,.text.call_indirect_two_args"
+        ],
+        "kcfi_preambles": {
+          "target_zero_args": {
+            "movl": [
+              "movl\t$3525342048, %eax",
+              "movl\t$11, %eax"
+            ],
+            "lines": [
+              "__cfi_target_zero_args:",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "movl\t$3525342048, %eax",
+              ".Lcfi_func_end7:",
+              ".size\t__cfi_target_zero_args, .Lcfi_func_end7-__cfi_target_zero_args",
+              "target_zero_args:",
+              ".cfi_startproc",
+              "movl\t$11, %eax"
+            ]
+          },
+          "target_i32_ptr": {
+            "movl": [
+              "movl\t$124123658, %ecx",
+              "movl\t(%rdi), %eax"
+            ],
+            "lines": [
+              "__cfi_target_i32_ptr:",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "movl\t$124123658, %ecx",
+              ".Lcfi_func_end3:",
+              ".size\t__cfi_target_i32_ptr, .Lcfi_func_end3-__cfi_target_i32_ptr",
+              "target_i32_ptr:",
+              ".cfi_startproc",
+              "movl\t(%rdi), %eax"
+            ]
+          },
+          "target_two_args": {
+            "movl": [
+              "movl\t$2505940310, %edx"
+            ],
+            "lines": [
+              "__cfi_target_two_args:",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "movl\t$2505940310, %edx",
+              ".Lcfi_func_end5:",
+              ".size\t__cfi_target_two_args, .Lcfi_func_end5-__cfi_target_two_args",
+              "target_two_args:",
+              ".cfi_startproc",
+              "leal\t(%rdi,%rsi), %eax"
+            ]
+          },
+          "target_three_args": {
+            "movl": [
+              "movl\t$1248878270, %ebx"
+            ],
+            "lines": [
+              "__cfi_target_three_args:",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "nop",
+              "movl\t$1248878270, %ebx",
+              ".Lcfi_func_end4:",
+              ".size\t__cfi_target_three_args, .Lcfi_func_end4-__cfi_target_three_args",
+              "target_three_args:",
+              ".cfi_startproc",
+              "leal\t(%rdi,%rsi), %eax"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "probe_3_asan_tsan_msan_lsan": {
+    "asan": {
+      "compile_rc": 0,
+      "has_sanitize_address_attr": true,
+      "has_asan_init": true,
+      "asan_report_calls": [
+        "__asan_report_load4",
+        "__asan_report_load8",
+        "__asan_report_store4",
+        "__asan_report_store8"
+      ],
+      "run_in_bounds": {
+        "rc": 0,
+        "stdout": "VAL=30"
+      },
+      "run_oob": {
+        "rc": 1,
+        "detected_heap_overflow": true,
+        "stderr_summary": [
+          "==<PID>==ERROR: AddressSanitizer: heap-buffer-overflow on address <ADDR> at pc <ADDR> bp <ADDR> sp <ADDR>",
+          "SUMMARY: AddressSanitizer: heap-buffer-overflow (<TMP>/probe3/asan/bin+0xff02b) (BuildId: <BUILD_ID>)"
+        ]
+      }
+    },
+    "tsan": {
+      "compile_rc": 0,
+      "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: 1 warning emitted",
+      "has_sanitize_thread_attr": true,
+      "tsan_calls_nonatomic": [
+        "__tsan_func_entry",
+        "__tsan_func_exit",
+        "__tsan_write4"
+      ],
+      "tsan_calls_atomic": [
+        "__tsan_atomic32_fetch_add",
+        "__tsan_func_entry",
+        "__tsan_func_exit"
+      ],
+      "run_atomic": {
+        "rc": 0,
+        "stdout": "ATOMIC=0"
+      },
+      "run_race": {
+        "rc": 66,
+        "detected_data_race": true,
+        "stderr_summary": [
+          "WARNING: ThreadSanitizer: data race (pid=<PID>)",
+          "SUMMARY: ThreadSanitizer: data race ??:? in bump_nonatomic"
+        ]
+      }
+    },
+    "msan_origins2": {
+      "compile_rc": 0,
+      "compile_stderr": "",
+      "has_sanitize_memory_attr": true,
+      "msan_symbols": [
+        "__msan_init",
+        "__msan_track_origins",
+        "__msan_warning_with_origin_noreturn"
+      ]
+    },
+    "lsan": {
+      "compile_rc": 0,
+      "has_sanitize_address_attr": false,
+      "has_asan_init": false,
+      "lsan_ir_symbols": []
+    }
+  },
+  "probe_4_sanitize_attr_and_ignorelist": {
+    "supports_z_sanitizer_ignorelist": false,
+    "ignorelist_text": "[address]\nfun:*ignorelist_excluded_fn*\nfun:*ignorelist_reenabled_fn*\nfun:*ignorelist_reenabled_fn*=sanitize\n",
+    "attr_only_mode": {
+      "compile_rc": 0,
+      "compile_stderr": "",
+      "fn_attrs": {
+        "normal_fn": {
+          "header": "define noundef i32 @normal_fn(ptr noundef readonly captures(none) %p) unnamed_addr #1 {",
+          "has_sanitize_address": true,
+          "has_asan_report_call": true
+        },
+        "attr_off_fn": {
+          "header": "define noundef i32 @attr_off_fn(ptr noundef readonly captures(none) %p) unnamed_addr #0 {",
+          "has_sanitize_address": false,
+          "has_asan_report_call": false
+        },
+        "ignorelist_excluded_fn": {
+          "header": "define noundef i32 @ignorelist_excluded_fn(ptr noundef readonly captures(none) %p) unnamed_addr #1 {",
+          "has_sanitize_address": true,
+          "has_asan_report_call": true
+        },
+        "ignorelist_reenabled_fn": {
+          "header": "define noundef i32 @ignorelist_reenabled_fn(ptr noundef readonly captures(none) %p) unnamed_addr #1 {",
+          "has_sanitize_address": true,
+          "has_asan_report_call": true
+        }
+      }
+    },
+    "ignorelist_mode": {
+      "compile_rc": 1,
+      "compile_stderr": "error: unknown unstable option: `sanitizer-ignorelist`",
+      "fn_attrs": {}
+    }
+  }
+}
