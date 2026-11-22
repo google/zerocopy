@@ -93708,6 +93708,63 @@
         "verification"
       ]
     },
+    "rustc-reproducible-builds-remap-path-prefix-cgu-and-incremental-determinism": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "host": "x86_64-unknown-linux-gnu",
+            "llvm_version": "22.1.6",
+            "release": "1.98.0-nightly (14210df0e 2026-05-31)",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "rustc (executed nightly toolchain)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+          },
+          "name": "rustc (upstream source cross-check)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted boundary and compiler capture"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "tool": "GNU ar (GNU Binutils for Debian)",
+            "version": "2.47"
+          },
+          "name": "GNU Binutils ar"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/build",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "verification"
+      ]
+    },
     "rustc-rmeta-mir-encoding-symbol-export-crate-types-and-share-generics": {
       "observed_at": "2026-11-22",
       "subjects": [

@@ -1,0 +1,1097 @@
+{
+  "ar_version": "GNU ar (GNU Binutils for Debian) 2.47",
+  "probe_1_cross_dir_determinism": {
+    "cross_mode_comparisons": {
+      "dbg0_remap_path_vs_remap_path_and_cwd_obj_equal": true,
+      "dbg0_remap_path_vs_remap_path_and_cwd_rmeta_equal": false,
+      "dbg2_remap_path_only_vs_remap_path_and_cwd_obj_equal": true,
+      "dbg2_remap_path_only_vs_remap_path_and_cwd_rmeta_equal": false
+    },
+    "dbg0_no_remap": {
+      "bit_exact": {
+        "obj": false,
+        "rlib": false,
+        "rmeta": false
+      },
+      "bytes_alpha": {
+        "obj": 9368,
+        "rlib": 18224,
+        "rmeta": 6681
+      },
+      "bytes_beta": {
+        "obj": 9352,
+        "rlib": 18200,
+        "rmeta": 6678
+      },
+      "debuginfo": 0,
+      "hashes_alpha": {
+        "obj": "0cddd57f33ca2795260db831e3971c863e4bd53779693f83e2e08ac961d896af",
+        "rlib": "8beb16fed344d7065f6934817f0a89ec09a9a5ee02c2ae36e421ae35e064b435",
+        "rmeta": "6cd73f5357b4d5b1eb7129af7600016ac8c224269378bd25648932ee5f4bbb6f"
+      },
+      "hashes_beta": {
+        "obj": "6cb326f3e34997ccbd59ad3615ec50de1ca77270ce67f12ae489d92b0d75999b",
+        "rlib": "a4d3d41a424cefbf23fc4711837fb5d73c670883439f1fc47023fc1b181a1094",
+        "rmeta": "cf3c7deb6fbe5e93f0cfe6e3ba3b2cfc147e2283e2388cc6522e39509fd41dcc"
+      },
+      "leaks_alpha": {
+        "obj": 1,
+        "rlib": 4,
+        "rmeta": 3
+      },
+      "leaks_beta": {
+        "obj": 1,
+        "rlib": 4,
+        "rmeta": 3
+      },
+      "obj_leak_breakdown_alpha": {
+        "by_elf_section": {
+          ".rodata.str1.1": 1
+        },
+        "dwarf_info_attrs": {
+          "DW_AT_comp_dir": 0,
+          "DW_AT_name": 0
+        }
+      },
+      "remap_cwd_prefix": false,
+      "remap_path_prefix": false,
+      "remap_path_scope": "all (default)",
+      "source_arg_kind": "absolute"
+    },
+    "dbg0_remap_cwd_only_abssrc": {
+      "bit_exact": {
+        "obj": true,
+        "rlib": true,
+        "rmeta": true
+      },
+      "bytes_alpha": {
+        "obj": 9304,
+        "rlib": 18048,
+        "rmeta": 6576
+      },
+      "bytes_beta": {
+        "obj": 9304,
+        "rlib": 18048,
+        "rmeta": 6576
+      },
+      "debuginfo": 0,
+      "hashes_alpha": {
+        "obj": "4ba030a4f6140e55c55888369b9790c9aa28f6fc1821e791dd62ee306058f09f",
+        "rlib": "9889ddf0c4630ea569288d37bed984d99ccb15a0953804b0edc5da10db196e06",
+        "rmeta": "f1ee8ccb541459370e94451a8b2b1ce84b992db978c9da8efc0aa4f78a9e8640"
+      },
+      "hashes_beta": {
+        "obj": "4ba030a4f6140e55c55888369b9790c9aa28f6fc1821e791dd62ee306058f09f",
+        "rlib": "9889ddf0c4630ea569288d37bed984d99ccb15a0953804b0edc5da10db196e06",
+        "rmeta": "f1ee8ccb541459370e94451a8b2b1ce84b992db978c9da8efc0aa4f78a9e8640"
+      },
+      "leaks_alpha": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "leaks_beta": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "remap_cwd_prefix": true,
+      "remap_path_prefix": false,
+      "remap_path_scope": "all (default)",
+      "source_arg_kind": "absolute"
+    },
+    "dbg0_remap_cwd_only_relsrc": {
+      "bit_exact": {
+        "obj": true,
+        "rlib": true,
+        "rmeta": true
+      },
+      "bytes_alpha": {
+        "obj": 9280,
+        "rlib": 18024,
+        "rmeta": 6569
+      },
+      "bytes_beta": {
+        "obj": 9280,
+        "rlib": 18024,
+        "rmeta": 6569
+      },
+      "debuginfo": 0,
+      "hashes_alpha": {
+        "obj": "56a50986a4474a680215606ae71c0f8cc85aa617c3ce82f59a82585a1daeb747",
+        "rlib": "29946e76cd1b5d0459ee5a109d06253c595ef69c6ce94cb5385fb2a0708f77d0",
+        "rmeta": "603c1514a6b4cf6f452d8a428833ab481d03e52f8f795390582492c5383cfc36"
+      },
+      "hashes_beta": {
+        "obj": "56a50986a4474a680215606ae71c0f8cc85aa617c3ce82f59a82585a1daeb747",
+        "rlib": "29946e76cd1b5d0459ee5a109d06253c595ef69c6ce94cb5385fb2a0708f77d0",
+        "rmeta": "603c1514a6b4cf6f452d8a428833ab481d03e52f8f795390582492c5383cfc36"
+      },
+      "leaks_alpha": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "leaks_beta": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "remap_cwd_prefix": true,
+      "remap_path_prefix": false,
+      "remap_path_scope": "all (default)",
+      "source_arg_kind": "relative"
+    },
+    "dbg0_remap_path": {
+      "bit_exact": {
+        "obj": true,
+        "rlib": true,
+        "rmeta": true
+      },
+      "bytes_alpha": {
+        "obj": 9304,
+        "rlib": 18048,
+        "rmeta": 6576
+      },
+      "bytes_beta": {
+        "obj": 9304,
+        "rlib": 18048,
+        "rmeta": 6576
+      },
+      "debuginfo": 0,
+      "hashes_alpha": {
+        "obj": "4ba030a4f6140e55c55888369b9790c9aa28f6fc1821e791dd62ee306058f09f",
+        "rlib": "62a655b60fdb458e5c6136722acfeb7d701bce98583e600346b29bad7866b014",
+        "rmeta": "4ad70d132b4603dc462926fd8361fa120d997fdac3615c97ce5af2ccef0a8ed4"
+      },
+      "hashes_beta": {
+        "obj": "4ba030a4f6140e55c55888369b9790c9aa28f6fc1821e791dd62ee306058f09f",
+        "rlib": "62a655b60fdb458e5c6136722acfeb7d701bce98583e600346b29bad7866b014",
+        "rmeta": "4ad70d132b4603dc462926fd8361fa120d997fdac3615c97ce5af2ccef0a8ed4"
+      },
+      "leaks_alpha": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "leaks_beta": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "remap_cwd_prefix": false,
+      "remap_path_prefix": true,
+      "remap_path_scope": "all (default)",
+      "source_arg_kind": "absolute"
+    },
+    "dbg0_remap_path_and_cwd": {
+      "bit_exact": {
+        "obj": true,
+        "rlib": true,
+        "rmeta": true
+      },
+      "bytes_alpha": {
+        "obj": 9304,
+        "rlib": 18048,
+        "rmeta": 6576
+      },
+      "bytes_beta": {
+        "obj": 9304,
+        "rlib": 18048,
+        "rmeta": 6576
+      },
+      "debuginfo": 0,
+      "hashes_alpha": {
+        "obj": "4ba030a4f6140e55c55888369b9790c9aa28f6fc1821e791dd62ee306058f09f",
+        "rlib": "9889ddf0c4630ea569288d37bed984d99ccb15a0953804b0edc5da10db196e06",
+        "rmeta": "f1ee8ccb541459370e94451a8b2b1ce84b992db978c9da8efc0aa4f78a9e8640"
+      },
+      "hashes_beta": {
+        "obj": "4ba030a4f6140e55c55888369b9790c9aa28f6fc1821e791dd62ee306058f09f",
+        "rlib": "9889ddf0c4630ea569288d37bed984d99ccb15a0953804b0edc5da10db196e06",
+        "rmeta": "f1ee8ccb541459370e94451a8b2b1ce84b992db978c9da8efc0aa4f78a9e8640"
+      },
+      "leaks_alpha": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "leaks_beta": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "remap_cwd_prefix": true,
+      "remap_path_prefix": true,
+      "remap_path_scope": "all (default)",
+      "source_arg_kind": "absolute"
+    },
+    "dbg2_no_remap": {
+      "bit_exact": {
+        "obj": false,
+        "rlib": false,
+        "rmeta": false
+      },
+      "bytes_alpha": {
+        "obj": 32200,
+        "rlib": 41584,
+        "rmeta": 7210
+      },
+      "bytes_beta": {
+        "obj": 32176,
+        "rlib": 41552,
+        "rmeta": 7207
+      },
+      "debuginfo": 2,
+      "hashes_alpha": {
+        "obj": "0bd75e585df38d3905390461608466ed696df7bb9b6486de7636e07d632d951a",
+        "rlib": "ccf65716b1e2db490b423b58a4620db4d753c87e5e3bd25ef75dc249abcfaf75",
+        "rmeta": "d4418b56ec5ffa0426a5df19d16ee8fc8b1346532637524424a8c0c13c855b01"
+      },
+      "hashes_beta": {
+        "obj": "f7e18daf16e257c33d8445868206fcff074beb3d3e9c417f6eb02025376016da",
+        "rlib": "538b62c56ac37a9412ab22353cb4e871914a23861850d98a65d7d4b7ac164dce",
+        "rmeta": "da960bb0619dc11a622623e8199625cfb8ef7d6cc013bb13d33dd7f896565abc"
+      },
+      "leaks_alpha": {
+        "obj": 5,
+        "rlib": 8,
+        "rmeta": 3
+      },
+      "leaks_beta": {
+        "obj": 5,
+        "rlib": 8,
+        "rmeta": 3
+      },
+      "obj_leak_breakdown_alpha": {
+        "by_elf_section": {
+          ".debug_str": 2,
+          ".llvmbc": 2,
+          ".rodata.str1.1": 1
+        },
+        "dwarf_info_attrs": {
+          "DW_AT_comp_dir": 1,
+          "DW_AT_name": 1
+        }
+      },
+      "remap_cwd_prefix": false,
+      "remap_path_prefix": false,
+      "remap_path_scope": "all (default)",
+      "source_arg_kind": "absolute"
+    },
+    "dbg2_remap_path_and_cwd": {
+      "bit_exact": {
+        "obj": true,
+        "rlib": true,
+        "rmeta": true
+      },
+      "bytes_alpha": {
+        "obj": 31984,
+        "rlib": 41264,
+        "rmeta": 7105
+      },
+      "bytes_beta": {
+        "obj": 31984,
+        "rlib": 41264,
+        "rmeta": 7105
+      },
+      "debuginfo": 2,
+      "hashes_alpha": {
+        "obj": "b0e8c4a53fe033f76acc996cc9b37a6d4e05b20b518a311c4b8f23db9f4e1b52",
+        "rlib": "e342b254d4fd7b737a8e946019e7d462ede559ac2368cef4e04e91549a84d72e",
+        "rmeta": "813c733948d8afc102d97b98ee527325ddc817e7724572fcd590f56072c60093"
+      },
+      "hashes_beta": {
+        "obj": "b0e8c4a53fe033f76acc996cc9b37a6d4e05b20b518a311c4b8f23db9f4e1b52",
+        "rlib": "e342b254d4fd7b737a8e946019e7d462ede559ac2368cef4e04e91549a84d72e",
+        "rmeta": "813c733948d8afc102d97b98ee527325ddc817e7724572fcd590f56072c60093"
+      },
+      "leaks_alpha": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "leaks_beta": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "remap_cwd_prefix": true,
+      "remap_path_prefix": true,
+      "remap_path_scope": "all (default)",
+      "source_arg_kind": "absolute"
+    },
+    "dbg2_remap_path_only": {
+      "bit_exact": {
+        "obj": true,
+        "rlib": true,
+        "rmeta": true
+      },
+      "bytes_alpha": {
+        "obj": 31984,
+        "rlib": 41264,
+        "rmeta": 7105
+      },
+      "bytes_beta": {
+        "obj": 31984,
+        "rlib": 41264,
+        "rmeta": 7105
+      },
+      "debuginfo": 2,
+      "hashes_alpha": {
+        "obj": "b0e8c4a53fe033f76acc996cc9b37a6d4e05b20b518a311c4b8f23db9f4e1b52",
+        "rlib": "5bf72eaafda4f318ab440f31aab3f5e13bb6f219fed81c996d71dc4678b92227",
+        "rmeta": "b51b843bacc13fda1b57eecb5d6f3c974f3fcb260be3ab0210da94093e78d600"
+      },
+      "hashes_beta": {
+        "obj": "b0e8c4a53fe033f76acc996cc9b37a6d4e05b20b518a311c4b8f23db9f4e1b52",
+        "rlib": "5bf72eaafda4f318ab440f31aab3f5e13bb6f219fed81c996d71dc4678b92227",
+        "rmeta": "b51b843bacc13fda1b57eecb5d6f3c974f3fcb260be3ab0210da94093e78d600"
+      },
+      "leaks_alpha": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "leaks_beta": {
+        "obj": 0,
+        "rlib": 0,
+        "rmeta": 0
+      },
+      "remap_cwd_prefix": false,
+      "remap_path_prefix": true,
+      "remap_path_scope": "all (default)",
+      "source_arg_kind": "absolute"
+    },
+    "dbg2_remap_scope_object": {
+      "bit_exact": {
+        "obj": true,
+        "rlib": false,
+        "rmeta": false
+      },
+      "bytes_alpha": {
+        "obj": 31984,
+        "rlib": 41400,
+        "rmeta": 7248
+      },
+      "bytes_beta": {
+        "obj": 31984,
+        "rlib": 41400,
+        "rmeta": 7245
+      },
+      "debuginfo": 2,
+      "hashes_alpha": {
+        "obj": "b0e8c4a53fe033f76acc996cc9b37a6d4e05b20b518a311c4b8f23db9f4e1b52",
+        "rlib": "0011207ea8e546221c0f06ca91d322ffe3fe12383279d78ccf09613808ba2057",
+        "rmeta": "788c5044d03c6c84be23bbe079f6affdb573f363373156aa1a2bd30b567bd082"
+      },
+      "hashes_beta": {
+        "obj": "b0e8c4a53fe033f76acc996cc9b37a6d4e05b20b518a311c4b8f23db9f4e1b52",
+        "rlib": "081f1b41db6c639f9eea30912544782f3476a577b91d17f97add84763faec39d",
+        "rmeta": "8054b0e7a6e6c6ca2f04771365cfdf676eb89967a79c5c0b09d420c255134f06"
+      },
+      "leaks_alpha": {
+        "obj": 0,
+        "rlib": 3,
+        "rmeta": 3
+      },
+      "leaks_beta": {
+        "obj": 0,
+        "rlib": 3,
+        "rmeta": 3
+      },
+      "remap_cwd_prefix": false,
+      "remap_path_prefix": true,
+      "remap_path_scope": "object",
+      "source_arg_kind": "absolute"
+    }
+  },
+  "probe_2_cgu_and_threads_repeatability": {
+    "cgu16_t1": {
+      "all_ar_headers_deterministic_zero_epoch": true,
+      "all_bit_exact": true,
+      "ar_member_headers": [
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "lib.rmeta",
+          "size": 7136,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "lib.rmeta-link",
+          "size": 888,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.0.rcgu.o",
+          "size": 5520,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.1.rcgu.o",
+          "size": 4400,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.2.rcgu.o",
+          "size": 4384,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.3.rcgu.o",
+          "size": 4104,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.4.rcgu.o",
+          "size": 4112,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.5.rcgu.o",
+          "size": 5072,
+          "uid": 0
+        }
+      ],
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.0.rcgu.o",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.1.rcgu.o",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.2.rcgu.o",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.3.rcgu.o",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.4.rcgu.o",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.5.rcgu.o"
+      ],
+      "cgu_member_count": 6,
+      "codegen_units": 16,
+      "rlib_bytes": 37138,
+      "rlib_sha256": "dfa6149d41a6ae698a836d6e6aed865fa8e6e985fcf82a2ea5ff41d65b5e1f8e",
+      "rmeta_sha256": "4ad70d132b4603dc462926fd8361fa120d997fdac3615c97ce5af2ccef0a8ed4",
+      "runs": 4,
+      "threads": 1,
+      "unique_obj_bundle_hashes": 1,
+      "unique_rlib_hashes": 1,
+      "unique_rmeta_hashes": 1
+    },
+    "cgu16_t1_eq_cgu16_t4_rlib": true,
+    "cgu16_t1_eq_cgu16_t4_rmeta": true,
+    "cgu16_t4": {
+      "all_ar_headers_deterministic_zero_epoch": true,
+      "all_bit_exact": true,
+      "ar_member_headers": [
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "lib.rmeta",
+          "size": 7136,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "lib.rmeta-link",
+          "size": 888,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.0.rcgu.o",
+          "size": 5520,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.1.rcgu.o",
+          "size": 4400,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.2.rcgu.o",
+          "size": 4384,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.3.rcgu.o",
+          "size": 4104,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.4.rcgu.o",
+          "size": 4112,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.5.rcgu.o",
+          "size": 5072,
+          "uid": 0
+        }
+      ],
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.0.rcgu.o",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.1.rcgu.o",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.2.rcgu.o",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.3.rcgu.o",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.4.rcgu.o",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.5.rcgu.o"
+      ],
+      "cgu_member_count": 6,
+      "codegen_units": 16,
+      "rlib_bytes": 37138,
+      "rlib_sha256": "dfa6149d41a6ae698a836d6e6aed865fa8e6e985fcf82a2ea5ff41d65b5e1f8e",
+      "rmeta_sha256": "4ad70d132b4603dc462926fd8361fa120d997fdac3615c97ce5af2ccef0a8ed4",
+      "runs": 4,
+      "threads": 4,
+      "unique_obj_bundle_hashes": 1,
+      "unique_rlib_hashes": 1,
+      "unique_rmeta_hashes": 1
+    },
+    "cgu1_t1": {
+      "all_ar_headers_deterministic_zero_epoch": true,
+      "all_bit_exact": true,
+      "ar_member_headers": [
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "lib.rmeta",
+          "size": 7136,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "lib.rmeta-link",
+          "size": 640,
+          "uid": 0
+        },
+        {
+          "gid": 0,
+          "mode_octal": "644",
+          "mtime": 0,
+          "name": "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.0.rcgu.o",
+          "size": 9304,
+          "uid": 0
+        }
+      ],
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.0.rcgu.o"
+      ],
+      "cgu_member_count": 1,
+      "codegen_units": 1,
+      "rlib_bytes": 18048,
+      "rlib_sha256": "62a655b60fdb458e5c6136722acfeb7d701bce98583e600346b29bad7866b014",
+      "rmeta_sha256": "4ad70d132b4603dc462926fd8361fa120d997fdac3615c97ce5af2ccef0a8ed4",
+      "runs": 4,
+      "threads": 1,
+      "unique_obj_bundle_hashes": 1,
+      "unique_rlib_hashes": 1,
+      "unique_rmeta_hashes": 1
+    }
+  },
+  "probe_3_clean_vs_incremental": {
+    "clean": {
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.0.rcgu.o"
+      ],
+      "invocation_temp_suffixes": [
+        null
+      ],
+      "rcgu_member_payload_sha256s": [
+        "4ba030a4f6140e55c55888369b9790c9aa28f6fc1821e791dd62ee306058f09f"
+      ],
+      "rcgu_member_sizes": [
+        9304
+      ],
+      "rlib_bytes": 18048,
+      "rlib_sha256": "62a655b60fdb458e5c6136722acfeb7d701bce98583e600346b29bad7866b014",
+      "rmeta_bytes": 6576,
+      "rmeta_link_member_payload_sha256": "7f368d0c20f6e16bd496699e6c0f3bd1d396f1eead9d095f2e5542b3030d4a1f",
+      "rmeta_member_payload_sha256": "a334fe19a7882ad6aa4cbe3c9035f480c77f26db9d4f5a970668b7e6e71fec58",
+      "rmeta_sha256": "4ad70d132b4603dc462926fd8361fa120d997fdac3615c97ce5af2ccef0a8ed4"
+    },
+    "clean_no_mir_inline": {
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.repro_lib.6f3d9c231c4892e8-cgu.0.rcgu.o"
+      ],
+      "invocation_temp_suffixes": [
+        null
+      ],
+      "rcgu_member_payload_sha256s": [
+        "814d521d8fe076327afc3c575d3d62ae93719501d6ef940053bb04a6347b0e23"
+      ],
+      "rcgu_member_sizes": [
+        10016
+      ],
+      "rlib_bytes": 18080,
+      "rlib_sha256": "9494914b6d07b9af438a201364e8b7d5d4398cbeec1648e28a8ab785da280d76",
+      "rmeta_bytes": 5800,
+      "rmeta_link_member_payload_sha256": "7f368d0c20f6e16bd496699e6c0f3bd1d396f1eead9d095f2e5542b3030d4a1f",
+      "rmeta_member_payload_sha256": "5e7f7508fee571aaaa60cd88dbf0fe8ccdffd709da9034d7d3a37bd11ba9ceb1",
+      "rmeta_sha256": "bbecf4904c2c0714dd5fb2ebfef40f7b2fee439bced3f072fc4b3179f00ec9a6"
+    },
+    "comparisons": {
+      "clean_eq_incr_cold_obj_payload": false,
+      "clean_eq_incr_cold_rlib": false,
+      "clean_eq_incr_cold_rmeta": false,
+      "clean_eq_incr_force_inline_rmeta": false,
+      "clean_noinline_eq_incr_cold_obj_payload": false,
+      "clean_noinline_eq_incr_cold_rmeta": false,
+      "incr_cgu16_cold_eq_warm_obj_payloads": true,
+      "incr_cgu16_cold_eq_warm_rlib": false,
+      "incr_cgu16_cold_eq_warm_rmeta": true,
+      "incr_cgu16_cold_vs_warm_byte_diff": {
+        "cgu_count": 7,
+        "diff_byte_count": 84,
+        "diff_bytes_by_region": {
+          "ar_gnu_strtab(//)": 42,
+          "member_payload:lib.rmeta-link": 42
+        },
+        "diff_offsets": [
+          868,
+          870,
+          871,
+          872,
+          873,
+          874,
+          920,
+          922,
+          923,
+          924,
+          925,
+          926,
+          972,
+          974,
+          975,
+          976,
+          977,
+          978,
+          1024,
+          1026,
+          1027,
+          1028,
+          1029,
+          1030,
+          1076,
+          1078,
+          1079,
+          1080,
+          1081,
+          1082,
+          1128,
+          1130,
+          1131,
+          1132,
+          1133,
+          1134,
+          1180,
+          1182,
+          1183,
+          1184
+        ],
+        "diff_offsets_truncated": true,
+        "expected_2x_hamming_matches_diff": true,
+        "same_length": true,
+        "suffix_a": [
+          "1teft3r",
+          "1teft3r",
+          "1teft3r",
+          "1teft3r",
+          "1teft3r",
+          "1teft3r",
+          "1teft3r"
+        ],
+        "suffix_b": [
+          "0th4x8y",
+          "0th4x8y",
+          "0th4x8y",
+          "0th4x8y",
+          "0th4x8y",
+          "0th4x8y",
+          "0th4x8y"
+        ],
+        "suffix_hamming_sum": 42,
+        "total_bytes": 40784,
+        "unique_suffixes_a": [
+          "1teft3r"
+        ],
+        "unique_suffixes_b": [
+          "0th4x8y"
+        ]
+      },
+      "incr_cold_eq_incr_warm1_obj_payload": true,
+      "incr_cold_eq_incr_warm1_rlib": false,
+      "incr_cold_eq_incr_warm1_rmeta": true,
+      "incr_cold_vs_warm1_byte_diff": {
+        "cgu_count": 1,
+        "diff_byte_count": 12,
+        "diff_bytes_by_region": {
+          "ar_gnu_strtab(//)": 6,
+          "member_payload:lib.rmeta-link": 6
+        },
+        "diff_offsets": [
+          869,
+          870,
+          871,
+          872,
+          873,
+          874,
+          7427,
+          7428,
+          7429,
+          7430,
+          7431,
+          7432
+        ],
+        "diff_offsets_truncated": false,
+        "expected_2x_hamming_matches_diff": true,
+        "same_length": true,
+        "suffix_a": [
+          "09w14lc"
+        ],
+        "suffix_b": [
+          "0sbhbf5"
+        ],
+        "suffix_hamming_sum": 6,
+        "total_bytes": 17984,
+        "unique_suffixes_a": [
+          "09w14lc"
+        ],
+        "unique_suffixes_b": [
+          "0sbhbf5"
+        ]
+      },
+      "incr_cold_vs_warm2_byte_diff": {
+        "cgu_count": 1,
+        "diff_byte_count": 14,
+        "diff_bytes_by_region": {
+          "ar_gnu_strtab(//)": 7,
+          "member_payload:lib.rmeta-link": 7
+        },
+        "diff_offsets": [
+          868,
+          869,
+          870,
+          871,
+          872,
+          873,
+          874,
+          7426,
+          7427,
+          7428,
+          7429,
+          7430,
+          7431,
+          7432
+        ],
+        "diff_offsets_truncated": false,
+        "expected_2x_hamming_matches_diff": true,
+        "same_length": true,
+        "suffix_a": [
+          "09w14lc"
+        ],
+        "suffix_b": [
+          "1s0llzm"
+        ],
+        "suffix_hamming_sum": 7,
+        "total_bytes": 17984,
+        "unique_suffixes_a": [
+          "09w14lc"
+        ],
+        "unique_suffixes_b": [
+          "1s0llzm"
+        ]
+      },
+      "incr_warm1_eq_incr_warm2_obj_payload": true,
+      "incr_warm1_vs_warm2_byte_diff": {
+        "cgu_count": 1,
+        "diff_byte_count": 12,
+        "diff_bytes_by_region": {
+          "ar_gnu_strtab(//)": 6,
+          "member_payload:lib.rmeta-link": 6
+        },
+        "diff_offsets": [
+          868,
+          870,
+          871,
+          872,
+          873,
+          874,
+          7426,
+          7428,
+          7429,
+          7430,
+          7431,
+          7432
+        ],
+        "diff_offsets_truncated": false,
+        "expected_2x_hamming_matches_diff": true,
+        "same_length": true,
+        "suffix_a": [
+          "0sbhbf5"
+        ],
+        "suffix_b": [
+          "1s0llzm"
+        ],
+        "suffix_hamming_sum": 6,
+        "total_bytes": 17984,
+        "unique_suffixes_a": [
+          "0sbhbf5"
+        ],
+        "unique_suffixes_b": [
+          "1s0llzm"
+        ]
+      }
+    },
+    "incr_cgu16_cold": {
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.1gy5zfrfh1yd7w0rjlacofmic.1teft3r.rcgu.o",
+        "repro_lib.2zoygqhu4z60got4wcqd6vrb5.1teft3r.rcgu.o",
+        "repro_lib.5sk28kd7rhelvvvw52fx8bn8i.1teft3r.rcgu.o",
+        "repro_lib.834ev4vyaw2t3jw4alzjb89m6.1teft3r.rcgu.o",
+        "repro_lib.9kze3eutfynhzu65z8qewwdzk.1teft3r.rcgu.o",
+        "repro_lib.dd77wxnws3phshvc7y2noqiok.1teft3r.rcgu.o",
+        "repro_lib.emwz6fa8s7cmxttlo0ftr2c5u.1teft3r.rcgu.o"
+      ],
+      "invocation_temp_suffixes": [
+        "1teft3r",
+        "1teft3r",
+        "1teft3r",
+        "1teft3r",
+        "1teft3r",
+        "1teft3r",
+        "1teft3r"
+      ],
+      "rcgu_member_payload_sha256s": [
+        "6444af7cb9e9808d810e7d35d890ca74257590476cd3de901818de25292ff909",
+        "3265174d5835c6345e159128e386c4c9a7ea6018e7baf19c70894078f93660ba",
+        "1b4711f81b7c2cf9b2e6029708dd59f630ff87c23aaede74d58aaa46c6fe1749",
+        "28ccc4511335d0cc4777ba213f65e067f041b8fe61166e7b48c3b87a054876f2",
+        "cdfff7fb8b747df7d1911f56894e6fa7505171d48f641731a6370ea666c11dc4",
+        "ac1a4c541d5514316ca1ca4285d976ac3a09ad4c77352eb0b4e2bbc83e837be3",
+        "74f43625011b817503d55a27b4cdaf5bef4926ce04a034eabd407fc1270f03bf"
+      ],
+      "rcgu_member_sizes": [
+        4080,
+        4376,
+        4360,
+        5224,
+        4088,
+        5952,
+        3728
+      ],
+      "rlib_bytes": 40784,
+      "rlib_sha256": "42e3084c7baaf0827580f7005714587d8c480320bd0301c95f8c3a3982357757",
+      "rmeta_bytes": 5721,
+      "rmeta_link_member_payload_sha256": "e449aef231acde14d45a5c199acc09c3c25d30bd1efdf747d04c716547226c65",
+      "rmeta_member_payload_sha256": "448060a57f8e8430ee0811ea120f0d7d19a6bbdcf9ec01490aedea1e3906f446",
+      "rmeta_sha256": "f1f509073e20280ef95f751e222e59358efb4bcaa670ad5bf0be846d74ef0196"
+    },
+    "incr_cgu16_warm": {
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.1gy5zfrfh1yd7w0rjlacofmic.0th4x8y.rcgu.o",
+        "repro_lib.2zoygqhu4z60got4wcqd6vrb5.0th4x8y.rcgu.o",
+        "repro_lib.5sk28kd7rhelvvvw52fx8bn8i.0th4x8y.rcgu.o",
+        "repro_lib.834ev4vyaw2t3jw4alzjb89m6.0th4x8y.rcgu.o",
+        "repro_lib.9kze3eutfynhzu65z8qewwdzk.0th4x8y.rcgu.o",
+        "repro_lib.dd77wxnws3phshvc7y2noqiok.0th4x8y.rcgu.o",
+        "repro_lib.emwz6fa8s7cmxttlo0ftr2c5u.0th4x8y.rcgu.o"
+      ],
+      "invocation_temp_suffixes": [
+        "0th4x8y",
+        "0th4x8y",
+        "0th4x8y",
+        "0th4x8y",
+        "0th4x8y",
+        "0th4x8y",
+        "0th4x8y"
+      ],
+      "rcgu_member_payload_sha256s": [
+        "6444af7cb9e9808d810e7d35d890ca74257590476cd3de901818de25292ff909",
+        "3265174d5835c6345e159128e386c4c9a7ea6018e7baf19c70894078f93660ba",
+        "1b4711f81b7c2cf9b2e6029708dd59f630ff87c23aaede74d58aaa46c6fe1749",
+        "28ccc4511335d0cc4777ba213f65e067f041b8fe61166e7b48c3b87a054876f2",
+        "cdfff7fb8b747df7d1911f56894e6fa7505171d48f641731a6370ea666c11dc4",
+        "ac1a4c541d5514316ca1ca4285d976ac3a09ad4c77352eb0b4e2bbc83e837be3",
+        "74f43625011b817503d55a27b4cdaf5bef4926ce04a034eabd407fc1270f03bf"
+      ],
+      "rcgu_member_sizes": [
+        4080,
+        4376,
+        4360,
+        5224,
+        4088,
+        5952,
+        3728
+      ],
+      "rlib_bytes": 40784,
+      "rlib_sha256": "7aad93994897dd97ed7fe6ee07d93d39e5515f3d44176e5a387e64938afc4c50",
+      "rmeta_bytes": 5721,
+      "rmeta_link_member_payload_sha256": "b129ccea1c1c49986d8a7959184a3e15da8dea0d6b92abb33afa42895a987243",
+      "rmeta_member_payload_sha256": "448060a57f8e8430ee0811ea120f0d7d19a6bbdcf9ec01490aedea1e3906f446",
+      "rmeta_sha256": "f1f509073e20280ef95f751e222e59358efb4bcaa670ad5bf0be846d74ef0196"
+    },
+    "incr_cold": {
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.2ortto8p3uieo0vcykf62cozd.09w14lc.rcgu.o"
+      ],
+      "invocation_temp_suffixes": [
+        "09w14lc"
+      ],
+      "rcgu_member_payload_sha256s": [
+        "d99ff43ae822a39be48d1ca0bcc149b7b81be29fa4121c6e0cc4ba32fec39dbf"
+      ],
+      "rcgu_member_sizes": [
+        9992
+      ],
+      "rlib_bytes": 17984,
+      "rlib_sha256": "04bbc9054db4ba33565f38e9d1a7ea37ff7fa22fbbb0f7a518637a3f6868086e",
+      "rmeta_bytes": 5721,
+      "rmeta_link_member_payload_sha256": "cfa2d4de191ad316c2ded7cdd6c586d83a3e01af7df8905a4918bc964da67d49",
+      "rmeta_member_payload_sha256": "448060a57f8e8430ee0811ea120f0d7d19a6bbdcf9ec01490aedea1e3906f446",
+      "rmeta_sha256": "f1f509073e20280ef95f751e222e59358efb4bcaa670ad5bf0be846d74ef0196"
+    },
+    "incr_force_mir_inline": {
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.2ortto8p3uieo0vcykf62cozd.0htgpx4.rcgu.o"
+      ],
+      "invocation_temp_suffixes": [
+        "0htgpx4"
+      ],
+      "rcgu_member_payload_sha256s": [
+        "de2b83ad81f744e812ce650d0a2562ab05a47b29eee48f3b73f815ff0b4762cf"
+      ],
+      "rcgu_member_sizes": [
+        9816
+      ],
+      "rlib_bytes": 17800,
+      "rlib_sha256": "0da5a461f6ce9f9b6447b6ad772eedcba45dbcd1728bcb8bac015f3f2cec77c9",
+      "rmeta_bytes": 5717,
+      "rmeta_link_member_payload_sha256": "6c8ac2436e1234d144d35211ad72f314b8bb3e65b64dbac2a1d77ddab2317d52",
+      "rmeta_member_payload_sha256": "9bceb6e77c62f18c4995d6ae938e6b742e04b47b0d3455b5c87f299ff5db047d",
+      "rmeta_sha256": "539742717897986aff9f955dfa46b8b3fb1d252fff2c9c6726927cbcafc4ec43"
+    },
+    "incr_warm1": {
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.2ortto8p3uieo0vcykf62cozd.0sbhbf5.rcgu.o"
+      ],
+      "invocation_temp_suffixes": [
+        "0sbhbf5"
+      ],
+      "rcgu_member_payload_sha256s": [
+        "d99ff43ae822a39be48d1ca0bcc149b7b81be29fa4121c6e0cc4ba32fec39dbf"
+      ],
+      "rcgu_member_sizes": [
+        9992
+      ],
+      "rlib_bytes": 17984,
+      "rlib_sha256": "6b0519e7c02419e6c75f55d772b0fc6b5b1e376fa554aeba4d4c7f8b2c273d46",
+      "rmeta_bytes": 5721,
+      "rmeta_link_member_payload_sha256": "27a1fbd75fb4d8ac2868f9fcacb28127b837feda9678b439161d890ea0cc08a6",
+      "rmeta_member_payload_sha256": "448060a57f8e8430ee0811ea120f0d7d19a6bbdcf9ec01490aedea1e3906f446",
+      "rmeta_sha256": "f1f509073e20280ef95f751e222e59358efb4bcaa670ad5bf0be846d74ef0196"
+    },
+    "incr_warm2": {
+      "ar_members": [
+        "lib.rmeta",
+        "lib.rmeta-link",
+        "repro_lib.2ortto8p3uieo0vcykf62cozd.1s0llzm.rcgu.o"
+      ],
+      "invocation_temp_suffixes": [
+        "1s0llzm"
+      ],
+      "rcgu_member_payload_sha256s": [
+        "d99ff43ae822a39be48d1ca0bcc149b7b81be29fa4121c6e0cc4ba32fec39dbf"
+      ],
+      "rcgu_member_sizes": [
+        9992
+      ],
+      "rlib_bytes": 17984,
+      "rlib_sha256": "34a3e4417a81f12e59970c405fdc3cbc84861bc0aca2786e533234a61d9cc1e1",
+      "rmeta_bytes": 5721,
+      "rmeta_link_member_payload_sha256": "45d55d1960e6b2f7a9319117ce3c6ed6bb394ef4fc4dab423eb2baf0ca9b551b",
+      "rmeta_member_payload_sha256": "448060a57f8e8430ee0811ea120f0d7d19a6bbdcf9ec01490aedea1e3906f446",
+      "rmeta_sha256": "f1f509073e20280ef95f751e222e59358efb4bcaa670ad5bf0be846d74ef0196"
+    }
+  },
+  "probe_4_linked_elf_repro": {
+    "alpha": {
+      "elf_bytes": 4381272,
+      "elf_sha256": "193908541773321d8ebc9fdd7cae9b87329fdcfc12285c426e7f49ef39e589df",
+      "leaks": 0,
+      "rlib_sha256": "e0083a492944aebb0ecc1f08d9261ef8a3e2a3c936d02ef3e66a6519f25a217d",
+      "run_stdout": "10 30 /repro/main.rs 1729382261405277070"
+    },
+    "beta": {
+      "elf_bytes": 4381272,
+      "elf_sha256": "193908541773321d8ebc9fdd7cae9b87329fdcfc12285c426e7f49ef39e589df",
+      "leaks": 0,
+      "rlib_sha256": "e0083a492944aebb0ecc1f08d9261ef8a3e2a3c936d02ef3e66a6519f25a217d",
+      "run_stdout": "10 30 /repro/main.rs 1729382261405277070"
+    },
+    "elf_bit_exact": true,
+    "rlib_bit_exact": true,
+    "stdout_equal": true
+  },
+  "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+}
