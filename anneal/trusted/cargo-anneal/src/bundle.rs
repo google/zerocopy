@@ -29,10 +29,11 @@ use crate::toolchain::{LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, is_sha256_hex,
 /// `theory/Anneal/BitVec.lean`, `theory/Anneal/BitVecArith.lean`,
 /// `theory/Anneal/LeBytes.lean`, `theory/Anneal/ListChunks.lean`,
 /// `theory/Anneal/MirWp.lean` (with its `Anneal.MirWp.*` submodules),
-/// `theory/Anneal/LoopInv.lean`, and `theory/Anneal/SpineForce.lean`; target
-/// verification stages the full bundle for model-manifest identity, then
-/// compiles, audits, and records in per-source receipts only the transitive
-/// `Anneal.*` closure imported by non-bundled target modules.
+/// `theory/Anneal/LoopInv.lean`, `theory/Anneal/SpineForce.lean`, and
+/// `theory/Anneal/PTree.lean`; target verification stages the full bundle for
+/// model-manifest identity, then compiles, audits, and records in per-source
+/// receipts only the transitive `Anneal.*` closure imported by non-bundled
+/// target modules.
 pub const BUNDLE_SOURCES: &[&str] = &[
     "trusted/audit/TrustedBoundary.lean",
     "trusted/audit/library-lock.json",
@@ -70,6 +71,7 @@ pub const BUNDLE_SOURCES: &[&str] = &[
     "theory/Anneal/MirWp/Scalars.lean",
     "theory/Anneal/LoopInv.lean",
     "theory/Anneal/SpineForce.lean",
+    "theory/Anneal/PTree.lean",
 ];
 
 const UPSTREAM_PIN_PATH: &str = "vendor/lean-miri/UPSTREAM_PIN.json";

@@ -72,13 +72,14 @@ The example uses `execProg` to check a bounded execution of its captured body.
 `wellFormed_and_spec_of_wp` turns that check into safety, a postcondition, and
 termination in the model. Proof modules (not `specification` modules) may also
 import bundled 3-axiom `Anneal.*` proof libraries (`Anneal.MirWp`,
-`Anneal.LoopInv`, `Anneal.SpineForce`, `Anneal.BitVec`, `Anneal.BitVecArith`,
-`Anneal.NatBitwise`, `Anneal.LeBytes`, and `Anneal.ListChunks`), compiled and
-audited on demand when imported. When adapting the example, run the request with
-`--artifacts <new-directory>`. In `capture/capture.json`, inspect `selected`
-for the body index and `program` for the MIR. Choose fuel to cover the
-executed MIR steps through the return. Use `generated/Expected.lean` to inspect
-the goal. For functions with arguments, address all permitted inputs when the
+`Anneal.LoopInv`, `Anneal.SpineForce`, `Anneal.PTree`, `Anneal.BitVec`,
+`Anneal.BitVecArith`, `Anneal.NatBitwise`, `Anneal.LeBytes`, and
+`Anneal.ListChunks`), compiled and audited on demand when imported. When
+adapting the example, run the request with `--artifacts <new-directory>`. In
+`capture/capture.json`, inspect `selected` for the body index and `program` for
+the MIR. Choose fuel to cover the executed MIR steps through the return. Use
+`generated/Expected.lean` to inspect the goal. For functions with arguments,
+address all permitted inputs when the
 claim requires it.
 
 ## Diagnose limitations and report results

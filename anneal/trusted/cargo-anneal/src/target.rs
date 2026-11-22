@@ -2707,6 +2707,7 @@ mod tests {
         assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
         assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
         assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
+        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -2719,6 +2720,7 @@ mod tests {
         assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitVecArith.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-loopinv");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
@@ -2728,6 +2730,7 @@ mod tests {
         assert!(!export_dir.join("Anneal/BitVec.olean").exists());
         assert!(!export_dir.join("Anneal/BitVecArith.olean").exists());
         assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
+        assert!(!export_dir.join("Anneal/PTree.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 
@@ -2821,6 +2824,7 @@ mod tests {
             .map(|s| s["module"].as_str().unwrap())
             .collect();
         assert!(sources.contains("Anneal.SpineForce"), "{sources:?}");
+        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
         assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
         assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
         assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
@@ -2834,6 +2838,7 @@ mod tests {
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
         assert!(checker.stage.join("target-lib/Anneal/SpineForce.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
@@ -2841,6 +2846,170 @@ mod tests {
         let export_dir = base.join("export-with-spineforce");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/SpineForce.olean").is_file());
+        assert!(!export_dir.join("Anneal/PTree.olean").exists());
+        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
+        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
+        assert!(!export_dir.join("Anneal/BitVec.olean").exists());
+        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+    }
+
+    #[test]
+    fn live_demand_driven_ptree_three_axiom_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-ptree"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.NotationExtra\nimport Init.Data.Nat.Basic\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 10\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.specs (base : Nat) : Prop :=\n  \
+                     (∀ (k1 k2 : Nat), k1 ≠ k2 →\n    \
+                       ∃ (read1 read2 : Nat → Option Nat),\n      \
+                         (∀ q, read1 q = read2 q) ∧\n      \
+                         read1 k1 = some base ∧\n      \
+                         read1 k2 = some (base + 20) ∧\n      \
+                         (∀ q, q ≠ k1 → q ≠ k2 → read1 q = none)) ∧\n  \
+                     (∃ (r1 r2 u : Nat → Option Nat),\n    \
+                       (∀ k, r1 k = none ∨ r2 k = none) ∧\n    \
+                       (∀ k, (match r1 k with | some x => some x | none => r2 k) = u k) ∧\n    \
+                       u 1 = some base ∧ u 2 = some (base + 20) ∧\n    \
+                       r1 1 = some base ∧ r2 2 = some (base + 20))\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.PTree\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                     constructor\n  \
+                     · intro k1 k2 hNe\n    \
+                       let p1 := Anneal.PTree.natToPos k1\n    \
+                       let p2 := Anneal.PTree.natToPos k2\n    \
+                       have hp : p1 ≠ p2 := fun h => hNe (Anneal.PTree.natToPos_inj h)\n    \
+                       let t1 := (Anneal.PTree.PTree.empty.set p1 Captured.program).set p2 \
+                         (Captured.program + 20)\n    \
+                       let t2 := (Anneal.PTree.PTree.empty.set p2 (Captured.program + 20)).set p1 \
+                         Captured.program\n    \
+                       have hComm : t1 = t2 := Anneal.PTree.ptree_set_set_comm \
+                         Anneal.PTree.PTree.empty Captured.program (Captured.program + 20) hp\n    \
+                       refine ⟨fun q => t1.get (Anneal.PTree.natToPos q), \
+                         fun q => t2.get (Anneal.PTree.natToPos q), ?_, ?_, ?_, ?_⟩\n    \
+                       · intro q\n      \
+                         exact congrArg (fun m => Anneal.PTree.PTree.get m (Anneal.PTree.natToPos q)) \
+                           hComm\n    \
+                       · dsimp only [t1]\n      \
+                         rw [Anneal.PTree.ptree_get_set_other _ _ _ _ hp.symm, \
+                           Anneal.PTree.ptree_get_set_same]\n    \
+                       · exact Anneal.PTree.ptree_get_set_same _ _ _\n    \
+                       · intro q hq1 hq2\n      \
+                         have hqp1 : p1 ≠ Anneal.PTree.natToPos q :=\n        \
+                           fun h => hq1 (Anneal.PTree.natToPos_inj h).symm\n      \
+                         have hqp2 : p2 ≠ Anneal.PTree.natToPos q :=\n        \
+                           fun h => hq2 (Anneal.PTree.natToPos_inj h).symm\n      \
+                         dsimp only [t1]\n      \
+                         rw [Anneal.PTree.ptree_get_set_other _ _ _ _ hqp2, \
+                           Anneal.PTree.ptree_get_set_other _ _ _ _ hqp1]\n      \
+                         exact Anneal.PTree.ptree_get_empty _\n  \
+                     · let goal := (Anneal.PTree.PTree.empty.set (Anneal.PTree.natToPos 1) \
+                         Captured.program).set (Anneal.PTree.natToPos 2) (Captured.program + 20)\n    \
+                       let req := Anneal.PTree.PTree.empty.set (Anneal.PTree.natToPos 1) \
+                         Captured.program\n    \
+                       let rem := Anneal.PTree.PTree.empty.set (Anneal.PTree.natToPos 2) \
+                         (Captured.program + 20)\n    \
+                       have hDiff : Anneal.PTree.PTree.diffWith Nat.beq goal req = some rem := rfl\n    \
+                       let ⟨hDisj, hUnion⟩ :=\n      \
+                         Anneal.PTree.ptree_diffWith_sound Nat.beq Nat.eq_of_beq_eq_true hDiff\n    \
+                       refine ⟨fun k => req.get (Anneal.PTree.natToPos k), \
+                         fun k => rem.get (Anneal.PTree.natToPos k), \
+                         fun k => goal.get (Anneal.PTree.natToPos k), ?_, ?_, rfl, rfl, rfl, rfl⟩\n    \
+                       · intro k\n      \
+                         exact hDisj (Anneal.PTree.natToPos k)\n    \
+                       · intro k\n      \
+                         dsimp only\n      \
+                         rw [← hUnion, Anneal.PTree.ptree_get_union]\n      \
+                         cases Anneal.PTree.PTree.get req (Anneal.PTree.natToPos k) <;> rfl\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req, false);
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(sources.contains("Anneal.PTree"), "{sources:?}");
+        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
+        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
+        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        assert!(checker.stage.join("target-lib/Anneal/PTree.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        let export_dir = base.join("export-with-ptree");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        assert!(export_dir.join("Anneal/PTree.olean").is_file());
+        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
         assert!(!export_dir.join("Anneal/MirWp.olean").exists());
         assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
         assert!(!export_dir.join("Anneal/BitVec.olean").exists());
