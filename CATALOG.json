@@ -3760,6 +3760,132 @@
         "verification/n-version-programming"
       ]
     },
+    "agent-handoff-compilation-problem-frames-and-conflict-attribution": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2308.00352v7",
+            "doi": "10.48550/arXiv.2308.00352",
+            "repository": "FoundationAgents/MetaGPT",
+            "revision": "11cdf466d042aece04fc6cfd13b28e1a70341b1f",
+            "year": "2024-2026"
+          },
+          "name": "MetaGPT Role-Specialized SOP ActionNode Pydantic Compiler (FoundationAgents/MetaGPT main; Hong et al., ICLR 2024)"
+        },
+        {
+          "identity": {
+            "repository": "FoundationAgents/MetaGPT",
+            "revision": "df9bc1858f7d396a7eef5d9718cab7587b63fd62",
+            "version": "v0.8.2",
+            "year": "2025"
+          },
+          "name": "MetaGPT Release v0.8.2 ActionNode Baseline Prior to Keyword-Only Context Refactor (FoundationAgents/MetaGPT v0.8.2)"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.07924v5",
+            "doi": "10.18653/v1/2024.acl-long.810",
+            "repository": "OpenBMB/ChatDev",
+            "revision": "bcab15717940818938402394a04aea2052d76665",
+            "version": "v1.1.6",
+            "year": "2024"
+          },
+          "name": "ChatDev Waterfall ChatChain Phase-Gate and Communicative Dehallucination Engine (OpenBMB/ChatDev v1.1.6; Qian et al., ACL 2024)"
+        },
+        {
+          "identity": {
+            "repository": "OpenBMB/ChatDev",
+            "revision": "3c72d860d2553f05129b7dff0fd4efdde5b01d2f",
+            "version": "v2.2.0",
+            "year": "2026"
+          },
+          "name": "ChatDev DevAll DAG GraphExecutor and Typed Edge Payload Processor (OpenBMB/ChatDev v2.2.0)"
+        },
+        {
+          "identity": {
+            "repository": "OpenBMB/ChatDev",
+            "revision": "464a681ba7bda869db97a50c5fa707c9a0fb57a0",
+            "year": "2026"
+          },
+          "name": "ChatDev DevAll DAG GraphExecutor and Typed Edge Payload Processor (OpenBMB/ChatDev main)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10601-015-9183-0",
+            "repository": "liffiton/MARCO",
+            "revision": "27e056bd5199ab995cf57473ea17c6a2762ff564",
+            "year": "2016-2026"
+          },
+          "name": "MARCO / MARCO+ Power-Set Lattice MUS/MCS Enumerator (liffiton/MARCO master; Liffiton, Previti, Malik, & Marques-Silva, Constraints 2016)"
+        },
+        {
+          "identity": {
+            "repository": "liffiton/MARCO",
+            "revision": "dd45d93ff9e746c29e6cf900fb021e301d8f74c4",
+            "version": "v3.3",
+            "year": "2016-2020"
+          },
+          "name": "MARCO / MARCO+ Release v3.3 Baseline Prior to Python-3 Syntax Modernization (liffiton/MARCO v3.3)"
+        },
+        {
+          "identity": {
+            "doi": "10.3233/SAT190116",
+            "repository": "pysathq/pysat",
+            "revision": "ff051b57496492822a52c510bbd082f840bd792f",
+            "version": "1.9.dev24",
+            "year": "2019-2026"
+          },
+          "name": "PySAT Toolkit: OLL Core-Guided RC2 / RC2Stratified WMaxSAT, MUSX, MCSls, Hitman, and OptUx (pysathq/pysat; Ignatiev, Morgado, & Marques-Silva, JSAT 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1147/sj.423.0428; 10.1007/978-3-642-19589-1_1; 10.1145/2002259.2002270; 10.1007/978-3-642-23059-2_29; 10.1016/j.is.2012.09.002",
+            "year": "2003-2013"
+          },
+          "name": "Business Artifacts and Guard-Stage-Milestone (GSM) Declarative PAC/PDG Operational Semantics (Nigam & Caswell 2003; Hull et al., WS-FM 2010/2011 & DEBS 2011; Damaggio, Hull, & Vaculin, BPM 2011 & Information Systems 2013)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.02442v3; 2502.20258v2",
+            "doi": "10.18653/v1/2024.emnlp-industry.91; 10.18653/v1/2025.acl-long.371",
+            "year": "2024-2025"
+          },
+          "name": "Multi-Hop LLM Information Distortion and Format-Restricted Deliberation Studies (Tam et al., EMNLP 2024; Mohamed et al., ACL 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.03256v1; 2602.19065v1; 2603.11890v2",
+            "doi": "10.1145/237432.237434; 10.1109/52.896248; 10.1109/32.879820; 10.1109/ISRE.2001.948567; 10.1109/ICSE.2004.1317437; 10.48550/arXiv.2405.03256; 10.48550/arXiv.2602.19065; 10.48550/arXiv.2603.11890",
+            "isbn": "978-0-201-59627-4",
+            "year": "1997-2026"
+          },
+          "name": "WRSPM Reference Model, Problem Frames, KAOS Goal-Obstacle Refinement, and Multi-Agent Requirements Frameworks (Zave & Jackson 1997; Gunter et al. 2000; Jackson 2001; van Lamsweerde & Letier 2000; van Lamsweerde 2001, 2004; Jin et al. 2024; Park 2026; Cheng et al. 2026)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0004-3702(87)90062-2; 10.1007/s10817-007-9084-z",
+            "isbn": "978-0-262-51183-4",
+            "venue": "Artificial Intelligence 32(1):57-95; Proc. AAAI 2004, pp. 167-172 (AAAI04-027); Journal of Automated Reasoning 40(1):1-33",
+            "year": "1987-2008"
+          },
+          "name": "QuickXplain Preferred Explanations/Relaxations and Minimal Hitting-Set Duality Foundations (Reiter 1987; Junker, AAAI 2004; Liffiton & Sakallah 2008)"
+        }
+      ],
+      "topics": [
+        "agents/multi-agent-coordination",
+        "agents/handoff-compilation",
+        "agents/structured-artifacts",
+        "agents/requirements-engineering",
+        "verification/problem-frames",
+        "verification/goal-obstacle-refinement",
+        "verification/specification-vacuity",
+        "smt/mus-enumeration",
+        "smt/maxsat",
+        "smt/conflict-explanation",
+        "tooling/agent-harnesses"
+      ]
+    },
     "agent-instruction-compliance-context-rot-reasoning-models-and-skill-routing": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -4395,6 +4521,155 @@
         "security/supply-chain",
         "systems/linux-sandboxing",
         "tooling/agent-harnesses"
+      ]
+    },
+    "agent-prospective-memory-fsm-prompts-and-factorial-ablations": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2607.12385v1",
+            "repository": "genglinliu/PMBench",
+            "revision": "e1093c470c8981daf522d4ef047a7c3a71e077d7",
+            "venue": "COLM 2026",
+            "year": "2026"
+          },
+          "name": "PM-Bench Multi-Turn Agent Prospective Memory Benchmark and Evaluation Suite (genglinliu/PMBench; Liu & Gabriel, COLM 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2606.23459v1",
+            "repository": "KristenZHANG/TriggerBench-Official",
+            "revision": "9e2185c3d071f73c195196ba1859631898017c8d",
+            "year": "2026"
+          },
+          "name": "TriggerBench Prospective Memory Benchmark and External Memory Adapters (KristenZHANG/TriggerBench-Official; Zhang et al. 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2607.17598v1; 2609.35692v1",
+            "repository": "virgiliojr94/book-to-skill",
+            "revision": "57f3db51ff338edfd940a255b885c60ac90e40fa",
+            "year": "2026"
+          },
+          "name": "Book-to-Skill Progressive-Disclosure SKILL.md Packaging Pipeline and Long-Context Skill Evaluations (virgiliojr94/book-to-skill; He et al. 2026; Zhang et al. 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2603.23530v2; 2609.01272v1; 2611.05731v1",
+            "doi": "10.1002/acp.775",
+            "year": "2000-2026"
+          },
+          "name": "Cognitive Multiprocess Prospective Memory, Dual-Task Constraint Interference, and Typed/Selective Intention Stores (McDaniel & Einstein 2000; Mittal 2026; Zhao & Wu 2026; Bei et al. 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.11322v5",
+            "repository": "yiranwu0/StateFlow",
+            "revision": "39d722f053c02f244b47fddcdc3b048aaa41041e",
+            "venue": "COLM 2024",
+            "year": "2024"
+          },
+          "name": "StateFlow State-Driven LLM Task-Solving Framework (yiranwu0/StateFlow; Wu et al., COLM 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.14884v1",
+            "doi": "10.18653/v1/2024.findings-emnlp.638",
+            "repository": "Justherozen/FlowBench",
+            "revision": "5145bf6a023d8ed2632dece1113843fb9cb28b09",
+            "venue": "Findings of EMNLP 2024, pp. 10883-10900",
+            "year": "2024-2025"
+          },
+          "name": "FlowBench Workflow-Guided Planning Benchmark and Multi-Turn Simulator (Justherozen/FlowBench; Xiao et al., Findings of EMNLP 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.07869v3",
+            "repository": "zjunlp/WorfBench",
+            "revision": "38a6455557128dffceae9a08ffd745f04a4a9d03",
+            "venue": "ICLR 2025",
+            "year": "2025"
+          },
+          "name": "WorFBench and WorFEval Agentic Workflow-DAG Generation Benchmark and Graph Evaluator (zjunlp/WorfBench; Qiao et al., ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2611.10884v1",
+            "year": "2026"
+          },
+          "name": "Executable Finite-State Control for Long-Horizon Agent Instruction Fidelity (Sun et al. 2026)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/biomet/33.4.305; 10.1109/32.988498",
+            "repository": "uds-se/debuggingbook",
+            "revision": "35dfb6c7a1932e4d5e9ca9858b4b1e80eb7447a5",
+            "venue": "Biometrika 33(4):305-325; IEEE TSE 28(2):183-200",
+            "year": "1946-2025"
+          },
+          "name": "Multifactorial Plackett-Burman Screening Designs and Minimizing Delta Debugging (Plackett & Burman 1946; Zeller & Hildebrandt 2002; uds-se/debuggingbook)"
+        },
+        {
+          "identity": {
+            "arxiv": "2409.00729v2",
+            "repository": "MadryLab/context-cite",
+            "revision": "c11f8ace6e68ba0121b2e2f1f5c896da9e4156f4",
+            "venue": "NeurIPS 2024",
+            "year": "2024"
+          },
+          "name": "ContextCite Sparse Linear Surrogate Context Attribution Solver (MadryLab/context-cite; Cohen-Wang et al., NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "1810.08240v9",
+            "doi": "10.1145/3097983.3097992; 10.1287/opre.2021.2135; 10.1214/20-AOS1991",
+            "repository": "gostevehoward/confseq",
+            "revision": "5ffe733ca2447a2e28c2c91f3b00086173f2ab2c",
+            "year": "2017-2026"
+          },
+          "name": "Always-Valid Mixture SPRT and Time-Uniform Nonparametric Confidence Sequences (gostevehoward/confseq; Johari et al., KDD 2017 & Operations Research 2022; Howard et al., Annals of Statistics 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.08631v2; 2510.22251v1; 2512.01420v1; 2512.05858v1; 2603.18507v1; 2608.24641v1",
+            "repository": "strongSoda/prompt-sculpting",
+            "revision": "729703c44eea79b7aa59e6db3ab1662fa65be634",
+            "year": "2024-2026"
+          },
+          "name": "Prompt-Technique Aging, Prompting Inversion, Persona Degradation, and Cross-Model Prompt Transfer (strongSoda/prompt-sculpting; Kim et al. 2024; Khan 2025; Wang et al. 2025; Basil et al. 2025; Hu, Rostami, & Thomason 2026; Rudyk, Oertel, & Hebig, ICSME 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2609.32459v1",
+            "repository": "SWE-agent/mini-swe-agent",
+            "revision": "04d809ceab9df28f9adaed044884180159172930",
+            "year": "2026"
+          },
+          "name": "Minimal Single-Bash Baseline Comparator in Cross-Checkpoint Harness Evaluations (SWE-agent/mini-swe-agent; Hu et al. 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2511.13646v3",
+            "repository": "OpenAutoCoder/live-swe-agent",
+            "revision": "8d7dd8634580d1e09320b4c27d70380bc9ae74a8",
+            "year": "2025-2026"
+          },
+          "name": "Live-SWE-agent Self-Evolving Software-Engineering Agent Scaffold (OpenAutoCoder/live-swe-agent; Xia et al. 2025)"
+        }
+      ],
+      "topics": [
+        "agents/prospective-memory",
+        "agents/progressive-disclosure",
+        "agents/skill-routing",
+        "agents/finite-state-control",
+        "agents/workflow-graphs",
+        "agents/factorial-ablation",
+        "agents/context-attribution",
+        "agents/sequential-testing",
+        "agents/scaffolding-retirement",
+        "tooling/agent-harnesses",
+        "verification/experimental-design"
       ]
     },
     "agent-scaffolding-automated-prompt-optimization-and-divergent-design-exploration": {
@@ -5163,6 +5438,395 @@
         "tooling/benchmark-harnesses",
         "vcs/merge-conflicts",
         "verification/conformance-checking"
+      ]
+    },
+    "agent-typed-hole-contextualization-typestate-and-edit-planning": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2201.11227v1",
+            "doi": "10.48550/arXiv.2201.11227",
+            "repository": "kanishkg/synchromesh",
+            "revision": "799e93b9b8db30879251f7a8c3171f09aca214b5",
+            "year": "2022-2024"
+          },
+          "name": "Synchromesh Constrained Semantic Decoding Engine and Target Similarity Tuning Specification (kanishkg/synchromesh; Poesia et al., ICLR 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2409.00921v1",
+            "doi": "10.1145/3689728; 10.5281/zenodo.12669479",
+            "repository": "fplab/chatlsp",
+            "revision": "c07132bdea52e4cf296e4647fc841dc706ff2119",
+            "year": "2024"
+          },
+          "name": "ChatLSP Typed-Hole Static Context Protocol and MVUBench Ablation Study (fplab/chatlsp; Blinn, Li, Kim, & Omar, PACMPL OOPSLA 2024)"
+        },
+        {
+          "identity": {
+            "repository": "HongweiRuan/ctxextract-llm",
+            "revision": "040ddbe67cd52ef8a586fea4343cfa78b929934a",
+            "year": "2025"
+          },
+          "name": "TypeScript and OCaml Typed-Hole Static Context Extractor (HongweiRuan/ctxextract-llm)"
+        },
+        {
+          "identity": {
+            "repository": "hazelgrove/chatLSP",
+            "revision": "657f389d907e2027efbc6900151c07a99b265ba3",
+            "year": "2023"
+          },
+          "name": "Hazel VS Code ChatLSP Client Extension (hazelgrove/chatLSP)"
+        },
+        {
+          "identity": {
+            "repository": "hazelgrove/hazel",
+            "revision": "f7257dd4a939666d1fc974841f48fb08019392a5",
+            "year": "2026"
+          },
+          "name": "Hazel Live Functional Programming Environment AgentContext Core (hazelgrove/hazel)"
+        },
+        {
+          "identity": {
+            "repository": "hazelgrove/hazel",
+            "revision": "ea05f3ba0c085a2312a8306cdc274c4feb8d2999",
+            "year": "2022"
+          },
+          "name": "Hazel Assistant-1 Hole Suggestion Prototype (hazelgrove/hazel)"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.05177v1",
+            "doi": "10.1109/ICSE55347.2025.00022; 10.48550/arXiv.2308.05177; 10.1145/3453483.3454084",
+            "year": "2021-2025"
+          },
+          "name": "RustAssistant Compiler-Diagnostic Repair Loop and SyRust Ownership-Aware Synthesis (Deligiannis et al., ICSE 2025 & arXiv 2023; Takashima et al., PLDI 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.15254v3",
+            "doi": "10.48550/arXiv.2504.15254",
+            "repository": "anirudhkhatry/CRUST-bench",
+            "revision": "4b4702544b800a3821feea128c5b9e413665dc83",
+            "year": "2025-2026"
+          },
+          "name": "CRUST-Bench C-to-Safe-Rust Repository Transpilation and Compiler/Test Repair Suite (anirudhkhatry/CRUST-bench; Khatry et al., COLM 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.02605v1",
+            "doi": "10.48550/arXiv.2504.02605",
+            "repository": "multi-swe-bench/multi-swe-bench",
+            "revision": "24f493f8a103e72312ded4f6b9c89f081d69cb09",
+            "year": "2025"
+          },
+          "name": "Multi-SWE-bench Multilingual Issue-Resolution Failure Annotations (multi-swe-bench/multi-swe-bench; Zan et al., 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.1986.6312929; 10.1145/1639950.1640073; 10.1007/978-3-642-22655-7_2; 10.1145/2048066.2048122; 10.1007/978-3-662-44202-9_7; 10.1184/R1/6625919.v1; 10.1109/ICPC.2015.17",
+            "year": "1986-2015"
+          },
+          "name": "Typestate Semilattice Analysis, Java Protocol Prevalence, Plaid First-Class State Change, and Plaiddoc State-Search Studies (Strom & Yemini 1986; Aldrich et al. 2009; Beckman, Kim, & Aldrich 2011; Sunshine et al. 2011, 2014, 2015)"
+        },
+        {
+          "identity": {
+            "arxiv": "2203.04374v1; 2401.13407v1",
+            "doi": "10.1145/3524843.3528091; 10.1145/3644384.3644471",
+            "repository": "codescene-research/increasing-returns-techdebt-2024",
+            "revision": "39a30b75051310c11bb9b6a992cbdc8cca8b9fe2",
+            "year": "2022-2024"
+          },
+          "name": "CodeScene Code Red and Increasing-Returns Maintainability Studies (codescene-research/increasing-returns-techdebt-2024; Tornhill & Borg 2022; Borg, Pruvost, Mones, & Tornhill 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.00788v3",
+            "doi": "10.1007/s10664-026-10889-1; 10.48550/arXiv.2507.00788",
+            "repository": "codescene-research/echoes-of-ai-emse-2025",
+            "revision": "472ebca6d20af5d6de4264897ba98220ce521fd0",
+            "year": "2025-2026"
+          },
+          "name": "Echoes of AI Two-Phase Maintainability Randomized Controlled Trial (codescene-research/echoes-of-ai-emse-2025; Borg et al., EMSE 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.02200v1",
+            "doi": "10.48550/arXiv.2601.02200",
+            "repository": "codescene-research/ai-friendliness-forge-2026",
+            "revision": "c7e7afd437cfaecb282b9e7c366ed1dbae06ca2d",
+            "year": "2026"
+          },
+          "name": "CodeScene AI-Friendliness and CodeHealth Refactoring Break-Rate Study (codescene-research/ai-friendliness-forge-2026; Borg, Hagatulah, Tornhill, & S\u00f6derberg, FORGE 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.03712v1",
+            "doi": "10.48550/arXiv.2602.03712; 10.1109/TSE.2020.3007722",
+            "repository": "tsantalis/RefactoringMiner",
+            "revision": "7e7670b11464399f4539edfe1d7ab47746e21118",
+            "year": "2022-2026"
+          },
+          "name": "SWE-Refactor Atomic vs. Compound Java Refactoring Benchmark and RefactoringMiner 2.0 AST Oracle (tsantalis/RefactoringMiner; Xu, Yang, & Chen 2026; Tsantalis, Ketkar, & Dig 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2608.23564v1",
+            "doi": "10.48550/arXiv.2608.23564",
+            "repository": "Einsia/SWE-Refactor-Bench",
+            "revision": "0d5d7310e64970826ffbe53fb53a349114acd69c",
+            "year": "2026"
+          },
+          "name": "SWE Refactor Bench Whole-Repository Stack Migration Harness and Study (Einsia/SWE-Refactor-Bench; Hong et al., 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.12499v1",
+            "doi": "10.1145/3643757; 10.48550/arXiv.2309.12499",
+            "year": "2023-2024"
+          },
+          "name": "CodePlan Incremental Dependency-Graph and Change May-Impact Repository Edit Planner (Bairi et al., PACMSE FSE 2024)"
+        },
+        {
+          "identity": {
+            "repository": "Aider-AI/aider",
+            "revision": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+            "year": "2026"
+          },
+          "name": "Aider Tree-Sitter and Personalized PageRank RepoMap Engine (Aider-AI/aider)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.16443v1",
+            "doi": "10.48550/arXiv.2403.16443",
+            "repository": "NL2Code/CodeS",
+            "revision": "0b624ab4ef22b0d9d223f274a986eb27fe090c88",
+            "year": "2024"
+          },
+          "name": "CodeS Three-Layer Repository Sketch Synthesis Pipeline (NL2Code/CodeS; Zan et al., 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.00994v1",
+            "doi": "10.18653/v1/2024.acl-long.730; 10.48550/arXiv.2408.00994",
+            "repository": "ldilab/ArchCode",
+            "revision": "e0b95d4e1f3e95dea42e5d21f158744cc3c24857",
+            "year": "2024-2025"
+          },
+          "name": "ArchCode Requirements-Conditioned Code Generation Pipeline (ldilab/ArchCode; Han, Kim, Yoo, Lee, & Hwang, ACL 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2303.12570v3",
+            "doi": "10.48550/arXiv.2303.12570",
+            "repository": "microsoft/CodeT",
+            "revision": "35f54d60b152cc31d134b788e702878ad613d9f7",
+            "year": "2023"
+          },
+          "name": "RepoCoder Iterative Generation-Augmented Retrieval Pipeline (microsoft/CodeT; Zhang et al., EMNLP 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.15337v3",
+            "doi": "10.48550/arXiv.2307.15337; 10.3389/frai.2025.1660912",
+            "repository": "MKH99918/Blueprint2Code",
+            "revision": "b7718bc7db11f9c2545ba34f2541ee5350e9d715",
+            "year": "2023-2025"
+          },
+          "name": "Skeleton-of-Thought Parallel Decoding and Blueprint2Code Multi-Stage Blueprint Synthesis (MKH99918/Blueprint2Code; Ning et al., ICLR 2024; Mao et al., 2025)"
+        }
+      ],
+      "topics": [
+        "agents/typed-hole-contextualization",
+        "agents/constrained-decoding",
+        "agents/compiler-diagnostic-repair",
+        "agents/edit-planning",
+        "agents/repo-map",
+        "agents/refactoring",
+        "pl/typestate",
+        "pl/typed-holes",
+        "compilers/change-impact-analysis",
+        "rust/borrow-repair",
+        "tooling/lsp",
+        "verification/typestate-dataflow"
+      ]
+    },
+    "agent-vulnerability-twin-collapse-neurosymbolic-sast-and-diff-ordering": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2403.18624v2",
+            "doi": "10.1109/ICSE55347.2025.00038",
+            "repository": "DLVulDet/PrimeVul",
+            "revision": "6f54687c84947b1d17486495440b37030d147289",
+            "venue": "Proc. 47th IEEE/ACM Int. Conf. on Software Engineering (ICSE 2025), pp. 1729-1741",
+            "year": "2024-2025"
+          },
+          "name": "PrimeVul Paired Vulnerable-vs-Patched Benchmark and VD-S Evaluator (DLVulDet/PrimeVul; Ding et al., ICSE 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.16185v4",
+            "doi": "10.48550/arXiv.2401.16185",
+            "repository": "IzaiahSun/LLM4Vuln",
+            "revision": "64fcebbe0631dffbca3c80b4e853e97d47ad5913",
+            "year": "2024-2025"
+          },
+          "name": "LLM4Vuln / UniVul Factorial Vulnerability Reasoning Framework (IzaiahSun/LLM4Vuln; Sun et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.16185v4",
+            "repository": "anonymous-Bssazg/LLM4Vuln",
+            "revision": "6fd3e54428aef93825f3aa33e702750b421ebb71",
+            "year": "2024"
+          },
+          "name": "LLM4Vuln Raw Experiment Archive (anonymous-Bssazg/LLM4Vuln; Sun et al., 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.15596v1",
+            "doi": "10.1109/TSE.2026.3662145",
+            "repository": "Xin-Cheng-Wen/VulEval",
+            "revision": "ae1e938eb963cfd25ff4b6bad70e628e313acb54",
+            "venue": "IEEE Transactions on Software Engineering, Vol. 52(4), pp. 1315-1331",
+            "year": "2024-2026"
+          },
+          "name": "VulEval Interprocedural Repository-Level Vulnerability Benchmark (Xin-Cheng-Wen/VulEval; Wen et al., IEEE TSE 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.13169v2",
+            "doi": "10.1145/3639478.3647634",
+            "repository": "Eshe0922/ReposVul",
+            "revision": "67f53000715d0636403261f5f762d9bec13b9b3d",
+            "venue": "Proc. ACM/IEEE 46th ICSE Companion (ICSE-Companion 2024), pp. 472-483",
+            "year": "2024"
+          },
+          "name": "ReposVul Untangled Multi-Granularity Vulnerability Dataset (Eshe0922/ReposVul; Wang et al., ICSE-Companion 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.21205v3",
+            "doi": "10.1145/3786181.3788703",
+            "repository": "ai-sec-lab/SecRepoBench",
+            "revision": "759cb3031565cb34fc3d31473b3e6e4c587feb87",
+            "venue": "Proc. 2nd Int. Workshop on Large Language Models for Code (LLM4Code 2026), pp. 159-166",
+            "year": "2025-2026"
+          },
+          "name": "SecRepoBench Secure Repository Code Completion Benchmark (ai-sec-lab/SecRepoBench; Shen et al., LLM4Code 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.16167v2",
+            "doi": "10.18653/v1/2025.findings-acl.476",
+            "repository": "hongyi-tom/CodeReviewQA",
+            "revision": "6015308c52b63c6f7bc9b3f71ecd3c07d9d45628",
+            "venue": "Findings of the Association for Computational Linguistics: ACL 2025, pp. 9138-9166",
+            "year": "2025-2026"
+          },
+          "name": "CodeReviewQA Multi-Probe Code Review Comprehension Suite (hongyi-tom/CodeReviewQA; Lin et al., Findings of ACL 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2509.01494v2",
+            "doi": "10.1145/3808144",
+            "repository": "ZZR0/SWRench",
+            "revision": "67ae1d4395ac05f800d62b0e13678eadeb9fa5c7",
+            "venue": "Proc. ACM on Software Engineering (PACMSE), Vol. 3(FSE), Article FSE137, pp. 3093-3115",
+            "year": "2025-2026"
+          },
+          "name": "SWR-Bench Real-World Pull-Request Review Comment Benchmark (ZZR0/SWRench; Zeng et al., PACMSE / FSE 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.17238v3",
+            "doi": "10.48550/arXiv.2405.17238",
+            "repository": "iris-sast/iris",
+            "revision": "d2059f299a80a68ea4a0b0315eec2f42b8743776",
+            "version": "v2",
+            "year": "2025-2026"
+          },
+          "name": "IRIS LLM-Assisted CodeQL Taint Specification and Post-Filtering Pipeline v2 Default Branch (iris-sast/iris; Li, Dutta, & Naik, ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.17238v3",
+            "doi": "10.48550/arXiv.2405.17238",
+            "repository": "iris-sast/iris",
+            "revision": "67140e84e6a01da2b44803a6208be2ea7bd4bd51",
+            "version": "v1",
+            "year": "2025"
+          },
+          "name": "IRIS LLM-Assisted CodeQL Taint Specification Pipeline v1 ICLR Artifact Branch (iris-sast/iris; Li, Dutta, & Naik, ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.10754v2",
+            "doi": "10.48550/arXiv.2402.10754",
+            "repository": "chengpeng-wang/LLMDFA",
+            "revision": "fca638790cc0a5cc49afd9d6bc31d1f04efc4af5",
+            "venue": "Advances in Neural Information Processing Systems 37 (NeurIPS 2024)",
+            "year": "2024-2025"
+          },
+          "name": "LLMDFA Compilation-Free Tree-Sitter Extractor, CFL Summary Search, and Z3 Path-Feasibility Auditor (chengpeng-wang/LLMDFA; Wang et al., NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2501.18160v3",
+            "doi": "10.48550/arXiv.2501.18160",
+            "repository": "PurCL/RepoAudit",
+            "revision": "160f5bcd378a02a2417e32e999f93ef5fa0f5e64",
+            "version": "main",
+            "year": "2025-2026"
+          },
+          "name": "RepoAudit Demand-Driven Path-Sensitive Code Auditor Main Branch (PurCL/RepoAudit; Guo et al., ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2501.18160v3",
+            "doi": "10.48550/arXiv.2501.18160",
+            "repository": "PurCL/RepoAudit",
+            "revision": "6d1cd92e4d91b5bcf1dcd600d248414505d2d766",
+            "version": "artifact",
+            "year": "2025"
+          },
+          "name": "RepoAudit Demand-Driven Path-Sensitive Code Auditor ICML Artifact Branch (PurCL/RepoAudit; Guo et al., ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2306.17193v2; 2603.11078v1",
+            "doi": "10.48550/arXiv.2306.17193; 10.48550/arXiv.2603.11078",
+            "venue": "Proc. 33rd USENIX Security Symposium (USENIX Security 2024), pp. 4247-4264; arXiv:2603.11078v1",
+            "year": "2024-2026"
+          },
+          "name": "Vulnerability Patch-Pair Limits and AI Code-Review Signal-to-Noise Studies (Risse & Bohme, USENIX Security 2024; Pereira, Sinha, Ghosh, & Dutta, CR-Bench 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "1502.06757v1; 2208.04259v1; 2601.21298v3; 2607.20189v1",
+            "doi": "10.1109/MSR.2013.6624018; 10.1109/SANER.2015.7081844; 10.1109/MSR.2015.21; 10.1007/s10664-015-9376-6; 10.1109/TSE.2016.2576451; 10.1109/ICSME.2017.28; 10.1007/s10664-018-9676-8; 10.1145/3468264.3468551; 10.1145/3540250.3549171; 10.1145/3540250.3549177; 10.4230/LIPIcs.ESEM.2026.26",
+            "venue": "MSR 2013 & 2015; SANER 2015; EMSE 21(2) & 24(4); IEEE TSE 43(1); ICSME 2017; ESEC/FSE 2021 & 2022; LIPIcs Vol. 394 (ESEM 2026), Article 26, pp. 26:1-26:21",
+            "year": "2013-2026"
+          },
+          "name": "Diff File-Position Decay, Cognitive Diff-Tour Ordering, Commit Untangling, and Stacked Relation-Chain Studies (Herzig & Zeller 2013; Dias et al. 2015; Bosu et al. 2015, 2017; Herzig, Just, & Zeller 2016; Baum, Schneider, & Bacchelli 2017, 2019; Shen et al. 2021; Li, Wang, & Nguyen 2022; Fregnan et al. 2022; Koh, Walkinshaw, & Shin 2026; Belhouchette et al., ESEM 2026)"
+        }
+      ],
+      "topics": [
+        "security/vulnerability-detection",
+        "security/static-analysis",
+        "security/taint-analysis",
+        "agents/code-review",
+        "agents/neurosymbolic-auditing",
+        "agents/context-slicing",
+        "smt/path-feasibility",
+        "vcs/diff-ordering",
+        "vcs/commit-untangling",
+        "vcs/stacked-diffs",
+        "tooling/code-review",
+        "verification/program-analysis"
       ]
     },
     "airbus-do-333-unit-proof-observable-mcdc-fault-finding-kind2-cocospec-agree-contracts-and-copilot-monitors": {

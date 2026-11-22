@@ -1,0 +1,149 @@
+{
+  "topics": [
+    "agents/prospective-memory",
+    "agents/progressive-disclosure",
+    "agents/skill-routing",
+    "agents/finite-state-control",
+    "agents/workflow-graphs",
+    "agents/factorial-ablation",
+    "agents/context-attribution",
+    "agents/sequential-testing",
+    "agents/scaffolding-retirement",
+    "tooling/agent-harnesses",
+    "verification/experimental-design"
+  ],
+  "subjects": [
+    {
+      "name": "PM-Bench Multi-Turn Agent Prospective Memory Benchmark and Evaluation Suite (genglinliu/PMBench; Liu & Gabriel, COLM 2026)",
+      "identity": {
+        "arxiv": "2607.12385v1",
+        "repository": "genglinliu/PMBench",
+        "revision": "e1093c470c8981daf522d4ef047a7c3a71e077d7",
+        "venue": "COLM 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "TriggerBench Prospective Memory Benchmark and External Memory Adapters (KristenZHANG/TriggerBench-Official; Zhang et al. 2026)",
+      "identity": {
+        "arxiv": "2606.23459v1",
+        "repository": "KristenZHANG/TriggerBench-Official",
+        "revision": "9e2185c3d071f73c195196ba1859631898017c8d",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Book-to-Skill Progressive-Disclosure SKILL.md Packaging Pipeline and Long-Context Skill Evaluations (virgiliojr94/book-to-skill; He et al. 2026; Zhang et al. 2026)",
+      "identity": {
+        "arxiv": "2607.17598v1; 2609.35692v1",
+        "repository": "virgiliojr94/book-to-skill",
+        "revision": "57f3db51ff338edfd940a255b885c60ac90e40fa",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Cognitive Multiprocess Prospective Memory, Dual-Task Constraint Interference, and Typed/Selective Intention Stores (McDaniel & Einstein 2000; Mittal 2026; Zhao & Wu 2026; Bei et al. 2026)",
+      "identity": {
+        "arxiv": "2603.23530v2; 2609.01272v1; 2611.05731v1",
+        "doi": "10.1002/acp.775",
+        "year": "2000-2026"
+      }
+    },
+    {
+      "name": "StateFlow State-Driven LLM Task-Solving Framework (yiranwu0/StateFlow; Wu et al., COLM 2024)",
+      "identity": {
+        "arxiv": "2403.11322v5",
+        "repository": "yiranwu0/StateFlow",
+        "revision": "39d722f053c02f244b47fddcdc3b048aaa41041e",
+        "venue": "COLM 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "FlowBench Workflow-Guided Planning Benchmark and Multi-Turn Simulator (Justherozen/FlowBench; Xiao et al., Findings of EMNLP 2024)",
+      "identity": {
+        "arxiv": "2406.14884v1",
+        "doi": "10.18653/v1/2024.findings-emnlp.638",
+        "repository": "Justherozen/FlowBench",
+        "revision": "5145bf6a023d8ed2632dece1113843fb9cb28b09",
+        "venue": "Findings of EMNLP 2024, pp. 10883-10900",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "WorFBench and WorFEval Agentic Workflow-DAG Generation Benchmark and Graph Evaluator (zjunlp/WorfBench; Qiao et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2410.07869v3",
+        "repository": "zjunlp/WorfBench",
+        "revision": "38a6455557128dffceae9a08ffd745f04a4a9d03",
+        "venue": "ICLR 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Executable Finite-State Control for Long-Horizon Agent Instruction Fidelity (Sun et al. 2026)",
+      "identity": {
+        "arxiv": "2611.10884v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Multifactorial Plackett-Burman Screening Designs and Minimizing Delta Debugging (Plackett & Burman 1946; Zeller & Hildebrandt 2002; uds-se/debuggingbook)",
+      "identity": {
+        "doi": "10.1093/biomet/33.4.305; 10.1109/32.988498",
+        "repository": "uds-se/debuggingbook",
+        "revision": "35dfb6c7a1932e4d5e9ca9858b4b1e80eb7447a5",
+        "venue": "Biometrika 33(4):305-325; IEEE TSE 28(2):183-200",
+        "year": "1946-2025"
+      }
+    },
+    {
+      "name": "ContextCite Sparse Linear Surrogate Context Attribution Solver (MadryLab/context-cite; Cohen-Wang et al., NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2409.00729v2",
+        "repository": "MadryLab/context-cite",
+        "revision": "c11f8ace6e68ba0121b2e2f1f5c896da9e4156f4",
+        "venue": "NeurIPS 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Always-Valid Mixture SPRT and Time-Uniform Nonparametric Confidence Sequences (gostevehoward/confseq; Johari et al., KDD 2017 & Operations Research 2022; Howard et al., Annals of Statistics 2021)",
+      "identity": {
+        "arxiv": "1810.08240v9",
+        "doi": "10.1145/3097983.3097992; 10.1287/opre.2021.2135; 10.1214/20-AOS1991",
+        "repository": "gostevehoward/confseq",
+        "revision": "5ffe733ca2447a2e28c2c91f3b00086173f2ab2c",
+        "year": "2017-2026"
+      }
+    },
+    {
+      "name": "Prompt-Technique Aging, Prompting Inversion, Persona Degradation, and Cross-Model Prompt Transfer (strongSoda/prompt-sculpting; Kim et al. 2024; Khan 2025; Wang et al. 2025; Basil et al. 2025; Hu, Rostami, & Thomason 2026; Rudyk, Oertel, & Hebig, ICSME 2026)",
+      "identity": {
+        "arxiv": "2408.08631v2; 2510.22251v1; 2512.01420v1; 2512.05858v1; 2603.18507v1; 2608.24641v1",
+        "repository": "strongSoda/prompt-sculpting",
+        "revision": "729703c44eea79b7aa59e6db3ab1662fa65be634",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Minimal Single-Bash Baseline Comparator in Cross-Checkpoint Harness Evaluations (SWE-agent/mini-swe-agent; Hu et al. 2026)",
+      "identity": {
+        "arxiv": "2609.32459v1",
+        "repository": "SWE-agent/mini-swe-agent",
+        "revision": "04d809ceab9df28f9adaed044884180159172930",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Live-SWE-agent Self-Evolving Software-Engineering Agent Scaffold (OpenAutoCoder/live-swe-agent; Xia et al. 2025)",
+      "identity": {
+        "arxiv": "2511.13646v3",
+        "repository": "OpenAutoCoder/live-swe-agent",
+        "revision": "8d7dd8634580d1e09320b4c27d70380bc9ae74a8",
+        "year": "2025-2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

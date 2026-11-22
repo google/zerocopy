@@ -1,0 +1,212 @@
+{
+  "topics": [
+    "agents/typed-hole-contextualization",
+    "agents/constrained-decoding",
+    "agents/compiler-diagnostic-repair",
+    "agents/edit-planning",
+    "agents/repo-map",
+    "agents/refactoring",
+    "pl/typestate",
+    "pl/typed-holes",
+    "compilers/change-impact-analysis",
+    "rust/borrow-repair",
+    "tooling/lsp",
+    "verification/typestate-dataflow"
+  ],
+  "subjects": [
+    {
+      "name": "Synchromesh Constrained Semantic Decoding Engine and Target Similarity Tuning Specification (kanishkg/synchromesh; Poesia et al., ICLR 2022)",
+      "identity": {
+        "arxiv": "2201.11227v1",
+        "doi": "10.48550/arXiv.2201.11227",
+        "repository": "kanishkg/synchromesh",
+        "revision": "799e93b9b8db30879251f7a8c3171f09aca214b5",
+        "year": "2022-2024"
+      }
+    },
+    {
+      "name": "ChatLSP Typed-Hole Static Context Protocol and MVUBench Ablation Study (fplab/chatlsp; Blinn, Li, Kim, & Omar, PACMPL OOPSLA 2024)",
+      "identity": {
+        "arxiv": "2409.00921v1",
+        "doi": "10.1145/3689728; 10.5281/zenodo.12669479",
+        "repository": "fplab/chatlsp",
+        "revision": "c07132bdea52e4cf296e4647fc841dc706ff2119",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "TypeScript and OCaml Typed-Hole Static Context Extractor (HongweiRuan/ctxextract-llm)",
+      "identity": {
+        "repository": "HongweiRuan/ctxextract-llm",
+        "revision": "040ddbe67cd52ef8a586fea4343cfa78b929934a",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Hazel VS Code ChatLSP Client Extension (hazelgrove/chatLSP)",
+      "identity": {
+        "repository": "hazelgrove/chatLSP",
+        "revision": "657f389d907e2027efbc6900151c07a99b265ba3",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Hazel Live Functional Programming Environment AgentContext Core (hazelgrove/hazel)",
+      "identity": {
+        "repository": "hazelgrove/hazel",
+        "revision": "f7257dd4a939666d1fc974841f48fb08019392a5",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Hazel Assistant-1 Hole Suggestion Prototype (hazelgrove/hazel)",
+      "identity": {
+        "repository": "hazelgrove/hazel",
+        "revision": "ea05f3ba0c085a2312a8306cdc274c4feb8d2999",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "RustAssistant Compiler-Diagnostic Repair Loop and SyRust Ownership-Aware Synthesis (Deligiannis et al., ICSE 2025 & arXiv 2023; Takashima et al., PLDI 2021)",
+      "identity": {
+        "arxiv": "2308.05177v1",
+        "doi": "10.1109/ICSE55347.2025.00022; 10.48550/arXiv.2308.05177; 10.1145/3453483.3454084",
+        "year": "2021-2025"
+      }
+    },
+    {
+      "name": "CRUST-Bench C-to-Safe-Rust Repository Transpilation and Compiler/Test Repair Suite (anirudhkhatry/CRUST-bench; Khatry et al., COLM 2025)",
+      "identity": {
+        "arxiv": "2504.15254v3",
+        "doi": "10.48550/arXiv.2504.15254",
+        "repository": "anirudhkhatry/CRUST-bench",
+        "revision": "4b4702544b800a3821feea128c5b9e413665dc83",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Multi-SWE-bench Multilingual Issue-Resolution Failure Annotations (multi-swe-bench/multi-swe-bench; Zan et al., 2025)",
+      "identity": {
+        "arxiv": "2504.02605v1",
+        "doi": "10.48550/arXiv.2504.02605",
+        "repository": "multi-swe-bench/multi-swe-bench",
+        "revision": "24f493f8a103e72312ded4f6b9c89f081d69cb09",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Typestate Semilattice Analysis, Java Protocol Prevalence, Plaid First-Class State Change, and Plaiddoc State-Search Studies (Strom & Yemini 1986; Aldrich et al. 2009; Beckman, Kim, & Aldrich 2011; Sunshine et al. 2011, 2014, 2015)",
+      "identity": {
+        "doi": "10.1109/TSE.1986.6312929; 10.1145/1639950.1640073; 10.1007/978-3-642-22655-7_2; 10.1145/2048066.2048122; 10.1007/978-3-662-44202-9_7; 10.1184/R1/6625919.v1; 10.1109/ICPC.2015.17",
+        "year": "1986-2015"
+      }
+    },
+    {
+      "name": "CodeScene Code Red and Increasing-Returns Maintainability Studies (codescene-research/increasing-returns-techdebt-2024; Tornhill & Borg 2022; Borg, Pruvost, Mones, & Tornhill 2024)",
+      "identity": {
+        "arxiv": "2203.04374v1; 2401.13407v1",
+        "doi": "10.1145/3524843.3528091; 10.1145/3644384.3644471",
+        "repository": "codescene-research/increasing-returns-techdebt-2024",
+        "revision": "39a30b75051310c11bb9b6a992cbdc8cca8b9fe2",
+        "year": "2022-2024"
+      }
+    },
+    {
+      "name": "Echoes of AI Two-Phase Maintainability Randomized Controlled Trial (codescene-research/echoes-of-ai-emse-2025; Borg et al., EMSE 2026)",
+      "identity": {
+        "arxiv": "2507.00788v3",
+        "doi": "10.1007/s10664-026-10889-1; 10.48550/arXiv.2507.00788",
+        "repository": "codescene-research/echoes-of-ai-emse-2025",
+        "revision": "472ebca6d20af5d6de4264897ba98220ce521fd0",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "CodeScene AI-Friendliness and CodeHealth Refactoring Break-Rate Study (codescene-research/ai-friendliness-forge-2026; Borg, Hagatulah, Tornhill, & Söderberg, FORGE 2026)",
+      "identity": {
+        "arxiv": "2601.02200v1",
+        "doi": "10.48550/arXiv.2601.02200",
+        "repository": "codescene-research/ai-friendliness-forge-2026",
+        "revision": "c7e7afd437cfaecb282b9e7c366ed1dbae06ca2d",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "SWE-Refactor Atomic vs. Compound Java Refactoring Benchmark and RefactoringMiner 2.0 AST Oracle (tsantalis/RefactoringMiner; Xu, Yang, & Chen 2026; Tsantalis, Ketkar, & Dig 2022)",
+      "identity": {
+        "arxiv": "2602.03712v1",
+        "doi": "10.48550/arXiv.2602.03712; 10.1109/TSE.2020.3007722",
+        "repository": "tsantalis/RefactoringMiner",
+        "revision": "7e7670b11464399f4539edfe1d7ab47746e21118",
+        "year": "2022-2026"
+      }
+    },
+    {
+      "name": "SWE Refactor Bench Whole-Repository Stack Migration Harness and Study (Einsia/SWE-Refactor-Bench; Hong et al., 2026)",
+      "identity": {
+        "arxiv": "2608.23564v1",
+        "doi": "10.48550/arXiv.2608.23564",
+        "repository": "Einsia/SWE-Refactor-Bench",
+        "revision": "0d5d7310e64970826ffbe53fb53a349114acd69c",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "CodePlan Incremental Dependency-Graph and Change May-Impact Repository Edit Planner (Bairi et al., PACMSE FSE 2024)",
+      "identity": {
+        "arxiv": "2309.12499v1",
+        "doi": "10.1145/3643757; 10.48550/arXiv.2309.12499",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Aider Tree-Sitter and Personalized PageRank RepoMap Engine (Aider-AI/aider)",
+      "identity": {
+        "repository": "Aider-AI/aider",
+        "revision": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "CodeS Three-Layer Repository Sketch Synthesis Pipeline (NL2Code/CodeS; Zan et al., 2024)",
+      "identity": {
+        "arxiv": "2403.16443v1",
+        "doi": "10.48550/arXiv.2403.16443",
+        "repository": "NL2Code/CodeS",
+        "revision": "0b624ab4ef22b0d9d223f274a986eb27fe090c88",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "ArchCode Requirements-Conditioned Code Generation Pipeline (ldilab/ArchCode; Han, Kim, Yoo, Lee, & Hwang, ACL 2024)",
+      "identity": {
+        "arxiv": "2408.00994v1",
+        "doi": "10.18653/v1/2024.acl-long.730; 10.48550/arXiv.2408.00994",
+        "repository": "ldilab/ArchCode",
+        "revision": "e0b95d4e1f3e95dea42e5d21f158744cc3c24857",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "RepoCoder Iterative Generation-Augmented Retrieval Pipeline (microsoft/CodeT; Zhang et al., EMNLP 2023)",
+      "identity": {
+        "arxiv": "2303.12570v3",
+        "doi": "10.48550/arXiv.2303.12570",
+        "repository": "microsoft/CodeT",
+        "revision": "35f54d60b152cc31d134b788e702878ad613d9f7",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Skeleton-of-Thought Parallel Decoding and Blueprint2Code Multi-Stage Blueprint Synthesis (MKH99918/Blueprint2Code; Ning et al., ICLR 2024; Mao et al., 2025)",
+      "identity": {
+        "arxiv": "2307.15337v3",
+        "doi": "10.48550/arXiv.2307.15337; 10.3389/frai.2025.1660912",
+        "repository": "MKH99918/Blueprint2Code",
+        "revision": "b7718bc7db11f9c2545ba34f2541ee5350e9d715",
+        "year": "2023-2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

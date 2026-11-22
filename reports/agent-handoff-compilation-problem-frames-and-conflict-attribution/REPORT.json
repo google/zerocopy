@@ -1,0 +1,126 @@
+{
+  "topics": [
+    "agents/multi-agent-coordination",
+    "agents/handoff-compilation",
+    "agents/structured-artifacts",
+    "agents/requirements-engineering",
+    "verification/problem-frames",
+    "verification/goal-obstacle-refinement",
+    "verification/specification-vacuity",
+    "smt/mus-enumeration",
+    "smt/maxsat",
+    "smt/conflict-explanation",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "MetaGPT Role-Specialized SOP ActionNode Pydantic Compiler (FoundationAgents/MetaGPT main; Hong et al., ICLR 2024)",
+      "identity": {
+        "arxiv": "2308.00352v7",
+        "doi": "10.48550/arXiv.2308.00352",
+        "repository": "FoundationAgents/MetaGPT",
+        "revision": "11cdf466d042aece04fc6cfd13b28e1a70341b1f",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "MetaGPT Release v0.8.2 ActionNode Baseline Prior to Keyword-Only Context Refactor (FoundationAgents/MetaGPT v0.8.2)",
+      "identity": {
+        "repository": "FoundationAgents/MetaGPT",
+        "revision": "df9bc1858f7d396a7eef5d9718cab7587b63fd62",
+        "version": "v0.8.2",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "ChatDev Waterfall ChatChain Phase-Gate and Communicative Dehallucination Engine (OpenBMB/ChatDev v1.1.6; Qian et al., ACL 2024)",
+      "identity": {
+        "arxiv": "2307.07924v5",
+        "doi": "10.18653/v1/2024.acl-long.810",
+        "repository": "OpenBMB/ChatDev",
+        "revision": "bcab15717940818938402394a04aea2052d76665",
+        "version": "v1.1.6",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "ChatDev DevAll DAG GraphExecutor and Typed Edge Payload Processor (OpenBMB/ChatDev v2.2.0)",
+      "identity": {
+        "repository": "OpenBMB/ChatDev",
+        "revision": "3c72d860d2553f05129b7dff0fd4efdde5b01d2f",
+        "version": "v2.2.0",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "ChatDev DevAll DAG GraphExecutor and Typed Edge Payload Processor (OpenBMB/ChatDev main)",
+      "identity": {
+        "repository": "OpenBMB/ChatDev",
+        "revision": "464a681ba7bda869db97a50c5fa707c9a0fb57a0",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "MARCO / MARCO+ Power-Set Lattice MUS/MCS Enumerator (liffiton/MARCO master; Liffiton, Previti, Malik, & Marques-Silva, Constraints 2016)",
+      "identity": {
+        "doi": "10.1007/s10601-015-9183-0",
+        "repository": "liffiton/MARCO",
+        "revision": "27e056bd5199ab995cf57473ea17c6a2762ff564",
+        "year": "2016-2026"
+      }
+    },
+    {
+      "name": "MARCO / MARCO+ Release v3.3 Baseline Prior to Python-3 Syntax Modernization (liffiton/MARCO v3.3)",
+      "identity": {
+        "repository": "liffiton/MARCO",
+        "revision": "dd45d93ff9e746c29e6cf900fb021e301d8f74c4",
+        "version": "v3.3",
+        "year": "2016-2020"
+      }
+    },
+    {
+      "name": "PySAT Toolkit: OLL Core-Guided RC2 / RC2Stratified WMaxSAT, MUSX, MCSls, Hitman, and OptUx (pysathq/pysat; Ignatiev, Morgado, & Marques-Silva, JSAT 2019)",
+      "identity": {
+        "doi": "10.3233/SAT190116",
+        "repository": "pysathq/pysat",
+        "revision": "ff051b57496492822a52c510bbd082f840bd792f",
+        "version": "1.9.dev24",
+        "year": "2019-2026"
+      }
+    },
+    {
+      "name": "Business Artifacts and Guard-Stage-Milestone (GSM) Declarative PAC/PDG Operational Semantics (Nigam & Caswell 2003; Hull et al., WS-FM 2010/2011 & DEBS 2011; Damaggio, Hull, & Vaculin, BPM 2011 & Information Systems 2013)",
+      "identity": {
+        "doi": "10.1147/sj.423.0428; 10.1007/978-3-642-19589-1_1; 10.1145/2002259.2002270; 10.1007/978-3-642-23059-2_29; 10.1016/j.is.2012.09.002",
+        "year": "2003-2013"
+      }
+    },
+    {
+      "name": "Multi-Hop LLM Information Distortion and Format-Restricted Deliberation Studies (Tam et al., EMNLP 2024; Mohamed et al., ACL 2025)",
+      "identity": {
+        "arxiv": "2408.02442v3; 2502.20258v2",
+        "doi": "10.18653/v1/2024.emnlp-industry.91; 10.18653/v1/2025.acl-long.371",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "WRSPM Reference Model, Problem Frames, KAOS Goal-Obstacle Refinement, and Multi-Agent Requirements Frameworks (Zave & Jackson 1997; Gunter et al. 2000; Jackson 2001; van Lamsweerde & Letier 2000; van Lamsweerde 2001, 2004; Jin et al. 2024; Park 2026; Cheng et al. 2026)",
+      "identity": {
+        "arxiv": "2405.03256v1; 2602.19065v1; 2603.11890v2",
+        "doi": "10.1145/237432.237434; 10.1109/52.896248; 10.1109/32.879820; 10.1109/ISRE.2001.948567; 10.1109/ICSE.2004.1317437; 10.48550/arXiv.2405.03256; 10.48550/arXiv.2602.19065; 10.48550/arXiv.2603.11890",
+        "isbn": "978-0-201-59627-4",
+        "year": "1997-2026"
+      }
+    },
+    {
+      "name": "QuickXplain Preferred Explanations/Relaxations and Minimal Hitting-Set Duality Foundations (Reiter 1987; Junker, AAAI 2004; Liffiton & Sakallah 2008)",
+      "identity": {
+        "doi": "10.1016/0004-3702(87)90062-2; 10.1007/s10817-007-9084-z",
+        "isbn": "978-0-262-51183-4",
+        "venue": "Artificial Intelligence 32(1):57-95; Proc. AAAI 2004, pp. 167-172 (AAAI04-027); Journal of Automated Reasoning 40(1):1-33",
+        "year": "1987-2008"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
