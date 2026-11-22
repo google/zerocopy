@@ -143,7 +143,7 @@
 mod sync;
 
 use std::{
-    io::{Read, Result as IoResult},
+    io::{Read, Result as IoResult, Seek as _},
     path::{Path, PathBuf},
 };
 
@@ -393,8 +393,10 @@ const fn validate_path(part: &str) {
     }
 }
 
-/// Extracts the `.tar.zst` from `reader` and installs it at `dst`, optionally
-/// validating its hash.
+/// Extracts the `.tar.zst` from `reader` and installs it at `dst`.
+///
+/// When `expected_sha256` is `Some`, buffers and verifies the SHA-256 digest of
+/// the entire compressed stream before invoking `zstd` or `tar` extraction.
 fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>) -> IoResult<()> {
     struct HashingReader<R> {
         reader: R,
@@ -409,23 +411,21 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
         }
     }
 
+    fn unpack_tar_zst(reader: impl Read, target_dir: &Path) -> IoResult<()> {
+        let decoder = zstd::stream::read::Decoder::new(reader)?;
+        let mut archive = tar::Archive::new(decoder);
+        archive.unpack(target_dir)
+    }
+
     sync::ManagedDirName::new(dst)
         .check_exists_or_create(|target_dir| {
             if let Some(expected) = expected_sha256 {
+                // Stream and verify the compressed archive inside a private
+                // temporary file on the cache filesystem before passing any
+                // untrusted bytes to `zstd` or `tar`.
+                let mut tmp = tempfile::tempfile_in(sync::staging_parent(dst))?;
                 let mut hash_reader = HashingReader { reader, hasher: sha2::Sha256::new() };
-                {
-                    let decoder = zstd::stream::read::Decoder::new(&mut hash_reader)?;
-                    let mut archive = tar::Archive::new(decoder);
-                    archive.unpack(target_dir)?;
-                }
-
-                // Ensure any remaining trailing bytes in the stream are read
-                // and hashed. Zstd may skip trailing data which isn't necessary
-                // to decompress, but we need to account for it in the hash, or
-                // else a valid archive could fail to hash properly if that
-                // archive contains trailing data which isn't required for
-                // decompression.
-                std::io::copy(&mut hash_reader, &mut std::io::sink())?;
+                std::io::copy(&mut hash_reader, &mut tmp)?;
 
                 let hash: [u8; 32] = sha2::Digest::finalize(hash_reader.hasher).into();
                 if hash != expected {
@@ -434,12 +434,12 @@ fn install(mut reader: impl Read, dst: &Path, expected_sha256: Option<[u8; 32]>)
                         "SHA-256 hash mismatch",
                     ));
                 }
+
+                tmp.rewind()?;
+                unpack_tar_zst(tmp, target_dir)
             } else {
-                let decoder = zstd::stream::read::Decoder::new(&mut reader)?;
-                let mut archive = tar::Archive::new(decoder);
-                archive.unpack(target_dir)?;
+                unpack_tar_zst(&mut reader, target_dir)
             }
-            Ok(())
         })
         .map(|_| ())
 }
@@ -954,5 +954,212 @@ mod tests {
         // "COM1.txt" is reserved the same as "COM1" since Windows
         // matches device names by their stem, not the full name.
         let _ = Config::new(&["COM1.txt"], "v1");
+    }
+
+    #[cfg(unix)]
+    fn create_tar_zst_with_modes(files: &[(&str, &[u8], u32)], dirs: &[(&str, u32)]) -> Vec<u8> {
+        let mut zstd_enc = zstd::stream::write::Encoder::new(Vec::new(), 0).unwrap();
+        {
+            let mut tar_builder = tar::Builder::new(&mut zstd_enc);
+            for (name, content, mode) in files {
+                let mut header = tar::Header::new_gnu();
+                header.set_size(content.len() as u64);
+                header.set_mode(*mode);
+                header.set_cksum();
+                tar_builder.append_data(&mut header, name, *content).unwrap();
+            }
+            for (dir_name, mode) in dirs {
+                let mut dir = tar::Header::new_gnu();
+                dir.set_entry_type(tar::EntryType::Directory);
+                dir.set_size(0);
+                dir.set_mode(*mode);
+                dir.set_cksum();
+                tar_builder.append_data(&mut dir, dir_name, std::io::empty()).unwrap();
+            }
+            tar_builder.finish().unwrap();
+        }
+        zstd_enc.finish().unwrap()
+    }
+
+    #[cfg(unix)]
+    fn serve_archives_once(
+        archives: Vec<Vec<u8>>,
+    ) -> (std::net::SocketAddr, std::thread::JoinHandle<()>) {
+        use std::{io::Write as _, net::TcpListener, time::Duration};
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let addr = listener.local_addr().unwrap();
+        let handle = std::thread::spawn(move || {
+            for archive in archives {
+                let (mut socket, _) = listener.accept().unwrap();
+                socket.set_read_timeout(Some(Duration::from_secs(10))).unwrap();
+                let mut request = Vec::new();
+                let mut byte = [0];
+                while !request.ends_with(b"\r\n\r\n") {
+                    socket.read_exact(&mut byte).unwrap();
+                    request.push(byte[0]);
+                    assert!(request.len() < 8192);
+                }
+                write!(
+                    socket,
+                    "HTTP/1.1 200 OK\r\nContent-Length: {}\r\nConnection: close\r\n\r\n",
+                    archive.len()
+                )
+                .unwrap();
+                socket.write_all(&archive).unwrap();
+            }
+        });
+        (addr, handle)
+    }
+
+    #[test]
+    fn test_install_verifies_hash_before_decompression() {
+        let temp = tempfile::tempdir().unwrap();
+        let dst = temp.path().join("install_target");
+
+        // Not valid zstd or tar; a wrong hash must fail at hash verification
+        // rather than surfacing a decompression/unpack error.
+        let garbage = b"not a zstd or tar payload";
+        let wrong_hash = compute_sha256(b"authentic payload");
+
+        let err = install(garbage.as_slice(), &dst, Some(wrong_hash)).unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+        assert_eq!(err.to_string(), "SHA-256 hash mismatch");
+        assert!(!dst.exists());
+
+        let entries: Vec<_> = fs::read_dir(temp.path())
+            .unwrap()
+            .map(|e| e.unwrap().file_name())
+            .filter(|n| n != "install_target.lock")
+            .collect();
+        assert!(entries.is_empty());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_rejected_0555_archive_does_not_contaminate_remote_install() {
+        let temp = tempfile::tempdir().unwrap();
+        let _restore = sync::tests::UnixRestorePermissions { root: temp.path() };
+
+        let malicious = create_tar_zst_with_modes(
+            &[("unexpected/marker.txt", b"UNVERIFIED REMOTE MARKER", 0o600)],
+            &[("unexpected", 0o555)],
+        );
+        let valid = create_tar_zst_with_modes(
+            &[("official.txt", b"authenticated expected contents", 0o644)],
+            &[],
+        );
+        let expected_sha256 = compute_sha256(&valid);
+
+        let (addr, server) = serve_archives_once(vec![malicious, valid]);
+        let url: &'static str =
+            Box::leak(format!("http://{addr}/archive.tar.zst").into_boxed_str());
+        let config = Config::new(&["tool"], "v1");
+        let tool_parent = temp.path().join("tool");
+
+        let first = config.resolve_installation_dir_or_install(
+            Location::Custom(temp.path().to_path_buf()),
+            Source::Remote(RemoteArchive { url, sha256: expected_sha256 }),
+        );
+        let err = first.unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+        assert_eq!(err.to_string(), "SHA-256 hash mismatch");
+        assert!(!tool_parent.join("v1").exists());
+        let leftover: Vec<_> = fs::read_dir(&tool_parent)
+            .unwrap()
+            .map(|e| e.unwrap().file_name())
+            .filter(|n| n != "v1.lock")
+            .collect();
+        assert!(leftover.is_empty(), "unexpected leftover entries: {leftover:?}");
+
+        let (installed, status) = config
+            .resolve_installation_dir_or_install(
+                Location::Custom(temp.path().to_path_buf()),
+                Source::Remote(RemoteArchive { url, sha256: expected_sha256 }),
+            )
+            .unwrap();
+        server.join().unwrap();
+
+        assert_eq!(status, ResolvedOrInstalled::NewlyInstalled);
+        assert_eq!(
+            fs::read_to_string(installed.join("official.txt")).unwrap(),
+            "authenticated expected contents"
+        );
+        assert!(!installed.join("unexpected").exists());
+        assert!(!installed.join("unexpected/marker.txt").exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_rejected_0000_dir_archive_does_not_block_remote_install() {
+        let temp = tempfile::tempdir().unwrap();
+        let _restore = sync::tests::UnixRestorePermissions { root: temp.path() };
+
+        let malicious =
+            create_tar_zst_with_modes(&[("bin/poison", b"UNVERIFIED", 0o600)], &[("bin", 0o000)]);
+        let valid = create_tar_zst_with_modes(&[("bin/tool", b"ok", 0o755)], &[]);
+        let expected_sha256 = compute_sha256(&valid);
+
+        let (addr, server) = serve_archives_once(vec![malicious, valid]);
+        let url: &'static str =
+            Box::leak(format!("http://{addr}/archive.tar.zst").into_boxed_str());
+        let config = Config::new(&["tool"], "v1");
+
+        let first = config.resolve_installation_dir_or_install(
+            Location::Custom(temp.path().to_path_buf()),
+            Source::Remote(RemoteArchive { url, sha256: expected_sha256 }),
+        );
+        let err = first.unwrap_err();
+        assert_eq!(err.kind(), std::io::ErrorKind::InvalidData);
+        assert_eq!(err.to_string(), "SHA-256 hash mismatch");
+
+        let (installed, status) = config
+            .resolve_installation_dir_or_install(
+                Location::Custom(temp.path().to_path_buf()),
+                Source::Remote(RemoteArchive { url, sha256: expected_sha256 }),
+            )
+            .unwrap();
+        server.join().unwrap();
+
+        assert_eq!(status, ResolvedOrInstalled::NewlyInstalled);
+        assert_eq!(fs::read(installed.join("bin/tool")).unwrap(), b"ok");
+        assert!(!installed.join("bin/poison").exists());
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn test_preexisting_unwritable_staging_residue_does_not_poison_or_block() {
+        use std::os::unix::fs::PermissionsExt as _;
+
+        let temp = tempfile::tempdir().unwrap();
+        let _restore = sync::tests::UnixRestorePermissions { root: temp.path() };
+        let dst = temp.path().join("install_target");
+
+        // Pre-populate both a legacy `<dst>.staging` tree with a mode-0555
+        // directory and a sibling `.staging-*` leftover containing a mode-0000
+        // directory.
+        let legacy_unexpected = temp.path().join("install_target.staging/unexpected");
+        fs::create_dir_all(&legacy_unexpected).unwrap();
+        fs::write(legacy_unexpected.join("marker.txt"), b"POISON").unwrap();
+        fs::set_permissions(&legacy_unexpected, fs::Permissions::from_mode(0o555)).unwrap();
+        fs::set_permissions(
+            temp.path().join("install_target.staging"),
+            fs::Permissions::from_mode(0o555),
+        )
+        .unwrap();
+
+        let orphaned_bin = temp.path().join(".staging-install_target.orphaned.staging/bin");
+        fs::create_dir_all(&orphaned_bin).unwrap();
+        fs::set_permissions(&orphaned_bin, fs::Permissions::from_mode(0o000)).unwrap();
+
+        let valid = create_tar_zst_with_modes(&[("official.txt", b"clean", 0o644)], &[]);
+        let expected_sha256 = compute_sha256(&valid);
+
+        install(valid.as_slice(), &dst, Some(expected_sha256)).unwrap();
+
+        assert!(dst.is_dir());
+        assert_eq!(fs::read_to_string(dst.join("official.txt")).unwrap(), "clean");
+        assert!(!dst.join("unexpected").exists());
+        assert!(!dst.join("bin").exists());
     }
 }
