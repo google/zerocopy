@@ -1,0 +1,1748 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.BoundaryLicensing.AllBad": [],
+    "Toy.BoundaryLicensing.AllCtx": [],
+    "Toy.BoundaryLicensing.Atom": [],
+    "Toy.BoundaryLicensing.AxiomId": [],
+    "Toy.BoundaryLicensing.BoundaryRel": [],
+    "Toy.BoundaryLicensing.BoundaryRel.casesOn": [],
+    "Toy.BoundaryLicensing.BoundaryRel.certFaithfulSoundPinned": [],
+    "Toy.BoundaryLicensing.BoundaryRel.certFaithfulSoundPinned.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.certFaithfulSoundPinned.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.cospanCaptureLower": [],
+    "Toy.BoundaryLicensing.BoundaryRel.cospanCaptureLower.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.cospanCaptureLower.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.ctorElim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.ctorElimType": [],
+    "Toy.BoundaryLicensing.BoundaryRel.ctorIdx": [],
+    "Toy.BoundaryLicensing.BoundaryRel.embed": [],
+    "Toy.BoundaryLicensing.BoundaryRel.embed.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.embed.inj": [],
+    "Toy.BoundaryLicensing.BoundaryRel.embed.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.BoundaryRel.embed.noConfusion": [],
+    "Toy.BoundaryLicensing.BoundaryRel.embed.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.hom": [],
+    "Toy.BoundaryLicensing.BoundaryRel.hom.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.hom.inj": [],
+    "Toy.BoundaryLicensing.BoundaryRel.hom.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.BoundaryRel.hom.noConfusion": [],
+    "Toy.BoundaryLicensing.BoundaryRel.hom.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.litEntails": [],
+    "Toy.BoundaryLicensing.BoundaryRel.litEntails.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.litEntails.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.lockStepSim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.lockStepSim.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.lockStepSim.inj": [],
+    "Toy.BoundaryLicensing.BoundaryRel.lockStepSim.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.BoundaryRel.lockStepSim.noConfusion": [],
+    "Toy.BoundaryLicensing.BoundaryRel.lockStepSim.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.noConfusion": [],
+    "Toy.BoundaryLicensing.BoundaryRel.noConfusionType": [],
+    "Toy.BoundaryLicensing.BoundaryRel.none": [],
+    "Toy.BoundaryLicensing.BoundaryRel.none.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.none.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.posBoundedMorph": [],
+    "Toy.BoundaryLicensing.BoundaryRel.posBoundedMorph.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.posBoundedMorph.inj": [],
+    "Toy.BoundaryLicensing.BoundaryRel.posBoundedMorph.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.BoundaryRel.posBoundedMorph.noConfusion": [],
+    "Toy.BoundaryLicensing.BoundaryRel.posBoundedMorph.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.rec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.recOn": [],
+    "Toy.BoundaryLicensing.BoundaryRel.stutterSim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.stutterSim.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.stutterSim.inj": [],
+    "Toy.BoundaryLicensing.BoundaryRel.stutterSim.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.BoundaryRel.stutterSim.noConfusion": [],
+    "Toy.BoundaryLicensing.BoundaryRel.stutterSim.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.surjHom": [],
+    "Toy.BoundaryLicensing.BoundaryRel.surjHom.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.surjHom.inj": [],
+    "Toy.BoundaryLicensing.BoundaryRel.surjHom.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.BoundaryRel.surjHom.noConfusion": [],
+    "Toy.BoundaryLicensing.BoundaryRel.surjHom.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.termRoundTrip": [],
+    "Toy.BoundaryLicensing.BoundaryRel.termRoundTrip.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.termRoundTrip.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.traceRefine": [],
+    "Toy.BoundaryLicensing.BoundaryRel.traceRefine.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.traceRefine.inj": [],
+    "Toy.BoundaryLicensing.BoundaryRel.traceRefine.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.BoundaryRel.traceRefine.noConfusion": [],
+    "Toy.BoundaryLicensing.BoundaryRel.traceRefine.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.BoundaryRel.wfStutterSim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.wfStutterSim.elim": [],
+    "Toy.BoundaryLicensing.BoundaryRel.wfStutterSim.inj": [],
+    "Toy.BoundaryLicensing.BoundaryRel.wfStutterSim.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.BoundaryRel.wfStutterSim.noConfusion": [],
+    "Toy.BoundaryLicensing.BoundaryRel.wfStutterSim.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.CertFaithful": [],
+    "Toy.BoundaryLicensing.CertPinnedLink": [],
+    "Toy.BoundaryLicensing.CertSemSound": [],
+    "Toy.BoundaryLicensing.CertVerifier": [],
+    "Toy.BoundaryLicensing.CertVerifier.casesOn": [],
+    "Toy.BoundaryLicensing.CertVerifier.check": [],
+    "Toy.BoundaryLicensing.CertVerifier.ctorIdx": [],
+    "Toy.BoundaryLicensing.CertVerifier.derivable": [],
+    "Toy.BoundaryLicensing.CertVerifier.mk": [],
+    "Toy.BoundaryLicensing.CertVerifier.mk.inj": [],
+    "Toy.BoundaryLicensing.CertVerifier.mk.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.CertVerifier.mk.noConfusion": [],
+    "Toy.BoundaryLicensing.CertVerifier.mk.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.CertVerifier.noConfusion": [],
+    "Toy.BoundaryLicensing.CertVerifier.noConfusionType": [],
+    "Toy.BoundaryLicensing.CertVerifier.official": [],
+    "Toy.BoundaryLicensing.CertVerifier.rec": [],
+    "Toy.BoundaryLicensing.CertVerifier.recOn": [],
+    "Toy.BoundaryLicensing.CertVerifier.valid": [],
+    "Toy.BoundaryLicensing.CheckerSound": [],
+    "Toy.BoundaryLicensing.ConsistentExcl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.ContradictsEv": [],
+    "Toy.BoundaryLicensing.CospanSysWitness": [],
+    "Toy.BoundaryLicensing.DisclaimerLitTrue": [],
+    "Toy.BoundaryLicensing.DisclaimerSafe": [],
+    "Toy.BoundaryLicensing.EntailsEv": [],
+    "Toy.BoundaryLicensing.EvalShape": [],
+    "Toy.BoundaryLicensing.EvalShape.match_1": [],
+    "Toy.BoundaryLicensing.ExactAdjudicatorOnWarnings": [],
+    "Toy.BoundaryLicensing.HasTrace": [],
+    "Toy.BoundaryLicensing.ImplChecker": [],
+    "Toy.BoundaryLicensing.ImplChecker.casesOn": [],
+    "Toy.BoundaryLicensing.ImplChecker.code": [],
+    "Toy.BoundaryLicensing.ImplChecker.ctorIdx": [],
+    "Toy.BoundaryLicensing.ImplChecker.mk": [],
+    "Toy.BoundaryLicensing.ImplChecker.mk.inj": [],
+    "Toy.BoundaryLicensing.ImplChecker.mk.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.ImplChecker.mk.noConfusion": [],
+    "Toy.BoundaryLicensing.ImplChecker.mk.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.ImplChecker.noConfusion": [],
+    "Toy.BoundaryLicensing.ImplChecker.noConfusionType": [],
+    "Toy.BoundaryLicensing.ImplChecker.rec": [],
+    "Toy.BoundaryLicensing.ImplChecker.recOn": [],
+    "Toy.BoundaryLicensing.ImplChecker.run": [],
+    "Toy.BoundaryLicensing.ImplExtensionalLaw": [],
+    "Toy.BoundaryLicensing.ImplicatureSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.InnocentlyExcludable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.IsEmbedFrom": [],
+    "Toy.BoundaryLicensing.IsExec": [],
+    "Toy.BoundaryLicensing.IsHomFrom": [],
+    "Toy.BoundaryLicensing.IsPosBoundedMorphFrom": [],
+    "Toy.BoundaryLicensing.IsSurjHomFrom": [],
+    "Toy.BoundaryLicensing.LitEntailsLink": [],
+    "Toy.BoundaryLicensing.LockStepSimFrom": [],
+    "Toy.BoundaryLicensing.LosesNoBehaviourAtInputs": [],
+    "Toy.BoundaryLicensing.LosesNoBehaviourAtInputs.match_1": [],
+    "Toy.BoundaryLicensing.LowerRefinesAt": [],
+    "Toy.BoundaryLicensing.MaximalConsistentExcl": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.MinimalSafeBlockers": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.NeitherNorDisclaimerSafe": [],
+    "Toy.BoundaryLicensing.NonDegen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.OnlyDeclaredAxioms": [],
+    "Toy.BoundaryLicensing.OnlyDeclaredAxioms.eq_1": [],
+    "Toy.BoundaryLicensing.OverApproxOnOk": [],
+    "Toy.BoundaryLicensing.PlusMatch": [],
+    "Toy.BoundaryLicensing.PlusMatch.below": [],
+    "Toy.BoundaryLicensing.PlusMatch.below.casesOn": [],
+    "Toy.BoundaryLicensing.PlusMatch.below.rec": [],
+    "Toy.BoundaryLicensing.PlusMatch.below.step_done": [],
+    "Toy.BoundaryLicensing.PlusMatch.below.step_stut": [],
+    "Toy.BoundaryLicensing.PlusMatch.brecOn": [],
+    "Toy.BoundaryLicensing.PlusMatch.casesOn": [],
+    "Toy.BoundaryLicensing.PlusMatch.rec": [],
+    "Toy.BoundaryLicensing.PlusMatch.recOn": [],
+    "Toy.BoundaryLicensing.PlusMatch.step_done": [],
+    "Toy.BoundaryLicensing.PlusMatch.step_stut": [],
+    "Toy.BoundaryLicensing.PosShape": [],
+    "Toy.BoundaryLicensing.PosShape.casesOn": [],
+    "Toy.BoundaryLicensing.PosShape.ctorElim": [],
+    "Toy.BoundaryLicensing.PosShape.ctorElimType": [],
+    "Toy.BoundaryLicensing.PosShape.ctorIdx": [],
+    "Toy.BoundaryLicensing.PosShape.existWitness": [],
+    "Toy.BoundaryLicensing.PosShape.existWitness.elim": [],
+    "Toy.BoundaryLicensing.PosShape.existWitness.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.PosShape.hyperGeneral": [],
+    "Toy.BoundaryLicensing.PosShape.hyperGeneral.elim": [],
+    "Toy.BoundaryLicensing.PosShape.hyperGeneral.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.PosShape.hyperSubsetClosed": [],
+    "Toy.BoundaryLicensing.PosShape.hyperSubsetClosed.elim": [],
+    "Toy.BoundaryLicensing.PosShape.hyperSubsetClosed.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.PosShape.noConfusion": [],
+    "Toy.BoundaryLicensing.PosShape.noConfusionType": [],
+    "Toy.BoundaryLicensing.PosShape.ofNat": [],
+    "Toy.BoundaryLicensing.PosShape.ofNat_ctorIdx": [],
+    "Toy.BoundaryLicensing.PosShape.rec": [],
+    "Toy.BoundaryLicensing.PosShape.recOn": [],
+    "Toy.BoundaryLicensing.PosShape.termination": [],
+    "Toy.BoundaryLicensing.PosShape.termination.elim": [],
+    "Toy.BoundaryLicensing.PosShape.termination.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.PosShape.univSafety": [],
+    "Toy.BoundaryLicensing.PosShape.univSafety.elim": [],
+    "Toy.BoundaryLicensing.PosShape.univSafety.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.PragRule": [],
+    "Toy.BoundaryLicensing.PragRule.casesOn": [],
+    "Toy.BoundaryLicensing.PragRule.condPerfection": [],
+    "Toy.BoundaryLicensing.PragRule.condPerfection.elim": [],
+    "Toy.BoundaryLicensing.PragRule.condPerfection.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.PragRule.ctorElim": [],
+    "Toy.BoundaryLicensing.PragRule.ctorElimType": [],
+    "Toy.BoundaryLicensing.PragRule.ctorIdx": [],
+    "Toy.BoundaryLicensing.PragRule.noConfusion": [],
+    "Toy.BoundaryLicensing.PragRule.noConfusionType": [],
+    "Toy.BoundaryLicensing.PragRule.ofNat": [],
+    "Toy.BoundaryLicensing.PragRule.ofNat_ctorIdx": [],
+    "Toy.BoundaryLicensing.PragRule.rec": [],
+    "Toy.BoundaryLicensing.PragRule.recOn": [],
+    "Toy.BoundaryLicensing.PragRule.scalarExh": [],
+    "Toy.BoundaryLicensing.PragRule.scalarExh.elim": [],
+    "Toy.BoundaryLicensing.PragRule.scalarExh.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Realizes": [],
+    "Toy.BoundaryLicensing.Realizes.match_1": [],
+    "Toy.BoundaryLicensing.RealizesChain": [],
+    "Toy.BoundaryLicensing.RealizesChain.below": [],
+    "Toy.BoundaryLicensing.RealizesChain.below.casesOn": [],
+    "Toy.BoundaryLicensing.RealizesChain.below.cons": [],
+    "Toy.BoundaryLicensing.RealizesChain.below.nil": [],
+    "Toy.BoundaryLicensing.RealizesChain.below.rec": [],
+    "Toy.BoundaryLicensing.RealizesChain.brecOn": [],
+    "Toy.BoundaryLicensing.RealizesChain.casesOn": [],
+    "Toy.BoundaryLicensing.RealizesChain.cons": [],
+    "Toy.BoundaryLicensing.RealizesChain.nil": [],
+    "Toy.BoundaryLicensing.RealizesChain.rec": [],
+    "Toy.BoundaryLicensing.RealizesChain.recOn": [],
+    "Toy.BoundaryLicensing.RealizesUnderTCB": [],
+    "Toy.BoundaryLicensing.RealizesUnderTCB.eq_1": [],
+    "Toy.BoundaryLicensing.RoundTripLink": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.bareOnly": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.bareOnly.elim": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.bareOnly.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.casesOn": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.ctorElim": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.ctorElimType": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.ctorIdx": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.neitherNor": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.neitherNor.elim": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.neitherNor.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.noConfusion": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.noConfusionType": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.ofNat": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.ofNat_ctorIdx": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.rec": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.recOn": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.unblockedUnshown": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.unblockedUnshown.elim": [],
+    "Toy.BoundaryLicensing.ScopeDisclaimer.unblockedUnshown.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Sequent": [],
+    "Toy.BoundaryLicensing.Sequent.CtxNonVacuous": [],
+    "Toy.BoundaryLicensing.Sequent.FullPremiseNonVacuous": [],
+    "Toy.BoundaryLicensing.Sequent.Holds": [],
+    "Toy.BoundaryLicensing.Sequent.NonVacuousOnBranches": [],
+    "Toy.BoundaryLicensing.Sequent.TightBadAt": [],
+    "Toy.BoundaryLicensing.Sequent.TightCtxAt": [],
+    "Toy.BoundaryLicensing.Sequent.badHyps": [],
+    "Toy.BoundaryLicensing.Sequent.casesOn": [],
+    "Toy.BoundaryLicensing.Sequent.ctorIdx": [],
+    "Toy.BoundaryLicensing.Sequent.ctxHyps": [],
+    "Toy.BoundaryLicensing.Sequent.goal": [],
+    "Toy.BoundaryLicensing.Sequent.mk": [],
+    "Toy.BoundaryLicensing.Sequent.mk.inj": [],
+    "Toy.BoundaryLicensing.Sequent.mk.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.Sequent.mk.noConfusion": [],
+    "Toy.BoundaryLicensing.Sequent.mk.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Sequent.noConfusion": [],
+    "Toy.BoundaryLicensing.Sequent.noConfusionType": [],
+    "Toy.BoundaryLicensing.Sequent.rec": [],
+    "Toy.BoundaryLicensing.Sequent.recOn": [],
+    "Toy.BoundaryLicensing.SimDir": [],
+    "Toy.BoundaryLicensing.SimDir.casesOn": [],
+    "Toy.BoundaryLicensing.SimDir.ctorElim": [],
+    "Toy.BoundaryLicensing.SimDir.ctorElimType": [],
+    "Toy.BoundaryLicensing.SimDir.ctorIdx": [],
+    "Toy.BoundaryLicensing.SimDir.m2s": [],
+    "Toy.BoundaryLicensing.SimDir.m2s.elim": [],
+    "Toy.BoundaryLicensing.SimDir.m2s.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.SimDir.noConfusion": [],
+    "Toy.BoundaryLicensing.SimDir.noConfusionType": [],
+    "Toy.BoundaryLicensing.SimDir.ofNat": [],
+    "Toy.BoundaryLicensing.SimDir.ofNat_ctorIdx": [],
+    "Toy.BoundaryLicensing.SimDir.rec": [],
+    "Toy.BoundaryLicensing.SimDir.recOn": [],
+    "Toy.BoundaryLicensing.SimDir.s2m": [],
+    "Toy.BoundaryLicensing.SimDir.s2m.elim": [],
+    "Toy.BoundaryLicensing.SimDir.s2m.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Spec": [],
+    "Toy.BoundaryLicensing.Spec.atom": [],
+    "Toy.BoundaryLicensing.Spec.atom.elim": [],
+    "Toy.BoundaryLicensing.Spec.atom.inj": [],
+    "Toy.BoundaryLicensing.Spec.atom.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.Spec.atom.noConfusion": [],
+    "Toy.BoundaryLicensing.Spec.atom.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Spec.below": [],
+    "Toy.BoundaryLicensing.Spec.bot": [],
+    "Toy.BoundaryLicensing.Spec.bot.elim": [],
+    "Toy.BoundaryLicensing.Spec.bot.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Spec.brecOn": [],
+    "Toy.BoundaryLicensing.Spec.brecOn.eq": [],
+    "Toy.BoundaryLicensing.Spec.brecOn.go": [],
+    "Toy.BoundaryLicensing.Spec.casesOn": [],
+    "Toy.BoundaryLicensing.Spec.conj": [],
+    "Toy.BoundaryLicensing.Spec.conj.elim": [],
+    "Toy.BoundaryLicensing.Spec.conj.inj": [],
+    "Toy.BoundaryLicensing.Spec.conj.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.Spec.conj.noConfusion": [],
+    "Toy.BoundaryLicensing.Spec.conj.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Spec.ctorElim": [],
+    "Toy.BoundaryLicensing.Spec.ctorElimType": [],
+    "Toy.BoundaryLicensing.Spec.ctorIdx": [],
+    "Toy.BoundaryLicensing.Spec.disj": [],
+    "Toy.BoundaryLicensing.Spec.disj.elim": [],
+    "Toy.BoundaryLicensing.Spec.disj.inj": [],
+    "Toy.BoundaryLicensing.Spec.disj.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.Spec.disj.noConfusion": [],
+    "Toy.BoundaryLicensing.Spec.disj.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Spec.noConfusion": [],
+    "Toy.BoundaryLicensing.Spec.noConfusionType": [],
+    "Toy.BoundaryLicensing.Spec.rec": [],
+    "Toy.BoundaryLicensing.Spec.recOn": [],
+    "Toy.BoundaryLicensing.Spec.top": [],
+    "Toy.BoundaryLicensing.Spec.top.elim": [],
+    "Toy.BoundaryLicensing.Spec.top.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Status": [],
+    "Toy.BoundaryLicensing.Status.Definite": [],
+    "Toy.BoundaryLicensing.Status.casesOn": [],
+    "Toy.BoundaryLicensing.Status.contradicted": [],
+    "Toy.BoundaryLicensing.Status.contradicted.elim": [],
+    "Toy.BoundaryLicensing.Status.contradicted.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Status.ctorElim": [],
+    "Toy.BoundaryLicensing.Status.ctorElimType": [],
+    "Toy.BoundaryLicensing.Status.ctorIdx": [],
+    "Toy.BoundaryLicensing.Status.flip": [],
+    "Toy.BoundaryLicensing.Status.le": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.Status.le.eq_1": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.Status.le.eq_2": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.Status.le.match_1": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.Status.noConfusion": [],
+    "Toy.BoundaryLicensing.Status.noConfusionType": [],
+    "Toy.BoundaryLicensing.Status.ofNat": [],
+    "Toy.BoundaryLicensing.Status.ofNat_ctorIdx": [],
+    "Toy.BoundaryLicensing.Status.rec": [],
+    "Toy.BoundaryLicensing.Status.recOn": [],
+    "Toy.BoundaryLicensing.Status.supported": [],
+    "Toy.BoundaryLicensing.Status.supported.elim": [],
+    "Toy.BoundaryLicensing.Status.supported.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Status.undetermined": [],
+    "Toy.BoundaryLicensing.Status.undetermined.elim": [],
+    "Toy.BoundaryLicensing.Status.undetermined.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Steps": [],
+    "Toy.BoundaryLicensing.Steps.below": [],
+    "Toy.BoundaryLicensing.Steps.below.casesOn": [],
+    "Toy.BoundaryLicensing.Steps.below.rec": [],
+    "Toy.BoundaryLicensing.Steps.below.refl": [],
+    "Toy.BoundaryLicensing.Steps.below.tail": [],
+    "Toy.BoundaryLicensing.Steps.brecOn": [],
+    "Toy.BoundaryLicensing.Steps.casesOn": [],
+    "Toy.BoundaryLicensing.Steps.rec": [],
+    "Toy.BoundaryLicensing.Steps.recOn": [],
+    "Toy.BoundaryLicensing.Steps.refl": [],
+    "Toy.BoundaryLicensing.Steps.tail": [],
+    "Toy.BoundaryLicensing.StutterSimFrom": [],
+    "Toy.BoundaryLicensing.SubsetClosed": [],
+    "Toy.BoundaryLicensing.SuiteSoundInvariant": [],
+    "Toy.BoundaryLicensing.SummaryCard": [],
+    "Toy.BoundaryLicensing.SummaryCard.casesOn": [],
+    "Toy.BoundaryLicensing.SummaryCard.concl": [],
+    "Toy.BoundaryLicensing.SummaryCard.ctorIdx": [],
+    "Toy.BoundaryLicensing.SummaryCard.hyp": [],
+    "Toy.BoundaryLicensing.SummaryCard.lit": [],
+    "Toy.BoundaryLicensing.SummaryCard.mk": [],
+    "Toy.BoundaryLicensing.SummaryCard.mk.inj": [],
+    "Toy.BoundaryLicensing.SummaryCard.mk.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.SummaryCard.mk.noConfusion": [],
+    "Toy.BoundaryLicensing.SummaryCard.mk.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.SummaryCard.noConfusion": [],
+    "Toy.BoundaryLicensing.SummaryCard.noConfusionType": [],
+    "Toy.BoundaryLicensing.SummaryCard.pragReading": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.SummaryCard.rec": [],
+    "Toy.BoundaryLicensing.SummaryCard.recOn": [],
+    "Toy.BoundaryLicensing.Sys": [],
+    "Toy.BoundaryLicensing.Sys.State": [],
+    "Toy.BoundaryLicensing.Sys.casesOn": [],
+    "Toy.BoundaryLicensing.Sys.ctorIdx": [],
+    "Toy.BoundaryLicensing.Sys.init": [],
+    "Toy.BoundaryLicensing.Sys.init_nonempty": [],
+    "Toy.BoundaryLicensing.Sys.mk": [],
+    "Toy.BoundaryLicensing.Sys.mk.inj": [],
+    "Toy.BoundaryLicensing.Sys.mk.injEq": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.Sys.mk.noConfusion": [],
+    "Toy.BoundaryLicensing.Sys.mk.sizeOf_spec": [],
+    "Toy.BoundaryLicensing.Sys.noConfusion": [],
+    "Toy.BoundaryLicensing.Sys.noConfusionType": [],
+    "Toy.BoundaryLicensing.Sys.rec": [],
+    "Toy.BoundaryLicensing.Sys.recOn": [],
+    "Toy.BoundaryLicensing.Sys.step": [],
+    "Toy.BoundaryLicensing.Sys.step_total": [],
+    "Toy.BoundaryLicensing.Sys.val": [],
+    "Toy.BoundaryLicensing.TableConsistentWith": [],
+    "Toy.BoundaryLicensing.TablePinned": [],
+    "Toy.BoundaryLicensing.Trace": [],
+    "Toy.BoundaryLicensing.TraceDeterministic": [],
+    "Toy.BoundaryLicensing.TraceIncl": [],
+    "Toy.BoundaryLicensing.TraceSet": [],
+    "Toy.BoundaryLicensing.TraceSub": [],
+    "Toy.BoundaryLicensing.UndeterminedEv": [],
+    "Toy.BoundaryLicensing.Valuation": [],
+    "Toy.BoundaryLicensing.WfStutterSimFrom": [],
+    "Toy.BoundaryLicensing.WorldClaim": [],
+    "Toy.BoundaryLicensing.ZeroFalseAccept": [],
+    "Toy.BoundaryLicensing.ZeroLockout": [],
+    "Toy.BoundaryLicensing.acceptsNamed": [],
+    "Toy.BoundaryLicensing.acceptsNamed.eq_1": [],
+    "Toy.BoundaryLicensing.acceptsNamed.match_1": [],
+    "Toy.BoundaryLicensing.acceptsNamed_neg": [],
+    "Toy.BoundaryLicensing.acceptsNamed_pos": [],
+    "Toy.BoundaryLicensing.allBad_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.allBad_pos": [],
+    "Toy.BoundaryLicensing.allCtx_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.allCtx_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.allSafeH": [],
+    "Toy.BoundaryLicensing.allSafeH_subsetClosed": [],
+    "Toy.BoundaryLicensing.allowlistAccepts": [],
+    "Toy.BoundaryLicensing.allowlistAccepts.eq_1": [],
+    "Toy.BoundaryLicensing.allowlistAccepts_iff_onlyDeclaredAxioms": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.allowlistAccepts_neg": [],
+    "Toy.BoundaryLicensing.allowlistAccepts_pos": [],
+    "Toy.BoundaryLicensing.bitSem": [],
+    "Toy.BoundaryLicensing.bitSem.match_1": [],
+    "Toy.BoundaryLicensing.blockingGate": [],
+    "Toy.BoundaryLicensing.blockingGate.eq_1": [],
+    "Toy.BoundaryLicensing.blockingGate_locks_out_strict_proxy": [],
+    "Toy.BoundaryLicensing.blockingGate_neg": [],
+    "Toy.BoundaryLicensing.blockingGate_pos": [],
+    "Toy.BoundaryLicensing.boolHonestVerifier": [],
+    "Toy.BoundaryLicensing.boolHonestVerifier.eq_1": [],
+    "Toy.BoundaryLicensing.boolUnfaithfulVerifier": [],
+    "Toy.BoundaryLicensing.boolUnfaithfulVerifier.eq_1": [],
+    "Toy.BoundaryLicensing.bothBranchesH": [],
+    "Toy.BoundaryLicensing.branch_nonVacuous_blocks_vacuous_branch_false": [],
+    "Toy.BoundaryLicensing.certFaithful_neg": [],
+    "Toy.BoundaryLicensing.certFaithful_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.certPinnedLink_iff_traceEquiv": [],
+    "Toy.BoundaryLicensing.certSemSound_neg": [],
+    "Toy.BoundaryLicensing.certSemSound_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cert_trust_triple_sound": [],
+    "Toy.BoundaryLicensing.cex_blocking_lockout_without_proxy_reject": [],
+    "Toy.BoundaryLicensing.cex_blocking_lockout_without_valid_witness": [],
+    "Toy.BoundaryLicensing.cex_coincidental_truth_on_unlicensed_chain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_cospan_without_capture_ok": [],
+    "Toy.BoundaryLicensing.cex_cospan_without_ir_holds": [],
+    "Toy.BoundaryLicensing.cex_cospan_without_lowerRefines": [],
+    "Toy.BoundaryLicensing.cex_cospan_without_overApproxOnOk": [],
+    "Toy.BoundaryLicensing.cex_cospan_without_prepass_no_loss": [],
+    "Toy.BoundaryLicensing.cex_cospan_without_subsetClosed": [],
+    "Toy.BoundaryLicensing.cex_exhaustifiedOnly_unsound_without_undetermined": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_exhaustifiedOnly_without_model_entailed": [],
+    "Toy.BoundaryLicensing.cex_global_ctxNonVacuous_dead_right_branch": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_iff_converse_unlicensed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_licensedTransfer_iff_without_nonDegen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_lookup_without_consistent": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_lookup_without_extensional": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_lookup_without_law": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_neitherNor_without_model_entailed": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_posShape_distinct_without_ne": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_refutation_not_fullPremise_without_hholds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_refutation_not_fullPremise_without_href": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_sepMatrix_subdiagonal_without_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_sharp_without_definite": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_sharp_without_nonDegen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_sharp_without_undetermined": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_suite_barrier_without_invariant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_suite_barrier_without_law": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_suite_barrier_without_outside_witness": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_suite_barrier_without_sound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_transferChain_iff_without_nonDegen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_transferIff_sound_without_realizes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_transfer_sound_without_realizes": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_trust_triple_without_accepted": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_trust_triple_without_faithful": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_trust_triple_without_pinned": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_trust_triple_without_semSound": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_unwarranted_collapse_without_nonDegen": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.cex_warnAdjudicate_without_exact_adjudicator": [],
+    "Toy.BoundaryLicensing.cex_warnAdjudicate_without_sound_fastPath": [],
+    "Toy.BoundaryLicensing.checkerSound_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.checkerSound_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.checkerSound_suiteAllowlist": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.compressedG1Card": [],
+    "Toy.BoundaryLicensing.condPerfection_compression_breaks_minimal_safe_blocker": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.constSys": [],
+    "Toy.BoundaryLicensing.constSys.eq_1": [],
+    "Toy.BoundaryLicensing.contradictsEv_neg": [],
+    "Toy.BoundaryLicensing.contradictsEv_pos": [],
+    "Toy.BoundaryLicensing.cospanSysWitness_iff_traceIncl": [],
+    "Toy.BoundaryLicensing.cospan_subsetClosed_transfer": [],
+    "Toy.BoundaryLicensing.cospan_sys_hyperSubsetClosed_transfer": [],
+    "Toy.BoundaryLicensing.ctxNonVacuous_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.ctxNonVacuous_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.deadRightBranchSequent": [],
+    "Toy.BoundaryLicensing.deadRightBranchSequent.eq_1": [],
+    "Toy.BoundaryLicensing.denylistAccepts": [],
+    "Toy.BoundaryLicensing.denylistAccepts.eq_1": [],
+    "Toy.BoundaryLicensing.denylistAccepts_neg": [],
+    "Toy.BoundaryLicensing.denylistAccepts_pos": [],
+    "Toy.BoundaryLicensing.denylist_complement_sound_on_closed_universe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.determinizing_stage_breaks_markovian_completeness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.determinizing_stage_breaks_markovian_completeness.match_1_1": [],
+    "Toy.BoundaryLicensing.disclaimerReadings": [],
+    "Toy.BoundaryLicensing.disclaimerSafe_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.disclaimerSafe_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.embedM2S_flip_witness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.entailsEv_neg": [],
+    "Toy.BoundaryLicensing.entailsEv_pos": [],
+    "Toy.BoundaryLicensing.evalShape_constSys_valFalse": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_constSys_valTrue": [],
+    "Toy.BoundaryLicensing.evalShape_finiteStutter_not_subClosed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_finiteStutter_not_subClosed.match_1_1": [],
+    "Toy.BoundaryLicensing.evalShape_finiteStutter_not_subClosed.match_1_5": [],
+    "Toy.BoundaryLicensing.evalShape_oneBranch": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_oneBranch_vf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_oneBranch_vf_vt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_oneBranch_vf_vt.match_1_1": [],
+    "Toy.BoundaryLicensing.evalShape_oneBranch_vt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_stepSys_terminates": [],
+    "Toy.BoundaryLicensing.evalShape_threeBranch_mixed": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_threeBranch_mixed.match_1_1": [],
+    "Toy.BoundaryLicensing.evalShape_threeBranch_no_gni": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_twoBranch_gni": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_twoBranch_gni.match_1_1": [],
+    "Toy.BoundaryLicensing.evalShape_twoBranch_vt_vf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_univSafety_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalShape_univSafety_pos": [],
+    "Toy.BoundaryLicensing.evalVal": [],
+    "Toy.BoundaryLicensing.evalVal.eq_1": [],
+    "Toy.BoundaryLicensing.evalVal.eq_2": [],
+    "Toy.BoundaryLicensing.evalVal.eq_3": [],
+    "Toy.BoundaryLicensing.evalVal.eq_4": [],
+    "Toy.BoundaryLicensing.evalVal.eq_5": [],
+    "Toy.BoundaryLicensing.evalVal.eq_def": [],
+    "Toy.BoundaryLicensing.evalVal.match_1": [],
+    "Toy.BoundaryLicensing.evalVal_all_false_of_valTrue": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalVal_all_true_of_valFalse": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalVal_mono": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.evalVal_neg": [],
+    "Toy.BoundaryLicensing.evalVal_pos": [],
+    "Toy.BoundaryLicensing.exactAdjudicatorOnWarnings_neg": [],
+    "Toy.BoundaryLicensing.exactAdjudicatorOnWarnings_pos": [],
+    "Toy.BoundaryLicensing.exhaustifiedOnlyReading": [],
+    "Toy.BoundaryLicensing.exhaustifiedOnlyReading_neg": [],
+    "Toy.BoundaryLicensing.exhaustifiedOnlyReading_pos": [],
+    "Toy.BoundaryLicensing.exhaustifiedOnly_sound_iff_contradictsEv": [],
+    "Toy.BoundaryLicensing.exhaustifiedOnly_unsound_and_neitherNor_safe_of_undetermined": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.exists_flip_realization": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.extend_reachable_to_trace": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.extensional_law_admits_lookupWrapper": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.fin3Alt02": [],
+    "Toy.BoundaryLicensing.fin3Alt02.eq_1": [],
+    "Toy.BoundaryLicensing.fin3Alt12": [],
+    "Toy.BoundaryLicensing.fin3Alt12.eq_1": [],
+    "Toy.BoundaryLicensing.finiteStutterSys": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.finiteStutterSys.eq_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.finite_suite_allowlist_barrier": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.flip_ne_self_of_definite": [],
+    "Toy.BoundaryLicensing.freshAxiomOutside": [],
+    "Toy.BoundaryLicensing.freshAxiomOutside_accepted_by_denylist_rejected_by_allowlist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.freshAxiomOutside_neg": [],
+    "Toy.BoundaryLicensing.freshAxiomOutside_not_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.freshAxiomOutside_pos": [],
+    "Toy.BoundaryLicensing.fullConjCard": [],
+    "Toy.BoundaryLicensing.fullPremiseNonVacuous_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.fullPremiseNonVacuous_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.gateWarrant": [],
+    "Toy.BoundaryLicensing.gateWarrant.eq_1": [],
+    "Toy.BoundaryLicensing.gateWarrant_neg": [],
+    "Toy.BoundaryLicensing.gateWarrant_pos": [],
+    "Toy.BoundaryLicensing.hasTrace_constSys_iff": [],
+    "Toy.BoundaryLicensing.hasTrace_maskedBranchSys_iff": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.hasTrace_maskedBranchSys_iff.match_1_2": [],
+    "Toy.BoundaryLicensing.hasTrace_nonempty": [
+      "Classical.choice"
+    ],
+    "Toy.BoundaryLicensing.hasTrace_stepSys_iff": [],
+    "Toy.BoundaryLicensing.hasTrace_stepSys_iff.match_1_1": [],
+    "Toy.BoundaryLicensing.implExtensionalLaw_neg": [],
+    "Toy.BoundaryLicensing.implExtensionalLaw_pos": [],
+    "Toy.BoundaryLicensing.implicatureSafe_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.implicatureSafe_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.innocentExh": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.innocentExh_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.innocentExh_neg.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.innocentExh_neg.match_1_3": [],
+    "Toy.BoundaryLicensing.innocentExh_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.innocentExh_pos.match_1_1": [],
+    "Toy.BoundaryLicensing.instDecidableEqBoundaryRel": [],
+    "Toy.BoundaryLicensing.instDecidableEqBoundaryRel.decEq": [],
+    "Toy.BoundaryLicensing.instDecidableEqBoundaryRel.decEq.match_1": [],
+    "Toy.BoundaryLicensing.instDecidableEqPosShape": [],
+    "Toy.BoundaryLicensing.instDecidableEqPragRule": [],
+    "Toy.BoundaryLicensing.instDecidableEqScopeDisclaimer": [],
+    "Toy.BoundaryLicensing.instDecidableEqSimDir": [],
+    "Toy.BoundaryLicensing.instDecidableEqSpec": [],
+    "Toy.BoundaryLicensing.instDecidableEqSpec.decEq": [],
+    "Toy.BoundaryLicensing.instDecidableEqSpec.decEq.match_1": [],
+    "Toy.BoundaryLicensing.instDecidableEqStatus": [],
+    "Toy.BoundaryLicensing.instDecidableLe": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.instDecidableLe.match_5": [],
+    "Toy.BoundaryLicensing.instReprBoundaryRel": [],
+    "Toy.BoundaryLicensing.instReprBoundaryRel.repr": [],
+    "Toy.BoundaryLicensing.instReprBoundaryRel.repr.match_1": [],
+    "Toy.BoundaryLicensing.instReprPosShape": [],
+    "Toy.BoundaryLicensing.instReprPosShape.repr": [],
+    "Toy.BoundaryLicensing.instReprPosShape.repr.match_1": [],
+    "Toy.BoundaryLicensing.instReprPragRule": [],
+    "Toy.BoundaryLicensing.instReprPragRule.repr": [],
+    "Toy.BoundaryLicensing.instReprPragRule.repr.match_1": [],
+    "Toy.BoundaryLicensing.instReprScopeDisclaimer": [],
+    "Toy.BoundaryLicensing.instReprScopeDisclaimer.repr": [],
+    "Toy.BoundaryLicensing.instReprScopeDisclaimer.repr.match_1": [],
+    "Toy.BoundaryLicensing.instReprSimDir": [],
+    "Toy.BoundaryLicensing.instReprSimDir.repr": [],
+    "Toy.BoundaryLicensing.instReprSimDir.repr.match_1": [],
+    "Toy.BoundaryLicensing.instReprSpec": [],
+    "Toy.BoundaryLicensing.instReprSpec.repr": [],
+    "Toy.BoundaryLicensing.instReprSpec.repr.match_1": [],
+    "Toy.BoundaryLicensing.instReprStatus": [],
+    "Toy.BoundaryLicensing.instReprStatus.repr": [],
+    "Toy.BoundaryLicensing.instReprStatus.repr.match_1": [],
+    "Toy.BoundaryLicensing.isEmbedFrom_isHomFrom": [],
+    "Toy.BoundaryLicensing.isEmbedFrom_lockStepSimFrom": [],
+    "Toy.BoundaryLicensing.isEmbedFrom_one_two": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.isEmbedFrom_two_three": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.isHomFrom_preserves_existWitness": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.isHomFrom_to_constValTrue": [],
+    "Toy.BoundaryLicensing.isPosBoundedMorphFrom_isHomFrom": [],
+    "Toy.BoundaryLicensing.isPosBoundedMorphFrom_lifts_exec": [
+      "Classical.choice"
+    ],
+    "Toy.BoundaryLicensing.isPosBoundedMorphFrom_neg": [],
+    "Toy.BoundaryLicensing.isPosBoundedMorphFrom_pos": [],
+    "Toy.BoundaryLicensing.isPosBoundedMorphFrom_preserves_termination": [
+      "Classical.choice",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.isPosBoundedMorphFrom_preserves_termination.match_1_1": [],
+    "Toy.BoundaryLicensing.isPosBoundedMorphFrom_preserves_univSafety": [
+      "Classical.choice",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.isPosBoundedMorphFrom_preserves_univSafety.match_1_1": [],
+    "Toy.BoundaryLicensing.isPosBoundedMorphFrom_to_constValTrue": [],
+    "Toy.BoundaryLicensing.isSurjHomFrom_isHomFrom": [],
+    "Toy.BoundaryLicensing.isSurjHomFrom_neg": [],
+    "Toy.BoundaryLicensing.isSurjHomFrom_pos": [],
+    "Toy.BoundaryLicensing.isSurjHomFrom_to_constValTrue": [],
+    "Toy.BoundaryLicensing.licensedTransfer": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.licensedTransfer.eq_1": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.licensedTransfer_eq_iff_forall_realizesUnderTCB": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.licensedTransfer_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.licensedTransfer_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.litEntails_constFalse_constTrue": [
+      "Classical.choice",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.litEntails_mixed_to_vt_and_gni": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.litEntails_mixed_to_vt_and_gni.match_1_1": [],
+    "Toy.BoundaryLicensing.lockStepSimFrom_traceIncl": [
+      "Classical.choice"
+    ],
+    "Toy.BoundaryLicensing.lockStepSimFrom_wfStutterSimFrom": [],
+    "Toy.BoundaryLicensing.lookupWrapper": [],
+    "Toy.BoundaryLicensing.lookupWrapper.match_1": [],
+    "Toy.BoundaryLicensing.lookupWrapper_eq_of_consistent": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.lookupWrapper_neg": [],
+    "Toy.BoundaryLicensing.lookupWrapper_pos": [],
+    "Toy.BoundaryLicensing.lookupWrapper_same_code_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.losesNoBehaviourAtInputs_neg": [],
+    "Toy.BoundaryLicensing.losesNoBehaviourAtInputs_pos": [],
+    "Toy.BoundaryLicensing.lowerRefinesAt_neg": [],
+    "Toy.BoundaryLicensing.lowerRefinesAt_pos": [],
+    "Toy.BoundaryLicensing.maskedBranchSys": [],
+    "Toy.BoundaryLicensing.maskedBranchSys.eq_1": [],
+    "Toy.BoundaryLicensing.minimalSafeBlockers_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.minimalSafeBlockers_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.natBoundRefutation": [],
+    "Toy.BoundaryLicensing.natBoundRefutation.eq_1": [],
+    "Toy.BoundaryLicensing.negation_closed_entailment_preserves_contradicted": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.negation_closed_entailment_preserves_contradicted.match_1_1": [],
+    "Toy.BoundaryLicensing.neitherNorDisclaimerSafe_iff": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.neitherNorDisclaimerSafe_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.neitherNorDisclaimerSafe_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.no_finite_denylist_enforces_allowlist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.no_stateless_implicature_transfer_for_compression": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonDegen_MultiPos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonDegen_iff_evalVal_false_true": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonDegen_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonDegen_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonVacuousOnBranches_implies_ctxNonVacuous": [],
+    "Toy.BoundaryLicensing.nonVacuousOnBranches_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonVacuousOnBranches_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_allowlist_vs_denylist": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_cert_trust_triple": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_cospan_transfer": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_cospan_transfer.match_1_2": [],
+    "Toy.BoundaryLicensing.nonvacuity_exact_blockingGate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_exhaustifiedOnly": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_extensional_lookupWrapper": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_extensional_lookupWrapper.match_1_1": [],
+    "Toy.BoundaryLicensing.nonvacuity_finite_suite_barrier": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_finite_suite_barrier.match_1_1": [],
+    "Toy.BoundaryLicensing.nonvacuity_licensedTransfer": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_posShape_distinct": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_sequent_refutation_and_branches": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_transferChain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_transfer_sharp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_transfer_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.nonvacuity_warnAdjudicate_strict_proxy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.oneBranchSys": [],
+    "Toy.BoundaryLicensing.oneBranchSys.eq_1": [],
+    "Toy.BoundaryLicensing.onlyDeclaredAxioms_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.onlyDeclaredAxioms_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.outside_accepted_good_iff": [],
+    "Toy.BoundaryLicensing.overApproxOnOk_neg": [],
+    "Toy.BoundaryLicensing.overApproxOnOk_pos": [],
+    "Toy.BoundaryLicensing.plusMatch_rel_head": [],
+    "Toy.BoundaryLicensing.plusMatch_step_unpack": [],
+    "Toy.BoundaryLicensing.plusMatch_steps": [],
+    "Toy.BoundaryLicensing.posBoundedMorphM2S_flip_witness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.posBoundedMorphM2S_flip_witness.match_1_79": [],
+    "Toy.BoundaryLicensing.posShape_columns_pairwise_distinct": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.positive_control_intensional_code_law_separates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.positive_control_postFreeze_probe_separates": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_1": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_10": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_11": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_12": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_13": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_14": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_15": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_16": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_17": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_18": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_19": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_2": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_20": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_21": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_22": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_23": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_24": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_25": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_26": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_27": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_28": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_29": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_3": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_30": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_31": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_32": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_33": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_34": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_35": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_36": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_37": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_38": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_39": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_4": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_40": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_41": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_42": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_43": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_44": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_45": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_46": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_47": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_48": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_49": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_5": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_50": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_51": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_52": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_53": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_54": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_55": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_56": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_57": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_58": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_59": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_6": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_60": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_61": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_62": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_63": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_64": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_65": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_66": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_67": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_68": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_69": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_7": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_70": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_8": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.eq_9": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.preservesDefinite.match_1": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.realizesChain_append": [],
+    "Toy.BoundaryLicensing.realizesChain_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.realizesChain_pos": [],
+    "Toy.BoundaryLicensing.realizesChain_refl": [],
+    "Toy.BoundaryLicensing.realizesUnderTCB_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.realizesUnderTCB_pos": [],
+    "Toy.BoundaryLicensing.realizes_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.realizes_pos": [],
+    "Toy.BoundaryLicensing.realizes_refl": [],
+    "Toy.BoundaryLicensing.recomputeBlockers": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.recomputeBlockers_safe_and_minimal": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.refutation_not_fullPremiseNonVacuous": [],
+    "Toy.BoundaryLicensing.roundTripLink_iff_traceEquiv": [],
+    "Toy.BoundaryLicensing.runPasses": [],
+    "Toy.BoundaryLicensing.runPasses_neg": [],
+    "Toy.BoundaryLicensing.runPasses_pos": [],
+    "Toy.BoundaryLicensing.runPasses_preserves_behaviours": [],
+    "Toy.BoundaryLicensing.scalarExh_compression_breaks_blocker_minimality": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.scalarExh_compression_breaks_blocker_minimality.match_1_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.scalarExh_compression_breaks_blocker_minimality.match_1_10": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.scalarExh_compression_breaks_blocker_minimality.match_1_3": [],
+    "Toy.BoundaryLicensing.sepMatrix_subdiagonal_countermodels": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.sepMatrix_upperTriangular": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.sepRel": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.sepRel.match_1": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.sepRel_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.sepRel_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.sepShape": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.sepShape_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.sepShape_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.sequent_holds_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.sequent_holds_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.specAtom0": [],
+    "Toy.BoundaryLicensing.specAtom0.eq_1": [],
+    "Toy.BoundaryLicensing.specAtom1": [],
+    "Toy.BoundaryLicensing.specAtom1.eq_1": [],
+    "Toy.BoundaryLicensing.specConstFalse": [],
+    "Toy.BoundaryLicensing.specConstTrue": [],
+    "Toy.BoundaryLicensing.specMultiPos": [],
+    "Toy.BoundaryLicensing.split_at_first_undetermined": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.statusOf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.statusOf_definite": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.statusOf_eq_contradicted_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.statusOf_eq_supported_iff": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.statusOf_ne_undetermined": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.statusOf_neg": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.statusOf_pos": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.status_definite_neg": [],
+    "Toy.BoundaryLicensing.status_definite_pos": [],
+    "Toy.BoundaryLicensing.status_le_iff": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.status_le_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.status_le_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.status_le_refl": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.status_le_trans": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.stepSys": [],
+    "Toy.BoundaryLicensing.stepSys.eq_1": [],
+    "Toy.BoundaryLicensing.steps_trans": [],
+    "Toy.BoundaryLicensing.stutterSimFrom_pointwise_match": [],
+    "Toy.BoundaryLicensing.stutterSimFrom_preserves_existWitness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.stutterSimFrom_reflects_univSafety": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.stutterSimFrom_reflects_univSafety.match_1_1": [],
+    "Toy.BoundaryLicensing.stutter_constFalse_to_step": [],
+    "Toy.BoundaryLicensing.subsetClosed_neg": [],
+    "Toy.BoundaryLicensing.subsetClosed_pos": [],
+    "Toy.BoundaryLicensing.suiteAllowlist": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.suiteAllowlist.congr_simp": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.suiteAllowlist.eq_1": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.suiteAllowlist_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.suiteAllowlist_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.suiteSoundInvariant_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.suiteSoundInvariant_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.surjHomM2S_flip_witness": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.surjHomM2S_flip_witness.match_1_79": [],
+    "Toy.BoundaryLicensing.surjHom_breaks_trace_univSafety_and_termination": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.surjHom_breaks_trace_univSafety_and_termination.match_1_2": [],
+    "Toy.BoundaryLicensing.symmetricCard": [],
+    "Toy.BoundaryLicensing.symmetricConjCard": [],
+    "Toy.BoundaryLicensing.tableConsistentWith_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.tableConsistentWith_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.tablePinned_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.tablePinned_pos": [],
+    "Toy.BoundaryLicensing.threeBranchSys": [],
+    "Toy.BoundaryLicensing.threeBranchSys.eq_1": [],
+    "Toy.BoundaryLicensing.tightBadAt_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.tightBadAt_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.tightBadAt_pos.match_1_2": [],
+    "Toy.BoundaryLicensing.tightCtxAt_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.tightCtxAt_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.tightCtxAt_pos.match_1_1": [],
+    "Toy.BoundaryLicensing.traceDeterministic_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.traceDeterministic_neg.match_1_1": [],
+    "Toy.BoundaryLicensing.traceDeterministic_pos": [
+      "Quot.sound"
+    ],
+    "Toy.BoundaryLicensing.traceIncl_preserves_s2m": [],
+    "Toy.BoundaryLicensing.traceIncl_preserves_s2m.match_1_1": [],
+    "Toy.BoundaryLicensing.traceSub_neg": [],
+    "Toy.BoundaryLicensing.traceSub_pos": [],
+    "Toy.BoundaryLicensing.traceSub_refl": [],
+    "Toy.BoundaryLicensing.traceSub_trans": [],
+    "Toy.BoundaryLicensing.transfer": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transfer.eq_1": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transfer.eq_2": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transfer.eq_3": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferChain": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferChain.eq_1": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferChain_eq_iff_forall_realizesChain": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferChain_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferChain_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferChain_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferChain_undetermined": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferIff": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferIff_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferIff_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferIff_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transferIff_univSafety_existWitness_supported_iff": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transfer_eq_self_or_undetermined": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transfer_neg": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transfer_pos": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transfer_sound": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transfer_sound.match_1_77": [],
+    "Toy.BoundaryLicensing.transfer_undetermined": [
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.transfer_undetermined_sharp": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.twoBranchSys": [],
+    "Toy.BoundaryLicensing.twoBranchSys.eq_1": [],
+    "Toy.BoundaryLicensing.undeterminedEv_neg": [],
+    "Toy.BoundaryLicensing.undeterminedEv_pos": [],
+    "Toy.BoundaryLicensing.unwarranted_collapses_both_statuses": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.unwarranted_undetermined_vacuous_agreement": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.valFalse": [],
+    "Toy.BoundaryLicensing.valFalse.eq_1": [],
+    "Toy.BoundaryLicensing.valTrue": [],
+    "Toy.BoundaryLicensing.valTrue.eq_1": [],
+    "Toy.BoundaryLicensing.warnAdjudicateGate": [],
+    "Toy.BoundaryLicensing.warnAdjudicateGate_neg": [],
+    "Toy.BoundaryLicensing.warnAdjudicateGate_pos": [],
+    "Toy.BoundaryLicensing.warnAdjudicateGate_zeroLockout_and_sound": [],
+    "Toy.BoundaryLicensing.wfStutterSimFrom_reflects_termination": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.wfStutterSimFrom_reflects_termination.match_1_1": [],
+    "Toy.BoundaryLicensing.wfStutterSimFrom_stutterSimFrom": [],
+    "Toy.BoundaryLicensing.wfStutter_find_progress": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.wfStutter_finiteStutter_to_step": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.BoundaryLicensing.zeroFalseAccept_neg": [],
+    "Toy.BoundaryLicensing.zeroFalseAccept_pos": [],
+    "Toy.BoundaryLicensing.zeroLockout_and_zeroFalseAccept_iff_exact": [],
+    "Toy.BoundaryLicensing.zeroLockout_neg": [],
+    "Toy.BoundaryLicensing.zeroLockout_pos": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

@@ -1,0 +1,1068 @@
+[
+  {
+    "id": "single-boundary-transfer-soundness",
+    "lean": "Toy.BoundaryLicensing.transfer_sound",
+    "lean_names": [
+      "Toy.BoundaryLicensing.cex_transfer_sound_without_realizes",
+      "Toy.BoundaryLicensing.nonvacuity_transfer_sound",
+      "Toy.BoundaryLicensing.surjHom_breaks_trace_univSafety_and_termination",
+      "Toy.BoundaryLicensing.hasTrace_nonempty",
+      "Toy.BoundaryLicensing.evalVal_mono",
+      "Toy.BoundaryLicensing.isHomFrom_preserves_existWitness",
+      "Toy.BoundaryLicensing.isPosBoundedMorphFrom_to_constValTrue",
+      "Toy.BoundaryLicensing.isSurjHomFrom_to_constValTrue",
+      "Toy.BoundaryLicensing.certPinnedLink_iff_traceEquiv",
+      "Toy.BoundaryLicensing.roundTripLink_iff_traceEquiv",
+      "Toy.BoundaryLicensing.cospanSysWitness_iff_traceIncl",
+      "Toy.BoundaryLicensing.Realizes",
+      "Toy.BoundaryLicensing.transfer",
+      "Toy.BoundaryLicensing.preservesDefinite",
+      "Toy.BoundaryLicensing.statusOf",
+      "Toy.BoundaryLicensing.Status.le",
+      "Toy.BoundaryLicensing.EvalShape",
+      "Toy.BoundaryLicensing.evalVal",
+      "Toy.BoundaryLicensing.HasTrace",
+      "Toy.BoundaryLicensing.IsExec",
+      "Toy.BoundaryLicensing.IsHomFrom",
+      "Toy.BoundaryLicensing.IsSurjHomFrom",
+      "Toy.BoundaryLicensing.IsPosBoundedMorphFrom",
+      "Toy.BoundaryLicensing.IsEmbedFrom",
+      "Toy.BoundaryLicensing.TraceIncl",
+      "Toy.BoundaryLicensing.StutterSimFrom",
+      "Toy.BoundaryLicensing.WfStutterSimFrom",
+      "Toy.BoundaryLicensing.LockStepSimFrom",
+      "Toy.BoundaryLicensing.CospanSysWitness",
+      "Toy.BoundaryLicensing.CertPinnedLink",
+      "Toy.BoundaryLicensing.RoundTripLink",
+      "Toy.BoundaryLicensing.LitEntailsLink",
+      "Toy.BoundaryLicensing.status_le_iff",
+      "Toy.BoundaryLicensing.statusOf_eq_supported_iff",
+      "Toy.BoundaryLicensing.statusOf_eq_contradicted_iff",
+      "Toy.BoundaryLicensing.statusOf_ne_undetermined",
+      "Toy.BoundaryLicensing.evalVal_pos",
+      "Toy.BoundaryLicensing.evalVal_neg",
+      "Toy.BoundaryLicensing.evalShape_univSafety_pos",
+      "Toy.BoundaryLicensing.evalShape_univSafety_neg",
+      "Toy.BoundaryLicensing.isSurjHomFrom_pos",
+      "Toy.BoundaryLicensing.isSurjHomFrom_neg",
+      "Toy.BoundaryLicensing.isPosBoundedMorphFrom_pos",
+      "Toy.BoundaryLicensing.isPosBoundedMorphFrom_neg",
+      "Toy.BoundaryLicensing.realizes_pos",
+      "Toy.BoundaryLicensing.realizes_neg",
+      "Toy.BoundaryLicensing.transfer_pos",
+      "Toy.BoundaryLicensing.transfer_neg",
+      "Toy.BoundaryLicensing.constSys",
+      "Toy.BoundaryLicensing.stepSys",
+      "Toy.BoundaryLicensing.valTrue",
+      "Toy.BoundaryLicensing.valFalse",
+      "Toy.BoundaryLicensing.specAtom0",
+      "Toy.BoundaryLicensing.specMultiPos",
+      "Toy.BoundaryLicensing.BoundaryRel",
+      "Toy.BoundaryLicensing.PosShape",
+      "Toy.BoundaryLicensing.Spec",
+      "Toy.BoundaryLicensing.Status",
+      "Toy.BoundaryLicensing.Sys",
+      "Toy.BoundaryLicensing.oneBranchSys"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Preservation of individual formula and temporal classes across homomorphisms, bounded morphisms, simulations, and trace inclusion is classical; unifying all twenty-one directional pipeline boundary relations (separating plain surjective homomorphisms from positive bounded morphisms) and five positive claim shapes over negation-free propositional state formulas into a single decidable epistemic status transformer `transfer` on Kripke structures is parameterized here.",
+    "plain_claim": "For every boundary relation `rel : BoundaryRel`, positive claim shape `sh : PosShape`, negation-free positive propositional state formula `P : Spec`, and Kripke systems `src tgt : Sys`: if `Realizes rel src tgt` holds, then `transfer rel sh (statusOf src sh P)` is below or equal to `statusOf tgt sh P` in the epistemic information order `Status.le`.",
+    "hypotheses": [
+      {
+        "name": "hrel : Realizes rel src tgt",
+        "purpose": "witnesses that the semantic link declared by `rel` actually holds between `src` and `tgt`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_transfer_sound_without_realizes",
+        "witness_class": "two 1-state Kripke systems `constSys valTrue` and `constSys valFalse` paired under `.termRoundTrip` at `.univSafety` and `specAtom0`"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`nonvacuity_transfer_sound`: `constSys valTrue` realizes `.lockStepSim .s2m` to itself and preserves `.supported` on `.hyperSubsetClosed` at `specAtom0`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_transfer_sound",
+    "non_claims": [
+      "When `transfer rel sh st = .undetermined`, `Status.le .undetermined (statusOf tgt sh P)` holds trivially without constraining `tgt`'s verdict; completeness of `.undetermined` is established separately in `transfer_undetermined_sharp`.",
+      "Every `Sys` has a non-empty initial state set (`init_nonempty`) and a total transition relation (`step_total`), ensuring every system admits at least one infinite execution (`hasTrace_nonempty`); systems with empty initial sets or deadlocked finite-only runs are not modeled.",
+      "`BoundaryRel.surjHom` (`IsSurjHomFrom`) models plain surjective positive homomorphisms without transition back-lifting and preserves `.supported` on `.existWitness` (`isHomFrom_preserves_existWitness`), whereas plain surjective (even bijective, exact-valuation) homomorphisms without step back-lifting fail to preserve `.univSafety` and `.termination` over execution traces (`surjHom_breaks_trace_univSafety_and_termination`); preserving `.univSafety` and `.termination` forward requires `BoundaryRel.posBoundedMorph` (`IsPosBoundedMorphFrom`, a positive bounded morphism / p-morphism with `init` and `step` back-lifting).",
+      "Inside `Basic.lean`, `CertPinnedLink`, `RoundTripLink`, `LitEntailsLink`, and `CospanSysWitness` summarize cross-system semantic links on `Sys`: `CertPinnedLink` instantiates a `CertFaithful`, `CertSemSound`, `TablePinned` verifier over `Sys` and reduces to trace equivalence (`certPinnedLink_iff_traceEquiv`), `RoundTripLink` requires a left-inverse `print`/`elabTerm` section over trace-equivalent presentations and reduces to trace equivalence (`roundTripLink_iff_traceEquiv`), `LitEntailsLink` assumes positive `EvalShape` entailment (`∀ sh P, EvalShape sh src P → EvalShape sh tgt P`) directly, and `CospanSysWitness ir exec` reduces to `TraceIncl exec ir` (`cospanSysWitness_iff_traceIncl`); concrete polymorphic certificate and cospan hypotheses are analyzed separately in `cert_trust_triple_sound` and `cospan_subsetClosed_transfer`.",
+      "`Spec` ranges over negation-free positive propositional state formulas (`top`, `bot`, `atom`, `conj`, `disj`) and cannot negate a single atom (`v a = false`); because `IsHomFrom`, `IsSurjHomFrom`, and `IsPosBoundedMorphFrom` preserve only positive truth (`evalVal_mono`), universal absence of a positive bad-event atom (`∀ τ n, v bad = false`) is not preserved forward along `.posBoundedMorph .m2s` or `.surjHom .m2s` (`isPosBoundedMorphFrom_to_constValTrue`, `isSurjHomFrom_to_constValTrue`).",
+      "`EvalShape` evaluates single representative schemas — state invariants (`∀ τ n, evalVal P (τ n) = true`) for `.univSafety`, eventual formula visit (`∀ τ, ∃ n, evalVal P (τ n) = true`) on total infinite runs for `.termination`, all-step 2-safety observational determinism (`∀ τ₁ τ₂, evalVal P (τ₁ 0) = evalVal P (τ₂ 0) → ∀ n, evalVal P (τ₁ n) = evalVal P (τ₂ n)`) for `.hyperSubsetClosed`, and any-step two-trace variation (`∀ τ₁, ∃ τ₂, evalVal P (τ₂ 0) = evalVal P (τ₁ 0) ∧ ∃ n, evalVal P (τ₂ n) ≠ evalVal P (τ₁ n)`) for `.hyperGeneral` — rather than arbitrary prefix-closed safety properties, finite-run halting, or arbitrary subset-closed/`∀∃` hyperproperties.",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "M. R. Clarkson, F. B. Schneider, \"Hyperproperties\", Journal of Computer Security 18(6):1157–1210, 2010, doi:10.3233/JCS-2009-0393: subset-closed hyperproperties preserved under trace refinement vs. general hyperproperties such as generalized noninterference.",
+      "K. S. Namjoshi, \"A Simple Characterization of Stuttering Bisimulation\", FSTTCS 1997, LNCS 1346, pp. 284–296, 1997, doi:10.1007/BFb0058037: well-founded ranking prevents silent divergence under stuttering bisimulation.",
+      "P. Manolios, \"A Compositional Theory of Refinement for Branching Time\", CHARME 2003, LNCS 2860, pp. 304–318, 2003, doi:10.1007/978-3-540-39724-3_28 (and UT Austin PhD dissertation, 2001): directed well-founded stuttering simulation/refinement mechanized in ACL2; S. Merz, \"Stuttering Equivalence\", Archive of Formal Proofs, 2012: Isabelle/HOL mechanization of stuttering equivalence.",
+      "M. C. Browne, E. M. Clarke, O. Grumberg, \"Characterizing Finite Kripke Structures in Propositional Temporal Logic\", Theoretical Computer Science 59(1–2):115–131, 1988, doi:10.1016/0304-3975(88)90098-9: stuttering invariance on initialized total Kripke structures.",
+      "R. C. Lyndon, \"Properties Preserved under Homomorphism\", Pacific Journal of Mathematics 9(1):143–154, 1959, doi:10.2140/pjm.1959.9.143; P. Blackburn, M. de Rijke, Y. Venema, Modal Logic, Cambridge University Press, 2001, §2.1, doi:10.1017/CBO9781107050884; J. M. Han, F. van Doorn, \"A Formal Proof of the Independence of the Continuum Hypothesis\", CPP 2020, pp. 353–366, doi:10.1145/3372885.3373826: positive homomorphism preservation, bounded morphisms (p-morphisms), and Lean Mathlib `FirstOrder.Language` homomorphisms/embeddings.",
+      "C. Abate, R. Blanco, D. Garg, C. Hrițcu, M. Patrignani, J. Thibault, \"Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation\", IEEE CSF 2019, pp. 256–271, doi:10.1109/CSF.2019.00025 (Coq mechanization); T. Dardinier, P. Müller, \"Hyper Hoare Logic: (Dis-)Proving Program Hyperproperties\", PACMPL 8(PLDI):207, 2024, doi:10.1145/3656437 (Isabelle AFP `HyperHoareLogic`); J. McLean, \"A General Theory of Composition for Trace Sets Closed Under Selective Interleaving Functions\", IEEE S&P 1994, pp. 79–93, doi:10.1109/RISP.1994.296590: hyperproperty preservation and GNI refinement failure.",
+      "Reference corpus package `toy-model-transfer-preservation-of-claim-shapes-under-embeddings-homomorphisms-and-simulations`: single-boundary first-order homomorphism, surjective-homomorphism, and embedding preservation.",
+      "Reference corpus package `refinement-and-hyperproperties-noninterference-and-randomness`: trace-inclusion preservation of subset-closed hyperproperties and failure on generalized noninterference.",
+      "Reference corpus package `claim-strength-order-quantifier-drift-relativization-and-non-claims`: three-valued epistemic answer space and literal entailment.",
+      "Reference corpus package `scheduler-adequacy-generated-execution-domains-and-restricted-quantifiers`: full execution-domain quantification (`HasTrace`) vs. restricted generator adequacy."
+    ],
+    "design_question": "Across a multi-boundary formal-verification pipeline (`capture → model → spec → checker → rendering → summary`), which positive and negative claim verdicts are soundly licensed across each boundary relation?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "five-shape-upper-triangular-separation",
+    "lean": [
+      "Toy.BoundaryLicensing.sepMatrix_upperTriangular",
+      "Toy.BoundaryLicensing.sepMatrix_subdiagonal_countermodels",
+      "Toy.BoundaryLicensing.posShape_columns_pairwise_distinct"
+    ],
+    "lean_names": [
+      "Toy.BoundaryLicensing.cex_sepMatrix_subdiagonal_without_lt",
+      "Toy.BoundaryLicensing.cex_posShape_distinct_without_ne",
+      "Toy.BoundaryLicensing.nonvacuity_posShape_distinct",
+      "Toy.BoundaryLicensing.sepRel",
+      "Toy.BoundaryLicensing.sepShape",
+      "Toy.BoundaryLicensing.sepRel_pos",
+      "Toy.BoundaryLicensing.sepRel_neg",
+      "Toy.BoundaryLicensing.sepShape_pos",
+      "Toy.BoundaryLicensing.sepShape_neg",
+      "Toy.BoundaryLicensing.specAtom0"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Individual separations among existential reachability, universal safety, termination under stuttering, synchronous 2-safety, and generalized noninterference are standard; organizing them into an explicit `5 × 5` upper-triangular transfer matrix paired with `Sys` sub-diagonal countermodels and pairwise `PosShape` column distinctness is made precise here.",
+    "plain_claim": "Ordering the five boundary relations via `sepRel` (`.litEntails`, `.lockStepSim .s2m`, `.wfStutterSim .s2m`, `.stutterSim .s2m`, `.embed .m2s`) and the five positive claim shapes via `sepShape` (`.hyperGeneral`, `.hyperSubsetClosed`, `.termination`, `.univSafety`, `.existWitness`), every diagonal cell `(i, i)` maps `.supported` to `.supported` under `transfer` and every strict sub-diagonal cell `(i, j)` with `j.1 < i.1` maps `.supported` to `.undetermined` (`sepMatrix_upperTriangular`) and admits a concrete `Realizes (sepRel i) src tgt` Kripke pair flipping `.supported` to `.contradicted` at `specAtom0` (`sepMatrix_subdiagonal_countermodels`); consequently, whenever `sh₁ ≠ sh₂`, some `BoundaryRel` separates `sh₁` and `sh₂` on `.supported` (`posShape_columns_pairwise_distinct`).",
+    "hypotheses": [
+      {
+        "name": "hlt : j.1 < i.1",
+        "applies_to": [
+          "Toy.BoundaryLicensing.sepMatrix_subdiagonal_countermodels"
+        ],
+        "purpose": "restricts countermodel construction to strict sub-diagonal entries `(i, j)` where `sepRel i` does not preserve `sepShape j`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_sepMatrix_subdiagonal_without_lt",
+        "witness_class": "diagonal index `i = j = ⟨0, _⟩` (`.litEntails`, `.hyperGeneral`), where `transfer_sound` preserves `.supported`"
+      },
+      {
+        "name": "hne : sh₁ ≠ sh₂",
+        "applies_to": [
+          "Toy.BoundaryLicensing.posShape_columns_pairwise_distinct"
+        ],
+        "purpose": "excludes identical shapes whose `transfer` column values coincide on every `BoundaryRel`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_posShape_distinct_without_ne",
+        "witness_class": "`sh₁ = sh₂ = .univSafety`, where `transfer rel .univSafety .supported` equals itself for all `rel`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_posShape_distinct`: `(⟨1, _⟩ : Fin 5).1 < (⟨2, _⟩ : Fin 5).1` and `.termination ≠ .hyperSubsetClosed`, with `.wfStutterSim .s2m` mapping `.supported` to `.supported` on `.termination` and to `.undetermined` on `.hyperSubsetClosed`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_posShape_distinct",
+    "non_claims": [
+      "Upper-triangularity holds for the listed row and column orderings `sepRel` and `sepShape` on `.supported`; super-diagonal entries `j > i` are not all `.supported` (for instance, `.lockStepSim .s2m` maps `.existWitness` `.supported` to `.undetermined`).",
+      "Distinctness of the five `PosShape` columns does not imply that all twenty-one `BoundaryRel` rows are pairwise distinct under `transfer` (for example, `.lockStepSim .s2m`, `.traceRefine .s2m`, `.embed .s2m`, and `.cospanCaptureLower` share the same trace-refinement transfer row) (by inspection of `preservesDefinite`; not proved as a separate theorem here).",
+      "`transfer (.wfStutterSim .s2m) .hyperSubsetClosed .supported = .undetermined` reflects step-index sensitivity of `EvalShape .hyperSubsetClosed` (`∀ n, evalVal P (τ₁ n) = evalVal P (τ₂ n)` under synchronous step indexing); stutter-invariant subset-closed hyperproperties are not refuted under well-founded stuttering simulation (not proved here).",
+      "Row `0` (`.litEntails`) preserves `.hyperGeneral` because `LitEntailsLink` assumes `∀ sh P, EvalShape sh src P → EvalShape sh tgt P` directly by definition, not via a structural morphism on states or transitions.",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "M. R. Clarkson, F. B. Schneider, \"Hyperproperties\", Journal of Computer Security 18(6):1157–1210, 2010, doi:10.3233/JCS-2009-0393: separation between 1-safety, liveness, k-safety/subset-closed hyperproperties, and ∀∃ hyperproperties.",
+      "K. S. Namjoshi, \"A Simple Characterization of Stuttering Bisimulation\", FSTTCS 1997, LNCS 1346, pp. 284–296, 1997, doi:10.1007/BFb0058037; P. Manolios, \"A Compositional Theory of Refinement for Branching Time\", CHARME 2003, LNCS 2860, pp. 304–318, 2003, doi:10.1007/978-3-540-39724-3_28; S. Merz, \"Stuttering Equivalence\", Isabelle AFP, 2012: separation between unranked stuttering and well-founded ranked stuttering on termination/liveness.",
+      "C. Abate et al., \"Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation\", IEEE CSF 2019, pp. 256–271, doi:10.1109/CSF.2019.00025; T. Dardinier, P. Müller, \"Hyper Hoare Logic: (Dis-)Proving Program Hyperproperties\", PACMPL 8(PLDI):207, 2024, doi:10.1145/3656437: mechanized hierarchies separating safety, hyper-safety, and existential hyperproperties.",
+      "Reference corpus package `simulation-diagrams-and-multi-pass-compiler-correctness`: well-founded forward simulation diagrams."
+    ],
+    "design_question": "Are all five positive claim shapes (`univSafety`, `existWitness`, `termination`, `hyperSubsetClosed`, `hyperGeneral`) irreducibly needed in the boundary transfer table, or do two columns collapse?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "undetermined-cell-sharpness",
+    "lean": "Toy.BoundaryLicensing.transfer_undetermined_sharp",
+    "lean_names": [
+      "Toy.BoundaryLicensing.exists_flip_realization",
+      "Toy.BoundaryLicensing.negation_closed_entailment_preserves_contradicted",
+      "Toy.BoundaryLicensing.cex_sharp_without_nonDegen",
+      "Toy.BoundaryLicensing.cex_sharp_without_definite",
+      "Toy.BoundaryLicensing.cex_sharp_without_undetermined",
+      "Toy.BoundaryLicensing.nonvacuity_transfer_sharp",
+      "Toy.BoundaryLicensing.NonDegen",
+      "Toy.BoundaryLicensing.Status.Definite",
+      "Toy.BoundaryLicensing.nonDegen_iff_evalVal_false_true",
+      "Toy.BoundaryLicensing.nonDegen_pos",
+      "Toy.BoundaryLicensing.nonDegen_MultiPos",
+      "Toy.BoundaryLicensing.nonDegen_neg",
+      "Toy.BoundaryLicensing.status_definite_pos",
+      "Toy.BoundaryLicensing.status_definite_neg",
+      "Toy.BoundaryLicensing.finiteStutterSys",
+      "Toy.BoundaryLicensing.stepSys",
+      "Toy.BoundaryLicensing.twoBranchSys",
+      "Toy.BoundaryLicensing.threeBranchSys",
+      "Toy.BoundaryLicensing.specConstTrue",
+      "Toy.BoundaryLicensing.specConstFalse",
+      "Toy.BoundaryLicensing.Valuation"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Countermodels for individual unlicensed cells (such as refinement breaking GNI or unranked stuttering breaking termination) are classical; uniform sharpness across all 210 `(BoundaryRel, PosShape, definite Status)` cells for every non-degenerate negation-free positive formula `P : Spec` is proved here.",
+    "plain_claim": "For every boundary relation `rel : BoundaryRel`, positive shape `sh : PosShape`, positive propositional formula `P : Spec`, and verdict `st : Status`: if `NonDegen sh P` holds, `st.Definite` holds (`st = .supported ∨ st = .contradicted`), and `transfer rel sh st = .undetermined`, then there exist Kripke systems `src₁, tgt₁, src₂, tgt₂ : Sys` realizing `rel` (`Realizes rel src₁ tgt₁` and `Realizes rel src₂ tgt₂`) such that both `src₁` and `src₂` have verdict `st` for `(sh, P)`, `tgt₁` has verdict `.supported`, and `tgt₂` has verdict `.contradicted`.",
+    "hypotheses": [
+      {
+        "name": "hnd : NonDegen sh P",
+        "purpose": "ensures `(sh, P)` admits both `.supported` and `.contradicted` Kripke systems (`evalVal P valFalse = false ∧ evalVal P valTrue = true`) rather than a constant tautology or contradiction",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_sharp_without_nonDegen",
+        "witness_class": "the tautological formula `specConstTrue` at `.none`, `.univSafety`, and `.supported`, where no Kripke system is `.contradicted`"
+      },
+      {
+        "name": "hdef : st.Definite",
+        "purpose": "restricts the source verdict `st` to `.supported` or `.contradicted`, since `statusOf` on a Kripke system is two-valued and never equals `.undetermined`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_sharp_without_definite",
+        "witness_class": "`st = .undetermined` at `.none`, `.univSafety`, and `specAtom0`, where no `src₁ : Sys` has `statusOf src₁ = .undetermined`"
+      },
+      {
+        "name": "hund : transfer rel sh st = .undetermined",
+        "purpose": "excludes preserved cells where `transfer_sound` forces every target `tgt` to share verdict `st`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_sharp_without_undetermined",
+        "witness_class": "the sound cell `.lockStepSim .s2m`, `.univSafety`, `.supported` at `specAtom0`, where no realized target can be `.contradicted`"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`nonvacuity_transfer_sharp`: `NonDegen .termination specAtom0`, `Status.Definite .supported`, and `transfer (.stutterSim .s2m) .termination .supported = .undetermined`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_transfer_sharp",
+    "non_claims": [
+      "Sharpness constructs finite Kripke countermodels (`constSys`, `stepSys`, `twoBranchSys`, `threeBranchSys`, `finiteStutterSys`) over `Sys`; restricting `Sys` to a narrower subclass (for example, `TraceDeterministic` systems) can validate additional transfers not licensed in general (`determinizing_stage_breaks_markovian_completeness`).",
+      "Sharpness of `transfer .litEntails sh .contradicted = .undetermined` relies on `Spec` containing only negation-free positive propositional state formulas (`evalVal_mono`); if `LitEntailsLink` quantified over negation-closed state predicates `Valuation → Bool`, dualizing `p` with `fun v => !p v` would force universal entailment to preserve `.contradicted` on both `.univSafety` and `.existWitness` (`negation_closed_entailment_preserves_contradicted`).",
+      "For `.hyperSubsetClosed`, `EvalShape` evaluates synchronous all-step 2-safety observational determinism (`evalVal P (τ₁ 0) = evalVal P (τ₂ 0) → ∀ n, evalVal P (τ₁ n) = evalVal P (τ₂ n)`), which is broken by finite stuttering (`finiteStutterSys`); stutter-invariant subset-closed properties such as `.univSafety` are already covered by the `.univSafety` column.",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "M. Abadi, L. Lamport, \"The Existence of Refinement Mappings\", Theoretical Computer Science 82(2):253–284, 1991, doi:10.1016/0304-3975(91)90224-P: limits of direct refinement mappings without auxiliary history or prophecy state.",
+      "R. C. Lyndon, \"Properties Preserved under Homomorphism\", Pacific Journal of Mathematics 9(1):143–154, 1959, doi:10.2140/pjm.1959.9.143; P. Blackburn, M. de Rijke, Y. Venema, Modal Logic, Cambridge University Press, 2001, §2.1, doi:10.1017/CBO9781107050884: why negation-free positive polarity is necessary for homomorphism preservation.",
+      "M. R. Clarkson, F. B. Schneider, \"Hyperproperties\", Journal of Computer Security 18(6):1157–1210, 2010, doi:10.3233/JCS-2009-0393; J. McLean, \"A General Theory of Composition for Trace Sets Closed Under Selective Interleaving Functions\", IEEE S&P 1994, pp. 79–93, doi:10.1109/RISP.1994.296590: non-preservation of ∀∃ hyperproperties under trace refinement.",
+      "P. Manolios, \"A Compositional Theory of Refinement for Branching Time\", CHARME 2003, LNCS 2860, pp. 304–318, 2003, doi:10.1007/978-3-540-39724-3_28: counterexamples separating unranked stuttering from ranked well-founded stuttering.",
+      "Reference corpus package `toy-model-transfer-preservation-of-claim-shapes-under-embeddings-homomorphisms-and-simulations`: finite countermodels for unlicensed first-order transfer cells."
+    ],
+    "design_question": "Is any `.undetermined` entry in `transfer` overly conservative over general Kripke structures `Sys` and positive specifications `Spec`, or is every `.undetermined` cell witnessed by concrete models of opposite target truth?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "paired-biconditional-transfer-and-unlicensed-converse",
+    "lean": [
+      "Toy.BoundaryLicensing.transferIff_sound",
+      "Toy.BoundaryLicensing.transferIff_univSafety_existWitness_supported_iff",
+      "Toy.BoundaryLicensing.cex_iff_converse_unlicensed"
+    ],
+    "lean_names": [
+      "Toy.BoundaryLicensing.cex_transferIff_sound_without_realizes",
+      "Toy.BoundaryLicensing.transferIff",
+      "Toy.BoundaryLicensing.transferIff_pos",
+      "Toy.BoundaryLicensing.transferIff_neg",
+      "Toy.BoundaryLicensing.specAtom0",
+      "Toy.BoundaryLicensing.specAtom1"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Elementary reference point: `transferIff_sound` is the direct component-wise product of `transfer_sound` across a paired directional claim tuple `(sh.1, sh.2)`, included so asymmetric loss of an existential witness claim alongside a preserved universal safety claim (`cex_iff_converse_unlicensed`, evaluated on the fixed pair `specAtom0` and `specAtom1`) and the exact four-relation preservation list (`transferIff_univSafety_existWitness_supported_iff`) can be cited directly.",
+    "plain_claim": "For every boundary relation `rel : BoundaryRel`, paired directional claim-shape tuple `sh : PosShape × PosShape`, positive formulas `P₁ P₂ : Spec`, and Kripke systems `src tgt : Sys`: if `Realizes rel src tgt` holds, then each component of `transferIff rel sh (statusOf src sh.1 P₁, statusOf src sh.2 P₂)` bounds the corresponding component status of `tgt` under `Status.le` (`transferIff_sound`); `transferIff rel (.univSafety, .existWitness) (.supported, .supported)` equals `(.supported, .supported)` iff `rel` is `.posBoundedMorph .m2s`, `.certFaithfulSoundPinned`, `.termRoundTrip`, or `.litEntails` (`transferIff_univSafety_existWitness_supported_iff`), whereas there exist `src, tgt` realizing `.lockStepSim .s2m` where `src` supports `.univSafety` at `specAtom0` and `.existWitness` at `specAtom1` while `tgt` preserves `.univSafety` at `specAtom0` and falsifies `.existWitness` at that same `specAtom1` (`cex_iff_converse_unlicensed`).",
+    "hypotheses": [
+      {
+        "name": "hrel : Realizes rel src tgt",
+        "applies_to": [
+          "Toy.BoundaryLicensing.transferIff_sound"
+        ],
+        "purpose": "witnesses the boundary relation for both components of the paired directional claim tuple",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_transferIff_sound_without_realizes",
+        "witness_class": "`constSys valTrue` and `constSys valFalse` without a `RoundTripLink` under `.termRoundTrip` at `(.univSafety, .existWitness)` and `(specAtom0, specAtom1)`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`cex_iff_converse_unlicensed`: a concrete `.lockStepSim .s2m` pair `(src, tgt)` where `src` supports `.univSafety` on `specAtom0` and `.existWitness` on `specAtom1`, while `tgt` preserves `.univSafety` on `specAtom0` and flips `.existWitness` on `specAtom1` from `.supported` to `.contradicted`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.cex_iff_converse_unlicensed",
+    "non_claims": [
+      "`transferIff` tracks two independent unconditional statuses `(statusOf src sh.1 P₁, statusOf src sh.2 P₂)` rather than a single system-level material biconditional `EvalShape sh.1 src P₁ ↔ EvalShape sh.2 src P₂`: if both halves are false on `src` (`False ↔ False`), a `.lockStepSim .s2m` refinement can still make `.univSafety` true while leaving `.existWitness` false (`True ↔ False`), whereas a state-level invariant biconditional decomposes into two `.univSafety` claims that both survive `.lockStepSim .s2m` (not proved here).",
+      "The four `BoundaryRel` constructors preserving `(.supported, .supported)` on `(.univSafety, .existWitness)` are `.posBoundedMorph .m2s`, `.certFaithfulSoundPinned`, `.termRoundTrip`, and `.litEntails` (`transferIff_univSafety_existWitness_supported_iff`); `.posBoundedMorph .m2s` and `.litEntails` are one-directional positive links rather than symmetric equivalences.",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "Reference corpus package `printing-elaboration-round-trips-coercions-and-statement-certificates`: round-trip equivalence preserving full statement meaning across rendering and elaboration.",
+      "Reference corpus package `claim-strength-order-quantifier-drift-relativization-and-non-claims`: directional entailment vs. equivalence."
+    ],
+    "design_question": "When a specification pairs a universal safety claim with an existential witness claim as a directional tuple, which components survive across a one-directional simulation and which boundary relations preserve `.supported` on both?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "cospan-capture-and-lowering-subset-closed-transfer",
+    "lean": "Toy.BoundaryLicensing.cospan_subsetClosed_transfer",
+    "lean_names": [
+      "Toy.BoundaryLicensing.cospan_sys_hyperSubsetClosed_transfer",
+      "Toy.BoundaryLicensing.nonvacuity_cospan_transfer",
+      "Toy.BoundaryLicensing.cex_cospan_without_capture_ok",
+      "Toy.BoundaryLicensing.cex_cospan_without_prepass_no_loss",
+      "Toy.BoundaryLicensing.cex_cospan_without_overApproxOnOk",
+      "Toy.BoundaryLicensing.cex_cospan_without_lowerRefines",
+      "Toy.BoundaryLicensing.cex_cospan_without_subsetClosed",
+      "Toy.BoundaryLicensing.cex_cospan_without_ir_holds",
+      "Toy.BoundaryLicensing.TraceSub",
+      "Toy.BoundaryLicensing.SubsetClosed",
+      "Toy.BoundaryLicensing.runPasses",
+      "Toy.BoundaryLicensing.LosesNoBehaviourAtInputs",
+      "Toy.BoundaryLicensing.OverApproxOnOk",
+      "Toy.BoundaryLicensing.LowerRefinesAt",
+      "Toy.BoundaryLicensing.traceSub_pos",
+      "Toy.BoundaryLicensing.traceSub_neg",
+      "Toy.BoundaryLicensing.subsetClosed_pos",
+      "Toy.BoundaryLicensing.subsetClosed_neg",
+      "Toy.BoundaryLicensing.runPasses_pos",
+      "Toy.BoundaryLicensing.runPasses_neg",
+      "Toy.BoundaryLicensing.losesNoBehaviourAtInputs_pos",
+      "Toy.BoundaryLicensing.losesNoBehaviourAtInputs_neg",
+      "Toy.BoundaryLicensing.overApproxOnOk_pos",
+      "Toy.BoundaryLicensing.overApproxOnOk_neg",
+      "Toy.BoundaryLicensing.lowerRefinesAt_pos",
+      "Toy.BoundaryLicensing.lowerRefinesAt_neg",
+      "Toy.BoundaryLicensing.bitSem",
+      "Toy.BoundaryLicensing.allSafeH",
+      "Toy.BoundaryLicensing.bothBranchesH"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Pre-capture fail-closed over-approximation (`fail-closed-ir-capture-...`) and subset-closed trace-refinement contravariance (`refinement-and-hyperproperties-...`) were previously established on separate legs; composing pre-capture pass chains, partial `Except` capture, and post-capture lowering across universe-independent `Src`, `Ir`, and `Exec` carrier types into one cospan transfer lemma is packaged here.",
+    "plain_claim": "Across a universe-polymorphic cospan `a_ir ←(cap ∘ runPasses passes)— a_src —(lower)→ lower a_src` over carrier types `Src : Type u`, `Ir : Type v`, `Exec : Type w`, error type `Err : Type e`, and behavior type `B : Type b` with trace semantics `semS`, `semIr`, and `semExec`: if `cap (runPasses passes a_src) = .ok a_ir`, `LosesNoBehaviourAtInputs semS passes a_src` holds along the pre-capture pass list, `OverApproxOnOk semS semIr cap` holds, `LowerRefinesAt semS semExec lower a_src` holds, `SubsetClosed H` holds, and `H (semIr a_ir)` holds on the captured IR, then `H` holds on both the source artifact `semS a_src` and the lowered executable `semExec (lower a_src)`.",
+    "hypotheses": [
+      {
+        "name": "hok : cap (runPasses passes a_src) = .ok a_ir",
+        "purpose": "ties the verified IR artifact `a_ir` to the successful capture of `runPasses passes a_src`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_cospan_without_capture_ok",
+        "witness_class": "there is a fail-closed capture returning `.error ()` on `a_src = 2` while an unrelated `a_ir = 0` satisfies `allSafeH`"
+      },
+      {
+        "name": "hpass : LosesNoBehaviourAtInputs semS passes a_src",
+        "purpose": "prevents pre-capture compiler passes from erasing source behaviors that `lower a_src` still exhibits",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_cospan_without_prepass_no_loss",
+        "witness_class": "there is a single-pass pre-capture pipeline `[fun _ => 0]` erasing `true` from `bitSem 2` while `lower = id`"
+      },
+      {
+        "name": "hcap : OverApproxOnOk semS semIr cap",
+        "purpose": "ensures `.ok` capture loses no behavior present after the pre-capture passes",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_cospan_without_overApproxOnOk",
+        "witness_class": "there is an under-approximating capture `fun _ => .ok 0` on `a_src = 2` with `passes = []` and `lower = id`"
+      },
+      {
+        "name": "hlow : LowerRefinesAt semS semExec lower a_src",
+        "purpose": "ensures post-capture backend lowering introduces no new behavior absent from `semS a_src`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_cospan_without_lowerRefines",
+        "witness_class": "there is a post-capture lowering `fun _ => 1` introducing behavior `true` absent from `a_src = 0`"
+      },
+      {
+        "name": "hsub : SubsetClosed H",
+        "purpose": "allows `H` to transfer contravariantly along `semExec (lower a_src) ⊆ semS a_src ⊆ semIr a_ir`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_cospan_without_subsetClosed",
+        "witness_class": "the two-branch GNI-like hyperproperty `bothBranchesH` when `lower` refines `{false, true}` (`2`) to `{false}` (`0`)"
+      },
+      {
+        "name": "hir : H (semIr a_ir)",
+        "purpose": "supplies the verified hyperproperty on the captured IR artifact",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_cospan_without_ir_holds",
+        "witness_class": "identity passes, capture, and lowering on `1`, where `allSafeH (bitSem 1)` fails"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_cospan_transfer`: cross-universe cospan (`Src = Nat : Type 0`, `Ir = Sys : Type 1`, `Exec = Bool : Type 0`) with pre-capture pass `[fun n => n + 1]`, partial capture (`cap 1 = .ok a_ir`, `cap 2 = .error ()`), and strict behavioral refinement (`¬ TraceSub (semS 0) (semExec (lower 0))`).",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_cospan_transfer",
+    "non_claims": [
+      "When `lower` runs on `runPasses passes a_src` rather than `a_src` (sharing pre-capture passes with the backend), undefined-behavior-erasing passes still require source-to-pass trace inclusion (`semS a ⊆ semS (f a)`, i.e., pass over-approximation rather than undefined-behavior-erasing pass refinement `semS (f a) ⊆ semS a`) if the claim is stated about `a_src`, whereas claims scoped to `runPasses passes a_src` drop `hpass` (not proved here; see `fail-closed-ir-capture-soundness-erasing-pass-sets-and-metadata-injectivity`).",
+      "`LowerRefinesAt` assumes unconditional trace inclusion `TraceSub (semExec (lower a_src)) (semS a_src)` at `a_src`. For compilers whose backend refinement holds only when `a_src` has no undefined behavior, `cospan_subsetClosed_transfer` applies only when `semS` models undefined behavior chaotically (admitting all traces) or when undefined-behavior freedom of `a_src` is independently established from `H (semIr a_ir)` and `semS a_src ⊆ semIr a_ir` (not proved here; see `simulation-diagrams-and-multi-pass-compiler-correctness` and `law-dependent-rewrites-after-capture-safe-vs-unsafe-trait-laws-and-relational-semantics`).",
+      "`semS`, `semIr`, and `semExec` share a common trace type `B`; cross-language trace abstraction or observation maps between IR events and machine events are not modeled.",
+      "Existential witness properties and general ∀∃ hyperproperties (`bothBranchesH`) do not transfer across `cospan_subsetClosed_transfer` (`cex_cospan_without_subsetClosed`).",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "X. Leroy, \"A Formally Verified Compiler Back-end\", Journal of Automated Reasoning 43(4):363–446, 2009, doi:10.1007/s10817-009-9155-4: backward behavior refinement across compiler lowering conditioned on source safety.",
+      "A. W. Appel, \"Verified Software Toolchain\", ESOP 2011, LNCS 6602, pp. 1–17, 2011, doi:10.1007/978-3-642-19718-5_1: composing front-end IR program verification with CompCert backend lowering in Coq.",
+      "M. R. Clarkson, F. B. Schneider, \"Hyperproperties\", Journal of Computer Security 18(6):1157–1210, 2010, doi:10.3233/JCS-2009-0393; C. Abate et al., \"Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation\", IEEE CSF 2019, pp. 256–271, doi:10.1109/CSF.2019.00025: preservation of subset-closed hyperproperties under trace inclusion.",
+      "Reference corpus package `fail-closed-ir-capture-soundness-erasing-pass-sets-and-metadata-injectivity`: `OverApproxOnOk` and `LosesNoBehaviourAtInputs` on pre-capture compiler pipelines.",
+      "Reference corpus package `simulation-diagrams-and-multi-pass-compiler-correctness`: conditional backward trace inclusion under `NeverGoesWrong`.",
+      "Reference corpus package `law-dependent-rewrites-after-capture-safe-vs-unsafe-trait-laws-and-relational-semantics`: post-capture codegen rewrites relative to captured IR."
+    ],
+    "design_question": "How do pre-capture IR passes (which may erase behaviors), fail-closed partial IR capture, and post-capture backend lowering compose as a cospan to transfer properties from verified IR to compiled executables?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "uniform-chain-composition-iff",
+    "lean": "Toy.BoundaryLicensing.transferChain_eq_iff_forall_realizesChain",
+    "lean_names": [
+      "Toy.BoundaryLicensing.cex_transferChain_iff_without_nonDegen",
+      "Toy.BoundaryLicensing.cex_coincidental_truth_on_unlicensed_chain",
+      "Toy.BoundaryLicensing.determinizing_stage_breaks_markovian_completeness",
+      "Toy.BoundaryLicensing.nonvacuity_transferChain",
+      "Toy.BoundaryLicensing.RealizesChain",
+      "Toy.BoundaryLicensing.transferChain",
+      "Toy.BoundaryLicensing.TraceDeterministic",
+      "Toy.BoundaryLicensing.realizes_refl",
+      "Toy.BoundaryLicensing.realizesChain_pos",
+      "Toy.BoundaryLicensing.realizesChain_neg",
+      "Toy.BoundaryLicensing.transferChain_pos",
+      "Toy.BoundaryLicensing.transferChain_neg",
+      "Toy.BoundaryLicensing.traceDeterministic_pos",
+      "Toy.BoundaryLicensing.traceDeterministic_neg"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Composing individual simulation links by transitivity is standard; proving that the folded decidable status transformer `transferChain` is both sound and complete (`↔`) with respect to universal preservation over all unconstrained `n`-step `RealizesChain` realizations on `Sys` is established here.",
+    "plain_claim": "For every finite boundary list `rels : List BoundaryRel`, positive shape `sh : PosShape`, positive formula `P : Spec`, and initial status `st₀ : Status`: if `NonDegen sh P` holds, then `transferChain rels sh st₀ = st₀` holds iff for every pair of Kripke systems `S₀ Sₙ : Sys` connected by `RealizesChain rels S₀ Sₙ` with `statusOf S₀ sh P = st₀`, the final target satisfies `statusOf Sₙ sh P = st₀`.",
+    "hypotheses": [
+      {
+        "name": "hnd : NonDegen sh P",
+        "purpose": "rules out degenerate formulas (`specConstTrue`, `specConstFalse`) where every Kripke system shares a fixed verdict even across `.none`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_transferChain_iff_without_nonDegen",
+        "witness_class": "`rels = [.none]`, `sh = .univSafety`, `P = specConstTrue`, `st₀ = .supported`"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`nonvacuity_transferChain`: explicit 3-step `RealizesChain` along `[.cospanCaptureLower, .lockStepSim .s2m, .litEntails]` from `twoBranchSys` (`S₀`) to `oneBranchSys` (`S₃`) with `¬ TraceIncl S₀ S₃`, preserving `.supported` on `.hyperSubsetClosed` at `specAtom0`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_transferChain",
+    "non_claims": [
+      "At `st₀ = .undetermined`, both sides of the biconditional hold trivially (`transferChain` returns `.undetermined`, and `statusOf S₀ sh P = .undetermined` is vacuously false because `statusOf` on `Sys` is two-valued via `statusOf_ne_undetermined`).",
+      "Coincidental agreement on a single concrete realization chain (`S₀, …, Sₙ`) does not license the boundary list `rels` (`cex_coincidental_truth_on_unlicensed_chain`).",
+      "Completeness (`←`) of `transferChain` relies on intermediate stages ranging over arbitrary nondeterministic Kripke structures `Sys` (`realizes_refl`); restricting an intermediate stage's codomain to `TraceDeterministic` systems allows `.traceRefine .s2m` to preserve `.existWitness` `.supported` even though `transfer (.traceRefine .s2m) .existWitness .supported = .undetermined` (`determinizing_stage_breaks_markovian_completeness`).",
+      "`RealizesChain rels S₀ Sₙ` quantifies over unconstrained intermediate systems `S₁, …, Sₙ₋₁ : Sys`; pipelines whose stages satisfy a coupled joint invariant (for example, an `.embed .m2s` instrumentation pass followed by its paired state-erasing retraction) can preserve claims even when link-by-link `transferChain` returns `.undetermined` (not proved here).",
+      "`transferChain` tracks preservation of a fixed `(sh, P)` and verdict `st₀` across `Sys` (where `Spec` is negation-free and `EvalShape` evaluates fixed representative schemas); negation or complementation steps (such as reducing validity of `φ` to unsatisfiability of `¬φ`) and non-Markovian pragmatic effects (`no_stateless_implicature_transfer_for_compression`) are not represented in `BoundaryRel`.",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "Reference corpus package `simulation-diagrams-and-multi-pass-compiler-correctness`: multi-step composition of homogeneous well-founded forward simulations.",
+      "Reference corpus package `toy-model-transfer-preservation-of-claim-shapes-under-embeddings-homomorphisms-and-simulations`: single-step soundness and sharpness for model-theoretic maps."
+    ],
+    "design_question": "Across an `n`-step heterogeneous verification pipeline `[rel₁, …, relₙ]` over unconstrained intermediate systems, does folding single-boundary `transfer` lose precision, or is `transferChain rels sh st₀ = st₀` exact for universal preservation across all realizations?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "operational-tcb-warrant-gating-and-bilateral-collapse",
+    "lean": [
+      "Toy.BoundaryLicensing.licensedTransfer_eq_iff_forall_realizesUnderTCB",
+      "Toy.BoundaryLicensing.unwarranted_collapses_both_statuses"
+    ],
+    "lean_names": [
+      "Toy.BoundaryLicensing.cex_licensedTransfer_iff_without_nonDegen",
+      "Toy.BoundaryLicensing.cex_unwarranted_collapse_without_nonDegen",
+      "Toy.BoundaryLicensing.unwarranted_undetermined_vacuous_agreement",
+      "Toy.BoundaryLicensing.nonvacuity_licensedTransfer",
+      "Toy.BoundaryLicensing.gateWarrant",
+      "Toy.BoundaryLicensing.licensedTransfer",
+      "Toy.BoundaryLicensing.RealizesUnderTCB",
+      "Toy.BoundaryLicensing.gateWarrant_pos",
+      "Toy.BoundaryLicensing.gateWarrant_neg",
+      "Toy.BoundaryLicensing.licensedTransfer_pos",
+      "Toy.BoundaryLicensing.licensedTransfer_neg",
+      "Toy.BoundaryLicensing.realizesUnderTCB_pos",
+      "Toy.BoundaryLicensing.realizesUnderTCB_neg"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "That violating TCB assumptions invalidates positive guarantees is standard; formalizing global TCB warrant as conditional realization `warrantValid = true → RealizesChain rels S₀ Sₙ` makes precise when `warrantValid = false` symmetrically invalidates `.contradicted` refutations as well (and clarifies where directional replay escapes bilateral collapse).",
+    "plain_claim": "For every operational warrant boolean `warrantValid : Bool`, boundary chain `rels : List BoundaryRel`, positive shape `sh : PosShape`, positive formula `P : Spec`, and status `st₀ : Status`: if `NonDegen sh P` holds, then `licensedTransfer warrantValid rels sh st₀ = st₀` iff every TCB-conditional realization `RealizesUnderTCB warrantValid rels S₀ Sₙ` starting at `statusOf S₀ sh P = st₀` ends at `statusOf Sₙ sh P = st₀` (`licensedTransfer_eq_iff_forall_realizesUnderTCB`); in particular, when `warrantValid = false` and `NonDegen sh P` holds, `licensedTransfer` equals `.undetermined` for both `.supported` and `.contradicted` and admits opposite-verdict `RealizesUnderTCB false` pairs in both directions (`unwarranted_collapses_both_statuses`).",
+    "hypotheses": [
+      {
+        "name": "hnd : NonDegen sh P",
+        "applies_to": [
+          "Toy.BoundaryLicensing.licensedTransfer_eq_iff_forall_realizesUnderTCB",
+          "Toy.BoundaryLicensing.unwarranted_collapses_both_statuses"
+        ],
+        "purpose": "ensures opposite-verdict target systems exist when `warrantValid = false` leaves `RealizesUnderTCB` unconstrained",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.BoundaryLicensing.cex_licensedTransfer_iff_without_nonDegen",
+          "Toy.BoundaryLicensing.cex_unwarranted_collapse_without_nonDegen"
+        ],
+        "witness_class": "`specConstTrue` at `.univSafety`, `.supported`, and `warrantValid = false`, where every `Sₙ` has verdict `.supported` even under unconstrained `RealizesUnderTCB false`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_licensedTransfer`: `warrantValid = true` on `[.cospanCaptureLower, .lockStepSim .s2m, .litEntails]` from `twoBranchSys` to `oneBranchSys` preserves `.supported` for `.hyperSubsetClosed` at `specAtom0`, while `warrantValid = false` collapses to `.undetermined`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_licensedTransfer",
+    "non_claims": [
+      "`warrantValid` is modeled as a global boolean summary of whether external TCB assumptions hold; how operational evidence establishes `warrantValid = true` (hardware, OS, compiler binary integrity) lies outside the formal model.",
+      "Bilateral collapse under `warrantValid = false` (`unwarranted_collapses_both_statuses`) holds because `RealizesUnderTCB false rels S₀ Sₙ` (`false = true → RealizesChain rels S₀ Sₙ`) leaves `S₀` and `Sₙ` completely unrelated; when a partial TCB degradation breaks `.s2m` over-approximation while `.m2s` concrete execution under-approximation (`Realizes (.traceRefine .m2s) S₀ Sₙ`) remains valid, `.supported` on `.univSafety` collapses to `.undetermined` while `.contradicted` remains licensed (`transfer_sound`).",
+      "At `st₀ = .undetermined`, both sides of `licensedTransfer_eq_iff_forall_realizesUnderTCB` hold trivially even at `warrantValid = false` (`unwarranted_undetermined_vacuous_agreement`), because `licensedTransfer` returns `.undetermined` and `statusOf S₀ sh P = .undetermined` is vacuously false (`statusOf_ne_undetermined`).",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "R. Pollack, \"How to Believe a Machine-Checked Proof\", in Twenty-Five Years of Constructive Type Theory (G. Sambin, J. M. Smith, eds.), Oxford University Press, pp. 205–220, 1998: separation between formal kernel derivability and operational/specification trust assumptions.",
+      "Reference corpus package `proof-checker-trust-layers-faithfulness-semantic-soundness-and-verifier-rings`: explicit TCB assumptions for proof checkers."
+    ],
+    "design_question": "When an operational TCB assumption fails globally (`warrantValid = false`, with no remaining directional replay link), does a tool's negative refutation (`.contradicted`) survive even though its positive proof (`.supported`) fails, or do both verdicts collapse to `.undetermined`?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "positive-allowlist-exactness-and-finite-denylist-impossibility",
+    "lean": [
+      "Toy.BoundaryLicensing.allowlistAccepts_iff_onlyDeclaredAxioms",
+      "Toy.BoundaryLicensing.freshAxiomOutside_accepted_by_denylist_rejected_by_allowlist",
+      "Toy.BoundaryLicensing.no_finite_denylist_enforces_allowlist"
+    ],
+    "lean_names": [
+      "Toy.BoundaryLicensing.denylist_complement_sound_on_closed_universe",
+      "Toy.BoundaryLicensing.freshAxiomOutside_not_mem",
+      "Toy.BoundaryLicensing.nonvacuity_allowlist_vs_denylist",
+      "Toy.BoundaryLicensing.allowlistAccepts",
+      "Toy.BoundaryLicensing.denylistAccepts",
+      "Toy.BoundaryLicensing.OnlyDeclaredAxioms",
+      "Toy.BoundaryLicensing.freshAxiomOutside",
+      "Toy.BoundaryLicensing.allowlistAccepts_pos",
+      "Toy.BoundaryLicensing.allowlistAccepts_neg",
+      "Toy.BoundaryLicensing.denylistAccepts_pos",
+      "Toy.BoundaryLicensing.denylistAccepts_neg",
+      "Toy.BoundaryLicensing.onlyDeclaredAxioms_pos",
+      "Toy.BoundaryLicensing.onlyDeclaredAxioms_neg",
+      "Toy.BoundaryLicensing.freshAxiomOutside_pos",
+      "Toy.BoundaryLicensing.freshAxiomOutside_neg",
+      "Toy.BoundaryLicensing.CertVerifier",
+      "Toy.BoundaryLicensing.AxiomId"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "Re-derivation of fail-safe positive allowlisting vs. finite exclusion denylisting over an infinite identifier domain (Saltzer & Schroeder 1975), packaged with the explicit `freshAxiomOutside` witness and finite closed-universe complement positive control.",
+    "plain_claim": "For every finite declared axiom allowlist `allow : List AxiomId` and used-axiom list `used : List AxiomId` over `AxiomId = Nat`: `allowlistAccepts allow used = true` iff `OnlyDeclaredAxioms allow used` (`allowlistAccepts_iff_onlyDeclaredAxioms`), whereas for every finite denylist `deny : List AxiomId`, the witness `a := freshAxiomOutside allow deny` has `[a]` accepted by `denylistAccepts deny`, rejected by `allowlistAccepts allow`, and outside `OnlyDeclaredAxioms allow` (`freshAxiomOutside_accepted_by_denylist_rejected_by_allowlist`), so no finite denylist `deny` satisfies `∀ used, denylistAccepts deny used = true → OnlyDeclaredAxioms allow used` (`no_finite_denylist_enforces_allowlist`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_allowlist_vs_denylist`: `allowlistAccepts [0, 1] [1, 0] = true` and `OnlyDeclaredAxioms [0, 1] [1, 0]` hold, while `freshAxiomOutside [1, 4] [2] = 5` satisfies `5 ∉ [1, 4]`, `5 ∉ [2]`, `denylistAccepts [2] [5] = true`, and `allowlistAccepts [1, 4] [5] = false`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_allowlist_vs_denylist",
+    "positive_control_lean": "Toy.BoundaryLicensing.denylist_complement_sound_on_closed_universe",
+    "non_claims": [
+      "The impossibility relies on `AxiomId = Nat` being infinite and `deny` being a finite `List AxiomId`; over a fixed finite closed universe `univ` (`OnlyDeclaredAxioms univ used`), the complement denylist `univ.filter (!allow.contains ·)` is sound (`denylist_complement_sound_on_closed_universe`), and a decidable predicate denylist `AxiomId → Bool` (such as `fun a => !allow.contains a`) can likewise complement `allow`.",
+      "`allowlistAccepts allow used = true` checks only that `used ⊆ allow` and trusts that `used` collects all axioms transitively depended on; it neither establishes consistency of the axioms inside `allow` nor detects soundness bypasses that introduce no axiom identifier into `used` (such as incomplete axiom collection, unsound reduction rules, foreign-function overrides, or unpinned definitions; see `cert_trust_triple_sound`).",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "J. H. Saltzer, M. D. Schroeder, \"The Protection of Information in Computer Systems\", Proceedings of the IEEE 63(9):1278–1308, 1975, doi:10.1109/PROC.1975.9939 (Section I-A-2, Fail-Safe Defaults): permission allowlists vs. exclusion denylists.",
+      "R. Pollack, \"How to Believe a Machine-Checked Proof\", in Twenty-Five Years of Constructive Type Theory (G. Sambin, J. M. Smith, eds.), Oxford University Press, pp. 205–220, 1998: auditing all axioms and definitions transitively depended on by a checked theorem.",
+      "Reference corpus package `fail-closed-ir-capture-soundness-erasing-pass-sets-and-metadata-injectivity`: fail-closed vs. fail-open syntactic checks."
+    ],
+    "design_question": "Why must a TCB gate check axiom dependencies against a positive finite allowlist (`used ⊆ allow`) rather than grepping for a finite list of known banned axioms?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "certificate-trust-triple-soundness-and-independence",
+    "lean": "Toy.BoundaryLicensing.cert_trust_triple_sound",
+    "lean_names": [
+      "Toy.BoundaryLicensing.cex_trust_triple_without_faithful",
+      "Toy.BoundaryLicensing.cex_trust_triple_without_semSound",
+      "Toy.BoundaryLicensing.cex_trust_triple_without_pinned",
+      "Toy.BoundaryLicensing.cex_trust_triple_without_accepted",
+      "Toy.BoundaryLicensing.nonvacuity_cert_trust_triple",
+      "Toy.BoundaryLicensing.CertFaithful",
+      "Toy.BoundaryLicensing.CertSemSound",
+      "Toy.BoundaryLicensing.TablePinned",
+      "Toy.BoundaryLicensing.acceptsNamed",
+      "Toy.BoundaryLicensing.boolHonestVerifier",
+      "Toy.BoundaryLicensing.boolUnfaithfulVerifier",
+      "Toy.BoundaryLicensing.certFaithful_pos",
+      "Toy.BoundaryLicensing.certFaithful_neg",
+      "Toy.BoundaryLicensing.certSemSound_pos",
+      "Toy.BoundaryLicensing.certSemSound_neg",
+      "Toy.BoundaryLicensing.tablePinned_pos",
+      "Toy.BoundaryLicensing.tablePinned_neg",
+      "Toy.BoundaryLicensing.acceptsNamed_pos",
+      "Toy.BoundaryLicensing.acceptsNamed_neg"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Elementary polymorphic reference point: restates the three-layer kernel-trust decomposition (`proof-checker-trust-layers-...`) over universe-polymorphic `CertVerifier Stmt Rule Cert` interfaces (`Type u`, `Type v`, `Type w`), used directly by `CertPinnedLink` on `Sys : Type 1` and paired with four pairwise independence counterexamples.",
+    "plain_claim": "For every universe-polymorphic certificate verifier `V : CertVerifier Stmt Rule Cert`, rule parameter `R : Rule`, shipped statement table `shipped : Nat → Option Stmt`, certificate `c : Cert`, and theorem identifier `name : Nat`: if `CertFaithful V R`, `CertSemSound V R`, `TablePinned V.official shipped name`, and `acceptsNamed V R shipped c name = true` all hold, then there exists `φ : Stmt` such that `V.official name = some φ` and `V.valid φ`.",
+    "hypotheses": [
+      {
+        "name": "hfaith : CertFaithful V R",
+        "purpose": "ensures `V.check R c φ = true` implies `V.derivable R φ`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_trust_triple_without_faithful",
+        "witness_class": "`boolUnfaithfulVerifier` (`check = true` always) with sound rules and pinned table at `name = 0`"
+      },
+      {
+        "name": "hsem : CertSemSound V R",
+        "purpose": "ensures every `R`-derivable statement satisfies `V.valid`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_trust_triple_without_semSound",
+        "witness_class": "`boolHonestVerifier` at unsound rule flag `R = false` with pinned table at `name = 0`"
+      },
+      {
+        "name": "hpin : TablePinned V.official shipped name",
+        "purpose": "prevents `shipped` from remapping `name` to a trivially true statement while `V.official name` is false",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_trust_triple_without_pinned",
+        "witness_class": "`boolHonestVerifier` at `R = true` with `shipped 0 = some true` and `official 0 = some false`"
+      },
+      {
+        "name": "hacc : acceptsNamed V R shipped c name = true",
+        "purpose": "requires the certificate check on `name` to actually pass",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_trust_triple_without_accepted",
+        "witness_class": "`boolHonestVerifier` at `R = true` with pinned table at `name = 0`, where `acceptsNamed = false`"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "`nonvacuity_cert_trust_triple`: `boolHonestVerifier` at `R = true` and `name = 1` (`official 1 = some true`).",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_cert_trust_triple",
+    "non_claims": [
+      "`TablePinned` checks equality of `Stmt` values at `name` only; in languages with definitional dependencies, pinning the surface statement without pinning the transitive definition closure of `φ` (not modeled in `TablePinned`) leaves statement spoofing open.",
+      "`TablePinned` pins `shipped name` to `V.official name` only; it neither pins the rule parameter `R` (whose soundness must be supplied separately via `CertSemSound V R`) nor establishes that the formal predicate `V.valid φ` matches informal user intent.",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "R. Pollack, \"How to Believe a Machine-Checked Proof\", in Twenty-Five Years of Constructive Type Theory (G. Sambin, J. M. Smith, eds.), Oxford University Press, pp. 205–220, 1998: separation between checker derivability and statement faithfulness.",
+      "M. Sozeau, S. Boulier, Y. Forster, N. Tabareau, T. Winterhalter, \"Coq Coq Correct! Verification of Type Checking and Erasure for Coq, in Coq\", PACMPL 4(POPL):8, 2020, doi:10.1145/3371076; O. Abrahamsson, M. O. Myreen, R. Kumar, T. Sewell, \"Candle: A Verified Implementation of HOL Light\", ITP 2022, LIPIcs 237, pp. 3:1–3:17, doi:10.4230/LIPIcs.ITP.2022.3; M. Carneiro, \"Lean4Lean: Verifying a Typechecker for Lean, in Lean\", arXiv:2403.14064, 2024: mechanized kernel verifiers separating algorithmic typechecking from declarative typing and environment lookup.",
+      "Reference corpus package `proof-checker-trust-layers-faithfulness-semantic-soundness-and-verifier-rings`: concrete propositional rule-table formulation of `Faithful`, `SemSound`, and `Pinned`."
+    ],
+    "design_question": "Can any two of checker faithfulness (`CertFaithful`), rule soundness (`CertSemSound`), and statement-table pinning (`TablePinned`) guarantee end-to-end validity of an accepted theorem name without the third?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "bare-only-exhaustification-iff-and-neither-nor-safety",
+    "lean": [
+      "Toy.BoundaryLicensing.exhaustifiedOnly_sound_iff_contradictsEv",
+      "Toy.BoundaryLicensing.neitherNorDisclaimerSafe_iff",
+      "Toy.BoundaryLicensing.exhaustifiedOnly_unsound_and_neitherNor_safe_of_undetermined"
+    ],
+    "lean_names": [
+      "Toy.BoundaryLicensing.cex_exhaustifiedOnly_without_model_entailed",
+      "Toy.BoundaryLicensing.cex_neitherNor_without_model_entailed",
+      "Toy.BoundaryLicensing.cex_exhaustifiedOnly_unsound_without_undetermined",
+      "Toy.BoundaryLicensing.nonvacuity_exhaustifiedOnly",
+      "Toy.BoundaryLicensing.EntailsEv",
+      "Toy.BoundaryLicensing.ContradictsEv",
+      "Toy.BoundaryLicensing.UndeterminedEv",
+      "Toy.BoundaryLicensing.exhaustifiedOnlyReading",
+      "Toy.BoundaryLicensing.ScopeDisclaimer",
+      "Toy.BoundaryLicensing.DisclaimerLitTrue",
+      "Toy.BoundaryLicensing.disclaimerReadings",
+      "Toy.BoundaryLicensing.DisclaimerSafe",
+      "Toy.BoundaryLicensing.NeitherNorDisclaimerSafe",
+      "Toy.BoundaryLicensing.entailsEv_pos",
+      "Toy.BoundaryLicensing.entailsEv_neg",
+      "Toy.BoundaryLicensing.contradictsEv_pos",
+      "Toy.BoundaryLicensing.contradictsEv_neg",
+      "Toy.BoundaryLicensing.undeterminedEv_pos",
+      "Toy.BoundaryLicensing.undeterminedEv_neg",
+      "Toy.BoundaryLicensing.exhaustifiedOnlyReading_pos",
+      "Toy.BoundaryLicensing.exhaustifiedOnlyReading_neg",
+      "Toy.BoundaryLicensing.disclaimerSafe_pos",
+      "Toy.BoundaryLicensing.disclaimerSafe_neg",
+      "Toy.BoundaryLicensing.neitherNorDisclaimerSafe_pos",
+      "Toy.BoundaryLicensing.neitherNorDisclaimerSafe_neg",
+      "Toy.BoundaryLicensing.SummaryCard",
+      "Toy.BoundaryLicensing.WorldClaim"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Re-derivation of focus-sensitive `only` exhaustification (Fox 2007) and explicit neither-nor scope-disclaimer safety (`implicature-safe-summaries-...`) over arbitrary world predicates `WorldClaim W`.",
+    "plain_claim": "For every world space `W : Type`, evidence predicate `E : WorldClaim W`, model claim `M : WorldClaim W`, and outside-model claim `S_ext : WorldClaim W`: if `EntailsEv E M` holds, then `EntailsEv E (exhaustifiedOnlyReading M S_ext)` (`∀ w, E w → M w ∧ ¬ S_ext w`) holds iff `ContradictsEv E S_ext` holds (`exhaustifiedOnly_sound_iff_contradictsEv`); `NeitherNorDisclaimerSafe E M S_ext` (`DisclaimerSafe E M S_ext .neitherNor`) holds iff `EntailsEv E M ∧ UndeterminedEv E S_ext` (`neitherNorDisclaimerSafe_iff`); and whenever `EntailsEv E M` and `UndeterminedEv E S_ext` hold, `DisclaimerSafe E M S_ext .bareOnly` and `EntailsEv E (exhaustifiedOnlyReading M S_ext)` fail while `NeitherNorDisclaimerSafe E M S_ext` holds (`exhaustifiedOnly_unsound_and_neitherNor_safe_of_undetermined`).",
+    "hypotheses": [
+      {
+        "name": "hM : EntailsEv E M",
+        "applies_to": [
+          "Toy.BoundaryLicensing.exhaustifiedOnly_sound_iff_contradictsEv",
+          "Toy.BoundaryLicensing.exhaustifiedOnly_unsound_and_neitherNor_safe_of_undetermined"
+        ],
+        "purpose": "supplies entailment of the positive prejacent `M` used by both `exhaustifiedOnlyReading M S_ext` and `NeitherNorDisclaimerSafe E M S_ext`",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.BoundaryLicensing.cex_exhaustifiedOnly_without_model_entailed",
+          "Toy.BoundaryLicensing.cex_neitherNor_without_model_entailed"
+        ],
+        "witness_class": "`W = Bool` with `E = True` and `M = (· = true)`, failing at `w = false` under both `S_ext = False` (refuted) and `S_ext = (· = false)` (undetermined)"
+      },
+      {
+        "name": "hund : UndeterminedEv E S_ext",
+        "applies_to": [
+          "Toy.BoundaryLicensing.exhaustifiedOnly_unsound_and_neitherNor_safe_of_undetermined"
+        ],
+        "purpose": "excludes cases where `E` already refutes `S_ext` (making `.bareOnly` sound and `.neitherNor` literally false)",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_exhaustifiedOnly_unsound_without_undetermined",
+        "witness_class": "`W = Bool` with `E = (· = true)`, `M = (· = true)`, and `S_ext = (· = false)`, where `DisclaimerSafe E M S_ext .bareOnly` holds and `NeitherNorDisclaimerSafe E M S_ext` fails"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "`nonvacuity_exhaustifiedOnly`: over `W = Bool`, `(E = (· = true), M = (· = true), S_ext = (· = false))` witnesses `EntailsEv E M ∧ ContradictsEv E S_ext`, while `(E = True, M = True, S_ext = (· = true))` witnesses `EntailsEv E M ∧ UndeterminedEv E S_ext ∧ NeitherNorDisclaimerSafe E M S_ext`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_exhaustifiedOnly",
+    "non_claims": [
+      "When `E` explicitly proves a refutation of `S_ext` (`ContradictsEv E S_ext` with `¬ EntailsEv E S_ext`), `exhaustifiedOnlyReading M S_ext` and `DisclaimerSafe E M S_ext .bareOnly` ARE supported by `E`; what is unsound is writing bare `\"only\"` when `S_ext` is undetermined (`UndeterminedEv E S_ext`; `exhaustifiedOnly_unsound_and_neitherNor_safe_of_undetermined`).",
+      "`NeitherNorDisclaimerSafe E M S_ext` (`DisclaimerSafe E M S_ext .neitherNor`) is equivalent to `EntailsEv E M ∧ UndeterminedEv E S_ext` (`neitherNorDisclaimerSafe_iff`): it checks `DisclaimerLitTrue` together with entailment of `disclaimerReadings M S_ext .neitherNor = [M]`, and is false whenever `E` does not entail `M`, whenever `E` entails or contradicts `S_ext`, or whenever `E` is unsatisfiable (`∀ w, ¬ E w`).",
+      "Probabilistic or context-dependent reader cancellation cues beyond the three deterministic `ScopeDisclaimer` forms (`bareOnly`, `unblockedUnshown`, `neitherNor`) are not modeled.",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "D. Fox, \"Free Choice and the Theory of Scalar Implicatures\", in Presupposition and Implicature in Compositional Semantics (U. Sauerland, P. Stateva, eds.), Palgrave Macmillan, pp. 71–120, 2007, doi:10.1057/9780230210752_4: covert exhaustification (`Exh`) as silent `only` negating excludable alternatives.",
+      "Reference corpus package `implicature-safe-summaries-conditional-perfection-and-exhaustification-of-formal-claims`: finite-world innocent exclusion and disclaimer safety (`notShown` vs. `notShownNotRefuted`)."
+    ],
+    "design_question": "Under `BoundaryRel.none` (no proved model–system bridge), when is scoping a result with bare `\"only\"` sound, and why is `\"neither establish nor refute\"` required whenever the system-level claim is undetermined?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "compression-blocker-non-inheritance-and-non-markovian-barrier",
+    "lean": [
+      "Toy.BoundaryLicensing.condPerfection_compression_breaks_minimal_safe_blocker",
+      "Toy.BoundaryLicensing.scalarExh_compression_breaks_blocker_minimality",
+      "Toy.BoundaryLicensing.no_stateless_implicature_transfer_for_compression"
+    ],
+    "lean_names": [
+      "Toy.BoundaryLicensing.recomputeBlockers_safe_and_minimal",
+      "Toy.BoundaryLicensing.SummaryCard.lit",
+      "Toy.BoundaryLicensing.ConsistentExcl",
+      "Toy.BoundaryLicensing.MaximalConsistentExcl",
+      "Toy.BoundaryLicensing.InnocentlyExcludable",
+      "Toy.BoundaryLicensing.innocentExh",
+      "Toy.BoundaryLicensing.SummaryCard.pragReading",
+      "Toy.BoundaryLicensing.ImplicatureSafe",
+      "Toy.BoundaryLicensing.MinimalSafeBlockers",
+      "Toy.BoundaryLicensing.recomputeBlockers",
+      "Toy.BoundaryLicensing.fullConjCard",
+      "Toy.BoundaryLicensing.compressedG1Card",
+      "Toy.BoundaryLicensing.symmetricConjCard",
+      "Toy.BoundaryLicensing.symmetricCard",
+      "Toy.BoundaryLicensing.fin3Alt02",
+      "Toy.BoundaryLicensing.fin3Alt12",
+      "Toy.BoundaryLicensing.implicatureSafe_pos",
+      "Toy.BoundaryLicensing.implicatureSafe_neg",
+      "Toy.BoundaryLicensing.minimalSafeBlockers_pos",
+      "Toy.BoundaryLicensing.minimalSafeBlockers_neg",
+      "Toy.BoundaryLicensing.innocentExh_pos",
+      "Toy.BoundaryLicensing.innocentExh_neg"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Non-inheritance of inherited blockers after conjunct-dropping was established on a finite multi-world model in `implicature-safe-summaries-...`; isolating the minimal 2-world conditional-perfection witness on `Bool`, the 3-world Fox (2007) innocent-exclusion minimality-loss witness on `Fin 3` under genuine conclusion-dropping, and the resulting impossibility of any stateless boolean transfer function `Bool → Bool` for `(H, G₁ ∧ G₂) ↦ (H, G₁)` are proved here.",
+    "plain_claim": "Under genuine conclusion-dropping `(H, G₁ ∧ G₂) ↦ (H, G₁)` with no side-channel fields on `SummaryCard`: over `Bool` with `E = True` and `alts = []`, `B = []` is minimal and `ImplicatureSafe` on `fullConjCard` (`H → True ∧ H`) yet fails `ImplicatureSafe` after dropping `G₂` to `compressedG1Card` (`H → True`) (`condPerfection_compression_breaks_minimal_safe_blocker`); dually, over `Fin 3` with fixed `E = fin3Alt12` and fixed alternatives `alts = [fin3Alt02, fin3Alt12]`, `[.scalarExh]` is minimal and safe on `⟨True, (fin3Alt02 ∨ fin3Alt12) ∧ fin3Alt12⟩` yet loses `MinimalSafeBlockers` after dropping `fin3Alt12` because `{fin3Alt02}` and `{fin3Alt12}` clash under `innocentExh` (`scalarExh_compression_breaks_blocker_minimality`); consequently, no stateless function `f : Bool → Bool` computes post-drop `ImplicatureSafe` from pre-drop `ImplicatureSafe` across all conclusion-drops `(H, G₁ ∧ G₂) ↦ (H, G₁)` (`no_stateless_implicature_transfer_for_compression`).",
+    "hypotheses": [],
+    "depth": "shallow",
+    "nonvacuity_witness": "`condPerfection_compression_breaks_minimal_safe_blocker`: `MinimalSafeBlockers (fun _ => True) [] [] fullConjCard` and `EntailsEv fullConjCard.lit compressedG1Card.lit` hold while `¬ ImplicatureSafe (fun _ => True) [] [] compressedG1Card`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.condPerfection_compression_breaks_minimal_safe_blocker",
+    "positive_control_lean": "Toy.BoundaryLicensing.recomputeBlockers_safe_and_minimal",
+    "non_claims": [
+      "Literal truth (`EntailsEv E card.lit`) IS preserved by conclusion-dropping (`LitEntailsLink`); what fails stateless inheritance is pragmatic `ImplicatureSafe` and `MinimalSafeBlockers` (`no_stateless_implicature_transfer_for_compression`, `condPerfection_compression_breaks_minimal_safe_blocker`, `scalarExh_compression_breaks_blocker_minimality`).",
+      "`no_stateless_implicature_transfer_for_compression` rules out an exact two-valued boolean predictor `f : Bool → Bool` computing post-compression `ImplicatureSafe` from pre-compression `ImplicatureSafe` alone; a conservative three-valued `Status` transformer mapping `.supported` to `.undetermined` remains sound under `Status.le` because stateless compression cannot license post-compression `.supported` safety without recomputing blockers on `(E, alts, c₂)`.",
+      "Recomputing `recomputeBlockers E alts card` directly from `(E, alts, card)` after compression restores both `ImplicatureSafe` and `MinimalSafeBlockers` (`recomputeBlockers_safe_and_minimal`).",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "M. L. Geis, A. M. Zwicky, \"On Invited Inferences\", Linguistic Inquiry 2(4):561–566, 1971: conditional perfection (`if H then C` inviting `if C then H`), whose antecedent `C` sits in contravariant position when `C` is weakened.",
+      "D. Fox, \"Free Choice and the Theory of Scalar Implicatures\", in Presupposition and Implicature in Compositional Semantics (U. Sauerland, P. Stateva, eds.), Palgrave Macmillan, pp. 71–120, 2007, doi:10.1057/9780230210752_4: innocent exclusion (`InnocentlyExcludable`, `innocentExh`) over maximal consistently excludable subsets of scalar alternatives.",
+      "Reference corpus package `implicature-safe-summaries-conditional-perfection-and-exhaustification-of-formal-claims`: blocker sets and conclusion-dropping summary compression."
+    ],
+    "design_question": "Why cannot summary compression (`H → G₁ ∧ G₂` compressed to `H → G₁`) be treated as a stateless Markovian `BoundaryRel` that carries forward the full card's minimal blocker annotations?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "sequent-refutation-context-split-and-dead-branch-vacuity",
+    "lean": [
+      "Toy.BoundaryLicensing.refutation_not_fullPremiseNonVacuous",
+      "Toy.BoundaryLicensing.cex_global_ctxNonVacuous_dead_right_branch"
+    ],
+    "lean_names": [
+      "Toy.BoundaryLicensing.cex_refutation_not_fullPremise_without_href",
+      "Toy.BoundaryLicensing.cex_refutation_not_fullPremise_without_hholds",
+      "Toy.BoundaryLicensing.nonVacuousOnBranches_implies_ctxNonVacuous",
+      "Toy.BoundaryLicensing.branch_nonVacuous_blocks_vacuous_branch_false",
+      "Toy.BoundaryLicensing.nonvacuity_sequent_refutation_and_branches",
+      "Toy.BoundaryLicensing.AllCtx",
+      "Toy.BoundaryLicensing.AllBad",
+      "Toy.BoundaryLicensing.Sequent.Holds",
+      "Toy.BoundaryLicensing.Sequent.CtxNonVacuous",
+      "Toy.BoundaryLicensing.Sequent.FullPremiseNonVacuous",
+      "Toy.BoundaryLicensing.Sequent.NonVacuousOnBranches",
+      "Toy.BoundaryLicensing.Sequent.TightCtxAt",
+      "Toy.BoundaryLicensing.Sequent.TightBadAt",
+      "Toy.BoundaryLicensing.deadRightBranchSequent",
+      "Toy.BoundaryLicensing.natBoundRefutation",
+      "Toy.BoundaryLicensing.allCtx_pos",
+      "Toy.BoundaryLicensing.allCtx_neg",
+      "Toy.BoundaryLicensing.allBad_pos",
+      "Toy.BoundaryLicensing.allBad_neg",
+      "Toy.BoundaryLicensing.sequent_holds_pos",
+      "Toy.BoundaryLicensing.sequent_holds_neg",
+      "Toy.BoundaryLicensing.ctxNonVacuous_pos",
+      "Toy.BoundaryLicensing.ctxNonVacuous_neg",
+      "Toy.BoundaryLicensing.fullPremiseNonVacuous_pos",
+      "Toy.BoundaryLicensing.fullPremiseNonVacuous_neg",
+      "Toy.BoundaryLicensing.nonVacuousOnBranches_pos",
+      "Toy.BoundaryLicensing.nonVacuousOnBranches_neg",
+      "Toy.BoundaryLicensing.tightCtxAt_pos",
+      "Toy.BoundaryLicensing.tightCtxAt_neg",
+      "Toy.BoundaryLicensing.tightBadAt_pos",
+      "Toy.BoundaryLicensing.tightBadAt_neg",
+      "Toy.BoundaryLicensing.Sequent"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Global hypothesis non-vacuity was formalized in `hypothesis-ledgers-...`; splitting `Sequent` into `ctxHyps` vs. `badHyps` (with tight premises on `refutation_not_fullPremiseNonVacuous`) and isolating sum-branch vacuity closed by non-empty `NonVacuousOnBranches` are made explicit here.",
+    "plain_claim": "For every sequent `sq : Sequent α m k`: if `∀ x, sq.goal x ↔ False` and `sq.Holds` hold, then `sq.FullPremiseNonVacuous` fails (`refutation_not_fullPremiseNonVacuous`), motivating `Sequent.CtxNonVacuous`; however, on `Sum Unit Unit`, the explicit sequent `deadRightBranchSequent` satisfies both `Sequent.Holds` and global `Sequent.CtxNonVacuous` (witnessed at `Sum.inl ()`) while vacuously entailing `False` on every `Sum.inr u`, and is rejected by `Sequent.NonVacuousOnBranches` over `[isLeft, isRight]` (`cex_global_ctxNonVacuous_dead_right_branch`).",
+    "hypotheses": [
+      {
+        "name": "href : ∀ x, sq.goal x ↔ False",
+        "applies_to": [
+          "Toy.BoundaryLicensing.refutation_not_fullPremiseNonVacuous"
+        ],
+        "purpose": "restricts full-premise impossibility to refutation sequents whose goal is logically false",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_refutation_not_fullPremise_without_href",
+        "witness_class": "there is a positive sequent on `Nat` (`ctx: x < 5`, `bad: x = 3`, `goal: True`) satisfying both `Holds` and `FullPremiseNonVacuous` at `x = 3`"
+      },
+      {
+        "name": "hholds : sq.Holds",
+        "applies_to": [
+          "Toy.BoundaryLicensing.refutation_not_fullPremiseNonVacuous"
+        ],
+        "purpose": "requires the refutation sequent to be valid so `ctxHyps` and `badHyps` cannot hold simultaneously",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_refutation_not_fullPremise_without_hholds",
+        "witness_class": "there is an invalid refutation sequent on `Nat` (`ctx: x < 5`, `bad: x = 3`, `goal: False`) satisfying `FullPremiseNonVacuous` at `x = 3`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_sequent_refutation_and_branches`: `natBoundRefutation` satisfies `∀ x, goal x ↔ False`, `Sequent.Holds`, and `Sequent.CtxNonVacuous`, and the unrestricted `Sum Unit Unit` sequent satisfies `NonVacuousOnBranches` over `[isLeft, isRight]`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_sequent_refutation_and_branches",
+    "non_claims": [
+      "`Sequent.NonVacuousOnBranches` requires `branches ≠ []` (so `nonVacuousOnBranches_implies_ctxNonVacuous` holds) and `∃ x, b x ∧ AllCtx sq.ctxHyps x` for each `b ∈ branches`, without requiring `branches` to be disjoint or exhaustive and without inspecting guards placed inside `sq.badHyps` or inside an implicational `sq.goal` (`fun x => guard x → P x`); encoding a dead branch restriction inside `goal` or omitting a constructor from `branches` leaves branch vacuity undetected.",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "Reference corpus package `hypothesis-ledgers-tightness-irredundancy-weakest-premises-and-vacuity`: `Sufficient`, global `NonVacuous`, and `TightAt` over unpartitioned hypothesis families."
+    ],
+    "design_question": "Why does naive all-premise non-vacuity fail on refutation theorems (`goal = False`), and why is global domain non-vacuity (`∃ x, AllCtx ctxHyps x`) still insufficient on sum or enum domains?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "finite-suite-allowlist-separation-barrier",
+    "lean": "Toy.BoundaryLicensing.finite_suite_allowlist_barrier",
+    "lean_names": [
+      "Toy.BoundaryLicensing.outside_accepted_good_iff",
+      "Toy.BoundaryLicensing.positive_control_postFreeze_probe_separates",
+      "Toy.BoundaryLicensing.cex_suite_barrier_without_sound",
+      "Toy.BoundaryLicensing.cex_suite_barrier_without_invariant",
+      "Toy.BoundaryLicensing.cex_suite_barrier_without_law",
+      "Toy.BoundaryLicensing.cex_suite_barrier_without_outside_witness",
+      "Toy.BoundaryLicensing.nonvacuity_finite_suite_barrier",
+      "Toy.BoundaryLicensing.CheckerSound",
+      "Toy.BoundaryLicensing.suiteAllowlist",
+      "Toy.BoundaryLicensing.SuiteSoundInvariant",
+      "Toy.BoundaryLicensing.checkerSound_pos",
+      "Toy.BoundaryLicensing.checkerSound_neg",
+      "Toy.BoundaryLicensing.suiteAllowlist_pos",
+      "Toy.BoundaryLicensing.suiteAllowlist_neg",
+      "Toy.BoundaryLicensing.suiteSoundInvariant_pos",
+      "Toy.BoundaryLicensing.suiteSoundInvariant_neg"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "tier_justification": "Refines the anchor-allowlist acceptance lemmas of `sound-checker-laws-anchors-allowlists-and-certificates` into a parametric invariance barrier over higher-order laws `SuiteSoundInvariant good F L` with four canonical tightness counterexamples and a post-freeze probe positive control.",
+    "plain_claim": "For every decidable-equality artifact type `α`, validity predicate `good : α → Prop`, pre-fixed finite suite `F : List α`, law `L : (α → Bool) → Prop`, and checker `c : α → Bool`: if `CheckerSound good c`, `SuiteSoundInvariant good F L`, `L c`, and `∃ p, p ∉ F ∧ c p = true` all hold, then `L (suiteAllowlist F c)` holds even though `suiteAllowlist F c ≠ c`.",
+    "hypotheses": [
+      {
+        "name": "hsound : CheckerSound good c",
+        "purpose": "ensures `CheckerSound good c ↔ CheckerSound good (suiteAllowlist F c)` both hold (`True ↔ True`, and implies `good p` on the outside witness via `outside_accepted_good_iff`), since `suiteAllowlist F` can turn an unsound `c` into a sound checker",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_suite_barrier_without_sound",
+        "witness_class": "`good = (· % 2 = 0)`, `F = [0]`, `c = fun _ => true` (unsound at `1`, accepting valid outside witness `p = 2`), and `L = (¬ CheckerSound good ·)`, where `suiteAllowlist [0] c` becomes sound and falsifies `L`"
+      },
+      {
+        "name": "hinv : SuiteSoundInvariant good F L",
+        "purpose": "restricts `L` to depend only on `CheckerSound good ·` truth and checker outputs on `F`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_suite_barrier_without_invariant",
+        "witness_class": "there is an even-number checker `c` on `F = [0]` with `L d := d 2 = true` probing `2 ∉ F`"
+      },
+      {
+        "name": "hlaw : L c",
+        "purpose": "supplies satisfaction of `L` on the original checker `c`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_suite_barrier_without_law",
+        "witness_class": "`L = fun _ => False` on `F = [0]` and `c = (· % 2 == 0)`"
+      },
+      {
+        "name": "hout : ∃ p : α, p ∉ F ∧ c p = true",
+        "purpose": "ensures `suiteAllowlist F c` actually differs extensionally from `c` on at least one accepted input outside `F` (automatically valid under `hsound` by `outside_accepted_good_iff`)",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_suite_barrier_without_outside_witness",
+        "witness_class": "`good = (· = 0)` and `c = (· == 0)` on `F = [0]`, where `suiteAllowlist [0] c = c`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_finite_suite_barrier`: `good = (· % 2 = 0)`, `c = (· % 2 == 0)`, `F = [0]`, `L d := CheckerSound good d ∧ d 0 = true`, and outside witness `p = 2`.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_finite_suite_barrier",
+    "positive_control_lean": "Toy.BoundaryLicensing.positive_control_postFreeze_probe_separates",
+    "non_claims": [
+      "The barrier applies to a fixed finite suite `F` chosen before the checker is frozen; evaluating `c` on held-out or post-freeze valid artifacts outside `F` breaks `SuiteSoundInvariant` and separates `c` from `suiteAllowlist F c` (`positive_control_postFreeze_probe_separates`).",
+      "Universal relational or metamorphic checker laws across unbounded inputs (for example, monotonicity or equivalence-invariance `∀ x y, rel x y → c x = true → c y = true`) and proof-certificate obligations depend on behavior outside `F`, violate `SuiteSoundInvariant`, and are not subject to `finite_suite_allowlist_barrier` (not proved here).",
+      "Over bounded finite state spaces where `F` enumerates every accepted input (`∀ p, c p = true → p ∈ F`), `suiteAllowlist F c` equals `c` (`cex_suite_barrier_without_outside_witness`).",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "Reference corpus package `sound-checker-laws-anchors-allowlists-and-certificates`: elementary anchor-allowlist acceptance (`R2a`, `R2c`, `R2f`).",
+      "Reference corpus package `finite-test-suites-teaching-sets-and-bounded-state-completeness`: finite test suites vs. unbounded domains."
+    ],
+    "design_question": "Can any acceptance criterion combining soundness with pass rates on a pre-published finite benchmark suite `F` distinguish a general compositional verifier from a hardcoded `F`-allowlist?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "extensional-lookup-wrapper-barrier",
+    "lean": "Toy.BoundaryLicensing.extensional_law_admits_lookupWrapper",
+    "lean_names": [
+      "Toy.BoundaryLicensing.lookupWrapper_eq_of_consistent",
+      "Toy.BoundaryLicensing.lookupWrapper_same_code_eq",
+      "Toy.BoundaryLicensing.positive_control_intensional_code_law_separates",
+      "Toy.BoundaryLicensing.cex_lookup_without_extensional",
+      "Toy.BoundaryLicensing.cex_lookup_without_consistent",
+      "Toy.BoundaryLicensing.cex_lookup_without_law",
+      "Toy.BoundaryLicensing.nonvacuity_extensional_lookupWrapper",
+      "Toy.BoundaryLicensing.ImplExtensionalLaw",
+      "Toy.BoundaryLicensing.TableConsistentWith",
+      "Toy.BoundaryLicensing.lookupWrapper",
+      "Toy.BoundaryLicensing.implExtensionalLaw_pos",
+      "Toy.BoundaryLicensing.implExtensionalLaw_neg",
+      "Toy.BoundaryLicensing.tableConsistentWith_pos",
+      "Toy.BoundaryLicensing.tableConsistentWith_neg",
+      "Toy.BoundaryLicensing.lookupWrapper_pos",
+      "Toy.BoundaryLicensing.lookupWrapper_neg",
+      "Toy.BoundaryLicensing.ImplChecker"
+    ],
+    "kind": "impossibility",
+    "tier": "T0",
+    "tier_justification": "Elementary intensional-representation reference point: restates extensional lookup-wrapper indistinguishability (`sound-checker-laws-...` `R3a`) over explicit `ImplChecker α Code` pairs so `ImplExtensionalLaw` does not collapse trivially under Lean function extensionality on bare `α → Bool`.",
+    "plain_claim": "For every decidable-equality type `α`, representation type `Code`, law `L : ImplChecker α Code → Prop`, representations `code₁ code₂ : Code`, checker `c : α → Bool`, and lookup table `table : List (α × Bool)`: if `ImplExtensionalLaw L`, `TableConsistentWith table c`, and `L ⟨code₁, c⟩` hold, then `L ⟨code₂, lookupWrapper table c⟩` holds and `code₁ ≠ code₂` implies `⟨code₂, lookupWrapper table c⟩ ≠ ⟨code₁, c⟩`.",
+    "hypotheses": [
+      {
+        "name": "hext : ImplExtensionalLaw L",
+        "purpose": "prevents `L` from inspecting `ImplChecker.code` directly rather than input-output behavior `run`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_lookup_without_extensional",
+        "witness_class": "`L chk := chk.code = true` separating `code₁ = true` from `code₂ = false`"
+      },
+      {
+        "name": "hcons : TableConsistentWith table c",
+        "purpose": "ensures every cached entry in `table` agrees with `c` so `lookupWrapper table c` has identical `run` behavior",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_lookup_without_consistent",
+        "witness_class": "there is an inconsistent entry `[(1, true)]` wrapping `c = (· == 0)` under `L chk := CheckerSound (· = 0) chk.run`"
+      },
+      {
+        "name": "hlaw : L ⟨code₁, c⟩",
+        "purpose": "supplies satisfaction of `L` on the original implementation `⟨code₁, c⟩`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_lookup_without_law",
+        "witness_class": "`L = fun _ => False` with `table = [(0, true)]` and `c = (· == 0)`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_extensional_lookupWrapper`: on `L chk := CheckerSound (· = 0) chk.run ∧ chk.run 0 = true`, `c = (· == 0)`, `table = [(0, true)]`, `code₁ = true`, and `code₂ = false`, all three hypotheses (`ImplExtensionalLaw L`, `TableConsistentWith table c`, `L ⟨true, c⟩`) and `true ≠ false` hold jointly.",
+    "nonvacuity_witness_lean": "Toy.BoundaryLicensing.nonvacuity_extensional_lookupWrapper",
+    "positive_control_lean": "Toy.BoundaryLicensing.positive_control_intensional_code_law_separates",
+    "non_claims": [
+      "`lookupWrapper table c` retains the full fallback checker `c` for every input absent from `table` (and when `code₁ = code₂`, `⟨code, lookupWrapper table c⟩ = ⟨code, c⟩` by `lookupWrapper_same_code_eq`); `extensional_law_admits_lookupWrapper` establishes extensional indistinguishability of fronting `c` with a consistent memoization cache, not that a standalone finite lookup table without `c` can match `c` over an unbounded input domain.",
+      "Intensional or certificate-emitting requirements that inspect `code` or require independently checkable proof objects (`positive_control_intensional_code_law_separates`, `cert_trust_triple_sound`) are not `ImplExtensionalLaw` and DO separate compositional checkers from lookup-wrapped representations.",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "Reference corpus package `sound-checker-laws-anchors-allowlists-and-certificates`: extensional checker equivalence (`R3a`)."
+    ],
+    "design_question": "Can any black-box input-output testing law (even over all inputs `α`) distinguish a compositional checker implementation from one fronted by a consistent lookup cache, without inspecting code or proof certificates?",
+    "proof_status": "proved (0 sorry)"
+  },
+  {
+    "id": "anti-lockout-exactness-and-warn-adjudicate-repair",
+    "lean": [
+      "Toy.BoundaryLicensing.zeroLockout_and_zeroFalseAccept_iff_exact",
+      "Toy.BoundaryLicensing.blockingGate_locks_out_strict_proxy",
+      "Toy.BoundaryLicensing.warnAdjudicateGate_zeroLockout_and_sound"
+    ],
+    "lean_names": [
+      "Toy.BoundaryLicensing.cex_warnAdjudicate_without_exact_adjudicator",
+      "Toy.BoundaryLicensing.cex_warnAdjudicate_without_sound_fastPath",
+      "Toy.BoundaryLicensing.cex_blocking_lockout_without_valid_witness",
+      "Toy.BoundaryLicensing.cex_blocking_lockout_without_proxy_reject",
+      "Toy.BoundaryLicensing.nonvacuity_exact_blockingGate",
+      "Toy.BoundaryLicensing.nonvacuity_warnAdjudicate_strict_proxy",
+      "Toy.BoundaryLicensing.ZeroLockout",
+      "Toy.BoundaryLicensing.ZeroFalseAccept",
+      "Toy.BoundaryLicensing.blockingGate",
+      "Toy.BoundaryLicensing.warnAdjudicateGate",
+      "Toy.BoundaryLicensing.ExactAdjudicatorOnWarnings",
+      "Toy.BoundaryLicensing.zeroLockout_pos",
+      "Toy.BoundaryLicensing.zeroLockout_neg",
+      "Toy.BoundaryLicensing.zeroFalseAccept_pos",
+      "Toy.BoundaryLicensing.zeroFalseAccept_neg",
+      "Toy.BoundaryLicensing.blockingGate_pos",
+      "Toy.BoundaryLicensing.blockingGate_neg",
+      "Toy.BoundaryLicensing.warnAdjudicateGate_pos",
+      "Toy.BoundaryLicensing.warnAdjudicateGate_neg",
+      "Toy.BoundaryLicensing.exactAdjudicatorOnWarnings_pos",
+      "Toy.BoundaryLicensing.exactAdjudicatorOnWarnings_neg"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "tier_justification": "Elementary re-derivation of sound-and-complete boolean decision equivalence (`sound-checker-laws-...` `R6c`) paired with conservative fast-path filtering (`warnAdjudicateGate`), explicitly recording the four tightness obligations separating hard `blockingGate` lockout from `warn + adjudicate`.",
+    "plain_claim": "For every artifact type `α`, semantic validity predicate `P : α → Prop`, and boolean check `Q : α → Bool`: `blockingGate Q` achieves both `ZeroLockout P` and `ZeroFalseAccept P` iff `∀ x, Q x = true ↔ P x` (`zeroLockout_and_zeroFalseAccept_iff_exact`); if `P x₀` and `Q x₀ = false` hold for some `x₀ : α`, then `blockingGate Q x₀ = false` and `ZeroLockout P (blockingGate Q)` fails (`blockingGate_locks_out_strict_proxy`), whereas if `ExactAdjudicatorOnWarnings P Q adj` and `ZeroFalseAccept P Q` hold, then `warnAdjudicateGate Q adj` achieves both `ZeroLockout P` and `ZeroFalseAccept P` (`warnAdjudicateGate_zeroLockout_and_sound`).",
+    "hypotheses": [
+      {
+        "name": "hvalid : P x₀",
+        "applies_to": [
+          "Toy.BoundaryLicensing.blockingGate_locks_out_strict_proxy"
+        ],
+        "purpose": "supplies a semantically valid artifact `x₀` so rejecting `x₀` constitutes a genuine lockout rather than a sound rejection",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_blocking_lockout_without_valid_witness",
+        "witness_class": "`P = (· = true)` and exact `Q = id` at invalid `x₀ = false`, where `Q false = false` yet `ZeroLockout P (blockingGate Q)` holds"
+      },
+      {
+        "name": "hproxy : Q x₀ = false",
+        "applies_to": [
+          "Toy.BoundaryLicensing.blockingGate_locks_out_strict_proxy"
+        ],
+        "purpose": "witnesses strictness of the proxy check `Q` rejecting the valid artifact `x₀`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_blocking_lockout_without_proxy_reject",
+        "witness_class": "`P = (· = true)` and exact `Q = id` at `x₀ = true`, where `P true` holds and `ZeroLockout P (blockingGate Q)` holds"
+      },
+      {
+        "name": "hadj : ExactAdjudicatorOnWarnings P Q adj",
+        "applies_to": [
+          "Toy.BoundaryLicensing.warnAdjudicateGate_zeroLockout_and_sound"
+        ],
+        "purpose": "ensures warned inputs (`Q x = false`) are neither falsely locked out nor falsely accepted by `adj`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_warnAdjudicate_without_exact_adjudicator",
+        "witness_class": "`P = (· = true)`, `Q = fun _ => false`, and `adj = fun _ => false`, which satisfies `ZeroFalseAccept P Q` yet violates `ZeroLockout`"
+      },
+      {
+        "name": "hfast : ZeroFalseAccept P Q",
+        "applies_to": [
+          "Toy.BoundaryLicensing.warnAdjudicateGate_zeroLockout_and_sound"
+        ],
+        "purpose": "ensures inputs accepted immediately on the `Q x = true` fast path (bypassing `adj`) satisfy `P`",
+        "tightness": "tight",
+        "counterexample": "Toy.BoundaryLicensing.cex_warnAdjudicate_without_sound_fastPath",
+        "witness_class": "`P = (· = true)`, `Q = fun _ => true`, and `adj = id`, where `ExactAdjudicatorOnWarnings` holds vacuously yet `false` is falsely accepted"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "`nonvacuity_exact_blockingGate` and `nonvacuity_warnAdjudicate_strict_proxy`: exact `Q = (· == 0)` for `P = (· = 0)` satisfies both sides of `zeroLockout_and_zeroFalseAccept_iff_exact`, while strict proxy `Q = (· == 0)` for `P = (· % 2 = 0)` rejects valid `x₀ = 2` and is repaired by `warnAdjudicateGate Q (· % 2 == 0)`.",
+    "nonvacuity_witness_lean": [
+      "Toy.BoundaryLicensing.nonvacuity_exact_blockingGate",
+      "Toy.BoundaryLicensing.nonvacuity_warnAdjudicate_strict_proxy"
+    ],
+    "non_claims": [
+      "`warnAdjudicateGate_zeroLockout_and_sound` requires `ZeroFalseAccept P Q` (`∀ x, Q x = true → P x`) on the unwarned fast path (`cex_warnAdjudicate_without_sound_fastPath`): a heuristic `Q` that silently passes invalid artifacts (`Q x = true ∧ ¬ P x`) cannot skip adjudication without false acceptances.",
+      "`ExactAdjudicatorOnWarnings P Q adj` assumes a total boolean function `adj : α → Bool` that decides `P` without error on every warned input (`Q x = false`). When `P` is undecidable or when human or automated adjudication is fallible or partial (abstaining on hard instances), no total boolean `adj` satisfies `ExactAdjudicatorOnWarnings` (`cex_warnAdjudicate_without_exact_adjudicator`, undecidability not proved here).",
+      "Latency, human/computational cost of `adj`, and warning volume (`|{x | Q x = false}|`) are not modeled.",
+      "Model–system relation: none proved. These are statements about the formal definitions in this package; they neither establish nor refute the corresponding claims about any compiler, proof assistant, or verification tool."
+    ],
+    "prior_art": [
+      "E. Clarke, O. Grumberg, S. Jha, Y. Lu, H. Veith, \"Counterexample-Guided Abstraction Refinement for Symbolic Model Checking\", Journal of the ACM 50(5):752–794, 2003, doi:10.1145/876638.876643: conservative over-approximation accepting immediately when abstractly safe and routing abstract counterexamples to concrete feasibility checking and iterative refinement.",
+      "Reference corpus package `sound-checker-laws-anchors-allowlists-and-certificates`: exactness equivalence for universal soundness and completeness (`R6c`).",
+      "Reference corpus package `fail-closed-ir-capture-soundness-erasing-pass-sets-and-metadata-injectivity`: fail-closed syntactic checks and incompleteness."
+    ],
+    "design_question": "When may an automated pipeline check `Q` be wired as hard `blocking` without locking out valid work, and under what exact hypotheses does `warn + adjudicate` eliminate lockout while preserving zero false acceptances?",
+    "proof_status": "proved (0 sorry)"
+  }
+]

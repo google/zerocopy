@@ -73306,6 +73306,172 @@
         "verification/barrier-certificates"
       ]
     },
+    "pipeline-boundary-licensing-cospan-transfer-and-anti-lockout-barriers": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "doi": "10.3233/JCS-2009-0393"
+          },
+          "name": "Hyperproperties (Clarkson and Schneider, Journal of Computer Security 18(6), 2010)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(88)90098-9"
+          },
+          "name": "Characterizing Finite Kripke Structures in Propositional Temporal Logic (Browne, Clarke, and Grumberg, Theoretical Computer Science 59(1-2), 1988)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/BFb0058037"
+          },
+          "name": "A Simple Characterization of Stuttering Bisimulation (Namjoshi, FSTTCS 1997)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-540-39724-3_28"
+          },
+          "name": "A Compositional Theory of Refinement for Branching Time (Manolios, CHARME 2003)"
+        },
+        {
+          "identity": {
+            "entry": "Stuttering_Equivalence",
+            "issn": "2150-914x",
+            "published": "2012-05-07",
+            "url": "https://www.isa-afp.org/entries/Stuttering_Equivalence.html"
+          },
+          "name": "Stuttering Equivalence (Merz, Archive of Formal Proofs, 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.2140/pjm.1959.9.143"
+          },
+          "name": "Properties Preserved under Homomorphism (Lyndon, Pacific Journal of Mathematics 9(1), 1959)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/CBO9781107050884"
+          },
+          "name": "Modal Logic (Blackburn, de Rijke, and Venema, Cambridge University Press, 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3372885.3373826"
+          },
+          "name": "A Formal Proof of the Independence of the Continuum Hypothesis (Han and van Doorn, CPP 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/0304-3975(91)90224-P"
+          },
+          "name": "The Existence of Refinement Mappings (Abadi and Lamport, Theoretical Computer Science 82(2), 1991)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF.2019.00025"
+          },
+          "name": "Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation (Abate et al., IEEE CSF 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656437"
+          },
+          "name": "Hyper Hoare Logic: (Dis-)Proving Program Hyperproperties (Dardinier and Muller, PACMPL 8(PLDI), 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/RISP.1994.296590"
+          },
+          "name": "A General Theory of Composition for Trace Sets Closed Under Selective Interleaving Functions (McLean, IEEE S&P 1994)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9155-4"
+          },
+          "name": "A Formally Verified Compiler Back-end (Leroy, Journal of Automated Reasoning 43(4), 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-19718-5_1"
+          },
+          "name": "Verified Software Toolchain (Appel, ESOP 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/PROC.1975.9939"
+          },
+          "name": "The Protection of Information in Computer Systems (Saltzer and Schroeder, Proceedings of the IEEE 63(9), 1975)"
+        },
+        {
+          "identity": {
+            "doi": "10.1093/oso/9780198501275.003.0013",
+            "isbn": "978-0-19-850127-5"
+          },
+          "name": "How to Believe a Machine-Checked Proof (Pollack, Twenty-Five Years of Constructive Type Theory, Oxford University Press, 1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371076"
+          },
+          "name": "Coq Coq Correct! Verification of Type Checking and Erasure for Coq, in Coq (Sozeau et al., PACMPL 4(POPL), 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.4230/LIPIcs.ITP.2022.3"
+          },
+          "name": "Candle: A Verified Implementation of HOL Light (Abrahamsson, Myreen, Kumar, and Sewell, ITP 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.14064",
+            "doi": "10.48550/arXiv.2403.14064"
+          },
+          "name": "Lean4Lean: Verifying a Typechecker for Lean, in Lean (Carneiro, 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1057/9780230210752_4"
+          },
+          "name": "Free Choice and the Theory of Scalar Implicatures (Fox, Presupposition and Implicature in Compositional Semantics, Palgrave Macmillan, 2007)"
+        },
+        {
+          "identity": {
+            "issue": "4",
+            "journal": "Linguistic Inquiry",
+            "pages": "561-566",
+            "url": "https://www.jstor.org/stable/4177664",
+            "volume": "2",
+            "year": "1971"
+          },
+          "name": "On Invited Inferences (Geis and Zwicky, Linguistic Inquiry 2(4), 1971)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/876638.876643"
+          },
+          "name": "Counterexample-Guided Abstraction Refinement for Symbolic Model Checking (Clarke, Grumberg, Jha, Lu, and Veith, Journal of the ACM 50(5), 2003)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/refinement",
+        "verification/hyperproperties",
+        "verification/trusted-computing-base",
+        "verification/soundness",
+        "verification/translation-validation",
+        "verification/specification-summaries",
+        "compilers/compiler-correctness"
+      ]
+    },
     "pipelined-dag-bft-hotstuff-bullshark-threshold-quorums-and-bymc": {
       "observed_at": "2026-11-19",
       "subjects": [
