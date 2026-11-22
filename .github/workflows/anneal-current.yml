@@ -165,7 +165,7 @@ jobs:
             nix_args+=(--extra-substituters "file://$RUNNER_TEMP/anneal-nix-cache/?trusted=1")
           fi
 
-          nix build --max-jobs 1 --cores 4 "${nix_args[@]}" \
+          nix build --max-jobs 4 --cores 4 "${nix_args[@]}" \
             .#omnibus-archive --out-link target/omnibus-link
           cp -f "$(readlink -f target/omnibus-link)" target/anneal-exocrate.tar.zst
           rm -f target/omnibus-link
@@ -368,14 +368,22 @@ jobs:
           # `anneal-audit` only invokes `lean/bin/lean` and authenticates its
           # executable, `foundation-lock.json`, and sysroot `.olean` digests
           # before running. End-to-end `cargo-anneal setup` installation is
-          # exercised by the parallel `installed-smoke` and `workspace-tests`
-          # jobs.
+          # exercised by the parallel `installed-smoke` job.
           archive="$(readlink -f target/anneal-exocrate.tar.zst)"
           install_root="$(mktemp -d "$RUNNER_TEMP/anneal-lean-toolchain.XXXXXX")"
-          tar --no-same-owner --zstd -xf "$archive" -C "$install_root" lean
-          test -f "$install_root/lean/bin/lean"
-          test ! -L "$install_root/lean/bin/lean"
-          printf 'ANNEAL_TEST_INSTALL_ROOT=%s\n' "$install_root" >> "$GITHUB_ENV"
+          bwrap --unshare-all --die-with-parent --new-session --clearenv \
+            --cap-drop ALL --tmpfs / --dev /dev --proc /proc \
+            --setenv PATH /usr/bin:/bin \
+            --ro-bind /usr /usr \
+            --ro-bind-try /bin /bin \
+            --ro-bind-try /lib /lib \
+            --ro-bind-try /lib64 /lib64 \
+            --ro-bind-try /etc/ld.so.cache /etc/ld.so.cache \
+            --ro-bind "$archive" /archive.tar.zst \
+            --bind "$install_root" /out \
+            -- tar --no-same-owner --zstd -xf /archive.tar.zst -C /out lean
+          /usr/bin/python3 -I -B ci/check_bundle_tree.py \
+            --root "$install_root" --lean-only >> "$GITHUB_ENV"
           rm -f target/anneal-exocrate.tar.zst
 
       - name: Audit repository trusted boundary
@@ -590,43 +598,12 @@ jobs:
           # Exocrate's pinned configuration installs below anneal/toolchain.
           # The cache was empty before setup, so exactly one directory names
           # the artifact installed by this run, without an older-cache fallback.
-          python3 -I -B - <<'PY' >> "$GITHUB_ENV"
-          import json
-          import os
-          from pathlib import Path
-
-          parent = Path(os.environ["XDG_CACHE_HOME"]) / "anneal/toolchain"
-          roots = [path for path in parent.iterdir() if path.is_dir()]
-          if len(roots) != 1 or roots[0].is_symlink():
-              raise SystemExit("setup must produce exactly one fresh installation")
-          root = roots[0].resolve()
-          for relative in ("rust/bin/rustc", "rust/bin/rustdoc", "lean/bin/lean", "bin/anneal-rustc-capture", "share/anneal/correspondence-provenance.json"):
-              if not (root / relative).is_file():
-                  raise SystemExit(f"installed tool is missing: {root / relative}")
-          print(f"XDG_CACHE_HOME={os.environ['XDG_CACHE_HOME']}")
-          print(f"ANNEAL_TEST_INSTALL_ROOT={root}")
-          print(f"ANNEAL_TEST_RUST_SYSROOT={root / 'rust'}")
-          print(f"ANNEAL_LEAN={root / 'lean/bin/lean'}")
-          print(f"ANNEAL_CAPTURE={root / 'bin/anneal-rustc-capture'}")
-          print(f"ANNEAL_SYSROOT={root / 'rust'}")
-          print(f"RUSTC={root / 'rust/bin/rustc'}")
-          print(f"RUSTDOC={root / 'rust/bin/rustdoc'}")
-          print(f"LD_LIBRARY_PATH={root / 'rust/lib'}")
-          print(f"RUSTFLAGS=-Lnative={root / 'rust/lib'} -Clink-arg=-Wl,-rpath,{root / 'rust/lib'}")
-          evidence = {
-              "source_revision": os.environ["ANNEAL_TEST_SOURCE_REVISION"],
-              "fresh_installation_root": str(root),
-              "rustc": str(root / "rust/bin/rustc"),
-              "rustdoc": str(root / "rust/bin/rustdoc"),
-              "lean": str(root / "lean/bin/lean"),
-              "driver": str(root / "bin/anneal-rustc-capture"),
-              "inspector_source": str(root / "share/anneal/trusted/audit/TrustedBoundary.lean"),
-          }
-          destination = Path(os.environ["ANNEAL_TEST_DIAGNOSTICS"])
-          (destination / "installation.json").write_text(
-              json.dumps(evidence, indent=2) + "\n"
-          )
-          PY
+          /usr/bin/python3 -I -B ci/check_bundle_tree.py \
+            --cache-root "$XDG_CACHE_HOME" \
+            --discover-single \
+            --diagnostics "$ANNEAL_TEST_DIAGNOSTICS/installation.json" \
+            --source-revision "$ANNEAL_TEST_SOURCE_REVISION" \
+            >> "$GITHUB_ENV"
           rm -f target/anneal-exocrate.tar.zst
 
       - name: Smoke-test the installed compiler session
@@ -961,76 +938,6 @@ jobs:
           name: anneal-exocrate-archive
           path: anneal/target
 
-      - name: Install current CLI for toolchain setup
-        id: installed_cli
-        env:
-          ACTIONS_CACHE_URL: ''
-          ACTIONS_RESULTS_URL: ''
-          ACTIONS_RUNTIME_TOKEN: ''
-        run: |
-          set -euo pipefail
-          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/install-cli.log") 2>&1
-          tools_root="$(mktemp -d "$RUNNER_TEMP/anneal-tools.XXXXXX")"
-          bootstrap_target="$(mktemp -d "$RUNNER_TEMP/anneal-bootstrap-target.XXXXXX")"
-          cargo install --locked --debug --path trusted/cargo-anneal \
-            --config 'profile.dev.package.cpufeatures.opt-level=3' \
-            --config 'profile.dev.package.digest.opt-level=3' \
-            --config 'profile.dev.package.sha2.opt-level=3' \
-            --config 'profile.dev.package.zstd-sys.opt-level=3' \
-            --target-dir "$bootstrap_target" --root "$tools_root"
-          rm -rf "$bootstrap_target"
-          printf 'ANNEAL_TEST_CARGO_ANNEAL=%s/bin/cargo-anneal\n' \
-            "$tools_root" >> "$GITHUB_ENV"
-          printf 'tools_root=%s\n' "$tools_root"
-
-      - name: Install exocrate toolchain from local archive
-        id: setup
-        env:
-          ACTIONS_CACHE_URL: ''
-          ACTIONS_RESULTS_URL: ''
-          ACTIONS_RUNTIME_TOKEN: ''
-        run: |
-          set -euo pipefail
-          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/setup.log") 2>&1
-          archive="$(readlink -f target/anneal-exocrate.tar.zst)"
-          install_cache="$(mktemp -d "$RUNNER_TEMP/anneal-toolchain.XXXXXX")"
-          export XDG_CACHE_HOME="$install_cache"
-          setup_project="$(mktemp -d "$RUNNER_TEMP/anneal-setup-project.XXXXXX")"
-          printf '%s\n' '[package]' 'name = "anneal-setup-smoke"' \
-            'version = "0.0.0"' 'edition = "2024"' \
-            > "$setup_project/Cargo.toml"
-          mkdir "$setup_project/src"
-          touch "$setup_project/src/lib.rs"
-          (
-            cd "$setup_project"
-            "$ANNEAL_TEST_CARGO_ANNEAL" setup --local-archive "$archive"
-          )
-
-          python3 -I -B - <<'PY' >> "$GITHUB_ENV"
-          import os
-          from pathlib import Path
-
-          parent = Path(os.environ["XDG_CACHE_HOME"]) / "anneal/toolchain"
-          roots = [path for path in parent.iterdir() if path.is_dir()]
-          if len(roots) != 1 or roots[0].is_symlink():
-              raise SystemExit("setup must produce exactly one fresh installation")
-          root = roots[0].resolve()
-          for relative in ("rust/bin/rustc", "rust/bin/rustdoc", "lean/bin/lean", "bin/anneal-rustc-capture", "share/anneal/correspondence-provenance.json"):
-              if not (root / relative).is_file():
-                  raise SystemExit(f"installed tool is missing: {root / relative}")
-          print(f"XDG_CACHE_HOME={os.environ['XDG_CACHE_HOME']}")
-          print(f"ANNEAL_TEST_INSTALL_ROOT={root}")
-          print(f"ANNEAL_TEST_RUST_SYSROOT={root / 'rust'}")
-          print(f"ANNEAL_LEAN={root / 'lean/bin/lean'}")
-          print(f"ANNEAL_CAPTURE={root / 'bin/anneal-rustc-capture'}")
-          print(f"ANNEAL_SYSROOT={root / 'rust'}")
-          print(f"RUSTC={root / 'rust/bin/rustc'}")
-          print(f"RUSTDOC={root / 'rust/bin/rustdoc'}")
-          print(f"LD_LIBRARY_PATH={root / 'rust/lib'}")
-          print(f"RUSTFLAGS=-Lnative={root / 'rust/lib'} -Clink-arg=-Wl,-rpath,{root / 'rust/lib'}")
-          PY
-          rm -f target/anneal-exocrate.tar.zst
-
       - name: Install bubblewrap sandbox for workspace tests
         id: sandbox
         env:
@@ -1040,9 +947,16 @@ jobs:
         run: |
           set -euo pipefail
           exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/sandbox.log") 2>&1
+          pkgs=()
           if ! command -v bwrap >/dev/null 2>&1; then
+            pkgs+=(bubblewrap)
+          fi
+          if ! command -v zstd >/dev/null 2>&1; then
+            pkgs+=(zstd)
+          fi
+          if [ "${#pkgs[@]}" -gt 0 ]; then
             sudo apt-get update
-            sudo apt-get install -y bubblewrap
+            sudo apt-get install -y "${pkgs[@]}"
           fi
           if [ ! -f /etc/apparmor.d/bwrap ] && command -v apparmor_parser >/dev/null 2>&1; then
             sudo tee /etc/apparmor.d/bwrap <<'PROFILE' >/dev/null
@@ -1065,6 +979,41 @@ jobs:
             --ro-bind-try /etc/ld.so.cache /etc/ld.so.cache \
             --ro-bind /usr/bin/true /true \
             -- /true
+
+      - name: Extract exocrate toolchain from local archive
+        id: extract_toolchain
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+        run: |
+          set -euo pipefail
+          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/extract-toolchain.log") 2>&1
+          # Unpack directly under `$XDG_CACHE_HOME/anneal/toolchain/extracted`
+          # rather than compiling `cargo-anneal` with host `rustc` first:
+          # `default_lean_path()` discovers `lean/bin/lean` under that layout,
+          # all Cargo commands in `workspace` share one compiler (`RUSTC`), and
+          # `cargo-anneal setup` is already tested in `installed-smoke`.
+          archive="$(readlink -f target/anneal-exocrate.tar.zst)"
+          install_cache="$(mktemp -d "$RUNNER_TEMP/anneal-toolchain.XXXXXX")"
+          install_root="$install_cache/anneal/toolchain/extracted"
+          mkdir -p "$install_root"
+          bwrap --unshare-all --die-with-parent --new-session --clearenv \
+            --cap-drop ALL --tmpfs / --dev /dev --proc /proc \
+            --setenv PATH /usr/bin:/bin \
+            --ro-bind /usr /usr \
+            --ro-bind-try /bin /bin \
+            --ro-bind-try /lib /lib \
+            --ro-bind-try /lib64 /lib64 \
+            --ro-bind-try /etc/ld.so.cache /etc/ld.so.cache \
+            --ro-bind "$archive" /archive.tar.zst \
+            --bind "$install_root" /out \
+            -- tar --no-same-owner --zstd -xf /archive.tar.zst -C /out
+          /usr/bin/python3 -I -B ci/check_bundle_tree.py \
+            --cache-root "$install_cache" \
+            --root "$install_root" \
+            >> "$GITHUB_ENV"
+          rm -f target/anneal-exocrate.tar.zst
 
       - name: Test Rust workspace
         id: workspace

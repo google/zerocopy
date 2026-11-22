@@ -144,31 +144,49 @@
 
             buildPhase = ''
               set -euo pipefail
-              mkdir -p "$out"
-              extract_component() {
-                local name="$1"
-                local url="https://static.rust-lang.org/dist/${rustDate}/''${name}-nightly-${rustTarget}.tar.gz"
-                echo "Downloading and extracting $name from $url..."
-                mkdir -p tmp_extract
-                curl -sSL "$url" | tar -xz -C tmp_extract
-                local top_dir
-                top_dir="$(ls tmp_extract | head -n 1)"
-                local comp_dir
-                comp_dir="$(find "tmp_extract/$top_dir" -mindepth 1 -maxdepth 1 -type d | head -n 1)"
-                cp -r "$comp_dir"/* "$out"/
-                rm -rf tmp_extract
+              mkdir -p "$out" tmp_extract
+              # Download and decompress all 7 upstream component tarballs in
+              # parallel into isolated slot directories, then merge them into
+              # `$out` in deterministic order so the fixed-output NAR hash stays
+              # bit-for-bit identical across all platforms.
+              fetch_and_unpack() {
+                (
+                  set -euo pipefail
+                  local slot="$1"
+                  local label="$2"
+                  local url="$3"
+                  mkdir -p "tmp_extract/$slot"
+                  echo "Downloading and extracting $label from $url..."
+                  curl -fsSL "$url" | tar -xz -C "tmp_extract/$slot"
+                )
               }
-              extract_component "cargo"
-              extract_component "rustc"
-              extract_component "rust-std"
-              extract_component "rustc-dev"
-              extract_component "llvm-tools"
-              extract_component "miri"
-              echo "Downloading and extracting rust-src..."
-              mkdir -p tmp_extract
-              curl -sSL "https://static.rust-lang.org/dist/${rustDate}/rust-src-nightly.tar.gz" | tar -xz -C tmp_extract
-              top_dir="$(ls tmp_extract | head -n 1)"
-              cp -r "tmp_extract/$top_dir/rust-src"/* "$out"/
+              components=(cargo rustc rust-std rustc-dev llvm-tools miri)
+              pids=()
+              for idx in "''${!components[@]}"; do
+                comp="''${components[$idx]}"
+                fetch_and_unpack "$idx" "$comp" \
+                  "https://static.rust-lang.org/dist/${rustDate}/''${comp}-nightly-${rustTarget}.tar.gz" &
+                pids+=("$!")
+              done
+              fetch_and_unpack 6 "rust-src" \
+                "https://static.rust-lang.org/dist/${rustDate}/rust-src-nightly.tar.gz" &
+              pids+=("$!")
+              for pid in "''${pids[@]}"; do
+                wait "$pid"
+              done
+              for idx in "''${!components[@]}"; do
+                top_dir="$(ls "tmp_extract/$idx" | sed -n '1p')"
+                test -n "$top_dir"
+                comp_dir="$(find "tmp_extract/$idx/$top_dir" -mindepth 1 -maxdepth 1 -type d | sed -n '1p')"
+                test -n "$comp_dir"
+                test -d "$comp_dir"
+                cp -r "$comp_dir"/* "$out"/
+                rm -rf "tmp_extract/$idx"
+              done
+              top_dir="$(ls tmp_extract/6 | sed -n '1p')"
+              test -n "$top_dir"
+              test -d "tmp_extract/6/$top_dir/rust-src"
+              cp -r "tmp_extract/6/$top_dir/rust-src"/* "$out"/
               rm -rf tmp_extract
             '';
           };
@@ -195,11 +213,8 @@
 
             buildPhase = ''
               set -euo pipefail
-              mkdir -p "$out" tmp_extract
-              tar --zstd -xf "$src" -C tmp_extract
-              top_dir="$(ls tmp_extract | head -n 1)"
-              cp -r "tmp_extract/$top_dir"/* "$out"/
-              rm -rf tmp_extract
+              mkdir -p "$out"
+              tar --zstd --strip-components=1 -xf "$src" -C "$out"
 
               expected_lean_sha="$(jq -er --arg prefix "Lean (version ${leanVersion}, ${pkgs.stdenv.hostPlatform.config}" '.distributions | to_entries[] | select(.key | startswith($prefix)).value' "$lockFile")"
               actual_lean_sha="$(sha256sum "$out/bin/lean" | awk '{print $1}')"
@@ -267,6 +282,7 @@
 
             nativeBuildInputs = with pkgs; [
               coreutils
+              gnugrep
               gnused
               gnutar
               jq
@@ -288,12 +304,8 @@
               set -euo pipefail
               mkdir -p \
                 "$TMPDIR/dist_staging/bin" \
-                "$TMPDIR/dist_staging/lean" \
-                "$TMPDIR/dist_staging/rust" \
                 "$TMPDIR/dist_staging/share/anneal/trusted/audit"
 
-              cp -r "$rustToolchain"/* "$TMPDIR/dist_staging/rust/"
-              cp -r "$leanToolchain"/* "$TMPDIR/dist_staging/lean/"
               cp "$rustcCapture/bin/anneal-rustc-capture" "$TMPDIR/dist_staging/bin/"
               cp -r "$leanFoundation" "$TMPDIR/dist_staging/share/anneal/trusted/lean"
               cp -r "$leanTheory" "$TMPDIR/dist_staging/share/anneal/theory"
@@ -319,15 +331,18 @@
                 > /dev/null
 
               chmod -R u+w "$TMPDIR/dist_staging"
-              rm -rf "$TMPDIR/dist_staging/rust/share/doc"
 
               ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
                 # Carry the compiler's non-libc runtime dependencies beside
                 # its libraries. Dereference the Nix symlinks so relocation
                 # cannot silently depend on the build machine's store.
+                mkdir -p "$TMPDIR/dist_staging/rust/lib"
                 cp -L "${pkgs.zlib}/lib/libz.so.1" \
                   "$TMPDIR/dist_staging/rust/lib/libz.so.1"
                 cp -L "${pkgs.stdenv.cc.cc.lib}/lib/libgcc_s.so.1" \
+                  "$TMPDIR/dist_staging/rust/lib/libgcc_s.so.1"
+                chmod u+w \
+                  "$TMPDIR/dist_staging/rust/lib/libz.so.1" \
                   "$TMPDIR/dist_staging/rust/lib/libgcc_s.so.1"
 
                 # Point the Nix-built `anneal-rustc-capture` binary at the
@@ -340,28 +355,107 @@
                   "$TMPDIR/dist_staging/bin/anneal-rustc-capture"
               ''}
 
-              for path in \
-                bin/anneal-rustc-capture \
-                lean/bin/lean \
-                rust/bin/cargo \
-                rust/bin/rustc \
-                share/anneal/correspondence-provenance.json \
-                share/anneal/trusted/audit/TrustedBoundary.lean \
-                share/anneal/trusted/audit/library-lock.json \
-                share/anneal/trusted/lean/foundation-lock.json \
-                share/anneal/trusted/lean/lean-toolchain \
-                share/anneal/trusted/lean/Trusted/MirAst.lean \
-                share/anneal/trusted/lean/Trusted/MirSemantics.lean \
-                share/anneal/theory/Anneal.lean \
-                share/anneal/theory/Anneal/MirWp.lean; do
-                if [ ! -f "$TMPDIR/dist_staging/$path" ]; then
-                  echo "ERROR: expected archive entry missing: $path" >&2
+              for full_path in \
+                "$TMPDIR/dist_staging/bin/anneal-rustc-capture" \
+                "$leanToolchain/bin/lean" \
+                "$rustToolchain/bin/cargo" \
+                "$rustToolchain/bin/rustc" \
+                "$TMPDIR/dist_staging/share/anneal/correspondence-provenance.json" \
+                "$TMPDIR/dist_staging/share/anneal/trusted/audit/TrustedBoundary.lean" \
+                "$TMPDIR/dist_staging/share/anneal/trusted/audit/library-lock.json" \
+                "$TMPDIR/dist_staging/share/anneal/trusted/lean/foundation-lock.json" \
+                "$TMPDIR/dist_staging/share/anneal/trusted/lean/lean-toolchain" \
+                "$TMPDIR/dist_staging/share/anneal/trusted/lean/Trusted/MirAst.lean" \
+                "$TMPDIR/dist_staging/share/anneal/trusted/lean/Trusted/MirSemantics.lean" \
+                "$TMPDIR/dist_staging/share/anneal/theory/Anneal.lean" \
+                "$TMPDIR/dist_staging/share/anneal/theory/Anneal/MirWp.lean"; do
+                if [ ! -f "$full_path" ]; then
+                  echo "ERROR: expected archive entry missing: $full_path" >&2
                   exit 1
                 fi
               done
 
-              cd "$TMPDIR/dist_staging"
-              tar -cf - bin lean rust share | zstd -T"$NIX_BUILD_CORES" -6 -o "$out"
+              # Stream `lean/` and `rust/` directly from their verified store
+              # paths without copying 3.3 GiB into `$TMPDIR`. `flags=r`
+              # rewrites member paths without altering internal `.so` symlink
+              # targets, `--hard-dereference` breaks store hardlinks into
+              # standalone files, and `--mode='u+w'` makes entries writable.
+              lean_parent="$(dirname "$leanToolchain")"
+              lean_base="$(basename "$leanToolchain")"
+              lean_esc="$(printf '%s' "$lean_base" | sed 's/[.[\*^$:]/\\&/g')"
+              rust_parent="$(dirname "$rustToolchain")"
+              rust_base="$(basename "$rustToolchain")"
+              rust_esc="$(printf '%s' "$rust_base" | sed 's/[.[\*^$:]/\\&/g')"
+
+              tar_args=(
+                --mode='u+w'
+                --hard-dereference
+                --anchored
+                --exclude="$rust_base/share/doc"
+              )
+              ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+                tar_args+=(
+                  --exclude="$rust_base/lib/libz.so.1"
+                  --exclude="$rust_base/lib/libgcc_s.so.1"
+                )
+              ''}
+              tar_args+=(
+                --transform="flags=r;s:^''${lean_esc}\$:lean:;s:^''${lean_esc}/:lean/:"
+                --transform="flags=r;s:^''${rust_esc}\$:rust:;s:^''${rust_esc}/:rust/:"
+                -cf -
+                -C "$TMPDIR/dist_staging" bin share
+                -C "$lean_parent" "$lean_base"
+                -C "$rust_parent" "$rust_base"
+              )
+              ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+                tar_args+=(
+                  -C "$TMPDIR/dist_staging"
+                  rust/lib/libz.so.1
+                  rust/lib/libgcc_s.so.1
+                )
+              ''}
+
+              tar "''${tar_args[@]}" | zstd -T"$NIX_BUILD_CORES" -3 -o "$out"
+
+              # Verify the produced archive directly so any broken path
+              # transform or unexpected top-level member fails closed at build
+              # time before downstream jobs or release uploads consume `$out`.
+              zstd -dc "$out" | tar -tf - > "$TMPDIR/archive_entries.txt"
+              if grep -Eqv '^(bin|lean|rust|share)(/|$)' "$TMPDIR/archive_entries.txt"; then
+                echo "ERROR: unexpected top-level entry in omnibus archive" >&2
+                exit 1
+              fi
+              if grep -Eq '^rust/share/doc(/|$)' "$TMPDIR/archive_entries.txt"; then
+                echo "ERROR: rust/share/doc was not excluded from omnibus archive" >&2
+                exit 1
+              fi
+              expected_entries=(
+                bin/anneal-rustc-capture
+                lean/bin/lean
+                rust/bin/cargo
+                rust/bin/rustc
+                share/anneal/correspondence-provenance.json
+                share/anneal/trusted/audit/TrustedBoundary.lean
+                share/anneal/trusted/audit/library-lock.json
+                share/anneal/trusted/lean/foundation-lock.json
+                share/anneal/trusted/lean/lean-toolchain
+                share/anneal/trusted/lean/Trusted/MirAst.lean
+                share/anneal/trusted/lean/Trusted/MirSemantics.lean
+                share/anneal/theory/Anneal.lean
+                share/anneal/theory/Anneal/MirWp.lean
+              )
+              ${pkgs.lib.optionalString pkgs.stdenv.isLinux ''
+                expected_entries+=(
+                  rust/lib/libz.so.1
+                  rust/lib/libgcc_s.so.1
+                )
+              ''}
+              for entry in "''${expected_entries[@]}"; do
+                if ! grep -Fxq -- "$entry" "$TMPDIR/archive_entries.txt"; then
+                  echo "ERROR: expected archive entry missing from $out: $entry" >&2
+                  exit 1
+                fi
+              done
             '';
           };
 
