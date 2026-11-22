@@ -335,12 +335,16 @@ kernel-level audit:
      `.trusted (.candidate _)`).
 3. **MIR WP non-backsliding (`verifyMirWpCoreTheorems`):** Enabled by default
    (`require_mir_wp = true`); requires `Trusted.MirAst`,
-   `Trusted.MirSemantics`, and `Anneal.MirWp` to be present and verifies that
+   `Trusted.MirSemantics`, and `Anneal.MirWp` to be present, verifies that
    `wpProg` soundness, `wpFaultProg` soundness, and all 25 Pass 1 canaries
    (including `CanaryMemoryLifecycleAnnealClaim`, which exercises
    `forceAllocation`, `.indirect` locals, and `MemoryState`, and the `char`,
    `BinOp.cmp`, `BinOp.*WithOverflow`, and `CastKind.intToInt` canaries) prove
-   their exact `Trusted.MirSemantics` `*Claim` propositions.
+   their exact `Trusted.MirSemantics` `*Claim` propositions, and verifies via
+   `requireMirPublicAlias` that `Trusted.{Crate, CrateTheorem, UnitTheorem}` in
+   `Trusted.MirSemantics` are universe-monomorphic `abbrev` declarations
+   (kernel `ReducibilityHints.abbrev`) directly aliasing
+   `Trusted.MirSemantics.{Crate, CrateTheorem, UnitTheorem}`.
 4. **Fresh kernel replay (`replayOntoBase`):** Constructs a clean kernel
    environment containing only the pinned `Init.*` foundation (`base`),
    replays every non-foundation constant (`Trusted.*` and `theory/`) through

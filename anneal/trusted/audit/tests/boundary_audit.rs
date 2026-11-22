@@ -2383,6 +2383,7 @@ struct MirWpSyntheticSpec {
     wp_soundness_claim: Option<String>,
     wp_fault_soundness_claim: Option<String>,
     canary_claim_overrides: BTreeMap<String, Option<String>>,
+    public_alias_overrides: BTreeMap<String, Option<String>>,
     anneal_extra: String,
     wp_soundness_proof: Option<String>,
     wp_fault_soundness_proof: Option<String>,
@@ -2403,6 +2404,7 @@ impl MirWpSyntheticSpec {
                     .to_string(),
             ),
             canary_claim_overrides: BTreeMap::new(),
+            public_alias_overrides: BTreeMap::new(),
             anneal_extra: String::new(),
             wp_soundness_proof: Some(
                 "theorem wellFormed_and_spec_of_wp : \
@@ -2457,6 +2459,7 @@ impl MirWpSyntheticSpec {
              def PositiveCanaryClaim : Prop := True\n\
              def NegativeCanaryClaim : Prop := True\n\
              def IntWidthBoundaryCanary : Prop := True\n\
+             def Crate : Prop := True\n\
              def CrateTheorem : Prop := True\n\
              def UnitTheorem : Prop := True\n\
              def BodyVerified : Prop := True\n\
@@ -2496,6 +2499,25 @@ impl MirWpSyntheticSpec {
             }
         }
         sem.push_str("end Trusted.MirSemantics\n");
+        sem.push_str("namespace Trusted\n");
+        for (alias_name, default_decl) in [
+            ("Crate", "abbrev Crate := Trusted.MirSemantics.Crate"),
+            ("CrateTheorem", "noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem"),
+            ("UnitTheorem", "noncomputable abbrev UnitTheorem := Trusted.MirSemantics.UnitTheorem"),
+        ] {
+            match self.public_alias_overrides.get(alias_name) {
+                Some(None) => {}
+                Some(Some(custom)) => {
+                    sem.push_str(custom);
+                    sem.push('\n');
+                }
+                None => {
+                    sem.push_str(default_decl);
+                    sem.push('\n');
+                }
+            }
+        }
+        sem.push_str("end Trusted\n");
         fs::write(fix.root.join("trusted/lean/Trusted/MirSemantics.lean"), sem).unwrap();
 
         let mut wp = String::from(
@@ -3021,12 +3043,28 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
          Trusted.MirSemantics.forceAllocation",
     );
 
-    // `char`, `BinOp.cmp`, overflow-pair, and `IntToInt` cast canary claims
-    // that each replace one pinned constant with a duplicate of another (so
-    // the new operation, fixture, or UB path is no longer exercised while the
-    // synthetic proof still type-checks). Each weakened body keeps every other
-    // required constant, so the rejection names exactly the dropped one.
+    // Crate/unit/body-verified, `char`, `BinOp.cmp`, overflow-pair, and
+    // `IntToInt` cast canary claims that each replace one pinned constant with
+    // a duplicate of another (so the operation, fixture, contract symbol, or UB
+    // path is no longer exercised while the synthetic proof still type-checks).
+    // Each weakened body keeps every other required constant, so the
+    // rejection names exactly the dropped one.
     for (claim, weakened_body, dropped) in [
+        (
+            "CanaryCrateAndBodyVerifiedAnnealClaim",
+            "And UnitTheorem (And UnitTheorem BodyVerified)",
+            "Trusted.MirSemantics.CrateTheorem",
+        ),
+        (
+            "CanaryCrateAndBodyVerifiedAnnealClaim",
+            "And CrateTheorem (And CrateTheorem BodyVerified)",
+            "Trusted.MirSemantics.UnitTheorem",
+        ),
+        (
+            "CanaryCrateAndBodyVerifiedAnnealClaim",
+            "And CrateTheorem (And UnitTheorem CrateTheorem)",
+            "Trusted.MirSemantics.BodyVerified",
+        ),
         (
             "CanaryPositiveCharAndCmpAnnealClaim",
             "And PositiveCanaryClaim (And mkBinOpProg (And mkBinOpProg \
@@ -3070,6 +3108,69 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
             "claim Trusted.MirSemantics.{claim} body must reference {dropped}"
         ));
     }
+
+    // Missing, non-definition, non-abbrev, wrong-module, universe-polymorphic,
+    // or un-wired `Trusted.{Crate, CrateTheorem, UnitTheorem}` public aliases
+    // are rejected fail-closed by `verifyMirWpCoreTheorems`.
+    for alias in ["Crate", "CrateTheorem", "UnitTheorem"] {
+        let mut missing_alias = MirWpSyntheticSpec::valid();
+        missing_alias.public_alias_overrides.insert(alias.to_string(), None);
+        missing_alias
+            .expect_audit_policy_err(&format!("missing required MIR public alias Trusted.{alias}"));
+
+        let mut non_abbrev_alias = MirWpSyntheticSpec::valid();
+        non_abbrev_alias.public_alias_overrides.insert(
+            alias.to_string(),
+            Some(format!("def {alias} := Trusted.MirSemantics.{alias}")),
+        );
+        non_abbrev_alias.expect_audit_policy_err(&format!(
+            "alias Trusted.{alias} must be an abbrev (ReducibilityHints.abbrev)"
+        ));
+
+        let mut rewired_alias = MirWpSyntheticSpec::valid();
+        rewired_alias
+            .public_alias_overrides
+            .insert(alias.to_string(), Some(format!("abbrev {alias} : Prop := True")));
+        rewired_alias.expect_audit_policy_err(&format!(
+            "alias Trusted.{alias} must directly alias Trusted.MirSemantics.{alias}"
+        ));
+
+        let mut non_def_alias = MirWpSyntheticSpec::valid();
+        non_def_alias
+            .public_alias_overrides
+            .insert(alias.to_string(), Some(format!("theorem {alias} : True := True.intro")));
+        non_def_alias
+            .expect_audit_policy_err(&format!("expected Trusted.{alias} to be a definition"));
+
+        let mut poly_alias = MirWpSyntheticSpec::valid();
+        poly_alias.public_alias_overrides.insert(
+            alias.to_string(),
+            Some(format!("abbrev {alias}.{{u}} : Type u → Prop := fun _ => True")),
+        );
+        poly_alias.expect_audit_policy_err(&format!(
+            "alias Trusted.{alias} must have no universe parameters"
+        ));
+    }
+
+    let mut wrong_mod_alias = MirWpSyntheticSpec::valid();
+    wrong_mod_alias.public_alias_overrides.insert("UnitTheorem".to_string(), None);
+    wrong_mod_alias.mir_ast_extra = "\
+        namespace Trusted\n\
+        abbrev UnitTheorem : Prop := True\n\
+        end Trusted"
+        .to_string();
+    wrong_mod_alias.expect_audit_policy_err(
+        "expected Trusted.UnitTheorem to be defined in Trusted.MirSemantics, found Trusted.MirAst",
+    );
+
+    let mut cross_wired_alias = MirWpSyntheticSpec::valid();
+    cross_wired_alias.public_alias_overrides.insert(
+        "UnitTheorem".to_string(),
+        Some("noncomputable abbrev UnitTheorem := Trusted.MirSemantics.CrateTheorem".to_string()),
+    );
+    cross_wired_alias.expect_audit_policy_err(
+        "alias Trusted.UnitTheorem must directly alias Trusted.MirSemantics.UnitTheorem",
+    );
 }
 
 /// Verifies Pass 2 non-backsliding enforcement (`--require-correspondence`):
@@ -3920,6 +4021,209 @@ fn enforces_correspondence_non_backsliding() {
         ),
         "unexpected weakened BytesCodecMatchesMiriClaim error: {err_weak_bytes_codec}"
     );
+
+    // Weakening a `D11`–`D13` enum/ZST-enum canary claim by dropping any
+    // required program fixture, MIR predicate, reference predicate, or
+    // `encodeProg` (replacing it with a duplicate of another symbol of the same
+    // type so the synthetic proof still type-checks) is rejected by
+    // `verifyCorrespondenceClaims`.
+    let valid_d11_def = "def CanaryD11EnumDiscriminantAndConstOkClaim : Prop :=\n\
+               Trusted.MirSemantics.progEnumExplicitReprU8 = Trusted.MirSemantics.progEnumSignedTagIsize ∧\n\
+               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n";
+    let valid_d12_def = "def CanaryD12ZstEnumMoveAndDiscrOkClaim : Prop :=\n\
+               Trusted.MirSemantics.progZstSingleEnumImplicitRet = Trusted.MirSemantics.progZstSingleEnumMoveAndDiscr ∧\n\
+               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n";
+    let valid_d13_def = "def CanaryD13EnumInvalidTagAndUninitUbClaim : Prop :=\n\
+               Trusted.MirSemantics.progEnumInvalidTagConstUb = Trusted.MirSemantics.progEnumUninitDiscrUb ∧\n\
+               encodeProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n";
+    for (claim, valid_def, old_tok, replacement_tok, dropped) in [
+        (
+            "CanaryD11EnumDiscriminantAndConstOkClaim",
+            valid_d11_def,
+            "Trusted.MirSemantics.progEnumExplicitReprU8",
+            "Trusted.MirSemantics.progEnumSignedTagIsize",
+            "Trusted.MirSemantics.progEnumExplicitReprU8",
+        ),
+        (
+            "CanaryD11EnumDiscriminantAndConstOkClaim",
+            valid_d11_def,
+            "Trusted.MirSemantics.progEnumSignedTagIsize",
+            "Trusted.MirSemantics.progEnumExplicitReprU8",
+            "Trusted.MirSemantics.progEnumSignedTagIsize",
+        ),
+        (
+            "CanaryD11EnumDiscriminantAndConstOkClaim",
+            valid_d11_def,
+            "Trusted.MirSemantics.WellFormed",
+            "Trusted.MirSemantics.Behavior",
+            "Trusted.MirSemantics.WellFormed",
+        ),
+        (
+            "CanaryD11EnumDiscriminantAndConstOkClaim",
+            valid_d11_def,
+            "Trusted.MirSemantics.Behavior",
+            "Trusted.MirSemantics.WellFormed",
+            "Trusted.MirSemantics.Behavior",
+        ),
+        (
+            "CanaryD11EnumDiscriminantAndConstOkClaim",
+            valid_d11_def,
+            "RefWellFormed",
+            "RefBehavior",
+            "Trusted.Correspondence.RefWellFormed",
+        ),
+        (
+            "CanaryD11EnumDiscriminantAndConstOkClaim",
+            valid_d11_def,
+            "RefBehavior",
+            "RefWellFormed",
+            "Trusted.Correspondence.RefBehavior",
+        ),
+        (
+            "CanaryD11EnumDiscriminantAndConstOkClaim",
+            valid_d11_def,
+            "encodeProg = encodeProg",
+            "Trusted.MirSemantics.progEnumExplicitReprU8 = Trusted.MirSemantics.progEnumExplicitReprU8",
+            "Trusted.Correspondence.encodeProg",
+        ),
+        (
+            "CanaryD12ZstEnumMoveAndDiscrOkClaim",
+            valid_d12_def,
+            "Trusted.MirSemantics.progZstSingleEnumImplicitRet",
+            "Trusted.MirSemantics.progZstSingleEnumMoveAndDiscr",
+            "Trusted.MirSemantics.progZstSingleEnumImplicitRet",
+        ),
+        (
+            "CanaryD12ZstEnumMoveAndDiscrOkClaim",
+            valid_d12_def,
+            "Trusted.MirSemantics.progZstSingleEnumMoveAndDiscr",
+            "Trusted.MirSemantics.progZstSingleEnumImplicitRet",
+            "Trusted.MirSemantics.progZstSingleEnumMoveAndDiscr",
+        ),
+        (
+            "CanaryD12ZstEnumMoveAndDiscrOkClaim",
+            valid_d12_def,
+            "Trusted.MirSemantics.WellFormed",
+            "Trusted.MirSemantics.Behavior",
+            "Trusted.MirSemantics.WellFormed",
+        ),
+        (
+            "CanaryD12ZstEnumMoveAndDiscrOkClaim",
+            valid_d12_def,
+            "Trusted.MirSemantics.Behavior",
+            "Trusted.MirSemantics.WellFormed",
+            "Trusted.MirSemantics.Behavior",
+        ),
+        (
+            "CanaryD12ZstEnumMoveAndDiscrOkClaim",
+            valid_d12_def,
+            "RefWellFormed",
+            "RefBehavior",
+            "Trusted.Correspondence.RefWellFormed",
+        ),
+        (
+            "CanaryD12ZstEnumMoveAndDiscrOkClaim",
+            valid_d12_def,
+            "RefBehavior",
+            "RefWellFormed",
+            "Trusted.Correspondence.RefBehavior",
+        ),
+        (
+            "CanaryD12ZstEnumMoveAndDiscrOkClaim",
+            valid_d12_def,
+            "encodeProg = encodeProg",
+            "Trusted.MirSemantics.progZstSingleEnumImplicitRet = Trusted.MirSemantics.progZstSingleEnumImplicitRet",
+            "Trusted.Correspondence.encodeProg",
+        ),
+        (
+            "CanaryD13EnumInvalidTagAndUninitUbClaim",
+            valid_d13_def,
+            "Trusted.MirSemantics.progEnumInvalidTagConstUb",
+            "Trusted.MirSemantics.progEnumUninitDiscrUb",
+            "Trusted.MirSemantics.progEnumInvalidTagConstUb",
+        ),
+        (
+            "CanaryD13EnumInvalidTagAndUninitUbClaim",
+            valid_d13_def,
+            "Trusted.MirSemantics.progEnumUninitDiscrUb",
+            "Trusted.MirSemantics.progEnumInvalidTagConstUb",
+            "Trusted.MirSemantics.progEnumUninitDiscrUb",
+        ),
+        (
+            "CanaryD13EnumInvalidTagAndUninitUbClaim",
+            valid_d13_def,
+            "Trusted.MirSemantics.ReachesResult",
+            "Trusted.MirSemantics.WellFormed",
+            "Trusted.MirSemantics.ReachesResult",
+        ),
+        (
+            "CanaryD13EnumInvalidTagAndUninitUbClaim",
+            valid_d13_def,
+            "Trusted.MirSemantics.WellFormed",
+            "Trusted.MirSemantics.ReachesResult",
+            "Trusted.MirSemantics.WellFormed",
+        ),
+        (
+            "CanaryD13EnumInvalidTagAndUninitUbClaim",
+            valid_d13_def,
+            "RefReachesOutcome",
+            "Trusted.MirSemantics.WellFormed",
+            "Trusted.Correspondence.RefReachesOutcome",
+        ),
+        (
+            "CanaryD13EnumInvalidTagAndUninitUbClaim",
+            valid_d13_def,
+            "encodeProg = encodeProg",
+            "Trusted.MirSemantics.progEnumInvalidTagConstUb = Trusted.MirSemantics.progEnumInvalidTagConstUb",
+            "Trusted.Correspondence.encodeProg",
+        ),
+    ] {
+        assert_eq!(
+            valid_claims.matches(valid_def).count(),
+            1,
+            "synthetic {claim} body drifted"
+        );
+        assert_eq!(
+            valid_def.matches(old_tok).count(),
+            1,
+            "expected unique {old_tok} inside synthetic {claim}"
+        );
+        let weakened_def = valid_def.replace(old_tok, replacement_tok);
+        compile_forged_module(
+            &mut checker_pass2,
+            &corr_src,
+            &trusted_lib,
+            &corr_deps,
+            "Trusted.Correspondence",
+            &valid_claims.replace(valid_def, &weakened_def),
+        );
+        compile_forged_module(
+            &mut checker_pass2,
+            &corr_src,
+            &corr_lib,
+            &proof_deps,
+            "Anneal.MirCorrespondenceProof",
+            &all_proofs_src(
+                corr_choices_valid_proof,
+                fault_choices_valid_proof,
+                wiring_valid_proof,
+                d6_valid_proof,
+                ref_step_allowed_valid_proof,
+            ),
+        );
+        let err_weak_canary = run_corr_audit(&mut checker_pass2).unwrap_err();
+        assert_eq!(err_weak_canary.code, 1);
+        assert_eq!(err_weak_canary.phase, "correspondence-audit");
+        assert!(
+            err_weak_canary.message.contains(&format!(
+                "claim Trusted.Correspondence.{claim} body must reference {dropped}"
+            )),
+            "unexpected weakened {claim} error: {err_weak_canary}"
+        );
+    }
 
     // Weakening a `D14`–`D16` canary claim (replacing the pinned `BinOp.cmp`,
     // `IntToInt` cast fixture, or `addWithOverflow` operation with a
