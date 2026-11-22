@@ -1,0 +1,7 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages": [],
+ "name":
+ "«substitution-stable-checks-definition-site-vs-post-monomorphization-and-generic-capture»",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

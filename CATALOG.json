@@ -105059,6 +105059,117 @@
         "verification/column-separation-valve-slews"
       ]
     },
+    "substitution-stable-checks-definition-site-vs-post-monomorphization-and-generic-capture": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "The Rust compiler (rustc)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs (RFC 2000: Const generics)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "8fb35253fbc703cb2cd0997f4efcda76cf9062b6"
+          },
+          "name": "zerocopy"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/CBO9781139172752",
+            "isbn": "978-0-521-45520-6"
+          },
+          "name": "Term Rewriting and All That"
+        },
+        {
+          "identity": {
+            "issn": "2150-914X",
+            "url": "https://isa-afp.org/entries/First_Order_Terms.html"
+          },
+          "name": "First-Order Terms (Archive of Formal Proofs)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1065010.1065021"
+          },
+          "name": "Essential Language Support for Generic Programming"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/11785477_19"
+          },
+          "name": "A Semantic Analysis of C++ Templates"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1167473.1167499"
+          },
+          "name": "Concepts: Linguistic Support for Generic Programming in C++"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428217"
+          },
+          "name": "Featherweight Go"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3510457.3513031"
+          },
+          "name": "Verifying Dynamic Trait Objects in Rust"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3547647"
+          },
+          "name": "Aeneas: Rust Verification by Functional Translation"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-17244-1_6"
+          },
+          "name": "Creusot: A Foundry for the Deductive Verification of Rust Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3586037"
+          },
+          "name": "Verus: Verifying Rust Programs using Linear Ghost Types"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "pl/generics",
+        "pl/const-generics",
+        "compilers/monomorphization",
+        "verification/modular-verification"
+      ]
+    },
     "superdense-logical-time-hybrid-synchronous-calculi-and-preemptive-srp-verification": {
       "observed_at": "2026-11-19",
       "subjects": [

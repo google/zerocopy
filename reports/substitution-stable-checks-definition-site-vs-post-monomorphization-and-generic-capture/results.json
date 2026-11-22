@@ -1,0 +1,720 @@
+[
+  {
+    "id": "R1-subst-stability-characterization",
+    "lean": [
+      "Toy.SubstStable.exists_sound_complete_defCheck_iff_substStable",
+      "Toy.SubstStable.witnessDefCheck_sound_and_complete_iff_substStable"
+    ],
+    "lean_names": [
+      "Toy.SubstStable.defCheckSound_iff_allInstSat",
+      "Toy.SubstStable.defCheckComplete_iff_exists_inst",
+      "Toy.SubstStable.substStable_iff_allInst_const",
+      "Toy.SubstStable.hasInstWitness_iff_forall_inst",
+      "Toy.SubstStable.witnessDefCheck_eq_true_iff",
+      "Toy.SubstStable.instTy_constZeroNoAlignWitness_isSome",
+      "Toy.SubstStable.defCheckSound_pos_const_false",
+      "Toy.SubstStable.defCheckSound_neg_const_true",
+      "Toy.SubstStable.defCheckComplete_pos_const_true",
+      "Toy.SubstStable.defCheckComplete_neg_const_false",
+      "Toy.SubstStable.substStable_pos_const_true",
+      "Toy.SubstStable.substStable_neg_sizeLe_unbounded",
+      "Toy.SubstStable.hasInstWitness_pos_singleton_bound",
+      "Toy.SubstStable.hasInstWitness_pos_fixed_const",
+      "Toy.SubstStable.hasInstWitness_neg_const_map_fullNoAlign",
+      "Toy.SubstStable.hasInstWitness_neg_bad_subst",
+      "Toy.SubstStable.witnessDefCheck_pos_u8",
+      "Toy.SubstStable.witnessDefCheck_neg_over_size",
+      "Toy.SubstStable.fixedConstNoAlignBound_pos",
+      "Toy.SubstStable.fixedConstNoAlignBound_neg_nonzero_cnst",
+      "Toy.SubstStable.AllInstSat",
+      "Toy.SubstStable.AssocEnv",
+      "Toy.SubstStable.BoundPred",
+      "Toy.SubstStable.ClosedTy",
+      "Toy.SubstStable.CVal",
+      "Toy.SubstStable.DefCheckComplete",
+      "Toy.SubstStable.DefCheckSound",
+      "Toy.SubstStable.FixedConstNoAlignBound",
+      "Toy.SubstStable.FullNoAlignBound",
+      "Toy.SubstStable.HasInstWitness",
+      "Toy.SubstStable.IdxTerm",
+      "Toy.SubstStable.OpenTy",
+      "Toy.SubstStable.Subst",
+      "Toy.SubstStable.SubstStable",
+      "Toy.SubstStable.constZeroNoAlignWitness",
+      "Toy.SubstStable.badAlign16Witness",
+      "Toy.SubstStable.defaultNoAlignEnv",
+      "Toy.SubstStable.emptyAssoc",
+      "Toy.SubstStable.instTy",
+      "Toy.SubstStable.substAlign16",
+      "Toy.SubstStable.substU8",
+      "Toy.SubstStable.tyU8",
+      "Toy.SubstStable.unbounded",
+      "Toy.SubstStable.witnessDefCheck"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "plain_claim": "For every semantic bound B and closed-type property Φ: (1) a Boolean definition-site check C over open types that is both sound (DefCheckSound B Φ C) and instance-complete (DefCheckComplete B Φ C) exists if and only if Φ is substitution-stable relative to B (SubstStable B Φ); and (2) for any instantiation-witness map w satisfying HasInstWitness B w, the witness-evaluating check witnessDefCheck Φ w (defined without Classical.choice, and executable whenever Φ and w are computable) is both sound and instance-complete relative to B if and only if SubstStable B Φ holds.",
+    "hypotheses": [
+      {
+        "name": "hw : HasInstWitness B w (in witnessDefCheck_sound_and_complete_iff_substStable)",
+        "purpose": "ensures w t supplies a B-conforming instantiation whenever t admits at least one B-conforming closed instance",
+        "tightness": "tight",
+        "witness_class": "constant witness maps over 1-type-parameter open types under FullNoAlignBound",
+        "counterexample": "Toy.SubstStable.cex_witnessDefCheck_without_hasInstWitness"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "FixedConstNoAlignBound with constZeroNoAlignWitness and packedNoAlignWf, realizing both true and false verdicts",
+    "nonvacuity_witness_lean": "Toy.SubstStable.nonvacuity_substStable_witness",
+    "non_claims": [
+      "The existential right-to-left construction in exists_sound_complete_defCheck_iff_substStable uses classical decidability over arbitrary Prop-valued bounds B; witnessDefCheck_sound_and_complete_iff_substStable gives one constructive route avoiding Classical.choice when an explicit witness map w satisfying HasInstWitness B w is supplied (specific bounds and properties can also admit direct syntax-directed checks such as naiveDefPackedCheck under FullNoAlignBound even when partial const indices rule out any t-independent constant witness map, hasInstWitness_neg_const_map_fullNoAlign).",
+      "DefCheckSound B Φ C and SubstStable B Φ quantify over environments (A, σ) where instTy A σ t = some τ succeeds; even when SubstStable B Φ holds and a sound, instance-complete check accepts t (C t = true), instantiating t at a B-conforming (A, σ) can still fail with instTy A σ t = none (and CollectRes.pmeError) due to partial const arithmetic (such as N - 1 at N = 0, cex_partial_sub_post_mono_error) or unresolved associated-type projections (instTy_neg_unresolved_proj).",
+      "DefCheckComplete requires C t = true whenever at least one B-conforming closed instance satisfies Φ; a sound conservative check sufficient for universal validity AllInstSat B Φ t (DefCheckSound B Φ C without DefCheckComplete B Φ C, rejecting mixed open types while accepting a sound class of universally valid ones) does not require SubstStable B Φ (for example, boundedDefPackedCheck in R4; see cex_defCheckSound_without_complete_not_substStable).",
+      "Open types that admit no B-conforming closed instance (for example, due to an always-failing const index 0 - 1) satisfy AllInstSat B Φ t and SubstStable B Φ vacuously, and witnessDefCheck Φ w accepts them when w t fails to instantiate t.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, zerocopy, or any program verifier."
+    ],
+    "prior_art": [
+      "Siek and Lumsdaine, 'Essential Language Support for Generic Programming', Proc. ACM SIGPLAN 2005 Conf. on Programming Language Design and Implementation (PLDI '05), pp. 73-84, doi:10.1145/1065010.1065021 (establishes modular concept-bounded type safety of System F^G rather than DefCheckComplete or the iff characterization)",
+      "Siek and Taha, 'A Semantic Analysis of C++ Templates', ECOOP 2006, LNCS vol. 4067, Springer, pp. 304-327, doi:10.1007/11785477_19 (Isabelle/HOL mechanization of instantiation-time template checking and post-instantiation errors)",
+      "Gregor, Järvi, Siek, Stroustrup, Dos Reis, and Lumsdaine, 'Concepts: Linguistic Support for Generic Programming in C++', Proc. 21st Annual ACM SIGPLAN Conf. on Object-Oriented Programming, Systems, Languages, and Applications (OOPSLA '06), pp. 291-310, doi:10.1145/1167473.1167499"
+    ],
+    "design_question": "For which closed-type properties does a sound and instance-complete definition-site check over open types exist relative to declared parameter bounds?"
+  },
+  {
+    "id": "R2-instability-forces-incompleteness",
+    "lean": [
+      "Toy.SubstStable.not_defCheckComplete_of_defCheckSound_of_unstable_witness",
+      "Toy.SubstStable.unbounded_substStable_iff_const",
+      "Toy.SubstStable.sizeLe_not_substStable_and_incomplete_of_defCheckSound"
+    ],
+    "lean_names": [
+      "Toy.SubstStable.defCheckSound_eq_false_of_falsifying_inst",
+      "Toy.SubstStable.sizeLe_iff_byteSize_le",
+      "Toy.SubstStable.sizeLe_pos_u32",
+      "Toy.SubstStable.sizeLe_neg_u64",
+      "Toy.SubstStable.byteSize_pos_arr_nat",
+      "Toy.SubstStable.byteSize_pos_arr_ctor",
+      "Toy.SubstStable.byteSize_neg_arr_zero",
+      "Toy.SubstStable.byteSize_ignores_align_and_padding",
+      "Toy.SubstStable.effAlign_pos_align_raises",
+      "Toy.SubstStable.effAlign_neg_packed_caps",
+      "Toy.SubstStable.allInstSat_pos_zero_len_arr_sizeLe",
+      "Toy.SubstStable.notNaiveCheck_sound_and_complete_of_fullNoAlign",
+      "Toy.SubstStable.ClosedTy.byteSize",
+      "Toy.SubstStable.ClosedTy.effAlign",
+      "Toy.SubstStable.cClosedBaseLe4",
+      "Toy.SubstStable.notNaiveDefPackedCheck",
+      "Toy.SubstStable.notPackedNoAlignWf",
+      "Toy.SubstStable.sizeLe",
+      "Toy.SubstStable.tyU16",
+      "Toy.SubstStable.tyU32",
+      "Toy.SubstStable.tyU64"
+    ],
+    "kind": "impossibility",
+    "tier": "T1",
+    "plain_claim": "If C is sound relative to B for Φ (DefCheckSound B Φ C) and an open type t admits two B-conforming closed instances τ1 (with Φ τ1 = true) and τ2 (with Φ τ2 = false), then C rejects t (C t = false) and fails instance-completeness (¬ DefCheckComplete B Φ C); under unbounded parameters, SubstStable unbounded Φ holds if and only if Φ is constant across all closed types, so for every byte threshold k, sizeLe k is not substitution-stable under unbounded and every unbounded-sound definition-site check C for sizeLe k fails DefCheckComplete unbounded (sizeLe k) C.",
+    "hypotheses": [
+      {
+        "name": "hS : DefCheckSound B Φ C (in not_defCheckComplete_of_defCheckSound_of_unstable_witness and sizeLe_not_substStable_and_incomplete_of_defCheckSound)",
+        "purpose": "forces C to reject any open type admitting a B-conforming falsifying instance; without soundness, there is an unsound constant-true check (fun _ => true) at threshold k = 4 on 1-parameter open types that accepts .tparam 0 and satisfies DefCheckComplete",
+        "tightness": "tight",
+        "witness_class": "unsound constant-true check at byte threshold k = 4 on 1-type-parameter open types",
+        "counterexample": "Toy.SubstStable.cex_incompleteness_without_soundness"
+      },
+      {
+        "name": "hB1 : B A1 σ1 (in not_defCheckComplete_of_defCheckSound_of_unstable_witness)",
+        "purpose": "the Φ-satisfying instance τ1 must satisfy B; otherwise under FullNoAlignBound there is an out-of-bound substitution substAlign16 on Packed<T0> while notNaiveDefPackedCheck satisfies DefCheckComplete",
+        "tightness": "tight",
+        "witness_class": "1-type-parameter packed open types under FullNoAlignBound",
+        "counterexample": "Toy.SubstStable.cex_incompleteness_without_pos_bound"
+      },
+      {
+        "name": "hi1 : instTy A1 σ1 t = some τ1 (in not_defCheckComplete_of_defCheckSound_of_unstable_witness)",
+        "purpose": "τ1 must arise from instantiating t at (A1, σ1); otherwise on Packed<T0> under FullNoAlignBound there is an unproduced closed type .packed 1 align16U8 while notNaiveDefPackedCheck satisfies DefCheckComplete",
+        "tightness": "tight",
+        "witness_class": "1-type-parameter packed open types under FullNoAlignBound",
+        "counterexample": "Toy.SubstStable.cex_incompleteness_without_pos_inst"
+      },
+      {
+        "name": "hΦ1 : Φ τ1 = true (in not_defCheckComplete_of_defCheckSound_of_unstable_witness)",
+        "purpose": "without a B-conforming positive instance of t, rejecting t does not violate DefCheckComplete; for constant-false Φ on .tparam 0, fun _ => false satisfies DefCheckComplete",
+        "tightness": "tight",
+        "witness_class": "constant-false predicate over 1-type-parameter open types",
+        "counterexample": "Toy.SubstStable.cex_incompleteness_without_pos_prop"
+      },
+      {
+        "name": "hB2 : B A2 σ2 (in not_defCheckComplete_of_defCheckSound_of_unstable_witness)",
+        "purpose": "the Φ-falsifying instance τ2 must satisfy B; otherwise under FullNoAlignBound there is an out-of-bound substitution substAlign16 while naiveDefPackedCheck accepts Packed<T0> and satisfies DefCheckComplete",
+        "tightness": "tight",
+        "witness_class": "1-type-parameter packed open types under FullNoAlignBound",
+        "counterexample": "Toy.SubstStable.cex_incompleteness_without_neg_bound"
+      },
+      {
+        "name": "hi2 : instTy A2 σ2 t = some τ2 (in not_defCheckComplete_of_defCheckSound_of_unstable_witness)",
+        "purpose": "τ2 must arise from instantiating t at (A2, σ2); otherwise defaultNoAlignEnv does not produce .packed 1 align16U8 while naiveDefPackedCheck accepts Packed<T0> and satisfies DefCheckComplete",
+        "tightness": "tight",
+        "witness_class": "1-type-parameter packed open types under FullNoAlignBound",
+        "counterexample": "Toy.SubstStable.cex_incompleteness_without_neg_inst"
+      },
+      {
+        "name": "hΦ2 : Φ τ2 = false (in not_defCheckComplete_of_defCheckSound_of_unstable_witness)",
+        "purpose": "without a B-conforming falsifying instance, C t = true remains sound; for constant-true Φ on .tparam 0, fun _ => true accepts .tparam 0 and satisfies DefCheckComplete",
+        "tightness": "tight",
+        "witness_class": "constant-true predicate over 1-type-parameter open types",
+        "counterexample": "Toy.SubstStable.cex_incompleteness_without_neg_prop"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "unbounded with sizeLe 4, conservative check cClosedBaseLe4 (accepting u8 and rejecting T0), tyU8 (1 byte), and tyU64 (8 bytes)",
+    "nonvacuity_witness_lean": "Toy.SubstStable.nonvacuity_unstable_sizeLe",
+    "positive_control_lean": "Toy.SubstStable.pc_fullNoAlign_naiveCheck_sound_and_complete",
+    "non_claims": [
+      "Failure of DefCheckComplete unbounded (sizeLe k) C forces a sound check C to reject mixed open types such as .tparam 0, not every open type mentioning a type parameter: for example, .arr (.tparam 0) (.lit 0) instantiates to byteSize = 0 ≤ k at every substitution and can be soundly accepted without parameter bounds (allInstSat_pos_zero_len_arr_sizeLe).",
+      "Does not rule out sound conservative definition-site checks that reject open types with mixed instances while still accepting closed or suitably bounded open types (for example, cClosedBaseLe4 here and boundedDefPackedCheck in R4). Also note that C t = false in not_defCheckComplete_of_defCheckSound_of_unstable_witness follows from the falsifying instance (hS, hB2, hi2, hΦ2) alone (defCheckSound_eq_false_of_falsifying_inst).",
+      "unbounded_substStable_iff_const relies on OpenTy containing unrestricted type parameters (.tparam 0) ranging over every ClosedTy; a sub-grammar without type parameters or with restricted parameter sorts could admit non-constant unbounded-stable properties (not examined).",
+      "Escape hatch: strengthening the parameter bound from unbounded to a bound that excludes either all positive or all negative instances of mixed open types restores SubstStable and admits a sound, instance-complete check (pc_fullNoAlign_naiveCheck_sound_and_complete).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, zerocopy, or any program verifier."
+    ],
+    "prior_art": [
+      "Siek and Lumsdaine, 'Essential Language Support for Generic Programming', Proc. ACM SIGPLAN 2005 Conf. on Programming Language Design and Implementation (PLDI '05), pp. 73-84, doi:10.1145/1065010.1065021 (modular concept-bounded soundness of System F^G; does not state the DefCheckComplete ↔ SubstStable converse)",
+      "Siek and Taha, 'A Semantic Analysis of C++ Templates', ECOOP 2006, LNCS vol. 4067, Springer, pp. 304-327, doi:10.1007/11785477_19 (Isabelle/HOL mechanization of instantiation-time template checking and post-instantiation errors)",
+      "Gregor, Järvi, Siek, Stroustrup, Dos Reis, and Lumsdaine, 'Concepts: Linguistic Support for Generic Programming in C++', Proc. 21st Annual ACM SIGPLAN Conf. on Object-Oriented Programming, Systems, Languages, and Applications (OOPSLA '06), pp. 291-310, doi:10.1145/1167473.1167499",
+      "Corpus package repr-c-layout-algebra-dst-tails-and-enum-tags (closed layout-size arithmetic background only; does not treat open types, parameter bounds, or substitution stability)"
+    ],
+    "design_question": "What goes wrong for completeness when a non-constant structural property (such as size ≤ k) must be checked soundly at the definition site without parameter bounds?"
+  },
+  {
+    "id": "R3-packed-align-empty-bounds-unsound",
+    "lean": [
+      "Toy.SubstStable.cex_naiveDefPackedCheck_tparam_and_proj",
+      "Toy.SubstStable.packedNoAlignWf_not_substStable_emptyBounds"
+    ],
+    "lean_names": [
+      "Toy.SubstStable.hasAlignWrapper_pos_nested",
+      "Toy.SubstStable.hasAlignWrapper_neg_natural_u64",
+      "Toy.SubstStable.packedNoAlignWf_pos_outer_align",
+      "Toy.SubstStable.packedNoAlignWf_pos_natural_u64",
+      "Toy.SubstStable.packedNoAlignWf_neg_inner_align",
+      "Toy.SubstStable.packedNoAlignWf_neg_zero_len_arr",
+      "Toy.SubstStable.naiveOpenHasAlign_pos_literal",
+      "Toy.SubstStable.naiveOpenHasAlign_neg_tparam",
+      "Toy.SubstStable.naiveDefPackedCheck_pos_tparam",
+      "Toy.SubstStable.naiveDefPackedCheck_neg_literal_align",
+      "Toy.SubstStable.substAlign16_sat_emptyBounds",
+      "Toy.SubstStable.sampleAssoc_substU8_sat_emptyBounds",
+      "Toy.SubstStable.allInstSat_neg_packed_under_empty",
+      "Toy.SubstStable.instTy_pos_proj_and_arr",
+      "Toy.SubstStable.instTy_neg_unresolved_proj",
+      "Toy.SubstStable.instTy_neg_failed_idx",
+      "Toy.SubstStable.DeclBounds",
+      "Toy.SubstStable.DeclBounds.sat",
+      "Toy.SubstStable.align16U8",
+      "Toy.SubstStable.emptyBounds",
+      "Toy.SubstStable.hasAlignWrapper",
+      "Toy.SubstStable.naiveDefPackedCheck",
+      "Toy.SubstStable.naiveOpenHasAlign",
+      "Toy.SubstStable.packedNoAlignWf",
+      "Toy.SubstStable.sampleAssoc"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "Under emptyBounds (where every substituted parameter and associated type is itself packedNoAlignWf, with no noAlign restrictions), the syntactic check naiveDefPackedCheck accepts both Packed<T0> (.packed 1 (.tparam 0)) and Packed<<T0 as Trait0>::Assoc> (.packed 1 (.proj 0 (.tparam 0))), yet emptyBounds-conforming instantiations (substAlign16 and sampleAssoc with substU8) normalize both to .packed 1 align16U8, which violates packedNoAlignWf; hence naiveDefPackedCheck is not DefCheckSound and packedNoAlignWf is not SubstStable under emptyBounds.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "concrete instantiations substAlign16 on Packed<T0> and (sampleAssoc, substU8) on Packed<<T0 as Trait0>::Assoc>",
+    "nonvacuity_witness_lean": "Toy.SubstStable.cex_naiveDefPackedCheck_tparam_and_proj",
+    "positive_control_lean": "Toy.SubstStable.pc_fullNoAlign_naiveCheck_sound_and_complete",
+    "non_claims": [
+      "packedNoAlignWf models only transitive containment of an explicit align(n) wrapper inside a packed(k) wrapper; it does not model natural alignment of scalars (packed(1) over u64 has packedNoAlignWf = true, matching E0588 vs. E0793 at compiler/rustc_error_codes/src/error_codes/E0793.md:1-32) or align(n) combined with packed(k) on the same struct declaration (E0587 at compiler/rustc_error_codes/src/error_codes/E0587.md:1-16).",
+      "Even a zero-length array .packed 1 (.arr align16U8 (.nat 0)) fails packedNoAlignWf because containment is structural in the element type rather than byte-footprint-based (packedNoAlignWf_neg_zero_len_arr).",
+      "Does not claim that rustc omits post-substitution checks.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, zerocopy, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_error_codes/src/error_codes/E0588.md:1-24, E0587.md:1-16, and E0793.md:1-32 (documentation)",
+      "The Rust Reference, rust-lang/reference at commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/type-layout.md:632-658 (specifically r[layout.repr.alignment.constraint-exclusive] at src/type-layout.md:653-654) (normative)",
+      "Corpus package packed-field-projections-aligned-staging-and-alignment-check-completeness-across-shims"
+    ],
+    "design_question": "Why is 'no explicitly aligned type inside a packed type' not checkable by a purely syntactic open-AST inspection under unconstrained parameters (emptyBounds)?"
+  },
+  {
+    "id": "R4-packed-align-post-mono-and-bounded-sound",
+    "lean": [
+      "Toy.SubstStable.evalPmeCheck_packedWf_iff",
+      "Toy.SubstStable.boundedDefPackedCheck_sound"
+    ],
+    "lean_names": [
+      "Toy.SubstStable.hasAlignWrapper_eq_naiveOpenHasAlign_of_fullNoAlign",
+      "Toy.SubstStable.packedNoAlignWf_eq_naiveDefPackedCheck_of_fullNoAlign",
+      "Toy.SubstStable.allInstSat_pos_packed_under_full",
+      "Toy.SubstStable.declBoundsSat_pos_selective",
+      "Toy.SubstStable.declBoundsSat_neg_param_has_align",
+      "Toy.SubstStable.fullNoAlignBound_pos_scalars",
+      "Toy.SubstStable.fullNoAlignBound_neg_align_subst",
+      "Toy.SubstStable.mayHaveAlignUnder_pos_unbounded_param",
+      "Toy.SubstStable.mayHaveAlignUnder_neg_bounded_param",
+      "Toy.SubstStable.boundedDefPackedCheck_pos_bounded_param",
+      "Toy.SubstStable.boundedDefPackedCheck_neg_unbounded_param",
+      "Toy.SubstStable.boundedDefPackedCheck_pos_erased_proj_arg",
+      "Toy.SubstStable.PmeCheck",
+      "Toy.SubstStable.boundedDefPackedCheck",
+      "Toy.SubstStable.evalPmeCheck",
+      "Toy.SubstStable.mayHaveAlignUnder"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every associated-type environment A, substitution σ, and open type t, the definitional unfolding of PmeCheck.packedWf t after instantiation (evalPmeCheck A σ (.packedWf t) = true) holds if and only if instTy A σ t produces a closed type τ with packedNoAlignWf τ = true; at the definition site, for every declared bound d, open type t, environment A, substitution σ, and closed type τ, if boundedDefPackedCheck d t = true, DeclBounds.sat d A σ holds, and instTy A σ t = some τ, then packedNoAlignWf τ = true.",
+    "hypotheses": [
+      {
+        "name": "hchk : boundedDefPackedCheck d t = true (in boundedDefPackedCheck_sound)",
+        "purpose": "forbids literal align wrappers and unlisted parameters or projections under packed; in the class of 1-parameter open types under emptyBounds, there is Packed<T0> instantiated at substAlign16 where boundedDefPackedCheck = false and packedNoAlignWf = false",
+        "tightness": "tight",
+        "witness_class": "1-type-parameter packed open types under emptyBounds",
+        "counterexample": "Toy.SubstStable.cex_boundedDefPackedCheck_without_check"
+      },
+      {
+        "name": "hsat : DeclBounds.sat d A σ (in boundedDefPackedCheck_sound)",
+        "purpose": "ensures substituted arguments and associated types obey packedNoAlignWf and declared paramNoAlign/projNoAlign exclusions; in the class of 1-parameter open types under d = ⟨[0], []⟩, there is substAlign16 violating DeclBounds.sat and producing .packed 1 align16U8",
+        "tightness": "tight",
+        "witness_class": "1-type-parameter packed open types under DeclBounds ⟨[0], []⟩",
+        "counterexample": "Toy.SubstStable.cex_boundedDefPackedCheck_without_boundsSat"
+      },
+      {
+        "name": "hinst : instTy A σ t = some τ (in boundedDefPackedCheck_sound)",
+        "purpose": "ties τ to the normalized result of instantiating t at (A, σ); in the class of closed packed types paired with d = ⟨[0], []⟩, there is .packed 1 align16U8 not produced by instTy on Packed<T0> that violates packedNoAlignWf",
+        "tightness": "tight",
+        "witness_class": "1-type-parameter packed open types paired with an unrelated closed type",
+        "counterexample": "Toy.SubstStable.cex_boundedDefPackedCheck_without_inst"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "selective bound ⟨[0], []⟩ on (Packed<T0>, T1) instantiated with T0 := u8 and T1 := align16U8",
+    "nonvacuity_witness_lean": "Toy.SubstStable.nonvacuity_boundedDefPackedCheck_selective",
+    "non_claims": [
+      "evalPmeCheck_packedWf_iff is a definitional unfolding of evalPmeCheck on PmeCheck.packedWf t; the substantive content of Card R4 is the inductive definition-site soundness theorem boundedDefPackedCheck_sound.",
+      "Rust has no surface marker trait corresponding to paramNoAlign or projNoAlign; DeclBounds models a counterfactual bound discipline explaining what a sound definition-site check would require.",
+      "Neither mayHaveAlignUnder nor boundedDefPackedCheck inspects the self-argument arg of .proj tr arg at any AST position (whether inside or outside .packed, boundedDefPackedCheck_pos_erased_proj_arg), because instTy normalizes .proj tr arg to its AssocEnv output rhs and discards arg' without checking packedNoAlignWf arg'; source-level well-formedness of projection arguments (enforced by rustc wfcheck) is not modeled.",
+      "In DeclBounds.sat, membership tr ∈ d.projNoAlign constrains A tr τ across every closed self-type τ : ClosedTy in AssocEnv (modeling a global trait-definition bound on Trait_tr rather than a per-parameter where-clause bound on <T as Trait_tr>::Assoc), and boundedDefPackedCheck d fails DefCheckComplete whenever d leaves a type parameter i : Nat unlisted (witnessed by Packed<T_i> at substU8, not proved for general d here; proved for d = ⟨[0], []⟩ in cex_defCheckSound_without_complete_not_substStable, cf. boundedDefPackedCheck_neg_unbounded_param for emptyBounds), in addition to rejecting uninstantiable open types such as Packed<[Align16<u8>; 0 - 1]> that satisfy AllInstSat vacuously (not proved here).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, zerocopy, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_error_codes/src/error_codes/E0588.md:1-24 (documentation)",
+      "The Rust Reference, rust-lang/reference at commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/type-layout.md:632-658 (r[layout.repr.alignment.constraint-exclusive] at src/type-layout.md:653-654) (normative)",
+      "Siek and Lumsdaine, 'Essential Language Support for Generic Programming', Proc. ACM SIGPLAN 2005 Conf. on Programming Language Design and Implementation (PLDI '05), pp. 73-84, doi:10.1145/1065010.1065021",
+      "Corpus package packed-field-projections-aligned-staging-and-alignment-check-completeness-across-shims"
+    ],
+    "design_question": "Does re-checking packed/align containment after substitution and normalization restore soundness, and what parameter bound makes a definition-site check sound?"
+  },
+  {
+    "id": "R5-ctor-const-indices-total-and-decidable",
+    "lean": [
+      "Toy.SubstStable.idxTotal_of_isCtorIdx",
+      "Toy.SubstStable.idxSemEq_iff_eq_of_isCtorIdx"
+    ],
+    "lean_names": [
+      "Toy.SubstStable.idxTotal_iff_exists_cval",
+      "Toy.SubstStable.isCtorIdx_pos_nested_ctor",
+      "Toy.SubstStable.isCtorIdx_neg_add",
+      "Toy.SubstStable.isCtorIdxList_pos",
+      "Toy.SubstStable.isCtorIdxList_neg",
+      "Toy.SubstStable.evalIdx_pos_checked_sub",
+      "Toy.SubstStable.evalIdx_neg_underflow_sub",
+      "Toy.SubstStable.evalIdx_neg_div_zero",
+      "Toy.SubstStable.evalIdxList_pos",
+      "Toy.SubstStable.evalIdxList_neg",
+      "Toy.SubstStable.idxSemEq_pos_comm_add",
+      "Toy.SubstStable.idxSemEq_neg_partial_sub",
+      "Toy.SubstStable.idxTotal_pos_add",
+      "Toy.SubstStable.idxTotal_neg_sub",
+      "Toy.SubstStable.add_idxTotal_yet_not_isCtorIdx",
+      "Toy.SubstStable.IdxSemEq",
+      "Toy.SubstStable.IdxTotal",
+      "Toy.SubstStable.evalIdx",
+      "Toy.SubstStable.evalIdxList",
+      "Toy.SubstStable.isCtorIdx",
+      "Toy.SubstStable.isCtorIdxList"
+    ],
+    "kind": "characterization",
+    "tier": "T0",
+    "plain_claim": "For every const-index expression e satisfying isCtorIdx e = true (acyclic constructor and parameter terms over canonical natural scalars, with no add, sub, or div nodes), instantiation-time evaluation in evalIdx never fails (IdxTotal e); and for any two index expressions e1 and e2 with isCtorIdx e1 = true and isCtorIdx e2 = true, semantic equality across all natural parameter valuations (IdxSemEq e1 e2) holds if and only if rigid syntactic AST equality e1 = e2 holds, which is decidable via DecidableEq IdxTerm.",
+    "hypotheses": [
+      {
+        "name": "hCtor : isCtorIdx e = true (in idxTotal_of_isCtorIdx)",
+        "purpose": "excludes partial checked subtraction and floor division nodes; in the class of 1-const-parameter arithmetic index expressions, there is idxSub1 (N - 1) with isCtorIdx = false that fails evaluation at γ 0 = 0",
+        "tightness": "tight",
+        "witness_class": "1-const-parameter checked-subtraction index expressions",
+        "counterexample": "Toy.SubstStable.cex_partial_sub_post_mono_error"
+      },
+      {
+        "name": "h1 : isCtorIdx e1 = true (in idxSemEq_iff_eq_of_isCtorIdx)",
+        "purpose": "excludes left-hand arithmetic expressions; in the class of 1-const-parameter total addition expressions, there is 0 + N paired with N that satisfies IdxSemEq while .add (.lit 0) (.cparam 0) ≠ .cparam 0",
+        "tightness": "tight",
+        "witness_class": "1-const-parameter total addition index expressions",
+        "counterexample": "Toy.SubstStable.cex_idxSemEq_drop_left_isCtorIdx"
+      },
+      {
+        "name": "h2 : isCtorIdx e2 = true (in idxSemEq_iff_eq_of_isCtorIdx)",
+        "purpose": "excludes right-hand arithmetic expressions; in the class of 1-const-parameter total addition expressions, there is N paired with N + 0 that satisfies IdxSemEq while .cparam 0 ≠ .add (.cparam 0) (.lit 0)",
+        "tightness": "tight",
+        "witness_class": "1-const-parameter total addition index expressions",
+        "counterexample": "Toy.SubstStable.cex_idxSemEq_drop_right_isCtorIdx"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "nested constructor terms .ctor 2 [.cparam 0, .ctor 1 [.lit 4]] and .ctor 2 [.cparam 1, .ctor 1 [.lit 4]]",
+    "nonvacuity_witness_lean": "Toy.SubstStable.nonvacuity_ctor_indices",
+    "non_claims": [
+      "Const parameters (.cparam i) range only over Nat scalars (γ : Nat → Nat, MonoKey.cnstArgs : List Nat), never over CVal.ctor trees, and function-call const argument evaluation (evalNatArgs in GenStmt.call) rejects every .ctor value with none (evalNatArgs_neg_ctor, triggering CollectRes.pmeError during collectAndCheck); IdxTotal guarantees non-failure of evalIdx inside OpenTy.arr, not admission of constructor terms as GenStmt.call const arguments.",
+      "DecidableEq IdxTerm tests rigid syntactic AST equality (treating .cparam i as universally quantified constants rather than unifiable metavariables). Unlike RFC 2000 (where each abstract const expression occurrence creates a distinct anonymous projection so even two separate AST occurrences of N + 1 do not unify) and stable Rust (where ADT const arguments and open const arithmetic require nightly feature gates), IdxTerm compares AST structure directly.",
+      "isCtorIdx is sufficient but not necessary for IdxTotal: total addition N + 1 satisfies IdxTotal while isCtorIdx (N + 1) = false (add_idxTotal_yet_not_isCtorIdx).",
+      "idxSemEq_iff_eq_of_isCtorIdx quantifies over all unconstrained valuations γ : Nat → Nat in IdxSemEq; under a where-clause fixing γ 0 = 4, .cparam 0 and .lit 4 agree on constrained valuations despite syntactic inequality (not modeled in IdxSemEq).",
+      "CVal models canonical pointer-free, padding-free, union-free value trees directly as an inductive tree; raw pointers with provenance, unions, and floating-point NaN non-reflexivity are outside the grammar.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, zerocopy, or any program verifier."
+    ],
+    "prior_art": [
+      "Baader and Nipkow, Term Rewriting and All That, Cambridge University Press, 1998, Chapter 3 ('Universal Algebra', §3.2-3.4), doi:10.1017/CBO9781139172752 (freeness and injectivity of constructor-term evaluation over infinite domains)",
+      "Sternagel and Thiemann, 'First-Order Terms', Archive of Formal Proofs (Isabelle/HOL AFP), Feb. 2018, ISSN 2150-914X, https://isa-afp.org/entries/First_Order_Terms.html (mechanization of first-order constructor terms, matching, and unification)",
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_type_ir/src/const_kind.rs:191-223 (ValTreeKind) and compiler/rustc_middle/src/ty/consts/valtree.rs:23-43 (ValTree) (source)",
+      "rust-lang/rfcs at commit f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/2000-const-generics.md:176-248 (documentation)",
+      "Corpus report const-generics-ctfe-packed-provenance-extern-types-and-array-init-cursors (ConstKind/AliasConstKind stratification and CtfeProvenance background)"
+    ],
+    "design_question": "Under what restriction on const-generic index expressions is instantiation-time evaluation in evalIdx guaranteed never to fail and definitional equality decidable by rigid syntactic AST equality?"
+  },
+  {
+    "id": "R6-const-index-rigid-eq-and-partial-op-cex",
+    "lean": [
+      "Toy.SubstStable.cex_rigid_ast_eq_incomplete_comm_add",
+      "Toy.SubstStable.cex_partial_sub_post_mono_error",
+      "Toy.SubstStable.cex_partial_div_zero_post_mono_error"
+    ],
+    "lean_names": [
+      "Toy.SubstStable.idxAdd1N",
+      "Toy.SubstStable.idxAddN1",
+      "Toy.SubstStable.idxDiv0",
+      "Toy.SubstStable.idxSub1",
+      "Toy.SubstStable.progDiv0",
+      "Toy.SubstStable.progSub1"
+    ],
+    "kind": "counterexample",
+    "tier": "T0",
+    "plain_claim": "(1) The total index expressions idxAddN1 (N + 1) and idxAdd1N (1 + N) satisfy IdxSemEq yet fail rigid syntactic AST equality (decide (idxAddN1 = idxAdd1N) = false); (2) under checked natural subtraction, idxSub1 (N - 1) evaluates to some (.nat 0), instantiates [u8; N - 1] to [u8; 0], and passes collectAndCheck true progSub1 [⟨0, [], [1]⟩] 2 at N = 1, yet evaluates to none, fails instTy, and fails collectAndCheck true progSub1 [⟨0, [], [0]⟩] 2 with .pmeError ⟨0, [], [0]⟩ at N = 0; and (3) under checked floor division, idxDiv0 (16 / N) evaluates to some (.nat 8) and passes collectAndCheck true progDiv0 [⟨0, [], [2]⟩] 2 at N = 2, yet evaluates to none and fails collectAndCheck true progDiv0 [⟨0, [], [0]⟩] 2 with .pmeError ⟨0, [], [0]⟩ at N = 0.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "concrete expressions idxAddN1, idxAdd1N, idxSub1, and idxDiv0 on progSub1 and progDiv0",
+    "nonvacuity_witness_lean": "Toy.SubstStable.cex_partial_sub_post_mono_error",
+    "positive_control_lean": "Toy.SubstStable.nonvacuity_ctor_indices",
+    "non_claims": [
+      "decide (idxAddN1 = idxAdd1N) = false tests rigid syntactic inequality of ASTs; under RFC 2000's anonymous const projections (text/2000-const-generics.md:213-229), even two separate occurrences of the syntactically identical expression N + 1 fail to unify unless bound to a single declaration.",
+      "evalIdx models checked natural subtraction (failing with none when x < y) and checked floor division (failing with none when y = 0), matching compile-time const evaluation errors rather than Lean's total truncating Nat.sub (0 - 1 = 0) or Nat.div (16 / 0 = 0).",
+      "Fixed-width integer overflow (such as usize::MAX + 1 failing E0080, compiler/rustc_error_codes/src/error_codes/E0080.md:12-15) is not modeled in evalIdx's unbounded Nat addition.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, zerocopy, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rfcs at commit f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07, text/2000-const-generics.md:176-248 (documentation)",
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_error_codes/src/error_codes/E0080.md:1-23 (documentation)",
+      "Corpus report anneal-pme-mir-semantics-and-polar-ctfe-admission (prose and PME admission semantics)",
+      "Corpus report const-generics-ctfe-packed-provenance-extern-types-and-array-init-cursors (ConstKind/AliasConstKind stratification referencing RFC 2000)"
+    ],
+    "design_question": "How do unevaluated commutative arithmetic and partial arithmetic operations in const indices break rigid syntactic AST equality and defer evaluation errors past generic checking?"
+  },
+  {
+    "id": "R7-pme-collection-soundness",
+    "lean": [
+      "Toy.SubstStable.collectAndCheck_ok_mem_and_localPme",
+      "Toy.SubstStable.intrinsicReachable_iff_reachable_of_collectAndCheck_ok_of_allLocalMir",
+      "Toy.SubstStable.collectAndCheck_ok_intrinsicPme_of_allLocalMir"
+    ],
+    "lean_names": [
+      "Toy.SubstStable.allLocalMir_iff_list_all",
+      "Toy.SubstStable.passesIntrinsicPme_of_passesLocalPme_of_isLocalFn",
+      "Toy.SubstStable.evalPmeCheck_pos_sizeEq",
+      "Toy.SubstStable.evalPmeCheck_neg_sizeMismatch",
+      "Toy.SubstStable.substOfKey_pos_in_bounds",
+      "Toy.SubstStable.substOfKey_neg_out_of_bounds_default",
+      "Toy.SubstStable.isLocalFn_pos",
+      "Toy.SubstStable.isLocalFn_neg_external",
+      "Toy.SubstStable.allLocalMir_pos",
+      "Toy.SubstStable.allLocalMir_neg",
+      "Toy.SubstStable.passesLocalPme_pos_external_mir",
+      "Toy.SubstStable.passesLocalPme_neg_local_fail",
+      "Toy.SubstStable.passesIntrinsicPme_pos_valid",
+      "Toy.SubstStable.passesIntrinsicPme_neg_external_fail",
+      "Toy.SubstStable.instTyList_pos",
+      "Toy.SubstStable.instTyList_neg",
+      "Toy.SubstStable.evalNatArgs_pos",
+      "Toy.SubstStable.evalNatArgs_neg_ctor",
+      "Toy.SubstStable.usedStmtRefs_pos_call",
+      "Toy.SubstStable.usedStmtRefs_neg_erases_deadBranch",
+      "Toy.SubstStable.mentionedStmtRefs_pos_keeps_deadBranch",
+      "Toy.SubstStable.mentionedStmtRefs_neg_bad_idx",
+      "Toy.SubstStable.monoEdges_pos_local",
+      "Toy.SubstStable.monoEdges_neg_undef",
+      "Toy.SubstStable.collectAndCheck_pos_valid",
+      "Toy.SubstStable.collectAndCheck_neg_pmeError",
+      "Toy.SubstStable.collectAndCheck_neg_outOfFuel",
+      "Toy.SubstStable.reachable_pos_step",
+      "Toy.SubstStable.reachable_neg_deadBranch_in_used",
+      "Toy.SubstStable.intrinsicEdges_pos_external_body",
+      "Toy.SubstStable.intrinsicEdges_neg_undef",
+      "Toy.SubstStable.intrinsicReachable_pos_step",
+      "Toy.SubstStable.intrinsicReachable_neg_deadBranch_in_used",
+      "Toy.SubstStable.AllLocalMir",
+      "Toy.SubstStable.CollectRes",
+      "Toy.SubstStable.CrateProg",
+      "Toy.SubstStable.GenFn",
+      "Toy.SubstStable.GenStmt",
+      "Toy.SubstStable.IntrinsicReachable",
+      "Toy.SubstStable.MonoKey",
+      "Toy.SubstStable.Reachable",
+      "Toy.SubstStable.collectAndCheck",
+      "Toy.SubstStable.collectLoop",
+      "Toy.SubstStable.evalNatArgs",
+      "Toy.SubstStable.instTyList",
+      "Toy.SubstStable.intrinsicEdges",
+      "Toy.SubstStable.isLocalFn",
+      "Toy.SubstStable.mentionedStmtRefs",
+      "Toy.SubstStable.monoEdges",
+      "Toy.SubstStable.passesIntrinsicPme",
+      "Toy.SubstStable.passesLocalPme",
+      "Toy.SubstStable.sampleMixedCrate",
+      "Toy.SubstStable.substOfKey",
+      "Toy.SubstStable.usedStmtRefs"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "For every mode includeMentioned, crate program P, root list roots, fuel, and output list T: (1) if collectAndCheck includeMentioned P roots fuel = .ok T, then T contains an instance k if and only if k is collector-reachable via monoEdges (Reachable includeMentioned P roots k, which truncates outgoing call edges at localMir = false items), T includes every used-reachable instance (Reachable false P roots k), and every k in T satisfies passesLocalPme P k = true; and (2) if in addition every key in T has locally available MIR (AllLocalMir P T), then IntrinsicReachable includeMentioned P roots k (full fn.body call-graph reachability via intrinsicEdges) coincides with Reachable includeMentioned P roots k for every k, and every intrinsically reachable instance k satisfies passesIntrinsicPme P k = true.",
+    "hypotheses": [
+      {
+        "name": "hOk : collectAndCheck includeMentioned P roots fuel = .ok T",
+        "purpose": "requires worklist collection to finish within fuel without pmeError or outOfFuel; in the class of 2- and 3-function crates (progLiveLocal and progExtCallbackHole), when collectAndCheck fails to return .ok [], AllLocalMir P [] holds vacuously while membership, IntrinsicReachable ↔ Reachable adequacy, and passesIntrinsicPme all fail",
+        "tightness": "tight",
+        "witness_class": "2- and 3-function crates failing with pmeError or outOfFuel",
+        "counterexample": "Toy.SubstStable.cex_pme_collection_not_ok"
+      },
+      {
+        "name": "hLoc : AllLocalMir P T (in intrinsicReachable_iff_reachable_of_collectAndCheck_ok_of_allLocalMir and collectAndCheck_ok_intrinsicPme_of_allLocalMir)",
+        "purpose": "prevents external items (localMir = false) from skipping PME checks or truncating callbacks; in the class of 3-function crates, there is progExtCallbackHole where external fn 1 calls back into local fn 2 (isLocalFn = true) at ⟨2, [tyU8], []⟩, violating both IntrinsicReachable ↔ Reachable and passesIntrinsicPme despite collectAndCheck = .ok",
+        "tightness": "tight",
+        "witness_class": "3-function crates with external-to-local callback edges (and 2-function external-callee crates via cex_external_mir_pme_hole)",
+        "counterexample": "Toy.SubstStable.cex_external_callback_local_pme_hole"
+      },
+      {
+        "name": "hReach : IntrinsicReachable includeMentioned P roots k (in collectAndCheck_ok_intrinsicPme_of_allLocalMir)",
+        "purpose": "restricts the intrinsic PME guarantee to call-reachable instances; in the class of 2-function all-local crates, there is progUnreachedLib where collectAndCheck = .ok [⟨0, [], []⟩] and AllLocalMir hold while the unreached instance ⟨1, [tyU8], []⟩ violates passesIntrinsicPme",
+        "tightness": "tight",
+        "witness_class": "2-function all-local crates with an unreached generic function",
+        "counterexample": "Toy.SubstStable.cex_uncollected_instance_violates_pme"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "2-function all-local crate exercising both live and dead-branch calls to fnSizeEqU16 under includeMentioned = true",
+    "nonvacuity_witness_lean": "Toy.SubstStable.nonvacuity_pme_collection_mentioned",
+    "non_claims": [
+      "collectAndCheck evaluates only explicit assertions in fn.pmeAsserts and Option-totality of monoEdges; it does not enforce DeclBounds.sat fn.bounds on MonoKey arguments or check packedNoAlignWf on closed types lacking an explicit PmeCheck.packedWf assertion, and when roots = [] (an uninstantiated generic library crate) it returns .ok [] while certifying zero instances.",
+      "In Toy.SubstStable, GenFn.pmeAsserts is attached to the function declaration rather than to GenStmt, so inline assertions on a reached function run in both includeMentioned = false and includeMentioned = true modes; GenStmt.deadBranch affects only callee traversal. In Rust, dead-branch const evaluation is left unspecified by the Reference (r[expr.block.const.not-executed]) and rustc marks Body::mentioned_items (compiler/rustc_middle/src/mir/mod.rs:273-285) as an optimization-independence mechanism rather than a stable soundness guarantee.",
+      "For an instance k already known to be collector-reachable via Reachable (rather than IntrinsicReachable), pointwise isLocalFn P k = true suffices to transfer passesLocalPme to passesIntrinsicPme without crate-wide AllLocalMir (passesIntrinsicPme_of_passesLocalPme_of_isLocalFn); crate-wide AllLocalMir P T is needed once reachability is stated over intrinsic fn.body edges (cex_external_callback_local_pme_hole).",
+      "Says nothing when collectAndCheck returns .outOfFuel (for example, under polymorphic recursion; see monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets R8 and R9).",
+      "In our simplified collector, includeMentioned = true traverses mentionedStmtRefs recursively at every hop, matching collector.rs L173-175 without modeling separate LLVM codegen suppression for mentioned-only nodes.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, zerocopy, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_monomorphize/src/collector.rs:130-196 and compiler/rustc_middle/src/mir/mod.rs:265-285 (documentation)",
+      "The Rust Reference, rust-lang/reference at commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/expressions/block-expr.md:230-276 (r[expr.block.const.evaluation]; note r[expr.block.const.not-executed] leaves unexecuted const blocks unspecified) (normative)",
+      "google/zerocopy at commit 8fb35253fbc703cb2cd0997f4efcda76cf9062b6, zerocopy/src/macros.rs:239-278 and zerocopy/src/doctests.rs:15-17 (documentation)",
+      "Corpus package monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets",
+      "Corpus report anneal-pme-mir-semantics-and-polar-ctfe-admission (prose and PME admission semantics)"
+    ],
+    "design_question": "Which monomorphic instances are certified to satisfy post-monomorphization assertions when crate collection succeeds under used-only versus mentioned-items traversal, and when does collector reachability match intrinsic call-graph reachability?"
+  },
+  {
+    "id": "R8-pme-collection-dead-branch-unreached-and-external-cex",
+    "lean": [
+      "Toy.SubstStable.cex_deadBranch_pme_caught_by_mentioned_missed_by_used",
+      "Toy.SubstStable.cex_uncollected_instance_violates_pme",
+      "Toy.SubstStable.cex_external_mir_pme_hole",
+      "Toy.SubstStable.cex_external_callback_local_pme_hole"
+    ],
+    "lean_names": [
+      "Toy.SubstStable.fnSizeEqU16",
+      "Toy.SubstStable.fnExtSizeEqU16",
+      "Toy.SubstStable.fnDeadCaller",
+      "Toy.SubstStable.fnLiveCaller",
+      "Toy.SubstStable.progDeadBranch",
+      "Toy.SubstStable.progExtCallbackHole",
+      "Toy.SubstStable.progExtHole",
+      "Toy.SubstStable.progLiveLocal",
+      "Toy.SubstStable.progUnreachedLib"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "plain_claim": "(1) On progDeadBranch (where fn 0 mentions fn 1::<u8> inside deadBranch), used-only collection (includeMentioned = false) returns .ok [⟨0, [], []⟩] while mentioned-mode collection (includeMentioned = true) reports .pmeError ⟨1, [tyU8], []⟩; (2) on progUnreachedLib, mentioned-mode collection from ⟨0, [], []⟩ returns .ok [⟨0, [], []⟩] with AllLocalMir, yet the unreached instance ⟨1, [tyU8], []⟩ is neither IntrinsicReachable nor Reachable and violates passesIntrinsicPme; (3) on progExtHole (where fn 1 has localMir = false), mentioned-mode collection returns .ok [⟨0, [], []⟩, ⟨1, [tyU8], []⟩] with passesLocalPme = true while passesIntrinsicPme is false on ⟨1, [tyU8], []⟩; and (4) on progExtCallbackHole (where local fn 0 calls external fn 1 which calls back into local fn 2), mentioned-mode collection returns .ok [⟨0, [], []⟩, ⟨1, [tyU8], []⟩] while local instance ⟨2, [tyU8], []⟩ (isLocalFn = true) is IntrinsicReachable, not Reachable, and violates passesIntrinsicPme.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "concrete crate programs progDeadBranch, progUnreachedLib, progExtHole, and progExtCallbackHole",
+    "nonvacuity_witness_lean": "Toy.SubstStable.cex_deadBranch_pme_caught_by_mentioned_missed_by_used",
+    "positive_control_lean": "Toy.SubstStable.nonvacuity_pme_collection_mentioned",
+    "non_claims": [
+      "In progExtHole, collectAndCheck inserts the external key ⟨1, [tyU8], []⟩ into the output list T with passesLocalPme = true (and in progExtCallbackHole truncates monoEdges at fn 1), whereas rustc_monomorphize::collector (collector.rs:137-139) creates no collector node when an external non-generic item's MIR is unavailable (and rustc exports generic MIR in .rmeta for cross-crate generic functions); progExtHole and progExtCallbackHole model a per-crate verifier or summary check that treats external generic calls as uninterpreted stubs without discharging their PME obligations or traversing their callbacks.",
+      "Statements after unconditional divergence (such as return or loop {}) that lower to unreachable zero-predecessor blocks before mentioned-items gathering are not modeled by deadBranch, and the Rust Reference (r[expr.block.const.not-executed]) leaves dead-branch const evaluation unspecified.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, zerocopy, or any program verifier."
+    ],
+    "prior_art": [
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_monomorphize/src/collector.rs:130-196 and compiler/rustc_middle/src/mir/mod.rs:265-285 (documentation)",
+      "The Rust Reference, rust-lang/reference at commit c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c, src/expressions/block-expr.md:230-276 (r[expr.block.const.evaluation], r[expr.block.const.not-executed]) (normative)",
+      "google/zerocopy at commit 8fb35253fbc703cb2cd0997f4efcda76cf9062b6, zerocopy/src/macros.rs:239-278 and zerocopy/src/doctests.rs:15-17 (documentation)",
+      "Corpus package monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets",
+      "Corpus report anneal-pme-mir-semantics-and-polar-ctfe-admission (prose and PME admission semantics)"
+    ],
+    "design_question": "What is the modularity and cross-crate price of enforcing safety invariants via post-monomorphization assertions instead of definition-site trait bounds?"
+  },
+  {
+    "id": "R9-generic-capture-invariance-and-pme-gap",
+    "lean": [
+      "Toy.SubstStable.defCheckSound_accepted_true_and_substStable_of_complete",
+      "Toy.SubstStable.defCheckSound_of_boundEntails",
+      "Toy.SubstStable.genericBodySafeUnconditional_of_defCheckSound_of_boundEntails",
+      "Toy.SubstStable.cex_generic_capture_unstated_bound_unsound",
+      "Toy.SubstStable.cex_pme_guarded_fn_unsound_without_pme_assumption"
+    ],
+    "lean_names": [
+      "Toy.SubstStable.boundEntails_pos_full_to_empty",
+      "Toy.SubstStable.boundEntails_neg_empty_to_full",
+      "Toy.SubstStable.genericBodySafeUnconditional_pos_bounded",
+      "Toy.SubstStable.genericBodySafeUnconditional_neg_emptyBounds",
+      "Toy.SubstStable.genericBodySafeUnderPme_pos_sizeEq",
+      "Toy.SubstStable.genericBodySafeUnderPme_neg_unguarded",
+      "Toy.SubstStable.BoundEntails",
+      "Toy.SubstStable.GenericBodySafeUnconditional",
+      "Toy.SubstStable.GenericBodySafeUnderPme",
+      "Toy.SubstStable.fnTransmuteLike"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "(1) As an elementary corollary of DefCheckSound and R1, for every bound B, property Φ, and check C satisfying DefCheckSound B Φ C, Φ evaluates to true (and hence Φ τ1 = Φ τ2) across all B-conforming closed instances of every C-accepted open type t, and if C also satisfies DefCheckComplete B Φ C then SubstStable B Φ holds globally; (2) for every B_src, B_assumed, Φ, C, generic function fn, and openTarget, BoundEntails B_src B_assumed transfers DefCheckSound B_assumed Φ C to DefCheckSound B_src Φ C, and when BoundEntails (DeclBounds.sat fn.bounds) B_assumed and C openTarget = true hold, GenericBodySafeUnconditional fn openTarget Φ holds; (3) assuming an unstated bound (FullNoAlignBound when source declares emptyBounds) makes naiveDefPackedCheck on Packed<T0> violate both DefCheckSound and GenericBodySafeUnconditional for packedNoAlignWf at substAlign16; and (4) PME-guarded fnTransmuteLike on (.prod (.tparam 0) (.tparam 1)) satisfies GenericBodySafeUnderPme for eqProdByteSize yet violates GenericBodySafeUnconditional without a PME-admission precondition.",
+    "hypotheses": [
+      {
+        "name": "hSound : DefCheckSound B Φ C / DefCheckSound B_assumed Φ C",
+        "purpose": "the check C must be sound under the assumed bound; in the class of 1-parameter packed open types under emptyBounds, there is naiveDefPackedCheck accepting Packed<T0> while violating DefCheckSound, accepted-type invariance, and GenericBodySafeUnconditional",
+        "tightness": "tight",
+        "witness_class": "1-type-parameter packed open types under emptyBounds",
+        "counterexample": "Toy.SubstStable.cex_boundEntails_without_soundness"
+      },
+      {
+        "name": "hComp : DefCheckComplete B Φ C (in second conjunct of defCheckSound_accepted_true_and_substStable_of_complete)",
+        "purpose": "conservative sound checks need not imply global SubstStable; in the class of 2-type-parameter packed open types under DeclBounds ⟨[0], []⟩, there is boundedDefPackedCheck ⟨[0], []⟩ which is DefCheckSound and accepts Packed<T0>, yet fails DefCheckComplete while packedNoAlignWf fails SubstStable",
+        "tightness": "tight",
+        "witness_class": "2-type-parameter packed open types under DeclBounds ⟨[0], []⟩",
+        "counterexample": "Toy.SubstStable.cex_defCheckSound_without_complete_not_substStable"
+      },
+      {
+        "name": "hEntails : BoundEntails B_src B_assumed / BoundEntails (DeclBounds.sat fn.bounds) B_assumed",
+        "purpose": "call sites enforce only the source-declared bound; in the class of 1-parameter generic functions with emptyBounds vs. FullNoAlignBound, there is naiveDefPackedCheck on Packed<T0> at substAlign16 violating both DefCheckSound and GenericBodySafeUnconditional",
+        "tightness": "tight",
+        "witness_class": "1-type-parameter generic functions with emptyBounds vs. FullNoAlignBound",
+        "counterexample": "Toy.SubstStable.cex_generic_capture_unstated_bound_unsound"
+      },
+      {
+        "name": "hAccept : C openTarget = true (in genericBodySafeUnconditional_of_defCheckSound_of_boundEntails)",
+        "purpose": "C must actually accept openTarget; in the class of 2-type-parameter generic functions with bounds ⟨[0], []⟩, there is openTarget = Packed<T1> rejected by boundedDefPackedCheck ⟨[0], []⟩ that violates GenericBodySafeUnconditional",
+        "tightness": "tight",
+        "witness_class": "2-type-parameter generic functions under DeclBounds ⟨[0], []⟩",
+        "counterexample": "Toy.SubstStable.cex_genericBodySafeUnconditional_without_accept"
+      }
+    ],
+    "depth": "definitional",
+    "nonvacuity_witness": "source bound DeclBounds.sat ⟨[0, 1], []⟩ entailing assumed bound DeclBounds.sat ⟨[0], []⟩ with sound check boundedDefPackedCheck ⟨[0], []⟩ accepting Packed<T0> (and rejecting Packed<T1>), paired with (FullNoAlignBound, naiveDefPackedCheck) witnessing DefCheckSound and DefCheckComplete",
+    "nonvacuity_witness_lean": "Toy.SubstStable.nonvacuity_defCheckSound_boundEntails",
+    "non_claims": [
+      "defCheckSound_accepted_true_and_substStable_of_complete, defCheckSound_of_boundEntails, and genericBodySafeUnconditional_of_defCheckSound_of_boundEntails are elementary definitional corollaries of DefCheckSound, BoundEntails, and R1 (GenericBodySafeUnconditional fn openTarget Φ unfolds directly to AllInstSat (DeclBounds.sat fn.bounds) Φ openTarget and does not inspect fn.body).",
+      "Sound generic-IR reliance on a definition-site check (DefCheckSound B Φ C) does not require SubstStable B Φ when C is conservative rather than instance-complete (¬ DefCheckComplete B Φ C): for example, boundedDefPackedCheck ⟨[0], []⟩ is DefCheckSound under DeclBounds.sat ⟨[0], []⟩ while failing DefCheckComplete and SubstStable (cex_defCheckSound_without_complete_not_substStable; likewise under emptyBounds via boundedDefPackedCheck_sound and packedNoAlignWf_not_substStable_emptyBounds).",
+      "ClosedTy.byteSize omits inter-field and trailing alignment padding (.align 16 tyU8 has byteSize = 1, byteSize_ignores_align_and_padding), and fnTransmuteLike paired with eqProdByteSize isolates the equal-byte-size PME obligation only—omitting alignment compatibility (PmeCheck.alignLe), alignment-rounded size, bit-validity (FromBytes/IntoBytes), and immutability required for sound reference transmutation.",
+      "Does not prevent a generic-IR verifier from verifying PME-guarded generic functions conditionally under an explicit PME-admission premise (GenericBodySafeUnderPme, matching PolymorphicConditionalVerification in anneal-pme-mir-semantics-and-polar-ctfe-admission); cex_pme_guarded_fn_unsound_without_pme_assumption refutes only unconditional generic safety (GenericBodySafeUnconditional) that omits PME admission.",
+      "Does not claim any defect in Aeneas, Charon, Creusot, Verus, or any existing generic-IR verifier.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, zerocopy, or any program verifier."
+    ],
+    "prior_art": [
+      "Ho and Protzenko, 'Aeneas: Rust verification by functional translation', Proc. ACM Program. Lang. 6 (ICFP), Article 116, pp. 711-741, 2022, doi:10.1145/3547647",
+      "Denis, Jourdan, and Marché, 'Creusot: A Foundry for the Deductive Verification of Rust Programs', Proc. 23rd Int. Conf. on Formal Engineering Methods (ICFEM 2022), LNCS vol. 13478, Springer, pp. 90-105, doi:10.1007/978-3-031-17244-1_6",
+      "Lattuada, Hance, Cho, Brun, Subasinghe, Zhou, Howell, Parno, and Hawblitzel, 'Verus: Verifying Rust Programs using Linear Ghost Types', Proc. ACM Program. Lang. 7 (OOPSLA1), Article 85, pp. 286-315, 2023, doi:10.1145/3586037",
+      "Siek and Lumsdaine, 'Essential Language Support for Generic Programming', Proc. ACM SIGPLAN 2005 Conf. on Programming Language Design and Implementation (PLDI '05), pp. 73-84, doi:10.1145/1065010.1065021",
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_middle/src/mir/mod.rs:265-271 (Body::required_consts) (source)",
+      "google/zerocopy at commit 8fb35253fbc703cb2cd0997f4efcda76cf9062b6, zerocopy/src/macros.rs:239-278 and zerocopy/src/doctests.rs:15-17 (documentation)",
+      "Corpus report anneal-pme-mir-semantics-and-polar-ctfe-admission (prose and PME admission semantics)"
+    ],
+    "design_question": "Which compiler or verifier checks may a verifier capturing generic IR soundly rely on, and what happens if it assumes unstated bounds or ignores post-monomorphization assertions?"
+  },
+  {
+    "id": "R10-monomorphic-capture-post-mono-soundness",
+    "lean": [
+      "Toy.SubstStable.checkMonoTarget_iff_monoCaptureCertifiedOn",
+      "Toy.SubstStable.monoCaptureCertifiedOn_of_collectAndCheck_ok_of_packedGuard"
+    ],
+    "lean_names": [
+      "Toy.SubstStable.eqProdByteSize_iff_exists_prod",
+      "Toy.SubstStable.eqProdByteSize_pos_same",
+      "Toy.SubstStable.eqProdByteSize_neg_mismatch",
+      "Toy.SubstStable.eqProdByteSize_neg_nonprod",
+      "Toy.SubstStable.hasPackedPmeGuard_iff_list_all",
+      "Toy.SubstStable.checkMonoTarget_pos_pair",
+      "Toy.SubstStable.checkMonoTarget_neg_bad_inst",
+      "Toy.SubstStable.monoCaptureCertifiedOn_pos_pair",
+      "Toy.SubstStable.monoCaptureCertifiedOn_neg_missing_target",
+      "Toy.SubstStable.keyHasPackedGuard_pos",
+      "Toy.SubstStable.keyHasPackedGuard_neg_missing_pme",
+      "Toy.SubstStable.hasPackedPmeGuard_pos",
+      "Toy.SubstStable.hasPackedPmeGuard_neg",
+      "Toy.SubstStable.HasPackedPmeGuard",
+      "Toy.SubstStable.MonoCaptureCertifiedOn",
+      "Toy.SubstStable.checkMonoTarget",
+      "Toy.SubstStable.eqProdByteSize",
+      "Toy.SubstStable.keyHasPackedGuard",
+      "Toy.SubstStable.progMonoPacked",
+      "Toy.SubstStable.targetPacked0"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "plain_claim": "(1) As a definitional List.all equivalence for verifier-executed post-capture checking, for every associated-type environment A, closed-type property Φ (whether substitution-stable or not), target map targetOf, and captured monomorphic instance list T, checkMonoTarget A Φ targetOf T = true holds if and only if MonoCaptureCertifiedOn A Φ targetOf T holds; and (2) for every mode includeMentioned, crate program P, root list roots, fuel, output list T, and target map targetOf, when collectAndCheck includeMentioned P roots fuel = .ok T, AllLocalMir P T holds, and HasPackedPmeGuard P targetOf T holds, MonoCaptureCertifiedOn P.assoc packedNoAlignWf targetOf T holds.",
+    "hypotheses": [
+      {
+        "name": "hOk : collectAndCheck includeMentioned P roots fuel = .ok T (in monoCaptureCertifiedOn_of_collectAndCheck_ok_of_packedGuard)",
+        "purpose": "collection must succeed without pmeError; in the class of 1-function local packedWf-guarded crates, there is progMonoPacked at root ⟨0, [align16U8], []⟩ where AllLocalMir and HasPackedPmeGuard hold, collection fails with pmeError, and MonoCaptureCertifiedOn fails",
+        "tightness": "tight",
+        "witness_class": "1-function local packedWf-guarded crates instantiated at an over-aligned argument",
+        "counterexample": "Toy.SubstStable.cex_monoCapture_without_collectOk"
+      },
+      {
+        "name": "hLoc : AllLocalMir P T (in monoCaptureCertifiedOn_of_collectAndCheck_ok_of_packedGuard)",
+        "purpose": "external items with localMir = false skip local PME evaluation; in the class of 1-function external crates, there is Pext at root ⟨0, [align16U8], []⟩ where collectAndCheck returns .ok and HasPackedPmeGuard holds, yet MonoCaptureCertifiedOn fails",
+        "tightness": "tight",
+        "witness_class": "1-function external-MIR crates instantiated at an over-aligned argument",
+        "counterexample": "Toy.SubstStable.cex_monoCapture_without_allLocalMir"
+      },
+      {
+        "name": "hGuard : HasPackedPmeGuard P targetOf T (in monoCaptureCertifiedOn_of_collectAndCheck_ok_of_packedGuard)",
+        "purpose": "each captured function must declare PmeCheck.packedWf for targetOf; in the class of 1-function unguarded local crates, there is Punguarded at root ⟨0, [align16U8], []⟩ where collectAndCheck returns .ok with AllLocalMir, yet MonoCaptureCertifiedOn fails",
+        "tightness": "tight",
+        "witness_class": "1-function local crates omitting the PmeCheck.packedWf guard",
+        "counterexample": "Toy.SubstStable.cex_monoCapture_without_packedGuard"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "progMonoPacked under emptyBounds (where packedNoAlignWf is unstable) captured at [⟨0, [tyU8], []⟩, ⟨0, [tyU64], []⟩]",
+    "nonvacuity_witness_lean": "Toy.SubstStable.nonvacuity_monoCapture_packed",
+    "non_claims": [
+      "checkMonoTarget_iff_monoCaptureCertifiedOn characterizes a direct verifier-side check over T (requiring no compiler PME), whereas monoCaptureCertifiedOn_of_collectAndCheck_ok_of_packedGuard transfers compiler PME collection solely for PmeCheck.packedWf / packedNoAlignWf (not .sizeEq, .alignLe, or .idxValid); when roots = [] (an uninstantiated library crate), collectAndCheck returns .ok [] and MonoCaptureCertifiedOn holds vacuously over T = [].",
+      "MonoCaptureCertifiedOn certifies only the captured instance list T; uncaptured instantiations k ∉ T (such as ⟨0, [align16U8], []⟩ on progMonoPacked) are not certified and can violate Φ (cex_monoCapture_without_collectOk).",
+      "Does not by itself prove that T is closed under runtime calls unless paired with a closed-target collector theorem (see monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets R1 and R2).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, the Rust language, zerocopy, or any program verifier."
+    ],
+    "prior_art": [
+      "Siek and Taha, 'A Semantic Analysis of C++ Templates', ECOOP 2006, LNCS vol. 4067, Springer, pp. 304-327, doi:10.1007/11785477_19 (mechanized post-instantiation checking of unconstrained generic definitions)",
+      "VanHattum, Schwartz-Narbonne, Chong, and Sampson, 'Verifying Dynamic Trait Objects in Rust', Proc. 44th IEEE/ACM Int. Conf. on Software Engineering: Software Engineering in Practice (ICSE-SEIP '22), pp. 321-330, 2022, doi:10.1145/3510457.3513031 (per-monomorphization Rust MIR verification in Kani)",
+      "Griesemer, Hu, Kokke, Lange, Taylor, Toninho, Wadler, and Yoshida, 'Featherweight Go', Proc. ACM Program. Lang. 4 (OOPSLA), Article 149, pp. 149:1-149:29, 2020, doi:10.1145/3428217 (reachable-instance monomorphization collection background only; FGG guarantees post-monomorphization well-typedness from definition-site interface checks with zero post-monomorphization errors)",
+      "rust-lang/rust at commit 26bfbf28f5f79dff333ce5a232f131b496ec9cfe, compiler/rustc_monomorphize/src/collector.rs:130-196 (documentation)",
+      "google/zerocopy at commit 8fb35253fbc703cb2cd0997f4efcda76cf9062b6, zerocopy/src/macros.rs:239-278 and zerocopy/src/doctests.rs:15-17 (documentation)",
+      "Corpus package monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets",
+      "Corpus report anneal-pme-mir-semantics-and-polar-ctfe-admission (prose and PME admission semantics)"
+    ],
+    "design_question": "Why may a verifier capturing monomorphic IR soundly rely on post-monomorphization checks even for substitution-unstable properties, and to which instances is that guarantee scoped?"
+  }
+]
