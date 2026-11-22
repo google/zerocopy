@@ -1,0 +1,638 @@
+{
+  "observed_at_utc": "2026-11-22T09:07:54Z",
+  "part_a_multi_target_primitive_and_pair_matrix": {
+    "aarch64-apple-darwin": {
+      "C_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "C_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_F64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Float(F64), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_Ptr": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_U128": [
+        "size: Size(16 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "P_U64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "Pair_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ],
+      "Pair_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ]
+    },
+    "aarch64-unknown-linux-gnu": {
+      "C_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "C_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_F64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Float(F64), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_Ptr": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_U128": [
+        "size: Size(16 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "P_U64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "Pair_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ],
+      "Pair_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ]
+    },
+    "i686-pc-windows-msvc": {
+      "C_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "C_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_F64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Float(F64), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_Ptr": [
+        "size: Size(4 bytes)",
+        "align: Align(4 bytes)",
+        "backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=4294967295 })"
+      ],
+      "P_U128": [
+        "size: Size(16 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "P_U64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "Pair_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ],
+      "Pair_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ]
+    },
+    "i686-unknown-linux-gnu": {
+      "C_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "C_U8_U64": [
+        "size: Size(12 bytes)",
+        "align: Align(4 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_F64": [
+        "size: Size(8 bytes)",
+        "align: Align(4 bytes)",
+        "backend_repr: Scalar(Initialized { value: Float(F64), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_Ptr": [
+        "size: Size(4 bytes)",
+        "align: Align(4 bytes)",
+        "backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=4294967295 })"
+      ],
+      "P_U128": [
+        "size: Size(16 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "P_U64": [
+        "size: Size(8 bytes)",
+        "align: Align(4 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "Pair_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ],
+      "Pair_U8_U64": [
+        "size: Size(12 bytes)",
+        "align: Align(4 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ]
+    },
+    "riscv64gc-unknown-none-elf": {
+      "C_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "C_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_F64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Float(F64), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_Ptr": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_U128": [
+        "size: Size(16 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "P_U64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "Pair_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ],
+      "Pair_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ]
+    },
+    "s390x-unknown-linux-gnu": {
+      "C_U8_U128": [
+        "size: Size(24 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "C_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_F64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Float(F64), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_Ptr": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_U128": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "P_U64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "Pair_U8_U128": [
+        "size: Size(24 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ],
+      "Pair_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ]
+    },
+    "thumbv7m-none-eabi": {
+      "C_U8_U128": [
+        "size: Size(24 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "C_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_F64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Float(F64), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_Ptr": [
+        "size: Size(4 bytes)",
+        "align: Align(4 bytes)",
+        "backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=4294967295 })"
+      ],
+      "P_U128": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "P_U64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "Pair_U8_U128": [
+        "size: Size(24 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ],
+      "Pair_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ]
+    },
+    "wasm32-unknown-unknown": {
+      "C_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "C_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_F64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Float(F64), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_Ptr": [
+        "size: Size(4 bytes)",
+        "align: Align(4 bytes)",
+        "backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=4294967295 })"
+      ],
+      "P_U128": [
+        "size: Size(16 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "P_U64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "Pair_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ],
+      "Pair_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ]
+    },
+    "x86_64-unknown-linux-gnu": {
+      "C_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "C_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I8, false), valid_range: 0..=255 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_F64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Float(F64), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_Ptr": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Pointer(AddressSpace(0)), valid_range: 0..=18446744073709551615 })"
+      ],
+      "P_U128": [
+        "size: Size(16 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 })"
+      ],
+      "P_U64": [
+        "size: Size(8 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+      ],
+      "Pair_U8_U128": [
+        "size: Size(32 bytes)",
+        "align: Align(16 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I128, false), valid_range: 0..=340282366920938463463374607431768211455 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ],
+      "Pair_U8_U64": [
+        "size: Size(16 bytes)",
+        "align: Align(8 bytes)",
+        "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+      ]
+    }
+  },
+  "part_b_simd_packed_pow2_vs_nonpow2": {
+    "SimdF32x3": [
+      "size: Size(16 bytes)",
+      "align: Align(16 bytes)",
+      "backend_repr: SimdVector { element: Initialized { value: Float(F32), valid_range: 0..=4294967295 }, count: 3 }"
+    ],
+    "SimdF32x4": [
+      "size: Size(16 bytes)",
+      "align: Align(16 bytes)",
+      "backend_repr: SimdVector { element: Initialized { value: Float(F32), valid_range: 0..=4294967295 }, count: 4 }"
+    ],
+    "SimdF32x6": [
+      "size: Size(32 bytes)",
+      "align: Align(32 bytes)",
+      "backend_repr: SimdVector { element: Initialized { value: Float(F32), valid_range: 0..=4294967295 }, count: 6 }"
+    ],
+    "SimdPackedF32x3": [
+      "size: Size(12 bytes)",
+      "align: Align(4 bytes)",
+      "backend_repr: Memory { sized: true }"
+    ],
+    "SimdPackedF32x4": [
+      "size: Size(16 bytes)",
+      "align: Align(16 bytes)",
+      "backend_repr: SimdVector { element: Initialized { value: Float(F32), valid_range: 0..=4294967295 }, count: 4 }"
+    ],
+    "SimdPackedF32x6": [
+      "size: Size(24 bytes)",
+      "align: Align(8 bytes)",
+      "backend_repr: Memory { sized: true }"
+    ],
+    "SimdPackedU8x3": [
+      "size: Size(3 bytes)",
+      "align: Align(1 bytes)",
+      "backend_repr: Memory { sized: true }"
+    ]
+  },
+  "part_c_maybe_unsized_tail_pinning_and_niche_bias": {
+    "rc": 0,
+    "runtime_offsets": "FIXED_ARR_BOOL_OFF=(1,0) MAYBEDST_ARR_BOOL_OFF=(0,4) FIXED_EDGE_OFF=(0,4,5) MAYBEDST_EDGE_OFF=(0,4,5) ENUM_FIXED_SZ=8 ENUM_MAYBEDST_SZ=12 FIXED_PURE_OFF=(0,5,4,5) MAYBEDST_PURE_OFF=(0,4,5,6) ENUM_FIXED_PURE_SZ=8 ENUM_MAYBEDST_PURE_SZ=12 NO_BOOL_OFF=(16,0) WITH_BOOL_OFF=(0,1) END_BIAS_OFF=(3,0)",
+    "stderr": ""
+  },
+  "part_d_uninhabited_non_1zst_variant_reservation": {
+    "Dead1Zst": [
+      "size: Size(1 bytes)",
+      "align: Align(1 bytes)",
+      "backend_repr: Scalar(Initialized { value: Int(I8, false), valid_range: 0..=255 })"
+    ],
+    "DeadAlign16Zst": [
+      "size: Size(16 bytes)",
+      "align: Align(16 bytes)",
+      "backend_repr: Memory { sized: true }"
+    ],
+    "DeadPayload64": [
+      "size: Size(65 bytes)",
+      "align: Align(1 bytes)",
+      "backend_repr: Memory { sized: true }"
+    ],
+    "ReprCDead1Zst": [
+      "size: Size(8 bytes)",
+      "align: Align(4 bytes)",
+      "backend_repr: ScalarPair(Initialized { value: Int(I32, false), valid_range: 0..=1 }, Union { value: Int(I8, false) })"
+    ]
+  },
+  "part_e_repr_c_scalar_vs_scalarpair_and_union_opt": {
+    "CommonScalarUnionMixedSign": [
+      "size: Size(8 bytes)",
+      "align: Align(8 bytes)",
+      "backend_repr: Memory { sized: true }"
+    ],
+    "CommonScalarUnionSamePrim": [
+      "size: Size(8 bytes)",
+      "align: Align(8 bytes)",
+      "backend_repr: Scalar(Union { value: Int(I64, false) })"
+    ],
+    "PackedScalarUnion": [
+      "size: Size(8 bytes)",
+      "align: Align(1 bytes)",
+      "backend_repr: Memory { sized: true }"
+    ],
+    "ReprCTwoScalars": [
+      "size: Size(16 bytes)",
+      "align: Align(8 bytes)",
+      "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+    ],
+    "ReprCUnion": [
+      "size: Size(8 bytes)",
+      "align: Align(8 bytes)",
+      "backend_repr: Memory { sized: true }"
+    ],
+    "ReprCWrapScalar": [
+      "size: Size(8 bytes)",
+      "align: Align(8 bytes)",
+      "backend_repr: Memory { sized: true }",
+      "homogeneous_aggregate: Ok(Homogeneous(Reg { kind: Integer, size: Size(8 bytes) }))"
+    ],
+    "ReprCWrapTuplePair": [
+      "size: Size(16 bytes)",
+      "align: Align(8 bytes)",
+      "backend_repr: ScalarPair(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 }, Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+    ],
+    "RustWrapScalar": [
+      "size: Size(8 bytes)",
+      "align: Align(8 bytes)",
+      "backend_repr: Scalar(Initialized { value: Int(I64, false), valid_range: 0..=18446744073709551615 })"
+    ]
+  },
+  "part_f_packed_align_bypass_and_x86_win32_ice": {
+    "alias_wrapper_bypass__i686-pc-windows-msvc": {
+      "panic_or_err": "thread 'rustc' (<TID>) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_target/src/callconv/x86_win32.rs:69:13: | abi alignment Align(1 bytes) less than requested alignment Align(8 bytes)",
+      "rc": 101
+    },
+    "alias_wrapper_bypass__x86_64-unknown-linux-gnu": {
+      "panic_or_err": "",
+      "rc": 0
+    },
+    "align_outer_containing_packed_inner_ok": {
+      "error_codes": [],
+      "first_error": "",
+      "rc": 0
+    },
+    "array_wrapper_bypass__i686-pc-windows-msvc": {
+      "panic_or_err": "",
+      "rc": 0
+    },
+    "array_wrapper_bypass__x86_64-unknown-linux-gnu": {
+      "panic_or_err": "",
+      "rc": 0
+    },
+    "bypass_layout_fields_x86_64": {
+      "AliasPacked": {
+        "abi_align": "Align(1 bytes)",
+        "max_repr_align": "Some(Align(8 bytes))",
+        "size": "Size(8 bytes)"
+      },
+      "ArrayPacked": {
+        "abi_align": "Align(1 bytes)",
+        "max_repr_align": "None",
+        "size": "Size(8 bytes)"
+      },
+      "GenericPacked<Inner>": {
+        "abi_align": "Align(1 bytes)",
+        "max_repr_align": "Some(Align(8 bytes))",
+        "size": "Size(8 bytes)"
+      },
+      "ReprCArrayOuter": {
+        "abi_align": "Align(8 bytes)",
+        "max_repr_align": "None",
+        "size": "Size(8 bytes)"
+      },
+      "ReprCDirectOuter": {
+        "abi_align": "Align(8 bytes)",
+        "max_repr_align": "Some(Align(8 bytes))",
+        "size": "Size(8 bytes)"
+      },
+      "TuplePacked": {
+        "abi_align": "Align(1 bytes)",
+        "max_repr_align": "Some(Align(8 bytes))",
+        "size": "Size(8 bytes)"
+      }
+    },
+    "concrete_packed_containing_align_allow_lint": {
+      "error_codes": [
+        "E0588"
+      ],
+      "first_error": "error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type",
+      "rc": 1
+    },
+    "concrete_packed_containing_align_default": {
+      "error_codes": [
+        "E0588"
+      ],
+      "first_error": "error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type",
+      "rc": 1
+    },
+    "conflicting_packed_1_and_2_e0634": {
+      "error_codes": [
+        "E0634"
+      ],
+      "first_error": "error[E0634]: type has conflicting packed representation hints",
+      "rc": 1
+    },
+    "generic_param_bypass__i686-pc-windows-msvc": {
+      "panic_or_err": "thread 'rustc' (<TID>) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_target/src/callconv/x86_win32.rs:69:13: | abi alignment Align(1 bytes) less than requested alignment Align(8 bytes)",
+      "rc": 101
+    },
+    "generic_param_bypass__x86_64-unknown-linux-gnu": {
+      "panic_or_err": "",
+      "rc": 0
+    },
+    "i686_msvc_array_max_repr_align_drop_llvm_ir": {
+      "rc": 0,
+      "signatures": {
+        "take_array": "define void @_RNvCs8inY50FQ4rE_14part_f_arr_abi10take_array(ptr byval([8 x i8]) align 4 %0) unnamed_addr #0 {",
+        "take_direct": "define void @_RNvCs8inY50FQ4rE_14part_f_arr_abi11take_direct(ptr align 8 %_x) unnamed_addr #0 {"
+      }
+    },
+    "packed_enum_rejected": {
+      "error_codes": [
+        "E0517"
+      ],
+      "first_error": "error[E0517]: attribute should be applied to a struct or union",
+      "rc": 1
+    },
+    "same_struct_packed_and_align_e0587": {
+      "error_codes": [
+        "E0587"
+      ],
+      "first_error": "error[E0587]: type has conflicting packed and align representation hints",
+      "rc": 1
+    },
+    "transparent_all_zst_with_align16_ok": {
+      "error_codes": [],
+      "first_error": "",
+      "rc": 0
+    },
+    "transparent_with_align16_zst_e0690": {
+      "error_codes": [
+        "E0690"
+      ],
+      "first_error": "error[E0690]: transparent struct needs at most one field with non-trivial size or alignment, but has 2",
+      "rc": 1
+    },
+    "tuple_wrapper_bypass__i686-pc-windows-msvc": {
+      "panic_or_err": "thread 'rustc' (<TID>) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_target/src/callconv/x86_win32.rs:69:13: | abi alignment Align(1 bytes) less than requested alignment Align(8 bytes)",
+      "rc": 101
+    },
+    "tuple_wrapper_bypass__x86_64-unknown-linux-gnu": {
+      "panic_or_err": "",
+      "rc": 0
+    }
+  },
+  "part_g_randomize_layout_seed_and_zst_invariance": {
+    "default_no_randomize": {
+      "rc": 0,
+      "stdout": "RUST=(0,8,16,24,32) REPRC=(0,8,16,24,32) ALLZST_SZ=0 SINGLE_ZST_ENUM_SZ=0 ZERO_VAR_ENUM_SZ=0"
+    },
+    "seed_1_run1": {
+      "rc": 0,
+      "stdout": "RUST=(24,32,8,16,0) REPRC=(0,8,16,24,32) ALLZST_SZ=0 SINGLE_ZST_ENUM_SZ=0 ZERO_VAR_ENUM_SZ=0"
+    },
+    "seed_1_run2": {
+      "rc": 0,
+      "stdout": "RUST=(24,32,8,16,0) REPRC=(0,8,16,24,32) ALLZST_SZ=0 SINGLE_ZST_ENUM_SZ=0 ZERO_VAR_ENUM_SZ=0"
+    },
+    "seed_2": {
+      "rc": 0,
+      "stdout": "RUST=(16,8,0,32,24) REPRC=(0,8,16,24,32) ALLZST_SZ=0 SINGLE_ZST_ENUM_SZ=0 ZERO_VAR_ENUM_SZ=0"
+    },
+    "seed_999": {
+      "rc": 0,
+      "stdout": "RUST=(32,8,0,16,24) REPRC=(0,8,16,24,32) ALLZST_SZ=0 SINGLE_ZST_ENUM_SZ=0 ZERO_VAR_ENUM_SZ=0"
+    }
+  },
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+}
