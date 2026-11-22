@@ -13,20 +13,40 @@ set -eo pipefail
 ZEROCOPY_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 REPO_DIR="$(dirname "$ZEROCOPY_DIR")"
 
-# Inside the prebuilt CI container image, reuse `/usr/local/bin/cargo-zerocopy`
-# (built from `tools/` during `build_docker_env`) so each matrix container does
-# not re-fetch crates.io dependencies and recompile `cargo-zerocopy` on
-# startup.
-if [[ -n "${CARGO_ZEROCOPY_PREBUILT:-}" && -x "$CARGO_ZEROCOPY_PREBUILT" ]]; then
+# Inside prebuilt CI or sandbox environments, reuse a prebuilt `cargo-zerocopy`
+# binary (such as `/usr/local/bin/cargo-zerocopy` built during
+# `build_docker_env`) so each invocation does not re-fetch crates.io
+# dependencies and recompile `cargo-zerocopy`. Explicit `CARGO_ZEROCOPY_BIN`
+# fails closed when non-executable; legacy `CARGO_ZEROCOPY_PREBUILT` falls back
+# to a source build when absent.
+if [[ -n "${CARGO_ZEROCOPY_BIN:-}" ]]; then
+  PREBUILT_BIN="$CARGO_ZEROCOPY_BIN"
+  if [[ "$PREBUILT_BIN" != /* ]]; then
+    PREBUILT_BIN="$PWD/$PREBUILT_BIN"
+  fi
+  if [[ ! -f "$PREBUILT_BIN" || ! -x "$PREBUILT_BIN" ]]; then
+    echo "[cargo-zerocopy] error: CARGO_ZEROCOPY_BIN is not an executable file: $PREBUILT_BIN" >&2
+    exit 1
+  fi
   cd "$ZEROCOPY_DIR"
-  exec "$CARGO_ZEROCOPY_PREBUILT" "$@"
+  exec "$PREBUILT_BIN" "$@"
+elif [[ -n "${CARGO_ZEROCOPY_PREBUILT:-}" ]]; then
+  PREBUILT_BIN="$CARGO_ZEROCOPY_PREBUILT"
+  if [[ "$PREBUILT_BIN" != /* ]]; then
+    PREBUILT_BIN="$PWD/$PREBUILT_BIN"
+  fi
+  if [[ -f "$PREBUILT_BIN" && -x "$PREBUILT_BIN" ]]; then
+    cd "$ZEROCOPY_DIR"
+    exec "$PREBUILT_BIN" "$@"
+  fi
 fi
 
 # Build `cargo-zerocopy` without any RUSTFLAGS or CARGO_TARGET_DIR set in the
 # environment. Build it from the repository root so that Zerocopy's vendoring
-# config does not apply to the unvendored tools workspace. Prefer `stable`
-# when installed, and fall back to `pinned-stable` from `Cargo.toml` so slim
-# CI images do not have to ship both an unpinned and a pinned stable toolchain.
+# config does not apply to the unvendored `tools/cargo-zerocopy` crate. Prefer
+# `stable` when installed, and fall back to `pinned-stable` from `Cargo.toml`
+# so slim CI images do not have to ship both an unpinned and a pinned stable
+# toolchain.
 BUILD_TOOLCHAIN="stable"
 if command -v rustup >/dev/null 2>&1; then
   INSTALLED_TOOLCHAINS="$(rustup toolchain list)"
@@ -40,8 +60,8 @@ if command -v rustup >/dev/null 2>&1; then
 fi
 (
   cd "$REPO_DIR"
-  env -u RUSTFLAGS -u CARGO_TARGET_DIR cargo "+$BUILD_TOOLCHAIN" build --manifest-path tools/cargo-zerocopy/Cargo.toml -p cargo-zerocopy -q
+  env -u CARGO_ENCODED_RUSTFLAGS -u RUSTFLAGS -u CARGO_TARGET_DIR cargo "+$BUILD_TOOLCHAIN" build --locked --manifest-path tools/cargo-zerocopy/Cargo.toml -q
 )
 
 cd "$ZEROCOPY_DIR"
-exec "$REPO_DIR/tools/target/debug/cargo-zerocopy" "$@"
+exec "$REPO_DIR/tools/cargo-zerocopy/target/debug/cargo-zerocopy" "$@"

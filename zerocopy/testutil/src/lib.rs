@@ -10,13 +10,88 @@
 #![deny(unexpected_cfgs)]
 
 use std::{
-    env, fs,
+    env,
+    ffi::OsStr,
+    fs,
     path::{Path, PathBuf},
     process::Command,
 };
 
 const UI_TEST_FEATURE_ARG_COUNT_ENV: &str = "ZEROCOPY_UI_TEST_FEATURE_ARG_COUNT";
 const UI_TEST_FEATURE_ARG_ENV_PREFIX: &str = "ZEROCOPY_UI_TEST_FEATURE_ARG_";
+const UI_RUNNER_BIN_ENV: &str = "ZEROCOPY_UI_RUNNER_BIN";
+
+fn resolve_prebuilt_ui_runner_bin(value: Option<&OsStr>) -> Result<Option<PathBuf>, String> {
+    let path = match value {
+        Some(value) if !value.is_empty() => PathBuf::from(value),
+        _ => return Ok(None),
+    };
+    let metadata = fs::metadata(&path)
+        .map_err(|err| format!("{} ({}) is invalid: {}", UI_RUNNER_BIN_ENV, path.display(), err))?;
+    if !metadata.is_file() {
+        return Err(format!("{} ({}) is not a file", UI_RUNNER_BIN_ENV, path.display()));
+    }
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::PermissionsExt;
+
+        if (metadata.permissions().mode() & 0o111) == 0 {
+            return Err(format!("{} ({}) is not executable", UI_RUNNER_BIN_ENV, path.display()));
+        }
+    }
+    if path.is_relative() && path.parent() == Some(Path::new("")) {
+        if let Ok(cwd) = env::current_dir() {
+            return Ok(Some(cwd.join(&path)));
+        }
+    }
+    Ok(Some(path))
+}
+
+fn build_ui_runner(workspace_root: &Path, repo_root: &Path) -> PathBuf {
+    let ui_runner_toolchain = select_ui_runner_toolchain(workspace_root);
+    let mut build_command = Command::new("rustup");
+
+    // Prevent `RUSTFLAGS` (e.g. `-Zrandomize-layout` from Nightly CI) from
+    // bleeding into our stable `ui-runner` build and crashing it.
+    build_command.env_remove("CARGO_ENCODED_RUSTFLAGS");
+    build_command.env_remove("RUSTFLAGS");
+    build_command.env_remove("CARGO_ENCODED_RUSTDOCFLAGS");
+    build_command.env_remove("RUSTDOCFLAGS");
+
+    build_command.current_dir(repo_root);
+    build_command.args([
+        "run",
+        &ui_runner_toolchain,
+        "cargo",
+        "build",
+        "--locked",
+        "--manifest-path=tools/ui-runner/Cargo.toml",
+        "--message-format=json",
+    ]);
+
+    // Isolate build to avoid invalidating the libzerocopy cargo cache
+    build_command.env("CARGO_TARGET_DIR", repo_root.join("target/ui-runner"));
+
+    let output = build_command.output().unwrap();
+    if !output.status.success() {
+        println!("{}", String::from_utf8_lossy(&output.stderr));
+        panic!("Failed to build ui-runner");
+    }
+
+    let mut ui_runner_path = None;
+    let stdout = String::from_utf8(output.stdout).unwrap();
+    for msg in cargo_metadata::Message::parse_stream(stdout.as_bytes()) {
+        if let Ok(cargo_metadata::Message::CompilerArtifact(artifact)) = msg {
+            if artifact.target.name == "ui-runner" {
+                if let Some(path) = artifact.executable {
+                    ui_runner_path = Some(path);
+                }
+            }
+        }
+    }
+
+    ui_runner_path.expect("failed to find ui-runner binary").into_std_path_buf()
+}
 
 fn decode_feature_selection_args(
     count: Option<&str>,
@@ -395,49 +470,12 @@ impl UiTestRunner {
             "UI artifact build did not enable its required derive feature"
         );
 
-        let ui_runner_toolchain = select_ui_runner_toolchain(&workspace_root);
-        let mut build_command = Command::new("rustup");
-
-        // Prevent `RUSTFLAGS` (e.g. `-Zrandomize-layout` from Nightly CI) from
-        // bleeding into our stable `ui-runner` build and crashing it.
-        build_command.env_remove("CARGO_ENCODED_RUSTFLAGS");
-        build_command.env_remove("RUSTFLAGS");
-        build_command.env_remove("CARGO_ENCODED_RUSTDOCFLAGS");
-        build_command.env_remove("RUSTDOCFLAGS");
-
-        build_command.current_dir(repo_root);
-        build_command.args([
-            "run",
-            &ui_runner_toolchain,
-            "cargo",
-            "build",
-            "--locked",
-            "--manifest-path=tools/ui-runner/Cargo.toml",
-            "--message-format=json",
-        ]);
-
-        // Isolate build to avoid invalidating the libzerocopy cargo cache
-        build_command.env("CARGO_TARGET_DIR", repo_root.join("target/ui-runner"));
-
-        let output = build_command.output().unwrap();
-        if !output.status.success() {
-            println!("{}", String::from_utf8_lossy(&output.stderr));
-            panic!("Failed to build ui-runner");
-        }
-
-        let mut ui_runner_path = None;
-        let stdout = String::from_utf8(output.stdout).unwrap();
-        for msg in cargo_metadata::Message::parse_stream(stdout.as_bytes()) {
-            if let Ok(cargo_metadata::Message::CompilerArtifact(artifact)) = msg {
-                if artifact.target.name == "ui-runner" {
-                    if let Some(path) = artifact.executable {
-                        ui_runner_path = Some(path);
-                    }
-                }
-            }
-        }
-
-        let ui_runner_path = ui_runner_path.expect("failed to find ui-runner binary");
+        let prebuilt_ui_runner = env::var_os(UI_RUNNER_BIN_ENV);
+        let ui_runner_path = match resolve_prebuilt_ui_runner_bin(prebuilt_ui_runner.as_deref()) {
+            Ok(Some(path)) => path,
+            Ok(None) => build_ui_runner(&workspace_root, repo_root),
+            Err(err) => panic!("{}", err),
+        };
 
         let mut command = Command::new(ui_runner_path);
 
@@ -494,7 +532,20 @@ impl UiTestRunner {
 
 #[cfg(test)]
 mod tests {
-    use super::{decode_feature_selection_args, resolve_ui_runner_toolchain};
+    use std::{env, ffi::OsStr, fs, path::PathBuf};
+
+    use super::{
+        decode_feature_selection_args, resolve_prebuilt_ui_runner_bin, resolve_ui_runner_toolchain,
+        UI_RUNNER_BIN_ENV,
+    };
+
+    struct TempDir(PathBuf);
+
+    impl Drop for TempDir {
+        fn drop(&mut self) {
+            let _ = fs::remove_dir_all(&self.0);
+        }
+    }
 
     #[test]
     fn decodes_indexed_feature_arguments() {
@@ -555,5 +606,46 @@ pinned-nightly = \"nightly-2026-09-30\"
             resolve_ui_runner_toolchain("1.100.0-x86_64-unknown-linux-gnu\n", "[package]\n"),
             "stable"
         );
+    }
+
+    #[test]
+    fn resolves_prebuilt_ui_runner_bin() {
+        assert_eq!(resolve_prebuilt_ui_runner_bin(None), Ok(None));
+        assert_eq!(resolve_prebuilt_ui_runner_bin(Some(OsStr::new(""))), Ok(None));
+
+        let temp_dir = TempDir(env::temp_dir().join(format!(
+            "zerocopy-testutil-ui-runner-{}-{}",
+            std::process::id(),
+            env::var("CARGO_PKG_NAME").unwrap_or_default()
+        )));
+        let _ = fs::remove_dir_all(&temp_dir.0);
+        fs::create_dir_all(&temp_dir.0).unwrap();
+
+        let missing = temp_dir.0.join("missing");
+        let missing_err = resolve_prebuilt_ui_runner_bin(Some(missing.as_os_str())).unwrap_err();
+        assert!(missing_err.contains(UI_RUNNER_BIN_ENV), "unexpected error: {}", missing_err);
+
+        let dir_err = resolve_prebuilt_ui_runner_bin(Some(temp_dir.0.as_os_str())).unwrap_err();
+        assert!(dir_err.contains("not a file"), "unexpected error: {}", dir_err);
+
+        let runner = temp_dir.0.join("ui-runner");
+        fs::write(&runner, b"#!/bin/sh\n").unwrap();
+
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt;
+
+            let mut perms = fs::metadata(&runner).unwrap().permissions();
+            perms.set_mode(0o644);
+            fs::set_permissions(&runner, perms.clone()).unwrap();
+            let non_exec_err =
+                resolve_prebuilt_ui_runner_bin(Some(runner.as_os_str())).unwrap_err();
+            assert!(non_exec_err.contains("not executable"), "unexpected error: {}", non_exec_err);
+
+            perms.set_mode(0o755);
+            fs::set_permissions(&runner, perms).unwrap();
+        }
+
+        assert_eq!(resolve_prebuilt_ui_runner_bin(Some(runner.as_os_str())), Ok(Some(runner)));
     }
 }

@@ -19,5 +19,5 @@ cd "$(dirname "$0")/.."
   cargo install -q cargo-readme --version 3.2.0
 )
 
-diff <(cd .. && cargo -q run --manifest-path tools/Cargo.toml -p generate-readme) README.md >&2
+diff <(cd .. && cargo -q run --locked --manifest-path tools/generate-readme/Cargo.toml) README.md >&2
 exit $?

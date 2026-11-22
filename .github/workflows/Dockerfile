@@ -65,7 +65,7 @@ ENV CARGO_ZEROCOPY_AUTO_INSTALL_TOOLCHAIN=1 \
 # Pre-install pinned `stable`, `nightly`, and `msrv` toolchains, install the
 # prebuilt `cargo-zerocopy` wrapper, and warm the host/native `x86_64` Miri
 # sysroot (`RUSTFLAGS` matching `ci.yml`) via bind mounts so neither
-# `/tmp/setup` nor `tools/target` enters any image layer.
+# `/tmp/setup` nor `tools/cargo-zerocopy/target` enters any image layer.
 RUN --mount=type=bind,source=zerocopy/Cargo.toml,target=/mnt/setup/zerocopy/Cargo.toml \
     --mount=type=bind,source=zerocopy/cargo.sh,target=/mnt/setup/zerocopy/cargo.sh     \
     --mount=type=bind,source=tools,target=/mnt/setup/tools                             \
@@ -79,8 +79,8 @@ RUN --mount=type=bind,source=zerocopy/Cargo.toml,target=/mnt/setup/zerocopy/Carg
     rustup default "$PINNED_STABLE" && \
     ( cd /tmp/setup && \
       env -u RUSTFLAGS -u CARGO_TARGET_DIR cargo "+$PINNED_STABLE" build \
-        --locked --release --manifest-path tools/Cargo.toml -p cargo-zerocopy ) && \
-    install -Dm755 /tmp/setup/tools/target/release/cargo-zerocopy /usr/local/bin/cargo-zerocopy && \
+        --locked --release --manifest-path tools/cargo-zerocopy/Cargo.toml ) && \
+    install -Dm755 /tmp/setup/tools/cargo-zerocopy/target/release/cargo-zerocopy /usr/local/bin/cargo-zerocopy && \
     ( cd /tmp/setup/zerocopy && \
       ./cargo.sh +stable --version  && \
       ./cargo.sh +nightly --version && \

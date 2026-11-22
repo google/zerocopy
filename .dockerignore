@@ -10,6 +10,6 @@
 /target/
 /zerocopy/target/
 /anneal/target/
-/tools/target/
+/tools/*/target/
 /exocrate/target/
 **/.git/
