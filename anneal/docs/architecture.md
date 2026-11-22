@@ -505,6 +505,7 @@ anneal/
     ├── Anneal/
     │   ├── BitVec.lean             # Constructive 3-axiom BitVec & tnum lemmas
     │   ├── BitVecArith.lean        # Constructive BitVec range & arithmetic
+    │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)
     │   ├── LeBytes.lean            # Parametric LE/BE byte serialization lemmas
     │   ├── LinearArith.lean        # Sparse Farkas & Chvatal-Gomory checker
     │   ├── ListChunks.lean         # Ceiling division & fixed-size chunking
