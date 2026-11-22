@@ -9,11 +9,29 @@
 # those terms.
 
 set -euo pipefail
+
+if [ "$#" -gt 1 ]; then
+  echo "Usage: $0 [manifest_path]" >&2
+  exit 1
+fi
+
+if [ "$#" -eq 1 ]; then
+  manifest_path="$1"
+  if [ -z "$manifest_path" ]; then
+    echo "Error: manifest path must not be empty" >&2
+    exit 1
+  fi
+  if [[ "$manifest_path" != /* ]]; then
+    manifest_path="$PWD/$manifest_path"
+  fi
+fi
+
 cd "$(dirname "$0")/.."
+manifest_path="${manifest_path:-trusted/cargo-anneal/Cargo.toml}"
 
 # FIXME(#4012): We must address all blockers listed in #4012 before permitting
 # stable releases.
-python3 - <<'EOF'
+python3 - "$manifest_path" <<'EOF'
 import re
 import sys
 
@@ -22,7 +40,7 @@ try:
 except ImportError:
     import tomli as tomllib
 
-manifest_path = "trusted/cargo-anneal/Cargo.toml"
+manifest_path = sys.argv[1]
 try:
     with open(manifest_path, "rb") as f:
         data = tomllib.load(f)
@@ -30,28 +48,42 @@ except Exception as e:
     print(f"Error reading {manifest_path}: {e}", file=sys.stderr)
     sys.exit(1)
 
-package = data.get("package", {})
+package = data.get("package")
+if not isinstance(package, dict):
+    print(
+        f"Error: {manifest_path} does not define a [package] table",
+        file=sys.stderr,
+    )
+    sys.exit(1)
+
 version = package.get("version")
-if not version:
+if not isinstance(version, str) or not version:
     print(
         f"Error: {manifest_path} does not specify package.version",
         file=sys.stderr,
     )
     sys.exit(1)
 
-# Ensure the version number is a non-stable pre-release version (e.g.,
-# 0.1.0-alpha.1). Under SemVer 2.0.0, pre-release versions append a hyphen and a
-# series of dot-separated identifiers to the patch version. Normal / stable
-# versions (such as 0.1.0 or 1.0.0) lack a pre-release tag and are forbidden
-# until all blockers in #4012 are resolved.
+# Enforce the SemVer 2.0.0 pre-release grammar with an optional build-metadata
+# suffix, requiring a non-empty `-<pre-release>` component so stable versions
+# (such as 0.1.0, 1.0.0, or 0.2.0+build.1) stay blocked until all blockers in
+# #4012 are resolved.
 #
 # FIXME(#4012): We must address all blockers listed in #4012 before permitting
 # stable releases.
-prerelease_pattern = r"^[0-9]+\.[0-9]+\.[0-9]+-[0-9A-Za-z.-]+$"
-if not re.match(prerelease_pattern, version):
+numeric_ident = r"(?:0|[1-9][0-9]*)"
+prerelease_ident = rf"(?:{numeric_ident}|[0-9]*[A-Za-z-][0-9A-Za-z-]*)"
+build_ident = r"[0-9A-Za-z-]+"
+prerelease_pattern = re.compile(
+    rf"{numeric_ident}\.{numeric_ident}\.{numeric_ident}"
+    rf"-{prerelease_ident}(?:\.{prerelease_ident})*"
+    rf"(?:\+{build_ident}(?:\.{build_ident})*)?",
+    re.ASCII,
+)
+if not prerelease_pattern.fullmatch(version):
     print(
         f"Error: package.version '{version}' in {manifest_path} is not a "
-        "pre-release version.\n"
+        "valid SemVer 2.0.0 pre-release version.\n"
         "Stable releases are blocked until all issues in #4012 are resolved.\n"
         "See: https://github.com/google/zerocopy/issues/4012",
         file=sys.stderr,
