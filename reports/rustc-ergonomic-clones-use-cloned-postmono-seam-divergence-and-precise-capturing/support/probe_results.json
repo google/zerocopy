@@ -1,0 +1,226 @@
+{
+  "timestamp_utc": "2026-11-22T11:42:11Z",
+  "host_arch": "Linux x86_64",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "part_a_ergonomic_clones_native_vs_miri_divergence": {
+    "native_opt0_mir0": {
+      "flags": [
+        "-C",
+        "opt-level=0",
+        "-Z",
+        "mir-opt-level=0"
+      ],
+      "compile_rc": 0,
+      "compile_stderr": "warning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_a_opt0_mir0.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "GENERIC=(7,7) CALLS_G=0 GENERIC_CLOSURE=(7,7) CALLS_GC=0 CONCRETE=(7,7) CALLS_C=0 CONCRETE_CLOSURE=(7,7) CALLS_CC=0 RC_OUT=43 RC_CNT=3 MOVED_LEN=5",
+      "stderr": ""
+    },
+    "native_opt0": {
+      "flags": [
+        "-C",
+        "opt-level=0"
+      ],
+      "compile_rc": 0,
+      "compile_stderr": "warning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_a_opt0.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "GENERIC=(7,7) CALLS_G=0 GENERIC_CLOSURE=(7,7) CALLS_GC=0 CONCRETE=(7,7) CALLS_C=0 CONCRETE_CLOSURE=(7,7) CALLS_CC=0 RC_OUT=43 RC_CNT=3 MOVED_LEN=5",
+      "stderr": ""
+    },
+    "native_opt3": {
+      "flags": [
+        "-O"
+      ],
+      "compile_rc": 0,
+      "compile_stderr": "warning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_a_opt3.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "GENERIC=(7,7) CALLS_G=0 GENERIC_CLOSURE=(7,7) CALLS_GC=0 CONCRETE=(7,7) CALLS_C=0 CONCRETE_CLOSURE=(7,7) CALLS_CC=0 RC_OUT=43 RC_CNT=3 MOVED_LEN=5",
+      "stderr": ""
+    },
+    "miri_stacked_borrows": {
+      "rc": 0,
+      "stdout": "GENERIC=(107,7) CALLS_G=1 GENERIC_CLOSURE=(107,7) CALLS_GC=1 CONCRETE=(7,7) CALLS_C=0 CONCRETE_CLOSURE=(7,7) CALLS_CC=0 RC_OUT=43 RC_CNT=3 MOVED_LEN=5",
+      "stderr": "Compiling part_a_sb v0.1.0 (<TMP>/miri_part_a_sb)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in <DURATION>\n     Running `<TOOLCHAIN_SYSROOT>/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/part_a_sb`\nwarning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> src/main.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default"
+    },
+    "miri_tree_borrows": {
+      "rc": 0,
+      "stdout": "GENERIC=(107,7) CALLS_G=1 GENERIC_CLOSURE=(107,7) CALLS_GC=1 CONCRETE=(7,7) CALLS_C=0 CONCRETE_CLOSURE=(7,7) CALLS_CC=0 RC_OUT=43 RC_CNT=3 MOVED_LEN=5",
+      "stderr": "Compiling part_a_tb v0.1.0 (<TMP>/miri_part_a_tb)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in <DURATION>\n     Running `<TOOLCHAIN_SYSROOT>/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/part_a_tb`\nwarning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> src/main.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default"
+    },
+    "mir_snippets_opt0_mir0": {
+      "generic_dup": "fn generic_dup(_1: T) -> (T, T) {\n    debug x => _1;\n    let mut _0: (T, T);\n    let mut _2: T;\n    let mut _3: &T;\n    let mut _4: T;\n\n    bb0: {\n        StorageLive(_2);\n        _3 = &_1;\n        _2 = <T as Clone>::clone(move _3) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        StorageLive(_4);\n        _4 = move _1;\n        _0 = (move _2, move _4);\n        StorageDead(_4);\n        StorageDead(_2);\n        return;\n    }\n}",
+      "generic_closure_dup": "fn generic_closure_dup(_1: T) -> (T, T) {\n    debug x => _1;\n    let mut _0: (T, T);\n    let _2: {closure@<TMP>/part_a_ir.rs:29:13: 29:19};\n    let mut _3: T;\n    let mut _4: &T;\n    let mut _5: T;\n    let mut _6: {closure@<TMP>/part_a_ir.rs:29:13: 29:19};\n    let mut _7: ();\n    let mut _8: T;\n    scope 1 {\n        debug f => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _4 = &_1;\n        _3 = <T as Clone>::clone(move _4) -> [return: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _2 = {closure@<TMP>/part_a_ir.rs:29:13: 29:19} { x: move _3 };\n        StorageDead(_3);\n        StorageLive(_5);\n        StorageLive(_6);\n        _6 = move _2;\n        StorageLive(_7);\n        _7 = ();\n        _5 = <{closure@<TMP>/part_a_ir.rs:29:13: 29:19} as FnOnce<()>>::call_once(move _6, move _7) -> [return: bb2, unwind: bb3];\n    }\n\n    bb2: {\n        StorageDead(_7);\n        StorageDead(_6);\n        StorageLive(_8);\n        _8 = move _1;\n        _0 = (move _5, move _8);\n        StorageDead(_8);\n        StorageDead(_5);\n        StorageDead(_2);\n        return;\n    }\n\n    bb3 (cleanup): {\n        drop(_1) -> [return: bb4, unwind terminate(cleanup)];\n    }\n\n    bb4 (cleanup): {\n        resume;\n    }\n}",
+      "concrete_dup": "fn concrete_dup(_1: SneakyCopy) -> (SneakyCopy, SneakyCopy) {\n    debug x => _1;\n    let mut _0: (SneakyCopy, SneakyCopy);\n    let mut _2: SneakyCopy;\n    let mut _3: SneakyCopy;\n\n    bb0: {\n        StorageLive(_2);\n        _2 = copy _1;\n        StorageLive(_3);\n        _3 = copy _1;\n        _0 = (move _2, move _3);\n        StorageDead(_3);\n        StorageDead(_2);\n        return;\n    }\n}",
+      "concrete_closure_dup": "fn concrete_closure_dup(_1: SneakyCopy) -> (SneakyCopy, SneakyCopy) {\n    debug x => _1;\n    let mut _0: (SneakyCopy, SneakyCopy);\n    let _2: {closure@<TMP>/part_a_ir.rs:40:13: 40:19};\n    let mut _3: SneakyCopy;\n    let mut _4: SneakyCopy;\n    let mut _5: &{closure@<TMP>/part_a_ir.rs:40:13: 40:19};\n    let mut _6: ();\n    let mut _7: SneakyCopy;\n    scope 1 {\n        debug f => _2;\n    }\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = copy _1;\n        _2 = {closure@<TMP>/part_a_ir.rs:40:13: 40:19} { x: move _3 };\n        StorageDead(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = &_2;\n        StorageLive(_6);\n        _6 = ();\n        _4 = <{closure@<TMP>/part_a_ir.rs:40:13: 40:19} as Fn<()>>::call(move _5, move _6) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_7);\n        _7 = copy _1;\n        _0 = (move _4, move _7);\n        StorageDead(_7);\n        StorageDead(_4);\n        StorageDead(_2);\n        return;\n    }\n}"
+    },
+    "llvm_ir_opt0_mir0_generic_dup": "define internal { i32, i32 } @_RINvCsfOhYePzhLma_9part_a_ir11generic_dupNtB2_10SneakyCopyEB2_(i32 %0) unnamed_addr #0 {\nstart:\n  %x = alloca [4 x i8], align 4\n  store i32 %0, ptr %x, align 4\n  %_2 = load i32, ptr %x, align 4\n  %_4 = load i32, ptr %x, align 4\n  %1 = insertvalue { i32, i32 } poison, i32 %_2, 0\n  %2 = insertvalue { i32, i32 } %1, i32 %_4, 1\n  ret { i32, i32 } %2\n}",
+    "llvm_ir_opt0_mir0_generic_closure_dup": "define internal { i32, i32 } @_RINvCsfOhYePzhLma_9part_a_ir19generic_closure_dupNtB2_10SneakyCopyEB2_(i32 %0) unnamed_addr #0 personality ptr @rust_eh_personality {\nstart:\n  %1 = alloca [16 x i8], align 8\n  %x = alloca [4 x i8], align 4\n  store i32 %0, ptr %x, align 4\n  %_3 = load i32, ptr %x, align 4\n; invoke part_a_ir::generic_closure_dup::<part_a_ir::SneakyCopy>::{closure#0}\n  %_5 = invoke i32 @_RNCINvCsfOhYePzhLma_9part_a_ir19generic_closure_dupNtB4_10SneakyCopyE0B4_(i32 %_3)\n          to label %bb2 unwind label %cleanup\n\nbb3:                                              ; preds = %cleanup\n  %2 = load ptr, ptr %1, align 8\n  %3 = getelementptr inbounds i8, ptr %1, i64 8\n  %4 = load i32, ptr %3, align 8\n  %5 = insertvalue { ptr, i32 } poison, ptr %2, 0\n  %6 = insertvalue { ptr, i32 } %5, i32 %4, 1\n  resume { ptr, i32 } %6\n\ncleanup:                                          ; preds = %start\n  %7 = landingpad { ptr, i32 }\n          cleanup\n  %8 = extractvalue { ptr, i32 } %7, 0\n  %9 = extractvalue { ptr, i32 } %7, 1\n  store ptr %8, ptr %1, align 8\n  %10 = getelementptr inbounds i8, ptr %1, i64 8\n  store i32 %9, ptr %10, align 8\n  br label %bb3\n\nbb2:                                              ; preds = %start\n  %_8 = load i32, ptr %x, align 4\n  %11 = insertvalue { i32, i32 } poison, i32 %_5, 0\n  %12 = insertvalue { i32, i32 } %11, i32 %_8, 1\n  ret { i32, i32 } %12\n}",
+    "llvm_ir_generic_dup_calls_clone": false,
+    "llvm_ir_generic_closure_dup_calls_clone": false
+  },
+  "part_b_call_source_use_unwind_unreachable_hazard": {
+    "panic_copy_native_opt0": {
+      "flags": [
+        "-C",
+        "opt-level=0",
+        "-Z",
+        "mir-opt-level=0"
+      ],
+      "compile_rc": 0,
+      "compile_stderr": "warning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_b_panic_copy_opt0.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "OK=(7,7)",
+      "stderr": ""
+    },
+    "panic_copy_native_opt3": {
+      "flags": [
+        "-O"
+      ],
+      "compile_rc": 0,
+      "compile_stderr": "warning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_b_panic_copy_opt3.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "OK=(7,7)",
+      "stderr": ""
+    },
+    "panic_copy_miri_sb": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "Compiling part_b_panic_copy_sb v0.1.0 (<TMP>/miri_part_b_panic_copy_sb)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in <DURATION>\n     Running `<TOOLCHAIN_SYSROOT>/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/part_b_panic_copy_sb`\nwarning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> src/main.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n\nthread 'main' (<PID>) panicked at src/main.rs:11:9:\nPanicCopy::clone invoked\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nnote: in Miri, you may have to set `MIRIFLAGS=-Zmiri-env-forward=RUST_BACKTRACE` for the environment variable to have an effect\nerror: Undefined Behavior: unwinding past a stack frame that does not allow unwinding\n  --> src/main.rs:19:6\n   |\n19 |     (x.use, x)\n   |      ^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: generic_dup::<PanicCopy>\n               at src/main.rs:19:6: 19:11\n           1: main::{closure#0}\n               at src/main.rs:23:43: 23:68\n           2: std::panicking::catch_unwind::do_call::<{closure@src/main.rs:23:40: 23:42}, (PanicCopy, PanicCopy)>\n               at <TOOLCHAIN_SYSROOT>/lib/rustlib/src/rust/library/std/src/panicking.rs:575:43: 575:46\n           3: std::panicking::catch_unwind::<(PanicCopy, PanicCopy), {closure@src/main.rs:23:40: 23:42}>\n               at <TOOLCHAIN_SYSROOT>/lib/rustlib/src/rust/library/std/src/panicking.rs:543:19: 543:77\n           4: std::panic::catch_unwind::<{closure@src/main.rs:23:40: 23:42}, (PanicCopy, PanicCopy)>\n               at <TOOLCHAIN_SYSROOT>/lib/rustlib/src/rust/library/std/src/panic.rs:359:14: 359:40\n           5: main\n               at src/main.rs:23:15: 23:69\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "panic_copy_miri_tb": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "Compiling part_b_panic_copy_tb v0.1.0 (<TMP>/miri_part_b_panic_copy_tb)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in <DURATION>\n     Running `<TOOLCHAIN_SYSROOT>/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/part_b_panic_copy_tb`\nwarning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> src/main.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n\nthread 'main' (<PID>) panicked at src/main.rs:11:9:\nPanicCopy::clone invoked\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nnote: in Miri, you may have to set `MIRIFLAGS=-Zmiri-env-forward=RUST_BACKTRACE` for the environment variable to have an effect\nerror: Undefined Behavior: unwinding past a stack frame that does not allow unwinding\n  --> src/main.rs:19:6\n   |\n19 |     (x.use, x)\n   |      ^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: generic_dup::<PanicCopy>\n               at src/main.rs:19:6: 19:11\n           1: main::{closure#0}\n               at src/main.rs:23:43: 23:68\n           2: std::panicking::catch_unwind::do_call::<{closure@src/main.rs:23:40: 23:42}, (PanicCopy, PanicCopy)>\n               at <TOOLCHAIN_SYSROOT>/lib/rustlib/src/rust/library/std/src/panicking.rs:575:43: 575:46\n           3: std::panicking::catch_unwind::<(PanicCopy, PanicCopy), {closure@src/main.rs:23:40: 23:42}>\n               at <TOOLCHAIN_SYSROOT>/lib/rustlib/src/rust/library/std/src/panicking.rs:543:19: 543:77\n           4: std::panic::catch_unwind::<{closure@src/main.rs:23:40: 23:42}, (PanicCopy, PanicCopy)>\n               at <TOOLCHAIN_SYSROOT>/lib/rustlib/src/rust/library/std/src/panic.rs:359:14: 359:40\n           5: main\n               at src/main.rs:23:15: 23:69\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "panic_noncopy_native_opt0": {
+      "flags": [
+        "-C",
+        "opt-level=0",
+        "-Z",
+        "mir-opt-level=0"
+      ],
+      "compile_rc": 0,
+      "compile_stderr": "warning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_b_panic_noncopy_opt0.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "CAUGHT_PANIC",
+      "stderr": "thread 'main' (<PID>) panicked at <TMP>/part_b_panic_noncopy_opt0.rs:11:9:\nPanicNonCopy::clone invoked\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+    },
+    "panic_noncopy_native_opt3": {
+      "flags": [
+        "-O"
+      ],
+      "compile_rc": 0,
+      "compile_stderr": "warning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_b_panic_noncopy_opt3.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "stdout": "CAUGHT_PANIC",
+      "stderr": "thread 'main' (<PID>) panicked at <TMP>/part_b_panic_noncopy_opt3.rs:11:9:\nPanicNonCopy::clone invoked\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+    },
+    "panic_noncopy_miri_sb": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "Compiling part_b_panic_noncopy_sb v0.1.0 (<TMP>/miri_part_b_panic_noncopy_sb)\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in <DURATION>\n     Running `<TOOLCHAIN_SYSROOT>/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/part_b_panic_noncopy_sb`\nwarning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> src/main.rs:2:12\n  |\n2 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n\nthread 'main' (<PID>) panicked at src/main.rs:11:9:\nPanicNonCopy::clone invoked\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nnote: in Miri, you may have to set `MIRIFLAGS=-Zmiri-env-forward=RUST_BACKTRACE` for the environment variable to have an effect\nerror: Undefined Behavior: unwinding past a stack frame that does not allow unwinding\n  --> src/main.rs:19:6\n   |\n19 |     (x.use, x)\n   |      ^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: generic_dup::<PanicNonCopy>\n               at src/main.rs:19:6: 19:11\n           1: main::{closure#0}\n               at src/main.rs:23:43: 23:71\n           2: std::panicking::catch_unwind::do_call::<{closure@src/main.rs:23:40: 23:42}, (PanicNonCopy, PanicNonCopy)>\n               at <TOOLCHAIN_SYSROOT>/lib/rustlib/src/rust/library/std/src/panicking.rs:575:43: 575:46\n           3: std::panicking::catch_unwind::<(PanicNonCopy, PanicNonCopy), {closure@src/main.rs:23:40: 23:42}>\n               at <TOOLCHAIN_SYSROOT>/lib/rustlib/src/rust/library/std/src/panicking.rs:543:19: 543:77\n           4: std::panic::catch_unwind::<{closure@src/main.rs:23:40: 23:42}, (PanicNonCopy, PanicNonCopy)>\n               at <TOOLCHAIN_SYSROOT>/lib/rustlib/src/rust/library/std/src/panic.rs:359:14: 359:40\n           5: main\n               at src/main.rs:23:15: 23:72\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "panic_noncopy_llvm_ir_generic_dup": "define internal { i32, i32 } @_RINvCsiMafjF6MIG9_17part_b_noncopy_ir11generic_dupNtB2_12PanicNonCopyEB2_(i32 %0) unnamed_addr #0 {\nstart:\n  %x = alloca [4 x i8], align 4\n  store i32 %0, ptr %x, align 4\n; call <part_b_noncopy_ir::PanicNonCopy as core::clone::Clone>::clone\n  %_2 = call i32 @_RNvXCsiMafjF6MIG9_17part_b_noncopy_irNtB2_12PanicNonCopyNtNtCs8b4M6GsfcPr_4core5clone5Clone5clone(ptr align 4 %x)\n  %_4 = load i32, ptr %x, align 4\n  %1 = insertvalue { i32, i32 } poison, i32 %_2, 0\n  %2 = insertvalue { i32, i32 } %1, i32 %_4, 1\n  ret { i32, i32 } %2\n}"
+  },
+  "part_c_precise_capturing_and_ergonomic_clone_gates": {
+    "edition2021_rpit_omits_unmentioned_lifetime_by_default": {
+      "edition": "2021",
+      "expected_rc": 0,
+      "rc": 0,
+      "matched_expectation": true,
+      "stderr": ""
+    },
+    "edition2024_rpit_captures_lifetime_by_default_e0597": {
+      "edition": "2024",
+      "expected_rc": 1,
+      "rc": 1,
+      "matched_expectation": true,
+      "stderr": "error[E0597]: `local` does not live long enough\n --> <TMP>/edition2024_rpit_captures_lifetime_by_default_e0597.rs:7:18\n  |\n6 |     let local = 1u32;\n  |         ----- binding `local` declared here\n7 |     rpit_default(&local)\n  |     -------------^^^^^^-\n  |     |            |\n  |     |            borrowed value does not live long enough\n  |     argument requires that `local` is borrowed for `'static`\n8 | }\n  | - `local` dropped here while still borrowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0597`."
+    },
+    "edition2024_rpit_overcapture_note_in_local_block_e0597": {
+      "edition": "2024",
+      "expected_rc": 1,
+      "rc": 1,
+      "matched_expectation": true,
+      "stderr": "error[E0597]: `local` does not live long enough\n --> <TMP>/edition2024_rpit_overcapture_note_in_local_block_e0597.rs:8:22\n  |\n6 |     let held = {\n  |         ---- borrow later stored here\n7 |         let local = 1u32;\n  |             ----- binding `local` declared here\n8 |         rpit_default(&local)\n  |                      ^^^^^^ borrowed value does not live long enough\n9 |     };\n  |     - `local` dropped here while still borrowed\n  |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n --> <TMP>/edition2024_rpit_overcapture_note_in_local_block_e0597.rs:8:9\n  |\n8 |         rpit_default(&local)\n  |         ^^^^^^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n  |\n1 | fn rpit_default<'a>(_: &'a u32) -> impl Sized + use<> {\n  |                                               +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0597`."
+    },
+    "edition2024_rpit_use_empty_opts_out_of_lifetime_capture": {
+      "edition": "2024",
+      "expected_rc": 0,
+      "rc": 0,
+      "matched_expectation": true,
+      "stderr": ""
+    },
+    "non_use_cloned_string_moved_by_dot_use_e0382": {
+      "edition": "2024",
+      "expected_rc": 1,
+      "rc": 1,
+      "matched_expectation": true,
+      "stderr": "warning: the feature `ergonomic_clones` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/non_use_cloned_string_moved_by_dot_use_e0382.rs:1:12\n  |\n1 | #![feature(ergonomic_clones)]\n  |            ^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132290 <https://github.com/rust-lang/rust/issues/132290> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0382]: use of moved value: `s`\n --> <TMP>/non_use_cloned_string_moved_by_dot_use_e0382.rs:4:13\n  |\n3 | pub fn moved_twice(s: String) -> (String, String) {\n  |                    - move occurs because `s` has type `String`, which does not implement the `Copy` trait\n4 |     (s.use, s)\n  |      -----  ^ value used here after move\n  |      |\n  |      value moved here\n  |\nhelp: consider cloning the value if the performance cost is acceptable\n  |\n4 |     (s.use.clone(), s)\n  |           ++++++++\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0382`."
+    },
+    "rpit_use_omitting_in_scope_type_param_rejected": {
+      "edition": "2024",
+      "expected_rc": 1,
+      "rc": 1,
+      "matched_expectation": true,
+      "stderr": "error: `impl Trait` must mention all type parameters in scope in `use<...>`\n --> <TMP>/rpit_use_omitting_in_scope_type_param_rejected.rs:1:48\n  |\n1 | pub fn bad_omit_ty<'a, T>(_: &'a u32, _: T) -> impl Sized + use<'a> {\n  |                        -                       ^^^^^^^^^^^^^^^^^^^^\n  |                        |\n  |                        type parameter is implicitly captured by this `impl Trait`\n  |\n  = note: currently, all type parameters are required to be mentioned in the precise captures list\n\nerror: aborting due to 1 previous error"
+    },
+    "rpit_use_omitting_in_scope_const_param_rejected": {
+      "edition": "2024",
+      "expected_rc": 1,
+      "rc": 1,
+      "matched_expectation": true,
+      "stderr": "error: `impl Trait` must mention all const parameters in scope in `use<...>`\n --> <TMP>/rpit_use_omitting_in_scope_const_param_rejected.rs:1:58\n  |\n1 | ...st<'a, const N: usize>(_: &'a u32) -> impl Sized + use<'a> {\n  |           --------------                 ^^^^^^^^^^^^^^^^^^^^\n  |           |\n  |           const parameter is implicitly captured by this `impl Trait`\n  |\n  = note: currently, all const parameters are required to be mentioned in the precise captures list\n\nerror: aborting due to 1 previous error"
+    },
+    "rpit_use_retaining_all_ty_params_and_omitting_lifetime_accepted": {
+      "edition": "2024",
+      "expected_rc": 0,
+      "rc": 0,
+      "matched_expectation": true,
+      "stderr": ""
+    },
+    "rpit_use_captures_lifetime_invariantly_rejected": {
+      "edition": "2024",
+      "expected_rc": 1,
+      "rc": 1,
+      "matched_expectation": true,
+      "stderr": "error: lifetime may not live long enough\n --> <TMP>/rpit_use_captures_lifetime_invariantly_rejected.rs:9:20\n  |\n8 | pub fn check_opaque_invariant<'a>(cond: bool) {\n  |                               -- lifetime `'a` defined here\n9 |     let mut slot = mk::<'static>();\n  |                    ^^^^^^^^^^^^^^^ assignment requires that `'a` must outlive `'static`\n\nerror: aborting due to 1 previous error"
+    },
+    "rpit_use_omitted_lifetime_is_bivariant_accepted": {
+      "edition": "2024",
+      "expected_rc": 0,
+      "rc": 0,
+      "matched_expectation": true,
+      "stderr": ""
+    },
+    "rpit_use_lifetimes_must_be_first_rejected": {
+      "edition": "2024",
+      "expected_rc": 1,
+      "rc": 1,
+      "matched_expectation": true,
+      "stderr": "error: lifetime parameter `'a` must be listed before non-lifetime parameters\n --> <TMP>/rpit_use_lifetimes_must_be_first_rejected.rs:1:66\n  |\n1 | pub fn bad_order<'a, T>(_: &'a u32, _: T) -> impl Sized + use<T, 'a> {\n  |                                                               -  ^^\n  |                                                               |\n  |                                                               move the lifetime before this parameter\n\nerror: aborting due to 1 previous error"
+    },
+    "rpit_use_duplicate_param_rejected": {
+      "edition": "2024",
+      "expected_rc": 1,
+      "rc": 1,
+      "matched_expectation": true,
+      "stderr": "error: cannot capture parameter `'a` twice\n --> <TMP>/rpit_use_duplicate_param_rejected.rs:1:52\n  |\n1 | pub fn bad_dup<'a>(_: &'a u32) -> impl Sized + use<'a, 'a> {\n  |                                                    ^^  -- parameter captured again here\n\nerror: aborting due to 1 previous error"
+    },
+    "rpit_use_omitting_bound_mentioned_lifetime_rejected": {
+      "edition": "2024",
+      "expected_rc": 1,
+      "rc": 1,
+      "matched_expectation": true,
+      "stderr": "error: `impl Trait` captures lifetime parameter, but it is not mentioned in `use<...>` precise captures list\n --> <TMP>/rpit_use_omitting_bound_mentioned_lifetime_rejected.rs:1:50\n  |\n1 | pub fn bad_bound<'a>(x: &'a u32) -> impl Sized + 'a + use<> {\n  |                  --                 -------------^^--------\n  |                  |                  |\n  |                  |                  lifetime captured due to being mentioned in the bounds of the `impl Trait`\n  |                  this lifetime parameter is captured\n\nerror: aborting due to 1 previous error"
+    },
+    "tait_non_generic_param_rejected_e0792": {
+      "edition": "2024",
+      "expected_rc": 1,
+      "rc": 1,
+      "matched_expectation": true,
+      "stderr": "error[E0792]: expected generic type parameter, found `u32`\n --> <TMP>/tait_non_generic_param_rejected_e0792.rs:6:29\n  |\n3 | type Opaque<T> = impl Sized;\n  |             - this generic parameter must be used with a generic type parameter\n...\n6 | pub fn bad_non_generic() -> Opaque<u32> {\n  |                             ^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0792`."
+    }
+  }
+}

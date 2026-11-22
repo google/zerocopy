@@ -1,0 +1,51 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (executed nightly rustc and Miri toolchain)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "release": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+        "miri": "miri 0.1.0 (14210df0e2 2026-05-31)",
+        "llvm": "22.1.6"
+      }
+    },
+    {
+      "name": "rust-lang/rust (upstream main source audit snapshot)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1",
+        "commit_date": "2026-11-22"
+      }
+    },
+    {
+      "name": "joshlf/anneal (Runtime(PostCleanup) MIR trusted boundary)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "leanprover/lean4 (kernel-checked proof toolchain)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
