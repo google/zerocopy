@@ -396,8 +396,13 @@ fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rval
 
 /// Storage markers survive capture. Their documented effect is that
 /// "Using a local ... while it is unallocated is UB."
-/// `Nop` alone has no effect.
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L364-L385
+/// `PlaceMention` survives capture because `-Zmir-preserve-ub` disables
+/// `RemovePlaceMention`; mentions of places with projections (such as `**pp`
+/// or field projections) fail closed explicitly because evaluating a projected
+/// place can perform loads and trigger UB, while bare unprojected locals are
+/// recorded as [`ir::Statement::PlaceMention`] and validated as `Sized` in
+/// [`ir::Body::try_new`]. `Nop` alone has no effect.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L364-L393
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L442-L443
 fn statement<'tcx>(tcx: TyCtxt<'tcx>, stmt: &mir::StatementKind<'tcx>) -> Result<ir::Statement> {
     Ok(match stmt {
@@ -411,9 +416,43 @@ fn statement<'tcx>(tcx: TyCtxt<'tcx>, stmt: &mir::StatementKind<'tcx>) -> Result
         mir::StatementKind::StorageDead(local) => ir::Statement::StorageDead {
             local: local.as_u32(),
         },
+        mir::StatementKind::PlaceMention(place) => {
+            if !place.projection.is_empty() {
+                return Err(format!(
+                    "PlaceMention with projections is unsupported: {place:?}"
+                ));
+            }
+            ir::Statement::PlaceMention {
+                local: place.local.as_u32(),
+            }
+        }
         mir::StatementKind::Nop => ir::Statement::Nop,
         other => return Err(format!("unsupported statement: {other:?}")),
     })
+}
+
+/// Fail closed on `TerminatorKind::Call` with `CallSource::Use` before any
+/// future `Call` lowering can run.
+///
+/// Under `#![feature(ergonomic_clones)]`, `rustc_codegen_ssa` runs
+/// `optimize_use_clone` after `Runtime(PostCleanup)` capture and rewrites
+/// `CallSource::Use` calls on `&T` (`T: Copy`) to bitwise copies even when
+/// `<T as Clone>::clone` is non-trivial, diverging from captured MIR and Miri.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L217-L224
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_codegen_ssa/src/mir/mod.rs#L350-L407
+fn check_call_source(call_source: mir::CallSource) -> Result<()> {
+    match call_source {
+        mir::CallSource::Use => Err(
+            "CallSource::Use call terminators are unsupported: post-capture \
+             optimize_use_clone may rewrite Clone::clone to a bitwise copy \
+             for Copy types, diverging from captured MIR"
+                .into(),
+        ),
+        mir::CallSource::Normal
+        | mir::CallSource::OverloadedOperator
+        | mir::CallSource::MatchCmp
+        | mir::CallSource::Misc => Ok(()),
+    }
 }
 
 /// `SwitchInt` evaluates its operand and selects an explicit or otherwise edge.
@@ -421,6 +460,8 @@ fn statement<'tcx>(tcx: TyCtxt<'tcx>, stmt: &mir::StatementKind<'tcx>) -> Result
 /// Calls, drop, unwind, assembly and all other terminators are refused. They
 /// need interprocedural, memory, or unwinding rules absent from this syntax;
 /// an apparently unreachable occurrence is not permission to erase it.
+/// `TerminatorKind::Call` explicitly runs [`check_call_source`] first so
+/// `CallSource::Use` fails closed even once general call support is added.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L692-L740
 fn terminator<'tcx>(tcx: TyCtxt<'tcx>, term: &mir::TerminatorKind<'tcx>) -> Result<ir::Terminator> {
     Ok(match term {
@@ -437,6 +478,10 @@ fn terminator<'tcx>(tcx: TyCtxt<'tcx>, term: &mir::TerminatorKind<'tcx>) -> Resu
         },
         mir::TerminatorKind::Return => ir::Terminator::Ret,
         mir::TerminatorKind::Unreachable => ir::Terminator::Unreachable,
+        mir::TerminatorKind::Call { call_source, .. } => {
+            check_call_source(*call_source)?;
+            return Err(format!("unsupported terminator: {term:?}"));
+        }
         other => return Err(format!("unsupported terminator: {other:?}")),
     })
 }
@@ -715,6 +760,25 @@ pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) ->
             "intrinsic `{}` is unsupported: calls need not execute its fallback body",
             intrinsic.name
         ));
+    }
+    // Defense in depth: `-Zmir-preserve-ub` disables `RemovePlaceMention` and
+    // trivial `SwitchInt` read erasure before `Runtime(PostCleanup)`.
+    if !tcx.sess.opts.unstable_opts.mir_preserve_ub {
+        return Err(
+            "capture requires -Zmir-preserve-ub so PlaceMention and SwitchInt \
+             UB checks survive Runtime(PostCleanup)"
+                .into(),
+        );
+    }
+    // Refuse crates enabling `#![feature(ergonomic_clones)]`: post-capture
+    // `optimize_use_clone` in `rustc_codegen_ssa` rewrites `CallSource::Use`
+    // calls on `&T` (`T: Copy`) to bitwise copies after `Runtime(PostCleanup)`.
+    if tcx.features().ergonomic_clones() {
+        return Err(
+            "#![feature(ergonomic_clones)] is unsupported during capture: \
+             post-capture optimize_use_clone can diverge from captured MIR"
+                .into(),
+        );
     }
     // The phase determines the meaning and allowed grammar of MIR. The
     // compiler's phase field records progress through "desugaring and
@@ -1229,6 +1293,22 @@ mod tests {
         ] {
             let err = bin_op(refused_bin).unwrap_err();
             assert!(err.contains("unsupported binary operator"), "{err}");
+        }
+    }
+
+    #[test]
+    fn call_source_use_fails_closed_while_other_call_sources_pass_guard() {
+        let err = check_call_source(mir::CallSource::Use).unwrap_err();
+        assert!(err.contains("CallSource::Use"), "{err}");
+        assert!(err.contains("optimize_use_clone"), "{err}");
+
+        for other in [
+            mir::CallSource::Normal,
+            mir::CallSource::OverloadedOperator,
+            mir::CallSource::MatchCmp,
+            mir::CallSource::Misc,
+        ] {
+            assert!(check_call_source(other).is_ok(), "{other:?}");
         }
     }
 }
