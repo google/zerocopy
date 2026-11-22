@@ -1,0 +1,54 @@
+{
+  "part_a_gca_const_items_definitional_normalization": {
+    "compile_rc": 0,
+    "compile_stderr": "",
+    "miri_rc": 0,
+    "miri_stdout": "EXACT_LEN=4 FIRST=7 GLOBAL_LEN=5",
+    "native_rc": 0,
+    "native_stdout": "EXACT_LEN=4 FIRST=7 GLOBAL_LEN=5"
+  },
+  "part_b_mgca_e0557_removal_and_plain_const_compat": {
+    "bare_assoc_const_without_gca_macro_rejected_with_help": {
+      "rc": 1,
+      "stderr": "error: generic parameters may not be used in const operations\n --> <TMP>/bare_assoc_const_without_gca_macro_rejected_with_help.rs:4:27\n  |\n4 | pub fn f<T: Tr>() -> [u8; T::N] { [0; T::N] }\n  |                           ^\n  |\n  = help: add `#![feature(gca_const_items)]` and wrap the expression in the `gca!` macro\n\nerror: generic parameters may not be used in const operations\n --> <TMP>/bare_assoc_const_without_gca_macro_rejected_with_help.rs:4:39\n  |\n4 | pub fn f<T: Tr>() -> [u8; T::N] { [0; T::N] }\n  |                                       ^\n  |\n  = help: add `#![feature(gca_const_items)]` and wrap the expression in the "
+    },
+    "gca_preserves_plain_const_in_array_ty_ok": {
+      "rc": 0,
+      "stderr": ""
+    },
+    "removed_min_generic_const_args_e0557": {
+      "rc": 1,
+      "stderr": "error[E0557]: feature has been removed\n --> <TMP>/removed_min_generic_const_args_e0557.rs:1:12\n  |\n1 | #![feature(min_generic_const_args)]\n  |            ^^^^^^^^^^^^^^^^^^^^^^ feature has been removed\n  |\n  = note: removed in 1.100.0\n  = note: renamed to `gca_min_const_items`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0557`.\n"
+    }
+  },
+  "part_c_gce_next_solver_downgrade_noncomm_and_post_mono_vs_gca": {
+    "gca_generic_arith_inside_gca_macro_rejected_at_def": {
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error: complex const arguments must be placed inside of a `const` block\n --> <TMP>/gca_generic_arith_inside_gca_macro_rejected_at_def.rs:5:20\n  |\n5 |     [0; core::gca!(T::N + 1)]\n  |                    ^^^^^^^^\n\nerror: complex const arguments must be placed inside of a `const` block\n --> <TMP>/gca_generic_arith_inside_gca_macro_rejected_at_def.rs:4:49\n  |\n4 | pub fn forbid_arith<T: Tr>() -> [u8; core::gca!(T::N + 1)] {\n  |                                                 ^^^^^^^^\n\nerror: aborting due to 2 previous errors\n\n"
+    },
+    "gce_n_minus_1_called_at_0_fails_post_instantiation_e0080": {
+      "rc": 1,
+      "reverted_next_solver": true,
+      "stderr": "warning: `feature(generic_const_exprs)` is not supported with the next-generation trait solver\n --> <TMP>/gce_n_minus_1_called_at_0_fails_post_instantiation_e0080.rs:1:12\n  |\n1 | #![feature(generic_const_exprs)]\n  |            ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: `-Znext-solver=globally` is currently enabled by default for testing\n  = note: reverted the setting to `-Znext-solver=coherence` for this crate\n  = note: the currently stable trait solver will be used for this crate\n  = note: see issues #160895 <https://github.com/rust-lang/rust/issues/160895> for more information\n\nerror[E0080]: attempt to compute `0_usize - 1_usize`, which would overflow\n  --> <TMP>/gce_n_minus_1_called_at_0_fails_post_instantiation_e0080.rs:10:"
+    },
+    "gce_n_minus_1_uncalled_def_compiles_rc0": {
+      "rc": 0,
+      "reverted_next_solver": true,
+      "stderr": "warning: `feature(generic_const_exprs)` is not supported with the next-generation trait solver\n --> <TMP>/gce_n_minus_1_uncalled_def_compiles_rc0.rs:1:12\n  |\n1 | #![feature(generic_const_exprs)]\n  |            ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: `-Znext-solver=globally` is currently enabled by default for testing\n  = note: reverted the setting to `-Znext-solver=coherence` for this crate\n  = note: the currently stable trait solver will be used for this crate\n  = note: see issues #160895 <https://github.com/rust-lang/rust/issues/160895> for more information\n\nwarning: 1 warning emitted\n\n"
+    },
+    "gce_reverts_default_next_solver_and_fails_commutativity_e0308": {
+      "rc": 1,
+      "reverted_next_solver": true,
+      "stderr": "warning: `feature(generic_const_exprs)` is not supported with the next-generation trait solver\n --> <TMP>/gce_reverts_default_next_solver_and_fails_commutativity_e0308.rs:1:12\n  |\n1 | #![feature(generic_const_exprs)]\n  |            ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: `-Znext-solver=globally` is currently enabled by default for testing\n  = note: reverted the setting to `-Znext-solver=coherence` for this crate\n  = note: the currently stable trait solver will be used for this crate\n  = note: see issues #160895 <https://github.com/rust-lang/rust/issues/160895> for more information\n\nerror[E0308]: mismatched types\n --> <TMP>/gce_reverts_default_next_solver_and_fails_commutativity_e0308.rs:8:5\n  |\n8 |     a\n  |     ^ expected `"
+    }
+  },
+  "part_d_cyclic_const_e0391": {
+    "rc": 1,
+    "stderr": "error[E0391]: cycle detected when checking if `A` is a trivial const\n --> <TMP>/part_d.rs:3:1\n  |\n3 | pub const A: usize = B;\n  | ^^^^^^^^^^^^^^^^^^\n  |\n  = note: ...which requires building MIR for `A`...\nnote: ...which requires checking if `B` is a trivial const...\n --> <TMP>/part_d.rs:4:1\n  |\n4 | pub const B: usize = A;\n  | ^^^^^^^^^^^^^^^^^^\n  = note: ...which requires building MIR for `B`...\n  = note: ...which again requires checking if `A` is a trivial const, completing the cycle\n  = note: cycle used when simplifying constant for the type system `A`\n  = note: for more information, see <https://rustc-dev-guide.rust-lang.org/overview.html#queries> and <https://rustc-"
+  },
+  "rust_repo_head_inspected": "49d734536222bf28bb6d07d885b3a81d145981da",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "study": "E3-51",
+  "timestamp_utc": "2026-11-21T21:17:39Z"
+}

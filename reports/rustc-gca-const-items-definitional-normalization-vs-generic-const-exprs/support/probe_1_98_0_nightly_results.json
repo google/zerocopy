@@ -1,0 +1,272 @@
+{
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "part_a_gca_const_items_definitional_normalization": {
+    "compile": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "-Znext-solver=globally",
+        "<TMP>/part_a_bin.rs",
+        "-o",
+        "<TMP>/part_a_bin.out"
+      ],
+      "rc": 0,
+      "reverted_next_solver": false,
+      "stderr": "",
+      "stdout": ""
+    },
+    "mir_excerpt": "fn make_buf(_1: u8) -> [u8; <T as Tr>::SIZE] {\n    let mut _0: [u8; <T as Tr>::SIZE];\n        _0 = [copy _1; <T as Tr>::SIZE];\n    let _1: [u8; 4];\n    let mut _9: &[u8; 4];\n    let mut _16: &[u8; 5];\n        let _2: [u8; 5];\n        _1 = make_buf::<Four>(const 7_u8) -> [return: bb1, unwind continue];\n        _21 = const b\"\\nEXACT_LEN=\\xc0\\x07 FIRST=\\xc0\\x0c GLOBAL_LEN=\\xc0\\x01\\n\\x00\";\n    0x10 \u2502 52 53 54 3d c0 0c 20 47 4c 4f 42 41 4c 5f 4c 45 \u2502 RST=.. GLOBAL_LE",
+    "miri_negative_canary": {
+      "cmd": [
+        "<SYSROOT>/bin/miri",
+        "--edition=2024",
+        "--sysroot",
+        "<SYSROOT>",
+        "-Znext-solver=globally",
+        "<TMP>/part_a_nocore_neg.rs"
+      ],
+      "rc": 1,
+      "stderr": "",
+      "stdout": ""
+    },
+    "miri_stacked_borrows": {
+      "cmd": [
+        "<SYSROOT>/bin/miri",
+        "--edition=2024",
+        "--sysroot",
+        "<SYSROOT>",
+        "-Znext-solver=globally",
+        "<TMP>/part_a_nocore_sb.rs"
+      ],
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "miri_tree_borrows": {
+      "cmd": [
+        "<SYSROOT>/bin/miri",
+        "--edition=2024",
+        "--sysroot",
+        "<SYSROOT>",
+        "-Znext-solver=globally",
+        "-Zmiri-tree-borrows",
+        "<TMP>/part_a_nocore_tb.rs"
+      ],
+      "rc": 0,
+      "stderr": "",
+      "stdout": ""
+    },
+    "native_rc": 0,
+    "native_stderr": "",
+    "native_stdout": "EXACT_LEN=4 FIRST=7 GLOBAL_LEN=5",
+    "pre_1_100_without_next_solver_flag": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=bin",
+        "<TMP>/part_a_default_solver.rs",
+        "-o",
+        "<TMP>/part_a_default_solver.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error: `generic_const_args` requires -Znext-solver=globally to be enabled\n --> <TMP>/part_a_default_solver.rs:2:36\n  |\n2 | #![feature(min_generic_const_args, generic_const_args)]\n  |                                    ^^^^^^^^^^^^^^^^^^\n  |\n  = help: enable all of these features\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout": ""
+    }
+  },
+  "part_b_mgca_e0557_removal_and_plain_const_compat": {
+    "bare_assoc_const_rejected": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "<TMP>/bare_assoc_const_without_type_const.rs",
+        "-o",
+        "<TMP>/bare_assoc_const_without_type_const.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error: use of `const` in the type system not defined as `type const`\n --> <TMP>/bare_assoc_const_without_type_const.rs:4:27\n  |\n4 | pub fn f<T: Tr>() -> [u8; T::N] { [0; T::N] }\n  |                           ^^^^\n  |\nhelp: add `type` before `const` for `Tr::N`\n  |\n3 | pub trait Tr { type const N: usize; }\n  |                ++++\n\nerror: use of `const` in the type system not defined as `type const`\n --> <TMP>/bare_assoc_const_without_type_const.rs:4:39\n  |\n4 | pub fn f<T: Tr>() -> [u8; T::N] { [0; T::N] }\n  |                                       ^^^^\n  |\nhelp: add `type` before `const` for `Tr::N`\n  |\n3 | pub trait Tr { type const N: usize; }\n  |                ++++\n\nerror: aborting due to 2 previous errors\n\n",
+      "stdout": ""
+    },
+    "const_items_requires_next_solver": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "<TMP>/generic_const_args_under_default_solver.rs",
+        "-o",
+        "<TMP>/generic_const_args_under_default_solver.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error: `generic_const_args` requires -Znext-solver=globally to be enabled\n --> <TMP>/generic_const_args_under_default_solver.rs:2:36\n  |\n2 | #![feature(min_generic_const_args, generic_const_args)]\n  |                                    ^^^^^^^^^^^^^^^^^^\n  |\n  = help: enable all of these features\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout": ""
+    },
+    "gca_min_const_items_feature_check": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "<TMP>/gca_min_const_items_probe.rs",
+        "-o",
+        "<TMP>/gca_min_const_items_probe.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error[E0635]: unknown feature `gca_min_const_items`\n --> <TMP>/gca_min_const_items_probe.rs:2:12\n  |\n2 | #![feature(gca_min_const_items)]\n  |            ^^^^^^^^^^^^^^^^^^^\n  |\nhelp: there is a feature with a similar name: `generic_const_items`\n  |\n2 - #![feature(gca_min_const_items)]\n2 + #![feature(generic_const_items)]\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0635`.\n",
+      "stdout": ""
+    },
+    "min_generic_const_args_feature_check": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "<TMP>/removed_min_generic_const_args.rs",
+        "-o",
+        "<TMP>/removed_min_generic_const_args.out"
+      ],
+      "rc": 0,
+      "reverted_next_solver": false,
+      "stderr": "warning: the feature `min_generic_const_args` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/removed_min_generic_const_args.rs:1:12\n  |\n1 | #![feature(min_generic_const_args)]\n  |            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #132980 <https://github.com/rust-lang/rust/issues/132980> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: feature `min_generic_const_args` is declared but not used\n --> <TMP>/removed_min_generic_const_args.rs:1:12\n  |\n1 | #![feature(min_generic_const_args)]\n  |            ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+      "stdout": ""
+    },
+    "plain_const_in_array_ty": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "<TMP>/mgca_plain_const_in_array_ty.rs",
+        "-o",
+        "<TMP>/mgca_plain_const_in_array_ty.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error: use of `const` in the type system not defined as `type const`\n --> <TMP>/mgca_plain_const_in_array_ty.rs:4:20\n  |\n4 | pub fn f() -> [u8; PLAIN] { [0; PLAIN] }\n  |                    ^^^^^\n  |\nhelp: add `type` before `const` for `PLAIN`\n  |\n3 | type pub const PLAIN: usize = 3;\n  | ++++\n\nerror: use of `const` in the type system not defined as `type const`\n --> <TMP>/mgca_plain_const_in_array_ty.rs:4:33\n  |\n4 | pub fn f() -> [u8; PLAIN] { [0; PLAIN] }\n  |                                 ^^^^^\n  |\nhelp: add `type` before `const` for `PLAIN`\n  |\n3 | type pub const PLAIN: usize = 3;\n  | ++++\n\nerror: aborting due to 2 previous errors\n\n",
+      "stdout": ""
+    }
+  },
+  "part_c_gce_next_solver_downgrade_noncomm_and_post_mono_vs_gca": {
+    "gca_generic_arith_rejected_at_def": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "-Znext-solver=globally",
+        "<TMP>/gca_generic_arith_rejected.rs",
+        "-o",
+        "<TMP>/gca_generic_arith_rejected.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error: complex const arguments must be placed inside of a `const` block\n --> <TMP>/gca_generic_arith_rejected.rs:5:9\n  |\n5 |     [0; T::N + 1]\n  |         ^^^^^^^^\n\nerror: complex const arguments must be placed inside of a `const` block\n --> <TMP>/gca_generic_arith_rejected.rs:4:38\n  |\n4 | pub fn forbid_arith<T: Tr>() -> [u8; T::N + 1] {\n  |                                      ^^^^^^^^\n\nerror: aborting due to 2 previous errors\n\n",
+      "stdout": ""
+    },
+    "gce_n_minus_1_called_at_0": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "<TMP>/gce_n_minus_1_called_zero.rs",
+        "-o",
+        "<TMP>/gce_n_minus_1_called_zero.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error[E0080]: attempt to compute `0_usize - 1_usize`, which would overflow\n --> <TMP>/gce_n_minus_1_called_zero.rs:6:10\n  |\n6 |     [(); N - 1]:,\n  |          ^^^^^ evaluation of `sub_one::<0>::{constant#0}` failed here\n\nerror[E0080]: attempt to compute `0_usize - 1_usize`, which would overflow\n --> <TMP>/gce_n_minus_1_called_zero.rs:4:42\n  |\n4 | pub fn sub_one<const N: usize>() -> [u8; N - 1]\n  |                                          ^^^^^ evaluation of `sub_one::<0>::{constant#1}` failed here\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0080`.\n",
+      "stdout": ""
+    },
+    "gce_n_minus_1_uncalled_def": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "<TMP>/gce_n_minus_1_uncalled.rs",
+        "-o",
+        "<TMP>/gce_n_minus_1_uncalled.out"
+      ],
+      "rc": 0,
+      "reverted_next_solver": false,
+      "stderr": "",
+      "stdout": ""
+    },
+    "gce_noncomm_default_solver": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "<TMP>/gce_noncomm_default.rs",
+        "-o",
+        "<TMP>/gce_noncomm_default.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error[E0308]: mismatched types\n --> <TMP>/gce_noncomm_default.rs:9:5\n  |\n9 |     a\n  |     ^ expected `1 + N`, found `N + 1`\n  |\n  = note: expected constant `1 + N`\n             found constant `N + 1`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n",
+      "stdout": ""
+    },
+    "gce_noncomm_explicit_next_solver_globally": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "-Znext-solver=globally",
+        "<TMP>/gce_noncomm_next_solver.rs",
+        "-o",
+        "<TMP>/gce_noncomm_next_solver.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error: `-Znext-solver=globally` and `generic_const_exprs` are incompatible, using them at the same time is not allowed\n --> <TMP>/gce_noncomm_next_solver.rs:2:12\n  |\n2 | #![feature(generic_const_exprs)]\n  |            ^^^^^^^^^^^^^^^^^^^\n  |\n  = help: remove one of these features\n\nerror[E0275]: overflow evaluating whether `[(); N + 1]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:6:5\n  |\n6 |     [(); N + 1]:,\n  |     ^^^^^^^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:6:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n5 | where\n6 |     [(); N + 1]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); 1 + N]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:6:5\n  |\n6 |     [(); N + 1]:,\n  |     ^^^^^^^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:7:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n...\n7 |     [(); 1 + N]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); N + 1]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:7:5\n  |\n7 |     [(); 1 + N]:,\n  |     ^^^^^^^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:6:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n5 | where\n6 |     [(); N + 1]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); 1 + N]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:7:5\n  |\n7 |     [(); 1 + N]:,\n  |     ^^^^^^^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:7:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n...\n7 |     [(); 1 + N]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); N + 1]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:6:10\n  |\n6 |     [(); N + 1]:,\n  |          ^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:6:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n5 | where\n6 |     [(); N + 1]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); 1 + N]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:6:10\n  |\n6 |     [(); N + 1]:,\n  |          ^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:7:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n...\n7 |     [(); 1 + N]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); N + 1]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:7:10\n  |\n7 |     [(); 1 + N]:,\n  |          ^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:6:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n5 | where\n6 |     [(); N + 1]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); 1 + N]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:7:10\n  |\n7 |     [(); 1 + N]:,\n  |          ^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:7:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n...\n7 |     [(); 1 + N]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); N + 1]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:4:42\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |                                          ^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:6:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n5 | where\n6 |     [(); N + 1]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); 1 + N]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:4:42\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |                                          ^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:7:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n...\n7 |     [(); 1 + N]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); N + 1]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:4:58\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |                                                          ^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:6:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n5 | where\n6 |     [(); N + 1]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror[E0275]: overflow evaluating whether `[(); 1 + N]` is well-formed\n --> <TMP>/gce_noncomm_next_solver.rs:4:58\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |                                                          ^^^^^\n  |\nnote: required by a bound in `comm_fail`\n --> <TMP>/gce_noncomm_next_solver.rs:7:5\n  |\n4 | pub fn comm_fail<const N: usize>(a: [u8; N + 1]) -> [u8; 1 + N]\n  |        --------- required by a bound in this function\n...\n7 |     [(); 1 + N]:,\n  |     ^^^^^^^^^^^ required by this bound in `comm_fail`\n\nerror: aborting due to 13 previous errors\n\nFor more information about this error, try `rustc --explain E0275`.\n",
+      "stdout": ""
+    },
+    "gce_same_order_n_plus_1_ok": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "<TMP>/gce_same_order_ok.rs",
+        "-o",
+        "<TMP>/gce_same_order_ok.out"
+      ],
+      "rc": 0,
+      "reverted_next_solver": false,
+      "stderr": "",
+      "stdout": ""
+    }
+  },
+  "part_d_cyclic_const_e0391": {
+    "direct_gca_const_cycle": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "-Znext-solver=globally",
+        "<TMP>/part_d_cyclic_gca.rs",
+        "-o",
+        "<TMP>/part_d_cyclic_gca.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error[E0271]: type mismatch resolving `B normalizes-to _`\n --> <TMP>/part_d_cyclic_gca.rs:3:1\n  |\n3 | pub type const A: usize = B;\n  | ^^^^^^^^^^^^^^^^^^^^^^^ types differ\n\nerror: the constant `B` is not of type `usize`\n --> <TMP>/part_d_cyclic_gca.rs:3:1\n  |\n3 | pub type const A: usize = B;\n  | ^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found a different `usize`\n\nerror[E0271]: type mismatch resolving `A normalizes-to _`\n --> <TMP>/part_d_cyclic_gca.rs:4:1\n  |\n4 | pub type const B: usize = A;\n  | ^^^^^^^^^^^^^^^^^^^^^^^ types differ\n\nerror: the constant `A` is not of type `usize`\n --> <TMP>/part_d_cyclic_gca.rs:4:1\n  |\n4 | pub type const B: usize = A;\n  | ^^^^^^^^^^^^^^^^^^^^^^^ expected `usize`, found a different `usize`\n\nerror: aborting due to 4 previous errors\n\nFor more information about this error, try `rustc --explain E0271`.\n",
+      "stdout": ""
+    },
+    "plain_const_cycle_e0391": {
+      "cmd": [
+        "<HOME>/.cargo/bin/rustc",
+        "--edition=2024",
+        "--crate-type=lib",
+        "<TMP>/part_d_cyclic_plain.rs",
+        "-o",
+        "<TMP>/part_d_cyclic_plain.out"
+      ],
+      "rc": 1,
+      "reverted_next_solver": false,
+      "stderr": "error[E0391]: cycle detected when checking if `A` is a trivial const\n --> <TMP>/part_d_cyclic_plain.rs:1:1\n  |\n1 | pub const A: usize = B;\n  | ^^^^^^^^^^^^^^^^^^\n  |\nnote: ...which requires building MIR for `A`...\n --> <TMP>/part_d_cyclic_plain.rs:1:1\n  |\n1 | pub const A: usize = B;\n  | ^^^^^^^^^^^^^^^^^^\nnote: ...which requires checking if `B` is a trivial const...\n --> <TMP>/part_d_cyclic_plain.rs:2:1\n  |\n2 | pub const B: usize = A;\n  | ^^^^^^^^^^^^^^^^^^\nnote: ...which requires building MIR for `B`...\n --> <TMP>/part_d_cyclic_plain.rs:2:1\n  |\n2 | pub const B: usize = A;\n  | ^^^^^^^^^^^^^^^^^^\n  = note: ...which again requires checking if `A` is a trivial const, completing the cycle\nnote: cycle used when simplifying constant for the type system `A`\n --> <TMP>/part_d_cyclic_plain.rs:1:1\n  |\n1 | pub const A: usize = B;\n  | ^^^^^^^^^^^^^^^^^^\n  = note: see https://rustc-dev-guide.rust-lang.org/overview.html#queries and https://rustc-dev-guide.rust-lang.org/query.html for more information\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0391`.\n",
+      "stdout": ""
+    }
+  },
+  "regime": "pre_1_100_mgca",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "timestamp_utc": "2026-11-22T10:24:45Z"
+}

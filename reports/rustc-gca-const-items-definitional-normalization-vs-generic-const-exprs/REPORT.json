@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/types",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/types",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc upstream primary source (main)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1",
+        "commit_date": "2026-11-22"
+      }
+    },
+    {
+      "name": "rustc 1.102.0-nightly and Miri (post-1.100.0 GCA and default -Znext-solver=globally)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "release": "1.102.0-nightly",
+        "commit_date": "2026-11-11",
+        "llvm": "23.1.5"
+      }
+    },
+    {
+      "name": "rustc 1.98.0-nightly and Miri (pre-1.100.0 MGCA type const and opt-in -Znext-solver=globally)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "release": "1.98.0-nightly",
+        "commit_date": "2026-05-31",
+        "miri": "0.1.0",
+        "llvm": "22.1.6"
+      }
+    },
+    {
+      "name": "Anneal trusted MIR semantics and capture boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+        "commit_date": "2026-11-19"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover and kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "release": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
