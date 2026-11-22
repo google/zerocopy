@@ -1,0 +1,4135 @@
+{
+  "schema": "rustc-public-vs-middle-mir-audit/1",
+  "cross_version_summary": {
+    "anneal_pin_2026_05_30": {
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "line_hit_totals": {
+        "unimplemented": 4,
+        "todo": 8,
+        "bug": 4,
+        "unreachable": 7,
+        "opaque": 11
+      },
+      "occurrence_totals": {
+        "unimplemented": 4,
+        "todo": 8,
+        "bug": 4,
+        "unreachable": 7,
+        "opaque": 12
+      },
+      "explicit_panic_total": 0,
+      "dropped_body_field_count": 13,
+      "dropped_basic_block_fields": [
+        "after_last_stmt_debuginfos",
+        "is_cleanup"
+      ],
+      "terminator_arm_count": 12
+    },
+    "baseline_2026_09_11": {
+      "revision": "49d734536222bf28bb6d07d885b3a81d145981da",
+      "line_hit_totals": {
+        "unimplemented": 11,
+        "todo": 0,
+        "bug": 5,
+        "unreachable": 7,
+        "opaque": 11
+      },
+      "occurrence_totals": {
+        "unimplemented": 11,
+        "todo": 0,
+        "bug": 5,
+        "unreachable": 7,
+        "opaque": 12
+      },
+      "explicit_panic_total": 1,
+      "dropped_body_field_count": 12,
+      "dropped_basic_block_fields": [
+        "after_last_stmt_debuginfos",
+        "is_cleanup"
+      ],
+      "terminator_arm_count": 12
+    },
+    "head_2026_11_22": {
+      "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1",
+      "line_hit_totals": {
+        "unimplemented": 12,
+        "todo": 0,
+        "bug": 5,
+        "unreachable": 8,
+        "opaque": 6
+      },
+      "occurrence_totals": {
+        "unimplemented": 12,
+        "todo": 0,
+        "bug": 5,
+        "unreachable": 8,
+        "opaque": 6
+      },
+      "explicit_panic_total": 0,
+      "dropped_body_field_count": 12,
+      "dropped_basic_block_fields": [
+        "after_last_stmt_debuginfos",
+        "is_cleanup"
+      ],
+      "terminator_arm_count": 12
+    }
+  },
+  "rust_lang_rust_snapshots": {
+    "anneal_pin_2026_05_30": {
+      "repository": "rust-lang/rust",
+      "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+      "trap_and_opaque_audit": {
+        "line_hit_totals": {
+          "unimplemented": 4,
+          "todo": 8,
+          "bug": 4,
+          "unreachable": 7,
+          "opaque": 11
+        },
+        "occurrence_totals": {
+          "unimplemented": 4,
+          "todo": 8,
+          "bug": 4,
+          "unreachable": 7,
+          "opaque": 12
+        },
+        "explicit_panic_total": 0,
+        "per_file_scan": {
+          "compiler/rustc_public/src/unstable/convert/stable/mir.rs": {
+            "lines": 923,
+            "sha256": "bdf1b48fe7639895b9f6c16af23489a3275be4caa62d386c70bfd2a96e6590d5",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 3,
+              "bug": 3,
+              "unreachable": 1,
+              "opaque": 5
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 3,
+              "bug": 3,
+              "unreachable": 1,
+              "opaque": 5
+            },
+            "explicit_panic_count": 0,
+            "hits": {
+              "todo": [
+                {
+                  "line": 248,
+                  "occurrences": 1,
+                  "text": "WrapUnsafeBinder(..) => todo!(\"FIXME(unsafe_binders):\"),"
+                },
+                {
+                  "line": 449,
+                  "occurrences": 1,
+                  "text": "UnwrapUnsafeBinder(..) => todo!(\"FIXME(unsafe_binders):\"),"
+                },
+                {
+                  "line": 756,
+                  "occurrences": 1,
+                  "text": "mir::TerminatorKind::TailCall { func: _, args: _, fn_span: _ } => todo!(),"
+                }
+              ],
+              "bug": [
+                {
+                  "line": 576,
+                  "occurrences": 1,
+                  "text": "BinOp::AddWithOverflow => bug!(\"AddWithOverflow should have been translated already\"),"
+                },
+                {
+                  "line": 579,
+                  "occurrences": 1,
+                  "text": "BinOp::SubWithOverflow => bug!(\"AddWithOverflow should have been translated already\"),"
+                },
+                {
+                  "line": 582,
+                  "occurrences": 1,
+                  "text": "BinOp::MulWithOverflow => bug!(\"AddWithOverflow should have been translated already\"),"
+                }
+              ],
+              "unreachable": [
+                {
+                  "line": 786,
+                  "occurrences": 1,
+                  "text": "| mir::TerminatorKind::FalseUnwind { .. } => unreachable!(),"
+                }
+              ],
+              "opaque": [
+                {
+                  "line": 171,
+                  "occurrences": 1,
+                  "text": "crate::mir::StatementKind::Coverage(opaque(coverage))"
+                },
+                {
+                  "line": 362,
+                  "occurrences": 1,
+                  "text": "crate::mir::FakeReadCause::ForMatchedPlace(opaque(local_def_id))"
+                },
+                {
+                  "line": 365,
+                  "occurrences": 1,
+                  "text": "ForLet(local_def_id) => crate::mir::FakeReadCause::ForLet(opaque(local_def_id)),"
+                },
+                {
+                  "line": 458,
+                  "occurrences": 1,
+                  "text": "UserTypeProjection { base: self.base.as_usize(), projection: opaque(&self.projs) }"
+                },
+                {
+                  "line": 920,
+                  "occurrences": 1,
+                  "text": "MonoItem::GlobalAsm(item_id) => StableMonoItem::GlobalAsm(opaque(item_id)),"
+                }
+              ]
+            },
+            "explicit_panics": []
+          },
+          "compiler/rustc_public/src/unstable/convert/stable/ty.rs": {
+            "lines": 1189,
+            "sha256": "7a6e6ca2f0097be7ec4505ae954be5bed2d769e2c61d96ce7f9446c452dd81f3",
+            "line_hit_counts": {
+              "unimplemented": 4,
+              "todo": 5,
+              "bug": 1,
+              "unreachable": 5,
+              "opaque": 1
+            },
+            "occurrence_counts": {
+              "unimplemented": 4,
+              "todo": 5,
+              "bug": 1,
+              "unreachable": 5,
+              "opaque": 1
+            },
+            "explicit_panic_count": 0,
+            "hits": {
+              "unimplemented": [
+                {
+                  "line": 549,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Bound(_, _) => unimplemented!(),"
+                },
+                {
+                  "line": 550,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Placeholder(_) => unimplemented!(),"
+                },
+                {
+                  "line": 551,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Expr(_) => unimplemented!(),"
+                },
+                {
+                  "line": 733,
+                  "occurrences": 1,
+                  "text": "PredicateKind::NormalizesTo(_pred) => unimplemented!(),"
+                }
+              ],
+              "todo": [
+                {
+                  "line": 457,
+                  "occurrences": 1,
+                  "text": "ty::UnsafeBinder(_) => todo!(),"
+                },
+                {
+                  "line": 469,
+                  "occurrences": 1,
+                  "text": "ty::CoroutineClosure(..) => todo!(\"FIXME(async_closures): Lower these to SMIR\"),"
+                },
+                {
+                  "line": 479,
+                  "occurrences": 1,
+                  "text": "todo!()"
+                },
+                {
+                  "line": 782,
+                  "occurrences": 1,
+                  "text": "todo!()"
+                },
+                {
+                  "line": 785,
+                  "occurrences": 1,
+                  "text": "todo!()"
+                }
+              ],
+              "bug": [
+                {
+                  "line": 334,
+                  "occurrences": 1,
+                  "text": "ty::BoundRegionKind::NamedForPrinting(_) => bug!(\"only used for pretty printing\"),"
+                }
+              ],
+              "unreachable": [
+                {
+                  "line": 483,
+                  "occurrences": 1,
+                  "text": "unreachable!()"
+                },
+                {
+                  "line": 493,
+                  "occurrences": 1,
+                  "text": "unreachable!();"
+                },
+                {
+                  "line": 547,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Error(_) => unreachable!(),"
+                },
+                {
+                  "line": 548,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Infer(_) => unreachable!(),"
+                },
+                {
+                  "line": 957,
+                  "occurrences": 1,
+                  "text": "_ => unreachable!(\"{self:?}\"),"
+                }
+              ],
+              "opaque": [
+                {
+                  "line": 624,
+                  "occurrences": 1,
+                  "text": ".map(|idents| idents.iter().map(|ident| opaque(ident)).collect()),"
+                }
+              ]
+            },
+            "explicit_panics": []
+          },
+          "compiler/rustc_public/src/unstable/convert/stable/abi.rs": {
+            "lines": 437,
+            "sha256": "7fffaee23a0073004e8e42c96dfdc515ae8423927292520fbd397143ef072352",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 5
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 6
+            },
+            "explicit_panic_count": 0,
+            "hits": {
+              "opaque": [
+                {
+                  "line": 163,
+                  "occurrences": 1,
+                  "text": "callconv::PassMode::Direct(attr) => PassMode::Direct(opaque(attr)),"
+                },
+                {
+                  "line": 165,
+                  "occurrences": 2,
+                  "text": "PassMode::Pair(opaque(first), opaque(second))"
+                },
+                {
+                  "line": 168,
+                  "occurrences": 1,
+                  "text": "PassMode::Cast { pad_i32: *pad_i32, cast: opaque(cast) }"
+                },
+                {
+                  "line": 171,
+                  "occurrences": 1,
+                  "text": "attrs: opaque(attrs),"
+                },
+                {
+                  "line": 172,
+                  "occurrences": 1,
+                  "text": "meta_attrs: opaque(meta_attrs),"
+                }
+              ]
+            },
+            "explicit_panics": []
+          },
+          "compiler/rustc_public/src/unstable/convert/stable/mod.rs": {
+            "lines": 127,
+            "sha256": "7efa769ada84cf4ff9b35d33a6e6a65f54721259c8d20a9d26658516795303ad",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {},
+            "explicit_panics": []
+          },
+          "compiler/rustc_public_bridge/src/builder.rs": {
+            "lines": 76,
+            "sha256": "a326f3a7e28de46861748598722b9d1e2dcb2fdb0a38027e92aa4d2fb9dd010c",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 1,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 1,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {
+              "unreachable": [
+                {
+                  "line": 65,
+                  "occurrences": 1,
+                  "text": "unreachable!(\"Failed to evaluate instance constant: {:?}\", const_)"
+                }
+              ]
+            },
+            "explicit_panics": []
+          },
+          "compiler/rustc_public_bridge/src/alloc.rs": {
+            "lines": 100,
+            "sha256": "31eed98937de3005f41a67a7f99a8b5d270b983c4e757a689df056bcbaea084e",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {},
+            "explicit_panics": []
+          },
+          "compiler/rustc_public_bridge/src/context/impls.rs": {
+            "lines": 782,
+            "sha256": "2bd0770806302057b592021188e4f3e4420e60fe200f9afcd318459e2231cb54",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {},
+            "explicit_panics": []
+          }
+        }
+      },
+      "struct_field_comparison": {
+        "Body": {
+          "rustc_middle_count": 19,
+          "rustc_public_total_count": 6,
+          "rustc_public_pub_count": 3,
+          "rustc_public_pub_crate_count": 3,
+          "rustc_middle_fields": [
+            "basic_blocks",
+            "phase",
+            "pass_count",
+            "source",
+            "source_scopes",
+            "coroutine",
+            "local_decls",
+            "user_type_annotations",
+            "arg_count",
+            "spread_arg",
+            "var_debug_info",
+            "span",
+            "required_consts",
+            "mentioned_items",
+            "is_polymorphic",
+            "injection_phase",
+            "tainted_by_errors",
+            "coverage_info_hi",
+            "function_coverage_info"
+          ],
+          "rustc_public_fields": [
+            {
+              "name": "blocks",
+              "visibility": "pub"
+            },
+            {
+              "name": "locals",
+              "visibility": "pub(super)"
+            },
+            {
+              "name": "arg_count",
+              "visibility": "pub(super)"
+            },
+            {
+              "name": "var_debug_info",
+              "visibility": "pub"
+            },
+            {
+              "name": "spread_arg",
+              "visibility": "pub(super)"
+            },
+            {
+              "name": "span",
+              "visibility": "pub"
+            }
+          ],
+          "dropped_from_middle_Body": [
+            "phase",
+            "pass_count",
+            "source",
+            "source_scopes",
+            "coroutine",
+            "user_type_annotations",
+            "required_consts",
+            "mentioned_items",
+            "is_polymorphic",
+            "injection_phase",
+            "tainted_by_errors",
+            "coverage_info_hi",
+            "function_coverage_info"
+          ]
+        },
+        "BasicBlock": {
+          "rustc_middle_fields": [
+            "statements",
+            "after_last_stmt_debuginfos",
+            "terminator",
+            "is_cleanup"
+          ],
+          "rustc_public_fields": [
+            "statements",
+            "terminator"
+          ],
+          "dropped_from_BasicBlockData": [
+            "after_last_stmt_debuginfos",
+            "is_cleanup"
+          ]
+        },
+        "LocalDecl": {
+          "rustc_middle_fields": [
+            "mutability",
+            "local_info",
+            "ty",
+            "user_ty",
+            "source_info"
+          ],
+          "rustc_public_fields": [
+            "ty",
+            "span",
+            "mutability"
+          ]
+        },
+        "SourceScope": {
+          "rustc_middle_fields": [
+            "span",
+            "parent_scope",
+            "inlined",
+            "inlined_parent_scope",
+            "local_data"
+          ],
+          "rustc_public_fields": []
+        },
+        "InlineAsmOperand": {
+          "rustc_middle_variants": [
+            "In",
+            "Out",
+            "InOut",
+            "Const",
+            "SymFn",
+            "SymStatic",
+            "Label"
+          ],
+          "rustc_public_fields": [
+            "in_value",
+            "out_place",
+            "raw_rpr"
+          ]
+        }
+      },
+      "terminator_conversion_arms": [
+        {
+          "line": 712,
+          "middle_variant": "Goto",
+          "pattern_head": "mir::TerminatorKind::Goto { target }",
+          "target_variant": "TerminatorKind::Goto",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "{ TerminatorKind::Goto { target: target.as_usize() } }"
+        },
+        {
+          "line": 715,
+          "middle_variant": "SwitchInt",
+          "pattern_head": "mir::TerminatorKind::SwitchInt { discr, targets }",
+          "target_variant": "TerminatorKind::SwitchInt",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::SwitchInt { discr: discr.stable(tables, cx), targets: { let branches = targets.iter().map(|(val, target)"
+        },
+        {
+          "line": 725,
+          "middle_variant": "UnwindResume",
+          "pattern_head": "mir::TerminatorKind::UnwindResume",
+          "target_variant": "TerminatorKind::Resume",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::Resume,"
+        },
+        {
+          "line": 726,
+          "middle_variant": "UnwindTerminate",
+          "pattern_head": "mir::TerminatorKind::UnwindTerminate(_)",
+          "target_variant": "TerminatorKind::Abort",
+          "trap": null,
+          "dropped_or_degraded": [
+            "UnwindTerminateReason (via (_))"
+          ],
+          "rhs_head": "TerminatorKind::Abort,"
+        },
+        {
+          "line": 727,
+          "middle_variant": "Return",
+          "pattern_head": "mir::TerminatorKind::Return",
+          "target_variant": "TerminatorKind::Return",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::Return,"
+        },
+        {
+          "line": 728,
+          "middle_variant": "Unreachable",
+          "pattern_head": "mir::TerminatorKind::Unreachable",
+          "target_variant": "TerminatorKind::Unreachable",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::Unreachable,"
+        },
+        {
+          "line": 729,
+          "middle_variant": "Drop",
+          "pattern_head": "mir::TerminatorKind::Drop { place, target, unwind, replace: _, drop: _, async_fut: _, }",
+          "target_variant": "TerminatorKind::Drop",
+          "trap": null,
+          "dropped_or_degraded": [
+            "replace",
+            "drop",
+            "async_fut"
+          ],
+          "rhs_head": "TerminatorKind::Drop { place: place.stable(tables, cx), target: target.as_usize(), unwind: unwind.stable(tables, cx), },"
+        },
+        {
+          "line": 741,
+          "middle_variant": "Call",
+          "pattern_head": "mir::TerminatorKind::Call { func, args, destination, target, unwind, call_source: _, fn_span: _, }",
+          "target_variant": "TerminatorKind::Call",
+          "trap": null,
+          "dropped_or_degraded": [
+            "call_source",
+            "fn_span"
+          ],
+          "rhs_head": "TerminatorKind::Call { func: func.stable(tables, cx), args: args.iter().map(|arg| arg.node.stable(tables, cx)).collect()"
+        },
+        {
+          "line": 756,
+          "middle_variant": "TailCall",
+          "pattern_head": "mir::TerminatorKind::TailCall { func: _, args: _, fn_span: _ }",
+          "target_variant": null,
+          "trap": "todo!",
+          "dropped_or_degraded": [
+            "func",
+            "args",
+            "fn_span"
+          ],
+          "rhs_head": "todo!(),"
+        },
+        {
+          "line": 757,
+          "middle_variant": "Assert",
+          "pattern_head": "mir::TerminatorKind::Assert { cond, expected, msg, target, unwind }",
+          "target_variant": "TerminatorKind::Assert",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "{ TerminatorKind::Assert { cond: cond.stable(tables, cx), expected: *expected, msg: msg.stable(tables, cx), target: targ"
+        },
+        {
+          "line": 766,
+          "middle_variant": "InlineAsm",
+          "pattern_head": "mir::TerminatorKind::InlineAsm { asm_macro: _, template, operands, options, line_spans, targets, unwind, }",
+          "target_variant": "TerminatorKind::InlineAsm",
+          "trap": null,
+          "dropped_or_degraded": [
+            "asm_macro",
+            "targets[1..] (multi-label asm_goto targets dropped)",
+            "template/options/line_spans stringified via Debug"
+          ],
+          "rhs_head": "TerminatorKind::InlineAsm { template: format!(\"{template:?}\"), operands: operands.iter().map(|operand| operand.stable(ta"
+        },
+        {
+          "line": 783,
+          "middle_variant": "Yield",
+          "pattern_head": "mir::TerminatorKind::Yield { .. } | mir::TerminatorKind::CoroutineDrop | mir::TerminatorKind::FalseEdge { .. } | mir::TerminatorKind::FalseUnwind { .. }",
+          "target_variant": null,
+          "trap": "unreachable!",
+          "dropped_or_degraded": [],
+          "rhs_head": "unreachable!(), }"
+        }
+      ],
+      "builder_and_pipeline_audit": {
+        "builder_instance_mir_calls": [
+          {
+            "line": 31,
+            "text": "let body = self.tcx.instance_mir(self.instance.def).clone();"
+          }
+        ],
+        "builder_reported_error_swallow": [
+          {
+            "line": 63,
+            "text": "Err(mir::interpret::ErrorHandled::Reported(..)) => return,"
+          }
+        ],
+        "builder_too_generic_unreachable": [
+          {
+            "line": 64,
+            "text": "Err(mir::interpret::ErrorHandled::TooGeneric(..)) => {"
+          }
+        ],
+        "context_impls_mir_body_instance_mir": [
+          {
+            "line": 133,
+            "text": "self.tcx.instance_mir(InstanceKind::Item(item))"
+          }
+        ],
+        "pass_placement_in_rustc_mir_transform": {
+          "RemovePlaceMention": {
+            "in_run_runtime_cleanup_passes_lines": [
+              653
+            ],
+            "in_run_optimization_passes_lines": []
+          },
+          "CheckAlignment": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              692
+            ]
+          },
+          "CheckNull": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              693
+            ]
+          },
+          "CheckEnums": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              694
+            ]
+          },
+          "RemoveStorageMarkers": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              711
+            ]
+          },
+          "RemoveZsts": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              713
+            ]
+          },
+          "UnreachablePropagation": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              718
+            ]
+          },
+          "GVN": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              738
+            ]
+          }
+        },
+        "pass_policies": {
+          "RemovePlaceMention": [
+            {
+              "line": 10,
+              "text": "fn is_enabled(&self, sess: &rustc_session::Session) -> bool {"
+            },
+            {
+              "line": 11,
+              "text": "!sess.opts.unstable_opts.mir_preserve_ub"
+            }
+          ],
+          "RemoveStorageMarkers": [
+            {
+              "line": 10,
+              "text": "fn is_enabled(&self, sess: &rustc_session::Session) -> bool {"
+            },
+            {
+              "line": 11,
+              "text": "sess.mir_opt_level() > 0 && !sess.emit_lifetime_markers()"
+            }
+          ],
+          "RemoveZsts": [
+            {
+              "line": 10,
+              "text": "fn is_enabled(&self, sess: &rustc_session::Session) -> bool {"
+            },
+            {
+              "line": 11,
+              "text": "sess.mir_opt_level() > 0"
+            }
+          ],
+          "UnreachablePropagation": [
+            {
+              "line": 17,
+              "text": "fn is_enabled(&self, sess: &rustc_session::Session) -> bool {"
+            },
+            {
+              "line": 19,
+              "text": "sess.mir_opt_level() >= 2"
+            }
+          ],
+          "GVN": [
+            {
+              "line": 130,
+              "text": "fn is_enabled(&self, sess: &rustc_session::Session) -> bool {"
+            },
+            {
+              "line": 131,
+              "text": "sess.mir_opt_level() >= 2"
+            }
+          ]
+        }
+      }
+    },
+    "baseline_2026_09_11": {
+      "repository": "rust-lang/rust",
+      "revision": "49d734536222bf28bb6d07d885b3a81d145981da",
+      "trap_and_opaque_audit": {
+        "line_hit_totals": {
+          "unimplemented": 11,
+          "todo": 0,
+          "bug": 5,
+          "unreachable": 7,
+          "opaque": 11
+        },
+        "occurrence_totals": {
+          "unimplemented": 11,
+          "todo": 0,
+          "bug": 5,
+          "unreachable": 7,
+          "opaque": 12
+        },
+        "explicit_panic_total": 1,
+        "per_file_scan": {
+          "compiler/rustc_public/src/unstable/convert/stable/mir.rs": {
+            "lines": 941,
+            "sha256": "cf19b2e1568fe08f3a2e2bbd09d5717fee6a640c1853d7994b730d54e45ba8dc",
+            "line_hit_counts": {
+              "unimplemented": 3,
+              "todo": 0,
+              "bug": 4,
+              "unreachable": 1,
+              "opaque": 5
+            },
+            "occurrence_counts": {
+              "unimplemented": 3,
+              "todo": 0,
+              "bug": 4,
+              "unreachable": 1,
+              "opaque": 5
+            },
+            "explicit_panic_count": 0,
+            "hits": {
+              "unimplemented": [
+                {
+                  "line": 266,
+                  "occurrences": 1,
+                  "text": "WrapUnsafeBinder(..) => unimplemented!(\"FIXME(unsafe_binders):\"),"
+                },
+                {
+                  "line": 469,
+                  "occurrences": 1,
+                  "text": "UnwrapUnsafeBinder(..) => unimplemented!(\"FIXME(unsafe_binders):\"),"
+                },
+                {
+                  "line": 774,
+                  "occurrences": 1,
+                  "text": "mir::TerminatorKind::TailCall { func: _, args: _, fn_span: _ } => unimplemented!(),"
+                }
+              ],
+              "bug": [
+                {
+                  "line": 447,
+                  "occurrences": 1,
+                  "text": "PhantomDeref => bug!(\"Hopefully we don't come here\"),"
+                },
+                {
+                  "line": 599,
+                  "occurrences": 1,
+                  "text": "BinOp::AddWithOverflow => bug!(\"AddWithOverflow should have been translated already\"),"
+                },
+                {
+                  "line": 602,
+                  "occurrences": 1,
+                  "text": "BinOp::SubWithOverflow => bug!(\"AddWithOverflow should have been translated already\"),"
+                },
+                {
+                  "line": 605,
+                  "occurrences": 1,
+                  "text": "BinOp::MulWithOverflow => bug!(\"AddWithOverflow should have been translated already\"),"
+                }
+              ],
+              "unreachable": [
+                {
+                  "line": 804,
+                  "occurrences": 1,
+                  "text": "| mir::TerminatorKind::FalseUnwind { .. } => unreachable!(),"
+                }
+              ],
+              "opaque": [
+                {
+                  "line": 189,
+                  "occurrences": 1,
+                  "text": "crate::mir::StatementKind::Coverage(opaque(coverage))"
+                },
+                {
+                  "line": 381,
+                  "occurrences": 1,
+                  "text": "crate::mir::FakeReadCause::ForMatchedPlace(opaque(local_def_id))"
+                },
+                {
+                  "line": 384,
+                  "occurrences": 1,
+                  "text": "ForLet(local_def_id) => crate::mir::FakeReadCause::ForLet(opaque(local_def_id)),"
+                },
+                {
+                  "line": 478,
+                  "occurrences": 1,
+                  "text": "UserTypeProjection { base: self.base.as_usize(), projection: opaque(&self.projs) }"
+                },
+                {
+                  "line": 938,
+                  "occurrences": 1,
+                  "text": "MonoItem::GlobalAsm(item_id) => StableMonoItem::GlobalAsm(opaque(item_id)),"
+                }
+              ]
+            },
+            "explicit_panics": []
+          },
+          "compiler/rustc_public/src/unstable/convert/stable/ty.rs": {
+            "lines": 1181,
+            "sha256": "d2187f4c7e0e8438382c26c359f8231ad0f76e35de05367640ca27628a57a9be",
+            "line_hit_counts": {
+              "unimplemented": 8,
+              "todo": 0,
+              "bug": 1,
+              "unreachable": 5,
+              "opaque": 1
+            },
+            "occurrence_counts": {
+              "unimplemented": 8,
+              "todo": 0,
+              "bug": 1,
+              "unreachable": 5,
+              "opaque": 1
+            },
+            "explicit_panic_count": 1,
+            "hits": {
+              "unimplemented": [
+                {
+                  "line": 470,
+                  "occurrences": 1,
+                  "text": "ty::UnsafeBinder(_) => unimplemented!(),"
+                },
+                {
+                  "line": 483,
+                  "occurrences": 1,
+                  "text": "unimplemented!(\"FIXME(async_closures): Lower these to SMIR\")"
+                },
+                {
+                  "line": 570,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Bound(_, _) => unimplemented!(),"
+                },
+                {
+                  "line": 571,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Placeholder(_) => unimplemented!(),"
+                },
+                {
+                  "line": 572,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Expr(_) => unimplemented!(),"
+                },
+                {
+                  "line": 754,
+                  "occurrences": 1,
+                  "text": "PredicateKind::NormalizesTo(_pred) => unimplemented!(),"
+                },
+                {
+                  "line": 796,
+                  "occurrences": 1,
+                  "text": "unimplemented!()"
+                },
+                {
+                  "line": 799,
+                  "occurrences": 1,
+                  "text": "unimplemented!()"
+                }
+              ],
+              "bug": [
+                {
+                  "line": 347,
+                  "occurrences": 1,
+                  "text": "ty::BoundRegionKind::NamedForPrinting(_) => bug!(\"only used for pretty printing\"),"
+                }
+              ],
+              "unreachable": [
+                {
+                  "line": 498,
+                  "occurrences": 1,
+                  "text": "unreachable!()"
+                },
+                {
+                  "line": 508,
+                  "occurrences": 1,
+                  "text": "unreachable!();"
+                },
+                {
+                  "line": 568,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Error(_) => unreachable!(),"
+                },
+                {
+                  "line": 569,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Infer(_) => unreachable!(),"
+                },
+                {
+                  "line": 958,
+                  "occurrences": 1,
+                  "text": "_ => unreachable!(\"{self:?}\"),"
+                }
+              ],
+              "opaque": [
+                {
+                  "line": 645,
+                  "occurrences": 1,
+                  "text": ".map(|idents| idents.iter().map(|ident| opaque(ident)).collect()),"
+                }
+              ]
+            },
+            "explicit_panics": [
+              {
+                "line": 561,
+                "text": "panic!(\"non-defid alias consts are not supported by rustc_public at the moment\")"
+              }
+            ]
+          },
+          "compiler/rustc_public/src/unstable/convert/stable/abi.rs": {
+            "lines": 455,
+            "sha256": "633075f41cb6d29701f5227564b2a7758f7a33001a83d36884b58fde401c2f5e",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 5
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 6
+            },
+            "explicit_panic_count": 0,
+            "hits": {
+              "opaque": [
+                {
+                  "line": 164,
+                  "occurrences": 1,
+                  "text": "callconv::PassMode::Direct(attr) => PassMode::Direct(opaque(attr)),"
+                },
+                {
+                  "line": 166,
+                  "occurrences": 2,
+                  "text": "PassMode::Pair(opaque(first), opaque(second))"
+                },
+                {
+                  "line": 169,
+                  "occurrences": 1,
+                  "text": "PassMode::Cast { pad_i32_count: *pad_i32_count, cast: opaque(cast) }"
+                },
+                {
+                  "line": 172,
+                  "occurrences": 1,
+                  "text": "attrs: opaque(attrs),"
+                },
+                {
+                  "line": 173,
+                  "occurrences": 1,
+                  "text": "meta_attrs: opaque(meta_attrs),"
+                }
+              ]
+            },
+            "explicit_panics": []
+          },
+          "compiler/rustc_public/src/unstable/convert/stable/mod.rs": {
+            "lines": 127,
+            "sha256": "2355dfdfd6bbe4f8f43e90bee77e28992781ba58fba58b6cffceb0ade56e8d27",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {},
+            "explicit_panics": []
+          },
+          "compiler/rustc_public_bridge/src/builder.rs": {
+            "lines": 76,
+            "sha256": "9254e295911ac94a226a18ba6f59baf57ac75932dfbe67084d013df09c926c1c",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 1,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 1,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {
+              "unreachable": [
+                {
+                  "line": 65,
+                  "occurrences": 1,
+                  "text": "unreachable!(\"Failed to evaluate instance constant: {:?}\", const_)"
+                }
+              ]
+            },
+            "explicit_panics": []
+          },
+          "compiler/rustc_public_bridge/src/alloc.rs": {
+            "lines": 100,
+            "sha256": "31eed98937de3005f41a67a7f99a8b5d270b983c4e757a689df056bcbaea084e",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {},
+            "explicit_panics": []
+          },
+          "compiler/rustc_public_bridge/src/context/impls.rs": {
+            "lines": 823,
+            "sha256": "4083eef7d73b66f2fa45098bf722ea7e8c7ca7e9154274ec12db33fcf0ea2c9b",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {},
+            "explicit_panics": []
+          }
+        }
+      },
+      "struct_field_comparison": {
+        "Body": {
+          "rustc_middle_count": 19,
+          "rustc_public_total_count": 7,
+          "rustc_public_pub_count": 3,
+          "rustc_public_pub_crate_count": 4,
+          "rustc_middle_fields": [
+            "basic_blocks",
+            "phase",
+            "pass_count",
+            "source",
+            "source_scopes",
+            "coroutine",
+            "local_decls",
+            "user_type_annotations",
+            "arg_count",
+            "spread_arg",
+            "var_debug_info",
+            "span",
+            "required_consts",
+            "mentioned_items",
+            "is_polymorphic",
+            "injection_phase",
+            "tainted_by_errors",
+            "coverage_early_info",
+            "coverage_mir_info"
+          ],
+          "rustc_public_fields": [
+            {
+              "name": "blocks",
+              "visibility": "pub"
+            },
+            {
+              "name": "locals",
+              "visibility": "pub(crate)"
+            },
+            {
+              "name": "arg_count",
+              "visibility": "pub(crate)"
+            },
+            {
+              "name": "var_debug_info",
+              "visibility": "pub"
+            },
+            {
+              "name": "spread_arg",
+              "visibility": "pub(crate)"
+            },
+            {
+              "name": "span",
+              "visibility": "pub"
+            },
+            {
+              "name": "source_scopes",
+              "visibility": "pub(crate)"
+            }
+          ],
+          "dropped_from_middle_Body": [
+            "phase",
+            "pass_count",
+            "source",
+            "coroutine",
+            "user_type_annotations",
+            "required_consts",
+            "mentioned_items",
+            "is_polymorphic",
+            "injection_phase",
+            "tainted_by_errors",
+            "coverage_early_info",
+            "coverage_mir_info"
+          ]
+        },
+        "BasicBlock": {
+          "rustc_middle_fields": [
+            "statements",
+            "after_last_stmt_debuginfos",
+            "terminator",
+            "is_cleanup"
+          ],
+          "rustc_public_fields": [
+            "statements",
+            "terminator"
+          ],
+          "dropped_from_BasicBlockData": [
+            "after_last_stmt_debuginfos",
+            "is_cleanup"
+          ]
+        },
+        "LocalDecl": {
+          "rustc_middle_fields": [
+            "mutability",
+            "local_info",
+            "ty",
+            "user_ty",
+            "source_info"
+          ],
+          "rustc_public_fields": [
+            "ty",
+            "span",
+            "mutability"
+          ]
+        },
+        "SourceScope": {
+          "rustc_middle_fields": [
+            "span",
+            "parent_scope",
+            "inlined",
+            "inlined_parent_scope",
+            "local_data"
+          ],
+          "rustc_public_fields": [
+            "inlined",
+            "inlined_parent_scope"
+          ]
+        },
+        "InlineAsmOperand": {
+          "rustc_middle_variants": [
+            "In",
+            "Out",
+            "InOut",
+            "Const",
+            "SymFn",
+            "SymStatic",
+            "Label"
+          ],
+          "rustc_public_fields": [
+            "in_value",
+            "out_place",
+            "raw_rpr"
+          ]
+        }
+      },
+      "terminator_conversion_arms": [
+        {
+          "line": 735,
+          "middle_variant": "Goto",
+          "pattern_head": "mir::TerminatorKind::Goto { target }",
+          "target_variant": "TerminatorKind::Goto",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "{ TerminatorKind::Goto { target: target.as_usize() } }"
+        },
+        {
+          "line": 738,
+          "middle_variant": "SwitchInt",
+          "pattern_head": "mir::TerminatorKind::SwitchInt { discr, targets }",
+          "target_variant": "TerminatorKind::SwitchInt",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::SwitchInt { discr: discr.stable(tables, cx), targets: { let branches = targets.iter().map(|(val, target)"
+        },
+        {
+          "line": 748,
+          "middle_variant": "UnwindResume",
+          "pattern_head": "mir::TerminatorKind::UnwindResume",
+          "target_variant": "TerminatorKind::Resume",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::Resume,"
+        },
+        {
+          "line": 749,
+          "middle_variant": "UnwindTerminate",
+          "pattern_head": "mir::TerminatorKind::UnwindTerminate(_)",
+          "target_variant": "TerminatorKind::Abort",
+          "trap": null,
+          "dropped_or_degraded": [
+            "UnwindTerminateReason (via (_))"
+          ],
+          "rhs_head": "TerminatorKind::Abort,"
+        },
+        {
+          "line": 750,
+          "middle_variant": "Return",
+          "pattern_head": "mir::TerminatorKind::Return",
+          "target_variant": "TerminatorKind::Return",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::Return,"
+        },
+        {
+          "line": 751,
+          "middle_variant": "Unreachable",
+          "pattern_head": "mir::TerminatorKind::Unreachable",
+          "target_variant": "TerminatorKind::Unreachable",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::Unreachable,"
+        },
+        {
+          "line": 752,
+          "middle_variant": "Drop",
+          "pattern_head": "mir::TerminatorKind::Drop { place, target, unwind, replace: _, drop: _ }",
+          "target_variant": "TerminatorKind::Drop",
+          "trap": null,
+          "dropped_or_degraded": [
+            "replace",
+            "drop"
+          ],
+          "rhs_head": "{ TerminatorKind::Drop { place: place.stable(tables, cx), target: target.as_usize(), unwind: unwind.stable(tables, cx), "
+        },
+        {
+          "line": 759,
+          "middle_variant": "Call",
+          "pattern_head": "mir::TerminatorKind::Call { func, args, destination, target, unwind, call_source: _, fn_span: _, }",
+          "target_variant": "TerminatorKind::Call",
+          "trap": null,
+          "dropped_or_degraded": [
+            "call_source",
+            "fn_span"
+          ],
+          "rhs_head": "TerminatorKind::Call { func: func.stable(tables, cx), args: args.iter().map(|arg| arg.node.stable(tables, cx)).collect()"
+        },
+        {
+          "line": 774,
+          "middle_variant": "TailCall",
+          "pattern_head": "mir::TerminatorKind::TailCall { func: _, args: _, fn_span: _ }",
+          "target_variant": null,
+          "trap": "unimplemented!",
+          "dropped_or_degraded": [
+            "func",
+            "args",
+            "fn_span"
+          ],
+          "rhs_head": "unimplemented!(),"
+        },
+        {
+          "line": 775,
+          "middle_variant": "Assert",
+          "pattern_head": "mir::TerminatorKind::Assert { cond, expected, msg, target, unwind }",
+          "target_variant": "TerminatorKind::Assert",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "{ TerminatorKind::Assert { cond: cond.stable(tables, cx), expected: *expected, msg: msg.stable(tables, cx), target: targ"
+        },
+        {
+          "line": 784,
+          "middle_variant": "InlineAsm",
+          "pattern_head": "mir::TerminatorKind::InlineAsm { asm_macro: _, template, operands, options, line_spans, targets, unwind, }",
+          "target_variant": "TerminatorKind::InlineAsm",
+          "trap": null,
+          "dropped_or_degraded": [
+            "asm_macro",
+            "targets[1..] (multi-label asm_goto targets dropped)",
+            "template/options/line_spans stringified via Debug"
+          ],
+          "rhs_head": "TerminatorKind::InlineAsm { template: format!(\"{template:?}\"), operands: operands.iter().map(|operand| operand.stable(ta"
+        },
+        {
+          "line": 801,
+          "middle_variant": "Yield",
+          "pattern_head": "mir::TerminatorKind::Yield { .. } | mir::TerminatorKind::CoroutineDrop | mir::TerminatorKind::FalseEdge { .. } | mir::TerminatorKind::FalseUnwind { .. }",
+          "target_variant": null,
+          "trap": "unreachable!",
+          "dropped_or_degraded": [],
+          "rhs_head": "unreachable!(), }"
+        }
+      ],
+      "builder_and_pipeline_audit": {
+        "builder_instance_mir_calls": [
+          {
+            "line": 31,
+            "text": "let body = self.tcx.instance_mir(self.instance.def).clone();"
+          }
+        ],
+        "builder_reported_error_swallow": [
+          {
+            "line": 63,
+            "text": "Err(mir::interpret::ErrorHandled::Reported(..)) => return,"
+          }
+        ],
+        "builder_too_generic_unreachable": [
+          {
+            "line": 64,
+            "text": "Err(mir::interpret::ErrorHandled::TooGeneric(..)) => {"
+          }
+        ],
+        "context_impls_mir_body_instance_mir": [
+          {
+            "line": 149,
+            "text": "self.tcx.instance_mir(InstanceKind::Item(item))"
+          }
+        ],
+        "pass_placement_in_rustc_mir_transform": {
+          "RemovePlaceMention": {
+            "in_run_runtime_cleanup_passes_lines": [
+              673
+            ],
+            "in_run_optimization_passes_lines": []
+          },
+          "CheckAlignment": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              697
+            ]
+          },
+          "CheckNull": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              698
+            ]
+          },
+          "CheckEnums": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              699
+            ]
+          },
+          "RemoveStorageMarkers": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              716
+            ]
+          },
+          "RemoveZsts": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              718
+            ]
+          },
+          "UnreachablePropagation": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              723
+            ]
+          },
+          "GVN": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              743
+            ]
+          }
+        },
+        "pass_policies": {
+          "RemovePlaceMention": [
+            {
+              "line": 13,
+              "text": "PassPolicy::optional(!ctx.opts.unstable_opts.mir_preserve_ub)"
+            }
+          ],
+          "RemoveStorageMarkers": [
+            {
+              "line": 13,
+              "text": "PassPolicy::optional(ctx.mir_opt_level() >= 1 && !ctx.emit_lifetime_markers())"
+            }
+          ],
+          "RemoveZsts": [
+            {
+              "line": 13,
+              "text": "PassPolicy::optional(ctx.mir_opt_level() >= 1)"
+            }
+          ],
+          "UnreachablePropagation": [
+            {
+              "line": 20,
+              "text": "PassPolicy::optional(ctx.mir_opt_level() >= 2)"
+            }
+          ],
+          "GVN": [
+            {
+              "line": 132,
+              "text": "PassPolicy::optional(ctx.mir_opt_level() >= 2)"
+            }
+          ]
+        }
+      }
+    },
+    "head_2026_11_22": {
+      "repository": "rust-lang/rust",
+      "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1",
+      "trap_and_opaque_audit": {
+        "line_hit_totals": {
+          "unimplemented": 12,
+          "todo": 0,
+          "bug": 5,
+          "unreachable": 8,
+          "opaque": 6
+        },
+        "occurrence_totals": {
+          "unimplemented": 12,
+          "todo": 0,
+          "bug": 5,
+          "unreachable": 8,
+          "opaque": 6
+        },
+        "explicit_panic_total": 0,
+        "per_file_scan": {
+          "compiler/rustc_public/src/unstable/convert/stable/mir.rs": {
+            "lines": 942,
+            "sha256": "a5925358222f3e5694935cd00eb08ebb04afcfa9ecd25645b63afd7d306987b1",
+            "line_hit_counts": {
+              "unimplemented": 3,
+              "todo": 0,
+              "bug": 4,
+              "unreachable": 1,
+              "opaque": 5
+            },
+            "occurrence_counts": {
+              "unimplemented": 3,
+              "todo": 0,
+              "bug": 4,
+              "unreachable": 1,
+              "opaque": 5
+            },
+            "explicit_panic_count": 0,
+            "hits": {
+              "unimplemented": [
+                {
+                  "line": 267,
+                  "occurrences": 1,
+                  "text": "WrapUnsafeBinder(..) => unimplemented!(\"FIXME(unsafe_binders):\"),"
+                },
+                {
+                  "line": 470,
+                  "occurrences": 1,
+                  "text": "UnwrapUnsafeBinder(..) => unimplemented!(\"FIXME(unsafe_binders):\"),"
+                },
+                {
+                  "line": 775,
+                  "occurrences": 1,
+                  "text": "mir::TerminatorKind::TailCall { func: _, args: _, fn_span: _ } => unimplemented!(),"
+                }
+              ],
+              "bug": [
+                {
+                  "line": 448,
+                  "occurrences": 1,
+                  "text": "PhantomDeref => bug!(\"Hopefully we don't come here\"),"
+                },
+                {
+                  "line": 600,
+                  "occurrences": 1,
+                  "text": "BinOp::AddWithOverflow => bug!(\"AddWithOverflow should have been translated already\"),"
+                },
+                {
+                  "line": 603,
+                  "occurrences": 1,
+                  "text": "BinOp::SubWithOverflow => bug!(\"AddWithOverflow should have been translated already\"),"
+                },
+                {
+                  "line": 606,
+                  "occurrences": 1,
+                  "text": "BinOp::MulWithOverflow => bug!(\"AddWithOverflow should have been translated already\"),"
+                }
+              ],
+              "unreachable": [
+                {
+                  "line": 805,
+                  "occurrences": 1,
+                  "text": "| mir::TerminatorKind::FalseUnwind { .. } => unreachable!(),"
+                }
+              ],
+              "opaque": [
+                {
+                  "line": 190,
+                  "occurrences": 1,
+                  "text": "crate::mir::StatementKind::Coverage(opaque(coverage))"
+                },
+                {
+                  "line": 382,
+                  "occurrences": 1,
+                  "text": "crate::mir::FakeReadCause::ForMatchedPlace(opaque(local_def_id))"
+                },
+                {
+                  "line": 385,
+                  "occurrences": 1,
+                  "text": "ForLet(local_def_id) => crate::mir::FakeReadCause::ForLet(opaque(local_def_id)),"
+                },
+                {
+                  "line": 479,
+                  "occurrences": 1,
+                  "text": "UserTypeProjection { base: self.base.as_usize(), projection: opaque(&self.projs) }"
+                },
+                {
+                  "line": 939,
+                  "occurrences": 1,
+                  "text": "MonoItem::GlobalAsm(item_id) => StableMonoItem::GlobalAsm(opaque(item_id)),"
+                }
+              ]
+            },
+            "explicit_panics": []
+          },
+          "compiler/rustc_public/src/unstable/convert/stable/ty.rs": {
+            "lines": 1197,
+            "sha256": "7725650c63479dba4a1f89fed245c80d208ba6ed4de83e30b9e188dea51cafbf",
+            "line_hit_counts": {
+              "unimplemented": 9,
+              "todo": 0,
+              "bug": 1,
+              "unreachable": 6,
+              "opaque": 1
+            },
+            "occurrence_counts": {
+              "unimplemented": 9,
+              "todo": 0,
+              "bug": 1,
+              "unreachable": 6,
+              "opaque": 1
+            },
+            "explicit_panic_count": 0,
+            "hits": {
+              "unimplemented": [
+                {
+                  "line": 471,
+                  "occurrences": 1,
+                  "text": "ty::UnsafeBinder(_) => unimplemented!(),"
+                },
+                {
+                  "line": 484,
+                  "occurrences": 1,
+                  "text": "unimplemented!(\"FIXME(async_closures): Lower these to SMIR\")"
+                },
+                {
+                  "line": 513,
+                  "occurrences": 1,
+                  "text": "ty::View(..) => unimplemented!(),"
+                },
+                {
+                  "line": 578,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Bound(_, _) => unimplemented!(),"
+                },
+                {
+                  "line": 579,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Placeholder(_) => unimplemented!(),"
+                },
+                {
+                  "line": 580,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Expr(_) => unimplemented!(),"
+                },
+                {
+                  "line": 762,
+                  "occurrences": 1,
+                  "text": "PredicateKind::NormalizesTo(_pred) => unimplemented!(),"
+                },
+                {
+                  "line": 807,
+                  "occurrences": 1,
+                  "text": "unimplemented!()"
+                },
+                {
+                  "line": 810,
+                  "occurrences": 1,
+                  "text": "unimplemented!()"
+                }
+              ],
+              "bug": [
+                {
+                  "line": 348,
+                  "occurrences": 1,
+                  "text": "ty::BoundRegionKind::NamedForPrinting(_) => bug!(\"only used for pretty printing\"),"
+                }
+              ],
+              "unreachable": [
+                {
+                  "line": 499,
+                  "occurrences": 1,
+                  "text": "unreachable!()"
+                },
+                {
+                  "line": 509,
+                  "occurrences": 1,
+                  "text": "unreachable!();"
+                },
+                {
+                  "line": 576,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Error(_) => unreachable!(),"
+                },
+                {
+                  "line": 577,
+                  "occurrences": 1,
+                  "text": "ty::ConstKind::Infer(_) => unreachable!(),"
+                },
+                {
+                  "line": 804,
+                  "occurrences": 1,
+                  "text": "unreachable!()"
+                },
+                {
+                  "line": 969,
+                  "occurrences": 1,
+                  "text": "_ => unreachable!(\"{self:?}\"),"
+                }
+              ],
+              "opaque": [
+                {
+                  "line": 653,
+                  "occurrences": 1,
+                  "text": ".map(|idents| idents.iter().map(|ident| opaque(ident)).collect()),"
+                }
+              ]
+            },
+            "explicit_panics": []
+          },
+          "compiler/rustc_public/src/unstable/convert/stable/abi.rs": {
+            "lines": 577,
+            "sha256": "ec20fc8e46c388997acd1f05b75f20ec15ecb2518fa7660f0f4d629bcd328662",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {},
+            "explicit_panics": []
+          },
+          "compiler/rustc_public/src/unstable/convert/stable/mod.rs": {
+            "lines": 127,
+            "sha256": "2355dfdfd6bbe4f8f43e90bee77e28992781ba58fba58b6cffceb0ade56e8d27",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {},
+            "explicit_panics": []
+          },
+          "compiler/rustc_public_bridge/src/builder.rs": {
+            "lines": 76,
+            "sha256": "9254e295911ac94a226a18ba6f59baf57ac75932dfbe67084d013df09c926c1c",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 1,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 1,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {
+              "unreachable": [
+                {
+                  "line": 65,
+                  "occurrences": 1,
+                  "text": "unreachable!(\"Failed to evaluate instance constant: {:?}\", const_)"
+                }
+              ]
+            },
+            "explicit_panics": []
+          },
+          "compiler/rustc_public_bridge/src/alloc.rs": {
+            "lines": 100,
+            "sha256": "20acb20f19bd3f6ee4eb397d4e49bdf2edefdd2c34ecd3071af2fd17dbc32fb7",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {},
+            "explicit_panics": []
+          },
+          "compiler/rustc_public_bridge/src/context/impls.rs": {
+            "lines": 796,
+            "sha256": "a5551d3690e1f2b6e63a052a9d1174a346dff8a7e9fc190c640e1c46f220fcda",
+            "line_hit_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "occurrence_counts": {
+              "unimplemented": 0,
+              "todo": 0,
+              "bug": 0,
+              "unreachable": 0,
+              "opaque": 0
+            },
+            "explicit_panic_count": 0,
+            "hits": {},
+            "explicit_panics": []
+          }
+        }
+      },
+      "struct_field_comparison": {
+        "Body": {
+          "rustc_middle_count": 19,
+          "rustc_public_total_count": 7,
+          "rustc_public_pub_count": 3,
+          "rustc_public_pub_crate_count": 4,
+          "rustc_middle_fields": [
+            "basic_blocks",
+            "phase",
+            "pass_count",
+            "source",
+            "source_scopes",
+            "coroutine",
+            "local_decls",
+            "user_type_annotations",
+            "arg_count",
+            "spread_arg",
+            "var_debug_info",
+            "span",
+            "required_consts",
+            "mentioned_items",
+            "is_polymorphic",
+            "injection_phase",
+            "tainted_by_errors",
+            "coverage_early_info",
+            "coverage_mir_info"
+          ],
+          "rustc_public_fields": [
+            {
+              "name": "blocks",
+              "visibility": "pub"
+            },
+            {
+              "name": "locals",
+              "visibility": "pub(crate)"
+            },
+            {
+              "name": "arg_count",
+              "visibility": "pub(crate)"
+            },
+            {
+              "name": "var_debug_info",
+              "visibility": "pub"
+            },
+            {
+              "name": "spread_arg",
+              "visibility": "pub(crate)"
+            },
+            {
+              "name": "span",
+              "visibility": "pub"
+            },
+            {
+              "name": "source_scopes",
+              "visibility": "pub(crate)"
+            }
+          ],
+          "dropped_from_middle_Body": [
+            "phase",
+            "pass_count",
+            "source",
+            "coroutine",
+            "user_type_annotations",
+            "required_consts",
+            "mentioned_items",
+            "is_polymorphic",
+            "injection_phase",
+            "tainted_by_errors",
+            "coverage_early_info",
+            "coverage_mir_info"
+          ]
+        },
+        "BasicBlock": {
+          "rustc_middle_fields": [
+            "statements",
+            "after_last_stmt_debuginfos",
+            "terminator",
+            "is_cleanup"
+          ],
+          "rustc_public_fields": [
+            "statements",
+            "terminator"
+          ],
+          "dropped_from_BasicBlockData": [
+            "after_last_stmt_debuginfos",
+            "is_cleanup"
+          ]
+        },
+        "LocalDecl": {
+          "rustc_middle_fields": [
+            "mutability",
+            "local_info",
+            "ty",
+            "user_ty",
+            "source_info"
+          ],
+          "rustc_public_fields": [
+            "ty",
+            "span",
+            "mutability"
+          ]
+        },
+        "SourceScope": {
+          "rustc_middle_fields": [
+            "span",
+            "parent_scope",
+            "inlined",
+            "inlined_parent_scope",
+            "local_data"
+          ],
+          "rustc_public_fields": [
+            "inlined",
+            "inlined_parent_scope"
+          ]
+        },
+        "InlineAsmOperand": {
+          "rustc_middle_variants": [
+            "In",
+            "Out",
+            "InOut",
+            "Const",
+            "SymFn",
+            "SymStatic",
+            "Label"
+          ],
+          "rustc_public_fields": [
+            "in_value",
+            "out_place",
+            "raw_rpr"
+          ]
+        }
+      },
+      "terminator_conversion_arms": [
+        {
+          "line": 736,
+          "middle_variant": "Goto",
+          "pattern_head": "mir::TerminatorKind::Goto { target, .. }",
+          "target_variant": "TerminatorKind::Goto",
+          "trap": null,
+          "dropped_or_degraded": [
+            "loop_hint_attrs (via ..)"
+          ],
+          "rhs_head": "{ TerminatorKind::Goto { target: target.as_usize() } }"
+        },
+        {
+          "line": 739,
+          "middle_variant": "SwitchInt",
+          "pattern_head": "mir::TerminatorKind::SwitchInt { discr, targets }",
+          "target_variant": "TerminatorKind::SwitchInt",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::SwitchInt { discr: discr.stable(tables, cx), targets: { let branches = targets.iter().map(|(val, target)"
+        },
+        {
+          "line": 749,
+          "middle_variant": "UnwindResume",
+          "pattern_head": "mir::TerminatorKind::UnwindResume",
+          "target_variant": "TerminatorKind::Resume",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::Resume,"
+        },
+        {
+          "line": 750,
+          "middle_variant": "UnwindTerminate",
+          "pattern_head": "mir::TerminatorKind::UnwindTerminate(_)",
+          "target_variant": "TerminatorKind::Abort",
+          "trap": null,
+          "dropped_or_degraded": [
+            "UnwindTerminateReason (via (_))"
+          ],
+          "rhs_head": "TerminatorKind::Abort,"
+        },
+        {
+          "line": 751,
+          "middle_variant": "Return",
+          "pattern_head": "mir::TerminatorKind::Return",
+          "target_variant": "TerminatorKind::Return",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::Return,"
+        },
+        {
+          "line": 752,
+          "middle_variant": "Unreachable",
+          "pattern_head": "mir::TerminatorKind::Unreachable",
+          "target_variant": "TerminatorKind::Unreachable",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "TerminatorKind::Unreachable,"
+        },
+        {
+          "line": 753,
+          "middle_variant": "Drop",
+          "pattern_head": "mir::TerminatorKind::Drop { place, target, unwind, replace: _, drop: _ }",
+          "target_variant": "TerminatorKind::Drop",
+          "trap": null,
+          "dropped_or_degraded": [
+            "replace",
+            "drop"
+          ],
+          "rhs_head": "{ TerminatorKind::Drop { place: place.stable(tables, cx), target: target.as_usize(), unwind: unwind.stable(tables, cx), "
+        },
+        {
+          "line": 760,
+          "middle_variant": "Call",
+          "pattern_head": "mir::TerminatorKind::Call { func, args, destination, target, unwind, call_source: _, fn_span: _, }",
+          "target_variant": "TerminatorKind::Call",
+          "trap": null,
+          "dropped_or_degraded": [
+            "call_source",
+            "fn_span"
+          ],
+          "rhs_head": "TerminatorKind::Call { func: func.stable(tables, cx), args: args.iter().map(|arg| arg.node.stable(tables, cx)).collect()"
+        },
+        {
+          "line": 775,
+          "middle_variant": "TailCall",
+          "pattern_head": "mir::TerminatorKind::TailCall { func: _, args: _, fn_span: _ }",
+          "target_variant": null,
+          "trap": "unimplemented!",
+          "dropped_or_degraded": [
+            "func",
+            "args",
+            "fn_span"
+          ],
+          "rhs_head": "unimplemented!(),"
+        },
+        {
+          "line": 776,
+          "middle_variant": "Assert",
+          "pattern_head": "mir::TerminatorKind::Assert { cond, expected, msg, target, unwind }",
+          "target_variant": "TerminatorKind::Assert",
+          "trap": null,
+          "dropped_or_degraded": [],
+          "rhs_head": "{ TerminatorKind::Assert { cond: cond.stable(tables, cx), expected: *expected, msg: msg.stable(tables, cx), target: targ"
+        },
+        {
+          "line": 785,
+          "middle_variant": "InlineAsm",
+          "pattern_head": "mir::TerminatorKind::InlineAsm { asm_macro: _, template, operands, options, line_spans, targets, unwind, }",
+          "target_variant": "TerminatorKind::InlineAsm",
+          "trap": null,
+          "dropped_or_degraded": [
+            "asm_macro",
+            "targets[1..] (multi-label asm_goto targets dropped)",
+            "template/options/line_spans stringified via Debug"
+          ],
+          "rhs_head": "TerminatorKind::InlineAsm { template: format!(\"{template:?}\"), operands: operands.iter().map(|operand| operand.stable(ta"
+        },
+        {
+          "line": 802,
+          "middle_variant": "Yield",
+          "pattern_head": "mir::TerminatorKind::Yield { .. } | mir::TerminatorKind::CoroutineDrop | mir::TerminatorKind::FalseEdge { .. } | mir::TerminatorKind::FalseUnwind { .. }",
+          "target_variant": null,
+          "trap": "unreachable!",
+          "dropped_or_degraded": [],
+          "rhs_head": "unreachable!(), }"
+        }
+      ],
+      "builder_and_pipeline_audit": {
+        "builder_instance_mir_calls": [
+          {
+            "line": 31,
+            "text": "let body = self.tcx.instance_mir(self.instance.def).clone();"
+          }
+        ],
+        "builder_reported_error_swallow": [
+          {
+            "line": 63,
+            "text": "Err(mir::interpret::ErrorHandled::Reported(..)) => return,"
+          }
+        ],
+        "builder_too_generic_unreachable": [
+          {
+            "line": 64,
+            "text": "Err(mir::interpret::ErrorHandled::TooGeneric(..)) => {"
+          }
+        ],
+        "context_impls_mir_body_instance_mir": [
+          {
+            "line": 143,
+            "text": "self.tcx.instance_mir(InstanceKind::Item(item))"
+          }
+        ],
+        "pass_placement_in_rustc_mir_transform": {
+          "RemovePlaceMention": {
+            "in_run_runtime_cleanup_passes_lines": [
+              687
+            ],
+            "in_run_optimization_passes_lines": []
+          },
+          "CheckAlignment": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              711
+            ]
+          },
+          "CheckNull": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              712
+            ]
+          },
+          "CheckEnums": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              713
+            ]
+          },
+          "RemoveStorageMarkers": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              730
+            ]
+          },
+          "RemoveZsts": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              732
+            ]
+          },
+          "UnreachablePropagation": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              737
+            ]
+          },
+          "GVN": {
+            "in_run_runtime_cleanup_passes_lines": [],
+            "in_run_optimization_passes_lines": [
+              757
+            ]
+          }
+        },
+        "pass_policies": {
+          "RemovePlaceMention": [
+            {
+              "line": 13,
+              "text": "PassPolicy::optional(!ctx.opts.unstable_opts.mir_preserve_ub)"
+            }
+          ],
+          "RemoveStorageMarkers": [
+            {
+              "line": 13,
+              "text": "PassPolicy::optional(ctx.mir_opt_level() >= 1 && !ctx.emit_lifetime_markers())"
+            }
+          ],
+          "RemoveZsts": [
+            {
+              "line": 13,
+              "text": "PassPolicy::optional(ctx.mir_opt_level() >= 1)"
+            }
+          ],
+          "UnreachablePropagation": [
+            {
+              "line": 20,
+              "text": "PassPolicy::optional(ctx.mir_opt_level() >= 2)"
+            }
+          ],
+          "GVN": [
+            {
+              "line": 131,
+              "text": "PassPolicy::optional(ctx.mir_opt_level() >= 2)"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "anneal_rustc_capture_contrast": {
+    "repository": "joshlf/anneal",
+    "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+    "files": [
+      "trusted/rustc-capture/Cargo.toml",
+      "trusted/rustc-capture/src/driver.rs",
+      "trusted/rustc-capture/src/main.rs",
+      "trusted/rustc-capture/tests/compiler_session.rs"
+    ],
+    "uses_rustc_public": false,
+    "linked_rustc_private_crates": [
+      "rustc_driver",
+      "rustc_interface",
+      "rustc_middle",
+      "rustc_session"
+    ],
+    "compiler_version_pin": "1.98.0-nightly (f8a08b688 2026-05-30)",
+    "driver_fail_closed_hooks": [
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 29,
+        "text": "analysis_reached: bool,"
+      },
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 46,
+        "text": "early_dcx.early_fatal(\"driver was built with an unexpected compiler version\");"
+      },
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 56,
+        "text": "early_dcx.early_fatal(format!(\"cannot resolve capture executable: {error}\"))"
+      },
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 62,
+        "text": "early_dcx.early_fatal(\"capture executable has no installation root\")"
+      },
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 66,
+        "text": "early_dcx.early_fatal(format!("
+      },
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 82,
+        "text": "self.analysis_reached = tcx.dcx().has_errors().is_none();"
+      },
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 106,
+        "text": "early_dcx.early_fatal(format!("
+      },
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 113,
+        "text": "early_dcx.early_fatal(format!(\"compiler argument is not UTF-8: {arg:?}\"))"
+      },
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 128,
+        "text": "analysis_reached: false,"
+      },
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 145,
+        "text": "if !callbacks.analysis_reached {"
+      },
+      {
+        "file": "trusted/rustc-capture/src/driver.rs",
+        "line": 146,
+        "text": "early_dcx.early_fatal(\"compiler returned without reaching a clean analysis callback\");"
+      }
+    ],
+    "trusted_mir_ast_explicit_unsupported_constructors": [
+      {
+        "line": 321,
+        "text": "| unsupported"
+      },
+      {
+        "line": 475,
+        "text": "| unsupported"
+      },
+      {
+        "line": 628,
+        "text": "| unsupported"
+      },
+      {
+        "line": 662,
+        "text": "| unsupported"
+      },
+      {
+        "line": 740,
+        "text": "| unsupported"
+      },
+      {
+        "line": 795,
+        "text": "| unsupported"
+      }
+    ],
+    "trusted_mir_ast_cleanup_metadata": [
+      {
+        "line": 813,
+        "text": "cleanup : Bool := false"
+      },
+      {
+        "line": 932,
+        "text": "`BasicBlockData::is_cleanup`), and `Place.projection` (from"
+      }
+    ]
+  },
+  "live_rustc_mir_phase_probes": {
+    "rustc_version": {
+      "summary": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+      "binary": "rustc",
+      "commit-hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "commit-date": "2026-05-31",
+      "host": "x86_64-unknown-linux-gnu",
+      "release": "1.98.0-nightly",
+      "LLVM version": "22.1.6"
+    },
+    "probe_source_relpath": "support/mir_phase_ub_probes.rs",
+    "probe_source_sha256": "f473e56760d7dc8b0b32e9074e7d6cd734803766192eea418aea2d7b3f61c23d",
+    "configurations": {
+      "o0_default": {
+        "flags": [
+          "-C",
+          "opt-level=0"
+        ],
+        "functions": {
+          "probe_zst_deref": {
+            "post_cleanup": {
+              "sha256": "9139b5e46a496901ce61bc1b5ddba943eb0813c4cc055e0e0a3c7c4283e5450a",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": true,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "41a2fc5ad6d0706620d2ad2671c02aae1e780e379db9795da3929ecaef4aec38",
+              "basic_block_count": 5,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 4
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_div_zero_unchecked": {
+            "post_cleanup": {
+              "sha256": "350d87271a865dcbd7a12700f9d2987981effda283fed552f5dc7b2cd26e2f24",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "13ce46951ccb35d4d6c86fb428e36ba02fd9732829aed97e2e1458dcb2f54659",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_div_zero_checked": {
+            "post_cleanup": {
+              "sha256": "cd64955f84454a8395a96ac146fa8da8bdbc70e6c2072593dff83b2935caa7a1",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "5278170abbd8fc72c313a7b1d7f6ba04ce31aa6bf66426010f0a80f24d345d99",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_place_mention": {
+            "post_cleanup": {
+              "sha256": "6fa808b8d95626cce7d27cc51232118de4653164affb5794c9c35e8a1201e4fd",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "02636cc8087817b353198f124791c4a4c890d2d628e072f8be618947b895f23d",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_storage_markers": {
+            "post_cleanup": {
+              "sha256": "118510780ab05172a072f4e0af3456222707f0eb90fb550382edccd53a146f5e",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 8,
+              "storage_dead_count": 8,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "2b51a71ac0fc92a2a10f5133ed8c599771217da55d285a2a47b3f910663565c5",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unreachable_prop": {
+            "post_cleanup": {
+              "sha256": "5ceb2a62e4a5240f1f90c4117829907119663e4cc462fb39267d3274549f502a",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 5,
+              "storage_dead_count": 3,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": true,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "82a7f2bc2ffe7b10282b05858de59755849c3f91c3926edc31b9ebf9d218e308",
+              "basic_block_count": 6,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": true,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 2
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unwind_cleanup": {
+            "post_cleanup": {
+              "sha256": "ea73a7355931f13a3454900e25f5d80f557b52659c40204146fac7b067b1c57c",
+              "basic_block_count": 7,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 6,
+              "storage_dead_count": 5,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "1c9ba7e7e953ad68b34eec65fef7b5763ddc658dd39c9c73e46bebd39fd90d16",
+              "basic_block_count": 7,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unwind_abi_terminate": {
+            "post_cleanup": {
+              "sha256": "df9e6b76a55c295266aa0861e5a1840294528fa851f5a73661d8b25a456f121b",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 5,
+              "storage_dead_count": 4,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "3e153f4979e841ad747e449debfe4132f1f2996b1cffecf2f19c7732e688c175",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          }
+        }
+      },
+      "o2_default": {
+        "flags": [
+          "-C",
+          "opt-level=2"
+        ],
+        "functions": {
+          "probe_zst_deref": {
+            "post_cleanup": {
+              "sha256": "9139b5e46a496901ce61bc1b5ddba943eb0813c4cc055e0e0a3c7c4283e5450a",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": true,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "3849b334c06558cab9829d6ab71033669a6d38ae97537d4f54a6026194fb2931",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_div_zero_unchecked": {
+            "post_cleanup": {
+              "sha256": "350d87271a865dcbd7a12700f9d2987981effda283fed552f5dc7b2cd26e2f24",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "b338704be4c805b018d4aeba578014ae646b8eeda6612af01828ef0a3f38d72c",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_div_zero_checked": {
+            "post_cleanup": {
+              "sha256": "cd64955f84454a8395a96ac146fa8da8bdbc70e6c2072593dff83b2935caa7a1",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "ece95ea9183a02c041ec0af455889743971477a647ac4c7e3562cbcf0efcdbd4",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_place_mention": {
+            "post_cleanup": {
+              "sha256": "6fa808b8d95626cce7d27cc51232118de4653164affb5794c9c35e8a1201e4fd",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "02636cc8087817b353198f124791c4a4c890d2d628e072f8be618947b895f23d",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_storage_markers": {
+            "post_cleanup": {
+              "sha256": "118510780ab05172a072f4e0af3456222707f0eb90fb550382edccd53a146f5e",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 8,
+              "storage_dead_count": 8,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "e85cbc93af2d67f4e8fa5c7b733ae5835a802084ee902eb0528d5cd60355c96f",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 3,
+              "storage_dead_count": 3,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unreachable_prop": {
+            "post_cleanup": {
+              "sha256": "5ceb2a62e4a5240f1f90c4117829907119663e4cc462fb39267d3274549f502a",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 5,
+              "storage_dead_count": 3,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": true,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "06a9d85b21d81088b15c8dcfc41521bce979c478b892e7abf7c36241adeb8def",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": true,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unwind_cleanup": {
+            "post_cleanup": {
+              "sha256": "ea73a7355931f13a3454900e25f5d80f557b52659c40204146fac7b067b1c57c",
+              "basic_block_count": 7,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 6,
+              "storage_dead_count": 5,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "ed1979d1d522024279cc73a1862fc703139a09dc95e3678c1af1c000e26c88e7",
+              "basic_block_count": 6,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 11,
+              "storage_dead_count": 10,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unwind_abi_terminate": {
+            "post_cleanup": {
+              "sha256": "df9e6b76a55c295266aa0861e5a1840294528fa851f5a73661d8b25a456f121b",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 5,
+              "storage_dead_count": 4,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "1f79f10459fb4fb35c0bdf5e6bd3eac0c7d895432042ecbe4bf85458e3592aff",
+              "basic_block_count": 3,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 10,
+              "storage_dead_count": 9,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          }
+        }
+      },
+      "o0_preserve_ub": {
+        "flags": [
+          "-C",
+          "opt-level=0",
+          "-Zmir-preserve-ub"
+        ],
+        "functions": {
+          "probe_zst_deref": {
+            "post_cleanup": {
+              "sha256": "9139b5e46a496901ce61bc1b5ddba943eb0813c4cc055e0e0a3c7c4283e5450a",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": true,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "41a2fc5ad6d0706620d2ad2671c02aae1e780e379db9795da3929ecaef4aec38",
+              "basic_block_count": 5,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 4
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_div_zero_unchecked": {
+            "post_cleanup": {
+              "sha256": "350d87271a865dcbd7a12700f9d2987981effda283fed552f5dc7b2cd26e2f24",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "13ce46951ccb35d4d6c86fb428e36ba02fd9732829aed97e2e1458dcb2f54659",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_div_zero_checked": {
+            "post_cleanup": {
+              "sha256": "cd64955f84454a8395a96ac146fa8da8bdbc70e6c2072593dff83b2935caa7a1",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "5278170abbd8fc72c313a7b1d7f6ba04ce31aa6bf66426010f0a80f24d345d99",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_place_mention": {
+            "post_cleanup": {
+              "sha256": "15f9d213fb18aeabdb56b980a1e515bd9ffd3be9393d161ec410d3807e86408e",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "820fbf641ba75bdec4752c7d39c52c8bf9156341a44167f8f9606a4ade5bee19",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_storage_markers": {
+            "post_cleanup": {
+              "sha256": "118510780ab05172a072f4e0af3456222707f0eb90fb550382edccd53a146f5e",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 8,
+              "storage_dead_count": 8,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "2b51a71ac0fc92a2a10f5133ed8c599771217da55d285a2a47b3f910663565c5",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unreachable_prop": {
+            "post_cleanup": {
+              "sha256": "76f523c109a2b98036a2f9d8ccf02f6125a56aff58f134c0d06eb696a47500ef",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 5,
+              "storage_dead_count": 3,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": true,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "86ee496f91d4292c4ed2b432ca8d60223d851c9cebed8c3e5a37e7c026f78e73",
+              "basic_block_count": 6,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": true,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 2
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unwind_cleanup": {
+            "post_cleanup": {
+              "sha256": "ea73a7355931f13a3454900e25f5d80f557b52659c40204146fac7b067b1c57c",
+              "basic_block_count": 7,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 6,
+              "storage_dead_count": 5,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "1c9ba7e7e953ad68b34eec65fef7b5763ddc658dd39c9c73e46bebd39fd90d16",
+              "basic_block_count": 7,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unwind_abi_terminate": {
+            "post_cleanup": {
+              "sha256": "df9e6b76a55c295266aa0861e5a1840294528fa851f5a73661d8b25a456f121b",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 5,
+              "storage_dead_count": 4,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "3e153f4979e841ad747e449debfe4132f1f2996b1cffecf2f19c7732e688c175",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          }
+        }
+      },
+      "o2_preserve_ub": {
+        "flags": [
+          "-C",
+          "opt-level=2",
+          "-Zmir-preserve-ub"
+        ],
+        "functions": {
+          "probe_zst_deref": {
+            "post_cleanup": {
+              "sha256": "9139b5e46a496901ce61bc1b5ddba943eb0813c4cc055e0e0a3c7c4283e5450a",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": true,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "3849b334c06558cab9829d6ab71033669a6d38ae97537d4f54a6026194fb2931",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_div_zero_unchecked": {
+            "post_cleanup": {
+              "sha256": "350d87271a865dcbd7a12700f9d2987981effda283fed552f5dc7b2cd26e2f24",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "b338704be4c805b018d4aeba578014ae646b8eeda6612af01828ef0a3f38d72c",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_div_zero_checked": {
+            "post_cleanup": {
+              "sha256": "cd64955f84454a8395a96ac146fa8da8bdbc70e6c2072593dff83b2935caa7a1",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "ece95ea9183a02c041ec0af455889743971477a647ac4c7e3562cbcf0efcdbd4",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_place_mention": {
+            "post_cleanup": {
+              "sha256": "15f9d213fb18aeabdb56b980a1e515bd9ffd3be9393d161ec410d3807e86408e",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "820fbf641ba75bdec4752c7d39c52c8bf9156341a44167f8f9606a4ade5bee19",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_storage_markers": {
+            "post_cleanup": {
+              "sha256": "118510780ab05172a072f4e0af3456222707f0eb90fb550382edccd53a146f5e",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 8,
+              "storage_dead_count": 8,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "e85cbc93af2d67f4e8fa5c7b733ae5835a802084ee902eb0528d5cd60355c96f",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 3,
+              "storage_dead_count": 3,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unreachable_prop": {
+            "post_cleanup": {
+              "sha256": "76f523c109a2b98036a2f9d8ccf02f6125a56aff58f134c0d06eb696a47500ef",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 5,
+              "storage_dead_count": 3,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": true,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "06a9d85b21d81088b15c8dcfc41521bce979c478b892e7abf7c36241adeb8def",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": true,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unwind_cleanup": {
+            "post_cleanup": {
+              "sha256": "ea73a7355931f13a3454900e25f5d80f557b52659c40204146fac7b067b1c57c",
+              "basic_block_count": 7,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 6,
+              "storage_dead_count": 5,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "ed1979d1d522024279cc73a1862fc703139a09dc95e3678c1af1c000e26c88e7",
+              "basic_block_count": 6,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 11,
+              "storage_dead_count": 10,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unwind_abi_terminate": {
+            "post_cleanup": {
+              "sha256": "df9e6b76a55c295266aa0861e5a1840294528fa851f5a73661d8b25a456f121b",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 5,
+              "storage_dead_count": 4,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "1f79f10459fb4fb35c0bdf5e6bd3eac0c7d895432042ecbe4bf85458e3592aff",
+              "basic_block_count": 3,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 10,
+              "storage_dead_count": 9,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": false
+          }
+        }
+      },
+      "o0_mopt0_preserve_ub": {
+        "flags": [
+          "-C",
+          "opt-level=0",
+          "-Zmir-opt-level=0",
+          "-Zmir-preserve-ub"
+        ],
+        "functions": {
+          "probe_zst_deref": {
+            "post_cleanup": {
+              "sha256": "9139b5e46a496901ce61bc1b5ddba943eb0813c4cc055e0e0a3c7c4283e5450a",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": true,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "0957fb2eb85590bf6c370dbf07329b0f56c8118634685bf36a074e65190b5ce9",
+              "basic_block_count": 5,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": true,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 4
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_div_zero_unchecked": {
+            "post_cleanup": {
+              "sha256": "350d87271a865dcbd7a12700f9d2987981effda283fed552f5dc7b2cd26e2f24",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "7b94b89def8dc88510530c894d6eacd256f1f31907775e6bd2786262fb7b677f",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_div_zero_checked": {
+            "post_cleanup": {
+              "sha256": "cd64955f84454a8395a96ac146fa8da8bdbc70e6c2072593dff83b2935caa7a1",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "e30ad102756575f7b5933bd9003ead72cab56c8c4364cc20e26209bdcf9a06b1",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_place_mention": {
+            "post_cleanup": {
+              "sha256": "15f9d213fb18aeabdb56b980a1e515bd9ffd3be9393d161ec410d3807e86408e",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "3e7068e5e516221a258988226013c55c66acc0d5abefe91999ce09ce3587041a",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_storage_markers": {
+            "post_cleanup": {
+              "sha256": "118510780ab05172a072f4e0af3456222707f0eb90fb550382edccd53a146f5e",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 8,
+              "storage_dead_count": 8,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "7f97b19362b156af421f6e5911d90031d1e759e5c8f6239e2662be7111e07994",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 8,
+              "storage_dead_count": 8,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_unreachable_prop": {
+            "post_cleanup": {
+              "sha256": "76f523c109a2b98036a2f9d8ccf02f6125a56aff58f134c0d06eb696a47500ef",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 5,
+              "storage_dead_count": 3,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": true,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "108f8254be036efdf9959a16006c5dbf1a66a660ee885adf344d8fd7fe5fafbe",
+              "basic_block_count": 6,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 5,
+              "storage_dead_count": 3,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": true,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 2
+            },
+            "mir_body_identical_post_vs_opt": false
+          },
+          "probe_unwind_cleanup": {
+            "post_cleanup": {
+              "sha256": "ea73a7355931f13a3454900e25f5d80f557b52659c40204146fac7b067b1c57c",
+              "basic_block_count": 7,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 6,
+              "storage_dead_count": 5,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "2ea7b2193249da36ae1ed9f753a7e96ba8925337877f736f283a0ae8c03ab70a",
+              "basic_block_count": 7,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 6,
+              "storage_dead_count": 5,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_unwind_abi_terminate": {
+            "post_cleanup": {
+              "sha256": "df9e6b76a55c295266aa0861e5a1840294528fa851f5a73661d8b25a456f121b",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 5,
+              "storage_dead_count": 4,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "b869050ddc628027ec10f1a83f1a3ef07f9ef8cb8ef55929874654cbad70f235",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 5,
+              "storage_dead_count": 4,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          }
+        }
+      },
+      "o2_mopt0_preserve_ub": {
+        "flags": [
+          "-C",
+          "opt-level=2",
+          "-Zmir-opt-level=0",
+          "-Zmir-preserve-ub"
+        ],
+        "functions": {
+          "probe_zst_deref": {
+            "post_cleanup": {
+              "sha256": "9139b5e46a496901ce61bc1b5ddba943eb0813c4cc055e0e0a3c7c4283e5450a",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": true,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "d21eb5b031adc329363cecc124f14483a28cf5f25d8aa88f04a31c770f8a719d",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": true,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_div_zero_unchecked": {
+            "post_cleanup": {
+              "sha256": "350d87271a865dcbd7a12700f9d2987981effda283fed552f5dc7b2cd26e2f24",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "7b94b89def8dc88510530c894d6eacd256f1f31907775e6bd2786262fb7b677f",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_div_zero_checked": {
+            "post_cleanup": {
+              "sha256": "cd64955f84454a8395a96ac146fa8da8bdbc70e6c2072593dff83b2935caa7a1",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "e30ad102756575f7b5933bd9003ead72cab56c8c4364cc20e26209bdcf9a06b1",
+              "basic_block_count": 2,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": true,
+              "has_place_mention": false,
+              "storage_live_count": 1,
+              "storage_dead_count": 1,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_place_mention": {
+            "post_cleanup": {
+              "sha256": "15f9d213fb18aeabdb56b980a1e515bd9ffd3be9393d161ec410d3807e86408e",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "3e7068e5e516221a258988226013c55c66acc0d5abefe91999ce09ce3587041a",
+              "basic_block_count": 1,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 0,
+              "storage_dead_count": 0,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_storage_markers": {
+            "post_cleanup": {
+              "sha256": "118510780ab05172a072f4e0af3456222707f0eb90fb550382edccd53a146f5e",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 8,
+              "storage_dead_count": 8,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "7f97b19362b156af421f6e5911d90031d1e759e5c8f6239e2662be7111e07994",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 8,
+              "storage_dead_count": 8,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_unreachable_prop": {
+            "post_cleanup": {
+              "sha256": "76f523c109a2b98036a2f9d8ccf02f6125a56aff58f134c0d06eb696a47500ef",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 5,
+              "storage_dead_count": 3,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": true,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "fa63ff06972c916ca1ec718c2bd668cbbe7c785c1ff00570e251f9d3b5606af4",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": true,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": true,
+              "storage_live_count": 5,
+              "storage_dead_count": 3,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": true,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_unwind_cleanup": {
+            "post_cleanup": {
+              "sha256": "ea73a7355931f13a3454900e25f5d80f557b52659c40204146fac7b067b1c57c",
+              "basic_block_count": 7,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 6,
+              "storage_dead_count": 5,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "2ea7b2193249da36ae1ed9f753a7e96ba8925337877f736f283a0ae8c03ab70a",
+              "basic_block_count": 7,
+              "cleanup_block_count": 2,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 6,
+              "storage_dead_count": 5,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": true,
+              "has_terminate_abi": false,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          },
+          "probe_unwind_abi_terminate": {
+            "post_cleanup": {
+              "sha256": "df9e6b76a55c295266aa0861e5a1840294528fa851f5a73661d8b25a456f121b",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 5,
+              "storage_dead_count": 4,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "optimized": {
+              "sha256": "b869050ddc628027ec10f1a83f1a3ef07f9ef8cb8ef55929874654cbad70f235",
+              "basic_block_count": 4,
+              "cleanup_block_count": 0,
+              "has_arg1_deref_read": false,
+              "has_arg1_zst_write": false,
+              "has_div_op": false,
+              "has_place_mention": false,
+              "storage_live_count": 5,
+              "storage_dead_count": 4,
+              "has_assume": false,
+              "has_unreachable_unchecked_call": false,
+              "has_terminate_cleanup": false,
+              "has_terminate_abi": true,
+              "ub_check_assert_count": 0
+            },
+            "mir_body_identical_post_vs_opt": true
+          }
+        }
+      }
+    }
+  }
+}

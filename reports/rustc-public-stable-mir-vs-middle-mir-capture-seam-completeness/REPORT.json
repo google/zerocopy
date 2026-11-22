@@ -1,0 +1,65 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (Anneal pinned capture toolchain source)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "release": "1.98.0-nightly (f8a08b688 2026-05-30)"
+      }
+    },
+    {
+      "name": "rustc (executed nightly toolchain for MIR phase probes)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "release": "1.98.0-nightly (14210df0e 2026-05-31)",
+        "host": "x86_64-unknown-linux-gnu",
+        "llvm_version": "22.1.6"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc_public baseline source audit)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "rust-lang/rust (rustc_public cross-version main audit)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+      }
+    },
+    {
+      "name": "Anneal (trusted/rustc-capture and Trusted.MirAst)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 kernel checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
