@@ -51,8 +51,13 @@ modules under `proof.sources`. For a dependency-free, feature-free Cargo
 library, `--manifest-path <Cargo.toml> --proof-dir <dir>` (with optional
 `--select <path>`) constructs the same request automatically.
 
-The alpha uses the x86-64 Linux scalar MIR profile: booleans, integers up to
-64 bits, unit, never, and inhabited local fieldless enums (for example,
+The alpha uses the x86-64 Linux scalar MIR profile: booleans, 8- through
+128-bit and pointer-sized integers, `char`, `core::cmp::Ordering`, `(T, bool)`
+overflowing-arithmetic pairs (via `core::intrinsics::*_with_overflow`, since
+`-Copt-level=0` leaves `overflowing_*` methods as `Call` terminators), unit,
+never, inhabited local fieldless enums, unary/binary scalar operators (division
+and remainder require unchecked intrinsics that do not emit runtime `Assert`
+terminators), and integer/character casts (for example,
 `ci/verify_starnix_e2e.py` checks Starnix's `ebpf_core` endianness conversion
 with symbolic MIR helpers in `Anneal.MirWp`). Proof modules may import bundled
 3-axiom `Anneal.*` proof libraries (`Anneal.MirWp`, `Anneal.LoopInv`,
@@ -60,7 +65,9 @@ with symbolic MIR helpers in `Anneal.MirWp`). Proof modules may import bundled
 `Anneal.BitVecArith`, `Anneal.NatBitwise`, `Anneal.LeBytes`, and
 `Anneal.ListChunks`), compiled and audited on demand when imported;
 specification modules stay restricted to `Trusted.*`, `Init.*`/`Std.*`, and
-declared `specification` helpers. Calls, pointer accesses, and external
+declared `specification` helpers. Calls (including `overflowing_*` methods),
+runtime `Assert` terminators (including ordinary Rust `/` and `%`), place
+projections, general tuple or ADT aggregates, pointer accesses, and external
 dependencies are outside the alpha's scope. An unsupported input returns an
 explicit refusal. Verify the stated configuration when comparing a result with a
 deployed binary. See the [threat model](../THREAT_MODEL.md) for the verification

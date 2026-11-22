@@ -41,7 +41,7 @@ use crate::setup::{ToolOverrides, installed_bundle, resolve_tools};
 // canonical audited sources without running a build hook.
 include!("bundled_resources.rs");
 
-const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 3;
+const PINNED_CAPTURE_SCHEMA_VERSION: u32 = 4;
 const PINNED_RUSTC_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 const RECEIPT_SCHEMA_VERSION: u32 = 2;
 
@@ -495,11 +495,12 @@ struct CaptureSchemaHeader {
 fn parse_capture_receipt(bytes: &[u8]) -> Result<CaptureReceipt> {
     let header: CaptureSchemaHeader =
         serde_json::from_slice(bytes).map_err(|e| error("tool_failed", "capture", e))?;
-    // Capture schema 3 records structured `IntWidth` / `IntTy`, `ConstLit`,
-    // `EnumTagRepr`, and a single authoritative `program.scope` (including
-    // rootless `crate` scope values), retaining schema 2's `with_retag` flags
-    // and source identities. Check the schema version and compiler commit
-    // before strict deserialization so older capture ABIs report a clear
+    // Capture schema 4 widens integer widths to `i128`, encodes 128-bit bit
+    // patterns as canonical decimal strings, and adds `char`, `Ordering`,
+    // `(T, bool)` overflow pairs, unary/overflow/division/comparison ops, and
+    // `IntToInt` casts on top of schema 3's `program.scope`, `with_retag`
+    // flags, and source identities. Check the schema version and compiler
+    // commit before strict deserialization so older capture ABIs report a clear
     // version mismatch. Request schema 1 is independent.
     if header.schema_version != PINNED_CAPTURE_SCHEMA_VERSION
         || header.compiler.as_ref().map(|compiler| compiler.commit.as_str())
@@ -2101,13 +2102,34 @@ mod tests {
 
     #[test]
     fn old_capture_schema_reports_version_mismatch_before_strict_deserialization() {
-        let schema2 = br#"{"schema_version":2,"compiler":{"commit":"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"},"legacy":true}"#;
-        let Err(err) = parse_capture_receipt(schema2) else {
-            panic!("schema 2 receipt must be rejected");
-        };
-        assert_eq!(err.status, "tool_failed");
-        assert_eq!(err.phase, "capture");
-        assert_eq!(err.detail, "unexpected capture schema or compiler");
+        for legacy in [
+            br#"{"schema_version":2,"compiler":{"commit":"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"},"legacy":true}"#.as_slice(),
+            br#"{"schema_version":3,"compiler":{"commit":"f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"},"legacy":true}"#.as_slice(),
+        ] {
+            let Err(err) = parse_capture_receipt(legacy) else {
+                panic!("legacy schema receipt must be rejected");
+            };
+            assert_eq!(err.status, "tool_failed");
+            assert_eq!(err.phase, "capture");
+            assert_eq!(err.detail, "unexpected capture schema or compiler");
+        }
+
+        // Schema 4 receipts carrying 128-bit decimal string constants above
+        // `u64::MAX` inside `program.bodies` parse cleanly without arbitrary
+        // JSON number precision.
+        let schema4_u128 = br#"{
+            "schema_version": 4,
+            "compiler": { "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1" },
+            "configuration": {},
+            "source_files": [{ "path": "src/lib.rs", "sha256": "00" }],
+            "census": [],
+            "selected": [],
+            "program": {
+                "scope": { "kind": "crate" },
+                "bodies": [{ "bits": "340282366920938463463374607431768211455" }]
+            }
+        }"#;
+        assert!(parse_capture_receipt(schema4_u128).is_ok());
     }
 
     #[test]

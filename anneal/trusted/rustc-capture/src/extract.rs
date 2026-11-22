@@ -26,7 +26,7 @@ pub type Result<T> = std::result::Result<T, String>;
 
 /// Decode a `TyKind::Int` or `TyKind::Uint` into [`IntTy`], preserving pointer-
 /// sized `isize`/`usize` (`bit_width() == None`) as [`IntWidth::Isize`] on the
-/// separately checked 64-bit target and refusing 128-bit integers.
+/// separately checked 64-bit target and mapping 8..=128-bit integers 1-to-1.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_ast_ir/src/lib.rs#L58-L67
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_ast_ir/src/lib.rs#L134-L143
 fn int_ty(t: ty::Ty<'_>) -> Result<IntTy> {
@@ -41,8 +41,9 @@ fn int_ty(t: ty::Ty<'_>) -> Result<IntTy> {
         Some(16) => IntWidth::I16,
         Some(32) => IntWidth::I32,
         Some(64) => IntWidth::I64,
+        Some(128) => IntWidth::I128,
         Some(bits) => {
-            return Err(format!("integer width {bits} exceeds the modeled 64 bits"));
+            return Err(format!("unsupported integer width {bits}"));
         }
     };
     Ok(IntTy { width, signed })
@@ -86,11 +87,7 @@ fn enum_tag_repr<'tcx>(
                     Integer::I16 => IntWidth::I16,
                     Integer::I32 => IntWidth::I32,
                     Integer::I64 => IntWidth::I64,
-                    Integer::I128 => {
-                        return Err(format!(
-                            "enum tag width 128 exceeds the modeled 64 bits: {t:?}"
-                        ));
-                    }
+                    Integer::I128 => IntWidth::I128,
                 };
                 Ok(ir::EnumTagRepr::Scalar(IntTy { width, signed }))
             }
@@ -112,13 +109,40 @@ fn enum_tag_repr<'tcx>(
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1433-L1443
 pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
     // Every admitted value must fit the owned scalar representation. Rejecting
-    // a type is deliberate: replacing a pointer, payload, or wider integer with
-    // a machine word would assign semantics the proof model does not provide.
+    // a type is deliberate: replacing a pointer, payload, or unmodeled
+    // aggregate with a machine word would assign semantics the proof model does
+    // not provide.
     match *t.kind() {
         ty::Bool => Ok(ir::Ty::Bool),
+        ty::Char => Ok(ir::Ty::Char),
         ty::Never => Ok(ir::Ty::Never),
         ty::Tuple(elements) if elements.is_empty() => Ok(ir::Ty::Unit),
+        // `BinOp::{Add,Sub,Mul}WithOverflow` "returns `(T, bool)` of both the
+        // wrapped result and a bool indicating whether it overflowed", which is
+        // the sole non-empty tuple type `Trusted.MirSemantics.isOverflowPairTy`
+        // executes; every other non-empty tuple remains refused.
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1626-L1642
+        ty::Tuple(elements) if elements.len() == 2 => {
+            if let (Ok(ir::Ty::Int(ity)), Ok(ir::Ty::Bool)) =
+                (ty(tcx, elements[0]), ty(tcx, elements[1]))
+            {
+                Ok(ir::Ty::OverflowPair(ity))
+            } else {
+                Err(format!("unsupported type: {t:?}"))
+            }
+        }
         ty::Uint(_) | ty::Int(_) => Ok(ir::Ty::Int(int_ty(t)?)),
+        // `core::cmp::Ordering` ("a lang item only so that `BinOp::Cmp` in MIR
+        // can return it") maps to `Trusted.MirAst.MirTy.ordering` before the
+        // crate-local fieldless enum arm (`capture.rs` separately refuses
+        // crate-local language items).
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L400-L415
+        ty::Adt(adt, args)
+            if args.is_empty()
+                && tcx.is_lang_item(adt.did(), rustc_hir::LangItem::OrderingEnum) =>
+        {
+            Ok(ir::Ty::Ordering)
+        }
         // `Trusted.MirAst.EnumTy` keys nominal enum identity by the `u32` that
         // `enum_id` derives from the enum's semantic path, so the key does not
         // move when unrelated items shift compiler indices. Admission requires
@@ -161,8 +185,7 @@ pub fn ty<'tcx>(tcx: TyCtxt<'tcx>, t: ty::Ty<'tcx>) -> Result<ir::Ty> {
                     if int_ty(entry.ty)? != discr {
                         return Err("enum discriminant type disagrees with discriminant_ty".into());
                     }
-                    u64::try_from(entry.val)
-                        .map_err(|_| "enum discriminant exceeds 64 bits".to_string())
+                    Ok(entry.val)
                 })
                 .collect::<Result<Vec<_>>>()?;
             let ety = ir::EnumTy::try_new(enum_id(tcx, adt.did()), discr, tag_repr, discriminants)
@@ -198,7 +221,8 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
         mir::Operand::Constant(constant) => {
             let t = ty(tcx, constant.const_.ty())?;
             let width = match &t {
-                ir::Ty::Bool => 8,
+                ir::Ty::Bool | ir::Ty::Ordering => 8,
+                ir::Ty::Char => 32,
                 ir::Ty::Unit => {
                     // `ZeroSized` is documented as "Only for ZSTs." The
                     // source type must independently be the empty tuple;
@@ -217,6 +241,9 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
                 }
                 ir::Ty::Never => {
                     return Err("the never type has no scalar constants".into());
+                }
+                ir::Ty::OverflowPair(_) => {
+                    return Err("overflow-pair tuple constants are unsupported".into());
                 }
                 ir::Ty::Int(ity) => ity.width.bits(),
                 ir::Ty::Enum(ety) => match ety.tag_repr() {
@@ -254,21 +281,51 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
             if value.size().bits() != u64::from(width) {
                 return Err("scalar constant width disagrees with its type".into());
             }
-            let bits = u64::try_from(value.to_bits_unchecked())
-                .map_err(|_| "scalar constant exceeds 64 bits")?;
-            Ok(ir::Operand::Constant {
-                ty: t,
-                lit: ConstLit::Scalar { bits },
-            })
+            let lit = ConstLit::Scalar {
+                bits: value.to_bits_unchecked(),
+            };
+            ir::validate_constant(&t, lit)?;
+            Ok(ir::Operand::Constant { ty: t, lit })
         }
         other => Err(format!("unsupported operand: {other:?}")),
+    }
+}
+
+/// Extract MIR unary operators (`Not` and `Neg`), refusing `PtrMetadata`
+/// ("Gets the metadata `M` from a `*const`/`*mut`/`&`/`&mut`").
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1603-L1617
+fn un_op(op: mir::UnOp) -> Result<ir::UnOp> {
+    Ok(match op {
+        mir::UnOp::Not => ir::UnOp::Not,
+        mir::UnOp::Neg => ir::UnOp::Neg,
+        mir::UnOp::PtrMetadata => return Err(format!("unsupported unary operator: {op:?}")),
+    })
+}
+
+/// Extract MIR cast kinds, admitting only `CastKind::IntToInt` and refusing
+/// pointer, float, transmute, and subtype casts exhaustively.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1491-L1532
+fn cast_kind(kind: mir::CastKind) -> Result<ir::CastKind> {
+    match kind {
+        mir::CastKind::IntToInt => Ok(ir::CastKind::IntToInt),
+        mir::CastKind::PointerExposeProvenance
+        | mir::CastKind::PointerWithExposedProvenance
+        | mir::CastKind::PointerCoercion(..)
+        | mir::CastKind::FloatToInt
+        | mir::CastKind::FloatToFloat
+        | mir::CastKind::IntToFloat
+        | mir::CastKind::PtrToPtr
+        | mir::CastKind::FnPtrToPtr
+        | mir::CastKind::Transmute
+        | mir::CastKind::Subtype => Err(format!("unsupported cast kind: {kind:?}")),
     }
 }
 
 /// Preserve the ordinary MIR operators. In particular, ordinary shifts use
 /// "RHS.rem_euclid(LHS::BITS)"; the unchecked variants have a different UB
 /// contract and are rejected. The model interprets these operators, including
-/// signed comparisons and wrapping arithmetic, rather than the adapter.
+/// signed comparisons, division/remainder UB, three-way comparison (`Cmp`), and
+/// wrapping or `(T, bool)` overflowing arithmetic, rather than the adapter.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1621-L1708
 fn bin_op(op: mir::BinOp) -> Result<ir::BinOp> {
     Ok(match op {
@@ -280,12 +337,18 @@ fn bin_op(op: mir::BinOp) -> Result<ir::BinOp> {
         mir::BinOp::Add => ir::BinOp::Add,
         mir::BinOp::Sub => ir::BinOp::Sub,
         mir::BinOp::Mul => ir::BinOp::Mul,
+        mir::BinOp::Div => ir::BinOp::Div,
+        mir::BinOp::Rem => ir::BinOp::Rem,
+        mir::BinOp::AddWithOverflow => ir::BinOp::AddWithOverflow,
+        mir::BinOp::SubWithOverflow => ir::BinOp::SubWithOverflow,
+        mir::BinOp::MulWithOverflow => ir::BinOp::MulWithOverflow,
         mir::BinOp::Eq => ir::BinOp::Eq,
         mir::BinOp::Ne => ir::BinOp::Ne,
         mir::BinOp::Lt => ir::BinOp::Lt,
         mir::BinOp::Le => ir::BinOp::Le,
         mir::BinOp::Gt => ir::BinOp::Gt,
         mir::BinOp::Ge => ir::BinOp::Ge,
+        mir::BinOp::Cmp => ir::BinOp::Cmp,
         other => return Err(format!("unsupported binary operator: {other:?}")),
     })
 }
@@ -299,7 +362,7 @@ fn bin_op(op: mir::BinOp) -> Result<ir::BinOp> {
 /// closed until retagging is modeled. Binary operands may have different types
 /// for shifts; no casts are inserted.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1363-L1365
-/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1410-L1443
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1403-L1443
 fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rvalue> {
     Ok(match value {
         mir::Rvalue::Use(op, with_retag) => ir::Rvalue::Use {
@@ -311,11 +374,22 @@ fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rval
             left: operand(tcx, &values.0)?,
             right: operand(tcx, &values.1)?,
         },
+        mir::Rvalue::UnaryOp(op, value) => ir::Rvalue::Unary {
+            op: un_op(*op)?,
+            operand: operand(tcx, value)?,
+        },
+        mir::Rvalue::Cast(kind, value, target_ty) => ir::Rvalue::Cast {
+            cast_kind: cast_kind(*kind)?,
+            operand: operand(tcx, value)?,
+            ty: ty(tcx, *target_ty)?,
+        },
         mir::Rvalue::Discriminant(place) => ir::Rvalue::Discriminant {
             local: local(place)?,
         },
-        // This also refuses `Aggregate(Tuple, [])`. The model supports unit
-        // constants via `Use`, but it has no tuple aggregate semantics.
+        // This also refuses `Aggregate(Tuple, ..)` and `Aggregate(Adt, ..)`.
+        // `Trusted.MirSemantics` models unit constants via `Use` and overflow
+        // pairs via `*WithOverflow`, and rejects tuple and ADT `Aggregate`
+        // rvalues with `.unsupported`.
         other => return Err(format!("unsupported rvalue: {other:?}")),
     })
 }
@@ -357,13 +431,8 @@ fn terminator<'tcx>(tcx: TyCtxt<'tcx>, term: &mir::TerminatorKind<'tcx>) -> Resu
             operand: operand(tcx, discr)?,
             targets: targets
                 .iter()
-                .map(|(value, block)| {
-                    Ok((
-                        u64::try_from(value).map_err(|_| "switch value exceeds 64 bits")?,
-                        block.as_u32(),
-                    ))
-                })
-                .collect::<Result<Vec<_>>>()?,
+                .map(|(value, block)| (value, block.as_u32()))
+                .collect(),
             otherwise: targets.otherwise().as_u32(),
         },
         mir::TerminatorKind::Return => ir::Terminator::Ret,
@@ -838,9 +907,20 @@ mod tests {
             width: IntWidth::I8,
             signed: false,
         });
-        assert!(ir::EnumTy::try_new(2, isize_discr, i8_signed, vec![u64::MAX, 0, 1]).is_ok());
+        assert!(
+            ir::EnumTy::try_new(2, isize_discr, i8_signed, vec![u128::from(u64::MAX), 0, 1])
+                .is_ok()
+        );
         assert!(ir::EnumTy::try_new(2, isize_discr, i8_signed, vec![7, 7]).is_err());
-        assert!(ir::EnumTy::try_new(2, isize_discr, u8_unsigned, vec![u64::MAX, 0, 1]).is_err());
+        assert!(
+            ir::EnumTy::try_new(
+                2,
+                isize_discr,
+                u8_unsigned,
+                vec![u128::from(u64::MAX), 0, 1]
+            )
+            .is_err()
+        );
         assert!(
             ir::EnumTy::try_new(
                 3,
@@ -969,7 +1049,7 @@ mod tests {
                 width: IntWidth::I8,
                 signed: true,
             }),
-            vec![u64::MAX, 0, 1],
+            vec![u128::from(u64::MAX), 0, 1],
         )
         .unwrap();
         let enum_ty = ir::Ty::Enum(signed_enum);
@@ -1097,6 +1177,58 @@ mod tests {
             "rust-path-v1::non_enum_discr".into(),
         )
         .unwrap_err();
-        assert!(non_enum_discr.contains("requires a fieldless enum local"));
+        assert!(non_enum_discr.contains("requires a fieldless enum or Ordering local"));
+    }
+
+    #[test]
+    fn operator_and_cast_extractors_admit_modeled_variants_and_refuse_others() {
+        assert_eq!(un_op(mir::UnOp::Not).unwrap(), ir::UnOp::Not);
+        assert_eq!(un_op(mir::UnOp::Neg).unwrap(), ir::UnOp::Neg);
+        assert!(
+            un_op(mir::UnOp::PtrMetadata)
+                .unwrap_err()
+                .contains("unsupported unary operator")
+        );
+
+        assert_eq!(
+            cast_kind(mir::CastKind::IntToInt).unwrap(),
+            ir::CastKind::IntToInt
+        );
+        for refused_cast in [
+            mir::CastKind::PointerExposeProvenance,
+            mir::CastKind::PointerWithExposedProvenance,
+            mir::CastKind::FloatToInt,
+            mir::CastKind::FloatToFloat,
+            mir::CastKind::IntToFloat,
+            mir::CastKind::PtrToPtr,
+            mir::CastKind::FnPtrToPtr,
+            mir::CastKind::Transmute,
+            mir::CastKind::Subtype,
+        ] {
+            let err = cast_kind(refused_cast).unwrap_err();
+            assert!(err.contains("unsupported cast kind"), "{err}");
+        }
+
+        for (mir_op, expected) in [
+            (mir::BinOp::Div, ir::BinOp::Div),
+            (mir::BinOp::Rem, ir::BinOp::Rem),
+            (mir::BinOp::AddWithOverflow, ir::BinOp::AddWithOverflow),
+            (mir::BinOp::SubWithOverflow, ir::BinOp::SubWithOverflow),
+            (mir::BinOp::MulWithOverflow, ir::BinOp::MulWithOverflow),
+            (mir::BinOp::Cmp, ir::BinOp::Cmp),
+        ] {
+            assert_eq!(bin_op(mir_op).unwrap(), expected);
+        }
+        for refused_bin in [
+            mir::BinOp::AddUnchecked,
+            mir::BinOp::SubUnchecked,
+            mir::BinOp::MulUnchecked,
+            mir::BinOp::ShlUnchecked,
+            mir::BinOp::ShrUnchecked,
+            mir::BinOp::Offset,
+        ] {
+            let err = bin_op(refused_bin).unwrap_err();
+            assert!(err.contains("unsupported binary operator"), "{err}");
+        }
     }
 }
