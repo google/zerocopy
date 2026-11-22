@@ -73844,6 +73844,83 @@
         "verification/compcert"
       ]
     },
+    "non-memory-safety-sandbox-guarantees-and-formal-proof-discharge-mechanisms": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/",
+            "repository": "google/zerocopy",
+            "revision": "a5c88c87ce08e97b0576165f898d2866710d03f5"
+          },
+          "name": "Anneal MIR verifier and audit boundary in zerocopy"
+        },
+        {
+          "identity": {
+            "path": "docs/security/rule-of-2.md",
+            "repository": "chromium/chromium",
+            "url": "https://chromium.googlesource.com/chromium/src/+/main/docs/security/rule-of-2.md"
+          },
+          "name": "Chromium Rule of 2 and Site Isolation documentation"
+        },
+        {
+          "identity": {
+            "specification": "Linux kernel userspace API documentation",
+            "subsystems": "seccomp(2), landlock(7), cgroups(7), namespaces(7)"
+          },
+          "name": "Linux kernel sandboxing primitives (seccomp-bpf, Landlock LSM, cgroups v2, namespaces)"
+        },
+        {
+          "identity": {
+            "license": "Apache-2.0",
+            "repository": "google/sandboxed-api"
+          },
+          "name": "Sandboxed API / Sandbox2 open-source Linux sandboxing framework"
+        },
+        {
+          "identity": {
+            "license": "Apache-2.0",
+            "repository": "google/gvisor"
+          },
+          "name": "gVisor open-source userspace application kernel"
+        },
+        {
+          "identity": {
+            "license": "Apache-2.0",
+            "path": "arm64-semantics",
+            "repository": "google-deepmind/code-verification",
+            "version": "v0.56.1"
+          },
+          "name": "arm64-semantics Lean 4 AArch64 ISA and ELF semantics"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11), LLVM 23.1.5"
+          },
+          "name": "rustc and LLVM constant-time lowering baseline"
+        },
+        {
+          "identity": {
+            "cves": "CVE-2003-1564; CVE-2016-1897; CVE-2016-1898; CVE-2016-3714; CVE-2017-5753; CVE-2017-9993; CVE-2020-26217; CVE-2021-44228; CVE-2022-24713; CVE-2023-36664; CVE-2024-21626; CVE-2024-3094"
+          },
+          "name": "Public non-memory-safety vulnerability advisories"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "pl/capabilities",
+        "security/ambient-authority",
+        "security/sandboxing",
+        "security/side-channels",
+        "security/supply-chain",
+        "systems/compartmentalization",
+        "verification/noninterference",
+        "verification/resource-bounds",
+        "verification/trusted-computing-base"
+      ]
+    },
     "non-quorum-kernel-confidence-trace-downtranslation-and-guard-mutation": {
       "observed_at": "2026-11-19",
       "subjects": [
