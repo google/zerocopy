@@ -1,0 +1,306 @@
+{
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "case_count": 14,
+  "solver_divergences": [
+    "tait_08_Defining_self_cycle_in_box",
+    "tait_10_generic_type_non_param_instantiation_rejected"
+  ],
+  "cases": {
+    "tait_01_valid_define_opaque_and_nondefining_size": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "warning: unused import: `std::rc::Rc`\n --> <tmp>:2:5\n  |\n2 | use std::rc::Rc;\n  |     ^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "EQ=true SIZE=4 SEND=true"
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "warning: unused import: `std::rc::Rc`\n --> <tmp>:2:5\n  |\n2 | use std::rc::Rc;\n  |     ^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "EQ=true SIZE=4 SEND=true"
+      },
+      "solver_parity": true
+    },
+    "tait_02_missing_define_opaque_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: unconstrained opaque type\n --> <tmp>:2:19\n  |\n2 | pub type Hidden = impl Copy;\n  |                   ^^^^^^^^^\n  |\n  = note: `Hidden` must be used in combination with a concrete type within the same crate\n\nerror[E0308]: mismatched types\n --> <tmp>:3:39\n  |\n2 | pub type Hidden = impl Copy;\n  |                   --------- the expected opaque type\n3 | pub fn unmarked_definer() -> Hidden { 42u32 }\n  |                              ------   ^^^^^ expected opaque type, found `u32`\n  |                              |\n  |                              expected `Hidden` because of return type\n  |",
+        "error_codes": [
+          "E0308"
+        ]
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: unconstrained opaque type\n --> <tmp>:2:19\n  |\n2 | pub type Hidden = impl Copy;\n  |                   ^^^^^^^^^\n  |\n  = note: `Hidden` must be used in combination with a concrete type within the same crate\n\nerror[E0308]: mismatched types\n --> <tmp>:3:39\n  |\n2 | pub type Hidden = impl Copy;\n  |                   --------- the expected opaque type\n3 | pub fn unmarked_definer() -> Hidden { 42u32 }\n  |                              ------   ^^^^^ expected opaque type, found `u32`\n  |                              |\n  |                              expected `Hidden` because of return type\n  |",
+        "error_codes": [
+          "E0308"
+        ]
+      },
+      "solver_parity": true
+    },
+    "tait_03_unconstrained_define_opaque_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: item does not constrain `Hidden::{opaque#0}`\n --> <tmp>:4:8\n  |\n4 | pub fn claims_to_define_but_does_not() -> u32 { 7 }\n  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: consider removing `#[define_opaque]` or adding an empty `#[define_opaque()]`\nnote: this opaque type is supposed to be constrained\n --> <tmp>:2:19\n  |\n2 | pub type Hidden = impl Copy;\n  |                   ^^^^^^^^^\n\nerror: aborting due to 1 previous error\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: item does not constrain `Hidden::{opaque#0}`\n --> <tmp>:4:8\n  |\n4 | pub fn claims_to_define_but_does_not() -> u32 { 7 }\n  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: consider removing `#[define_opaque]` or adding an empty `#[define_opaque()]`\nnote: this opaque type is supposed to be constrained\n --> <tmp>:2:19\n  |\n2 | pub type Hidden = impl Copy;\n  |                   ^^^^^^^^^\n\nerror: aborting due to 1 previous error\n",
+        "error_codes": []
+      },
+      "solver_parity": true
+    },
+    "tait_04_conflicting_concrete_witnesses_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: concrete type differs from previous defining opaque type use\n --> <tmp>:6:21\n  |\n6 | pub fn def_u64() -> Hidden { 2u64 }\n  |                     ^^^^^^ expected `u32`, got `u64`\n  |\nnote: previous use here\n --> <tmp>:4:21\n  |\n4 | pub fn def_u32() -> Hidden { 1u32 }\n  |                     ^^^^^^\n\nerror: aborting due to 1 previous error\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: concrete type differs from previous defining opaque type use\n --> <tmp>:6:21\n  |\n6 | pub fn def_u64() -> Hidden { 2u64 }\n  |                     ^^^^^^ expected `u32`, got `u64`\n  |\nnote: previous use here\n --> <tmp>:4:21\n  |\n4 | pub fn def_u32() -> Hidden { 1u32 }\n  |                     ^^^^^^\n\nerror: aborting due to 1 previous error\n",
+        "error_codes": []
+      },
+      "solver_parity": true
+    },
+    "tait_05_non_send_rc_auto_trait_leak_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "warning: unused import: `std::rc::Rc`\n --> <tmp>:2:5\n  |\n2 | use std::rc::Rc;\n  |     ^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0277]: `Rc<u32>` cannot be sent between threads safely\n  --> <tmp>:10:33\n   |\n 5 |     pub type OpaqueRc = impl Clone;\n   |                         ---------- within this `OpaqueRc`\n...\n10 | pub fn check() { require_send::<m::OpaqueRc>(); }\n   |                                 ^^^^^^^^^^^ `Rc<u32>` cannot be sent between threads safely\n   |\n   = help: within `OpaqueRc`, the trait `Send` is not implemented for `Rc<u32>`",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "warning: unused import: `std::rc::Rc`\n --> <tmp>:2:5\n  |\n2 | use std::rc::Rc;\n  |     ^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0277]: `Rc<u32>` cannot be sent between threads safely\n  --> <tmp>:10:33\n   |\n 5 |     pub type OpaqueRc = impl Clone;\n   |                         ---------- within this `OpaqueRc`\n...\n10 | pub fn check() { require_send::<m::OpaqueRc>(); }\n   |                                 ^^^^^^^^^^^ `Rc<u32>` cannot be sent between threads safely\n   |\n   = help: within `OpaqueRc`, the trait `Send` is not implemented for `Rc<u32>`",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "solver_parity": true
+    },
+    "tait_06_send_u64_auto_trait_leak_accepted": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": []
+      },
+      "solver_parity": true
+    },
+    "tait_07_nondefining_concrete_equality_probe": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0369]: cannot add `u32` to `Hidden`\n --> <tmp>:6:7\n  |\n6 |     h + 1u32\n  |     - ^ ---- u32\n  |     |\n  |     Hidden\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0369`.",
+        "error_codes": [
+          "E0369"
+        ]
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0369]: cannot add `u32` to `Hidden`\n --> <tmp>:6:7\n  |\n6 |     h + 1u32\n  |     - ^ ---- u32\n  |     |\n  |     Hidden\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0369`.",
+        "error_codes": [
+          "E0369"
+        ]
+      },
+      "solver_parity": true
+    },
+    "tait_08_Defining_self_cycle_in_box": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0275]: overflow assigning `(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<_>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)` to `(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<(u32, Option<Box<_>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)>>)`\n --> <tmp>:5:12\n  |\n5 |     (1u32, b)\n  |            ^\n  |\n  = help: consider increasing the recursion limit by adding a `#![recursion_limit = \"256\"]` attribute to your crate (`probe`)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0275`.",
+        "error_codes": [
+          "E0275"
+        ]
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0720]: cannot resolve opaque type\n --> <tmp>:4:41\n  |\n4 | pub fn make_rec(b: Option<Box<Rec>>) -> Rec {\n  |                                         ^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0720`.",
+        "error_codes": [
+          "E0720"
+        ]
+      },
+      "solver_parity": false
+    },
+    "tait_09_generic_lifetime_unused_in_witness": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": []
+      },
+      "solver_parity": true
+    },
+    "tait_10_generic_type_non_param_instantiation_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: item does not constrain `GenOpaque::{opaque#0}`\n --> <tmp>:4:8\n  |\n4 | pub fn bad_inst() -> GenOpaque<u32> {\n  |        ^^^^^^^^\n  |\n  = note: consider removing `#[define_opaque]` or adding an empty `#[define_opaque()]`\nnote: this opaque type is supposed to be constrained\n --> <tmp>:2:25\n  |\n2 | pub type GenOpaque<T> = impl Copy;\n  |                         ^^^^^^^^^\nnote: this use of `GenOpaque<u32>` does not have unique universal generic arguments\n --> <tmp>:4:22\n  |\n4 | pub fn bad_inst() -> GenOpaque<u32> {\n  |                      ^^^^^^^^^^^^^^\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0792]: expected generic type parameter, found `u32`\n --> <tmp>:4:22\n  |\n2 | pub type GenOpaque<T> = impl Copy;\n  |                    - this generic parameter must be used with a generic type parameter\n3 | #[define_opaque(GenOpaque)]\n4 | pub fn bad_inst() -> GenOpaque<u32> {\n  |                      ^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0792`.",
+        "error_codes": [
+          "E0792"
+        ]
+      },
+      "solver_parity": false
+    },
+    "atpit_01_impl_trait_in_assoc_type_and_send_leak": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "ATPIT_SUM=12 SEND=true"
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "ATPIT_SUM=12 SEND=true"
+      },
+      "solver_parity": true
+    },
+    "rtn_01_async_fn_in_trait_send_bound": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "warning: unused import: `std::pin::Pin`\n --> <tmp>:3:5\n  |\n3 | use std::pin::Pin;\n  |     ^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "RTN_READY=42"
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "warning: unused import: `std::pin::Pin`\n --> <tmp>:3:5\n  |\n3 | use std::pin::Pin;\n  |     ^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "RTN_READY=42"
+      },
+      "solver_parity": true
+    },
+    "rtn_02_non_send_local_rc_across_await_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: future cannot be sent between threads safely\n  --> <tmp>:18:37\n   |\n18 | pub fn trigger() { require_rtn_send(RcWorker); }\n   |                                     ^^^^^^^^ future returned by `run` is not `Send`\n   |\n   = help: within `impl Future<Output = u32> { <_ as Worker>::run(..) }`, the trait `Send` is not implemented for `Rc<u32>`\nnote: future is not `Send` as this value is used across an await\n  --> <tmp>:12:32\n   |\n11 |         let rc = Rc::new(7u32);\n   |             -- has type `Rc<u32>` which is not `Send`\n12 |         std::future::ready(()).await;\n   |                                ^^^^^ await occurs here, with `rc` maybe used later\nnote: required by a bound in `require_rtn_send`\n  --> <tmp>:17:44\n   |\n17 | pub fn require_rtn_send<W: Worker<run(..): Send>>(_: W) {}",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: future cannot be sent between threads safely\n  --> <tmp>:18:37\n   |\n18 | pub fn trigger() { require_rtn_send(RcWorker); }\n   |                                     ^^^^^^^^ future returned by `run` is not `Send`\n   |\n   = help: within `impl Future<Output = u32>`, the trait `Send` is not implemented for `Rc<u32>`\nnote: future is not `Send` as this value is used across an await\n  --> <tmp>:12:32\n   |\n11 |         let rc = Rc::new(7u32);\n   |             -- has type `Rc<u32>` which is not `Send`\n12 |         std::future::ready(()).await;\n   |                                ^^^^^ await occurs here, with `rc` maybe used later\nnote: required by a bound in `require_rtn_send`\n  --> <tmp>:17:44\n   |\n17 | pub fn require_rtn_send<W: Worker<run(..): Send>>(_: W) {}",
+        "error_codes": []
+      },
+      "solver_parity": true
+    },
+    "rtn_03_type_qualified_syntax_probe": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": []
+      },
+      "solver_parity": true
+    }
+  }
+}

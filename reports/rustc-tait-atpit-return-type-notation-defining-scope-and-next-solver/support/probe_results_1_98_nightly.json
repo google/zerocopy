@@ -1,0 +1,594 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "case_count": 22,
+  "solver_divergences": [
+    "tait_08_Defining_self_cycle_in_box",
+    "tait_10_generic_type_non_param_instantiation_rejected",
+    "tait_11_duplicate_generic_param_rejected",
+    "tait_12_nondefining_alongside_defining_in_same_scope"
+  ],
+  "cases": {
+    "tait_01_valid_define_opaque_and_nondefining_size": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "EQ=true SIZE=4 ALIGN=4 SEND=true",
+        "miri": {
+          "rc": 0,
+          "stdout": "EQ=true SIZE=4 ALIGN=4 SEND=true",
+          "stderr_head": ""
+        }
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "EQ=true SIZE=4 ALIGN=4 SEND=true",
+        "miri": {
+          "rc": 0,
+          "stdout": "EQ=true SIZE=4 ALIGN=4 SEND=true",
+          "stderr_head": ""
+        }
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "tait_02_missing_define_opaque_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: unconstrained opaque type\n --> <tmp>/tait_02_missing_define_opaque_rejected_next_solver_globally.rs:2:19\n  |\n2 | pub type Hidden = impl Copy;\n  |                   ^^^^^^^^^\n  |\n  = note: `Hidden` must be used in combination with a concrete type within the same crate\n\nerror[E0308]: mismatched types\n --> <tmp>/tait_02_missing_define_opaque_rejected_next_solver_globally.rs:3:39\n  |\n2 | pub type Hidden = impl Copy;\n  |                   --------- the expected opaque type\n3 | pub fn unmarked_definer() -> Hidden { 42u32 }\n  |                              ------   ^^^^^ types differ\n  |                              |\n  |                              expected `Hidden` because of return type\n  |\n  = note: expected opaque type `Hidden`\n                    found type `u32`\nnote: this item must have a `#[define_opaque(Hidden)]` attribute to be able to define hidden types\n --> <tmp>/tait_02_missing_define_opaque_rejected_next_solver_globally.rs:3:8\n  |\n3 | pub fn unmarked_definer() -> Hidden { 42u32 }\n  |        ^^^^^^^^^^^^^^^^\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0308`.\n",
+        "error_codes": [
+          "E0308"
+        ]
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: unconstrained opaque type\n --> <tmp>/tait_02_missing_define_opaque_rejected_next_solver_no.rs:2:19\n  |\n2 | pub type Hidden = impl Copy;\n  |                   ^^^^^^^^^\n  |\n  = note: `Hidden` must be used in combination with a concrete type within the same crate\n\nerror[E0308]: mismatched types\n --> <tmp>/tait_02_missing_define_opaque_rejected_next_solver_no.rs:3:39\n  |\n2 | pub type Hidden = impl Copy;\n  |                   --------- the expected opaque type\n3 | pub fn unmarked_definer() -> Hidden { 42u32 }\n  |                              ------   ^^^^^ expected opaque type, found `u32`\n  |                              |\n  |                              expected `Hidden` because of return type\n  |\n  = note: expected opaque type `Hidden`\n                    found type `u32`\nnote: this item must have a `#[define_opaque(Hidden)]` attribute to be able to define hidden types\n --> <tmp>/tait_02_missing_define_opaque_rejected_next_solver_no.rs:3:8\n  |\n3 | pub fn unmarked_definer() -> Hidden { 42u32 }\n  |        ^^^^^^^^^^^^^^^^\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0308`.\n",
+        "error_codes": [
+          "E0308"
+        ]
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "tait_03_unconstrained_define_opaque_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: item does not constrain `Hidden::{opaque#0}`\n --> <tmp>/tait_03_unconstrained_define_opaque_rejected_next_solver_globally.rs:4:8\n  |\n4 | pub fn claims_to_define_but_does_not() -> u32 { 7 }\n  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: consider removing `#[define_opaque]` or adding an empty `#[define_opaque()]`\nnote: this opaque type is supposed to be constrained\n --> <tmp>/tait_03_unconstrained_define_opaque_rejected_next_solver_globally.rs:2:19\n  |\n2 | pub type Hidden = impl Copy;\n  |                   ^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: item does not constrain `Hidden::{opaque#0}`\n --> <tmp>/tait_03_unconstrained_define_opaque_rejected_next_solver_no.rs:4:8\n  |\n4 | pub fn claims_to_define_but_does_not() -> u32 { 7 }\n  |        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: consider removing `#[define_opaque]` or adding an empty `#[define_opaque()]`\nnote: this opaque type is supposed to be constrained\n --> <tmp>/tait_03_unconstrained_define_opaque_rejected_next_solver_no.rs:2:19\n  |\n2 | pub type Hidden = impl Copy;\n  |                   ^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "tait_04_conflicting_concrete_witnesses_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: concrete type differs from previous defining opaque type use\n --> <tmp>/tait_04_conflicting_concrete_witnesses_rejected_next_solver_globally.rs:6:21\n  |\n6 | pub fn def_u64() -> Hidden { 2u64 }\n  |                     ^^^^^^ expected `u32`, got `u64`\n  |\nnote: previous use here\n --> <tmp>/tait_04_conflicting_concrete_witnesses_rejected_next_solver_globally.rs:4:21\n  |\n4 | pub fn def_u32() -> Hidden { 1u32 }\n  |                     ^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: concrete type differs from previous defining opaque type use\n --> <tmp>/tait_04_conflicting_concrete_witnesses_rejected_next_solver_no.rs:6:21\n  |\n6 | pub fn def_u64() -> Hidden { 2u64 }\n  |                     ^^^^^^ expected `u32`, got `u64`\n  |\nnote: previous use here\n --> <tmp>/tait_04_conflicting_concrete_witnesses_rejected_next_solver_no.rs:4:21\n  |\n4 | pub fn def_u32() -> Hidden { 1u32 }\n  |                     ^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "tait_05_non_send_rc_auto_trait_leak_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0277]: `Rc<u32>` cannot be sent between threads safely\n --> <tmp>/tait_05_non_send_rc_auto_trait_leak_rejected_next_solver_globally.rs:9:33\n  |\n4 |     pub type OpaqueRc = impl Clone;\n  |                         ---------- within this `OpaqueRc`\n...\n9 | pub fn check() { require_send::<m::OpaqueRc>(); }\n  |                                 ^^^^^^^^^^^ `Rc<u32>` cannot be sent between threads safely\n  |\n  = help: within `OpaqueRc`, the trait `Send` is not implemented for `Rc<u32>`\nnote: required because it appears within the type `OpaqueRc`\n --> <tmp>/tait_05_non_send_rc_auto_trait_leak_rejected_next_solver_globally.rs:4:25\n  |\n4 |     pub type OpaqueRc = impl Clone;\n  |                         ^^^^^^^^^^\nnote: required by a bound in `require_send`\n --> <tmp>/tait_05_non_send_rc_auto_trait_leak_rejected_next_solver_globally.rs:8:20\n  |\n8 | fn require_send<T: Send>() {}\n  |                    ^^^^ required by this bound in `require_send`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0277]: `Rc<u32>` cannot be sent between threads safely\n --> <tmp>/tait_05_non_send_rc_auto_trait_leak_rejected_next_solver_no.rs:9:33\n  |\n4 |     pub type OpaqueRc = impl Clone;\n  |                         ---------- within this `OpaqueRc`\n...\n9 | pub fn check() { require_send::<m::OpaqueRc>(); }\n  |                                 ^^^^^^^^^^^ `Rc<u32>` cannot be sent between threads safely\n  |\n  = help: within `OpaqueRc`, the trait `Send` is not implemented for `Rc<u32>`\nnote: required because it appears within the type `OpaqueRc`\n --> <tmp>/tait_05_non_send_rc_auto_trait_leak_rejected_next_solver_no.rs:4:25\n  |\n4 |     pub type OpaqueRc = impl Clone;\n  |                         ^^^^^^^^^^\nnote: required by a bound in `require_send`\n --> <tmp>/tait_05_non_send_rc_auto_trait_leak_rejected_next_solver_no.rs:8:20\n  |\n8 | fn require_send<T: Send>() {}\n  |                    ^^^^ required by this bound in `require_send`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "tait_06_send_u64_auto_trait_leak_accepted": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "warning: function `make` is never used\n --> <tmp>/tait_06_send_u64_auto_trait_leak_accepted_next_solver_globally.rs:5:12\n  |\n5 |     pub fn make() -> OpaqueU64 { 99u64 }\n  |            ^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "warning: function `make` is never used\n --> <tmp>/tait_06_send_u64_auto_trait_leak_accepted_next_solver_no.rs:5:12\n  |\n5 |     pub fn make() -> OpaqueU64 { 99u64 }\n  |            ^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+        "error_codes": []
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "tait_07_nondefining_concrete_equality_probe": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0369]: cannot add `u32` to `Hidden`\n --> <tmp>/tait_07_nondefining_concrete_equality_probe_next_solver_globally.rs:6:7\n  |\n6 |     h + 1u32\n  |     - ^ ---- u32\n  |     |\n  |     Hidden\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0369`.\n",
+        "error_codes": [
+          "E0369"
+        ]
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0369]: cannot add `u32` to `Hidden`\n --> <tmp>/tait_07_nondefining_concrete_equality_probe_next_solver_no.rs:6:7\n  |\n6 |     h + 1u32\n  |     - ^ ---- u32\n  |     |\n  |     Hidden\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0369`.\n",
+        "error_codes": [
+          "E0369"
+        ]
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "tait_08_Defining_self_cycle_in_box": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0282]: type annotations needed\n --> <tmp>/tait_08_Defining_self_cycle_in_box_next_solver_globally.rs:4:20\n  |\n4 | pub fn make_rec(b: Option<Box<Rec>>) -> Rec {\n  |                    ^^^^^^^^^^^^^^^^ cannot infer type\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0282`.\n",
+        "error_codes": [
+          "E0282"
+        ]
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0720]: cannot resolve opaque type\n --> <tmp>/tait_08_Defining_self_cycle_in_box_next_solver_no.rs:4:41\n  |\n4 | pub fn make_rec(b: Option<Box<Rec>>) -> Rec {\n  |                                         ^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0720`.\n",
+        "error_codes": [
+          "E0720"
+        ]
+      },
+      "exit_code_parity": true,
+      "solver_parity": false
+    },
+    "tait_09_generic_lifetime_unused_in_witness": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "WITH_LT_SIZE=4",
+        "miri": {
+          "rc": 0,
+          "stdout": "WITH_LT_SIZE=4",
+          "stderr_head": ""
+        }
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "WITH_LT_SIZE=4",
+        "miri": {
+          "rc": 0,
+          "stdout": "WITH_LT_SIZE=4",
+          "stderr_head": ""
+        }
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "tait_10_generic_type_non_param_instantiation_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: item does not constrain `GenOpaque::{opaque#0}`\n --> <tmp>/tait_10_generic_type_non_param_instantiation_rejected_next_solver_globally.rs:4:8\n  |\n4 | pub fn bad_inst() -> GenOpaque<u32> {\n  |        ^^^^^^^^\n  |\n  = note: consider removing `#[define_opaque]` or adding an empty `#[define_opaque()]`\nnote: this opaque type is supposed to be constrained\n --> <tmp>/tait_10_generic_type_non_param_instantiation_rejected_next_solver_globally.rs:2:25\n  |\n2 | pub type GenOpaque<T> = impl Copy;\n  |                         ^^^^^^^^^\nnote: this use of `GenOpaque<u32>` does not have unique universal generic arguments\n --> <tmp>/tait_10_generic_type_non_param_instantiation_rejected_next_solver_globally.rs:4:22\n  |\n4 | pub fn bad_inst() -> GenOpaque<u32> {\n  |                      ^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0792]: expected generic type parameter, found `u32`\n --> <tmp>/tait_10_generic_type_non_param_instantiation_rejected_next_solver_no.rs:4:22\n  |\n2 | pub type GenOpaque<T> = impl Copy;\n  |                    - this generic parameter must be used with a generic type parameter\n3 | #[define_opaque(GenOpaque)]\n4 | pub fn bad_inst() -> GenOpaque<u32> {\n  |                      ^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0792`.\n",
+        "error_codes": [
+          "E0792"
+        ]
+      },
+      "exit_code_parity": true,
+      "solver_parity": false
+    },
+    "atpit_01_impl_trait_in_assoc_type_and_send_leak": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "ATPIT_SUM=12 SEND=true",
+        "miri": {
+          "rc": 0,
+          "stdout": "ATPIT_SUM=12 SEND=true",
+          "stderr_head": ""
+        }
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "ATPIT_SUM=12 SEND=true",
+        "miri": {
+          "rc": 0,
+          "stdout": "ATPIT_SUM=12 SEND=true",
+          "stderr_head": ""
+        }
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "rtn_01_async_fn_in_trait_send_bound": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "RTN_READY=42",
+        "miri": {
+          "rc": 0,
+          "stdout": "RTN_READY=42",
+          "stderr_head": ""
+        }
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "RTN_READY=42",
+        "miri": {
+          "rc": 0,
+          "stdout": "RTN_READY=42",
+          "stderr_head": ""
+        }
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "rtn_02_non_send_local_rc_across_await_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: future cannot be sent between threads safely\n  --> <tmp>/rtn_02_non_send_local_rc_across_await_rejected_next_solver_globally.rs:17:37\n   |\n17 | pub fn trigger() { require_rtn_send(RcWorker); }\n   |                                     ^^^^^^^^ future returned by `run` is not `Send`\n   |\n   = help: within `impl Future<Output = u32> { <... as Worker>::run(..) }`, the trait `Send` is not implemented for `Rc<u32>`\nnote: future is not `Send` as this value is used across an await\n  --> <tmp>/rtn_02_non_send_local_rc_across_await_rejected_next_solver_globally.rs:11:32\n   |\n10 |         let rc = Rc::new(7u32);\n   |             -- has type `Rc<u32>` which is not `Send`\n11 |         std::future::ready(()).await;\n   |                                ^^^^^ await occurs here, with `rc` maybe used later\nnote: required by a bound in `require_rtn_send`\n  --> <tmp>/rtn_02_non_send_local_rc_across_await_rejected_next_solver_globally.rs:16:44\n   |\n16 | pub fn require_rtn_send<W: Worker<run(..): Send>>(_: W) {}\n   |                                            ^^^^ required by this bound in `require_rtn_send`\n   = note: the full name for the type has been written to '<tmp>/rtn_02_non_send_local_rc_across_await_rejected_next_solver_globally.long-type-17044804433406845810.txt'\n   = note: consider using `--verbose` to print the full type name to the console\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: future cannot be sent between threads safely\n  --> <tmp>/rtn_02_non_send_local_rc_across_await_rejected_next_solver_no.rs:17:37\n   |\n17 | pub fn trigger() { require_rtn_send(RcWorker); }\n   |                                     ^^^^^^^^ future returned by `run` is not `Send`\n   |\n   = help: within `impl Future<Output = u32>`, the trait `Send` is not implemented for `Rc<u32>`\nnote: future is not `Send` as this value is used across an await\n  --> <tmp>/rtn_02_non_send_local_rc_across_await_rejected_next_solver_no.rs:11:32\n   |\n10 |         let rc = Rc::new(7u32);\n   |             -- has type `Rc<u32>` which is not `Send`\n11 |         std::future::ready(()).await;\n   |                                ^^^^^ await occurs here, with `rc` maybe used later\nnote: required by a bound in `require_rtn_send`\n  --> <tmp>/rtn_02_non_send_local_rc_across_await_rejected_next_solver_no.rs:16:44\n   |\n16 | pub fn require_rtn_send<W: Worker<run(..): Send>>(_: W) {}\n   |                                            ^^^^ required by this bound in `require_rtn_send`\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "rtn_03_type_qualified_syntax_probe": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "RTN_WHERE_READY=77",
+        "miri": {
+          "rc": 0,
+          "stdout": "RTN_WHERE_READY=77",
+          "stderr_head": ""
+        }
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "RTN_WHERE_READY=77",
+        "miri": {
+          "rc": 0,
+          "stdout": "RTN_WHERE_READY=77",
+          "stderr_head": ""
+        }
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "tait_11_duplicate_generic_param_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: item does not constrain `GenPair::{opaque#0}`\n --> <tmp>/tait_11_duplicate_generic_param_rejected_next_solver_globally.rs:4:8\n  |\n4 | pub fn dup_param<T: Copy>(x: T) -> GenPair<T, T> {\n  |        ^^^^^^^^^\n  |\n  = note: consider removing `#[define_opaque]` or adding an empty `#[define_opaque()]`\nnote: this opaque type is supposed to be constrained\n --> <tmp>/tait_11_duplicate_generic_param_rejected_next_solver_globally.rs:2:26\n  |\n2 | pub type GenPair<A, B> = impl Copy;\n  |                          ^^^^^^^^^\nnote: this use of `GenPair<T, T>` does not have unique universal generic arguments\n --> <tmp>/tait_11_duplicate_generic_param_rejected_next_solver_globally.rs:4:36\n  |\n4 | pub fn dup_param<T: Copy>(x: T) -> GenPair<T, T> {\n  |                                    ^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: non-defining opaque type use in defining scope\n --> <tmp>/tait_11_duplicate_generic_param_rejected_next_solver_no.rs:4:36\n  |\n4 | pub fn dup_param<T: Copy>(x: T) -> GenPair<T, T> {\n  |                                    ^^^^^^^^^^^^^\n  |\nnote: type used multiple times\n --> <tmp>/tait_11_duplicate_generic_param_rejected_next_solver_no.rs:2:18\n  |\n2 | pub type GenPair<A, B> = impl Copy;\n  |                  ^  ^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "exit_code_parity": true,
+      "solver_parity": false
+    },
+    "tait_12_nondefining_alongside_defining_in_same_scope": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "SIZES=2,4",
+        "miri": {
+          "rc": 0,
+          "stdout": "SIZES=2,4",
+          "stderr_head": ""
+        }
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0792]: expected generic type parameter, found `u32`\n --> <tmp>/tait_12_nondefining_alongside_defining_in_same_scope_next_solver_no.rs:4:43\n  |\n2 | pub type GenOpaque<T: Copy> = impl Copy;\n  |                    - this generic parameter must be used with a generic type parameter\n3 | #[define_opaque(GenOpaque)]\n4 | pub fn define_and_reuse<T: Copy>(x: T) -> (GenOpaque<T>, GenOpaque<u32>) {\n  |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0792`.\n",
+        "error_codes": [
+          "E0792"
+        ]
+      },
+      "exit_code_parity": false,
+      "solver_parity": false
+    },
+    "tait_14_lifetime_equality_exception_accepted": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "EQLT_SIZE=8",
+        "miri": {
+          "rc": 0,
+          "stdout": "EQLT_SIZE=8",
+          "stderr_head": ""
+        }
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 0,
+        "stderr_head": "",
+        "error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "EQLT_SIZE=8",
+        "miri": {
+          "rc": 0,
+          "stdout": "EQLT_SIZE=8",
+          "stderr_head": ""
+        }
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "atpit_02_non_send_atpit_auto_trait_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0277]: `Rc<u32>` cannot be sent between threads safely\n  --> <tmp>/atpit_02_non_send_atpit_auto_trait_rejected_next_solver_globally.rs:15:33\n   |\n 9 |     type Item = impl Clone;\n   |                 ---------- within this `<Local as Holder>::Item`\n...\n15 | pub fn check() { require_send::<<Local as Holder>::Item>(); }\n   |                                 ^^^^^^^^^^^^^^^^^^^^^^^ `Rc<u32>` cannot be sent between threads safely\n   |\n   = help: within `<Local as Holder>::Item`, the trait `Send` is not implemented for `Rc<u32>`\nnote: required because it appears within the type `<Local as Holder>::Item`\n  --> <tmp>/atpit_02_non_send_atpit_auto_trait_rejected_next_solver_globally.rs:9:17\n   |\n 9 |     type Item = impl Clone;\n   |                 ^^^^^^^^^^\nnote: required by a bound in `require_send`\n  --> <tmp>/atpit_02_non_send_atpit_auto_trait_rejected_next_solver_globally.rs:14:20\n   |\n14 | fn require_send<T: Send>() {}\n   |                    ^^^^ required by this bound in `require_send`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error[E0277]: `Rc<u32>` cannot be sent between threads safely\n  --> <tmp>/atpit_02_non_send_atpit_auto_trait_rejected_next_solver_no.rs:15:33\n   |\n 9 |     type Item = impl Clone;\n   |                 ---------- within this `<Local as Holder>::Item`\n...\n15 | pub fn check() { require_send::<<Local as Holder>::Item>(); }\n   |                                 ^^^^^^^^^^^^^^^^^^^^^^^ `Rc<u32>` cannot be sent between threads safely\n   |\n   = help: within `<Local as Holder>::Item`, the trait `Send` is not implemented for `Rc<u32>`\nnote: required because it appears within the type `<Local as Holder>::Item`\n  --> <tmp>/atpit_02_non_send_atpit_auto_trait_rejected_next_solver_no.rs:9:17\n   |\n 9 |     type Item = impl Clone;\n   |                 ^^^^^^^^^^\nnote: required by a bound in `require_send`\n  --> <tmp>/atpit_02_non_send_atpit_auto_trait_rejected_next_solver_no.rs:14:20\n   |\n14 | fn require_send<T: Send>() {}\n   |                    ^^^^ required by this bound in `require_send`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+        "error_codes": [
+          "E0277"
+        ]
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "rtn_04_equality_bound_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: return type notation is not allowed to use type equality\n --> <tmp>/rtn_04_equality_bound_rejected_next_solver_globally.rs:5:22\n  |\n5 | pub fn bad<W: Worker<run(..) = ()>>(_: W) {}\n  |                      ^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: return type notation is not allowed to use type equality\n --> <tmp>/rtn_04_equality_bound_rejected_next_solver_no.rs:5:22\n  |\n5 | pub fn bad<W: Worker<run(..) = ()>>(_: W) {}\n  |                      ^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "rtn_05_non_rpitit_method_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: return type notation used on function that is not `async` and does not return `impl Trait`\n --> <tmp>/rtn_05_non_rpitit_method_rejected_next_solver_globally.rs:5:21\n  |\n3 |     fn sync_fn(&self) -> u32;\n  |     ------------------------- this function must be `async` or return `impl Trait`\n4 | }\n5 | pub fn bad<W: Plain<sync_fn(..): Send>>(_: W) {}\n  |                     ^^^^^^^^^^^^^^^^^\n  |\n  = note: function returns `u32`, which is not compatible with associated type return bounds\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: return type notation used on function that is not `async` and does not return `impl Trait`\n --> <tmp>/rtn_05_non_rpitit_method_rejected_next_solver_no.rs:5:21\n  |\n3 |     fn sync_fn(&self) -> u32;\n  |     ------------------------- this function must be `async` or return `impl Trait`\n4 | }\n5 | pub fn bad<W: Plain<sync_fn(..): Send>>(_: W) {}\n  |                     ^^^^^^^^^^^^^^^^^\n  |\n  = note: function returns `u32`, which is not compatible with associated type return bounds\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "rtn_06_method_type_param_rejected": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "rc": 1,
+        "stderr_head": "error: return type notation is not allowed for functions that have type parameters\n --> <tmp>/rtn_06_method_type_param_rejected_next_solver_globally.rs:5:19\n  |\n3 |     async fn f<T>(&self, x: T) -> u32;\n  |                - type parameter declared here\n4 | }\n5 | pub fn bad<W: Bad<f(..): Send>>(_: W) {}\n  |                   ^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "rc": 1,
+        "stderr_head": "error: return type notation is not allowed for functions that have type parameters\n --> <tmp>/rtn_06_method_type_param_rejected_next_solver_no.rs:5:19\n  |\n3 |     async fn f<T>(&self, x: T) -> u32;\n  |                - type parameter declared here\n4 | }\n5 | pub fn bad<W: Bad<f(..): Send>>(_: W) {}\n  |                   ^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "error_codes": []
+      },
+      "exit_code_parity": true,
+      "solver_parity": true
+    },
+    "tait_13_cross_crate_reveal_all_layout_and_abi": {
+      "next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "dep_rc": 0,
+        "dep_error_codes": [],
+        "consumer_rc": 0,
+        "consumer_error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "XC_EQ=true XC_SIZE=24 XC_ALIGN=8 XC_AUTO=true",
+        "neg_concrete_op_rc": 1,
+        "neg_concrete_op_error_codes": [
+          "E0608"
+        ],
+        "neg_concrete_op_stderr_head": "error[E0608]: cannot index into a value of type `dep::Secret`\n --> <tmp>/xc_Znextsolver_globally/neg.rs:2:6\n  |\n2 |     s[0]\n  |      ^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0608`.\n",
+        "miri": {
+          "rc": 0,
+          "stdout": "XC_EQ=true XC_SIZE=24 XC_ALIGN=8 XC_AUTO=true",
+          "stderr_head": ""
+        }
+      },
+      "next_solver_no": {
+        "flags": [
+          "-Znext-solver=no"
+        ],
+        "dep_rc": 0,
+        "dep_error_codes": [],
+        "consumer_rc": 0,
+        "consumer_error_codes": [],
+        "run_rc": 0,
+        "run_stdout": "XC_EQ=true XC_SIZE=24 XC_ALIGN=8 XC_AUTO=true",
+        "neg_concrete_op_rc": 1,
+        "neg_concrete_op_error_codes": [
+          "E0608"
+        ],
+        "neg_concrete_op_stderr_head": "error[E0608]: cannot index into a value of type `dep::Secret`\n --> <tmp>/xc_Znextsolver_no/neg.rs:2:6\n  |\n2 |     s[0]\n  |      ^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0608`.\n",
+        "miri": {
+          "rc": 0,
+          "stdout": "XC_EQ=true XC_SIZE=24 XC_ALIGN=8 XC_AUTO=true",
+          "stderr_head": ""
+        }
+      },
+      "solver_parity": true
+    }
+  },
+  "miri_setup_rc": 0
+}
