@@ -990,9 +990,10 @@ macro_rules! codegen_preamble {
 }
 
 /// Stub for rendering codegen documentation; used to break build dependency
-/// between benches and zerocopy when re-blessing codegen tests.
+/// between benches and zerocopy when re-blessing codegen tests and when running
+/// doctests.
 #[allow(unused)]
-#[cfg(not(doc))]
+#[cfg(any(not(doc), doctest))]
 macro_rules! codegen_section {
     (
         header = $level:expr,
@@ -1019,7 +1020,7 @@ macro_rules! codegen_section {
 
 /// Generates the HTML for code generation documentation.
 #[allow(unused)]
-#[cfg(doc)]
+#[cfg(all(doc, not(doctest)))]
 macro_rules! codegen_section {
     (
         header = $level:expr,
