@@ -44,7 +44,7 @@ structure CrateBuildFlags where
   deriving DecidableEq, Repr
 
 /-- Effective contract-check predicate under `lmode` and `flags`. -/
-def contractChecksEnabled (lmode : LoweringMode) (flags : CrateBuildFlags) : Bool :=
+noncomputable def contractChecksEnabled (lmode : LoweringMode) (flags : CrateBuildFlags) : Bool :=
   match lmode with
   | .hirBaked => flags.defContractChecks
   | .deferredRuntimeCheck => flags.callerContractChecks
@@ -83,7 +83,7 @@ inductive ExitKind where
   deriving DecidableEq, Repr
 
 /-- Whether `rustc_ast_lowering` wraps this exit kind with `contract_check_ensures`. -/
-def ExitKind.isCheckedNormalExit : ExitKind → Bool
+noncomputable def ExitKind.isCheckedNormalExit : ExitKind → Bool
   | .tail => true
   | .earlyReturn => true
   | .tryResidual => true
@@ -92,7 +92,7 @@ def ExitKind.isCheckedNormalExit : ExitKind → Bool
 
 /-- Predicate asserting a function body contains no `become` explicit tail-call
     exit (which bypasses `checked_return` in `rustc_ast_lowering/src/expr.rs`). -/
-def NoBecomeBypass {Ret : Type} : BodyExpr Ret → Prop
+noncomputable def NoBecomeBypass {Ret : Type} : BodyExpr Ret → Prop
   | .tail _ => True
   | .earlyReturn _ => True
   | .tryResidual _ => True
@@ -101,7 +101,7 @@ def NoBecomeBypass {Ret : Type} : BodyExpr Ret → Prop
   | .branch _ t e => NoBecomeBypass t ∧ NoBecomeBypass e
 
 /-- Raw exit classification and uninstrumented outcome of a `BodyExpr`. -/
-def evalBodyRaw {Ret : Type} : BodyExpr Ret → ExitKind × Outcome Ret
+noncomputable def evalBodyRaw {Ret : Type} : BodyExpr Ret → ExitKind × Outcome Ret
   | .tail v => (.tail, .ok v)
   | .earlyReturn v => (.earlyReturn, .ok v)
   | .tryResidual v => (.tryResidual, .ok v)
@@ -113,13 +113,13 @@ def evalBodyRaw {Ret : Type} : BodyExpr Ret → ExitKind × Outcome Ret
       | false => evalBodyRaw e
 
 /-- Uninstrumented body evaluation (erased contracts). -/
-def evalBodyNoCheck {Ret : Type} (b : BodyExpr Ret) : Outcome Ret :=
+noncomputable def evalBodyNoCheck {Ret : Type} (b : BodyExpr Ret) : Outcome Ret :=
   (evalBodyRaw b).2
 
 /-- Postcondition-instrumented body evaluation mirroring
     `wrap_body_with_contract_check`, `checked_return`, and `inject_ensures_check`
     in `compiler/rustc_ast_lowering/src/contract.rs`. -/
-def evalBodyWithEnsures {Ret : Type} (ens : Ret → Bool) : BodyExpr Ret → Outcome Ret
+noncomputable def evalBodyWithEnsures {Ret : Type} (ens : Ret → Bool) : BodyExpr Ret → Outcome Ret
   | .tail v =>
       match ens v with
       | true => .ok v
@@ -140,7 +140,7 @@ def evalBodyWithEnsures {Ret : Type} (ens : Ret → Bool) : BodyExpr Ret → Out
       | false => evalBodyWithEnsures ens e
 
 /-- Apply the `ensures` check rule to a raw `(ExitKind, Outcome)` pair. -/
-def applyEnsuresDispatch {Ret : Type} (ens : Ret → Bool) :
+noncomputable def applyEnsuresDispatch {Ret : Type} (ens : Ret → Bool) :
     ExitKind × Outcome Ret → Outcome Ret
   | (k, .ok v) =>
       match k.isCheckedNormalExit with
@@ -159,14 +159,14 @@ structure ContractFn (Arg Ret : Type) where
   body : Arg → BodyExpr Ret
 
 /-- Uninstrumented execution of `f` (zero-overhead erased semantics). -/
-def evalUninstrumented {Arg Ret : Type} (f : ContractFn Arg Ret) (x : Arg) : Outcome Ret :=
+noncomputable def evalUninstrumented {Arg Ret : Type} (f : ContractFn Arg Ret) (x : Arg) : Outcome Ret :=
   evalBodyNoCheck (f.body x)
 
 /-- Instrumented execution of `f` under evaluation mode `mode`, lowering mode
     `lmode`, and cross-crate build flags `flags`.
     In `EvalMode.ctfe`, `const_eval_select!` makes both `contract_check_requires`
     and `contract_check_ensures` no-ops even when `contractChecksEnabled = true`. -/
-def evalInstrumented {Arg Ret : Type}
+noncomputable def evalInstrumented {Arg Ret : Type}
     (mode : EvalMode) (lmode : LoweringMode) (flags : CrateBuildFlags)
     (f : ContractFn Arg Ret) (x : Arg) : Outcome Ret :=
   match mode with
@@ -182,7 +182,7 @@ def evalInstrumented {Arg Ret : Type}
 /-- Static verification obligation corresponding to Anneal-style proof discharge:
     for every input satisfying `req`, the uninstrumented body returns normally
     with a value satisfying `ens`. -/
-def StaticContractVerified {Arg Ret : Type} (f : ContractFn Arg Ret) : Prop :=
+noncomputable def StaticContractVerified {Arg Ret : Type} (f : ContractFn Arg Ret) : Prop :=
   ∀ x : Arg, f.req x = true →
     ∃ r : Ret, evalUninstrumented f x = .ok r ∧ f.ens x r = true
 
@@ -401,15 +401,15 @@ theorem deferred_runtime_check_tracks_caller_crate_flag {Arg Ret : Type}
 
 /-! ### Return-Range Narrowing (`range(i32 1, 101)`) & Overflow Freedom (`nuw nsw`) -/
 
-def u32Mod : Nat := 4294967296
-def i32Max : Nat := 2147483647
+noncomputable def u32Mod : Nat := 4294967296
+noncomputable def i32Max : Nat := 2147483647
 
-def u32Add (a b : Nat) : Nat := (a + b) % u32Mod
+noncomputable def u32Add (a b : Nat) : Nat := (a + b) % u32Mod
 
 /-- Concrete model of the probed `inc_bounded(x: u32) -> u32` function:
     `#[requires(x < 100)]`
     `#[ensures(move |ret| *ret == x + 1 && *ret > 0 && *ret <= 100)]` -/
-def incBounded : ContractFn Nat Nat where
+noncomputable def incBounded : ContractFn Nat Nat where
   req := fun x => decide (x < 100)
   ens := fun x r => decide (r = u32Add x 1 ∧ 0 < r ∧ r ≤ 100)
   body := fun x => .tail (u32Add x 1)
@@ -484,7 +484,7 @@ theorem incBounded_runtime_guarded_return_range (callerFlag : Bool) (x r : Nat)
 /-- Tautological postcondition folding soundness: replacing `incBounded.ens`
     with `fun _ _ => true` preserves runtime behavior for ALL inputs `x : Nat`
     (both valid and precondition-violating!). -/
-def incBoundedFoldedEnsures : ContractFn Nat Nat where
+noncomputable def incBoundedFoldedEnsures : ContractFn Nat Nat where
   req := incBounded.req
   ens := fun _ _ => true
   body := incBounded.body
@@ -523,7 +523,7 @@ theorem ce1_unverified_erasure_misses_precondition_violation :
   cases h
 
 /-- Concrete model of `#[requires(x > 0)] #[ensures(|r| *r > 0)] const fn pos(x: u32) -> u32 { x }`. -/
-def posConstFn : ContractFn Nat Nat where
+noncomputable def posConstFn : ContractFn Nat Nat where
   req := fun x => decide (0 < x)
   ens := fun _ r => decide (0 < r)
   body := fun x => .tail x
@@ -545,7 +545,7 @@ theorem ce2_ctfe_skipping_requires_evaluates_invalid_const :
   cases h
 
 /-- Concrete model of the upstream `#[inline] #[requires(x < 10)] pub fn inline_inc(x: u32) -> u32`. -/
-def upstreamInlineInc : ContractFn Nat Nat where
+noncomputable def upstreamInlineInc : ContractFn Nat Nat where
   req := fun x => decide (x < 10)
   ens := fun x r => decide (r = u32Add x 1)
   body := fun x => .tail (u32Add x 1)
@@ -564,19 +564,19 @@ theorem ce3_unchecked_downstream_caller_relying_on_uninstrumented_upstream_misse
   exact ⟨rfl, rfl, rfl, rfl⟩
 
 /-- Concrete model of `buggy_early_return(flag: bool) -> u32` (`if flag { return 0; } 42`). -/
-def buggyEarlyReturn : ContractFn Bool Nat where
+noncomputable def buggyEarlyReturn : ContractFn Bool Nat where
   req := fun _ => true
   ens := fun _ r => decide (0 < r)
   body := fun flag => .branch flag (.earlyReturn 0) (.tail 42)
 
 /-- Concrete model of `tail_bypass() -> u32 { become helper() }` where `helper()` returns `0`. -/
-def tailBecomeBypass : ContractFn Unit Nat where
+noncomputable def tailBecomeBypass : ContractFn Unit Nat where
   req := fun _ => true
   ens := fun _ r => decide (0 < r)
   body := fun _ => .tailCallBecome 0
 
 /-- Concrete model of `panics_before_return() -> u32 { panic!(...) }` with `#[ensures(|_| false)]`. -/
-def panicsBeforeReturn : ContractFn Unit Nat where
+noncomputable def panicsBeforeReturn : ContractFn Unit Nat where
   req := fun _ => true
   ens := fun _ _ => false
   body := fun _ => .panicUnwind 1
