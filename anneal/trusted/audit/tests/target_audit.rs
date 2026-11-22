@@ -475,6 +475,61 @@ fn rejects_axiom_and_sorry_through_opaque_helpers() {
     Fixture::new("prelude\nimport Expected\naxiom hidden : Expected.claim\nopaque helper : Expected.claim := hidden\ntheorem Proof.verify : Expected.claim := helper\n").reject("unapproved axiom");
     Fixture::new("prelude\nimport Expected\nopaque helper : Expected.claim := by sorry\ntheorem Proof.verify : Expected.claim := helper\n").reject("sorryAx");
 }
+
+/// Lean v4.34.1 elaborates `native_decide` and `decide +native` into fresh
+/// `._native.*` auxiliary axioms rather than referencing `Lean.ofReduceBool`
+/// directly. Because `Checker::run_target` elaborates authored target proofs
+/// without repository syntactic preflight, the target audit's foundation-axiom
+/// allowlist is the defense that rejects both direct and opaque-helper
+/// native-evaluation proofs.
+#[test]
+fn rejects_native_evaluation_auxiliary_axioms() {
+    let decidable_goal = "(BitVec.ofNat 8 7).toNat = 7 ∧ \
+        BitVec.and (BitVec.ofNat 8 7) (BitVec.ofNat 8 7) = BitVec.ofNat 8 7";
+    for (body, expected_aux_prefix) in [
+        (
+            format!(
+                "theorem Proof.verify : Expected.claim := \
+                 by change {decidable_goal}; native_decide\n"
+            ),
+            "Proof.verify._native.native_decide.",
+        ),
+        (
+            format!(
+                "theorem Proof.verify : Expected.claim := \
+                 by change {decidable_goal}; decide +native\n"
+            ),
+            "Proof.verify._native.decide.",
+        ),
+        (
+            format!(
+                "opaque helper : Expected.claim := \
+                 by change {decidable_goal}; native_decide\n\
+                 theorem Proof.verify : Expected.claim := helper\n"
+            ),
+            "helper._native.native_decide.",
+        ),
+        (
+            format!(
+                "opaque helper : Expected.claim := \
+                 by change {decidable_goal}; decide +native\n\
+                 theorem Proof.verify : Expected.claim := helper\n"
+            ),
+            "helper._native.decide.",
+        ),
+    ] {
+        let source = format!("prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n{body}");
+        let failure = Fixture::new(&source).run().unwrap_err();
+        assert_eq!(failure.code, 1, "{failure}");
+        assert_eq!(failure.phase, "target-audit", "{failure}");
+        assert!(failure.message.contains("unapproved axiom"), "{failure}");
+        assert!(
+            failure.message.contains(expected_aux_prefix),
+            "expected {expected_aux_prefix:?} in {failure}"
+        );
+    }
+}
+
 #[test]
 fn rejects_specification_import_of_proof_helper() {
     let mut f = Fixture::new(PROOF);
