@@ -28159,6 +28159,182 @@
         "security"
       ]
     },
+    "crates-io-concurrency-primitives-weak-memory-protocols-and-ub-gaps": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "artifact": "crossbeam-utils-0.8.23.crate",
+            "crate": "crossbeam-utils",
+            "sha256": "a31eee39dddec8330830986fcd7625edb5a24ec90ea038215273bbc3adb08ac6",
+            "version": "0.8.23"
+          },
+          "name": "crates.io crossbeam-utils crate"
+        },
+        {
+          "identity": {
+            "artifact": "crossbeam-epoch-0.9.21.crate",
+            "crate": "crossbeam-epoch",
+            "sha256": "dc74980687109a3b14c72fd458107bf0baa1da1a1a805e178d15501ba9b86d9d",
+            "version": "0.9.21"
+          },
+          "name": "crates.io crossbeam-epoch crate"
+        },
+        {
+          "identity": {
+            "artifact": "crossbeam-deque-0.8.8.crate",
+            "crate": "crossbeam-deque",
+            "sha256": "622f3fc73690be383c7214310406f28a90e6edeadc3cea882f9d71e495b9711a",
+            "version": "0.8.8"
+          },
+          "name": "crates.io crossbeam-deque crate"
+        },
+        {
+          "identity": {
+            "artifact": "crossbeam-queue-0.3.13.crate",
+            "crate": "crossbeam-queue",
+            "sha256": "803d13fb3b09d88be9f4dbc29062c66b19bf7170867ceb746d2a8689bf6c7a26",
+            "version": "0.3.13"
+          },
+          "name": "crates.io crossbeam-queue crate"
+        },
+        {
+          "identity": {
+            "artifact": "crossbeam-channel-0.5.15.crate",
+            "crate": "crossbeam-channel",
+            "sha256": "82b8f8f868b36967f9606790d1903570de9ceaf870a7bf9fbbd3016d636a2cb2",
+            "version": "0.5.15"
+          },
+          "name": "crates.io crossbeam-channel crate"
+        },
+        {
+          "identity": {
+            "artifact": "lock_api-0.4.14.crate",
+            "crate": "lock_api",
+            "sha256": "224399e74b87b5f3557511d98dff8b14089b3dadafcab6bb93eab67d3aace965",
+            "version": "0.4.14"
+          },
+          "name": "crates.io lock_api crate"
+        },
+        {
+          "identity": {
+            "artifact": "parking_lot-0.12.5.crate",
+            "crate": "parking_lot",
+            "sha256": "93857453250e3077bd71ff98b6a65ea6621a19bb0f559a85248955ac12c45a1a",
+            "version": "0.12.5"
+          },
+          "name": "crates.io parking_lot crate"
+        },
+        {
+          "identity": {
+            "artifact": "parking_lot_core-0.9.12.crate",
+            "crate": "parking_lot_core",
+            "sha256": "2621685985a2ebf1c516881c026032ac7deafcda1a2c9b7850dc81e3dfcb64c1",
+            "version": "0.9.12"
+          },
+          "name": "crates.io parking_lot_core crate"
+        },
+        {
+          "identity": {
+            "artifact": "tokio-1.54.1.crate",
+            "crate": "tokio",
+            "sha256": "b52fd3255258d26fac7264ab5a76b53c13367136dc011d3d6ad4f8ed070396a3",
+            "version": "1.54.1"
+          },
+          "name": "crates.io tokio crate"
+        },
+        {
+          "identity": {
+            "artifact": "once_cell-1.21.4.crate",
+            "crate": "once_cell",
+            "sha256": "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50",
+            "version": "1.21.4"
+          },
+          "name": "crates.io once_cell crate"
+        },
+        {
+          "identity": {
+            "artifact": "arc-swap-1.8.0.crate",
+            "crate": "arc-swap",
+            "sha256": "51d03449bb8ca2cc2ef70869af31463d1ae5ccc8fa3e334b307203fbf815207e",
+            "version": "1.8.0"
+          },
+          "name": "crates.io arc-swap crate"
+        },
+        {
+          "identity": {
+            "artifact": "dashmap-6.2.1.crate",
+            "crate": "dashmap",
+            "sha256": "e6361d5c062261c78a176addb82d4c821ae42bed6089de0e12603cd25de2059c",
+            "version": "6.2.1"
+          },
+          "name": "crates.io dashmap crate"
+        },
+        {
+          "identity": {
+            "artifact": "rayon-core-1.13.0.crate",
+            "crate": "rayon-core",
+            "sha256": "22e18b0f0062d30d4230b2e85ff77fdfe4326feb054b9783a3460d8435c8ab91",
+            "version": "1.13.0"
+          },
+          "name": "crates.io rayon-core crate"
+        },
+        {
+          "identity": {
+            "artifact": "portable-atomic-1.13.1.crate",
+            "crate": "portable-atomic",
+            "sha256": "c33a9471896f1c69cecef8d20cbe2f7accd12527ce60845ff44c153bb2a21b49",
+            "version": "1.13.1"
+          },
+          "name": "crates.io portable-atomic crate"
+        },
+        {
+          "identity": {
+            "artifact": "atomic-waker-1.1.2.crate",
+            "crate": "atomic-waker",
+            "sha256": "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0",
+            "version": "1.1.2"
+          },
+          "name": "crates.io atomic-waker crate"
+        },
+        {
+          "identity": {
+            "artifact": "futures-core-0.3.34.crate",
+            "crate": "futures-core",
+            "sha256": "92d699e522242e69e3003b94ecc1f960f3a5e015aa7c5d7486e65ad01dd94f5e",
+            "version": "0.3.34"
+          },
+          "name": "crates.io futures-core crate"
+        },
+        {
+          "identity": {
+            "artifact": "futures-util-0.3.34.crate",
+            "crate": "futures-util",
+            "sha256": "0d50a92467f8ba5dd6e3ee5d4bd04d73ab2e4e1c44474a0674821dfce14b79bc",
+            "version": "0.3.34"
+          },
+          "name": "crates.io futures-util crate"
+        },
+        {
+          "identity": {
+            "artifact": "futures-channel-0.3.34.crate",
+            "crate": "futures-channel",
+            "sha256": "b1f9e3d69d39e4862ffed03ed071a76f9a13ba1d9109d355b0f0aa6b15e393c4",
+            "version": "0.3.34"
+          },
+          "name": "crates.io futures-channel crate"
+        }
+      ],
+      "topics": [
+        "rust/concurrency",
+        "rust/atomics",
+        "rust/memory-model",
+        "rust/unsafe",
+        "runtimes/async",
+        "verification/concurrency",
+        "verification/liveness"
+      ]
+    },
     "crates-io-download-weighted-codegen-demand-census": {
       "observed_at": "2026-11-13",
       "subjects": [

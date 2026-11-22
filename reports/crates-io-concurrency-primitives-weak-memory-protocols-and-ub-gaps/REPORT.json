@@ -1,0 +1,176 @@
+{
+  "topics": [
+    "rust/concurrency",
+    "rust/atomics",
+    "rust/memory-model",
+    "rust/unsafe",
+    "runtimes/async",
+    "verification/concurrency",
+    "verification/liveness"
+  ],
+  "subjects": [
+    {
+      "name": "crates.io crossbeam-utils crate",
+      "identity": {
+        "crate": "crossbeam-utils",
+        "version": "0.8.23",
+        "artifact": "crossbeam-utils-0.8.23.crate",
+        "sha256": "a31eee39dddec8330830986fcd7625edb5a24ec90ea038215273bbc3adb08ac6"
+      }
+    },
+    {
+      "name": "crates.io crossbeam-epoch crate",
+      "identity": {
+        "crate": "crossbeam-epoch",
+        "version": "0.9.21",
+        "artifact": "crossbeam-epoch-0.9.21.crate",
+        "sha256": "dc74980687109a3b14c72fd458107bf0baa1da1a1a805e178d15501ba9b86d9d"
+      }
+    },
+    {
+      "name": "crates.io crossbeam-deque crate",
+      "identity": {
+        "crate": "crossbeam-deque",
+        "version": "0.8.8",
+        "artifact": "crossbeam-deque-0.8.8.crate",
+        "sha256": "622f3fc73690be383c7214310406f28a90e6edeadc3cea882f9d71e495b9711a"
+      }
+    },
+    {
+      "name": "crates.io crossbeam-queue crate",
+      "identity": {
+        "crate": "crossbeam-queue",
+        "version": "0.3.13",
+        "artifact": "crossbeam-queue-0.3.13.crate",
+        "sha256": "803d13fb3b09d88be9f4dbc29062c66b19bf7170867ceb746d2a8689bf6c7a26"
+      }
+    },
+    {
+      "name": "crates.io crossbeam-channel crate",
+      "identity": {
+        "crate": "crossbeam-channel",
+        "version": "0.5.15",
+        "artifact": "crossbeam-channel-0.5.15.crate",
+        "sha256": "82b8f8f868b36967f9606790d1903570de9ceaf870a7bf9fbbd3016d636a2cb2"
+      }
+    },
+    {
+      "name": "crates.io lock_api crate",
+      "identity": {
+        "crate": "lock_api",
+        "version": "0.4.14",
+        "artifact": "lock_api-0.4.14.crate",
+        "sha256": "224399e74b87b5f3557511d98dff8b14089b3dadafcab6bb93eab67d3aace965"
+      }
+    },
+    {
+      "name": "crates.io parking_lot crate",
+      "identity": {
+        "crate": "parking_lot",
+        "version": "0.12.5",
+        "artifact": "parking_lot-0.12.5.crate",
+        "sha256": "93857453250e3077bd71ff98b6a65ea6621a19bb0f559a85248955ac12c45a1a"
+      }
+    },
+    {
+      "name": "crates.io parking_lot_core crate",
+      "identity": {
+        "crate": "parking_lot_core",
+        "version": "0.9.12",
+        "artifact": "parking_lot_core-0.9.12.crate",
+        "sha256": "2621685985a2ebf1c516881c026032ac7deafcda1a2c9b7850dc81e3dfcb64c1"
+      }
+    },
+    {
+      "name": "crates.io tokio crate",
+      "identity": {
+        "crate": "tokio",
+        "version": "1.54.1",
+        "artifact": "tokio-1.54.1.crate",
+        "sha256": "b52fd3255258d26fac7264ab5a76b53c13367136dc011d3d6ad4f8ed070396a3"
+      }
+    },
+    {
+      "name": "crates.io once_cell crate",
+      "identity": {
+        "crate": "once_cell",
+        "version": "1.21.4",
+        "artifact": "once_cell-1.21.4.crate",
+        "sha256": "9f7c3e4beb33f85d45ae3e3a1792185706c8e16d043238c593331cc7cd313b50"
+      }
+    },
+    {
+      "name": "crates.io arc-swap crate",
+      "identity": {
+        "crate": "arc-swap",
+        "version": "1.8.0",
+        "artifact": "arc-swap-1.8.0.crate",
+        "sha256": "51d03449bb8ca2cc2ef70869af31463d1ae5ccc8fa3e334b307203fbf815207e"
+      }
+    },
+    {
+      "name": "crates.io dashmap crate",
+      "identity": {
+        "crate": "dashmap",
+        "version": "6.2.1",
+        "artifact": "dashmap-6.2.1.crate",
+        "sha256": "e6361d5c062261c78a176addb82d4c821ae42bed6089de0e12603cd25de2059c"
+      }
+    },
+    {
+      "name": "crates.io rayon-core crate",
+      "identity": {
+        "crate": "rayon-core",
+        "version": "1.13.0",
+        "artifact": "rayon-core-1.13.0.crate",
+        "sha256": "22e18b0f0062d30d4230b2e85ff77fdfe4326feb054b9783a3460d8435c8ab91"
+      }
+    },
+    {
+      "name": "crates.io portable-atomic crate",
+      "identity": {
+        "crate": "portable-atomic",
+        "version": "1.13.1",
+        "artifact": "portable-atomic-1.13.1.crate",
+        "sha256": "c33a9471896f1c69cecef8d20cbe2f7accd12527ce60845ff44c153bb2a21b49"
+      }
+    },
+    {
+      "name": "crates.io atomic-waker crate",
+      "identity": {
+        "crate": "atomic-waker",
+        "version": "1.1.2",
+        "artifact": "atomic-waker-1.1.2.crate",
+        "sha256": "1505bd5d3d116872e7271a6d4e16d81d0c8570876c8de68093a09ac269d8aac0"
+      }
+    },
+    {
+      "name": "crates.io futures-core crate",
+      "identity": {
+        "crate": "futures-core",
+        "version": "0.3.34",
+        "artifact": "futures-core-0.3.34.crate",
+        "sha256": "92d699e522242e69e3003b94ecc1f960f3a5e015aa7c5d7486e65ad01dd94f5e"
+      }
+    },
+    {
+      "name": "crates.io futures-util crate",
+      "identity": {
+        "crate": "futures-util",
+        "version": "0.3.34",
+        "artifact": "futures-util-0.3.34.crate",
+        "sha256": "0d50a92467f8ba5dd6e3ee5d4bd04d73ab2e4e1c44474a0674821dfce14b79bc"
+      }
+    },
+    {
+      "name": "crates.io futures-channel crate",
+      "identity": {
+        "crate": "futures-channel",
+        "version": "0.3.34",
+        "artifact": "futures-channel-0.3.34.crate",
+        "sha256": "b1f9e3d69d39e4862ffed03ed071a76f9a13ba1d9109d355b0f0aa6b15e393c4"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
