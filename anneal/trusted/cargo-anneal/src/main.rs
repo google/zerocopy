@@ -39,12 +39,17 @@ enum Command {
     /// this version or installs the pinned remote archive. With
     /// `--local-archive`, replaces any existing cached installation for this
     /// version while coordinating with concurrent `verify` runs via the cache
-    /// lock.
+    /// lock. Pass `--clear-old` to remove older cached toolchain directories
+    /// without prompting; on an interactive terminal without `--clear-old`,
+    /// prompts before removing them.
     #[cfg(feature = "setup")]
     Setup {
         /// Install a local archive, replacing any existing cached version.
         #[arg(long, value_name = "path")]
         local_archive: Option<PathBuf>,
+        /// Remove older cached toolchain directories without prompting.
+        #[arg(long)]
+        clear_old: bool,
     },
     /// Print the bundled agent skill.
     Skill {
@@ -101,12 +106,12 @@ fn scalar_example() -> String {
 #[cfg(feature = "setup")]
 fn dispatch(
     cli: Cli,
-    install: impl FnOnce(Option<PathBuf>) -> Result<PathBuf, String>,
+    install: impl FnOnce(Option<PathBuf>, bool) -> Result<PathBuf, String>,
 ) -> Result<Action, String> {
     match cli.command {
         None => Ok(Action::Print(format!("{}\n", Cli::command().render_help()))),
-        Some(Command::Setup { local_archive }) => {
-            let root = install(local_archive)?;
+        Some(Command::Setup { local_archive, clear_old }) => {
+            let root = install(local_archive, clear_old)?;
             Ok(Action::Print(format!("Installed Anneal toolchain at {}\n", root.display())))
         }
         Some(Command::Skill { example: true }) => Ok(Action::Print(scalar_example())),
@@ -144,7 +149,7 @@ fn parse_action(args: Vec<OsString>) -> Result<Result<Cli, Action>, Failure> {
 #[cfg(feature = "setup")]
 fn run(
     args: Vec<OsString>,
-    install: impl FnOnce(Option<PathBuf>) -> Result<PathBuf, String>,
+    install: impl FnOnce(Option<PathBuf>, bool) -> Result<PathBuf, String>,
 ) -> Result<Action, Failure> {
     match parse_action(args)? {
         Ok(cli) => dispatch(cli, install).map_err(Failure::Operation),
@@ -193,7 +198,7 @@ mod tests {
     }
 
     #[cfg(feature = "setup")]
-    fn must_not_install(_: Option<PathBuf>) -> Result<PathBuf, String> {
+    fn must_not_install(_: Option<PathBuf>, _: bool) -> Result<PathBuf, String> {
         panic!("argument handling must not install a toolchain")
     }
 
@@ -339,27 +344,33 @@ mod tests {
     #[test]
     fn setup_dispatch_preserves_archive_and_operation_result() {
         for archive in [None, Some(PathBuf::from("local archive.tar.zst"))] {
-            let mut input = args(&["cargo-anneal", "setup"]);
-            if let Some(path) = &archive {
-                input.push("--local-archive".into());
-                input.push(path.as_os_str().into());
-            }
-            let output = output(
-                run(input.clone(), |actual| {
-                    assert_eq!(actual, archive);
-                    Ok(PathBuf::from("installed toolchain"))
-                })
-                .expect("setup must return the operation's success"),
-            );
-            assert_eq!(output, "Installed Anneal toolchain at installed toolchain\n");
+            for clear_old in [false, true] {
+                let mut input = args(&["cargo-anneal", "setup"]);
+                if let Some(path) = &archive {
+                    input.push("--local-archive".into());
+                    input.push(path.as_os_str().into());
+                }
+                if clear_old {
+                    input.push("--clear-old".into());
+                }
+                let output = output(
+                    run(input.clone(), |actual_archive, actual_clear_old| {
+                        assert_eq!(actual_archive, archive);
+                        assert_eq!(actual_clear_old, clear_old);
+                        Ok(PathBuf::from("installed toolchain"))
+                    })
+                    .expect("setup must return the operation's success"),
+                );
+                assert_eq!(output, "Installed Anneal toolchain at installed toolchain\n");
 
-            let failure = run(input, |_| Err("archive unavailable".into()))
-                .err()
-                .expect("setup must return the operation's failure");
-            assert!(matches!(
-                failure,
-                Failure::Operation(message) if message == "archive unavailable"
-            ));
+                let failure = run(input, |_, _| Err("archive unavailable".into()))
+                    .err()
+                    .expect("setup must return the operation's failure");
+                assert!(matches!(
+                    failure,
+                    Failure::Operation(message) if message == "archive unavailable"
+                ));
+            }
         }
     }
 
@@ -480,7 +491,7 @@ mod tests {
         .expect("OS-native archive path must parse");
         assert!(matches!(
             cli.command,
-            Some(Command::Setup { local_archive: Some(actual) })
+            Some(Command::Setup { local_archive: Some(actual), clear_old: false })
                 if actual.as_os_str() == path
         ));
     }
