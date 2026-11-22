@@ -1,0 +1,188 @@
+{
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "part_a2_box_deref_swap_miri_sb_vs_tb": {
+    "compile_rc": 0,
+    "miri_sb_rc": 1,
+    "miri_sb_stderr": "error: Undefined Behavior: trying to retag from <98> for SharedReadOnly permission at alloc120[0x0], but that tag does not exist in the borrow stack for this location\n   --> <HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:788:14\n    |\n788 |     unsafe { intrinsics::typed_swap_nonoverlapping(x, y) }\n    |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    |              |\n    |              this error occurs as part of retag at alloc120[0x0..0x4]\n    |              while retagging field .<coroutine-state(3)>.<captured-var(1)>\n    |\n    = help: this indicates a potential bug in the program: it performed an invalid operation, but the Stacked Borrows rules it violated are still experimental\n    = help: see https://github.com/rust-lang/unsafe-code-guidelines/blob/master/wip/stacked-borrows.md for further information\nhelp: <98> was created by a SharedReadOnly retag at offsets [0x0..0x4]\n   --> <TMP>/part_a2_miri.rs:45:23\n    |\n 45 |         let r: &i32 = &*b;\n    |                       ^^^\nhelp: <98> was later invalidated at offsets [0x0..0x4] by a Unique retag\n   --> <TMP>/part_a2_miri.rs:55:5\n    |\n 55 |     mem::swap(&mut g1, &mut g2);\n    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n    = note: stack backtrace:\n            0: core::mem::swap::<{gen block@<TMP>/part_a2_miri.rs:43:5: 43:13}>\n                at <HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/mem/mod.rs:788:14: 788:57\n            1: run_part_a2_box_swap\n                at <TMP>/part_a2_miri.rs:55:5: 55:32\n            2: miri_start\n                at <TMP>/part_a2_miri.rs:63:76: 63:98\n\nerror: aborting due to 1 previous error",
+    "miri_sb_stdout": "",
+    "miri_tb_rc": 0,
+    "miri_tb_stderr": "",
+    "miri_tb_stdout": "BOX_DEREF_SWAP=Some(11),Some(22),Some(122),Some(111)",
+    "native_rc": 0,
+    "native_stdout": "BOX_DEREF_SWAP=Some(11),Some(22),Some(122),Some(111)"
+  },
+  "part_a_gen_async_gen_swap_for_await_and_miri": {
+    "all_three_outputs_identical": true,
+    "compile_rc": 0,
+    "compile_stderr": "",
+    "miri_sb_rc": 0,
+    "miri_sb_stderr": "",
+    "miri_sb_stdout": "UNPIN=true UNPIN_PP=true FUSED_TRAIT=true SWAP=Some(11),Some(21),Some(22),Some(12) FUSED=(None, None) SZ_DISJOINT=257 SZ_OVERLAP=513 SZ_HANDOFF_73137=513 SUMS=11,10,16 ASYNC_GEN=(184, true) ASYNC_GEN_RETURNED_FUSED=true",
+    "miri_tb_rc": 0,
+    "miri_tb_stderr": "",
+    "miri_tb_stdout": "UNPIN=true UNPIN_PP=true FUSED_TRAIT=true SWAP=Some(11),Some(21),Some(22),Some(12) FUSED=(None, None) SZ_DISJOINT=257 SZ_OVERLAP=513 SZ_HANDOFF_73137=513 SUMS=11,10,16 ASYNC_GEN=(184, true) ASYNC_GEN_RETURNED_FUSED=true",
+    "native_rc": 0,
+    "native_stdout": "UNPIN=true UNPIN_PP=true FUSED_TRAIT=true SWAP=Some(11),Some(21),Some(22),Some(12) FUSED=(None, None) SZ_DISJOINT=257 SZ_OVERLAP=513 SZ_HANDOFF_73137=513 SUMS=11,10,16 ASYNC_GEN=(184, true) ASYNC_GEN_RETURNED_FUSED=true"
+  },
+  "part_b_post_panic_fusing_4way": {
+    "compile_rc": 0,
+    "compile_stderr": "",
+    "native_rc": 0,
+    "stdout_lines": [
+      "GEN: STEP1=Some(1) STEP2_PANIC=Some(\"mid-gen-boom\") STEP3_PANICKED=\"`gen fn` should just keep returning `None` after panicking\"",
+      "ASYNC_GEN: STEP1=Ready(Some(1)) STEP2_PANIC=Some(\"mid-async-gen-boom\") STEP3_PANICKED=\"`async gen fn` resumed after panicking\"",
+      "ASYNC: AFTER_RETURN=(Ready(7), PANICKED=\"`async fn` resumed after completion\") AFTER_PANIC=(Some(\"mid-async-boom\"), PANICKED=\"`async fn` resumed after panicking\")",
+      "COROUTINE: AFTER_RETURN=(Yielded(1), Complete(99), PANICKED=\"coroutine resumed after completion\") AFTER_PANIC=(Yielded(1), Some(\"mid-coro-boom\"), PANICKED=\"coroutine resumed after panicking\")"
+    ]
+  },
+  "part_c_compile_time_soundness_gates": {
+    "async_gen_is_not_unpin_rejected_e0277": {
+      "edition": "2024",
+      "error_codes": [
+        "error[E0277]"
+      ],
+      "rc": 1,
+      "stderr": "error[E0277]: `{async gen block@<TMP>/async_gen_is_not_unpin_rejected_e0277.rs:4:14: 4:23}` cannot be unpinned\n --> <TMP>/async_gen_is_not_unpin_rejected_e0277.rs:7:18\n  |\n7 |     assert_unpin(ag);\n  |     ------------ ^^ unsatisfied trait bound\n  |     |\n  |     required by a bound introduced by this call\n  |\n  = help: the trait `Unpin` is not implemented for `{async gen block@<TMP>/async_gen_is_not_unpin_rejected_e0277.rs:4:14: 4:23}`\n  = note: consider using the `pin!` macro\n          consider using `Box::pin` if you need to access the pinned value outside of the current scope\nnote: required by a bound in `assert_unpin`\n --> <TMP>/async_gen_is_not_unpin_rejected_e0277.rs:2:20\n  |\n2 | fn assert_unpin<T: Unpin>(_: T) {}\n  |                    ^^^^^ required by this bound in `assert_unpin`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+    },
+    "async_gen_self_borrow_across_yield_accepted": {
+      "edition": "2024",
+      "error_codes": [],
+      "rc": 0,
+      "stderr": ""
+    },
+    "edition2021_gen_accepted_as_ident": {
+      "edition": "2021",
+      "error_codes": [],
+      "rc": 0,
+      "stderr": ""
+    },
+    "edition2024_gen_keyword_rejected_as_ident": {
+      "edition": "2024",
+      "error_codes": [],
+      "rc": 1,
+      "stderr": "error: expected identifier, found reserved keyword `gen`\n --> <TMP>/edition2024_gen_keyword_rejected_as_ident.rs:1:25\n  |\n1 | pub fn f() -> i32 { let gen = 7; gen }\n  |                         ^^^ expected identifier, found reserved keyword\n  |\nhelp: escape `gen` to use it as an identifier\n  |\n1 | pub fn f() -> i32 { let r#gen = 7; gen }\n  |                         ++\n\nerror: expected expression, found reserved keyword `gen`\n --> <TMP>/edition2024_gen_keyword_rejected_as_ident.rs:1:34\n  |\n1 | pub fn f() -> i32 { let gen = 7; gen }\n  |                                  ^^^ expected expression\n\nerror: aborting due to 2 previous errors\n\n"
+    },
+    "gen_block_is_fused_iterator_accepted": {
+      "edition": "2024",
+      "error_codes": [],
+      "rc": 0,
+      "stderr": ""
+    },
+    "gen_box_deref_borrow_across_yield_check": {
+      "edition": "2024",
+      "error_codes": [],
+      "rc": 0,
+      "stderr": ""
+    },
+    "gen_external_ref_reborrow_across_yield_accepted": {
+      "edition": "2024",
+      "error_codes": [],
+      "rc": 0,
+      "stderr": ""
+    },
+    "gen_move_upvar_borrow_across_yield_rejected_e0626": {
+      "edition": "2024",
+      "error_codes": [
+        "error[E0626]"
+      ],
+      "rc": 1,
+      "stderr": "error[E0626]: borrow may still be in use when `gen` block yields\n --> <TMP>/gen_move_upvar_borrow_across_yield_rejected_e0626.rs:4:17\n  |\n3 |     gen move {\n  |     -------- within this `gen` block\n4 |         let r = &upvar;\n  |                 ^^^^^^\n5 |         yield 1;\n  |         ------- possible yield occurs here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0626`.\n"
+    },
+    "gen_non_unit_return_rejected": {
+      "edition": "2024",
+      "error_codes": [
+        "error[E0308]"
+      ],
+      "rc": 1,
+      "stderr": "error[E0308]: mismatched types\n --> <TMP>/gen_non_unit_return_rejected.rs:5:16\n  |\n5 |         return 99;\n  |                ^^ expected `()`, found integer\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n"
+    },
+    "gen_self_borrow_across_yield_rejected_e0626": {
+      "edition": "2024",
+      "error_codes": [
+        "error[E0626]"
+      ],
+      "rc": 1,
+      "stderr": "error[E0626]: borrow may still be in use when `gen` block yields\n --> <TMP>/gen_self_borrow_across_yield_rejected_e0626.rs:5:17\n  |\n3 |     gen {\n  |     --- within this `gen` block\n4 |         let x = 42;\n5 |         let r = &x;\n  |                 ^^\n6 |         yield 1;\n  |         ------- possible yield occurs here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0626`.\n"
+    },
+    "gen_with_phantom_pinned_is_unpin_accepted": {
+      "edition": "2024",
+      "error_codes": [],
+      "rc": 0,
+      "stderr": ""
+    }
+  },
+  "part_d_mir_lowering_and_type_sizes": {
+    "compile_rc": 0,
+    "compile_stderr": "",
+    "layout_headers": {
+      "part_d.make_gen_disjoint-{closure#0}.-------.coroutine_resume.0.mir": "fn make_gen_disjoint::{closure#0}(_1: &mut {gen block@<TMP>/part_d.rs:24:5: 24:8}) -> Option<u8> {\n    coroutine layout {\n        field _s0: [u8; 256];\n        field _s1: [u8; 256];\n        variant_fields = {\n            Unresumed(0): [],\n            Returned (1): [],\n            Panicked (2): [],\n            Suspend0 (3): [_s0],\n            Suspend1 (4): [],\n            Suspend2 (5): [_s1],\n            Suspend3 (6): [],\n        }\n        storage_conflicts = BitMatrix(2x2) {(_s0, _s0), (_s1, _s1)}\n    }",
+      "part_d.make_gen_handoff_73137-{closure#0}.-------.coroutine_resume.0.mir": "fn make_gen_handoff_73137::{closure#0}(_1: &mut {gen block@<TMP>/part_d.rs:41:5: 41:8}) -> Option<u8> {\n    coroutine layout {\n        field _s0: [u8; 256];\n        field _s1: [u8; 256];\n        variant_fields = {\n            Unresumed(0): [],\n            Returned (1): [],\n            Panicked (2): [],\n            Suspend0 (3): [_s0],\n            Suspend1 (4): [_s1],\n            Suspend2 (5): [],\n        }\n        storage_conflicts = BitMatrix(2x2) {(_s0, _s0), (_s0, _s1), (_s1, _s0), (_s1, _s1)}\n    }",
+      "part_d.make_gen_overlap-{closure#0}.-------.coroutine_resume.0.mir": "fn make_gen_overlap::{closure#0}(_1: &mut {gen block@<TMP>/part_d.rs:53:5: 53:8}) -> Option<u8> {\n    coroutine layout {\n        field _s0: [u8; 256];\n        field _s1: [u8; 256];\n        variant_fields = {\n            Unresumed(0): [],\n            Returned (1): [],\n            Panicked (2): [],\n            Suspend0 (3): [_s0],\n            Suspend1 (4): [_s0, _s1],\n            Suspend2 (5): [],\n        }\n        storage_conflicts = BitMatrix(2x2) {(_s0, _s0), (_s0, _s1), (_s1, _s0), (_s1, _s1)}\n    }"
+    },
+    "mir_extracts": {
+      "part_d.make_async_gen_cond_panic-{closure#0}.-------.coroutine_resume.0.mir": "// MIR for `make_async_gen_cond_panic::{closure#0}` 0 coroutine_resume\n\nfn make_async_gen_cond_panic::{closure#0}(_1: Pin<&mut {async gen block@<TMP>/part_d.rs:14:5: 14:19}>, _2: &mut Context<'_>) -> Poll<Option<i32>> {\n    coroutine layout {\n        variant_fields = {\n            Unresumed(0): [],\n            Returned (1): [],\n            Panicked (2): [],\n            Suspend0 (3): [],\n            Suspend1 (4): [],\n        }\n        storage_conflicts = BitMatrix(0x0) {}\n    }\n    debug _task_context => _2;\n    debug boom => ((*_15).0: bool);\n    let mut _0: std::task::Poll<std::option::Option<i32>>;\n    let mut _3: &mut std::task::Context<'_>;\n    let mut _4: std::task::Poll<std::option::Option<i32>>;\n    let _5: ();\n    let mut _6: bool;\n    let mut _7: !;\n    let _8: !;\n    let _9: !;\n    let mut _10: std::fmt::Arguments<'_>;\n    let mut _11: &mut std::task::Context<'_>;\n    let mut _12: std::task::Poll<std::option::Option<i32>>;\n    let mut _13: ();\n    let mut _14: u32;\n    let mut _15: &mut {async gen block@<TMP>/part_d.rs:14:5: 14:19};\n\n    bb0: {\n        _15 = copy (_1.0: &mut {async gen block@<TMP>/part_d.rs:14:5: 14:19});\n        _14 = discriminant((*_15));\n        switchInt(move _14) -> [0: bb21, 1: bb19, 2: bb18, 3: bb16, 4: bb17, otherwise: bb20];\n    }\n\n    bb1: {\n        _0 = move _4;\n        StorageDead(_3);\n        StorageDead(_4);\n        discriminant((*_15)) = 3;\n        return;\n    }\n\n    bb2: {\n        StorageDead(_4);\n        _2 = move _3;\n        StorageDead(_3);\n        StorageLive(_5);\n        StorageLive(_6);\n        _6 = copy ((*_15).0: bool);\n        switchInt(move _6) -> [0: bb5, otherwise: bb3];\n    }\n\n    bb3: {\n        StorageLive(_9);\n        StorageLive(_10);\n        _10 = Arguments::<'_>::from_str(const \"async-boom\") -> [return: bb4, unwind: bb10];\n    }\n\n    bb4: {\n        _9 = panic_fmt(move _10) -> bb10;\n    }\n\n    bb5: {\n        _5 = const ();\n        StorageDead(_6);\n        StorageDead(_5);\n        StorageLive(_11);\n        StorageLive(_12);\n        _12 = async_iter::async_iter::<impl Poll<Option<i32>>>::async_gen_ready(const 2_i32) -> [return: bb6, unwind: bb9];\n    }\n\n    bb6: {\n        _0 = move _12;\n        StorageDead(_11);\n        StorageDead(_12);\n        discriminant((*_15)) = 4;\n        return;\n    }\n\n    bb7: {\n        StorageDead(_12);\n        _2 = move _11;\n        StorageDead(_11);\n        _13 = const ();\n        goto -> bb14;\n    }\n\n    bb8: {\n        _0 = const std::async_iter::async_iter::<impl std::task::Poll<std::option::Option<i32>>>::FINISHED;\n        discriminant((*_15)) = 1;\n        return;\n    }\n\n    bb9 (cleanup): {\n        StorageDead(_12);\n        StorageDead(_11);\n        goto -> bb12;\n    }\n\n    bb10 (cleanup): {\n        StorageDead(_10);\n        StorageDead(_9);\n        StorageDead(_6);\n        StorageDead(_5);\n        goto -> bb12;\n    }\n\n    bb11 (cleanup): {\n        StorageDead(_4);\n        StorageDead(_3);\n        goto -> bb12;\n    }\n\n    bb12 (cleanup): {\n        goto -> bb13;\n    }\n\n    bb13 (cleanup): {\n        goto -> bb15;\n    }\n\n    bb14: {\n        goto -> bb8;\n    }\n\n    bb15 (cleanup): {\n        discriminant((*_15)) = 2;\n        resume;\n    }\n\n    bb16: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _3 = move _2;\n        goto -> bb2;\n    }\n\n    bb17: {\n        StorageLive(_11);\n        StorageLive(_12);\n        _11 = move _2;\n        goto -> bb7;\n    }\n\n    bb18: {\n        assert(const false, \"`async gen fn` resumed after panicking\") -> [success: bb18, unwind continue];\n    }\n\n    bb19: {\n        _0 = const std::async_iter::async_iter::<impl std::task::Poll<std::option::Option<i32>>>::FINISHED;\n        return;\n    }\n\n    bb20: {\n        unreachable;\n    }\n\n    bb21: {\n        StorageLive(_3);\n        StorageLive(_4);\n        _4 = async_iter::async_iter::<impl Poll<Option<i32>>>::async_gen_ready(const 1_i32) -> [return: bb1, unwind: bb11];\n    }\n}\n\nalloc2 (size: 10, align: 1) {\n    61 73 79 6e 63 2d 62 6f 6f 6d                   \u2502 async-boom\n}\n",
+      "part_d.make_gen_cond_panic-{closure#0}.-------.coroutine_resume.0.mir": "// MIR for `make_gen_cond_panic::{closure#0}` 0 coroutine_resume\n\nfn make_gen_cond_panic::{closure#0}(_1: &mut {gen block@<TMP>/part_d.rs:4:5: 4:13}) -> Option<i32> {\n    coroutine layout {\n        variant_fields = {\n            Unresumed(0): [],\n            Returned (1): [],\n            Panicked (2): [],\n            Suspend0 (3): [],\n            Suspend1 (4): [],\n        }\n        storage_conflicts = BitMatrix(0x0) {}\n    }\n    debug boom => ((*_1).0: bool);\n    let mut _0: std::option::Option<i32>;\n    let mut _2: ();\n    let _3: ();\n    let _4: ();\n    let mut _5: bool;\n    let mut _6: !;\n    let _7: !;\n    let _8: !;\n    let mut _9: std::fmt::Arguments<'_>;\n    let _10: ();\n    let mut _11: ();\n    let mut _12: u32;\n\n    bb0: {\n        _12 = discriminant((*_1));\n        switchInt(move _12) -> [0: bb16, 1: bb14, 2: bb13, 3: bb11, 4: bb12, otherwise: bb15];\n    }\n\n    bb1: {\n        StorageDead(_3);\n        StorageLive(_4);\n        StorageLive(_5);\n        _5 = copy ((*_1).0: bool);\n        switchInt(move _5) -> [0: bb4, otherwise: bb2];\n    }\n\n    bb2: {\n        StorageLive(_8);\n        StorageLive(_9);\n        _9 = Arguments::<'_>::from_str(const \"boom\") -> [return: bb3, unwind: bb7];\n    }\n\n    bb3: {\n        _8 = panic_fmt(move _9) -> bb7;\n    }\n\n    bb4: {\n        _4 = const ();\n        StorageDead(_5);\n        StorageDead(_4);\n        StorageLive(_10);\n        _0 = Option::<i32>::Some(const 2_i32);\n        StorageDead(_10);\n        discriminant((*_1)) = 4;\n        return;\n    }\n\n    bb5: {\n        StorageDead(_10);\n        _11 = const ();\n        goto -> bb9;\n    }\n\n    bb6: {\n        _0 = Option::<i32>::None;\n        discriminant((*_1)) = 1;\n        return;\n    }\n\n    bb7 (cleanup): {\n        StorageDead(_9);\n        StorageDead(_8);\n        StorageDead(_5);\n        StorageDead(_4);\n        goto -> bb8;\n    }\n\n    bb8 (cleanup): {\n        goto -> bb10;\n    }\n\n    bb9: {\n        goto -> bb6;\n    }\n\n    bb10 (cleanup): {\n        discriminant((*_1)) = 2;\n        resume;\n    }\n\n    bb11: {\n        StorageLive(_3);\n        _3 = move _2;\n        goto -> bb1;\n    }\n\n    bb12: {\n        StorageLive(_10);\n        _10 = move _2;\n        goto -> bb5;\n    }\n\n    bb13: {\n        assert(const false, \"`gen fn` should just keep returning `None` after panicking\") -> [success: bb13, unwind continue];\n    }\n\n    bb14: {\n        _0 = Option::<i32>::None;\n        return;\n    }\n\n    bb15: {\n        unreachable;\n    }\n\n    bb16: {\n        StorageLive(_3);\n        _0 = Option::<i32>::Some(const 1_i32);\n        StorageDead(_3);\n        discriminant((*_1)) = 3;\n        return;\n    }\n}\n\nalloc1 (size: 4, align: 1) {\n    62 6f 6f 6d                                     \u2502 boom\n}\n"
+    },
+    "type_size_lines": [
+      "print-type-size type: `{gen block@<TMP>/part_d.rs:41:5: 41:8}`: 513 bytes, alignment: 1 bytes",
+      "print-type-size     discriminant: 1 bytes",
+      "print-type-size     variant `Unresumed`: 0 bytes",
+      "print-type-size     variant `Suspend0`: 256 bytes",
+      "print-type-size         local `.a`: 256 bytes",
+      "print-type-size     variant `Suspend1`: 512 bytes",
+      "print-type-size         padding: 256 bytes",
+      "print-type-size         local `.b`: 256 bytes, alignment: 1 bytes",
+      "print-type-size     variant `Suspend2`: 0 bytes",
+      "print-type-size     variant `Returned`: 0 bytes",
+      "print-type-size     variant `Panicked`: 0 bytes",
+      "print-type-size type: `{gen block@<TMP>/part_d.rs:53:5: 53:8}`: 513 bytes, alignment: 1 bytes",
+      "print-type-size     discriminant: 1 bytes",
+      "print-type-size     variant `Unresumed`: 0 bytes",
+      "print-type-size     variant `Suspend0`: 256 bytes",
+      "print-type-size         local `.a`: 256 bytes",
+      "print-type-size     variant `Suspend1`: 512 bytes",
+      "print-type-size         local `.a`: 256 bytes",
+      "print-type-size         local `.b`: 256 bytes",
+      "print-type-size     variant `Suspend2`: 0 bytes",
+      "print-type-size     variant `Returned`: 0 bytes",
+      "print-type-size     variant `Panicked`: 0 bytes",
+      "print-type-size type: `{gen block@<TMP>/part_d.rs:24:5: 24:8}`: 257 bytes, alignment: 1 bytes",
+      "print-type-size     discriminant: 1 bytes",
+      "print-type-size     variant `Unresumed`: 0 bytes",
+      "print-type-size     variant `Suspend0`: 256 bytes",
+      "print-type-size         local `.a`: 256 bytes",
+      "print-type-size     variant `Suspend1`: 0 bytes",
+      "print-type-size     variant `Suspend2`: 256 bytes",
+      "print-type-size         local `.b`: 256 bytes",
+      "print-type-size     variant `Suspend3`: 0 bytes",
+      "print-type-size     variant `Returned`: 0 bytes",
+      "print-type-size     variant `Panicked`: 0 bytes",
+      "print-type-size type: `{async gen block@<TMP>/part_d.rs:14:5: 14:19}`: 2 bytes, alignment: 1 bytes",
+      "print-type-size     discriminant: 1 bytes",
+      "print-type-size     variant `Unresumed`: 1 bytes",
+      "print-type-size         upvar `.boom`: 1 bytes, offset: 0 bytes, alignment: 1 bytes",
+      "print-type-size     variant `Suspend0`: 1 bytes",
+      "print-type-size         upvar `.boom`: 1 bytes, offset: 0 bytes, alignment: 1 bytes",
+      "print-type-size     variant `Suspend1`: 1 bytes",
+      "print-type-size         upvar `.boom`: 1 bytes, offset: 0 bytes, alignment: 1 bytes",
+      "print-type-size     variant `Returned`: 1 bytes",
+      "print-type-size         upvar `.boom`: 1 bytes, offset: 0 bytes, alignment: 1 bytes",
+      "print-type-size     variant `Panicked`: 1 bytes",
+      "print-type-size         upvar `.boom`: 1 bytes, offset: 0 bytes, alignment: 1 bytes",
+      "print-type-size type: `{gen block@<TMP>/part_d.rs:4:5: 4:13}`: 2 bytes, alignment: 1 bytes",
+      "print-type-size     discriminant: 1 bytes",
+      "print-type-size     variant `Unresumed`: 1 bytes",
+      "print-type-size         upvar `.boom`: 1 bytes, offset: 0 bytes, alignment: 1 bytes",
+      "print-type-size     variant `Suspend0`: 1 bytes",
+      "print-type-size         upvar `.boom`: 1 bytes, offset: 0 bytes, alignment: 1 bytes",
+      "print-type-size     variant `Suspend1`: 1 bytes",
+      "print-type-size         upvar `.boom`: 1 bytes, offset: 0 bytes, alignment: 1 bytes",
+      "print-type-size     variant `Returned`: 1 bytes",
+      "print-type-size         upvar `.boom`: 1 bytes, offset: 0 bytes, alignment: 1 bytes",
+      "print-type-size     variant `Panicked`: 1 bytes",
+      "print-type-size         upvar `.boom`: 1 bytes, offset: 0 bytes, alignment: 1 bytes"
+    ]
+  },
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "timestamp_utc": "2026-11-22T11:04:36Z"
+}
