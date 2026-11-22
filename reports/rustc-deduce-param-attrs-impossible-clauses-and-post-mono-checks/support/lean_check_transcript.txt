@@ -1,0 +1,29 @@
+$ lean --version
+Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
+
+$ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=true DeduceParamAttrsImpossibleClausesAndMonoChecksSoundness.lean
+'DeduceParamAttrs.deducedReadOnly_no_caller_slot_mutation' does not depend on any axioms
+'DeduceParamAttrs.rmeta_trim_lookup_eq' does not depend on any axioms
+'DeduceParamAttrs.padTo_trim_of_canonical' does not depend on any axioms
+'DeduceParamAttrs.forwarding_sound_of_deduced_attrs' does not depend on any axioms
+'DeduceParamAttrs.incremental_empty_attrs_sound_coarsening' does not depend on any axioms
+'DeduceParamAttrs.generic_drop_readonly_iff_not_needsDrop' does not depend on any axioms
+'DeduceParamAttrs.impossibleClauses_erase_to_unreachable_refines' does not depend on any axioms
+'DeduceParamAttrs.abiCheck_accepts_implies_vector_transfer_faithful' does not depend on any axioms
+'DeduceParamAttrs.ce1_omitting_indirect_call_move_mutate_causes_caller_aliasing_miscompile' does not depend on any axioms
+'DeduceParamAttrs.ce2_shared_borrow_non_freeze_unsafecell_violates_readonly' does not depend on any axioms
+'DeduceParamAttrs.ce3_return_place_without_mutate_emits_contradictory_writable_readonly' does not depend on any axioms
+'DeduceParamAttrs.ce4_extern_c_vector_passMode_direct_without_caller_feature_faults' does not depend on any axioms
+'DeduceParamAttrs.Usage.bits_join' depends on axioms: [propext]
+AUDIT module-local constants in namespace: 604 (theorems: 182, of which axiom-free: 158; definitions: 356)
+AUDIT axioms reachable from any module-local constant, auto-generated ones included: [propext]
+AUDIT forbidden axiom names checked: 4 (unknown to the environment: 0); offenders: 0
+AUDIT headline theorems required axiom-free: 22; missing: 0; depending on some axiom: 0
+AUDIT unsafe recursion companions: module-local (map₂) = 0; imported under this namespace (map₁) = 0 of 0 imported constants under this namespace
+AUDIT unsafe/partial/opaque/axiom declarations: 0
+exit status: 0
+
+$ ./lean_audit_negative_controls.sh <lean>
+negative control 'recursive definition left computable': rejected as expected (exit 1; matched: unsafe recursion companions)
+negative control 'proof replaced by an admitted goal': rejected as expected (exit 1; matched: forbidden axioms)
+exit status: 0

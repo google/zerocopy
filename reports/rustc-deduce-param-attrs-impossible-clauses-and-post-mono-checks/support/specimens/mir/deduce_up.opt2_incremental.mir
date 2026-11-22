@@ -1,0 +1,381 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+const BigFreeze::0::{constant#0}: usize = const 8_usize;
+
+const BigCell::0::{constant#0}: usize = const 8_usize;
+
+const BigCopy::0::{constant#0}: usize = const 8_usize;
+
+fn <impl at deduce_up.rs:14:10: 14:15>::clone(_1: &BigCopy) -> BigCopy {
+    debug self => _1;
+    let mut _0: BigCopy;
+    scope 1 {
+    }
+
+    bb0: {
+        _0 = copy (*_1);
+        return;
+    }
+}
+
+const <impl at deduce_up.rs:14:10: 14:15>::clone::{constant#0}: usize = const 8_usize;
+
+fn read_big_freeze(_1: BigFreeze) -> u64 {
+    debug x => _1;
+    let mut _0: u64;
+    let mut _2: u64;
+    let mut _3: u64;
+
+    bb0: {
+        StorageLive(_2);
+        _2 = copy (_1.0: [u64; 8])[0 of 1];
+        StorageLive(_3);
+        _3 = copy (_1.0: [u64; 8])[7 of 8];
+        _0 = core::num::<impl u64>::wrapping_add(move _2, move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+fn read_big_copy(_1: BigCopy) -> u64 {
+    debug x => _1;
+    let mut _0: u64;
+    let mut _2: u64;
+    let mut _3: u64;
+
+    bb0: {
+        StorageLive(_2);
+        _2 = copy (_1.0: [u64; 8])[0 of 1];
+        StorageLive(_3);
+        _3 = copy (_1.0: [u64; 8])[7 of 8];
+        _0 = core::num::<impl u64>::wrapping_add(move _2, move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageDead(_2);
+        return;
+    }
+}
+
+fn shared_borrow_big_freeze(_1: BigFreeze) -> u64 {
+    debug x => _1;
+    let mut _0: u64;
+    let _2: &BigFreeze;
+    let mut _3: &BigFreeze;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = &_1;
+        _2 = std::hint::black_box::<&BigFreeze>(move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageDead(_2);
+        _0 = copy (_1.0: [u64; 8])[0 of 1];
+        return;
+    }
+}
+
+fn shared_borrow_big_cell(_1: BigCell) -> u64 {
+    debug x => _1;
+    let mut _0: u64;
+    let _2: &BigCell;
+    let mut _3: &BigCell;
+    let mut _4: &std::cell::Cell<u64>;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = &_1;
+        _2 = std::hint::black_box::<&BigCell>(move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageDead(_2);
+        StorageLive(_4);
+        _4 = &(_1.0: [std::cell::Cell<u64>; 8])[0 of 1];
+        _0 = Cell::<u64>::get(move _4) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_4);
+        return;
+    }
+}
+
+fn raw_const_borrow_big_freeze(_1: BigFreeze) -> u64 {
+    debug x => _1;
+    let mut _0: u64;
+    let _2: *const BigFreeze;
+    let mut _3: *const BigFreeze;
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = &raw const _1;
+        _2 = std::hint::black_box::<*const BigFreeze>(move _3) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_3);
+        StorageDead(_2);
+        _0 = copy (_1.0: [u64; 8])[0 of 1];
+        return;
+    }
+}
+
+fn mutate_local_copy_big_freeze(_1: BigFreeze) -> u64 {
+    debug x => _1;
+    let mut _0: u64;
+    let _2: usize;
+    let mut _3: u64;
+    let mut _4: u64;
+    let mut _5: bool;
+    let mut _6: u64;
+    let mut _7: u64;
+    scope 1 {
+        debug i => _2;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = copy (_1.0: [u64; 8])[0 of 1];
+        _3 = BitAnd(move _4, const 7_u64);
+        StorageDead(_4);
+        _2 = move _3 as usize (IntToInt);
+        StorageDead(_3);
+        _5 = Lt(copy _2, const 8_usize);
+        assert(move _5, "index out of bounds: the length is {} but the index is {}", const 8_usize, copy _2) -> [success: bb1, unwind continue];
+    }
+
+    bb1: {
+        (_1.0: [u64; 8])[_2] = const 57005_u64;
+        StorageLive(_6);
+        _6 = copy (_1.0: [u64; 8])[0 of 1];
+        StorageLive(_7);
+        _7 = copy (_1.0: [u64; 8])[7 of 8];
+        _0 = BitXor(move _6, move _7);
+        StorageDead(_7);
+        StorageDead(_6);
+        StorageDead(_2);
+        return;
+    }
+}
+
+fn generic_drop_only(_1: [T; 8], _2: u64) -> u64 {
+    debug _x => _1;
+    debug flag => _2;
+    let mut _0: u64;
+
+    bb0: {
+        _0 = core::num::<impl u64>::wrapping_mul(move _2, const 3_u64) -> [return: bb1, unwind: bb3];
+    }
+
+    bb1: {
+        drop(_1) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        return;
+    }
+
+    bb3 (cleanup): {
+        drop(_1) -> [return: bb4, unwind terminate(cleanup)];
+    }
+
+    bb4 (cleanup): {
+        resume;
+    }
+}
+
+const generic_drop_only::{constant#0}: usize = const 8_usize;
+
+fn sink_big_freeze(_1: BigFreeze) -> u64 {
+    debug x => _1;
+    let mut _0: u64;
+
+    bb0: {
+        _0 = copy (_1.0: [u64; 8])[1 of 2];
+        return;
+    }
+}
+
+fn forward_by_move_indirect(_1: BigFreeze) -> u64 {
+    debug x => _1;
+    let mut _0: u64;
+
+    bb0: {
+        _0 = sink_big_freeze(move _1) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        return;
+    }
+}
+
+fn mixed_read_then_forward(_1: BigFreeze, _2: BigFreeze) -> u64 {
+    debug a => _1;
+    debug b => _2;
+    let mut _0: u64;
+    let mut _3: u64;
+    let mut _4: u64;
+
+    bb0: {
+        StorageLive(_3);
+        _3 = copy (_1.0: [u64; 8])[0 of 1];
+        StorageLive(_4);
+        _4 = sink_big_freeze(move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        _0 = core::num::<impl u64>::wrapping_add(move _3, move _4) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_4);
+        StorageDead(_3);
+        return;
+    }
+}
+
+fn mixed_forward_then_read(_1: BigFreeze, _2: BigFreeze) -> u64 {
+    debug a => _1;
+    debug b => _2;
+    let mut _0: u64;
+    let mut _3: u64;
+    let mut _4: u64;
+
+    bb0: {
+        StorageLive(_3);
+        _3 = sink_big_freeze(move _1) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = copy (_2.0: [u64; 8])[0 of 1];
+        _0 = core::num::<impl u64>::wrapping_add(move _3, move _4) -> [return: bb2, unwind continue];
+    }
+
+    bb2: {
+        StorageDead(_4);
+        StorageDead(_3);
+        return;
+    }
+}
+
+fn ret_never_returns() -> [u8; 80] {
+    let mut _0: [u8; 80];
+
+    bb0: {
+        goto -> bb1;
+    }
+
+    bb1: {
+        goto -> bb1;
+    }
+}
+
+const ret_never_returns::{constant#0}: usize = const 80_usize;
+
+fn ret_not_captured(_1: u8) -> [u8; 80] {
+    debug v => _1;
+    let mut _0: [u8; 80];
+
+    bb0: {
+        _0 = [copy _1; 80];
+        return;
+    }
+}
+
+const ret_not_captured::{constant#0}: usize = const 80_usize;
+
+const ret_not_captured::{constant#1}: usize = const 80_usize;
+
+fn ret_captured(_1: u8) -> [u8; 80] {
+    debug v => _1;
+    let mut _0: [u8; 80];
+    let mut _2: [u8; 80];
+
+    bb0: {
+        StorageLive(_2);
+        _2 = [copy _1; 80];
+        _0 = std::hint::black_box::<[u8; 80]>(move _2) -> [return: bb1, unwind continue];
+    }
+
+    bb1: {
+        StorageDead(_2);
+        return;
+    }
+}
+
+const ret_captured::{constant#0}: usize = const 80_usize;
+
+const ret_captured::{constant#1}: usize = const 80_usize;
+
+fn BigFreeze(_1: [u64; 8]) -> BigFreeze {
+    let mut _0: BigFreeze;
+
+    bb0: {
+        _0 = BigFreeze(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn BigFreeze(_1: [u64; 8]) -> BigFreeze {
+    let mut _0: BigFreeze;
+
+    bb0: {
+        _0 = BigFreeze(move _1);
+        return;
+    }
+}
+
+fn BigCell(_1: [Cell<u64>; 8]) -> BigCell {
+    let mut _0: BigCell;
+
+    bb0: {
+        _0 = BigCell(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn BigCell(_1: [Cell<u64>; 8]) -> BigCell {
+    let mut _0: BigCell;
+
+    bb0: {
+        _0 = BigCell(move _1);
+        return;
+    }
+}
+
+fn BigCopy(_1: [u64; 8]) -> BigCopy {
+    let mut _0: BigCopy;
+
+    bb0: {
+        _0 = BigCopy(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn BigCopy(_1: [u64; 8]) -> BigCopy {
+    let mut _0: BigCopy;
+
+    bb0: {
+        _0 = BigCopy(move _1);
+        return;
+    }
+}

@@ -1,0 +1,112 @@
+// WARNING: This output format is intended for human consumers only
+// and is subject to change without notice. Knock yourself out.
+// HINT: See also -Z dump-mir for MIR at specific points during compilation.
+const BigFreeze::0::{constant#0}: usize = const 8_usize;
+
+fn tail_helper(_1: BigFreeze, _2: BigFreeze, _3: u64) -> u64 {
+    debug a => _1;
+    debug b => _2;
+    debug n => _3;
+    let mut _0: u64;
+    let mut _4: u64;
+    let mut _5: u64;
+    let mut _6: u64;
+
+    bb0: {
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = copy (_1.0: [u64; 8])[0 of 1];
+        StorageLive(_6);
+        _6 = copy (_2.0: [u64; 8])[0 of 1];
+        _4 = BitXor(move _5, move _6);
+        StorageDead(_6);
+        StorageDead(_5);
+        _0 = BitXor(move _4, copy _3);
+        StorageDead(_4);
+        return;
+    }
+}
+
+fn tail_reads_then_becomes(_1: BigFreeze, _2: BigFreeze, _3: u64) -> u64 {
+    debug a => _1;
+    debug b => _2;
+    debug n => _3;
+    let mut _0: u64;
+    let mut _4: u64;
+    let mut _5: u64;
+    let _6: u64;
+    let mut _7: u64;
+    let mut _8: u64;
+    let mut _9: BigFreeze;
+    let mut _10: [u64; 8];
+    let mut _11: BigFreeze;
+    let mut _12: [u64; 8];
+    let mut _13: u64;
+    scope 1 {
+        debug s => _6;
+    }
+    scope 2 (inlined core::num::<impl u64>::wrapping_add) {
+    }
+
+    bb0: {
+        switchInt(copy _3) -> [0: bb1, otherwise: bb2];
+    }
+
+    bb1: {
+        StorageLive(_4);
+        _4 = copy (_1.0: [u64; 8])[0 of 1];
+        StorageLive(_5);
+        _5 = copy (_2.0: [u64; 8])[0 of 1];
+        _0 = BitXor(move _4, move _5);
+        StorageDead(_5);
+        StorageDead(_4);
+        return;
+    }
+
+    bb2: {
+        StorageLive(_6);
+        StorageLive(_7);
+        _7 = copy (_1.0: [u64; 8])[1 of 2];
+        StorageLive(_8);
+        _8 = copy (_2.0: [u64; 8])[1 of 2];
+        _6 = Add(copy _7, copy _8);
+        StorageDead(_8);
+        StorageDead(_7);
+        StorageLive(_9);
+        StorageLive(_10);
+        _10 = [copy _6; 8];
+        _9 = BigFreeze(move _10);
+        StorageDead(_10);
+        StorageLive(_11);
+        StorageLive(_12);
+        _12 = [copy _3; 8];
+        _11 = BigFreeze(move _12);
+        StorageDead(_12);
+        StorageLive(_13);
+        _13 = Sub(copy _3, const 1_u64);
+        tailcall tail_helper(move _9, move _11, move _13);
+    }
+}
+
+const tail_reads_then_becomes::{constant#0}: usize = const 8_usize;
+
+const tail_reads_then_becomes::{constant#1}: usize = const 8_usize;
+
+fn BigFreeze(_1: [u64; 8]) -> BigFreeze {
+    let mut _0: BigFreeze;
+
+    bb0: {
+        _0 = BigFreeze(move _1);
+        return;
+    }
+}
+
+// MIR FOR CTFE
+fn BigFreeze(_1: [u64; 8]) -> BigFreeze {
+    let mut _0: BigFreeze;
+
+    bb0: {
+        _0 = BigFreeze(move _1);
+        return;
+    }
+}

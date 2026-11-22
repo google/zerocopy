@@ -1,0 +1,124 @@
+{
+  "probe_id": "E3-71",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "deduce_param_attrs_llvm_ir": {
+    "opt2_non_incr": {
+      "read_big_freeze": [
+        "declare noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up15read_big_freeze(ptr noalias nofree noundef readonly align 8 captures(none) dead_on_return dereferenceable(64)) unnamed_addr #6",
+        "define noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up15read_big_freeze(ptr noalias nofree noundef readonly align 8 captures(none) dead_on_return dereferenceable(64) %x) unnamed_addr #0 !guid !6 {"
+      ],
+      "shared_borrow_big_cell": [
+        "declare noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up22shared_borrow_big_cell(ptr noalias nofree noundef align 8 captures(address) dead_on_return dereferenceable(64)) unnamed_addr #6",
+        "define noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up22shared_borrow_big_cell(ptr noalias nofree noundef readonly align 8 captures(none) dead_on_return dereferenceable(64) %x) unnamed_addr #0 !guid !7 {"
+      ],
+      "raw_const_borrow_big_freeze": [
+        "declare noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up27raw_const_borrow_big_freeze(ptr noalias nofree noundef align 8 captures(address) dead_on_return dereferenceable(64)) unnamed_addr #6"
+      ],
+      "mutate_local_copy_big_freeze": [
+        "declare noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up28mutate_local_copy_big_freeze(ptr noalias nofree noundef align 8 captures(none) dead_on_return dereferenceable(64)) unnamed_addr #6",
+        "define noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up28mutate_local_copy_big_freeze(ptr noalias nofree noundef readnone align 8 captures(none) dead_on_return dereferenceable(64) %x) unnamed_addr #1 !guid !9 {"
+      ],
+      "generic_drop_only": [
+        "define noundef i64 @_RINvCs0s2rl2PA47p_9deduce_up17generic_drop_onlyNtNtCs2g7ZaPJK1KW_5alloc6string6StringECs3UkaRirqSnj_11deduce_down(ptr noalias nofree noundef readonly align 8 captures(none) dead_on_return dereferenceable(192) %x, i64 noundef %flag) unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+        "define noundef i64 @_RINvCs0s2rl2PA47p_9deduce_up17generic_drop_onlyyECs3UkaRirqSnj_11deduce_down(ptr noalias nofree readonly align 8 captures(none) dead_on_return %x, i64 noundef %flag) unnamed_addr #1 !guid !121 {"
+      ],
+      "forward_by_move_indirect": [
+        "declare noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up24forward_by_move_indirect(ptr noalias nofree noundef align 8 captures(address) dead_on_return dereferenceable(64)) unnamed_addr #6",
+        "define noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up24forward_by_move_indirect(ptr noalias nofree noundef readonly align 8 captures(none) dead_on_return dereferenceable(64) %x) unnamed_addr #0 !guid !8 {"
+      ]
+    },
+    "opt2_incremental": {
+      "read_big_freeze": [
+        "declare noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up15read_big_freeze(ptr noalias nofree noundef align 8 captures(address) dead_on_return dereferenceable(64)) unnamed_addr #6",
+        "define noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up15read_big_freeze(ptr noalias nofree noundef readonly align 8 captures(none) dead_on_return dereferenceable(64) %x) unnamed_addr #0 !guid !6 {"
+      ],
+      "shared_borrow_big_cell": [
+        "declare noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up22shared_borrow_big_cell(ptr noalias nofree noundef align 8 captures(address) dead_on_return dereferenceable(64)) unnamed_addr #6",
+        "define noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up22shared_borrow_big_cell(ptr noalias nofree noundef readonly align 8 captures(none) dead_on_return dereferenceable(64) %x) unnamed_addr #0 !guid !7 {"
+      ],
+      "raw_const_borrow_big_freeze": [
+        "declare noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up27raw_const_borrow_big_freeze(ptr noalias nofree noundef align 8 captures(address) dead_on_return dereferenceable(64)) unnamed_addr #6"
+      ],
+      "mutate_local_copy_big_freeze": [
+        "declare noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up28mutate_local_copy_big_freeze(ptr noalias nofree noundef align 8 captures(address) dead_on_return dereferenceable(64)) unnamed_addr #6",
+        "define noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up28mutate_local_copy_big_freeze(ptr noalias nofree noundef readnone align 8 captures(none) dead_on_return dereferenceable(64) %x) unnamed_addr #1 !guid !9 {"
+      ],
+      "generic_drop_only": [
+        "define noundef i64 @_RINvCs0s2rl2PA47p_9deduce_up17generic_drop_onlyNtNtCs2g7ZaPJK1KW_5alloc6string6StringECs3UkaRirqSnj_11deduce_down(ptr noalias nofree noundef readonly align 8 captures(none) dead_on_return dereferenceable(192) %x, i64 noundef %flag) unnamed_addr #0 personality ptr @rust_eh_personality !guid !4 {",
+        "define noundef i64 @_RINvCs0s2rl2PA47p_9deduce_up17generic_drop_onlyyECs3UkaRirqSnj_11deduce_down(ptr noalias nofree readnone align 8 captures(none) dead_on_return %x, i64 noundef %flag) unnamed_addr #1 !guid !121 {"
+      ],
+      "forward_by_move_indirect": [
+        "declare noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up24forward_by_move_indirect(ptr noalias nofree noundef align 8 captures(address) dead_on_return dereferenceable(64)) unnamed_addr #6",
+        "define noundef i64 @_RNvCs0s2rl2PA47p_9deduce_up24forward_by_move_indirect(ptr noalias nofree noundef readonly align 8 captures(none) dead_on_return dereferenceable(64) %x) unnamed_addr #0 !guid !8 {"
+      ]
+    }
+  },
+  "impossible_clauses_and_mono_checks": {
+    "impossible_01_trivial_bounds_string_copy_erased_to_unreachable": {
+      "flags": [
+        "--crate-type=lib",
+        "-C",
+        "opt-level=1",
+        "--emit=mir"
+      ],
+      "rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: trait bound String: Copy does not depend on any type or lifetime parameters\n --> <tmp>:4:13\n  |\n4 |     String: Copy,\n  |             ^^^^\n  |\n  = note: `#[warn(trivial_bounds)]` on by default\n\nwarning: 1 warning emitted\n",
+      "mir_has_unreachable": true,
+      "mir_snippet": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nfn impossible_string_copy(_1: u32) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        unreachable;\n    }\n}"
+    },
+    "impossible_02_generic_dyn_trait_sized_erased_to_unreachable": {
+      "flags": [
+        "--crate-type=lib",
+        "-C",
+        "opt-level=1",
+        "--emit=mir"
+      ],
+      "rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "mir_has_unreachable": true,
+      "mir_snippet": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nfn impossible_dyn_sized(_1: u32) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        unreachable;\n    }\n}"
+    },
+    "mono_03_rust_abi_simd_vector_passes_indirect_ok": {
+      "flags": [
+        "--crate-type=lib",
+        "--emit=obj"
+      ],
+      "rc": 0,
+      "error_codes": [],
+      "stderr_head": "warning: the feature `repr_simd` is internal to the compiler or standard library\n --> <tmp>:1:12\n  |\n1 | #![feature(repr_simd)]\n  |            ^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: 1 warning emitted\n"
+    },
+    "mono_03b_extern_c_avx2_simd_vector_by_value_rejected": {
+      "flags": [
+        "--crate-type=lib",
+        "--emit=obj"
+      ],
+      "rc": 1,
+      "error_codes": [],
+      "stderr_head": "warning: the feature `repr_simd` is internal to the compiler or standard library\n --> <tmp>:1:12\n  |\n1 | #![feature(repr_simd)]\n  |            ^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: this function call requires the `avx` target feature, which is not enabled in the caller\n --> <tmp>:9:14\n  |\n9 |     unsafe { callee_takes_ymm_c(v) }\n  |              ^^^^^^^^^^^^^^^^^^^^^ function called here\n  |\n  = note: the function has type `Simd256` in its signature, which is passed in SIMD vector registers under the \"C\" ABI"
+    },
+    "mono_04_extern_c_unsized_slice_param_rejected_post_mono": {
+      "flags": [
+        "--crate-type=lib",
+        "--emit=obj"
+      ],
+      "rc": 1,
+      "error_codes": [],
+      "stderr_head": "warning: the feature `unsized_fn_params` is internal to the compiler or standard library\n --> <tmp>:1:12\n  |\n1 | #![feature(unsized_fn_params)]\n  |            ^^^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: `extern` fn uses type `[u8]`, which is not FFI-safe\n --> <tmp>:2:43\n  |\n2 | pub extern \"C\" fn c_abi_unsized_slice(_s: [u8]) {}\n  |                                           ^^^^ not FFI-safe\n  |\n  = help: consider using a raw pointer instead"
+    },
+    "mono_05_move_size_limit_lint_or_check": {
+      "flags": [
+        "--crate-type=lib",
+        "--emit=obj",
+        "-Z",
+        "move-size-limit=64",
+        "-D",
+        "large-assignments"
+      ],
+      "rc": 1,
+      "error_codes": [],
+      "stderr_head": "error: moving 256 bytes\n --> <tmp>:2:13\n  |\n2 |     let x = *src;\n  |             ^^^^ value moved from here\n  |\n  = note: the current maximum size is 64, but it can be customized with the move_size_limit attribute: `#![move_size_limit = \"...\"]`\n  = note: requested on the command line with `-D large-assignments`\n\nerror: aborting due to 1 previous error\n"
+    }
+  }
+}
