@@ -1,0 +1,89 @@
+{
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "matrix": {
+    "valid_const_reborrowed_shared_ref": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": ""
+    },
+    "valid_static_reborrowed_shared_ref": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": ""
+    },
+    "ice1a_const_raw_ptr_from_const_make_global": {
+      "rc": 101,
+      "is_ice": true,
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_const_eval/src/interpret/intern.rs:350:13: the static const safety checks accepted a mutable pointer they should not have accepted\n --> <TMP>/ice1a_const_raw_ptr.rs:3:1\n  |\n3 | pub const RAW_FROM_MAKE_GLOBAL: *const u8 = unsafe {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (<PID>) panicked at <RUSTC_SRC>/compiler/rustc_const_eval/src/interpret/intern.rs:350:13:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7fafb2c0ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7fafb32107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7fafb2c23a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[1f0690780a9acb4e]::io::write::Write>::write_fmt\n   3:     0x7fafb2bdff8a - std[c6455289cfba667d]::panicking::default_hook::{closure#0}\n   4:     0x7fafb2c027e3 - std[c6455289cfba667d]::panicking::default_hook\n   5:     0x7fafb1980a09 - std[c6455289cfba667d]::panicking::update_hook::<alloc[1a53452dcf5e1664]::boxed::Box<rustc_driver_impl[15d0f20fcdaf3e6]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7fafb2c02c82 - std[c6455289cfba667d]::panicking::panic_with_hook\n   7:     0x7fafb27920d4 - std[c6455289cfba667d]::panicking::begin_panic::<rustc_span[30c560a7d7b91630]::macros::ExplicitBug>::{closure#0}"
+    },
+    "ice1b_static_raw_ptr_from_const_make_global": {
+      "rc": 101,
+      "is_ice": true,
+      "stderr_head": "error: internal compiler error: <RUSTC_SRC>/compiler/rustc_const_eval/src/interpret/intern.rs:350:13: the static const safety checks accepted a mutable pointer they should not have accepted\n --> <TMP>/ice1b_static_raw_ptr.rs:5:1\n  |\n5 | pub static STATIC_RAW: SyncPtr = unsafe {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n\nthread 'rustc' (<PID>) panicked at <RUSTC_SRC>/compiler/rustc_const_eval/src/interpret/intern.rs:350:13:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7ff13500ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7ff1356107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7ff135023a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[1f0690780a9acb4e]::io::write::Write>::write_fmt\n   3:     0x7ff134fdff8a - std[c6455289cfba667d]::panicking::default_hook::{closure#0}\n   4:     0x7ff1350027e3 - std[c6455289cfba667d]::panicking::default_hook\n   5:     0x7ff133d80a09 - std[c6455289cfba667d]::panicking::update_hook::<alloc[1a53452dcf5e1664]::boxed::Box<rustc_driver_impl[15d0f20fcdaf3e6]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7ff135002c82 - std[c6455289cfba667d]::panicking::panic_with_hook\n   7:     0x7ff134b920d4 - std[c6455289cfba667d]::panicking::begin_panic::<rustc_span[30c560a7d7b91630]::macros::ExplicitBug>::{closure#0}"
+    },
+    "reborrow_to_raw_ptr_avoids_ice1": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": ""
+    },
+    "ice2a_static_mut_reborrowed_ref": {
+      "rc": 101,
+      "is_ice": true,
+      "stderr_head": "\nthread 'rustc' (<PID>) panicked at <RUSTC_SRC>/compiler/rustc_const_eval/src/interpret/intern.rs:91:13:\nassertion `left == right` failed\n  left: Not\n right: Mut\nstack backtrace:\n   0:     0x7f81e540ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7f81e5a107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7f81e5423a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[1f0690780a9acb4e]::io::write::Write>::write_fmt\n   3:     0x7f81e53dff8a - std[c6455289cfba667d]::panicking::default_hook::{closure#0}\n   4:     0x7f81e54027e3 - std[c6455289cfba667d]::panicking::default_hook\n   5:     0x7f81e4180a09 - std[c6455289cfba667d]::panicking::update_hook::<alloc[1a53452dcf5e1664]::boxed::Box<rustc_driver_impl[15d0f20fcdaf3e6]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7f81e5402c82 - std[c6455289cfba667d]::panicking::panic_with_hook\n   7:     0x7f81e53e0042 - std[c6455289cfba667d]::panicking::panic_handler::{closure#0}\n   8:     0x7f81e53d86b9 - std[c6455289cfba667d]::sys::backtrace::__rust_end_short_backtrace::<std[c6455289cfba667d]::panicking::panic_handler::{closure#0}, !>\n   9:     0x7f81e53e1d9d - __rustc[b41569b7287658e4]::rust_begin_unwind\n  10:     0x7f81e1cd9a4c - core[1f0690780a9acb4e]::panicking::panic_fmt\n  11:     0x7f81e3a68a63 - core[1f0690780a9acb4e]::panicking::assert_failed_inner"
+    },
+    "ice2b_static_mut_raw_ptr": {
+      "rc": 101,
+      "is_ice": true,
+      "stderr_head": "\nthread 'rustc' (<PID>) panicked at <RUSTC_SRC>/compiler/rustc_const_eval/src/interpret/intern.rs:91:13:\nassertion `left == right` failed\n  left: Not\n right: Mut\nstack backtrace:\n   0:     0x7f706e20ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7f706e8107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7f706e223a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[1f0690780a9acb4e]::io::write::Write>::write_fmt\n   3:     0x7f706e1dff8a - std[c6455289cfba667d]::panicking::default_hook::{closure#0}\n   4:     0x7f706e2027e3 - std[c6455289cfba667d]::panicking::default_hook\n   5:     0x7f706cf80a09 - std[c6455289cfba667d]::panicking::update_hook::<alloc[1a53452dcf5e1664]::boxed::Box<rustc_driver_impl[15d0f20fcdaf3e6]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7f706e202c82 - std[c6455289cfba667d]::panicking::panic_with_hook\n   7:     0x7f706e1e0042 - std[c6455289cfba667d]::panicking::panic_handler::{closure#0}\n   8:     0x7f706e1d86b9 - std[c6455289cfba667d]::sys::backtrace::__rust_end_short_backtrace::<std[c6455289cfba667d]::panicking::panic_handler::{closure#0}, !>\n   9:     0x7f706e1e1d9d - __rustc[b41569b7287658e4]::rust_begin_unwind\n  10:     0x7f706aad9a4c - core[1f0690780a9acb4e]::panicking::panic_fmt\n  11:     0x7f706c868a63 - core[1f0690780a9acb4e]::panicking::assert_failed_inner"
+    },
+    "doc_contradiction_dealloc_stack_local": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error[E0080]: deallocating alloc2, which is stack variable memory, using heap allocation deallocation operation\n --> <TMP>/dealloc_stack_local.rs:5:5\n  |\n3 | pub const DEALLOC_LOCAL: u8 = unsafe {\n4 |     let mut x: u8 = 7;\n5 |     core::intrinsics::const_deallocate(&raw mut x, 1, 1);\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `DEALLOC_LOCAL` failed here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+    },
+    "dealloc_other_const_memory_is_noop": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": ""
+    },
+    "dealloc_static_item_throws_ub": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error[E0080]: deallocating alloc1, which is static memory\n --> <TMP>/dealloc_static_item.rs:5:5\n  |\n4 | pub const DEALLOC_STAT: u8 = unsafe {\n5 |     core::intrinsics::const_deallocate(&raw const STAT as *mut u8, 1, 1);\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `DEALLOC_STAT` failed here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+    },
+    "dealloc_same_const_after_make_global_throws_ub": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error[E0080]: deallocating immutable allocation alloc2\n --> <TMP>/dealloc_same_const_global.rs:7:5\n  |\n3 | pub const DEALLOC_SAME_GLOBAL: u8 = unsafe {\n...\n7 |     core::intrinsics::const_deallocate(p, 1, 1);\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `DEALLOC_SAME_GLOBAL` failed here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+    },
+    "uninterned_transient_const_allocate_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: encountered `const_allocate` pointer in final value that was not made global\n --> <TMP>/transient_leak_err.rs:3:1\n  |\n3 | pub const TRANSIENT_LEAK: &'static u8 = unsafe {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: use `const_make_global` to turn allocated pointers into immutable globals before returning\n\nerror: aborting due to 1 previous error\n"
+    },
+    "make_global_nonzero_offset_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error[E0080]: making alloc2+0x1 global which does not point to the beginning of an object\n --> <TMP>/make_global_offset.rs:6:7\n  |\n3 | pub const OFFSET_ERR: &'static u8 = unsafe {\n...\n6 |     &*core::intrinsics::const_make_global(p.add(1))\n  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `OFFSET_ERR` failed here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+    },
+    "make_global_twice_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error[E0080]: attempting to call `const_make_global` twice on the same allocation alloc2\n --> <TMP>/make_global_twice.rs:7:7\n  |\n3 | pub const TWICE_ERR: &'static u8 = unsafe {\n...\n7 |     &*core::intrinsics::const_make_global(p)\n  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ evaluation of `TWICE_ERR` failed here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0080`."
+    },
+    "thread_local_nested_static_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: #[thread_local] does not support implicit nested statics, please create explicit static items and refer to them instead\n --> <TMP>/tls_nested_static.rs:4:1\n  |\n4 | pub static TLS_REF: &'static u8 = unsafe {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n"
+    }
+  },
+  "runtime_execution": {
+    "compile_rc": 0,
+    "stdout": "CTFE=(true, 88) RUNTIME=(true, 77)"
+  },
+  "miri_execution": {
+    "rc": 0,
+    "stdout": "CTFE=(true, 88) RUNTIME=(true, 77)",
+    "stderr_head": ""
+  }
+}
