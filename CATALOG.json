@@ -80191,6 +80191,50 @@
         "compilers/differential-testing"
       ]
     },
+    "promising2-relaxed-load-buffering-op-sc2-reduction-and-x86-tso-fence-soundness": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "ae3c943b7b1004d839ddb8d0dad65eacba158d58"
+          },
+          "name": "google/zerocopy (anneal/ subtree)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust (anneal pinned rustc 1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "crate": "crossbeam-epoch",
+            "sha256": "dc74980687109a3b14c72fd458107bf0baa1da1a1a805e178d15501ba9b86d9d",
+            "version": "0.9.21"
+          },
+          "name": "crossbeam-epoch crate"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/theory",
+        "lean/mechanization",
+        "rust/atomics",
+        "rust/concurrency",
+        "verification/concurrency"
+      ]
+    },
     "proof-assistant-artifact-cache-poisoning-opaque-declarations-and-fresh-kernel-replay-audits": {
       "observed_at": "2026-11-20",
       "subjects": [
