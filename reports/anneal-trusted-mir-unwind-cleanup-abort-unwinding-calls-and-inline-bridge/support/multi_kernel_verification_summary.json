@@ -1,0 +1,1095 @@
+{
+  "timestamp_utc": "2026-11-22T16:12:10Z",
+  "public_theorems": [
+    "VrustcFormal.F1_13.unwind_conservative_extension_exact",
+    "VrustcFormal.F1_13.unwindOptStep_sound_bidirectional_iff",
+    "VrustcFormal.F1_13.panicAbortEntryTransform_refines_unwound_to_aborted",
+    "VrustcFormal.F1_13.unwindOptTrace_sound_bidirectional_iff",
+    "VrustcFormal.F1_13.unwindOptTrace_reduces_to_trusted_mir",
+    "VrustcFormal.F1_13.unwindOptTrace_then_optPipeline_vc_transport",
+    "VrustcFormal.F1_13.reachesUnw_head",
+    "VrustcFormal.F1_13.reachesUnw_head_det",
+    "VrustcFormal.F1_13.execFuelUnw_sound",
+    "VrustcFormal.F1_13.execUnw_sound",
+    "VrustcFormal.F1_13.execFuelUnw_done_det",
+    "VrustcFormal.F1_13.positiveCanaryUnw_of_exec",
+    "VrustcFormal.F1_13.negativeCanaryUnw_of_exec",
+    "VrustcFormal.F1_13.ce1_return_in_cleanup_faults_unsupported",
+    "VrustcFormal.F1_13.ce2_unwind_resume_in_normal_block_faults_unsupported",
+    "VrustcFormal.F1_13.ce3_unwind_across_unreachable_is_ub_and_summary_rejected",
+    "VrustcFormal.F1_13.ce4_double_panic_terminate_produces_aborted_distinct_from_unwound",
+    "VrustcFormal.F1_13.ce5_dead_cleanup_storage_annotation_flip_erases_ub_and_rejected",
+    "VrustcFormal.F1_13.ce6_unwind_does_not_write_call_dst",
+    "VrustcFormal.F1_13.ce7_inline_unwinding_callee_preserves_unwound",
+    "VrustcFormal.F1_13.ce8_return_from_diverging_call_faults_ub",
+    "VrustcFormal.F1_13.ce9_assert_polarity_and_non_bool_fail_closed",
+    "VrustcFormal.F1_13.ce10_witness_unwind_trace_and_panic_abort_refinement",
+    "VrustcFormal.F1_13.ce11_caller_oob_goto_rejected_by_inline_checker"
+  ],
+  "frozen_sha256": "49ec17a0d30c1806a235c16bfe0bdcdb3153429552404d2f0c6421c4364aa19d",
+  "proof_sha256": "7d0c3ff0eea6269ee05f7b7bc3c4882ba6452fca6666ef519f8e1d1fd7365d97",
+  "proof_lines": 13707,
+  "proof_bytes": 625384,
+  "lock_matches_frozen": true,
+  "reconstruction": {
+    "prefix_byte_exact": true,
+    "suffix_byte_exact": true,
+    "non_private_inserted_decls": [],
+    "reconstructed_sha256": "49ec17a0d30c1806a235c16bfe0bdcdb3153429552404d2f0c6421c4364aa19d",
+    "frozen_sha256": "49ec17a0d30c1806a235c16bfe0bdcdb3153429552404d2f0c6421c4364aa19d",
+    "byte_exact_reconstruction": true
+  },
+  "crlf_count": 0,
+  "bad_unicode_count": 0,
+  "lean_434_sync_m4096": {
+    "rc": 0,
+    "wall_sec": 25.1663,
+    "rss_mb": 818.11,
+    "stdout": "",
+    "stderr": "",
+    "olean_bytes": 20318440
+  },
+  "lean_434_axioms_map1": {
+    "rc": 0,
+    "wall_sec": 1.5079,
+    "rss_mb": 1612.18,
+    "stdout": "'VrustcFormal.F1_13.unwind_conservative_extension_exact' depends on axioms: [propext]\n'VrustcFormal.F1_13.unwindOptStep_sound_bidirectional_iff' depends on axioms: [propext]\n'VrustcFormal.F1_13.panicAbortEntryTransform_refines_unwound_to_aborted' depends on axioms: [propext]\n'VrustcFormal.F1_13.unwindOptTrace_sound_bidirectional_iff' depends on axioms: [propext]\n'VrustcFormal.F1_13.unwindOptTrace_reduces_to_trusted_mir' depends on axioms: [propext]\n'VrustcFormal.F1_13.unwindOptTrace_then_optPipeline_vc_transport' depends on axioms: [propext]\n'VrustcFormal.F1_13.reachesUnw_head' depends on axioms: [propext]\n'VrustcFormal.F1_13.reachesUnw_head_det' depends on axioms: [propext]\n'VrustcFormal.F1_13.execFuelUnw_sound' depends on axioms: [propext]\n'VrustcFormal.F1_13.execUnw_sound' depends on axioms: [propext]\n'VrustcFormal.F1_13.execFuelUnw_done_det' depends on axioms: [propext]\n'VrustcFormal.F1_13.positiveCanaryUnw_of_exec' depends on axioms: [propext]\n'VrustcFormal.F1_13.negativeCanaryUnw_of_exec' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce1_return_in_cleanup_faults_unsupported' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce2_unwind_resume_in_normal_block_faults_unsupported' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce3_unwind_across_unreachable_is_ub_and_summary_rejected' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce4_double_panic_terminate_produces_aborted_distinct_from_unwound' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce5_dead_cleanup_storage_annotation_flip_erases_ub_and_rejected' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce6_unwind_does_not_write_call_dst' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce7_inline_unwinding_callee_preserves_unwound' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce8_return_from_diverging_call_faults_ub' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce9_assert_polarity_and_non_bool_fail_closed' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce10_witness_unwind_trace_and_panic_abort_refinement' depends on axioms: [propext]\n'VrustcFormal.F1_13.ce11_caller_oob_goto_rejected_by_inline_checker' depends on axioms: [propext]\nAUDIT_MAP1 total=1459 pub=501 priv=958 bad=0\n",
+    "stderr": ""
+  },
+  "tb_preflight_pos": {
+    "rc": 0,
+    "wall_sec": 5.0597,
+    "rss_mb": 785.21,
+    "stdout": "",
+    "stderr": "",
+    "json": {
+      "result": {
+        "headers": [
+          {
+            "trustTier": "vetted",
+            "module": "Trusted",
+            "imports": [
+              {
+                "module": "Init.NotationExtra",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              }
+            ]
+          },
+          {
+            "trustTier": "candidate:mir_ast",
+            "module": "Trusted.MirAst",
+            "imports": [
+              {
+                "module": "Init.NotationExtra",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Data.BitVec.BasicAux",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Data.Int.Basic",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              }
+            ]
+          },
+          {
+            "trustTier": "candidate:mir_semantics",
+            "module": "Trusted.MirSemantics",
+            "imports": [
+              {
+                "module": "Init.NotationExtra",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Data.BitVec.BasicAux",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Data.Int.Basic",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Data.Nat.Div.Basic",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Data.Nat.Bitwise.Basic",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Control.Except",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Trusted.MirAst",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              }
+            ]
+          },
+          {
+            "trustTier": null,
+            "module": "Anneal.MirWp",
+            "imports": [
+              {
+                "module": "Init.NotationExtra",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Data.BitVec.BasicAux",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Data.Int.Basic",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Data.Nat.Div.Basic",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Data.Nat.Bitwise.Basic",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Init.Control.Except",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Trusted",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Trusted.MirAst",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Trusted.MirSemantics",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              }
+            ]
+          },
+          {
+            "trustTier": null,
+            "module": "Anneal.F1_13_Proof",
+            "imports": [
+              {
+                "module": "Trusted.MirAst",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              },
+              {
+                "module": "Trusted.MirSemantics",
+                "isMeta": false,
+                "isExported": true,
+                "importAll": false
+              }
+            ]
+          }
+        ],
+        "graph": {
+          "Init.WFTactics": [
+            {
+              "module": "Init.WF",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.WF": [
+            {
+              "module": "Init.BinderNameHint",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Grind.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Util": [
+            {
+              "module": "Init.Data.ToString.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Tactics": [
+            {
+              "module": "Init.Notation",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Syntax": [
+            {
+              "module": "Init.Prelude",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Array.Set",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.SizeOf": [
+            {
+              "module": "Init.Notation",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Tactics",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.SimpLemmas": [
+            {
+              "module": "Init.Core",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Prelude": [],
+          "Init.NotationExtra": [
+            {
+              "module": "Init.Conv",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.GetElem",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Meta.Defs",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Notation": [
+            {
+              "module": "Init.Coe",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.MetaTypes": [
+            {
+              "module": "Init.Core",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Meta.Defs": [
+            {
+              "module": "Init.Prelude",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": true
+            },
+            {
+              "module": "Init.Data.Array.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.MetaTypes",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Array.GetLit",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Char.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            },
+            {
+              "module": "Init.MetaTypes",
+              "isMeta": true,
+              "isExported": false,
+              "importAll": false
+            },
+            {
+              "module": "Init.WFTactics",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Meta": [
+            {
+              "module": "Init.Meta.Defs",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Meta.Defs",
+              "isMeta": true,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Syntax",
+              "isMeta": true,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Grind.Tactics": [
+            {
+              "module": "Init.Core",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Grind.Interactive",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Grind.Interactive": [
+            {
+              "module": "Init.Grind.Attr",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Grind.Attr": [
+            {
+              "module": "Init.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.GetElem": [
+            {
+              "module": "Init.Util",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Option.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Zero": [
+            {
+              "module": "Init.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Data.UInt.BasicAux": [
+            {
+              "module": "Init.Data.BitVec.BasicAux",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Fin.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Div.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.ToString.Basic": [
+            {
+              "module": "Init.Data.Repr",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Char.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.String.Bootstrap": [
+            {
+              "module": "Init.Data.ByteArray.Bootstrap",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.UInt.BasicAux",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Char.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Repr": [
+            {
+              "module": "Init.Data.Format.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Control.Id",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.UInt.BasicAux",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Char.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Option.Basic": [
+            {
+              "module": "Init.Control.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Grind.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Data.NeZero": [
+            {
+              "module": "Init.Data.Zero",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Core",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Nat.Div.Basic": [
+            {
+              "module": "Init.Data.NeZero",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.WF",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.MetaTypes",
+              "isMeta": true,
+              "isExported": false,
+              "importAll": false
+            },
+            {
+              "module": "Init.WFTactics",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Nat.Bitwise.Basic": [
+            {
+              "module": "Init.Grind.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Div.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            },
+            {
+              "module": "Init.MetaTypes",
+              "isMeta": true,
+              "isExported": false,
+              "importAll": false
+            },
+            {
+              "module": "Init.WFTactics",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Nat.Basic": [
+            {
+              "module": "Init.SimpLemmas",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.NeZero",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Grind.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Data.List.ToArrayImpl": [
+            {
+              "module": "Init.Prelude",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.List.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.List.Notation": [
+            {
+              "module": "Init.Grind.Tactics",
+              "isMeta": true,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Notation",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Data.List.Basic": [
+            {
+              "module": "Init.Data.List.Notation",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Zero",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Grind.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.SimpLemmas",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Int.Basic": [
+            {
+              "module": "Init.Data.Cast",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Format.Basic": [
+            {
+              "module": "Init.Data.Int.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.String.Bootstrap",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Control.State",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Bitwise.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Fin.Basic": [
+            {
+              "module": "Init.Data.Nat.Bitwise.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Div.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Char.Basic": [
+            {
+              "module": "Init.Data.UInt.BasicAux",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Div.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Cast": [
+            {
+              "module": "Init.Coe",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Data.ByteArray.Bootstrap": [
+            {
+              "module": "Init.Data.List.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Data.BitVec.BasicAux": [
+            {
+              "module": "Init.Grind.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Nat.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Array.Set": [
+            {
+              "module": "Init.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Array.GetLit": [
+            {
+              "module": "Init.GetElem",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Array.Basic",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Data.Array.Basic": [
+            {
+              "module": "Init.Control.Do",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.GetElem",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.List.ToArrayImpl",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.List.ToArrayImpl",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": true
+            },
+            {
+              "module": "Init.Data.Array.Set",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Data.Array.Set",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": true
+            },
+            {
+              "module": "Init.WF",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.MetaTypes",
+              "isMeta": true,
+              "isExported": false,
+              "importAll": false
+            },
+            {
+              "module": "Init.WFTactics",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ],
+          "Init.Core": [
+            {
+              "module": "Init.SizeOf",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Conv": [
+            {
+              "module": "Init.Tactics",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Meta",
+              "isMeta": true,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Control.State": [
+            {
+              "module": "Init.Control.Except",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Control.Option": [
+            {
+              "module": "Init.Data.Option.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Control.MonadAttach",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Control.MonadAttach": [
+            {
+              "module": "Init.Core",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Control.Id": [
+            {
+              "module": "Init.Control.MonadAttach",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Control.Except": [
+            {
+              "module": "Init.Control.Basic",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Control.Id",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Control.Do": [
+            {
+              "module": "Init.Control.Except",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Control.Option",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Control.Basic": [
+            {
+              "module": "Init.Core",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.BinderNameHint",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.Coe": [
+            {
+              "module": "Init.Prelude",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Prelude",
+              "isMeta": true,
+              "isExported": true,
+              "importAll": false
+            }
+          ],
+          "Init.BinderNameHint": [
+            {
+              "module": "Init.Prelude",
+              "isMeta": false,
+              "isExported": true,
+              "importAll": false
+            },
+            {
+              "module": "Init.Tactics",
+              "isMeta": false,
+              "isExported": false,
+              "importAll": false
+            }
+          ]
+        }
+      },
+      "ok": true
+    }
+  },
+  "tb_preflight_neg": {
+    "rc": 1,
+    "wall_sec": 4.4138,
+    "rss_mb": 783.16,
+    "stdout": "",
+    "stderr": "policy:unsupported syntax kind Lean.Parser.Tactic.tacticSorry\nCommand exited with non-zero status 1",
+    "json": {
+      "ok": false,
+      "message": "policy:unsupported syntax kind Lean.Parser.Tactic.tacticSorry",
+      "category": "policy"
+    }
+  },
+  "tb_pass1_audit_no_choice": {
+    "rc": 0,
+    "wall_sec": 8.3154,
+    "rss_mb": 868.05,
+    "stdout": "",
+    "stderr": "",
+    "json": {
+      "ok": true,
+      "result": {
+        "kernelDeclarations": 1324,
+        "replayedDeclarations": 3040,
+        "checkedAlternateProofs": 0,
+        "compilerOnlyNames": 281,
+        "reachableDeclarations": 3867,
+        "axioms": [
+          "propext"
+        ],
+        "replay": true
+      }
+    }
+  },
+  "lean_435_sync": {
+    "rc": 0,
+    "wall_sec": 22.2123,
+    "rss_mb": 788.22,
+    "stdout": "",
+    "stderr": ""
+  },
+  "leanexport_310": {
+    "rc": 0,
+    "wall_sec": 1.6086,
+    "ndjson_bytes": 30319185,
+    "ndjson_lines": 579181,
+    "stderr": ""
+  },
+  "nanoda_pos_no_choice": {
+    "rc": 0,
+    "wall_sec": 1.4802,
+    "rss_mb": 51.79,
+    "stdout": "Checked 2592 declarations with no typechecker errors, 1 pretty printer errors: [\n    \"Unable to print axioms\",\n]\n",
+    "stderr": ""
+  },
+  "nanoda_neg_zero_axioms": {
+    "rc": 1,
+    "wall_sec": 0.013,
+    "rss_mb": 3.86,
+    "stdout": "",
+    "stderr": "Error: export file declares unpermitted axiom \"propext\"\n\nrun with `-h` or `--help` for help\nCommand exited with non-zero status 1"
+  }
+}
