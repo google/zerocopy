@@ -69,7 +69,7 @@ def ReadProj.isDirectReadable : ReadProj → Bool
   | .singleVariantDowncast _ => true
   | .otherProj => false
 
-def allDirectReadable : List ReadProj → Bool
+noncomputable def allDirectReadable : List ReadProj → Bool
   | [] => true
   | p :: ps => p.isDirectReadable && allDirectReadable ps
 
@@ -109,7 +109,7 @@ def stepDefine (repr : BackendReprClass) (kind : LocalKind) (loc : DefLoc) : Loc
   | .ssa _ => .memory
 
 /-- Lattice transition for one MIR use (`analyze.rs:97-267`). -/
-def stepUse (repr : BackendReprClass) (domBlock : Nat → Nat → Bool)
+noncomputable def stepUse (repr : BackendReprClass) (domBlock : Nat → Nat → Bool)
     (kind : LocalKind) (u : UseKind) : LocalKind :=
   match u with
   | .define loc => stepDefine repr kind loc
@@ -140,7 +140,7 @@ def initLocalKind : BackendReprClass → LocalKind
   | .zst => .zst
   | _ => .unused
 
-def analyzeUses (repr : BackendReprClass) (domBlock : Nat → Nat → Bool)
+noncomputable def analyzeUses (repr : BackendReprClass) (domBlock : Nat → Nat → Bool)
     (uses : List UseKind) : LocalKind :=
   uses.foldl (stepUse repr domBlock) (initLocalKind repr)
 
@@ -267,7 +267,7 @@ def evalMirTraceStep (s : MirSlotVal) (ev : TraceEvent) : MirSlotVal × Option M
   | .storageLive => (.uninit, none)
   | .storageDead => (.uninit, none)
 
-def evalMirTrace (events : List TraceEvent) : List (Option MirSlotVal) :=
+noncomputable def evalMirTrace (events : List TraceEvent) : List (Option MirSlotVal) :=
   let rec go (s : MirSlotVal) : List TraceEvent → List (Option MirSlotVal)
     | [] => []
     | ev :: rest =>
@@ -286,7 +286,7 @@ def initLoweredSlot (kind : LocalKind) : LoweredSlot :=
     Crucially, `StorageLive`/`StorageDead` on `PendingOperand`/`Operand` are no-ops,
     reading `PendingOperand` panics (`ssaUseBeforeDef`), and overwriting an already-assigned
     non-ZST `Operand` panics (`ssaAlreadyAssigned`). -/
-def evalLoweredStep (s : LoweredSlot) (ev : TraceEvent) :
+noncomputable def evalLoweredStep (s : LoweredSlot) (ev : TraceEvent) :
     Except SimError (LoweredSlot × Option MirSlotVal) :=
   match ev with
   | .assign v =>
@@ -330,12 +330,12 @@ instance {ε α : Type} [DecidableEq ε] [DecidableEq α] : DecidableEq (Except 
     | isTrue h => isTrue (h ▸ rfl)
     | isFalse h => isFalse (fun he => h (Except.ok.inj he))
 
-def listGetOpt {α : Type} : List α → Nat → Option α
+noncomputable def listGetOpt {α : Type} : List α → Nat → Option α
   | [], _ => none
   | x :: _, 0 => some x
   | _ :: xs, n + 1 => listGetOpt xs n
 
-def evalLoweredTrace (kind : LocalKind) (events : List TraceEvent) :
+noncomputable def evalLoweredTrace (kind : LocalKind) (events : List TraceEvent) :
     Except SimError (List (Option MirSlotVal)) :=
   let rec go (s : LoweredSlot) : List TraceEvent → Except SimError (List (Option MirSlotVal))
     | [] => .ok []
@@ -354,7 +354,7 @@ def evalLoweredTrace (kind : LocalKind) (events : List TraceEvent) :
     - After the definition (`assigned = true`), no second `assign` occurs, no `projWrite` occurs,
       no `storageDead`/`storageLive` invalidates the register value while live, and every `read`
       uses only direct-readable projections (`Field` or single-variant `Downcast`). -/
-def validSsaTrace (assigned : Bool) : List TraceEvent → Bool
+noncomputable def validSsaTrace (assigned : Bool) : List TraceEvent → Bool
   | [] => true
   | ev :: rest =>
     match ev with
@@ -365,7 +365,7 @@ def validSsaTrace (assigned : Bool) : List TraceEvent → Bool
     | .storageDead => (!assigned) && validSsaTrace false rest
 
 /-- Well-formedness of a trace for a `.memory` (alloca) local: unrestricted writes/reads/storage. -/
-def validMemoryTrace : List TraceEvent → Bool
+noncomputable def validMemoryTrace : List TraceEvent → Bool
   | [] => true
   | _ :: rest => validMemoryTrace rest
 
@@ -528,15 +528,15 @@ structure CleanupState where
   funcletSuccs : List (Option Nat)
   deriving DecidableEq, Repr
 
-def setListAt {α : Type} : List α → Nat → α → List α
+noncomputable def setListAt {α : Type} : List α → Nat → α → List α
   | [], _, _ => []
   | _ :: xs, 0, v => v :: xs
   | x :: xs, n + 1, v => x :: setListAt xs n v
 
-def getKind (kinds : List CleanupKind) (bb : Nat) : CleanupKind :=
+noncomputable def getKind (kinds : List CleanupKind) (bb : Nat) : CleanupKind :=
   (listGetOpt kinds bb).getD .notCleanup
 
-def getSuccOpt (succs : List (Option Nat)) (bb : Nat) : Option Nat :=
+noncomputable def getSuccOpt (succs : List (Option Nat)) (bb : Nat) : Option Nat :=
   (listGetOpt succs bb).getD none
 
 theorem getKind_setListAt_eq (kinds : List CleanupKind) (i : Nat) (v : CleanupKind)
@@ -569,7 +569,7 @@ theorem getKind_setListAt_ne (kinds : List CleanupKind) (i j : Nat) (v : Cleanup
         have hne' : i' ≠ j' := fun h => hne (congrArg Nat.succ h)
         exact ih i' j' hne'
 
-def setSuccessor (succs : List (Option Nat)) (funclet succ : Nat) :
+noncomputable def setSuccessor (succs : List (Option Nat)) (funclet succ : Nat) :
     Except CleanupError (List (Option Nat)) :=
   match getSuccOpt succs funclet with
   | none => .ok (setListAt succs funclet (some succ))
@@ -578,7 +578,7 @@ def setSuccessor (succs : List (Option Nat)) (funclet succ : Nat) :
     else .error (.twoParents funclet s succ)
 
 /-- Single-edge step of `cleanup_kinds::propagate` (`analyze.rs:371-397`). -/
-def propagateEdge (st : CleanupState) (srcFunclet succ : Nat) :
+noncomputable def propagateEdge (st : CleanupState) (srcFunclet succ : Nat) :
     Except CleanupError CleanupState :=
   match getKind st.kinds succ with
   | .notCleanup =>
@@ -600,14 +600,14 @@ def propagateEdge (st : CleanupState) (srcFunclet succ : Nat) :
         | .error e => .error e
         | .ok succs2 => .ok { kinds := kinds', funcletSuccs := succs2 }
 
-def propagateEdgesFrom (st : CleanupState) (srcFunclet : Nat) :
+noncomputable def propagateEdgesFrom (st : CleanupState) (srcFunclet : Nat) :
     List Nat → Except CleanupError CleanupState
   | [] => .ok st
   | s :: ss => do
     let st' ← propagateEdge st srcFunclet s
     propagateEdgesFrom st' srcFunclet ss
 
-def propagateBlock (cfgSuccs : List (List Nat)) (st : CleanupState) (bb : Nat) :
+noncomputable def propagateBlock (cfgSuccs : List (List Nat)) (st : CleanupState) (bb : Nat) :
     Except CleanupError CleanupState :=
   match getKind st.kinds bb with
   | .notCleanup => .ok st
@@ -615,7 +615,7 @@ def propagateBlock (cfgSuccs : List (List Nat)) (st : CleanupState) (bb : Nat) :
   | .internal f => propagateEdgesFrom st f ((listGetOpt cfgSuccs bb).getD [])
 
 /-- Register `UnwindAction::Cleanup(target)` entries unless `target ∈ nopLandingPads`. -/
-def discoverMasters (n : Nat) (unwindTargets : List Nat) (nopLandingPads : List Nat) :
+noncomputable def discoverMasters (n : Nat) (unwindTargets : List Nat) (nopLandingPads : List Nat) :
     CleanupState :=
   let initKinds := List.replicate n CleanupKind.notCleanup
   let kinds := unwindTargets.foldl
@@ -623,16 +623,16 @@ def discoverMasters (n : Nat) (unwindTargets : List Nat) (nopLandingPads : List 
     initKinds
   { kinds := kinds, funcletSuccs := List.replicate n none }
 
-def propagateRpo (cfgSuccs : List (List Nat)) (rpo : List Nat) (st : CleanupState) :
+noncomputable def propagateRpo (cfgSuccs : List (List Nat)) (rpo : List Nat) (st : CleanupState) :
     Except CleanupError CleanupState :=
   rpo.foldlM (propagateBlock cfgSuccs) st
 
-def runCleanupKinds (n : Nat) (unwindTargets nopLandingPads : List Nat)
+noncomputable def runCleanupKinds (n : Nat) (unwindTargets nopLandingPads : List Nat)
     (cfgSuccs : List (List Nat)) (rpo : List Nat) : Except CleanupError CleanupState :=
   propagateRpo cfgSuccs rpo (discoverMasters n unwindTargets nopLandingPads)
 
 /-- Exact mirror of `TerminatorCodegenHelper::llbb_characteristics` (`block.rs:111-127`). -/
-def llbbCharacteristics (kinds : List CleanupKind) (src dst : Nat) :
+noncomputable def llbbCharacteristics (kinds : List CleanupKind) (src dst : Nat) :
     Except CleanupError (Bool × Bool) :=
   match (getKind kinds src).funcletBb src, (getKind kinds dst).funcletBb dst with
   | none, none => .ok (false, false)
@@ -813,7 +813,7 @@ structure CounterTerm where
   deriving DecidableEq, Repr
 
 /-- Evaluates a `CovTerm` expression list (`transcribe_counters`: `SUM(pos) - SUM(neg)`). -/
-def evalCounterTerms (phys : Nat → Int) : List CounterTerm → Int
+noncomputable def evalCounterTerms (phys : Nat → Int) : List CounterTerm → Int
   | [] => 0
   | ⟨.add, id⟩ :: ts => phys id + evalCounterTerms phys ts
   | ⟨.subtract, id⟩ :: ts => -(phys id) + evalCounterTerms phys ts
@@ -1027,7 +1027,7 @@ structure ScopeData where
   inlinedParentScope : Option Nat
   deriving DecidableEq, Repr
 
-def inlinedInstance (scopes : List ScopeData) (scopeIdx : Nat) : Option InstanceKey :=
+noncomputable def inlinedInstance (scopes : List ScopeData) (scopeIdx : Nat) : Option InstanceKey :=
   match listGetOpt scopes scopeIdx with
   | none => none
   | some sd =>
@@ -1040,7 +1040,7 @@ def inlinedInstance (scopes : List ScopeData) (scopeIdx : Nat) : Option Instance
 
 /-- Attribute a `Coverage::VirtualCounter` statement in `callerInstance` using `codegen_coverage`
     (`compiler/rustc_codegen_ssa/src/mir/coverageinfo.rs:7-17`) and `query::is_inlined`. -/
-def attributeCoverageCounter (caller : InstanceKey) (scopes : List ScopeData)
+noncomputable def attributeCoverageCounter (caller : InstanceKey) (scopes : List ScopeData)
     (scopeIdx bcb : Nat) : InstanceKey × Nat :=
   match inlinedInstance scopes scopeIdx with
   | some inst => (inst, bcb)
