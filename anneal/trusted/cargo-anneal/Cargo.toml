@@ -32,7 +32,7 @@ exclude = [
 [[package.metadata.exocrate]]
 os = "linux"
 arch = "x86_64"
-sha256 = "0000000000000000000000000000000000000000000000000000000000000000"
+sha256 = "3bc3e606b9e59f19839426eccb9ea1d15c365f3c4a34af2b94a4f512d5c008e0"
 url = "https://github.com/google/zerocopy/releases/download/anneal-toolchain-v0.2.0-alpha.7/anneal-toolchain-linux-x86_64.tar.zst"
 
 [[bin]]
