@@ -18,7 +18,8 @@
 
 use std::{
     ffi::{OsStr, OsString},
-    fs, io,
+    fs,
+    io::{self, IsTerminal as _},
     path::{Path, PathBuf},
 };
 
@@ -48,9 +49,10 @@ fn remote_archive() -> Result<exocrate::RemoteArchive, String> {
 
 /// Directory layout of an unpacked Anneal omnibus toolchain bundle.
 ///
-/// When acquired through [`installed_bundle_at`], holds a shared flock on
-/// `<slug>.lock` so concurrent `cargo anneal setup --local-archive` installs
-/// wait until verification finishes reading this toolchain.
+/// When acquired through [`installed_bundle_at`] or an install helper, holds a
+/// shared flock on `<slug>.lock` so concurrent `cargo anneal setup` reinstalls
+/// and cross-version `--clear-old` pruning treat this toolchain as in use until
+/// the caller drops the handle.
 #[derive(Debug)]
 pub(crate) struct Bundle {
     root: PathBuf,
@@ -76,14 +78,42 @@ impl Bundle {
     }
 }
 
-/// Installs or resolves the Anneal toolchain archive in the user-global cache.
+/// Installs or resolves the Anneal toolchain archive in the user-global cache
+/// and optionally clears older cached toolchain directories.
 ///
-/// Reuses an installed toolchain when `local_archive` is `None` (installing the
-/// pinned remote archive when absent and configured). When `local_archive` is
-/// `Some(path)`, extracts and atomically installs `path`, replacing an
-/// existing installation for this version only after extraction succeeds.
-pub fn install(local_archive: Option<PathBuf>) -> Result<PathBuf, String> {
-    install_at(local_archive, exocrate::Location::UserGlobal)
+/// Reuses an installed toolchain when `local_archive` is `None` (installing
+/// the pinned remote archive when absent and configured). When
+/// `local_archive` is `Some(path)`, extracts and atomically installs `path`,
+/// replacing an existing installation for this version only after extraction
+/// succeeds.
+///
+/// After resolving the current installation, scans its parent cache directory
+/// for older toolchain directories:
+/// - When `clear_old` is `true`, removes unlocked old directories immediately
+///   without prompting and reports removed paths on stderr.
+/// - When `clear_old` is `false` and both stdin and stdout are terminals,
+///   lists the old directories on stdout and prompts `[y/N]` before removing.
+/// - Otherwise (non-interactive), leaves old directories untouched and prints
+///   a note on stderr suggesting `cargo anneal setup --clear-old`.
+///
+/// Busy locks or cleanup errors on obsolete directories emit warnings on
+/// stderr without failing the returned current installation path.
+pub fn install(local_archive: Option<PathBuf>, clear_old: bool) -> Result<PathBuf, String> {
+    let mode = if clear_old {
+        PruneMode::ClearOld
+    } else if io::stdin().is_terminal() && io::stdout().is_terminal() {
+        PruneMode::Interactive
+    } else {
+        PruneMode::NonInteractive
+    };
+    let (root, _report) = install_at_with_prune(
+        local_archive,
+        exocrate::Location::UserGlobal,
+        mode,
+        prompt_stdin_stdout,
+        &mut io::stderr(),
+    )?;
+    Ok(root)
 }
 
 fn clone_location(location: &exocrate::Location) -> exocrate::Location {
@@ -112,13 +142,61 @@ fn sibling_lock_path(dir: &Path, suffix: &str) -> io::Result<PathBuf> {
     Ok(parent.join(lock_name))
 }
 
+fn open_regular_lock_file(
+    lock_path: &Path,
+    write: bool,
+    create: bool,
+) -> io::Result<Option<fs::File>> {
+    match fs::symlink_metadata(lock_path) {
+        Ok(meta) if meta.file_type().is_symlink() => {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                format!("lock path {} is a symlink", lock_path.display()),
+            ));
+        }
+        Ok(meta) if !meta.file_type().is_file() => {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                format!("lock path {} is not a regular file", lock_path.display()),
+            ));
+        }
+        Ok(_) => {}
+        Err(err) if err.kind() == io::ErrorKind::NotFound => {
+            if !create {
+                return Ok(None);
+            }
+        }
+        Err(err) => return Err(err),
+    }
+
+    let mut opts = fs::OpenOptions::new();
+    opts.read(true).write(write).create(create).truncate(false);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt as _;
+        opts.custom_flags(libc::O_NOFOLLOW);
+    }
+    let file = match opts.open(lock_path) {
+        Ok(file) => file,
+        Err(err) if !create && err.kind() == io::ErrorKind::NotFound => return Ok(None),
+        Err(err) => return Err(err),
+    };
+    if !file.metadata()?.is_file() {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("lock path {} is not a regular file", lock_path.display()),
+        ));
+    }
+    Ok(Some(file))
+}
+
 fn open_exclusive_lock(lock_path: &Path) -> io::Result<fs::File> {
-    let file = fs::OpenOptions::new()
-        .read(true)
-        .write(true)
-        .create(true)
-        .truncate(false)
-        .open(lock_path)?;
+    let file = open_regular_lock_file(lock_path, true, true)?.ok_or_else(|| {
+        io::Error::new(
+            io::ErrorKind::NotFound,
+            format!("lock path {} does not exist", lock_path.display()),
+        )
+    })?;
     file.lock()?;
     Ok(file)
 }
@@ -199,22 +277,43 @@ fn remove_temp_dir_best_effort_with(
     }
 }
 
-fn validate_real_dir(dir: &Path) -> Result<(), String> {
-    let meta = fs::symlink_metadata(dir)
-        .map_err(|err| format!("cannot inspect installed toolchain {}: {err}", dir.display()))?;
-    if meta.file_type().is_symlink() {
-        return Err(format!(
+const INCOMPLETE_MARKER: &str = ".incomplete";
+
+enum AcquireLeaseError {
+    MissingOrIncomplete(String),
+    Fatal(String),
+}
+
+impl AcquireLeaseError {
+    fn into_message(self) -> String {
+        match self {
+            Self::MissingOrIncomplete(msg) | Self::Fatal(msg) => msg,
+        }
+    }
+}
+
+fn validate_real_dir_for_lease(dir: &Path) -> Result<(), AcquireLeaseError> {
+    match fs::symlink_metadata(dir) {
+        Ok(meta) if meta.file_type().is_symlink() => Err(AcquireLeaseError::Fatal(format!(
             "installed toolchain path {} is a symlink",
             dir.display()
-        ));
-    }
-    if !meta.file_type().is_dir() {
-        return Err(format!(
+        ))),
+        Ok(meta) if !meta.file_type().is_dir() => Err(AcquireLeaseError::Fatal(format!(
             "installed toolchain path {} is not a directory",
             dir.display()
-        ));
+        ))),
+        Ok(_) => Ok(()),
+        Err(err) if err.kind() == io::ErrorKind::NotFound => {
+            Err(AcquireLeaseError::MissingOrIncomplete(format!(
+                "cannot inspect installed toolchain {}: {err}",
+                dir.display()
+            )))
+        }
+        Err(err) => Err(AcquireLeaseError::Fatal(format!(
+            "cannot inspect installed toolchain {}: {err}",
+            dir.display()
+        ))),
     }
-    Ok(())
 }
 
 // Deterministic USTAR tar archive containing a single empty `.incomplete`
@@ -242,17 +341,62 @@ fn marker_present(path: &Path) -> Result<bool, String> {
     }
 }
 
-fn check_bundle_complete(dir: &Path) -> Result<(), String> {
-    let inner_marker = dir.join(".incomplete");
-    let sibling_marker = sibling_lock_path(dir, ".incomplete")
-        .map_err(|err| format!("cannot locate toolchain marker for {}: {err}", dir.display()))?;
-    if marker_present(&inner_marker)? || marker_present(&sibling_marker)? {
-        return Err(format!(
+fn check_bundle_complete_for_lease(dir: &Path) -> Result<(), AcquireLeaseError> {
+    let inner_marker = dir.join(INCOMPLETE_MARKER);
+    let sibling_marker = sibling_lock_path(dir, INCOMPLETE_MARKER).map_err(|err| {
+        AcquireLeaseError::Fatal(format!(
+            "cannot locate toolchain marker for {}: {err}",
+            dir.display()
+        ))
+    })?;
+    if marker_present(&inner_marker).map_err(AcquireLeaseError::Fatal)?
+        || marker_present(&sibling_marker).map_err(AcquireLeaseError::Fatal)?
+    {
+        return Err(AcquireLeaseError::MissingOrIncomplete(format!(
             "Anneal toolchain installation at {} is incomplete; run `cargo anneal setup`",
             dir.display()
-        ));
+        )));
     }
     Ok(())
+}
+
+/// Validates `dir` as a real directory, acquires a shared flock on its regular
+/// sibling `<slug>.lock`, re-validates `dir`, and verifies completion markers
+/// are absent.
+fn acquire_bundle_lease(dir: &Path) -> Result<Bundle, AcquireLeaseError> {
+    validate_real_dir_for_lease(dir)?;
+    let lock_path = sibling_lock_path(dir, ".lock").map_err(|err| {
+        AcquireLeaseError::Fatal(format!(
+            "cannot locate toolchain lock for {}: {err}",
+            dir.display()
+        ))
+    })?;
+    let lock_file = match open_regular_lock_file(&lock_path, false, false).map_err(|err| {
+        AcquireLeaseError::Fatal(format!(
+            "cannot open toolchain lock {}: {err}",
+            lock_path.display()
+        ))
+    })? {
+        Some(file) => file,
+        None => {
+            // If `<slug>.lock` is absent on a missing or `.incomplete`
+            // directory (for example after an interrupted install), classify it
+            // as recoverable so remote setup can repair the bundle and recreate
+            // the lock; complete directories without a lock still fail closed.
+            validate_real_dir_for_lease(dir)?;
+            check_bundle_complete_for_lease(dir)?;
+            return Err(AcquireLeaseError::Fatal(format!(
+                "cannot open toolchain lock {}: No such file or directory",
+                lock_path.display()
+            )));
+        }
+    };
+    lock_file.lock_shared().map_err(|err| {
+        AcquireLeaseError::Fatal(format!("cannot lock toolchain {}: {err}", lock_path.display()))
+    })?;
+    validate_real_dir_for_lease(dir)?;
+    check_bundle_complete_for_lease(dir)?;
+    Ok(Bundle { root: dir.to_path_buf(), _lock: Some(lock_file) })
 }
 
 fn is_cold_seed_only(dir: &Path) -> bool {
@@ -282,12 +426,14 @@ fn cleanup_cold_seed_if_uncommitted(dir: &Path) {
     }
 }
 
-const INCOMPLETE_MARKER: &str = ".incomplete";
-
 /// Stage `source` inside `dir`'s parent directory, then swap its top-level
 /// entries into `dir` while keeping `dir` continuously present as a real
 /// directory, preserving any previous installation if staging fails, and
 /// cleaning up an uncommitted cold seed if staging or pre-commit setup fails.
+///
+/// Returns a [`Bundle`] holding a shared flock on `<slug>.lock` acquired before
+/// releasing `<slug>.reinstall.lock`, leaving no unlocked gap during which a
+/// concurrent cross-version `setup --clear-old` could delete `dir`.
 ///
 /// When `reinstall_only_if_incomplete` is `true`, returns early once
 /// `.reinstall.lock` is held if `dir` is already a complete real directory
@@ -296,7 +442,7 @@ fn reinstall_existing(
     dir: &Path,
     source: exocrate::Source,
     reinstall_only_if_incomplete: bool,
-) -> io::Result<PathBuf> {
+) -> io::Result<Bundle> {
     let parent = dir.parent().ok_or_else(|| {
         io::Error::new(
             io::ErrorKind::InvalidInput,
@@ -307,11 +453,12 @@ fn reinstall_existing(
     // and exocrate cold-installers never block on archive decompression and we
     // never self-deadlock while staging via `CONFIG` into `staging_holder`.
     let reinstall_lock = open_exclusive_lock(&sibling_lock_path(dir, ".reinstall.lock")?)?;
-    if reinstall_only_if_incomplete
-        && validate_real_dir(dir).is_ok()
-        && check_bundle_complete(dir).is_ok()
-    {
-        return Ok(dir.to_path_buf());
+    if reinstall_only_if_incomplete {
+        match acquire_bundle_lease(dir) {
+            Ok(bundle) => return Ok(bundle),
+            Err(AcquireLeaseError::MissingOrIncomplete(_)) => {}
+            Err(AcquireLeaseError::Fatal(err)) => return Err(io::Error::other(err)),
+        }
     }
 
     let staging_holder = tempfile::Builder::new()
@@ -371,11 +518,15 @@ fn reinstall_existing(
             ));
         }
         Err(e) if e.kind() == io::ErrorKind::NotFound => {
+            let sibling_incomplete = sibling_lock_path(dir, INCOMPLETE_MARKER)?;
+            remove_regular_sibling_if_present(&sibling_incomplete)?;
             fs::rename(&staged_dir, dir)?;
             drop(exocrate_lock);
+            let bundle =
+                acquire_bundle_lease(dir).map_err(|err| io::Error::other(err.into_message()))?;
             remove_temp_dir_best_effort(staging_holder, "staging");
             drop(reinstall_lock);
-            return Ok(dir.to_path_buf());
+            return Ok(bundle);
         }
         Err(e) => return Err(e),
     };
@@ -419,12 +570,7 @@ fn reinstall_existing(
     let had_sibling_incomplete = fs::symlink_metadata(&sibling_incomplete).is_ok();
     // Record crash-detectable `.incomplete` marker before moving any entry out
     // of `dir` so a process kill mid-swap leaves the bundle flagged incomplete.
-    if let Err(err) = fs::OpenOptions::new()
-        .write(true)
-        .create(true)
-        .truncate(true)
-        .open(&sibling_incomplete)
-    {
+    if let Err(err) = create_incomplete_marker_nofollow(&sibling_incomplete) {
         if is_cold_seed_only(dir) {
             let _ = fs::remove_dir_all(dir);
         }
@@ -487,17 +633,17 @@ fn reinstall_existing(
         moved_new.push(name);
     }
 
-    if let Err(err) = fs::remove_file(&sibling_incomplete)
-        && err.kind() != io::ErrorKind::NotFound
-    {
-        return Err(err);
-    }
+    remove_regular_sibling_if_present(&sibling_incomplete)?;
 
+    // Hand off directly from exclusive `<slug>.lock` to a shared lease while
+    // `.reinstall.lock` is still held so concurrent pruners never observe an
+    // unlocked window on `dir`.
     drop(exocrate_lock);
+    let bundle = acquire_bundle_lease(dir).map_err(|err| io::Error::other(err.into_message()))?;
     remove_temp_dir_best_effort(backup_holder, "backup");
     remove_temp_dir_best_effort(staging_holder, "staging");
     drop(reinstall_lock);
-    Ok(dir.to_path_buf())
+    Ok(bundle)
 }
 
 fn ensure_local_archive_readable(path: &Path) -> io::Result<()> {
@@ -511,7 +657,7 @@ fn ensure_local_archive_readable(path: &Path) -> io::Result<()> {
     Ok(())
 }
 
-fn install_local(path: PathBuf, location: exocrate::Location) -> io::Result<PathBuf> {
+fn install_local(path: PathBuf, location: exocrate::Location) -> io::Result<Bundle> {
     install_local_with_seed_hook(path, location, || {})
 }
 
@@ -519,7 +665,7 @@ fn install_local_with_seed_hook(
     path: PathBuf,
     location: exocrate::Location,
     after_resolve_absent: impl FnOnce(),
-) -> io::Result<PathBuf> {
+) -> io::Result<Bundle> {
     // Validate the caller's archive before initializing any cache directory.
     ensure_local_archive_readable(&path)?;
     let dir = match CONFIG.resolve_installation_dir(clone_location(&location)) {
@@ -547,9 +693,9 @@ fn install_local_with_seed_hook(
 fn resolve_complete_existing(
     location: exocrate::Location,
     missing_reason: String,
-) -> Result<PathBuf, String> {
+) -> Result<Bundle, String> {
     match installed_bundle_at(location)? {
-        Some(bundle) => Ok(bundle.root),
+        Some(bundle) => Ok(bundle),
         None => Err(missing_reason),
     }
 }
@@ -557,37 +703,435 @@ fn resolve_complete_existing(
 fn install_remote(
     get_remote: impl Fn() -> Result<exocrate::RemoteArchive, String>,
     location: exocrate::Location,
-) -> Result<PathBuf, String> {
-    let archive = get_remote()?;
-    match installed_bundle_at(clone_location(&location)) {
-        Ok(Some(bundle)) => Ok(bundle.root),
-        Ok(None) => {
-            let (dir, _) = CONFIG
-                .resolve_installation_dir_or_install(
-                    clone_location(&location),
-                    exocrate::Source::Remote(archive),
-                )
-                .map_err(|e| format!("failed to install Anneal toolchain: {e}"))?;
-            if check_bundle_complete(&dir).is_err() {
-                return reinstall_existing(&dir, exocrate::Source::Remote(get_remote()?), true)
-                    .map_err(|e| format!("failed to install Anneal toolchain: {e}"));
-            }
-            Ok(dir)
-        }
-        Err(err) => match CONFIG.resolve_installation_dir(location) {
-            Ok(dir) if validate_real_dir(&dir).is_ok() && check_bundle_complete(&dir).is_err() => {
-                reinstall_existing(&dir, exocrate::Source::Remote(archive), true)
+) -> Result<Bundle, String> {
+    install_from_source(|| get_remote().map(exocrate::Source::Remote), location)
+}
+
+fn install_from_source(
+    get_source: impl Fn() -> Result<exocrate::Source, String>,
+    location: exocrate::Location,
+) -> Result<Bundle, String> {
+    let source = get_source()?;
+    match CONFIG.resolve_installation_dir(clone_location(&location)) {
+        Ok(dir) => match acquire_bundle_lease(&dir) {
+            Ok(bundle) => Ok(bundle),
+            Err(AcquireLeaseError::MissingOrIncomplete(_)) => {
+                reinstall_existing(&dir, source, true)
                     .map_err(|e| format!("failed to install Anneal toolchain: {e}"))
             }
-            _ => Err(err),
+            Err(AcquireLeaseError::Fatal(err)) => Err(err),
         },
+        Err(err) if err.kind() == io::ErrorKind::NotFound => {
+            let (dir, _) = CONFIG
+                .resolve_installation_dir_or_install(location, source)
+                .map_err(|e| format!("failed to install Anneal toolchain: {e}"))?;
+            // Immediately take a shared lease on `dir`. If a concurrent pruner
+            // deleted `dir` after `exocrate` dropped `<slug>.lock` (or left it
+            // incomplete), recover via `reinstall_existing` for a gap-free
+            // leased `Bundle`.
+            match acquire_bundle_lease(&dir) {
+                Ok(bundle) => Ok(bundle),
+                Err(AcquireLeaseError::MissingOrIncomplete(_)) => {
+                    reinstall_existing(&dir, get_source()?, true)
+                        .map_err(|e| format!("failed to install Anneal toolchain: {e}"))
+                }
+                Err(AcquireLeaseError::Fatal(err)) => Err(err),
+            }
+        }
+        Err(err) => Err(format!("cannot inspect installed Anneal toolchain: {err}")),
     }
+}
+
+/// Controls how [`install_at_with_prune`] handles older cached toolchain
+/// directories beside the current version.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum PruneMode {
+    /// Remove all unlocked old toolchain directories without prompting.
+    ClearOld,
+    /// Prompt interactively before removing old toolchain directories.
+    Interactive,
+    /// Leave old toolchain directories untouched and emit a note.
+    NonInteractive,
+}
+
+/// Summary of an old-toolchain pruning pass for diagnostics and tests.
+#[derive(Clone, Debug, Default, PartialEq, Eq)]
+pub(crate) struct PruneReport {
+    pub(crate) found: Vec<PathBuf>,
+    pub(crate) removed: Vec<PathBuf>,
+    pub(crate) skipped_busy: Vec<PathBuf>,
+    pub(crate) warnings: Vec<String>,
+}
+
+enum TryLockOutcome {
+    Acquired(fs::File),
+    Busy,
+}
+
+enum RemoveOldOutcome {
+    Removed { cleanup_warnings: Vec<String> },
+    AlreadyGone,
+    SkippedUnmanaged,
+    Busy,
+}
+
+fn is_internal_temp_dir_name(name: &OsStr) -> bool {
+    let bytes = name.as_encoded_bytes();
+    bytes.starts_with(b".staging-")
+        || bytes.starts_with(b".backup-")
+        || bytes.ends_with(b".staging")
+}
+
+fn open_try_exclusive_lock(lock_path: &Path, create: bool) -> io::Result<Option<TryLockOutcome>> {
+    let Some(file) = open_regular_lock_file(lock_path, true, create)? else {
+        return Ok(None);
+    };
+    match file.try_lock() {
+        Ok(()) => Ok(Some(TryLockOutcome::Acquired(file))),
+        Err(fs::TryLockError::WouldBlock) => Ok(Some(TryLockOutcome::Busy)),
+        Err(fs::TryLockError::Error(err)) => Err(err),
+    }
+}
+
+fn create_incomplete_marker_nofollow(path: &Path) -> io::Result<()> {
+    match fs::symlink_metadata(path) {
+        Ok(meta) if meta.file_type().is_symlink() => {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                format!("marker path {} is a symlink", path.display()),
+            ));
+        }
+        Ok(meta) if !meta.file_type().is_file() => {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                format!("marker path {} is not a regular file", path.display()),
+            ));
+        }
+        Ok(_) => {}
+        Err(err) if err.kind() == io::ErrorKind::NotFound => {}
+        Err(err) => return Err(err),
+    }
+
+    let mut opts = fs::OpenOptions::new();
+    opts.write(true).create(true).truncate(true);
+    #[cfg(unix)]
+    {
+        use std::os::unix::fs::OpenOptionsExt as _;
+        opts.custom_flags(libc::O_NOFOLLOW);
+    }
+    let file = opts.open(path)?;
+    if !file.metadata()?.is_file() {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("marker path {} is not a regular file", path.display()),
+        ));
+    }
+    Ok(())
+}
+
+fn remove_regular_sibling_if_present(path: &Path) -> io::Result<()> {
+    match fs::symlink_metadata(path) {
+        Ok(meta) if meta.file_type().is_symlink() => Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("refusing to remove symlink {}", path.display()),
+        )),
+        Ok(meta) if !meta.file_type().is_file() => Err(io::Error::new(
+            io::ErrorKind::InvalidInput,
+            format!("refusing to remove non-file {}", path.display()),
+        )),
+        Ok(_) => match fs::remove_file(path) {
+            Ok(()) => Ok(()),
+            Err(err) if err.kind() == io::ErrorKind::NotFound => Ok(()),
+            Err(err) => Err(err),
+        },
+        Err(err) if err.kind() == io::ErrorKind::NotFound => Ok(()),
+        Err(err) => Err(err),
+    }
+}
+
+fn discover_old_toolchains(
+    current_dir: &Path,
+    warnings: &mut Vec<String>,
+) -> Result<(PathBuf, Vec<PathBuf>), String> {
+    let parent = current_dir.parent().ok_or_else(|| {
+        format!("installed toolchain {} has no parent directory", current_dir.display())
+    })?;
+    let current_name = current_dir.file_name().ok_or_else(|| {
+        format!("installed toolchain {} has no directory name", current_dir.display())
+    })?;
+    let parent_meta = fs::symlink_metadata(parent).map_err(|err| {
+        format!("cannot inspect toolchain cache directory {}: {err}", parent.display())
+    })?;
+    if parent_meta.file_type().is_symlink() || !parent_meta.file_type().is_dir() {
+        return Err(format!(
+            "toolchain cache directory {} is not a real directory",
+            parent.display()
+        ));
+    }
+
+    let entries = fs::read_dir(parent).map_err(|err| {
+        format!("cannot scan toolchain cache directory {}: {err}", parent.display())
+    })?;
+    let mut old_dirs = Vec::new();
+    for entry_res in entries {
+        let entry = match entry_res {
+            Ok(entry) => entry,
+            Err(err) => {
+                warnings.push(format!(
+                    "cannot read entry in toolchain cache {}: {err}",
+                    parent.display()
+                ));
+                continue;
+            }
+        };
+        let name = entry.file_name();
+        if name == current_name || is_internal_temp_dir_name(&name) {
+            continue;
+        }
+        let path = entry.path();
+        let meta = match fs::symlink_metadata(&path) {
+            Ok(meta) => meta,
+            Err(err) if err.kind() == io::ErrorKind::NotFound => continue,
+            Err(err) => {
+                warnings.push(format!("cannot inspect {}: {err}", path.display()));
+                continue;
+            }
+        };
+        let ft = meta.file_type();
+        if !ft.is_dir() || ft.is_symlink() {
+            continue;
+        }
+        // Only treat directories with a pre-existing regular `<slug>.lock` as
+        // exocrate-managed Anneal toolchains so unrelated or in-flight staging
+        // directories are never selected.
+        let lock_path = match sibling_lock_path(&path, ".lock") {
+            Ok(lock_path) => lock_path,
+            Err(err) => {
+                warnings.push(format!("cannot locate lock path for {}: {err}", path.display()));
+                continue;
+            }
+        };
+        match fs::symlink_metadata(&lock_path) {
+            Ok(lock_meta) if lock_meta.file_type().is_symlink() => {
+                warnings.push(format!(
+                    "skipping {}: lock path {} is a symlink",
+                    path.display(),
+                    lock_path.display()
+                ));
+            }
+            Ok(lock_meta) if !lock_meta.file_type().is_file() => {
+                warnings.push(format!(
+                    "skipping {}: lock path {} is not a regular file",
+                    path.display(),
+                    lock_path.display()
+                ));
+            }
+            Ok(_) => old_dirs.push(path),
+            Err(err) if err.kind() == io::ErrorKind::NotFound => {}
+            Err(err) => {
+                warnings.push(format!("cannot inspect {}: {err}", lock_path.display()));
+            }
+        }
+    }
+    old_dirs.sort();
+    Ok((parent.to_path_buf(), old_dirs))
+}
+
+fn try_remove_old_toolchain(old_dir: &Path) -> io::Result<RemoveOldOutcome> {
+    let reinstall_lock_path = sibling_lock_path(old_dir, ".reinstall.lock")?;
+    let exocrate_lock_path = sibling_lock_path(old_dir, ".lock")?;
+    let incomplete_path = sibling_lock_path(old_dir, INCOMPLETE_MARKER)?;
+
+    // Probe any existing `.reinstall.lock` without creating it first so a busy
+    // shared `.lock` (from a concurrent `verify`) skips cleanly without leaving
+    // a stray `.reinstall.lock` file behind. Open `.lock` with `create = false`
+    // so unmanaged directories without a pre-existing exocrate lock are skipped
+    // rather than creating new lock files. All locks are non-blocking, so
+    // acquiring `.lock` before creating `.reinstall.lock` cannot deadlock.
+    let mut reinstall_lock = match open_try_exclusive_lock(&reinstall_lock_path, false)? {
+        Some(TryLockOutcome::Busy) => return Ok(RemoveOldOutcome::Busy),
+        Some(TryLockOutcome::Acquired(file)) => Some(file),
+        None => None,
+    };
+    let exocrate_lock = match open_try_exclusive_lock(&exocrate_lock_path, false)? {
+        Some(TryLockOutcome::Acquired(file)) => file,
+        Some(TryLockOutcome::Busy) => return Ok(RemoveOldOutcome::Busy),
+        None => return Ok(RemoveOldOutcome::SkippedUnmanaged),
+    };
+    if reinstall_lock.is_none() {
+        match open_try_exclusive_lock(&reinstall_lock_path, true)? {
+            Some(TryLockOutcome::Acquired(file)) => reinstall_lock = Some(file),
+            Some(TryLockOutcome::Busy) | None => {
+                drop(exocrate_lock);
+                return Ok(RemoveOldOutcome::Busy);
+            }
+        }
+    }
+
+    // Re-validate under both exclusive locks to close TOCTOU swaps.
+    match fs::symlink_metadata(old_dir) {
+        Ok(meta) if meta.file_type().is_symlink() => {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "old toolchain path is a symlink",
+            ));
+        }
+        Ok(meta) if !meta.file_type().is_dir() => {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                "old toolchain path is not a directory",
+            ));
+        }
+        Ok(_) => {}
+        Err(err) if err.kind() == io::ErrorKind::NotFound => {
+            let _ = remove_regular_sibling_if_present(&incomplete_path);
+            drop(exocrate_lock);
+            drop(reinstall_lock);
+            return Ok(RemoveOldOutcome::AlreadyGone);
+        }
+        Err(err) => return Err(err),
+    }
+
+    // Mark the directory incomplete before starting recursive deletion so an
+    // interrupted removal cannot leave a half-deleted bundle looking valid.
+    create_incomplete_marker_nofollow(&incomplete_path)?;
+    normalize_dir_permissions(old_dir)?;
+    fs::remove_dir_all(old_dir)?;
+
+    // Clean up only the `.incomplete` marker and leave `.lock` and
+    // `.reinstall.lock` in place: unlinking a held lock file can split mutual
+    // exclusion across inodes if another process is already waiting on it.
+    let mut cleanup_warnings = Vec::new();
+    if let Err(err) = remove_regular_sibling_if_present(&incomplete_path) {
+        cleanup_warnings
+            .push(format!("failed to clean up sibling file {}: {err}", incomplete_path.display()));
+    }
+    drop(exocrate_lock);
+    drop(reinstall_lock);
+    Ok(RemoveOldOutcome::Removed { cleanup_warnings })
+}
+
+fn parse_yes_response(line: &str) -> bool {
+    matches!(line.trim().to_ascii_lowercase().as_str(), "y" | "yes")
+}
+
+fn prompt_on_streams(
+    parent: &Path,
+    old_dirs: &[PathBuf],
+    reader: &mut impl io::BufRead,
+    writer: &mut impl io::Write,
+) -> io::Result<bool> {
+    let noun = if old_dirs.len() == 1 { "toolchain" } else { "toolchains" };
+    writeln!(writer, "Found {} old cached Anneal {noun} in {}:", old_dirs.len(), parent.display())?;
+    for dir in old_dirs {
+        writeln!(writer, "  {}", dir.display())?;
+    }
+    write!(writer, "Remove old cached {noun}? [y/N] ")?;
+    writer.flush()?;
+    let mut answer = String::new();
+    let bytes = reader.read_line(&mut answer)?;
+    if bytes == 0 {
+        return Ok(false);
+    }
+    Ok(parse_yes_response(&answer))
+}
+
+fn prompt_stdin_stdout(parent: &Path, old_dirs: &[PathBuf]) -> io::Result<bool> {
+    let stdin = io::stdin();
+    let mut reader = stdin.lock();
+    let stdout = io::stdout();
+    let mut writer = stdout.lock();
+    prompt_on_streams(parent, old_dirs, &mut reader, &mut writer)
+}
+
+fn prune_old_toolchains_with(
+    current_dir: &Path,
+    mode: PruneMode,
+    prompt: impl FnOnce(&Path, &[PathBuf]) -> io::Result<bool>,
+    status_out: &mut impl io::Write,
+) -> PruneReport {
+    let mut report = PruneReport::default();
+    let (parent, old_dirs) = match discover_old_toolchains(current_dir, &mut report.warnings) {
+        Ok(found) => found,
+        Err(msg) => {
+            let _ = writeln!(status_out, "warning: {msg}");
+            report.warnings.push(msg);
+            return report;
+        }
+    };
+    for warning in &report.warnings {
+        let _ = writeln!(status_out, "warning: {warning}");
+    }
+    if old_dirs.is_empty() {
+        return report;
+    }
+    report.found = old_dirs.clone();
+
+    let should_remove = match mode {
+        PruneMode::ClearOld => true,
+        PruneMode::Interactive => match prompt(&parent, &old_dirs) {
+            Ok(confirmed) => confirmed,
+            Err(err) => {
+                let msg = format!("failed to prompt before clearing old toolchains: {err}");
+                let _ = writeln!(status_out, "warning: {msg}");
+                report.warnings.push(msg);
+                false
+            }
+        },
+        PruneMode::NonInteractive => {
+            let (noun, pronoun) =
+                if old_dirs.len() == 1 { ("toolchain", "it") } else { ("toolchains", "them") };
+            let _ = writeln!(
+                status_out,
+                "note: found {} old cached Anneal {noun} in {}; re-run \
+                 `cargo anneal setup --clear-old` to remove {pronoun}",
+                old_dirs.len(),
+                parent.display()
+            );
+            false
+        }
+    };
+    if !should_remove {
+        return report;
+    }
+
+    for old_dir in &old_dirs {
+        match try_remove_old_toolchain(old_dir) {
+            Ok(RemoveOldOutcome::Removed { cleanup_warnings }) => {
+                report.removed.push(old_dir.clone());
+                let _ =
+                    writeln!(status_out, "Removed old Anneal toolchain at {}", old_dir.display());
+                for warning in cleanup_warnings {
+                    let _ = writeln!(status_out, "warning: {warning}");
+                    report.warnings.push(warning);
+                }
+            }
+            Ok(RemoveOldOutcome::AlreadyGone | RemoveOldOutcome::SkippedUnmanaged) => {}
+            Ok(RemoveOldOutcome::Busy) => {
+                report.skipped_busy.push(old_dir.clone());
+                let msg = format!(
+                    "skipping old Anneal toolchain {} because it is currently in use",
+                    old_dir.display()
+                );
+                let _ = writeln!(status_out, "warning: {msg}");
+                report.warnings.push(msg);
+            }
+            Err(err) => {
+                let msg =
+                    format!("failed to remove old Anneal toolchain {}: {err}", old_dir.display());
+                let _ = writeln!(status_out, "warning: {msg}");
+                report.warnings.push(msg);
+            }
+        }
+    }
+    report
 }
 
 /// Installs or resolves the archive at an explicit exocrate location.
 ///
-/// Unit tests use a fresh `Custom` location for each synthetic local archive.
-/// Production setup uses the user-global cache above.
+/// Unit and smoke tests use a fresh `Custom` location for each synthetic local
+/// archive. Production setup uses [`install`] -> [`install_at_with_prune`].
+#[cfg(test)]
 pub(crate) fn install_at(
     local_archive: Option<PathBuf>,
     location: exocrate::Location,
@@ -595,11 +1139,43 @@ pub(crate) fn install_at(
     install_at_with_remote(local_archive, location, remote_archive)
 }
 
+/// Installs or resolves the archive at an explicit exocrate location, then
+/// prunes older sibling toolchain directories according to `mode` while
+/// holding a shared `<current>.lock` lease on the current installation root.
+///
+/// Obsolete-directory pruning warnings or busy locks never fail returning the
+/// valid current installation root.
+pub(crate) fn install_at_with_prune(
+    local_archive: Option<PathBuf>,
+    location: exocrate::Location,
+    mode: PruneMode,
+    prompt: impl FnOnce(&Path, &[PathBuf]) -> io::Result<bool>,
+    status_out: &mut impl io::Write,
+) -> Result<(PathBuf, PruneReport), String> {
+    let bundle = install_at_bundle(local_archive, location, remote_archive)?;
+    // Keep the shared `<current>.lock` lease alive across the entire pruning
+    // pass (including any interactive prompt) so concurrent `setup --clear-old`
+    // runs from other `cargo-anneal` versions see this root as busy.
+    let report = prune_old_toolchains_with(&bundle.root, mode, prompt, status_out);
+    let Bundle { root, _lock } = bundle;
+    drop(_lock);
+    Ok((root, report))
+}
+
+#[cfg(test)]
 fn install_at_with_remote(
     local_archive: Option<PathBuf>,
     location: exocrate::Location,
     get_remote: impl Fn() -> Result<exocrate::RemoteArchive, String>,
 ) -> Result<PathBuf, String> {
+    install_at_bundle(local_archive, location, get_remote).map(|bundle| bundle.root)
+}
+
+fn install_at_bundle(
+    local_archive: Option<PathBuf>,
+    location: exocrate::Location,
+    get_remote: impl Fn() -> Result<exocrate::RemoteArchive, String>,
+) -> Result<Bundle, String> {
     match local_archive {
         Some(path) => install_local(path, location)
             .map_err(|e| format!("failed to install Anneal toolchain: {e}")),
@@ -689,17 +1265,9 @@ pub(crate) fn installed_bundle_at(location: exocrate::Location) -> Result<Option
             return Err(format!("cannot inspect installed Anneal toolchain: {err}"));
         }
     };
-    validate_real_dir(&dir)?;
-    let lock_path = sibling_lock_path(&dir, ".lock")
-        .map_err(|err| format!("cannot locate toolchain lock for {}: {err}", dir.display()))?;
-    let lock_file = fs::File::open(&lock_path)
-        .map_err(|err| format!("cannot open toolchain lock {}: {err}", lock_path.display()))?;
-    lock_file
-        .lock_shared()
-        .map_err(|err| format!("cannot lock toolchain {}: {err}", lock_path.display()))?;
-    validate_real_dir(&dir)?;
-    check_bundle_complete(&dir)?;
-    Ok(Some(Bundle { root: dir, _lock: Some(lock_file) }))
+    acquire_bundle_lease(&dir)
+        .map(Some)
+        .map_err(AcquireLeaseError::into_message)
 }
 
 /// Resolves an already installed user-global bundle without downloading it.
@@ -1355,7 +1923,8 @@ mod tests {
                 .expect("concurrent v1 winner succeeds");
             },
         )
-        .expect("losing v2 cold caller must still apply its archive");
+        .expect("losing v2 cold caller must still apply its archive")
+        .root;
         assert_eq!(
             fs::read(root_after_hook.join("marker.txt")).unwrap(),
             b"archive v2"
@@ -1523,13 +2092,19 @@ mod tests {
             install_at(Some(v1), exocrate::Location::Custom(cache)).expect("install v1 bundle");
 
         // When already complete, `reinstall_only_if_incomplete = true` returns
-        // before touching or even opening `source`.
+        // a leased bundle before touching or even opening `source`.
         let reused_missing = reinstall_existing(&root, exocrate::Source::Local(missing), true)
             .expect("complete bundle skips opening source");
-        assert_eq!(reused_missing, root);
+        assert_eq!(reused_missing.root, root);
+        assert!(matches!(
+            try_remove_old_toolchain(&root).expect("probe leased reused bundle"),
+            RemoveOldOutcome::Busy
+        ));
+        drop(reused_missing);
         let reused_v2 = reinstall_existing(&root, exocrate::Source::Local(v2.clone()), true)
             .expect("complete bundle is reused without overwriting");
-        assert_eq!(reused_v2, root);
+        assert_eq!(reused_v2.root, root);
+        drop(reused_v2);
         assert_eq!(fs::read(root.join("marker.txt")).unwrap(), b"archive v1");
 
         // Negative controls: incomplete marker or absent dir still installs
@@ -1538,14 +2113,654 @@ mod tests {
         fs::write(&sibling_marker, b"").expect("mark bundle incomplete");
         let repaired = reinstall_existing(&root, exocrate::Source::Local(v2.clone()), true)
             .expect("incomplete bundle is repaired");
-        assert_eq!(repaired, root);
+        assert_eq!(repaired.root, root);
+        drop(repaired);
         assert_eq!(fs::read(root.join("marker.txt")).unwrap(), b"archive v2");
         assert!(!sibling_marker.exists());
 
         fs::remove_dir_all(&root).expect("remove directory before retry");
         let recreated = reinstall_existing(&root, exocrate::Source::Local(v2), true)
             .expect("absent directory is not treated as complete");
-        assert_eq!(recreated, root);
+        assert_eq!(recreated.root, root);
+        drop(recreated);
         assert_eq!(fs::read(root.join("marker.txt")).unwrap(), b"archive v2");
+    }
+
+    #[test]
+    fn clear_old_removes_unlocked_old_dirs_and_preserves_current_staging_and_files() {
+        let temp = tempfile::tempdir().expect("create owned fixture");
+        let archive = temp.path().join("v1.tar.zst");
+        write_archive_with(&archive, b"current toolchain");
+
+        let cache = temp.path().join("cache");
+        let current = install_at(Some(archive.clone()), exocrate::Location::Custom(cache.clone()))
+            .expect("install current toolchain");
+        let parent = current.parent().expect("toolchain parent");
+
+        // Control: no old directories -> silent output and prompt never called.
+        let mut out = Vec::new();
+        let (root_empty, report_empty) = install_at_with_prune(
+            Some(archive.clone()),
+            exocrate::Location::Custom(cache.clone()),
+            PruneMode::Interactive,
+            |_, _| panic!("prompt must not run when no old toolchains exist"),
+            &mut out,
+        )
+        .expect("reinstall with no old dirs");
+        assert_eq!(root_empty, current);
+        assert_eq!(report_empty, PruneReport::default());
+        assert!(out.is_empty(), "unexpected output: {}", String::from_utf8_lossy(&out));
+
+        // Populate two old toolchain directories (including a read-only subdir
+        // on Unix) plus sibling lock/incomplete markers, internal temp dirs,
+        // and an unrelated regular file.
+        let old_v1 = parent.join("0.1.0-old");
+        let old_v2 = parent.join("0.2.0-old");
+        fs::create_dir_all(old_v1.join("readonly")).unwrap();
+        fs::write(old_v1.join("readonly/file.txt"), b"old v1").unwrap();
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::PermissionsExt as _;
+            fs::set_permissions(old_v1.join("readonly"), fs::Permissions::from_mode(0o555))
+                .unwrap();
+        }
+        fs::create_dir_all(&old_v2).unwrap();
+        fs::write(old_v2.join("marker.txt"), b"old v2").unwrap();
+        for old in [&old_v1, &old_v2] {
+            for suffix in [".lock", ".reinstall.lock", ".incomplete"] {
+                fs::write(sibling_lock_path(old, suffix).unwrap(), b"").unwrap();
+            }
+        }
+        let staging_dir = parent.join(".staging-in-flight");
+        let backup_dir = parent.join(".backup-in-flight");
+        let exocrate_staging = parent.join("0.3.0-cold.staging");
+        let exocrate_staging_with_lock = parent.join("0.3.1-cold.staging");
+        let unmanaged_dir = parent.join("unmanaged-user-dir");
+        let sibling_file = parent.join("notes.txt");
+        fs::create_dir_all(&staging_dir).unwrap();
+        fs::create_dir_all(&backup_dir).unwrap();
+        fs::create_dir_all(&exocrate_staging).unwrap();
+        fs::create_dir_all(&exocrate_staging_with_lock).unwrap();
+        fs::write(sibling_lock_path(&exocrate_staging_with_lock, ".lock").unwrap(), b"").unwrap();
+        fs::create_dir_all(&unmanaged_dir).unwrap();
+        fs::write(&sibling_file, b"keep").unwrap();
+
+        let mut out = Vec::new();
+        let (root, report) = install_at_with_prune(
+            Some(archive),
+            exocrate::Location::Custom(cache),
+            PruneMode::ClearOld,
+            |_, _| panic!("--clear-old must not prompt"),
+            &mut out,
+        )
+        .expect("install with --clear-old");
+        assert_eq!(root, current);
+        assert_eq!(report.found, vec![old_v1.clone(), old_v2.clone()]);
+        assert_eq!(report.removed, vec![old_v1.clone(), old_v2.clone()]);
+        assert!(report.skipped_busy.is_empty(), "{report:?}");
+        assert!(report.warnings.is_empty(), "{report:?}");
+        let output = String::from_utf8(out).unwrap();
+        assert!(output.contains(&format!("Removed old Anneal toolchain at {}", old_v1.display())));
+        assert!(output.contains(&format!("Removed old Anneal toolchain at {}", old_v2.display())));
+
+        for old in [&old_v1, &old_v2] {
+            assert!(!old.exists(), "old dir still present: {}", old.display());
+            assert!(
+                !sibling_lock_path(old, ".incomplete").unwrap().exists(),
+                ".incomplete marker still present for {}",
+                old.display()
+            );
+            // Leave lock files in place so mutual exclusion never splits.
+            assert!(sibling_lock_path(old, ".lock").unwrap().is_file());
+            assert!(sibling_lock_path(old, ".reinstall.lock").unwrap().is_file());
+        }
+        assert!(current.is_dir());
+        assert_eq!(fs::read(current.join("marker.txt")).unwrap(), b"current toolchain");
+        assert!(sibling_lock_path(&current, ".lock").unwrap().is_file());
+        assert!(staging_dir.is_dir());
+        assert!(backup_dir.is_dir());
+        assert!(exocrate_staging.is_dir());
+        assert!(exocrate_staging_with_lock.is_dir());
+        assert!(unmanaged_dir.is_dir());
+        assert!(!sibling_lock_path(&unmanaged_dir, ".lock").unwrap().exists());
+        assert_eq!(fs::read(&sibling_file).unwrap(), b"keep");
+    }
+
+    #[test]
+    fn clear_old_skips_busy_locked_old_dirs_and_prunes_unlocked_peers() {
+        let temp = tempfile::tempdir().expect("create owned fixture");
+        let archive = temp.path().join("v1.tar.zst");
+        write_archive_with(&archive, b"current toolchain");
+
+        let cache = temp.path().join("cache");
+        let current = install_at(Some(archive.clone()), exocrate::Location::Custom(cache.clone()))
+            .expect("install current toolchain");
+        let parent = current.parent().expect("toolchain parent");
+
+        let old_busy_reinstall = parent.join("0.1.0-busy-reinstall");
+        let old_busy_shared = parent.join("0.1.1-busy-shared");
+        let old_idle = parent.join("0.1.2-idle");
+        for dir in [&old_busy_reinstall, &old_busy_shared, &old_idle] {
+            fs::create_dir_all(dir).unwrap();
+            fs::write(dir.join("marker.txt"), b"old").unwrap();
+            fs::write(sibling_lock_path(dir, ".lock").unwrap(), b"").unwrap();
+        }
+        // Simulate an active exocrate 0.3.0 cold install: `<slug>.staging/`
+        // populated while `<slug>.lock` is held exclusively.
+        let cold_install_staging = parent.join("0.1.3-cold-install.staging");
+        fs::create_dir_all(&cold_install_staging).unwrap();
+        fs::write(cold_install_staging.join("extracting.txt"), b"in flight").unwrap();
+        let cold_install_lock =
+            open_exclusive_lock(&parent.join("0.1.3-cold-install.lock")).expect("lock cold slug");
+
+        // Hold an active shared `.lock` (simulating `verify`) without creating
+        // `.reinstall.lock`, and hold an exclusive `.reinstall.lock` on another
+        // old dir (simulating a concurrent `setup --local-archive`).
+        let shared_lock = fs::File::open(sibling_lock_path(&old_busy_shared, ".lock").unwrap())
+            .expect("open shared lock");
+        shared_lock.lock_shared().expect("acquire shared lock");
+        let reinstall_lock = open_exclusive_lock(
+            &sibling_lock_path(&old_busy_reinstall, ".reinstall.lock").unwrap(),
+        )
+        .expect("acquire reinstall lock");
+
+        let mut out = Vec::new();
+        let (root, report) = install_at_with_prune(
+            Some(archive),
+            exocrate::Location::Custom(cache),
+            PruneMode::ClearOld,
+            |_, _| panic!("--clear-old must not prompt"),
+            &mut out,
+        )
+        .expect("busy locks must not fail current installation");
+        assert_eq!(root, current);
+        assert_eq!(
+            report.found,
+            vec![old_busy_reinstall.clone(), old_busy_shared.clone(), old_idle.clone()]
+        );
+        assert_eq!(report.removed, vec![old_idle.clone()]);
+        assert_eq!(report.skipped_busy, vec![old_busy_reinstall.clone(), old_busy_shared.clone()]);
+        assert_eq!(report.warnings.len(), 2, "{report:?}");
+
+        assert!(!old_idle.exists());
+        assert!(sibling_lock_path(&old_idle, ".lock").unwrap().is_file());
+        assert!(old_busy_shared.is_dir());
+        assert!(
+            !sibling_lock_path(&old_busy_shared, ".reinstall.lock").unwrap().exists(),
+            "busy shared lock must skip without creating a stray .reinstall.lock"
+        );
+        assert!(old_busy_reinstall.is_dir());
+        assert!(cold_install_staging.is_dir());
+        assert_eq!(fs::read(cold_install_staging.join("extracting.txt")).unwrap(), b"in flight");
+        assert!(!sibling_lock_path(&cold_install_staging, ".lock").unwrap().exists());
+        let output = String::from_utf8(out).unwrap();
+        assert!(output.contains("warning: skipping old Anneal toolchain"), "{output}");
+
+        drop(cold_install_lock);
+        drop(shared_lock);
+        drop(reinstall_lock);
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn clear_old_never_follows_or_deletes_symlinks_in_parent_or_locks() {
+        use std::os::unix::fs::symlink;
+
+        let temp = tempfile::tempdir().expect("create owned fixture");
+        let archive = temp.path().join("v1.tar.zst");
+        write_archive_with(&archive, b"current toolchain");
+
+        let cache = temp.path().join("cache");
+        let current = install_at(Some(archive.clone()), exocrate::Location::Custom(cache.clone()))
+            .expect("install current toolchain");
+        let parent = current.parent().expect("toolchain parent");
+
+        let outside_dir = temp.path().join("outside-dir");
+        fs::create_dir_all(&outside_dir).unwrap();
+        let outside_file = outside_dir.join("keep.txt");
+        fs::write(&outside_file, b"must survive").unwrap();
+
+        // 1. Top-level symlink directory in `parent` must be ignored.
+        let top_symlink = parent.join("0.1.0-symlink");
+        symlink(&outside_dir, &top_symlink).unwrap();
+        fs::write(sibling_lock_path(&top_symlink, ".lock").unwrap(), b"").unwrap();
+
+        // 2. Old directory containing an internal symlink to `outside_dir` must
+        //    unlink only the inner symlink without touching `outside_dir`.
+        let old_inner_sym = parent.join("0.1.1-inner-sym");
+        fs::create_dir_all(&old_inner_sym).unwrap();
+        fs::write(sibling_lock_path(&old_inner_sym, ".lock").unwrap(), b"").unwrap();
+        symlink(&outside_dir, old_inner_sym.join("ext-link")).unwrap();
+
+        // 3. Old directory whose sibling `.lock` is a symlink must fail closed
+        //    with a warning without removing the dir or following the lock.
+        let old_sym_lock = parent.join("0.1.2-sym-lock");
+        fs::create_dir_all(&old_sym_lock).unwrap();
+        fs::write(old_sym_lock.join("marker.txt"), b"keep").unwrap();
+        let outside_lock_target = temp.path().join("outside-lock-target.txt");
+        fs::write(&outside_lock_target, b"untouched").unwrap();
+        symlink(&outside_lock_target, sibling_lock_path(&old_sym_lock, ".lock").unwrap()).unwrap();
+
+        // 4. Old directory whose `.incomplete` marker is a symlink must fail
+        //    closed without truncating the target or deleting the directory.
+        let old_sym_incomplete = parent.join("0.1.3-sym-incomplete");
+        fs::create_dir_all(&old_sym_incomplete).unwrap();
+        fs::write(old_sym_incomplete.join("marker.txt"), b"keep").unwrap();
+        fs::write(sibling_lock_path(&old_sym_incomplete, ".lock").unwrap(), b"").unwrap();
+        let outside_marker_target = temp.path().join("outside-marker-target.txt");
+        fs::write(&outside_marker_target, b"untouched-marker").unwrap();
+        symlink(
+            &outside_marker_target,
+            sibling_lock_path(&old_sym_incomplete, ".incomplete").unwrap(),
+        )
+        .unwrap();
+
+        let mut out = Vec::new();
+        let (root, report) = install_at_with_prune(
+            Some(archive),
+            exocrate::Location::Custom(cache),
+            PruneMode::ClearOld,
+            |_, _| panic!("--clear-old must not prompt"),
+            &mut out,
+        )
+        .expect("symlink warnings must not fail current installation");
+        assert_eq!(root, current);
+        assert_eq!(report.found, vec![old_inner_sym.clone(), old_sym_incomplete.clone()]);
+        assert_eq!(report.removed, vec![old_inner_sym.clone()]);
+        assert_eq!(report.warnings.len(), 2, "{report:?}");
+        assert!(report.warnings.iter().all(|w| w.contains("symlink")), "{report:?}");
+
+        assert!(fs::symlink_metadata(&top_symlink).unwrap().file_type().is_symlink());
+        assert!(!old_inner_sym.exists());
+        assert!(old_sym_lock.is_dir());
+        assert!(old_sym_incomplete.is_dir());
+        assert_eq!(fs::read(&outside_file).unwrap(), b"must survive");
+        assert_eq!(fs::read(&outside_lock_target).unwrap(), b"untouched");
+        assert_eq!(fs::read(&outside_marker_target).unwrap(), b"untouched-marker");
+    }
+
+    #[test]
+    fn prune_interactive_prompt_and_non_tty_note_behave_as_documented() {
+        let temp = tempfile::tempdir().expect("create owned fixture");
+        let archive = temp.path().join("v1.tar.zst");
+        write_archive_with(&archive, b"current toolchain");
+
+        let cache = temp.path().join("cache");
+        let current = install_at(Some(archive.clone()), exocrate::Location::Custom(cache.clone()))
+            .expect("install current toolchain");
+        let parent = current.parent().expect("toolchain parent");
+        let old_v1 = parent.join("0.1.0-old");
+        fs::create_dir_all(&old_v1).unwrap();
+        fs::write(old_v1.join("marker.txt"), b"old").unwrap();
+        fs::write(sibling_lock_path(&old_v1, ".lock").unwrap(), b"").unwrap();
+        let unmanaged = parent.join("not-a-toolchain");
+        fs::create_dir_all(&unmanaged).unwrap();
+
+        // Direct prompt parser/stream tests.
+        for (input, expected) in
+            [("y\n", true), ("YES\r\n", true), ("n\n", false), ("\n", false), ("", false)]
+        {
+            let mut reader = io::Cursor::new(input.as_bytes());
+            let mut writer = Vec::new();
+            let confirmed =
+                prompt_on_streams(parent, std::slice::from_ref(&old_v1), &mut reader, &mut writer)
+                    .expect("prompt streams");
+            assert_eq!(confirmed, expected, "input={input:?}");
+            let prompt_text = String::from_utf8(writer).unwrap();
+            assert!(prompt_text.contains(&old_v1.display().to_string()), "{prompt_text}");
+            assert!(prompt_text.contains("[y/N]"), "{prompt_text}");
+        }
+
+        // Non-TTY mode emits a concise note and leaves the old dir untouched.
+        let mut out = Vec::new();
+        let (_, non_tty) = install_at_with_prune(
+            Some(archive.clone()),
+            exocrate::Location::Custom(cache.clone()),
+            PruneMode::NonInteractive,
+            |_, _| panic!("non-TTY mode must never prompt"),
+            &mut out,
+        )
+        .expect("non-TTY setup");
+        assert_eq!(non_tty.found, vec![old_v1.clone()]);
+        assert!(non_tty.removed.is_empty());
+        assert!(old_v1.is_dir());
+        let note = String::from_utf8(out).unwrap();
+        assert!(note.contains("found 1 old cached Anneal toolchain"), "{note}");
+        assert!(note.contains("--clear-old"), "{note}");
+
+        // Interactive decline (`n` / empty) keeps the old dir without warnings.
+        let mut out = Vec::new();
+        let (_, declined) = install_at_with_prune(
+            Some(archive.clone()),
+            exocrate::Location::Custom(cache.clone()),
+            PruneMode::Interactive,
+            |seen_parent, seen_dirs| {
+                assert_eq!(seen_parent, parent);
+                assert_eq!(seen_dirs, std::slice::from_ref(&old_v1));
+                Ok(false)
+            },
+            &mut out,
+        )
+        .expect("interactive decline");
+        assert_eq!(declined.found, vec![old_v1.clone()]);
+        assert!(declined.removed.is_empty());
+        assert!(declined.warnings.is_empty());
+        assert!(old_v1.is_dir());
+        assert!(out.is_empty());
+
+        // Interactive prompt I/O failure warns cleanly and preserves `current`.
+        let mut out = Vec::new();
+        let (_, prompt_err) = install_at_with_prune(
+            Some(archive.clone()),
+            exocrate::Location::Custom(cache.clone()),
+            PruneMode::Interactive,
+            |_, _| Err(io::Error::new(io::ErrorKind::BrokenPipe, "stdin closed")),
+            &mut out,
+        )
+        .expect("prompt I/O failure must not fail setup");
+        assert!(prompt_err.removed.is_empty());
+        assert_eq!(prompt_err.warnings.len(), 1);
+        assert!(old_v1.is_dir());
+
+        // Interactive acceptance (`y`) deletes the old dir.
+        let mut out = Vec::new();
+        let (_, accepted) = install_at_with_prune(
+            Some(archive),
+            exocrate::Location::Custom(cache),
+            PruneMode::Interactive,
+            |_, _| Ok(true),
+            &mut out,
+        )
+        .expect("interactive accept");
+        assert_eq!(accepted.removed, vec![old_v1.clone()]);
+        assert!(!old_v1.exists());
+        assert!(unmanaged.is_dir());
+        assert!(String::from_utf8(out).unwrap().contains("Removed old Anneal toolchain at"));
+    }
+
+    #[test]
+    fn install_at_with_prune_holds_shared_lease_on_current_root_throughout_pruning() {
+        let temp = tempfile::tempdir().expect("create owned fixture");
+        let archive = temp.path().join("v1.tar.zst");
+        write_archive_with(&archive, b"current toolchain");
+
+        let cache = temp.path().join("cache");
+        let current = install_at(Some(archive.clone()), exocrate::Location::Custom(cache.clone()))
+            .expect("install current toolchain");
+        let parent = current.parent().expect("toolchain parent");
+        let old_v1 = parent.join("0.1.0-old");
+        fs::create_dir_all(&old_v1).unwrap();
+        fs::write(old_v1.join("marker.txt"), b"old").unwrap();
+        fs::write(sibling_lock_path(&old_v1, ".lock").unwrap(), b"").unwrap();
+
+        // Local-archive install path: while pruning is in progress, a
+        // concurrent pruner must see `current` as busy, while a concurrent
+        // `verify` reader can still acquire a shared lease without blocking.
+        let mut out = Vec::new();
+        let (root_local, _) = install_at_with_prune(
+            Some(archive),
+            exocrate::Location::Custom(cache.clone()),
+            PruneMode::Interactive,
+            |_, _| {
+                assert!(matches!(
+                    try_remove_old_toolchain(&current).expect("probe current during local prune"),
+                    RemoveOldOutcome::Busy
+                ));
+                assert!(current.is_dir());
+                let reader = installed_bundle_at(exocrate::Location::Custom(cache.clone()))
+                    .expect("shared reader must not fail during prune")
+                    .expect("current bundle present during prune");
+                assert_eq!(reader.root, current);
+                drop(reader);
+                assert!(matches!(
+                    open_try_exclusive_lock(
+                        &sibling_lock_path(&current, ".reinstall.lock").unwrap(),
+                        false,
+                    )
+                    .expect("probe reinstall lock"),
+                    Some(TryLockOutcome::Acquired(_))
+                ));
+                Ok(false)
+            },
+            &mut out,
+        )
+        .expect("local install with prune");
+        assert_eq!(root_local, current);
+        assert!(matches!(
+            open_try_exclusive_lock(&sibling_lock_path(&current, ".lock").unwrap(), false)
+                .expect("lease released after local prune"),
+            Some(TryLockOutcome::Acquired(_))
+        ));
+
+        // Cached reuse (`None`) path: also holds the shared lease throughout
+        // pruning and releases it cleanly upon return.
+        let mut out = Vec::new();
+        let (root_reuse, report_reuse) = install_at_with_prune(
+            None,
+            exocrate::Location::Custom(cache.clone()),
+            PruneMode::Interactive,
+            |_, _| {
+                assert!(matches!(
+                    try_remove_old_toolchain(&current).expect("probe current during reuse prune"),
+                    RemoveOldOutcome::Busy
+                ));
+                Ok(true)
+            },
+            &mut out,
+        )
+        .expect("reuse install with prune");
+        assert_eq!(root_reuse, current);
+        assert_eq!(report_reuse.removed, vec![old_v1.clone()]);
+        assert!(!old_v1.exists());
+        assert!(current.is_dir());
+        assert_eq!(fs::read(current.join("marker.txt")).unwrap(), b"current toolchain");
+        assert!(matches!(
+            open_try_exclusive_lock(&sibling_lock_path(&current, ".lock").unwrap(), false)
+                .expect("lease released after reuse prune"),
+            Some(TryLockOutcome::Acquired(_))
+        ));
+    }
+
+    #[test]
+    fn concurrent_different_version_prunes_protect_each_others_roots() {
+        use std::{sync::mpsc, thread, time::Duration};
+
+        let temp = tempfile::tempdir().expect("create owned fixture");
+        let archive = temp.path().join("v1.tar.zst");
+        write_archive_with(&archive, b"version a");
+
+        let cache = temp.path().join("cache");
+        let current_a =
+            install_at(Some(archive.clone()), exocrate::Location::Custom(cache.clone()))
+                .expect("install version a");
+        let parent = current_a.parent().expect("toolchain parent").to_path_buf();
+
+        // Populate a concurrent second version root (`current_b`) and an
+        // unlocked obsolete directory (`old_c`) in the shared cache parent.
+        let current_b = parent.join("0.2.0-concurrent-b");
+        let old_c = parent.join("0.0.1-obsolete");
+        fs::create_dir_all(&current_b).unwrap();
+        fs::write(current_b.join("marker.txt"), b"version b").unwrap();
+        fs::write(sibling_lock_path(&current_b, ".lock").unwrap(), b"").unwrap();
+        fs::create_dir_all(&old_c).unwrap();
+        fs::write(old_c.join("marker.txt"), b"obsolete").unwrap();
+        fs::write(sibling_lock_path(&old_c, ".lock").unwrap(), b"").unwrap();
+
+        let (a_in_prune_tx, a_in_prune_rx) = mpsc::channel();
+        let (b_pruned_tx, b_pruned_rx) = mpsc::channel();
+        let (a_done_tx, a_done_rx) = mpsc::channel();
+
+        let current_b_for_thread = current_b.clone();
+        let thread_b = thread::spawn(move || {
+            let bundle_b = acquire_bundle_lease(&current_b_for_thread)
+                .map_err(AcquireLeaseError::into_message)
+                .expect("acquire shared lease on version b");
+            a_in_prune_rx
+                .recv_timeout(Duration::from_secs(10))
+                .expect("version a entered pruning pass");
+            let mut out_b = Vec::new();
+            let report_b = prune_old_toolchains_with(
+                &bundle_b.root,
+                PruneMode::ClearOld,
+                |_, _| panic!("--clear-old must not prompt"),
+                &mut out_b,
+            );
+            b_pruned_tx.send(()).unwrap();
+            // Keep version b's lease alive until version a finishes pruning.
+            a_done_rx
+                .recv_timeout(Duration::from_secs(10))
+                .expect("version a finished pruning pass");
+            drop(bundle_b);
+            report_b
+        });
+
+        let mut out_a = Vec::new();
+        let (returned_a, report_a) = install_at_with_prune(
+            Some(archive),
+            exocrate::Location::Custom(cache.clone()),
+            PruneMode::Interactive,
+            |_, _| {
+                a_in_prune_tx.send(()).unwrap();
+                b_pruned_rx
+                    .recv_timeout(Duration::from_secs(10))
+                    .expect("version b completed pruning pass");
+                Ok(true)
+            },
+            &mut out_a,
+        )
+        .expect("version a setup with prune");
+        a_done_tx.send(()).unwrap();
+        let report_b = thread_b.join().unwrap();
+
+        assert_eq!(returned_a, current_a);
+        assert_eq!(report_b.skipped_busy, vec![current_a.clone()]);
+        assert_eq!(report_b.removed, vec![old_c.clone()]);
+        assert_eq!(report_a.skipped_busy, vec![current_b.clone()]);
+        assert!(report_a.removed.is_empty(), "{report_a:?}");
+
+        assert!(!old_c.exists());
+        assert_eq!(fs::read(current_a.join("marker.txt")).unwrap(), b"version a");
+        assert_eq!(fs::read(current_b.join("marker.txt")).unwrap(), b"version b");
+        assert!(acquire_bundle_lease(&current_a).is_ok());
+        assert!(acquire_bundle_lease(&current_b).is_ok());
+
+        // Verify `acquire_bundle_lease` classifies missing/incomplete dirs as
+        // recoverable and symlinked `.lock` files as fatal.
+        fs::remove_dir_all(&current_b).unwrap();
+        assert!(matches!(
+            acquire_bundle_lease(&current_b),
+            Err(AcquireLeaseError::MissingOrIncomplete(_))
+        ));
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::symlink;
+            let sym_lock_dir = parent.join("0.3.0-sym-lock");
+            fs::create_dir_all(&sym_lock_dir).unwrap();
+            let outside = temp.path().join("outside.lock");
+            fs::write(&outside, b"").unwrap();
+            symlink(&outside, sibling_lock_path(&sym_lock_dir, ".lock").unwrap()).unwrap();
+            assert!(matches!(
+                acquire_bundle_lease(&sym_lock_dir),
+                Err(AcquireLeaseError::Fatal(msg)) if msg.contains("symlink")
+            ));
+        }
+    }
+
+    #[test]
+    fn install_from_source_repairs_incomplete_dir_without_lock_and_fails_closed_otherwise() {
+        let temp = tempfile::tempdir().expect("create owned fixture");
+        let v1 = temp.path().join("v1.tar.zst");
+        let v2 = temp.path().join("v2.tar.zst");
+        write_archive_with(&v1, b"archive v1");
+        write_archive_with(&v2, b"archive v2");
+
+        // Cold install via `install_from_source` returns a leased `Bundle`.
+        let cache = temp.path().join("cache");
+        let cold_bundle = install_from_source(
+            || Ok(exocrate::Source::Local(v1.clone())),
+            exocrate::Location::Custom(cache.clone()),
+        )
+        .expect("cold install_from_source succeeds");
+        let root = cold_bundle.root.clone();
+        assert!(matches!(
+            try_remove_old_toolchain(&root).expect("probe leased cold bundle"),
+            RemoveOldOutcome::Busy
+        ));
+        drop(cold_bundle);
+        assert_eq!(fs::read(root.join("marker.txt")).unwrap(), b"archive v1");
+
+        let lock_path = sibling_lock_path(&root, ".lock").unwrap();
+        let inner_marker = root.join(".incomplete");
+        let sibling_marker = sibling_lock_path(&root, ".incomplete").unwrap();
+
+        // Incomplete directory (inner `.incomplete`) with missing `.lock` must
+        // repair cleanly, recreate `.lock`, clear `.incomplete`, and return a
+        // leased `Bundle`.
+        fs::write(&inner_marker, b"").expect("create inner incomplete marker");
+        fs::remove_file(&lock_path).expect("remove sibling .lock");
+        let repaired_inner = install_from_source(
+            || Ok(exocrate::Source::Local(v2.clone())),
+            exocrate::Location::Custom(cache.clone()),
+        )
+        .expect("incomplete dir without .lock must repair");
+        assert_eq!(repaired_inner.root, root);
+        assert!(matches!(
+            try_remove_old_toolchain(&root).expect("probe repaired inner bundle"),
+            RemoveOldOutcome::Busy
+        ));
+        drop(repaired_inner);
+        assert!(lock_path.is_file());
+        assert!(!inner_marker.exists());
+        assert_eq!(fs::read(root.join("marker.txt")).unwrap(), b"archive v2");
+
+        // Incomplete directory (sibling `.incomplete`) with missing `.lock`
+        // must also repair cleanly and recreate `.lock`.
+        fs::write(&sibling_marker, b"").expect("create sibling incomplete marker");
+        fs::remove_file(&lock_path).expect("remove sibling .lock");
+        let repaired_sibling = install_from_source(
+            || Ok(exocrate::Source::Local(v1.clone())),
+            exocrate::Location::Custom(cache.clone()),
+        )
+        .expect("sibling-incomplete dir without .lock must repair");
+        assert_eq!(repaired_sibling.root, root);
+        assert!(matches!(
+            try_remove_old_toolchain(&root).expect("probe repaired sibling bundle"),
+            RemoveOldOutcome::Busy
+        ));
+        drop(repaired_sibling);
+        assert!(lock_path.is_file());
+        assert!(!sibling_marker.exists());
+        assert_eq!(fs::read(root.join("marker.txt")).unwrap(), b"archive v1");
+
+        // Complete directory without `.lock` must fail closed without
+        // overwriting the existing installation.
+        fs::remove_file(&lock_path).expect("remove sibling .lock on complete dir");
+        let complete_err = install_from_source(
+            || Ok(exocrate::Source::Local(v2.clone())),
+            exocrate::Location::Custom(cache.clone()),
+        )
+        .expect_err("complete dir without .lock must fail closed");
+        assert!(complete_err.contains("cannot open toolchain lock"), "{complete_err}");
+        assert_eq!(fs::read(root.join("marker.txt")).unwrap(), b"archive v1");
+        assert!(!lock_path.exists());
+
+        // Incomplete directory with a symlinked `.lock` must still fail closed
+        // without following or overwriting the symlink target.
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::symlink;
+            fs::write(&inner_marker, b"").expect("create inner incomplete marker");
+            let outside_target = temp.path().join("outside-lock.txt");
+            fs::write(&outside_target, b"untouched").unwrap();
+            symlink(&outside_target, &lock_path).unwrap();
+            let sym_err = install_from_source(
+                || Ok(exocrate::Source::Local(v2.clone())),
+                exocrate::Location::Custom(cache),
+            )
+            .expect_err("symlinked .lock on incomplete dir must fail closed");
+            assert!(sym_err.contains("symlink"), "{sym_err}");
+            assert_eq!(fs::read(&outside_target).unwrap(), b"untouched");
+            assert_eq!(fs::read(root.join("marker.txt")).unwrap(), b"archive v1");
+        }
     }
 }

@@ -294,6 +294,7 @@ fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
         .output()
         .unwrap();
     assert_result(&help, 0, "replaces any existing cached installation", "");
+    assert_result(&help, 0, "--clear-old", "");
 
     let cache = tempfile::tempdir().expect("create cache");
     let archive = project.path().join("v1.tar.zst");
@@ -345,6 +346,99 @@ fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
         receipt["detail"].as_str().unwrap_or("").contains("symlink"),
         "{receipt}"
     );
+}
+
+#[cfg(all(target_os = "linux", feature = "setup"))]
+#[test]
+fn setup_clear_old_flag_and_non_tty_note() {
+    use std::{fs, os::unix::fs::symlink};
+
+    let project = tempfile::tempdir().expect("create fixture");
+    let archive = project.path().join("v1.tar.zst");
+    local_archive(&archive);
+
+    for route in [Route::Direct, Route::Cargo] {
+        let cache = tempfile::tempdir().expect("create cache");
+        let initial = command(route, project.path())
+            .env("XDG_CACHE_HOME", cache.path())
+            .args(["setup", "--local-archive"])
+            .arg(&archive)
+            .output()
+            .unwrap();
+        assert_result(&initial, 0, "Installed Anneal toolchain at ", "");
+        assert!(initial.stderr.is_empty(), "{initial:?}");
+        let stdout = String::from_utf8_lossy(&initial.stdout);
+        let installed = std::path::PathBuf::from(
+            stdout.trim_end().strip_prefix("Installed Anneal toolchain at ").unwrap(),
+        );
+        let parent = installed.parent().expect("toolchain parent");
+
+        let old_dir = parent.join("0.1.0-old-toolchain");
+        fs::create_dir_all(&old_dir).unwrap();
+        fs::write(old_dir.join("marker.txt"), b"old").unwrap();
+        for suffix in [".lock", ".reinstall.lock", ".incomplete"] {
+            fs::write(parent.join(format!("0.1.0-old-toolchain{suffix}")), b"").unwrap();
+        }
+        let staging_dir = parent.join(".staging-keep");
+        let backup_dir = parent.join(".backup-keep");
+        let exocrate_staging = parent.join("0.2.0-in-flight.staging");
+        let unmanaged_dir = parent.join("unmanaged-keep");
+        fs::create_dir_all(&staging_dir).unwrap();
+        fs::create_dir_all(&backup_dir).unwrap();
+        fs::create_dir_all(&exocrate_staging).unwrap();
+        fs::create_dir_all(&unmanaged_dir).unwrap();
+
+        let outside = project.path().join(format!("outside-{route:?}"));
+        fs::create_dir_all(&outside).unwrap();
+        fs::write(outside.join("keep.txt"), b"survive").unwrap();
+        let sym = parent.join("0.1.0-sym");
+        symlink(&outside, &sym).unwrap();
+
+        // Without `--clear-old` on non-TTY: keep old dir and note on stderr.
+        let non_tty = command(route, project.path())
+            .env("XDG_CACHE_HOME", cache.path())
+            .args(["setup", "--local-archive"])
+            .arg(&archive)
+            .output()
+            .unwrap();
+        assert_result(&non_tty, 0, "Installed Anneal toolchain at ", "--clear-old");
+        assert_eq!(
+            String::from_utf8_lossy(&non_tty.stdout),
+            format!("Installed Anneal toolchain at {}\n", installed.display())
+        );
+        assert!(old_dir.is_dir());
+
+        // With `--clear-old`: remove old dir and `.incomplete`, keeping lock
+        // files, current, staging/backup dirs, unmanaged dirs, and symlinks.
+        let cleared = command(route, project.path())
+            .env("XDG_CACHE_HOME", cache.path())
+            .args(["setup", "--local-archive"])
+            .arg(&archive)
+            .arg("--clear-old")
+            .output()
+            .unwrap();
+        assert_result(
+            &cleared,
+            0,
+            "Installed Anneal toolchain at ",
+            "Removed old Anneal toolchain at ",
+        );
+        assert_eq!(
+            String::from_utf8_lossy(&cleared.stdout),
+            format!("Installed Anneal toolchain at {}\n", installed.display())
+        );
+        assert!(!old_dir.exists());
+        assert!(!parent.join("0.1.0-old-toolchain.incomplete").exists());
+        assert!(parent.join("0.1.0-old-toolchain.lock").is_file());
+        assert!(parent.join("0.1.0-old-toolchain.reinstall.lock").is_file());
+        assert!(installed.is_dir());
+        assert!(staging_dir.is_dir());
+        assert!(backup_dir.is_dir());
+        assert!(exocrate_staging.is_dir());
+        assert!(unmanaged_dir.is_dir());
+        assert!(fs::symlink_metadata(&sym).unwrap().file_type().is_symlink());
+        assert_eq!(fs::read(outside.join("keep.txt")).unwrap(), b"survive");
+    }
 }
 
 #[cfg(unix)]
