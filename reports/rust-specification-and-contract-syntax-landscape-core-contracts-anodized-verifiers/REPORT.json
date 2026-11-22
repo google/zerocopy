@@ -1,0 +1,125 @@
+{
+  "topics": [
+    "aeneas",
+    "anneal",
+    "charon",
+    "pl/contracts",
+    "rust",
+    "rust/unsafe",
+    "rustc/contracts",
+    "tooling/specifications",
+    "verification/rust"
+  ],
+  "subjects": [
+    {
+      "name": "Anodized specification framework",
+      "identity": {
+        "repository": "anodized-rs/anodized",
+        "revision": "8fb862e952ab893643095a3365734af20b48e3bb",
+        "version": "0.8.0"
+      }
+    },
+    {
+      "name": "verify-rust-std standard library verification fork",
+      "identity": {
+        "repository": "model-checking/verify-rust-std",
+        "revision": "1feeadd937956b8067ec2fb147ef55469361dab4"
+      }
+    },
+    {
+      "name": "Rust compiler and core library (core::contracts and pattern_types)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ce66487ebbd7541212d22d01c39a808057d69f1f"
+      }
+    },
+    {
+      "name": "contracts Design-by-Contract crate",
+      "identity": {
+        "repository": "x52dev/contracts",
+        "revision": "3d8bea443a5bd804e27fc1d78294cc18cbb1b1b4",
+        "version": "0.6.11"
+      }
+    },
+    {
+      "name": "Verus Rust verifier",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "1ce6a59bd72713cf486a7660097fe5ac57519617"
+      }
+    },
+    {
+      "name": "Creusot Rust verifier",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+      }
+    },
+    {
+      "name": "Kani Rust verifier",
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "87c87010eda7797d7fa14033ca68bcbe17184a63"
+      }
+    },
+    {
+      "name": "Flux refinement type checker for Rust",
+      "identity": {
+        "repository": "flux-rs/flux",
+        "revision": "828d6086c94a1171fce81fab449ace2abc9e1540"
+      }
+    },
+    {
+      "name": "Prusti static verifier for Rust",
+      "identity": {
+        "repository": "prusti/prusti",
+        "revision": "d1196b5dd0c5874969d1913b33a48022f4236913"
+      }
+    },
+    {
+      "name": "hax Rust verification frontend and hax-lib",
+      "identity": {
+        "repository": "pereq-dev/hax",
+        "revision": "0d2f66ed697c46d7c0f5038150b7c9679e4d954b",
+        "version": "0.5.0"
+      }
+    },
+    {
+      "name": "Aeneas Rust-to-Lean verification toolchain",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+      }
+    },
+    {
+      "name": "Gillian-Rust separation-logic verifier",
+      "identity": {
+        "repository": "GillianPlatform/gillian-rust",
+        "revision": "83d739e83034d71162fb66b569041cf301123df7"
+      }
+    },
+    {
+      "name": "google/zerocopy (Anneal v2 documentation)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "a007a51af473e5901915b003083e61c7c89c7bd1"
+      }
+    },
+    {
+      "name": "google/zerocopy (Anneal v1 historical syntax tag)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "a3ad195abf85896be6f07f11acb486ceb7d61900",
+        "tag": "anneal-v0.1.0-alpha.23"
+      }
+    },
+    {
+      "name": "joshlf/anneal repository",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
