@@ -78758,6 +78758,55 @@
         "compilers/symbol-retention"
       ]
     },
+    "repkgs-relocatable-nix-and-nix-windows-validationos-evaluation": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "repkgs-org/repkgs",
+            "revision": "2f4a87bbbd450d3ad24cf99949bae021a3167788"
+          },
+          "name": "repkgs experimental Nix package set"
+        },
+        {
+          "identity": {
+            "repository": "Mic92/nix-1",
+            "revision": "e6c24e710343d0485995d1a67c6f4971d698bbca"
+          },
+          "name": "Mic92/nix-1 repkgs fork"
+        },
+        {
+          "identity": {
+            "repository": "nix-windows/nix-windows-demo",
+            "revision": "0f117ea0e3c2d463851d849a3ac7907554623d6e"
+          },
+          "name": "nix-windows ValidationOS demo"
+        },
+        {
+          "identity": {
+            "branch": "windows-demo-1",
+            "repository": "nix-windows/nix",
+            "revision": "d13b627ee439c0f5f1f90b5973d2bd0e5d680a44"
+          },
+          "name": "nix-windows cross-compiled Nix branch"
+        },
+        {
+          "identity": {
+            "path": "anneal/flake.nix",
+            "repository": "google/zerocopy",
+            "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0"
+          },
+          "name": "Anneal hermetic toolchain flake in google/zerocopy"
+        }
+      ],
+      "topics": [
+        "build/nix",
+        "build/hermeticity",
+        "exocrate/packaging",
+        "isa/elf-relocations",
+        "tooling/ci"
+      ]
+    },
     "repr-c-layout-algebra-dst-tails-and-enum-tags": {
       "observed_at": "2026-11-20",
       "subjects": [
