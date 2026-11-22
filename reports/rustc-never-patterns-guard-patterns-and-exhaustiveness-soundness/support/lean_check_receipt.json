@@ -1,0 +1,51 @@
+{
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "file": "support/NeverPatternsGuardPatternsAndExhaustivenessSoundness.lean",
+  "sha256": "efabb0ba0568dfd7ecc8052e616265012218c7fc349f28a68d9b6a64c554297b",
+  "line_count": 2570,
+  "flags": [
+    "-M2048",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "wall_clock_sec": 11.9247,
+  "max_rss_kib": 700392,
+  "source_banned_token_counts": {
+    "sorry": 0,
+    "omega": 0,
+    "bv_decide": 0,
+    "native_decide": 0,
+    "Classical.choice": 0,
+    "partial_def": 0,
+    "unsafe_def": 0,
+    "deriving": 0,
+    "user_axiom": 0,
+    "user_opaque": 0,
+    "_unsafe_rec": 0
+  },
+  "kernel_environment_stats": {
+    "namespace_constants": 914,
+    "theorem_constants": 309,
+    "def_constants": 475,
+    "is_unsafe": 0,
+    "is_partial": 0,
+    "unsafe_rec_helpers": 0,
+    "user_axioms": 0
+  },
+  "theorem_axiom_footprints": [
+    "'NeverPatternsSoundness.exhaustiveMatrix_every_valid_value_matched_or_never_read' depends on axioms: [propext, Quot.sound]",
+    "'NeverPatternsSoundness.guardPattern_must_stay_opaque_for_exhaustiveness' depends on axioms: [propext]",
+    "'NeverPatternsSoundness.threeWay_null_raw_never_split' depends on axioms: [propext]",
+    "'NeverPatternsSoundness.postfixMatch_temp_drop_order_eq_prefix' does not depend on any axioms",
+    "'NeverPatternsSoundness.anneal_never_param_vacuity_requires_static_admission' does not depend on any axioms",
+    "'NeverPatternsSoundness.ce1_guard_pattern_treated_as_exhaustive_causes_missing_arm' depends on axioms: [propext]",
+    "'NeverPatternsSoundness.ce2_uninhabited_behind_raw_ptr_without_read_unsound_unreachable' depends on axioms: [propext]",
+    "'NeverPatternsSoundness.ce3_wildcard_star_null_never_succeeds_while_empty_match_faults' depends on axioms: [propext]",
+    "'NeverPatternsSoundness.ce4_never_pattern_on_inhabited_variant_rejected' depends on axioms: [propext]",
+    "'NeverPatternsSoundness.ce5_private_uninhabited_field_hidden_outside_module' depends on axioms: [propext]",
+    "'NeverPatternsSoundness.ce6_foreign_non_exhaustive_empty_enum_blocks_empty_match' depends on axioms: [propext]"
+  ],
+  "forbidden_axioms_present": false,
+  "all_checks_passed": true
+}

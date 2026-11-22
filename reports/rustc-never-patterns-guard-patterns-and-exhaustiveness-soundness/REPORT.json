@@ -1,0 +1,63 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc 1.98.0-nightly: compiler source audited, and the rustc and Miri binaries executed live by the probe",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "rustc 1.102.0-nightly: compiler source audited after never_type stabilization, and toolchain of the cross-checked execution receipt",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly"
+      }
+    },
+    {
+      "name": "rust-lang/rust HEAD: upstream compiler source cross-checked across rustc_pattern_analysis, rustc_mir_build, rustc_mir_transform, and rustc_const_eval",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "01afe534803b93889b85f6028117251cfbd431da"
+      }
+    },
+    {
+      "name": "Rust Reference: never type, behavior considered undefined, match expressions, patterns, and destructors",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Anneal Trusted.MirAst, Trusted.MirSemantics, and TrustedBoundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain used to kernel-check and environment-audit the mechanization",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

@@ -1,0 +1,249 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "cases": {
+    "np_01_never_pattern_in_result_ok_and_err_never": {
+      "rc": 0,
+      "error_codes": [],
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/np_01.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+      "run_rc": 0,
+      "run_stdout": "UNWRAP=42",
+      "run_stderr": ""
+    },
+    "np_01b_by_value_omit_err_min_exhaustive": {
+      "rc": 0,
+      "error_codes": [],
+      "stderr": "",
+      "run_rc": 0,
+      "run_stdout": "MIN_EXHAUSTIVE=42",
+      "run_stderr": ""
+    },
+    "np_02_never_pattern_behind_shared_ref_requires_deref_read": {
+      "rc": 0,
+      "error_codes": [],
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/np_02.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted",
+      "mir": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nfn ref_to_err_never(_1: &Result<u32, !>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: &u32;\n    scope 1 {\n        debug v => _3;\n    }\n\n    bb0: {\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        _3 = &(((*_1) as Ok).0: u32);\n        _0 = copy (*_3);\n        return;\n    }\n}",
+      "has_place_mention": false,
+      "has_fake_read": false,
+      "has_unreachable": true,
+      "mir_built_after": {
+        "np_02.ref_to_err_never.built.after.mir": "// MIR for `ref_to_err_never` after built\n\nfn ref_to_err_never(_1: &Result<u32, !>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: &u32;\n    let mut _4: !;\n    let mut _5: ();\n    scope 1 {\n        debug v => _3;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb2, 1: bb4, otherwise: bb1];\n    }\n\n    bb1: {\n        FakeRead(ForMatchedPlace(None), _1);\n        unreachable;\n    }\n\n    bb2: {\n        falseEdge -> [real: bb8, imaginary: bb4];\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4: {\n        FakeRead(ForMatchedPlace(None), (((*_1) as Err).0: !));\n        unreachable;\n    }\n\n    bb5: {\n        goto -> bb1;\n    }\n\n    bb6: {\n        unreachable;\n    }\n\n    bb7: {\n        goto -> bb5;\n    }\n\n    bb8: {\n        StorageLive(_3);\n        _3 = &(((*_1) as Ok).0: u32);\n        _0 = copy (*_3);\n        StorageDead(_3);\n        goto -> bb14;\n    }\n\n    bb9: {\n        StorageLive(_4);\n        goto -> bb10;\n    }\n\n    bb10: {\n        falseUnwind -> [real: bb11, unwind: bb15];\n    }\n\n    bb11: {\n        _5 = const ();\n        goto -> bb10;\n    }\n\n    bb12: {\n        unreachable;\n    }\n\n    bb13: {\n        StorageDead(_4);\n        goto -> bb14;\n    }\n\n    bb14: {\n        return;\n    }\n\n    bb15 (cleanup): {\n        resume;\n    }\n}"
+      },
+      "mir_cleanup_post_borrowck_after": {
+        "np_02.ref_to_err_never.CleanupPostBorrowck.after.mir": "// MIR for `ref_to_err_never` after CleanupPostBorrowck\n\nfn ref_to_err_never(_1: &Result<u32, !>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: &u32;\n    let mut _4: !;\n    let mut _5: ();\n    scope 1 {\n        debug v => _3;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb2, 1: bb3, otherwise: bb1];\n    }\n\n    bb1: {\n        nop;\n        unreachable;\n    }\n\n    bb2: {\n        goto -> bb4;\n    }\n\n    bb3: {\n        nop;\n        unreachable;\n    }\n\n    bb4: {\n        StorageLive(_3);\n        _3 = &(((*_1) as Ok).0: u32);\n        _0 = copy (*_3);\n        StorageDead(_3);\n        return;\n    }\n}"
+      },
+      "mir_remove_place_mention_after": {
+        "np_02.ref_to_err_never.RemovePlaceMention.after.mir": "// MIR for `ref_to_err_never` after RemovePlaceMention\n\nfn ref_to_err_never(_1: &Result<u32, !>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: &u32;\n    let mut _4: !;\n    let mut _5: ();\n    scope 1 {\n        debug v => _3;\n    }\n\n    bb0: {\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb2, 1: bb1, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        StorageLive(_3);\n        _3 = &(((*_1) as Ok).0: u32);\n        _0 = copy (*_3);\n        StorageDead(_3);\n        return;\n    }\n}"
+      },
+      "mir_preserve_ub_opt0": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nfn ref_to_err_never(_1: &Result<u32, !>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: &u32;\n    let mut _4: !;\n    let mut _5: ();\n    scope 1 {\n        debug v => _3;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb2, 1: bb1, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        StorageLive(_3);\n        _3 = &(((*_1) as Ok).0: u32);\n        _0 = copy (*_3);\n        StorageDead(_3);\n        return;\n    }\n}",
+      "preserve_ub_opt0_has_place_mention": true,
+      "mir_preserve_ub_opt1": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nfn ref_to_err_never(_1: &Result<u32, !>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: &u32;\n    scope 1 {\n        debug v => _3;\n    }\n\n    bb0: {\n        PlaceMention(_1);\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        _3 = &(((*_1) as Ok).0: u32);\n        _0 = copy (*_3);\n        return;\n    }\n}",
+      "preserve_ub_opt1_has_place_mention": true
+    },
+    "np_02b_ref_result_omit_err_rejected": {
+      "rc": 1,
+      "error_codes": [
+        "E0004"
+      ],
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/np_02b.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0004]: non-exhaustive patterns: `&Err(!)` not covered\n   --> <tmp>/np_02b.rs:4:11\n    |\n  4 |     match r {\n    |           ^ pattern `&Err(!)` not covered\n    |\nnote: `Result<u32, !>` defined here\n   --> <home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:557:1\n    |\n557 | pub enum Result<T, E> {\n    | ^^^^^^^^^^^^^^^^^^^^^\n...\n566 |     Err(#[stable(feature = \"rust1\", since = \"1.0.0\")] E),\n    |     --- not covered\n    = note: the matched value is of type `&Result<u32, !>`\n    = note: `!` is uninhabited but is not being matched by value, so a wildcard `_` is required\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown\n    |\n  5 ~         Ok(v) => *v,\n  6 ~         &Err(!),\n    |\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0004`."
+    },
+    "np_02c_ref_result_omit_err_exhaustive_patterns": {
+      "rc": 0,
+      "error_codes": [],
+      "stderr": "",
+      "mir": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nfn ref_omit_err_exh(_1: &Result<u32, !>) -> u32 {\n    debug r => _1;\n    let mut _0: u32;\n    let mut _2: isize;\n    let _3: &u32;\n    scope 1 {\n        debug v => _3;\n    }\n\n    bb0: {\n        _2 = discriminant((*_1));\n        switchInt(move _2) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        _3 = &(((*_1) as Ok).0: u32);\n        _0 = copy (*_3);\n        return;\n    }\n}",
+      "has_place_mention": false,
+      "has_fake_read": false,
+      "has_unreachable": true
+    },
+    "np_03_never_pattern_on_inhabited_type_rejected": {
+      "rc": 1,
+      "error_codes": [],
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/np_03.rs:1:12\n  |\n1 | #![feature(never_patterns)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: mismatched types\n --> <tmp>/np_03.rs:5:14\n  |\n5 |         Some(!),\n  |              ^ a never pattern must be used on an uninhabited type\n  |\n  = note: the matched value is of type `u32`\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "np_04_never_pattern_with_arm_body_rejected": {
+      "rc": 1,
+      "error_codes": [],
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/np_04.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: a never pattern is always unreachable\n --> <tmp>/np_04.rs:6:19\n  |\n6 |         Err(!) => 0,\n  |                   ^\n  |                   |\n  |                   this will never be executed\n  |                   help: remove this expression\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "np_04b_never_pattern_with_guard_rejected": {
+      "rc": 1,
+      "error_codes": [],
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/np_04b.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: a guard on a never pattern will never be run\n --> <tmp>/np_04b.rs:6:19\n  |\n6 |         Err(!) if true,\n  |                   ^^^^ help: remove this guard\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "np_05_raw_ptr_empty_match_vs_never_pattern_deref": {
+      "rc": 0,
+      "error_codes": [],
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/np_05.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: unreachable arm\n --> <tmp>/np_05.rs:8:25\n  |\n8 |     unsafe { match *p { ! } }\n  |                    --   ^ unreachable arm\n  |                    |\n  |                    any code following this expression is unreachable\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted",
+      "mir": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nfn empty_match_raw_never(_1: *const !) -> () {\n    debug p => _1;\n    let mut _0: ();\n\n    bb0: {\n        unreachable;\n    }\n}\n\nfn explicit_never_pat_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: !;\n    let mut _3: ();\n\n    bb0: {\n        unreachable;\n    }\n}\n\nfn wildcard_match_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n\n    bb0: {\n        _0 = const 99_u32;\n        return;\n    }\n}",
+      "has_place_mention": false,
+      "has_fake_read": false,
+      "has_unreachable": true,
+      "mir_built_after": {
+        "np_05.empty_match_raw_never.built.after.mir": "// MIR for `empty_match_raw_never` after built\n\nfn empty_match_raw_never(_1: *const !) -> () {\n    debug p => _1;\n    let mut _0: ();\n    let mut _2: !;\n\n    bb0: {\n        StorageLive(_2);\n        PlaceMention((*_1));\n        FakeRead(ForMatchedPlace(None), (*_1));\n        unreachable;\n    }\n\n    bb1: {\n        unreachable;\n    }\n\n    bb2: {\n        StorageDead(_2);\n        return;\n    }\n}",
+        "np_05.explicit_never_pat_raw_never.built.after.mir": "// MIR for `explicit_never_pat_raw_never` after built\n\nfn explicit_never_pat_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: !;\n    let mut _3: ();\n\n    bb0: {\n        PlaceMention((*_1));\n        FakeRead(ForMatchedPlace(None), (*_1));\n        unreachable;\n    }\n\n    bb1: {\n        FakeRead(ForMatchedPlace(None), (*_1));\n        unreachable;\n    }\n\n    bb2: {\n        unreachable;\n    }\n\n    bb3: {\n        goto -> bb1;\n    }\n\n    bb4: {\n        StorageLive(_2);\n        goto -> bb5;\n    }\n\n    bb5: {\n        falseUnwind -> [real: bb6, unwind: bb10];\n    }\n\n    bb6: {\n        _3 = const ();\n        goto -> bb5;\n    }\n\n    bb7: {\n        unreachable;\n    }\n\n    bb8: {\n        StorageDead(_2);\n        goto -> bb9;\n    }\n\n    bb9: {\n        return;\n    }\n\n    bb10 (cleanup): {\n        resume;\n    }\n}",
+        "np_05.wildcard_match_raw_never.built.after.mir": "// MIR for `wildcard_match_raw_never` after built\n\nfn wildcard_match_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n\n    bb0: {\n        PlaceMention((*_1));\n        _0 = const 99_u32;\n        goto -> bb2;\n    }\n\n    bb1: {\n        FakeRead(ForMatchedPlace(None), (*_1));\n        unreachable;\n    }\n\n    bb2: {\n        return;\n    }\n}"
+      },
+      "mir_cleanup_post_borrowck_after": {
+        "np_05.empty_match_raw_never.CleanupPostBorrowck.after.mir": "// MIR for `empty_match_raw_never` after CleanupPostBorrowck\n\nfn empty_match_raw_never(_1: *const !) -> () {\n    debug p => _1;\n    let mut _0: ();\n    let mut _2: !;\n\n    bb0: {\n        StorageLive(_2);\n        PlaceMention((*_1));\n        nop;\n        unreachable;\n    }\n}",
+        "np_05.explicit_never_pat_raw_never.CleanupPostBorrowck.after.mir": "// MIR for `explicit_never_pat_raw_never` after CleanupPostBorrowck\n\nfn explicit_never_pat_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: !;\n    let mut _3: ();\n\n    bb0: {\n        PlaceMention((*_1));\n        nop;\n        unreachable;\n    }\n}",
+        "np_05.wildcard_match_raw_never.CleanupPostBorrowck.after.mir": "// MIR for `wildcard_match_raw_never` after CleanupPostBorrowck\n\nfn wildcard_match_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n\n    bb0: {\n        PlaceMention((*_1));\n        _0 = const 99_u32;\n        return;\n    }\n}"
+      },
+      "mir_remove_place_mention_after": {
+        "np_05.empty_match_raw_never.RemovePlaceMention.after.mir": "// MIR for `empty_match_raw_never` after RemovePlaceMention\n\nfn empty_match_raw_never(_1: *const !) -> () {\n    debug p => _1;\n    let mut _0: ();\n    let mut _2: !;\n\n    bb0: {\n        StorageLive(_2);\n        unreachable;\n    }\n}",
+        "np_05.explicit_never_pat_raw_never.RemovePlaceMention.after.mir": "// MIR for `explicit_never_pat_raw_never` after RemovePlaceMention\n\nfn explicit_never_pat_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: !;\n    let mut _3: ();\n\n    bb0: {\n        unreachable;\n    }\n}",
+        "np_05.wildcard_match_raw_never.RemovePlaceMention.after.mir": "// MIR for `wildcard_match_raw_never` after RemovePlaceMention\n\nfn wildcard_match_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n\n    bb0: {\n        _0 = const 99_u32;\n        return;\n    }\n}"
+      },
+      "mir_preserve_ub_opt0": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nfn empty_match_raw_never(_1: *const !) -> () {\n    debug p => _1;\n    let mut _0: ();\n    let mut _2: !;\n\n    bb0: {\n        StorageLive(_2);\n        PlaceMention((*_1));\n        unreachable;\n    }\n}\n\nfn explicit_never_pat_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: !;\n    let mut _3: ();\n\n    bb0: {\n        PlaceMention((*_1));\n        unreachable;\n    }\n}\n\nfn wildcard_match_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n\n    bb0: {\n        PlaceMention((*_1));\n        _0 = const 99_u32;\n        return;\n    }\n}",
+      "preserve_ub_opt0_has_place_mention": true,
+      "mir_preserve_ub_opt1": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nfn empty_match_raw_never(_1: *const !) -> () {\n    debug p => _1;\n    let mut _0: ();\n\n    bb0: {\n        unreachable;\n    }\n}\n\nfn explicit_never_pat_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n\n    bb0: {\n        unreachable;\n    }\n}\n\nfn wildcard_match_raw_never(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n\n    bb0: {\n        _0 = const 99_u32;\n        return;\n    }\n}",
+      "preserve_ub_opt1_has_place_mention": false
+    },
+    "np_05b_hasnever_raw_ptr_empty_match_rejected": {
+      "rc": 1,
+      "error_codes": [
+        "E0004"
+      ],
+      "stderr": "error[E0004]: non-exhaustive patterns: type `HasNever` is non-empty\n --> <tmp>/np_05b.rs:6:20\n  |\n6 |     unsafe { match *p {} }\n  |                    ^^\n  |\nnote: `HasNever` defined here\n --> <tmp>/np_05b.rs:3:12\n  |\n3 | pub struct HasNever(pub u32, pub !);\n  |            ^^^^^^^^\n  = note: the matched value is of type `HasNever`\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern as shown\n  |\n6 ~     unsafe { match *p {\n7 +         _ => todo!(),\n8 ~     } }\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+    },
+    "np_06_postfix_match_chaining_and_temp_drop_order": {
+      "rc": 0,
+      "error_codes": [],
+      "stderr": "",
+      "run_rc": 0,
+      "run_stdout": "RES=15 LOG=[\"make\", \"arm_body\", \"drop_inner\", \"after_match\"]",
+      "run_stderr": ""
+    },
+    "np_06b_postfix_match_edition_2021": {
+      "rc": 0,
+      "error_codes": [],
+      "stderr": "",
+      "run_rc": 0,
+      "run_stdout": "RES=15 LOG=[\"make\", \"arm_body\", \"drop_inner\", \"after_match\"]",
+      "run_stderr": ""
+    },
+    "np_06c_prefix_match_edition_2024_comparison": {
+      "rc": 0,
+      "error_codes": [],
+      "stderr": "",
+      "run_rc": 0,
+      "run_stdout": "RES=15 LOG=[\"make\", \"arm_body\", \"drop_inner\", \"after_match\"]",
+      "run_stderr": ""
+    },
+    "np_07a_arm_guard_opaque_to_exhaustiveness": {
+      "rc": 1,
+      "error_codes": [
+        "E0004"
+      ],
+      "stderr": "error[E0004]: non-exhaustive patterns: `Some(_)` not covered\n   --> <tmp>/np_07a.rs:2:11\n    |\n  2 |     match x {\n    |           ^ pattern `Some(_)` not covered\n    |\nnote: `Option<i32>` defined here\n   --> <home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/option.rs:597:1\n    |\n597 | pub enum Option<T> {\n    | ^^^^^^^^^^^^^^^^^^\n...\n605 |     Some(#[stable(feature = \"rust1\", since = \"1.0.0\")] T),\n    |     ---- not covered\n    = note: the matched value is of type `Option<i32>`\n    = note: match arms with guards don't count towards exhaustivity\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown\n    |\n  4 ~         None => 0,\n  5 ~         Some(_) => todo!(),\n    |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+    },
+    "np_07b_guard_patterns_live_defect_and_int_ranges": {
+      "rc": 0,
+      "error_codes": [],
+      "stderr": "warning: the feature `guard_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/np_07b.rs:1:12\n  |\n1 | #![feature(guard_patterns)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #129967 <https://github.com/rust-lang/rust/issues/129967> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: unreachable pattern\n --> <tmp>/np_07b.rs:6:9\n  |\n5 |         Some(n if n > 0) => \"pos\",\n  |         ---------------- matches all the relevant values\n6 |         Some(_) => \"nonpos\",\n  |         ^^^^^^^ no value can reach this\n  |\n  = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted",
+      "run_rc": 0,
+      "run_stdout": "GUARD_POS=pos GUARD_NEG=pos GUARD_NONE=none RANGE_0=hit RANGE_255=hit",
+      "run_stderr": ""
+    },
+    "np_07c_guard_patterns_omits_e0004_and_drops_binding": {
+      "rc": 1,
+      "error_codes": [
+        "E0381"
+      ],
+      "stderr": "warning: the feature `guard_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/np_07c.rs:1:12\n  |\n1 | #![feature(guard_patterns)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #129967 <https://github.com/rust-lang/rust/issues/129967> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0381]: used binding `n` isn't initialized\n --> <tmp>/np_07c.rs:5:29\n  |\n5 |         Some(n if n > 0) => n,\n  |              -              ^ `n` used here but it isn't initialized\n  |              |\n  |              binding declared here but left uninitialized\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0381`."
+    },
+    "np_07d_private_uninhabited_field_inside_vs_outside": {
+      "rc": 1,
+      "error_codes": [
+        "E0004"
+      ],
+      "stderr": "error[E0004]: non-exhaustive patterns: `Err(_)` not covered\n   --> <tmp>/np_07d_outside.rs:16:11\n    |\n 16 |     match r {\n    |           ^ pattern `Err(_)` not covered\n    |\nnote: `Result<u8, PrivEmpty>` defined here\n   --> <home>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library/core/src/result.rs:557:1\n    |\n557 | pub enum Result<T, E> {\n    | ^^^^^^^^^^^^^^^^^^^^^\n...\n566 |     Err(#[stable(feature = \"rust1\", since = \"1.0.0\")] E),\n    |     --- not covered\n    = note: the matched value is of type `Result<u8, PrivEmpty>`\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern or an explicit pattern as shown\n    |\n 17 ~         Ok(v) => v,\n 18 ~         Err(_) => todo!(),\n    |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+    },
+    "np_07f_never_pattern_uninit_and_union_read": {
+      "rc": 1,
+      "error_codes": [
+        "E0133",
+        "E0381"
+      ],
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/np_07f.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: unreachable arm\n  --> <tmp>/np_07f.rs:10:15\n   |\n10 |     match x { ! }\n   |           -   ^ unreachable arm\n   |           |\n   |           any code following this expression is unreachable\n   |\n   = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable pattern\n  --> <tmp>/np_07f.rs:10:15\n   |\n10 |     match x { ! }\n   |               ^\n   |               |\n   |               matches no values because `!` is uninhabited\n   |               help: remove the match arm\n   |\n   = note: to learn more about uninhabited types, see https://doc.rust-lang.org/nomicon/exotic-sizes.html#empty-types\n   = note: `#[warn(unreachable_patterns)]` (part of `#[warn(unused)]`) on by default\n\nerror[E0381]: used binding `x` isn't initialized\n  --> <tmp>/np_07f.rs:10:15\n   |\n 9 |     let x: !;\n   |         - binding declared here but left uninitialized\n10 |     match x { ! }\n   |               ^ `x` used here but it isn't initialized\n\nerror[E0133]: access to union field is unsafe and requires unsafe block\n  --> <tmp>/np_07f.rs:14:16\n   |\n14 |     let U { a: ! } = u;\n   |                ^ access to union field\n   |\n   = note: the field may not be properly initialized: using uninitialized data will cause undefined behavior\n\nerror: aborting due to 2 previous errors; 3 warnings emitted\n\nSome errors have detailed explanations: E0133, E0381.\nFor more information about an error, try `rustc --explain E0133`."
+    }
+  },
+  "cross_crate_cases": {
+    "foreign_non_exhaustive_empty_enum": {
+      "dep_rc": 0,
+      "dep_stderr": "",
+      "client_rc": 1,
+      "client_error_codes": [
+        "E0004"
+      ],
+      "client_stderr": "error[E0004]: non-exhaustive patterns: type `ForeignEmpty` is non-empty\n --> <tmp>/client.rs:4:11\n  |\n4 |     match x {}\n  |           ^\n  |\nnote: `ForeignEmpty` defined here\n --> <tmp>/dep.rs:2:1\n  |\n2 | pub enum ForeignEmpty {}\n  | ^^^^^^^^^^^^^^^^^^^^^\n  = note: the matched value is of type `ForeignEmpty`, which is marked as non-exhaustive\nhelp: ensure that all possible cases are being handled by adding a match arm with a wildcard pattern as shown\n  |\n4 ~     match x {\n5 +         _ => todo!(),\n6 ~     }\n  |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0004`."
+    }
+  },
+  "miri_comparison": {
+    "wildcard_match_star_null": {
+      "rc": 0,
+      "stdout": "WILDCARD_NULL_OK=99",
+      "stderr": ""
+    },
+    "empty_match_star_null": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "error: Undefined Behavior: entering unreachable code\n --> <tmp>/main.rs:4:20\n  |\n4 |     unsafe { match *p {} }\n  |                    ^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+    },
+    "explicit_bang_match_star_null": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/main.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: unreachable arm\n --> <tmp>/main.rs:4:39\n  |\n4 |     let _x: u32 = unsafe { match *p { ! } };\n  |                                  --   ^ unreachable arm\n  |                                  |\n  |                                  any code following this expression is unreachable\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: entering unreachable code\n --> <tmp>/main.rs:4:39\n  |\n4 |     let _x: u32 = unsafe { match *p { ! } };\n  |                                       ^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 2 warnings emitted"
+    },
+    "rogue_tagged_raw_ptr_err_wildcard": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "warning: variants `Ok` and `Err` are never constructed\n --> <tmp>/main.rs:4:5\n  |\n3 | enum Tagged {\n  |      ------ variants in this enum\n4 |     Ok(u32) = 0,\n  |     ^^\n5 |     Err(!) = 1,\n  |     ^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: read discriminant of an uninhabited enum variant\n  --> <tmp>/main.rs:13:15\n   |\n13 |         match *p {\n   |               ^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "rogue_tagged_raw_ptr_err_bang": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/main.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: variants `Ok` and `Err` are never constructed\n --> <tmp>/main.rs:4:5\n  |\n3 | enum Tagged {\n  |      ------ variants in this enum\n4 |     Ok(u32) = 0,\n  |     ^^\n5 |     Err(!) = 1,\n  |     ^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: read discriminant of an uninhabited enum variant\n  --> <tmp>/main.rs:13:15\n   |\n13 |         match *p {\n   |               ^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 2 warnings emitted"
+    },
+    "rogue_tagged_raw_ptr_omit_err_exhaustive_patterns": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "warning: variants `Ok` and `Err` are never constructed\n --> <tmp>/main.rs:4:5\n  |\n3 | enum Tagged {\n  |      ------ variants in this enum\n4 |     Ok(u32) = 0,\n  |     ^^\n5 |     Err(!) = 1,\n  |     ^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: read discriminant of an uninhabited enum variant\n  --> <tmp>/main.rs:13:15\n   |\n13 |         match *p {\n   |               ^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "rogue_tagged_shared_ref_err_wildcard": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "warning: variants `Ok` and `Err` are never constructed\n --> <tmp>/main.rs:4:5\n  |\n3 | enum Tagged {\n  |      ------ variants in this enum\n4 |     Ok(u32) = 0,\n  |     ^^\n5 |     Err(!) = 1,\n  |     ^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: read discriminant of an uninhabited enum variant\n  --> <tmp>/main.rs:12:19\n   |\n12 |     let v = match r {\n   |                   ^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "rogue_tagged_shared_ref_err_bang": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/main.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: variants `Ok` and `Err` are never constructed\n --> <tmp>/main.rs:4:5\n  |\n3 | enum Tagged {\n  |      ------ variants in this enum\n4 |     Ok(u32) = 0,\n  |     ^^\n5 |     Err(!) = 1,\n  |     ^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: read discriminant of an uninhabited enum variant\n  --> <tmp>/main.rs:12:19\n   |\n12 |     let v = match r {\n   |                   ^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 2 warnings emitted"
+    },
+    "rogue_tagged_shared_ref_top_wildcard": {
+      "rc": 0,
+      "stdout": "ROGUE_TOP_WILDCARD_OK=888",
+      "stderr": "warning: variants `Ok` and `Err` are never constructed\n --> <tmp>/main.rs:4:5\n  |\n3 | enum Tagged {\n  |      ------ variants in this enum\n4 |     Ok(u32) = 0,\n  |     ^^\n5 |     Err(!) = 1,\n  |     ^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default"
+    },
+    "rogue_hasnever_raw_ptr_wildcard": {
+      "rc": 0,
+      "stdout": "HASNEVER_RAW_WILD_OK=42",
+      "stderr": ""
+    },
+    "rogue_hasnever_raw_ptr_bang": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/main.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: Undefined Behavior: entering unreachable code\n --> <tmp>/main.rs:9:25\n  |\n9 |             HasNever(_, !),\n  |                         ^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    },
+    "rogue_hasnever_shared_ref_wildcard": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "error: Undefined Behavior: constructing invalid value of type &HasNever: encountered a reference pointing to uninhabited type HasNever\n --> <tmp>/main.rs:6:33\n  |\n6 |     let r: &HasNever = unsafe { &*(&x as *const u32).cast::<HasNever>() };\n  |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+    },
+    "rogue_hasnever_shared_ref_bang": {
+      "rc": 1,
+      "stdout": "",
+      "stderr": "warning: the feature `never_patterns` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>/main.rs:1:12\n  |\n1 | #![feature(never_patterns, never_type)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #118155 <https://github.com/rust-lang/rust/issues/118155> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: Undefined Behavior: constructing invalid value of type &HasNever: encountered a reference pointing to uninhabited type HasNever\n --> <tmp>/main.rs:6:33\n  |\n6 |     let r: &HasNever = unsafe { &*(&x as *const u32).cast::<HasNever>() };\n  |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    }
+  }
+}
