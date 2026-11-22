@@ -1,0 +1,114 @@
+{
+  "topics": [
+    "agents/ui-synthesis",
+    "agents/multimodal-coding",
+    "agents/visual-self-refinement",
+    "agents/accessibility",
+    "domains/web-frontend",
+    "tooling/visual-regression",
+    "tooling/accessibility-oracles",
+    "verification/dom-geometry",
+    "verification/wcag-2.2",
+    "verification/benchmark-evaluators"
+  ],
+  "subjects": [
+    {
+      "name": "Design2Code Multimodal Front-End Benchmark and Visual Evaluator (NoviScl/Design2Code; Si et al., NAACL 2025)",
+      "identity": {
+        "arxiv": "2403.03163v3",
+        "repository": "NoviScl/Design2Code",
+        "revision": "7a575e4c33f417c4be5c64072b8f5798de0d0f99",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "ChartMimic Chart-to-Code Benchmark and Low-Level Evaluators (ChartMimic/ChartMimic; Yang et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2406.09961v2",
+        "repository": "ChartMimic/ChartMimic",
+        "revision": "92ba5b97b908c607f630c3ffbb5043de9de62b76",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Plot2Code Scientific Plot-to-Code Benchmark and Evaluation Harness (TencentARC/Plot2Code; Wu et al., NAACL 2025 Findings)",
+      "identity": {
+        "arxiv": "2405.07990v1",
+        "repository": "TencentARC/Plot2Code",
+        "revision": "12bd95a7e04dfcc2eb664cbeb739d924c090c503",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "DesignBench Multi-Framework Front-End Generation, Edit, and Repair Benchmark (WebPAI/DesignBench; Xiao et al., 2025-2026)",
+      "identity": {
+        "arxiv": "2506.06251v3",
+        "repository": "WebPAI/DesignBench",
+        "revision": "a1e58d66ecbf1f77848bc5529ee7bbbe33bc25ba",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "pixelmatch Visual-Regression Diff Engine (YIQ Engine)",
+      "identity": {
+        "repository": "mapbox/pixelmatch",
+        "revision": "973afc76ad1f609261a6b3b503d341e9ed9056e4",
+        "version": "v7.1.1"
+      }
+    },
+    {
+      "name": "pixelmatch Visual-Regression Diff Engine (OKLab HyAB and windowSize Engine)",
+      "identity": {
+        "repository": "mapbox/pixelmatch",
+        "revision": "ab76f526ef951c0ec6284e314a700e161b1800e6",
+        "version": "post-v8.0.0"
+      }
+    },
+    {
+      "name": "axe-core Automated Accessibility Rule Engine",
+      "identity": {
+        "repository": "dequelabs/axe-core",
+        "revision": "e80f6b797b32b5f9d60ddaa0a7afad6ed864f121",
+        "version": "v4.14.1"
+      }
+    },
+    {
+      "name": "GOV.UK Accessibility Tool Audit Dataset (Government Digital Service)",
+      "identity": {
+        "repository": "alphagov/accessibility-tool-audit",
+        "revision": "e9e46115caf55f07a9302a5ee187687870510a09",
+        "year": "2017-2019"
+      }
+    },
+    {
+      "name": "W3C Web Content Accessibility Guidelines (WCAG) 2.2",
+      "identity": {
+        "date": "2023-10-05",
+        "specification": "W3C Recommendation",
+        "url": "https://www.w3.org/TR/WCAG22/"
+      }
+    },
+    {
+      "name": "WebAIM Million Annual Home-Page Accessibility Reports (2024-2026) and Deque Automated Accessibility Coverage Studies (2021-2022)",
+      "identity": {
+        "urls": "https://webaim.org/projects/million/; https://www.deque.com/blog/deque-stakes-claim-as-undisputed-leader-in-automated-accessibility-testing-coverage-with-new-report/",
+        "year": "2021-2026"
+      }
+    },
+    {
+      "name": "Multimodal Frontend Synthesis, Decomposition, Declarative UI, and Cross-Environment Compatibility Literature (WebSight 2024; WebCode2M WWW 2025; DCGen FSE 2025; DeclarUI 2024; WebCompat/XCompat 2026)",
+      "identity": {
+        "arxiv": "2403.09029v1; 2404.06369v2; 2406.16386v3; 2409.11667v1; 2608.12518v1",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "LLM Accessibility Detection, Alignment, and Multi-File Repair Literature (AccessGuru 2025; A11yn 2025-2026; A11YRepair/A11YBench ASE 2026)",
+      "identity": {
+        "arxiv": "2507.19549v1; 2510.13914v2; 2606.21926v1",
+        "year": "2025-2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

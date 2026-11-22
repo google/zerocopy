@@ -1,0 +1,113 @@
+{
+  "topics": [
+    "agents/performance-engineering",
+    "agents/kernel-autotuning",
+    "agents/reward-hacking",
+    "compilers/autotuning",
+    "compilers/schedule-separation",
+    "systems/microbenchmarking",
+    "systems/roofline-model",
+    "systems/measurement-noise",
+    "tooling/benchmarking",
+    "verification/benchmark-integrity"
+  ],
+  "subjects": [
+    {
+      "name": "KernelBench GPU Kernel Optimization Benchmark and Evaluation Harness (ScalingIntelligence/KernelBench; Ouyang et al., ICML 2025)",
+      "identity": {
+        "arxiv": "2502.10517v1",
+        "repository": "ScalingIntelligence/KernelBench",
+        "revision": "423217d9fda91e0c2d67e4a43bf62f96f6d104f1",
+        "venue": "ICML 2025",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "robust-kbench Hardened CUDA Kernel Benchmark and AI CUDA Engineer Technical Report (SakanaAI/robust-kbench; Lange et al., 2025)",
+      "identity": {
+        "arxiv": "2509.14279v1",
+        "repository": "SakanaAI/robust-kbench",
+        "revision": "078f5bab29934a822268d59a4e707d449abf9b4e",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "AI CUDA Engineer Kernel Archive Dataset (SakanaAI/AI-CUDA-Engineer-Archive on HuggingFace)",
+      "identity": {
+        "dataset": "SakanaAI/AI-CUDA-Engineer-Archive",
+        "revision": "4edbe8d6d0b417e05aaf8ec7e23f78aecdc5516b",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "SWE-Perf Repository-Level Performance Optimization Benchmark and Evaluation Harness (SWE-Perf/SWE-Perf; He et al., ICML 2026)",
+      "identity": {
+        "arxiv": "2507.12415v2",
+        "repository": "SWE-Perf/SWE-Perf",
+        "revision": "9e8fed285ed640b51baaf66b13773706dc95aa45",
+        "venue": "ICML 2026",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Criterion.rs Statistical Microbenchmarking Harness (bheisler/criterion.rs)",
+      "identity": {
+        "repository": "bheisler/criterion.rs",
+        "revision": "3dbc6c618acb48885066422d81d50729aa17b2b7",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Google Benchmark Statistical Comparison Tooling (google/benchmark)",
+      "identity": {
+        "repository": "google/benchmark",
+        "revision": "3a62735ef058ff6a039bf6cd2712082c8f1fe3e9",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "AlgoTune Algorithmic Optimization Benchmark and Isolated Timing Harness (oripress/AlgoTune; Press et al., 2025)",
+      "identity": {
+        "arxiv": "2507.15887v4",
+        "repository": "oripress/AlgoTune",
+        "revision": "dff9914c10800c7a031c9e8c3d4d1c8cd1b38906",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "PIE CodeNet Performance-Improving Edits v1 Wall-Clock Harness and ICLR 2024 gem5 Skylake Benchmark (madaan/pie-perf; Shypula et al., ICLR 2024 Spotlight)",
+      "identity": {
+        "arxiv": "2302.07867v5",
+        "repository": "madaan/pie-perf",
+        "revision": "8f74491065bcd5b66d3913bf31cfba0ecf4ea5f0",
+        "venue": "ICLR 2024 Spotlight",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Agentic GPU Kernel Synthesis and Profiler-Guided Autotuning Studies (CUDA-L1, Li et al. ICLR 2026; Kevin, Baronio et al. 2025; KernelPro, Gai et al. 2026; CudaForge, Zhang et al. 2025)",
+      "identity": {
+        "arxiv": "2507.14111v13; 2507.11948v1; 2606.26453v2; 2511.01884v2",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Code Efficiency Refinement, Evolutionary Discovery, and Algorithm/Schedule Separation (ECCO, Waghjale et al. EMNLP 2024; AlphaEvolve, Novikov et al. 2025; FunSearch, Romera-Paredes et al. Nature 2023/2024; Ansor, Zheng et al. OSDI 2020; Halide, Ragan-Kelley et al. PLDI 2013)",
+      "identity": {
+        "arxiv": "2407.14044v2; 2506.13131v1; 2006.06762v5",
+        "doi": "10.1038/s41586-023-06924-6; 10.1145/2491956.2462176",
+        "year": "2013-2025"
+      }
+    },
+    {
+      "name": "Roofline Performance Modeling and Statistically Rigorous Microbenchmarking Foundations (Williams, Waterman, & Patterson CACM 2009 / UCB/EECS-2008-134; Mytkowicz et al. ASPLOS 2009; STABILIZER, Curtsinger & Berger ASPLOS 2013; Georges, Buytaert, & Eeckhout OOPSLA 2007; Kalibera & Jones ISMM 2013 / 2020)",
+      "identity": {
+        "arxiv": "2007.10899v1",
+        "doi": "10.1145/1498765.1498785; 10.1145/1508244.1508275; 10.1145/2451116.2451141; 10.1145/1297027.1297033; 10.1145/2464157.2464160",
+        "tech_report": "UCB/EECS-2008-134",
+        "year": "2007-2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

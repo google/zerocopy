@@ -1,0 +1,110 @@
+{
+  "topics": [
+    "agents/mixed-initiative",
+    "agents/user-simulators",
+    "agents/preference-elicitation",
+    "agents/clarification",
+    "agents/pedagogical-scaffolding",
+    "agents/human-ai-collaboration",
+    "agents/evaluation",
+    "tooling/user-simulator-instrumentation",
+    "verification/benchmark-fidelity"
+  ],
+  "subjects": [
+    {
+      "name": "Horvitz Mixed-Initiative User Interface Decision Theory and LookOut Dwell Deferral (Horvitz, CHI 1999)",
+      "identity": {
+        "doi": "10.1145/302979.303030",
+        "venue": "CHI '99, pp. 159-166",
+        "year": "1999"
+      }
+    },
+    {
+      "name": "Collaborative Gym Asynchronous Mixed-Initiative Framework and Initiative Entropy Benchmark (SALT-NLP/collaborative-gym; Shao et al., ICLR 2026)",
+      "identity": {
+        "arxiv": "2412.15701v6",
+        "repository": "SALT-NLP/collaborative-gym",
+        "revision": "58972c0702412f293e303c3e49b6cc896db2467a",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "CollabLLM Multiturn-Aware Reward and Forward-Rollout Collaborative Training Framework (Wuyxin/collabllm; Wu et al., ICML 2025)",
+      "identity": {
+        "arxiv": "2502.00640",
+        "repository": "Wuyxin/collabllm",
+        "revision": "7378aab4efb1168557e72699cc51aebb5b8bc656",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "tau-bench Tool-Agent-User Benchmark and ReAct User Simulator (sierra-research/tau-bench; Yao et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2406.12045",
+        "repository": "sierra-research/tau-bench",
+        "revision": "59a200c6d575d595120f1cb70fea53cef0632f6b",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "tau2-bench Dual-Control Dec-POMDP Telecom/Retail/Airline Benchmark and Orchestrator (sierra-research/tau2-bench; Barres et al., 2025)",
+      "identity": {
+        "arxiv": "2506.07982",
+        "repository": "sierra-research/tau2-bench",
+        "revision": "768f3d8fe8528b4f32a5096f9ed008ae50f48ead",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "User-Simulator Fidelity, Trained User LMs, and Multi-Proxy Evaluation Studies (UserBench Qian et al. 2025; Flipping the Dialogue Naous et al., ICLR 2026; UserProxyBench Jain & Sandhu, NeurIPS 2026 AABA4ET Workshop; Simulated Customers Never Walk Away Chen 2026)",
+      "identity": {
+        "arxiv": "2507.22034; 2510.06552; 2609.38043; 2606.20708",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "MediQ Clinical Abstention-Coupled Question-Asking Benchmark and Fact-Gated Patient Simulators (stellalisy/mediQ; Li et al., NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2406.00922",
+        "repository": "stellalisy/mediQ",
+        "revision": "faa2ce62fef0423e35af4c31d7537aad973173eb",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Interactive Preference and Requirement Elicitation Frameworks (GATE Li et al., ICLR 2025; ClarifyGPT Mu et al., PACMSE/FSE 2024; Tell Me More! IN3 Qian et al., ACL 2024; OPEN Handa et al. 2024)",
+      "identity": {
+        "arxiv": "2310.11589; 2310.10996; 2402.09205; 2403.05534",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Generative AI Without Guardrails Can Harm Learning RCT Dataset and Clustered OLS Analysis (obastani/GenAICanHarmLearning; Bastani et al., PNAS 2025)",
+      "identity": {
+        "doi": "10.1073/pnas.2422633122",
+        "pmc": "PMC12232635",
+        "repository": "obastani/GenAICanHarmLearning",
+        "revision": "2f63dae1a01d51453826fe07ef5cf6678e339588",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "MathDial Socratic Math Tutoring Corpus and Success@k/Telling@k Evaluator (eth-nlped/mathdial; Macina et al., EMNLP 2023 Findings)",
+      "identity": {
+        "arxiv": "2305.14536",
+        "repository": "eth-nlped/mathdial",
+        "revision": "600350952cf11f9d7e745df059b4e5723b34aa6e",
+        "year": "2023-2026"
+      }
+    },
+    {
+      "name": "Step-Gated AI Tutoring Transfer RCT and Pedagogical Rubric Benchmarks (Kestin et al., Sci Rep 2025; LearnLM Google 2024/2025; MRBench Maurya et al., NAACL 2025; TutorBench Srinivasa et al. 2025)",
+      "identity": {
+        "arxiv": "2412.16429; 2505.24477; 2412.09416; 2510.02663",
+        "doi": "10.1038/s41598-025-97652-6",
+        "year": "2024-2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

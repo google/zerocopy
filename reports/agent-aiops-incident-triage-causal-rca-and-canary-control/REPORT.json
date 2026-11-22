@@ -1,0 +1,125 @@
+{
+  "topics": [
+    "agents/aiops",
+    "agents/incident-triage",
+    "agents/root-cause-analysis",
+    "agents/benchmark-methodology",
+    "systems/canary-analysis",
+    "systems/progressive-delivery",
+    "systems/slo-alerting",
+    "systems/telemetry-correlation",
+    "systems/causal-inference",
+    "tooling/observability",
+    "verification/statistical-testing"
+  ],
+  "subjects": [
+    {
+      "name": "Spinnaker Kayenta Automated Canary Analysis Judge (spinnaker/kayenta)",
+      "identity": {
+        "branch": "master",
+        "commit_date": "2025-12-20",
+        "repository": "spinnaker/kayenta",
+        "revision": "5310ab7da1fe42d96b5597f79d0bcd93e21c8f24"
+      }
+    },
+    {
+      "name": "Argo Rollouts Progressive Delivery and AnalysisRun Controller (argoproj/argo-rollouts)",
+      "identity": {
+        "branch": "master",
+        "commit_date": "2026-11-20",
+        "repository": "argoproj/argo-rollouts",
+        "revision": "8c9c5ad2182ba7757bb6a35e79d2051afc31feee"
+      }
+    },
+    {
+      "name": "AIOpsLab Autonomous Cloud Incident Benchmark and Orchestrator (microsoft/AIOpsLab; Chen et al., 2025)",
+      "identity": {
+        "arxiv": "2501.06706v1",
+        "commit_date": "2026-10-20",
+        "repository": "microsoft/AIOpsLab",
+        "revision": "576c3f080c7ae2459a972afd4a2f8d5f01828430",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "OpenRCA Multi-Modal Root Cause Analysis Benchmark and Evaluator (microsoft/OpenRCA; Xu et al., ICLR 2025)",
+      "identity": {
+        "commit_date": "2026-10-22",
+        "openreview": "M4qNIzQYpd",
+        "proceedings_pdf": "d29b8d53678015079e1d245c023e49d2-Paper-Conference.pdf",
+        "repository": "microsoft/OpenRCA",
+        "revision": "2a481ae63cb045c3eadbeca9eddaa10ec1151979",
+        "venue": "ICLR 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "RCAEval Microservice Root Cause Analysis Benchmark (phamquiluan/RCAEval; Pham et al., WWW Companion 2025)",
+      "identity": {
+        "arxiv": "2412.17015v5",
+        "commit_date": "2026-11-21",
+        "repository": "phamquiluan/RCAEval",
+        "revision": "a30feeba3150ed61194297e42df10254b5f54b54",
+        "venue": "WWW Companion 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "BARO Multivariate Bayesian Online Change Point Detection and RobustScorer (phamquiluan/BARO; Pham, Ha, & Zhang, PACMSE/FSE 2024)",
+      "identity": {
+        "arxiv": "2405.09330",
+        "commit_date": "2026-02-02",
+        "repository": "phamquiluan/BARO",
+        "revision": "e35f4ec1095e5cac891d52de9ad18a5b32a37ec8",
+        "venue": "PACMSE 1(FSE), Article 98",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "ITBench Real-World IT Automation Benchmark (Jha et al., ICML 2025, PMLR v267)",
+      "identity": {
+        "arxiv": "2502.05352v1",
+        "proceedings_pdf": "PMLR v267 (jha25a.pdf)",
+        "reference_repository": "itbench-hub/ITBench",
+        "reference_revision": "3efdb465daa209bd75449735e441f9bdeddec1cd",
+        "venue": "ICML 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "CIRCA Causal Bayesian Network Intervention Recognition for RCA (Li et al., ACM SIGKDD 2022)",
+      "identity": {
+        "arxiv": "2206.05871",
+        "reference_repository": "NetManAIOps/CIRCA",
+        "reference_revision": "0215e1880096aa02a305c697f1c23cac4600ebd2",
+        "venue": "ACM SIGKDD 2022",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "RCACopilot Production Cloud Incident Root Cause Analysis (Chen et al., EuroSys 2024)",
+      "identity": {
+        "arxiv": "2305.15778v4",
+        "venue": "EuroSys 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "RCAgent Tool-Augmented Autonomous Cloud Root Cause Analysis (Wang et al., ACM CIKM 2024)",
+      "identity": {
+        "arxiv": "2310.16340v3",
+        "venue": "ACM CIKM 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Google Site Reliability Workbook, Chapter 5: Alerting on SLOs (Beyer, Murphy, Rensin, Kawahara, & Thorne, O'Reilly 2018)",
+      "identity": {
+        "publisher": "O'Reilly Media",
+        "url": "https://sre.google/workbook/alerting-on-slos/",
+        "year": "2018"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

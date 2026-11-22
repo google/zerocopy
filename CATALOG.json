@@ -1924,6 +1924,131 @@
         "vcs/proof-library-version-pinning"
       ]
     },
+    "agent-aiops-incident-triage-causal-rca-and-canary-control": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "master",
+            "commit_date": "2025-12-20",
+            "repository": "spinnaker/kayenta",
+            "revision": "5310ab7da1fe42d96b5597f79d0bcd93e21c8f24"
+          },
+          "name": "Spinnaker Kayenta Automated Canary Analysis Judge (spinnaker/kayenta)"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "commit_date": "2026-11-20",
+            "repository": "argoproj/argo-rollouts",
+            "revision": "8c9c5ad2182ba7757bb6a35e79d2051afc31feee"
+          },
+          "name": "Argo Rollouts Progressive Delivery and AnalysisRun Controller (argoproj/argo-rollouts)"
+        },
+        {
+          "identity": {
+            "arxiv": "2501.06706v1",
+            "commit_date": "2026-10-20",
+            "repository": "microsoft/AIOpsLab",
+            "revision": "576c3f080c7ae2459a972afd4a2f8d5f01828430",
+            "year": "2025"
+          },
+          "name": "AIOpsLab Autonomous Cloud Incident Benchmark and Orchestrator (microsoft/AIOpsLab; Chen et al., 2025)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-22",
+            "openreview": "M4qNIzQYpd",
+            "proceedings_pdf": "d29b8d53678015079e1d245c023e49d2-Paper-Conference.pdf",
+            "repository": "microsoft/OpenRCA",
+            "revision": "2a481ae63cb045c3eadbeca9eddaa10ec1151979",
+            "venue": "ICLR 2025",
+            "year": "2025"
+          },
+          "name": "OpenRCA Multi-Modal Root Cause Analysis Benchmark and Evaluator (microsoft/OpenRCA; Xu et al., ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.17015v5",
+            "commit_date": "2026-11-21",
+            "repository": "phamquiluan/RCAEval",
+            "revision": "a30feeba3150ed61194297e42df10254b5f54b54",
+            "venue": "WWW Companion 2025",
+            "year": "2025"
+          },
+          "name": "RCAEval Microservice Root Cause Analysis Benchmark (phamquiluan/RCAEval; Pham et al., WWW Companion 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.09330",
+            "commit_date": "2026-02-02",
+            "repository": "phamquiluan/BARO",
+            "revision": "e35f4ec1095e5cac891d52de9ad18a5b32a37ec8",
+            "venue": "PACMSE 1(FSE), Article 98",
+            "year": "2024"
+          },
+          "name": "BARO Multivariate Bayesian Online Change Point Detection and RobustScorer (phamquiluan/BARO; Pham, Ha, & Zhang, PACMSE/FSE 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.05352v1",
+            "proceedings_pdf": "PMLR v267 (jha25a.pdf)",
+            "reference_repository": "itbench-hub/ITBench",
+            "reference_revision": "3efdb465daa209bd75449735e441f9bdeddec1cd",
+            "venue": "ICML 2025",
+            "year": "2025"
+          },
+          "name": "ITBench Real-World IT Automation Benchmark (Jha et al., ICML 2025, PMLR v267)"
+        },
+        {
+          "identity": {
+            "arxiv": "2206.05871",
+            "reference_repository": "NetManAIOps/CIRCA",
+            "reference_revision": "0215e1880096aa02a305c697f1c23cac4600ebd2",
+            "venue": "ACM SIGKDD 2022",
+            "year": "2022"
+          },
+          "name": "CIRCA Causal Bayesian Network Intervention Recognition for RCA (Li et al., ACM SIGKDD 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.15778v4",
+            "venue": "EuroSys 2024",
+            "year": "2024"
+          },
+          "name": "RCACopilot Production Cloud Incident Root Cause Analysis (Chen et al., EuroSys 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.16340v3",
+            "venue": "ACM CIKM 2024",
+            "year": "2024"
+          },
+          "name": "RCAgent Tool-Augmented Autonomous Cloud Root Cause Analysis (Wang et al., ACM CIKM 2024)"
+        },
+        {
+          "identity": {
+            "publisher": "O'Reilly Media",
+            "url": "https://sre.google/workbook/alerting-on-slos/",
+            "year": "2018"
+          },
+          "name": "Google Site Reliability Workbook, Chapter 5: Alerting on SLOs (Beyer, Murphy, Rensin, Kawahara, & Thorne, O'Reilly 2018)"
+        }
+      ],
+      "topics": [
+        "agents/aiops",
+        "agents/incident-triage",
+        "agents/root-cause-analysis",
+        "agents/benchmark-methodology",
+        "systems/canary-analysis",
+        "systems/progressive-delivery",
+        "systems/slo-alerting",
+        "systems/telemetry-correlation",
+        "systems/causal-inference",
+        "tooling/observability",
+        "verification/statistical-testing"
+      ]
+    },
     "agent-anti-unification-library-learning-and-subproblem-factoring": {
       "observed_at": "2026-11-22",
       "subjects": [
@@ -4338,6 +4463,116 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-mixed-initiative-collaboration-user-simulators-and-pedagogical-scaffolding": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/302979.303030",
+            "venue": "CHI '99, pp. 159-166",
+            "year": "1999"
+          },
+          "name": "Horvitz Mixed-Initiative User Interface Decision Theory and LookOut Dwell Deferral (Horvitz, CHI 1999)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.15701v6",
+            "repository": "SALT-NLP/collaborative-gym",
+            "revision": "58972c0702412f293e303c3e49b6cc896db2467a",
+            "year": "2024-2026"
+          },
+          "name": "Collaborative Gym Asynchronous Mixed-Initiative Framework and Initiative Entropy Benchmark (SALT-NLP/collaborative-gym; Shao et al., ICLR 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.00640",
+            "repository": "Wuyxin/collabllm",
+            "revision": "7378aab4efb1168557e72699cc51aebb5b8bc656",
+            "year": "2025"
+          },
+          "name": "CollabLLM Multiturn-Aware Reward and Forward-Rollout Collaborative Training Framework (Wuyxin/collabllm; Wu et al., ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.12045",
+            "repository": "sierra-research/tau-bench",
+            "revision": "59a200c6d575d595120f1cb70fea53cef0632f6b",
+            "year": "2024-2026"
+          },
+          "name": "tau-bench Tool-Agent-User Benchmark and ReAct User Simulator (sierra-research/tau-bench; Yao et al., ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.07982",
+            "repository": "sierra-research/tau2-bench",
+            "revision": "768f3d8fe8528b4f32a5096f9ed008ae50f48ead",
+            "year": "2025-2026"
+          },
+          "name": "tau2-bench Dual-Control Dec-POMDP Telecom/Retail/Airline Benchmark and Orchestrator (sierra-research/tau2-bench; Barres et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.22034; 2510.06552; 2609.38043; 2606.20708",
+            "year": "2025-2026"
+          },
+          "name": "User-Simulator Fidelity, Trained User LMs, and Multi-Proxy Evaluation Studies (UserBench Qian et al. 2025; Flipping the Dialogue Naous et al., ICLR 2026; UserProxyBench Jain & Sandhu, NeurIPS 2026 AABA4ET Workshop; Simulated Customers Never Walk Away Chen 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.00922",
+            "repository": "stellalisy/mediQ",
+            "revision": "faa2ce62fef0423e35af4c31d7537aad973173eb",
+            "year": "2024-2025"
+          },
+          "name": "MediQ Clinical Abstention-Coupled Question-Asking Benchmark and Fact-Gated Patient Simulators (stellalisy/mediQ; Li et al., NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.11589; 2310.10996; 2402.09205; 2403.05534",
+            "year": "2023-2025"
+          },
+          "name": "Interactive Preference and Requirement Elicitation Frameworks (GATE Li et al., ICLR 2025; ClarifyGPT Mu et al., PACMSE/FSE 2024; Tell Me More! IN3 Qian et al., ACL 2024; OPEN Handa et al. 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1073/pnas.2422633122",
+            "pmc": "PMC12232635",
+            "repository": "obastani/GenAICanHarmLearning",
+            "revision": "2f63dae1a01d51453826fe07ef5cf6678e339588",
+            "year": "2025"
+          },
+          "name": "Generative AI Without Guardrails Can Harm Learning RCT Dataset and Clustered OLS Analysis (obastani/GenAICanHarmLearning; Bastani et al., PNAS 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.14536",
+            "repository": "eth-nlped/mathdial",
+            "revision": "600350952cf11f9d7e745df059b4e5723b34aa6e",
+            "year": "2023-2026"
+          },
+          "name": "MathDial Socratic Math Tutoring Corpus and Success@k/Telling@k Evaluator (eth-nlped/mathdial; Macina et al., EMNLP 2023 Findings)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.16429; 2505.24477; 2412.09416; 2510.02663",
+            "doi": "10.1038/s41598-025-97652-6",
+            "year": "2024-2025"
+          },
+          "name": "Step-Gated AI Tutoring Transfer RCT and Pedagogical Rubric Benchmarks (Kestin et al., Sci Rep 2025; LearnLM Google 2024/2025; MRBench Maurya et al., NAACL 2025; TutorBench Srinivasa et al. 2025)"
+        }
+      ],
+      "topics": [
+        "agents/mixed-initiative",
+        "agents/user-simulators",
+        "agents/preference-elicitation",
+        "agents/clarification",
+        "agents/pedagogical-scaffolding",
+        "agents/human-ai-collaboration",
+        "agents/evaluation",
+        "tooling/user-simulator-instrumentation",
+        "verification/benchmark-fidelity"
+      ]
+    },
     "agent-model-routing-cascades-repo-migrations-merge-resolution-and-crash-dedup": {
       "observed_at": "2026-11-22",
       "subjects": [
@@ -4554,6 +4789,233 @@
         "tooling/code-migration",
         "tooling/crash-bucketing",
         "verification/semantic-merge-auditing"
+      ]
+    },
+    "agent-multimodal-ui-synthesis-visual-regression-and-accessibility-oracles": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2403.03163v3",
+            "repository": "NoviScl/Design2Code",
+            "revision": "7a575e4c33f417c4be5c64072b8f5798de0d0f99",
+            "year": "2024-2025"
+          },
+          "name": "Design2Code Multimodal Front-End Benchmark and Visual Evaluator (NoviScl/Design2Code; Si et al., NAACL 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.09961v2",
+            "repository": "ChartMimic/ChartMimic",
+            "revision": "92ba5b97b908c607f630c3ffbb5043de9de62b76",
+            "year": "2024-2025"
+          },
+          "name": "ChartMimic Chart-to-Code Benchmark and Low-Level Evaluators (ChartMimic/ChartMimic; Yang et al., ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2405.07990v1",
+            "repository": "TencentARC/Plot2Code",
+            "revision": "12bd95a7e04dfcc2eb664cbeb739d924c090c503",
+            "year": "2024-2025"
+          },
+          "name": "Plot2Code Scientific Plot-to-Code Benchmark and Evaluation Harness (TencentARC/Plot2Code; Wu et al., NAACL 2025 Findings)"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.06251v3",
+            "repository": "WebPAI/DesignBench",
+            "revision": "a1e58d66ecbf1f77848bc5529ee7bbbe33bc25ba",
+            "year": "2025-2026"
+          },
+          "name": "DesignBench Multi-Framework Front-End Generation, Edit, and Repair Benchmark (WebPAI/DesignBench; Xiao et al., 2025-2026)"
+        },
+        {
+          "identity": {
+            "repository": "mapbox/pixelmatch",
+            "revision": "973afc76ad1f609261a6b3b503d341e9ed9056e4",
+            "version": "v7.1.1"
+          },
+          "name": "pixelmatch Visual-Regression Diff Engine (YIQ Engine)"
+        },
+        {
+          "identity": {
+            "repository": "mapbox/pixelmatch",
+            "revision": "ab76f526ef951c0ec6284e314a700e161b1800e6",
+            "version": "post-v8.0.0"
+          },
+          "name": "pixelmatch Visual-Regression Diff Engine (OKLab HyAB and windowSize Engine)"
+        },
+        {
+          "identity": {
+            "repository": "dequelabs/axe-core",
+            "revision": "e80f6b797b32b5f9d60ddaa0a7afad6ed864f121",
+            "version": "v4.14.1"
+          },
+          "name": "axe-core Automated Accessibility Rule Engine"
+        },
+        {
+          "identity": {
+            "repository": "alphagov/accessibility-tool-audit",
+            "revision": "e9e46115caf55f07a9302a5ee187687870510a09",
+            "year": "2017-2019"
+          },
+          "name": "GOV.UK Accessibility Tool Audit Dataset (Government Digital Service)"
+        },
+        {
+          "identity": {
+            "date": "2023-10-05",
+            "specification": "W3C Recommendation",
+            "url": "https://www.w3.org/TR/WCAG22/"
+          },
+          "name": "W3C Web Content Accessibility Guidelines (WCAG) 2.2"
+        },
+        {
+          "identity": {
+            "urls": "https://webaim.org/projects/million/; https://www.deque.com/blog/deque-stakes-claim-as-undisputed-leader-in-automated-accessibility-testing-coverage-with-new-report/",
+            "year": "2021-2026"
+          },
+          "name": "WebAIM Million Annual Home-Page Accessibility Reports (2024-2026) and Deque Automated Accessibility Coverage Studies (2021-2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.09029v1; 2404.06369v2; 2406.16386v3; 2409.11667v1; 2608.12518v1",
+            "year": "2024-2026"
+          },
+          "name": "Multimodal Frontend Synthesis, Decomposition, Declarative UI, and Cross-Environment Compatibility Literature (WebSight 2024; WebCode2M WWW 2025; DCGen FSE 2025; DeclarUI 2024; WebCompat/XCompat 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.19549v1; 2510.13914v2; 2606.21926v1",
+            "year": "2025-2026"
+          },
+          "name": "LLM Accessibility Detection, Alignment, and Multi-File Repair Literature (AccessGuru 2025; A11yn 2025-2026; A11YRepair/A11YBench ASE 2026)"
+        }
+      ],
+      "topics": [
+        "agents/ui-synthesis",
+        "agents/multimodal-coding",
+        "agents/visual-self-refinement",
+        "agents/accessibility",
+        "domains/web-frontend",
+        "tooling/visual-regression",
+        "tooling/accessibility-oracles",
+        "verification/dom-geometry",
+        "verification/wcag-2.2",
+        "verification/benchmark-evaluators"
+      ]
+    },
+    "agent-performance-engineering-kernel-autotuning-and-benchmark-rigor": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2502.10517v1",
+            "repository": "ScalingIntelligence/KernelBench",
+            "revision": "423217d9fda91e0c2d67e4a43bf62f96f6d104f1",
+            "venue": "ICML 2025",
+            "year": "2025-2026"
+          },
+          "name": "KernelBench GPU Kernel Optimization Benchmark and Evaluation Harness (ScalingIntelligence/KernelBench; Ouyang et al., ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2509.14279v1",
+            "repository": "SakanaAI/robust-kbench",
+            "revision": "078f5bab29934a822268d59a4e707d449abf9b4e",
+            "year": "2025"
+          },
+          "name": "robust-kbench Hardened CUDA Kernel Benchmark and AI CUDA Engineer Technical Report (SakanaAI/robust-kbench; Lange et al., 2025)"
+        },
+        {
+          "identity": {
+            "dataset": "SakanaAI/AI-CUDA-Engineer-Archive",
+            "revision": "4edbe8d6d0b417e05aaf8ec7e23f78aecdc5516b",
+            "year": "2025"
+          },
+          "name": "AI CUDA Engineer Kernel Archive Dataset (SakanaAI/AI-CUDA-Engineer-Archive on HuggingFace)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.12415v2",
+            "repository": "SWE-Perf/SWE-Perf",
+            "revision": "9e8fed285ed640b51baaf66b13773706dc95aa45",
+            "venue": "ICML 2026",
+            "year": "2025-2026"
+          },
+          "name": "SWE-Perf Repository-Level Performance Optimization Benchmark and Evaluation Harness (SWE-Perf/SWE-Perf; He et al., ICML 2026)"
+        },
+        {
+          "identity": {
+            "repository": "bheisler/criterion.rs",
+            "revision": "3dbc6c618acb48885066422d81d50729aa17b2b7",
+            "year": "2025"
+          },
+          "name": "Criterion.rs Statistical Microbenchmarking Harness (bheisler/criterion.rs)"
+        },
+        {
+          "identity": {
+            "repository": "google/benchmark",
+            "revision": "3a62735ef058ff6a039bf6cd2712082c8f1fe3e9",
+            "year": "2026"
+          },
+          "name": "Google Benchmark Statistical Comparison Tooling (google/benchmark)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.15887v4",
+            "repository": "oripress/AlgoTune",
+            "revision": "dff9914c10800c7a031c9e8c3d4d1c8cd1b38906",
+            "year": "2025-2026"
+          },
+          "name": "AlgoTune Algorithmic Optimization Benchmark and Isolated Timing Harness (oripress/AlgoTune; Press et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2302.07867v5",
+            "repository": "madaan/pie-perf",
+            "revision": "8f74491065bcd5b66d3913bf31cfba0ecf4ea5f0",
+            "venue": "ICLR 2024 Spotlight",
+            "year": "2023-2024"
+          },
+          "name": "PIE CodeNet Performance-Improving Edits v1 Wall-Clock Harness and ICLR 2024 gem5 Skylake Benchmark (madaan/pie-perf; Shypula et al., ICLR 2024 Spotlight)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.14111v13; 2507.11948v1; 2606.26453v2; 2511.01884v2",
+            "year": "2025-2026"
+          },
+          "name": "Agentic GPU Kernel Synthesis and Profiler-Guided Autotuning Studies (CUDA-L1, Li et al. ICLR 2026; Kevin, Baronio et al. 2025; KernelPro, Gai et al. 2026; CudaForge, Zhang et al. 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.14044v2; 2506.13131v1; 2006.06762v5",
+            "doi": "10.1038/s41586-023-06924-6; 10.1145/2491956.2462176",
+            "year": "2013-2025"
+          },
+          "name": "Code Efficiency Refinement, Evolutionary Discovery, and Algorithm/Schedule Separation (ECCO, Waghjale et al. EMNLP 2024; AlphaEvolve, Novikov et al. 2025; FunSearch, Romera-Paredes et al. Nature 2023/2024; Ansor, Zheng et al. OSDI 2020; Halide, Ragan-Kelley et al. PLDI 2013)"
+        },
+        {
+          "identity": {
+            "arxiv": "2007.10899v1",
+            "doi": "10.1145/1498765.1498785; 10.1145/1508244.1508275; 10.1145/2451116.2451141; 10.1145/1297027.1297033; 10.1145/2464157.2464160",
+            "tech_report": "UCB/EECS-2008-134",
+            "year": "2007-2020"
+          },
+          "name": "Roofline Performance Modeling and Statistically Rigorous Microbenchmarking Foundations (Williams, Waterman, & Patterson CACM 2009 / UCB/EECS-2008-134; Mytkowicz et al. ASPLOS 2009; STABILIZER, Curtsinger & Berger ASPLOS 2013; Georges, Buytaert, & Eeckhout OOPSLA 2007; Kalibera & Jones ISMM 2013 / 2020)"
+        }
+      ],
+      "topics": [
+        "agents/performance-engineering",
+        "agents/kernel-autotuning",
+        "agents/reward-hacking",
+        "compilers/autotuning",
+        "compilers/schedule-separation",
+        "systems/microbenchmarking",
+        "systems/roofline-model",
+        "systems/measurement-noise",
+        "tooling/benchmarking",
+        "verification/benchmark-integrity"
       ]
     },
     "agent-planning-decomposition-error-recovery-and-long-horizon-execution": {
