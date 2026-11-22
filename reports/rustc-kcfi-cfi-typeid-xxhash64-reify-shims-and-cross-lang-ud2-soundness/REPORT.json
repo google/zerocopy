@@ -1,0 +1,74 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/codegen",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc 1.98.0-nightly (nightly-2026-06-01): source and executed toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (14210df0e 2026-05-31), LLVM 22.1.6, host x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "rustc source at the default-branch head of 2026-11-21 (source only)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e"
+      }
+    },
+    {
+      "name": "LLVM fork pinned by rustc 14210df0 (src/llvm-project submodule)",
+      "identity": {
+        "repository": "rust-lang/llvm-project",
+        "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+        "version": "LLVM 22.1.6"
+      }
+    },
+    {
+      "name": "Clang/LLVM 19.1.7: source and executed Debian build",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "cd708029e0b2869e80abe31ddb175f7c35361f90",
+        "version": "llvmorg-19.1.7",
+        "executed_artifact": "clang-19_1:19.1.7-10.1+build1_amd64.deb (Debian clang version 19.1.7 (10.1+build1))",
+        "executed_artifact_sha256": "94d0031a183342903bb58359fc63852f33360d4fe1a837ae4932b692d0e48096"
+      }
+    },
+    {
+      "name": "twox-hash 1.6.3 (XxHash64 used by rustc_sanitizers)",
+      "identity": {
+        "repository": "shepmaster/twox-hash",
+        "revision": "79168f770e0e870a11c5bb69ec0382547ef04790",
+        "version": "v1.6.3"
+      }
+    },
+    {
+      "name": "Anneal trusted MIR AST",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain used to check the mechanization",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

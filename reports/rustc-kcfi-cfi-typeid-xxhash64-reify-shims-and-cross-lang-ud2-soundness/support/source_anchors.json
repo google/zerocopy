@@ -1,0 +1,1173 @@
+{
+ "schema": "source-anchors/1",
+ "note": "line numbers are 1-based; text is the line with surrounding whitespace removed",
+ "files": [
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_sanitizers/src/kcfi/typeid/mod.rs",
+   "anchors": [
+    {
+     "line": 11,
+     "text": "use twox_hash::XxHash64;"
+    },
+    {
+     "line": 39,
+     "text": "// 2. KCFI has the limitation that a function or method may have one type id assigned only."
+    },
+    {
+     "line": 49,
+     "text": "if matches!(instance.def, InstanceKind::ReifyShim(_, Some(ReifyReason::FnPtr))) {"
+    },
+    {
+     "line": 50,
+     "text": "options.insert(TypeIdOptions::USE_CONCRETE_SELF);"
+    },
+    {
+     "line": 23,
+     "text": "let mut hash: XxHash64 = Default::default();"
+    },
+    {
+     "line": 54,
+     "text": "let mut hash: XxHash64 = Default::default();"
+    },
+    {
+     "line": 55,
+     "text": "hash.write(itanium_cxx_abi::typeid_for_instance(tcx, instance, options).as_bytes());"
+    },
+    {
+     "line": 25,
+     "text": "hash.finish() as u32"
+    },
+    {
+     "line": 56,
+     "text": "hash.finish() as u32"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_sanitizers/src/kcfi/typeid/mod.rs",
+   "anchors": [
+    {
+     "line": 11,
+     "text": "use twox_hash::XxHash64;"
+    },
+    {
+     "line": 39,
+     "text": "// 2. KCFI has the limitation that a function or method may have one type id assigned only."
+    },
+    {
+     "line": 49,
+     "text": "if matches!(instance.def, InstanceKind::Shim(ShimKind::Reify(_, Some(ReifyReason::FnPtr)))) {"
+    },
+    {
+     "line": 50,
+     "text": "options.insert(TypeIdOptions::USE_CONCRETE_SELF);"
+    },
+    {
+     "line": 23,
+     "text": "let mut hash: XxHash64 = Default::default();"
+    },
+    {
+     "line": 54,
+     "text": "let mut hash: XxHash64 = Default::default();"
+    },
+    {
+     "line": 55,
+     "text": "hash.write(itanium_cxx_abi::typeid_for_instance(tcx, instance, options).as_bytes());"
+    },
+    {
+     "line": 25,
+     "text": "hash.finish() as u32"
+    },
+    {
+     "line": 56,
+     "text": "hash.finish() as u32"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_sanitizers/src/cfi/typeid/mod.rs",
+   "anchors": [
+    {
+     "line": 18,
+     "text": "const GENERALIZE_POINTERS = 1;"
+    },
+    {
+     "line": 21,
+     "text": "const GENERALIZE_REPR_C = 2;"
+    },
+    {
+     "line": 25,
+     "text": "const NORMALIZE_INTEGERS = 4;"
+    },
+    {
+     "line": 33,
+     "text": "const USE_CONCRETE_SELF = 8;"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_sanitizers/src/cfi/typeid/mod.rs",
+   "anchors": [
+    {
+     "line": 18,
+     "text": "const GENERALIZE_POINTERS = 1;"
+    },
+    {
+     "line": 21,
+     "text": "const GENERALIZE_REPR_C = 2;"
+    },
+    {
+     "line": 25,
+     "text": "const NORMALIZE_INTEGERS = 4;"
+    },
+    {
+     "line": 33,
+     "text": "const USE_CONCRETE_SELF = 8;"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_sanitizers/src/cfi/typeid/itanium_cxx_abi/mod.rs",
+   "anchors": [
+    {
+     "line": 32,
+     "text": "let mut typeid = String::from(\"_Z\");"
+    },
+    {
+     "line": 37,
+     "text": "typeid.push_str(\"TS\");"
+    },
+    {
+     "line": 40,
+     "text": "typeid.push('F');"
+    },
+    {
+     "line": 49,
+     "text": "CanonAbi::C => {"
+    },
+    {
+     "line": 50,
+     "text": "encode_ty_options.insert(EncodeTyOptions::GENERALIZE_REPR_C);"
+    },
+    {
+     "line": 71,
+     "text": "for arg in fn_abi.args.iter().filter(|arg| arg.mode != PassMode::Ignore) {"
+    },
+    {
+     "line": 79,
+     "text": "typeid.push('v');"
+    },
+    {
+     "line": 94,
+     "text": "typeid.push('E');"
+    },
+    {
+     "line": 98,
+     "text": "typeid.push_str(\".normalized\");"
+    },
+    {
+     "line": 102,
+     "text": "typeid.push_str(\".generalized\");"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_sanitizers/src/cfi/typeid/itanium_cxx_abi/mod.rs",
+   "anchors": [
+    {
+     "line": 32,
+     "text": "let mut typeid = String::from(\"_Z\");"
+    },
+    {
+     "line": 37,
+     "text": "typeid.push_str(\"TS\");"
+    },
+    {
+     "line": 40,
+     "text": "typeid.push('F');"
+    },
+    {
+     "line": 49,
+     "text": "CanonAbi::C => {"
+    },
+    {
+     "line": 50,
+     "text": "encode_ty_options.insert(EncodeTyOptions::GENERALIZE_REPR_C);"
+    },
+    {
+     "line": 71,
+     "text": "for arg in fn_abi.args.iter().filter(|arg| arg.mode != PassMode::Ignore) {"
+    },
+    {
+     "line": 79,
+     "text": "typeid.push('v');"
+    },
+    {
+     "line": 94,
+     "text": "typeid.push('E');"
+    },
+    {
+     "line": 98,
+     "text": "typeid.push_str(\".normalized\");"
+    },
+    {
+     "line": 102,
+     "text": "typeid.push_str(\".generalized\");"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_sanitizers/src/cfi/typeid/itanium_cxx_abi/encode.rs",
+   "anchors": [
+    {
+     "line": 49,
+     "text": "fn compress<'tcx>("
+    },
+    {
+     "line": 57,
+     "text": "let _ = write!(comp, \"S{}_\", to_seq_id(*num));"
+    },
+    {
+     "line": 60,
+     "text": "dict.insert(key, dict.len());"
+    },
+    {
+     "line": 351,
+     "text": "ty::Int(IntTy::I32) => \"u3i32\","
+    },
+    {
+     "line": 358,
+     "text": "ty::Uint(UintTy::U64) => \"u3u64\","
+    },
+    {
+     "line": 360,
+     "text": "ty::Uint(UintTy::Usize) => \"u5usize\","
+    },
+    {
+     "line": 343,
+     "text": "typeid.push('b');"
+    },
+    {
+     "line": 383,
+     "text": "let mut s = String::from(\"u4char\");"
+    },
+    {
+     "line": 574,
+     "text": "s = format!(\"{}{}\", \"K\", s);"
+    },
+    {
+     "line": 575,
+     "text": "compress(dict, DictKey::Ty(*ptr_ty, TyQ::Const), &mut s);"
+    },
+    {
+     "line": 577,
+     "text": "s = format!(\"{}{}\", \"P\", s);"
+    },
+    {
+     "line": 557,
+     "text": "s.push_str(\"u3refI\");"
+    },
+    {
+     "line": 604,
+     "text": "let mut s = String::from(\"u3dynI\");"
+    },
+    {
+     "line": 704,
+     "text": "s.push_str(&to_disambiguator(tcx.stable_crate_id(def_path.krate).as_u64()));"
+    },
+    {
+     "line": 738,
+     "text": "format!(\"s{}_\", num.to_base(ALPHANUMERIC_ONLY))"
+    },
+    {
+     "line": 746,
+     "text": "fn to_seq_id(num: usize) -> String {"
+    },
+    {
+     "line": 748,
+     "text": "(num as u64).to_base(CASE_INSENSITIVE).to_uppercase()"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_sanitizers/src/cfi/typeid/itanium_cxx_abi/encode.rs",
+   "anchors": [
+    {
+     "line": 50,
+     "text": "fn compress<'tcx>("
+    },
+    {
+     "line": 58,
+     "text": "let _ = write!(comp, \"S{}_\", to_seq_id(*num));"
+    },
+    {
+     "line": 61,
+     "text": "dict.insert(key, dict.len());"
+    },
+    {
+     "line": 450,
+     "text": "ty::Int(IntTy::I32) => \"u3i32\","
+    },
+    {
+     "line": 457,
+     "text": "ty::Uint(UintTy::U64) => \"u3u64\","
+    },
+    {
+     "line": 459,
+     "text": "ty::Uint(UintTy::Usize) => \"u5usize\","
+    },
+    {
+     "line": 442,
+     "text": "typeid.push('b');"
+    },
+    {
+     "line": 492,
+     "text": "let mut s = String::from(\"u4char\");"
+    },
+    {
+     "line": 701,
+     "text": "s = format!(\"{}{}\", \"K\", s);"
+    },
+    {
+     "line": 702,
+     "text": "compress(dict, DictKey::Ty(*ptr_ty, TyQ::Const), &mut s);"
+    },
+    {
+     "line": 704,
+     "text": "s = format!(\"{}{}\", \"P\", s);"
+    },
+    {
+     "line": 684,
+     "text": "s.push_str(\"u3refI\");"
+    },
+    {
+     "line": 731,
+     "text": "let mut s = String::from(\"u3dynI\");"
+    },
+    {
+     "line": 835,
+     "text": "s.push_str(&to_disambiguator(tcx.stable_crate_id(def_path.krate).as_u64()));"
+    },
+    {
+     "line": 869,
+     "text": "format!(\"s{}_\", num.to_base(ALPHANUMERIC_ONLY))"
+    },
+    {
+     "line": 877,
+     "text": "fn to_seq_id(num: usize) -> String {"
+    },
+    {
+     "line": 879,
+     "text": "(num as u64).to_base(CASE_INSENSITIVE).to_uppercase()"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_sanitizers/src/cfi/typeid/itanium_cxx_abi/transform.rs",
+   "anchors": [
+    {
+     "line": 83,
+     "text": "self.tcx.types.u8"
+    },
+    {
+     "line": 93,
+     "text": "self.tcx.types.u32"
+    },
+    {
+     "line": 110,
+     "text": "64 => self.tcx.types.i64,"
+    },
+    {
+     "line": 120,
+     "text": "64 => self.tcx.types.u64,"
+    },
+    {
+     "line": 134,
+     "text": "ty::Adt(..) if t.is_c_void(self.tcx) => self.tcx.types.unit,"
+    },
+    {
+     "line": 137,
+     "text": "if adt_def.repr().transparent() && adt_def.is_struct() && !self.parents.contains(&t)"
+    },
+    {
+     "line": 378,
+     "text": "if !options.contains(TransformTyOptions::USE_CONCRETE_SELF) {"
+    },
+    {
+     "line": 400,
+     "text": "instance.def = ty::InstanceKind::Virtual(method_id, 0);"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_sanitizers/src/cfi/typeid/itanium_cxx_abi/transform.rs",
+   "anchors": [
+    {
+     "line": 84,
+     "text": "self.tcx.types.u8"
+    },
+    {
+     "line": 94,
+     "text": "self.tcx.types.u32"
+    },
+    {
+     "line": 113,
+     "text": "64 => self.tcx.types.i64,"
+    },
+    {
+     "line": 123,
+     "text": "64 => self.tcx.types.u64,"
+    },
+    {
+     "line": 137,
+     "text": "ty::Adt(..) if t.is_c_void(self.tcx) => self.tcx.types.unit,"
+    },
+    {
+     "line": 140,
+     "text": "if adt_def.repr().transparent() && adt_def.is_struct() && !self.parents.contains(&t)"
+    },
+    {
+     "line": 522,
+     "text": "let erase_self = !options.contains(TransformTyOptions::USE_CONCRETE_SELF);"
+    },
+    {
+     "line": 469,
+     "text": "instance.def = ty::InstanceKind::Virtual(method_id, 0);"
+    },
+    {
+     "line": 732,
+     "text": "instance.def = ty::InstanceKind::Virtual(method_id, 0);"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_codegen_llvm/src/declare.rs",
+   "anchors": [
+    {
+     "line": 181,
+     "text": "// Function addresses in Rust are never significant, allowing functions to"
+    },
+    {
+     "line": 187,
+     "text": "llvm::UnnamedAddr::Global,"
+    },
+    {
+     "line": 199,
+     "text": "cfi::TypeIdOptions::USE_CONCRETE_SELF,"
+    },
+    {
+     "line": 207,
+     "text": "self.add_type_metadata(llfn, typeid.as_bytes());"
+    },
+    {
+     "line": 220,
+     "text": "self.add_type_metadata(llfn, typeid.as_bytes());"
+    },
+    {
+     "line": 226,
+     "text": "// LLVM KCFI does not support multiple !kcfi_type attachments"
+    },
+    {
+     "line": 236,
+     "text": "let kcfi_typeid = kcfi::typeid_for_instance(self.tcx, instance, options);"
+    },
+    {
+     "line": 237,
+     "text": "self.set_kcfi_type_metadata(llfn, kcfi_typeid);"
+    },
+    {
+     "line": 240,
+     "text": "self.set_kcfi_type_metadata(llfn, kcfi_typeid);"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_codegen_llvm/src/declare.rs",
+   "anchors": [
+    {
+     "line": 186,
+     "text": "// Function addresses in Rust are never significant, allowing functions to"
+    },
+    {
+     "line": 192,
+     "text": "llvm::UnnamedAddr::Global,"
+    },
+    {
+     "line": 204,
+     "text": "cfi::TypeIdOptions::USE_CONCRETE_SELF,"
+    },
+    {
+     "line": 212,
+     "text": "self.add_type_metadata(llfn, typeid.as_bytes());"
+    },
+    {
+     "line": 225,
+     "text": "self.add_type_metadata(llfn, typeid.as_bytes());"
+    },
+    {
+     "line": 231,
+     "text": "// LLVM KCFI does not support multiple !kcfi_type attachments"
+    },
+    {
+     "line": 241,
+     "text": "kcfi::typeid_for_instance(self.tcx, instance, options)"
+    },
+    {
+     "line": 245,
+     "text": "self.set_kcfi_type_metadata(llfn, kcfi_typeid);"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_codegen_llvm/src/builder.rs",
+   "anchors": [
+    {
+     "line": 1899,
+     "text": "let cond = self.call_intrinsic(\"llvm.type.test\", &[], &[llfn, typeid]);"
+    },
+    {
+     "line": 1951,
+     "text": "Some(llvm::OperandBundleBox::new(\"kcfi\", &[self.const_u32(kcfi_typeid)]))"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_codegen_llvm/src/builder.rs",
+   "anchors": [
+    {
+     "line": 2014,
+     "text": "let cond = self.call_intrinsic(\"llvm.type.test\", &[], &[llfn, typeid]);"
+    },
+    {
+     "line": 2144,
+     "text": "Some(llvm::OperandBundleBox::new(\"kcfi\", &[self.const_u32(kcfi_typeid)]))"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_middle/src/ty/instance.rs",
+   "anchors": [
+    {
+     "line": 593,
+     "text": "let reason = tcx.sess.is_sanitizer_kcfi_enabled().then_some(ReifyReason::FnPtr);"
+    },
+    {
+     "line": 618,
+     "text": "// KCFI because it can only attach one type per function."
+    },
+    {
+     "line": 619,
+     "text": "resolved.def = InstanceKind::ReifyShim(resolved.def_id(), reason)"
+    },
+    {
+     "line": 649,
+     "text": "let reason = tcx.sess.is_sanitizer_kcfi_enabled().then_some(ReifyReason::Vtable);"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_middle/src/ty/instance.rs",
+   "anchors": [
+    {
+     "line": 664,
+     "text": "let reason = tcx.sess.is_sanitizer_kcfi_enabled().then_some(ReifyReason::FnPtr);"
+    },
+    {
+     "line": 692,
+     "text": "// KCFI because it can only attach one type per function."
+    },
+    {
+     "line": 694,
+     "text": "InstanceKind::Shim(ShimKind::Reify(resolved.def_id(), reason))"
+    },
+    {
+     "line": 724,
+     "text": "let reason = tcx.sess.is_sanitizer_kcfi_enabled().then_some(ReifyReason::Vtable);"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_mir_transform/src/shim.rs",
+   "anchors": [
+    {
+     "line": 96,
+     "text": "ty::InstanceKind::ReifyShim(def_id, _) => {"
+    },
+    {
+     "line": 97,
+     "text": "build_call_shim(tcx, instance, None, CallKind::Direct(def_id))"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_mir_transform/src/shim.rs",
+   "anchors": [
+    {
+     "line": 60,
+     "text": "ty::ShimKind::Reify(def_id, _) => {"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_symbol_mangling/src/v0.rs",
+   "anchors": [
+    {
+     "line": 55,
+     "text": "ty::InstanceKind::ReifyShim(_, Some(ReifyReason::FnPtr)) => Some(\"reify_fnptr\"),"
+    },
+    {
+     "line": 56,
+     "text": "ty::InstanceKind::ReifyShim(_, Some(ReifyReason::Vtable)) => Some(\"reify_vtable\"),"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_symbol_mangling/src/v0.rs",
+   "anchors": [
+    {
+     "line": 55,
+     "text": "ty::InstanceKind::Shim(ty::ShimKind::Reify(_, Some(ReifyReason::FnPtr))) => {"
+    },
+    {
+     "line": 56,
+     "text": "Some(\"reify_fnptr\")"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_session/src/options.rs",
+   "anchors": [
+    {
+     "line": 122,
+     "text": "// For kCFI, the helper flag -Zsanitizer-cfi-normalize-integers should also be a target modifier"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_session/src/options.rs",
+   "anchors": [
+    {
+     "line": 131,
+     "text": "// For kCFI, the helper flag -Zsanitizer-cfi-normalize-integers should also be a target modifier"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_session/src/session.rs",
+   "anchors": [
+    {
+     "line": 1260,
+     "text": "// LLVM CFI integer normalization requires CFI or KCFI."
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_session/src/session.rs",
+   "anchors": [
+    {
+     "line": 1720,
+     "text": "// LLVM CFI integer normalization requires CFI or KCFI."
+    },
+    {
+     "line": 429,
+     "text": "self.opts.unstable_opts.merge_functions.unwrap_or(self.target.merge_functions)"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_codegen_ssa/src/back/write.rs",
+   "anchors": [
+    {
+     "line": 251,
+     "text": "MergeFunctions::Trampolines | MergeFunctions::Aliases => {"
+    },
+    {
+     "line": 254,
+     "text": "Aggressive | More | SizeMin | Size => true,"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_codegen_ssa/src/back/write.rs",
+   "anchors": [
+    {
+     "line": 249,
+     "text": "MergeFunctions::Trampolines | MergeFunctions::Aliases => matches!("
+    },
+    {
+     "line": 247,
+     "text": "merge_functions: match sess.merge_functions() {"
+    },
+    {
+     "line": 251,
+     "text": "OptimizationObjective::Speed | OptimizationObjective::Size"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_target/src/spec/mod.rs",
+   "anchors": [
+    {
+     "line": 2910,
+     "text": "merge_functions: MergeFunctions::Aliases,"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_target/src/spec/mod.rs",
+   "anchors": [
+    {
+     "line": 2835,
+     "text": "merge_functions: MergeFunctions::Aliases,"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_target/src/spec/targets/x86_64_unknown_linux_gnu.rs",
+   "anchors": [
+    {
+     "line": 15,
+     "text": "| SanitizerSet::KCFI"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_target/src/spec/targets/x86_64_unknown_linux_gnu.rs",
+   "anchors": [
+    {
+     "line": 14,
+     "text": "| SanitizerSet::KCFI"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "path": "compiler/rustc_sanitizers/Cargo.toml",
+   "anchors": [
+    {
+     "line": 17,
+     "text": "twox-hash = \"1.6.3\""
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/rust",
+   "revision": "bdf712ee87c22a2b5c60db2e1af8a63e3cfd1a2e",
+   "path": "compiler/rustc_sanitizers/Cargo.toml",
+   "anchors": [
+    {
+     "line": 19,
+     "text": "twox-hash = { version = \"1.6.3\", default-features = false }"
+    }
+   ]
+  },
+  {
+   "repository": "llvm/llvm-project",
+   "revision": "cd708029e0b2869e80abe31ddb175f7c35361f90",
+   "path": "clang/lib/CodeGen/CodeGenModule.cpp",
+   "anchors": [
+    {
+     "line": 2142,
+     "text": "llvm::ConstantInt *CodeGenModule::CreateKCFITypeId(QualType T) {"
+    },
+    {
+     "line": 2151,
+     "text": "T, Out, getCodeGenOpts().SanitizeCfiICallNormalizeIntegers);"
+    },
+    {
+     "line": 7526,
+     "text": "T, Out, getCodeGenOpts().SanitizeCfiICallNormalizeIntegers);"
+    },
+    {
+     "line": 2154,
+     "text": "Out << \".normalized\";"
+    },
+    {
+     "line": 7529,
+     "text": "Out << \".normalized\";"
+    },
+    {
+     "line": 2157,
+     "text": "static_cast<uint32_t>(llvm::xxHash64(OutName)));"
+    }
+   ]
+  },
+  {
+   "repository": "llvm/llvm-project",
+   "revision": "cd708029e0b2869e80abe31ddb175f7c35361f90",
+   "path": "clang/lib/AST/ItaniumMangle.cpp",
+   "anchors": [
+    {
+     "line": 3075,
+     "text": "if (NormalizeIntegers && T->isInteger()) {"
+    },
+    {
+     "line": 3099,
+     "text": "if (mangleSubstitution(BuiltinType::Long))"
+    },
+    {
+     "line": 3101,
+     "text": "Out << \"u3i64\";"
+    },
+    {
+     "line": 3102,
+     "text": "addSubstitution(BuiltinType::Long);"
+    },
+    {
+     "line": 6758,
+     "text": "bool CXXNameMangler::mangleSubstitution(QualType T) {"
+    },
+    {
+     "line": 6764,
+     "text": "uintptr_t TypePtr = reinterpret_cast<uintptr_t>(T.getAsOpaquePtr());"
+    },
+    {
+     "line": 6937,
+     "text": "uintptr_t TypePtr = reinterpret_cast<uintptr_t>(T.getAsOpaquePtr());"
+    }
+   ]
+  },
+  {
+   "repository": "llvm/llvm-project",
+   "revision": "cd708029e0b2869e80abe31ddb175f7c35361f90",
+   "path": "llvm/lib/Support/xxhash.cpp",
+   "anchors": [
+    {
+     "line": 103,
+     "text": "uint64_t llvm::xxHash64(StringRef Data) {"
+    },
+    {
+     "line": 105,
+     "text": "uint64_t Seed = 0;"
+    }
+   ]
+  },
+  {
+   "repository": "llvm/llvm-project",
+   "revision": "cd708029e0b2869e80abe31ddb175f7c35361f90",
+   "path": "llvm/lib/Target/X86/X86AsmPrinter.cpp",
+   "anchors": [
+    {
+     "line": 118,
+     "text": "uint32_t X86AsmPrinter::MaskKCFIType(uint32_t Value) {"
+    },
+    {
+     "line": 121,
+     "text": "0xFA1E0FF3, /* ENDBR64 */"
+    },
+    {
+     "line": 122,
+     "text": "0xFB1E0FF3, /* ENDBR32 */"
+    },
+    {
+     "line": 127,
+     "text": "if (N == Value || -N == Value)"
+    },
+    {
+     "line": 128,
+     "text": "return Value + 1;"
+    },
+    {
+     "line": 149,
+     "text": "emitNops(offsetToAlignment(PrefixBytes, MF.getAlignment()));"
+    },
+    {
+     "line": 174,
+     "text": "MCSymbol *FnSym = OutContext.getOrCreateSymbol(\"__cfi_\" + MF.getName());"
+    },
+    {
+     "line": 185,
+     "text": ".addImm(MaskKCFIType(Type->getZExtValue())));"
+    }
+   ]
+  },
+  {
+   "repository": "llvm/llvm-project",
+   "revision": "cd708029e0b2869e80abe31ddb175f7c35361f90",
+   "path": "llvm/lib/Target/X86/X86MCInstLower.cpp",
+   "anchors": [
+    {
+     "line": 898,
+     "text": "void X86AsmPrinter::LowerKCFI_CHECK(const MachineInstr &MI) {"
+    },
+    {
+     "line": 922,
+     "text": "unsigned TempReg = AddrReg == X86::R10 ? X86::R11D : X86::R10D;"
+    },
+    {
+     "line": 924,
+     "text": "MCInstBuilder(X86::MOV32ri).addReg(TempReg).addImm(-MaskKCFIType(Type)));"
+    },
+    {
+     "line": 931,
+     "text": ".addImm(-(PrefixNops + 4))"
+    },
+    {
+     "line": 938,
+     "text": ".addImm(X86::COND_E));"
+    },
+    {
+     "line": 942,
+     "text": "EmitAndCountInstruction(MCInstBuilder(X86::TRAP));"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/llvm-project",
+   "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+   "path": "llvm/lib/Target/X86/X86AsmPrinter.cpp",
+   "anchors": [
+    {
+     "line": 127,
+     "text": "uint32_t X86AsmPrinter::MaskKCFIType(uint32_t Value) {"
+    },
+    {
+     "line": 130,
+     "text": "0xFA1E0FF3, /* ENDBR64 */"
+    },
+    {
+     "line": 136,
+     "text": "if (N == Value || -N == Value)"
+    },
+    {
+     "line": 158,
+     "text": "emitNops(offsetToAlignment(PrefixBytes, MF.getAlignment()));"
+    },
+    {
+     "line": 183,
+     "text": "MCSymbol *FnSym = OutContext.getOrCreateSymbol(\"__cfi_\" + MF.getName());"
+    },
+    {
+     "line": 192,
+     "text": "unsigned DestReg = X86::EAX;"
+    },
+    {
+     "line": 194,
+     "text": "if (F.getParent()->getModuleFlag(\"kcfi-arity\")) {"
+    },
+    {
+     "line": 228,
+     "text": ".addImm(MaskKCFIType(Type->getZExtValue())));"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/llvm-project",
+   "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+   "path": "llvm/lib/Target/X86/X86MCInstLower.cpp",
+   "anchors": [
+    {
+     "line": 896,
+     "text": "void X86AsmPrinter::LowerKCFI_CHECK(const MachineInstr &MI) {"
+    },
+    {
+     "line": 920,
+     "text": "unsigned TempReg = AddrReg == X86::R10 ? X86::R11D : X86::R10D;"
+    },
+    {
+     "line": 922,
+     "text": "MCInstBuilder(X86::MOV32ri).addReg(TempReg).addImm(-MaskKCFIType(Type)));"
+    },
+    {
+     "line": 929,
+     "text": ".addImm(-(PrefixNops + 4))"
+    },
+    {
+     "line": 940,
+     "text": "EmitAndCountInstruction(MCInstBuilder(X86::TRAP));"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/llvm-project",
+   "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+   "path": "llvm/lib/CodeGen/AsmPrinter/AsmPrinter.cpp",
+   "anchors": [
+    {
+     "line": 4418,
+     "text": "void AsmPrinter::emitNops(unsigned N) {"
+    },
+    {
+     "line": 4419,
+     "text": "MCInst Nop = MF->getSubtarget().getInstrInfo()->getNop();"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/llvm-project",
+   "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+   "path": "llvm/lib/Support/xxhash.cpp",
+   "anchors": [
+    {
+     "line": 103,
+     "text": "uint64_t llvm::xxHash64(StringRef Data) {"
+    },
+    {
+     "line": 105,
+     "text": "uint64_t Seed = 0;"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/llvm-project",
+   "revision": "08c84e69a84d95936296dfcab0e38b34100725d5",
+   "path": "llvm/lib/Transforms/IPO/MergeFunctions.cpp",
+   "anchors": [
+    {
+     "line": 805,
+     "text": "copyMetadataIfPresent(G, NewG, \"kcfi_type\");"
+    },
+    {
+     "line": 817,
+     "text": "if (!MergeFunctionsAliases || !F->hasGlobalUnnamedAddr())"
+    },
+    {
+     "line": 934,
+     "text": "if (G->hasGlobalUnnamedAddr() && !Used.contains(G)) {"
+    },
+    {
+     "line": 938,
+     "text": "// If G's address is not significant, replace it entirely."
+    },
+    {
+     "line": 940,
+     "text": "G->replaceAllUsesWith(F);"
+    }
+   ]
+  },
+  {
+   "repository": "rust-lang/llvm-project",
+   "revision": "08ec928a5bd1866f4008c8ad216166ca685fd380",
+   "path": "llvm/lib/Transforms/IPO/MergeFunctions.cpp",
+   "anchors": [
+    {
+     "line": 812,
+     "text": "copyMetadataIfPresent(G, NewG, \"kcfi_type\");"
+    },
+    {
+     "line": 825,
+     "text": "if (!MergeFunctionsAliases || !F->hasGlobalUnnamedAddr())"
+    },
+    {
+     "line": 960,
+     "text": "if (G->hasGlobalUnnamedAddr() && !Used.contains(G)) {"
+    },
+    {
+     "line": 964,
+     "text": "// If G's address is not significant, replace it entirely."
+    },
+    {
+     "line": 966,
+     "text": "G->replaceAllUsesWith(F);"
+    }
+   ]
+  },
+  {
+   "repository": "shepmaster/twox-hash",
+   "revision": "79168f770e0e870a11c5bb69ec0382547ef04790",
+   "path": "src/sixty_four.rs",
+   "anchors": [
+    {
+     "line": 269,
+     "text": "impl Default for XxHash64 {"
+    },
+    {
+     "line": 271,
+     "text": "XxHash64::with_seed(0)"
+    }
+   ]
+  },
+  {
+   "repository": "joshlf/anneal",
+   "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "path": "trusted/lean/Trusted/MirAst.lean",
+   "anchors": [
+    {
+     "line": 308,
+     "text": "- `.unsupported` represents all other `TyKind` variants (`Char`, `Float`,"
+    },
+    {
+     "line": 310,
+     "text": "`FnPtr`, `Dynamic`, `Closure`, `CoroutineClosure`, `Coroutine`, etc.), causing"
+    },
+    {
+     "line": 613,
+     "text": "`ThreadLocalRef`, `Cast`, non-tuple `Aggregate` (including direct fieldless"
+    },
+    {
+     "line": 780,
+     "text": "- `.call callee args dst target unwind` corresponds to direct `FnDef`"
+    },
+    {
+     "line": 783,
+     "text": "(`UnwindTerminate`, `Drop`, indirect `Call`, `TailCall`, `Yield`,"
+    },
+    {
+     "line": 793,
+     "text": "| call (callee : DefId) (args : List Operand) (dst : Place)"
+    }
+   ]
+  }
+ ]
+}

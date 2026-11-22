@@ -1,0 +1,1831 @@
+{
+  "schema": "kcfi-probe/1",
+  "toolchain": {
+    "rustc": [
+      "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+      "commit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "commit-date: 2026-05-31",
+      "host: x86_64-unknown-linux-gnu",
+      "release: 1.98.0-nightly",
+      "LLVM version: 22.1.6"
+    ],
+    "clang": [
+      "Debian clang version 19.1.7 (10.1+build1)",
+      "Target: x86_64-pc-linux-gnu"
+    ],
+    "llvm_objdump": [
+      "LLVM version 22.1.6-rust-1.98.0-nightly"
+    ],
+    "uname_machine": "x86_64",
+    "uname_sysname": "Linux",
+    "cpu_model": "Intel(R) Xeon(R) CPU @ 2.20GHz"
+  },
+  "A_xxh64": {
+    "reference_vectors": {
+      "''": "0xef46db3751d8e999",
+      "'a'": "0xd24ec4f1a98c6e5b",
+      "'abc'": "0x44bc2cf5ad770999",
+      "'Nobody inspects the spammish repetition'": "0xfbcea83c8a378bf1"
+    },
+    "type_id_strings": {
+      "_ZTSFmiE": {
+        "xxh64": "0xdb839590eb321a32",
+        "kcfi_id": 3945929266,
+        "kcfi_id_hex": "0xeb321a32",
+        "negated_mod_2_32_hex": "0x14cde5ce"
+      },
+      "_ZTSFyiE": {
+        "xxh64": "0x2ceb4821ace0ed9e",
+        "kcfi_id": 2900422046,
+        "kcfi_id_hex": "0xace0ed9e",
+        "negated_mod_2_32_hex": "0x531f1262"
+      },
+      "_ZTSFu3u64u3i32E": {
+        "xxh64": "0x05d9f2dfe4b6c9d7",
+        "kcfi_id": 3837184471,
+        "kcfi_id_hex": "0xe4b6c9d7",
+        "negated_mod_2_32_hex": "0x1b493629"
+      },
+      "_ZTSFu3u64u3i32E.normalized": {
+        "xxh64": "0x39961622a0fe4f69",
+        "kcfi_id": 2701021033,
+        "kcfi_id_hex": "0xa0fe4f69",
+        "negated_mod_2_32_hex": "0x5f01b097"
+      },
+      "_ZTSFjjE": {
+        "xxh64": "0x1c2cbdbf673a7326",
+        "kcfi_id": 1731883814,
+        "kcfi_id_hex": "0x673a7326",
+        "negated_mod_2_32_hex": "0x98c58cda"
+      },
+      "_ZTSFu3u32S_E": {
+        "xxh64": "0x7203348fa406b3fc",
+        "kcfi_id": 2751902716,
+        "kcfi_id_hex": "0xa406b3fc",
+        "negated_mod_2_32_hex": "0x5bf94c04"
+      },
+      "_ZTSFu3u32S_E.normalized": {
+        "xxh64": "0x56f8788b77d77d34",
+        "kcfi_id": 2010610996,
+        "kcfi_id_hex": "0x77d77d34",
+        "negated_mod_2_32_hex": "0x882882cc"
+      },
+      "_ZTSFu3u64u3i64E": {
+        "xxh64": "0xd71eda1e6513d72e",
+        "kcfi_id": 1695799086,
+        "kcfi_id_hex": "0x6513d72e",
+        "negated_mod_2_32_hex": "0x9aec28d2"
+      },
+      "_ZTSFu3u64u3i64E.normalized": {
+        "xxh64": "0x4987a692a45d28d3",
+        "kcfi_id": 2757568723,
+        "kcfi_id_hex": "0xa45d28d3",
+        "negated_mod_2_32_hex": "0x5ba2d72d"
+      }
+    }
+  },
+  "B_cross_language_ffi": {
+    "sources": {
+      "ffi_harness.c": "\n#include <stdint.h>\ntypedef uint64_t (*cb_u64_i32_t)(int32_t);\ntypedef uint32_t (*cb_u32_u32_t)(uint32_t);\nuint64_t call_u64_i32(cb_u64_i32_t f, int32_t x) { return f(x); }\nuint32_t call_u32_u32(cb_u32_u32_t f, uint32_t x) { return f(x); }\n/* `long` and `long long` are both 64-bit signed on LP64. */\ntypedef void (*cb_ptrs_same_t)(long *, long *);\ntypedef void (*cb_ptrs_mixed_t)(long *, long long *);\nvoid call_ptrs_same(cb_ptrs_same_t f, long *a, long *b) { f(a, b); }\nvoid call_ptrs_mixed(cb_ptrs_mixed_t f, long *a, long long *b) { f(a, b); }\n",
+      "ffi_main.rs": "\n#[repr(transparent)]\npub struct TransU32(pub u32);\n\n#[no_mangle]\n#[inline(never)]\npub extern \"C\" fn rust_cb_u64_i32(x: i32) -> u64 { 1000u64.wrapping_add(x as u64) }\n\n#[no_mangle]\n#[inline(never)]\npub extern \"C\" fn rust_cb_u32_trans(x: TransU32) -> u32 { x.0.wrapping_add(58) }\n\n#[no_mangle]\n#[inline(never)]\npub extern \"C\" fn rust_cb_wrong_sig(x: i64) -> u64 { 2000u64.wrapping_add(x as u64) }\n\n#[no_mangle]\n#[inline(never)]\npub extern \"C\" fn rust_cb_two_i64_ptrs(a: *mut i64, b: *mut i64) { unsafe { *a = 7; *b = 9; } }\n\nextern \"C\" {\n    fn call_u64_i32(f: extern \"C\" fn(i32) -> u64, x: i32) -> u64;\n    fn call_u32_u32(f: extern \"C\" fn(TransU32) -> u32, x: u32) -> u32;\n    fn call_ptrs_same(f: extern \"C\" fn(*mut i64, *mut i64), a: *mut i64, b: *mut i64);\n    fn call_ptrs_mixed(f: extern \"C\" fn(*mut i64, *mut i64), a: *mut i64, b: *mut i64);\n}\n\nfn main() {\n    let mode = std::env::args().nth(1).unwrap_or_default();\n    match mode.as_str() {\n        \"u64\" => {\n            let r = unsafe { call_u64_i32(rust_cb_u64_i32, 42) };\n            println!(\"U64_OK={r}\");\n        }\n        \"trans\" => {\n            let r = unsafe { call_u32_u32(rust_cb_u32_trans, 42) };\n            println!(\"TRANS_OK={r}\");\n        }\n        \"wrong\" => {\n            let f: extern \"C\" fn(i32) -> u64 =\n                unsafe { std::mem::transmute(rust_cb_wrong_sig as extern \"C\" fn(i64) -> u64) };\n            let r = unsafe { call_u64_i32(f, 42) };\n            println!(\"WRONG_SIG_NOT_TRAPPED={r}\");\n        }\n        \"ptrs_same\" => {\n            let (mut a, mut b) = (0i64, 0i64);\n            unsafe { call_ptrs_same(rust_cb_two_i64_ptrs, &mut a, &mut b) };\n            println!(\"PTRS_SAME_OK={}\", a + b);\n        }\n        \"ptrs_mixed\" => {\n            let (mut a, mut b) = (0i64, 0i64);\n            unsafe { call_ptrs_mixed(rust_cb_two_i64_ptrs, &mut a, &mut b) };\n            println!(\"PTRS_MIXED_OK={}\", a + b);\n        }\n        _ => std::process::exit(2),\n    }\n}\n"
+    },
+    "configs": {
+      "no_sanitizer": {
+        "clang_flags": [
+          "-O2"
+        ],
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Copt-level=2",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0"
+        ],
+        "clang_ir": {
+          "call_u64_i32": {
+            "kcfi_type": null,
+            "call_site_kcfi_bundles": []
+          },
+          "call_u32_u32": {
+            "kcfi_type": null,
+            "call_site_kcfi_bundles": []
+          },
+          "call_ptrs_same": {
+            "kcfi_type": null,
+            "call_site_kcfi_bundles": []
+          },
+          "call_ptrs_mixed": {
+            "kcfi_type": null,
+            "call_site_kcfi_bundles": []
+          }
+        },
+        "rustc_ir_kcfi_type": {
+          "rust_cb_two_i64_ptrs": null,
+          "rust_cb_u32_trans": null,
+          "rust_cb_u64_i32": null,
+          "rust_cb_wrong_sig": null
+        },
+        "exec": {
+          "u64": {
+            "rc": 0,
+            "stdout": "U64_OK=1042"
+          },
+          "trans": {
+            "rc": 0,
+            "stdout": "TRANS_OK=100"
+          },
+          "wrong": {
+            "rc": 0,
+            "stdout": "WRONG_SIG_NOT_TRAPPED=2042"
+          },
+          "ptrs_same": {
+            "rc": 0,
+            "stdout": "PTRS_SAME_OK=16"
+          },
+          "ptrs_mixed": {
+            "rc": 0,
+            "stdout": "PTRS_MIXED_OK=16"
+          }
+        }
+      },
+      "kcfi_default": {
+        "clang_flags": [
+          "-O2",
+          "-fsanitize=kcfi"
+        ],
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Copt-level=2",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "-Zsanitizer=kcfi",
+          "-Cunsafe-allow-abi-mismatch=sanitizer"
+        ],
+        "clang_ir": {
+          "call_u64_i32": {
+            "kcfi_type": 3928633473,
+            "call_site_kcfi_bundles": [
+              3945929266
+            ]
+          },
+          "call_u32_u32": {
+            "kcfi_type": 4154262267,
+            "call_site_kcfi_bundles": [
+              1731883814
+            ]
+          },
+          "call_ptrs_same": {
+            "kcfi_type": 2035807577,
+            "call_site_kcfi_bundles": [
+              99822569
+            ]
+          },
+          "call_ptrs_mixed": {
+            "kcfi_type": 737295943,
+            "call_site_kcfi_bundles": [
+              1246749912
+            ]
+          }
+        },
+        "rustc_ir_kcfi_type": {
+          "rust_cb_two_i64_ptrs": 436628713,
+          "rust_cb_u32_trans": 2751902716,
+          "rust_cb_u64_i32": 3837184471,
+          "rust_cb_wrong_sig": 1695799086
+        },
+        "exec": {
+          "u64": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "trans": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "wrong": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "ptrs_same": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "ptrs_mixed": {
+            "rc": -4,
+            "stdout": ""
+          }
+        },
+        "machine_code": {
+          "__cfi_rust_cb_u64_i32": {
+            "size_bytes": 16,
+            "leading_0x90_nops": 11,
+            "opcode_after_nops": "0xb8",
+            "mov_eax_imm32": 3837184471,
+            "raw_hex": "90 90 90 90 90 90 90 90 90 90 90 b8 d7 c9 b6 e4",
+            "entry_minus_prefix_symbol": 16,
+            "disassembly": [
+              "14430: 90                    nop",
+              "14431: 90                    nop",
+              "14432: 90                    nop",
+              "14433: 90                    nop",
+              "14434: 90                    nop",
+              "14435: 90                    nop",
+              "14436: 90                    nop",
+              "14437: 90                    nop",
+              "14438: 90                    nop",
+              "14439: 90                    nop",
+              "1443a: 90                    nop",
+              "1443b: b8 d7 c9 b6 e4        movl $3837184471, %eax       # imm = 0xE4B6C9D7"
+            ]
+          },
+          "__cfi_rust_cb_u32_trans": {
+            "size_bytes": 16,
+            "leading_0x90_nops": 11,
+            "opcode_after_nops": "0xb8",
+            "mov_eax_imm32": 2751902716,
+            "raw_hex": "90 90 90 90 90 90 90 90 90 90 90 b8 fc b3 06 a4",
+            "entry_minus_prefix_symbol": 16,
+            "disassembly": [
+              "14410: 90                    nop",
+              "14411: 90                    nop",
+              "14412: 90                    nop",
+              "14413: 90                    nop",
+              "14414: 90                    nop",
+              "14415: 90                    nop",
+              "14416: 90                    nop",
+              "14417: 90                    nop",
+              "14418: 90                    nop",
+              "14419: 90                    nop",
+              "1441a: 90                    nop",
+              "1441b: b8 fc b3 06 a4        movl $2751902716, %eax       # imm = 0xA406B3FC"
+            ]
+          },
+          "__cfi_rust_cb_wrong_sig": {
+            "size_bytes": 16,
+            "leading_0x90_nops": 11,
+            "opcode_after_nops": "0xb8",
+            "mov_eax_imm32": 1695799086,
+            "raw_hex": "90 90 90 90 90 90 90 90 90 90 90 b8 2e d7 13 65",
+            "entry_minus_prefix_symbol": 16,
+            "disassembly": [
+              "14450: 90                    nop",
+              "14451: 90                    nop",
+              "14452: 90                    nop",
+              "14453: 90                    nop",
+              "14454: 90                    nop",
+              "14455: 90                    nop",
+              "14456: 90                    nop",
+              "14457: 90                    nop",
+              "14458: 90                    nop",
+              "14459: 90                    nop",
+              "1445a: 90                    nop",
+              "1445b: b8 2e d7 13 65        movl $1695799086, %eax       # imm = 0x6513D72E"
+            ]
+          },
+          "call_u64_i32": {
+            "guard": {
+              "neg_imm32": 349038030,
+              "add_disp8": -4,
+              "je_rel8": 2,
+              "insns": [
+                "41 ba ce e5 cd 14    | movl $349038030, %r10d       # imm = 0x14CDE5CE",
+                "44 03 50 fc    | addl -4(%rax), %r10d",
+                "74 02    | je 0x51853 <call_u64_i32+0x13>",
+                "0f 0b    | ud2",
+                "ff e0    | jmpq *%rax"
+              ],
+              "transfer": "jmpq *%rax"
+            },
+            "disassembly": [
+              "51840: 48 89 f8              movq %rdi, %rax",
+              "51843: 89 f7                 movl %esi, %edi",
+              "51845: 41 ba ce e5 cd 14     movl $349038030, %r10d       # imm = 0x14CDE5CE",
+              "5184b: 44 03 50 fc           addl -4(%rax), %r10d",
+              "5184f: 74 02                 je 0x51853 <call_u64_i32+0x13>",
+              "51851: 0f 0b                 ud2",
+              "51853: ff e0                 jmpq *%rax",
+              "51855: 66 66 2e 0f 1f 84 00 00 00 00 00 nopw %cs:(%rax,%rax)"
+            ]
+          },
+          "call_u32_u32": {
+            "guard": {
+              "neg_imm32": 2563083482,
+              "add_disp8": -4,
+              "je_rel8": 2,
+              "insns": [
+                "41 ba da 8c c5 98    | movl $2563083482, %r10d      # imm = 0x98C58CDA",
+                "44 03 50 fc    | addl -4(%rax), %r10d",
+                "74 02    | je 0x51883 <call_u32_u32+0x13>",
+                "0f 0b    | ud2",
+                "ff e0    | jmpq *%rax"
+              ],
+              "transfer": "jmpq *%rax"
+            },
+            "disassembly": [
+              "51870: 48 89 f8              movq %rdi, %rax",
+              "51873: 89 f7                 movl %esi, %edi",
+              "51875: 41 ba da 8c c5 98     movl $2563083482, %r10d      # imm = 0x98C58CDA",
+              "5187b: 44 03 50 fc           addl -4(%rax), %r10d",
+              "5187f: 74 02                 je 0x51883 <call_u32_u32+0x13>",
+              "51881: 0f 0b                 ud2",
+              "51883: ff e0                 jmpq *%rax",
+              "51885: 66 66 2e 0f 1f 84 00 00 00 00 00 nopw %cs:(%rax,%rax)"
+            ]
+          }
+        }
+      },
+      "kcfi_normalized": {
+        "clang_flags": [
+          "-O2",
+          "-fsanitize=kcfi",
+          "-fsanitize-cfi-icall-experimental-normalize-integers"
+        ],
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Copt-level=2",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "-Zsanitizer=kcfi",
+          "-Zsanitizer-cfi-normalize-integers",
+          "-Cunsafe-allow-abi-mismatch=sanitizer,sanitizer-cfi-normalize-integers"
+        ],
+        "clang_ir": {
+          "call_u64_i32": {
+            "kcfi_type": 3813977439,
+            "call_site_kcfi_bundles": [
+              2701021033
+            ]
+          },
+          "call_u32_u32": {
+            "kcfi_type": 2547211081,
+            "call_site_kcfi_bundles": [
+              2010610996
+            ]
+          },
+          "call_ptrs_same": {
+            "kcfi_type": 3185705342,
+            "call_site_kcfi_bundles": [
+              1309558340
+            ]
+          },
+          "call_ptrs_mixed": {
+            "kcfi_type": 3791120297,
+            "call_site_kcfi_bundles": [
+              293747588
+            ]
+          }
+        },
+        "rustc_ir_kcfi_type": {
+          "rust_cb_two_i64_ptrs": 1309558340,
+          "rust_cb_u32_trans": 2010610996,
+          "rust_cb_u64_i32": 2701021033,
+          "rust_cb_wrong_sig": 2757568723
+        },
+        "exec": {
+          "u64": {
+            "rc": 0,
+            "stdout": "U64_OK=1042"
+          },
+          "trans": {
+            "rc": 0,
+            "stdout": "TRANS_OK=100"
+          },
+          "wrong": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "ptrs_same": {
+            "rc": 0,
+            "stdout": "PTRS_SAME_OK=16"
+          },
+          "ptrs_mixed": {
+            "rc": -4,
+            "stdout": ""
+          }
+        },
+        "machine_code": {
+          "__cfi_rust_cb_u64_i32": {
+            "size_bytes": 16,
+            "leading_0x90_nops": 11,
+            "opcode_after_nops": "0xb8",
+            "mov_eax_imm32": 2701021033,
+            "raw_hex": "90 90 90 90 90 90 90 90 90 90 90 b8 69 4f fe a0",
+            "entry_minus_prefix_symbol": 16,
+            "disassembly": [
+              "14430: 90                    nop",
+              "14431: 90                    nop",
+              "14432: 90                    nop",
+              "14433: 90                    nop",
+              "14434: 90                    nop",
+              "14435: 90                    nop",
+              "14436: 90                    nop",
+              "14437: 90                    nop",
+              "14438: 90                    nop",
+              "14439: 90                    nop",
+              "1443a: 90                    nop",
+              "1443b: b8 69 4f fe a0        movl $2701021033, %eax       # imm = 0xA0FE4F69"
+            ]
+          },
+          "__cfi_rust_cb_u32_trans": {
+            "size_bytes": 16,
+            "leading_0x90_nops": 11,
+            "opcode_after_nops": "0xb8",
+            "mov_eax_imm32": 2010610996,
+            "raw_hex": "90 90 90 90 90 90 90 90 90 90 90 b8 34 7d d7 77",
+            "entry_minus_prefix_symbol": 16,
+            "disassembly": [
+              "14410: 90                    nop",
+              "14411: 90                    nop",
+              "14412: 90                    nop",
+              "14413: 90                    nop",
+              "14414: 90                    nop",
+              "14415: 90                    nop",
+              "14416: 90                    nop",
+              "14417: 90                    nop",
+              "14418: 90                    nop",
+              "14419: 90                    nop",
+              "1441a: 90                    nop",
+              "1441b: b8 34 7d d7 77        movl $2010610996, %eax       # imm = 0x77D77D34"
+            ]
+          },
+          "__cfi_rust_cb_wrong_sig": {
+            "size_bytes": 16,
+            "leading_0x90_nops": 11,
+            "opcode_after_nops": "0xb8",
+            "mov_eax_imm32": 2757568723,
+            "raw_hex": "90 90 90 90 90 90 90 90 90 90 90 b8 d3 28 5d a4",
+            "entry_minus_prefix_symbol": 16,
+            "disassembly": [
+              "14450: 90                    nop",
+              "14451: 90                    nop",
+              "14452: 90                    nop",
+              "14453: 90                    nop",
+              "14454: 90                    nop",
+              "14455: 90                    nop",
+              "14456: 90                    nop",
+              "14457: 90                    nop",
+              "14458: 90                    nop",
+              "14459: 90                    nop",
+              "1445a: 90                    nop",
+              "1445b: b8 d3 28 5d a4        movl $2757568723, %eax       # imm = 0xA45D28D3"
+            ]
+          },
+          "call_u64_i32": {
+            "guard": {
+              "neg_imm32": 1593946263,
+              "add_disp8": -4,
+              "je_rel8": 2,
+              "insns": [
+                "41 ba 97 b0 01 5f    | movl $1593946263, %r10d      # imm = 0x5F01B097",
+                "44 03 50 fc    | addl -4(%rax), %r10d",
+                "74 02    | je 0x51853 <call_u64_i32+0x13>",
+                "0f 0b    | ud2",
+                "ff e0    | jmpq *%rax"
+              ],
+              "transfer": "jmpq *%rax"
+            },
+            "disassembly": [
+              "51840: 48 89 f8              movq %rdi, %rax",
+              "51843: 89 f7                 movl %esi, %edi",
+              "51845: 41 ba 97 b0 01 5f     movl $1593946263, %r10d      # imm = 0x5F01B097",
+              "5184b: 44 03 50 fc           addl -4(%rax), %r10d",
+              "5184f: 74 02                 je 0x51853 <call_u64_i32+0x13>",
+              "51851: 0f 0b                 ud2",
+              "51853: ff e0                 jmpq *%rax",
+              "51855: 66 66 2e 0f 1f 84 00 00 00 00 00 nopw %cs:(%rax,%rax)"
+            ]
+          },
+          "call_u32_u32": {
+            "guard": {
+              "neg_imm32": 2284356300,
+              "add_disp8": -4,
+              "je_rel8": 2,
+              "insns": [
+                "41 ba cc 82 28 88    | movl $2284356300, %r10d      # imm = 0x882882CC",
+                "44 03 50 fc    | addl -4(%rax), %r10d",
+                "74 02    | je 0x51883 <call_u32_u32+0x13>",
+                "0f 0b    | ud2",
+                "ff e0    | jmpq *%rax"
+              ],
+              "transfer": "jmpq *%rax"
+            },
+            "disassembly": [
+              "51870: 48 89 f8              movq %rdi, %rax",
+              "51873: 89 f7                 movl %esi, %edi",
+              "51875: 41 ba cc 82 28 88     movl $2284356300, %r10d      # imm = 0x882882CC",
+              "5187b: 44 03 50 fc           addl -4(%rax), %r10d",
+              "5187f: 74 02                 je 0x51883 <call_u32_u32+0x13>",
+              "51881: 0f 0b                 ud2",
+              "51883: ff e0                 jmpq *%rax",
+              "51885: 66 66 2e 0f 1f 84 00 00 00 00 00 nopw %cs:(%rax,%rax)"
+            ]
+          }
+        }
+      },
+      "kcfi_rust_normalized_c_default": {
+        "clang_flags": [
+          "-O2",
+          "-fsanitize=kcfi"
+        ],
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Copt-level=2",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "-Zsanitizer=kcfi",
+          "-Zsanitizer-cfi-normalize-integers",
+          "-Cunsafe-allow-abi-mismatch=sanitizer,sanitizer-cfi-normalize-integers"
+        ],
+        "clang_ir": {
+          "call_u64_i32": {
+            "kcfi_type": 3928633473,
+            "call_site_kcfi_bundles": [
+              3945929266
+            ]
+          },
+          "call_u32_u32": {
+            "kcfi_type": 4154262267,
+            "call_site_kcfi_bundles": [
+              1731883814
+            ]
+          },
+          "call_ptrs_same": {
+            "kcfi_type": 2035807577,
+            "call_site_kcfi_bundles": [
+              99822569
+            ]
+          },
+          "call_ptrs_mixed": {
+            "kcfi_type": 737295943,
+            "call_site_kcfi_bundles": [
+              1246749912
+            ]
+          }
+        },
+        "rustc_ir_kcfi_type": {
+          "rust_cb_two_i64_ptrs": 1309558340,
+          "rust_cb_u32_trans": 2010610996,
+          "rust_cb_u64_i32": 2701021033,
+          "rust_cb_wrong_sig": 2757568723
+        },
+        "exec": {
+          "u64": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "trans": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "wrong": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "ptrs_same": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "ptrs_mixed": {
+            "rc": -4,
+            "stdout": ""
+          }
+        },
+        "machine_code": {
+          "__cfi_rust_cb_u64_i32": {
+            "size_bytes": 16,
+            "leading_0x90_nops": 11,
+            "opcode_after_nops": "0xb8",
+            "mov_eax_imm32": 2701021033,
+            "raw_hex": "90 90 90 90 90 90 90 90 90 90 90 b8 69 4f fe a0",
+            "entry_minus_prefix_symbol": 16,
+            "disassembly": [
+              "14430: 90                    nop",
+              "14431: 90                    nop",
+              "14432: 90                    nop",
+              "14433: 90                    nop",
+              "14434: 90                    nop",
+              "14435: 90                    nop",
+              "14436: 90                    nop",
+              "14437: 90                    nop",
+              "14438: 90                    nop",
+              "14439: 90                    nop",
+              "1443a: 90                    nop",
+              "1443b: b8 69 4f fe a0        movl $2701021033, %eax       # imm = 0xA0FE4F69"
+            ]
+          },
+          "__cfi_rust_cb_u32_trans": {
+            "size_bytes": 16,
+            "leading_0x90_nops": 11,
+            "opcode_after_nops": "0xb8",
+            "mov_eax_imm32": 2010610996,
+            "raw_hex": "90 90 90 90 90 90 90 90 90 90 90 b8 34 7d d7 77",
+            "entry_minus_prefix_symbol": 16,
+            "disassembly": [
+              "14410: 90                    nop",
+              "14411: 90                    nop",
+              "14412: 90                    nop",
+              "14413: 90                    nop",
+              "14414: 90                    nop",
+              "14415: 90                    nop",
+              "14416: 90                    nop",
+              "14417: 90                    nop",
+              "14418: 90                    nop",
+              "14419: 90                    nop",
+              "1441a: 90                    nop",
+              "1441b: b8 34 7d d7 77        movl $2010610996, %eax       # imm = 0x77D77D34"
+            ]
+          },
+          "__cfi_rust_cb_wrong_sig": {
+            "size_bytes": 16,
+            "leading_0x90_nops": 11,
+            "opcode_after_nops": "0xb8",
+            "mov_eax_imm32": 2757568723,
+            "raw_hex": "90 90 90 90 90 90 90 90 90 90 90 b8 d3 28 5d a4",
+            "entry_minus_prefix_symbol": 16,
+            "disassembly": [
+              "14450: 90                    nop",
+              "14451: 90                    nop",
+              "14452: 90                    nop",
+              "14453: 90                    nop",
+              "14454: 90                    nop",
+              "14455: 90                    nop",
+              "14456: 90                    nop",
+              "14457: 90                    nop",
+              "14458: 90                    nop",
+              "14459: 90                    nop",
+              "1445a: 90                    nop",
+              "1445b: b8 d3 28 5d a4        movl $2757568723, %eax       # imm = 0xA45D28D3"
+            ]
+          },
+          "call_u64_i32": {
+            "guard": {
+              "neg_imm32": 349038030,
+              "add_disp8": -4,
+              "je_rel8": 2,
+              "insns": [
+                "41 ba ce e5 cd 14    | movl $349038030, %r10d       # imm = 0x14CDE5CE",
+                "44 03 50 fc    | addl -4(%rax), %r10d",
+                "74 02    | je 0x51853 <call_u64_i32+0x13>",
+                "0f 0b    | ud2",
+                "ff e0    | jmpq *%rax"
+              ],
+              "transfer": "jmpq *%rax"
+            },
+            "disassembly": [
+              "51840: 48 89 f8              movq %rdi, %rax",
+              "51843: 89 f7                 movl %esi, %edi",
+              "51845: 41 ba ce e5 cd 14     movl $349038030, %r10d       # imm = 0x14CDE5CE",
+              "5184b: 44 03 50 fc           addl -4(%rax), %r10d",
+              "5184f: 74 02                 je 0x51853 <call_u64_i32+0x13>",
+              "51851: 0f 0b                 ud2",
+              "51853: ff e0                 jmpq *%rax",
+              "51855: 66 66 2e 0f 1f 84 00 00 00 00 00 nopw %cs:(%rax,%rax)"
+            ]
+          },
+          "call_u32_u32": {
+            "guard": {
+              "neg_imm32": 2563083482,
+              "add_disp8": -4,
+              "je_rel8": 2,
+              "insns": [
+                "41 ba da 8c c5 98    | movl $2563083482, %r10d      # imm = 0x98C58CDA",
+                "44 03 50 fc    | addl -4(%rax), %r10d",
+                "74 02    | je 0x51883 <call_u32_u32+0x13>",
+                "0f 0b    | ud2",
+                "ff e0    | jmpq *%rax"
+              ],
+              "transfer": "jmpq *%rax"
+            },
+            "disassembly": [
+              "51870: 48 89 f8              movq %rdi, %rax",
+              "51873: 89 f7                 movl %esi, %edi",
+              "51875: 41 ba da 8c c5 98     movl $2563083482, %r10d      # imm = 0x98C58CDA",
+              "5187b: 44 03 50 fc           addl -4(%rax), %r10d",
+              "5187f: 74 02                 je 0x51883 <call_u32_u32+0x13>",
+              "51881: 0f 0b                 ud2",
+              "51883: ff e0                 jmpq *%rax",
+              "51885: 66 66 2e 0f 1f 84 00 00 00 00 00 nopw %cs:(%rax,%rax)"
+            ]
+          }
+        }
+      }
+    },
+    "type_ids": {
+      "default": {
+        "rust_cb_u64_i32": {
+          "model_typeid": "_ZTSFu3u64u3i32E",
+          "rustc": 3837184471,
+          "model_id": 3837184471
+        },
+        "rust_cb_u32_trans": {
+          "model_typeid": "_ZTSFu3u32S_E",
+          "rustc": 2751902716,
+          "model_id": 2751902716
+        },
+        "rust_cb_wrong_sig": {
+          "model_typeid": "_ZTSFu3u64u3i64E",
+          "rustc": 1695799086,
+          "model_id": 1695799086
+        },
+        "call_u64_i32": {
+          "model_typeid": "_ZTSFmiE",
+          "clang_bundle": [
+            3945929266
+          ],
+          "model_id": 3945929266
+        },
+        "call_u32_u32": {
+          "model_typeid": "_ZTSFjjE",
+          "clang_bundle": [
+            1731883814
+          ],
+          "model_id": 1731883814
+        },
+        "rust_cb_two_i64_ptrs": {
+          "model_typeid": "_ZTSFvPu3i64S0_E",
+          "rustc": 436628713,
+          "model_id": 436628713
+        },
+        "call_ptrs_same": {
+          "model_typeid": "_ZTSFvPlS_E",
+          "clang_bundle": [
+            99822569
+          ],
+          "model_id": 99822569
+        },
+        "call_ptrs_mixed": {
+          "model_typeid": "_ZTSFvPlPxE",
+          "clang_bundle": [
+            1246749912
+          ],
+          "model_id": 1246749912
+        }
+      },
+      "normalized": {
+        "rust_cb_u64_i32": {
+          "model_typeid": "_ZTSFu3u64u3i32E.normalized",
+          "rustc": 2701021033,
+          "model_id": 2701021033
+        },
+        "rust_cb_u32_trans": {
+          "model_typeid": "_ZTSFu3u32S_E.normalized",
+          "rustc": 2010610996,
+          "model_id": 2010610996
+        },
+        "rust_cb_wrong_sig": {
+          "model_typeid": "_ZTSFu3u64u3i64E.normalized",
+          "rustc": 2757568723,
+          "model_id": 2757568723
+        },
+        "call_u64_i32": {
+          "model_typeid": "_ZTSFu3u64u3i32E.normalized",
+          "clang_bundle": [
+            2701021033
+          ],
+          "model_id": 2701021033
+        },
+        "call_u32_u32": {
+          "model_typeid": "_ZTSFu3u32S_E.normalized",
+          "clang_bundle": [
+            2010610996
+          ],
+          "model_id": 2010610996
+        },
+        "rust_cb_two_i64_ptrs": {
+          "model_typeid": "_ZTSFvPu3i64S0_E.normalized",
+          "rustc": 1309558340,
+          "model_id": 1309558340
+        },
+        "call_ptrs_same": {
+          "model_typeid": "_ZTSFvPu3i64S0_E.normalized",
+          "clang_bundle": [
+            1309558340
+          ],
+          "model_id": 1309558340
+        },
+        "call_ptrs_mixed": {
+          "model_typeid": "_ZTSFvPu3i64PS_E.normalized",
+          "clang_bundle": [
+            293747588
+          ],
+          "model_id": 293747588
+        }
+      }
+    },
+    "normalized_machine_code_summary": {
+      "prefix_imm32": 2701021033,
+      "prefix_imm32_hex": "0xa0fe4f69",
+      "guard_neg_imm32": 1593946263,
+      "guard_neg_imm32_hex": "0x5f01b097",
+      "sum_mod_2_32": 0
+    },
+    "default_machine_code_summary": {
+      "prefix_imm32_hex": "0xe4b6c9d7",
+      "guard_neg_imm32_hex": "0x14cde5ce",
+      "sum_mod_2_32_hex": "0xf984afa5"
+    }
+  },
+  "C_reify_shim": {
+    "sources": {
+      "reify_kcfi.rs": "\nuse std::hint::black_box;\n\npub trait Step { fn step(&self, x: u32) -> u32; }\npub struct Counter(pub u32);\nimpl Step for Counter {\n    #[inline(never)]\n    fn step(&self, x: u32) -> u32 { self.0.wrapping_add(x) }\n}\n\n#[inline(never)]\npub fn invoke_dyn(s: &dyn Step, x: u32) -> u32 { s.step(x) }\n\n#[inline(never)]\npub fn invoke_fnptr(f: fn(&Counter, u32) -> u32, c: &Counter, x: u32) -> u32 { f(c, x) }\n\n#[inline(never)]\npub fn reify_step_as_fnptr() -> fn(&Counter, u32) -> u32 { <Counter as Step>::step }\n\n/// Address stored in the vtable slot of `Step::step` for `Counter`\n/// (slots 0..2 are drop_in_place, size, align in this toolchain; the\n/// no-sanitizer control run of mode `slot_as_fnptr` checks that reading).\nfn vtable_parts(d: &dyn Step) -> (*const (), *const usize) {\n    unsafe { std::mem::transmute::<&dyn Step, (*const (), *const usize)>(d) }\n}\n\nfn main() {\n    let mode = std::env::args().nth(1).unwrap_or_default();\n    let c = Counter(40);\n    match mode.as_str() {\n        \"dyn\" => println!(\"DYN_OK={}\", invoke_dyn(black_box(&c), 2)),\n        \"fnptr\" => println!(\"FNPTR_OK={}\", invoke_fnptr(black_box(reify_step_as_fnptr()), &c, 2)),\n        \"addrs\" => {\n            let (_data, vt) = vtable_parts(&c);\n            let slot = unsafe { *vt.add(3) };\n            println!(\"FNPTR_EQ_VTABLE_SLOT={}\", slot == reify_step_as_fnptr() as usize);\n        }\n        // Cross-wire 1: the vtable entry used as a plain fn pointer.\n        \"slot_as_fnptr\" => {\n            let (_data, vt) = vtable_parts(&c);\n            let slot = unsafe { *vt.add(3) };\n            let f: fn(&Counter, u32) -> u32 = unsafe { std::mem::transmute(slot) };\n            println!(\"SLOT_AS_FNPTR={}\", invoke_fnptr(black_box(f), &c, 2));\n        }\n        // Cross-wire 2: the fn-pointer value placed in a vtable slot.\n        \"fnptr_in_vtable\" => {\n            let (data, vt) = vtable_parts(&c);\n            let forged: &'static [usize; 4] = Box::leak(Box::new(unsafe {\n                [*vt, *vt.add(1), *vt.add(2), reify_step_as_fnptr() as usize]\n            }));\n            let fake: &dyn Step = unsafe {\n                std::mem::transmute::<(*const (), *const usize), &dyn Step>((data, forged.as_ptr()))\n            };\n            println!(\"FNPTR_IN_VTABLE={}\", invoke_dyn(black_box(fake), 2));\n        }\n        _ => std::process::exit(2),\n    }\n}\n"
+    },
+    "builds": {
+      "no_sanitizer": {
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Copt-level=2",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "--crate-name",
+          "reify_kcfi"
+        ],
+        "defined_functions": {
+          "_RINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuECskdnFWz4JOn5_10reify_kcfi": {},
+          "_RINvNtNtCsfFlbQN6m3JZ_3std3sys9backtrace28___rust_begin_short_backtraceFEuuECskdnFWz4JOn5_10reify_kcfi": {},
+          "_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0CskdnFWz4JOn5_10reify_kcfi": {},
+          "_RNSNvYNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0INtNtNtCs8b4M6GsfcPr_4core3ops8function6FnOnceuE9call_once6vtableCskdnFWz4JOn5_10reify_kcfi": {},
+          "_RNvCskdnFWz4JOn5_10reify_kcfi10invoke_dyn": {},
+          "_RNvCskdnFWz4JOn5_10reify_kcfi12invoke_fnptr": {},
+          "_RNvCskdnFWz4JOn5_10reify_kcfi4main": {},
+          "_RNvXCskdnFWz4JOn5_10reify_kcfiNtB2_7CounterNtB2_4Step4step": {}
+        }
+      },
+      "kcfi": {
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Copt-level=2",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "--crate-name",
+          "reify_kcfi",
+          "-Zsanitizer=kcfi",
+          "-Cunsafe-allow-abi-mismatch=sanitizer"
+        ],
+        "defined_functions": {
+          "_RINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuECskdnFWz4JOn5_10reify_kcfi": {
+            "kcfi_type": 2285050091
+          },
+          "_RINvNtNtCsfFlbQN6m3JZ_3std3sys9backtrace28___rust_begin_short_backtraceFEuuECskdnFWz4JOn5_10reify_kcfi": {
+            "kcfi_type": 131620657,
+            "kcfi_bundles": [
+              2772461324
+            ]
+          },
+          "_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0CskdnFWz4JOn5_10reify_kcfi": {
+            "kcfi_type": 2050472662
+          },
+          "_RNSNvXCskdnFWz4JOn5_10reify_kcfiNtB4_7CounterNtB4_4Step4step11reify_fnptr": {
+            "kcfi_type": 1587319811
+          },
+          "_RNSNvYNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0INtNtNtCs8b4M6GsfcPr_4core3ops8function6FnOnceuE9call_once6vtableCskdnFWz4JOn5_10reify_kcfi": {
+            "kcfi_type": 24209502
+          },
+          "_RNvCskdnFWz4JOn5_10reify_kcfi10invoke_dyn": {
+            "kcfi_type": 68117223,
+            "kcfi_bundles": [
+              68117223
+            ]
+          },
+          "_RNvCskdnFWz4JOn5_10reify_kcfi12invoke_fnptr": {
+            "kcfi_type": 2965734182,
+            "kcfi_bundles": [
+              1587319811
+            ]
+          },
+          "_RNvCskdnFWz4JOn5_10reify_kcfi4main": {
+            "kcfi_type": 2772461324
+          },
+          "_RNvXCskdnFWz4JOn5_10reify_kcfiNtB2_7CounterNtB2_4Step4step": {
+            "kcfi_type": 68117223
+          }
+        }
+      },
+      "cfi": {
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Copt-level=2",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "--crate-name",
+          "reify_kcfi",
+          "-Zsanitizer=cfi",
+          "-Clinker-plugin-lto",
+          "-Cunsafe-allow-abi-mismatch=sanitizer"
+        ],
+        "defined_functions": {
+          "_RINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuECskdnFWz4JOn5_10reify_kcfi": {
+            "type_strings": [
+              "_ZTSFu5isizePFvvES_PKPKu2u8S1_E",
+              "_ZTSFu5isizePKvS_S1_u2u8E.generalized",
+              "_ZTSFu3i64PFvvES_PKPKu2u8S1_E.normalized",
+              "_ZTSFu3i64PKvS_S1_u2u8E.normalized.generalized"
+            ]
+          },
+          "_RINvNtNtCsfFlbQN6m3JZ_3std3sys9backtrace28___rust_begin_short_backtraceFEuuECskdnFWz4JOn5_10reify_kcfi": {
+            "type_strings": [
+              "_ZTSFvPFvvEE",
+              "_ZTSFvPKvE.generalized",
+              "_ZTSFvPFvvEE.normalized",
+              "_ZTSFvPKvE.normalized.generalized"
+            ]
+          },
+          "_RNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0CskdnFWz4JOn5_10reify_kcfi": {
+            "type_strings": [
+              "_ZTSFu3i32u3refIu3dynIu41NtNtNtCs8b4M6GsfcPs_4core3ops8function2FnIvEu54NtNtNtNtCs8b4M6GsfcPs_4core3ops8function6FnOnce6OutputIvES_u6regionEEE",
+              "_ZTSFu3i32u3refIvEE.generalized",
+              "_ZTSFu3i32u3refIu3dynIu41NtNtNtCs8b4M6GsfcPs_4core3ops8function2FnIvEu54NtNtNtNtCs8b4M6GsfcPs_4core3ops8function6FnOnce6OutputIvES_u6regionEEE.normalized",
+              "_ZTSFu3i32u3refIu52NCNvNtCsfFlbQN6m3K0_3std2rt10lang_start11{{closure}}Ivu2i8PFS_vEu5tupleIPFvvEEEEE",
+              "_ZTSFu3i32u3refIvEE.normalized.generalized",
+              "_ZTSFu3i32u3refIu52NCNvNtCsfFlbQN6m3K0_3std2rt10lang_start11{{closure}}Ivu2i8PFS_vEu5tupleIPFvvEEEEE.normalized"
+            ]
+          },
+          "_RNSNvYNCINvNtCsfFlbQN6m3JZ_3std2rt10lang_startuE0INtNtNtCs8b4M6GsfcPr_4core3ops8function6FnOnceuE9call_once6vtableCskdnFWz4JOn5_10reify_kcfi": {
+            "type_strings": [
+              "_ZTSFu3i32Pu3dynIu45NtNtNtCs8b4M6GsfcPs_4core3ops8function6FnOnceIvEu54NtNtNtNtCs8b4M6GsfcPs_4core3ops8function6FnOnce6OutputIvES_u6regionEE",
+              "_ZTSFu3i32PvE.generalized",
+              "_ZTSFu3i32Pu3dynIu45NtNtNtCs8b4M6GsfcPs_4core3ops8function6FnOnceIvEu54NtNtNtNtCs8b4M6GsfcPs_4core3ops8function6FnOnce6OutputIvES_u6regionEE.normalized",
+              "_ZTSFu3i32PvE.normalized.generalized"
+            ]
+          },
+          "_RNvCskdnFWz4JOn5_10reify_kcfi10invoke_dyn": {
+            "type_strings": [
+              "_ZTSFu3u32u3refIu3dynIu33NtCskdnFWz4JOn6_10reify_kcfi4Stepu6regionEES_E",
+              "_ZTSFu3u32u3refIvES_E.generalized",
+              "_ZTSFu3u32u3refIu3dynIu33NtCskdnFWz4JOn6_10reify_kcfi4Stepu6regionEES_E.normalized",
+              "_ZTSFu3u32u3refIvES_E.normalized.generalized"
+            ]
+          },
+          "_RNvCskdnFWz4JOn5_10reify_kcfi12invoke_fnptr": {
+            "type_strings": [
+              "_ZTSFu3u32PFS_u3refIu36NtCskdnFWz4JOn6_10reify_kcfi7CounterES_Eu3refIS0_ES_E",
+              "_ZTSFu3u32PKvu3refIvES_E.generalized",
+              "_ZTSFu3u32PFS_u3refIu36NtCskdnFWz4JOn6_10reify_kcfi7CounterES_Eu3refIS0_ES_E.normalized",
+              "_ZTSFu3u32PKvu3refIvES_E.normalized.generalized"
+            ]
+          },
+          "_RNvCskdnFWz4JOn5_10reify_kcfi4main": {
+            "type_strings": [
+              "_ZTSFvvE",
+              "_ZTSFvvE.generalized",
+              "_ZTSFvvE.normalized",
+              "_ZTSFvvE.normalized.generalized"
+            ]
+          },
+          "_RNvXCskdnFWz4JOn5_10reify_kcfiNtB2_7CounterNtB2_4Step4step": {
+            "type_strings": [
+              "_ZTSFu3u32u3refIu3dynIu33NtCskdnFWz4JOn6_10reify_kcfi4Stepu6regionEES_E",
+              "_ZTSFu3u32u3refIvES_E.generalized",
+              "_ZTSFu3u32u3refIu3dynIu33NtCskdnFWz4JOn6_10reify_kcfi4Stepu6regionEES_E.normalized",
+              "_ZTSFu3u32u3refIu36NtCskdnFWz4JOn6_10reify_kcfi7CounterES_E",
+              "_ZTSFu3u32u3refIvES_E.normalized.generalized",
+              "_ZTSFu3u32u3refIu36NtCskdnFWz4JOn6_10reify_kcfi7CounterES_E.normalized"
+            ]
+          }
+        }
+      }
+    },
+    "summary": {
+      "shim_symbol_with_kcfi": "_RNSNvXCskdnFWz4JOn5_10reify_kcfiNtB4_7CounterNtB4_4Step4step11reify_fnptr",
+      "all_reify_shims_with_kcfi": [
+        "_RNSNvXCskdnFWz4JOn5_10reify_kcfiNtB4_7CounterNtB4_4Step4step11reify_fnptr",
+        "_RNSNvXs8_NtNtNtCs8b4M6GsfcPr_4core3fmt3num3impmNtBb_7Display3fmt11reify_fnptr",
+        "_RNSNvXsg_NtCs8b4M6GsfcPr_4core3fmtbNtB7_7Display3fmt11reify_fnptr"
+      ],
+      "all_reify_shims_without_sanitizer": [],
+      "all_reify_shims_with_cfi": [],
+      "method_symbol": "_RNvXCskdnFWz4JOn5_10reify_kcfiNtB2_7CounterNtB2_4Step4step",
+      "method_kcfi_type": 68117223,
+      "shim_kcfi_type": 1587319811,
+      "dyn_call_site_expected_id": [
+        68117223
+      ],
+      "fnptr_call_site_expected_id": [
+        1587319811
+      ],
+      "cfi_type_strings_attached_to_method": [
+        "_ZTSFu3u32u3refIu3dynIu33NtCskdnFWz4JOn6_10reify_kcfi4Stepu6regionEES_E",
+        "_ZTSFu3u32u3refIvES_E.generalized",
+        "_ZTSFu3u32u3refIu3dynIu33NtCskdnFWz4JOn6_10reify_kcfi4Stepu6regionEES_E.normalized",
+        "_ZTSFu3u32u3refIu36NtCskdnFWz4JOn6_10reify_kcfi7CounterES_E",
+        "_ZTSFu3u32u3refIvES_E.normalized.generalized",
+        "_ZTSFu3u32u3refIu36NtCskdnFWz4JOn6_10reify_kcfi7CounterES_E.normalized"
+      ],
+      "method_kcfi_type_is_hash_of": [
+        "_ZTSFu3u32u3refIu3dynIu33NtCskdnFWz4JOn6_10reify_kcfi4Stepu6regionEES_E"
+      ],
+      "shim_kcfi_type_is_hash_of": [
+        "_ZTSFu3u32u3refIu36NtCskdnFWz4JOn6_10reify_kcfi7CounterES_E"
+      ],
+      "cfi_string_hashes": {
+        "_ZTSFu3u32u3refIu3dynIu33NtCskdnFWz4JOn6_10reify_kcfi4Stepu6regionEES_E": 68117223,
+        "_ZTSFu3u32u3refIvES_E.generalized": 2348719420,
+        "_ZTSFu3u32u3refIu3dynIu33NtCskdnFWz4JOn6_10reify_kcfi4Stepu6regionEES_E.normalized": 4017149266,
+        "_ZTSFu3u32u3refIu36NtCskdnFWz4JOn6_10reify_kcfi7CounterES_E": 1587319811,
+        "_ZTSFu3u32u3refIvES_E.normalized.generalized": 4271284902,
+        "_ZTSFu3u32u3refIu36NtCskdnFWz4JOn6_10reify_kcfi7CounterES_E.normalized": 4064381647
+      }
+    },
+    "exec": {
+      "no_sanitizer": {
+        "dyn": {
+          "rc": 0,
+          "stdout": "DYN_OK=42"
+        },
+        "fnptr": {
+          "rc": 0,
+          "stdout": "FNPTR_OK=42"
+        },
+        "addrs": {
+          "rc": 0,
+          "stdout": "FNPTR_EQ_VTABLE_SLOT=true"
+        },
+        "slot_as_fnptr": {
+          "rc": 0,
+          "stdout": "SLOT_AS_FNPTR=42"
+        },
+        "fnptr_in_vtable": {
+          "rc": 0,
+          "stdout": "FNPTR_IN_VTABLE=42"
+        }
+      },
+      "kcfi": {
+        "dyn": {
+          "rc": 0,
+          "stdout": "DYN_OK=42"
+        },
+        "fnptr": {
+          "rc": 0,
+          "stdout": "FNPTR_OK=42"
+        },
+        "addrs": {
+          "rc": 0,
+          "stdout": "FNPTR_EQ_VTABLE_SLOT=false"
+        },
+        "slot_as_fnptr": {
+          "rc": -4,
+          "stdout": ""
+        },
+        "fnptr_in_vtable": {
+          "rc": -4,
+          "stdout": ""
+        }
+      }
+    },
+    "machine_code": {
+      "__cfi__RNSNvXCskdnFWz4JOn5_10reify_kcfiNtB4_7CounterNtB4_4Step4step11reify_fnptr": {
+        "disassembly": [
+          "13f60: 90                    nop",
+          "13f61: 90                    nop",
+          "13f62: 90                    nop",
+          "13f63: 90                    nop",
+          "13f64: 90                    nop",
+          "13f65: 90                    nop",
+          "13f66: 90                    nop",
+          "13f67: 90                    nop",
+          "13f68: 90                    nop",
+          "13f69: 90                    nop",
+          "13f6a: 90                    nop",
+          "13f6b: b8 03 94 9c 5e        movl $1587319811, %eax       # imm = 0x5E9C9403"
+        ],
+        "size_bytes": 16,
+        "leading_0x90_nops": 11,
+        "opcode_after_nops": "0xb8",
+        "mov_eax_imm32": 1587319811
+      },
+      "_RNSNvXCskdnFWz4JOn5_10reify_kcfiNtB4_7CounterNtB4_4Step4step11reify_fnptr": {
+        "disassembly": [
+          "13f70: e9 9b 04 00 00        jmp 0x14410 <_RNvXCskdnFWz4JOn5_10reify_kcfiNtB2_7CounterNtB2_4Step4step>",
+          "13f75: cc                    int3",
+          "13f76: cc                    int3",
+          "13f77: cc                    int3",
+          "13f78: cc                    int3",
+          "13f79: cc                    int3",
+          "13f7a: cc                    int3",
+          "13f7b: cc                    int3",
+          "13f7c: cc                    int3",
+          "13f7d: cc                    int3",
+          "13f7e: cc                    int3",
+          "13f7f: cc                    int3"
+        ]
+      },
+      "__cfi__RNvXCskdnFWz4JOn5_10reify_kcfiNtB2_7CounterNtB2_4Step4step": {
+        "disassembly": [
+          "14400: 90                    nop",
+          "14401: 90                    nop",
+          "14402: 90                    nop",
+          "14403: 90                    nop",
+          "14404: 90                    nop",
+          "14405: 90                    nop",
+          "14406: 90                    nop",
+          "14407: 90                    nop",
+          "14408: 90                    nop",
+          "14409: 90                    nop",
+          "1440a: 90                    nop",
+          "1440b: b8 e7 62 0f 04        movl $68117223, %eax         # imm = 0x40F62E7"
+        ],
+        "size_bytes": 16,
+        "leading_0x90_nops": 11,
+        "opcode_after_nops": "0xb8",
+        "mov_eax_imm32": 68117223
+      },
+      "_RNvXCskdnFWz4JOn5_10reify_kcfiNtB2_7CounterNtB2_4Step4step": {
+        "disassembly": [
+          "14410: 89 f0                 movl %esi, %eax",
+          "14412: 03 07                 addl (%rdi), %eax",
+          "14414: c3                    retq",
+          "14415: cc                    int3",
+          "14416: cc                    int3",
+          "14417: cc                    int3",
+          "14418: cc                    int3",
+          "14419: cc                    int3",
+          "1441a: cc                    int3",
+          "1441b: cc                    int3",
+          "1441c: cc                    int3",
+          "1441d: cc                    int3",
+          "1441e: cc                    int3",
+          "1441f: cc                    int3"
+        ]
+      }
+    },
+    "shim_body_is_single_direct_jmp_to_method": true
+  },
+  "D_encoder_model_differential": {
+    "prng_seed": 20261122,
+    "signature_count": 179,
+    "c_counterparts": 93,
+    "modes": {
+      "default": {
+        "rustc_functions_compared": 358,
+        "clang_functions_compared": 93
+      },
+      "normalized": {
+        "rustc_functions_compared": 358,
+        "clang_functions_compared": 93
+      }
+    },
+    "model_vs_tool_mismatches": [],
+    "cross_language_prediction_failures": [],
+    "cross_language": {
+      "default": {
+        "agree": 20,
+        "differ": 73,
+        "agree_examples": [
+          {
+            "rust_typeid": "_ZTSFvPvPKvE",
+            "c_typeid": "_ZTSFvPvPKvE",
+            "c_prototype": "void (*)(void *, void const *)"
+          },
+          {
+            "rust_typeid": "_ZTSFvfdbPvE",
+            "c_typeid": "_ZTSFvfdbPvE",
+            "c_prototype": "void (*)(float, double, _Bool, void *)"
+          },
+          {
+            "rust_typeid": "_ZTSFvvE",
+            "c_typeid": "_ZTSFvvE",
+            "c_prototype": "void (*)(void)"
+          },
+          {
+            "rust_typeid": "_ZTSFvvE",
+            "c_typeid": "_ZTSFvvE",
+            "c_prototype": "void (*)(void)"
+          },
+          {
+            "rust_typeid": "_ZTSFvPKdE",
+            "c_typeid": "_ZTSFvPKdE",
+            "c_prototype": "void (*)(double const *)"
+          },
+          {
+            "rust_typeid": "_ZTSFfvE",
+            "c_typeid": "_ZTSFfvE",
+            "c_prototype": "float (*)(void)"
+          },
+          {
+            "rust_typeid": "_ZTSFvbE",
+            "c_typeid": "_ZTSFvbE",
+            "c_prototype": "void (*)(_Bool)"
+          },
+          {
+            "rust_typeid": "_ZTSFPKdvE",
+            "c_typeid": "_ZTSFPKdvE",
+            "c_prototype": "double const * (*)(void)"
+          }
+        ],
+        "differ_examples": [
+          {
+            "rust_typeid": "_ZTSFu3u32S_S_S_E",
+            "c_typeid": "_ZTSFjjjjE",
+            "c_prototype": "unsigned int (*)(unsigned int, unsigned int, unsigned int)"
+          },
+          {
+            "rust_typeid": "_ZTSFvu2i8u2u8S_S0_E",
+            "c_typeid": "_ZTSFvchchE",
+            "c_prototype": "void (*)(char, unsigned char, char, unsigned char)"
+          },
+          {
+            "rust_typeid": "_ZTSFvPKu3i32S1_S_E",
+            "c_typeid": "_ZTSFvPKiS0_iE",
+            "c_prototype": "void (*)(int const *, int const *, int)"
+          },
+          {
+            "rust_typeid": "_ZTSFvPu3i32PKS_E",
+            "c_typeid": "_ZTSFvPiPKiE",
+            "c_prototype": "void (*)(int *, int const *)"
+          },
+          {
+            "rust_typeid": "_ZTSFu3u64u5usizeS_E",
+            "c_typeid": "_ZTSFymyE",
+            "c_prototype": "unsigned long long (*)(unsigned long, unsigned long long)"
+          },
+          {
+            "rust_typeid": "_ZTSFPKPKu2u8S1_E",
+            "c_typeid": "_ZTSFPKPKhS0_E",
+            "c_prototype": "unsigned char const * const * (*)(unsigned char const *)"
+          },
+          {
+            "rust_typeid": "_ZTSFvu2i8u3i16u3i32u3i64u2u8u3u16u3u32u3u64S_S6_E",
+            "c_typeid": "_ZTSFvcsilhtjmamE",
+            "c_prototype": "void (*)(char, short, int, long, unsigned char, unsigned short, unsigned int, unsigned long, signed char, unsigned long)"
+          },
+          {
+            "rust_typeid": "_ZTSFu3u32S_E",
+            "c_typeid": "_ZTSFjjE",
+            "c_prototype": "unsigned int (*)(unsigned int)"
+          }
+        ]
+      },
+      "normalized": {
+        "agree": 89,
+        "differ": 4,
+        "agree_examples": [
+          {
+            "rust_typeid": "_ZTSFu3u32S_S_S_E.normalized",
+            "c_typeid": "_ZTSFu3u32S_S_S_E.normalized",
+            "c_prototype": "unsigned int (*)(unsigned int, unsigned int, unsigned int)"
+          },
+          {
+            "rust_typeid": "_ZTSFvu2i8u2u8S_S0_E.normalized",
+            "c_typeid": "_ZTSFvu2i8u2u8S_S0_E.normalized",
+            "c_prototype": "void (*)(char, unsigned char, char, unsigned char)"
+          },
+          {
+            "rust_typeid": "_ZTSFvPKu3i32S1_S_E.normalized",
+            "c_typeid": "_ZTSFvPKu3i32S1_S_E.normalized",
+            "c_prototype": "void (*)(int const *, int const *, int)"
+          },
+          {
+            "rust_typeid": "_ZTSFvPu3i32PKS_E.normalized",
+            "c_typeid": "_ZTSFvPu3i32PKS_E.normalized",
+            "c_prototype": "void (*)(int *, int const *)"
+          },
+          {
+            "rust_typeid": "_ZTSFu3u64S_S_E.normalized",
+            "c_typeid": "_ZTSFu3u64S_S_E.normalized",
+            "c_prototype": "unsigned long long (*)(unsigned long, unsigned long long)"
+          },
+          {
+            "rust_typeid": "_ZTSFvPvPKvE.normalized",
+            "c_typeid": "_ZTSFvPvPKvE.normalized",
+            "c_prototype": "void (*)(void *, void const *)"
+          },
+          {
+            "rust_typeid": "_ZTSFPKPKu2u8S1_E.normalized",
+            "c_typeid": "_ZTSFPKPKu2u8S1_E.normalized",
+            "c_prototype": "unsigned char const * const * (*)(unsigned char const *)"
+          },
+          {
+            "rust_typeid": "_ZTSFvu2i8u3i16u3i32u3i64u2u8u3u16u3u32u3u64S_S6_E.normalized",
+            "c_typeid": "_ZTSFvu2i8u3i16u3i32u3i64u2u8u3u16u3u32u3u64S_S6_E.normalized",
+            "c_prototype": "void (*)(char, short, int, long, unsigned char, unsigned short, unsigned int, unsigned long, signed char, unsigned long)"
+          }
+        ],
+        "differ_examples": [
+          {
+            "rust_typeid": "_ZTSFvPu3i64S0_E.normalized",
+            "c_typeid": "_ZTSFvPu3i64PS_E.normalized",
+            "c_prototype": "void (*)(long *, long long *)"
+          },
+          {
+            "rust_typeid": "_ZTSFvPKu2i8S1_E.normalized",
+            "c_typeid": "_ZTSFvPKu2i8PKS_E.normalized",
+            "c_prototype": "void (*)(char const *, signed char const *)"
+          },
+          {
+            "rust_typeid": "_ZTSFvPKu3u64S1_S_E.normalized",
+            "c_typeid": "_ZTSFvPKu3u64PKS_S_E.normalized",
+            "c_prototype": "void (*)(unsigned long const *, unsigned long long const *, unsigned long long)"
+          },
+          {
+            "rust_typeid": "_ZTSFPPu3i64S0_E.normalized",
+            "c_typeid": "_ZTSFPPu3i64PS_E.normalized",
+            "c_prototype": "long * * (*)(long long *)"
+          }
+        ]
+      }
+    },
+    "merge_functions_default_at_opt_level_2": {
+      "symbols_emitted_as_aliases": 169,
+      "aliases_whose_shared_prefix_id_is_not_their_own": 52,
+      "examples": [
+        {
+          "symbol": "sig_c_3",
+          "own_typeid": "_ZTSFvPu3i32PKS_E",
+          "own_id": 137968235,
+          "alias_of": "sig_c_14",
+          "id_in_front_of_shared_entry": 436628713
+        },
+        {
+          "symbol": "sig_rust_3",
+          "own_typeid": "_ZTSFvPu3i32PKS_E",
+          "own_id": 137968235,
+          "alias_of": "sig_c_14",
+          "id_in_front_of_shared_entry": 436628713
+        },
+        {
+          "symbol": "sig_c_8",
+          "own_typeid": "_ZTSFvPvPKvE",
+          "own_id": 574810481,
+          "alias_of": "sig_c_14",
+          "id_in_front_of_shared_entry": 436628713
+        },
+        {
+          "symbol": "sig_rust_8",
+          "own_typeid": "_ZTSFvPvPKvE",
+          "own_id": 574810481,
+          "alias_of": "sig_c_14",
+          "id_in_front_of_shared_entry": 436628713
+        },
+        {
+          "symbol": "sig_c_9",
+          "own_typeid": "_ZTSFPKPKu2u8S1_E",
+          "own_id": 2830970033,
+          "alias_of": "sig_c_18",
+          "id_in_front_of_shared_entry": 4183964443
+        },
+        {
+          "symbol": "sig_rust_9",
+          "own_typeid": "_ZTSFPKPKu2u8S1_E",
+          "own_id": 2830970033,
+          "alias_of": "sig_c_18",
+          "id_in_front_of_shared_entry": 4183964443
+        }
+      ]
+    }
+  },
+  "E_truncation_collision": {
+    "search_space": "Rust-ABI fn(p1..pn) with n<=5 pairwise-distinct parameter types from ['i8', 'i16', 'i32', 'i64', 'isize', 'u8', 'u16', 'u32', 'u64', 'usize', 'f32', 'f64', 'bool', 'char'], return ()",
+    "collision": {
+      "a": {
+        "params": [
+          "isize",
+          "bool",
+          "usize",
+          "f32",
+          "i64"
+        ],
+        "typeid": "_ZTSFvu5isizebu5usizefu3i64E",
+        "xxh64": "0xa62274beba801ccf"
+      },
+      "b": {
+        "params": [
+          "u8",
+          "u64",
+          "f64",
+          "u16",
+          "i8"
+        ],
+        "typeid": "_ZTSFvu2u8u3u64du3u16u2i8E",
+        "xxh64": "0xc41a702dba801ccf"
+      },
+      "shared_low32": 3128958159,
+      "candidates_hashed_before_hit": 122485
+    },
+    "source": "\nuse std::hint::black_box;\nuse std::sync::atomic::{AtomicU32, Ordering};\nstatic HIT: AtomicU32 = AtomicU32::new(0);\n#[inline(never)] pub fn col_a(_p0: isize, _p1: bool, _p2: usize, _p3: f32, _p4: i64) { HIT.store(0xA, Ordering::SeqCst); }\n#[inline(never)] pub fn col_b(_p0: u8, _p1: u64, _p2: f64, _p3: u16, _p4: i8) { HIT.store(0xB, Ordering::SeqCst); }\n#[inline(never)] pub fn col_c(_p0: u64, _p1: u8) { HIT.store(0xC, Ordering::SeqCst); }\n#[inline(never)] fn call_as_b(f: fn(u8, u64, f64, u16, i8)) { f(1, 1, 1.0, 1, 1) }\nfn main() {\n    let mode = std::env::args().nth(1).unwrap_or_default();\n    let f: fn(u8, u64, f64, u16, i8) = match mode.as_str() {\n        \"b\" => col_b,\n        \"a_as_b\" => unsafe { std::mem::transmute(col_a as fn(isize, bool, usize, f32, i64)) },\n        \"c_as_b\" => unsafe { std::mem::transmute(col_c as fn(u64, u8)) },\n        _ => std::process::exit(2),\n    };\n    call_as_b(black_box(f));\n    println!(\"CALLEE_RAN={:X}\", HIT.load(Ordering::SeqCst));\n}\n",
+    "rustc_kcfi_type": {
+      "col_a": 3128958159,
+      "col_b": 3128958159,
+      "col_c": 1601364660
+    },
+    "rustc_call_site_expected_id": [
+      3128958159
+    ],
+    "exec": {
+      "b": {
+        "rc": 0,
+        "stdout": "CALLEE_RAN=B"
+      },
+      "a_as_b": {
+        "rc": 0,
+        "stdout": "CALLEE_RAN=A"
+      },
+      "c_as_b": {
+        "rc": -4,
+        "stdout": ""
+      }
+    }
+  },
+  "F_target_modifier_gating": {
+    "kcfi_without_panic_abort": {
+      "flags": [
+        "-Zsanitizer=kcfi"
+      ],
+      "rustc_exit_code": 1,
+      "first_error": "error: `-Z sanitizer=kcfi` requires `-C panic=abort`",
+      "distinct_error_lines": [
+        "error: `-Z sanitizer=kcfi` requires `-C panic=abort`",
+        "error: aborting due to 20 previous errors",
+        "error: mixing `-Zsanitizer` will cause an ABI mismatch in crate `m`"
+      ],
+      "note_count": 19,
+      "first_note": "= note: `-Zsanitizer=kcfi` in this crate is incompatible with unset `-Zsanitizer` in dependency `std`"
+    },
+    "kcfi_no_allow": {
+      "flags": [
+        "-Cpanic=abort",
+        "-Zsanitizer=kcfi"
+      ],
+      "rustc_exit_code": 1,
+      "first_error": "error: mixing `-Zsanitizer` will cause an ABI mismatch in crate `m`",
+      "distinct_error_lines": [
+        "error: aborting due to 20 previous errors",
+        "error: mixing `-Zsanitizer` will cause an ABI mismatch in crate `m`"
+      ],
+      "note_count": 20,
+      "first_note": "= note: `-Zsanitizer=kcfi` in this crate is incompatible with unset `-Zsanitizer` in dependency `std`"
+    },
+    "kcfi_allow_sanitizer": {
+      "flags": [
+        "-Cpanic=abort",
+        "-Zsanitizer=kcfi",
+        "-Cunsafe-allow-abi-mismatch=sanitizer"
+      ],
+      "rustc_exit_code": 0,
+      "first_error": null,
+      "distinct_error_lines": [],
+      "note_count": 0,
+      "first_note": null
+    },
+    "kcfi_normalize_allow_sanitizer_only": {
+      "flags": [
+        "-Cpanic=abort",
+        "-Zsanitizer=kcfi",
+        "-Zsanitizer-cfi-normalize-integers",
+        "-Cunsafe-allow-abi-mismatch=sanitizer"
+      ],
+      "rustc_exit_code": 1,
+      "first_error": "error: mixing `-Zsanitizer-cfi-normalize-integers` will cause an ABI mismatch in crate `m`",
+      "distinct_error_lines": [
+        "error: aborting due to 20 previous errors",
+        "error: mixing `-Zsanitizer-cfi-normalize-integers` will cause an ABI mismatch in crate `m`"
+      ],
+      "note_count": 20,
+      "first_note": "= note: `-Zsanitizer-cfi-normalize-integers=` in this crate is incompatible with unset `-Zsanitizer-cfi-normalize-integers` in dependency `std`"
+    },
+    "kcfi_normalize_allow_both": {
+      "flags": [
+        "-Cpanic=abort",
+        "-Zsanitizer=kcfi",
+        "-Zsanitizer-cfi-normalize-integers",
+        "-Cunsafe-allow-abi-mismatch=sanitizer,sanitizer-cfi-normalize-integers"
+      ],
+      "rustc_exit_code": 0,
+      "first_error": null,
+      "distinct_error_lines": [],
+      "note_count": 0,
+      "first_note": null
+    },
+    "kcfi_normalize_allow_as_two_separate_flags": {
+      "flags": [
+        "-Cpanic=abort",
+        "-Zsanitizer=kcfi",
+        "-Zsanitizer-cfi-normalize-integers",
+        "-Cunsafe-allow-abi-mismatch=sanitizer",
+        "-Cunsafe-allow-abi-mismatch=sanitizer-cfi-normalize-integers"
+      ],
+      "rustc_exit_code": 1,
+      "first_error": "error: mixing `-Zsanitizer` will cause an ABI mismatch in crate `m`",
+      "distinct_error_lines": [
+        "error: aborting due to 20 previous errors",
+        "error: mixing `-Zsanitizer` will cause an ABI mismatch in crate `m`"
+      ],
+      "note_count": 20,
+      "first_note": "= note: `-Zsanitizer=kcfi` in this crate is incompatible with unset `-Zsanitizer` in dependency `std`"
+    },
+    "normalize_without_cfi_or_kcfi": {
+      "flags": [
+        "-Cpanic=abort",
+        "-Zsanitizer-cfi-normalize-integers"
+      ],
+      "rustc_exit_code": 1,
+      "first_error": "error: `-Zsanitizer-cfi-normalize-integers` requires `-Zsanitizer=cfi` or `-Zsanitizer=kcfi`",
+      "distinct_error_lines": [
+        "error: `-Zsanitizer-cfi-normalize-integers` requires `-Zsanitizer=cfi` or `-Zsanitizer=kcfi`",
+        "error: aborting due to 1 previous error"
+      ],
+      "note_count": 0,
+      "first_note": null
+    }
+  },
+  "G_merge_functions": {
+    "source": "\nuse std::hint::black_box;\n\n// Two safe functions with different Rust types, the same LLVM type\n// `i32 (ptr, ptr)`, and the same body.\n#[inline(never)]\npub fn f_i32(a: *mut i32, b: *const i32) -> u32 { let _ = (a, b); 7 }\n#[inline(never)]\npub fn f_u8(a: *mut u8, b: *const u8) -> u32 { let _ = (a, b); 7 }\n\n#[inline(never)]\nfn call_i32(f: fn(*mut i32, *const i32) -> u32) -> u32 { f(std::ptr::null_mut(), std::ptr::null()) }\n#[inline(never)]\nfn call_u8(f: fn(*mut u8, *const u8) -> u32) -> u32 { f(std::ptr::null_mut(), std::ptr::null()) }\n\nfn main() {\n    let mode = std::env::args().nth(1).unwrap_or_default();\n    match mode.as_str() {\n        \"i32\" => println!(\"I32_OK={}\", call_i32(black_box(f_i32))),\n        \"u8\" => println!(\"U8_OK={}\", call_u8(black_box(f_u8))),\n        _ => std::process::exit(2),\n    }\n}\n",
+    "configs": {
+      "no_sanitizer_O2": {
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "-Copt-level=2"
+        ],
+        "ir": {
+          "f_i32": null,
+          "f_u8": {
+            "kcfi_type": null,
+            "kcfi_bundles": [],
+            "alias_of": null
+          },
+          "call_i32": null,
+          "call_u8": {
+            "kcfi_type": null,
+            "kcfi_bundles": [],
+            "alias_of": null
+          }
+        },
+        "exec": {
+          "i32": {
+            "rc": 0,
+            "stdout": "I32_OK=7"
+          },
+          "u8": {
+            "rc": 0,
+            "stdout": "U8_OK=7"
+          }
+        }
+      },
+      "kcfi_O1": {
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "-Copt-level=1",
+          "-Zsanitizer=kcfi",
+          "-Cunsafe-allow-abi-mismatch=sanitizer"
+        ],
+        "ir": {
+          "f_i32": {
+            "kcfi_type": 2077473701,
+            "kcfi_bundles": [],
+            "alias_of": null
+          },
+          "f_u8": {
+            "kcfi_type": 1133697259,
+            "kcfi_bundles": [],
+            "alias_of": null
+          },
+          "call_i32": {
+            "kcfi_type": 3670341424,
+            "kcfi_bundles": [
+              2077473701
+            ],
+            "alias_of": null
+          },
+          "call_u8": {
+            "kcfi_type": 1075421362,
+            "kcfi_bundles": [
+              1133697259
+            ],
+            "alias_of": null
+          }
+        },
+        "exec": {
+          "i32": {
+            "rc": 0,
+            "stdout": "I32_OK=7"
+          },
+          "u8": {
+            "rc": 0,
+            "stdout": "U8_OK=7"
+          }
+        }
+      },
+      "kcfi_O2": {
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "-Copt-level=2",
+          "-Zsanitizer=kcfi",
+          "-Cunsafe-allow-abi-mismatch=sanitizer"
+        ],
+        "ir": {
+          "f_i32": null,
+          "f_u8": {
+            "kcfi_type": 1133697259,
+            "kcfi_bundles": [],
+            "alias_of": null
+          },
+          "call_i32": {
+            "kcfi_type": 3670341424,
+            "kcfi_bundles": [
+              2077473701
+            ],
+            "alias_of": null
+          },
+          "call_u8": {
+            "kcfi_type": 1075421362,
+            "kcfi_bundles": [
+              1133697259
+            ],
+            "alias_of": null
+          }
+        },
+        "exec": {
+          "i32": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "u8": {
+            "rc": 0,
+            "stdout": "U8_OK=7"
+          }
+        }
+      },
+      "kcfi_O2_merge_functions_trampolines": {
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "-Copt-level=2",
+          "-Zmerge-functions=trampolines",
+          "-Zsanitizer=kcfi",
+          "-Cunsafe-allow-abi-mismatch=sanitizer"
+        ],
+        "ir": {
+          "f_i32": null,
+          "f_u8": {
+            "kcfi_type": 1133697259,
+            "kcfi_bundles": [],
+            "alias_of": null
+          },
+          "call_i32": {
+            "kcfi_type": 3670341424,
+            "kcfi_bundles": [
+              2077473701
+            ],
+            "alias_of": null
+          },
+          "call_u8": {
+            "kcfi_type": 1075421362,
+            "kcfi_bundles": [
+              1133697259
+            ],
+            "alias_of": null
+          }
+        },
+        "exec": {
+          "i32": {
+            "rc": -4,
+            "stdout": ""
+          },
+          "u8": {
+            "rc": 0,
+            "stdout": "U8_OK=7"
+          }
+        }
+      },
+      "kcfi_O2_merge_functions_disabled": {
+        "rustc_flags": [
+          "--edition",
+          "2021",
+          "-Ccodegen-units=1",
+          "-Cpanic=abort",
+          "-Csymbol-mangling-version=v0",
+          "-Copt-level=2",
+          "-Zmerge-functions=disabled",
+          "-Zsanitizer=kcfi",
+          "-Cunsafe-allow-abi-mismatch=sanitizer"
+        ],
+        "ir": {
+          "f_i32": {
+            "kcfi_type": 2077473701,
+            "kcfi_bundles": [],
+            "alias_of": null
+          },
+          "f_u8": {
+            "kcfi_type": 1133697259,
+            "kcfi_bundles": [],
+            "alias_of": null
+          },
+          "call_i32": {
+            "kcfi_type": 3670341424,
+            "kcfi_bundles": [
+              2077473701
+            ],
+            "alias_of": null
+          },
+          "call_u8": {
+            "kcfi_type": 1075421362,
+            "kcfi_bundles": [
+              1133697259
+            ],
+            "alias_of": null
+          }
+        },
+        "exec": {
+          "i32": {
+            "rc": 0,
+            "stdout": "I32_OK=7"
+          },
+          "u8": {
+            "rc": 0,
+            "stdout": "U8_OK=7"
+          }
+        }
+      }
+    },
+    "model": {
+      "f_i32": {
+        "typeid": "_ZTSFu3u32Pu3i32PKS0_E",
+        "id": 2077473701
+      },
+      "f_u8": {
+        "typeid": "_ZTSFu3u32Pu2u8PKS0_E",
+        "id": 1133697259
+      }
+    },
+    "kcfi_O2_function_without_own_definition": [
+      "f_i32"
+    ]
+  },
+  "checks": {
+    "A_xxh64_reference_vectors": true,
+    "B_control_without_sanitizer_all_three_calls_return": true,
+    "B_default_u64_i32_callback_dies_with_SIGILL": true,
+    "B_default_transparent_u32_callback_dies_with_SIGILL": true,
+    "B_normalized_u64_i32_callback_returns_1042": true,
+    "B_normalized_transparent_u32_callback_returns_100": true,
+    "B_normalized_wrong_signature_dies_with_SIGILL": true,
+    "B_normalized_pointer_pair_with_one_c_spelling_returns_16": true,
+    "B_normalized_pointer_pair_mixing_long_and_long_long_dies_with_SIGILL": true,
+    "B_one_sided_normalization_dies_with_SIGILL": true,
+    "B_model_ids_equal_rustc_and_clang_emitted_ids": true,
+    "B_default_ids_differ_across_languages": true,
+    "B_normalized_pointer_ids_agree_only_for_the_single_spelling_prototype": true,
+    "B_normalized_ids_agree_across_languages": true,
+    "B_prefix_is_11_nops_then_mov_eax_imm32_and_16_bytes": true,
+    "B_prefix_imm32_equals_emitted_kcfi_type": true,
+    "B_guard_reads_disp_minus_4_and_neg_imm_plus_prefix_is_zero_mod_2_32": true,
+    "B_default_guard_sum_is_nonzero": true,
+    "C_reify_fnptr_shim_defined_only_with_kcfi": true,
+    "C_cfi_attaches_more_than_one_type_id_to_the_method_and_kcfi_exactly_one": true,
+    "C_method_id_is_hash_of_self_erased_string_and_shim_id_of_concrete_self_string": true,
+    "C_call_sites_expect_method_id_for_dyn_and_shim_id_for_fnptr": true,
+    "C_control_without_sanitizer_all_paths_return_42_and_fnptr_is_vtable_slot": true,
+    "C_kcfi_dyn_and_fnptr_paths_return_42": true,
+    "C_kcfi_fnptr_value_differs_from_vtable_slot": true,
+    "C_kcfi_cross_wired_paths_die_with_SIGILL": true,
+    "C_binary_prefixes_carry_the_two_distinct_ids": true,
+    "C_shim_forwards_with_a_direct_unchecked_jump": true,
+    "D_rustc_model_matches_every_rustc_emitted_id": true,
+    "D_clang_model_matches_every_clang_emitted_id": true,
+    "D_cross_language_equality_is_exactly_type_id_string_equality": true,
+    "D_default_ids_agree_iff_signature_has_no_integer_or_char": true,
+    "D_normalized_ids_differ_iff_c_prototype_mixes_same_width_integer_spellings_under_pointers": true,
+    "E_collision_found_with_distinct_strings_and_distinct_64_bit_hashes": true,
+    "E_rustc_emits_the_same_id_for_both_signatures": true,
+    "E_wrong_signature_call_through_colliding_id_is_not_trapped": true,
+    "E_wrong_signature_call_without_collision_dies_with_SIGILL": true,
+    "F_kcfi_requires_panic_abort": true,
+    "F_mixing_sanitizer_is_rejected_without_allow": true,
+    "F_allow_sanitizer_accepts_kcfi": true,
+    "F_normalize_integers_is_a_separate_target_modifier_under_kcfi": true,
+    "F_repeating_the_allow_flag_does_not_accumulate": true,
+    "F_normalize_integers_requires_cfi_or_kcfi": true,
+    "G_type_correct_calls_return_without_sanitizer_and_with_merging_off_or_O1": true,
+    "G_kcfi_O2_default_merging_makes_one_type_correct_call_die_with_SIGILL": true,
+    "G_kcfi_O2_trampolines_mode_also_dies_with_SIGILL": true,
+    "G_kcfi_O2_one_of_the_two_definitions_is_folded_into_the_other": true,
+    "G_both_definitions_and_both_ids_survive_with_merging_disabled": true
+  },
+  "all_checks_hold": true
+}
