@@ -25,12 +25,14 @@ use crate::toolchain::{LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, is_sha256_hex,
 ///
 /// Resource ownership remains explicit so runtime target verification never
 /// discovers model, lock, or inspector files from an untrusted checkout. Within
-/// `theory/`, `BUNDLE_SOURCES` includes `theory/Anneal/MirWp.lean` and its
-/// `Anneal.MirWp.*` submodules; target verification authenticates, stages, and
-/// header-parses listed sources, then compiles, audits, and records provenance
-/// only for the transitive `Anneal.*` closure imported by non-bundled target
-/// modules so unused bundled theory modules incur no compilation, auditing, or
-/// provenance overhead.
+/// `theory/`, `BUNDLE_SOURCES` includes `theory/Anneal/NatBitwise.lean`,
+/// `theory/Anneal/BitVec.lean`, `theory/Anneal/BitVecArith.lean`,
+/// `theory/Anneal/LeBytes.lean`, `theory/Anneal/ListChunks.lean`, and
+/// `theory/Anneal/MirWp.lean` (with its `Anneal.MirWp.*` submodules); target
+/// verification authenticates, stages, and header-parses listed sources, then
+/// compiles, audits, and records provenance only for the transitive `Anneal.*`
+/// closure imported by non-bundled target modules so unused bundled theory
+/// modules incur no compilation, auditing, or provenance overhead.
 pub const BUNDLE_SOURCES: &[&str] = &[
     "trusted/audit/TrustedBoundary.lean",
     "trusted/audit/library-lock.json",
@@ -55,6 +57,11 @@ pub const BUNDLE_SOURCES: &[&str] = &[
     "trusted/lean/Trusted/MirSemantics/Ops.lean",
     "trusted/lean/Trusted/MirSemantics/State.lean",
     "trusted/lean/Trusted/MirSemantics/Step.lean",
+    "theory/Anneal/NatBitwise.lean",
+    "theory/Anneal/BitVec.lean",
+    "theory/Anneal/BitVecArith.lean",
+    "theory/Anneal/LeBytes.lean",
+    "theory/Anneal/ListChunks.lean",
     "theory/Anneal/MirWp.lean",
     "theory/Anneal/MirWp/Canaries.lean",
     "theory/Anneal/MirWp/Core.lean",
