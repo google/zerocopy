@@ -1,0 +1,145 @@
+{
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "qemu_version": "qemu-aarch64 version 11.1.2 (Debian 1:11.1.2+ds-2)",
+  "scalable_vector_checks": {
+    "direct_struct_field_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: scalable vectors cannot be fields of a struct\n --> <TMP>/direct_struct_rejected.rs:9:31\n  |\n9 | pub struct BadStruct { pub v: SvU32, pub x: u64 }\n  |                               ^^^^^\n\nerror: aborting due to 1 previous error\n",
+      "llvm_ir_excerpt": []
+    },
+    "direct_tuple_old_solver_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: scalable vectors cannot be tuple fields\n --> <TMP>/direct_tuple_old_solver.rs:9:29\n  |\n9 | pub fn bad_tup(v: SvU32) -> (SvU32, u64) { (v, 1) }\n  |                             ^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n",
+      "llvm_ir_excerpt": []
+    },
+    "direct_tuple_next_solver_dummysp_bypass_rc0": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: feature `lang_items` is declared but not used\n --> <TMP>/direct_tuple_next_solver.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+      "llvm_ir_excerpt": [
+        "define void @_RNvCsgmi6XREPVQz_24direct_tuple_next_solver7bad_tup(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %v) unnamed_addr #0 !guid !4 {",
+        "store <vscale x 4 x i32> %v, ptr %_0, align 16"
+      ]
+    },
+    "x86_64_arch_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: scalable vectors are not supported on this architecture\n --> <TMP>/x86_64_rejected.rs:3:1\n  |\n3 | #[rustc_scalable_vector(4)]\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n",
+      "llvm_ir_excerpt": []
+    },
+    "generic_struct_wf_bypass_rc0": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: feature `lang_items` is declared but not used\n --> <TMP>/generic_struct_wf_bypass_rc0.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+      "llvm_ir_excerpt": [
+        "define void @_RNvCsctTfBrjojoD_28generic_struct_wf_bypass_rc013bypass_struct(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %v) unnamed_addr #0 !guid !4 {",
+        "store <vscale x 4 x i32> %v, ptr %_0, align 16"
+      ]
+    },
+    "generic_tuple_wf_bypass_rc0": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: feature `lang_items` is declared but not used\n --> <TMP>/generic_tuple_wf_bypass_rc0.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+      "llvm_ir_excerpt": [
+        "define void @_RINvCs73ii9Z4X2fd_27generic_tuple_wf_bypass_rc07mk_pairNtB2_5SvU32EB2_(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %a, i64 %b) unnamed_ad",
+        "store <vscale x 4 x i32> %a, ptr %_0, align 16",
+        "define i64 @_RNvCs73ii9Z4X2fd_27generic_tuple_wf_bypass_rc012bypass_tuple(<vscale x 4 x i32> %v) unnamed_addr #0 !guid !5 {",
+        "%_2 = alloca [32 x i8], align 16",
+        "call void @_RINvCs73ii9Z4X2fd_27generic_tuple_wf_bypass_rc07mk_pairNtB2_5SvU32EB2_(ptr sret([32 x i8]) align 16 %_2, <vscale x 4 x i32> %v, i64 7) #1"
+      ]
+    },
+    "generic_array_wf_bypass_rc0": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: feature `lang_items` is declared but not used\n --> <TMP>/generic_array_wf_bypass_rc0.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+      "llvm_ir_excerpt": [
+        "define void @_RINvCse1z7jaroIVd_27generic_array_wf_bypass_rc06mk_arrNtB2_5SvU32EB2_(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %a, <vscale x 4 x i32> ",
+        "store <vscale x 4 x i32> %a, ptr %0, align 16",
+        "store <vscale x 4 x i32> %b, ptr %1, align 16",
+        "define void @_RNvCse1z7jaroIVd_27generic_array_wf_bypass_rc012bypass_array(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %a, <vscale x 4 x i32> %b) unnam",
+        "call void @_RINvCse1z7jaroIVd_27generic_array_wf_bypass_rc06mk_arrNtB2_5SvU32EB2_(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %a, <vscale x 4 x i32> %b"
+      ]
+    },
+    "closure_capture_wf_bypass_rc0": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: feature `lang_items` is declared but not used\n --> <TMP>/closure_capture_wf_bypass_rc0.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+      "llvm_ir_excerpt": [
+        "define i64 @_RNvCs22jvSNZc7nH_29closure_capture_wf_bypass_rc014bypass_closure(<vscale x 4 x i32> %v, i64 %canary) unnamed_addr #0 !guid !4 {"
+      ]
+    },
+    "multi_vector_x2_ok": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: feature `lang_items` is declared but not used\n --> <TMP>/multi_vec_x2.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+      "llvm_ir_excerpt": [
+        "define { <vscale x 4 x i32>, <vscale x 4 x i32> } @_RNvCskh8WOK4H90j_12multi_vec_x23id2({ <vscale x 4 x i32>, <vscale x 4 x i32> } %x) unnamed_addr #0 !guid !4 "
+      ]
+    },
+    "multi_vector_x9_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: scalable vector tuples can have at most eight fields\n  --> <TMP>/multi_vec_x9.rs:10:1\n   |\n10 | pub struct SvU32x9(SvU32, SvU32, SvU32, SvU32, SvU32, SvU32, SvU32, SvU3...\n   | ^^^^^^^^^^^^^^^^^^\n   |\n   = help: tuples of scalable vectors can only contain multiple of the same scalable vector type\n\nerror: aborting due to 1 previous error\n",
+      "llvm_ir_excerpt": []
+    },
+    "riscv64_rvv_debuginfo0_ok": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: feature `lang_items` is declared but not used\n --> <TMP>/rv_d0.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n",
+      "llvm_ir_excerpt": [
+        "define <vscale x 4 x i32> @_RNvCs6PtX0Eh0J33_5rv_d05id_rv(<vscale x 4 x i32> %v) unnamed_addr #0 !guid !5 {"
+      ]
+    },
+    "riscv64_rvv_debuginfo2_live_ice": {
+      "rc": 101,
+      "is_ice": true,
+      "stderr_head": "\nthread 'rustc' (3685261) panicked at <RUSTC_SRC>/compiler/rustc_codegen_llvm/src/debuginfo/metadata.rs:1213:5:\nassertion `left matches right` failed\n  left: RiscV64\n right: Arch::AArch64\nstack backtrace:\n   0:     0x7fa7e840ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7fa7e8a107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7fa7e8423a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[1f0690780a9acb4e]::io::write::Write>::write_fmt\n   3:     0x7fa7e83dff8a - std[c6455289cfba667d]::panicking::default_hook::{closure#0}\n   4:     0x7fa7e84027e3 - std[c6455289cfba667d]::panicking::default_hook\n   5:     0x7fa7e7180a09 - std[c6455289cfba667d]::panicking::update_hook::<alloc[1a53452dcf5e1664]::boxed::Box<rustc_driver_impl[15d0f20fcdaf3e6]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7fa7e8402c82 - std[c6455289cfba667d]::panicking::panic_with_hook\n   7:     0x7fa7e83e0042 - std[c6455289cfba667d]::panicking::panic_handler::{closure#0}\n   8:     0x7fa7e83d86b9 - std[c6455289cfba667d]::sys::backtrace::__rust_end_short_backtrace::<std[c6455289cfba667d]::panicking::panic_handler::{closure#0}, !>\n   9:     0x7fa7e83e1d9d - __rustc[b41569b7287658e4]::rust_begin_unwind",
+      "llvm_ir_excerpt": []
+    }
+  },
+  "qemu_sve_soundness_bug_execution": {
+    "sve_128_vscale_1": {
+      "hardware_vector_bytes": 16,
+      "ctfe_size_of_svu32": 16,
+      "exit_code": 17,
+      "expected_uncorrupted_canary": 17,
+      "stderr": ""
+    },
+    "sve_256_vscale_2": {
+      "hardware_vector_bytes": 32,
+      "ctfe_size_of_svu32": 16,
+      "exit_code": 42,
+      "expected_uncorrupted_canary": 17,
+      "stderr": ""
+    },
+    "sve_512_vscale_4": {
+      "hardware_vector_bytes": 64,
+      "ctfe_size_of_svu32": 16,
+      "exit_code": -11,
+      "expected_uncorrupted_canary": 17,
+      "stderr": "qemu: uncaught target signal 11 (Segmentation fault) - core dumped"
+    }
+  },
+  "autodiff_and_offload": {
+    "autodiff_without_z_flag": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: using the autodiff feature requires -Z autodiff=Enable\n\nerror: aborting due to 1 previous error\n",
+      "llvm_ir_excerpt": []
+    },
+    "autodiff_with_z_enable_missing_libenzyme23": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: autodiff backend not found in the sysroot: failed to find a `libEnzyme-23.so` in the sysroot candidates:\n       * <HOME>/.rustup/toolchains/nightly-x86_64-unknown-linux-gnu/lib/rustlib/x86_64-unknown-linux-gnu/lib\n  |\n  = note: it will be distributed via rustup in the future\n",
+      "llvm_ir_excerpt": []
+    },
+    "offload_safe_intrinsic_missing_enable_and_fat_lto": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: using the offload feature requires -Z offload=<Device or Host=/absolute/path/to/<crate>.ptx or <crate>.elf>\n\nerror: using the offload feature requires -C lto=fat\n\nerror: aborting due to 2 previous errors\n",
+      "llvm_ir_excerpt": []
+    }
+  }
+}

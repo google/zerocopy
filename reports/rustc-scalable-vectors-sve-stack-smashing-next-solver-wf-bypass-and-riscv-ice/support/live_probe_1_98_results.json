@@ -1,0 +1,335 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "scalable_vector_checks": {
+    "direct_struct_field_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/direct_struct.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/direct_struct.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/direct_struct.rs:1:46\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                              ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "direct_enum_field_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/direct_enum.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/direct_enum.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/direct_enum.rs:1:46\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                              ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "direct_union_field_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/direct_union.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/direct_union.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/direct_union.rs:1:46\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                              ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "x86_64_arch_rejected": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: scalable vectors are not supported on this architecture\n  --> <TMP>/x86_64_rejected.rs:12:1\n   |\n12 | #[rustc_scalable_vector(4)]\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nwarning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/x86_64_rejected.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/x86_64_rejected.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "direct_tuple_default_solver": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/direct_tuple_default.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/direct_tuple_default.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/direct_tuple_default.rs:1:46\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                              ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "direct_tuple_old_solver_no": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/direct_tuple_old.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/direct_tuple_old.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/direct_tuple_old.rs:1:46\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                              ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "direct_tuple_next_solver_globally_dummysp_bypass": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/direct_tuple_next.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/direct_tuple_next.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/direct_tuple_next.rs:1:46\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                              ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n",
+      "llvm_ir_excerpt": [
+        "define void @_RNvCs7hFtbljjzdW_17direct_tuple_next7bad_tup(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %v) unnamed_addr #0 {",
+        "store <vscale x 4 x i32> %v, ptr %_0, align 16"
+      ],
+      "asm_excerpt": []
+    },
+    "direct_array_old_solver_no_bypass": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/direct_array_old.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/direct_array_old.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/direct_array_old.rs:1:46\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                              ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n",
+      "llvm_ir_excerpt": [
+        "define void @_RNvCsk52zl6tVx8K_16direct_array_old10direct_arr(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %a, <vscale x 4 x i32> %b) unnamed_addr #0 {",
+        "store <vscale x 4 x i32> %a, ptr %0, align 16",
+        "store <vscale x 4 x i32> %b, ptr %1, align 16"
+      ],
+      "asm_excerpt": []
+    },
+    "direct_array_next_solver_globally_bypass": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/direct_array_next.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/direct_array_next.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/direct_array_next.rs:1:46\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                              ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n",
+      "llvm_ir_excerpt": [
+        "define void @_RNvCs8UtTaXlqpav_17direct_array_next10direct_arr(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %a, <vscale x 4 x i32> %b) unnamed_addr #0 {",
+        "store <vscale x 4 x i32> %a, ptr %0, align 16",
+        "store <vscale x 4 x i32> %b, ptr %1, align 16"
+      ],
+      "asm_excerpt": []
+    },
+    "generic_struct_old_solver_bypass": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/generic_struct_old.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/generic_struct_old.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+      "llvm_ir_excerpt": [
+        "define void @_RNvCslnXXeXFCLaD_18generic_struct_old13bypass_struct(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %v) unnamed_addr #0 {",
+        "store <vscale x 4 x i32> %v, ptr %_0, align 16",
+        "store i64 17, ptr %0, align 16"
+      ],
+      "asm_excerpt": []
+    },
+    "generic_struct_next_solver_bypass": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/generic_struct_next.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/generic_struct_next.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+      "llvm_ir_excerpt": [
+        "define void @_RNvCs6BnO5u9y5Gs_19generic_struct_next13bypass_struct(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %v) unnamed_addr #0 {",
+        "store <vscale x 4 x i32> %v, ptr %_0, align 16",
+        "store i64 17, ptr %0, align 16"
+      ],
+      "asm_excerpt": []
+    },
+    "generic_enum_and_union_bypass": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/generic_enum_union.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/generic_enum_union.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+      "llvm_ir_excerpt": [
+        "define void @mk_enum(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %v) unnamed_addr #0 {",
+        "store <vscale x 4 x i32> %v, ptr %0, align 16",
+        "define void @mk_union(ptr sret([16 x i8]) align 16 %_0, <vscale x 4 x i32> %v) unnamed_addr #0 {",
+        "store <vscale x 4 x i32> %v, ptr %_0, align 16"
+      ],
+      "asm_excerpt": []
+    },
+    "generic_tuple_old_solver_no": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/generic_tuple_old.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: scalable vectors cannot be tuple fields\n --> <TMP>/generic_tuple_old.rs:7:40\n  |\n7 | pub fn bypass_tuple(v: SvU32) -> u64 { mk_pair(v, 7).1 }\n  |                                        ^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "generic_tuple_next_solver_globally_bypass": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/generic_tuple_next.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/generic_tuple_next.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+      "llvm_ir_excerpt": [
+        "define internal void @_RINvCshtL96F0vHR5_18generic_tuple_next7mk_pairNtB2_5SvU32EB2_(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %a, i64 %b) unnamed_addr #0 {",
+        "store <vscale x 4 x i32> %a, ptr %_0, align 16",
+        "define i64 @_RNvCshtL96F0vHR5_18generic_tuple_next12bypass_tuple(<vscale x 4 x i32> %v) unnamed_addr #1 {",
+        "%_2 = alloca [32 x i8], align 16",
+        "ret i64 %_0"
+      ],
+      "asm_excerpt": []
+    },
+    "generic_array_bypass": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/generic_array.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/generic_array.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+      "llvm_ir_excerpt": [
+        "define internal void @_RINvCs7m8StkFQZLR_13generic_array6mk_arrNtB2_5SvU32EB2_(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %a, <vscale x 4 x i32> %b) unnamed_addr #0 {",
+        "store <vscale x 4 x i32> %a, ptr %0, align 16",
+        "store <vscale x 4 x i32> %b, ptr %1, align 16",
+        "define void @_RNvCs7m8StkFQZLR_13generic_array12bypass_array(ptr sret([32 x i8]) align 16 %_0, <vscale x 4 x i32> %a, <vscale x 4 x i32> %b) unnamed_addr #1 {"
+      ],
+      "asm_excerpt": []
+    },
+    "closure_capture_old_solver_no": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/closure_old.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: scalable vectors cannot be tuple fields\n --> <TMP>/closure_old.rs:7:55\n  |\n7 | pub fn bypass_closure(v: SvU32, canary: u64) -> u64 { run_fn(move || { le...\n  |                                                       ^^^^^^\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "closure_capture_next_solver_globally_bypass": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/closure_next.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/closure_next.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+      "llvm_ir_excerpt": [
+        "define internal i64 @_RINvCs4sKWhFBMPWI_12closure_next6run_fnNCNvB2_14bypass_closure0EB2_(ptr align 16 %f) unnamed_addr #0 {",
+        "%0 = alloca [32 x i8], align 16",
+        "ret i64 %_0",
+        "define internal i64 @_RNCNvCs4sKWhFBMPWI_12closure_next14bypass_closure0B3_(ptr align 16 %_1) unnamed_addr #1 {",
+        "ret i64 %_0",
+        "define i64 @_RNvCs4sKWhFBMPWI_12closure_next14bypass_closure(<vscale x 4 x i32> %v, i64 %canary) unnamed_addr #2 {",
+        "%_3 = alloca [32 x i8], align 16",
+        "store <vscale x 4 x i32> %v, ptr %_3, align 16",
+        "ret i64 %_0"
+      ],
+      "asm_excerpt": []
+    },
+    "ctfe_layout_sizes_and_offsets": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/ctfe_sizes.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/ctfe_sizes.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+      "llvm_ir_excerpt": [
+        "define noundef i64 @al_sv() unnamed_addr #0 {",
+        "ret i64 16",
+        "define noundef i64 @layout_sz() unnamed_addr #0 {",
+        "ret i64 16",
+        "define noundef i64 @off_canary() unnamed_addr #0 {",
+        "ret i64 16",
+        "define noundef i64 @sz_pair() unnamed_addr #0 {",
+        "ret i64 32",
+        "define noundef i64 @sz_sv() unnamed_addr #0 {",
+        "ret i64 16"
+      ],
+      "asm_excerpt": []
+    },
+    "multi_vector_x1": {
+      "rc": 101,
+      "is_ice": true,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/multi_vec_x1.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/multi_vec_x1.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: field `0` is never read\n --> <TMP>/multi_vec_x1.rs:7:20\n  |\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "multi_vector_x2": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/multi_vec_x2.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/multi_vec_x2.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: fields `0` and `1` are never read\n --> <TMP>/multi_vec_x2.rs:7:20\n  |\n",
+      "llvm_ir_excerpt": [
+        "define { <vscale x 4 x i32>, <vscale x 4 x i32> } @_RNvCsiJKMKiSQgiB_12multi_vec_x23id2({ <vscale x 4 x i32>, <vscale x 4 x i32> } %x) unnamed_addr #0 {"
+      ],
+      "asm_excerpt": []
+    },
+    "multi_vector_x7": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/multi_vec_x7.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/multi_vec_x7.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: multiple fields are never read\n --> <TMP>/multi_vec_x7.rs:7:20\n  |\n",
+      "llvm_ir_excerpt": [
+        "define { <vscale x 4 x i32>, <vscale x 4 x i32>, <vscale x 4 x i32>, <vscale x 4 x i32>, <vscale x 4 x i32>, <vscale x 4 x i32>, <vscale x 4 x i32> } @_RNvCsjl2LJmAvXHV_12multi_vec_x73id7({ <vscale x 4 x i32>, <vscale x "
+      ],
+      "asm_excerpt": []
+    },
+    "multi_vector_x8": {
+      "rc": 101,
+      "is_ice": true,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/multi_vec_x8.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/multi_vec_x8.rs:5:18\n  |\n5 | pub struct SvU32(u32);\n  |            ----- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU32` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: multiple fields are never read\n --> <TMP>/multi_vec_x8.rs:7:20\n  |\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "multi_vector_x9": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/multi_vec_x9.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: scalable vector tuples can have at most eight fields\n --> <TMP>/multi_vec_x9.rs:7:1\n  |\n7 | pub struct SvU32x9(SvU32, SvU32, SvU32, SvU32, SvU32, SvU32, SvU32, SvU32...\n  | ^^^^^^^^^^^^^^^^^^\n  |\n  = help: tuples of scalable vectors can only contain multiple of the same scalable vector type\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "aarch64_sve_debuginfo2_ok": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/aarch64_dbg2.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/aarch64_dbg2.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/aarch64_dbg2.rs:1:46\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                              ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n",
+      "llvm_ir_excerpt": [
+        "define <vscale x 4 x i32> @_RNvCs7choFuMfKKd_12aarch64_dbg26id_sve(<vscale x 4 x i32> %v) unnamed_addr #0 !dbg !8 {",
+        "%v.dbg.spill = alloca <vscale x 4 x i32>, align 16",
+        "store <vscale x 4 x i32> %v, ptr %v.dbg.spill, align 16",
+        "!15 = !DICompositeType(tag: DW_TAG_array_type, baseType: !16, align: 128, flags: DIFlagVector, elements: !17)",
+        "!18 = !DISubrange(lowerBound: 0, upperBound: !DIExpression(DW_OP_constu, 2, DW_OP_bregx, 46, 0, DW_OP_mul, DW_OP_constu, 1, DW_OP_minus))"
+      ],
+      "asm_excerpt": []
+    },
+    "aarch64_sve_debuginfo2_count1_div2_zero": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/aarch64_dbg2_c1.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: field `0` is never read\n --> <TMP>/aarch64_dbg2_c1.rs:5:20\n  |\n5 | pub struct SvU64_1(u64);\n  |            ------- ^^^\n  |            |\n  |            field in this struct\n  |\n  = help: consider removing this field\n  = note: `SvU64_1` has a derived impl for the trait `Clone`, but this is intentionally ignored during dead code analysis\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+      "llvm_ir_excerpt": [
+        "define <vscale x 1 x i64> @id_c1(<vscale x 1 x i64> %v) unnamed_addr #0 !dbg !8 {",
+        "%v.dbg.spill = alloca <vscale x 1 x i64>, align 8",
+        "store <vscale x 1 x i64> %v, ptr %v.dbg.spill, align 8",
+        "!15 = !DICompositeType(tag: DW_TAG_array_type, baseType: !16, align: 64, flags: DIFlagVector, elements: !17)",
+        "!18 = !DISubrange(lowerBound: 0, upperBound: !DIExpression(DW_OP_constu, 0, DW_OP_bregx, 46, 0, DW_OP_mul, DW_OP_constu, 1, DW_OP_minus))"
+      ],
+      "asm_excerpt": []
+    },
+    "riscv64_rvv_debuginfo0_ok": {
+      "rc": 0,
+      "is_ice": false,
+      "stderr_head": "warning: unstable feature specified for `-Ctarget-feature`: `v`\n  |\n  = note: this feature is not stably supported; its behavior can change in the future\n\nwarning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/rv64_d0.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/rv64_d0.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/rv64_d0.rs:1:46\n  |\n",
+      "llvm_ir_excerpt": [
+        "define <vscale x 4 x i32> @_RNvCs4mBjR10zmMA_7rv64_d05id_rv(<vscale x 4 x i32> %v) unnamed_addr #0 {"
+      ],
+      "asm_excerpt": []
+    },
+    "riscv64_rvv_debuginfo2_live_ice": {
+      "rc": 101,
+      "is_ice": true,
+      "stderr_head": "warning: unstable feature specified for `-Ctarget-feature`: `v`\n  |\n  = note: this feature is not stably supported; its behavior can change in the future\n\nwarning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/rv64_d2.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/rv64_d2.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/rv64_d2.rs:1:46\n  |\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "riscv32_rvv_debuginfo2_live_ice": {
+      "rc": 101,
+      "is_ice": true,
+      "stderr_head": "warning: unstable feature specified for `-Ctarget-feature`: `v`\n  |\n  = note: this feature is not stably supported; its behavior can change in the future\n\nwarning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMP>/rv32_d2.rs:1:21\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <TMP>/rv32_d2.rs:1:33\n  |\n1 | #![feature(no_core, lang_items, rustc_attrs, intrinsics)]\n  |                                 ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n\nwarning: the feature `intrinsics` is internal to the compiler or standard library\n --> <TMP>/rv32_d2.rs:1:46\n  |\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    }
+  },
+  "aarch64_sve_elf_and_qemu": {
+    "static_elf_build_rc": 0,
+    "disassembly": [
+      "<TMP>/sve_smash:\tfile format elf64-littleaarch64",
+      "Disassembly of section .text:",
+      "00000000002101f0 <_RINvCskrwN9pzY0iW_9sve_smash22overwrite_first_safelyNtB2_5SvU32EB2_>:",
+      "  2101f0: 25b8c540     \tmov\tz0.s, #0x2a             // =42",
+      "  2101f4: e5804000     \tstr\tz0, [x0]",
+      "  2101f8: d65f03c0     \tret",
+      "00000000002101fc <_start>:",
+      "  2101fc: a9bf7bfd     \tstp\tx29, x30, [sp, #-0x10]!",
+      "  210200: 910003fd     \tmov\tx29, sp",
+      "  210204: 94000004     \tbl\t0x210214 <run_test>",
+      "  210208: d2800bc8     \tmov\tx8, #0x5e               // =94",
+      "  21020c: d4000001     \tsvc\t#0",
+      "  210210: d4200020     \tbrk\t#0x1",
+      "0000000000210214 <run_test>:",
+      "  210214: d100c3ff     \tsub\tsp, sp, #0x30",
+      "  210218: a9027bfd     \tstp\tx29, x30, [sp, #0x20]",
+      "  21021c: 910083fd     \tadd\tx29, sp, #0x20",
+      "  210220: 6f00e400     \tmovi\tv0.2d, #0000000000000000",
+      "  210224: 910003e8     \tmov\tx8, sp",
+      "  210228: 52800229     \tmov\tw9, #0x11               // =17",
+      "  21022c: 910003e0     \tmov\tx0, sp",
+      "  210230: e5804100     \tstr\tz0, [x8]",
+      "  210234: f9000be9     \tstr\tx9, [sp, #0x10]",
+      "  210238: 97ffffee     \tbl\t0x2101f0 <_RINvCskrwN9pzY0iW_9sve_smash22overwrite_first_safelyNtB2_5SvU32EB2_>",
+      "  21023c: 394043e0     \tldrb\tw0, [sp, #0x10]",
+      "  210240: a9427bfd     \tldp\tx29, x30, [sp, #0x20]",
+      "  210244: 9100c3ff     \tadd\tsp, sp, #0x30",
+      "  210248: d65f03c0     \tret"
+    ],
+    "qemu_aarch64_available": false,
+    "qemu_version": null,
+    "qemu_runs": {}
+  },
+  "autodiff_and_offload": {
+    "autodiff_without_z_flag": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: using the autodiff feature requires -Z autodiff=Enable\n\nerror: aborting due to 1 previous error\n\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "autodiff_with_z_enable_missing_enzyme": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "error: autodiff backend not found in the sysroot: failed to find a `libEnzyme-22` folder in the sysroot candidates:\n       * <HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/lib\n  |\n  = note: it will be distributed via rustup in the future\n\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "offload_safe_intrinsic_missing_enable_and_fat_lto": {
+      "rc": 1,
+      "is_ice": false,
+      "stderr_head": "warning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> <TMP>/offload_5arg.rs:1:12\n  |\n1 | #![feature(core_intrinsics)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: using the offload feature requires -Z offload=<Device or Host=/absolute/path/to/device.bin>\n\nerror: using the offload feature requires -C lto=fat\n\nerror: aborting due to 2 previous errors; 1 warning emitted\n\n",
+      "llvm_ir_excerpt": [],
+      "asm_excerpt": []
+    },
+    "offload_arity_detected": 5
+  }
+}
