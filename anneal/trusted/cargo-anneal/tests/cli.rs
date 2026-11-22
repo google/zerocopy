@@ -380,23 +380,36 @@ fn early_verification_failures_have_versioned_receipts() {
 #[cfg(all(target_os = "linux", feature = "setup"))]
 #[test]
 fn capture_discovery_prefers_explicit_then_installed_then_sibling() {
-    use std::{fs, os::unix::fs::PermissionsExt};
+    use std::fs;
     let project = tempfile::tempdir().unwrap();
     let bin = project.path().join("bin");
     fs::create_dir(&bin).unwrap();
     let cli = bin.join("cargo-anneal");
-    fs::copy(env!("CARGO_BIN_EXE_cargo-anneal"), &cli).unwrap();
     let script = |label| {
         format!(
             "#!/bin/sh\nprintf '%s\\n' '{{\"status\":\"unsupported\",\"detail\":\"{label}\"}}'\nexit 2\n"
         )
     };
-    for (path, label) in
-        [(bin.join("anneal-rustc-capture"), "sibling"), (bin.join("explicit"), "explicit")]
-    {
-        fs::write(&path, script(label)).unwrap();
-        fs::set_permissions(&path, fs::Permissions::from_mode(0o755)).unwrap();
-    }
+    // Stage executable fixtures in a short-lived child process so this test
+    // binary never holds `O_WRONLY` descriptors in its shared file-descriptor
+    // table while sibling test threads call `Command::current_dir` (`fork()`
+    // on Linux), which would otherwise race before `execve()` with `ETXTBSY`.
+    let stage = Command::new("/bin/sh")
+        .arg("-ceu")
+        .arg(
+            "ln \"$1\" \"$2/cargo-anneal\" 2>/dev/null || cp \"$1\" \"$2/cargo-anneal\"\n\
+             printf '%s' \"$3\" > \"$2/anneal-rustc-capture\"\n\
+             printf '%s' \"$4\" > \"$2/explicit\"\n\
+             chmod 0755 \"$2/anneal-rustc-capture\" \"$2/explicit\"",
+        )
+        .arg("sh")
+        .arg(env!("CARGO_BIN_EXE_cargo-anneal"))
+        .arg(&bin)
+        .arg(script("sibling"))
+        .arg(script("explicit"))
+        .output()
+        .unwrap();
+    assert_result(&stage, 0, "", "");
     let archive = project.path().join("tools.tar.zst");
     let cached = script("installed");
     archive_entries(

@@ -377,7 +377,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                 ("installed_cli", "installed_auditor", "package", "smoke"),
                 full_opt_flags,
             ),
-            ("workspace-tests", ("installed_cli", "workspace"), full_opt_flags),
+            ("workspace-tests", ("workspace",), full_opt_flags),
         ):
             by_id = {
                 s["id"]: s for s in jobs[job_name]["steps"] if "id" in s
@@ -417,13 +417,36 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
             self.assertIn("bwrap --unshare-all", sandbox_step["run"])
             self.assertIn("-- /true", sandbox_step["run"])
 
+        build_step = next(
+            s for s in jobs["build-exocrate"]["steps"] if s.get("id") == "build"
+        )
+        self.assertIn("nix build --max-jobs 4 --cores 4", build_step["run"])
+
         extract_step = next(
             s for s in jobs["test-and-verify"]["steps"]
             if s.get("id") == "extract_lean"
         )
-        self.assertIn("tar --no-same-owner --zstd -xf", extract_step["run"])
-        self.assertIn('test -f "$install_root/lean/bin/lean"', extract_step["run"])
-        self.assertIn('test ! -L "$install_root/lean/bin/lean"', extract_step["run"])
+        self.assertIn("bwrap --unshare-all", extract_step["run"])
+        self.assertIn("tar --no-same-owner --zstd -xf /archive.tar.zst -C /out lean", extract_step["run"])
+        self.assertIn("/usr/bin/python3 -I -B ci/check_bundle_tree.py", extract_step["run"])
+        self.assertIn("--lean-only", extract_step["run"])
+
+        setup_step = next(
+            s for s in jobs["installed-smoke"]["steps"]
+            if s.get("id") == "setup"
+        )
+        self.assertIn("/usr/bin/python3 -I -B ci/check_bundle_tree.py", setup_step["run"])
+        self.assertIn("--discover-single", setup_step["run"])
+
+        ws_extract = next(
+            s for s in jobs["workspace-tests"]["steps"]
+            if s.get("id") == "extract_toolchain"
+        )
+        self.assertIn("bwrap --unshare-all", ws_extract["run"])
+        self.assertIn("tar --no-same-owner --zstd -xf /archive.tar.zst -C /out", ws_extract["run"])
+        self.assertIn("/usr/bin/python3 -I -B ci/check_bundle_tree.py", ws_extract["run"])
+        for ws_step in jobs["workspace-tests"]["steps"]:
+            self.assertNotIn("cargo install", ws_step.get("run", ""))
 
         alpha_step = next(
             s for s in jobs["installed-smoke"]["steps"]
@@ -466,7 +489,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
         for job_name, min_run_steps in (
             ("test-and-verify", 6),
             ("installed-smoke", 12),
-            ("workspace-tests", 7),
+            ("workspace-tests", 6),
         ):
             steps_list = jobs[job_name]["steps"]
             checkout_idx = next(
@@ -501,7 +524,7 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                         f"{job_name}/{step.get('name')!r} must use python3 -I -B -: "
                         f"{match.group(0)!r}",
                     )
-        self.assertGreaterEqual(inline_py_count, 7)
+        self.assertGreaterEqual(inline_py_count, 5)
         # Verify clean_tree in test-and-verify, installed-smoke, and
         # workspace-tests fails closed when git status errors (e.g., outside a
         # git repository).
