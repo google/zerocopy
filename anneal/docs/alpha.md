@@ -62,9 +62,9 @@ terminators), and integer/character casts (for example,
 with symbolic MIR helpers in `Anneal.MirWp`). Proof modules may import bundled
 3-axiom `Anneal.*` proof libraries (`Anneal.MirWp`, `Anneal.LoopInv`,
 `Anneal.LinearArith`, `Anneal.SpineForce`, `Anneal.PTree`,
-`Anneal.BitTrieLrat`, `Anneal.InitLemmas`, `Anneal.BitVec`,
-`Anneal.BitVecArith`, `Anneal.NatBitwise`, `Anneal.LeBytes`, and
-`Anneal.ListChunks`), compiled and audited on demand when imported;
+`Anneal.BitTrieLrat`, `Anneal.InitLemmas`, `Anneal.ClassicalEm`,
+`Anneal.BitVec`, `Anneal.BitVecArith`, `Anneal.NatBitwise`, `Anneal.LeBytes`,
+and `Anneal.ListChunks`), compiled and audited on demand when imported;
 specification modules stay restricted to `Trusted.*`, `Init.*`/`Std.*`, and
 declared `specification` helpers. Calls (including `overflowing_*` methods),
 runtime `Assert` terminators (including ordinary Rust `/` and `%`), place
