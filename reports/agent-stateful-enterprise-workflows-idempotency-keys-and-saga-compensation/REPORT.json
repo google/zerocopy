@@ -1,0 +1,179 @@
+{
+  "topics": [
+    "agents/enterprise-workflows",
+    "agents/stateful-tool-use",
+    "agents/benchmark-methodology",
+    "agents/checkpoint-rewind",
+    "systems/idempotency-keys",
+    "systems/saga-compensation",
+    "systems/transactional-outbox",
+    "runtimes/durable-execution",
+    "verification/state-diff-evaluators"
+  ],
+  "subjects": [
+    {
+      "name": "AppWorld Multi-App Interactive Coding Benchmark and State-Diff Evaluator (StonyBrookNLP/appworld; Trivedi et al., ACL 2024)",
+      "identity": {
+        "arxiv": "2407.18901v1",
+        "branch": "main",
+        "commit_date": "2026-09-03",
+        "repository": "StonyBrookNLP/appworld",
+        "revision": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+        "venue": "ACL 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "ToolSandbox Stateful Conversational Tool-Use Benchmark and Milestone/Minefield Evaluator (apple/ToolSandbox; Lu et al., NAACL 2025)",
+      "identity": {
+        "arxiv": "2408.04682v2",
+        "branch": "main",
+        "commit_date": "2026-09-11",
+        "repository": "apple/ToolSandbox",
+        "revision": "c8571d7854316d2e1c5f288e59fe1e34e53f6dd1",
+        "venue": "NAACL 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "WorkArena Enterprise ServiceNow Web-Agent Benchmark (ServiceNow/WorkArena; Drouin et al., ICML 2024)",
+      "identity": {
+        "arxiv": "2403.07718v5",
+        "branch": "main",
+        "commit_date": "2026-09-28",
+        "repository": "ServiceNow/WorkArena",
+        "revision": "e885130962f61fb64ac305497996a46cfc7d18f0",
+        "venue": "ICML 2024 (PMLR v235)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "WorkArena++ Compositional Enterprise Planning and Infeasible-Task Benchmark (ServiceNow/WorkArena; Boisvert et al., NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2407.05291v2",
+        "branch": "main",
+        "commit_date": "2026-09-28",
+        "repository": "ServiceNow/WorkArena",
+        "revision": "e885130962f61fb64ac305497996a46cfc7d18f0",
+        "venue": "NeurIPS 2024 Datasets and Benchmarks",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "TheAgentCompany Consequential Multi-Service Enterprise Benchmark and Evaluator (TheAgentCompany/TheAgentCompany; Xu et al., 2025)",
+      "identity": {
+        "arxiv": "2412.14161v3",
+        "branch": "main",
+        "commit_date": "2025-11-17",
+        "repository": "TheAgentCompany/TheAgentCompany",
+        "revision": "98b68ef82a47690c316f42fddb05baafaab56851",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "IETF HTTPAPI Idempotency-Key HTTP Header Field Specification (draft-ietf-httpapi-idempotency-key-header-09; ietf-wg-httpapi/idempotency)",
+      "identity": {
+        "branch": "main",
+        "commit_date": "2026-11-21",
+        "draft": "draft-ietf-httpapi-idempotency-key-header-09",
+        "published_date": "2026-11-21",
+        "repository": "ietf-wg-httpapi/idempotency",
+        "revision": "67864a221b7a59435d19b61f15a395a0031b02b8",
+        "url": "https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-09.txt"
+      }
+    },
+    {
+      "name": "Temporal Server Default Activity Retry Policy (temporalio/temporal)",
+      "identity": {
+        "branch": "main",
+        "commit_date": "2026-11-21",
+        "repository": "temporalio/temporal",
+        "revision": "32ef011fbd1e38ecddf656fc3f5026f6641cfeab"
+      }
+    },
+    {
+      "name": "Temporal Python SDK Workflow Replay Sandbox and Activity Sequencer (temporalio/sdk-python)",
+      "identity": {
+        "branch": "main",
+        "commit_date": "2026-11-20",
+        "repository": "temporalio/sdk-python",
+        "revision": "5c925a41b36b34d9ce32d03f1d1f07faa35b348a"
+      }
+    },
+    {
+      "name": "Temporal AI Agent Framework Integrations (temporalio/ai-integrations)",
+      "identity": {
+        "branch": "main",
+        "commit_date": "2026-11-21",
+        "repository": "temporalio/ai-integrations",
+        "revision": "7607956c80b945891e3aa96eff9fde3dcdb9f326"
+      }
+    },
+    {
+      "name": "Janus Evidence-Before-Effect Saga Orchestrator and Offline Provenance Verifier (mustafarslan/janus; Arslan, 2026)",
+      "identity": {
+        "arxiv": "2609.38266v1",
+        "branch": "master",
+        "commit_date": "2026-10-01",
+        "repository": "mustafarslan/janus",
+        "revision": "18c390359571c042deb6313c8e825b68a2f0872e",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Atomix Progress-Aware Transactional Tool-Use and Per-Resource Frontier Runtime (Mohammadi et al., 2026)",
+      "identity": {
+        "arxiv": "2602.14849v2",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Cordon Speculative Semantic Transactions for Tool-Using LLM Agents (Chen et al., 2026)",
+      "identity": {
+        "arxiv": "2606.17573v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "AgentRewind Aligned Context-Environment Checkpointing and Failure-Memory Runtime (Zhuang et al., 2026)",
+      "identity": {
+        "arxiv": "2608.14380v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "SagaLLM Multi-Agent Transaction Log and Compensation Validation Framework (Chang & Geng, 2025)",
+      "identity": {
+        "arxiv": "2503.11951v3",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "ToolEmu LM-Emulated High-Stakes Tool-Use Safety Benchmark (Ruan et al., ICLR 2024)",
+      "identity": {
+        "arxiv": "2309.15817v2",
+        "venue": "ICLR 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Sagas Long-Lived Transaction and Semantic Compensation Model (Garcia-Molina & Salem, ACM SIGMOD 1987)",
+      "identity": {
+        "doi": "10.1145/38714.38742",
+        "pages": "249-259",
+        "venue": "ACM SIGMOD 1987 (SIGMOD Record 16(3))",
+        "year": "1987"
+      }
+    },
+    {
+      "name": "Life Beyond Distributed Transactions: Per-Partner Activities and Tentative-Cancel-Confirm Workflows (Helland, CIDR 2007)",
+      "identity": {
+        "pages": "132-141",
+        "url": "https://www.cidrdb.org/cidr2007/papers/cidr07p15.pdf",
+        "venue": "CIDR 2007",
+        "year": "2007"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

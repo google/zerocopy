@@ -1,0 +1,200 @@
+{
+  "topics": [
+    "agents/synthetic-data",
+    "agents/rejection-sampling",
+    "agents/model-collapse",
+    "agents/rlvr",
+    "agents/self-improvement",
+    "agents/curriculum-filtering",
+    "agents/llm-as-a-judge",
+    "tooling/data-deduplication",
+    "tooling/benchmark-decontamination",
+    "verification/verifier-specificity",
+    "verification/statistical-testing"
+  ],
+  "subjects": [
+    {
+      "name": "Self-Instruct Bootstrap and Fine-Tuning Data Pipeline (yizhongw/self-instruct; Wang et al., ACL 2023)",
+      "identity": {
+        "arxiv": "2212.10560v2",
+        "branch": "main",
+        "commit_date": "2023-03-27",
+        "repository": "yizhongw/self-instruct",
+        "revision": "0b26ccaa415992100fa32df62d41b994cf928e23",
+        "venue": "ACL 2023",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "DataTrove MinHash LSH Deduplication and Text Normalization Pipeline (huggingface/datatrove)",
+      "identity": {
+        "branch": "main",
+        "commit_date": "2026-11-10",
+        "repository": "huggingface/datatrove",
+        "revision": "5484e67ab81daf66c689106054d5133910d731c2"
+      }
+    },
+    {
+      "name": "WizardLM Evol-Instruct Reference Implementation and Specification (nlpxucan/WizardLM; Xu et al., ICLR 2024)",
+      "identity": {
+        "arxiv": "2304.12244v3",
+        "branch": "main",
+        "commit_date": "2025-06-07",
+        "repository": "nlpxucan/WizardLM",
+        "revision": "cd4b4cc022b6426aee62d51f7ae99a4a6ec9aaef",
+        "venue": "ICLR 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Open-R1 Offline Pass-Rate Curriculum Filtering and Benchmark Decontamination (huggingface/open-r1)",
+      "identity": {
+        "branch": "main",
+        "commit_date": "2026-10-02",
+        "repository": "huggingface/open-r1",
+        "revision": "5b6ff22b3fb7aa069c54866e517f39dfc3160e09"
+      }
+    },
+    {
+      "name": "Collapse or Thrive Recursive Data-Workflow Suite (RylanSchaeffer/KoyejoLab-Collapse-or-Thrive; Kazdan et al., ICML 2025)",
+      "identity": {
+        "arxiv": "2410.16713v4",
+        "branch": "main",
+        "commit_date": "2025-07-05",
+        "repository": "RylanSchaeffer/KoyejoLab-Collapse-or-Thrive",
+        "revision": "3874173141dcf7f344b805cfa4ef126fc6a587d8",
+        "venue": "ICML 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Limit-of-RLVR Reasoning Boundary Evaluation Suite (LeapLabTHU/limit-of-RLVR; Yue et al., NeurIPS 2025 Oral)",
+      "identity": {
+        "arxiv": "2504.13837v5",
+        "branch": "main",
+        "commit_date": "2026-07-27",
+        "repository": "LeapLabTHU/limit-of-RLVR",
+        "revision": "79c348f4543330bb78b01a5332df09fea2700f70",
+        "venue": "NeurIPS 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "RLHF Generalization vs. Generation Diversity Metrics Suite (facebookresearch/rlfh-gen-div; Kirk et al., ICLR 2024)",
+      "identity": {
+        "arxiv": "2310.06452v3",
+        "branch": "main",
+        "commit_date": "2024-01-19",
+        "repository": "facebookresearch/rlfh-gen-div",
+        "revision": "7291e6deb5127ca07497da21b4bd72e4f4afab4e",
+        "venue": "ICLR 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "AI Models Collapse When Trained on Recursively Generated Data (Shumailov et al., Nature 2024)",
+      "identity": {
+        "arxiv": "2305.17493v3",
+        "doi": "10.1038/s41586-024-07566-y",
+        "venue": "Nature 631(8022):755-759",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Is Model Collapse Inevitable? Breaking the Curse of Recursion by Accumulating Real and Synthetic Data (Gerstgrasser et al., COLM 2024)",
+      "identity": {
+        "arxiv": "2404.01413v2",
+        "venue": "COLM 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "A Tale of Tails: Model Collapse as a Change of Scaling Laws (Dohmatob et al., ICML 2024)",
+      "identity": {
+        "arxiv": "2402.07043v2",
+        "venue": "ICML 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Strong Model Collapse (Dohmatob et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2410.04840v2",
+        "venue": "ICLR 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "How Bad is Training on Synthetic Data? A Statistical Analysis of Language Model Collapse (Seddik et al., COLM 2024)",
+      "identity": {
+        "arxiv": "2404.05090v1",
+        "venue": "COLM 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "STaR: Bootstrapping Reasoning With Reasoning (Zelikman et al., NeurIPS 2022)",
+      "identity": {
+        "arxiv": "2203.14465v2",
+        "venue": "NeurIPS 2022",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Beyond Human Data: Scaling Self-Training for Problem-Solving with Language Models (ReST^EM; Singh et al., TMLR 2024)",
+      "identity": {
+        "arxiv": "2312.06585v4",
+        "venue": "TMLR 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Scaling Relationship on Learning Mathematical Reasoning with Large Language Models (RFT; Yuan et al., 2023)",
+      "identity": {
+        "arxiv": "2308.01825v2",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Self-Rewarding Language Models (Yuan et al., ICML 2024)",
+      "identity": {
+        "arxiv": "2401.10020v3",
+        "venue": "ICML 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Self-Consuming Generative Models with Curated Data Provably Optimize Human Preferences (Ferbach et al., NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2407.09499v1",
+        "venue": "NeurIPS 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Beyond Model Collapse: Scaling Up with Synthesized Data Requires Verification (Feng et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2406.07515v2",
+        "venue": "ICLR 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Does Writing with Language Models Reduce Content Diversity? (Padmakumar & He, ICLR 2024)",
+      "identity": {
+        "arxiv": "2309.05196v3",
+        "venue": "ICLR 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "ProRL: Prolonged Reinforcement Learning Expands Reasoning Boundaries in Large Language Models (Liu et al., NeurIPS 2025)",
+      "identity": {
+        "arxiv": "2505.24864v1",
+        "venue": "NeurIPS 2025",
+        "year": "2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

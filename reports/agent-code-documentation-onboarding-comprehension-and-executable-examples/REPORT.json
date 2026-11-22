@@ -1,0 +1,184 @@
+{
+  "topics": [
+    "agents/code-documentation",
+    "agents/repository-onboarding",
+    "agents/code-comprehension",
+    "agents/abstention",
+    "agents/repo-map",
+    "agents/benchmark-methodology",
+    "tooling/docstring-code-consistency",
+    "tooling/doctest",
+    "rustc/rustdoc",
+    "verification/executable-examples"
+  ],
+  "subjects": [
+    {
+      "name": "CPython Lib/doctest.py Implementation Source (python/cpython)",
+      "identity": {
+        "branch": "main",
+        "commit_date": "2026-11-22",
+        "path": "Lib/doctest.py",
+        "repository": "python/cpython",
+        "revision": "436d791c26de90e38ee1734a42534594f6a56e98"
+      }
+    },
+    {
+      "name": "CPython 3.13.15 Standard-Library doctest Runtime",
+      "identity": {
+        "build": "main, Aug 11 2026, 08:30:27 [GCC 15.2.0]",
+        "module": "doctest",
+        "runtime": "CPython",
+        "version": "3.13.15"
+      }
+    },
+    {
+      "name": "Rust librustdoc Documentation and Doctest Compiler (rust-lang/rust)",
+      "identity": {
+        "branch": "main",
+        "commit_date": "2026-11-22",
+        "path": "src/librustdoc",
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+      }
+    },
+    {
+      "name": "RepoAgent Call-Graph Repository Documentation Generator (OpenBMB/RepoAgent; Luo et al., 2024)",
+      "identity": {
+        "arxiv": "2402.16667v1",
+        "branch": "main",
+        "commit_date": "2024-12-23",
+        "repository": "OpenBMB/RepoAgent",
+        "revision": "825d988127d7bfd757237d9c4e8678d9104030f0",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "RepoQA Long-Context Code-Understanding Benchmark and Evaluator (evalplus/repoqa; Liu et al., 2024)",
+      "identity": {
+        "arxiv": "2406.06025v1",
+        "branch": "main",
+        "commit_date": "2024-10-29",
+        "repository": "evalplus/repoqa",
+        "revision": "ae876deb1365dbf5a15b0533723c8ed123eee586",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "DoGBench Agentic User-Facing Documentation Benchmark and Defect Audit (Liu, Silva, Calvert, Adiati, & Sanders, 2026)",
+      "identity": {
+        "arxiv": "2609.39909v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "DocAgent Multi-Agent Topological Documentation Generation Framework (Yang et al., 2025)",
+      "identity": {
+        "arxiv": "2504.08725v3",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "CodeWiki Repository-Level Hierarchical Documentation Framework and CodeWikiBench (Hoang, Le-Anh, Le, & Bui, 2025/2026)",
+      "identity": {
+        "arxiv": "2510.24428v6",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "RepoBench Repository-Level Cross-File Code Retrieval and Completion Benchmark (Liu, Xu, & McAuley, ICLR 2024)",
+      "identity": {
+        "arxiv": "2306.03091v2",
+        "venue": "ICLR 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "SIDE Contrastive Code-Summary Coherence Metric (Mastropaolo, Ciniselli, Di Penta, & Bavota, ICSE 2024)",
+      "identity": {
+        "arxiv": "2312.15475v1",
+        "doi": "10.1145/3597503.3639174",
+        "venue": "ICSE 2024",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "DScribe Exception Documentation-Testing Alignment Study (Nassif, Hernandez, Sridharan, & Robillard, IEEE TSE 2022)",
+      "identity": {
+        "arxiv": "2005.08750v2",
+        "doi": "10.1109/TSE.2021.3087087",
+        "venue": "IEEE Transactions on Software Engineering 48(9)",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Associating Code Edits with Comment Updates (Panthaplackel et al., ACL 2020)",
+      "identity": {
+        "arxiv": "2004.12169v2",
+        "doi": "10.18653/v1/2020.acl-main.168",
+        "venue": "ACL 2020",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "CUP Neural Just-In-Time Comment Updater (Liu, Xia, Yan, & Li, ASE 2020)",
+      "identity": {
+        "doi": "10.1145/3324884.3416581",
+        "venue": "ASE 2020",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "HEBCUP Heuristic Comment Updater and Cleaned Benchmark (Ringbo/HebCup; Lin, Wang, Liu, Mao, & Bissyande, ICPC 2021)",
+      "identity": {
+        "branch": "master",
+        "commit_date": "2021-03-30",
+        "doi": "10.1109/ICPC52881.2021.00013",
+        "repository": "Ringbo/HebCup",
+        "revision": "6f52063dbf4a8c28eff013fd5b1e3dbf0fedc8a4",
+        "venue": "ICPC 2021",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Software Documentation Issues Taxonomy and Practitioner Survey Replication Package (USI-INF-Software/Conf-ReplicationPackage-ICSE2020; Aghajani et al., ICSE 2019 & ICSE 2020)",
+      "identity": {
+        "branch": "master",
+        "commit_date": "2020-02-04",
+        "doi_icse2019": "10.1109/ICSE.2019.00122",
+        "doi_icse2020": "10.1145/3377811.3380405",
+        "repository": "USI-INF-Software/Conf-ReplicationPackage-ICSE2020",
+        "revision": "7ad5301e8f624d918f709684e75b065ad156f401",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Code-Comment Inconsistency Evolution Dataset (USI-INF-Software/ICPC2019-code-comment-inconsistencies; Wen et al., ICPC 2019)",
+      "identity": {
+        "branch": "master",
+        "commit_date": "2019-03-13",
+        "doi": "10.1109/ICPC.2019.00019",
+        "repository": "USI-INF-Software/ICPC2019-code-comment-inconsistencies",
+        "revision": "fce8bdbb465a3fbcf2a09caa3a08dcd9add581a0",
+        "venue": "ICPC 2019",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Executable Snippet and Tutorial Reproducibility Studies (Yang, Hussain, & Lopes, MSR 2016; Horton & Parnin, ICSME 2018 & ICSE 2019; Mirhosseini & Parnin, ESEC/FSE 2020)",
+      "identity": {
+        "doi_docable_2020": "10.1145/3368089.3409706",
+        "doi_dockerizeme_2019": "10.1109/ICSE.2019.00047",
+        "doi_gistable_2018": "10.1109/ICSME.2018.00031",
+        "doi_yang_2016": "10.1145/2901739.2901767"
+      }
+    },
+    {
+      "name": "Comment-Code Rule Extraction Studies (Tan et al., iComment SOSP 2007 & @tComment ICST 2012)",
+      "identity": {
+        "doi_icomment_2007": "10.1145/1294261.1294276",
+        "doi_tcomment_2012": "10.1109/ICST.2012.106"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

@@ -1,0 +1,200 @@
+{
+  "topics": [
+    "agents/environment-setup",
+    "agents/build-repair",
+    "agents/benchmark-methodology",
+    "agents/reward-hacking",
+    "build/dependency-resolution",
+    "build/reproducibility",
+    "build/lockfiles",
+    "build/temporal-drift",
+    "smt/cdcl",
+    "smt/pubgrub",
+    "tooling/package-managers",
+    "verification/benchmark-evaluators"
+  ],
+  "subjects": [
+    {
+      "name": "PubGrub Next-Generation Version Solving Specification (dart-lang/pub, Weizenbaum)",
+      "identity": {
+        "commit_date": "2026-11-04",
+        "path": "doc/solver.md",
+        "repository": "dart-lang/pub",
+        "revision": "fe190660d68a4dd3070fe33fc406ff58d754dccc"
+      }
+    },
+    {
+      "name": "pubgrub-rs Rust CDCL Version Solver and Derivation Reporter (pubgrub-rs/pubgrub)",
+      "identity": {
+        "commit_date": "2026-10-29",
+        "repository": "pubgrub-rs/pubgrub",
+        "revision": "65355b4a1192c5a0fadb81f301e6dea713ae78d8"
+      }
+    },
+    {
+      "name": "uv Python Package Resolver, Universal ForkState Scheduler, and Iterative Proof Reporter (astral-sh/uv)",
+      "identity": {
+        "commit_date": "2026-11-21",
+        "repository": "astral-sh/uv",
+        "revision": "264d8b4a5e10d195d2cc2a34dffa807cfbe6298c"
+      }
+    },
+    {
+      "name": "resolvelib Abstract Dependency Backtracking Resolver (sarugaku/resolvelib)",
+      "identity": {
+        "commit_date": "2026-11-05",
+        "repository": "sarugaku/resolvelib",
+        "revision": "223f4bdcf5fb8152a59b3c9503a304572790d75e"
+      }
+    },
+    {
+      "name": "EnvBench Autonomous Environment Setup Benchmark and Evaluator (JetBrains-Research/EnvBench; Eliseeva et al., ICLR 2025 DL4C Workshop)",
+      "identity": {
+        "arxiv": "2503.14443v1",
+        "commit_date": "2025-11-09",
+        "repository": "JetBrains-Research/EnvBench",
+        "revision": "1ba2695018080df3a3606b100fc1dbfad96ea115",
+        "venue": "ICLR 2025 Workshop on Deep Learning for Code (DL4C)",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Repo2Run Dual-Environment Container Build Agent and Benchmark (bytedance/Repo2Run; Hu et al., NeurIPS 2025)",
+      "identity": {
+        "arxiv": "2502.13681v4",
+        "commit_date": "2026-06-10",
+        "repository": "bytedance/Repo2Run",
+        "revision": "65042aa2d69a13746d7cd94ef1c5a29fcd19a692",
+        "venue": "NeurIPS 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "SetupBench Bare-Container Environment Setup Benchmark and Harness (microsoft/SetupBench; Arora, Jang, & Moghaddam, 2025)",
+      "identity": {
+        "arxiv": "2507.09063v1",
+        "commit_date": "2025-08-16",
+        "repository": "microsoft/SetupBench",
+        "revision": "041a412f01348c2a6f8b1b6a910138fe01885aee",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "ExecutionAgent Language-Independent Build and Test Provisioning Agent (sola-st/ExecutionAgent; Bouzenia & Pradel, PACMSE/ISSTA 2025)",
+      "identity": {
+        "arxiv": "2412.10133v2",
+        "commit_date": "2026-09-03",
+        "doi": "10.1145/3728922",
+        "repository": "sola-st/ExecutionAgent",
+        "revision": "8fb16de8eac89619fb7abcaddf750ff82af9afb4",
+        "venue": "PACMSE 2(ISSTA):ISSTA047",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "SWE-smith Execution Environment Factory and Evaluation Harness (SWE-bench/SWE-smith; Yang et al., NeurIPS 2025 Datasets and Benchmarks)",
+      "identity": {
+        "arxiv": "2504.21798v2",
+        "commit_date": "2026-03-21",
+        "repository": "SWE-bench/SWE-smith",
+        "revision": "9b74ac08118a85c39c356802f7961893af73e07f",
+        "venue": "NeurIPS 2025 Datasets and Benchmarks Track",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "SWE-Gym Executable Software Engineering Environment Corpus (Pan et al., ICML 2025)",
+      "identity": {
+        "arxiv": "2412.21139v2",
+        "venue": "ICML 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Installamatic Documentation-Driven Python Dockerfile Synthesis (Milliken, Kang, & Yoo, IEEE SANER 2025)",
+      "identity": {
+        "arxiv": "2412.06294v1",
+        "venue": "IEEE SANER 2025",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "CompileAgent Multi-Agent C/C++ Build Orchestration (Hu et al., 2025)",
+      "identity": {
+        "arxiv": "2505.04254v1",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Managing the Complexity of Large Free and Open Source Package-Based Software Distributions (Mancinelli et al., IEEE/ACM ASE 2006)",
+      "identity": {
+        "doi": "10.1109/ASE.2006.49",
+        "pages": "199-208",
+        "venue": "21st IEEE/ACM International Conference on Automated Software Engineering (ASE 2006)",
+        "year": "2006"
+      }
+    },
+    {
+      "name": "Dependency Solving: A Separate Concern in Component Evolution Management (Abate, Di Cosmo, Treinen, & Zacchiroli, JSS 2012)",
+      "identity": {
+        "doi": "10.1016/j.jss.2012.02.018",
+        "pages": "2228-2240",
+        "venue": "Journal of Systems and Software 85(10)",
+        "year": "2012"
+      }
+    },
+    {
+      "name": "Solving Linux Upgradeability Problems Using Boolean Optimization (Argelich et al., LoCoCo / EPTCS 2010)",
+      "identity": {
+        "arxiv": "1007.1021v1",
+        "pages": "11-22",
+        "venue": "EPTCS 29 (LoCoCo 2010)",
+        "year": "2010"
+      }
+    },
+    {
+      "name": "There and Back Again: Can You Compile That Snapshot? (Tufano et al., JSEP 2017)",
+      "identity": {
+        "article": "e1838",
+        "doi": "10.1002/smr.1838",
+        "venue": "Journal of Software: Evolution and Process 29(4)",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "A Quantitative Study of Java Software Buildability (Sulir & Poruban, PLATEAU 2016)",
+      "identity": {
+        "arxiv": "1712.01024v1",
+        "pages": "17-25",
+        "venue": "7th International Workshop on Evaluation and Usability of Programming Languages and Tools (PLATEAU 2016)",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "BugSwarm: Mining and Continuously Growing a Dataset of Reproducible Failures and Fixes (Tomassi et al., ICSE 2019)",
+      "identity": {
+        "arxiv": "1903.06725v2",
+        "pages": "339-349",
+        "venue": "41st ACM/IEEE International Conference on Software Engineering (ICSE 2019)",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "HireBuild: An Automatic Approach to History-Driven Repair of Build Scripts (Hassan & Wang, ICSE 2018)",
+      "identity": {
+        "pages": "1078-1089",
+        "venue": "40th ACM/IEEE International Conference on Software Engineering (ICSE 2018)",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Python Packaging Specifications: PEP 508 Dependency Markers and PEP 700 Simple API Upload-Time Metadata",
+      "identity": {
+        "pep_508": "https://peps.python.org/pep-0508/",
+        "pep_700": "https://peps.python.org/pep-0700/",
+        "publisher": "Python Software Foundation"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

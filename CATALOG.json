@@ -2349,6 +2349,206 @@
         "tooling/static-analysis"
       ]
     },
+    "agent-build-systems-pubgrub-resolution-and-environment-reproduction": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-11-04",
+            "path": "doc/solver.md",
+            "repository": "dart-lang/pub",
+            "revision": "fe190660d68a4dd3070fe33fc406ff58d754dccc"
+          },
+          "name": "PubGrub Next-Generation Version Solving Specification (dart-lang/pub, Weizenbaum)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-29",
+            "repository": "pubgrub-rs/pubgrub",
+            "revision": "65355b4a1192c5a0fadb81f301e6dea713ae78d8"
+          },
+          "name": "pubgrub-rs Rust CDCL Version Solver and Derivation Reporter (pubgrub-rs/pubgrub)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-21",
+            "repository": "astral-sh/uv",
+            "revision": "264d8b4a5e10d195d2cc2a34dffa807cfbe6298c"
+          },
+          "name": "uv Python Package Resolver, Universal ForkState Scheduler, and Iterative Proof Reporter (astral-sh/uv)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-05",
+            "repository": "sarugaku/resolvelib",
+            "revision": "223f4bdcf5fb8152a59b3c9503a304572790d75e"
+          },
+          "name": "resolvelib Abstract Dependency Backtracking Resolver (sarugaku/resolvelib)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.14443v1",
+            "commit_date": "2025-11-09",
+            "repository": "JetBrains-Research/EnvBench",
+            "revision": "1ba2695018080df3a3606b100fc1dbfad96ea115",
+            "venue": "ICLR 2025 Workshop on Deep Learning for Code (DL4C)",
+            "year": "2025"
+          },
+          "name": "EnvBench Autonomous Environment Setup Benchmark and Evaluator (JetBrains-Research/EnvBench; Eliseeva et al., ICLR 2025 DL4C Workshop)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.13681v4",
+            "commit_date": "2026-06-10",
+            "repository": "bytedance/Repo2Run",
+            "revision": "65042aa2d69a13746d7cd94ef1c5a29fcd19a692",
+            "venue": "NeurIPS 2025",
+            "year": "2025"
+          },
+          "name": "Repo2Run Dual-Environment Container Build Agent and Benchmark (bytedance/Repo2Run; Hu et al., NeurIPS 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.09063v1",
+            "commit_date": "2025-08-16",
+            "repository": "microsoft/SetupBench",
+            "revision": "041a412f01348c2a6f8b1b6a910138fe01885aee",
+            "year": "2025"
+          },
+          "name": "SetupBench Bare-Container Environment Setup Benchmark and Harness (microsoft/SetupBench; Arora, Jang, & Moghaddam, 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.10133v2",
+            "commit_date": "2026-09-03",
+            "doi": "10.1145/3728922",
+            "repository": "sola-st/ExecutionAgent",
+            "revision": "8fb16de8eac89619fb7abcaddf750ff82af9afb4",
+            "venue": "PACMSE 2(ISSTA):ISSTA047",
+            "year": "2025"
+          },
+          "name": "ExecutionAgent Language-Independent Build and Test Provisioning Agent (sola-st/ExecutionAgent; Bouzenia & Pradel, PACMSE/ISSTA 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.21798v2",
+            "commit_date": "2026-03-21",
+            "repository": "SWE-bench/SWE-smith",
+            "revision": "9b74ac08118a85c39c356802f7961893af73e07f",
+            "venue": "NeurIPS 2025 Datasets and Benchmarks Track",
+            "year": "2025"
+          },
+          "name": "SWE-smith Execution Environment Factory and Evaluation Harness (SWE-bench/SWE-smith; Yang et al., NeurIPS 2025 Datasets and Benchmarks)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.21139v2",
+            "venue": "ICML 2025",
+            "year": "2025"
+          },
+          "name": "SWE-Gym Executable Software Engineering Environment Corpus (Pan et al., ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.06294v1",
+            "venue": "IEEE SANER 2025",
+            "year": "2025"
+          },
+          "name": "Installamatic Documentation-Driven Python Dockerfile Synthesis (Milliken, Kang, & Yoo, IEEE SANER 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2505.04254v1",
+            "year": "2025"
+          },
+          "name": "CompileAgent Multi-Agent C/C++ Build Orchestration (Hu et al., 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ASE.2006.49",
+            "pages": "199-208",
+            "venue": "21st IEEE/ACM International Conference on Automated Software Engineering (ASE 2006)",
+            "year": "2006"
+          },
+          "name": "Managing the Complexity of Large Free and Open Source Package-Based Software Distributions (Mancinelli et al., IEEE/ACM ASE 2006)"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jss.2012.02.018",
+            "pages": "2228-2240",
+            "venue": "Journal of Systems and Software 85(10)",
+            "year": "2012"
+          },
+          "name": "Dependency Solving: A Separate Concern in Component Evolution Management (Abate, Di Cosmo, Treinen, & Zacchiroli, JSS 2012)"
+        },
+        {
+          "identity": {
+            "arxiv": "1007.1021v1",
+            "pages": "11-22",
+            "venue": "EPTCS 29 (LoCoCo 2010)",
+            "year": "2010"
+          },
+          "name": "Solving Linux Upgradeability Problems Using Boolean Optimization (Argelich et al., LoCoCo / EPTCS 2010)"
+        },
+        {
+          "identity": {
+            "article": "e1838",
+            "doi": "10.1002/smr.1838",
+            "venue": "Journal of Software: Evolution and Process 29(4)",
+            "year": "2017"
+          },
+          "name": "There and Back Again: Can You Compile That Snapshot? (Tufano et al., JSEP 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "1712.01024v1",
+            "pages": "17-25",
+            "venue": "7th International Workshop on Evaluation and Usability of Programming Languages and Tools (PLATEAU 2016)",
+            "year": "2016"
+          },
+          "name": "A Quantitative Study of Java Software Buildability (Sulir & Poruban, PLATEAU 2016)"
+        },
+        {
+          "identity": {
+            "arxiv": "1903.06725v2",
+            "pages": "339-349",
+            "venue": "41st ACM/IEEE International Conference on Software Engineering (ICSE 2019)",
+            "year": "2019"
+          },
+          "name": "BugSwarm: Mining and Continuously Growing a Dataset of Reproducible Failures and Fixes (Tomassi et al., ICSE 2019)"
+        },
+        {
+          "identity": {
+            "pages": "1078-1089",
+            "venue": "40th ACM/IEEE International Conference on Software Engineering (ICSE 2018)",
+            "year": "2018"
+          },
+          "name": "HireBuild: An Automatic Approach to History-Driven Repair of Build Scripts (Hassan & Wang, ICSE 2018)"
+        },
+        {
+          "identity": {
+            "pep_508": "https://peps.python.org/pep-0508/",
+            "pep_700": "https://peps.python.org/pep-0700/",
+            "publisher": "Python Software Foundation"
+          },
+          "name": "Python Packaging Specifications: PEP 508 Dependency Markers and PEP 700 Simple API Upload-Time Metadata"
+        }
+      ],
+      "topics": [
+        "agents/environment-setup",
+        "agents/build-repair",
+        "agents/benchmark-methodology",
+        "agents/reward-hacking",
+        "build/dependency-resolution",
+        "build/reproducibility",
+        "build/lockfiles",
+        "build/temporal-drift",
+        "smt/cdcl",
+        "smt/pubgrub",
+        "tooling/package-managers",
+        "verification/benchmark-evaluators"
+      ]
+    },
     "agent-calibration-abstention-clarification-sycophancy-and-human-handoff": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -2578,6 +2778,190 @@
         "agents/reasoning-models",
         "verification/conformal-prediction",
         "tooling/agent-harnesses"
+      ]
+    },
+    "agent-code-documentation-onboarding-comprehension-and-executable-examples": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "branch": "main",
+            "commit_date": "2026-11-22",
+            "path": "Lib/doctest.py",
+            "repository": "python/cpython",
+            "revision": "436d791c26de90e38ee1734a42534594f6a56e98"
+          },
+          "name": "CPython Lib/doctest.py Implementation Source (python/cpython)"
+        },
+        {
+          "identity": {
+            "build": "main, Aug 11 2026, 08:30:27 [GCC 15.2.0]",
+            "module": "doctest",
+            "runtime": "CPython",
+            "version": "3.13.15"
+          },
+          "name": "CPython 3.13.15 Standard-Library doctest Runtime"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "commit_date": "2026-11-22",
+            "path": "src/librustdoc",
+            "repository": "rust-lang/rust",
+            "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+          },
+          "name": "Rust librustdoc Documentation and Doctest Compiler (rust-lang/rust)"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.16667v1",
+            "branch": "main",
+            "commit_date": "2024-12-23",
+            "repository": "OpenBMB/RepoAgent",
+            "revision": "825d988127d7bfd757237d9c4e8678d9104030f0",
+            "year": "2024"
+          },
+          "name": "RepoAgent Call-Graph Repository Documentation Generator (OpenBMB/RepoAgent; Luo et al., 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.06025v1",
+            "branch": "main",
+            "commit_date": "2024-10-29",
+            "repository": "evalplus/repoqa",
+            "revision": "ae876deb1365dbf5a15b0533723c8ed123eee586",
+            "year": "2024"
+          },
+          "name": "RepoQA Long-Context Code-Understanding Benchmark and Evaluator (evalplus/repoqa; Liu et al., 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2609.39909v1",
+            "year": "2026"
+          },
+          "name": "DoGBench Agentic User-Facing Documentation Benchmark and Defect Audit (Liu, Silva, Calvert, Adiati, & Sanders, 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.08725v3",
+            "year": "2025"
+          },
+          "name": "DocAgent Multi-Agent Topological Documentation Generation Framework (Yang et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.24428v6",
+            "year": "2026"
+          },
+          "name": "CodeWiki Repository-Level Hierarchical Documentation Framework and CodeWikiBench (Hoang, Le-Anh, Le, & Bui, 2025/2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2306.03091v2",
+            "venue": "ICLR 2024",
+            "year": "2024"
+          },
+          "name": "RepoBench Repository-Level Cross-File Code Retrieval and Completion Benchmark (Liu, Xu, & McAuley, ICLR 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2312.15475v1",
+            "doi": "10.1145/3597503.3639174",
+            "venue": "ICSE 2024",
+            "year": "2024"
+          },
+          "name": "SIDE Contrastive Code-Summary Coherence Metric (Mastropaolo, Ciniselli, Di Penta, & Bavota, ICSE 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2005.08750v2",
+            "doi": "10.1109/TSE.2021.3087087",
+            "venue": "IEEE Transactions on Software Engineering 48(9)",
+            "year": "2022"
+          },
+          "name": "DScribe Exception Documentation-Testing Alignment Study (Nassif, Hernandez, Sridharan, & Robillard, IEEE TSE 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2004.12169v2",
+            "doi": "10.18653/v1/2020.acl-main.168",
+            "venue": "ACL 2020",
+            "year": "2020"
+          },
+          "name": "Associating Code Edits with Comment Updates (Panthaplackel et al., ACL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3324884.3416581",
+            "venue": "ASE 2020",
+            "year": "2020"
+          },
+          "name": "CUP Neural Just-In-Time Comment Updater (Liu, Xia, Yan, & Li, ASE 2020)"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "commit_date": "2021-03-30",
+            "doi": "10.1109/ICPC52881.2021.00013",
+            "repository": "Ringbo/HebCup",
+            "revision": "6f52063dbf4a8c28eff013fd5b1e3dbf0fedc8a4",
+            "venue": "ICPC 2021",
+            "year": "2021"
+          },
+          "name": "HEBCUP Heuristic Comment Updater and Cleaned Benchmark (Ringbo/HebCup; Lin, Wang, Liu, Mao, & Bissyande, ICPC 2021)"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "commit_date": "2020-02-04",
+            "doi_icse2019": "10.1109/ICSE.2019.00122",
+            "doi_icse2020": "10.1145/3377811.3380405",
+            "repository": "USI-INF-Software/Conf-ReplicationPackage-ICSE2020",
+            "revision": "7ad5301e8f624d918f709684e75b065ad156f401",
+            "year": "2020"
+          },
+          "name": "Software Documentation Issues Taxonomy and Practitioner Survey Replication Package (USI-INF-Software/Conf-ReplicationPackage-ICSE2020; Aghajani et al., ICSE 2019 & ICSE 2020)"
+        },
+        {
+          "identity": {
+            "branch": "master",
+            "commit_date": "2019-03-13",
+            "doi": "10.1109/ICPC.2019.00019",
+            "repository": "USI-INF-Software/ICPC2019-code-comment-inconsistencies",
+            "revision": "fce8bdbb465a3fbcf2a09caa3a08dcd9add581a0",
+            "venue": "ICPC 2019",
+            "year": "2019"
+          },
+          "name": "Code-Comment Inconsistency Evolution Dataset (USI-INF-Software/ICPC2019-code-comment-inconsistencies; Wen et al., ICPC 2019)"
+        },
+        {
+          "identity": {
+            "doi_docable_2020": "10.1145/3368089.3409706",
+            "doi_dockerizeme_2019": "10.1109/ICSE.2019.00047",
+            "doi_gistable_2018": "10.1109/ICSME.2018.00031",
+            "doi_yang_2016": "10.1145/2901739.2901767"
+          },
+          "name": "Executable Snippet and Tutorial Reproducibility Studies (Yang, Hussain, & Lopes, MSR 2016; Horton & Parnin, ICSME 2018 & ICSE 2019; Mirhosseini & Parnin, ESEC/FSE 2020)"
+        },
+        {
+          "identity": {
+            "doi_icomment_2007": "10.1145/1294261.1294276",
+            "doi_tcomment_2012": "10.1109/ICST.2012.106"
+          },
+          "name": "Comment-Code Rule Extraction Studies (Tan et al., iComment SOSP 2007 & @tComment ICST 2012)"
+        }
+      ],
+      "topics": [
+        "agents/code-documentation",
+        "agents/repository-onboarding",
+        "agents/code-comprehension",
+        "agents/abstention",
+        "agents/repo-map",
+        "agents/benchmark-methodology",
+        "tooling/docstring-code-consistency",
+        "tooling/doctest",
+        "rustc/rustdoc",
+        "verification/executable-examples"
       ]
     },
     "agent-collaboration-interventions-fenced-leases-and-concurrency-control": {
@@ -6159,6 +6543,185 @@
         "security/registry-validation"
       ]
     },
+    "agent-stateful-enterprise-workflows-idempotency-keys-and-saga-compensation": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2407.18901v1",
+            "branch": "main",
+            "commit_date": "2026-09-03",
+            "repository": "StonyBrookNLP/appworld",
+            "revision": "42b5bcf3cd334fee33f0c37c02070a9f5807add5",
+            "venue": "ACL 2024",
+            "year": "2024"
+          },
+          "name": "AppWorld Multi-App Interactive Coding Benchmark and State-Diff Evaluator (StonyBrookNLP/appworld; Trivedi et al., ACL 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2408.04682v2",
+            "branch": "main",
+            "commit_date": "2026-09-11",
+            "repository": "apple/ToolSandbox",
+            "revision": "c8571d7854316d2e1c5f288e59fe1e34e53f6dd1",
+            "venue": "NAACL 2025",
+            "year": "2025"
+          },
+          "name": "ToolSandbox Stateful Conversational Tool-Use Benchmark and Milestone/Minefield Evaluator (apple/ToolSandbox; Lu et al., NAACL 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.07718v5",
+            "branch": "main",
+            "commit_date": "2026-09-28",
+            "repository": "ServiceNow/WorkArena",
+            "revision": "e885130962f61fb64ac305497996a46cfc7d18f0",
+            "venue": "ICML 2024 (PMLR v235)",
+            "year": "2024"
+          },
+          "name": "WorkArena Enterprise ServiceNow Web-Agent Benchmark (ServiceNow/WorkArena; Drouin et al., ICML 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.05291v2",
+            "branch": "main",
+            "commit_date": "2026-09-28",
+            "repository": "ServiceNow/WorkArena",
+            "revision": "e885130962f61fb64ac305497996a46cfc7d18f0",
+            "venue": "NeurIPS 2024 Datasets and Benchmarks",
+            "year": "2024"
+          },
+          "name": "WorkArena++ Compositional Enterprise Planning and Infeasible-Task Benchmark (ServiceNow/WorkArena; Boisvert et al., NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.14161v3",
+            "branch": "main",
+            "commit_date": "2025-11-17",
+            "repository": "TheAgentCompany/TheAgentCompany",
+            "revision": "98b68ef82a47690c316f42fddb05baafaab56851",
+            "year": "2025"
+          },
+          "name": "TheAgentCompany Consequential Multi-Service Enterprise Benchmark and Evaluator (TheAgentCompany/TheAgentCompany; Xu et al., 2025)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "commit_date": "2026-11-21",
+            "draft": "draft-ietf-httpapi-idempotency-key-header-09",
+            "published_date": "2026-11-21",
+            "repository": "ietf-wg-httpapi/idempotency",
+            "revision": "67864a221b7a59435d19b61f15a395a0031b02b8",
+            "url": "https://www.ietf.org/archive/id/draft-ietf-httpapi-idempotency-key-header-09.txt"
+          },
+          "name": "IETF HTTPAPI Idempotency-Key HTTP Header Field Specification (draft-ietf-httpapi-idempotency-key-header-09; ietf-wg-httpapi/idempotency)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "commit_date": "2026-11-21",
+            "repository": "temporalio/temporal",
+            "revision": "32ef011fbd1e38ecddf656fc3f5026f6641cfeab"
+          },
+          "name": "Temporal Server Default Activity Retry Policy (temporalio/temporal)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "commit_date": "2026-11-20",
+            "repository": "temporalio/sdk-python",
+            "revision": "5c925a41b36b34d9ce32d03f1d1f07faa35b348a"
+          },
+          "name": "Temporal Python SDK Workflow Replay Sandbox and Activity Sequencer (temporalio/sdk-python)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "commit_date": "2026-11-21",
+            "repository": "temporalio/ai-integrations",
+            "revision": "7607956c80b945891e3aa96eff9fde3dcdb9f326"
+          },
+          "name": "Temporal AI Agent Framework Integrations (temporalio/ai-integrations)"
+        },
+        {
+          "identity": {
+            "arxiv": "2609.38266v1",
+            "branch": "master",
+            "commit_date": "2026-10-01",
+            "repository": "mustafarslan/janus",
+            "revision": "18c390359571c042deb6313c8e825b68a2f0872e",
+            "year": "2026"
+          },
+          "name": "Janus Evidence-Before-Effect Saga Orchestrator and Offline Provenance Verifier (mustafarslan/janus; Arslan, 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2602.14849v2",
+            "year": "2026"
+          },
+          "name": "Atomix Progress-Aware Transactional Tool-Use and Per-Resource Frontier Runtime (Mohammadi et al., 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2606.17573v1",
+            "year": "2026"
+          },
+          "name": "Cordon Speculative Semantic Transactions for Tool-Using LLM Agents (Chen et al., 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2608.14380v1",
+            "year": "2026"
+          },
+          "name": "AgentRewind Aligned Context-Environment Checkpointing and Failure-Memory Runtime (Zhuang et al., 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.11951v3",
+            "year": "2025"
+          },
+          "name": "SagaLLM Multi-Agent Transaction Log and Compensation Validation Framework (Chang & Geng, 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.15817v2",
+            "venue": "ICLR 2024",
+            "year": "2024"
+          },
+          "name": "ToolEmu LM-Emulated High-Stakes Tool-Use Safety Benchmark (Ruan et al., ICLR 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/38714.38742",
+            "pages": "249-259",
+            "venue": "ACM SIGMOD 1987 (SIGMOD Record 16(3))",
+            "year": "1987"
+          },
+          "name": "Sagas Long-Lived Transaction and Semantic Compensation Model (Garcia-Molina & Salem, ACM SIGMOD 1987)"
+        },
+        {
+          "identity": {
+            "pages": "132-141",
+            "url": "https://www.cidrdb.org/cidr2007/papers/cidr07p15.pdf",
+            "venue": "CIDR 2007",
+            "year": "2007"
+          },
+          "name": "Life Beyond Distributed Transactions: Per-Partner Activities and Tentative-Cancel-Confirm Workflows (Helland, CIDR 2007)"
+        }
+      ],
+      "topics": [
+        "agents/enterprise-workflows",
+        "agents/stateful-tool-use",
+        "agents/benchmark-methodology",
+        "agents/checkpoint-rewind",
+        "systems/idempotency-keys",
+        "systems/saga-compensation",
+        "systems/transactional-outbox",
+        "runtimes/durable-execution",
+        "verification/state-diff-evaluators"
+      ]
+    },
     "agent-structured-outputs-constrained-decoding-tool-schemas-and-computer-use": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -6300,6 +6863,206 @@
         "compilers/parsing",
         "tooling/agent-harnesses",
         "security/sandboxing"
+      ]
+    },
+    "agent-synthetic-data-rejection-sampling-and-recursive-model-collapse": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2212.10560v2",
+            "branch": "main",
+            "commit_date": "2023-03-27",
+            "repository": "yizhongw/self-instruct",
+            "revision": "0b26ccaa415992100fa32df62d41b994cf928e23",
+            "venue": "ACL 2023",
+            "year": "2023"
+          },
+          "name": "Self-Instruct Bootstrap and Fine-Tuning Data Pipeline (yizhongw/self-instruct; Wang et al., ACL 2023)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "commit_date": "2026-11-10",
+            "repository": "huggingface/datatrove",
+            "revision": "5484e67ab81daf66c689106054d5133910d731c2"
+          },
+          "name": "DataTrove MinHash LSH Deduplication and Text Normalization Pipeline (huggingface/datatrove)"
+        },
+        {
+          "identity": {
+            "arxiv": "2304.12244v3",
+            "branch": "main",
+            "commit_date": "2025-06-07",
+            "repository": "nlpxucan/WizardLM",
+            "revision": "cd4b4cc022b6426aee62d51f7ae99a4a6ec9aaef",
+            "venue": "ICLR 2024",
+            "year": "2024"
+          },
+          "name": "WizardLM Evol-Instruct Reference Implementation and Specification (nlpxucan/WizardLM; Xu et al., ICLR 2024)"
+        },
+        {
+          "identity": {
+            "branch": "main",
+            "commit_date": "2026-10-02",
+            "repository": "huggingface/open-r1",
+            "revision": "5b6ff22b3fb7aa069c54866e517f39dfc3160e09"
+          },
+          "name": "Open-R1 Offline Pass-Rate Curriculum Filtering and Benchmark Decontamination (huggingface/open-r1)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.16713v4",
+            "branch": "main",
+            "commit_date": "2025-07-05",
+            "repository": "RylanSchaeffer/KoyejoLab-Collapse-or-Thrive",
+            "revision": "3874173141dcf7f344b805cfa4ef126fc6a587d8",
+            "venue": "ICML 2025",
+            "year": "2025"
+          },
+          "name": "Collapse or Thrive Recursive Data-Workflow Suite (RylanSchaeffer/KoyejoLab-Collapse-or-Thrive; Kazdan et al., ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.13837v5",
+            "branch": "main",
+            "commit_date": "2026-07-27",
+            "repository": "LeapLabTHU/limit-of-RLVR",
+            "revision": "79c348f4543330bb78b01a5332df09fea2700f70",
+            "venue": "NeurIPS 2025",
+            "year": "2025"
+          },
+          "name": "Limit-of-RLVR Reasoning Boundary Evaluation Suite (LeapLabTHU/limit-of-RLVR; Yue et al., NeurIPS 2025 Oral)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.06452v3",
+            "branch": "main",
+            "commit_date": "2024-01-19",
+            "repository": "facebookresearch/rlfh-gen-div",
+            "revision": "7291e6deb5127ca07497da21b4bd72e4f4afab4e",
+            "venue": "ICLR 2024",
+            "year": "2024"
+          },
+          "name": "RLHF Generalization vs. Generation Diversity Metrics Suite (facebookresearch/rlfh-gen-div; Kirk et al., ICLR 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.17493v3",
+            "doi": "10.1038/s41586-024-07566-y",
+            "venue": "Nature 631(8022):755-759",
+            "year": "2024"
+          },
+          "name": "AI Models Collapse When Trained on Recursively Generated Data (Shumailov et al., Nature 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.01413v2",
+            "venue": "COLM 2024",
+            "year": "2024"
+          },
+          "name": "Is Model Collapse Inevitable? Breaking the Curse of Recursion by Accumulating Real and Synthetic Data (Gerstgrasser et al., COLM 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2402.07043v2",
+            "venue": "ICML 2024",
+            "year": "2024"
+          },
+          "name": "A Tale of Tails: Model Collapse as a Change of Scaling Laws (Dohmatob et al., ICML 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2410.04840v2",
+            "venue": "ICLR 2025",
+            "year": "2025"
+          },
+          "name": "Strong Model Collapse (Dohmatob et al., ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2404.05090v1",
+            "venue": "COLM 2024",
+            "year": "2024"
+          },
+          "name": "How Bad is Training on Synthetic Data? A Statistical Analysis of Language Model Collapse (Seddik et al., COLM 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2203.14465v2",
+            "venue": "NeurIPS 2022",
+            "year": "2022"
+          },
+          "name": "STaR: Bootstrapping Reasoning With Reasoning (Zelikman et al., NeurIPS 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2312.06585v4",
+            "venue": "TMLR 2024",
+            "year": "2024"
+          },
+          "name": "Beyond Human Data: Scaling Self-Training for Problem-Solving with Language Models (ReST^EM; Singh et al., TMLR 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.01825v2",
+            "year": "2023"
+          },
+          "name": "Scaling Relationship on Learning Mathematical Reasoning with Large Language Models (RFT; Yuan et al., 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.10020v3",
+            "venue": "ICML 2024",
+            "year": "2024"
+          },
+          "name": "Self-Rewarding Language Models (Yuan et al., ICML 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2407.09499v1",
+            "venue": "NeurIPS 2024",
+            "year": "2024"
+          },
+          "name": "Self-Consuming Generative Models with Curated Data Provably Optimize Human Preferences (Ferbach et al., NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2406.07515v2",
+            "venue": "ICLR 2025",
+            "year": "2025"
+          },
+          "name": "Beyond Model Collapse: Scaling Up with Synthesized Data Requires Verification (Feng et al., ICLR 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2309.05196v3",
+            "venue": "ICLR 2024",
+            "year": "2024"
+          },
+          "name": "Does Writing with Language Models Reduce Content Diversity? (Padmakumar & He, ICLR 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2505.24864v1",
+            "venue": "NeurIPS 2025",
+            "year": "2025"
+          },
+          "name": "ProRL: Prolonged Reinforcement Learning Expands Reasoning Boundaries in Large Language Models (Liu et al., NeurIPS 2025)"
+        }
+      ],
+      "topics": [
+        "agents/synthetic-data",
+        "agents/rejection-sampling",
+        "agents/model-collapse",
+        "agents/rlvr",
+        "agents/self-improvement",
+        "agents/curriculum-filtering",
+        "agents/llm-as-a-judge",
+        "tooling/data-deduplication",
+        "tooling/benchmark-decontamination",
+        "verification/verifier-specificity",
+        "verification/statistical-testing"
       ]
     },
     "agent-test-driven-development-property-based-testing-and-mutation-guided-workflows": {
