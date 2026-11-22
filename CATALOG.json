@@ -87821,6 +87821,33 @@
         "verification"
       ]
     },
+    "rust-std-concurrency-intrinsics-futex-mpmc-scope-and-tls-destructor-semantics": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "Rust standard library (core, alloc, std) and in-tree Miri concurrency shims"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "bc1b6da0d31959f0fb30c273955dd95304109cba"
+          },
+          "name": "Standalone Miri Linux futex shim (historical Relaxed-load baseline)"
+        }
+      ],
+      "topics": [
+        "rust/concurrency",
+        "rust/atomics",
+        "rust/memory-model",
+        "systems/linux-futex",
+        "verification/concurrency",
+        "verification/liveness"
+      ]
+    },
     "rust-sysroot-rlib-artifact-provenance-reproducible-capture-and-toctou-hardening": {
       "observed_at": "2026-11-20",
       "subjects": [
