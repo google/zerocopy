@@ -1,0 +1,330 @@
+{
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "probe_1_fake_borrow_matrix": {
+    "mutate_box_deref_pat_in_guard_shallow_pair": {
+      "compile_rc": 1,
+      "error_codes": [
+        "error[E0510]"
+      ],
+      "fake_borrows_after_cleanup_post_borrowck": [],
+      "fake_borrows_in_built_mir": [
+        "&fake shallow (*_1)",
+        "&fake shallow _1"
+      ],
+      "fake_reads_after_cleanup_post_borrowck": [],
+      "fake_reads_in_built_mir": [
+        "FakeRead(ForMatchGuard, _2)",
+        "FakeRead(ForMatchGuard, _3)",
+        "FakeRead(ForMatchedPlace(None), _1)"
+      ],
+      "stderr_head": [
+        "error[E0510]: cannot assign `*b` in match guard",
+        "error: aborting due to 1 previous error",
+        "For more information about this error, try `rustc --explain E0510`."
+      ]
+    },
+    "mutate_custom_deref_pure_in_guard_deep_borrow": {
+      "compile_rc": 1,
+      "error_codes": [
+        "error[E0510]"
+      ],
+      "fake_borrows_after_cleanup_post_borrowck": [],
+      "fake_borrows_in_built_mir": [
+        "&fake _1"
+      ],
+      "fake_reads_after_cleanup_post_borrowck": [],
+      "fake_reads_in_built_mir": [
+        "FakeRead(ForMatchGuard, _4)",
+        "FakeRead(ForMatchedPlace(None), _1)"
+      ],
+      "stderr_head": [
+        "error[E0510]: cannot assign `s.0` in match guard",
+        "error: aborting due to 1 previous error",
+        "For more information about this error, try `rustc --explain E0510`."
+      ]
+    },
+    "mutate_deref_prefix_bound_in_guard": {
+      "compile_rc": 1,
+      "error_codes": [
+        "error[E0510]"
+      ],
+      "fake_borrows_after_cleanup_post_borrowck": [],
+      "fake_borrows_in_built_mir": [
+        "&fake shallow _1"
+      ],
+      "fake_reads_after_cleanup_post_borrowck": [],
+      "fake_reads_in_built_mir": [
+        "FakeRead(ForGuardBinding, _5)",
+        "FakeRead(ForMatchGuard, _3)",
+        "FakeRead(ForMatchedPlace(None), (*_1))"
+      ],
+      "stderr_head": [
+        "error[E0510]: cannot assign `x` in match guard",
+        "error: aborting due to 1 previous error",
+        "For more information about this error, try `rustc --explain E0510`."
+      ]
+    },
+    "mutate_slice_ref_prefix_in_guard": {
+      "compile_rc": 1,
+      "error_codes": [
+        "error[E0510]"
+      ],
+      "fake_borrows_after_cleanup_post_borrowck": [],
+      "fake_borrows_in_built_mir": [
+        "&fake shallow (*_1)",
+        "&fake shallow _1"
+      ],
+      "fake_reads_after_cleanup_post_borrowck": [],
+      "fake_reads_in_built_mir": [
+        "FakeRead(ForMatchGuard, _3)",
+        "FakeRead(ForMatchGuard, _4)",
+        "FakeRead(ForMatchedPlace(None), (*_10))",
+        "FakeRead(ForMatchedPlace(None), _1)"
+      ],
+      "stderr_head": [
+        "error[E0510]: cannot assign `x` in match guard",
+        "= help: maybe it is overwritten before being read?",
+        "error: aborting due to 1 previous error; 1 warning emitted",
+        "For more information about this error, try `rustc --explain E0510`."
+      ]
+    },
+    "mutate_switched_enum_wildcard_payload_in_guard": {
+      "compile_rc": 1,
+      "error_codes": [
+        "error[E0510]"
+      ],
+      "fake_borrows_after_cleanup_post_borrowck": [],
+      "fake_borrows_in_built_mir": [
+        "&fake shallow _1"
+      ],
+      "fake_reads_after_cleanup_post_borrowck": [],
+      "fake_reads_in_built_mir": [
+        "FakeRead(ForMatchGuard, _2)",
+        "FakeRead(ForMatchedPlace(None), _1)"
+      ],
+      "stderr_head": [
+        "error[E0510]: cannot assign `x` in match guard",
+        "error: aborting due to 1 previous error",
+        "For more information about this error, try `rustc --explain E0510`."
+      ]
+    },
+    "mutate_switched_enum_with_binding_in_guard": {
+      "compile_rc": 1,
+      "error_codes": [
+        "error[E0506]"
+      ],
+      "fake_borrows_after_cleanup_post_borrowck": [],
+      "fake_borrows_in_built_mir": [
+        "&fake shallow _1"
+      ],
+      "fake_reads_after_cleanup_post_borrowck": [],
+      "fake_reads_in_built_mir": [
+        "FakeRead(ForGuardBinding, _5)",
+        "FakeRead(ForMatchGuard, _2)",
+        "FakeRead(ForMatchedPlace(None), _1)"
+      ],
+      "stderr_head": [
+        "error[E0506]: cannot assign to `x` because it is borrowed",
+        "error: aborting due to 1 previous error",
+        "For more information about this error, try `rustc --explain E0506`."
+      ]
+    },
+    "mutate_unswitched_box_inner_without_deref_pat_allowed": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "fake_borrows_after_cleanup_post_borrowck": [],
+      "fake_borrows_in_built_mir": [],
+      "fake_reads_after_cleanup_post_borrowck": [],
+      "fake_reads_in_built_mir": [
+        "FakeRead(ForMatchedPlace(None), _1)"
+      ],
+      "stderr_head": []
+    },
+    "mutate_unswitched_local_in_guard_allowed": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "fake_borrows_after_cleanup_post_borrowck": [],
+      "fake_borrows_in_built_mir": [],
+      "fake_reads_after_cleanup_post_borrowck": [],
+      "fake_reads_in_built_mir": [
+        "FakeRead(ForMatchedPlace(None), _1)"
+      ],
+      "stderr_head": []
+    },
+    "mutate_unswitched_payload_projection_allowed": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "fake_borrows_after_cleanup_post_borrowck": [],
+      "fake_borrows_in_built_mir": [
+        "&fake shallow (_1.0: std::option::Option<i32>)",
+        "&fake shallow (_1.1: bool)"
+      ],
+      "fake_reads_after_cleanup_post_borrowck": [],
+      "fake_reads_in_built_mir": [
+        "FakeRead(ForMatchGuard, _2)",
+        "FakeRead(ForMatchGuard, _3)",
+        "FakeRead(ForMatchedPlace(None), _1)"
+      ],
+      "stderr_head": []
+    }
+  },
+  "probe_2_or_pattern_guards_and_drop_order": {
+    "compile_rc": 0,
+    "miri_stacked_borrows_rc": 0,
+    "miri_stacked_borrows_stdout": [
+      "OR_GUARD_RES=20 LOG=[\"guard:1\", \"guard:2\"]",
+      "DROP_BRANCH0=[\"arm:a=first:b=second\", \"drop:second:2\", \"drop:first:1\"]",
+      "DROP_BRANCH1=[\"arm:a=second:b=first\", \"drop:first:1\", \"drop:second:2\"]",
+      "GUARD_FAIL_NONCOPY=[\"guard_fail:a=left:b=right\", \"fallback_arm:x=left:y=right\", \"drop:right:2\", \"drop:left:1\"]",
+      "UNSWITCHED_MUT_GUARD=true",
+      "UNSWITCHED_PAYLOAD_MUT_GUARD=42"
+    ],
+    "miri_tree_borrows_rc": 0,
+    "miri_tree_borrows_stdout": [
+      "OR_GUARD_RES=20 LOG=[\"guard:1\", \"guard:2\"]",
+      "DROP_BRANCH0=[\"arm:a=first:b=second\", \"drop:second:2\", \"drop:first:1\"]",
+      "DROP_BRANCH1=[\"arm:a=second:b=first\", \"drop:first:1\", \"drop:second:2\"]",
+      "GUARD_FAIL_NONCOPY=[\"guard_fail:a=left:b=right\", \"fallback_arm:x=left:y=right\", \"drop:right:2\", \"drop:left:1\"]",
+      "UNSWITCHED_MUT_GUARD=true",
+      "UNSWITCHED_PAYLOAD_MUT_GUARD=42"
+    ],
+    "native_equals_miri_stacked_and_tree": true,
+    "native_rc": 0,
+    "native_stdout": [
+      "OR_GUARD_RES=20 LOG=[\"guard:1\", \"guard:2\"]",
+      "DROP_BRANCH0=[\"arm:a=first:b=second\", \"drop:second:2\", \"drop:first:1\"]",
+      "DROP_BRANCH1=[\"arm:a=second:b=first\", \"drop:first:1\", \"drop:second:2\"]",
+      "GUARD_FAIL_NONCOPY=[\"guard_fail:a=left:b=right\", \"fallback_arm:x=left:y=right\", \"drop:right:2\", \"drop:left:1\"]",
+      "UNSWITCHED_MUT_GUARD=true",
+      "UNSWITCHED_PAYLOAD_MUT_GUARD=42"
+    ]
+  },
+  "probe_3_uninhabited_and_non_exhaustive": {
+    "downstream_matrix": {
+      "match_exh_single_no_wild": {
+        "compile_rc": 0,
+        "error_codes": [],
+        "has_discriminant_read": false,
+        "has_fake_read_matched_in_built": true,
+        "has_place_mention_in_post_cleanup": true,
+        "has_switch_int": false,
+        "has_unreachable": false,
+        "stderr_head": []
+      },
+      "match_non_exh_single_no_wild": {
+        "compile_rc": 1,
+        "error_codes": [
+          "error[E0004]"
+        ],
+        "has_discriminant_read": false,
+        "has_fake_read_matched_in_built": false,
+        "has_place_mention_in_post_cleanup": false,
+        "has_switch_int": false,
+        "has_unreachable": true,
+        "stderr_head": [
+          "error[E0004]: non-exhaustive patterns: `_` not covered",
+          "error: aborting due to 1 previous error",
+          "For more information about this error, try `rustc --explain E0004`."
+        ]
+      },
+      "match_non_exh_single_with_wild": {
+        "compile_rc": 0,
+        "error_codes": [],
+        "has_discriminant_read": true,
+        "has_fake_read_matched_in_built": true,
+        "has_place_mention_in_post_cleanup": true,
+        "has_switch_int": true,
+        "has_unreachable": false,
+        "stderr_head": []
+      },
+      "match_void_by_val_empty": {
+        "compile_rc": 0,
+        "error_codes": [],
+        "has_discriminant_read": false,
+        "has_fake_read_matched_in_built": true,
+        "has_place_mention_in_post_cleanup": true,
+        "has_switch_int": false,
+        "has_unreachable": true,
+        "stderr_head": []
+      },
+      "match_void_raw_ptr_empty": {
+        "compile_rc": 0,
+        "error_codes": [],
+        "has_discriminant_read": false,
+        "has_fake_read_matched_in_built": true,
+        "has_place_mention_in_post_cleanup": true,
+        "has_switch_int": false,
+        "has_unreachable": true,
+        "stderr_head": []
+      },
+      "match_void_raw_ptr_wildcard": {
+        "compile_rc": 0,
+        "error_codes": [],
+        "has_discriminant_read": false,
+        "has_fake_read_matched_in_built": true,
+        "has_place_mention_in_post_cleanup": true,
+        "has_switch_int": false,
+        "has_unreachable": false,
+        "stderr_head": []
+      },
+      "match_void_ref_empty": {
+        "compile_rc": 0,
+        "error_codes": [],
+        "has_discriminant_read": false,
+        "has_fake_read_matched_in_built": true,
+        "has_place_mention_in_post_cleanup": true,
+        "has_switch_int": false,
+        "has_unreachable": true,
+        "stderr_head": []
+      }
+    },
+    "miri_void_tests": {
+      "raw_wildcard_null": {
+        "rc": 0,
+        "stdout": "RES=99",
+        "ub_summary": []
+      },
+      "raw_wildcard_valid": {
+        "rc": 0,
+        "stdout": "RES=99",
+        "ub_summary": []
+      },
+      "ref_empty_from_valid": {
+        "rc": 1,
+        "stdout": "",
+        "ub_summary": [
+          "error: Undefined Behavior: constructing invalid value of type &Void: encountered a reference pointing to uninhabited type Void",
+          "|                        ^^^ Undefined Behavior occurred here",
+          "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+          "= help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information",
+          "error: aborting due to 1 previous error; 3 warnings emitted"
+        ]
+      }
+    },
+    "upstream_compile_rc": 0
+  },
+  "probe_4_slice_and_range_mir": {
+    "compile_rc": 0,
+    "fixed_array_fn": {
+      "has_from_end_index": false,
+      "has_ptr_metadata": false,
+      "has_static_subslice_proj": true,
+      "has_static_suffix_index": true
+    },
+    "slice_and_range_fn": {
+      "has_constant_index_from_end": true,
+      "has_constant_index_prefix": true,
+      "has_legacy_rvalue_len": false,
+      "has_ptr_metadata": true,
+      "has_subslice_from_end_proj": true,
+      "range_and_len_cmp_ops": [
+        "Eq(",
+        "Ge(",
+        "Le(",
+        "Lt("
+      ],
+      "switch_int_count": 9
+    }
+  },
+  "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+}

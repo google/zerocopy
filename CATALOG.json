@@ -91259,6 +91259,70 @@
         "rustc/codegen"
       ]
     },
+    "rustc-match-lowering-fake-borrows-guards-or-patterns-and-uninhabited-soundness": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rustc and Miri nightly toolchain (primary source and execution subject)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rustc nightly compiler (cross-revision source comparison)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd"
+          },
+          "name": "rustc MIR specification reference revision anchored by Anneal Trusted.MirAst"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (f8a08b688 2026-05-30)"
+          },
+          "name": "rustc nightly revision pinned by Anneal rustc-capture driver"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR syntax, semantics, and compiler capture boundary"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover kernel used for mechanized soundness proofs"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-maybe-dangling-interior-mutability-llvm-noalias-and-sroa-soundness": {
       "observed_at": "2026-11-21",
       "subjects": [
