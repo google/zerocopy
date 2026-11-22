@@ -1860,6 +1860,212 @@ fn verifies_upstream_pin_and_rejects_tampering() {
     );
 }
 
+/// Verifies that `upstream/source-lock.json` conforms to `SourceLock`'s closed
+/// schema (admitting only the upstream `c92d1d97` `null` `**HASH**` on
+/// `upstream/rustc-source/Cargo.lock`) and rejects unknown top-level or nested
+/// fields, stray `**HASH**` elsewhere, malformed digests, blank/padded
+/// components, non-canonical paths, bad `schema_version`, and duplicate paths.
+#[test]
+fn verifies_source_lock_schema_and_rejects_malformed_records() {
+    let checkout = repo_root();
+    let source_lock_bytes =
+        fs::read(checkout.join("vendor/lean-miri/upstream/source-lock.json")).unwrap();
+    let parsed = anneal_audit::verify_source_lock_bytes(&source_lock_bytes).unwrap();
+    assert_eq!(parsed.schema_version, 1);
+    assert_eq!(parsed.files.len(), 707);
+    assert_eq!(parsed.supporting_files.len(), 12);
+
+    // Future upstream lockfiles that remove the legacy `"**HASH**": null` on
+    // `upstream/rustc-source/Cargo.lock` must still validate cleanly.
+    let mut cleaned_lock: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    cleaned_lock["supporting_files"][11].as_object_mut().unwrap().remove("**HASH**");
+    anneal_audit::verify_source_lock_bytes(&serde_json::to_vec(&cleaned_lock).unwrap()).unwrap();
+
+    let expect_policy = |val: &serde_json::Value, needle: &str| {
+        let err =
+            anneal_audit::verify_source_lock_bytes(&serde_json::to_vec(val).unwrap()).unwrap_err();
+        assert_eq!(err.code, 1, "expected policy error for {needle}, got {err}");
+        assert!(err.message.contains(needle), "expected {needle:?} in: {err}");
+    };
+
+    // On-disk modification of `upstream/source-lock.json` is rejected by
+    // `verify_upstream_pin`.
+    let tmp = tempfile::tempdir().unwrap();
+    let vendor_copy = tmp.path().join("vendor/lean-miri");
+    copy_dir_all(&checkout.join("vendor/lean-miri"), &vendor_copy).unwrap();
+    let mut disk_lock: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    disk_lock["supporting_files"][0]
+        .as_object_mut()
+        .unwrap()
+        .insert("**HASH**".to_string(), serde_json::Value::Null);
+    fs::write(
+        vendor_copy.join("upstream/source-lock.json"),
+        serde_json::to_vec(&disk_lock).unwrap(),
+    )
+    .unwrap();
+    let err_disk = anneal_audit::verify_upstream_pin(&vendor_copy).unwrap_err();
+    assert_eq!(err_disk.code, 1);
+    assert!(
+        err_disk.message.contains("vendor aux file SHA-256 mismatch for upstream/source-lock.json"),
+        "unexpected error: {err_disk}"
+    );
+
+    // Stray `**HASH**` is rejected on any other record, when non-null on the
+    // legacy record, or anywhere in `files`.
+    expect_policy(&disk_lock, "unexpected `**HASH**` field in `supporting_files`");
+
+    let mut non_null_legacy: serde_json::Value =
+        serde_json::from_slice(&source_lock_bytes).unwrap();
+    non_null_legacy["supporting_files"][11]["**HASH**"] = serde_json::json!("override");
+    expect_policy(&non_null_legacy, "unexpected `**HASH**` field in `supporting_files`");
+
+    let mut file_stray: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    file_stray["files"][0]
+        .as_object_mut()
+        .unwrap()
+        .insert("**HASH**".to_string(), serde_json::Value::Null);
+    expect_policy(&file_stray, "unexpected `**HASH**` field in `files`");
+
+    let mut moved_legacy: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    let legacy_record = moved_legacy["supporting_files"].as_array_mut().unwrap().pop().unwrap();
+    assert_eq!(legacy_record["path"].as_str(), Some("upstream/rustc-source/Cargo.lock"));
+    moved_legacy["files"].as_array_mut().unwrap().push(legacy_record);
+    expect_policy(
+        &moved_legacy,
+        "unexpected `**HASH**` field in `files` record for upstream/rustc-source/Cargo.lock",
+    );
+
+    // Unknown fields at top level and across nested `deny_unknown_fields`
+    // structs must fail closed.
+    let mut top_extra: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    top_extra.as_object_mut().unwrap().insert("unexpected".to_string(), serde_json::json!(true));
+    expect_policy(&top_extra, "unknown field `unexpected`");
+
+    let mut file_rec_extra: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    file_rec_extra["files"][0]
+        .as_object_mut()
+        .unwrap()
+        .insert("extra_file_key".to_string(), serde_json::json!(1));
+    expect_policy(&file_rec_extra, "unknown field `extra_file_key`");
+
+    let mut pins_extra: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    pins_extra["pins"]
+        .as_object_mut()
+        .unwrap()
+        .insert("extra_pins_key".to_string(), serde_json::json!(1));
+    expect_policy(&pins_extra, "unknown field `extra_pins_key`");
+
+    let mut pin_extra: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    pin_extra["pins"]["rustc"]
+        .as_object_mut()
+        .unwrap()
+        .insert("extra_pin_key".to_string(), serde_json::json!(1));
+    expect_policy(&pin_extra, "unknown field `extra_pin_key`");
+
+    let mut acq_extra: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    acq_extra["acquisition"]
+        .as_object_mut()
+        .unwrap()
+        .insert("extra_acq_key".to_string(), serde_json::json!(1));
+    expect_policy(&acq_extra, "unknown field `extra_acq_key`");
+
+    let mut sel_extra: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    sel_extra["acquisition"]["rustc_selected_archive_paths"]
+        .as_object_mut()
+        .unwrap()
+        .insert("extra_sel_key".to_string(), serde_json::json!(1));
+    expect_policy(&sel_extra, "unknown field `extra_sel_key`");
+
+    let mut ext_extra: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    ext_extra["external_dependencies"]
+        .as_object_mut()
+        .unwrap()
+        .insert("extra_ext_key".to_string(), serde_json::json!(1));
+    expect_policy(&ext_extra, "unknown field `extra_ext_key`");
+
+    let mut cargo_pkg_extra: serde_json::Value =
+        serde_json::from_slice(&source_lock_bytes).unwrap();
+    cargo_pkg_extra["external_dependencies"]["cargo_packages"][0]
+        .as_object_mut()
+        .unwrap()
+        .insert("extra_pkg_key".to_string(), serde_json::json!(1));
+    expect_policy(&cargo_pkg_extra, "unknown field `extra_pkg_key`");
+
+    let mut rustc_crate_extra: serde_json::Value =
+        serde_json::from_slice(&source_lock_bytes).unwrap();
+    rustc_crate_extra["external_dependencies"]["rustc_private_crates"][0]
+        .as_object_mut()
+        .unwrap()
+        .insert("extra_crate_key".to_string(), serde_json::json!(1));
+    expect_policy(&rustc_crate_extra, "unknown field `extra_crate_key`");
+
+    let mut res_extra: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    res_extra["external_dependencies"]["resolution_file"]
+        .as_object_mut()
+        .unwrap()
+        .insert("extra_res_key".to_string(), serde_json::json!(1));
+    expect_policy(&res_extra, "unknown field `extra_res_key`");
+
+    // Schema version, acquisition, resolution file, and pin field validations.
+    let mut bad_ver: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_ver["schema_version"] = serde_json::json!(2);
+    expect_policy(&bad_ver, "unsupported upstream/source-lock.json schema_version: 2");
+
+    let mut bad_acq: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_acq["acquisition"]["rustc_selected_archive_paths"]["count"] = serde_json::json!(0);
+    expect_policy(&bad_acq, "invalid `acquisition` metadata");
+
+    let mut bad_res: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_res["external_dependencies"]["resolution_file"]["sha256"] = serde_json::json!("bad");
+    expect_policy(&bad_res, "invalid `resolution_file` record");
+
+    let mut bad_pin: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_pin["pins"]["rustc"]["commit"] = serde_json::json!("short");
+    expect_policy(&bad_pin, "invalid `rustc` pin record");
+
+    // Malformed `files` and `supporting_files` records, non-canonical paths,
+    // padded components, and intra/cross-section duplicate paths.
+    let mut empty_files: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    empty_files["files"] = serde_json::json!([]);
+    expect_policy(&empty_files, "upstream/source-lock.json `files` must not be empty");
+
+    let mut bad_file_blob: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_file_blob["files"][0]["git_blob"] = serde_json::json!("bad-blob");
+    expect_policy(&bad_file_blob, "invalid `files` git_blob");
+
+    let mut bad_blob: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_blob["supporting_files"][0]["git_blob"] = serde_json::json!("not-a-40-hex-oid");
+    expect_policy(&bad_blob, "invalid `supporting_files` git_blob");
+
+    let mut bad_sha: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    bad_sha["supporting_files"][0]["sha256"] = serde_json::json!("deadbeef");
+    expect_policy(&bad_sha, "invalid `supporting_files` sha256");
+
+    for bad_component in ["   ", " aes", "aes "] {
+        let mut bad_comp: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+        bad_comp["supporting_files"][0]["component"] = serde_json::json!(bad_component);
+        expect_policy(&bad_comp, "invalid `supporting_files` component name");
+    }
+
+    for non_canon in
+        ["../escape", "upstream//a", "upstream/./a", "upstream/a/", "/abs/path", "upstream\\a"]
+    {
+        let mut dirty_path: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+        dirty_path["supporting_files"][0]["path"] = serde_json::json!(non_canon);
+        expect_policy(&dirty_path, "invalid `supporting_files` path");
+    }
+
+    let mut dup_path: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    let dup_entry = dup_path["supporting_files"][0].clone();
+    dup_path["supporting_files"].as_array_mut().unwrap().push(dup_entry);
+    expect_policy(&dup_path, "duplicate `supporting_files` path");
+
+    let mut cross_dup: serde_json::Value = serde_json::from_slice(&source_lock_bytes).unwrap();
+    let file_entry = cross_dup["files"][0].clone();
+    cross_dup["supporting_files"].as_array_mut().unwrap().push(file_entry);
+    expect_policy(&cross_dup, "duplicate `supporting_files` path");
+}
+
 /// Verifies that `"correspondence-audit"` rejects a `.vendorMiri` module that
 /// declares a constant in the reserved `Trusted` or `Anneal` root namespace
 /// (including a `private` declaration), declares an `axiom` or `unsafe`
