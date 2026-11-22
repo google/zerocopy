@@ -1,0 +1,286 @@
+{
+  "toolchain": {
+    "rustc_vV": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)"
+  },
+  "probe1_track_caller_matrix": {
+    "dev_rc": 0,
+    "dev_stdout": [
+      "CASE=fn_result_qmark in_user=true exact_line=true got_file=src/main.rs got_line=82 expected_line=82",
+      "CASE=hetero_result_qmark in_user=true exact_line=true got_file=src/main.rs got_line=92 expected_line=92",
+      "CASE=homo_custom_qmark in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/ops/try_trait.rs got_line=384 expected_line=101",
+      "CASE=hetero_custom_qmark in_user=true exact_line=true got_file=src/main.rs got_line=110 expected_line=110",
+      "CASE=fn_result_yeet in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/result.rs got_line=2204 expected_line=119",
+      "CASE=homo_result_yeet in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/result.rs got_line=2204 expected_line=128",
+      "CASE=hetero_result_yeet in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/result.rs got_line=2204 expected_line=137",
+      "CASE=fn_custom_yeet in_user=true exact_line=true got_file=src/main.rs got_line=146 expected_line=146",
+      "CASE=homo_custom_yeet in_user=true exact_line=true got_file=src/main.rs got_line=155 expected_line=155",
+      "CASE=hetero_custom_yeet in_user=true exact_line=true got_file=src/main.rs got_line=164 expected_line=164"
+    ],
+    "dev_stderr_head": "",
+    "release_rc": 0,
+    "release_stdout": [
+      "CASE=fn_result_qmark in_user=true exact_line=true got_file=src/main.rs got_line=82 expected_line=82",
+      "CASE=hetero_result_qmark in_user=true exact_line=true got_file=src/main.rs got_line=92 expected_line=92",
+      "CASE=homo_custom_qmark in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/ops/try_trait.rs got_line=384 expected_line=101",
+      "CASE=hetero_custom_qmark in_user=true exact_line=true got_file=src/main.rs got_line=110 expected_line=110",
+      "CASE=fn_result_yeet in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/result.rs got_line=2204 expected_line=119",
+      "CASE=homo_result_yeet in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/result.rs got_line=2204 expected_line=128",
+      "CASE=hetero_result_yeet in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/result.rs got_line=2204 expected_line=137",
+      "CASE=fn_custom_yeet in_user=true exact_line=true got_file=src/main.rs got_line=146 expected_line=146",
+      "CASE=homo_custom_yeet in_user=true exact_line=true got_file=src/main.rs got_line=155 expected_line=155",
+      "CASE=hetero_custom_yeet in_user=true exact_line=true got_file=src/main.rs got_line=164 expected_line=164"
+    ],
+    "release_stderr_head": "",
+    "miri_tb_rc": 0,
+    "miri_tb_stdout": [
+      "CASE=fn_result_qmark in_user=true exact_line=true got_file=src/main.rs got_line=82 expected_line=82",
+      "CASE=hetero_result_qmark in_user=true exact_line=true got_file=src/main.rs got_line=92 expected_line=92",
+      "CASE=homo_custom_qmark in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/ops/try_trait.rs got_line=384 expected_line=101",
+      "CASE=hetero_custom_qmark in_user=true exact_line=true got_file=src/main.rs got_line=110 expected_line=110",
+      "CASE=fn_result_yeet in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/result.rs got_line=2204 expected_line=119",
+      "CASE=homo_result_yeet in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/result.rs got_line=2204 expected_line=128",
+      "CASE=hetero_result_yeet in_user=false exact_line=false got_file=<RUST_SYSROOT_SRC>/library/core/src/result.rs got_line=2204 expected_line=137",
+      "CASE=fn_custom_yeet in_user=true exact_line=true got_file=src/main.rs got_line=146 expected_line=146",
+      "CASE=homo_custom_yeet in_user=true exact_line=true got_file=src/main.rs got_line=155 expected_line=155",
+      "CASE=hetero_custom_yeet in_user=true exact_line=true got_file=src/main.rs got_line=164 expected_line=164"
+    ],
+    "miri_tb_stderr_head": ""
+  },
+  "probe2_scope_inference_and_conversion_matrix": {
+    "homo_unannotated_ok": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": ""
+    },
+    "homo_from_conv_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0308]: mismatched types\n --> <TMP>/homo_from_conv_rejected.rs:6:43\n  |\n6 |     let _x: Result<u32, SuperErr> = try { Err::<u32, SubErr>(SubErr)? };\n  |                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^ expected `Result<u32, SuperErr>`, found `Result<_, SubErr>`\n  |\n  = note: expected enum `Result<u32, SuperErr>`\n             found enum `Result<_, SubErr>`\nhelp: consider using `Result::expect` to unwrap the `Result<_, SubErr>` value, panicking if the value is a `Result::Err`\n  |\n6 |     let _x: Result<u32, SuperErr> = try { Err::<u32, SubErr>(SubErr)?.expect(\"REASON\") };\n  |                                                                      +++++++++++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+    },
+    "homo_yeet_from_conv_accepted": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "HOMO_YEET_CONV_OK=77"
+    },
+    "homo_yeet_unannotated_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0283]: type annotations needed\n   --> <TMP>/homo_yeet_unannotated_rejected.rs:3:9\n    |\n  3 |     let _x = try {\n    |         ^^\n  4 |         if true { do yeet 1u8; }\n    |                           --- type must be known at this point\n    |\n    = note: the type must implement `FromResidual<Yeet<u8>>`\nnote: required by a bound in `ops::try_trait::from_yeet`\n   --> <RUST_SYSROOT_SRC>/library/core/src/ops/try_trait.rs:347:8\n    |\n345 | pub fn from_yeet<T, Y>(yeeted: Y) -> T\n    |        --------- required by a bound in this function\n346 | where\n347 |     T: FromResidual<Yeet<Y>>,\n    |        ^^^^^^^^^^^^^^^^^^^^^ required by this bound in `from_yeet`\nhelp: consider giving `_x` an explicit type\n    |\n  3 |     let _x: /* Type */ = try {\n    |           ++++++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0283`."
+    },
+    "hetero_bikeshed_from_conv_accepted": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "HETERO_BIKESHED_CONV_OK=107"
+    },
+    "infallible_alias_never_no_blanket_from": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0277]: `?` couldn't convert the error to `u32`\n --> <TMP>/infallible_alias_never_no_blanket_from.rs:3:42\n  |\n3 |     let _out: Result<u64, u32> = (|| Ok(r?))();\n  |                                         -^ the trait `From<Infallible>` is not implemented for `u32`\n  |                                         |\n  |                                         this can't be annotated with `?` because it has type `Result<_, Infallible>`\n  |\n  = note: the question mark operation (`?`) implicitly performs a conversion on the error value using the `From` trait\n  = help: `u32` implements trait `From<T>`:\n            From<Ipv4Addr>\n            From<bool>\n            From<char>\n            From<std::ascii::Char>\n            From<u16>\n            From<u8>\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+    },
+    "infallible_is_never_type_identity_check": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0277]: the trait bound `Infallible: Same<!>` is not satisfied\n --> <TMP>/infallible_is_never_type_identity_check.rs:7:19\n  |\n7 |     assert_same::<Infallible, !>();\n  |                   ^^^^^^^^^^ the trait `Same<!>` is not implemented for `Infallible`\n  |\nnote: required by a bound in `assert_same`\n --> <TMP>/infallible_is_never_type_identity_check.rs:5:19\n  |\n5 | fn assert_same<A: Same<B>, B>() {}\n  |                   ^^^^^^^ required by this bound in `assert_same`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+    },
+    "const_try_missing_const_trait_impl_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0658]: `?` is not allowed on `Option<u32>` in constant functions\n --> <TMP>/const_try_missing_const_trait_impl_rejected.rs:3:11\n  |\n3 |     try { a? + b? }\n  |           ^^\n  |\n  = note: calls in constant functions are limited to constant functions, tuple structs and tuple variants\n  = note: see issue #143874 <https://github.com/rust-lang/rust/issues/143874> for more information\n  = help: add `#![feature(const_trait_impl)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror[E0658]: `?` is not allowed on `Option<u32>` in constant functions\n --> <TMP>/const_try_missing_const_trait_impl_rejected.rs:3:16\n  |\n3 |     try { a? + b? }\n  |                ^^\n  |\n  = note: calls in constant functions are limited to constant functions, tuple structs and tuple variants\n  = note: see issue #143874 <https://github"
+    },
+    "const_try_with_const_trait_impl_accepted": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "CONST_TRY_OK=42"
+    },
+    "const_yeet_rejected_non_const_from_yeet": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0015]: cannot call non-const function `ops::try_trait::from_yeet::<Option<u32>, ()>` in constant functions\n   --> <TMP>/const_yeet_rejected_non_const_from_yeet.rs:3:15\n    |\n  3 |     if true { do yeet; }\n    |               ^^^^^^^\n    |\nnote: function `from_yeet` is not const\n   --> <RUST_SYSROOT_SRC>/library/core/src/ops/try_trait.rs:345:1\n    |\n345 | / pub fn from_yeet<T, Y>(yeeted: Y) -> T\n346 | | where\n347 | |     T: FromResidual<Yeet<Y>>,\n    | |_____________________________^\n    = note: calls in constant functions are limited to constant functions, tuple structs and tuple variants\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0015`."
+    }
+  },
+  "probe3_edition_drop_order": {
+    "edition_2021": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "lines": [
+        "qmark_ok res=Ok(16) drops=[\"rhs_tmp\", \"scrut_tmp\", \"stmt_done\", \"fn_local\"]",
+        "qmark_err res=Err(\"boom\") drops=[\"scrut_tmp\", \"fn_local\"]",
+        "try_tail_ok res=Ok(11) drops=[\"qmark_tmp\", \"blk_local\", \"tail_tmp\"]",
+        "try_tail_tuple res=Ok(42) drops=[\"blk_local\", \"tail_tuple_tmp\"]",
+        "hetero_try_tail_ok res=Ok(11) drops=[\"qmark_tmp\", \"blk_local\", \"tail_tmp\"]"
+      ],
+      "try_tail_refcell_borrow_rc": 1,
+      "try_tail_refcell_borrow_stderr": "error[E0597]: `c` does not live long enough\n --> <TMP>/btry_2021.rs:6:10\n  |\n5 |         let c = RefCell::new(41u32);\n  |             - binding `c` declared here\n6 |         *c.borrow() + 1\n  |          ^---------\n  |          |\n  |          borrowed value does not live long enough\n  |          a temporary with access to the borrow is created here ...\n7 |     };\n  |     -- ... and the borrow might be used here, when that temporary is dropped and runs the destructor for type `Ref<'_, u32>`\n  |   ",
+      "hetero_try_tail_refcell_borrow_rc": 1,
+      "hetero_try_tail_refcell_borrow_stderr": "error[E0597]: `c` does not live long enough\n --> <TMP>/htry_2021.rs:6:10\n  |\n5 |         let c = RefCell::new(41u32);\n  |             - binding `c` declared here\n6 |         *c.borrow() + 1\n  |          ^---------\n  |          |\n  |          borrowed value does not live long enough\n  |          a temporary with access to the borrow is created here ...\n7 |     };\n  |     -- ... and the borrow might be used here, when that temporary is dropped and runs the destructor for type `Ref<'_, u32>`\n  |   "
+    },
+    "edition_2024": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "lines": [
+        "qmark_ok res=Ok(16) drops=[\"rhs_tmp\", \"scrut_tmp\", \"stmt_done\", \"fn_local\"]",
+        "qmark_err res=Err(\"boom\") drops=[\"scrut_tmp\", \"fn_local\"]",
+        "try_tail_ok res=Ok(11) drops=[\"qmark_tmp\", \"tail_tmp\", \"blk_local\"]",
+        "try_tail_tuple res=Ok(42) drops=[\"tail_tuple_tmp\", \"blk_local\"]",
+        "hetero_try_tail_ok res=Ok(11) drops=[\"qmark_tmp\", \"tail_tmp\", \"blk_local\"]"
+      ],
+      "try_tail_refcell_borrow_rc": 0,
+      "try_tail_refcell_borrow_stderr": "",
+      "try_tail_refcell_borrow_run_rc": 0,
+      "hetero_try_tail_refcell_borrow_rc": 0,
+      "hetero_try_tail_refcell_borrow_stderr": "",
+      "hetero_try_tail_refcell_borrow_run_rc": 0
+    }
+  },
+  "probe4_const_try_mir_and_llvm": {
+    "compile_o0_rc": 0,
+    "compile_o0_stderr": "",
+    "compile_o2_rc": 0,
+    "compile_o2_stderr": "",
+    "mir_postcleanup_vs_optimized": {
+      "qmark_infallible": {
+        "postcleanup_mir_opt0": {
+          "file": "lib.qmark_infallible.3-2-000.runtime-post-cleanup.after.mir",
+          "bb_count": 8,
+          "switchInt_count": 1,
+          "unreachable_count": 1,
+          "residual_into_try_type_mentions": 0,
+          "residual_into_try_type_live_calls": 0,
+          "from_residual_mentions": 1,
+          "from_residual_live_calls": 1,
+          "branch_mentions": 1,
+          "branch_live_calls": 1
+        },
+        "optimized_mir_opt2": {
+          "file": "lib.qmark_infallible.3-3-000.runtime-optimized.after.mir",
+          "bb_count": 1,
+          "switchInt_count": 0,
+          "unreachable_count": 0,
+          "residual_into_try_type_mentions": 0,
+          "residual_into_try_type_live_calls": 0,
+          "from_residual_mentions": 1,
+          "from_residual_live_calls": 0,
+          "branch_mentions": 0,
+          "branch_live_calls": 0
+        }
+      },
+      "qmark_infallible_same": {
+        "postcleanup_mir_opt0": {
+          "file": "lib.qmark_infallible_same.3-2-000.runtime-post-cleanup.after.mir",
+          "bb_count": 8,
+          "switchInt_count": 1,
+          "unreachable_count": 1,
+          "residual_into_try_type_mentions": 0,
+          "residual_into_try_type_live_calls": 0,
+          "from_residual_mentions": 1,
+          "from_residual_live_calls": 1,
+          "branch_mentions": 1,
+          "branch_live_calls": 1
+        },
+        "optimized_mir_opt2": {
+          "file": "lib.qmark_infallible_same.3-3-000.runtime-optimized.after.mir",
+          "bb_count": 1,
+          "switchInt_count": 0,
+          "unreachable_count": 0,
+          "residual_into_try_type_mentions": 0,
+          "residual_into_try_type_live_calls": 0,
+          "from_residual_mentions": 1,
+          "from_residual_live_calls": 0,
+          "branch_mentions": 0,
+          "branch_live_calls": 0
+        }
+      },
+      "qmark_opt_nonzero": {
+        "postcleanup_mir_opt0": {
+          "file": "lib.qmark_opt_nonzero.3-2-000.runtime-post-cleanup.after.mir",
+          "bb_count": 9,
+          "switchInt_count": 1,
+          "unreachable_count": 1,
+          "residual_into_try_type_mentions": 0,
+          "residual_into_try_type_live_calls": 0,
+          "from_residual_mentions": 1,
+          "from_residual_live_calls": 1,
+          "branch_mentions": 1,
+          "branch_live_calls": 1
+        },
+        "optimized_mir_opt2": {
+          "file": "lib.qmark_opt_nonzero.3-3-000.runtime-optimized.after.mir",
+          "bb_count": 5,
+          "switchInt_count": 1,
+          "unreachable_count": 1,
+          "residual_into_try_type_mentions": 0,
+          "residual_into_try_type_live_calls": 0,
+          "from_residual_mentions": 1,
+          "from_residual_live_calls": 0,
+          "branch_mentions": 0,
+          "branch_live_calls": 0
+        }
+      },
+      "homo_try_opt_u64": {
+        "postcleanup_mir_opt0": {
+          "file": "lib.homo_try_opt_u64.3-2-000.runtime-post-cleanup.after.mir",
+          "bb_count": 14,
+          "switchInt_count": 2,
+          "unreachable_count": 1,
+          "residual_into_try_type_mentions": 2,
+          "residual_into_try_type_live_calls": 2,
+          "from_residual_mentions": 0,
+          "from_residual_live_calls": 0,
+          "branch_mentions": 2,
+          "branch_live_calls": 2
+        },
+        "optimized_mir_opt2": {
+          "file": "lib.homo_try_opt_u64.3-3-000.runtime-optimized.after.mir",
+          "bb_count": 8,
+          "switchInt_count": 2,
+          "unreachable_count": 1,
+          "residual_into_try_type_mentions": 2,
+          "residual_into_try_type_live_calls": 0,
+          "from_residual_mentions": 2,
+          "from_residual_live_calls": 0,
+          "branch_mentions": 0,
+          "branch_live_calls": 0
+        }
+      }
+    },
+    "llvm_o2_ir": {
+      "qmark_infallible": [
+        "define void @qmark_infallible(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 8 captures(none) dereferenceable(16) initializes((0, 4), (8, 16)) %_0, i64 noundef %r) unnamed_addr #1 {",
+        "start:",
+        "  %_2 = add i64 %r, 1",
+        "  %0 = getelementptr inbounds nuw i8, ptr %_0, i64 8",
+        "  store i64 %_2, ptr %0, align 8",
+        "  store i32 0, ptr %_0, align 8",
+        "  ret void",
+        "}"
+      ],
+      "qmark_infallible_same": [
+        "define noundef i64 @qmark_infallible_same(i64 noundef %r) unnamed_addr #0 {",
+        "start:",
+        "  %_2 = add i64 %r, 1",
+        "  ret i64 %_2",
+        "}"
+      ],
+      "qmark_opt_nonzero": [
+        "define noundef i64 @qmark_opt_nonzero(i64 noundef %0) unnamed_addr #0 {",
+        "start:",
+        "  %.not = icmp eq i64 %0, 0",
+        "  %_5 = or i64 %0, 1",
+        "  %_0.sroa.0.0 = select i1 %.not, i64 0, i64 %_5",
+        "  ret i64 %_0.sroa.0.0",
+        "}"
+      ],
+      "homo_try_opt_u64": [
+        "define { i64, i64 } @homo_try_opt_u64(i64 noundef range(i64 0, 2) %0, i64 %1, i64 noundef range(i64 0, 2) %2, i64 %3) unnamed_addr #0 {",
+        "start:",
+        "  %4 = and i64 %2, %0",
+        "  %or.cond.not.not = icmp eq i64 %4, 0",
+        "  %_3 = add i64 %3, %1",
+        "  %_0.sroa.4.1 = select i1 %or.cond.not.not, i64 undef, i64 %_3",
+        "  %5 = insertvalue { i64, i64 } poison, i64 %4, 0",
+        "  %6 = insertvalue { i64, i64 } %5, i64 %_0.sroa.4.1, 1",
+        "  ret { i64, i64 } %6",
+        "}"
+      ]
+    }
+  }
+}
