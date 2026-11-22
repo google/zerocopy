@@ -1588,12 +1588,13 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
             "sha256_locked": [
                 "Lean executable in foundation-lock.json",
                 "foundation-lock.json modules",
+                "Lean sysroot Init/Std/Lean .olean artifacts in LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256",
                 "imported library-lock.json modules",
             ],
             "sha256_recorded": ["capture executable as capture_binary_sha256"],
             "unhashed": [
                 "Lean shared libraries, identified by lean --version",
-                "Lean sysroot modules outside the locks, including Lean.* and Std.*",
+                "Lean sysroot .ir/.ir.sig companions outside the locks",
                 "Rust compiler and sysroot, identified by their reported commit",
             ],
         })

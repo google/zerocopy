@@ -741,6 +741,119 @@ fn rejects_symlinks_stale_oleans_and_unexpected_foundation_companions() {
     assert_eq!(chk_env.environment().get("PATH").map(String::as_str), Some("/usr/bin:/bin"));
 }
 
+#[cfg(unix)]
+fn copy_sysroot_dir(src: &Path, dst: &Path) {
+    fs::create_dir_all(dst).unwrap();
+    for entry in fs::read_dir(src).unwrap() {
+        let entry = entry.unwrap();
+        let src_path = entry.path();
+        let dst_path = dst.join(entry.file_name());
+        let ftype = fs::symlink_metadata(&src_path).unwrap().file_type();
+        if ftype.is_dir() {
+            copy_sysroot_dir(&src_path, &dst_path);
+        } else if ftype.is_file() && fs::hard_link(&src_path, &dst_path).is_err() {
+            fs::copy(&src_path, &dst_path).unwrap();
+        }
+    }
+}
+
+/// Verifies through both `anneal_audit::Checker::run()` and the external
+/// `anneal-audit` binary that tampering with a sysroot `.olean` outside
+/// `foundation-lock.json` (`Lean/Replay.olean`) fails closed in phase
+/// `"toolchain"` with policy exit code `1` before `TrustedBoundary.lean` runs.
+#[cfg(unix)]
+#[test]
+fn rejects_tampered_lean_sysroot_outside_foundation_lock() {
+    use std::os::unix::fs::PermissionsExt;
+
+    let fix = TempFixture::new(None);
+    let real_lean = fs::canonicalize(default_lean_path()).unwrap();
+    let real_prefix_out = Command::new(&real_lean).arg("--print-prefix").output().unwrap();
+    assert!(real_prefix_out.status.success());
+    let real_prefix = PathBuf::from(String::from_utf8(real_prefix_out.stdout).unwrap().trim());
+
+    // Place the synthetic sysroot outside `fix.root` so `scan_lean_tree` and
+    // `check_checkout_cargo_hygiene` inspect only the clean fixture checkout.
+    let sysroot_dir = tempfile::Builder::new().prefix("anneal-sysroot-test-").tempdir().unwrap();
+    let syn_prefix = fs::canonicalize(sysroot_dir.path()).unwrap().join("sysroot");
+    let copied_lean = syn_prefix.join("bin/lean");
+    fs::create_dir_all(copied_lean.parent().unwrap()).unwrap();
+    fs::copy(&real_lean, &copied_lean).unwrap();
+    fs::set_permissions(&copied_lean, fs::Permissions::from_mode(0o755)).unwrap();
+
+    // `verify_sysroot_foundation_dir` forbids symlinks under
+    // `lib/lean/{Init,Std,Lean}`, and compiling `TrustedBoundary.lean` in the
+    // control run requires `Std`/`Lean` `.ir` companions alongside `.olean*`,
+    // so those subtrees use `hard_link` with `copy` fallback. Only
+    // `Lean/Replay.olean` is replaced after `remove_file`, never mutating the
+    // real toolchain.
+    copy_sysroot_dir(&real_prefix.join("src/lean/Init"), &syn_prefix.join("src/lean/Init"));
+    let dst_lib_lean = syn_prefix.join("lib/lean");
+    fs::create_dir_all(&dst_lib_lean).unwrap();
+    for entry in fs::read_dir(real_prefix.join("lib/lean")).unwrap() {
+        let entry = entry.unwrap();
+        let name = entry.file_name();
+        let name_str = name.to_string_lossy();
+        let src_path = entry.path();
+        let dst_path = dst_lib_lean.join(&name);
+        if matches!(name_str.as_ref(), "Init" | "Std" | "Lean") {
+            copy_sysroot_dir(&src_path, &dst_path);
+        } else if ["Init.", "Std.", "Lean."].iter().any(|p| name_str.starts_with(p)) {
+            if fs::symlink_metadata(&src_path).unwrap().file_type().is_file() {
+                fs::copy(&src_path, &dst_path).unwrap();
+            }
+        } else {
+            symlink(&src_path, &dst_path).unwrap();
+        }
+    }
+
+    // Control: untampered sysroot copy passes `anneal_audit::Checker::run()`.
+    let mut control = Checker::new(&fix.root, Some(&copied_lean)).unwrap();
+    control.set_require_mir_wp(false);
+    control.run().unwrap();
+
+    // Attack: corrupt `Lean/Replay.olean` while keeping `bin/lean` and all
+    // `foundation-lock.json` (`Init.*`) files untouched.
+    let replay_olean = dst_lib_lean.join("Lean/Replay.olean");
+    assert!(replay_olean.is_file(), "missing {}", replay_olean.display());
+    fs::remove_file(&replay_olean).unwrap();
+    fs::write(&replay_olean, b"tampered lean replay\n").unwrap();
+
+    let mut tampered = Checker::new(&fix.root, Some(&copied_lean)).unwrap();
+    tampered.set_require_mir_wp(false);
+    let err = tampered.run().unwrap_err();
+    assert_eq!((err.code, err.phase.as_str()), (1, "toolchain"), "{err}");
+    assert!(!tampered.execution_began(), "inspector ran before sysroot check: {err}");
+    assert!(
+        err.message.contains("sysroot Init/Std/Lean .olean manifest SHA-256 mismatch"),
+        "unexpected error: {err}"
+    );
+
+    // Binary CLI entrypoint also fails closed with policy exit code `1` and the
+    // toolchain mismatch diagnostic.
+    let bin = env!("CARGO_BIN_EXE_anneal-audit");
+    let out = Command::new(bin)
+        .arg("--anneal-root")
+        .arg(repo_root())
+        .arg("--lean")
+        .arg(&copied_lean)
+        .output()
+        .unwrap();
+    assert_eq!(
+        out.status.code(),
+        Some(1),
+        "status: {:?}, stderr: {}",
+        out.status,
+        String::from_utf8_lossy(&out.stderr)
+    );
+    let stderr = String::from_utf8_lossy(&out.stderr);
+    assert!(
+        stderr.contains("(toolchain): sysroot Init/Std/Lean .olean manifest SHA-256 mismatch")
+            && stderr.contains("Target execution began: false"),
+        "unexpected binary stderr: {stderr}"
+    );
+}
+
 /// Verifies defense-in-depth in Phase 2 (`"audit"`): even if a `.lean` file
 /// declaring an `axiom` were compiled directly into a `.olean` (bypassing
 /// `"preflight"`), `verifyAndCollectLocals` rejects the `.olean` because every
