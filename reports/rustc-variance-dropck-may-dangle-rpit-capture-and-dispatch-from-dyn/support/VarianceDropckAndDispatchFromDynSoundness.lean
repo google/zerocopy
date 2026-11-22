@@ -37,7 +37,7 @@ namespace Variance
 
 /-- Context-to-position variance composition (`Variance::xform` in
 `compiler/rustc_type_ir/src/lib.rs`, PLDI'11 Figure 1). -/
-def xform : Variance → Variance → Variance
+noncomputable def xform : Variance → Variance → Variance
   | .covariant, .covariant => .covariant
   | .covariant, .contravariant => .contravariant
   | .covariant, .invariant => .invariant
@@ -53,7 +53,7 @@ def xform : Variance → Variance → Variance
 (`fn glb` in `compiler/rustc_hir_analysis/src/variance/solve.rs`):
 `bivariant (*)` is top (least restrictive), `covariant (+)` and `contravariant (-)`
 are incomparable middle elements, and `invariant (o)` is bottom (most restrictive). -/
-def glb : Variance → Variance → Variance
+noncomputable def glb : Variance → Variance → Variance
   | .invariant, _ => .invariant
   | _, .invariant => .invariant
   | .covariant, .contravariant => .invariant
@@ -65,7 +65,7 @@ def glb : Variance → Variance → Variance
 
 /-- Constraint-strength partial order `a ≤_c b`: `b` is at least as restrictive
 as `a`, i.e., `bivariant ≤_c {covariant, contravariant} ≤_c invariant`. -/
-def constraintLe : Variance → Variance → Prop
+noncomputable def constraintLe : Variance → Variance → Prop
   | .bivariant, _ => True
   | .covariant, .covariant => True
   | .covariant, .invariant => True
@@ -76,7 +76,7 @@ def constraintLe : Variance → Variance → Prop
 
 /-- Subtyping-permissiveness partial order `a ≤_p b` (the dual of `constraintLe`):
 `invariant ≤_p {covariant, contravariant} ≤_p bivariant`. -/
-def permissiveLe (a b : Variance) : Prop := constraintLe b a
+noncomputable def permissiveLe (a b : Variance) : Prop := constraintLe b a
 
 theorem xform_assoc (a b c : Variance) :
     xform (xform a b) c = xform a (xform b c) := by
@@ -178,10 +178,9 @@ inductive TyExpr where
   | unsafeCell (inner : TyExpr)
   | phantomData (inner : TyExpr)
   | pair (fst : TyExpr) (snd : TyExpr)
-  deriving DecidableEq, Repr
 
 /-- Whether `param` occurs syntactically anywhere inside `e`. -/
-def mentionsParam : TyExpr → Bool
+noncomputable def mentionsParam : TyExpr → Bool
   | .unit => false
   | .param => true
   | .sharedRef t => mentionsParam t
@@ -195,7 +194,7 @@ def mentionsParam : TyExpr → Bool
 
 /-- Constraint-accumulation variance inference matching
 `compiler/rustc_hir_analysis/src/variance/{constraints,terms,solve}.rs`. -/
-def inferVariance (ambient : Variance) : TyExpr → Variance
+noncomputable def inferVariance (ambient : Variance) : TyExpr → Variance
   | .unit => .bivariant
   | .param => ambient
   | .sharedRef t => inferVariance ambient t
@@ -305,7 +304,7 @@ theorem inferVariance_ambient_factor (ambient : Variance) (e : TyExpr)
 /-- Semantic lifetime-outlives subtyping relation on `TyExpr`, where a natural
 number models a lifetime's scope extent (`r2 ≤ r1` means `'r1 : 'r2`, so
 `&'r1 u8 <: &'r2 u8`). -/
-def tySubtype : TyExpr → Nat → Nat → Prop
+noncomputable def tySubtype : TyExpr → Nat → Nat → Prop
   | .unit, _, _ => True
   | .param, r1, r2 => r2 ≤ r1
   | .sharedRef t, r1, r2 => tySubtype t r1 r2
@@ -332,7 +331,7 @@ theorem tySubtype_refl (e : TyExpr) (r : Nat) : tySubtype e r r := by
 
 /-- Variance specification: `v` sound for `e` means `r2 ≤ r1` implies the
 corresponding directional subtyping obligation on `e`. -/
-def varianceHolds (v : Variance) (e : TyExpr) (r1 r2 : Nat) : Prop :=
+noncomputable def varianceHolds (v : Variance) (e : TyExpr) (r1 r2 : Nat) : Prop :=
   match v with
   | .bivariant => tySubtype e r1 r2 ∧ tySubtype e r2 r1
   | .covariant => r2 ≤ r1 → tySubtype e r1 r2
@@ -586,7 +585,7 @@ structure ScopeMem where
   deriving DecidableEq, Repr
 
 /-- Execute one slot's drop step in the reverse-declaration-order drop schedule. -/
-def execDropSlot (c : ContainerSpec) (e : ElemSpec) (st : ScopeMem) :
+noncomputable def execDropSlot (c : ContainerSpec) (e : ElemSpec) (st : ScopeMem) :
     DeclSlot → Except DropOutcome ScopeMem
   | .localS => .ok { sAlive := false }
   | .guardC =>
@@ -599,7 +598,7 @@ def execDropSlot (c : ContainerSpec) (e : ElemSpec) (st : ScopeMem) :
         .ok st
 
 /-- Structural execution helper over a concrete drop list. -/
-def execDropList (c : ContainerSpec) (e : ElemSpec) (st : ScopeMem) :
+noncomputable def execDropList (c : ContainerSpec) (e : ElemSpec) (st : ScopeMem) :
     List DeclSlot → DropOutcome
   | [] => .ok
   | slot :: rest =>
@@ -609,7 +608,7 @@ def execDropList (c : ContainerSpec) (e : ElemSpec) (st : ScopeMem) :
 
 /-- Execute a full drop schedule (given in declaration order, therefore executed
 in `List.reverse declOrder`). -/
-def execDropSchedule (c : ContainerSpec) (e : ElemSpec)
+noncomputable def execDropSchedule (c : ContainerSpec) (e : ElemSpec)
     (declOrder : List DeclSlot) : DropOutcome :=
   execDropList c e { sAlive := true } declOrder.reverse
 
@@ -623,12 +622,12 @@ When `declOrder = [.guardC, .localS]` (so `s` drops before `_guard`):
 - With `#[may_dangle]`, `dropck` waives the `Drop`-header requirement on `T`, and
   instead checks non-trivial fields (`PhantomData<T>` -> pushes `T` onto `dtorck_types`,
   which then requires `'a` live iff `!trivial_dropck_outlives(T)`, i.e. `e.tDropReadsRef`). -/
-def sDroppedBeforeGuard (declOrder : List DeclSlot) : Bool :=
+noncomputable def sDroppedBeforeGuard (declOrder : List DeclSlot) : Bool :=
   match declOrder with
   | [.guardC, .localS] => true
   | _ => false
 
-def dropckAccepts (c : ContainerSpec) (e : ElemSpec)
+noncomputable def dropckAccepts (c : ContainerSpec) (e : ElemSpec)
     (declOrder : List DeclSlot) : Bool :=
   if !sDroppedBeforeGuard declOrder || !e.borrowsLocalS then
     true
@@ -639,13 +638,13 @@ def dropckAccepts (c : ContainerSpec) (e : ElemSpec)
 
 /-- Two valid 2-binding lexical scopes: safe order `let (s, _guard)` and
 reverse order `let (_guard, s)`. -/
-def validTwoSlotScope (declOrder : List DeclSlot) : Prop :=
+noncomputable def validTwoSlotScope (declOrder : List DeclSlot) : Prop :=
   declOrder = [.localS, .guardC] ∨ declOrder = [.guardC, .localS]
 
 /-- Soundness predicate for a container `c`: across all element types `e` and
 all valid 2-slot declaration orders accepted by `dropck`, reverse-order scope
 destruction never triggers a use-after-free. -/
-def ContainerUafFreeUnderDropck (c : ContainerSpec) : Prop :=
+noncomputable def ContainerUafFreeUnderDropck (c : ContainerSpec) : Prop :=
   ∀ (e : ElemSpec) (declOrder : List DeclSlot),
     validTwoSlotScope declOrder →
     dropckAccepts c e declOrder = true →
@@ -770,7 +769,7 @@ inductive OpaqueOrigin where
 
 /-- Exact mirror of `opaque_captures_all_in_scope_lifetimes` in
 `compiler/rustc_hir_analysis/src/collect/resolve_bound_vars.rs`. -/
-def opaqueCapturesAllInScopeLifetimes
+noncomputable def opaqueCapturesAllInScopeLifetimes
     (edition : RustEdition) (origin : OpaqueOrigin) (hasUseBound : Bool) : Bool :=
   if hasUseBound then
     false
@@ -784,7 +783,7 @@ def opaqueCapturesAllInScopeLifetimes
         | .ed2024 => true
 
 /-- Whether an unmentioned in-scope lifetime `'a` is captured by `impl Trait`. -/
-def rpitCapturesUnmentionedLifetime
+noncomputable def rpitCapturesUnmentionedLifetime
     (edition : RustEdition) (origin : OpaqueOrigin)
     (useExplicit : Option Bool) : Bool :=
   match useExplicit with
@@ -842,7 +841,7 @@ inductive AbiKind where
   deriving DecidableEq, Repr
 
 /-- Exact structural natural-number maximum. -/
-def natMax : Nat → Nat → Nat
+noncomputable def natMax : Nat → Nat → Nat
   | 0, b => b
   | a + 1, 0 => a + 1
   | a + 1, b + 1 => (natMax a b) + 1
@@ -864,23 +863,23 @@ theorem natMax_one_right {n : Nat} (h : 1 ≤ n) : natMax n 1 = n := by
       | succ m => rfl
 
 /-- Compute aggregate alignment across a list of fields (starting from 1). -/
-def fieldsAlign : List FieldSpec → Nat
+noncomputable def fieldsAlign : List FieldSpec → Nat
   | [] => 1
   | f :: fs => natMax f.alignBytes (fieldsAlign fs)
 
 /-- Compute sum of field sizes across a list of fields (before alignment padding). -/
-def fieldsRawSize : List FieldSpec → Nat
+noncomputable def fieldsRawSize : List FieldSpec → Nat
   | [] => 0
   | f :: fs => f.sizeBytes + fieldsRawSize fs
 
 /-- Count non-zero-sized fields in a struct. -/
-def nonZstCount : List FieldSpec → Nat
+noncomputable def nonZstCount : List FieldSpec → Nat
   | [] => 0
   | f :: fs => (match f.sizeBytes with | 0 => 0 | _ + 1 => 1) + nonZstCount fs
 
 /-- Soundness predicate for `PhantomData<T>` layout guarantee from
 `library/core/src/marker.rs`: `size_of == 0` and `align_of == 1`. -/
-def PhantomLayoutsValid (fields : List FieldSpec) : Prop :=
+noncomputable def PhantomLayoutsValid (fields : List FieldSpec) : Prop :=
   ∀ f, f ∈ fields → f.isPhantomData = true → f.sizeBytes = 0 ∧ f.alignBytes = 1
 
 /-- Purely structural `Nat.beq` reflexivity (zero axioms). -/
@@ -891,7 +890,7 @@ theorem nat_beq_refl : ∀ n : Nat, Nat.beq n n = true
 /-- Check whether a field is accepted as an ignored auxiliary field by
 `visit_implementation_of_dispatch_from_dyn` (`builtin.rs:374-414`):
 either `PhantomData`, or a non-changing 1-ZST that mentions no type/const param. -/
-def isIgnoredExtraField (f : FieldSpec) : Bool :=
+noncomputable def isIgnoredExtraField (f : FieldSpec) : Bool :=
   f.isPhantomData ||
     (!f.changesUnderCoercion &&
      Nat.beq f.sizeBytes 0 &&
@@ -900,7 +899,7 @@ def isIgnoredExtraField (f : FieldSpec) : Bool :=
 
 /-- Filter to the fields that `DispatchFromDyn` must coerce (matching `coerced_fields`
 in `builtin.rs:371-416`). -/
-def coercedFields : List FieldSpec → List FieldSpec
+noncomputable def coercedFields : List FieldSpec → List FieldSpec
   | [] => []
   | f :: fs =>
       if f.isPhantomData then
@@ -912,7 +911,7 @@ def coercedFields : List FieldSpec → List FieldSpec
 
 /-- Check whether all non-`PhantomData`, non-changing fields pass the `E0378`
 1-ZST and no-type/const-generic guard (`builtin.rs:391-411`). -/
-def allUnchangedFieldsPassE0378 : List FieldSpec → Bool
+noncomputable def allUnchangedFieldsPassE0378 : List FieldSpec → Bool
   | [] => true
   | f :: fs =>
       let okHere :=
@@ -922,7 +921,7 @@ def allUnchangedFieldsPassE0378 : List FieldSpec → Bool
 
 /-- Full `DispatchFromDyn` struct admissibility predicate mirroring
 `visit_implementation_of_dispatch_from_dyn` (`builtin.rs:349-460`). -/
-def dispatchFromDynAdmissible (s : SmartPtrStruct) : Bool :=
+noncomputable def dispatchFromDynAdmissible (s : SmartPtrStruct) : Bool :=
   let reprOk :=
     match s.repr with
     | .reprC | .reprPacked => false
@@ -939,7 +938,7 @@ def dispatchFromDynAdmissible (s : SmartPtrStruct) : Bool :=
 /-- Struct calling-convention ABI classifier when the single non-ZST field has
 pointer layout `(ptrSize, ptrAlign)` (assuming `ptrSize > 0` and `1 ≤ ptrAlign`,
 with `ptrSize` already a multiple of `ptrAlign`, as for thin/wide pointers). -/
-def classifySmartPtrAbi (s : SmartPtrStruct) (ptrSize ptrAlign : Nat) : AbiKind :=
+noncomputable def classifySmartPtrAbi (s : SmartPtrStruct) (ptrSize ptrAlign : Nat) : AbiKind :=
   let sz := fieldsRawSize s.fields
   let al := fieldsAlign s.fields
   let nz := nonZstCount s.fields
