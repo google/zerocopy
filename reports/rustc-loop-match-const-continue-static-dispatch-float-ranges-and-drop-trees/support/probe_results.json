@@ -1,0 +1,566 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "cases": {
+    "c1_dfa_opt0": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stdout": "DFA=157 STREAM=101 DROPS=[\"arm0_inner\", \"arm0_outer\", \"arm1\"]",
+      "llvm_fn_cfg": {
+        "drop_order_loop_match": {
+          "switch": 0,
+          "br": 17,
+          "bb_labels": 49
+        },
+        "dfa_stream_loop_match": {
+          "switch": 1,
+          "br": 19,
+          "bb_labels": 29
+        },
+        "dfa_stream_plain_loop": {
+          "switch": 1,
+          "br": 21,
+          "bb_labels": 31
+        },
+        "step_loop_match": {
+          "switch": 1,
+          "br": 4,
+          "bb_labels": 7
+        },
+        "step_plain_loop": {
+          "switch": 1,
+          "br": 6,
+          "bb_labels": 9
+        }
+      },
+      "mir_stats": {
+        "step_loop_match": {
+          "built.after": {
+            "file": "c1.step_loop_match.1-1-000.built.after.mir",
+            "basic_blocks": 37,
+            "switch_int": 1,
+            "false_edge": 5,
+            "false_unwind": 1,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 17
+          },
+          "CleanupPostBorrowck.after": {
+            "file": "c1.step_loop_match.2-1-002.CleanupPostBorrowck.after.mir",
+            "basic_blocks": 18,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 9
+          },
+          "ElaborateDrops.after": {
+            "file": "c1.step_loop_match.2-2-004.ElaborateDrops.after.mir",
+            "basic_blocks": 12,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 4
+          },
+          "runtime-optimized.after": {
+            "file": "c1.step_loop_match.3-3-000.runtime-optimized.after.mir",
+            "basic_blocks": 12,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 4
+          }
+        },
+        "step_plain_loop": {
+          "built.after": {
+            "file": "c1.step_plain_loop.1-1-000.built.after.mir",
+            "basic_blocks": 33,
+            "switch_int": 1,
+            "false_edge": 3,
+            "false_unwind": 1,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 15
+          },
+          "CleanupPostBorrowck.after": {
+            "file": "c1.step_plain_loop.2-1-002.CleanupPostBorrowck.after.mir",
+            "basic_blocks": 19,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 10
+          },
+          "ElaborateDrops.after": {
+            "file": "c1.step_plain_loop.2-2-004.ElaborateDrops.after.mir",
+            "basic_blocks": 14,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 6
+          },
+          "runtime-optimized.after": {
+            "file": "c1.step_plain_loop.3-3-000.runtime-optimized.after.mir",
+            "basic_blocks": 14,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 6
+          }
+        },
+        "dfa_stream_loop_match": {
+          "built.after": {
+            "file": "c1.dfa_stream_loop_match.1-1-000.built.after.mir",
+            "basic_blocks": 88,
+            "switch_int": 6,
+            "false_edge": 7,
+            "false_unwind": 1,
+            "discriminant_rvalue": 6,
+            "drop_terminators": 0,
+            "goto_terminators": 49
+          },
+          "CleanupPostBorrowck.after": {
+            "file": "c1.dfa_stream_loop_match.2-1-002.CleanupPostBorrowck.after.mir",
+            "basic_blocks": 43,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 6,
+            "drop_terminators": 0,
+            "goto_terminators": 20
+          },
+          "ElaborateDrops.after": {
+            "file": "c1.dfa_stream_loop_match.2-2-004.ElaborateDrops.after.mir",
+            "basic_blocks": 30,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 6,
+            "drop_terminators": 0,
+            "goto_terminators": 8
+          },
+          "runtime-optimized.after": {
+            "file": "c1.dfa_stream_loop_match.3-3-000.runtime-optimized.after.mir",
+            "basic_blocks": 27,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 1,
+            "drop_terminators": 0,
+            "goto_terminators": 8
+          }
+        },
+        "dfa_stream_plain_loop": {
+          "built.after": {
+            "file": "c1.dfa_stream_plain_loop.1-1-000.built.after.mir",
+            "basic_blocks": 73,
+            "switch_int": 6,
+            "false_edge": 2,
+            "false_unwind": 1,
+            "discriminant_rvalue": 1,
+            "drop_terminators": 0,
+            "goto_terminators": 39
+          },
+          "CleanupPostBorrowck.after": {
+            "file": "c1.dfa_stream_plain_loop.2-1-002.CleanupPostBorrowck.after.mir",
+            "basic_blocks": 38,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 1,
+            "drop_terminators": 0,
+            "goto_terminators": 15
+          },
+          "ElaborateDrops.after": {
+            "file": "c1.dfa_stream_plain_loop.2-2-004.ElaborateDrops.after.mir",
+            "basic_blocks": 34,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 1,
+            "drop_terminators": 0,
+            "goto_terminators": 12
+          },
+          "runtime-optimized.after": {
+            "file": "c1.dfa_stream_plain_loop.3-3-000.runtime-optimized.after.mir",
+            "basic_blocks": 29,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 1,
+            "drop_terminators": 0,
+            "goto_terminators": 10
+          }
+        },
+        "drop_order_loop_match": {
+          "built.after": {
+            "file": "c1.drop_order_loop_match.1-1-000.built.after.mir",
+            "basic_blocks": 37,
+            "switch_int": 1,
+            "false_edge": 3,
+            "false_unwind": 1,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 9,
+            "goto_terminators": 15
+          },
+          "CleanupPostBorrowck.after": {
+            "file": "c1.drop_order_loop_match.2-1-002.CleanupPostBorrowck.after.mir",
+            "basic_blocks": 20,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 6,
+            "goto_terminators": 9
+          },
+          "ElaborateDrops.after": {
+            "file": "c1.drop_order_loop_match.2-2-004.ElaborateDrops.after.mir",
+            "basic_blocks": 12,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 4,
+            "goto_terminators": 3
+          },
+          "runtime-optimized.after": {
+            "file": "c1.drop_order_loop_match.3-3-000.runtime-optimized.after.mir",
+            "basic_blocks": 8,
+            "switch_int": 0,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 4,
+            "goto_terminators": 0
+          }
+        }
+      }
+    },
+    "c1_dfa_opt2": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stdout": "DFA=157 STREAM=101 DROPS=[\"arm0_inner\", \"arm0_outer\", \"arm1\"]",
+      "llvm_fn_cfg": {
+        "dfa_stream_loop_match": {
+          "switch": 0,
+          "br": 9,
+          "bb_labels": 11
+        },
+        "dfa_stream_plain_loop": {
+          "switch": 1,
+          "br": 10,
+          "bb_labels": 14
+        },
+        "drop_order_loop_match": {
+          "switch": 2,
+          "br": 9,
+          "bb_labels": 24
+        },
+        "step_loop_match": {
+          "switch": 1,
+          "br": 3,
+          "bb_labels": 6
+        },
+        "step_plain_loop": {
+          "switch": 1,
+          "br": 4,
+          "bb_labels": 7
+        }
+      },
+      "mir_stats": {
+        "step_loop_match": {
+          "built.after": {
+            "file": "c1.step_loop_match.1-1-000.built.after.mir",
+            "basic_blocks": 37,
+            "switch_int": 1,
+            "false_edge": 5,
+            "false_unwind": 1,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 17
+          },
+          "CleanupPostBorrowck.after": {
+            "file": "c1.step_loop_match.2-1-002.CleanupPostBorrowck.after.mir",
+            "basic_blocks": 18,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 9
+          },
+          "ElaborateDrops.after": {
+            "file": "c1.step_loop_match.2-2-004.ElaborateDrops.after.mir",
+            "basic_blocks": 12,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 4
+          },
+          "runtime-optimized.after": {
+            "file": "c1.step_loop_match.3-3-000.runtime-optimized.after.mir",
+            "basic_blocks": 6,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 4
+          }
+        },
+        "step_plain_loop": {
+          "built.after": {
+            "file": "c1.step_plain_loop.1-1-000.built.after.mir",
+            "basic_blocks": 33,
+            "switch_int": 1,
+            "false_edge": 3,
+            "false_unwind": 1,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 15
+          },
+          "CleanupPostBorrowck.after": {
+            "file": "c1.step_plain_loop.2-1-002.CleanupPostBorrowck.after.mir",
+            "basic_blocks": 19,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 10
+          },
+          "ElaborateDrops.after": {
+            "file": "c1.step_plain_loop.2-2-004.ElaborateDrops.after.mir",
+            "basic_blocks": 14,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 6
+          },
+          "runtime-optimized.after": {
+            "file": "c1.step_plain_loop.3-3-000.runtime-optimized.after.mir",
+            "basic_blocks": 8,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 6
+          }
+        },
+        "dfa_stream_loop_match": {
+          "built.after": {
+            "file": "c1.dfa_stream_loop_match.1-1-000.built.after.mir",
+            "basic_blocks": 84,
+            "switch_int": 6,
+            "false_edge": 7,
+            "false_unwind": 1,
+            "discriminant_rvalue": 6,
+            "drop_terminators": 0,
+            "goto_terminators": 49
+          },
+          "CleanupPostBorrowck.after": {
+            "file": "c1.dfa_stream_loop_match.2-1-002.CleanupPostBorrowck.after.mir",
+            "basic_blocks": 39,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 6,
+            "drop_terminators": 0,
+            "goto_terminators": 20
+          },
+          "ElaborateDrops.after": {
+            "file": "c1.dfa_stream_loop_match.2-2-004.ElaborateDrops.after.mir",
+            "basic_blocks": 26,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 6,
+            "drop_terminators": 0,
+            "goto_terminators": 8
+          },
+          "runtime-optimized.after": {
+            "file": "c1.dfa_stream_loop_match.3-3-000.runtime-optimized.after.mir",
+            "basic_blocks": 17,
+            "switch_int": 5,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 0,
+            "goto_terminators": 8
+          }
+        },
+        "dfa_stream_plain_loop": {
+          "built.after": {
+            "file": "c1.dfa_stream_plain_loop.1-1-000.built.after.mir",
+            "basic_blocks": 69,
+            "switch_int": 6,
+            "false_edge": 2,
+            "false_unwind": 1,
+            "discriminant_rvalue": 1,
+            "drop_terminators": 0,
+            "goto_terminators": 39
+          },
+          "CleanupPostBorrowck.after": {
+            "file": "c1.dfa_stream_plain_loop.2-1-002.CleanupPostBorrowck.after.mir",
+            "basic_blocks": 34,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 1,
+            "drop_terminators": 0,
+            "goto_terminators": 15
+          },
+          "ElaborateDrops.after": {
+            "file": "c1.dfa_stream_plain_loop.2-2-004.ElaborateDrops.after.mir",
+            "basic_blocks": 30,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 1,
+            "drop_terminators": 0,
+            "goto_terminators": 12
+          },
+          "runtime-optimized.after": {
+            "file": "c1.dfa_stream_plain_loop.3-3-000.runtime-optimized.after.mir",
+            "basic_blocks": 23,
+            "switch_int": 6,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 1,
+            "drop_terminators": 0,
+            "goto_terminators": 12
+          }
+        },
+        "drop_order_loop_match": {
+          "built.after": {
+            "file": "c1.drop_order_loop_match.1-1-000.built.after.mir",
+            "basic_blocks": 37,
+            "switch_int": 1,
+            "false_edge": 3,
+            "false_unwind": 1,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 9,
+            "goto_terminators": 15
+          },
+          "CleanupPostBorrowck.after": {
+            "file": "c1.drop_order_loop_match.2-1-002.CleanupPostBorrowck.after.mir",
+            "basic_blocks": 20,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 6,
+            "goto_terminators": 9
+          },
+          "ElaborateDrops.after": {
+            "file": "c1.drop_order_loop_match.2-2-004.ElaborateDrops.after.mir",
+            "basic_blocks": 12,
+            "switch_int": 1,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 4,
+            "goto_terminators": 3
+          },
+          "runtime-optimized.after": {
+            "file": "c1.drop_order_loop_match.3-3-000.runtime-optimized.after.mir",
+            "basic_blocks": 8,
+            "switch_int": 0,
+            "false_edge": 0,
+            "false_unwind": 0,
+            "discriminant_rvalue": 0,
+            "drop_terminators": 4,
+            "goto_terminators": 0
+          }
+        }
+      }
+    },
+    "c1_miri_tree_borrows": {
+      "miri_rc": 0,
+      "stdout": "DFA=157 STREAM=101 DROPS=[\"arm0_inner\", \"arm0_outer\", \"arm1\"]",
+      "stderr_head": ""
+    },
+    "c2_opaque_manual_partial_eq_rejection": {
+      "compile_rc": 1,
+      "stderr_head": "error: constant of non-structural type `CustomEq` in a pattern\n  --> /tmp/probe_loop_match_glwxnmgx/c2.rs:21:17\n   |\n 5 | enum CustomEq { A, B }\n   | ------------- `CustomEq` must be annotated with `#[derive(PartialEq)]` to be usable in patterns\n...\n12 | const PAT_A: CustomEq = CustomEq::A;\n   | --------------------- constant defined here\n...\n21 |                 PAT_A => {\n   |                 ^^^^^ constant of non-structural type\n   |\nnote: the `PartialEq` trait must be derived, manual `impl`s are not sufficient; see https://doc.rust-lang.org/stable/std/marker/trait.StructuralPartialEq.html for details\n  --> /tmp/probe_loop_match_glwxnmgx/c2.rs:6:1\n   |\n 6 | impl PartialEq for CustomEq {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^\nhelp: add a condition to the match arm checking for equality\n   |\n21 -                 PAT_A => {\n21 +                 binding if binding == PAT_A => {\n   |\n\nerror: aborting due to 1 previous error\n\n"
+    },
+    "c3_ieee754_float_and_or_bindings": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stdout": "NEG_ZERO=(\"zero_arm\", 2147483648) NAN=nan_wildcard PINF=(\"ge5_or_pos_inf\", 2139095040) NINF=(\"lt0_or_neg_inf\", 4286578688) OPEN_NZ=(\"ge_zero_open_range\", 2147483648) OR_BIND=22 OR_OUTER=22 OR_NOBIND=102",
+      "stderr_head": ""
+    },
+    "c3_miri_tree_borrows": {
+      "miri_rc": 0,
+      "stdout": "NEG_ZERO=(\"zero_arm\", 2147483648) NAN=nan_wildcard PINF=(\"ge5_or_pos_inf\", 2139095040) NINF=(\"lt0_or_neg_inf\", 4286578688) OPEN_NZ=(\"ge_zero_open_range\", 2147483648) OR_BIND=22 OR_OUTER=22 OR_NOBIND=102",
+      "stderr_head": ""
+    },
+    "c3_nested_binding_or_ice": {
+      "compile_rc": 101,
+      "stderr_head": "warning: unnecessary parentheses around pattern\n --> /tmp/probe_loop_match_glwxnmgx/c3_ice.rs:9:17\n  |\n9 |                 (x @ (0 | 1)) | x @ 2 => {\n  |                 ^           ^\n  |\n  = note: `#[warn(unused_parens)]` (part of `#[warn(unused)]`) on by default\nhelp: remove these parentheses\n  |\n9 -                 (x @ (0 | 1)) | x @ 2 => {\n9 +                 x @ (0 | 1) | x @ 2 => {\n  |\n\nerror: internal compiler error: /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_build/src/builder/matches/mod.rs:3023:38: unsupported pattern constructor Or\n\n\nthread 'rustc' (274634) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_build/src/builder/matches/mod.rs:3023:38:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7f58c96a0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7f58c9e2a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7f58c96b79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7f58c967711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7f5"
+    },
+    "c4a_reject_arm_guard": {
+      "compile_rc": 1,
+      "stderr_head": "warning: the feature `loop_match` is incomplete and may not be safe to use and/or cause compiler crashes\n --> /tmp/probe_loop_match_glwxnmgx/c4a_reject_arm_guard.rs:1:12\n  |\n1 | #![feature(loop_match)]\n  |            ^^^^^^^^^^\n  |\n  = note: see issue #132306 <https://github.com/rust-lang/rust/issues/132306> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: match arms that are part of a `#[loop_match]` cannot have guards\n --> /tmp/probe_loop_match_glwxnmgx/c4a_reject_arm_guard.rs:8:22\n  |\n8 |                 0 if true => { #[const_continue] break 'blk 1; }\n  |                      ^^^^\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n"
+    },
+    "c4b_reject_payload_enum": {
+      "compile_rc": 1,
+      "stderr_head": "warning: the feature `loop_match` is incomplete and may not be safe to use and/or cause compiler crashes\n --> /tmp/probe_loop_match_glwxnmgx/c4b_reject_payload_enum.rs:1:12\n  |\n1 | #![feature(loop_match)]\n  |            ^^^^^^^^^^\n  |\n  = note: see issue #132306 <https://github.com/rust-lang/rust/issues/132306> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: this `#[loop_match]` state value has type `E`, which is not supported\n --> /tmp/probe_loop_match_glwxnmgx/c4b_reject_payload_enum.rs:7:9\n  |\n7 |         s = 'blk: {\n  |         ^\n  |\n  = note: only integers, floats, bool, char, and enums without fields are supported\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n"
+    },
+    "c4c_reject_projected_place": {
+      "compile_rc": 1,
+      "stderr_head": "warning: the feature `loop_match` is incomplete and may not be safe to use and/or cause compiler crashes\n --> /tmp/probe_loop_match_glwxnmgx/c4c_reject_projected_place.rs:1:12\n  |\n1 | #![feature(loop_match)]\n  |            ^^^^^^^^^^\n  |\n  = note: see issue #132306 <https://github.com/rust-lang/rust/issues/132306> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: invalid match on `#[loop_match]` state\n --> /tmp/probe_loop_match_glwxnmgx/c4c_reject_projected_place.rs:8:19\n  |\n8 |             match h.s {\n  |                   ^^^\n  |\n  = note: a local variable must be the scrutinee within a `#[loop_match]`\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n"
+    },
+    "c4d_reject_const_param": {
+      "compile_rc": 1,
+      "stderr_head": "warning: the feature `loop_match` is incomplete and may not be safe to use and/or cause compiler crashes\n --> /tmp/probe_loop_match_glwxnmgx/c4d_reject_const_param.rs:1:12\n  |\n1 | #![feature(loop_match)]\n  |            ^^^^^^^^^^\n  |\n  = note: see issue #132306 <https://github.com/rust-lang/rust/issues/132306> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: could not determine the target branch for this `#[const_continue]`\n --> /tmp/probe_loop_match_glwxnmgx/c4d_reject_const_param.rs:7:53\n  |\n7 |                 0 => { #[const_continue] break 'blk NEXT; }\n  |                                                     ^^^^ constant parameters may use generics, and are not evaluated early enough\n  |\n  = help: try extracting the expression into a `const` item\n\nwarning: variable does not need to be mutable\n --> /tmp/probe_loop_match_glwxnmgx/c4d_reject_const_param.rs:2:28\n  |\n2 | fn generic<const NEXT: u8>(mut s: u8) {\n  |                            ----^\n  |                            |\n  |                            help: remove this `mut`\n  |\n  = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous erro"
+    },
+    "c4e_reject_const_block": {
+      "compile_rc": 1,
+      "stderr_head": "warning: the feature `loop_match` is incomplete and may not be safe to use and/or cause compiler crashes\n --> /tmp/probe_loop_match_glwxnmgx/c4e_reject_const_block.rs:1:12\n  |\n1 | #![feature(loop_match)]\n  |            ^^^^^^^^^^\n  |\n  = note: see issue #132306 <https://github.com/rust-lang/rust/issues/132306> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: could not determine the target branch for this `#[const_continue]`\n --> /tmp/probe_loop_match_glwxnmgx/c4e_reject_const_block.rs:8:53\n  |\n8 |                 0 => { #[const_continue] break 'blk const { 1 }; }\n  |                                                     ^^^^^^^^^^^ `const` blocks may use generics, and are not evaluated early enough\n  |\n  = help: try extracting the expression into a `const` item\n\nwarning: variable does not need to be mutable\n --> /tmp/probe_loop_match_glwxnmgx/c4e_reject_const_block.rs:3:9\n  |\n3 |     let mut s = 0u8;\n  |         ----^\n  |         |\n  |         help: remove this `mut`\n  |\n  = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\n"
+    },
+    "c4f_reject_bad_label": {
+      "compile_rc": 1,
+      "stderr_head": "warning: the feature `loop_match` is incomplete and may not be safe to use and/or cause compiler crashes\n --> /tmp/probe_loop_match_glwxnmgx/c4f_reject_bad_label.rs:1:12\n  |\n1 | #![feature(loop_match)]\n  |            ^^^^^^^^^^\n  |\n  = note: see issue #132306 <https://github.com/rust-lang/rust/issues/132306> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: unused label\n --> /tmp/probe_loop_match_glwxnmgx/c4f_reject_bad_label.rs:6:13\n  |\n6 |         s = 'blk: {\n  |             ^^^^\n  |\n  = note: `#[warn(unused_labels)]` (part of `#[warn(unused)]`) on by default\n\nerror: `#[const_continue]` must break to a labeled block that participates in a `#[loop_match]`\n --> /tmp/probe_loop_match_glwxnmgx/c4f_reject_bad_label.rs:8:48\n  |\n8 |                 0 => { #[const_continue] break 'outer; }\n  |                                                ^^^^^^\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\n"
+    },
+    "c4g_reject_mismatched_update": {
+      "compile_rc": 1,
+      "stderr_head": "warning: the feature `loop_match` is incomplete and may not be safe to use and/or cause compiler crashes\n --> /tmp/probe_loop_match_glwxnmgx/c4g_reject_mismatched_update.rs:1:12\n  |\n1 | #![feature(loop_match)]\n  |            ^^^^^^^^^^\n  |\n  = note: see issue #132306 <https://github.com/rust-lang/rust/issues/132306> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: invalid update of the `#[loop_match]` state\n --> /tmp/probe_loop_match_glwxnmgx/c4g_reject_mismatched_update.rs:7:9\n  |\n7 |         s2 = 'blk: {\n  |         ^^\n8 |             match s1 {\n  |                   -- the assignment must update this variable\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n"
+    },
+    "c5_drop_fieldless_enum_divergence": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stdout": "LM_CONST_CONTINUE=[\"armA_inner\", \"armA_outer\", \"armB\", \"drop_S::B\"]\nLM_NORMAL_BREAK=[\"armA_inner\", \"armA_outer\", \"armB\", \"drop_S::B\"]\nPLAIN_LOOP=[\"armA_inner\", \"armA_outer\", \"drop_S::A\", \"armB\", \"drop_S::B\"]"
+    },
+    "c5_miri_tree_borrows": {
+      "miri_rc": 0,
+      "stdout": "LM_CONST_CONTINUE=[\"armA_inner\", \"armA_outer\", \"armB\", \"drop_S::B\"]\nLM_NORMAL_BREAK=[\"armA_inner\", \"armA_outer\", \"armB\", \"drop_S::B\"]\nPLAIN_LOOP=[\"armA_inner\", \"armA_outer\", \"drop_S::A\", \"armB\", \"drop_S::B\"]",
+      "stderr_head": ""
+    },
+    "c6_unwind_through_const_continue_drops": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stdout": "UNWIND_CAUGHT=true LOG=[\"arm0_inner_panics\", \"arm0_outer\"]"
+    },
+    "c6_miri_tree_borrows": {
+      "miri_rc": 0,
+      "stdout": "UNWIND_CAUGHT=true LOG=[\"arm0_inner_panics\", \"arm0_outer\"]",
+      "stderr_head": "\nthread 'main' (1000) panicked at /tmp/probe_loop_match_glwxnmgx/miri_c6_unwind.rs:15:13:\nintentional_drop_panic\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nnote: in Miri, you may have to set `MIRIFLAGS=-Zmiri-env-forward=RUST_BACKTRACE` for the environment variable to have an effect\n"
+    }
+  }
+}
