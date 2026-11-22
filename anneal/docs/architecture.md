@@ -386,7 +386,10 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `theory/Anneal/PureLift/`, and planned `Theory/Rust/Wp/`,
   `Theory/Rust/Tactics/`):** Weakest-precondition calculi, functional borrow
   lifting, separation-logic frame rules, and proof automation built against
-  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics`.
+  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics` (`cargo-anneal`
+  bundles `theory/Anneal/MirWp.lean` and its `Anneal.MirWp.*` submodules and
+  compiles and audits only the transitive `Anneal.*` closure imported by target
+  proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
 

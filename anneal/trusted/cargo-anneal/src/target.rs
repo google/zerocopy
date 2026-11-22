@@ -15,7 +15,7 @@
 //! checks their separation from the unreviewed proof implementation.
 
 use std::{
-    collections::{BTreeMap, BTreeSet},
+    collections::{BTreeMap, BTreeSet, VecDeque},
     fs, io,
     path::{Path, PathBuf},
 };
@@ -77,8 +77,9 @@ pub struct TargetModule {
     /// Names the host path used only for source admission and private staging.
     /// The inspector receives compiled artifacts, not this original path.
     pub source: PathBuf,
-    /// Holds the hex SHA-256 digest that the source bytes must match both
-    /// before staging and again after elaboration.
+    /// Holds the hex SHA-256 digest that the source bytes must match before
+    /// staging and, for every module retained for compilation, again after
+    /// elaboration.
     pub expected_sha256: String,
     /// Assigns the module's authority; see [`TargetRole::allows`].
     pub role: TargetRole,
@@ -108,7 +109,9 @@ pub struct TargetBindings {
 /// must obtain Model hashes from its installed package and Specification hashes
 /// from its reviewed request, rather than accepting either from proof code.
 /// Adjacent caller `.olean` files are never loaded; every listed source is
-/// copied into a fresh private stage and compiled against explicit artifacts.
+/// copied into a fresh private stage and header-parsed, and every retained
+/// module (all non-bundled inputs plus any bundled `Anneal.*` `Proof` modules
+/// reachable from them via imports) is compiled against explicit artifacts.
 ///
 /// Module and selected declaration labels currently use nonempty dot-separated
 /// components, each starting with an ASCII letter and continuing with ASCII
@@ -147,6 +150,51 @@ pub struct TargetAuditRequest {
 // general naming rules or apply it to helper declarations inside source files.
 fn target_name_valid(name: &str) -> bool {
     !name.is_empty() && name.split('.').all(is_lean_ident)
+}
+
+/// Return whether `module` belongs to the bundled `Anneal` theory namespace
+/// (`Anneal` or `Anneal.*`), which authored proof modules are forbidden from
+/// naming via `reserved_proof_module`.
+fn is_bundled_theory_module(module: &str) -> bool {
+    module == "Anneal" || module.starts_with("Anneal.")
+}
+
+/// Compute the deterministic BFS set of target modules to retain for
+/// compilation and auditing.
+///
+/// Every non-bundled-theory module (`Model`, `Capture`, `Specification`,
+/// `Expected`, and authored `Proof` modules, plus `request.theorem_module`)
+/// seeds the traversal. Bundled `Anneal.*` `Proof` modules are retained only
+/// when reachable via parsed `imports` edges from those seeds, preserving
+/// role-violation checks such as `Specification -> Anneal.*` while skipping
+/// compilation, auditing, and provenance of unused bundled theory libraries.
+fn reachable_target_modules(
+    request: &TargetAuditRequest,
+    imports: &BTreeMap<String, Vec<ImportEdge>>,
+) -> BTreeSet<String> {
+    let staged_names: BTreeSet<&str> = request.modules.iter().map(|m| m.module.as_str()).collect();
+    let mut retained = BTreeSet::new();
+    let mut queue = VecDeque::new();
+    for module in &request.modules {
+        let is_seed = module.role != TargetRole::Proof
+            || !is_bundled_theory_module(&module.module)
+            || module.module == request.theorem_module;
+        if is_seed && retained.insert(module.module.clone()) {
+            queue.push_back(module.module.clone());
+        }
+    }
+    while let Some(current) = queue.pop_front() {
+        if let Some(edges) = imports.get(&current) {
+            for edge in edges {
+                if staged_names.contains(edge.module.as_str())
+                    && retained.insert(edge.module.clone())
+                {
+                    queue.push_back(edge.module.clone());
+                }
+            }
+        }
+    }
+    retained
 }
 
 /// Inspector data excludes original host paths: Lean uses compiled artifacts
@@ -494,6 +542,34 @@ impl Checker {
         if imports.len() != staged.len() {
             return Err(Failure::policy("headers", "incomplete target source header inventory"));
         }
+        // Retain every non-bundled target module plus only those bundled
+        // `Anneal.*` theory modules reachable from them via parsed imports.
+        // Every listed request source was already authenticated, staged, and
+        // header-parsed above; pruning before library/sysroot admission avoids
+        // admitting external libraries for, compiling, auditing, and recording
+        // provenance on unused bundled libraries while keeping forbidden edges
+        // such as `Specification -> Anneal.*` reachable for role checks below.
+        let retained = reachable_target_modules(request, &imports);
+        imports.retain(|module, _| retained.contains(module));
+        roles.retain(|module, _| retained.contains(module));
+        staged.retain(|module, _| retained.contains(module));
+        let filtered_request = TargetAuditRequest {
+            modules: request
+                .modules
+                .iter()
+                .filter(|m| retained.contains(&m.module))
+                .cloned()
+                .collect(),
+            theorem_module: request.theorem_module.clone(),
+            theorem_name: request.theorem_name.clone(),
+            expected_module: request.expected_module.clone(),
+            expected_declaration: request.expected_declaration.clone(),
+            canonical_root: request.canonical_root.clone(),
+            subject_declaration: request.subject_declaration.clone(),
+            specification_declaration: request.specification_declaration.clone(),
+            bindings: request.bindings.clone(),
+        };
+        let request = &filtered_request;
         if self.admitted()?.unpinned {
             let external_imports: Vec<String> = imports
                 .values()
@@ -574,7 +650,8 @@ impl Checker {
         // Report modules determining the subject, model, or specification,
         // including installed libraries used only by captured program data.
         // The logical closures exclude proof-only helpers; the source inventory
-        // above separately identifies every request source, even unused ones.
+        // above separately identifies every retained source (all non-bundled
+        // request modules plus reachable bundled `Anneal.*` libraries).
         let mut identities = serde_json::Map::new();
         for key in ["subjectClosure", "modelClosure", "specificationClosure"] {
             if let Some(rows) = obj.get(key).and_then(Json::as_array) {
@@ -1605,5 +1682,475 @@ exit 3
         let pinned_report = pinned.run_target(&eq_def_req).unwrap();
         assert_eq!(pinned_report["replay"], Json::Bool(true));
         assert_eq!(pinned_report["exactType"], Json::Bool(true));
+    }
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use std::{ffi::OsStr, fs};
+
+    use super::*;
+    use crate::toolchain::LOCKED_LEAN_SHA256;
+
+    mod embedded {
+        include!("bundled_resources.rs");
+
+        pub fn entries() -> &'static [(&'static str, &'static str)] {
+            let _ = CORRESPONDENCE_PROVENANCE_JSON;
+            BUNDLE
+        }
+    }
+
+    struct EmbeddedBundle {
+        root: PathBuf,
+        model_modules: Vec<TargetModule>,
+        theory_modules: Vec<TargetModule>,
+    }
+
+    impl EmbeddedBundle {
+        /// Materialize `cargo-anneal`'s embedded bundle into `root` just as
+        /// `verify.rs` does, so `target::tests` runs without reaching outside
+        /// the package (including from an unpacked `cargo package` tarball).
+        fn materialize(root: &Path) -> Self {
+            let mut model_modules = Vec::new();
+            let mut theory_modules = Vec::new();
+            for &(relative, text) in embedded::entries() {
+                let path = root.join(relative);
+                fs::create_dir_all(path.parent().unwrap()).unwrap();
+                fs::write(&path, text.as_bytes()).unwrap();
+                let sha = sha256_file(&path, "fixture").unwrap();
+                if let Some(rest) =
+                    relative.strip_prefix("trusted/lean/").and_then(|s| s.strip_suffix(".lean"))
+                {
+                    model_modules.push(TargetModule {
+                        module: rest.replace('/', "."),
+                        source: path,
+                        expected_sha256: sha,
+                        role: TargetRole::Model,
+                    });
+                } else if let Some(rest) =
+                    relative.strip_prefix("theory/").and_then(|s| s.strip_suffix(".lean"))
+                {
+                    theory_modules.push(TargetModule {
+                        module: rest.replace('/', "."),
+                        source: path,
+                        expected_sha256: sha,
+                        role: TargetRole::Proof,
+                    });
+                }
+            }
+            Self { root: root.to_path_buf(), model_modules, theory_modules }
+        }
+
+        fn attach(&self, req: &mut TargetAuditRequest, include_model: bool) {
+            if include_model {
+                req.modules.extend(self.model_modules.iter().cloned());
+            }
+            req.modules.extend(self.theory_modules.iter().cloned());
+        }
+    }
+
+    /// Resolve an explicitly configured, pinned Lean 4.34.1 binary from
+    /// `(ANNEAL_LEAN, ANNEAL_TEST_INSTALL_ROOT)`.
+    ///
+    /// Returns `None` when neither variable is set (or both are empty),
+    /// skipping live Lean tests without probing ambient `$HOME/.elan` or
+    /// `$XDG_CACHE_HOME` installs. Panics when either variable is configured to
+    /// a missing path or a binary whose SHA-256 differs from
+    /// [`LOCKED_LEAN_SHA256`], so toolchain-equipped CI jobs cannot silently
+    /// skip live tests.
+    fn explicit_verified_lean_from(
+        anneal_lean: Option<&OsStr>,
+        install_root: Option<&OsStr>,
+    ) -> Option<PathBuf> {
+        let (source, path) = if let Some(lean) = anneal_lean.filter(|v| !v.is_empty()) {
+            ("ANNEAL_LEAN", PathBuf::from(lean))
+        } else {
+            let root = install_root.filter(|v| !v.is_empty())?;
+            ("ANNEAL_TEST_INSTALL_ROOT", Path::new(root).join("lean/bin/lean"))
+        };
+        assert!(
+            path.is_file(),
+            "{source} does not point to a Lean binary file: {}",
+            path.display()
+        );
+        let digest = sha256_file(&path, "test")
+            .unwrap_or_else(|err| panic!("{source} failed to hash {}: {err}", path.display()));
+        assert!(
+            LOCKED_LEAN_SHA256.contains(&digest.as_str()),
+            "{source} Lean binary {} has unpinned SHA-256 {digest}",
+            path.display()
+        );
+        Some(path)
+    }
+
+    fn explicit_verified_lean() -> Option<PathBuf> {
+        explicit_verified_lean_from(
+            std::env::var_os("ANNEAL_LEAN").as_deref(),
+            std::env::var_os("ANNEAL_TEST_INSTALL_ROOT").as_deref(),
+        )
+    }
+
+    fn write_target_request(
+        dir: &Path,
+        modules: Vec<(&str, TargetRole, &str)>,
+    ) -> TargetAuditRequest {
+        let mut req_modules = Vec::new();
+        for (name, role, src) in modules {
+            let path = dir.join(format!("{name}.lean"));
+            fs::create_dir_all(path.parent().unwrap()).unwrap();
+            fs::write(&path, src).unwrap();
+            req_modules.push(TargetModule {
+                module: name.to_owned(),
+                expected_sha256: sha256_file(&path, "fixture").unwrap(),
+                source: path,
+                role,
+            });
+        }
+        let digest = req_modules[0].expected_sha256.clone();
+        TargetAuditRequest {
+            modules: req_modules,
+            theorem_module: "Proof".to_owned(),
+            theorem_name: "Proof.verify".to_owned(),
+            expected_module: "Expected".to_owned(),
+            expected_declaration: "Expected.claim".to_owned(),
+            canonical_root: "Trusted.MirSemantics.UnitTheorem".to_owned(),
+            subject_declaration: "Captured.program".to_owned(),
+            specification_declaration: "Spec.specs".to_owned(),
+            bindings: TargetBindings {
+                request_sha256: digest.clone(),
+                capture_sha256: digest.clone(),
+                model_manifest_sha256: digest.clone(),
+                specification_manifest_sha256: digest,
+            },
+        }
+    }
+
+    fn minimal_request(dir: &Path) -> TargetAuditRequest {
+        write_target_request(
+            dir,
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Data.BitVec.Basic\nnamespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : BitVec 8\n  specs : BitVec 8 → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.program.toNat = 7 ∧ c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : BitVec 8 := BitVec.ofNat 8 7\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\ndef Spec.specs (p : BitVec 8) : Prop := BitVec.and p p = p\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Init.Data.BitVec.Lemmas\n\
+                     theorem Proof.verify : Expected.claim := And.intro rfl BitVec.and_self\n",
+                ),
+            ],
+        )
+    }
+
+    #[test]
+    fn demand_driven_theory_bfs_prunes_unused_and_preserves_role_edges() {
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let mut req = minimal_request(&base.join("bfs"));
+        for extra in ["Anneal.Extra", "Anneal.MirWp", "Anneal.Helper"] {
+            let path = base.join("bfs").join(format!("{extra}.lean"));
+            fs::write(&path, "prelude\n").unwrap();
+            req.modules.push(TargetModule {
+                module: extra.to_owned(),
+                expected_sha256: sha256_file(&path, "fixture").unwrap(),
+                source: path,
+                role: TargetRole::Proof,
+            });
+        }
+        let mk_edge = |m: &str| ImportEdge {
+            module: m.to_owned(),
+            import_all: false,
+            is_exported: true,
+            is_meta: false,
+        };
+        let mut imports: BTreeMap<String, Vec<ImportEdge>> = BTreeMap::from([
+            ("Model".to_owned(), vec![]),
+            ("Captured".to_owned(), vec![mk_edge("Model")]),
+            ("Spec".to_owned(), vec![mk_edge("Model")]),
+            ("Expected".to_owned(), vec![mk_edge("Captured"), mk_edge("Spec")]),
+            ("Proof".to_owned(), vec![mk_edge("Expected")]),
+            ("Anneal.Extra".to_owned(), vec![]),
+            ("Anneal.MirWp".to_owned(), vec![mk_edge("Model")]),
+            ("Anneal.Helper".to_owned(), vec![mk_edge("Anneal.Extra")]),
+        ]);
+
+        // 1. None of the bundled `Anneal.*` modules are imported.
+        let retained_none = reachable_target_modules(&req, &imports);
+        assert!(!retained_none.contains("Anneal.Extra"));
+        assert!(!retained_none.contains("Anneal.MirWp"));
+        assert!(!retained_none.contains("Anneal.Helper"));
+        for seed in ["Model", "Captured", "Spec", "Expected", "Proof"] {
+            assert!(retained_none.contains(seed), "missing seed {seed}");
+        }
+
+        // 2. Transitive `Proof -> Anneal.Helper -> Anneal.Extra` retains both
+        //    reachable theory modules while still pruning `Anneal.MirWp`.
+        imports.get_mut("Proof").unwrap().push(mk_edge("Anneal.Helper"));
+        let retained_trans = reachable_target_modules(&req, &imports);
+        assert!(retained_trans.contains("Anneal.Helper"));
+        assert!(retained_trans.contains("Anneal.Extra"));
+        assert!(!retained_trans.contains("Anneal.MirWp"));
+
+        // 3. A forbidden `Spec -> Anneal.MirWp` edge retains `Anneal.MirWp` so
+        //    the downstream `TargetRole::allows` check still rejects it.
+        imports.get_mut("Spec").unwrap().push(mk_edge("Anneal.MirWp"));
+        let retained_spec = reachable_target_modules(&req, &imports);
+        assert!(retained_spec.contains("Anneal.MirWp"));
+
+        // 4. Setting `theorem_module` to a bundled `Anneal.*` module keeps it
+        //    as a seed even with no incoming import edges.
+        imports.get_mut("Proof").unwrap().retain(|e| e.module != "Anneal.Helper");
+        req.theorem_module = "Anneal.Extra".to_owned();
+        let retained_thm = reachable_target_modules(&req, &imports);
+        assert!(retained_thm.contains("Anneal.Extra"));
+        assert!(!retained_thm.contains("Anneal.Helper"));
+    }
+
+    #[test]
+    fn explicit_verified_lean_gates_and_fails_closed() {
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let empty = OsStr::new("");
+
+        assert_eq!(explicit_verified_lean_from(None, None), None);
+        assert_eq!(explicit_verified_lean_from(Some(empty), Some(empty)), None);
+
+        let panic_message = |anneal_lean: Option<&OsStr>, install_root: Option<&OsStr>| {
+            let err =
+                std::panic::catch_unwind(|| explicit_verified_lean_from(anneal_lean, install_root))
+                    .expect_err("expected fail-closed panic");
+            err.downcast_ref::<String>()
+                .cloned()
+                .or_else(|| err.downcast_ref::<&str>().map(|s| (*s).to_owned()))
+                .expect("string panic payload")
+        };
+
+        let missing_lean = base.join("missing-lean");
+        let msg = panic_message(Some(missing_lean.as_os_str()), None);
+        assert!(msg.contains("ANNEAL_LEAN"), "{msg}");
+        assert!(msg.contains("Lean binary file"), "{msg}");
+
+        let missing_root = base.join("missing-root");
+        let msg = panic_message(Some(empty), Some(missing_root.as_os_str()));
+        assert!(msg.contains("ANNEAL_TEST_INSTALL_ROOT"), "{msg}");
+        assert!(msg.contains("Lean binary file"), "{msg}");
+
+        let bogus_lean = base.join("bogus-lean");
+        fs::write(&bogus_lean, b"not lean").unwrap();
+        let msg = panic_message(Some(bogus_lean.as_os_str()), Some(missing_root.as_os_str()));
+        assert!(msg.contains("ANNEAL_LEAN"), "{msg}");
+        assert!(msg.contains("unpinned SHA-256"), "{msg}");
+
+        let bogus_root = base.join("bogus-root");
+        let bogus_root_lean = bogus_root.join("lean/bin/lean");
+        fs::create_dir_all(bogus_root_lean.parent().unwrap()).unwrap();
+        fs::write(&bogus_root_lean, b"not lean").unwrap();
+        let msg = panic_message(None, Some(bogus_root.as_os_str()));
+        assert!(msg.contains("ANNEAL_TEST_INSTALL_ROOT"), "{msg}");
+        assert!(msg.contains("unpinned SHA-256"), "{msg}");
+    }
+
+    #[test]
+    fn live_demand_driven_bundled_theory_pruning() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let attach_mir_wp_and_unused = |req: &mut TargetAuditRequest, include_model: bool| {
+            bundle.attach(req, include_model);
+            req.modules.push(TargetModule {
+                module: "Anneal.Unused".to_owned(),
+                source: unused_path.clone(),
+                expected_sha256: unused_sha.clone(),
+                role: TargetRole::Proof,
+            });
+        };
+
+        // 1. When `Proof` does NOT import `Anneal.MirWp` or `Anneal.Unused`,
+        //    neither is compiled nor listed in provenance (`sources`).
+        let mut req_unimported = minimal_request(&base.join("unimported"));
+        attach_mir_wp_and_unused(&mut req_unimported, false);
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report_unimported = checker.run_target(&req_unimported).unwrap();
+        assert_eq!(report_unimported["replay"], Json::Bool(true));
+        assert_eq!(report_unimported["exactType"], Json::Bool(true));
+        let sources_unimported: BTreeSet<&str> = report_unimported["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(!sources_unimported.contains("Anneal.MirWp"), "{sources_unimported:?}");
+        assert!(!sources_unimported.contains("Anneal.MirWp.Core"), "{sources_unimported:?}");
+        assert!(!sources_unimported.contains("Anneal.Unused"), "{sources_unimported:?}");
+        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+
+        // 2. When `Proof` imports `Anneal.MirWp`, `Anneal.MirWp` and its
+        //    transitive submodules ARE compiled and verified within the
+        //    3-axiom ceiling, while unimported `Anneal.Unused` remains
+        //    uncompiled and omitted.
+        let mut req_with_mir_wp = write_target_request(
+            &base.join("with-mir-wp"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.body0 : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 0, isUnsafe := false, locals := [.unit],\n    \
+                       basicBlocks := [{ statements := [], terminator := .return_ }],\n    \
+                       identity := _root_.String.ofList [(_root_.Char.ofNat 97)] }\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs where\n  \
+                     safety := fun _ _ => True\n  \
+                     property := fun _ => True\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.MirWp\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                     refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, trivial⟩\n  \
+                     intro id selected h\n  \
+                     cases id with\n  \
+                     | zero =>\n    \
+                       cases h\n    \
+                       refine Anneal.MirWp.bodyVerified_of_safe rfl rfl (fun args hv _ => ?_)\n    \
+                       cases args with\n    \
+                       | nil => exact (Anneal.MirWp.run_initial_success (body := Captured.body0) (fuel := 4) (args := []) (value := .unit) rfl).1\n    \
+                       | cons _ _ => cases hv\n  \
+                     | succ n => cases n <;> cases h\n",
+                ),
+            ],
+        );
+        attach_mir_wp_and_unused(&mut req_with_mir_wp, true);
+        let report_with_mir_wp = checker.run_target(&req_with_mir_wp).unwrap();
+        assert_eq!(report_with_mir_wp["replay"], Json::Bool(true));
+        assert_eq!(report_with_mir_wp["exactType"], Json::Bool(true));
+        let sources_with_mir_wp: BTreeSet<&str> = report_with_mir_wp["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        for expected in [
+            "Anneal.MirWp",
+            "Anneal.MirWp.Core",
+            "Anneal.MirWp.Execution",
+            "Anneal.MirWp.Reflection",
+            "Anneal.MirWp.Scalars",
+            "Anneal.MirWp.Canaries",
+        ] {
+            assert!(
+                sources_with_mir_wp.contains(expected),
+                "missing {expected} in {sources_with_mir_wp:?}"
+            );
+        }
+        assert!(!sources_with_mir_wp.contains("Anneal.Unused"), "{sources_with_mir_wp:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> = report_with_mir_wp["axioms"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|a| a.as_str().unwrap())
+            .collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        assert!(checker.stage.join("target-lib/Anneal/MirWp.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+
+        // 3. Role isolation remains intact: `Specification -> Anneal.MirWp`
+        //    is retained by BFS and rejected by `TargetRole::allows`.
+        let mut req_bad_spec = write_target_request(
+            &base.join("bad-spec"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.body0 : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 0, isUnsafe := false, locals := [.unit],\n    \
+                       basicBlocks := [{ statements := [], terminator := .return_ }],\n    \
+                       identity := _root_.String.ofList [(_root_.Char.ofNat 97)] }\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\nimport Anneal.MirWp\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs where\n  \
+                     safety := fun _ _ => True\n  \
+                     property := fun _ => True\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\ntheorem Proof.verify : Expected.claim := trivial\n",
+                ),
+            ],
+        );
+        attach_mir_wp_and_unused(&mut req_bad_spec, true);
+        let err = checker.run_target(&req_bad_spec).unwrap_err();
+        assert_eq!(err.code, 1, "{err}");
+        assert_eq!(err.phase, "target-role", "{err}");
+        assert!(err.message.contains("Spec cannot import Anneal.MirWp"), "{err}");
     }
 }

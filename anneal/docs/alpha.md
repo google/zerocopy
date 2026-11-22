@@ -54,11 +54,15 @@ library, `--manifest-path <Cargo.toml> --proof-dir <dir>` (with optional
 The alpha uses the x86-64 Linux scalar MIR profile: booleans, integers up to
 64 bits, unit, never, and inhabited local fieldless enums (for example,
 `ci/verify_starnix_e2e.py` checks Starnix's `ebpf_core` endianness conversion
-with symbolic MIR helpers in `Anneal.MirWp`). Calls, pointer accesses, and
-external dependencies are outside the alpha's scope. An unsupported input
-returns an explicit refusal. Verify the stated configuration when comparing a
-result with a deployed binary. See the [threat model](../THREAT_MODEL.md) for
-the verification assumptions.
+with symbolic MIR helpers in `Anneal.MirWp`). Proof modules may import bundled
+`Anneal.*` proof libraries (`Anneal.MirWp`), which are authenticated and
+header-parsed alongside the request and compiled, audited, and recorded in
+provenance on demand when imported; specification modules stay restricted to
+`Trusted.*`, `Init.*`, and declared `specification` helpers. Calls, pointer
+accesses, and external dependencies are outside the alpha's scope. An
+unsupported input returns an explicit refusal. Verify the stated configuration
+when comparing a result with a deployed binary. See the
+[threat model](../THREAT_MODEL.md) for the verification assumptions.
 
 ## Build-system and toolchain options
 

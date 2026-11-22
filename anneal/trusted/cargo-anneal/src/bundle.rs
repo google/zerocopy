@@ -25,10 +25,12 @@ use crate::toolchain::{LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256, is_sha256_hex,
 ///
 /// Resource ownership remains explicit so runtime target verification never
 /// discovers model, lock, or inspector files from an untrusted checkout. Within
-/// `theory/`, `BUNDLE_SOURCES` includes only `theory/Anneal/MirWp.lean` and its
-/// `Anneal.MirWp.*` submodules, the target verification library for the
-/// supported pointer-free MIR profile, because target verification compiles
-/// every bundled `theory/` source module on each run.
+/// `theory/`, `BUNDLE_SOURCES` includes `theory/Anneal/MirWp.lean` and its
+/// `Anneal.MirWp.*` submodules; target verification authenticates, stages, and
+/// header-parses listed sources, then compiles, audits, and records provenance
+/// only for the transitive `Anneal.*` closure imported by non-bundled target
+/// modules so unused bundled theory modules incur no compilation, auditing, or
+/// provenance overhead.
 pub const BUNDLE_SOURCES: &[&str] = &[
     "trusted/audit/TrustedBoundary.lean",
     "trusted/audit/library-lock.json",
