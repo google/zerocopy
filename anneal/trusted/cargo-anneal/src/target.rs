@@ -2706,6 +2706,7 @@ mod tests {
         assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
         assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
         assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -2717,6 +2718,7 @@ mod tests {
         assert!(checker.stage.join("target-lib/Anneal/LoopInv.olean").is_file());
         assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitVecArith.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-loopinv");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
@@ -2725,6 +2727,123 @@ mod tests {
         assert!(export_dir.join("Anneal/LoopInv.olean").is_file());
         assert!(!export_dir.join("Anneal/BitVec.olean").exists());
         assert!(!export_dir.join("Anneal/BitVecArith.olean").exists());
+        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
+        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+    }
+
+    #[test]
+    fn live_demand_driven_spineforce_three_axiom_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-spineforce"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.NotationExtra\nimport Init.Data.Nat.Basic\n\
+                     import Init.Data.List.Basic\nnamespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 3\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.specs (depth : Nat) : Prop :=\n  \
+                     (∀ (xs : List Nat), ∃ (f : List Nat → Nat), f xs = xs.length) ∧\n  \
+                     (∀ (n : Nat), ∃ (g : Nat → Nat), g n = n + 1) ∧\n  \
+                     (∃ m : Nat, 0 < m ∧ m = 9) ∧\n  \
+                     (∀ i : Nat, i < depth → i < 10)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.SpineForce\n\
+                     theorem Proof.verify : Expected.claim :=\n  \
+                     ⟨fun xs => ⟨fun ys => Anneal.SpineForce.forceList ys List.length,\n    \
+                       Anneal.SpineForce.forceList_eq xs List.length⟩,\n   \
+                      fun n => ⟨fun m => Anneal.SpineForce.withStrictNat m (fun x => x + 1),\n    \
+                       Anneal.SpineForce.withStrictNat_eq n (fun x => x + 1)⟩,\n   \
+                      ⟨Anneal.SpineForce.runPow2 Captured.program (fun x => x + 1) 1,\n    \
+                       Anneal.SpineForce.runPow2_preserves (fun x => 0 < x) (fun x => x + 1)\n      \
+                         (fun _ hx => Nat.lt_trans hx (Nat.lt_succ_self _)) Captured.program 1\n      \
+                         (Nat.lt_succ_self 0),\n    rfl⟩,\n   \
+                      Anneal.SpineForce.checkRange_sound (fun i => decide (i < 10))\n    \
+                        (fun _ h => of_decide_eq_true h) Captured.program rfl⟩\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req, false);
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(sources.contains("Anneal.SpineForce"), "{sources:?}");
+        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
+        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        assert!(checker.stage.join("target-lib/Anneal/SpineForce.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        let export_dir = base.join("export-with-spineforce");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        assert!(export_dir.join("Anneal/SpineForce.olean").is_file());
+        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
+        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
+        assert!(!export_dir.join("Anneal/BitVec.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 }

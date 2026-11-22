@@ -384,15 +384,16 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `StableAst` to $M_{\text{anneal}}$.
 - **Program logics, 3-axiom proof libraries, and tactics
   (`theory/Anneal/{MirWp,LoopInv,BitVec,BitVecArith}.lean`,
-  `theory/Anneal/{LeBytes,ListChunks,NatBitwise}.lean`,
+  `theory/Anneal/{LeBytes,ListChunks,NatBitwise,SpineForce}.lean`,
   `theory/Anneal/PureLift/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   constructive bitvector, byte-serialization, and list-chunking proof
-  libraries, functional borrow lifting, separation-logic frame rules, and
-  proof automation built against $M_{\text{anneal}}$ and
-  `StableAst` / `StableSemantics` (`cargo-anneal` bundles the scalar and MIR
-  proof libraries under `theory/Anneal/`, compiling and auditing only the
-  transitive `Anneal.*` closure imported by target proof modules).
+  libraries, CPS spine-forcing and `@Nat.rec` iteration combinators, functional
+  borrow lifting, separation-logic frame rules, and proof automation built
+  against $M_{\text{anneal}}$ and `StableAst` / `StableSemantics`
+  (`cargo-anneal` bundles the scalar and MIR proof libraries under
+  `theory/Anneal/`, compiling and auditing only the transitive `Anneal.*`
+  closure imported by target proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
 
@@ -510,7 +511,8 @@ anneal/
     │   ├── MirWp.lean              # Fuel-bounded MIR WP & canaries (+ MirWp/)
     │   ├── NatBitwise.lean         # Shared Nat.bitwise unfolding & bounds
     │   ├── PureLift.lean           # Functional borrow-lifting calculus
-    │   └── PureLift/
+    │   ├── PureLift/
+    │   └── SpineForce.lean         # CPS spine-forcing & @Nat.rec combinators
     ├── Framework/                  # [planned] Generic simulation lemmas
     └── Rust/                       # [planned] StableAst/, Passes/, Wp/
 ```
