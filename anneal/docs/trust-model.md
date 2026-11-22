@@ -233,15 +233,20 @@ taint), while Repository Pass 2 requires `linux_bwrap`; Rust compilation
 
 ### Cargo workspace containment
 
-Before inspecting Lean files, `anneal-audit` verifies the repository's root
-manifests against [`root-manifest.sha256`](../trusted/root-manifest.sha256)
-(`trusted/root-manifest.sha256`, including valid UTF-8 and invisible/bidi
-control scans on textual pinned manifests such as `Cargo.toml`, `Cargo.lock`,
-`flake.nix`, and `flake.lock`), checks Git checkouts for `160000` gitlink
-submodules (invoking external `git ls-files --stage` with `core.fsmonitor=false`
-and a cleared environment / disabled system-global config when inside `.git`),
-and enforces two complementary Cargo workspace invariants inside `trusted/`: (1)
-closed-world Cargo manifest and dependency schemas
+Before inspecting Lean files, `anneal-audit` requires
+[`root-manifest.sha256`](../trusted/root-manifest.sha256)
+(`trusted/root-manifest.sha256`, in lowercase two-space text-mode format
+`<sha256>  <path>` with canonical printable-ASCII paths matching
+`ci/update_root_manifest.py` across real directories and single-link regular
+files) whenever any root build/manifest/vendor input is present or `trusted/` /
+`trusted/audit/` contains any entry outside the closed Lean-only fixture
+allowlist, verifies the repository's root manifests against it (including valid
+UTF-8 and invisible/bidi control scans on textual pinned manifests such as
+`Cargo.toml`, `Cargo.lock`, `flake.nix`, and `flake.lock`), checks Git checkouts
+for `160000` gitlink submodules (invoking external `git ls-files --stage` with
+`core.fsmonitor=false` and a cleared environment / disabled system-global config
+when inside `.git`), and enforces two complementary Cargo workspace invariants
+inside `trusted/`: (1) closed-world Cargo manifest and dependency schemas
 (`#[serde(deny_unknown_fields)]`, rejecting `cargo-features`,
 `package.metabuild`, `package.links`, `[workspace.dependencies]`, and `workspace
 = true` inheritance) paired with whole-member filesystem hygiene across every
@@ -675,8 +680,9 @@ To include these files in `trusted/`'s effective TCB without relocating them,
 
 - **[`trusted/root-manifest.sha256`](../trusted/root-manifest.sha256):** Pins
   the SHA-256 digests of the repository's root build files (`Cargo.toml`,
-  `Cargo.lock`, `flake.nix`, and `flake.lock`), verified by CI and
-  `anneal-audit`.
+  `Cargo.lock`, `flake.nix`, and `flake.lock`) in lowercase two-space text-mode
+  format (`<sha256>  <path>`), required and verified by both CI and
+  `anneal-audit` (and refreshed explicitly by `ci/update_root_manifest.py`).
 - **[`foundation-lock.json`](../trusted/lean/foundation-lock.json)**
   (`trusted/lean/foundation-lock.json`): Pins the SHA-256 digests of the `lean`
   executable and all `Init.*` prelude source and `.olean` companion files,

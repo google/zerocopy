@@ -920,6 +920,18 @@ fn rejects_unused_compiled_axiom() {
     );
 }
 
+/// Rewrites `trusted/root-manifest.sha256` in two-space text mode for the four
+/// required root build files under `root` so tests mutating `Cargo.toml` or
+/// `Cargo.lock` exercise downstream Cargo boundary checks.
+fn refresh_root_manifest(root: &Path) {
+    let mut text = String::new();
+    for rel in ["Cargo.toml", "Cargo.lock", "flake.nix", "flake.lock"] {
+        let digest = sha256_file(&root.join(rel), "test").unwrap();
+        text.push_str(&format!("{digest}  {rel}\n"));
+    }
+    fs::write(root.join("trusted/root-manifest.sha256"), text).unwrap();
+}
+
 /// Verifies that `check_cargo_boundary` rejects Cargo workspace members
 /// outside `trusted/` and `path` dependencies from `trusted/` crates to paths
 /// outside `trusted/`.
@@ -927,14 +939,7 @@ fn rejects_unused_compiled_axiom() {
 fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     let checkout = repo_root();
     let mut fix = TempFixture::new(None);
-    fs::copy(checkout.join("Cargo.toml"), fix.root.join("Cargo.toml")).unwrap();
-    fs::copy(checkout.join("trusted/audit/Cargo.toml"), fix.root.join("trusted/audit/Cargo.toml"))
-        .unwrap();
-    copy_dir_all(&checkout.join("trusted/audit/src"), &fix.root.join("trusted/audit/src")).unwrap();
-    copy_dir_all(&checkout.join("trusted/rustc-capture"), &fix.root.join("trusted/rustc-capture"))
-        .unwrap();
-    copy_dir_all(&checkout.join("trusted/cargo-anneal"), &fix.root.join("trusted/cargo-anneal"))
-        .unwrap();
+    copy_cargo_workspace(&fix.root);
     check_cargo_boundary(&fix.root).unwrap();
 
     fs::create_dir_all(fix.root.join("crates/untrusted-helper/src")).unwrap();
@@ -949,12 +954,14 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         b"[workspace]\nresolver = \"2\"\nmembers = [\n    \"trusted/rustc-capture\",\n    \"trusted/cargo-anneal\",\n    \"crates/untrusted-helper\",\n]\n",
     )
     .unwrap();
+    refresh_root_manifest(&fix.root);
     let err_member = fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
     assert!(
         err_member.message.contains("workspace member outside trusted/: crates/untrusted-helper")
     );
 
     fs::copy(checkout.join("Cargo.toml"), fix.root.join("Cargo.toml")).unwrap();
+    refresh_root_manifest(&fix.root);
     fs::write(
         fix.root.join("trusted/rustc-capture/Cargo.toml"),
         b"[package]\nname = \"anneal-rustc-capture\"\nversion = \"0.1.0\"\nedition = \"2024\"\n[dependencies]\nuntrusted-helper = { path = \"../../crates/untrusted-helper\" }\n",
@@ -997,6 +1004,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         b"[workspace]\nresolver = \"2\"\nmembers = [\"trusted/rustc-capture\"]\n[patch.crates-io]\nserde = { path = \"crates/untrusted-helper\" }\n",
     )
     .unwrap();
+    refresh_root_manifest(&fix.root);
     let err_patch = fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
     assert!(
         err_patch.message.contains("root Cargo.toml may contain only [workspace]"),
@@ -1009,15 +1017,16 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         b"version = 4\n[[package]]\nname = \"evil\"\nversion = \"0.1.0\"\nsource = \"git+https://example.com/evil.git#deadbeef\"\n",
     )
     .unwrap();
+    refresh_root_manifest(&fix.root);
     let err_lock = fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
     assert!(err_lock.message.contains("untrusted dependency source in Cargo.lock for evil"));
-    fs::remove_file(fix.root.join("Cargo.lock")).unwrap();
 
     fs::write(
         fix.root.join("Cargo.lock"),
         b"version = 4\n[[package]]\nname = \"rogue-local\"\nversion = \"0.1.0\"\n",
     )
     .unwrap();
+    refresh_root_manifest(&fix.root);
     let err_rogue_lock =
         fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
     assert!(
@@ -1026,7 +1035,6 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
             .contains("untrusted local package without source in Cargo.lock: rogue-local"),
         "unexpected error: {err_rogue_lock}"
     );
-    fs::remove_file(fix.root.join("Cargo.lock")).unwrap();
 
     fs::copy(checkout.join("Cargo.lock"), fix.root.join("Cargo.lock")).unwrap();
     fs::copy(checkout.join("flake.nix"), fix.root.join("flake.nix")).unwrap();
@@ -1046,6 +1054,26 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         "unexpected error: {err_manifest}"
     );
     fs::copy(checkout.join("flake.nix"), fix.root.join("flake.nix")).unwrap();
+
+    // Binary-mode (` *`) entry and absent `trusted/root-manifest.sha256` fail
+    // closed in `Checker::run()`.
+    let orig_manifest = fs::read_to_string(fix.root.join("trusted/root-manifest.sha256")).unwrap();
+    let binary_manifest = orig_manifest.replacen("  Cargo.lock", " *Cargo.lock", 1);
+    fs::write(fix.root.join("trusted/root-manifest.sha256"), binary_manifest).unwrap();
+    let err_binary_mode =
+        fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
+    assert!(
+        err_binary_mode.message.contains("malformed line in root-manifest.sha256"),
+        "unexpected error: {err_binary_mode}"
+    );
+    fs::remove_file(fix.root.join("trusted/root-manifest.sha256")).unwrap();
+    let err_missing_manifest =
+        fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
+    assert!(
+        err_missing_manifest.message.contains("missing required root TCB manifest"),
+        "unexpected error: {err_missing_manifest}"
+    );
+    fs::write(fix.root.join("trusted/root-manifest.sha256"), orig_manifest).unwrap();
 
     // Symlinked target source and Rust `#[path]` escape fail in
     // `Checker::run()`.
@@ -1104,6 +1132,11 @@ fn cargo_boundary_enforces_exclude_edition_doctest_dep_renames_and_source_closur
     cargo_boundary_cases::assert_rejects_manifest_targets_edition_doctest_proc_macros_dep_renames_and_auto_fields();
     cargo_boundary_cases::assert_rejects_rust_source_closure_escapes_and_smuggling();
     cargo_boundary_cases::assert_rejects_case_folded_aliases_unlisted_overrides_submodules_and_manifest_bidi();
+}
+
+#[test]
+fn cargo_boundary_requires_text_mode_root_manifest_and_rejects_tampering() {
+    cargo_boundary_cases::assert_requires_text_mode_root_manifest_and_rejects_tampering();
 }
 
 /// Verifies module-level trust-tier non-contamination (both syntactic

@@ -16,7 +16,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use anneal_audit::{Checker, check_cargo_boundary};
+use anneal_audit::{Checker, check_cargo_boundary, sha256_file};
+
+const ROOT_MANIFEST_FILES: [&str; 4] = ["Cargo.toml", "Cargo.lock", "flake.nix", "flake.lock"];
 
 fn repo_root() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).parent().unwrap().parent().unwrap().to_path_buf()
@@ -46,15 +48,40 @@ impl CargoFixture {
         .unwrap();
         fs::write(root.join("trusted/rustc-capture/src/lib.rs"), b"pub fn ok() -> u32 { 0 }\n")
             .unwrap();
-        Self { _dir: dir, root }
+        fs::write(
+            root.join("Cargo.lock"),
+            b"version = 4\n\n[[package]]\nname = \"anneal-rustc-capture\"\nversion = \"0.1.0\"\n",
+        )
+        .unwrap();
+        fs::write(root.join("flake.nix"), b"{ }\n").unwrap();
+        fs::write(root.join("flake.lock"), b"{}\n").unwrap();
+        let fix = Self { _dir: dir, root };
+        fix.refresh_root_manifest();
+        fix
     }
 
-    fn write(&self, rel: &str, bytes: &[u8]) {
+    fn refresh_root_manifest(&self) {
+        let mut manifest = String::new();
+        for rel in ROOT_MANIFEST_FILES {
+            let digest = sha256_file(&self.root.join(rel), "test").unwrap();
+            manifest.push_str(&format!("{digest}  {rel}\n"));
+        }
+        fs::write(self.root.join("trusted/root-manifest.sha256"), manifest).unwrap();
+    }
+
+    fn write_raw(&self, rel: &str, bytes: &[u8]) {
         let path = self.root.join(rel);
         if let Some(parent) = path.parent() {
             fs::create_dir_all(parent).unwrap();
         }
         fs::write(path, bytes).unwrap();
+    }
+
+    fn write(&self, rel: &str, bytes: &[u8]) {
+        self.write_raw(rel, bytes);
+        if ROOT_MANIFEST_FILES.contains(&rel) {
+            self.refresh_root_manifest();
+        }
     }
 
     fn assert_rejected(&self, expected_substring: &str) {
@@ -561,7 +588,7 @@ pub fn assert_rejects_symlinked_and_hardlinked_directories_and_files() {
     {
         let fix = CargoFixture::new();
         fs::hard_link(fix.root.join("Cargo.toml"), fix.root.join("Cargo.toml.link")).unwrap();
-        fix.assert_rejected("root Cargo.toml must not be hard-linked");
+        fix.assert_rejected("Cargo.toml must not be hard-linked");
     }
     {
         let fix = CargoFixture::new();
@@ -2433,17 +2460,7 @@ pub fn assert_rejects_case_folded_aliases_unlisted_overrides_submodules_and_mani
     // 4. Pinned root manifests with matching digests must still scan for bidi/invisible controls.
     {
         let fix = CargoFixture::new();
-        fix.write("Cargo.lock", b"version = 4\n");
         fix.write("flake.nix", "// hidden \u{202E} bidi\n{}\n".as_bytes());
-        fix.write("flake.lock", b"{}\n");
-        let manifest: String = ["Cargo.toml", "Cargo.lock", "flake.nix", "flake.lock"]
-            .into_iter()
-            .map(|rel| {
-                let hex = cargo_anneal::sha256_file(&fix.root.join(rel), "test").unwrap();
-                format!("{hex}  {rel}\n")
-            })
-            .collect();
-        fix.write("trusted/root-manifest.sha256", manifest.as_bytes());
         fix.assert_rejected("disallowed bidi or invisible control");
         fix.assert_checker_rejected("disallowed bidi or invisible control");
     }
@@ -2505,5 +2522,334 @@ pub fn assert_rejects_case_folded_aliases_unlisted_overrides_submodules_and_mani
         fix.write(artifact, b"stale\n");
         fix.assert_rejected("checked-in build/cache artifact forbidden");
         fix.assert_checker_rejected("checked-in build/cache artifact forbidden");
+    }
+}
+
+pub fn assert_requires_text_mode_root_manifest_and_rejects_tampering() {
+    // 1. Deleting `trusted/root-manifest.sha256` fails closed in both direct
+    // `check_cargo_boundary` and end-to-end `Checker::run()`.
+    {
+        let fix = CargoFixture::new();
+        fs::remove_file(fix.root.join("trusted/root-manifest.sha256")).unwrap();
+        fix.assert_rejected("missing required root TCB manifest");
+        fix.assert_checker_rejected("missing required root TCB manifest");
+    }
+
+    // 2. Each non-manifest Cargo/TCB trigger alone (including unexpected
+    // entries under `trusted/` or `trusted/audit/` outside the closed
+    // Lean-only fixture allowlist) forces `Checker::run()` to invoke
+    // `check_cargo_boundary` and fail closed on the absent
+    // `trusted/root-manifest.sha256`, and a lone empty
+    // `trusted/root-manifest.sha256` also triggers `check_cargo_boundary`.
+    for (rel, is_dir) in [
+        ("Cargo.toml", false),
+        ("Cargo.lock", false),
+        ("flake.nix", false),
+        ("flake.lock", false),
+        ("trusted/rustc-capture", true),
+        ("trusted/cargo-anneal", true),
+        ("trusted/audit/Cargo.toml", false),
+        ("trusted/audit/src/lib.rs", false),
+        ("trusted/extra-crate/Cargo.toml", false),
+        ("vendor", true),
+    ] {
+        let dir = tempfile::Builder::new().prefix("anneal-trigger-only-").tempdir().unwrap();
+        fs::create_dir_all(dir.path().join("trusted")).unwrap();
+        let target = dir.path().join(rel);
+        if is_dir {
+            fs::create_dir_all(&target).unwrap();
+        } else {
+            if let Some(parent) = target.parent() {
+                fs::create_dir_all(parent).unwrap();
+            }
+            fs::write(&target, b"\n").unwrap();
+        }
+        let mut checker = Checker::new(dir.path(), None).unwrap();
+        checker.set_require_mir_wp(false);
+        let err = checker.run().unwrap_err();
+        assert_eq!(err.code, 1, "trigger {rel}: expected code 1, got: {err}");
+        assert_eq!(err.phase, "cargo-boundary", "trigger {rel}: unexpected phase: {err}");
+        assert!(
+            err.message.contains("missing required root TCB manifest"),
+            "trigger {rel}: unexpected diagnostic: {err}"
+        );
+        assert!(!checker.execution_began());
+    }
+    // Non-directory `trusted/audit` entries (a regular file or a symlink
+    // pointing to an external directory containing only `TrustedBoundary.lean`)
+    // also trigger `check_cargo_boundary` via `Checker::run()` when present as
+    // the sole entry under `trusted/`.
+    {
+        let dir = tempfile::Builder::new().prefix("anneal-audit-file-only-").tempdir().unwrap();
+        fs::create_dir_all(dir.path().join("trusted")).unwrap();
+        fs::write(dir.path().join("trusted/audit"), b"\n").unwrap();
+        let mut checker = Checker::new(dir.path(), None).unwrap();
+        checker.set_require_mir_wp(false);
+        let err = checker.run().unwrap_err();
+        assert_eq!(err.code, 1, "audit regular-file trigger: {err}");
+        assert_eq!(err.phase, "cargo-boundary");
+        assert!(
+            err.message.contains("missing required root TCB manifest"),
+            "audit regular-file trigger: unexpected diagnostic: {err}"
+        );
+        assert!(!checker.execution_began());
+    }
+    #[cfg(unix)]
+    {
+        let outside =
+            tempfile::Builder::new().prefix("anneal-audit-sym-target-").tempdir().unwrap();
+        fs::write(outside.path().join("TrustedBoundary.lean"), b"-- stub\n").unwrap();
+        let dir = tempfile::Builder::new().prefix("anneal-audit-sym-only-").tempdir().unwrap();
+        fs::create_dir_all(dir.path().join("trusted")).unwrap();
+        symlink(outside.path(), dir.path().join("trusted/audit")).unwrap();
+        let mut checker = Checker::new(dir.path(), None).unwrap();
+        checker.set_require_mir_wp(false);
+        let err = checker.run().unwrap_err();
+        assert_eq!(err.code, 1, "audit symlink trigger: {err}");
+        assert_eq!(err.phase, "cargo-boundary");
+        assert!(
+            err.message.contains("missing required root TCB manifest"),
+            "audit symlink trigger: unexpected diagnostic: {err}"
+        );
+        assert!(!checker.execution_began());
+    }
+    #[cfg(target_os = "linux")]
+    {
+        use std::{ffi::OsStr, os::unix::ffi::OsStrExt};
+
+        let dir = tempfile::Builder::new().prefix("anneal-trusted-nonutf8-").tempdir().unwrap();
+        fs::create_dir_all(dir.path().join("trusted/lean")).unwrap();
+        fs::write(dir.path().join("trusted").join(OsStr::from_bytes(b"bad\xffentry")), b"\n")
+            .unwrap();
+        let mut checker = Checker::new(dir.path(), None).unwrap();
+        checker.set_require_mir_wp(false);
+        let err = checker.run().unwrap_err();
+        assert_eq!(err.code, 1, "non-UTF-8 trusted entry trigger: {err}");
+        assert_eq!(err.phase, "cargo-boundary");
+        assert!(
+            err.message.contains("missing required root TCB manifest"),
+            "non-UTF-8 trusted entry trigger: unexpected diagnostic: {err}"
+        );
+        assert!(!checker.execution_began());
+    }
+    {
+        let dir = tempfile::Builder::new().prefix("anneal-manifest-only-").tempdir().unwrap();
+        fs::create_dir_all(dir.path().join("trusted")).unwrap();
+        fs::write(dir.path().join("trusted/root-manifest.sha256"), b"").unwrap();
+        let mut checker = Checker::new(dir.path(), None).unwrap();
+        checker.set_require_mir_wp(false);
+        let err = checker.run().unwrap_err();
+        assert_eq!(err.code, 1, "manifest-only: expected code 1, got: {err}");
+        assert_eq!(err.phase, "cargo-boundary", "manifest-only: unexpected phase: {err}");
+        assert!(
+            err.message.contains("root-manifest.sha256 missing required entry"),
+            "manifest-only: unexpected diagnostic: {err}"
+        );
+        assert!(!checker.execution_began());
+    }
+
+    // 3. GNU binary-mode (` *`) entry in `trusted/root-manifest.sha256` is
+    // rejected with policy exit code 1 (direct and `Checker::run()`).
+    {
+        let fix = CargoFixture::new();
+        let manifest = fs::read_to_string(fix.root.join("trusted/root-manifest.sha256")).unwrap();
+        let binary_mode = manifest.replacen("  Cargo.lock", " *Cargo.lock", 1);
+        assert_ne!(manifest, binary_mode);
+        fix.write_raw("trusted/root-manifest.sha256", binary_mode.as_bytes());
+        fix.assert_rejected("malformed line in root-manifest.sha256");
+        fix.assert_checker_rejected("malformed line in root-manifest.sha256");
+    }
+
+    // 4. Uppercase hex digest in `trusted/root-manifest.sha256` is rejected to
+    // match `ci/update_root_manifest.py` (`[0-9a-f]{64}`).
+    {
+        let fix = CargoFixture::new();
+        let manifest = fs::read_to_string(fix.root.join("trusted/root-manifest.sha256")).unwrap();
+        let uppercase: String = manifest
+            .lines()
+            .enumerate()
+            .map(|(idx, line)| {
+                if idx == 0 {
+                    let (hex, rest) = line.split_once("  ").unwrap();
+                    format!("{}  {rest}\n", hex.to_ascii_uppercase())
+                } else {
+                    format!("{line}\n")
+                }
+            })
+            .collect();
+        assert_ne!(manifest, uppercase);
+        fix.write_raw("trusted/root-manifest.sha256", uppercase.as_bytes());
+        fix.assert_rejected("invalid or duplicate entry in root-manifest.sha256");
+        fix.assert_checker_rejected("invalid or duplicate entry in root-manifest.sha256");
+    }
+
+    // 5. Leading-whitespace and trailing-whitespace padded entries are
+    // rejected without silent trimming.
+    {
+        let fix = CargoFixture::new();
+        let manifest = fs::read_to_string(fix.root.join("trusted/root-manifest.sha256")).unwrap();
+        let leading_padded = format!(" {manifest}");
+        fix.write_raw("trusted/root-manifest.sha256", leading_padded.as_bytes());
+        fix.assert_rejected("invalid or duplicate entry in root-manifest.sha256");
+        fix.assert_checker_rejected("invalid or duplicate entry in root-manifest.sha256");
+
+        let trailing_padded: String = manifest
+            .lines()
+            .enumerate()
+            .map(|(idx, line)| if idx == 0 { format!("{line} \n") } else { format!("{line}\n") })
+            .collect();
+        fix.write_raw("trusted/root-manifest.sha256", trailing_padded.as_bytes());
+        fix.assert_rejected("invalid or duplicate entry in root-manifest.sha256");
+        fix.assert_checker_rejected("invalid or duplicate entry in root-manifest.sha256");
+
+        // Embedded whitespace in an existing regular file path (`sub/with
+        // space.txt`) is also rejected through the unified whitespace/control
+        // predicate.
+        let fix_embed = CargoFixture::new();
+        fix_embed.write_raw("sub/with space.txt", b"payload\n");
+        let digest = sha256_file(&fix_embed.root.join("sub/with space.txt"), "test").unwrap();
+        let orig = fs::read_to_string(fix_embed.root.join("trusted/root-manifest.sha256")).unwrap();
+        let with_space = format!("{orig}{digest}  sub/with space.txt\n");
+        fix_embed.write_raw("trusted/root-manifest.sha256", with_space.as_bytes());
+        fix_embed.assert_rejected("invalid or duplicate entry in root-manifest.sha256");
+        fix_embed.assert_checker_rejected("invalid or duplicate entry in root-manifest.sha256");
+
+        // Unicode whitespace, non-ASCII paths, trailing slashes, and bidi or
+        // invisible controls inside manifest paths/texts are rejected, and
+        // Unicode-only whitespace lines (`\u{00A0}\n`) fail closed instead of
+        // being skipped as blank.
+        let nbsp_line = format!("{orig}{digest}  sub\u{00a0}file.txt\n");
+        fix_embed.write_raw("trusted/root-manifest.sha256", nbsp_line.as_bytes());
+        fix_embed.assert_rejected("invalid or duplicate entry in root-manifest.sha256");
+
+        let unicode_blank = format!("{orig}\u{00a0}\n");
+        fix_embed.write_raw("trusted/root-manifest.sha256", unicode_blank.as_bytes());
+        fix_embed.assert_rejected("malformed line in root-manifest.sha256");
+        fix_embed.assert_checker_rejected("malformed line in root-manifest.sha256");
+
+        let bidi_line = format!("{orig}# \u{202E} hidden\n");
+        fix_embed.write_raw("trusted/root-manifest.sha256", bidi_line.as_bytes());
+        fix_embed.assert_rejected("disallowed bidi or invisible control character");
+
+        let bare_cr_comment = format!("{orig}# comment\r{digest}  sub/extra.txt\n");
+        fix_embed.write_raw("trusted/root-manifest.sha256", bare_cr_comment.as_bytes());
+        fix_embed.assert_rejected("bare carriage return forbidden in root-manifest.sha256");
+        fix_embed.assert_checker_rejected("bare carriage return forbidden in root-manifest.sha256");
+
+        let bare_cr_sep = format!("{orig}{digest}  Cargo.toml\r{digest}  Cargo.lock\n");
+        fix_embed.write_raw("trusted/root-manifest.sha256", bare_cr_sep.as_bytes());
+        fix_embed.assert_rejected("bare carriage return forbidden in root-manifest.sha256");
+
+        let bare_cr_eof = format!("{orig}{digest}  sub/extra.txt\r");
+        fix_embed.write_raw("trusted/root-manifest.sha256", bare_cr_eof.as_bytes());
+        fix_embed.assert_rejected("bare carriage return forbidden in root-manifest.sha256");
+
+        let fix_slash = CargoFixture::new();
+        fix_slash.write_raw("sub/extra.txt", b"extra\n");
+        let slash_digest = sha256_file(&fix_slash.root.join("sub/extra.txt"), "test").unwrap();
+        let slash_orig =
+            fs::read_to_string(fix_slash.root.join("trusted/root-manifest.sha256")).unwrap();
+        let trailing_slash = format!("{slash_orig}{slash_digest}  sub/extra.txt/\n");
+        fix_slash.write_raw("trusted/root-manifest.sha256", trailing_slash.as_bytes());
+        fix_slash.assert_rejected("invalid or duplicate entry in root-manifest.sha256");
+        fix_slash.assert_checker_rejected("invalid or duplicate entry in root-manifest.sha256");
+
+        fix_slash.write_raw("sub/foo.", b"dot\n");
+        let dot_digest = sha256_file(&fix_slash.root.join("sub/foo."), "test").unwrap();
+        let trailing_dot = format!("{slash_orig}{dot_digest}  sub/foo.\n");
+        fix_slash.write_raw("trusted/root-manifest.sha256", trailing_dot.as_bytes());
+        fix_slash.assert_rejected("invalid or duplicate entry in root-manifest.sha256");
+
+        fix_slash.write_raw("sub/foo:bar", b"colon\n");
+        let colon_digest = sha256_file(&fix_slash.root.join("sub/foo:bar"), "test").unwrap();
+        let colon_entry = format!("{slash_orig}{colon_digest}  sub/foo:bar\n");
+        fix_slash.write_raw("trusted/root-manifest.sha256", colon_entry.as_bytes());
+        fix_slash.assert_rejected("invalid or duplicate entry in root-manifest.sha256");
+
+        fix_slash.write_raw("sub/foo~1", b"tilde\n");
+        let tilde_digest = sha256_file(&fix_slash.root.join("sub/foo~1"), "test").unwrap();
+        let tilde_entry = format!("{slash_orig}{tilde_digest}  sub/foo~1\n");
+        fix_slash.write_raw("trusted/root-manifest.sha256", tilde_entry.as_bytes());
+        fix_slash.assert_rejected("invalid or duplicate entry in root-manifest.sha256");
+
+        fix_slash.write_raw("sub/caf\u{00e9}.txt", b"utf8\n");
+        let non_ascii_digest =
+            sha256_file(&fix_slash.root.join("sub/caf\u{00e9}.txt"), "test").unwrap();
+        let non_ascii_entry = format!("{slash_orig}{non_ascii_digest}  sub/caf\u{00e9}.txt\n");
+        fix_slash.write_raw("trusted/root-manifest.sha256", non_ascii_entry.as_bytes());
+        fix_slash.assert_rejected("invalid or duplicate entry in root-manifest.sha256");
+    }
+
+    // 6. Omitting one of the four required root build files is rejected.
+    {
+        let fix = CargoFixture::new();
+        let manifest = fs::read_to_string(fix.root.join("trusted/root-manifest.sha256")).unwrap();
+        let without_flake_lock: String = manifest
+            .lines()
+            .filter(|l| !l.ends_with("  flake.lock"))
+            .map(|l| format!("{l}\n"))
+            .collect();
+        fix.write_raw("trusted/root-manifest.sha256", without_flake_lock.as_bytes());
+        fix.assert_rejected("root-manifest.sha256 missing required entry: flake.lock");
+    }
+
+    // 7. Symlinked or hard-linked `trusted/root-manifest.sha256` and symlinked
+    // or hard-linked covered root build files are rejected (direct and
+    // `Checker::run()`).
+    #[cfg(unix)]
+    {
+        let fix = CargoFixture::new();
+        let outside = tempfile::tempdir().unwrap();
+        let real_manifest = outside.path().join("root-manifest.sha256");
+        fs::copy(fix.root.join("trusted/root-manifest.sha256"), &real_manifest).unwrap();
+        fs::remove_file(fix.root.join("trusted/root-manifest.sha256")).unwrap();
+        symlink(&real_manifest, fix.root.join("trusted/root-manifest.sha256")).unwrap();
+        fix.assert_rejected("root TCB manifest must be a regular file");
+        fix.assert_checker_rejected("root TCB manifest must be a regular file");
+    }
+
+    #[cfg(unix)]
+    {
+        let fix = CargoFixture::new();
+        fs::hard_link(
+            fix.root.join("trusted/root-manifest.sha256"),
+            fix.root.join("root-manifest.link"),
+        )
+        .unwrap();
+        fix.assert_rejected("root TCB manifest must not be hard-linked");
+        fix.assert_checker_rejected("root TCB manifest must not be hard-linked");
+    }
+
+    #[cfg(unix)]
+    {
+        let fix = CargoFixture::new();
+        let outside = tempfile::tempdir().unwrap();
+        let real_flake = outside.path().join("flake.nix");
+        fs::copy(fix.root.join("flake.nix"), &real_flake).unwrap();
+        fs::remove_file(fix.root.join("flake.nix")).unwrap();
+        symlink(&real_flake, fix.root.join("flake.nix")).unwrap();
+        fix.assert_rejected("root-manifest entry flake.nix must be a regular file");
+        fix.assert_checker_rejected("root-manifest entry flake.nix must be a regular file");
+    }
+
+    #[cfg(unix)]
+    {
+        let fix = CargoFixture::new();
+        fs::hard_link(fix.root.join("flake.nix"), fix.root.join("flake.nix.link")).unwrap();
+        fix.assert_rejected("root-manifest entry flake.nix must not be hard-linked");
+        fix.assert_checker_rejected("root-manifest entry flake.nix must not be hard-linked");
+    }
+
+    #[cfg(unix)]
+    {
+        let fix = CargoFixture::new();
+        fix.write_raw("real_sub/extra.txt", b"extra\n");
+        symlink(fix.root.join("real_sub"), fix.root.join("sym_sub")).unwrap();
+        let digest = sha256_file(&fix.root.join("real_sub/extra.txt"), "test").unwrap();
+        let orig = fs::read_to_string(fix.root.join("trusted/root-manifest.sha256")).unwrap();
+        let with_sym_parent = format!("{orig}{digest}  sym_sub/extra.txt\n");
+        fix.write_raw("trusted/root-manifest.sha256", with_sym_parent.as_bytes());
+        fix.assert_rejected("must be a regular directory");
+        fix.assert_checker_rejected("must be a regular directory");
     }
 }

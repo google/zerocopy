@@ -773,23 +773,52 @@ fn verify_exact_case_path_prefix(
     Ok(())
 }
 
-/// Verify `trusted/root-manifest.sha256` (when present): every non-comment line
-/// must name a unique clean relative path whose on-disk SHA-256 matches,
-/// textual pinned manifests must pass UTF-8 and bidi/invisible-control scans,
-/// and the four root build files (`Cargo.toml`, `Cargo.lock`, `flake.nix`,
-/// `flake.lock`) must be covered.
-fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
+/// Return `true` if `s` is a 64-character lowercase ASCII hex digest, matching
+/// `ci/update_root_manifest.py` (`[0-9a-f]{64}`).
+fn is_lowercase_sha256_hex(s: &str) -> bool {
+    s.len() == 64 && s.bytes().all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
+}
+
+/// Verify required `trusted/root-manifest.sha256`: the manifest must exist as
+/// a single-link regular file, every non-comment line must use lowercase hex
+/// and the two-space text-mode separator (`<sha256>  <path>`, matching
+/// `ci/update_root_manifest.py`) and name a unique clean relative single-link
+/// regular file whose on-disk SHA-256 matches, textual pinned manifests must
+/// pass UTF-8 and bidi/invisible-control scans, and the four root build files
+/// (`Cargo.toml`, `Cargo.lock`, `flake.nix`, `flake.lock`) must be covered.
+fn verify_root_manifest_sha256(checkout: &Path, checkout_canon: &Path) -> Result<(), Failure> {
     let phase = "cargo-boundary";
     let manifest_path = checkout.join("trusted/root-manifest.sha256");
-    if fs::symlink_metadata(&manifest_path).is_err() {
-        return Ok(());
+    match fs::symlink_metadata(&manifest_path) {
+        Ok(meta) => {
+            check_single_link_regular_meta(&manifest_path, &meta, "root TCB manifest", phase)?;
+        }
+        Err(err) if err.kind() == io::ErrorKind::NotFound => {
+            return Err(Failure::policy(
+                phase,
+                format!("missing required root TCB manifest: {}", manifest_path.display()),
+            ));
+        }
+        Err(err) => {
+            return Err(Failure::operational(
+                phase,
+                format!("cannot inspect {}: {err}", manifest_path.display()),
+            ));
+        }
     }
-    validate_single_link_regular(&manifest_path, "root TCB manifest", phase)?;
     let manifest_text = fs::read_to_string(&manifest_path)
         .map_err(|e| Failure::new(1, phase, format!("cannot read root-manifest.sha256: {e}")))?;
+    reject_bidi_or_invisible_controls(&manifest_text, "root-manifest.sha256", phase)?;
+    if manifest_text.lines().any(|l| l.contains('\r')) {
+        return Err(Failure::policy(
+            phase,
+            "bare carriage return forbidden in root-manifest.sha256",
+        ));
+    }
     let mut seen_paths = BTreeSet::new();
-    for line in
-        manifest_text.lines().map(str::trim).filter(|l| !l.is_empty() && !l.starts_with('#'))
+    for line in manifest_text
+        .lines()
+        .filter(|l| !l.bytes().all(|b| b.is_ascii_whitespace()) && !l.starts_with('#'))
     {
         let Some((expected_hex, rel_path)) = line.split_once("  ") else {
             return Err(Failure::new(
@@ -798,8 +827,8 @@ fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
                 format!("malformed line in root-manifest.sha256: {line}"),
             ));
         };
-        if !is_sha256_hex(expected_hex)
-            || !is_clean_relative_path(rel_path)
+        if !is_lowercase_sha256_hex(expected_hex)
+            || !is_canonical_ascii_rel_path(rel_path)
             || !seen_paths.insert(rel_path.to_string())
         {
             return Err(Failure::new(
@@ -808,15 +837,16 @@ fn verify_root_manifest_sha256(checkout: &Path) -> Result<(), Failure> {
                 format!("invalid or duplicate entry in root-manifest.sha256: {line}"),
             ));
         }
-        let target_path = checkout.join(rel_path);
-        validate_single_link_regular(
-            &target_path,
+        let (target_path, _) = validate_real_file(
+            checkout,
+            checkout_canon,
+            Path::new(rel_path),
             &format!("root-manifest entry {rel_path}"),
             phase,
         )?;
         let actual_hex =
             sha256_file(&target_path, phase).map_err(|e| Failure::new(1, phase, e.message))?;
-        if !actual_hex.eq_ignore_ascii_case(expected_hex) {
+        if actual_hex != expected_hex {
             return Err(Failure::new(
                 1,
                 phase,
@@ -4537,16 +4567,13 @@ fn validate_dep_table(
     Ok(())
 }
 
-/// Validate `Cargo.lock` (when present): version 4, every external dependency
-/// sourced from `crates.io-index` with a 64-hex SHA-256 checksum, and every
-/// source-less package belonging to `member_pkg_names`.
+/// Validate `Cargo.lock`: version 4, every external dependency sourced from
+/// `crates.io-index` with a 64-hex SHA-256 checksum, and every source-less
+/// package belonging to `member_pkg_names`.
 fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Result<(), Failure> {
     let phase = "cargo-boundary";
     verify_exact_case_entry(checkout, OsStr::new("Cargo.lock"), "Cargo.lock", phase)?;
     let lock_path = checkout.join("Cargo.lock");
-    if fs::symlink_metadata(&lock_path).is_err() {
-        return Ok(());
-    }
     validate_single_link_regular(&lock_path, "Cargo.lock", phase)?;
     let lock_text = fs::read_to_string(&lock_path)
         .map_err(|e| Failure::new(1, phase, format!("cannot read Cargo.lock: {e}")))?;
@@ -4592,20 +4619,22 @@ fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Re
 }
 
 /// Verify Cargo workspace DAG containment, root Cargo/toolchain hygiene,
-/// `Cargo.lock` dependency provenance, member and target filesystem
-/// containment, lexical Rust source-closure containment (`#[path]`,
-/// `include!`, `include_str!`, `include_bytes!`, `exocrate::config!`, and
-/// `exocrate::parse_remote_archive!`), and `trusted/root-manifest.sha256`
-/// (when present): all workspace members must reside under real directories
-/// inside `trusted/`, and no workspace crate may depend on a path outside
-/// `workspace.members`.
+/// required `trusted/root-manifest.sha256` verification, `Cargo.lock`
+/// dependency provenance, member and target filesystem containment, and
+/// lexical Rust source-closure containment (`#[path]`, `include!`,
+/// `include_str!`, `include_bytes!`, `exocrate::config!`, and
+/// `exocrate::parse_remote_archive!`): all workspace members must reside under
+/// real directories inside `trusted/`, and no workspace crate may depend on a
+/// path outside `workspace.members`.
 ///
-/// Entries in `workspace.exclude` are validated as non-glob real directories
-/// under `trusted/` (when present), checked by
-/// [`verify_trusted_subtree_hygiene`] (with intermediate ancestors checked for
-/// real-directory containment and forbidden override entries) rather than parsed
-/// as workspace members, and excluded from member `path`-dependency and
-/// `Cargo.lock` allowlists.
+/// This check requires `trusted/root-manifest.sha256` as a single-link regular
+/// file in lowercase two-space text-mode format (`<sha256>  <path>`) pinning
+/// `Cargo.toml`, `Cargo.lock`, `flake.nix`, and `flake.lock`. Entries in
+/// `workspace.exclude` are validated as non-glob real directories under
+/// `trusted/` (when present), checked by [`verify_trusted_subtree_hygiene`]
+/// (with intermediate ancestors checked for real-directory containment and
+/// forbidden override entries) rather than parsed as workspace members, and
+/// excluded from member `path`-dependency and `Cargo.lock` allowlists.
 /// Whole-tree filesystem hygiene (`verify_trusted_subtree_hygiene`) rejects
 /// symlinks, hard-linked files (`nlink > 1`), special files, canonical
 /// escapes, bidi/invisible control characters in texts or relative member
@@ -4641,8 +4670,6 @@ fn verify_cargo_lock(checkout: &Path, member_pkg_names: &BTreeSet<String>) -> Re
 pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
     let phase = "cargo-boundary";
     reject_cargo_toolchain_overrides(checkout)?;
-    let root_toml_path = checkout.join("Cargo.toml");
-    validate_single_link_regular(&root_toml_path, "root Cargo.toml", phase)?;
     let checkout_canon = fs::canonicalize(checkout)
         .map_err(|e| Failure::new(2, phase, format!("cannot canonicalize checkout: {e}")))?;
     let (trusted_dir, trusted_canon) = validate_real_dir(
@@ -4653,6 +4680,10 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
         phase,
     )?;
     reject_git_submodules(checkout, &checkout_canon, phase)?;
+    verify_root_manifest_sha256(checkout, &checkout_canon)?;
+
+    let root_toml_path = checkout.join("Cargo.toml");
+    validate_single_link_regular(&root_toml_path, "root Cargo.toml", phase)?;
     let (capture_dir, capture_canon) = validate_real_dir(
         checkout,
         &checkout_canon,
@@ -4671,7 +4702,6 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
         "trusted/rustc-capture/Cargo.toml",
         phase,
     )?;
-    verify_root_manifest_sha256(checkout)?;
 
     let root_text = fs::read_to_string(&root_toml_path)
         .map_err(|e| Failure::new(1, phase, format!("malformed Cargo manifest: {e}")))?;
@@ -4916,10 +4946,40 @@ pub fn check_cargo_boundary(checkout: &Path) -> Result<(), Failure> {
     Ok(())
 }
 
+/// Return `true` if `dir` exists and is anything other than a readable
+/// regular directory containing only entries in `allowed`.
+fn dir_has_entries_outside(dir: &Path, allowed: &[&str]) -> bool {
+    match fs::symlink_metadata(dir) {
+        Err(err) if err.kind() == io::ErrorKind::NotFound => false,
+        Err(_) => true,
+        Ok(meta) if !meta.file_type().is_dir() => true,
+        Ok(_) => match fs::read_dir(dir) {
+            Err(_) => true,
+            Ok(entries) => entries.into_iter().any(|res| match res {
+                Err(_) => true,
+                Ok(entry) => entry.file_name().to_str().is_none_or(|name| !allowed.contains(&name)),
+            }),
+        },
+    }
+}
+
 /// Reject `.cargo*` and `rust-toolchain*` overrides at `checkout`, and run
-/// [`check_cargo_boundary`], [`verify_upstream_pin`], and (when
-/// `require_mir_wp` is enabled) [`verify_bundled_resources`] whenever any
-/// Cargo, root-manifest, or vendored Miri TCB path is present.
+/// [`check_cargo_boundary`] (which requires `trusted/root-manifest.sha256`),
+/// [`verify_upstream_pin`], and (when `require_mir_wp` is enabled)
+/// [`verify_bundled_resources`] whenever any root-build/manifest/vendor input
+/// (`Cargo.toml`, `Cargo.lock`, `flake.nix`, `flake.lock`,
+/// `trusted/root-manifest.sha256`, `vendor`) is present or `trusted/` /
+/// `trusted/audit/` contains any entry outside the closed Lean-only fixture
+/// allowlist (`trusted/{lean,correspondence,audit}` and
+/// `trusted/audit/{TrustedBoundary.lean,library-lock.json}`).
+///
+/// Closed-allowlist presence gating keeps synthetic Lean-only unit and CLI
+/// fixtures (which omit Cargo and Nix files while exercising default
+/// `Checker::new`) decoupled from repository Cargo manifests while preventing
+/// partial Cargo/TCB checkouts (such as `trusted/audit/Cargo.toml` alone) from
+/// bypassing root-manifest verification. Repository CI runs both
+/// `sha256sum --check --strict trusted/root-manifest.sha256` and
+/// `cargo run --locked -p anneal-audit` from the workspace root.
 ///
 /// Bundle parity follows `require_mir_wp` because the bundle embeds
 /// `Trusted.MirAst`, `Trusted.MirSemantics`, and `Anneal.MirWp`: only
@@ -4934,12 +4994,18 @@ pub(crate) fn check_checkout_cargo_hygiene(
     if [
         "Cargo.toml",
         "Cargo.lock",
+        "flake.nix",
+        "flake.lock",
         "trusted/root-manifest.sha256",
-        "trusted/rustc-capture",
         "vendor",
     ]
     .iter()
     .any(|rel| fs::symlink_metadata(checkout.join(rel)).is_ok())
+        || dir_has_entries_outside(&checkout.join("trusted"), &["lean", "correspondence", "audit"])
+        || dir_has_entries_outside(
+            &checkout.join("trusted/audit"),
+            &["TrustedBoundary.lean", "library-lock.json"],
+        )
     {
         check_cargo_boundary(checkout)?;
         verify_upstream_pin(&checkout.join("vendor/lean-miri"))?;

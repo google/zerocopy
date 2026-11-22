@@ -43,9 +43,9 @@ class ManifestTests(unittest.TestCase):
     def entry(self, name, ending=b"\n", mode=b"  "):
         return b"0" * 64 + mode + name.encode() + ending
 
-    def test_preserves_header_coverage_order_mode_and_line_endings(self):
+    def test_preserves_header_coverage_order_and_line_endings(self):
         original = (HASH_HEADER.encode() + b"# Review before accepting these hashes.\r\n"
-                    + self.entry("Cargo.lock", b"\r\n", b" *")
+                    + self.entry("Cargo.lock", b"\r\n")
                     + self.entry("Cargo.toml", b""))
         self.path.write_bytes(original)
         self.path.chmod(0o640)
@@ -58,6 +58,13 @@ class ManifestTests(unittest.TestCase):
         self.assertEqual(self.path.stat().st_mode & 0o777, 0o640)
         self.assertFalse(manifest.update(self.root))
 
+    def test_binary_mode_entry_rejected(self):
+        original = self.entry("Cargo.lock", mode=b" *") + self.entry("Cargo.toml")
+        self.path.write_bytes(original)
+        with self.assertRaises(manifest.ManifestError):
+            manifest.update(self.root)
+        self.assertEqual(self.path.read_bytes(), original)
+
     def test_missing_input_leaves_original_manifest_untouched(self):
         original = self.entry("Cargo.toml") + self.entry("missing.file")
         self.path.write_bytes(original)
@@ -68,9 +75,42 @@ class ManifestTests(unittest.TestCase):
                          ["root-manifest.sha256"])
 
     def test_invalid_empty_duplicate_and_escaping_manifest_rejected(self):
+        (self.root / "Cargo file.toml").write_bytes(b"manifest\n")
+        (self.root / "Cargo\u00a0file.toml").write_bytes(b"manifest\n")
+        (self.root / "caf\u00e9.txt").write_bytes(b"manifest\n")
+        (self.root / "sub").mkdir()
+        (self.root / "sub/extra.txt").write_bytes(b"extra\n")
+        (self.root / "sub/foo.").write_bytes(b"dot\n")
+        (self.root / "sub/foo:bar").write_bytes(b"colon\n")
+        (self.root / "sub/foo~1").write_bytes(b"tilde\n")
+        (self.root / "C:Cargo.toml").write_bytes(b"drive\n")
+        (self.root / "sub.").mkdir()
+        (self.root / "sub./Cargo.toml").write_bytes(b"dotdir\n")
         for original in [b"# no entries\n", b"bad checksum\n",
                          self.entry("Cargo.toml") * 2, self.entry("../outside"),
                          self.entry("/absolute"), self.entry("./Cargo.toml"),
+                         self.entry("sub/extra.txt/"),
+                         self.entry("sub/foo."),
+                         self.entry("sub./Cargo.toml"),
+                         self.entry("sub/foo:bar"),
+                         self.entry("sub/foo~1"),
+                         self.entry("C:Cargo.toml"),
+                         self.entry("Cargo file.toml"), self.entry(" Cargo.toml"),
+                         self.entry("Cargo.toml "),
+                         self.entry("Cargo\u00a0file.toml"),
+                         self.entry("caf\u00e9.txt"),
+                         self.entry("Cargo.toml", b"\r") + self.entry("Cargo.lock"),
+                         self.entry("Cargo.toml", b"\r"),
+                         self.entry("Cargo.toml") + b"# comment\r",
+                         self.entry("Cargo.toml") + b"\r",
+                         b"# comment\r" + self.entry("Cargo.toml"),
+                         b"0" * 64 + b"  Cargo.toml\r" + self.entry("Cargo.lock"),
+                         b"# \xe2\x80\xae hidden\n" + self.entry("Cargo.toml"),
+                         b"# soft\xc2\xadhyphen\n" + self.entry("Cargo.toml"),
+                         b"# func\xe2\x81\xa1app\n" + self.entry("Cargo.toml"),
+                         *(f"# ignorable {ch}\n".encode("utf-8") + self.entry("Cargo.toml")
+                           for ch in ("\ufff0", "\ufff8", "\U000e0000", "\U000e0002",
+                                      "\U000e0080", "\U000e01f0")),
                          self.entry("trusted/root-manifest.sha256")]:
             with self.subTest(original=original):
                 self.path.write_bytes(original)
@@ -78,11 +118,40 @@ class ManifestTests(unittest.TestCase):
                     manifest.update(self.root)
                 self.assertEqual(self.path.read_bytes(), original)
 
-    def test_symlink_manifest_or_covered_file_rejected(self):
+    def test_case_folded_path_aliases_rejected(self):
+        (self.root / "sub").mkdir()
+        (self.root / "sub/extra.txt").write_bytes(b"extra\n")
+        for rel in ("cargo.toml", "Sub/extra.txt"):
+            original = self.entry(rel)
+            with self.subTest(rel=rel):
+                self.path.write_bytes(original)
+                with self.assertRaisesRegex(manifest.ManifestError, "case-folded path alias"):
+                    manifest.update(self.root)
+                self.assertEqual(self.path.read_bytes(), original)
+
+    def test_symlink_hardlink_or_symlink_parent_rejected(self):
         (self.root / "alias.toml").symlink_to("Cargo.toml")
         self.path.write_bytes(self.entry("alias.toml"))
         with self.assertRaises(manifest.ManifestError):
             manifest.update(self.root)
+        # Symlinked parent directory inside `self.root`.
+        (self.root / "real_sub").mkdir()
+        (self.root / "real_sub/extra.txt").write_bytes(b"extra\n")
+        (self.root / "sym_sub").symlink_to("real_sub", target_is_directory=True)
+        self.path.write_bytes(self.entry("sym_sub/extra.txt"))
+        with self.assertRaises(manifest.ManifestError):
+            manifest.update(self.root)
+        # Hard-linked covered file (`st_nlink > 1`).
+        (self.root / "real_sub/extra.link").hardlink_to(self.root / "real_sub/extra.txt")
+        self.path.write_bytes(self.entry("real_sub/extra.txt"))
+        with self.assertRaises(manifest.ManifestError):
+            manifest.update(self.root)
+        # Hard-linked manifest (`st_nlink > 1`).
+        self.path.write_bytes(self.entry("Cargo.toml"))
+        (self.root / "manifest.link").hardlink_to(self.path)
+        with self.assertRaises(manifest.ManifestError):
+            manifest.update(self.root)
+        (self.root / "manifest.link").unlink()
         self.path.unlink()
         self.path.symlink_to("../Cargo.toml")
         with self.assertRaises(manifest.ManifestError):

@@ -53,3 +53,8 @@ fn rejects_rust_source_closure_escapes_and_smuggling() {
 fn rejects_case_folded_aliases_unlisted_overrides_submodules_and_manifest_bidi() {
     cargo_boundary_cases::assert_rejects_case_folded_aliases_unlisted_overrides_submodules_and_manifest_bidi();
 }
+
+#[test]
+fn requires_text_mode_root_manifest_and_rejects_tampering() {
+    cargo_boundary_cases::assert_requires_text_mode_root_manifest_and_rejects_tampering();
+}
