@@ -80635,7 +80635,7 @@
       ]
     },
     "rc11-gps-fsl-timestamp-view-pcms-and-miri-store-buffer-completeness-gaps": {
-      "observed_at": "2026-11-20",
+      "observed_at": "2026-11-22",
       "subjects": [
         {
           "identity": {
@@ -80643,6 +80643,13 @@
             "revision": "7fa591d7d4dd9af8154becbc8332f8096f8323b1"
           },
           "name": "miri"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "bc1b6da0d31959f0fb30c273955dd95304109cba"
+          },
+          "name": "miri (2026-11-22 revalidation)"
         },
         {
           "identity": {
@@ -80660,6 +80667,13 @@
         },
         {
           "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "rust (2026-11-22 revalidation)"
+        },
+        {
+          "identity": {
             "repository": "crossbeam-rs/crossbeam",
             "revision": "a28f40fdddb70bea8e5faf0efad9af0be4b9dbea"
           },
@@ -80671,6 +80685,13 @@
             "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
           },
           "name": "anneal"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "f2efbfd1eb0c923aa2865e38229f72782a5aefb7"
+          },
+          "name": "google/zerocopy (anneal/ subtree, 2026-11-22 revalidation)"
         },
         {
           "identity": {

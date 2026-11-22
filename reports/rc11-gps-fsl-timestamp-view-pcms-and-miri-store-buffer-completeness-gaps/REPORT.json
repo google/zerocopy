@@ -20,6 +20,13 @@
       }
     },
     {
+      "name": "miri (2026-11-22 revalidation)",
+      "identity": {
+        "repository": "rust-lang/miri",
+        "revision": "bc1b6da0d31959f0fb30c273955dd95304109cba"
+      }
+    },
+    {
       "name": "lean-miri",
       "identity": {
         "repository": "proofs-rs/lean-miri",
@@ -34,6 +41,13 @@
       }
     },
     {
+      "name": "rust (2026-11-22 revalidation)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
       "name": "crossbeam",
       "identity": {
         "repository": "crossbeam-rs/crossbeam",
@@ -45,6 +59,13 @@
       "identity": {
         "repository": "joshlf/anneal",
         "revision": "20aa204315cd36aaf944778b7d33c0d609ced8e8"
+      }
+    },
+    {
+      "name": "google/zerocopy (anneal/ subtree, 2026-11-22 revalidation)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "f2efbfd1eb0c923aa2865e38229f72782a5aefb7"
       }
     },
     {
@@ -91,5 +112,5 @@
       }
     }
   ],
-  "observed_at": "2026-11-20"
+  "observed_at": "2026-11-22"
 }
