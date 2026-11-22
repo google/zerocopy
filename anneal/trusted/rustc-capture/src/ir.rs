@@ -276,6 +276,29 @@ impl Ty {
             | Self::OverflowPair(_) => true,
         }
     }
+
+    /// Whether values of this type are always statically `Sized`.
+    ///
+    /// In `rustc_const_eval`'s `eval_place` (`local_to_place`) and `lean-miri`'s
+    /// `Miri.Interpreter.Place.localToPlace`, evaluating an unprojected
+    /// `PlaceMention` of a `Sized` local returns `Place::Local` without reading
+    /// memory or checking liveness (an exact operational no-op), whereas an
+    /// unsized local accesses its local operand and checks liveness. Any future
+    /// unsized `Ty` variant must return `false` so capture fails closed rather
+    /// than rendering `Statement::PlaceMention` as `StatementKind.nop`.
+    /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/place.rs#L170-L185
+    pub const fn is_sized(&self) -> bool {
+        match self {
+            Self::Bool
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Int(_)
+            | Self::Enum(_)
+            | Self::OverflowPair(_) => true,
+        }
+    }
 }
 
 /// Constant literal payload matching `Trusted.MirAst.ConstLit` 1-to-1.
@@ -304,6 +327,28 @@ pub fn check_use_retag(dst_ty: &Ty, with_retag: bool) -> Result<(), String> {
 fn admit_retag(retag_noop: bool, with_retag: bool) -> Result<(), String> {
     if with_retag && !retag_noop {
         return Err("retagging Use rvalues on reference-bearing types are unsupported".into());
+    }
+    Ok(())
+}
+
+/// Validate that an unprojected `PlaceMention` is an operational no-op for
+/// `local_ty`.
+///
+/// `lean.rs` renders an unprojected [`Statement::PlaceMention`] as
+/// `Trusted.MirAst.StatementKind.nop`, which is sound only when the place has
+/// no projections (enforced in `extract.rs`) and its local type is `Sized`
+/// (`local_to_place` neither loads memory nor checks liveness). Every admitted
+/// [`Ty`] variant is `Sized`, so this check cannot fail for any admitted type;
+/// `admit_place_mention` holds the refusal itself, which stays unit-tested
+/// until an unsized variant makes it reachable.
+pub fn check_place_mention(local_ty: &Ty) -> Result<(), String> {
+    admit_place_mention(local_ty.is_sized())
+}
+
+/// Refuse rendering a `PlaceMention` of an unsized local as a no-op.
+fn admit_place_mention(is_sized: bool) -> Result<(), String> {
+    if !is_sized {
+        return Err("PlaceMention on unsized locals is unsupported".into());
     }
     Ok(())
 }
@@ -483,6 +528,7 @@ pub enum Statement {
     Assign { local: u32, value: Rvalue },
     StorageLive { local: u32 },
     StorageDead { local: u32 },
+    PlaceMention { local: u32 },
     Nop,
 }
 
@@ -814,6 +860,10 @@ impl Body {
                         }
                         check_local(&local_tys, *local, "storage annotation")?;
                     }
+                    Statement::PlaceMention { local } => {
+                        let local_ty = check_local(&local_tys, *local, "place mention")?;
+                        check_place_mention(local_ty)?;
+                    }
                     Statement::Nop => {}
                 }
             }
@@ -935,6 +985,7 @@ pub struct Configuration {
     pub opt_level: u8,
     pub debug_assertions: bool,
     pub overflow_checks: bool,
+    pub mir_preserve_ub: bool,
     pub pointer_bits: u64,
     pub endian: &'static str,
     pub declared_source_files: Vec<PathBuf>,
@@ -1481,5 +1532,52 @@ mod tests {
             json_val["discriminants"],
             serde_json::json!(["340282366920938463463374607431768211455", "0", "1"])
         );
+    }
+
+    #[test]
+    fn place_mention_guard_checks_local_bounds_and_sizedness() {
+        assert!(admit_place_mention(true).is_ok());
+        assert!(
+            admit_place_mention(false)
+                .unwrap_err()
+                .contains("PlaceMention on unsized locals is unsupported")
+        );
+
+        let u64_ty = Ty::Int(IntTy {
+            width: IntWidth::I64,
+            signed: false,
+        });
+        assert!(check_place_mention(&u64_ty).is_ok());
+        assert!(check_place_mention(&Ty::Unit).is_ok());
+
+        let valid = Body::try_new(
+            1,
+            false,
+            vec![Ty::Unit, u64_ty.clone()],
+            vec![Block {
+                statements: vec![Statement::PlaceMention { local: 1 }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::place_mention_ok".into(),
+        )
+        .unwrap();
+        let json = serde_json::to_value(&valid).unwrap();
+        assert_eq!(
+            json["blocks"][0]["statements"][0],
+            serde_json::json!({ "kind": "place_mention", "local": 1 })
+        );
+
+        let oob = Body::try_new(
+            1,
+            false,
+            vec![Ty::Unit, u64_ty],
+            vec![Block {
+                statements: vec![Statement::PlaceMention { local: 9 }],
+                terminator: Terminator::Ret,
+            }],
+            "rust-path-v1::place_mention_oob".into(),
+        )
+        .unwrap_err();
+        assert!(oob.contains("place mention local 9 out of bounds"), "{oob}");
     }
 }

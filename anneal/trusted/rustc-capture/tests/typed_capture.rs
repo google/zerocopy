@@ -2204,3 +2204,107 @@ fn thousand_one_hundred_function_crate_compiles_in_lean_under_default_max_rec_de
 
     compile_captured_lean_if_trusted_sources_present(&captured_lean);
 }
+
+#[test]
+fn mir_preserve_ub_retains_bare_place_mention_and_rejects_projected_place_mention() {
+    // `-Zmir-preserve-ub` disables `RemovePlaceMention` before
+    // `Runtime(PostCleanup)`. A bare unprojected `Sized` local mention survives
+    // into `capture.json` as `place_mention` and renders cleanly to Lean.
+    let bare = Capture::new(
+        b"pub fn selected(x: u64) -> u64 {\n\
+              let _ = x;\n\
+              x\n\
+          }\n",
+    );
+    let output = bare.selected_command().output().unwrap();
+    assert!(
+        output.status.success(),
+        "bare PlaceMention capture failed:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let manifest = bare.manifest();
+    assert_eq!(manifest["configuration"]["mir_preserve_ub"], true);
+    let has_place_mention = manifest["program"]["bodies"][0]["blocks"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .flat_map(|bb| bb["statements"].as_array().unwrap())
+        .any(|stmt| stmt["kind"] == "place_mention");
+    assert!(
+        has_place_mention,
+        "expected -Zmir-preserve-ub to preserve PlaceMention in Runtime(PostCleanup) MIR: {manifest}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&bare.output.join("Captured.lean"));
+
+    // All locals here have admitted types (`u64` and `(u64, bool)`), and the
+    // body contains no `Call` terminators; only `let _ = p.0;` emits a
+    // projected `PlaceMention((_3.0: u64))`. Without `-Zmir-preserve-ub`,
+    // `RemovePlaceMention` would erase this statement and capture would succeed
+    // silently; with `-Zmir-preserve-ub`, capture must fail closed explicitly.
+    let projected = Capture::new(
+        b"#![feature(core_intrinsics)]\n\
+          #![allow(internal_features)]\n\
+          pub fn selected(a: u64, b: u64) -> u64 {\n\
+              let p: (u64, bool) = core::intrinsics::add_with_overflow(a, b);\n\
+              let _ = p.0;\n\
+              a\n\
+          }\n",
+    );
+    let output = projected.selected_command().output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(
+        failure
+            .to_string()
+            .contains("PlaceMention with projections is unsupported"),
+        "expected explicit projected PlaceMention refusal, got {failure}"
+    );
+    projected.assert_no_capture_artifacts();
+}
+
+#[test]
+fn ergonomic_clones_and_call_source_use_fail_closed_at_capture() {
+    // Even on a pure scalar function, enabling `#![feature(ergonomic_clones)]`
+    // activates post-capture `optimize_use_clone` in `rustc_codegen_ssa` and
+    // must fail closed during capture.
+    let feature_only = Capture::new(
+        b"#![feature(ergonomic_clones)]\n\
+          #![allow(incomplete_features)]\n\
+          pub fn selected(x: u64) -> u64 { x }\n",
+    );
+    let output = feature_only.selected_command().output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    assert!(
+        failure.to_string().contains("ergonomic_clones")
+            && failure.to_string().contains("optimize_use_clone"),
+        "expected explicit ergonomic_clones/optimize_use_clone refusal, got {failure}"
+    );
+    feature_only.assert_no_capture_artifacts();
+
+    // A concrete `.use` site (`CallSource::Use`) must also fail closed with no
+    // published capture artifacts.
+    let use_site = Capture::new(
+        b"#![feature(ergonomic_clones)]\n\
+          #![allow(incomplete_features)]\n\
+          use core::clone::UseCloned;\n\
+          #[derive(Copy)]\n\
+          pub struct Wrapper(pub u32);\n\
+          impl Clone for Wrapper {\n\
+              fn clone(&self) -> Self { Wrapper(self.0 + 1) }\n\
+          }\n\
+          impl UseCloned for Wrapper {}\n\
+          pub fn selected(x: Wrapper) -> u32 {\n\
+              let a = x.use;\n\
+              a.0\n\
+          }\n",
+    );
+    let output = use_site.selected_command().output().unwrap();
+    assert_eq!(output.status.code(), Some(1), "{output:?}");
+    let failure = status(&output);
+    assert_eq!(failure["status"], "unsupported", "{failure}");
+    use_site.assert_no_capture_artifacts();
+}

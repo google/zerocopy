@@ -210,7 +210,11 @@ fn statement(stmt: &Statement) -> String {
         Statement::StorageDead { local } => {
             format!("(Trusted.MirAst.StatementKind.storageDead {local})")
         }
-        Statement::Nop => "Trusted.MirAst.StatementKind.nop".into(),
+        // `ir::Body::try_new` admits `Statement::PlaceMention` only for an
+        // in-bounds, unprojected `Sized` local, where `rustc`'s `eval_place`
+        // (`local_to_place`) and `lean-miri`'s `Step.evalStatement` perform no
+        // memory load and no liveness check.
+        Statement::PlaceMention { .. } | Statement::Nop => "Trusted.MirAst.StatementKind.nop".into(),
     }
 }
 

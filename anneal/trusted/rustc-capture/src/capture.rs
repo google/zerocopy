@@ -450,6 +450,9 @@ fn validate_compiler_options(opts: &Options) -> Result<(), String> {
     {
         return Err("proc-macro and non-library crate types are unsupported during capture".into());
     }
+    if !opts.unstable_opts.mir_preserve_ub {
+        return Err("-Zmir-preserve-ub must be enabled during capture".into());
+    }
     Ok(())
 }
 
@@ -855,6 +858,7 @@ fn collect(
             opt_level: 0,
             debug_assertions: false,
             overflow_checks: false,
+            mir_preserve_ub: true,
             pointer_bits: 64,
             endian: "little",
             declared_source_files: args.source_file.clone(),
@@ -915,6 +919,13 @@ pub fn run(args: &Args, verified_sysroot: &Path) -> Result<ir::Manifest, Failure
         "-Copt-level=0".into(),
         "-Cdebug-assertions=no".into(),
         "-Coverflow-checks=no".into(),
+        // Preserve `StatementKind::PlaceMention` and reads in trivial
+        // `SwitchInt` terminators (matching Miri's default arguments and
+        // disabling `RemovePlaceMention` before `Runtime(PostCleanup)`), while
+        // also implying `-Zmir-opt-level=0`.
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_mir_transform/src/remove_place_mention.rs#L10-L12
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/src/tools/miri/src/lib.rs#L183-L188
+        "-Zmir-preserve-ub".into(),
         format!("--out-dir={}", compiler_path(&args.out_dir)?),
     ];
     if let Some(sysroot) = &args.sysroot {
@@ -1019,6 +1030,21 @@ mod tests {
                 "expected {bad:?} to fail"
             );
         }
+    }
+
+    #[test]
+    fn compiler_options_gate_requires_mir_preserve_ub() {
+        let mut opts = Options {
+            crate_types: vec![CrateType::Rlib],
+            ..Options::default()
+        };
+        opts.sysroot.explicit = Some(PathBuf::from("/sysroot"));
+        opts.unstable_opts.mir_preserve_ub = false;
+        let err = validate_compiler_options(&opts).unwrap_err();
+        assert!(err.contains("-Zmir-preserve-ub"), "{err}");
+
+        opts.unstable_opts.mir_preserve_ub = true;
+        assert!(validate_compiler_options(&opts).is_ok());
     }
 
     #[cfg(unix)]
