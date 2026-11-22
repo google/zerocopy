@@ -1,0 +1,59 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc and Rust core library (1.102.0-nightly, LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "toolchain": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "llvm_version": "23.1.5"
+      }
+    },
+    {
+      "name": "rustc, Rust core library, and Miri (1.98.0-nightly, LLVM 22.1.6)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "toolchain": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+        "llvm_version": "22.1.6",
+        "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)"
+      }
+    },
+    {
+      "name": "rustc upstream source snapshot (source-checked drift audit)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+      }
+    },
+    {
+      "name": "Anneal trusted MIR AST and operational semantics boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 proof kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

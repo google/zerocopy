@@ -1,0 +1,153 @@
+{
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "local_rust_src_commit": "49d734536222bf28bb6d07d885b3a81d145981da",
+  "probe_1_modes": {
+    "default_O2": {
+      "compile_rc": 0,
+      "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: the feature `contracts` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/contracts_probe.rs:2:12\n  |\n2 | #![feature(contracts)]\n  |            ^^^^^^^^^\n  |\n  = note: see issue #128044 <https://github.com/rust-lang/rust/issues/128044> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarnin",
+      "mir_signals": {
+        "has_contract_checks_operand_opt": false,
+        "has_contract_checks_operand_postcleanup": false,
+        "has_contract_check_requires": false,
+        "has_contract_check_ensures": false,
+        "has_build_check_ensures": false
+      },
+      "inc_bounded_llvm_ir_lines": 5,
+      "inc_bounded_llvm_ir": "define dso_local noundef i32 @inc_bounded(i32 noundef %x) unnamed_addr #4 !guid !188 {\nstart:\n  %0 = add i32 %x, 1\n  ret i32 %0\n}",
+      "runtime": {
+        "ok": {
+          "rc": 0,
+          "stdout": "OK=42 EARLY_FALSE=42 CONST=7",
+          "stderr_head": []
+        },
+        "violate_requires": {
+          "rc": 0,
+          "stdout": "REQ=201",
+          "stderr_head": []
+        },
+        "violate_ensures_early": {
+          "rc": 0,
+          "stdout": "ENS=0",
+          "stderr_head": []
+        }
+      }
+    },
+    "contract_yes_O2": {
+      "compile_rc": 0,
+      "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: the feature `contracts` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/contracts_probe.rs:2:12\n  |\n2 | #![feature(contracts)]\n  |            ^^^^^^^^^\n  |\n  = note: see issue #128044 <https://github.com/rust-lang/rust/issues/128044> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarnin",
+      "mir_signals": {
+        "has_contract_checks_operand_opt": false,
+        "has_contract_checks_operand_postcleanup": false,
+        "has_contract_check_requires": false,
+        "has_contract_check_ensures": false,
+        "has_build_check_ensures": false
+      },
+      "inc_bounded_llvm_ir_lines": 14,
+      "inc_bounded_llvm_ir": "define dso_local noundef range(i32 1, 101) i32 @inc_bounded(i32 noundef %0) unnamed_addr #4 personality ptr @rust_eh_personality !guid !194 {\nstart:\n  %_0.i.i = icmp ult i32 %0, 100\n  br i1 %_0.i.i, label %_RINvNtCs2F9dQBLtWXO_4core10intrinsics23contract_check_requiresNCNvCsgaVBRbqlPg9_15contracts_probe11inc_bounded0EB12_.exit, label %bb3.i, !prof !195\n\nbb3.i:                                            ; preds = %start\n; call core::panicking::panic_nounwind\n  tail call void @_RNvNtCs2F9dQBLtWXO_4core9panicking14panic_nounwind(ptr noalias nofree noundef nonnull readonly captures(address, read_provenance) @alloc_4ad7987833f2e907b8b0c3d7691d6e36, i64 noundef 21) #12, !noalias !196\n  unreachable\n\n_RINvNtCs2F9dQBLtWXO_4core10intrinsics23contract_check_requiresNCNvCsgaVBRbqlPg9_15contracts_probe11inc_bounded0EB12_.exit: ; preds = %start\n  %__ret = add nuw nsw i32 %0, 1\n  ret i32 %__ret\n}",
+      "runtime": {
+        "ok": {
+          "rc": 0,
+          "stdout": "OK=42 EARLY_FALSE=42 CONST=7",
+          "stderr_head": []
+        },
+        "violate_requires": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:"
+          ]
+        },
+        "violate_ensures_early": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_head": [
+            "",
+            "thread 'main' (<PID>) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:"
+          ]
+        }
+      }
+    },
+    "contract_no_O2": {
+      "compile_rc": 0,
+      "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: the feature `contracts` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/contracts_probe.rs:2:12\n  |\n2 | #![feature(contracts)]\n  |            ^^^^^^^^^\n  |\n  = note: see issue #128044 <https://github.com/rust-lang/rust/issues/128044> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarnin",
+      "mir_signals": {
+        "has_contract_checks_operand_opt": false,
+        "has_contract_checks_operand_postcleanup": false,
+        "has_contract_check_requires": false,
+        "has_contract_check_ensures": false,
+        "has_build_check_ensures": false
+      },
+      "inc_bounded_llvm_ir_lines": 5,
+      "inc_bounded_llvm_ir": "define dso_local noundef i32 @inc_bounded(i32 noundef %x) unnamed_addr #4 !guid !188 {\nstart:\n  %0 = add i32 %x, 1\n  ret i32 %0\n}",
+      "runtime": {
+        "ok": {
+          "rc": 0,
+          "stdout": "OK=42 EARLY_FALSE=42 CONST=7",
+          "stderr_head": []
+        },
+        "violate_requires": {
+          "rc": 0,
+          "stdout": "REQ=201",
+          "stderr_head": []
+        },
+        "violate_ensures_early": {
+          "rc": 0,
+          "stdout": "ENS=0",
+          "stderr_head": []
+        }
+      }
+    }
+  },
+  "probe_2_cross_crate_contract_checks": {
+    "up_no_rc": 0,
+    "up_no_ds_no": {
+      "rc": 0,
+      "stdout": "UP=51\n",
+      "stderr": ""
+    },
+    "up_no_ds_yes": {
+      "rc": 0,
+      "stdout": "UP=51\n",
+      "stderr": ""
+    },
+    "up_yes_rc": 0,
+    "up_yes_ds_no": {
+      "rc": -6,
+      "stdout": "",
+      "stderr": "\nthread 'main' (<PID>) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:\nfailed requires check\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.\n"
+    },
+    "up_yes_ds_yes": {
+      "rc": -6,
+      "stdout": "",
+      "stderr": "\nthread 'main' (<PID>) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:\nfailed requires check\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.\n"
+    }
+  },
+  "probe_2b_ensures_borrow_capture_e0597": {
+    "rc": 1,
+    "error_codes": [
+      "error[E0597]"
+    ]
+  },
+  "probe_3_ctfe_violation": {
+    "contract_no": {
+      "rc": 0
+    },
+    "contract_yes": {
+      "rc": 0,
+      "stdout": "",
+      "stderr": "warning: the feature `contracts` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/ctfe_bad/lib.rs:2:12\n  |\n2 | #![feature(contracts)]\n  |            ^^^^^^^^^\n  |\n  = note: see issue #128044 <https://github.com/rust-lang/rust/issues/128044> for more inform"
+    }
+  },
+  "probe_4_miri_contract_yes": {
+    "rc": 1,
+    "stderr_tail": [
+      "              at src/main.rs:40:50: 40:88",
+      "",
+      "note: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace",
+      "",
+      "error: aborting due to 1 previous error; 1 warning emitted",
+      ""
+    ]
+  }
+}

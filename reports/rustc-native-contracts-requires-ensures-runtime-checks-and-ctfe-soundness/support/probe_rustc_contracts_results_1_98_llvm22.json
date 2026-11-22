@@ -1,0 +1,454 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "probe_1_modes": {
+    "default_O2": {
+      "compile_rc": 0,
+      "inc_bounded_mir_signals": {
+        "has_runtime_checks_contract_checks_postcleanup": false,
+        "has_runtime_checks_contract_checks_opt": false,
+        "has_baked_const_true_postcleanup": false,
+        "has_baked_const_false_postcleanup": true,
+        "has_contract_check_requires_postcleanup": true,
+        "has_contract_check_requires_opt": false,
+        "has_build_check_ensures_postcleanup": true,
+        "has_build_check_ensures_opt": true,
+        "has_contract_check_ensures_postcleanup": true,
+        "has_contract_check_ensures_opt": false
+      },
+      "inc_bounded_llvm_ir_lines": 5,
+      "inc_bounded_llvm_ir": "define dso_local noundef i32 @inc_bounded(i32 noundef %x) unnamed_addr #4 {\nstart:\n  %__ret = add i32 %x, 1\n  ret i32 %__ret\n}",
+      "inc_bounded_has_range_1_101": false,
+      "inc_bounded_has_add_nuw_nsw": false,
+      "inc_bounded_has_panic_nounwind_len_21": false,
+      "inc_bounded_has_panic_nounwind_len_20": false,
+      "buggy_early_return_llvm_ir_lines": 5,
+      "buggy_early_return_llvm_ir": "define dso_local noundef range(i32 0, 43) i32 @buggy_early_return(i1 noundef zeroext %flag) unnamed_addr #4 {\nstart:\n  %. = select i1 %flag, i32 0, i32 42\n  ret i32 %.\n}",
+      "buggy_early_return_has_panic_nounwind_len_20": false,
+      "runtime": {
+        "ok": {
+          "rc": 0,
+          "stdout": "OK=42 EARLY_FALSE=42 CONST=7",
+          "stderr_lines": []
+        },
+        "violate_requires": {
+          "rc": 0,
+          "stdout": "REQ=201",
+          "stderr_lines": []
+        },
+        "violate_ensures_early": {
+          "rc": 0,
+          "stdout": "ENS=0",
+          "stderr_lines": []
+        }
+      }
+    },
+    "contract_yes_O2": {
+      "compile_rc": 0,
+      "inc_bounded_mir_signals": {
+        "has_runtime_checks_contract_checks_postcleanup": false,
+        "has_runtime_checks_contract_checks_opt": false,
+        "has_baked_const_true_postcleanup": true,
+        "has_baked_const_false_postcleanup": false,
+        "has_contract_check_requires_postcleanup": true,
+        "has_contract_check_requires_opt": true,
+        "has_build_check_ensures_postcleanup": true,
+        "has_build_check_ensures_opt": true,
+        "has_contract_check_ensures_postcleanup": true,
+        "has_contract_check_ensures_opt": true
+      },
+      "inc_bounded_llvm_ir_lines": 14,
+      "inc_bounded_llvm_ir": "define dso_local noundef range(i32 1, 101) i32 @inc_bounded(i32 noundef %0) unnamed_addr #0 personality ptr @rust_eh_personality {\nstart:\n  %_0.i.i = icmp ult i32 %0, 100\n  br i1 %_0.i.i, label %_RINvNtCs8b4M6GsfcPr_4core10intrinsics22contract_check_ensuresNCNvCs2djAezbpFDZ_15contracts_probe11inc_boundeds_0mEB11_.exit, label %bb3.i, !prof !176\n\nbb3.i:                                            ; preds = %start\n; call core::panicking::panic_nounwind\n  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking14panic_nounwind(ptr noalias noundef nonnull readonly captures(address, read_provenance) @alloc_4ad7987833f2e907b8b0c3d7691d6e36, i64 noundef 21) #13, !noalias !177\n  unreachable\n\n_RINvNtCs8b4M6GsfcPr_4core10intrinsics22contract_check_ensuresNCNvCs2djAezbpFDZ_15contracts_probe11inc_boundeds_0mEB11_.exit: ; preds = %start\n  %__ret = add nuw nsw i32 %0, 1\n  ret i32 %__ret\n}",
+      "inc_bounded_has_range_1_101": true,
+      "inc_bounded_has_add_nuw_nsw": true,
+      "inc_bounded_has_panic_nounwind_len_21": true,
+      "inc_bounded_has_panic_nounwind_len_20": false,
+      "buggy_early_return_llvm_ir_lines": 12,
+      "buggy_early_return_llvm_ir": "define dso_local noundef range(i32 0, 43) i32 @buggy_early_return(i1 noundef zeroext %flag) unnamed_addr #0 personality ptr @rust_eh_personality {\nstart:\n  br i1 %flag, label %bb2, label %bb6\n\nbb2:                                              ; preds = %start\n; call core::panicking::panic_nounwind\n  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking14panic_nounwind(ptr noalias noundef nonnull readonly captures(address, read_provenance) @alloc_1b930be7ffe51f6b2154c7dc5869ecaf, i64 noundef 20) #13\n  unreachable\n\nbb6:                                              ; preds = %start\n  ret i32 42\n}",
+      "buggy_early_return_has_panic_nounwind_len_20": true,
+      "runtime": {
+        "ok": {
+          "rc": 0,
+          "stdout": "OK=42 EARLY_FALSE=42 CONST=7",
+          "stderr_lines": []
+        },
+        "violate_requires": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_lines": [
+            "thread 'main' (<PID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:",
+            "failed requires check",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+            "thread caused non-unwinding panic. aborting."
+          ]
+        },
+        "violate_ensures_early": {
+          "rc": -6,
+          "stdout": "",
+          "stderr_lines": [
+            "thread 'main' (<PID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:",
+            "failed ensures check",
+            "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+            "thread caused non-unwinding panic. aborting."
+          ]
+        }
+      }
+    },
+    "contract_no_O2": {
+      "compile_rc": 0,
+      "inc_bounded_mir_signals": {
+        "has_runtime_checks_contract_checks_postcleanup": false,
+        "has_runtime_checks_contract_checks_opt": false,
+        "has_baked_const_true_postcleanup": false,
+        "has_baked_const_false_postcleanup": true,
+        "has_contract_check_requires_postcleanup": true,
+        "has_contract_check_requires_opt": false,
+        "has_build_check_ensures_postcleanup": true,
+        "has_build_check_ensures_opt": true,
+        "has_contract_check_ensures_postcleanup": true,
+        "has_contract_check_ensures_opt": false
+      },
+      "inc_bounded_llvm_ir_lines": 5,
+      "inc_bounded_llvm_ir": "define dso_local noundef i32 @inc_bounded(i32 noundef %x) unnamed_addr #4 {\nstart:\n  %__ret = add i32 %x, 1\n  ret i32 %__ret\n}",
+      "inc_bounded_has_range_1_101": false,
+      "inc_bounded_has_add_nuw_nsw": false,
+      "inc_bounded_has_panic_nounwind_len_21": false,
+      "inc_bounded_has_panic_nounwind_len_20": false,
+      "buggy_early_return_llvm_ir_lines": 5,
+      "buggy_early_return_llvm_ir": "define dso_local noundef range(i32 0, 43) i32 @buggy_early_return(i1 noundef zeroext %flag) unnamed_addr #4 {\nstart:\n  %. = select i1 %flag, i32 0, i32 42\n  ret i32 %.\n}",
+      "buggy_early_return_has_panic_nounwind_len_20": false,
+      "runtime": {
+        "ok": {
+          "rc": 0,
+          "stdout": "OK=42 EARLY_FALSE=42 CONST=7",
+          "stderr_lines": []
+        },
+        "violate_requires": {
+          "rc": 0,
+          "stdout": "REQ=201",
+          "stderr_lines": []
+        },
+        "violate_ensures_early": {
+          "rc": 0,
+          "stdout": "ENS=0",
+          "stderr_lines": []
+        }
+      }
+    }
+  },
+  "probe_2_cross_crate": {
+    "up_no_compile_rc": 0,
+    "up_no_ds_no": {
+      "compile_rc": 0,
+      "inline": {
+        "rc": 0,
+        "stdout": "UP_INLINE=51",
+        "failed_requires": false,
+        "stderr_lines": []
+      },
+      "inline_always": {
+        "rc": 0,
+        "stdout": "UP_ALWAYS=51",
+        "failed_requires": false,
+        "stderr_lines": []
+      },
+      "generic": {
+        "rc": 0,
+        "stdout": "UP_GENERIC=51",
+        "failed_requires": false,
+        "stderr_lines": []
+      }
+    },
+    "up_no_ds_yes": {
+      "compile_rc": 0,
+      "inline": {
+        "rc": 0,
+        "stdout": "UP_INLINE=51",
+        "failed_requires": false,
+        "stderr_lines": []
+      },
+      "inline_always": {
+        "rc": 0,
+        "stdout": "UP_ALWAYS=51",
+        "failed_requires": false,
+        "stderr_lines": []
+      },
+      "generic": {
+        "rc": 0,
+        "stdout": "UP_GENERIC=51",
+        "failed_requires": false,
+        "stderr_lines": []
+      }
+    },
+    "up_yes_compile_rc": 0,
+    "up_yes_ds_no": {
+      "compile_rc": 0,
+      "inline": {
+        "rc": -6,
+        "stdout": "",
+        "failed_requires": true,
+        "stderr_lines": [
+          "thread 'main' (<PID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:",
+          "failed requires check",
+          "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+          "thread caused non-unwinding panic. aborting."
+        ]
+      },
+      "inline_always": {
+        "rc": -6,
+        "stdout": "",
+        "failed_requires": true,
+        "stderr_lines": [
+          "thread 'main' (<PID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:",
+          "failed requires check",
+          "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+          "thread caused non-unwinding panic. aborting."
+        ]
+      },
+      "generic": {
+        "rc": -6,
+        "stdout": "",
+        "failed_requires": true,
+        "stderr_lines": [
+          "thread 'main' (<PID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:",
+          "failed requires check",
+          "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+          "thread caused non-unwinding panic. aborting."
+        ]
+      }
+    },
+    "up_yes_ds_yes": {
+      "compile_rc": 0,
+      "inline": {
+        "rc": -6,
+        "stdout": "",
+        "failed_requires": true,
+        "stderr_lines": [
+          "thread 'main' (<PID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:",
+          "failed requires check",
+          "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+          "thread caused non-unwinding panic. aborting."
+        ]
+      },
+      "inline_always": {
+        "rc": -6,
+        "stdout": "",
+        "failed_requires": true,
+        "stderr_lines": [
+          "thread 'main' (<PID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:",
+          "failed requires check",
+          "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+          "thread caused non-unwinding panic. aborting."
+        ]
+      },
+      "generic": {
+        "rc": -6,
+        "stdout": "",
+        "failed_requires": true,
+        "stderr_lines": [
+          "thread 'main' (<PID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:",
+          "failed requires check",
+          "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+          "thread caused non-unwinding panic. aborting."
+        ]
+      }
+    }
+  },
+  "probe_3_capture_and_syntax": {
+    "borrow_capture_e0597": {
+      "rc": 1,
+      "error_codes": [
+        "error[E0597]"
+      ],
+      "error_lines": [
+        "error[E0597]: `x` does not live long enough",
+        "error: aborting due to 1 previous error; 1 warning emitted"
+      ]
+    },
+    "non_copy_move_capture_e0277": {
+      "rc": 1,
+      "error_codes": [
+        "error[E0277]"
+      ],
+      "error_lines": [
+        "error[E0277]: the trait bound `Vec<u8>: Copy` is not satisfied in `{closure@...}`",
+        "error: aborting due to 1 previous error; 1 warning emitted"
+      ]
+    },
+    "non_static_ref_capture": {
+      "rc": 1,
+      "error_codes": [],
+      "error_lines": [
+        "error: lifetime may not live long enough",
+        "error: aborting due to 1 previous error; 1 warning emitted"
+      ]
+    },
+    "method_call_inference_e0282": {
+      "rc": 1,
+      "error_codes": [
+        "error[E0282]"
+      ],
+      "error_lines": [
+        "error[E0282]: type annotations needed for `&_`",
+        "error: aborting due to 1 previous error; 1 warning emitted"
+      ]
+    },
+    "reversed_attr_order": {
+      "rc": 1,
+      "error_codes": [],
+      "error_lines": [
+        "error: expected one of `.`, `?`, `where`, `{`, or an operator, found `contract_requires`",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "stacked_requires": {
+      "rc": 1,
+      "error_codes": [],
+      "error_lines": [
+        "error: expected one of `where` or `{`, found `contract_requires`",
+        "error: aborting due to 1 previous error"
+      ]
+    },
+    "async_fn_rejected": {
+      "rc": 1,
+      "error_codes": [],
+      "error_lines": [
+        "error: contract annotations are not yet supported on async or gen functions",
+        "error: aborting due to 1 previous error; 1 warning emitted"
+      ]
+    },
+    "bodyless_trait_fn_rejected": {
+      "rc": 1,
+      "error_codes": [],
+      "error_lines": [
+        "error: contract annotations is only supported in functions with bodies",
+        "error: aborting due to 1 previous error; 1 warning emitted"
+      ]
+    },
+    "raw_contract_checks_intrinsic_e0093": {
+      "rc": 1,
+      "error_codes": [
+        "error[E0093]"
+      ],
+      "error_lines": [
+        "error[E0093]: unrecognized intrinsic function: `contract_checks`",
+        "error: aborting due to 1 previous error; 1 warning emitted"
+      ]
+    }
+  },
+  "probe_4_exit_paths": {
+    "try_yeet_unwind_compile_rc": 0,
+    "try_ok": {
+      "rc": 0,
+      "stdout": "Ok(2)",
+      "failed_ensures": false,
+      "stderr_lines": []
+    },
+    "try_err": {
+      "rc": -6,
+      "stdout": "",
+      "failed_ensures": true,
+      "stderr_lines": [
+        "thread 'main' (<PID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:",
+        "failed ensures check",
+        "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "thread caused non-unwinding panic. aborting."
+      ]
+    },
+    "yeet_ok": {
+      "rc": 0,
+      "stdout": "Ok(1)",
+      "failed_ensures": false,
+      "stderr_lines": []
+    },
+    "yeet_err": {
+      "rc": -6,
+      "stdout": "",
+      "failed_ensures": true,
+      "stderr_lines": [
+        "thread 'main' (<PID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:",
+        "failed ensures check",
+        "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "thread caused non-unwinding panic. aborting."
+      ]
+    },
+    "unwind_caught": {
+      "rc": 0,
+      "stdout": "CAUGHT=true",
+      "failed_ensures": false,
+      "stderr_lines": [
+        "thread 'main' (<PID>) panicked at <TMPDIR>/p4_exits/exits.rs:22:5:",
+        "body panicked",
+        "note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      ]
+    },
+    "explicit_tail_call_become": {
+      "compile_rc": 0,
+      "runtime_rc": 0,
+      "stdout": "TAIL=0",
+      "failed_ensures": false
+    }
+  },
+  "probe_5_ctfe_bypass": {
+    "contract_no": {
+      "compile_rc": 0,
+      "runtime_rc": 0,
+      "stdout": "BAD_CONST=0"
+    },
+    "contract_yes": {
+      "compile_rc": 0,
+      "runtime_rc": 0,
+      "stdout": "BAD_CONST=0"
+    }
+  },
+  "probe_6_miri": {
+    "available": true,
+    "core_build_rc": 0,
+    "runs": {
+      "default_ok": {
+        "rc": 0,
+        "has_fallback_is_spec_error": false,
+        "error_lines": []
+      },
+      "default_violate_req": {
+        "rc": 0,
+        "has_fallback_is_spec_error": false,
+        "error_lines": []
+      },
+      "contract_no_violate_req": {
+        "rc": 0,
+        "has_fallback_is_spec_error": false,
+        "error_lines": []
+      },
+      "contract_no_violate_ens": {
+        "rc": 0,
+        "has_fallback_is_spec_error": false,
+        "error_lines": []
+      },
+      "contract_yes_ok": {
+        "rc": 1,
+        "has_fallback_is_spec_error": true,
+        "error_lines": [
+          "error: unsupported operation: Miri can only use intrinsic fallback bodies that exactly reflect the specification: they fully check for UB and are as non-deterministic as possible. After verifying that `contract_check_requires` does so, add the `#[miri::intrinsic_fallback_is_spec]` attribute to it; also ping @rust-lang/miri when you do that",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      },
+      "contract_yes_violate_req": {
+        "rc": 1,
+        "has_fallback_is_spec_error": true,
+        "error_lines": [
+          "error: unsupported operation: Miri can only use intrinsic fallback bodies that exactly reflect the specification: they fully check for UB and are as non-deterministic as possible. After verifying that `contract_check_requires` does so, add the `#[miri::intrinsic_fallback_is_spec]` attribute to it; also ping @rust-lang/miri when you do that",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      },
+      "contract_yes_ensures_only_ok": {
+        "rc": 1,
+        "has_fallback_is_spec_error": true,
+        "error_lines": [
+          "error: unsupported operation: Miri can only use intrinsic fallback bodies that exactly reflect the specification: they fully check for UB and are as non-deterministic as possible. After verifying that `contract_check_ensures` does so, add the `#[miri::intrinsic_fallback_is_spec]` attribute to it; also ping @rust-lang/miri when you do that",
+          "error: aborting due to 1 previous error; 2 warnings emitted"
+        ]
+      }
+    }
+  }
+}
