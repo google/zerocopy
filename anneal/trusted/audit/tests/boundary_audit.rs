@@ -24,6 +24,8 @@ use anneal_audit::{
 };
 use serde_json::json;
 
+mod cargo_boundary_cases;
+
 const HEADER: &str = "-- anneal-trust-tier: vetted\nprelude\nimport Init.NotationExtra\n";
 
 struct TempFixture {
@@ -131,7 +133,7 @@ fn copy_cargo_workspace(root: &Path) {
     ] {
         fs::copy(checkout.join(rel), root.join(rel)).unwrap();
     }
-    for rel in ["trusted/rustc-capture", "trusted/cargo-anneal"] {
+    for rel in ["trusted/audit/src", "trusted/rustc-capture", "trusted/cargo-anneal"] {
         copy_dir_all(&checkout.join(rel), &root.join(rel)).unwrap();
     }
 }
@@ -928,6 +930,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     fs::copy(checkout.join("Cargo.toml"), fix.root.join("Cargo.toml")).unwrap();
     fs::copy(checkout.join("trusted/audit/Cargo.toml"), fix.root.join("trusted/audit/Cargo.toml"))
         .unwrap();
+    copy_dir_all(&checkout.join("trusted/audit/src"), &fix.root.join("trusted/audit/src")).unwrap();
     copy_dir_all(&checkout.join("trusted/rustc-capture"), &fix.root.join("trusted/rustc-capture"))
         .unwrap();
     copy_dir_all(&checkout.join("trusted/cargo-anneal"), &fix.root.join("trusted/cargo-anneal"))
@@ -1042,6 +1045,65 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         err_manifest.message.contains("root TCB manifest digest mismatch for flake.nix"),
         "unexpected error: {err_manifest}"
     );
+    fs::copy(checkout.join("flake.nix"), fix.root.join("flake.nix")).unwrap();
+
+    // Symlinked target source and Rust `#[path]` escape fail in
+    // `Checker::run()`.
+    let orig_main = fs::read(fix.root.join("trusted/rustc-capture/src/main.rs")).unwrap();
+    fs::write(
+        fix.root.join("trusted/rustc-capture/src/main.rs"),
+        b"#[path = \"../../../theory/evil.rs\"]\nmod evil;\n",
+    )
+    .unwrap();
+    let err_path_escape =
+        fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
+    assert!(
+        err_path_escape.message.contains("escapes member directory"),
+        "unexpected error: {err_path_escape}"
+    );
+    fs::write(fix.root.join("trusted/rustc-capture/src/main.rs"), &orig_main).unwrap();
+
+    let outside_rs = fix.root.join("crates/untrusted-helper/src/lib.rs");
+    symlink(&outside_rs, fix.root.join("trusted/rustc-capture/src/link.rs")).unwrap();
+    let err_symlink_src =
+        fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
+    assert!(
+        err_symlink_src
+            .message
+            .contains("symlink forbidden in workspace member trusted/rustc-capture"),
+        "unexpected error: {err_symlink_src}"
+    );
+    fs::remove_file(fix.root.join("trusted/rustc-capture/src/link.rs")).unwrap();
+
+    fs::hard_link(&outside_rs, fix.root.join("trusted/rustc-capture/src/hardlink.rs")).unwrap();
+    let err_hardlink_src =
+        fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
+    assert!(
+        err_hardlink_src.message.contains("must not be hard-linked"),
+        "unexpected error: {err_hardlink_src}"
+    );
+}
+
+#[test]
+fn cargo_boundary_accepts_repository_and_valid_member_closure() {
+    cargo_boundary_cases::assert_accepts_real_repository();
+    cargo_boundary_cases::assert_accepts_valid_explicit_implicit_targets_and_in_member_rust_closure(
+    );
+}
+
+#[cfg(unix)]
+#[test]
+fn cargo_boundary_rejects_symlinked_and_hardlinked_paths() {
+    cargo_boundary_cases::assert_rejects_symlinked_and_hardlinked_directories_and_files();
+    cargo_boundary_cases::assert_rejects_symlinked_implicit_and_explicit_target_sources();
+}
+
+#[test]
+fn cargo_boundary_enforces_exclude_edition_doctest_dep_renames_and_source_closure() {
+    cargo_boundary_cases::assert_distinguishes_workspace_members_from_workspace_exclude();
+    cargo_boundary_cases::assert_rejects_manifest_targets_edition_doctest_proc_macros_dep_renames_and_auto_fields();
+    cargo_boundary_cases::assert_rejects_rust_source_closure_escapes_and_smuggling();
+    cargo_boundary_cases::assert_rejects_case_folded_aliases_unlisted_overrides_submodules_and_manifest_bidi();
 }
 
 /// Verifies module-level trust-tier non-contamination (both syntactic
@@ -1695,30 +1757,7 @@ fn verifies_upstream_pin_and_rejects_tampering() {
     // 1. Deleting `vendor/` in a repository checkout fails `Checker::run()`
     // with policy exit code `1` (`miri-pin`).
     let mut fix_missing_dir = TempFixture::new(None);
-    fs::copy(checkout.join("Cargo.toml"), fix_missing_dir.root.join("Cargo.toml")).unwrap();
-    fs::copy(checkout.join("Cargo.lock"), fix_missing_dir.root.join("Cargo.lock")).unwrap();
-    fs::copy(checkout.join("flake.nix"), fix_missing_dir.root.join("flake.nix")).unwrap();
-    fs::copy(checkout.join("flake.lock"), fix_missing_dir.root.join("flake.lock")).unwrap();
-    fs::copy(
-        checkout.join("trusted/root-manifest.sha256"),
-        fix_missing_dir.root.join("trusted/root-manifest.sha256"),
-    )
-    .unwrap();
-    fs::copy(
-        checkout.join("trusted/audit/Cargo.toml"),
-        fix_missing_dir.root.join("trusted/audit/Cargo.toml"),
-    )
-    .unwrap();
-    copy_dir_all(
-        &checkout.join("trusted/rustc-capture"),
-        &fix_missing_dir.root.join("trusted/rustc-capture"),
-    )
-    .unwrap();
-    copy_dir_all(
-        &checkout.join("trusted/cargo-anneal"),
-        &fix_missing_dir.root.join("trusted/cargo-anneal"),
-    )
-    .unwrap();
+    copy_cargo_workspace(&fix_missing_dir.root);
     let err_no_vendor =
         fix_missing_dir.check_expected(Some(1), Some("miri-pin"), Some(false)).unwrap_err();
     assert!(
@@ -2625,7 +2664,10 @@ impl MirWpSyntheticSpec {
         sem.push_str("namespace Trusted\n");
         for (alias_name, default_decl) in [
             ("Crate", "abbrev Crate := Trusted.MirSemantics.Crate"),
-            ("CrateTheorem", "noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem"),
+            (
+                "CrateTheorem",
+                "noncomputable abbrev CrateTheorem := Trusted.MirSemantics.CrateTheorem",
+            ),
             ("UnitTheorem", "noncomputable abbrev UnitTheorem := Trusted.MirSemantics.UnitTheorem"),
         ] {
             match self.public_alias_overrides.get(alias_name) {
@@ -3223,10 +3265,9 @@ fn enforces_mir_wp_canary_claim_proof_rules() {
         ),
     ] {
         let mut weak_canary = MirWpSyntheticSpec::valid();
-        weak_canary.canary_claim_overrides.insert(
-            claim.to_string(),
-            Some(format!("def {claim} : Prop := {weakened_body}")),
-        );
+        weak_canary
+            .canary_claim_overrides
+            .insert(claim.to_string(), Some(format!("def {claim} : Prop := {weakened_body}")));
         weak_canary.expect_audit_policy_err(&format!(
             "claim Trusted.MirSemantics.{claim} body must reference {dropped}"
         ));
@@ -3876,16 +3917,7 @@ fn enforces_correspondence_non_backsliding() {
         &trusted_lib,
         &corr_deps,
         "Trusted.Correspondence",
-        &all_claims_src(
-            "0",
-            "0",
-            allowed_step_valid_body,
-            Some("True"),
-            None,
-            None,
-            None,
-            None,
-        ),
+        &all_claims_src("0", "0", allowed_step_valid_body, Some("True"), None, None, None, None),
     );
     compile_forged_module(
         &mut checker_pass2,
@@ -3917,16 +3949,7 @@ fn enforces_correspondence_non_backsliding() {
         &trusted_lib,
         &corr_deps,
         "Trusted.Correspondence",
-        &all_claims_src(
-            "0",
-            "0",
-            allowed_step_valid_body,
-            None,
-            Some("True"),
-            None,
-            None,
-            None,
-        ),
+        &all_claims_src("0", "0", allowed_step_valid_body, None, Some("True"), None, None, None),
     );
     compile_forged_module(
         &mut checker_pass2,
@@ -4004,16 +4027,7 @@ fn enforces_correspondence_non_backsliding() {
         &trusted_lib,
         &corr_deps,
         "Trusted.Correspondence",
-        &all_claims_src(
-            "0",
-            "0",
-            allowed_step_valid_body,
-            None,
-            None,
-            None,
-            Some("True"),
-            None,
-        ),
+        &all_claims_src("0", "0", allowed_step_valid_body, None, None, None, Some("True"), None),
     );
     compile_forged_module(
         &mut checker_pass2,
@@ -4045,16 +4059,7 @@ fn enforces_correspondence_non_backsliding() {
         &trusted_lib,
         &corr_deps,
         "Trusted.Correspondence",
-        &all_claims_src(
-            "0",
-            "0",
-            allowed_step_valid_body,
-            None,
-            None,
-            None,
-            None,
-            Some("True"),
-        ),
+        &all_claims_src("0", "0", allowed_step_valid_body, None, None, None, None, Some("True")),
     );
     compile_forged_module(
         &mut checker_pass2,
@@ -4089,16 +4094,8 @@ fn enforces_correspondence_non_backsliding() {
                Trusted.MirSemantics.profileTargetEndian = Miri.Memory.Allocation.writeScalar ∧\n\
                Miri.Memory.Allocation.getBytesUnchecked = Miri.Memory.Allocation.readScalar ∧\n\
                Miri.Memory.Allocation.writeUninit = Miri.Memory.Allocation.writeUninit\n";
-    let valid_claims = all_claims_src(
-        "0",
-        "0",
-        allowed_step_valid_body,
-        None,
-        None,
-        None,
-        None,
-        None,
-    );
+    let valid_claims =
+        all_claims_src("0", "0", allowed_step_valid_body, None, None, None, None, None);
     assert!(
         valid_claims.contains(valid_bytes_codec_def),
         "synthetic BytesCodecMatchesMiriClaim body drifted"
@@ -4304,11 +4301,7 @@ fn enforces_correspondence_non_backsliding() {
             "Trusted.Correspondence.encodeProg",
         ),
     ] {
-        assert_eq!(
-            valid_claims.matches(valid_def).count(),
-            1,
-            "synthetic {claim} body drifted"
-        );
+        assert_eq!(valid_claims.matches(valid_def).count(), 1, "synthetic {claim} body drifted");
         assert_eq!(
             valid_def.matches(old_tok).count(),
             1,
@@ -4416,16 +4409,7 @@ fn enforces_correspondence_non_backsliding() {
         &trusted_lib,
         &corr_deps,
         "Trusted.Correspondence",
-        &all_claims_src(
-            "0",
-            "0",
-            allowed_step_valid_body,
-            None,
-            None,
-            None,
-            None,
-            None,
-        ),
+        &all_claims_src("0", "0", allowed_step_valid_body, None, None, None, None, None),
     );
     compile_forged_module(
         &mut checker_pass2,
@@ -4517,16 +4501,7 @@ fn enforces_correspondence_non_backsliding() {
             &trusted_lib,
             &corr_deps,
             "Trusted.Correspondence",
-            &all_claims_src(
-                "0",
-                &body,
-                allowed_step_valid_body,
-                None,
-                None,
-                None,
-                None,
-                None,
-            ),
+            &all_claims_src("0", &body, allowed_step_valid_body, None, None, None, None, None),
         );
         compile_forged_module(
             &mut checker_pass2,
@@ -4566,16 +4541,7 @@ fn enforces_correspondence_non_backsliding() {
         &trusted_lib,
         &corr_deps,
         "Trusted.Correspondence",
-        &all_claims_src(
-            "0",
-            "0",
-            &masking_allowed_step,
-            None,
-            None,
-            None,
-            None,
-            None,
-        ),
+        &all_claims_src("0", "0", &masking_allowed_step, None, None, None, None, None),
     );
     compile_forged_module(
         &mut checker_pass2,
@@ -9217,7 +9183,8 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
     c1.set_require_mir_wp(false);
     c1.set_miri_cache_dir(Some(cache_dir.clone()));
     c1.run().unwrap();
-    let miri_lib = c1.verify_and_stage_miri_entries(&vendor_dir, &entries, &expected_sources).unwrap();
+    let miri_lib =
+        c1.verify_and_stage_miri_entries(&vendor_dir, &entries, &expected_sources).unwrap();
     for entry in &entries {
         let rel_olean = format!("{}.olean", entry.module.replace('.', "/"));
         assert_eq!(sha256_file(&miri_lib.join(&rel_olean), "test").unwrap(), entry.olean_sha256);
@@ -9298,8 +9265,9 @@ fn compiles_cold_miri_closure_dag_in_parallel_and_preserves_failure_order() {
     let mut c_dup = Checker::new(&fix.root, None).unwrap();
     c_dup.set_require_mir_wp(false);
     c_dup.run().unwrap();
-    let err_dup =
-        c_dup.verify_and_stage_miri_entries(&race_vendor, &race_entries, &race_sources).unwrap_err();
+    let err_dup = c_dup
+        .verify_and_stage_miri_entries(&race_vendor, &race_entries, &race_sources)
+        .unwrap_err();
     assert_eq!(err_dup.code, 1);
     assert!(err_dup.message.contains("duplicate Miri closure module Miri.DagRoot"));
 

@@ -38,6 +38,9 @@ url = "https://github.com/google/zerocopy/releases/download/anneal-toolchain-v0.
 [[bin]]
 name = "cargo-anneal"
 
+[lib]
+doctest = false
+
 [[example]]
 name = "regenerate_bundle"
 test = true

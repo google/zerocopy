@@ -2409,25 +2409,24 @@ mod linux {
         unsafe { close_inherited_fds_cloexec()? };
         // Clamp each resource cap against the inherited hard limit so tight
         // container limits never cause `setrlimit` to fail with `EPERM`.
-        macro_rules! set_clamped_rlimit {
-            ($resource:expr, $desired:expr) => {{
-                let mut cur = libc::rlimit { rlim_cur: 0, rlim_max: 0 };
-                let capped = if unsafe { libc::getrlimit($resource, &mut cur) } == 0
-                    && cur.rlim_max != libc::RLIM_INFINITY
-                {
-                    ($desired).min(cur.rlim_max)
-                } else {
-                    $desired
-                };
-                let lim = libc::rlimit { rlim_cur: capped, rlim_max: capped };
-                if unsafe { libc::setrlimit($resource, &lim) } != 0 {
-                    return Err(io::Error::last_os_error());
-                }
-            }};
+        for (resource, desired) in [
+            (libc::RLIMIT_CORE, 0),
+            (libc::RLIMIT_FSIZE, RLIMIT_FSIZE_BYTES),
+            (libc::RLIMIT_NOFILE, RLIMIT_NOFILE_LIMIT),
+        ] {
+            let mut cur = libc::rlimit { rlim_cur: 0, rlim_max: 0 };
+            let capped = if unsafe { libc::getrlimit(resource, &mut cur) } == 0
+                && cur.rlim_max != libc::RLIM_INFINITY
+            {
+                desired.min(cur.rlim_max)
+            } else {
+                desired
+            };
+            let lim = libc::rlimit { rlim_cur: capped, rlim_max: capped };
+            if unsafe { libc::setrlimit(resource, &lim) } != 0 {
+                return Err(io::Error::last_os_error());
+            }
         }
-        set_clamped_rlimit!(libc::RLIMIT_CORE, 0);
-        set_clamped_rlimit!(libc::RLIMIT_FSIZE, RLIMIT_FSIZE_BYTES);
-        set_clamped_rlimit!(libc::RLIMIT_NOFILE, RLIMIT_NOFILE_LIMIT);
         Ok(())
     }
 

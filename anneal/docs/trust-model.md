@@ -235,9 +235,73 @@ taint), while Repository Pass 2 requires `linux_bwrap`; Rust compilation
 
 Before inspecting Lean files, `anneal-audit` verifies the repository's root
 manifests against [`root-manifest.sha256`](../trusted/root-manifest.sha256)
-(`trusted/root-manifest.sha256`) and checks that every Cargo workspace member
-and `path` dependency resides under `trusted/`. Because Rust code (including
-`build.rs` scripts and proc-macros) is effectful and not checked by the Lean
+(`trusted/root-manifest.sha256`, including valid UTF-8 and invisible/bidi
+control scans on textual pinned manifests such as `Cargo.toml`, `Cargo.lock`,
+`flake.nix`, and `flake.lock`), checks Git checkouts for `160000` gitlink
+submodules (invoking external `git ls-files --stage` with `core.fsmonitor=false`
+and a cleared environment / disabled system-global config when inside `.git`),
+and enforces two complementary Cargo workspace invariants inside `trusted/`: (1)
+closed-world Cargo manifest and dependency schemas
+(`#[serde(deny_unknown_fields)]`, rejecting `cargo-features`,
+`package.metabuild`, `package.links`, `[workspace.dependencies]`, and `workspace
+= true` inheritance) paired with whole-member filesystem hygiene across every
+file and directory of each workspace member and existing `workspace.exclude`
+directory (tracked separately from workspace members, which are pinned to
+`edition = "2024"` with no target-level `edition` override and set `[lib]
+doctest = false` when they have a library target; excluded crates remain
+unparsed as Cargo members, while excluded directories pass full tree hygiene and
+their intermediate ancestors pass real-directory containment and override-entry
+checks) plus full whole-tree hygiene across all unlisted `trusted/` subtrees and
+files, requiring canonical printable-ASCII, globally case-collision-free paths
+across workspace roots, ancestors, and files, rejecting symlinks, hard links
+(`nlink > 1` on Unix; failing closed where link counts are unverified on
+non-Unix hosts), special files, Windows trailing-dot/space and colon/NTFS
+alternate-stream, and Windows 8.3 `~` short-name path aliases, case-folded
+directory/file aliases along member/target/`mod`/`#[path]`/`include*!`
+resolution (preventing case-sensitive Linux audits from skipping files resolved
+on Windows/macOS builds), checked-in build/cache outputs (`target`, `.lake`,
+`/result*`, `.olean*`, `.ilean`, `.ir`, `.ir.sig`), canonical escapes,
+disallowed Unicode control, separator, format, and default-ignorable characters
+in tree paths, manifests, mandatory text extensions, and other NUL-free valid
+UTF-8 files (while permitting binary resources subject to path, real-directory,
+single-link regular-file, and containment hygiene), nested `.git` submodule/repo
+markers, and nested Cargo/toolchain/ambient override entries (`.cargo*`,
+`rust-toolchain*`, `.gitmodules`, `.envrc`, `.gitattributes`,
+`AGENTS.override.md`, and `lean-toolchain` outside `trusted/lean/`), and (2)
+compiled host-source closure enforcement starting from every declared or
+auto-discovered Cargo target root (honoring `autolib`/`auto<kind>` switches and
+resolving pathless explicit targets), requiring ASCII-only tokens and
+identifiers outside comments and string/char literals, and following active
+out-of-line `mod` (skipping `mod` items and balanced item macro
+invocations—never `macro_rules!` or declarative `macro` definitions—outside
+macro invocation bodies only when disabled by non-raw outer `#[cfg(...)]` or
+`#[cfg_attr(all(), cfg(...))]` predicates whose Kleene three-valued evaluation
+over non-raw `true`, `false`, `all`, `any`, and `not` yields false, while
+enforcing balanced delimiters in skipped inline `mod` or macro bodies and
+failing closed on raw identifiers like `r#true`/`r#false`, unknown predicates,
+or inside macro invocations), `#[path]` (dispatched by attribute head so `path`
+inside attribute arguments or `cfg`/`cfg_attr` predicates stays allowed while
+nested `#[cfg_attr(..., path = ...)]`—including raw `r#cfg_attr` and inside
+macro invocations—stays rejected, and modeling `rustc` `DirOwnership` across
+inline `mod`, enclosing blocks, and top-level macro invocations by scanning both
+parent- and stem-relative candidate paths), and `include!` declarations while
+validating `include_str!`, `include_bytes!`, `exocrate::config!`,
+`exocrate::parse_remote_archive!`, and `path` dependencies strictly within real
+directories and single-link regular files inside `trusted/` (leaving uncompiled
+test fixture data files covered by filesystem hygiene without falsely lexing
+them as compiled host Rust; note that an external macro wrapping caller items
+inside a hidden synthesized inline `mod` without spelling `mod` in source cannot
+be tracked lexically, and third-party attribute macros—none exist in the
+workspace's derive-only proc-macro dependencies—similarly are not expanded
+lexically beyond scanning their attribute arguments). Workspace members may not
+define `build.rs` scripts, proc-macros, Cargo `package = "..."` dependency
+renames, `extern crate ... as` aliases, first-party `macro_rules!`/`macro`
+items, `debugger_visualizer`/`global_asm`/`asm`/`naked_asm` constructs, or
+unstable `#![feature(...)]` gates outside `trusted/rustc-capture`'s closed
+auditor allowlist (`normalize_lexically`, `rustc_private`); external
+`Cargo.lock`- or pinned-toolchain dependencies and their procedural macros
+remain governed by `Cargo.lock` / toolchain provenance checks and human
+dependency review. Because Rust code is effectful and not checked by the Lean
 kernel, no Rust crate is permitted outside `trusted/`.
 
 ### Syntactic source preflight (`"preflight"` & `"correspondence-preflight"`)

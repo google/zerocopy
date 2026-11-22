@@ -12,6 +12,9 @@ version = "0.1.0"
 edition = "2024"
 publish = false
 
+[lib]
+doctest = false
+
 [dependencies]
 cargo-anneal = { path = "../cargo-anneal", default-features = false }
 clap = { version = "4.5", features = ["derive"] }
