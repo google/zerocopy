@@ -495,6 +495,7 @@ anneal/
 └── theory/                         # Stage 3 (Pass 1): Untrusted proofs
     ├── Anneal.lean
     ├── Anneal/
+    │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
     │   ├── MirWp.lean              # Fuel-bounded MIR WP & canaries (+ MirWp/)
     │   ├── PureLift.lean           # Functional borrow-lifting calculus
     │   └── PureLift/
