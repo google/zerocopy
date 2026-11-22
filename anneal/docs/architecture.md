@@ -385,16 +385,18 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
 - **Program logics, 3-axiom proof libraries, and tactics
   (`theory/Anneal/{MirWp,LoopInv,LinearArith,BitVec,BitVecArith}.lean`,
   `theory/Anneal/{LeBytes,ListChunks,NatBitwise,PTree,SpineForce}.lean`,
-  `theory/Anneal/PureLift/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
+  `theory/Anneal/BitTrieLrat.lean`, `theory/Anneal/PureLift/`, and planned
+  `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   sparse Farkas and Chvatal-Gomory linear cut certificate checker, constructive
   bitvector, byte-serialization, list-chunking, and canonical positive
   radix-trie framing proof libraries, CPS spine-forcing and `@Nat.rec`
-  iteration combinators, functional borrow lifting, separation-logic frame
-  rules, and proof automation built against $M_{\text{anneal}}$ and
-  `StableAst` / `StableSemantics` (`cargo-anneal` bundles the scalar and MIR
-  proof libraries under `theory/Anneal/`, compiling and auditing only the
-  transitive `Anneal.*` closure imported by target proof modules).
+  iteration combinators, a radix-2 trie RUP-only LRAT UNSAT checker, functional
+  borrow lifting, separation-logic frame rules, and proof automation built
+  against $M_{\text{anneal}}$ and `StableAst` / `StableSemantics`
+  (`cargo-anneal` bundles the scalar and MIR proof libraries under
+  `theory/Anneal/`, compiling and auditing only the transitive `Anneal.*`
+  closure imported by target proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
 
@@ -503,6 +505,7 @@ anneal/
 └── theory/                         # Stage 3 (Pass 1): Untrusted proofs
     ├── Anneal.lean
     ├── Anneal/
+    │   ├── BitTrieLrat.lean        # Radix-2 trie RUP-only LRAT checker
     │   ├── BitVec.lean             # Constructive 3-axiom BitVec & tnum lemmas
     │   ├── BitVecArith.lean        # Constructive BitVec range & arithmetic
     │   ├── Core.lean               # BlockTree, SepPCM & StepStageCut (+ Core/)

@@ -56,7 +56,8 @@ The alpha uses the x86-64 Linux scalar MIR profile: booleans, integers up to
 `ci/verify_starnix_e2e.py` checks Starnix's `ebpf_core` endianness conversion
 with symbolic MIR helpers in `Anneal.MirWp`). Proof modules may import bundled
 3-axiom `Anneal.*` proof libraries (`Anneal.MirWp`, `Anneal.LoopInv`,
-`Anneal.LinearArith`, `Anneal.SpineForce`, `Anneal.PTree`, `Anneal.BitVec`,
+`Anneal.LinearArith`, `Anneal.SpineForce`, `Anneal.PTree`, `Anneal.BitTrieLrat`,
+`Anneal.BitVec`,
 `Anneal.BitVecArith`, `Anneal.NatBitwise`, `Anneal.LeBytes`, and
 `Anneal.ListChunks`), compiled and audited on demand when imported;
 specification modules stay restricted to `Trusted.*`, `Init.*`/`Std.*`, and

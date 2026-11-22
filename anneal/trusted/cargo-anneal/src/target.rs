@@ -1943,6 +1943,7 @@ mod tests {
         assert!(!sources_unimported.contains("Anneal.MirWp.Core"), "{sources_unimported:?}");
         assert!(!sources_unimported.contains("Anneal.Unused"), "{sources_unimported:?}");
         assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_unimported = base.join("export-unimported");
         assert!(checker.export_target_oleans(&export_unimported).unwrap());
@@ -2710,6 +2711,7 @@ mod tests {
         assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
         assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
         assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -2724,6 +2726,7 @@ mod tests {
         assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-loopinv");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
@@ -2735,6 +2738,7 @@ mod tests {
         assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
         assert!(!export_dir.join("Anneal/PTree.olean").exists());
         assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
+        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 
@@ -2836,6 +2840,7 @@ mod tests {
         assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
         assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
         assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -2848,6 +2853,7 @@ mod tests {
         assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-spineforce");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
@@ -2857,6 +2863,7 @@ mod tests {
         assert!(!export_dir.join("Anneal/MirWp.olean").exists());
         assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
         assert!(!export_dir.join("Anneal/BitVec.olean").exists());
+        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 
@@ -2996,6 +3003,7 @@ mod tests {
         assert!(sources.contains("Anneal.PTree"), "{sources:?}");
         assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
         assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
         assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
         assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
         assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
@@ -3011,6 +3019,7 @@ mod tests {
         assert!(checker.stage.join("target-lib/Anneal/PTree.olean").is_file());
         assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
@@ -3022,6 +3031,168 @@ mod tests {
         assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
         assert!(!export_dir.join("Anneal/MirWp.olean").exists());
         assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
+        assert!(!export_dir.join("Anneal/BitVec.olean").exists());
+        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
+        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+    }
+
+    #[test]
+    fn live_demand_driven_bit_trie_lrat_three_axiom_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-bit-trie-lrat"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.NotationExtra\nimport Init.Data.Nat.Basic\n\
+                     import Init.Data.List.Basic\nnamespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 6\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.diamondCnfSat (σ : Nat → Bool) : Bool :=\n  \
+                     ((σ 0 || false) &&\n   \
+                      (((!σ 0) || (σ 1 || (σ 2 || false))) &&\n    \
+                       (((!σ 1) || (σ 3 || false)) &&\n     \
+                        (((!σ 2) || (σ 3 || false)) &&\n      \
+                         (((!σ 3) || false) && true)))))\n\
+                     def Spec.unitPairSat (σ : Nat → Bool) : Bool :=\n  \
+                     ((σ 1 || false) && (((!σ 1) || false) && true))\n\
+                     def Spec.specs (depth : Nat) : Prop :=\n  \
+                     depth = 6 ∧\n  \
+                     (∀ (σ : Nat → Bool), Spec.diamondCnfSat σ = false) ∧\n  \
+                     (∀ (σ : Nat → Bool), Spec.unitPairSat σ = false)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.BitTrieLrat\n\
+                     private abbrev bOr := Anneal.BitTrieLrat.boolOr\n\
+                     private abbrev bAnd := Anneal.BitTrieLrat.boolAnd\n\
+                     private abbrev bBeq := Anneal.BitTrieLrat.boolBeq\n\
+                     private def unitCnf : List Anneal.BitTrieLrat.Clause :=\n  \
+                     [[Anneal.BitTrieLrat.mkLit 1 true], [Anneal.BitTrieLrat.mkLit 1 false]]\n\
+                     private theorem boolBeq_true (b : Bool) :\n  \
+                     bBeq b true = b := by cases b <;> rfl\n\
+                     private theorem boolBeq_false (b : Bool) :\n  \
+                     bBeq b false = !b := by cases b <;> rfl\n\
+                     private theorem boolOr_eq (a b : Bool) :\n  \
+                     bOr a b = (a || b) := by cases a <;> cases b <;> rfl\n\
+                     private theorem boolAnd_eq (a b : Bool) :\n  \
+                     bAnd a b = (a && b) := by cases a <;> cases b <;> rfl\n\
+                     private theorem diamond_eval_eq (σ : Nat → Bool) :\n  \
+                     Anneal.BitTrieLrat.evalCnf σ Anneal.BitTrieLrat.sampleUnsatCnf =\n    \
+                     Spec.diamondCnfSat σ := by\n  \
+                     change bAnd (bOr (bBeq (σ 0) true) false)\n    \
+                     (bAnd (bOr (bBeq (σ 0) false) (bOr (bBeq (σ 1) true)\n      \
+                     (bOr (bBeq (σ 2) true) false)))\n    \
+                     (bAnd (bOr (bBeq (σ 1) false) (bOr (bBeq (σ 3) true) false))\n    \
+                     (bAnd (bOr (bBeq (σ 2) false) (bOr (bBeq (σ 3) true) false))\n    \
+                     (bAnd (bOr (bBeq (σ 3) false) false) true)))) = Spec.diamondCnfSat σ\n  \
+                     simp only [boolBeq_true, boolBeq_false, boolOr_eq,\n    \
+                     boolAnd_eq, Spec.diamondCnfSat]\n\
+                     private theorem unit_eval_eq (σ : Nat → Bool) :\n  \
+                     Anneal.BitTrieLrat.evalCnf σ unitCnf = Spec.unitPairSat σ := by\n  \
+                     change bAnd (bOr (bBeq (σ 1) true) false)\n    \
+                     (bAnd (bOr (bBeq (σ 1) false) false) true) = Spec.unitPairSat σ\n  \
+                     simp only [boolBeq_true, boolBeq_false, boolOr_eq,\n    \
+                     boolAnd_eq, Spec.unitPairSat]\n\
+                     theorem Proof.verify : Expected.claim :=\n  \
+                     ⟨rfl,\n   \
+                      fun σ => (diamond_eval_eq σ).symm.trans\n     \
+                        (Anneal.BitTrieLrat.checkRupProof_sound Captured.program\n       \
+                          Anneal.BitTrieLrat.sampleUnsatCnf\n       \
+                          Anneal.BitTrieLrat.sampleUnsatSteps rfl σ),\n   \
+                      fun σ => (unit_eval_eq σ).symm.trans\n     \
+                        (Anneal.BitTrieLrat.checkRupProof_sound Captured.program\n       \
+                          unitCnf [.addRup 2 [] [0, 1]] rfl σ)⟩\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req, false);
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
+        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
+        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
+        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
+        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
+        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        assert!(checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        let export_dir = base.join("export-with-bit-trie-lrat");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        assert!(export_dir.join("Anneal/BitTrieLrat.olean").is_file());
+        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
+        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
+        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
+        assert!(!export_dir.join("Anneal/PTree.olean").exists());
+        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
         assert!(!export_dir.join("Anneal/BitVec.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
@@ -3122,6 +3293,7 @@ mod tests {
         assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
         assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
         assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -3133,6 +3305,7 @@ mod tests {
         assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitTrieLrat.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-linear-arith");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
@@ -3141,6 +3314,7 @@ mod tests {
         assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
         assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
         assert!(!export_dir.join("Anneal/MirWp.olean").exists());
+        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 }
