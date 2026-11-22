@@ -26,20 +26,63 @@ prelude\nimport Trusted.MirAst\n\nnamespace Captured\n\n";
 
 const MAX_LIST_CHUNK_LEN: usize = 16;
 
-fn join_balanced(chunks: &[String]) -> String {
+fn join_balanced_slice<T>(
+    chunks: &[T],
+    indent: Option<usize>,
+    render_leaf: &impl Fn(&T, Option<usize>) -> String,
+) -> String {
     match chunks {
         [] => "[]".into(),
-        [single] => single.clone(),
+        [single] => render_leaf(single, indent),
         _ => {
             let mid = chunks.len() / 2;
             let (left, right) = chunks.split_at(mid);
-            format!("(_root_.List.append {} {})", join_balanced(left), join_balanced(right))
+            match indent {
+                None => format!(
+                    "(_root_.List.append {} {})",
+                    join_balanced_slice(left, None, render_leaf),
+                    join_balanced_slice(right, None, render_leaf)
+                ),
+                Some(col) => {
+                    let child_col = col + 2;
+                    let pad = " ".repeat(child_col);
+                    format!(
+                        "(_root_.List.append {}\n{pad}{})",
+                        join_balanced_slice(left, Some(child_col), render_leaf),
+                        join_balanced_slice(right, Some(child_col), render_leaf)
+                    )
+                }
+            }
+        }
+    }
+}
+
+fn list_literal_at<T>(
+    values: &[T],
+    indent: Option<usize>,
+    render: &impl Fn(&T, Option<usize>) -> String,
+) -> String {
+    if values.is_empty() {
+        return "[]".into();
+    }
+    match indent {
+        None => {
+            let items: Vec<String> = values.iter().map(|v| render(v, None)).collect();
+            format!("[{}]", items.join(", "))
+        }
+        Some(col) => {
+            let item_col = col + 2;
+            let item_pad = " ".repeat(item_col);
+            let close_pad = " ".repeat(col);
+            let items: Vec<String> =
+                values.iter().map(|v| format!("{item_pad}{}", render(v, Some(item_col)))).collect();
+            format!("[\n{}\n{close_pad}]", items.join(",\n"))
         }
     }
 }
 
 fn list_literal<T>(values: &[T], render: impl Fn(&T) -> String) -> String {
-    format!("[{}]", values.iter().map(render).collect::<Vec<_>>().join(", "))
+    list_literal_at(values, None, &|v, _| render(v))
 }
 
 /// Render a Lean list literal, chunking lists longer than `MAX_LIST_CHUNK_LEN`
@@ -58,12 +101,29 @@ fn list_literal<T>(values: &[T], render: impl Fn(&T) -> String) -> String {
 /// one definition still hit Lean's `maxRecDepth` limit independently of list
 /// representation).
 fn list<T>(values: &[T], render: impl Fn(&T) -> String) -> String {
-    let chunks: Vec<String> =
-        values.chunks(MAX_LIST_CHUNK_LEN).map(|chunk| list_literal(chunk, &render)).collect();
-    join_balanced(&chunks)
+    let chunks: Vec<&[T]> = values.chunks(MAX_LIST_CHUNK_LEN).collect();
+    join_balanced_slice(&chunks, None, &|chunk, _| list_literal(chunk, &render))
 }
 
-fn ty(t: &Ty) -> String {
+fn list_pretty<T>(values: &[T], indent: usize, render: impl Fn(&T, usize) -> String) -> String {
+    let chunks: Vec<&[T]> = values.chunks(MAX_LIST_CHUNK_LEN).collect();
+    join_balanced_slice(&chunks, Some(indent), &|chunk, chunk_indent| {
+        list_literal_at(chunk, chunk_indent, &|item, item_indent| {
+            render(item, item_indent.unwrap_or(indent))
+        })
+    })
+}
+
+fn list_chunk_lines<T>(values: &[T], indent: usize, render: impl Fn(&T) -> String) -> String {
+    let chunks: Vec<&[T]> = values.chunks(MAX_LIST_CHUNK_LEN).collect();
+    if chunks.len() <= 1 {
+        list(values, render)
+    } else {
+        join_balanced_slice(&chunks, Some(indent), &|chunk, _| list_literal(chunk, &render))
+    }
+}
+
+fn ty_at(t: &Ty, indent: usize) -> String {
     match t {
         Ty::Bool => "Trusted.MirAst.MirTy.bool".into(),
         Ty::Char => "Trusted.MirAst.MirTy.char".into(),
@@ -90,12 +150,20 @@ fn ty(t: &Ty) -> String {
                 ),
             };
             let discr = ety.discr();
+            let field_pad = " ".repeat(indent + 2);
+            let close_pad = " ".repeat(indent);
+            let discriminants = list_chunk_lines(ety.discriminants(), indent + 2, u128::to_string);
             format!(
-                "(Trusted.MirAst.MirTy.enum {{ id := {}, discrWidth := Trusted.MirAst.IntWidth.{}, discrSigned := {}, tagRepr := {tag_repr}, discriminants := {} }})",
+                "(Trusted.MirAst.MirTy.enum {{\n\
+                 {field_pad}id := {},\n\
+                 {field_pad}discrWidth := Trusted.MirAst.IntWidth.{},\n\
+                 {field_pad}discrSigned := {},\n\
+                 {field_pad}tagRepr := {tag_repr},\n\
+                 {field_pad}discriminants := {discriminants}\n\
+                 {close_pad}}})",
                 ety.id(),
                 discr.width.lean_name(),
                 discr.signed,
-                list(ety.discriminants(), u128::to_string)
             )
         }
     }
@@ -110,7 +178,7 @@ fn const_lit(lit: ConstLit) -> String {
     }
 }
 
-fn operand(op: &Operand) -> String {
+fn operand_at(op: &Operand, indent: usize) -> String {
     match op {
         Operand::Copy { local } => {
             format!("(Trusted.MirAst.Operand.copy (Trusted.MirAst.Place.mk {local} []))")
@@ -120,7 +188,7 @@ fn operand(op: &Operand) -> String {
         }
         Operand::Constant { ty: t, lit } => format!(
             "(Trusted.MirAst.Operand.constant (Trusted.MirAst.ConstOperand.mk {} {}))",
-            ty(t),
+            ty_at(t, indent),
             const_lit(*lit)
         ),
     }
@@ -164,33 +232,29 @@ fn bin_op(op: BinOp) -> &'static str {
     }
 }
 
-fn rvalue(value: &Rvalue) -> String {
+fn rvalue_at(value: &Rvalue, indent: usize) -> String {
     match value {
         // `ir::Body::try_new` admits `with_retag == true` only when the
         // destination type satisfies `Ty::is_retag_noop()`.
         Rvalue::Use { operand: op, .. } => {
-            format!("(Trusted.MirAst.Rvalue.use {})", operand(op))
+            format!("(Trusted.MirAst.Rvalue.use {})", operand_at(op, indent))
         }
         Rvalue::Binary { op, left, right } => format!(
             "(Trusted.MirAst.Rvalue.binaryOp Trusted.MirAst.BinOp.{} {} {})",
             bin_op(*op),
-            operand(left),
-            operand(right)
+            operand_at(left, indent),
+            operand_at(right, indent)
         ),
         Rvalue::Unary { op, operand: opnd } => format!(
             "(Trusted.MirAst.Rvalue.unaryOp Trusted.MirAst.UnOp.{} {})",
             un_op(*op),
-            operand(opnd)
+            operand_at(opnd, indent)
         ),
-        Rvalue::Cast {
-            cast_kind: kind,
-            operand: opnd,
-            ty: target_ty,
-        } => format!(
+        Rvalue::Cast { cast_kind: kind, operand: opnd, ty: target_ty } => format!(
             "(Trusted.MirAst.Rvalue.cast Trusted.MirAst.CastKind.{} {} {})",
             cast_kind(*kind),
-            operand(opnd),
-            ty(target_ty)
+            operand_at(opnd, indent),
+            ty_at(target_ty, indent)
         ),
         Rvalue::Discriminant { local } => {
             format!("(Trusted.MirAst.Rvalue.discriminant (Trusted.MirAst.Place.mk {local} []))")
@@ -198,11 +262,11 @@ fn rvalue(value: &Rvalue) -> String {
     }
 }
 
-fn statement(stmt: &Statement) -> String {
+fn statement_at(stmt: &Statement, indent: usize) -> String {
     match stmt {
         Statement::Assign { local, value } => format!(
             "(Trusted.MirAst.StatementKind.assign (Trusted.MirAst.Place.mk {local} []) {})",
-            rvalue(value)
+            rvalue_at(value, indent)
         ),
         Statement::StorageLive { local } => {
             format!("(Trusted.MirAst.StatementKind.storageLive {local})")
@@ -214,22 +278,26 @@ fn statement(stmt: &Statement) -> String {
     }
 }
 
-fn terminator(term: &Terminator) -> String {
+fn terminator_at(term: &Terminator, indent: usize) -> String {
     match term {
         Terminator::Goto { block } => {
             format!("(Trusted.MirAst.TerminatorKind.goto {block})")
         }
-        Terminator::SwitchInt {
-            operand: op,
-            targets,
-            otherwise,
-        } => format!(
-            "(Trusted.MirAst.TerminatorKind.switchInt {} (Trusted.MirAst.SwitchTargets.mk {} {otherwise}))",
-            operand(op),
-            list(targets, |(value, block)| format!(
-                "((BitVec.ofNat 128 {value}), {block})"
-            ))
-        ),
+        Terminator::SwitchInt { operand: op, targets, otherwise } => {
+            let child_pad = " ".repeat(indent + 2);
+            let target_pad = " ".repeat(indent + 4);
+            format!(
+                "(Trusted.MirAst.TerminatorKind.switchInt\n\
+                 {child_pad}{}\n\
+                 {child_pad}(Trusted.MirAst.SwitchTargets.mk\n\
+                 {target_pad}{}\n\
+                 {target_pad}{otherwise}))",
+                operand_at(op, indent + 2),
+                list_pretty(targets, indent + 4, |(value, block), _| format!(
+                    "((BitVec.ofNat 128 {value}), {block})"
+                ))
+            )
+        }
         Terminator::Ret => "Trusted.MirAst.TerminatorKind.return_".into(),
         Terminator::Unreachable => "Trusted.MirAst.TerminatorKind.unreachable".into(),
     }
@@ -241,29 +309,49 @@ fn terminator(term: &Terminator) -> String {
 /// Rust characters are Unicode scalar values; numeric Char constructors retain
 /// them even when a name contains quotes, backslashes or other syntax. This
 /// keeps every emitted token fixed or numeric and requires no escaping grammar.
-fn identity(value: &str) -> String {
-    let characters: Vec<_> = value.chars().collect();
-    format!(
-        "(_root_.String.ofList {})",
-        list(&characters, |ch| format!(
-            "(_root_.Char.ofNat {})",
-            u32::from(*ch)
-        ))
-    )
+fn identity_at(value: &str, indent: usize) -> String {
+    let characters: Vec<char> = value.chars().collect();
+    let chars_list = list_chunk_lines(&characters, indent + 2, |ch| {
+        format!("(_root_.Char.ofNat {})", u32::from(*ch))
+    });
+    format!("(_root_.String.ofList {chars_list})")
 }
 
-fn body_record(body: &ir::Body) -> String {
+#[cfg(test)]
+fn identity(value: &str) -> String {
+    identity_at(value, 0)
+}
+
+fn body_record(body: &ir::Body, indent: usize) -> String {
+    let field_col = indent + 2;
+    let field_pad = " ".repeat(field_col);
+    let close_pad = " ".repeat(indent);
     format!(
-        "{{ argumentCount := {}, isUnsafe := {}, locals := {}, basicBlocks := {}, identity := {} }}",
+        "{{\n\
+         {field_pad}argumentCount := {},\n\
+         {field_pad}isUnsafe := {},\n\
+         {field_pad}locals := {},\n\
+         {field_pad}basicBlocks := {},\n\
+         {field_pad}identity := {}\n\
+         {close_pad}}}",
         body.arg_count(),
         body.is_unsafe(),
-        list(body.local_tys(), ty),
-        list(body.blocks(), |block| format!(
-            "({{ statements := {}, terminator := {}, cleanup := false }} : Trusted.MirAst.BasicBlock)",
-            list(&block.statements, statement),
-            terminator(&block.terminator)
-        )),
-        identity(body.identity())
+        list_pretty(body.local_tys(), field_col, ty_at),
+        list_pretty(body.blocks(), field_col, |block, block_indent| {
+            let bf_col = block_indent + 2;
+            let bf_pad = " ".repeat(bf_col);
+            let bc_pad = " ".repeat(block_indent);
+            format!(
+                "({{\n\
+                 {bf_pad}statements := {},\n\
+                 {bf_pad}terminator := {},\n\
+                 {bf_pad}cleanup := false\n\
+                 {bc_pad}}} : Trusted.MirAst.BasicBlock)",
+                list_pretty(&block.statements, bf_col, statement_at),
+                terminator_at(&block.terminator, bf_col)
+            )
+        }),
+        identity_at(body.identity(), field_col)
     )
 }
 
@@ -303,31 +391,39 @@ pub fn render(program: &ir::Program) -> String {
     let mut body_names = Vec::with_capacity(program.bodies().len());
     for (index, item) in program.bodies().iter().enumerate() {
         let name = format!("body_{index}");
-        let _ = writeln!(
-            out,
-            "def {name} : Trusted.MirAst.Body :=\n  {}\n",
-            body_record(item)
-        );
+        let _ = writeln!(out, "def {name} : Trusted.MirAst.Body :=\n  {}\n", body_record(item, 2));
         body_names.push(name);
     }
-    let bodies_expr = if body_names.len() <= MAX_LIST_CHUNK_LEN {
-        list_literal(&body_names, String::clone)
-    } else {
-        let mut chunk_names = Vec::new();
-        for (chunk_idx, chunk) in body_names.chunks(MAX_LIST_CHUNK_LEN).enumerate() {
-            let chunk_name = format!("bodies_chunk_{chunk_idx}");
-            let _ = writeln!(
-                out,
-                "def {chunk_name} : _root_.List Trusted.MirAst.Body :=\n  {}\n",
-                list_literal(chunk, String::clone)
-            );
-            chunk_names.push(chunk_name);
+    let bodies_expr = match body_names.as_slice() {
+        [] => "[]".into(),
+        [single] => format!("[{single}]"),
+        _ if body_names.len() <= MAX_LIST_CHUNK_LEN => {
+            list_literal_at(&body_names, Some(4), &|name, _| name.clone())
         }
-        join_balanced(&chunk_names)
+        _ => {
+            let mut chunk_names = Vec::new();
+            for (chunk_idx, chunk) in body_names.chunks(MAX_LIST_CHUNK_LEN).enumerate() {
+                let chunk_name = format!("bodies_chunk_{chunk_idx}");
+                let chunk_lit = list_literal_at(chunk, Some(2), &|name, _| name.clone());
+                let _ = writeln!(
+                    out,
+                    "def {chunk_name} : _root_.List Trusted.MirAst.Body :=\n  {chunk_lit}\n"
+                );
+                chunk_names.push(chunk_name);
+            }
+            join_balanced_slice(&chunk_names, Some(4), &|name, _| name.clone())
+        }
     };
     let _ = write!(
         out,
-        "def program : Trusted.MirAst.Program :=\n  {{ pointerWidthBits := {POINTER_WIDTH_BITS}, mirProfileVersion := {MIR_PROFILE_VERSION}, scope := Trusted.MirAst.VerificationScope.{scope}, entryDefId := {ENTRY_DEF_ID}, bodies := {bodies_expr} }}\n\nend Captured\n"
+        "def program : Trusted.MirAst.Program :=\n\
+         \x20 {{\n\
+         \x20   pointerWidthBits := {POINTER_WIDTH_BITS},\n\
+         \x20   mirProfileVersion := {MIR_PROFILE_VERSION},\n\
+         \x20   scope := Trusted.MirAst.VerificationScope.{scope},\n\
+         \x20   entryDefId := {ENTRY_DEF_ID},\n\
+         \x20   bodies := {bodies_expr}\n\
+         \x20 }}\n\nend Captured\n"
     );
     out
 }
@@ -424,10 +520,7 @@ mod tests {
                 statements: vec![Statement::Assign {
                     local: 0,
                     value: Rvalue::Use {
-                        operand: Operand::Constant {
-                            ty: Ty::Unit,
-                            lit: ConstLit::ZeroSized,
-                        },
+                        operand: Operand::Constant { ty: Ty::Unit, lit: ConstLit::ZeroSized },
                         with_retag: true,
                     },
                 }],
@@ -442,10 +535,7 @@ mod tests {
         assert!(rendered.contains("mirProfileVersion := 1"), "{rendered}");
         // Producers must not rely on the Lean default for the entry body.
         assert!(rendered.contains("entryDefId := 0"), "{rendered}");
-        assert!(
-            rendered.contains("Trusted.MirAst.VerificationScope.crate"),
-            "{rendered}"
-        );
+        assert!(rendered.contains("Trusted.MirAst.VerificationScope.crate"), "{rendered}");
         assert_eq!(
             rendered
                 .matches("(Trusted.MirAst.Rvalue.use (Trusted.MirAst.Operand.constant (Trusted.MirAst.ConstOperand.mk Trusted.MirAst.MirTy.unit Trusted.MirAst.ConstLit.zeroSized)))")
@@ -456,9 +546,7 @@ mod tests {
         assert!(!rendered.contains("unit_fn"), "{rendered}");
 
         let selected = Program::try_new(
-            Scope::SelectedUnit {
-                roots: BTreeSet::from(["raw\"selector".into()]),
-            },
+            Scope::SelectedUnit { roots: BTreeSet::from(["raw\"selector".into()]) },
             vec![body],
         )
         .unwrap();
@@ -467,26 +555,14 @@ mod tests {
             selected_rendered.contains("Trusted.MirAst.VerificationScope.unit"),
             "{selected_rendered}"
         );
-        assert!(
-            selected_rendered.contains("entryDefId := 0"),
-            "{selected_rendered}"
-        );
-        assert!(
-            !selected_rendered.contains("selector"),
-            "{selected_rendered}"
-        );
+        assert!(selected_rendered.contains("entryDefId := 0"), "{selected_rendered}");
+        assert!(!selected_rendered.contains("selector"), "{selected_rendered}");
         assert!(
             selected_rendered.contains("def body_0 : Trusted.MirAst.Body :="),
             "{selected_rendered}"
         );
-        assert!(
-            selected_rendered.contains("bodies := [body_0]"),
-            "{selected_rendered}"
-        );
-        assert!(
-            !selected_rendered.contains("bodies_chunk_"),
-            "{selected_rendered}"
-        );
+        assert!(selected_rendered.contains("bodies := [body_0]"), "{selected_rendered}");
+        assert!(!selected_rendered.contains("bodies_chunk_"), "{selected_rendered}");
     }
 
     #[test]
@@ -508,14 +584,8 @@ mod tests {
             .collect();
         let program = Program::try_new(Scope::Crate, bodies).unwrap();
         let rendered = render(&program);
-        assert!(
-            rendered.contains("def body_0 : Trusted.MirAst.Body :="),
-            "{rendered}"
-        );
-        assert!(
-            rendered.contains("def body_129 : Trusted.MirAst.Body :="),
-            "{rendered}"
-        );
+        assert!(rendered.contains("def body_0 : Trusted.MirAst.Body :="), "{rendered}");
+        assert!(rendered.contains("def body_129 : Trusted.MirAst.Body :="), "{rendered}");
         assert!(
             rendered.contains("def bodies_chunk_0 : _root_.List Trusted.MirAst.Body :="),
             "{rendered}"
@@ -524,10 +594,7 @@ mod tests {
             rendered.contains("def bodies_chunk_8 : _root_.List Trusted.MirAst.Body :="),
             "{rendered}"
         );
-        assert!(
-            rendered.contains("(_root_.List.append "),
-            "{rendered}"
-        );
+        assert!(rendered.contains("(_root_.List.append "), "{rendered}");
         assert_list_literals_at_most(&rendered, MAX_LIST_CHUNK_LEN);
     }
 
@@ -631,5 +698,100 @@ mod tests {
         );
         assert_list_literals_at_most(&rendered, MAX_LIST_CHUNK_LEN);
         assert!(rendered.contains("(_root_.List.append "));
+        let max_line = rendered.lines().map(str::len).max().unwrap_or(0);
+        assert!(max_line <= 500, "expected pretty-printed line width <= 500, got {max_line}");
+        assert!(
+            rendered.lines().all(|line| !line.ends_with(' ') && !line.ends_with('\t')),
+            "unexpected trailing whitespace in rendered Lean"
+        );
+    }
+
+    #[test]
+    fn render_pretty_prints_structured_multiline_lean() {
+        let enum_ty = Ty::Enum(
+            EnumTy::try_new(
+                9,
+                IntTy { width: IntWidth::I32, signed: true },
+                EnumTagRepr::Scalar(IntTy { width: IntWidth::I8, signed: true }),
+                vec![0, 1],
+            )
+            .unwrap(),
+        );
+        let i32_ty = Ty::Int(IntTy { width: IntWidth::I32, signed: true });
+        let body0 = Body::try_new(
+            1,
+            true,
+            vec![i32_ty.clone(), i32_ty, enum_ty.clone()],
+            vec![
+                Block {
+                    statements: vec![
+                        Statement::StorageLive { local: 1 },
+                        Statement::Assign {
+                            local: 0,
+                            value: Rvalue::Use {
+                                operand: Operand::Copy { local: 1 },
+                                with_retag: true,
+                            },
+                        },
+                        Statement::Assign {
+                            local: 2,
+                            value: Rvalue::Use {
+                                operand: Operand::Constant {
+                                    ty: enum_ty,
+                                    lit: ConstLit::Scalar { bits: 0 },
+                                },
+                                with_retag: false,
+                            },
+                        },
+                        Statement::Nop,
+                    ],
+                    terminator: Terminator::SwitchInt {
+                        operand: Operand::Copy { local: 1 },
+                        targets: vec![(0, 1), (1, 1)],
+                        otherwise: 1,
+                    },
+                },
+                Block { statements: vec![], terminator: Terminator::Ret },
+            ],
+            "rust-path-v1::multi_block_secret_fn".into(),
+        )
+        .unwrap();
+        let body1 = Body::try_new(
+            0,
+            false,
+            vec![Ty::Unit],
+            vec![Block { statements: vec![], terminator: Terminator::Ret }],
+            "rust-path-v1::helper_fn".into(),
+        )
+        .unwrap();
+        let program = Program::try_new(Scope::Crate, vec![body0, body1]).unwrap();
+        let rendered = render(&program);
+        for expected in [
+            "def body_0 : Trusted.MirAst.Body :=\n  {\n",
+            "    argumentCount := 1,\n    isUnsafe := true,\n",
+            "    locals := [\n",
+            "      (Trusted.MirAst.MirTy.enum {\n",
+            "        id := 9,\n",
+            "        discriminants := [0, 1]\n",
+            "      })\n",
+            "    basicBlocks := [\n",
+            "      ({\n        statements := [\n",
+            "          (Trusted.MirAst.StatementKind.assign (Trusted.MirAst.Place.mk 2 []) (Trusted.MirAst.Rvalue.use (Trusted.MirAst.Operand.constant (Trusted.MirAst.ConstOperand.mk (Trusted.MirAst.MirTy.enum {\n            id := 9,\n            discrWidth := Trusted.MirAst.IntWidth.i32,\n            discrSigned := true,\n            tagRepr := (Trusted.MirAst.EnumTagRepr.scalar Trusted.MirAst.IntWidth.i8 true),\n            discriminants := [0, 1]\n          }) (Trusted.MirAst.ConstLit.scalar (BitVec.ofNat 128 0)))))),\n",
+            "        terminator := (Trusted.MirAst.TerminatorKind.switchInt\n",
+            "          (Trusted.MirAst.SwitchTargets.mk\n",
+            "            [\n",
+            "              ((BitVec.ofNat 128 0), 1),\n",
+            "              ((BitVec.ofNat 128 1), 1)\n",
+            "            ]\n            1)),\n",
+            "    bodies := [\n      body_0,\n      body_1\n    ]\n",
+        ] {
+            assert!(
+                rendered.contains(expected),
+                "missing pretty block {expected:?} in:\n{rendered}"
+            );
+        }
+        assert!(!rendered.contains("secret_fn"));
+        assert!(!rendered.contains("helper_fn"));
+        assert!(rendered.lines().all(|line| !line.ends_with(' ') && !line.ends_with('\t')));
     }
 }
