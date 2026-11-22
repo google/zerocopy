@@ -20086,6 +20086,13 @@
         },
         {
           "identity": {
+            "crate": "glob",
+            "version": "0.3.4"
+          },
+          "name": "Rust glob crate"
+        },
+        {
+          "identity": {
             "repository": "google/zerocopy",
             "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0"
           },
@@ -43246,7 +43253,7 @@
       ]
     },
     "github-actions-artifact-attestations-fulcio-oidc-and-gh-verify-reusable-workflows": {
-      "observed_at": "2026-11-21",
+      "observed_at": "2026-11-22",
       "subjects": [
         {
           "identity": {

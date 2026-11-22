@@ -32,6 +32,13 @@
       }
     },
     {
+      "name": "Rust glob crate",
+      "identity": {
+        "crate": "glob",
+        "version": "0.3.4"
+      }
+    },
+    {
       "name": "zerocopy (consumer workspaces)",
       "identity": {
         "repository": "google/zerocopy",
