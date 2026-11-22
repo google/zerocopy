@@ -66,7 +66,7 @@ class CheckSkillsTests(unittest.TestCase):
 
         (skills_dir / "README.md").write_text(
             "# Skills\n\nSee [`vendored-pkg`](vendored-pkg/SKILL.md#heading) "
-            "and [`architectural-design`](architectural-design/SKILL.md).\n",
+            "and [`unsafe-rust`](unsafe-rust/SKILL.md).\n",
             encoding="utf-8",
         )
         (anneal_skills / "README.md").write_text(
@@ -94,10 +94,10 @@ class CheckSkillsTests(unittest.TestCase):
         helper.write_text("# Reference\n", encoding="utf-8")
 
         # Repo-owned root skill using double-quoted description + ref link.
-        local_dir = skills_dir / "architectural-design"
+        local_dir = skills_dir / "unsafe-rust"
         local_dir.mkdir()
         (local_dir / "SKILL.md").write_text(
-            '---\nname: architectural-design\ndescription: "Local repo skill."\n---\n\n'
+            '---\nname: unsafe-rust\ndescription: "Local repo skill."\n---\n\n'
             "# Local Heading\n\nSee [guide][guide-ref].\n\n"
             "[guide-ref]: ../README.md#skills\n",
             encoding="utf-8",
@@ -264,7 +264,7 @@ class CheckSkillsTests(unittest.TestCase):
     def test_symlinks_rejected_everywhere(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = self.build_fixture(Path(tmp))
-            link = repo / "skills" / "architectural-design" / "link.md"
+            link = repo / "skills" / "unsafe-rust" / "link.md"
             link.symlink_to("../README.md")
             self.assert_fails_with(repo, "symlink is forbidden")
             link.unlink()
@@ -273,7 +273,7 @@ class CheckSkillsTests(unittest.TestCase):
             outside.write_text("# Outside\n", encoding="utf-8")
             bridge = repo / "bridge"
             bridge.symlink_to(".")
-            md = repo / "skills" / "architectural-design" / "SKILL.md"
+            md = repo / "skills" / "unsafe-rust" / "SKILL.md"
             md.write_text(
                 md.read_text(encoding="utf-8")
                 + "\n[via-symlink](../../bridge/outside.md#outside)\n",
@@ -284,8 +284,8 @@ class CheckSkillsTests(unittest.TestCase):
     def test_case_collision_and_unicode_control_chars_rejected(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = self.build_fixture(Path(tmp))
-            d1 = repo / "skills" / "architectural-design" / "references"
-            d2 = repo / "skills" / "architectural-design" / "References"
+            d1 = repo / "skills" / "unsafe-rust" / "references"
+            d2 = repo / "skills" / "unsafe-rust" / "References"
             d1.mkdir()
             (d1 / "a.md").write_text("# A\n", encoding="utf-8")
             try:
@@ -309,7 +309,7 @@ class CheckSkillsTests(unittest.TestCase):
     def test_frontmatter_and_duplicate_skill_names_validated(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = self.build_fixture(Path(tmp))
-            bad_md = repo / "skills" / "architectural-design" / "SKILL.md"
+            bad_md = repo / "skills" / "unsafe-rust" / "SKILL.md"
 
             bad_md.write_text("# No frontmatter\n", encoding="utf-8")
             self.assert_fails_with(repo, "missing opening '---'")
@@ -321,32 +321,32 @@ class CheckSkillsTests(unittest.TestCase):
             self.assert_fails_with(repo, "does not match directory")
 
             bad_md.write_text(
-                "---\nname: architectural-design\ndescription: >-\n  \n---\n# H\n",
+                "---\nname: unsafe-rust\ndescription: >-\n  \n---\n# H\n",
                 encoding="utf-8",
             )
             self.assert_fails_with(repo, "empty block scalar")
 
             bad_md.write_text(
-                "---\nname: architectural-design\ndescription: a\ndescription: b\n---\n",
+                "---\nname: unsafe-rust\ndescription: a\ndescription: b\n---\n",
                 encoding="utf-8",
             )
             self.assert_fails_with(repo, "duplicate frontmatter key")
 
-            # Restore architectural-design, then add a colliding skill in anneal/skills.
+            # Restore unsafe-rust, then add a colliding skill in anneal/skills.
             bad_md.write_text(
-                "---\nname: architectural-design\ndescription: ok\n---\n# H\n",
+                "---\nname: unsafe-rust\ndescription: ok\n---\n# H\n",
                 encoding="utf-8",
             )
             write_skill_md(
-                repo / "anneal" / "skills" / "architectural-design", "architectural-design"
+                repo / "anneal" / "skills" / "unsafe-rust", "unsafe-rust"
             )
             self.assert_fails_with(repo, "duplicate skill name(s)")
 
     def test_broken_links_and_anchors_fail_closed(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = self.build_fixture(Path(tmp))
-            md = repo / "skills" / "architectural-design" / "SKILL.md"
-            base = "---\nname: architectural-design\ndescription: ok\n---\n\n# H\n\n"
+            md = repo / "skills" / "unsafe-rust" / "SKILL.md"
+            base = "---\nname: unsafe-rust\ndescription: ok\n---\n\n# H\n\n"
 
             md.write_text(base + "[missing](nope.md)\n", encoding="utf-8")
             self.assert_fails_with(repo, "target does not exist")
@@ -371,7 +371,7 @@ class CheckSkillsTests(unittest.TestCase):
             )
 
     def test_both_skill_roots_reject_scripts_and_executables(self) -> None:
-        for skill in ("skills/architectural-design", "anneal/skills/policy-review"):
+        for skill in ("skills/unsafe-rust", "anneal/skills/policy-review"):
             for filename, content, make_exec in (
                 ("helper.py", "print(1)\n", False),
                 ("run.sh", "echo hi\n", False),
@@ -389,7 +389,7 @@ class CheckSkillsTests(unittest.TestCase):
                     )
 
     def test_both_skill_roots_reject_forbidden_config_paths(self) -> None:
-        for skill in ("skills/architectural-design", "anneal/skills/policy-review"):
+        for skill in ("skills/unsafe-rust", "anneal/skills/policy-review"):
             for name in (
                 "AGENTS.override.md", "nested/.cargo/config.toml",
                 "nested/.agents/skills.json", "nested/rust-toolchain.toml",
@@ -421,7 +421,7 @@ class CheckSkillsTests(unittest.TestCase):
     def test_balanced_and_escaped_inline_link_destinations(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = self.build_fixture(Path(tmp))
-            md = repo / "skills/architectural-design/SKILL.md"
+            md = repo / "skills/unsafe-rust/SKILL.md"
             header = md.read_text(encoding="utf-8")
             (repo / "guide(foo").write_text("Wrong path\n", encoding="utf-8")
             md.write_text(
@@ -536,8 +536,8 @@ class CheckSkillsTests(unittest.TestCase):
             )
 
             # Probe B: `../../../<repo_name>/...` parent-directory bounce.
-            md = repo / "skills" / "architectural-design" / "SKILL.md"
-            base = "---\nname: architectural-design\ndescription: ok\n---\n\n# H\n\n"
+            md = repo / "skills" / "unsafe-rust" / "SKILL.md"
+            base = "---\nname: unsafe-rust\ndescription: ok\n---\n\n# H\n\n"
             md.write_text(
                 base + "[bounce](../../../zerocopy/skills/README.md#skills)\n",
                 encoding="utf-8",
@@ -556,8 +556,8 @@ class CheckSkillsTests(unittest.TestCase):
     def test_multiline_links_and_html_comment_code_interactions(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             repo = self.build_fixture(Path(tmp))
-            md = repo / "skills" / "architectural-design" / "SKILL.md"
-            base = "---\nname: architectural-design\ndescription: ok\n---\n\n# H\n\n"
+            md = repo / "skills" / "unsafe-rust" / "SKILL.md"
+            base = "---\nname: unsafe-rust\ndescription: ok\n---\n\n# H\n\n"
 
             # Valid wrapped multiline link + `"<!--"` inside fenced code +
             # `` `<!--` `` inside inline code must pass cleanly.

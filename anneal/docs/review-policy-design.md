@@ -287,8 +287,8 @@ against its canonical owner and required outcome:
    generators.
 3. **Holdout isolation and reserve partition:**
    [`change-review`](../skills/change-review/SKILL.md#delegate-review-and-holdouts)
-   — enforces `Holdout Vault` isolation (`sealed-file`, `private-subagent`, or
-   `none`), separates blind `Partition 1`/`Partition 2` reserves from
+   — distinguishes cooperative `sealed-file` from `private-subagent`
+   and `none`, separates blind `Partition 1`/`Partition 2` reserves from
    `exposed-holdout` cases, and blocks leaking passing premises.
 4. **Repair-induced TCB violation and style oscillation:**
    [`change-review`](../skills/change-review/SKILL.md#adjudicate-findings-and-repairs)

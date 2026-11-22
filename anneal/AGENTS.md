@@ -365,7 +365,7 @@ load only
 [`authorship-disclosure`](../skills/authorship-disclosure/SKILL.md), and
 applicable writing skills
 ([`reader-oriented-explanation`](../skills/reader-oriented-explanation/SKILL.md),
-[`williams-style`](../skills/williams-style/SKILL.md)). Run deterministic
+[`clear-writing`](../skills/clear-writing/SKILL.md)). Run deterministic
 preflight and scoped Pass 1 hygiene and diff checks. Skip refinement and the
 skill table. Record a 3–5 bullet PR-comment or branch-handoff
 [receipt](skills/change-review/SKILL.md#record-the-receipt-and-converge).
@@ -374,7 +374,7 @@ skill table. Record a 3–5 bullet PR-comment or branch-handoff
 | :--- | :--- |
 | Authoring changes for publication, reviewing code/commits/PRs, or auditing trust boundaries | [`change-review`](skills/change-review/SKILL.md) (delegated reviewers: Part I only), [`trust-review`](skills/trust-review/SKILL.md) |
 | Designing, implementing, refactoring, or reviewing code for comprehension, invariants, or safe evolution | [`robust-code`](../skills/robust-code/SKILL.md) |
-| Writing, revising, or reviewing technical prose (docs, comments, commits, PRs, issues) | [`reader-oriented-explanation`](../skills/reader-oriented-explanation/SKILL.md), [`williams-style`](../skills/williams-style/SKILL.md) (writing skills) |
+| Writing, revising, or reviewing technical prose (docs, comments, commits, PRs, issues) | [`reader-oriented-explanation`](../skills/reader-oriented-explanation/SKILL.md), [`clear-writing`](../skills/clear-writing/SKILL.md) (writing skills) |
 | Adding, revising, or reviewing explanatory inline (`//`, `--`) or doc (`///`, `//!`, `/--`, `/-!`) comments | [`comment-guidelines`](../skills/comment-guidelines/SKILL.md), plus writing skills |
 | Structuring commits, commit messages, worker integration, stack locking/rebasing, or PR publication | [`source-control`](skills/source-control/SKILL.md), [`commit-message`](../skills/commit-message/SKILL.md), [`authorship-disclosure`](../skills/authorship-disclosure/SKILL.md), plus writing skills |
 | Preparing or updating Git commits, PR descriptions, or externally visible prose | [`authorship-disclosure`](../skills/authorship-disclosure/SKILL.md) |

@@ -118,7 +118,8 @@ Brief every worker strictly from the packets authorized by the Access Matrix
    running `holdout-seal.py verify`), or lists/reads `<steward-scratch>` or
    `<holdout-scratch>` (even on worker timeout):
    - *Sealed mode (`sealed-file`, preferred):* When Python 3.8+ CLI,
-     cross-subagent file handoff, and `holdout-seal.py` exist, pass its
+     cross-subagent file handoff, and
+     a host-supplied `holdout-seal.py` exist, pass its
      resolved path so `Steward` seals `<steward-scratch>/P1.sealed` (and
      optional `P2.sealed`, or inside a dedicated non-repo dir without worker
      scratch) via `seal ... --unlink-input` with short ASCII `--label` IDs
@@ -127,10 +128,14 @@ Brief every worker strictly from the packets authorized by the Access Matrix
      into `<holdout-scratch>` (never listing `<steward-scratch>`; on `Holdout
      Evaluator` timeout, spawn a fresh evaluator reusing verified `.sealed`
      paths).
-   - *Fallback (`private-subagent`):* Otherwise retain holdouts in one private
-     `Steward/Holdout` sub-agent (Turn 1 blind authoring; Turn 2+ evaluating
+   - *Fallback (`private-subagent`):* When the host can resume the same private
+     worker across turns, retain holdouts in one `Steward/Holdout` sub-agent
+     (Turn 1 blind authoring; Turn 2+ evaluating
      `(M_0, M_k)`; spawn a brand-new blind sub-agent on replenishment or
      timeout) and record `private-subagent` reuse.
+   - *No blind store:* If neither mode is available, record `holdout mode =
+     none` and skip both holdout roles. If the contract requires blind
+     confirmation, report a bounded stop before convergence.
 7. **`STATE.md` (`<50`-line Coordinator Checkpoint):** Maintained on filesystem
    runs with blind holdouts or compaction risk. **Line 1** must be `STOP — DO
    NOT READ: <sealed-paths> <steward-scratch> <holdout-scratch>`, followed by
@@ -233,6 +238,12 @@ Brief every worker strictly from the packets authorized by the Access Matrix
 
 ## 4. Lifecycle phases and deterministic transition ladder
 
+In a caller-selected `Discovery-only` run, set holdout mode `none` before
+selecting roles. Use only Phase 1, keeping the caller's proposal pool out of
+discovery packets. Return its independent proposals and any discriminating
+premises or blockers to the caller before synthesis, so those premises can be
+probed before convergence.
+
 Reuse valid caller-supplied contracts, prior opportunity-awareness framing,
 `discovery` witnesses, uninspected external/sealed holdouts (tagging any
 holdout already in `Coordinator` context `exposed-holdout`), candidate pools
@@ -289,8 +300,9 @@ primitive baseline.
    steps); apply the **first** matching transition:
    - **`T1` (Contract, Premise, Check, Holdout, or Unresolved-Layer Stop):** If
      a defect belongs to $C$, non-self-revised guidance, or an unrepairable
-     medium limit, an `UNVERIFIED_BLOCKING` premise or failed/incomplete
-     required check or evaluator persists, `holdout mode != none` requires
+     medium limit, an `UNVERIFIED_BLOCKING` premise persists, a required
+     check or evaluator remains failed or incomplete with no in-scope
+     repair or retry available, `holdout mode != none` requires
      blind confirmation for a checkable $C^+$/$C^-$ clause with `0` unexposed
      cases after replenishment is exhausted, or any open `P0` or unaccepted
      `P1` has unresolved layer ownership, never weaken $C$ silently—report a
@@ -311,18 +323,24 @@ primitive baseline.
      `T1`–`T2` are false and any (a) strictly mechanical hygiene or
      fixture-only repair leaving conceptual semantics and substantive
      realization logic invariant (formatting, wrapping, links, typos, stripped
-     internal labels, or isolated adapter/fixture syntax), (b) uncorroborated
+     internal labels, or isolated adapter/fixture syntax) or an available
+     no-edit retry of a transient required check or evaluator, (b) uncorroborated
      factual `P0`/`P1` refutation or `quarantined-fixture` proposal in
      `DECISIONS.md`, or (c) unqualified checkable $C^+$/$C^-$ clause under
      `holdout mode != none` with `0` unexposed cases evaluated on the current
      substantive state (with non-holdout and active unlocked-holdout checks
-     clean) remains: in one batched step, freeze `snap-<hash'>/` on file edits
-     and rerun deterministic + affected syntax/realization checks while
-     preserving $w$ and semantic verdicts (spawning one fresh `Adversary` when
-     (b) holds or non-whitespace deliverable tokens changed—paired with `T5`'s
+     clean) remains: if there are file edits, batch them, freeze
+     `snap-<hash'>/`, and rerun deterministic and affected syntax/realization
+     checks. For a no-edit retry, reconcile the pending result first, then
+     retry the failed or incomplete work once on the same snapshot within
+     the authorized budget.
+     Preserve $w$ and semantic verdicts during mechanical repairs and retries.
+     Resume a Full Wave blocked at its smoke gate only after the checks pass.
+     Spawn one fresh `Adversary` when (b) holds or non-whitespace deliverable
+     tokens changed—paired with `T5`'s
      `Fresh Critic` incrementing $w$ only when `T4` will not fire and `T5` is
-     owed; if `Adversary` rejects a refutation or quarantine, treat the
-     finding/case as active rather than re-proposing without new evidence);
+     owed. If `Adversary` rejects a refutation or quarantine, treat the
+     finding/case as active rather than re-proposing without new evidence.
      when (c) holds, unlock `Partition 2` and run `Holdout Evaluator` on it, or
      spawn at most one mid-run `Steward` + `Holdout Evaluator` (or record a
      `0`-unexposed coverage qualification in `DECISIONS.md` when blind

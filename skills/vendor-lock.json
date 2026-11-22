@@ -1,10 +1,25 @@
 {
   "schema": 1,
   "packages": {
+    "architectural-design": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "architectural-design",
+      "upstream_commit": "fcd5ac02ddc0ad1002db890a7b94c355bb73226b",
+      "omitted_upstream_paths": [],
+      "local_modifications": [],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 32529,
+          "sha256": "0dbd44bfbef8b87d67c7c02bff4f17e15d662dad0e362e3d369de98d00469a8e"
+        }
+      ]
+    },
     "authorship-disclosure": {
       "upstream_repo": "https://github.com/joshlf/skills",
       "upstream_path": "authorship_disclosure",
-      "upstream_commit": "b563468a8148df117283494915cee5b6561cc47f",
+      "upstream_commit": "6a63da89d7240b1083e56991ab3718fbe7862ae7",
       "omitted_upstream_paths": [],
       "local_modifications": [],
       "files": [
@@ -13,6 +28,25 @@
           "mode": "100644",
           "bytes": 5359,
           "sha256": "5071260837969199ab71aa0d0708cb442d9977ffb1a84153ace19ee3b6392f89"
+        }
+      ]
+    },
+    "clear-writing": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "clear-writing",
+      "upstream_commit": "12c20182ac57213eebb3f6ade950911e7b563c2a",
+      "omitted_upstream_paths": [
+        "references/SOURCES.md"
+      ],
+      "local_modifications": [
+        "SKILL.md: links to the pinned upstream provenance bibliography."
+      ],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 10354,
+          "sha256": "1ef9bfeff119d3f26dd151b2ea3fc55e5405c0eae11717f4d8afa4335053420b"
         }
       ]
     },
@@ -34,22 +68,22 @@
     "commit-message": {
       "upstream_repo": "https://github.com/joshlf/skills",
       "upstream_path": "commit-message",
-      "upstream_commit": "b563468a8148df117283494915cee5b6561cc47f",
+      "upstream_commit": "6a63da89d7240b1083e56991ab3718fbe7862ae7",
       "omitted_upstream_paths": [],
       "local_modifications": [],
       "files": [
         {
           "path": "SKILL.md",
           "mode": "100644",
-          "bytes": 10679,
-          "sha256": "9f7ed741e1b1824a90c981c807ca25facf6c6f311cfea2451b75e1303e165fb8"
+          "bytes": 10678,
+          "sha256": "cf612c61e021ec9fe1b0fb8f32b69869fea19a4467c5eef8e7eefec14830171a"
         }
       ]
     },
     "model-refinement": {
       "upstream_repo": "https://github.com/joshlf/skills",
       "upstream_path": "model-refinement",
-      "upstream_commit": "0073be02ea65150ad56ded426261245ec1a22848",
+      "upstream_commit": "6a63da89d7240b1083e56991ab3718fbe7862ae7",
       "omitted_upstream_paths": [],
       "local_modifications": [],
       "files": [
@@ -64,7 +98,7 @@
     "reader-oriented-explanation": {
       "upstream_repo": "https://github.com/joshlf/skills",
       "upstream_path": "reader-oriented-explanation",
-      "upstream_commit": "b563468a8148df117283494915cee5b6561cc47f",
+      "upstream_commit": "6a63da89d7240b1083e56991ab3718fbe7862ae7",
       "omitted_upstream_paths": [],
       "local_modifications": [],
       "files": [
@@ -76,10 +110,25 @@
         }
       ]
     },
+    "research-wheel": {
+      "upstream_repo": "https://github.com/joshlf/skills",
+      "upstream_path": "research-wheel",
+      "upstream_commit": "95420245403de7d840c8469e2bb4dc747e4ab6cd",
+      "omitted_upstream_paths": [],
+      "local_modifications": [],
+      "files": [
+        {
+          "path": "SKILL.md",
+          "mode": "100644",
+          "bytes": 22924,
+          "sha256": "949b289f37d6fe781a3d04800da8449a573835ec4c0a8da7758e66975e314b7c"
+        }
+      ]
+    },
     "robust-code": {
       "upstream_repo": "https://github.com/joshlf/skills",
       "upstream_path": "robust-code",
-      "upstream_commit": "468f74547999ad6879905c91398b1a218b010791",
+      "upstream_commit": "6a63da89d7240b1083e56991ab3718fbe7862ae7",
       "omitted_upstream_paths": [
         "references/agent-scaffolding.md"
       ],
@@ -105,7 +154,7 @@
     "skill-authorship": {
       "upstream_repo": "https://github.com/joshlf/skills",
       "upstream_path": "skill-authorship",
-      "upstream_commit": "3bf3f345b2916f8417306ba197f779b0b4429c1d",
+      "upstream_commit": "6a63da89d7240b1083e56991ab3718fbe7862ae7",
       "omitted_upstream_paths": [],
       "local_modifications": [],
       "files": [
@@ -125,14 +174,17 @@
         "scripts/holdout-seal.py"
       ],
       "local_modifications": [
-        "SKILL.md: removed the relative link to omitted scripts/holdout-seal.py (keep scripts and executables out of skill roots; host-supplied holdout-seal.py or private-subagent fallback applies)."
+        "SKILL.md: names the host-supplied holdout-seal.py helper because the bundled executable is omitted.",
+        "SKILL.md: requires a resumable private worker for private-subagent mode and defines the fallback to none.",
+        "SKILL.md: returns Phase 1 proposals and open premises to the caller in Discovery-only mode.",
+        "SKILL.md: lets repairable or retryable check failures reach T3 and defines a bounded same-snapshot retry."
       ],
       "files": [
         {
           "path": "SKILL.md",
           "mode": "100644",
-          "bytes": 25535,
-          "sha256": "aedc2254c21037f4c2041d7fc788324a5cbc9a3babc47c8daeb9829cdc6736c1"
+          "bytes": 26567,
+          "sha256": "b722ab9ba367fc178d07b96d371fa8eb0ea52654f47162593ab4adf7e325e632"
         }
       ]
     },
@@ -156,25 +208,6 @@
           "mode": "100644",
           "bytes": 9732,
           "sha256": "197d3589d20a13c58d9be32a92865302609374e849b6bb19cf2ebcad8b766536"
-        }
-      ]
-    },
-    "williams-style": {
-      "upstream_repo": "https://github.com/joshlf/skills",
-      "upstream_path": "williams-style",
-      "upstream_commit": "b563468a8148df117283494915cee5b6561cc47f",
-      "omitted_upstream_paths": [
-        "references/SOURCES.md"
-      ],
-      "local_modifications": [
-        "SKILL.md: removed the optional link to omitted references/SOURCES.md."
-      ],
-      "files": [
-        {
-          "path": "SKILL.md",
-          "mode": "100644",
-          "bytes": 11640,
-          "sha256": "332625fd21ba7f405870e2b1d15a20a038b0281456cd4a0257332534dcea2939"
         }
       ]
     }

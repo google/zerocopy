@@ -330,11 +330,12 @@ trivial edits incur zero needless ceremony:
   [`swarm-model-refinement`](../../../skills/swarm-model-refinement/SKILL.md):
   keep the `Holdout Evaluator` prompt mechanically distinct from `Audit Critic`
   prompts, seal holdouts with host-supplied `holdout-seal.py` (`sealed-file`
-  mode—a cooperative same-UID envelope—outside swept `/tmp` dirs) or isolate
-  them inside one private `Steward/Holdout` sub-agent (`private-subagent`
-  mode)—or set `holdout mode = none` when neither isolation mechanism is
-  available—and author `Partition 1` plus reserve `Partition 2` upfront before
-  candidate exposure. Exposure is strictly one-way and permanent (`unexposed` ->
+  mode, a cooperative same-UID envelope, outside swept `/tmp` dirs), or keep
+  them in a `Steward/Holdout` sub-agent whose transcript and scratch space
+  stay private from the author and synthesizer (`private-subagent` mode).
+  Set `holdout mode = none` if neither mode is available. Author `Partition 1`
+  and reserve `Partition 2` before candidate exposure.
+  Exposure is strictly one-way and permanent (`unexposed` ->
   `exposed-holdout` whenever a scenario or `body_group` reaches the author or
   synthesizer). Repair handoffs carry only failing clause IDs (disclosing
   concrete traces only when clause IDs cannot guide repair), never passing
