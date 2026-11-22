@@ -1039,26 +1039,34 @@ def condAssignments {Val : Type} (conds : List Val) :
         acc.map (fun ctx => (c, false) :: ctx))
     [[]]
 
+/-- Handle-accounting core over decoded `(oldRefs newRefs : List HandleRef)`
+lists: every handle in `newRefs` must either satisfy `handleRefCopyable` or
+match a unique active loan (`handleFlavorMatchesLoan`) and appear no more
+often in `newRefs` than in `oldRefs`. -/
+def replaceableHandleRefs {Val : Type} (alg : ValAlgebra Val)
+    (loans : List (LoanEntry Val)) (oldRefs newRefs : List HandleRef) :
+    Bool :=
+  newRefs.all (fun r =>
+    handleRefCopyable alg loans r ||
+      (handleFlavorMatchesLoan alg loans r &&
+        Nat.ble (countHandleRef r newRefs) (countHandleRef r oldRefs)))
+
 /-- True iff writing the values `news` in place of `olds` (one writeback that
 may span several places) introduces, in no branch, a handle `(lid, path)` that
 could not be copied: in every branch, every handle `(lid, path)` in `news`
-either satisfies `handleRefCopyable` or names a unique active loan (`lid` in
-`loans` with `e.phase.isActive`) and occurs with the exact same `(lid, path)`
-in `news` no more often than in `olds`. Counting `(LoanId × SubPath)` pairs
-across the whole writeback admits moving or swapping unique handles between the
-written places (as in `mem::swap` of two `&mut` references) while rejecting
-handles that callee-supplied functions or spatial cells fabricate, duplicate,
-or retarget to a different `SubPath` or to an `.ended` loan. -/
+satisfies `replaceableHandleRefs` against the handles in `olds`. Counting
+`(LoanId × SubPath)` pairs across the whole writeback admits moving or swapping
+unique handles between the written places (as in `mem::swap` of two `&mut`
+references) while rejecting handles that callee-supplied functions or spatial
+cells fabricate, duplicate, or retarget to a different `SubPath` or to an
+`.ended` loan. -/
 def replaceableVals {Val : Type} (alg : ValAlgebra Val)
     (loans : List (LoanEntry Val)) (olds news : List Val) : Bool :=
   let fitsIn (ctx : List (Val × Bool)) : Bool :=
     match collectHandleRefsListIn alg false ctx news,
         collectHandleRefsListIn alg true ctx olds with
     | some newRefs, some oldRefs =>
-      newRefs.all (fun r =>
-        handleRefCopyable alg loans r ||
-          (handleFlavorMatchesLoan alg loans r &&
-            Nat.ble (countHandleRef r newRefs) (countHandleRef r oldRefs)))
+      replaceableHandleRefs alg loans oldRefs newRefs
     | _, _ => false
   -- Bounds over every branch at once suffice when they already fit.
   fitsIn [] ||

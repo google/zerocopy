@@ -797,4 +797,152 @@ theorem borrowed_handle_shared_alias_and_frame_escape_tests
        cases hOwn with
        | intro _ hPerm => cases hPerm.1)⟩
 
+/-- Output-free region group locking `(*local 1).0`, used when testing active
+region locks across an explicit branch join (`branchExplicitJoin`). -/
+def outputFreeRegionOnLocal1Spec : RegionGroupSpec StdVal where
+  groupId := 0
+  requiredChildren := []
+  inputPlaces := [.derefSub 1 [0]]
+  outDsts := []
+  fwdOuts := fun _ _ => some []
+  backFn := fun _ muts _ _ =>
+    match muts with
+    | [⟨_, .nat v0⟩] => some ([.nat (v0 + 7)], [])
+    | _ => none
+
+/-- Admitted plan in which the false arm of `branchExplicitJoin` holds an active
+output-free region group (whose ended lock sentinel sits at loan `1`) alongside
+a continuing borrow at loan `2`, renamed by `joinPairs = [(1, 2)]` before
+writeback and `endRegionGroup 0`. -/
+def outputFreeRegionExplicitJoinPlan : FlowPlan StdVal :=
+  .seq
+    (.branchExplicitJoin (.use (.localSub 0 []))
+      (.earlyReturn [] [] (.constVal (.nat 99)))
+      (.seq
+        (.act (.callMultiRegion [] [outputFreeRegionOnLocal1Spec]))
+        (.act (.borrow 2 .mutBorrow (.derefSub 1 [1]))))
+      [(1, 2)])
+    (.seq
+      (.act (.assign (.derefSub 2 []) (.constVal (.nat 42))))
+      (.seq
+        (.act (.endLoan 1))
+        (.act (.endRegionGroup 0))))
+
+/-- Active output-free region lock guards:
+1. direct `renameLoanInState` refuses to overwrite the ended `lockLid` (`1`) of
+   an active output-free region group, and
+2. once that region group ends (`!g.active`, lock released), `renameLoanInState`
+   allows reusing `1`. -/
+theorem output_free_region_lock_guard_tests (v0 v1 : Nat) :
+    let init : EvalOutcome (SymState StdVal) :=
+      initFnState stdValAlg [⟨.mutRef 0 [], .pair (.nat v0) (.nat v1)⟩]
+    let activeAndBorrow : EvalOutcome (SymState StdVal) :=
+      match init with
+      | .ok st0 =>
+        match stepAction stdValAlg
+            (.callMultiRegion [] [outputFreeRegionSpec]) st0 with
+        | .ok stRg =>
+          stepAction stdValAlg (.borrow 1 .mutBorrow (.derefSub 0 [1])) stRg
+        | .fail => .fail
+      | .fail => .fail
+    let isNone (o : Option (SymState StdVal)) : Bool :=
+      match o with
+      | some _ => false
+      | none => true
+    match activeAndBorrow with
+    | .ok stLocked =>
+      isNone (renameLoanInState stdValAlg 1 2 stLocked) = true ∧
+      match stepAction stdValAlg (.endRegionGroup 0) stLocked with
+      | .ok stGroupEnded =>
+        isNone (renameLoanInState stdValAlg 1 2 stGroupEnded) = false
+      | .fail => False
+    | .fail => False :=
+  ⟨rfl, rfl⟩
+
+/-- Admitted explicit-join plan (`cond = .bool false`) colliding with the
+active region group's `lockLid` (`1`), evacuating it to `3`, renaming the
+continuing borrow `2 -> 1`, and finishing `endLoan 1` and `endRegionGroup 0`.
+-/
+theorem output_free_region_explicit_join_bool_plan_test :
+    evalFnValue stdValAlg
+      [⟨.byVal, .bool false⟩, ⟨.mutRef 0 [], .pair (.nat 10) (.nat 20)⟩]
+      outputFreeRegionExplicitJoinPlan
+      (.constVal .unit) =
+      .ok ⟨.unit, [.pair (.nat 17) (.nat 42)]⟩ :=
+  rfl
+
+/-- Symbolic branch variant of `outputFreeRegionExplicitJoinPlan` (`asBool =
+none`): true arm early-returns while the false arm continues with an active
+output-free region group whose lock collides with `joinPairs = [(1, 2)]`,
+before `endLoan 1` and `endRegionGroup 0` complete. -/
+theorem output_free_region_explicit_join_sym_plan_test (cond : Bool) :
+    evalFnValue stdValAlg
+      [⟨.byVal, .symBool cond⟩, ⟨.mutRef 0 [], .pair (.nat 10) (.nat 20)⟩]
+      outputFreeRegionExplicitJoinPlan
+      (.constVal .unit) =
+      .ok ⟨zipStdVal (.symBool cond) (.nat 99) .unit,
+        [.pair
+          (zipStdVal (.symBool cond) (.nat 10) (.nat 17))
+          (zipStdVal (.symBool cond) (.nat 20) (.nat 42))]⟩ := by
+  cases cond <;> rfl
+
+/-- Explicit-join plan starting from a state with an active child borrow `1`
+whose concrete `.choice (.bool true)` target's untaken false arm names
+`.parentLoan 0`. The false arm retires loan `0` (possible because
+`noActiveChildLoanEdgesIn` prunes the untaken arm) and allocates loan `2`, and
+`branchExplicitJoin` aligns `[(0, 2)]` before ending loans `1` and `0`. -/
+def concreteChoicePruneExplicitJoinPlan : FlowPlan StdVal :=
+  .seq
+    (.branchExplicitJoin (.use (.localSub 0 []))
+      (.act (.assign (.derefSub 4 []) (.constVal (.nat 100))))
+      (.seq
+        (.act (.assign (.derefSub 4 []) (.constVal (.nat 200))))
+        (.seq
+          (.act (.endLoan 0))
+          (.seq
+            (.act (.borrow 4 .mutBorrow (.localSub 2 [])))
+            (.act (.assign (.derefSub 4 []) (.constVal (.nat 300)))))))
+      [(0, 2)])
+    (.seq
+      (.act (.assign (.derefSub 3 []) (.constVal (.nat 77))))
+      (.seq
+        (.act (.endLoan 1))
+        (.act (.endLoan 0))))
+
+/-- Concrete conditional-borrow `branchExplicitJoin` test: verifies that
+`evalPlan` evaluates `concreteChoicePruneExplicitJoinPlan` cleanly for both a
+symbolic outer branch (`cond : Bool`) and a concrete false branch without
+creating spurious evacuation loans (`stFinal.loans.length = 3`). -/
+theorem concrete_choice_prune_explicit_join_tests (cond : Bool) :
+    let mkSt0 (cVal : StdVal) : SymState StdVal :=
+      ⟨[ ⟨cVal, .unborrowed⟩
+       , ⟨.nat 20, .mutLocked 1⟩
+       , ⟨.nat 10, .mutLocked 0⟩
+       , ⟨.refVal 1 [], .unborrowed⟩
+       , ⟨.refVal 0 [], .unborrowed⟩ ],
+       [ ⟨0, .activeMut, ⟨.nat 10, .unborrowed⟩, .direct (.localReg 2) []⟩
+       , ⟨1, .activeMut, ⟨.nat 20, .unborrowed⟩,
+          .choice (.bool true) (.direct (.localReg 1) [])
+            (.direct (.parentLoan 0) [])⟩ ],
+       [], [], [], 0⟩
+    (match evalPlan stdValAlg concreteChoicePruneExplicitJoinPlan
+        (mkSt0 (.symBool cond)) with
+     | .ok (.continuing stFinal) =>
+       stFinal.loans.length = 3 ∧
+       stFinal.loans.all (fun e => e.phase.isEnded) = true ∧
+       getLocal stdValAlg 1 stFinal =
+         some (zipStdVal (.symBool cond) (.nat 77) (.nat 77)) ∧
+       getLocal stdValAlg 2 stFinal =
+         some (zipStdVal (.symBool cond) (.nat 100) (.nat 300))
+     | _ => False) ∧
+    (match evalPlan stdValAlg concreteChoicePruneExplicitJoinPlan
+        (mkSt0 (.bool false)) with
+     | .ok (.continuing stFalseFinal) =>
+       stFalseFinal.loans.length = 3 ∧
+       stFalseFinal.loans.all (fun e => e.phase.isEnded) = true ∧
+       getLocal stdValAlg 1 stFalseFinal = some (.nat 77) ∧
+       getLocal stdValAlg 2 stFalseFinal = some (.nat 300)
+     | _ => False) := by
+  cases cond <;> exact ⟨⟨rfl, rfl, rfl, rfl⟩, ⟨rfl, rfl, rfl, rfl⟩⟩
+
 end Anneal.PureLift

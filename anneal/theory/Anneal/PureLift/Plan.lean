@@ -876,6 +876,13 @@ def renameOwnerLoan (oldLid newLid : LoanId) : OwnerRef → OwnerRef
   | .localReg reg => .localReg reg
   | .parentLoan lid => .parentLoan (if lid == oldLid then newLid else lid)
 
+/-- Swap parent loan references `lidA` and `lidB` inside an `OwnerRef`. -/
+def swapOwnerLoan (lidA lidB : LoanId) : OwnerRef → OwnerRef
+  | .localReg reg => .localReg reg
+  | .parentLoan lid =>
+    .parentLoan
+      (if lid == lidA then lidB else if lid == lidB then lidA else lid)
+
 /-- True iff `v` may contain a handle to loan `lid` (or nests too deeply to
 tell; see `collectHandles`). -/
 def mayMentionLoan {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
@@ -1013,11 +1020,11 @@ def renameClosureVals {Val : Type} (alg : ValAlgebra Val)
         if outs.any (mayMentionLoan alg newLid) then none
         else remapValListLoan alg oldLid newLid outs
 
-def renameBackTargetStepLoan {Val : Type} (alg : ValAlgebra Val)
-    (oldLid newLid : LoanId) :
+def mapBackTargetStepLoan {Val : Type} (alg : ValAlgebra Val)
+    (mapOwner : OwnerRef → OwnerRef) (oldLid newLid : LoanId) :
     BackTargetStep Val → Option (BackTargetStep Val)
   | .rootParam i => some (.rootParam i)
-  | .direct o p => some (.direct (renameOwnerLoan oldLid newLid o) p)
+  | .direct o p => some (.direct (mapOwner o) p)
   | .choiceJoin cond =>
     match remapValLoan alg oldLid newLid cond with
     | some cond' => some (.choiceJoin cond')
@@ -1027,7 +1034,7 @@ def renameBackTargetStepLoan {Val : Type} (alg : ValAlgebra Val)
       listFold []
         (fun op _ ih =>
           match op with
-          | (o, p) => (renameOwnerLoan oldLid newLid o, p) :: ih)
+          | (o, p) => (mapOwner o, p) :: ih)
         targets
     let backFn' : Val → Option (List Val) :=
       fun v =>
@@ -1038,22 +1045,40 @@ def renameBackTargetStepLoan {Val : Type} (alg : ValAlgebra Val)
     some (.lensCall targets' backFn')
   | .regionOut gid idx => some (.regionOut gid idx)
 
-/-- Rename parent loan references and handles from `oldLid` to `newLid` inside
-a `BackTarget Val`, or `none` if a condition's renaming fails
-(`remapValLoan`). -/
-def renameBackTargetLoan {Val : Type} (alg : ValAlgebra Val)
-    (oldLid newLid : LoanId) (target : BackTarget Val) :
-    Option (BackTarget Val) :=
+def renameBackTargetStepLoan {Val : Type} (alg : ValAlgebra Val)
+    (oldLid newLid : LoanId) :
+    BackTargetStep Val → Option (BackTargetStep Val) :=
+  mapBackTargetStepLoan alg (renameOwnerLoan oldLid newLid) oldLid newLid
+
+def mapBackTargetLoan {Val : Type} (alg : ValAlgebra Val)
+    (mapOwner : OwnerRef → OwnerRef) (oldLid newLid : LoanId)
+    (target : BackTarget Val) : Option (BackTarget Val) :=
   match
     target.steps.foldr
       (fun s acc =>
-        match renameBackTargetStepLoan alg oldLid newLid s, acc with
+        match mapBackTargetStepLoan alg mapOwner oldLid newLid s, acc with
         | some s', some rest => some (s' :: rest)
         | _, _ => none)
       (some [])
   with
   | some steps => some ⟨steps⟩
   | none => none
+
+/-- Rename parent loan references and handles from `oldLid` to `newLid` inside
+a `BackTarget Val`, or `none` if a condition's renaming fails
+(`remapValLoan`). -/
+def renameBackTargetLoan {Val : Type} (alg : ValAlgebra Val)
+    (oldLid newLid : LoanId) (target : BackTarget Val) :
+    Option (BackTarget Val) :=
+  mapBackTargetLoan alg (renameOwnerLoan oldLid newLid) oldLid newLid target
+
+/-- Swap parent loan references `fLid ↔ tLid` and remap value handles
+`fLid → tLid` inside a `BackTarget Val`, or `none` if a condition's renaming
+fails (`remapValLoan`). -/
+def swapBackTargetLoan {Val : Type} (alg : ValAlgebra Val)
+    (fLid tLid : LoanId) (target : BackTarget Val) :
+    Option (BackTarget Val) :=
+  mapBackTargetLoan alg (swapOwnerLoan fLid tLid) fLid tLid target
 
 /-- Remap handles (`remapValLoan`) and `PermTree` loan IDs from `fLid` to
 `tLid` across a list of `PlaceCell Val`s, failing if any value fails. -/
@@ -1130,6 +1155,37 @@ def staleHandleTo {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
         | none => true
       | _ => false)
 
+/-- True iff `target` holds an active owner edge to `lid`
+(`activeTargetLeaves`) or mentions `lid` in any `.choiceJoin` condition.
+Untaken arms of concrete choices are pruned for owner edges (matching
+`noActiveChildLoanEdgesIn`), while symbolic or malformed choices still inspect
+all branches. -/
+def backTargetMentionsLoan {Val : Type} (alg : ValAlgebra Val)
+    (lid : LoanId) (target : BackTarget Val) : Bool :=
+  hasParentLoanEdge lid (activeTargetLeaves alg target) ||
+    target.steps.any (fun s =>
+      match s with
+      | .choiceJoin cond => mayMentionLoan alg lid cond
+      | _ => false)
+
+/-- True iff loan `lid` still carries a value or structural reference in `st`:
+a handle in locals/loans/deposits/spatial cells (`staleHandleTo`), a local or
+loan `PermTree` entry (`!noResidualLoanPerm`), a non-ended loan's `BackTarget`,
+an active `RegionGroupEntry` (`lockLid`, `outputLoans`, or `inputTargets`), or a
+`SpatialBlock.originLoan`. -/
+def loanIdReferencedInState {Val : Type} (alg : ValAlgebra Val)
+    (lid : LoanId) (st : SymState Val) : Bool :=
+  staleHandleTo alg lid st ||
+    !noResidualLoanPerm lid st ||
+    st.loans.any (fun e =>
+      !e.phase.isEnded && backTargetMentionsLoan alg lid e.target) ||
+    st.regionGroups.any (fun g =>
+      g.active &&
+        (g.lockLid == lid ||
+          elemLoanId lid g.outputLoans ||
+          hasParentLoanEdge lid g.inputTargets)) ||
+    st.spatial.any (fun b => b.originLoan == lid)
+
 /-- Remap handles to `fLid` to `tLid` inside a spatial cell (`remapValLoan` on
 `.init v`). -/
 def remapCellValLoan {Val : Type} (alg : ValAlgebra Val)
@@ -1174,9 +1230,10 @@ def remapSpatialBlocksLoan {Val : Type} (alg : ValAlgebra Val)
 
 /-- Verify that after remapping `fLid` to `tLid`, every `.spatialPinned` loan's
 spatial block either decodes under its `pinnedCodec` to the exact remapped
-handle multiset of its pre-rename decoded value, or (when the block is
-partially uninitialized or undecodable) neither the pinned loan cell nor the
-block mentions `fLid` or contains `.rawByte` cells. -/
+handle multiset of its pre-rename decoded value AND preserves the full handle
+multiset across every `.init` cell (`collectInitCells (handleRefs alg)`), or
+(when the block is partially uninitialized or undecodable) neither the pinned
+loan cell nor the block mentions `fLid` or contains `.rawByte` cells. -/
 def spatialPinnedRenameConsistent {Val : Type} (alg : ValAlgebra Val)
     (fLid tLid : LoanId) (loans : List (LoanEntry Val))
     (spOld spNew : List (SpatialBlock Val)) : Bool :=
@@ -1187,16 +1244,22 @@ def spatialPinnedRenameConsistent {Val : Type} (alg : ValAlgebra Val)
       | some (blkOld, _), some (blkNew, _) =>
         if !hasUninitCell blkOld.cells then
           match pinnedCodec.decode blkOld.cells,
-              pinnedCodec.decode blkNew.cells with
-          | some vOld, some vNew =>
+              pinnedCodec.decode blkNew.cells,
+              collectInitCells (handleRefs alg) blkOld.cells,
+              collectInitCells (handleRefs alg) blkNew.cells with
+          | some vOld, some vNew, some csOld, some csNew =>
             match handleRefs alg vOld, handleRefs alg vNew with
             | some rsOld, some rsNew =>
               sameRefMultiset
                 (rsOld.map (fun r =>
                   (if r.1 == fLid then tLid else r.1, r.2)))
-                rsNew
+                rsNew &&
+              sameRefMultiset
+                (csOld.map (fun r =>
+                  (if r.1 == fLid then tLid else r.1, r.2)))
+                csNew
             | _, _ => false
-          | _, _ => false
+          | _, _, _, _ => false
         else
           !mayMentionLoan alg fLid e.cell.val &&
             blkOld.cells.all (fun c =>
@@ -1225,11 +1288,11 @@ def padEndedLoans {Val : Type} (alg : ValAlgebra Val) (upTo : LoanId)
     ⟨locals, loans ++ extra, rgs, deps, sp, tag⟩
 
 /-- Move loan `fLid` (live or ended) of `stIn` to the ID `tLid`, where `tLid`
-names an ended loan of `stIn` that no value still references. If `tLid` lies
-beyond `stIn`'s loans, `stIn` is first padded with ended placeholders
-(`padEndedLoans`). Every reference to `fLid` (locals, loan cells,
-permissions, `BackTarget`s, region groups, deposits, and spatial blocks) is
-remapped to `tLid`,
+names an ended loan of `stIn` with no remaining value or structural references
+(`loanIdReferencedInState`). If `tLid` lies beyond `stIn`'s loans, `stIn` is
+first padded with ended placeholders (`padEndedLoans`). Every reference to
+`fLid` (locals, loan cells, permissions, `BackTarget`s, region groups,
+deposits, and spatial blocks) is remapped to `tLid`,
 the entry at `fLid` moves to `tLid`, and the ended entry formerly at `tLid`
 moves to `fLid`, where nothing refers to it any more. Every renamed value is
 checked to be exactly that renaming (`remapValLoan`), so the result is a
@@ -1249,16 +1312,17 @@ def renameLoanInState {Val : Type} (alg : ValAlgebra Val)
       if !hasUniqueLoanId fLid st.loans || !hasUniqueLoanId tLid st.loans ||
          isRootTarget eF.target || isRootTarget eT.target ||
          !eT.phase.isEnded then none
-      -- A stale handle to the ended `tLid` would come back to life as a
-      -- handle to the moved entry.
-      else if staleHandleTo alg tLid st then none
+      -- Any surviving value handle, permission lock, live backward target,
+      -- active region lock/edge, or spatial origin on `tLid` would bind to
+      -- the moved entry.
+      else if loanIdReferencedInState alg tLid st then none
       else
         match st with
         | ⟨locals, loans, rgs, deps, sp, tag⟩ =>
           let renameEntry (e : LoanEntry Val) (newId : LoanId) :
               Option (LoanEntry Val) :=
             match remapValLoan alg fLid tLid e.cell.val,
-                renameBackTargetLoan alg fLid tLid e.target with
+                swapBackTargetLoan alg fLid tLid e.target with
             | some v', some t' =>
               some ⟨newId, e.phase, ⟨v', renameLoanPerm fLid tLid e.cell.perm⟩,
                 t'⟩
@@ -1269,7 +1333,7 @@ def renameLoanInState {Val : Type} (alg : ValAlgebra Val)
                     .direct (.localReg 0) []⟩
             else
               match remapValLoan alg fLid tLid eT.cell.val,
-                  renameBackTargetLoan alg fLid tLid eT.target with
+                  swapBackTargetLoan alg fLid tLid eT.target with
               | some vT, some tT =>
                 some ⟨fLid, .ended, ⟨vT, .unborrowed⟩, tT⟩
               | _, _ => none
@@ -1333,7 +1397,8 @@ A pair moves its loan directly (`renameLoanInState`) if `tLid` is free. If
 `tLid` is occupied, its loan first moves to the fresh ID `base + i` (for the
 `i`-th pair), together with every reference to it, provided that the loan is
 - an ended loan that something still refers to, such as a dead handle left in
-  a local (as in MIR before `StorageDead`), or
+  a local (as in MIR before `StorageDead`) or the lock sentinel of an active
+  output-free region group, or
 - a live loan that a later pair moves; that pair then finds it at the fresh
   ID, so the pairs may exchange loans, as in `[(2, 3), (3, 2)]`.
 Any other occupant makes the renaming fail. Fresh IDs remain afterwards as
@@ -2618,5 +2683,131 @@ theorem plan_handle_access_shared_choice_spatial_rename_and_zip_fuel_tests :
       some [(10, .choice symCond (.atom 1) (.atom 10)),
             (20, .choice symCond (.atom 2) (.atom 20))] :=
   ⟨rfl, rfl, rfl, rfl, ⟨rfl, trivial⟩, ⟨rfl, rfl⟩, rfl, ⟨rfl, rfl⟩, rfl⟩
+
+/-- Tests for:
+1. `spatialPinnedRenameConsistent` verifying every `.init` cell (including extra
+   cells ignored by `decode`) under loan renaming,
+2. `renameLoanInState` rejecting overwriting `tLid` when referenced solely by a
+   local/loan `PermTree` entry, a non-ended loan's `BackTarget` (`.direct` or
+   `.choiceJoin`), an active `RegionGroupEntry`'s `lockLid`, `outputLoans`, or
+   `inputTargets`, or a `SpatialBlock.originLoan`. -/
+theorem spatial_pinned_extra_cell_rename_and_loan_ref_tests :
+    let ignoredExtraCodec : SpatialCodec LensTestVal :=
+      { codecId := 45
+        encode := fun v => [.init v, .init (.atom 0)]
+        decode := fun cells =>
+          match cells with
+          | .init v :: _ => some v
+          | _ => none
+        decode_encode := fun _ => rfl }
+    let loansPin : List (LoanEntry LensTestVal) :=
+      [⟨0, .spatialPinned 0 ignoredExtraCodec, ⟨.atom 5, .unborrowed⟩,
+        .direct (.localReg 0) []⟩]
+    let spOld : List (SpatialBlock LensTestVal) :=
+      [⟨0, 0, .readWrite, 0, 0, [.init (.atom 5), .init (.ref 2 [])]⟩]
+    let spBadNew : List (SpatialBlock LensTestVal) :=
+      [⟨0, 0, .readWrite, 0, 0, [.init (.atom 5), .init (.atom 9)]⟩]
+    let spGoodNew : List (SpatialBlock LensTestVal) :=
+      [⟨0, 0, .readWrite, 0, 0, [.init (.atom 5), .init (.ref 1 [])]⟩]
+    let baseLoans : List (LoanEntry LensTestVal) :=
+      [ ⟨0, .activeMut, ⟨.atom 1, .unborrowed⟩, .rootParam 0⟩
+      , ⟨1, .ended, ⟨.atom 0, .unborrowed⟩, .direct (.localReg 0) []⟩
+      , ⟨2, .activeMut, ⟨.atom 2, .unborrowed⟩, .direct (.localReg 0) []⟩ ]
+    let stPermOnly : SymState LensTestVal :=
+      ⟨[⟨.atom 1, .mutLocked 1⟩], baseLoans, [], [], [], 0⟩
+    let stSharedPermOnly : SymState LensTestVal :=
+      ⟨[⟨.atom 1, .shared [1]⟩], baseLoans, [], [], [], 0⟩
+    let stTargetDirect : SymState LensTestVal :=
+      ⟨[],
+       [ ⟨0, .activeMut, ⟨.atom 1, .unborrowed⟩, .rootParam 0⟩
+       , ⟨1, .ended, ⟨.atom 0, .unborrowed⟩, .direct (.localReg 0) []⟩
+       , ⟨2, .activeMut, ⟨.atom 2, .unborrowed⟩, .direct (.localReg 0) []⟩
+       , ⟨3, .activeMut, ⟨.atom 3, .unborrowed⟩, .direct (.parentLoan 1) []⟩ ],
+       [], [], [], 0⟩
+    let stTargetCond : SymState LensTestVal :=
+      ⟨[],
+       [ ⟨0, .activeMut, ⟨.atom 1, .unborrowed⟩, .rootParam 0⟩
+       , ⟨1, .ended, ⟨.atom 0, .unborrowed⟩, .direct (.localReg 0) []⟩
+       , ⟨2, .activeMut, ⟨.atom 2, .unborrowed⟩, .direct (.localReg 0) []⟩
+       , ⟨3, .activeMut, ⟨.atom 3, .unborrowed⟩,
+          ⟨[.direct (.localReg 0) [], .direct (.localReg 0) [],
+            .choiceJoin (.ref 1 [])]⟩⟩ ],
+       [], [], [], 0⟩
+    let stActiveGroupLock : SymState LensTestVal :=
+      ⟨[], baseLoans,
+       [⟨0, true, 1, [], [], [], fun _ _ => some ([], [])⟩],
+       [], [], 0⟩
+    let stActiveGroupOut : SymState LensTestVal :=
+      ⟨[], baseLoans,
+       [⟨0, true, 9, [], [1], [], fun _ _ => some ([], [])⟩], [], [], 0⟩
+    let stActiveGroupIn : SymState LensTestVal :=
+      ⟨[], baseLoans,
+       [⟨0, true, 9, [(.parentLoan 1, [])], [], [], fun _ _ => some ([], [])⟩],
+       [], [], 0⟩
+    let stSpatialOrigin : SymState LensTestVal :=
+      ⟨[], baseLoans, [], [], [⟨0, 1, .readWrite, 0, 0, [.init (.atom 7)]⟩], 1⟩
+    spatialPinnedRenameConsistent lensTestValAlg 2 1 loansPin spOld spBadNew =
+      false ∧
+    spatialPinnedRenameConsistent lensTestValAlg 2 1 loansPin spOld spGoodNew =
+      true ∧
+    renameLoanInState lensTestValAlg 1 2 stPermOnly = none ∧
+    renameLoanInState lensTestValAlg 1 2 stSharedPermOnly = none ∧
+    renameLoanInState lensTestValAlg 1 2 stTargetDirect = none ∧
+    renameLoanInState lensTestValAlg 1 2 stTargetCond = none ∧
+    renameLoanInState lensTestValAlg 1 2 stActiveGroupLock = none ∧
+    renameLoanInState lensTestValAlg 1 2 stActiveGroupOut = none ∧
+    renameLoanInState lensTestValAlg 1 2 stActiveGroupIn = none ∧
+    renameLoanInState lensTestValAlg 1 2 stSpatialOrigin = none :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Concrete-choice pruning in `backTargetMentionsLoan` and involutive parent
+swapping in `swapBackTargetLoan`:
+1. When child loan `1` has concrete choice `true` (`trueArm = localReg 0`,
+   `falseArm = parentLoan 0`) and `0` is `.ended`, `renameLoanInState alg 0 2`
+   succeeds, swaps `falseArm` to `.parentLoan 2`, and allows `endLoanInState` on
+   loan `1` afterward.
+2. `renameLoanInState alg 0 2` still returns `none` when (i) the taken concrete
+   arm points to `.parentLoan 0`, (ii) the condition is symbolic
+   (`asBool = none`), or (iii) `.choiceJoin cond` holds a handle to `0`. -/
+theorem renameLoanInState_concrete_choice_pruning_tests :
+    let mkSt (t1 : BackTarget LensTestVal) : SymState LensTestVal :=
+      ⟨[⟨.atom 10, .mutLocked 1⟩, ⟨.atom 20, .mutLocked 2⟩],
+       [ ⟨0, .ended, ⟨.atom 0, .unborrowed⟩, .direct (.localReg 0) []⟩
+       , ⟨1, .activeMut, ⟨.atom 77, .unborrowed⟩, t1⟩
+       , ⟨2, .activeMut, ⟨.atom 88, .unborrowed⟩, .direct (.localReg 1) []⟩ ],
+       [], [], [], 0⟩
+    let tPruned : BackTarget LensTestVal :=
+      .choice (.atom 1) (.direct (.localReg 0) []) (.direct (.parentLoan 0) [])
+    let tTaken : BackTarget LensTestVal :=
+      .choice (.atom 0) (.direct (.localReg 0) []) (.direct (.parentLoan 0) [])
+    let tSym : BackTarget LensTestVal :=
+      .choice (.node (.atom 0) (.atom 1)) (.direct (.localReg 0) [])
+        (.direct (.parentLoan 0) [])
+    let tCondHandle : BackTarget LensTestVal :=
+      .choice (.ref 0 []) (.direct (.localReg 0) []) (.direct (.localReg 1) [])
+    (match renameLoanInState lensTestValAlg 0 2 (mkSt tPruned) with
+     | some stRenamed =>
+       (match findLoan 0 stRenamed.loans, findLoan 1 stRenamed.loans,
+            findLoan 2 stRenamed.loans with
+        | some e0', some e1', some e2' =>
+          e0'.phase.isActiveMut && e2'.phase.isEnded &&
+          (match e1'.target.steps with
+           | [.choiceJoin c, .direct (.localReg 0) [],
+              .direct (.parentLoan 2) []] =>
+             lensTestValEq c (.atom 1)
+           | _ => false)
+        | _, _, _ => false) = true ∧
+       (match endLoanInState lensTestValAlg 1 stRenamed with
+        | .ok stEnded =>
+          (match findLoan 1 stEnded.loans with
+           | some e1'' => e1''.phase.isEnded
+           | none => false) = true ∧
+          getLocal lensTestValAlg 0 stEnded = some (.atom 77)
+        | .fail => False)
+     | none => False) ∧
+    renameLoanInState lensTestValAlg 0 2 (mkSt tTaken) = none ∧
+    renameLoanInState lensTestValAlg 0 2 (mkSt tSym) = none ∧
+    renameLoanInState lensTestValAlg 0 2 (mkSt tCondHandle) = none :=
+  ⟨⟨rfl, ⟨rfl, rfl⟩⟩, rfl, rfl, rfl⟩
 
 end Anneal.PureLift
