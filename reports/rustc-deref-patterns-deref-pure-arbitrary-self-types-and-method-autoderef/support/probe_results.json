@@ -1,0 +1,193 @@
+{
+  "all_checks_passed": true,
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "part_a_deref_patterns_box_rc_string_vec_and_deref_pure_gate": {
+    "deep_fake_borrow_blocks_guard_mutation": {
+      "rc": 1,
+      "stderr": "error[E0510]: cannot assign `*b` in match guard\n --> <TMP>/a_guard.rs:7:16\n  |\n5 |     match b {\n  |           - value is immutable in match guard\n6 |         deref!(true) => 1,\n7 |         _ if { *b = true; false } => 2,\n  |                ^^^^^^^^^ cannot assign\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0510`.",
+      "stdout": ""
+    },
+    "impure_deref_rejected_without_deref_pure": {
+      "rc": 1,
+      "stderr": "error[E0277]: the trait bound `ImpureWrapper: DerefPure` is not satisfied\n  --> <TMP>/a_impure.rs:14:9\n   |\n14 |         deref!(0) => 1,\n   |         ^^^^^^^^^ unsatisfied trait bound\n   |\nhelp: the nightly-only, unstable trait `DerefPure` is not implemented for `ImpureWrapper`\n  --> <TMP>/a_impure.rs:5:1\n   |\n 5 | pub struct ImpureWrapper(pub u32);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^\n   = note: this error originates in the macro `deref` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.",
+      "stdout": ""
+    },
+    "lying_deref_pure_triggers_miri_ub": {
+      "rc": 1,
+      "stderr": "error: Undefined Behavior: entering unreachable code\n  --> src/main.rs:25:21\n   |\n25 |     let out = match w {\n   |                     ^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+      "stdout": ""
+    },
+    "mixed_deref_and_adt_ctors_rejected": {
+      "rc": 1,
+      "stderr": "error: mix of deref patterns and normal constructors\n  --> <TMP>/a_mixed.rs:14:9\n   |\n14 |         deref!(0) => 1,\n   |         ^^^^^^^^^ matches on the result of dereferencing `PureWrap`\n15 |         PureWrap(1) => 2,\n   |         ^^^^^^^^^^^ matches directly on `PureWrap`\n   |\n   = note: this error originates in the macro `deref` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error",
+      "stdout": ""
+    },
+    "multi_arm_deref_pat_post_cleanup_mir": {
+      "classify_pure_found": true,
+      "classify_pure_mir_excerpt": "fn classify_pure(_1: PureBool) -> u32 {\n    debug w => _1;\n    let mut _0: u32;\n    let mut _2: &bool;\n    let mut _3: &bool;\n    let mut _4: &PureBool;\n    let mut _5: &PureBool;\n\n    bb0: {\n        _4 = &_1;\n        _2 = <PureBool as Deref>::deref(move _4) -> [return: bb2, unwind continue];\n    }\n\n    bb1: {\n        _5 = &_1;\n        _3 = <PureBool as Deref>::deref(move _5) -> [return: bb4, unwind continue];\n    }\n\n    bb2: {\n        switchInt(copy (*_2)) -> [0: bb1, otherwise: bb6];\n    }\n\n    bb3: {\n        unreachable;\n    }\n\n    bb4: {\n        switchInt(copy (*_3)) -> [0: bb5, otherwise: bb3];\n    }\n\n    bb5: {\n        _0 = const 20_u32;\n        goto -> bb7;\n    }\n\n    bb6: {\n        _0 = const 10_u32;\n        goto -> bb7;\n    }\n\n    bb7: {\n        return;\n    }\n}",
+      "deref_call_count_in_post_cleanup_mir": 2,
+      "has_residual_fake_borrow_or_fake_read": false,
+      "has_unreachable_terminator": true,
+      "rc": 0
+    },
+    "std_and_custom_deref_pure_miri_stacked_borrows": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "DEREF_PAT_OK=210 MUT_CUSTOM=45"
+    },
+    "std_and_custom_deref_pure_miri_tree_borrows": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "DEREF_PAT_OK=210 MUT_CUSTOM=45"
+    },
+    "std_and_custom_deref_pure_native": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stderr": "",
+      "stdout": "DEREF_PAT_OK=210 MUT_CUSTOM=45"
+    }
+  },
+  "part_b_arbitrary_self_types_receiver_vs_dyn_dispatch": {
+    "anti_shadowing_by_val_vs_by_ref_error": {
+      "rc": 1,
+      "stderr": "error[E0034]: multiple applicable items in scope\n  --> <TMP>/b_shadow_err.rs:22:7\n   |\n22 |     p.collide()\n   |       ^^^^^^^ multiple `collide` found\n   |\nnote: candidate #1 is defined in an impl for the type `Inner`\n  --> <TMP>/b_shadow_err.rs:18:5\n   |\n18 |     pub fn collide(self: &SmartPtr<Self>) -> u32 { 111 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nnote: candidate #2 is defined in an impl for the type `SmartPtr<T>`\n  --> <TMP>/b_shadow_err.rs:12:5\n   |\n12 |     pub fn collide(self) -> u32 { 222 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0034`.",
+      "stdout": ""
+    },
+    "anti_shadowing_ref_vs_mut_ref_error": {
+      "rc": 1,
+      "stderr": "error[E0034]: multiple applicable items in scope\n  --> <TMP>/b_shadow_ref_mut.rs:19:7\n   |\n19 |     p.collide_ref()\n   |       ^^^^^^^^^^^ multiple `collide_ref` found\n   |\nnote: candidate #1 is defined in an impl for the type `Inner`\n  --> <TMP>/b_shadow_ref_mut.rs:15:5\n   |\n15 |     pub fn collide_ref(self: &mut SmartPtr<Self>) -> u32 { 111 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nnote: candidate #2 is defined in an impl for the type `SmartPtr<T>`\n  --> <TMP>/b_shadow_ref_mut.rs:10:5\n   |\n10 |     pub fn collide_ref(&self) -> u32 { 222 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0034`.",
+      "stdout": ""
+    },
+    "both_inh_same_ref_ambiguity": {
+      "rc": 1,
+      "stderr": "error[E0034]: multiple applicable items in scope\n  --> <TMP>/b_shadow_same_ref.rs:19:7\n   |\n19 |     p.same_ref()\n   |       ^^^^^^^^ multiple `same_ref` found\n   |\nnote: candidate #1 is defined in an impl for the type `Inner`\n  --> <TMP>/b_shadow_same_ref.rs:15:5\n   |\n15 |     pub fn same_ref(self: &SmartPtr<Self>) -> u32 { 111 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nnote: candidate #2 is defined in an impl for the type `SmartPtr<T>`\n  --> <TMP>/b_shadow_same_ref.rs:10:5\n   |\n10 |     pub fn same_ref(&self) -> u32 { 222 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0034`.",
+      "stdout": ""
+    },
+    "dispatch_from_dyn_repr_c_rejected": {
+      "rc": 1,
+      "stderr": "error[E0378]: structs implementing `DispatchFromDyn` may not have `#[repr(packed)]` or `#[repr(C)]`\n --> <TMP>/b_dfd_reprc.rs:9:1\n  |\n9 | impl<T: ?Sized + Unsize<U>, U: ?Sized> DispatchFromDyn<ReprCHandle<U>> for ReprCHandle<T> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`.",
+      "stdout": ""
+    },
+    "dispatch_from_dyn_two_field_rejected": {
+      "rc": 1,
+      "stderr": "error[E0378]: the trait `DispatchFromDyn` may only be implemented for structs containing the field being coerced, ZST fields with 1 byte alignment that don't mention type/const generics, and nothing else\n  --> <TMP>/b_dfd_two.rs:11:1\n   |\n11 | impl<T: ?Sized + Unsize<U>, U: ?Sized> DispatchFromDyn<TwoField<U>> for TwoField<T> {}\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = note: extra field `extra` of type `u32` is not allowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`.",
+      "stdout": ""
+    },
+    "dispatch_from_dyn_valid_custom_handle_miri": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "DYN_HANDLE_OK=142"
+    },
+    "dispatch_from_dyn_valid_custom_handle_native": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stderr": "",
+      "stdout": "DYN_HANDLE_OK=142"
+    },
+    "non_deref_receiver_and_raw_ptr_miri_stacked_borrows": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "HANDLE=31 RAW_PTR=40 RAW_MUT=27"
+    },
+    "non_deref_receiver_and_raw_ptr_miri_tree_borrows": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "HANDLE=31 RAW_PTR=40 RAW_MUT=27"
+    },
+    "non_deref_receiver_and_raw_ptr_native": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stderr": "",
+      "stdout": "HANDLE=31 RAW_PTR=40 RAW_MUT=27"
+    },
+    "raw_ptr_self_rejected_without_arbitrary_self_types_pointers": {
+      "rc": 1,
+      "stderr": "error[E0658]: `*const S` cannot be used as the type of `self` without the `arbitrary_self_types_pointers` feature\n --> <TMP>/b_no_ptrs.rs:6:27\n  |\n6 |     pub fn raw_self(self: *const Self) -> u32 { 0 }\n  |                           ^^^^^^^^^^^\n  |\n  = note: see issue #44874 <https://github.com/rust-lang/rust/issues/44874> for more information\n  = help: add `#![feature(arbitrary_self_types_pointers)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n  = help: consider changing to `self`, `&self`, `&mut self`, or a type implementing `Receiver` such as `self: Box<Self>`, `self: Rc<Self>`, or `self: Arc<Self>`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0658`.",
+      "stdout": ""
+    },
+    "receiver_without_dispatch_from_dyn_breaks_dyn_trait": {
+      "rc": 1,
+      "stderr": "error[E0038]: the trait `DynAttempt` is not dyn compatible\n  --> <TMP>/b_no_dyn.rs:18:20\n   |\n15 |     fn ping(self: NonDynHandle<Self>) -> u32;\n   |                   ------------------ help: consider changing method `ping`'s `self` parameter to be `&self`: `&Self`\n...\n18 | pub fn use_dyn(d: &dyn DynAttempt) -> usize {\n   |                    ^^^^^^^^^^^^^^ `DynAttempt` is not dyn compatible\n   |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n  --> <TMP>/b_no_dyn.rs:15:19\n   |\n14 | pub trait DynAttempt {\n   |           ---------- this trait is not dyn compatible...\n15 |     fn ping(self: NonDynHandle<Self>) -> u32;\n   |                   ^^^^^^^^^^^^^^^^^^ ...because method `ping`'s `self` parameter cannot be dispatched on\n\nerror[E0038]: the trait `DynAttempt` is not dyn compatible\n  --> <TMP>/b_no_dyn.rs:19:5\n   |\n15 |     fn ping(self: NonDynHandle<Self>) -> u32;\n   |                   ------------------ help: consider changing method `ping`'s `self` parameter to be `&self`: `&Self`\n...\n19 |     core::mem::size_of_val(&d)\n   |     ^^^^^^^^^^^^^^^^^^^^^^ `DynAttempt` is not dyn compatible\n   |\nnote: for a trait to be dyn compatible it needs to allow building a vtable\n      for more information, visit <https://doc.rust-lang.org/reference/items/traits.html#dyn-compatibility>\n  --> <TMP>/b_no_dyn.rs:15:19\n   |\n14 | pub trait DynAttempt {\n   |           ---------- this trait is not dyn compatible...\n15 |     fn ping(self: NonDynHandle<Self>) -> u32;\n   |                   ^^^^^^^^^^^^^^^^^^ ...because method `ping`'s `self` parameter cannot be dispatched on\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0038`.",
+      "stdout": ""
+    },
+    "shadowing_asymmetry_inner_by_val_wins_miri": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "ASYM_INNER_WINS=111"
+    },
+    "shadowing_asymmetry_inner_by_val_wins_native": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stderr": "",
+      "stdout": "ASYM_INNER_WINS=111"
+    },
+    "shadowing_deref_depth0_wins_miri": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "SHADOW_TAG=222 EXPLICIT_INNER=111"
+    },
+    "shadowing_deref_depth0_wins_native": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stderr": "",
+      "stdout": "SHADOW_TAG=222 EXPLICIT_INNER=111"
+    },
+    "shadowing_inh_over_ext_miri": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "INH_OVER_EXT_TAG=222 EXPLICIT_EXT=111"
+    },
+    "shadowing_inh_over_ext_native": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stderr": "",
+      "stdout": "INH_OVER_EXT_TAG=222 EXPLICIT_EXT=111"
+    }
+  },
+  "part_c_method_autoderef_autoref_precedence_and_raw_ptr": {
+    "method_probe_full_precedence_miri_stacked_borrows": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "PICK_VAL=10 D0R_VS_D1V=20 D0M_VS_D1R=30 INH_VS_EXT=40 ARR=50 SLICE=60 BOTH=70 CONST_PTR=85 REF_BEFORE_CONST=90"
+    },
+    "method_probe_full_precedence_miri_tree_borrows": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "PICK_VAL=10 D0R_VS_D1V=20 D0M_VS_D1R=30 INH_VS_EXT=40 ARR=50 SLICE=60 BOTH=70 CONST_PTR=85 REF_BEFORE_CONST=90"
+    },
+    "method_probe_full_precedence_native": {
+      "compile_rc": 0,
+      "run_rc": 0,
+      "stderr": "",
+      "stdout": "PICK_VAL=10 D0R_VS_D1V=20 D0M_VS_D1R=30 INH_VS_EXT=40 ARR=50 SLICE=60 BOTH=70 CONST_PTR=85 REF_BEFORE_CONST=90"
+    },
+    "raw_ptr_never_autoderefs_in_method_call": {
+      "rc": 1,
+      "stderr": "error[E0599]: no method named `by_ref` found for raw pointer `*const Target` in the current scope\n  --> <TMP>/c_raw_no_deref.rs:10:7\n   |\n10 |     p.by_ref()\n   |       ^^^^^^\n   |\nnote: the method `by_ref` exists on the type `&Target`\n  --> <TMP>/c_raw_no_deref.rs:6:5\n   |\n 6 |     pub fn by_ref(&self) -> u32 { self.0 }\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   = note: you might want to use the unsafe method `<*const T>::as_ref` to get an optional reference to the value behind the pointer\n   = note: read the documentation for `<*const T>::as_ref` and ensure you satisfy its safety preconditions before calling it to avoid undefined behavior: https://doc.rust-lang.org/std/primitive.pointer.html#method.as_ref\nhelp: there is a method `as_ref` with a similar name\n   |\n10 -     p.by_ref()\n10 +     p.as_ref()\n   |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0599`.",
+      "stdout": ""
+    }
+  },
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "summary_checks": {
+    "part_a_deep_fake_borrow_blocks_guard_E0510": true,
+    "part_a_impure_rejected_E0277": true,
+    "part_a_lying_deref_pure_miri_catches_unreachable_ub": true,
+    "part_a_mir_emits_two_derefs_and_unreachable_no_fake_borrow": true,
+    "part_a_mixed_ctors_rejected": true,
+    "part_a_std_custom_native_miri_agree": true,
+    "part_b_anti_shadowing_by_val_vs_by_ref_E0034": true,
+    "part_b_anti_shadowing_ref_vs_mut_ref_E0034": true,
+    "part_b_both_inh_same_ref_E0034": true,
+    "part_b_dispatch_from_dyn_rejects_two_field_and_repr_c": true,
+    "part_b_dispatch_from_dyn_valid_custom_handle_native_miri_agree": true,
+    "part_b_dyn_compat_split_E0038": true,
+    "part_b_non_deref_receiver_native_miri_agree": true,
+    "part_b_raw_ptr_gate_E0658": true,
+    "part_b_shadowing_asymmetry_inner_by_val_wins_native_miri_agree": true,
+    "part_b_shadowing_deref_depth0_wins_native_miri_agree": true,
+    "part_b_shadowing_inh_over_ext_native_miri_agree": true,
+    "part_c_precedence_native_miri_agree": true,
+    "part_c_raw_ptr_never_autoderefs_E0599": true
+  },
+  "timestamp_utc": "2026-11-22T09:39:41Z"
+}
