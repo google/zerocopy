@@ -1,0 +1,138 @@
+{
+ "audit": {
+  "exit_code": 0,
+  "peak_rss_kb": 1604320,
+  "print_axioms": {
+   "PromoteTempsSoundness.ce_addWithOverflow_dead_branch_keepOriginal_sound": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.ce_copy_index_oob_rejected_vs_place_index_base_promoted": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.ce_div_zero_dead_branch_breaks_ctfe": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.ce_needsDrop_promotion_drops_side_effect": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.ce_non_zst_move_deinit_preserved": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.ce_signed_min_div_neg1_breaks_ctfe": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.checkConstItemMutation_nestedDrop_198_vs_1102_witness": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.checkConstItemMutation_visitRvalue_false_positive_witness": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.collector_defined_after_single_init": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.collector_double_init_unpromotable": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.collector_drop_and_storage_noop": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.collector_ignores_non_temps": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.collector_mutBorrow_increments_uses": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.collector_unpromotable_absorbing": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.constMutation_unobservable_iff_no_needsDrop": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.dual_protected_zst_mut_borrows_rodata_sound": [],
+   "PromoteTempsSoundness.lintRepaired_exact_soundness_and_completeness": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.nonzst_mut_borrow_rodata_ub_counterexample": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.observed_drops_sum_eq_75": [],
+   "PromoteTempsSoundness.promoteTemps_infallible_preserves_semantics_iff": [
+    "propext",
+    "Quot.sound"
+   ],
+   "PromoteTempsSoundness.promoteTemps_runtime_and_drop_trace_preserved": [
+    "propext",
+    "Quot.sound"
+   ],
+   "PromoteTempsSoundness.qualifHasMutInterior_optionNone_unsafeCellZst_false": [],
+   "PromoteTempsSoundness.qualifHasMutInterior_unsafeCellZst_true": [],
+   "PromoteTempsSoundness.validateRef_mut_syntactic_conservatism_and_unsafecell_zst_witness": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.validator_implies_ctfe_infallible": [
+    "propext"
+   ],
+   "PromoteTempsSoundness.zst_mut_borrow_promoted_rodata_sound": [],
+   "PromoteTempsSoundness.zst_mut_promoted_write_oob_ub": [
+    "propext"
+   ]
+  },
+  "summary": {
+   "axioms_used": [
+    "propext",
+    "Quot.sound"
+   ],
+   "constants": 951,
+   "constructors": 76,
+   "definitions": 467,
+   "inductive_types": 20,
+   "recursors": 21,
+   "theorems": 367,
+   "theorems_without_axioms": 226,
+   "violations": 0
+  },
+  "violation_lines": [],
+  "wall_seconds": 3.256
+ },
+ "compile": {
+  "errors": 0,
+  "exit_code": 0,
+  "olean_bytes": 2847120,
+  "peak_rss_kb": 566112,
+  "wall_seconds": 5.066,
+  "warnings": 0
+ },
+ "compile_flags": [
+  "-M2048",
+  "-DElab.async=false",
+  "-Ddebug.skipKernelTC=false",
+  "-DwarningAsError=true"
+ ],
+ "forbidden_token_counts": {
+  "Classical": 0,
+  "_unsafe_rec": 0,
+  "admit": 0,
+  "axiom": 0,
+  "bv_decide": 0,
+  "extern": 0,
+  "implemented_by": 0,
+  "native_decide": 0,
+  "omega": 0,
+  "opaque": 0,
+  "partial": 0,
+  "sorry": 0,
+  "unsafe": 0
+ },
+ "generated_on": "2026-11-22",
+ "imports": [],
+ "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+ "module": "support/PromoteTempsInfallibleZstMutAndConstMutationSoundness.lean",
+ "passed": true,
+ "schema": "lean-check-receipt/1",
+ "source_bytes": 57609,
+ "source_def_keywords": 54,
+ "source_inductive_keywords": 20,
+ "source_lines": 1351,
+ "source_sha256": "e0a3f80b28c0c6253cc3fdd44eea696113166840593fdc9483926e937fd22cd4",
+ "source_theorem_keywords": 39
+}

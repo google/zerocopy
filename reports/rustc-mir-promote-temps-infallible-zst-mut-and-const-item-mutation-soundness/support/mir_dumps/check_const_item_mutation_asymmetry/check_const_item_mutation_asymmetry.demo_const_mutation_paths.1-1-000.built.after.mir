@@ -1,0 +1,74 @@
+// MIR for `demo_const_mutation_paths` after built
+
+fn demo_const_mutation_paths(_1: &mut u32) -> () {
+    debug sink => _1;
+    let mut _0: ();
+    let mut _2: DropLogger;
+    let _3: ();
+    let mut _4: &mut DropLogger;
+    let mut _5: DropLogger;
+    let mut _6: DropLogger;
+    let mut _7: PlainVal;
+    let _8: PtrWrap;
+    let mut _9: *mut u32;
+    scope 1 {
+        debug c_ptr => _8;
+    }
+
+    bb0: {
+        StorageLive(_2);
+        _2 = const C_DIRECT;
+        (_2.0: u32) = const 10_u32;
+        drop(_2) -> [return: bb1, unwind: bb6];
+    }
+
+    bb1: {
+        StorageDead(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = const C_DIRECT;
+        _4 = &mut _5;
+        _3 = DropLogger::set(move _4, const 15_u32) -> [return: bb2, unwind: bb5];
+    }
+
+    bb2: {
+        StorageDead(_4);
+        drop(_5) -> [return: bb3, unwind: bb6];
+    }
+
+    bb3: {
+        StorageDead(_5);
+        StorageDead(_3);
+        StorageLive(_6);
+        _6 = const C_DIRECT;
+        (_6.0: u32) = const 50_u32;
+        drop(_6) -> [return: bb4, unwind: bb6];
+    }
+
+    bb4: {
+        StorageDead(_6);
+        StorageLive(_7);
+        _7 = const C_NODROP;
+        (_7.0: u32) = const 99_u32;
+        StorageDead(_7);
+        StorageLive(_8);
+        StorageLive(_9);
+        _9 = &raw mut (*_1);
+        _8 = PtrWrap { ptr: move _9 };
+        StorageDead(_9);
+        FakeRead(ForLet(None), _8);
+        (*(_8.0: *mut u32)) = const 7_u32;
+        _0 = const ();
+        StorageDead(_8);
+        return;
+    }
+
+    bb5 (cleanup): {
+        drop(_5) -> [return: bb6, unwind terminate(cleanup)];
+    }
+
+    bb6 (cleanup): {
+        resume;
+    }
+}

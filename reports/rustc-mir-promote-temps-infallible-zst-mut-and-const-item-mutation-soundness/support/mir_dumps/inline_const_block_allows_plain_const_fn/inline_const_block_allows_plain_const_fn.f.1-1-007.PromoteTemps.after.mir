@@ -1,0 +1,17 @@
+// MIR for `f` after PromoteTemps
+
+fn f() -> &u32 {
+    let mut _0: &u32;
+    let _1: &u32;
+    let _2: u32;
+    let mut _3: &u32;
+
+    bb0: {
+        StorageLive(_1);
+        _3 = const f::promoted[0];
+        _1 = &(*_3);
+        _0 = &(*_1);
+        StorageDead(_1);
+        return;
+    }
+}

@@ -1,0 +1,289 @@
+{
+ "commits": [
+  {
+   "api_sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "committer_date": "2026-05-31T20:13:59Z",
+   "is_40_hex": true,
+   "pinned_revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "repository": "rust-lang/rust",
+   "subject_line": "Auto merge of #157219 - jhpratt:rollup-70ooTMg, r=jhpratt",
+   "verified": true
+  },
+  {
+   "api_sha": "940498dad7cb35a753a7cce104ab510b414e84de",
+   "committer_date": "2026-08-24T06:55:29Z",
+   "is_40_hex": true,
+   "pinned_revision": "940498dad7cb35a753a7cce104ab510b414e84de",
+   "repository": "rust-lang/rust",
+   "subject_line": "fix const_item_mutation lint to use needs_drop instead of has_dtor",
+   "verified": true
+  },
+  {
+   "api_sha": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "committer_date": "2026-11-11T17:59:24Z",
+   "is_40_hex": true,
+   "pinned_revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "repository": "rust-lang/rust",
+   "subject_line": "Auto merge of #165821 - JonathanBrouwer:rollup-TeJSwaI, r=JonathanBrouwer",
+   "verified": true
+  },
+  {
+   "api_sha": "ce66487ebbd7541212d22d01c39a808057d69f1f",
+   "committer_date": "2026-11-22T17:08:30Z",
+   "is_40_hex": true,
+   "pinned_revision": "ce66487ebbd7541212d22d01c39a808057d69f1f",
+   "repository": "rust-lang/rust",
+   "subject_line": "Auto merge of #166350 - JonathanBrouwer:rollup-mFHuioz, r=JonathanBrouwer",
+   "verified": true
+  },
+  {
+   "api_sha": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+   "committer_date": "2026-11-17T20:49:56Z",
+   "is_40_hex": true,
+   "pinned_revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+   "repository": "rust-lang/reference",
+   "subject_line": "Merge pull request #2327 from tshepang/patch-2",
+   "verified": true
+  },
+  {
+   "api_sha": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+   "committer_date": "2026-11-14T17:21:49Z",
+   "is_40_hex": true,
+   "pinned_revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+   "repository": "rust-lang/rfcs",
+   "subject_line": "Rename RFC to correct number",
+   "verified": true
+  },
+  {
+   "api_sha": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "committer_date": "2026-11-19T21:39:21Z",
+   "is_40_hex": true,
+   "pinned_revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "repository": "joshlf/anneal",
+   "subject_line": "[theory] Bridge PureLift onto Trusted MIR semantics (#266)",
+   "verified": true
+  },
+  {
+   "api_sha": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "committer_date": "2026-09-24T17:27:27Z",
+   "is_40_hex": true,
+   "pinned_revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "repository": "leanprover/lean4",
+   "subject_line": "chore: prepare release",
+   "verified": true
+  }
+ ],
+ "files": [
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/promote_consts.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/check_const_item_mutation.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/required_consts.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/lib.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_const_eval/src/check_consts/qualifs.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "src/tools/miri/src/borrow_tracker/stacked_borrows/mod.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "src/tools/miri/src/borrow_tracker/tree_borrows/mod.rs",
+   "repository": "rust-lang/rust",
+   "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/check_const_item_mutation.rs",
+   "repository": "rust-lang/rust",
+   "revision": "940498dad7cb35a753a7cce104ab510b414e84de",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/promote_consts.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/check_const_item_mutation.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/required_consts.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/lib.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_const_eval/src/check_consts/qualifs.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_build/src/builder/expr/as_temp.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "src/tools/miri/src/borrow_tracker/stacked_borrows/mod.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "src/tools/miri/src/borrow_tracker/tree_borrows/mod.rs",
+   "repository": "rust-lang/rust",
+   "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/promote_consts.rs",
+   "repository": "rust-lang/rust",
+   "revision": "ce66487ebbd7541212d22d01c39a808057d69f1f",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "compiler/rustc_mir_transform/src/check_const_item_mutation.rs",
+   "repository": "rust-lang/rust",
+   "revision": "ce66487ebbd7541212d22d01c39a808057d69f1f",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "src/destructors.md",
+   "repository": "rust-lang/reference",
+   "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "src/items/constant-items.md",
+   "repository": "rust-lang/reference",
+   "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "text/3027-infallible-promotion.md",
+   "repository": "rust-lang/rfcs",
+   "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "text/1414-rvalue_static_promotion.md",
+   "repository": "rust-lang/rfcs",
+   "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "trusted/lean/Trusted/MirAst.lean",
+   "repository": "joshlf/anneal",
+   "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "trusted/lean/Trusted/MirSemantics.lean",
+   "repository": "joshlf/anneal",
+   "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "trusted/audit/TrustedBoundary.lean",
+   "repository": "joshlf/anneal",
+   "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "status": 200
+  },
+  {
+   "expected_status": 200,
+   "in_report_subjects": true,
+   "path": "trusted/rustc-capture/src/driver.rs",
+   "repository": "joshlf/anneal",
+   "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "status": 200
+  }
+ ],
+ "generated_on": "2026-11-22",
+ "passed": true,
+ "schema": "pin-receipt/1"
+}

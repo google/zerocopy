@@ -1,0 +1,37 @@
+// MIR for `f` after PromoteTemps
+
+fn f() -> &u32 {
+    let mut _0: &u32;
+    let _1: &u32;
+    let _2: u32;
+    let mut _3: [u32; 2];
+    let _4: usize;
+    let mut _5: bool;
+
+    bb0: {
+        StorageLive(_1);
+        StorageLive(_2);
+        StorageLive(_3);
+        _3 = [const 10_u32, const 20_u32];
+        StorageLive(_4);
+        _4 = const 2_usize;
+        FakeRead(ForIndex, _3);
+        _5 = Lt(copy _4, const 2_usize);
+        assert(move _5, "index out of bounds: the length is {} but the index is {}", const 2_usize, copy _4) -> [success: bb1, unwind: bb2];
+    }
+
+    bb1: {
+        _2 = copy _3[_4];
+        _1 = &_2;
+        _0 = &(*_1);
+        StorageDead(_4);
+        StorageDead(_3);
+        StorageDead(_2);
+        StorageDead(_1);
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+}

@@ -1,0 +1,106 @@
+// MIR for `dual_protected_zst_mut` after PromoteTemps
+
+fn dual_protected_zst_mut(_1: &mut [u32], _2: &mut [u32]) -> bool {
+    debug x => _1;
+    debug y => _2;
+    let mut _0: bool;
+    let mut _3: bool;
+    let mut _4: usize;
+    let mut _5: &[u32];
+    let mut _6: bool;
+    let mut _7: usize;
+    let mut _8: &[u32];
+    let mut _9: *const u32;
+    let mut _10: *mut u32;
+    let mut _11: &mut [u32];
+    let mut _12: *const u32;
+    let mut _13: *mut u32;
+    let mut _14: &mut [u32];
+
+    bb0: {
+        StorageLive(_3);
+        StorageLive(_4);
+        StorageLive(_5);
+        _5 = &(*_1);
+        _4 = core::slice::<impl [u32]>::len(move _5) -> [return: bb1, unwind: bb12];
+    }
+
+    bb1: {
+        StorageDead(_5);
+        _3 = Eq(move _4, const 0_usize);
+        switchInt(move _3) -> [0: bb6, otherwise: bb2];
+    }
+
+    bb2: {
+        StorageDead(_4);
+        StorageLive(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = &(*_2);
+        _7 = core::slice::<impl [u32]>::len(move _8) -> [return: bb3, unwind: bb12];
+    }
+
+    bb3: {
+        StorageDead(_8);
+        _6 = Eq(move _7, const 0_usize);
+        switchInt(move _6) -> [0: bb5, otherwise: bb4];
+    }
+
+    bb4: {
+        StorageDead(_7);
+        StorageLive(_9);
+        StorageLive(_10);
+        StorageLive(_11);
+        _11 = &mut (*_1);
+        _10 = core::slice::<impl [u32]>::as_mut_ptr(move _11) -> [return: bb8, unwind: bb12];
+    }
+
+    bb5: {
+        StorageDead(_7);
+        goto -> bb7;
+    }
+
+    bb6: {
+        StorageDead(_4);
+        goto -> bb7;
+    }
+
+    bb7: {
+        _0 = const false;
+        goto -> bb11;
+    }
+
+    bb8: {
+        _9 = move _10 as *const u32 (PointerCoercion(MutToConstPointer, Implicit));
+        StorageDead(_11);
+        StorageDead(_10);
+        StorageLive(_12);
+        StorageLive(_13);
+        StorageLive(_14);
+        _14 = &mut (*_2);
+        _13 = core::slice::<impl [u32]>::as_mut_ptr(move _14) -> [return: bb9, unwind: bb12];
+    }
+
+    bb9: {
+        _12 = move _13 as *const u32 (PointerCoercion(MutToConstPointer, Implicit));
+        StorageDead(_14);
+        StorageDead(_13);
+        _0 = std::ptr::eq::<u32>(move _9, move _12) -> [return: bb10, unwind: bb12];
+    }
+
+    bb10: {
+        StorageDead(_12);
+        StorageDead(_9);
+        goto -> bb11;
+    }
+
+    bb11: {
+        StorageDead(_6);
+        StorageDead(_3);
+        return;
+    }
+
+    bb12 (cleanup): {
+        resume;
+    }
+}

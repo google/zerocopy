@@ -1,0 +1,39 @@
+// MIR for `f` before PromoteTemps
+
+fn f() -> Option<&u32> {
+    let mut _0: std::option::Option<&u32>;
+    let mut _1: bool;
+    let mut _2: &u32;
+    let _3: &u32;
+    let _4: u32;
+
+    bb0: {
+        StorageLive(_1);
+        _1 = const false;
+        switchInt(move _1) -> [0: bb2, otherwise: bb1];
+    }
+
+    bb1: {
+        StorageLive(_2);
+        StorageLive(_3);
+        StorageLive(_4);
+        _4 = const f::{constant#0};
+        _3 = &_4;
+        _2 = &(*_3);
+        _0 = Option::<&u32>::Some(move _2);
+        StorageDead(_2);
+        StorageDead(_4);
+        StorageDead(_3);
+        goto -> bb3;
+    }
+
+    bb2: {
+        _0 = Option::<&u32>::None;
+        goto -> bb3;
+    }
+
+    bb3: {
+        StorageDead(_1);
+        return;
+    }
+}

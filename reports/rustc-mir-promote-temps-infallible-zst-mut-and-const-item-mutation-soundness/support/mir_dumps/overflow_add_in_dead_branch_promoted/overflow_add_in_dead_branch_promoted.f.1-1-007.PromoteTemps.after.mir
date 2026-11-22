@@ -1,0 +1,48 @@
+// MIR for `f` after PromoteTemps
+
+fn f() -> Option<&u8> {
+    let mut _0: std::option::Option<&u8>;
+    let mut _1: bool;
+    let mut _2: &u8;
+    let _3: &u8;
+    let _4: u8;
+    let mut _5: (u8, bool);
+    let mut _6: &u8;
+
+    bb0: {
+        StorageLive(_1);
+        _1 = const false;
+        switchInt(move _1) -> [0: bb3, otherwise: bb1];
+    }
+
+    bb1: {
+        StorageLive(_2);
+        StorageLive(_3);
+        _5 = AddWithOverflow(const 200_u8, const 200_u8);
+        assert(!move (_5.1: bool), "attempt to compute `{} + {}`, which would overflow", const 200_u8, const 200_u8) -> [success: bb2, unwind: bb5];
+    }
+
+    bb2: {
+        _6 = const f::promoted[0];
+        _3 = &(*_6);
+        _2 = &(*_3);
+        _0 = Option::<&u8>::Some(move _2);
+        StorageDead(_2);
+        StorageDead(_3);
+        goto -> bb4;
+    }
+
+    bb3: {
+        _0 = Option::<&u8>::None;
+        goto -> bb4;
+    }
+
+    bb4: {
+        StorageDead(_1);
+        return;
+    }
+
+    bb5 (cleanup): {
+        resume;
+    }
+}

@@ -99443,6 +99443,84 @@
         "verification"
       ]
     },
+    "rustc-mir-promote-temps-infallible-zst-mut-and-const-item-mutation-soundness": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rust-lang/rust (rustc 1.98.0-nightly and Miri 0.1.0: PromoteTemps, CheckConstItemMutation pre-940498dad7cb, Stacked Borrows, Tree Borrows)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "940498dad7cb35a753a7cce104ab510b414e84de"
+          },
+          "name": "rust-lang/rust (fix const_item_mutation lint to use needs_drop instead of adt.has_dtor)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly: PromoteTemps, RequiredConstsVisitor, CheckConstItemMutation, ConstQualifs)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "ce66487ebbd7541212d22d01c39a808057d69f1f"
+          },
+          "name": "rust-lang/rust (upstream HEAD snapshot confirming PromoteTemps and CheckConstItemMutation parity with 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (destructors, constant promotion, and constant items)"
+        },
+        {
+          "identity": {
+            "path": "text/3027-infallible-promotion.md",
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "The Rust RFC Book (RFC 3027 Infallible Promotion and RFC 1414 Rvalue Static Promotion)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (Trusted.MirAst, Trusted.MirSemantics, TrustedBoundary, and anneal-rustc-capture)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 (Lean 4 v4.34.1 proof kernel)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-mir-steal-lifetimes-and-dual-profile-capture": {
       "observed_at": "2026-11-12",
       "subjects": [

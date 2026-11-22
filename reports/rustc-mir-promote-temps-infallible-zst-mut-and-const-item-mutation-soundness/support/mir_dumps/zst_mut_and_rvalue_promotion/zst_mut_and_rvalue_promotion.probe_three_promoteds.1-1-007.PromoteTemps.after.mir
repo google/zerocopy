@@ -1,0 +1,100 @@
+// MIR for `probe_three_promoteds` after PromoteTemps
+
+| User Type Annotations
+| 0: user_ty: Canonical { value: Ty(&'static mut [u32]), max_universe: U0, var_kinds: [] }, span: $TMP/zst_mut_and_rvalue_promotion.rs:5:12: 5:30, inferred_ty: &mut [u32]
+| 1: user_ty: Canonical { value: Ty(&'static mut [u32]), max_universe: U0, var_kinds: [] }, span: $TMP/zst_mut_and_rvalue_promotion.rs:5:12: 5:30, inferred_ty: &mut [u32]
+| 2: user_ty: Canonical { value: Ty(&'static mut [u32; 0]), max_universe: U0, var_kinds: [] }, span: $TMP/zst_mut_and_rvalue_promotion.rs:6:12: 6:33, inferred_ty: &mut [u32; 0]
+| 3: user_ty: Canonical { value: Ty(&'static mut [u32; 0]), max_universe: U0, var_kinds: [] }, span: $TMP/zst_mut_and_rvalue_promotion.rs:6:12: 6:33, inferred_ty: &mut [u32; 0]
+| 4: user_ty: Canonical { value: Ty(&'static [u32; 2]), max_universe: U0, var_kinds: [] }, span: $TMP/zst_mut_and_rvalue_promotion.rs:7:12: 7:29, inferred_ty: &[u32; 2]
+| 5: user_ty: Canonical { value: Ty(&'static [u32; 2]), max_universe: U0, var_kinds: [] }, span: $TMP/zst_mut_and_rvalue_promotion.rs:7:12: 7:29, inferred_ty: &[u32; 2]
+|
+fn probe_three_promoteds() -> (&mut [u32], &mut [u32; 0], &[u32; 2]) {
+    let mut _0: (&mut [u32], &mut [u32; 0], &[u32; 2]);
+    let _1: &mut [u32] as UserTypeProjection { base: UserType(0), projs: [] };
+    let mut _2: &mut [u32; 0];
+    let mut _3: &mut [u32; 0];
+    let mut _4: [u32; 0];
+    let mut _6: &mut [u32; 0];
+    let mut _7: [u32; 0];
+    let _9: &[u32; 2];
+    let _10: [u32; 2];
+    let mut _11: u32;
+    let mut _12: (u32, bool);
+    let mut _13: u32;
+    let mut _14: (u32, bool);
+    let mut _15: &mut [u32];
+    let mut _16: &mut [u32; 0];
+    let mut _17: &[u32; 2];
+    let mut _20: &mut [u32; 0];
+    scope 1 {
+        debug a => _1;
+        let _5: &mut [u32; 0] as UserTypeProjection { base: UserType(2), projs: [] };
+        let mut _19: &mut [u32; 0];
+        scope 2 {
+            debug b => _5;
+            let _8: &[u32; 2] as UserTypeProjection { base: UserType(4), projs: [] };
+            let mut _18: &[u32; 2];
+            scope 3 {
+                debug c => _8;
+            }
+        }
+    }
+
+    bb0: {
+        StorageLive(_1);
+        StorageLive(_2);
+        StorageLive(_3);
+        _20 = const probe_three_promoteds::promoted[2];
+        _3 = &mut (*_20);
+        _2 = &mut (*_3);
+        _1 = move _2 as &mut [u32] (PointerCoercion(Unsize, Implicit));
+        StorageDead(_2);
+        FakeRead(ForLet(None), _1);
+        AscribeUserType(_1, o, UserTypeProjection { base: UserType(1), projs: [] });
+        StorageDead(_3);
+        StorageLive(_5);
+        StorageLive(_6);
+        _19 = const probe_three_promoteds::promoted[1];
+        _6 = &mut (*_19);
+        _5 = &mut (*_6);
+        FakeRead(ForLet(None), _5);
+        AscribeUserType(_5, o, UserTypeProjection { base: UserType(3), projs: [] });
+        StorageDead(_6);
+        StorageLive(_8);
+        StorageLive(_9);
+        _12 = AddWithOverflow(const 10_u32, const 1_u32);
+        assert(!move (_12.1: bool), "attempt to compute `{} + {}`, which would overflow", const 10_u32, const 1_u32) -> [success: bb1, unwind: bb3];
+    }
+
+    bb1: {
+        _14 = MulWithOverflow(const 20_u32, const 2_u32);
+        assert(!move (_14.1: bool), "attempt to compute `{} * {}`, which would overflow", const 20_u32, const 2_u32) -> [success: bb2, unwind: bb3];
+    }
+
+    bb2: {
+        _18 = const probe_three_promoteds::promoted[0];
+        _9 = &(*_18);
+        _8 = &(*_9);
+        FakeRead(ForLet(None), _8);
+        AscribeUserType(_8, o, UserTypeProjection { base: UserType(5), projs: [] });
+        StorageDead(_9);
+        StorageLive(_15);
+        _15 = &mut (*_1);
+        StorageLive(_16);
+        _16 = &mut (*_5);
+        StorageLive(_17);
+        _17 = copy _8;
+        _0 = (move _15, move _16, move _17);
+        StorageDead(_17);
+        StorageDead(_16);
+        StorageDead(_15);
+        StorageDead(_8);
+        StorageDead(_5);
+        StorageDead(_1);
+        return;
+    }
+
+    bb3 (cleanup): {
+        resume;
+    }
+}
