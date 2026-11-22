@@ -1,0 +1,281 @@
+{
+  "timestamp_utc": "2026-11-22T07:42:02Z",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "part_a_variance_lattice": {
+    "shared_ref_T": {
+      "ty": "&'b T",
+      "cov_ok": true,
+      "contra_ok": false,
+      "inferred_variance": "Covariant"
+    },
+    "mut_ref_T": {
+      "ty": "&'b mut T",
+      "cov_ok": false,
+      "contra_ok": false,
+      "inferred_variance": "Invariant"
+    },
+    "raw_const_T": {
+      "ty": "*const T",
+      "cov_ok": true,
+      "contra_ok": false,
+      "inferred_variance": "Covariant"
+    },
+    "raw_mut_T": {
+      "ty": "*mut T",
+      "cov_ok": false,
+      "contra_ok": false,
+      "inferred_variance": "Invariant"
+    },
+    "fn_arg_T": {
+      "ty": "fn(T)",
+      "cov_ok": false,
+      "contra_ok": true,
+      "inferred_variance": "Contravariant"
+    },
+    "fn_ret_T": {
+      "ty": "fn() -> T",
+      "cov_ok": true,
+      "contra_ok": false,
+      "inferred_variance": "Covariant"
+    },
+    "fn_double_contra_T": {
+      "ty": "fn(fn(T))",
+      "cov_ok": true,
+      "contra_ok": false,
+      "inferred_variance": "Covariant"
+    },
+    "unsafe_cell_T": {
+      "ty": "core::cell::UnsafeCell<T>",
+      "cov_ok": false,
+      "contra_ok": false,
+      "inferred_variance": "Invariant"
+    },
+    "phantom_T": {
+      "ty": "core::marker::PhantomData<T>",
+      "cov_ok": true,
+      "contra_ok": false,
+      "inferred_variance": "Covariant"
+    },
+    "phantom_fn_arg_T": {
+      "ty": "core::marker::PhantomData<fn(T)>",
+      "cov_ok": false,
+      "contra_ok": true,
+      "inferred_variance": "Contravariant"
+    },
+    "phantom_fn_ret_T": {
+      "ty": "core::marker::PhantomData<fn() -> T>",
+      "cov_ok": true,
+      "contra_ok": false,
+      "inferred_variance": "Covariant"
+    },
+    "phantom_inv_T": {
+      "ty": "core::marker::PhantomData<fn(T) -> T>",
+      "cov_ok": false,
+      "contra_ok": false,
+      "inferred_variance": "Invariant"
+    },
+    "lifetime_parameter_variance": {
+      "lt_shared_ref": {
+        "ty": "&'a u8",
+        "cov_ok": true,
+        "contra_ok": false,
+        "inferred_variance": "Covariant"
+      },
+      "lt_mut_ref": {
+        "ty": "&'a mut u8",
+        "cov_ok": true,
+        "contra_ok": false,
+        "inferred_variance": "Covariant"
+      },
+      "lt_fn_arg_ref": {
+        "ty": "fn(&'a u8)",
+        "cov_ok": false,
+        "contra_ok": true,
+        "inferred_variance": "Contravariant"
+      },
+      "lt_fn_double_contra_ref": {
+        "ty": "fn(fn(&'a u8))",
+        "cov_ok": true,
+        "contra_ok": false,
+        "inferred_variance": "Covariant"
+      },
+      "lt_mut_ref_to_ref_inner": {
+        "ty": "&'static mut &'a u8",
+        "cov_ok": false,
+        "contra_ok": false,
+        "inferred_variance": "Invariant"
+      }
+    },
+    "unused_type_param_bivariant_rejected_e0392": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0392]: type parameter `T` is never used\n --> <tmpdir>/a_e0392_ty.rs:1:19\n  |\n1 | pub struct Unused<T>(u8);\n  |                   ^ unused type parameter\n  |\n  = help: consider removing `T`, referring to it in a field, or using a marker such as `PhantomData`\n  = help: if you intended `T` to be a const parameter, use `const T: /* Type */` instead\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0392`."
+    },
+    "unused_lifetime_param_bivariant_rejected_e0392": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0392]: lifetime parameter `'a` is never used\n --> <tmpdir>/a_e0392_lt.rs:1:21\n  |\n1 | pub struct UnusedLt<'a>(u8);\n  |                     ^^ unused lifetime parameter\n  |\n  = help: consider removing `'a`, referring to it in a field, or using a marker such as `PhantomData`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0392`."
+    },
+    "rustc_dump_variances_internal": {
+      "compile_rc": 1,
+      "stderr_head": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <tmpdir>/a_rustc_variance_dump.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: ['a: +, 'b: +, A: +, B: o, C: -, D: +, E: +, F: o]\n --> <tmpdir>/a_rustc_variance_dump.rs:6:1\n  |\n6 | pub struct Showcase<'a, 'b, A, B, C, D, E, F>(\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+    }
+  },
+  "part_b_dropck_may_dangle_phantomdata": {
+    "axis1_no_phantom_uaf_compile": {
+      "compile_rc": 0,
+      "stderr_head": ""
+    },
+    "axis1_no_phantom_uaf_miri": {
+      "rc": 1,
+      "stdout": "",
+      "stderr_head": "error: Undefined Behavior: constructing invalid value of type &std::string::String: encountered a dangling reference (use-after-free)\n --> src/main.rs:4:34\n  |\n4 |     fn drop(&mut self) { let _ = self.0.len(); }\n  |                                  ^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: <PrintOnDrop<'_> as std::ops::Drop>::drop\n              at src/main.rs:4:34: 4:40\n          1: std::ptr::drop_glue::<PrintOnDrop<'_>> - shim(Some(PrintOnDrop<'_>))\n              at <sysroot>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:825:1: 827:25\n          2: std::ptr::drop_glue::<std::boxed::Box<PrintOnDrop<'_>>> - shim(Some(std::boxed::Box<PrintOnDrop<'_>>))\n              at <sysroot>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:825:1: 827:25\n          3: std::mem::drop::<std::boxed::Box<PrintOnDrop<'_>>>\n              at <sysroot>/lib/rustlib/src/rust/library/core/src/mem/mod.rs:1004:1: 1004:2\n          4: <MyBox<PrintOnDrop<'_>> as std::ops::Drop>::drop\n              at src/main.rs:13:18: 13:45\n          5: std::ptr::drop_glue::<MyBox<PrintOnDrop<'_>>> - shim(Some(MyBox<PrintOnDrop<'_>>))\n              at <sysroot>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:825:1: 827:25\n          6: main\n              at src/main.rs:21:1: 21:2\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+    },
+    "axis1_phantom_t_blocks_e0597": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0597]: `s` does not live long enough\n  --> <tmpdir>/b2_pht.rs:22:37\n   |\n20 |     let (_guard, s);\n   |                  - binding `s` declared here\n21 |     s = String::from(\"dropped_first\");\n22 |     _guard = MyBox::new(PrintOnDrop(&s));\n   |                                     ^^ borrowed value does not live long enough\n23 | }\n   | -\n   | |\n   | `s` dropped here while still borrowed\n   | borrow might be used here, when `_guard` is dropped and runs the `Drop` code for type `MyBox`\n   |\n   = note: values in a scope are dropped in the opposite order they are defined\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0597`."
+    },
+    "axis1_phantom_t_safe_order_miri": {
+      "rc": 0,
+      "stdout": "SAFE_DROP_LEN=14",
+      "stderr_head": ""
+    },
+    "axis1_phantom_fn_uaf_compile": {
+      "compile_rc": 0,
+      "stderr_head": ""
+    },
+    "axis1_phantom_fn_uaf_miri": {
+      "rc": 1,
+      "stdout": "",
+      "stderr_head": "error: Undefined Behavior: constructing invalid value of type &std::string::String: encountered a dangling reference (use-after-free)\n --> src/main.rs:6:34\n  |\n6 |     fn drop(&mut self) { let _ = self.0.len(); }\n  |                                  ^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: <PrintOnDrop<'_> as std::ops::Drop>::drop\n              at src/main.rs:6:34: 6:40\n          1: std::ptr::drop_glue::<PrintOnDrop<'_>> - shim(Some(PrintOnDrop<'_>))\n              at <sysroot>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:825:1: 827:25\n          2: std::ptr::drop_glue::<std::boxed::Box<PrintOnDrop<'_>>> - shim(Some(std::boxed::Box<PrintOnDrop<'_>>))\n              at <sysroot>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:825:1: 827:25\n          3: std::mem::drop::<std::boxed::Box<PrintOnDrop<'_>>>\n              at <sysroot>/lib/rustlib/src/rust/library/core/src/mem/mod.rs:1004:1: 1004:2\n          4: <MyBox<PrintOnDrop<'_>> as std::ops::Drop>::drop\n              at src/main.rs:15:18: 15:45\n          5: std::ptr::drop_glue::<MyBox<PrintOnDrop<'_>>> - shim(Some(MyBox<PrintOnDrop<'_>>))\n              at <sysroot>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:825:1: 827:25\n          6: main\n              at src/main.rs:23:1: 23:2\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+    },
+    "axis2_direct_read_copy_t_even_with_phantom_t_compile": {
+      "compile_rc": 0,
+      "stderr_head": ""
+    },
+    "axis2_direct_read_copy_t_even_with_phantom_t_miri": {
+      "rc": 1,
+      "stdout": "",
+      "stderr_head": "error: Undefined Behavior: constructing invalid value of type &std::string::String: encountered a dangling reference (use-after-free)\n    --> <sysroot>/lib/rustlib/src/rust/library/core/src/fmt/mod.rs:2872:71\n     |\n2872 |             fn fmt(&self, f: &mut Formatter<'_>) -> Result { $tr::fmt(&**self, f) }\n     |                                                                       ^^^^^^^ Undefined Behavior occurred here\n...\n2882 | fmt_refs! { Debug, Display, Octal, Binary, LowerHex, UpperHex, LowerExp, UpperExp }\n     | ----------------------------------------------------------------------------------- in this macro invocation\n     |\n     = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n     = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n     = note: stack backtrace:\n             0: <&std::string::String as std::fmt::Display>::fmt\n                 at <sysroot>/lib/rustlib/src/rust/library/core/src/fmt/mod.rs:2872:71: 2872:78\n             1: <std::boxed::Box<&std::string::String> as std::fmt::Display>::fmt\n                 at <sysroot>/lib/rustlib/src/rust/library/alloc/src/boxed.rs:2229:9: 2229:38\n             2: core::fmt::rt::Argument::<'_>::fmt\n                 at <sysroot>/lib/rustlib/src/rust/library/core/src/fmt/rt.rs:152:76: 152:95\n             3: std::fmt::write\n                 at <sysroot>/lib/rustlib/src/rust/library/core/src/fmt/mod.rs:1685:17: 1687:80\n             4: <&mut std::string::String as std::fmt::Write::write_fmt::SpecWriteFmt>::spec_write_fmt\n                 at <sysroot>/lib/rustlib/src/rust/library/core/src/fmt/mod.rs:236:21: 236:38\n             5: <std::string::String as std::fmt::Write>::write_fmt\n                 at <sysroot>/lib/rustlib/src/rust/library/core/src/fmt/mod.rs:241:9: 241:34\n             6: std::fmt::format::format_inner\n                 at <sysroot>/lib/rustlib/src/rust/library/alloc/src/fmt.rs:653:9: 654:29\n             7: std::fmt::format::{closure#0}\n                 at <sysroot>/lib/rustlib/src/rust/library/alloc/src/fmt.rs:659:34: 659:52"
+    },
+    "axis2_without_may_dangle_blocks_copy_t_e0597": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0597]: `s` does not live long enough\n  --> <tmpdir>/b5_no_may_dangle.rs:20:30\n   |\n18 |     let (_guard, s);\n   |                  - binding `s` declared here\n19 |     s = String::from(\"dangling_copy_ref\");\n20 |     _guard = InspectBox::new(&s);\n   |                              ^^ borrowed value does not live long enough\n21 | }\n   | -\n   | |\n   | `s` dropped here while still borrowed\n   | borrow might be used here, when `_guard` is dropped and runs the `Drop` code for type `InspectBox`\n   |\n   = note: values in a scope are dropped in the opposite order they are defined\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0597`."
+    },
+    "sound_may_dangle_copy_t_miri": {
+      "rc": 0,
+      "stdout": "SOUND_MAY_DANGLE_COPY_OK",
+      "stderr_head": ""
+    }
+  },
+  "part_c_edition2021_vs_2024_rpit_use_capture": {
+    "ed2021_rpit_free_does_not_capture_a": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "RPIT_NO_CAPTURE_X=2"
+    },
+    "ed2024_rpit_free_captures_a_by_default": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0506]: cannot assign to `x` because it is borrowed\n --> <tmpdir>/c1_2024.rs:7:5\n  |\n6 |     let tok = make_opaque(&x);\n  |                           -- `x` is borrowed here\n7 |     x += 1;\n  |     ^^^^^^ `x` is assigned to here but it was already borrowed\n8 |     drop(tok);\n  |          --- borrow later used here\n  |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n --> <tmpdir>/c1_2024.rs:6:15\n  |\n6 |     let tok = make_opaque(&x);\n  |               ^^^^^^^^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n  |\n1 | fn make_opaque<'a>(_x: &'a i32) -> impl Sized + use<> {\n  |                                               +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+    },
+    "ed2024_rpit_use_empty_opts_out": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "RPIT_USE_EMPTY_X=2"
+    },
+    "ed2021_rpit_use_empty_ok": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "RPIT_USE_EMPTY_X=2"
+    },
+    "ed2024_rpit_use_a_captures_a": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0506]: cannot assign to `x` because it is borrowed\n --> <tmpdir>/c3_2024_use_a.rs:7:5\n  |\n6 |     let tok = make_opaque(&x);\n  |                           -- `x` is borrowed here\n7 |     x += 1;\n  |     ^^^^^^ `x` is assigned to here but it was already borrowed\n8 |     drop(tok);\n  |          --- borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+    },
+    "ed2021_rpit_use_a_captures_a": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0506]: cannot assign to `x` because it is borrowed\n --> <tmpdir>/c3_2021_use_a.rs:7:5\n  |\n6 |     let tok = make_opaque(&x);\n  |                           -- `x` is borrowed here\n7 |     x += 1;\n  |     ^^^^^^ `x` is assigned to here but it was already borrowed\n8 |     drop(tok);\n  |          --- borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+    },
+    "ed2021_inherent_method_rpit_does_not_capture_self": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "INHERENT_METHOD_X=2"
+    },
+    "ed2024_inherent_method_rpit_captures_self": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0506]: cannot assign to `s.0` because it is borrowed\n --> <tmpdir>/c4_2024_method.rs:8:5\n  |\n7 |     let tok = s.make();\n  |               - `s.0` is borrowed here\n8 |     s.0 += 1;\n  |     ^^^^^^^^ `s.0` is assigned to here but it was already borrowed\n9 |     drop(tok);\n  |          --- borrow later used here\n  |\nnote: this call may capture more lifetimes than intended, because Rust 2024 has adjusted the `impl Trait` lifetime capture rules\n --> <tmpdir>/c4_2024_method.rs:7:15\n  |\n7 |     let tok = s.make();\n  |               ^^^^^^^^\nhelp: use the precise capturing `use<...>` syntax to make the captures explicit\n  |\n3 |     fn make(&self) -> impl Sized + use<> { 42u8 }\n  |                                  +++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+    },
+    "ed2021_rpitit_trait_method_already_captures_self": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0506]: cannot assign to `s.0` because it is borrowed\n  --> <tmpdir>/c5_2021_rpitit.rs:11:5\n   |\n10 |     let tok = s.make();\n   |               - `s.0` is borrowed here\n11 |     s.0 += 1;\n   |     ^^^^^^^^ `s.0` is assigned to here but it was already borrowed\n12 |     drop(tok);\n   |          --- borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+    },
+    "ed2024_rpitit_trait_method_captures_self": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0506]: cannot assign to `s.0` because it is borrowed\n  --> <tmpdir>/c5_2024_rpitit.rs:11:5\n   |\n10 |     let tok = s.make();\n   |               - `s.0` is borrowed here\n11 |     s.0 += 1;\n   |     ^^^^^^^^ `s.0` is assigned to here but it was already borrowed\n12 |     drop(tok);\n   |          --- borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0506`."
+    }
+  },
+  "part_d_coerce_unsized_and_dispatch_from_dyn": {
+    "custom_dispatch_from_dyn_ok": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "CUSTOM_DISPATCH=123"
+    },
+    "custom_dispatch_from_dyn_miri": {
+      "rc": 0,
+      "stdout": "CUSTOM_DISPATCH=123",
+      "stderr_head": ""
+    },
+    "dispatch_from_dyn_extra_non_zst_rejected_e0378": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0378]: the trait `DispatchFromDyn` may only be implemented for structs containing the field being coerced, ZST fields with 1 byte alignment that don't mention type/const generics, and nothing else\n --> <tmpdir>/d2_extra.rs:7:1\n  |\n7 | impl<T: ?Sized + Unsize<U>, U: ?Sized> DispatchFromDyn<BadPtr<U>> for BadPtr<T> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: extra field `1` of type `u64` is not allowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`."
+    },
+    "coerce_unsized_extra_non_zst_allowed": {
+      "compile_rc": 0,
+      "stderr_head": ""
+    },
+    "dispatch_from_dyn_align16_zst_rejected_e0378": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0378]: the trait `DispatchFromDyn` may only be implemented for structs containing the field being coerced, ZST fields with 1 byte alignment that don't mention type/const generics, and nothing else\n  --> <tmpdir>/d3_azst.rs:10:1\n   |\n10 | impl<T: ?Sized + Unsize<U>, U: ?Sized> DispatchFromDyn<BadAlignedPtr<U>> for BadAlignedPtr<T> {}\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = note: extra field `1` of type `Align16Zst` is not allowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`."
+    },
+    "dispatch_from_dyn_1byte_nongeneric_zst_miri": {
+      "rc": 0,
+      "stdout": "ZST_DISPATCH=456",
+      "stderr_head": ""
+    },
+    "dispatch_from_dyn_phantom_t_whitelisted_compile": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "PHANTOM_DISPATCH=789"
+    },
+    "dispatch_from_dyn_phantom_t_whitelisted_miri": {
+      "rc": 0,
+      "stdout": "PHANTOM_DISPATCH=789",
+      "stderr_head": ""
+    },
+    "dispatch_from_dyn_custom_generic_zst_with_coerce_e0375": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0375]: implementing `CoerceUnsized` does not allow multiple fields to be coerced\n --> <tmpdir>/d5_myzst_coerce.rs:7:40\n  |\n7 | ...e<U>, U: ?Sized> CoerceUnsized<BadCustomGenZstPtr<U>> for BadCustomGen...\n  |                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\nnote: the trait `CoerceUnsized` may only be implemented when a single field is being coerced\n --> <tmpdir>/d5_myzst_coerce.rs:6:38\n  |\n6 | struct BadCustomGenZstPtr<T: ?Sized>(*const T, MyZst<T>);\n  |                                      ^^^^^^^^  ^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0375`."
+    },
+    "dispatch_from_dyn_custom_generic_zst_alone_e0375": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0375]: implementing `DispatchFromDyn` does not allow multiple fields to be coerced\n --> <tmpdir>/d6_myzst_dispatch_only.rs:7:1\n  |\n7 | impl<T: ?Sized + Unsize<U>, U: ?Sized> DispatchFromDyn<BadCustomGenZstPtr<U>> for BadCustomGenZstPtr<T> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\nnote: the trait `DispatchFromDyn` may only be implemented when a single field is being coerced\n --> <tmpdir>/d6_myzst_dispatch_only.rs:6:38\n  |\n6 | struct BadCustomGenZstPtr<T: ?Sized>(*const T, MyZst<T>);\n  |                                      ^^^^^^^^  ^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0375`."
+    },
+    "dispatch_from_dyn_unchanged_type_generic_zst_e0378": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0378]: the trait `DispatchFromDyn` may only be implemented for structs containing the field being coerced, ZST fields with 1 byte alignment that don't mention type/const generics, and nothing else\n --> <tmpdir>/d6b_other_gen_zst.rs:7:1\n  |\n7 | / impl<T: ?Sized + Unsize<U>, U: ?Sized, X>\n8 | |     DispatchFromDyn<BadOtherGenZstPtr<U, X>> for BadOtherGenZstPtr<T, X> {}\n  | |________________________________________________________________________^\n  |\n  = note: extra field `1` of type `OtherGenZst<X>` is not allowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`."
+    },
+    "dispatch_from_dyn_const_generic_zst_rejected_e0378": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0378]: the trait `DispatchFromDyn` may only be implemented for structs containing the field being coerced, ZST fields with 1 byte alignment that don't mention type/const generics, and nothing else\n --> <tmpdir>/d7_const_zst.rs:7:1\n  |\n7 | / impl<T: ?Sized + Unsize<U>, U: ?Sized, const N: usize>\n8 | |     DispatchFromDyn<BadConstZstPtr<U, N>> for BadConstZstPtr<T, N> {}\n  | |__________________________________________________________________^\n  |\n  = note: extra field `1` of type `ConstZst<N>` is not allowed\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`."
+    },
+    "dispatch_from_dyn_repr_c_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0378]: structs implementing `DispatchFromDyn` may not have `#[repr(packed)]` or `#[repr(C)]`\n --> <tmpdir>/d8_repr_c.rs:7:1\n  |\n7 | impl<T: ?Sized + Unsize<U>, U: ?Sized> DispatchFromDyn<ReprCPtr<U>> for ReprCPtr<T> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0378`."
+    }
+  }
+}

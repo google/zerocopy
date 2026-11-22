@@ -96235,6 +96235,56 @@
         "verification"
       ]
     },
+    "rustc-variance-dropck-may-dangle-rpit-capture-and-dispatch-from-dyn": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+          },
+          "name": "rust-lang/rust (upstream source audit)"
+        },
+        {
+          "identity": {
+            "miri_version": "0.1.0",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "rustc_release": "1.98.0-nightly",
+            "target": "x86_64-unknown-linux-gnu"
+          },
+          "name": "rustc and Miri nightly toolchain (empirical probe execution)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal MIR trusted boundary and semantics"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel proof checker"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/typeck",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/typeck",
+        "verification"
+      ]
+    },
     "rvv-lmul-vtype-hazards-arm-sme-streaming-za-tiles-and-ffload-speculation": {
       "observed_at": "2026-11-19",
       "subjects": [

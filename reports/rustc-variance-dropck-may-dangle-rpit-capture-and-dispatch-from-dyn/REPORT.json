@@ -1,0 +1,50 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/typeck",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/typeck",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (upstream source audit)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+      }
+    },
+    {
+      "name": "rustc and Miri nightly toolchain (empirical probe execution)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "rustc_release": "1.98.0-nightly",
+        "miri_version": "0.1.0",
+        "target": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "Anneal MIR trusted boundary and semantics",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 kernel proof checker",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
