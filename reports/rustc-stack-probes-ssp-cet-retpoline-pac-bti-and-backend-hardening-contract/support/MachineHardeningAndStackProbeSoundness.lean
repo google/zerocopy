@@ -77,7 +77,7 @@ inductive StackOp where
   deriving DecidableEq, Repr
 
 /-- Classify a memory access at address `addr` relative to guard page `[guardLo, guardLo + pageSize)`. -/
-def classifyAccess (guardLo pageSize addr : Nat) : StackOutcome :=
+noncomputable def classifyAccess (guardLo pageSize addr : Nat) : StackOutcome :=
   if addr < guardLo then
     .corruptedBelowGuard addr
   else if addr < guardLo + pageSize then
@@ -86,7 +86,7 @@ def classifyAccess (guardLo pageSize addr : Nat) : StackOutcome :=
     .running addr
 
 /-- Execute a single `StackOp` from a live stack pointer `sp`. -/
-def stepStackOp (guardLo pageSize sp : Nat) : StackOp → StackOutcome
+noncomputable def stepStackOp (guardLo pageSize sp : Nat) : StackOp → StackOutcome
   | .subSp delta => .running (sp - delta)
   | .addSp delta => .running (sp + delta)
   | .probeAtSp => classifyAccess guardLo pageSize sp
@@ -94,7 +94,7 @@ def stepStackOp (guardLo pageSize sp : Nat) : StackOp → StackOutcome
   | .touchBottom => classifyAccess guardLo pageSize sp
 
 /-- Total structural execution of a sequence of stack operations; stops immediately on trap or corruption. -/
-def execStackOps (guardLo pageSize : Nat) : List StackOp → StackOutcome → StackOutcome
+noncomputable def execStackOps (guardLo pageSize : Nat) : List StackOp → StackOutcome → StackOutcome
   | [], out => out
   | op :: rest, .running sp =>
     execStackOps guardLo pageSize rest (stepStackOp guardLo pageSize sp op)
@@ -102,37 +102,37 @@ def execStackOps (guardLo pageSize : Nat) : List StackOp → StackOutcome → St
   | _ :: _, .corruptedBelowGuard a => .corruptedBelowGuard a
 
 /-- `k` repetitions of `sub $pageSize, %rsp; mov $0, (%rsp)`. -/
-def repeatSubAndProbe (pageSize : Nat) : Nat → List StackOp
+noncomputable def repeatSubAndProbe (pageSize : Nat) : Nat → List StackOp
   | 0 => []
   | k + 1 => .subAndProbe pageSize :: repeatSubAndProbe pageSize k
 
 /-- LLVM-style inline stack-probe prologue: monotonic descent in `pageSize` steps,
     followed by remainder `subSp (frameSize % pageSize)` and body `touchBottom`. -/
-def mkLlvmInlineProbeSeq (frameSize pageSize : Nat) : List StackOp :=
+noncomputable def mkLlvmInlineProbeSeq (frameSize pageSize : Nat) : List StackOp :=
   repeatSubAndProbe pageSize (frameSize / pageSize) ++
     [.subSp (frameSize % pageSize), .touchBottom]
 
 /-- Cranelift-style inline stack-probe prologue (`cranelift/codegen/src/isa/x64/abi.rs`):
     probes down `k = frameSize / pageSize` steps by `pageSize`, restores `%rsp` by
     `add $(k * pageSize), %rsp`, then allocates `sub $frameSize, %rsp` and touches bottom. -/
-def mkCraneliftInlineProbeSeq (frameSize pageSize : Nat) : List StackOp :=
+noncomputable def mkCraneliftInlineProbeSeq (frameSize pageSize : Nat) : List StackOp :=
   let k := frameSize / pageSize
   repeatSubAndProbe pageSize k ++
     [.addSp (k * pageSize), .subSp frameSize, .touchBottom]
 
 /-- Unprobed stack allocation: directly subtracts `frameSize` then touches bottom. -/
-def mkUnprobedSeq (frameSize : Nat) : List StackOp :=
+noncomputable def mkUnprobedSeq (frameSize : Nat) : List StackOp :=
   [.subSp frameSize, .touchBottom]
 
 /-- Addresses probed during `k` downward `pageSize` steps starting from `sp0`. -/
-def inlineProbeAddrs (sp0 pageSize : Nat) : Nat → List Nat
+noncomputable def inlineProbeAddrs (sp0 pageSize : Nat) : Nat → List Nat
   | 0 => []
   | k + 1 => (sp0 - pageSize) :: inlineProbeAddrs (sp0 - pageSize) pageSize k
 
 /-- Guard-page coverage predicate: for every guard page `[g, g + pageSize)` straddled
     by the stack frame `[sp0 - frameSize, sp0)`, at least one address in `touched`
     falls inside `[g, g + pageSize)`. -/
-def touchesEveryPage (sp0 frameSize pageSize : Nat) (touched : List Nat) : Prop :=
+noncomputable def touchesEveryPage (sp0 frameSize pageSize : Nat) (touched : List Nat) : Prop :=
   ∀ guardLo : Nat,
     guardLo + pageSize ≤ sp0 →
     sp0 - frameSize < guardLo →
@@ -399,7 +399,7 @@ structure GnuPropertyNote where
 /-- ELF linker bitwise-AND merge rule for `.note.gnu.property` across object files.
     If ANY linked object (such as an unhardened `std` `.rlib`) omits a feature bit,
     the merged executable silently loses that property. -/
-def GnuPropertyNote.linkAndMerge (a b : GnuPropertyNote) : GnuPropertyNote where
+noncomputable def GnuPropertyNote.linkAndMerge (a b : GnuPropertyNote) : GnuPropertyNote where
   x86Ibt := a.x86Ibt && b.x86Ibt
   x86Shstk := a.x86Shstk && b.x86Shstk
   armBti := a.armBti && b.armBti
@@ -442,7 +442,7 @@ inductive SctlrBtMode where
   deriving DecidableEq, Repr
 
 /-- Architectural BTI landing-pad compatibility check on a guarded memory page (`GP = 1`). -/
-def btiAccepts (btMode : SctlrBtMode) (btype : BType) (insn : AArch64Insn) : Bool :=
+noncomputable def btiAccepts (btMode : SctlrBtMode) (btype : BType) (insn : AArch64Insn) : Bool :=
   match btype with
   | .b00_direct => true
   | .b01_blr =>
@@ -463,14 +463,14 @@ def btiAccepts (btMode : SctlrBtMode) (btype : BType) (insn : AArch64Insn) : Boo
     | _ => false
 
 /-- Architectural PAC return-address signing check for key `k`. -/
-def pacSignsLr (k : PacKey) (insn : AArch64Insn) : Bool :=
+noncomputable def pacSignsLr (k : PacKey) (insn : AArch64Insn) : Bool :=
   match k, insn with
   | .keyA, .paciasp => true
   | .keyB, .pacibsp => true
   | _, _ => false
 
 /-- Architectural PAC return-address authentication check for key `k`. -/
-def pacAuthsLr (k : PacKey) (insn : AArch64Insn) : Bool :=
+noncomputable def pacAuthsLr (k : PacKey) (insn : AArch64Insn) : Bool :=
   match k, insn with
   | .keyA, .autiasp => true
   | .keyB, .autibsp => true
@@ -499,27 +499,27 @@ theorem paciasp_satisfies_both_pac_and_bti_c :
 
 /-- Decidable check that `fn` contains a complete x86-64 SSP stack-canary prologue
     (`mov %fs:0x28`) and epilogue check (`cmp`/`xor %fs:0x28` + `call __stack_chk_fail`). -/
-def hasCanaryPrologueEpilogue (fn : FnImage) : Bool :=
+noncomputable def hasCanaryPrologueEpilogue (fn : FnImage) : Bool :=
   fn.x86Insns.contains .movFs28CanaryLoad &&
   fn.x86Insns.contains .cmpFs28CanaryCheck &&
   fn.x86Insns.contains .callStackChkFail
 
 /-- SSP requirement per function under `SspLevel`. -/
-def fnSatisfiesSsp (lvl : SspLevel) (fn : FnImage) : Bool :=
+noncomputable def fnSatisfiesSsp (lvl : SspLevel) (fn : FnImage) : Bool :=
   match lvl with
   | .none => true
   | .strong => !fn.hasStackBufferOrAddrTaken || hasCanaryPrologueEpilogue fn
   | .all => hasCanaryPrologueEpilogue fn
 
 /-- Decidable check that a function starts with `endbr64` (when externally callable). -/
-def fnStartsWithEndbr64 (fn : FnImage) : Bool :=
+noncomputable def fnStartsWithEndbr64 (fn : FnImage) : Bool :=
   match fn.x86Insns with
   | .endbr64 :: _ => true
   | _ => false
 
 /-- Decidable Intel CET check: entry `endbr64` on all externally callable functions
     plus ELF `.note.gnu.property` `IBT` / `SHSTK` bits matching `cet`. -/
-def hasEndbrEntryAndGnuProperty (img : BinaryImage) (cet : CetMode) : Bool :=
+noncomputable def hasEndbrEntryAndGnuProperty (img : BinaryImage) (cet : CetMode) : Bool :=
   match cet with
   | .none => true
   | .branch =>
@@ -535,7 +535,7 @@ def hasEndbrEntryAndGnuProperty (img : BinaryImage) (cet : CetMode) : Bool :=
 /-- Decidable Retpoline check: rejects raw `call *%reg` / `jmp *%reg` and requires
     the requested thunk target (`__llvm_retpoline_r11` or `__x86_indirect_thunk_r11`)
     on functions with indirect call/jump sites. -/
-def noRawIndirectBranch (fn : FnImage) (mode : RetpolineMode) : Bool :=
+noncomputable def noRawIndirectBranch (fn : FnImage) (mode : RetpolineMode) : Bool :=
   match mode with
   | .none => true
   | .internalThunk =>
@@ -548,14 +548,14 @@ def noRawIndirectBranch (fn : FnImage) (mode : RetpolineMode) : Bool :=
     (!fn.hasIndirectSite || fn.x86Insns.contains .jmpExternalThunkR11)
 
 /-- Decidable AddressSanitizer instrumentation check on stack-buffer functions. -/
-def fnSatisfiesAsan (asan : Bool) (fn : FnImage) : Bool :=
+noncomputable def fnSatisfiesAsan (asan : Bool) (fn : FnImage) : Bool :=
   if asan then
     !fn.hasStackBufferOrAddrTaken || fn.x86Insns.contains .callAsan
   else
     true
 
 /-- Decidable AArch64 PAC + BTI check on a function image and ELF `.note.gnu.property`. -/
-def hasPacBtiEntry (fn : FnImage) (bp : BranchProtPolicy) (note : GnuPropertyNote) : Bool :=
+noncomputable def hasPacBtiEntry (fn : FnImage) (bp : BranchProtPolicy) (note : GnuPropertyNote) : Bool :=
   let btiOk :=
     if bp.bti then
       note.armBti &&
@@ -584,7 +584,7 @@ def hasPacBtiEntry (fn : FnImage) (bp : BranchProtPolicy) (note : GnuPropertyNot
   btiOk && pacOk
 
 /-- Complete fail-closed post-link binary hardening validator (`MiniMach` attestation gate). -/
-def validateBinaryHardening (pol : HardeningPolicy) (img : BinaryImage) : Bool :=
+noncomputable def validateBinaryHardening (pol : HardeningPolicy) (img : BinaryImage) : Bool :=
   hasEndbrEntryAndGnuProperty img pol.cet &&
   img.functions.all (fun fn =>
     fnSatisfiesSsp pol.ssp fn &&
@@ -596,12 +596,12 @@ def validateBinaryHardening (pol : HardeningPolicy) (img : BinaryImage) : Bool :
 
 /-- Frontend acceptance predicate: `rustc` driver returned exit code `0` (regardless of
     whether warnings such as `#154613` were emitted on stderr). -/
-def frontendAccepted (img : BinaryImage) : Bool :=
+noncomputable def frontendAccepted (img : BinaryImage) : Bool :=
   img.exitCode == 0
 
 /-- Predicate capturing an unhardened backend artifact (zero ASan, zero SSP canaries,
     zero CET `endbr64` / `.note.gnu.property`, zero Retpoline thunks, zero PAC/BTI). -/
-def IsUnhardenedImage (img : BinaryImage) : Prop :=
+noncomputable def IsUnhardenedImage (img : BinaryImage) : Prop :=
   img.gnuNote = { x86Ibt := false, x86Shstk := false, armBti := false, armPac := false } ∧
   ∀ fn, fn ∈ img.functions →
     ¬ fn.x86Insns.contains .movFs28CanaryLoad = true ∧
@@ -619,7 +619,7 @@ def IsUnhardenedImage (img : BinaryImage) : Prop :=
 
 /-- Predicate capturing that at least one requested mitigation in `pol` applies
     non-trivially to `img`. -/
-def PolicyHasActiveObligation (pol : HardeningPolicy) (img : BinaryImage) : Prop :=
+noncomputable def PolicyHasActiveObligation (pol : HardeningPolicy) (img : BinaryImage) : Prop :=
   (pol.cet ≠ .none) ∨
   (∃ fn, fn ∈ img.functions ∧ pol.ssp = .all) ∨
   (∃ fn, fn ∈ img.functions ∧ pol.ssp = .strong ∧ fn.hasStackBufferOrAddrTaken = true) ∨
@@ -808,7 +808,7 @@ theorem ce1_unprobed_8kb_frame_skips_4kb_guard_page :
     compiles cleanly (`exitCode = 0`), even emits frontend `#154613` partial-mitigation
     diagnostics for `std`, yet emits zero `%fs:0x28`, zero `endbr64` / `.note.gnu.property`,
     zero `__asan_`, and bare `call *%rsi` (`callIndirectRaw`). -/
-def craneliftSilentDropImage : BinaryImage := {
+noncomputable def craneliftSilentDropImage : BinaryImage := {
   exitCode := 0,
   frontendWarnings := [
     "warning: your program uses the crate `std`, that is not compiled with `stack-protector=all` enabled (#154613)"
@@ -838,19 +838,19 @@ def craneliftSilentDropImage : BinaryImage := {
 
 /-- Four individual single-flag policies corresponding to the four silent fail-open gaps
     observed in `rustc_codegen_cranelift` (`asan`, `ssp=all`, `cet=full`, `retpoline`). -/
-def polAsanOnly : HardeningPolicy :=
+noncomputable def polAsanOnly : HardeningPolicy :=
   { ssp := .none, cet := .none, retpoline := .none, asan := true, branchProt := none }
 
-def polSspAllOnly : HardeningPolicy :=
+noncomputable def polSspAllOnly : HardeningPolicy :=
   { ssp := .all, cet := .none, retpoline := .none, asan := false, branchProt := none }
 
-def polCetFullOnly : HardeningPolicy :=
+noncomputable def polCetFullOnly : HardeningPolicy :=
   { ssp := .none, cet := .full, retpoline := .none, asan := false, branchProt := none }
 
-def polRetpolineOnly : HardeningPolicy :=
+noncomputable def polRetpolineOnly : HardeningPolicy :=
   { ssp := .none, cet := .none, retpoline := .internalThunk, asan := false, branchProt := none }
 
-def polAllFourFlags : HardeningPolicy :=
+noncomputable def polAllFourFlags : HardeningPolicy :=
   { ssp := .all, cet := .full, retpoline := .internalThunk, asan := true, branchProt := none }
 
 /-- **Counterexample 2 (`ce2_cranelift_silent_drop_of_ssp_cet_retpoline_passes_frontend_fails_binary_validator`):**
@@ -869,7 +869,7 @@ theorem ce2_cranelift_silent_drop_of_ssp_cet_retpoline_passes_frontend_fails_bin
   exact ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
 
 /-- Concrete bare indirect-call function (Cranelift `call *%rsi`) vs LLVM `__llvm_retpoline_r11`. -/
-def rawIndirectCallFn : FnImage := {
+noncomputable def rawIndirectCallFn : FnImage := {
   name := "indirect_call",
   externallyCallable := true,
   hasStackBufferOrAddrTaken := false,
@@ -879,7 +879,7 @@ def rawIndirectCallFn : FnImage := {
   armInsns := []
 }
 
-def llvmRetpolineFn : FnImage := {
+noncomputable def llvmRetpolineFn : FnImage := {
   name := "indirect_call",
   externallyCallable := true,
   hasStackBufferOrAddrTaken := false,
@@ -889,14 +889,14 @@ def llvmRetpolineFn : FnImage := {
   armInsns := []
 }
 
-def rawIndirectImg : BinaryImage := {
+noncomputable def rawIndirectImg : BinaryImage := {
   exitCode := 0,
   frontendWarnings := [],
   gnuNote := { x86Ibt := false, x86Shstk := false, armBti := false, armPac := false },
   functions := [rawIndirectCallFn]
 }
 
-def llvmRetpolineImg : BinaryImage := {
+noncomputable def llvmRetpolineImg : BinaryImage := {
   exitCode := 0,
   frontendWarnings := [],
   gnuNote := { x86Ibt := false, x86Shstk := false, armBti := false, armPac := false },
@@ -955,7 +955,7 @@ theorem validateBinaryHardening_sound
     Retpoline + ASan) and an AArch64 `bti,pac-ret,leaf` LLVM image (`hint #25`,
     `hint #29`, `br x16`, `.note.gnu.property` `BTI, PAC`) both satisfy
     `validateBinaryHardening`. -/
-def llvmFullHardenedX86Image : BinaryImage := {
+noncomputable def llvmFullHardenedX86Image : BinaryImage := {
   exitCode := 0,
   frontendWarnings := [],
   gnuNote := { x86Ibt := true, x86Shstk := true, armBti := false, armPac := false },
@@ -981,7 +981,7 @@ def llvmFullHardenedX86Image : BinaryImage := {
   ]
 }
 
-def llvmPacBtiLeafAArch64Policy : HardeningPolicy := {
+noncomputable def llvmPacBtiLeafAArch64Policy : HardeningPolicy := {
   ssp := .none,
   cet := .none,
   retpoline := .none,
@@ -989,7 +989,7 @@ def llvmPacBtiLeafAArch64Policy : HardeningPolicy := {
   branchProt := some { bti := true, pacRet := some (true, .keyA) }
 }
 
-def llvmPacBtiLeafAArch64Image : BinaryImage := {
+noncomputable def llvmPacBtiLeafAArch64Image : BinaryImage := {
   exitCode := 0,
   frontendWarnings := [],
   gnuNote := { x86Ibt := false, x86Shstk := false, armBti := true, armPac := true },
