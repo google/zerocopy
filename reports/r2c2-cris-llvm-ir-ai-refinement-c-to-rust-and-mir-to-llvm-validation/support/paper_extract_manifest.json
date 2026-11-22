@@ -1,0 +1,140 @@
+{
+  "paper": {
+    "arxiv_id": "2611.18036v1",
+    "url": "https://arxiv.org/abs/2611.18036v1",
+    "title": "C-to-Rust Translation Validation at the LLVM IR Level via AI-Assisted Refinement Proof",
+    "authors": [
+      "Eunsu Kim",
+      "Sukyoung Ryu",
+      "Jaemin Hong"
+    ]
+  },
+  "what_was_examined": "A comment-stripped text extract of the v1 LaTeX source, one text per source file. Each text was capped at 6500 characters before it reached this investigation; a text whose length equals the cap ends mid-sentence and its remainder was not examined.",
+  "character_cap": 6500,
+  "sections": [
+    {
+      "source_file": "0-abstract.tex",
+      "characters_examined": 1995,
+      "lines_examined": 32,
+      "hit_character_cap": false,
+      "sha256_of_examined_text": "5f57ef2cd8213b924d390ec5c2375b28716be951146db1c3cc0f99dab98ac509"
+    },
+    {
+      "source_file": "1-intro.tex",
+      "characters_examined": 6500,
+      "lines_examined": 146,
+      "hit_character_cap": true,
+      "sha256_of_examined_text": "a1bc0f585715a0ed411e8628f41f275353186e911203ce3f94b4f732a27c0908"
+    },
+    {
+      "source_file": "2-1-llvm.tex",
+      "characters_examined": 6500,
+      "lines_examined": 159,
+      "hit_character_cap": true,
+      "sha256_of_examined_text": "05ebca5734428fc340e2c1c1421073b578e848037b1d63bc9a8e14118ef77836"
+    },
+    {
+      "source_file": "2-2-refinement.tex",
+      "characters_examined": 4139,
+      "lines_examined": 89,
+      "hit_character_cap": false,
+      "sha256_of_examined_text": "db22f4ff2c57ca31b16920aba1569562d9523d9aa68335f288a8f3c0156b5cd8"
+    },
+    {
+      "source_file": "3-validation.tex",
+      "characters_examined": 6500,
+      "lines_examined": 132,
+      "hit_character_cap": true,
+      "sha256_of_examined_text": "eeeb379d4f6316a52f55325006eb37a9b25103cd3c99b6965f4b8874bdfbad76"
+    },
+    {
+      "source_file": "4-common.tex",
+      "characters_examined": 6500,
+      "lines_examined": 146,
+      "hit_character_cap": true,
+      "sha256_of_examined_text": "ae805c34113fd8a1fa4e0f9593dc7b41e2f3aa93fa88ec25ee158f68e9939185"
+    },
+    {
+      "source_file": "5-1-chain.tex",
+      "characters_examined": 6490,
+      "lines_examined": 148,
+      "hit_character_cap": false,
+      "sha256_of_examined_text": "1af8416f871d8725102ca92e349a50d7fa344ea6ae262bce2abdf2a1348ed706"
+    },
+    {
+      "source_file": "5-2-simulation.tex",
+      "characters_examined": 6500,
+      "lines_examined": 146,
+      "hit_character_cap": true,
+      "sha256_of_examined_text": "b6d859cb23001986533b0d3ac7a1dbd0b94b3bad5bffa5f28faf636a7d104f37"
+    },
+    {
+      "source_file": "6-automation.tex",
+      "characters_examined": 6500,
+      "lines_examined": 146,
+      "hit_character_cap": true,
+      "sha256_of_examined_text": "944d87d22da43e4bf2fa87d5b090756168d718af7ffd96c6f67501e0b7be644c"
+    },
+    {
+      "source_file": "7-1-eval.tex",
+      "characters_examined": 6500,
+      "lines_examined": 161,
+      "hit_character_cap": true,
+      "sha256_of_examined_text": "aa348f538673c202269e013140fa1e48ea2f4d2d5a06a49573b93fd82c4b8f22"
+    },
+    {
+      "source_file": "7-2-eval.tex",
+      "characters_examined": 5620,
+      "lines_examined": 136,
+      "hit_character_cap": false,
+      "sha256_of_examined_text": "8312f3e2ba9b66c33ecc45f2d604b6a8d21537b805a1532eced328406c4d1db9"
+    },
+    {
+      "source_file": "8-related.tex",
+      "characters_examined": 4549,
+      "lines_examined": 73,
+      "hit_character_cap": false,
+      "sha256_of_examined_text": "26d0499460d7cc9a6182460ce4392da42be001f3d211efc8c83bbb7208771d8b"
+    },
+    {
+      "source_file": "9-conclusion.tex",
+      "characters_examined": 1023,
+      "lines_examined": 23,
+      "hit_character_cap": false,
+      "sha256_of_examined_text": "0b02bc6cd573ebc948a90f65b747ad7e93c6681f04ccb98f53949b8bc053975c"
+    },
+    {
+      "source_file": "A-semantics.tex",
+      "characters_examined": 6500,
+      "lines_examined": 137,
+      "hit_character_cap": true,
+      "sha256_of_examined_text": "bf8696fd55176eed795ae4283686123657daedd739ea2d6e4c9676e2cd52f228"
+    },
+    {
+      "source_file": "B-compilation.tex",
+      "characters_examined": 2026,
+      "lines_examined": 37,
+      "hit_character_cap": false,
+      "sha256_of_examined_text": "a7695f1dc9eb8dcc8e7de589948fd44a0244a1fb4e6de7485234c3c9932addc3"
+    }
+  ],
+  "sections_cut_at_cap": [
+    "1-intro.tex",
+    "2-1-llvm.tex",
+    "3-validation.tex",
+    "4-common.tex",
+    "5-2-simulation.tex",
+    "6-automation.tex",
+    "7-1-eval.tex",
+    "A-semantics.tex"
+  ],
+  "sections_complete": [
+    "0-abstract.tex",
+    "2-2-refinement.tex",
+    "5-1-chain.tex",
+    "7-2-eval.tex",
+    "8-related.tex",
+    "9-conclusion.tex",
+    "B-compilation.tex"
+  ]
+}

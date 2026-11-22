@@ -1,0 +1,7 @@
+CrisModel constants in map₁ (imported): 0
+CrisModel constants in map₂ (this file): 353
+theorems: 133
+_unsafe_rec constants: 0 []
+unsafe or partial constants: 0 []
+axioms used: [propext, Quot.sound]
+disallowed axiom uses: 0

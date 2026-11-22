@@ -1,0 +1,19 @@
+PASS  tokenizer.noundef_is_not_undef
+PASS  c.single_use_indeterminate_bits_are_folded
+PASS  c.whole_member_undef_survives
+PASS  c.undef_phi_reaches_two_masks
+PASS  c.zero_trip_original_keeps_defined_bit
+PASS  c.zero_trip_poison_rewrite_returns_poison
+PASS  rust.safe_maybeuninit_return_is_undef
+PASS  rust.field0_original_is_undef
+PASS  rust.field0_zero_rewrite_is_zero
+PASS  c.vla_bound_is_nsw_add_then_zext
+PASS  rust.vec_len_is_wrapping_add_then_sext
+PASS  rust.safe_only_panic_abort_has_no_invoke
+PASS  rust.c_unwind_call_is_invoke_under_panic_abort
+PASS  rust.cleanup_pad_runs_drop_before_abort
+PASS  rust.parameter_attributes_present
+PASS  rust.mustprogress_is_routine
+PASS  c.mustprogress_is_routine
+PASS  rustc.z_flag_rejected_under_stable_rules
+18 checks, 0 failed

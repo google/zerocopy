@@ -1,0 +1,547 @@
+{
+  "abi_and_unwind": {
+    "functions_abort": {
+      "call_c_with_guard": "define noundef i32 @call_c_with_guard(ptr noalias noundef align 4 captures(none) dereferenceable(4) %slot, i32 noundef %x) unnamed_addr #6 {\nstart:\n  %_0 = tail call noundef i32 @foreign_nounwind(i32 noundef %x) #24\n  %0 = load i32, ptr %slot, align 4, !noalias !919, !noundef !16\n  %1 = add i32 %0, 1\n  store i32 %1, ptr %slot, align 4, !noalias !919\n  ret i32 %_0\n}",
+      "call_cunwind_no_guard": "define noundef i32 @call_cunwind_no_guard(i32 noundef %x) unnamed_addr #6 personality ptr @rust_eh_personality {\nstart:\n  %_0 = invoke noundef i32 @foreign_may_unwind(i32 noundef %x)\n          to label %bb1 unwind label %cleanup\n\ncleanup:                                          ; preds = %start\n  %0 = landingpad { ptr, i32 }\n          cleanup\n; call core::panicking::panic_cannot_unwind\n  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind() #28\n  unreachable\n\nbb1:                                              ; preds = %start\n  ret i32 %_0\n}",
+      "call_cunwind_with_guard": "define noundef i32 @call_cunwind_with_guard(ptr noalias noundef align 4 captures(none) dereferenceable(4) %slot, i32 noundef %x) unnamed_addr #6 personality ptr @rust_eh_personality {\nstart:\n  %_0 = invoke noundef i32 @foreign_may_unwind(i32 noundef %x)\n          to label %bb1 unwind label %cleanup\n\ncleanup:                                          ; preds = %start\n  %0 = landingpad { ptr, i32 }\n          cleanup\n  %1 = load i32, ptr %slot, align 4, !noalias !924, !noundef !16\n  %2 = add i32 %1, 1\n  store i32 %2, ptr %slot, align 4, !noalias !924\n; call core::panicking::panic_cannot_unwind\n  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking19panic_cannot_unwind() #28\n  unreachable\n\nbb1:                                              ; preds = %start\n  %3 = load i32, ptr %slot, align 4, !noalias !929, !noundef !16\n  %4 = add i32 %3, 1\n  store i32 %4, ptr %slot, align 4, !noalias !929\n  ret i32 %_0\n}"
+    },
+    "headers_abort": {
+      "has_duplicate": "define noundef zeroext i1 @has_duplicate(ptr noalias noundef nonnull readonly align 4 captures(none) %a.0, i64 noundef range(i64 0, 2305843009213693952) %a.1) unnamed_addr #6 personality ptr @rust_eh_personality {",
+      "slice_and_opt_string": "define void @slice_and_opt_string(ptr dead_on_unwind noalias noundef writable writeonly sret([24 x i8]) align 8 captures(none) dereferenceable(24) %_0, ptr noalias noundef nonnull readonly align 4 captures(none) %a.0, i64 noundef range(i64 0, 2305843009213693952) %a.1, i1 noundef zeroext %flag) unnamed_addr #6 {",
+      "takes_ref_and_bool": "define noundef i32 @takes_ref_and_bool(ptr noalias noundef readonly align 4 captures(none) dereferenceable(4) %r, i1 noundef zeroext %b, ptr noalias noundef align 8 captures(none) dereferenceable(8) %m) unnamed_addr #11 {"
+    },
+    "module_mustprogress_occurrences_abort": 25,
+    "parameter_attributes": {
+      "has_duplicate": {
+        "dereferenceable": false,
+        "noalias": true,
+        "nonnull": true,
+        "noundef": true,
+        "range": true,
+        "readonly": true,
+        "sret": false,
+        "zeroext": true
+      },
+      "slice_and_opt_string": {
+        "dereferenceable": true,
+        "noalias": true,
+        "nonnull": true,
+        "noundef": true,
+        "range": true,
+        "readonly": true,
+        "sret": true,
+        "zeroext": true
+      },
+      "takes_ref_and_bool": {
+        "dereferenceable": true,
+        "noalias": true,
+        "nonnull": false,
+        "noundef": true,
+        "range": false,
+        "readonly": true,
+        "sret": false,
+        "zeroext": true
+      }
+    },
+    "stores_between_landingpad_and_abort": 1,
+    "unwinding": {
+      "abort": {
+        "module": {
+          "invoke": 2,
+          "landingpad": 2,
+          "resume": 0
+        },
+        "per_function": {
+          "call_c_with_guard": {
+            "calls_panic_cannot_unwind": 0,
+            "invoke": 0,
+            "landingpad": 0,
+            "personality": false
+          },
+          "call_cunwind_no_guard": {
+            "calls_panic_cannot_unwind": 1,
+            "invoke": 1,
+            "landingpad": 1,
+            "personality": true
+          },
+          "call_cunwind_with_guard": {
+            "calls_panic_cannot_unwind": 1,
+            "invoke": 1,
+            "landingpad": 1,
+            "personality": true
+          }
+        }
+      },
+      "unwind": {
+        "module": {
+          "invoke": 8,
+          "landingpad": 6,
+          "resume": 4
+        },
+        "per_function": {
+          "call_c_with_guard": {
+            "calls_panic_cannot_unwind": 0,
+            "invoke": 0,
+            "landingpad": 0,
+            "personality": false
+          },
+          "call_cunwind_no_guard": {
+            "calls_panic_cannot_unwind": 0,
+            "invoke": 0,
+            "landingpad": 0,
+            "personality": false
+          },
+          "call_cunwind_with_guard": {
+            "calls_panic_cannot_unwind": 0,
+            "invoke": 1,
+            "landingpad": 1,
+            "personality": true
+          }
+        }
+      }
+    },
+    "z_flag_gating": {
+      "first_error_line": "error: the option `Z` is only accepted on the nightly compiler",
+      "rc_with_RUSTC_BOOTSTRAP_minus_1": 1,
+      "rc_without_RUSTC_BOOTSTRAP": 0
+    }
+  },
+  "c_undef": {
+    "functions": {
+      "arr_part": "define dso_local range(i64 0, 4294967296) i64 @arr_part(i32 noundef %0) local_unnamed_addr #0 {\n  %2 = zext i32 %0 to i64\n  ret i64 %2\n}",
+      "bf_loop_ext": "define dso_local range(i32 0, 256) i32 @bf_loop_ext(i32 noundef %0) local_unnamed_addr #1 {\n  %2 = tail call i32 @cond() #3\n  %3 = icmp eq i32 %2, 0\n  br i1 %3, label %10, label %4\n\n4:                                                ; preds = %1, %4\n  %5 = tail call signext i8 @next() #3\n  %6 = tail call i32 @cond() #3\n  %7 = icmp eq i32 %6, 0\n  br i1 %7, label %8, label %4, !llvm.loop !9\n\n8:                                                ; preds = %4\n  %9 = shl i8 %5, 1\n  br label %10\n\n10:                                               ; preds = %8, %1\n  %11 = phi i8 [ 0, %1 ], [ %9, %8 ]\n  %12 = trunc i32 %0 to i8\n  %13 = and i8 %12, 1\n  %14 = or disjoint i8 %11, %13\n  %15 = zext i8 %14 to i32\n  ret i32 %15\n}",
+      "bf_loop_then_set": "define dso_local range(i32 0, 256) i32 @bf_loop_then_set(i32 noundef %0, i32 noundef %1) local_unnamed_addr #0 {\n  %3 = icmp sgt i32 %1, 0\n  %4 = shl nuw i32 %1, 1\n  %5 = add i32 %4, 254\n  %6 = and i32 %5, 254\n  %7 = select i1 %3, i32 %6, i32 0\n  %8 = and i32 %0, 1\n  %9 = or disjoint i32 %7, %8\n  ret i32 %9\n}",
+      "bf_read_back": "define dso_local noundef range(i32 0, 2) i32 @bf_read_back(i32 noundef %0) local_unnamed_addr #0 {\n  %2 = and i32 %0, 1\n  ret i32 %2\n}",
+      "bf_return_whole": "define dso_local noundef range(i32 0, 2) i32 @bf_return_whole(i32 noundef %0) local_unnamed_addr #0 {\n  %2 = and i32 %0, 1\n  ret i32 %2\n}",
+      "bf_switch_then_set": "define dso_local range(i32 0, 68) i32 @bf_switch_then_set(i32 noundef %0, i32 noundef %1) local_unnamed_addr #0 {\n  %3 = add i32 %1, -1\n  %4 = icmp ult i32 %3, 3\n  br i1 %4, label %5, label %9\n\n5:                                                ; preds = %2\n  %6 = zext nneg i32 %3 to i64\n  %7 = getelementptr inbounds nuw i32, ptr @switch.table.bf_switch_then_set, i64 %6\n  %8 = load i32, ptr %7, align 4\n  br label %9\n\n9:                                                ; preds = %5, %2\n  %10 = phi i32 [ 0, %2 ], [ %8, %5 ]\n  %11 = and i32 %0, 1\n  %12 = or disjoint i32 %10, %11\n  ret i32 %12\n}",
+      "dd": "define dso_local { double, double } @dd(double noundef %0) local_unnamed_addr #0 {\n  %2 = insertvalue { double, double } poison, double %0, 0\n  %3 = insertvalue { double, double } %2, double undef, 1\n  ret { double, double } %3\n}",
+      "fi": "define dso_local range(i64 0, -4294967295) i64 @fi(i32 noundef %0) local_unnamed_addr #0 {\n  %2 = zext i32 %0 to i64\n  %3 = shl nuw i64 %2, 32\n  ret i64 %3\n}",
+      "li": "define dso_local { i64, i32 } @li(i32 noundef %0) local_unnamed_addr #0 {\n  %2 = insertvalue { i64, i32 } { i64 undef, i32 poison }, i32 %0, 1\n  ret { i64, i32 } %2\n}",
+      "pair_loop": "define dso_local { i64, i64 } @pair_loop(i64 noundef %0) local_unnamed_addr #1 {\n  %2 = tail call i32 @cond() #3\n  %3 = icmp eq i32 %2, 0\n  br i1 %3, label %10, label %4\n\n4:                                                ; preds = %1, %4\n  %5 = tail call signext i8 @next() #3\n  %6 = tail call i32 @cond() #3\n  %7 = icmp eq i32 %6, 0\n  br i1 %7, label %8, label %4, !llvm.loop !15\n\n8:                                                ; preds = %4\n  %9 = sext i8 %5 to i64\n  br label %10\n\n10:                                               ; preds = %8, %1\n  %11 = phi i64 [ %9, %8 ], [ undef, %1 ]\n  %12 = insertvalue { i64, i64 } poison, i64 %0, 0\n  %13 = insertvalue { i64, i64 } %12, i64 %11, 1\n  ret { i64, i64 } %13\n}",
+      "partial_coerced": "define dso_local range(i64 0, 256) i64 @partial_coerced(i8 noundef signext %0) local_unnamed_addr #0 {\n  %2 = zext i8 %0 to i64\n  ret i64 %2\n}",
+      "partial_pair": "define dso_local { i64, i64 } @partial_pair(i64 noundef %0) local_unnamed_addr #0 {\n  %2 = insertvalue { i64, i64 } poison, i64 %0, 0\n  %3 = insertvalue { i64, i64 } %2, i64 undef, 1\n  ret { i64, i64 } %3\n}",
+      "plain_loop": "define dso_local i16 @plain_loop(i8 noundef signext %0) local_unnamed_addr #1 {\n  %2 = tail call i32 @cond() #3\n  %3 = icmp eq i32 %2, 0\n  br i1 %3, label %11, label %4\n\n4:                                                ; preds = %1, %4\n  %5 = tail call signext i8 @next() #3\n  %6 = tail call i32 @cond() #3\n  %7 = icmp eq i32 %6, 0\n  br i1 %7, label %8, label %4, !llvm.loop !12\n\n8:                                                ; preds = %4\n  %9 = zext i8 %5 to i16\n  %10 = shl nuw i16 %9, 8\n  br label %11\n\n11:                                               ; preds = %8, %1\n  %12 = phi i16 [ 0, %1 ], [ %10, %8 ]\n  %13 = zext i8 %0 to i16\n  %14 = or disjoint i16 %12, %13\n  ret i16 %14\n}",
+      "pun": "define dso_local range(i32 0, 256) i32 @pun(i8 noundef signext %0) local_unnamed_addr #0 {\n  %2 = zext i8 %0 to i32\n  ret i32 %2\n}",
+      "two_copies": "define dso_local i32 @two_copies(i8 noundef signext %0, i8 noundef signext %1) local_unnamed_addr #1 {\n  %3 = tail call i32 @cond() #3\n  %4 = icmp eq i32 %3, 0\n  br i1 %4, label %11, label %5\n\n5:                                                ; preds = %2, %5\n  %6 = tail call signext i8 @next() #3\n  %7 = tail call i32 @cond() #3\n  %8 = icmp eq i32 %7, 0\n  br i1 %8, label %9, label %5, !llvm.loop !13\n\n9:                                                ; preds = %5\n  %10 = zext i8 %6 to i32\n  br label %11\n\n11:                                               ; preds = %9, %2\n  %12 = phi i32 [ 0, %2 ], [ %10, %9 ]\n  %13 = shl nuw i32 %12, 24\n  %14 = zext i8 %1 to i32\n  %15 = shl nuw nsw i32 %14, 16\n  %16 = or disjoint i32 %13, %15\n  %17 = shl nuw nsw i32 %12, 8\n  %18 = or disjoint i32 %16, %17\n  %19 = zext i8 %0 to i32\n  %20 = or disjoint i32 %18, %19\n  ret i32 %20\n}",
+      "two_masks": "define dso_local range(i64 137438953472, 201863463168) i64 @two_masks(i32 noundef %0) local_unnamed_addr #1 {\n  %2 = tail call i32 @cond() #3\n  %3 = icmp eq i32 %2, 0\n  br i1 %3, label %11, label %4\n\n4:                                                ; preds = %1, %4\n  %5 = tail call signext i8 @next() #3\n  %6 = tail call i32 @cond() #3\n  %7 = icmp eq i32 %6, 0\n  br i1 %7, label %8, label %4, !llvm.loop !14\n\n8:                                                ; preds = %4\n  %9 = shl i8 %5, 1\n  %10 = and i8 %9, 14\n  br label %11\n\n11:                                               ; preds = %8, %1\n  %12 = phi i8 [ undef, %1 ], [ %10, %8 ]\n  %13 = trunc i32 %0 to i8\n  %14 = and i8 %13, 1\n  %15 = and i8 %12, -2\n  %16 = or disjoint i8 %15, %14\n  %17 = and i8 %12, 15\n  %18 = or disjoint i8 %17, 32\n  %19 = zext nneg i8 %18 to i64\n  %20 = shl nuw nsw i64 %19, 32\n  %21 = zext i8 %16 to i64\n  %22 = or disjoint i64 %20, %21\n  ret i64 %22\n}"
+    },
+    "module_mustprogress_occurrences": 13,
+    "standalone_undef_lines_by_function": {
+      "arr_part": [],
+      "bf_loop_ext": [],
+      "bf_loop_then_set": [],
+      "bf_read_back": [],
+      "bf_return_whole": [],
+      "bf_switch_then_set": [],
+      "dd": [
+        "%3 = insertvalue { double, double } %2, double undef, 1"
+      ],
+      "fi": [],
+      "li": [
+        "%2 = insertvalue { i64, i32 } { i64 undef, i32 poison }, i32 %0, 1"
+      ],
+      "pair_loop": [
+        "%11 = phi i64 [ %9, %8 ], [ undef, %1 ]"
+      ],
+      "partial_coerced": [],
+      "partial_pair": [
+        "%3 = insertvalue { i64, i64 } %2, i64 undef, 1"
+      ],
+      "plain_loop": [],
+      "pun": [],
+      "two_copies": [],
+      "two_masks": [
+        "%12 = phi i8 [ undef, %1 ], [ %10, %8 ]"
+      ]
+    },
+    "two_masks_and_masks_on_phi": [
+      "-2",
+      "15"
+    ],
+    "two_masks_phi": "%12 = phi i8 [ undef, %1 ], [ %10, %8 ]",
+    "two_masks_zero_trip_folded_after_undef_to_poison": "define dso_local range(i64 137438953472, 201863463168) i64 @two_masks(i32 noundef %0) local_unnamed_addr #1 {\n  ret i64 poison\n}",
+    "two_masks_zero_trip_folded_original": "define dso_local range(i64 137438953472, 201863463168) i64 @two_masks(i32 noundef %0) local_unnamed_addr #1 {\n  %2 = trunc i32 %0 to i8\n  %3 = and i8 %2, 1\n  %4 = zext i8 %3 to i64\n  %5 = or disjoint i64 137438953472, %4\n  ret i64 %5\n}",
+    "undef_to_poison_substitutions_in_module": 5
+  },
+  "checks": [
+    {
+      "description": "the standalone-token scanner ignores `noundef` and finds real `undef` operands",
+      "id": "tokenizer.noundef_is_not_undef",
+      "observed": {
+        "noundef_parameter": 0,
+        "undef_in_phi": 1,
+        "undef_operand": 1
+      },
+      "pass": true
+    },
+    {
+      "description": "shapes whose indeterminate bits meet one mask/extension emit no standalone `undef`",
+      "id": "c.single_use_indeterminate_bits_are_folded",
+      "observed": {
+        "arr_part": 0,
+        "bf_loop_ext": 0,
+        "bf_loop_then_set": 0,
+        "bf_read_back": 0,
+        "bf_return_whole": 0,
+        "bf_switch_then_set": 0,
+        "fi": 0,
+        "partial_coerced": 0,
+        "plain_loop": 0,
+        "pun": 0,
+        "two_copies": 0
+      },
+      "pass": true
+    },
+    {
+      "description": "an entirely unwritten member returned in its own register is a literal `undef`",
+      "id": "c.whole_member_undef_survives",
+      "observed": {
+        "dd": [
+          "%3 = insertvalue { double, double } %2, double undef, 1"
+        ],
+        "li": [
+          "%2 = insertvalue { i64, i32 } { i64 undef, i32 poison }, i32 %0, 1"
+        ],
+        "pair_loop": [
+          "%11 = phi i64 [ %9, %8 ], [ undef, %1 ]"
+        ],
+        "partial_pair": [
+          "%3 = insertvalue { i64, i64 } %2, i64 undef, 1"
+        ]
+      },
+      "pass": true
+    },
+    {
+      "description": "`two_masks` keeps a phi with an `undef` incoming value that is masked twice and OR-ed with defined bits",
+      "id": "c.undef_phi_reaches_two_masks",
+      "observed": {
+        "and_masks": [
+          "-2",
+          "15"
+        ],
+        "phi": "%12 = phi i8 [ undef, %1 ], [ %10, %8 ]"
+      },
+      "pass": true
+    },
+    {
+      "description": "with `undef` kept, LLVM folds the zero-trip path of `two_masks` to a value that still depends on the argument and is not `poison`",
+      "id": "c.zero_trip_original_keeps_defined_bit",
+      "observed": {
+        "instructions": 5,
+        "ret": [
+          "ret i64 %5"
+        ]
+      },
+      "pass": true
+    },
+    {
+      "description": "after the textual `undef -> poison` rewrite, LLVM folds the same path to `ret poison`",
+      "id": "c.zero_trip_poison_rewrite_returns_poison",
+      "observed": {
+        "instructions": 1,
+        "ret": [
+          "ret i64 poison"
+        ]
+      },
+      "pass": true
+    },
+    {
+      "description": "safe Rust returning `(MaybeUninit<i32>, i32)` emits an `undef` aggregate operand",
+      "id": "rust.safe_maybeuninit_return_is_undef",
+      "observed": [
+        "%0 = insertvalue { i32, i32 } undef, i32 %x, 1"
+      ],
+      "pass": true
+    },
+    {
+      "description": "LLVM folds the uninitialized component of the original IR to `undef`",
+      "id": "rust.field0_original_is_undef",
+      "observed": [
+        "ret i32 undef"
+      ],
+      "pass": true
+    },
+    {
+      "description": "after the textual `undef -> zero` rewrite the same component folds to the constant 0",
+      "id": "rust.field0_zero_rewrite_is_zero",
+      "observed": [
+        "ret i32 0"
+      ],
+      "pass": true
+    },
+    {
+      "description": "clang lowers an `int` VLA bound `n + 1` to `add nsw i32` followed by a plain `zext` to i64 feeding a dynamic `alloca`",
+      "id": "c.vla_bound_is_nsw_add_then_zext",
+      "observed": {
+        "vla1d": {
+          "add_nsw_i32": 1,
+          "add_plain_i32": 0,
+          "alloca_dynamic": 1,
+          "calls_handle_error": 0,
+          "sext_i32_to_i64": 0,
+          "zext_i32_to_i64": 1,
+          "zext_nneg_i32_to_i64": 0
+        },
+        "vla2d": {
+          "add_nsw_i32": 2,
+          "add_plain_i32": 0,
+          "alloca_dynamic": 1,
+          "calls_handle_error": 0,
+          "sext_i32_to_i64": 0,
+          "zext_i32_to_i64": 2,
+          "zext_nneg_i32_to_i64": 0
+        }
+      },
+      "pass": true
+    },
+    {
+      "description": "rustc lowers `(n + 1) as usize` to a flag-free `add i32` followed by `sext` to i64, and reaches the allocation-error path",
+      "id": "rust.vec_len_is_wrapping_add_then_sext",
+      "observed": {
+        "vec1d": {
+          "add_nsw_i32": 0,
+          "add_plain_i32": 1,
+          "alloca_dynamic": 0,
+          "calls_handle_error": 1,
+          "sext_i32_to_i64": 1,
+          "zext_i32_to_i64": 0,
+          "zext_nneg_i32_to_i64": 0
+        },
+        "vec2d": {
+          "add_nsw_i32": 0,
+          "add_plain_i32": 2,
+          "alloca_dynamic": 0,
+          "calls_handle_error": 2,
+          "sext_i32_to_i64": 2,
+          "zext_i32_to_i64": 0,
+          "zext_nneg_i32_to_i64": 0
+        }
+      },
+      "pass": true
+    },
+    {
+      "description": "a safe-Rust-only module compiled with `-Cpanic=abort` has no `invoke`, `landingpad` or `resume`",
+      "id": "rust.safe_only_panic_abort_has_no_invoke",
+      "observed": {
+        "defines": 19,
+        "defines_with_personality": 9,
+        "invoke": 0,
+        "landingpad": 0,
+        "resume": 0
+      },
+      "pass": true
+    },
+    {
+      "description": "under `-Cpanic=abort`, a call to an `extern \"C-unwind\"` function is an `invoke` with a `landingpad` that reaches `panic_cannot_unwind`, with or without a `Drop` guard; a call to an `extern \"C\"` function is not",
+      "id": "rust.c_unwind_call_is_invoke_under_panic_abort",
+      "observed": {
+        "call_c_with_guard": {
+          "calls_panic_cannot_unwind": 0,
+          "invoke": 0,
+          "landingpad": 0,
+          "personality": false
+        },
+        "call_cunwind_no_guard": {
+          "calls_panic_cannot_unwind": 1,
+          "invoke": 1,
+          "landingpad": 1,
+          "personality": true
+        },
+        "call_cunwind_with_guard": {
+          "calls_panic_cannot_unwind": 1,
+          "invoke": 1,
+          "landingpad": 1,
+          "personality": true
+        }
+      },
+      "pass": true
+    },
+    {
+      "description": "the landing pad of the guarded call performs the guard's store before aborting",
+      "id": "rust.cleanup_pad_runs_drop_before_abort",
+      "observed": 1,
+      "pass": true
+    },
+    {
+      "description": "rustc attaches `noundef`/`noalias`/`dereferenceable` to reference parameters, `range` to a slice length, and `sret` to an `Option<String>` return slot",
+      "id": "rust.parameter_attributes_present",
+      "observed": {
+        "has_duplicate": {
+          "dereferenceable": false,
+          "noalias": true,
+          "nonnull": true,
+          "noundef": true,
+          "range": true,
+          "readonly": true,
+          "sret": false,
+          "zeroext": true
+        },
+        "slice_and_opt_string": {
+          "dereferenceable": true,
+          "noalias": true,
+          "nonnull": true,
+          "noundef": true,
+          "range": true,
+          "readonly": true,
+          "sret": true,
+          "zeroext": true
+        },
+        "takes_ref_and_bool": {
+          "dereferenceable": true,
+          "noalias": true,
+          "nonnull": false,
+          "noundef": true,
+          "range": false,
+          "readonly": true,
+          "sret": false,
+          "zeroext": true
+        }
+      },
+      "pass": true
+    },
+    {
+      "description": "`mustprogress` occurs in the attribute groups of an ordinary rustc -O1 module",
+      "id": "rust.mustprogress_is_routine",
+      "observed": 25,
+      "pass": true
+    },
+    {
+      "description": "`mustprogress` occurs in the attribute groups of an ordinary clang -O1 C module",
+      "id": "c.mustprogress_is_routine",
+      "observed": 13,
+      "pass": true
+    },
+    {
+      "description": "with stable-channel rules forced, `-Zinline-mir=no` is rejected with the nightly-only diagnostic; without them this toolchain accepts it",
+      "id": "rustc.z_flag_rejected_under_stable_rules",
+      "observed": {
+        "first_error_line": "error: the option `Z` is only accepted on the nightly compiler",
+        "rc_with_RUSTC_BOOTSTRAP_minus_1": 1,
+        "rc_without_RUSTC_BOOTSTRAP": 0
+      },
+      "pass": true
+    }
+  ],
+  "rust_undef": {
+    "field0_folded_after_undef_to_zero": [
+      "ret i32 0"
+    ],
+    "field0_folded_original": [
+      "ret i32 undef"
+    ],
+    "functions": {
+      "make_padded": "define { i8, i32 } @make_padded(i8 noundef %x, i32 noundef %v) unnamed_addr #0 {\nstart:\n  %0 = insertvalue { i8, i32 } poison, i8 %x, 0\n  %1 = insertvalue { i8, i32 } %0, i32 %v, 1\n  ret { i8, i32 } %1\n}",
+      "mk_e": "define range(i64 0, 65281) i64 @mk_e(i8 noundef %x) unnamed_addr #0 {\nstart:\n  %_0.sroa.2.0.insert.ext = zext i8 %x to i64\n  %_0.sroa.2.0.insert.shift = shl nuw nsw i64 %_0.sroa.2.0.insert.ext, 8\n  ret i64 %_0.sroa.2.0.insert.shift\n}",
+      "none_or": "define { i32, i32 } @none_or(i32 noundef %x, i1 noundef zeroext %c) unnamed_addr #0 {\nstart:\n  %. = zext i1 %c to i32\n  %0 = insertvalue { i32, i32 } poison, i32 %., 0\n  %1 = insertvalue { i32, i32 } %0, i32 %x, 1\n  ret { i32, i32 } %1\n}",
+      "uninit_pair": "define { i32, i32 } @uninit_pair(i32 noundef %x) unnamed_addr #0 {\nstart:\n  %0 = insertvalue { i32, i32 } undef, i32 %x, 1\n  ret { i32, i32 } %0\n}"
+    },
+    "standalone_undef_lines_by_function": {
+      "make_padded": [],
+      "mk_e": [],
+      "none_or": [],
+      "uninit_pair": [
+        "%0 = insertvalue { i32, i32 } undef, i32 %x, 1"
+      ]
+    },
+    "undef_to_zero_substitutions": 1,
+    "uninit_pair_after_undef_to_zero": "define { i32, i32 } @uninit_pair(i32 noundef %x) {\nstart:\n  %0 = insertvalue { i32, i32 } zeroinitializer, i32 %x, 1\n  ret { i32, i32 } %0\n}"
+  },
+  "schema": "r2c2-undef-hazard-probe/1",
+  "source_ub_vs_ir": {
+    "c": {
+      "vla1d": {
+        "add_nsw_i32": 1,
+        "add_plain_i32": 0,
+        "alloca_dynamic": 1,
+        "calls_handle_error": 0,
+        "sext_i32_to_i64": 0,
+        "zext_i32_to_i64": 1,
+        "zext_nneg_i32_to_i64": 0
+      },
+      "vla2d": {
+        "add_nsw_i32": 2,
+        "add_plain_i32": 0,
+        "alloca_dynamic": 1,
+        "calls_handle_error": 0,
+        "sext_i32_to_i64": 0,
+        "zext_i32_to_i64": 2,
+        "zext_nneg_i32_to_i64": 0
+      }
+    },
+    "c_functions": {
+      "vla1d": "define dso_local i32 @vla1d(i32 noundef %0) local_unnamed_addr #0 {\n  %2 = add nsw i32 %0, 1\n  %3 = zext i32 %2 to i64\n  %4 = alloca i32, i64 %3, align 16\n  call void @use(ptr noundef nonnull %4) #2\n  %5 = load i32, ptr %4, align 16, !tbaa !5\n  ret i32 %5\n}",
+      "vla2d": "define dso_local zeroext i1 @vla2d(i32 noundef %0, i32 noundef %1) local_unnamed_addr #0 {\n  %3 = add nsw i32 %0, 1\n  %4 = zext i32 %3 to i64\n  %5 = add nsw i32 %1, 1\n  %6 = zext i32 %5 to i64\n  %7 = mul nuw i64 %6, %4\n  %8 = alloca i8, i64 %7, align 16\n  call void @use(ptr noundef nonnull %8) #2\n  %9 = load i8, ptr %8, align 16, !tbaa !9, !range !11, !noundef !12\n  %10 = trunc nuw i8 %9 to i1\n  ret i1 %10\n}"
+    },
+    "rust": {
+      "vec1d": {
+        "add_nsw_i32": 0,
+        "add_plain_i32": 1,
+        "alloca_dynamic": 0,
+        "calls_handle_error": 1,
+        "sext_i32_to_i64": 1,
+        "zext_i32_to_i64": 0,
+        "zext_nneg_i32_to_i64": 0
+      },
+      "vec2d": {
+        "add_nsw_i32": 0,
+        "add_plain_i32": 2,
+        "alloca_dynamic": 0,
+        "calls_handle_error": 2,
+        "sext_i32_to_i64": 2,
+        "zext_i32_to_i64": 0,
+        "zext_nneg_i32_to_i64": 0
+      }
+    },
+    "rust_safe_only_module_unwinding_under_panic_abort": {
+      "defines": 19,
+      "defines_with_personality": 9,
+      "invoke": 0,
+      "landingpad": 0,
+      "resume": 0
+    },
+    "rust_vec1d": "define noundef range(i64 0, 2147483648) i64 @vec1d(i32 noundef %n) unnamed_addr #0 personality ptr @rust_eh_personality {\nstart:\n  %_16.i.i = alloca [24 x i8], align 8\n  %arr = alloca [24 x i8], align 8\n  call void @llvm.lifetime.start.p0(ptr nonnull %arr)\n  %_4 = add i32 %n, 1\n  %_3 = sext i32 %_4 to i64\n  tail call void @llvm.experimental.noalias.scope.decl(metadata !59)\n  tail call void @llvm.experimental.noalias.scope.decl(metadata !62)\n  call void @llvm.lifetime.start.p0(ptr nonnull %_16.i.i), !noalias !65\n; call <alloc::raw_vec::RawVecInner>::try_allocate_in\n  call void @_RNvMs4_NtCs8jjFDZd5IFg_5alloc7raw_vecNtB5_11RawVecInner15try_allocate_inCsfyNqZpOxG7m_5gimli(ptr noalias noundef sret([24 x i8]) align 8 captures(none) dereferenceable(24) %_16.i.i, i64 noundef %_3, i1 noundef zeroext true, i64 noundef 4, i64 noundef 4) #10, !noalias !65\n  %_17.i.i = load i64, ptr %_16.i.i, align 8, !range !8, !noalias !65, !noundef !9\n  %0 = trunc nuw i64 %_17.i.i to i1\n  %1 = getelementptr inbounds nuw i8, ptr %_16.i.i, i64 8\n  %err.0.i.i = load i64, ptr %1, align 8, !range !10, !noalias !65, !noundef !9\n  %2 = getelementptr inbounds nuw i8, ptr %_16.i.i, i64 16\n  br i1 %0, label %bb14.i.i, label %_RINvNtCs8jjFDZd5IFg_5alloc3vec9from_elemlECs9GFQsRfqtoR_8rust_vec.exit, !prof !11\n\nbb14.i.i:                                         ; preds = %start\n  %err.1.i.i = load i64, ptr %2, align 8, !noalias !65\n; call alloc::raw_vec::handle_error\n  tail call void @_RNvNtCs8jjFDZd5IFg_5alloc7raw_vec12handle_error(i64 noundef %err.0.i.i, i64 %err.1.i.i) #11, !noalias !65\n  unreachable\n\n_RINvNtCs8jjFDZd5IFg_5alloc3vec9from_elemlECs9GFQsRfqtoR_8rust_vec.exit: ; preds = %start\n  %res.1.i.i = load ptr, ptr %2, align 8, !noalias !65, !nonnull !9, !noundef !9\n  call void @llvm.lifetime.end.p0(ptr nonnull %_16.i.i), !noalias !65\n  store i64 %err.0.i.i, ptr %arr, align 8, !alias.scope !65\n  %3 = getelementptr inbounds nuw i8, ptr %arr, i64 8\n  store ptr %res.1.i.i, ptr %3, align 8, !alias.scope !65\n  %4 = getelementptr inbounds nuw i8, ptr %arr, i64 16\n  store i64 %_3, ptr %4, align 8, !alias.scope !65\n  %_2.i = icmp sgt i32 %_4, -1\n  tail call void @llvm.assume(i1 %_2.i)\n; call <alloc::raw_vec::RawVecInner>::deallocate\n  call void @_RNvMs2_NtCs8jjFDZd5IFg_5alloc7raw_vecNtB5_11RawVecInner10deallocateCsfyNqZpOxG7m_5gimli(ptr noalias noundef nonnull align 8 dereferenceable(24) %arr, i64 noundef 4, i64 noundef 4) #10\n  call void @llvm.lifetime.end.p0(ptr nonnull %arr)\n  ret i64 %_3\n}"
+  },
+  "summary": {
+    "checks": 18,
+    "failed": []
+  },
+  "token_selftest": {
+    "noundef_parameter": 0,
+    "undef_in_phi": 1,
+    "undef_operand": 1
+  },
+  "toolchain": {
+    "clang": "clang version 22.1.4 (https://github.com/llvm/llvm-project 35990504507d79e0b9deb809c8ee5e1b34ceef20)",
+    "clang_flags": [
+      "-std=gnu11",
+      "-O1",
+      "-fno-unroll-loops",
+      "-fno-vectorize",
+      "-fno-slp-vectorize",
+      "-ffp-contract=off",
+      "-S",
+      "-emit-llvm"
+    ],
+    "opt": "LLVM version 22.1.6-rust-1.98.0-nightly",
+    "opt_extract_pipeline": "cgscc(inline),function(instcombine)",
+    "opt_fold_pipeline": "cgscc(inline),function(simplifycfg,instsimplify)",
+    "rustc": [
+      "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+      "binary: rustc",
+      "commit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "commit-date: 2026-05-31",
+      "host: x86_64-unknown-linux-gnu",
+      "release: 1.98.0-nightly",
+      "LLVM version: 22.1.6"
+    ],
+    "rustc_flags": [
+      "--edition=2021",
+      "-Copt-level=1",
+      "-Zinline-mir=no",
+      "-Cno-vectorize-loops",
+      "-Cno-vectorize-slp",
+      "-Cllvm-args=--unroll-threshold=0",
+      "--emit=llvm-ir"
+    ]
+  }
+}

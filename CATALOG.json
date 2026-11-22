@@ -80336,6 +80336,92 @@
         "security"
       ]
     },
+    "r2c2-cris-llvm-ir-ai-refinement-c-to-rust-and-mir-to-llvm-validation": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "url": "https://arxiv.org/abs/2611.18036v1",
+            "version": "2611.18036v1"
+          },
+          "name": "R2C2: C-to-Rust Translation Validation at the LLVM IR Level via AI-Assisted Refinement Proof (arXiv:2611.18036v1)"
+        },
+        {
+          "identity": {
+            "repository": "vellvm/vellvm",
+            "revision": "7f0610c38d829b79bf6e867edf410c9e6f928f98"
+          },
+          "name": "Vellvm (LLVM IR semantics in Rocq)"
+        },
+        {
+          "identity": {
+            "repository": "DeepSpec/InteractionTrees",
+            "revision": "284d42248a3c5517cff9f582e335fcee2f6bdc1f"
+          },
+          "name": "Interaction Trees (Rocq library)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rustc 1.98.0-nightly (2026-05-31), executed"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf",
+            "version": "1.93.1"
+          },
+          "name": "rustc 1.93.1, source inspected"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "35990504507d79e0b9deb809c8ee5e1b34ceef20",
+            "version": "llvmorg-22.1.4"
+          },
+          "name": "LLVM and Clang 22.1.4, clang executed, LangRef and Clang source inspected"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "2078da43e25a4623cab2d0d60decddf709aaea28",
+            "version": "llvmorg-21.1.8"
+          },
+          "name": "Clang 21.1.8, source inspected"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal (trusted MIR semantics and trusted-boundary audit)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1, executed"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "raft-reconfiguration-quorums-porcupine-linearizability-and-elle-adya-cycles": {
       "observed_at": "2026-11-19",
       "subjects": [

@@ -1,0 +1,62 @@
+{
+  "resolved_on": "2026-11-22",
+  "method": "GET https://api.github.com/repos/<repository>/commits/<requested_ref>, field `sha`",
+  "note": "`HEAD` is the default-branch head on the resolution date and is recorded only to show that the two pinned commits were the default-branch heads at that time.",
+  "pins": [
+    {
+      "repository": "vellvm/vellvm",
+      "requested_ref": "7f0610c38d829b79bf6e867edf410c9e6f928f98",
+      "resolved_commit": "7f0610c38d829b79bf6e867edf410c9e6f928f98"
+    },
+    {
+      "repository": "DeepSpec/InteractionTrees",
+      "requested_ref": "284d42248a3c5517cff9f582e335fcee2f6bdc1f",
+      "resolved_commit": "284d42248a3c5517cff9f582e335fcee2f6bdc1f"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "requested_ref": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+      "resolved_commit": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+    },
+    {
+      "repository": "rust-lang/rust",
+      "requested_ref": "1.93.1",
+      "resolved_commit": "01f6ddf7588f42ae2d7eb0a2f21d44e8e96674cf"
+    },
+    {
+      "repository": "leanprover/lean4",
+      "requested_ref": "v4.34.1",
+      "resolved_commit": "5045d0056413266e57c625dcd7c365b10e377c52"
+    },
+    {
+      "repository": "llvm/llvm-project",
+      "requested_ref": "35990504507d79e0b9deb809c8ee5e1b34ceef20",
+      "resolved_commit": "35990504507d79e0b9deb809c8ee5e1b34ceef20"
+    },
+    {
+      "repository": "llvm/llvm-project",
+      "requested_ref": "llvmorg-22.1.4",
+      "resolved_commit": "35990504507d79e0b9deb809c8ee5e1b34ceef20"
+    },
+    {
+      "repository": "llvm/llvm-project",
+      "requested_ref": "llvmorg-21.1.8",
+      "resolved_commit": "2078da43e25a4623cab2d0d60decddf709aaea28"
+    },
+    {
+      "repository": "joshlf/anneal",
+      "requested_ref": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+      "resolved_commit": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+    },
+    {
+      "repository": "vellvm/vellvm",
+      "requested_ref": "HEAD",
+      "resolved_commit": "7f0610c38d829b79bf6e867edf410c9e6f928f98"
+    },
+    {
+      "repository": "DeepSpec/InteractionTrees",
+      "requested_ref": "HEAD",
+      "resolved_commit": "284d42248a3c5517cff9f582e335fcee2f6bdc1f"
+    }
+  ]
+}
