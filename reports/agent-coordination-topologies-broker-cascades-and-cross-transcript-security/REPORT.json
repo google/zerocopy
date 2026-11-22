@@ -1,0 +1,124 @@
+{
+  "topics": [
+    "agents/multi-agent-coordination",
+    "agents/broker-cascades",
+    "agents/duplicate-work-detection",
+    "agents/intent-telemetry-drift",
+    "agents/protocols",
+    "security/prompt-injection-worms",
+    "security/cross-transcript-quarantine",
+    "systems/distributed-coordination",
+    "systems/tuple-spaces",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "Agent2Agent Protocol Specification and Protobuf Schema (a2aproject/A2A)",
+      "identity": {
+        "repository": "a2aproject/A2A",
+        "revision": "5f931b8a25fe66789f987ec4a55fc16ee9fe41ee"
+      }
+    },
+    {
+      "name": "Microsoft AutoGen / Magentic-One Orchestrator and Swarm GroupChat (microsoft/autogen and Fourney et al.)",
+      "identity": {
+        "arxiv": "2411.04468v1",
+        "repository": "microsoft/autogen",
+        "revision": "8390985108cb1e3881f5f7297765758d8ad2540c",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "MetaGPT Shared Message Environment and Role Pub/Sub (FoundationAgents/MetaGPT and Hong et al.)",
+      "identity": {
+        "arxiv": "2308.00352v7",
+        "repository": "FoundationAgents/MetaGPT",
+        "revision": "11cdf466d042aece04fc6cfd13b28e1a70341b1f",
+        "venue": "ICLR 2024"
+      }
+    },
+    {
+      "name": "CrewAI Delegation Tools and CacheHandler (crewAIInc/crewAI)",
+      "identity": {
+        "repository": "crewAIInc/crewAI",
+        "revision": "56c26a7fb3ece62c64de52e8b4228d15c9c81492"
+      }
+    },
+    {
+      "name": "CAMEL Workforce and TaskChannel Packet Queue (camel-ai/camel)",
+      "identity": {
+        "repository": "camel-ai/camel",
+        "revision": "c619d1fe5aa2182395d02aadddc71b818c1b6c9f"
+      }
+    },
+    {
+      "name": "OpenHands Software Agent SDK Coordination, Locking, and Conversation Search (OpenHands/software-agent-sdk)",
+      "identity": {
+        "repository": "OpenHands/software-agent-sdk",
+        "revision": "c0c4f0d3fdec003f3b20d3384557f648541d25fe"
+      }
+    },
+    {
+      "name": "OpenHands Frontend Client Repository (OpenHands/OpenHands)",
+      "identity": {
+        "repository": "OpenHands/OpenHands",
+        "revision": "b1f3b66abbaf834892f69b0892f62586774861a3"
+      }
+    },
+    {
+      "name": "Mert Cemri et al., Why Do Multi-Agent LLM Systems Fail? / MAST",
+      "identity": {
+        "arxiv": "2503.13657v3",
+        "repository": "multi-agent-systems-failure-taxonomy/MAST",
+        "venue": "NeurIPS 2025 Datasets and Benchmarks",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Coordination Theory and Blackboard Architectures (Malone & Crowston 1994; Fennell & Lesser 1977; Erman et al. 1980; Nii 1986a, 1986b; Salemi et al. 2026)",
+      "identity": {
+        "arxiv": "2510.01285v2",
+        "doi": "10.1145/174666.174668; 10.1109/TC.1977.5009289; 10.1145/356810.356816; 10.1609/aimag.v7i2.537; 10.1609/aimag.v7i3.550",
+        "year": "1977-2026"
+      }
+    },
+    {
+      "name": "Generative Communication and Linda Tuple-Space Kernels (Gelernter 1985; Carriero & Gelernter 1986; Carriero & Gelernter 1989)",
+      "identity": {
+        "doi": "10.1145/2363.2433; 10.1145/214419.214420; 10.1145/63334.63337",
+        "venue": "ACM TOPLAS 7(1); ACM TOCS 4(2); CACM 32(4)",
+        "year": "1985-1989"
+      }
+    },
+    {
+      "name": "Contract Net Protocol, Stigmergy, and Publish/Subscribe Taxonomies (Smith 1980; Grassé 1959; Eugster et al. 2003; Heylighen 2016)",
+      "identity": {
+        "doi": "10.1109/TC.1980.1675516; 10.1007/BF02223791; 10.1145/857076.857078; 10.1016/j.cogsys.2015.12.002",
+        "year": "1959-2016"
+      }
+    },
+    {
+      "name": "Chain-of-Thought Unfaithfulness and Coding-Agent Scope/Policy Drift Studies (Turpin et al.; Lanham et al.; Chen et al.; PatchDiff; SWE-Misbehavior; SWE-CC)",
+      "identity": {
+        "arxiv": "2305.04388v2; 2307.13702v1; 2505.05410v1; 2503.15223v2; 2610.18206v1; 2610.06193v1",
+        "doi": "10.1145/3744916.3764576",
+        "venue": "NeurIPS 2023; ICSE 2026; arXiv 2023-2026"
+      }
+    },
+    {
+      "name": "Semantic Retrieval and Confidence-Gated LLM Routing Cascades (Reimers & Gurevych SBERT; Thakur et al. BEIR; Chen, Zaharia & Zou FrugalGPT; Ong et al. RouteLLM)",
+      "identity": {
+        "arxiv": "1908.10084v1; 2104.08663v4; 2305.05176v1; 2406.18665v4",
+        "venue": "EMNLP-IJCNLP 2019; NeurIPS 2021 D&B; arXiv 2023; ICLR 2025"
+      }
+    },
+    {
+      "name": "Multi-Agent Prompt-Injection Worms and Shared-Memory Epidemics (Cohen, Bitton & Nassi Morris-II; Lee & Tiwari Prompt Infection)",
+      "identity": {
+        "arxiv": "2403.02817v2; 2410.07283v1",
+        "year": "2024-2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

@@ -1,0 +1,197 @@
+{
+  "topics": [
+    "agents/multi-agent-collaboration",
+    "agents/task-partitioning",
+    "agents/concurrency-control",
+    "systems/distributed-leases",
+    "systems/fencing-tokens",
+    "systems/concurrency-control",
+    "vcs/merge-conflicts",
+    "vcs/git-hooks",
+    "tooling/pull-requests",
+    "verification/differential-testing"
+  ],
+  "subjects": [
+    {
+      "name": "Cary G. Gray and David R. Cheriton, Leases: An Efficient Fault-Tolerant Mechanism for Distributed File Cache Consistency (SOSP 1989)",
+      "identity": {
+        "doi": "10.1145/74850.74870",
+        "venue": "12th ACM Symposium on Operating Systems Principles (SOSP), pp. 202-210",
+        "year": "1989"
+      }
+    },
+    {
+      "name": "Mike Burrows, The Chubby Lock Service for Loosely-Coupled Distributed Systems (OSDI 2006) and Martin Kleppmann, Distributed Locking and Fencing Tokens (2016; DDIA 2017)",
+      "identity": {
+        "url": "https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html",
+        "venue": "7th USENIX OSDI, pp. 335-350; Designing Data-Intensive Applications (O'Reilly), Ch. 8, pp. 301-306",
+        "year": "2006; 2016-2017"
+      }
+    },
+    {
+      "name": "Patrick Hunt, Mahadev Konar, Flavio P. Junqueira, and Benjamin Reed, ZooKeeper: Wait-Free Coordination for Internet-Scale Systems (USENIX ATC 2010 and apache/zookeeper)",
+      "identity": {
+        "repository": "apache/zookeeper",
+        "revision": "7f4ebb356a6efeb1674bb5dc48ecb6caf1fc017b",
+        "venue": "USENIX Annual Technical Conference (ATC), pp. 145-158",
+        "year": "2010; 2026"
+      }
+    },
+    {
+      "name": "etcd v3 Raft Lease Lessor and CreateRevision Transactional Mutex (etcd-io/etcd)",
+      "identity": {
+        "repository": "etcd-io/etcd",
+        "revision": "f872eb465ed3d2d056ec16742a1a2f8e322a5751",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "HashiCorp Consul KVS Monotonic LockIndex and Session LockDelay State Machine (hashicorp/consul)",
+      "identity": {
+        "repository": "hashicorp/consul",
+        "revision": "9225feae6d51cb92b812926f811b6064653c1e3f",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Redis Single-Node SET NX PX Expiry Lock Baseline (redis/redis)",
+      "identity": {
+        "repository": "redis/redis",
+        "revision": "fd7710ca2bf6ff025aedb3cf1d5da146854a6db2",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Daniel J. Rosenkrantz, Richard E. Stearns, and Philip M. Lewis II (1978); H. T. Kung and John T. Robinson (1981); Peter Franaszek and John T. Robinson (1985); Y. C. Tay, Nathan Goodman, and Rajan Suri (1985); Rakesh Agrawal, Michael J. Carey, and Miron Livny (1987)",
+      "identity": {
+        "doi": "10.1145/320251.320260; 10.1145/319566.319567; 10.1145/3148.3160; 10.1145/4879.4880; 10.1145/32204.32220",
+        "venue": "ACM Transactions on Database Systems (TODS) 3(2):178-198; 6(2):213-226; 10(1):1-28; 10(4):415-462; 12(4):609-654",
+        "year": "1978-1987"
+      }
+    },
+    {
+      "name": "Melvin E. Conway (1968); David L. Parnas (1972); Michael E. Fagan (1976); John C. Knight and Nancy G. Leveson (1986); William M. McKeeman (1998)",
+      "identity": {
+        "doi": "10.1145/361598.361623; 10.1147/sj.153.0182; 10.1109/TSE.1986.6312924",
+        "venue": "Datamation 14(4):28-31; CACM 15(12):1053-1058; IBM Systems Journal 15(3):182-211; IEEE TSE SE-12(1):96-109; Digital Technical Journal 10(1):100-107",
+        "year": "1968-1998"
+      }
+    },
+    {
+      "name": "Yuriy Brun, Reid Holmes, Michael D. Ernst, and David Notkin, Proactive Detection of Collaboration Conflicts (ESEC/FSE 2011 and IEEE TSE 2013)",
+      "identity": {
+        "doi": "10.1145/2025113.2025139; 10.1109/TSE.2013.28",
+        "venue": "ESEC/FSE 2011, pp. 168-178; IEEE Transactions on Software Engineering 39(10):1358-1375",
+        "year": "2011-2013"
+      }
+    },
+    {
+      "name": "Yue Yu, Zhixing Li, Gang Yin, Tao Wang, and Huaimin Wang (MSR 2018) and Zhixing Li, Yue Yu, Minghui Zhou, Tao Wang, Gang Yin, Long Lan, and Huaimin Wang (IEEE TSE 2022, whystar/MSR2018-DupPR)",
+      "identity": {
+        "doi": "10.1145/3196398.3196455; 10.1109/TSE.2020.3018726",
+        "repository": "whystar/MSR2018-DupPR",
+        "revision": "627822196dae340109f8a822ccc3f924c88cb708",
+        "venue": "MSR 2018, pp. 22-25; IEEE Transactions on Software Engineering 48(4):1309-1335",
+        "year": "2018-2022"
+      }
+    },
+    {
+      "name": "Zhixing Li et al., Duplicate Pull-Request Cited Examples Index (whystar/DupPR-cited)",
+      "identity": {
+        "doi": "10.1109/TSE.2020.3018726",
+        "repository": "whystar/DupPR-cited",
+        "revision": "effc13e84f71c39e109fa7246b3c3f12e0046065",
+        "year": "2020-2022"
+      }
+    },
+    {
+      "name": "Zhixing Li, Yue Yu, Tao Wang, Gang Yin, ShanShan Li, and Huaimin Wang, Are You Still Working on This? An Empirical Study on Pull Request Abandonment (IEEE TSE 2022 and whystar/TSE2021-AbandonedPR)",
+      "identity": {
+        "doi": "10.1109/TSE.2021.3053403",
+        "repository": "whystar/TSE2021-AbandonedPR",
+        "revision": "e65415fee73de85f7caa309a532c103f0fc4c618",
+        "venue": "IEEE Transactions on Software Engineering 48(6):2173-2188",
+        "year": "2021-2022"
+      }
+    },
+    {
+      "name": "Shurui Zhou, Bogdan Vasilescu, and Christian Kastner (ESEC/FSE 2019); Zainab Masood, Rashina Hoda, and Kelly Blincoe (IEEE TSE 2022); SayedHassan Khatoonabadi et al. (ACM TOSEM 2023 and 2024)",
+      "identity": {
+        "arxiv": "2110.15447v2; 2305.18150v1",
+        "doi": "10.1145/3338906.3338918; 10.1109/TSE.2021.3101732; 10.1145/3530785; 10.1145/3624739",
+        "venue": "ESEC/FSE 2019, pp. 350-361; IEEE TSE 48(9):3626-3639; ACM TOSEM 32(1):Art. 10, pp. 1-39; ACM TOSEM 33(2):Art. 46, pp. 1-43",
+        "year": "2019-2024"
+      }
+    },
+    {
+      "name": "GitHub Stale Issue and Pull-Request Lifecycle Action (actions/stale)",
+      "identity": {
+        "repository": "actions/stale",
+        "revision": "3c6b846feaf83b4021f133e36bcf68061f04e1dc",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Arpita Khatua, Hao Zhu, et al., CooperBench: Why Coding Agents Cannot Be Your Teammates Yet (arXiv:2601.13295v2 and cooperbench/CooperBench)",
+      "identity": {
+        "arxiv": "2601.13295v2",
+        "repository": "cooperbench/CooperBench",
+        "revision": "63b9d44d9f39a02fccf5bf0052db48a917a011fd",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "CooperBench Cooperative Multi-Agent Harness (cooperbench/cooperagents)",
+      "identity": {
+        "arxiv": "2601.13295v2",
+        "repository": "cooperbench/cooperagents",
+        "revision": "89135a56b35e0712b2da4eb700c8d258803dd623",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Xinyi Yang, Linyi Nie, et al., When Parallelism Pays Off: Cohesion-Aware Task Partitioning for Multi-Agent Coding (Co-Coder, arXiv:2606.00953v1 and Flitternie/CoCoder)",
+      "identity": {
+        "arxiv": "2606.00953v1",
+        "repository": "Flitternie/CoCoder",
+        "revision": "64fddee20db2b7ec992fa7e0f5b088fb9147a0fa",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Jiachen Geng and Graham Neubig, CAID (arXiv:2603.21489v2); Daniel Ogenrwot and John Businge, AgenticFlict (ACM AIware 2026); G. Xu, A. Subramanian, and N. Karthik (arXiv:2607.04697v2); S. Muku, NP-Bench (arXiv:2610.07261v1)",
+      "identity": {
+        "arxiv": "2603.21489v2; 2604.03551v2; 2607.04697v2; 2610.07261v1",
+        "doi": "10.1145/3805760.3814923",
+        "venue": "ACM AIware 2026, pp. 323-331; arXiv 2026",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Linux Kernel Patch Submission Guide (torvalds/linux)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "e572847ee4d074c9947e8367d150b81775a7e903",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Python PEP 1 Purpose and Guidelines (python/peps)",
+      "identity": {
+        "repository": "python/peps",
+        "revision": "4434e728a7db24540d581f52e96570ca1230356e",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Rust RFC Process Guide (rust-lang/rfcs) and Chromium Blink Launching Features Process",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+        "url": "https://www.chromium.org/blink/launching-features/",
+        "year": "2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

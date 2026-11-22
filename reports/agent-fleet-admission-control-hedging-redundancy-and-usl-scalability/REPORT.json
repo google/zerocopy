@@ -1,0 +1,143 @@
+{
+  "topics": [
+    "agents/fleet-coordination",
+    "agents/admission-control",
+    "agents/concurrency-control",
+    "agents/hedging-and-redundancy",
+    "agents/exploration-diversity",
+    "systems/queueing-theory",
+    "systems/universal-scalability-law",
+    "systems/cluster-scheduling",
+    "vcs/merge-conflicts",
+    "verification/n-version-programming"
+  ],
+  "subjects": [
+    {
+      "name": "CooperBench Cooperative Multi-Agent Coding Benchmark (cooperbench/CooperBench; Khatua et al., 2026)",
+      "identity": {
+        "arxiv": "2601.13295v2",
+        "doi": "10.48550/arXiv.2601.13295",
+        "repository": "cooperbench/CooperBench",
+        "revision": "63b9d44d9f39a02fccf5bf0052db48a917a011fd",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Concurrent AI Agent Pull Requests Replication Package (Quantum535/concurrent-agentic-prs-replication; Xu, Subramanian, & Karthik, 2026)",
+      "identity": {
+        "arxiv": "2607.04697v2",
+        "doi": "10.5281/zenodo.21186464",
+        "repository": "Quantum535/concurrent-agentic-prs-replication",
+        "revision": "3f5970588c412b43b50ddb67a68b38ecffdca70d",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "AgenticFlict Merge-Conflict Dataset and Study (Ogenrwot & Businge, ACM AIware 2026)",
+      "identity": {
+        "arxiv": "2604.03551v2",
+        "doi": "10.1145/3805760.3814923",
+        "venue": "Proc. 3rd ACM Int. Conf. on AI-Powered Software (AIware '26), pp. 323-331",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "CoAgent Advisory Concurrency Control and Monotonic Trajectory Pre-Order (Lyu, Zhang, Wu, Wei, & Chen, 2026)",
+      "identity": {
+        "arxiv": "2606.15376v1",
+        "doi": "10.48550/arXiv.2606.15376",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Omega, Mesos, and Monolithic Cluster Scheduler Simulator (google/cluster-scheduler-simulator; Schwarzkopf et al. EuroSys 2013; Hindman et al. NSDI 2011)",
+      "identity": {
+        "doi": "10.1145/2465351.2465386",
+        "repository": "google/cluster-scheduler-simulator",
+        "revision": "b882f26643227fcc62739de7b814ef9b0634ecff",
+        "venue": "ACM EuroSys 2013, pp. 351-364; USENIX NSDI 2011, pp. 295-308",
+        "year": "2011-2022"
+      }
+    },
+    {
+      "name": "Sparrow Decentralized Batch-Sampling and Late-Binding Scheduler (radlab/sparrow; Ousterhout, Wendell, Zaharia, & Stoica, SOSP 2013)",
+      "identity": {
+        "doi": "10.1145/2517349.2522716",
+        "repository": "radlab/sparrow",
+        "revision": "afb8efadeb88524f1394d1abe4ea66c6fd2ac744",
+        "venue": "24th ACM SOSP (2013), pp. 69-84",
+        "year": "2013"
+      }
+    },
+    {
+      "name": "Classical Queueing Admission and Concurrency-Control Foundations (Little 1961; Kung & Robinson 1981; Stidham 1985; Agrawal, Carey, & Livny 1987)",
+      "identity": {
+        "doi": "10.1287/opre.9.3.383; 10.1145/319566.319567; 10.1109/TAC.1985.1104054; 10.1145/32204.32220",
+        "venue": "Operations Research 9(3); ACM TODS 6(2) & 12(4); IEEE Trans. Autom. Control 30(8)",
+        "year": "1961-1987"
+      }
+    },
+    {
+      "name": "Tail-Latency Hedging, Straggler Backup Tasks, and Redundant Queueing Theory (Dean & Ghemawat OSDI 2004; Dean & Barroso CACM 2013; Vulimiri et al. CoNEXT 2013; Gardner et al. SIGMETRICS 2015, OR 2017a, IEEE/ACM ToN 2017b; Shah, Lee, & Ramchandran IEEE TCOMM 2016)",
+      "identity": {
+        "arxiv": "1311.2851v1",
+        "doi": "10.1145/2408776.2408794; 10.1145/2535372.2535392; 10.1145/2745844.2745873; 10.1287/opre.2016.1582; 10.1109/TNET.2017.2744607; 10.1109/TCOMM.2015.2506161",
+        "year": "2004-2017"
+      }
+    },
+    {
+      "name": "Knight-Leveson-Redux Coding-Agent N-Version Campaign and Coincident-Failure Theory (ASSERT-KTH/Knight-Leveson-Redux; Ron, Baudry, & Monperrus 2026; Avizienis 1985; Eckhardt & Lee 1985; Knight & Leveson 1986; Littlewood & Miller 1989; Brilliant, Knight, & Leveson 1990)",
+      "identity": {
+        "arxiv": "2606.20158v1",
+        "doi": "10.1109/TSE.1985.231893; 10.1109/TSE.1985.231895; 10.1109/TSE.1986.6312924; 10.1109/32.58771; 10.1109/32.44387",
+        "repository": "ASSERT-KTH/Knight-Leveson-Redux",
+        "revision": "546a59d35e2fda7da070f0e6015523f4ca44a649",
+        "year": "1985-2026"
+      }
+    },
+    {
+      "name": "Network Exploration, NK Epistasis, and Cumulative Recombinant Innovation (March 1991; Lazer & Friedman 2007; Mason & Watts 2012; Derex & Boyd 2016)",
+      "identity": {
+        "doi": "10.1287/orsc.2.1.71; 10.2189/asqu.52.4.667; 10.1073/pnas.1110069108; 10.1073/pnas.1518798113",
+        "venue": "Organization Science 2(1); Admin. Sci. Q. 52(4); PNAS 109(3) & 113(11)",
+        "year": "1991-2016"
+      }
+    },
+    {
+      "name": "Gunther Universal Scalability Law Theory and VividCortex Nose-Curve Monograph (VividCortex/ebooks; Gunther 1993, 2007, 2008; Schwartz 2015; Amdahl 1967; Brooks 1975)",
+      "identity": {
+        "arxiv": "0808.1431v2",
+        "doi": "10.1145/1465482.1465560; 10.1007/978-3-540-31010-5; 10.48550/arXiv.0808.1431",
+        "repository": "VividCortex/ebooks",
+        "revision": "969dccbb2a2f3e7c8621ef71eb4a1651a9c62088",
+        "year": "1967-2020"
+      }
+    },
+    {
+      "name": "Go Universal Scalability Law Fitter and Solver (codahale/usl)",
+      "identity": {
+        "repository": "codahale/usl",
+        "revision": "513b3f33c0dc0858df35e1f1af1a8fcf4f61b198",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "Java Universal Scalability Law Port (codahale/usl4j)",
+      "identity": {
+        "repository": "codahale/usl4j",
+        "revision": "15ef46d9800a02de8a56228d19976ffdef741f74",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "CRAN R Universal Scalability Law Package v3.0.4 (smoeding/usl; Gunther & Moeding)",
+      "identity": {
+        "repository": "smoeding/usl",
+        "revision": "4a05e8ee6f3321001a314821d3af510add5fb033",
+        "version": "3.0.4",
+        "year": "2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

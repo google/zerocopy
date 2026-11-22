@@ -1,0 +1,154 @@
+{
+  "topics": [
+    "agents/overlap-detection",
+    "agents/conflict-detection",
+    "agents/findings-ledgers",
+    "agents/semantic-caching",
+    "agents/socio-technical-congruence",
+    "vcs/speculative-merge",
+    "vcs/duplicate-pull-requests",
+    "smt/clause-sharing",
+    "systems/content-addressed-invalidation",
+    "tooling/agent-harnesses",
+    "verification/nogood-sharing"
+  ],
+  "subjects": [
+    {
+      "name": "Anita Sarma, David F. Redmiles, and André van der Hoek, Palantír: Early Detection of Development Conflicts Arising from Parallel Code Changes (IEEE TSE 2012)",
+      "identity": {
+        "doi": "10.1109/TSE.2011.64",
+        "venue": "IEEE Transactions on Software Engineering 38(4):889-908",
+        "year": "2012"
+      }
+    },
+    {
+      "name": "Yuriy Brun, Reid Holmes, Michael D. Ernst, and David Notkin, Proactive Detection of Collaboration Conflicts and Early Detection of Collaboration Conflicts and Risks (ESEC/FSE 2011; IEEE TSE 2013; brunyuriy/crystalvc)",
+      "identity": {
+        "doi": "10.1145/2025113.2025139; 10.1109/TSE.2013.28",
+        "repository": "brunyuriy/crystalvc",
+        "revision": "2275e6980f8ba58136ac02a517c8ccdaf5ce754b",
+        "venue": "ESEC/FSE 2011, pp. 168-178; IEEE TSE 39(10):1358-1375",
+        "year": "2011-2013"
+      }
+    },
+    {
+      "name": "Mário Luís Guimarães and António Rito Silva, Improving Early Detection of Software Merge Conflicts / WeCode (ICSE 2012), and Bakhtiar Khan Kasi and Anita Sarma, Cassandra: Proactive Conflict Minimization through Optimized Task Scheduling (ICSE 2013)",
+      "identity": {
+        "doi": "10.1109/ICSE.2012.6227180; 10.1109/ICSE.2013.6606619",
+        "venue": "ICSE 2012, pp. 342-352; ICSE 2013, pp. 732-741",
+        "year": "2012-2013"
+      }
+    },
+    {
+      "name": "Marcelo Cataldo, Patrick A. Wagstrom, James D. Herbsleb, and Kathleen M. Carley, Socio-Technical Congruence and Coordination Breakdowns (CSCW 2006; ESEM 2008; IEEE TSE 2013)",
+      "identity": {
+        "doi": "10.1145/1180875.1180929; 10.1145/1414004.1414008; 10.1109/TSE.2012.32",
+        "venue": "CSCW 2006, pp. 353-362; ESEM 2008, pp. 2-11; IEEE TSE 39(3):343-360",
+        "year": "2006-2013"
+      }
+    },
+    {
+      "name": "Yue Yu, Zhixing Li, Gang Yin, Tao Wang, and Huaimin Wang, A Dataset of Duplicate Pull-Requests in GitHub (MSR 2018; whystar/MSR2018-DupPR)",
+      "identity": {
+        "doi": "10.1145/3196398.3196455",
+        "repository": "whystar/MSR2018-DupPR",
+        "revision": "627822196dae340109f8a822ccc3f924c88cb708",
+        "venue": "MSR 2018, pp. 22-25",
+        "year": "2018-2020"
+      }
+    },
+    {
+      "name": "Zhixing Li et al., Duplicate Pull-Request Detection Combining Textual, Change, and Temporal Signals (Internetware 2017; Internetware 2019; JCST 2021; IEEE TSE 2022)",
+      "identity": {
+        "doi": "10.1145/3131704.3131725; 10.1145/3361242.3361254; 10.1007/s11390-020-9935-1; 10.1109/TSE.2020.3018726",
+        "venue": "Internetware 2017, pp. 1-6; Internetware 2019, pp. 1-10; JCST 36(1):191-206; IEEE TSE 48(4):1309-1335",
+        "year": "2017-2022"
+      }
+    },
+    {
+      "name": "Luyao Ren, Shurui Zhou, Christian Kästner, and Andrzej Wąsowski, Identifying Redundancies in Fork-Based Development (IEEE SANER 2019; luyaor/INTRUDE), and Shurui Zhou, Bogdan Vasilescu, and Christian Kästner, What the Fork (ESEC/FSE 2019)",
+      "identity": {
+        "doi": "10.1109/SANER.2019.8668023; 10.1145/3338906.3338918",
+        "repository": "luyaor/INTRUDE",
+        "revision": "87a69cbbe71ac707ea25d6e31c317038b1aba78d",
+        "venue": "IEEE SANER 2019, pp. 230-241; ESEC/FSE 2019, pp. 350-361",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Per Runeson, Magnus Alexandersson, and Oskar Nyholm, Detection of Duplicate Defect Reports Using Natural Language Processing (ICSE 2007), and Chengnian Sun, David Lo, Siau-Cheng Khoo, and Jing Jiang, Towards More Accurate Retrieval of Duplicate Bug Reports / REP (ASE 2011)",
+      "identity": {
+        "doi": "10.1109/ICSE.2007.32; 10.1109/ASE.2011.6100061",
+        "venue": "ICSE 2007, pp. 499-510; ASE 2011, pp. 253-262",
+        "year": "2007-2011"
+      }
+    },
+    {
+      "name": "Youssef Hamadi, Saïd Jabbour, and Lakhdar Sais, ManySAT and Control-Based Clause Sharing in Parallel SAT Solving (JSAT 2009; IJCAI 2009), and Gilles Audemard and Laurent Simon, Predicting Learnt Clauses Quality in Modern SAT Solvers / Glucose LBD (IJCAI 2009)",
+      "identity": {
+        "doi": "10.3233/SAT190070",
+        "venue": "JSAT 6(4):245-262; IJCAI 2009, pp. 499-504; IJCAI 2009, pp. 399-404",
+        "year": "2009"
+      }
+    },
+    {
+      "name": "Chen Qian et al., Experiential Co-Learning of Software-Developing Agents (ACL 2024; OpenBMB/ChatDev chatdev1.0)",
+      "identity": {
+        "arxiv": "2312.17025v3",
+        "doi": "10.18653/v1/2024.acl-long.305",
+        "repository": "OpenBMB/ChatDev",
+        "revision": "31fd994416a251ecdeb1f0a73c329271743bfb56",
+        "venue": "ACL 2024 Long Papers, pp. 5628-5640",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "OpenBMB/ChatDev 2.0 BlackboardMemory Implementation",
+      "identity": {
+        "repository": "OpenBMB/ChatDev",
+        "revision": "464a681ba7bda869db97a50c5fa707c9a0fb57a0",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Andrew Zhao, Daniel Huang, Quentin Xu, Matthieu Lin, Yong-Jin Liu, and Gao Huang, ExpeL: LLM Agents Are Experiential Learners (AAAI 2024)",
+      "identity": {
+        "arxiv": "2308.10144v3",
+        "doi": "10.1609/aaai.v38i17.29936",
+        "venue": "AAAI 2024, 38(17):19632-19642",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Fu Bang (PDF byline: Bang Fu and Di Feng), GPTCache: An Open-Source Semantic Cache for LLM Applications Enabling Faster Answers and Cost Savings (NLP-OSS @ EMNLP 2023; zilliztech/GPTCache), and Waris Gill et al., MeanCache: User-Centric Semantic Caching for LLM Web Services (2024)",
+      "identity": {
+        "arxiv": "2403.02694",
+        "doi": "10.18653/v1/2023.nlposs-1.24",
+        "repository": "zilliztech/GPTCache",
+        "revision": "a74ac654473f7bf4109118e8576945161616e17a",
+        "venue": "NLP-OSS @ EMNLP 2023, pp. 212-218; arXiv 2024",
+        "year": "2023-2026"
+      }
+    },
+    {
+      "name": "Luis Gaspar Schroeder, Aditya Desai, Alejandro Cuadron, Kyle Chu, Shu Liu, Mark Zhao, Stephan Krusche, Alfons Kemper, Matei Zaharia, and Joseph E. Gonzalez, vCache: Verified Semantic Prompt Caching (ICLR 2026; vcache-project/vCache)",
+      "identity": {
+        "arxiv": "2502.03771v5",
+        "repository": "vcache-project/vCache",
+        "revision": "50694eebf0c870231030f73707cb6543d47f0411",
+        "venue": "ICLR 2026",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Git Three-Way In-Memory Merge Plumbing (git merge-tree --write-tree)",
+      "identity": {
+        "component": "git-merge-tree",
+        "minimum_version": "2.38.0",
+        "observed_version": "2.56.1",
+        "repository": "git/git"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

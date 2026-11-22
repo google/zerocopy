@@ -2336,6 +2336,203 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-collaboration-interventions-fenced-leases-and-concurrency-control": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/74850.74870",
+            "venue": "12th ACM Symposium on Operating Systems Principles (SOSP), pp. 202-210",
+            "year": "1989"
+          },
+          "name": "Cary G. Gray and David R. Cheriton, Leases: An Efficient Fault-Tolerant Mechanism for Distributed File Cache Consistency (SOSP 1989)"
+        },
+        {
+          "identity": {
+            "url": "https://martin.kleppmann.com/2016/02/08/how-to-do-distributed-locking.html",
+            "venue": "7th USENIX OSDI, pp. 335-350; Designing Data-Intensive Applications (O'Reilly), Ch. 8, pp. 301-306",
+            "year": "2006; 2016-2017"
+          },
+          "name": "Mike Burrows, The Chubby Lock Service for Loosely-Coupled Distributed Systems (OSDI 2006) and Martin Kleppmann, Distributed Locking and Fencing Tokens (2016; DDIA 2017)"
+        },
+        {
+          "identity": {
+            "repository": "apache/zookeeper",
+            "revision": "7f4ebb356a6efeb1674bb5dc48ecb6caf1fc017b",
+            "venue": "USENIX Annual Technical Conference (ATC), pp. 145-158",
+            "year": "2010; 2026"
+          },
+          "name": "Patrick Hunt, Mahadev Konar, Flavio P. Junqueira, and Benjamin Reed, ZooKeeper: Wait-Free Coordination for Internet-Scale Systems (USENIX ATC 2010 and apache/zookeeper)"
+        },
+        {
+          "identity": {
+            "repository": "etcd-io/etcd",
+            "revision": "f872eb465ed3d2d056ec16742a1a2f8e322a5751",
+            "year": "2026"
+          },
+          "name": "etcd v3 Raft Lease Lessor and CreateRevision Transactional Mutex (etcd-io/etcd)"
+        },
+        {
+          "identity": {
+            "repository": "hashicorp/consul",
+            "revision": "9225feae6d51cb92b812926f811b6064653c1e3f",
+            "year": "2026"
+          },
+          "name": "HashiCorp Consul KVS Monotonic LockIndex and Session LockDelay State Machine (hashicorp/consul)"
+        },
+        {
+          "identity": {
+            "repository": "redis/redis",
+            "revision": "fd7710ca2bf6ff025aedb3cf1d5da146854a6db2",
+            "year": "2026"
+          },
+          "name": "Redis Single-Node SET NX PX Expiry Lock Baseline (redis/redis)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/320251.320260; 10.1145/319566.319567; 10.1145/3148.3160; 10.1145/4879.4880; 10.1145/32204.32220",
+            "venue": "ACM Transactions on Database Systems (TODS) 3(2):178-198; 6(2):213-226; 10(1):1-28; 10(4):415-462; 12(4):609-654",
+            "year": "1978-1987"
+          },
+          "name": "Daniel J. Rosenkrantz, Richard E. Stearns, and Philip M. Lewis II (1978); H. T. Kung and John T. Robinson (1981); Peter Franaszek and John T. Robinson (1985); Y. C. Tay, Nathan Goodman, and Rajan Suri (1985); Rakesh Agrawal, Michael J. Carey, and Miron Livny (1987)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/361598.361623; 10.1147/sj.153.0182; 10.1109/TSE.1986.6312924",
+            "venue": "Datamation 14(4):28-31; CACM 15(12):1053-1058; IBM Systems Journal 15(3):182-211; IEEE TSE SE-12(1):96-109; Digital Technical Journal 10(1):100-107",
+            "year": "1968-1998"
+          },
+          "name": "Melvin E. Conway (1968); David L. Parnas (1972); Michael E. Fagan (1976); John C. Knight and Nancy G. Leveson (1986); William M. McKeeman (1998)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2025113.2025139; 10.1109/TSE.2013.28",
+            "venue": "ESEC/FSE 2011, pp. 168-178; IEEE Transactions on Software Engineering 39(10):1358-1375",
+            "year": "2011-2013"
+          },
+          "name": "Yuriy Brun, Reid Holmes, Michael D. Ernst, and David Notkin, Proactive Detection of Collaboration Conflicts (ESEC/FSE 2011 and IEEE TSE 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3196398.3196455; 10.1109/TSE.2020.3018726",
+            "repository": "whystar/MSR2018-DupPR",
+            "revision": "627822196dae340109f8a822ccc3f924c88cb708",
+            "venue": "MSR 2018, pp. 22-25; IEEE Transactions on Software Engineering 48(4):1309-1335",
+            "year": "2018-2022"
+          },
+          "name": "Yue Yu, Zhixing Li, Gang Yin, Tao Wang, and Huaimin Wang (MSR 2018) and Zhixing Li, Yue Yu, Minghui Zhou, Tao Wang, Gang Yin, Long Lan, and Huaimin Wang (IEEE TSE 2022, whystar/MSR2018-DupPR)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.2020.3018726",
+            "repository": "whystar/DupPR-cited",
+            "revision": "effc13e84f71c39e109fa7246b3c3f12e0046065",
+            "year": "2020-2022"
+          },
+          "name": "Zhixing Li et al., Duplicate Pull-Request Cited Examples Index (whystar/DupPR-cited)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.2021.3053403",
+            "repository": "whystar/TSE2021-AbandonedPR",
+            "revision": "e65415fee73de85f7caa309a532c103f0fc4c618",
+            "venue": "IEEE Transactions on Software Engineering 48(6):2173-2188",
+            "year": "2021-2022"
+          },
+          "name": "Zhixing Li, Yue Yu, Tao Wang, Gang Yin, ShanShan Li, and Huaimin Wang, Are You Still Working on This? An Empirical Study on Pull Request Abandonment (IEEE TSE 2022 and whystar/TSE2021-AbandonedPR)"
+        },
+        {
+          "identity": {
+            "arxiv": "2110.15447v2; 2305.18150v1",
+            "doi": "10.1145/3338906.3338918; 10.1109/TSE.2021.3101732; 10.1145/3530785; 10.1145/3624739",
+            "venue": "ESEC/FSE 2019, pp. 350-361; IEEE TSE 48(9):3626-3639; ACM TOSEM 32(1):Art. 10, pp. 1-39; ACM TOSEM 33(2):Art. 46, pp. 1-43",
+            "year": "2019-2024"
+          },
+          "name": "Shurui Zhou, Bogdan Vasilescu, and Christian Kastner (ESEC/FSE 2019); Zainab Masood, Rashina Hoda, and Kelly Blincoe (IEEE TSE 2022); SayedHassan Khatoonabadi et al. (ACM TOSEM 2023 and 2024)"
+        },
+        {
+          "identity": {
+            "repository": "actions/stale",
+            "revision": "3c6b846feaf83b4021f133e36bcf68061f04e1dc",
+            "year": "2026"
+          },
+          "name": "GitHub Stale Issue and Pull-Request Lifecycle Action (actions/stale)"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.13295v2",
+            "repository": "cooperbench/CooperBench",
+            "revision": "63b9d44d9f39a02fccf5bf0052db48a917a011fd",
+            "year": "2026"
+          },
+          "name": "Arpita Khatua, Hao Zhu, et al., CooperBench: Why Coding Agents Cannot Be Your Teammates Yet (arXiv:2601.13295v2 and cooperbench/CooperBench)"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.13295v2",
+            "repository": "cooperbench/cooperagents",
+            "revision": "89135a56b35e0712b2da4eb700c8d258803dd623",
+            "year": "2026"
+          },
+          "name": "CooperBench Cooperative Multi-Agent Harness (cooperbench/cooperagents)"
+        },
+        {
+          "identity": {
+            "arxiv": "2606.00953v1",
+            "repository": "Flitternie/CoCoder",
+            "revision": "64fddee20db2b7ec992fa7e0f5b088fb9147a0fa",
+            "year": "2026"
+          },
+          "name": "Xinyi Yang, Linyi Nie, et al., When Parallelism Pays Off: Cohesion-Aware Task Partitioning for Multi-Agent Coding (Co-Coder, arXiv:2606.00953v1 and Flitternie/CoCoder)"
+        },
+        {
+          "identity": {
+            "arxiv": "2603.21489v2; 2604.03551v2; 2607.04697v2; 2610.07261v1",
+            "doi": "10.1145/3805760.3814923",
+            "venue": "ACM AIware 2026, pp. 323-331; arXiv 2026",
+            "year": "2026"
+          },
+          "name": "Jiachen Geng and Graham Neubig, CAID (arXiv:2603.21489v2); Daniel Ogenrwot and John Businge, AgenticFlict (ACM AIware 2026); G. Xu, A. Subramanian, and N. Karthik (arXiv:2607.04697v2); S. Muku, NP-Bench (arXiv:2610.07261v1)"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "e572847ee4d074c9947e8367d150b81775a7e903",
+            "year": "2026"
+          },
+          "name": "Linux Kernel Patch Submission Guide (torvalds/linux)"
+        },
+        {
+          "identity": {
+            "repository": "python/peps",
+            "revision": "4434e728a7db24540d581f52e96570ca1230356e",
+            "year": "2026"
+          },
+          "name": "Python PEP 1 Purpose and Guidelines (python/peps)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+            "url": "https://www.chromium.org/blink/launching-features/",
+            "year": "2026"
+          },
+          "name": "Rust RFC Process Guide (rust-lang/rfcs) and Chromium Blink Launching Features Process"
+        }
+      ],
+      "topics": [
+        "agents/multi-agent-collaboration",
+        "agents/task-partitioning",
+        "agents/concurrency-control",
+        "systems/distributed-leases",
+        "systems/fencing-tokens",
+        "systems/concurrency-control",
+        "vcs/merge-conflicts",
+        "vcs/git-hooks",
+        "tooling/pull-requests",
+        "verification/differential-testing"
+      ]
+    },
     "agent-context-compaction-externalized-memory-coordination-scaling-and-retrieval": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -2708,6 +2905,130 @@
         "verification/statistical-gating"
       ]
     },
+    "agent-coordination-topologies-broker-cascades-and-cross-transcript-security": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "a2aproject/A2A",
+            "revision": "5f931b8a25fe66789f987ec4a55fc16ee9fe41ee"
+          },
+          "name": "Agent2Agent Protocol Specification and Protobuf Schema (a2aproject/A2A)"
+        },
+        {
+          "identity": {
+            "arxiv": "2411.04468v1",
+            "repository": "microsoft/autogen",
+            "revision": "8390985108cb1e3881f5f7297765758d8ad2540c",
+            "year": "2024-2026"
+          },
+          "name": "Microsoft AutoGen / Magentic-One Orchestrator and Swarm GroupChat (microsoft/autogen and Fourney et al.)"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.00352v7",
+            "repository": "FoundationAgents/MetaGPT",
+            "revision": "11cdf466d042aece04fc6cfd13b28e1a70341b1f",
+            "venue": "ICLR 2024"
+          },
+          "name": "MetaGPT Shared Message Environment and Role Pub/Sub (FoundationAgents/MetaGPT and Hong et al.)"
+        },
+        {
+          "identity": {
+            "repository": "crewAIInc/crewAI",
+            "revision": "56c26a7fb3ece62c64de52e8b4228d15c9c81492"
+          },
+          "name": "CrewAI Delegation Tools and CacheHandler (crewAIInc/crewAI)"
+        },
+        {
+          "identity": {
+            "repository": "camel-ai/camel",
+            "revision": "c619d1fe5aa2182395d02aadddc71b818c1b6c9f"
+          },
+          "name": "CAMEL Workforce and TaskChannel Packet Queue (camel-ai/camel)"
+        },
+        {
+          "identity": {
+            "repository": "OpenHands/software-agent-sdk",
+            "revision": "c0c4f0d3fdec003f3b20d3384557f648541d25fe"
+          },
+          "name": "OpenHands Software Agent SDK Coordination, Locking, and Conversation Search (OpenHands/software-agent-sdk)"
+        },
+        {
+          "identity": {
+            "repository": "OpenHands/OpenHands",
+            "revision": "b1f3b66abbaf834892f69b0892f62586774861a3"
+          },
+          "name": "OpenHands Frontend Client Repository (OpenHands/OpenHands)"
+        },
+        {
+          "identity": {
+            "arxiv": "2503.13657v3",
+            "repository": "multi-agent-systems-failure-taxonomy/MAST",
+            "venue": "NeurIPS 2025 Datasets and Benchmarks",
+            "year": "2025"
+          },
+          "name": "Mert Cemri et al., Why Do Multi-Agent LLM Systems Fail? / MAST"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.01285v2",
+            "doi": "10.1145/174666.174668; 10.1109/TC.1977.5009289; 10.1145/356810.356816; 10.1609/aimag.v7i2.537; 10.1609/aimag.v7i3.550",
+            "year": "1977-2026"
+          },
+          "name": "Coordination Theory and Blackboard Architectures (Malone & Crowston 1994; Fennell & Lesser 1977; Erman et al. 1980; Nii 1986a, 1986b; Salemi et al. 2026)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2363.2433; 10.1145/214419.214420; 10.1145/63334.63337",
+            "venue": "ACM TOPLAS 7(1); ACM TOCS 4(2); CACM 32(4)",
+            "year": "1985-1989"
+          },
+          "name": "Generative Communication and Linda Tuple-Space Kernels (Gelernter 1985; Carriero & Gelernter 1986; Carriero & Gelernter 1989)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TC.1980.1675516; 10.1007/BF02223791; 10.1145/857076.857078; 10.1016/j.cogsys.2015.12.002",
+            "year": "1959-2016"
+          },
+          "name": "Contract Net Protocol, Stigmergy, and Publish/Subscribe Taxonomies (Smith 1980; Grass\u00e9 1959; Eugster et al. 2003; Heylighen 2016)"
+        },
+        {
+          "identity": {
+            "arxiv": "2305.04388v2; 2307.13702v1; 2505.05410v1; 2503.15223v2; 2610.18206v1; 2610.06193v1",
+            "doi": "10.1145/3744916.3764576",
+            "venue": "NeurIPS 2023; ICSE 2026; arXiv 2023-2026"
+          },
+          "name": "Chain-of-Thought Unfaithfulness and Coding-Agent Scope/Policy Drift Studies (Turpin et al.; Lanham et al.; Chen et al.; PatchDiff; SWE-Misbehavior; SWE-CC)"
+        },
+        {
+          "identity": {
+            "arxiv": "1908.10084v1; 2104.08663v4; 2305.05176v1; 2406.18665v4",
+            "venue": "EMNLP-IJCNLP 2019; NeurIPS 2021 D&B; arXiv 2023; ICLR 2025"
+          },
+          "name": "Semantic Retrieval and Confidence-Gated LLM Routing Cascades (Reimers & Gurevych SBERT; Thakur et al. BEIR; Chen, Zaharia & Zou FrugalGPT; Ong et al. RouteLLM)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.02817v2; 2410.07283v1",
+            "year": "2024-2025"
+          },
+          "name": "Multi-Agent Prompt-Injection Worms and Shared-Memory Epidemics (Cohen, Bitton & Nassi Morris-II; Lee & Tiwari Prompt Infection)"
+        }
+      ],
+      "topics": [
+        "agents/multi-agent-coordination",
+        "agents/broker-cascades",
+        "agents/duplicate-work-detection",
+        "agents/intent-telemetry-drift",
+        "agents/protocols",
+        "security/prompt-injection-worms",
+        "security/cross-transcript-quarantine",
+        "systems/distributed-coordination",
+        "systems/tuple-spaces",
+        "tooling/agent-harnesses"
+      ]
+    },
     "agent-data-analysis-sql-generation-ml-experimentation-and-scientific-workflows": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -3021,6 +3342,303 @@
         "vcs/git-bisect",
         "security/vulnerability-repair",
         "verification/differential-testing"
+      ]
+    },
+    "agent-early-overlap-detection-speculative-merge-and-shared-findings-ledgers": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1109/TSE.2011.64",
+            "venue": "IEEE Transactions on Software Engineering 38(4):889-908",
+            "year": "2012"
+          },
+          "name": "Anita Sarma, David F. Redmiles, and Andr\u00e9 van der Hoek, Palant\u00edr: Early Detection of Development Conflicts Arising from Parallel Code Changes (IEEE TSE 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2025113.2025139; 10.1109/TSE.2013.28",
+            "repository": "brunyuriy/crystalvc",
+            "revision": "2275e6980f8ba58136ac02a517c8ccdaf5ce754b",
+            "venue": "ESEC/FSE 2011, pp. 168-178; IEEE TSE 39(10):1358-1375",
+            "year": "2011-2013"
+          },
+          "name": "Yuriy Brun, Reid Holmes, Michael D. Ernst, and David Notkin, Proactive Detection of Collaboration Conflicts and Early Detection of Collaboration Conflicts and Risks (ESEC/FSE 2011; IEEE TSE 2013; brunyuriy/crystalvc)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSE.2012.6227180; 10.1109/ICSE.2013.6606619",
+            "venue": "ICSE 2012, pp. 342-352; ICSE 2013, pp. 732-741",
+            "year": "2012-2013"
+          },
+          "name": "M\u00e1rio Lu\u00eds Guimar\u00e3es and Ant\u00f3nio Rito Silva, Improving Early Detection of Software Merge Conflicts / WeCode (ICSE 2012), and Bakhtiar Khan Kasi and Anita Sarma, Cassandra: Proactive Conflict Minimization through Optimized Task Scheduling (ICSE 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1180875.1180929; 10.1145/1414004.1414008; 10.1109/TSE.2012.32",
+            "venue": "CSCW 2006, pp. 353-362; ESEM 2008, pp. 2-11; IEEE TSE 39(3):343-360",
+            "year": "2006-2013"
+          },
+          "name": "Marcelo Cataldo, Patrick A. Wagstrom, James D. Herbsleb, and Kathleen M. Carley, Socio-Technical Congruence and Coordination Breakdowns (CSCW 2006; ESEM 2008; IEEE TSE 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3196398.3196455",
+            "repository": "whystar/MSR2018-DupPR",
+            "revision": "627822196dae340109f8a822ccc3f924c88cb708",
+            "venue": "MSR 2018, pp. 22-25",
+            "year": "2018-2020"
+          },
+          "name": "Yue Yu, Zhixing Li, Gang Yin, Tao Wang, and Huaimin Wang, A Dataset of Duplicate Pull-Requests in GitHub (MSR 2018; whystar/MSR2018-DupPR)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3131704.3131725; 10.1145/3361242.3361254; 10.1007/s11390-020-9935-1; 10.1109/TSE.2020.3018726",
+            "venue": "Internetware 2017, pp. 1-6; Internetware 2019, pp. 1-10; JCST 36(1):191-206; IEEE TSE 48(4):1309-1335",
+            "year": "2017-2022"
+          },
+          "name": "Zhixing Li et al., Duplicate Pull-Request Detection Combining Textual, Change, and Temporal Signals (Internetware 2017; Internetware 2019; JCST 2021; IEEE TSE 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SANER.2019.8668023; 10.1145/3338906.3338918",
+            "repository": "luyaor/INTRUDE",
+            "revision": "87a69cbbe71ac707ea25d6e31c317038b1aba78d",
+            "venue": "IEEE SANER 2019, pp. 230-241; ESEC/FSE 2019, pp. 350-361",
+            "year": "2019"
+          },
+          "name": "Luyao Ren, Shurui Zhou, Christian K\u00e4stner, and Andrzej W\u0105sowski, Identifying Redundancies in Fork-Based Development (IEEE SANER 2019; luyaor/INTRUDE), and Shurui Zhou, Bogdan Vasilescu, and Christian K\u00e4stner, What the Fork (ESEC/FSE 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSE.2007.32; 10.1109/ASE.2011.6100061",
+            "venue": "ICSE 2007, pp. 499-510; ASE 2011, pp. 253-262",
+            "year": "2007-2011"
+          },
+          "name": "Per Runeson, Magnus Alexandersson, and Oskar Nyholm, Detection of Duplicate Defect Reports Using Natural Language Processing (ICSE 2007), and Chengnian Sun, David Lo, Siau-Cheng Khoo, and Jing Jiang, Towards More Accurate Retrieval of Duplicate Bug Reports / REP (ASE 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.3233/SAT190070",
+            "venue": "JSAT 6(4):245-262; IJCAI 2009, pp. 499-504; IJCAI 2009, pp. 399-404",
+            "year": "2009"
+          },
+          "name": "Youssef Hamadi, Sa\u00efd Jabbour, and Lakhdar Sais, ManySAT and Control-Based Clause Sharing in Parallel SAT Solving (JSAT 2009; IJCAI 2009), and Gilles Audemard and Laurent Simon, Predicting Learnt Clauses Quality in Modern SAT Solvers / Glucose LBD (IJCAI 2009)"
+        },
+        {
+          "identity": {
+            "arxiv": "2312.17025v3",
+            "doi": "10.18653/v1/2024.acl-long.305",
+            "repository": "OpenBMB/ChatDev",
+            "revision": "31fd994416a251ecdeb1f0a73c329271743bfb56",
+            "venue": "ACL 2024 Long Papers, pp. 5628-5640",
+            "year": "2023-2024"
+          },
+          "name": "Chen Qian et al., Experiential Co-Learning of Software-Developing Agents (ACL 2024; OpenBMB/ChatDev chatdev1.0)"
+        },
+        {
+          "identity": {
+            "repository": "OpenBMB/ChatDev",
+            "revision": "464a681ba7bda869db97a50c5fa707c9a0fb57a0",
+            "year": "2026"
+          },
+          "name": "OpenBMB/ChatDev 2.0 BlackboardMemory Implementation"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.10144v3",
+            "doi": "10.1609/aaai.v38i17.29936",
+            "venue": "AAAI 2024, 38(17):19632-19642",
+            "year": "2023-2024"
+          },
+          "name": "Andrew Zhao, Daniel Huang, Quentin Xu, Matthieu Lin, Yong-Jin Liu, and Gao Huang, ExpeL: LLM Agents Are Experiential Learners (AAAI 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2403.02694",
+            "doi": "10.18653/v1/2023.nlposs-1.24",
+            "repository": "zilliztech/GPTCache",
+            "revision": "a74ac654473f7bf4109118e8576945161616e17a",
+            "venue": "NLP-OSS @ EMNLP 2023, pp. 212-218; arXiv 2024",
+            "year": "2023-2026"
+          },
+          "name": "Fu Bang (PDF byline: Bang Fu and Di Feng), GPTCache: An Open-Source Semantic Cache for LLM Applications Enabling Faster Answers and Cost Savings (NLP-OSS @ EMNLP 2023; zilliztech/GPTCache), and Waris Gill et al., MeanCache: User-Centric Semantic Caching for LLM Web Services (2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.03771v5",
+            "repository": "vcache-project/vCache",
+            "revision": "50694eebf0c870231030f73707cb6543d47f0411",
+            "venue": "ICLR 2026",
+            "year": "2025-2026"
+          },
+          "name": "Luis Gaspar Schroeder, Aditya Desai, Alejandro Cuadron, Kyle Chu, Shu Liu, Mark Zhao, Stephan Krusche, Alfons Kemper, Matei Zaharia, and Joseph E. Gonzalez, vCache: Verified Semantic Prompt Caching (ICLR 2026; vcache-project/vCache)"
+        },
+        {
+          "identity": {
+            "component": "git-merge-tree",
+            "minimum_version": "2.38.0",
+            "observed_version": "2.56.1",
+            "repository": "git/git"
+          },
+          "name": "Git Three-Way In-Memory Merge Plumbing (git merge-tree --write-tree)"
+        }
+      ],
+      "topics": [
+        "agents/overlap-detection",
+        "agents/conflict-detection",
+        "agents/findings-ledgers",
+        "agents/semantic-caching",
+        "agents/socio-technical-congruence",
+        "vcs/speculative-merge",
+        "vcs/duplicate-pull-requests",
+        "smt/clause-sharing",
+        "systems/content-addressed-invalidation",
+        "tooling/agent-harnesses",
+        "verification/nogood-sharing"
+      ]
+    },
+    "agent-fleet-admission-control-hedging-redundancy-and-usl-scalability": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2601.13295v2",
+            "doi": "10.48550/arXiv.2601.13295",
+            "repository": "cooperbench/CooperBench",
+            "revision": "63b9d44d9f39a02fccf5bf0052db48a917a011fd",
+            "year": "2026"
+          },
+          "name": "CooperBench Cooperative Multi-Agent Coding Benchmark (cooperbench/CooperBench; Khatua et al., 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2607.04697v2",
+            "doi": "10.5281/zenodo.21186464",
+            "repository": "Quantum535/concurrent-agentic-prs-replication",
+            "revision": "3f5970588c412b43b50ddb67a68b38ecffdca70d",
+            "year": "2026"
+          },
+          "name": "Concurrent AI Agent Pull Requests Replication Package (Quantum535/concurrent-agentic-prs-replication; Xu, Subramanian, & Karthik, 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2604.03551v2",
+            "doi": "10.1145/3805760.3814923",
+            "venue": "Proc. 3rd ACM Int. Conf. on AI-Powered Software (AIware '26), pp. 323-331",
+            "year": "2026"
+          },
+          "name": "AgenticFlict Merge-Conflict Dataset and Study (Ogenrwot & Businge, ACM AIware 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2606.15376v1",
+            "doi": "10.48550/arXiv.2606.15376",
+            "year": "2026"
+          },
+          "name": "CoAgent Advisory Concurrency Control and Monotonic Trajectory Pre-Order (Lyu, Zhang, Wu, Wei, & Chen, 2026)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2465351.2465386",
+            "repository": "google/cluster-scheduler-simulator",
+            "revision": "b882f26643227fcc62739de7b814ef9b0634ecff",
+            "venue": "ACM EuroSys 2013, pp. 351-364; USENIX NSDI 2011, pp. 295-308",
+            "year": "2011-2022"
+          },
+          "name": "Omega, Mesos, and Monolithic Cluster Scheduler Simulator (google/cluster-scheduler-simulator; Schwarzkopf et al. EuroSys 2013; Hindman et al. NSDI 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2517349.2522716",
+            "repository": "radlab/sparrow",
+            "revision": "afb8efadeb88524f1394d1abe4ea66c6fd2ac744",
+            "venue": "24th ACM SOSP (2013), pp. 69-84",
+            "year": "2013"
+          },
+          "name": "Sparrow Decentralized Batch-Sampling and Late-Binding Scheduler (radlab/sparrow; Ousterhout, Wendell, Zaharia, & Stoica, SOSP 2013)"
+        },
+        {
+          "identity": {
+            "doi": "10.1287/opre.9.3.383; 10.1145/319566.319567; 10.1109/TAC.1985.1104054; 10.1145/32204.32220",
+            "venue": "Operations Research 9(3); ACM TODS 6(2) & 12(4); IEEE Trans. Autom. Control 30(8)",
+            "year": "1961-1987"
+          },
+          "name": "Classical Queueing Admission and Concurrency-Control Foundations (Little 1961; Kung & Robinson 1981; Stidham 1985; Agrawal, Carey, & Livny 1987)"
+        },
+        {
+          "identity": {
+            "arxiv": "1311.2851v1",
+            "doi": "10.1145/2408776.2408794; 10.1145/2535372.2535392; 10.1145/2745844.2745873; 10.1287/opre.2016.1582; 10.1109/TNET.2017.2744607; 10.1109/TCOMM.2015.2506161",
+            "year": "2004-2017"
+          },
+          "name": "Tail-Latency Hedging, Straggler Backup Tasks, and Redundant Queueing Theory (Dean & Ghemawat OSDI 2004; Dean & Barroso CACM 2013; Vulimiri et al. CoNEXT 2013; Gardner et al. SIGMETRICS 2015, OR 2017a, IEEE/ACM ToN 2017b; Shah, Lee, & Ramchandran IEEE TCOMM 2016)"
+        },
+        {
+          "identity": {
+            "arxiv": "2606.20158v1",
+            "doi": "10.1109/TSE.1985.231893; 10.1109/TSE.1985.231895; 10.1109/TSE.1986.6312924; 10.1109/32.58771; 10.1109/32.44387",
+            "repository": "ASSERT-KTH/Knight-Leveson-Redux",
+            "revision": "546a59d35e2fda7da070f0e6015523f4ca44a649",
+            "year": "1985-2026"
+          },
+          "name": "Knight-Leveson-Redux Coding-Agent N-Version Campaign and Coincident-Failure Theory (ASSERT-KTH/Knight-Leveson-Redux; Ron, Baudry, & Monperrus 2026; Avizienis 1985; Eckhardt & Lee 1985; Knight & Leveson 1986; Littlewood & Miller 1989; Brilliant, Knight, & Leveson 1990)"
+        },
+        {
+          "identity": {
+            "doi": "10.1287/orsc.2.1.71; 10.2189/asqu.52.4.667; 10.1073/pnas.1110069108; 10.1073/pnas.1518798113",
+            "venue": "Organization Science 2(1); Admin. Sci. Q. 52(4); PNAS 109(3) & 113(11)",
+            "year": "1991-2016"
+          },
+          "name": "Network Exploration, NK Epistasis, and Cumulative Recombinant Innovation (March 1991; Lazer & Friedman 2007; Mason & Watts 2012; Derex & Boyd 2016)"
+        },
+        {
+          "identity": {
+            "arxiv": "0808.1431v2",
+            "doi": "10.1145/1465482.1465560; 10.1007/978-3-540-31010-5; 10.48550/arXiv.0808.1431",
+            "repository": "VividCortex/ebooks",
+            "revision": "969dccbb2a2f3e7c8621ef71eb4a1651a9c62088",
+            "year": "1967-2020"
+          },
+          "name": "Gunther Universal Scalability Law Theory and VividCortex Nose-Curve Monograph (VividCortex/ebooks; Gunther 1993, 2007, 2008; Schwartz 2015; Amdahl 1967; Brooks 1975)"
+        },
+        {
+          "identity": {
+            "repository": "codahale/usl",
+            "revision": "513b3f33c0dc0858df35e1f1af1a8fcf4f61b198",
+            "year": "2022"
+          },
+          "name": "Go Universal Scalability Law Fitter and Solver (codahale/usl)"
+        },
+        {
+          "identity": {
+            "repository": "codahale/usl4j",
+            "revision": "15ef46d9800a02de8a56228d19976ffdef741f74",
+            "year": "2019"
+          },
+          "name": "Java Universal Scalability Law Port (codahale/usl4j)"
+        },
+        {
+          "identity": {
+            "repository": "smoeding/usl",
+            "revision": "4a05e8ee6f3321001a314821d3af510add5fb033",
+            "version": "3.0.4",
+            "year": "2025"
+          },
+          "name": "CRAN R Universal Scalability Law Package v3.0.4 (smoeding/usl; Gunther & Moeding)"
+        }
+      ],
+      "topics": [
+        "agents/fleet-coordination",
+        "agents/admission-control",
+        "agents/concurrency-control",
+        "agents/hedging-and-redundancy",
+        "agents/exploration-diversity",
+        "systems/queueing-theory",
+        "systems/universal-scalability-law",
+        "systems/cluster-scheduling",
+        "vcs/merge-conflicts",
+        "verification/n-version-programming"
       ]
     },
     "agent-instruction-compliance-context-rot-reasoning-models-and-skill-routing": {
