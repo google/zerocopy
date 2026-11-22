@@ -10550,6 +10550,59 @@
         "systems/sel4"
       ]
     },
+    "anneal-concurrent-mir-capture-target-audit-and-lean-miri-closure": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "64b0b6ae57882b290b19e8ee0f7d89c05daa0caf"
+          },
+          "name": "google/zerocopy (anneal/ subtree)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust (anneal pinned rustc 1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rust-lang/rust (rustc 1.102.0-nightly)"
+        },
+        {
+          "identity": {
+            "repository": "proofs-rs/lean-miri",
+            "revision": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a"
+          },
+          "name": "proofs-rs/lean-miri (vendored in anneal/vendor/lean-miri)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4"
+        }
+      ],
+      "topics": [
+        "anneal/architecture",
+        "anneal/theory",
+        "lean/mechanization",
+        "rust/atomics",
+        "rust/concurrency",
+        "rust/miri",
+        "rustc/mir",
+        "verification/concurrency"
+      ]
+    },
     "anneal-cps-robotics-aerospace-eda-and-quantum-survey": {
       "observed_at": "2026-10-31",
       "subjects": [
