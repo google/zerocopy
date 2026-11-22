@@ -67963,6 +67963,61 @@
         "verification/physical-unit-consistency-checking"
       ]
     },
+    "nominal-recursive-mir-adts-null-gap-arrays-and-sql-error-dominance": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "233d60e7c72e1550c9fcc39cf8a36b4d00d8c4ed"
+          },
+          "name": "Anneal MIR AST, operational semantics, and TrustedBoundary inspector"
+        },
+        {
+          "identity": {
+            "repository": "google/googlesql",
+            "revision": "762ca7a16f2b555c85b6f9250c713a82bd1052d6"
+          },
+          "name": "GoogleSQL C++ reference evaluator and numeric conversion library"
+        },
+        {
+          "identity": {
+            "repository": "apache/arrow-rs",
+            "revision": "e02da695a51d1a941fd99beb91a0afbb00d49cdc"
+          },
+          "name": "Apache Arrow Rust columnar list and offset arrays"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1"
+          },
+          "name": "Rust compiler (`rustc`) IEEE-754 float-to-int saturating cast and MIR"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 proof kernel"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/theory",
+        "anneal/trusted",
+        "compilers",
+        "domains",
+        "domains/sql-engines",
+        "lean/mechanization",
+        "pl/type-systems",
+        "rust",
+        "verification",
+        "verification/floating-point",
+        "verification/soundness"
+      ]
+    },
     "non-coherent-dma-cache-maintenance-zicbom-granules-and-adjacent-field-tearing-hazards": {
       "observed_at": "2026-11-20",
       "subjects": [
