@@ -1,0 +1,969 @@
+{
+  "schema": "rsm-range-switch-probe/1",
+  "generated_on": "2026-11-21",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "part_a_remove_storage_markers_miri_paradox": {
+    "single_scope_matrix": {
+      "miri_mir0_opt0": {
+        "flags": [
+          "-Zmir-opt-level=0",
+          "-Copt-level=0"
+        ],
+        "miri_rc": 1,
+        "diag_head": [
+          "error: Undefined Behavior: memory access failed: alloc151 has been freed, so this pointer is dangling",
+          " --> src/bin/single_scope.rs:8:14",
+          "  |",
+          "8 |     unsafe { *ptr }"
+        ],
+        "warnings": [],
+        "stderr_scrubbed": "error: Undefined Behavior: memory access failed: alloc151 has been freed, so this pointer is dangling\n --> src/bin/single_scope.rs:8:14\n  |\n8 |     unsafe { *ptr }\n  |              ^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nhelp: alloc151 was allocated here:\n --> src/bin/single_scope.rs:5:13\n  |\n5 |         let x: i32 = 42;\n  |             ^\nhelp: alloc151 was deallocated here:\n --> src/bin/single_scope.rs:7:5\n  |\n7 |     }\n  |     ^\n  = note: stack backtrace:\n          0: use_after_scope_value\n              at src/bin/single_scope.rs:8:14: 8:18\n          1: main\n              at src/bin/single_scope.rs:12:13: 12:36\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n"
+      },
+      "miri_mir1_opt0_ub_erased": {
+        "flags": [
+          "-Zmir-opt-level=1",
+          "-Copt-level=0"
+        ],
+        "miri_rc": 0,
+        "diag_head": [],
+        "warnings": [
+          "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best."
+        ],
+        "stderr_scrubbed": "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best.\n\n"
+      },
+      "miri_mir2_opt0_ub_erased": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=0"
+        ],
+        "miri_rc": 0,
+        "diag_head": [],
+        "warnings": [
+          "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best."
+        ],
+        "stderr_scrubbed": "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best.\n\n"
+      },
+      "miri_mir2_opt0_explicit_preserve_ub": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=0",
+          "-Zmir-preserve-ub=yes"
+        ],
+        "miri_rc": 0,
+        "diag_head": [],
+        "warnings": [
+          "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best."
+        ],
+        "stderr_scrubbed": "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best.\n\n"
+      },
+      "miri_mir2_opt1_ub_restored": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=1"
+        ],
+        "miri_rc": 1,
+        "diag_head": [
+          "error: Undefined Behavior: memory access failed: alloc151 has been freed, so this pointer is dangling",
+          " --> src/bin/single_scope.rs:8:14",
+          "  |",
+          "8 |     unsafe { *ptr }"
+        ],
+        "warnings": [
+          "warning: Miri does not support optimizations: the opt-level is ignored. The only effect of selecting a Cargo profile that enables optimizations (such as --release) is to apply its remaining settings, such as whether debug assertions and overflow checks are enabled.",
+          "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best."
+        ],
+        "stderr_scrubbed": "warning: Miri does not support optimizations: the opt-level is ignored. The only effect of selecting a Cargo profile that enables optimizations (such as --release) is to apply its remaining settings, such as whether debug assertions and overflow checks are enabled.\n\nwarning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best.\n\nerror: Undefined Behavior: memory access failed: alloc151 has been freed, so this pointer is dangling\n --> src/bin/single_scope.rs:8:14\n  |\n8 |     unsafe { *ptr }\n  |              ^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nhelp: alloc151 was allocated here:\n --> src/bin/single_scope.rs:5:13\n  |\n5 |         let x: i32 = 42;\n  |             ^\nhelp: alloc151 was deallocated here:\n --> src/bin/single_scope.rs:7:5\n  |\n7 |     }\n  |     ^\n  = note: stack backtrace:\n          0: use_after_scope_value\n              at src/bin/single_scope.rs:8:14: 8:18\n          1: main\n              at src/bin/single_scope.rs:12:13: 12:36\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 2 warnings emitted\n\n"
+      },
+      "miri_mir1_opt0_disable_rsm_ub_restored": {
+        "flags": [
+          "-Zmir-opt-level=1",
+          "-Copt-level=0",
+          "-Zmir-enable-passes=-RemoveStorageMarkers"
+        ],
+        "miri_rc": 1,
+        "diag_head": [
+          "error: Undefined Behavior: memory access failed: alloc151 has been freed, so this pointer is dangling",
+          " --> src/bin/single_scope.rs:8:14",
+          "  |",
+          "8 |     unsafe { *ptr }"
+        ],
+        "warnings": [
+          "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best."
+        ],
+        "stderr_scrubbed": "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best.\n\nerror: Undefined Behavior: memory access failed: alloc151 has been freed, so this pointer is dangling\n --> src/bin/single_scope.rs:8:14\n  |\n8 |     unsafe { *ptr }\n  |              ^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nhelp: alloc151 was allocated here:\n --> src/bin/single_scope.rs:5:13\n  |\n5 |         let x: i32 = 42;\n  |             ^\nhelp: alloc151 was deallocated here:\n --> src/bin/single_scope.rs:7:5\n  |\n7 |     }\n  |     ^\n  = note: stack backtrace:\n          0: use_after_scope_value\n              at src/bin/single_scope.rs:8:14: 8:18\n          1: main\n              at src/bin/single_scope.rs:12:13: 12:36\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n"
+      },
+      "miri_mir2_opt0_disable_rsm_ub_restored": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=0",
+          "-Zmir-enable-passes=-RemoveStorageMarkers"
+        ],
+        "miri_rc": 1,
+        "diag_head": [
+          "error: Undefined Behavior: memory access failed: alloc151 has been freed, so this pointer is dangling",
+          " --> src/bin/single_scope.rs:8:14",
+          "  |",
+          "8 |     unsafe { *ptr }"
+        ],
+        "warnings": [
+          "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best."
+        ],
+        "stderr_scrubbed": "warning: You have explicitly enabled MIR optimizations, overriding Miri's default which is to completely disable them. Any optimizations may hide UB that Miri would otherwise detect, and it is not necessarily possible to predict what kind of UB will be missed. If you are enabling optimizations to make Miri run faster, we advise using cfg(miri) to shrink your workload instead. The performance benefit of enabling MIR optimizations is usually marginal at best.\n\nerror: Undefined Behavior: memory access failed: alloc151 has been freed, so this pointer is dangling\n --> src/bin/single_scope.rs:8:14\n  |\n8 |     unsafe { *ptr }\n  |              ^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nhelp: alloc151 was allocated here:\n --> src/bin/single_scope.rs:5:13\n  |\n5 |         let x: i32 = 42;\n  |             ^\nhelp: alloc151 was deallocated here:\n --> src/bin/single_scope.rs:7:5\n  |\n7 |     }\n  |     ^\n  = note: stack backtrace:\n          0: use_after_scope_value\n              at src/bin/single_scope.rs:8:14: 8:18\n          1: main\n              at src/bin/single_scope.rs:12:13: 12:36\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n"
+      }
+    },
+    "loop_cross_iteration_alias": {
+      "no_overwrite_mir0_opt0": {
+        "flags": [
+          "-Zmir-opt-level=0",
+          "-Copt-level=0"
+        ],
+        "args": [],
+        "miri_rc": 1,
+        "stdout": "",
+        "diag_head": [
+          "error: Undefined Behavior: memory access failed: alloc643 has been freed, so this pointer is dangling",
+          "  --> src/bin/loop_alias.rs:15:33",
+          "   |",
+          "15 |             observed = unsafe { *p };"
+        ]
+      },
+      "no_overwrite_mir2_opt0_ub_erased": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=0"
+        ],
+        "args": [],
+        "miri_rc": 0,
+        "stdout": "observed=10",
+        "diag_head": []
+      },
+      "no_overwrite_mir2_opt1_ub_restored": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=1"
+        ],
+        "args": [],
+        "miri_rc": 1,
+        "stdout": "",
+        "diag_head": [
+          "error: Undefined Behavior: memory access failed: alloc633 has been freed, so this pointer is dangling",
+          "  --> src/bin/loop_alias.rs:15:33",
+          "   |",
+          "15 |             observed = unsafe { *p };"
+        ]
+      },
+      "overwrite_mir0_opt0": {
+        "flags": [
+          "-Zmir-opt-level=0",
+          "-Copt-level=0"
+        ],
+        "args": [
+          "--",
+          "overwrite"
+        ],
+        "miri_rc": 1,
+        "stdout": "",
+        "diag_head": [
+          "error: Undefined Behavior: memory access failed: alloc776 has been freed, so this pointer is dangling",
+          "  --> src/bin/loop_alias.rs:12:37",
+          "   |",
+          "12 |                 observed = unsafe { *p };"
+        ]
+      },
+      "overwrite_mir2_opt0_sb": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=0"
+        ],
+        "args": [
+          "--",
+          "overwrite"
+        ],
+        "miri_rc": 1,
+        "stdout": "",
+        "diag_head": [
+          "error: Undefined Behavior: attempting a read access using <1579> at alloc776[0x0], but that tag does not exist in the borrow stack for this location",
+          "  --> src/bin/loop_alias.rs:12:37",
+          "   |",
+          "12 |                 observed = unsafe { *p };"
+        ]
+      },
+      "overwrite_mir2_opt0_no_sb_alias_11": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=0",
+          "-Zmiri-disable-stacked-borrows"
+        ],
+        "args": [
+          "--",
+          "overwrite"
+        ],
+        "miri_rc": 0,
+        "stdout": "observed=11",
+        "diag_head": []
+      }
+    },
+    "rustc_rsm_mir_dumps": {
+      "mir0_opt0": {
+        "flags": [
+          "-Zmir-opt-level=0",
+          "-Copt-level=0"
+        ],
+        "rsm_before_present": false,
+        "rsm_after_present": false,
+        "before_metrics": null,
+        "after_metrics": null,
+        "before_mir": null,
+        "after_mir": null
+      },
+      "mir2_opt0": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=0"
+        ],
+        "rsm_before_present": true,
+        "rsm_after_present": true,
+        "before_metrics": {
+          "bodies": 1,
+          "bbs": 3,
+          "assigns": 16,
+          "switchints": 0,
+          "returns": 1,
+          "subtype_casts": 0,
+          "storage_live": 4,
+          "storage_dead": 4,
+          "storage_markers": 8
+        },
+        "after_metrics": {
+          "bodies": 1,
+          "bbs": 3,
+          "assigns": 16,
+          "switchints": 0,
+          "returns": 1,
+          "subtype_casts": 0,
+          "storage_live": 0,
+          "storage_dead": 0,
+          "storage_markers": 0
+        },
+        "before_mir": "// MIR for `use_after_scope_value` before RemoveStorageMarkers\n\nfn use_after_scope_value() -> i32 {\n    let mut _0: i32;\n    let _1: *const i32;\n    let _2: ();\n    let mut _4: *const i32;\n    scope 1 {\n        debug ptr => _1;\n        let _3: i32;\n        let mut _5: *const ();\n        let mut _6: usize;\n        let mut _7: usize;\n        let mut _8: usize;\n        let mut _9: bool;\n        let mut _10: *const ();\n        let mut _11: usize;\n        let mut _12: bool;\n        let mut _13: bool;\n        let mut _14: bool;\n        let mut _15: bool;\n        scope 2 {\n            debug x => _3;\n        }\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = const 42_i32;\n        StorageLive(_4);\n        _4 = &raw const _3;\n        _1 = move _4;\n        StorageDead(_4);\n        _2 = const ();\n        StorageDead(_3);\n        StorageDead(_2);\n        _5 = copy _1 as *const () (PtrToPtr);\n        _6 = copy _5 as usize (Transmute);\n        _7 = Sub(const <i32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _8 = BitAnd(copy _6, copy _7);\n        _9 = Eq(copy _8, const 0_usize);\n        assert(copy _9, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <i32 as std::mem::SizedTypeProperties>::ALIGN, copy _6) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _10 = copy _1 as *const () (PtrToPtr);\n        _11 = copy _10 as usize (Transmute);\n        _12 = Ne(const <i32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _13 = Eq(copy _11, const 0_usize);\n        _14 = BitAnd(copy _13, copy _12);\n        _15 = Not(copy _14);\n        assert(copy _15, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = copy (*_1);\n        StorageDead(_1);\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `use_after_scope_value` after RemoveStorageMarkers\n\nfn use_after_scope_value() -> i32 {\n    let mut _0: i32;\n    let _1: *const i32;\n    let _2: ();\n    let mut _4: *const i32;\n    scope 1 {\n        debug ptr => _1;\n        let _3: i32;\n        let mut _5: *const ();\n        let mut _6: usize;\n        let mut _7: usize;\n        let mut _8: usize;\n        let mut _9: bool;\n        let mut _10: *const ();\n        let mut _11: usize;\n        let mut _12: bool;\n        let mut _13: bool;\n        let mut _14: bool;\n        let mut _15: bool;\n        scope 2 {\n            debug x => _3;\n        }\n    }\n\n    bb0: {\n        _3 = const 42_i32;\n        _4 = &raw const _3;\n        _1 = move _4;\n        _2 = const ();\n        _5 = copy _1 as *const () (PtrToPtr);\n        _6 = copy _5 as usize (Transmute);\n        _7 = Sub(const <i32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _8 = BitAnd(copy _6, copy _7);\n        _9 = Eq(copy _8, const 0_usize);\n        assert(copy _9, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <i32 as std::mem::SizedTypeProperties>::ALIGN, copy _6) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _10 = copy _1 as *const () (PtrToPtr);\n        _11 = copy _10 as usize (Transmute);\n        _12 = Ne(const <i32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _13 = Eq(copy _11, const 0_usize);\n        _14 = BitAnd(copy _13, copy _12);\n        _15 = Not(copy _14);\n        assert(copy _15, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = copy (*_1);\n        return;\n    }\n}\n"
+      },
+      "mir2_opt0_preserve_ub": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=0",
+          "-Zmir-preserve-ub=yes"
+        ],
+        "rsm_before_present": true,
+        "rsm_after_present": true,
+        "before_metrics": {
+          "bodies": 1,
+          "bbs": 3,
+          "assigns": 16,
+          "switchints": 0,
+          "returns": 1,
+          "subtype_casts": 0,
+          "storage_live": 4,
+          "storage_dead": 4,
+          "storage_markers": 8
+        },
+        "after_metrics": {
+          "bodies": 1,
+          "bbs": 3,
+          "assigns": 16,
+          "switchints": 0,
+          "returns": 1,
+          "subtype_casts": 0,
+          "storage_live": 0,
+          "storage_dead": 0,
+          "storage_markers": 0
+        },
+        "before_mir": "// MIR for `use_after_scope_value` before RemoveStorageMarkers\n\nfn use_after_scope_value() -> i32 {\n    let mut _0: i32;\n    let _1: *const i32;\n    let _2: ();\n    let mut _4: *const i32;\n    scope 1 {\n        debug ptr => _1;\n        let _3: i32;\n        let mut _5: *const ();\n        let mut _6: usize;\n        let mut _7: usize;\n        let mut _8: usize;\n        let mut _9: bool;\n        let mut _10: *const ();\n        let mut _11: usize;\n        let mut _12: bool;\n        let mut _13: bool;\n        let mut _14: bool;\n        let mut _15: bool;\n        scope 2 {\n            debug x => _3;\n        }\n    }\n\n    bb0: {\n        StorageLive(_1);\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = const 42_i32;\n        StorageLive(_4);\n        _4 = &raw const _3;\n        _1 = move _4;\n        StorageDead(_4);\n        _2 = const ();\n        StorageDead(_3);\n        StorageDead(_2);\n        _5 = copy _1 as *const () (PtrToPtr);\n        _6 = copy _5 as usize (Transmute);\n        _7 = Sub(const <i32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _8 = BitAnd(copy _6, copy _7);\n        _9 = Eq(copy _8, const 0_usize);\n        assert(copy _9, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <i32 as std::mem::SizedTypeProperties>::ALIGN, copy _6) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _10 = copy _1 as *const () (PtrToPtr);\n        _11 = copy _10 as usize (Transmute);\n        _12 = Ne(const <i32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _13 = Eq(copy _11, const 0_usize);\n        _14 = BitAnd(copy _13, copy _12);\n        _15 = Not(copy _14);\n        assert(copy _15, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = copy (*_1);\n        StorageDead(_1);\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `use_after_scope_value` after RemoveStorageMarkers\n\nfn use_after_scope_value() -> i32 {\n    let mut _0: i32;\n    let _1: *const i32;\n    let _2: ();\n    let mut _4: *const i32;\n    scope 1 {\n        debug ptr => _1;\n        let _3: i32;\n        let mut _5: *const ();\n        let mut _6: usize;\n        let mut _7: usize;\n        let mut _8: usize;\n        let mut _9: bool;\n        let mut _10: *const ();\n        let mut _11: usize;\n        let mut _12: bool;\n        let mut _13: bool;\n        let mut _14: bool;\n        let mut _15: bool;\n        scope 2 {\n            debug x => _3;\n        }\n    }\n\n    bb0: {\n        _3 = const 42_i32;\n        _4 = &raw const _3;\n        _1 = move _4;\n        _2 = const ();\n        _5 = copy _1 as *const () (PtrToPtr);\n        _6 = copy _5 as usize (Transmute);\n        _7 = Sub(const <i32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _8 = BitAnd(copy _6, copy _7);\n        _9 = Eq(copy _8, const 0_usize);\n        assert(copy _9, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <i32 as std::mem::SizedTypeProperties>::ALIGN, copy _6) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _10 = copy _1 as *const () (PtrToPtr);\n        _11 = copy _10 as usize (Transmute);\n        _12 = Ne(const <i32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _13 = Eq(copy _11, const 0_usize);\n        _14 = BitAnd(copy _13, copy _12);\n        _15 = Not(copy _14);\n        assert(copy _15, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = copy (*_1);\n        return;\n    }\n}\n"
+      },
+      "mir2_opt1": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=1"
+        ],
+        "rsm_before_present": false,
+        "rsm_after_present": false,
+        "before_metrics": null,
+        "after_metrics": null,
+        "before_mir": null,
+        "after_mir": null
+      }
+    }
+  },
+  "part_b_pass_specimens": {
+    "ssa_range_propagation": {
+      "ssa_docstring_example": {
+        "before_file": "pass_specimens.ssa_docstring_example.3-2-021.SsaRangePropagation.before.mir",
+        "after_file": "pass_specimens.ssa_docstring_example.3-2-021.SsaRangePropagation.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `ssa_docstring_example` before SsaRangePropagation\n\nfn ssa_docstring_example(_1: u32) -> (bool, bool) {\n    debug a => _1;\n    let mut _0: (bool, bool);\n    let _2: bool;\n    scope 1 {\n        debug b => _2;\n        let _3: bool;\n        scope 2 {\n            debug c => _3;\n            let _4: bool;\n            scope 3 {\n                debug d => _4;\n            }\n        }\n    }\n\n    bb0: {\n        _2 = Lt(copy _1, const 9_u32);\n        switchInt(copy _2) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _3 = copy _2;\n        _4 = Lt(copy _1, const 8_u32);\n        _0 = (copy _2, copy _4);\n        goto -> bb3;\n    }\n\n    bb2: {\n        _0 = const (false, false);\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}\n\nalloc1 (size: 2, align: 1) {\n    00 00                                           \u2502 ..\n}\n",
+        "after_mir": "// MIR for `ssa_docstring_example` after SsaRangePropagation\n\nfn ssa_docstring_example(_1: u32) -> (bool, bool) {\n    debug a => _1;\n    let mut _0: (bool, bool);\n    let _2: bool;\n    scope 1 {\n        debug b => _2;\n        let _3: bool;\n        scope 2 {\n            debug c => _3;\n            let _4: bool;\n            scope 3 {\n                debug d => _4;\n            }\n        }\n    }\n\n    bb0: {\n        _2 = Lt(copy _1, const 9_u32);\n        switchInt(copy _2) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _3 = const true;\n        _4 = Lt(copy _1, const 8_u32);\n        _0 = (const true, copy _4);\n        goto -> bb3;\n    }\n\n    bb2: {\n        _0 = const (false, false);\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}\n\nalloc1 (size: 2, align: 1) {\n    00 00                                           \u2502 ..\n}\n",
+        "native_at_a_eq_8": "a=8 -> c=true, d=false"
+      },
+      "ssa_assume_mir": {
+        "before_file": "pass_specimens.ssa_assume_mir.3-2-021.SsaRangePropagation.before.mir",
+        "after_file": "pass_specimens.ssa_assume_mir.3-2-021.SsaRangePropagation.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `ssa_assume_mir` before SsaRangePropagation\n\nfn ssa_assume_mir(_1: bool) -> bool {\n    let mut _0: bool;\n\n    bb0: {\n        assume(copy _1);\n        _0 = copy _1;\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `ssa_assume_mir` after SsaRangePropagation\n\nfn ssa_assume_mir(_1: bool) -> bool {\n    let mut _0: bool;\n\n    bb0: {\n        assume(copy _1);\n        _0 = const true;\n        return;\n    }\n}\n"
+      },
+      "ssa_bool_otherwise": {
+        "before_file": "pass_specimens.ssa_bool_otherwise.3-2-021.SsaRangePropagation.before.mir",
+        "after_file": "pass_specimens.ssa_bool_otherwise.3-2-021.SsaRangePropagation.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `ssa_bool_otherwise` before SsaRangePropagation\n\nfn ssa_bool_otherwise(_1: bool) -> bool {\n    debug b => _1;\n    let mut _0: bool;\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = copy _1;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _0 = const false;\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `ssa_bool_otherwise` after SsaRangePropagation\n\nfn ssa_bool_otherwise(_1: bool) -> bool {\n    debug b => _1;\n    let mut _0: bool;\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = const true;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _0 = const false;\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}\n"
+      },
+      "ssa_switch_u32_singleton": {
+        "before_file": "pass_specimens.ssa_switch_u32_singleton.3-2-021.SsaRangePropagation.before.mir",
+        "after_file": "pass_specimens.ssa_switch_u32_singleton.3-2-021.SsaRangePropagation.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `ssa_switch_u32_singleton` before SsaRangePropagation\n\nfn ssa_switch_u32_singleton(_1: u32) -> u32 {\n    debug x => _1;\n    let mut _0: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [7: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = const 0_u32;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _0 = copy _1;\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `ssa_switch_u32_singleton` after SsaRangePropagation\n\nfn ssa_switch_u32_singleton(_1: u32) -> u32 {\n    debug x => _1;\n    let mut _0: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [7: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = const 0_u32;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _0 = const 7_u32;\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}\n"
+      },
+      "ssa_switch_14_arms_lt16": {
+        "before_file": "pass_specimens.ssa_switch_14_arms_lt16.3-2-021.SsaRangePropagation.before.mir",
+        "after_file": "pass_specimens.ssa_switch_14_arms_lt16.3-2-021.SsaRangePropagation.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `ssa_switch_14_arms_lt16` before SsaRangePropagation\n\nfn ssa_switch_14_arms_lt16(_1: u32) -> u32 {\n    debug x => _1;\n    let mut _0: u32;\n    let mut _2: (u32, bool);\n    let mut _3: (u32, bool);\n    let mut _4: (u32, bool);\n    let mut _5: (u32, bool);\n    let mut _6: (u32, bool);\n    let mut _7: (u32, bool);\n    let mut _8: (u32, bool);\n    let mut _9: (u32, bool);\n    let mut _10: (u32, bool);\n    let mut _11: (u32, bool);\n    let mut _12: (u32, bool);\n    let mut _13: (u32, bool);\n    let mut _14: (u32, bool);\n    let mut _15: (u32, bool);\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb15, 1: bb14, 2: bb13, 3: bb12, 4: bb11, 5: bb10, 6: bb9, 7: bb8, 8: bb7, 9: bb6, 10: bb5, 11: bb4, 12: bb3, 13: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = copy _1;\n        goto -> bb30;\n    }\n\n    bb2: {\n        _15 = AddWithOverflow(copy _1, const 14_u32);\n        assert(!move (_15.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 14_u32) -> [success: bb29, unwind continue];\n    }\n\n    bb3: {\n        _14 = AddWithOverflow(copy _1, const 13_u32);\n        assert(!move (_14.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 13_u32) -> [success: bb28, unwind continue];\n    }\n\n    bb4: {\n        _13 = AddWithOverflow(copy _1, const 12_u32);\n        assert(!move (_13.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 12_u32) -> [success: bb27, unwind continue];\n    }\n\n    bb5: {\n        _12 = AddWithOverflow(copy _1, const 11_u32);\n        assert(!move (_12.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 11_u32) -> [success: bb26, unwind continue];\n    }\n\n    bb6: {\n        _11 = AddWithOverflow(copy _1, const 10_u32);\n        assert(!move (_11.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 10_u32) -> [success: bb25, unwind continue];\n    }\n\n    bb7: {\n        _10 = AddWithOverflow(copy _1, const 9_u32);\n        assert(!move (_10.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 9_u32) -> [success: bb24, unwind continue];\n    }\n\n    bb8: {\n        _9 = AddWithOverflow(copy _1, const 8_u32);\n        assert(!move (_9.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 8_u32) -> [success: bb23, unwind continue];\n    }\n\n    bb9: {\n        _8 = AddWithOverflow(copy _1, const 7_u32);\n        assert(!move (_8.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 7_u32) -> [success: bb22, unwind continue];\n    }\n\n    bb10: {\n        _7 = AddWithOverflow(copy _1, const 6_u32);\n        assert(!move (_7.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 6_u32) -> [success: bb21, unwind continue];\n    }\n\n    bb11: {\n        _6 = AddWithOverflow(copy _1, const 5_u32);\n        assert(!move (_6.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 5_u32) -> [success: bb20, unwind continue];\n    }\n\n    bb12: {\n        _5 = AddWithOverflow(copy _1, const 4_u32);\n        assert(!move (_5.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 4_u32) -> [success: bb19, unwind continue];\n    }\n\n    bb13: {\n        _4 = AddWithOverflow(copy _1, const 3_u32);\n        assert(!move (_4.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 3_u32) -> [success: bb18, unwind continue];\n    }\n\n    bb14: {\n        _3 = AddWithOverflow(copy _1, const 2_u32);\n        assert(!move (_3.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 2_u32) -> [success: bb17, unwind continue];\n    }\n\n    bb15: {\n        _2 = AddWithOverflow(copy _1, const 1_u32);\n        assert(!move (_2.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 1_u32) -> [success: bb16, unwind continue];\n    }\n\n    bb16: {\n        _0 = move (_2.0: u32);\n        goto -> bb30;\n    }\n\n    bb17: {\n        _0 = move (_3.0: u32);\n        goto -> bb30;\n    }\n\n    bb18: {\n        _0 = move (_4.0: u32);\n        goto -> bb30;\n    }\n\n    bb19: {\n        _0 = move (_5.0: u32);\n        goto -> bb30;\n    }\n\n    bb20: {\n        _0 = move (_6.0: u32);\n        goto -> bb30;\n    }\n\n    bb21: {\n        _0 = move (_7.0: u32);\n        goto -> bb30;\n    }\n\n    bb22: {\n        _0 = move (_8.0: u32);\n        goto -> bb30;\n    }\n\n    bb23: {\n        _0 = move (_9.0: u32);\n        goto -> bb30;\n    }\n\n    bb24: {\n        _0 = move (_10.0: u32);\n        goto -> bb30;\n    }\n\n    bb25: {\n        _0 = move (_11.0: u32);\n        goto -> bb30;\n    }\n\n    bb26: {\n        _0 = move (_12.0: u32);\n        goto -> bb30;\n    }\n\n    bb27: {\n        _0 = move (_13.0: u32);\n        goto -> bb30;\n    }\n\n    bb28: {\n        _0 = move (_14.0: u32);\n        goto -> bb30;\n    }\n\n    bb29: {\n        _0 = move (_15.0: u32);\n        goto -> bb30;\n    }\n\n    bb30: {\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `ssa_switch_14_arms_lt16` after SsaRangePropagation\n\nfn ssa_switch_14_arms_lt16(_1: u32) -> u32 {\n    debug x => _1;\n    let mut _0: u32;\n    let mut _2: (u32, bool);\n    let mut _3: (u32, bool);\n    let mut _4: (u32, bool);\n    let mut _5: (u32, bool);\n    let mut _6: (u32, bool);\n    let mut _7: (u32, bool);\n    let mut _8: (u32, bool);\n    let mut _9: (u32, bool);\n    let mut _10: (u32, bool);\n    let mut _11: (u32, bool);\n    let mut _12: (u32, bool);\n    let mut _13: (u32, bool);\n    let mut _14: (u32, bool);\n    let mut _15: (u32, bool);\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb15, 1: bb14, 2: bb13, 3: bb12, 4: bb11, 5: bb10, 6: bb9, 7: bb8, 8: bb7, 9: bb6, 10: bb5, 11: bb4, 12: bb3, 13: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = copy _1;\n        goto -> bb30;\n    }\n\n    bb2: {\n        _15 = AddWithOverflow(const 13_u32, const 14_u32);\n        assert(!move (_15.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 13_u32, const 14_u32) -> [success: bb29, unwind continue];\n    }\n\n    bb3: {\n        _14 = AddWithOverflow(const 12_u32, const 13_u32);\n        assert(!move (_14.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 12_u32, const 13_u32) -> [success: bb28, unwind continue];\n    }\n\n    bb4: {\n        _13 = AddWithOverflow(const 11_u32, const 12_u32);\n        assert(!move (_13.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 11_u32, const 12_u32) -> [success: bb27, unwind continue];\n    }\n\n    bb5: {\n        _12 = AddWithOverflow(const 10_u32, const 11_u32);\n        assert(!move (_12.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 10_u32, const 11_u32) -> [success: bb26, unwind continue];\n    }\n\n    bb6: {\n        _11 = AddWithOverflow(const 9_u32, const 10_u32);\n        assert(!move (_11.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 9_u32, const 10_u32) -> [success: bb25, unwind continue];\n    }\n\n    bb7: {\n        _10 = AddWithOverflow(const 8_u32, const 9_u32);\n        assert(!move (_10.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 8_u32, const 9_u32) -> [success: bb24, unwind continue];\n    }\n\n    bb8: {\n        _9 = AddWithOverflow(const 7_u32, const 8_u32);\n        assert(!move (_9.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 7_u32, const 8_u32) -> [success: bb23, unwind continue];\n    }\n\n    bb9: {\n        _8 = AddWithOverflow(const 6_u32, const 7_u32);\n        assert(!move (_8.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 6_u32, const 7_u32) -> [success: bb22, unwind continue];\n    }\n\n    bb10: {\n        _7 = AddWithOverflow(const 5_u32, const 6_u32);\n        assert(!move (_7.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 5_u32, const 6_u32) -> [success: bb21, unwind continue];\n    }\n\n    bb11: {\n        _6 = AddWithOverflow(const 4_u32, const 5_u32);\n        assert(!move (_6.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 4_u32, const 5_u32) -> [success: bb20, unwind continue];\n    }\n\n    bb12: {\n        _5 = AddWithOverflow(const 3_u32, const 4_u32);\n        assert(!move (_5.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 3_u32, const 4_u32) -> [success: bb19, unwind continue];\n    }\n\n    bb13: {\n        _4 = AddWithOverflow(const 2_u32, const 3_u32);\n        assert(!move (_4.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 2_u32, const 3_u32) -> [success: bb18, unwind continue];\n    }\n\n    bb14: {\n        _3 = AddWithOverflow(const 1_u32, const 2_u32);\n        assert(!move (_3.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 1_u32, const 2_u32) -> [success: bb17, unwind continue];\n    }\n\n    bb15: {\n        _2 = AddWithOverflow(const 0_u32, const 1_u32);\n        assert(!move (_2.1: bool), \"attempt to compute `{} + {}`, which would overflow\", const 0_u32, const 1_u32) -> [success: bb16, unwind continue];\n    }\n\n    bb16: {\n        _0 = move (_2.0: u32);\n        goto -> bb30;\n    }\n\n    bb17: {\n        _0 = move (_3.0: u32);\n        goto -> bb30;\n    }\n\n    bb18: {\n        _0 = move (_4.0: u32);\n        goto -> bb30;\n    }\n\n    bb19: {\n        _0 = move (_5.0: u32);\n        goto -> bb30;\n    }\n\n    bb20: {\n        _0 = move (_6.0: u32);\n        goto -> bb30;\n    }\n\n    bb21: {\n        _0 = move (_7.0: u32);\n        goto -> bb30;\n    }\n\n    bb22: {\n        _0 = move (_8.0: u32);\n        goto -> bb30;\n    }\n\n    bb23: {\n        _0 = move (_9.0: u32);\n        goto -> bb30;\n    }\n\n    bb24: {\n        _0 = move (_10.0: u32);\n        goto -> bb30;\n    }\n\n    bb25: {\n        _0 = move (_11.0: u32);\n        goto -> bb30;\n    }\n\n    bb26: {\n        _0 = move (_12.0: u32);\n        goto -> bb30;\n    }\n\n    bb27: {\n        _0 = move (_13.0: u32);\n        goto -> bb30;\n    }\n\n    bb28: {\n        _0 = move (_14.0: u32);\n        goto -> bb30;\n    }\n\n    bb29: {\n        _0 = move (_15.0: u32);\n        goto -> bb30;\n    }\n\n    bb30: {\n        return;\n    }\n}\n"
+      },
+      "ssa_switch_15_arms_eq16": {
+        "before_file": "pass_specimens.ssa_switch_15_arms_eq16.3-2-021.SsaRangePropagation.before.mir",
+        "after_file": "pass_specimens.ssa_switch_15_arms_eq16.3-2-021.SsaRangePropagation.after.mir",
+        "changed": false,
+        "before_mir": "// MIR for `ssa_switch_15_arms_eq16` before SsaRangePropagation\n\nfn ssa_switch_15_arms_eq16(_1: u32) -> u32 {\n    debug x => _1;\n    let mut _0: u32;\n    let mut _2: (u32, bool);\n    let mut _3: (u32, bool);\n    let mut _4: (u32, bool);\n    let mut _5: (u32, bool);\n    let mut _6: (u32, bool);\n    let mut _7: (u32, bool);\n    let mut _8: (u32, bool);\n    let mut _9: (u32, bool);\n    let mut _10: (u32, bool);\n    let mut _11: (u32, bool);\n    let mut _12: (u32, bool);\n    let mut _13: (u32, bool);\n    let mut _14: (u32, bool);\n    let mut _15: (u32, bool);\n    let mut _16: (u32, bool);\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb16, 1: bb15, 2: bb14, 3: bb13, 4: bb12, 5: bb11, 6: bb10, 7: bb9, 8: bb8, 9: bb7, 10: bb6, 11: bb5, 12: bb4, 13: bb3, 14: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = copy _1;\n        goto -> bb32;\n    }\n\n    bb2: {\n        _16 = AddWithOverflow(copy _1, const 15_u32);\n        assert(!move (_16.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 15_u32) -> [success: bb31, unwind continue];\n    }\n\n    bb3: {\n        _15 = AddWithOverflow(copy _1, const 14_u32);\n        assert(!move (_15.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 14_u32) -> [success: bb30, unwind continue];\n    }\n\n    bb4: {\n        _14 = AddWithOverflow(copy _1, const 13_u32);\n        assert(!move (_14.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 13_u32) -> [success: bb29, unwind continue];\n    }\n\n    bb5: {\n        _13 = AddWithOverflow(copy _1, const 12_u32);\n        assert(!move (_13.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 12_u32) -> [success: bb28, unwind continue];\n    }\n\n    bb6: {\n        _12 = AddWithOverflow(copy _1, const 11_u32);\n        assert(!move (_12.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 11_u32) -> [success: bb27, unwind continue];\n    }\n\n    bb7: {\n        _11 = AddWithOverflow(copy _1, const 10_u32);\n        assert(!move (_11.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 10_u32) -> [success: bb26, unwind continue];\n    }\n\n    bb8: {\n        _10 = AddWithOverflow(copy _1, const 9_u32);\n        assert(!move (_10.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 9_u32) -> [success: bb25, unwind continue];\n    }\n\n    bb9: {\n        _9 = AddWithOverflow(copy _1, const 8_u32);\n        assert(!move (_9.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 8_u32) -> [success: bb24, unwind continue];\n    }\n\n    bb10: {\n        _8 = AddWithOverflow(copy _1, const 7_u32);\n        assert(!move (_8.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 7_u32) -> [success: bb23, unwind continue];\n    }\n\n    bb11: {\n        _7 = AddWithOverflow(copy _1, const 6_u32);\n        assert(!move (_7.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 6_u32) -> [success: bb22, unwind continue];\n    }\n\n    bb12: {\n        _6 = AddWithOverflow(copy _1, const 5_u32);\n        assert(!move (_6.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 5_u32) -> [success: bb21, unwind continue];\n    }\n\n    bb13: {\n        _5 = AddWithOverflow(copy _1, const 4_u32);\n        assert(!move (_5.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 4_u32) -> [success: bb20, unwind continue];\n    }\n\n    bb14: {\n        _4 = AddWithOverflow(copy _1, const 3_u32);\n        assert(!move (_4.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 3_u32) -> [success: bb19, unwind continue];\n    }\n\n    bb15: {\n        _3 = AddWithOverflow(copy _1, const 2_u32);\n        assert(!move (_3.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 2_u32) -> [success: bb18, unwind continue];\n    }\n\n    bb16: {\n        _2 = AddWithOverflow(copy _1, const 1_u32);\n        assert(!move (_2.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 1_u32) -> [success: bb17, unwind continue];\n    }\n\n    bb17: {\n        _0 = move (_2.0: u32);\n        goto -> bb32;\n    }\n\n    bb18: {\n        _0 = move (_3.0: u32);\n        goto -> bb32;\n    }\n\n    bb19: {\n        _0 = move (_4.0: u32);\n        goto -> bb32;\n    }\n\n    bb20: {\n        _0 = move (_5.0: u32);\n        goto -> bb32;\n    }\n\n    bb21: {\n        _0 = move (_6.0: u32);\n        goto -> bb32;\n    }\n\n    bb22: {\n        _0 = move (_7.0: u32);\n        goto -> bb32;\n    }\n\n    bb23: {\n        _0 = move (_8.0: u32);\n        goto -> bb32;\n    }\n\n    bb24: {\n        _0 = move (_9.0: u32);\n        goto -> bb32;\n    }\n\n    bb25: {\n        _0 = move (_10.0: u32);\n        goto -> bb32;\n    }\n\n    bb26: {\n        _0 = move (_11.0: u32);\n        goto -> bb32;\n    }\n\n    bb27: {\n        _0 = move (_12.0: u32);\n        goto -> bb32;\n    }\n\n    bb28: {\n        _0 = move (_13.0: u32);\n        goto -> bb32;\n    }\n\n    bb29: {\n        _0 = move (_14.0: u32);\n        goto -> bb32;\n    }\n\n    bb30: {\n        _0 = move (_15.0: u32);\n        goto -> bb32;\n    }\n\n    bb31: {\n        _0 = move (_16.0: u32);\n        goto -> bb32;\n    }\n\n    bb32: {\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `ssa_switch_15_arms_eq16` after SsaRangePropagation\n\nfn ssa_switch_15_arms_eq16(_1: u32) -> u32 {\n    debug x => _1;\n    let mut _0: u32;\n    let mut _2: (u32, bool);\n    let mut _3: (u32, bool);\n    let mut _4: (u32, bool);\n    let mut _5: (u32, bool);\n    let mut _6: (u32, bool);\n    let mut _7: (u32, bool);\n    let mut _8: (u32, bool);\n    let mut _9: (u32, bool);\n    let mut _10: (u32, bool);\n    let mut _11: (u32, bool);\n    let mut _12: (u32, bool);\n    let mut _13: (u32, bool);\n    let mut _14: (u32, bool);\n    let mut _15: (u32, bool);\n    let mut _16: (u32, bool);\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb16, 1: bb15, 2: bb14, 3: bb13, 4: bb12, 5: bb11, 6: bb10, 7: bb9, 8: bb8, 9: bb7, 10: bb6, 11: bb5, 12: bb4, 13: bb3, 14: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = copy _1;\n        goto -> bb32;\n    }\n\n    bb2: {\n        _16 = AddWithOverflow(copy _1, const 15_u32);\n        assert(!move (_16.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 15_u32) -> [success: bb31, unwind continue];\n    }\n\n    bb3: {\n        _15 = AddWithOverflow(copy _1, const 14_u32);\n        assert(!move (_15.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 14_u32) -> [success: bb30, unwind continue];\n    }\n\n    bb4: {\n        _14 = AddWithOverflow(copy _1, const 13_u32);\n        assert(!move (_14.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 13_u32) -> [success: bb29, unwind continue];\n    }\n\n    bb5: {\n        _13 = AddWithOverflow(copy _1, const 12_u32);\n        assert(!move (_13.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 12_u32) -> [success: bb28, unwind continue];\n    }\n\n    bb6: {\n        _12 = AddWithOverflow(copy _1, const 11_u32);\n        assert(!move (_12.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 11_u32) -> [success: bb27, unwind continue];\n    }\n\n    bb7: {\n        _11 = AddWithOverflow(copy _1, const 10_u32);\n        assert(!move (_11.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 10_u32) -> [success: bb26, unwind continue];\n    }\n\n    bb8: {\n        _10 = AddWithOverflow(copy _1, const 9_u32);\n        assert(!move (_10.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 9_u32) -> [success: bb25, unwind continue];\n    }\n\n    bb9: {\n        _9 = AddWithOverflow(copy _1, const 8_u32);\n        assert(!move (_9.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 8_u32) -> [success: bb24, unwind continue];\n    }\n\n    bb10: {\n        _8 = AddWithOverflow(copy _1, const 7_u32);\n        assert(!move (_8.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 7_u32) -> [success: bb23, unwind continue];\n    }\n\n    bb11: {\n        _7 = AddWithOverflow(copy _1, const 6_u32);\n        assert(!move (_7.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 6_u32) -> [success: bb22, unwind continue];\n    }\n\n    bb12: {\n        _6 = AddWithOverflow(copy _1, const 5_u32);\n        assert(!move (_6.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 5_u32) -> [success: bb21, unwind continue];\n    }\n\n    bb13: {\n        _5 = AddWithOverflow(copy _1, const 4_u32);\n        assert(!move (_5.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 4_u32) -> [success: bb20, unwind continue];\n    }\n\n    bb14: {\n        _4 = AddWithOverflow(copy _1, const 3_u32);\n        assert(!move (_4.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 3_u32) -> [success: bb19, unwind continue];\n    }\n\n    bb15: {\n        _3 = AddWithOverflow(copy _1, const 2_u32);\n        assert(!move (_3.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 2_u32) -> [success: bb18, unwind continue];\n    }\n\n    bb16: {\n        _2 = AddWithOverflow(copy _1, const 1_u32);\n        assert(!move (_2.1: bool), \"attempt to compute `{} + {}`, which would overflow\", copy _1, const 1_u32) -> [success: bb17, unwind continue];\n    }\n\n    bb17: {\n        _0 = move (_2.0: u32);\n        goto -> bb32;\n    }\n\n    bb18: {\n        _0 = move (_3.0: u32);\n        goto -> bb32;\n    }\n\n    bb19: {\n        _0 = move (_4.0: u32);\n        goto -> bb32;\n    }\n\n    bb20: {\n        _0 = move (_5.0: u32);\n        goto -> bb32;\n    }\n\n    bb21: {\n        _0 = move (_6.0: u32);\n        goto -> bb32;\n    }\n\n    bb22: {\n        _0 = move (_7.0: u32);\n        goto -> bb32;\n    }\n\n    bb23: {\n        _0 = move (_8.0: u32);\n        goto -> bb32;\n    }\n\n    bb24: {\n        _0 = move (_9.0: u32);\n        goto -> bb32;\n    }\n\n    bb25: {\n        _0 = move (_10.0: u32);\n        goto -> bb32;\n    }\n\n    bb26: {\n        _0 = move (_11.0: u32);\n        goto -> bb32;\n    }\n\n    bb27: {\n        _0 = move (_12.0: u32);\n        goto -> bb32;\n    }\n\n    bb28: {\n        _0 = move (_13.0: u32);\n        goto -> bb32;\n    }\n\n    bb29: {\n        _0 = move (_14.0: u32);\n        goto -> bb32;\n    }\n\n    bb30: {\n        _0 = move (_15.0: u32);\n        goto -> bb32;\n    }\n\n    bb31: {\n        _0 = move (_16.0: u32);\n        goto -> bb32;\n    }\n\n    bb32: {\n        return;\n    }\n}\n"
+      },
+      "ssa_multi_pred_join": {
+        "before_file": "pass_specimens.ssa_multi_pred_join.3-2-021.SsaRangePropagation.before.mir",
+        "after_file": "pass_specimens.ssa_multi_pred_join.3-2-021.SsaRangePropagation.after.mir",
+        "changed": false,
+        "before_mir": "// MIR for `ssa_multi_pred_join` before SsaRangePropagation\n\nfn ssa_multi_pred_join(_1: u32) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [7: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        goto -> bb2;\n    }\n\n    bb2: {\n        _0 = copy _1;\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `ssa_multi_pred_join` after SsaRangePropagation\n\nfn ssa_multi_pred_join(_1: u32) -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [7: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        goto -> bb2;\n    }\n\n    bb2: {\n        _0 = copy _1;\n        return;\n    }\n}\n"
+      }
+    },
+    "simplify_comparison_integral": {
+      "sci_move_retained_assign": {
+        "before_file": "pass_specimens.sci_move_retained_assign.3-2-027.SimplifyComparisonIntegral.before.mir",
+        "after_file": "pass_specimens.sci_move_retained_assign.3-2-027.SimplifyComparisonIntegral.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `sci_move_retained_assign` before SimplifyComparisonIntegral\n\nfn sci_move_retained_assign(_1: u32) -> (u32, bool) {\n    debug z => _1;\n    let mut _0: (u32, bool);\n    let _2: bool;\n    let mut _3: u32;\n    let mut _5: u32;\n    scope 1 {\n        debug eq => _2;\n        let _4: u32;\n        scope 2 {\n            debug out => _4;\n        }\n    }\n\n    bb0: {\n        _3 = make_u32(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = Eq(move _3, const 43_u32);\n        switchInt(copy _2) -> [0: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        _4 = const 10_u32;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _4 = const 20_u32;\n        goto -> bb4;\n    }\n\n    bb4: {\n        _5 = copy _4;\n        _0 = (move _5, copy _2);\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `sci_move_retained_assign` after SimplifyComparisonIntegral\n\nfn sci_move_retained_assign(_1: u32) -> (u32, bool) {\n    debug z => _1;\n    let mut _0: (u32, bool);\n    let _2: bool;\n    let mut _3: u32;\n    let mut _5: u32;\n    scope 1 {\n        debug eq => _2;\n        let _4: u32;\n        scope 2 {\n            debug out => _4;\n        }\n    }\n\n    bb0: {\n        _3 = make_u32(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = Eq(copy _3, const 43_u32);\n        switchInt(copy _3) -> [43: bb2, otherwise: bb3];\n    }\n\n    bb2: {\n        _4 = const 10_u32;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _4 = const 20_u32;\n        goto -> bb4;\n    }\n\n    bb4: {\n        _5 = copy _4;\n        _0 = (move _5, copy _2);\n        return;\n    }\n}\n"
+      },
+      "sci_ne_swap": {
+        "before_file": "pass_specimens.sci_ne_swap.3-2-027.SimplifyComparisonIntegral.before.mir",
+        "after_file": "pass_specimens.sci_ne_swap.3-2-027.SimplifyComparisonIntegral.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `sci_ne_swap` before SimplifyComparisonIntegral\n\nfn sci_ne_swap(_1: u32) -> (u32, bool) {\n    debug z => _1;\n    let mut _0: (u32, bool);\n    let _2: bool;\n    let mut _3: u32;\n    let mut _5: u32;\n    scope 1 {\n        debug ne => _2;\n        let _4: u32;\n        scope 2 {\n            debug out => _4;\n        }\n    }\n\n    bb0: {\n        _3 = make_u32(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = Ne(move _3, const 43_u32);\n        switchInt(copy _2) -> [0: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        _4 = const 10_u32;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _4 = const 20_u32;\n        goto -> bb4;\n    }\n\n    bb4: {\n        _5 = copy _4;\n        _0 = (move _5, copy _2);\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `sci_ne_swap` after SimplifyComparisonIntegral\n\nfn sci_ne_swap(_1: u32) -> (u32, bool) {\n    debug z => _1;\n    let mut _0: (u32, bool);\n    let _2: bool;\n    let mut _3: u32;\n    let mut _5: u32;\n    scope 1 {\n        debug ne => _2;\n        let _4: u32;\n        scope 2 {\n            debug out => _4;\n        }\n    }\n\n    bb0: {\n        _3 = make_u32(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = Ne(copy _3, const 43_u32);\n        switchInt(copy _3) -> [43: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        _4 = const 10_u32;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _4 = const 20_u32;\n        goto -> bb4;\n    }\n\n    bb4: {\n        _5 = copy _4;\n        _0 = (move _5, copy _2);\n        return;\n    }\n}\n"
+      },
+      "sci_move_dead_stmt_opt0": {
+        "before_file": "pass_specimens.sci_move_dead_stmt.3-2-027.SimplifyComparisonIntegral.before.mir",
+        "after_file": "pass_specimens.sci_move_dead_stmt.3-2-027.SimplifyComparisonIntegral.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `sci_move_dead_stmt` before SimplifyComparisonIntegral\n\nfn sci_move_dead_stmt(_1: u32) -> u32 {\n    debug z => _1;\n    let mut _0: u32;\n    let mut _2: bool;\n    let mut _3: u32;\n\n    bb0: {\n        _3 = make_u32(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = Eq(move _3, const 43_u32);\n        switchInt(move _2) -> [0: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        _0 = const 10_u32;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _0 = const 20_u32;\n        goto -> bb4;\n    }\n\n    bb4: {\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `sci_move_dead_stmt` after SimplifyComparisonIntegral\n\nfn sci_move_dead_stmt(_1: u32) -> u32 {\n    debug z => _1;\n    let mut _0: u32;\n    let mut _2: bool;\n    let mut _3: u32;\n\n    bb0: {\n        _3 = make_u32(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        nop;\n        switchInt(copy _3) -> [43: bb2, otherwise: bb3];\n    }\n\n    bb2: {\n        _0 = const 10_u32;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _0 = const 20_u32;\n        goto -> bb4;\n    }\n\n    bb4: {\n        return;\n    }\n}\n"
+      },
+      "sci_move_dead_stmt_opt1": {
+        "before_file": "pass_specimens.sci_move_dead_stmt.3-2-023.SimplifyComparisonIntegral.before.mir",
+        "after_file": "pass_specimens.sci_move_dead_stmt.3-2-023.SimplifyComparisonIntegral.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `sci_move_dead_stmt` before SimplifyComparisonIntegral\n\nfn sci_move_dead_stmt(_1: u32) -> u32 {\n    debug z => _1;\n    let mut _0: u32;\n    let mut _2: bool;\n    let mut _3: u32;\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = make_u32(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _2 = Eq(move _3, const 43_u32);\n        switchInt(move _2) -> [0: bb3, otherwise: bb2];\n    }\n\n    bb2: {\n        StorageDead(_3);\n        _0 = const 10_u32;\n        goto -> bb4;\n    }\n\n    bb3: {\n        StorageDead(_3);\n        _0 = const 20_u32;\n        goto -> bb4;\n    }\n\n    bb4: {\n        StorageDead(_2);\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `sci_move_dead_stmt` after SimplifyComparisonIntegral\n\nfn sci_move_dead_stmt(_1: u32) -> u32 {\n    debug z => _1;\n    let mut _0: u32;\n    let mut _2: bool;\n    let mut _3: u32;\n\n    bb0: {\n        StorageLive(_2);\n        StorageLive(_3);\n        _3 = make_u32(copy _1) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        nop;\n        switchInt(copy _3) -> [43: bb2, otherwise: bb3];\n    }\n\n    bb2: {\n        StorageDead(_3);\n        _0 = const 10_u32;\n        goto -> bb4;\n    }\n\n    bb3: {\n        StorageDead(_3);\n        _0 = const 20_u32;\n        goto -> bb4;\n    }\n\n    bb4: {\n        StorageDead(_2);\n        return;\n    }\n}\n"
+      }
+    },
+    "early_otherwise_branch": {
+      "eob_opt2_docstring_default": {
+        "before_file": "pass_specimens.eob_opt2_docstring.3-2-026.EarlyOtherwiseBranch.before.mir",
+        "after_file": "pass_specimens.eob_opt2_docstring.3-2-026.EarlyOtherwiseBranch.after.mir",
+        "changed": false,
+        "before_mir": "// MIR for `eob_opt2_docstring` before EarlyOtherwiseBranch\n\nfn eob_opt2_docstring(_1: Option<()>, _2: Option<()>) -> u32 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u32;\n    let mut _3: isize;\n    let mut _4: isize;\n    let mut _5: isize;\n\n    bb0: {\n        _5 = discriminant(_1);\n        switchInt(move _5) -> [0: bb3, 1: bb2, otherwise: bb7];\n    }\n\n    bb1: {\n        _0 = const 1_u32;\n        goto -> bb6;\n    }\n\n    bb2: {\n        _3 = discriminant(_2);\n        switchInt(move _3) -> [1: bb5, 0: bb1, otherwise: bb7];\n    }\n\n    bb3: {\n        _4 = discriminant(_2);\n        switchInt(move _4) -> [0: bb4, 1: bb1, otherwise: bb7];\n    }\n\n    bb4: {\n        _0 = const 2_u32;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 0_u32;\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7: {\n        unreachable;\n    }\n}\n",
+        "after_mir": "// MIR for `eob_opt2_docstring` after EarlyOtherwiseBranch\n\nfn eob_opt2_docstring(_1: Option<()>, _2: Option<()>) -> u32 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u32;\n    let mut _3: isize;\n    let mut _4: isize;\n    let mut _5: isize;\n\n    bb0: {\n        _5 = discriminant(_1);\n        switchInt(move _5) -> [0: bb3, 1: bb2, otherwise: bb7];\n    }\n\n    bb1: {\n        _0 = const 1_u32;\n        goto -> bb6;\n    }\n\n    bb2: {\n        _3 = discriminant(_2);\n        switchInt(move _3) -> [1: bb5, 0: bb1, otherwise: bb7];\n    }\n\n    bb3: {\n        _4 = discriminant(_2);\n        switchInt(move _4) -> [0: bb4, 1: bb1, otherwise: bb7];\n    }\n\n    bb4: {\n        _0 = const 2_u32;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 0_u32;\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7: {\n        unreachable;\n    }\n}\n"
+      },
+      "eob_opt2_docstring_no_unreachable_enum_branching": {
+        "before_file": "pass_specimens.eob_opt2_docstring.3-2-025.EarlyOtherwiseBranch.before.mir",
+        "after_file": "pass_specimens.eob_opt2_docstring.3-2-025.EarlyOtherwiseBranch.after.mir",
+        "changed": false,
+        "before_mir": "// MIR for `eob_opt2_docstring` before EarlyOtherwiseBranch\n\nfn eob_opt2_docstring(_1: Option<()>, _2: Option<()>) -> u32 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u32;\n    let mut _3: isize;\n    let mut _4: isize;\n    let mut _5: isize;\n\n    bb0: {\n        _5 = discriminant(_1);\n        switchInt(move _5) -> [0: bb3, 1: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = const 1_u32;\n        goto -> bb6;\n    }\n\n    bb2: {\n        _3 = discriminant(_2);\n        switchInt(move _3) -> [1: bb5, otherwise: bb1];\n    }\n\n    bb3: {\n        _4 = discriminant(_2);\n        switchInt(move _4) -> [0: bb4, otherwise: bb1];\n    }\n\n    bb4: {\n        _0 = const 2_u32;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 0_u32;\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `eob_opt2_docstring` after EarlyOtherwiseBranch\n\nfn eob_opt2_docstring(_1: Option<()>, _2: Option<()>) -> u32 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u32;\n    let mut _3: isize;\n    let mut _4: isize;\n    let mut _5: isize;\n\n    bb0: {\n        _5 = discriminant(_1);\n        switchInt(move _5) -> [0: bb3, 1: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = const 1_u32;\n        goto -> bb6;\n    }\n\n    bb2: {\n        _3 = discriminant(_2);\n        switchInt(move _3) -> [1: bb5, otherwise: bb1];\n    }\n\n    bb3: {\n        _4 = discriminant(_2);\n        switchInt(move _4) -> [0: bb4, otherwise: bb1];\n    }\n\n    bb4: {\n        _0 = const 2_u32;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 0_u32;\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n}\n"
+      },
+      "eob_e3_two_arms": {
+        "before_file": "pass_specimens.eob_e3_two_arms.3-2-026.EarlyOtherwiseBranch.before.mir",
+        "after_file": "pass_specimens.eob_e3_two_arms.3-2-026.EarlyOtherwiseBranch.after.mir",
+        "changed": false,
+        "before_mir": "// MIR for `eob_e3_two_arms` before EarlyOtherwiseBranch\n\nfn eob_e3_two_arms(_1: E3, _2: E3) -> u32 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u32;\n    let mut _3: isize;\n    let mut _4: isize;\n    let mut _5: isize;\n\n    bb0: {\n        _5 = discriminant(_1);\n        switchInt(move _5) -> [0: bb2, 1: bb3, 2: bb1, otherwise: bb7];\n    }\n\n    bb1: {\n        _0 = const 0_u32;\n        goto -> bb6;\n    }\n\n    bb2: {\n        _3 = discriminant(_2);\n        switchInt(move _3) -> [0: bb5, otherwise: bb1];\n    }\n\n    bb3: {\n        _4 = discriminant(_2);\n        switchInt(move _4) -> [1: bb4, otherwise: bb1];\n    }\n\n    bb4: {\n        _0 = const 1_u32;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 2_u32;\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7: {\n        unreachable;\n    }\n}\n",
+        "after_mir": "// MIR for `eob_e3_two_arms` after EarlyOtherwiseBranch\n\nfn eob_e3_two_arms(_1: E3, _2: E3) -> u32 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u32;\n    let mut _3: isize;\n    let mut _4: isize;\n    let mut _5: isize;\n\n    bb0: {\n        _5 = discriminant(_1);\n        switchInt(move _5) -> [0: bb2, 1: bb3, 2: bb1, otherwise: bb7];\n    }\n\n    bb1: {\n        _0 = const 0_u32;\n        goto -> bb6;\n    }\n\n    bb2: {\n        _3 = discriminant(_2);\n        switchInt(move _3) -> [0: bb5, otherwise: bb1];\n    }\n\n    bb3: {\n        _4 = discriminant(_2);\n        switchInt(move _4) -> [1: bb4, otherwise: bb1];\n    }\n\n    bb4: {\n        _0 = const 1_u32;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 2_u32;\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n\n    bb7: {\n        unreachable;\n    }\n}\n"
+      },
+      "eob_e3_three_arms": {
+        "before_file": "pass_specimens.eob_e3_three_arms.3-2-026.EarlyOtherwiseBranch.before.mir",
+        "after_file": "pass_specimens.eob_e3_three_arms.3-2-026.EarlyOtherwiseBranch.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `eob_e3_three_arms` before EarlyOtherwiseBranch\n\nfn eob_e3_three_arms(_1: E3, _2: E3) -> u32 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u32;\n    let mut _3: isize;\n    let mut _4: isize;\n    let mut _5: isize;\n    let mut _6: isize;\n\n    bb0: {\n        _6 = discriminant(_1);\n        switchInt(move _6) -> [0: bb2, 1: bb3, 2: bb4, otherwise: bb9];\n    }\n\n    bb1: {\n        _0 = const 0_u32;\n        goto -> bb8;\n    }\n\n    bb2: {\n        _3 = discriminant(_2);\n        switchInt(move _3) -> [0: bb7, otherwise: bb1];\n    }\n\n    bb3: {\n        _4 = discriminant(_2);\n        switchInt(move _4) -> [1: bb6, otherwise: bb1];\n    }\n\n    bb4: {\n        _5 = discriminant(_2);\n        switchInt(move _5) -> [2: bb5, otherwise: bb1];\n    }\n\n    bb5: {\n        _0 = const 3_u32;\n        goto -> bb8;\n    }\n\n    bb6: {\n        _0 = const 1_u32;\n        goto -> bb8;\n    }\n\n    bb7: {\n        _0 = const 2_u32;\n        goto -> bb8;\n    }\n\n    bb8: {\n        return;\n    }\n\n    bb9: {\n        unreachable;\n    }\n}\n",
+        "after_mir": "// MIR for `eob_e3_three_arms` after EarlyOtherwiseBranch\n\nfn eob_e3_three_arms(_1: E3, _2: E3) -> u32 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u32;\n    let mut _3: isize;\n    let mut _4: isize;\n    let mut _5: isize;\n    let mut _6: isize;\n    let mut _7: isize;\n    let mut _8: bool;\n\n    bb0: {\n        _6 = discriminant(_1);\n        _7 = discriminant(_2);\n        _8 = Ne(copy _6, move _7);\n        switchInt(move _8) -> [0: bb7, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = const 0_u32;\n        goto -> bb5;\n    }\n\n    bb2: {\n        _0 = const 3_u32;\n        goto -> bb5;\n    }\n\n    bb3: {\n        _0 = const 1_u32;\n        goto -> bb5;\n    }\n\n    bb4: {\n        _0 = const 2_u32;\n        goto -> bb5;\n    }\n\n    bb5: {\n        return;\n    }\n\n    bb6: {\n        unreachable;\n    }\n\n    bb7: {\n        switchInt(copy _6) -> [0: bb4, 1: bb3, 2: bb2, otherwise: bb6];\n    }\n}\n"
+      },
+      "eob_u32_two_arms": {
+        "before_file": "pass_specimens.eob_u32_two_arms.3-2-026.EarlyOtherwiseBranch.before.mir",
+        "after_file": "pass_specimens.eob_u32_two_arms.3-2-026.EarlyOtherwiseBranch.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `eob_u32_two_arms` before EarlyOtherwiseBranch\n\nfn eob_u32_two_arms(_1: u32, _2: u32) -> u32 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u32;\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, 1: bb3, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = const 0_u32;\n        goto -> bb6;\n    }\n\n    bb2: {\n        switchInt(copy _2) -> [0: bb5, otherwise: bb1];\n    }\n\n    bb3: {\n        switchInt(copy _2) -> [1: bb4, otherwise: bb1];\n    }\n\n    bb4: {\n        _0 = const 1_u32;\n        goto -> bb6;\n    }\n\n    bb5: {\n        _0 = const 2_u32;\n        goto -> bb6;\n    }\n\n    bb6: {\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `eob_u32_two_arms` after EarlyOtherwiseBranch\n\nfn eob_u32_two_arms(_1: u32, _2: u32) -> u32 {\n    debug x => _1;\n    debug y => _2;\n    let mut _0: u32;\n    let mut _3: bool;\n\n    bb0: {\n        _3 = Ne(copy _1, copy _2);\n        switchInt(move _3) -> [0: bb5, otherwise: bb1];\n    }\n\n    bb1: {\n        _0 = const 0_u32;\n        goto -> bb4;\n    }\n\n    bb2: {\n        _0 = const 1_u32;\n        goto -> bb4;\n    }\n\n    bb3: {\n        _0 = const 2_u32;\n        goto -> bb4;\n    }\n\n    bb4: {\n        return;\n    }\n\n    bb5: {\n        switchInt(copy _1) -> [0: bb3, 1: bb2, otherwise: bb1];\n    }\n}\n"
+      }
+    },
+    "subtyper": {
+      "subtyper_hrtb": {
+        "before_file": "pass_specimens.subtyper_hrtb.2-2-003.Subtyper.before.mir",
+        "after_file": "pass_specimens.subtyper_hrtb.2-2-003.Subtyper.after.mir",
+        "changed": true,
+        "before_mir": "// MIR for `subtyper_hrtb` before Subtyper\n\nfn subtyper_hrtb(_1: for<'a> fn(&'a u8)) -> fn(&u8) {\n    debug f => _1;\n    let mut _0: fn(&u8);\n\n    bb0: {\n        _0 = copy _1;\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `subtyper_hrtb` after Subtyper\n\nfn subtyper_hrtb(_1: for<'a> fn(&'a u8)) -> fn(&u8) {\n    debug f => _1;\n    let mut _0: fn(&u8);\n    let mut _2: for<'a> fn(&'a u8);\n\n    bb0: {\n        _2 = copy _1;\n        _0 = move _2 as fn(&u8) (Subtype);\n        return;\n    }\n}\n"
+      },
+      "subtyper_covariant_ref": {
+        "before_file": "pass_specimens.subtyper_covariant_ref.2-2-003.Subtyper.before.mir",
+        "after_file": "pass_specimens.subtyper_covariant_ref.2-2-003.Subtyper.after.mir",
+        "changed": false,
+        "before_mir": "// MIR for `subtyper_covariant_ref` before Subtyper\n\nfn subtyper_covariant_ref(_1: &u8) -> &u8 {\n    debug r => _1;\n    let mut _0: &u8;\n\n    bb0: {\n        _0 = &(*_1);\n        return;\n    }\n}\n",
+        "after_mir": "// MIR for `subtyper_covariant_ref` after Subtyper\n\nfn subtyper_covariant_ref(_1: &u8) -> &u8 {\n    debug r => _1;\n    let mut _0: &u8;\n\n    bb0: {\n        _0 = &(*_1);\n        return;\n    }\n}\n"
+      }
+    }
+  },
+  "part_c_zerocopy_census": {
+    "live_installed_toolchain": {
+      "opt0_mir2": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=0"
+        ],
+        "passes": {
+          "2-2-003.Subtyper": {
+            "before": {
+              "bodies": 4715,
+              "bbs": 14259,
+              "assigns": 21018,
+              "switchints": 1111,
+              "returns": 4690,
+              "subtype_casts": 0,
+              "storage_live": 15699,
+              "storage_dead": 15892,
+              "storage_markers": 31591
+            },
+            "after": {
+              "bodies": 4715,
+              "bbs": 14259,
+              "assigns": 21018,
+              "switchints": 1111,
+              "returns": 4690,
+              "subtype_casts": 0,
+              "storage_live": 15699,
+              "storage_dead": 15892,
+              "storage_markers": 31591
+            },
+            "delta": {
+              "bodies": 0,
+              "bbs": 0,
+              "assigns": 0,
+              "switchints": 0,
+              "returns": 0,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "changed_bodies_count": 0,
+            "sample_changed_bodies": []
+          },
+          "3-2-007.RemoveStorageMarkers": {
+            "before": {
+              "bodies": 4355,
+              "bbs": 12446,
+              "assigns": 18382,
+              "switchints": 1032,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 13342,
+              "storage_dead": 13571,
+              "storage_markers": 26913
+            },
+            "after": {
+              "bodies": 4355,
+              "bbs": 12446,
+              "assigns": 18382,
+              "switchints": 1032,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "delta": {
+              "bodies": 0,
+              "bbs": 0,
+              "assigns": 0,
+              "switchints": 0,
+              "returns": 0,
+              "subtype_casts": 0,
+              "storage_live": -13342,
+              "storage_dead": -13571,
+              "storage_markers": -26913
+            },
+            "changed_bodies_count": 2009,
+            "sample_changed_bodies": [
+              "zerocopy.FromBytes-mut_from",
+              "zerocopy.FromBytes-mut_from_bytes-{closure#0}",
+              "zerocopy.FromBytes-mut_from_bytes",
+              "zerocopy.FromBytes-mut_from_bytes_with_elems-{closure#0}",
+              "zerocopy.FromBytes-mut_from_bytes_with_elems",
+              "zerocopy.FromBytes-mut_from_prefix",
+              "zerocopy.FromBytes-mut_from_prefix_with_elems",
+              "zerocopy.FromBytes-mut_from_suffix",
+              "zerocopy.FromBytes-mut_from_suffix_with_elems",
+              "zerocopy.FromBytes-mut_slice_from_prefix",
+              "zerocopy.FromBytes-mut_slice_from_suffix",
+              "zerocopy.FromBytes-read_from"
+            ]
+          },
+          "3-2-021.SsaRangePropagation": {
+            "before": {
+              "bodies": 4355,
+              "bbs": 11136,
+              "assigns": 10808,
+              "switchints": 660,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "after": {
+              "bodies": 4355,
+              "bbs": 11136,
+              "assigns": 10808,
+              "switchints": 660,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "delta": {
+              "bodies": 0,
+              "bbs": 0,
+              "assigns": 0,
+              "switchints": 0,
+              "returns": 0,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "changed_bodies_count": 0,
+            "sample_changed_bodies": []
+          },
+          "3-2-026.EarlyOtherwiseBranch": {
+            "before": {
+              "bodies": 4355,
+              "bbs": 11138,
+              "assigns": 10802,
+              "switchints": 655,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "after": {
+              "bodies": 4355,
+              "bbs": 11138,
+              "assigns": 10802,
+              "switchints": 655,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "delta": {
+              "bodies": 0,
+              "bbs": 0,
+              "assigns": 0,
+              "switchints": 0,
+              "returns": 0,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "changed_bodies_count": 0,
+            "sample_changed_bodies": []
+          },
+          "3-2-027.SimplifyComparisonIntegral": {
+            "before": {
+              "bodies": 4355,
+              "bbs": 11138,
+              "assigns": 10802,
+              "switchints": 655,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "after": {
+              "bodies": 4355,
+              "bbs": 11138,
+              "assigns": 10794,
+              "switchints": 655,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "delta": {
+              "bodies": 0,
+              "bbs": 0,
+              "assigns": -8,
+              "switchints": 0,
+              "returns": 0,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "changed_bodies_count": 7,
+            "sample_changed_bodies": [
+              "zerocopy.error-{impl#13}-display_verbose_extras",
+              "zerocopy.layout-{impl#1}-max_trailing_bytes",
+              "zerocopy.layout-{impl#2}-has_same_size_sequence",
+              "zerocopy.layout-{impl#4}-validate_cast_and_convert_metadata",
+              "zerocopy.split_at-{impl#5}-via_runtime_check",
+              "zerocopy.util-validate_aligned_to",
+              "zerocopy.wrappers-{impl#1}-update"
+            ]
+          }
+        }
+      },
+      "opt1_mir2": {
+        "flags": [
+          "-Zmir-opt-level=2",
+          "-Copt-level=1"
+        ],
+        "passes": {
+          "2-2-003.Subtyper": {
+            "before": {
+              "bodies": 4715,
+              "bbs": 14233,
+              "assigns": 20992,
+              "switchints": 1111,
+              "returns": 4690,
+              "subtype_casts": 0,
+              "storage_live": 15699,
+              "storage_dead": 15892,
+              "storage_markers": 31591
+            },
+            "after": {
+              "bodies": 4715,
+              "bbs": 14233,
+              "assigns": 20992,
+              "switchints": 1111,
+              "returns": 4690,
+              "subtype_casts": 0,
+              "storage_live": 15699,
+              "storage_dead": 15892,
+              "storage_markers": 31591
+            },
+            "delta": {
+              "bodies": 0,
+              "bbs": 0,
+              "assigns": 0,
+              "switchints": 0,
+              "returns": 0,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "changed_bodies_count": 0,
+            "sample_changed_bodies": []
+          },
+          "3-2-017.SsaRangePropagation": {
+            "before": {
+              "bodies": 4355,
+              "bbs": 11630,
+              "assigns": 10808,
+              "switchints": 660,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 7222,
+              "storage_dead": 7826,
+              "storage_markers": 15048
+            },
+            "after": {
+              "bodies": 4355,
+              "bbs": 11630,
+              "assigns": 10808,
+              "switchints": 660,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 7222,
+              "storage_dead": 7826,
+              "storage_markers": 15048
+            },
+            "delta": {
+              "bodies": 0,
+              "bbs": 0,
+              "assigns": 0,
+              "switchints": 0,
+              "returns": 0,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "changed_bodies_count": 0,
+            "sample_changed_bodies": []
+          },
+          "3-2-022.EarlyOtherwiseBranch": {
+            "before": {
+              "bodies": 4355,
+              "bbs": 11646,
+              "assigns": 10806,
+              "switchints": 657,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 7230,
+              "storage_dead": 7842,
+              "storage_markers": 15072
+            },
+            "after": {
+              "bodies": 4355,
+              "bbs": 11646,
+              "assigns": 10806,
+              "switchints": 657,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 7230,
+              "storage_dead": 7842,
+              "storage_markers": 15072
+            },
+            "delta": {
+              "bodies": 0,
+              "bbs": 0,
+              "assigns": 0,
+              "switchints": 0,
+              "returns": 0,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "changed_bodies_count": 0,
+            "sample_changed_bodies": []
+          },
+          "3-2-023.SimplifyComparisonIntegral": {
+            "before": {
+              "bodies": 4355,
+              "bbs": 11646,
+              "assigns": 10806,
+              "switchints": 657,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 7230,
+              "storage_dead": 7842,
+              "storage_markers": 15072
+            },
+            "after": {
+              "bodies": 4355,
+              "bbs": 11646,
+              "assigns": 10798,
+              "switchints": 657,
+              "returns": 4330,
+              "subtype_casts": 0,
+              "storage_live": 7230,
+              "storage_dead": 7842,
+              "storage_markers": 15072
+            },
+            "delta": {
+              "bodies": 0,
+              "bbs": 0,
+              "assigns": -8,
+              "switchints": 0,
+              "returns": 0,
+              "subtype_casts": 0,
+              "storage_live": 0,
+              "storage_dead": 0,
+              "storage_markers": 0
+            },
+            "changed_bodies_count": 7,
+            "sample_changed_bodies": [
+              "zerocopy.error-{impl#13}-display_verbose_extras",
+              "zerocopy.layout-{impl#1}-max_trailing_bytes",
+              "zerocopy.layout-{impl#2}-has_same_size_sequence",
+              "zerocopy.layout-{impl#4}-validate_cast_and_convert_metadata",
+              "zerocopy.split_at-{impl#5}-via_runtime_check",
+              "zerocopy.util-validate_aligned_to",
+              "zerocopy.wrappers-{impl#1}-update"
+            ]
+          }
+        }
+      }
+    },
+    "historical_baseline_1_102_0_nightly": {
+      "rustc_commit": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+      "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+      "opt0_mir2_passes": {
+        "2-2-003.Subtyper": {
+          "before": {
+            "bodies": 4663,
+            "bbs": 14352,
+            "assigns": 20330,
+            "switchints": 1072,
+            "returns": 4636,
+            "subtype_casts": 0,
+            "storage_markers": 30392
+          },
+          "after": {
+            "bodies": 4663,
+            "bbs": 14352,
+            "assigns": 20330,
+            "switchints": 1072,
+            "returns": 4636,
+            "subtype_casts": 0,
+            "storage_markers": 30392
+          },
+          "delta": {
+            "bodies": 0,
+            "bbs": 0,
+            "assigns": 0,
+            "switchints": 0,
+            "returns": 0,
+            "subtype_casts": 0,
+            "storage_markers": 0
+          }
+        },
+        "opt0_mir2.RemoveStorageMarkers": {
+          "before": {
+            "bodies": 4302,
+            "bbs": 12288,
+            "assigns": 17670,
+            "switchints": 997,
+            "returns": 4277,
+            "subtype_casts": 0,
+            "storage_markers": 25716
+          },
+          "after": {
+            "bodies": 4302,
+            "bbs": 12288,
+            "assigns": 17670,
+            "switchints": 997,
+            "returns": 4277,
+            "subtype_casts": 0,
+            "storage_markers": 0
+          },
+          "delta": {
+            "bodies": 0,
+            "bbs": 0,
+            "assigns": 0,
+            "switchints": 0,
+            "returns": 0,
+            "subtype_casts": 0,
+            "storage_markers": -25716
+          }
+        },
+        "3-2-018.SsaRangePropagation": {
+          "before": {
+            "bodies": 4302,
+            "bbs": 13853,
+            "assigns": 27176,
+            "switchints": 1889,
+            "returns": 4277,
+            "subtype_casts": 0,
+            "storage_markers": 39369
+          },
+          "after": {
+            "bodies": 4302,
+            "bbs": 13853,
+            "assigns": 27176,
+            "switchints": 1889,
+            "returns": 4277,
+            "subtype_casts": 0,
+            "storage_markers": 39369
+          },
+          "delta": {
+            "bodies": 0,
+            "bbs": 0,
+            "assigns": 0,
+            "switchints": 0,
+            "returns": 0,
+            "subtype_casts": 0,
+            "storage_markers": 0
+          }
+        },
+        "3-2-023.EarlyOtherwiseBranch": {
+          "before": {
+            "bodies": 4302,
+            "bbs": 14083,
+            "assigns": 26426,
+            "switchints": 1865,
+            "returns": 4277,
+            "subtype_casts": 0,
+            "storage_markers": 40127
+          },
+          "after": {
+            "bodies": 4302,
+            "bbs": 14083,
+            "assigns": 26426,
+            "switchints": 1865,
+            "returns": 4277,
+            "subtype_casts": 0,
+            "storage_markers": 40127
+          },
+          "delta": {
+            "bodies": 0,
+            "bbs": 0,
+            "assigns": 0,
+            "switchints": 0,
+            "returns": 0,
+            "subtype_casts": 0,
+            "storage_markers": 0
+          }
+        },
+        "3-2-024.SimplifyComparisonIntegral": {
+          "before": {
+            "bodies": 4302,
+            "bbs": 14083,
+            "assigns": 26426,
+            "switchints": 1865,
+            "returns": 4277,
+            "subtype_casts": 0,
+            "storage_markers": 40127
+          },
+          "after": {
+            "bodies": 4302,
+            "bbs": 14083,
+            "assigns": 26426,
+            "switchints": 1865,
+            "returns": 4277,
+            "subtype_casts": 0,
+            "storage_markers": 40127
+          },
+          "delta": {
+            "bodies": 0,
+            "bbs": 0,
+            "assigns": 0,
+            "switchints": 0,
+            "returns": 0,
+            "subtype_casts": 0,
+            "storage_markers": 0
+          }
+        }
+      }
+    }
+  }
+}

@@ -92836,6 +92836,101 @@
         "rustc"
       ]
     },
+    "rustc-remove-storage-markers-miri-paradox-and-ssa-range-switch-passes": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "committed_at": "2026-11-11T17:59:24Z",
+            "kind": "repository",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "url": "https://github.com/rust-lang/rust",
+            "version": "1.102.0-nightly"
+          },
+          "name": "Rust compiler and Miri primary source (1.102.0-nightly audit pin)"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-05-31T20:13:59Z",
+            "kind": "toolchain",
+            "llvm_version": "22.1.6",
+            "miri_version": "0.1.0",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "target": "x86_64-unknown-linux-gnu",
+            "url": "https://github.com/rust-lang/rust",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust compiler and Miri execution toolchain (1.98.0-nightly host pin)"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-10-20T00:26:42Z",
+            "kind": "repository",
+            "repository": "rust-lang/rust",
+            "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+            "url": "https://github.com/rust-lang/rust"
+          },
+          "name": "Rust upstream pin matching Anneal vendored lean-miri semantics"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-05-30T17:09:19Z",
+            "kind": "repository",
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "url": "https://github.com/rust-lang/rust"
+          },
+          "name": "Rust upstream pin matching Anneal trusted rustc-capture driver"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-11-19T21:39:21Z",
+            "kind": "repository",
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+            "url": "https://github.com/joshlf/anneal"
+          },
+          "name": "Anneal verification framework capture, AST, and MIR semantics"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-11-21T07:17:31Z",
+            "kind": "repository",
+            "repository": "google/zerocopy",
+            "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+            "url": "https://github.com/google/zerocopy",
+            "version": "0.8.64"
+          },
+          "name": "zerocopy crate Runtime(PostCleanup) and MIR optimization census target"
+        },
+        {
+          "identity": {
+            "committed_at": "2026-09-24T17:27:27Z",
+            "kind": "toolchain",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "url": "https://github.com/leanprover/lean4",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4 kernel proof assistant"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-remove-zsts-sroa-reference-propagation-and-zst-alignment-ub": {
       "observed_at": "2026-11-21",
       "subjects": [

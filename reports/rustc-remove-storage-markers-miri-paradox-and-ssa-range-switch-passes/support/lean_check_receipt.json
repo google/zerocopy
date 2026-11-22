@@ -1,0 +1,122 @@
+{
+ "audit": {
+  "exit_code": 0,
+  "peak_rss_kb": 1588780,
+  "print_axioms": {
+   "StorageMarkersRangeSwitch.Examples.ce1_remove_storage_markers_erases_dangling_stack_ptr_ub": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.Examples.ce1b_loop_reallocation_merges_distinct_alloc_ids": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.Examples.ce2_simplify_cmp_retaining_move_operand_deinits_switch_scrutinee_ub": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.Examples.ce3_ssa_range_multi_predecessor_join_unsound_without_intersection": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.Examples.ce4_eob_issue_95162_non_exhaustive_hoist_introduces_ub": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.emitLifetimeMarkers_opt0_vs_opt1": [],
+   "StorageMarkersRangeSwitch.eob_exhaustive_bidirectional_iff": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.fixedRemoveStorageMarkers_preserves_ub_when_mirPreserveUb": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.forwardRefines_removeStorageMarkers": [
+    "propext",
+    "Quot.sound"
+   ],
+   "StorageMarkersRangeSwitch.miri_paradox_non_monotone_in_opt_level": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.removeStorageMarkers_ignores_mirPreserveUb": [],
+   "StorageMarkersRangeSwitch.simplifyCmp_bidirectional_iff": [
+    "propext",
+    "Quot.sound"
+   ],
+   "StorageMarkersRangeSwitch.simplifyCmp_rejects_ptr_const": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.ssaRangeProp_docstring_counterexample_at_8": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.ssaRangeProp_optional_overflow_assert_unsound_if_propagated": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.ssaRangeProp_singleton_copy_exact_iff": [
+    "propext"
+   ],
+   "StorageMarkersRangeSwitch.ssaRangeProp_singleton_move_forward_refines": [
+    "propext",
+    "Quot.sound"
+   ],
+   "StorageMarkersRangeSwitch.subtyper_region_erasure_and_operational_equiv": [
+    "propext",
+    "Quot.sound"
+   ],
+   "StorageMarkersRangeSwitch.ueb_eob_enum_fires_iff_exhaustive_at_least_three_variants": [
+    "propext"
+   ]
+  },
+  "summary": {
+   "axioms_used": [
+    "propext",
+    "Quot.sound"
+   ],
+   "constants": 1323,
+   "constructors": 69,
+   "definitions": 616,
+   "inductive_types": 23,
+   "recursors": 23,
+   "theorems": 592,
+   "theorems_without_axioms": 441,
+   "violations": 0
+  },
+  "violation_lines": [],
+  "wall_seconds": 3.456
+ },
+ "compile": {
+  "errors": 0,
+  "exit_code": 0,
+  "olean_bytes": 13055776,
+  "peak_rss_kb": 878508,
+  "wall_seconds": 28.344,
+  "warnings": 0
+ },
+ "compile_flags": [
+  "-M2048",
+  "-DElab.async=false",
+  "-Ddebug.skipKernelTC=false",
+  "-DwarningAsError=true"
+ ],
+ "forbidden_token_counts": {
+  "Classical": 0,
+  "_unsafe_rec": 0,
+  "admit": 0,
+  "axiom": 0,
+  "bv_decide": 0,
+  "extern": 0,
+  "implemented_by": 0,
+  "native_decide": 0,
+  "omega": 0,
+  "opaque": 0,
+  "partial": 0,
+  "sorry": 0,
+  "unsafe": 0
+ },
+ "generated_on": "2026-11-22",
+ "imports": [],
+ "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+ "module": "support/StorageMarkersParadoxAndRangeSwitchSoundness.lean",
+ "passed": true,
+ "schema": "lean-check-receipt/1",
+ "source_bytes": 272328,
+ "source_def_keywords": 89,
+ "source_inductive_keywords": 23,
+ "source_lines": 5620,
+ "source_sha256": "21c1847a9cb9a44b8782753fbf09094dd169c13982f143c8111f1ea6cef76897",
+ "source_theorem_keywords": 94
+}

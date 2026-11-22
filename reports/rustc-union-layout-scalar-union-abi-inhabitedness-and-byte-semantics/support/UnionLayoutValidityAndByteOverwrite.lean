@@ -37,19 +37,19 @@ inductive AbstractByte where
   deriving DecidableEq, Repr
 
 /-- Well-formedness of a single abstract byte (`val < 256` on initialized bytes). -/
-def ByteWF : AbstractByte → Bool
+noncomputable def ByteWF : AbstractByte → Bool
   | .uninit => true
   | .bits val _ => decide (val < 256)
 
 abbrev ByteBuffer := List AbstractByte
 
 /-- Every byte in a buffer satisfies `ByteWF`. -/
-def BufferWF : ByteBuffer → Bool
+noncomputable def BufferWF : ByteBuffer → Bool
   | [] => true
   | b :: bs => ByteWF b && BufferWF bs
 
 /-- Predicate checking whether a byte buffer contains any `.uninit` byte. -/
-def bufHasUninit : ByteBuffer → Bool
+noncomputable def bufHasUninit : ByteBuffer → Bool
   | [] => false
   | .uninit :: _ => true
   | .bits _ _ :: bs => bufHasUninit bs
@@ -116,31 +116,31 @@ inductive ScalarAbi where
 
 namespace ScalarAbi
 
-def primitive : ScalarAbi → PrimKind
+noncomputable def primitive : ScalarAbi → PrimKind
   | .initialized p _ _ _ _ => p
   | .unionScalar p _ => p
 
-def sizeBytes : ScalarAbi → Nat
+noncomputable def sizeBytes : ScalarAbi → Nat
   | .initialized _ sz _ _ _ => sz
   | .unionScalar _ sz => sz
 
 /-- `Scalar::to_union` (`compiler/rustc_abi/src/lib.rs:1636-1638`). -/
-def toUnion : ScalarAbi → ScalarAbi
+noncomputable def toUnion : ScalarAbi → ScalarAbi
   | .initialized p sz _ _ _ => .unionScalar p sz
   | .unionScalar p sz => .unionScalar p sz
 
 /-- `Scalar::is_uninit_valid` (`compiler/rustc_abi/src/lib.rs:1670-1675`). -/
-def isUninitValid : ScalarAbi → Bool
+noncomputable def isUninitValid : ScalarAbi → Bool
   | .initialized _ _ _ _ _ => false
   | .unionScalar _ _ => true
 
 /-- `Scalar::is_always_valid` (`compiler/rustc_abi/src/lib.rs:1661-1666`). -/
-def isAlwaysValid : ScalarAbi → Bool
+noncomputable def isAlwaysValid : ScalarAbi → Bool
   | .initialized _ _ _ _ hasNiche => !hasNiche
   | .unionScalar _ _ => true
 
 /-- True iff `ScalarAbi` is the `Scalar::Union` variant. -/
-def isUnionVariant : ScalarAbi → Bool
+noncomputable def isUnionVariant : ScalarAbi → Bool
   | .initialized _ _ _ _ _ => false
   | .unionScalar _ _ => true
 
@@ -175,21 +175,21 @@ inductive BackendRepr where
 namespace BackendRepr
 
 /-- `BackendRepr::to_union` (`compiler/rustc_abi/src/lib.rs:1975-1993`). -/
-def toUnion : BackendRepr → BackendRepr
+noncomputable def toUnion : BackendRepr → BackendRepr
   | .scalar s => .scalar s.toUnion
   | .scalarPair a b off => .scalarPair a.toUnion b.toUnion off
   | .simdVector elem count => .simdVector elem.toUnion count
   | .memory => .memory
 
 /-- Platform scalar alignment for `Scalar` / `ScalarPair`, or `none` otherwise. -/
-def scalarPlatformAlign (elemAlign : Nat) : BackendRepr → Option Nat
+noncomputable def scalarPlatformAlign (elemAlign : Nat) : BackendRepr → Option Nat
   | .scalar _ => some elemAlign
   | .scalarPair _ _ _ => some elemAlign
   | .simdVector _ _ => none
   | .memory => none
 
 /-- Predicate asserting that every `ScalarAbi` inside a `BackendRepr` is `.unionScalar`. -/
-def allScalarsUnion : BackendRepr → Bool
+noncomputable def allScalarsUnion : BackendRepr → Bool
   | .scalar s => s.isUnionVariant
   | .scalarPair a b _ => a.isUnionVariant && b.isUnionVariant
   | .simdVector elem _ => elem.isUnionVariant
@@ -239,7 +239,7 @@ structure ReprOptions where
 
 /-- `ReprOptions::inhibits_union_abi_opt` (`compiler/rustc_abi/src/lib.rs:245-247`):
 returns `self.c()`, deliberately NOT inhibited by `#[repr(transparent)]`. -/
-def ReprOptions.inhibitsUnionAbiOpt (repr : ReprOptions) : Bool := repr.isC
+noncomputable def ReprOptions.inhibitsUnionAbiOpt (repr : ReprOptions) : Bool := repr.isC
 
 /-- Computed ADT layout output (`LayoutData`). -/
 structure ComputedLayout where
@@ -252,7 +252,7 @@ structure ComputedLayout where
   dataMask : List Bool
 
 /-- Alignment helper: round `sz` up to a multiple of `a` (when `a > 0`). -/
-def alignTo (sz a : Nat) : Nat :=
+noncomputable def alignTo (sz a : Nat) : Nat :=
   if a == 0 then sz
   else
     let rem := sz % a
@@ -260,7 +260,7 @@ def alignTo (sz a : Nat) : Nat :=
 
 /-- Recursive helper matching `layout_of_union`'s fold over fields
 (`compiler/rustc_abi/src/layout.rs:431-468`). -/
-def foldUnionFields :
+noncomputable def foldUnionFields :
     List FieldSpec → Nat → Nat → Option (Option BackendRepr) →
       (Nat × Nat × Option (Option BackendRepr))
   | [], al, sz, common => (al, sz, common)
@@ -280,7 +280,7 @@ def foldUnionFields :
 
 /-- Computes `union_data_range` boolean mask across `[0..unionSize)` as the
 pointwise disjunction (`||`) over every non-ZST field's `dataMask`. -/
-def fieldHasDataAt (idx : Nat) (fields : List FieldSpec) : Bool :=
+noncomputable def fieldHasDataAt (idx : Nat) (fields : List FieldSpec) : Bool :=
   match fields with
   | [] => false
   | f :: fs =>
@@ -291,7 +291,7 @@ def fieldHasDataAt (idx : Nat) (fields : List FieldSpec) : Bool :=
         | none => false
     here || fieldHasDataAt idx fs
 
-def computeUnionDataMask (unionSize : Nat) (fields : List FieldSpec) : List Bool :=
+noncomputable def computeUnionDataMask (unionSize : Nat) (fields : List FieldSpec) : List Bool :=
   (List.range unionSize).map (fun i => fieldHasDataAt i fields)
 
 /-- Models `LayoutCalculator::layout_of_union` (`compiler/rustc_abi/src/layout.rs:404-534`):
@@ -301,7 +301,7 @@ def computeUnionDataMask (unionSize : Nat) (fields : List FieldSpec) : List Bool
 4. Caps alignment by `pack` and raises by `reprAlign`.
 5. Demotes `Scalar`/`ScalarPair` to `BackendRepr.memory` when `scalarPlatformAlign != align`.
 6. Unconditionally sets `largestNiche := none` and `uninhabited := false`. -/
-def computeUnionLayout (repr : ReprOptions) (fields : List FieldSpec) : ComputedLayout :=
+noncomputable def computeUnionLayout (repr : ReprOptions) (fields : List FieldSpec) : ComputedLayout :=
   let initCommon : Option (Option BackendRepr) :=
     if repr.inhibitsUnionAbiOpt then none else some none
   let (rawAlign, rawSize, common) := foldUnionFields fields 1 0 initCommon
@@ -339,7 +339,7 @@ def computeUnionLayout (repr : ReprOptions) (fields : List FieldSpec) : Computed
 /-- Models `#[repr(transparent)]` on a `struct` around one non-ZST field `f`
 (`compiler/rustc_abi/src/layout.rs:827-934`), which forwards `f.backendRepr`,
 `f.largestNiche`, and `f.uninhabited` WITHOUT calling `.toUnion`. -/
-def computeTransparentStructLayout (f : FieldSpec) : ComputedLayout :=
+noncomputable def computeTransparentStructLayout (f : FieldSpec) : ComputedLayout :=
   {
     size := f.size
     align := f.align
@@ -558,20 +558,20 @@ inductive UbError where
 imposes ZERO field-level `bytePred` checks! Any byte buffer of exact length
 `u.size` satisfying byte well-formedness (`val < 256` on `.bits`, arbitrary `.uninit`)
 is a valid union value. -/
-def validUnionValue (u : ComputedLayout) (buf : ByteBuffer) : Prop :=
+noncomputable def validUnionValue (u : ComputedLayout) (buf : ByteBuffer) : Prop :=
   buf.length = u.size ∧ BufferWF buf = true
 
 /-- Mirrors `copy_op_no_validate` + `ValidityVisitor::visit_union`:
 copies bytes at offsets flagged by `u.dataMask` verbatim (preserving initialized
 bits, provenance, and uninit), and resets pure union padding bytes (`dataMask[i] = false`)
 to `.uninit`. -/
-def copyUnionWithDataRangeAux : List Bool → ByteBuffer → ByteBuffer
+noncomputable def copyUnionWithDataRangeAux : List Bool → ByteBuffer → ByteBuffer
   | _, [] => []
   | [], bs => bs.map (fun _ => AbstractByte.uninit)
   | true :: ms, b :: bs => b :: copyUnionWithDataRangeAux ms bs
   | false :: ms, _ :: bs => AbstractByte.uninit :: copyUnionWithDataRangeAux ms bs
 
-def copyUnionWithDataRange (u : ComputedLayout) (buf : ByteBuffer) : ByteBuffer :=
+noncomputable def copyUnionWithDataRange (u : ComputedLayout) (buf : ByteBuffer) : ByteBuffer :=
   copyUnionWithDataRangeAux u.dataMask buf
 
 theorem copyUnionWithDataRangeAux_length (m : List Bool) (bs : ByteBuffer) :
@@ -621,7 +621,7 @@ theorem copyUnionWithDataRange_preserves_valid (u : ComputedLayout) (buf : ByteB
 private theorem nat_beq_refl (n : Nat) : (n == n) = true :=
   beq_iff_eq.mpr rfl
 
-def hasFieldIdList : List FieldSpec → Nat → Bool
+noncomputable def hasFieldIdList : List FieldSpec → Nat → Bool
   | [], _ => false
   | g :: gs, fid => (g.fieldId == fid) || hasFieldIdList gs fid
 
@@ -636,7 +636,7 @@ theorem hasFieldIdList_of_mem {fs : List FieldSpec} {f : FieldSpec} (hf : f ∈ 
     | tail _ hm =>
       simp only [hasFieldIdList, ih hm, Bool.or_true]
 
-def hasFieldId (u : ComputedLayout) (f : FieldSpec) : Bool :=
+noncomputable def hasFieldId (u : ComputedLayout) (f : FieldSpec) : Bool :=
   hasFieldIdList u.fields f.fieldId
 
 theorem hasFieldId_of_mem {u : ComputedLayout} {f : FieldSpec} (hf : f ∈ u.fields) :
@@ -647,7 +647,7 @@ theorem hasFieldId_of_mem {u : ComputedLayout} {f : FieldSpec} (hf : f ∈ u.fie
 and validates `f.bytePred` on that slice, failing with `.error .invalidFieldValue`
 whenever the bytes violate `f`'s type-level invariant (including `.uninit`, `0` for
 `NonZeroU64`, or any bytes for `!`/`Infallible`). -/
-def readUnionField (u : ComputedLayout) (f : FieldSpec) (buf : ByteBuffer) :
+noncomputable def readUnionField (u : ComputedLayout) (f : FieldSpec) (buf : ByteBuffer) :
     Except UbError ByteBuffer :=
   if !(hasFieldId u f) then .error .fieldNotInUnion
   else if !(buf.length == u.size && BufferWF buf) then .error .invalidBufferLength
@@ -659,7 +659,7 @@ def readUnionField (u : ComputedLayout) (f : FieldSpec) (buf : ByteBuffer) :
 /-- Sub-object partial write (`u.f = newBytes`): validates `newBytes` against
 `f.bytePred`, then splices `newBytes ++ buf.drop f.size` across `[0..f.size)`,
 leaving all sibling bytes `[f.size..u.size)` untouched! -/
-def writeUnionField (u : ComputedLayout) (f : FieldSpec)
+noncomputable def writeUnionField (u : ComputedLayout) (f : FieldSpec)
     (newBytes : ByteBuffer) (buf : ByteBuffer) : Except UbError ByteBuffer :=
   if !(hasFieldId u f) then .error .fieldNotInUnion
   else if !(buf.length == u.size && BufferWF buf) then .error .invalidBufferLength
@@ -674,11 +674,11 @@ structure ArgPassAttrs where
   hasRangeCheck : Bool
   deriving DecidableEq, Repr
 
-def argAttrsForScalar : ScalarAbi → ArgPassAttrs
+noncomputable def argAttrsForScalar : ScalarAbi → ArgPassAttrs
   | .initialized _ _ _ _ hasNiche => { hasNoUndef := true, hasRangeCheck := hasNiche }
   | .unionScalar _ _ => { hasNoUndef := false, hasRangeCheck := false }
 
-def argAttrsForRepr : BackendRepr → ArgPassAttrs
+noncomputable def argAttrsForRepr : BackendRepr → ArgPassAttrs
   | .scalar s => argAttrsForScalar s
   | _ => { hasNoUndef := false, hasRangeCheck := false }
 
@@ -692,7 +692,7 @@ with `ArgPassAttrs` and scalar range predicate `rangePred`:
 - If `hasNoUndef` is set and `buf` contains any `.uninit`, LLVM passes `poison` -> UB.
 - If `hasRangeCheck` is set and `rangePred buf = false`, LLVM `!range` / `range(...)` -> UB.
 - Otherwise the exact abstract byte buffer is transmitted intact. -/
-def evalRegisterCall (attrs : ArgPassAttrs) (rangePred : ByteBuffer → Bool)
+noncomputable def evalRegisterCall (attrs : ArgPassAttrs) (rangePred : ByteBuffer → Bool)
     (buf : ByteBuffer) : CallOutcome :=
   if attrs.hasNoUndef && bufHasUninit buf then .callUbPoison
   else if attrs.hasRangeCheck && !(rangePred buf) then .callUbPoison
@@ -799,7 +799,7 @@ private theorem add_sub_cancel_ge {n i : Nat} (hle : n ≤ i) :
   exact Nat.sub_add_cancel hle
 
 /-- Invariant asserting that every field in `u.fields` fits inside `u.size`. -/
-def LayoutFieldsFit (u : ComputedLayout) : Prop :=
+noncomputable def LayoutFieldsFit (u : ComputedLayout) : Prop :=
   ∀ f ∈ u.fields, f.size ≤ u.size
 
 theorem computeUnionLayout_fieldsFit (repr : ReprOptions) (fields : List FieldSpec) :
@@ -923,12 +923,12 @@ theorem writeUnionField_preserves_upper_slice
             exact getElem?_append_left_of_lt hlt'
 
 /-- Little-endian `u32` byte decoding on concrete 4-byte initialized slices. -/
-def decodeU32LE : ByteBuffer → Option Nat
+noncomputable def decodeU32LE : ByteBuffer → Option Nat
   | [.bits b0 none, .bits b1 none, .bits b2 none, .bits b3 none] =>
     some (b0 + 256 * b1 + 65536 * b2 + 16777216 * b3)
   | _ => none
 
-def mkU8LoField : FieldSpec := {
+noncomputable def mkU8LoField : FieldSpec := {
   fieldId := 1
   size := 1
   align := 1
@@ -940,7 +940,7 @@ def mkU8LoField : FieldSpec := {
   dataMask := [true]
 }
 
-def mkU32FullField : FieldSpec := {
+noncomputable def mkU32FullField : FieldSpec := {
   fieldId := 0
   size := 4
   align := 4
@@ -952,7 +952,7 @@ def mkU32FullField : FieldSpec := {
   dataMask := [true, true, true, true]
 }
 
-def u32LoUnionLayout : ComputedLayout :=
+noncomputable def u32LoUnionLayout : ComputedLayout :=
   computeUnionLayout { isC := true, isTransparent := false, pack := none, reprAlign := none }
     [mkU32FullField, mkU8LoField]
 
@@ -1034,13 +1034,13 @@ theorem uninhabited_field_read_fails_on_valid_union
 - Inhabited `T` with `largestNiche = none` -> `Option<T>` requires an external tag
   (`size = Nat.max (T.size + T.align) 1`, yielding `1 B` for ZSTs and `16 B` for
   8-byte aligned types). -/
-def optionSizeOf (inner : ComputedLayout) : Nat :=
+noncomputable def optionSizeOf (inner : ComputedLayout) : Nat :=
   if inner.uninhabited then 0
   else match inner.largestNiche with
     | some _ => inner.size
     | none => Nat.max (inner.size + inner.align) 1
 
-def infallibleField : FieldSpec := {
+noncomputable def infallibleField : FieldSpec := {
   fieldId := 0
   size := 0
   align := 1
@@ -1052,14 +1052,14 @@ def infallibleField : FieldSpec := {
   dataMask := []
 }
 
-def infallibleStructLayout : ComputedLayout :=
+noncomputable def infallibleStructLayout : ComputedLayout :=
   computeTransparentStructLayout infallibleField
 
-def neverUnionLayout : ComputedLayout :=
+noncomputable def neverUnionLayout : ComputedLayout :=
   computeUnionLayout { isC := false, isTransparent := false, pack := none, reprAlign := none }
     [infallibleField]
 
-def nonZeroU64Field : FieldSpec := {
+noncomputable def nonZeroU64Field : FieldSpec := {
   fieldId := 0
   size := 8
   align := 8
@@ -1077,7 +1077,7 @@ def nonZeroU64Field : FieldSpec := {
   dataMask := [true, true, true, true, true, true, true, true]
 }
 
-def zstUnitField : FieldSpec := {
+noncomputable def zstUnitField : FieldSpec := {
   fieldId := 1
   size := 0
   align := 1
@@ -1089,14 +1089,14 @@ def zstUnitField : FieldSpec := {
   dataMask := []
 }
 
-def plainWrapStructLayout : ComputedLayout :=
+noncomputable def plainWrapStructLayout : ComputedLayout :=
   computeTransparentStructLayout nonZeroU64Field
 
-def twoNonZeroUnionLayout : ComputedLayout :=
+noncomputable def twoNonZeroUnionLayout : ComputedLayout :=
   computeUnionLayout { isC := false, isTransparent := false, pack := none, reprAlign := none }
     [nonZeroU64Field, { nonZeroU64Field with fieldId := 1 }]
 
-def transNonZeroUnionLayout : ComputedLayout :=
+noncomputable def transNonZeroUnionLayout : ComputedLayout :=
   computeUnionLayout { isC := false, isTransparent := true, pack := none, reprAlign := none }
     [nonZeroU64Field, zstUnitField]
 
@@ -1119,7 +1119,7 @@ theorem option_infallible_size_zero_vs_option_neverUnion_size_one :
 /-- Hypothetical BUGGY niche-intersection model: computes union niche by
 taking the first field's niche (as in `TwoNonZero { a: NonZeroU64, b: NonZeroU64 }`)
 and enforces that niche on top-level union validity instead of `largestNiche := none`. -/
-def buggyIntersectedUnionValid (buf : ByteBuffer) : Bool :=
+noncomputable def buggyIntersectedUnionValid (buf : ByteBuffer) : Bool :=
   buf.length == 8 && nonZeroU64Field.bytePred buf
 
 /-- **Counterexample 1**: Intersecting field niches (`NonZeroU64 ∩ NonZeroU64`)
@@ -1165,7 +1165,7 @@ inductive AssumeInitOutcome where
   | ubUnreachable
   deriving DecidableEq, Repr
 
-def evalAssumeInitWithInhabitedFlag (u : ComputedLayout) (isUninhab : Bool)
+noncomputable def evalAssumeInitWithInhabitedFlag (u : ComputedLayout) (isUninhab : Bool)
     (buf : ByteBuffer) : AssumeInitOutcome :=
   if isUninhab then .ubUnreachable
   else if buf.length == u.size then .ok buf

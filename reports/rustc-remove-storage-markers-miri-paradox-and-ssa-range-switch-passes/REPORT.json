@@ -1,0 +1,95 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "Rust compiler and Miri primary source (1.102.0-nightly audit pin)",
+      "identity": {
+        "kind": "repository",
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly",
+        "committed_at": "2026-11-11T17:59:24Z",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    },
+    {
+      "name": "Rust compiler and Miri execution toolchain (1.98.0-nightly host pin)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly",
+        "miri_version": "0.1.0",
+        "llvm_version": "22.1.6",
+        "target": "x86_64-unknown-linux-gnu",
+        "committed_at": "2026-05-31T20:13:59Z",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    },
+    {
+      "name": "Rust upstream pin matching Anneal vendored lean-miri semantics",
+      "identity": {
+        "kind": "repository",
+        "repository": "rust-lang/rust",
+        "revision": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+        "committed_at": "2026-10-20T00:26:42Z",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    },
+    {
+      "name": "Rust upstream pin matching Anneal trusted rustc-capture driver",
+      "identity": {
+        "kind": "repository",
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "committed_at": "2026-05-30T17:09:19Z",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    },
+    {
+      "name": "Anneal verification framework capture, AST, and MIR semantics",
+      "identity": {
+        "kind": "repository",
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+        "committed_at": "2026-11-19T21:39:21Z",
+        "url": "https://github.com/joshlf/anneal"
+      }
+    },
+    {
+      "name": "zerocopy crate Runtime(PostCleanup) and MIR optimization census target",
+      "identity": {
+        "kind": "repository",
+        "repository": "google/zerocopy",
+        "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+        "version": "0.8.64",
+        "committed_at": "2026-11-21T07:17:31Z",
+        "url": "https://github.com/google/zerocopy"
+      }
+    },
+    {
+      "name": "Lean 4 kernel proof assistant",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1",
+        "committed_at": "2026-09-24T17:27:27Z",
+        "url": "https://github.com/leanprover/lean4"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

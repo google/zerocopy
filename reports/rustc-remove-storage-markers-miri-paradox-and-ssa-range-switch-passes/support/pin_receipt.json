@@ -1,0 +1,104 @@
+{
+ "schema": "pin-receipt/1",
+ "generated_on": "2026-11-21",
+ "verification_method": "GitHub GraphQL API queries over pinned 40-hex commit SHAs, plus local git HEAD cross-checks for checked-out repositories",
+ "repositories": [
+  {
+   "repository": "rust-lang/rust",
+   "role": "Primary upstream compiler and Miri operational semantics audit baseline (1.102.0-nightly)",
+   "commit": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "committed_at": "2026-11-11T17:59:24Z",
+   "commit_title": "Auto merge of #165821 - JonathanBrouwer:rollup-TeJSwaI, r=JonathanBro\u2026",
+   "verified_blobs": {
+    "compiler/rustc_mir_transform/src/remove_storage_markers.rs": "833d281366adc6951539d0c704592e0c62a6829d",
+    "compiler/rustc_session/src/session.rs": "9bf2de04662331c648266ae01e8aa6536951ae99",
+    "src/tools/miri/src/lib.rs": "19c0c1cf53116efdaf020bd259437d8cc68b12e1",
+    "src/tools/miri/src/bin/miri.rs": "e3e2eef146ccc5a433ea16ade77a0546edad1e0f",
+    "compiler/rustc_mir_transform/src/ssa_range_prop.rs": "f854e4c5a8d3cc7c95f3d988d097186e84063638",
+    "compiler/rustc_mir_transform/src/simplify_comparison_integral.rs": "55698bf0e7ec1d9d0807cb73f545ca7c364d774c",
+    "compiler/rustc_mir_transform/src/early_otherwise_branch.rs": "cc4f3e2b3911b24a01e4398c310690b4308506d6",
+    "compiler/rustc_mir_transform/src/add_subtyping_projections.rs": "cab927d152196305480aa6512435d88a57d8019a",
+    "compiler/rustc_mir_transform/src/unreachable_enum_branching.rs": "d33574b93c43e646e6645bc45ec0f810359140c6",
+    "compiler/rustc_mir_transform/src/ssa.rs": "994cb8cf681ad78286ca127db021fd1bd1993577",
+    "compiler/rustc_mir_transform/src/lib.rs": "d32bbaa3d77de93893e57f9a3aec98337a6bad5c",
+    "compiler/rustc_const_eval/src/interpret/stack.rs": "19a1dfe3e567bf3f951acb1215624c706fc9db23",
+    "compiler/rustc_const_eval/src/interpret/step.rs": "901f1f0655378de28d4543b882018e83b06913a0",
+    "compiler/rustc_const_eval/src/interpret/operand.rs": "84cf61c06e7906e69ec27d2dba42fdc284e13309"
+   }
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "Installed host compiler and Miri execution toolchain (1.98.0-nightly / 0.1.0)",
+   "commit": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "committed_at": "2026-05-31T20:13:59Z",
+   "commit_title": "Auto merge of #157219 - jhpratt:rollup-70ooTMg, r=jhpratt",
+   "verified_blobs": {
+    "compiler/rustc_mir_transform/src/remove_storage_markers.rs": "cb97d2c865ac9f1abd79c27fcce6f00b961c2f5b",
+    "compiler/rustc_session/src/session.rs": "c83bb62324e76a0686515782d3290961d655dd3d",
+    "src/tools/miri/src/lib.rs": "160f31d50c4bf0e63a744c638b648b39bbdd55e1",
+    "src/tools/miri/src/bin/miri.rs": "ba662346a028cf579327a395280437af84aaab60",
+    "compiler/rustc_mir_transform/src/ssa_range_prop.rs": "348c3bc2c91197759418cecdc031dca4cddaf298",
+    "compiler/rustc_mir_transform/src/simplify_comparison_integral.rs": "74e5fc6f34579d17235d0fdd8c446f9b59a1327d",
+    "compiler/rustc_mir_transform/src/early_otherwise_branch.rs": "ae99339c021789f8390d1b6ccc2034130aeb5932",
+    "compiler/rustc_mir_transform/src/add_subtyping_projections.rs": "fc31d502087fdfed6282009e8164532f7f467f59",
+    "compiler/rustc_mir_transform/src/unreachable_enum_branching.rs": "e40df5b91aca552755d2751941a6d077d23df9ba",
+    "compiler/rustc_mir_transform/src/lib.rs": "ad7affe8d96fc1076c3c24f11e83bf3abbd46ee0",
+    "compiler/rustc_const_eval/src/interpret/stack.rs": "3e7c57a439c6743021375d32a34064956a71496e",
+    "compiler/rustc_const_eval/src/interpret/step.rs": "0718638c1d219b5c6709faf5dd57f3df3a56bdf3",
+    "compiler/rustc_const_eval/src/interpret/operand.rs": "7b2983620d420fcc153c728524e4d328d68f1d12"
+   }
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "Anneal vendored lean-miri upstream operational semantics pin",
+   "commit": "8144389c895da997dbdecaa635e41d6a50be6ffd",
+   "committed_at": "2026-10-20T00:26:42Z",
+   "commit_title": "Auto merge of #164501 - Muhtasim-Rasheed:issue-164477-closure-fn-sig-\u2026",
+   "verified_blobs": {}
+  },
+  {
+   "repository": "rust-lang/rust",
+   "role": "Anneal trusted/rustc-capture rustc_private pin",
+   "commit": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+   "committed_at": "2026-05-30T17:09:19Z",
+   "commit_title": "Auto merge of #157161 - JonathanBrouwer:rollup-3MNUPwu, r=JonathanBro\u2026",
+   "verified_blobs": {}
+  },
+  {
+   "repository": "joshlf/anneal",
+   "role": "Anneal TCB capture, Lean AST/semantics, and correspondence baseline",
+   "commit": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "committed_at": "2026-11-19T21:39:21Z",
+   "commit_title": "[theory] Bridge PureLift onto Trusted MIR semantics (#266)",
+   "verified_blobs": {
+    "trusted/rustc-capture/src/driver.rs": "f82074bb58e1e16adb8a055ca72c9040a496cf52",
+    "trusted/lean/Trusted/MirAst.lean": "0da11dc6dd5c2c52fd80f44f60483c86479f01cb",
+    "trusted/lean/Trusted/MirSemantics.lean": "668c0955aef2c53624bfe32cb429eecc6014c011",
+    "trusted/correspondence/Trusted/Correspondence.lean": "445f7440fc618633224d22fce7221295bcea9e23",
+    "vendor/lean-miri/Miri/Interpreter/Step.lean": "2c4da14e55c425068c8477441d17855fb9bbe1aa",
+    "vendor/lean-miri/Miri/Interpreter/Stack.lean": "a2c3284c617fd2892964be87223933860f233a7f"
+   }
+  },
+  {
+   "repository": "google/zerocopy",
+   "role": "Live Runtime(PostCleanup) and MIR optimization pass empirical corpus target",
+   "commit": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+   "committed_at": "2026-11-21T07:17:31Z",
+   "commit_title": "[ci] Publish Anneal GitHub releases (#4025)",
+   "verified_blobs": {
+    "zerocopy/Cargo.toml": "3d175360a72fe7974842e6eb8e67053ed445de74",
+    "zerocopy/src/lib.rs": "70a0b982f870f31f82273aa681fdf6fd92cefd01"
+   }
+  },
+  {
+   "repository": "leanprover/lean4",
+   "role": "Kernel proof assistant version (v4.34.1)",
+   "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "committed_at": "2026-09-24T17:27:27Z",
+   "commit_title": "chore: prepare release",
+   "verified_blobs": {
+    "src/CMakeLists.txt": "b1ddacae49bdb4863103e4482daf1e957d9e7554"
+   }
+  }
+ ]
+}
