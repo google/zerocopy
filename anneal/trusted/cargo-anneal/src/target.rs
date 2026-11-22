@@ -3317,4 +3317,56 @@ mod tests {
         assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
+
+    #[test]
+    fn live_omitted_program_scope_fails_elaboration() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Omitting `scope` from `Trusted.MirAst.Program` must fail Lean
+        // elaboration at capture compilation time rather than defaulting to
+        // `.unit` (`Trusted.MirSemantics` negative canaries already reject an
+        // explicit `scope := .unit` under `CrateTheorem`).
+        let mut req_missing = write_target_request(
+            &base.join("missing-scope"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [] }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs := {}\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.CrateTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\n\
+                     theorem Proof.verify : Expected.claim := by exact False.elim sorry\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req_missing, true);
+        let mut checker_missing = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let err_missing = checker_missing.run_target(&req_missing).unwrap_err();
+        assert_eq!(err_missing.code, 1, "expected elaboration failure: {err_missing}");
+        assert_eq!(err_missing.phase, "compile-Captured", "{err_missing}");
+        assert!(err_missing.message.contains("Fields missing: `scope`"), "{err_missing}");
+    }
 }

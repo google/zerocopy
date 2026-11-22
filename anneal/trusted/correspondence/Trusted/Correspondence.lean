@@ -55,7 +55,7 @@ This module defines five components:
    replacing inline structural `MirTy` values with `TyId := Nat` indices into a
    single deduplicated program type table `RefProg.types : List MirTy`, while
    carrying explicit `pointerWidthBits : Nat`, `mirProfileVersion : Nat`, and
-   `scope : VerificationScope := .unit`.
+   `scope : VerificationScope`.
 2. **Canonical type-interning codec (`encodeProg` / `decodeProg`):** Interns
    every structural `MirTy` in bottom-up topological order and provides an
    unconditional left-inverse decoder `decodeProg`.

@@ -129,7 +129,7 @@ structure RefProg where
   types : List MirTy
   pointerWidthBits : Nat
   mirProfileVersion : Nat
-  scope : VerificationScope := .unit
+  scope : VerificationScope
 
 /-! ## Canonical Type Interning and Codec (`encodeProg` / `decodeProg`) -/
 

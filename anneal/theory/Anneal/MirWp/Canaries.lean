@@ -260,6 +260,7 @@ theorem canary_crate_and_body_verified_anneal_base :
     have hWf := hVer.2.2 [.bool false] rfl (fun h => Bool.noConfusion h)
     have hNeg : NegativeCanaryClaim
         (entryProgForBody {
+          scope := .unit
           pointerWidthBits := 64
           mirProfileVersion := 1
           bodies := [canaryUnsafeGuardedBody false]

@@ -3858,6 +3858,7 @@ at entry).
 /-- Authoritative `Trusted.MirAst.Program` for `compute_linear(x: u32, delta:
 u32) -> u32`. -/
 def progComputeLinearU32 : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -4102,6 +4103,7 @@ theorem mir_swap_fields_verified (a b : ScalarVal) :
 /-- 4-block authoritative `Trusted.MirAst.Program` for
 `select_add(flag: bool, x: u32, y: u32, v: u32) -> u32`. -/
 def progSelectAddU32 : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -4261,6 +4263,7 @@ and transferred across `CorrespondenceClaim` to `lean-miri` ($M_{\text{ref}}$).
 /-- 4-block authoritative `Trusted.MirAst.Program` for
 `loop_accumulate(acc: u32, n: u32) -> u32`. -/
 def progLoopAccumulateU32 : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -4418,6 +4421,7 @@ theorem mir_loop_accumulate_verified
 /-- Authoritative `Trusted.MirAst.Program` that moves `_1` into `_2`
 (`Operand.move`, deinitializing `_1`) and then attempts to read `_1` again. -/
 def progUseAfterMoveUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -4438,6 +4442,7 @@ def progUseAfterMoveUb : Program where
 /-- Named `Trusted.MirAst.Program` that initializes `_1`, retires `_1` with
 `StorageDead`, and then attempts to read `_1` into `_0`. -/
 def progUseAfterStorageDeadUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -4584,6 +4589,7 @@ def mirU8Val (n : Nat) : Val :=
 /-- Straight-line MIR program decoding `ReprU8::B` (`20u8`) via `ConstOperand`
 and reading its `u8` discriminant into `_0` via `Rvalue.discriminant`. -/
 def progEnumDiscriminantU8 : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -4606,6 +4612,7 @@ def progEnumDiscriminantU8 : Program where
 /-- Straight-line MIR program attempting to decode invalid tag `1u8` into
 `ReprU8 { A = 10, B = 20 }`, triggering `FaultKind.undefined`. -/
 def progEnumInvalidTagUb : Program where
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{

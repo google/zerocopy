@@ -38,6 +38,7 @@ faults with `.fault .undefined` (`.ub` in $M_{\text{ref}}$) on the subsequent
 `copy _1`. -/
 noncomputable def progUseAfterMoveD6 : Program where
   entryDefId := 0
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -61,6 +62,7 @@ noncomputable def queryU32_42 : Query where
 and deinitializes `_1` in `rhs`, and returns `84`. -/
 noncomputable def progBinOpCopyThenMoveD7a : Program where
   entryDefId := 0
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -80,6 +82,7 @@ noncomputable def progBinOpCopyThenMoveD7a : Program where
 $M_{\text{ref}}$) in `rhs = copy _1`. -/
 noncomputable def progBinOpMoveThenCopyD7b : Program where
   entryDefId := 0
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -99,6 +102,7 @@ noncomputable def progBinOpMoveThenCopyD7b : Program where
 $M_{\text{ref}}$) in `rhs = move _1`. -/
 noncomputable def progBinOpMoveThenMoveD7c : Program where
   entryDefId := 0
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -118,6 +122,7 @@ to `.immediate none`, and then writes `42` back into `_1`, so the subsequent
 `_0 = copy _1` succeeds and returns `42`. -/
 noncomputable def progSelfMoveD8 : Program where
   entryDefId := 0
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{
@@ -138,6 +143,7 @@ noncomputable def progSelfMoveD8 : Program where
 succeeds and returns `.unit`. -/
 noncomputable def progMoveUnitZstD9 : Program where
   entryDefId := 0
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [{

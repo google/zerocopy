@@ -1479,6 +1479,7 @@ def countDownBody : Body := {
 
 /-- Single-body program for `count_down`. -/
 def countDownProg : Program := {
+  scope := .unit
   pointerWidthBits := 64
   mirProfileVersion := 1
   bodies := [countDownBody]
