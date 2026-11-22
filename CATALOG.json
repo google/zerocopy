@@ -37854,6 +37854,87 @@
         "pl/parametricity"
       ]
     },
+    "dimsum-melocoton-multi-language-operational-linking-and-semantic-interop": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.1145/3571220",
+            "url": "https://iris-project.org/pdfs/2023-popl-dimsum.pdf",
+            "venue": "Proc. ACM Program. Lang. 7(POPL), Article 27, pp. 775-805 (2023)"
+          },
+          "name": "DimSum: A Decentralized Approach to Multi-language Semantics and Verification (POPL 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3622823",
+            "url": "https://iris-project.org/pdfs/2023-oopsla-melocoton.pdf",
+            "venue": "Proc. ACM Program. Lang. 7(OOPSLA2), Article 247, pp. 716-744 (2023)"
+          },
+          "name": "Melocoton: A Program Logic for Verified Interoperability Between OCaml and C (OOPSLA 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2676726.2676985",
+            "url": "https://www.cs.princeton.edu/~appel/papers/compcomp.pdf",
+            "venue": "POPL '15, pp. 275-287 (2015)"
+          },
+          "name": "Compositional CompCert (POPL 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371091",
+            "url": "https://sf.snu.ac.kr/publications/compcertm.pdf",
+            "venue": "Proc. ACM Program. Lang. 4(POPL), Article 23, pp. 1-31 (2020)"
+          },
+          "name": "CompCertM: CompCert with C-Assembly Linking and Lightweight Modular Verification (POPL 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454097",
+            "url": "http://flint.cs.yale.edu/flint/publications/compcerto.pdf",
+            "venue": "PLDI '21, pp. 1095-1109 (2021)"
+          },
+          "name": "CompCertO: Compiling Certified Open C Components (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3623510",
+            "url": "https://iris-project.org/pdfs/2023-jacm-cerise.pdf",
+            "venue": "Journal of the ACM 71(1), Article 3, pp. 1-59 (2024)"
+          },
+          "name": "Cerise: Program Verification on a Capability Machine in the Presence of Untrusted Code (JACM 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434287",
+            "url": "https://iris-project.org/pdfs/2021-popl-ucaps-final.pdf",
+            "venue": "Proc. ACM Program. Lang. 5(POPL), Article 6, pp. 1-30 (2021)"
+          },
+          "name": "Efficient and Provable Local Capability Revocation using Uninitialized Capabilities (POPL 2021)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain (toy-model mechanization)"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/multi-language-semantics",
+        "pl/operational-linking",
+        "pl/logical-relations",
+        "ffi",
+        "ffi/memory-membranes",
+        "ffi/reentrancy",
+        "compilers/compositional-verification",
+        "security/capability-machines",
+        "verification/iris"
+      ]
+    },
     "direct-surface-operational-semantics-jscert-k-spectec-and-desugaring-proofs": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -62839,6 +62920,150 @@
         "verification/polygon-winding-dose-integrals"
       ]
     },
+    "linearity-and-delimited-continuations-multi-shot-effect-handler-soundness": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2307.09383v2",
+            "doi": "10.1145/3632896"
+          },
+          "name": "Tang et al., Soundly Handling Linearity (POPL 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1926385.1926436"
+          },
+          "name": "Tov and Pucella, Practical Affine Types (Alms, POPL 2011)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2628136.2628160"
+          },
+          "name": "Petricek, Orchard, and Mycroft, Coeffects: A Calculus of Context-Dependent Computation (ICFP 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341714"
+          },
+          "name": "Orchard, Liepelt, and Eades III, Quantitative Program Reasoning with Graded Modal Types (Granule, ICFP 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3209108.3209189"
+          },
+          "name": "Atkey, The Syntax and Semantics of Quantitative Type Theory (LICS 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3009837.3009872"
+          },
+          "name": "Leijen, Type Directed Compilation of Row-Typed Algebraic Effects (POPL 2017)"
+        },
+        {
+          "identity": {
+            "publisher": "Microsoft Research",
+            "report": "MSR-TR-2018-10",
+            "url": "https://www.microsoft.com/en-us/research/publication/algebraic-effect-handlers-resources-deep-finalization/",
+            "year": "2018"
+          },
+          "name": "Leijen, Algebraic Effect Handlers with Resources and Deep Finalization (MSR-TR-2018-10)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454032"
+          },
+          "name": "Reinking, Xie, de Moura, and Leijen, Perceus: Garbage Free Reference Counting with Reuse (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3428194"
+          },
+          "name": "Brachth\u00e4user, Schuster, and Ostermann, Effects as Capabilities (Effekt, OOPSLA 2020)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3527320"
+          },
+          "name": "Brachth\u00e4user, Schuster, Lee, and Boruch-Gruszecki, Effects, Capabilities, and Boxes (Effekt, OOPSLA 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2104.00250v1",
+            "doi": "10.1145/3453483.3454039"
+          },
+          "name": "Sivaramakrishnan et al., Retrofitting Effect Handlers onto OCaml (PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434314"
+          },
+          "name": "de Vilhena and Pottier, A Separation Logic for Effect Handlers (POPL 2021)"
+        },
+        {
+          "identity": {
+            "url": "https://ocaml.org/manual/5.3/effects.html",
+            "version": "5.3"
+          },
+          "name": "OCaml 5.3 Reference Manual, Effect Handlers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3674642"
+          },
+          "name": "Lorenzen, White, Dolan, Eisenberg, and Lindley, Oxidizing OCaml with Modal Memory Management (ICFP 2024)"
+        },
+        {
+          "identity": {
+            "url": "https://oxcaml.org/documentation/modes/intro/"
+          },
+          "name": "OxCaml Mode System Documentation"
+        },
+        {
+          "identity": {
+            "path": "text/2349-pin.md",
+            "repository": "rust-lang/rfcs",
+            "url": "https://github.com/rust-lang/rfcs/blob/master/text/2349-pin.md"
+          },
+          "name": "Rust RFC 2349 (Pin API)"
+        },
+        {
+          "identity": {
+            "path": "text/1066-safe-mem-forget.md",
+            "repository": "rust-lang/rfcs",
+            "url": "https://github.com/rust-lang/rfcs/blob/master/text/1066-safe-mem-forget.md"
+          },
+          "name": "Rust RFC 1066 (Safe std::mem::forget)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+            "url": "https://doc.rust-lang.org/std/pin/index.html",
+            "version": "1.100.0"
+          },
+          "name": "Rust std::pin Documentation"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "pl/algebraic-effects",
+        "pl/control-flow-linearity",
+        "pl/delimited-continuations",
+        "pl/graded-coeffects",
+        "pl/linear-types",
+        "pl/modal-types",
+        "rust/pin",
+        "verification/lean4"
+      ]
+    },
     "linearizability-prophecy-helping-and-atomic-commit-point-refinement-proofs": {
       "observed_at": "2026-11-20",
       "subjects": [
@@ -70476,6 +70701,233 @@
         "verification/silicon-tagging-contracts"
       ]
     },
+    "multi-language-two-safety-and-hyperproperty-composition-across-heterogeneous-boundaries": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "doi": "10.3233/JCS-2009-0393",
+            "venue": "Journal of Computer Security, Vol. 18, No. 6, pp. 1157-1210 (2010)"
+          },
+          "name": "Clarkson and Schneider (JCS 2010): Hyperproperties"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/964001.964017",
+            "venue": "ACM POPL 2004"
+          },
+          "name": "Giacobazzi and Mastroeni (POPL 2004): Abstract Non-Interference"
+        },
+        {
+          "identity": {
+            "conference_doi": "10.1145/1190216.1190220",
+            "doi": "10.1145/1498926.1498930",
+            "venue": "ACM TOPLAS, Vol. 31, No. 3, Article 12 (2009); POPL 2007"
+          },
+          "name": "Matthews and Findler (POPL 2007 / TOPLAS 2009): Operational Semantics for Multi-Language Programs"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF.2017.13",
+            "venue": "IEEE CSF 2017"
+          },
+          "name": "Patrignani and Garg (CSF 2017): Secure Compilation and Hyperproperty Preservation"
+        },
+        {
+          "identity": {
+            "arxiv": "1804.00489v5",
+            "conference_doi": "10.1007/978-3-030-17184-1_17",
+            "doi": "10.1145/3436809",
+            "venue": "ACM TOPLAS, Vol. 43, No. 1, Article 1 (2021); ESOP 2019"
+          },
+          "name": "Patrignani and Garg (ESOP 2019 / TOPLAS 2021): Robustly Safe Compilation"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.04603v6",
+            "doi": "10.1109/CSF.2019.00025",
+            "venue": "IEEE CSF 2019"
+          },
+          "name": "Abate et al. (CSF 2019): Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation"
+        },
+        {
+          "identity": {
+            "arxiv": "1907.05320v4",
+            "conference_doi": "10.1007/978-3-030-44914-8_1",
+            "doi": "10.1145/3460860",
+            "venue": "ACM TOPLAS, Vol. 43, No. 4, Article 14 (2021); ESOP 2020"
+          },
+          "name": "Abate et al. (ESOP 2020 / TOPLAS 2021): Trace-Relating Compiler Correctness and Secure Compilation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3280984",
+            "venue": "ACM Computing Surveys, Vol. 51, No. 6 (2019)"
+          },
+          "name": "Patrignani, Ahmed, and Clarke (CSUR 2019): Formal Approaches to Secure Compilation"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF.2018.00031",
+            "venue": "IEEE CSF 2018"
+          },
+          "name": "Barthe, Gregoire, and Laporte (CSF 2018): Secure Compilation of Side-Channel Countermeasures"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3371075",
+            "venue": "ACM POPL 2020"
+          },
+          "name": "Barthe et al. (POPL 2020): Formal Verification of a Constant-Time Preserving C Compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3460120.3484761",
+            "venue": "ACM CCS 2021"
+          },
+          "name": "Barthe et al. (CCS 2021): Structured Leakage and Applications to Cryptographic Constant-Time and Cost"
+        },
+        {
+          "identity": {
+            "arxiv": "1910.08607v4",
+            "doi": "10.1145/3460120.3484534",
+            "venue": "ACM CCS 2021"
+          },
+          "name": "Patrignani and Guarnieri (CCS 2021): Exorcising Spectres with Secure Compilers"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40000.2020.00011",
+            "venue": "IEEE S&P 2020"
+          },
+          "name": "Guarnieri et al. (S&P 2020): Spectector: Principled Detection of Speculative Information Flows"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP40001.2021.00036",
+            "venue": "IEEE S&P 2021"
+          },
+          "name": "Guarnieri et al. (S&P 2021): Hardware-Software Contracts for Secure Speculation"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF51468.2021.00036",
+            "venue": "IEEE CSF 2021"
+          },
+          "name": "El-Korashy et al. (CSF 2021): CapablePtrs: Securely Compiling Partial Programs Using the Pointers-as-Capabilities Principle"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/CSF54842.2022.9919680",
+            "venue": "IEEE CSF 2022"
+          },
+          "name": "El-Korashy et al. (CSF 2022): SecurePtrs: Proving Secure Compilation with Data-Flow Back-Translation and Turn-Taking Simulation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3243734.3243745",
+            "venue": "ACM CCS 2018"
+          },
+          "name": "Abate et al. (CCS 2018): When Good Components Go Bad: Formally Secure Compilation Despite Dynamic Compromise"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3658644.3670288",
+            "venue": "ACM CCS 2024"
+          },
+          "name": "Thibault et al. (CCS 2024): SECOMP: Formally Secure Compilation of Compartmentalized C Programs"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.08681v3",
+            "doi": "10.48550/arXiv.2307.08681",
+            "venue": "arXiv preprint (Oct 2024)"
+          },
+          "name": "Kruse, Backes, and Patrignani (2024): Secure Composition of Robust and Optimising Compilers"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3341689",
+            "venue": "ACM ICFP 2019"
+          },
+          "name": "Patterson and Ahmed (ICFP 2019): The Next 700 Compiler Correctness Theorems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3519939.3523703",
+            "venue": "ACM PLDI 2022"
+          },
+          "name": "Patterson et al. (PLDI 2022): Semantic Soundness for Language Interoperability"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3571220",
+            "venue": "ACM POPL 2023"
+          },
+          "name": "Sammler et al. (POPL 2023): DimSum: A Decentralized Approach to Multi-language Semantics and Verification"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/SP.2017.64",
+            "venue": "IEEE S&P 2017"
+          },
+          "name": "Pedersen and Askarov (S&P 2017): From Trash to Treasure: Timing-Sensitive Garbage Collection"
+        },
+        {
+          "identity": {
+            "doi": "10.1016/j.jlap.2008.09.003",
+            "venue": "Journal of Logic and Algebraic Programming, Vol. 78, No. 7, pp. 593-618 (2009)"
+          },
+          "name": "Russo and Sabelfeld (JLAP 2009): Securing Interaction Between Threads and the Scheduler in the Presence of Synchronization"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2364527.2364557",
+            "venue": "ACM ICFP 2012"
+          },
+          "name": "Stefan et al. (ICFP 2012): Addressing Covert Termination and Timing Channels in Concurrent Information Flow Systems"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454039",
+            "venue": "ACM PLDI 2021"
+          },
+          "name": "Sivaramakrishnan et al. (PLDI 2021): Retrofitting Effect Handlers onto OCaml"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3408981",
+            "venue": "ACM ICFP 2020"
+          },
+          "name": "Xie et al. (ICFP 2020): Effect Handlers, Evidently"
+        },
+        {
+          "identity": {
+            "url": "https://www.usenix.org/conference/usenixsecurity21/presentation/narayan",
+            "venue": "USENIX Security 2021"
+          },
+          "name": "Narayan et al. (USENIX Security 2021): Swivel: Hardening WebAssembly Against Spectre"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 Toolchain"
+        }
+      ],
+      "topics": [
+        "security/hyperproperties",
+        "security/secure-compilation",
+        "security/side-channels",
+        "pl/multi-language-interop",
+        "compilers/composition",
+        "ffi/boundaries",
+        "runtimes/gc-and-effects",
+        "verification/lean4"
+      ]
+    },
     "multi-logic-and-multi-paradigm-verification-composition": {
       "observed_at": "2026-11-19",
       "subjects": [
@@ -76301,6 +76753,195 @@
         "pl/types",
         "pl/regions",
         "pl/linearity"
+      ]
+    },
+    "ownership-to-moving-gc-ffi-root-pinning-safepoints-and-reentrancy": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "edition": "Java SE 25 & JDK 25",
+            "specification": "Java Native Interface Specification",
+            "url": "https://docs.oracle.com/en/java/javase/25/docs/specs/jni/"
+          },
+          "name": "Java Native Interface Specification (Java SE 25 & JDK 25), chapters 2, 4 and 5"
+        },
+        {
+          "identity": {
+            "document": "The OCaml Manual",
+            "url": "https://ocaml.org/manual/5.4/intfc.html",
+            "version": "5.4"
+          },
+          "name": "The OCaml Manual, version 5.4, Chapter 23 (Interfacing C with OCaml), Gc module documentation and parallel programming chapter"
+        },
+        {
+          "identity": {
+            "crate": "pyo3",
+            "url": "https://docs.rs/pyo3/0.30.1/pyo3/",
+            "version": "0.30.1"
+          },
+          "name": "PyO3 (Rust bindings for Python) API documentation"
+        },
+        {
+          "identity": {
+            "repository": "PyO3/pyo3",
+            "revision": "be9e428ab7573552c65aa9e7a7a0c6d14b06fd5d",
+            "url": "https://pyo3.rs/main/"
+          },
+          "name": "PyO3 user guide (types, free-threading and class chapters) on branch main"
+        },
+        {
+          "identity": {
+            "document": "PEP 703",
+            "url": "https://peps.python.org/pep-0703/"
+          },
+          "name": "PEP 703: Making the Global Interpreter Lock Optional in CPython"
+        },
+        {
+          "identity": {
+            "release": "3.0 (draft dated 2026-11-20)",
+            "specification": "WebAssembly Specification",
+            "url": "https://webassembly.github.io/spec/core/"
+          },
+          "name": "WebAssembly Specification, Release 3.0 (core)"
+        },
+        {
+          "identity": {
+            "path": "document/js-api/index.bs",
+            "repository": "WebAssembly/spec",
+            "revision": "6fca707686ed4f36a1e30ec2ae7d3dd32b276704"
+          },
+          "name": "WebAssembly JavaScript Interface (specification source)"
+        },
+        {
+          "identity": {
+            "path": "proposals/gc",
+            "repository": "WebAssembly/gc",
+            "revision": "756060f5816c7e2159f4817fbdee76cf52f9c923"
+          },
+          "name": "WebAssembly GC proposal design documents (MVP.md, Post-MVP.md)"
+        },
+        {
+          "identity": {
+            "crate": "ocaml-interop",
+            "url": "https://docs.rs/ocaml-interop/0.12.0/ocaml_interop/",
+            "version": "0.12.0"
+          },
+          "name": "ocaml-interop (OCaml and Rust interoperability crate) documentation"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3622823"
+          },
+          "name": "Gu\u00e9neau, Hostert, Spies, Sammler, Birkedal, Dreyer: Melocoton: A Program Logic for Verified Interoperability Between OCaml and C (OOPSLA 2023)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3704860"
+          },
+          "name": "Korkut, Stark, Appel: A Verified Foreign Function Interface between Coq and C (POPL 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-018-9487-z"
+          },
+          "name": "Sandberg Ericsson, Myreen, \u00c5man Pohjola: A Verified Generational Garbage Collector for CakeML (Journal of Automated Reasoning 63(2))"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000229"
+          },
+          "name": "Tan, Myreen, Kumar, Fox, Owens, Norrish: The verified CakeML compiler backend (Journal of Functional Programming 29, 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1250734.1250788"
+          },
+          "name": "McCreight, Shao, Lin, Li: A general framework for certifying garbage collectors and their mutators (PLDI 2007)"
+        },
+        {
+          "identity": {
+            "arxiv": "1004.3808v3",
+            "doi": "10.1145/1480881.1480935",
+            "journal_doi": "10.2168/LMCS-6(3:6)2010"
+          },
+          "name": "Hawblitzel, Petrank: Automated verification of practical garbage collectors (POPL 2009; Logical Methods in Computer Science 6(3), 2010)"
+        },
+        {
+          "identity": {
+            "afp_entry": "ConcurrentGC",
+            "doi": "10.1145/2737924.2738006",
+            "url": "https://www.isa-afp.org/entries/ConcurrentGC.html"
+          },
+          "name": "Gammie, Hosking, Engelhardt: Relaxing safely: verified on-the-fly garbage collection for x86-TSO (PLDI 2015) and its Isabelle development"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-642-17164-2_9",
+            "journal_doi": "10.1017/S0960129513000042"
+          },
+          "name": "Tan: JNI Light: An Operational Model for the Core JNI (APLAS 2010; Mathematical Structures in Computer Science 25(4))"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1377492.1377493"
+          },
+          "name": "Furr, Foster: Checking type safety of foreign function calls (ACM TOPLAS 30(4), 2008)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1806596.1806601"
+          },
+          "name": "Lee, Wiedermann, Hirzel, Grimm, McKinley: Jinn: synthesizing dynamic bug detectors for foreign language interfaces (PLDI 2010)"
+        },
+        {
+          "identity": {
+            "arxiv": "1807.00067v1"
+          },
+          "name": "Jeffrey: Josephine: Using JavaScript to safely manage the lifetimes of Rust data"
+        },
+        {
+          "identity": {
+            "hal": "hal-03910313v1",
+            "url": "https://inria.hal.science/hal-03910313v1"
+          },
+          "name": "Munch-Maccagnoni, Scherer: Boxroot, fast movable GC roots for a better FFI (ML Family Workshop 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2504.01841v4",
+            "doi": "10.1145/3763179"
+          },
+          "name": "Hughes, Tratt: Garbage Collection for Rust: The Finalizer Frontier (OOPSLA 2025)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "ffi/garbage-collection",
+        "ffi/root-registration",
+        "ffi/pinning",
+        "ffi/opaque-handles",
+        "ffi/reentrancy",
+        "ffi/jni",
+        "ffi/ocaml-c-interface",
+        "ffi/pyo3",
+        "ffi/wasm-gc",
+        "runtimes/moving-gc",
+        "runtimes/safepoints",
+        "runtimes/finalization",
+        "pl/ownership-and-borrowing",
+        "pl/lifetime-branded-tokens",
+        "rust/ffi",
+        "verification/garbage-collector-verification",
+        "verification/ffi-semantics",
+        "lean/mechanization"
       ]
     },
     "package-management-version-solving-semver-and-supply-chain-boundaries": {
@@ -118908,6 +119549,111 @@
         "pl/provenance",
         "tooling",
         "tooling/proof-engineering"
+      ]
+    },
+    "tulip-denotational-higher-order-store-logics-versus-operational-correspondence": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2308.02906v2",
+            "doi": "10.46298/entics.12232",
+            "publication": "A denotationally-based program logic for higher-order store",
+            "venue": "ENTICS Volume 3, Proceedings of MFPS XXXIX (2023), entics:12232"
+          },
+          "name": "Tulip: a denotationally-based program logic for higher-order store (Aagaard, Sterling, Birkedal)"
+        },
+        {
+          "identity": {
+            "arxiv": "2210.02169v2",
+            "publication": "Denotational semantics of general store and polymorphism"
+          },
+          "name": "Denotational semantics of general store and polymorphism (Sterling, Gratzer, Birkedal)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1275497.1275499",
+            "examined_text": "IT University of Copenhagen Technical Report ITU-TR-2005-69 (July 2005)",
+            "publication": "BI-hyperdoctrines, higher-order separation logic, and abstraction",
+            "url": "https://cs.au.dk/~birke/papers/ITU-TR-2005-69.pdf",
+            "venue": "ACM TOPLAS 29(5), article 24, 2007"
+          },
+          "name": "BI-hyperdoctrines, higher-order separation logic, and abstraction (Biering, Birkedal, Torp-Smith)"
+        },
+        {
+          "identity": {
+            "arxiv": "1208.3596v2",
+            "conference_doi": "10.1109/LICS.2011.16",
+            "doi": "10.2168/LMCS-8(4:1)2012",
+            "publication": "First steps in synthetic guarded domain theory: step-indexing in the topos of trees"
+          },
+          "name": "First steps in synthetic guarded domain theory: step-indexing in the topos of trees (Birkedal, M\u00f8gelberg, Schwinghammer, St\u00f8vring)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1926385.1926401",
+            "publication": "Step-indexed Kripke models over recursive worlds",
+            "venue": "POPL 2011"
+          },
+          "name": "Step-indexed Kripke models over recursive worlds (Birkedal, Reus, Schwinghammer, St\u00f8vring, Thamsborg, Yang)"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796818000151",
+            "publication": "Iris from the ground up: A modular foundation for higher-order concurrent separation logic",
+            "venue": "Journal of Functional Programming 28, e20, 2018"
+          },
+          "name": "Iris from the ground up (Jung, Krebbers, Jourdan, Bizjak, Birkedal, Dreyer)"
+        },
+        {
+          "identity": {
+            "repository": "iris/iris",
+            "revision": "3d176f124f708e7325a362722c3d2b3957e3675d",
+            "url": "https://gitlab.mpi-sws.org/iris/iris",
+            "version": "iris-4.3.0"
+          },
+          "name": "Iris Coq development"
+        },
+        {
+          "identity": {
+            "arxiv": "1805.00289v2",
+            "conference_doi": "10.1145/2933575.2934516",
+            "publication": "Denotational semantics of recursive types in synthetic guarded domain theory"
+          },
+          "name": "Denotational semantics of recursive types in synthetic guarded domain theory (M\u00f8gelberg, Paviotti)"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.08514v2",
+            "doi": "10.1145/3632854",
+            "publication": "Modular Denotational Semantics for Effects with Guarded Interaction Trees",
+            "venue": "Proc. ACM Program. Lang. 8(POPL), 2024"
+          },
+          "name": "Modular denotational semantics for effects with guarded interaction trees (Frumin, Timany, Birkedal)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        }
+      ],
+      "topics": [
+        "pl",
+        "pl/denotational-semantics",
+        "pl/higher-order-store",
+        "pl/guarded-recursion",
+        "pl/categorical-logic",
+        "verification",
+        "verification/program-logics",
+        "verification/separation-logic",
+        "verification/step-indexing",
+        "verification/iris",
+        "verification/adequacy",
+        "lean",
+        "lean/mechanization"
       ]
     },
     "two-phase-borrows-reservation-activation-dominator-approximations-and-early-exit-edges": {

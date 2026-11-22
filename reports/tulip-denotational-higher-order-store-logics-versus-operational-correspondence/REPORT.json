@@ -1,0 +1,105 @@
+{
+  "topics": [
+    "pl",
+    "pl/denotational-semantics",
+    "pl/higher-order-store",
+    "pl/guarded-recursion",
+    "pl/categorical-logic",
+    "verification",
+    "verification/program-logics",
+    "verification/separation-logic",
+    "verification/step-indexing",
+    "verification/iris",
+    "verification/adequacy",
+    "lean",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Tulip: a denotationally-based program logic for higher-order store (Aagaard, Sterling, Birkedal)",
+      "identity": {
+        "publication": "A denotationally-based program logic for higher-order store",
+        "arxiv": "2308.02906v2",
+        "doi": "10.46298/entics.12232",
+        "venue": "ENTICS Volume 3, Proceedings of MFPS XXXIX (2023), entics:12232"
+      }
+    },
+    {
+      "name": "Denotational semantics of general store and polymorphism (Sterling, Gratzer, Birkedal)",
+      "identity": {
+        "publication": "Denotational semantics of general store and polymorphism",
+        "arxiv": "2210.02169v2"
+      }
+    },
+    {
+      "name": "BI-hyperdoctrines, higher-order separation logic, and abstraction (Biering, Birkedal, Torp-Smith)",
+      "identity": {
+        "publication": "BI-hyperdoctrines, higher-order separation logic, and abstraction",
+        "doi": "10.1145/1275497.1275499",
+        "venue": "ACM TOPLAS 29(5), article 24, 2007",
+        "examined_text": "IT University of Copenhagen Technical Report ITU-TR-2005-69 (July 2005)",
+        "url": "https://cs.au.dk/~birke/papers/ITU-TR-2005-69.pdf"
+      }
+    },
+    {
+      "name": "First steps in synthetic guarded domain theory: step-indexing in the topos of trees (Birkedal, Møgelberg, Schwinghammer, Støvring)",
+      "identity": {
+        "publication": "First steps in synthetic guarded domain theory: step-indexing in the topos of trees",
+        "doi": "10.2168/LMCS-8(4:1)2012",
+        "arxiv": "1208.3596v2",
+        "conference_doi": "10.1109/LICS.2011.16"
+      }
+    },
+    {
+      "name": "Step-indexed Kripke models over recursive worlds (Birkedal, Reus, Schwinghammer, Støvring, Thamsborg, Yang)",
+      "identity": {
+        "publication": "Step-indexed Kripke models over recursive worlds",
+        "doi": "10.1145/1926385.1926401",
+        "venue": "POPL 2011"
+      }
+    },
+    {
+      "name": "Iris from the ground up (Jung, Krebbers, Jourdan, Bizjak, Birkedal, Dreyer)",
+      "identity": {
+        "publication": "Iris from the ground up: A modular foundation for higher-order concurrent separation logic",
+        "doi": "10.1017/S0956796818000151",
+        "venue": "Journal of Functional Programming 28, e20, 2018"
+      }
+    },
+    {
+      "name": "Iris Coq development",
+      "identity": {
+        "repository": "iris/iris",
+        "url": "https://gitlab.mpi-sws.org/iris/iris",
+        "version": "iris-4.3.0",
+        "revision": "3d176f124f708e7325a362722c3d2b3957e3675d"
+      }
+    },
+    {
+      "name": "Denotational semantics of recursive types in synthetic guarded domain theory (Møgelberg, Paviotti)",
+      "identity": {
+        "publication": "Denotational semantics of recursive types in synthetic guarded domain theory",
+        "arxiv": "1805.00289v2",
+        "conference_doi": "10.1145/2933575.2934516"
+      }
+    },
+    {
+      "name": "Modular denotational semantics for effects with guarded interaction trees (Frumin, Timany, Birkedal)",
+      "identity": {
+        "publication": "Modular Denotational Semantics for Effects with Guarded Interaction Trees",
+        "doi": "10.1145/3632854",
+        "arxiv": "2307.08514v2",
+        "venue": "Proc. ACM Program. Lang. 8(POPL), 2024"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

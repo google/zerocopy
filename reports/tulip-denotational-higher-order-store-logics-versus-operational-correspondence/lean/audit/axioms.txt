@@ -1,0 +1,66 @@
+# Recorded 2026-11-22 with leanprover/lean4:v4.34.1.
+# Commands (run from a scratch copy of this lean/ directory, after removing any build directory):
+#   lake build
+#   lake env lean Audit.lean
+# Output of `lake build`:
+Build completed successfully (9 jobs).
+# Output of `lake env lean Audit.lean`:
+'Toy.SProp.imp_adj' does not depend on any axioms
+'Toy.SProp.wand_adj' does not depend on any axioms
+'Toy.SProp.sep_assoc' does not depend on any axioms
+'Toy.SProp.later_intro' does not depend on any axioms
+'Toy.SProp.later_and' does not depend on any axioms
+'Toy.SProp.later_sep' does not depend on any axioms
+'Toy.SProp.later_wand' does not depend on any axioms
+'Toy.SProp.later_bot_not_bot' does not depend on any axioms
+'Toy.SProp.later_ex_of_inhabited' does not depend on any axioms
+'Toy.SProp.loeb' does not depend on any axioms
+'Toy.SProp.loeb_internal' does not depend on any axioms
+'Toy.SProp.later_contractive' does not depend on any axioms
+'Toy.SProp.guarded_fixpoint_unique' depends on axioms: [propext, Quot.sound]
+'Toy.SProp.gfix_unfold' depends on axioms: [propext, Quot.sound]
+'Toy.sep_ne_and' depends on axioms: [propext, Quot.sound]
+'Toy.Pred.reidx_id' does not depend on any axioms
+'Toy.Pred.reidx_comp' does not depend on any axioms
+'Toy.Pred.reidx_and' does not depend on any axioms
+'Toy.Pred.reidx_imp' does not depend on any axioms
+'Toy.Pred.reidx_sep' does not depend on any axioms
+'Toy.Pred.reidx_wand' does not depend on any axioms
+'Toy.Pred.reidx_later' does not depend on any axioms
+'Toy.Pred.ex_adj' does not depend on any axioms
+'Toy.Pred.all_adj' does not depend on any axioms
+'Toy.Pred.beck_chevalley_ex' does not depend on any axioms
+'Toy.Pred.beck_chevalley_all' does not depend on any axioms
+'Toy.Pred.frobenius_and' depends on axioms: [propext, Quot.sound]
+'Toy.Pred.frobenius_sep' depends on axioms: [propext, Quot.sound]
+'Toy.Pred.lawvere_eq' does not depend on any axioms
+'Toy.Tm.eval_sub' depends on axioms: [Quot.sound]
+'Toy.Sub.den_comp' depends on axioms: [Quot.sound]
+'Toy.Conv.sound' depends on axioms: [propext, Quot.sound]
+'Toy.substP_comp' depends on axioms: [Quot.sound]
+'Toy.substP_congr' depends on axioms: [propext, Quot.sound]
+'Toy.subst1_congr' depends on axioms: [propext, Quot.sound]
+'Toy.substP_forallT' depends on axioms: [Quot.sound]
+'Toy.substP_existsT' depends on axioms: [Quot.sound]
+'Toy.substP_wp' depends on axioms: [Quot.sound]
+'Toy.wp_congr' depends on axioms: [propext, Quot.sound]
+'Toy.wp_beta' depends on axioms: [propext, Quot.sound]
+'Toy.wp_ret_lam_congr' depends on axioms: [propext, Quot.sound]
+'Toy.wp_bind_body_congr' depends on axioms: [propext, Quot.sound]
+'Toy.wpSem_ret' depends on axioms: [propext, Quot.sound]
+'Toy.wpSem_bind' depends on axioms: [propext, Quot.sound]
+'Toy.wpSem_tick' depends on axioms: [propext, Quot.sound]
+'Toy.wpSem_frame' does not depend on any axioms
+'Toy.wpSem_wand' does not depend on any axioms
+'Toy.wpo_bind' does not depend on any axioms
+'Toy.appCtx_laws' does not depend on any axioms
+'Toy.wpo_bind_app' does not depend on any axioms
+'Toy.lamCtx_not_ctxLaws' does not depend on any axioms
+'Toy.wpo_bind_fails_under_lam' does not depend on any axioms
+'Toy.operational_predicate_distinguishes' does not depend on any axioms
+'Toy.lamCtx_conv' does not depend on any axioms
+'Toy.denotational_predicate_cannot_distinguish' depends on axioms: [propext, Quot.sound]
+'Toy.wp_agrees_under_lam' depends on axioms: [propext, Quot.sound]
+'Toy.Step.sound' depends on axioms: [propext, Quot.sound]
+'Toy.Steps.sound' depends on axioms: [propext, Quot.sound]
+'Toy.Steps.ret_sound' depends on axioms: [propext, Quot.sound]

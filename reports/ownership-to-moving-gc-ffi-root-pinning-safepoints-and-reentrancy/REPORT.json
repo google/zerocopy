@@ -1,0 +1,189 @@
+{
+  "topics": [
+    "ffi/garbage-collection",
+    "ffi/root-registration",
+    "ffi/pinning",
+    "ffi/opaque-handles",
+    "ffi/reentrancy",
+    "ffi/jni",
+    "ffi/ocaml-c-interface",
+    "ffi/pyo3",
+    "ffi/wasm-gc",
+    "runtimes/moving-gc",
+    "runtimes/safepoints",
+    "runtimes/finalization",
+    "pl/ownership-and-borrowing",
+    "pl/lifetime-branded-tokens",
+    "rust/ffi",
+    "verification/garbage-collector-verification",
+    "verification/ffi-semantics",
+    "lean/mechanization"
+  ],
+  "subjects": [
+    {
+      "name": "Java Native Interface Specification (Java SE 25 & JDK 25), chapters 2, 4 and 5",
+      "identity": {
+        "specification": "Java Native Interface Specification",
+        "edition": "Java SE 25 & JDK 25",
+        "url": "https://docs.oracle.com/en/java/javase/25/docs/specs/jni/"
+      }
+    },
+    {
+      "name": "The OCaml Manual, version 5.4, Chapter 23 (Interfacing C with OCaml), Gc module documentation and parallel programming chapter",
+      "identity": {
+        "document": "The OCaml Manual",
+        "version": "5.4",
+        "url": "https://ocaml.org/manual/5.4/intfc.html"
+      }
+    },
+    {
+      "name": "PyO3 (Rust bindings for Python) API documentation",
+      "identity": {
+        "crate": "pyo3",
+        "version": "0.30.1",
+        "url": "https://docs.rs/pyo3/0.30.1/pyo3/"
+      }
+    },
+    {
+      "name": "PyO3 user guide (types, free-threading and class chapters) on branch main",
+      "identity": {
+        "repository": "PyO3/pyo3",
+        "revision": "be9e428ab7573552c65aa9e7a7a0c6d14b06fd5d",
+        "url": "https://pyo3.rs/main/"
+      }
+    },
+    {
+      "name": "PEP 703: Making the Global Interpreter Lock Optional in CPython",
+      "identity": {
+        "document": "PEP 703",
+        "url": "https://peps.python.org/pep-0703/"
+      }
+    },
+    {
+      "name": "WebAssembly Specification, Release 3.0 (core)",
+      "identity": {
+        "specification": "WebAssembly Specification",
+        "release": "3.0 (draft dated 2026-11-20)",
+        "url": "https://webassembly.github.io/spec/core/"
+      }
+    },
+    {
+      "name": "WebAssembly JavaScript Interface (specification source)",
+      "identity": {
+        "repository": "WebAssembly/spec",
+        "revision": "6fca707686ed4f36a1e30ec2ae7d3dd32b276704",
+        "path": "document/js-api/index.bs"
+      }
+    },
+    {
+      "name": "WebAssembly GC proposal design documents (MVP.md, Post-MVP.md)",
+      "identity": {
+        "repository": "WebAssembly/gc",
+        "revision": "756060f5816c7e2159f4817fbdee76cf52f9c923",
+        "path": "proposals/gc"
+      }
+    },
+    {
+      "name": "ocaml-interop (OCaml and Rust interoperability crate) documentation",
+      "identity": {
+        "crate": "ocaml-interop",
+        "version": "0.12.0",
+        "url": "https://docs.rs/ocaml-interop/0.12.0/ocaml_interop/"
+      }
+    },
+    {
+      "name": "Guéneau, Hostert, Spies, Sammler, Birkedal, Dreyer: Melocoton: A Program Logic for Verified Interoperability Between OCaml and C (OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3622823"
+      }
+    },
+    {
+      "name": "Korkut, Stark, Appel: A Verified Foreign Function Interface between Coq and C (POPL 2025)",
+      "identity": {
+        "doi": "10.1145/3704860"
+      }
+    },
+    {
+      "name": "Sandberg Ericsson, Myreen, Åman Pohjola: A Verified Generational Garbage Collector for CakeML (Journal of Automated Reasoning 63(2))",
+      "identity": {
+        "doi": "10.1007/s10817-018-9487-z"
+      }
+    },
+    {
+      "name": "Tan, Myreen, Kumar, Fox, Owens, Norrish: The verified CakeML compiler backend (Journal of Functional Programming 29, 2019)",
+      "identity": {
+        "doi": "10.1017/S0956796818000229"
+      }
+    },
+    {
+      "name": "McCreight, Shao, Lin, Li: A general framework for certifying garbage collectors and their mutators (PLDI 2007)",
+      "identity": {
+        "doi": "10.1145/1250734.1250788"
+      }
+    },
+    {
+      "name": "Hawblitzel, Petrank: Automated verification of practical garbage collectors (POPL 2009; Logical Methods in Computer Science 6(3), 2010)",
+      "identity": {
+        "doi": "10.1145/1480881.1480935",
+        "journal_doi": "10.2168/LMCS-6(3:6)2010",
+        "arxiv": "1004.3808v3"
+      }
+    },
+    {
+      "name": "Gammie, Hosking, Engelhardt: Relaxing safely: verified on-the-fly garbage collection for x86-TSO (PLDI 2015) and its Isabelle development",
+      "identity": {
+        "doi": "10.1145/2737924.2738006",
+        "afp_entry": "ConcurrentGC",
+        "url": "https://www.isa-afp.org/entries/ConcurrentGC.html"
+      }
+    },
+    {
+      "name": "Tan: JNI Light: An Operational Model for the Core JNI (APLAS 2010; Mathematical Structures in Computer Science 25(4))",
+      "identity": {
+        "doi": "10.1007/978-3-642-17164-2_9",
+        "journal_doi": "10.1017/S0960129513000042"
+      }
+    },
+    {
+      "name": "Furr, Foster: Checking type safety of foreign function calls (ACM TOPLAS 30(4), 2008)",
+      "identity": {
+        "doi": "10.1145/1377492.1377493"
+      }
+    },
+    {
+      "name": "Lee, Wiedermann, Hirzel, Grimm, McKinley: Jinn: synthesizing dynamic bug detectors for foreign language interfaces (PLDI 2010)",
+      "identity": {
+        "doi": "10.1145/1806596.1806601"
+      }
+    },
+    {
+      "name": "Jeffrey: Josephine: Using JavaScript to safely manage the lifetimes of Rust data",
+      "identity": {
+        "arxiv": "1807.00067v1"
+      }
+    },
+    {
+      "name": "Munch-Maccagnoni, Scherer: Boxroot, fast movable GC roots for a better FFI (ML Family Workshop 2022)",
+      "identity": {
+        "hal": "hal-03910313v1",
+        "url": "https://inria.hal.science/hal-03910313v1"
+      }
+    },
+    {
+      "name": "Hughes, Tratt: Garbage Collection for Rust: The Finalizer Frontier (OOPSLA 2025)",
+      "identity": {
+        "doi": "10.1145/3763179",
+        "arxiv": "2504.01841v4"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

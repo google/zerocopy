@@ -1,0 +1,144 @@
+{
+  "topics": [
+    "pl/algebraic-effects",
+    "pl/control-flow-linearity",
+    "pl/delimited-continuations",
+    "pl/graded-coeffects",
+    "pl/linear-types",
+    "pl/modal-types",
+    "rust/pin",
+    "verification/lean4"
+  ],
+  "subjects": [
+    {
+      "name": "Tang et al., Soundly Handling Linearity (POPL 2024)",
+      "identity": {
+        "doi": "10.1145/3632896",
+        "arxiv": "2307.09383v2"
+      }
+    },
+    {
+      "name": "Tov and Pucella, Practical Affine Types (Alms, POPL 2011)",
+      "identity": {
+        "doi": "10.1145/1926385.1926436"
+      }
+    },
+    {
+      "name": "Petricek, Orchard, and Mycroft, Coeffects: A Calculus of Context-Dependent Computation (ICFP 2014)",
+      "identity": {
+        "doi": "10.1145/2628136.2628160"
+      }
+    },
+    {
+      "name": "Orchard, Liepelt, and Eades III, Quantitative Program Reasoning with Graded Modal Types (Granule, ICFP 2019)",
+      "identity": {
+        "doi": "10.1145/3341714"
+      }
+    },
+    {
+      "name": "Atkey, The Syntax and Semantics of Quantitative Type Theory (LICS 2018)",
+      "identity": {
+        "doi": "10.1145/3209108.3209189"
+      }
+    },
+    {
+      "name": "Leijen, Type Directed Compilation of Row-Typed Algebraic Effects (POPL 2017)",
+      "identity": {
+        "doi": "10.1145/3009837.3009872"
+      }
+    },
+    {
+      "name": "Leijen, Algebraic Effect Handlers with Resources and Deep Finalization (MSR-TR-2018-10)",
+      "identity": {
+        "report": "MSR-TR-2018-10",
+        "publisher": "Microsoft Research",
+        "year": "2018",
+        "url": "https://www.microsoft.com/en-us/research/publication/algebraic-effect-handlers-resources-deep-finalization/"
+      }
+    },
+    {
+      "name": "Reinking, Xie, de Moura, and Leijen, Perceus: Garbage Free Reference Counting with Reuse (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454032"
+      }
+    },
+    {
+      "name": "Brachthäuser, Schuster, and Ostermann, Effects as Capabilities (Effekt, OOPSLA 2020)",
+      "identity": {
+        "doi": "10.1145/3428194"
+      }
+    },
+    {
+      "name": "Brachthäuser, Schuster, Lee, and Boruch-Gruszecki, Effects, Capabilities, and Boxes (Effekt, OOPSLA 2022)",
+      "identity": {
+        "doi": "10.1145/3527320"
+      }
+    },
+    {
+      "name": "Sivaramakrishnan et al., Retrofitting Effect Handlers onto OCaml (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454039",
+        "arxiv": "2104.00250v1"
+      }
+    },
+    {
+      "name": "de Vilhena and Pottier, A Separation Logic for Effect Handlers (POPL 2021)",
+      "identity": {
+        "doi": "10.1145/3434314"
+      }
+    },
+    {
+      "name": "OCaml 5.3 Reference Manual, Effect Handlers",
+      "identity": {
+        "version": "5.3",
+        "url": "https://ocaml.org/manual/5.3/effects.html"
+      }
+    },
+    {
+      "name": "Lorenzen, White, Dolan, Eisenberg, and Lindley, Oxidizing OCaml with Modal Memory Management (ICFP 2024)",
+      "identity": {
+        "doi": "10.1145/3674642"
+      }
+    },
+    {
+      "name": "OxCaml Mode System Documentation",
+      "identity": {
+        "url": "https://oxcaml.org/documentation/modes/intro/"
+      }
+    },
+    {
+      "name": "Rust RFC 2349 (Pin API)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "path": "text/2349-pin.md",
+        "url": "https://github.com/rust-lang/rfcs/blob/master/text/2349-pin.md"
+      }
+    },
+    {
+      "name": "Rust RFC 1066 (Safe std::mem::forget)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "path": "text/1066-safe-mem-forget.md",
+        "url": "https://github.com/rust-lang/rfcs/blob/master/text/1066-safe-mem-forget.md"
+      }
+    },
+    {
+      "name": "Rust std::pin Documentation",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "version": "1.100.0",
+        "revision": "0ef1bc386059596dada8fb65b50425aab2ea637a",
+        "url": "https://doc.rust-lang.org/std/pin/index.html"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

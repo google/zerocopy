@@ -1,0 +1,227 @@
+{
+  "topics": [
+    "security/hyperproperties",
+    "security/secure-compilation",
+    "security/side-channels",
+    "pl/multi-language-interop",
+    "compilers/composition",
+    "ffi/boundaries",
+    "runtimes/gc-and-effects",
+    "verification/lean4"
+  ],
+  "subjects": [
+    {
+      "name": "Clarkson and Schneider (JCS 2010): Hyperproperties",
+      "identity": {
+        "doi": "10.3233/JCS-2009-0393",
+        "venue": "Journal of Computer Security, Vol. 18, No. 6, pp. 1157-1210 (2010)"
+      }
+    },
+    {
+      "name": "Giacobazzi and Mastroeni (POPL 2004): Abstract Non-Interference",
+      "identity": {
+        "doi": "10.1145/964001.964017",
+        "venue": "ACM POPL 2004"
+      }
+    },
+    {
+      "name": "Matthews and Findler (POPL 2007 / TOPLAS 2009): Operational Semantics for Multi-Language Programs",
+      "identity": {
+        "doi": "10.1145/1498926.1498930",
+        "conference_doi": "10.1145/1190216.1190220",
+        "venue": "ACM TOPLAS, Vol. 31, No. 3, Article 12 (2009); POPL 2007"
+      }
+    },
+    {
+      "name": "Patrignani and Garg (CSF 2017): Secure Compilation and Hyperproperty Preservation",
+      "identity": {
+        "doi": "10.1109/CSF.2017.13",
+        "venue": "IEEE CSF 2017"
+      }
+    },
+    {
+      "name": "Patrignani and Garg (ESOP 2019 / TOPLAS 2021): Robustly Safe Compilation",
+      "identity": {
+        "doi": "10.1145/3436809",
+        "conference_doi": "10.1007/978-3-030-17184-1_17",
+        "arxiv": "1804.00489v5",
+        "venue": "ACM TOPLAS, Vol. 43, No. 1, Article 1 (2021); ESOP 2019"
+      }
+    },
+    {
+      "name": "Abate et al. (CSF 2019): Journey Beyond Full Abstraction: Exploring Robust Property Preservation for Secure Compilation",
+      "identity": {
+        "doi": "10.1109/CSF.2019.00025",
+        "arxiv": "1807.04603v6",
+        "venue": "IEEE CSF 2019"
+      }
+    },
+    {
+      "name": "Abate et al. (ESOP 2020 / TOPLAS 2021): Trace-Relating Compiler Correctness and Secure Compilation",
+      "identity": {
+        "doi": "10.1145/3460860",
+        "conference_doi": "10.1007/978-3-030-44914-8_1",
+        "arxiv": "1907.05320v4",
+        "venue": "ACM TOPLAS, Vol. 43, No. 4, Article 14 (2021); ESOP 2020"
+      }
+    },
+    {
+      "name": "Patrignani, Ahmed, and Clarke (CSUR 2019): Formal Approaches to Secure Compilation",
+      "identity": {
+        "doi": "10.1145/3280984",
+        "venue": "ACM Computing Surveys, Vol. 51, No. 6 (2019)"
+      }
+    },
+    {
+      "name": "Barthe, Gregoire, and Laporte (CSF 2018): Secure Compilation of Side-Channel Countermeasures",
+      "identity": {
+        "doi": "10.1109/CSF.2018.00031",
+        "venue": "IEEE CSF 2018"
+      }
+    },
+    {
+      "name": "Barthe et al. (POPL 2020): Formal Verification of a Constant-Time Preserving C Compiler",
+      "identity": {
+        "doi": "10.1145/3371075",
+        "venue": "ACM POPL 2020"
+      }
+    },
+    {
+      "name": "Barthe et al. (CCS 2021): Structured Leakage and Applications to Cryptographic Constant-Time and Cost",
+      "identity": {
+        "doi": "10.1145/3460120.3484761",
+        "venue": "ACM CCS 2021"
+      }
+    },
+    {
+      "name": "Patrignani and Guarnieri (CCS 2021): Exorcising Spectres with Secure Compilers",
+      "identity": {
+        "doi": "10.1145/3460120.3484534",
+        "arxiv": "1910.08607v4",
+        "venue": "ACM CCS 2021"
+      }
+    },
+    {
+      "name": "Guarnieri et al. (S&P 2020): Spectector: Principled Detection of Speculative Information Flows",
+      "identity": {
+        "doi": "10.1109/SP40000.2020.00011",
+        "venue": "IEEE S&P 2020"
+      }
+    },
+    {
+      "name": "Guarnieri et al. (S&P 2021): Hardware-Software Contracts for Secure Speculation",
+      "identity": {
+        "doi": "10.1109/SP40001.2021.00036",
+        "venue": "IEEE S&P 2021"
+      }
+    },
+    {
+      "name": "El-Korashy et al. (CSF 2021): CapablePtrs: Securely Compiling Partial Programs Using the Pointers-as-Capabilities Principle",
+      "identity": {
+        "doi": "10.1109/CSF51468.2021.00036",
+        "venue": "IEEE CSF 2021"
+      }
+    },
+    {
+      "name": "El-Korashy et al. (CSF 2022): SecurePtrs: Proving Secure Compilation with Data-Flow Back-Translation and Turn-Taking Simulation",
+      "identity": {
+        "doi": "10.1109/CSF54842.2022.9919680",
+        "venue": "IEEE CSF 2022"
+      }
+    },
+    {
+      "name": "Abate et al. (CCS 2018): When Good Components Go Bad: Formally Secure Compilation Despite Dynamic Compromise",
+      "identity": {
+        "doi": "10.1145/3243734.3243745",
+        "venue": "ACM CCS 2018"
+      }
+    },
+    {
+      "name": "Thibault et al. (CCS 2024): SECOMP: Formally Secure Compilation of Compartmentalized C Programs",
+      "identity": {
+        "doi": "10.1145/3658644.3670288",
+        "venue": "ACM CCS 2024"
+      }
+    },
+    {
+      "name": "Kruse, Backes, and Patrignani (2024): Secure Composition of Robust and Optimising Compilers",
+      "identity": {
+        "doi": "10.48550/arXiv.2307.08681",
+        "arxiv": "2307.08681v3",
+        "venue": "arXiv preprint (Oct 2024)"
+      }
+    },
+    {
+      "name": "Patterson and Ahmed (ICFP 2019): The Next 700 Compiler Correctness Theorems",
+      "identity": {
+        "doi": "10.1145/3341689",
+        "venue": "ACM ICFP 2019"
+      }
+    },
+    {
+      "name": "Patterson et al. (PLDI 2022): Semantic Soundness for Language Interoperability",
+      "identity": {
+        "doi": "10.1145/3519939.3523703",
+        "venue": "ACM PLDI 2022"
+      }
+    },
+    {
+      "name": "Sammler et al. (POPL 2023): DimSum: A Decentralized Approach to Multi-language Semantics and Verification",
+      "identity": {
+        "doi": "10.1145/3571220",
+        "venue": "ACM POPL 2023"
+      }
+    },
+    {
+      "name": "Pedersen and Askarov (S&P 2017): From Trash to Treasure: Timing-Sensitive Garbage Collection",
+      "identity": {
+        "doi": "10.1109/SP.2017.64",
+        "venue": "IEEE S&P 2017"
+      }
+    },
+    {
+      "name": "Russo and Sabelfeld (JLAP 2009): Securing Interaction Between Threads and the Scheduler in the Presence of Synchronization",
+      "identity": {
+        "doi": "10.1016/j.jlap.2008.09.003",
+        "venue": "Journal of Logic and Algebraic Programming, Vol. 78, No. 7, pp. 593-618 (2009)"
+      }
+    },
+    {
+      "name": "Stefan et al. (ICFP 2012): Addressing Covert Termination and Timing Channels in Concurrent Information Flow Systems",
+      "identity": {
+        "doi": "10.1145/2364527.2364557",
+        "venue": "ACM ICFP 2012"
+      }
+    },
+    {
+      "name": "Sivaramakrishnan et al. (PLDI 2021): Retrofitting Effect Handlers onto OCaml",
+      "identity": {
+        "doi": "10.1145/3453483.3454039",
+        "venue": "ACM PLDI 2021"
+      }
+    },
+    {
+      "name": "Xie et al. (ICFP 2020): Effect Handlers, Evidently",
+      "identity": {
+        "doi": "10.1145/3408981",
+        "venue": "ACM ICFP 2020"
+      }
+    },
+    {
+      "name": "Narayan et al. (USENIX Security 2021): Swivel: Hardening WebAssembly Against Spectre",
+      "identity": {
+        "url": "https://www.usenix.org/conference/usenixsecurity21/presentation/narayan",
+        "venue": "USENIX Security 2021"
+      }
+    },
+    {
+      "name": "Lean 4 Toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

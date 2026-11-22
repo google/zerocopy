@@ -1,0 +1,16 @@
+import Toy
+
+#print axioms Toy.LinearEffects.two_shot_duplicates_linear_capability
+#print axioms Toy.LinearEffects.zero_shot_abort_skips_linear_cleanup
+#print axioms Toy.LinearEffects.zero_shot_drop_bypasses_finally
+#print axioms Toy.LinearEffects.typed_eval_sound
+#print axioms Toy.LinearEffects.wellTypedProgram_exact_single_use
+#print axioms Toy.LinearEffects.twoShotProgram_rejected
+#print axioms Toy.LinearEffects.zeroShotDropProgram_rejected
+#print axioms Toy.LinearEffects.oneShotLinearProgram_wellTyped
+#print axioms Toy.LinearEffects.abortDiscontinueProgram_wellTyped
+#print axioms Toy.LinearEffects.twoShotAfterConsumeProgram_wellTyped
+#print axioms Toy.PinInvariant.unpinned_move_breaks_self_ref
+#print axioms Toy.PinInvariant.skip_drop_then_reuse_violates_drop_guarantee
+#print axioms Toy.PinInvariant.mem_forget_without_reuse_preserves_pin_invariants
+#print axioms Toy.PinInvariant.pinned_trace_preserves_invariants

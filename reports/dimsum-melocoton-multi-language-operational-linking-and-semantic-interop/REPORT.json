@@ -1,0 +1,81 @@
+{
+  "topics": [
+    "pl",
+    "pl/multi-language-semantics",
+    "pl/operational-linking",
+    "pl/logical-relations",
+    "ffi",
+    "ffi/memory-membranes",
+    "ffi/reentrancy",
+    "compilers/compositional-verification",
+    "security/capability-machines",
+    "verification/iris"
+  ],
+  "subjects": [
+    {
+      "name": "DimSum: A Decentralized Approach to Multi-language Semantics and Verification (POPL 2023)",
+      "identity": {
+        "doi": "10.1145/3571220",
+        "venue": "Proc. ACM Program. Lang. 7(POPL), Article 27, pp. 775-805 (2023)",
+        "url": "https://iris-project.org/pdfs/2023-popl-dimsum.pdf"
+      }
+    },
+    {
+      "name": "Melocoton: A Program Logic for Verified Interoperability Between OCaml and C (OOPSLA 2023)",
+      "identity": {
+        "doi": "10.1145/3622823",
+        "venue": "Proc. ACM Program. Lang. 7(OOPSLA2), Article 247, pp. 716-744 (2023)",
+        "url": "https://iris-project.org/pdfs/2023-oopsla-melocoton.pdf"
+      }
+    },
+    {
+      "name": "Compositional CompCert (POPL 2015)",
+      "identity": {
+        "doi": "10.1145/2676726.2676985",
+        "venue": "POPL '15, pp. 275-287 (2015)",
+        "url": "https://www.cs.princeton.edu/~appel/papers/compcomp.pdf"
+      }
+    },
+    {
+      "name": "CompCertM: CompCert with C-Assembly Linking and Lightweight Modular Verification (POPL 2020)",
+      "identity": {
+        "doi": "10.1145/3371091",
+        "venue": "Proc. ACM Program. Lang. 4(POPL), Article 23, pp. 1-31 (2020)",
+        "url": "https://sf.snu.ac.kr/publications/compcertm.pdf"
+      }
+    },
+    {
+      "name": "CompCertO: Compiling Certified Open C Components (PLDI 2021)",
+      "identity": {
+        "doi": "10.1145/3453483.3454097",
+        "venue": "PLDI '21, pp. 1095-1109 (2021)",
+        "url": "http://flint.cs.yale.edu/flint/publications/compcerto.pdf"
+      }
+    },
+    {
+      "name": "Cerise: Program Verification on a Capability Machine in the Presence of Untrusted Code (JACM 2024)",
+      "identity": {
+        "doi": "10.1145/3623510",
+        "venue": "Journal of the ACM 71(1), Article 3, pp. 1-59 (2024)",
+        "url": "https://iris-project.org/pdfs/2023-jacm-cerise.pdf"
+      }
+    },
+    {
+      "name": "Efficient and Provable Local Capability Revocation using Uninitialized Capabilities (POPL 2021)",
+      "identity": {
+        "doi": "10.1145/3434287",
+        "venue": "Proc. ACM Program. Lang. 5(POPL), Article 6, pp. 1-30 (2021)",
+        "url": "https://iris-project.org/pdfs/2021-popl-ucaps-final.pdf"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain (toy-model mechanization)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

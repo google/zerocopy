@@ -1,0 +1,32 @@
+'Toy.handle_read_gc_stable' does not depend on any axioms
+'Toy.handle_read_gc_stable_star' does not depend on any axioms
+'Toy.handle_identity_gc_stable' depends on axioms: [propext]
+'Toy.pinned_raw_gc_stable' does not depend on any axioms
+'Toy.pinned_raw_gc_stable_star' does not depend on any axioms
+'Toy.unpinned_raw_can_dangle' depends on axioms: [propext]
+'Toy.unpinned_raw_can_alias' depends on axioms: [propext]
+'Toy.unrooted_can_be_collected' depends on axioms: [propext]
+'Toy.raw_stable_iff_pinned' depends on axioms: [propext]
+'Toy.current_view_reads_as_handle' depends on axioms: [propext]
+'Toy.rt_keeps_pinned_view' depends on axioms: [propext]
+'Toy.branded_tokens_sound' depends on axioms: [propext, Quot.sound]
+'Toy.branded_tokens_sound_closed' depends on axioms: [propext, Quot.sound]
+'Toy.staleProgram_rejected' depends on axioms: [propext]
+'Toy.reloadProgram_accepted' depends on axioms: [propext]
+'Toy.pinnedProgram_accepted' depends on axioms: [propext]
+'Toy.afterUnpinProgram_rejected' depends on axioms: [propext]
+'Toy.unbranded_use_is_stale' depends on axioms: [propext]
+'Toy.pinned_view_valid_not_exclusive' depends on axioms: [propext]
+'Toy.checked_reentrancy_preserves_exclusive' depends on axioms: [propext]
+'Toy.holder_checked' depends on axioms: [propext]
+'Toy.unchecked_reentrancy_breaks_exclusive' depends on axioms: [propext]
+'Toy.unchecked_reentrant_read_observes' depends on axioms: [propext]
+'Toy.sync_unchecked_finalizer_breaks_exclusive' depends on axioms: [propext]
+'Toy.sync_checked_finalizer_preserves_exclusive' depends on axioms: [propext]
+'Toy.deferred_finalizer_preserves_exclusive' depends on axioms: [propext]
+'Toy.deferred_then_poll_breaks_exclusive' depends on axioms: [propext]
+'Toy.resurrection_dangles' depends on axioms: [propext]
+'Toy.retrace_sound' depends on axioms: [propext, Quot.sound]
+'Toy.objectless_finalizer_sound' depends on axioms: [propext]
+'Toy.interleaved_order_sensitive' does not depend on any axioms
+'Toy.two_phase_order_insensitive' depends on axioms: [propext, Quot.sound]

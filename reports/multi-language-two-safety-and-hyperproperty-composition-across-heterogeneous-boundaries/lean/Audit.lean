@@ -1,0 +1,30 @@
+import Toy
+
+#print axioms Toy.HyperComposition.leakageBisim_compose
+#print axioms Toy.HyperComposition.leakageBisim_implies_uniformRefinement
+#print axioms Toy.HyperComposition.uniformRefinement_preserves_setNI
+#print axioms Toy.HyperComposition.uniformRefinement_preserves_twoSafety
+#print axioms Toy.HyperComposition.leakageBisim_incompatible_with_determinizer
+#print axioms Toy.HyperComposition.nondetAlignSource_setNI
+#print axioms Toy.HyperComposition.uniformDetTarget_twoSafety
+#print axioms Toy.HyperComposition.leakageBisim_rejects_uniformDetTarget
+#print axioms Toy.HyperComposition.uniformRefinement_admits_uniformDetTarget
+#print axioms Toy.HyperComposition.uniformRefinement_rejects_leakyDetTarget
+#print axioms Toy.HyperComposition.secretAllocModule_source_twoSafety
+#print axioms Toy.HyperComposition.membrane_breaks_two_safety
+#print axioms Toy.HyperComposition.membrane_preserves_one_safety
+#print axioms Toy.HyperComposition.uniformRefinement_breaks_under_richer_context
+#print axioms Toy.HyperComposition.tau_sigma_galois
+#print axioms Toy.HyperComposition.ccRel_iff_tpTau
+#print axioms Toy.HyperComposition.ccRel_iff_tpSigma
+#print axioms Toy.HyperComposition.galois_two_safety_composition
+#print axioms Toy.HyperComposition.tau_relComp
+#print axioms Toy.HyperComposition.sigma_relComp
+#print axioms Toy.HyperComposition.relComp_reflectsLowIn
+#print axioms Toy.HyperComposition.relComp_preservesLowOut
+#print axioms Toy.HyperComposition.heterogeneous_chain_two_safety
+#print axioms Toy.HyperComposition.gc_membrane_satisfies_ccRel
+#print axioms Toy.HyperComposition.gc_membrane_reflectsLowIn
+#print axioms Toy.HyperComposition.gc_membrane_violates_preservesLowOut
+#print axioms Toy.HyperComposition.galois_insertion_transfers_sigma_hyperprop
+#print axioms Toy.HyperComposition.gcTraceRel_not_galoisInsertion

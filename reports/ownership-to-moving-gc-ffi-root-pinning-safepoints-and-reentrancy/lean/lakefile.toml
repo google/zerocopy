@@ -1,0 +1,6 @@
+name = "ownership-to-moving-gc-ffi-root-pinning-safepoints-and-reentrancy"
+version = "0.1.0"
+defaultTargets = ["Toy"]
+
+[[lean_lib]]
+name = "Toy"
