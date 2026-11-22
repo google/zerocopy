@@ -19559,7 +19559,7 @@
       ]
     },
     "cargo-static-workspace-manifest-and-target-autodiscovery": {
-      "observed_at": "2026-11-21",
+      "observed_at": "2026-11-22",
       "subjects": [
         {
           "identity": {
@@ -42663,7 +42663,7 @@
       ]
     },
     "github-actions-cross-repo-reusable-workflows-rulesets-tokens-and-distribution": {
-      "observed_at": "2026-11-21",
+      "observed_at": "2026-11-22",
       "subjects": [
         {
           "identity": {
