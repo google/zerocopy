@@ -10,7 +10,11 @@
 //! a numeric/Boolean literal. Function identities use numeric Unicode scalar
 //! constructors, so names never enter the emitted command or literal syntax.
 
-use crate::ir::{self, BinOp, ConstLit, Operand, Rvalue, Statement, Terminator, Ty};
+use std::fmt::Write as _;
+
+use crate::ir::{
+    self, BinOp, CastKind, ConstLit, Operand, Rvalue, Statement, Terminator, Ty, UnOp,
+};
 
 const HEADER: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
 -- Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0\n\
@@ -21,6 +25,22 @@ const HEADER: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
 prelude\nimport Trusted.MirAst\n\nnamespace Captured\n\n";
 
 const MAX_LIST_CHUNK_LEN: usize = 16;
+
+fn join_balanced(chunks: &[String]) -> String {
+    match chunks {
+        [] => "[]".into(),
+        [single] => single.clone(),
+        _ => {
+            let mid = chunks.len() / 2;
+            let (left, right) = chunks.split_at(mid);
+            format!("(_root_.List.append {} {})", join_balanced(left), join_balanced(right))
+        }
+    }
+}
+
+fn list_literal<T>(values: &[T], render: impl Fn(&T) -> String) -> String {
+    format!("[{}]", values.iter().map(render).collect::<Vec<_>>().join(", "))
+}
 
 /// Render a Lean list literal, chunking lists longer than `MAX_LIST_CHUNK_LEN`
 /// into a balanced binary tree of `_root_.List.append` over 1..=16-element
@@ -38,32 +58,25 @@ const MAX_LIST_CHUNK_LEN: usize = 16;
 /// one definition still hit Lean's `maxRecDepth` limit independently of list
 /// representation).
 fn list<T>(values: &[T], render: impl Fn(&T) -> String) -> String {
-    fn join_balanced(chunks: &[String]) -> String {
-        match chunks {
-            [] => "[]".into(),
-            [single] => single.clone(),
-            _ => {
-                let mid = chunks.len() / 2;
-                let (left, right) = chunks.split_at(mid);
-                format!("(_root_.List.append {} {})", join_balanced(left), join_balanced(right))
-            }
-        }
-    }
-
-    let chunks: Vec<String> = values
-        .chunks(MAX_LIST_CHUNK_LEN)
-        .map(|chunk| format!("[{}]", chunk.iter().map(&render).collect::<Vec<_>>().join(", ")))
-        .collect();
+    let chunks: Vec<String> =
+        values.chunks(MAX_LIST_CHUNK_LEN).map(|chunk| list_literal(chunk, &render)).collect();
     join_balanced(&chunks)
 }
 
 fn ty(t: &Ty) -> String {
     match t {
         Ty::Bool => "Trusted.MirAst.MirTy.bool".into(),
+        Ty::Char => "Trusted.MirAst.MirTy.char".into(),
+        Ty::Ordering => "Trusted.MirAst.MirTy.ordering".into(),
         Ty::Unit => "Trusted.MirAst.MirTy.unit".into(),
         Ty::Never => "Trusted.MirAst.MirTy.never".into(),
         Ty::Int(ity) => format!(
             "(Trusted.MirAst.MirTy.int Trusted.MirAst.IntWidth.{} {})",
+            ity.width.lean_name(),
+            ity.signed
+        ),
+        Ty::OverflowPair(ity) => format!(
+            "(Trusted.MirAst.MirTy.tuple [(Trusted.MirAst.MirTy.int Trusted.MirAst.IntWidth.{} {}), Trusted.MirAst.MirTy.bool])",
             ity.width.lean_name(),
             ity.signed
         ),
@@ -82,7 +95,7 @@ fn ty(t: &Ty) -> String {
                 ety.id(),
                 discr.width.lean_name(),
                 discr.signed,
-                list(ety.discriminants(), u64::to_string)
+                list(ety.discriminants(), u128::to_string)
             )
         }
     }
@@ -113,6 +126,19 @@ fn operand(op: &Operand) -> String {
     }
 }
 
+fn un_op(op: UnOp) -> &'static str {
+    match op {
+        UnOp::Not => "not",
+        UnOp::Neg => "neg",
+    }
+}
+
+fn cast_kind(kind: CastKind) -> &'static str {
+    match kind {
+        CastKind::IntToInt => "intToInt",
+    }
+}
+
 fn bin_op(op: BinOp) -> &'static str {
     match op {
         BinOp::BitAnd => "bitAnd",
@@ -123,12 +149,18 @@ fn bin_op(op: BinOp) -> &'static str {
         BinOp::Add => "add",
         BinOp::Sub => "sub",
         BinOp::Mul => "mul",
+        BinOp::Div => "div",
+        BinOp::Rem => "rem",
+        BinOp::AddWithOverflow => "addWithOverflow",
+        BinOp::SubWithOverflow => "subWithOverflow",
+        BinOp::MulWithOverflow => "mulWithOverflow",
         BinOp::Eq => "eq",
         BinOp::Ne => "ne",
         BinOp::Lt => "lt",
         BinOp::Le => "le",
         BinOp::Gt => "gt",
         BinOp::Ge => "ge",
+        BinOp::Cmp => "cmp",
     }
 }
 
@@ -144,6 +176,21 @@ fn rvalue(value: &Rvalue) -> String {
             bin_op(*op),
             operand(left),
             operand(right)
+        ),
+        Rvalue::Unary { op, operand: opnd } => format!(
+            "(Trusted.MirAst.Rvalue.unaryOp Trusted.MirAst.UnOp.{} {})",
+            un_op(*op),
+            operand(opnd)
+        ),
+        Rvalue::Cast {
+            cast_kind: kind,
+            operand: opnd,
+            ty: target_ty,
+        } => format!(
+            "(Trusted.MirAst.Rvalue.cast Trusted.MirAst.CastKind.{} {} {})",
+            cast_kind(*kind),
+            operand(opnd),
+            ty(target_ty)
         ),
         Rvalue::Discriminant { local } => {
             format!("(Trusted.MirAst.Rvalue.discriminant (Trusted.MirAst.Place.mk {local} []))")
@@ -205,9 +252,9 @@ fn identity(value: &str) -> String {
     )
 }
 
-fn body(body: &ir::Body) -> String {
+fn body_record(body: &ir::Body) -> String {
     format!(
-        "({{ argumentCount := {}, isUnsafe := {}, locals := {}, basicBlocks := {}, identity := {} }} : Trusted.MirAst.Body)",
+        "{{ argumentCount := {}, isUnsafe := {}, locals := {}, basicBlocks := {}, identity := {} }}",
         body.arg_count(),
         body.is_unsafe(),
         list(body.local_tys(), ty),
@@ -241,15 +288,48 @@ const ENTRY_DEF_ID: u32 = 0;
 /// Capture emits a subject, not a proof or a dynamically chosen theorem. The
 /// verifier separately authenticates this source and checks the authored root;
 /// neither diagnostics nor census text can add commands through this renderer.
+///
+/// Each body is emitted as its own `Captured.body_<i>` definition, and
+/// `program.bodies` assembles more than [`MAX_LIST_CHUNK_LEN`] bodies via
+/// `Captured.bodies_chunk_<k>` slices combined with a balanced
+/// `_root_.List.append` tree so elaboration recursion depth stays bounded on
+/// multi-hundred- and multi-thousand-function crates.
 pub fn render(program: &ir::Program) -> String {
     let scope = match program.scope() {
         ir::Scope::SelectedUnit { .. } => "unit",
         ir::Scope::Crate => "crate",
     };
-    format!(
-        "{HEADER}def program : Trusted.MirAst.Program :=\n  {{ pointerWidthBits := {POINTER_WIDTH_BITS}, mirProfileVersion := {MIR_PROFILE_VERSION}, scope := Trusted.MirAst.VerificationScope.{scope}, entryDefId := {ENTRY_DEF_ID}, bodies := {} }}\n\nend Captured\n",
-        list(program.bodies(), body)
-    )
+    let mut out = String::from(HEADER);
+    let mut body_names = Vec::with_capacity(program.bodies().len());
+    for (index, item) in program.bodies().iter().enumerate() {
+        let name = format!("body_{index}");
+        let _ = writeln!(
+            out,
+            "def {name} : Trusted.MirAst.Body :=\n  {}\n",
+            body_record(item)
+        );
+        body_names.push(name);
+    }
+    let bodies_expr = if body_names.len() <= MAX_LIST_CHUNK_LEN {
+        list_literal(&body_names, String::clone)
+    } else {
+        let mut chunk_names = Vec::new();
+        for (chunk_idx, chunk) in body_names.chunks(MAX_LIST_CHUNK_LEN).enumerate() {
+            let chunk_name = format!("bodies_chunk_{chunk_idx}");
+            let _ = writeln!(
+                out,
+                "def {chunk_name} : _root_.List Trusted.MirAst.Body :=\n  {}\n",
+                list_literal(chunk, String::clone)
+            );
+            chunk_names.push(chunk_name);
+        }
+        join_balanced(&chunk_names)
+    };
+    let _ = write!(
+        out,
+        "def program : Trusted.MirAst.Program :=\n  {{ pointerWidthBits := {POINTER_WIDTH_BITS}, mirProfileVersion := {MIR_PROFILE_VERSION}, scope := Trusted.MirAst.VerificationScope.{scope}, entryDefId := {ENTRY_DEF_ID}, bodies := {bodies_expr} }}\n\nend Captured\n"
+    );
+    out
 }
 
 #[cfg(test)]
@@ -395,6 +475,60 @@ mod tests {
             !selected_rendered.contains("selector"),
             "{selected_rendered}"
         );
+        assert!(
+            selected_rendered.contains("def body_0 : Trusted.MirAst.Body :="),
+            "{selected_rendered}"
+        );
+        assert!(
+            selected_rendered.contains("bodies := [body_0]"),
+            "{selected_rendered}"
+        );
+        assert!(
+            !selected_rendered.contains("bodies_chunk_"),
+            "{selected_rendered}"
+        );
+    }
+
+    #[test]
+    fn render_chunks_large_programs_and_long_lists_with_balanced_append() {
+        let bodies: Vec<Body> = (0..130)
+            .map(|i| {
+                Body::try_new(
+                    0,
+                    false,
+                    vec![Ty::Unit],
+                    vec![Block {
+                        statements: vec![Statement::Nop; if i == 0 { 70 } else { 0 }],
+                        terminator: Terminator::Ret,
+                    }],
+                    format!("rust-path-v1::fn_{i}"),
+                )
+                .unwrap()
+            })
+            .collect();
+        let program = Program::try_new(Scope::Crate, bodies).unwrap();
+        let rendered = render(&program);
+        assert!(
+            rendered.contains("def body_0 : Trusted.MirAst.Body :="),
+            "{rendered}"
+        );
+        assert!(
+            rendered.contains("def body_129 : Trusted.MirAst.Body :="),
+            "{rendered}"
+        );
+        assert!(
+            rendered.contains("def bodies_chunk_0 : _root_.List Trusted.MirAst.Body :="),
+            "{rendered}"
+        );
+        assert!(
+            rendered.contains("def bodies_chunk_8 : _root_.List Trusted.MirAst.Body :="),
+            "{rendered}"
+        );
+        assert!(
+            rendered.contains("(_root_.List.append "),
+            "{rendered}"
+        );
+        assert_list_literals_at_most(&rendered, MAX_LIST_CHUNK_LEN);
     }
 
     #[test]
@@ -452,7 +586,7 @@ mod tests {
         );
         let mut locals = vec![Ty::Unit, u64_ty.clone(), big_enum];
         locals.resize(70, u64_ty);
-        let targets = (0..70u64).map(|v| (v, 1u32)).collect();
+        let targets = (0..70u128).map(|v| (v, 1u32)).collect();
         let statements = vec![Statement::Nop; 250];
         let body0 = Body::try_new(
             0,

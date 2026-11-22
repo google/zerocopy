@@ -12,21 +12,50 @@
 use std::collections::BTreeSet;
 use std::path::PathBuf;
 
-use serde::Serialize;
+use serde::ser::SerializeSeq;
+use serde::{Serialize, Serializer};
 
-// Version 3 updates the typed IR JSON schema with structured `IntWidth` /
-// `IntTy`, `ConstLit`, `EnumTagRepr`, and a single authoritative
-// `program.scope` (`crate` without roots or `selected_unit`, retaining schema
-// 2's non-empty source identities and `with_retag` flags), and enforces static
-// admission invariants on integer widths, enum descriptors, constants, and
-// body indices at construction.
-pub const SCHEMA_VERSION: u32 = 3;
+// Version 4 widens integer widths to include `i128` (`IntWidth::I128`), encodes
+// 128-bit bit-pattern fields (`ConstLit::Scalar.bits`, `EnumTy.discriminants`,
+// and `Terminator::SwitchInt.targets`) as canonical base-10 strings so JSON
+// consumers without arbitrary-precision numbers round-trip `0..=u128::MAX`
+// losslessly, adds `Ty::{Char, Ordering, OverflowPair}`, `UnOp::{Not, Neg}`,
+// `CastKind::IntToInt`, `BinOp::{Div, Rem, AddWithOverflow, SubWithOverflow,
+// MulWithOverflow, Cmp}`, and `Rvalue::{Unary, Cast}`, and enforces static
+// operand and destination typing across binary, unary, cast, discriminant, and
+// switch operations.
+pub const SCHEMA_VERSION: u32 = 4;
 pub const COMPILER_COMMIT: &str = "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1";
 pub const COMPILER_VERSION: &str = "1.98.0-nightly (f8a08b688 2026-05-30)";
 
+fn serialize_u128_decimal<S: Serializer>(val: &u128, serializer: S) -> Result<S::Ok, S::Error> {
+    serializer.serialize_str(&val.to_string())
+}
+
+fn serialize_u128_slice_decimal<S: Serializer>(
+    vals: &[u128],
+    serializer: S,
+) -> Result<S::Ok, S::Error> {
+    let mut seq = serializer.serialize_seq(Some(vals.len()))?;
+    for val in vals {
+        seq.serialize_element(&val.to_string())?;
+    }
+    seq.end()
+}
+
+fn serialize_switch_targets_decimal<S: Serializer>(
+    targets: &[(u128, u32)],
+    serializer: S,
+) -> Result<S::Ok, S::Error> {
+    let mut seq = serializer.serialize_seq(Some(targets.len()))?;
+    for (val, block) in targets {
+        seq.serialize_element(&(val.to_string(), *block))?;
+    }
+    seq.end()
+}
+
 /// Admitted integer widths in the 64-bit little-endian capture profile,
-/// corresponding 1-to-1 to the <= 64-bit constructors of
-/// `Trusted.MirAst.IntWidth`.
+/// corresponding 1-to-1 to `Trusted.MirAst.IntWidth`.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum IntWidth {
@@ -34,6 +63,7 @@ pub enum IntWidth {
     I16,
     I32,
     I64,
+    I128,
     Isize,
 }
 
@@ -44,11 +74,17 @@ impl IntWidth {
             Self::I16 => 16,
             Self::I32 => 32,
             Self::I64 | Self::Isize => 64,
+            Self::I128 => 128,
         }
     }
 
     pub const fn mask(self) -> u128 {
-        (1u128 << self.bits()) - 1
+        let bits = self.bits();
+        if bits == 128 {
+            u128::MAX
+        } else {
+            (1u128 << bits) - 1
+        }
     }
 
     pub const fn lean_name(self) -> &'static str {
@@ -57,6 +93,7 @@ impl IntWidth {
             Self::I16 => "i16",
             Self::I32 => "i32",
             Self::I64 => "i64",
+            Self::I128 => "i128",
             Self::Isize => "isize",
         }
     }
@@ -112,7 +149,8 @@ pub struct EnumTy {
     discr_width: IntWidth,
     discr_signed: bool,
     tag_repr: EnumTagRepr,
-    discriminants: Vec<u64>,
+    #[serde(serialize_with = "serialize_u128_slice_decimal")]
+    discriminants: Vec<u128>,
 }
 
 impl EnumTy {
@@ -120,7 +158,7 @@ impl EnumTy {
         id: u32,
         discr: IntTy,
         tag_repr: EnumTagRepr,
-        discriminants: Vec<u64>,
+        discriminants: Vec<u128>,
     ) -> Result<Self, String> {
         if discriminants.is_empty() {
             return Err("uninhabited zero-variant enums are unsupported".into());
@@ -130,11 +168,11 @@ impl EnumTy {
         }
         let discr_mask = discr.width.mask();
         for &d in &discriminants {
-            if u128::from(d) > discr_mask {
+            if d > discr_mask {
                 return Err("enum discriminant exceeds its discriminant width".into());
             }
         }
-        let unique: BTreeSet<u64> = discriminants.iter().copied().collect();
+        let unique: BTreeSet<u128> = discriminants.iter().copied().collect();
         if unique.len() != discriminants.len() {
             return Err("duplicate enum discriminants are unsupported".into());
         }
@@ -147,9 +185,8 @@ impl EnumTy {
             EnumTagRepr::Scalar(tag) => {
                 let tag_mask = tag.width.mask();
                 for &d in &discriminants {
-                    let d128 = u128::from(d);
-                    let recovered = tag_bits_to_discr_bits(tag, discr.width, d128 & tag_mask);
-                    if recovered != d128 {
+                    let recovered = tag_bits_to_discr_bits(tag, discr.width, d & tag_mask);
+                    if recovered != d {
                         return Err(
                             "enum discriminant does not round-trip through its tag representation"
                                 .into(),
@@ -182,19 +219,33 @@ impl EnumTy {
         self.tag_repr
     }
 
-    pub fn discriminants(&self) -> &[u64] {
+    pub fn discriminants(&self) -> &[u128] {
         &self.discriminants
     }
+}
+
+/// Whether `bits` is a Unicode scalar value (`0x0000..=0xD7FF` or
+/// `0xE000..=0x10FFFF`), matching the Rust Reference ("A value of type `char`
+/// is represented as a 32-bit unsigned word in the 0x0000 to 0xD7FF or 0xE000
+/// to 0x10FFFF range. It is immediate [undefined behavior] to create a `char`
+/// that falls outside this range.") and `Scalar::to_char`.
+/// https://github.com/rust-lang/reference/blob/a286e1ecb8ce193d50056e4bb042eea9b23876ef/src/types/char.md?plain=1#L17-L21
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/value.rs#L353-L359
+pub const fn is_unicode_scalar(bits: u128) -> bool {
+    bits <= 0x10_FFFF && !(0xD800 <= bits && bits <= 0xDFFF)
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Ty {
     Bool,
+    Char,
+    Ordering,
     Unit,
     Never,
     Int(IntTy),
     Enum(EnumTy),
+    OverflowPair(IntTy),
 }
 
 impl Ty {
@@ -207,14 +258,22 @@ impl Ty {
     /// In Miri (`Miri/Interpreter/Rvalue.lean` and `ValidityVisitor.lean`),
     /// `WithRetag::Yes` sets `RetagMode::Default` during `copyOp`, which calls
     /// `retagSafePointer` only inside `ValidityVisitor::checkSafe` on safe
-    /// pointers (`&T`, `&mut T`, `Box<T>`). For reference-free scalar, unit,
-    /// never, and fieldless-enum types, `WithRetag::Yes` and `WithRetag::No`
-    /// have identical semantics. Any future `Ty` variant capable of carrying
-    /// references or `Box` must return `false` so capture fails closed rather
-    /// than erasing active retags.
+    /// pointers (`&T`, `&mut T`, `Box<T>`). For reference-free scalar, `char`,
+    /// `Ordering`, unit, never, fieldless-enum, and `(int, bool)` overflow-pair
+    /// types, `WithRetag::Yes` and `WithRetag::No` have identical semantics.
+    /// Any future `Ty` variant capable of carrying references or `Box` must
+    /// return `false` so capture fails closed rather than erasing active
+    /// retags.
     pub const fn is_retag_noop(&self) -> bool {
         match self {
-            Self::Bool | Self::Unit | Self::Never | Self::Int(_) | Self::Enum(_) => true,
+            Self::Bool
+            | Self::Char
+            | Self::Ordering
+            | Self::Unit
+            | Self::Never
+            | Self::Int(_)
+            | Self::Enum(_)
+            | Self::OverflowPair(_) => true,
         }
     }
 }
@@ -224,16 +283,19 @@ impl Ty {
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum ConstLit {
     ZeroSized,
-    Scalar { bits: u64 },
+    Scalar {
+        #[serde(serialize_with = "serialize_u128_decimal")]
+        bits: u128,
+    },
 }
 
 /// Validate that `with_retag` is admitted for destination type `dst_ty`.
 ///
 /// `lean.rs` renders `Rvalue::Use` without its retag flag, so the flag may be
 /// erased only when [`Ty::is_retag_noop`] holds for the destination type.
-/// Every admitted [`Ty`] variant is retag-noop today, so this check cannot
-/// fail for any current type. `admit_retag` holds the refusal itself, which
-/// stays unit-tested until a reference-bearing variant makes it reachable.
+/// Every admitted [`Ty`] variant is retag-noop, so this check cannot fail for
+/// any admitted type; `admit_retag` holds the refusal itself, which stays
+/// unit-tested until a reference-bearing variant makes it reachable.
 pub fn check_use_retag(dst_ty: &Ty, with_retag: bool) -> Result<(), String> {
     admit_retag(dst_ty.is_retag_noop(), with_retag)
 }
@@ -259,6 +321,7 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
         (Ty::Never, ConstLit::Scalar { .. }) => {
             Err("the never type has no scalar constants".into())
         }
+        (Ty::OverflowPair(_), _) => Err("overflow-pair tuple constants are unsupported".into()),
         (Ty::Bool, ConstLit::ZeroSized) => {
             Err("ZeroSized constant requires unit or zero-sized enum type".into())
         }
@@ -272,11 +335,37 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
                 Err("invalid Boolean constant".into())
             }
         }
+        (Ty::Char, ConstLit::ZeroSized) => {
+            Err("ZeroSized constant requires unit or zero-sized enum type".into())
+        }
+        (Ty::Char, ConstLit::Scalar { bits }) => {
+            if is_unicode_scalar(bits) {
+                Ok(())
+            } else {
+                Err(format!(
+                    "invalid char constant {bits:#x}: outside Unicode scalar range"
+                ))
+            }
+        }
+        (Ty::Ordering, ConstLit::ZeroSized) => {
+            Err("ZeroSized constant requires unit or zero-sized enum type".into())
+        }
+        (Ty::Ordering, ConstLit::Scalar { bits }) => {
+            // `core::cmp::Ordering` is `#[repr(i8)]` whose "three variants
+            // `Less`/`Equal`/`Greater` remain `-1_i8`/`0_i8`/`+1_i8`
+            // respectively" (`0xff`, `0`, `1` as 8-bit unsigned tags).
+            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/library/core/src/cmp.rs#L400-L415
+            if matches!(bits, 0 | 1 | 0xff) {
+                Ok(())
+            } else {
+                Err(format!("invalid Ordering tag constant {bits:#x}"))
+            }
+        }
         (Ty::Int(_), ConstLit::ZeroSized) => {
             Err("ZeroSized constant requires unit or zero-sized enum type".into())
         }
         (Ty::Int(ity), ConstLit::Scalar { bits }) => {
-            if u128::from(bits) > ity.width.mask() {
+            if bits > ity.width.mask() {
                 return Err(format!(
                     "scalar constant {bits:#x} exceeds {}-bit width",
                     ity.width.bits()
@@ -293,14 +382,14 @@ pub fn validate_constant(ty: &Ty, lit: ConstLit) -> Result<(), String> {
                 Err("ZeroSized constant requires unit or zero-sized enum type".into())
             }
             (EnumTagRepr::Scalar(tag), ConstLit::Scalar { bits }) => {
-                if u128::from(bits) > tag.width.mask() {
+                if bits > tag.width.mask() {
                     return Err(format!(
                         "enum tag constant {bits:#x} exceeds {}-bit tag width",
                         tag.width.bits()
                     ));
                 }
-                let discr = tag_bits_to_discr_bits(tag, ety.discr().width, u128::from(bits));
-                if !ety.discriminants.iter().any(|&d| u128::from(d) == discr) {
+                let discr = tag_bits_to_discr_bits(tag, ety.discr().width, bits);
+                if !ety.discriminants.contains(&discr) {
                     return Err(format!(
                         "enum tag constant {bits:#x} does not match any declared variant"
                     ));
@@ -319,6 +408,24 @@ pub enum Operand {
     Constant { ty: Ty, lit: ConstLit },
 }
 
+/// Admitted MIR unary operators (`rustc_middle::mir::UnOp`, "The `!` operator
+/// for logical inversion" and "The `-` operator for negation").
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1603-L1617
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum UnOp {
+    Not,
+    Neg,
+}
+
+/// Admitted MIR cast kinds (`rustc_middle::mir::CastKind::IntToInt`).
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1491-L1532
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CastKind {
+    IntToInt,
+}
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize)]
 #[serde(rename_all = "snake_case")]
 pub enum BinOp {
@@ -330,12 +437,18 @@ pub enum BinOp {
     Add,
     Sub,
     Mul,
+    Div,
+    Rem,
+    AddWithOverflow,
+    SubWithOverflow,
+    MulWithOverflow,
     Eq,
     Ne,
     Lt,
     Le,
     Gt,
     Ge,
+    Cmp,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -349,6 +462,15 @@ pub enum Rvalue {
         op: BinOp,
         left: Operand,
         right: Operand,
+    },
+    Unary {
+        op: UnOp,
+        operand: Operand,
+    },
+    Cast {
+        cast_kind: CastKind,
+        operand: Operand,
+        ty: Ty,
     },
     Discriminant {
         local: u32,
@@ -372,7 +494,8 @@ pub enum Terminator {
     },
     SwitchInt {
         operand: Operand,
-        targets: Vec<(u64, u32)>,
+        #[serde(serialize_with = "serialize_switch_targets_decimal")]
+        targets: Vec<(u128, u32)>,
         otherwise: u32,
     },
     Ret,
@@ -385,20 +508,177 @@ pub struct Block {
     pub terminator: Terminator,
 }
 
+/// Check static operand and destination typing for [`Rvalue::Binary`], matching
+/// `Trusted.MirSemantics.evalBinOp` and `writePlace`.
+fn check_binary_types(op: BinOp, l_ty: &Ty, r_ty: &Ty, dst_ty: &Ty) -> Result<(), String> {
+    match op {
+        BinOp::Shl | BinOp::Shr => match (l_ty, r_ty) {
+            (Ty::Int(l_ity), Ty::Int(_)) if *dst_ty == Ty::Int(*l_ity) => Ok(()),
+            _ => Err(format!(
+                "invalid shift operand or destination types: ({l_ty:?}, {r_ty:?}) -> {dst_ty:?}"
+            )),
+        },
+        BinOp::Add | BinOp::Sub | BinOp::Mul | BinOp::Div | BinOp::Rem => match (l_ty, r_ty) {
+            (Ty::Int(l_ity), Ty::Int(r_ity)) if l_ity == r_ity && *dst_ty == Ty::Int(*l_ity) => {
+                Ok(())
+            }
+            _ => Err(format!(
+                "invalid arithmetic operand or destination types for {op:?}: \
+                 ({l_ty:?}, {r_ty:?}) -> {dst_ty:?}"
+            )),
+        },
+        BinOp::AddWithOverflow | BinOp::SubWithOverflow | BinOp::MulWithOverflow => {
+            match (l_ty, r_ty) {
+                (Ty::Int(l_ity), Ty::Int(r_ity))
+                    if l_ity == r_ity && *dst_ty == Ty::OverflowPair(*l_ity) =>
+                {
+                    Ok(())
+                }
+                _ => Err(format!(
+                    "invalid overflowing arithmetic types for {op:?}: \
+                     ({l_ty:?}, {r_ty:?}) -> {dst_ty:?}"
+                )),
+            }
+        }
+        BinOp::BitAnd | BinOp::BitOr | BinOp::BitXor => match (l_ty, r_ty) {
+            (Ty::Int(l_ity), Ty::Int(r_ity)) if l_ity == r_ity && *dst_ty == Ty::Int(*l_ity) => {
+                Ok(())
+            }
+            (Ty::Bool, Ty::Bool) if *dst_ty == Ty::Bool => Ok(()),
+            _ => Err(format!(
+                "invalid bitwise operand or destination types for {op:?}: \
+                 ({l_ty:?}, {r_ty:?}) -> {dst_ty:?}"
+            )),
+        },
+        BinOp::Eq | BinOp::Ne | BinOp::Lt | BinOp::Le | BinOp::Gt | BinOp::Ge => {
+            if l_ty == r_ty
+                && matches!(l_ty, Ty::Int(_) | Ty::Bool | Ty::Char)
+                && *dst_ty == Ty::Bool
+            {
+                Ok(())
+            } else {
+                Err(format!(
+                    "invalid comparison operand or destination types for {op:?}: \
+                     ({l_ty:?}, {r_ty:?}) -> {dst_ty:?}"
+                ))
+            }
+        }
+        // `BinOp::Cmp` "is supported only on the integer types and `char`,
+        // always returning [`rustc_hir::LangItem::OrderingEnum`]".
+        // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1697-L1706
+        BinOp::Cmp => {
+            if l_ty == r_ty && matches!(l_ty, Ty::Int(_) | Ty::Char) && *dst_ty == Ty::Ordering {
+                Ok(())
+            } else {
+                Err(format!(
+                    "invalid three-way comparison types: ({l_ty:?}, {r_ty:?}) -> {dst_ty:?}"
+                ))
+            }
+        }
+    }
+}
+
+/// Check static operand and destination typing for [`Rvalue::Unary`], matching
+/// `Trusted.MirSemantics.evalUnOp`.
+fn check_unary_types(op: UnOp, op_ty: &Ty, dst_ty: &Ty) -> Result<(), String> {
+    if op_ty != dst_ty {
+        return Err("unary rvalue operand type disagrees with destination local".into());
+    }
+    match (op, op_ty) {
+        (UnOp::Not, Ty::Bool | Ty::Int(_)) => Ok(()),
+        (UnOp::Neg, Ty::Int(IntTy { signed: true, .. })) => Ok(()),
+        _ => Err(format!("invalid unary operator {op:?} for type {op_ty:?}")),
+    }
+}
+
+/// Check static source, target, and destination typing for [`Rvalue::Cast`],
+/// matching `cast_from_int_like` ("can take 'int-like' input type ... to
+/// int/float/char types", where `ty::Char` executes
+/// `u8::try_from(v).unwrap().into()`) and `Trusted.MirSemantics.castTypesValid`
+/// / `evalIntToIntCast`.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_const_eval/src/interpret/cast.rs#L258-L312
+fn check_cast_types(kind: CastKind, src_ty: &Ty, cast_ty: &Ty, dst_ty: &Ty) -> Result<(), String> {
+    if cast_ty != dst_ty {
+        return Err("cast target type disagrees with destination local".into());
+    }
+    match (kind, src_ty, cast_ty) {
+        (CastKind::IntToInt, Ty::Int(_) | Ty::Bool | Ty::Char, Ty::Int(_)) => Ok(()),
+        (
+            CastKind::IntToInt,
+            Ty::Int(IntTy {
+                width: IntWidth::I8,
+                signed: false,
+            }),
+            Ty::Char,
+        ) => Ok(()),
+        _ => Err(format!(
+            "unsupported cast {kind:?} from {src_ty:?} to {cast_ty:?}"
+        )),
+    }
+}
+
+/// Check static operand and case-value typing for [`Terminator::SwitchInt`],
+/// matching `Trusted.MirSemantics.evalTerminator`.
+fn check_switch_targets(discr_ty: &Ty, targets: &[(u128, u32)]) -> Result<(), String> {
+    match discr_ty {
+        Ty::Int(ity) => {
+            let mask = ity.width.mask();
+            for &(val, _) in targets {
+                if val > mask {
+                    return Err(format!(
+                        "SwitchInt case {val:#x} exceeds {}-bit operand width",
+                        ity.width.bits()
+                    ));
+                }
+            }
+            Ok(())
+        }
+        Ty::Bool => {
+            for &(val, _) in targets {
+                if val > 1 {
+                    return Err(format!("invalid Boolean SwitchInt case {val:#x}"));
+                }
+            }
+            Ok(())
+        }
+        Ty::Char => {
+            for &(val, _) in targets {
+                if !is_unicode_scalar(val) {
+                    return Err(format!(
+                        "invalid char SwitchInt case {val:#x}: outside Unicode scalar range"
+                    ));
+                }
+            }
+            Ok(())
+        }
+        Ty::OverflowPair(_) => {
+            if targets.is_empty() {
+                Ok(())
+            } else {
+                Err("non-empty SwitchInt branches on overflow-pair tuple are unsupported".into())
+            }
+        }
+        Ty::Unit | Ty::Never | Ty::Ordering | Ty::Enum(_) => Err(format!(
+            "SwitchInt operand type {discr_ty:?} is not primitive-switchable"
+        )),
+    }
+}
+
 /// Validated MIR function body enforcing
 /// `Trusted.MirSemantics.BodyStaticAdmitted`, constant/retag/storage
-/// invariants, and in-bounds local/block references by construction.
+/// invariants, static rvalue/terminator typing, and in-bounds local/block
+/// references by construction.
 ///
 /// Most checks in [`Body::try_new`] (static `BodyStaticAdmitted` conditions,
-/// constant/index/storage bounds, and direct destination-type agreement for
-/// `Rvalue::Use` and `Rvalue::Discriminant`) mirror
-/// `BodyStaticAdmitted` and `WellFormed` in `Trusted.MirSemantics` for
-/// fail-fast defense in depth; full runtime operand and terminator typing is
+/// constant/index/storage bounds, and operand/destination typing for
+/// `Rvalue` and `Terminator::SwitchInt`) mirror `BodyStaticAdmitted` and
+/// `WellFormed` in `Trusted.MirSemantics` for fail-fast defense in depth; full
+/// runtime safety (such as division-by-zero and initialized-local checks) is
 /// enforced by `WellFormed`. By contrast, [`check_use_retag`] is the sole
 /// soundness guard for erasing `WithRetag::Yes` in `lean.rs`, because
-/// `Trusted.MirAst.Rvalue.use` carries no retag field (vacuous today while
-/// every admitted [`Ty`] variant is retag-noop, but load-bearing for any
-/// future reference-bearing [`Ty`]).
+/// `Trusted.MirAst.Rvalue.use` carries no retag field (vacuous while every
+/// admitted [`Ty`] variant is retag-noop, and load-bearing for any future
+/// reference-bearing [`Ty`]).
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 pub struct Body {
     arg_count: usize,
@@ -475,19 +755,42 @@ impl Body {
                                     );
                                 }
                             }
-                            Rvalue::Binary { left, right, .. } => {
-                                check_operand(&local_tys, left)?;
-                                check_operand(&local_tys, right)?;
+                            Rvalue::Binary { op, left, right } => {
+                                let l_ty = check_operand(&local_tys, left)?;
+                                let r_ty = check_operand(&local_tys, right)?;
+                                check_binary_types(*op, l_ty, r_ty, dst_ty)?;
+                            }
+                            Rvalue::Unary { op, operand } => {
+                                let op_ty = check_operand(&local_tys, operand)?;
+                                check_unary_types(*op, op_ty, dst_ty)?;
+                            }
+                            Rvalue::Cast {
+                                cast_kind,
+                                operand,
+                                ty,
+                            } => {
+                                let src_ty = check_operand(&local_tys, operand)?;
+                                check_cast_types(*cast_kind, src_ty, ty, dst_ty)?;
                             }
                             Rvalue::Discriminant { local: src } => {
-                                let Ty::Enum(ety) = check_local(&local_tys, *src, "discriminant")?
-                                else {
-                                    return Err(
-                                        "discriminant rvalue requires a fieldless enum local"
-                                            .into(),
-                                    );
+                                let expected_discr = match check_local(
+                                    &local_tys,
+                                    *src,
+                                    "discriminant",
+                                )? {
+                                    Ty::Enum(ety) => ety.discr(),
+                                    Ty::Ordering => IntTy {
+                                        width: IntWidth::I8,
+                                        signed: true,
+                                    },
+                                    _ => {
+                                        return Err(
+                                            "discriminant rvalue requires a fieldless enum or Ordering local"
+                                                .into(),
+                                        );
+                                    }
                                 };
-                                if *dst_ty != Ty::Int(ety.discr()) {
+                                if *dst_ty != Ty::Int(expected_discr) {
                                     return Err(
                                         "discriminant rvalue destination type disagrees with enum discriminant"
                                             .into(),
@@ -521,7 +824,8 @@ impl Body {
                     targets,
                     otherwise,
                 } => {
-                    check_operand(&local_tys, operand)?;
+                    let discr_ty = check_operand(&local_tys, operand)?;
+                    check_switch_targets(discr_ty, targets)?;
                     for &(_, target) in targets {
                         check_block(target)?;
                     }
@@ -836,7 +1140,7 @@ mod tests {
                     width: IntWidth::I8,
                     signed: true,
                 }),
-                vec![u64::MAX, 1],
+                vec![u128::from(u64::MAX), 1],
             )
             .unwrap(),
         );
@@ -844,18 +1148,47 @@ mod tests {
             width: IntWidth::I8,
             signed: false,
         });
+        let u128_ty = Ty::Int(IntTy {
+            width: IntWidth::I128,
+            signed: false,
+        });
+        let ovf_u8 = Ty::OverflowPair(IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        });
+
+        assert_eq!(IntWidth::I128.bits(), 128);
+        assert_eq!(IntWidth::I128.mask(), u128::MAX);
+        assert_eq!(IntWidth::I128.lean_name(), "i128");
 
         assert!(validate_constant(&Ty::Unit, ConstLit::ZeroSized).is_ok());
         assert!(validate_constant(&Ty::Unit, ConstLit::Scalar { bits: 0 }).is_err());
         assert!(validate_constant(&Ty::Never, ConstLit::ZeroSized).is_err());
         assert!(validate_constant(&Ty::Never, ConstLit::Scalar { bits: 0 }).is_err());
+        assert!(validate_constant(&ovf_u8, ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&ovf_u8, ConstLit::Scalar { bits: 0 }).is_err());
         assert!(validate_constant(&Ty::Bool, ConstLit::ZeroSized).is_err());
         assert!(validate_constant(&Ty::Bool, ConstLit::Scalar { bits: 0 }).is_ok());
         assert!(validate_constant(&Ty::Bool, ConstLit::Scalar { bits: 1 }).is_ok());
         assert!(validate_constant(&Ty::Bool, ConstLit::Scalar { bits: 2 }).is_err());
+        assert!(validate_constant(&Ty::Char, ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0 }).is_ok());
+        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0xD7FF }).is_ok());
+        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0xD800 }).is_err());
+        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0xDFFF }).is_err());
+        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0xE000 }).is_ok());
+        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0x10_FFFF }).is_ok());
+        assert!(validate_constant(&Ty::Char, ConstLit::Scalar { bits: 0x11_0000 }).is_err());
+        assert!(validate_constant(&Ty::Ordering, ConstLit::ZeroSized).is_err());
+        assert!(validate_constant(&Ty::Ordering, ConstLit::Scalar { bits: 0 }).is_ok());
+        assert!(validate_constant(&Ty::Ordering, ConstLit::Scalar { bits: 1 }).is_ok());
+        assert!(validate_constant(&Ty::Ordering, ConstLit::Scalar { bits: 0xff }).is_ok());
+        assert!(validate_constant(&Ty::Ordering, ConstLit::Scalar { bits: 2 }).is_err());
+        assert!(validate_constant(&Ty::Ordering, ConstLit::Scalar { bits: 0x1ff }).is_err());
         assert!(validate_constant(&u8_ty, ConstLit::ZeroSized).is_err());
         assert!(validate_constant(&u8_ty, ConstLit::Scalar { bits: 255 }).is_ok());
         assert!(validate_constant(&u8_ty, ConstLit::Scalar { bits: 256 }).is_err());
+        assert!(validate_constant(&u128_ty, ConstLit::Scalar { bits: u128::MAX }).is_ok());
         assert!(validate_constant(&zst_enum, ConstLit::ZeroSized).is_ok());
         assert!(validate_constant(&zst_enum, ConstLit::Scalar { bits: 0 }).is_err());
         assert!(validate_constant(&scalar_enum, ConstLit::ZeroSized).is_err());
@@ -878,15 +1211,275 @@ mod tests {
         assert!(admit_retag(true, false).is_ok());
         for ty in [
             Ty::Bool,
+            Ty::Char,
+            Ty::Ordering,
             Ty::Unit,
             Ty::Never,
             Ty::Int(IntTy {
                 width: IntWidth::Isize,
                 signed: true,
             }),
+            Ty::Int(IntTy {
+                width: IntWidth::I128,
+                signed: false,
+            }),
+            Ty::OverflowPair(IntTy {
+                width: IntWidth::I64,
+                signed: false,
+            }),
         ] {
             assert!(ty.is_retag_noop(), "{ty:?}");
             assert!(check_use_retag(&ty, true).is_ok(), "{ty:?}");
         }
+    }
+
+    #[test]
+    fn body_try_new_enforces_operator_cast_discriminant_and_switch_typing() {
+        let u8_ity = IntTy {
+            width: IntWidth::I8,
+            signed: false,
+        };
+        let i8_ity = IntTy {
+            width: IntWidth::I8,
+            signed: true,
+        };
+        let u32_ity = IntTy {
+            width: IntWidth::I32,
+            signed: false,
+        };
+        let i128_ity = IntTy {
+            width: IntWidth::I128,
+            signed: true,
+        };
+        let u8_ty = Ty::Int(u8_ity);
+        let i8_ty = Ty::Int(i8_ity);
+        let u32_ty = Ty::Int(u32_ity);
+        let i128_ty = Ty::Int(i128_ity);
+        let ovf_u32 = Ty::OverflowPair(u32_ity);
+
+        let one_stmt_body = |locals: Vec<Ty>, value: Rvalue| {
+            Body::try_new(
+                locals.len() - 1,
+                false,
+                locals,
+                vec![Block {
+                    statements: vec![Statement::Assign { local: 0, value }],
+                    terminator: Terminator::Ret,
+                }],
+                "rust-path-v1::stmt_check".into(),
+            )
+        };
+
+        // Overflowing arithmetic requires matching `Int` operands and
+        // `OverflowPair(ity)` destination.
+        assert!(
+            one_stmt_body(
+                vec![ovf_u32.clone(), u32_ty.clone(), u32_ty.clone()],
+                Rvalue::Binary {
+                    op: BinOp::AddWithOverflow,
+                    left: Operand::Copy { local: 1 },
+                    right: Operand::Copy { local: 2 },
+                },
+            )
+            .is_ok()
+        );
+        assert!(
+            one_stmt_body(
+                vec![u32_ty.clone(), u32_ty.clone(), u32_ty.clone()],
+                Rvalue::Binary {
+                    op: BinOp::AddWithOverflow,
+                    left: Operand::Copy { local: 1 },
+                    right: Operand::Copy { local: 2 },
+                },
+            )
+            .is_err()
+        );
+
+        // `Cmp` admits `Int` and `Char` -> `Ordering`, rejecting `Bool` and
+        // `Ordering`; relational ops admit `Char` and reject `Ordering`.
+        assert!(
+            one_stmt_body(
+                vec![Ty::Ordering, Ty::Char, Ty::Char],
+                Rvalue::Binary {
+                    op: BinOp::Cmp,
+                    left: Operand::Copy { local: 1 },
+                    right: Operand::Copy { local: 2 },
+                },
+            )
+            .is_ok()
+        );
+        assert!(
+            one_stmt_body(
+                vec![Ty::Ordering, Ty::Bool, Ty::Bool],
+                Rvalue::Binary {
+                    op: BinOp::Cmp,
+                    left: Operand::Copy { local: 1 },
+                    right: Operand::Copy { local: 2 },
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            one_stmt_body(
+                vec![Ty::Bool, Ty::Char, Ty::Char],
+                Rvalue::Binary {
+                    op: BinOp::Lt,
+                    left: Operand::Copy { local: 1 },
+                    right: Operand::Copy { local: 2 },
+                },
+            )
+            .is_ok()
+        );
+        assert!(
+            one_stmt_body(
+                vec![Ty::Bool, Ty::Ordering, Ty::Ordering],
+                Rvalue::Binary {
+                    op: BinOp::Eq,
+                    left: Operand::Copy { local: 1 },
+                    right: Operand::Copy { local: 2 },
+                },
+            )
+            .is_err()
+        );
+
+        // `Unary`: `Not` admits `Bool` and `Int` (rejects `Char`), `Neg` admits
+        // signed `Int` (rejects unsigned `Int` and `Bool`).
+        assert!(
+            one_stmt_body(
+                vec![i128_ty.clone(), i128_ty.clone()],
+                Rvalue::Unary {
+                    op: UnOp::Neg,
+                    operand: Operand::Copy { local: 1 },
+                },
+            )
+            .is_ok()
+        );
+        assert!(
+            one_stmt_body(
+                vec![u32_ty.clone(), u32_ty.clone()],
+                Rvalue::Unary {
+                    op: UnOp::Neg,
+                    operand: Operand::Copy { local: 1 },
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            one_stmt_body(
+                vec![Ty::Char, Ty::Char],
+                Rvalue::Unary {
+                    op: UnOp::Not,
+                    operand: Operand::Copy { local: 1 },
+                },
+            )
+            .is_err()
+        );
+
+        // `Cast(IntToInt)`: `{int, bool, char} -> int` and `u8 -> char` only,
+        // with `cast_ty == dst_ty`.
+        assert!(
+            one_stmt_body(
+                vec![Ty::Char, u8_ty.clone()],
+                Rvalue::Cast {
+                    cast_kind: CastKind::IntToInt,
+                    operand: Operand::Copy { local: 1 },
+                    ty: Ty::Char,
+                },
+            )
+            .is_ok()
+        );
+        for bad_src in [i8_ty.clone(), u32_ty.clone(), Ty::Bool, Ty::Char] {
+            assert!(
+                one_stmt_body(
+                    vec![Ty::Char, bad_src],
+                    Rvalue::Cast {
+                        cast_kind: CastKind::IntToInt,
+                        operand: Operand::Copy { local: 1 },
+                        ty: Ty::Char,
+                    },
+                )
+                .is_err()
+            );
+        }
+        assert!(
+            one_stmt_body(
+                vec![u32_ty.clone(), Ty::Char],
+                Rvalue::Cast {
+                    cast_kind: CastKind::IntToInt,
+                    operand: Operand::Copy { local: 1 },
+                    ty: u8_ty.clone(),
+                },
+            )
+            .is_err()
+        );
+        assert!(
+            one_stmt_body(
+                vec![Ty::Bool, u8_ty.clone()],
+                Rvalue::Cast {
+                    cast_kind: CastKind::IntToInt,
+                    operand: Operand::Copy { local: 1 },
+                    ty: Ty::Bool,
+                },
+            )
+            .is_err()
+        );
+
+        // `Discriminant` on `Ordering` requires `i8` destination.
+        assert!(
+            one_stmt_body(
+                vec![i8_ty.clone(), Ty::Ordering],
+                Rvalue::Discriminant { local: 1 },
+            )
+            .is_ok()
+        );
+        assert!(
+            one_stmt_body(
+                vec![u8_ty.clone(), Ty::Ordering],
+                Rvalue::Discriminant { local: 1 },
+            )
+            .is_err()
+        );
+
+        // `SwitchInt` checks operand switchability and case bounds.
+        let switch_body = |discr_ty: Ty, targets: Vec<(u128, u32)>| {
+            Body::try_new(
+                1,
+                false,
+                vec![Ty::Unit, discr_ty],
+                vec![Block {
+                    statements: vec![],
+                    terminator: Terminator::SwitchInt {
+                        operand: Operand::Copy { local: 1 },
+                        targets,
+                        otherwise: 0,
+                    },
+                }],
+                "rust-path-v1::switch_check".into(),
+            )
+        };
+        assert!(switch_body(i128_ty, vec![(u128::MAX, 0)]).is_ok());
+        assert!(switch_body(u8_ty, vec![(256, 0)]).is_err());
+        assert!(switch_body(Ty::Bool, vec![(0, 0), (1, 0)]).is_ok());
+        assert!(switch_body(Ty::Bool, vec![(2, 0)]).is_err());
+        assert!(switch_body(Ty::Char, vec![(0x1F600, 0)]).is_ok());
+        assert!(switch_body(Ty::Char, vec![(0xD800, 0)]).is_err());
+        assert!(switch_body(ovf_u32.clone(), vec![]).is_ok());
+        assert!(switch_body(ovf_u32, vec![(0, 0)]).is_err());
+        assert!(switch_body(Ty::Ordering, vec![]).is_err());
+
+        // Decimal string serialization for 128-bit values round-trips via
+        // standard `serde_json::Value` without `arbitrary_precision`.
+        let i128_enum = EnumTy::try_new(
+            9,
+            i128_ity,
+            EnumTagRepr::Scalar(i128_ity),
+            vec![u128::MAX, 0, 1],
+        )
+        .unwrap();
+        let json_val = serde_json::to_value(&i128_enum).unwrap();
+        assert_eq!(
+            json_val["discriminants"],
+            serde_json::json!(["340282366920938463463374607431768211455", "0", "1"])
+        );
     }
 }

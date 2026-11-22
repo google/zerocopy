@@ -193,7 +193,7 @@ fn selected_capture_keeps_unselected_unsupported_items_in_the_census() {
     assert!(output.status.success(), "{output:?}");
     assert_eq!(status(&output)["status"], "captured", "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 3);
+    assert_eq!(manifest["schema_version"], 4);
     assert!(manifest.get("scope").is_none(), "{manifest}");
     assert_eq!(manifest["program"]["scope"]["kind"], "selected_unit");
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
@@ -951,7 +951,7 @@ fn enum_representations_follow_admitted_zst_and_scalar_tag_rules() {
     assert_eq!(ty["discr_signed"], true, "{ty}");
     assert_eq!(ty["tag_repr"]["kind"], "scalar", "{ty}");
     assert_eq!(ty["tag_repr"]["width"], "i64", "{ty}");
-    assert_eq!(ty["discriminants"], serde_json::json!([7]), "{ty}");
+    assert_eq!(ty["discriminants"], serde_json::json!(["7"]), "{ty}");
 
     let zst_single =
         b"pub enum Single { Only = 42 }\npub fn selected(x: Single) -> isize { match x { Single::Only => 42 } }\n";
@@ -962,7 +962,7 @@ fn enum_representations_follow_admitted_zst_and_scalar_tag_rules() {
     let ty = &manifest["program"]["bodies"][0]["local_tys"][1];
     assert_eq!(ty["kind"], "enum", "{ty}");
     assert_eq!(ty["tag_repr"]["kind"], "zero_sized", "{ty}");
-    assert_eq!(ty["discriminants"], serde_json::json!([42]), "{ty}");
+    assert_eq!(ty["discriminants"], serde_json::json!(["42"]), "{ty}");
 
     let repr_u8 = b"#[repr(u8)]\npub enum ExplicitU8 { Ten = 10, Twenty = 20 }\npub fn selected(x: ExplicitU8) -> u8 { match x { ExplicitU8::Ten => 10, ExplicitU8::Twenty => 20 } }\n";
     let fixture = Capture::new(repr_u8);
@@ -974,7 +974,7 @@ fn enum_representations_follow_admitted_zst_and_scalar_tag_rules() {
     assert_eq!(ty["discr_width"], "i8", "{ty}");
     assert_eq!(ty["discr_signed"], false, "{ty}");
     assert_eq!(ty["tag_repr"]["width"], "i8", "{ty}");
-    assert_eq!(ty["discriminants"], serde_json::json!([10, 20]), "{ty}");
+    assert_eq!(ty["discriminants"], serde_json::json!(["10", "20"]), "{ty}");
 
     let empty_crate = Capture::new(b"");
     let output = empty_crate.command().arg("--scope=crate").output().unwrap();
@@ -1016,11 +1016,11 @@ fn negative_isize_enum_discriminants_are_captured_as_64_bit_twos_complement() {
     let discriminants = manifest["program"]["bodies"][0]["local_tys"][1]["discriminants"]
         .as_array()
         .expect("enum discriminants");
-    let values: Vec<u64> = discriminants
+    let values: Vec<&str> = discriminants
         .iter()
-        .map(|v| v.as_u64().expect("u64 discriminant"))
+        .map(|v| v.as_str().expect("decimal string discriminant"))
         .collect();
-    assert_eq!(values, vec![u64::MAX, 0, 1]);
+    assert_eq!(values, vec!["18446744073709551615", "0", "1"]);
     let lean =
         std::fs::read_to_string(fixture.output.join("Captured.lean")).expect("read Captured.lean");
     assert!(
@@ -1082,7 +1082,7 @@ fn whole_crate_admits_implicit_fieldless_enums_and_refuses_all_anon_consts() {
     let output = fixture.command().arg("--scope=crate").output().unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 3);
+    assert_eq!(manifest["schema_version"], 4);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 2);
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(lean.contains("EnumTagRepr.zeroSized"), "{lean}");
@@ -1226,7 +1226,7 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
         .unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 3);
+    assert_eq!(manifest["schema_version"], 4);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(
@@ -1318,8 +1318,14 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
             "unsupported type",
         ),
         (
-            "non_local_enum",
+            "ordering_adt_aggregate",
             b"pub fn f() -> core::cmp::Ordering { core::cmp::Ordering::Less }\n",
+            &["--scope=crate"],
+            "unsupported rvalue",
+        ),
+        (
+            "non_local_enum",
+            b"pub fn f(x: core::sync::atomic::Ordering) -> core::sync::atomic::Ordering { x }\n",
             &["--scope=crate"],
             "unsupported type",
         ),
@@ -1728,7 +1734,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
         .output()
         .unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(fixture.manifest()["schema_version"], 3);
+    assert_eq!(fixture.manifest()["schema_version"], 4);
 
     // Replacing the driver symlink with a distinct regular file inode must fail
     // closed.
@@ -1795,7 +1801,7 @@ fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates
     let no_std_fixture = Capture::new(b"#![no_std]\npub fn selected(x: u64) -> u64 { x }\n");
     let output = no_std_fixture.selected_command().output().unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(no_std_fixture.manifest()["schema_version"], 3);
+    assert_eq!(no_std_fixture.manifest()["schema_version"], 4);
 
     let proc_macro_fixture = Capture::new(
         b"#![crate_type = \"proc-macro\"]\n\
@@ -1849,4 +1855,352 @@ fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates
         assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
         fixture.assert_no_capture_artifacts();
     }
+}
+
+/// Compile `Captured.lean` against `Trusted.MirAst` with the pinned `lean`
+/// executable under its default `maxRecDepth` whenever `../lean` is present in
+/// the source tree (all local and CI workspace runs; inside Nix's isolated
+/// `rustcCaptureSourceFiles` derivation `../lean` is intentionally absent).
+fn compile_captured_lean_if_trusted_sources_present(captured_lean: &std::path::Path) -> bool {
+    let lean_src_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../lean");
+    if !lean_src_root.join("Trusted/MirAst.lean").is_file() {
+        return false;
+    }
+    let lean_bin = common::lean();
+    let stage = tempfile::tempdir().expect("create temporary Lean build directory");
+    let lean_lib = stage.path().join("lib");
+    std::fs::create_dir_all(lean_lib.join("Trusted/MirAst")).unwrap();
+
+    for rel in [
+        "Trusted/MirAst/Types",
+        "Trusted/MirAst/Places",
+        "Trusted/MirAst/Rvalues",
+        "Trusted/MirAst/Statements",
+        "Trusted/MirAst/Terminators",
+        "Trusted/MirAst/Body",
+        "Trusted/MirAst",
+    ] {
+        let src = lean_src_root.join(format!("{rel}.lean"));
+        let olean = lean_lib.join(format!("{rel}.olean"));
+        let out = Command::new(&lean_bin)
+            .current_dir(&lean_src_root)
+            .env("LEAN_PATH", &lean_lib)
+            .arg("-DwarningAsError=true")
+            .arg("-o")
+            .arg(&olean)
+            .arg(&src)
+            .output()
+            .expect("invoke pinned lean on Trusted.MirAst");
+        assert!(
+            out.status.success(),
+            "failed compiling {}: {}\n{}",
+            src.display(),
+            stdout(&out),
+            stderr(&out)
+        );
+    }
+
+    let captured_olean = lean_lib.join("Captured.olean");
+    let out = Command::new(&lean_bin)
+        .current_dir(captured_lean.parent().expect("Captured.lean parent"))
+        .env("LEAN_PATH", &lean_lib)
+        .arg("-DwarningAsError=true")
+        .arg("-o")
+        .arg(&captured_olean)
+        .arg(captured_lean)
+        .output()
+        .expect("invoke pinned lean on Captured.lean");
+    let combined = format!("{}{}", stdout(&out), stderr(&out));
+    assert!(
+        !combined.contains("maximum recursion depth"),
+        "Captured.lean hit recursion-depth limit:\n{combined}"
+    );
+    assert!(
+        out.status.success(),
+        "Captured.lean failed Lean compilation:\n{combined}"
+    );
+    assert!(captured_olean.is_file());
+    true
+}
+
+#[test]
+fn scalar_cast_cmp_div_unary_and_overflow_pair_constructs_capture_and_typecheck_in_lean() {
+    let source = br#"#![feature(core_intrinsics)]
+#![allow(internal_features)]
+
+#[repr(u128)]
+pub enum WideImplicit {
+    Zero,
+    One,
+}
+
+pub fn wide_scalars(a: u128, b: i128, tag: WideImplicit) -> u128 {
+    let max_val: u128 = 0xffff_ffff_ffff_ffff_ffff_ffff_ffff_ffff_u128;
+    let min_val: i128 = -0x7fff_ffff_ffff_ffff_ffff_ffff_ffff_ffff_i128 - 1;
+    let neg_b: i128 = -b;
+    let not_a: u128 = !a;
+    let tag_val: u128 = match tag {
+        WideImplicit::Zero => 0,
+        WideImplicit::One => 1,
+    };
+    match a {
+        0 => (min_val as u128) ^ tag_val,
+        340282366920938463463374607431768211455 => not_a,
+        _ => max_val & (neg_b as u128),
+    }
+}
+
+pub fn char_and_casts(c: char, byte: u8, flag: bool, signed: i16) -> u32 {
+    let from_byte: char = byte as char;
+    let flag_int: i64 = flag as i64;
+    let ext: i128 = signed as i128;
+    if c < from_byte || c == '\u{03bb}' || c >= '\u{10ffff}' {
+        (c as u32) ^ (flag_int as u32)
+    } else {
+        match c {
+            'a' => 1,
+            '\u{e000}' => ext as u32,
+            _ => 0,
+        }
+    }
+}
+
+pub fn ordering_and_cmp(x: i64, y: i64, c1: char, c2: char) -> i8 {
+    let ord_i: core::cmp::Ordering = core::intrinsics::three_way_compare(x, y);
+    let ord_c: core::cmp::Ordering = core::intrinsics::three_way_compare(c1, c2);
+    let first = match ord_i {
+        core::cmp::Ordering::Less => -1i8,
+        core::cmp::Ordering::Equal => 0i8,
+        core::cmp::Ordering::Greater => 1i8,
+    };
+    let second = match ord_c {
+        core::cmp::Ordering::Less => -1i8,
+        core::cmp::Ordering::Equal => 0i8,
+        core::cmp::Ordering::Greater => 1i8,
+    };
+    !first ^ second
+}
+
+pub unsafe fn unchecked_div_rem(a: i64, b: i64, u: u128, v: u128) -> u128 {
+    let q: i64 = unsafe { core::intrinsics::unchecked_div(a, b) };
+    let r: i64 = unsafe { core::intrinsics::unchecked_rem(a, b) };
+    let uq: u128 = unsafe { core::intrinsics::unchecked_div(u, v) };
+    let ur: u128 = unsafe { core::intrinsics::unchecked_rem(u, v) };
+    ((q ^ r) as u128) ^ uq ^ ur
+}
+
+pub fn overflow_pairs(a: u64, b: u64) -> (u64, bool) {
+    let p_add: (u64, bool) = core::intrinsics::add_with_overflow(a, b);
+    let _p_sub: (u64, bool) = core::intrinsics::sub_with_overflow(a, b);
+    let p_mul: (u64, bool) = core::intrinsics::mul_with_overflow(a, b);
+    let copied: (u64, bool) = p_add;
+    if !false {
+        copied
+    } else {
+        p_mul
+    }
+}
+"#;
+
+    let fixture = Capture::new(source);
+    let output = fixture.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        output.status.success(),
+        "expected crate capture to succeed:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let manifest = fixture.manifest();
+    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 5);
+
+    let manifest_text = std::fs::read_to_string(fixture.output.join("capture.json")).unwrap();
+    assert!(
+        manifest_text.contains("\"340282366920938463463374607431768211455\""),
+        "expected canonical decimal string for u128::MAX in capture.json:\n{manifest_text}"
+    );
+    assert!(manifest_text.contains("\"kind\": \"overflow_pair\""));
+    assert!(manifest_text.contains("\"kind\": \"ordering\""));
+    assert!(manifest_text.contains("\"kind\": \"char\""));
+    assert!(manifest_text.contains("\"cast_kind\": \"int_to_int\""));
+
+    let lean_path = fixture.output.join("Captured.lean");
+    let lean_src = std::fs::read_to_string(&lean_path).unwrap();
+    for expected_token in [
+        "Trusted.MirAst.IntWidth.i128",
+        "Trusted.MirAst.MirTy.char",
+        "Trusted.MirAst.MirTy.ordering",
+        "(Trusted.MirAst.MirTy.tuple [(Trusted.MirAst.MirTy.int Trusted.MirAst.IntWidth.i64 false), Trusted.MirAst.MirTy.bool])",
+        "Trusted.MirAst.UnOp.not",
+        "Trusted.MirAst.UnOp.neg",
+        "Trusted.MirAst.BinOp.div",
+        "Trusted.MirAst.BinOp.rem",
+        "Trusted.MirAst.BinOp.addWithOverflow",
+        "Trusted.MirAst.BinOp.subWithOverflow",
+        "Trusted.MirAst.BinOp.mulWithOverflow",
+        "Trusted.MirAst.BinOp.cmp",
+        "Trusted.MirAst.CastKind.intToInt",
+        "BitVec.ofNat 128 340282366920938463463374607431768211455",
+    ] {
+        assert!(
+            lean_src.contains(expected_token),
+            "Captured.lean missing {expected_token:?}:\n{lean_src}"
+        );
+    }
+    compile_captured_lean_if_trusted_sources_present(&lean_path);
+
+    // Explicit 128-bit signed enum discriminants (`-1i128 == u128::MAX`) also
+    // capture cleanly in `selected_unit` scope.
+    let i128_enum_src = br#"#[repr(i128)]
+pub enum Signed128 {
+    NegOne = -1,
+    Zero = 0,
+    High = 1 << 100,
+}
+pub fn selected(x: Signed128) -> i128 {
+    match x {
+        Signed128::NegOne => -1,
+        Signed128::Zero => 0,
+        Signed128::High => 1 << 100,
+    }
+}
+"#;
+    let i128_fixture = Capture::new(i128_enum_src);
+    let i128_out = i128_fixture.selected_command().output().unwrap();
+    assert!(i128_out.status.success(), "{i128_out:?}");
+    let i128_manifest = i128_fixture.manifest();
+    assert_eq!(
+        i128_manifest["program"]["bodies"][0]["local_tys"][1]["discriminants"],
+        serde_json::json!([
+            "340282366920938463463374607431768211455",
+            "0",
+            "1267650600228229401496703205376"
+        ])
+    );
+    compile_captured_lean_if_trusted_sources_present(&i128_fixture.output.join("Captured.lean"));
+}
+
+#[test]
+fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
+    let refused_cases: &[(&str, &[u8], &str)] = &[
+        (
+            "overflow_pair_field_0_projection",
+            b"#![feature(core_intrinsics)]\n\
+              #![allow(internal_features)]\n\
+              pub fn selected(a: u32, b: u32) -> u32 {\n\
+                  core::intrinsics::add_with_overflow(a, b).0\n\
+              }\n",
+            "place projections are unsupported",
+        ),
+        (
+            "overflow_pair_field_1_projection",
+            b"#![feature(core_intrinsics)]\n\
+              #![allow(internal_features)]\n\
+              pub fn selected(a: u32, b: u32) -> bool {\n\
+                  core::intrinsics::add_with_overflow(a, b).1\n\
+              }\n",
+            "place projections are unsupported",
+        ),
+        (
+            "overflow_pair_tuple_aggregate",
+            b"pub fn selected(x: u32, flag: bool) -> (u32, bool) { (x, flag) }\n",
+            "unsupported rvalue",
+        ),
+        (
+            "non_overflow_pair_tuple_bool_int",
+            b"pub fn selected(p: (bool, u32)) -> (bool, u32) { p }\n",
+            "unsupported type",
+        ),
+        (
+            "non_overflow_pair_tuple_char_bool",
+            b"pub fn selected(p: (char, bool)) -> (char, bool) { p }\n",
+            "unsupported type",
+        ),
+        (
+            "triple_tuple",
+            b"pub fn selected(p: (u32, bool, bool)) -> (u32, bool, bool) { p }\n",
+            "unsupported type",
+        ),
+        (
+            "checked_add_option_call",
+            b"pub fn selected(a: u32, b: u32) -> Option<u32> { a.checked_add(b) }\n",
+            "unsupported type",
+        ),
+        (
+            "checked_div_assert_terminator",
+            b"pub fn selected(a: u32, b: u32) -> u32 { a / b }\n",
+            "unsupported terminator",
+        ),
+        (
+            "transmute_cast_kind",
+            b"pub unsafe fn selected(x: u32) -> i32 {\n\
+                  unsafe { core::mem::transmute::<u32, i32>(x) }\n\
+              }\n",
+            "unsupported cast kind: Transmute",
+        ),
+        (
+            "unchecked_add_bin_op",
+            b"#![feature(core_intrinsics)]\n\
+              #![allow(internal_features)]\n\
+              pub unsafe fn selected(a: u32, b: u32) -> u32 {\n\
+                  unsafe { core::intrinsics::unchecked_add(a, b) }\n\
+              }\n",
+            "unsupported binary operator: AddUnchecked",
+        ),
+        (
+            "ptr_metadata_un_op_or_ptr_type",
+            b"#![feature(ptr_metadata)]\n\
+              pub fn selected(p: *const [u8]) -> usize { p.len() }\n",
+            "unsupported",
+        ),
+    ];
+
+    for (name, source, expected) in refused_cases {
+        let fixture = Capture::new(source);
+        let output = fixture.selected_command().output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains(expected),
+            "{name}: expected {expected:?}, got {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
+}
+
+#[test]
+fn thousand_one_hundred_function_crate_compiles_in_lean_under_default_max_rec_depth() {
+    let mut source = String::with_capacity(64 * 1024);
+    for idx in 0..1_100usize {
+        let _ = writeln!(
+            source,
+            "pub fn f_{idx}(x: u64) -> u64 {{ (x ^ {idx}u64) + 1u64 }}"
+        );
+    }
+    let fixture = Capture::new(source.as_bytes());
+    let output = fixture.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        output.status.success(),
+        "expected 1,100-function crate capture to succeed:\n{}\n{}",
+        stdout(&output),
+        stderr(&output)
+    );
+    let manifest = fixture.manifest();
+    assert_eq!(manifest["schema_version"], 4);
+    assert_eq!(
+        manifest["program"]["bodies"].as_array().unwrap().len(),
+        1_100
+    );
+
+    let captured_lean = fixture.output.join("Captured.lean");
+    let lean_text = std::fs::read_to_string(&captured_lean).unwrap();
+    assert!(lean_text.contains("def body_0 : Trusted.MirAst.Body :="));
+    assert!(lean_text.contains("def body_1099 : Trusted.MirAst.Body :="));
+    assert!(lean_text.contains("def bodies_chunk_0 : _root_.List Trusted.MirAst.Body :="));
+    assert!(lean_text.contains("def bodies_chunk_68 : _root_.List Trusted.MirAst.Body :="));
+    assert!(!lean_text.contains("def bodies_chunk_69"));
+    assert!(lean_text.contains("(_root_.List.append "));
+
+    compile_captured_lean_if_trusted_sources_present(&captured_lean);
 }
