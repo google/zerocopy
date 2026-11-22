@@ -2992,23 +2992,37 @@ mod tests {
             let escape_session = mode == "setsid";
             let _ = std::io::stdout().write_all(b"leader-out");
             let _ = std::io::stdout().flush();
-            // SAFETY: Single-threaded helper branch immediately forks, puts the
-            // grandchild to sleep with inherited stdout/stderr, and exits the
-            // leader without running atexit handlers.
+            let mut sync_pipe = [-1; 2];
+            // SAFETY: Helper branch runs async-signal-safe libc calls across
+            // `fork()` (`pipe`, `fork`, `setsid`, `close`, `read`, `sleep`,
+            // `_exit`), keeping inherited stdout/stderr open in the grandchild
+            // until the leader receives `sync_pipe` EOF strictly after any
+            // `setsid()`, so the parent cannot `SIGKILL` the leader's process
+            // group before `setsid()` runs.
             unsafe {
+                if libc::pipe(sync_pipe.as_mut_ptr()) != 0 {
+                    libc::_exit(1);
+                }
                 let pid = libc::fork();
+                if pid < 0 {
+                    libc::_exit(1);
+                }
                 if pid == 0 {
+                    if escape_session && libc::setsid() < 0 {
+                        libc::_exit(1);
+                    }
+                    let _ = libc::close(sync_pipe[0]);
+                    let _ = libc::close(sync_pipe[1]);
                     for fd in 3..256 {
                         let _ = libc::close(fd);
                     }
-                    if escape_session {
-                        let _ = libc::setsid();
-                        let _ = libc::sleep(4);
-                    } else {
-                        let _ = libc::sleep(10);
-                    }
+                    let _ = libc::sleep(if escape_session { 6 } else { 10 });
                     libc::_exit(0);
                 }
+                let _ = libc::close(sync_pipe[1]);
+                let mut byte = [0u8; 1];
+                let _ = libc::read(sync_pipe[0], byte.as_mut_ptr().cast(), 1);
+                let _ = libc::close(sync_pipe[0]);
                 libc::_exit(0);
             }
         }
