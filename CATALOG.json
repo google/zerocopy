@@ -90510,6 +90510,58 @@
         "verification/kani"
       ]
     },
+    "rust-contract-mir-core-speceval-assumed-effects-and-productive-unsafe-impls": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "path": "anneal/trusted/",
+            "repository": "google/zerocopy",
+            "revision": "a007a51af473e5901915b003083e61c7c89c7bd1"
+          },
+          "name": "Anneal trusted MIR semantics and rustc-capture in google/zerocopy"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly (f8a08b688 2026-05-30)"
+          },
+          "name": "rustc 1.98.0-nightly (2026-05-30) Runtime(PostCleanup) MIR and trait solver"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "6905905bb7727fd0f9223f5fdc9ad4e62236d5a2",
+            "version": "1.102.0-nightly (6905905bb 2026-11-19)"
+          },
+          "name": "rustc 1.102.0-nightly (2026-11-19) Runtime(PostCleanup) MIR and trait solver"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel (v4.34.1)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/contracts",
+        "ffi/unwind",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rust/contracts",
+        "rust/unsafe",
+        "rustc",
+        "rustc/mir",
+        "verification",
+        "verification/contracts",
+        "verification/soundness"
+      ]
+    },
     "rust-coroutines-gen-blocks-async-drop-and-self-referential-generator-pinning": {
       "observed_at": "2026-11-20",
       "subjects": [
