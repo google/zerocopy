@@ -9140,6 +9140,65 @@
         "systems/sandboxing"
       ]
     },
+    "anneal-aeneas-lean4-interop-refinement-bridge": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "lean-toolchain": "leanprover/lean4:v4.36.0",
+            "repository": "AeneasVerif/aeneas",
+            "revision": "2e3d4488280bb8a95411db81019a7854a784861f"
+          },
+          "name": "Aeneas Lean 4 backend and standard library"
+        },
+        {
+          "identity": {
+            "lean-toolchain": "leanprover/lean4:v4.31.0",
+            "repository": "AeneasVerif/jxl-proofs",
+            "revision": "79ea57c0e9f630e06e9ec3a6d1d61fa9ed50e55d"
+          },
+          "name": "Aeneas jxl-proofs external-function specimen"
+        },
+        {
+          "identity": {
+            "path": "src/lib.rs",
+            "repository": "BurntSushi/byteorder",
+            "tag": "1.5.0"
+          },
+          "name": "byteorder Rust crate (LittleEndian::read_u64 and BigEndian::write_uint)"
+        },
+        {
+          "identity": {
+            "lean-toolchain": "leanprover/lean4:v4.34.1",
+            "path": "anneal/trusted/lean",
+            "repository": "google/zerocopy",
+            "revision": "a007a51af473e5901915b003083e61c7c89c7bd1"
+          },
+          "name": "Anneal trusted MIR model and operational semantics"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision_v4_34_1": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version_v4_34_1": "v4.34.1",
+            "version_v4_35_0": "v4.35.0"
+          },
+          "name": "Lean 4 v4.34.1 and v4.35.0 kernel and bundled external checkers"
+        }
+      ],
+      "topics": [
+        "aeneas/external-models",
+        "aeneas/lean-backend",
+        "aeneas/raw-pointers-unsafe",
+        "anneal/interop",
+        "charon/llbc",
+        "lean/external-checkers",
+        "lean/kernel",
+        "rust/unsafe",
+        "verification/program-logics",
+        "verification/refinement"
+      ]
+    },
     "anneal-ai-safety-neural-planning-cad-media-and-iot-survey": {
       "observed_at": "2026-10-31",
       "subjects": [
