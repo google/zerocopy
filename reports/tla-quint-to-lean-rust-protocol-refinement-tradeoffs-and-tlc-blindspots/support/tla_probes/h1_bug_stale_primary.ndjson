@@ -1,0 +1,8 @@
+{"event": "PrimaryWrite", "node": 0, "epoch": 1, "val": 1, "vol_epoch": 1, "vol_val": 1, "vol_dirty": true}
+{"event": "Fsync", "node": 0, "vol_dirty": false, "disk_epoch": 1, "disk_val": 1}
+{"event": "StartFailover", "node": 1, "epoch": 2, "vol_epoch": 2, "vol_dirty": true}
+{"event": "Fsync", "node": 1, "vol_dirty": false, "disk_epoch": 2, "disk_val": 0}
+{"event": "PrimaryWrite", "node": 1, "epoch": 2, "val": 2, "vol_epoch": 2, "vol_val": 2, "vol_dirty": true}
+{"event": "Fsync", "node": 1, "vol_dirty": false, "disk_epoch": 2, "disk_val": 2}
+{"event": "BackupRecv", "node": 1, "epoch": 1, "val": 1, "vol_epoch": 1, "vol_val": 1, "vol_dirty": true}
+{"event": "Fsync", "node": 1, "vol_dirty": false, "disk_epoch": 1, "disk_val": 1}

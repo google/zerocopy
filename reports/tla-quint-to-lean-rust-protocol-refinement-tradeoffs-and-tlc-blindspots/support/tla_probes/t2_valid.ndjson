@@ -1,0 +1,15 @@
+{"event": "StartElection", "node": 0, "term": 1, "vol_term": 1, "vol_role": "candidate", "vol_dirty": true}
+{"event": "Fsync", "node": 0, "vol_dirty": false, "disk_term": 1, "durable_log_len": 0}
+{"event": "SendVoteGrant", "node": 0, "term": 1, "vol_dirty": false, "disk_term": 1}
+{"event": "RecvReqVote", "node": 1, "term": 1, "cand": 0, "vol_term": 1, "vol_role": "follower", "vol_dirty": true}
+{"event": "Fsync", "node": 1, "vol_dirty": false, "disk_term": 1, "durable_log_len": 0}
+{"event": "SendVoteGrant", "node": 1, "term": 1, "vol_dirty": false, "disk_term": 1}
+{"event": "Propose", "node": 0, "term": 1, "val": 1, "vol_role": "leader", "vol_dirty": true}
+{"event": "Fsync", "node": 0, "vol_dirty": false, "disk_term": 1, "durable_log_len": 1}
+{"event": "SendPrepareAck", "node": 0, "term": 1, "val": 1, "vol_dirty": false, "durable_log_len": 1}
+{"event": "RecvPrepare", "node": 1, "term": 1, "val": 1, "vol_term": 1, "vol_dirty": true}
+{"event": "Fsync", "node": 1, "vol_dirty": false, "disk_term": 1, "durable_log_len": 1}
+{"event": "SendPrepareAck", "node": 1, "term": 1, "val": 1, "vol_dirty": false, "durable_log_len": 1}
+{"event": "Crash", "node": 1, "crashed": true, "vol_term": 0, "vol_dirty": false}
+{"event": "Restart", "node": 1, "crashed": false, "vol_term": 1, "disk_term": 1, "durable_log_len": 1}
+{"event": "Commit", "node": 0, "val": 1, "committed": 1}

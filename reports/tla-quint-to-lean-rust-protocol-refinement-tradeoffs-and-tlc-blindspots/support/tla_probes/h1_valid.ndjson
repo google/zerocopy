@@ -1,0 +1,16 @@
+{"event": "PrimaryWrite", "node": 0, "epoch": 1, "val": 1, "vol_epoch": 1, "vol_val": 1, "vol_dirty": true}
+{"event": "Fsync", "node": 0, "vol_dirty": false, "disk_epoch": 1, "disk_val": 1}
+{"event": "BackupRecv", "node": 1, "epoch": 1, "val": 1, "vol_epoch": 1, "vol_val": 1, "vol_dirty": true}
+{"event": "Fsync", "node": 1, "vol_dirty": false, "disk_epoch": 1, "disk_val": 1}
+{"event": "BackupSendAck", "node": 1, "epoch": 1, "val": 1, "disk_epoch": 1, "disk_val": 1}
+{"event": "PrimaryCommit", "node": 0, "epoch": 1, "val": 1, "committed": 1}
+{"event": "StartFailover", "node": 1, "epoch": 2, "vol_epoch": 2, "vol_dirty": true}
+{"event": "Fsync", "node": 1, "vol_dirty": false, "disk_epoch": 2, "disk_val": 1}
+{"event": "PrimaryWrite", "node": 1, "epoch": 2, "val": 2, "vol_epoch": 2, "vol_val": 2, "vol_dirty": true}
+{"event": "Fsync", "node": 1, "vol_dirty": false, "disk_epoch": 2, "disk_val": 2}
+{"event": "BackupRecv", "node": 2, "epoch": 2, "val": 2, "vol_epoch": 2, "vol_val": 2, "vol_dirty": true}
+{"event": "Fsync", "node": 2, "vol_dirty": false, "disk_epoch": 2, "disk_val": 2}
+{"event": "BackupSendAck", "node": 2, "epoch": 2, "val": 2, "disk_epoch": 2, "disk_val": 2}
+{"event": "Crash", "node": 2, "crashed": true, "vol_epoch": 0, "vol_dirty": false}
+{"event": "Restart", "node": 2, "crashed": false, "vol_epoch": 2, "disk_epoch": 2, "disk_val": 2}
+{"event": "PrimaryCommit", "node": 1, "epoch": 2, "val": 2, "committed": 2}

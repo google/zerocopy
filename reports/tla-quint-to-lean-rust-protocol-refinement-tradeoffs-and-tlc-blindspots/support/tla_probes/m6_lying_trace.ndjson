@@ -1,0 +1,14 @@
+{"meta": "M6 Lying Trace Instrumentation: logger emitted FsyncOk while concrete MIR skipped flushing diskPending (volDirty stayed true)"}
+{"event": "StartElection", "node": 0, "term": 1, "vol_term": 1, "vol_role": "candidate", "vol_dirty": true}
+{"event": "Fsync", "node": 0, "vol_dirty": false, "disk_term": 1, "durable_log_len": 0}
+{"event": "SendVoteGrant", "node": 0, "term": 1}
+{"event": "RecvReqVote", "node": 1, "term": 1, "cand": 0, "vol_term": 1, "vol_role": "follower", "vol_dirty": true}
+{"event": "Fsync", "node": 1, "vol_dirty": false, "disk_term": 1, "durable_log_len": 0}
+{"event": "SendVoteGrant", "node": 1, "term": 1}
+{"event": "Propose", "node": 0, "term": 1, "val": 1, "vol_role": "leader", "vol_dirty": true}
+{"event": "Fsync", "node": 0, "vol_dirty": false, "disk_term": 1, "durable_log_len": 1}
+{"event": "SendPrepareAck", "node": 0, "term": 1, "val": 1}
+{"event": "RecvPrepare", "node": 1, "term": 1, "val": 1, "vol_term": 1, "vol_dirty": true}
+{"event": "Fsync", "node": 1, "vol_dirty": false, "disk_term": 1, "durable_log_len": 1}
+{"event": "SendPrepareAck", "node": 1, "term": 1, "val": 1}
+{"event": "Commit", "node": 0, "val": 1, "committed": 1}

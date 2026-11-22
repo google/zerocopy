@@ -1,0 +1,52 @@
+{
+  "topics": [
+    "anneal/theory",
+    "lean/mechanization",
+    "rust/concurrency",
+    "verification/concurrency",
+    "verification/liveness",
+    "verification/refinement",
+    "verification/semantics"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy (anneal/ subtree)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "d2f63ce1c3c04ffabb4442b028caf612c9508387"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "tlaplus/tlaplus (TLC model checker)",
+      "identity": {
+        "repository": "tlaplus/tlaplus",
+        "revision": "defe0c74915b1c27c6af2fb55c8163f3574c8918",
+        "version": "2.15",
+        "artifact_sha256": "3325ab526b3dd40d292a6e8005a60ef1554f473cffa86dbaffc38cc954406d85"
+      }
+    },
+    {
+      "name": "verse-lab/veil (Veil 2.0)",
+      "identity": {
+        "repository": "verse-lab/veil",
+        "revision": "02791b2d1576efc88fcbfcd417cbb2862c88a8ad"
+      }
+    },
+    {
+      "name": "informalsystems/quint",
+      "identity": {
+        "repository": "informalsystems/quint",
+        "revision": "659c210febdb1c5ecfb3c6696d1d073d706c99c7"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

@@ -1,0 +1,92 @@
+{
+  "#meta": {
+    "format": "ITF",
+    "format-description": "https://apalache-mc.org/docs/adr/015adr-trace.html",
+    "source": "H1Spec.tla",
+    "description": "Valid H1 (Lease-Fenced Reconfigurable Primary-Backup) trace with epoch-1 commit, failover to epoch 2, and crash-restart"
+  },
+  "vars": ["last_event", "vol_epoch", "vol_val", "vol_dirty", "disk_epoch", "disk_val"],
+  "states": [
+    {
+      "#meta": { "index": 0 },
+      "last_event": { "event": "Init" },
+      "vol_epoch": { "#bigint": "1" },
+      "vol_val": { "#bigint": "0" },
+      "vol_dirty": false,
+      "disk_epoch": { "#bigint": "1" },
+      "disk_val": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 1 },
+      "last_event": { "event": "PrimaryWrite", "node": { "#bigint": "0" }, "epoch": { "#bigint": "1" }, "val": { "#bigint": "1" } },
+      "vol_epoch": { "#bigint": "1" },
+      "vol_val": { "#bigint": "1" },
+      "vol_dirty": true,
+      "disk_epoch": { "#bigint": "1" },
+      "disk_val": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 2 },
+      "last_event": { "event": "Fsync", "node": { "#bigint": "0" } },
+      "vol_epoch": { "#bigint": "1" },
+      "vol_val": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_epoch": { "#bigint": "1" },
+      "disk_val": { "#bigint": "1" }
+    },
+    {
+      "#meta": { "index": 3 },
+      "last_event": { "event": "BackupRecv", "node": { "#bigint": "1" }, "epoch": { "#bigint": "1" }, "val": { "#bigint": "1" } },
+      "vol_epoch": { "#bigint": "1" },
+      "vol_val": { "#bigint": "1" },
+      "vol_dirty": true,
+      "disk_epoch": { "#bigint": "1" },
+      "disk_val": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 4 },
+      "last_event": { "event": "Fsync", "node": { "#bigint": "1" } },
+      "vol_epoch": { "#bigint": "1" },
+      "vol_val": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_epoch": { "#bigint": "1" },
+      "disk_val": { "#bigint": "1" }
+    },
+    {
+      "#meta": { "index": 5 },
+      "last_event": { "event": "BackupSendAck", "node": { "#bigint": "1" }, "epoch": { "#bigint": "1" }, "val": { "#bigint": "1" } },
+      "vol_epoch": { "#bigint": "1" },
+      "vol_val": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_epoch": { "#bigint": "1" },
+      "disk_val": { "#bigint": "1" }
+    },
+    {
+      "#meta": { "index": 6 },
+      "last_event": { "event": "PrimaryCommit", "node": { "#bigint": "0" }, "epoch": { "#bigint": "1" }, "val": { "#bigint": "1" }, "committed": { "#bigint": "1" } },
+      "vol_epoch": { "#bigint": "1" },
+      "vol_val": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_epoch": { "#bigint": "1" },
+      "disk_val": { "#bigint": "1" }
+    },
+    {
+      "#meta": { "index": 7 },
+      "last_event": { "event": "StartFailover", "node": { "#bigint": "1" }, "epoch": { "#bigint": "2" } },
+      "vol_epoch": { "#bigint": "2" },
+      "vol_val": { "#bigint": "1" },
+      "vol_dirty": true,
+      "disk_epoch": { "#bigint": "1" },
+      "disk_val": { "#bigint": "1" }
+    },
+    {
+      "#meta": { "index": 8 },
+      "last_event": { "event": "Fsync", "node": { "#bigint": "1" } },
+      "vol_epoch": { "#bigint": "2" },
+      "vol_val": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_epoch": { "#bigint": "2" },
+      "disk_val": { "#bigint": "1" }
+    }
+  ]
+}

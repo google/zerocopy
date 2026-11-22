@@ -1,0 +1,155 @@
+{
+  "#meta": {
+    "format": "ITF",
+    "format-description": "https://apalache-mc.org/docs/adr/015adr-trace.html",
+    "source": "T2Spec.qnt",
+    "description": "Valid T2 (Crash-fsync 2PC / Lease-Raft Slice) execution with fsync durability barrier and follower crash-restart"
+  },
+  "vars": ["last_event", "vol_term", "vol_dirty", "disk_term", "durable_log_len", "committed"],
+  "states": [
+    {
+      "#meta": { "index": 0 },
+      "last_event": { "event": "Init" },
+      "vol_term": { "#bigint": "0" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "0" },
+      "durable_log_len": { "#bigint": "0" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 1 },
+      "last_event": { "event": "StartElection", "node": { "#bigint": "0" }, "term": { "#bigint": "1" }, "vol_role": "candidate" },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": true,
+      "disk_term": { "#bigint": "0" },
+      "durable_log_len": { "#bigint": "0" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 2 },
+      "last_event": { "event": "Fsync", "node": { "#bigint": "0" } },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "0" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 3 },
+      "last_event": { "event": "SendVoteGrant", "node": { "#bigint": "0" }, "term": { "#bigint": "1" } },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "0" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 4 },
+      "last_event": { "event": "RecvReqVote", "node": { "#bigint": "1" }, "term": { "#bigint": "1" }, "cand": { "#bigint": "0" }, "vol_role": "follower" },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": true,
+      "disk_term": { "#bigint": "0" },
+      "durable_log_len": { "#bigint": "0" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 5 },
+      "last_event": { "event": "Fsync", "node": { "#bigint": "1" } },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "0" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 6 },
+      "last_event": { "event": "SendVoteGrant", "node": { "#bigint": "1" }, "term": { "#bigint": "1" } },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "0" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 7 },
+      "last_event": { "event": "Propose", "node": { "#bigint": "0" }, "term": { "#bigint": "1" }, "val": { "#bigint": "1" }, "vol_role": "leader" },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": true,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "0" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 8 },
+      "last_event": { "event": "Fsync", "node": { "#bigint": "0" } },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "1" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 9 },
+      "last_event": { "event": "SendPrepareAck", "node": { "#bigint": "0" }, "term": { "#bigint": "1" }, "val": { "#bigint": "1" } },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "1" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 10 },
+      "last_event": { "event": "RecvPrepare", "node": { "#bigint": "1" }, "term": { "#bigint": "1" }, "val": { "#bigint": "1" } },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": true,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "0" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 11 },
+      "last_event": { "event": "Fsync", "node": { "#bigint": "1" } },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "1" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 12 },
+      "last_event": { "event": "SendPrepareAck", "node": { "#bigint": "1" }, "term": { "#bigint": "1" }, "val": { "#bigint": "1" } },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "1" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 13 },
+      "last_event": { "event": "Crash", "node": { "#bigint": "1" }, "crashed": true },
+      "vol_term": { "#bigint": "0" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "1" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 14 },
+      "last_event": { "event": "Restart", "node": { "#bigint": "1" }, "crashed": false },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "1" },
+      "committed": { "#bigint": "0" }
+    },
+    {
+      "#meta": { "index": 15 },
+      "last_event": { "event": "Commit", "node": { "#bigint": "0" }, "val": { "#bigint": "1" } },
+      "vol_term": { "#bigint": "1" },
+      "vol_dirty": false,
+      "disk_term": { "#bigint": "1" },
+      "durable_log_len": { "#bigint": "1" },
+      "committed": { "#bigint": "1" }
+    }
+  ]
+}
