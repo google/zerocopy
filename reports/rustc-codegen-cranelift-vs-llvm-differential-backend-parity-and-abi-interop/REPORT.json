@@ -1,0 +1,64 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/codegen",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/codegen",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc and rustc_codegen_cranelift (1.102.0-nightly dual-backend baseline)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11); LLVM 23.1.5; cranelift-codegen 0.137.0"
+      }
+    },
+    {
+      "name": "rustc and rustc_codegen_cranelift (main source continuity check)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+      }
+    },
+    {
+      "name": "rustc LLVM backend (1.98.0-nightly revalidation baseline)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31); LLVM 22.1.6"
+      }
+    },
+    {
+      "name": "zerocopy crate (full-crate compile benchmark subject)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "aa7c31671cb5ce509551edafa23c6865df83b180",
+        "version": "0.8.48"
+      }
+    },
+    {
+      "name": "Anneal MIR trusted boundary and rustc capture scaffold",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 proof kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

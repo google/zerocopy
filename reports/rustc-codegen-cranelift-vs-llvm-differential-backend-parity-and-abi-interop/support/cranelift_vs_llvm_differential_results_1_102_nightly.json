@@ -1,0 +1,295 @@
+{
+  "timestamp_utc": "2026-11-21T18:27:49Z",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "part_a_cross_backend_abi_and_unwind": {
+    "lib_llvm__bin_llvm": {
+      "lib_rc": 0,
+      "abi_no_panic": {
+        "bin_rc": 0,
+        "bin_err": "",
+        "run_rc": 0,
+        "stdout": "SRET=60 MIXED=3000000000000000a STR=542 DYN=9077 LINE=11",
+        "run_stderr": ""
+      },
+      "unwind_catch_and_drop": {
+        "bin_rc": 0,
+        "bin_err": "",
+        "run_rc": 0,
+        "stdout": "CAUGHT=true BIN_DROPS=1 LIB_DROPS=1",
+        "run_stderr": "thread 'main' (<PID>) panicked at <TMPDIR>/abi_lib.rs:44:5:\nboom: cross_backend\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      }
+    },
+    "lib_llvm__bin_cranelift": {
+      "lib_rc": 0,
+      "abi_no_panic": {
+        "bin_rc": 0,
+        "bin_err": "",
+        "run_rc": 0,
+        "stdout": "SRET=60 MIXED=3000000000000000a STR=542 DYN=9077 LINE=11",
+        "run_stderr": ""
+      },
+      "unwind_catch_and_drop": {
+        "bin_rc": 0,
+        "bin_err": "",
+        "run_rc": 101,
+        "stdout": "",
+        "run_stderr": "thread 'main' (<PID>) panicked at <TMPDIR>/abi_lib.rs:44:5:\nboom: cross_backend\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      }
+    },
+    "lib_cranelift__bin_llvm": {
+      "lib_rc": 0,
+      "abi_no_panic": {
+        "bin_rc": 0,
+        "bin_err": "",
+        "run_rc": 0,
+        "stdout": "SRET=60 MIXED=3000000000000000a STR=542 DYN=9077 LINE=11",
+        "run_stderr": ""
+      },
+      "unwind_catch_and_drop": {
+        "bin_rc": 0,
+        "bin_err": "",
+        "run_rc": 0,
+        "stdout": "CAUGHT=true BIN_DROPS=1 LIB_DROPS=0",
+        "run_stderr": "thread 'main' (<PID>) panicked at <TMPDIR>/abi_lib.rs:44:5:\nboom: cross_backend\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      }
+    },
+    "lib_cranelift__bin_cranelift": {
+      "lib_rc": 0,
+      "abi_no_panic": {
+        "bin_rc": 0,
+        "bin_err": "",
+        "run_rc": 0,
+        "stdout": "SRET=60 MIXED=3000000000000000a STR=542 DYN=9077 LINE=11",
+        "run_stderr": ""
+      },
+      "unwind_catch_and_drop": {
+        "bin_rc": 0,
+        "bin_err": "",
+        "run_rc": 101,
+        "stdout": "",
+        "run_stderr": "thread 'main' (<PID>) panicked at <TMPDIR>/abi_lib.rs:44:5:\nboom: cross_backend\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace"
+      }
+    }
+  },
+  "part_b_feature_gate_matrix": {
+    "inline_asm_basic": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "ASM=42",
+        "add_asm_disasm": "<add_asm>:\n   14c38:\t48 89 f8             \tmov    %rdi,%rax\n   14c3b:\t48 01 f0             \tadd    %rsi,%rax\n   14c3e:\tc3                   \tret\n   14c3f:\tcc                   \tint3",
+        "has_inline_asm_wrapper_sym": false
+      },
+      "cranelift": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "ASM=42",
+        "add_asm_disasm": "<add_asm>:\n   14efb:\t55                   \tpush   %rbp\n   14efc:\t48 89 e5             \tmov    %rsp,%rbp\n   14eff:\t48 83 ec 10          \tsub    $0x10,%rsp\n   14f03:\t4c 8d 04 24          \tlea    (%rsp),%r8\n   14f07:\t48 89 3c 24          \tmov    %rdi,(%rsp)\n   14f0b:\t48 89 74 24 08       \tmov    %rsi,0x8(%rsp)\n   14f10:\t4c 8b 0d 49 dd 03 00 \tmov    0x3dd49(%rip),%r9        # 52c60 <_DYNAMIC+0x278>\n   14f17:\t4c 89 c7             \tmov    %r8,%rdi\n   14f1a:\t41 ff d1             \tcall   *%r9\n   14f1d:\t48 8b 04 24          \tmov    (%rsp),%rax\n   14f21:\t48 83 c4 10          \tadd    $0x10,%rsp\n   14f25:\t48 89 ec             \tmov    %rbp,%rsp\n   14f28:\t5d                   \tpop    %rbp\n   14f29:\tc3    ",
+        "has_inline_asm_wrapper_sym": true
+      }
+    },
+    "inline_asm_sym": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "ASM_SYM=99"
+      },
+      "cranelift": {
+        "compile_rc": 1,
+        "stderr_head": "error: asm! and global_asm! sym operands are not yet supported\n --> <TMPDIR>/b_inline_asm_sym.rs:7:14\n  |\n7 | ... { asm!(\"call {f}\", f = sym target_fn, out(\"rax\") out, clobber_abi(\"C\")); }\n  |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n"
+      }
+    },
+    "asm_goto_label": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "ASM_GOTO=7"
+      },
+      "cranelift": {
+        "compile_rc": 1,
+        "stderr_head": "error: cranelift doesn't support labels in inline assembly.\n --> <TMPDIR>/b_asm_goto_label.rs:5:14\n  |\n5 |     unsafe { asm!(\"jmp {}\", label { hit = 7; }); }\n  |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n"
+      }
+    },
+    "explicit_tail_calls_become": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "warning: the feature `explicit_tail_calls` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/b_explicit_tail_calls_become.rs:2:12\n  |\n2 | #![feature(explicit_tail_calls)]\n  |            ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #112788 <https://github.com/rust-lang/rust/issues/112788> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n",
+        "run_rc": 0,
+        "stdout": "TAIL=5050"
+      },
+      "cranelift": {
+        "compile_rc": 101,
+        "stderr_head": "warning: the feature `explicit_tail_calls` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/b_explicit_tail_calls_become.rs:2:12\n  |\n2 | #![feature(explicit_tail_calls)]\n  |            ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #112788 <https://github.com/rust-lang/rust/issues/112788> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: internal compiler error: /rustc-dev/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/compiler/rustc_codegen_cranelift/src/base.rs:532:57: tail calls are not yet supported in `rustc_codegen_cranelift` backend\n --> <TMPDIR>/b_explicit_tail_calls_become.rs:4:37\n  |\n4 |     if n == 0 { acc } else { become countdown(n - 1, acc + n as u64) }\n  |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"
+      }
+    },
+    "c_variadic_def": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "VA=42"
+      },
+      "cranelift": {
+        "compile_rc": 1,
+        "stderr_head": "error: Defining variadic functions is not yet supported by Cranelift\n --> <TMPDIR>/b_c_variadic_def.rs:2:1\n  |\n2 | / unsafe extern \"C\" fn sum2(_n: u32, mut ap: ...) -> u32 {\n3 | |     unsafe { ap.next_arg::<u32>() + ap.next_arg::<u32>() }\n4 | | }\n  | |_^\n\nerror: aborting due to 1 previous error\n"
+      }
+    },
+    "atomic_u128_intrinsic": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "warning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> <TMPDIR>/b_atomic_u128_intrinsic.rs:2:12\n  |\n2 | #![feature(core_intrinsics)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: 1 warning emitted\n",
+        "run_rc": 0,
+        "stdout": "A128=100 NOW=123"
+      },
+      "cranelift": {
+        "compile_rc": 101,
+        "stderr_head": "warning: the feature `core_intrinsics` is internal to the compiler or standard library\n --> <TMPDIR>/b_atomic_u128_intrinsic.rs:2:12\n  |\n2 | #![feature(core_intrinsics)]\n  |            ^^^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\n\nthread 'opt cgu.0' (<PID>) panicked at /rustc-dev/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/compiler/rustc_codegen_cranelift/src/base.rs:222:17:\nError while defining _RNvCs9JJAGFQEqH3_23b_atomic_u128_intrinsic4main: Compilation(Unsupported(\"should be implemented in ISLE: inst = `v8 = atomic_rmw.i128 add v3, v70`, type = `Some(types::I128)`\"))\n\n\n                    Post-optimization Cranelift IR:"
+      }
+    },
+    "f16_f128_arith": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "F16=3.75 F128=21"
+      },
+      "cranelift": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "F16=3.75 F128=21"
+      }
+    },
+    "portable_simd_and_sse2": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "SIMD=[11, 22, 33, 44] SSE2=[6, 8, 10, 12]"
+      },
+      "cranelift": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "SIMD=[11, 22, 33, 44] SSE2=[6, 8, 10, 12]"
+      }
+    },
+    "lto_thin_flag": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": ""
+      },
+      "cranelift": {
+        "compile_rc": 1,
+        "stderr_head": "error: LTO is not supported by rustc_codegen_cranelift\n"
+      }
+    },
+    "instrument_coverage_flag": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": ""
+      },
+      "cranelift": {
+        "compile_rc": 1,
+        "stderr_head": "error: `-Cinstrument-coverage` is LLVM specific and not supported by Cranelift\n"
+      }
+    },
+    "sanitizer_address_heap_oob": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 1,
+        "stdout": "",
+        "run_stderr_head": "=================================================================\n==<PID>==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7b49547e0020 at pc 0x55ad2e8f346a bp 0x7ffcbaf0c7a0 sp 0x7ffcbaf0c798\nREAD of size 1 at 0x7b49547e0020 thread T0\n    #0 0x55ad2e8f3469 in b_sanitizer_address_heap_oob::read_oob b_sanitizer_address_heap_oob.efed58123edd0b89-cgu.0\n    #1 0x55ad2e8f332d in b_sanitizer_address_heap_oob::main b_sanitizer_address_heap_oob.efed58123edd0b89-cgu.0\n    #2 0x55ad2e8f31e2 in std::sys::backtrace::__rust_begin_short_backtrace::<fn(), ()> b_sanitizer_address_heap_oob.efed58123edd0b89-cgu.0\n    #3 0x55ad2e8f3208 in std::rt::lang_start::<()>::{closure#0} b_sanitizer_address_heap_oob.efed58123edd0b89-cgu.0\n    #4 0x55ad2e915e0e in <&dyn core::ops::function::Fn<(), Output = i32> + core::panic::unwind_safe::RefUnwindSafe + core::marker::Sync as core::ops::function::FnOnce<()>>::call_once /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/ops/function.rs:287:21"
+      },
+      "cranelift": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "ASAN_SURVIVED_OOB=0"
+      }
+    }
+  },
+  "part_c_zerocopy_and_microbench": {
+    "zerocopy_lib_build": {
+      "llvm_O0": {
+        "rc": 0,
+        "elapsed_sec": 2.4404,
+        "rlib_bytes": 8746788,
+        "stderr_head": ""
+      },
+      "llvm_O2": {
+        "rc": 0,
+        "elapsed_sec": 3.2304,
+        "rlib_bytes": 9442960,
+        "stderr_head": ""
+      },
+      "cranelift_O0": {
+        "rc": 0,
+        "elapsed_sec": 2.5062,
+        "rlib_bytes": 8650682,
+        "stderr_head": ""
+      },
+      "cranelift_O2": {
+        "rc": 0,
+        "elapsed_sec": 2.7577,
+        "rlib_bytes": 9440294,
+        "stderr_head": ""
+      }
+    },
+    "compute_microbench": {
+      "llvm_O0": {
+        "compile_rc": 0,
+        "compile_sec": 0.1235,
+        "bin_bytes": 4686856,
+        "checksum": "8d84cae7b21ecec2",
+        "run_ms_samples": [
+          1977.63,
+          1755.38,
+          1948.17
+        ],
+        "run_ms_median": 1948.17
+      },
+      "llvm_O2": {
+        "compile_rc": 0,
+        "compile_sec": 0.2241,
+        "bin_bytes": 4646696,
+        "checksum": "8d84cae7b21ecec2",
+        "run_ms_samples": [
+          76.64,
+          58.84,
+          57.91
+        ],
+        "run_ms_median": 58.84
+      },
+      "cranelift_O0": {
+        "compile_rc": 0,
+        "compile_sec": 0.1592,
+        "bin_bytes": 4715376,
+        "checksum": "8d84cae7b21ecec2",
+        "run_ms_samples": [
+          2428.26,
+          2038.05,
+          1879.85
+        ],
+        "run_ms_median": 2038.05
+      },
+      "cranelift_O2": {
+        "compile_rc": 0,
+        "compile_sec": 0.114,
+        "bin_bytes": 4687320,
+        "checksum": "8d84cae7b21ecec2",
+        "run_ms_samples": [
+          779.05,
+          872.11,
+          844.39
+        ],
+        "run_ms_median": 844.39
+      }
+    }
+  }
+}

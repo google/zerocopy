@@ -1,0 +1,199 @@
+{
+  "timestamp_utc": "2026-11-22T06:57:13Z",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "cranelift_available": false,
+  "cranelift_probe_note": "error: failed to find a `codegen-backends` folder in the sysroot candidates:\n       * <HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu",
+  "part_a_cross_backend_abi_and_unwind": {
+    "lib_llvm__bin_llvm": {
+      "lib_rc": 0,
+      "abi_no_panic": {
+        "bin_rc": 0,
+        "bin_err": "",
+        "run_rc": 0,
+        "stdout": "SRET=60 MIXED=3000000000000000a STR=542 DYN=9077 LINE=11",
+        "run_stderr": ""
+      },
+      "unwind_catch_and_drop": {
+        "bin_rc": 0,
+        "bin_err": "",
+        "run_rc": 0,
+        "stdout": "CAUGHT=true BIN_DROPS=1 LIB_DROPS=1",
+        "run_stderr": "thread 'main' (<PID>) panicked at <TMPDIR>/abi_lib.rs:56:5:\nboom: cross_backend\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace",
+        "elf_sections": {
+          ".gcc_except_table": 11140,
+          ".eh_frame_hdr": 4188,
+          ".eh_frame": 20824,
+          ".text": 251459
+        }
+      }
+    },
+    "lib_llvm__bin_cranelift": {
+      "skipped": "rustc_codegen_cranelift component not installed in active toolchain"
+    },
+    "lib_cranelift__bin_llvm": {
+      "skipped": "rustc_codegen_cranelift component not installed in active toolchain"
+    },
+    "lib_cranelift__bin_cranelift": {
+      "skipped": "rustc_codegen_cranelift component not installed in active toolchain"
+    }
+  },
+  "part_b_feature_gate_matrix": {
+    "inline_asm_basic": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "ASM=42",
+        "disasm": "0000000000013d60 <add_asm>:\n   13d60:\t48 89 f8             \tmov    %rdi,%rax\n   13d63:\t48 01 f0             \tadd    %rsi,%rax\n   13d66:\tc3                   \tret",
+        "insn_count": 3,
+        "insn_bytes": 7,
+        "has_inline_asm_wrapper_sym": false,
+        "wrapper_sym_count": 0
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    },
+    "inline_asm_sym": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "ASM_SYM=99"
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    },
+    "asm_goto_label": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "ASM_GOTO=7"
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    },
+    "explicit_tail_calls_become": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "TAIL=5050"
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    },
+    "c_variadic_def": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "VA=42"
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    },
+    "atomic_u128_intrinsic": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "A128=100 NOW=123"
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    },
+    "f16_f128_arith": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "F16=3.75 F128=21"
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    },
+    "portable_simd_and_sse2": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "SIMD=[11, 22, 33, 44] SSE2=[6, 8, 10, 12]"
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    },
+    "lto_thin_flag": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": ""
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    },
+    "instrument_coverage_flag": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": ""
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    },
+    "sanitizer_address_heap_oob": {
+      "llvm": {
+        "compile_rc": 0,
+        "stderr_head": "",
+        "run_rc": 1,
+        "stdout": "",
+        "run_stderr_head": "=================================================================\n==<PID>==ERROR: AddressSanitizer: heap-buffer-overflow on address 0x7b8dd7de00c0 at pc 0x559fbbb4e874 bp 0x7ffdb30ce3b0 sp 0x7ffdb30ce3a8\nREAD of size 1 at 0x7b8dd7de00c0 thread T0\n    #0 0x559fbbb4e873  (<TMPDIR>/b_sanitizer_address_heap_oob_llvm+0xff873) (BuildId: 2bb72234a11dfc311830bbbf63a97bb4ecd3fdc1)\n    #1 0x559fbbb4eeb0  (<TMPDIR>/b_sanitizer_address_heap_oob_llvm+0xffeb0) (BuildId: 2bb72234a11dfc311830bbbf63a97bb4ecd3fdc1)\n    #2 0x559fbbb4ed37  (<TMPDIR>/b_sanitizer_address_heap_oob_llvm+0xffd37) (BuildId: 2bb72234a11dfc311830bbbf63a97bb4ecd3fdc1)\n    #3 0x559fbbb4f322  (<TMPDIR>/b_sanitizer_address_heap_oob_llvm+0x100322) (BuildId: 2bb72234a11dfc311830bbbf63a97bb4ecd3fdc1)\n    #4 0x559fbbb4ea85  (<TMPDIR>/b_sanitizer_address_heap_oob_llvm+0xffa85) (BuildId: 2bb72234a11dfc311830bbbf63a97bb4ecd3fdc1)\n    #5 0x559fbbb4eab8  (<TMPDIR>/b_sanitizer_address_heap_oob_llvm+0xffab8) (BuildId: 2bb72234a11dfc311830bbbf63a97bb4ecd3fdc1)\n    #6 0x559fbbb74936  (<TMPDIR>/b_sanitizer_address_heap_oob_llvm+0x125936) (BuildId: 2bb72234a11dfc311830bbbf63a97bb4ecd3fdc1)\n    #7 0x559fbbb4ea1d  (<TMPDIR>/b_sanitizer_address_heap_oob_llvm+0xffa1d) (BuildId: 2bb72234a11dfc311830bbbf63a97bb4ecd3fdc1)\n    #8 0x559fbbb4f384  (<TMPDIR>/b_sanitizer_address_heap_oob_llvm+0x100384) (BuildId: 2bb72234a11dfc311830bbbf63a97bb4ecd3fdc1)\n    #9 0x7f5dd8a58fb9  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x29fb9) (BuildId: f2025ba530074a43f7ff63e2eb49cfbcc234ce1d)\n    #10 0x7f5dd8a590d6  (/usr/lib/x86_64-linux-gnu/libc.so.6+0x2a0d6) (BuildId: f2025ba530074a43f7ff63e2eb49cfbcc234ce1d)\n    #11 0x559fbba943a0  (<TMPDIR>/b_sanitizer_address_heap_oob_llvm+0x453a0) (BuildId: 2bb72234a11dfc311830bbbf63a97bb4ecd3fdc1)"
+      },
+      "cranelift": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    }
+  },
+  "part_c_microbench_and_crate": {
+    "compute_microbench": {
+      "llvm_O0": {
+        "compile_rc": 0,
+        "compile_sec": 0.2007,
+        "bin_bytes": 4373960,
+        "checksum": "10d506cbbf1d1512",
+        "run_ms_samples": [
+          871.38,
+          1003.0,
+          983.19
+        ],
+        "run_ms_median": 983.19
+      },
+      "llvm_O2": {
+        "compile_rc": 0,
+        "compile_sec": 0.1903,
+        "bin_bytes": 4366680,
+        "checksum": "10d506cbbf1d1512",
+        "run_ms_samples": [
+          199.35,
+          131.07,
+          132.62
+        ],
+        "run_ms_median": 132.62
+      },
+      "cranelift_O0": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      },
+      "cranelift_O2": {
+        "skipped": "rustc_codegen_cranelift component not installed"
+      }
+    }
+  }
+}
