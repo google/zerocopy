@@ -82229,6 +82229,115 @@
         "tooling/open-oximetry-datasets-and-algorithms"
       ]
     },
+    "purelift-cutpoint-unification-static-dag-scc-sharding-and-day2-proof-repair": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "d2f63ce1c3c04ffabb4442b028caf612c9508387"
+          },
+          "name": "Anneal verification framework in google/zerocopy"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 compiler, module system, and kernel"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "819816b2e0a3bf405af45ae5c7af2491d8f5bee6",
+            "version": "v4.33.1"
+          },
+          "name": "Lean 4 compiler and module system (v4.33.1)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1"
+          },
+          "name": "Rust compiler (rustc MIR and metadata encoder)"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929"
+          },
+          "name": "nanoda_lib independent Rust Lean 4 kernel checker"
+        },
+        {
+          "identity": {
+            "repository": "Frommi/miniz_oxide",
+            "revision": "4e582392df3a739d2b0dfd2c537dc33e8942be38"
+          },
+          "name": "miniz_oxide Rust compression crate"
+        },
+        {
+          "identity": {
+            "repository": "serde-rs/json",
+            "revision": "20572a6d066958542d79cdd6cf1a7cd9f0c8e1f8"
+          },
+          "name": "serde_json Rust JSON crate"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/regex",
+            "revision": "140167995737fa11dfe11b8af8b9aa143b790b4e"
+          },
+          "name": "regex-syntax Rust crate"
+        },
+        {
+          "identity": {
+            "repository": "ufmg-smite/carcara",
+            "revision": "819f30914665019898cbad7e09d3962053b6f97a",
+            "version": "v1.1.0"
+          },
+          "name": "Carcara Alethe proof checker and slicer"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "0dab219272ac2353320bd177ebb3929453b90a9e"
+          },
+          "name": "Verus Rust verifier"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "75de7486da5a473a5aba2add8ff80fc5bbe8337f"
+          },
+          "name": "Dafny program verifier"
+        },
+        {
+          "identity": {
+            "repository": "FStarLang/FStar",
+            "revision": "fc1776afe592ed8eef352c6610614a70d77b3b66"
+          },
+          "name": "FStar verifier and FStarC SMT encoding"
+        },
+        {
+          "identity": {
+            "repository": "uwplse/pumpkin-pi",
+            "revision": "a7743d4665d8c7a0ebfd9d39e1247ee7804d402b"
+          },
+          "name": "PUMPKIN Pi proof repair plugin"
+        }
+      ],
+      "topics": [
+        "anneal/theory",
+        "build/incremental-computation",
+        "lean/kernel",
+        "lean/modules",
+        "rust/mir",
+        "tooling/proof-engineering",
+        "verification/proof-repair",
+        "verification/scaling"
+      ]
+    },
     "pybamm-electrochemical-bms-lithium-plating-and-grid-forming-inverters": {
       "observed_at": "2026-11-19",
       "subjects": [
