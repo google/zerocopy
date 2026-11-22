@@ -109,9 +109,8 @@ inductive MirTy where
   | enumSingle (inner : MirTy)
   | enumDirect (validDiscrs : List Nat) (size : Nat) (align : Nat)
   | enumNiche (tagOffset : Nat) (range : WrappingRange) (size : Nat) (align : Nat)
-  deriving DecidableEq, Repr
 
-def MirTy.size : MirTy → Nat
+noncomputable def MirTy.size : MirTy → Nat
   | .unit => 0
   | .primBool => 1
   | .primU8 => 1
@@ -123,7 +122,7 @@ def MirTy.size : MirTy → Nat
   | .enumDirect _ sz _ => sz
   | .enumNiche _ _ sz _ => sz
 
-def MirTy.align : MirTy → Nat
+noncomputable def MirTy.align : MirTy → Nat
   | .unit => 1
   | .primBool => 1
   | .primU8 => 1
@@ -135,7 +134,7 @@ def MirTy.align : MirTy → Nat
   | .enumDirect _ _ al => al
   | .enumNiche _ _ _ al => al
 
-def MirTy.isInhabited : MirTy → Bool
+noncomputable def MirTy.isInhabited : MirTy → Bool
   | .enumEmpty => false
   | .enumSingle inner => inner.isInhabited
   | _ => true
@@ -178,7 +177,6 @@ inductive MirOp where
       (fieldOffset : Nat) (fieldTy : MirTy)
   | transmute (srcTy : MirTy) (dstTy : MirTy) (srcBytes : List Nat)
   | ptrReadValue (baseAddr : Nat) (dstTy : MirTy) (memBytes : List Nat)
-  deriving DecidableEq, Repr
 
 /-- `AssertKind` abort reasons injected by `CheckAlignment`, `CheckNull`, and `CheckEnums`. -/
 inductive UbAbortKind where
@@ -201,7 +199,7 @@ def byteAt (bytes : List Nat) (off : Nat) : Nat :=
   | [] => 0
 
 /-- Full operational byte-level value validity (Miri oracle). -/
-def validValueBytes : MirTy → List Nat → Prop
+noncomputable def validValueBytes : MirTy → List Nat → Prop
   | .unit, _ => True
   | .primBool, bs => byteAt bs 0 ≤ 1
   | .primU8, _ => True
@@ -262,7 +260,7 @@ def runCheckAlignment (cfg : TargetUbCfg) (op : MirOp) : CheckOutcome :=
     | .transmute _ _ _ => .ok
 
 /-- `CheckNull` pass semantics (`check_null.rs:18-128`, `NoFollowProjections`). -/
-def runCheckNull (cfg : TargetUbCfg) (op : MirOp) : CheckOutcome :=
+noncomputable def runCheckNull (cfg : TargetUbCfg) (op : MirOp) : CheckOutcome :=
   if !cfg.ubChecksEnabled || !cfg.hasPanicImpl then
     .ok
   else
@@ -281,7 +279,7 @@ def runCheckNull (cfg : TargetUbCfg) (op : MirOp) : CheckOutcome :=
 /-- `CheckEnums` pass semantics (`check_enums.rs:167-238`):
 visits `Rvalue::Cast(CastKind::Transmute, op, ty)` on `adt_def.is_enum()` only,
 skipping `Variants::Single`, `ty::Bool`, and pointer dereference reads. -/
-def runCheckEnums (cfg : TargetUbCfg) (op : MirOp) : CheckOutcome :=
+noncomputable def runCheckEnums (cfg : TargetUbCfg) (op : MirOp) : CheckOutcome :=
   if !cfg.ubChecksEnabled || !cfg.hasPanicImpl then
     .ok
   else
@@ -304,7 +302,7 @@ def runCheckEnums (cfg : TargetUbCfg) (op : MirOp) : CheckOutcome :=
 
 /-- Composition in exact `rustc_mir_transform/src/lib.rs:711-713` pass order:
 `CheckAlignment` -> `CheckNull` -> `CheckEnums`. -/
-def runUbChecks (cfg : TargetUbCfg) (op : MirOp) : CheckOutcome :=
+noncomputable def runUbChecks (cfg : TargetUbCfg) (op : MirOp) : CheckOutcome :=
   match runCheckAlignment cfg op with
   | .abort k => .abort k
   | .ok =>
@@ -512,7 +510,7 @@ theorem ubChecks_never_reject_well_defined_execution (cfg : TargetUbCfg) (op : M
 
 /-- Concrete host configuration with `ub-checks = yes`, `PanicImpl` present, and exact alignment
 (e.g. `x86_64-unknown-linux-gnu` where `max_reliable_alignment() = Align::MAX`). -/
-def x86HostUbCfg : TargetUbCfg where
+noncomputable def x86HostUbCfg : TargetUbCfg where
   hasPanicImpl := true
   ubChecksEnabled := true
   effectiveAlign := fun t => if t.align == 0 then 1 else t.align
@@ -620,20 +618,18 @@ inductive CfiBaseTy where
   | tyUsize
   | tyRawPtr (isMut : Bool) (pointee : CfiBaseTy)
   | tyRef (isMut : Bool) (pointee : CfiBaseTy)
-  deriving DecidableEq, Repr
 
 /-- Full CFI type including arbitrary-arity function pointers (`ty::FnPtr`, `transform.rs:213-219`). -/
 inductive CfiTy where
   | base (t : CfiBaseTy)
   | tyFnPtr (ret : CfiBaseTy) (args : List CfiBaseTy)
-  deriving DecidableEq, Repr
 
 def generalizeBaseTy : CfiBaseTy → CfiBaseTy
   | .tyRawPtr isMut _ => .tyRawPtr isMut .tyVoid
   | .tyRef isMut _ => .tyRef isMut .tyVoid
   | t => t
 
-def normalizeIntBaseTy : CfiBaseTy → CfiBaseTy
+noncomputable def normalizeIntBaseTy : CfiBaseTy → CfiBaseTy
   | .tyBool => .tyU8
   | .tyChar => .tyU32
   | .tyUsize => .tyU64
@@ -649,19 +645,18 @@ def generalizeTy : CfiTy → CfiTy
 
 /-- Integer normalization on 64-bit targets (`TransformTyOptions::NORMALIZE_INTEGERS`,
 `transform.rs:76-115`): `bool -> u8`, `char -> u32`, `usize -> u64`. -/
-def normalizeIntTy : CfiTy → CfiTy
+noncomputable def normalizeIntTy : CfiTy → CfiTy
   | .base t => .base (normalizeIntBaseTy t)
   | .tyFnPtr r args => .tyFnPtr (normalizeIntBaseTy r) (args.map normalizeIntBaseTy)
 
 /-- Combined transformation matching `TransformTy::fold_ty` (`transform.rs:51-220`). -/
-def transformCfiTy (m : CfiMode) (t : CfiTy) : CfiTy :=
+noncomputable def transformCfiTy (m : CfiMode) (t : CfiTy) : CfiTy :=
   let t1 := if m.normalizeInts then normalizeIntTy t else t
   if m.generalizePtrs then generalizeTy t1 else t1
 
 structure CfiFnSig where
   ret : CfiTy
   args : List CfiTy
-  deriving DecidableEq, Repr
 
 /-- Encoded CFI type metadata identifier with canonical mode suffixes
 (`.normalized`, `.generalized`, `itanium_cxx_abi/mod.rs:97-103`). -/
@@ -669,9 +664,8 @@ structure CfiTypeId where
   mode : CfiMode
   ret : CfiTy
   args : List CfiTy
-  deriving DecidableEq, Repr
 
-def cfiTypeId (m : CfiMode) (sig : CfiFnSig) : CfiTypeId :=
+noncomputable def cfiTypeId (m : CfiMode) (sig : CfiFnSig) : CfiTypeId :=
   ⟨m, transformCfiTy m sig.ret, sig.args.map (transformCfiTy m)⟩
 
 private theorem normalizeIntBaseTy_idemp (t : CfiBaseTy) :
@@ -944,7 +938,7 @@ theorem cfi_generalize_strictly_coarser_and_arity_preserving :
      kcfiPreambleReg true 2 = .edx ∧ kcfiPreambleReg true 3 = .ebx) := by
   refine ⟨fun _ _ s1 s2 hle heq => cfi_mode_coarsening_monotone hle s1 s2 heq,
           cfi_typeid_preserves_arity,
-          ⟨by decide, rfl, by decide⟩,
+          ⟨(fun h => nomatch h), rfl, (fun h => nomatch h)⟩,
           ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩⟩
 
 /-- **Counterexample 2 (`ce2_cfi_generalize_pointers_admits_cross_pointee_type_confusion`)**:
@@ -964,7 +958,7 @@ theorem ce2_cfi_generalize_pointers_admits_cross_pointee_type_confusion :
     lowerTypeTestsCheck jtBase 2 addrI32 = true ∧
     lowerTypeTestsCheck jtBase 2 addrU8 = true ∧
     lowerTypeTestsCheck jtBase 2 addrMisaligned = false := by
-  refine ⟨by decide, rfl, rfl, by decide, by decide, by decide⟩
+  refine ⟨(fun h => nomatch h), rfl, rfl, (by decide), (by decide), (by decide)⟩
 
 /-! ## Section 3: `SanitizerIgnoreList` Blame Algebra & `#[sanitize(...)]` Composition -/
 
