@@ -10,6 +10,7 @@ prelude
 import Init.NotationExtra
 import Trusted
 import Anneal.MirWp
+import Anneal.MirTotal
 import Anneal.PureLift
 
 namespace Anneal
@@ -19,7 +20,8 @@ namespace Anneal
 
 Umbrella module for Anneal's untrusted proof theory (`theory/`), re-exporting
 `Trusted`, the fuel-bounded MIR weakest-precondition machinery
-(`Anneal.MirWp`), and `Anneal.PureLift`.
+(`Anneal.MirWp`), the computable MIR step mirrors and unbounded-depth bridges
+(`Anneal.MirTotal`), and `Anneal.PureLift`.
 -/
 
 end Anneal
