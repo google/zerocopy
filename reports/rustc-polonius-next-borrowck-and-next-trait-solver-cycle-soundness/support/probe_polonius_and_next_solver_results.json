@@ -1,0 +1,693 @@
+{
+  "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "rustc_z_flag_help": [
+    "-Z                        assumptions-on-binders=val -- allow deducing higher-ranked outlives assumptions from all binders (`for<'a>`)",
+    "-Z                     higher-ranked-assumptions=val -- allow deducing higher-ranked outlives assumptions from coroutines when proving auto traits",
+    "-Z                                   next-solver=val -- enable and configure the next generation trait solver used by rustc",
+    "-Z                                      polonius=val -- enable polonius-based borrow-checker (default: no)"
+  ],
+  "flag_capabilities": {
+    "supports_z_polonius_off": false,
+    "assumptions_on_binders_alone_compiles_empty_crate": false,
+    "assumptions_on_binders_with_next_solver_compiles_empty_crate": true
+  },
+  "probe_1_polonius_matrix": {
+    "nll_problem_case_3_hashmap": {
+      "rustc_default": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*map` as mutable more than once at a time",
+          "error[E0499]: cannot borrow `*map` as mutable more than once at a time",
+          "error: aborting due to 2 previous errors"
+        ],
+        "elapsed_ms": 53.57
+      },
+      "polonius_off": {
+        "supported": false,
+        "note": "-Zpolonius=off not recognized by this rustc revision; rustc_default already uses Polonius::Off (NLL)"
+      },
+      "polonius_next": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 51.91
+      },
+      "polonius_legacy": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 56.91
+      }
+    },
+    "loop_conditional_mut_return": {
+      "rustc_default": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error: aborting due to 2 previous errors"
+        ],
+        "elapsed_ms": 61.66
+      },
+      "polonius_off": {
+        "supported": false,
+        "note": "-Zpolonius=off not recognized by this rustc revision; rustc_default already uses Polonius::Off (NLL)"
+      },
+      "polonius_next": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 53.73
+      },
+      "polonius_legacy": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 56.96
+      }
+    },
+    "invariant_backward_loan_must_reject": {
+      "rustc_default": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `**p` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 46.46
+      },
+      "polonius_off": {
+        "supported": false,
+        "note": "-Zpolonius=off not recognized by this rustc revision; rustc_default already uses Polonius::Off (NLL)"
+      },
+      "polonius_next": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `**p` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 47.54
+      },
+      "polonius_legacy": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `**p` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 47.85
+      }
+    },
+    "invariant_time_travel_through_mut_ref_must_reject": {
+      "rustc_default": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0506]"
+        ],
+        "err_head": [
+          "error[E0506]: cannot assign to `b` because it is borrowed",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ],
+        "elapsed_ms": 47.52
+      },
+      "polonius_off": {
+        "supported": false,
+        "note": "-Zpolonius=off not recognized by this rustc revision; rustc_default already uses Polonius::Off (NLL)"
+      },
+      "polonius_next": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0506]"
+        ],
+        "err_head": [
+          "error[E0506]: cannot assign to `b` because it is borrowed",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ],
+        "elapsed_ms": 46.08
+      },
+      "polonius_legacy": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0506]"
+        ],
+        "err_head": [
+          "error[E0506]: cannot assign to `b` because it is borrowed",
+          "error: aborting due to 1 previous error; 1 warning emitted"
+        ],
+        "elapsed_ms": 47.29
+      }
+    },
+    "aliasing_mut_escape_must_reject": {
+      "rustc_default": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 47.53
+      },
+      "polonius_off": {
+        "supported": false,
+        "note": "-Zpolonius=off not recognized by this rustc revision; rustc_default already uses Polonius::Off (NLL)"
+      },
+      "polonius_next": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 46.8
+      },
+      "polonius_legacy": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 49.53
+      }
+    },
+    "two_phase_borrow_allowed": {
+      "rustc_default": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 48.4
+      },
+      "polonius_off": {
+        "supported": false,
+        "note": "-Zpolonius=off not recognized by this rustc revision; rustc_default already uses Polonius::Off (NLL)"
+      },
+      "polonius_next": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 49.67
+      },
+      "polonius_legacy": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 52.31
+      }
+    },
+    "conditional_reborrow_and_mutate_else": {
+      "rustc_default": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0499]",
+          "error[E0503]"
+        ],
+        "err_head": [
+          "error[E0503]: cannot use `slice[_]` because it was mutably borrowed",
+          "error[E0499]: cannot borrow `slice[_]` as mutable more than once at a time",
+          "error: aborting due to 2 previous errors"
+        ],
+        "elapsed_ms": 49.47
+      },
+      "polonius_off": {
+        "supported": false,
+        "note": "-Zpolonius=off not recognized by this rustc revision; rustc_default already uses Polonius::Off (NLL)"
+      },
+      "polonius_next": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 53.04
+      },
+      "polonius_legacy": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 51.82
+      }
+    }
+  },
+  "probe_2_next_solver_matrix": {
+    "coinductive_auto_send_recursive": {
+      "default_solver": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 48.89
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 47.81
+      },
+      "assumptions_on_binders": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0275]"
+        ],
+        "err_head": [
+          "error[E0275]: overflow evaluating the requirement `Rec: Send`",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 61.43
+      },
+      "default_vs_next_globally_diverge": false,
+      "next_globally_vs_assumptions_on_binders_diverge": true
+    },
+    "inductive_cycle_in_typeck_rejected": {
+      "default_solver": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0275]"
+        ],
+        "err_head": [
+          "error[E0275]: overflow evaluating the requirement `u32: Loop`",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 65.69
+      },
+      "next_solver_globally": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0275]"
+        ],
+        "err_head": [
+          "error[E0275]: overflow evaluating the requirement `u32: Loop`",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 59.63
+      },
+      "assumptions_on_binders": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0275]"
+        ],
+        "err_head": [
+          "error[E0275]: overflow evaluating the requirement `u32: Loop`",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 64.17
+      },
+      "default_vs_next_globally_diverge": false,
+      "next_globally_vs_assumptions_on_binders_diverge": false
+    },
+    "inductive_cycle_in_coherence_overlap_rejected": {
+      "default_solver": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0119]"
+        ],
+        "err_head": [
+          "error[E0119]: conflicting implementations of trait `Disjoint` for type `u32`",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 54.23
+      },
+      "next_solver_globally": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0119]"
+        ],
+        "err_head": [
+          "error[E0119]: conflicting implementations of trait `Disjoint` for type `u32`",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 55.18
+      },
+      "assumptions_on_binders": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0119]"
+        ],
+        "err_head": [
+          "error[E0119]: conflicting implementations of trait `Disjoint` for type `u32`",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 54.56
+      },
+      "default_vs_next_globally_diverge": false,
+      "next_globally_vs_assumptions_on_binders_diverge": false
+    },
+    "coherence_unproductive_assoc_norm_rejected": {
+      "default_solver": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0119]"
+        ],
+        "err_head": [
+          "error[E0119]: conflicting implementations of trait `Overlap<u32, _>` for type `Overflow`",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 56.43
+      },
+      "next_solver_globally": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0119]"
+        ],
+        "err_head": [
+          "error[E0119]: conflicting implementations of trait `Overlap<u32, _>` for type `Overflow`",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 58.98
+      },
+      "assumptions_on_binders": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [
+          "error[E0119]"
+        ],
+        "err_head": [
+          "error[E0119]: conflicting implementations of trait `Overlap<u32, _>` for type `Overflow`",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 58.95
+      },
+      "default_vs_next_globally_diverge": false,
+      "next_globally_vs_assumptions_on_binders_diverge": false
+    },
+    "hrtb_implied_bounds_assumptions_on_binders": {
+      "default_solver": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 53.77
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 52.06
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 54.22
+      },
+      "default_vs_next_globally_diverge": false,
+      "next_globally_vs_assumptions_on_binders_diverge": false
+    },
+    "hrtb_lifetime_transmute_25860_must_reject": {
+      "default_solver": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [],
+        "err_head": [
+          "error: lifetime may not live long enough",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 48.01
+      },
+      "next_solver_globally": {
+        "ok": false,
+        "rc": 1,
+        "error_codes": [],
+        "err_head": [
+          "error: lifetime may not live long enough",
+          "error: aborting due to 1 previous error"
+        ],
+        "elapsed_ms": 48.34
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 53.1
+      },
+      "default_vs_next_globally_diverge": false,
+      "next_globally_vs_assumptions_on_binders_diverge": true
+    },
+    "rpit_defining_use_consistency": {
+      "default_solver": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 51.52
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 52.78
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 52.19
+      },
+      "default_vs_next_globally_diverge": false,
+      "next_globally_vs_assumptions_on_binders_diverge": false
+    },
+    "marker_trait_overlap_allowed": {
+      "default_solver": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 45.57
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 48.41
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 49.71
+      },
+      "default_vs_next_globally_diverge": false,
+      "next_globally_vs_assumptions_on_binders_diverge": false
+    },
+    "deep_assoc_proj_normalization": {
+      "default_solver": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 52.15
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 54.38
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 52.85
+      },
+      "default_vs_next_globally_diverge": false,
+      "next_globally_vs_assumptions_on_binders_diverge": false
+    },
+    "param_env_rigid_alias_vs_normalization": {
+      "default_solver": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 49.22
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 49.75
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "rc": 0,
+        "error_codes": [],
+        "err_head": [],
+        "elapsed_ms": 53.59
+      },
+      "default_vs_next_globally_diverge": false,
+      "next_globally_vs_assumptions_on_binders_diverge": false
+    }
+  },
+  "probe_3_miri_25860_uaf": {
+    "available": true,
+    "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+    "rustflags": "-Znext-solver=globally -Zassumptions-on-binders=yes",
+    "rc": 1,
+    "wall_s": 0.47,
+    "ub_detected": true,
+    "ub_lines": [
+      "error: Undefined Behavior: constructing invalid value of type &std::string::String: encountered a dangling reference (use-after-free)",
+      "|                ^^^^^^^^ Undefined Behavior occurred here",
+      "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+      "= help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information",
+      "error: aborting due to 1 previous error"
+    ]
+  },
+  "probe_4_zerocopy_compile_stress": {
+    "zerocopy_revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+    "zerocopy_pkg_version": "0.8.64",
+    "cfg_flags_discovered": [
+      "--cfg",
+      "no_zerocopy_allocator_api_1_100_0"
+    ],
+    "trials_per_mode": 5,
+    "modes": {
+      "nll_baseline_default_solver": {
+        "flags": [],
+        "ok": true,
+        "rc": 0,
+        "wall_s_samples": [
+          4.6208,
+          3.7099,
+          4.0451,
+          4.1553,
+          4.1225
+        ],
+        "wall_s_median": 4.1225,
+        "wall_s_mean": 4.1307,
+        "error_codes": [],
+        "err_head": [],
+        "delta_pct_vs_nll_baseline": 0.0
+      },
+      "polonius_next_default_solver": {
+        "flags": [
+          "-Zpolonius=next"
+        ],
+        "ok": true,
+        "rc": 0,
+        "wall_s_samples": [
+          4.089,
+          4.5021,
+          4.3433,
+          6.1506,
+          5.1874
+        ],
+        "wall_s_median": 4.5021,
+        "wall_s_mean": 4.8545,
+        "error_codes": [],
+        "err_head": [],
+        "delta_pct_vs_nll_baseline": 9.21
+      },
+      "nll_baseline_next_solver_globally": {
+        "flags": [
+          "-Znext-solver=globally"
+        ],
+        "ok": true,
+        "rc": 0,
+        "wall_s_samples": [
+          5.7227,
+          7.3087,
+          8.7043,
+          6.5437,
+          6.1994
+        ],
+        "wall_s_median": 6.5437,
+        "wall_s_mean": 6.8958,
+        "error_codes": [],
+        "err_head": [],
+        "delta_pct_vs_nll_baseline": 58.73
+      },
+      "polonius_next_and_next_solver_globally": {
+        "flags": [
+          "-Zpolonius=next",
+          "-Znext-solver=globally"
+        ],
+        "ok": true,
+        "rc": 0,
+        "wall_s_samples": [
+          5.2182,
+          5.5705,
+          6.5175,
+          6.5372,
+          12.9599
+        ],
+        "wall_s_median": 6.5175,
+        "wall_s_mean": 7.3607,
+        "error_codes": [],
+        "err_head": [],
+        "delta_pct_vs_nll_baseline": 58.1
+      },
+      "polonius_legacy_datalog_single_trial": {
+        "flags": [
+          "-Zpolonius=legacy"
+        ],
+        "ok": true,
+        "rc": 0,
+        "wall_s_samples": [
+          13.9328
+        ],
+        "wall_s_median": 13.9328,
+        "wall_s_mean": 13.9328,
+        "error_codes": [],
+        "err_head": [],
+        "delta_pct_vs_nll_baseline": 237.97
+      }
+    }
+  }
+}

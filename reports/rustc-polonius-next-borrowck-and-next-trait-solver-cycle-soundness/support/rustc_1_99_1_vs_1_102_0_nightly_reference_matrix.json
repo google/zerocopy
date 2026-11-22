@@ -1,0 +1,450 @@
+{
+  "toolchain_primary": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "toolchain_baseline": "rustc 1.99.1 (58cf8f9c35b355199727627d07ae34a4e2846d67)",
+  "source_snapshot_revision": "49d734536222bf28bb6d07d885b3a81d145981da",
+  "polonius_borrowck_matrix": {
+    "nll_problem_case_3_hashmap": {
+      "rustc_1_99_1_default": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*map` as mutable more than once at a time",
+          "error[E0499]: cannot borrow `*map` as mutable more than once at a time",
+          "error: aborting due to 2 previous errors"
+        ]
+      },
+      "nightly_polonius_off": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*map` as mutable more than once at a time",
+          "error[E0499]: cannot borrow `*map` as mutable more than once at a time",
+          "error: aborting due to 2 previous errors"
+        ]
+      },
+      "nightly_default_polonius_next": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "nightly_polonius_legacy": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      }
+    },
+    "loop_conditional_mut_return": {
+      "rustc_1_99_1_default": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error: aborting due to 2 previous errors"
+        ]
+      },
+      "nightly_polonius_off": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error: aborting due to 2 previous errors"
+        ]
+      },
+      "nightly_default_polonius_next": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "nightly_polonius_legacy": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      }
+    },
+    "invariant_backward_loan_must_reject": {
+      "rustc_1_99_1_default": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `**p` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "nightly_polonius_off": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `**p` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "nightly_default_polonius_next": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `**p` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "nightly_polonius_legacy": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `**p` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ]
+      }
+    },
+    "aliasing_mut_escape_must_reject": {
+      "rustc_1_99_1_default": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "nightly_polonius_off": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "nightly_default_polonius_next": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "nightly_polonius_legacy": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]"
+        ],
+        "err_head": [
+          "error[E0499]: cannot borrow `*v` as mutable more than once at a time",
+          "error: aborting due to 1 previous error"
+        ]
+      }
+    },
+    "two_phase_borrow_allowed": {
+      "rustc_1_99_1_default": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "nightly_polonius_off": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "nightly_default_polonius_next": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "nightly_polonius_legacy": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      }
+    },
+    "conditional_reborrow_and_mutate_else": {
+      "rustc_1_99_1_default": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]",
+          "error[E0503]"
+        ],
+        "err_head": [
+          "error[E0503]: cannot use `slice[_]` because it was mutably borrowed",
+          "error[E0499]: cannot borrow `slice[_]` as mutable more than once at a time",
+          "error: aborting due to 2 previous errors"
+        ]
+      },
+      "nightly_polonius_off": {
+        "ok": false,
+        "error_codes": [
+          "error[E0499]",
+          "error[E0503]"
+        ],
+        "err_head": [
+          "error[E0503]: cannot use `slice[_]` because it was mutably borrowed",
+          "error[E0499]: cannot borrow `slice[_]` as mutable more than once at a time",
+          "error: aborting due to 2 previous errors"
+        ]
+      },
+      "nightly_default_polonius_next": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "nightly_polonius_legacy": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      }
+    }
+  },
+  "next_trait_solver_matrix": {
+    "coinductive_auto_send_recursive": {
+      "legacy_default": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "legacy_vs_next_diverge": false
+    },
+    "inductive_cycle_in_typeck_rejected": {
+      "legacy_default": {
+        "ok": false,
+        "error_codes": [
+          "error[E0275]"
+        ],
+        "err_head": [
+          "error[E0275]: overflow evaluating the requirement `u32: Loop`",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "next_solver_globally": {
+        "ok": false,
+        "error_codes": [
+          "error[E0275]"
+        ],
+        "err_head": [
+          "error[E0275]: overflow evaluating the requirement `u32: Loop`",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "assumptions_on_binders": {
+        "ok": false,
+        "error_codes": [
+          "error[E0275]"
+        ],
+        "err_head": [
+          "error[E0275]: overflow evaluating the requirement `u32: Loop`",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "legacy_vs_next_diverge": false
+    },
+    "inductive_cycle_in_coherence_overlap_rejected": {
+      "legacy_default": {
+        "ok": false,
+        "error_codes": [
+          "error[E0119]"
+        ],
+        "err_head": [
+          "error[E0119]: conflicting implementations of trait `Disjoint` for type `u32`",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "next_solver_globally": {
+        "ok": false,
+        "error_codes": [
+          "error[E0119]"
+        ],
+        "err_head": [
+          "error[E0119]: conflicting implementations of trait `Disjoint` for type `u32`",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "assumptions_on_binders": {
+        "ok": false,
+        "error_codes": [
+          "error[E0119]"
+        ],
+        "err_head": [
+          "error[E0119]: conflicting implementations of trait `Disjoint` for type `u32`",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "legacy_vs_next_diverge": false
+    },
+    "hrtb_implied_bounds_assumptions_on_binders": {
+      "legacy_default": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "legacy_vs_next_diverge": false
+    },
+    "hrtb_lifetime_transmute_25860_must_reject": {
+      "legacy_default": {
+        "ok": false,
+        "error_codes": [],
+        "err_head": [
+          "error: lifetime may not live long enough",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "next_solver_globally": {
+        "ok": false,
+        "error_codes": [],
+        "err_head": [
+          "error: lifetime may not live long enough",
+          "error: aborting due to 1 previous error"
+        ]
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "legacy_vs_next_diverge": false
+    },
+    "rpit_defining_use_consistency": {
+      "legacy_default": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "legacy_vs_next_diverge": false
+    },
+    "marker_trait_overlap_allowed": {
+      "legacy_default": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "legacy_vs_next_diverge": false
+    },
+    "deep_assoc_proj_normalization": {
+      "legacy_default": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "legacy_vs_next_diverge": false
+    },
+    "param_env_rigid_alias_vs_normalization": {
+      "legacy_default": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "next_solver_globally": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "assumptions_on_binders": {
+        "ok": true,
+        "error_codes": [],
+        "err_head": []
+      },
+      "legacy_vs_next_diverge": false
+    }
+  },
+  "miri_uaf_and_zerocopy_lib": {
+    "miri_assumptions_on_binders_uaf": {
+      "rc": 1,
+      "ub_lines": [
+        "error: Undefined Behavior: constructing invalid value of type &std::string::String: encountered a dangling reference (use-after-free)",
+        "|                                                                       ^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "zerocopy_lib": {
+      "nightly_default_polonius_next": {
+        "ok": true,
+        "rc": 0,
+        "wall_s": 1.646,
+        "error_codes": [],
+        "err_head": []
+      },
+      "nightly_polonius_off": {
+        "ok": true,
+        "rc": 0,
+        "wall_s": 1.443,
+        "error_codes": [],
+        "err_head": []
+      },
+      "nightly_next_solver_globally": {
+        "ok": true,
+        "rc": 0,
+        "wall_s": 1.447,
+        "error_codes": [],
+        "err_head": []
+      }
+    }
+  }
+}
