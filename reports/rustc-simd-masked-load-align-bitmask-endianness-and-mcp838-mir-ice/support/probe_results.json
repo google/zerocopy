@@ -1,0 +1,450 @@
+{
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "part_a_valid_masked_load_saturating_as_and_bitmask": {
+    "miri_bitmask_hex": {
+      "s390x_be": "0xa0",
+      "x86_64_le": "0x05"
+    },
+    "miri_nocore_s390x_sb_bitmask_exit": 160,
+    "miri_nocore_s390x_tb_bitmask_exit": 160,
+    "miri_nocore_x86_64_sb_bitmask_exit": 5,
+    "miri_nocore_x86_64_tb_bitmask_exit": 5,
+    "native_compile_rc": 0,
+    "native_rc": 0,
+    "native_stdout": "PARTIAL=[10, 20, 99, 99] NULL_MASKED=[77, 77, 77, 77] UNALIGN1_MASKED=[55, 55, 55, 55] SAT=[0, 255, 0, 42] BITMASK=0x05 ROUNDTRIP=[100, 201, 102, 203, 204, 205, 206, 207]"
+  },
+  "part_b_miri_ub_sharpness_matrix": {
+    "all_masked_align8_vector_align_target_split": {
+      "miri_s390x_sb_rc": 0,
+      "miri_s390x_tb_rc": 0,
+      "miri_s390x_tb_stderr": "",
+      "miri_x86_64_sb_rc": 1,
+      "miri_x86_64_tb_rc": 1,
+      "miri_x86_64_tb_stderr": "error: Undefined Behavior: accessing memory with alignment 8, but alignment 16 is required\n   --> <TMP>/all_masked_align8_vector_align_target_split_nocore.rs:98:9\n    |\n 98 | / ...   simd_masked_load::<I32x4, *const u32, U32x4, { SimdAlign::Vecto...\n 99 | | ...       I32x4([0, 0, 0, 0]),\n100 | | ...       without_provenance_u32(8),\n101 | | ...       U32x4([33, 33, 33, 33]),\n102 | | ...   )\n    | |_______^ Undefined Behavior occurred here\n    |\n    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nerror: aborting due to 1 previous error\n\n",
+      "native_compile_rc": 0,
+      "native_rc": 0,
+      "native_stdout": "ALIGN_OF_U32X4=16 VAL=[33, 33, 33, 33]"
+    },
+    "all_masked_misaligned_element_align4_ub": {
+      "miri_x86_64_sb_rc": 1,
+      "miri_x86_64_tb_rc": 1,
+      "miri_x86_64_tb_stderr": "error: Undefined Behavior: accessing memory with alignment 1, but alignment 4 is required\n   --> <TMP>/all_masked_misaligned_element_align4_ub_nocore.rs:98:9\n    |\n 98 | / ...   simd_masked_load::<I32x4, *const u32, U32x4, { SimdAlign::Eleme...\n 99 | | ...       I32x4([0, 0, 0, 0]),\n100 | | ...       without_provenance_u32(1),\n101 | | ...       U32x4([0, 0, 0, 0]),\n102 | | ...   )\n    | |_______^ Undefined Behavior occurred here\n    |\n    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nerror: aborting due to 1 previous error\n\n",
+      "native_compile_rc": 0,
+      "native_rc": 0,
+      "native_stdout": "[0, 0, 0, 0]"
+    },
+    "non_all_ones_plus1_mask_bitmask_ub_and_lsb_contrast": {
+      "miri_x86_64_sb_rc": 1,
+      "miri_x86_64_tb_rc": 1,
+      "miri_x86_64_tb_stderr": "error: Undefined Behavior: each element of a SIMD mask must be all-0-bits or all-1-bits\n  --> <TMP>/non_all_ones_plus1_mask_bitmask_ub_and_lsb_contrast_nocore.rs:98:27\n   |\n98 | ...safe { simd_bitmask(I32x8([1, 0, all_ones, 0, 0, 0, 0, 0])) };\n   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nerror: aborting due to 1 previous error\n\n",
+      "native_compile_rc": 0,
+      "native_rc": 0,
+      "native_stdout": "LLVM_BITMASK_MSB=0x04 MASK_TO_ARRAY_LSB=[1, 0, 1, 0, 0, 0, 0, 0]"
+    },
+    "non_all_ones_plus1_mask_masked_load_ub": {
+      "miri_x86_64_sb_rc": 1,
+      "miri_x86_64_tb_rc": 1,
+      "miri_x86_64_tb_stderr": "error: Undefined Behavior: each element of a SIMD mask must be all-0-bits or all-1-bits\n   --> <TMP>/non_all_ones_plus1_mask_masked_load_ub_nocore.rs:100:9\n    |\n100 | / ...   simd_masked_load::<I32x4, *const u32, U32x4, { SimdAlign::Eleme...\n101 | | ...       I32x4([1, 0, 0, 0]),\n102 | | ...       p,\n103 | | ...       U32x4([99, 99, 99, 99]),\n104 | | ...   )\n    | |_______^ Undefined Behavior occurred here\n    |\n    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nerror: aborting due to 1 previous error\n\n",
+      "native_compile_rc": 0,
+      "native_rc": 0,
+      "native_stdout": "NATIVE_PLUS1_MASK=[99, 99, 99, 99]"
+    },
+    "simd_cast_nan_float_to_u8_ub": {
+      "miri_x86_64_sb_rc": 1,
+      "miri_x86_64_tb_rc": 1,
+      "miri_x86_64_tb_stderr": "warning: unnecessary transmute\n  --> <TMP>/simd_cast_nan_float_to_u8_ub_nocore.rs:97:33\n   |\n97 |     let nan_f32: f32 = unsafe { transmute(0x7fc0_0000_u32) };\n   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = note: `#[warn(unnecessary_transmutes)]` on by default\nhelp: replace this with\n   |\n97 -     let nan_f32: f32 = unsafe { transmute(0x7fc0_0000_u32) };\n97 +     let nan_f32: f32 = unsafe { f32::from_bits(0x7fc0_0000_u32) };\n   |\n\nerror: Undefined Behavior: `simd_cast` intrinsic called on NaN_f32 which cannot be represented in target type `u8`\n  --> <TMP>/simd_cast_nan_float_to_u8_ub_nocore.rs:98:28\n   |\n98 | ...fe { simd_cast(F32x4([nan_f32, 1.0_f32, 2.0_f32, 3.0_f32])) };\n   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, a",
+      "native_compile_rc": 0,
+      "native_rc": 0,
+      "native_stdout": "[0, 1, 2, 3]"
+    },
+    "simd_cast_oob_float_to_u8_ub": {
+      "miri_x86_64_sb_rc": 1,
+      "miri_x86_64_tb_rc": 1,
+      "miri_x86_64_tb_stderr": "error: Undefined Behavior: `simd_cast` intrinsic called on 300f32 which cannot be represented in target type `u8`\n  --> <TMP>/simd_cast_oob_float_to_u8_ub_nocore.rs:97:28\n   |\n97 | ...fe { simd_cast(F32x4([300.0_f32, 1.0_f32, 2.0_f32, 3.0_f32])) };\n   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nerror: aborting due to 1 previous error\n\n",
+      "native_compile_rc": 0,
+      "native_rc": 0,
+      "native_stdout": "[255, 1, 2, 3]"
+    },
+    "unmasked_oob_lane2_on_len2_slice_ub": {
+      "miri_x86_64_sb_rc": 1,
+      "miri_x86_64_tb_rc": 1,
+      "miri_x86_64_tb_stderr": "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got alloc19+0x8 which is at or beyond the end of the allocation of size 8 bytes\n   --> <TMP>/unmasked_oob_lane2_on_len2_slice_ub_nocore.rs:101:9\n    |\n101 | / ...   simd_masked_load::<I32x4, *const u32, U32x4, { SimdAlign::Eleme...\n102 | | ...       I32x4([all_ones, all_ones, all_ones, 0]),\n103 | | ...       p,\n104 | | ...       U32x4([0, 0, 0, 0]),\n105 | | ...   )\n    | |_______^ Undefined Behavior occurred here\n    |\n    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nhelp: alloc19 was allocated here:\n   --> <TMP>/unmasked_oob_lane2_on_len2_slice_ub_nocore.rs:98:9\n    |\n 98 |     let short: [u32; 2] = [10, 20];\n    |         ^",
+      "native_compile_rc": 0,
+      "native_rc": 0,
+      "native_stdout": "OOB_LANE0_1=[10, 20]"
+    }
+  },
+  "part_c_x86_64_vs_s390x_llvm_ir_and_asm": {
+    "s390x-unknown-linux-gnu": {
+      "asm_ir_bitmask": {
+        "lines": [
+          "ir_bitmask:",
+          "\tchsi\t4(%r2), 0",
+          "\tipm\t%r0",
+          "\tchsi\t0(%r2), 0",
+          "\tipm\t%r1",
+          "\trisbg\t%r1, %r1, 60, 188, 39",
+          "\trosbg\t%r1, %r0, 61, 61, 38",
+          "\tchsi\t8(%r2), 0",
+          "\tipm\t%r3",
+          "\tchsi\t12(%r2), 0",
+          "\tipm\t%r0",
+          "\trisbg\t%r0, %r0, 63, 191, 36",
+          "\trosbg\t%r0, %r3, 62, 62, 37",
+          "\tor\t%r0, %r1",
+          "\tchsi\t20(%r2), 0",
+          "\tipm\t%r1",
+          "\tchsi\t16(%r2), 0",
+          "\tipm\t%r3",
+          "\trisbg\t%r3, %r3, 60, 188, 39",
+          "\trosbg\t%r3, %r1, 61, 61, 38",
+          "\tchsi\t24(%r2), 0",
+          "\tipm\t%r1",
+          "\tchsi\t28(%r2), 0",
+          "\tipm\t%r2",
+          "\trisbg\t%r2, %r2, 63, 191, 36",
+          "\trosbg\t%r2, %r1, 62, 62, 37",
+          "\tor\t%r2, %r3",
+          "\trosbg\t%r2, %r0, 32, 59, 4",
+          "\tbr\t%r14",
+          ".Lfunc_end0:"
+        ],
+        "rc": 0
+      },
+      "opt0": {
+        "ir": {
+          "_RNvXs6_Cse68ApzmReaN_9part_c_irNtB5_9SimdAlignNtB5_9PartialEq2eq": [
+            "define zeroext i1 @_RNvXs6_Cse68ApzmReaN_9part_c_irNtB5_9SimdAlignNtB5_9PartialEq2eq(ptr %self, ptr %_other) unnamed_addr #0 {",
+            "start:",
+            "  ret i1 true",
+            "}"
+          ],
+          "_meta": [
+            "target datalayout = \"E-m:e-i1:8:16-i8:8:16-i64:64-f128:64-v128:64-a:8:16-n32:64\"",
+            "target triple = \"s390x-unknown-linux-gnu\"",
+            "declare <4 x i32> @llvm.masked.load.v4i32.p0(ptr captures(none), <4 x i1>, <4 x i32>) #1",
+            "declare <4 x i8> @llvm.fptoui.sat.v4i8.v4f32(<4 x float>) #2"
+          ],
+          "ir_bitmask": [
+            "define i8 @ir_bitmask(ptr align 32 %m) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <8 x i32>, ptr %m, align 32",
+            "  %1 = lshr <8 x i32> %0, splat (i32 31)",
+            "  %2 = trunc <8 x i32> %1 to <8 x i1>",
+            "  %_0 = bitcast <8 x i1> %2 to i8",
+            "  ret i8 %_0",
+            "}"
+          ],
+          "ir_masked_load_elem": [
+            "define void @ir_masked_load_elem(ptr sret([16 x i8]) align 8 %_0, ptr align 8 %m, ptr %p, ptr align 8 %d) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 8",
+            "  %1 = load <4 x i32>, ptr %d, align 8",
+            "  %2 = lshr <4 x i32> %0, splat (i32 31)",
+            "  %3 = trunc <4 x i32> %2 to <4 x i1>",
+            "  %4 = call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 4 %p, <4 x i1> %3, <4 x i32> %1)",
+            "  store <4 x i32> %4, ptr %_0, align 8",
+            "  ret void",
+            "}"
+          ],
+          "ir_masked_load_unaligned": [
+            "define void @ir_masked_load_unaligned(ptr sret([16 x i8]) align 8 %_0, ptr align 8 %m, ptr %p, ptr align 8 %d) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 8",
+            "  %1 = load <4 x i32>, ptr %d, align 8",
+            "  %2 = lshr <4 x i32> %0, splat (i32 31)",
+            "  %3 = trunc <4 x i32> %2 to <4 x i1>",
+            "  %4 = call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 1 %p, <4 x i1> %3, <4 x i32> %1)",
+            "  store <4 x i32> %4, ptr %_0, align 8",
+            "  ret void",
+            "}"
+          ],
+          "ir_masked_load_vec": [
+            "define void @ir_masked_load_vec(ptr sret([16 x i8]) align 8 %_0, ptr align 8 %m, ptr %p, ptr align 8 %d) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 8",
+            "  %1 = load <4 x i32>, ptr %d, align 8",
+            "  %2 = lshr <4 x i32> %0, splat (i32 31)",
+            "  %3 = trunc <4 x i32> %2 to <4 x i1>",
+            "  %4 = call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 8 %p, <4 x i1> %3, <4 x i32> %1)",
+            "  store <4 x i32> %4, ptr %_0, align 8",
+            "  ret void",
+            "}"
+          ],
+          "ir_simd_as": [
+            "define void @ir_simd_as(ptr sret([4 x i8]) align 4 %_0, ptr align 8 %x) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <4 x float>, ptr %x, align 8",
+            "  %1 = call <4 x i8> @llvm.fptoui.sat.v4i8.v4f32(<4 x float> %0)",
+            "  store <4 x i8> %1, ptr %_0, align 4",
+            "  ret void",
+            "}"
+          ],
+          "ir_simd_cast": [
+            "define void @ir_simd_cast(ptr sret([4 x i8]) align 4 %_0, ptr align 8 %x) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <4 x float>, ptr %x, align 8",
+            "  %1 = fptoui <4 x float> %0 to <4 x i8>",
+            "  store <4 x i8> %1, ptr %_0, align 4",
+            "  ret void",
+            "}"
+          ]
+        },
+        "rc": 0
+      },
+      "opt2": {
+        "ir": {
+          "_meta": [
+            "target datalayout = \"E-m:e-i1:8:16-i8:8:16-i64:64-f128:64-v128:64-a:8:16-n32:64\"",
+            "target triple = \"s390x-unknown-linux-gnu\"",
+            "declare <4 x i32> @llvm.masked.load.v4i32.p0(ptr captures(none), <4 x i1>, <4 x i32>) #2",
+            "declare <4 x i8> @llvm.fptoui.sat.v4i8.v4f32(<4 x float>) #3"
+          ],
+          "ir_bitmask": [
+            "define noundef i8 @ir_bitmask(ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %m) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <8 x i32>, ptr %m, align 32",
+            "  %1 = icmp slt <8 x i32> %0, zeroinitializer",
+            "  %_0 = bitcast <8 x i1> %1 to i8",
+            "  ret i8 %_0",
+            "}"
+          ],
+          "ir_masked_load_elem": [
+            "define void @ir_masked_load_elem(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 8 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(16) %m, ptr noundef readonly captures(none) %p, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(16) %d) unnamed_addr #1 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 8",
+            "  %1 = load <4 x i32>, ptr %d, align 8",
+            "  %2 = icmp slt <4 x i32> %0, zeroinitializer",
+            "  %3 = tail call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 4 %p, <4 x i1> %2, <4 x i32> %1)",
+            "  store <4 x i32> %3, ptr %_0, align 8",
+            "  ret void",
+            "}"
+          ],
+          "ir_masked_load_unaligned": [
+            "define void @ir_masked_load_unaligned(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 8 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(16) %m, ptr noundef readonly captures(none) %p, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(16) %d) unnamed_addr #1 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 8",
+            "  %1 = load <4 x i32>, ptr %d, align 8",
+            "  %2 = icmp slt <4 x i32> %0, zeroinitializer",
+            "  %3 = tail call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 1 %p, <4 x i1> %2, <4 x i32> %1)",
+            "  store <4 x i32> %3, ptr %_0, align 8",
+            "  ret void",
+            "}"
+          ],
+          "ir_masked_load_vec": [
+            "define void @ir_masked_load_vec(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 8 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(16) %m, ptr noundef readonly captures(none) %p, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(16) %d) unnamed_addr #1 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 8",
+            "  %1 = load <4 x i32>, ptr %d, align 8",
+            "  %2 = icmp slt <4 x i32> %0, zeroinitializer",
+            "  %3 = tail call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 8 %p, <4 x i1> %2, <4 x i32> %1)",
+            "  store <4 x i32> %3, ptr %_0, align 8",
+            "  ret void",
+            "}"
+          ],
+          "ir_simd_as": [
+            "define void @ir_simd_as(ptr dead_on_unwind noalias noundef writable writeonly sret([4 x i8]) align 4 captures(none) dereferenceable(4) initializes((0, 4)) %_0, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(16) %x) unnamed_addr #1 {",
+            "start:",
+            "  %0 = load <4 x float>, ptr %x, align 8",
+            "  %1 = tail call <4 x i8> @llvm.fptoui.sat.v4i8.v4f32(<4 x float> %0)",
+            "  store <4 x i8> %1, ptr %_0, align 4",
+            "  ret void",
+            "}"
+          ],
+          "ir_simd_cast": [
+            "define void @ir_simd_cast(ptr dead_on_unwind noalias noundef writable writeonly sret([4 x i8]) align 4 captures(none) dereferenceable(4) initializes((0, 4)) %_0, ptr dead_on_return noalias noundef readonly align 8 captures(none) dereferenceable(16) %x) unnamed_addr #1 {",
+            "start:",
+            "  %0 = load <4 x float>, ptr %x, align 8",
+            "  %1 = fptoui <4 x float> %0 to <4 x i8>",
+            "  store <4 x i8> %1, ptr %_0, align 4",
+            "  ret void",
+            "}"
+          ]
+        },
+        "rc": 0
+      }
+    },
+    "x86_64-unknown-linux-gnu": {
+      "asm_ir_bitmask": {
+        "lines": [
+          "ir_bitmask:",
+          "\tmovdqa\t(%rdi), %xmm0",
+          "\tpackssdw\t16(%rdi), %xmm0",
+          "\tpacksswb\t%xmm0, %xmm0",
+          "\tpmovmskb\t%xmm0, %eax",
+          "\tretq",
+          ".Lfunc_end0:"
+        ],
+        "rc": 0
+      },
+      "opt0": {
+        "ir": {
+          "_RNvXs6_Cse68ApzmReaN_9part_c_irNtB5_9SimdAlignNtB5_9PartialEq2eq": [
+            "define zeroext i1 @_RNvXs6_Cse68ApzmReaN_9part_c_irNtB5_9SimdAlignNtB5_9PartialEq2eq(ptr %self, ptr %_other) unnamed_addr #0 {",
+            "start:",
+            "  ret i1 true",
+            "}"
+          ],
+          "_meta": [
+            "target datalayout = \"e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128\"",
+            "target triple = \"x86_64-unknown-linux-gnu\"",
+            "declare <4 x i32> @llvm.masked.load.v4i32.p0(ptr captures(none), <4 x i1>, <4 x i32>) #1",
+            "declare <4 x i8> @llvm.fptoui.sat.v4i8.v4f32(<4 x float>) #2"
+          ],
+          "ir_bitmask": [
+            "define i8 @ir_bitmask(ptr align 32 %m) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <8 x i32>, ptr %m, align 32",
+            "  %1 = lshr <8 x i32> %0, splat (i32 31)",
+            "  %2 = trunc <8 x i32> %1 to <8 x i1>",
+            "  %_0 = bitcast <8 x i1> %2 to i8",
+            "  ret i8 %_0",
+            "}"
+          ],
+          "ir_masked_load_elem": [
+            "define void @ir_masked_load_elem(ptr sret([16 x i8]) align 16 %_0, ptr align 16 %m, ptr %p, ptr align 16 %d) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 16",
+            "  %1 = load <4 x i32>, ptr %d, align 16",
+            "  %2 = lshr <4 x i32> %0, splat (i32 31)",
+            "  %3 = trunc <4 x i32> %2 to <4 x i1>",
+            "  %4 = call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 4 %p, <4 x i1> %3, <4 x i32> %1)",
+            "  store <4 x i32> %4, ptr %_0, align 16",
+            "  ret void",
+            "}"
+          ],
+          "ir_masked_load_unaligned": [
+            "define void @ir_masked_load_unaligned(ptr sret([16 x i8]) align 16 %_0, ptr align 16 %m, ptr %p, ptr align 16 %d) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 16",
+            "  %1 = load <4 x i32>, ptr %d, align 16",
+            "  %2 = lshr <4 x i32> %0, splat (i32 31)",
+            "  %3 = trunc <4 x i32> %2 to <4 x i1>",
+            "  %4 = call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 1 %p, <4 x i1> %3, <4 x i32> %1)",
+            "  store <4 x i32> %4, ptr %_0, align 16",
+            "  ret void",
+            "}"
+          ],
+          "ir_masked_load_vec": [
+            "define void @ir_masked_load_vec(ptr sret([16 x i8]) align 16 %_0, ptr align 16 %m, ptr %p, ptr align 16 %d) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 16",
+            "  %1 = load <4 x i32>, ptr %d, align 16",
+            "  %2 = lshr <4 x i32> %0, splat (i32 31)",
+            "  %3 = trunc <4 x i32> %2 to <4 x i1>",
+            "  %4 = call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 16 %p, <4 x i1> %3, <4 x i32> %1)",
+            "  store <4 x i32> %4, ptr %_0, align 16",
+            "  ret void",
+            "}"
+          ],
+          "ir_simd_as": [
+            "define void @ir_simd_as(ptr sret([4 x i8]) align 4 %_0, ptr align 16 %x) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <4 x float>, ptr %x, align 16",
+            "  %1 = call <4 x i8> @llvm.fptoui.sat.v4i8.v4f32(<4 x float> %0)",
+            "  store <4 x i8> %1, ptr %_0, align 4",
+            "  ret void",
+            "}"
+          ],
+          "ir_simd_cast": [
+            "define void @ir_simd_cast(ptr sret([4 x i8]) align 4 %_0, ptr align 16 %x) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <4 x float>, ptr %x, align 16",
+            "  %1 = fptoui <4 x float> %0 to <4 x i8>",
+            "  store <4 x i8> %1, ptr %_0, align 4",
+            "  ret void",
+            "}"
+          ]
+        },
+        "rc": 0
+      },
+      "opt2": {
+        "ir": {
+          "_meta": [
+            "target datalayout = \"e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128\"",
+            "target triple = \"x86_64-unknown-linux-gnu\"",
+            "declare <4 x i32> @llvm.masked.load.v4i32.p0(ptr captures(none), <4 x i1>, <4 x i32>) #2",
+            "declare <4 x i8> @llvm.fptoui.sat.v4i8.v4f32(<4 x float>) #3"
+          ],
+          "ir_bitmask": [
+            "define noundef i8 @ir_bitmask(ptr dead_on_return noalias noundef readonly align 32 captures(none) dereferenceable(32) %m) unnamed_addr #0 {",
+            "start:",
+            "  %0 = load <8 x i32>, ptr %m, align 32",
+            "  %1 = icmp slt <8 x i32> %0, zeroinitializer",
+            "  %_0 = bitcast <8 x i1> %1 to i8",
+            "  ret i8 %_0",
+            "}"
+          ],
+          "ir_masked_load_elem": [
+            "define void @ir_masked_load_elem(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %m, ptr noundef readonly captures(none) %p, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %d) unnamed_addr #1 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 16",
+            "  %1 = load <4 x i32>, ptr %d, align 16",
+            "  %2 = icmp slt <4 x i32> %0, zeroinitializer",
+            "  %3 = tail call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 4 %p, <4 x i1> %2, <4 x i32> %1)",
+            "  store <4 x i32> %3, ptr %_0, align 16",
+            "  ret void",
+            "}"
+          ],
+          "ir_masked_load_unaligned": [
+            "define void @ir_masked_load_unaligned(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %m, ptr noundef readonly captures(none) %p, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %d) unnamed_addr #1 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 16",
+            "  %1 = load <4 x i32>, ptr %d, align 16",
+            "  %2 = icmp slt <4 x i32> %0, zeroinitializer",
+            "  %3 = tail call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 1 %p, <4 x i1> %2, <4 x i32> %1)",
+            "  store <4 x i32> %3, ptr %_0, align 16",
+            "  ret void",
+            "}"
+          ],
+          "ir_masked_load_vec": [
+            "define void @ir_masked_load_vec(ptr dead_on_unwind noalias noundef writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %m, ptr noundef readonly captures(none) %p, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %d) unnamed_addr #1 {",
+            "start:",
+            "  %0 = load <4 x i32>, ptr %m, align 16",
+            "  %1 = load <4 x i32>, ptr %d, align 16",
+            "  %2 = icmp slt <4 x i32> %0, zeroinitializer",
+            "  %3 = tail call <4 x i32> @llvm.masked.load.v4i32.p0(ptr align 16 %p, <4 x i1> %2, <4 x i32> %1)",
+            "  store <4 x i32> %3, ptr %_0, align 16",
+            "  ret void",
+            "}"
+          ],
+          "ir_simd_as": [
+            "define void @ir_simd_as(ptr dead_on_unwind noalias noundef writable writeonly sret([4 x i8]) align 4 captures(none) dereferenceable(4) initializes((0, 4)) %_0, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %x) unnamed_addr #1 {",
+            "start:",
+            "  %0 = load <4 x float>, ptr %x, align 16",
+            "  %1 = tail call <4 x i8> @llvm.fptoui.sat.v4i8.v4f32(<4 x float> %0)",
+            "  store <4 x i8> %1, ptr %_0, align 4",
+            "  ret void",
+            "}"
+          ],
+          "ir_simd_cast": [
+            "define void @ir_simd_cast(ptr dead_on_unwind noalias noundef writable writeonly sret([4 x i8]) align 4 captures(none) dereferenceable(4) initializes((0, 4)) %_0, ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %x) unnamed_addr #1 {",
+            "start:",
+            "  %0 = load <4 x float>, ptr %x, align 16",
+            "  %1 = fptoui <4 x float> %0 to <4 x i8>",
+            "  store <4 x i8> %1, ptr %_0, align 4",
+            "  ret void",
+            "}"
+          ]
+        },
+        "rc": 0
+      }
+    }
+  },
+  "part_d_mcp838_repr_simd_field_projection_mir_validator_ice": {
+    "crate_type_lib": {
+      "rc": 101,
+      "stderr_excerpt": "warning: the feature `repr_simd` is internal to the compiler or standard library\n --> <TMP>/mcp838_ice.rs:2:12\n  |\n2 | #![feature(repr_simd)]\n  |            ^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: internal compiler error: /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:7 ~ mcp838_ice[c256]::safe_proj_ice)) (after phase change to runtime-optimized) at bb0[0]:\n                                Projecting into SIMD type U32x4 is banned by MCP#838\n --> <TMP>/mcp838_ice.rs:8:5\n  |\n8 |     v.0\n  |     ^^^\n\n\nthread 'rustc' (188298) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_transform/src/validate.rs:82:25:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7ff4908a0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7ff49102a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7ff4908b79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7ff49087711e"
+    },
+    "emit_metadata_only": {
+      "rc": 0,
+      "stderr_excerpt": "warning: the feature `repr_simd` is internal to the compiler or standard library\n --> <TMP>/mcp838_ice.rs:2:12\n  |\n2 | #![feature(repr_simd)]\n  |            ^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "mir_opt_level_0": {
+      "rc": 101,
+      "stderr_excerpt": "warning: the feature `repr_simd` is internal to the compiler or standard library\n --> <TMP>/mcp838_ice.rs:2:12\n  |\n2 | #![feature(repr_simd)]\n  |            ^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: internal compiler error: /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_transform/src/validate.rs:82:25: broken MIR in Item(DefId(0:7 ~ mcp838_ice[c256]::safe_proj_ice)) (after phase change to runtime-optimized) at bb0[0]:\n                                Projecting into SIMD type U32x4 is banned by MCP#838\n --> <TMP>/mcp838_ice.rs:8:5\n  |\n8 |     v.0\n  |     ^^^\n\n\nthread 'rustc' (188323) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_transform/src/validate.rs:82:25:\nBox<dyn Any>\nstack backtrace:\n   0:     0x7fa9f76a0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7fa9f7e2a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7fa9f76b79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7fa9f767711e"
+    }
+  },
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "timestamp_utc": "2026-11-22T12:23:54Z"
+}
