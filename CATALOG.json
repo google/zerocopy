@@ -53802,6 +53802,83 @@
         "systems/os-kernels"
       ]
     },
+    "in-principle-reward-hacking-defenses-and-zero-trust-proof-auditing": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 toolchain and runtime"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 v4.35.0 toolchain, Lake comparator, and bundled external kernels"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "e3dcf3083fc53d44b27a4431fabf7d43181583f5",
+            "version": "v4.35.0"
+          },
+          "name": "leanprover/comparator"
+        },
+        {
+          "identity": {
+            "repository": "ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+            "version": "v0.4.32"
+          },
+          "name": "ammkrn/nanoda_lib"
+        },
+        {
+          "identity": {
+            "repository": "google-deepmind/code-verification",
+            "revision": "8c8d371f1962ac73435c8eb148678991f5c3470d"
+          },
+          "name": "google-deepmind/code-verification (comparator, tcb-map, TrustedClosure)"
+        },
+        {
+          "identity": {
+            "repository": "GasStationManager/SafeVerify",
+            "revision": "b291b588a53999a7e837dda61c7dbfe8c550c814"
+          },
+          "name": "GasStationManager/SafeVerify"
+        },
+        {
+          "identity": {
+            "repository": "theorem-labs/oss-verify-proofs",
+            "revision": "4c8fe739bb9bc95898f410b37222626f26dd0061",
+            "version": "2026.11.2"
+          },
+          "name": "theorem-labs/oss-verify-proofs (oft check)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "a007a51af473e5901915b003083e61c7c89c7bd1"
+          },
+          "name": "google/zerocopy (anneal/trusted/audit and rustc-capture)"
+        }
+      ],
+      "topics": [
+        "anneal/audit",
+        "anneal/trust-boundary",
+        "lean/kernel-replay",
+        "lean/olean-compaction",
+        "security/adversarial-verification",
+        "security/tcb-hazards",
+        "tooling/lean-comparator",
+        "verification/tcb-audit",
+        "verification/external-kernels"
+      ]
+    },
     "incorrectness-logic-under-approximation-and-bug-report-soundness": {
       "observed_at": "2026-11-20",
       "subjects": [
