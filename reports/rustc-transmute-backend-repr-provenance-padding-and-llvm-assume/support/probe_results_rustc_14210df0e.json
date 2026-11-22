@@ -1,0 +1,238 @@
+{
+  "checks": {
+    "ctfe_rejects_ptr_to_usize_transmute": true,
+    "mir_lower_intrinsics_emits_castkind_transmute": true,
+    "mir_subtyper_emits_castkind_subtype": true,
+    "miri_as_cast_exposes_provenance_ok": true,
+    "miri_pad_pair_to_maybe_uninit_bytes_ok": true,
+    "miri_pad_pair_to_u32_uninit_ub": true,
+    "miri_pad_pair_typed_copy_resets_prior_init_padding_ub": true,
+    "miri_ptr_transmute_through_maybe_uninit_bytes_strict_ok": true,
+    "miri_ptr_transmute_through_u8_array_strips_provenance_ub": true,
+    "miri_transmute_ptr_to_usize_strips_without_exposing_ub": true,
+    "miri_u32_zero_to_maybe_uninit_nonzero_u32_ok": true,
+    "miri_u32_zero_to_nonzero_u32_ub": true,
+    "tm_10_wrapping_niche_ordering_emits_single_icmp_ule_assume": true,
+    "tm_1_injects_llvm_assume_without_alloca": true,
+    "tm_2_emits_scalar_bitcast": true,
+    "tm_3_emits_simd_vector_bitcast": true,
+    "tm_4_transmutes_scalarpair_in_registers_with_assume": true,
+    "tm_5_falls_back_to_alloca_and_lifetime_start": true,
+    "tm_6_lowers_ptr_to_usize_via_ptrtoint": true,
+    "tm_7_memory_to_scalar_uses_source_align_1": true,
+    "tm_8_pointer_simd_uses_alloca_not_bitcast": true,
+    "tm_9_discarded_transmute_injects_assume_and_folds_eq_zero_to_false": true
+  },
+  "ctfe_ptr_to_usize_transmute": {
+    "diag_head": [
+      "error[E0080]: unable to turn pointer into integer",
+      "error: aborting due to 1 previous error"
+    ],
+    "rustc_rc": 1
+  },
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "part_a_b_miri_transmute_matrix": {
+    "as_cast_exposes_provenance_ok": {
+      "diag_head": [],
+      "extra_flags": [
+        "-Zmiri-permissive-provenance"
+      ],
+      "miri_rc": 0
+    },
+    "pad_pair_to_maybe_uninit_bytes_ok": {
+      "diag_head": [],
+      "extra_flags": [],
+      "miri_rc": 0
+    },
+    "pad_pair_to_u32_uninit_ub": {
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type u32: encountered uninitialized memory, but expected an integer",
+        "   |                           ^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "error: aborting due to 1 previous error"
+      ],
+      "extra_flags": [],
+      "miri_rc": 1
+    },
+    "pad_pair_typed_copy_resets_prior_init_padding_ub": {
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type u32: encountered uninitialized memory, but expected an integer",
+        "   |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "error: aborting due to 1 previous error"
+      ],
+      "extra_flags": [],
+      "miri_rc": 1
+    },
+    "ptr_transmute_through_maybe_uninit_bytes_strict_ok": {
+      "diag_head": [],
+      "extra_flags": [
+        "-Zmiri-strict-provenance"
+      ],
+      "miri_rc": 0
+    },
+    "ptr_transmute_through_u8_array_strips_provenance_ub": {
+      "diag_head": [
+        "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x2013c[noalloc] which is a dangling pointer (it has no provenance)",
+        "   |                 ^^ Undefined Behavior occurred here",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "error: aborting due to 1 previous error"
+      ],
+      "extra_flags": [
+        "-Zmiri-permissive-provenance"
+      ],
+      "miri_rc": 1
+    },
+    "transmute_ptr_to_usize_strips_without_exposing_ub": {
+      "diag_head": [
+        "error: Undefined Behavior: memory access failed: attempting to access 4 bytes, but got 0x2013c[noalloc] which is a dangling pointer (it has no provenance)",
+        "   |                 ^^ Undefined Behavior occurred here",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "error: aborting due to 1 previous error"
+      ],
+      "extra_flags": [
+        "-Zmiri-permissive-provenance"
+      ],
+      "miri_rc": 1
+    },
+    "u32_zero_to_maybe_uninit_nonzero_u32_ok": {
+      "diag_head": [],
+      "extra_flags": [],
+      "miri_rc": 0
+    },
+    "u32_zero_to_nonzero_u32_ub": {
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type core::num::NonZero<u32>: at .0.0, encountered 0, but expected something greater or equal to 1",
+        "  |                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "error: aborting due to 1 previous error; 1 warning emitted"
+      ],
+      "extra_flags": [],
+      "miri_rc": 1
+    }
+  },
+  "part_c_llvm_cg_transmute_arms": {
+    "tm_1_scalar_nonzero_assume": {
+      "has_alloca": false,
+      "has_bitcast": false,
+      "has_lifetime_start": false,
+      "has_llvm_assume": true,
+      "has_ptrtoint": false,
+      "ir": "define noundef range(i32 1, 0) i32 @tm_1_scalar_nonzero_assume(i32 noundef %x) unnamed_addr #0 {\nstart:\n  %0 = sub i32 %x, 1\n  %1 = icmp ule i32 %0, -2\n  call void @llvm.assume(i1 %1)\n  ret i32 %x\n}"
+    },
+    "tm_2_scalar_u32_to_f32": {
+      "has_alloca": false,
+      "has_bitcast": true,
+      "has_lifetime_start": false,
+      "has_llvm_assume": false,
+      "has_ptrtoint": false,
+      "ir": "define noundef float @tm_2_scalar_u32_to_f32(i32 noundef %x) unnamed_addr #0 {\nstart:\n  %_0 = bitcast i32 %x to float\n  ret float %_0\n}"
+    },
+    "tm_3_simd_bitcast": {
+      "has_alloca": false,
+      "has_bitcast": true,
+      "has_lifetime_start": false,
+      "has_llvm_assume": false,
+      "has_ptrtoint": false,
+      "ir": "define <4 x float> @tm_3_simd_bitcast(<4 x i32> %x) unnamed_addr #1 {\nstart:\n  %_0 = bitcast <4 x i32> %x to <4 x float>\n  ret <4 x float> %_0\n}"
+    },
+    "tm_4_scalarpair_in_regs": {
+      "has_alloca": false,
+      "has_bitcast": true,
+      "has_lifetime_start": false,
+      "has_llvm_assume": true,
+      "has_ptrtoint": false,
+      "ir": "define { float, i32 } @tm_4_scalarpair_in_regs(i32 noundef %x.0, i32 noundef %x.1) unnamed_addr #0 {\nstart:\n  %_0.0 = bitcast i32 %x.0 to float\n  %0 = sub i32 %x.1, 1\n  %1 = icmp ule i32 %0, -2\n  call void @llvm.assume(i1 %1)\n  %2 = insertvalue { float, i32 } poison, float %_0.0, 0\n  %3 = insertvalue { float, i32 } %2, i32 %x.1, 1\n  ret { float, i32 } %3\n}"
+    },
+    "tm_5_scalar_to_scalarpair_alloca": {
+      "has_alloca": true,
+      "has_bitcast": false,
+      "has_lifetime_start": true,
+      "has_llvm_assume": false,
+      "has_ptrtoint": false,
+      "ir": "define { i32, i32 } @tm_5_scalar_to_scalarpair_alloca(i64 noundef %x) unnamed_addr #0 {\nstart:\n  %0 = alloca [8 x i8], align 8\n  call void @llvm.lifetime.start.p0(ptr %0)\n  store i64 %x, ptr %0, align 8\n  %_0.0 = load i32, ptr %0, align 8, !noundef !4\n  %1 = getelementptr inbounds i8, ptr %0, i64 4\n  %_0.1 = load i32, ptr %1, align 4, !noundef !4\n  call void @llvm.lifetime.end.p0(ptr %0)\n  %2 = insertvalue { i32, i32 } poison, i32 %_0.0, 0\n  %3 = insertvalue { i32, i32 } %2, i32 %_0.1, 1\n  ret { i32, i32 } %3\n}"
+    },
+    "tm_6_ptr_to_usize_ptrtoint": {
+      "has_alloca": false,
+      "has_bitcast": false,
+      "has_lifetime_start": false,
+      "has_llvm_assume": false,
+      "has_ptrtoint": true,
+      "ir": "define noundef i64 @tm_6_ptr_to_usize_ptrtoint(ptr noundef %p) unnamed_addr #0 {\nstart:\n  %_0 = ptrtoint ptr %p to i64\n  ret i64 %_0\n}"
+    }
+  },
+  "part_d_extended_codegen_and_mir_probes": {
+    "mir_lower_intrinsics_after_cast_lines": [
+      "_0 = move _2 as std::num::NonZero<u32> (Transmute);"
+    ],
+    "mir_subtyper_after_cast_lines": [
+      "_0 = move _2 as fn(&u8) -> &u8 (Subtype);"
+    ],
+    "prepass_llvm_ir": {
+      "subtype_hrtb_fn_ptr": {
+        "has_alloca": false,
+        "has_bitcast": false,
+        "has_lifetime_start": false,
+        "has_llvm_assume": false,
+        "has_ptrtoint": false,
+        "ir": "define noundef nonnull ptr @subtype_hrtb_fn_ptr(ptr noundef nonnull %f) unnamed_addr #0 {\nstart:\n  ret ptr %f\n}"
+      },
+      "tm_10_wrapping_niche_ordering_assume": {
+        "has_alloca": false,
+        "has_bitcast": false,
+        "has_lifetime_start": false,
+        "has_llvm_assume": true,
+        "has_ptrtoint": false,
+        "ir": "define noundef range(i8 -1, 2) i8 @tm_10_wrapping_niche_ordering_assume(i8 noundef %x) unnamed_addr #0 {\nstart:\n  %0 = sub i8 %x, -1\n  %1 = icmp ule i8 %0, 2\n  call void @llvm.assume(i1 %1)\n  ret i8 %x\n}"
+      },
+      "tm_11_zst_transmute": {
+        "has_alloca": false,
+        "has_bitcast": false,
+        "has_lifetime_start": false,
+        "has_llvm_assume": false,
+        "has_ptrtoint": false,
+        "ir": "define void @tm_11_zst_transmute() unnamed_addr #0 {\nstart:\n  ret void\n}"
+      },
+      "tm_6b_as_cast_ptr_to_usize": {
+        "has_alloca": false,
+        "has_bitcast": false,
+        "has_lifetime_start": false,
+        "has_llvm_assume": false,
+        "has_ptrtoint": true,
+        "ir": "define noundef i64 @tm_6b_as_cast_ptr_to_usize(ptr noundef %p) unnamed_addr #0 {\nstart:\n  %_0 = ptrtoint ptr %p to i64\n  ret i64 %_0\n}"
+      },
+      "tm_7_memory_to_scalar_source_align": {
+        "has_alloca": true,
+        "has_bitcast": false,
+        "has_lifetime_start": true,
+        "has_llvm_assume": false,
+        "has_ptrtoint": false,
+        "ir": "define noundef i128 @tm_7_memory_to_scalar_source_align(ptr dead_on_return noalias noundef readonly align 1 captures(none) dereferenceable(16) %arr) unnamed_addr #0 {\nstart:\n  %_2 = alloca [16 x i8], align 1\n  call void @llvm.lifetime.start.p0(ptr %_2)\n  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %_2, ptr align 1 %arr, i64 16, i1 false)\n  %_0 = load i128, ptr %_2, align 1, !noundef !4\n  call void @llvm.lifetime.end.p0(ptr %_2)\n  ret i128 %_0\n}"
+      },
+      "tm_8_simd_ptr_to_int_alloca": {
+        "has_alloca": true,
+        "has_bitcast": false,
+        "has_lifetime_start": true,
+        "has_llvm_assume": false,
+        "has_ptrtoint": false,
+        "ir": "define <4 x i64> @tm_8_simd_ptr_to_int_alloca(<4 x ptr> %v) unnamed_addr #2 {\nstart:\n  %0 = alloca [32 x i8], align 32\n  call void @llvm.lifetime.start.p0(ptr %0)\n  store <4 x ptr> %v, ptr %0, align 32\n  %_0 = load <4 x i64>, ptr %0, align 32\n  call void @llvm.lifetime.end.p0(ptr %0)\n  ret <4 x i64> %_0\n}"
+      },
+      "tm_9_discarded_nonzero_assume_eq_zero": {
+        "has_alloca": false,
+        "has_bitcast": false,
+        "has_lifetime_start": false,
+        "has_llvm_assume": true,
+        "has_ptrtoint": false,
+        "ir": "define noundef zeroext i1 @tm_9_discarded_nonzero_assume_eq_zero(i32 noundef %x) unnamed_addr #0 {\nstart:\n  %0 = sub i32 %x, 1\n  %1 = icmp ule i32 %0, -2\n  call void @llvm.assume(i1 %1)\n  %_0 = icmp eq i32 %x, 0\n  ret i1 %_0\n}"
+      }
+    },
+    "tm_9_opt_level_2_ir": "define noundef zeroext i1 @tm_9_discarded_nonzero_assume_eq_zero(i32 noundef %x) unnamed_addr #1 {\nstart:\n  ret i1 false\n}"
+  },
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "schema": "rustc-transmute-backend-repr-provenance-probe/1",
+  "summary": {
+    "failed": [],
+    "failed_count": 0,
+    "held_count": 22
+  }
+}

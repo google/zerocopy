@@ -1,0 +1,55 @@
+{
+  "all_checks_held": true,
+  "audit": {
+    "axioms_used_by_any_constant": [
+      "Quot.sound",
+      "propext"
+    ],
+    "definition_constants": 232,
+    "exit_code": 0,
+    "held": true,
+    "offending_constants": "#[]",
+    "other_constants": 44,
+    "theorem_constants": 90,
+    "unsafe_partial_axiom_opaque_or_unsafe_rec_constants": 0
+  },
+  "code_token_scan_all_zero": true,
+  "code_token_scan_occurrences": {
+    "Classical.": 0,
+    "admit": 0,
+    "axiom": 0,
+    "bv_decide": 0,
+    "import": 0,
+    "native_decide": 0,
+    "omega": 0,
+    "partial def": 0,
+    "plain def (not noncomputable)": 0,
+    "sorry": 0,
+    "unsafe": 0
+  },
+  "file": "TransmuteByteModelAndCodegenRefinement.lean",
+  "flags": [
+    "-M2048",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "lean_version_line": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "negative_control": {
+    "exit_code": 1,
+    "held": true,
+    "rejected": true
+  },
+  "plain": {
+    "axioms_in_print_axioms_output": [
+      "Quot.sound",
+      "propext"
+    ],
+    "exit_code": 0,
+    "held": true,
+    "print_axioms_lines": 12
+  },
+  "schema": "lean-kernel-audit/1",
+  "source_bytes": 62076,
+  "source_lines": 1445
+}
