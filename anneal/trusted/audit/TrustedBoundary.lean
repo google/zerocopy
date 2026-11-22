@@ -1782,13 +1782,38 @@ def verifyAndCollectLocals (env : Environment)
       fail s!"uninventoried constant {n}"
   return (locals, extraNames, alternateProofs)
 
+/-- Verify that `aliasName` is a universe-monomorphic `.defnInfo` abbreviation
+(`ReducibilityHints.abbrev`) in `expectedMod` whose body is directly
+`Expr.const targetName []` for a repository constant `targetName`. -/
+def requireMirPublicAlias (env : Environment)
+    (locals : Std.HashMap Name ConstantInfo)
+    (expectedMod aliasName targetName : Name) : IO Unit := do
+  let some aliasCi := locals.get? aliasName
+    | fail s!"missing required MIR public alias {aliasName}"
+  let .defnInfo aliasDef := aliasCi
+    | fail s!"expected {aliasName} to be a definition"
+  unless aliasDef.hints matches .abbrev do
+    fail s!"alias {aliasName} must be an abbrev (ReducibilityHints.abbrev)"
+  unless aliasCi.levelParams.isEmpty do
+    fail s!"alias {aliasName} must have no universe parameters"
+  let aliasOrig ← origin env aliasName
+  unless aliasOrig == expectedMod do
+    fail (s!"expected {aliasName} to be defined in " ++
+      s!"{expectedMod}, found {aliasOrig}")
+  unless locals.contains targetName do
+    fail s!"missing target {targetName} for alias {aliasName}"
+  unless aliasCi.value? true == some (.const targetName []) do
+    fail s!"alias {aliasName} must directly alias {targetName}"
+
 /-- Verify that `Trusted.MirAst` and `Trusted.MirSemantics` are loaded as
 `.repo (.trusted _)` modules and `Anneal.MirWp` is loaded as a `.repo .theory`
 module (whenever `requireMirWp` is `true` or any MIR/`PureLift` module is
-loaded), and that the core weakest-precondition adequacy and
-fault-characterization theorems and all 25 non-vacuity and parameter-boundary
-canaries in `Anneal.MirWp` prove the exact `*Claim` propositions defined in
-`Trusted.MirSemantics`. -/
+loaded), that the core weakest-precondition adequacy and fault-characterization
+theorems and all 25 non-vacuity and parameter-boundary canaries in
+`Anneal.MirWp` prove the exact `*Claim` propositions defined in
+`Trusted.MirSemantics`, and that the public `Trusted.{Crate, CrateTheorem,
+UnitTheorem}` aliases in `Trusted.MirSemantics` directly reference their
+canonical `Trusted.MirSemantics.*` declarations. -/
 def verifyMirWpCoreTheorems (env : Environment)
     (roles : Std.HashMap Name RepoOrigin)
     (locals : Std.HashMap Name ConstantInfo)
@@ -1909,6 +1934,11 @@ def verifyMirWpCoreTheorems (env : Environment)
             `Trusted.MirSemantics.progCastUninitSourceUb])] do
       requireClaimProof env locals semMod wpMod claimName none proofName
         reqConsts
+    for (aliasName, targetName) in [
+        (`Trusted.Crate, `Trusted.MirSemantics.Crate),
+        (`Trusted.CrateTheorem, `Trusted.MirSemantics.CrateTheorem),
+        (`Trusted.UnitTheorem, `Trusted.MirSemantics.UnitTheorem)] do
+      requireMirPublicAlias env locals semMod aliasName targetName
 
 /-- Execute Phase 2 (`"audit"`) on the compiled `.olean` environment `env`. -/
 def audit (j : Json) (env : Environment) (foundation : Array Name)
