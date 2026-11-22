@@ -70,16 +70,16 @@ theorem disjointBitOr_fallback_iff_no_poison (w : Nat) (a b : BitVec w) :
   cases evalDisjointBitOr w a b <;> simp [observeNoundef]
 
 /-- Little-endian bit-list model to prove `(a & b) == 0 → a + b = a | b` with zero carry. -/
-def bitAndList : List Bool → List Bool → List Bool
+noncomputable def bitAndList : List Bool → List Bool → List Bool
   | x :: xs, y :: ys => (x && y) :: bitAndList xs ys
   | _, _ => []
 
-def bitOrList : List Bool → List Bool → List Bool
+noncomputable def bitOrList : List Bool → List Bool → List Bool
   | x :: xs, y :: ys => (x || y) :: bitOrList xs ys
   | [], ys => ys
   | xs, [] => xs
 
-def allFalse : List Bool → Bool
+noncomputable def allFalse : List Bool → Bool
   | [] => true
   | b :: bs => (!b) && allFalse bs
 
@@ -88,7 +88,7 @@ def fullAdder (x y cin : Bool) : Bool × Bool :=
   let cout := (x && y) || (cin && (x || y))
   (sum, cout)
 
-def addBitsCarry : List Bool → List Bool → Bool → List Bool × Bool
+noncomputable def addBitsCarry : List Bool → List Bool → Bool → List Bool × Bool
   | [], ys, false => (ys, false)
   | x :: xs, [], false => (x :: xs, false)
   | [], [], true => ([], true)
