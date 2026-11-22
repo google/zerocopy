@@ -1,0 +1,191 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "part_a_local_analyzer_ssa_vs_memory": {
+    "cm_1_single_def_dominated": {
+      "alloca_count": 0,
+      "phi_count": 0,
+      "load_count": 0,
+      "store_count": 0,
+      "allocas": [],
+      "ir": "define noundef i32 @cm_1_single_def_dominated(i32 noundef %_1) unnamed_addr #0 {\nstart:\n  %_2 = add i32 %_1, 5\n  %_0 = mul i32 %_2, 3\n  ret i32 %_0\n}"
+    },
+    "cm_2_diamond_two_defs_forces_alloca": {
+      "alloca_count": 1,
+      "phi_count": 0,
+      "load_count": 1,
+      "store_count": 2,
+      "allocas": [
+        "%_3 = alloca [4 x i8], align 4"
+      ],
+      "ir": "define noundef i32 @cm_2_diamond_two_defs_forces_alloca(i1 noundef zeroext %_1, i32 noundef %_2) unnamed_addr #0 {\nstart:\n  %_3 = alloca [4 x i8], align 4\n  br i1 %_1, label %bb1, label %bb2\n\nbb1:                                              ; preds = %start\n  %0 = add i32 %_2, 10\n  store i32 %0, ptr %_3, align 4\n  br label %bb3\n\nbb2:                                              ; preds = %start\n  %1 = add i32 %_2, 20\n  store i32 %1, ptr %_3, align 4\n  br label %bb3\n\nbb3:                                              ; preds = %bb2, %bb1\n  %_0 = load i32, ptr %_3, align 4, !noundef !4\n  ret i32 %_0\n}"
+    },
+    "cm_3_single_def_nondominating_read_forces_alloca": {
+      "alloca_count": 1,
+      "phi_count": 0,
+      "load_count": 1,
+      "store_count": 1,
+      "allocas": [
+        "%_3 = alloca [4 x i8], align 4"
+      ],
+      "ir": "define noundef i32 @cm_3_single_def_nondominating_read_forces_alloca(i1 noundef zeroext %_1, i32 noundef %_2) unnamed_addr #0 {\nstart:\n  %_3 = alloca [4 x i8], align 4\n  br i1 %_1, label %bb1, label %bb2\n\nbb1:                                              ; preds = %start\n  %0 = add i32 %_2, 77\n  store i32 %0, ptr %_3, align 4\n  br label %bb2\n\nbb2:                                              ; preds = %bb1, %start\n  %_0 = load i32, ptr %_3, align 4, !noundef !4\n  ret i32 %_0\n}"
+    },
+    "cm_4_scalarpair_field_read_direct_ssa": {
+      "alloca_count": 0,
+      "phi_count": 0,
+      "load_count": 0,
+      "store_count": 0,
+      "allocas": [],
+      "ir": "define noundef i64 @cm_4_scalarpair_field_read_direct_ssa(i32 noundef %_1.0, i64 noundef %_1.1) unnamed_addr #0 {\nstart:\n  ret i64 %_1.1\n}"
+    },
+    "cm_5_scalarpair_field_write_forces_alloca": {
+      "alloca_count": 1,
+      "phi_count": 0,
+      "load_count": 1,
+      "store_count": 2,
+      "allocas": [
+        "%_3 = alloca [16 x i8], align 8"
+      ],
+      "ir": "define noundef i64 @cm_5_scalarpair_field_write_forces_alloca(i32 noundef %_1, i64 noundef %_2) unnamed_addr #0 {\nstart:\n  %_3 = alloca [16 x i8], align 8\n  store i32 %_1, ptr %_3, align 8\n  %0 = getelementptr inbounds i8, ptr %_3, i64 8\n  store i64 %_2, ptr %0, align 8\n  %1 = getelementptr inbounds i8, ptr %_3, i64 8\n  %_0 = load i64, ptr %1, align 8, !noundef !4\n  ret i64 %_0\n}"
+    },
+    "cm_6_raw_borrow_forces_alloca": {
+      "alloca_count": 1,
+      "phi_count": 0,
+      "load_count": 1,
+      "store_count": 1,
+      "allocas": [
+        "%_2 = alloca [4 x i8], align 4"
+      ],
+      "ir": "define noundef i32 @cm_6_raw_borrow_forces_alloca(i32 noundef %_1) unnamed_addr #0 {\nstart:\n  %_2 = alloca [4 x i8], align 4\n  %0 = add i32 %_1, 1\n  store i32 %0, ptr %_2, align 4\n  %_0 = load i32, ptr %_2, align 4, !noundef !4\n  ret i32 %_0\n}"
+    }
+  },
+  "part_b_msvc_seh_funclet_promotion": {
+    "rc": 0,
+    "module_cleanuppad_def_count": 5,
+    "module_cleanuppad_all_lines_count": 12,
+    "cleanuppad_count": 5,
+    "cleanupret_count": 2,
+    "invoke_count": 4,
+    "cleanuppads": [
+      "call void @_RINvCshB23UO63ypZ_12msvc_funclet18drop_in_place_shimNtB2_10OuterGuardEB2_(ptr noundef %_1) #4 [ \"funclet\"(token %cleanuppad) ]",
+      "cleanupret from %cleanuppad unwind to caller",
+      "%cleanuppad = cleanuppad within none []",
+      "call void @_RINvCshB23UO63ypZ_12msvc_funclet18drop_in_place_shimNtB2_10InnerGuardEB2_(ptr noundef %_3) #4 [ \"funclet\"(token %cleanuppad1) ]",
+      "%cleanuppad1 = cleanuppad within none []"
+    ],
+    "cleanuprets": [
+      "cleanupret from %cleanuppad unwind to caller",
+      "cleanupret from %cleanuppad1 unwind label %funclet_bb6"
+    ],
+    "ir": "define void @seh_shared_cleanup_promotion() unnamed_addr #2 personality ptr @__CxxFrameHandler3 {\nstart:\n  %_3 = alloca [0 x i8], align 1\n  %_1 = alloca [0 x i8], align 1\n  invoke void @may_throw_outer()\n          to label %bb1 unwind label %funclet_bb6\n\nbb6:                                              ; preds = %funclet_bb6\n; call msvc_funclet::drop_in_place_shim::<msvc_funclet::OuterGuard>\n  call void @_RINvCshB23UO63ypZ_12msvc_funclet18drop_in_place_shimNtB2_10OuterGuardEB2_(ptr noundef %_1) #4 [ \"funclet\"(token %cleanuppad) ]\n  cleanupret from %cleanuppad unwind to caller\n\nfunclet_bb6:                                      ; preds = %bb5, %bb2, %start\n  %cleanuppad = cleanuppad within none []\n  br label %bb6\n\nbb1:                                              ; preds = %start\n  invoke void @may_throw_inner()\n          to label %bb2 unwind label %funclet_bb5\n\nbb5:                                              ; preds = %funclet_bb5\n; call msvc_funclet::drop_in_place_shim::<msvc_funclet::InnerGuard>\n  call void @_RINvCshB23UO63ypZ_12msvc_funclet18drop_in_place_shimNtB2_10InnerGuardEB2_(ptr noundef %_3) #4 [ \"funclet\"(token %cleanuppad1) ]\n  cleanupret from %cleanuppad1 unwind label %funclet_bb6\n\nfunclet_bb5:                                      ; preds = %bb1\n  %cleanuppad1 = cleanuppad within none []\n  br label %bb5\n\nbb2:                                              ; preds = %bb1\n; invoke msvc_funclet::drop_in_place_shim::<msvc_funclet::InnerGuard>\n  invoke void @_RINvCshB23UO63ypZ_12msvc_funclet18drop_in_place_shimNtB2_10InnerGuardEB2_(ptr noundef %_3)\n          to label %bb3 unwind label %funclet_bb6\n\nbb3:                                              ; preds = %bb2\n; call msvc_funclet::drop_in_place_shim::<msvc_funclet::OuterGuard>\n  call void @_RINvCshB23UO63ypZ_12msvc_funclet18drop_in_place_shimNtB2_10OuterGuardEB2_(ptr noundef %_1) #5\n  ret void\n}",
+    "seh_true_internal_join_promotion": {
+      "cleanuppad_def_count": 3,
+      "cleanuppad_defs": [
+        "%cleanuppad = cleanuppad within none []",
+        "%cleanuppad1 = cleanuppad within none []",
+        "%cleanuppad2 = cleanuppad within none []"
+      ],
+      "cleanuppad_all_lines_count": 7,
+      "cleanupret_count": 3,
+      "cleanuprets": [
+        "cleanupret from %cleanuppad unwind label %funclet_bb4",
+        "cleanupret from %cleanuppad1 unwind to caller",
+        "cleanupret from %cleanuppad2 unwind label %funclet_bb4"
+      ],
+      "invoke_count": 2,
+      "ir": "define void @seh_true_internal_join_promotion(i1 noundef zeroext %branch) unnamed_addr #2 personality ptr @__CxxFrameHandler3 {\nstart:\n  %_5 = alloca [0 x i8], align 1\n  %_3 = alloca [0 x i8], align 1\n  %_2 = alloca [0 x i8], align 1\n  br i1 %branch, label %bb1, label %bb2\n\nbb2:                                              ; preds = %start\n  invoke void @may_throw_right()\n          to label %bb9 unwind label %funclet_bb6\n\nbb1:                                              ; preds = %start\n  invoke void @may_throw_left()\n          to label %bb8 unwind label %funclet_bb7\n\nbb6:                                              ; preds = %funclet_bb6\n; call msvc_funclet::drop_in_place_shim::<msvc_funclet::InnerGuard>\n  call void @_RINvCshB23UO63ypZ_12msvc_funclet18drop_in_place_shimNtB2_10InnerGuardEB2_(ptr noundef %_5) #4 [ \"funclet\"(token %cleanuppad) ]\n  cleanupret from %cleanuppad unwind label %funclet_bb4\n\nfunclet_bb6:                                      ; preds = %bb2\n  %cleanuppad = cleanuppad within none []\n  br label %bb6\n\nbb9:                                              ; preds = %bb2\n  br label %bb3\n\nbb3:                                              ; preds = %bb8, %bb9\n  ret void\n\nbb4:                                              ; preds = %funclet_bb4\n; call msvc_funclet::drop_in_place_shim::<msvc_funclet::OuterGuard>\n  call void @_RINvCshB23UO63ypZ_12msvc_funclet18drop_in_place_shimNtB2_10OuterGuardEB2_(ptr noundef %_2) #4 [ \"funclet\"(token %cleanuppad1) ]\n  cleanupret from %cleanuppad1 unwind to caller\n\nfunclet_bb4:                                      ; preds = %bb7, %bb6\n  %cleanuppad1 = cleanuppad within none []\n  br label %bb4\n\nbb7:                                              ; preds = %funclet_bb7\n; call msvc_funclet::drop_in_place_shim::<msvc_funclet::InnerGuard>\n  call void @_RINvCshB23UO63ypZ_12msvc_funclet18drop_in_place_shimNtB2_10InnerGuardEB2_(ptr noundef %_3) #4 [ \"funclet\"(token %cleanuppad2) ]\n  cleanupret from %cleanuppad2 unwind label %funclet_bb4\n\nfunclet_bb7:                                      ; preds = %bb1\n  %cleanuppad2 = cleanuppad within none []\n  br label %bb7\n\nbb8:                                              ; preds = %bb1\n  br label %bb3\n}"
+    }
+  },
+  "part_c_instrument_coverage_bcb_flow": {
+    "hot_loop_symbol": "_RNvCs20G1N2DXitr_12cov_specimen16hot_loop_diamond",
+    "hot_loop_mir_total_bbs": 9,
+    "hot_loop_mir_noncleanup_bbs": 8,
+    "hot_loop_virtual_counters_bcb": 7,
+    "hot_loop_virtual_counter_stmt_count": 7,
+    "hot_loop_coverage_points_before_pass": 0,
+    "hot_loop_physical_atomic_increments_in_prepass_llvm_ir": 3,
+    "hot_loop_physical_atomic_increments_in_opt2_llvm_ir": 7,
+    "hot_loop_increment_calls": [
+      "%0 = atomicrmw add ptr @__profc__RNvCs20G1N2DXitr_12cov_specimen16hot_loop_diamond, i64 1 monotonic, align 8",
+      "%1 = atomicrmw add ptr getelementptr inbounds ([3 x i64], ptr @__profc__RNvCs20G1N2DXitr_12cov_specimen16hot_loop_diamond, i32 0, i32 1), i64 1 monotonic, align 8",
+      "%4 = atomicrmw add ptr getelementptr inbounds ([3 x i64], ptr @__profc__RNvCs20G1N2DXitr_12cov_specimen16hot_loop_diamond, i32 0, i32 2), i64 1 monotonic, align 8"
+    ],
+    "main_inlined_increment_calls_count_prepass": 9,
+    "elf_coverage_sections": [
+      "Name: __llvm_prf_names (124)",
+      "Name: __llvm_prf_cnts (316)",
+      "Name: __llvm_prf_data (332)",
+      "Name: __llvm_covfun (362)",
+      "Name: __llvm_covmap (376)"
+    ],
+    "llvm_cov_functions": [
+      {
+        "name": "_RINvCs20G1N2DXitr_12cov_specimen15generic_inlinedmEB2_",
+        "count": 10,
+        "regions_count": 5,
+        "region_exec_counts": [
+          10,
+          10,
+          10,
+          0,
+          10
+        ]
+      },
+      {
+        "name": "_RINvCs20G1N2DXitr_12cov_specimen15generic_inlinedyEB2_",
+        "count": 7,
+        "regions_count": 5,
+        "region_exec_counts": [
+          7,
+          7,
+          0,
+          7,
+          7
+        ]
+      },
+      {
+        "name": "_RNvCs20G1N2DXitr_12cov_specimen16hot_loop_diamond",
+        "count": 1,
+        "regions_count": 12,
+        "region_exec_counts": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          101,
+          100,
+          25,
+          75,
+          100,
+          1,
+          1
+        ]
+      },
+      {
+        "name": "_RNvCs20G1N2DXitr_12cov_specimen4main",
+        "count": 1,
+        "regions_count": 15,
+        "region_exec_counts": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          10,
+          10,
+          1,
+          7,
+          7,
+          1,
+          1
+        ]
+      }
+    ],
+    "llvm_cov_show_annotated": "    1|       |#[inline(never)]\n    2|      1|pub fn hot_loop_diamond(n: u32) -> u32 {\n    3|      1|    let mut i = 0_u32;\n    4|      1|    let mut acc = 0_u32;\n    5|    101|    while i < n {\n    6|    100|        if (i & 3) == 0 {\n    7|     25|            acc += 3;\n    8|     75|        } else {\n    9|     75|            acc += 1;\n   10|     75|        }\n   11|    100|        i += 1;\n   12|       |    }\n   13|      1|    acc\n   14|      1|}\n   15|       |\n   16|       |#[inline(always)]\n   17|     17|pub fn generic_inlined<T: Copy>(val: T, take_left: bool) -> (T, u32) {\n   18|     17|    if take_left {\n   19|     10|        (val, 11)\n   20|       |    } else {\n   21|      7|        (val, 22)\n   22|       |    }\n   23|     17|}\n  ------------------\n  | _RINvCs20G1N2DXitr_12cov_specimen15generic_inlinedmEB2_:\n  |   17|     10|pub fn generic_inlined<T: Copy>(val: T, take_left: bool) -> (T, u32) {\n  |   18|     10|    if take_left {\n  |   19|     10|        (val, 11)\n  |   20|       |    } else {\n  |   21|      0|        (val, 22)\n  |   22|       |    }\n  |   23|     10|}\n  ------------------\n  | _RINvCs20G1N2DXitr_12cov_specimen15generic_inlinedyEB2_:\n  |   17|      7|pub fn generic_inlined<T: Copy>(val: T, take_left: bool) -> (T, u32) {\n  |   18|      7|    if take_left {\n  |   19|      0|        (val, 11)\n  |   20|       |    } else {\n  |   21|      7|        (val, 22)\n  |   22|       |    }\n  |   23|      7|}\n  ------------------\n   24|       |\n   25|      1|fn main() {\n   26|      1|    let s = hot_loop_diamond(std::hint::black_box(100));\n   27|      1|    assert_eq!(s, 25 * 3 + 75 * 1);\n   28|      1|    let mut tag_sum = 0_u32;\n   29|     10|    for _ in 0..10 {\n   30|     10|        tag_sum += generic_inlined(std::hint::black_box(5_u32), std::hint::black_box(true)).1;\n   31|     10|    }\n   32|      7|    for _ in 0..7 {\n   33|      7|        tag_sum += generic_inlined(std::hint::black_box(9_u64), std::hint::black_box(false)).1;\n   34|      7|    }\n   35|      1|    assert_eq!(tag_sum, 10 * 11 + 7 * 22);\n   36|      1|}\n\n",
+    "hot_loop_instrument_coverage_after_mir": "// MIR for `hot_loop_diamond` after InstrumentCoverage\n\nfn hot_loop_diamond(_1: u32) -> u32 {\n    debug n => _1;\n    let mut _0: u32;\n    let mut _2: u32;\n    let _4: ();\n    let mut _5: ();\n    let mut _6: bool;\n    let mut _7: u32;\n    let mut _8: u32;\n    let _9: ();\n    let mut _10: bool;\n    let mut _11: u32;\n    let mut _12: u32;\n    let mut _13: !;\n    let _14: ();\n    let mut _15: !;\n    scope 1 {\n        debug i => _2;\n        let mut _3: u32;\n        scope 2 {\n            debug acc => _3;\n        }\n    }\n\n    coverage Code { bcb: bcb0 } => <scratch>/cov_specimen.rs:2:1: 2:39 (#0);\n    coverage Code { bcb: bcb0 } => <scratch>/cov_specimen.rs:3:9: 3:14 (#0);\n    coverage Code { bcb: bcb0 } => <scratch>/cov_specimen.rs:3:17: 3:22 (#0);\n    coverage Code { bcb: bcb0 } => <scratch>/cov_specimen.rs:4:9: 4:16 (#0);\n    coverage Code { bcb: bcb0 } => <scratch>/cov_specimen.rs:4:19: 4:24 (#0);\n    coverage Code { bcb: bcb1 } => <scratch>/cov_specimen.rs:5:11: 5:16 (#0);\n    coverage Code { bcb: bcb2 } => <scratch>/cov_specimen.rs:6:12: 6:24 (#0);\n    coverage Code { bcb: bcb3 } => <scratch>/cov_specimen.rs:6:25: 8:10 (#0);\n    coverage Code { bcb: bcb5 } => <scratch>/cov_specimen.rs:8:16: 10:10 (#0);\n    coverage Code { bcb: bcb4 } => <scratch>/cov_specimen.rs:11:9: 11:15 (#0);\n    coverage Code { bcb: bcb6 } => <scratch>/cov_specimen.rs:13:5: 13:8 (#0);\n    coverage Code { bcb: bcb6 } => <scratch>/cov_specimen.rs:14:1: 14:2 (#0);\n\n    bb0: {\n        Coverage::VirtualCounter(bcb0);\n        StorageLive(_2);\n        _2 = const 0_u32;\n        FakeRead(ForLet(None), _2);\n        StorageLive(_3);\n        _3 = const 0_u32;\n        FakeRead(ForLet(None), _3);\n        StorageLive(_4);\n        goto -> bb1;\n    }\n\n    bb1: {\n        Coverage::VirtualCounter(bcb1);\n        falseUnwind -> [real: bb2, unwind: bb8];\n    }\n\n    bb2: {\n        StorageLive(_6);\n        StorageLive(_7);\n        _7 = copy _2;\n        StorageLive(_8);\n        _8 = copy _1;\n        _6 = Lt(move _7, move _8);\n        switchInt(move _6) -> [0: bb7, otherwise: bb3];\n    }\n\n    bb3: {\n        Coverage::VirtualCounter(bcb2);\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageLive(_9);\n        StorageLive(_10);\n        StorageLive(_11);\n        StorageLive(_12);\n        _12 = copy _2;\n        _11 = BitAnd(move _12, const 3_u32);\n        StorageDead(_12);\n        _10 = Eq(move _11, const 0_u32);\n        switchInt(move _10) -> [0: bb5, otherwise: bb4];\n    }\n\n    bb4: {\n        Coverage::VirtualCounter(bcb3);\n        StorageDead(_11);\n        _3 = Add(copy _3, const 3_u32);\n        _9 = const ();\n        goto -> bb6;\n    }\n\n    bb5: {\n        Coverage::VirtualCounter(bcb5);\n        StorageDead(_11);\n        _3 = Add(copy _3, const 1_u32);\n        _9 = const ();\n        goto -> bb6;\n    }\n\n    bb6: {\n        Coverage::VirtualCounter(bcb4);\n        StorageDead(_10);\n        StorageDead(_9);\n        _2 = Add(copy _2, const 1_u32);\n        _5 = const ();\n        StorageDead(_6);\n        goto -> bb1;\n    }\n\n    bb7: {\n        Coverage::VirtualCounter(bcb6);\n        StorageDead(_8);\n        StorageDead(_7);\n        StorageLive(_14);\n        _4 = const ();\n        StorageDead(_14);\n        StorageDead(_6);\n        StorageDead(_4);\n        _0 = copy _3;\n        StorageDead(_3);\n        StorageDead(_2);\n        return;\n    }\n\n    bb8 (cleanup): {\n        resume;\n    }\n}\n",
+    "hot_loop_prepass_llvm_ir": "define internal noundef i32 @_RNvCs20G1N2DXitr_12cov_specimen16hot_loop_diamond(i32 noundef %n) unnamed_addr #1 {\nstart:\n  %i = alloca [4 x i8], align 4\n  %acc = alloca [4 x i8], align 4\n  %0 = atomicrmw add ptr @__profc__RNvCs20G1N2DXitr_12cov_specimen16hot_loop_diamond, i64 1 monotonic, align 8\n  call void @llvm.lifetime.start.p0(ptr %i)\n  store i32 0, ptr %i, align 4\n  store i32 0, ptr %acc, align 4\n  br label %bb1\n\nbb1:                                              ; preds = %bb5, %start\n  %1 = atomicrmw add ptr getelementptr inbounds ([3 x i64], ptr @__profc__RNvCs20G1N2DXitr_12cov_specimen16hot_loop_diamond, i32 0, i32 1), i64 1 monotonic, align 8\n  %_4 = load i32, ptr %i, align 4, !noundef !6\n  %_3 = icmp ult i32 %_4, %n\n  br i1 %_3, label %bb2, label %bb6\n\nbb6:                                              ; preds = %bb1\n  call void @llvm.lifetime.end.p0(ptr %i)\n  %2 = load i32, ptr %acc, align 4, !noundef !6\n  ret i32 %2\n\nbb2:                                              ; preds = %bb1\n  %_6 = load i32, ptr %i, align 4, !noundef !6\n  %_5 = and i32 %_6, 3\n  %3 = icmp eq i32 %_5, 0\n  br i1 %3, label %bb3, label %bb4\n\nbb3:                                              ; preds = %bb2\n  %4 = atomicrmw add ptr getelementptr inbounds ([3 x i64], ptr @__profc__RNvCs20G1N2DXitr_12cov_specimen16hot_loop_diamond, i32 0, i32 2), i64 1 monotonic, align 8\n  %5 = load i32, ptr %acc, align 4, !noundef !6\n  %6 = add i32 %5, 3\n  store i32 %6, ptr %acc, align 4\n  br label %bb5\n\nbb4:                                              ; preds = %bb2\n  %7 = load i32, ptr %acc, align 4, !noundef !6\n  %8 = add i32 %7, 1\n  store i32 %8, ptr %acc, align 4\n  br label %bb5\n\nbb5:                                              ; preds = %bb4, %bb3\n  %9 = load i32, ptr %i, align 4, !noundef !6\n  %10 = add i32 %9, 1\n  store i32 %10, ptr %i, align 4\n  br label %bb1\n}"
+  }
+}

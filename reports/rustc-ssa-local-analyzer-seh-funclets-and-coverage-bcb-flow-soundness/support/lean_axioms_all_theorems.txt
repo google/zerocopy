@@ -1,0 +1,33 @@
+'SsaLocalAnalyzerAndCoverageFlow.zst_preserved_non_drop' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.zst_with_drop_promotes_to_memory' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.memory_fixed_step' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.stepUse_monotone_non_zst' depends on axioms: [propext, Quot.sound]
+'SsaLocalAnalyzerAndCoverageFlow.second_define_demotes_to_memory' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.non_dominated_read_demotes_to_memory' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.disallowed_proj_demotes_to_memory' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.sim_ssa_go' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.sim_memory_go' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.localAnalyzer_ssa_or_memory_simulation_exact' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.cm1_single_def_stays_ssa' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.cm2_two_defs_demotes_to_memory' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.cm3_nondominated_single_def_demotes_to_memory' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.cm4_scalarpair_field_read_stays_ssa' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.cm5_scalarpair_field_write_demotes_to_memory' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.cm6_raw_borrow_demotes_to_memory' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.getKind_setListAt_eq' does not depend on any axioms
+'SsaLocalAnalyzerAndCoverageFlow.getKind_setListAt_ne' does not depend on any axioms
+'SsaLocalAnalyzerAndCoverageFlow.cleanupKinds_no_cross_funclet_internal_edge' depends on axioms: [propext, Quot.sound]
+'SsaLocalAnalyzerAndCoverageFlow.distinct_funclet_edge_lowers_to_cleanupret' depends on axioms: [propext, Quot.sound]
+'SsaLocalAnalyzerAndCoverageFlow.seh_shared_cleanup_promotion_tree_verified' does not depend on any axioms
+'SsaLocalAnalyzerAndCoverageFlow.seh_true_internal_join_promotion_tree_verified' does not depend on any axioms
+'SsaLocalAnalyzerAndCoverageFlow.seh_two_parents_triggers_span_bug' does not depend on any axioms
+'SsaLocalAnalyzerAndCoverageFlow.int_add_zero_right' does not depend on any axioms
+'SsaLocalAnalyzerAndCoverageFlow.int_solve_left_sum' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.int_solve_right_sum' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.bcbFlow_counterExpression_reconstructs_exact' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.hotLoop_reloop_priority_places_latch_first' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.hotLoop_concrete_100_iters_reconstructs_exact' does not depend on any axioms
+'SsaLocalAnalyzerAndCoverageFlow.inlinedInstance_monomorphize_preserves_distinct_counters' does not depend on any axioms
+'SsaLocalAnalyzerAndCoverageFlow.ce1_nondominated_single_def_in_ssa_reads_unbound_vreg' depends on axioms: [propext]
+'SsaLocalAnalyzerAndCoverageFlow.ce2_unpromoted_shared_cleanup_join_violates_seh_funclet_isolation' does not depend on any axioms
+'SsaLocalAnalyzerAndCoverageFlow.ce3_non_out_summable_abort_block_breaks_naive_outflow_conservation' does not depend on any axioms

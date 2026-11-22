@@ -93276,6 +93276,63 @@
         "rustc/codegen"
       ]
     },
+    "rustc-ssa-local-analyzer-seh-funclets-and-coverage-bcb-flow-soundness": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0-nightly (3ef0c22cd 2026-11-11)"
+          },
+          "name": "rustc nightly source and recorded LLVM 23.1.5 codegen/coverage baseline"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (14210df0e 2026-05-31)"
+          },
+          "name": "rustc nightly toolchain and source (audited and live-executed with LLVM 22.1.6, llvm-profdata, and llvm-cov)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "6dfe1677ab8dffbc6ec13d53a1e0215d75147689",
+            "version": "llvmorg-23.1.1"
+          },
+          "name": "LLVM Language Reference Manual, Exception Handling, Coverage Mapping Format, and InstrProfiling pass"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "joshlf/anneal (Trusted.MirAst, Trusted.MirSemantics, Trusted.Correspondence)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4 theorem prover"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "verification"
+      ]
+    },
     "rustc-standard-library-codegen-demand-per-target": {
       "observed_at": "2026-11-13",
       "subjects": [
