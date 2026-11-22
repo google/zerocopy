@@ -1209,7 +1209,7 @@ mod unpinned_admission_tests {
             .unwrap_or_else(default_lean_path)
     }
 
-    fn write_target_request(
+    pub(super) fn write_target_request(
         dir: &Path,
         modules: Vec<(&str, TargetRole, &str)>,
     ) -> TargetAuditRequest {
@@ -1244,7 +1244,10 @@ mod unpinned_admission_tests {
         }
     }
 
-    fn minimal_request(dir: &Path, proof_extra_import: Option<&str>) -> TargetAuditRequest {
+    pub(super) fn minimal_request(
+        dir: &Path,
+        proof_extra_import: Option<&str>,
+    ) -> TargetAuditRequest {
         let extra = proof_extra_import.map(|m| format!("import {m}\n")).unwrap_or_default();
         write_target_request(
             dir,
@@ -1673,13 +1676,123 @@ exit 3
         assert_eq!(pinned_report["replay"], Json::Bool(true));
         assert_eq!(pinned_report["exactType"], Json::Bool(true));
     }
+}
+
+#[cfg(all(test, unix))]
+mod tests {
+    use std::{ffi::OsStr, fs};
+
+    use super::{
+        unpinned_admission_tests::{minimal_request, write_target_request},
+        *,
+    };
+    use crate::toolchain::LOCKED_LEAN_SHA256;
+
+    mod embedded {
+        include!("bundled_resources.rs");
+
+        pub fn entries() -> &'static [(&'static str, &'static str)] {
+            let _ = CORRESPONDENCE_PROVENANCE_JSON;
+            BUNDLE
+        }
+    }
+
+    struct EmbeddedBundle {
+        root: PathBuf,
+        model_modules: Vec<TargetModule>,
+        theory_modules: Vec<TargetModule>,
+    }
+
+    impl EmbeddedBundle {
+        /// Materialize `cargo-anneal`'s embedded bundle into `root` just as
+        /// `verify.rs` does, so `target::tests` runs without reaching outside
+        /// the package (including from an unpacked `cargo package` tarball).
+        fn materialize(root: &Path) -> Self {
+            let mut model_modules = Vec::new();
+            let mut theory_modules = Vec::new();
+            for &(relative, text) in embedded::entries() {
+                let path = root.join(relative);
+                fs::create_dir_all(path.parent().unwrap()).unwrap();
+                fs::write(&path, text.as_bytes()).unwrap();
+                let sha = sha256_file(&path, "fixture").unwrap();
+                if let Some(rest) =
+                    relative.strip_prefix("trusted/lean/").and_then(|s| s.strip_suffix(".lean"))
+                {
+                    model_modules.push(TargetModule {
+                        module: rest.replace('/', "."),
+                        source: path,
+                        expected_sha256: sha,
+                        role: TargetRole::Model,
+                    });
+                } else if let Some(rest) =
+                    relative.strip_prefix("theory/").and_then(|s| s.strip_suffix(".lean"))
+                {
+                    theory_modules.push(TargetModule {
+                        module: rest.replace('/', "."),
+                        source: path,
+                        expected_sha256: sha,
+                        role: TargetRole::Proof,
+                    });
+                }
+            }
+            Self { root: root.to_path_buf(), model_modules, theory_modules }
+        }
+
+        fn attach(&self, req: &mut TargetAuditRequest, include_model: bool) {
+            if include_model {
+                req.modules.extend(self.model_modules.iter().cloned());
+            }
+            req.modules.extend(self.theory_modules.iter().cloned());
+        }
+    }
+
+    /// Resolve an explicitly configured, pinned Lean 4.34.1 binary from
+    /// `(ANNEAL_LEAN, ANNEAL_TEST_INSTALL_ROOT)`.
+    ///
+    /// Returns `None` when neither variable is set (or both are empty),
+    /// skipping live Lean tests without probing ambient `$HOME/.elan` or
+    /// `$XDG_CACHE_HOME` installs. Panics when either variable is configured to
+    /// a missing path or a binary whose SHA-256 differs from
+    /// [`LOCKED_LEAN_SHA256`], so toolchain-equipped CI jobs cannot silently
+    /// skip live tests.
+    fn explicit_verified_lean_from(
+        anneal_lean: Option<&OsStr>,
+        install_root: Option<&OsStr>,
+    ) -> Option<PathBuf> {
+        let (source, path) = if let Some(lean) = anneal_lean.filter(|v| !v.is_empty()) {
+            ("ANNEAL_LEAN", PathBuf::from(lean))
+        } else {
+            let root = install_root.filter(|v| !v.is_empty())?;
+            ("ANNEAL_TEST_INSTALL_ROOT", Path::new(root).join("lean/bin/lean"))
+        };
+        assert!(
+            path.is_file(),
+            "{source} does not point to a Lean binary file: {}",
+            path.display()
+        );
+        let digest = sha256_file(&path, "test")
+            .unwrap_or_else(|err| panic!("{source} failed to hash {}: {err}", path.display()));
+        assert!(
+            LOCKED_LEAN_SHA256.contains(&digest.as_str()),
+            "{source} Lean binary {} has unpinned SHA-256 {digest}",
+            path.display()
+        );
+        Some(path)
+    }
+
+    fn explicit_verified_lean() -> Option<PathBuf> {
+        explicit_verified_lean_from(
+            std::env::var_os("ANNEAL_LEAN").as_deref(),
+            std::env::var_os("ANNEAL_TEST_INSTALL_ROOT").as_deref(),
+        )
+    }
 
     #[test]
     fn demand_driven_theory_bfs_prunes_unused_and_preserves_role_edges() {
         let dir = tempfile::tempdir().unwrap();
         let base = fs::canonicalize(dir.path()).unwrap();
         let mut req = minimal_request(&base.join("bfs"), None);
-        for extra in ["Anneal.BitVec", "Anneal.MirWp", "Anneal.Helper"] {
+        for extra in ["Anneal.Extra", "Anneal.MirWp", "Anneal.Helper"] {
             let path = base.join("bfs").join(format!("{extra}.lean"));
             fs::write(&path, "prelude\n").unwrap();
             req.modules.push(TargetModule {
@@ -1699,55 +1812,97 @@ exit 3
             ("Model".to_owned(), vec![]),
             ("Captured".to_owned(), vec![mk_edge("Model")]),
             ("Spec".to_owned(), vec![mk_edge("Model")]),
-            (
-                "Expected".to_owned(),
-                vec![mk_edge("Captured"), mk_edge("Spec")],
-            ),
+            ("Expected".to_owned(), vec![mk_edge("Captured"), mk_edge("Spec")]),
             ("Proof".to_owned(), vec![mk_edge("Expected")]),
-            ("Anneal.BitVec".to_owned(), vec![]),
+            ("Anneal.Extra".to_owned(), vec![]),
             ("Anneal.MirWp".to_owned(), vec![mk_edge("Model")]),
-            ("Anneal.Helper".to_owned(), vec![mk_edge("Anneal.BitVec")]),
+            ("Anneal.Helper".to_owned(), vec![mk_edge("Anneal.Extra")]),
         ]);
 
         // 1. None of the bundled `Anneal.*` modules are imported.
         let retained_none = reachable_target_modules(&req, &imports);
-        assert!(!retained_none.contains("Anneal.BitVec"));
+        assert!(!retained_none.contains("Anneal.Extra"));
         assert!(!retained_none.contains("Anneal.MirWp"));
         assert!(!retained_none.contains("Anneal.Helper"));
         for seed in ["Model", "Captured", "Spec", "Expected", "Proof"] {
             assert!(retained_none.contains(seed), "missing seed {seed}");
         }
 
-        // 2. Transitive `Proof -> Anneal.Helper -> Anneal.BitVec` retains both
+        // 2. Transitive `Proof -> Anneal.Helper -> Anneal.Extra` retains both
         //    reachable theory modules while still pruning `Anneal.MirWp`.
-        imports
-            .get_mut("Proof")
-            .unwrap()
-            .push(mk_edge("Anneal.Helper"));
+        imports.get_mut("Proof").unwrap().push(mk_edge("Anneal.Helper"));
         let retained_trans = reachable_target_modules(&req, &imports);
         assert!(retained_trans.contains("Anneal.Helper"));
-        assert!(retained_trans.contains("Anneal.BitVec"));
+        assert!(retained_trans.contains("Anneal.Extra"));
         assert!(!retained_trans.contains("Anneal.MirWp"));
 
         // 3. A forbidden `Spec -> Anneal.MirWp` edge retains `Anneal.MirWp` so
         //    the downstream `TargetRole::allows` check still rejects it.
-        imports
-            .get_mut("Spec")
-            .unwrap()
-            .push(mk_edge("Anneal.MirWp"));
+        imports.get_mut("Spec").unwrap().push(mk_edge("Anneal.MirWp"));
         let retained_spec = reachable_target_modules(&req, &imports);
         assert!(retained_spec.contains("Anneal.MirWp"));
+
+        // 4. Setting `theorem_module` to a bundled `Anneal.*` module keeps it
+        //    as a seed even with no incoming import edges.
+        imports.get_mut("Proof").unwrap().retain(|e| e.module != "Anneal.Helper");
+        req.theorem_module = "Anneal.Extra".to_owned();
+        let retained_thm = reachable_target_modules(&req, &imports);
+        assert!(retained_thm.contains("Anneal.Extra"));
+        assert!(!retained_thm.contains("Anneal.Helper"));
     }
 
     #[test]
-    fn live_demand_driven_anneal_bitvec_pruning_and_three_axiom_proof() {
-        let lean = installed_lean();
+    fn explicit_verified_lean_gates_and_fails_closed() {
         let dir = tempfile::tempdir().unwrap();
         let base = fs::canonicalize(dir.path()).unwrap();
-        let nat_bitwise_path = repo_root().join("theory/Anneal/NatBitwise.lean");
-        let nat_bitwise_sha = sha256_file(&nat_bitwise_path, "fixture").unwrap();
-        let bitvec_path = repo_root().join("theory/Anneal/BitVec.lean");
-        let bitvec_sha = sha256_file(&bitvec_path, "fixture").unwrap();
+        let empty = OsStr::new("");
+
+        assert_eq!(explicit_verified_lean_from(None, None), None);
+        assert_eq!(explicit_verified_lean_from(Some(empty), Some(empty)), None);
+
+        let panic_message = |anneal_lean: Option<&OsStr>, install_root: Option<&OsStr>| {
+            let err =
+                std::panic::catch_unwind(|| explicit_verified_lean_from(anneal_lean, install_root))
+                    .expect_err("expected fail-closed panic");
+            err.downcast_ref::<String>()
+                .cloned()
+                .or_else(|| err.downcast_ref::<&str>().map(|s| (*s).to_owned()))
+                .expect("string panic payload")
+        };
+
+        let missing_lean = base.join("missing-lean");
+        let msg = panic_message(Some(missing_lean.as_os_str()), None);
+        assert!(msg.contains("ANNEAL_LEAN"), "{msg}");
+        assert!(msg.contains("Lean binary file"), "{msg}");
+
+        let missing_root = base.join("missing-root");
+        let msg = panic_message(Some(empty), Some(missing_root.as_os_str()));
+        assert!(msg.contains("ANNEAL_TEST_INSTALL_ROOT"), "{msg}");
+        assert!(msg.contains("Lean binary file"), "{msg}");
+
+        let bogus_lean = base.join("bogus-lean");
+        fs::write(&bogus_lean, b"not lean").unwrap();
+        let msg = panic_message(Some(bogus_lean.as_os_str()), Some(missing_root.as_os_str()));
+        assert!(msg.contains("ANNEAL_LEAN"), "{msg}");
+        assert!(msg.contains("unpinned SHA-256"), "{msg}");
+
+        let bogus_root = base.join("bogus-root");
+        let bogus_root_lean = bogus_root.join("lean/bin/lean");
+        fs::create_dir_all(bogus_root_lean.parent().unwrap()).unwrap();
+        fs::write(&bogus_root_lean, b"not lean").unwrap();
+        let msg = panic_message(None, Some(bogus_root.as_os_str()));
+        assert!(msg.contains("ANNEAL_TEST_INSTALL_ROOT"), "{msg}");
+        assert!(msg.contains("unpinned SHA-256"), "{msg}");
+    }
+
+    #[test]
+    fn live_demand_driven_bundled_theory_pruning() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
 
         // Unused bundled theory module with a deliberate elaboration error in
         // its body (valid header only): proving it is pruned means it is never
@@ -1760,19 +1915,198 @@ exit 3
         .unwrap();
         let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
 
-        let attach_bundled_theory = |req: &mut TargetAuditRequest| {
+        let attach_mir_wp_and_unused = |req: &mut TargetAuditRequest, include_model: bool| {
+            bundle.attach(req, include_model);
             req.modules.push(TargetModule {
-                module: "Anneal.NatBitwise".to_owned(),
-                source: nat_bitwise_path.clone(),
-                expected_sha256: nat_bitwise_sha.clone(),
+                module: "Anneal.Unused".to_owned(),
+                source: unused_path.clone(),
+                expected_sha256: unused_sha.clone(),
                 role: TargetRole::Proof,
             });
-            req.modules.push(TargetModule {
-                module: "Anneal.BitVec".to_owned(),
-                source: bitvec_path.clone(),
-                expected_sha256: bitvec_sha.clone(),
-                role: TargetRole::Proof,
-            });
+        };
+
+        // 1. When `Proof` does NOT import `Anneal.MirWp` or `Anneal.Unused`,
+        //    neither is compiled nor listed in provenance (`sources`).
+        let mut req_unimported = minimal_request(&base.join("unimported"), None);
+        attach_mir_wp_and_unused(&mut req_unimported, false);
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report_unimported = checker.run_target(&req_unimported).unwrap();
+        assert_eq!(report_unimported["replay"], Json::Bool(true));
+        assert_eq!(report_unimported["exactType"], Json::Bool(true));
+        let sources_unimported: BTreeSet<&str> = report_unimported["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(!sources_unimported.contains("Anneal.MirWp"), "{sources_unimported:?}");
+        assert!(!sources_unimported.contains("Anneal.MirWp.Core"), "{sources_unimported:?}");
+        assert!(!sources_unimported.contains("Anneal.Unused"), "{sources_unimported:?}");
+        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        let export_unimported = base.join("export-unimported");
+        assert!(checker.export_target_oleans(&export_unimported).unwrap());
+        assert!(!export_unimported.join("Anneal/MirWp.olean").exists());
+        assert!(!export_unimported.join("Anneal/Unused.olean").exists());
+
+        // 2. When `Proof` imports `Anneal.MirWp`, `Anneal.MirWp` and its
+        //    transitive submodules ARE compiled and verified within the
+        //    3-axiom ceiling, while unimported `Anneal.Unused` remains
+        //    uncompiled and omitted.
+        let mut req_with_mir_wp = write_target_request(
+            &base.join("with-mir-wp"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.body0 : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 0, isUnsafe := false, locals := [.unit],\n    \
+                       basicBlocks := [{ statements := [], terminator := .return_ }],\n    \
+                       identity := _root_.String.ofList [(_root_.Char.ofNat 97)] }\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs where\n  \
+                     safety := fun _ _ => True\n  \
+                     property := fun _ => True\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.MirWp\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                     refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, trivial⟩\n  \
+                     intro id selected h\n  \
+                     cases id with\n  \
+                     | zero =>\n    \
+                       cases h\n    \
+                       refine Anneal.MirWp.bodyVerified_of_safe rfl rfl (fun args hv _ => ?_)\n    \
+                       cases args with\n    \
+                       | nil => exact (Anneal.MirWp.run_initial_success (body := Captured.body0) (fuel := 4) (args := []) (value := .unit) rfl).1\n    \
+                       | cons _ _ => cases hv\n  \
+                     | succ n => cases n <;> cases h\n",
+                ),
+            ],
+        );
+        attach_mir_wp_and_unused(&mut req_with_mir_wp, true);
+        let report_with_mir_wp = checker.run_target(&req_with_mir_wp).unwrap();
+        assert_eq!(report_with_mir_wp["replay"], Json::Bool(true));
+        assert_eq!(report_with_mir_wp["exactType"], Json::Bool(true));
+        let sources_with_mir_wp: BTreeSet<&str> = report_with_mir_wp["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        for expected in [
+            "Anneal.MirWp",
+            "Anneal.MirWp.Core",
+            "Anneal.MirWp.Execution",
+            "Anneal.MirWp.Reflection",
+            "Anneal.MirWp.Scalars",
+            "Anneal.MirWp.Canaries",
+        ] {
+            assert!(
+                sources_with_mir_wp.contains(expected),
+                "missing {expected} in {sources_with_mir_wp:?}"
+            );
+        }
+        assert!(!sources_with_mir_wp.contains("Anneal.Unused"), "{sources_with_mir_wp:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> = report_with_mir_wp["axioms"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|a| a.as_str().unwrap())
+            .collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        assert!(checker.stage.join("target-lib/Anneal/MirWp.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        let export_with_mir_wp = base.join("export-with-mir-wp");
+        assert!(checker.export_target_oleans(&export_with_mir_wp).unwrap());
+        assert!(export_with_mir_wp.join("Anneal/MirWp.olean").is_file());
+        assert!(!export_with_mir_wp.join("Anneal/Unused.olean").exists());
+
+        // 3. Role isolation remains intact: `Specification -> Anneal.MirWp`
+        //    is retained by BFS and rejected by `TargetRole::allows`.
+        let mut req_bad_spec = write_target_request(
+            &base.join("bad-spec"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.body0 : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 0, isUnsafe := false, locals := [.unit],\n    \
+                       basicBlocks := [{ statements := [], terminator := .return_ }],\n    \
+                       identity := _root_.String.ofList [(_root_.Char.ofNat 97)] }\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\nimport Anneal.MirWp\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs where\n  \
+                     safety := fun _ _ => True\n  \
+                     property := fun _ => True\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\ntheorem Proof.verify : Expected.claim := trivial\n",
+                ),
+            ],
+        );
+        attach_mir_wp_and_unused(&mut req_bad_spec, true);
+        let err = checker.run_target(&req_bad_spec).unwrap_err();
+        assert_eq!(err.code, 1, "{err}");
+        assert_eq!(err.phase, "target-role", "{err}");
+        assert!(err.message.contains("Spec cannot import Anneal.MirWp"), "{err}");
+    }
+
+    #[test]
+    fn live_demand_driven_anneal_bitvec_pruning_and_three_axiom_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let attach_bundled_theory = |req: &mut TargetAuditRequest, include_model: bool| {
+            bundle.attach(req, include_model);
             req.modules.push(TargetModule {
                 module: "Anneal.Unused".to_owned(),
                 source: unused_path.clone(),
@@ -1784,8 +2118,8 @@ exit 3
         // 1. When `Proof` does NOT import `Anneal.BitVec` (or `Anneal.Unused`),
         //    neither is compiled nor listed in provenance (`sources`).
         let mut req_no_bv = minimal_request(&base.join("no-bv"), None);
-        attach_bundled_theory(&mut req_no_bv);
-        let mut checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        attach_bundled_theory(&mut req_no_bv, false);
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
         let report_no_bv = checker.run_target(&req_no_bv).unwrap();
         assert_eq!(report_no_bv["replay"], Json::Bool(true));
         assert_eq!(report_no_bv["exactType"], Json::Bool(true));
@@ -1795,18 +2129,12 @@ exit 3
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(
-            !sources_no_bv.contains("Anneal.NatBitwise"),
-            "{sources_no_bv:?}"
-        );
-        assert!(
-            !sources_no_bv.contains("Anneal.BitVec"),
-            "{sources_no_bv:?}"
-        );
-        assert!(
-            !sources_no_bv.contains("Anneal.Unused"),
-            "{sources_no_bv:?}"
-        );
+        assert!(!sources_no_bv.contains("Anneal.NatBitwise"), "{sources_no_bv:?}");
+        assert!(!sources_no_bv.contains("Anneal.BitVec"), "{sources_no_bv:?}");
+        assert!(!sources_no_bv.contains("Anneal.Unused"), "{sources_no_bv:?}");
+        assert!(!checker.stage.join("target-lib/Anneal/NatBitwise.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_no_bv = base.join("export-no-bv");
         assert!(checker.export_target_oleans(&export_no_bv).unwrap());
         assert!(!export_no_bv.join("Anneal/NatBitwise.olean").exists());
@@ -1872,7 +2200,7 @@ exit 3
                 ),
             ],
         );
-        attach_bundled_theory(&mut req_with_bv);
+        attach_bundled_theory(&mut req_with_bv, false);
         let report_with_bv = checker.run_target(&req_with_bv).unwrap();
         assert_eq!(report_with_bv["replay"], Json::Bool(true));
         assert_eq!(report_with_bv["exactType"], Json::Bool(true));
@@ -1882,18 +2210,9 @@ exit 3
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(
-            sources_with_bv.contains("Anneal.NatBitwise"),
-            "{sources_with_bv:?}"
-        );
-        assert!(
-            sources_with_bv.contains("Anneal.BitVec"),
-            "{sources_with_bv:?}"
-        );
-        assert!(
-            !sources_with_bv.contains("Anneal.Unused"),
-            "{sources_with_bv:?}"
-        );
+        assert!(sources_with_bv.contains("Anneal.NatBitwise"), "{sources_with_bv:?}");
+        assert!(sources_with_bv.contains("Anneal.BitVec"), "{sources_with_bv:?}");
+        assert!(!sources_with_bv.contains("Anneal.Unused"), "{sources_with_bv:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> = report_with_bv["axioms"]
@@ -1902,10 +2221,10 @@ exit 3
             .iter()
             .map(|a| a.as_str().unwrap())
             .collect();
-        assert!(
-            used_axioms.is_subset(&allowed_axioms),
-            "unexpected axioms: {used_axioms:?}"
-        );
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        assert!(checker.stage.join("target-lib/Anneal/NatBitwise.olean").is_file());
+        assert!(checker.stage.join("target-lib/Anneal/BitVec.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_with_bv = base.join("export-with-bv");
         assert!(checker.export_target_oleans(&export_with_bv).unwrap());
         assert!(export_with_bv.join("Anneal/NatBitwise.olean").is_file());
@@ -1950,18 +2269,14 @@ exit 3
                 ),
             ],
         );
-        attach_bundled_theory(&mut req_bad_spec);
+        attach_bundled_theory(&mut req_bad_spec, false);
         let err = checker.run_target(&req_bad_spec).unwrap_err();
         assert_eq!(err.code, 1, "{err}");
         assert_eq!(err.phase, "target-role", "{err}");
-        assert!(
-            err.message.contains("Spec cannot import Anneal.BitVec"),
-            "{err}"
-        );
+        assert!(err.message.contains("Spec cannot import Anneal.BitVec"), "{err}");
 
         // 4. Importing both `Anneal.MirWp` and `Anneal.BitVec` together in one
-        //    `Proof` replays cleanly via shared `Anneal.NatBitwise` with no
-        //    duplicate `Nat.bitwise.eq_def` declaration.
+        //    `Proof` replays cleanly with no duplicate declarations.
         let mut req_both = write_target_request(
             &base.join("both-mirwp-bitvec"),
             vec![
@@ -2015,33 +2330,7 @@ exit 3
                 ),
             ],
         );
-        for rel in crate::bundle::BUNDLE_SOURCES {
-            if let Some(rest) = rel
-                .strip_prefix("trusted/lean/")
-                .and_then(|s| s.strip_suffix(".lean"))
-            {
-                let source = repo_root().join(rel);
-                req_both.modules.push(TargetModule {
-                    module: rest.replace('/', "."),
-                    expected_sha256: sha256_file(&source, "fixture").unwrap(),
-                    source,
-                    role: TargetRole::Model,
-                });
-            } else if let Some(rest) = rel
-                .strip_prefix("theory/")
-                .and_then(|s| s.strip_suffix(".lean"))
-                && rest.starts_with("Anneal/MirWp")
-            {
-                let source = repo_root().join(rel);
-                req_both.modules.push(TargetModule {
-                    module: rest.replace('/', "."),
-                    expected_sha256: sha256_file(&source, "fixture").unwrap(),
-                    source,
-                    role: TargetRole::Proof,
-                });
-            }
-        }
-        attach_bundled_theory(&mut req_both);
+        attach_bundled_theory(&mut req_both, true);
         let report_both = checker.run_target(&req_both).unwrap();
         assert_eq!(report_both["replay"], Json::Bool(true));
         assert_eq!(report_both["exactType"], Json::Bool(true));
@@ -2051,28 +2340,23 @@ exit 3
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(
-            sources_both.contains("Anneal.NatBitwise"),
-            "{sources_both:?}"
-        );
+        assert!(sources_both.contains("Anneal.NatBitwise"), "{sources_both:?}");
         assert!(sources_both.contains("Anneal.MirWp"), "{sources_both:?}");
         assert!(sources_both.contains("Anneal.BitVec"), "{sources_both:?}");
+        assert!(!sources_both.contains("Anneal.BitVecArith"), "{sources_both:?}");
+        assert!(!sources_both.contains("Anneal.LeBytes"), "{sources_both:?}");
+        assert!(!sources_both.contains("Anneal.ListChunks"), "{sources_both:?}");
         assert!(!sources_both.contains("Anneal.Unused"), "{sources_both:?}");
     }
 
     #[test]
     fn live_demand_driven_lebytes_and_listchunks_three_axiom_proof() {
-        let lean = installed_lean();
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
         let dir = tempfile::tempdir().unwrap();
         let base = fs::canonicalize(dir.path()).unwrap();
-        let nat_bitwise_path = repo_root().join("theory/Anneal/NatBitwise.lean");
-        let nat_bitwise_sha = sha256_file(&nat_bitwise_path, "fixture").unwrap();
-        let bitvec_path = repo_root().join("theory/Anneal/BitVec.lean");
-        let bitvec_sha = sha256_file(&bitvec_path, "fixture").unwrap();
-        let lebytes_path = repo_root().join("theory/Anneal/LeBytes.lean");
-        let lebytes_sha = sha256_file(&lebytes_path, "fixture").unwrap();
-        let listchunks_path = repo_root().join("theory/Anneal/ListChunks.lean");
-        let listchunks_sha = sha256_file(&listchunks_path, "fixture").unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
 
         let mut req = write_target_request(
             &base.join("lebytes-listchunks"),
@@ -2136,32 +2420,9 @@ exit 3
                 ),
             ],
         );
-        req.modules.push(TargetModule {
-            module: "Anneal.NatBitwise".to_owned(),
-            source: nat_bitwise_path,
-            expected_sha256: nat_bitwise_sha,
-            role: TargetRole::Proof,
-        });
-        req.modules.push(TargetModule {
-            module: "Anneal.BitVec".to_owned(),
-            source: bitvec_path,
-            expected_sha256: bitvec_sha,
-            role: TargetRole::Proof,
-        });
-        req.modules.push(TargetModule {
-            module: "Anneal.LeBytes".to_owned(),
-            source: lebytes_path,
-            expected_sha256: lebytes_sha,
-            role: TargetRole::Proof,
-        });
-        req.modules.push(TargetModule {
-            module: "Anneal.ListChunks".to_owned(),
-            source: listchunks_path,
-            expected_sha256: listchunks_sha,
-            role: TargetRole::Proof,
-        });
+        bundle.attach(&mut req, false);
 
-        let mut checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
         let report = checker.run_target(&req).unwrap();
         assert_eq!(report["replay"], Json::Bool(true));
         assert_eq!(report["exactType"], Json::Bool(true));
@@ -2174,32 +2435,24 @@ exit 3
         assert!(sources.contains("Anneal.LeBytes"), "{sources:?}");
         assert!(sources.contains("Anneal.ListChunks"), "{sources:?}");
         assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
         assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
+        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
-        let used_axioms: BTreeSet<&str> = report["axioms"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .map(|a| a.as_str().unwrap())
-            .collect();
-        assert!(
-            used_axioms.is_subset(&allowed_axioms),
-            "unexpected axioms: {used_axioms:?}"
-        );
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
     }
 
     #[test]
     fn live_demand_driven_bitvec_arith_three_axiom_proof() {
-        let lean = installed_lean();
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
         let dir = tempfile::tempdir().unwrap();
         let base = fs::canonicalize(dir.path()).unwrap();
-        let nat_bitwise_path = repo_root().join("theory/Anneal/NatBitwise.lean");
-        let nat_bitwise_sha = sha256_file(&nat_bitwise_path, "fixture").unwrap();
-        let bitvec_path = repo_root().join("theory/Anneal/BitVec.lean");
-        let bitvec_sha = sha256_file(&bitvec_path, "fixture").unwrap();
-        let bitvec_arith_path = repo_root().join("theory/Anneal/BitVecArith.lean");
-        let bitvec_arith_sha = sha256_file(&bitvec_arith_path, "fixture").unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
 
         // Unused bundled theory module with a deliberate elaboration error in
         // its body (valid header only): proving it is pruned means it is never
@@ -2278,24 +2531,7 @@ exit 3
                 ),
             ],
         );
-        req.modules.push(TargetModule {
-            module: "Anneal.NatBitwise".to_owned(),
-            source: nat_bitwise_path,
-            expected_sha256: nat_bitwise_sha,
-            role: TargetRole::Proof,
-        });
-        req.modules.push(TargetModule {
-            module: "Anneal.BitVec".to_owned(),
-            source: bitvec_path,
-            expected_sha256: bitvec_sha,
-            role: TargetRole::Proof,
-        });
-        req.modules.push(TargetModule {
-            module: "Anneal.BitVecArith".to_owned(),
-            source: bitvec_arith_path,
-            expected_sha256: bitvec_arith_sha,
-            role: TargetRole::Proof,
-        });
+        bundle.attach(&mut req, false);
         req.modules.push(TargetModule {
             module: "Anneal.Unused".to_owned(),
             source: unused_path,
@@ -2303,7 +2539,7 @@ exit 3
             role: TargetRole::Proof,
         });
 
-        let mut checker = Checker::new(&repo_root(), Some(&lean)).unwrap();
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
         let report = checker.run_target(&req).unwrap();
         assert_eq!(report["replay"], Json::Bool(true));
         assert_eq!(report["exactType"], Json::Bool(true));
@@ -2316,24 +2552,179 @@ exit 3
         assert!(sources.contains("Anneal.NatBitwise"), "{sources:?}");
         assert!(sources.contains("Anneal.BitVec"), "{sources:?}");
         assert!(sources.contains("Anneal.BitVecArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
+        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
-        let used_axioms: BTreeSet<&str> = report["axioms"]
-            .as_array()
-            .unwrap()
-            .iter()
-            .map(|a| a.as_str().unwrap())
-            .collect();
-        assert!(
-            used_axioms.is_subset(&allowed_axioms),
-            "unexpected axioms: {used_axioms:?}"
-        );
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        assert!(checker.stage.join("target-lib/Anneal/NatBitwise.olean").is_file());
+        assert!(checker.stage.join("target-lib/Anneal/BitVec.olean").is_file());
+        assert!(checker.stage.join("target-lib/Anneal/BitVecArith.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-bv-arith");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/NatBitwise.olean").is_file());
         assert!(export_dir.join("Anneal/BitVec.olean").is_file());
         assert!(export_dir.join("Anneal/BitVecArith.olean").is_file());
+        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+    }
+
+    #[test]
+    fn live_demand_driven_loopinv_three_axiom_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-loopinv"),
+            vec![
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Captured.u32Ty : Trusted.MirAst.MirTy := .int .i32 false\n\
+                     def Captured.body0 : Trusted.MirAst.Body :=\n  \
+                     { argumentCount := 1, isUnsafe := false,\n    \
+                       locals := [Captured.u32Ty, Captured.u32Ty],\n    \
+                       basicBlocks := [\n      \
+                         { statements := [.assign ⟨0, []⟩ (.use (.constant ⟨Captured.u32Ty, .scalar (BitVec.ofNat 128 0)⟩))],\n        \
+                           terminator := .goto 1 },\n      \
+                         { statements := [],\n        \
+                           terminator := .switchInt (.copy ⟨1, []⟩) { branches := [(BitVec.ofNat 128 0, 3)], otherwise := 2 } },\n      \
+                         { statements := [\n            \
+                             .assign ⟨1, []⟩ (.binaryOp .sub (.copy ⟨1, []⟩) (.constant ⟨Captured.u32Ty, .scalar (BitVec.ofNat 128 1)⟩)),\n            \
+                             .assign ⟨0, []⟩ (.binaryOp .add (.copy ⟨0, []⟩) (.constant ⟨Captured.u32Ty, .scalar (BitVec.ofNat 128 1)⟩))],\n        \
+                           terminator := .goto 1 },\n      \
+                         { statements := [], terminator := .return_ }],\n    \
+                       identity := \"count_down\" }\n\
+                     def Captured.program : Trusted.MirAst.Program :=\n  \
+                     { pointerWidthBits := 64, mirProfileVersion := 1, bodies := [Captured.body0], scope := .unit }\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Trusted.MirSemantics\n\
+                     def Spec.specs : Trusted.MirSemantics.Specs where\n  \
+                     safety := fun _ _ => True\n  \
+                     property := fun prog =>\n    \
+                     ∀ (n : Nat), n < Nat.pow 2 32 →\n      \
+                       Trusted.MirSemantics.WellFormed prog\n        \
+                         { args := [.scalar ⟨.i32, false, BitVec.ofNat 128 n⟩] } ∧\n      \
+                       Trusted.MirSemantics.Behavior prog\n        \
+                         { args := [.scalar ⟨.i32, false, BitVec.ofNat 128 n⟩] }\n        \
+                         (.returned ⟨.scalar ⟨.i32, false, BitVec.ofNat 128 n⟩, ⟨[]⟩⟩)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.LoopInv\n\
+                     private theorem check_arg_u32 (v : Trusted.MirSemantics.Val)\n  \
+                       (h : Trusted.MirSemantics.checkVal v Captured.u32Ty = true) :\n  \
+                       ∃ n, n < Nat.pow 2 32 ∧ v = .scalar ⟨.i32, false, BitVec.ofNat 128 n⟩ := by\n  \
+                       let ⟨bits, hv, hTrunc⟩ := Anneal.MirWp.checkVal_int_iff.mp h\n  \
+                       have hlt : bits.toNat < Nat.pow 2 32 := by\n    \
+                         have h1 : bits.toNat = (Trusted.MirSemantics.truncateBits .i32 bits).toNat :=\n      \
+                           congrArg BitVec.toNat hTrunc.symm\n    \
+                         rw [h1, Anneal.MirWp.toNat_truncateBits]\n    \
+                         exact Nat.mod_lt bits.toNat (Anneal.MirWp.intWidth_modulus_pos .i32)\n  \
+                       exact ⟨bits.toNat, hlt,\n    \
+                         hv.trans (congrArg (fun x => Trusted.MirSemantics.Val.scalar ⟨.i32, false, x⟩)\n      \
+                           (congrArg BitVec.ofFin (Fin.eq_of_val_eq (Nat.mod_eq_of_lt bits.isLt))).symm)⟩\n\
+                     theorem Proof.verify : Expected.claim := by\n  \
+                     refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, ?_⟩\n  \
+                     · intro id selected h\n    \
+                       cases id with\n    \
+                       | zero =>\n      \
+                         cases h\n      \
+                         refine ⟨rfl, rfl, fun args hv _ => ?_⟩\n      \
+                         change Trusted.MirSemantics.checkArgsMatch args [Captured.u32Ty] = true at hv\n      \
+                         cases args with\n      \
+                         | nil => cases hv\n      \
+                         | cons v rest =>\n        \
+                           cases rest with\n        \
+                           | cons _ _ =>\n          \
+                             change (Trusted.MirSemantics.checkVal v Captured.u32Ty && false) = true at hv\n          \
+                             rw [Bool.and_false] at hv; cases hv\n        \
+                           | nil =>\n          \
+                             change (Trusted.MirSemantics.checkVal v Captured.u32Ty && true) = true at hv\n          \
+                             rw [Bool.and_true] at hv\n          \
+                             let ⟨n, hn, hvEq⟩ := check_arg_u32 v hv\n          \
+                             rw [hvEq]\n          \
+                             exact (Anneal.LoopInv.countDown_returns n hn).1\n    \
+                       | succ n => cases n <;> cases h\n  \
+                     · exact fun n hn => Anneal.LoopInv.countDown_returns n hn\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req, true);
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(sources.contains("Anneal.MirWp"), "{sources:?}");
+        assert!(sources.contains("Anneal.NatBitwise"), "{sources:?}");
+        assert!(sources.contains("Anneal.LoopInv"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
+        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        assert!(checker.stage.join("target-lib/Anneal/MirWp.olean").is_file());
+        assert!(checker.stage.join("target-lib/Anneal/NatBitwise.olean").is_file());
+        assert!(checker.stage.join("target-lib/Anneal/LoopInv.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/BitVecArith.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        let export_dir = base.join("export-with-loopinv");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        assert!(export_dir.join("Anneal/MirWp.olean").is_file());
+        assert!(export_dir.join("Anneal/NatBitwise.olean").is_file());
+        assert!(export_dir.join("Anneal/LoopInv.olean").is_file());
+        assert!(!export_dir.join("Anneal/BitVec.olean").exists());
+        assert!(!export_dir.join("Anneal/BitVecArith.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 }
