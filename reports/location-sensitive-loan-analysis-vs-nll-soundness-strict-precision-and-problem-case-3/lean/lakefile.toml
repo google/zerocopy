@@ -1,0 +1,5 @@
+name = "toy_loan_flow"
+defaultTargets = ["ToyLoanFlow"]
+
+[[lean_lib]]
+name = "ToyLoanFlow"

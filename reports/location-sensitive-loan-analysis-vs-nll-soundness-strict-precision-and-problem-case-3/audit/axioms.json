@@ -1,0 +1,1516 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.LoanFlow.Acc": [],
+    "Toy.LoanFlow.Acc.casesOn": [],
+    "Toy.LoanFlow.Acc.ctorElim": [],
+    "Toy.LoanFlow.Acc.ctorElimType": [],
+    "Toy.LoanFlow.Acc.ctorIdx": [],
+    "Toy.LoanFlow.Acc.noConfusion": [],
+    "Toy.LoanFlow.Acc.noConfusionType": [],
+    "Toy.LoanFlow.Acc.ofNat": [],
+    "Toy.LoanFlow.Acc.ofNat_ctorIdx": [],
+    "Toy.LoanFlow.Acc.rd": [],
+    "Toy.LoanFlow.Acc.rd.elim": [],
+    "Toy.LoanFlow.Acc.rd.sizeOf_spec": [],
+    "Toy.LoanFlow.Acc.rec": [],
+    "Toy.LoanFlow.Acc.recOn": [],
+    "Toy.LoanFlow.Acc.wr": [],
+    "Toy.LoanFlow.Acc.wr.elim": [],
+    "Toy.LoanFlow.Acc.wr.sizeOf_spec": [],
+    "Toy.LoanFlow.Acyclic": [],
+    "Toy.LoanFlow.Conflicts": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Edges": [],
+    "Toy.LoanFlow.Incl.fst_mem_uses_or_defs_of_mem_gen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Incl.fst_of_mem_relate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Incl.gen_layer_bounds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Incl.holds_of_liveHolds": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Incl.killsAt_overwrite_false_of_liveAt": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Incl.liveAt_of_killsAt_overwrite_false": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Incl.liveAt_of_mem_gen": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Incl.liveHolds_of_holds": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Incl.liveHolds_to_nll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Incl.subAt_bounds_and_outlives": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Incl.subAt_left_live_or_killed": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.IsWalk": [],
+    "Toy.LoanFlow.IsWalk.match_1": [],
+    "Toy.LoanFlow.KillMode": [],
+    "Toy.LoanFlow.KillMode.casesOn": [],
+    "Toy.LoanFlow.KillMode.ctorElim": [],
+    "Toy.LoanFlow.KillMode.ctorElimType": [],
+    "Toy.LoanFlow.KillMode.ctorIdx": [],
+    "Toy.LoanFlow.KillMode.noConfusion": [],
+    "Toy.LoanFlow.KillMode.noConfusionType": [],
+    "Toy.LoanFlow.KillMode.none": [],
+    "Toy.LoanFlow.KillMode.none.elim": [],
+    "Toy.LoanFlow.KillMode.none.sizeOf_spec": [],
+    "Toy.LoanFlow.KillMode.ofNat": [],
+    "Toy.LoanFlow.KillMode.ofNat_ctorIdx": [],
+    "Toy.LoanFlow.KillMode.overwrite": [],
+    "Toy.LoanFlow.KillMode.overwrite.elim": [],
+    "Toy.LoanFlow.KillMode.overwrite.sizeOf_spec": [],
+    "Toy.LoanFlow.KillMode.overwriteAndCopySrc": [],
+    "Toy.LoanFlow.KillMode.overwriteAndCopySrc.elim": [],
+    "Toy.LoanFlow.KillMode.overwriteAndCopySrc.sizeOf_spec": [],
+    "Toy.LoanFlow.KillMode.rec": [],
+    "Toy.LoanFlow.KillMode.recOn": [],
+    "Toy.LoanFlow.LS.Accepts": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Accepts.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.below": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.below.carry": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.below.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.below.intro": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.below.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.below.step": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.below.sub": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.brecOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.carry": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.intro": [],
+    "Toy.LoanFlow.LS.Holds.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.recOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.step": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.Holds.sub": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveAccepts": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveAccepts.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.below": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.below.carry": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.below.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.below.intro": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.below.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.below.step": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.below.sub": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.brecOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.carry": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.intro": [],
+    "Toy.LoanFlow.LS.LiveHolds.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.recOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.step": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveHolds.sub": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LiveLoanLive": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.LoanLive": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.base": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.below": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.below.base": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.below.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.below.persist": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.below.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.below.trans": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.brecOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.persist": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.recOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LS.SubAt.trans": [],
+    "Toy.LoanFlow.LSAccepts": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.below": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.below.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.below.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.below.step": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.below.use": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.brecOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.recOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.step": [
+      "propext"
+    ],
+    "Toy.LoanFlow.LiveAt.use": [],
+    "Toy.LoanFlow.Mutbl": [],
+    "Toy.LoanFlow.Mutbl.casesOn": [],
+    "Toy.LoanFlow.Mutbl.ctorElim": [],
+    "Toy.LoanFlow.Mutbl.ctorElimType": [],
+    "Toy.LoanFlow.Mutbl.ctorIdx": [],
+    "Toy.LoanFlow.Mutbl.mut": [],
+    "Toy.LoanFlow.Mutbl.mut.elim": [],
+    "Toy.LoanFlow.Mutbl.mut.sizeOf_spec": [],
+    "Toy.LoanFlow.Mutbl.noConfusion": [],
+    "Toy.LoanFlow.Mutbl.noConfusionType": [],
+    "Toy.LoanFlow.Mutbl.ofNat": [],
+    "Toy.LoanFlow.Mutbl.ofNat_ctorIdx": [],
+    "Toy.LoanFlow.Mutbl.rec": [],
+    "Toy.LoanFlow.Mutbl.recOn": [],
+    "Toy.LoanFlow.Mutbl.shr": [],
+    "Toy.LoanFlow.Mutbl.shr.elim": [],
+    "Toy.LoanFlow.Mutbl.shr.sizeOf_spec": [],
+    "Toy.LoanFlow.NLL.Accepts": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.below": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.below.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.below.live": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.below.outlives": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.below.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.below.universal": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.brecOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.live": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.outlives": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.recOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InRegion.universal": [],
+    "Toy.LoanFlow.NLL.InScope": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.below": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.below.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.below.first": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.below.next": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.below.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.brecOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.first": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.next": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLL.InScope.recOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.NLLAccepts": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Origin": [],
+    "Toy.LoanFlow.Outcome": [],
+    "Toy.LoanFlow.Outcome.casesOn": [],
+    "Toy.LoanFlow.Outcome.ctorElim": [],
+    "Toy.LoanFlow.Outcome.ctorElimType": [],
+    "Toy.LoanFlow.Outcome.ctorIdx": [],
+    "Toy.LoanFlow.Outcome.halt": [],
+    "Toy.LoanFlow.Outcome.halt.elim": [],
+    "Toy.LoanFlow.Outcome.halt.sizeOf_spec": [],
+    "Toy.LoanFlow.Outcome.isUB": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Outcome.isUB.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Outcome.isUB.eq_2": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Outcome.isUB.match_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Outcome.noConfusion": [],
+    "Toy.LoanFlow.Outcome.noConfusionType": [],
+    "Toy.LoanFlow.Outcome.ok": [],
+    "Toy.LoanFlow.Outcome.ok.elim": [],
+    "Toy.LoanFlow.Outcome.ok.inj": [],
+    "Toy.LoanFlow.Outcome.ok.injEq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Outcome.ok.noConfusion": [],
+    "Toy.LoanFlow.Outcome.ok.sizeOf_spec": [],
+    "Toy.LoanFlow.Outcome.rec": [],
+    "Toy.LoanFlow.Outcome.recOn": [],
+    "Toy.LoanFlow.Outcome.ub": [],
+    "Toy.LoanFlow.Outcome.ub.elim": [],
+    "Toy.LoanFlow.Outcome.ub.sizeOf_spec": [],
+    "Toy.LoanFlow.Prog": [],
+    "Toy.LoanFlow.Prog.casesOn": [],
+    "Toy.LoanFlow.Prog.ctorIdx": [],
+    "Toy.LoanFlow.Prog.entry": [],
+    "Toy.LoanFlow.Prog.mk": [],
+    "Toy.LoanFlow.Prog.mk.inj": [],
+    "Toy.LoanFlow.Prog.mk.injEq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Prog.mk.noConfusion": [],
+    "Toy.LoanFlow.Prog.mk.sizeOf_spec": [],
+    "Toy.LoanFlow.Prog.noConfusion": [],
+    "Toy.LoanFlow.Prog.noConfusionType": [],
+    "Toy.LoanFlow.Prog.rec": [],
+    "Toy.LoanFlow.Prog.recOn": [],
+    "Toy.LoanFlow.Prog.stmt": [],
+    "Toy.LoanFlow.Prog.succ": [],
+    "Toy.LoanFlow.Prog.ty": [],
+    "Toy.LoanFlow.RState": [],
+    "Toy.LoanFlow.RState.get": [
+      "propext"
+    ],
+    "Toy.LoanFlow.RState.init": [],
+    "Toy.LoanFlow.RState.init.eq_1": [],
+    "Toy.LoanFlow.RState.set": [],
+    "Toy.LoanFlow.RState.set.eq_1": [],
+    "Toy.LoanFlow.Reach": [],
+    "Toy.LoanFlow.Reach.below": [],
+    "Toy.LoanFlow.Reach.below.casesOn": [],
+    "Toy.LoanFlow.Reach.below.rec": [],
+    "Toy.LoanFlow.Reach.below.refl": [],
+    "Toy.LoanFlow.Reach.below.step": [],
+    "Toy.LoanFlow.Reach.brecOn": [],
+    "Toy.LoanFlow.Reach.casesOn": [],
+    "Toy.LoanFlow.Reach.rec": [],
+    "Toy.LoanFlow.Reach.recOn": [],
+    "Toy.LoanFlow.Reach.refl": [],
+    "Toy.LoanFlow.Reach.step": [],
+    "Toy.LoanFlow.ReachesUB": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Rec": [],
+    "Toy.LoanFlow.Rec.casesOn": [],
+    "Toy.LoanFlow.Rec.ctorIdx": [],
+    "Toy.LoanFlow.Rec.mk": [],
+    "Toy.LoanFlow.Rec.mk.inj": [],
+    "Toy.LoanFlow.Rec.mk.injEq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Rec.mk.noConfusion": [],
+    "Toy.LoanFlow.Rec.mk.sizeOf_spec": [],
+    "Toy.LoanFlow.Rec.mu": [],
+    "Toy.LoanFlow.Rec.noConfusion": [],
+    "Toy.LoanFlow.Rec.noConfusionType": [],
+    "Toy.LoanFlow.Rec.rec": [],
+    "Toy.LoanFlow.Rec.recOn": [],
+    "Toy.LoanFlow.Rec.tag": [],
+    "Toy.LoanFlow.Rec.tgt": [],
+    "Toy.LoanFlow.Rec.valid": [],
+    "Toy.LoanFlow.Safe": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.Inv": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.Inv.casesOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.Inv.len": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.Inv.live": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.Inv.mk": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.Inv.rec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.Inv.recOn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.Inv.uniq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.Inv.wf": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.LocalOK": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.Uniq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.ValidFrom": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.WF": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.defs_wr": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.exec_ne_ub": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.fields_of_get_invalidate": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.frame_local": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.get_init": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.get_invalidate": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.get_invalidate_keep": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.get_invalidate_none": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.get_invalidate_some": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.get_set_ne": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.get_set_self": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.inv_init": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.inv_of_parts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.invariantAt_inv_mut": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.ite_f": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.ite_t": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.keep_of_sel": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.keep_placeRead": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.keep_placeWrite": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.keep_thruRead": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.keep_thruWrite": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.killsAt_false": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.len_placeRead": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.len_placeWrite": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.len_thruRead": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.len_thruWrite": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.length_init": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.length_invalidate": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.length_set": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.mem_gen_borrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.mem_relate_mut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.mem_relate_zero": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.no_conflict": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.no_defs": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.placeRead_sel": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.placeWrite_sel": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.run_not_ub": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.step_access_rd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.step_access_wr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.step_borrow": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.step_copy": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.step_deref_rd": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.step_deref_wr": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.step_inv": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.step_nop": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.step_store": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.tgt_ne_self": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.thruRead_sel": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.thruWrite_sel": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.uniq_of_validFrom": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.validFrom_invalidate": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.validFrom_refl": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.validFrom_set": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.validFrom_trans": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.valid_invalidate": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Sound.wf_invalidate": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt": [],
+    "Toy.LoanFlow.Stmt.access": [],
+    "Toy.LoanFlow.Stmt.access.elim": [],
+    "Toy.LoanFlow.Stmt.access.inj": [],
+    "Toy.LoanFlow.Stmt.access.injEq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.access.noConfusion": [],
+    "Toy.LoanFlow.Stmt.access.sizeOf_spec": [],
+    "Toy.LoanFlow.Stmt.accesses": [],
+    "Toy.LoanFlow.Stmt.accesses.eq_1": [],
+    "Toy.LoanFlow.Stmt.accesses.eq_2": [],
+    "Toy.LoanFlow.Stmt.accesses.eq_3": [],
+    "Toy.LoanFlow.Stmt.accesses.eq_4": [],
+    "Toy.LoanFlow.Stmt.accesses.eq_5": [],
+    "Toy.LoanFlow.Stmt.accesses.eq_6": [],
+    "Toy.LoanFlow.Stmt.accesses.eq_7": [],
+    "Toy.LoanFlow.Stmt.accesses.eq_8": [],
+    "Toy.LoanFlow.Stmt.accesses.match_1": [],
+    "Toy.LoanFlow.Stmt.borrow": [],
+    "Toy.LoanFlow.Stmt.borrow.elim": [],
+    "Toy.LoanFlow.Stmt.borrow.inj": [],
+    "Toy.LoanFlow.Stmt.borrow.injEq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.borrow.noConfusion": [],
+    "Toy.LoanFlow.Stmt.borrow.sizeOf_spec": [],
+    "Toy.LoanFlow.Stmt.casesOn": [],
+    "Toy.LoanFlow.Stmt.copy": [],
+    "Toy.LoanFlow.Stmt.copy.elim": [],
+    "Toy.LoanFlow.Stmt.copy.inj": [],
+    "Toy.LoanFlow.Stmt.copy.injEq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.copy.noConfusion": [],
+    "Toy.LoanFlow.Stmt.copy.sizeOf_spec": [],
+    "Toy.LoanFlow.Stmt.ctorElim": [],
+    "Toy.LoanFlow.Stmt.ctorElimType": [],
+    "Toy.LoanFlow.Stmt.ctorIdx": [],
+    "Toy.LoanFlow.Stmt.defs": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.defs.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.defs.eq_2": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.defs.eq_3": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.defs.match_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.deref": [],
+    "Toy.LoanFlow.Stmt.deref.elim": [],
+    "Toy.LoanFlow.Stmt.deref.inj": [],
+    "Toy.LoanFlow.Stmt.deref.injEq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.deref.noConfusion": [],
+    "Toy.LoanFlow.Stmt.deref.sizeOf_spec": [],
+    "Toy.LoanFlow.Stmt.noConfusion": [],
+    "Toy.LoanFlow.Stmt.noConfusionType": [],
+    "Toy.LoanFlow.Stmt.nop": [],
+    "Toy.LoanFlow.Stmt.nop.elim": [],
+    "Toy.LoanFlow.Stmt.nop.sizeOf_spec": [],
+    "Toy.LoanFlow.Stmt.rec": [],
+    "Toy.LoanFlow.Stmt.recOn": [],
+    "Toy.LoanFlow.Stmt.ret": [],
+    "Toy.LoanFlow.Stmt.ret.elim": [],
+    "Toy.LoanFlow.Stmt.ret.inj": [],
+    "Toy.LoanFlow.Stmt.ret.injEq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.ret.noConfusion": [],
+    "Toy.LoanFlow.Stmt.ret.sizeOf_spec": [],
+    "Toy.LoanFlow.Stmt.store": [],
+    "Toy.LoanFlow.Stmt.store.elim": [],
+    "Toy.LoanFlow.Stmt.store.inj": [],
+    "Toy.LoanFlow.Stmt.store.injEq": [
+      "propext"
+    ],
+    "Toy.LoanFlow.Stmt.store.noConfusion": [],
+    "Toy.LoanFlow.Stmt.store.sizeOf_spec": [],
+    "Toy.LoanFlow.Stmt.uses": [],
+    "Toy.LoanFlow.Stmt.uses.eq_1": [],
+    "Toy.LoanFlow.Stmt.uses.eq_2": [],
+    "Toy.LoanFlow.Stmt.uses.eq_3": [],
+    "Toy.LoanFlow.Stmt.uses.eq_4": [],
+    "Toy.LoanFlow.Stmt.uses.eq_5": [],
+    "Toy.LoanFlow.Stmt.uses.eq_6": [],
+    "Toy.LoanFlow.Stmt.uses.eq_7": [],
+    "Toy.LoanFlow.StmtWellTyped": [],
+    "Toy.LoanFlow.StmtWellTyped.eq_1": [],
+    "Toy.LoanFlow.StmtWellTyped.eq_2": [],
+    "Toy.LoanFlow.StmtWellTyped.eq_3": [],
+    "Toy.LoanFlow.StmtWellTyped.eq_4": [],
+    "Toy.LoanFlow.StmtWellTyped.eq_5": [],
+    "Toy.LoanFlow.StmtWellTyped.eq_6": [],
+    "Toy.LoanFlow.StmtWellTyped.eq_7": [],
+    "Toy.LoanFlow.StmtWellTyped.eq_8": [],
+    "Toy.LoanFlow.StmtWellTyped.match_1": [],
+    "Toy.LoanFlow.VarMode": [],
+    "Toy.LoanFlow.VarMode.casesOn": [],
+    "Toy.LoanFlow.VarMode.cov": [],
+    "Toy.LoanFlow.VarMode.cov.elim": [],
+    "Toy.LoanFlow.VarMode.cov.sizeOf_spec": [],
+    "Toy.LoanFlow.VarMode.ctorElim": [],
+    "Toy.LoanFlow.VarMode.ctorElimType": [],
+    "Toy.LoanFlow.VarMode.ctorIdx": [],
+    "Toy.LoanFlow.VarMode.inv": [],
+    "Toy.LoanFlow.VarMode.inv.elim": [],
+    "Toy.LoanFlow.VarMode.inv.sizeOf_spec": [],
+    "Toy.LoanFlow.VarMode.noConfusion": [],
+    "Toy.LoanFlow.VarMode.noConfusionType": [],
+    "Toy.LoanFlow.VarMode.ofNat": [],
+    "Toy.LoanFlow.VarMode.ofNat_ctorIdx": [],
+    "Toy.LoanFlow.VarMode.rec": [],
+    "Toy.LoanFlow.VarMode.recOn": [],
+    "Toy.LoanFlow.WellTyped": [],
+    "Toy.LoanFlow.acyclic_of_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.certOK": [
+      "propext"
+    ],
+    "Toy.LoanFlow.certOK.match_1": [],
+    "Toy.LoanFlow.closure": [],
+    "Toy.LoanFlow.closure.match_1": [],
+    "Toy.LoanFlow.exec": [
+      "propext"
+    ],
+    "Toy.LoanFlow.exec.match_1": [],
+    "Toy.LoanFlow.exec.match_11": [],
+    "Toy.LoanFlow.exec.match_3": [],
+    "Toy.LoanFlow.exec.match_5": [],
+    "Toy.LoanFlow.exec.match_7": [],
+    "Toy.LoanFlow.exec.match_9": [],
+    "Toy.LoanFlow.explore": [
+      "propext"
+    ],
+    "Toy.LoanFlow.explore.go": [
+      "propext"
+    ],
+    "Toy.LoanFlow.explore.go.match_1": [],
+    "Toy.LoanFlow.explore.go.match_3": [],
+    "Toy.LoanFlow.gen": [
+      "propext"
+    ],
+    "Toy.LoanFlow.gen.match_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.genAll": [
+      "propext"
+    ],
+    "Toy.LoanFlow.holds_none_of_holds_overwrite": [
+      "propext"
+    ],
+    "Toy.LoanFlow.instDecidableConflicts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.instDecidableEqAcc": [],
+    "Toy.LoanFlow.instDecidableEqKillMode": [],
+    "Toy.LoanFlow.instDecidableEqMutbl": [],
+    "Toy.LoanFlow.instDecidableEqRec": [],
+    "Toy.LoanFlow.instDecidableEqRec.decEq": [],
+    "Toy.LoanFlow.instDecidableEqRec.decEq.match_1": [],
+    "Toy.LoanFlow.instDecidableEqStmt": [],
+    "Toy.LoanFlow.instDecidableEqStmt.decEq": [],
+    "Toy.LoanFlow.instDecidableEqStmt.decEq.match_1": [],
+    "Toy.LoanFlow.instDecidableEqVarMode": [],
+    "Toy.LoanFlow.instDecidableIsWalk": [
+      "propext"
+    ],
+    "Toy.LoanFlow.instDecidableReachesUB": [
+      "propext"
+    ],
+    "Toy.LoanFlow.instDecidableStmtWellTyped": [],
+    "Toy.LoanFlow.instDecidableWellTyped": [],
+    "Toy.LoanFlow.instReprAcc": [],
+    "Toy.LoanFlow.instReprAcc.repr": [],
+    "Toy.LoanFlow.instReprAcc.repr.match_1": [],
+    "Toy.LoanFlow.instReprKillMode": [],
+    "Toy.LoanFlow.instReprKillMode.repr": [],
+    "Toy.LoanFlow.instReprKillMode.repr.match_1": [],
+    "Toy.LoanFlow.instReprMutbl": [],
+    "Toy.LoanFlow.instReprMutbl.repr": [],
+    "Toy.LoanFlow.instReprMutbl.repr.match_1": [],
+    "Toy.LoanFlow.instReprRec": [],
+    "Toy.LoanFlow.instReprRec.repr": [],
+    "Toy.LoanFlow.instReprStmt": [],
+    "Toy.LoanFlow.instReprStmt.repr": [],
+    "Toy.LoanFlow.instReprStmt.repr.match_1": [],
+    "Toy.LoanFlow.instReprVarMode": [],
+    "Toy.LoanFlow.instReprVarMode.repr": [],
+    "Toy.LoanFlow.instReprVarMode.repr.match_1": [],
+    "Toy.LoanFlow.invalidate": [],
+    "Toy.LoanFlow.invalidate.eq_1": [],
+    "Toy.LoanFlow.invariantAt": [],
+    "Toy.LoanFlow.invariantAt.eq_1": [],
+    "Toy.LoanFlow.invariantAt.eq_2": [],
+    "Toy.LoanFlow.killsAt": [
+      "propext"
+    ],
+    "Toy.LoanFlow.killsAt.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.killsAt.eq_2": [
+      "propext"
+    ],
+    "Toy.LoanFlow.killsAt.eq_3": [
+      "propext"
+    ],
+    "Toy.LoanFlow.killsAt.match_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.liveAccepts_of_wellTyped_of_nllAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.liveAccepts_of_wellTyped_of_nllAccepts.match_1_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.liveClosed": [
+      "propext"
+    ],
+    "Toy.LoanFlow.liveList": [
+      "propext"
+    ],
+    "Toy.LoanFlow.liveList.match_1": [],
+    "Toy.LoanFlow.loanDst": [
+      "propext"
+    ],
+    "Toy.LoanFlow.loanDst.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.loanOf": [
+      "propext"
+    ],
+    "Toy.LoanFlow.loanOf.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.loanOf.match_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.lsAcceptsB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsAccepts_not_safe_without_wellTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsAccepts_of_lsNoKillAccepts": [
+      "propext"
+    ],
+    "Toy.LoanFlow.lsAccepts_of_lsNoKillAccepts.match_1_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.lsAccepts_of_nllAccepts_fails_without_wellTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsAccepts_of_reachWellTyped_of_nllAccepts_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsAccepts_of_wellTyped_of_nllAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsAccepts_of_wellTyped_of_nllAccepts_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsAccepts_overwrite_iff_liveAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsAccepts_overwrite_iff_liveAccepts_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsCert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsCert.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsClosed": [
+      "propext"
+    ],
+    "Toy.LoanFlow.lsClosed.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.lsClosed.match_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.lsClosed.match_4": [],
+    "Toy.LoanFlow.lsList": [
+      "propext"
+    ],
+    "Toy.LoanFlow.lsList.match_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.lsList.match_4": [],
+    "Toy.LoanFlow.lsLoanLive_overwrite_iff_liveLoanLive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.lsNoKillAccepts_of_wellTyped_of_nllAccepts_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.ls_accepts_of_cert": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.mem_of_holds": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.mem_of_inRegion": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.mem_of_inScope": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.mem_of_liveAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.mem_of_reach": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.mem_of_subAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.nllAcceptsB": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.nllAccepts_not_safe_without_wellTyped": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.nllCert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.nllCert.eq_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.nllCert.match_1": [],
+    "Toy.LoanFlow.nll_accepts_of_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.not_safe_of_reachesUB": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUse": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUse.match_1": [],
+    "Toy.LoanFlow.pCopyThenUseShr": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUseShr_lsCopySrcKill_accepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUseShr_not_lsAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUseShr_not_safe": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUseShr_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUseShr_wellTyped_lsCopySrcKillAccepts_not_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUse_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUse_lsCopySrcKill_accepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUse_not_lsAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUse_not_safe": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUse_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pCopyThenUse_wellTyped_lsCopySrcKillAccepts_not_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pReassign": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pReassign.match_1": [],
+    "Toy.LoanFlow.pReassign.match_3": [],
+    "Toy.LoanFlow.pReassign_lsAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pReassign_lsNoKill_loan0_live_at_3": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pReassign_nllAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pReassign_not_lsNoKill_accepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pReassign_r_dead_at_2": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pReassign_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pReassign_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pReassign_wellTyped_safe_nllAccepts_lsAccepts_not_lsNoKillAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pStoreSafe": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pStoreSafe_lsAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pStoreSafe_nllAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pStoreSafe_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pStoreSafe_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pUnreachUntyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pUnreachUntyped.match_1": [],
+    "Toy.LoanFlow.pUnreachUntyped.match_3": [],
+    "Toy.LoanFlow.pUnreachUntyped_nllAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pUnreachUntyped_not_lsAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pUnreachUntyped_not_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pUnreachUntyped_reach_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pUntypedHolder": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pUntypedHolder.match_1": [],
+    "Toy.LoanFlow.pUntypedHolder_nllAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pUntypedHolder_not_lsAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pUntypedHolder_not_safe": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pUntypedHolder_not_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pUntypedStore": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pUntypedStore.match_1": [],
+    "Toy.LoanFlow.pUntypedStore_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pUntypedStore_lsAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pUntypedStore_not_safe": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pUntypedStore_not_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pVariance": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pVariance.match_1": [],
+    "Toy.LoanFlow.pVariance.match_3": [],
+    "Toy.LoanFlow.pVariance_lsCov_accepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pVariance_ls_loan2_live_at_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pVariance_nllCov_accepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pVariance_not_lsAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pVariance_not_nllAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pVariance_not_safe": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pVariance_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pVariance_wellTyped_covAccepts_not_safe": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3.match_1": [],
+    "Toy.LoanFlow.pc3.match_3": [],
+    "Toy.LoanFlow.pc3.match_5": [],
+    "Toy.LoanFlow.pc3Loop": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3Loop.match_1": [],
+    "Toy.LoanFlow.pc3Loop.match_3": [],
+    "Toy.LoanFlow.pc3Loop_lsAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3Loop_not_acyclic": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3Loop_not_nllAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3Loop_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3Loop_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3Loop_wellTyped_safe_lsAccepts_not_nllAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3NoReturn": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3NoReturn_lsAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3NoReturn_nllAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3NoReturn_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3NoReturn_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3NoReturn_wellTyped_safe_nllAccepts_lsAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3_acyclic": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3_loan0_at_insertion": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3_lsAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3_ls_loan0_not_live_at_3": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3_nll_loan0_inScope_at_3": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3_not_nllAccepts": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3_r_region_universal": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3_wellTyped": [
+      "propext"
+    ],
+    "Toy.LoanFlow.pc3_wellTyped_safe_lsAccepts_not_nllAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.placeRead": [],
+    "Toy.LoanFlow.placeRead.eq_1": [],
+    "Toy.LoanFlow.placeWrite": [],
+    "Toy.LoanFlow.placeWrite.eq_1": [],
+    "Toy.LoanFlow.reachAll": [],
+    "Toy.LoanFlow.reachClosed": [],
+    "Toy.LoanFlow.reachList": [],
+    "Toy.LoanFlow.refuted_result2_needs_kills": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.regionClosed": [
+      "propext"
+    ],
+    "Toy.LoanFlow.regionClosed.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.regionClosed.match_1": [],
+    "Toy.LoanFlow.regionClosed.match_3": [
+      "propext"
+    ],
+    "Toy.LoanFlow.regionList": [
+      "propext"
+    ],
+    "Toy.LoanFlow.regionList.match_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.regionList.match_4": [],
+    "Toy.LoanFlow.regionList.match_6": [],
+    "Toy.LoanFlow.relate": [],
+    "Toy.LoanFlow.relate.eq_1": [],
+    "Toy.LoanFlow.run": [
+      "propext"
+    ],
+    "Toy.LoanFlow.run.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.run.eq_2": [
+      "propext"
+    ],
+    "Toy.LoanFlow.run.eq_def": [
+      "propext"
+    ],
+    "Toy.LoanFlow.run.match_1": [],
+    "Toy.LoanFlow.run.match_3": [],
+    "Toy.LoanFlow.run_ne_ub_of_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.safe_of_cert": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.safe_of_wellTyped_of_lsAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.safe_of_wellTyped_of_lsAccepts_nonvacuous": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.safe_of_wellTyped_of_lsCopySrcKillAccepts_fails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.safe_of_wellTyped_of_lsCovAccepts_fails": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.safe_of_wellTyped_of_nllAccepts": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.safe_of_wellTyped_of_nllAccepts_nonvacuous": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.safe_of_wellTyped_of_nllCovAccepts_fails": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.scopeClosed": [
+      "propext"
+    ],
+    "Toy.LoanFlow.scopeClosed.match_1": [],
+    "Toy.LoanFlow.scopeList": [
+      "propext"
+    ],
+    "Toy.LoanFlow.scopeList.match_1": [],
+    "Toy.LoanFlow.scopeList.match_3": [],
+    "Toy.LoanFlow.subClosed": [
+      "propext"
+    ],
+    "Toy.LoanFlow.subClosed.eq_1": [
+      "propext"
+    ],
+    "Toy.LoanFlow.subClosed.match_1": [],
+    "Toy.LoanFlow.subList": [
+      "propext"
+    ],
+    "Toy.LoanFlow.subList.iter": [],
+    "Toy.LoanFlow.subList.iter.match_1": [],
+    "Toy.LoanFlow.subList.match_1": [],
+    "Toy.LoanFlow.thruRead": [],
+    "Toy.LoanFlow.thruRead.eq_1": [],
+    "Toy.LoanFlow.thruWrite": [],
+    "Toy.LoanFlow.thruWrite.eq_1": [],
+    "Toy.LoanFlow.unsafeB": [
+      "propext"
+    ],
+    "Toy.LoanFlow.wellTyped_acyclic_not_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LoanFlow.wellTyped_not_lsAccepts": [
+      "Quot.sound",
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

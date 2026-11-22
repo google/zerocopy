@@ -1,0 +1,131 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/dataflow",
+    "verification/type-soundness",
+    "pl/lifetimes",
+    "pl/variance",
+    "pl/borrow-checking",
+    "compilers/dataflow-analysis"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust RFC 2094 (Non-Lexical Lifetimes)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4",
+        "path": "text/2094-nll.md"
+      }
+    },
+    {
+      "name": "Guide to Rustc Development (region inference)",
+      "identity": {
+        "repository": "rust-lang/rustc-dev-guide",
+        "revision": "d946d7402d269990f3b64baabaf6592409791c11",
+        "path": "src/borrow-check/region-inference"
+      }
+    },
+    {
+      "name": "The Polonius Book (loan analysis rules)",
+      "identity": {
+        "repository": "rust-lang/polonius",
+        "revision": "bfd4c945b7713d0e66a3cde80475d9a4494740df",
+        "path": "book/src/rules/loans.md"
+      }
+    },
+    {
+      "name": "An alias-based formulation of the borrow checker",
+      "identity": {
+        "repository": "nikomatsakis/babysteps",
+        "revision": "75f5a77af61eddc5a881122fbc216d283acd5687",
+        "path": "content/blog/2018-04-27-an-alias-based-formulation-of-the-borrow-checker.markdown",
+        "url": "https://smallcultfollowing.com/babysteps/blog/2018/04/27/an-alias-based-formulation-of-the-borrow-checker/"
+      }
+    },
+    {
+      "name": "Polonius revisited, part 1",
+      "identity": {
+        "repository": "nikomatsakis/babysteps",
+        "revision": "75f5a77af61eddc5a881122fbc216d283acd5687",
+        "path": "content/blog/2023-09-22-polonius-part-1.markdown",
+        "url": "https://smallcultfollowing.com/babysteps/blog/2023/09/22/polonius-part-1/"
+      }
+    },
+    {
+      "name": "Polonius revisited, part 2",
+      "identity": {
+        "repository": "nikomatsakis/babysteps",
+        "revision": "75f5a77af61eddc5a881122fbc216d283acd5687",
+        "path": "content/blog/2023-09-29-polonius-part-2.markdown",
+        "url": "https://smallcultfollowing.com/babysteps/blog/2023/09/29/polonius-part-2/"
+      }
+    },
+    {
+      "name": "Rust project blog posts on Polonius",
+      "identity": {
+        "repository": "rust-lang/blog.rust-lang.org",
+        "revision": "8666f7c3a86260ec58e4d914d451b14613c690a4"
+      }
+    },
+    {
+      "name": "Stacked Borrows: An Aliasing Model for Rust",
+      "identity": {
+        "doi": "10.1145/3371109"
+      }
+    },
+    {
+      "name": "Tree Borrows",
+      "identity": {
+        "doi": "10.1145/3735592"
+      }
+    },
+    {
+      "name": "RustBelt: Securing the Foundations of the Rust Programming Language",
+      "identity": {
+        "doi": "10.1145/3158154"
+      }
+    },
+    {
+      "name": "Sound Borrow-Checking for Rust via Symbolic Semantics",
+      "identity": {
+        "doi": "10.1145/3674640",
+        "arxiv": "2404.02680"
+      }
+    },
+    {
+      "name": "Oxide: The Essence of Rust",
+      "identity": {
+        "arxiv": "1903.00982",
+        "version": "v4"
+      }
+    },
+    {
+      "name": "A Lightweight Formalism for Reference Lifetimes and Borrowing in Rust",
+      "identity": {
+        "doi": "10.1145/3443420"
+      }
+    },
+    {
+      "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs",
+      "identity": {
+        "doi": "10.1145/3656422"
+      }
+    },
+    {
+      "name": "Place Capability Graphs: A General-Purpose Model of Rust's Ownership and Borrowing Guarantees",
+      "identity": {
+        "doi": "10.1145/3763122"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

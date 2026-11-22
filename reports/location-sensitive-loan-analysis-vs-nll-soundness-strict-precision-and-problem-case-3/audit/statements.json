@@ -1,0 +1,565 @@
+{
+  "statements": {
+    "Toy.LoanFlow.Acc": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.LoanFlow.Acyclic": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "b20597b47da54d7a1ff9c38016effc735d1f0d882d967535e1bb37f894dfd027"
+    },
+    "Toy.LoanFlow.Conflicts": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "e15f08d05e8dbf7f7de56d24b6b10d2bb6faa3d04c1ce0ca7653ad32f81c06b4"
+    },
+    "Toy.LoanFlow.Edges": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "f6f89b1e202b0402af79d58f047c64c0c027411fd8a20194e7a83a70d5bb9d4f"
+    },
+    "Toy.LoanFlow.Incl.holds_of_liveHolds": {
+      "closure_sha256": "2869bb28b7a653411da87ea49e02425b465e072e792acd9ccfd445c0127d6a61",
+      "closure_size": 73,
+      "statement_sha256": "39060cf8971a972b0f8d3fd58d66401ed8d4b6e914328c9dc2d68edfa6d8e8d0"
+    },
+    "Toy.LoanFlow.Incl.liveHolds_of_holds": {
+      "closure_sha256": "2869bb28b7a653411da87ea49e02425b465e072e792acd9ccfd445c0127d6a61",
+      "closure_size": 73,
+      "statement_sha256": "3f9c88ef3f51f7e98df264e987b6cbbe86ac48ba07a372b425f3b3aad364a8b1"
+    },
+    "Toy.LoanFlow.Incl.liveHolds_to_nll": {
+      "closure_sha256": "1023fa17997e9bcce8a1c75ffc8e62d828a310095fc8f18b43d184520597e658",
+      "closure_size": 73,
+      "statement_sha256": "791edd51c01e07334dfbb040a41d18ac491f7f4efb1c22ea0019633fb4fa9615"
+    },
+    "Toy.LoanFlow.IsWalk": {
+      "closure_sha256": "101db1d537c833b5c08d04a1201f0318f49117955221b0d0d86f2aaf0800af58",
+      "closure_size": 1,
+      "statement_sha256": "acd4cfbb57fa020ec6fe39e8b1dcf155410c70005a3f89cfd3f36ccdb340ed35"
+    },
+    "Toy.LoanFlow.KillMode": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.LoanFlow.LS.Accepts": {
+      "closure_sha256": "9e7581d0d72e69fb7574772439d188ce259c2ea4e21cfd976779abfefb919ec4",
+      "closure_size": 24,
+      "statement_sha256": "885ea89edc93935a3b30ee75cb9b183af6bc9096ce164c775b8fbcdd8b3ff5cb"
+    },
+    "Toy.LoanFlow.LS.Holds": {
+      "closure_sha256": "3ea4814f819352eb9fcbc655e9cd9232e5cd78bb1629478d59c5a834a2945998",
+      "closure_size": 25,
+      "statement_sha256": "07fcd8d763088d2b5f8544376bf04bc1967d808e90e966cedf73907c18315d2c"
+    },
+    "Toy.LoanFlow.LS.LiveAccepts": {
+      "closure_sha256": "9ab6b1914cf100c906e858be5939ce8adbf3836031f674c7c8a7ca9bc09a3048",
+      "closure_size": 20,
+      "statement_sha256": "bb48b7a84b2345fd5e265e4960924d4da7fd8b0a44cbd462609288ec266ab8ce"
+    },
+    "Toy.LoanFlow.LS.LiveHolds": {
+      "closure_sha256": "e6eef169f182f5b8503d8fa919fdc3ae7b72b9b0090a27629d29ef014e3d4acc",
+      "closure_size": 21,
+      "statement_sha256": "86ff7a62d39e76033ed8215ac0425063ecf686a8220cc1aa8eb62404c907ed92"
+    },
+    "Toy.LoanFlow.LS.LiveLoanLive": {
+      "closure_sha256": "9ab6b1914cf100c906e858be5939ce8adbf3836031f674c7c8a7ca9bc09a3048",
+      "closure_size": 20,
+      "statement_sha256": "5dc9cf2b5617eb329b6474048232993a9dd17b31f3406329c6c9463704562020"
+    },
+    "Toy.LoanFlow.LS.LoanLive": {
+      "closure_sha256": "9e7581d0d72e69fb7574772439d188ce259c2ea4e21cfd976779abfefb919ec4",
+      "closure_size": 24,
+      "statement_sha256": "a214535fde54692001cd1e291172c0e641bd8d264d5f4b61c0446545f70fe633"
+    },
+    "Toy.LoanFlow.LS.SubAt": {
+      "closure_sha256": "e6eef169f182f5b8503d8fa919fdc3ae7b72b9b0090a27629d29ef014e3d4acc",
+      "closure_size": 21,
+      "statement_sha256": "f1221f7718858473096b7babf6215904d2ac2edb0bd6001fae4d97328e305ba0"
+    },
+    "Toy.LoanFlow.LSAccepts": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "b20597b47da54d7a1ff9c38016effc735d1f0d882d967535e1bb37f894dfd027"
+    },
+    "Toy.LoanFlow.LiveAt": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "2bdc2fd330e2ed890692365ea9ec48c949476b54e21386e17365420330fed359"
+    },
+    "Toy.LoanFlow.Mutbl": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.LoanFlow.NLL.Accepts": {
+      "closure_sha256": "9ab6b1914cf100c906e858be5939ce8adbf3836031f674c7c8a7ca9bc09a3048",
+      "closure_size": 20,
+      "statement_sha256": "bb48b7a84b2345fd5e265e4960924d4da7fd8b0a44cbd462609288ec266ab8ce"
+    },
+    "Toy.LoanFlow.NLL.InRegion": {
+      "closure_sha256": "e6eef169f182f5b8503d8fa919fdc3ae7b72b9b0090a27629d29ef014e3d4acc",
+      "closure_size": 21,
+      "statement_sha256": "54796ca87795c6ac2c3459290611382f2f35c95381b35230b0a26a582f189889"
+    },
+    "Toy.LoanFlow.NLL.InScope": {
+      "closure_sha256": "9ab6b1914cf100c906e858be5939ce8adbf3836031f674c7c8a7ca9bc09a3048",
+      "closure_size": 20,
+      "statement_sha256": "22730db97ab63df99d127a503cce3cd7a1e9b503750d9dfe52688aa09ec09851"
+    },
+    "Toy.LoanFlow.NLLAccepts": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "b20597b47da54d7a1ff9c38016effc735d1f0d882d967535e1bb37f894dfd027"
+    },
+    "Toy.LoanFlow.Origin": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "f90689f02c7655dad6c5a27959ac8ac133356b1596ff28fa512baf22ef8416cd"
+    },
+    "Toy.LoanFlow.Outcome": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "59c83c6c1a2d8daa2e6fdc35fdd9d3f4d73008fd4fa4f9258813d0bd42f98061"
+    },
+    "Toy.LoanFlow.Outcome.isUB": {
+      "closure_sha256": "1de391c376eb29d3af994be36bb659b556f96e394f1e770cd70268b46fa6a1be",
+      "closure_size": 10,
+      "statement_sha256": "4e15d4fd9b2461353bc63648ddb5ad925d2ae8006fdd510c3e89f0db6b171be8"
+    },
+    "Toy.LoanFlow.Prog": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "59c83c6c1a2d8daa2e6fdc35fdd9d3f4d73008fd4fa4f9258813d0bd42f98061"
+    },
+    "Toy.LoanFlow.RState": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "59c83c6c1a2d8daa2e6fdc35fdd9d3f4d73008fd4fa4f9258813d0bd42f98061"
+    },
+    "Toy.LoanFlow.RState.get": {
+      "closure_sha256": "8ac6c3851930e54e889bd7d1f920f13d7c84c14f33f1c21eb594e498fc3a4182",
+      "closure_size": 6,
+      "statement_sha256": "6454d19f760c4d1e5c98c717ea77b88f63a63395f541326402924ed82ad3c990"
+    },
+    "Toy.LoanFlow.RState.init": {
+      "closure_sha256": "8ac6c3851930e54e889bd7d1f920f13d7c84c14f33f1c21eb594e498fc3a4182",
+      "closure_size": 6,
+      "statement_sha256": "c23ff0b23fb55ba2adcc8a1f3c199409121dc2db6c39af9280ee963ec822a6a5"
+    },
+    "Toy.LoanFlow.RState.set": {
+      "closure_sha256": "8ac6c3851930e54e889bd7d1f920f13d7c84c14f33f1c21eb594e498fc3a4182",
+      "closure_size": 6,
+      "statement_sha256": "d1f2d7903d73ea9949da9b8489f344eb6ba2cbddc947c87758f13b4ddb0e1565"
+    },
+    "Toy.LoanFlow.Reach": {
+      "closure_sha256": "101db1d537c833b5c08d04a1201f0318f49117955221b0d0d86f2aaf0800af58",
+      "closure_size": 1,
+      "statement_sha256": "648004def33f39493ccb35bf5894cb110e85d78887a1e73deaac2c3d0799b14d"
+    },
+    "Toy.LoanFlow.ReachesUB": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "4226408202ffc2521ea4ab2374bf791f3e2f1bee186dc3c6a792c45542edfc97"
+    },
+    "Toy.LoanFlow.Rec": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "59c83c6c1a2d8daa2e6fdc35fdd9d3f4d73008fd4fa4f9258813d0bd42f98061"
+    },
+    "Toy.LoanFlow.Safe": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "b20597b47da54d7a1ff9c38016effc735d1f0d882d967535e1bb37f894dfd027"
+    },
+    "Toy.LoanFlow.Sound.Inv": {
+      "closure_sha256": "84a5f53f0a5d101bdf2939628ced4e556b4a7151761476a37e34bf5e58e44bce",
+      "closure_size": 20,
+      "statement_sha256": "e19cda2ff63068bf3fdd5d47bdd3f5411bcd4fbdec86249dd61997f0c85340a7"
+    },
+    "Toy.LoanFlow.Sound.Uniq": {
+      "closure_sha256": "8ac6c3851930e54e889bd7d1f920f13d7c84c14f33f1c21eb594e498fc3a4182",
+      "closure_size": 6,
+      "statement_sha256": "3d0309eefd5058b0fa1d362dc274032614adcd508fb61bb52f9731ee7d338b70"
+    },
+    "Toy.LoanFlow.Sound.WF": {
+      "closure_sha256": "84a5f53f0a5d101bdf2939628ced4e556b4a7151761476a37e34bf5e58e44bce",
+      "closure_size": 20,
+      "statement_sha256": "7755f5c9a221b3bf258813dc612c7ff99ca50999edfe97a6d90813fd9fd9a1d9"
+    },
+    "Toy.LoanFlow.Sound.exec_ne_ub": {
+      "closure_sha256": "95702fd7c68031344cfef4c4c7cd312036bc1a54cc695627421cf49eee33ad13",
+      "closure_size": 109,
+      "statement_sha256": "bf7e47e2df5b78b40c03b4831d5c9015edf5947d70c7db7aeeda9a16773f37e1"
+    },
+    "Toy.LoanFlow.Sound.inv_init": {
+      "closure_sha256": "8e877cb17fe91b84cdaacbb99cd2d8cdf97599b04a6b34796e056b4ee1e1ba2d",
+      "closure_size": 86,
+      "statement_sha256": "23b04f219287b87a331a43874685172496ece912d0442b26a35e790bf6682452"
+    },
+    "Toy.LoanFlow.Sound.run_not_ub": {
+      "closure_sha256": "b75ccfc775625d77c688ce4e301c751ff6c859159a9187410a28ac2f057b4fd5",
+      "closure_size": 125,
+      "statement_sha256": "4d6debaa47c279d95d9d274087a5a3cae1182c661ef69b081a43941668817666"
+    },
+    "Toy.LoanFlow.Sound.step_inv": {
+      "closure_sha256": "5bec546cb5a6a78b519c7b48dfb4ac908473bfab98449d4d685507f2a6c5087b",
+      "closure_size": 112,
+      "statement_sha256": "a513a2f1728130a54d1e7483b6b006743127611b1dc37915ea2e05624f8c6736"
+    },
+    "Toy.LoanFlow.Stmt": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "f90689f02c7655dad6c5a27959ac8ac133356b1596ff28fa512baf22ef8416cd"
+    },
+    "Toy.LoanFlow.Stmt.accesses": {
+      "closure_sha256": "29a6d5184bf2351858944bb82cb10d15f70aa4edb9f3f135a27ff0e10f3d2770",
+      "closure_size": 14,
+      "statement_sha256": "15c09b96db21aee7702a206f777145433442e5d4181f64fa1e402d3ecb1d7aad"
+    },
+    "Toy.LoanFlow.Stmt.defs": {
+      "closure_sha256": "29a6d5184bf2351858944bb82cb10d15f70aa4edb9f3f135a27ff0e10f3d2770",
+      "closure_size": 14,
+      "statement_sha256": "6bf674567b8a8870437bfbce45e40a5cb41f741e1a950b21fffd2aef831fc874"
+    },
+    "Toy.LoanFlow.Stmt.uses": {
+      "closure_sha256": "29a6d5184bf2351858944bb82cb10d15f70aa4edb9f3f135a27ff0e10f3d2770",
+      "closure_size": 14,
+      "statement_sha256": "6bf674567b8a8870437bfbce45e40a5cb41f741e1a950b21fffd2aef831fc874"
+    },
+    "Toy.LoanFlow.StmtWellTyped": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "40e5dbf043b03d9a90714aeb60b2b06e10a9f22ae006a02902dbfcf2dcbe7c9b"
+    },
+    "Toy.LoanFlow.VarMode": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.LoanFlow.WellTyped": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "b20597b47da54d7a1ff9c38016effc735d1f0d882d967535e1bb37f894dfd027"
+    },
+    "Toy.LoanFlow.exec": {
+      "closure_sha256": "b2ac8864f165142abb609bb74a08dfee4bd1d578a44efca36884f7972153851c",
+      "closure_size": 24,
+      "statement_sha256": "a4fc0f058dbe9a7f45565be3882c40e2eaa3b9b5948b49c67e2365a5263a5a4a"
+    },
+    "Toy.LoanFlow.gen": {
+      "closure_sha256": "e6eef169f182f5b8503d8fa919fdc3ae7b72b9b0090a27629d29ef014e3d4acc",
+      "closure_size": 21,
+      "statement_sha256": "2488dc75fe654ccc923626d4db93e9bbaedba4e8e528ee58a313099e42e95454"
+    },
+    "Toy.LoanFlow.invalidate": {
+      "closure_sha256": "8ac6c3851930e54e889bd7d1f920f13d7c84c14f33f1c21eb594e498fc3a4182",
+      "closure_size": 6,
+      "statement_sha256": "9b31e126d8dce4e2d819f8b33fa29d2f8731bd0ac405bf2460420db167edbb72"
+    },
+    "Toy.LoanFlow.invariantAt": {
+      "closure_sha256": "34af60586fce0d7d7e60d221b9a4f83476e4b1782d683e74ce0ba840023d76c3",
+      "closure_size": 6,
+      "statement_sha256": "36c83de8d05b269a1e8e39e91c4bc678812d4a1e2152d93e9da64e7bf7e6abfc"
+    },
+    "Toy.LoanFlow.killsAt": {
+      "closure_sha256": "4d388c8405c189f9a3a2f3e7692cc36afc5965626c84eee6b454d42a456cb1d6",
+      "closure_size": 21,
+      "statement_sha256": "4d57318431e03135b431c2b6a1aca2248d941141c8e59f31a10ff22d30fd684f"
+    },
+    "Toy.LoanFlow.liveAccepts_of_wellTyped_of_nllAccepts": {
+      "closure_sha256": "c0e6935a5a27ba1716fef77bb9a8e99d3d36d9b2be3c0e9a14d436f886507247",
+      "closure_size": 80,
+      "statement_sha256": "e1675ad3a8960c546c52a5b85783ebaa8b7220f20098b6a304af7efbafc8d071"
+    },
+    "Toy.LoanFlow.loanDst": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "88b21a3d0fa71b6837524d8d7b3a22c40fde6b7577fc678ff8b859886f0b5c66"
+    },
+    "Toy.LoanFlow.loanOf": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "1e3d625852682efe8c7d454639b04ffc6c8517c636aafb523928921460b265cc"
+    },
+    "Toy.LoanFlow.lsAccepts_not_safe_without_wellTyped": {
+      "closure_sha256": "082e326723ac59cd380e5e973eeb40bde963e1a824b10a6d4fc8b606b7dcf05e",
+      "closure_size": 132,
+      "statement_sha256": "7e822e45770b072784361105d306b5ec8b80cc0715cb2084d5b9b03caf2f8265"
+    },
+    "Toy.LoanFlow.lsAccepts_of_lsNoKillAccepts": {
+      "closure_sha256": "f40fbfb0ee426931452b49beb156206564b4e9cb6ec045a2cb821221d67622fa",
+      "closure_size": 76,
+      "statement_sha256": "fd0fcfbde36fa2954910a99dd9c39003171326e535c38c386afd6d5e6095cdaf"
+    },
+    "Toy.LoanFlow.lsAccepts_of_nllAccepts_fails_without_wellTyped": {
+      "closure_sha256": "125c85f78e77bbc23f731ff306d74839e501c45c8bd0ef91a40d4efe30c890b7",
+      "closure_size": 96,
+      "statement_sha256": "5642fd180c58c7ee04acba47ff23856e2d4b6afe8c3c6189cd8feefa49838e92"
+    },
+    "Toy.LoanFlow.lsAccepts_of_reachWellTyped_of_nllAccepts_fails": {
+      "closure_sha256": "654d8358023d7e7ee80cd0f7511e4ca392e688b974977bc14b84e71b84bfb0a3",
+      "closure_size": 100,
+      "statement_sha256": "e5df89a3ab26b74644766928385ff048c81de40a9de6faf22d702ad42ce0469a"
+    },
+    "Toy.LoanFlow.lsAccepts_of_wellTyped_of_nllAccepts": {
+      "closure_sha256": "2e13a2bda4eb6101cc6e9999701c4b857a043d9688ceb4e694f06fe0e8c81cf5",
+      "closure_size": 90,
+      "statement_sha256": "ba06799cb9fc2ef0dd1bc88fd9cac4e065f0403e786eadb3acfd29f92a9e08f5"
+    },
+    "Toy.LoanFlow.lsAccepts_of_wellTyped_of_nllAccepts_nonvacuous": {
+      "closure_sha256": "bbd350431918d33845f69451395b2d5a6e964350a24429730a435e24acfc5d51",
+      "closure_size": 80,
+      "statement_sha256": "a1d2ab84e9c2e3c81167366810ad10830c3fb9003a7720d0359b68a19b8c4650"
+    },
+    "Toy.LoanFlow.lsAccepts_overwrite_iff_liveAccepts": {
+      "closure_sha256": "55f552dcfe38356776dbb0d3b7b7604f946172f6aa27e3c6aaee365a6e423ee9",
+      "closure_size": 83,
+      "statement_sha256": "ade3a95d55db0de74c0c5e51a8d251e22558238b322c7745a8e69f657b1cec8c"
+    },
+    "Toy.LoanFlow.lsAccepts_overwrite_iff_liveAccepts_nonvacuous": {
+      "closure_sha256": "f32166ac2f7349e03b894019a9cce93339f5e73a8966ac99208f8824e9ccb078",
+      "closure_size": 93,
+      "statement_sha256": "ab8f3a08d93b58d6f63c2ba9a16f7a93fbfda7f1eb222d34b8204d36ab2814de"
+    },
+    "Toy.LoanFlow.lsLoanLive_overwrite_iff_liveLoanLive": {
+      "closure_sha256": "934708dfd66e5ae10e92e10aa4c810d6a9c429fb115e66a73791c3fa04ed62b6",
+      "closure_size": 75,
+      "statement_sha256": "4a7bd8de56c805217301612845672f995cc3a8878b930bc081e4f2b1a1f89ac8"
+    },
+    "Toy.LoanFlow.lsNoKillAccepts_of_wellTyped_of_nllAccepts_fails": {
+      "closure_sha256": "8acc26cea1d56780911424c23860122ae9f89b62e6dab4c65f7637ff02022a24",
+      "closure_size": 91,
+      "statement_sha256": "55579d743b3c031fd9a8628ddc40af01280e521c6dd0f69b41a3bf265aa496ee"
+    },
+    "Toy.LoanFlow.nllAccepts_not_safe_without_wellTyped": {
+      "closure_sha256": "aa908c388e02bd36e80930e15912a4dd5c94c65d3ba23eded642613305a7d5c8",
+      "closure_size": 115,
+      "statement_sha256": "d4fbeb4671808a448ba41461db00caec35fff53ae13fae24636fba8843fd6b63"
+    },
+    "Toy.LoanFlow.pCopyThenUse": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "bf9afeea715a61ff8005536b95f5d5fc9c1df6dc381ef991302bdf0f53dde56d"
+    },
+    "Toy.LoanFlow.pCopyThenUseShr": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "bf9afeea715a61ff8005536b95f5d5fc9c1df6dc381ef991302bdf0f53dde56d"
+    },
+    "Toy.LoanFlow.pCopyThenUseShr_lsCopySrcKill_accepts": {
+      "closure_sha256": "889a5bb0573c0497bf1889eb522373f9933a896e459b40c66785461eacb1bfb3",
+      "closure_size": 81,
+      "statement_sha256": "5393feb991e10057b0c5ab11a81c9362044d8e172c60dd43ae0c4d4df47b4dfe"
+    },
+    "Toy.LoanFlow.pCopyThenUseShr_not_lsAccepts": {
+      "closure_sha256": "4a7721c6009c406e818f80a4784ab78c0730fe988a671a74e6bb848cb3f0550f",
+      "closure_size": 82,
+      "statement_sha256": "9cb2edc7bdedb654b42ce96cbecc564bc484ff4ca603b784106f3c8060f1a448"
+    },
+    "Toy.LoanFlow.pCopyThenUseShr_wellTyped_lsCopySrcKillAccepts_not_safe": {
+      "closure_sha256": "73918def80c9f56d7ecb67a9b61a5a5de4cdbb7d254fe489133c25b36b5ea882",
+      "closure_size": 128,
+      "statement_sha256": "4b60cd1943ac2e4fa9ddbef579e4cb71397904e632c12693956c49f7ac7b27b0"
+    },
+    "Toy.LoanFlow.pCopyThenUse_lsCopySrcKill_accepts": {
+      "closure_sha256": "d4be8cbcad6d8a9596963197c8b437b9e7a43a5bbb571d0ea5a4b8cff0b7f2f7",
+      "closure_size": 81,
+      "statement_sha256": "f2fd90803bfe93bc1901384e7c1edc1cc7dbe975e7b9fea13e52102eee281cc3"
+    },
+    "Toy.LoanFlow.pCopyThenUse_not_lsAccepts": {
+      "closure_sha256": "f4c0ec997a35c486e6e45474fbba93e56187cfc9fd8819f2e1e75f5c1d4e3de8",
+      "closure_size": 82,
+      "statement_sha256": "7579872336aa8a300d691dd456a9f8caef03ad1d326a33f112c2f08b8f9c99d3"
+    },
+    "Toy.LoanFlow.pCopyThenUse_wellTyped_lsCopySrcKillAccepts_not_safe": {
+      "closure_sha256": "569c58784a484e6c3ea1f9a1412f6bb86db41dc2d330804d9424fbae87642256",
+      "closure_size": 128,
+      "statement_sha256": "2b441ac63bb2acb12c60e7c381c6d242a50550b16ef60b01df918bdc007556fe"
+    },
+    "Toy.LoanFlow.pReassign": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "aeebf7274e68b20369858efea184bb72e8eb2199bf039786bacf8f9b155cb021"
+    },
+    "Toy.LoanFlow.pReassign_r_dead_at_2": {
+      "closure_sha256": "e6a4815fc507e63d66b8a78a03876c9dba5065dcb4375113813300f45413b778",
+      "closure_size": 35,
+      "statement_sha256": "5895c808bd022b291eb6910f64db72ded933189a4b7127dff641da9f453b5f81"
+    },
+    "Toy.LoanFlow.pReassign_wellTyped_safe_nllAccepts_lsAccepts_not_lsNoKillAccepts": {
+      "closure_sha256": "c97766f7a9fe7c2489c086d2a8ec0fbc89aeb96e83cfee225f4768a0e1e00d10",
+      "closure_size": 138,
+      "statement_sha256": "41cc1d6d26c4004061928d0ca0bba5ead5ad36f8ce86e88c77cad2f4b3e3464a"
+    },
+    "Toy.LoanFlow.pStoreSafe": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "3cee1010162e861d16998762c0491db41c0b97a822b630c1532ef2f8dadbea0f"
+    },
+    "Toy.LoanFlow.pUnreachUntyped": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "91db09539f6e82645ce68121b5e2d2b17b964a1d019c5ea54c80f9ea15604e76"
+    },
+    "Toy.LoanFlow.pUntypedHolder": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "27513b36fd39f661b2e496da4f7894703be20f4b1c9cdcd1fd425ea9346ec4a9"
+    },
+    "Toy.LoanFlow.pUntypedStore": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "a1eafee4afabd9894f51c4fdde67e6e5980e3298ea1e1d7ca2941f3d6f312f7e"
+    },
+    "Toy.LoanFlow.pVariance": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "3cee1010162e861d16998762c0491db41c0b97a822b630c1532ef2f8dadbea0f"
+    },
+    "Toy.LoanFlow.pVariance_lsCov_accepts": {
+      "closure_sha256": "1281de5be65213f60b93cc8025f2f8c46ebf5ac83feb13c165e399ea0c40fa38",
+      "closure_size": 81,
+      "statement_sha256": "7942bc674a626690858e480d023c70523e48113f1d1a7605dacd38943ee5cdf1"
+    },
+    "Toy.LoanFlow.pVariance_not_lsAccepts": {
+      "closure_sha256": "f99c247963800261fcc20dc89355a15027354ddcf0e4fff4d9e19c250baf23ea",
+      "closure_size": 82,
+      "statement_sha256": "ad6230ff5716799f4dcb32a9fbd4e346321fab57bce8a3d69c87e3938fb1304b"
+    },
+    "Toy.LoanFlow.pVariance_not_nllAccepts": {
+      "closure_sha256": "52c4a3a54c5df86fb28a895a70054fb750befb68f7f3783fead0052283900a41",
+      "closure_size": 70,
+      "statement_sha256": "13453d05806c99ff037cbe0d62068fe7ef6d676c1f16f1d9e14ce22b9ce3682c"
+    },
+    "Toy.LoanFlow.pVariance_wellTyped_covAccepts_not_safe": {
+      "closure_sha256": "1c022606b17c20385fec1949c3c24a726f82c35afd57149cce45030abd5aa7db",
+      "closure_size": 138,
+      "statement_sha256": "adf0238b2ec3da581f4a799a810a9f54e4217706e5701e756fe9419e2d486c71"
+    },
+    "Toy.LoanFlow.pc3": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "0db2be051b1d8605e8aeb5e12a61ddb1bf48a846f356767c1fddd70d83266540"
+    },
+    "Toy.LoanFlow.pc3Loop": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "91db09539f6e82645ce68121b5e2d2b17b964a1d019c5ea54c80f9ea15604e76"
+    },
+    "Toy.LoanFlow.pc3Loop_safe": {
+      "closure_sha256": "1c509fb41f4b8224e7294c24853c4e790b9808575f34336e0672c67b81a72585",
+      "closure_size": 76,
+      "statement_sha256": "8cb25bfbb8fc6fac670040c0c750699a2f07e2052f0f6958ee2e7398b9b96081"
+    },
+    "Toy.LoanFlow.pc3Loop_wellTyped_safe_lsAccepts_not_nllAccepts": {
+      "closure_sha256": "9d731437af1a19c49c42df0c653f2246b104e1aa63b071a6f4175662557b9a40",
+      "closure_size": 139,
+      "statement_sha256": "cf8e2d220048bea947fbb4782671d88f038fa119f8bbf8be5bfbc7cbc411f95e"
+    },
+    "Toy.LoanFlow.pc3NoReturn": {
+      "closure_sha256": "6c881e8f2f20cde14d4b22a44c342fe7c6c475e0feb53335668094df7c49c48c",
+      "closure_size": 17,
+      "statement_sha256": "0db2be051b1d8605e8aeb5e12a61ddb1bf48a846f356767c1fddd70d83266540"
+    },
+    "Toy.LoanFlow.pc3NoReturn_wellTyped_safe_nllAccepts_lsAccepts": {
+      "closure_sha256": "8a916c9401fc97dbd9401cd2172fe14bc8d24305687947706ffbbe793130738b",
+      "closure_size": 139,
+      "statement_sha256": "9543596a8b47a7a24476c5ab64093380103eb8b85d73ce903541ef987723e094"
+    },
+    "Toy.LoanFlow.pc3_loan0_at_insertion": {
+      "closure_sha256": "4621df4c01f218293601bc4766007a0ac98cbc9726d5b8411b816ebf0ad6953d",
+      "closure_size": 89,
+      "statement_sha256": "196faa2644c570b8c5403208f757567ad33116f43ed50b78a05cdb991efe2e62"
+    },
+    "Toy.LoanFlow.pc3_wellTyped_safe_lsAccepts_not_nllAccepts": {
+      "closure_sha256": "3af972c2c14c29c2b3f634db35ce1d345fde170a301fb4d4baed9e0980ebb1ad",
+      "closure_size": 139,
+      "statement_sha256": "2805d6e4d14dc8fd71bfc91f98985bdf52455d91fd95d8eb179f5fa7037f98ce"
+    },
+    "Toy.LoanFlow.placeRead": {
+      "closure_sha256": "8ac6c3851930e54e889bd7d1f920f13d7c84c14f33f1c21eb594e498fc3a4182",
+      "closure_size": 6,
+      "statement_sha256": "8fa06d83f150ad03d7ccf2645d18bfae24773c9768a893c6f0dac4c3f11d045e"
+    },
+    "Toy.LoanFlow.placeWrite": {
+      "closure_sha256": "8ac6c3851930e54e889bd7d1f920f13d7c84c14f33f1c21eb594e498fc3a4182",
+      "closure_size": 6,
+      "statement_sha256": "8fa06d83f150ad03d7ccf2645d18bfae24773c9768a893c6f0dac4c3f11d045e"
+    },
+    "Toy.LoanFlow.refuted_result2_needs_kills": {
+      "closure_sha256": "e4f2df30d32b205bc60267921c7f465232981913f5ce716feb6a63673fca2cbe",
+      "closure_size": 102,
+      "statement_sha256": "9265832306ada724d1b03e3db585dbc6cdd9c73df20fe8c7efd82e75259d5d59"
+    },
+    "Toy.LoanFlow.relate": {
+      "closure_sha256": "db7e76b4659bda381fea41d57689effbcf4f8c94114b1219313444e3d14a026d",
+      "closure_size": 7,
+      "statement_sha256": "ee3cc8d7bcabba036c7a57e753cfdf35aebb0613d19ed52c13c9dc688e17df56"
+    },
+    "Toy.LoanFlow.run": {
+      "closure_sha256": "b2ac8864f165142abb609bb74a08dfee4bd1d578a44efca36884f7972153851c",
+      "closure_size": 24,
+      "statement_sha256": "166945601543d131936c6ccee833b1d202ee18780e23176f90c4c9ec2df9c3e5"
+    },
+    "Toy.LoanFlow.safe_of_wellTyped_of_lsAccepts": {
+      "closure_sha256": "83e8481e9158a830a3012d3b342ef88a069af4bfd65c6e7d6fd0e6a058ae8bf1",
+      "closure_size": 123,
+      "statement_sha256": "50fed8016f24f63ab02e6798cd8726ea15bd80629930974fd0e39e21360bab40"
+    },
+    "Toy.LoanFlow.safe_of_wellTyped_of_lsAccepts_nonvacuous": {
+      "closure_sha256": "8f122fe00f8c949b250788c251292c7d3a75402a0c182cec765d504c9455bc6e",
+      "closure_size": 97,
+      "statement_sha256": "c2954da17670e0a5112e6fc7ecd001c59d2b23075f0bf7e096967c389d792479"
+    },
+    "Toy.LoanFlow.safe_of_wellTyped_of_lsCopySrcKillAccepts_fails": {
+      "closure_sha256": "39a5c4525ffa26ac9d1953d8bd689b7f662b7218c17830789b43085c59f577ee",
+      "closure_size": 122,
+      "statement_sha256": "e80bd2f6bdc1be4cb33d580e2c31948748cac959885e798d6b4224422518bf1e"
+    },
+    "Toy.LoanFlow.safe_of_wellTyped_of_lsCovAccepts_fails": {
+      "closure_sha256": "39a5c4525ffa26ac9d1953d8bd689b7f662b7218c17830789b43085c59f577ee",
+      "closure_size": 122,
+      "statement_sha256": "9613b10cb7cb635eafc1eaf635f1fa0d271eba279d01cdc0c15ff83a375fb829"
+    },
+    "Toy.LoanFlow.safe_of_wellTyped_of_nllAccepts": {
+      "closure_sha256": "0d8df54d27fdb5cf17700efa5b2a3653ad0b14f9b81969f311b8490440d3bcd3",
+      "closure_size": 111,
+      "statement_sha256": "7c7035a419fa9f4024e32f52addc2d9c5105e225f03fb95a48126ce8d4ef2be5"
+    },
+    "Toy.LoanFlow.safe_of_wellTyped_of_nllAccepts_nonvacuous": {
+      "closure_sha256": "720e247cc4bc2c03fb7d8ec05a457bfb8867ca0f8abb353ac182a5d7bca523d4",
+      "closure_size": 79,
+      "statement_sha256": "ba1e72cf802e7b66ddf664d3a80f15ac44752baf9d65ababf9942f47bd230075"
+    },
+    "Toy.LoanFlow.safe_of_wellTyped_of_nllCovAccepts_fails": {
+      "closure_sha256": "7915f7adee743164cb9327fb8a09df1c880baa45dc9894772ad3e9ba62886485",
+      "closure_size": 110,
+      "statement_sha256": "813fbd8826a6e4aa1be495067399c9a80c7cf35de783c58e27ef0f33fe27bf0b"
+    },
+    "Toy.LoanFlow.thruRead": {
+      "closure_sha256": "8ac6c3851930e54e889bd7d1f920f13d7c84c14f33f1c21eb594e498fc3a4182",
+      "closure_size": 6,
+      "statement_sha256": "5f94d8420160762e378b06637e41811689124604371066f8e26fcd3148ef5a1f"
+    },
+    "Toy.LoanFlow.thruWrite": {
+      "closure_sha256": "8ac6c3851930e54e889bd7d1f920f13d7c84c14f33f1c21eb594e498fc3a4182",
+      "closure_size": 6,
+      "statement_sha256": "5f94d8420160762e378b06637e41811689124604371066f8e26fcd3148ef5a1f"
+    },
+    "Toy.LoanFlow.wellTyped_acyclic_not_safe": {
+      "closure_sha256": "d92aa96d378820bc355c83ce0c4cf6ad412295afd59e569ada66aa4e880cdea4",
+      "closure_size": 83,
+      "statement_sha256": "f9bf234b81c73192dcfb7eb08ead06d2769d4e5f4c40ab268503668b5f191e32"
+    },
+    "Toy.LoanFlow.wellTyped_not_lsAccepts": {
+      "closure_sha256": "a772d1b1535d3ca4d92e470462f230a8d6a07e5af7fa002e5f4f7d15c65bacae",
+      "closure_size": 87,
+      "statement_sha256": "60a287fe860e177d26091a3fa2919c4ac308b55401ff1763f8949c294d40e211"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
