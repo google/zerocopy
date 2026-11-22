@@ -54,8 +54,7 @@ REF_USE_RE = re.compile(
 
 FORBIDDEN_UNICODE_CATEGORIES = frozenset({"Cc", "Cf", "Zl", "Zp"})
 REPO_OWNED_ROOT_SKILLS = frozenset(
-    {"architectural-design", "unsafe-rust", "zerocopy-development",
-     "zerocopy-review"}
+    {"unsafe-rust", "zerocopy-development", "zerocopy-review"}
 )
 SKILL_DOCUMENT_SUFFIXES = frozenset({".md", ".txt", ".json", ".yaml", ".yml"})
 FORBIDDEN_SKILL_CONFIGS = frozenset(

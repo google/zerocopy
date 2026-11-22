@@ -15,7 +15,7 @@ Compose this skill with
 [`commit-message`](../../../skills/commit-message/SKILL.md),
 [`authorship-disclosure`](../../../skills/authorship-disclosure/SKILL.md),
 [`reader-oriented-explanation`](../../../skills/reader-oriented-explanation/SKILL.md),
-and [`williams-style`](../../../skills/williams-style/SKILL.md). This skill
+and [`clear-writing`](../../../skills/clear-writing/SKILL.md). This skill
 grants no authority to rewrite published history, push branches, open, update,
 merge, or close pull requests, or waive merge gates; act only when authorized.
 

@@ -20,7 +20,7 @@ the host's supported mechanism or a supplied package; reuse it if already
 loaded. Do not assume a sibling path, universal import facility, or access to
 maintainer files. If it is unavailable, identify that composition limit outside
 the message where permitted and continue only supported work; do not invent its
-instructions. Apply separately available `williams-style` for prose. This skill
+instructions. Apply separately available `clear-writing` for prose. This skill
 owns the commit-specific responsibilities below, not another general writing
 procedure.
 

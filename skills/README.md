@@ -20,7 +20,6 @@ routing.
 
 | Skill | Scope | Purpose |
 | :--- | :--- | :--- |
-| [`architectural-design`](architectural-design/SKILL.md) | Shared | End-to-end architectural design, empirical grounding, conceptual model refinement, and specification authoring |
 | [`unsafe-rust`](unsafe-rust/SKILL.md) | Shared / Rust | Proof-grade unsafe Rust authoring, safety documentation, soundness review, and TCB auditing |
 | [`zerocopy-development`](zerocopy-development/SKILL.md) | `zerocopy/` | Implementation, toolchain gating, macro generation, UI tests, and validation for `zerocopy` and `zerocopy-derive` |
 | [`zerocopy-review`](zerocopy-review/SKILL.md) | `zerocopy/` | Pull-request and patch review for `zerocopy` and `zerocopy-derive` |
@@ -38,18 +37,31 @@ Both skill roots loaded by Anneal accept non-executable documentation and data
 files. Keep scripts, executables, and ambient agent or build configuration
 out of these roots.
 
+`research-wheel` supports multi-wave inquiry and can run on its own.
+`architectural-design` uses it for research that needs several adaptive
+rounds. The [Anneal reference corpus guidance][reference-corpus] applies
+when working with the separately distributed corpus.
+
+[reference-corpus]: ../anneal/AGENTS.md#technical-reference-corpus
+
 | Skill | Source | Upstream path & revision |
 | :--- | :--- | :--- |
-| [`authorship-disclosure`](authorship-disclosure/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`authorship_disclosure/` at `b563468a8148df117283494915cee5b6561cc47f`](https://github.com/joshlf/skills/tree/b563468a8148df117283494915cee5b6561cc47f/authorship_disclosure) |
-| [`comment-guidelines`](comment-guidelines/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`comment_guidelines/` at `b563468a8148df117283494915cee5b6561cc47f`](https://github.com/joshlf/skills/tree/b563468a8148df117283494915cee5b6561cc47f/comment_guidelines) |
-| [`commit-message`](commit-message/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`commit-message/` at `b563468a8148df117283494915cee5b6561cc47f`](https://github.com/joshlf/skills/tree/b563468a8148df117283494915cee5b6561cc47f/commit-message) |
-| [`model-refinement`](model-refinement/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`model-refinement/` at `0073be02ea65150ad56ded426261245ec1a22848`](https://github.com/joshlf/skills/tree/0073be02ea65150ad56ded426261245ec1a22848/model-refinement) |
-| [`reader-oriented-explanation`](reader-oriented-explanation/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`reader-oriented-explanation/` at `b563468a8148df117283494915cee5b6561cc47f`](https://github.com/joshlf/skills/tree/b563468a8148df117283494915cee5b6561cc47f/reader-oriented-explanation) |
-| [`robust-code`](robust-code/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`robust-code/` at `468f74547999ad6879905c91398b1a218b010791`](https://github.com/joshlf/skills/tree/468f74547999ad6879905c91398b1a218b010791/robust-code) (patched; see below) |
-| [`skill-authorship`](skill-authorship/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`skill-authorship/` at `3bf3f345b2916f8417306ba197f779b0b4429c1d`](https://github.com/joshlf/skills/tree/3bf3f345b2916f8417306ba197f779b0b4429c1d/skill-authorship) |
-| [`swarm-model-refinement`](swarm-model-refinement/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`swarm-model-refinement/` at `3bf3f345b2916f8417306ba197f779b0b4429c1d`](https://github.com/joshlf/skills/tree/3bf3f345b2916f8417306ba197f779b0b4429c1d/swarm-model-refinement) |
-| [`tech-lead`](tech-lead/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`tech-lead/` at `3bf3f345b2916f8417306ba197f779b0b4429c1d`](https://github.com/joshlf/skills/tree/3bf3f345b2916f8417306ba197f779b0b4429c1d/tech-lead) (header added; see below) |
-| [`williams-style`](williams-style/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`williams-style/` at `b563468a8148df117283494915cee5b6561cc47f`](https://github.com/joshlf/skills/tree/b563468a8148df117283494915cee5b6561cc47f/williams-style) (patched; see below) |
+| [`architectural-design`](architectural-design/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`architectural-design/` at `fcd5ac02ddc0ad1002db890a7b94c355bb73226b`](https://github.com/joshlf/skills/tree/fcd5ac02ddc0ad1002db890a7b94c355bb73226b/architectural-design) |
+| [`authorship-disclosure`](authorship-disclosure/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`authorship_disclosure/` at `6a63da89d7240b1083e56991ab3718fbe7862ae7`](https://github.com/joshlf/skills/tree/6a63da89d7240b1083e56991ab3718fbe7862ae7/authorship_disclosure) |
+| [`clear-writing`](clear-writing/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`clear-writing/` at `12c20182ac57213eebb3f6ade950911e7b563c2a`](https://github.com/joshlf/skills/tree/12c20182ac57213eebb3f6ade950911e7b563c2a/clear-writing) (see below) |
+| [`comment-guidelines`](comment-guidelines/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | `comment_guidelines/` at `b563468a8148df117283494915cee5b6561cc47f` (historical pin) |
+| [`commit-message`](commit-message/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`commit-message/` at `6a63da89d7240b1083e56991ab3718fbe7862ae7`](https://github.com/joshlf/skills/tree/6a63da89d7240b1083e56991ab3718fbe7862ae7/commit-message) |
+| [`model-refinement`](model-refinement/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`model-refinement/` at `6a63da89d7240b1083e56991ab3718fbe7862ae7`](https://github.com/joshlf/skills/tree/6a63da89d7240b1083e56991ab3718fbe7862ae7/model-refinement) |
+| [`reader-oriented-explanation`](reader-oriented-explanation/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`reader-oriented-explanation/` at `6a63da89d7240b1083e56991ab3718fbe7862ae7`](https://github.com/joshlf/skills/tree/6a63da89d7240b1083e56991ab3718fbe7862ae7/reader-oriented-explanation) |
+| [`research-wheel`](research-wheel/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`research-wheel/` at `95420245403de7d840c8469e2bb4dc747e4ab6cd`](https://github.com/joshlf/skills/tree/95420245403de7d840c8469e2bb4dc747e4ab6cd/research-wheel) |
+| [`robust-code`](robust-code/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`robust-code/` at `6a63da89d7240b1083e56991ab3718fbe7862ae7`](https://github.com/joshlf/skills/tree/6a63da89d7240b1083e56991ab3718fbe7862ae7/robust-code) (see below) |
+| [`skill-authorship`](skill-authorship/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`skill-authorship/` at `6a63da89d7240b1083e56991ab3718fbe7862ae7`](https://github.com/joshlf/skills/tree/6a63da89d7240b1083e56991ab3718fbe7862ae7/skill-authorship) |
+| [`swarm-model-refinement`](swarm-model-refinement/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | [`swarm-model-refinement/` at `f0afc6cb1203fff09089112f31cc481df7f1de75`](https://github.com/joshlf/skills/tree/f0afc6cb1203fff09089112f31cc481df7f1de75/swarm-model-refinement) (see below) |
+| [`tech-lead`](tech-lead/SKILL.md) | [`joshlf/skills`](https://github.com/joshlf/skills) | `tech-lead/` at `3bf3f345b2916f8417306ba197f779b0b4429c1d` (historical pin) (see below) |
+
+The current public export omits `comment-guidelines` and `tech-lead` and
+no longer resolves their recorded upstream revisions. The lock still
+verifies the copies checked into this repository.
 
 ## Local modifications
 
@@ -61,8 +73,16 @@ modifications (also recorded in [`vendor-lock.json`](vendor-lock.json)):
   `skills/tech-lead/references/context-recovery.md`:** Carry the repository
   copyright and license header while preserving their upstream bodies unchanged.
 
-- **`skills/williams-style/`:** Omits the upstream `references/SOURCES.md`
-  bibliography and removes its optional link from `SKILL.md`.
+- **`skills/clear-writing/`:** Links to the pinned upstream
+  `references/SOURCES.md` bibliography.
+
+- **`skills/swarm-model-refinement/`:** Omits the executable upstream
+  `scripts/holdout-seal.py` helper. Cooperative same-UID `sealed-file` mode
+  requires a separately supplied host helper. The skill uses
+  `private-subagent` only if the host can resume a private worker, and
+  records holdout mode `none` if neither mode is available. Discovery-only
+  runs return to the caller after Phase 1. T3 handles repairable checks
+  and bounded retries before T1 can stop the run.
 
 - **`skills/robust-code/`:**
   - **Omitted file:** `references/agent-scaffolding.md`, which covers external

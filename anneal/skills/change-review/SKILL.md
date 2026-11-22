@@ -153,9 +153,11 @@ integration, publication, and stack locking or rebasing.
   per-agent temporary directory (`mktemp -d` under `/tmp`)—this is scratch
   hygiene, not an OS sandbox—pass `-B` to Python invocations (`python3 -B`) so
   no `__pycache__` lands in the reviewed worktree, and remove per-check
-  temporary directories before exiting (a multi-round holdout store persists
-  only inside its isolated holdout runner's directory until the task completes,
-  then is removed).
+  temporary directories before exiting (keep blind holdout vaults outside swept
+  `/tmp` dirs in a dedicated `Steward`/`Holdout Evaluator` vault or private
+  sub-agent per
+  [`swarm-model-refinement`](../../../skills/swarm-model-refinement/SKILL.md),
+  removing any temporary holdout vault once the task completes).
 
 ### Report within the host's constraints
 
@@ -311,8 +313,8 @@ trivial edits incur zero needless ceremony:
   verdict (verify closure of prior findings in a separate warm check or
   coordinator adjudication, keeping fresh confirmation unanchored). Assign the
   strongest available reviewer capability to `trust-review` and complex diffs.
-  Use distinct model families across authoring, review, challenger, and
-  fresh-critic roles when available within authorized compute, and cross-check
+  Use distinct model families across authoring, review, `Audit Critic`, and
+  `Fresh Critic` roles when available within authorized compute, and cross-check
   any accepted repair that implements a reviewer's concrete design on a
   different model family when available.
 - **Bounded read-only slice-sharding:** For large multi-subsystem diffs
@@ -322,19 +324,23 @@ trivial edits incur zero needless ceremony:
   confirming every reported finding and checking cross-slice contracts (such as
   capture-to-Lean AST boundaries or manifest-to-bundle alignment). Delegated
   reviewers never spawn sub-reviews.
-- **Holdout probes and monotonic isolation:** When holdouts apply (semantic,
-  compiler, or auditor logic), use the role separation in
+- **Holdout probes and permanent exposure isolation:** When holdouts apply
+  (semantic, compiler, or auditor logic), use the role separation and `Holdout
+  Vault` rules in
   [`swarm-model-refinement`](../../../skills/swarm-model-refinement/SKILL.md):
-  keep the holdout probe prompt mechanically distinct from challenger prompts,
-  isolate holdout files in a per-agent `mktemp -d` directory, and fix **active**
-  versus **withheld reserve** holdouts before the first repair. Isolation moves
-  only one way: `Sealed` (host-enforced filesystem or workspace isolation
-  prevents the author from listing or reading holdouts) -> `Behavioral` (shared
-  filesystem where the author does not inspect; disclose in the receipt) ->
-  `exposed design witness` (premise reached the author or synthesizer). Repair
-  handoffs carry only failing obligations, never passing holdout premises;
-  reclassify any disclosed failing holdout and re-validate on unexposed reserve
-  holdouts.
+  keep the `Holdout Evaluator` prompt mechanically distinct from `Audit Critic`
+  prompts, seal holdouts with host-supplied `holdout-seal.py` (`sealed-file`
+  mode, a cooperative same-UID envelope, outside swept `/tmp` dirs), or keep
+  them in a `Steward/Holdout` sub-agent whose transcript and scratch space
+  stay private from the author and synthesizer (`private-subagent` mode).
+  Set `holdout mode = none` if neither mode is available. Author `Partition 1`
+  and reserve `Partition 2` before candidate exposure.
+  Exposure is strictly one-way and permanent (`unexposed` ->
+  `exposed-holdout` whenever a scenario or `body_group` reaches the author or
+  synthesizer). Repair handoffs carry only failing clause IDs (disclosing
+  concrete traces only when clause IDs cannot guide repair), never passing
+  holdout premises; reclassify any disclosed case and re-validate on unexposed
+  reserve holdouts (`Partition 2`).
 - **Delegated output-validity gate:** Accept a delegated review result only if
   it (1) binds the exact comparison tuple (reporting an unreachable base as a
   coverage gap), (2) names inspected declarations or hunks and invariant
@@ -458,8 +464,9 @@ bullet per field:
 4. **Realized capability and isolation:** public, generic model-family labels
    (for example "two distinct model families", "single-family fallback",
    "disclosed trust-first self-review", or "author self-check on verified
-   trivial edit"), holdout isolation level (`Sealed`, `Behavioral`, or `none`)
-   and exposed witnesses, plus any fallbacks or un-re-executed checks.
+   trivial edit"), holdout mode (`sealed-file` [cooperative same-UID envelope],
+   `private-subagent`, or `none`) and exposed cases, plus any fallbacks or
+   un-re-executed checks.
 5. **Checks and probes:** deterministic reference preflight receipt and
    executable probes run (and which checks were validly reused).
 6. **Findings and blockers:** dispositions for every local, hosted, and

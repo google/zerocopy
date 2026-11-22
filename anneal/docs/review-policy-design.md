@@ -287,8 +287,9 @@ against its canonical owner and required outcome:
    generators.
 3. **Holdout isolation and reserve partition:**
    [`change-review`](../skills/change-review/SKILL.md#delegate-review-and-holdouts)
-   — separates `Sealed` vs. `Behavioral` vs. `exposed design witness`, withholds
-   reserves before first repair, and blocks leaking passing premises.
+   — distinguishes cooperative `sealed-file` from `private-subagent`
+   and `none`, separates blind `Partition 1`/`Partition 2` reserves from
+   `exposed-holdout` cases, and blocks leaking passing premises.
 4. **Repair-induced TCB violation and style oscillation:**
    [`change-review`](../skills/change-review/SKILL.md#adjudicate-findings-and-repairs)
    — rejects TCB-violating repairs and repeated style oscillation without new
