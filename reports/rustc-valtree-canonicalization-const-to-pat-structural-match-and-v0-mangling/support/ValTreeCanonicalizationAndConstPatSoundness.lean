@@ -38,7 +38,7 @@ inductive FloatVal where
   deriving DecidableEq
 
 /-- IEEE-754 `BinOp::Eq` semantics used by MIR `TestKind::ScalarEq` on floats. -/
-def floatIeeeEq : FloatVal → FloatVal → Bool
+noncomputable def floatIeeeEq : FloatVal → FloatVal → Bool
   | .posZero, .posZero => true
   | .posZero, .negZero => true
   | .negZero, .posZero => true
@@ -47,7 +47,7 @@ def floatIeeeEq : FloatVal → FloatVal → Bool
   | _, _ => false
 
 /-- Predicate identifying IEEE-754 NaN values rejected by `const_to_pat` (RFC 3535). -/
-def floatIsNaN : FloatVal → Bool
+noncomputable def floatIsNaN : FloatVal → Bool
   | .nan _ => true
   | _ => false
 
@@ -79,25 +79,25 @@ mutual
 end
 
 /-- Look up the `idx`-th variant declaration of an enum. -/
-def getVariant : VariantDecls → Nat → Option (String × Nat × TyFields)
+noncomputable def getVariant : VariantDecls → Nat → Option (String × Nat × TyFields)
   | .nil, _ => none
   | .cons vName padLen fields _, 0 => some (vName, padLen, fields)
   | .cons _ _ _ rest, n + 1 => getVariant rest n
 
 /-- Shallow `StructuralPartialEq` check matching `Ty::is_structural_eq_shallow`. -/
-def isStructuralShallow : Ty → Bool
+noncomputable def isStructuralShallow : Ty → Bool
   | .int | .bool | .thinRawPtr | .fnPtr | .ref _ | .array _ _ => true
   | .structTy _ structural _ _ => structural
   | .enumTy _ structural _ => structural
   | .float | .wideRawPtr | .fnDef _ | .unionTy _ => false
 
 /-- Construct a list of `n` uninitialized padding bytes. -/
-def uninitPad : Nat → List MemByte
+noncomputable def uninitPad : Nat → List MemByte
   | 0 => []
   | n + 1 => .uninit :: uninitPad n
 
 /-- Check that every byte in a padding byte list is `MemByte.uninit`. -/
-def allBytesUninit : List MemByte → Bool
+noncomputable def allBytesUninit : List MemByte → Bool
   | [] => true
   | .uninit :: rest => allBytesUninit rest
   | .init _ :: _ => false
@@ -158,11 +158,11 @@ mutual
 end
 
 /-- `ValTree::zst`: empty branch slice. -/
-def ValTree.zst : ValTree := .branch .nil
+noncomputable def ValTree.zst : ValTree := .branch .nil
 
 mutual
   /-- Structural boolean equality on canonical `ValTree`s (used by `v0` `self.consts` cache). -/
-  def valTreeEq : ValTree → ValTree → Bool
+  noncomputable def valTreeEq : ValTree → ValTree → Bool
     | .leafInt a, .leafInt b => if a = b then true else false
     | .leafBool a, .leafBool b => if a = b then true else false
     | .leafFloat a, .leafFloat b => if a = b then true else false
@@ -171,7 +171,7 @@ mutual
     | _, _ => false
   termination_by structural a => a
 
-  def valTreeListEq : ValTreeList → ValTreeList → Bool
+  noncomputable def valTreeListEq : ValTreeList → ValTreeList → Bool
     | .nil, .nil => true
     | .cons h1 t1, .cons h2 t2 => valTreeEq h1 h2 && valTreeListEq t1 t2
     | _, _ => false
@@ -196,7 +196,7 @@ mutual
   /-- Quotient map `const_to_valtree_inner`: strips padding bytes and reference addresses,
   accepts provenance-free thin raw pointers and `FnDef` ZSTs, and rejects provenance raw
   pointers, wide raw pointers, function pointers, and unions. -/
-  def toValTree : AllocVal → Except ValTreeErr ValTree
+  noncomputable def toValTree : AllocVal → Except ValTreeErr ValTree
     | .intVal v => .ok (.leafInt v)
     | .boolVal b => .ok (.leafBool b)
     | .floatVal f => .ok (.leafFloat f)
@@ -222,7 +222,7 @@ mutual
   termination_by structural a => a
 
   /-- Field-wise helper for `toValTree`. -/
-  def toValTreeFields : AllocFields → Except ValTreeErr ValTreeList
+  noncomputable def toValTreeFields : AllocFields → Except ValTreeErr ValTreeList
     | .nil => .ok .nil
     | .cons h t =>
         match toValTree h with
@@ -354,7 +354,7 @@ end
 
 mutual
   /-- Predicate asserting that every padding byte in every nested struct/enum is `MemByte.uninit`. -/
-  def allPaddingUninit : AllocVal → Bool
+  noncomputable def allPaddingUninit : AllocVal → Bool
     | .intVal _ | .boolVal _ | .floatVal _ | .thinRawPtr _ _
     | .wideRawPtr _ _ _ | .fnPtr _ | .fnDef _ | .unionVal _ _ => true
     | .refVal _ p => allPaddingUninit p
@@ -364,14 +364,14 @@ mutual
   termination_by structural a => a
 
   /-- Field-list helper for `allPaddingUninit`. -/
-  def allPaddingUninitFields : AllocFields → Bool
+  noncomputable def allPaddingUninitFields : AllocFields → Bool
     | .nil => true
     | .cons h t => allPaddingUninit h && allPaddingUninitFields t
   termination_by structural fs => fs
 end
 
 /-- Generic fixed-length array mapper over `ValTreeList` (keeps `fromValTree` structurally recursive on `Ty`). -/
-def mapValTreeArray {α : Type} (f : ValTree → Except ValTreeErr α)
+noncomputable def mapValTreeArray {α : Type} (f : ValTree → Except ValTreeErr α)
     (combine : α → List α → List α) : Nat → ValTreeList → Except ValTreeErr (List α)
   | 0, .nil => .ok []
   | n + 1, .cons vh vt =>
@@ -384,7 +384,7 @@ def mapValTreeArray {α : Type} (f : ValTree → Except ValTreeErr α)
   | _, _ => .error .layoutMismatch
 
 /-- Helper lifting a `ValTree` decoder over a fixed-length array into `AllocFields`. -/
-def decodeArrayFields (f : ValTree → Except ValTreeErr AllocVal) :
+noncomputable def decodeArrayFields (f : ValTree → Except ValTreeErr AllocVal) :
     Nat → ValTreeList → Except ValTreeErr AllocFields
   | 0, .nil => .ok .nil
   | n + 1, .cons vh vt =>
@@ -399,7 +399,7 @@ def decodeArrayFields (f : ValTree → Except ValTreeErr AllocVal) :
 mutual
   /-- Reconstruction `valtree_to_const_value` / `valtree_into_mplace`: allocates fresh
   uninitialized padding (`uninitPad padLen`) and writes only canonical fields. -/
-  def fromValTree : Ty → ValTree → Except ValTreeErr AllocVal
+  noncomputable def fromValTree : Ty → ValTree → Except ValTreeErr AllocVal
     | .int, .leafInt v => .ok (.intVal v)
     | .bool, .leafBool b => .ok (.boolVal b)
     | .float, .leafFloat f => .ok (.floatVal f)
@@ -426,7 +426,7 @@ mutual
   termination_by structural ty => ty
 
   /-- Variant lookup + reconstruction (structurally recursive on `VariantDecls`). -/
-  def fromValTreeVariants (name : String) :
+  noncomputable def fromValTreeVariants (name : String) :
       VariantDecls → Nat → ValTreeList → Except ValTreeErr AllocVal
     | .nil, _, _ => .error .layoutMismatch
     | .cons _ padLen ftys _, 0, ts =>
@@ -441,7 +441,7 @@ mutual
   termination_by structural vs => vs
 
   /-- Field-wise reconstruction helper. -/
-  def fromValTreeFields : TyFields → ValTreeList → Except ValTreeErr AllocFields
+  noncomputable def fromValTreeFields : TyFields → ValTreeList → Except ValTreeErr AllocFields
     | .nil, .nil => .ok .nil
     | .cons _ ty rest, .cons vh vt =>
         match fromValTree ty vh with
@@ -634,7 +634,7 @@ mutual
 end
 
 /-- Array-element helper lifting a `Pat` lowerer over a fixed-length `ValTreeList`. -/
-def lowerArrayPat (f : ValTree → Except PatErr Pat) :
+noncomputable def lowerArrayPat (f : ValTree → Except PatErr Pat) :
     Nat → ValTreeList → Except PatErr PatFields
   | 0, .nil => .ok .nil
   | n + 1, .cons vh vt =>
@@ -653,7 +653,7 @@ mutual
     (never checking inactive variants' field types);
   - Rejects `NaN` floats (RFC 3535) and accepts finite floats (including `-0.0` / `+0.0`);
   - Rejects `FnDef` even though `toValTree` succeeded with `ValTree.zst`. -/
-  def valTreeToPat : Ty → ValTree → Except PatErr Pat
+  noncomputable def valTreeToPat : Ty → ValTree → Except PatErr Pat
     | .int, .leafInt v => .ok (.constInt v)
     | .bool, .leafBool b => .ok (.constBool b)
     | .float, .leafFloat f =>
@@ -687,7 +687,7 @@ mutual
   termination_by structural ty => ty
 
   /-- Active-variant lookup + lowering (never inspects inactive variants). -/
-  def valTreeVariantsToPat (name : String) :
+  noncomputable def valTreeVariantsToPat (name : String) :
       VariantDecls → Nat → ValTreeList → Except PatErr Pat
     | .nil, _, _ => .error .badValTree
     | .cons _ _ ftys _, 0, ts =>
@@ -702,7 +702,7 @@ mutual
   termination_by structural vs => vs
 
   /-- Field-list helper for `valTreeToPat`. -/
-  def valTreeFieldsToPat : TyFields → ValTreeList → Except PatErr PatFields
+  noncomputable def valTreeFieldsToPat : TyFields → ValTreeList → Except PatErr PatFields
     | .nil, .nil => .ok .nil
     | .cons _ ty rest, .cons vh vt =>
         match valTreeToPat ty vh with
@@ -742,7 +742,7 @@ theorem valTreeVariantsToPat_inv (name : String) :
 mutual
   /-- Operational match semantics of a lowered THIR/MIR pattern against a runtime `AllocVal`.
   Note: padding bytes and reference addresses are never consulted; floats use `floatIeeeEq`. -/
-  def patMatches : Pat → AllocVal → Bool
+  noncomputable def patMatches : Pat → AllocVal → Bool
     | .constInt v1, .intVal v2 => v1 == v2
     | .constBool b1, .boolVal b2 => b1 == b2
     | .constFloat f1, .floatVal f2 => floatIeeeEq f1 f2
@@ -756,7 +756,7 @@ mutual
   termination_by structural p => p
 
   /-- Field-list helper for `patMatches`. -/
-  def patMatchesFields : PatFields → AllocFields → Bool
+  noncomputable def patMatchesFields : PatFields → AllocFields → Bool
     | .nil, .nil => true
     | .cons ph pt, .cons fh ft => patMatches ph fh && patMatchesFields pt ft
     | _, _ => false
@@ -767,7 +767,7 @@ mutual
   /-- Direct structural equality between two runtime/CTFE `AllocVal`s (ignoring padding bytes
   and reference addresses, comparing floats with IEEE `Eq`, and comparing only active enum
   variant payloads when discriminants agree). -/
-  def structuralEq : AllocVal → AllocVal → Bool
+  noncomputable def structuralEq : AllocVal → AllocVal → Bool
     | .intVal v1, .intVal v2 => v1 == v2
     | .boolVal b1, .boolVal b2 => b1 == b2
     | .floatVal f1, .floatVal f2 => floatIeeeEq f1 f2
@@ -781,7 +781,7 @@ mutual
   termination_by structural a => a
 
   /-- Field-list helper for `structuralEq`. -/
-  def structuralEqFields : AllocFields → AllocFields → Bool
+  noncomputable def structuralEqFields : AllocFields → AllocFields → Bool
     | .nil, .nil => true
     | .cons h1 t1, .cons h2 t2 => structuralEq h1 h2 && structuralEqFields t1 t2
     | _, _ => false
@@ -996,12 +996,12 @@ inductive V0Tok where
   deriving DecidableEq
 
 /-- Encode signed `Int` as `(isNeg, unsignedMagnitude)` matching `v0.rs:819-829`. -/
-def encodeSignedInt : Int → Bool × Nat
+noncomputable def encodeSignedInt : Int → Bool × Nat
   | .ofNat n => (false, n)
   | .negSucc k => (true, k + 1)
 
 /-- Decode `(isNeg, unsignedMagnitude)` back to `Int`. -/
-def decodeSignedInt : Bool → Nat → Option Int
+noncomputable def decodeSignedInt : Bool → Nat → Option Int
   | false, n => some (.ofNat n)
   | true, 0 => none
   | true, k + 1 => some (.negSucc k)
@@ -1014,7 +1014,7 @@ theorem decode_encodeSignedInt (v : Int) :
   | negSucc k => rfl
 
 /-- Array-element helper lifting a `v0` mangler over a fixed-length `ValTreeList`. -/
-def mangleArrayToks (f : ValTree → Except ValTreeErr (List V0Tok)) :
+noncomputable def mangleArrayToks (f : ValTree → Except ValTreeErr (List V0Tok)) :
     Nat → ValTreeList → Except ValTreeErr (List V0Tok)
   | 0, .nil => .ok []
   | n + 1, .cons vh vt =>
@@ -1027,7 +1027,7 @@ def mangleArrayToks (f : ValTree → Except ValTreeErr (List V0Tok)) :
   | _, _ => .error .layoutMismatch
 
 /-- Array-element helper lifting a `v0` parser over a fixed-length token stream. -/
-def parseArrayToks (f : List V0Tok → Option (ValTree × List V0Tok)) :
+noncomputable def parseArrayToks (f : List V0Tok → Option (ValTree × List V0Tok)) :
     Nat → List V0Tok → Option (ValTreeList × List V0Tok)
   | 0, rest => some (.nil, rest)
   | n + 1, rest =>
@@ -1041,7 +1041,7 @@ def parseArrayToks (f : List V0Tok → Option (ValTree × List V0Tok)) :
 mutual
   /-- Type-directed `v0` symbol mangler (`V0SymbolMangler::print_const`) over `ConstParamTy`
   canonical `ValTree`s. -/
-  def mangleValTree : Ty → ValTree → Except ValTreeErr (List V0Tok)
+  noncomputable def mangleValTree : Ty → ValTree → Except ValTreeErr (List V0Tok)
     | .int, .leafInt v =>
         let p := encodeSignedInt v
         .ok [.intLit p.1 p.2]
@@ -1064,7 +1064,7 @@ mutual
   termination_by structural ty => ty
 
   /-- Variant lookup + mangling (structurally recursive on `VariantDecls`). -/
-  def mangleValTreeVariants (name : String) :
+  noncomputable def mangleValTreeVariants (name : String) :
       VariantDecls → Nat → ValTreeList → Except ValTreeErr (List V0Tok)
     | .nil, _, _ => .error .layoutMismatch
     | .cons vName _ ftys _, 0, ts =>
@@ -1079,7 +1079,7 @@ mutual
   termination_by structural vs => vs
 
   /-- Field-list mangler emitting disambiguated field identifiers before each child `ValTree`. -/
-  def mangleValTreeFields : TyFields → ValTreeList → Except ValTreeErr (List V0Tok)
+  noncomputable def mangleValTreeFields : TyFields → ValTreeList → Except ValTreeErr (List V0Tok)
     | .nil, .nil => .ok []
     | .cons fName ty rest, .cons vh vt =>
         match mangleValTree ty vh with
@@ -1094,7 +1094,7 @@ end
 
 mutual
   /-- Prefix-free recursive-descent inverse parser for `mangleValTree`. -/
-  def parseValTree : Ty → List V0Tok → Option (ValTree × List V0Tok)
+  noncomputable def parseValTree : Ty → List V0Tok → Option (ValTree × List V0Tok)
     | .int, .intLit neg mag :: rest =>
         match decodeSignedInt neg mag with
         | some v => some (.leafInt v, rest)
@@ -1121,7 +1121,7 @@ mutual
   termination_by structural ty => ty
 
   /-- Variant lookup + inverse parser. -/
-  def parseValTreeVariants :
+  noncomputable def parseValTreeVariants :
       VariantDecls → Nat → String → List V0Tok → Option (ValTree × List V0Tok)
     | .nil, _, _, _ => none
     | .cons expName _ ftys _, 0, vName, rest =>
@@ -1139,7 +1139,7 @@ mutual
   termination_by structural vs => vs
 
   /-- Field-list inverse parser. -/
-  def parseValTreeFields : TyFields → List V0Tok → Option (ValTreeList × List V0Tok)
+  noncomputable def parseValTreeFields : TyFields → List V0Tok → Option (ValTreeList × List V0Tok)
     | .nil, rest => some (.nil, rest)
     | .cons fName ty restF, .fieldTag tag :: rest =>
         if tag = fName then
@@ -1324,7 +1324,7 @@ theorem mangleValTree_injective {ty : Ty} {vt1 vt2 : ValTree} {toks : List V0Tok
   injection hpair
 
 /-- Two-argument `v0` mangling with `self.consts` backref cache (`v0.rs:803-806, 943-945`). -/
-def manglePairWithBackref (ty : Ty) (a1 a2 : AllocVal) : Except ValTreeErr (List V0Tok × List V0Tok) :=
+noncomputable def manglePairWithBackref (ty : Ty) (a1 a2 : AllocVal) : Except ValTreeErr (List V0Tok × List V0Tok) :=
   match toValTree a1, toValTree a2 with
   | .ok vt1, .ok vt2 =>
       match mangleValTree ty vt1 with
@@ -1354,20 +1354,20 @@ theorem manglePairWithBackref_dedups_mod_pad_and_ref {ty : Ty} {a1 a2 : AllocVal
 /-! ## 7. `VALTREE_MAX_NODES` vs. DAG `settled` Memoization -/
 
 /-- Exact upstream constant `compiler/rustc_const_eval/src/const_eval/mod.rs:29`. -/
-def VALTREE_MAX_NODES : Nat := 100000
+noncomputable def VALTREE_MAX_NODES : Nat := 100000
 
 /-- Logical leaf count of a binary sharing DAG of depth `d` (`2^d`). -/
-def dagLogicalLeaves : Nat → Nat
+noncomputable def dagLogicalLeaves : Nat → Nat
   | 0 => 1
   | d + 1 => dagLogicalLeaves d + dagLogicalLeaves d
 
 /-- Total visits without `settled` memoization (pre-cycle-detection `valtrees.rs`: `2^(d+1) - 1`). -/
-def dagUnmemoizedVisits : Nat → Nat
+noncomputable def dagUnmemoizedVisits : Nat → Nat
   | 0 => 1
   | d + 1 => 1 + dagUnmemoizedVisits d + dagUnmemoizedVisits d
 
 /-- Lookup in an association list modeling `settled : FxHashMap<MPlaceTy, ValTree>`. -/
-def settledLookup (settled : List (Nat × Nat)) (nodeId : Nat) : Option Nat :=
+noncomputable def settledLookup (settled : List (Nat × Nat)) (nodeId : Nat) : Option Nat :=
   match settled with
   | [] => none
   | (k, v) :: rest => if k = nodeId then some v else settledLookup rest nodeId
@@ -1375,7 +1375,7 @@ def settledLookup (settled : List (Nat × Nat)) (nodeId : Nat) : Option Nat :=
 /-- Executable simulation of `const_to_valtree_inner` with `settled` DAG memoization over a
 binary sharing DAG where node `0` is `Leaf(1)` and node `k + 1` is `Pair(&N_k, &N_k)`.
 A cache hit in `settled` returns immediately without incrementing `numNodes` (`valtrees.rs:94-96`). -/
-def evalBinaryDagMemo (nodeId : Nat) (numNodes : Nat) (settled : List (Nat × Nat)) :
+noncomputable def evalBinaryDagMemo (nodeId : Nat) (numNodes : Nat) (settled : List (Nat × Nat)) :
     Nat × List (Nat × Nat) :=
   match settledLookup settled nodeId with
   | some _ => (numNodes, settled)
@@ -1388,7 +1388,7 @@ def evalBinaryDagMemo (nodeId : Nat) (numNodes : Nat) (settled : List (Nat × Na
           (n2 + 1, (k + 1, 1) :: s2)
 
 /-- Distinct nodes charged by `evalBinaryDagMemo` starting from an empty `settled` cache. -/
-def settledNodeCount (d : Nat) : Nat :=
+noncomputable def settledNodeCount (d : Nat) : Nat :=
   (evalBinaryDagMemo d 0 []).1
 
 theorem settledLookup_ne_none_of_mem :
@@ -1468,16 +1468,16 @@ theorem settledNodeCount_eq (d : Nat) : settledNodeCount d = d + 1 := by
 
 /-- Type of `#[repr(C)] #[derive(PartialEq, Eq, ConstParamTy)] struct Padded { a: u8, b: u32 }`
 with 3 bytes of internal padding after `a`. -/
-def paddedStructTy : Ty :=
+noncomputable def paddedStructTy : Ty :=
   .structTy "Padded" true 3 (.cons "a" .int (.cons "b" .int .nil))
 
 /-- `PAD_ZERO`: `Padded { a: 1, b: 2 }` with `[0, 0, 0]` padding bytes. -/
-def padZeroVal : AllocVal :=
+noncomputable def padZeroVal : AllocVal :=
   .structVal "Padded" [.init 0, .init 0, .init 0]
     (.cons (.intVal 1) (.cons (.intVal 2) .nil))
 
 /-- `PAD_DEAD`: `Padded { a: 1, b: 2 }` with `[0xDE, 0xAD, 0xBE]` padding bytes. -/
-def padDeadVal : AllocVal :=
+noncomputable def padDeadVal : AllocVal :=
   .structVal "Padded" [.init 0xDE, .init 0xAD, .init 0xBE]
     (.cons (.intVal 1) (.cons (.intVal 2) .nil))
 
@@ -1501,22 +1501,22 @@ theorem ce1_distinct_padding_bytes_unify_to_same_valtree :
             rfl, rfl, rfl⟩
 
 /-- `struct Manual(u8)` with a manual (non-structural) `impl PartialEq`. -/
-def manualTy : Ty :=
+noncomputable def manualTy : Ty :=
   .structTy "Manual" false 0 (.cons "0" .int .nil)
 
 /-- `#[derive(PartialEq)] enum Wrap<Manual> { Empty, Full(Manual) }`.
 Variant 0 (`Empty`) has no fields; variant 1 (`Full`) contains non-structural `Manual`. -/
-def wrapManualTy : Ty :=
+noncomputable def wrapManualTy : Ty :=
   .enumTy "Wrap" true
     (.cons "Empty" 0 .nil
       (.cons "Full" 0 (.cons "0" manualTy .nil) .nil))
 
 /-- `const C_EMPTY: Wrap<Manual> = Wrap::Empty`. -/
-def wrapEmptyVal : AllocVal :=
+noncomputable def wrapEmptyVal : AllocVal :=
   .enumVal "Wrap" 0 [] .nil
 
 /-- `const C_FULL: Wrap<Manual> = Wrap::Full(Manual(1))`. -/
-def wrapFullVal : AllocVal :=
+noncomputable def wrapFullVal : AllocVal :=
   .enumVal "Wrap" 1 [] (.cons (.structVal "Manual" [] (.cons (.intVal 1) .nil)) .nil)
 
 /-- Counterexample 2: Active-variant-only recursion in `valTreeToPat` admits `Wrap::Empty`

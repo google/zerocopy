@@ -45,7 +45,7 @@ structure BackendProfile where
   deriving DecidableEq, Repr
 
 /-- Standard `rustc_codegen_llvm` profile on `x86_64-unknown-linux-gnu` with `-C panic=unwind`. -/
-def llvmProfile : BackendProfile :=
+noncomputable def llvmProfile : BackendProfile :=
   { hasEhFrame := true
     hasLsdaCleanup := true
     hasLsdaCatch := true
@@ -55,7 +55,7 @@ def llvmProfile : BackendProfile :=
 /-- Default shipped `rustc_codegen_cranelift` profile (`Cargo.toml` feature `unwinding` disabled).
     Emits System V `.eh_frame` FDEs and matches LLVM's binary ABI, but omits `.gcc_except_table`
     LSDA cleanup/catch pads and ignores `-Z sanitizer=address`. -/
-def craneliftDefaultProfile : BackendProfile :=
+noncomputable def craneliftDefaultProfile : BackendProfile :=
   { hasEhFrame := true
     hasLsdaCleanup := false
     hasLsdaCatch := false
@@ -63,7 +63,7 @@ def craneliftDefaultProfile : BackendProfile :=
     enforcesSanitizer := false }
 
 /-- `rustc_codegen_cranelift` built with `--features unwinding` (still lacking ASan). -/
-def craneliftUnwindingProfile : BackendProfile :=
+noncomputable def craneliftUnwindingProfile : BackendProfile :=
   { hasEhFrame := true
     hasLsdaCleanup := true
     hasLsdaCatch := true
@@ -71,7 +71,7 @@ def craneliftUnwindingProfile : BackendProfile :=
     enforcesSanitizer := false }
 
 /-- Hypothetical backend omitting `.eh_frame` entirely (cannot even be unwound through). -/
-def noEhFrameProfile : BackendProfile :=
+noncomputable def noEhFrameProfile : BackendProfile :=
   { hasEhFrame := false
     hasLsdaCleanup := false
     hasLsdaCatch := false
@@ -79,7 +79,7 @@ def noEhFrameProfile : BackendProfile :=
     enforcesSanitizer := false }
 
 /-- Pairwise binary ABI compatibility between a caller backend and a callee backend. -/
-def abiCompat (caller callee : BackendProfile) : Bool :=
+noncomputable def abiCompat (caller callee : BackendProfile) : Bool :=
   caller.abiTag == callee.abiTag
 
 theorem abiCompat_refl (p : BackendProfile) : abiCompat p p = true := by
@@ -116,7 +116,7 @@ structure CallFrame where
 
 /-- Normalize any call frame to the ideal LLVM reference profile while keeping its source
     frame ID, drop-guard presence, and `catch_unwind` boundary placement unchanged. -/
-def toReferenceFrame (f : CallFrame) : CallFrame :=
+noncomputable def toReferenceFrame (f : CallFrame) : CallFrame :=
   { f with profile := llvmProfile }
 
 /-! ## 2. Normal (Non-Panicking) Mixed-Backend Call Execution -/
@@ -129,13 +129,13 @@ inductive CallOutcome where
 
 /-- Reference semantics of a non-panicking call chain independent of backend metadata:
     each frame applies its pure value transformation `step f.frameId` to the marshalled ABI payload. -/
-def evalNormalRef (step : Nat → Nat → Nat) : List CallFrame → Nat → Nat
+noncomputable def evalNormalRef (step : Nat → Nat → Nat) : List CallFrame → Nat → Nat
   | [], acc => acc
   | f :: rest, acc => evalNormalRef step rest (step f.frameId acc)
 
 /-- Mixed-backend non-panicking execution checking `abiCompat` against the caller's ABI profile
     at every call boundary before transferring control and marshalling arguments/returns. -/
-def execNormalStack (step : Nat → Nat → Nat) (callerProfile : BackendProfile) :
+noncomputable def execNormalStack (step : Nat → Nat → Nat) (callerProfile : BackendProfile) :
     List CallFrame → Nat → CallOutcome
   | [], acc => .ok acc
   | f :: rest, acc =>
@@ -213,7 +213,7 @@ structure UnwindTrace where
   deriving DecidableEq, Repr
 
 /-- Operational semantics of Itanium / System V stack unwinding across a mixed-backend call stack. -/
-def unwindStack : List CallFrame → UnwindTrace
+noncomputable def unwindStack : List CallFrame → UnwindTrace
   | [] =>
       { disposition := .uncaughtAbort
         executedDrops := []
@@ -250,11 +250,11 @@ def unwindStack : List CallFrame → UnwindTrace
             missedCatches := tail.missedCatches }
 
 /-- Reference unwinding semantics: every frame runs with full `.eh_frame` + LSDA cleanup + LSDA catch. -/
-def referenceUnwindStack (stack : List CallFrame) : UnwindTrace :=
+noncomputable def referenceUnwindStack (stack : List CallFrame) : UnwindTrace :=
   unwindStack (stack.map toReferenceFrame)
 
 /-- A backend profile is unwind-complete iff it emits `.eh_frame`, LSDA cleanup, and LSDA catch tables. -/
-def UnwindComplete (p : BackendProfile) : Prop :=
+noncomputable def UnwindComplete (p : BackendProfile) : Prop :=
   p.hasEhFrame = true ∧ p.hasLsdaCleanup = true ∧ p.hasLsdaCatch = true
 
 private theorem referenceUnwindStack_leaked_nil (stack : List CallFrame) :
@@ -275,7 +275,7 @@ private theorem referenceUnwindStack_missed_nil (stack : List CallFrame) :
       simp only [List.map_cons, toReferenceFrame, unwindStack, llvmProfile]
       cases f.hasDropGuard <;> cases f.isCatchBoundary <;> simp [ih]
 
-private def mkTestFrame (hasDrop isCatch : Bool) (p : BackendProfile) : CallFrame :=
+private noncomputable def mkTestFrame (hasDrop isCatch : Bool) (p : BackendProfile) : CallFrame :=
   { frameId := 0
     profile := p
     hasDropGuard := hasDrop
@@ -464,17 +464,17 @@ inductive HeapOobOutcome where
   deriving DecidableEq, Repr
 
 /-- Runtime execution model of the heap-OOB probe under a given backend profile. -/
-def runHeapOobProbe (profile : BackendProfile) : HeapOobOutcome :=
+noncomputable def runHeapOobProbe (profile : BackendProfile) : HeapOobOutcome :=
   if profile.enforcesSanitizer then .abortedAsan else .silentReadSurvived
 
 /-- Capabilities truthfully realized by a concrete `BackendProfile`. -/
-def CapabilitiesMatchProfile (cap : BackendCapabilities) (p : BackendProfile) : Prop :=
+noncomputable def CapabilitiesMatchProfile (cap : BackendCapabilities) (p : BackendProfile) : Prop :=
   cap.supportsAddressSanitizer = p.enforcesSanitizer ∧
   cap.supportsUnwindLsda = (p.hasEhFrame && p.hasLsdaCleanup && p.hasLsdaCatch)
 
 /-- Required fail-closed `CodegenBackend::init` flag admission gate: every requested
     security or semantic capability must be supported by the selected backend. -/
-def admitsFlags (cap : BackendCapabilities) (req : RequestedFlags) : Bool :=
+noncomputable def admitsFlags (cap : BackendCapabilities) (req : RequestedFlags) : Bool :=
   (!req.ltoThin || cap.supportsLto) &&
   (!req.instrumentCoverage || cap.supportsCoverage) &&
   (!req.sanitizerAddress || cap.supportsAddressSanitizer) &&
@@ -483,18 +483,18 @@ def admitsFlags (cap : BackendCapabilities) (req : RequestedFlags) : Bool :=
 /-- Actual flag gate observed in `compiler/rustc_codegen_cranelift/src/lib.rs:134-144`:
     rejects `-C lto=*` and `-C instrument-coverage`, but never inspects `sess.sanitizers()`
     or `cfg!(feature = "unwinding")` against `-C panic=unwind`. -/
-def admitsFlagsCraneliftActual (req : RequestedFlags) : Bool :=
+noncomputable def admitsFlagsCraneliftActual (req : RequestedFlags) : Bool :=
   (!req.ltoThin) && (!req.instrumentCoverage)
 
 /-- Capabilities of shipped `rustc_codegen_llvm`. -/
-def llvmCapabilities : BackendCapabilities :=
+noncomputable def llvmCapabilities : BackendCapabilities :=
   { supportsLto := true
     supportsCoverage := true
     supportsAddressSanitizer := true
     supportsUnwindLsda := true }
 
 /-- True capabilities of shipped `rustc_codegen_cranelift` (default build without `unwinding`). -/
-def craneliftDefaultCapabilities : BackendCapabilities :=
+noncomputable def craneliftDefaultCapabilities : BackendCapabilities :=
   { supportsLto := false
     supportsCoverage := false
     supportsAddressSanitizer := false

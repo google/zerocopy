@@ -52,12 +52,12 @@ structure Mark where
 abbrev SyntaxContext := List Mark
 
 /-- Push a fresh mark onto a `SyntaxContext`. -/
-def applyMark (ctxt : SyntaxContext) (e : ExpnId) (t : Transparency) : SyntaxContext :=
+noncomputable def applyMark (ctxt : SyntaxContext) (e : ExpnId) (t : Transparency) : SyntaxContext :=
   { expnId := e, transparency := t } :: ctxt
 
 /-- `SyntaxContext::normalize_to_macros_2_0`: retains only `Opaque` marks
     (`compiler/rustc_span/src/hygiene.rs`, `SyntaxContextData.opaque`). -/
-def normalizeToMacros20 : SyntaxContext → SyntaxContext
+noncomputable def normalizeToMacros20 : SyntaxContext → SyntaxContext
   | [] => []
   | m :: rest =>
     match m.transparency with
@@ -67,7 +67,7 @@ def normalizeToMacros20 : SyntaxContext → SyntaxContext
 
 /-- `SyntaxContext::normalize_to_macro_rules`: retains `SemiOpaque` and `Opaque` marks,
     stripping `Transparent` (`compiler/rustc_span/src/hygiene.rs`, `opaque_and_semiopaque`). -/
-def normalizeToMacroRules : SyntaxContext → SyntaxContext
+noncomputable def normalizeToMacroRules : SyntaxContext → SyntaxContext
   | [] => []
   | m :: rest =>
     match m.transparency with
@@ -76,7 +76,7 @@ def normalizeToMacroRules : SyntaxContext → SyntaxContext
     | .transparent => normalizeToMacroRules rest
 
 /-- Predicate asserting that expansion ID `e` does not appear anywhere in `ctxt`. -/
-def FreshIn (e : ExpnId) : SyntaxContext → Prop
+noncomputable def FreshIn (e : ExpnId) : SyntaxContext → Prop
   | [] => True
   | m :: rest => m.expnId ≠ e ∧ FreshIn e rest
 
@@ -199,7 +199,7 @@ inductive SemTy where
   deriving DecidableEq, Repr
 
 /-- Visibility check `vis.is_accessible_from(fromMod)`. -/
-def isAccessibleFrom (vis : Visibility) (fromMod : ModuleId) : Bool :=
+noncomputable def isAccessibleFrom (vis : Visibility) (fromMod : ModuleId) : Bool :=
   match vis with
   | .pubVis => true
   | .privTo owner => owner == fromMod
@@ -249,7 +249,7 @@ inductive CheckResult (α : Type) where
   deriving DecidableEq, Repr
 
 /-- Lookup in lexical ribs (locals and labels) using `macro_rules`-normalized `SyntaxContext`. -/
-def lookupLexical (ribs : List LexicalEntry) (name : SymbolId)
+noncomputable def lookupLexical (ribs : List LexicalEntry) (name : SymbolId)
     (kind : IdentKind) (normCtxt : SyntaxContext) : Option TargetId :=
   match ribs with
   | [] => none
@@ -260,7 +260,7 @@ def lookupLexical (ribs : List LexicalEntry) (name : SymbolId)
       lookupLexical rest name kind normCtxt
 
 /-- Lookup an item in a specific module `inMod`, checking name-resolution visibility from `privacyMod`. -/
-def lookupItemInMod (items : List ItemEntry) (inMod : ModuleId) (privacyMod : ModuleId)
+noncomputable def lookupItemInMod (items : List ItemEntry) (inMod : ModuleId) (privacyMod : ModuleId)
     (name : SymbolId) (kind : IdentKind) : CheckResult ResolvedBinding :=
   match items with
   | [] => .err (.notFoundE0425 name)
@@ -279,7 +279,7 @@ def lookupItemInMod (items : List ItemEntry) (inMod : ModuleId) (privacyMod : Mo
     - `itemFn` & `itemConst`: normalized via `normalizeToMacros20` (`IdentKey::new_adjusted`);
       if an `Opaque` mark remains, both lookup module AND name-resolution privacy scope
       switch to `expnDefMod m.expnId`; otherwise both stay at `callSiteMod`. -/
-def resolveIdent (env : ResolveEnv) (id : Ident) : CheckResult ResolvedBinding :=
+noncomputable def resolveIdent (env : ResolveEnv) (id : Ident) : CheckResult ResolvedBinding :=
   match id.kind with
   | .localVar =>
     let nc := normalizeToMacroRules id.ctxt
@@ -317,7 +317,7 @@ def resolveIdent (env : ResolveEnv) (id : Ident) : CheckResult ResolvedBinding :
     `SemiOpaque` marks), while the member segment's name-resolution privacy scope is
     adjusted via `normalizeToMacros20` (`IdentKey::new_adjusted`) — stripping `SemiOpaque`
     marks so `macro_rules!` `$crate::private_item` fails with `E0603` at `callSiteMod`. -/
-def resolveDollarCrateMember (env : ResolveEnv) (dollarCrateCtxt : SyntaxContext)
+noncomputable def resolveDollarCrateMember (env : ResolveEnv) (dollarCrateCtxt : SyntaxContext)
     (memberName : SymbolId) (memberKind : IdentKind) (memberCtxt : SyntaxContext) :
     CheckResult ResolvedBinding :=
   let targetMod := match normalizeToMacroRules dollarCrateCtxt with
@@ -331,7 +331,7 @@ def resolveDollarCrateMember (env : ResolveEnv) (dollarCrateCtxt : SyntaxContext
 /-- Pass 2 (`rustc_privacy::TypePrivacyVisitor`): checks the semantic type of an
     expression against `callSiteMod`, completely ignoring `SyntaxContext` / macro hygiene
     (`compiler/rustc_privacy/src/lib.rs:1122`, "regardless of names and their hygiene"). -/
-def checkTypePrivacy (ty : SemTy) (callSiteMod : ModuleId) : CheckResult Unit :=
+noncomputable def checkTypePrivacy (ty : SemTy) (callSiteMod : ModuleId) : CheckResult Unit :=
   match ty with
   | .pubScalar => .ok ()
   | .pubFnPtr => .ok ()
@@ -346,7 +346,7 @@ def checkTypePrivacy (ty : SemTy) (callSiteMod : ModuleId) : CheckResult Unit :=
 
 /-- End-to-end two-pass identifier checking: Pass 1 name resolution followed by
     Pass 2 semantic type privacy. -/
-def checkIdentTwoPass (env : ResolveEnv) (id : Ident) : CheckResult ResolvedBinding :=
+noncomputable def checkIdentTwoPass (env : ResolveEnv) (id : Ident) : CheckResult ResolvedBinding :=
   match resolveIdent env id with
   | .err e => .err e
   | .ok binding =>
@@ -374,7 +374,7 @@ theorem lookupLexical_skip_ne_ctxt (entry : LexicalEntry) (rest : List LexicalEn
 
 /-- Helper: if every entry in `ribs` has its `normCtxt` free of expansion ID `e`, then
     a lookup with a `SemiOpaque`/`Opaque` mark `e` cannot capture any binding in `ribs`. -/
-def AllRibsFreshIn (e : ExpnId) : List LexicalEntry → Prop
+noncomputable def AllRibsFreshIn (e : ExpnId) : List LexicalEntry → Prop
   | [] => True
   | entry :: rest => FreshIn e entry.normCtxt ∧ AllRibsFreshIn e rest
 
@@ -609,7 +609,7 @@ inductive ExpandOutcome (α : Type) where
     - Before each expansion, check `depth ≤ limit` (`value_within_limit`).
     - Base case `n = 0` (`count!()`) checks `depth ≤ limit` and returns `0`.
     - Inductive step `n + 1` checks `depth ≤ limit`, then recurses at `depth + 1`. -/
-def expandCountAt (limit : Nat) (depth : Nat) : Nat → ExpandOutcome Nat
+noncomputable def expandCountAt (limit : Nat) (depth : Nat) : Nat → ExpandOutcome Nat
   | 0 =>
     if depth ≤ limit then .ok 0
     else .recursionLimitReached depth
@@ -623,7 +623,7 @@ def expandCountAt (limit : Nat) (depth : Nat) : Nat → ExpandOutcome Nat
 
 /-- Expand `count!(+^n)` invoked inside `outerFrames` enclosing macro expansions
     (`outerFrames = 0` for top-level, `outerFrames = 2` inside `println!` -> `format_args_nl!`). -/
-def expandCount (limit : Nat) (outerFrames : Nat) (n : Nat) : ExpandOutcome Nat :=
+noncomputable def expandCount (limit : Nat) (outerFrames : Nat) (n : Nat) : ExpandOutcome Nat :=
   expandCountAt limit (outerFrames + 1) n
 
 theorem nat_le_of_add_le {a b c : Nat} (h : a + b ≤ c) : a ≤ c :=
@@ -747,11 +747,11 @@ abbrev MacroExpanderFn := TokenStream → HostEnv → Option TokenStream
 
 /-- A macro expander is *pure* if its output tokens depend solely on input tokens,
     independent of host OS environment state. -/
-def IsPureExpander (f : MacroExpanderFn) : Prop :=
+noncomputable def IsPureExpander (f : MacroExpanderFn) : Prop :=
   ∀ (ts : TokenStream) (env1 env2 : HostEnv), f ts env1 = f ts env2
 
 /-- Fuel-bounded iterative macro expansion pipeline (up to `fuel` rounds). -/
-def expandFuel (f : MacroExpanderFn) : Nat → TokenStream → HostEnv → ExpandOutcome TokenStream
+noncomputable def expandFuel (f : MacroExpanderFn) : Nat → TokenStream → HostEnv → ExpandOutcome TokenStream
   | 0, ts, _ => .ok ts
   | fuel + 1, ts, env =>
     match f ts env with
@@ -759,7 +759,7 @@ def expandFuel (f : MacroExpanderFn) : Nat → TokenStream → HostEnv → Expan
     | some ts' => expandFuel f fuel ts' env
 
 /-- End-to-end compilation from source tokens through macro expansion and a deterministic backend. -/
-def compilePipeline (f : MacroExpanderFn) (backend : TokenStream → ObjArtifact)
+noncomputable def compilePipeline (f : MacroExpanderFn) (backend : TokenStream → ObjArtifact)
     (fuel : Nat) (src : TokenStream) (env : HostEnv) : ExpandOutcome ObjArtifact :=
   match expandFuel f fuel src env with
   | .ok expanded => .ok (backend expanded)
@@ -820,7 +820,7 @@ inductive ExprSpecToken where
   | symExpr2021
   deriving DecidableEq, Repr
 
-def resolveNtExprKind (spec : ExprSpecToken) (defEdition : Edition) : NtExprKind :=
+noncomputable def resolveNtExprKind (spec : ExprSpecToken) (defEdition : Edition) : NtExprKind :=
   match spec with
   | .symExpr =>
     match defEdition with
@@ -837,7 +837,7 @@ inductive ExprLeadToken where
   | kwLet         -- `let` (excluded in both 2021 and 2024)
   deriving DecidableEq, Repr
 
-def exprMayBeginWith (kind : NtExprKind) (tok : ExprLeadToken) : Bool :=
+noncomputable def exprMayBeginWith (kind : NtExprKind) (tok : ExprLeadToken) : Bool :=
   match kind, tok with
   | .expr2021 _, .regularExpr => true
   | .expr2021 _, .kwConst => false
