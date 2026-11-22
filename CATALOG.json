@@ -37245,6 +37245,43 @@
         "lean/kernel"
       ]
     },
+    "deepmind-code-verification-prooflib-comparator-tcb-map": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google-deepmind/code-verification",
+            "revision": "8c8d371f1962ac73435c8eb148678991f5c3470d"
+          },
+          "name": "google-deepmind/code-verification"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/comparator",
+            "revision": "e3dcf3083fc53d44b27a4431fabf7d43181583f5",
+            "version": "v4.35.0"
+          },
+          "name": "leanprover/comparator"
+        },
+        {
+          "identity": {
+            "lake_version": "5.0.0-src+eb6cafb",
+            "repository": "leanprover/lean4",
+            "version": "v4.35.0"
+          },
+          "name": "Lean 4 v4.35.0 toolchain and Lake comparator"
+        }
+      ],
+      "topics": [
+        "lean/reflection",
+        "lean/kernel-replay",
+        "lean/module-system",
+        "verification/separation-logic",
+        "verification/tcb-audit",
+        "smt/bitvectors",
+        "tooling/lean-comparator"
+      ]
+    },
     "deflate-inflate-algorithms-optimal-dp-and-block-splitting": {
       "observed_at": "2026-11-17",
       "subjects": [
