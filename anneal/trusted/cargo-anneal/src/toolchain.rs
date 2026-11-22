@@ -265,13 +265,6 @@ pub(crate) struct LibraryLock {
     pub graph: BTreeMap<String, Vec<ImportEdge>>,
 }
 
-/// Stage-local compiled inspector and its thin import runner.
-#[derive(Debug, Clone)]
-pub(crate) struct CompiledInspectorPaths {
-    pub(crate) lib_dir: PathBuf,
-    pub(crate) runner: PathBuf,
-}
-
 /// Holds the admitted Lean 4.34.1 toolchain state, `foundation-lock.json`
 /// metadata, and active artifact graph produced by
 /// [`crate::Checker::tool_admission`].
@@ -284,13 +277,10 @@ pub(crate) struct CompiledInspectorPaths {
 pub struct AdmittedToolchain {
     /// Holds the staged path of `TrustedBoundary.lean`.
     pub inspector: PathBuf,
-    /// SHA-256 digest of the staged `TrustedBoundary.lean` source.
+    /// SHA-256 digest of staged `control/TrustedBoundary.lean` at admission.
     pub(crate) inspector_sha256: String,
     /// Verified SHA-256 digest of the admitted `lean` binary.
     pub(crate) lean_sha256: String,
-    /// Stage-local precompiled `TrustedBoundary.olean` library and runner,
-    /// lazily populated on first inspector invocation.
-    pub(crate) compiled_inspector: Option<CompiledInspectorPaths>,
     /// Holds the verified `lean --version` string matching
     /// `foundation-lock.json`.
     pub version: String,
@@ -326,6 +316,14 @@ pub struct AdmittedToolchain {
     /// Records the SHA-256 digest of the unpinned Lean binary at admission so
     /// `target-provenance` can detect mid-run binary replacement.
     pub lean_binary_sha256: Option<String>,
+    /// Resolved executable Lean binary (`<prefix>/bin/lean` when present, else
+    /// the caller-provided Lean path).
+    pub(crate) exec_lean: PathBuf,
+    /// Expected locked SHA-256 digest of `exec_lean` in pinned mode.
+    pub(crate) expected_lean_sha: Option<String>,
+    /// Staged precompiled `control/TrustedBoundary.olean` built once per
+    /// `Checker` from `control/TrustedBoundary.lean`, plus its SHA-256 digest.
+    pub(crate) inspector_olean: Option<(PathBuf, String)>,
 }
 
 impl AdmittedToolchain {
@@ -1211,7 +1209,20 @@ fn record_earliest_dag_error(
     entry_idx: usize,
     err: Failure,
 ) {
-    if slot.as_ref().is_none_or(|(best_idx, _)| entry_idx < *best_idx) {
+    // Operational failures (`code != 1`, e.g. sandbox, timeout, Door 1, or I/O
+    // errors) strictly outrank ordinary `code == 1` source/proof rejections so
+    // parallel compilation never downgrades `tool_failed` into `proof_failed`.
+    // Ties within the same severity class break deterministically by smallest
+    // node index.
+    let is_op = |f: &Failure| f.code != 1;
+    let outranks =
+        slot.as_ref()
+            .is_none_or(|(best_idx, best_err)| match (is_op(&err), is_op(best_err)) {
+                (true, false) => true,
+                (false, true) => false,
+                _ => entry_idx < *best_idx,
+            });
+    if outranks {
         *slot = Some((entry_idx, err));
     }
 }
@@ -1269,7 +1280,9 @@ fn verify_dag_acyclic(
 }
 
 /// Execute all active nodes in `plan` across at most `max_workers` scoped
-/// threads while preserving deterministic earliest-index failure reporting.
+/// threads while preserving deterministic failure reporting: operational
+/// failures (`Failure.code != 1`) outrank ordinary `code == 1` rejections, and
+/// ties within the same severity class break by smallest node index.
 ///
 /// For each ready node `idx`, `prepare` runs under the scheduler mutex before
 /// spawning unlocked concurrent work in `run`, and `commit` runs under the
@@ -1776,6 +1789,126 @@ mod parallel_dag_tests {
             )
         }));
         assert!(res.is_err());
+    }
+
+    #[test]
+    fn operational_failure_outranks_earlier_policy_rejection_in_both_orders() {
+        let plan = ParallelDagPlan::from_indexed_edges(
+            vec![true, true, true],
+            vec![vec![], vec![], vec![]],
+            "dag",
+            "cycle",
+        )
+        .unwrap();
+        let mut shared = ();
+
+        // 1. Both 0 and 2 start `run` concurrently (via `start1`); `commit(0)`
+        //    records `code == 1` under the scheduler lock first, then `run(2)`
+        //    returns `code == 2`: operational failure at index 2 must win.
+        let start1 = Arc::new(Barrier::new(2));
+        let (tx1, rx1) = std::sync::mpsc::channel::<()>();
+        let rx1 = Mutex::new(rx1);
+        let err1 = run_parallel_dag(
+            &plan,
+            3,
+            "dag",
+            "panic",
+            &mut shared,
+            |_, _| Ok(()),
+            |idx, ()| match idx {
+                0 => {
+                    start1.wait();
+                    Ok(())
+                }
+                2 => {
+                    start1.wait();
+                    rx1.lock().unwrap().recv().unwrap();
+                    Err(Failure::operational("sandbox", "sandbox-io-2"))
+                }
+                _ => Ok(()),
+            },
+            |_, idx, ()| {
+                if idx == 0 {
+                    tx1.send(()).unwrap();
+                    return Err(Failure::policy("dag", "proof-rejected-0"));
+                }
+                Ok(())
+            },
+        )
+        .unwrap_err();
+        assert_eq!(err1, Failure::operational("sandbox", "sandbox-io-2"));
+
+        // 2. Both 0 and 2 start `run` concurrently; `commit(2)` records
+        //    `code == 2` first, then `run(0)` returns `code == 1`: operational
+        //    failure at index 2 must not be overwritten by the lower-index
+        //    policy rejection.
+        let start2 = Arc::new(Barrier::new(2));
+        let (tx2, rx2) = std::sync::mpsc::channel::<()>();
+        let rx2 = Mutex::new(rx2);
+        let err2 = run_parallel_dag(
+            &plan,
+            3,
+            "dag",
+            "panic",
+            &mut shared,
+            |_, _| Ok(()),
+            |idx, ()| match idx {
+                2 => {
+                    start2.wait();
+                    Ok(())
+                }
+                0 => {
+                    start2.wait();
+                    rx2.lock().unwrap().recv().unwrap();
+                    Err(Failure::policy("dag", "proof-rejected-0"))
+                }
+                _ => Ok(()),
+            },
+            |_, idx, ()| {
+                if idx == 2 {
+                    tx2.send(()).unwrap();
+                    return Err(Failure::operational("sandbox", "sandbox-io-2"));
+                }
+                Ok(())
+            },
+        )
+        .unwrap_err();
+        assert_eq!(err2, Failure::operational("sandbox", "sandbox-io-2"));
+
+        // 3. Among two concurrent operational (`code == 2`) failures, smallest
+        //    index wins even when index 2 records its failure first.
+        let start3 = Arc::new(Barrier::new(2));
+        let (tx3, rx3) = std::sync::mpsc::channel::<()>();
+        let rx3 = Mutex::new(rx3);
+        let err3 = run_parallel_dag(
+            &plan,
+            3,
+            "dag",
+            "panic",
+            &mut shared,
+            |_, _| Ok(()),
+            |idx, ()| match idx {
+                2 => {
+                    start3.wait();
+                    Ok(())
+                }
+                1 => {
+                    start3.wait();
+                    rx3.lock().unwrap().recv().unwrap();
+                    Err(Failure::operational("sandbox", "sandbox-io-1"))
+                }
+                _ => Ok(()),
+            },
+            |_, idx, ()| {
+                if idx == 2 {
+                    tx3.send(()).unwrap();
+                    return Err(Failure::operational("sandbox", "sandbox-io-2"));
+                }
+                Ok(())
+            },
+        )
+        .unwrap_err();
+        assert_eq!(err3, Failure::operational("sandbox", "sandbox-io-1"));
     }
 }
 

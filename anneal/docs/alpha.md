@@ -12,13 +12,17 @@ The developer alpha checks selected Rust functions or scalar library crates on
 x86-64 Linux with glibc, such as Ubuntu 24.04. It compiles a dependency-free
 library with the pinned compiler and checks the authored Lean proof against the
 captured MIR, the stated specification, and Anneal's safety obligations. A
-successful receipt (`"schema_version": 2`) identifies the verified scope,
-compilation configuration, input digests, and assumptions.
+successful receipt (`"schema_version": 3`) identifies the verified scope,
+compilation configuration, input digests, containment backend, and assumptions.
 
-Use Rust inputs, specifications, and proofs you trust to compile and
-elaborate on your machine. Lean elaboration runs as your user. To use the
-alpha in automation that processes outside contributions, supply a separate
-isolated execution environment for the entire verifier.
+On Linux, `ExecSeal` isolates target Lean preflight, elaboration, and audit by
+default inside Tier 1 `linux_bwrap` or Tier 2 `linux_landlock_seccomp`
+(recorded in `elaboration_sandbox`, failing closed when unavailable unless
+`--allow-unsandboxed-elaboration` is passed; see
+[elaborator containment](elaborator-containment-design.md)). Rust compilation
+(`rustc`) still runs as the caller, so supply a separate isolated execution
+environment when processing untrusted Rust crates or build scripts, on
+non-Linux hosts, or with `--allow-unsandboxed-elaboration`.
 
 ## Try a proof
 
@@ -95,20 +99,36 @@ symlinked runfiles trees work directly, while still rejecting special files and
 concurrent source edits. Additional flags support build-system and custom
 toolchain integration:
 
-- `--export-lean-lib` (requires `--artifacts <directory>`): copies compiled
-  target `.olean*` files to `<artifacts>/lean-lib/`.
+- `--export-lean-lib` (requires `--artifacts <directory>`): atomically stages
+  Door-1-verified target `.olean` files inside the private work directory and
+  retains them under `<artifacts>/lean-lib/` after target audit passes; omits
+  authored `proof` `.olean`s on `proof_failed` (exit `1`), and exports nothing
+  on `tool_failed` (exit `2`).
 - `--lean-memory-mb <MB>`: sets Lean's `-M<MB>` memory limit (`resolve-imports`
   enforces a `4096` MiB floor).
-- `--allow-unpinned-lean` (requires explicit `--lean <path>`): admits an
-  unpinned host Lean binary by dynamically discovering and hashing its minimal
-  `Init.*` and `Std.*` sysroot import closure (recorded in `unpinned_lean` and
-  `audit.unpinnedLean`), prints a `TAINTED` warning banner on stderr, sets
-  `taint_reasons` to `["unpinned_lean"]` with status `tainted_crate_verified`
-  or `tainted_selected_unit_verified`, and marks
-  `correspondence_provenance.applicable` as `false`.
 - `--no-default-features`: building `cargo-anneal` without its default `setup`
   feature omits remote archive download support (`exocrate`); pass explicit
   `--capture`, `--sysroot`, and `--lean` paths when running `verify`.
+
+Each `--allow-*` relaxation flag follows Receipt Schema v3's Uniform
+Flag-Driven Taint Law: passing the flag prints a `TAINTED` warning banner on
+stderr, adds its sorted entry to `taint_reasons` even on clean runs, and
+switches passing status to `tainted_crate_verified` or
+`tainted_selected_unit_verified`:
+
+- `--allow-unpinned-lean` (requires explicit `--lean <path>`): adds
+  `"unpinned_lean"`, dynamically discovers and hashes the minimal `Init.*` and
+  `Std.*` sysroot import closure (recorded in `unpinned_lean` and
+  `audit.unpinnedLean`), and marks `correspondence_provenance.applicable` as
+  `false`.
+- `--allow-unsandboxed-elaboration`: adds `"unsandboxed_elaboration"`, disables
+  `ExecSeal` (`"elaboration_sandbox": "none"`), and retains `"hostile Lean
+  elaborator effects"` in `deferred`.
+- `--allow-sorry-in-proof`: adds `"sorry_in_proof"`, permits `sorry` strictly
+  in authored `proof` modules outside Phase 1 (never in `specification`,
+  `Model`, `Capture`, or `Expected` modules; `"spec-preflight"` also enforces
+  pure declarative syntax on `specification` modules), and records
+  `sorry`-using proof declarations in `sorry_declarations`.
 
 ## Install a published alpha
 

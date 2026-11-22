@@ -275,6 +275,11 @@ significant influences are listed here, but this list is far from exhaustive.
   [declaration replay][lean-replay], [environment importer][lean-env],
   compiler-attribute handling, and kernel reduction behavior guided Anneal's
   auditor and PureLift's combinators.
+- Anneal's elaborator sandbox builds on [Bubblewrap], by Alexander Larsson,
+  Colin Walters, and the Bubblewrap contributors, on Linux's [Landlock]
+  security module, by Mickaël Salaün and the Linux kernel contributors, and on
+  Linux's [seccomp-BPF] syscall filter, by Will Drewry and the Linux kernel
+  contributors.
 - The Rust contributors' [compiler source][rustc] (including
   [`rustc_const_eval`][rustc-const-eval] and [a padding-clearing
   issue][rust-148470]) and [Rust Reference] guided Anneal's MIR capture and
@@ -308,6 +313,9 @@ significant influences are listed here, but this list is far from exhaustive.
 [Lean 4]: https://lean-lang.org/papers/lean4.pdf
 [lean-replay]: https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Replay.lean
 [lean-env]: https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean
+[Bubblewrap]: https://github.com/containers/bubblewrap
+[Landlock]: https://docs.kernel.org/userspace-api/landlock.html
+[seccomp-BPF]: https://docs.kernel.org/userspace-api/seccomp_filter.html
 [rustc]: https://github.com/rust-lang/rust/tree/main/compiler
 [rustc-const-eval]: https://github.com/rust-lang/rust/tree/main/compiler/rustc_const_eval/src/interpret
 [rust-148470]: https://github.com/rust-lang/rust/issues/148470
