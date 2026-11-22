@@ -1,0 +1,87 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/codegen",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/codegen",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc 1.102.0-nightly (LLVM 23.1.5 and rustc_codegen_cranelift)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "1.102.0-nightly (2026-11-11)"
+      }
+    },
+    {
+      "name": "rustc 1.98.0-nightly (LLVM 22.1.6)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly (2026-05-31)"
+      }
+    },
+    {
+      "name": "rust-lang/rust source revalidation snapshot",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+      }
+    },
+    {
+      "name": "rustc_codegen_cranelift upstream repository",
+      "identity": {
+        "repository": "rust-lang/rustc_codegen_cranelift",
+        "revision": "a69afc0967fddad0587b24fcd4c5534a5a7e60b9"
+      }
+    },
+    {
+      "name": "LLVM 23.1.5",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "392dfff97d29b59d77e5cac6d4b6ef2585fe7117",
+        "version": "llvmorg-23.1.5"
+      }
+    },
+    {
+      "name": "LLVM 22.1.6",
+      "identity": {
+        "repository": "llvm/llvm-project",
+        "revision": "fc4aad7b5db3fff421df9a9637605b9ca5667881",
+        "version": "llvmorg-22.1.6"
+      }
+    },
+    {
+      "name": "Cranelift codegen 0.137.0 (Wasmtime v50.0.0)",
+      "identity": {
+        "repository": "bytecodealliance/wasmtime",
+        "revision": "ebe5e8df1f4e12c5fc2f5954926881d8d61367d8",
+        "version": "v50.0.0"
+      }
+    },
+    {
+      "name": "Anneal verification toolchain and trusted boundary",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

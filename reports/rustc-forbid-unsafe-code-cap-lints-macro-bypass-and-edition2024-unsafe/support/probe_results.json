@@ -1,0 +1,2012 @@
+{
+  "schema": "forbid-unsafe-cap-lints-probe/1",
+  "observed_utc": "2026-11-22T08:34:05Z",
+  "toolchain": {
+    "rustc_vV": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+    "cargo_vV": "cargo 1.98.0-nightly (fbb61be30 2026-05-26)\nrelease: 1.98.0-nightly\ncommit-hash: fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef\ncommit-date: 2026-05-26\nhost: x86_64-unknown-linux-gnu\nlibgit2: 1.9.2 (sys:0.20.4 vendored)\nlibcurl: 8.20.0-DEV (sys:0.4.88+curl-8.20.0 vendored ssl:OpenSSL/3.6.2)\nssl: OpenSSL 3.6.2 7 Apr 2026"
+  },
+  "sources": {
+    "up_unsafe_mac.rs": "// Foreign `macro_rules!` crate.  Compiled as an rlib with --edition 2021.\n#[macro_export]\nmacro_rules! foreign_unsafe_expr { () => { unsafe { 101u32 } }; }\n#[macro_export]\nmacro_rules! foreign_allow_unsafe_expr {\n    () => {{ #[allow(unsafe_code)] let v = unsafe { 102u32 }; v }};\n}\n#[macro_export]\nmacro_rules! foreign_passthrough { ($e:expr) => { $e }; }\n#[macro_export]\nmacro_rules! foreign_call_local { ($m:ident) => { $m!() }; }\n#[macro_export]\nmacro_rules! foreign_read_raw { ($p:expr) => { unsafe { *$p } }; }\n#[macro_export]\nmacro_rules! foreign_ed2021_ffi_items {\n    () => {\n        #[no_mangle]\n        pub extern \"C\" fn up_exported_symbol() -> u32 { 301 }\n        extern \"C\" { fn abs(x: i32) -> i32; }\n        pub fn foreign_abs(x: i32) -> i32 { unsafe { abs(x) } }\n    };\n}\n",
+    "up_unsafe_pm.rs": "// Foreign function-like proc-macro crate.  `pm_def_site` is compiled only\n// when the probe passes `--cfg probe_def_site` (unstable `Span::def_site`).\n#![cfg_attr(probe_def_site, feature(proc_macro_def_site))]\nextern crate proc_macro;\nuse proc_macro::{Delimiter, Group, Ident, Literal, Span, TokenStream, TokenTree};\n\n// Emits `unsafe { <value>u32 }` with every token carrying `span`.\nfn unsafe_block(value: u32, span: Span) -> TokenStream {\n    let mut lit = Literal::u32_suffixed(value);\n    lit.set_span(span);\n    let inner: TokenStream = TokenTree::Literal(lit).into();\n    let mut group = Group::new(Delimiter::Brace, inner);\n    group.set_span(span);\n    [TokenTree::Ident(Ident::new(\"unsafe\", span)), TokenTree::Group(group)]\n        .into_iter()\n        .collect()\n}\n\n#[proc_macro]\npub fn pm_call_site(_: TokenStream) -> TokenStream { unsafe_block(201, Span::call_site()) }\n#[proc_macro]\npub fn pm_mixed_site(_: TokenStream) -> TokenStream { unsafe_block(202, Span::mixed_site()) }\n#[cfg(probe_def_site)]\n#[proc_macro]\npub fn pm_def_site(_: TokenStream) -> TokenStream { unsafe_block(203, Span::def_site()) }\n// Re-uses the span of the first input token, i.e. a span written in the\n// invoking crate, for every emitted token.\n#[proc_macro]\npub fn pm_input_span(input: TokenStream) -> TokenStream {\n    let span = input.into_iter().next().expect(\"one input token\").span();\n    unsafe_block(204, span)\n}\n// Attribute and derive macros that add a function containing an `unsafe`\n// block.  Tokens parsed from a string carry `Span::call_site()`.\n#[proc_macro_attribute]\npub fn pm_attr_inject(_attr: TokenStream, item: TokenStream) -> TokenStream {\n    let extra: TokenStream =\n        \"fn injected_by_attr() -> u32 { unsafe { 205u32 } }\".parse().expect(\"valid tokens\");\n    item.into_iter().chain(extra).collect()\n}\n#[proc_macro_derive(PmDeriveInject)]\npub fn pm_derive_inject(_item: TokenStream) -> TokenStream {\n    \"fn injected_by_derive() -> u32 { unsafe { 206u32 } }\".parse().expect(\"valid tokens\")\n}\n",
+    "a_forbid.rs": "#![forbid(unsafe_code)]\nfn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n",
+    "a_plain.rs": "fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n",
+    "b0_local_mac.rs": "// Local macro_rules! whose body contains the `unsafe` block.\n#![forbid(unsafe_code)]\nmacro_rules! loc_u { () => { unsafe { 100u32 } }; }\nfn main() { println!(\"{}\", loc_u!()); }\n",
+    "b1_fmac.rs": "#![forbid(unsafe_code)]\nfn main() { println!(\"FMAC={}\", up_unsafe_mac::foreign_unsafe_expr!()); }\n",
+    "b2_fmac_allow.rs": "#![forbid(unsafe_code)]\nfn main() { println!(\"FMAC_ALLOW={}\", up_unsafe_mac::foreign_allow_unsafe_expr!()); }\n",
+    "b3_pm_call.rs": "#![forbid(unsafe_code)]\nfn main() { println!(\"PM_CALL={}\", up_unsafe_pm::pm_call_site!()); }\n",
+    "b4_pm_mixed.rs": "#![forbid(unsafe_code)]\nfn main() { println!(\"PM_MIXED={}\", up_unsafe_pm::pm_mixed_site!()); }\n",
+    "b5_pm_def.rs": "#![forbid(unsafe_code)]\nfn main() { println!(\"PM_DEF={}\", up_unsafe_pm::pm_def_site!()); }\n",
+    "c1_uop.rs": "unsafe fn deref_raw(p: *const u32) -> u32 { *p }\nfn main() { let v = 9u32; println!(\"UOP={}\", unsafe { deref_raw(&v) }); }\n",
+    "c2_smut.rs": "static mut G: u32 = 1;\nfn main() { unsafe { let r = &mut G; *r += 1; println!(\"SMUT={}\", *r); } }\n",
+    "c2_raw.rs": "static mut G: u32 = 1;\nfn main() { unsafe { let p = &raw mut G; *p += 1; println!(\"RAW={}\", *p); } }\n",
+    "c3_nm.rs": "#[no_mangle] pub extern \"C\" fn foo_nm() -> u32 { 7 }\nfn main() { println!(\"NM={}\", foo_nm()); }\n",
+    "c4_forbid_nm.rs": "#![forbid(unsafe_code)]\n#[unsafe(no_mangle)] pub extern \"C\" fn foo_nm() -> u32 { 7 }\nfn main() { println!(\"NM={}\", foo_nm()); }\n",
+    "c5_ext.rs": "extern \"C\" { fn abs(x: i32) -> i32; }\nfn main() { println!(\"ABS={}\", unsafe { abs(-3) }); }\n",
+    "c6_forbid_ext.rs": "#![forbid(unsafe_code)]\nunsafe extern \"C\" { safe fn abs(x: i32) -> i32; }\nfn main() { println!(\"ABS={}\", abs(-3)); }\n",
+    "d1_e0453.rs": "#![forbid(unsafe_code)]\n#[allow(unsafe_code)]\nfn main() { let _ = unsafe { 1 }; }\n",
+    "d2_exp_ok.rs": "#[expect(unsafe_code)]\nfn main() { let v = 5u32; let p = &raw const v; let x = unsafe { *p }; let _ = x; println!(\"EXP_OK\"); }\n",
+    "d3_exp_unful.rs": "#[expect(dead_code)]\nfn used() -> u32 { 5 }\nfn main() { println!(\"EXP_UNFUL={}\", used()); }\n",
+    "d4_exp_cap.rs": "#[expect(dead_code)]\nfn used() -> u32 { 5 }\nfn main() { println!(\"EXP_CAP={}\", used()); }\n",
+    "e_deny_in_forbid.rs": "#![forbid(unsafe_code)]\n#[deny(unsafe_code)]\nfn main() { let _ = unsafe { 1 }; }\n",
+    "e_expect_in_forbid.rs": "#![forbid(unsafe_code)]\n#[expect(unsafe_code)]\nfn main() { let _ = unsafe { 1 }; }\n",
+    "e_passthrough.rs": "#![forbid(unsafe_code)]\nfn main() { println!(\"PASS={}\", up_unsafe_mac::foreign_passthrough!(unsafe { 111u32 })); }\n",
+    "e_local_wraps_foreign.rs": "#![forbid(unsafe_code)]\nmacro_rules! local_wrap { () => { up_unsafe_mac::foreign_unsafe_expr!() }; }\nfn main() { println!(\"WRAP={}\", local_wrap!()); }\n",
+    "e_foreign_calls_local.rs": "#![forbid(unsafe_code)]\nmacro_rules! loc_u { () => { unsafe { 112u32 } }; }\nfn main() { println!(\"CALL_LOCAL={}\", up_unsafe_mac::foreign_call_local!(loc_u)); }\n",
+    "e_pm_input_span.rs": "#![forbid(unsafe_code)]\nfn main() { println!(\"PM_INPUT={}\", up_unsafe_pm::pm_input_span!(here)); }\n",
+    "e_ed2021_ffi_in_2024.rs": "#![forbid(unsafe_code)]\nup_unsafe_mac::foreign_ed2021_ffi_items!();\nfn main() { println!(\"FFI={} {}\", up_exported_symbol(), foreign_abs(-5)); }\n",
+    "e_expect_noop_block.rs": "#[expect(unsafe_code)]\nfn main() { let x = unsafe { 5u32 }; let _ = x; println!(\"EXP_NOOP\"); }\n",
+    "e_expect_foreign.rs": "#[expect(unsafe_code)]\nfn main() { println!(\"EXP_FOREIGN={}\", up_unsafe_mac::foreign_unsafe_expr!()); }\n",
+    "e_pm_attr_derive.rs": "#![forbid(unsafe_code)]\n#[up_unsafe_pm::pm_attr_inject]\nfn anchor() {}\n#[derive(up_unsafe_pm::PmDeriveInject)]\nstruct Marker;\nfn main() {\n    anchor();\n    let _ = Marker;\n    println!(\"PM_ATTR_DERIVE={} {}\", injected_by_attr(), injected_by_derive());\n}\n",
+    "e_group_forbid.rs": "#![forbid(unused)]\n#[allow(unused_variables)]\nfn main() { let x = 1; println!(\"GROUP_FCW\"); }\n",
+    "e_crate_allow.rs": "#![allow(unsafe_code)]\nfn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n",
+    "e_e0133.rs": "fn main() { let v = 5u32; let p = &raw const v; let x = *p; println!(\"E0133={}\", x); }\n",
+    "e_smut_allow_attr.rs": "#![allow(static_mut_refs)]\nstatic mut G: u32 = 1;\nfn main() { unsafe { let r = &mut G; *r += 1; println!(\"SMUT_ALLOW={}\", *r); } }\n",
+    "e_mir_foreign_raw.rs": "#![forbid(unsafe_code)]\npub fn read_through_foreign_macro(x: &u32) -> u32 {\n    let p = x as *const u32;\n    up_unsafe_mac::foreign_read_raw!(p)\n}\nfn main() { println!(\"MIR_FOREIGN={}\", read_through_foreign_macro(&21)); }\n",
+    "e_mir_local_raw.rs": "#![forbid(unsafe_code)]\npub fn read_through_local_block(x: &u32) -> u32 {\n    let p = x as *const u32;\n    unsafe { *p }\n}\nfn main() { println!(\"MIR_LOCAL={}\", read_through_local_block(&22)); }\n",
+    "e_mir_no_op.rs": "#![forbid(unsafe_code)]\npub fn unsafe_block_without_unsafe_operation() -> u32 {\n    unsafe { 42u32 }\n}\nfn main() { println!(\"MIR_NOOP={}\", unsafe_block_without_unsafe_operation()); }\n",
+    "cargo/forbid_dep/Cargo.toml": "[package]\nname = \"forbid_dep\"\nversion = \"0.1.0\"\nedition = \"2021\"\n",
+    "cargo/forbid_dep/src/lib.rs": "#![forbid(unsafe_code)]\npub fn peek(v: &u32) -> u32 { unsafe { *(v as *const u32) } }\n",
+    "cargo/app/src/main.rs": "#![forbid(unsafe_code)]\nfn main() { println!(\"DEP_PEEK={}\", forbid_dep::peek(&11)); }\n"
+  },
+  "upstream_builds": {
+    "up_unsafe_mac": {
+      "argv": [
+        "rustc",
+        "--edition",
+        "2021",
+        "--crate-type",
+        "rlib",
+        "--crate-name",
+        "up_unsafe_mac",
+        "$TMP/up_unsafe_mac.rs",
+        "--out-dir",
+        "$TMP/out"
+      ],
+      "rc": 0,
+      "stderr": ""
+    },
+    "up_unsafe_pm": {
+      "argv": [
+        "rustc",
+        "--edition",
+        "2021",
+        "--crate-type",
+        "proc-macro",
+        "--crate-name",
+        "up_unsafe_pm",
+        "$TMP/up_unsafe_pm.rs",
+        "--out-dir",
+        "$TMP/out",
+        "--cfg",
+        "probe_def_site"
+      ],
+      "rc": 0,
+      "stderr": "",
+      "def_site_available": true
+    }
+  },
+  "cases": {
+    "part_a_forbid_vs_cap_lints": {
+      "default_forbid_rejects": {
+        "source": "a_forbid.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe` block",
+            "#![forbid(unsafe_code)]"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_a_default_forbid_rejects"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe` block\n --> $TMP/a_forbid.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/a_forbid.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> $TMP/a_forbid.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "cap_lints_allow_bypasses_forbid": {
+        "source": "a_forbid.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "UNSAFE_RAN=42"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_a_cap_lints_allow_bypasses_forbid",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "UNSAFE_RAN=42",
+        "status": "pass",
+        "problems": []
+      },
+      "cap_lints_warn_downgrades_forbid": {
+        "source": "a_forbid.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [
+            "warning: usage of an `unsafe` block"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": true,
+          "stdout": "UNSAFE_RAN=42"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_a_cap_lints_warn_downgrades_forbid",
+          "--cap-lints",
+          "warn"
+        ],
+        "compile_rc": 0,
+        "stderr": "warning: usage of an `unsafe` block\n --> $TMP/a_forbid.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/a_forbid.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> $TMP/a_forbid.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+        "run_rc": 0,
+        "stdout": "UNSAFE_RAN=42",
+        "status": "pass",
+        "problems": []
+      },
+      "cap_lints_allow_plus_cli_F_unsafe_code": {
+        "source": "a_plain.rs",
+        "edition": "2021",
+        "note": "Forbid comes only from the command line; cap flag first.",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "UNSAFE_RAN=42"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_plain.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_a_cap_lints_allow_plus_cli_F_unsafe_code",
+          "--cap-lints",
+          "allow",
+          "-F",
+          "unsafe_code"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "UNSAFE_RAN=42",
+        "status": "pass",
+        "problems": []
+      },
+      "cli_F_unsafe_code_plus_cap_lints_allow": {
+        "source": "a_plain.rs",
+        "edition": "2021",
+        "note": "Forbid comes only from the command line; cap flag last.",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "UNSAFE_RAN=42"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_plain.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_a_cli_F_unsafe_code_plus_cap_lints_allow",
+          "-F",
+          "unsafe_code",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "UNSAFE_RAN=42",
+        "status": "pass",
+        "problems": []
+      }
+    },
+    "part_b_foreign_macro_and_proc_macro_bypass": {
+      "local_macro_rules_unsafe_caught_by_forbid": {
+        "source": "b0_local_mac.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe` block",
+            "in this macro invocation"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/b0_local_mac.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_b_local_macro_rules_unsafe_caught_by_forbid"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe` block\n --> $TMP/b0_local_mac.rs:3:30\n  |\n3 | macro_rules! loc_u { () => { unsafe { 100u32 } }; }\n  |                              ^^^^^^^^^^^^^^^^^\n4 | fn main() { println!(\"{}\", loc_u!()); }\n  |                            -------- in this macro invocation\n  |\nnote: the lint level is defined here\n --> $TMP/b0_local_mac.rs:2:11\n  |\n2 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n  = note: this error originates in the macro `loc_u` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nwarning: unnecessary `unsafe` block\n --> $TMP/b0_local_mac.rs:3:30\n  |\n3 | macro_rules! loc_u { () => { unsafe { 100u32 } }; }\n  |                              ^^^^^^ unnecessary `unsafe` block\n4 | fn main() { println!(\"{}\", loc_u!()); }\n  |                            -------- in this macro invocation\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n  = note: this warning originates in the macro `loc_u` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "foreign_macro_rules_unsafe_in_forbid_crate": {
+        "source": "b1_fmac.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "FMAC=101"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/b1_fmac.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_b_foreign_macro_rules_unsafe_in_forbid_crate",
+          "--extern",
+          "up_unsafe_mac=$TMP/out/libup_unsafe_mac.rlib"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "FMAC=101",
+        "status": "pass",
+        "problems": []
+      },
+      "foreign_macro_rules_allow_unsafe_in_forbid_crate": {
+        "source": "b2_fmac_allow.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error[E0453]: allow(unsafe_code) incompatible with previous forbid",
+            "this error originates in the macro `up_unsafe_mac::foreign_allow_unsafe_expr`"
+          ],
+          "stderr_not_contains": [
+            "usage of an `unsafe` block"
+          ],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/b2_fmac_allow.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_b_foreign_macro_rules_allow_unsafe_in_forbid_crate",
+          "--extern",
+          "up_unsafe_mac=$TMP/out/libup_unsafe_mac.rlib"
+        ],
+        "compile_rc": 1,
+        "stderr": "error[E0453]: allow(unsafe_code) incompatible with previous forbid\n --> $TMP/b2_fmac_allow.rs:2:39\n  |\n1 | ...id(unsafe_code)]\n  |       ----------- `forbid` level set here\n2 | ...() { println!(\"FMAC_ALLOW={}\", up_unsafe_mac::foreign_allow_unsafe_expr!()); }\n  |                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ overruled by previous forbid\n  |\n  = note: this error originates in the macro `up_unsafe_mac::foreign_allow_unsafe_expr` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0453`.\n",
+        "status": "pass",
+        "problems": []
+      },
+      "proc_macro_call_site_unsafe_in_forbid_crate": {
+        "source": "b3_pm_call.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "PM_CALL=201"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/b3_pm_call.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_b_proc_macro_call_site_unsafe_in_forbid_crate",
+          "--extern",
+          "up_unsafe_pm=$TMP/out/libup_unsafe_pm.so"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "PM_CALL=201",
+        "status": "pass",
+        "problems": []
+      },
+      "proc_macro_mixed_site_unsafe_in_forbid_crate": {
+        "source": "b4_pm_mixed.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "PM_MIXED=202"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/b4_pm_mixed.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_b_proc_macro_mixed_site_unsafe_in_forbid_crate",
+          "--extern",
+          "up_unsafe_pm=$TMP/out/libup_unsafe_pm.so"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "PM_MIXED=202",
+        "status": "pass",
+        "problems": []
+      },
+      "proc_macro_def_site_unsafe_in_forbid_crate": {
+        "source": "b5_pm_def.rs",
+        "edition": "2021",
+        "note": "needs_def_site",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "PM_DEF=203"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/b5_pm_def.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_b_proc_macro_def_site_unsafe_in_forbid_crate",
+          "--extern",
+          "up_unsafe_pm=$TMP/out/libup_unsafe_pm.so"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "PM_DEF=203",
+        "status": "pass",
+        "problems": []
+      }
+    },
+    "part_c_edition2024_unsafe_hardening": {
+      "unsafe_op_in_unsafe_fn_ed2021": {
+        "source": "c1_uop.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "UOP=9"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/c1_uop.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_c_unsafe_op_in_unsafe_fn_ed2021"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "UOP=9",
+        "status": "pass",
+        "problems": []
+      },
+      "unsafe_op_in_unsafe_fn_ed2024": {
+        "source": "c1_uop.rs",
+        "edition": "2024",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [
+            "warning[E0133]: dereference of raw pointer is unsafe and requires unsafe block"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": true,
+          "stdout": "UOP=9"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/c1_uop.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_c_unsafe_op_in_unsafe_fn_ed2024"
+        ],
+        "compile_rc": 0,
+        "stderr": "warning[E0133]: dereference of raw pointer is unsafe and requires unsafe block\n --> $TMP/c1_uop.rs:1:45\n  |\n1 | unsafe fn deref_raw(p: *const u32) -> u32 { *p }\n  |                                             ^^ dereference of raw pointer\n  |\n  = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior\nnote: an unsafe function restricts its caller, but its body is safe by default\n --> $TMP/c1_uop.rs:1:1\n  |\n1 | unsafe fn deref_raw(p: *const u32) -> u32 { *p }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/unsafe-op-in-unsafe-fn.html>\n  = note: `#[warn(unsafe_op_in_unsafe_fn)]` (part of `#[warn(rust_2024_compatibility)]`) on by default\n\nwarning: 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0133`.\n",
+        "run_rc": 0,
+        "stdout": "UOP=9",
+        "status": "pass",
+        "problems": []
+      },
+      "static_mut_ref_ed2021": {
+        "source": "c2_smut.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [
+            "warning: creating a mutable reference to mutable static",
+            "`#[warn(static_mut_refs)]`"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": true,
+          "stdout": "SMUT=2"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/c2_smut.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_c_static_mut_ref_ed2021"
+        ],
+        "compile_rc": 0,
+        "stderr": "warning: creating a mutable reference to mutable static\n --> $TMP/c2_smut.rs:2:30\n  |\n2 | fn main() { unsafe { let r = &mut G; *r += 1; println!(\"SMUT={}\", *r); } }\n  |                              ^^^^^^ mutable reference to mutable static\n  |\n  = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives\n  = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>\n  = note: `#[warn(static_mut_refs)]` (part of `#[warn(rust_2024_compatibility)]`) on by default\nhelp: use `&raw mut` instead to create a raw pointer\n  |\n2 | fn main() { unsafe { let r = &raw mut G; *r += 1; println!(\"SMUT={}\", *r); } }\n  |                               +++\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "stdout": "SMUT=2",
+        "status": "pass",
+        "problems": []
+      },
+      "static_mut_ref_ed2024": {
+        "source": "c2_smut.rs",
+        "edition": "2024",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: creating a mutable reference to mutable static",
+            "`#[deny(static_mut_refs)]`"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/c2_smut.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_c_static_mut_ref_ed2024"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: creating a mutable reference to mutable static\n --> $TMP/c2_smut.rs:2:30\n  |\n2 | fn main() { unsafe { let r = &mut G; *r += 1; println!(\"SMUT={}\", *r); } }\n  |                              ^^^^^^ mutable reference to mutable static\n  |\n  = note: mutable references to mutable statics are dangerous; it's undefined behavior if any other pointer to the static is used or if any other reference is created for the static while the mutable reference lives\n  = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/static-mut-references.html>\n  = note: `#[deny(static_mut_refs)]` (part of `#[deny(rust_2024_compatibility)]`) on by default\nhelp: use `&raw mut` instead to create a raw pointer\n  |\n2 | fn main() { unsafe { let r = &raw mut G; *r += 1; println!(\"SMUT={}\", *r); } }\n  |                               +++\n\nerror: aborting due to 1 previous error\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "raw_mut_static_ed2024": {
+        "source": "c2_raw.rs",
+        "edition": "2024",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "RAW=2"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/c2_raw.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_c_raw_mut_static_ed2024"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "RAW=2",
+        "status": "pass",
+        "problems": []
+      },
+      "bare_no_mangle_ed2021": {
+        "source": "c3_nm.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "NM=7"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/c3_nm.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_c_bare_no_mangle_ed2021"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "NM=7",
+        "status": "pass",
+        "problems": []
+      },
+      "bare_no_mangle_ed2024_rejected": {
+        "source": "c3_nm.rs",
+        "edition": "2024",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: unsafe attribute used without unsafe"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/c3_nm.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_c_bare_no_mangle_ed2024_rejected"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: unsafe attribute used without unsafe\n --> $TMP/c3_nm.rs:1:3\n  |\n1 | #[no_mangle] pub extern \"C\" fn foo_nm() -> u32 { 7 }\n  |   ^^^^^^^^^ usage of unsafe attribute\n  |\nhelp: wrap the attribute in `unsafe(...)`\n  |\n1 | #[unsafe(no_mangle)] pub extern \"C\" fn foo_nm() -> u32 { 7 }\n  |   +++++++         +\n\nerror: aborting due to 1 previous error\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "forbid_unsafe_code_rejects_unsafe_no_mangle": {
+        "source": "c4_forbid_nm.rs",
+        "edition": "2024",
+        "note": "The first line of this unsafe_code diagnostic is worded differently across releases.",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "`no_mangle`",
+            "#![forbid(unsafe_code)]"
+          ],
+          "stderr_not_contains": [
+            "unsafe attribute used without unsafe"
+          ],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/c4_forbid_nm.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_c_forbid_unsafe_code_rejects_unsafe_no_mangle"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: declaration of a `no_mangle` function\n --> $TMP/c4_forbid_nm.rs:2:1\n  |\n2 | #[unsafe(no_mangle)] pub extern \"C\" fn foo_nm() -> u32 { 7 }\n  | ^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: the linker's behavior with multiple libraries exporting duplicate symbol names is undefined and Rust cannot provide guarantees when you manually override them\nnote: the lint level is defined here\n --> $TMP/c4_forbid_nm.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "bare_extern_c_ed2024_rejected": {
+        "source": "c5_ext.rs",
+        "edition": "2024",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: extern blocks must be unsafe"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/c5_ext.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_c_bare_extern_c_ed2024_rejected"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: extern blocks must be unsafe\n --> $TMP/c5_ext.rs:1:1\n  |\n1 | extern \"C\" { fn abs(x: i32) -> i32; }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "forbid_unsafe_code_rejects_unsafe_extern_c": {
+        "source": "c6_forbid_ext.rs",
+        "edition": "2024",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe extern` block",
+            "#![forbid(unsafe_code)]"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/c6_forbid_ext.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_c_forbid_unsafe_code_rejects_unsafe_extern_c"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe extern` block\n --> $TMP/c6_forbid_ext.rs:2:1\n  |\n2 | unsafe extern \"C\" { safe fn abs(x: i32) -> i32; }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/c6_forbid_ext.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+        "status": "pass",
+        "problems": []
+      }
+    },
+    "part_d_expect_and_forbid_override": {
+      "allow_under_forbid_rejected_e0453": {
+        "source": "d1_e0453.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error[E0453]: allow(unsafe_code) incompatible with previous forbid",
+            "error: usage of an `unsafe` block"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/d1_e0453.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_d_allow_under_forbid_rejected_e0453"
+        ],
+        "compile_rc": 1,
+        "stderr": "error[E0453]: allow(unsafe_code) incompatible with previous forbid\n --> $TMP/d1_e0453.rs:2:9\n  |\n1 | #![forbid(unsafe_code)]\n  |           ----------- `forbid` level set here\n2 | #[allow(unsafe_code)]\n  |         ^^^^^^^^^^^ overruled by previous forbid\n\nerror: usage of an `unsafe` block\n --> $TMP/d1_e0453.rs:3:21\n  |\n3 | fn main() { let _ = unsafe { 1 }; }\n  |                     ^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/d1_e0453.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> $TMP/d1_e0453.rs:3:21\n  |\n3 | fn main() { let _ = unsafe { 1 }; }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 2 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0453`.\n",
+        "status": "pass",
+        "problems": []
+      },
+      "expect_fulfilled_clean": {
+        "source": "d2_exp_ok.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "EXP_OK"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/d2_exp_ok.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_d_expect_fulfilled_clean"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "EXP_OK",
+        "status": "pass",
+        "problems": []
+      },
+      "expect_unfulfilled_warns": {
+        "source": "d3_exp_unful.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [
+            "warning: this lint expectation is unfulfilled",
+            "`#[warn(unfulfilled_lint_expectations)]` on by default"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": "EXP_UNFUL=5"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/d3_exp_unful.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_d_expect_unfulfilled_warns"
+        ],
+        "compile_rc": 0,
+        "stderr": "warning: this lint expectation is unfulfilled\n --> $TMP/d3_exp_unful.rs:1:10\n  |\n1 | #[expect(dead_code)]\n  |          ^^^^^^^^^\n  |\n  = note: `#[warn(unfulfilled_lint_expectations)]` on by default\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "stdout": "EXP_UNFUL=5",
+        "status": "pass",
+        "problems": []
+      },
+      "expect_unfulfilled_silenced_by_cap_lints_allow": {
+        "source": "d4_exp_cap.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "EXP_CAP=5"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/d4_exp_cap.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_d_expect_unfulfilled_silenced_by_cap_lints_allow",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "EXP_CAP=5",
+        "status": "pass",
+        "problems": []
+      }
+    },
+    "part_e_extended_discriminators": {
+      "cli_F_alone_rejects": {
+        "source": "a_plain.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe` block",
+            "requested on the command line with `-F unsafe-code`"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_plain.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_cli_F_alone_rejects",
+          "-F",
+          "unsafe_code"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe` block\n --> $TMP/a_plain.rs:1:21\n  |\n1 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^^^^^^^^^^^\n  |\n  = note: requested on the command line with `-F unsafe-code`\n\nwarning: unnecessary `unsafe` block\n --> $TMP/a_plain.rs:1:21\n  |\n1 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "attr_forbid_plus_cli_F_plus_cap_lints_allow": {
+        "source": "a_forbid.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "UNSAFE_RAN=42"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_attr_forbid_plus_cli_F_plus_cap_lints_allow",
+          "-F",
+          "unsafe_code",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "UNSAFE_RAN=42",
+        "status": "pass",
+        "problems": []
+      },
+      "cap_lints_allow_suppresses_e0453": {
+        "source": "d1_e0453.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/d1_e0453.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_cap_lints_allow_suppresses_e0453",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "",
+        "status": "pass",
+        "problems": []
+      },
+      "force_warn_survives_cap_lints_allow": {
+        "source": "a_plain.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [
+            "warning: usage of an `unsafe` block",
+            "requested on the command line with `--force-warn unsafe-code`"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": true,
+          "stdout": "UNSAFE_RAN=42"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_plain.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_force_warn_survives_cap_lints_allow",
+          "--force-warn",
+          "unsafe_code",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 0,
+        "stderr": "warning: usage of an `unsafe` block\n --> $TMP/a_plain.rs:1:21\n  |\n1 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^^^^^^^^^^^\n  |\n  = note: requested on the command line with `--force-warn unsafe-code`\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "stdout": "UNSAFE_RAN=42",
+        "status": "pass",
+        "problems": []
+      },
+      "cap_lints_repeated_allow_then_forbid": {
+        "source": "a_forbid.rs",
+        "edition": "2021",
+        "note": "First --cap-lints occurrence is the one that is read.",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "UNSAFE_RAN=42"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_cap_lints_repeated_allow_then_forbid",
+          "--cap-lints",
+          "allow",
+          "--cap-lints",
+          "forbid"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "UNSAFE_RAN=42",
+        "status": "pass",
+        "problems": []
+      },
+      "cap_lints_repeated_forbid_then_allow": {
+        "source": "a_forbid.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe` block"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_cap_lints_repeated_forbid_then_allow",
+          "--cap-lints",
+          "forbid",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe` block\n --> $TMP/a_forbid.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/a_forbid.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> $TMP/a_forbid.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "cap_lints_deny_keeps_forbid_an_error": {
+        "source": "a_forbid.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe` block"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_cap_lints_deny_keeps_forbid_an_error",
+          "--cap-lints",
+          "deny"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe` block\n --> $TMP/a_forbid.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/a_forbid.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> $TMP/a_forbid.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "cli_F_then_cli_A_stays_forbid": {
+        "source": "a_plain.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe` block"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_plain.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_cli_F_then_cli_A_stays_forbid",
+          "-F",
+          "unsafe_code",
+          "-A",
+          "unsafe_code"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe` block\n --> $TMP/a_plain.rs:1:21\n  |\n1 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^^^^^^^^^^^\n  |\n  = note: requested on the command line with `-F unsafe-code`\n\nwarning: unnecessary `unsafe` block\n --> $TMP/a_plain.rs:1:21\n  |\n1 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "cap_lints_deny_makes_forbid_overridable": {
+        "source": "d1_e0453.rs",
+        "edition": "2021",
+        "note": "Under a deny cap the revealed outer level is deny, so the inner allow is accepted.",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [
+            "E0453",
+            "usage of an `unsafe` block"
+          ],
+          "stderr_empty": false,
+          "no_error_diagnostics": true,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/d1_e0453.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_cap_lints_deny_makes_forbid_overridable",
+          "--cap-lints",
+          "deny"
+        ],
+        "compile_rc": 0,
+        "stderr": "warning: unnecessary `unsafe` block\n --> $TMP/d1_e0453.rs:3:21\n  |\n3 | fn main() { let _ = unsafe { 1 }; }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "stdout": "",
+        "status": "pass",
+        "problems": []
+      },
+      "cap_lints_rejects_expect_as_a_level": {
+        "source": "a_forbid.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: unknown lint level: `expect`"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_cap_lints_rejects_expect_as_a_level",
+          "--cap-lints",
+          "expect"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: unknown lint level: `expect`\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "force_warn_flag_downgrades_attribute_forbid": {
+        "source": "a_forbid.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [
+            "warning: usage of an `unsafe` block",
+            "requested on the command line with `--force-warn unsafe-code`"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": true,
+          "stdout": "UNSAFE_RAN=42"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/a_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_force_warn_flag_downgrades_attribute_forbid",
+          "--force-warn",
+          "unsafe_code"
+        ],
+        "compile_rc": 0,
+        "stderr": "warning: usage of an `unsafe` block\n --> $TMP/a_forbid.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^^^^^^^^^^^\n  |\n  = note: requested on the command line with `--force-warn unsafe-code`\n\nwarning: unnecessary `unsafe` block\n --> $TMP/a_forbid.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 2 warnings emitted\n\n",
+        "run_rc": 0,
+        "stdout": "UNSAFE_RAN=42",
+        "status": "pass",
+        "problems": []
+      },
+      "cli_F_then_crate_allow_attribute_is_e0453": {
+        "source": "e_crate_allow.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error[E0453]: allow(unsafe_code) incompatible with previous forbid",
+            "`forbid` lint level was set on command line"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_crate_allow.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_cli_F_then_crate_allow_attribute_is_e0453",
+          "-F",
+          "unsafe_code"
+        ],
+        "compile_rc": 1,
+        "stderr": "error[E0453]: allow(unsafe_code) incompatible with previous forbid\n --> $TMP/e_crate_allow.rs:1:10\n  |\n1 | #![allow(unsafe_code)]\n  |          ^^^^^^^^^^^ overruled by previous forbid\n  |\n  = note: `forbid` lint level was set on command line (`-F unsafe_code`)\n\nerror: usage of an `unsafe` block\n --> $TMP/e_crate_allow.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^^^^^^^^^^^\n  |\n  = note: requested on the command line with `-F unsafe-code`\n\nwarning: unnecessary `unsafe` block\n --> $TMP/e_crate_allow.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 42u32 }; println!(\"UNSAFE_RAN={}\", x); }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 2 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0453`.\n",
+        "status": "pass",
+        "problems": []
+      },
+      "forbid_of_lint_group_is_overridable_with_future_compat_warning": {
+        "source": "e_group_forbid.rs",
+        "edition": "2021",
+        "note": "Concerns a lint group; unsafe_code itself is not reached through this path.",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [
+            "warning: allow(unused_variables) incompatible with previous forbid",
+            "forbidden_lint_groups"
+          ],
+          "stderr_not_contains": [
+            "unused variable"
+          ],
+          "stderr_empty": false,
+          "no_error_diagnostics": true,
+          "stdout": "GROUP_FCW"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_group_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_forbid_of_lint_group_is_overridable_with_future_compat_warning"
+        ],
+        "compile_rc": 0,
+        "stderr": "warning: allow(unused_variables) incompatible with previous forbid\n --> $TMP/e_group_forbid.rs:2:9\n  |\n1 | #![forbid(unused)]\n  |           ------ `forbid` level set here\n2 | #[allow(unused_variables)]\n  |         ^^^^^^^^^^^^^^^^ overruled by previous forbid\n  |\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #81670 <https://github.com/rust-lang/rust/issues/81670>\n  = note: `#[warn(forbidden_lint_groups)]` (part of `#[warn(future_incompatible)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "stdout": "GROUP_FCW",
+        "status": "pass",
+        "problems": []
+      },
+      "deny_inside_forbid_is_not_e0453": {
+        "source": "e_deny_in_forbid.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe` block"
+          ],
+          "stderr_not_contains": [
+            "E0453"
+          ],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_deny_in_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_deny_inside_forbid_is_not_e0453"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe` block\n --> $TMP/e_deny_in_forbid.rs:3:21\n  |\n3 | fn main() { let _ = unsafe { 1 }; }\n  |                     ^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/e_deny_in_forbid.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> $TMP/e_deny_in_forbid.rs:3:21\n  |\n3 | fn main() { let _ = unsafe { 1 }; }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "expect_inside_forbid_is_e0453": {
+        "source": "e_expect_in_forbid.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error[E0453]: expect(unsafe_code) incompatible with previous forbid"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_expect_in_forbid.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_expect_inside_forbid_is_e0453"
+        ],
+        "compile_rc": 1,
+        "stderr": "error[E0453]: expect(unsafe_code) incompatible with previous forbid\n --> $TMP/e_expect_in_forbid.rs:2:10\n  |\n1 | #![forbid(unsafe_code)]\n  |           ----------- `forbid` level set here\n2 | #[expect(unsafe_code)]\n  |          ^^^^^^^^^^^ overruled by previous forbid\n\nerror: usage of an `unsafe` block\n --> $TMP/e_expect_in_forbid.rs:3:21\n  |\n3 | fn main() { let _ = unsafe { 1 }; }\n  |                     ^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/e_expect_in_forbid.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> $TMP/e_expect_in_forbid.rs:3:21\n  |\n3 | fn main() { let _ = unsafe { 1 }; }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 2 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0453`.\n",
+        "status": "pass",
+        "problems": []
+      },
+      "foreign_passthrough_of_local_unsafe_tokens_is_caught": {
+        "source": "e_passthrough.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe` block"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_passthrough.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_foreign_passthrough_of_local_unsafe_tokens_is_caught",
+          "--extern",
+          "up_unsafe_mac=$TMP/out/libup_unsafe_mac.rlib"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe` block\n --> $TMP/e_passthrough.rs:2:69\n  |\n2 | ...mac::foreign_passthrough!(unsafe { 111u32 })); }\n  |                              ^^^^^^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/e_passthrough.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> $TMP/e_passthrough.rs:2:69\n  |\n2 | ...eign_passthrough!(unsafe { 111u32 })); }\n  |                      ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "local_macro_wrapping_foreign_macro_bypasses": {
+        "source": "e_local_wraps_foreign.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "WRAP=101"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_local_wraps_foreign.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_local_macro_wrapping_foreign_macro_bypasses",
+          "--extern",
+          "up_unsafe_mac=$TMP/out/libup_unsafe_mac.rlib"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "WRAP=101",
+        "status": "pass",
+        "problems": []
+      },
+      "foreign_macro_invoking_local_macro_is_caught": {
+        "source": "e_foreign_calls_local.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe` block"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_foreign_calls_local.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_foreign_macro_invoking_local_macro_is_caught",
+          "--extern",
+          "up_unsafe_mac=$TMP/out/libup_unsafe_mac.rlib"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe` block\n --> $TMP/e_foreign_calls_local.rs:2:30\n  |\n2 | ...) => { unsafe { 112u32 } }; }\n  |           ^^^^^^^^^^^^^^^^^\n3 | ...CALL_LOCAL={}\", up_unsafe_mac::foreign_call_local!(loc_u)); }\n  |                    ----------------------------------------- in this macro invocation\n  |\nnote: the lint level is defined here\n --> $TMP/e_foreign_calls_local.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n  = note: this error originates in the macro `loc_u` which comes from the expansion of the macro `up_unsafe_mac::foreign_call_local` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nwarning: unnecessary `unsafe` block\n --> $TMP/e_foreign_calls_local.rs:2:30\n  |\n2 | ...) => { unsafe { 112u32 } }; }\n  |           ^^^^^^ unnecessary `unsafe` block\n3 | ...CALL_LOCAL={}\", up_unsafe_mac::foreign_call_local!(loc_u)); }\n  |                    ----------------------------------------- in this macro invocation\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n  = note: this warning originates in the macro `loc_u` which comes from the expansion of the macro `up_unsafe_mac::foreign_call_local` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "proc_macro_reusing_input_span_is_caught": {
+        "source": "e_pm_input_span.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error: usage of an `unsafe` block"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_pm_input_span.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_proc_macro_reusing_input_span_is_caught",
+          "--extern",
+          "up_unsafe_pm=$TMP/out/libup_unsafe_pm.so"
+        ],
+        "compile_rc": 1,
+        "stderr": "error: usage of an `unsafe` block\n --> $TMP/e_pm_input_span.rs:2:66\n  |\n2 | fn main() { println!(\"PM_INPUT={}\", up_unsafe_pm::pm_input_span!(here)); }\n  |                                                                  ^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/e_pm_input_span.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nwarning: unnecessary `unsafe` block\n --> $TMP/e_pm_input_span.rs:2:66\n  |\n2 | fn main() { println!(\"PM_INPUT={}\", up_unsafe_pm::pm_input_span!(here)); }\n  |                                                                  ^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+        "status": "pass",
+        "problems": []
+      },
+      "ed2021_foreign_macro_ffi_items_in_ed2024_forbid_crate": {
+        "source": "e_ed2021_ffi_in_2024.rs",
+        "edition": "2024",
+        "note": "Bare #[no_mangle] and bare extern \"C\" arrive with Edition 2021 spans.",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "FFI=301 5"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/e_ed2021_ffi_in_2024.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_ed2021_foreign_macro_ffi_items_in_ed2024_forbid_crate",
+          "--extern",
+          "up_unsafe_mac=$TMP/out/libup_unsafe_mac.rlib"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "FFI=301 5",
+        "status": "pass",
+        "problems": []
+      },
+      "static_mut_ref_ed2024_under_cap_lints_allow": {
+        "source": "c2_smut.rs",
+        "edition": "2024",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "SMUT=2"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/c2_smut.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_static_mut_ref_ed2024_under_cap_lints_allow",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "SMUT=2",
+        "status": "pass",
+        "problems": []
+      },
+      "static_mut_ref_ed2024_under_allow_attribute": {
+        "source": "e_smut_allow_attr.rs",
+        "edition": "2024",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "SMUT_ALLOW=2"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/e_smut_allow_attr.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_static_mut_ref_ed2024_under_allow_attribute"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "SMUT_ALLOW=2",
+        "status": "pass",
+        "problems": []
+      },
+      "unsafe_op_in_unsafe_fn_ed2024_under_cap_lints_allow": {
+        "source": "c1_uop.rs",
+        "edition": "2024",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "UOP=9"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2024",
+          "$TMP/c1_uop.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_unsafe_op_in_unsafe_fn_ed2024_under_cap_lints_allow",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "UOP=9",
+        "status": "pass",
+        "problems": []
+      },
+      "expect_unsafe_code_fulfilled_by_block_without_unsafe_operation": {
+        "source": "e_expect_noop_block.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [
+            "warning: unnecessary `unsafe` block"
+          ],
+          "stderr_not_contains": [
+            "this lint expectation is unfulfilled"
+          ],
+          "stderr_empty": false,
+          "no_error_diagnostics": true,
+          "stdout": "EXP_NOOP"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_expect_noop_block.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_expect_unsafe_code_fulfilled_by_block_without_unsafe_operation"
+        ],
+        "compile_rc": 0,
+        "stderr": "warning: unnecessary `unsafe` block\n --> $TMP/e_expect_noop_block.rs:2:21\n  |\n2 | fn main() { let x = unsafe { 5u32 }; let _ = x; println!(\"EXP_NOOP\"); }\n  |                     ^^^^^^ unnecessary `unsafe` block\n  |\n  = note: `#[warn(unused_unsafe)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "stdout": "EXP_NOOP",
+        "status": "pass",
+        "problems": []
+      },
+      "expect_unsafe_code_unfulfilled_when_only_site_is_foreign_macro": {
+        "source": "e_expect_foreign.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [
+            "warning: this lint expectation is unfulfilled"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": true,
+          "stdout": "EXP_FOREIGN=101"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_expect_foreign.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_expect_unsafe_code_unfulfilled_when_only_site_is_foreign_macro",
+          "--extern",
+          "up_unsafe_mac=$TMP/out/libup_unsafe_mac.rlib"
+        ],
+        "compile_rc": 0,
+        "stderr": "warning: this lint expectation is unfulfilled\n --> $TMP/e_expect_foreign.rs:1:10\n  |\n1 | #[expect(unsafe_code)]\n  |          ^^^^^^^^^^^\n  |\n  = note: `#[warn(unfulfilled_lint_expectations)]` on by default\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "stdout": "EXP_FOREIGN=101",
+        "status": "pass",
+        "problems": []
+      },
+      "attribute_and_derive_proc_macros_bypass_forbid": {
+        "source": "e_pm_attr_derive.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "PM_ATTR_DERIVE=205 206"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_pm_attr_derive.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_attribute_and_derive_proc_macros_bypass_forbid",
+          "--extern",
+          "up_unsafe_pm=$TMP/out/libup_unsafe_pm.so"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "PM_ATTR_DERIVE=205 206",
+        "status": "pass",
+        "problems": []
+      },
+      "unsafe_operation_outside_unsafe_block_is_e0133_under_cap_lints_allow": {
+        "source": "e_e0133.rs",
+        "edition": "2021",
+        "note": "The unsafety check in a safe context is a hard error, not a lint. The tail of the message depends on whether unsafe_op_in_unsafe_fn is revealed as allow.",
+        "expect": {
+          "compile_ok": false,
+          "stderr_contains": [
+            "error[E0133]: dereference of raw pointer is unsafe and requires unsafe"
+          ],
+          "stderr_not_contains": [],
+          "stderr_empty": false,
+          "no_error_diagnostics": false,
+          "stdout": null
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_e0133.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_unsafe_operation_outside_unsafe_block_is_e0133_under_cap_lints_allow",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 1,
+        "stderr": "error[E0133]: dereference of raw pointer is unsafe and requires unsafe function or block\n --> $TMP/e_e0133.rs:1:57\n  |\n1 | ...aw const v; let x = *p; println!(\"E0133={}\", x); }\n  |                        ^^ dereference of raw pointer\n  |\n  = note: raw pointers may be null, dangling or unaligned; they can violate aliasing rules and cause data races: all of these are undefined behavior\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0133`.\n",
+        "status": "pass",
+        "problems": []
+      },
+      "mir_shows_raw_deref_from_foreign_macro_in_forbid_crate": {
+        "source": "e_mir_foreign_raw.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "MIR_FOREIGN=21"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_mir_foreign_raw.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_mir_shows_raw_deref_from_foreign_macro_in_forbid_crate",
+          "--extern",
+          "up_unsafe_mac=$TMP/out/libup_unsafe_mac.rlib"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "MIR_FOREIGN=21",
+        "mir": {
+          "argv": [
+            "rustc",
+            "--edition",
+            "2021",
+            "$TMP/e_mir_foreign_raw.rs",
+            "--crate-name",
+            "probe_case",
+            "-o",
+            "$TMP/out/mir_shows_raw_deref_from_foreign_macro_in_forbid_crate.mir",
+            "--extern",
+            "up_unsafe_mac=$TMP/out/libup_unsafe_mac.rlib",
+            "--emit=mir"
+          ],
+          "rc": 0,
+          "stderr": "",
+          "fn_found": true,
+          "raw_pointer_locals": [
+            "_2: *const u32",
+            "_3: *const ()",
+            "_8: *const ()"
+          ],
+          "deref_statements": [
+            "_0 = copy (*_2);"
+          ],
+          "fn_mir": "fn read_through_foreign_macro(_1: &u32) -> u32 {\n    debug x => _1;\n    let mut _0: u32;\n    let _2: *const u32;\n    scope 1 {\n        debug p => _2;\n        let mut _3: *const ();\n        let mut _4: usize;\n        let mut _5: usize;\n        let mut _6: usize;\n        let mut _7: bool;\n        let mut _8: *const ();\n        let mut _9: usize;\n        let mut _10: bool;\n        let mut _11: bool;\n        let mut _12: bool;\n        let mut _13: bool;\n    }\n\n    bb0: {\n        _2 = &raw const (*_1);\n        _3 = copy _2 as *const () (PtrToPtr);\n        _4 = copy _3 as usize (Transmute);\n        _5 = Sub(const <u32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _6 = BitAnd(copy _4, copy _5);\n        _7 = Eq(copy _6, const 0_usize);\n        assert(copy _7, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <u32 as std::mem::SizedTypeProperties>::ALIGN, copy _4) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _8 = copy _2 as *const () (PtrToPtr);\n        _9 = copy _8 as usize (Transmute);\n        _10 = Ne(const <u32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _11 = Eq(copy _9, const 0_usize);\n        _12 = BitAnd(copy _11, copy _10);\n        _13 = Not(copy _12);\n        assert(copy _13, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = copy (*_2);\n        return;\n    }\n}",
+          "expect": {
+            "fn": "read_through_foreign_macro",
+            "raw_deref": true
+          }
+        },
+        "status": "pass",
+        "problems": []
+      },
+      "mir_shows_raw_deref_under_cap_lints_allow": {
+        "source": "e_mir_local_raw.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "MIR_LOCAL=22"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_mir_local_raw.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_mir_shows_raw_deref_under_cap_lints_allow",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "MIR_LOCAL=22",
+        "mir": {
+          "argv": [
+            "rustc",
+            "--edition",
+            "2021",
+            "$TMP/e_mir_local_raw.rs",
+            "--crate-name",
+            "probe_case",
+            "-o",
+            "$TMP/out/mir_shows_raw_deref_under_cap_lints_allow.mir",
+            "--cap-lints",
+            "allow",
+            "--emit=mir"
+          ],
+          "rc": 0,
+          "stderr": "",
+          "fn_found": true,
+          "raw_pointer_locals": [
+            "_2: *const u32",
+            "_3: *const ()",
+            "_8: *const ()"
+          ],
+          "deref_statements": [
+            "_0 = copy (*_2);"
+          ],
+          "fn_mir": "fn read_through_local_block(_1: &u32) -> u32 {\n    debug x => _1;\n    let mut _0: u32;\n    let _2: *const u32;\n    scope 1 {\n        debug p => _2;\n        let mut _3: *const ();\n        let mut _4: usize;\n        let mut _5: usize;\n        let mut _6: usize;\n        let mut _7: bool;\n        let mut _8: *const ();\n        let mut _9: usize;\n        let mut _10: bool;\n        let mut _11: bool;\n        let mut _12: bool;\n        let mut _13: bool;\n    }\n\n    bb0: {\n        _2 = &raw const (*_1);\n        _3 = copy _2 as *const () (PtrToPtr);\n        _4 = copy _3 as usize (Transmute);\n        _5 = Sub(const <u32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _6 = BitAnd(copy _4, copy _5);\n        _7 = Eq(copy _6, const 0_usize);\n        assert(copy _7, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <u32 as std::mem::SizedTypeProperties>::ALIGN, copy _4) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _8 = copy _2 as *const () (PtrToPtr);\n        _9 = copy _8 as usize (Transmute);\n        _10 = Ne(const <u32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _11 = Eq(copy _9, const 0_usize);\n        _12 = BitAnd(copy _11, copy _10);\n        _13 = Not(copy _12);\n        assert(copy _13, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = copy (*_2);\n        return;\n    }\n}",
+          "expect": {
+            "fn": "read_through_local_block",
+            "raw_deref": true
+          }
+        },
+        "status": "pass",
+        "problems": []
+      },
+      "mir_has_no_raw_deref_for_unsafe_block_without_unsafe_operation": {
+        "source": "e_mir_no_op.rs",
+        "edition": "2021",
+        "note": "",
+        "expect": {
+          "compile_ok": true,
+          "stderr_contains": [],
+          "stderr_not_contains": [],
+          "stderr_empty": true,
+          "no_error_diagnostics": false,
+          "stdout": "MIR_NOOP=42"
+        },
+        "argv": [
+          "rustc",
+          "--edition",
+          "2021",
+          "$TMP/e_mir_no_op.rs",
+          "--crate-name",
+          "probe_case",
+          "-o",
+          "$TMP/out/part_e_mir_has_no_raw_deref_for_unsafe_block_without_unsafe_operation",
+          "--cap-lints",
+          "allow"
+        ],
+        "compile_rc": 0,
+        "stderr": "",
+        "run_rc": 0,
+        "stdout": "MIR_NOOP=42",
+        "mir": {
+          "argv": [
+            "rustc",
+            "--edition",
+            "2021",
+            "$TMP/e_mir_no_op.rs",
+            "--crate-name",
+            "probe_case",
+            "-o",
+            "$TMP/out/mir_has_no_raw_deref_for_unsafe_block_without_unsafe_operation.mir",
+            "--cap-lints",
+            "allow",
+            "--emit=mir"
+          ],
+          "rc": 0,
+          "stderr": "",
+          "fn_found": true,
+          "raw_pointer_locals": [],
+          "deref_statements": [],
+          "fn_mir": "fn unsafe_block_without_unsafe_operation() -> u32 {\n    let mut _0: u32;\n\n    bb0: {\n        _0 = const 42_u32;\n        return;\n    }\n}",
+          "expect": {
+            "fn": "unsafe_block_without_unsafe_operation",
+            "raw_deref": false
+          }
+        },
+        "status": "pass",
+        "problems": []
+      },
+      "unsafe_code_is_allow_by_default_and_in_no_lint_group": {
+        "argv": [
+          "rustc",
+          "-W",
+          "help"
+        ],
+        "compile_rc": 0,
+        "lint_table_line": "unsafe-code  allow    usage of `unsafe` code and other potentially unsound constructs",
+        "lint_groups_containing_unsafe_code": [],
+        "expect": {
+          "default_level": "allow",
+          "lint_groups_containing_unsafe_code": []
+        },
+        "status": "pass",
+        "problems": []
+      }
+    }
+  },
+  "cargo_cases": {
+    "path_dependency_forbid_violation_fails_the_build": {
+      "manifest": "[package]\nname = \"app\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\nforbid_dep = { path = \"../forbid_dep\" }\n",
+      "argv": [
+        "cargo",
+        "build",
+        "-v",
+        "--manifest-path",
+        "$TMP/cargo/app_path/Cargo.toml",
+        "--target-dir",
+        "$TMP/target_path"
+      ],
+      "build_rc": 101,
+      "dep_rustc_lines": [
+        "Running `$HOME/.cargo/bin/rustc --crate-name forbid_dep --edition=2021 $TMP/cargo/forbid_dep/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4eed10cb97287614 -C extra-filename=-087c683abc8c9ebd --out-dir $TMP/target_path/debug/deps -C incremental=$TMP/target_path/debug/incremental -L dependency=$TMP/target_path/debug/deps --verbose`"
+      ],
+      "dep_rustc_has_cap_lints_allow": false,
+      "stderr": "     Locking 1 package to latest compatible version\n   Compiling forbid_dep v0.1.0 ($TMP/cargo/forbid_dep)\n     Running `$HOME/.cargo/bin/rustc --crate-name forbid_dep --edition=2021 $TMP/cargo/forbid_dep/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4eed10cb97287614 -C extra-filename=-087c683abc8c9ebd --out-dir $TMP/target_path/debug/deps -C incremental=$TMP/target_path/debug/incremental -L dependency=$TMP/target_path/debug/deps --verbose`\nerror: usage of an `unsafe` block\n --> $TMP/cargo/forbid_dep/src/lib.rs:2:31\n  |\n2 | pub fn peek(v: &u32) -> u32 { unsafe { *(v as *const u32) } }\n  |                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> $TMP/cargo/forbid_dep/src/lib.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nerror: could not compile `forbid_dep` (lib) due to 1 previous error\n\nCaused by:\n  process didn't exit successfully: `$HOME/.cargo/bin/rustc --crate-name forbid_dep --edition=2021 $TMP/cargo/forbid_dep/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=4eed10cb97287614 -C extra-filename=-087c683abc8c9ebd --out-dir $TMP/target_path/debug/deps -C incremental=$TMP/target_path/debug/incremental -L dependency=$TMP/target_path/debug/deps --verbose` (exit status: 1)\n",
+      "expect": {
+        "build_ok": false,
+        "dep_rustc_has_cap_lints_allow": false,
+        "stderr_contains": [
+          "error: usage of an `unsafe` block"
+        ]
+      },
+      "status": "pass",
+      "problems": []
+    },
+    "git_dependency_forbid_violation_is_capped_and_builds": {
+      "manifest": "[package]\nname = \"app\"\nversion = \"0.1.0\"\nedition = \"2021\"\n\n[dependencies]\nforbid_dep = { git = \"file://$TMP/cargo/forbid_dep\" }\n",
+      "argv": [
+        "cargo",
+        "build",
+        "-v",
+        "--manifest-path",
+        "$TMP/cargo/app_git/Cargo.toml",
+        "--target-dir",
+        "$TMP/target_git"
+      ],
+      "build_rc": 0,
+      "dep_rustc_lines": [
+        "Running `$HOME/.cargo/bin/rustc --crate-name forbid_dep --edition=2021 $TMP/cargo_home/git/checkouts/forbid_dep-4e14f63b8bf0ba84/291d8d5/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=ff0b85c94ff1db5a -C extra-filename=-b49a0a59c549456f --out-dir $TMP/target_git/debug/deps -L dependency=$TMP/target_git/debug/deps --cap-lints allow`"
+      ],
+      "dep_rustc_has_cap_lints_allow": true,
+      "stderr": "    Updating git repository `file://$TMP/cargo/forbid_dep`\n     Locking 1 package to latest compatible version\n   Compiling forbid_dep v0.1.0 (file://$TMP/cargo/forbid_dep#291d8d54)\n     Running `$HOME/.cargo/bin/rustc --crate-name forbid_dep --edition=2021 $TMP/cargo_home/git/checkouts/forbid_dep-4e14f63b8bf0ba84/291d8d5/src/lib.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type lib --emit=dep-info,metadata,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=ff0b85c94ff1db5a -C extra-filename=-b49a0a59c549456f --out-dir $TMP/target_git/debug/deps -L dependency=$TMP/target_git/debug/deps --cap-lints allow`\n   Compiling app v0.1.0 ($TMP/cargo/app_git)\n     Running `$HOME/.cargo/bin/rustc --crate-name app --edition=2021 src/main.rs --error-format=json --json=diagnostic-rendered-ansi,artifacts,future-incompat --crate-type bin --emit=dep-info,link -C embed-bitcode=no -C debuginfo=2 --check-cfg 'cfg(docsrs,test)' --check-cfg 'cfg(feature, values())' -C metadata=944be7af624f09b7 -C extra-filename=-9ba5671ea571f572 --out-dir $TMP/target_git/debug/deps -C incremental=$TMP/target_git/debug/incremental -L dependency=$TMP/target_git/debug/deps --extern forbid_dep=$TMP/target_git/debug/deps/libforbid_dep-b49a0a59c549456f.rlib --verbose`\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.44s\n",
+      "run_rc": 0,
+      "stdout": "DEP_PEEK=11",
+      "expect": {
+        "build_ok": true,
+        "dep_rustc_has_cap_lints_allow": true,
+        "stderr_contains": [],
+        "stdout": "DEP_PEEK=11"
+      },
+      "status": "pass",
+      "problems": []
+    }
+  },
+  "summary": {
+    "pass": 58,
+    "fail": 0,
+    "skipped": 0,
+    "total": 58,
+    "per_part": {
+      "part_a_forbid_vs_cap_lints": {
+        "total": 5,
+        "pass": 5
+      },
+      "part_b_foreign_macro_and_proc_macro_bypass": {
+        "total": 6,
+        "pass": 6
+      },
+      "part_c_edition2024_unsafe_hardening": {
+        "total": 10,
+        "pass": 10
+      },
+      "part_d_expect_and_forbid_override": {
+        "total": 4,
+        "pass": 4
+      },
+      "part_e_extended_discriminators": {
+        "total": 31,
+        "pass": 31
+      }
+    }
+  }
+}

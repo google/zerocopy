@@ -1,0 +1,106 @@
+{
+  "schema": "lean-verification/1",
+  "proof_file": "LintCapAndForbidUnsafeSoundness.lean",
+  "audit_file": "EnvAudit.lean",
+  "lean_flags": [
+    "-M2048",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "resource_prefix_used": true,
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "token_scan": {
+    "counts": {
+      "sorry": 0,
+      "admit": 0,
+      "omega": 0,
+      "bv_decide": 0,
+      "native_decide": 0,
+      "decide +native": 0,
+      "Classical": 0,
+      "partial def": 0,
+      "unsafe def": 0,
+      "_unsafe_rec": 0,
+      "axiom declaration": 0,
+      "implemented_by": 0,
+      "extern": 0,
+      "import": 0,
+      "opaque": 0
+    },
+    "ok": true,
+    "lines": 1391,
+    "theorems": 81
+  },
+  "proof_check": {
+    "argv": [
+      "lean",
+      "-M2048",
+      "-DElab.async=false",
+      "-Ddebug.skipKernelTC=false",
+      "-DwarningAsError=true",
+      "--root=$SUPPORT",
+      "-o",
+      "$TMP/LintCapAndForbidUnsafeSoundness.olean",
+      "$SUPPORT/LintCapAndForbidUnsafeSoundness.lean"
+    ],
+    "rc": 0,
+    "print_axioms": [
+      "'LintCap.LintLevel.min_assoc' does not depend on any axioms",
+      "'LintCap.LintLevel.le_min' does not depend on any axioms",
+      "'LintCap.reveal_le_lintCap' depends on axioms: [propext]",
+      "'LintCap.reveal_le_driverCap' depends on axioms: [propext]",
+      "'LintCap.cap_flag_position_irrelevant' does not depend on any axioms",
+      "'LintCap.insertSpecLiteral_eq_table' depends on axioms: [propext]",
+      "'LintCap.insertSpec_of_forbid' depends on axioms: [propext]",
+      "'LintCap.procMacro_span_modes_agree' does not depend on any axioms",
+      "'LintCap.foreign_proc_macro_span_external' does not depend on any axioms",
+      "'LintCap.emitLintBase_unsafeCode_external' depends on axioms: [propext]",
+      "'LintCap.capLints_allow_silences_forbid_and_cli_F' depends on axioms: [propext]",
+      "'LintCap.forbid_catches_local_non_capped_unsafe' depends on axioms: [propext]",
+      "'LintCap.forbid_attr_crate_sound' depends on axioms: [propext]",
+      "'LintCap.hasUnsafeMir_lower_iff' depends on axioms: [propext]",
+      "'LintCap.lower_relabel' does not depend on any axioms",
+      "'LintCap.mir_unsafe_audit_catches_all_macro_and_capped_unsafe' depends on axioms: [propext]",
+      "'LintCap.ce1_cap_lints_allow_overrides_forbid_and_cli_F' depends on axioms: [propext]",
+      "'LintCap.ce2_foreign_call_site_proc_macro_bypasses_forbid' depends on axioms: [propext]",
+      "'LintCap.ce3_foreign_macro_bare_unsafe_passes_while_allow_attr_fails_e0453' depends on axioms: [propext]",
+      "'LintCap.ce4_cap_lints_deny_makes_forbid_overridable' depends on axioms: [propext]",
+      "'LintCap.ce5_force_warn_is_neither_capped_nor_raised_by_forbid' depends on axioms: [propext]",
+      "'LintCap.chain_only_outermost_expansion_counts' depends on axioms: [propext]",
+      "'LintCap.lint_and_audit_are_incomparable' depends on axioms: [propext]",
+      "'LintCap.expect_and_deny_below_forbid' depends on axioms: [propext]",
+      "'LintCap.expect_and_unfulfilled_expectations_under_cap_allow' depends on axioms: [propext]",
+      "'LintCap.insertSpecLiteral' depends on axioms: [propext]",
+      "'LintCap.insertSpecTable' depends on axioms: [propext]",
+      "'LintCap.emitLintBase' depends on axioms: [propext]",
+      "'LintCap.applyCap' depends on axioms: [propext]",
+      "'LintCap.lintWalk' depends on axioms: [propext]",
+      "'LintCap.levelEmission' does not depend on any axioms",
+      "'LintCap.lower' does not depend on any axioms"
+    ],
+    "axioms_used": [
+      "propext"
+    ],
+    "axiom_free": 8,
+    "other_output": [],
+    "ok": true
+  },
+  "env_audit": {
+    "argv": [
+      "LEAN_PATH=$TMP",
+      "lean",
+      "-M2048",
+      "-DElab.async=false",
+      "-Ddebug.skipKernelTC=false",
+      "-DwarningAsError=true",
+      "$SUPPORT/EnvAudit.lean"
+    ],
+    "rc": 0,
+    "output": [
+      "ENV_AUDIT_OK constants=760 theorems=250 definitions=413 inductives=19 other=78 axiom_free_theorems=192 axioms_used=[propext]"
+    ],
+    "ok": true
+  },
+  "ok": true
+}

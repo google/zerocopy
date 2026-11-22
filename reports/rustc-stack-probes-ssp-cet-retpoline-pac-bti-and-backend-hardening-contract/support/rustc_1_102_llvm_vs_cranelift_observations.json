@@ -1,0 +1,236 @@
+{
+  "timestamp_utc": "2026-11-21T18:50:32Z",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "part_a_stack_probe_sweep_llvm_vs_clif": {
+    "1024": {
+      "llvm": {
+        "rc": 0,
+        "has_4096_step": false,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 15,
+        "asm_head": "0:\t53                   \tpush   %rbx\n   1:\t48 81 ec 10 04 00 00 \tsub    $0x410,%rsp\n   8:\t89 fe                \tmov    %edi,%esi\n   a:\t48 8d 5c 24 10       \tlea    0x10(%rsp),%rbx\n   f:\tba 00 04 00 00       \tmov    $0x400,%edx\n  14:\t48 89 df             \tmov    %rbx,%rdi\n  17:\tff 15 00 00 00 00    \tcall   *0x0(%rip)        # 1d <frame_1024+0x1d>\n\t\t\t19: R_X86_64_GOTPCREL\tmemset-0x4\n  1d:\t48 89 5c 24 08       \tmov    %rbx,0x8(%rsp)\n  22:\t48 8d 44 24 08       \tlea    0x8(%rsp),%rax\n  27:\t0f b6 84 24 0f 04 00 \tmovzbl 0x40f(%rsp),%eax\n  2e:\t00 \n  2f:\t48 81 c4 10 04 00 00 \tadd    $0x410,%rsp\n  36:\t5b                   \tpop    %rbx\n  37:\tc3                   \tret"
+      },
+      "cranelift": {
+        "rc": 0,
+        "has_4096_step": false,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 20,
+        "asm_head": "0:\t55                   \tpush   %rbp\n   1:\t48 89 e5             \tmov    %rsp,%rbp\n   4:\t48 81 ec 10 04 00 00 \tsub    $0x410,%rsp\n   b:\t4c 89 a4 24 00 04 00 \tmov    %r12,0x400(%rsp)\n  12:\t00 \n  13:\t4c 8d 24 24          \tlea    (%rsp),%r12\n  17:\t40 0f b6 f7          \tmovzbl %dil,%esi\n  1b:\tba 00 04 00 00       \tmov    $0x400,%edx\n  20:\t4c 8b 05 00 00 00 00 \tmov    0x0(%rip),%r8        # 27 <frame_1024+0x27>\n\t\t\t23: R_X86_64_GOTPCREL\tmemset-0x4\n  27:\t4c 89 e7             \tmov    %r12,%rdi\n  2a:\t41 ff d0             \tcall   *%r8\n  2d:\t49 0f b6 84 24 ff 03 \tmovzbq 0x3ff(%r12),%rax\n  34:\t00 00 \n  36:\t4c 8b a4 24 00 04 00 \tmov    0x400(%rsp),%r12\n  3d:\t00 \n  3e:\t48 81 c4 10 04 00 00 \tadd    $0x410,%rsp\n  45:\t48 89 ec             \tmov    %rbp,%rsp"
+      }
+    },
+    "3968": {
+      "llvm": {
+        "rc": 0,
+        "has_4096_step": false,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 15,
+        "asm_head": "0:\t53                   \tpush   %rbx\n   1:\t48 81 ec 90 0f 00 00 \tsub    $0xf90,%rsp\n   8:\t89 fe                \tmov    %edi,%esi\n   a:\t48 8d 5c 24 10       \tlea    0x10(%rsp),%rbx\n   f:\tba 80 0f 00 00       \tmov    $0xf80,%edx\n  14:\t48 89 df             \tmov    %rbx,%rdi\n  17:\tff 15 00 00 00 00    \tcall   *0x0(%rip)        # 1d <frame_3968+0x1d>\n\t\t\t19: R_X86_64_GOTPCREL\tmemset-0x4\n  1d:\t48 89 5c 24 08       \tmov    %rbx,0x8(%rsp)\n  22:\t48 8d 44 24 08       \tlea    0x8(%rsp),%rax\n  27:\t0f b6 84 24 8f 0f 00 \tmovzbl 0xf8f(%rsp),%eax\n  2e:\t00 \n  2f:\t48 81 c4 90 0f 00 00 \tadd    $0xf90,%rsp\n  36:\t5b                   \tpop    %rbx\n  37:\tc3                   \tret"
+      },
+      "cranelift": {
+        "rc": 0,
+        "has_4096_step": false,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 20,
+        "asm_head": "0:\t55                   \tpush   %rbp\n   1:\t48 89 e5             \tmov    %rsp,%rbp\n   4:\t48 81 ec 90 0f 00 00 \tsub    $0xf90,%rsp\n   b:\t4c 89 a4 24 80 0f 00 \tmov    %r12,0xf80(%rsp)\n  12:\t00 \n  13:\t4c 8d 24 24          \tlea    (%rsp),%r12\n  17:\t40 0f b6 f7          \tmovzbl %dil,%esi\n  1b:\tba 80 0f 00 00       \tmov    $0xf80,%edx\n  20:\t4c 8b 05 00 00 00 00 \tmov    0x0(%rip),%r8        # 27 <frame_3968+0x27>\n\t\t\t23: R_X86_64_GOTPCREL\tmemset-0x4\n  27:\t4c 89 e7             \tmov    %r12,%rdi\n  2a:\t41 ff d0             \tcall   *%r8\n  2d:\t49 0f b6 84 24 7f 0f \tmovzbq 0xf7f(%r12),%rax\n  34:\t00 00 \n  36:\t4c 8b a4 24 80 0f 00 \tmov    0xf80(%rsp),%r12\n  3d:\t00 \n  3e:\t48 81 c4 90 0f 00 00 \tadd    $0xf90,%rsp\n  45:\t48 89 ec             \tmov    %rbp,%rsp"
+      }
+    },
+    "4096": {
+      "llvm": {
+        "rc": 0,
+        "has_4096_step": true,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 18,
+        "asm_head": "0:\t53                   \tpush   %rbx\n   1:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n   8:\t48 c7 04 24 00 00 00 \tmovq   $0x0,(%rsp)\n   f:\t00 \n  10:\t48 83 ec 10          \tsub    $0x10,%rsp\n  14:\t89 fe                \tmov    %edi,%esi\n  16:\t48 8d 5c 24 10       \tlea    0x10(%rsp),%rbx\n  1b:\tba 00 10 00 00       \tmov    $0x1000,%edx\n  20:\t48 89 df             \tmov    %rbx,%rdi\n  23:\tff 15 00 00 00 00    \tcall   *0x0(%rip)        # 29 <frame_4096+0x29>\n\t\t\t25: R_X86_64_GOTPCREL\tmemset-0x4\n  29:\t48 89 5c 24 08       \tmov    %rbx,0x8(%rsp)\n  2e:\t48 8d 44 24 08       \tlea    0x8(%rsp),%rax\n  33:\t0f b6 84 24 0f 10 00 \tmovzbl 0x100f(%rsp),%eax\n  3a:\t00 \n  3b:\t48 81 c4 10 10 00 00 \tadd    $0x1010,%rsp\n  42:\t5b                   \tpop    %rbx\n  43:\tc3                   \tret"
+      },
+      "cranelift": {
+        "rc": 0,
+        "has_4096_step": true,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 23,
+        "asm_head": "0:\t55                   \tpush   %rbp\n   1:\t48 89 e5             \tmov    %rsp,%rbp\n   4:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n   b:\tc7 04 24 00 00 00 00 \tmovl   $0x0,(%rsp)\n  12:\t48 81 c4 00 10 00 00 \tadd    $0x1000,%rsp\n  19:\t48 81 ec 10 10 00 00 \tsub    $0x1010,%rsp\n  20:\t4c 89 a4 24 00 10 00 \tmov    %r12,0x1000(%rsp)\n  27:\t00 \n  28:\t4c 8d 24 24          \tlea    (%rsp),%r12\n  2c:\t40 0f b6 f7          \tmovzbl %dil,%esi\n  30:\tba 00 10 00 00       \tmov    $0x1000,%edx\n  35:\t4c 8b 05 00 00 00 00 \tmov    0x0(%rip),%r8        # 3c <frame_4096+0x3c>\n\t\t\t38: R_X86_64_GOTPCREL\tmemset-0x4\n  3c:\t4c 89 e7             \tmov    %r12,%rdi\n  3f:\t41 ff d0             \tcall   *%r8\n  42:\t49 0f b6 84 24 ff 0f \tmovzbq 0xfff(%r12),%rax\n  49:\t00 00 \n  4b:\t4c 8b a4 24 00 10 00 \tmov    0x1000(%rsp),%r12"
+      }
+    },
+    "4097": {
+      "llvm": {
+        "rc": 0,
+        "has_4096_step": true,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 18,
+        "asm_head": "0:\t53                   \tpush   %rbx\n   1:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n   8:\t48 c7 04 24 00 00 00 \tmovq   $0x0,(%rsp)\n   f:\t00 \n  10:\t48 83 ec 10          \tsub    $0x10,%rsp\n  14:\t89 fe                \tmov    %edi,%esi\n  16:\t48 8d 5c 24 0f       \tlea    0xf(%rsp),%rbx\n  1b:\tba 01 10 00 00       \tmov    $0x1001,%edx\n  20:\t48 89 df             \tmov    %rbx,%rdi\n  23:\tff 15 00 00 00 00    \tcall   *0x0(%rip)        # 29 <frame_4097+0x29>\n\t\t\t25: R_X86_64_GOTPCREL\tmemset-0x4\n  29:\t48 89 1c 24          \tmov    %rbx,(%rsp)\n  2d:\t48 89 e0             \tmov    %rsp,%rax\n  30:\t0f b6 84 24 0f 10 00 \tmovzbl 0x100f(%rsp),%eax\n  37:\t00 \n  38:\t48 81 c4 10 10 00 00 \tadd    $0x1010,%rsp\n  3f:\t5b                   \tpop    %rbx\n  40:\tc3                   \tret"
+      },
+      "cranelift": {
+        "rc": 0,
+        "has_4096_step": true,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 23,
+        "asm_head": "0:\t55                   \tpush   %rbp\n   1:\t48 89 e5             \tmov    %rsp,%rbp\n   4:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n   b:\tc7 04 24 00 00 00 00 \tmovl   $0x0,(%rsp)\n  12:\t48 81 c4 00 10 00 00 \tadd    $0x1000,%rsp\n  19:\t48 81 ec 20 10 00 00 \tsub    $0x1020,%rsp\n  20:\t4c 89 a4 24 10 10 00 \tmov    %r12,0x1010(%rsp)\n  27:\t00 \n  28:\t4c 8d 24 24          \tlea    (%rsp),%r12\n  2c:\t40 0f b6 f7          \tmovzbl %dil,%esi\n  30:\tba 01 10 00 00       \tmov    $0x1001,%edx\n  35:\t4c 8b 05 00 00 00 00 \tmov    0x0(%rip),%r8        # 3c <frame_4097+0x3c>\n\t\t\t38: R_X86_64_GOTPCREL\tmemset-0x4\n  3c:\t4c 89 e7             \tmov    %r12,%rdi\n  3f:\t41 ff d0             \tcall   *%r8\n  42:\t49 0f b6 84 24 00 10 \tmovzbq 0x1000(%r12),%rax\n  49:\t00 00 \n  4b:\t4c 8b a4 24 10 10 00 \tmov    0x1010(%rsp),%r12"
+      }
+    },
+    "8192": {
+      "llvm": {
+        "rc": 0,
+        "has_4096_step": true,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 21,
+        "asm_head": "0:\t53                   \tpush   %rbx\n   1:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n   8:\t48 c7 04 24 00 00 00 \tmovq   $0x0,(%rsp)\n   f:\t00 \n  10:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n  17:\t48 c7 04 24 00 00 00 \tmovq   $0x0,(%rsp)\n  1e:\t00 \n  1f:\t48 83 ec 10          \tsub    $0x10,%rsp\n  23:\t89 fe                \tmov    %edi,%esi\n  25:\t48 8d 5c 24 10       \tlea    0x10(%rsp),%rbx\n  2a:\tba 00 20 00 00       \tmov    $0x2000,%edx\n  2f:\t48 89 df             \tmov    %rbx,%rdi\n  32:\tff 15 00 00 00 00    \tcall   *0x0(%rip)        # 38 <frame_8192+0x38>\n\t\t\t34: R_X86_64_GOTPCREL\tmemset-0x4\n  38:\t48 89 5c 24 08       \tmov    %rbx,0x8(%rsp)\n  3d:\t48 8d 44 24 08       \tlea    0x8(%rsp),%rax\n  42:\t0f b6 84 24 0f 20 00 \tmovzbl 0x200f(%rsp),%eax\n  49:\t00 "
+      },
+      "cranelift": {
+        "rc": 0,
+        "has_4096_step": true,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 25,
+        "asm_head": "0:\t55                   \tpush   %rbp\n   1:\t48 89 e5             \tmov    %rsp,%rbp\n   4:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n   b:\tc7 04 24 00 00 00 00 \tmovl   $0x0,(%rsp)\n  12:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n  19:\tc7 04 24 00 00 00 00 \tmovl   $0x0,(%rsp)\n  20:\t48 81 c4 00 20 00 00 \tadd    $0x2000,%rsp\n  27:\t48 81 ec 10 20 00 00 \tsub    $0x2010,%rsp\n  2e:\t4c 89 a4 24 00 20 00 \tmov    %r12,0x2000(%rsp)\n  35:\t00 \n  36:\t4c 8d 24 24          \tlea    (%rsp),%r12\n  3a:\t40 0f b6 f7          \tmovzbl %dil,%esi\n  3e:\tba 00 20 00 00       \tmov    $0x2000,%edx\n  43:\t4c 8b 05 00 00 00 00 \tmov    0x0(%rip),%r8        # 4a <frame_8192+0x4a>\n\t\t\t46: R_X86_64_GOTPCREL\tmemset-0x4\n  4a:\t4c 89 e7             \tmov    %r12,%rdi\n  4d:\t41 ff d0             \tcall   *%r8\n  50:\t49 0f b6 84 24 ff 1f \tmovzbq 0x1fff(%r12),%rax"
+      }
+    },
+    "16384": {
+      "llvm": {
+        "rc": 0,
+        "has_4096_step": true,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 27,
+        "asm_head": "0:\t53                   \tpush   %rbx\n   1:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n   8:\t48 c7 04 24 00 00 00 \tmovq   $0x0,(%rsp)\n   f:\t00 \n  10:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n  17:\t48 c7 04 24 00 00 00 \tmovq   $0x0,(%rsp)\n  1e:\t00 \n  1f:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n  26:\t48 c7 04 24 00 00 00 \tmovq   $0x0,(%rsp)\n  2d:\t00 \n  2e:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n  35:\t48 c7 04 24 00 00 00 \tmovq   $0x0,(%rsp)\n  3c:\t00 \n  3d:\t48 83 ec 10          \tsub    $0x10,%rsp\n  41:\t89 fe                \tmov    %edi,%esi\n  43:\t48 8d 5c 24 10       \tlea    0x10(%rsp),%rbx\n  48:\tba 00 40 00 00       \tmov    $0x4000,%edx\n  4d:\t48 89 df             \tmov    %rbx,%rdi"
+      },
+      "cranelift": {
+        "rc": 0,
+        "has_4096_step": true,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": false,
+        "insn_count": 29,
+        "asm_head": "0:\t55                   \tpush   %rbp\n   1:\t48 89 e5             \tmov    %rsp,%rbp\n   4:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n   b:\tc7 04 24 00 00 00 00 \tmovl   $0x0,(%rsp)\n  12:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n  19:\tc7 04 24 00 00 00 00 \tmovl   $0x0,(%rsp)\n  20:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n  27:\tc7 04 24 00 00 00 00 \tmovl   $0x0,(%rsp)\n  2e:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n  35:\tc7 04 24 00 00 00 00 \tmovl   $0x0,(%rsp)\n  3c:\t48 81 c4 00 40 00 00 \tadd    $0x4000,%rsp\n  43:\t48 81 ec 10 40 00 00 \tsub    $0x4010,%rsp\n  4a:\t4c 89 a4 24 00 40 00 \tmov    %r12,0x4000(%rsp)\n  51:\t00 \n  52:\t4c 8d 24 24          \tlea    (%rsp),%r12\n  56:\t40 0f b6 f7          \tmovzbl %dil,%esi\n  5a:\tba 00 40 00 00       \tmov    $0x4000,%edx\n  5f:\t4c 8b 05 00 00 00 00 \tmov    0x0(%rip),%r8        # 66 <frame_16384+0x66>"
+      }
+    },
+    "65536": {
+      "llvm": {
+        "rc": 0,
+        "has_4096_step": true,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": true,
+        "insn_count": 22,
+        "asm_head": "0:\t53                   \tpush   %rbx\n   1:\t49 89 e3             \tmov    %rsp,%r11\n   4:\t49 81 eb 00 00 01 00 \tsub    $0x10000,%r11\n   b:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n  12:\t48 c7 04 24 00 00 00 \tmovq   $0x0,(%rsp)\n  19:\t00 \n  1a:\t4c 39 dc             \tcmp    %r11,%rsp\n  1d:\t75 ec                \tjne    b <frame_65536+0xb>\n  1f:\t48 83 ec 10          \tsub    $0x10,%rsp\n  23:\t89 fe                \tmov    %edi,%esi\n  25:\t48 8d 5c 24 10       \tlea    0x10(%rsp),%rbx\n  2a:\tba 00 00 01 00       \tmov    $0x10000,%edx\n  2f:\t48 89 df             \tmov    %rbx,%rdi\n  32:\tff 15 00 00 00 00    \tcall   *0x0(%rip)        # 38 <frame_65536+0x38>\n\t\t\t34: R_X86_64_GOTPCREL\tmemset-0x4\n  38:\t48 89 5c 24 08       \tmov    %rbx,0x8(%rsp)\n  3d:\t48 8d 44 24 08       \tlea    0x8(%rsp),%rax\n  42:\t0f b6 84 24 0f 00 01 \tmovzbl 0x1000f(%rsp),%eax"
+      },
+      "cranelift": {
+        "rc": 0,
+        "has_4096_step": true,
+        "has_probestack_call": false,
+        "has_probe_loop_branch": true,
+        "insn_count": 27,
+        "asm_head": "0:\t55                   \tpush   %rbp\n   1:\t48 89 e5             \tmov    %rsp,%rbp\n   4:\t49 89 e3             \tmov    %rsp,%r11\n   7:\t49 81 eb 00 10 01 00 \tsub    $0x11000,%r11\n   e:\t48 81 ec 00 10 00 00 \tsub    $0x1000,%rsp\n  15:\tc7 04 24 00 00 00 00 \tmovl   $0x0,(%rsp)\n  1c:\t4c 3b dc             \tcmp    %rsp,%r11\n  1f:\t0f 85 e9 ff ff ff    \tjne    e <frame_65536+0xe>\n  25:\t48 81 c4 00 10 01 00 \tadd    $0x11000,%rsp\n  2c:\t48 81 ec 10 00 01 00 \tsub    $0x10010,%rsp\n  33:\t4c 89 a4 24 00 00 01 \tmov    %r12,0x10000(%rsp)\n  3a:\t00 \n  3b:\t4c 8d 24 24          \tlea    (%rsp),%r12\n  3f:\t40 0f b6 f7          \tmovzbl %dil,%esi\n  43:\tba 00 00 01 00       \tmov    $0x10000,%edx\n  48:\t4c 8b 05 00 00 00 00 \tmov    0x0(%rip),%r8        # 4f <frame_65536+0x4f>\n\t\t\t4b: R_X86_64_GOTPCREL\tmemset-0x4\n  4f:\t4c 89 e7             \tmov    %r12,%rdi"
+      }
+    }
+  },
+  "part_b_ssp_cet_retpoline_and_clif_gate": {
+    "llvm_ssp_none": {
+      "rc": 0,
+      "stderr_head": "",
+      "stack_buf_has_fs28": false,
+      "stack_buf_has_chk_fail": false,
+      "scalar_only_has_fs28": false,
+      "scalar_only_has_chk_fail": false
+    },
+    "llvm_ssp_basic": {
+      "rc": 1,
+      "stderr_head": "error: incorrect value `basic` for unstable option `stack-protector` - one of (`none` (default), `strong`, or `all`) was expected\n",
+      "stack_buf_has_fs28": false,
+      "stack_buf_has_chk_fail": false,
+      "scalar_only_has_fs28": false,
+      "scalar_only_has_chk_fail": false
+    },
+    "llvm_ssp_strong": {
+      "rc": 0,
+      "stderr_head": "",
+      "stack_buf_has_fs28": true,
+      "stack_buf_has_chk_fail": true,
+      "scalar_only_has_fs28": false,
+      "scalar_only_has_chk_fail": false
+    },
+    "llvm_ssp_all": {
+      "rc": 0,
+      "stderr_head": "",
+      "stack_buf_has_fs28": true,
+      "stack_buf_has_chk_fail": true,
+      "scalar_only_has_fs28": true,
+      "scalar_only_has_chk_fail": true
+    },
+    "clif_ssp_all": {
+      "rc": 0,
+      "stderr_head": "warning: your program uses the crate `std`, that is not compiled with `stack-protector=all` enabled\n  |\n  = note: recompile `std` with `stack-protector=all` enabled, or use `-Z allow-partial-mitigations=stack-protector` to allow creating an artifact that has the mitigation partially enabled\n  = help: it is possible to disable `-Z allow-partial-mitigations=stack-protector` via `-Z deny-partial-mitigations=stack-protector`\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in a future release!\n  = note: for more information, see issue #154613 <https://github.com/rust-lang/rust/issues/154613>",
+      "has_fs28": false,
+      "has_endbr64": false,
+      "has_retpoline_thunk": false,
+      "indirect_asm": "0:\t55                   \tpush   %rbp\n   1:\t48 89 e5             \tmov    %rsp,%rbp\n   4:\t48 89 f0             \tmov    %rsi,%rax\n   7:\t48 89 fe             \tmov    %rdi,%rsi\n   a:\t48 89 c7             \tmov    %rax,%rdi\n   d:\tff d6                \tcall   *%rsi\n   f:\t48 89 ec             \tmov    %rbp,%r"
+    },
+    "clif_cet_full": {
+      "rc": 0,
+      "stderr_head": "",
+      "has_fs28": false,
+      "has_endbr64": false,
+      "has_retpoline_thunk": false,
+      "indirect_asm": "0:\t55                   \tpush   %rbp\n   1:\t48 89 e5             \tmov    %rsp,%rbp\n   4:\t48 89 f0             \tmov    %rsi,%rax\n   7:\t48 89 fe             \tmov    %rdi,%rsi\n   a:\t48 89 c7             \tmov    %rax,%rdi\n   d:\tff d6                \tcall   *%rsi\n   f:\t48 89 ec             \tmov    %rbp,%r"
+    },
+    "clif_retpoline": {
+      "rc": 0,
+      "stderr_head": "",
+      "has_fs28": false,
+      "has_endbr64": false,
+      "has_retpoline_thunk": false,
+      "indirect_asm": "0:\t55                   \tpush   %rbp\n   1:\t48 89 e5             \tmov    %rsp,%rbp\n   4:\t48 89 f0             \tmov    %rsi,%rax\n   7:\t48 89 fe             \tmov    %rdi,%rsi\n   a:\t48 89 c7             \tmov    %rax,%rdi\n   d:\tff d6                \tcall   *%rsi\n   f:\t48 89 ec             \tmov    %rbp,%r"
+    },
+    "llvm_cet_full": {
+      "rc": 0,
+      "indirect_call_starts_endbr64": true,
+      "gnu_property_ibt": true,
+      "gnu_property_shstk": true,
+      "notes_snippet": "Displaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\n      Properties: x86 feature: IBT, SHSTK",
+      "asm": "0:\tf3 0f 1e fa          \tendbr64\n   4:\t48 89 f8             \tmov    %rdi,%rax\n   7:\t48 89 f7             \tmov    %rsi,%rdi\n   a:\tff e0                \tjmp    *%rax"
+    },
+    "llvm_retpoline": {
+      "rc": 0,
+      "has_indirect_thunk": true,
+      "asm": "0:\t49 89 fb             \tmov    %rdi,%r11\n   3:\t48 89 f7             \tmov    %rsi,%rdi\n   6:\te9 00 00 00 00       \tjmp    b <indirect_call+0xb>\n\t\t\t7: R_X86_64_PLT32\t__llvm_retpoline_r11-0x4"
+    },
+    "llvm_retpoline-external-thunk": {
+      "rc": 1,
+      "has_indirect_thunk": false,
+      "asm": ""
+    }
+  },
+  "part_c_aarch64_pac_bti": {
+    "default": {
+      "rc": 0,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMPDIR>/arm_pac.rs:2:21\n  |\n2 | #![feature(no_core, lang_items)]\n  |                     ^^^^^^^^^^\n  |",
+      "has_bti_c": false,
+      "has_paciasp": false,
+      "has_autiasp": false,
+      "asm_snippet": "\t.file\t\"arm_pac.919870e4544358fb-cgu.0\"\n\t.section\t.text.arm_leaf,\"ax\",@progbits\n\t.globl\tarm_leaf\n\t.type\tarm_leaf,@function\narm_leaf:\n\tret\n\t.size\tarm_leaf, .Lfunc_end0-arm_leaf\n\n\t.section\t.text.arm_nonleaf,\"ax\",@progbits\n\t.globl\tarm_nonleaf\n\t.type\tarm_nonleaf,@function\narm_nonleaf:\n\tmov\tx2, x0\n\tmov\tx0, x1\n\tbr\tx2\n\t.size\tarm_nonleaf, .Lfunc_end1-arm_nonleaf\n"
+    },
+    "bti_pac_ret_leaf": {
+      "rc": 0,
+      "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMPDIR>/arm_pac.rs:2:21\n  |\n2 | #![feature(no_core, lang_items)]\n  |                     ^^^^^^^^^^\n  |",
+      "has_bti_c": false,
+      "has_paciasp": true,
+      "has_autiasp": true,
+      "asm_snippet": "\t.file\t\"arm_pac.919870e4544358fb-cgu.0\"\n\t.section\t.text.arm_leaf,\"ax\",@progbits\n\t.globl\tarm_leaf\n\t.type\tarm_leaf,@function\narm_leaf:\n\thint\t#25\n\thint\t#29\n\tret\n\t.size\tarm_leaf, .Lfunc_end0-arm_leaf\n\n\t.section\t.text.arm_nonleaf,\"ax\",@progbits\n\t.globl\tarm_nonleaf\n\t.type\tarm_nonleaf,@function\narm_nonleaf:\n\thint\t#25\n\tmov\tx16, x0\n\tmov\tx0, x1\n\thint\t#29\n\tbr\tx16\n\t.size\tarm_nonleaf, .Lfunc_end1-arm_nonleaf\n"
+    }
+  },
+  "schema": "rustc-hardening-observations/1",
+  "provenance": {
+    "observed_at": "2026-11-21",
+    "rustc_commit": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+    "llvm_version": "23.1.5",
+    "backends_executed": [
+      "llvm",
+      "cranelift"
+    ]
+  }
+}

@@ -1,0 +1,78 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/frontend",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/frontend",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc 1.98.0-nightly (14210df0e 2026-05-31), executed and source-audited",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly",
+        "host": "x86_64-unknown-linux-gnu"
+      }
+    },
+    {
+      "name": "rustc at the commit required by Anneal's capture driver, source compared",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+      }
+    },
+    {
+      "name": "Cargo 1.98.0-nightly (fbb61be30 2026-05-26)",
+      "identity": {
+        "repository": "rust-lang/cargo",
+        "revision": "fbb61be30e5f9ac3a6ad58e56a5c0f5db2d2b3ef",
+        "version": "1.98.0-nightly"
+      }
+    },
+    {
+      "name": "Anneal",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Rust RFCs (RFC 1193, RFC 2383)",
+      "identity": {
+        "repository": "rust-lang/rfcs",
+        "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "The Rust Edition Guide",
+      "identity": {
+        "repository": "rust-lang/edition-guide",
+        "revision": "ab8544aeed7b792984366aa122ac19bd47ad9a2f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

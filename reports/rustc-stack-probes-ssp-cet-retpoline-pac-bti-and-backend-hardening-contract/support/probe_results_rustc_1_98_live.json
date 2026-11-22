@@ -1,0 +1,430 @@
+{
+  "timestamp_utc": "2026-11-22T08:34:17Z",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "objdump_tool": "llvm-objdump",
+  "cranelift_available": false,
+  "part_a_stack_probes": {
+    "llvm_ir_has_probe_stack_inline_asm": true,
+    "llvm_ir_profile_generate_retains_probe_stack": false,
+    "llvm_ir_asan_retains_probe_stack": false,
+    "frame_size_sweep": {
+      "1024": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": false,
+          "probe_step_insn_count": 0,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": false,
+          "has_movq_probe_store": false,
+          "insn_count": 14,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 48 81 ec 10 04 00 00         \tsubq\t$0x410, %rsp            # imm = 0x410\n       8: 89 fe                        \tmovl\t%edi, %esi\n       a: 48 8d 5c 24 10               \tleaq\t0x10(%rsp), %rbx\n       f: ba 00 04 00 00               \tmovl\t$0x400, %edx            # imm = 0x400\n      14: 48 89 df                     \tmovq\t%rbx, %rdi\n      17: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x1d <frame_1024+0x1d>\n\t\t0000000000000019:  R_X86_64_GOTPCREL\tmemset-0x4\n      1d: 48 89 5c 24 08               \tmovq\t%rbx, 0x8(%rsp)\n      22: 48 8d 44 24 08               \tleaq\t0x8(%rsp), %rax\n      27: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      2c: 0f b6 80 ff 03 00 00         \tmovzbl\t0x3ff(%rax), %eax\n      33: 48 81 c4 10 04 00 00         \taddq\t$0x410, %rsp            # imm = 0x410\n      3a: 5b                           \tpopq\t%rbx\n      3b: c3                           \tretq"
+        },
+        "cranelift": {
+          "available": false
+        }
+      },
+      "3968": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": false,
+          "probe_step_insn_count": 0,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": false,
+          "has_movq_probe_store": false,
+          "insn_count": 14,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 48 81 ec 90 0f 00 00         \tsubq\t$0xf90, %rsp            # imm = 0xF90\n       8: 89 fe                        \tmovl\t%edi, %esi\n       a: 48 8d 5c 24 10               \tleaq\t0x10(%rsp), %rbx\n       f: ba 80 0f 00 00               \tmovl\t$0xf80, %edx            # imm = 0xF80\n      14: 48 89 df                     \tmovq\t%rbx, %rdi\n      17: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x1d <frame_3968+0x1d>\n\t\t0000000000000019:  R_X86_64_GOTPCREL\tmemset-0x4\n      1d: 48 89 5c 24 08               \tmovq\t%rbx, 0x8(%rsp)\n      22: 48 8d 44 24 08               \tleaq\t0x8(%rsp), %rax\n      27: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      2c: 0f b6 80 7f 0f 00 00         \tmovzbl\t0xf7f(%rax), %eax\n      33: 48 81 c4 90 0f 00 00         \taddq\t$0xf90, %rsp            # imm = 0xF90\n      3a: 5b                           \tpopq\t%rbx\n      3b: c3                           \tretq"
+        },
+        "cranelift": {
+          "available": false
+        }
+      },
+      "4096": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": true,
+          "probe_step_insn_count": 1,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": false,
+          "has_movq_probe_store": true,
+          "insn_count": 16,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n       8: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      10: 48 83 ec 10                  \tsubq\t$0x10, %rsp\n      14: 89 fe                        \tmovl\t%edi, %esi\n      16: 48 8d 5c 24 10               \tleaq\t0x10(%rsp), %rbx\n      1b: ba 00 10 00 00               \tmovl\t$0x1000, %edx           # imm = 0x1000\n      20: 48 89 df                     \tmovq\t%rbx, %rdi\n      23: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x29 <frame_4096+0x29>\n\t\t0000000000000025:  R_X86_64_GOTPCREL\tmemset-0x4\n      29: 48 89 5c 24 08               \tmovq\t%rbx, 0x8(%rsp)\n      2e: 48 8d 44 24 08               \tleaq\t0x8(%rsp), %rax\n      33: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      38: 0f b6 80 ff 0f 00 00         \tmovzbl\t0xfff(%rax), %eax\n      3f: 48 81 c4 10 10 00 00         \taddq\t$0x1010, %rsp           # imm = 0x1010\n      46: 5b                           \tpopq\t%rbx\n      47: c3                           \tretq"
+        },
+        "cranelift": {
+          "available": false
+        }
+      },
+      "4097": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": true,
+          "probe_step_insn_count": 1,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": false,
+          "has_movq_probe_store": true,
+          "insn_count": 16,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n       8: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      10: 48 83 ec 10                  \tsubq\t$0x10, %rsp\n      14: 89 fe                        \tmovl\t%edi, %esi\n      16: 48 8d 5c 24 0f               \tleaq\t0xf(%rsp), %rbx\n      1b: ba 01 10 00 00               \tmovl\t$0x1001, %edx           # imm = 0x1001\n      20: 48 89 df                     \tmovq\t%rbx, %rdi\n      23: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x29 <frame_4097+0x29>\n\t\t0000000000000025:  R_X86_64_GOTPCREL\tmemset-0x4\n      29: 48 89 1c 24                  \tmovq\t%rbx, (%rsp)\n      2d: 48 89 e0                     \tmovq\t%rsp, %rax\n      30: 48 8b 04 24                  \tmovq\t(%rsp), %rax\n      34: 0f b6 80 00 10 00 00         \tmovzbl\t0x1000(%rax), %eax\n      3b: 48 81 c4 10 10 00 00         \taddq\t$0x1010, %rsp           # imm = 0x1010\n      42: 5b                           \tpopq\t%rbx\n      43: c3                           \tretq"
+        },
+        "cranelift": {
+          "available": false
+        }
+      },
+      "8192": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": true,
+          "probe_step_insn_count": 2,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": false,
+          "has_movq_probe_store": true,
+          "insn_count": 18,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n       8: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      10: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      17: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      1f: 48 83 ec 10                  \tsubq\t$0x10, %rsp\n      23: 89 fe                        \tmovl\t%edi, %esi\n      25: 48 8d 5c 24 10               \tleaq\t0x10(%rsp), %rbx\n      2a: ba 00 20 00 00               \tmovl\t$0x2000, %edx           # imm = 0x2000\n      2f: 48 89 df                     \tmovq\t%rbx, %rdi\n      32: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x38 <frame_8192+0x38>\n\t\t0000000000000034:  R_X86_64_GOTPCREL\tmemset-0x4\n      38: 48 89 5c 24 08               \tmovq\t%rbx, 0x8(%rsp)\n      3d: 48 8d 44 24 08               \tleaq\t0x8(%rsp), %rax\n      42: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      47: 0f b6 80 ff 1f 00 00         \tmovzbl\t0x1fff(%rax), %eax\n      4e: 48 81 c4 10 20 00 00         \taddq\t$0x2010, %rsp           # imm = 0x2010\n      55: 5b                           \tpopq\t%rbx\n      56: c3                           \tretq"
+        },
+        "cranelift": {
+          "available": false
+        }
+      },
+      "16384": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": true,
+          "probe_step_insn_count": 4,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": false,
+          "has_movq_probe_store": true,
+          "insn_count": 22,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n       8: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      10: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      17: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      1f: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      26: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      2e: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      35: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      3d: 48 83 ec 10                  \tsubq\t$0x10, %rsp\n      41: 89 fe                        \tmovl\t%edi, %esi\n      43: 48 8d 5c 24 10               \tleaq\t0x10(%rsp), %rbx\n      48: ba 00 40 00 00               \tmovl\t$0x4000, %edx           # imm = 0x4000\n      4d: 48 89 df                     \tmovq\t%rbx, %rdi\n      50: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x56 <frame_16384+0x56>\n\t\t0000000000000052:  R_X86_64_GOTPCREL\tmemset-0x4\n      56: 48 89 5c 24 08               \tmovq\t%rbx, 0x8(%rsp)\n      5b: 48 8d 44 24 08               \tleaq\t0x8(%rsp), %rax\n      60: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      65: 0f b6 80 ff 3f 00 00         \tmovzbl\t0x3fff(%rax), %eax\n      6c: 48 81 c4 10 40 00 00         \taddq\t$0x4010, %rsp           # imm = 0x4010\n      73: 5b                           \tpopq\t%rbx"
+        },
+        "cranelift": {
+          "available": false
+        }
+      },
+      "20480": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": true,
+          "probe_step_insn_count": 5,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": false,
+          "has_movq_probe_store": true,
+          "insn_count": 24,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n       8: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      10: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      17: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      1f: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      26: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      2e: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      35: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      3d: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      44: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      4c: 48 83 ec 10                  \tsubq\t$0x10, %rsp\n      50: 89 fe                        \tmovl\t%edi, %esi\n      52: 48 8d 5c 24 10               \tleaq\t0x10(%rsp), %rbx\n      57: ba 00 50 00 00               \tmovl\t$0x5000, %edx           # imm = 0x5000\n      5c: 48 89 df                     \tmovq\t%rbx, %rdi\n      5f: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x65 <frame_20480+0x65>\n\t\t0000000000000061:  R_X86_64_GOTPCREL\tmemset-0x4\n      65: 48 89 5c 24 08               \tmovq\t%rbx, 0x8(%rsp)\n      6a: 48 8d 44 24 08               \tleaq\t0x8(%rsp), %rax\n      6f: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      74: 0f b6 80 ff 4f 00 00         \tmovzbl\t0x4fff(%rax), %eax"
+        },
+        "cranelift": {
+          "available": false
+        }
+      },
+      "32752": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": true,
+          "probe_step_insn_count": 8,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": false,
+          "has_movq_probe_store": true,
+          "insn_count": 28,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n       8: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      10: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      17: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      1f: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      26: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      2e: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      35: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      3d: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      44: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      4c: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      53: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      5b: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      62: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      6a: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      71: 89 fe                        \tmovl\t%edi, %esi\n      73: 48 8d 5c 24 10               \tleaq\t0x10(%rsp), %rbx\n      78: ba f0 7f 00 00               \tmovl\t$0x7ff0, %edx           # imm = 0x7FF0\n      7d: 48 89 df                     \tmovq\t%rbx, %rdi\n      80: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x86 <frame_32752+0x86>\n\t\t0000000000000082:  R_X86_64_GOTPCREL\tmemset-0x4"
+        },
+        "cranelift": {
+          "available": false
+        }
+      },
+      "32768": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": true,
+          "probe_step_insn_count": 1,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": true,
+          "has_movq_probe_store": true,
+          "insn_count": 20,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 49 89 e3                     \tmovq\t%rsp, %r11\n       4: 49 81 eb 00 80 00 00         \tsubq\t$0x8000, %r11           # imm = 0x8000\n       b: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      12: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      1a: 4c 39 dc                     \tcmpq\t%r11, %rsp\n      1d: 75 ec                        \tjne\t0xb <frame_32768+0xb>\n      1f: 48 83 ec 10                  \tsubq\t$0x10, %rsp\n      23: 89 fe                        \tmovl\t%edi, %esi\n      25: 48 8d 5c 24 10               \tleaq\t0x10(%rsp), %rbx\n      2a: ba 00 80 00 00               \tmovl\t$0x8000, %edx           # imm = 0x8000\n      2f: 48 89 df                     \tmovq\t%rbx, %rdi\n      32: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x38 <frame_32768+0x38>\n\t\t0000000000000034:  R_X86_64_GOTPCREL\tmemset-0x4\n      38: 48 89 5c 24 08               \tmovq\t%rbx, 0x8(%rsp)\n      3d: 48 8d 44 24 08               \tleaq\t0x8(%rsp), %rax\n      42: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      47: 0f b6 80 ff 7f 00 00         \tmovzbl\t0x7fff(%rax), %eax\n      4e: 48 81 c4 10 80 00 00         \taddq\t$0x8010, %rsp           # imm = 0x8010\n      55: 5b                           \tpopq\t%rbx\n      56: c3                           \tretq"
+        },
+        "cranelift": {
+          "available": false
+        }
+      },
+      "36864": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": true,
+          "probe_step_insn_count": 1,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": true,
+          "has_movq_probe_store": true,
+          "insn_count": 20,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 49 89 e3                     \tmovq\t%rsp, %r11\n       4: 49 81 eb 00 90 00 00         \tsubq\t$0x9000, %r11           # imm = 0x9000\n       b: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      12: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      1a: 4c 39 dc                     \tcmpq\t%r11, %rsp\n      1d: 75 ec                        \tjne\t0xb <frame_36864+0xb>\n      1f: 48 83 ec 10                  \tsubq\t$0x10, %rsp\n      23: 89 fe                        \tmovl\t%edi, %esi\n      25: 48 8d 5c 24 10               \tleaq\t0x10(%rsp), %rbx\n      2a: ba 00 90 00 00               \tmovl\t$0x9000, %edx           # imm = 0x9000\n      2f: 48 89 df                     \tmovq\t%rbx, %rdi\n      32: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x38 <frame_36864+0x38>\n\t\t0000000000000034:  R_X86_64_GOTPCREL\tmemset-0x4\n      38: 48 89 5c 24 08               \tmovq\t%rbx, 0x8(%rsp)\n      3d: 48 8d 44 24 08               \tleaq\t0x8(%rsp), %rax\n      42: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      47: 0f b6 80 ff 8f 00 00         \tmovzbl\t0x8fff(%rax), %eax\n      4e: 48 81 c4 10 90 00 00         \taddq\t$0x9010, %rsp           # imm = 0x9010\n      55: 5b                           \tpopq\t%rbx\n      56: c3                           \tretq"
+        },
+        "cranelift": {
+          "available": false
+        }
+      },
+      "65536": {
+        "llvm": {
+          "rc": 0,
+          "has_4096_step": true,
+          "probe_step_insn_count": 1,
+          "has_probestack_call": false,
+          "has_probe_loop_branch": true,
+          "has_movq_probe_store": true,
+          "insn_count": 20,
+          "asm_head": "       0: 53                           \tpushq\t%rbx\n       1: 49 89 e3                     \tmovq\t%rsp, %r11\n       4: 49 81 eb 00 00 01 00         \tsubq\t$0x10000, %r11          # imm = 0x10000\n       b: 48 81 ec 00 10 00 00         \tsubq\t$0x1000, %rsp           # imm = 0x1000\n      12: 48 c7 04 24 00 00 00 00      \tmovq\t$0x0, (%rsp)\n      1a: 4c 39 dc                     \tcmpq\t%r11, %rsp\n      1d: 75 ec                        \tjne\t0xb <frame_65536+0xb>\n      1f: 48 83 ec 10                  \tsubq\t$0x10, %rsp\n      23: 89 fe                        \tmovl\t%edi, %esi\n      25: 48 8d 5c 24 10               \tleaq\t0x10(%rsp), %rbx\n      2a: ba 00 00 01 00               \tmovl\t$0x10000, %edx          # imm = 0x10000\n      2f: 48 89 df                     \tmovq\t%rbx, %rdi\n      32: ff 15 00 00 00 00            \tcallq\t*(%rip)                 # 0x38 <frame_65536+0x38>\n\t\t0000000000000034:  R_X86_64_GOTPCREL\tmemset-0x4\n      38: 48 89 5c 24 08               \tmovq\t%rbx, 0x8(%rsp)\n      3d: 48 8d 44 24 08               \tleaq\t0x8(%rsp), %rax\n      42: 48 8b 44 24 08               \tmovq\t0x8(%rsp), %rax\n      47: 0f b6 80 ff ff 00 00         \tmovzbl\t0xffff(%rax), %eax\n      4e: 48 81 c4 10 00 01 00         \taddq\t$0x10010, %rsp          # imm = 0x10010\n      55: 5b                           \tpopq\t%rbx\n      56: c3                           \tretq"
+        },
+        "cranelift": {
+          "available": false
+        }
+      }
+    }
+  },
+  "part_b_ssp_cet_retpoline_asan": {
+    "llvm_ssp_none": {
+      "rc": 0,
+      "stderr_head": "",
+      "has_partial_mitigation_warning": false,
+      "stack_buf_has_fs28": false,
+      "stack_buf_has_chk_fail": false,
+      "scalar_only_has_fs28": false,
+      "scalar_only_has_chk_fail": false,
+      "scalar_addr_taken_has_fs28": false,
+      "scalar_addr_taken_has_chk_fail": false,
+      "stack_buf_asm": "       0: 66 0f 6e c7                  \tmovd\t%edi, %xmm0\n       4: 66 0f 60 c0                  \tpunpcklbw\t%xmm0, %xmm0    # xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]\n       8: f2 0f 70 c0 00               \tpshuflw\t$0x0, %xmm0, %xmm0      # xmm0 = xmm0[0,0,0,0,4,5,6,7]\n       d: 66 0f 70 c0 44               \tpshufd\t$0x44, %xmm0, %xmm0     # xmm0 = xmm0[0,1,0,1]\n      12: 66 0f 7f 44 24 e8            \tmovdqa\t%xmm0, -0x18(%rsp)\n      18: 66 0f 7f 44 24 d8            \tmovdqa\t%xmm0, -0x28(%rsp)\n      1e: 66 0f 7f 44 24 c8            \tmovdqa\t%xmm0, -0x38(%rsp)\n      24: 66 0f 7f 44 24 b8            \tmovdqa\t%xmm0, -0x48(%rsp)\n      2a: 48 8d 44 24 b8               \tleaq\t-0x48(%rsp), %rax\n      2f: 48 89 44 24 b0               \tmovq\t%rax, -0x50(%rsp)\n      34: 48 8d 44 24 b0               \tleaq\t-0x50(%rsp), %rax\n      39: 83 e6 3f                     \tandl\t$0x3f, %esi\n      3c: 48 8b 44 24 b0               \tmovq\t-0x50(%rsp), %rax\n      41: 0f b6 04 30                  \tmovzbl\t(%rax,%rsi), %eax\n      45: c3                           \tretq",
+      "scalar_only_asm": "       0: 48 89 f8                     \tmovq\t%rdi, %rax\n       3: 48 c1 e0 05                  \tshlq\t$0x5, %rax\n       7: 48 29 f8                     \tsubq\t%rdi, %rax\n       a: 48 01 f0                     \taddq\t%rsi, %rax\n       d: c3                           \tretq"
+    },
+    "llvm_ssp_basic": {
+      "rc": 0,
+      "stderr_head": "",
+      "has_partial_mitigation_warning": false,
+      "stack_buf_has_fs28": true,
+      "stack_buf_has_chk_fail": true,
+      "scalar_only_has_fs28": false,
+      "scalar_only_has_chk_fail": false,
+      "scalar_addr_taken_has_fs28": true,
+      "scalar_addr_taken_has_chk_fail": true,
+      "stack_buf_asm": "       0: 48 83 ec 58                  \tsubq\t$0x58, %rsp\n       4: 64 48 8b 04 25 28 00 00 00   \tmovq\t%fs:0x28, %rax\n       d: 48 89 44 24 50               \tmovq\t%rax, 0x50(%rsp)\n      12: 66 0f 6e c7                  \tmovd\t%edi, %xmm0\n      16: 66 0f 60 c0                  \tpunpcklbw\t%xmm0, %xmm0    # xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]\n      1a: f2 0f 70 c0 00               \tpshuflw\t$0x0, %xmm0, %xmm0      # xmm0 = xmm0[0,0,0,0,4,5,6,7]\n      1f: 66 0f 70 c0 44               \tpshufd\t$0x44, %xmm0, %xmm0     # xmm0 = xmm0[0,1,0,1]\n      24: 66 0f 7f 44 24 30            \tmovdqa\t%xmm0, 0x30(%rsp)\n      2a: 66 0f 7f 44 24 20            \tmovdqa\t%xmm0, 0x20(%rsp)\n      30: 66 0f 7f 44 24 10            \tmovdqa\t%xmm0, 0x10(%rsp)\n      36: 66 0f 7f 04 24               \tmovdqa\t%xmm0, (%rsp)\n      3b: 48 89 e0                     \tmovq\t%rsp, %rax\n      3e: 48 89 44 24 48               \tmovq\t%rax, 0x48(%rsp)\n      43: 48 8d 44 24 48               \tleaq\t0x48(%rsp), %rax\n      48: 83 e6 3f                     \tandl\t$0x3f, %esi\n      4b: 48 8b 44 24 48               \tmovq\t0x48(%rsp), %rax\n      50: 0f b6 04 30                  \tmovzbl\t(%rax,%rsi), %eax\n      54: 64 48 8b 0c 25 28 00 00 00   \tmovq\t%fs:0x28, %rcx\n      5d: 48 3b 4c 24 50               \tcmpq\t0x50(%rsp), %rcx\n      62: 75 05                        \tjne\t0x69 <stack_buf+0x69>\n      64: 48 83 c4 58                  \taddq\t$0x58, %rsp\n      68: c3                           \tretq\n      69: e8 00 00 00 00               \tcallq\t0x6e <stack_buf+0x6e>\n\t\t000000000000006a:  R_X86_64_PLT32\t__stack_chk_fail-0x4",
+      "scalar_only_asm": "       0: 48 89 f8                     \tmovq\t%rdi, %rax\n       3: 48 c1 e0 05                  \tshlq\t$0x5, %rax\n       7: 48 29 f8                     \tsubq\t%rdi, %rax\n       a: 48 01 f0                     \taddq\t%rsi, %rax\n       d: c3                           \tretq"
+    },
+    "llvm_ssp_strong": {
+      "rc": 0,
+      "stderr_head": "",
+      "has_partial_mitigation_warning": false,
+      "stack_buf_has_fs28": true,
+      "stack_buf_has_chk_fail": true,
+      "scalar_only_has_fs28": false,
+      "scalar_only_has_chk_fail": false,
+      "scalar_addr_taken_has_fs28": true,
+      "scalar_addr_taken_has_chk_fail": true,
+      "stack_buf_asm": "       0: 48 83 ec 58                  \tsubq\t$0x58, %rsp\n       4: 64 48 8b 04 25 28 00 00 00   \tmovq\t%fs:0x28, %rax\n       d: 48 89 44 24 50               \tmovq\t%rax, 0x50(%rsp)\n      12: 66 0f 6e c7                  \tmovd\t%edi, %xmm0\n      16: 66 0f 60 c0                  \tpunpcklbw\t%xmm0, %xmm0    # xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]\n      1a: f2 0f 70 c0 00               \tpshuflw\t$0x0, %xmm0, %xmm0      # xmm0 = xmm0[0,0,0,0,4,5,6,7]\n      1f: 66 0f 70 c0 44               \tpshufd\t$0x44, %xmm0, %xmm0     # xmm0 = xmm0[0,1,0,1]\n      24: 66 0f 7f 44 24 30            \tmovdqa\t%xmm0, 0x30(%rsp)\n      2a: 66 0f 7f 44 24 20            \tmovdqa\t%xmm0, 0x20(%rsp)\n      30: 66 0f 7f 44 24 10            \tmovdqa\t%xmm0, 0x10(%rsp)\n      36: 66 0f 7f 04 24               \tmovdqa\t%xmm0, (%rsp)\n      3b: 48 89 e0                     \tmovq\t%rsp, %rax\n      3e: 48 89 44 24 48               \tmovq\t%rax, 0x48(%rsp)\n      43: 48 8d 44 24 48               \tleaq\t0x48(%rsp), %rax\n      48: 83 e6 3f                     \tandl\t$0x3f, %esi\n      4b: 48 8b 44 24 48               \tmovq\t0x48(%rsp), %rax\n      50: 0f b6 04 30                  \tmovzbl\t(%rax,%rsi), %eax\n      54: 64 48 8b 0c 25 28 00 00 00   \tmovq\t%fs:0x28, %rcx\n      5d: 48 3b 4c 24 50               \tcmpq\t0x50(%rsp), %rcx\n      62: 75 05                        \tjne\t0x69 <stack_buf+0x69>\n      64: 48 83 c4 58                  \taddq\t$0x58, %rsp\n      68: c3                           \tretq\n      69: e8 00 00 00 00               \tcallq\t0x6e <stack_buf+0x6e>\n\t\t000000000000006a:  R_X86_64_PLT32\t__stack_chk_fail-0x4",
+      "scalar_only_asm": "       0: 48 89 f8                     \tmovq\t%rdi, %rax\n       3: 48 c1 e0 05                  \tshlq\t$0x5, %rax\n       7: 48 29 f8                     \tsubq\t%rdi, %rax\n       a: 48 01 f0                     \taddq\t%rsi, %rax\n       d: c3                           \tretq"
+    },
+    "llvm_ssp_all": {
+      "rc": 0,
+      "stderr_head": "",
+      "has_partial_mitigation_warning": false,
+      "stack_buf_has_fs28": true,
+      "stack_buf_has_chk_fail": true,
+      "scalar_only_has_fs28": true,
+      "scalar_only_has_chk_fail": true,
+      "scalar_addr_taken_has_fs28": true,
+      "scalar_addr_taken_has_chk_fail": true,
+      "stack_buf_asm": "       0: 48 83 ec 58                  \tsubq\t$0x58, %rsp\n       4: 64 48 8b 04 25 28 00 00 00   \tmovq\t%fs:0x28, %rax\n       d: 48 89 44 24 50               \tmovq\t%rax, 0x50(%rsp)\n      12: 66 0f 6e c7                  \tmovd\t%edi, %xmm0\n      16: 66 0f 60 c0                  \tpunpcklbw\t%xmm0, %xmm0    # xmm0 = xmm0[0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7]\n      1a: f2 0f 70 c0 00               \tpshuflw\t$0x0, %xmm0, %xmm0      # xmm0 = xmm0[0,0,0,0,4,5,6,7]\n      1f: 66 0f 70 c0 44               \tpshufd\t$0x44, %xmm0, %xmm0     # xmm0 = xmm0[0,1,0,1]\n      24: 66 0f 7f 44 24 30            \tmovdqa\t%xmm0, 0x30(%rsp)\n      2a: 66 0f 7f 44 24 20            \tmovdqa\t%xmm0, 0x20(%rsp)\n      30: 66 0f 7f 44 24 10            \tmovdqa\t%xmm0, 0x10(%rsp)\n      36: 66 0f 7f 04 24               \tmovdqa\t%xmm0, (%rsp)\n      3b: 48 89 e0                     \tmovq\t%rsp, %rax\n      3e: 48 89 44 24 48               \tmovq\t%rax, 0x48(%rsp)\n      43: 48 8d 44 24 48               \tleaq\t0x48(%rsp), %rax\n      48: 83 e6 3f                     \tandl\t$0x3f, %esi\n      4b: 48 8b 44 24 48               \tmovq\t0x48(%rsp), %rax\n      50: 0f b6 04 30                  \tmovzbl\t(%rax,%rsi), %eax\n      54: 64 48 8b 0c 25 28 00 00 00   \tmovq\t%fs:0x28, %rcx\n      5d: 48 3b 4c 24 50               \tcmpq\t0x50(%rsp), %rcx\n      62: 75 05                        \tjne\t0x69 <stack_buf+0x69>\n      64: 48 83 c4 58                  \taddq\t$0x58, %rsp\n      68: c3                           \tretq\n      69: e8 00 00 00 00               \tcallq\t0x6e <stack_buf+0x6e>\n\t\t000000000000006a:  R_X86_64_PLT32\t__stack_chk_fail-0x4",
+      "scalar_only_asm": "       0: 50                           \tpushq\t%rax\n       1: 64 48 8b 04 25 28 00 00 00   \tmovq\t%fs:0x28, %rax\n       a: 48 89 04 24                  \tmovq\t%rax, (%rsp)\n       e: 64 48 8b 04 25 28 00 00 00   \tmovq\t%fs:0x28, %rax\n      17: 48 3b 04 24                  \tcmpq\t(%rsp), %rax\n      1b: 75 0f                        \tjne\t0x2c <scalar_only+0x2c>\n      1d: 48 89 f8                     \tmovq\t%rdi, %rax\n      20: 48 c1 e0 05                  \tshlq\t$0x5, %rax\n      24: 48 29 f8                     \tsubq\t%rdi, %rax\n      27: 48 01 f0                     \taddq\t%rsi, %rax\n      2a: 59                           \tpopq\t%rcx\n      2b: c3                           \tretq\n      2c: e8 00 00 00 00               \tcallq\t0x31 <scalar_only+0x31>\n\t\t000000000000002d:  R_X86_64_PLT32\t__stack_chk_fail-0x4"
+    },
+    "llvm_ssp_all_allow": {
+      "rc": 0,
+      "stderr_head": ""
+    },
+    "llvm_ssp_all_deny": {
+      "rc": 1,
+      "stderr_head": "error: your program uses the crate `std`, that is not compiled with `stack-protector=all` enabled\n  |\n  = note: recompile `std` with `stack-protector=all` enabled, or use `-Z allow-partial-mitigations=stack-protector` to allow creating an artifact that has the mitigation partially enabled\n  = help: it is possible to disable `-Z allow-partial-mitigations=stack-protector` via `-Z deny-partial-mitigations=stack-protector`\n\nerror: your program uses the crate `core`, that is not compiled with `stack-protector=all` enabled\n  |\n  = note: recompile `core` with `stack-protector=all` enabled, or use `-Z allow-partial-mitigations=stack-protector` to allow creating an artifact that has the mitigation partially enabled\n  = help: it is possible to disable `-Z allow-partial-mitigations=stack-protector` via `-Z deny-partial-mitigations=stack-protector`\n\nerror: your program uses the crate `alloc`, that is not compiled with `stack-protector=all` enabled\n  |"
+    },
+    "llvm_cet_branch": {
+      "rc": 0,
+      "stderr_head": "",
+      "indirect_call_starts_endbr64": true,
+      "gnu_property_ibt": true,
+      "gnu_property_shstk": false,
+      "notes_snippet": "Displaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\n      Properties: x86 feature: IBT",
+      "asm": "       0: f3 0f 1e fa                  \tendbr64\n       4: 48 89 f8                     \tmovq\t%rdi, %rax\n       7: 48 89 f7                     \tmovq\t%rsi, %rdi\n       a: ff e0                        \tjmpq\t*%rax"
+    },
+    "llvm_cet_return": {
+      "rc": 0,
+      "stderr_head": "",
+      "indirect_call_starts_endbr64": false,
+      "gnu_property_ibt": false,
+      "gnu_property_shstk": true,
+      "notes_snippet": "Displaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\n      Properties: x86 feature: SHSTK",
+      "asm": "       0: 48 89 f8                     \tmovq\t%rdi, %rax\n       3: 48 89 f7                     \tmovq\t%rsi, %rdi\n       6: ff e0                        \tjmpq\t*%rax"
+    },
+    "llvm_cet_full": {
+      "rc": 0,
+      "stderr_head": "",
+      "indirect_call_starts_endbr64": true,
+      "gnu_property_ibt": true,
+      "gnu_property_shstk": true,
+      "notes_snippet": "Displaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\n      Properties: x86 feature: IBT, SHSTK",
+      "asm": "       0: f3 0f 1e fa                  \tendbr64\n       4: 48 89 f8                     \tmovq\t%rdi, %rax\n       7: 48 89 f7                     \tmovq\t%rsi, %rdi\n       a: ff e0                        \tjmpq\t*%rax"
+    },
+    "llvm_cet_full_linked_with_stock_std": {
+      "rc": 0,
+      "stderr_head": "",
+      "linked_exe_retains_ibt": false,
+      "linked_exe_retains_shstk": false,
+      "notes_snippet": "Displaying notes found in: .note.ABI-tag\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_ABI_TAG (ABI version tag)\n    OS: Linux, ABI: 3.2.0\n\nDisplaying notes found in: .note.gnu.build-id\n  Owner                Data size \tDescription\n  GNU                  0x00000014\tNT_GNU_BUILD_ID (unique build ID bitstring)\n    Build ID: 34d2baf426fc8c3812826ac5b9e6fb83a1221658"
+    },
+    "llvm_retpoline_no_abi_override": {
+      "rc": 1,
+      "stderr_head": "error: mixing `-Zretpoline` will cause an ABI mismatch in crate `hardening_std`\n  |\n  = help: the `-Zretpoline` flag modifies the ABI so Rust crates compiled with different values of this flag cannot be used together safely\n  = note: `-Zretpoline=` in this crate is incompatible with unset `-Zretpoline` in dependency `std`\n  = help: unset `-Zretpoline` in this crate or set `-Zretpoline=` in `std`\n  = help: if you are sure this will not cause problems, you may use `-Cunsafe-allow-abi-mismatch=retpoline` to silence this error\n\nerror: mixing `-Zretpoline` will cause an ABI mismatch in crate `hardening_std`\n  |\n  = help: the `-Zretpoline` flag modifies the ABI so Rust crates compiled with different values of this flag cannot be used together safely\n  = note: `-Zretpoline=` in this crate is incompatible with unset `-Zretpoline` in dependency `core`\n  = help: unset `-Zretpoline` in this crate or set `-Zretpoline=` in `core`"
+    },
+    "llvm_retpoline": {
+      "rc": 0,
+      "has_llvm_retpoline_r11": true,
+      "has_raw_indirect_call_or_jmp": false,
+      "asm": "       0: 49 89 fb                     \tmovq\t%rdi, %r11\n       3: 48 89 f7                     \tmovq\t%rsi, %rdi\n       6: e9 00 00 00 00               \tjmp\t0xb <indirect_call+0xb>\n\t\t0000000000000007:  R_X86_64_PLT32\t__llvm_retpoline_r11-0x4"
+    },
+    "llvm_retpoline_external_thunk_wrong_override": {
+      "rc": 1,
+      "stderr_head": "error: mixing `-Zretpoline-external-thunk` will cause an ABI mismatch in crate `hardening_std`\n  |\n  = help: the `-Zretpoline-external-thunk` flag modifies the ABI so Rust crates compiled with different values of this flag cannot be used together safely\n  = note: `-Zretpoline-external-thunk=` in this crate is incompatible with unset `-Zretpoline-external-thunk` in dependency `std`\n  = help: unset `-Zretpoline-external-thunk` in this crate or set `-Zretpoline-external-thunk=` in `std`\n  = help: if you are sure this will not cause problems, you may use `-Cunsafe-allow-abi-mismatch=retpoline-external-thunk` to silence this error\n\nerror: mixing `-Zretpoline-external-thunk` will cause an ABI mismatch in crate `hardening_std`\n  |\n  = help: the `-Zretpoline-external-thunk` flag modifies the ABI so Rust crates compiled with different values of this flag cannot be used together safely\n  = note: `-Zretpoline-external-thunk=` in this crate is incompatible with unset `-Zretpoline-external-thunk` in dependency `core`\n  = help: unset `-Zretpoline-external-thunk` in this crate or set `-Zretpoline-external-thunk=` in `core`"
+    },
+    "llvm_retpoline_external_thunk_both_overrides": {
+      "rc": 0,
+      "stderr_head": "",
+      "has_external_thunk_symbol": true,
+      "has_raw_indirect_call_or_jmp": false,
+      "asm": "       0: 49 89 fb                     \tmovq\t%rdi, %r11\n       3: 48 89 f7                     \tmovq\t%rsi, %rdi\n       6: e9 00 00 00 00               \tjmp\t0xb <indirect_call+0xb>\n\t\t0000000000000007:  R_X86_64_PLT32\t__x86_indirect_thunk_r11-0x4"
+    },
+    "llvm_asan": {
+      "rc": 0,
+      "has_asan_instrumentation": true,
+      "asm_head": "       0: 55                           \tpushq\t%rbp\n       1: 48 89 e5                     \tmovq\t%rsp, %rbp\n       4: 41 57                        \tpushq\t%r15\n       6: 41 56                        \tpushq\t%r14\n       8: 41 54                        \tpushq\t%r12\n       a: 53                           \tpushq\t%rbx\n       b: 48 83 e4 e0                  \tandq\t$-0x20, %rsp\n       f: 48 81 ec c0 00 00 00         \tsubq\t$0xc0, %rsp\n      16: 48 89 f3                     \tmovq\t%rsi, %rbx\n      19: 89 fe                        \tmovl\t%edi, %esi\n      1b: 4c 8d 74 24 20               \tleaq\t0x20(%rsp), %r14\n      20: 4c 8d 7c 24 40               \tleaq\t0x40(%rsp), %r15\n      25: 48 c7 04 24 b3 8a b5 41      \tmovq\t$0x41b58ab3, (%rsp)     # imm = 0x41B58AB3\n      2d: 48 8d 05 00 00 00 00         \tleaq\t(%rip), %rax            # 0x34 <stack_buf+0x34>\n\t\t0000000000000030:  R_X86_64_PC32\t.L___asan_gen_stack.1-0x4\n      34: 48 89 44 24 08               \tmovq\t%rax, 0x8(%rsp)\n      39: 48 8b 05 00 00 00 00         \tmovq\t(%rip), %rax            # 0x40 <stack_buf+0x40>\n\t\t000000000000003c:  R_X86_64_GOTPCREL\tstack_buf-0x4\n      40: 48 89 44 24 10               \tmovq\t%rax, 0x10(%rsp)\n      45: 49 89 e4                     \tmovq\t%rsp, %r12"
+    },
+    "cranelift_live_probe": {
+      "available": false,
+      "reason": "rustc_codegen_cranelift component not installed in invoking toolchain sysroot"
+    }
+  },
+  "part_c_aarch64_pac_bti": {
+    "available": true,
+    "target": "aarch64-unknown-linux-gnu",
+    "configs": {
+      "default": {
+        "rc_asm": 0,
+        "rc_obj": 0,
+        "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMPDIR>/arm_pac_bti.rs:2:21\n  |\n2 | #![feature(no_core, lang_items)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default",
+        "leaf_has_hint25_paciasp": false,
+        "leaf_has_hint29_autiasp": false,
+        "leaf_has_hint27_pacibsp": false,
+        "leaf_has_hint31_autibsp": false,
+        "leaf_has_hint34_bti_c": false,
+        "nonleaf_has_hint25_paciasp": false,
+        "nonleaf_has_hint29_autiasp": false,
+        "tailcall_uses_br_x16_or_x17": false,
+        "tailcall_branch_insn": "br\tx2",
+        "jumptable_has_hint36_bti_j": false,
+        "gnu_property_bti": false,
+        "gnu_property_pac": false,
+        "notes_snippet": "",
+        "functions": {
+          "arm_leaf": "\tret\n.Lfunc_end1:",
+          "arm_tailcall": "\tmov\tx2, x0\n\tmov\tx0, x1\n\tbr\tx2\n.Lfunc_end3:",
+          "arm_nonleaf_call": "\tstp\tx29, x30, [sp, #-16]!\n\tmov\tx29, sp\n\tmov\tx8, x0\n\tmov\tx0, x1\n\tblr\tx8\n\tbl\text_0\n\tmov\tx0, xzr\n\tldp\tx29, x30, [sp], #16\n\tret\n.Lfunc_end2:",
+          "arm_jumptable": "\tand\tx8, x0, #0xff\n\tadrp\tx9, .LJTI0_0\n\tadd\tx9, x9, :lo12:.LJTI0_0\n\tadr\tx10, .LBB0_1\n\tldrb\tw11, [x9, x8]\n\tadd\tx10, x10, x11, lsl #2\n\tbr\tx10\n.LBB0_1:\n\tmov\tx0, x1\n\tb\text_0\n.LBB0_2:\n\tmov\tx0, x1\n\tb\text_14\n.LBB0_3:\n\tmov\tx0, x1\n\tb\text_11\n.LBB0_4:\n\tmov\tx0, x1\n\tb\text_4\n.LBB0_5:\n\tmov\tx0, x1\n\tb\text_12\n.LBB0_6:\n\tmov\tx0, x1\n\tb\text_9\n.LBB0_7:\n\tmov\tx0, x1\n\tb\text_2\n.LBB0_8:\n\tmov\tx0, x1\n\tb\text_15\n.LBB0_9:\n\tmov\tx0, x1\n\tb\text_3\n.LBB0_10:\n\tmov\tx0, x1\n\tb\text_7\n.LBB0_11:\n\tmov\tx0, x1\n\tb\text_1\n.LBB0_12:\n\tmov\tx0, x1\n\tb\text_5\n.LBB0_13:\n\tmov\tx0, x1\n\tb\text_13\n.LBB0_14:\n\tmov\tx0, x1\n\tb\text_6\n.LBB0_15:\n\tmov\tx0, x1\n\tb\text_10\n.LBB0_16:\n\tmov\tx0, x1\n\tb\text_8\n.Lfunc_end0:"
+        }
+      },
+      "bti_only": {
+        "rc_asm": 0,
+        "rc_obj": 0,
+        "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMPDIR>/arm_pac_bti.rs:2:21\n  |\n2 | #![feature(no_core, lang_items)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default",
+        "leaf_has_hint25_paciasp": false,
+        "leaf_has_hint29_autiasp": false,
+        "leaf_has_hint27_pacibsp": false,
+        "leaf_has_hint31_autibsp": false,
+        "leaf_has_hint34_bti_c": true,
+        "nonleaf_has_hint25_paciasp": false,
+        "nonleaf_has_hint29_autiasp": false,
+        "tailcall_uses_br_x16_or_x17": true,
+        "tailcall_branch_insn": "br\tx16",
+        "jumptable_has_hint36_bti_j": true,
+        "gnu_property_bti": true,
+        "gnu_property_pac": false,
+        "notes_snippet": "Displaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\n      Properties: AArch64 feature: BTI",
+        "functions": {
+          "arm_leaf": "\thint\t#34\n\tret\n.Lfunc_end1:",
+          "arm_tailcall": "\thint\t#34\n\tmov\tx16, x0\n\tmov\tx0, x1\n\tbr\tx16\n.Lfunc_end3:",
+          "arm_nonleaf_call": "\thint\t#34\n\tstp\tx29, x30, [sp, #-16]!\n\tmov\tx29, sp\n\tmov\tx8, x0\n\tmov\tx0, x1\n\tblr\tx8\n\tbl\text_0\n\tmov\tx0, xzr\n\tldp\tx29, x30, [sp], #16\n\tret\n.Lfunc_end2:",
+          "arm_jumptable": "\thint\t#34\n\tand\tw9, w0, #0xff\n\tcmp\tw9, #15\n\tb.hi\t.LBB0_18\n\tmov\tw8, w0\n\tadrp\tx9, .LJTI0_0\n\tadd\tx9, x9, :lo12:.LJTI0_0\n\tand\tx8, x8, #0xff\n\tmov\tx0, x1\n\tadr\tx10, .LBB0_2\n\tldrb\tw11, [x9, x8]\n\tadd\tx10, x10, x11, lsl #2\n\tbr\tx10\n.LBB0_2:\n\thint\t#36\n\tb\text_0\n.LBB0_3:\n\thint\t#36\n\tb\text_14\n.LBB0_4:\n\thint\t#36\n\tb\text_11\n.LBB0_5:\n\thint\t#36\n\tb\text_4\n.LBB0_6:\n\thint\t#36\n\tb\text_12\n.LBB0_7:\n\thint\t#36\n\tb\text_9\n.LBB0_8:\n\thint\t#36\n\tb\text_2\n.LBB0_9:\n\thint\t#36\n\tb\text_15\n.LBB0_10:\n\thint\t#36\n\tb\text_3\n.LBB0_11:\n\thint\t#36\n\tb\text_7\n.LBB0_12:\n\thint\t#36\n\tb\text_1\n.LBB0_13:\n\thint\t#36\n\tb\text_5\n.LBB0_14:\n\thint\t#36\n\tb\text_13\n.LBB0_15:\n\thint\t#36\n\tb\text_6\n.LBB0_16:\n\thint\t#36\n\tb\text_10\n.LBB0_17:\n\thint\t#36\n\tb\text_8\n.LBB0_18:\n\tbrk\t#0x1\n.Lfunc_end0:"
+        }
+      },
+      "bti_pac_ret": {
+        "rc_asm": 0,
+        "rc_obj": 0,
+        "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMPDIR>/arm_pac_bti.rs:2:21\n  |\n2 | #![feature(no_core, lang_items)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default",
+        "leaf_has_hint25_paciasp": false,
+        "leaf_has_hint29_autiasp": false,
+        "leaf_has_hint27_pacibsp": false,
+        "leaf_has_hint31_autibsp": false,
+        "leaf_has_hint34_bti_c": true,
+        "nonleaf_has_hint25_paciasp": true,
+        "nonleaf_has_hint29_autiasp": true,
+        "tailcall_uses_br_x16_or_x17": true,
+        "tailcall_branch_insn": "br\tx16",
+        "jumptable_has_hint36_bti_j": true,
+        "gnu_property_bti": true,
+        "gnu_property_pac": true,
+        "notes_snippet": "Displaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\n      Properties: AArch64 feature: BTI, PAC",
+        "functions": {
+          "arm_leaf": "\thint\t#34\n\tret\n.Lfunc_end1:",
+          "arm_tailcall": "\thint\t#34\n\tmov\tx16, x0\n\tmov\tx0, x1\n\tbr\tx16\n.Lfunc_end3:",
+          "arm_nonleaf_call": "\thint\t#25\n\tstp\tx29, x30, [sp, #-16]!\n\tmov\tx29, sp\n\tmov\tx8, x0\n\tmov\tx0, x1\n\tblr\tx8\n\tbl\text_0\n\tmov\tx0, xzr\n\tldp\tx29, x30, [sp], #16\n\thint\t#29\n\tret\n.Lfunc_end2:",
+          "arm_jumptable": "\thint\t#34\n\tand\tw9, w0, #0xff\n\tcmp\tw9, #15\n\tb.hi\t.LBB0_18\n\tmov\tw8, w0\n\tadrp\tx9, .LJTI0_0\n\tadd\tx9, x9, :lo12:.LJTI0_0\n\tand\tx8, x8, #0xff\n\tmov\tx0, x1\n\tadr\tx10, .LBB0_2\n\tldrb\tw11, [x9, x8]\n\tadd\tx10, x10, x11, lsl #2\n\tbr\tx10\n.LBB0_2:\n\thint\t#36\n\tb\text_0\n.LBB0_3:\n\thint\t#36\n\tb\text_14\n.LBB0_4:\n\thint\t#36\n\tb\text_11\n.LBB0_5:\n\thint\t#36\n\tb\text_4\n.LBB0_6:\n\thint\t#36\n\tb\text_12\n.LBB0_7:\n\thint\t#36\n\tb\text_9\n.LBB0_8:\n\thint\t#36\n\tb\text_2\n.LBB0_9:\n\thint\t#36\n\tb\text_15\n.LBB0_10:\n\thint\t#36\n\tb\text_3\n.LBB0_11:\n\thint\t#36\n\tb\text_7\n.LBB0_12:\n\thint\t#36\n\tb\text_1\n.LBB0_13:\n\thint\t#36\n\tb\text_5\n.LBB0_14:\n\thint\t#36\n\tb\text_13\n.LBB0_15:\n\thint\t#36\n\tb\text_6\n.LBB0_16:\n\thint\t#36\n\tb\text_10\n.LBB0_17:\n\thint\t#36\n\tb\text_8\n.LBB0_18:\n\tbrk\t#0x1\n.Lfunc_end0:"
+        }
+      },
+      "bti_pac_ret_leaf": {
+        "rc_asm": 0,
+        "rc_obj": 0,
+        "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMPDIR>/arm_pac_bti.rs:2:21\n  |\n2 | #![feature(no_core, lang_items)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default",
+        "leaf_has_hint25_paciasp": true,
+        "leaf_has_hint29_autiasp": true,
+        "leaf_has_hint27_pacibsp": false,
+        "leaf_has_hint31_autibsp": false,
+        "leaf_has_hint34_bti_c": false,
+        "nonleaf_has_hint25_paciasp": true,
+        "nonleaf_has_hint29_autiasp": true,
+        "tailcall_uses_br_x16_or_x17": true,
+        "tailcall_branch_insn": "br\tx16",
+        "jumptable_has_hint36_bti_j": true,
+        "gnu_property_bti": true,
+        "gnu_property_pac": true,
+        "notes_snippet": "Displaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\n      Properties: AArch64 feature: BTI, PAC",
+        "functions": {
+          "arm_leaf": "\thint\t#25\n\thint\t#29\n\tret\n.Lfunc_end1:",
+          "arm_tailcall": "\thint\t#25\n\tmov\tx16, x0\n\tmov\tx0, x1\n\thint\t#29\n\tbr\tx16\n.Lfunc_end3:",
+          "arm_nonleaf_call": "\thint\t#25\n\tstp\tx29, x30, [sp, #-16]!\n\tmov\tx29, sp\n\tmov\tx8, x0\n\tmov\tx0, x1\n\tblr\tx8\n\tbl\text_0\n\tmov\tx0, xzr\n\tldp\tx29, x30, [sp], #16\n\thint\t#29\n\tret\n.Lfunc_end2:",
+          "arm_jumptable": "\thint\t#25\n\tand\tw9, w0, #0xff\n\tcmp\tw9, #15\n\tb.hi\t.LBB0_18\n\tmov\tw8, w0\n\tadrp\tx9, .LJTI0_0\n\tadd\tx9, x9, :lo12:.LJTI0_0\n\tand\tx8, x8, #0xff\n\tmov\tx0, x1\n\tadr\tx10, .LBB0_2\n\tldrb\tw11, [x9, x8]\n\tadd\tx10, x10, x11, lsl #2\n\tbr\tx10\n.LBB0_2:\n\thint\t#36\n\thint\t#29\n\tb\text_0\n.LBB0_3:\n\thint\t#36\n\thint\t#29\n\tb\text_14\n.LBB0_4:\n\thint\t#36\n\thint\t#29\n\tb\text_11\n.LBB0_5:\n\thint\t#36\n\thint\t#29\n\tb\text_4\n.LBB0_6:\n\thint\t#36\n\thint\t#29\n\tb\text_12\n.LBB0_7:\n\thint\t#36\n\thint\t#29\n\tb\text_9\n.LBB0_8:\n\thint\t#36\n\thint\t#29\n\tb\text_2\n.LBB0_9:\n\thint\t#36\n\thint\t#29\n\tb\text_15\n.LBB0_10:\n\thint\t#36\n\thint\t#29\n\tb\text_3\n.LBB0_11:\n\thint\t#36\n\thint\t#29\n\tb\text_7\n.LBB0_12:\n\thint\t#36\n\thint\t#29\n\tb\text_1\n.LBB0_13:\n\thint\t#36\n\thint\t#29\n\tb\text_5\n.LBB0_14:\n\thint\t#36\n\thint\t#29\n\tb\text_13\n.LBB0_15:\n\thint\t#36\n\thint\t#29\n\tb\text_6\n.LBB0_16:\n\thint\t#36\n\thint\t#29\n\tb\text_10\n.LBB0_17:\n\thint\t#36\n\thint\t#29\n\tb\text_8\n.LBB0_18:\n\tbrk\t#0x1\n.Lfunc_end0:"
+        }
+      },
+      "bti_pac_ret_leaf_bkey": {
+        "rc_asm": 0,
+        "rc_obj": 0,
+        "stderr_head": "warning: the feature `lang_items` is internal to the compiler or standard library\n --> <TMPDIR>/arm_pac_bti.rs:2:21\n  |\n2 | #![feature(no_core, lang_items)]\n  |                     ^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default",
+        "leaf_has_hint25_paciasp": false,
+        "leaf_has_hint29_autiasp": false,
+        "leaf_has_hint27_pacibsp": true,
+        "leaf_has_hint31_autibsp": true,
+        "leaf_has_hint34_bti_c": false,
+        "nonleaf_has_hint25_paciasp": false,
+        "nonleaf_has_hint29_autiasp": false,
+        "tailcall_uses_br_x16_or_x17": true,
+        "tailcall_branch_insn": "br\tx16",
+        "jumptable_has_hint36_bti_j": true,
+        "gnu_property_bti": true,
+        "gnu_property_pac": true,
+        "notes_snippet": "Displaying notes found in: .note.gnu.property\n  Owner                Data size \tDescription\n  GNU                  0x00000010\tNT_GNU_PROPERTY_TYPE_0\n      Properties: AArch64 feature: BTI, PAC",
+        "functions": {
+          "arm_leaf": "\thint\t#27\n\thint\t#31\n\tret\n.Lfunc_end1:",
+          "arm_tailcall": "\thint\t#27\n\tmov\tx16, x0\n\tmov\tx0, x1\n\thint\t#31\n\tbr\tx16\n.Lfunc_end3:",
+          "arm_nonleaf_call": "\thint\t#27\n\tstp\tx29, x30, [sp, #-16]!\n\tmov\tx29, sp\n\tmov\tx8, x0\n\tmov\tx0, x1\n\tblr\tx8\n\tbl\text_0\n\tmov\tx0, xzr\n\tldp\tx29, x30, [sp], #16\n\thint\t#31\n\tret\n.Lfunc_end2:",
+          "arm_jumptable": "\thint\t#27\n\tand\tw9, w0, #0xff\n\tcmp\tw9, #15\n\tb.hi\t.LBB0_18\n\tmov\tw8, w0\n\tadrp\tx9, .LJTI0_0\n\tadd\tx9, x9, :lo12:.LJTI0_0\n\tand\tx8, x8, #0xff\n\tmov\tx0, x1\n\tadr\tx10, .LBB0_2\n\tldrb\tw11, [x9, x8]\n\tadd\tx10, x10, x11, lsl #2\n\tbr\tx10\n.LBB0_2:\n\thint\t#36\n\thint\t#31\n\tb\text_0\n.LBB0_3:\n\thint\t#36\n\thint\t#31\n\tb\text_14\n.LBB0_4:\n\thint\t#36\n\thint\t#31\n\tb\text_11\n.LBB0_5:\n\thint\t#36\n\thint\t#31\n\tb\text_4\n.LBB0_6:\n\thint\t#36\n\thint\t#31\n\tb\text_12\n.LBB0_7:\n\thint\t#36\n\thint\t#31\n\tb\text_9\n.LBB0_8:\n\thint\t#36\n\thint\t#31\n\tb\text_2\n.LBB0_9:\n\thint\t#36\n\thint\t#31\n\tb\text_15\n.LBB0_10:\n\thint\t#36\n\thint\t#31\n\tb\text_3\n.LBB0_11:\n\thint\t#36\n\thint\t#31\n\tb\text_7\n.LBB0_12:\n\thint\t#36\n\thint\t#31\n\tb\text_1\n.LBB0_13:\n\thint\t#36\n\thint\t#31\n\tb\text_5\n.LBB0_14:\n\thint\t#36\n\thint\t#31\n\tb\text_13\n.LBB0_15:\n\thint\t#36\n\thint\t#31\n\tb\text_6\n.LBB0_16:\n\thint\t#36\n\thint\t#31\n\tb\text_10\n.LBB0_17:\n\thint\t#36\n\thint\t#31\n\tb\text_8\n.LBB0_18:\n\tbrk\t#0x1\n.Lfunc_end0:"
+        }
+      }
+    }
+  }
+}
