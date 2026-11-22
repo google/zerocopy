@@ -21,7 +21,7 @@ def uninitSym : ByteSym := ⟨256, by decide⟩
 structure ByteRange where
   start : Nat
   stop : Nat
-deriving DecidableEq, Repr
+deriving DecidableEq
 
 def ByteRange.contains (r : ByteRange) (b : ByteSym) : Bool :=
   decide (r.start ≤ b.val ∧ b.val < r.stop)
@@ -51,11 +51,11 @@ theorem uninit_contains_all (b : ByteSym) : ByteRange.uninit.contains b = true :
   exact decide_eq_true ⟨Nat.zero_le b.val, b.isLt⟩
 
 /-- Constructive enumeration of all 257 symbols in `Fin 257`. -/
-def finListAux : (k : Nat) → (hk : k ≤ 257) → List ByteSym
+noncomputable def finListAux : (k : Nat) → (hk : k ≤ 257) → List ByteSym
   | 0, _ => []
   | k + 1, hk => ⟨k, hk⟩ :: finListAux k (Nat.le_of_succ_le hk)
 
-def allBytes : List ByteSym := finListAux 257 (Nat.le_refl 257)
+noncomputable def allBytes : List ByteSym := finListAux 257 (Nat.le_refl 257)
 
 theorem mem_finListAux :
     ∀ (k : Nat) (hk : k ≤ 257) (b : ByteSym), b.val < k → b ∈ finListAux k hk
@@ -79,7 +79,7 @@ inductive DefKind where
   | variant
   | field
   | primitive
-deriving DecidableEq, Repr
+deriving DecidableEq
 
 /-- Mirrors `Def::has_safety_invariants(&self) -> bool { self != &Self::Primitive }`. -/
 def DefKind.hasSafetyInvariants : DefKind → Bool
@@ -94,7 +94,6 @@ inductive LayoutTree where
   | seq (elts : List LayoutTree)
   | alt (alts : List LayoutTree)
   | defNode (d : DefKind)
-deriving Repr
 
 def LayoutTree.unit : LayoutTree := .seq []
 def LayoutTree.uninhabited : LayoutTree := .alt []
@@ -124,20 +123,20 @@ def LayoutTree.orTree (a b : LayoutTree) : LayoutTree :=
 mutual
   /-- Mirrors `Tree::prune`: removes `defNode` annotations and rejects branches
   for which `pred d = true`. -/
-  def LayoutTree.prune (pred : DefKind → Bool) : LayoutTree → LayoutTree
+  noncomputable def LayoutTree.prune (pred : DefKind → Bool) : LayoutTree → LayoutTree
     | .byte r => .byte r
     | .defNode d => if pred d then LayoutTree.uninhabited else LayoutTree.unit
     | .seq elts => pruneSeq pred elts LayoutTree.unit
     | .alt alts => pruneAlt pred alts LayoutTree.uninhabited
 
-  def pruneSeq (pred : DefKind → Bool) : List LayoutTree → LayoutTree → LayoutTree
+  noncomputable def pruneSeq (pred : DefKind → Bool) : List LayoutTree → LayoutTree → LayoutTree
     | [], acc => acc
     | x :: xs, acc =>
       let px := LayoutTree.prune pred x
       if px.isUninhabited then LayoutTree.uninhabited
       else pruneSeq pred xs (acc.thenTree px)
 
-  def pruneAlt (pred : DefKind → Bool) : List LayoutTree → LayoutTree → LayoutTree
+  noncomputable def pruneAlt (pred : DefKind → Bool) : List LayoutTree → LayoutTree → LayoutTree
     | [], acc => acc
     | x :: xs, acc =>
       pruneAlt pred xs (acc.orTree (LayoutTree.prune pred x))
@@ -162,7 +161,7 @@ structure ByteDfa where
   step : Nat → ByteSym → Option Nat
 
 /-- Computable word acceptance from an arbitrary state `s`. -/
-def ByteDfa.acceptsFrom (d : ByteDfa) : Nat → List ByteSym → Bool
+noncomputable def ByteDfa.acceptsFrom (d : ByteDfa) : Nat → List ByteSym → Bool
   | s, [] => s == d.accept
   | s, b :: bs =>
     match d.step s b with
@@ -170,7 +169,7 @@ def ByteDfa.acceptsFrom (d : ByteDfa) : Nat → List ByteSym → Bool
     | some s' => d.acceptsFrom s' bs
 
 /-- Language membership `w ∈ L(d)`. -/
-def ByteDfa.accepts (d : ByteDfa) (w : List ByteSym) : Bool :=
+noncomputable def ByteDfa.accepts (d : ByteDfa) (w : List ByteSym) : Bool :=
   d.acceptsFrom d.start w
 
 /-- Mirrors `Dfa::get_uninit_edge_dst`: checks whether `UNINIT` (`256`) transitions out of `s`. -/
@@ -222,7 +221,7 @@ def UnionTransmuteCompat (dst : ByteDfa) (wSrc : List ByteSym) : Prop :=
 - `sSrc == src.accept` -> follow `dst.getUninitEdgeDst sDst` (trailing-uninit extension)
 - otherwise: `assumeValidity = false` uses `Quantifier::ForAll`;
   `assumeValidity = true` uses `Quantifier::ThereExists`. -/
-def dfaTransmute (src dst : ByteDfa) (assumeValidity : Bool) :
+noncomputable def dfaTransmute (src dst : ByteDfa) (assumeValidity : Bool) :
     Nat → Nat → Nat → Bool
   | 0, _, _ => false
   | fuel + 1, sSrc, sDst =>
@@ -757,7 +756,7 @@ inductive RustcAnswer (C R : Type) where
   | yes
   | no (reason : R)
   | ifCond (cond : C)
-deriving DecidableEq, Repr
+deriving DecidableEq
 
 /-- Exact upstream `Answer::or` behavior (`compiler/rustc_type_ir/src/transmute.rs:106-131`):
 `(Yes, other) | (other, Yes) => other`, so combining `Yes` with `If(c)` retains `c`
@@ -774,7 +773,7 @@ def RustcAnswer.orUpstream {C R : Type} (combineOr : C → C → C) (isGeneric :
   | .ifCond c1, .ifCond c2 => .ifCond (combineOr c1 c2)
 
 /-- `Quantifier::ThereExists` fold (`maybe_transmutable/mod.rs:322-329`), breaking only on `.yes`. -/
-def thereExistsFold {C R : Type} (combineOr : C → C → C) (isGeneric : R → Bool)
+noncomputable def thereExistsFold {C R : Type} (combineOr : C → C → C) (isGeneric : R → Bool)
     (initReason : R) : List (RustcAnswer C R) → RustcAnswer C R :=
   go (.no initReason)
 where
@@ -802,7 +801,7 @@ structure RefSpec where
   isFreeze : Bool
   align : Nat
   size : Nat
-deriving DecidableEq, Repr
+deriving DecidableEq
 
 /-- Mirrors `core::mem::Assume`. -/
 structure AssumeOpts where
@@ -810,7 +809,7 @@ structure AssumeOpts where
   lifetimes : Bool
   safety : Bool
   validity : Bool
-deriving DecidableEq, Repr
+deriving DecidableEq
 
 def AssumeOpts.nothing : AssumeOpts := ⟨false, false, false, false⟩
 
@@ -822,7 +821,7 @@ structure RefObligations where
   reqOutlives : Bool
   reqDstFreeze : Bool
   reqSrcFreeze : Bool
-deriving DecidableEq, Repr
+deriving DecidableEq
 
 /-- **Upstream buggy obligation generator** (`compiler/rustc_transmute/src/maybe_transmutable/mod.rs:244-289`,
 pinned at `rust-lang/rust@342d74463af7dd3018ef6aa04dd5500c2deb5bd1`):
@@ -880,7 +879,7 @@ inductive HandleCap where
   | sharedRO
   | sharedRW
   | uniqueRW
-deriving DecidableEq, Repr
+deriving DecidableEq
 
 def srcPostTransmuteCap (src : RefSpec) : HandleCap :=
   if src.isMut then .consumed
@@ -901,7 +900,7 @@ structure AliasState where
   dstReadOnlyInvalidated : Bool
   srcReadOnlyInvalidated : Bool
   ubOccurred : Bool
-deriving DecidableEq, Repr
+deriving DecidableEq
 
 def initAliasState (src dst : RefSpec) (v0 : Nat) : AliasState :=
   { srcCap := srcPostTransmuteCap src
@@ -918,7 +917,7 @@ inductive AliasStep where
   | readSrc
   | writeSrc (v : Nat)
   | writeDst (v : Nat)
-deriving DecidableEq, Repr
+deriving DecidableEq
 
 /-- Whether an `AliasStep` is well-typed in safe Rust given `(srcCap, dstCap)`. -/
 def stepPermitted (st : AliasState) : AliasStep → Bool
@@ -953,12 +952,12 @@ def execAliasStep (st : AliasState) : AliasStep → AliasState
           srcReadOnlyInvalidated := st.srcReadOnlyInvalidated || (st.srcCap == .sharedRO) }
     else st
 
-def execAliasTrace (st : AliasState) : List AliasStep → AliasState
+noncomputable def execAliasTrace (st : AliasState) : List AliasStep → AliasState
   | [] => st
   | s :: ss => execAliasTrace (execAliasStep st s) ss
 
 /-- All steps in a trace are permitted by safe Rust typing. -/
-def TracePermitted (st : AliasState) : List AliasStep → Prop
+noncomputable def TracePermitted (st : AliasState) : List AliasStep → Prop
   | [] => True
   | s :: ss => stepPermitted st s = true ∧ TracePermitted (execAliasStep st s) ss
 
