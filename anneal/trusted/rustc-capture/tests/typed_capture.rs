@@ -1884,6 +1884,10 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
     // 2. Replacing `libLLVM*` in the sysroot with a distinct file inode while
     //    keeping `librustc_driver-*.so` matching simulates a spliced mismatched
     //    `libLLVM.so` via `LD_LIBRARY_PATH` and must fail closed as `tool_failed`.
+    //    Replace `libLLVM*` in both `lib/` and `lib/rustlib/<host>/lib/` because
+    //    multi-component sysroots (such as those including `llvm-tools`) place a
+    //    copy in both directories that deduplicating stores can hardlink to the
+    //    same `(st_dev, st_ino)`.
     let bad_llvm_sysroot = fixture.directory.path().join("bad-llvm-sysroot");
     std::fs::create_dir_all(bad_llvm_sysroot.join("bin")).unwrap();
     std::fs::create_dir_all(bad_llvm_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib"))
@@ -1913,11 +1917,25 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
         std::fs::read_dir(real_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap()
     {
         let entry = entry.unwrap();
+        let name = entry.file_name();
+        if let Some(name_str) = name.to_str()
+            && name_str.starts_with("libLLVM")
+        {
+            std::fs::write(
+                bad_llvm_sysroot
+                    .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
+                    .join(&name),
+                b"mismatched-llvm",
+            )
+            .unwrap();
+            replaced_llvm = true;
+            continue;
+        }
         symlink(
             entry.path(),
             bad_llvm_sysroot
                 .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
-                .join(entry.file_name()),
+                .join(name),
         )
         .unwrap();
     }
