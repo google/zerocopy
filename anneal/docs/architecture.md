@@ -382,11 +382,16 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   `StableAst` body (or a chain of progressively higher-level representations),
   accompanied by a kernel-checked backward simulation (`Abstracts`) from
   `StableAst` to $M_{\text{anneal}}$.
-- **Program logics and tactics (`theory/Anneal/MirWp.lean`,
-  `theory/Anneal/PureLift/`, and planned `Theory/Rust/Wp/`,
-  `Theory/Rust/Tactics/`):** Weakest-precondition calculi, functional borrow
-  lifting, separation-logic frame rules, and proof automation built against
-  $M_{\text{anneal}}$ and `StableAst` / `StableSemantics`.
+- **Program logics, 3-axiom proof libraries, and tactics
+  (`theory/Anneal/{MirWp,BitVec,BitVecArith}.lean`,
+  `theory/Anneal/{LeBytes,ListChunks,NatBitwise}.lean`,
+  `theory/Anneal/PureLift/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
+  Weakest-precondition calculi, constructive bitvector, byte-serialization, and
+  list-chunking proof libraries, functional borrow lifting, separation-logic
+  frame rules, and proof automation built against $M_{\text{anneal}}$ and
+  `StableAst` / `StableSemantics` (`cargo-anneal` bundles the scalar and MIR
+  proof libraries under `theory/Anneal/`, compiling and auditing only the
+  transitive `Anneal.*` closure imported by target proof modules).
 
 #### Why $M_{\text{anneal}}$'s step rules and `theory/` do not expand the TCB
 
@@ -495,8 +500,13 @@ anneal/
 └── theory/                         # Stage 3 (Pass 1): Untrusted proofs
     ├── Anneal.lean
     ├── Anneal/
+    │   ├── BitVec.lean             # Constructive 3-axiom BitVec & tnum lemmas
+    │   ├── BitVecArith.lean        # Constructive BitVec range & arithmetic
+    │   ├── LeBytes.lean            # Parametric LE/BE byte serialization lemmas
+    │   ├── ListChunks.lean         # Ceiling division & fixed-size chunking
     │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
     │   ├── MirWp.lean              # Fuel-bounded MIR WP & canaries (+ MirWp/)
+    │   ├── NatBitwise.lean         # Shared Nat.bitwise unfolding & bounds
     │   ├── PureLift.lean           # Functional borrow-lifting calculus
     │   └── PureLift/
     ├── Framework/                  # [planned] Generic simulation lemmas
