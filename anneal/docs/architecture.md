@@ -383,12 +383,13 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   accompanied by a kernel-checked backward simulation (`Abstracts`) from
   `StableAst` to $M_{\text{anneal}}$.
 - **Program logics, 3-axiom proof libraries, and tactics
-  (`theory/Anneal/{MirWp,BitVec,BitVecArith}.lean`,
+  (`theory/Anneal/{MirWp,LoopInv,BitVec,BitVecArith}.lean`,
   `theory/Anneal/{LeBytes,ListChunks,NatBitwise}.lean`,
   `theory/Anneal/PureLift/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
-  Weakest-precondition calculi, constructive bitvector, byte-serialization, and
-  list-chunking proof libraries, functional borrow lifting, separation-logic
-  frame rules, and proof automation built against $M_{\text{anneal}}$ and
+  Weakest-precondition calculi, loop-invariant and simulation combinators,
+  constructive bitvector, byte-serialization, and list-chunking proof
+  libraries, functional borrow lifting, separation-logic frame rules, and
+  proof automation built against $M_{\text{anneal}}$ and
   `StableAst` / `StableSemantics` (`cargo-anneal` bundles the scalar and MIR
   proof libraries under `theory/Anneal/`, compiling and auditing only the
   transitive `Anneal.*` closure imported by target proof modules).
@@ -504,6 +505,7 @@ anneal/
     │   ├── BitVecArith.lean        # Constructive BitVec range & arithmetic
     │   ├── LeBytes.lean            # Parametric LE/BE byte serialization lemmas
     │   ├── ListChunks.lean         # Ceiling division & fixed-size chunking
+    │   ├── LoopInv.lean            # CFG loop-invariant & simulation combinators
     │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
     │   ├── MirWp.lean              # Fuel-bounded MIR WP & canaries (+ MirWp/)
     │   ├── NatBitwise.lean         # Shared Nat.bitwise unfolding & bounds
