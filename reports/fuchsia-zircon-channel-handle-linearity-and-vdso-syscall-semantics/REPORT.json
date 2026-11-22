@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "systems",
+    "systems/fuchsia-zircon",
+    "ffi/syscall-handles",
+    "security/capabilities",
+    "security/noninterference",
+    "verification/reactive-traces",
+    "lean/constructive-prelude"
+  ],
+  "subjects": [
+    {
+      "name": "Fuchsia Zircon kernel and vDSO syscall specifications",
+      "identity": {
+        "url": "https://fuchsia.googlesource.com/fuchsia",
+        "revision": "273f473fa9ac7d81e2e476d67e800c98df0fa117"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    },
+    {
+      "name": "Anneal verification framework in zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ffd1023db9c6014fa117b84710d5c3e336eb684f"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
