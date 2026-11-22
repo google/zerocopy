@@ -83,10 +83,14 @@ pub(super) fn configure(config: &mut interface::Config) {
 
     // Let rustc parse --sysroot, including options in response files.
     // Sysroot::path selects the "explicit sysroot if it was passed with
-    // `--sysroot`, or default sysroot otherwise". Replace only the default
-    // so the compiler's build path cannot rescue an incomplete archive.
+    // `--sysroot`, or default sysroot otherwise". Always override `default`
+    // (either to the explicit sysroot or to the packaged sysroot) so rustc's
+    // `filesearch` can never fall back to relative `./lib/rustlib` in
+    // `AT_FDCWD` or a build-time host path.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_session/src/config.rs#L1343-L1356
-    if config.opts.sysroot.explicit.is_none() {
+    if let Some(explicit) = &config.opts.sysroot.explicit {
+        config.opts.sysroot.default = explicit.clone();
+    } else {
         config.opts.sysroot.default =
             resolve_packaged_sysroot().unwrap_or_else(|message| early_dcx.early_fatal(message));
     }
