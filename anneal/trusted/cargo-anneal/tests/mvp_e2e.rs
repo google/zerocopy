@@ -967,3 +967,241 @@ fn rustc_mode_symlinks_replay_export_lean_lib_and_unpinned_taint() {
         unpinned.value["audit"]["unpinnedLean"]["sysrootModulesSha256"]
     );
 }
+
+#[test]
+fn balances_large_captured_lists_through_lean_and_target_audit() {
+    use std::fmt::Write as _;
+
+    use cargo_anneal::{
+        Checker, TargetAuditRequest, TargetBindings, TargetModule, TargetRole, sha256_bytes,
+    };
+
+    let tools = Tools::discover();
+    let fixture = Fixture::new();
+
+    // Assemble the shared trusted `MirAst` bundle plus a minimal test-local
+    // `Trusted.MirSemantics` `UnitTheorem` model (`bodies.length = expected`)
+    // so this test isolates `Captured.lean` + `Trusted.MirAst` elaboration and
+    // kernel replay (full `Trusted.MirSemantics.CrateTheorem` on 70+ bodies
+    // hits Lean's `maxRecDepth` inside `bodiesHaveUniqueIdentities`, which is
+    // an orthogonal semantic-evaluator limit outside `lean.rs`).
+    let repo_root = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let bundle_root = fixture.path("bundle");
+    for rel in [
+        "trusted/audit/TrustedBoundary.lean",
+        "trusted/audit/library-lock.json",
+        "trusted/lean/foundation-lock.json",
+        "trusted/lean/lean-toolchain",
+        "trusted/lean/Trusted.lean",
+    ] {
+        let dest = bundle_root.join(rel);
+        fs::create_dir_all(dest.parent().unwrap()).unwrap();
+        fs::copy(repo_root.join(rel), dest).unwrap();
+    }
+
+    let mut base_modules = Vec::new();
+    for (module, rel) in [
+        ("Trusted.MirAst.Types", "trusted/lean/Trusted/MirAst/Types.lean"),
+        ("Trusted.MirAst.Places", "trusted/lean/Trusted/MirAst/Places.lean"),
+        ("Trusted.MirAst.Rvalues", "trusted/lean/Trusted/MirAst/Rvalues.lean"),
+        ("Trusted.MirAst.Statements", "trusted/lean/Trusted/MirAst/Statements.lean"),
+        ("Trusted.MirAst.Terminators", "trusted/lean/Trusted/MirAst/Terminators.lean"),
+        ("Trusted.MirAst.Body", "trusted/lean/Trusted/MirAst/Body.lean"),
+        ("Trusted.MirAst", "trusted/lean/Trusted/MirAst.lean"),
+    ] {
+        let src = repo_root.join(rel);
+        let bytes = fs::read(&src).unwrap();
+        base_modules.push(TargetModule {
+            module: module.to_owned(),
+            source: src,
+            expected_sha256: sha256_bytes(&bytes),
+            role: TargetRole::Model,
+        });
+    }
+
+    let run_capture_and_audit = |tag: &str, rust_src: &str, expected_bodies: usize| {
+        let crate_root = fixture.path(&format!("{tag}/lib.rs"));
+        fs::create_dir_all(crate_root.parent().unwrap()).unwrap();
+        fs::write(&crate_root, rust_src).unwrap();
+
+        let capture_out = fixture.path(&format!("{tag}-capture"));
+        let capture_out_status = Command::new(&tools.capture)
+            .arg("capture")
+            .arg("--crate-root")
+            .arg(&crate_root)
+            .arg(format!("--crate-name=large_{tag}"))
+            .arg("--target=x86_64-unknown-linux-gnu")
+            .arg("--out-dir")
+            .arg(&capture_out)
+            .arg("--source-file")
+            .arg(&crate_root)
+            .arg("--scope=crate")
+            .arg("--sysroot")
+            .arg(&tools.sysroot)
+            .env("LD_LIBRARY_PATH", tools.sysroot.join("lib"))
+            .output()
+            .expect("run anneal-rustc-capture on large crate");
+        assert!(
+            capture_out_status.status.success(),
+            "capture ({tag}) failed: {}\n{}",
+            String::from_utf8_lossy(&capture_out_status.stdout),
+            String::from_utf8_lossy(&capture_out_status.stderr)
+        );
+
+        let capture_manifest: Value =
+            serde_json::from_slice(&fs::read(capture_out.join("capture.json")).unwrap()).unwrap();
+        let captured_path = capture_out.join("Captured.lean");
+        let captured_lean = fs::read_to_string(&captured_path).unwrap();
+        assert!(
+            captured_lean.contains("(_root_.List.append "),
+            "expected balanced _root_.List.append chunks in {tag} Captured.lean"
+        );
+
+        let target_dir = fixture.path(&format!("{tag}-lean"));
+        fs::create_dir_all(&target_dir).unwrap();
+        let make_lean = |name: &str, role: TargetRole, imports: &str, body: &str| {
+            let path = target_dir.join(format!("{name}.lean"));
+            let contents = lean_source(imports, body);
+            fs::write(&path, contents.as_bytes()).unwrap();
+            TargetModule {
+                module: name.to_owned(),
+                source: path,
+                expected_sha256: sha256_bytes(contents.as_bytes()),
+                role,
+            }
+        };
+
+        let mut modules = base_modules.clone();
+        modules.push(make_lean(
+            "Trusted.MirSemantics",
+            TargetRole::Model,
+            "import Trusted.MirAst",
+            &format!(
+                "namespace Trusted.MirSemantics\n\n\
+                 structure Crate where\n  \
+                   program : Trusted.MirAst.Program\n  \
+                   specs : Trusted.MirAst.Program → Prop\n\n\
+                 def UnitTheorem (c : Crate) : Prop :=\n  \
+                   c.program.bodies.length = {expected_bodies} ∧ c.specs c.program\n\n\
+                 end Trusted.MirSemantics"
+            ),
+        ));
+        modules.push(TargetModule {
+            module: "Captured".to_owned(),
+            expected_sha256: sha256_bytes(captured_lean.as_bytes()),
+            source: captured_path,
+            role: TargetRole::Capture,
+        });
+        modules.push(make_lean(
+            "Spec",
+            TargetRole::Specification,
+            "import Trusted.MirAst",
+            &format!(
+                "namespace Spec\n\
+                 def specs (p : Trusted.MirAst.Program) : Prop :=\n  \
+                   p.bodies.length = {expected_bodies}\n\
+                 end Spec"
+            ),
+        ));
+        modules.push(make_lean(
+            "Expected",
+            TargetRole::Expected,
+            "import Trusted.MirSemantics\nimport Captured\nimport Spec",
+            "namespace Expected\n\
+             def claim : Prop := Trusted.MirSemantics.UnitTheorem \
+               (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n\
+             end Expected",
+        ));
+        modules.push(make_lean(
+            "Proof",
+            TargetRole::Proof,
+            "import Expected",
+            &format!(
+                "namespace Proof\n\
+                 theorem bodies_len : Captured.program.bodies.length = {expected_bodies} := rfl\n\
+                 theorem verify : Expected.claim := ⟨bodies_len, bodies_len⟩\n\
+                 end Proof"
+            ),
+        ));
+
+        let h = sha256_bytes(format!("large-capture-binding-{tag}").as_bytes());
+        let request = TargetAuditRequest {
+            modules,
+            theorem_module: "Proof".to_owned(),
+            theorem_name: "Proof.verify".to_owned(),
+            expected_module: "Expected".to_owned(),
+            expected_declaration: "Expected.claim".to_owned(),
+            canonical_root: "Trusted.MirSemantics.UnitTheorem".to_owned(),
+            subject_declaration: "Captured.program".to_owned(),
+            specification_declaration: "Spec.specs".to_owned(),
+            bindings: TargetBindings {
+                request_sha256: h.clone(),
+                capture_sha256: h.clone(),
+                model_manifest_sha256: h.clone(),
+                specification_manifest_sha256: h,
+            },
+        };
+
+        let mut checker = Checker::new(&bundle_root, Some(&tools.lean)).unwrap();
+        let report = checker
+            .run_target(&request)
+            .unwrap_or_else(|e| panic!("target audit failed for {tag}: {e}"));
+        assert_eq!(report["replay"], json!(true), "{report}");
+        assert_eq!(report["exactType"], json!(true), "{report}");
+        assert_eq!(report["theorem"], json!("Proof.verify"), "{report}");
+        (capture_manifest, captured_lean)
+    };
+
+    // 1. Multi-body crate exercising chunking across bodies, locals, statements,
+    // switch targets, enum discriminants, and >= 100-char identities.
+    let mut rust_src = String::new();
+    for i in 0..69 {
+        let _ = writeln!(&mut rust_src, "pub fn fn_{i:02}() -> u64 {{ 0 }}");
+    }
+    rust_src.push_str("pub enum LargeEnum {\n");
+    for i in 0..70 {
+        let _ = writeln!(&mut rust_src, "    V{i},");
+    }
+    rust_src.push_str("}\n");
+    let long_mod = format!("m_{}", "x".repeat(75));
+    let _ = writeln!(&mut rust_src, "pub mod {long_mod} {{");
+    rust_src.push_str("    pub fn long_fn(e: crate::LargeEnum) -> u64 {\n");
+    for i in 0..85 {
+        let _ = writeln!(&mut rust_src, "        let _v_{i}: u64 = 0;");
+    }
+    rust_src.push_str("        match e {\n");
+    for i in 0..70 {
+        let _ = writeln!(&mut rust_src, "            crate::LargeEnum::V{i} => {},", i + 1);
+    }
+    rust_src.push_str("        }\n    }\n}\n");
+
+    let (capture_manifest, _) = run_capture_and_audit("bodies", &rust_src, 70);
+    let bodies = capture_manifest["program"]["bodies"].as_array().unwrap();
+    assert_eq!(bodies.len(), 70);
+    assert!(
+        bodies.iter().any(|b| b["identity"].as_str().unwrap().len() >= 100),
+        "expected >= 100-char function identity"
+    );
+    assert!(
+        bodies.iter().any(|b| {
+            b["blocks"]
+                .as_array()
+                .unwrap()
+                .iter()
+                .map(|blk| blk["statements"].as_array().unwrap().len())
+                .sum::<usize>()
+                >= 250
+        }),
+        "expected >= 250 MIR statements in captured body"
+    );
+
+    // 2. 1970-variant enum (`discriminants : List Nat`): unchunked `[...]`
+    // triggers Lean 4.34.1 `maximum recursion depth has been reached` in
+    // `Captured.lean` elaboration, whereas balanced chunking succeeds.
+    let mut wide_enum_src = String::from("pub enum WideEnum {\n");
+    for i in 0..1970 {
+        let _ = writeln!(&mut wide_enum_src, "    V{i},");
+    }
+    wide_enum_src.push_str("}\npub fn use_wide(_: WideEnum) -> u64 { 0 }\n");
+    run_capture_and_audit("wide_enum", &wide_enum_src, 1);
+}

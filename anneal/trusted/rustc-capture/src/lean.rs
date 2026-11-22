@@ -20,11 +20,41 @@ const HEADER: &str = "-- Copyright 2026 The Fuchsia Authors\n--\n\
 -- those terms.\n\n\
 prelude\nimport Trusted.MirAst\n\nnamespace Captured\n\n";
 
+const MAX_LIST_CHUNK_LEN: usize = 16;
+
+/// Render a Lean list literal, chunking lists longer than `MAX_LIST_CHUNK_LEN`
+/// into a balanced binary tree of `_root_.List.append` over 1..=16-element
+/// leaves.
+///
+/// Lean 4.34.1 expands `[...]` literals of `>= 33` elements via
+/// `Init.NotationExtra`'s `%[...|...]` macro into nested `let` bindings, which
+/// adds elaboration recursion overhead on top of per-element `OfNat` synthesis
+/// (e.g., failing elaboration with `maximum recursion depth has been reached`
+/// at `~1950+` distinct `Nat` literals in one definition, while chunking passes
+/// up to `~2000`). `_root_.List.append` lives in `Init.Prelude`, avoids
+/// namespace shadowing under `namespace Captured`, preserves `rfl` definitional
+/// equality with a flat list in the Lean kernel, and bounds AST depth to
+/// `O(log N)` (note `List.length` by `rfl` and `2050+` distinct `OfNat`s in
+/// one definition still hit Lean's `maxRecDepth` limit independently of list
+/// representation).
 fn list<T>(values: &[T], render: impl Fn(&T) -> String) -> String {
-    format!(
-        "[{}]",
-        values.iter().map(render).collect::<Vec<_>>().join(", ")
-    )
+    fn join_balanced(chunks: &[String]) -> String {
+        match chunks {
+            [] => "[]".into(),
+            [single] => single.clone(),
+            _ => {
+                let mid = chunks.len() / 2;
+                let (left, right) = chunks.split_at(mid);
+                format!("(_root_.List.append {} {})", join_balanced(left), join_balanced(right))
+            }
+        }
+    }
+
+    let chunks: Vec<String> = values
+        .chunks(MAX_LIST_CHUNK_LEN)
+        .map(|chunk| format!("[{}]", chunk.iter().map(&render).collect::<Vec<_>>().join(", ")))
+        .collect();
+    join_balanced(&chunks)
 }
 
 fn ty(t: &Ty) -> String {
@@ -226,10 +256,75 @@ pub fn render(program: &ir::Program) -> String {
 mod tests {
     use std::collections::BTreeSet;
 
-    use super::{identity, render};
+    use super::{MAX_LIST_CHUNK_LEN, identity, list, render};
     use crate::ir::{
-        Block, Body, ConstLit, Operand, Program, Rvalue, Scope, Statement, Terminator, Ty,
+        Block, Body, ConstLit, EnumTagRepr, EnumTy, IntTy, IntWidth, Operand, Program, Rvalue,
+        Scope, Statement, Terminator, Ty,
     };
+
+    fn max_paren_depth(text: &str) -> usize {
+        let mut depth = 0usize;
+        let mut max_depth = 0usize;
+        for ch in text.chars() {
+            match ch {
+                '(' => {
+                    depth += 1;
+                    max_depth = max_depth.max(depth);
+                }
+                ')' => {
+                    depth = depth.checked_sub(1).expect("unbalanced closing parenthesis");
+                }
+                _ => {}
+            }
+        }
+        assert_eq!(depth, 0, "unbalanced parentheses in {text}");
+        max_depth
+    }
+
+    fn assert_list_literals_at_most(text: &str, max_elems: usize) {
+        let mut paren_depth = 0usize;
+        // Track (paren_depth_at_open, top_level_commas, saw_element_token)
+        // per active `[` so nested lists inside body/tuple elements are bounded
+        // independently of enclosing list literals.
+        let mut brackets: Vec<(usize, usize, bool)> = Vec::new();
+        for ch in text.chars() {
+            if let Some(&(open_p, _, _)) = brackets.last()
+                && paren_depth == open_p
+                && !ch.is_whitespace()
+                && ch != ','
+                && ch != ']'
+            {
+                brackets.last_mut().unwrap().2 = true;
+            }
+            match ch {
+                '(' => paren_depth += 1,
+                ')' => {
+                    paren_depth =
+                        paren_depth.checked_sub(1).expect("unbalanced closing parenthesis");
+                }
+                '[' => brackets.push((paren_depth, 0, false)),
+                ',' => {
+                    if let Some(&mut (open_p, ref mut commas, _)) = brackets.last_mut()
+                        && paren_depth == open_p
+                    {
+                        *commas += 1;
+                    }
+                }
+                ']' => {
+                    let (open_p, commas, saw_token) =
+                        brackets.pop().expect("unbalanced closing bracket");
+                    assert_eq!(paren_depth, open_p, "unbalanced parens inside list literal");
+                    let elems = if commas > 0 || saw_token { commas + 1 } else { 0 };
+                    assert!(
+                        elems <= max_elems,
+                        "list literal has {elems} elements (limit {max_elems})"
+                    );
+                }
+                _ => {}
+            }
+        }
+        assert!(brackets.is_empty(), "unclosed bracket in {text}");
+    }
 
     #[test]
     fn identity_names_are_only_numeric_character_data() {
@@ -300,5 +395,107 @@ mod tests {
             !selected_rendered.contains("selector"),
             "{selected_rendered}"
         );
+    }
+
+    #[test]
+    fn list_preserves_small_lists_and_balances_large_chunks() {
+        let empty: Vec<u32> = Vec::new();
+        assert_eq!(list(&empty, u32::to_string), "[]");
+
+        let one = [42u32];
+        assert_eq!(list(&one, u32::to_string), "[42]");
+
+        let sixteen: Vec<u32> = (0..16).collect();
+        assert_eq!(
+            list(&sixteen, u32::to_string),
+            "[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]"
+        );
+
+        let seventeen: Vec<u32> = (0..17).collect();
+        assert_eq!(
+            list(&seventeen, u32::to_string),
+            "(_root_.List.append [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15] [16])"
+        );
+
+        let two_fifty: Vec<u32> = (0..250).collect();
+        let rendered = list(&two_fifty, u32::to_string);
+        assert!(max_paren_depth(&rendered) <= 10, "excessive paren depth in {rendered}");
+        assert_list_literals_at_most(&rendered, MAX_LIST_CHUNK_LEN);
+
+        // Extract every leaf number in source order to ensure zero reordering
+        // or dropped items across recursive `_root_.List.append` nodes.
+        let cleaned: String = rendered
+            .replace("(_root_.List.append ", " ")
+            .chars()
+            .filter(|ch| ch.is_ascii_digit() || *ch == ' ')
+            .collect();
+        let recovered: Vec<u32> =
+            cleaned.split_whitespace().map(|tok| tok.parse::<u32>().unwrap()).collect();
+        assert_eq!(recovered, two_fifty);
+    }
+
+    #[test]
+    fn identity_and_render_balance_all_large_list_fields() {
+        let long_id = identity(&"a".repeat(250));
+        assert!(max_paren_depth(&long_id) <= 10, "{long_id}");
+        assert_list_literals_at_most(&long_id, MAX_LIST_CHUNK_LEN);
+
+        let u64_ty = Ty::Int(IntTy { width: IntWidth::I64, signed: false });
+        let big_enum = Ty::Enum(
+            EnumTy::try_new(
+                7,
+                IntTy { width: IntWidth::I64, signed: false },
+                EnumTagRepr::Scalar(IntTy { width: IntWidth::I64, signed: false }),
+                (0..70).collect(),
+            )
+            .unwrap(),
+        );
+        let mut locals = vec![Ty::Unit, u64_ty.clone(), big_enum];
+        locals.resize(70, u64_ty);
+        let targets = (0..70u64).map(|v| (v, 1u32)).collect();
+        let statements = vec![Statement::Nop; 250];
+        let body0 = Body::try_new(
+            0,
+            false,
+            locals,
+            vec![
+                Block {
+                    statements,
+                    terminator: Terminator::SwitchInt {
+                        operand: Operand::Copy { local: 1 },
+                        targets,
+                        otherwise: 1,
+                    },
+                },
+                Block { statements: vec![], terminator: Terminator::Ret },
+            ],
+            format!("rust-path-v1::{}", "f".repeat(86)),
+        )
+        .unwrap();
+
+        let mut bodies = vec![body0];
+        for i in 1..70 {
+            bodies.push(
+                Body::try_new(
+                    0,
+                    false,
+                    vec![Ty::Unit],
+                    vec![Block { statements: vec![], terminator: Terminator::Ret }],
+                    format!("rust-path-v1::fn_{i}"),
+                )
+                .unwrap(),
+            );
+        }
+        let program = Program::try_new(Scope::Crate, bodies).unwrap();
+        let rendered = render(&program);
+        // `bodies` (depth 3) + Body/BasicBlock/SwitchInt/BitVec wrappers (5)
+        // + 250-statement or 70-target append tree (depth 4/3) stays O(log N).
+        assert!(
+            max_paren_depth(&rendered) <= 16,
+            "excessive paren depth: {}",
+            max_paren_depth(&rendered)
+        );
+        assert_list_literals_at_most(&rendered, MAX_LIST_CHUNK_LEN);
+        assert!(rendered.contains("(_root_.List.append "));
     }
 }
