@@ -1,0 +1,100 @@
+{
+ "audit": {
+  "exit_code": 0,
+  "peak_rss_kb": 1582456,
+  "print_axioms": {
+   "ColdBlocksAndNoUnwind.abortUnwindingCalls_sound_for_call": [
+    "propext"
+   ],
+   "ColdBlocksAndNoUnwind.ce1_single_pass_postorder_misses_cyclic_cold_loop_header": [
+    "propext"
+   ],
+   "ColdBlocksAndNoUnwind.ce2_marking_foreign_c_unwind_nounwind_under_panic_abort_skips_terminate_pad": [
+    "propext"
+   ],
+   "ColdBlocksAndNoUnwind.ce3_conflating_public_drop_in_place_with_lang_drop_glue_under_panic_in_drop_abort": [
+    "propext"
+   ],
+   "ColdBlocksAndNoUnwind.coldPath_erasure_preserves_behavior": [
+    "propext"
+   ],
+   "ColdBlocksAndNoUnwind.findColdBlocksPass_sound": [
+    "propext",
+    "Quot.sound"
+   ],
+   "ColdBlocksAndNoUnwind.findColdBlocks_sound_and_dag_complete": [
+    "propext",
+    "Quot.sound"
+   ],
+   "ColdBlocksAndNoUnwind.fnCanUnwind_nounwind_soundness": [
+    "propext"
+   ],
+   "ColdBlocksAndNoUnwind.fnCanUnwind_precedence_characterization": [
+    "propext"
+   ],
+   "ColdBlocksAndNoUnwind.optimize_attr_s_vs_z_default": [
+    "propext"
+   ],
+   "ColdBlocksAndNoUnwind.optimize_attr_size_speed_none_overrides": [
+    "propext"
+   ]
+  },
+  "summary": {
+   "axioms_used": [
+    "propext",
+    "Quot.sound"
+   ],
+   "constants": 1313,
+   "constructors": 84,
+   "definitions": 530,
+   "inductive_types": 24,
+   "recursors": 24,
+   "theorems": 651,
+   "theorems_without_axioms": 483,
+   "violations": 0
+  },
+  "violation_lines": [],
+  "wall_seconds": 4.098
+ },
+ "compile": {
+  "errors": 0,
+  "exit_code": 0,
+  "olean_bytes": 4581904,
+  "peak_rss_kb": 593656,
+  "wall_seconds": 6.248,
+  "warnings": 0
+ },
+ "compile_flags": [
+  "-M2048",
+  "-DElab.async=false",
+  "-Ddebug.skipKernelTC=false",
+  "-DwarningAsError=true"
+ ],
+ "forbidden_token_counts": {
+  "Classical": 0,
+  "_unsafe_rec": 0,
+  "admit": 0,
+  "axiom": 0,
+  "bv_decide": 0,
+  "extern": 0,
+  "implemented_by": 0,
+  "native_decide": 0,
+  "omega": 0,
+  "opaque": 0,
+  "partial": 0,
+  "sorry": 0,
+  "unsafe": 0
+ },
+ "generated_on": "2026-11-22",
+ "imports": [],
+ "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+ "module": "support/ColdBlocksAndNoUnwindSoundness.lean",
+ "passed": true,
+ "schema": "lean-check-receipt/1",
+ "source_bytes": 53194,
+ "source_def_keywords": 47,
+ "source_inductive_keywords": 22,
+ "source_lines": 1277,
+ "source_sha256": "6a8cc38fbf9a6bf40169d9522c3be7d561716c9ae4cb7c2c98d21310478475e1",
+ "source_theorem_keywords": 34
+}

@@ -1,0 +1,457 @@
+{
+ "schema": "rustc-cold-nu-probe/1",
+ "generated_on": "2026-11-22",
+ "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+ "part_a_cold_blocks_and_branch_weights": {
+  "opt2_prepass": {
+   "rc": 0,
+   "functions": {
+    "cw_1_two_way_unlikely": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [
+      "%0 = call i1 @llvm.expect.i1(i1 %c, i1 false)"
+     ],
+     "prof_branch_weights": []
+    },
+    "cw_2_two_way_hint_cold_path": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": true,
+     "expect_calls": [
+      "%0 = call i1 @llvm.expect.i1(i1 %c, i1 false)"
+     ],
+     "prof_branch_weights": []
+    },
+    "cw_2b_two_way_intrinsic_cold_path": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [
+      "%0 = call i1 @llvm.expect.i1(i1 %c, i1 false)"
+     ],
+     "prof_branch_weights": []
+    },
+    "cw_3_multi_way_switch_cold": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": true,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", i32 2000, i32 2000, i32 2000, i32 1, i32 2000"
+     ]
+    },
+    "cw_4_likely_hot_branch": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [
+      "%0 = call i1 @llvm.expect.i1(i1 %c, i1 true)"
+     ],
+     "prof_branch_weights": []
+    },
+    "cw_5_cyclic_cold_loop": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": true,
+     "expect_calls": [
+      "%5 = call i1 @llvm.expect.i1(i1 %4, i1 false)"
+     ],
+     "prof_branch_weights": [],
+     "entry_block_has_expect": false,
+     "entry_block_has_prof": false,
+     "start_block_lines": [
+      "%_0 = alloca [4 x i8], align 4",
+      "%n = alloca [4 x i8], align 4",
+      "store i32 %0, ptr %n, align 4",
+      "br i1 %enter_loop, label %bb1, label %bb6",
+      ""
+     ]
+    }
+   },
+   "aliases": {}
+  },
+  "opt2_full": {
+   "rc": 0,
+   "functions": {
+    "cw_1_two_way_unlikely": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", !\"expected\", i32 1, i32 2000"
+     ]
+    },
+    "cw_2_two_way_hint_cold_path": {
+     "aliased_to": "cw_1_two_way_unlikely",
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", !\"expected\", i32 1, i32 2000"
+     ]
+    },
+    "cw_2b_two_way_intrinsic_cold_path": {
+     "aliased_to": "cw_1_two_way_unlikely",
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", !\"expected\", i32 1, i32 2000"
+     ]
+    },
+    "cw_3_multi_way_switch_cold": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", i32 2000, i32 2000, i32 2000, i32 1, i32 2000"
+     ]
+    },
+    "cw_4_likely_hot_branch": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", !\"expected\", i32 2000, i32 1"
+     ]
+    },
+    "cw_5_cyclic_cold_loop": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", !\"expected\", i32 1, i32 2000"
+     ],
+     "entry_block_has_expect": false,
+     "entry_block_has_prof": false,
+     "start_block_lines": [
+      "br i1 %enter_loop, label %bb1, label %bb6",
+      ""
+     ]
+    }
+   },
+   "aliases": {
+    "cw_2_two_way_hint_cold_path": "cw_1_two_way_unlikely",
+    "cw_2b_two_way_intrinsic_cold_path": "cw_1_two_way_unlikely"
+   }
+  },
+  "opt2_full_nomerge": {
+   "rc": 0,
+   "functions": {
+    "cw_1_two_way_unlikely": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", !\"expected\", i32 1, i32 2000"
+     ]
+    },
+    "cw_2_two_way_hint_cold_path": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", !\"expected\", i32 1, i32 2000"
+     ]
+    },
+    "cw_2b_two_way_intrinsic_cold_path": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", !\"expected\", i32 1, i32 2000"
+     ]
+    },
+    "cw_3_multi_way_switch_cold": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", i32 2000, i32 2000, i32 2000, i32 1, i32 2000"
+     ]
+    },
+    "cw_4_likely_hot_branch": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", !\"expected\", i32 2000, i32 1"
+     ]
+    },
+    "cw_5_cyclic_cold_loop": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [
+      "!\"branch_weights\", !\"expected\", i32 1, i32 2000"
+     ],
+     "entry_block_has_expect": false,
+     "entry_block_has_prof": false,
+     "start_block_lines": [
+      "br i1 %enter_loop, label %bb1, label %bb6",
+      ""
+     ]
+    }
+   },
+   "aliases": {}
+  },
+  "opt0": {
+   "rc": 0,
+   "functions": {
+    "cw_1_two_way_unlikely": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": []
+    },
+    "cw_2_two_way_hint_cold_path": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": []
+    },
+    "cw_2b_two_way_intrinsic_cold_path": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": []
+    },
+    "cw_3_multi_way_switch_cold": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": []
+    },
+    "cw_4_likely_hot_branch": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": []
+    },
+    "cw_5_cyclic_cold_loop": {
+     "aliased_to": null,
+     "has_cold_path_call_insn": false,
+     "expect_calls": [],
+     "prof_branch_weights": [],
+     "entry_block_has_expect": false,
+     "entry_block_has_prof": false,
+     "start_block_lines": [
+      "%_0 = alloca [4 x i8], align 4",
+      "%n = alloca [4 x i8], align 4",
+      "store i32 %0, ptr %n, align 4",
+      "br i1 %enter_loop, label %bb1, label %bb5",
+      ""
+     ]
+    }
+   },
+   "aliases": {}
+  },
+  "mir_inline_check": {
+   "rc": 0,
+   "cw_1_two_way_unlikely": {
+    "calls_hint_cold_path_after_mir_inline": false,
+    "calls_intrinsics_cold_path_after_mir_inline": true
+   },
+   "cw_2_two_way_hint_cold_path": {
+    "calls_hint_cold_path_after_mir_inline": true,
+    "calls_intrinsics_cold_path_after_mir_inline": false
+   },
+   "cw_2b_two_way_intrinsic_cold_path": {
+    "calls_hint_cold_path_after_mir_inline": false,
+    "calls_intrinsics_cold_path_after_mir_inline": true
+   }
+  }
+ },
+ "part_b_optimize_and_cold_attrs": {
+  "prepass": {
+   "opt_0": {
+    "oa_default": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_size": "minsize nonlazybind optsize uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_speed": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_none": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_cold": "cold nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_inline_always_optnone": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   },
+   "opt_2": {
+    "oa_default": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_size": "minsize nonlazybind optsize uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_speed": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_none": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_cold": "cold nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_inline_always_optnone": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   },
+   "opt_s": {
+    "oa_default": "nonlazybind optsize uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_size": "minsize nonlazybind optsize uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_speed": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_none": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_cold": "cold nonlazybind optsize uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_inline_always_optnone": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   },
+   "opt_z": {
+    "oa_default": "minsize nonlazybind optsize uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_size": "minsize nonlazybind optsize uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_speed": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_none": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_cold": "cold minsize nonlazybind optsize uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_inline_always_optnone": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   }
+  },
+  "full": {
+   "opt_0": {
+    "oa_default": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_size": "minsize nonlazybind optsize uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_speed": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_none": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_cold": "cold nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_inline_always_optnone": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   },
+   "opt_2": {
+    "oa_default": "mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_size": "minsize mustprogress nofree norecurse nosync nounwind nonlazybind optsize willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_speed": "mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_none": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_cold": "cold mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_inline_always_optnone": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   },
+   "opt_s": {
+    "oa_default": "mustprogress nofree norecurse nosync nounwind nonlazybind optsize willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_size": "minsize mustprogress nofree norecurse nosync nounwind nonlazybind optsize willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_speed": "mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_none": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_cold": "cold mustprogress nofree norecurse nosync nounwind nonlazybind optsize willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_inline_always_optnone": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   },
+   "opt_z": {
+    "oa_default": "minsize mustprogress nofree norecurse nosync nounwind nonlazybind optsize willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_size": "minsize mustprogress nofree norecurse nosync nounwind nonlazybind optsize willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_speed": "mustprogress nofree norecurse nosync nounwind nonlazybind willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_none": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_cold": "cold minsize mustprogress nofree norecurse nosync nounwind nonlazybind optsize willreturn memory(none) uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "oa_inline_always_optnone": "noinline nonlazybind optnone uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   }
+  }
+ },
+ "part_c_nounwind_and_panic_strategies": {
+  "panic_unwind": {
+   "rc": 0,
+   "foreign_c_nounwind": true,
+   "foreign_c_unwind_nounwind": false,
+   "rust_def_extern_c_nounwind": true,
+   "rust_def_extern_c_unwind_nounwind": false,
+   "lang_drop_glue_nounwind": false,
+   "public_drop_in_place_nounwind": false,
+   "caller_has_invoke_foreign_c_unwind": true,
+   "caller_has_invoke_foreign_c": false,
+   "caller_nounwind": false,
+   "drop_glue_has_invoke_drop": false,
+   "drop_glue_calls_panic_cannot_unwind": false,
+   "raw_attrs": {
+    "ext_c": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "ext_c_unwind": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "rust_def_extern_c": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "rust_def_extern_c_unwind": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "drop_glue": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "drop_in_place": "alwaysinline nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "caller_of_foreign_c_unwind": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   }
+  },
+  "panic_abort": {
+   "rc": 0,
+   "foreign_c_nounwind": true,
+   "foreign_c_unwind_nounwind": false,
+   "rust_def_extern_c_nounwind": true,
+   "rust_def_extern_c_unwind_nounwind": true,
+   "lang_drop_glue_nounwind": true,
+   "public_drop_in_place_nounwind": true,
+   "caller_has_invoke_foreign_c_unwind": true,
+   "caller_has_invoke_foreign_c": false,
+   "caller_nounwind": true,
+   "drop_glue_has_invoke_drop": false,
+   "drop_glue_calls_panic_cannot_unwind": false,
+   "raw_attrs": {
+    "ext_c": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "ext_c_unwind": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "rust_def_extern_c": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "rust_def_extern_c_unwind": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "drop_glue": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "drop_in_place": "alwaysinline nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "caller_of_foreign_c_unwind": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   }
+  },
+  "panic_unwind_drop_abort": {
+   "rc": 0,
+   "foreign_c_nounwind": true,
+   "foreign_c_unwind_nounwind": false,
+   "rust_def_extern_c_nounwind": true,
+   "rust_def_extern_c_unwind_nounwind": false,
+   "lang_drop_glue_nounwind": true,
+   "public_drop_in_place_nounwind": false,
+   "caller_has_invoke_foreign_c_unwind": true,
+   "caller_has_invoke_foreign_c": false,
+   "caller_nounwind": false,
+   "drop_glue_has_invoke_drop": true,
+   "drop_glue_calls_panic_cannot_unwind": true,
+   "raw_attrs": {
+    "ext_c": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "ext_c_unwind": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "rust_def_extern_c": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "rust_def_extern_c_unwind": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "drop_glue": "nounwind nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "drop_in_place": "alwaysinline nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\"",
+    "caller_of_foreign_c_unwind": "nonlazybind uwtable \"probe-stack\"=\"inline-asm\" \"target-cpu\"=\"x86-64\""
+   }
+  },
+  "drop_in_panic_runtime": {
+   "panic_unwind": {
+    "compile_rc": 0,
+    "run_rc": 0,
+    "aborted_sigabrt": false,
+    "stdout": "CAUGHT_DROP_PANIC",
+    "has_panic_cannot_unwind_msg": false,
+    "has_drop_glue_frame": false
+   },
+   "panic_unwind_drop_abort": {
+    "compile_rc": 0,
+    "run_rc": -6,
+    "aborted_sigabrt": true,
+    "stdout": "",
+    "has_panic_cannot_unwind_msg": true,
+    "has_drop_glue_frame": true
+   },
+   "direct_bin_link_against_prebuilt_std": {
+    "rc": 1,
+    "incompatible_panic_in_drop": true,
+    "first_error_line": "error: the crate `std` is compiled with the panic-in-drop strategy `unwind` which is incompatible with this crate's strategy of `abort`"
+   }
+  },
+  "panic_immediate_abort_no_std": {
+   "rc": 0,
+   "has_llvm_trap": false,
+   "has_panic_bounds_call": true,
+   "nounwind": true,
+   "ir": "define noundef i32 @imm_bounds_index(ptr noalias noundef readonly align 4 captures(none) dereferenceable(16) %arr, i64 noundef %i) unnamed_addr #0 {\nstart:\n  %_3 = icmp ult i64 %i, 4\n  br i1 %_3, label %bb1, label %panic\n\nbb1:                                              ; preds = %start\n  %0 = getelementptr inbounds nuw i32, ptr %arr, i64 %i\n  %_0 = load i32, ptr %0, align 4, !noundef !4\n  ret i32 %_0\n\npanic:                                            ; preds = %start\n; call core::panicking::panic_bounds_check\n  tail call void @_RNvNtCs8b4M6GsfcPr_4core9panicking18panic_bounds_check(i64 noundef %i, i64 noundef 4, ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_bd00d6b6d57375a103d6b88739990a17) #2\n  unreachable\n}"
+  },
+  "panic_immediate_abort_bin_link": {
+   "rc": 1,
+   "stderr": "error: the crate `core` was compiled with a panic strategy which is incompatible with `immediate-abort`\n\nerror: aborting due to 1 previous error"
+  }
+ },
+ "checks": {
+  "a_prepass_intrinsics_erased_hint_kept": true,
+  "a_mir_inline_blocks_cold_fn": true,
+  "a_prepass_expect_and_switch_weights": true,
+  "a_opt2_full_lowers_expect_to_branch_weights": true,
+  "a_opt0_suppresses_all_hints": true,
+  "a_cyclic_cold_loop_entry_unmarked": true,
+  "b_opt_s_default_only_optsize": true,
+  "b_opt_z_default_both_minsize_and_optsize": true,
+  "b_optimize_size_overrides_all_levels": true,
+  "b_optimize_speed_strips_size_attrs": true,
+  "b_optimize_none_forces_noinline_optnone": true,
+  "b_cold_orthogonal_to_size": true,
+  "c_panic_unwind_matrix": true,
+  "c_panic_abort_foreign_c_unwind_split": true,
+  "c_panic_in_drop_abort_split": true,
+  "c_drop_runtime_abort": true,
+  "c_immediate_abort_prebuilt_core_behavior": true,
+  "parity_with_llvm23_baseline_part_a": true,
+  "parity_with_llvm23_baseline_part_b": true,
+  "parity_with_llvm23_baseline_part_c": true
+ },
+ "all_checks_passed": true
+}
