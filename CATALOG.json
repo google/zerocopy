@@ -49579,6 +49579,93 @@
         "verification/floating-point"
       ]
     },
+    "hermetic-build-systems-for-rust-mir-and-lean4-module-verification": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "commit": "3ef0c22cd",
+            "date": "2026-11-11",
+            "repository": "rust-lang/rust",
+            "version": "1.102.0-nightly"
+          },
+          "name": "rustc nightly toolchain"
+        },
+        {
+          "identity": {
+            "commit": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "repository": "leanprover/lean4",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4"
+        },
+        {
+          "identity": {
+            "commit": "819816b2e0a3bf405af45ae5c7af2491d8f5bee6",
+            "repository": "leanprover/lean4",
+            "version": "v4.33.1"
+          },
+          "name": "Lean 4 v4.33.1"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "d2f63ce1c3c04ffabb4442b028caf612c9508387"
+          },
+          "name": "Anneal verification workspace in zerocopy"
+        },
+        {
+          "identity": {
+            "repository": "bazelbuild/bazel",
+            "scope": "SpawnStrategyRegistry, LocalSpawnRunner, RemoteSpawnRunner, DynamicExecutionModule, SandboxOptions, CoreOptions, AllowedLocalActions, DarwinSandboxedSpawnRunner, StarlarkActionFactory"
+          },
+          "name": "Bazel"
+        },
+        {
+          "identity": {
+            "repository": "facebook/buck2",
+            "scope": "buck2_build_api/src/actions/calculation.rs, artifact_groups/calculation.rs, prelude//rust"
+          },
+          "name": "Buck2"
+        },
+        {
+          "identity": {
+            "repository": "mesonbuild/meson",
+            "scope": "mesonbuild/backend/ninjabackend.py, mesonbuild/mintro.py"
+          },
+          "name": "Meson"
+        },
+        {
+          "identity": {
+            "projects": "leanprover/lean4export v3.1.0; ammkrn/nanoda_lib v0.4.32"
+          },
+          "name": "lean4export and nanoda_lib"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/vscode-lean4",
+            "scope": "src/utils/projectInfo.ts, src/leanclient.ts"
+          },
+          "name": "vscode-lean4"
+        }
+      ],
+      "topics": [
+        "build/hermeticity",
+        "build/caching",
+        "build/sandboxing",
+        "build/reproducibility",
+        "build/nix",
+        "rustc/mir",
+        "rustc/driver",
+        "cargo",
+        "lean/module-system",
+        "lean/kernel-replay",
+        "lean/olean-compaction",
+        "security/supply-chain",
+        "verification/external-kernels",
+        "anneal/architecture"
+      ]
+    },
     "hermetic-ffi-build-graph-binding-linker-attestation-and-inlined-asm-tracking": {
       "observed_at": "2026-11-20",
       "subjects": [
