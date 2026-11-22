@@ -1,0 +1,73 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc compiler source (HEAD)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "01afe534803b93889b85f6028117251cfbd431da",
+        "commit_date": "2026-11-22"
+      }
+    },
+    {
+      "name": "rustc 1.102.0-nightly toolchain",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "release": "1.102.0-nightly",
+        "commit_date": "2026-11-11",
+        "host": "x86_64-unknown-linux-gnu",
+        "llvm_version": "23.1.5"
+      }
+    },
+    {
+      "name": "rustc 1.98.0-nightly toolchain and Miri",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "release": "1.98.0-nightly",
+        "commit_date": "2026-05-31",
+        "host": "x86_64-unknown-linux-gnu",
+        "llvm_version": "22.1.6"
+      }
+    },
+    {
+      "name": "The Rust Reference",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c",
+        "commit_date": "2026-11-17"
+      }
+    },
+    {
+      "name": "Anneal Trusted MIR AST and Semantics",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+        "commit_date": "2026-11-19"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover kernel",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "4.34.1",
+        "host": "x86_64-unknown-linux-gnu"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
