@@ -1,0 +1,218 @@
+{
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "part_a_live_execution_niche_and_miri": {
+    "default_v0_mangling": {
+      "panic_summary": "thread 'rustc' (706545) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_symbol_mangling/src/v0.rs:591:37: | not yet implemented",
+      "rc": 101,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_a.rs:2:12\n  |\n2 | #![feature(unsafe_binders, maybe_dangling)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n\nthread 'rustc' (706545) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_symbol_mangling/src/v0.rs:591:37:\nnot yet implemented\nstack backtrace:\n   0:     0x7fe845aa0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7fe84622a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7fe845ab79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7fe845a7711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7fe845a94823 - std[b67b1f443dfd2e41]::panicking::default_hook\n... (49 more lines)"
+    },
+    "legacy_mangling_and_native": {
+      "panic_summary": null,
+      "rc": 0,
+      "run_rc": 0,
+      "run_stderr": "",
+      "run_stdout": "OPT_REF=8 OPT_MD=8 OPT_SHARED=8 OPT_MUT=8 OPT_UNINIT=16 OUT=42 SLOT=42",
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_a.rs:2:12\n  |\n2 | #![feature(unsafe_binders, maybe_dangling)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "miri_default_validity": {
+      "panic_summary": "thread 'rustc' (706582) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_const_eval/src/interpret/validity.rs:994:36: | not yet implemented: FIXME(unsafe_binder)",
+      "rc": 101,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_a.rs:2:12\n  |\n2 | #![feature(unsafe_binders, maybe_dangling)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n\nthread 'rustc' (706582) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_const_eval/src/interpret/validity.rs:994:36:\nnot yet implemented: FIXME(unsafe_binder)\nstack backtrace:\n   0:     0x7f63b00a0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7f63b082a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7f63b00b79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7f63b007711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7f63b0094823 - std[b67b1f443dfd2e41]::panicking::default_hook\n... (78 more lines)",
+      "stdout": ""
+    },
+    "miri_disable_validation_tb": {
+      "panic_summary": null,
+      "rc": 0,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_a.rs:2:12\n  |\n2 | #![feature(unsafe_binders, maybe_dangling)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n",
+      "stdout": "OPT_REF=8 OPT_MD=8 OPT_SHARED=8 OPT_MUT=8 OPT_UNINIT=16 OUT=42 SLOT=42"
+    }
+  },
+  "part_b_llvm_ir_attrs_mir_and_dangling_miri": {
+    "dangling_binder_miri_sb_default": {
+      "panic_summary": "thread 'rustc' (706667) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_const_eval/src/interpret/validity.rs:994:36: | not yet implemented: FIXME(unsafe_binder)",
+      "rc": 101,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/dangling_unused.rs:2:12\n  |\n2 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n\nthread 'rustc' (706667) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_const_eval/src/interpret/validity.rs:994:36:\nnot yet implemented: FIXME(unsafe_binder)\nstack backtrace:\n   0:     0x7f75b46a0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7f75b4e2a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7f75b46b79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7f75b467711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7f75b4694823 - std[b67b1f443dfd2e41]::panicking::default_hook\n... (76 more lines)",
+      "stdout": ""
+    },
+    "dangling_binder_miri_tb_default": {
+      "panic_summary": "thread 'rustc' (706675) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_const_eval/src/interpret/validity.rs:994:36: | not yet implemented: FIXME(unsafe_binder)",
+      "rc": 101,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/dangling_unused.rs:2:12\n  |\n2 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n\nthread 'rustc' (706675) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_const_eval/src/interpret/validity.rs:994:36:\nnot yet implemented: FIXME(unsafe_binder)\nstack backtrace:\n   0:     0x7f9814ca0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7f981542a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7f9814cb79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7f9814c7711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7f9814c94823 - std[b67b1f443dfd2e41]::panicking::default_hook\n... (76 more lines)",
+      "stdout": ""
+    },
+    "dangling_binder_miri_tb_disable_validation": {
+      "panic_summary": null,
+      "rc": 0,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/dangling_unused.rs:2:12\n  |\n2 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n",
+      "stdout": "DANGLING_UNUSED=7"
+    },
+    "dangling_binder_unwrap_ub_miri_tb_disable_validation": {
+      "panic_summary": null,
+      "rc": 1,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/dangling_unwrap_ub.rs:2:12\n  |\n2 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror: Undefined Behavior: memory access failed: alloc234 has been freed, so this pointer is dangling\n --> <TMP>/dangling_unwrap_ub.rs:9:22\n  |\n9 |     let v = unsafe { *unwrap_binder!(b) };\n  |                      ^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\nhelp: alloc234 was allocated here:\n... (14 more lines)",
+      "stdout": ""
+    },
+    "llvm_ir_o0": {
+      "llvm_define_lines": [
+        "define zeroext i1 @\"_ZN4core6option15Option$LT$T$GT$7is_some17h263c51451d12f346E\"(ptr align 8 %self) unnamed_addr #0 {",
+        "define zeroext i1 @\"_ZN4core6option15Option$LT$T$GT$7is_some17h898553423dd10816E\"(ptr align 8 %self) unnamed_addr #0 {",
+        "define zeroext i1 @opt_unsafe_binder_is_some(ptr %0) unnamed_addr #1 {",
+        "define align 8 ptr @pass_maybe_dangling_mut(ptr align 8 %r) unnamed_addr #1 {",
+        "define align 8 ptr @pass_maybe_dangling_shared(ptr align 8 %r) unnamed_addr #1 {",
+        "define i64 @pass_maybe_uninit(ptr %_m) unnamed_addr #1 {",
+        "define i64 @pass_mut_slice_binder(ptr align 8 %_b.0, i64 %_b.1) unnamed_addr #1 {",
+        "define i64 @pass_mut_tuple_binder(ptr align 8 %_b.0, i64 %_b.1) unnamed_addr #1 {",
+        "define i64 @pass_newtype_binder(ptr align 8 %_b) unnamed_addr #1 {",
+        "define zeroext i1 @pass_opt_newtype_binder(ptr align 8 %0) unnamed_addr #1 {",
+        "define align 8 ptr @pass_plain_mut(ptr align 8 %r) unnamed_addr #1 {",
+        "define align 8 ptr @pass_plain_ref(ptr align 8 %r) unnamed_addr #1 {",
+        "define i64 @pass_struct_binder(ptr align 8 %_b.0, i64 %_b.1) unnamed_addr #1 {",
+        "define i64 @pass_tuple_binder(ptr align 8 %_b.0, i64 %_b.1) unnamed_addr #1 {",
+        "define i64 @pass_unsafe_binder_mut(ptr %_b) unnamed_addr #1 {",
+        "define i64 @pass_unsafe_binder_shared(ptr %0) unnamed_addr #1 {",
+        "define i64 @pass_unsafe_binder_unused(ptr %_b) unnamed_addr #1 {",
+        "define i64 @pass_wide_slice_binder(ptr align 8 %_b.0, i64 %_b.1) unnamed_addr #1 {",
+        "define i64 @wrap_and_unwrap_roundtrip(ptr align 8 %x) unnamed_addr #1 {"
+      ],
+      "panic_summary": null,
+      "rc": 0,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_b_llvm.rs:2:12\n  |\n2 | #![feature(unsafe_binders, maybe_dangling)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "llvm_ir_opt": {
+      "llvm_define_lines": [
+        "define noundef zeroext i1 @opt_unsafe_binder_is_some(ptr noundef readnone captures(address_is_null) %o) unnamed_addr #0 {",
+        "define noundef nonnull align 8 ptr @pass_maybe_dangling_mut(ptr noundef nonnull readnone returned align 8 captures(ret: address, provenance) %r) unnamed_addr #0 {",
+        "define noundef i64 @pass_maybe_uninit(ptr readnone captures(none) %_m) unnamed_addr #0 {",
+        "define noundef i64 @pass_mut_slice_binder(ptr noalias noundef nonnull readnone align 8 captures(none) %_b.0, i64 noundef %_b.1) unnamed_addr #0 {",
+        "define noundef i64 @pass_mut_tuple_binder(ptr noalias noundef readnone align 8 captures(none) dereferenceable(8) %_b.0, i64 noundef %_b.1) unnamed_addr #0 {",
+        "define noundef i64 @pass_newtype_binder(ptr noalias noundef readonly align 8 captures(none) dereferenceable(8) %_b) unnamed_addr #0 {",
+        "define noundef zeroext i1 @pass_opt_newtype_binder(ptr noalias noundef readonly align 8 captures(address_is_null) dereferenceable_or_null(8) %o) unnamed_addr #0 {",
+        "define noundef nonnull align 8 ptr @pass_plain_mut(ptr noalias noundef readnone returned align 8 captures(ret: address, provenance) dereferenceable(8) %r) unnamed_addr #0 {",
+        "define noundef nonnull align 8 ptr @pass_plain_ref(ptr noalias noundef readonly returned align 8 captures(ret: address, read_provenance) dereferenceable(8) %r) unnamed_addr #0 {",
+        "define noundef i64 @pass_struct_binder(ptr noalias noundef readonly align 8 captures(none) dereferenceable(8) %_b.0, i64 noundef %_b.1) unnamed_addr #0 {",
+        "define noundef i64 @pass_tuple_binder(ptr noalias noundef readonly align 8 captures(none) dereferenceable(8) %_b.0, i64 noundef %_b.1) unnamed_addr #0 {",
+        "define noundef i64 @pass_unsafe_binder_mut(ptr noundef nonnull readnone captures(none) %_b) unnamed_addr #0 {",
+        "define noundef i64 @pass_unsafe_binder_shared(ptr noundef nonnull readonly captures(none) %0) unnamed_addr #1 {",
+        "define noundef i64 @pass_unsafe_binder_unused(ptr noundef nonnull readnone captures(none) %_b) unnamed_addr #0 {",
+        "define noundef i64 @pass_wide_slice_binder(ptr noalias noundef nonnull readonly align 8 captures(none) %_b.0, i64 noundef %_b.1) unnamed_addr #0 {",
+        "define noundef i64 @wrap_and_unwrap_roundtrip(ptr noalias noundef readonly align 8 captures(none) dereferenceable(8) %x) unnamed_addr #1 {"
+      ],
+      "panic_summary": null,
+      "rc": 0,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_b_llvm.rs:2:12\n  |\n2 | #![feature(unsafe_binders, maybe_dangling)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "llvm_ir_opt_no_prepopulate": {
+      "llvm_define_lines": [
+        "define noundef zeroext i1 @opt_unsafe_binder_is_some(ptr noundef %o) unnamed_addr #0 {",
+        "define noundef nonnull align 8 ptr @pass_maybe_dangling_mut(ptr noundef nonnull align 8 %r) unnamed_addr #0 {",
+        "define noundef nonnull align 8 ptr @pass_maybe_dangling_shared(ptr noundef nonnull align 8 %r) unnamed_addr #0 {",
+        "define noundef i64 @pass_maybe_uninit(ptr %_m) unnamed_addr #0 {",
+        "define noundef i64 @pass_mut_slice_binder(ptr noalias noundef nonnull align 8 %_b.0, i64 noundef %_b.1) unnamed_addr #0 {",
+        "define noundef i64 @pass_mut_tuple_binder(ptr noalias noundef align 8 dereferenceable(8) %_b.0, i64 noundef %_b.1) unnamed_addr #0 {",
+        "define noundef i64 @pass_newtype_binder(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(8) %_b) unnamed_addr #0 {",
+        "define noundef zeroext i1 @pass_opt_newtype_binder(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable_or_null(8) %o) unnamed_addr #0 {",
+        "define noundef nonnull align 8 ptr @pass_plain_mut(ptr noalias noundef align 8 dereferenceable(8) %r) unnamed_addr #0 {",
+        "define noundef nonnull align 8 ptr @pass_plain_ref(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(8) %r) unnamed_addr #0 {",
+        "define noundef i64 @pass_struct_binder(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(8) %_b.0, i64 noundef %_b.1) unnamed_addr #0 {",
+        "define noundef i64 @pass_tuple_binder(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(8) %_b.0, i64 noundef %_b.1) unnamed_addr #0 {",
+        "define noundef i64 @pass_unsafe_binder_mut(ptr noundef nonnull %_b) unnamed_addr #0 {",
+        "define noundef i64 @pass_unsafe_binder_shared(ptr noundef nonnull %0) unnamed_addr #0 {",
+        "define noundef i64 @pass_unsafe_binder_unused(ptr noundef nonnull %_b) unnamed_addr #0 {",
+        "define noundef i64 @pass_wide_slice_binder(ptr noalias noundef nonnull readonly align 8 captures(address, read_provenance) %_b.0, i64 noundef %_b.1) unnamed_addr #0 {",
+        "define noundef i64 @wrap_and_unwrap_roundtrip(ptr noalias noundef readonly align 8 captures(address, read_provenance) dereferenceable(8) %x) unnamed_addr #0 {"
+      ],
+      "panic_summary": null,
+      "rc": 0,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_b_llvm.rs:2:12\n  |\n2 | #![feature(unsafe_binders, maybe_dangling)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "mir_dump": {
+      "mir_excerpt": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nfn wrap_and_unwrap_roundtrip(_1: &u64) -> u64 {\n    debug x => _1;\n    let mut _0: u64;\n    let _2: unsafe<'a> &'a u64;\n    let mut _3: &u64;\n    scope 1 {\n        debug b => _2;\n    }\n\n    bb0: {\n        _2 = wrap_binder!(copy _1; unsafe<'a> &'a u64);\n        _3 = no_retag copy unwrap_binder!(_2; &u64);\n        _0 = copy (*_3);\n        return;\n    }\n}\n",
+      "panic_summary": null,
+      "rc": 0,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/part_b_mir.rs:2:12\n  |\n2 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "misaligned_binder_unused_miri_tb_disable_validation": {
+      "panic_summary": null,
+      "rc": 0,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/misaligned_unused.rs:2:12\n  |\n2 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n",
+      "stdout": "MISALIGNED_UNUSED=7"
+    },
+    "misaligned_binder_unused_native": {
+      "panic_summary": null,
+      "rc": 0,
+      "run_rc": 0,
+      "run_stderr": "",
+      "run_stdout": "MISALIGNED_UNUSED=7",
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/misaligned_unused.rs:2:12\n  |\n2 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    }
+  },
+  "part_c_safety_gates_linearity_and_three_ices": {
+    "auto_traits_sized_send_sync_on_unsafe_binder": {
+      "panic_summary": null,
+      "rc": 0,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/auto_traits_sized_send_sync_on_unsafe_binder.rs:1:12\n  |\n1 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "ctfe_const_unsafe_binder_ice": {
+      "panic_summary": "thread 'rustc' (707011) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_const_eval/src/interpret/validity.rs:994:36: | not yet implemented: FIXME(unsafe_binder)",
+      "rc": 101,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/ctfe_const_unsafe_binder_ice.rs:1:12\n  |\n1 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n\nthread 'rustc' (707011) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_const_eval/src/interpret/validity.rs:994:36:\nnot yet implemented: FIXME(unsafe_binder)\nstack backtrace:\n   0:     0x7f1672aa0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7f167322a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7f1672ab79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7f1672a7711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7f1672a94823 - std[b67b1f443dfd2e41]::panicking::default_hook\n... (48 more lines)"
+    },
+    "forbid_unsafe_legacy_mangling_size_of_ok": {
+      "panic_summary": null,
+      "rc": 0,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/forbid_unsafe_legacy_mangling_size_of_ok.rs:2:12\n  |\n2 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "forbid_unsafe_v0_mangling_size_of_ice": {
+      "panic_summary": "thread 'rustc' (706983) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_symbol_mangling/src/v0.rs:591:37: | not yet implemented",
+      "rc": 101,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/forbid_unsafe_v0_mangling_size_of_ice.rs:2:12\n  |\n2 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\n\nthread 'rustc' (706983) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_symbol_mangling/src/v0.rs:591:37:\nnot yet implemented\nstack backtrace:\n   0:     0x7fafd06a0ee9 - <<std[b67b1f443dfd2e41]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[5f430e017bac492f]::fmt::Display>::fmt\n   1:     0x7fafd0e2a308 - core[5f430e017bac492f]::fmt::write\n   2:     0x7fafd06b79e6 - <std[b67b1f443dfd2e41]::sys::stdio::unix::Stderr as std[b67b1f443dfd2e41]::io::Write>::write_fmt\n   3:     0x7fafd067711e - std[b67b1f443dfd2e41]::panicking::default_hook::{closure#0}\n   4:     0x7fafd0694823 - std[b67b1f443dfd2e41]::panicking::default_hook\n... (53 more lines)"
+    },
+    "gce_wrap_unsafe_binder_ice": {
+      "panic_summary": "thread 'rustc' (707023) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_ty_utils/src/consts.rs:57:13: | not yet implemented: FIXME(unsafe_binders)",
+      "rc": 101,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/gce_wrap_unsafe_binder_ice.rs:1:12\n  |\n1 | #![feature(unsafe_binders, generic_const_exprs)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: the feature `generic_const_exprs` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/gce_wrap_unsafe_binder_ice.rs:1:28\n  |\n1 | #![feature(unsafe_binders, generic_const_exprs)]\n  |                            ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #76560 <https://github.com/rust-lang/rust/issues/76560> for more information\n\n\n... (64 more lines)"
+    },
+    "mut_ref_unsafe_binder_not_copy_e0382": {
+      "panic_summary": null,
+      "rc": 1,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/mut_ref_unsafe_binder_not_copy_e0382.rs:1:12\n  |\n1 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0382]: use of moved value: `b`\n --> <TMP>/mut_ref_unsafe_binder_not_copy_e0382.rs:3:9\n  |\n2 | pub fn dup(b: unsafe<'a> &'a mut u32) -> (unsafe<'a> &'a mut u32, unsafe<...\n  |            - move occurs because `b` has type `unsafe<'a> &'a mut u32`, which does not implement the `Copy` trait\n3 |     (b, b)\n  |      -  ^ value used here after move\n  |      |\n  |      value moved here\n... (4 more lines)"
+    },
+    "nested_unsafe_binder_rejected_no_drop_e0277": {
+      "panic_summary": null,
+      "rc": 1,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/nested_unsafe_binder_rejected_no_drop_e0277.rs:1:12\n  |\n1 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0277]: the trait bound `for<'a> unsafe<'b> &'a &'b u64: Copy` is not satisfied\n --> <TMP>/nested_unsafe_binder_rejected_no_drop_e0277.rs:2:18\n  |\n2 | pub fn nested(_: unsafe<'a> unsafe<'b> &'a &'b u64) {}\n  |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ the trait `for<'a> Copy` is not implemented for `unsafe<'b> &'a &'b u64`\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+    },
+    "nested_unsafe_binder_via_manually_drop_ok": {
+      "panic_summary": null,
+      "rc": 0,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/nested_unsafe_binder_via_manually_drop_ok.rs:1:12\n  |\n1 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n"
+    },
+    "shared_ref_unsafe_binder_move_e0382": {
+      "panic_summary": null,
+      "rc": 1,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/shared_ref_unsafe_binder_move_e0382.rs:1:12\n  |\n1 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0382]: use of moved value: `b`\n --> <TMP>/shared_ref_unsafe_binder_move_e0382.rs:3:9\n  |\n2 | pub fn dup(b: unsafe<'a> &'a u64) -> (unsafe<'a> &'a u64, unsafe<'a> &'a ...\n  |            - move occurs because `b` has type `unsafe<'a> &'a u64`, which does not implement the `Copy` trait\n3 |     (b, b)\n  |      -  ^ value used here after move\n  |      |\n  |      value moved here\n... (4 more lines)"
+    },
+    "shared_ref_unsafe_binder_not_clone_e0277": {
+      "panic_summary": null,
+      "rc": 1,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/shared_ref_unsafe_binder_not_clone_e0277.rs:1:12\n  |\n1 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0277]: the trait bound `unsafe<'a> &'a u64: Clone` is not satisfied\n --> <TMP>/shared_ref_unsafe_binder_not_clone_e0277.rs:3:31\n  |\n3 | pub fn check() { need_clone::<unsafe<'a> &'a u64>(); }\n  |                               ^^^^^^^^^^^^^^^^^^ the trait `Clone` is not implemented for `unsafe<'a> &'a u64`\n  |\nnote: required by a bound in `need_clone`\n --> <TMP>/shared_ref_unsafe_binder_not_clone_e0277.rs:2:18\n  |\n... (6 more lines)"
+    },
+    "shared_ref_unsafe_binder_not_copy_e0277": {
+      "panic_summary": null,
+      "rc": 1,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/shared_ref_unsafe_binder_not_copy_e0277.rs:1:12\n  |\n1 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0277]: the trait bound `unsafe<'a> &'a u64: Copy` is not satisfied\n --> <TMP>/shared_ref_unsafe_binder_not_copy_e0277.rs:3:30\n  |\n3 | pub fn check() { need_copy::<unsafe<'a> &'a u64>(); }\n  |                              ^^^^^^^^^^^^^^^^^^ the trait `Copy` is not implemented for `unsafe<'a> &'a u64`\n  |\nnote: required by a bound in `need_copy`\n --> <TMP>/shared_ref_unsafe_binder_not_copy_e0277.rs:2:17\n  |\n... (6 more lines)"
+    },
+    "unwrap_binder_without_unsafe_rejected_e0133": {
+      "panic_summary": null,
+      "rc": 1,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/unwrap_binder_without_unsafe_rejected_e0133.rs:1:12\n  |\n1 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0133]: unsafe binder cast is unsafe and requires unsafe block information that may be required to uphold safety guarantees of a type\n --> <TMP>/unwrap_binder_without_unsafe_rejected_e0133.rs:4:6\n  |\n4 |     *unwrap_binder!(b)\n  |      ^^^^^^^^^^^^^^^^^ unsafe binder cast\n  |\n  = note: this error originates in the macro `unwrap_binder` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error; 1 warning emitted\n... (2 more lines)"
+    },
+    "wrap_binder_without_unsafe_rejected_e0133": {
+      "panic_summary": null,
+      "rc": 1,
+      "stderr": "warning: the feature `unsafe_binders` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMP>/wrap_binder_without_unsafe_rejected_e0133.rs:1:12\n  |\n1 | #![feature(unsafe_binders)]\n  |            ^^^^^^^^^^^^^^\n  |\n  = note: see issue #130516 <https://github.com/rust-lang/rust/issues/130516> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nerror[E0133]: unsafe binder cast is unsafe and requires unsafe block information that may be required to uphold safety guarantees of a type\n --> <TMP>/wrap_binder_without_unsafe_rejected_e0133.rs:4:5\n  |\n4 |     wrap_binder!(r)\n  |     ^^^^^^^^^^^^^^^ unsafe binder cast\n  |\n  = note: this error originates in the macro `wrap_binder` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error; 1 warning emitted\n... (2 more lines)"
+    }
+  },
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "timestamp_utc": "2026-11-22T12:04:56Z"
+}

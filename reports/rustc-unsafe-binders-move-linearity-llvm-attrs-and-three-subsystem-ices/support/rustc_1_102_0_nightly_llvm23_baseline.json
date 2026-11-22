@@ -1,0 +1,61 @@
+{
+  "part_a_live_execution_niche_and_miri": {
+    "default_v0_mangling_ice_rc": 101,
+    "default_v0_mangling_ice_stderr": "\nthread 'rustc' (718113) panicked at /rustc-dev/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/compiler/rustc_symbol_mangling/src/v0.rs:679:37:\nnot implemented\nstack backtrace:\n   0:     0x7f804120ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7f80418107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7f8041223a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[1f0690780a9acb4e]::io::write:",
+    "legacy_mangling_compile_rc": 0,
+    "legacy_mangling_compile_stderr": "",
+    "miri_default_validity_ice_rc": 101,
+    "miri_default_validity_ice_stderr": "\nthread 'rustc' (718273) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/compiler/rustc_const_eval/src/interpret/validity.rs:987:36:\nnot implemented: FIXME(unsafe_binder)\nstack backtrace:\n   0:     0x7f189520ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7f18958107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7f1895223a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[",
+    "miri_disable_validation_tb_rc": 0,
+    "miri_disable_validation_tb_stdout": "OPT_SHARED=8 OPT_MUT=8 OUT=42 SLOT=42",
+    "native_rc": 0,
+    "native_stdout": "OPT_SHARED=8 OPT_MUT=8 OUT=42 SLOT=42"
+  },
+  "part_b_llvm_ir_attrs_and_dangling_miri_probe": {
+    "dangling_binder_miri_sb_rc": 101,
+    "dangling_binder_miri_sb_stderr": "\nthread 'rustc' (718410) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/compiler/rustc_const_eval/src/interpret/validity.rs:987:36:\nnot implemented: FIXME(unsafe_binder)\nstack backtrace:\n   0:     0x7f899a20ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7f899a8107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7f899a223a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[1f0690780a9acb4e]::io::write::Write>::write_fmt\n   3:     0x7f899a1dff8a - std[c6455289cfba667d]::pa",
+    "dangling_binder_miri_sb_stdout": "",
+    "dangling_binder_miri_tb_rc": 101,
+    "dangling_binder_miri_tb_stderr": "\nthread 'rustc' (718485) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/compiler/rustc_const_eval/src/interpret/validity.rs:987:36:\nnot implemented: FIXME(unsafe_binder)\nstack backtrace:\n   0:     0x7f513de0ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7f513e4107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7f513de23a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[1f0690780a9acb4e]::io::write::Write>::write_fmt\n   3:     0x7f513dddff8a - std[c6455289cfba667d]::pa",
+    "dangling_binder_miri_tb_stdout": "",
+    "ir_compile_rc": 0,
+    "llvm_define_lines": [
+      "define noundef ptr @pass_plain_ref(ptr noalias nofree noundef readonly align 8 captures(address, read_provenance) dereferenceable(8) %r) unnamed_addr #0 !guid !4 {",
+      "define noundef i64 @pass_unsafe_binder_shared(ptr noundef nonnull %0) unnamed_addr #0 !guid !5 {",
+      "define noundef i64 @pass_unsafe_binder_unused(ptr noundef nonnull %_b) unnamed_addr #0 !guid !8 {"
+    ]
+  },
+  "part_c_safety_gates_and_gce_compiler_ice": {
+    "ctfe_const_unsafe_binder_ice_validity_rs_987": {
+      "rc": 101,
+      "stderr": "\nthread 'rustc' (718551) panicked at /rustc-dev/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/compiler/rustc_const_eval/src/interpret/validity.rs:987:36:\nnot implemented: FIXME(unsafe_binder)\nstack backtrace:\n   0:     0x7f165260ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7f1652c107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7f1652623a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[1f0690780a9acb4e]::io::write::Write>::write_fmt\n   3:     0x7f16525dff8a - std[c6455289cfba667d]::panicking::default_hook::{closure#0}\n   4:     0x7f16526027e3 - std[c6455289cfba667d]::panicking::default_hook\n   5:     0x7f1651380a09 - std[c6455289cfba667d]::panicking::update_hook::<alloc[1a53452dcf5e1664]::boxed::Box<rustc_driver_impl[15d0f20fcdaf3e6]::install_ice_hook::{closure#1}>>::{closur"
+    },
+    "forbid_unsafe_v0_mangling_size_of_ice_v0_rs_679": {
+      "rc": 101,
+      "stderr": "\nthread 'rustc' (718582) panicked at /rustc-dev/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/compiler/rustc_symbol_mangling/src/v0.rs:679:37:\nnot implemented\nstack backtrace:\n   0:     0x7fd01cc0ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrace as core[1f0690780a9acb4e]::fmt::Display>::fmt\n   1:     0x7fd01d2107e9 - core[1f0690780a9acb4e]::fmt::write\n   2:     0x7fd01cc23a3c - <std[c6455289cfba667d]::sys::stdio::unix::Stderr as core[1f0690780a9acb4e]::io::write::Write>::write_fmt\n   3:     0x7fd01cbdff8a - std[c6455289cfba667d]::panicking::default_hook::{closure#0}\n   4:     0x7fd01cc027e3 - std[c6455289cfba667d]::panicking::default_hook\n   5:     0x7fd01b980a09 - std[c6455289cfba667d]::panicking::update_hook::<alloc[1a53452dcf5e1664]::boxed::Box<rustc_driver_impl[15d0f20fcdaf3e6]::install_ice_hook::{closure#1}>>::{closure#0}\n   6:     0x7fd01cc02c82 - s"
+    },
+    "gce_wrap_unsafe_binder_ice_consts_rs_57": {
+      "rc": 101,
+      "stderr": "warning: `feature(generic_const_exprs)` is not supported with the next-generation trait solver\n --> <TMP>/gce_wrap_unsafe_binder_ice_consts_rs_57.rs:1:28\n  |\n1 | #![feature(unsafe_binders, generic_const_exprs)]\n  |                            ^^^^^^^^^^^^^^^^^^^\n  |\n  = note: `-Znext-solver=globally` is currently enabled by default for testing\n  = note: reverted the setting to `-Znext-solver=coherence` for this crate\n  = note: the currently stable trait solver will be used for this crate\n  = note: see issues #160895 <https://github.com/rust-lang/rust/issues/160895> for more information\n\n\nthread 'rustc' (718600) panicked at /rustc-dev/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/compiler/rustc_ty_utils/src/consts.rs:57:13:\nnot implemented: FIXME(unsafe_binders)\nstack backtrace:\n   0:     0x7f493a40ee86 - <<std[c6455289cfba667d]::sys::backtrace::BacktraceLock>::print::DisplayBacktrac"
+    },
+    "mut_ref_unsafe_binder_not_copy_e0382": {
+      "rc": 1,
+      "stderr": "error[E0382]: use of moved value: `b`\n --> <TMP>/mut_ref_unsafe_binder_not_copy_e0382.rs:4:9\n  |\n3 | pub fn dup(b: unsafe<'a> &'a mut u32) -> (unsafe<'a> &'a mut u32, unsafe<...\n  |            - move occurs because `b` has type `unsafe<'a> &'a mut u32`, which does not implement the `Copy` trait\n4 |     (b, b)\n  |      -  ^ value used here after move\n  |      |\n  |      value moved here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0382`.\n"
+    },
+    "shared_ref_unsafe_binder_not_copy_e0277": {
+      "rc": 1,
+      "stderr": "error[E0277]: the trait bound `unsafe<'a> &'a u64: Copy` is not satisfied\n --> <TMP>/shared_ref_unsafe_binder_not_copy_e0277.rs:4:30\n  |\n4 | pub fn check() { need_copy::<unsafe<'a> &'a u64>(); }\n  |                              ^^^^^^^^^^^^^^^^^^ the trait `Copy` is not implemented for `unsafe<'a> &'a u64`\n  |\nnote: required by a bound in `need_copy`\n --> <TMP>/shared_ref_unsafe_binder_not_copy_e0277.rs:3:17\n  |\n3 | fn need_copy<T: Copy>() {}\n  |                 ^^^^ required by this bound in `need_copy`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+    },
+    "unwrap_binder_without_unsafe_rejected_e0133": {
+      "rc": 1,
+      "stderr": "error[E0133]: unsafe binder cast is unsafe and requires unsafe block information that may be required to uphold safety guarantees of a type\n --> <TMP>/unwrap_binder_without_unsafe_rejected_e0133.rs:5:6\n  |\n5 |     *unwrap_binder!(b)\n  |      ^^^^^^^^^^^^^^^^^ unsafe binder cast\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0133`.\n"
+    },
+    "wrap_binder_without_unsafe_rejected_e0133": {
+      "rc": 1,
+      "stderr": "error[E0133]: unsafe binder cast is unsafe and requires unsafe block information that may be required to uphold safety guarantees of a type\n --> <TMP>/wrap_binder_without_unsafe_rejected_e0133.rs:5:5\n  |\n5 |     wrap_binder!(r)\n  |     ^^^^^^^^^^^^^^^ unsafe binder cast\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0133`.\n"
+    }
+  },
+  "provenance_note": "Preserved execution record collected on rustc 1.102.0-nightly (3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, 2026-11-11) / LLVM 23.1.5.",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "timestamp_utc": "2026-11-21T23:07:56Z"
+}

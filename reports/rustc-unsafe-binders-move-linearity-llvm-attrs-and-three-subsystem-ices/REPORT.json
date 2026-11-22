@@ -1,0 +1,56 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/types",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/types",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc (nightly 1.98.0-nightly, LLVM 22.1.6, Miri 0.1.0)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31); LLVM 22.1.6; miri 0.1.0"
+      }
+    },
+    {
+      "name": "rustc (nightly 1.102.0-nightly, LLVM 23.1.5)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11); LLVM 23.1.5"
+      }
+    },
+    {
+      "name": "rust-lang/rust main source snapshot",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+      }
+    },
+    {
+      "name": "Anneal trusted MIR boundary and vendored lean-miri",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
