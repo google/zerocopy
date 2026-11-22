@@ -84,7 +84,7 @@
     },
     {
       "module": "Miri.Memory.InitMask",
-      "olean_sha256": "f8c459dd6f4e76adee3239fcb114d4335123e486bb92339f685d820722a5528f",
+      "olean_sha256": "7d401b0cbce9d4f5c9f89f5ca5ae57c1c3f8f55a0e2f097ae5c8c307332ca3db",
       "path": "Miri/Memory/InitMask.lean"
     },
     {
@@ -96,12 +96,12 @@
     },
     {
       "module": "Miri.Memory.ProvenanceMap",
-      "olean_sha256": "945bd7ef8d487a86ff5825a2f2147c6509122d64e8795d78fc13d48a72cd9e00",
+      "olean_sha256": "5382f426c4aa7c9d1161ce29b14c40ad76e05eaa27dcf825050b6c7a26aebb5a",
       "path": "Miri/Memory/ProvenanceMap.lean"
     },
     {
       "module": "Miri.Memory.Allocation",
-      "olean_sha256": "cb4149d34a4907b8f8a27706572a1b237ff4df36ddd11b6c046a52990f426306",
+      "olean_sha256": "dd1c653af06c23fbe3c8bd44b7f6590b9a16d408e2f2121db00f73b3dc1b0e5c",
       "path": "Miri/Memory/Allocation.lean"
     },
     {
@@ -136,7 +136,7 @@
     },
     {
       "module": "Miri.Interpreter.MemoryOperand",
-      "olean_sha256": "8c012d474526841fef6c13798d12aaab11f439c45dc9dc6302de29ebd0cfc167",
+      "olean_sha256": "f7dc130aea8d2291ce906ea1a18d033f4ddce252a15a060c50270d7e3c3c1f34",
       "path": "Miri/Interpreter/MemoryOperand.lean"
     },
     {
@@ -356,7 +356,7 @@
     },
     {
       "module": "Miri.Interpreter.PlaceMachine",
-      "olean_sha256": "587b7cb2ff67729bbc335fc740c34eb961d4ce79c70e03b480fec294d9067069",
+      "olean_sha256": "ab8568a484be0f6269c2f8501e40956afc224f391d0ca96543f94a0e8c1f662d",
       "path": "Miri/Interpreter/PlaceMachine.lean"
     },
     {
@@ -426,7 +426,7 @@
     },
     {
       "module": "Miri.Interpreter.ValidityVisitor",
-      "olean_sha256": "4a3d529a29b9f4d884b9e3c0866beac75f49acc1da904bdc45d27d322a8d8b07",
+      "olean_sha256": "4fc8da85543879194435baa2b263b81df77549521f782725d3d2fcd98cad2a51",
       "path": "Miri/Interpreter/ValidityVisitor.lean"
     },
     {
@@ -516,7 +516,7 @@
     },
     {
       "module": "Miri.Concurrency.AtomicScalarMemory",
-      "olean_sha256": "62bccac84bd34fb374e48ed771aca9200c575da9c02afd31c4b3928253d9829e",
+      "olean_sha256": "c29f9c8079eb763ce42a67a3c92f358dc72c96faf1df2f23daf3e9a3caba4c47",
       "path": "Miri/Concurrency/AtomicScalarMemory.lean"
     },
     {
@@ -869,24 +869,6 @@
       "path": "Miri/Interpreter/PlaceMachine.lean",
       "rationale": "Add deinitMovedPlace to AccessConfig and takePendingMoveDeinit, deinitialize indirect moved operands in PlaceMachine.readImmediate after reading, and add raw snapshot helpers (copyRawMPlace, writeMemoryRawUninit, trySnapshotMPlace, readImmediateFromSnapshot) for in-place call arguments and CopyNonOverlapping.",
       "upstream_sha256": "573ff212da394ad9ec43f2f7010b1d6f3050dfcc218785168a66a0ebdc804e96"
-    },
-    {
-      "patched_sha256": "2d687a324591facd212a4c0badd8801ae9f408359fe6bffe7e132200fdb0259f",
-      "path": "Miri/Memory/Allocation.lean",
-      "rationale": "Add theorem-only specifications in Miri.Memory.Allocation for withExtra/mapExtra projections, fromBytes/tryNew constructors, getBytesUnchecked slicing, checked byte and little/big-endian scalar reads, and partial-range writeScalar/writeBytes/writeUninit/copy framing with no changes to runtime definitions, data structures, or visibility (tracked for upstreaming and removal in google/zerocopy#4009).",
-      "upstream_sha256": "94b720890b174bb072772408d633196f244e73ccd807b2a5830249755540f899"
-    },
-    {
-      "patched_sha256": "2a74da193d8212c7f64d5643e1a371863ecc5749f24350475b84a044c5a315be",
-      "path": "Miri/Memory/InitMask.lean",
-      "rationale": "Add theorem-only specifications in Miri.Memory.InitMask.WriteProof (get_ok_of_wellFormed, set_range_get, isRangeInitialized_nonempty_iff, isRangeInitialized_after_setRange_true, isRangeInitialized_frame, prepareCopy_of_uniform, applyCopy_singleton) with no changes to runtime definitions, data structures, or visibility (tracked for upstreaming and removal in google/zerocopy#4009).",
-      "upstream_sha256": "7e4fcce815a8ee7482191a27f2af7ad966a28ac00ad98b940ea78c1a533a72d1"
-    },
-    {
-      "patched_sha256": "b497efd99855707bb2e18138fa51c4fa295a5d845301ae8498e110af860b749e",
-      "path": "Miri/Memory/ProvenanceMap.lean",
-      "rationale": "Add theorem-only specifications in Miri.Memory.ProvenanceMap for empty provenance maps (rangeEmpty_new, readPtr_new, prepareCopy_new, applyCopy_empty) with no changes to runtime definitions, data structures, or visibility (tracked for upstreaming and removal in google/zerocopy#4009).",
-      "upstream_sha256": "d618bb1f04be82ce35674d43050eebe646882ecfc8ceba50db6ca52687e2a8ef"
     }
   ],
   "repository": "https://github.com/proofs-rs/lean-miri.git",
@@ -3256,7 +3238,6 @@
         "sha256": "2b01be765bc0040f90bc0e23c162a07d9fa5e5029d28b2e7005a69044255a7cb"
       },
       {
-        "patched_sha256": "2d687a324591facd212a4c0badd8801ae9f408359fe6bffe7e132200fdb0259f",
         "path": "Miri/Memory/Allocation.lean",
         "sha256": "94b720890b174bb072772408d633196f244e73ccd807b2a5830249755540f899"
       },
@@ -3277,7 +3258,6 @@
         "sha256": "c9c0bd40e80741e0716e434956587aa9e28f40c77f9bcb54c2654c153b7c438a"
       },
       {
-        "patched_sha256": "2a74da193d8212c7f64d5643e1a371863ecc5749f24350475b84a044c5a315be",
         "path": "Miri/Memory/InitMask.lean",
         "sha256": "7e4fcce815a8ee7482191a27f2af7ad966a28ac00ad98b940ea78c1a533a72d1"
       },
@@ -3302,7 +3282,6 @@
         "sha256": "30787d370f5f1ca6fc643730224166940da9a892f892e9a3d002273598c72f04"
       },
       {
-        "patched_sha256": "b497efd99855707bb2e18138fa51c4fa295a5d845301ae8498e110af860b749e",
         "path": "Miri/Memory/ProvenanceMap.lean",
         "sha256": "d618bb1f04be82ce35674d43050eebe646882ecfc8ceba50db6ca52687e2a8ef"
       },

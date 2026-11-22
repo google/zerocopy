@@ -15,6 +15,7 @@ import Anneal.MirCorrespondence.Codec
 import Anneal.MirCorrespondence.SimHelpers
 import Anneal.MirCorrespondence.ScalarEquiv
 import Anneal.MirCorrespondence.EnumEquiv
+import Anneal.MirCorrespondence.MemoryLemmas
 import Anneal.MirCorrespondence.MemRoundTrip
 import Anneal.MirCorrespondence.RvalueStep
 import Anneal.MirCorrespondence.StmtTermStep

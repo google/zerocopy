@@ -1689,7 +1689,7 @@ fn verifies_upstream_pin_and_rejects_tampering() {
     let pin = anneal_audit::verify_upstream_pin(&checkout.join("vendor/lean-miri")).unwrap();
     assert_eq!(pin.schema_version, 2);
     assert_eq!(pin.vendor_tree.file_count, 608);
-    assert_eq!(pin.patched_files.len(), 13);
+    assert_eq!(pin.patched_files.len(), 10);
     assert_eq!(pin.execution_machine_closure.len(), 160);
 
     // 1. Deleting `vendor/` in a repository checkout fails `Checker::run()`
@@ -1746,7 +1746,7 @@ fn verifies_upstream_pin_and_rejects_tampering() {
 
     // 2b. Patched `.lean` files are verified against `patched_sha256`, never
     // exempted from on-disk digest checking.
-    for patched_rel in ["Miri/Interpreter/Call.lean", "Miri/Memory/Allocation.lean"] {
+    for patched_rel in ["Miri/Interpreter/Call.lean", "Miri/Interpreter/PlaceMachine.lean"] {
         let patched_lean = vendor_copy.join(patched_rel);
         let orig_patched = fs::read(&patched_lean).unwrap();
         let expected_patched_sha = &pin

@@ -4018,7 +4018,7 @@ def verifyCorrConesAndClaims
 /-- Execute Phase 3 (`"correspondence-audit"`) on the Pass 2 correspondence
 and `lean-miri` closure environment.
 
-Pass 2 replays EVERY non-`isPartial` `.vendorMiri` declaration (39,088
+Pass 2 replays EVERY non-`isPartial` `.vendorMiri` declaration (38,728
 declarations across the 160 compiled closure modules) from scratch through the
 standalone Lean kernel onto the authenticated `.foundation` +
 `.sysrootFoundation` base on every run (cold build and warm cache hit alike),
