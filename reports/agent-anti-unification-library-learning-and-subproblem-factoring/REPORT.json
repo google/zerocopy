@@ -1,0 +1,119 @@
+{
+  "topics": [
+    "agents/multi-agent-coordination",
+    "agents/library-learning",
+    "agents/concurrent-scheduling",
+    "pl/anti-unification",
+    "pl/program-synthesis",
+    "compilers/equality-saturation",
+    "tooling/clone-detection",
+    "tooling/refactoring-mining",
+    "verification/equivalence-modulo-theories"
+  ],
+  "subjects": [
+    {
+      "name": "DreamCoder Wake-Sleep Inductive Program Synthesis and Version-Space Compressor (ellisk42/ec; Ellis et al., PLDI 2021)",
+      "identity": {
+        "arxiv": "2006.08381v1",
+        "doi": "10.1145/3453483.3454080",
+        "repository": "ellisk42/ec",
+        "revision": "cb0e63f5c33cd2de360b791038b0f5272750270e",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Stitch Corpus-Guided Top-Down Branch-and-Bound Library Learner (mlb2251/stitch; Bowers et al., POPL 2023)",
+      "identity": {
+        "arxiv": "2211.16605v2",
+        "doi": "10.1145/3571234",
+        "repository": "mlb2251/stitch",
+        "revision": "350804b7b35807c78bd21c313785ae5152ae2985",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "babble Equational Library Learning via Pairwise E-Graph Product-DFTA Anti-Unification and Beam Extraction (dcao/babble; Cao et al., POPL 2023)",
+      "identity": {
+        "arxiv": "2212.04596v1",
+        "doi": "10.1145/3571207",
+        "repository": "dcao/babble",
+        "revision": "115f920db52f124fd7247d1f80e811f3784e6896",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "LILO Neuro-Symbolic Library Induction with LLM Synthesis, Stitch Compression, and AutoDoc (gabegrand/lilo; Grand et al., ICLR 2024)",
+      "identity": {
+        "arxiv": "2310.19791v4",
+        "doi": "10.48550/arXiv.2310.19791",
+        "repository": "gabegrand/lilo",
+        "revision": "7812c49bc2ef660cab2c57631b816658011b60bb",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "RefactoringMiner 2.0 Zero-Threshold AST Statement-Mapping and Extract-Method Detector (tsantalis/RefactoringMiner; Tsantalis, Ketkar, & Dig, IEEE TSE 2022)",
+      "identity": {
+        "doi": "10.1109/TSE.2020.3007722; 10.1145/3180155.3180206",
+        "repository": "tsantalis/RefactoringMiner",
+        "revision": "7e7670b11464399f4539edfe1d7ab47746e21118",
+        "year": "2018-2022"
+      }
+    },
+    {
+      "name": "SourcererCC Token-Ordered Partial-Index and Positional-Filter Clone Detector (Mondego/SourcererCC; Sajnani et al., ICSE 2016)",
+      "identity": {
+        "arxiv": "1512.06448v1",
+        "doi": "10.1145/2884781.2884877",
+        "repository": "Mondego/SourcererCC",
+        "revision": "88314f51fdf3cd89103eb2c19fb56464308846c8",
+        "year": "2016"
+      }
+    },
+    {
+      "name": "BigCloneEval and BigCloneBench Inter-Project Type-1 through Type-4 Clone Recall Evaluator (jeffsvajlenko/BigCloneEval; Svajlenko et al., ICSME 2014)",
+      "identity": {
+        "doi": "10.1109/ICSME.2014.77",
+        "repository": "jeffsvajlenko/BigCloneEval",
+        "revision": "6d393ec8adb1d71493d09881ba520659b6c2c68e",
+        "year": "2014"
+      }
+    },
+    {
+      "name": "InnerSource Commons Structured Governance, Valuation, and Cross-Team Reuse Patterns (InnerSourceCommons/InnerSourcePatterns; Stol et al. 2014; Stol & Fitzgerald 2015; Capraro & Riehle 2016)",
+      "identity": {
+        "doi": "10.1145/2533685; 10.1109/MS.2014.77; 10.1145/2856821",
+        "repository": "InnerSourceCommons/InnerSourcePatterns",
+        "revision": "126f6152978677f858a186850951db154ac1e282",
+        "year": "2014-2016"
+      }
+    },
+    {
+      "name": "First-Order, Equational, and Higher-Order Anti-Unification Theory (Plotkin 1970; Reynolds 1970; Pfenning 1991; Miller 1991; Baumgartner et al. 2017; Cerna & Kutsia 2023)",
+      "identity": {
+        "arxiv": "2302.00277v5",
+        "doi": "10.1109/LICS.1991.151632; 10.1093/logcom/1.4.497; 10.1007/s10817-016-9383-3; 10.24963/ijcai.2023/736",
+        "venue": "Machine Intelligence 5 (1970), pp. 135-163; IEEE LICS 1991, pp. 74-85; J. Logic Comput. 1(4):497-536; J. Autom. Reason. 58(2):293-310; IJCAI-23, pp. 6563-6573",
+        "year": "1970-2023"
+      }
+    },
+    {
+      "name": "Code Clone Taxonomy, Architectural Patterns, and Inconsistent-Clone Fault Studies (Kapser & Godfrey EMSE 2008; Roy, Cordy, & Koschke SCP 2009; Juergens et al. ICSE 2009)",
+      "identity": {
+        "arxiv": "1701.05472v1",
+        "doi": "10.1007/s10664-008-9076-6; 10.1016/j.scico.2009.02.007; 10.1109/ICSE.2009.5070547",
+        "venue": "Empirical Softw. Eng. 13(6):645-692; Sci. Comput. Program. 74(7):470-495; Proc. 31st ICSE (2009), pp. 485-495",
+        "year": "2008-2009"
+      }
+    },
+    {
+      "name": "Modular Information Hiding, Rule-of-Three Generalization, and Overlapped Upstream-Downstream Scheduling (Parnas 1972; Brooks 1975; Krishnan, Eppinger, & Whitney 1997; Fowler 1999)",
+      "identity": {
+        "doi": "10.1145/361598.361623; 10.1287/mnsc.43.4.437",
+        "venue": "Commun. ACM 15(12):1053-1058; Management Science 43(4):437-451; Addison-Wesley (1975, 1999)",
+        "year": "1972-1999"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

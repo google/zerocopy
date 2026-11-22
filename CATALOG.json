@@ -1924,6 +1924,125 @@
         "vcs/proof-library-version-pinning"
       ]
     },
+    "agent-anti-unification-library-learning-and-subproblem-factoring": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2006.08381v1",
+            "doi": "10.1145/3453483.3454080",
+            "repository": "ellisk42/ec",
+            "revision": "cb0e63f5c33cd2de360b791038b0f5272750270e",
+            "year": "2021"
+          },
+          "name": "DreamCoder Wake-Sleep Inductive Program Synthesis and Version-Space Compressor (ellisk42/ec; Ellis et al., PLDI 2021)"
+        },
+        {
+          "identity": {
+            "arxiv": "2211.16605v2",
+            "doi": "10.1145/3571234",
+            "repository": "mlb2251/stitch",
+            "revision": "350804b7b35807c78bd21c313785ae5152ae2985",
+            "year": "2023"
+          },
+          "name": "Stitch Corpus-Guided Top-Down Branch-and-Bound Library Learner (mlb2251/stitch; Bowers et al., POPL 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2212.04596v1",
+            "doi": "10.1145/3571207",
+            "repository": "dcao/babble",
+            "revision": "115f920db52f124fd7247d1f80e811f3784e6896",
+            "year": "2023"
+          },
+          "name": "babble Equational Library Learning via Pairwise E-Graph Product-DFTA Anti-Unification and Beam Extraction (dcao/babble; Cao et al., POPL 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "2310.19791v4",
+            "doi": "10.48550/arXiv.2310.19791",
+            "repository": "gabegrand/lilo",
+            "revision": "7812c49bc2ef660cab2c57631b816658011b60bb",
+            "year": "2024"
+          },
+          "name": "LILO Neuro-Symbolic Library Induction with LLM Synthesis, Stitch Compression, and AutoDoc (gabegrand/lilo; Grand et al., ICLR 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TSE.2020.3007722; 10.1145/3180155.3180206",
+            "repository": "tsantalis/RefactoringMiner",
+            "revision": "7e7670b11464399f4539edfe1d7ab47746e21118",
+            "year": "2018-2022"
+          },
+          "name": "RefactoringMiner 2.0 Zero-Threshold AST Statement-Mapping and Extract-Method Detector (tsantalis/RefactoringMiner; Tsantalis, Ketkar, & Dig, IEEE TSE 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "1512.06448v1",
+            "doi": "10.1145/2884781.2884877",
+            "repository": "Mondego/SourcererCC",
+            "revision": "88314f51fdf3cd89103eb2c19fb56464308846c8",
+            "year": "2016"
+          },
+          "name": "SourcererCC Token-Ordered Partial-Index and Positional-Filter Clone Detector (Mondego/SourcererCC; Sajnani et al., ICSE 2016)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSME.2014.77",
+            "repository": "jeffsvajlenko/BigCloneEval",
+            "revision": "6d393ec8adb1d71493d09881ba520659b6c2c68e",
+            "year": "2014"
+          },
+          "name": "BigCloneEval and BigCloneBench Inter-Project Type-1 through Type-4 Clone Recall Evaluator (jeffsvajlenko/BigCloneEval; Svajlenko et al., ICSME 2014)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2533685; 10.1109/MS.2014.77; 10.1145/2856821",
+            "repository": "InnerSourceCommons/InnerSourcePatterns",
+            "revision": "126f6152978677f858a186850951db154ac1e282",
+            "year": "2014-2016"
+          },
+          "name": "InnerSource Commons Structured Governance, Valuation, and Cross-Team Reuse Patterns (InnerSourceCommons/InnerSourcePatterns; Stol et al. 2014; Stol & Fitzgerald 2015; Capraro & Riehle 2016)"
+        },
+        {
+          "identity": {
+            "arxiv": "2302.00277v5",
+            "doi": "10.1109/LICS.1991.151632; 10.1093/logcom/1.4.497; 10.1007/s10817-016-9383-3; 10.24963/ijcai.2023/736",
+            "venue": "Machine Intelligence 5 (1970), pp. 135-163; IEEE LICS 1991, pp. 74-85; J. Logic Comput. 1(4):497-536; J. Autom. Reason. 58(2):293-310; IJCAI-23, pp. 6563-6573",
+            "year": "1970-2023"
+          },
+          "name": "First-Order, Equational, and Higher-Order Anti-Unification Theory (Plotkin 1970; Reynolds 1970; Pfenning 1991; Miller 1991; Baumgartner et al. 2017; Cerna & Kutsia 2023)"
+        },
+        {
+          "identity": {
+            "arxiv": "1701.05472v1",
+            "doi": "10.1007/s10664-008-9076-6; 10.1016/j.scico.2009.02.007; 10.1109/ICSE.2009.5070547",
+            "venue": "Empirical Softw. Eng. 13(6):645-692; Sci. Comput. Program. 74(7):470-495; Proc. 31st ICSE (2009), pp. 485-495",
+            "year": "2008-2009"
+          },
+          "name": "Code Clone Taxonomy, Architectural Patterns, and Inconsistent-Clone Fault Studies (Kapser & Godfrey EMSE 2008; Roy, Cordy, & Koschke SCP 2009; Juergens et al. ICSE 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/361598.361623; 10.1287/mnsc.43.4.437",
+            "venue": "Commun. ACM 15(12):1053-1058; Management Science 43(4):437-451; Addison-Wesley (1975, 1999)",
+            "year": "1972-1999"
+          },
+          "name": "Modular Information Hiding, Rule-of-Three Generalization, and Overlapped Upstream-Downstream Scheduling (Parnas 1972; Brooks 1975; Krishnan, Eppinger, & Whitney 1997; Fowler 1999)"
+        }
+      ],
+      "topics": [
+        "agents/multi-agent-coordination",
+        "agents/library-learning",
+        "agents/concurrent-scheduling",
+        "pl/anti-unification",
+        "pl/program-synthesis",
+        "compilers/equality-saturation",
+        "tooling/clone-detection",
+        "tooling/refactoring-mining",
+        "verification/equivalence-modulo-theories"
+      ]
+    },
     "agent-behavioral-evaluation-judge-biases-code-review-and-prose-faithfulness": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -3813,6 +3932,135 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-interruption-cost-boundary-batching-and-transactive-memory": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "prometheus/alertmanager",
+            "revision": "5dea4dedd70f7e770c34d33b96449ee27e5c1aae",
+            "year": "2026"
+          },
+          "name": "Prometheus Alertmanager Two-Stage GroupWait/GroupInterval Dispatcher and Root-Cause Inhibitor (prometheus/alertmanager)"
+        },
+        {
+          "identity": {
+            "repository": "tokio-rs/tokio",
+            "revision": "675ba8164071a6eee3dd1f3cb4fbdc1d3664396e",
+            "year": "2026"
+          },
+          "name": "Tokio Watch Latest-State Channel and Cooperative Poll-Budget Scheduler (tokio-rs/tokio)"
+        },
+        {
+          "identity": {
+            "arxiv": "2312.07104v2",
+            "doi": "10.48550/arXiv.2312.07104",
+            "repository": "sgl-project/sglang",
+            "revision": "448764da636a8500015f461afbb91e3d2d23c94f",
+            "year": "2024-2026"
+          },
+          "name": "SGLang RadixAttention Paged Longest-Prefix KV-Cache Engine (sgl-project/sglang; Zheng et al., NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "repository": "langchain-ai/langgraph",
+            "revision": "c6335a4255dc1d8abc25a7677f9c072c7ab27b9c",
+            "year": "2026"
+          },
+          "name": "LangGraph Pregel Superstep Channel Write Application, Interrupt Checkpoints, and BinaryOperatorAggregate (langchain-ai/langgraph)"
+        },
+        {
+          "identity": {
+            "repository": "temporalio/sdk-python",
+            "revision": "5c925a41b36b34d9ce32d03f1d1f07faa35b348a",
+            "year": "2026"
+          },
+          "name": "Temporal Python SDK Single-Batch Four-Bucket Workflow Activation Engine (temporalio/sdk-python)"
+        },
+        {
+          "identity": {
+            "arxiv": "1604.06766v1",
+            "doi": "10.1109/ICPC.2016.7503718; 10.1145/1806799.1806856; 10.1145/2512207",
+            "repository": "aserg-ufmg/Truck-Factor",
+            "revision": "614600ed6b36bb8f452bc6eab7c9b95320f5d7be",
+            "year": "2010-2024"
+          },
+          "name": "Git Truck Factor Degree-of-Authorship Calculator and Greedy Truck Factor Solver (aserg-ufmg/Truck-Factor; Avelino et al., ICPC 2016; Fritz et al., ICSE 2010 & ACM TOSEM 2014)"
+        },
+        {
+          "identity": {
+            "repository": "erikbern/git-of-theseus",
+            "revision": "961bda027ffa9fcd8bbe99d5b8809cc0eaa86464",
+            "year": "2023"
+          },
+          "name": "Git-of-Theseus Codebase Cohort Survival and Half-Life Analyzer (erikbern/git-of-theseus)"
+        },
+        {
+          "identity": {
+            "repository": "hmarr/codeowners",
+            "revision": "11d3ff2659b769bcb43ddef81a6ab19d1205d9c2",
+            "year": "2026"
+          },
+          "name": "Go Gitignore-Style CODEOWNERS Reverse-Precedence Matcher (hmarr/codeowners)"
+        },
+        {
+          "identity": {
+            "arxiv": "2505.02709v1",
+            "doi": "10.1609/aies.v8i1.36541",
+            "repository": "RaunoArike/goal-drift-evals",
+            "revision": "20362f55e785e19a96a712176f5a60eaa7f4b997",
+            "venue": "Proc. 8th AAAI/ACM Conf. on AI, Ethics, and Society (AIES 2025), Vol. 8(1), pp. 192-203",
+            "year": "2025"
+          },
+          "name": "Long-Context Agent Goal Drift Evaluation Suite and Study (RaunoArike/goal-drift-evals; Arike, Donoway, Bartsch, & Hobbhahn, AAAI/ACM AIES 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "1301.6707v1",
+            "doi": "10.1145/289444.289495; 10.1023/A:1021271517844; 10.1016/S0364-0213(01)00058-1; 10.1145/1056808.1056948; 10.1145/1124772.1124882; 10.1016/j.chb.2005.12.009; 10.1145/1357054.1357070; 10.1145/1357054.1357072; 10.1109/ICPC.2009.5090030; 10.1007/s11219-010-9104-9",
+            "year": "1998-2011"
+          },
+          "name": "Cognitive Goal-Activation, Subtask-Boundary Interruption, and Programmer Resumption Studies (Gutwin & Greenberg 1998, 2002; Horvitz, Jacobs, & Hovel 1999; Altmann & Trafton 2002; Iqbal & Bailey 2005, 2006, 2008; Bailey & Konstan 2006; Mark, Gudith, & Klocke 2008; Parnin & Rugaber 2009, 2011)"
+        },
+        {
+          "identity": {
+            "arxiv": "2311.04934v2; 2302.00093v3; 2604.06452v2",
+            "doi": "10.48550/arXiv.2311.04934; 10.48550/arXiv.2302.00093; 10.48550/arXiv.2604.06452",
+            "year": "2023-2026"
+          },
+          "name": "Prompt Prefix Caching, Irrelevant-Context Distraction, and Calibrated Multi-Agent Interruption (Gim et al., MLSys 2024; Shi et al., ICML 2023; Wang et al., HandRaiser 2026)"
+        },
+        {
+          "identity": {
+            "doi": "10.1287/mnsc.22.2.202; 10.1287/mnsc.23.7.775; 10.1287/opre.31.4.705",
+            "venue": "Management Science 22(2) & 23(7); Operations Research 31(4)",
+            "year": "1975-1983"
+          },
+          "name": "M/G/1 Queueing Vacation, T-Policy, and Rest-Period Variance Foundations (Levy & Yechiali 1975; Heyman 1977; Scholl & Kleinrock 1983)"
+        },
+        {
+          "identity": {
+            "doi": "10.1177/0146167295214009; 10.1287/mnsc.46.12.1554.12072; 10.1145/581339.581401; 10.1109/TSE.2003.1205177; 10.1037/0021-9010.88.4.587; 10.1287/orsc.1040.0069; 10.1111/j.1467-6486.2012.01077.x; 10.25300/MISQ/2017/41.1.03",
+            "pmid": "12940401",
+            "year": "1975-2017"
+          },
+          "name": "Transactive Memory Systems, Distributed Software Delay, and Expertise Coordination Foundations (Brooks 1975; Wegner 1987; Liang, Moreland, & Argote 1995; Faraj & Sproull 2000; Mockus & Herbsleb 2002; Espinosa et al. 2002; Herbsleb & Mockus 2003; Lewis 2003; Brandon & Hollingshead 2004; Argote & Ren 2012; Kudaravalli, Faraj, & Johnson 2017)"
+        }
+      ],
+      "topics": [
+        "agents/multi-agent-coordination",
+        "agents/interruption-management",
+        "agents/workspace-awareness",
+        "agents/transactive-memory",
+        "agents/kv-cache",
+        "agents/calibration",
+        "runtimes/cooperative-scheduling",
+        "systems/queueing-theory",
+        "systems/notification-batching",
+        "vcs/code-ownership",
+        "tooling/agent-harnesses"
+      ]
+    },
     "agent-planning-decomposition-error-recovery-and-long-horizon-execution": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -4348,6 +4596,114 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-software-reuse-economics-faceted-catalogs-and-registry-rot": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "backstage/backstage",
+            "revision": "feeadd4d4efcbda9f1573b95e356e0f3fc0b5d17",
+            "year": "2026"
+          },
+          "name": "Backstage Developer Portal, Entity Stitcher, Orphan Garbage Collector, and AiResource / MCP-Server Catalog Schemas (backstage/backstage)"
+        },
+        {
+          "identity": {
+            "repository": "modelcontextprotocol/registry",
+            "revision": "9432a0a9aa9e7092cf93f08226426487f8416423",
+            "schema_version": "2025-12-11",
+            "year": "2026"
+          },
+          "name": "Model Context Protocol Official Server Registry and Manifest Validator Suite (modelcontextprotocol/registry)"
+        },
+        {
+          "identity": {
+            "repository": "open-telemetry/semantic-conventions",
+            "revision": "68dacf3a1a555e9c3358f9d1ea5d0c310d424d1e",
+            "year": "2026"
+          },
+          "name": "OpenTelemetry Semantic Conventions OPA Rego Namespace Ownership and Reference Policies (open-telemetry/semantic-conventions)"
+        },
+        {
+          "identity": {
+            "repository": "adr/madr",
+            "revision": "ba75bb1b20d42af5746b246ad348c202419ae681",
+            "year": "2026"
+          },
+          "name": "Markdown Architectural Decision Records Template and Fitness-Function Confirmation Hook (adr/madr)"
+        },
+        {
+          "identity": {
+            "repository": "TNG/ArchUnit",
+            "revision": "df8ea3d7c16118eee4c8d676ae115187e1d37dcc",
+            "year": "2026"
+          },
+          "name": "ArchUnit FreezingArchRule Violation Store and Fuzzy Line Ratchet (TNG/ArchUnit)"
+        },
+        {
+          "identity": {
+            "repository": "OAI/OpenAPI-Specification",
+            "revision": "4f86429f134f7e48b6351563549b4502fc69de52",
+            "version": "3.1.2",
+            "year": "2026"
+          },
+          "name": "OpenAPI Specification v3.1.2 Normative Deprecation Lifecycle Schema (OAI/OpenAPI-Specification)"
+        },
+        {
+          "identity": {
+            "artifact": "reuse.arff",
+            "doi": "10.5281/zenodo.322466; 10.1109/TSE.2002.995420",
+            "md5": "aceb52b653d187bcbbe0fd266adfbaf8",
+            "sha256": "814af0a531c6d199717fd689b16b254ce7219e907ac60e61795cea4ba09ef18c",
+            "year": "2002-2017"
+          },
+          "name": "TERA-PROMISE Industrial Software-Reuse Archival Dataset (Morisio, Ezran, & Tully, 2002; reuse.arff)"
+        },
+        {
+          "identity": {
+            "repository": "opensciences/opensciences.github.io",
+            "revision": "58f779c9b8ab26d7574c0fd461059f6adecff627",
+            "year": "2017"
+          },
+          "name": "OpenSciences TERA-PROMISE Reuse Dataset Catalog Entry (opensciences/opensciences.github.io)"
+        },
+        {
+          "identity": {
+            "doi": "10.2307/2392547; 10.1111/j.1467-9310.1982.tb00478.x; 10.1145/130844.130856; 10.1109/32.391379; 10.1145/203241.203260; 10.1109/32.491652; 10.1109/TSE.2002.995420; 10.1109/TSE.2003.1199076; 10.1109/TSE.2005.85; 10.5465/amp.2013.0091; 10.1109/MS.2014.77; 10.1016/j.respol.2019.103822",
+            "year": "1982-2019"
+          },
+          "name": "Organizational NIH Syndrome, Reuse Transaction-Cost Economics, and Industrial Reuse Studies (Katz 1982; Katz & Allen 1982; Krueger 1992; Mili, Mili, & Mili 1995; Frakes & Fox 1995, 1996; Morisio, Ezran, & Tully 2002; Menzies & Di Stefano 2003; Frakes & Kang 2005; Antons & Piller 2015; Stol & Fitzgerald 2015; Hannen et al. 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/32206.32212; 10.1109/MS.1987.229789; 10.1145/103167.103176; 10.1145/290159.290160; 10.1145/323830.323845; 10.1023/B:COSU.0000045805.77534.2a; 10.1080/07421222.2001.11045671; 10.1145/581339.581402; 10.1007/s10515-005-6206-x; 10.1109/MS.2006.135; 10.17705/1jais.00195",
+            "year": "1987-2009"
+          },
+          "name": "Faceted Software Classification, Organizational Memory Intermediaries, and Proactive Reuse Delivery (Furnas et al. 1987; Prieto-Diaz & Freeman 1987; Prieto-Diaz 1991; Ackerman 1998; Ackerman & Halverson 2000, 2004; Markus 2001; Ye & Fischer 2002, 2005; Desouza, Awazu, & Baloh 2006; Pipek & Wulf 2009)"
+        },
+        {
+          "identity": {
+            "doi": "10.1177/009365087014005004; 10.4135/9781483325385.n10; 10.1016/S0268-4012(99)00051-1; 10.1177/0170840602235001; 10.1177/0093650202029002002; 10.1109/MS.2003.1241364; 10.1080/01972240490507974; 10.1109/MS.2005.27; 10.1109/WICSA.2005.61; 10.1109/ICSE.2019.00122; 10.1145/3377811.3380405",
+            "venue": "Comm. Res.; Organizations and Communication Technology (Sage); Social Dilemmas (Pergamon); IJIM; Organ. Stud.; IEEE Software; The Information Society; WICSA; IEEE/ACM ICSE",
+            "year": "1987-2020"
+          },
+          "name": "Discretionary-Database Public Goods, Documentation Staleness, Architectural Decisions, and Information Overload (Thorn & Connolly 1987; Connolly & Thorn 1990; Connolly, Thorn, & Heminger 1992; Edmunds & Morris 2000; Cabrera & Cabrera 2002; Kalman et al. 2002; Lethbridge, Singer, & Forward 2003; Eppler & Mengis 2004; Tyree & Akerman 2005; Jansen & Bosch 2005; Aghajani et al. 2019, 2020)"
+        }
+      ],
+      "topics": [
+        "agents/knowledge-management",
+        "agents/skill-catalogs",
+        "agents/software-reuse",
+        "agents/registry-governance",
+        "agents/information-overload",
+        "tooling/developer-portals",
+        "tooling/faceted-classification",
+        "tooling/architecture-decision-records",
+        "systems/public-goods-economics",
+        "verification/architectural-fitness-functions",
+        "security/registry-validation"
+      ]
+    },
     "agent-structured-outputs-constrained-decoding-tool-schemas-and-computer-use": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -4662,6 +5018,151 @@
         "verification/specifications",
         "tooling/test-generation",
         "tooling/agent-harnesses"
+      ]
+    },
+    "agent-trace-redundancy-metrics-and-multi-agent-benchmarks": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "arxiv": "2503.01935v2",
+            "doi": "10.48550/arXiv.2503.01935",
+            "repository": "MultiagentBench/MARBLE",
+            "revision": "8892e9cfb69282db568e6b018f2b1cd8eec31ba6",
+            "year": "2025-2026"
+          },
+          "name": "MultiAgentBench / MARBLE Multi-Agent Collaboration and Competition Framework (MultiagentBench/MARBLE; Zhu et al., ACL 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.14161v3",
+            "doi": "10.48550/arXiv.2412.14161",
+            "repository": "TheAgentCompany/TheAgentCompany",
+            "revision": "98b68ef82a47690c316f42fddb05baafaab56851",
+            "year": "2024-2025"
+          },
+          "name": "TheAgentCompany Consequential Workplace Agent Benchmark (TheAgentCompany/TheAgentCompany; Xu et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.06994v2",
+            "doi": "10.48550/arXiv.2502.06994",
+            "repository": "xhguo7/SyncMind",
+            "revision": "a48c469fc71a9f4f968c74813c66adf61be85f02",
+            "year": "2025"
+          },
+          "name": "SyncMind and SyncBench Out-of-Sync Collaborative Recovery Benchmark (xhguo7/SyncMind; Guo et al., ICML 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.12115v4",
+            "doi": "10.48550/arXiv.2502.12115",
+            "redirect_repository": "openai/SWELancer-Benchmark",
+            "redirect_revision": "4afbde31ba075992ffd96209f6533de8e450becd",
+            "repository": "openai/preparedness",
+            "revision": "b78dab1da774a6456b1ed9c48c9ff194ee3ff36d",
+            "year": "2025-2026"
+          },
+          "name": "SWE-Lancer Benchmark in OpenAI Preparedness Repository (openai/preparedness & openai/SWELancer-Benchmark; Miserendino et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2412.01769v1",
+            "doi": "10.48550/arXiv.2412.01769",
+            "repository": "commit-0/commit0",
+            "revision": "1123db33219ee1bfcc735304cb4308663e329aeb",
+            "year": "2024-2026"
+          },
+          "name": "Commit0 From-Scratch Library Generation Benchmark (commit-0/commit0; Zhao et al., 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.13295v2",
+            "doi": "10.48550/arXiv.2601.13295",
+            "repository": "cooperbench/CooperBench",
+            "revision": "63b9d44d9f39a02fccf5bf0052db48a917a011fd",
+            "year": "2026"
+          },
+          "name": "CooperBench Cooperative Multi-Agent Coding Benchmark (cooperbench/CooperBench; Khatua et al., 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2401.13178v2",
+            "doi": "10.48550/arXiv.2401.13178",
+            "repository": "hkust-nlp/AgentBoard",
+            "revision": "bb7255e2daf1989069a186dad9e53f70680961db",
+            "year": "2024"
+          },
+          "name": "AgentBoard Multi-Turn Analytical Agent Evaluation Framework (hkust-nlp/AgentBoard; Ma et al., NeurIPS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2505.08638v3",
+            "doi": "10.48550/arXiv.2505.08638",
+            "repository": "patronus-ai/trail-benchmark",
+            "revision": "0ffbed9db859b4a66250dc783fa4dccf86869595",
+            "year": "2025"
+          },
+          "name": "TRAIL Trace Reasoning and Agentic Issue Localization Benchmark (patronus-ai/trail-benchmark; Deshpande et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2507.12806v2",
+            "doi": "10.48550/arXiv.2507.12806",
+            "repository": "SalesforceAIResearch/MCPEval",
+            "revision": "70e1f903175a255c2967615914240f60d4d12a50",
+            "year": "2025-2026"
+          },
+          "name": "MCPEval Automatic MCP-Based Deep Agent Evaluator (SalesforceAIResearch/MCPEval; Liu et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2508.20453v1",
+            "doi": "10.48550/arXiv.2508.20453",
+            "repository": "Accenture/mcp-bench",
+            "revision": "7a8eaeae83a842a2949080acc5473f65e1569daf",
+            "year": "2025"
+          },
+          "name": "MCP-Bench Multi-Server Tool-Orchestration Benchmark (Accenture/mcp-bench; Wang et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2502.20073v3",
+            "doi": "10.18653/v1/2025.emnlp-main.249",
+            "repository": "YusaeMeow/Collab-Overcooked",
+            "revision": "d7ae1aa5e63d8ec076e96ee437fcbbd095278ef4",
+            "venue": "Proc. 2025 Conf. on Empirical Methods in Natural Language Processing (EMNLP 2025), pp. 4922-4951",
+            "year": "2025-2026"
+          },
+          "name": "Collab-Overcooked Collaborative Agent Benchmark and Trajectory Efficiency Evaluator (YusaeMeow/Collab-Overcooked; Sun et al., EMNLP 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2610.24206v2; 2509.16941v2",
+            "doi": "10.48550/arXiv.2610.24206; 10.48550/arXiv.2509.16941",
+            "year": "2025-2026"
+          },
+          "name": "SWE-Bench Pro V2 and V1 Benchmark Contamination and Harness Hardening Audit (Dan et al., 2026; Deng et al., 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/TIT.2005.844059; 10.4310/CIS.2005.v5.n4.a1; 10.1109/EDOC.2011.12; 10.1145/2025113.2025121; 10.1109/MSR.2012.6224298; 10.1145/2408776.2408794",
+            "venue": "IEEE Trans. Inf. Theory 51(4); Commun. Inf. Syst. 5(4); IEEE EDOC 2011; ACM ESEC/FSE 2011; IEEE MSR 2012; Commun. ACM 56(2)",
+            "year": "2005-2013"
+          },
+          "name": "Trace Conformance, Normalized Compression Pitfalls, Tail Hedging, and Supplementary Bug-Fix Foundations (Cilibrasi & Vitanyi 2005; Cebrian, Alfonseca, & Ortega 2005; Adriansyah, van Dongen, & van der Aalst 2011; Yin et al. 2011; Park, Kim, Ray, & Bae 2012; Dean & Barroso 2013)"
+        }
+      ],
+      "topics": [
+        "agents",
+        "agents/evaluation",
+        "agents/hedging-and-redundancy",
+        "agents/multi-agent-coordination",
+        "agents/software-engineering-benchmarks",
+        "agents/trace-efficiency",
+        "tooling/benchmark-harnesses",
+        "vcs/merge-conflicts",
+        "verification/conformance-checking"
       ]
     },
     "airbus-do-333-unit-proof-observable-mcdc-fault-finding-kind2-cocospec-agree-contracts-and-copilot-monitors": {

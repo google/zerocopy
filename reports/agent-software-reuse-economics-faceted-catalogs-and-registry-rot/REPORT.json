@@ -1,0 +1,108 @@
+{
+  "topics": [
+    "agents/knowledge-management",
+    "agents/skill-catalogs",
+    "agents/software-reuse",
+    "agents/registry-governance",
+    "agents/information-overload",
+    "tooling/developer-portals",
+    "tooling/faceted-classification",
+    "tooling/architecture-decision-records",
+    "systems/public-goods-economics",
+    "verification/architectural-fitness-functions",
+    "security/registry-validation"
+  ],
+  "subjects": [
+    {
+      "name": "Backstage Developer Portal, Entity Stitcher, Orphan Garbage Collector, and AiResource / MCP-Server Catalog Schemas (backstage/backstage)",
+      "identity": {
+        "repository": "backstage/backstage",
+        "revision": "feeadd4d4efcbda9f1573b95e356e0f3fc0b5d17",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Model Context Protocol Official Server Registry and Manifest Validator Suite (modelcontextprotocol/registry)",
+      "identity": {
+        "repository": "modelcontextprotocol/registry",
+        "revision": "9432a0a9aa9e7092cf93f08226426487f8416423",
+        "schema_version": "2025-12-11",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "OpenTelemetry Semantic Conventions OPA Rego Namespace Ownership and Reference Policies (open-telemetry/semantic-conventions)",
+      "identity": {
+        "repository": "open-telemetry/semantic-conventions",
+        "revision": "68dacf3a1a555e9c3358f9d1ea5d0c310d424d1e",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Markdown Architectural Decision Records Template and Fitness-Function Confirmation Hook (adr/madr)",
+      "identity": {
+        "repository": "adr/madr",
+        "revision": "ba75bb1b20d42af5746b246ad348c202419ae681",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "ArchUnit FreezingArchRule Violation Store and Fuzzy Line Ratchet (TNG/ArchUnit)",
+      "identity": {
+        "repository": "TNG/ArchUnit",
+        "revision": "df8ea3d7c16118eee4c8d676ae115187e1d37dcc",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "OpenAPI Specification v3.1.2 Normative Deprecation Lifecycle Schema (OAI/OpenAPI-Specification)",
+      "identity": {
+        "repository": "OAI/OpenAPI-Specification",
+        "revision": "4f86429f134f7e48b6351563549b4502fc69de52",
+        "version": "3.1.2",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "TERA-PROMISE Industrial Software-Reuse Archival Dataset (Morisio, Ezran, & Tully, 2002; reuse.arff)",
+      "identity": {
+        "artifact": "reuse.arff",
+        "doi": "10.5281/zenodo.322466; 10.1109/TSE.2002.995420",
+        "md5": "aceb52b653d187bcbbe0fd266adfbaf8",
+        "sha256": "814af0a531c6d199717fd689b16b254ce7219e907ac60e61795cea4ba09ef18c",
+        "year": "2002-2017"
+      }
+    },
+    {
+      "name": "OpenSciences TERA-PROMISE Reuse Dataset Catalog Entry (opensciences/opensciences.github.io)",
+      "identity": {
+        "repository": "opensciences/opensciences.github.io",
+        "revision": "58f779c9b8ab26d7574c0fd461059f6adecff627",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "Organizational NIH Syndrome, Reuse Transaction-Cost Economics, and Industrial Reuse Studies (Katz 1982; Katz & Allen 1982; Krueger 1992; Mili, Mili, & Mili 1995; Frakes & Fox 1995, 1996; Morisio, Ezran, & Tully 2002; Menzies & Di Stefano 2003; Frakes & Kang 2005; Antons & Piller 2015; Stol & Fitzgerald 2015; Hannen et al. 2019)",
+      "identity": {
+        "doi": "10.2307/2392547; 10.1111/j.1467-9310.1982.tb00478.x; 10.1145/130844.130856; 10.1109/32.391379; 10.1145/203241.203260; 10.1109/32.491652; 10.1109/TSE.2002.995420; 10.1109/TSE.2003.1199076; 10.1109/TSE.2005.85; 10.5465/amp.2013.0091; 10.1109/MS.2014.77; 10.1016/j.respol.2019.103822",
+        "year": "1982-2019"
+      }
+    },
+    {
+      "name": "Faceted Software Classification, Organizational Memory Intermediaries, and Proactive Reuse Delivery (Furnas et al. 1987; Prieto-Diaz & Freeman 1987; Prieto-Diaz 1991; Ackerman 1998; Ackerman & Halverson 2000, 2004; Markus 2001; Ye & Fischer 2002, 2005; Desouza, Awazu, & Baloh 2006; Pipek & Wulf 2009)",
+      "identity": {
+        "doi": "10.1145/32206.32212; 10.1109/MS.1987.229789; 10.1145/103167.103176; 10.1145/290159.290160; 10.1145/323830.323845; 10.1023/B:COSU.0000045805.77534.2a; 10.1080/07421222.2001.11045671; 10.1145/581339.581402; 10.1007/s10515-005-6206-x; 10.1109/MS.2006.135; 10.17705/1jais.00195",
+        "year": "1987-2009"
+      }
+    },
+    {
+      "name": "Discretionary-Database Public Goods, Documentation Staleness, Architectural Decisions, and Information Overload (Thorn & Connolly 1987; Connolly & Thorn 1990; Connolly, Thorn, & Heminger 1992; Edmunds & Morris 2000; Cabrera & Cabrera 2002; Kalman et al. 2002; Lethbridge, Singer, & Forward 2003; Eppler & Mengis 2004; Tyree & Akerman 2005; Jansen & Bosch 2005; Aghajani et al. 2019, 2020)",
+      "identity": {
+        "doi": "10.1177/009365087014005004; 10.4135/9781483325385.n10; 10.1016/S0268-4012(99)00051-1; 10.1177/0170840602235001; 10.1177/0093650202029002002; 10.1109/MS.2003.1241364; 10.1080/01972240490507974; 10.1109/MS.2005.27; 10.1109/WICSA.2005.61; 10.1109/ICSE.2019.00122; 10.1145/3377811.3380405",
+        "venue": "Comm. Res.; Organizations and Communication Technology (Sage); Social Dilemmas (Pergamon); IJIM; Organ. Stud.; IEEE Software; The Information Society; WICSA; IEEE/ACM ICSE",
+        "year": "1987-2020"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

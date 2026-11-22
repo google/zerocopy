@@ -1,0 +1,129 @@
+{
+  "topics": [
+    "agents/multi-agent-coordination",
+    "agents/interruption-management",
+    "agents/workspace-awareness",
+    "agents/transactive-memory",
+    "agents/kv-cache",
+    "agents/calibration",
+    "runtimes/cooperative-scheduling",
+    "systems/queueing-theory",
+    "systems/notification-batching",
+    "vcs/code-ownership",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "Prometheus Alertmanager Two-Stage GroupWait/GroupInterval Dispatcher and Root-Cause Inhibitor (prometheus/alertmanager)",
+      "identity": {
+        "repository": "prometheus/alertmanager",
+        "revision": "5dea4dedd70f7e770c34d33b96449ee27e5c1aae",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Tokio Watch Latest-State Channel and Cooperative Poll-Budget Scheduler (tokio-rs/tokio)",
+      "identity": {
+        "repository": "tokio-rs/tokio",
+        "revision": "675ba8164071a6eee3dd1f3cb4fbdc1d3664396e",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "SGLang RadixAttention Paged Longest-Prefix KV-Cache Engine (sgl-project/sglang; Zheng et al., NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2312.07104v2",
+        "doi": "10.48550/arXiv.2312.07104",
+        "repository": "sgl-project/sglang",
+        "revision": "448764da636a8500015f461afbb91e3d2d23c94f",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "LangGraph Pregel Superstep Channel Write Application, Interrupt Checkpoints, and BinaryOperatorAggregate (langchain-ai/langgraph)",
+      "identity": {
+        "repository": "langchain-ai/langgraph",
+        "revision": "c6335a4255dc1d8abc25a7677f9c072c7ab27b9c",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Temporal Python SDK Single-Batch Four-Bucket Workflow Activation Engine (temporalio/sdk-python)",
+      "identity": {
+        "repository": "temporalio/sdk-python",
+        "revision": "5c925a41b36b34d9ce32d03f1d1f07faa35b348a",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Git Truck Factor Degree-of-Authorship Calculator and Greedy Truck Factor Solver (aserg-ufmg/Truck-Factor; Avelino et al., ICPC 2016; Fritz et al., ICSE 2010 & ACM TOSEM 2014)",
+      "identity": {
+        "arxiv": "1604.06766v1",
+        "doi": "10.1109/ICPC.2016.7503718; 10.1145/1806799.1806856; 10.1145/2512207",
+        "repository": "aserg-ufmg/Truck-Factor",
+        "revision": "614600ed6b36bb8f452bc6eab7c9b95320f5d7be",
+        "year": "2010-2024"
+      }
+    },
+    {
+      "name": "Git-of-Theseus Codebase Cohort Survival and Half-Life Analyzer (erikbern/git-of-theseus)",
+      "identity": {
+        "repository": "erikbern/git-of-theseus",
+        "revision": "961bda027ffa9fcd8bbe99d5b8809cc0eaa86464",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Go Gitignore-Style CODEOWNERS Reverse-Precedence Matcher (hmarr/codeowners)",
+      "identity": {
+        "repository": "hmarr/codeowners",
+        "revision": "11d3ff2659b769bcb43ddef81a6ab19d1205d9c2",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Long-Context Agent Goal Drift Evaluation Suite and Study (RaunoArike/goal-drift-evals; Arike, Donoway, Bartsch, & Hobbhahn, AAAI/ACM AIES 2025)",
+      "identity": {
+        "arxiv": "2505.02709v1",
+        "doi": "10.1609/aies.v8i1.36541",
+        "repository": "RaunoArike/goal-drift-evals",
+        "revision": "20362f55e785e19a96a712176f5a60eaa7f4b997",
+        "venue": "Proc. 8th AAAI/ACM Conf. on AI, Ethics, and Society (AIES 2025), Vol. 8(1), pp. 192-203",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Cognitive Goal-Activation, Subtask-Boundary Interruption, and Programmer Resumption Studies (Gutwin & Greenberg 1998, 2002; Horvitz, Jacobs, & Hovel 1999; Altmann & Trafton 2002; Iqbal & Bailey 2005, 2006, 2008; Bailey & Konstan 2006; Mark, Gudith, & Klocke 2008; Parnin & Rugaber 2009, 2011)",
+      "identity": {
+        "arxiv": "1301.6707v1",
+        "doi": "10.1145/289444.289495; 10.1023/A:1021271517844; 10.1016/S0364-0213(01)00058-1; 10.1145/1056808.1056948; 10.1145/1124772.1124882; 10.1016/j.chb.2005.12.009; 10.1145/1357054.1357070; 10.1145/1357054.1357072; 10.1109/ICPC.2009.5090030; 10.1007/s11219-010-9104-9",
+        "year": "1998-2011"
+      }
+    },
+    {
+      "name": "Prompt Prefix Caching, Irrelevant-Context Distraction, and Calibrated Multi-Agent Interruption (Gim et al., MLSys 2024; Shi et al., ICML 2023; Wang et al., HandRaiser 2026)",
+      "identity": {
+        "arxiv": "2311.04934v2; 2302.00093v3; 2604.06452v2",
+        "doi": "10.48550/arXiv.2311.04934; 10.48550/arXiv.2302.00093; 10.48550/arXiv.2604.06452",
+        "year": "2023-2026"
+      }
+    },
+    {
+      "name": "M/G/1 Queueing Vacation, T-Policy, and Rest-Period Variance Foundations (Levy & Yechiali 1975; Heyman 1977; Scholl & Kleinrock 1983)",
+      "identity": {
+        "doi": "10.1287/mnsc.22.2.202; 10.1287/mnsc.23.7.775; 10.1287/opre.31.4.705",
+        "venue": "Management Science 22(2) & 23(7); Operations Research 31(4)",
+        "year": "1975-1983"
+      }
+    },
+    {
+      "name": "Transactive Memory Systems, Distributed Software Delay, and Expertise Coordination Foundations (Brooks 1975; Wegner 1987; Liang, Moreland, & Argote 1995; Faraj & Sproull 2000; Mockus & Herbsleb 2002; Espinosa et al. 2002; Herbsleb & Mockus 2003; Lewis 2003; Brandon & Hollingshead 2004; Argote & Ren 2012; Kudaravalli, Faraj, & Johnson 2017)",
+      "identity": {
+        "doi": "10.1177/0146167295214009; 10.1287/mnsc.46.12.1554.12072; 10.1145/581339.581401; 10.1109/TSE.2003.1205177; 10.1037/0021-9010.88.4.587; 10.1287/orsc.1040.0069; 10.1111/j.1467-6486.2012.01077.x; 10.25300/MISQ/2017/41.1.03",
+        "pmid": "12940401",
+        "year": "1975-2017"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

@@ -1,0 +1,145 @@
+{
+  "topics": [
+    "agents",
+    "agents/evaluation",
+    "agents/hedging-and-redundancy",
+    "agents/multi-agent-coordination",
+    "agents/software-engineering-benchmarks",
+    "agents/trace-efficiency",
+    "tooling/benchmark-harnesses",
+    "vcs/merge-conflicts",
+    "verification/conformance-checking"
+  ],
+  "subjects": [
+    {
+      "name": "MultiAgentBench / MARBLE Multi-Agent Collaboration and Competition Framework (MultiagentBench/MARBLE; Zhu et al., ACL 2025)",
+      "identity": {
+        "arxiv": "2503.01935v2",
+        "doi": "10.48550/arXiv.2503.01935",
+        "repository": "MultiagentBench/MARBLE",
+        "revision": "8892e9cfb69282db568e6b018f2b1cd8eec31ba6",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "TheAgentCompany Consequential Workplace Agent Benchmark (TheAgentCompany/TheAgentCompany; Xu et al., 2025)",
+      "identity": {
+        "arxiv": "2412.14161v3",
+        "doi": "10.48550/arXiv.2412.14161",
+        "repository": "TheAgentCompany/TheAgentCompany",
+        "revision": "98b68ef82a47690c316f42fddb05baafaab56851",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "SyncMind and SyncBench Out-of-Sync Collaborative Recovery Benchmark (xhguo7/SyncMind; Guo et al., ICML 2025)",
+      "identity": {
+        "arxiv": "2502.06994v2",
+        "doi": "10.48550/arXiv.2502.06994",
+        "repository": "xhguo7/SyncMind",
+        "revision": "a48c469fc71a9f4f968c74813c66adf61be85f02",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "SWE-Lancer Benchmark in OpenAI Preparedness Repository (openai/preparedness & openai/SWELancer-Benchmark; Miserendino et al., 2025)",
+      "identity": {
+        "arxiv": "2502.12115v4",
+        "doi": "10.48550/arXiv.2502.12115",
+        "redirect_repository": "openai/SWELancer-Benchmark",
+        "redirect_revision": "4afbde31ba075992ffd96209f6533de8e450becd",
+        "repository": "openai/preparedness",
+        "revision": "b78dab1da774a6456b1ed9c48c9ff194ee3ff36d",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Commit0 From-Scratch Library Generation Benchmark (commit-0/commit0; Zhao et al., 2024)",
+      "identity": {
+        "arxiv": "2412.01769v1",
+        "doi": "10.48550/arXiv.2412.01769",
+        "repository": "commit-0/commit0",
+        "revision": "1123db33219ee1bfcc735304cb4308663e329aeb",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "CooperBench Cooperative Multi-Agent Coding Benchmark (cooperbench/CooperBench; Khatua et al., 2026)",
+      "identity": {
+        "arxiv": "2601.13295v2",
+        "doi": "10.48550/arXiv.2601.13295",
+        "repository": "cooperbench/CooperBench",
+        "revision": "63b9d44d9f39a02fccf5bf0052db48a917a011fd",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "AgentBoard Multi-Turn Analytical Agent Evaluation Framework (hkust-nlp/AgentBoard; Ma et al., NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2401.13178v2",
+        "doi": "10.48550/arXiv.2401.13178",
+        "repository": "hkust-nlp/AgentBoard",
+        "revision": "bb7255e2daf1989069a186dad9e53f70680961db",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "TRAIL Trace Reasoning and Agentic Issue Localization Benchmark (patronus-ai/trail-benchmark; Deshpande et al., 2025)",
+      "identity": {
+        "arxiv": "2505.08638v3",
+        "doi": "10.48550/arXiv.2505.08638",
+        "repository": "patronus-ai/trail-benchmark",
+        "revision": "0ffbed9db859b4a66250dc783fa4dccf86869595",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "MCPEval Automatic MCP-Based Deep Agent Evaluator (SalesforceAIResearch/MCPEval; Liu et al., 2025)",
+      "identity": {
+        "arxiv": "2507.12806v2",
+        "doi": "10.48550/arXiv.2507.12806",
+        "repository": "SalesforceAIResearch/MCPEval",
+        "revision": "70e1f903175a255c2967615914240f60d4d12a50",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "MCP-Bench Multi-Server Tool-Orchestration Benchmark (Accenture/mcp-bench; Wang et al., 2025)",
+      "identity": {
+        "arxiv": "2508.20453v1",
+        "doi": "10.48550/arXiv.2508.20453",
+        "repository": "Accenture/mcp-bench",
+        "revision": "7a8eaeae83a842a2949080acc5473f65e1569daf",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Collab-Overcooked Collaborative Agent Benchmark and Trajectory Efficiency Evaluator (YusaeMeow/Collab-Overcooked; Sun et al., EMNLP 2025)",
+      "identity": {
+        "arxiv": "2502.20073v3",
+        "doi": "10.18653/v1/2025.emnlp-main.249",
+        "repository": "YusaeMeow/Collab-Overcooked",
+        "revision": "d7ae1aa5e63d8ec076e96ee437fcbbd095278ef4",
+        "venue": "Proc. 2025 Conf. on Empirical Methods in Natural Language Processing (EMNLP 2025), pp. 4922-4951",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "SWE-Bench Pro V2 and V1 Benchmark Contamination and Harness Hardening Audit (Dan et al., 2026; Deng et al., 2025)",
+      "identity": {
+        "arxiv": "2610.24206v2; 2509.16941v2",
+        "doi": "10.48550/arXiv.2610.24206; 10.48550/arXiv.2509.16941",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Trace Conformance, Normalized Compression Pitfalls, Tail Hedging, and Supplementary Bug-Fix Foundations (Cilibrasi & Vitanyi 2005; Cebrian, Alfonseca, & Ortega 2005; Adriansyah, van Dongen, & van der Aalst 2011; Yin et al. 2011; Park, Kim, Ray, & Bae 2012; Dean & Barroso 2013)",
+      "identity": {
+        "doi": "10.1109/TIT.2005.844059; 10.4310/CIS.2005.v5.n4.a1; 10.1109/EDOC.2011.12; 10.1145/2025113.2025121; 10.1109/MSR.2012.6224298; 10.1145/2408776.2408794",
+        "venue": "IEEE Trans. Inf. Theory 51(4); Commun. Inf. Syst. 5(4); IEEE EDOC 2011; ACM ESEC/FSE 2011; IEEE MSR 2012; Commun. ACM 56(2)",
+        "year": "2005-2013"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
