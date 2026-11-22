@@ -26,7 +26,7 @@ namespace RustcAbiLayoutAndReprSoundness
 
 /-- Round `offset` up to the next multiple of `align` (for `align > 0`; identity if `align = 0`).
 Matches `Size::align_to` in `compiler/rustc_abi/src/lib.rs` for power-of-two alignments. -/
-def alignTo (offset align : Nat) : Nat :=
+noncomputable def alignTo (offset align : Nat) : Nat :=
   if align = 0 then offset else ((offset + (align - 1)) / align) * align
 
 /-- Constructive predicate characterizing powers of two (`1, 2, 4, 8, ...`). -/
@@ -46,7 +46,7 @@ theorem IsPow2.ne_zero {k : Nat} (h : IsPow2 k) : k ≠ 0 :=
 
 /-- Structural helper for `maxAlignedFactor`: extracts the largest power of two dividing `n`
 within `fuel` halvings (exact whenever `n ≤ fuel`). -/
-def maxAlignedFactorAux : Nat → Nat → Nat
+noncomputable def maxAlignedFactorAux : Nat → Nat → Nat
   | 0, _ => 1
   | fuel + 1, n =>
     if n = 0 then 1
@@ -56,7 +56,7 @@ def maxAlignedFactorAux : Nat → Nat → Nat
 /-- Exact power-of-two divisibility: `maxAlignedFactor n` is the largest power of two
 dividing `n` (for `n > 0`; returns `1` for `n = 0`), modeling `Align::max_aligned_factor`
 in `compiler/rustc_abi/src/lib.rs`. -/
-def maxAlignedFactor (n : Nat) : Nat :=
+noncomputable def maxAlignedFactor (n : Nat) : Nat :=
   maxAlignedFactorAux n n
 
 theorem alignTo_eq_mul {offset d : Nat} (hd : 0 < d) :
@@ -249,15 +249,15 @@ structure TargetDataLayout where
   aggregateAlign : Nat
   deriving DecidableEq, Repr
 
-def dlX86_64Linux : TargetDataLayout := ⟨8, 8, 8, 8, 16, 1⟩
-def dlI686Linux : TargetDataLayout := ⟨4, 4, 4, 4, 16, 1⟩
-def dlI686WinMsvc : TargetDataLayout := ⟨4, 4, 8, 8, 16, 1⟩
-def dlWasm32 : TargetDataLayout := ⟨4, 4, 8, 8, 16, 1⟩
-def dlS390xLinux : TargetDataLayout := ⟨8, 8, 8, 8, 8, 1⟩
-def dlThumbv7m : TargetDataLayout := ⟨4, 4, 8, 8, 8, 1⟩
-def dlAarch64Linux : TargetDataLayout := ⟨8, 8, 8, 8, 16, 1⟩
-def dlAarch64Darwin : TargetDataLayout := ⟨8, 8, 8, 8, 16, 1⟩
-def dlRiscv64gc : TargetDataLayout := ⟨8, 8, 8, 8, 16, 1⟩
+noncomputable def dlX86_64Linux : TargetDataLayout := ⟨8, 8, 8, 8, 16, 1⟩
+noncomputable def dlI686Linux : TargetDataLayout := ⟨4, 4, 4, 4, 16, 1⟩
+noncomputable def dlI686WinMsvc : TargetDataLayout := ⟨4, 4, 8, 8, 16, 1⟩
+noncomputable def dlWasm32 : TargetDataLayout := ⟨4, 4, 8, 8, 16, 1⟩
+noncomputable def dlS390xLinux : TargetDataLayout := ⟨8, 8, 8, 8, 8, 1⟩
+noncomputable def dlThumbv7m : TargetDataLayout := ⟨4, 4, 8, 8, 8, 1⟩
+noncomputable def dlAarch64Linux : TargetDataLayout := ⟨8, 8, 8, 8, 16, 1⟩
+noncomputable def dlAarch64Darwin : TargetDataLayout := ⟨8, 8, 8, 8, 16, 1⟩
+noncomputable def dlRiscv64gc : TargetDataLayout := ⟨8, 8, 8, 8, 16, 1⟩
 
 structure PairLayout where
   size : Nat
@@ -266,14 +266,14 @@ structure PairLayout where
   deriving DecidableEq, Repr
 
 /-- `#[repr(C)]` two-field struct layout `(f0, f1)` preserving declaration order. -/
-def reprCPairLayout (s0 a0 s1 a1 : Nat) : PairLayout :=
+noncomputable def reprCPairLayout (s0 a0 s1 a1 : Nat) : PairLayout :=
   let off1 := alignTo s0 a1
   let align := max a0 a1
   let size := alignTo (off1 + s1) align
   ⟨size, align, off1⟩
 
 /-- `#[repr(Rust)]` two-field struct layout placing the higher-aligned field first. -/
-def reprRustPairLayout (s0 a0 s1 a1 : Nat) : PairLayout :=
+noncomputable def reprRustPairLayout (s0 a0 s1 a1 : Nat) : PairLayout :=
   if a0 ≥ a1 then reprCPairLayout s0 a0 s1 a1
   else reprCPairLayout s1 a1 s0 a0
 
@@ -312,7 +312,7 @@ structure SimdLayout where
   deriving DecidableEq, Repr
 
 /-- Structural helper for `isPowerOfTwoBool` so `decide` reduces definitionally. -/
-def isPowerOfTwoBoolAux : Nat → Nat → Bool
+noncomputable def isPowerOfTwoBoolAux : Nat → Nat → Bool
   | 0, n => n == 1
   | fuel + 1, n =>
     if n == 0 then false
@@ -321,23 +321,23 @@ def isPowerOfTwoBoolAux : Nat → Nat → Bool
     else false
 
 /-- Boolean power-of-two test on `Nat` (positive numbers with no odd factor > 1). -/
-def isPowerOfTwoBool (n : Nat) : Bool :=
+noncomputable def isPowerOfTwoBool (n : Nat) : Bool :=
   isPowerOfTwoBoolAux n n
 
 /-- Smallest power of two `≥ n` (for `n ≥ 1`, returns `1` for `n = 0`). -/
-def nextPowerOfTwoAux (fuel cur target : Nat) : Nat :=
+noncomputable def nextPowerOfTwoAux (fuel cur target : Nat) : Nat :=
   match fuel with
   | 0 => cur
   | fuel' + 1 =>
     if cur ≥ target then cur
     else nextPowerOfTwoAux fuel' (2 * cur) target
 
-def nextPowerOfTwo (n : Nat) : Nat :=
+noncomputable def nextPowerOfTwo (n : Nat) : Nat :=
   nextPowerOfTwoAux n 1 n
 
 /-- Models `vector_type_layout` in `compiler/rustc_abi/src/layout.rs:979-1035`
 for default `rust_vector_align` (`nextPowerOfTwo size`). -/
-def vectorTypeLayout (kind : SimdVectorKind) (elemSize count : Nat) : SimdLayout :=
+noncomputable def vectorTypeLayout (kind : SimdVectorKind) (elemSize count : Nat) : SimdLayout :=
   let rawSize := elemSize * count
   match kind with
   | .packedFixed =>
@@ -415,7 +415,7 @@ structure StructLayout where
   deriving DecidableEq, Repr
 
 /-- Lay out an already-ordered sequence of fields linearly from offset `0`. -/
-def layoutOrderedFieldsAux
+noncomputable def layoutOrderedFieldsAux
     (bias : NicheBias) (offset maxAlign : Nat) (bestNiche : Option NicheInfo)
     : List FieldSpec → (Nat × Nat × List Nat × Option NicheInfo)
   | [] => (offset, maxAlign, [], bestNiche)
@@ -440,7 +440,7 @@ def layoutOrderedFieldsAux
 
 /-- Compare two fields for descending-alignment + niche-bias sorting, matching
 `layout_of_univariant_biased` in `compiler/rustc_abi/src/layout.rs:693-731`. -/
-def fieldBefore (bias : NicheBias) (a b : FieldSpec) : Bool :=
+noncomputable def fieldBefore (bias : NicheBias) (a b : FieldSpec) : Bool :=
   if a.align != b.align then
     a.align > b.align
   else
@@ -448,24 +448,24 @@ def fieldBefore (bias : NicheBias) (a b : FieldSpec) : Bool :=
     | .startBias => a.nicheAvail > b.nicheAvail
     | .endBias => a.nicheAvail < b.nicheAvail
 
-def insertField (bias : NicheBias) (x : FieldSpec) : List FieldSpec → List FieldSpec
+noncomputable def insertField (bias : NicheBias) (x : FieldSpec) : List FieldSpec → List FieldSpec
   | [] => [x]
   | y :: ys =>
     if fieldBefore bias x y then x :: y :: ys
     else y :: insertField bias x ys
 
-def sortFields (bias : NicheBias) : List FieldSpec → List FieldSpec
+noncomputable def sortFields (bias : NicheBias) : List FieldSpec → List FieldSpec
   | [] => []
   | x :: xs => insertField bias x (sortFields bias xs)
 
-def splitInitLast : List FieldSpec → List FieldSpec × Option FieldSpec
+noncomputable def splitInitLast : List FieldSpec → List FieldSpec × Option FieldSpec
   | [] => ([], none)
   | [x] => ([], some x)
   | x :: xs =>
     let (init, last) := splitInitLast xs
     (x :: init, last)
 
-def univariantBiased (fields : List FieldSpec) (kind : StructKind) (bias : NicheBias) :
+noncomputable def univariantBiased (fields : List FieldSpec) (kind : StructKind) (bias : NicheBias) :
     StructLayout :=
   let ordered :=
     match kind with
@@ -481,7 +481,7 @@ def univariantBiased (fields : List FieldSpec) (kind : StructKind) (bias : Niche
 /-- Models `layout_of_univariant` (`compiler/rustc_abi/src/layout.rs:274-342`):
 runs `NicheBias::Start` first, and only retries `NicheBias::End` when
 `kind ≠ StructKind::MaybeUnsized` and the niche is strictly interior. -/
-def univariantLayout (fields : List FieldSpec) (kind : StructKind) : StructLayout :=
+noncomputable def univariantLayout (fields : List FieldSpec) (kind : StructKind) : StructLayout :=
   let startLy := univariantBiased fields kind .startBias
   match kind, startLy.niche with
   | .alwaysSized, some n =>
@@ -501,7 +501,7 @@ def univariantLayout (fields : List FieldSpec) (kind : StructKind) : StructLayou
 /-- Models `try_fit_variants_around_niche_tag` + tagged fallback in
 `compiler/rustc_abi/src/layout/enum_layout.rs:480-520` for a 2-variant enum
 `{ A(mainStruct), B(otherSize, otherAlign) }`. -/
-def twoVariantEnumSize (main : StructLayout) (otherSize otherAlign : Nat) : Nat :=
+noncomputable def twoVariantEnumSize (main : StructLayout) (otherSize otherAlign : Nat) : Nat :=
   let totalAlign := max main.align otherAlign
   let nichePackedSize := alignTo main.size totalAlign
   let fitsNiche :=
@@ -521,10 +521,10 @@ def twoVariantEnumSize (main : StructLayout) (otherSize otherAlign : Nat) : Nat 
     let bSize := alignTo (alignTo 1 otherAlign + otherSize) totalAlign
     max aSize bSize
 
-def fU32 : FieldSpec := ⟨4, 4, 0, 0⟩
-def fBool : FieldSpec := ⟨1, 1, 254, 1⟩
-def fU8 : FieldSpec := ⟨1, 1, 0, 0⟩
-def fUnit : FieldSpec := ⟨0, 1, 0, 0⟩
+noncomputable def fU32 : FieldSpec := ⟨4, 4, 0, 0⟩
+noncomputable def fBool : FieldSpec := ⟨1, 1, 254, 1⟩
+noncomputable def fU8 : FieldSpec := ⟨1, 1, 0, 0⟩
+noncomputable def fUnit : FieldSpec := ⟨0, 1, 0, 0⟩
 
 /-- **Counterexample 3 (`ce3_maybe_unsized_suppresses_niche_bias_end_inflating_enum_8_to_12`):**
 On the exact same field list `[u32, bool, u8, ()]`, `StructKind::AlwaysSized` invokes
@@ -557,21 +557,21 @@ structure VariantField where
   uninhabited : Bool
   deriving DecidableEq, Repr
 
-def is1Zst (f : VariantField) : Bool :=
+noncomputable def is1Zst (f : VariantField) : Bool :=
   f.size == 0 && f.align == 1
 
 /-- Models `absent` in `compiler/rustc_abi/src/layout.rs:91-102`:
 a variant is absent iff it has at least one uninhabited field AND every field is a 1-ZST. -/
-def absentVariant (fields : List VariantField) : Bool :=
+noncomputable def absentVariant (fields : List VariantField) : Bool :=
   fields.any (·.uninhabited) && fields.all is1Zst
 
-def variantSizeAlignAux (offset maxAlign : Nat) : List VariantField → Nat × Nat
+noncomputable def variantSizeAlignAux (offset maxAlign : Nat) : List VariantField → Nat × Nat
   | [] => (alignTo offset maxAlign, maxAlign)
   | f :: rest =>
     let off := alignTo offset f.align
     variantSizeAlignAux (off + f.size) (max maxAlign f.align) rest
 
-def variantSizeAlign (fields : List VariantField) : Nat × Nat :=
+noncomputable def variantSizeAlign (fields : List VariantField) : Nat × Nat :=
   variantSizeAlignAux 0 1 fields
 
 /-- Simplified two-variant enum size & alignment model covering:
@@ -579,7 +579,7 @@ def variantSizeAlign (fields : List VariantField) : Nat × Nat :=
 - `repr(C)` tag-plus-union (`c_int = 4 B`, align `4`) inhibiting `absent`,
 - `repr(Rust)` retention of non-absent uninhabited variants (`#49298`) reserving
   payload space and alignment (`align = max a0 a1`, tagged if `v1` is non-absent). -/
-def twoVariantAbsentEnumLayout
+noncomputable def twoVariantAbsentEnumLayout
     (reprC : Bool) (v0 v1 : List VariantField) : Nat × Nat :=
   let (s0, a0) := variantSizeAlign v0
   let (s1, a1) := variantSizeAlign v1
@@ -632,18 +632,14 @@ inductive HirTy where
   | tuple (elems : List HirTy)
   | array (elem : HirTy) (len : Nat)
   | adt (pack : Option Nat) (reprAlign : Option Nat) (fields : List HirTy)
-  deriving Repr
-
 /-- Monomorphized type tree (no remaining `param` or unnormalized `alias`). -/
 inductive MonoTy where
   | prim (size align : Nat)
   | tuple (elems : List MonoTy)
   | array (elem : MonoTy) (len : Nat)
   | adt (pack : Option Nat) (reprAlign : Option Nat) (fields : List MonoTy)
-  deriving Repr
-
 /-- Instantiate `HirTy.param` with `arg` and normalize `HirTy.alias`. -/
-def instantiateHir (arg : MonoTy) : HirTy → MonoTy
+noncomputable def instantiateHir (arg : MonoTy) : HirTy → MonoTy
   | .prim s a => .prim s a
   | .param => arg
   | .alias t => instantiateHir arg t
@@ -659,7 +655,7 @@ where
 (and `1756-1782` at HEAD): checks ONLY direct `HirTy.adt` fields at definition time,
 failing to recurse into `param`, `alias`, `tuple`, or `array`. Returns `true` iff it detects
 a nested `#[repr(align)]` ADT. -/
-def checkPackedInnerDef : HirTy → Bool
+noncomputable def checkPackedInnerDef : HirTy → Bool
   | .adt _ reprAlign fields =>
     if reprAlign.isSome then true
     else checkFieldsDef fields
@@ -674,13 +670,13 @@ where
 
 /-- Top-level definition-site `check_packed` acceptance predicate (no E0587 and
 `checkPackedInnerDef` returns `false`). -/
-def checkPackedDefPasses : HirTy → Bool
+noncomputable def checkPackedDefPasses : HirTy → Bool
   | .adt (some _) (some _) _ => false
   | .adt (some _) none fields => !checkPackedInnerDef (.adt (some 1) none fields)
   | _ => true
 
 /-- Optional maximum on `Option Nat`, matching `Option<Align>::max` in `rustc_abi`. -/
-def optMax : Option Nat → Option Nat → Option Nat
+noncomputable def optMax : Option Nat → Option Nat → Option Nat
   | none, y => y
   | x, none => x
   | some a, some b => some (max a b)
@@ -695,7 +691,7 @@ structure MonoAlignLayout where
 - `layout_of_array_like` (line 200) resets `max_repr_align: None`.
 - `layout_of_univariant_biased` (lines 780-784, 811-813) clamps `field_align` by `pack`,
   applies `repr.align`, and unconditionally propagates `max_repr_align = max_repr_align.max(field.max_repr_align)`. -/
-def computeMonoLayout : MonoTy → MonoAlignLayout
+noncomputable def computeMonoLayout : MonoTy → MonoAlignLayout
   | .prim _ a => ⟨a, none⟩
   | .array e _ =>
     let el := computeMonoLayout e
@@ -722,16 +718,16 @@ where
 /-- The exact assertion enforced in `compiler/rustc_target/src/callconv/x86_win32.rs`
 (lines 69-73 in `1.98.0-nightly`, 73-77 in `1.99.1`/`1.102.0-nightly`, 82-86 at HEAD):
 whenever `max_repr_align = some m` with `m > 4`, `abiAlign ≥ m` must hold. -/
-def x86Win32AbiInvariant (ly : MonoAlignLayout) : Prop :=
+noncomputable def x86Win32AbiInvariant (ly : MonoAlignLayout) : Prop :=
   ∀ m, ly.maxReprAlign = some m → m > 4 → ly.abiAlign ≥ m
 
 /-- Stronger invariant: `abiAlign` dominates `maxReprAlign` for ALL `m` (not just `m > 4`). -/
-def abiAlignDominatesMaxRepr (ly : MonoAlignLayout) : Prop :=
+noncomputable def abiAlignDominatesMaxRepr (ly : MonoAlignLayout) : Prop :=
   ∀ m, ly.maxReprAlign = some m → m ≤ ly.abiAlign
 
 /-- Post-monomorphization predicate: `ty` contains no `#[repr(align)]` attribute anywhere
 along a `max_repr_align`-propagating path (i.e., outside arrays). -/
-def hasNoReprAlign : MonoTy → Prop
+noncomputable def hasNoReprAlign : MonoTy → Prop
   | .prim _ _ => True
   | .array _ _ => True
   | .tuple elems => hasNoReprAlignList elems
@@ -744,7 +740,7 @@ where
 /-- Post-monomorphization well-formedness (`PackedAlignWf`):
 every packed ADT has `reprAlign = none` AND every field of a packed ADT satisfies
 `hasNoReprAlign`, recursively throughout the monomorphized type tree. -/
-def PackedAlignWf : MonoTy → Prop
+noncomputable def PackedAlignWf : MonoTy → Prop
   | .prim _ _ => True
   | .array e _ => PackedAlignWf e
   | .tuple elems => PackedAlignWfList elems
@@ -870,14 +866,14 @@ theorem postMonoPackedCheck_implies_abiAlign_ge_maxReprAlign
 
 /-! ### Constructive Counterexample 1 & Non-`ty::Adt` Bypass Corollaries -/
 
-def hirInnerAlign8 : HirTy := .adt none (some 8) [.prim 4 4]
-def monoInnerAlign8 : MonoTy := .adt none (some 8) [.prim 4 4]
+noncomputable def hirInnerAlign8 : HirTy := .adt none (some 8) [.prim 4 4]
+noncomputable def monoInnerAlign8 : MonoTy := .adt none (some 8) [.prim 4 4]
 
-def hirGenericPacked : HirTy := .adt (some 1) none [.param]
-def hirTuplePacked : HirTy := .adt (some 1) none [.tuple [hirInnerAlign8]]
-def hirAliasPacked : HirTy := .adt (some 1) none [.alias hirInnerAlign8]
-def hirArrayPacked : HirTy := .adt (some 1) none [.array hirInnerAlign8 1]
-def hirConcretePacked : HirTy := .adt (some 1) none [hirInnerAlign8]
+noncomputable def hirGenericPacked : HirTy := .adt (some 1) none [.param]
+noncomputable def hirTuplePacked : HirTy := .adt (some 1) none [.tuple [hirInnerAlign8]]
+noncomputable def hirAliasPacked : HirTy := .adt (some 1) none [.alias hirInnerAlign8]
+noncomputable def hirArrayPacked : HirTy := .adt (some 1) none [.array hirInnerAlign8 1]
+noncomputable def hirConcretePacked : HirTy := .adt (some 1) none [hirInnerAlign8]
 
 /-- **Counterexample 1 (`ce1_generic_packed_bypasses_def_check_violates_win32_abi_inv`):**
 `#[repr(C, packed)] struct GenericPacked<T>(T)` instantiated at
