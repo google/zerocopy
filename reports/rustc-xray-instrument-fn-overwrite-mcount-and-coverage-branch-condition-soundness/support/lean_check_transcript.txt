@@ -1,0 +1,77 @@
+== lean --version
+Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
+== step 1: XrayAttrOverrideAndCoverageBranchSoundness.lean
+'XrayCov.getAttr_addAttr_same' depends on axioms: [propext, Quot.sound]
+'XrayCov.getAttr_addAttr_other' depends on axioms: [propext, Quot.sound]
+'XrayCov.getAttr_addAll' depends on axioms: [propext, Quot.sound]
+'XrayCov.parse_wellFormed' does not depend on any axioms
+'XrayCov.finalNeverFirst_eq' depends on axioms: [propext]
+'XrayCov.finalAlwaysFirst_eq' depends on axioms: [propext]
+'XrayCov.off_overwritten_under_always' depends on axioms: [propext]
+'XrayCov.on_survives_never_first' depends on axioms: [propext]
+'XrayCov.on_lost_always_first' depends on axioms: [propext]
+'XrayCov.neverFirst_agrees_iff' depends on axioms: [propext]
+'XrayCov.alwaysFirst_agrees_iff' depends on axioms: [propext]
+'XrayCov.no_push_order_implements_override' depends on axioms: [propext]
+'XrayCov.table_neverFirst' depends on axioms: [propext]
+'XrayCov.table_alwaysFirst' depends on axioms: [propext]
+'XrayCov.threeState_agrees' does not depend on any axioms
+'XrayCov.threeState_at_most_one_push' does not depend on any axioms
+'XrayCov.resolve_idempotent' does not depend on any axioms
+'XrayCov.resolve_override' does not depend on any axioms
+'XrayCov.fixedPair_exclusive' does not depend on any axioms
+'XrayCov.fixed_agrees' does not depend on any axioms
+'XrayCov.off_gets_sleds_under_always' depends on axioms: [propext]
+'XrayCov.neverFirst_parity_with_mcount_iff' depends on axioms: [propext]
+'XrayCov.threeState_parity_with_mcount' depends on axioms: [propext]
+'XrayCov.callHelper_patched_never_returns' depends on axioms: [propext]
+'XrayCov.handlerDepth_unbounded' depends on axioms: [propext]
+'XrayCov.handler_reentrancy_diverges' depends on axioms: [propext]
+'XrayCov.handler_returns_with_three_state' depends on axioms: [propext]
+'XrayCov.expansion_body_erases_everything' depends on axioms: [propext]
+'XrayCov.mem_extractBranchMappings' depends on axioms: [propext]
+'XrayCov.kept_span_is_root' depends on axioms: [propext]
+'XrayCov.expansion_span_erased' depends on axioms: [propext]
+'XrayCov.body_context_span_kept' depends on axioms: [propext]
+'XrayCov.erasure_accounting' depends on axioms: [propext]
+'XrayCov.extract_length_le' depends on axioms: [propext]
+'XrayCov.probe_def_site_condition_erased' depends on axioms: [propext]
+'XrayCov.probe_call_site_condition_kept' depends on axioms: [propext]
+'XrayCov.probe_macro_generated_fn_erased' depends on axioms: [propext]
+'XrayCov.probe_call_site_body_kept' depends on axioms: [propext]
+'XrayCov.visit_preserves' depends on axioms: [propext, Quot.sound]
+'XrayCov.visit_fills_leaf' depends on axioms: [propext, Quot.sound]
+'XrayCov.leaf_notInfo' depends on axioms: [propext, Quot.sound]
+'XrayCov.true_marker_hit' depends on axioms: [propext, Quot.sound]
+'XrayCov.true_marker_hit_iff' depends on axioms: [propext, Quot.sound]
+'XrayCov.trueCount_eq' depends on axioms: [propext, Quot.sound]
+'XrayCov.falseCount_eq' depends on axioms: [propext, Quot.sound]
+'XrayCov.counts_partition' depends on axioms: [propext]
+'XrayCov.uncompensated_counts_are_swapped' depends on axioms: [propext]
+'XrayCov.parity_add_two' does not depend on any axioms
+'XrayCov.evalNots_add_two' does not depend on any axioms
+'XrayCov.probe_not_once' depends on axioms: [propext]
+'XrayCov.probe_not_twice' depends on axioms: [propext]
+'XrayCov.probe_not_thrice' depends on axioms: [propext]
+'XrayCov.diamond_conserves' does not depend on any axioms
+'XrayCov.diamond_join' does not depend on any axioms
+'XrayCov.diamond_entry' does not depend on any axioms
+'XrayCov.and_rhs_flow' depends on axioms: [propext]
+'XrayCov.or_rhs_flow' depends on axioms: [propext]
+'XrayCov.probe_and_rhs' does not depend on any axioms
+'XrayCov.condition_adds_diamonds' depends on axioms: [propext]
+'XrayCov.branchSpans_condition' depends on axioms: [propext]
+'XrayCov.branchSpans_monotone' depends on axioms: [propext]
+'XrayCov.probe_branch_spans' depends on axioms: [propext]
+'XrayCov.probe_diamonds' depends on axioms: [propext]
+step 1 exit status: 0
+== step 2: AuditXrayAttrOverrideAndCoverageBranchSoundness.lean
+module constants examined (from env.constants.map₁): 580
+theorems: 207; definitions: 311
+names containing _unsafe_rec: 0
+unsafe or partial constants: 0
+axiom or opaque constants declared by the module: 0
+axioms used anywhere in the module: [Quot.sound, propext]
+dependencies on axioms outside [propext, Quot.sound]: 0
+AUDIT PASSED
+step 2 exit status: 0

@@ -1,0 +1,4674 @@
+{
+  "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "target": "x86_64-unknown-linux-gnu",
+  "llvm_tool_versions": {
+    "llvm-objdump": "LLVM version 22.1.6-rust-1.98.0-nightly",
+    "llvm-cov": "LLVM version 22.1.6-rust-1.98.0-nightly",
+    "llvm-profdata": "LLVM version 22.1.6-rust-1.98.0-nightly",
+    "llc": "LLVM version 22.1.6-rust-1.98.0-nightly",
+    "llvm-as": "LLVM version 22.1.6-rust-1.98.0-nightly"
+  },
+  "instrument_fn_attribute": {
+    "accepted_by_this_rustc": false,
+    "first_error": "error: cannot find attribute `instrument_fn` in this scope"
+  },
+  "part_a1_real_rustc_command_line_matrix_no_attribute": {
+    "xray_default": {
+      "flags": [
+        "-Zinstrument-xray"
+      ],
+      "rc": 0,
+      "llvm_ir_defined_functions": [
+        "caller_inlines_callee",
+        "fn_default",
+        "fn_with_loop"
+      ],
+      "functions": {
+        "fn_default": {
+          "llvm_ir_instrument_attributes": [
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "leaq (%rdi,%rdi,2), %rax",
+            "incq %rax",
+            "retq"
+          ],
+          "last_instructions": [
+            "incq %rax",
+            "retq"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 0
+        },
+        "caller_inlines_callee": {
+          "llvm_ir_instrument_attributes": [
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "xorq $0x5a5a, %rdi # imm = 0x5A5A",
+            "leaq 0x7(%rdi), %rax",
+            "retq"
+          ],
+          "last_instructions": [
+            "leaq 0x7(%rdi), %rax",
+            "retq"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 0
+        },
+        "fn_with_loop": {
+          "llvm_ir_instrument_attributes": [
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 1,
+          "exit_sleds": 2,
+          "first_instructions": [
+            "jmp 0xb <fn_with_loop+0xb>",
+            "nopw 0x200(%rax,%rax)",
+            "testq %rdi, %rdi"
+          ],
+          "last_instructions": [
+            "retq",
+            "nopw %cs:0x200(%rax,%rax)"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 6,
+          "mcount_or_fentry_call_relocations": 0
+        }
+      }
+    },
+    "xray_always": {
+      "flags": [
+        "-Zinstrument-xray=always"
+      ],
+      "rc": 0,
+      "llvm_ir_defined_functions": [
+        "caller_inlines_callee",
+        "fn_default",
+        "fn_with_loop"
+      ],
+      "functions": {
+        "fn_default": {
+          "llvm_ir_instrument_attributes": [
+            "\"function-instrument\"=\"xray-always\"",
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 1,
+          "exit_sleds": 1,
+          "first_instructions": [
+            "jmp 0xb <fn_default+0xb>",
+            "nopw 0x200(%rax,%rax)",
+            "leaq (%rdi,%rdi,2), %rax"
+          ],
+          "last_instructions": [
+            "retq",
+            "nopw %cs:0x200(%rax,%rax)"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 4,
+          "mcount_or_fentry_call_relocations": 0
+        },
+        "caller_inlines_callee": {
+          "llvm_ir_instrument_attributes": [
+            "\"function-instrument\"=\"xray-always\"",
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 1,
+          "exit_sleds": 1,
+          "first_instructions": [
+            "jmp 0xb <caller_inlines_callee+0xb>",
+            "nopw 0x200(%rax,%rax)",
+            "xorq $0x5a5a, %rdi # imm = 0x5A5A"
+          ],
+          "last_instructions": [
+            "retq",
+            "nopw %cs:0x200(%rax,%rax)"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 4,
+          "mcount_or_fentry_call_relocations": 0
+        },
+        "fn_with_loop": {
+          "llvm_ir_instrument_attributes": [
+            "\"function-instrument\"=\"xray-always\"",
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 1,
+          "exit_sleds": 2,
+          "first_instructions": [
+            "jmp 0xb <fn_with_loop+0xb>",
+            "nopw 0x200(%rax,%rax)",
+            "testq %rdi, %rdi"
+          ],
+          "last_instructions": [
+            "retq",
+            "nopw %cs:0x200(%rax,%rax)"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 6,
+          "mcount_or_fentry_call_relocations": 0
+        }
+      }
+    },
+    "xray_never": {
+      "flags": [
+        "-Zinstrument-xray=never"
+      ],
+      "rc": 0,
+      "llvm_ir_defined_functions": [
+        "caller_inlines_callee",
+        "fn_default",
+        "fn_with_loop"
+      ],
+      "functions": {
+        "fn_default": {
+          "llvm_ir_instrument_attributes": [
+            "\"function-instrument\"=\"xray-never\"",
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "leaq (%rdi,%rdi,2), %rax",
+            "incq %rax",
+            "retq"
+          ],
+          "last_instructions": [
+            "incq %rax",
+            "retq"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 0
+        },
+        "caller_inlines_callee": {
+          "llvm_ir_instrument_attributes": [
+            "\"function-instrument\"=\"xray-never\"",
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "xorq $0x5a5a, %rdi # imm = 0x5A5A",
+            "leaq 0x7(%rdi), %rax",
+            "retq"
+          ],
+          "last_instructions": [
+            "leaq 0x7(%rdi), %rax",
+            "retq"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 0
+        },
+        "fn_with_loop": {
+          "llvm_ir_instrument_attributes": [
+            "\"function-instrument\"=\"xray-never\"",
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "testq %rdi, %rdi",
+            "je 0x19 <fn_with_loop+0x19>",
+            "movl %edi, %ecx"
+          ],
+          "last_instructions": [
+            "jne 0xa0 <fn_with_loop+0xa0>",
+            "retq"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 0
+        }
+      }
+    },
+    "xray_always_then_never_cli": {
+      "flags": [
+        "-Zinstrument-xray=always",
+        "-Zinstrument-xray=never"
+      ],
+      "rc": 0,
+      "llvm_ir_defined_functions": [
+        "caller_inlines_callee",
+        "fn_default",
+        "fn_with_loop"
+      ],
+      "functions": {
+        "fn_default": {
+          "llvm_ir_instrument_attributes": [
+            "\"function-instrument\"=\"xray-never\"",
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "leaq (%rdi,%rdi,2), %rax",
+            "incq %rax",
+            "retq"
+          ],
+          "last_instructions": [
+            "incq %rax",
+            "retq"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 0
+        },
+        "caller_inlines_callee": {
+          "llvm_ir_instrument_attributes": [
+            "\"function-instrument\"=\"xray-never\"",
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "xorq $0x5a5a, %rdi # imm = 0x5A5A",
+            "leaq 0x7(%rdi), %rax",
+            "retq"
+          ],
+          "last_instructions": [
+            "leaq 0x7(%rdi), %rax",
+            "retq"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 0
+        },
+        "fn_with_loop": {
+          "llvm_ir_instrument_attributes": [
+            "\"function-instrument\"=\"xray-never\"",
+            "\"xray-instruction-threshold\"=\"200\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "testq %rdi, %rdi",
+            "je 0x19 <fn_with_loop+0x19>",
+            "movl %edi, %ecx"
+          ],
+          "last_instructions": [
+            "jne 0xa0 <fn_with_loop+0xa0>",
+            "retq"
+          ],
+          "call_relocation_targets": [],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 0
+        }
+      }
+    },
+    "xray_always_comma_never_single_arg": {
+      "flags": [
+        "-Zinstrument-xray=always,never"
+      ],
+      "rc": 1,
+      "first_error": "error: incorrect value `always,never` for unstable option `instrument-xray` - either a boolean (`yes`, `no`, `on`, `off`, etc), or a comma separated list of settings: `always` or `never` (mutually exclusive), `ignore-loops`, `instruction-threshold=N`, `skip-entry`, `skip-exit` was expected"
+    },
+    "mcount_default": {
+      "flags": [
+        "-Zinstrument-mcount"
+      ],
+      "rc": 0,
+      "llvm_ir_defined_functions": [
+        "caller_inlines_callee",
+        "fn_default",
+        "fn_with_loop"
+      ],
+      "functions": {
+        "fn_default": {
+          "llvm_ir_instrument_attributes": [
+            "\"instrument-function-entry-inlined\"=\"mcount\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "pushq %rbp",
+            "movq %rsp, %rbp",
+            "pushq %rbx"
+          ],
+          "last_instructions": [
+            "popq %rbp",
+            "retq"
+          ],
+          "call_relocation_targets": [
+            "R_X86_64_PLT32 mcount-0x4"
+          ],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 1
+        },
+        "caller_inlines_callee": {
+          "llvm_ir_instrument_attributes": [
+            "\"instrument-function-entry-inlined\"=\"mcount\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "pushq %rbp",
+            "movq %rsp, %rbp",
+            "pushq %rbx"
+          ],
+          "last_instructions": [
+            "popq %rbp",
+            "retq"
+          ],
+          "call_relocation_targets": [
+            "R_X86_64_PLT32 mcount-0x4"
+          ],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 1
+        },
+        "fn_with_loop": {
+          "llvm_ir_instrument_attributes": [
+            "\"instrument-function-entry-inlined\"=\"mcount\""
+          ],
+          "defined": true,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "pushq %rbp",
+            "movq %rsp, %rbp",
+            "pushq %rbx"
+          ],
+          "last_instructions": [
+            "popq %rbp",
+            "retq"
+          ],
+          "call_relocation_targets": [
+            "R_X86_64_PLT32 mcount-0x4"
+          ],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 1
+        }
+      }
+    },
+    "mcount_fentry": {
+      "flags": [
+        "-Zinstrument-mcount=fentry"
+      ],
+      "rc": 1,
+      "first_error": "error: incorrect value `fentry` for unstable option `instrument-mcount` - one of: `y`, `yes`, `on`, `true`, `n`, `no`, `off` or `false` was expected"
+    }
+  },
+  "part_a2_real_rustc_instrument_fn_matrix": {
+    "executed": false,
+    "reason": "this rustc rejects #![feature(instrument_fn)]; see instrument_fn_attribute"
+  },
+  "part_a3_llvm_level_replay": {
+    "derived_from_source": "push sequences are computed by Python transliterations of the upstream function quoted in REPORT.md; every other field is tool output",
+    "tools": {
+      "llc": "LLVM version 22.1.6-rust-1.98.0-nightly",
+      "direct_wrapper_call": {
+        "available": true,
+        "symbol": "LLVMRustAddFunctionAttributes",
+        "symbol_type": "t",
+        "located_with": "llvm-nm on the sysroot's librustc_driver"
+      }
+    },
+    "xray_cells": {
+      "independent_booleans_never_pushed_first": {
+        "cells": {
+          "cli=threshold,attr=none": {
+            "pushes_in_order": [],
+            "llvm_tools": {
+              "attribute_group_text_written": " \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": ""
+            },
+            "surviving_function_instrument": "",
+            "attribute_override_spec": "",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=threshold,attr=on": {
+            "pushes_in_order": [
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=threshold,attr=off": {
+            "pushes_in_order": [
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=always,attr=none": {
+            "pushes_in_order": [
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=always,attr=on": {
+            "pushes_in_order": [
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=always,attr=off": {
+            "pushes_in_order": [
+              "xray-never",
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": false,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=never,attr=none": {
+            "pushes_in_order": [
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=never,attr=on": {
+            "pushes_in_order": [
+              "xray-never",
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=never,attr=off": {
+            "pushes_in_order": [
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          }
+        },
+        "disagreeing_cells": [
+          "cli=always,attr=off"
+        ]
+      },
+      "independent_booleans_always_pushed_first": {
+        "cells": {
+          "cli=threshold,attr=none": {
+            "pushes_in_order": [],
+            "llvm_tools": {
+              "attribute_group_text_written": " \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": ""
+            },
+            "surviving_function_instrument": "",
+            "attribute_override_spec": "",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=threshold,attr=on": {
+            "pushes_in_order": [
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=threshold,attr=off": {
+            "pushes_in_order": [
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=always,attr=none": {
+            "pushes_in_order": [
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=always,attr=on": {
+            "pushes_in_order": [
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=always,attr=off": {
+            "pushes_in_order": [
+              "xray-always",
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=never,attr=none": {
+            "pushes_in_order": [
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=never,attr=on": {
+            "pushes_in_order": [
+              "xray-always",
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": false,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=never,attr=off": {
+            "pushes_in_order": [
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          }
+        },
+        "disagreeing_cells": [
+          "cli=never,attr=on"
+        ]
+      },
+      "three_state_mode": {
+        "cells": {
+          "cli=threshold,attr=none": {
+            "pushes_in_order": [],
+            "llvm_tools": {
+              "attribute_group_text_written": " \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": ""
+            },
+            "surviving_function_instrument": "",
+            "attribute_override_spec": "",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=threshold,attr=on": {
+            "pushes_in_order": [
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=threshold,attr=off": {
+            "pushes_in_order": [
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=always,attr=none": {
+            "pushes_in_order": [
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=always,attr=on": {
+            "pushes_in_order": [
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=always,attr=off": {
+            "pushes_in_order": [
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=never,attr=none": {
+            "pushes_in_order": [
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=never,attr=on": {
+            "pushes_in_order": [
+              "xray-always"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-always\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-always\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 1,
+              "exit_sleds": 1,
+              "first_instructions": [
+                "jmp 0xb <replay_target+0xb>",
+                "nopw 0x200(%rax,%rax)",
+                "leaq 0x1(%rdi,%rdi,2), %rax"
+              ],
+              "last_instructions": [
+                "retq",
+                "nopw %cs:0x200(%rax,%rax)"
+              ],
+              "xray_instr_map_pc64_relocations": 4,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-always"
+            },
+            "surviving_function_instrument": "xray-always",
+            "attribute_override_spec": "xray-always",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          },
+          "cli=never,attr=off": {
+            "pushes_in_order": [
+              "xray-never"
+            ],
+            "llvm_tools": {
+              "attribute_group_text_written": "\"function-instrument\"=\"xray-never\" \"xray-instruction-threshold\"=\"200\"",
+              "llvm_as_rc": 0,
+              "attributes_after_llvm_as_llvm_dis": [
+                "\"function-instrument\"=\"xray-never\"",
+                "\"xray-instruction-threshold\"=\"200\""
+              ],
+              "llc_rc": 0,
+              "entry_sleds": 0,
+              "exit_sleds": 0,
+              "first_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "last_instructions": [
+                "leaq 0x1(%rdi,%rdi,2), %rax",
+                "retq"
+              ],
+              "xray_instr_map_pc64_relocations": 0,
+              "mcount_or_fentry_call_relocations": 0,
+              "call_relocation_targets": []
+            },
+            "direct_wrapper_call": {
+              "rc": 0,
+              "survivor": "xray-never"
+            },
+            "surviving_function_instrument": "xray-never",
+            "attribute_override_spec": "xray-never",
+            "agrees_with_attribute_override_spec": true,
+            "direct_wrapper_call_agrees_with_llvm_as": true
+          }
+        },
+        "disagreeing_cells": []
+      }
+    },
+    "mcount_cells": {
+      "mode=mcount,attr=none": {
+        "attribute_pushed": true,
+        "llvm_tools": {
+          "attribute_group_text_written": "\"instrument-function-entry-inlined\"=\"mcount\"",
+          "llvm_as_rc": 0,
+          "attributes_after_llvm_as_llvm_dis": [
+            "\"instrument-function-entry-inlined\"=\"mcount\""
+          ],
+          "llc_rc": 0,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "pushq %rbx",
+            "movq %rdi, %rbx",
+            "callq 0x9 <replay_target+0x9>"
+          ],
+          "last_instructions": [
+            "popq %rbx",
+            "retq"
+          ],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 1,
+          "call_relocation_targets": [
+            "R_X86_64_PLT32 mcount-0x4"
+          ]
+        }
+      },
+      "mode=mcount,attr=on": {
+        "attribute_pushed": true,
+        "llvm_tools": {
+          "attribute_group_text_written": "\"instrument-function-entry-inlined\"=\"mcount\"",
+          "llvm_as_rc": 0,
+          "attributes_after_llvm_as_llvm_dis": [
+            "\"instrument-function-entry-inlined\"=\"mcount\""
+          ],
+          "llc_rc": 0,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "pushq %rbx",
+            "movq %rdi, %rbx",
+            "callq 0x9 <replay_target+0x9>"
+          ],
+          "last_instructions": [
+            "popq %rbx",
+            "retq"
+          ],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 1,
+          "call_relocation_targets": [
+            "R_X86_64_PLT32 mcount-0x4"
+          ]
+        }
+      },
+      "mode=mcount,attr=off": {
+        "attribute_pushed": false,
+        "llvm_tools": {
+          "attribute_group_text_written": "",
+          "llvm_as_rc": 0,
+          "attributes_after_llvm_as_llvm_dis": [],
+          "llc_rc": 0,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "leaq 0x1(%rdi,%rdi,2), %rax",
+            "retq"
+          ],
+          "last_instructions": [
+            "leaq 0x1(%rdi,%rdi,2), %rax",
+            "retq"
+          ],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 0,
+          "call_relocation_targets": []
+        }
+      },
+      "mode=fentry,attr=none": {
+        "attribute_pushed": true,
+        "llvm_tools": {
+          "attribute_group_text_written": "\"fentry-call\"=\"true\"",
+          "llvm_as_rc": 0,
+          "attributes_after_llvm_as_llvm_dis": [
+            "\"fentry-call\"=\"true\""
+          ],
+          "llc_rc": 0,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "callq 0x5 <replay_target+0x5>",
+            "leaq 0x1(%rdi,%rdi,2), %rax",
+            "retq"
+          ],
+          "last_instructions": [
+            "leaq 0x1(%rdi,%rdi,2), %rax",
+            "retq"
+          ],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 1,
+          "call_relocation_targets": [
+            "R_X86_64_PLT32 __fentry__-0x4"
+          ]
+        }
+      },
+      "mode=fentry,attr=on": {
+        "attribute_pushed": true,
+        "llvm_tools": {
+          "attribute_group_text_written": "\"fentry-call\"=\"true\"",
+          "llvm_as_rc": 0,
+          "attributes_after_llvm_as_llvm_dis": [
+            "\"fentry-call\"=\"true\""
+          ],
+          "llc_rc": 0,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "callq 0x5 <replay_target+0x5>",
+            "leaq 0x1(%rdi,%rdi,2), %rax",
+            "retq"
+          ],
+          "last_instructions": [
+            "leaq 0x1(%rdi,%rdi,2), %rax",
+            "retq"
+          ],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 1,
+          "call_relocation_targets": [
+            "R_X86_64_PLT32 __fentry__-0x4"
+          ]
+        }
+      },
+      "mode=fentry,attr=off": {
+        "attribute_pushed": false,
+        "llvm_tools": {
+          "attribute_group_text_written": "",
+          "llvm_as_rc": 0,
+          "attributes_after_llvm_as_llvm_dis": [],
+          "llc_rc": 0,
+          "entry_sleds": 0,
+          "exit_sleds": 0,
+          "first_instructions": [
+            "leaq 0x1(%rdi,%rdi,2), %rax",
+            "retq"
+          ],
+          "last_instructions": [
+            "leaq 0x1(%rdi,%rdi,2), %rax",
+            "retq"
+          ],
+          "xray_instr_map_pc64_relocations": 0,
+          "mcount_or_fentry_call_relocations": 0,
+          "call_relocation_targets": []
+        }
+      }
+    },
+    "cross_check_against_real_rustc_without_attribute": {
+      "threshold": {
+        "compared": true,
+        "real_rustc_fn_default_function_instrument": "",
+        "replay_function_instrument": "",
+        "same_attribute": true,
+        "real_rustc_fn_default_entry_sleds": 0,
+        "replay_entry_sleds": 0,
+        "same_sled_presence": true
+      },
+      "always": {
+        "compared": true,
+        "real_rustc_fn_default_function_instrument": "xray-always",
+        "replay_function_instrument": "xray-always",
+        "same_attribute": true,
+        "real_rustc_fn_default_entry_sleds": 1,
+        "replay_entry_sleds": 1,
+        "same_sled_presence": true
+      },
+      "never": {
+        "compared": true,
+        "real_rustc_fn_default_function_instrument": "xray-never",
+        "replay_function_instrument": "xray-never",
+        "same_attribute": true,
+        "real_rustc_fn_default_entry_sleds": 0,
+        "replay_entry_sleds": 0,
+        "same_sled_presence": true
+      }
+    }
+  },
+  "part_b_coverage_levels": {
+    "inputs": {
+      "simple": [
+        [
+          1
+        ],
+        [
+          9
+        ],
+        [
+          10
+        ]
+      ],
+      "standalone": [
+        [
+          20,
+          10
+        ],
+        [
+          20,
+          60
+        ],
+        [
+          5,
+          10
+        ],
+        [
+          200,
+          3
+        ],
+        [
+          20,
+          0
+        ],
+        [
+          0,
+          0
+        ]
+      ],
+      "negated": [
+        [
+          1,
+          10,
+          0
+        ],
+        [
+          2,
+          20,
+          0
+        ],
+        [
+          3,
+          60,
+          0
+        ],
+        [
+          4,
+          70,
+          0
+        ],
+        [
+          200,
+          80,
+          5
+        ]
+      ]
+    },
+    "runs": {
+      "block_opt0": {
+        "rustc_rc": 0,
+        "program_rc": 0,
+        "llvm_profdata_rc": 0,
+        "llvm_cov_export_rc": 0,
+        "totals": {
+          "branches": {
+            "count": 0,
+            "covered": 0,
+            "notcovered": 0,
+            "percent": 0
+          },
+          "functions": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "instantiations": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "lines": {
+            "count": 55,
+            "covered": 55,
+            "percent": 100
+          },
+          "mcdc": {
+            "count": 0,
+            "covered": 0,
+            "notcovered": 0,
+            "percent": 0
+          },
+          "regions": {
+            "count": 102,
+            "covered": 102,
+            "notcovered": 0,
+            "percent": 100
+          }
+        },
+        "functions": {
+          "caller_of_excluded": {
+            "execution_count": 3,
+            "code_regions": 3,
+            "code_regions_executed": 3,
+            "source_lines_spanned": [
+              86,
+              88
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_generated_fn": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              21,
+              23
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "negated_conditions": {
+            "execution_count": 5,
+            "code_regions": 14,
+            "code_regions_executed": 14,
+            "source_lines_spanned": [
+              65,
+              77
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "standalone_conditions": {
+            "execution_count": 6,
+            "code_regions": 19,
+            "code_regions_executed": 19,
+            "source_lines_spanned": [
+              56,
+              62
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_fn_call_site_body": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              51,
+              52
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_def_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              40,
+              42
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_call_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              45,
+              47
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "main": {
+            "execution_count": 1,
+            "code_regions": 44,
+            "code_regions_executed": 44,
+            "source_lines_spanned": [
+              90,
+              107
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "normal_if": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              35,
+              37
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          }
+        },
+        "function_record_names": [
+          "caller_of_excluded",
+          "macro_call_site_condition",
+          "macro_def_site_condition",
+          "macro_fn_call_site_body",
+          "macro_generated_fn",
+          "main",
+          "negated_conditions",
+          "normal_if",
+          "standalone_conditions"
+        ],
+        "excluded_inline_callee_has_function_record": false,
+        "excluded_inline_callee": {
+          "llvm_ir_defines_it": false,
+          "llvm_ir_calls_it": false,
+          "profile_counter_globals_naming_it": 0,
+          "profile_counter_globals_total": 9,
+          "regions_of_any_function_on_its_lines": 0
+        },
+        "branch_sites": [
+          {
+            "site": "normal_if: x > 5",
+            "function": "normal_if",
+            "span": [
+              36,
+              8,
+              36,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "macro_call_site_condition: x > 5 (tokens written at the macro call site)",
+            "function": "macro_call_site_condition",
+            "span": [
+              46,
+              19,
+              46,
+              24
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "macro_fn_call_site_body: x > 5 (function item from a macro, body block from the call site)",
+            "function": "macro_fn_call_site_body",
+            "span": [
+              52,
+              8,
+              52,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "standalone: (x > 10) [lhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              27,
+              57,
+              35
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 4,
+            "oracle_false_count": 2
+          },
+          {
+            "site": "standalone: (y < 50) [rhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              39,
+              57,
+              47
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 3,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "standalone: (x > 100) [lhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              25,
+              59,
+              34
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 1,
+            "oracle_false_count": 5
+          },
+          {
+            "site": "standalone: (y < 5) [rhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              38,
+              59,
+              45
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3
+          },
+          {
+            "site": "standalone: (x > 1) [lhs of outer &&]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              24,
+              60,
+              31
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 5,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "standalone: (y > 1) [lhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              36,
+              60,
+              43
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "standalone: (x > 2) [rhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              47,
+              60,
+              54
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 1,
+            "oracle_false_count": 0
+          },
+          {
+            "site": "negated: !(x > 100)",
+            "function": "negated_conditions",
+            "span": [
+              67,
+              8,
+              67,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "negated: !!(y < 50)",
+            "function": "negated_conditions",
+            "span": [
+              70,
+              8,
+              70,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3
+          },
+          {
+            "site": "negated: !!!(z == 0)",
+            "function": "negated_conditions",
+            "span": [
+              73,
+              8,
+              73,
+              19
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 1,
+            "oracle_false_count": 4
+          }
+        ],
+        "all_sites_presence_as_source_predicts": true,
+        "all_present_sites_match_oracle": true,
+        "flow_conservation": []
+      },
+      "block_opt2": {
+        "rustc_rc": 0,
+        "program_rc": 0,
+        "llvm_profdata_rc": 0,
+        "llvm_cov_export_rc": 0,
+        "totals": {
+          "branches": {
+            "count": 0,
+            "covered": 0,
+            "notcovered": 0,
+            "percent": 0
+          },
+          "functions": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "instantiations": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "lines": {
+            "count": 55,
+            "covered": 55,
+            "percent": 100
+          },
+          "mcdc": {
+            "count": 0,
+            "covered": 0,
+            "notcovered": 0,
+            "percent": 0
+          },
+          "regions": {
+            "count": 102,
+            "covered": 102,
+            "notcovered": 0,
+            "percent": 100
+          }
+        },
+        "functions": {
+          "caller_of_excluded": {
+            "execution_count": 3,
+            "code_regions": 3,
+            "code_regions_executed": 3,
+            "source_lines_spanned": [
+              86,
+              88
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_generated_fn": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              21,
+              23
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "negated_conditions": {
+            "execution_count": 5,
+            "code_regions": 14,
+            "code_regions_executed": 14,
+            "source_lines_spanned": [
+              65,
+              77
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "standalone_conditions": {
+            "execution_count": 6,
+            "code_regions": 19,
+            "code_regions_executed": 19,
+            "source_lines_spanned": [
+              56,
+              62
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_fn_call_site_body": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              51,
+              52
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_def_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              40,
+              42
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_call_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              45,
+              47
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "main": {
+            "execution_count": 1,
+            "code_regions": 44,
+            "code_regions_executed": 44,
+            "source_lines_spanned": [
+              90,
+              107
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "normal_if": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              35,
+              37
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          }
+        },
+        "function_record_names": [
+          "caller_of_excluded",
+          "macro_call_site_condition",
+          "macro_def_site_condition",
+          "macro_fn_call_site_body",
+          "macro_generated_fn",
+          "main",
+          "negated_conditions",
+          "normal_if",
+          "standalone_conditions"
+        ],
+        "excluded_inline_callee_has_function_record": false,
+        "excluded_inline_callee": {
+          "llvm_ir_defines_it": false,
+          "llvm_ir_calls_it": false,
+          "profile_counter_globals_naming_it": 0,
+          "profile_counter_globals_total": 9,
+          "regions_of_any_function_on_its_lines": 0
+        },
+        "branch_sites": [
+          {
+            "site": "normal_if: x > 5",
+            "function": "normal_if",
+            "span": [
+              36,
+              8,
+              36,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "macro_call_site_condition: x > 5 (tokens written at the macro call site)",
+            "function": "macro_call_site_condition",
+            "span": [
+              46,
+              19,
+              46,
+              24
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "macro_fn_call_site_body: x > 5 (function item from a macro, body block from the call site)",
+            "function": "macro_fn_call_site_body",
+            "span": [
+              52,
+              8,
+              52,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "standalone: (x > 10) [lhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              27,
+              57,
+              35
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 4,
+            "oracle_false_count": 2
+          },
+          {
+            "site": "standalone: (y < 50) [rhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              39,
+              57,
+              47
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 3,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "standalone: (x > 100) [lhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              25,
+              59,
+              34
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 1,
+            "oracle_false_count": 5
+          },
+          {
+            "site": "standalone: (y < 5) [rhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              38,
+              59,
+              45
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3
+          },
+          {
+            "site": "standalone: (x > 1) [lhs of outer &&]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              24,
+              60,
+              31
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 5,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "standalone: (y > 1) [lhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              36,
+              60,
+              43
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "standalone: (x > 2) [rhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              47,
+              60,
+              54
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 1,
+            "oracle_false_count": 0
+          },
+          {
+            "site": "negated: !(x > 100)",
+            "function": "negated_conditions",
+            "span": [
+              67,
+              8,
+              67,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "negated: !!(y < 50)",
+            "function": "negated_conditions",
+            "span": [
+              70,
+              8,
+              70,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3
+          },
+          {
+            "site": "negated: !!!(z == 0)",
+            "function": "negated_conditions",
+            "span": [
+              73,
+              8,
+              73,
+              19
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 1,
+            "oracle_false_count": 4
+          }
+        ],
+        "all_sites_presence_as_source_predicts": true,
+        "all_present_sites_match_oracle": true,
+        "flow_conservation": []
+      },
+      "branch_opt0": {
+        "rustc_rc": 0,
+        "program_rc": 0,
+        "llvm_profdata_rc": 0,
+        "llvm_cov_export_rc": 0,
+        "totals": {
+          "branches": {
+            "count": 20,
+            "covered": 20,
+            "notcovered": 0,
+            "percent": 100
+          },
+          "functions": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "instantiations": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "lines": {
+            "count": 55,
+            "covered": 55,
+            "percent": 100
+          },
+          "mcdc": {
+            "count": 0,
+            "covered": 0,
+            "notcovered": 0,
+            "percent": 0
+          },
+          "regions": {
+            "count": 102,
+            "covered": 102,
+            "notcovered": 0,
+            "percent": 100
+          }
+        },
+        "functions": {
+          "caller_of_excluded": {
+            "execution_count": 3,
+            "code_regions": 3,
+            "code_regions_executed": 3,
+            "source_lines_spanned": [
+              86,
+              88
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_generated_fn": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              21,
+              23
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "negated_conditions": {
+            "execution_count": 5,
+            "code_regions": 14,
+            "code_regions_executed": 14,
+            "source_lines_spanned": [
+              65,
+              77
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  67,
+                  8,
+                  67,
+                  18
+                ],
+                "true_count": 4,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  70,
+                  8,
+                  70,
+                  18
+                ],
+                "true_count": 2,
+                "false_count": 3,
+                "kind": 4
+              },
+              {
+                "span": [
+                  73,
+                  8,
+                  73,
+                  19
+                ],
+                "true_count": 1,
+                "false_count": 4,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "standalone_conditions": {
+            "execution_count": 6,
+            "code_regions": 19,
+            "code_regions_executed": 19,
+            "source_lines_spanned": [
+              56,
+              62
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  57,
+                  27,
+                  57,
+                  35
+                ],
+                "true_count": 4,
+                "false_count": 2,
+                "kind": 4
+              },
+              {
+                "span": [
+                  59,
+                  25,
+                  59,
+                  34
+                ],
+                "true_count": 1,
+                "false_count": 5,
+                "kind": 4
+              },
+              {
+                "span": [
+                  60,
+                  24,
+                  60,
+                  31
+                ],
+                "true_count": 5,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  60,
+                  36,
+                  60,
+                  43
+                ],
+                "true_count": 4,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "macro_fn_call_site_body": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              51,
+              52
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  52,
+                  8,
+                  52,
+                  13
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "macro_def_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              40,
+              42
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_call_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              45,
+              47
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  46,
+                  19,
+                  46,
+                  24
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "main": {
+            "execution_count": 1,
+            "code_regions": 44,
+            "code_regions_executed": 44,
+            "source_lines_spanned": [
+              90,
+              107
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "normal_if": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              35,
+              37
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  36,
+                  8,
+                  36,
+                  13
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          }
+        },
+        "function_record_names": [
+          "caller_of_excluded",
+          "macro_call_site_condition",
+          "macro_def_site_condition",
+          "macro_fn_call_site_body",
+          "macro_generated_fn",
+          "main",
+          "negated_conditions",
+          "normal_if",
+          "standalone_conditions"
+        ],
+        "excluded_inline_callee_has_function_record": false,
+        "excluded_inline_callee": {
+          "llvm_ir_defines_it": false,
+          "llvm_ir_calls_it": false,
+          "profile_counter_globals_naming_it": 0,
+          "profile_counter_globals_total": 9,
+          "regions_of_any_function_on_its_lines": 0
+        },
+        "branch_sites": [
+          {
+            "site": "normal_if: x > 5",
+            "function": "normal_if",
+            "span": [
+              36,
+              8,
+              36,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "macro_call_site_condition: x > 5 (tokens written at the macro call site)",
+            "function": "macro_call_site_condition",
+            "span": [
+              46,
+              19,
+              46,
+              24
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "macro_fn_call_site_body: x > 5 (function item from a macro, body block from the call site)",
+            "function": "macro_fn_call_site_body",
+            "span": [
+              52,
+              8,
+              52,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 10) [lhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              27,
+              57,
+              35
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 2,
+            "true_count": 4,
+            "false_count": 2,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y < 50) [rhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              39,
+              57,
+              47
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 3,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "standalone: (x > 100) [lhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              25,
+              59,
+              34
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 1,
+            "oracle_false_count": 5,
+            "true_count": 1,
+            "false_count": 5,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y < 5) [rhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              38,
+              59,
+              45
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3
+          },
+          {
+            "site": "standalone: (x > 1) [lhs of outer &&]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              24,
+              60,
+              31
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 5,
+            "oracle_false_count": 1,
+            "true_count": 5,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y > 1) [lhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              36,
+              60,
+              43
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1,
+            "true_count": 4,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 2) [rhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              47,
+              60,
+              54
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 1,
+            "oracle_false_count": 0
+          },
+          {
+            "site": "negated: !(x > 100)",
+            "function": "negated_conditions",
+            "span": [
+              67,
+              8,
+              67,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1,
+            "true_count": 4,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "negated: !!(y < 50)",
+            "function": "negated_conditions",
+            "span": [
+              70,
+              8,
+              70,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3,
+            "true_count": 2,
+            "false_count": 3,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "negated: !!!(z == 0)",
+            "function": "negated_conditions",
+            "span": [
+              73,
+              8,
+              73,
+              19
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 1,
+            "oracle_false_count": 4,
+            "true_count": 1,
+            "false_count": 4,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          }
+        ],
+        "all_sites_presence_as_source_predicts": true,
+        "all_present_sites_match_oracle": true,
+        "flow_conservation": [
+          {
+            "rhs": "standalone: (y > 1) [lhs of inner ||]",
+            "lhs": "standalone: (x > 1) [lhs of outer &&]",
+            "lhs_outcome_feeding_rhs": "true",
+            "lhs_outcome_count": 5,
+            "rhs_true_plus_false": 5,
+            "conserved": true
+          }
+        ]
+      },
+      "branch_opt2": {
+        "rustc_rc": 0,
+        "program_rc": 0,
+        "llvm_profdata_rc": 0,
+        "llvm_cov_export_rc": 0,
+        "totals": {
+          "branches": {
+            "count": 20,
+            "covered": 20,
+            "notcovered": 0,
+            "percent": 100
+          },
+          "functions": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "instantiations": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "lines": {
+            "count": 55,
+            "covered": 55,
+            "percent": 100
+          },
+          "mcdc": {
+            "count": 0,
+            "covered": 0,
+            "notcovered": 0,
+            "percent": 0
+          },
+          "regions": {
+            "count": 102,
+            "covered": 102,
+            "notcovered": 0,
+            "percent": 100
+          }
+        },
+        "functions": {
+          "caller_of_excluded": {
+            "execution_count": 3,
+            "code_regions": 3,
+            "code_regions_executed": 3,
+            "source_lines_spanned": [
+              86,
+              88
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_generated_fn": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              21,
+              23
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "negated_conditions": {
+            "execution_count": 5,
+            "code_regions": 14,
+            "code_regions_executed": 14,
+            "source_lines_spanned": [
+              65,
+              77
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  67,
+                  8,
+                  67,
+                  18
+                ],
+                "true_count": 4,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  70,
+                  8,
+                  70,
+                  18
+                ],
+                "true_count": 2,
+                "false_count": 3,
+                "kind": 4
+              },
+              {
+                "span": [
+                  73,
+                  8,
+                  73,
+                  19
+                ],
+                "true_count": 1,
+                "false_count": 4,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "standalone_conditions": {
+            "execution_count": 6,
+            "code_regions": 19,
+            "code_regions_executed": 19,
+            "source_lines_spanned": [
+              56,
+              62
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  57,
+                  27,
+                  57,
+                  35
+                ],
+                "true_count": 4,
+                "false_count": 2,
+                "kind": 4
+              },
+              {
+                "span": [
+                  59,
+                  25,
+                  59,
+                  34
+                ],
+                "true_count": 1,
+                "false_count": 5,
+                "kind": 4
+              },
+              {
+                "span": [
+                  60,
+                  24,
+                  60,
+                  31
+                ],
+                "true_count": 5,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  60,
+                  36,
+                  60,
+                  43
+                ],
+                "true_count": 4,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "macro_fn_call_site_body": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              51,
+              52
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  52,
+                  8,
+                  52,
+                  13
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "macro_def_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              40,
+              42
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_call_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              45,
+              47
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  46,
+                  19,
+                  46,
+                  24
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "main": {
+            "execution_count": 1,
+            "code_regions": 44,
+            "code_regions_executed": 44,
+            "source_lines_spanned": [
+              90,
+              107
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "normal_if": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              35,
+              37
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  36,
+                  8,
+                  36,
+                  13
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          }
+        },
+        "function_record_names": [
+          "caller_of_excluded",
+          "macro_call_site_condition",
+          "macro_def_site_condition",
+          "macro_fn_call_site_body",
+          "macro_generated_fn",
+          "main",
+          "negated_conditions",
+          "normal_if",
+          "standalone_conditions"
+        ],
+        "excluded_inline_callee_has_function_record": false,
+        "excluded_inline_callee": {
+          "llvm_ir_defines_it": false,
+          "llvm_ir_calls_it": false,
+          "profile_counter_globals_naming_it": 0,
+          "profile_counter_globals_total": 9,
+          "regions_of_any_function_on_its_lines": 0
+        },
+        "branch_sites": [
+          {
+            "site": "normal_if: x > 5",
+            "function": "normal_if",
+            "span": [
+              36,
+              8,
+              36,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "macro_call_site_condition: x > 5 (tokens written at the macro call site)",
+            "function": "macro_call_site_condition",
+            "span": [
+              46,
+              19,
+              46,
+              24
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "macro_fn_call_site_body: x > 5 (function item from a macro, body block from the call site)",
+            "function": "macro_fn_call_site_body",
+            "span": [
+              52,
+              8,
+              52,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 10) [lhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              27,
+              57,
+              35
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 2,
+            "true_count": 4,
+            "false_count": 2,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y < 50) [rhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              39,
+              57,
+              47
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 3,
+            "oracle_false_count": 1
+          },
+          {
+            "site": "standalone: (x > 100) [lhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              25,
+              59,
+              34
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 1,
+            "oracle_false_count": 5,
+            "true_count": 1,
+            "false_count": 5,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y < 5) [rhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              38,
+              59,
+              45
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3
+          },
+          {
+            "site": "standalone: (x > 1) [lhs of outer &&]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              24,
+              60,
+              31
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 5,
+            "oracle_false_count": 1,
+            "true_count": 5,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y > 1) [lhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              36,
+              60,
+              43
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1,
+            "true_count": 4,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 2) [rhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              47,
+              60,
+              54
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": false,
+            "present": false,
+            "oracle_true_count": 1,
+            "oracle_false_count": 0
+          },
+          {
+            "site": "negated: !(x > 100)",
+            "function": "negated_conditions",
+            "span": [
+              67,
+              8,
+              67,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1,
+            "true_count": 4,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "negated: !!(y < 50)",
+            "function": "negated_conditions",
+            "span": [
+              70,
+              8,
+              70,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3,
+            "true_count": 2,
+            "false_count": 3,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "negated: !!!(z == 0)",
+            "function": "negated_conditions",
+            "span": [
+              73,
+              8,
+              73,
+              19
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 1,
+            "oracle_false_count": 4,
+            "true_count": 1,
+            "false_count": 4,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          }
+        ],
+        "all_sites_presence_as_source_predicts": true,
+        "all_present_sites_match_oracle": true,
+        "flow_conservation": [
+          {
+            "rhs": "standalone: (y > 1) [lhs of inner ||]",
+            "lhs": "standalone: (x > 1) [lhs of outer &&]",
+            "lhs_outcome_feeding_rhs": "true",
+            "lhs_outcome_count": 5,
+            "rhs_true_plus_false": 5,
+            "conserved": true
+          }
+        ]
+      },
+      "condition_opt0": {
+        "rustc_rc": 0,
+        "program_rc": 0,
+        "llvm_profdata_rc": 0,
+        "llvm_cov_export_rc": 0,
+        "totals": {
+          "branches": {
+            "count": 26,
+            "covered": 25,
+            "notcovered": 1,
+            "percent": 96.15384615384616
+          },
+          "functions": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "instantiations": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "lines": {
+            "count": 55,
+            "covered": 55,
+            "percent": 100
+          },
+          "mcdc": {
+            "count": 0,
+            "covered": 0,
+            "notcovered": 0,
+            "percent": 0
+          },
+          "regions": {
+            "count": 102,
+            "covered": 102,
+            "notcovered": 0,
+            "percent": 100
+          }
+        },
+        "functions": {
+          "caller_of_excluded": {
+            "execution_count": 3,
+            "code_regions": 3,
+            "code_regions_executed": 3,
+            "source_lines_spanned": [
+              86,
+              88
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_generated_fn": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              21,
+              23
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "negated_conditions": {
+            "execution_count": 5,
+            "code_regions": 14,
+            "code_regions_executed": 14,
+            "source_lines_spanned": [
+              65,
+              77
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  67,
+                  8,
+                  67,
+                  18
+                ],
+                "true_count": 4,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  70,
+                  8,
+                  70,
+                  18
+                ],
+                "true_count": 2,
+                "false_count": 3,
+                "kind": 4
+              },
+              {
+                "span": [
+                  73,
+                  8,
+                  73,
+                  19
+                ],
+                "true_count": 1,
+                "false_count": 4,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "standalone_conditions": {
+            "execution_count": 6,
+            "code_regions": 19,
+            "code_regions_executed": 19,
+            "source_lines_spanned": [
+              56,
+              62
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  57,
+                  27,
+                  57,
+                  35
+                ],
+                "true_count": 4,
+                "false_count": 2,
+                "kind": 4
+              },
+              {
+                "span": [
+                  57,
+                  39,
+                  57,
+                  47
+                ],
+                "true_count": 3,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  59,
+                  25,
+                  59,
+                  34
+                ],
+                "true_count": 1,
+                "false_count": 5,
+                "kind": 4
+              },
+              {
+                "span": [
+                  59,
+                  38,
+                  59,
+                  45
+                ],
+                "true_count": 2,
+                "false_count": 3,
+                "kind": 4
+              },
+              {
+                "span": [
+                  60,
+                  24,
+                  60,
+                  31
+                ],
+                "true_count": 5,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  60,
+                  36,
+                  60,
+                  43
+                ],
+                "true_count": 4,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  60,
+                  47,
+                  60,
+                  54
+                ],
+                "true_count": 1,
+                "false_count": 0,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "macro_fn_call_site_body": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              51,
+              52
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  52,
+                  8,
+                  52,
+                  13
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "macro_def_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              40,
+              42
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_call_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              45,
+              47
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  46,
+                  19,
+                  46,
+                  24
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "main": {
+            "execution_count": 1,
+            "code_regions": 44,
+            "code_regions_executed": 44,
+            "source_lines_spanned": [
+              90,
+              107
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "normal_if": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              35,
+              37
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  36,
+                  8,
+                  36,
+                  13
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          }
+        },
+        "function_record_names": [
+          "caller_of_excluded",
+          "macro_call_site_condition",
+          "macro_def_site_condition",
+          "macro_fn_call_site_body",
+          "macro_generated_fn",
+          "main",
+          "negated_conditions",
+          "normal_if",
+          "standalone_conditions"
+        ],
+        "excluded_inline_callee_has_function_record": false,
+        "excluded_inline_callee": {
+          "llvm_ir_defines_it": false,
+          "llvm_ir_calls_it": false,
+          "profile_counter_globals_naming_it": 0,
+          "profile_counter_globals_total": 9,
+          "regions_of_any_function_on_its_lines": 0
+        },
+        "branch_sites": [
+          {
+            "site": "normal_if: x > 5",
+            "function": "normal_if",
+            "span": [
+              36,
+              8,
+              36,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "macro_call_site_condition: x > 5 (tokens written at the macro call site)",
+            "function": "macro_call_site_condition",
+            "span": [
+              46,
+              19,
+              46,
+              24
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "macro_fn_call_site_body: x > 5 (function item from a macro, body block from the call site)",
+            "function": "macro_fn_call_site_body",
+            "span": [
+              52,
+              8,
+              52,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 10) [lhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              27,
+              57,
+              35
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 2,
+            "true_count": 4,
+            "false_count": 2,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y < 50) [rhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              39,
+              57,
+              47
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 3,
+            "oracle_false_count": 1,
+            "true_count": 3,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 100) [lhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              25,
+              59,
+              34
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 1,
+            "oracle_false_count": 5,
+            "true_count": 1,
+            "false_count": 5,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y < 5) [rhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              38,
+              59,
+              45
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3,
+            "true_count": 2,
+            "false_count": 3,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 1) [lhs of outer &&]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              24,
+              60,
+              31
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 5,
+            "oracle_false_count": 1,
+            "true_count": 5,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y > 1) [lhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              36,
+              60,
+              43
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1,
+            "true_count": 4,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 2) [rhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              47,
+              60,
+              54
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 1,
+            "oracle_false_count": 0,
+            "true_count": 1,
+            "false_count": 0,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "negated: !(x > 100)",
+            "function": "negated_conditions",
+            "span": [
+              67,
+              8,
+              67,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1,
+            "true_count": 4,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "negated: !!(y < 50)",
+            "function": "negated_conditions",
+            "span": [
+              70,
+              8,
+              70,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3,
+            "true_count": 2,
+            "false_count": 3,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "negated: !!!(z == 0)",
+            "function": "negated_conditions",
+            "span": [
+              73,
+              8,
+              73,
+              19
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 1,
+            "oracle_false_count": 4,
+            "true_count": 1,
+            "false_count": 4,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          }
+        ],
+        "all_sites_presence_as_source_predicts": true,
+        "all_present_sites_match_oracle": true,
+        "flow_conservation": [
+          {
+            "rhs": "standalone: (y < 50) [rhs of &&]",
+            "lhs": "standalone: (x > 10) [lhs of &&]",
+            "lhs_outcome_feeding_rhs": "true",
+            "lhs_outcome_count": 4,
+            "rhs_true_plus_false": 4,
+            "conserved": true
+          },
+          {
+            "rhs": "standalone: (y < 5) [rhs of ||]",
+            "lhs": "standalone: (x > 100) [lhs of ||]",
+            "lhs_outcome_feeding_rhs": "false",
+            "lhs_outcome_count": 5,
+            "rhs_true_plus_false": 5,
+            "conserved": true
+          },
+          {
+            "rhs": "standalone: (x > 2) [rhs of inner ||]",
+            "lhs": "standalone: (y > 1) [lhs of inner ||]",
+            "lhs_outcome_feeding_rhs": "false",
+            "lhs_outcome_count": 1,
+            "rhs_true_plus_false": 1,
+            "conserved": true
+          },
+          {
+            "rhs": "standalone: (y > 1) [lhs of inner ||]",
+            "lhs": "standalone: (x > 1) [lhs of outer &&]",
+            "lhs_outcome_feeding_rhs": "true",
+            "lhs_outcome_count": 5,
+            "rhs_true_plus_false": 5,
+            "conserved": true
+          }
+        ]
+      },
+      "condition_opt2": {
+        "rustc_rc": 0,
+        "program_rc": 0,
+        "llvm_profdata_rc": 0,
+        "llvm_cov_export_rc": 0,
+        "totals": {
+          "branches": {
+            "count": 26,
+            "covered": 25,
+            "notcovered": 1,
+            "percent": 96.15384615384616
+          },
+          "functions": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "instantiations": {
+            "count": 9,
+            "covered": 9,
+            "percent": 100
+          },
+          "lines": {
+            "count": 55,
+            "covered": 55,
+            "percent": 100
+          },
+          "mcdc": {
+            "count": 0,
+            "covered": 0,
+            "notcovered": 0,
+            "percent": 0
+          },
+          "regions": {
+            "count": 102,
+            "covered": 102,
+            "notcovered": 0,
+            "percent": 100
+          }
+        },
+        "functions": {
+          "caller_of_excluded": {
+            "execution_count": 3,
+            "code_regions": 3,
+            "code_regions_executed": 3,
+            "source_lines_spanned": [
+              86,
+              88
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_generated_fn": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              21,
+              23
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "negated_conditions": {
+            "execution_count": 5,
+            "code_regions": 14,
+            "code_regions_executed": 14,
+            "source_lines_spanned": [
+              65,
+              77
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  67,
+                  8,
+                  67,
+                  18
+                ],
+                "true_count": 4,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  70,
+                  8,
+                  70,
+                  18
+                ],
+                "true_count": 2,
+                "false_count": 3,
+                "kind": 4
+              },
+              {
+                "span": [
+                  73,
+                  8,
+                  73,
+                  19
+                ],
+                "true_count": 1,
+                "false_count": 4,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "standalone_conditions": {
+            "execution_count": 6,
+            "code_regions": 19,
+            "code_regions_executed": 19,
+            "source_lines_spanned": [
+              56,
+              62
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  57,
+                  27,
+                  57,
+                  35
+                ],
+                "true_count": 4,
+                "false_count": 2,
+                "kind": 4
+              },
+              {
+                "span": [
+                  57,
+                  39,
+                  57,
+                  47
+                ],
+                "true_count": 3,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  59,
+                  25,
+                  59,
+                  34
+                ],
+                "true_count": 1,
+                "false_count": 5,
+                "kind": 4
+              },
+              {
+                "span": [
+                  59,
+                  38,
+                  59,
+                  45
+                ],
+                "true_count": 2,
+                "false_count": 3,
+                "kind": 4
+              },
+              {
+                "span": [
+                  60,
+                  24,
+                  60,
+                  31
+                ],
+                "true_count": 5,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  60,
+                  36,
+                  60,
+                  43
+                ],
+                "true_count": 4,
+                "false_count": 1,
+                "kind": 4
+              },
+              {
+                "span": [
+                  60,
+                  47,
+                  60,
+                  54
+                ],
+                "true_count": 1,
+                "false_count": 0,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "macro_fn_call_site_body": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              51,
+              52
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  52,
+                  8,
+                  52,
+                  13
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "macro_def_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              40,
+              42
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "macro_call_site_condition": {
+            "execution_count": 3,
+            "code_regions": 4,
+            "code_regions_executed": 4,
+            "source_lines_spanned": [
+              45,
+              47
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  46,
+                  19,
+                  46,
+                  24
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          },
+          "main": {
+            "execution_count": 1,
+            "code_regions": 44,
+            "code_regions_executed": 44,
+            "source_lines_spanned": [
+              90,
+              107
+            ],
+            "branch_regions": [],
+            "mcdc_records": 0
+          },
+          "normal_if": {
+            "execution_count": 3,
+            "code_regions": 5,
+            "code_regions_executed": 5,
+            "source_lines_spanned": [
+              35,
+              37
+            ],
+            "branch_regions": [
+              {
+                "span": [
+                  36,
+                  8,
+                  36,
+                  13
+                ],
+                "true_count": 2,
+                "false_count": 1,
+                "kind": 4
+              }
+            ],
+            "mcdc_records": 0
+          }
+        },
+        "function_record_names": [
+          "caller_of_excluded",
+          "macro_call_site_condition",
+          "macro_def_site_condition",
+          "macro_fn_call_site_body",
+          "macro_generated_fn",
+          "main",
+          "negated_conditions",
+          "normal_if",
+          "standalone_conditions"
+        ],
+        "excluded_inline_callee_has_function_record": false,
+        "excluded_inline_callee": {
+          "llvm_ir_defines_it": false,
+          "llvm_ir_calls_it": false,
+          "profile_counter_globals_naming_it": 0,
+          "profile_counter_globals_total": 9,
+          "regions_of_any_function_on_its_lines": 0
+        },
+        "branch_sites": [
+          {
+            "site": "normal_if: x > 5",
+            "function": "normal_if",
+            "span": [
+              36,
+              8,
+              36,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "macro_call_site_condition: x > 5 (tokens written at the macro call site)",
+            "function": "macro_call_site_condition",
+            "span": [
+              46,
+              19,
+              46,
+              24
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "macro_fn_call_site_body: x > 5 (function item from a macro, body block from the call site)",
+            "function": "macro_fn_call_site_body",
+            "span": [
+              52,
+              8,
+              52,
+              13
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 1,
+            "true_count": 2,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 10) [lhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              27,
+              57,
+              35
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 2,
+            "true_count": 4,
+            "false_count": 2,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y < 50) [rhs of &&]",
+            "function": "standalone_conditions",
+            "span": [
+              57,
+              39,
+              57,
+              47
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 3,
+            "oracle_false_count": 1,
+            "true_count": 3,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 100) [lhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              25,
+              59,
+              34
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 1,
+            "oracle_false_count": 5,
+            "true_count": 1,
+            "false_count": 5,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y < 5) [rhs of ||]",
+            "function": "standalone_conditions",
+            "span": [
+              59,
+              38,
+              59,
+              45
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3,
+            "true_count": 2,
+            "false_count": 3,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 1) [lhs of outer &&]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              24,
+              60,
+              31
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 5,
+            "oracle_false_count": 1,
+            "true_count": 5,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (y > 1) [lhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              36,
+              60,
+              43
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1,
+            "true_count": 4,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "standalone: (x > 2) [rhs of inner ||]",
+            "function": "standalone_conditions",
+            "span": [
+              60,
+              47,
+              60,
+              54
+            ],
+            "lowest_level_per_source": "condition",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 1,
+            "oracle_false_count": 0,
+            "true_count": 1,
+            "false_count": 0,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "negated: !(x > 100)",
+            "function": "negated_conditions",
+            "span": [
+              67,
+              8,
+              67,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 4,
+            "oracle_false_count": 1,
+            "true_count": 4,
+            "false_count": 1,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "negated: !!(y < 50)",
+            "function": "negated_conditions",
+            "span": [
+              70,
+              8,
+              70,
+              18
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 2,
+            "oracle_false_count": 3,
+            "true_count": 2,
+            "false_count": 3,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          },
+          {
+            "site": "negated: !!!(z == 0)",
+            "function": "negated_conditions",
+            "span": [
+              73,
+              8,
+              73,
+              19
+            ],
+            "lowest_level_per_source": "branch",
+            "expected_present_per_source": true,
+            "present": true,
+            "oracle_true_count": 1,
+            "oracle_false_count": 4,
+            "true_count": 1,
+            "false_count": 4,
+            "counts_match_oracle": true,
+            "counts_match_swapped_oracle": false
+          }
+        ],
+        "all_sites_presence_as_source_predicts": true,
+        "all_present_sites_match_oracle": true,
+        "flow_conservation": [
+          {
+            "rhs": "standalone: (y < 50) [rhs of &&]",
+            "lhs": "standalone: (x > 10) [lhs of &&]",
+            "lhs_outcome_feeding_rhs": "true",
+            "lhs_outcome_count": 4,
+            "rhs_true_plus_false": 4,
+            "conserved": true
+          },
+          {
+            "rhs": "standalone: (y < 5) [rhs of ||]",
+            "lhs": "standalone: (x > 100) [lhs of ||]",
+            "lhs_outcome_feeding_rhs": "false",
+            "lhs_outcome_count": 5,
+            "rhs_true_plus_false": 5,
+            "conserved": true
+          },
+          {
+            "rhs": "standalone: (x > 2) [rhs of inner ||]",
+            "lhs": "standalone: (y > 1) [lhs of inner ||]",
+            "lhs_outcome_feeding_rhs": "false",
+            "lhs_outcome_count": 1,
+            "rhs_true_plus_false": 1,
+            "conserved": true
+          },
+          {
+            "rhs": "standalone: (y > 1) [lhs of inner ||]",
+            "lhs": "standalone: (x > 1) [lhs of outer &&]",
+            "lhs_outcome_feeding_rhs": "true",
+            "lhs_outcome_count": 5,
+            "rhs_true_plus_false": 5,
+            "conserved": true
+          }
+        ]
+      }
+    },
+    "built_mir": {
+      "block": {
+        "standalone_conditions": {
+          "available": true,
+          "basic_blocks": 21,
+          "switch_int_terminators": 4,
+          "switch_int_on_copy_operand": 0,
+          "coverage_block_markers": 0,
+          "coverage_statements": 0
+        },
+        "negated_conditions": {
+          "available": true,
+          "basic_blocks": 23,
+          "switch_int_terminators": 3,
+          "switch_int_on_copy_operand": 0,
+          "coverage_block_markers": 0,
+          "coverage_statements": 6
+        }
+      },
+      "branch": {
+        "standalone_conditions": {
+          "available": true,
+          "basic_blocks": 21,
+          "switch_int_terminators": 4,
+          "switch_int_on_copy_operand": 0,
+          "coverage_block_markers": 8,
+          "coverage_statements": 8
+        },
+        "negated_conditions": {
+          "available": true,
+          "basic_blocks": 23,
+          "switch_int_terminators": 3,
+          "switch_int_on_copy_operand": 0,
+          "coverage_block_markers": 6,
+          "coverage_statements": 12
+        }
+      },
+      "condition": {
+        "standalone_conditions": {
+          "available": true,
+          "basic_blocks": 30,
+          "switch_int_terminators": 7,
+          "switch_int_on_copy_operand": 3,
+          "coverage_block_markers": 14,
+          "coverage_statements": 14
+        },
+        "negated_conditions": {
+          "available": true,
+          "basic_blocks": 23,
+          "switch_int_terminators": 3,
+          "switch_int_on_copy_operand": 0,
+          "coverage_block_markers": 6,
+          "coverage_statements": 12
+        }
+      }
+    },
+    "coverage_options_mcdc": {
+      "rc": 1,
+      "first_error": "error: incorrect value `mcdc` for unstable option `coverage-options` - `block` | `branch` | `condition` was expected"
+    }
+  }
+}

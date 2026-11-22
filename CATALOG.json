@@ -100405,6 +100405,80 @@
         "verification"
       ]
     },
+    "rustc-xray-instrument-fn-overwrite-mcount-and-coverage-branch-condition-soundness": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "rustc (executed nightly toolchain and its source; no #[instrument_fn])"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+            "version": "1.102.0 development tree, committed 2026-11-11"
+          },
+          "name": "rustc (source only; has #[instrument_fn])"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1",
+            "version": "1.102.0 development tree, committed 2026-11-22"
+          },
+          "name": "rustc (source only; head of the default branch on 2026-11-22)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "tag": "llvmorg-22.1.6",
+            "version": "22.1.6"
+          },
+          "name": "LLVM (tools shipped with the executed toolchain; source at the matching release tag)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "tag": "llvmorg-23.1.5",
+            "version": "23.1.5"
+          },
+          "name": "LLVM (source only; representative of the 23.1 line)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal (MIR statement type and step function)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 (checker of the formalization)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/codegen",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rvv-lmul-vtype-hazards-arm-sme-streaming-za-tiles-and-ffload-speculation": {
       "observed_at": "2026-11-19",
       "subjects": [
