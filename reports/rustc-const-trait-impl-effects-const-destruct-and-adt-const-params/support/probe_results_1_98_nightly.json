@@ -1,0 +1,437 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "edition": "2024",
+  "solver_divergences": [],
+  "cases": {
+    "ct_01_const_trait_bracket_const_bound_ctfe_and_runtime": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "CTFE=42 RT_CONST=42 RT_NONCONST=42"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "CTFE=42 RT_CONST=42 RT_NONCONST=42"
+      }
+    },
+    "ct_02_non_const_impl_rejected_in_const_context": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0277"
+        ],
+        "stderr_head": "error[E0277]: the trait bound `NonConst: const Combine` is not satisfied\n  --> <tmp>:17:27\n   |\n17 | pub const BAD: NonConst = apply(NonConst(1), NonConst(2));\n   |                           ^^^^^\n   |\nnote: required by a bound in `apply`\n  --> <tmp>:16:23\n   |\n16 | pub const fn apply<T: [const] Combine>(a: T, b: T) -> T { a.combine(b) }\n   |                       ^^^^^^^^^^^^^^^ required by this bound in `apply`\nhelp: make the `impl` of trait `Combine` `const`\n   |\n10 | impl const Combine for NonConst {\n   |      +++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0277"
+        ],
+        "stderr_head": "error[E0277]: the trait bound `NonConst: const Combine` is not satisfied\n  --> <tmp>:17:27\n   |\n17 | pub const BAD: NonConst = apply(NonConst(1), NonConst(2));\n   |                           ^^^^^\n   |\nnote: required by a bound in `apply`\n  --> <tmp>:16:23\n   |\n16 | pub const fn apply<T: [const] Combine>(a: T, b: T) -> T { a.combine(b) }\n   |                       ^^^^^^^^^^^^^^^ required by this bound in `apply`\nhelp: make the `impl` of trait `Combine` `const`\n   |\n10 | impl const Combine for NonConst {\n   |      +++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+      }
+    },
+    "ct_03_generic_const_fn_drop_without_const_destruct_rejected": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0493"
+        ],
+        "stderr_head": "error[E0493]: destructor of `T` cannot be evaluated at compile-time\n --> <tmp>:1:39\n  |\n1 | pub const fn drop_generic_in_const<T>(_x: T) {}\n  |                                       ^^      - value is dropped here\n  |                                       |\n  |                                       the destructor for this type cannot be evaluated in constant functions\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0493`.\n"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0493"
+        ],
+        "stderr_head": "error[E0493]: destructor of `T` cannot be evaluated at compile-time\n --> <tmp>:1:39\n  |\n1 | pub const fn drop_generic_in_const<T>(_x: T) {}\n  |                                       ^^      - value is dropped here\n  |                                       |\n  |                                       the destructor for this type cannot be evaluated in constant functions\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0493`.\n"
+      }
+    },
+    "ct_04_generic_const_fn_with_const_destruct_accepted": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "CONST_DESTRUCT_OK=77 RT=77"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "CONST_DESTRUCT_OK=77 RT=77"
+      }
+    },
+    "ct_05_conflicting_const_and_nonconst_impl_coherence_rejected": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0119"
+        ],
+        "stderr_head": "error[E0119]: conflicting implementations of trait `MyOp` for type `u32`\n --> <tmp>:4:1\n  |\n3 | const impl MyOp for u32 { fn op(self) -> u32 { 1 } }\n  | ----------------------- first implementation here\n4 | impl MyOp for u32 { fn op(self) -> u32 { 2 } }\n  | ^^^^^^^^^^^^^^^^^ conflicting implementation for `u32`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`.\n"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0119"
+        ],
+        "stderr_head": "error[E0119]: conflicting implementations of trait `MyOp` for type `u32`\n --> <tmp>:4:1\n  |\n3 | const impl MyOp for u32 { fn op(self) -> u32 { 1 } }\n  | ----------------------- first implementation here\n4 | impl MyOp for u32 { fn op(self) -> u32 { 2 } }\n  | ^^^^^^^^^^^^^^^^^ conflicting implementation for `u32`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`.\n"
+      }
+    },
+    "ct_06_adt_const_params_structural_eq_accepted": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "FAST=40 CHECKED=1"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "FAST=40 CHECKED=1"
+      }
+    },
+    "ct_07_adt_const_params_float_field_rejected": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0204",
+          "E0277"
+        ],
+        "stderr_head": "error[E0204]: the trait `ConstParamTy_` cannot be implemented for this type\n --> <tmp>:5:12\n  |\n4 | #[derive(PartialEq, Eq, ConstParamTy)]\n  |                         ------------ in this derive macro expansion\n5 | pub struct BadFloatParam(pub f32);\n  |            ^^^^^^^^^^^^^ ------- this field does not implement `ConstParamTy_`\n\nerror[E0277]: the trait bound `f32: Eq` is not satisfied\n   --> <tmp>:5:26\n    |\n  4 | #[derive(PartialEq, Eq, ConstParamTy)]\n    |                     -- in this derive macro expansion\n  5 | pub struct BadFloatParam(pub f32);\n    |                          ^^^^^^^ the trait `Eq` is not implemented for `f32`\n    |\n    = help: the following other types implement trait `Eq`:\n              i128\n              i16\n              i32\n              i64\n              i8\n              isize\n              u128\n              u16\n            and 4 others\nnote: required by a bound in `std::cmp::AssertParamIsEq`\n   --> <sysroot>/library/core/src/cmp.rs:380:31\n    |\n380 | pub struct AssertParamIsEq<T: Eq + PointeeSized> {\n    |                               ^^ required by this bound in `AssertParamIsEq`\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0204, E0277.\n"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0204",
+          "E0277"
+        ],
+        "stderr_head": "error[E0204]: the trait `ConstParamTy_` cannot be implemented for this type\n --> <tmp>:5:12\n  |\n4 | #[derive(PartialEq, Eq, ConstParamTy)]\n  |                         ------------ in this derive macro expansion\n5 | pub struct BadFloatParam(pub f32);\n  |            ^^^^^^^^^^^^^ ------- this field does not implement `ConstParamTy_`\n\nerror[E0277]: the trait bound `f32: Eq` is not satisfied\n   --> <tmp>:5:26\n    |\n  4 | #[derive(PartialEq, Eq, ConstParamTy)]\n    |                     -- in this derive macro expansion\n  5 | pub struct BadFloatParam(pub f32);\n    |                          ^^^^^^^ the trait `Eq` is not implemented for `f32`\n    |\n    = help: the following other types implement trait `Eq`:\n              i128\n              i16\n              i32\n              i64\n              i8\n              isize\n              u128\n              u16\n            and 4 others\nnote: required by a bound in `std::cmp::AssertParamIsEq`\n   --> <sysroot>/library/core/src/cmp.rs:380:31\n    |\n380 | pub struct AssertParamIsEq<T: Eq + PointeeSized> {\n    |                               ^^ required by this bound in `AssertParamIsEq`\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0204, E0277.\n"
+      }
+    },
+    "ct_08_adt_const_params_raw_ptr_rejected": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0204"
+        ],
+        "stderr_head": "error[E0204]: the trait `ConstParamTy_` cannot be implemented for this type\n --> <tmp>:5:12\n  |\n4 | #[derive(PartialEq, Eq, ConstParamTy)]\n  |                         ------------ in this derive macro expansion\n5 | pub struct BadPtrParam(pub *const u8);\n  |            ^^^^^^^^^^^ ------------- this field does not implement `ConstParamTy_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0204`.\n"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0204"
+        ],
+        "stderr_head": "error[E0204]: the trait `ConstParamTy_` cannot be implemented for this type\n --> <tmp>:5:12\n  |\n4 | #[derive(PartialEq, Eq, ConstParamTy)]\n  |                         ------------ in this derive macro expansion\n5 | pub struct BadPtrParam(pub *const u8);\n  |            ^^^^^^^^^^^ ------------- this field does not implement `ConstParamTy_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0204`.\n"
+      }
+    },
+    "ct_09_unsized_const_params_slice_str_valtree": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "warning: the feature `unsized_const_params` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>:1:30\n  |\n1 | #![feature(adt_const_params, unsized_const_params)]\n  |                              ^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #95174 <https://github.com/rust-lang/rust/issues/95174> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "run_stdout": "LEN_API=9 LEN_ROOT=1"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "warning: the feature `unsized_const_params` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <tmp>:1:30\n  |\n1 | #![feature(adt_const_params, unsized_const_params)]\n  |                              ^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #95174 <https://github.com/rust-lang/rust/issues/95174> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "run_stdout": "LEN_API=9 LEN_ROOT=1"
+      }
+    },
+    "ct_10_legacy_impl_const_syntax_evolution": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "LEGACY_IMPL_CONST=15"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "LEGACY_IMPL_CONST=15"
+      }
+    },
+    "ct_11_always_const_bound_rejects_nonconst_at_runtime": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0277"
+        ],
+        "stderr_head": "error[E0277]: the trait bound `RuntimeOnly: const Op` is not satisfied\n  --> <tmp>:17:34\n   |\n17 |     let _ = require_always_const(RuntimeOnly(7));\n   |             -------------------- ^^^^^^^^^^^^^^\n   |             |\n   |             required by a bound introduced by this call\n   |\nnote: required by a bound in `require_always_const`\n  --> <tmp>:12:32\n   |\n12 | pub fn require_always_const<T: const Op>(x: T) -> u32 {\n   |                                ^^^^^^^^ required by this bound in `require_always_const`\nhelp: make the `impl` of trait `Op` `const`\n   |\n 8 | impl const Op for RuntimeOnly {\n   |      +++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0277"
+        ],
+        "stderr_head": "error[E0277]: the trait bound `RuntimeOnly: const Op` is not satisfied\n  --> <tmp>:17:34\n   |\n17 |     let _ = require_always_const(RuntimeOnly(7));\n   |             -------------------- ^^^^^^^^^^^^^^\n   |             |\n   |             required by a bound introduced by this call\n   |\nnote: required by a bound in `require_always_const`\n  --> <tmp>:12:32\n   |\n12 | pub fn require_always_const<T: const Op>(x: T) -> u32 {\n   |                                ^^^^^^^^ required by this bound in `require_always_const`\nhelp: make the `impl` of trait `Op` `const`\n   |\n 8 | impl const Op for RuntimeOnly {\n   |      +++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+      }
+    },
+    "ct_12_maybe_bound_cannot_satisfy_always_const_goal": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0277"
+        ],
+        "stderr_head": "error[E0277]: the trait bound `T: const Op` is not satisfied\n  --> <tmp>:12:17\n   |\n12 |     need_always(x)\n   |     ----------- ^\n   |     |\n   |     required by a bound introduced by this call\n   |\nnote: required by a bound in `need_always`\n  --> <tmp>:7:29\n   |\n 7 | pub const fn need_always<T: const Op>(x: T) -> u32 {\n   |                             ^^^^^^^^ required by this bound in `need_always`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0277"
+        ],
+        "stderr_head": "error[E0277]: the trait bound `T: const Op` is not satisfied\n  --> <tmp>:12:17\n   |\n12 |     need_always(x)\n   |     ----------- ^\n   |     |\n   |     required by a bound introduced by this call\n   |\nnote: required by a bound in `need_always`\n  --> <tmp>:7:29\n   |\n 7 | pub const fn need_always<T: const Op>(x: T) -> u32 {\n   |                             ^^^^^^^^ required by this bound in `need_always`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+      }
+    },
+    "ct_13_nonconst_drop_rejected_in_const_item_with_const_destruct": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0277"
+        ],
+        "stderr_head": "error[E0277]: the trait bound `NonConstDrop: const Destruct` is not satisfied\n  --> <tmp>:14:36\n   |\n14 | pub const BAD_DROP: u32 = drop_any(NonConstDrop(9));\n   |                           -------- ^^^^^^^^^^^^^^^\n   |                           |\n   |                           required by a bound introduced by this call\n   |\nnote: required by a bound in `drop_any`\n  --> <tmp>:10:26\n   |\n10 | pub const fn drop_any<T: [const] Destruct>(_x: T) -> u32 {\n   |                          ^^^^^^^^^^^^^^^^ required by this bound in `drop_any`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 1,
+        "error_codes": [
+          "E0277"
+        ],
+        "stderr_head": "error[E0277]: the trait bound `NonConstDrop: const Destruct` is not satisfied\n  --> <tmp>:14:36\n   |\n14 | pub const BAD_DROP: u32 = drop_any(NonConstDrop(9));\n   |                           -------- ^^^^^^^^^^^^^^^\n   |                           |\n   |                           required by a bound introduced by this call\n   |\nnote: required by a bound in `drop_any`\n  --> <tmp>:10:26\n   |\n10 | pub const fn drop_any<T: [const] Destruct>(_x: T) -> u32 {\n   |                          ^^^^^^^^^^^^^^^^ required by this bound in `drop_any`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+      }
+    },
+    "ct_14_const_drop_executes_confluently_in_ctfe_and_runtime": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "CTFE_DROP=99 RT_DROP=99"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "CTFE_DROP=99 RT_DROP=99"
+      }
+    },
+    "ct_15_manually_drop_trivially_const_destruct": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "warning: feature `const_destruct` is declared but not used\n --> <tmp>:1:30\n  |\n1 | #![feature(const_trait_impl, const_destruct)]\n  |                              ^^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "run_stdout": "MD_CTFE=13 MD_RT=13"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "warning: feature `const_destruct` is declared but not used\n --> <tmp>:1:30\n  |\n1 | #![feature(const_trait_impl, const_destruct)]\n  |                              ^^^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+        "run_rc": 0,
+        "run_stdout": "MD_CTFE=13 MD_RT=13"
+      }
+    },
+    "ct_16_ctfe_raw_ptr_comparison_rejected": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 1,
+        "error_codes": [],
+        "stderr_head": "error: pointers cannot be reliably compared during const eval\n --> <tmp>:4:26\n  |\n4 | pub const PTR_EQ: bool = (&A as *const u8) == (&B as *const u8);\n  |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #53020 <https://github.com/rust-lang/rust/issues/53020> for more information\n\nerror: aborting due to 1 previous error\n\n"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 1,
+        "error_codes": [],
+        "stderr_head": "error: pointers cannot be reliably compared during const eval\n --> <tmp>:4:26\n  |\n4 | pub const PTR_EQ: bool = (&A as *const u8) == (&B as *const u8);\n  |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #53020 <https://github.com/rust-lang/rust/issues/53020> for more information\n\nerror: aborting due to 1 previous error\n\n"
+      }
+    },
+    "ct_17_float_signed_zero_and_nan_structural_mismatch": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "EQ_ZEROS=true BITS_EQ_ZEROS=false POS_BITS=0x00000000 NEG_BITS=0x80000000 NAN_EQ_SELF=false"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "EQ_ZEROS=true BITS_EQ_ZEROS=false POS_BITS=0x00000000 NEG_BITS=0x80000000 NAN_EQ_SELF=false"
+      }
+    },
+    "ct_18_legacy_tilde_const_bound_still_parsed_as_maybe": {
+      "next_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=globally"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "TILDE_CONST=42"
+      },
+      "old_solver": {
+        "flags": [
+          "-Z",
+          "next-solver=no"
+        ],
+        "rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "run_stdout": "TILDE_CONST=42"
+      }
+    }
+  }
+}
