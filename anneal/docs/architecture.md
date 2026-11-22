@@ -383,12 +383,13 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   accompanied by a kernel-checked backward simulation (`Abstracts`) from
   `StableAst` to $M_{\text{anneal}}$.
 - **Program logics, 3-axiom proof libraries, and tactics
-  (`theory/Anneal/{MirWp,LoopInv,BitVec,BitVecArith}.lean`,
+  (`theory/Anneal/{MirWp,LoopInv,LinearArith,BitVec,BitVecArith}.lean`,
   `theory/Anneal/{LeBytes,ListChunks,NatBitwise,PTree,SpineForce}.lean`,
   `theory/Anneal/PureLift/`, and planned `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
-  constructive bitvector, byte-serialization, list-chunking, and canonical
-  positive radix-trie framing proof libraries, CPS spine-forcing and `@Nat.rec`
+  sparse Farkas and Chvatal-Gomory linear cut certificate checker, constructive
+  bitvector, byte-serialization, list-chunking, and canonical positive
+  radix-trie framing proof libraries, CPS spine-forcing and `@Nat.rec`
   iteration combinators, functional borrow lifting, separation-logic frame
   rules, and proof automation built against $M_{\text{anneal}}$ and
   `StableAst` / `StableSemantics` (`cargo-anneal` bundles the scalar and MIR
@@ -505,6 +506,7 @@ anneal/
     │   ├── BitVec.lean             # Constructive 3-axiom BitVec & tnum lemmas
     │   ├── BitVecArith.lean        # Constructive BitVec range & arithmetic
     │   ├── LeBytes.lean            # Parametric LE/BE byte serialization lemmas
+    │   ├── LinearArith.lean        # Sparse Farkas & Chvatal-Gomory checker
     │   ├── ListChunks.lean         # Ceiling division & fixed-size chunking
     │   ├── LoopInv.lean            # CFG loop-invariant & simulation combinators
     │   ├── MirTotal.lean           # Computable MIR step mirrors & bridges (+ MirTotal/)
