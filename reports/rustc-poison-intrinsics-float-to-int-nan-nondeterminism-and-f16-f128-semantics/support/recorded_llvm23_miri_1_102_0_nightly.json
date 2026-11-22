@@ -1,0 +1,277 @@
+{
+  "description": "Recorded Miri (20-case matrix) and pre-pass LLVM 23.1.5 IR (14-function matrix) comparison run on rustc 1.102.0-nightly (3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1, 2026-11-11). Preserved as a scrubbed comparison artifact alongside the re-executed probe_results.json on rustc 1.98.0-nightly (14210df0e27ccd7d9e6a05b8085cbd438e4bbc65).",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "miri_matrix": {
+    "float_as_u8_saturating_nan_inf_neg_ok": {
+      "extra_flags": [],
+      "miri_rc": 0,
+      "stdout": "SAT_OK 0,255,0,0",
+      "diag_head": []
+    },
+    "float_to_int_unchecked_u8_neg_0_9999_open_interval_ok": {
+      "extra_flags": [],
+      "miri_rc": 0,
+      "stdout": "OPEN_INTERVAL_OK 0,255",
+      "diag_head": []
+    },
+    "float_to_int_unchecked_u8_neg_1_0_ub": {
+      "extra_flags": [],
+      "miri_rc": 1,
+      "stdout": "",
+      "diag_head": [
+        "error: Undefined Behavior: `float_to_int_unchecked` intrinsic called on -1f32 which cannot be represented in target type `u8`",
+        "|                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "float_to_int_unchecked_u8_256_0_ub": {
+      "extra_flags": [],
+      "miri_rc": 1,
+      "stdout": "",
+      "diag_head": [
+        "error: Undefined Behavior: `float_to_int_unchecked` intrinsic called on 256f32 which cannot be represented in target type `u8`",
+        "|                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "float_to_int_unchecked_i32_max_as_f32_rounds_to_2p31_ub": {
+      "extra_flags": [],
+      "miri_rc": 1,
+      "stdout": "",
+      "diag_head": [
+        "error: Undefined Behavior: `float_to_int_unchecked` intrinsic called on 2.14748365E+9f32 which cannot be represented in target type `i32`",
+        "|                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "float_to_int_unchecked_i32_max_representable_f32_0x4effffff_ok": {
+      "extra_flags": [],
+      "miri_rc": 0,
+      "stdout": "MAX_F32_I32_OK 2147483520",
+      "diag_head": []
+    },
+    "disjoint_bitor_disjoint_ok": {
+      "extra_flags": [],
+      "miri_rc": 0,
+      "stdout": "",
+      "diag_head": []
+    },
+    "disjoint_bitor_overlapping_bit_ub": {
+      "extra_flags": [],
+      "miri_rc": 1,
+      "stdout": "",
+      "diag_head": [
+        "error: Undefined Behavior: `assume` called with `false`",
+        "|                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "exact_div_exact_ok": {
+      "extra_flags": [],
+      "miri_rc": 0,
+      "stdout": "",
+      "diag_head": [
+        "--> <TMP>/exact_div_exact_ok.rs:1:12"
+      ]
+    },
+    "exact_div_nonzero_remainder_ub": {
+      "extra_flags": [],
+      "miri_rc": 1,
+      "stdout": "",
+      "diag_head": [
+        "--> <TMP>/exact_div_nonzero_remainder_ub.rs:1:12",
+        "error: Undefined Behavior: exact_div: 13_u32 cannot be divided by 4_u32 without remainder",
+        "--> <TMP>/exact_div_nonzero_remainder_ub.rs:3:23",
+        "3 | ... { core::intrinsics::exact_div(std::hint::black_box(13_u32), std::hint::black_box(4_u32)) };"
+      ]
+    },
+    "exact_div_signed_min_div_neg1_overflow_ub": {
+      "extra_flags": [],
+      "miri_rc": 1,
+      "stdout": "",
+      "diag_head": [
+        "--> <TMP>/exact_div_signed_min_div_neg1_overflow_ub.rs:1:12",
+        "error: Undefined Behavior: overflow in signed remainder (dividing MIN by -1)",
+        "--> <TMP>/exact_div_signed_min_div_neg1_overflow_ub.rs:3:23",
+        "3 | ... { core::intrinsics::exact_div(std::hint::black_box(i8::MIN), std::hint::black_box(-1_i8)) };"
+      ]
+    },
+    "select_unpredictable_intrinsic_forgets_vs_hint_drops": {
+      "extra_flags": [],
+      "miri_rc": 0,
+      "stdout": "DROPS intrinsic=1 hint=2",
+      "diag_head": []
+    },
+    "fadd_fast_nan_input_ub": {
+      "extra_flags": [],
+      "miri_rc": 1,
+      "stdout": "",
+      "diag_head": [
+        "error: Undefined Behavior: `fadd_fast` intrinsic called with non-finite value as second parameter",
+        "|       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "fadd_fast_finite_inputs_infinite_output_ub": {
+      "extra_flags": [],
+      "miri_rc": 1,
+      "stdout": "",
+      "diag_head": [
+        "error: Undefined Behavior: `fadd_fast` intrinsic produced non-finite value as result",
+        "|                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "fadd_fast_4ulp_nondeterminism_default_miri": {
+      "extra_flags": [],
+      "miri_rc": 0,
+      "stdout": "FADD_FAST_NONDET distinct=9 max_ulp=4",
+      "diag_head": []
+    },
+    "fadd_fast_deterministic_floats_exact": {
+      "extra_flags": [
+        "-Zmiri-deterministic-floats"
+      ],
+      "miri_rc": 0,
+      "stdout": "FADD_FAST_DET distinct=1 exact=0x40400000",
+      "diag_head": []
+    },
+    "fadd_algebraic_safe_const_and_runtime_nan_inf_ok": {
+      "extra_flags": [],
+      "miri_rc": 0,
+      "stdout": "FADD_ALG_OK const_nan=0x7fc00000",
+      "diag_head": []
+    },
+    "nan_nondeterminism_ctfe_vs_miri_default": {
+      "extra_flags": [],
+      "miri_rc": 0,
+      "stdout": "NAN_NONDET ctfe=0x7fc00000 zdivz=[\"0x7fc00000\", \"0xffc00000\"] snan_prop_count=6 has_signaling_out=true",
+      "diag_head": []
+    },
+    "f16_and_f128_layout_arith_and_casts_miri_ok": {
+      "extra_flags": [],
+      "miri_rc": 0,
+      "stdout": "F16_F128_OK d=13.75",
+      "diag_head": []
+    },
+    "f128_powi_miri_todo_boundary": {
+      "extra_flags": [],
+      "miri_rc": 101,
+      "stdout": "",
+      "diag_head": [
+        "thread 'rustc' (<PID>) panicked at <RUSTC_SRC>/src/tools/miri/src/intrinsics/math.rs:217:38:",
+        "not yet implemented: f128"
+      ]
+    }
+  },
+  "llvm_ir_lowering": {
+    "ir_float_as_u8_sat": {
+      "signature": "define noundef i8 @ir_float_as_u8_sat(float noundef %x) unnamed_addr #3 !guid !15 {",
+      "instructions": [
+        "%_0 = call i8 @llvm.fptoui.sat.i8.f32(float %x)",
+        "ret i8 %_0"
+      ]
+    },
+    "ir_float_to_u8_unchecked": {
+      "signature": "define noundef i8 @ir_float_to_u8_unchecked(float noundef %x) unnamed_addr #3 !guid !16 {",
+      "instructions": [
+        "%_0 = fptoui float %x to i8",
+        "ret i8 %_0"
+      ]
+    },
+    "ir_disjoint_bitor_u32": {
+      "signature": "define noundef i32 @ir_disjoint_bitor_u32(i32 noundef %a, i32 noundef %b) unnamed_addr #3 !guid !10 {",
+      "instructions": [
+        "%_0 = or disjoint i32 %a, %b",
+        "ret i32 %_0"
+      ]
+    },
+    "ir_exact_sdiv_i32": {
+      "signature": "define noundef i32 @ir_exact_sdiv_i32(i32 noundef %a, i32 noundef %b) unnamed_addr #3 !guid !11 {",
+      "instructions": [
+        "%_0 = sdiv exact i32 %a, %b",
+        "ret i32 %_0"
+      ]
+    },
+    "ir_exact_udiv_u32": {
+      "signature": "define noundef i32 @ir_exact_udiv_u32(i32 noundef %a, i32 noundef %b) unnamed_addr #3 !guid !12 {",
+      "instructions": [
+        "%_0 = udiv exact i32 %a, %b",
+        "ret i32 %_0"
+      ]
+    },
+    "ir_unchecked_sadd_i32": {
+      "signature": "define noundef i32 @ir_unchecked_sadd_i32(i32 noundef %a, i32 noundef %b) unnamed_addr #3 !guid !21 {",
+      "instructions": [
+        "%_0 = add nsw i32 %a, %b",
+        "ret i32 %_0"
+      ]
+    },
+    "ir_unchecked_uadd_u32": {
+      "signature": "define noundef i32 @ir_unchecked_uadd_u32(i32 noundef %a, i32 noundef %b) unnamed_addr #3 !guid !23 {",
+      "instructions": [
+        "%_0 = add nuw i32 %a, %b",
+        "ret i32 %_0"
+      ]
+    },
+    "ir_unchecked_shl_u32": {
+      "signature": "define noundef i32 @ir_unchecked_shl_u32(i32 noundef %a, i32 noundef %b) unnamed_addr #3 !guid !22 {",
+      "instructions": [
+        "%_0 = shl i32 %a, %b",
+        "ret i32 %_0"
+      ]
+    },
+    "ir_fadd_fast_f32": {
+      "signature": "define noundef float @ir_fadd_fast_f32(float noundef %a, float noundef %b) unnamed_addr #3 !guid !14 {",
+      "instructions": [
+        "%_0 = fadd fast float %a, %b",
+        "ret float %_0"
+      ]
+    },
+    "ir_fadd_algebraic_f32": {
+      "signature": "define noundef float @ir_fadd_algebraic_f32(float noundef %a, float noundef %b) unnamed_addr #3 !guid !13 {",
+      "instructions": [
+        "%_0 = fadd reassoc nsz arcp contract float %a, %b",
+        "ret float %_0"
+      ]
+    },
+    "ir_select_unpred_scalar": {
+      "signature": "define noundef i64 @ir_select_unpred_scalar(i1 noundef zeroext %c, i64 noundef %a, i64 noundef %b) unnamed_addr #3 !guid !19 {",
+      "instructions": [
+        "%_0 = select i1 %c, i64 %a, i64 %b, !unpredictable !7",
+        "ret i64 %_0"
+      ]
+    },
+    "ir_select_unpred_pair": {
+      "signature": "define { i64, i64 } @ir_select_unpred_pair(i1 noundef zeroext %c, i64 noundef %a.0, i64 noundef %a.1, i64 noundef %b.0, i64 noundef %b.1) unnamed_addr #3 !guid !17 {",
+      "instructions": [
+        "%0 = insertvalue { i64, i64 } poison, i64 %a.0, 0",
+        "%1 = insertvalue { i64, i64 } %0, i64 %a.1, 1",
+        "%2 = insertvalue { i64, i64 } poison, i64 %b.0, 0",
+        "%3 = insertvalue { i64, i64 } %2, i64 %b.1, 1",
+        "%4 = select i1 %c, { i64, i64 } %1, { i64, i64 } %3, !unpredictable !7",
+        "%_0.0 = extractvalue { i64, i64 } %4, 0",
+        "%_0.1 = extractvalue { i64, i64 } %4, 1",
+        "%5 = insertvalue { i64, i64 } poison, i64 %_0.0, 0",
+        "%6 = insertvalue { i64, i64 } %5, i64 %_0.1, 1",
+        "ret { i64, i64 } %6"
+      ]
+    },
+    "ir_select_unpred_ref_array": {
+      "signature": "define void @ir_select_unpred_ref_array(ptr dead_on_unwind noalias nofree noundef writable sret([32 x i8]) align 8 captures(address) dereferenceable(32) %_0, i1 noundef zeroext %c, ptr noalias nofree noundef align 8 captures(address) dead_on_return dereferenceable(32) %a, ptr noalias nofree noundef align 8 captures(address) dead_on_return dereferenceable(32) %b) unnamed_addr #3 !guid !18 {",
+      "instructions": [
+        "%0 = select i1 %c, ptr %a, ptr %b, !unpredictable !7",
+        "call void @llvm.memcpy.p0.p0.i64(ptr align 8 %_0, ptr align 8 %0, i64 32, i1 false)",
+        "ret void"
+      ]
+    },
+    "ir_sysv_abi_f16_f128": {
+      "signature": "define noundef fp128 @ir_sysv_abi_f16_f128(half noundef %x, fp128 noundef %y) unnamed_addr #0 !guid !20 {",
+      "instructions": [
+        "%_3 = fpext half %x to fp128",
+        "%_0 = fadd fp128 %_3, %y",
+        "ret fp128 %_0"
+      ]
+    }
+  }
+}

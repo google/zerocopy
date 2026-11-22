@@ -1,0 +1,26 @@
+'PoisonIntrinsicsAndFloatSemantics.disjointBitOr_fallback_eq_observeNoundef' depends on axioms: [propext, Quot.sound]
+'PoisonIntrinsicsAndFloatSemantics.disjointBitOr_fallback_iff_no_poison' depends on axioms: [propext, Quot.sound]
+'PoisonIntrinsicsAndFloatSemantics.bitList_disjoint_implies_add_eq_or_no_carry' depends on axioms: [propext, Quot.sound]
+'PoisonIntrinsicsAndFloatSemantics.exactDiv_miri_eq_observeNoundef' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.exactDiv_miri_iff_no_poison' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.exactSDiv_signedMin_neg1_ub' does not depend on any axioms
+'PoisonIntrinsicsAndFloatSemantics.uncheckedAdd_miri_iff_no_poison' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.uncheckedShl_miri_iff_no_poison' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.checkedShl_total_while_uncheckedShl_poisons_at_width' does not depend on any axioms
+'PoisonIntrinsicsAndFloatSemantics.selectUnpredictable_repr_equiv' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.floatToIntUnchecked_defined_iff_open_interval' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.floatToIntUnchecked_unsigned_admits_neg_open_unit_interval' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.floatToIntSat_refines_floatToIntUnchecked' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.i32_max_as_f32_rounds_to_two_pow_31' does not depend on any axioms
+'PoisonIntrinsicsAndFloatSemantics.generateNaN_ctfe_eq_miriDet' does not depend on any axioms
+'PoisonIntrinsicsAndFloatSemantics.generateNaN_miriDet_subset_miriDefault' depends on axioms: [propext, Quot.sound]
+'PoisonIntrinsicsAndFloatSemantics.generateNaN_strict_refinement_zero_div_zero' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.generateNaN_strict_refinement_snan_six_outputs' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.generateNaN_miriDefault_all_valid_nan' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.evalFloatFast_refinement_chain' depends on axioms: [propext, Quot.sound]
+'PoisonIntrinsicsAndFloatSemantics.evalFloatFast_nondet_has_nine_ulps' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.evalFloatAlgebraic_total_and_safe_on_nonfinite' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.ce1_closed_interval_precondition_falsely_rejects_defined_neg_fraction_u8' does not depend on any axioms
+'PoisonIntrinsicsAndFloatSemantics.ce2_i32_max_round_to_f32_overflows_float_to_int_unchecked' does not depend on any axioms
+'PoisonIntrinsicsAndFloatSemantics.ce3_adding_ninf_to_fadd_algebraic_introduces_unsound_overflow_poison' depends on axioms: [propext]
+'PoisonIntrinsicsAndFloatSemantics.ce4_intrinsic_vs_hint_select_unpredictable_drop_count_divergence' does not depend on any axioms
