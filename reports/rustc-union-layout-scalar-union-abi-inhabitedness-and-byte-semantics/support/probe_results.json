@@ -1,0 +1,448 @@
+{
+  "layouts_and_diagnostics": {
+    "compile_checks": {
+      "ctfe_const_cell_union_ok": {
+        "error_codes": [],
+        "rustc_rc": 0,
+        "stderr_head": []
+      },
+      "ctfe_promoted_cell_union_e0492": {
+        "error_codes": [
+          "E0492"
+        ],
+        "rustc_rc": 1,
+        "stderr_head": [
+          "error[E0492]: interior mutable shared borrows of temporaries that have their lifetime extended until the end of the program are not allowed",
+          " --> <TMPDIR>/diag_ctfe_promoted_cell_union_e0492.rs:6:31",
+          "  |",
+          "6 | pub const C_REF: &CellUnion = &CellUnion { n: 0 };",
+          "  |                               ^^^^^^^^^^^^^^^^^^^ this borrow of an interior mutable value refers to such a temporary",
+          "  |",
+          "  = note: temporaries in constants and statics can have their lifetime extended until the end of the program",
+          "  = note: to avoid accidentally creating global mutable state, such temporaries must be immutable",
+          "  = help: if you really want global mutable state, try replacing the temporary by an interior mutable `static` or a `static mut`",
+          ""
+        ]
+      },
+      "ctfe_unsafe_cell_in_union_readonly_e0080": {
+        "error_codes": [
+          "E0080"
+        ],
+        "rustc_rc": 1,
+        "stderr_head": [
+          "error[E0080]: constructing invalid value of type &CellUnion: at .<deref>, encountered `UnsafeCell` in read-only memory",
+          " --> <TMPDIR>/diag_ctfe_unsafe_cell_in_union_readonly_e0080.rs:7:1",
+          "  |",
+          "7 | pub static BAD_REF: &CellUnion = unsafe { &*(&0u32 as *const u32 as *cons...",
+          "  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ it is undefined behavior to use this value",
+          "  |",
+          "  = note: the rules on what exactly is undefined behavior aren't clear, so this check might be overzealous. Please open an issue on the rustc repository if you believe it should not be considered undefined behavior.",
+          "  = note: the raw bytes of the constant (size: 8, align: 8) {",
+          "              \u257e\u2500\u2500\u2500\u2500\u2500alloc3<imm>\u2500\u2500\u2500\u2500\u2500\u257c                         \u2502 \u257e\u2500\u2500\u2500\u2500\u2500\u2500\u257c",
+          "          }"
+        ]
+      },
+      "transparent_union_e0658": {
+        "error_codes": [
+          "E0658"
+        ],
+        "rustc_rc": 1,
+        "stderr_head": [
+          "error[E0658]: transparent unions are unstable",
+          " --> <TMPDIR>/diag_transparent_union_e0658.rs:3:1",
+          "  |",
+          "3 | pub union Unstable { pub a: u64, pub z: () }",
+          "  | ^^^^^^^^^^^^^^^^^^",
+          "  |",
+          "  = note: see issue #60405 <https://github.com/rust-lang/rust/issues/60405> for more information",
+          "  = help: add `#![feature(transparent_unions)]` to the crate attributes to enable",
+          "  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date",
+          ""
+        ]
+      },
+      "union_manually_drop_ok": {
+        "error_codes": [],
+        "rustc_rc": 0,
+        "stderr_head": [
+          "warning: field `0` is never read",
+          " --> <TMPDIR>/diag_union_manually_drop_ok.rs:3:20",
+          "  |",
+          "3 | pub struct HasDrop(u8);",
+          "  |            ------- ^^",
+          "  |            |",
+          "  |            field in this struct",
+          "  |",
+          "  = help: consider removing this field",
+          "  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default"
+        ]
+      },
+      "union_non_copy_e0740": {
+        "error_codes": [
+          "E0740"
+        ],
+        "rustc_rc": 1,
+        "stderr_head": [
+          "error[E0740]: field must implement `Copy` or be wrapped in `ManuallyDrop<...>` to be used in a union",
+          " --> <TMPDIR>/diag_union_non_copy_e0740.rs:4:17",
+          "  |",
+          "4 | pub union Bad { pub x: HasDrop }",
+          "  |                 ^^^^^^^^^^^^^^",
+          "  |",
+          "  = note: union fields must not have drop side-effects, which is currently enforced via either `Copy` or `ManuallyDrop<...>`",
+          "help: wrap the field type in `ManuallyDrop<...>`",
+          "  |",
+          "4 | pub union Bad { pub x: std::mem::ManuallyDrop<HasDrop> }"
+        ]
+      }
+    },
+    "print_type_sizes": {
+      "NeverUnion": [
+        "print-type-size type: `NeverUnion`: 0 bytes, alignment: 1 bytes",
+        "print-type-size     variant `NeverUnion`: 0 bytes",
+        "print-type-size         field `.f`: 0 bytes"
+      ],
+      "Option<NeverUnion>": [
+        "print-type-size type: `std::option::Option<NeverUnion>`: 1 bytes, alignment: 1 bytes",
+        "print-type-size     discriminant: 1 bytes",
+        "print-type-size     variant `None`: 0 bytes",
+        "print-type-size     variant `Some`: 0 bytes",
+        "print-type-size         field `.0`: 0 bytes"
+      ],
+      "Option<PlainWrap>": [
+        "print-type-size type: `std::option::Option<PlainWrap>`: 8 bytes, alignment: 8 bytes",
+        "print-type-size     variant `Some`: 8 bytes",
+        "print-type-size         field `.0`: 8 bytes",
+        "print-type-size     variant `None`: 0 bytes"
+      ],
+      "Option<TransNonZero>": [
+        "print-type-size type: `std::option::Option<TransNonZero>`: 16 bytes, alignment: 8 bytes",
+        "print-type-size     discriminant: 8 bytes",
+        "print-type-size     variant `Some`: 8 bytes",
+        "print-type-size         field `.0`: 8 bytes",
+        "print-type-size     variant `None`: 0 bytes"
+      ],
+      "Option<TwoNonZero>": [
+        "print-type-size type: `std::option::Option<TwoNonZero>`: 16 bytes, alignment: 8 bytes",
+        "print-type-size     discriminant: 8 bytes",
+        "print-type-size     variant `Some`: 8 bytes",
+        "print-type-size         field `.0`: 8 bytes",
+        "print-type-size     variant `None`: 0 bytes"
+      ],
+      "OveralignedU64": [
+        "print-type-size type: `OveralignedU64`: 16 bytes, alignment: 16 bytes",
+        "print-type-size     variant `OveralignedU64`: 8 bytes",
+        "print-type-size         field `.a`: 8 bytes",
+        "print-type-size     end padding: 8 bytes"
+      ],
+      "PackedU64": [
+        "print-type-size type: `PackedU64`: 8 bytes, alignment: 1 bytes",
+        "print-type-size     variant `PackedU64`: 8 bytes",
+        "print-type-size         field `.a`: 8 bytes"
+      ],
+      "PlainWrap": [
+        "print-type-size type: `PlainWrap`: 8 bytes, alignment: 8 bytes",
+        "print-type-size     field `.0`: 8 bytes"
+      ],
+      "TransNonZero": [
+        "print-type-size type: `TransNonZero`: 8 bytes, alignment: 8 bytes",
+        "print-type-size     variant `TransNonZero`: 8 bytes",
+        "print-type-size         field `.z`: 0 bytes",
+        "print-type-size         field `.a`: 8 bytes"
+      ],
+      "TwoNonZero": [
+        "print-type-size type: `TwoNonZero`: 8 bytes, alignment: 8 bytes",
+        "print-type-size     variant `TwoNonZero`: 8 bytes",
+        "print-type-size         field `.a`: 8 bytes",
+        "print-type-size         field `.b`: 8 bytes, offset: 0 bytes, alignment: 8 bytes"
+      ]
+    },
+    "size_align_bytes": {
+      "BangUnion": [
+        0,
+        1
+      ],
+      "Infallible": [
+        0,
+        1
+      ],
+      "IntOrFloatC": [
+        8,
+        8
+      ],
+      "IntOrFloatRust": [
+        8,
+        8
+      ],
+      "MaybeUninit_NonZeroU64": [
+        8,
+        8
+      ],
+      "NeverUnion": [
+        0,
+        1
+      ],
+      "Option_BangUnion": [
+        1,
+        1
+      ],
+      "Option_Infallible": [
+        0,
+        1
+      ],
+      "Option_MaybeUninit_NonZeroU64": [
+        16,
+        8
+      ],
+      "Option_NeverUnion": [
+        1,
+        1
+      ],
+      "Option_PlainWrap": [
+        8,
+        8
+      ],
+      "Option_TransNonZero": [
+        16,
+        8
+      ],
+      "Option_TwoNonZero": [
+        16,
+        8
+      ],
+      "OveralignedU64": [
+        16,
+        16
+      ],
+      "PackedU64": [
+        8,
+        1
+      ],
+      "PlainWrap": [
+        8,
+        8
+      ],
+      "TransNonZero": [
+        8,
+        8
+      ],
+      "TwoNonZero": [
+        8,
+        8
+      ],
+      "U32Lo": [
+        4,
+        4
+      ]
+    },
+    "sizes_stdout": "NEVER_SZ=0 OPT_NEVER_SZ=1 OPT_TWO_NZ=16 OPT_TRANS_NZ=16"
+  },
+  "llvm_ir_and_asm": {
+    "llvm_define_bodies_pre_merge": {
+      "u_sig_0_plain_wrap": "define noundef range(i64 1, 0) i64 @u_sig_0_plain_wrap(i64 noundef range(i64 1, 0) %w) unnamed_addr #0 {\nstart:\n  ret i64 %w\n}",
+      "u_sig_1_two_nonzero": "define i64 @u_sig_1_two_nonzero(i64 %u) unnamed_addr #0 {\nstart:\n  ret i64 %u\n}",
+      "u_sig_2_trans_nonzero": "define i64 @u_sig_2_trans_nonzero(i64 %u) unnamed_addr #0 {\nstart:\n  ret i64 %u\n}",
+      "u_sig_2b_maybe_uninit_nonzero": "define i64 @u_sig_2b_maybe_uninit_nonzero(i64 %u) unnamed_addr #0 {\nstart:\n  ret i64 %u\n}",
+      "u_sig_2c_trans_f64": "define noundef double @u_sig_2c_trans_f64(double %u) unnamed_addr #0 {\nstart:\n  ret double %u\n}",
+      "u_sig_2d_repr_c_f64_rust_abi": "define noundef double @u_sig_2d_repr_c_f64_rust_abi(i64 %0) unnamed_addr #0 {\nstart:\n  %1 = alloca [8 x i8], align 8\n  %u = alloca [8 x i8], align 8\n  call void @llvm.lifetime.start.p0(ptr %1)\n  store i64 %0, ptr %1, align 8\n  call void @llvm.memcpy.p0.p0.i64(ptr align 8 %u, ptr align 8 %1, i64 8, i1 false)\n  call void @llvm.lifetime.end.p0(ptr %1)\n  %_0 = load double, ptr %u, align 8, !noundef !4\n  ret double %_0\n}",
+      "u_sig_3_int_float_rust": "define noundef i64 @u_sig_3_int_float_rust(i64 %0) unnamed_addr #0 {\nstart:\n  %1 = alloca [8 x i8], align 8\n  %u = alloca [8 x i8], align 8\n  call void @llvm.lifetime.start.p0(ptr %1)\n  store i64 %0, ptr %1, align 8\n  call void @llvm.memcpy.p0.p0.i64(ptr align 8 %u, ptr align 8 %1, i64 8, i1 false)\n  call void @llvm.lifetime.end.p0(ptr %1)\n  %_0 = load i64, ptr %u, align 8, !noundef !4\n  ret i64 %_0\n}",
+      "u_sig_4_int_float_sysv_c": "define noundef i64 @u_sig_4_int_float_sysv_c(i64 %0) unnamed_addr #1 {\nstart:\n  %1 = alloca [8 x i8], align 8\n  %u = alloca [8 x i8], align 8\n  call void @llvm.lifetime.start.p0(ptr %1)\n  store i64 %0, ptr %1, align 8\n  call void @llvm.memcpy.p0.p0.i64(ptr align 8 %u, ptr align 8 %1, i64 8, i1 false)\n  call void @llvm.lifetime.end.p0(ptr %1)\n  %_0 = load i64, ptr %u, align 8, !noundef !4\n  ret i64 %_0\n}",
+      "u_sig_5_overaligned_u64": "define noundef i64 @u_sig_5_overaligned_u64(ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %u) unnamed_addr #0 {\nstart:\n  %_0 = load i64, ptr %u, align 16, !noundef !4\n  ret i64 %_0\n}",
+      "u_sig_6_packed_u64": "define noundef i64 @u_sig_6_packed_u64(i64 %0) unnamed_addr #0 {\nstart:\n  %1 = alloca [8 x i8], align 8\n  %u = alloca [8 x i8], align 1\n  call void @llvm.lifetime.start.p0(ptr %1)\n  store i64 %0, ptr %1, align 8\n  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %u, ptr align 8 %1, i64 8, i1 false)\n  call void @llvm.lifetime.end.p0(ptr %1)\n  %_0 = load i64, ptr %u, align 1, !noundef !4\n  ret i64 %_0\n}",
+      "u_sig_7_heterogeneous_scalar": "define noundef i32 @u_sig_7_heterogeneous_scalar(i32 %0) unnamed_addr #0 {\nstart:\n  %1 = alloca [4 x i8], align 4\n  %u = alloca [4 x i8], align 4\n  call void @llvm.lifetime.start.p0(ptr %1)\n  store i32 %0, ptr %1, align 4\n  call void @llvm.memcpy.p0.p0.i64(ptr align 4 %u, ptr align 4 %1, i64 4, i1 false)\n  call void @llvm.lifetime.end.p0(ptr %1)\n  %_0 = load i32, ptr %u, align 4, !noundef !4\n  ret i32 %_0\n}",
+      "u_sig_8_ptr_union": "define noundef ptr @u_sig_8_ptr_union(ptr %u) unnamed_addr #0 {\nstart:\n  ret ptr %u\n}"
+    },
+    "llvm_define_headers_opt2": {
+      "u_sig_0_plain_wrap": "define noundef range(i64 1, 0) i64 @u_sig_0_plain_wrap(i64 noundef returned range(i64 1, 0) %w) unnamed_addr #0",
+      "u_sig_1_two_nonzero": "define i64 @u_sig_1_two_nonzero(i64 returned %u) unnamed_addr #0",
+      "u_sig_2_trans_nonzero": "define i64 @u_sig_2_trans_nonzero(i64 returned %u) unnamed_addr #0",
+      "u_sig_2b_maybe_uninit_nonzero": "define i64 @u_sig_2b_maybe_uninit_nonzero(i64 returned %u) unnamed_addr #0",
+      "u_sig_2c_trans_f64": "define noundef double @u_sig_2c_trans_f64(double returned %u) unnamed_addr #0",
+      "u_sig_2d_repr_c_f64_rust_abi": "define noundef double @u_sig_2d_repr_c_f64_rust_abi(i64 %0) unnamed_addr #0",
+      "u_sig_3_int_float_rust": "define noundef i64 @u_sig_3_int_float_rust(i64 returned %0) unnamed_addr #0",
+      "u_sig_4_int_float_sysv_c": "define noundef i64 @u_sig_4_int_float_sysv_c(i64 returned %0) unnamed_addr #0",
+      "u_sig_5_overaligned_u64": "define noundef i64 @u_sig_5_overaligned_u64(ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %u) unnamed_addr #1",
+      "u_sig_6_packed_u64": "define noundef i64 @u_sig_6_packed_u64(i64 returned %0) unnamed_addr #0",
+      "u_sig_7_heterogeneous_scalar": "define noundef i32 @u_sig_7_heterogeneous_scalar(i32 returned %0) unnamed_addr #0",
+      "u_sig_8_ptr_union": "define noundef ptr @u_sig_8_ptr_union(ptr readnone returned captures(ret: address, provenance) %u) unnamed_addr #0"
+    },
+    "llvm_define_headers_pre_merge": {
+      "u_sig_0_plain_wrap": "define noundef range(i64 1, 0) i64 @u_sig_0_plain_wrap(i64 noundef range(i64 1, 0) %w) unnamed_addr #0",
+      "u_sig_1_two_nonzero": "define i64 @u_sig_1_two_nonzero(i64 %u) unnamed_addr #0",
+      "u_sig_2_trans_nonzero": "define i64 @u_sig_2_trans_nonzero(i64 %u) unnamed_addr #0",
+      "u_sig_2b_maybe_uninit_nonzero": "define i64 @u_sig_2b_maybe_uninit_nonzero(i64 %u) unnamed_addr #0",
+      "u_sig_2c_trans_f64": "define noundef double @u_sig_2c_trans_f64(double %u) unnamed_addr #0",
+      "u_sig_2d_repr_c_f64_rust_abi": "define noundef double @u_sig_2d_repr_c_f64_rust_abi(i64 %0) unnamed_addr #0",
+      "u_sig_3_int_float_rust": "define noundef i64 @u_sig_3_int_float_rust(i64 %0) unnamed_addr #0",
+      "u_sig_4_int_float_sysv_c": "define noundef i64 @u_sig_4_int_float_sysv_c(i64 %0) unnamed_addr #1",
+      "u_sig_5_overaligned_u64": "define noundef i64 @u_sig_5_overaligned_u64(ptr dead_on_return noalias noundef readonly align 16 captures(none) dereferenceable(16) %u) unnamed_addr #0",
+      "u_sig_6_packed_u64": "define noundef i64 @u_sig_6_packed_u64(i64 %0) unnamed_addr #0",
+      "u_sig_7_heterogeneous_scalar": "define noundef i32 @u_sig_7_heterogeneous_scalar(i32 %0) unnamed_addr #0",
+      "u_sig_8_ptr_union": "define noundef ptr @u_sig_8_ptr_union(ptr %u) unnamed_addr #0"
+    },
+    "x86_64_asm_opt2": {
+      "u_sig_0_plain_wrap": "u_sig_0_plain_wrap:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tretq\n.Lfunc_end0:\n\t.size\tu_sig_0_plain_wrap, .Lfunc_end0-u_sig_0_plain_wrap\n\t.cfi_endproc",
+      "u_sig_1_two_nonzero": "u_sig_1_two_nonzero:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tretq\n.Lfunc_end1:\n\t.size\tu_sig_1_two_nonzero, .Lfunc_end1-u_sig_1_two_nonzero\n\t.cfi_endproc",
+      "u_sig_2_trans_nonzero": "u_sig_2_trans_nonzero:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tretq\n.Lfunc_end2:\n\t.size\tu_sig_2_trans_nonzero, .Lfunc_end2-u_sig_2_trans_nonzero\n\t.cfi_endproc",
+      "u_sig_2b_maybe_uninit_nonzero": "u_sig_2b_maybe_uninit_nonzero:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tretq\n.Lfunc_end3:\n\t.size\tu_sig_2b_maybe_uninit_nonzero, .Lfunc_end3-u_sig_2b_maybe_uninit_nonzero\n\t.cfi_endproc",
+      "u_sig_2c_trans_f64": "u_sig_2c_trans_f64:\n\t.cfi_startproc\n\tretq\n.Lfunc_end4:\n\t.size\tu_sig_2c_trans_f64, .Lfunc_end4-u_sig_2c_trans_f64\n\t.cfi_endproc",
+      "u_sig_2d_repr_c_f64_rust_abi": "u_sig_2d_repr_c_f64_rust_abi:\n\t.cfi_startproc\n\tmovq\t%rdi, %xmm0\n\tretq\n.Lfunc_end5:\n\t.size\tu_sig_2d_repr_c_f64_rust_abi, .Lfunc_end5-u_sig_2d_repr_c_f64_rust_abi\n\t.cfi_endproc",
+      "u_sig_3_int_float_rust": "u_sig_3_int_float_rust:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tretq\n.Lfunc_end6:\n\t.size\tu_sig_3_int_float_rust, .Lfunc_end6-u_sig_3_int_float_rust\n\t.cfi_endproc",
+      "u_sig_4_int_float_sysv_c": "u_sig_4_int_float_sysv_c:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tretq\n.Lfunc_end7:\n\t.size\tu_sig_4_int_float_sysv_c, .Lfunc_end7-u_sig_4_int_float_sysv_c\n\t.cfi_endproc",
+      "u_sig_5_overaligned_u64": "u_sig_5_overaligned_u64:\n\t.cfi_startproc\n\tmovq\t(%rdi), %rax\n\tretq\n.Lfunc_end8:\n\t.size\tu_sig_5_overaligned_u64, .Lfunc_end8-u_sig_5_overaligned_u64\n\t.cfi_endproc",
+      "u_sig_6_packed_u64": "u_sig_6_packed_u64:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tretq\n.Lfunc_end9:\n\t.size\tu_sig_6_packed_u64, .Lfunc_end9-u_sig_6_packed_u64\n\t.cfi_endproc",
+      "u_sig_7_heterogeneous_scalar": "u_sig_7_heterogeneous_scalar:\n\t.cfi_startproc\n\tmovl\t%edi, %eax\n\tretq\n.Lfunc_end10:\n\t.size\tu_sig_7_heterogeneous_scalar, .Lfunc_end10-u_sig_7_heterogeneous_scalar\n\t.cfi_endproc",
+      "u_sig_8_ptr_union": "u_sig_8_ptr_union:\n\t.cfi_startproc\n\tmovq\t%rdi, %rax\n\tretq\n.Lfunc_end11:\n\t.size\tu_sig_8_ptr_union, .Lfunc_end11-u_sig_8_ptr_union\n\t.cfi_endproc"
+    }
+  },
+  "miri_cases": {
+    "infallible_assume_init_ub": {
+      "diag_context": [
+        "error: Undefined Behavior: constructing invalid value of type core::convert::Infallible: encountered a value of zero-variant enum `core::convert::Infallible`",
+        "  --> <TMPDIR>/infallible_assume_init_ub_miri.rs:11:35",
+        "   |",
+        "11 | ...safe { MaybeUninit::<Infallible>::uninit().assume_init() };",
+        "   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "   |",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information"
+      ],
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type core::convert::Infallible: encountered a value of zero-variant enum `core::convert::Infallible`",
+        "   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here"
+      ],
+      "miri_rc": 1
+    },
+    "never_union_field_read_ub": {
+      "diag_context": [
+        "error: Undefined Behavior: constructing invalid value of type !: encountered a value of the never type `!`",
+        "  --> <TMPDIR>/never_union_field_read_ub_miri.rs:15:26",
+        "   |",
+        "15 |     let _v: ! = unsafe { u.b };",
+        "   |                          ^^^ Undefined Behavior occurred here",
+        "   |",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information"
+      ],
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type !: encountered a value of the never type `!`",
+        "   |                          ^^^ Undefined Behavior occurred here"
+      ],
+      "miri_rc": 1
+    },
+    "never_union_infallible_field_read_ub": {
+      "diag_context": [
+        "error: Undefined Behavior: constructing invalid value of type core::convert::Infallible: encountered a value of zero-variant enum `core::convert::Infallible`",
+        "  --> <TMPDIR>/never_union_infallible_field_read_ub_miri.rs:15:35",
+        "   |",
+        "15 |     let _v: Infallible = unsafe { u.f };",
+        "   |                                   ^^^ Undefined Behavior occurred here",
+        "   |",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information"
+      ],
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type core::convert::Infallible: encountered a value of zero-variant enum `core::convert::Infallible`",
+        "   |                                   ^^^ Undefined Behavior occurred here"
+      ],
+      "miri_rc": 1
+    },
+    "never_union_inhabited_ok": {
+      "diag_context": [],
+      "diag_head": [],
+      "miri_rc": 0
+    },
+    "partial_overwrite_preserves_sibling_bytes_ok": {
+      "diag_context": [],
+      "diag_head": [],
+      "miri_rc": 0,
+      "native_opt2_rc": 0,
+      "native_opt2_stdout": "FULL=0x11223399"
+    },
+    "partial_overwrite_uninit_upper_read_ub": {
+      "diag_context": [
+        "error: Undefined Behavior: reading memory at alloc26[0x0..0x4], but memory is uninitialized at [0x1..0x4], and this operation requires initialized memory",
+        "  --> <TMPDIR>/partial_overwrite_uninit_upper_read_ub_miri.rs:16:23",
+        "   |",
+        "16 |     let _x = unsafe { u.full_u32 };",
+        "   |                       ^^^^^^^^^^ Undefined Behavior occurred here",
+        "   |",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information"
+      ],
+      "diag_head": [
+        "error: Undefined Behavior: reading memory at alloc26[0x0..0x4], but memory is uninitialized at [0x1..0x4], and this operation requires initialized memory",
+        "   |                       ^^^^^^^^^^ Undefined Behavior occurred here"
+      ],
+      "miri_rc": 1
+    },
+    "repr_transparent_struct_nonzero_zero_bits_ub": {
+      "diag_context": [
+        "error: Undefined Behavior: constructing invalid value of type PlainWrap: at .0.0.0, encountered 0, but expected something greater or equal to 1",
+        "  --> <TMPDIR>/repr_transparent_struct_nonzero_zero_bits_ub_miri.rs:15:23",
+        "   |",
+        "15 |     let _w = unsafe { MaybeUninit::<PlainWrap>::zeroed().assume_init() };",
+        "   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "   |",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information"
+      ],
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type PlainWrap: at .0.0.0, encountered 0, but expected something greater or equal to 1",
+        "   |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here"
+      ],
+      "miri_rc": 1
+    },
+    "repr_transparent_union_nonzero_zero_bits": {
+      "diag_context": [],
+      "diag_head": [],
+      "miri_rc": 0
+    },
+    "two_nonzero_union_read_zero_field_ub": {
+      "diag_context": [
+        "error: Undefined Behavior: constructing invalid value of type core::num::NonZero<u64>: at .0.0, encountered 0, but expected something greater or equal to 1",
+        "  --> <TMPDIR>/two_nonzero_union_read_zero_field_ub_miri.rs:15:23",
+        "   |",
+        "15 |     let _v = unsafe { u.a };",
+        "   |                       ^^^ Undefined Behavior occurred here",
+        "   |",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information"
+      ],
+      "diag_head": [
+        "error: Undefined Behavior: constructing invalid value of type core::num::NonZero<u64>: at .0.0, encountered 0, but expected something greater or equal to 1",
+        "   |                       ^^^ Undefined Behavior occurred here"
+      ],
+      "miri_rc": 1
+    },
+    "two_nonzero_union_zero_bits_ok": {
+      "diag_context": [],
+      "diag_head": [],
+      "miri_rc": 0
+    },
+    "union_data_range_covered_byte_preserved_ok": {
+      "diag_context": [],
+      "diag_head": [],
+      "miri_rc": 0
+    },
+    "union_data_range_padding_strip_ub": {
+      "diag_context": [
+        "error: Undefined Behavior: reading memory at alloc25[0x1..0x2], but memory is uninitialized at [0x1..0x2], and this operation requires initialized memory",
+        "  --> <TMPDIR>/union_data_range_padding_strip_ub_miri.rs:22:26",
+        "   |",
+        "22 | ...safe { *(&u2 as *const PadHoleUnion as *const u8).add(1) };",
+        "   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "   |",
+        "   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior",
+        "   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information"
+      ],
+      "diag_head": [
+        "error: Undefined Behavior: reading memory at alloc25[0x1..0x2], but memory is uninitialized at [0x1..0x2], and this operation requires initialized memory",
+        "   |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here"
+      ],
+      "miri_rc": 1
+    }
+  },
+  "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "target_triple": "x86_64-unknown-linux-gnu"
+}
