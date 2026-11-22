@@ -141,6 +141,40 @@ def countBlocksForLoan {Val : Type} (lid : LoanId)
     (blocks : List (SpatialBlock Val)) : Nat :=
   blocks.foldr (fun b n => if b.originLoan == lid then n + 1 else n) 0
 
+/-- Extract the pure `Val` payloads from all `.init` cells in `cells`,
+ignoring `.uninit` and `.rawByte` cells (which hold no `Val`). -/
+def initCellVals {Val : Type} (cells : List (CellVal Val)) : List Val :=
+  cells.foldr
+    (fun c acc =>
+      match c with
+      | .init v => v :: acc
+      | .uninit => acc
+      | .rawByte _ => acc)
+    []
+
+/-- Concatenate `f v` across all `.init` cell payloads in `cells` (returning
+`some []` definitionally for blocks of `.rawByte` / `.uninit` cells), or
+`none` if `f` returns `none` for any `.init` value. -/
+def collectInitCells {Val α : Type} (f : Val → Option (List α))
+    (cells : List (CellVal Val)) : Option (List α) :=
+  (initCellVals cells).foldr
+    (fun v acc =>
+      match f v, acc with
+      | some rs, some rest => some (rs ++ rest)
+      | _, _ => none)
+    (some [])
+
+/-- True iff every `.init` cell in `cells` is accounted for by the handles
+already held in `srcVal` (`replaceableVals`). Blocks without `.init` cells
+(such as `[.rawByte ...]`) carry no handles and return `true` definitionally
+(`rfl`) without inspecting `srcVal`. -/
+def cellsAccountedByVal {Val : Type} (alg : ValAlgebra Val)
+    (loans : List (LoanEntry Val)) (srcVal : Val)
+    (cells : List (CellVal Val)) : Bool :=
+  match initCellVals cells with
+  | [] => true
+  | cellVals => replaceableVals alg loans [srcVal] cellVals
+
 /-- Extract spatial block `bid` and the remaining blocks in a single pass,
 requiring `bid` to occur uniquely in `blocks`. -/
 def findSpatialBlock {Val : Type} (blocks : List (SpatialBlock Val))
@@ -201,8 +235,9 @@ def mutateSpatialBlockAt {Val : Type} (bid : BlockId) (tag : Nat)
 
 /-- Export active mutable loan `lid` into a fresh `SpatialBlock` using `codec`,
 transitioning `lid`'s phase to `.spatialPinned bid codec` while preserving
-`lid`'s backward target. Rejects any encoding that produces `.uninit` cells or
-any state where `st.nextSpatialTag` collides with an existing block ID. -/
+`lid`'s backward target. Rejects any encoding that produces `.uninit` cells,
+introduces handles into `.init` cells beyond `e.cell.val`
+(`cellsAccountedByVal`), or collides with `st.nextSpatialTag`. -/
 def freezeToSpatialInState {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
     (codec : SpatialCodec Val) (st : SymState Val) :
     EvalOutcome (SymState Val) :=
@@ -217,7 +252,9 @@ def freezeToSpatialInState {Val : Type} (alg : ValAlgebra Val) (lid : LoanId)
         .fail
       else
         let cells := codec.encode e.cell.val
-        if hasUninitCell cells then .fail
+        if hasUninitCell cells ||
+           !cellsAccountedByVal alg st.loans e.cell.val cells then
+          .fail
         else
           match st with
           | ⟨locals, loans, rgs, deps, sp, tag⟩ =>
@@ -248,9 +285,10 @@ def mutateSpatialInState {Val : Type} (bid : BlockId) (tag : Nat)
 
 /-- Reabsorb spatially pinned loan `lid` back into the pure loan graph using
 the original `pinnedCodec` bound in `LoanPhase.spatialPinned`. Rejects any
-block containing `.uninit` cells (`hasUninitCell`), duplicate loan IDs,
-mismatched codec IDs, `.readOnly` spatial blocks, or unmerged spatial
-sub-splits. -/
+block containing `.uninit` cells (`hasUninitCell`), un-accounted `.init` cell
+handles (`cellsAccountedByVal`), fabricated decoded handles (`replaceableVal`),
+duplicate loan IDs, mismatched codec IDs, `.readOnly` spatial blocks, or
+unmerged spatial sub-splits. -/
 def reabsorbFromSpatialInState {Val : Type} (alg : ValAlgebra Val)
     (lid : LoanId) (codec : SpatialCodec Val) (st : SymState Val) :
     EvalOutcome (SymState Val) :=
@@ -273,7 +311,8 @@ def reabsorbFromSpatialInState {Val : Type} (alg : ValAlgebra Val)
           if blk.originLoan == lid && blk.provenanceTag == bid && writable &&
              countBlocksForLoan lid restSpatial == 0 &&
              blk.activeSubSplits == 0 &&
-             !hasUninitCell blk.cells then
+             !hasUninitCell blk.cells &&
+             cellsAccountedByVal alg st.loans e.cell.val blk.cells then
             match pinnedCodec.decode blk.cells with
             | none => .fail
             | some v' =>
@@ -628,5 +667,103 @@ theorem spatial_loan_graph_guard_tests :
     isOk (reabsorbFromSpatialInState lensTestValAlg 1 valueCellCodec
       (stPinned 1)) = true :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-- Spatial cell handle accounting checks all `.init` cells (even those ignored
+by `decode`), while leaving `.rawByte` cells definitionally handle-free:
+1. freezing fails when `encode` places a fabricated mutable handle into an
+   ignored second `.init` cell,
+2. mutating an ignored second `.init` cell after freezing to inject an active
+   mutable handle fails reabsorption,
+3. valid multi-cell handle-preserving and handle-dropping layouts succeed
+   reabsorption, and
+4. `.rawByte`-only blocks reduce definitionally to `[]` handles and `true`
+   accounting under `rfl`. -/
+theorem spatial_cell_handle_accounting_tests :
+    let x0 : OwnerRef := .localReg 0
+    let loans (v0 : LensTestVal) : List (LoanEntry LensTestVal) :=
+      [ ⟨0, .activeMut, ⟨v0, .unborrowed⟩, .direct x0 []⟩
+      , ⟨3, .activeMut, ⟨.atom 30, .unborrowed⟩, .rootParam 3⟩
+      , ⟨4, .activeMut, ⟨.atom 40, .unborrowed⟩, .rootParam 4⟩ ]
+    let stWith (v0 : LensTestVal) : SymState LensTestVal :=
+      { locals := [⟨v0, .mutLocked 0⟩]
+        loans := loans v0
+        regionGroups := []
+        regionDeposits := []
+        spatial := []
+        nextSpatialTag := 0 }
+    let fabricatingExtraCodec : SpatialCodec LensTestVal :=
+      { codecId := 40
+        encode := fun v => [.init v, .init (.ref 3 [])]
+        decode := fun cells =>
+          match cells with
+          | .init v :: _ => some v
+          | _ => none
+        decode_encode := fun _ => rfl }
+    let ignoredExtraCodec : SpatialCodec LensTestVal :=
+      { codecId := 41
+        encode := fun v => [.init v, .init (.atom 0)]
+        decode := fun cells =>
+          match cells with
+          | .init v :: _ => some v
+          | _ => none
+        decode_encode := fun _ => rfl }
+    let pairCellCodec : SpatialCodec LensTestVal :=
+      { codecId := 42
+        encode := fun v =>
+          match v with
+          | ⟨_, .branch fl fr l r⟩ => [.init ⟨fl, l⟩, .init ⟨fr, r⟩]
+          | other => [.init other]
+        decode := fun cells =>
+          match cells with
+          | [.init a, .init b] => some (.node a b)
+          | [.init single] => some single
+          | _ => none
+        decode_encode := fun v => by
+          cases v with
+          | mk fuel tree => cases tree <;> rfl }
+    let isOk (o : EvalOutcome (SymState LensTestVal)) : Bool :=
+      match o with
+      | .ok _ => true
+      | .fail => false
+    -- 1. Fabricating extra-cell codec fails at freeze:
+    freezeToSpatialInState lensTestValAlg 0
+        fabricatingExtraCodec (stWith (.atom 5)) = .fail ∧
+    -- 2. Smuggling an active handle in an ignored `.init` cell fails reabsorb:
+    (match freezeToSpatialInState lensTestValAlg 0
+        ignoredExtraCodec (stWith (.atom 5)) with
+     | .ok stPinned =>
+       match mutateSpatialInState 0 0
+           [.init (.atom 6), .init (.ref 3 [])] stPinned with
+       | .ok stMut =>
+         reabsorbFromSpatialInState lensTestValAlg 0
+             ignoredExtraCodec stMut = .fail
+       | .fail => False
+     | .fail => False) ∧
+    -- 3. Valid multi-cell codecs preserving or dropping handles succeed:
+    (match freezeToSpatialInState lensTestValAlg 0
+        ignoredExtraCodec (stWith (.ref 3 [])) with
+     | .ok stPinned =>
+       isOk (reabsorbFromSpatialInState lensTestValAlg 0
+         ignoredExtraCodec stPinned) = true
+     | .fail => False) ∧
+    (match freezeToSpatialInState lensTestValAlg 0
+        pairCellCodec (stWith (.node (.ref 3 []) (.ref 4 []))) with
+     | .ok stPinned =>
+       isOk (reabsorbFromSpatialInState lensTestValAlg 0
+         pairCellCodec stPinned) = true ∧
+       match mutateSpatialInState 0 0
+           [.init (.ref 3 []), .init (.atom 9)] stPinned with
+       | .ok stDropped =>
+         isOk (reabsorbFromSpatialInState lensTestValAlg 0
+           pairCellCodec stDropped) = true
+       | .fail => False
+     | .fail => False) ∧
+    -- 4. `.rawByte`-only blocks reduce definitionally under `rfl`:
+    (∀ (b0 b1 : UInt8) (srcVal : LensTestVal),
+      collectInitCells (collectHandleRefs lensTestValAlg)
+          [.rawByte b0, .rawByte b1] = some [] ∧
+      cellsAccountedByVal lensTestValAlg [] srcVal
+        [.rawByte b0, .rawByte b1] = true) :=
+  ⟨rfl, rfl, rfl, ⟨rfl, rfl⟩, fun _ _ _ => ⟨rfl, rfl⟩⟩
 
 end Anneal.PureLift
