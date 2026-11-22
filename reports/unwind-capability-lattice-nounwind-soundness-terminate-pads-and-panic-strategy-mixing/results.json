@@ -1,0 +1,1042 @@
+[
+ {
+  "id": "R1",
+  "lean": "Toy.UnwindCap.noUB_of_enforced_of_foreignCovered_of_siteAgreement",
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "For every precedence function `cu` and every toy program `p`: if `p` satisfies `Enforced cu p` (at every function index, reachable or not: if the function is non-foreign and its own crate classifies it as non-unwinding, then every call in its body to a callee that this crate classifies as possibly unwinding carries a stopping pad, `catchPad` or `terminate`, and, when the panic handler is `unwind`, every panic point in its body carries a stopping pad), `ForeignCovered cu p` (every foreign function that may unwind is classified as possibly unwinding by its declaring crate) and `SiteAgreement cu p` (at every function index, reachable or not, at every call site without a stopping pad in a non-foreign function: if the caller's crate classifies the callee as non-unwinding, so does the callee's own crate), then no finite run produced by the evaluator `runFn` (no `Exec cu p f t o`) of any function `f` has outcome `ub`. Because the semantics records an unwind leaving a function that its own crate classifies as non-unwinding as `ub` (`boundary`), under these hypotheses no such unwind occurs.",
+  "hypotheses": [
+   {
+    "name": "henf : Enforced cu p",
+    "purpose": "a function classified as non-unwinding stops, with a catch or terminate pad, every unwinding source it knows of (the obligation the toy codegen discharges)",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.noUB_fails_without_enforced",
+    "witness_class": "a 1-crate, 2-function program under `stdCanUnwind` (`progPlainCallFromNounwind`, handler `unwind`)"
+   },
+   {
+    "name": "hfc : ForeignCovered cu p",
+    "purpose": "an unwind leaving a foreign function classified as non-unwinding by its declaring crate cannot be stopped by any pad inside that function",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.noUB_fails_without_foreignCovered",
+    "witness_class": "a 1-crate program whose single function is a foreign `c`-ABI import that unwinds (`progThrowingC`)"
+   },
+   {
+    "name": "hsa : SiteAgreement cu p",
+    "purpose": "a caller that omits unwind handling because its crate classifies the callee as non-unwinding relies on the callee's own classification (and hence on the callee's enforcement)",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.noUB_fails_without_siteAgreement",
+    "witness_class": "a 2-crate, 2-function program with an `abort` crate calling an `unwind` crate under the `unwind` handler (`progAbortCallsUnwind`)"
+   }
+  ],
+  "nonvacuity_witness": "progUnwindCatch (one unwind crate: a panic unwinds through a cleanup pad dropping local 7 and is caught; run [drop 1 7, caught 0] / ret) and progAbortImportPadded (abort crate calling a foreign C-unwind import through a terminate pad; run [] / abort) satisfy all three hypotheses under stdCanUnwind.",
+  "nonvacuity_witness_lean": [
+   "Toy.UnwindCap.noUB_hypotheses_hold_progUnwindCatch",
+   "Toy.UnwindCap.noUB_hypotheses_hold_progAbortImportPadded"
+  ],
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "`Exec` collects the finite runs produced by the fuel-indexed evaluator `runFn`; diverging executions are not represented, and nothing is claimed about them.",
+   "Function bodies are straight-line statement lists: there are no branches or loops inside a body (recursion through calls is allowed).",
+   "Not modelled: indirect calls through function pointers (for which rustc's `fn_can_unwind` consults the ABI alone, layout.rs:1229-1232), inline assembly that may unwind, forced unwinding, panics during cleanup (a cleanup pad atomically records its drop events and cannot itself panic), asynchronous exceptions, and the third clause of the Reference's potentially-unwinding definition (separate runtime copies).",
+   "`Enforced`, `SiteAgreement`, `GlueAgreement` and `PotentiallyUnwinding` quantify over every function index and every statement of its body, reachable or not; the natural behavioural weakenings that restrict them to reachable functions or reachable call sites are not established here.",
+   "Out-of-range function indices `f ≥ p.fns.length` denote `FnDef.dummy` (an empty non-foreign Rust function in crate 0), and out-of-range crate indices denote `CrateCfg.dflt` (strategy and panic-in-drop `unwind`); no theorem here checks index bounds separately.",
+   "`Enforced` constrains panic points when the panic handler is `unwind` and does not constrain them when it is `abort`, because under the `abort` handler `execBody` aborts at a panic point without unwinding and without consulting its action.",
+   "In the toy semantics a stopping pad (`catchPad` or `terminate`) at a call site is executed even when the caller's crate classified the callee as non-unwinding (`onUnwind` with `assumed = true`); a lowering that emits no landing pad at such sites is not modelled.",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`.",
+   "The theorem holds for every precedence function `cu`; it does not say which precedence functions make the hypotheses true. `ForeignCovered stdCanUnwind` is a separate result (R2); `Enforced` and `SiteAgreement` are established for particular programs by R6 and R9.",
+   "Each counterexample shows that there is a program satisfying the other hypotheses that has a `ub` run; it does not show that every program violating a hypothesis has a `ub` run.",
+   "Absence of `ub` says nothing about destructor completeness or leak freedom."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "llvm/llvm-project@a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4 (tag llvmorg-19.1.0) llvm/docs/LangRef.rst:2177-2183 (`nounwind` function attribute: the function never raises an exception, and if it does its runtime behaviour is undefined; quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/1513-less-unwinding.md:108-111 (the `abort` strategy replaces `invoke` by `call`) and 142-146 (final-product validation: if the panic mode is `abort` no other validation is performed, otherwise all crates must agree) (RFC 1513, merged; quoted verbatim in REPORT.md)",
+   "D. Abrahams, R. Sharoni, D. Gregor, \"Allowing Move Constructors to Throw (Rev. 1)\", ISO/IEC JTC1/SC22/WG21 N3050, 2010-03-12 (open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3050.html): proposes the C++ `noexcept` specification together with wording changes to `[except.spec]` and `[except.terminate]` (`std::terminate`); the C++ analogue of enforcing a non-unwinding declaration by termination. No mechanized semantics.",
+   "Corpus report `rustc-cleanup-post-borrowck-false-edges-and-abort-unwinding-mir-lowering`: documents rustc's MIR passes between analysis and runtime MIR, including `AbortUnwindingCalls`, at pinned rustc revisions, and contains a kernel-checked Lean v4.34.1 mechanization (`support/CleanupPostBorrowckAndAbortCalls.lean`) of intra-procedural MIR semantics, `fn_can_unwind` and `AbortUnwindingCalls` (which keeps cleanup blocks and turns their final resume into a terminate) with end-to-end lowering theorems; by its own scope note it does not model linker-level cross-crate panic-strategy checks. This package does not depend on it; its additions are precedence functions as parameters, cross-crate classification disagreement (`SiteAgreement`), the linking restriction, per-crate panic-in-drop, and mixed landing-pad capabilities.",
+   "Related reports of the same corpus (Lean formalizations), cited and not repeated (descriptions checked against their REPORT.md): `drop-flag-elaboration-partial-moves-and-unwind-cleanup-exactly-once-destruction` (drop elaboration with drop flags, cleanup edges and the double-panic rule), `panic-safety-unwinding-through-broken-invariants-leak-amplification-and-safe-forget` (panic-safety obligations of unsafe collection code under unwinding), `call-site-inlining-slot-renaming-cleanup-splicing-capability-guards-and-caller-locations` (call-site inlining in a MIR-like language, including unwind actions and cleanup), `cfg-dwarf-cfi-state-stack-and-lsda-landing-pad-unwinding-soundness` (DWARF-style call-frame information and LSDA-style call-site tables over a given frame list), `explicit-tail-calls-frame-reuse-pre-jump-drop-order-stack-borrow-rejection-and-inlining` (a frame-stack machine with guaranteed tail calls, destructors and frame reuse). None of them treats whether a function may unwind as a classification made by a crate.",
+   "Novelty search (2026-11-21, web search, not exhaustive): no mechanized soundness statement for a non-unwinding classification with terminate-pad placement and cross-crate agreement conditions was found; tier T1 (documented rules, made precise in a toy model)."
+  ],
+  "design_question": "When may a compiler omit landing pads at call sites inside functions it classifies as non-unwinding, and which program-wide facts (foreign code honouring its declared ABI, cross-crate agreement of classifications) make that sound?",
+  "lean_names": [
+   "Toy.UnwindCap.CrateCfg.dflt",
+   "Toy.UnwindCap.Enforced",
+   "Toy.UnwindCap.Exec",
+   "Toy.UnwindCap.FnDef.dummy",
+   "Toy.UnwindCap.ForeignCovered",
+   "Toy.UnwindCap.GlueAgreement",
+   "Toy.UnwindCap.PotentiallyUnwinding",
+   "Toy.UnwindCap.Prec",
+   "Toy.UnwindCap.Prog",
+   "Toy.UnwindCap.SiteAgreement",
+   "Toy.UnwindCap.boundary",
+   "Toy.UnwindCap.execBody",
+   "Toy.UnwindCap.onUnwind",
+   "Toy.UnwindCap.progAbortCallsUnwind",
+   "Toy.UnwindCap.progAbortImportPadded",
+   "Toy.UnwindCap.progPlainCallFromNounwind",
+   "Toy.UnwindCap.progThrowingC",
+   "Toy.UnwindCap.progUnwindCatch",
+   "Toy.UnwindCap.runFn",
+   "Toy.UnwindCap.stdCanUnwind"
+  ]
+ },
+ {
+  "id": "R2",
+  "lean": "Toy.UnwindCap.foreignCovered_std_of_foreignHonest_of_foreignNotGlue",
+  "kind": "theorem",
+  "tier": "T0",
+  "depth": "definitional",
+  "plain_claim": "For every toy program `p` satisfying `ForeignHonest p` (every foreign function that may unwind is declared with the `cUnwind` ABI and without the never-unwind attribute) and `ForeignNotGlue p` (no foreign function is drop glue), the standard precedence function `stdCanUnwind` (ordered rules: never-unwind attribute, then `abort` strategy for non-foreign functions, then drop glue under panic-in-drop `abort`, then the ABI) satisfies `ForeignCovered stdCanUnwind p`.",
+  "hypotheses": [
+   {
+    "name": "hh : ForeignHonest p",
+    "purpose": "a foreign function declared `c` (or with the never-unwind attribute) that unwinds is classified as non-unwinding by `stdCanUnwind`",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.foreignCovered_std_fails_without_foreignHonest",
+    "witness_class": "a 1-crate program whose single function is a foreign `c`-ABI import that unwinds (`progThrowingC`)"
+   },
+   {
+    "name": "hng : ForeignNotGlue p",
+    "purpose": "well-formedness; the drop-glue rule would otherwise classify a foreign function as non-unwinding",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.foreignCovered_std_fails_without_foreignNotGlue",
+    "witness_class": "a 1-crate, 1-function toy encoding whose function is both foreign and drop glue (`progForeignGlue`); an encoding artifact, since real drop glue is not a foreign item"
+   }
+  ],
+  "nonvacuity_witness": "progAbortImportPadded (a throwing foreign C-unwind import) satisfies both hypotheses.",
+  "nonvacuity_witness_lean": "Toy.UnwindCap.foreignCovered_std_hypotheses_hold_progAbortImportPadded",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "`ForeignHonest` is an assumption about foreign code, not something the toy compiler checks; nothing is claimed about programs whose foreign code violates its declaration other than the counterexample.",
+   "It does not establish `Enforced` or `SiteAgreement`, and hence not freedom from `ub`, for any program.",
+   "Tier T0: the result restates, for the toy rule list, the behaviour that rustc's `fn_can_unwind` documents for foreign `\"C-unwind\"` items."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)",
+   "rust-lang/reference@c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c src/panic.md:86-101 (`panic.strategy`), 103-116 (`panic.unwind`), 124-128 (`panic.unwind.ffi.undefined`), 130-134 (`panic.unwind.ffi.catch-foreign`)"
+  ],
+  "design_question": "When may a compiler omit landing pads at call sites inside functions it classifies as non-unwinding, and which program-wide facts (foreign code honouring its declared ABI, cross-crate agreement of classifications) make that sound?",
+  "lean_names": [
+   "Toy.UnwindCap.Enforced",
+   "Toy.UnwindCap.ForeignCovered",
+   "Toy.UnwindCap.ForeignHonest",
+   "Toy.UnwindCap.ForeignNotGlue",
+   "Toy.UnwindCap.Prog",
+   "Toy.UnwindCap.SiteAgreement",
+   "Toy.UnwindCap.progAbortImportPadded",
+   "Toy.UnwindCap.progForeignGlue",
+   "Toy.UnwindCap.progThrowingC",
+   "Toy.UnwindCap.stdCanUnwind"
+  ]
+ },
+ {
+  "id": "R3",
+  "lean": "Toy.UnwindCap.precForeignSound_iff",
+  "kind": "characterization",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "For every precedence function `cu`: `PrecForeignSound cu` (in every program satisfying `ForeignHonest` and `ForeignNotGlue`, `cu` classifies every foreign function that may unwind as possibly unwinding) holds iff `cu c i = true` for every crate setting `c` and every static-facts value `i : FnInfo` that is foreign, has the `cUnwind` ABI, lacks the never-unwind attribute and is not drop glue.",
+  "hypotheses": [],
+  "nonvacuity_witness": "stdCanUnwind satisfies the right-hand side; abortAllCanUnwind violates it at (abortCfg, foreignCUnwind).",
+  "nonvacuity_witness_lean": "Toy.UnwindCap.precForeignSound_iff_instances",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "`PrecForeignSound` concerns the foreign-code obligation; a precedence function satisfying it can still yield programs that violate `SiteAgreement` or `Enforced`.",
+   "The characterization quantifies over the toy `FnInfo` values (ABI among `rust`, `c`, `cUnwind`); other ABIs are not modelled."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)"
+  ],
+  "design_question": "Is the order of the non-unwinding classification rules a free implementation choice among sound orders?",
+  "lean_names": [
+   "Toy.UnwindCap.Enforced",
+   "Toy.UnwindCap.FnInfo",
+   "Toy.UnwindCap.ForeignHonest",
+   "Toy.UnwindCap.ForeignNotGlue",
+   "Toy.UnwindCap.Prec",
+   "Toy.UnwindCap.PrecForeignSound",
+   "Toy.UnwindCap.SiteAgreement",
+   "Toy.UnwindCap.abortAllCanUnwind",
+   "Toy.UnwindCap.abortCfg",
+   "Toy.UnwindCap.foreignCUnwind",
+   "Toy.UnwindCap.stdCanUnwind"
+  ]
+ },
+ {
+  "id": "R4",
+  "lean": "Toy.UnwindCap.std_and_abiFirst_foreignSound_but_differ",
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "definitional",
+  "plain_claim": "`stdCanUnwind` and `abiFirstCanUnwind` (the same rules with the ABI rule consulted before the strategy rule) both satisfy `PrecForeignSound`; for every crate setting `c` and every `i : FnInfo`, if `abiFirstCanUnwind c i = false` then `stdCanUnwind c i = false`; and for `rustDefinedCUnwind` (a Rust-defined `extern \"C-unwind\"` function) classified from `abortCfg` (strategy `abort`), `stdCanUnwind` returns `false` while `abiFirstCanUnwind` returns `true`.",
+  "hypotheses": [],
+  "nonvacuity_witness": "Closed statement; its witnesses abortCfg and rustDefinedCUnwind are named in it.",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "Both orders being foreign-sound does not make either one yield `ub`-free programs; `Enforced` and `SiteAgreement` are separate obligations.",
+   "`PrecForeignSound` is a condition on the classification of honest, non-glue foreign imports (through `ForeignCovered`); satisfying it does not mean that an order makes Rust-defined exports of `abort` crates abort on foreign unwinds. Under `abiFirstCanUnwind`, `insertPads` inserts no terminate pad in the Rust-defined `extern \"C-unwind\"` function of `progAbortCUnwindExport` (an `abort` crate), and a foreign unwind leaves it, whereas under `stdCanUnwind` the same unwind aborts (`abiFirst_insertPads_lets_foreign_unwind_leave_abort_crate`); compare RFC 2945's table, quoted in REPORT.md, in which a foreign unwind reaching a `panic=abort` `\"C-unwind\"` boundary aborts.",
+   "Every result of this package uses one precedence function `cu` for all crates; programs whose crates use different precedence functions are not modelled (whether mixing orders breaks `SiteAgreement` is not proved here).",
+   "It does not rank the two orders (code size, optimisation) and does not claim that no other order is foreign-sound. \"More conservative\" refers to the stated implication between `false` verdicts and to nothing else."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)"
+  ],
+  "design_question": "Is the order of the non-unwinding classification rules a free implementation choice among sound orders?",
+  "lean_names": [
+   "Toy.UnwindCap.Enforced",
+   "Toy.UnwindCap.FnInfo",
+   "Toy.UnwindCap.ForeignCovered",
+   "Toy.UnwindCap.PrecForeignSound",
+   "Toy.UnwindCap.SiteAgreement",
+   "Toy.UnwindCap.abiFirstCanUnwind",
+   "Toy.UnwindCap.abiFirst_insertPads_lets_foreign_unwind_leave_abort_crate",
+   "Toy.UnwindCap.abortCfg",
+   "Toy.UnwindCap.insertPads",
+   "Toy.UnwindCap.progAbortCUnwindExport",
+   "Toy.UnwindCap.rustDefinedCUnwind",
+   "Toy.UnwindCap.stdCanUnwind"
+  ]
+ },
+ {
+  "id": "R5",
+  "lean": [
+   "Toy.UnwindCap.abortAllCanUnwind_not_foreignSound",
+   "Toy.UnwindCap.abortAll_progAbortImportPlain_ub"
+  ],
+  "kind": "counterexample",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "`abortAllCanUnwind` (the standard order with the `abort`-strategy rule applied to foreign functions as well) does not satisfy `PrecForeignSound` (`abortAllCanUnwind_not_foreignSound`); and the program `progAbortImportPlain` (an `abort` crate whose Rust function calls a foreign `\"C-unwind\"` import that may unwind, with a plain call; handler `abort`) satisfies `LinkOK`, `Enforced abortAllCanUnwind`, `SiteAgreement abortAllCanUnwind`, `ForeignHonest` and `ForeignNotGlue`, and its function 0 has a run with outcome `ub` under `abortAllCanUnwind` (`abortAll_progAbortImportPlain_ub`).",
+  "hypotheses": [],
+  "nonvacuity_witness": "progAbortImportPlain under abortAllCanUnwind (all listed conditions hold; run [] / ub).",
+  "nonvacuity_witness_lean": "Toy.UnwindCap.abortAll_progAbortImportPlain_ub",
+  "positive_control_lean": "Toy.UnwindCap.std_progAbortImportPlain_padded_noUB",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "It refutes one specific rule order in the toy; it does not say any real compiler uses that order.",
+   "Escape hatch: `ForeignCovered` is a condition on the foreign functions with `throws = true`; on a program with no foreign function that may unwind, `ForeignCovered abortAllCanUnwind p` holds (immediate from the definition of `ForeignCovered`), so the failure needs a foreign function that may unwind.",
+   "The positive control shows that under `stdCanUnwind` the toy codegen turns the same program into one without `ub` runs; it does not show that every program is repaired this way."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)"
+  ],
+  "design_question": "Is the order of the non-unwinding classification rules a free implementation choice among sound orders?",
+  "lean_names": [
+   "Toy.UnwindCap.Enforced",
+   "Toy.UnwindCap.Exec",
+   "Toy.UnwindCap.ForeignCovered",
+   "Toy.UnwindCap.ForeignHonest",
+   "Toy.UnwindCap.ForeignNotGlue",
+   "Toy.UnwindCap.LinkOK",
+   "Toy.UnwindCap.PrecForeignSound",
+   "Toy.UnwindCap.SiteAgreement",
+   "Toy.UnwindCap.abortAllCanUnwind",
+   "Toy.UnwindCap.progAbortImportPlain",
+   "Toy.UnwindCap.stdCanUnwind"
+  ]
+ },
+ {
+  "id": "R6",
+  "lean": [
+   "Toy.UnwindCap.insertPads_enforced",
+   "Toy.UnwindCap.insertPads_body",
+   "Toy.UnwindCap.padStmt_call",
+   "Toy.UnwindCap.padStmt_raise",
+   "Toy.UnwindCap.insertPads_foreignCovered",
+   "Toy.UnwindCap.insertPads_siteAgreement",
+   "Toy.UnwindCap.exec_insertPads_of_exec_of_ne_ub"
+  ],
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "For every precedence function `cu` and every toy program `p`: (i) `insertPads cu p` satisfies `Enforced cu` (`insertPads_enforced`); (ii) for every function index `g`, the body of `g` in `insertPads cu p` is `g`'s body with `padStmt cu p g` applied to every statement if `g` is non-foreign and classified as non-unwinding by its own crate, and is `g`'s body unchanged otherwise (`insertPads_body`); (iii) `padStmt cu p g` turns a call `.call f act` into `.call f .terminate` if `p.viewMay cu g f = true` and `act.Stops = false`, and leaves it unchanged otherwise (`padStmt_call`); (iv) `padStmt cu p g` turns a panic point `.raise act` into `.raise .terminate` if `p.handler = .unwind` and `act.Stops = false`, and leaves it unchanged otherwise (`padStmt_raise`); (v) if `p` satisfies `ForeignCovered cu p` then so does `insertPads cu p` (`insertPads_foreignCovered`), and if `p` satisfies `SiteAgreement cu p` (reachable or not, as in R1) then so does `insertPads cu p` (`insertPads_siteAgreement`); (vi) for every function `f`, trace `t` and outcome `o ≠ ub`, if `Exec cu p f t o` (a finite run produced by `runFn`) then `Exec cu (insertPads cu p) f t o` (`exec_insertPads_of_exec_of_ne_ub`). By (ii)-(iv), a `cleanup ds` action at a replaced site becomes `terminate` and its drop list `ds` is lost.",
+  "hypotheses": [
+   {
+    "name": "h : ForeignCovered cu p (in insertPads_foreignCovered)",
+    "purpose": "the pass does not change classifications, so it cannot repair a misclassified foreign function",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.insertPads_foreignCovered_fails_without_foreignCovered",
+    "witness_class": "the 1-crate, 1-function program `progThrowingC` under `stdCanUnwind`"
+   },
+   {
+    "name": "h : SiteAgreement cu p (in insertPads_siteAgreement)",
+    "purpose": "the pass inserts no pad at a call whose callee the caller's crate classifies as non-unwinding",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.insertPads_siteAgreement_fails_without_siteAgreement",
+    "witness_class": "the 2-crate, 2-function program `progAbortCallsUnwind` under `stdCanUnwind`"
+   },
+   {
+    "name": "o ≠ .ub (in exec_insertPads_of_exec_of_ne_ub)",
+    "purpose": "there is a `ub` run that the pass removes",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.exec_insertPads_fails_without_ne_ub",
+    "witness_class": "the 1-crate, 2-function program `progAbortImportPlain` under `stdCanUnwind`"
+   }
+  ],
+  "nonvacuity_witness": "insertPads stdCanUnwind progAbortImportPlain = progAbortImportPadded (a pad is inserted); insertPads stdCanUnwind progAbortCallsUnwind = progAbortCallsUnwind (no pad at a call whose callee the caller's crate classifies as non-unwinding); progAbortImportPlain satisfies ForeignCovered and SiteAgreement; the non-ub run [drop 1 7, caught 0] / ret of progUnwindCatch is kept.",
+  "nonvacuity_witness_lean": [
+   "Toy.UnwindCap.insertPads_progAbortImportPlain",
+   "Toy.UnwindCap.insertPads_progAbortCallsUnwind",
+   "Toy.UnwindCap.insertPads_hypotheses_hold"
+  ],
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "Function bodies are straight-line statement lists: there are no branches or loops inside a body (recursion through calls is allowed).",
+   "`Enforced`, `SiteAgreement`, `GlueAgreement` and `PotentiallyUnwinding` quantify over every function index and every statement of its body, reachable or not; the natural behavioural weakenings that restrict them to reachable functions or reachable call sites are not established here.",
+   "`insertPads` follows classifications, not behaviour: it inserts a terminate pad at a call to a callee that the caller's crate classifies as possibly unwinding even when that callee has no unwinding run (`insertPads_pad_without_unwinding_callee`), and at statements that no run reaches. Minimality of the inserted pads with respect to behaviour is not claimed; whether a pad is needed at a given site is the subject of R8 and R7.",
+   "`insertPads` keeps every `catchPad` and `terminate` action and keeps `cleanup ds` actions except at the replaced sites of (iii) and (iv), where `ds` is discarded. It does not model running local destructors before aborting, as rustc's `AbortUnwindingCalls` pass does by keeping a cleanup block and turning its final resume into a terminate (see the corpus report cited under prior art). (vi) keeps every run that is not `ub`; the runs of `insertPads cu p` that are not runs of `p` are not characterized here.",
+   "Under the `abort` handler `padStmt` leaves panic points unchanged; `execBody` aborts at a panic point there without consulting its action.",
+   "Refutations of earlier candidate statements: the following candidate readings of this result are false, and each is refuted by a proved theorem (see Boundaries, \"Disproved or dropped statements\"): \"`insertPads` changes the bodies of exactly the non-foreign functions classified as non-unwinding by their own crate\" (`refuted_insertPads_changes_exactly_nonunwinding_bodies`; the correct characterization is `insertPads_body_ne_iff`); \"`padStmt` gives a call site a terminate pad exactly when the caller's crate classifies the callee as possibly unwinding and the site has no stopping pad\" (`refuted_padStmt_call_terminate_exactly`; correct: `padStmt_call`, `padStmt_call_ne_iff`); \"`padStmt` gives a panic point a terminate pad exactly when it has no stopping pad\" (`refuted_padStmt_raise_terminate_exactly`; correct: `padStmt_raise`, `padStmt_raise_ne_iff`); \"the pass keeps existing cleanup pads\" (`refuted_insertPads_keeps_cleanup_pads`).",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/1513-less-unwinding.md:108-111 (the `abort` strategy replaces `invoke` by `call`) and 142-146 (final-product validation: if the panic mode is `abort` no other validation is performed, otherwise all crates must agree) (RFC 1513, merged; quoted verbatim in REPORT.md)",
+   "D. Abrahams, R. Sharoni, D. Gregor, \"Allowing Move Constructors to Throw (Rev. 1)\", ISO/IEC JTC1/SC22/WG21 N3050, 2010-03-12 (open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3050.html): proposes the C++ `noexcept` specification together with wording changes to `[except.spec]` and `[except.terminate]` (`std::terminate`); the C++ analogue of enforcing a non-unwinding declaration by termination. No mechanized semantics.",
+   "Corpus report `rustc-cleanup-post-borrowck-false-edges-and-abort-unwinding-mir-lowering`: documents rustc's MIR passes between analysis and runtime MIR, including `AbortUnwindingCalls`, at pinned rustc revisions, and contains a kernel-checked Lean v4.34.1 mechanization (`support/CleanupPostBorrowckAndAbortCalls.lean`) of intra-procedural MIR semantics, `fn_can_unwind` and `AbortUnwindingCalls` (which keeps cleanup blocks and turns their final resume into a terminate) with end-to-end lowering theorems; by its own scope note it does not model linker-level cross-crate panic-strategy checks. This package does not depend on it; its additions are precedence functions as parameters, cross-crate classification disagreement (`SiteAgreement`), the linking restriction, per-crate panic-in-drop, and mixed landing-pad capabilities.",
+   "T. Ramananandro, G. Dos Reis, X. Leroy, \"A mechanized semantics for C++ object construction and destruction, with applications to resource management\", POPL 2012, doi:10.1145/2103621.2103718: a Coq semantics of C++ object construction and destruction order (resource management); it does not treat unwind classifications or landing-pad placement."
+  ],
+  "design_question": "Where does a function classified as non-unwinding need terminate pads for enforcement to be sound, and what does a classification-driven pass insert?",
+  "lean_names": [
+   "Toy.UnwindCap.Action",
+   "Toy.UnwindCap.Enforced",
+   "Toy.UnwindCap.Exec",
+   "Toy.UnwindCap.ForeignCovered",
+   "Toy.UnwindCap.GlueAgreement",
+   "Toy.UnwindCap.PotentiallyUnwinding",
+   "Toy.UnwindCap.Prec",
+   "Toy.UnwindCap.Prog",
+   "Toy.UnwindCap.SiteAgreement",
+   "Toy.UnwindCap.execBody",
+   "Toy.UnwindCap.insertPads",
+   "Toy.UnwindCap.insertPads_body_ne_iff",
+   "Toy.UnwindCap.insertPads_pad_without_unwinding_callee",
+   "Toy.UnwindCap.padStmt",
+   "Toy.UnwindCap.padStmt_call_ne_iff",
+   "Toy.UnwindCap.padStmt_raise_ne_iff",
+   "Toy.UnwindCap.progAbortCallsUnwind",
+   "Toy.UnwindCap.progAbortImportPadded",
+   "Toy.UnwindCap.progAbortImportPlain",
+   "Toy.UnwindCap.progThrowingC",
+   "Toy.UnwindCap.progUnwindCatch",
+   "Toy.UnwindCap.refuted_insertPads_changes_exactly_nonunwinding_bodies",
+   "Toy.UnwindCap.refuted_insertPads_keeps_cleanup_pads",
+   "Toy.UnwindCap.refuted_padStmt_call_terminate_exactly",
+   "Toy.UnwindCap.refuted_padStmt_raise_terminate_exactly",
+   "Toy.UnwindCap.runFn",
+   "Toy.UnwindCap.stdCanUnwind"
+  ]
+ },
+ {
+  "id": "R7",
+  "lean": "Toy.UnwindCap.noUB_insertPads_of_foreignCovered_of_siteAgreement",
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "definitional",
+  "plain_claim": "Corollary of R1 and R6. For every precedence function `cu` and every toy program `p` satisfying `ForeignCovered cu p` and `SiteAgreement cu p` (reachable or not, as in R1), no finite run produced by `runFn` (no `Exec cu (insertPads cu p) f t o`) of any function of `insertPads cu p` has outcome `ub`.",
+  "hypotheses": [
+   {
+    "name": "hfc : ForeignCovered cu p",
+    "purpose": "no pad inside the program can stop an unwind leaving a misclassified foreign function itself",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.noUB_insertPads_fails_without_foreignCovered",
+    "witness_class": "the 1-crate, 1-function program `progThrowingC` under `stdCanUnwind`"
+   },
+   {
+    "name": "hsa : SiteAgreement cu p",
+    "purpose": "the pass inserts no pad where the caller's crate classifies the callee as non-unwinding",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.noUB_insertPads_fails_without_siteAgreement",
+    "witness_class": "the 2-crate, 2-function program `progAbortCallsUnwind` under `stdCanUnwind`"
+   }
+  ],
+  "nonvacuity_witness": "progAbortImportPlain satisfies both hypotheses under stdCanUnwind.",
+  "nonvacuity_witness_lean": "Toy.UnwindCap.noUB_insertPads_hypotheses_hold_progAbortImportPlain",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "`Exec` collects the finite runs produced by the fuel-indexed evaluator `runFn`; diverging executions are not represented, and nothing is claimed about them.",
+   "Function bodies are straight-line statement lists: there are no branches or loops inside a body (recursion through calls is allowed).",
+   "Not modelled: indirect calls through function pointers (for which rustc's `fn_can_unwind` consults the ABI alone, layout.rs:1229-1232), inline assembly that may unwind, forced unwinding, panics during cleanup (a cleanup pad atomically records its drop events and cannot itself panic), asynchronous exceptions, and the third clause of the Reference's potentially-unwinding definition (separate runtime copies).",
+   "`Enforced`, `SiteAgreement`, `GlueAgreement` and `PotentiallyUnwinding` quantify over every function index and every statement of its body, reachable or not; the natural behavioural weakenings that restrict them to reachable functions or reachable call sites are not established here.",
+   "It establishes the absence of `ub` runs of `insertPads cu p`; it does not say that drop events are kept: at replaced sites a `cleanup ds` action becomes `terminate` and `ds` is lost (R6).",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/1513-less-unwinding.md:108-111 (the `abort` strategy replaces `invoke` by `call`) and 142-146 (final-product validation: if the panic mode is `abort` no other validation is performed, otherwise all crates must agree) (RFC 1513, merged; quoted verbatim in REPORT.md)",
+   "D. Abrahams, R. Sharoni, D. Gregor, \"Allowing Move Constructors to Throw (Rev. 1)\", ISO/IEC JTC1/SC22/WG21 N3050, 2010-03-12 (open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3050.html): proposes the C++ `noexcept` specification together with wording changes to `[except.spec]` and `[except.terminate]` (`std::terminate`); the C++ analogue of enforcing a non-unwinding declaration by termination. No mechanized semantics.",
+   "Corpus report `rustc-cleanup-post-borrowck-false-edges-and-abort-unwinding-mir-lowering`: documents rustc's MIR passes between analysis and runtime MIR, including `AbortUnwindingCalls`, at pinned rustc revisions, and contains a kernel-checked Lean v4.34.1 mechanization (`support/CleanupPostBorrowckAndAbortCalls.lean`) of intra-procedural MIR semantics, `fn_can_unwind` and `AbortUnwindingCalls` (which keeps cleanup blocks and turns their final resume into a terminate) with end-to-end lowering theorems; by its own scope note it does not model linker-level cross-crate panic-strategy checks. This package does not depend on it; its additions are precedence functions as parameters, cross-crate classification disagreement (`SiteAgreement`), the linking restriction, per-crate panic-in-drop, and mixed landing-pad capabilities."
+  ],
+  "design_question": "Where does a function classified as non-unwinding need terminate pads for enforcement to be sound, and what does a classification-driven pass insert?",
+  "lean_names": [
+   "Toy.UnwindCap.Enforced",
+   "Toy.UnwindCap.Exec",
+   "Toy.UnwindCap.ForeignCovered",
+   "Toy.UnwindCap.GlueAgreement",
+   "Toy.UnwindCap.PotentiallyUnwinding",
+   "Toy.UnwindCap.Prec",
+   "Toy.UnwindCap.Prog",
+   "Toy.UnwindCap.SiteAgreement",
+   "Toy.UnwindCap.insertPads",
+   "Toy.UnwindCap.progAbortCallsUnwind",
+   "Toy.UnwindCap.progAbortImportPlain",
+   "Toy.UnwindCap.progThrowingC",
+   "Toy.UnwindCap.runFn",
+   "Toy.UnwindCap.stdCanUnwind"
+  ]
+ },
+ {
+  "id": "R8",
+  "lean": "Toy.UnwindCap.ub_of_selfNonUnwinding_of_unguarded_head_call_of_callee_unwinds",
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "For every precedence function `cu`, toy program `p`, and function `g` that is non-foreign, is classified as non-unwinding by its own crate, and whose body is `.call f act :: rest` (the call is the first statement) with `act.Stops = false` (`act` is `none` or a cleanup pad): if `f` has a finite run produced by `runFn` (`Exec cu p f t .unwind`) with trace `t` that unwinds, then there is a trace `t'` such that `Exec cu p g t' .ub`; this holds whichever way `g`'s crate classifies `f`.",
+  "hypotheses": [
+   {
+    "name": "hg : (p.fn g).info.foreign = false",
+    "purpose": "the body field of a foreign function is not executed",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.ub_of_unguarded_call_fails_without_nonForeign",
+    "witness_class": "a 1-crate, 2-function toy encoding whose function 0 is a foreign `c` import with a non-empty body field (`progForeignWithBody`); an encoding artifact, since real foreign items have no body"
+   },
+   {
+    "name": "hgself : p.selfMay cu g = false",
+    "purpose": "an unwind may leave a function classified as possibly unwinding",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.ub_of_unguarded_call_fails_without_selfNonUnwinding",
+    "witness_class": "the 1-crate, 3-function program `progUnwindCatch`"
+   },
+   {
+    "name": "hbody : (p.fn g).body = .call f act :: rest",
+    "purpose": "the call is reached; tight against the weakening \"the call occurs somewhere in the body\"",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.ub_of_unguarded_call_fails_without_callFirst",
+    "witness_class": "a 1-crate, 2-function program whose call follows a panic point with a terminate pad (`progUnreachableCall`)"
+   },
+   {
+    "name": "hact : act.Stops = false",
+    "purpose": "a catch or terminate pad stops the unwind",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.ub_of_unguarded_call_fails_without_nonStopping",
+    "witness_class": "a 1-crate, 2-function program (`progTerminateFromNounwind`)"
+   },
+   {
+    "name": "hf : Exec cu p f t .unwind",
+    "purpose": "the callee actually unwinds; there is a program whose callee has no unwinding run and whose caller has no `ub` run",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.ub_of_unguarded_call_fails_without_calleeUnwinds",
+    "witness_class": "a 1-crate, 2-function program whose callee never panics (`progNounwindCallee`)"
+   }
+  ],
+  "nonvacuity_witness": "progPlainCallFromNounwind: a Rust-defined extern \"C\" function calls a panicking Rust function with a plain call.",
+  "nonvacuity_witness_lean": "Toy.UnwindCap.ub_of_unguarded_call_hypotheses_hold_progPlainCallFromNounwind",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "`Exec` collects the finite runs produced by the fuel-indexed evaluator `runFn`; diverging executions are not represented, and nothing is claimed about them.",
+   "It requires an actual unwinding run of the callee; a callee merely classified as possibly unwinding but without such a run is not covered.",
+   "Escape hatches, each witnessed by a proved counterexample: a stopping pad at the call (`ub_of_unguarded_call_fails_without_nonStopping`), a callee without an unwinding run (`ub_of_unguarded_call_fails_without_calleeUnwinds`), and an earlier statement of `g` that aborts before the call (`ub_of_unguarded_call_fails_without_callFirst`) each avoid `ub`. Under the `abort` handler a panic point aborts (definition of `execBody`), so a callee whose unwinding sources are all panic points has no unwinding run there.",
+   "The call is the first statement of the body (`hbody`); a call preceded by other statements is not covered by this theorem, even when it is reached.",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`."
+  ],
+  "prior_art": [
+   "llvm/llvm-project@a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4 (tag llvmorg-19.1.0) llvm/docs/LangRef.rst:2177-2183 (`nounwind` function attribute: the function never raises an exception, and if it does its runtime behaviour is undefined; quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "D. Abrahams, R. Sharoni, D. Gregor, \"Allowing Move Constructors to Throw (Rev. 1)\", ISO/IEC JTC1/SC22/WG21 N3050, 2010-03-12 (open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3050.html): proposes the C++ `noexcept` specification together with wording changes to `[except.spec]` and `[except.terminate]` (`std::terminate`); the C++ analogue of enforcing a non-unwinding declaration by termination. No mechanized semantics."
+  ],
+  "design_question": "Where does a function classified as non-unwinding need terminate pads for enforcement to be sound, and what does a classification-driven pass insert?",
+  "lean_names": [
+   "Toy.UnwindCap.Action",
+   "Toy.UnwindCap.Event",
+   "Toy.UnwindCap.Exec",
+   "Toy.UnwindCap.Prec",
+   "Toy.UnwindCap.Prog",
+   "Toy.UnwindCap.Stmt",
+   "Toy.UnwindCap.execBody",
+   "Toy.UnwindCap.progForeignWithBody",
+   "Toy.UnwindCap.progNounwindCallee",
+   "Toy.UnwindCap.progPlainCallFromNounwind",
+   "Toy.UnwindCap.progTerminateFromNounwind",
+   "Toy.UnwindCap.progUnreachableCall",
+   "Toy.UnwindCap.progUnwindCatch",
+   "Toy.UnwindCap.runFn",
+   "Toy.UnwindCap.ub_of_unguarded_call_fails_without_callFirst",
+   "Toy.UnwindCap.ub_of_unguarded_call_fails_without_calleeUnwinds",
+   "Toy.UnwindCap.ub_of_unguarded_call_fails_without_nonStopping"
+  ]
+ },
+ {
+  "id": "R9",
+  "lean": "Toy.UnwindCap.noUB_std_of_linkOK_of_enforced_of_foreignHonest_of_foreignNotGlue_of_glueAgreement",
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "For `stdCanUnwind` and every toy program `p` satisfying `LinkOK p` (if `p` is potentially unwinding, that is, it uses the `unwind` panic handler or some non-foreign function of an `unwind`-strategy crate has a call, reachable or not, to a `cUnwind` function, then every crate in `p.crates` uses the `unwind` strategy), `Enforced stdCanUnwind p` (reachable or not, as in R1), `ForeignHonest p`, `ForeignNotGlue p`, and, in case `p` is potentially unwinding, `GlueAgreement p` (at every call site, reachable or not, without a stopping pad that calls drop glue from a crate with panic-in-drop `abort`, the glue instance's crate has panic-in-drop `abort`): no finite run produced by `runFn` of any function of `p` has outcome `ub`. `SiteAgreement` is not assumed.",
+  "hypotheses": [
+   {
+    "name": "hlink : LinkOK p",
+    "purpose": "an `abort` crate treats Rust-ABI callees as non-unwinding; that is sound when nothing in the artifact unwinds through Rust frames",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.noUB_std_fails_without_linkOK",
+    "witness_class": "the 2-crate, 2-function mixed-strategy program `progAbortCallsUnwind` (handler `unwind`)"
+   },
+   {
+    "name": "henf : Enforced stdCanUnwind p",
+    "purpose": "a function classified as non-unwinding stops its known unwinding sources",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.noUB_std_fails_without_enforced",
+    "witness_class": "the 1-crate, 2-function program `progPlainCallFromNounwind`"
+   },
+   {
+    "name": "hh : ForeignHonest p",
+    "purpose": "foreign code that unwinds is declared `cUnwind` without the never-unwind attribute",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.noUB_std_fails_without_foreignHonest",
+    "witness_class": "the 1-crate, 1-function program `progThrowingC`"
+   },
+   {
+    "name": "hng : ForeignNotGlue p",
+    "purpose": "well-formedness (toy-encoding artifact)",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.noUB_std_fails_without_foreignNotGlue",
+    "witness_class": "a 1-crate, 1-function toy encoding whose function is both foreign and drop glue (`progForeignGlue`)"
+   },
+   {
+    "name": "hglue : PotentiallyUnwinding p → GlueAgreement p",
+    "purpose": "the strategy-level linking restriction does not cover per-crate panic-in-drop settings",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.noUB_std_fails_without_glueAgreement",
+    "witness_class": "the 2-crate drop-glue program `progGlueMismatch` (handler `unwind`, hence potentially unwinding)"
+   }
+  ],
+  "nonvacuity_witness": "progMixedLinkOK (an abort crate and an unwind crate, panic handler abort; the abort crate calls a throwing foreign C-unwind import through a terminate pad and calls a panicking Rust function of the unwind crate with a plain call; SiteAgreement fails; a run aborts), progUnwindCatch (all crates unwind), progMixedAbortBothCallsGlue (an abort crate with panic-in-drop abort calls drop glue of an unwind crate with a plain call under the abort handler; GlueAgreement itself fails) and progAbortHandlerRaisePlain (a panic point without a landing pad under the abort handler) satisfy all five hypotheses.",
+  "nonvacuity_witness_lean": [
+   "Toy.UnwindCap.noUB_std_of_linkOK_hypotheses_hold_progMixedLinkOK",
+   "Toy.UnwindCap.noUB_std_of_linkOK_hypotheses_hold_progUnwindCatch",
+   "Toy.UnwindCap.noUB_std_hypotheses_hold_progMixedAbortBothCallsGlue",
+   "Toy.UnwindCap.noUB_std_hypotheses_hold_progAbortHandlerRaisePlain"
+  ],
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "`Exec` collects the finite runs produced by the fuel-indexed evaluator `runFn`; diverging executions are not represented, and nothing is claimed about them.",
+   "Function bodies are straight-line statement lists: there are no branches or loops inside a body (recursion through calls is allowed).",
+   "Not modelled: indirect calls through function pointers (for which rustc's `fn_can_unwind` consults the ABI alone, layout.rs:1229-1232), inline assembly that may unwind, forced unwinding, panics during cleanup (a cleanup pad atomically records its drop events and cannot itself panic), asynchronous exceptions, and the third clause of the Reference's potentially-unwinding definition (separate runtime copies).",
+   "`Enforced`, `SiteAgreement`, `GlueAgreement` and `PotentiallyUnwinding` quantify over every function index and every statement of its body, reachable or not; the natural behavioural weakenings that restrict them to reachable functions or reachable call sites are not established here.",
+   "Out-of-range function indices `f ≥ p.fns.length` denote `FnDef.dummy` (an empty non-foreign Rust function in crate 0), and out-of-range crate indices denote `CrateCfg.dflt` (strategy and panic-in-drop `unwind`); no theorem here checks index bounds separately.",
+   "`Enforced` constrains panic points when the panic handler is `unwind` and does not constrain them when it is `abort`, because under the `abort` handler `execBody` aborts at a panic point without unwinding and without consulting its action.",
+   "`LinkOK` is modelled on two of the three clauses of the Reference's potentially-unwinding definition; the clause about calls into another artifact with a separate runtime copy is not modelled.",
+   "Setting the panic handler to `abort` does not by itself make an artifact satisfy `LinkOK`: an artifact with the `abort` handler in which an `unwind`-strategy crate calls a `cUnwind` function is potentially unwinding (`potentiallyUnwinding_unwindCrateCallsCUnwind`).",
+   "`noUB_std_fails_without_glueAgreement` shows that `LinkOK` does not imply `GlueAgreement` in the toy. When `LinkOK p` and `PotentiallyUnwinding p` hold, every crate setting `p.crateOf g` uses the `unwind` strategy (`crateOf_unwind_of_linkOK_of_potentiallyUnwinding`), so weakening the conclusion of `GlueAgreement` to \"the glue instance's crate has strategy `abort` or panic-in-drop `abort`\" would not change this hypothesis.",
+   "Degenerate edge: a program with no crates satisfies `LinkOK` (`compRet_nil_and_linkOK_of_no_crates`); all its functions use `CrateCfg.dflt`.",
+   "Whether and how any real toolchain checks `LinkOK` or `GlueAgreement` is not examined here (see the corpus report on panic-strategy linking cited under prior art).",
+   "The panic handler is one artifact-wide setting; dynamically loaded code is not modelled.",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`."
+  ],
+  "prior_art": [
+   "rust-lang/reference@c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c src/linkage.md:154-176 (`link.unwinding`: potentially unwinding artifacts and the all-crates-unwind rule)",
+   "rust-lang/reference@c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c src/panic.md:86-101 (`panic.strategy`), 103-116 (`panic.unwind`), 124-128 (`panic.unwind.ffi.undefined`), 130-134 (`panic.unwind.ffi.catch-foreign`)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/1513-less-unwinding.md:108-111 (the `abort` strategy replaces `invoke` by `call`) and 142-146 (final-product validation: if the panic mode is `abort` no other validation is performed, otherwise all crates must agree) (RFC 1513, merged; quoted verbatim in REPORT.md)",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)",
+   "Corpus report `rust-no-std-panic-abort-eh-personality-and-cross-crate-unwinding-abi-contracts` (no Lean mechanization): documents rustc's panic-strategy linking rules from source and experiments, including a check that the `-Z panic-in-drop` setting agrees across linked crates (it cites `dependency_format.rs:495-505` at the revision it pins). This package does not re-examine that check."
+  ],
+  "design_question": "What must hold when crates compiled with different panic strategies are linked into one artifact?",
+  "lean_names": [
+   "Toy.UnwindCap.CrateCfg.dflt",
+   "Toy.UnwindCap.Enforced",
+   "Toy.UnwindCap.Exec",
+   "Toy.UnwindCap.FnDef.dummy",
+   "Toy.UnwindCap.ForeignHonest",
+   "Toy.UnwindCap.ForeignNotGlue",
+   "Toy.UnwindCap.GlueAgreement",
+   "Toy.UnwindCap.LinkOK",
+   "Toy.UnwindCap.PotentiallyUnwinding",
+   "Toy.UnwindCap.Prog",
+   "Toy.UnwindCap.SiteAgreement",
+   "Toy.UnwindCap.compRet_nil_and_linkOK_of_no_crates",
+   "Toy.UnwindCap.crateOf_unwind_of_linkOK_of_potentiallyUnwinding",
+   "Toy.UnwindCap.execBody",
+   "Toy.UnwindCap.noUB_std_fails_without_glueAgreement",
+   "Toy.UnwindCap.potentiallyUnwinding_unwindCrateCallsCUnwind",
+   "Toy.UnwindCap.progAbortCallsUnwind",
+   "Toy.UnwindCap.progAbortHandlerRaisePlain",
+   "Toy.UnwindCap.progForeignGlue",
+   "Toy.UnwindCap.progGlueMismatch",
+   "Toy.UnwindCap.progMixedAbortBothCallsGlue",
+   "Toy.UnwindCap.progMixedLinkOK",
+   "Toy.UnwindCap.progPlainCallFromNounwind",
+   "Toy.UnwindCap.progThrowingC",
+   "Toy.UnwindCap.progUnwindCatch",
+   "Toy.UnwindCap.runFn",
+   "Toy.UnwindCap.stdCanUnwind"
+  ]
+ },
+ {
+  "id": "R10",
+  "lean": "Toy.UnwindCap.glueSiteSound_iff",
+  "kind": "characterization",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "In the drop-glue program with exactly two crates, `glueProg cc cg act body` (crate 0, with settings `cc`, holds the caller, function 0, whose body consists of exactly one call to function 1 with action `act`; crate 1, with settings `cg`, compiled the drop-glue instance, function 1, whose body is `body`; panic handler `unwind`), for all `cc`, `cg` and `act`: `GlueSiteSound cc cg act` (for every glue body `body`, calls included, for which the program satisfies `Enforced stdCanUnwind` at every function index and statement, reachable or not, no finite run of the caller produced by `runFn` has outcome `ub`) holds iff, whenever `stdCanUnwind cc glueInfo = false` (the caller's crate treats the glue as non-unwinding), `stdCanUnwind cg glueInfo = false` (the glue instance's own crate does too) or `act` is a stopping pad (`catchPad` or `terminate`).",
+  "hypotheses": [],
+  "nonvacuity_witness": "Both sides are instantiated: (pidAbortCfg, unwindCfg, none) makes them false; (pidAbortCfg, pidAbortCfg, none) makes them true.",
+  "nonvacuity_witness_lean": [
+   "Toy.UnwindCap.glueSiteSound_iff_instances",
+   "Toy.UnwindCap.glueSiteSound_examples"
+  ],
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "`Exec` collects the finite runs produced by the fuel-indexed evaluator `runFn`; diverging executions are not represented, and nothing is claimed about them.",
+   "The program family is fixed: exactly one caller with exactly one call site, the `unwind` panic handler, a caller with the static facts `rustInfo`, and `stdCanUnwind`. Glue bodies may contain calls (to the caller, to the glue itself, or to out-of-range indices, which denote `FnDef.dummy`).",
+   "In the toy semantics a stopping pad (`catchPad` or `terminate`) at a call site is executed even when the caller's crate classified the callee as non-unwinding (`onUnwind` with `assumed = true`); a lowering that emits no landing pad at such sites is not modelled. The `act.Stops = true` alternative depends on this choice.",
+   "Escape hatch: the direction from `GlueSiteSound cc cg act` to the right-hand side uses the fixed `unwind` handler of `glueProg`. With the handler changed to `abort`, no finite run of any function of the family has outcome `ub`, for all settings, actions and glue bodies (`glueProg_abort_handler_noUB`), so the right-hand side does not characterize soundness of that variant.",
+   "\"The glue instance actually called\" is the function in crate 1 of the family; how a real toolchain chooses or shares drop-glue instances across crates is not examined, and nothing is asserted about whether any toolchain enforces agreement.",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "Corpus report `rust-no-std-panic-abort-eh-personality-and-cross-crate-unwinding-abi-contracts` (no Lean mechanization): documents rustc's panic-strategy linking rules from source and experiments, including a check that the `-Z panic-in-drop` setting agrees across linked crates (it cites `dependency_format.rs:495-505` at the revision it pins). This package does not re-examine that check."
+  ],
+  "design_question": "When may a caller treat drop glue as non-unwinding when panic-in-drop is a per-crate setting?",
+  "lean_names": [
+   "Toy.UnwindCap.Action",
+   "Toy.UnwindCap.CrateCfg",
+   "Toy.UnwindCap.Enforced",
+   "Toy.UnwindCap.Exec",
+   "Toy.UnwindCap.FnDef.dummy",
+   "Toy.UnwindCap.GlueSiteSound",
+   "Toy.UnwindCap.glueInfo",
+   "Toy.UnwindCap.glueProg",
+   "Toy.UnwindCap.glueProg_abort_handler_noUB",
+   "Toy.UnwindCap.onUnwind",
+   "Toy.UnwindCap.pidAbortCfg",
+   "Toy.UnwindCap.runFn",
+   "Toy.UnwindCap.rustInfo",
+   "Toy.UnwindCap.stdCanUnwind",
+   "Toy.UnwindCap.unwindCfg"
+  ]
+ },
+ {
+  "id": "R11",
+  "lean": "Toy.UnwindCap.glueSiteSound_iff_panicInDrop",
+  "kind": "characterization",
+  "tier": "T1",
+  "depth": "definitional",
+  "plain_claim": "Corollary of R10. For all caller-crate settings `cc`, glue-crate settings `cg` and actions `act`: if the caller's crate has strategy `abort` or panic-in-drop `abort` (so it treats drop glue as non-unwinding) and the glue instance's crate has strategy `unwind`, then `GlueSiteSound cc cg act` holds iff the glue instance's crate has panic-in-drop `abort` or `act` is a stopping pad (`catchPad` or `terminate`).",
+  "hypotheses": [
+   {
+    "name": "hview : cc.panic = .abort ∨ cc.panicInDrop = .abort",
+    "purpose": "without it the caller treats glue as possibly unwinding, and then every site is sound by `glueSiteSound_iff`",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.glueSiteSound_iff_panicInDrop_fails_without_view",
+    "witness_class": "the crate-settings pair (`unwindCfg`, `unwindCfg`) with action `none`"
+   },
+   {
+    "name": "hcg : cg.panic = .unwind",
+    "purpose": "glue compiled in an `abort`-strategy crate is non-unwinding by the strategy rule whatever its panic-in-drop setting",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.glueSiteSound_iff_panicInDrop_fails_without_glueCrateUnwind",
+    "witness_class": "the crate-settings pair (`pidAbortCfg`, `abortCfg`) with action `none`"
+   }
+  ],
+  "nonvacuity_witness": "cc = pidAbortCfg with cg = unwindCfg (both sides false) or cg = pidAbortCfg (both sides true).",
+  "nonvacuity_witness_lean": "Toy.UnwindCap.glueSiteSound_iff_panicInDrop_hypotheses_hold",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "Inherits the program-family restrictions and the stopping-pad modelling choice of `glueSiteSound_iff` (R10).",
+   "A catch pad also suffices in the toy; the per-crate panic-in-drop form is not specific to terminate pads.",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`."
+  ],
+  "prior_art": [
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "Corpus report `rust-no-std-panic-abort-eh-personality-and-cross-crate-unwinding-abi-contracts` (no Lean mechanization): documents rustc's panic-strategy linking rules from source and experiments, including a check that the `-Z panic-in-drop` setting agrees across linked crates (it cites `dependency_format.rs:495-505` at the revision it pins). This package does not re-examine that check."
+  ],
+  "design_question": "When may a caller treat drop glue as non-unwinding when panic-in-drop is a per-crate setting?",
+  "lean_names": [
+   "Toy.UnwindCap.Action",
+   "Toy.UnwindCap.CrateCfg",
+   "Toy.UnwindCap.GlueSiteSound",
+   "Toy.UnwindCap.abortCfg",
+   "Toy.UnwindCap.glueSiteSound_iff",
+   "Toy.UnwindCap.pidAbortCfg",
+   "Toy.UnwindCap.unwindCfg"
+  ]
+ },
+ {
+  "id": "R12",
+  "lean": "Toy.UnwindCap.compRet_eq_specRet_of_conforms",
+  "kind": "theorem",
+  "tier": "T0",
+  "depth": "shallow",
+  "plain_claim": "Reference point. For every lawful toy ABI `A` (`A.dec (A.enc v) = v` for every `v`), every backend `b0` of the innermost callee and every chain of frames `frs`: if `b0` and the backend of every frame in `frs` conform to `A` (each uses exactly `A`'s encoding and decoding, as functions on all of `Nat`), then `compRet b0 frs v = specRet frs v` for every value `v`, that is, normal returns through the mixed chain give the specified result.",
+  "hypotheses": [
+   {
+    "name": "hA : A.Lawful",
+    "purpose": "there is a lossy common ABI for which even a single-backend chain differs from the specification",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.compRet_fails_without_lawful",
+    "witness_class": "a 1-frame chain over `truncCodec` (encoding modulo 256, the floor-division remainder)"
+   },
+   {
+    "name": "h0 : Conforms b0 A",
+    "purpose": "there is a self-consistent callee backend with a different encoding whose return value a conforming caller misreads",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.compRet_fails_without_calleeConforms",
+    "witness_class": "a 1-frame chain whose callee uses `shiftCodec`"
+   },
+   {
+    "name": "hfrs : ∀ fr ∈ frs, Conforms fr.backend A",
+    "purpose": "there is a self-consistent caller backend that misreads a conforming callee",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.compRet_fails_without_framesConform",
+    "witness_class": "a 1-frame chain whose caller uses `shiftCodec` (decoding by truncated subtraction)"
+   }
+  ],
+  "nonvacuity_witness": "idCodec with the chain [(idCodec, +1), (idCodec, *2)] from 3 gives 8.",
+  "nonvacuity_witness_lean": "Toy.UnwindCap.compRet_hypotheses_hold",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy chain model; they neither establish nor refute the corresponding claims about any real compiler backend or unwinder. Backend capabilities are toy parameters; no capability or defect of any real backend is asserted.",
+   "Values are toy natural numbers with one return value per frame; argument passing, multiple registers and layout are not modelled.",
+   "`Conforms b A` equates `b.dec` and `A.dec` on every `Nat`, including values outside the range of `A.enc` (for `shiftCodec`, whose decoding uses truncated subtraction `w - 1`, both `0` and `1` decode to `0`). Neither the weakening to agreement on the range of `A.enc` nor the weakening to pairwise caller-callee inversion without one common ABI is examined.",
+   "Degenerate edge: on the empty chain `compRet b0 [] v = specRet [] v = v` whatever `b0` (`compRet_nil_and_linkOK_of_no_crates`); for a non-empty chain the outermost frame's result is observed directly, without an encoding."
+  ],
+  "prior_art": [
+   "J. Matthews, R. B. Findler, \"Operational semantics for multi-language programs\", ACM TOPLAS 31(3):12, 2009, doi:10.1145/1498926.1498930: general background on semantics of boundaries between languages; it does not treat ABI value encodings.",
+   "Related report of the same corpus (a Lean formalization) `codec-round-trip-laws-and-partial-isomorphisms` (round-trip laws of total-encoder, fallible-decoder codecs, including the decode-after-encode law `DecEnc`); the composition argument here is the elementary instance of such a law."
+  ],
+  "design_question": "What can be guaranteed when one call chain mixes functions compiled by backends with different landing-pad capabilities?",
+  "lean_names": [
+   "Toy.UnwindCap.AbiCodec",
+   "Toy.UnwindCap.Conforms",
+   "Toy.UnwindCap.RetFrame",
+   "Toy.UnwindCap.compRet",
+   "Toy.UnwindCap.compRet_nil_and_linkOK_of_no_crates",
+   "Toy.UnwindCap.idCodec",
+   "Toy.UnwindCap.shiftCodec",
+   "Toy.UnwindCap.specRet",
+   "Toy.UnwindCap.truncCodec"
+  ]
+ },
+ {
+  "id": "R13",
+  "lean": "Toy.UnwindCap.compUnwind_eq_specUnwind_iff_obligationsFull_of_noReachedNoneTerminate",
+  "kind": "characterization",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "For every call chain `c` (frames listed innermost first, each with the landing-pad capability `pads` of the backend that compiled it and the landing-pad action of its active call site) that satisfies `NoReachedNoneTerminate c` (no frame that the specified unwind reaches, up to and including the first frame whose action stops it, is a `pads = none` frame with a terminate pad; frames after that one are unconstrained): the compiled unwind `compUnwind c` (frames compiled with `pads = none` perform no landing-pad action) equals the specified unwind `specUnwind c` (same events, tagged with frame positions, and same outcome) iff `ObligationsFull c` (every frame that the specified unwind reaches, up to and including the first frame whose action stops it, and that has a non-empty cleanup pad, a catch pad or a terminate pad, was compiled with `pads = full`). The direction from `ObligationsFull c` holds without `NoReachedNoneTerminate c` and is stated separately as R18.",
+  "hypotheses": [
+   {
+    "name": "hterm : NoReachedNoneTerminate c",
+    "purpose": "there is a chain in which an abort skipped by a reached `pads = none` frame is performed by a later frame with no observable difference, because the outcome `aborted` carries no frame position (unlike drop events and catches)",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.compUnwind_iff_fails_without_noReachedNoneTerminate",
+    "witness_class": "a 2-frame chain `[⟨none, terminate⟩, ⟨full, terminate⟩]`"
+   }
+  ],
+  "nonvacuity_witness": "[(full, cleanup [1]), (none, none), (full, catchPad)]: a pads = none frame is unwound through and both sides hold; [(none, cleanup [1]), (full, catchPad)]: both sides fail; [(full, catchPad), (none, terminate)]: the pads = none terminate frame is not reached, the hypothesis holds and both sides hold.",
+  "nonvacuity_witness_lean": "Toy.UnwindCap.compUnwind_iff_hypotheses_hold",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy chain model; they neither establish nor refute the corresponding claims about any real compiler backend or unwinder. Backend capabilities are toy parameters; no capability or defect of any real backend is asserted.",
+   "A `pads = none` function or frame is assumed to be unwindable: an unwind that reaches it without a landing pad passes through to its caller (`Stmt.unpadded`, `UFrame.effAct`). This models a backend that emits frame-unwind information but no landing pads. Code that cannot be unwound through at all (compare the Reference's `src/panic.md:124-128` on code compiled with `-fno-exceptions`) is not modelled, and nothing here applies to it.",
+   "A chain is the stack at the moment one unwind starts; the model does not derive chains from programs, and the relation to the program model is informal (not proved here).",
+   "Frames without obligations may be compiled with `pads = none` and unwound through without any difference; the result does not require every unwound frame to be `pads = full`.",
+   "Events and catches are tagged with frame positions; a model whose observations cannot distinguish frames is not covered.",
+   "`NoReachedNoneTerminate` constrains every frame reached by the specified unwind; whether it can be weakened further (for example to reached frames whose skipped abort is not repeated by a later frame) is not examined.",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`."
+  ],
+  "prior_art": [
+   "G. Klein, T. Nipkow, \"A machine-checked model for a Java-like language, virtual machine, and compiler\", ACM TOPLAS 28(4):619-695, 2006, doi:10.1145/1146809.1146811: Isabelle/HOL semantics of a Java-like language with exceptions, a JVM-like machine and a verified compiler; mechanized exception propagation through frames, without cleanup obligations or backends lacking landing pads.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, \"Reliable and fast DWARF-based stack unwinding\", PACMPL 3(OOPSLA):146, 2019, doi:10.1145/3360572: validation and synthesis of DWARF `.eh_frame` unwind tables, the frame-unwind information that the `pads = none` modelling assumption presupposes.",
+   "T. Ramananandro, G. Dos Reis, X. Leroy, \"A mechanized semantics for C++ object construction and destruction, with applications to resource management\", POPL 2012, doi:10.1145/2103621.2103718: a Coq semantics of C++ object construction and destruction order (resource management); it does not treat unwind classifications or landing-pad placement.",
+   "rust-lang/reference@c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c src/panic.md:86-101 (`panic.strategy`), 103-116 (`panic.unwind`), 124-128 (`panic.unwind.ffi.undefined`), 130-134 (`panic.unwind.ffi.catch-foreign`)",
+   "Related reports of the same corpus (Lean formalizations), cited and not repeated (descriptions checked against their REPORT.md): `drop-flag-elaboration-partial-moves-and-unwind-cleanup-exactly-once-destruction` (drop elaboration with drop flags, cleanup edges and the double-panic rule), `panic-safety-unwinding-through-broken-invariants-leak-amplification-and-safe-forget` (panic-safety obligations of unsafe collection code under unwinding), `call-site-inlining-slot-renaming-cleanup-splicing-capability-guards-and-caller-locations` (call-site inlining in a MIR-like language, including unwind actions and cleanup), `cfg-dwarf-cfi-state-stack-and-lsda-landing-pad-unwinding-soundness` (DWARF-style call-frame information and LSDA-style call-site tables over a given frame list), `explicit-tail-calls-frame-reuse-pre-jump-drop-order-stack-borrow-rejection-and-inlining` (a frame-stack machine with guaranteed tail calls, destructors and frame reuse). None of them treats whether a function may unwind as a classification made by a crate."
+  ],
+  "design_question": "What can be guaranteed when one call chain mixes functions compiled by backends with different landing-pad capabilities?",
+  "lean_names": [
+   "Toy.UnwindCap.NoReachedNoneTerminate",
+   "Toy.UnwindCap.ObligationsFull",
+   "Toy.UnwindCap.Stmt.unpadded",
+   "Toy.UnwindCap.UFrame",
+   "Toy.UnwindCap.UFrame.effAct",
+   "Toy.UnwindCap.compUnwind",
+   "Toy.UnwindCap.specUnwind"
+  ]
+ },
+ {
+  "id": "R18",
+  "lean": "Toy.UnwindCap.compUnwind_eq_specUnwind_of_obligationsFull",
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "Companion of R13 (stated as its own card). For every call chain `c` that satisfies `ObligationsFull c` (every frame that the specified unwind reaches, up to and including the first frame whose action stops it, and that has a non-empty cleanup pad, a catch pad or a terminate pad, was compiled with `pads = full`), the compiled unwind `compUnwind c` equals the specified unwind `specUnwind c`. No condition on `pads = none` terminate frames is assumed.",
+  "hypotheses": [
+   {
+    "name": "h : ObligationsFull c",
+    "purpose": "there is a chain with a reached `pads = none` frame carrying a cleanup pad whose drop event the compiled unwind loses",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.compUnwind_of_obligationsFull_fails_without_obligationsFull",
+    "witness_class": "a 2-frame chain `[⟨none, cleanup [1]⟩, ⟨full, catchPad⟩]`"
+   }
+  ],
+  "nonvacuity_witness": "[(full, catchPad), (none, terminate)] satisfies ObligationsFull (its pads = none terminate frame is not reached).",
+  "nonvacuity_witness_lean": "Toy.UnwindCap.compUnwind_eq_specUnwind_of_obligationsFull_hypotheses_hold",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy chain model; they neither establish nor refute the corresponding claims about any real compiler backend or unwinder. Backend capabilities are toy parameters; no capability or defect of any real backend is asserted.",
+   "A `pads = none` function or frame is assumed to be unwindable: an unwind that reaches it without a landing pad passes through to its caller (`Stmt.unpadded`, `UFrame.effAct`). This models a backend that emits frame-unwind information but no landing pads. Code that cannot be unwound through at all (compare the Reference's `src/panic.md:124-128` on code compiled with `-fno-exceptions`) is not modelled, and nothing here applies to it.",
+   "`ObligationsFull c` is sufficient, and is not necessary for `compUnwind c = specUnwind c`: there is a chain, `[⟨none, terminate⟩, ⟨full, terminate⟩]`, whose compiled and specified unwinds are equal although `ObligationsFull` fails (`compUnwind_iff_fails_without_noReachedNoneTerminate`); under `NoReachedNoneTerminate c` the converse holds (R13).",
+   "A chain is the stack at the moment one unwind starts; the model does not derive chains from programs (not proved here).",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`."
+  ],
+  "prior_art": [
+   "G. Klein, T. Nipkow, \"A machine-checked model for a Java-like language, virtual machine, and compiler\", ACM TOPLAS 28(4):619-695, 2006, doi:10.1145/1146809.1146811: Isabelle/HOL semantics of a Java-like language with exceptions, a JVM-like machine and a verified compiler; mechanized exception propagation through frames, without cleanup obligations or backends lacking landing pads.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, \"Reliable and fast DWARF-based stack unwinding\", PACMPL 3(OOPSLA):146, 2019, doi:10.1145/3360572: validation and synthesis of DWARF `.eh_frame` unwind tables, the frame-unwind information that the `pads = none` modelling assumption presupposes.",
+   "T. Ramananandro, G. Dos Reis, X. Leroy, \"A mechanized semantics for C++ object construction and destruction, with applications to resource management\", POPL 2012, doi:10.1145/2103621.2103718: a Coq semantics of C++ object construction and destruction order (resource management); it does not treat unwind classifications or landing-pad placement.",
+   "Related reports of the same corpus (Lean formalizations), cited and not repeated (descriptions checked against their REPORT.md): `drop-flag-elaboration-partial-moves-and-unwind-cleanup-exactly-once-destruction` (drop elaboration with drop flags, cleanup edges and the double-panic rule), `panic-safety-unwinding-through-broken-invariants-leak-amplification-and-safe-forget` (panic-safety obligations of unsafe collection code under unwinding), `call-site-inlining-slot-renaming-cleanup-splicing-capability-guards-and-caller-locations` (call-site inlining in a MIR-like language, including unwind actions and cleanup), `cfg-dwarf-cfi-state-stack-and-lsda-landing-pad-unwinding-soundness` (DWARF-style call-frame information and LSDA-style call-site tables over a given frame list), `explicit-tail-calls-frame-reuse-pre-jump-drop-order-stack-borrow-rejection-and-inlining` (a frame-stack machine with guaranteed tail calls, destructors and frame reuse). None of them treats whether a function may unwind as a classification made by a crate."
+  ],
+  "design_question": "What can be guaranteed when one call chain mixes functions compiled by backends with different landing-pad capabilities?",
+  "lean_names": [
+   "Toy.UnwindCap.NoReachedNoneTerminate",
+   "Toy.UnwindCap.ObligationsFull",
+   "Toy.UnwindCap.Stmt.unpadded",
+   "Toy.UnwindCap.UFrame",
+   "Toy.UnwindCap.UFrame.effAct",
+   "Toy.UnwindCap.compUnwind",
+   "Toy.UnwindCap.compUnwind_iff_fails_without_noReachedNoneTerminate",
+   "Toy.UnwindCap.specUnwind"
+  ]
+ },
+ {
+  "id": "R14",
+  "lean": "Toy.UnwindCap.robust_iff_shielded",
+  "kind": "characterization",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "For every call chain `c`: the compiled and specified unwinds agree on every chain `c'` with `SameShape c c'` (the same backend capability frame by frame and the same actions at every `pads = full` frame, any actions at `pads = none` frames) iff `Shielded c`, that is, scanning from the innermost frame, every frame is compiled with `pads = full` up to and including the first frame whose action stops the unwind (`catchPad` or `terminate`), or up to the end of the chain if no frame stops it.",
+  "hypotheses": [],
+  "nonvacuity_witness": "[(full, catchPad), (none, none)] is Shielded (by a catch pad) but not TerminateShielded; [(none, none)] is not Shielded.",
+  "nonvacuity_witness_lean": [
+   "Toy.UnwindCap.shielded_not_terminateShielded",
+   "Toy.UnwindCap.shielded_examples"
+  ],
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy chain model; they neither establish nor refute the corresponding claims about any real compiler backend or unwinder. Backend capabilities are toy parameters; no capability or defect of any real backend is asserted.",
+   "A `pads = none` function or frame is assumed to be unwindable: an unwind that reaches it without a landing pad passes through to its caller (`Stmt.unpadded`, `UFrame.effAct`). This models a backend that emits frame-unwind information but no landing pads. Code that cannot be unwound through at all (compare the Reference's `src/panic.md:124-128` on code compiled with `-fno-exceptions`) is not modelled, and nothing here applies to it.",
+   "Robustness quantifies over the actions of `pads = none` frames; capabilities and the actions of `pads = full` frames are held fixed.",
+   "`Shielded` holds for a chain without `pads = none` frames even if no frame stops the unwind (for example `[⟨full, none⟩]`).",
+   "It does not say that a `pads = none` frame is classified as non-unwinding in any program; the program-level counterparts are R16 and R17.",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`."
+  ],
+  "prior_art": [
+   "G. Klein, T. Nipkow, \"A machine-checked model for a Java-like language, virtual machine, and compiler\", ACM TOPLAS 28(4):619-695, 2006, doi:10.1145/1146809.1146811: Isabelle/HOL semantics of a Java-like language with exceptions, a JVM-like machine and a verified compiler; mechanized exception propagation through frames, without cleanup obligations or backends lacking landing pads.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, \"Reliable and fast DWARF-based stack unwinding\", PACMPL 3(OOPSLA):146, 2019, doi:10.1145/3360572: validation and synthesis of DWARF `.eh_frame` unwind tables, the frame-unwind information that the `pads = none` modelling assumption presupposes.",
+   "Related reports of the same corpus (Lean formalizations), cited and not repeated (descriptions checked against their REPORT.md): `drop-flag-elaboration-partial-moves-and-unwind-cleanup-exactly-once-destruction` (drop elaboration with drop flags, cleanup edges and the double-panic rule), `panic-safety-unwinding-through-broken-invariants-leak-amplification-and-safe-forget` (panic-safety obligations of unsafe collection code under unwinding), `call-site-inlining-slot-renaming-cleanup-splicing-capability-guards-and-caller-locations` (call-site inlining in a MIR-like language, including unwind actions and cleanup), `cfg-dwarf-cfi-state-stack-and-lsda-landing-pad-unwinding-soundness` (DWARF-style call-frame information and LSDA-style call-site tables over a given frame list), `explicit-tail-calls-frame-reuse-pre-jump-drop-order-stack-borrow-rejection-and-inlining` (a frame-stack machine with guaranteed tail calls, destructors and frame reuse). None of them treats whether a function may unwind as a classification made by a crate."
+  ],
+  "design_question": "What can be guaranteed when one call chain mixes functions compiled by backends with different landing-pad capabilities?",
+  "lean_names": [
+   "Toy.UnwindCap.SameShape",
+   "Toy.UnwindCap.Shielded",
+   "Toy.UnwindCap.Stmt.unpadded",
+   "Toy.UnwindCap.TerminateShielded",
+   "Toy.UnwindCap.UFrame",
+   "Toy.UnwindCap.UFrame.effAct",
+   "Toy.UnwindCap.compUnwind",
+   "Toy.UnwindCap.specUnwind"
+  ]
+ },
+ {
+  "id": "R15",
+  "lean": "Toy.UnwindCap.robust_of_terminateShielded",
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "definitional",
+  "plain_claim": "Corollary of R14. For every call chain `c` with `TerminateShielded c` (scanning from the innermost frame, every frame is compiled with `pads = full` up to and including the first frame with a terminate pad, or up to the end of the chain if there is none), the compiled and specified unwinds agree on every chain `c'` with `SameShape c c'`.",
+  "hypotheses": [
+   {
+    "name": "h : TerminateShielded c",
+    "purpose": "otherwise an unwind can reach a `pads = none` frame with an obligation; sufficient, and not necessary for the conclusion (`shielded_not_terminateShielded`)",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.robust_fails_without_terminateShielded",
+    "witness_class": "the 1-frame chain `[⟨none, cleanup [1]⟩]`"
+   }
+  ],
+  "nonvacuity_witness": "[(full, none), (full, terminate), (none, none)].",
+  "nonvacuity_witness_lean": "Toy.UnwindCap.robust_of_terminateShielded_hypotheses_hold",
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy chain model; they neither establish nor refute the corresponding claims about any real compiler backend or unwinder. Backend capabilities are toy parameters; no capability or defect of any real backend is asserted.",
+   "A `pads = none` function or frame is assumed to be unwindable: an unwind that reaches it without a landing pad passes through to its caller (`Stmt.unpadded`, `UFrame.effAct`). This models a backend that emits frame-unwind information but no landing pads. Code that cannot be unwound through at all (compare the Reference's `src/panic.md:124-128` on code compiled with `-fno-exceptions`) is not modelled, and nothing here applies to it.",
+   "Abort shielding is sufficient, not necessary: there is a chain shielded by a catch pad that is robust but not `TerminateShielded` (`shielded_not_terminateShielded`).",
+   "`TerminateShielded` holds for a chain without `pads = none` frames even if it has no terminate pad (for example `[⟨full, catchPad⟩]`).",
+   "In the toy semantics `catchPad` stops every unwind, including unwinds started by foreign code and unwinds inside `abort`-strategy crates. In documented Rust, catching a foreign unwind with `std::panic::catch_unwind` either aborts or returns `Err`, and which one is unspecified (Reference `src/panic.md:130-134`); and RFC 1513 (lines 108-111) describes the `abort` strategy as using `call` instead of `invoke` everywhere, so code compiled with that strategy has no landing pad at which a catch could take effect (derived (modeling bridge)). The toy results about `catchPad` neither establish nor refute the corresponding claims about `std::panic::catch_unwind`."
+  ],
+  "prior_art": [
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)",
+   "D. Abrahams, R. Sharoni, D. Gregor, \"Allowing Move Constructors to Throw (Rev. 1)\", ISO/IEC JTC1/SC22/WG21 N3050, 2010-03-12 (open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3050.html): proposes the C++ `noexcept` specification together with wording changes to `[except.spec]` and `[except.terminate]` (`std::terminate`); the C++ analogue of enforcing a non-unwinding declaration by termination. No mechanized semantics."
+  ],
+  "design_question": "What can be guaranteed when one call chain mixes functions compiled by backends with different landing-pad capabilities?",
+  "lean_names": [
+   "Toy.UnwindCap.SameShape",
+   "Toy.UnwindCap.Stmt.unpadded",
+   "Toy.UnwindCap.TerminateShielded",
+   "Toy.UnwindCap.UFrame",
+   "Toy.UnwindCap.UFrame.effAct",
+   "Toy.UnwindCap.compUnwind",
+   "Toy.UnwindCap.shielded_not_terminateShielded",
+   "Toy.UnwindCap.specUnwind"
+  ]
+ },
+ {
+  "id": "R16",
+  "lean": "Toy.UnwindCap.withPads_exec_iff_of_padsNone_nonunwinding_of_enforcedAt_of_siteAgreementAt",
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "definitional",
+  "plain_claim": "For every precedence function `cu`, toy program `p` and backend assignment `pads` (functions compiled with `pads = none` lose every landing pad, giving `p.withPads pads`): if every non-foreign function `g < p.fns.length` with `pads g = none` (reachable or not) is classified as non-unwinding by its own crate, and the compiled program `p.withPads pads` satisfies `EnforcedAt cu (p.withPads pads) g` (the per-function condition of `Enforced` in R1: if `g` is non-foreign and classified as non-unwinding by its own crate, then every call in its compiled body to a callee that this crate classifies as possibly unwinding carries a stopping pad, and, when the panic handler is `unwind`, every panic point in that body carries a stopping pad) and `SiteAgreementAt cu (p.withPads pads) g` (the per-function condition of `SiteAgreement` in R1) at every function index `g` with `pads g = none` (reachable or not), then every function has exactly the same finite runs produced by `runFn` (traces and outcomes) in `p.withPads pads` as in `p`. It is derived from R17.",
+  "hypotheses": [
+   {
+    "name": "hnone : ∀ g, g < p.fns.length → pads g = .none → (p.fn g).info.foreign = false → p.selfMay cu g = false",
+    "purpose": "there is a possibly-unwinding `pads = none` function that is unwound through and loses a cleanup pad",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.withPads_fails_without_padsNoneNonUnwinding",
+    "witness_class": "a 1-crate, 2-function program whose `pads = none` function is a possibly-unwinding Rust function (`progPadsMayUnwind`)"
+   },
+   {
+    "name": "henf : ∀ g, pads g = .none → EnforcedAt cu (p.withPads pads) g",
+    "purpose": "enforcement after pads are removed; tight against the weakening to the source program (the counterexample satisfies `Enforced cu p` program-wide)",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.withPads_fails_without_enforcedCompiled",
+    "witness_class": "a 1-crate, 2-function program whose `pads = none` function calls a panicking function through a terminate pad (`progPadsTerminate`)"
+   },
+   {
+    "name": "hsa : ∀ g, pads g = .none → SiteAgreementAt cu (p.withPads pads) g",
+    "purpose": "agreement after pads are removed; tight against the weakening to the source program (the counterexample satisfies `SiteAgreement cu p` program-wide)",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.withPads_fails_without_siteAgreementCompiled",
+    "witness_class": "a 2-crate, 2-function mixed-strategy program (`progPadsAgree`)"
+   }
+  ],
+  "nonvacuity_witness": "progPadsNonvac: a pads = none extern \"C\" function calls a pads = full extern \"C\" function, which calls a panicking Rust function through a terminate pad; both programs abort. progPadsFullUnenforced: the hypotheses hold although the compiled program violates Enforced and SiteAgreement at pads = full functions.",
+  "nonvacuity_witness_lean": [
+   "Toy.UnwindCap.withPads_hypotheses_hold_progPadsNonvac",
+   "Toy.UnwindCap.withPads_hypotheses_hold_progPadsFullUnenforced"
+  ],
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "`Exec` collects the finite runs produced by the fuel-indexed evaluator `runFn`; diverging executions are not represented, and nothing is claimed about them.",
+   "Function bodies are straight-line statement lists: there are no branches or loops inside a body (recursion through calls is allowed).",
+   "A `pads = none` function or frame is assumed to be unwindable: an unwind that reaches it without a landing pad passes through to its caller (`Stmt.unpadded`, `UFrame.effAct`). This models a backend that emits frame-unwind information but no landing pads. Code that cannot be unwound through at all (compare the Reference's `src/panic.md:124-128` on code compiled with `-fno-exceptions`) is not modelled, and nothing here applies to it.",
+   "Out-of-range function indices `f ≥ p.fns.length` denote `FnDef.dummy` (an empty non-foreign Rust function in crate 0), and out-of-range crate indices denote `CrateCfg.dflt` (strategy and panic-in-drop `unwind`); no theorem here checks index bounds separately.",
+   "`henf` and `hsa` constrain the function indices `g` with `pads g = none`; `pads = full` functions need not satisfy `EnforcedAt` or `SiteAgreementAt` (`withPads_hypotheses_hold_progPadsFullUnenforced`).",
+   "Equality of runs does not by itself exclude `ub`; with `Enforced cu (p.withPads pads)`, `ForeignCovered cu p` and `SiteAgreement cu (p.withPads pads)` program-wide, R1 applied to `p.withPads pads` does.",
+   "`hnone` excludes `pads = none` functions classified as possibly unwinding even when they have no landing-pad obligation; R17 covers such functions (`withPads_local_hypotheses_hold_progPadsPlainUnwindThrough`).",
+   "Under the `unwind` handler a `pads = none` function that satisfies the hypotheses has no panic points in the compiled program, and every callee it calls is classified as non-unwinding by the callee's own crate; abort enforcement then sits in `pads = full` functions below it."
+  ],
+  "prior_art": [
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)",
+   "rust-lang/rust@26bfbf28f5f79dff333ce5a232f131b496ec9cfe compiler/rustc_middle/src/ty/layout.rs:1225-1330 (`fn_can_unwind`: doc comment 1225-1264, ordered rules 1267-1330; excerpts quoted verbatim in REPORT.md)",
+   "D. Abrahams, R. Sharoni, D. Gregor, \"Allowing Move Constructors to Throw (Rev. 1)\", ISO/IEC JTC1/SC22/WG21 N3050, 2010-03-12 (open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3050.html): proposes the C++ `noexcept` specification together with wording changes to `[except.spec]` and `[except.terminate]` (`std::terminate`); the C++ analogue of enforcing a non-unwinding declaration by termination. No mechanized semantics.",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, \"Reliable and fast DWARF-based stack unwinding\", PACMPL 3(OOPSLA):146, 2019, doi:10.1145/3360572: validation and synthesis of DWARF `.eh_frame` unwind tables, the frame-unwind information that the `pads = none` modelling assumption presupposes.",
+   "Related reports of the same corpus (Lean formalizations), cited and not repeated (descriptions checked against their REPORT.md): `drop-flag-elaboration-partial-moves-and-unwind-cleanup-exactly-once-destruction` (drop elaboration with drop flags, cleanup edges and the double-panic rule), `panic-safety-unwinding-through-broken-invariants-leak-amplification-and-safe-forget` (panic-safety obligations of unsafe collection code under unwinding), `call-site-inlining-slot-renaming-cleanup-splicing-capability-guards-and-caller-locations` (call-site inlining in a MIR-like language, including unwind actions and cleanup), `cfg-dwarf-cfi-state-stack-and-lsda-landing-pad-unwinding-soundness` (DWARF-style call-frame information and LSDA-style call-site tables over a given frame list), `explicit-tail-calls-frame-reuse-pre-jump-drop-order-stack-borrow-rejection-and-inlining` (a frame-stack machine with guaranteed tail calls, destructors and frame reuse). None of them treats whether a function may unwind as a classification made by a crate."
+  ],
+  "design_question": "What can be guaranteed when one call chain mixes functions compiled by backends with different landing-pad capabilities?",
+  "lean_names": [
+   "Toy.UnwindCap.CrateCfg.dflt",
+   "Toy.UnwindCap.Enforced",
+   "Toy.UnwindCap.EnforcedAt",
+   "Toy.UnwindCap.Exec",
+   "Toy.UnwindCap.FnDef.dummy",
+   "Toy.UnwindCap.ForeignCovered",
+   "Toy.UnwindCap.Pads",
+   "Toy.UnwindCap.Prec",
+   "Toy.UnwindCap.Prog",
+   "Toy.UnwindCap.Prog.withPads",
+   "Toy.UnwindCap.SiteAgreement",
+   "Toy.UnwindCap.SiteAgreementAt",
+   "Toy.UnwindCap.Stmt.unpadded",
+   "Toy.UnwindCap.UFrame.effAct",
+   "Toy.UnwindCap.progPadsAgree",
+   "Toy.UnwindCap.progPadsFullUnenforced",
+   "Toy.UnwindCap.progPadsMayUnwind",
+   "Toy.UnwindCap.progPadsNonvac",
+   "Toy.UnwindCap.progPadsTerminate",
+   "Toy.UnwindCap.runFn",
+   "Toy.UnwindCap.withPads_hypotheses_hold_progPadsFullUnenforced",
+   "Toy.UnwindCap.withPads_local_hypotheses_hold_progPadsPlainUnwindThrough"
+  ]
+ },
+ {
+  "id": "R17",
+  "lean": "Toy.UnwindCap.withPads_exec_iff_of_padsNone_obligationFreeRaises_of_obligationCalleesNonUnwinding",
+  "kind": "theorem",
+  "tier": "T1",
+  "depth": "shallow",
+  "plain_claim": "For every precedence function `cu`, toy program `p` and backend assignment `pads`: if, in every non-foreign function `g < p.fns.length` with `pads g = none` (reachable or not), every panic point has an action without an obligation (`Action.obligation`: `none` or `cleanup []`) when the panic handler is `unwind` (`hraise`), and every call whose action has an obligation (a non-empty cleanup pad, a catch pad or a terminate pad) calls a callee `f` classified as non-unwinding by `f`'s own crate (`hcall`), then every function has exactly the same finite runs produced by `runFn` (traces and outcomes) in `p.withPads pads` as in `p`. Calls without an obligation are unconstrained, so an unwind may pass through a `pads = none` function that has no landing-pad obligation.",
+  "hypotheses": [
+   {
+    "name": "hraise : ∀ g, g < p.fns.length → pads g = .none → (p.fn g).info.foreign = false → p.handler = .unwind → ∀ a, Stmt.raise a ∈ (p.fn g).body → a.obligation = false",
+    "purpose": "there is a program in which a panic point of a `pads = none` function loses its cleanup pad and a drop event disappears",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.withPads_local_fails_without_obligationFreeRaises",
+    "witness_class": "a 1-crate, 1-function program whose `pads = none` function has a panic point with a cleanup pad dropping one local (`progPadsRaiseCleanup`)"
+   },
+   {
+    "name": "hcall : ∀ g, g < p.fns.length → pads g = .none → (p.fn g).info.foreign = false → ∀ f a, Stmt.call f a ∈ (p.fn g).body → a.obligation = true → p.selfMay cu f = false",
+    "purpose": "there is a program in which an unwind from a callee reaches a call site of a `pads = none` function whose cleanup pad is lost",
+    "tightness": "tight",
+    "counterexample": "Toy.UnwindCap.withPads_local_fails_without_obligationCalleesNonUnwinding",
+    "witness_class": "a 1-crate, 2-function program whose `pads = none` function calls a panicking function through a cleanup pad dropping one local (`progPadsMayUnwind`)"
+   }
+  ],
+  "nonvacuity_witness": "progPadsNonvac (the pads = none function calls a non-unwinding extern \"C\" function through a cleanup pad); progAbortPadsRaise (a pads = none function with a panic point under the abort handler); progPadsPlainUnwindThrough (a possibly-unwinding pads = none Rust function calls a panicking function with a plain call, and the unwind passes through it); progPadsRaisePlain (a pads = none function whose panic point has no landing pad, under the unwind handler).",
+  "nonvacuity_witness_lean": [
+   "Toy.UnwindCap.withPads_local_hypotheses_hold_progPadsNonvac",
+   "Toy.UnwindCap.withPads_local_hypotheses_hold_progAbortPadsRaise",
+   "Toy.UnwindCap.withPads_local_hypotheses_hold_progPadsPlainUnwindThrough",
+   "Toy.UnwindCap.withPads_local_hypotheses_hold_progPadsRaisePlain"
+  ],
+  "non_claims": [
+   "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, LLVM, the Rust Reference's rules or any Rust toolchain.",
+   "`Exec` collects the finite runs produced by the fuel-indexed evaluator `runFn`; diverging executions are not represented, and nothing is claimed about them.",
+   "Function bodies are straight-line statement lists: there are no branches or loops inside a body (recursion through calls is allowed).",
+   "A `pads = none` function or frame is assumed to be unwindable: an unwind that reaches it without a landing pad passes through to its caller (`Stmt.unpadded`, `UFrame.effAct`). This models a backend that emits frame-unwind information but no landing pads. Code that cannot be unwound through at all (compare the Reference's `src/panic.md:124-128` on code compiled with `-fno-exceptions`) is not modelled, and nothing here applies to it.",
+   "Out-of-range function indices `f ≥ p.fns.length` denote `FnDef.dummy` (an empty non-foreign Rust function in crate 0), and out-of-range crate indices denote `CrateCfg.dflt` (strategy and panic-in-drop `unwind`); no theorem here checks index bounds separately.",
+   "The hypotheses quantify over every `pads = none` function index below `p.fns.length` and every statement of its body, reachable or not; a weakening to reachable statements is not established.",
+   "The two conditions are sufficient for equality of runs; they are not claimed to characterize it. Each is tight in the stated witness class, and no weaker sufficient condition is examined.",
+   "`hcall` concerns the callee's own classification (`selfMay`), not behaviour: a callee classified as non-unwinding by its own crate never unwinds out of itself in the toy (`runFn_unwind_selfMay`), possibly producing `ub` instead; equality of runs includes such `ub` runs."
+  ],
+  "prior_art": [
+   "rust-lang/rfcs@f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4 text/2945-c-unwind-abi.md:205-209, 230-235 and 366-375 (RFC 2945, the \"C-unwind\" ABI, merged; quoted verbatim in REPORT.md)",
+   "T. Bastian, S. Kell, F. Zappa Nardelli, \"Reliable and fast DWARF-based stack unwinding\", PACMPL 3(OOPSLA):146, 2019, doi:10.1145/3360572: validation and synthesis of DWARF `.eh_frame` unwind tables, the frame-unwind information that the `pads = none` modelling assumption presupposes.",
+   "Related reports of the same corpus (Lean formalizations), cited and not repeated (descriptions checked against their REPORT.md): `drop-flag-elaboration-partial-moves-and-unwind-cleanup-exactly-once-destruction` (drop elaboration with drop flags, cleanup edges and the double-panic rule), `panic-safety-unwinding-through-broken-invariants-leak-amplification-and-safe-forget` (panic-safety obligations of unsafe collection code under unwinding), `call-site-inlining-slot-renaming-cleanup-splicing-capability-guards-and-caller-locations` (call-site inlining in a MIR-like language, including unwind actions and cleanup), `cfg-dwarf-cfi-state-stack-and-lsda-landing-pad-unwinding-soundness` (DWARF-style call-frame information and LSDA-style call-site tables over a given frame list), `explicit-tail-calls-frame-reuse-pre-jump-drop-order-stack-borrow-rejection-and-inlining` (a frame-stack machine with guaranteed tail calls, destructors and frame reuse). None of them treats whether a function may unwind as a classification made by a crate."
+  ],
+  "design_question": "What can be guaranteed when one call chain mixes functions compiled by backends with different landing-pad capabilities?",
+  "lean_names": [
+   "Toy.UnwindCap.Action.obligation",
+   "Toy.UnwindCap.CrateCfg.dflt",
+   "Toy.UnwindCap.Exec",
+   "Toy.UnwindCap.FnDef.dummy",
+   "Toy.UnwindCap.Pads",
+   "Toy.UnwindCap.Prec",
+   "Toy.UnwindCap.Prog",
+   "Toy.UnwindCap.Prog.withPads",
+   "Toy.UnwindCap.Stmt.unpadded",
+   "Toy.UnwindCap.UFrame.effAct",
+   "Toy.UnwindCap.progAbortPadsRaise",
+   "Toy.UnwindCap.progPadsMayUnwind",
+   "Toy.UnwindCap.progPadsNonvac",
+   "Toy.UnwindCap.progPadsPlainUnwindThrough",
+   "Toy.UnwindCap.progPadsRaiseCleanup",
+   "Toy.UnwindCap.progPadsRaisePlain",
+   "Toy.UnwindCap.runFn",
+   "Toy.UnwindCap.runFn_unwind_selfMay"
+  ]
+ }
+]

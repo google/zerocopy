@@ -109286,6 +109286,92 @@
         "verification/untrusted-dependencies"
       ]
     },
+    "unwind-capability-lattice-nounwind-soundness-terminate-pads-and-panic-strategy-mixing": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc (fn_can_unwind in compiler/rustc_middle/src/ty/layout.rs)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f17e8623ee2e2854570dcdb936a9f4ab08c0fcd4"
+          },
+          "name": "Rust RFCs 2945 (\"C-unwind\" ABI) and 1513 (less unwinding)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference (panic.md, linkage.md)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "a4bf6cd7cfb1a1421ba92bca9d017b49936c55e4",
+            "version": "llvmorg-19.1.0"
+          },
+          "name": "LLVM Language Reference Manual (nounwind)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2103621.2103718"
+          },
+          "name": "A Mechanized Semantics for C++ Object Construction and Destruction, with Applications to Resource Management"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1146809.1146811"
+          },
+          "name": "A Machine-Checked Model for a Java-Like Language, Virtual Machine, and Compiler"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3360572"
+          },
+          "name": "Reliable and Fast DWARF-Based Stack Unwinding"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1498926.1498930"
+          },
+          "name": "Operational Semantics for Multi-Language Programs"
+        },
+        {
+          "identity": {
+            "document": "ISO/IEC JTC1/SC22/WG21 N3050",
+            "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3050.html"
+          },
+          "name": "Allowing Move Constructors to Throw (Rev. 1), WG21 N3050"
+        }
+      ],
+      "topics": [
+        "verification",
+        "verification/formalized-results",
+        "lean",
+        "lean/mechanization",
+        "compilers",
+        "compilers/unwinding",
+        "compilers/nounwind",
+        "compilers/exception-handling",
+        "rust/unwinding",
+        "rust/panic-strategy",
+        "ffi/unwinding"
+      ]
+    },
     "unwind-preserving-pic-safe-machine-outliner-all-tier1-targets": {
       "observed_at": "2026-11-14",
       "subjects": [

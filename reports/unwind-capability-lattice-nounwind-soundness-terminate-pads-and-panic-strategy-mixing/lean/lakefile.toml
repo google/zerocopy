@@ -1,0 +1,5 @@
+name = "toy_unwind_cap"
+defaultTargets = ["ToyUnwindCap"]
+
+[[lean_lib]]
+name = "ToyUnwindCap"
