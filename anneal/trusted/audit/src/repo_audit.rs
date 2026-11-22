@@ -183,22 +183,30 @@ pub enum InspectorRequest {
 }
 
 /// Scan a Lean directory tree (`trusted/lean` with `"Trusted"` or `theory`
-/// with `"Anneal"`), rejecting symlinks, non-`.lean` files, and compiled
-/// artifacts in the source tree and returning the map from dot-separated module
-/// name to `.lean` path.
+/// with `"Anneal"`), rejecting symlinks, non-`.lean` files (except the
+/// explicit manifest files allowed for that tree), and compiled artifacts in
+/// the source tree and returning the map from dot-separated module name to
+/// `.lean` path.
 pub fn scan_lean_tree(
     root: &Path,
     umbrella_prefix: &str,
 ) -> Result<BTreeMap<String, PathBuf>, Failure> {
-    scan_lean_tree_opts(root, umbrella_prefix, true)
+    let allowed_non_lean: &[&str] = match umbrella_prefix {
+        "Trusted" => &["lean-toolchain", "foundation-lock.json"],
+        "Anneal" => &["bundle-manifest.json"],
+        _ => &[],
+    };
+    scan_lean_tree_opts(root, umbrella_prefix, true, allowed_non_lean)
 }
 
 /// Scan a Lean directory tree (`root`) under `umbrella_prefix`, optionally
-/// requiring a root `<umbrella_prefix>.lean` umbrella file.
+/// requiring a root `<umbrella_prefix>.lean` umbrella file and permitting only
+/// the relative paths listed in `allowed_non_lean` as non-`.lean` regular files.
 fn scan_lean_tree_opts(
     root: &Path,
     umbrella_prefix: &str,
     require_umbrella: bool,
+    allowed_non_lean: &[&str],
 ) -> Result<BTreeMap<String, PathBuf>, Failure> {
     let meta = fs::symlink_metadata(root).map_err(|_| {
         Failure::new(
@@ -260,10 +268,7 @@ fn scan_lean_tree_opts(
             if modules.insert(module.clone(), path).is_some() {
                 return Err(Failure::new(1, "snapshot", format!("duplicate module: {module}")));
             }
-        } else if !(require_umbrella
-            && umbrella_prefix == "Trusted"
-            && (relative == "lean-toolchain" || relative == "foundation-lock.json"))
-        {
+        } else if !allowed_non_lean.contains(&relative.as_str()) {
             return Err(Failure::new(
                 1,
                 "snapshot",
@@ -649,8 +654,9 @@ impl Checker {
         umbrella_prefix: &str,
         stage_subdir: &str,
         require_umbrella: bool,
+        allowed_non_lean: &[&str],
     ) -> Result<BTreeMap<String, PathBuf>, Failure> {
-        scan_lean_tree_opts(root, umbrella_prefix, require_umbrella)?
+        scan_lean_tree_opts(root, umbrella_prefix, require_umbrella, allowed_non_lean)?
             .into_iter()
             .map(|(mod_name, raw_path)| {
                 let staged_path = self
@@ -782,9 +788,21 @@ impl Checker {
         // (`cli_environment.rs`).
         let source = root.join("trusted/lean");
         let theory_dir = root.join("theory");
-        self.modules = self.scan_and_stage_tree_opts(&source, "Trusted", "src/trusted", true)?;
+        self.modules = self.scan_and_stage_tree_opts(
+            &source,
+            "Trusted",
+            "src/trusted",
+            true,
+            &["lean-toolchain", "foundation-lock.json"],
+        )?;
         self.theory_modules = if fs::symlink_metadata(&theory_dir).is_ok() {
-            self.scan_and_stage_tree_opts(&theory_dir, "Anneal", "src/theory", false)?
+            self.scan_and_stage_tree_opts(
+                &theory_dir,
+                "Anneal",
+                "src/theory",
+                false,
+                &["bundle-manifest.json"],
+            )?
         } else {
             BTreeMap::new()
         };
@@ -922,8 +940,13 @@ impl Checker {
         let corr_trusted_dir = root.join("trusted/correspondence");
         let corr_theory_dir = root.join("correspondence");
 
-        let corr_trusted_modules =
-            self.scan_and_stage_tree_opts(&corr_trusted_dir, "Trusted", "src/corr-trusted", false)?;
+        let corr_trusted_modules = self.scan_and_stage_tree_opts(
+            &corr_trusted_dir,
+            "Trusted",
+            "src/corr-trusted",
+            false,
+            &[],
+        )?;
         if !corr_trusted_modules.contains_key("Trusted.Correspondence") {
             return Err(Failure::policy(
                 "snapshot",
@@ -931,8 +954,13 @@ impl Checker {
             ));
         }
 
-        let corr_theory_modules =
-            self.scan_and_stage_tree_opts(&corr_theory_dir, "Anneal", "src/corr-theory", false)?;
+        let corr_theory_modules = self.scan_and_stage_tree_opts(
+            &corr_theory_dir,
+            "Anneal",
+            "src/corr-theory",
+            false,
+            &[],
+        )?;
         if !corr_theory_modules.contains_key("Anneal.MirCorrespondenceProof") {
             return Err(Failure::policy(
                 "snapshot",

@@ -64,11 +64,10 @@ and remainder require unchecked intrinsics that do not emit runtime `Assert`
 terminators), and integer/character casts (for example,
 `ci/verify_starnix_e2e.py` checks Starnix's `ebpf_core` endianness conversion
 with symbolic MIR helpers in `Anneal.MirWp`). Proof modules may import bundled
-3-axiom `Anneal.*` proof libraries (`Anneal.MirWp`, `Anneal.LoopInv`,
-`Anneal.LinearArith`, `Anneal.SpineForce`, `Anneal.PTree`,
-`Anneal.BitTrieLrat`, `Anneal.InitLemmas`, `Anneal.ClassicalEm`,
-`Anneal.BitVec`, `Anneal.BitVecArith`, `Anneal.NatBitwise`, `Anneal.LeBytes`,
-and `Anneal.ListChunks`), compiled and audited on demand when imported;
+3-axiom `Anneal.*` proof libraries (such as `Anneal.MirWp`, `Anneal.LoopInv`,
+and `Anneal.BitVec`; see
+[`theory/bundle-manifest.json`](../theory/bundle-manifest.json) for the
+canonical manifest), compiled and audited on demand when imported;
 specification modules stay restricted to `Trusted.*`, `Init.*`/`Std.*`, and
 declared `specification` helpers. Calls (including `overflowing_*` methods),
 runtime `Assert` terminators (including ordinary Rust `/` and `%`), place

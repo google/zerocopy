@@ -79,11 +79,10 @@ returns zero in the captured MIR model.
 The example uses `execProg` to check a bounded execution of its captured body.
 `wellFormed_and_spec_of_wp` turns that check into safety, a postcondition, and
 termination in the model. Proof modules (not `specification` modules) may also
-import bundled 3-axiom `Anneal.*` proof libraries (`Anneal.MirWp`,
-`Anneal.LoopInv`, `Anneal.LinearArith`, `Anneal.SpineForce`, `Anneal.PTree`,
-`Anneal.BitTrieLrat`, `Anneal.InitLemmas`, `Anneal.ClassicalEm`,
-`Anneal.BitVec`, `Anneal.BitVecArith`, `Anneal.NatBitwise`, `Anneal.LeBytes`,
-and `Anneal.ListChunks`), compiled and audited on demand when imported. When
+import bundled 3-axiom `Anneal.*` proof libraries (such as `Anneal.MirWp`,
+`Anneal.LoopInv`, and `Anneal.BitVec`; see `theory/bundle-manifest.json` in the
+Anneal repository for the full bundled module list), compiled and audited on
+demand when imported. When
 adapting the example, run the request with `--artifacts <new-directory>`. In
 `capture/capture.json`, inspect `selected` for the body index and `program` for
 the MIR. Choose fuel to cover the executed MIR steps through the return. Use

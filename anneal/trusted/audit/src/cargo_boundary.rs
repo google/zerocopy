@@ -17,7 +17,10 @@ use std::path::{Component, Path};
 
 use serde::Deserialize;
 
-use cargo_anneal::bundle::{BundleError, render_bundled_resources, validate_bundle_destination};
+use cargo_anneal::bundle::{
+    BundleError, render_bundled_resources, render_bundled_theory, validate_bundle_destination,
+    validate_theory_bundle_destination,
+};
 use cargo_anneal::{Failure, is_clean_relative_path, is_sha256_hex, regular, sha256_file};
 
 use crate::miri_pin::verify_upstream_pin;
@@ -275,10 +278,13 @@ fn map_bundle_error(err: BundleError) -> Failure {
     }
 }
 
-/// Verify that `trusted/cargo-anneal/src/bundled_resources.rs` and every
-/// canonical source in [`cargo_anneal::bundle::BUNDLE_SOURCES`] and
+/// Verify that `trusted/cargo-anneal/src/bundled_resources.rs`,
+/// `trusted/cargo-anneal/src/bundled_theory.json`, `theory/bundle-manifest.json`,
+/// and every canonical source in [`cargo_anneal::bundle::TRUSTED_BUNDLE_SOURCES`],
+/// [`cargo_anneal::bundle::THEORY_BUNDLE_MANIFEST`], and
 /// [`cargo_anneal::bundle::PROVENANCE_SOURCES`] are regular files under
-/// regular directories and match [`render_bundled_resources`] byte-for-byte.
+/// regular directories and match [`render_bundled_resources`] and
+/// [`render_bundled_theory`] byte-for-byte.
 pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
     let phase = "bundle-manifest";
     let (destination, permissions) =
@@ -299,6 +305,28 @@ pub fn verify_bundled_resources(checkout: &Path) -> Result<(), Failure> {
             format!(
                 "{} differs from canonical bundled sources; run regenerate_bundle",
                 destination.display()
+            ),
+        ));
+    }
+
+    let (theory_destination, theory_permissions) =
+        validate_theory_bundle_destination(checkout).map_err(map_bundle_error)?;
+    if theory_permissions.is_none() {
+        return Err(Failure::policy(
+            phase,
+            format!("missing bundled_theory.json: {}", theory_destination.display()),
+        ));
+    }
+    let expected_theory = render_bundled_theory(checkout).map_err(map_bundle_error)?;
+    let actual_theory = fs::read(&theory_destination).map_err(|e| {
+        Failure::operational(phase, format!("cannot read {}: {e}", theory_destination.display()))
+    })?;
+    if actual_theory != expected_theory.as_bytes() {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "{} differs from canonical bundled theory sources; run regenerate_bundle",
+                theory_destination.display()
             ),
         ));
     }

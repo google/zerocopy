@@ -2366,13 +2366,18 @@ mod tests {
     }
 
     impl EmbeddedBundle {
-        /// Materialize `cargo-anneal`'s embedded bundle into `root` just as
-        /// `verify.rs` does, so `target::tests` runs without reaching outside
-        /// the package (including from an unpacked `cargo package` tarball).
+        /// Materialize `cargo-anneal`'s embedded trusted and theory bundles
+        /// into `root` just as `verify.rs` does, so `target::tests` runs
+        /// without reaching outside the package (including from an unpacked
+        /// `cargo package` tarball).
         fn materialize(root: &Path) -> Self {
             let mut model_modules = Vec::new();
             let mut theory_modules = Vec::new();
             for &(relative, text) in embedded::entries() {
+                assert!(
+                    !relative.starts_with("theory/"),
+                    "trusted bundle must not contain theory source: {relative}"
+                );
                 let path = root.join(relative);
                 fs::create_dir_all(path.parent().unwrap()).unwrap();
                 fs::write(&path, text.as_bytes()).unwrap();
@@ -2386,16 +2391,25 @@ mod tests {
                         expected_sha256: sha,
                         role: TargetRole::Model,
                     });
-                } else if let Some(rest) =
-                    relative.strip_prefix("theory/").and_then(|s| s.strip_suffix(".lean"))
-                {
-                    theory_modules.push(TargetModule {
-                        module: rest.replace('/', "."),
-                        source: path,
-                        expected_sha256: sha,
-                        role: TargetRole::Proof,
-                    });
                 }
+            }
+            let bundled_theory =
+                crate::bundle::embedded_theory_bundle().expect("embedded theory bundle");
+            for entry in bundled_theory.modules {
+                let path = root.join(&entry.path);
+                fs::create_dir_all(path.parent().unwrap()).unwrap();
+                fs::write(&path, entry.content.as_bytes()).unwrap();
+                let rest = entry
+                    .path
+                    .strip_prefix("theory/")
+                    .and_then(|s| s.strip_suffix(".lean"))
+                    .expect("validated theory bundle path");
+                theory_modules.push(TargetModule {
+                    module: rest.replace('/', "."),
+                    source: path,
+                    expected_sha256: entry.sha256,
+                    role: TargetRole::Proof,
+                });
             }
             Self { root: root.to_path_buf(), model_modules, theory_modules }
         }
@@ -2405,6 +2419,54 @@ mod tests {
                 req.modules.extend(self.model_modules.iter().cloned());
             }
             req.modules.extend(self.theory_modules.iter().cloned());
+        }
+
+        /// Assert that `sources`, `compiled_lib_dir`, and optional `export_dir`
+        /// retain every module in `expected_retained` and prune every other
+        /// bundled `Anneal.*` theory module (plus `extra_unimported`), without
+        /// hardcoding the global theory inventory in each test.
+        fn assert_exact_theory_retention(
+            &self,
+            sources: &BTreeSet<&str>,
+            compiled_lib_dir: &Path,
+            export_dir: Option<&Path>,
+            expected_retained: &[&str],
+            extra_unimported: &[&str],
+        ) {
+            let expected: BTreeSet<&str> = expected_retained.iter().copied().collect();
+            for module in &expected {
+                assert!(sources.contains(module), "missing {module} in {sources:?}");
+                let rel_olean = format!("{}.olean", module.replace('.', "/"));
+                assert!(
+                    compiled_lib_dir.join(&rel_olean).is_file(),
+                    "missing compiled {rel_olean}"
+                );
+                if let Some(dir) = export_dir {
+                    assert!(dir.join(&rel_olean).is_file(), "missing exported {rel_olean}");
+                }
+            }
+            for module in self
+                .theory_modules
+                .iter()
+                .map(|m| m.module.as_str())
+                .chain(extra_unimported.iter().copied())
+            {
+                if expected.contains(module) {
+                    continue;
+                }
+                assert!(
+                    !sources.contains(module),
+                    "unexpected unimported theory module {module} in {sources:?}"
+                );
+                let rel_olean = format!("{}.olean", module.replace('.', "/"));
+                assert!(
+                    !compiled_lib_dir.join(&rel_olean).exists(),
+                    "unexpected compiled {rel_olean}"
+                );
+                if let Some(dir) = export_dir {
+                    assert!(!dir.join(&rel_olean).exists(), "unexpected exported {rel_olean}");
+                }
+            }
         }
     }
 
@@ -2601,16 +2663,15 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(!sources_unimported.contains("Anneal.MirWp"), "{sources_unimported:?}");
-        assert!(!sources_unimported.contains("Anneal.MirWp.Core"), "{sources_unimported:?}");
-        assert!(!sources_unimported.contains("Anneal.Unused"), "{sources_unimported:?}");
-        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_unimported = base.join("export-unimported");
         assert!(checker.export_target_oleans(&export_unimported).unwrap());
-        assert!(!export_unimported.join("Anneal/MirWp.olean").exists());
-        assert!(!export_unimported.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources_unimported,
+            &checker.stage.join("lib"),
+            Some(&export_unimported),
+            &[],
+            &["Anneal.Unused"],
+        );
 
         // 2. When `Proof` imports `Anneal.MirWp`, `Anneal.MirWp` and its
         //    transitive submodules ARE compiled and verified within the
@@ -2673,20 +2734,6 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        for expected in [
-            "Anneal.MirWp",
-            "Anneal.MirWp.Core",
-            "Anneal.MirWp.Execution",
-            "Anneal.MirWp.Reflection",
-            "Anneal.MirWp.Scalars",
-            "Anneal.MirWp.Canaries",
-        ] {
-            assert!(
-                sources_with_mir_wp.contains(expected),
-                "missing {expected} in {sources_with_mir_wp:?}"
-            );
-        }
-        assert!(!sources_with_mir_wp.contains("Anneal.Unused"), "{sources_with_mir_wp:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> = report_with_mir_wp["axioms"]
@@ -2696,12 +2743,23 @@ mod tests {
             .map(|a| a.as_str().unwrap())
             .collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("lib/Anneal/MirWp.olean").is_file());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_with_mir_wp = base.join("export-with-mir-wp");
         assert!(checker.export_target_oleans(&export_with_mir_wp).unwrap());
-        assert!(export_with_mir_wp.join("Anneal/MirWp.olean").is_file());
-        assert!(!export_with_mir_wp.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources_with_mir_wp,
+            &checker.stage.join("lib"),
+            Some(&export_with_mir_wp),
+            &[
+                "Anneal.MirWp",
+                "Anneal.MirWp.Core",
+                "Anneal.MirWp.Execution",
+                "Anneal.MirWp.Reflection",
+                "Anneal.MirWp.Scalars",
+                "Anneal.MirWp.Canaries",
+                "Anneal.NatBitwise",
+            ],
+            &["Anneal.Unused"],
+        );
 
         // 3. Role isolation remains intact: `Specification -> Anneal.MirWp`
         //    is retained by BFS and rejected by `TargetRole::allows`.
@@ -2792,17 +2850,15 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(!sources_no_bv.contains("Anneal.NatBitwise"), "{sources_no_bv:?}");
-        assert!(!sources_no_bv.contains("Anneal.BitVec"), "{sources_no_bv:?}");
-        assert!(!sources_no_bv.contains("Anneal.Unused"), "{sources_no_bv:?}");
-        assert!(!checker.stage.join("lib/Anneal/NatBitwise.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitVec.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_no_bv = base.join("export-no-bv");
         assert!(checker.export_target_oleans(&export_no_bv).unwrap());
-        assert!(!export_no_bv.join("Anneal/NatBitwise.olean").exists());
-        assert!(!export_no_bv.join("Anneal/BitVec.olean").exists());
-        assert!(!export_no_bv.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources_no_bv,
+            &checker.stage.join("lib"),
+            Some(&export_no_bv),
+            &[],
+            &["Anneal.Unused"],
+        );
 
         // 2. When `Proof` imports `Anneal.BitVec`, it IS compiled and verified
         //    using `disjoint_or_injective`, `tnum_and_sound`, and
@@ -2873,9 +2929,6 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources_with_bv.contains("Anneal.NatBitwise"), "{sources_with_bv:?}");
-        assert!(sources_with_bv.contains("Anneal.BitVec"), "{sources_with_bv:?}");
-        assert!(!sources_with_bv.contains("Anneal.Unused"), "{sources_with_bv:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> = report_with_bv["axioms"]
@@ -2885,14 +2938,15 @@ mod tests {
             .map(|a| a.as_str().unwrap())
             .collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("lib/Anneal/NatBitwise.olean").is_file());
-        assert!(checker.stage.join("lib/Anneal/BitVec.olean").is_file());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_with_bv = base.join("export-with-bv");
         assert!(checker.export_target_oleans(&export_with_bv).unwrap());
-        assert!(export_with_bv.join("Anneal/NatBitwise.olean").is_file());
-        assert!(export_with_bv.join("Anneal/BitVec.olean").is_file());
-        assert!(!export_with_bv.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources_with_bv,
+            &checker.stage.join("lib"),
+            Some(&export_with_bv),
+            &["Anneal.NatBitwise", "Anneal.BitVec"],
+            &["Anneal.Unused"],
+        );
 
         // 3. Role isolation remains intact: `Specification -> Anneal.BitVec`
         //    is retained by BFS and rejected by `TargetRole::allows`.
@@ -3003,13 +3057,22 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources_both.contains("Anneal.NatBitwise"), "{sources_both:?}");
-        assert!(sources_both.contains("Anneal.MirWp"), "{sources_both:?}");
-        assert!(sources_both.contains("Anneal.BitVec"), "{sources_both:?}");
-        assert!(!sources_both.contains("Anneal.BitVecArith"), "{sources_both:?}");
-        assert!(!sources_both.contains("Anneal.LeBytes"), "{sources_both:?}");
-        assert!(!sources_both.contains("Anneal.ListChunks"), "{sources_both:?}");
-        assert!(!sources_both.contains("Anneal.Unused"), "{sources_both:?}");
+        bundle.assert_exact_theory_retention(
+            &sources_both,
+            &checker.stage.join("lib"),
+            None,
+            &[
+                "Anneal.NatBitwise",
+                "Anneal.BitVec",
+                "Anneal.MirWp",
+                "Anneal.MirWp.Core",
+                "Anneal.MirWp.Execution",
+                "Anneal.MirWp.Reflection",
+                "Anneal.MirWp.Scalars",
+                "Anneal.MirWp.Canaries",
+            ],
+            &["Anneal.Unused"],
+        );
     }
 
     #[test]
@@ -3095,12 +3158,13 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources.contains("Anneal.LeBytes"), "{sources:?}");
-        assert!(sources.contains("Anneal.ListChunks"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
-        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            None,
+            &["Anneal.LeBytes", "Anneal.ListChunks"],
+            &[],
+        );
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> =
@@ -3212,29 +3276,20 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources.contains("Anneal.NatBitwise"), "{sources:?}");
-        assert!(sources.contains("Anneal.BitVec"), "{sources:?}");
-        assert!(sources.contains("Anneal.BitVecArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
-        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("lib/Anneal/NatBitwise.olean").is_file());
-        assert!(checker.stage.join("lib/Anneal/BitVec.olean").is_file());
-        assert!(checker.stage.join("lib/Anneal/BitVecArith.olean").is_file());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-bv-arith");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
-        assert!(export_dir.join("Anneal/NatBitwise.olean").is_file());
-        assert!(export_dir.join("Anneal/BitVec.olean").is_file());
-        assert!(export_dir.join("Anneal/BitVecArith.olean").is_file());
-        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &["Anneal.NatBitwise", "Anneal.BitVec", "Anneal.BitVecArith"],
+            &["Anneal.Unused"],
+        );
     }
 
     #[test]
@@ -3363,51 +3418,29 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources.contains("Anneal.MirWp"), "{sources:?}");
-        assert!(sources.contains("Anneal.NatBitwise"), "{sources:?}");
-        assert!(sources.contains("Anneal.LoopInv"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
-        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
-        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
-        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ClassicalEm"), "{sources:?}");
-        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("lib/Anneal/MirWp.olean").is_file());
-        assert!(checker.stage.join("lib/Anneal/NatBitwise.olean").is_file());
-        assert!(checker.stage.join("lib/Anneal/LoopInv.olean").is_file());
-        assert!(!checker.stage.join("lib/Anneal/BitVec.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitVecArith.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-loopinv");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
-        assert!(export_dir.join("Anneal/MirWp.olean").is_file());
-        assert!(export_dir.join("Anneal/NatBitwise.olean").is_file());
-        assert!(export_dir.join("Anneal/LoopInv.olean").is_file());
-        assert!(!export_dir.join("Anneal/BitVec.olean").exists());
-        assert!(!export_dir.join("Anneal/BitVecArith.olean").exists());
-        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
-        assert!(!export_dir.join("Anneal/PTree.olean").exists());
-        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
-        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
-        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
-        assert!(!export_dir.join("Anneal/ClassicalEm.olean").exists());
-        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &[
+                "Anneal.LoopInv",
+                "Anneal.MirWp",
+                "Anneal.MirWp.Core",
+                "Anneal.MirWp.Execution",
+                "Anneal.MirWp.Reflection",
+                "Anneal.MirWp.Scalars",
+                "Anneal.MirWp.Canaries",
+                "Anneal.NatBitwise",
+            ],
+            &["Anneal.Unused"],
+        );
     }
 
     #[test]
@@ -3499,46 +3532,20 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources.contains("Anneal.SpineForce"), "{sources:?}");
-        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
-        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ClassicalEm"), "{sources:?}");
-        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("lib/Anneal/SpineForce.olean").is_file());
-        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitVec.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-spineforce");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
-        assert!(export_dir.join("Anneal/SpineForce.olean").is_file());
-        assert!(!export_dir.join("Anneal/PTree.olean").exists());
-        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
-        assert!(!export_dir.join("Anneal/ClassicalEm.olean").exists());
-        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
-        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
-        assert!(!export_dir.join("Anneal/BitVec.olean").exists());
-        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
-        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
-        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &["Anneal.SpineForce"],
+            &["Anneal.Unused"],
+        );
     }
 
     #[test]
@@ -3674,46 +3681,20 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources.contains("Anneal.PTree"), "{sources:?}");
-        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
-        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
-        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ClassicalEm"), "{sources:?}");
-        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("lib/Anneal/PTree.olean").is_file());
-        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitVec.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-ptree");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
-        assert!(export_dir.join("Anneal/PTree.olean").is_file());
-        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
-        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
-        assert!(!export_dir.join("Anneal/ClassicalEm.olean").exists());
-        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
-        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
-        assert!(!export_dir.join("Anneal/BitVec.olean").exists());
-        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
-        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
-        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &["Anneal.PTree"],
+            &["Anneal.Unused"],
+        );
     }
 
     #[test]
@@ -3840,47 +3821,20 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
-        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
-        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
-        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
-        assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
-        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ClassicalEm"), "{sources:?}");
-        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("lib/Anneal/BitTrieLrat.olean").is_file());
-        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitVec.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-bit-trie-lrat");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
-        assert!(export_dir.join("Anneal/BitTrieLrat.olean").is_file());
-        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
-        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
-        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
-        assert!(!export_dir.join("Anneal/PTree.olean").exists());
-        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
-        assert!(!export_dir.join("Anneal/BitVec.olean").exists());
-        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
-        assert!(!export_dir.join("Anneal/ClassicalEm.olean").exists());
-        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &["Anneal.BitTrieLrat"],
+            &["Anneal.Unused"],
+        );
     }
 
     #[test]
@@ -3969,45 +3923,20 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources.contains("Anneal.LinearArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
-        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
-        assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
-        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
-        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
-        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ClassicalEm"), "{sources:?}");
-        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("lib/Anneal/LinearArith.olean").is_file());
-        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-linear-arith");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
-        assert!(export_dir.join("Anneal/LinearArith.olean").is_file());
-        assert!(!export_dir.join("Anneal/PTree.olean").exists());
-        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
-        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
-        assert!(!export_dir.join("Anneal/ClassicalEm.olean").exists());
-        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
-        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
-        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
-        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &["Anneal.LinearArith"],
+            &["Anneal.Unused"],
+        );
     }
 
     #[test]
@@ -4145,45 +4074,20 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources.contains("Anneal.InitLemmas"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
-        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
-        assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
-        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
-        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ClassicalEm"), "{sources:?}");
-        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("lib/Anneal/InitLemmas.olean").is_file());
-        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/ClassicalEm.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-init-lemmas");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
-        assert!(export_dir.join("Anneal/InitLemmas.olean").is_file());
-        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
-        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
-        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
-        assert!(!export_dir.join("Anneal/PTree.olean").exists());
-        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
-        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
-        assert!(!export_dir.join("Anneal/ClassicalEm.olean").exists());
-        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &["Anneal.InitLemmas"],
+            &["Anneal.Unused"],
+        );
     }
 
     #[test]
@@ -4269,44 +4173,19 @@ mod tests {
             .iter()
             .map(|s| s["module"].as_str().unwrap())
             .collect();
-        assert!(sources.contains("Anneal.ClassicalEm"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
-        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
-        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
-        assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
-        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
-        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
-        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
-        assert!(!sources.contains("Anneal.BitTrieLrat"), "{sources:?}");
-        assert!(!sources.contains("Anneal.InitLemmas"), "{sources:?}");
-        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
         let used_axioms: BTreeSet<&str> =
             report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
-        assert!(checker.stage.join("lib/Anneal/ClassicalEm.olean").is_file());
-        assert!(!checker.stage.join("lib/Anneal/LoopInv.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/MirWp.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/SpineForce.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/PTree.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/LinearArith.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/BitTrieLrat.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/InitLemmas.olean").exists());
-        assert!(!checker.stage.join("lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-classical-em");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
-        assert!(export_dir.join("Anneal/ClassicalEm.olean").is_file());
-        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
-        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
-        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
-        assert!(!export_dir.join("Anneal/PTree.olean").exists());
-        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
-        assert!(!export_dir.join("Anneal/BitTrieLrat.olean").exists());
-        assert!(!export_dir.join("Anneal/InitLemmas.olean").exists());
-        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+        bundle.assert_exact_theory_retention(
+            &sources,
+            &checker.stage.join("lib"),
+            Some(&export_dir),
+            &["Anneal.ClassicalEm"],
+            &["Anneal.Unused"],
+        );
     }
 }

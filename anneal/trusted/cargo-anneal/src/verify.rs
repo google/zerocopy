@@ -1437,7 +1437,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
 
     let bundle = work.join("anneal");
     let mut modules = Vec::new();
-    let mut model_identity = Vec::new();
+    let mut model_identity: Vec<(String, String)> = Vec::new();
     // Installed theory remains proof code even though it ships with the
     // model. Only primitive trusted modules may determine the canonical
     // proposition; packaging must not promote proof helpers into its TCB.
@@ -1445,7 +1445,7 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         let path = bundle.join(relative);
         write(&path, text.as_bytes())?;
         let file_sha256 = sha256_bytes(text.as_bytes());
-        model_identity.push((*relative, file_sha256.clone()));
+        model_identity.push(((*relative).to_owned(), file_sha256.clone()));
         if relative.ends_with(".lean") && relative.starts_with("trusted/lean/") {
             modules.push(TargetModule {
                 module: relative
@@ -1456,17 +1456,25 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
                 expected_sha256: file_sha256,
                 role: TargetRole::Model,
             });
-        } else if relative.ends_with(".lean") && relative.starts_with("theory/") {
-            modules.push(TargetModule {
-                module: relative
-                    .trim_start_matches("theory/")
-                    .trim_end_matches(".lean")
-                    .replace('/', "."),
-                source: path,
-                expected_sha256: file_sha256,
-                role: TargetRole::Proof,
-            });
         }
+    }
+    let bundled_theory = cargo_anneal::bundle::embedded_theory_bundle().map_err(|e| {
+        error("tool_failed", "bundle", format!("corrupt embedded theory bundle: {e}"))
+    })?;
+    for entry in bundled_theory.modules {
+        let path = bundle.join(&entry.path);
+        write(&path, entry.content.as_bytes())?;
+        model_identity.push((entry.path.clone(), entry.sha256.clone()));
+        modules.push(TargetModule {
+            module: entry
+                .path
+                .trim_start_matches("theory/")
+                .trim_end_matches(".lean")
+                .replace('/', "."),
+            source: path,
+            expected_sha256: entry.sha256,
+            role: TargetRole::Proof,
+        });
     }
     let model_manifest_sha256 = sha256_bytes(&encoded(&model_identity)?);
     let captured_lean = capture_dir.join("Captured.lean");
