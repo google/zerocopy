@@ -25,6 +25,7 @@ import Anneal.MirTotal.StepCore
 import Anneal.Core.BlockTree
 import Anneal.Core.SepPCM
 import Anneal.Core.StageCut
+import Anneal.Core.SpecRealizability
 
 namespace Anneal.Core
 
@@ -2249,5 +2250,336 @@ theorem blockTree128_ofList_scaling_canary :
     (BlockTree.ofList (mkNatRangeFrom 128 0)).lookup 127 = some 127 ∧
     (BlockTree.ofList (mkNatRangeFrom 128 0)).lookup 128 = none :=
   ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl⟩
+
+/-! ## Canary Suite 6: Spec Realizability, Dichotomy, and Vacuity -/
+
+private theorem coreU32Val_inj {a b : Nat}
+    (ha : a < intWidthModulus .i32) (hb : b < intWidthModulus .i32)
+    (h : coreU32Val a = coreU32Val b) : a = b := by
+  unfold coreU32Val at h
+  rw [truncateBitsComp_of_lt ha, truncateBitsComp_of_lt hb] at h
+  injection h with hScalar
+  injection hScalar with _ _ hBv
+  have hNat :
+      (BitVec.ofNat 128 a).toNat = (BitVec.ofNat 128 b).toNat :=
+    congrArg BitVec.toNat hBv
+  rw [bitVec128_toNat_of_lt
+        (Nat.lt_of_lt_of_le ha (intWidthModulus_le_pow128 .i32)),
+      bitVec128_toNat_of_lt
+        (Nat.lt_of_lt_of_le hb (intWidthModulus_le_pow128 .i32))] at hNat
+  exact hNat
+
+private def canaryNonEmptyCallerMem : CallerMemory :=
+  ⟨[{ allocId := 1, alignLog2 := 0, mutability := .mut, bytes := [],
+      live := true }]⟩
+
+private theorem canaryCallerMem_empty_ne_nonEmpty :
+    (⟨[]⟩ : CallerMemory) ≠ canaryNonEmptyCallerMem := by
+  intro hEq
+  have hAllocs : ([] : List Allocation) = canaryNonEmptyCallerMem.allocations :=
+    congrArg CallerMemory.allocations hEq
+  cases hAllocs
+
+/-- `VacuityClass` wire-name taxonomy canary: verifies exhaustive enumeration,
+injectivity, and round-trip lookup across all 5 classes plus unknown wire
+names. -/
+theorem vacuityClass_wire_taxonomy_canary :
+    VacuityClass.all.length = 5 ∧
+    VacuityClass.ofCanonicalName? "DeadPrecondition" =
+      some .deadPrecondition ∧
+    VacuityClass.ofCanonicalName? "SpecViolation" = some .specViolation ∧
+    VacuityClass.ofCanonicalName? "TrivialPostcondition" =
+      some .trivialPostcondition ∧
+    VacuityClass.ofCanonicalName? "UnboundReturnOutput" =
+      some .unboundReturnOutput ∧
+    VacuityClass.ofCanonicalName? "SurvivedAllMutants" =
+      some .survivedAllMutants ∧
+    VacuityClass.ofCanonicalName? "NotAClass" = none ∧
+    (∀ c : VacuityClass, c ∈ VacuityClass.all) := by
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, VacuityClass.mem_all⟩
+
+private def twoPassAddQuery19_23 : Query :=
+  { args := [coreU32Val 19, coreU32Val 23] }
+
+private def twoPassAddSpecPre (q : Query) : Prop :=
+  q = twoPassAddQuery19_23
+
+private def twoPassAddSpecPost (_q : Query) (out : TerminalOut) : Prop :=
+  out = .returned ⟨coreU32Val 42, ⟨[]⟩⟩
+
+/-- Positive `SatisfiesPost` bridge canary on `bodyTwoPassAdd (19, 23) = 42`:
+derives `ContractRealizable`, `TerminalReturnDichotomy`,
+`PostconditionDichotomy`, a concrete `MutantKilledBySpec` witness, and
+`ContractDeterministic` directly from `Trusted.MirSemantics.SatisfiesPost`. -/
+theorem bodyTwoPassAdd_realizability_and_dichotomy_canary :
+    ContractRealizable twoPassAddSpecPre twoPassAddSpecPost ∧
+    TerminalReturnDichotomy twoPassAddSpecPre twoPassAddSpecPost ∧
+    PostconditionDichotomy twoPassAddSpecPre twoPassAddSpecPost ∧
+    MutantKilledBySpec twoPassAddSpecPre twoPassAddSpecPost
+      twoPassAddQuery19_23
+      (.returned ⟨coreU32Val 42, ⟨[]⟩⟩)
+      (.returned ⟨coreU32Val 0, ⟨[]⟩⟩) ∧
+    ContractDeterministic twoPassAddSpecPre twoPassAddSpecPost := by
+  have hCan := bodyTwoPassAdd_19_23_canary
+  have hSafe : wpProg (bodyProg bodyTwoPassAdd) 2
+      twoPassAddQuery19_23 (fun _ => True) :=
+    wpProg_of_execProg True.intro
+  have hWlp : wlpProg (bodyProg bodyTwoPassAdd) 2
+      twoPassAddQuery19_23 (twoPassAddSpecPost twoPassAddQuery19_23) := by
+    change wlpOutcomeState (bodyProg bodyTwoPassAdd)
+      (fun out => out = TerminalOut.returned ⟨coreU32Val 42, ⟨[]⟩⟩)
+      (fun _ => True) 2 _
+    intro c₁ hc₁
+    subst hc₁
+    intro c₂ hc₂
+    subst hc₂
+    rfl
+  have hWp : wpProg (bodyProg bodyTwoPassAdd) 2
+      twoPassAddQuery19_23 (twoPassAddSpecPost twoPassAddQuery19_23) :=
+    wpProg_of_wlp_and_safety hSafe hWlp
+  have hSat : SatisfiesPost (bodyProg bodyTwoPassAdd) twoPassAddQuery19_23
+      (twoPassAddSpecPost twoPassAddQuery19_23) :=
+    (wellFormed_and_spec_of_wp_base (bodyProg bodyTwoPassAdd)
+      twoPassAddQuery19_23 2 (twoPassAddSpecPost twoPassAddQuery19_23) hWp).1
+  have hBad :
+      ¬ twoPassAddSpecPost twoPassAddQuery19_23
+          (.returned ⟨coreU32Val 0, ⟨[]⟩⟩) := by
+    intro hEq
+    injection hEq with hOut
+    injection hOut with hRet _
+    have hNat : (0 : Nat) = 42 :=
+      coreU32Val_inj (by decide) (by decide) hRet
+    cases hNat
+  have hReal : ContractRealizable twoPassAddSpecPre twoPassAddSpecPost :=
+    satisfiesPost_contractRealizable rfl hCan.2 hSat
+  have hTermDich :
+      TerminalReturnDichotomy twoPassAddSpecPre twoPassAddSpecPost :=
+    satisfiesPost_terminalReturnDichotomy rfl hCan.2 hSat hBad
+  have hDich : PostconditionDichotomy twoPassAddSpecPre twoPassAddSpecPost :=
+    hTermDich.toDichotomy
+  have hNe :
+      (TerminalOut.returned ⟨coreU32Val 0, ⟨[]⟩⟩) ≠
+        (TerminalOut.returned ⟨coreU32Val 42, ⟨[]⟩⟩) := by
+    intro hEq
+    injection hEq with hOut
+    injection hOut with hRet _
+    have hNat : (0 : Nat) = 42 :=
+      coreU32Val_inj (by decide) (by decide) hRet
+    cases hNat
+  have hMut :
+      MutantKilledBySpec twoPassAddSpecPre twoPassAddSpecPost
+        twoPassAddQuery19_23
+        (.returned ⟨coreU32Val 42, ⟨[]⟩⟩)
+        (.returned ⟨coreU32Val 0, ⟨[]⟩⟩) :=
+    ⟨rfl, hNe, hSat.2 _ hCan.2, hBad⟩
+  have hDet : ContractDeterministic twoPassAddSpecPre twoPassAddSpecPost := by
+    unfold twoPassAddSpecPost
+    exact contractDeterministic_of_function twoPassAddSpecPre
+      (fun _ => TerminalOut.returned ⟨coreU32Val 42, ⟨[]⟩⟩)
+  exact ⟨hReal, hTermDich, hDich, hMut, hDet⟩
+
+private def statefulAllocBumpPre (_args : List Val) (mem : CallerMemory) :
+    Prop :=
+  mem = ⟨[]⟩
+
+private def statefulAllocBumpPost (_args : List Val) (mem : CallerMemory)
+    (ret : Val) (mem' : CallerMemory) : Prop :=
+  ret = coreU32Val mem.allocations.length ∧ mem' = canaryNonEmptyCallerMem
+
+/-- Positive stateful contract canary over `(List Val, CallerMemory)`: verifies
+`NonVacuousStatefulPre`, `StatefulRealizable`, `StatefulReturnDichotomy`,
+`StatefulDichotomy`, and `StatefulDeterministic`. -/
+theorem statefulAllocBump_realizability_canary :
+    NonVacuousStatefulPre statefulAllocBumpPre ∧
+    StatefulRealizable statefulAllocBumpPre statefulAllocBumpPost ∧
+    StatefulReturnDichotomy statefulAllocBumpPre statefulAllocBumpPost ∧
+    StatefulDichotomy statefulAllocBumpPre statefulAllocBumpPost ∧
+    StatefulDeterministic statefulAllocBumpPre statefulAllocBumpPost := by
+  have hPre : NonVacuousStatefulPre statefulAllocBumpPre := ⟨[], ⟨[]⟩, rfl⟩
+  have hReal : StatefulRealizable statefulAllocBumpPre statefulAllocBumpPost :=
+    ⟨([], ⟨[]⟩), rfl, (coreU32Val 0, canaryNonEmptyCallerMem), ⟨rfl, rfl⟩⟩
+  have hRetDich :
+      StatefulReturnDichotomy statefulAllocBumpPre statefulAllocBumpPost := by
+    refine ⟨[], ⟨[]⟩, canaryNonEmptyCallerMem, coreU32Val 0, coreU32Val 1,
+      rfl, ⟨rfl, rfl⟩, ?_⟩
+    intro hBad
+    have hNat : (1 : Nat) = 0 :=
+      coreU32Val_inj (by decide) (by decide) hBad.1
+    cases hNat
+  have hDich : StatefulDichotomy statefulAllocBumpPre statefulAllocBumpPost :=
+    hRetDich.toDichotomy
+  have hDet :
+      StatefulDeterministic statefulAllocBumpPre statefulAllocBumpPost := by
+    intro p q₁ q₂ hPreP h1 h2
+    let ⟨_, mem⟩ := p
+    let ⟨v₁, m₁⟩ := q₁
+    let ⟨v₂, m₂⟩ := q₂
+    have hv : v₁ = v₂ := h1.1.trans h2.1.symm
+    have hm : m₁ = m₂ := h1.2.trans h2.2.symm
+    cases hv
+    cases hm
+    rfl
+  exact ⟨hPre, hReal, hRetDich, hDich, hDet⟩
+
+private def deadNatPre (n : Nat) : Prop := 100 < n ∧ n < 50
+private def deadNatPost (n ret : Nat) : Prop := ret = n
+
+private def bodyUnsafeOverflowVacuous : Body :=
+  { identity := "anneal_core::unsafe_overflow_vacuous"
+    isUnsafe := true
+    locals := [coreU32Ty]
+    argumentCount := 0
+    basicBlocks := bodyUncheckedOverflowFault.basicBlocks }
+
+private def deadSafetyPre (args : List Val) : Prop := args.length = 99
+
+private def specViolPre (n : Nat) : Prop := n < 10
+private def specViolPost (n ret : Nat) : Prop := 10 ≤ n ∧ ret = 5
+private def contraNatPost (_n ret : Nat) : Prop := ret = 1 ∧ ret = 2
+
+private def trivReflNatPost (_n ret : Nat) : Prop := ret = ret
+private def trivDisjNatPost (_n ret : Nat) : Prop := ret = ret ∨ ret = 0
+
+private def inputOnlyNatPost (n _ret : Nat) : Prop := n < 100
+
+private def memOnlyStatefulPre (_args : List Val) (_mem : CallerMemory) :
+    Prop :=
+  True
+
+private def memOnlyStatefulPost (_args : List Val) (mem : CallerMemory)
+    (_ret : Val) (mem' : CallerMemory) : Prop :=
+  mem' = mem
+
+private def unwoundOnlyTrapPre (_q : Query) : Prop := True
+
+private def unwoundOnlyTrapPost (_q : Query) : TerminalOut → Prop
+  | .returned _ => True
+  | .unwound _ => False
+
+private def survivedNatPre (n : Nat) : Prop := n < 10
+private def survivedDisjNatPost (n ret : Nat) : Prop := n < 10 ∨ ret = 42
+private def survivedImpNatPost (n ret : Nat) : Prop := 10 ≤ n → ret = 42
+
+/-- Negative vacuity canary suite exercising all five `VacuityClass` failure
+modes (`DeadPrecondition`, `SpecViolation`, `TrivialPostcondition`,
+`UnboundReturnOutput`, `SurvivedAllMutants`), plus disjunctive-branch
+splitting. -/
+theorem specRealizability_negative_vacuity_and_composition_canary :
+    (¬ PreconditionSatisfiable deadNatPre) ∧
+    (¬ ContractRealizable deadNatPre deadNatPost) ∧
+    BodyVerified (bodyProg bodyUnsafeOverflowVacuous) 0
+      bodyUnsafeOverflowVacuous deadSafetyPre ∧
+    (¬ ContractRealizable specViolPre specViolPost) ∧
+    (¬ ContractRealizable (fun _ : Nat => True) contraNatPost) ∧
+    (¬ PostconditionDichotomy (fun _ : Nat => True) trivReflNatPost) ∧
+    (¬ PostconditionDichotomy (fun _ : Nat => True) trivDisjNatPost) ∧
+    (¬ PostconditionDichotomy (fun _ : Nat => True) inputOnlyNatPost) ∧
+    (¬ PostconditionDichotomy (fun _ : Nat => True)
+        (fun (_ : Nat) (r : Option Empty) => r = none)) ∧
+    (StatefulDichotomy memOnlyStatefulPre memOnlyStatefulPost ∧
+      ¬ StatefulReturnDichotomy memOnlyStatefulPre memOnlyStatefulPost) ∧
+    (PostconditionDichotomy unwoundOnlyTrapPre unwoundOnlyTrapPost ∧
+      ¬ TerminalReturnDichotomy unwoundOnlyTrapPre unwoundOnlyTrapPost) ∧
+    (PreconditionSatisfiable survivedNatPre ∧
+      ¬ PostconditionDichotomy survivedNatPre survivedDisjNatPost ∧
+      ¬ PostconditionDichotomy survivedNatPre survivedImpNatPost) ∧
+    PostconditionDichotomy (fun n => deadNatPre n ∨ n = 7) deadNatPost ∧
+    ¬ PostconditionDichotomy (fun n => deadNatPre n ∨ n = 7)
+        trivReflNatPost := by
+  have hDeadUnsat : ¬ PreconditionSatisfiable deadNatPre := by
+    intro h
+    let ⟨n, hGt, hLt⟩ := h
+    exact Nat.lt_asymm (Nat.lt_trans (by decide : 50 < 100) hGt) hLt
+  have hDeadReal : ¬ ContractRealizable deadNatPre deadNatPost :=
+    not_contractRealizable_of_unsat_pre hDeadUnsat
+  have hDeadSafetyUnsat :
+      ¬ NonVacuousBodySafetyPre bodyUnsafeOverflowVacuous deadSafetyPre := by
+    intro h
+    let ⟨args, hValid, hLen⟩ := h
+    dsimp only [ValidEntryArgs, bodyUnsafeOverflowVacuous] at hValid
+    cases args with
+    | nil => cases hLen
+    | cons _ _ => exact False.elim (Bool.noConfusion hValid)
+  have hBodyVacuous :
+      BodyVerified (bodyProg bodyUnsafeOverflowVacuous) 0
+        bodyUnsafeOverflowVacuous deadSafetyPre :=
+    bodyVerified_vacuous_safety_of_unsat rfl rfl rfl hDeadSafetyUnsat
+  have hSpecViol : ¬ ContractRealizable specViolPre specViolPost := by
+    intro h
+    let ⟨n, hLt, _, hGe, _⟩ := h
+    exact Nat.not_lt_of_le hGe hLt
+  have hContra : ¬ ContractRealizable (fun _ : Nat => True) contraNatPost := by
+    intro h
+    let ⟨_, _, _, h1, h2⟩ := h
+    rw [h1] at h2
+    cases h2
+  have hTrivRefl :
+      ¬ PostconditionDichotomy (fun _ : Nat => True) trivReflNatPost :=
+    not_postconditionDichotomy_of_trivial (fun _ _ _ => rfl)
+  have hTrivDisj :
+      ¬ PostconditionDichotomy (fun _ : Nat => True) trivDisjNatPost :=
+    not_postconditionDichotomy_of_trivial (fun _ _ _ => Or.inl rfl)
+  have hInputOnly :
+      ¬ PostconditionDichotomy (fun _ : Nat => True) inputOnlyNatPost :=
+    not_postconditionDichotomy_of_outputInsensitive (fun _ _ _ _ => Iff.rfl)
+  have hSubsing :
+      ¬ PostconditionDichotomy (fun _ : Nat => True)
+          (fun (_ : Nat) (r : Option Empty) => r = none) := by
+    have hSub : Subsingleton (Option Empty) :=
+      ⟨fun a b => by
+        cases a with
+        | none =>
+          cases b with
+          | none => rfl
+          | some e => exact nomatch e
+        | some e => exact nomatch e⟩
+    exact @not_postconditionDichotomy_of_subsingleton _ _ hSub _ _
+  have hMemOnlyDich :
+      StatefulDichotomy memOnlyStatefulPre memOnlyStatefulPost := by
+    refine ⟨([], ⟨[]⟩), True.intro,
+      ⟨(.unit, ⟨[]⟩), rfl⟩,
+      ⟨(.unit, canaryNonEmptyCallerMem), ?_⟩⟩
+    intro hEq
+    exact canaryCallerMem_empty_ne_nonEmpty hEq.symm
+  have hMemOnlyNotRet :
+      ¬ StatefulReturnDichotomy memOnlyStatefulPre memOnlyStatefulPost :=
+    not_statefulReturnDichotomy_of_returnInsensitive
+      (fun _ _ _ _ _ _ hOk => hOk)
+  have hUnwoundDich :
+      PostconditionDichotomy unwoundOnlyTrapPre unwoundOnlyTrapPost :=
+    ⟨{ args := [] }, True.intro,
+      ⟨.returned ⟨.unit, ⟨[]⟩⟩, True.intro⟩,
+      ⟨.unwound ⟨[]⟩, fun hF => hF⟩⟩
+  have hUnwoundNotRet :
+      ¬ TerminalReturnDichotomy unwoundOnlyTrapPre unwoundOnlyTrapPost :=
+    not_terminalReturnDichotomy_of_returnInsensitive
+      (fun _ _ _ _ _ _ => True.intro)
+  have hSurvPre : PreconditionSatisfiable survivedNatPre :=
+    ⟨0, Nat.zero_lt_succ 9⟩
+  have hSurvDisj :
+      ¬ PostconditionDichotomy survivedNatPre survivedDisjNatPost :=
+    not_postconditionDichotomy_of_trivial (fun _ _ hPre => Or.inl hPre)
+  have hSurvImp :
+      ¬ PostconditionDichotomy survivedNatPre survivedImpNatPost :=
+    not_postconditionDichotomy_of_trivial (fun _ _ hPre hGe =>
+      False.elim (Nat.not_lt_of_le hGe hPre))
+  have hBranchPos :
+      PostconditionDichotomy (fun n => deadNatPre n ∨ n = 7) deadNatPost := by
+    refine (postconditionDichotomy_or_pre_iff (pre₁ := deadNatPre)
+      (pre₂ := fun n => n = 7) (post := deadNatPost)).mpr (Or.inr ?_)
+    refine ⟨7, rfl, ⟨7, rfl⟩, ⟨8, ?_⟩⟩
+    intro hEq
+    cases hEq
+  have hBranchNeg :
+      ¬ PostconditionDichotomy (fun n => deadNatPre n ∨ n = 7)
+          trivReflNatPost := by
+    refine (not_postconditionDichotomy_or_pre_iff (pre₁ := deadNatPre)
+      (pre₂ := fun n => n = 7) (post := trivReflNatPost)).mpr ⟨?_, ?_⟩
+    · exact not_postconditionDichotomy_of_unsat_pre hDeadUnsat
+    · exact not_postconditionDichotomy_of_trivial (fun _ _ _ => rfl)
+  exact ⟨hDeadUnsat, hDeadReal, hBodyVacuous, hSpecViol, hContra, hTrivRefl,
+    hTrivDisj, hInputOnly, hSubsing, ⟨hMemOnlyDich, hMemOnlyNotRet⟩,
+    ⟨hUnwoundDich, hUnwoundNotRet⟩, ⟨hSurvPre, hSurvDisj, hSurvImp⟩,
+    hBranchPos, hBranchNeg⟩
 
 end Anneal.Core

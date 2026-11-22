@@ -10,4 +10,5 @@ prelude
 import Anneal.Core.BlockTree
 import Anneal.Core.SepPCM
 import Anneal.Core.StageCut
+import Anneal.Core.SpecRealizability
 import Anneal.Core.Canaries
