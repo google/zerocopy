@@ -130,19 +130,22 @@ pub enum InspectorRequest {
     TargetAudit { request: TargetAuditRequest },
     /// Parses `(module_name, staged_path)` pairs (`"preflight"`) against the
     /// authenticated foundation parser environment without elaborating the
-    /// source commands being inspected.
-    Preflight { sources: Vec<(String, PathBuf)> },
+    /// source commands being inspected, authenticating optional staged
+    /// `base_trusted_sources` (`"baseSources"`, such as Pass 1 `Trusted`
+    /// modules during Pass 2 preflight) directly from disk.
+    Preflight { sources: Vec<(String, PathBuf)>, base_trusted_sources: Vec<(String, PathBuf)> },
     /// Parses Pass 2 `(module_name, staged_path)` pairs
     /// (`"correspondence-preflight"`) against the authenticated Pass 2 compile
     /// parser environment (`foundation`, Pass 1 `trusted`/`theory`, and pinned
     /// `vendor_miri` with `loadExts := true`) before compiling any Pass 2
-    /// module.
+    /// module, authenticating `base_trusted_sources` (`"baseSources"`, one per
+    /// staged Pass 1 `trusted` module) directly from disk.
     CorrespondencePreflight {
         search_path: Vec<PathBuf>,
         trusted: Vec<String>,
         theory: Vec<String>,
         vendor_miri: Vec<String>,
-        module_tiers: BTreeMap<String, TrustTier>,
+        base_trusted_sources: Vec<(String, PathBuf)>,
         sources: Vec<(String, PathBuf)>,
     },
     /// Loads compiled Pass 1 `.olean`s (`"audit"`) with `loadExts := false`,
@@ -483,7 +486,7 @@ impl Checker {
         match request {
             InspectorRequest::Headers { sources } => self.inner.inspect_headers(&sources),
             InspectorRequest::TargetAudit { request } => self.inner.inspect_target(&request),
-            InspectorRequest::Preflight { sources } => {
+            InspectorRequest::Preflight { sources, base_trusted_sources } => {
                 let req = {
                     let adm = self.inner.admitted()?;
                     let arts_arr: Vec<Json> = adm
@@ -493,6 +496,10 @@ impl Checker {
                         .collect();
                     let src_pairs: Vec<(&str, std::borrow::Cow<'_, str>)> =
                         sources.iter().map(|(m, p)| (m.as_str(), p.to_string_lossy())).collect();
+                    let base_pairs: Vec<(&str, std::borrow::Cow<'_, str>)> = base_trusted_sources
+                        .iter()
+                        .map(|(m, p)| (m.as_str(), p.to_string_lossy()))
+                        .collect();
                     json!({
                         "mode": "preflight",
                         "sysroot": adm.prefix.to_string_lossy(),
@@ -500,6 +507,7 @@ impl Checker {
                         "foundation": adm.foundation_modules(),
                         "graph": &adm.foundation_graph,
                         "axioms": &adm.axioms,
+                        "baseSources": base_pairs,
                         "sources": src_pairs,
                     })
                 };
@@ -510,7 +518,7 @@ impl Checker {
                 trusted,
                 theory,
                 vendor_miri,
-                module_tiers,
+                base_trusted_sources,
                 sources,
             } => {
                 self.ensure_sysroot_foundation()?;
@@ -519,7 +527,7 @@ impl Checker {
                     &trusted,
                     &theory,
                     &vendor_miri,
-                    &module_tiers,
+                    &base_trusted_sources,
                     &sources,
                 )
             }
@@ -632,6 +640,7 @@ impl Checker {
         &mut self,
         trusted_map: &BTreeMap<String, PathBuf>,
         theory_map: &BTreeMap<String, PathBuf>,
+        base_trusted_modules: &BTreeMap<String, PathBuf>,
         base_tiers: &BTreeMap<String, TrustTier>,
         extra_trusted_allowed: &BTreeSet<String>,
         extra_theory_allowed: &BTreeSet<String>,
@@ -644,9 +653,12 @@ impl Checker {
             .chain(theory_map.iter())
             .map(|(n, p)| (n.clone(), p.clone()))
             .collect();
-        let pf_res: PreflightResult =
-            serde_json::from_value(self.inspect(InspectorRequest::Preflight { sources })?)
-                .map_err(|_| Failure::operational("preflight", inventory_err))?;
+        let base_trusted_sources: Vec<(String, PathBuf)> =
+            base_trusted_modules.iter().map(|(n, p)| (n.clone(), p.clone())).collect();
+        let pf_res: PreflightResult = serde_json::from_value(
+            self.inspect(InspectorRequest::Preflight { sources, base_trusted_sources })?,
+        )
+        .map_err(|_| Failure::operational("preflight", inventory_err))?;
 
         let mut imports: BTreeMap<String, Vec<ImportEdge>> = BTreeMap::new();
         let mut module_tiers = base_tiers.clone();
@@ -702,6 +714,16 @@ impl Checker {
             return Err(Failure::operational("preflight", inventory_err));
         }
 
+        {
+            let adm = self.inner.admitted()?;
+            check_preflight_tier_imports(
+                trusted_map.keys(),
+                &imports,
+                &module_tiers,
+                &adm.foundation_graph,
+            )?;
+        }
+
         let trusted_order =
             topo_sort_modules(trusted_map.keys().cloned().collect(), &imports, trusted_cycle_msg)?;
         let theory_order =
@@ -744,6 +766,7 @@ impl Checker {
         let preflight = self.preflight_and_order_modules(
             &modules_snap,
             &theory_snap,
+            &BTreeMap::new(),
             &BTreeMap::new(),
             &BTreeSet::new(),
             &BTreeSet::new(),
@@ -925,9 +948,11 @@ impl Checker {
             .chain(closure_entries.iter().map(|e| e.module.clone()))
             .collect();
         let extra_theory_allowed: BTreeSet<String> = self.theory_modules.keys().cloned().collect();
+        let base_trusted_modules = self.modules.clone();
         let preflight = self.preflight_and_order_modules(
             &corr_trusted_modules,
             &corr_theory_modules,
+            &base_trusted_modules,
             base_tiers,
             &extra_trusted_allowed,
             &extra_theory_allowed,
@@ -971,12 +996,14 @@ impl Checker {
             .chain(corr_theory_modules.iter())
             .map(|(n, p)| (n.clone(), p.clone()))
             .collect();
+        let corr_base_trusted_sources: Vec<(String, PathBuf)> =
+            self.modules.iter().map(|(n, p)| (n.clone(), p.clone())).collect();
         let corr_pf_req = InspectorRequest::CorrespondencePreflight {
             search_path: search_dirs.clone(),
             trusted: self.modules.keys().cloned().collect(),
             theory: self.theory_modules.keys().cloned().collect(),
             vendor_miri: closure_entries.iter().map(|e| e.module.clone()).collect(),
-            module_tiers: base_tiers.clone(),
+            base_trusted_sources: corr_base_trusted_sources,
             sources: corr_preflight_sources.clone(),
         };
         let corr_pf_res: PreflightResult = serde_json::from_value(self.inspect(corr_pf_req)?)
@@ -1362,7 +1389,7 @@ impl Checker {
         trusted: &[String],
         theory: &[String],
         vendor_miri: &[String],
-        module_tiers: &BTreeMap<String, TrustTier>,
+        base_trusted_sources: &[(String, PathBuf)],
         sources: &[(String, PathBuf)],
     ) -> Result<Json, Failure> {
         let mode = "correspondence-preflight";
@@ -1398,7 +1425,7 @@ impl Checker {
             }
         }
         let sandbox_sp: Vec<&str> = sp_binds.iter().map(|(_, dst)| dst.as_str()).collect();
-        let src_binds: Vec<(PathBuf, String)> = sources
+        let mut src_binds: Vec<(PathBuf, String)> = sources
             .iter()
             .enumerate()
             .map(|(i, (_, p))| (p.clone(), format!("/work/src/s-{i}.lean")))
@@ -1408,8 +1435,16 @@ impl Checker {
             .zip(src_binds.iter())
             .map(|((m, _), (_, dst))| (m.as_str(), dst.as_str()))
             .collect();
-        let tiers: Vec<(&str, String)> =
-            module_tiers.iter().map(|(m, t)| (m.as_str(), t.render())).collect();
+        let base_binds: Vec<(PathBuf, String)> = base_trusted_sources
+            .iter()
+            .enumerate()
+            .map(|(i, (_, p))| (p.clone(), format!("/work/src/b-{i}.lean")))
+            .collect();
+        let sandbox_base_sources: Vec<(&str, &str)> = base_trusted_sources
+            .iter()
+            .zip(base_binds.iter())
+            .map(|((m, _), (_, dst))| (m.as_str(), dst.as_str()))
+            .collect();
 
         let req = json!({
             "mode": mode,
@@ -1420,9 +1455,10 @@ impl Checker {
             "trusted": trusted,
             "theory": theory,
             "vendorMiri": vendor_miri,
-            "moduleTiers": tiers,
+            "baseSources": sandbox_base_sources,
             "sources": sandbox_sources,
         });
+        src_binds.extend(base_binds);
 
         let counter = self.inner.next_counter();
         let request_path = self.inner.stage().join(format!("request-{counter:03}-{mode}.json"));
@@ -2322,6 +2358,52 @@ fn validate_correspondence_report(
     Ok(())
 }
 
+/// Enforce module-level trust-tier import isolation before compilation: a
+/// `vetted` module may import `imp` if and only if `imp` belongs to
+/// `foundation_graph` or another `vetted` `Trusted` module (never
+/// `candidate:<feature>`, `.repo .theory`, or Pass 2 non-foundation modules
+/// such as `vendor/lean-miri`).
+fn check_preflight_tier_imports<'a, I>(
+    trusted_modules: I,
+    imports: &BTreeMap<String, Vec<ImportEdge>>,
+    module_tiers: &BTreeMap<String, TrustTier>,
+    foundation_graph: &BTreeMap<String, Vec<ImportEdge>>,
+) -> Result<(), Failure>
+where
+    I: IntoIterator<Item = &'a String>,
+{
+    for mod_name in trusted_modules {
+        if module_tiers.get(mod_name) == Some(&TrustTier::Vetted) {
+            for edge in &imports[mod_name] {
+                let imp_mod = edge.module.as_str();
+                if !foundation_graph.contains_key(imp_mod) {
+                    match module_tiers.get(imp_mod) {
+                        Some(TrustTier::Vetted) => {}
+                        Some(dep_tier) => {
+                            return Err(Failure::policy(
+                                "preflight",
+                                format!(
+                                    "vetted module {mod_name} cannot import {} module {imp_mod}",
+                                    dep_tier.render()
+                                ),
+                            ));
+                        }
+                        None => {
+                            return Err(Failure::policy(
+                                "preflight",
+                                format!(
+                                    "vetted module {mod_name} cannot import non-foundation module {imp_mod}"
+                                ),
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -2715,5 +2797,84 @@ mod tests {
             .unwrap_err();
             assert_eq!(err_sym.code, 1);
         }
+    }
+
+    #[test]
+    fn preflight_tier_imports_isolate_vetted_modules() {
+        let mk_edge = |module: &str| ImportEdge {
+            module: module.to_string(),
+            import_all: false,
+            is_exported: true,
+            is_meta: false,
+        };
+        let foundation = BTreeMap::from([("Init.Core".to_string(), Vec::new())]);
+        let tiers = BTreeMap::from([
+            ("Trusted".to_string(), TrustTier::Vetted),
+            ("Trusted.VettedSub".to_string(), TrustTier::Vetted),
+            (
+                "Trusted.Cand".to_string(),
+                TrustTier::Candidate(CandidateFeature::MirSemantics),
+            ),
+        ]);
+        let mods = [
+            "Trusted".to_string(),
+            "Trusted.VettedSub".to_string(),
+            "Trusted.Cand".to_string(),
+        ];
+
+        // Allowed: vetted imports foundation and vetted; candidate imports
+        // vetted and Miri.
+        let ok_imports = BTreeMap::from([
+            ("Trusted".to_string(), vec![mk_edge("Init.Core"), mk_edge("Trusted.VettedSub")]),
+            ("Trusted.VettedSub".to_string(), vec![mk_edge("Init.Core")]),
+            (
+                "Trusted.Cand".to_string(),
+                vec![mk_edge("Init.Core"), mk_edge("Trusted.VettedSub"), mk_edge("Miri.Child")],
+            ),
+        ]);
+        check_preflight_tier_imports(mods.iter(), &ok_imports, &tiers, &foundation).unwrap();
+
+        // Rejected: vetted imports candidate.
+        let mut bad_cand = ok_imports.clone();
+        bad_cand.get_mut("Trusted").unwrap().push(mk_edge("Trusted.Cand"));
+        let err_cand =
+            check_preflight_tier_imports(mods.iter(), &bad_cand, &tiers, &foundation).unwrap_err();
+        assert_eq!(err_cand.code, 1);
+        assert_eq!(err_cand.phase, "preflight");
+        assert!(
+            err_cand.message.contains(
+                "vetted module Trusted cannot import candidate:mir_semantics module Trusted.Cand"
+            ),
+            "unexpected error: {err_cand}"
+        );
+
+        // Rejected: vetted imports Pass 2 non-foundation module (such as
+        // `vendor/lean-miri`) or `theory/` module (`Anneal.Helper`).
+        let mut bad_miri = ok_imports.clone();
+        bad_miri.get_mut("Trusted").unwrap().push(mk_edge("Miri.Child"));
+        let err_miri =
+            check_preflight_tier_imports(mods.iter(), &bad_miri, &tiers, &foundation).unwrap_err();
+        assert_eq!(err_miri.code, 1);
+        assert_eq!(err_miri.phase, "preflight");
+        assert!(
+            err_miri
+                .message
+                .contains("vetted module Trusted cannot import non-foundation module Miri.Child"),
+            "unexpected error: {err_miri}"
+        );
+
+        let mut bad_theory = ok_imports;
+        bad_theory.get_mut("Trusted").unwrap().push(mk_edge("Anneal.Helper"));
+        let err_theory =
+            check_preflight_tier_imports(mods.iter(), &bad_theory, &tiers, &foundation)
+                .unwrap_err();
+        assert_eq!(err_theory.code, 1);
+        assert_eq!(err_theory.phase, "preflight");
+        assert!(
+            err_theory.message.contains(
+                "vetted module Trusted cannot import non-foundation module Anneal.Helper"
+            ),
+            "unexpected error: {err_theory}"
+        );
     }
 }
