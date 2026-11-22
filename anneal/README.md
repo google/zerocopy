@@ -254,13 +254,17 @@ significant influences are listed here, but this list is far from exhaustive.
   contributors' work on simulation proofs provided a comparison for how
   Anneal relates its model to its reference semantics.
 - [Lean 4], by Leonardo de Moura, Sebastian Ullrich, and the Lean
-  contributors, checks Anneal's proofs. Lean's environment and declaration
-  replay code guided the design of Anneal's auditor.
-- The Rust contributors' [compiler source][rustc] and [Rust Reference]
-  guided Anneal's MIR capture and model of Rust behavior. The earlier
-  memory model also drew on the [standard library documentation][rust-std].
-  The LLVM contributors' [language reference][llvm-linkage] guided Anneal's
-  treatment of Rust's linkage attributes.
+  contributors, checks Anneal's proofs. Lean's
+  [declaration replay][lean-replay], [environment importer][lean-env],
+  compiler-attribute handling, and kernel reduction behavior guided Anneal's
+  auditor and PureLift's combinators.
+- The Rust contributors' [compiler source][rustc] (including
+  [`rustc_const_eval`][rustc-const-eval] and [a padding-clearing
+  issue][rust-148470]) and [Rust Reference] guided Anneal's MIR capture and
+  model of Rust behavior. The earlier memory model also drew on the
+  [standard library documentation][rust-std]. The LLVM contributors'
+  [language reference][llvm-linkage] guided Anneal's treatment of Rust's
+  linkage attributes.
 - Early design work drew on
   [research into security risks in Rust][rust-security] by Xiaoye Zheng,
   Zhiyuan Wan, Yun Zhang, Rui Chang, and David Lo. Lars Bergstrom's
@@ -281,7 +285,11 @@ significant influences are listed here, but this list is far from exhaustive.
 [ucg-moves]: https://github.com/rust-lang/unsafe-code-guidelines/issues/188
 [CompCert]: https://compcert.org/
 [Lean 4]: https://lean-lang.org/papers/lean4.pdf
+[lean-replay]: https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Replay.lean
+[lean-env]: https://github.com/leanprover/lean4/blob/5045d0056413266e57c625dcd7c365b10e377c52/src/Lean/Environment.lean
 [rustc]: https://github.com/rust-lang/rust/tree/main/compiler
+[rustc-const-eval]: https://github.com/rust-lang/rust/tree/main/compiler/rustc_const_eval/src/interpret
+[rust-148470]: https://github.com/rust-lang/rust/issues/148470
 [Rust Reference]: https://doc.rust-lang.org/reference/
 [rust-std]: https://doc.rust-lang.org/std/
 [llvm-linkage]: https://llvm.org/docs/LangRef.html#linkage-types
