@@ -31,6 +31,10 @@ for the same version key.
 
 The [MIR verifier alpha](alpha.md) includes an end-to-end scalar example.
 
+See the [scaffold build and testing guide](scaffolding.md) to run workspace
+tests with the pinned toolchain, execute or filter `installed_smoke` cases,
+check `cargo-anneal` packaging, and reproduce retained failure bundles.
+
 To audit the checkout, use the `lean/bin/lean` under the installation path
 printed by setup. The full MIR correspondence audit uses Linux bubblewrap
 at `/usr/bin/bwrap`.
