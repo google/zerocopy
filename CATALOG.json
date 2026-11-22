@@ -67990,6 +67990,42 @@
         "verification/regression-and-benchmark-test-suites"
       ]
     },
+    "modular-deadlock-freedom-wait-levels-linear-obligations-and-fair-liveness-in-lean4": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "b4c1107fa213ab01d860d6cb24a12fd0834f0df7"
+          },
+          "name": "google/zerocopy (anneal/ subtree)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "rust-lang/rust (library/std/src/sync/poison)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4"
+        }
+      ],
+      "topics": [
+        "anneal/theory",
+        "lean/mechanization",
+        "rust/concurrency",
+        "rust/unsafe",
+        "verification/concurrency",
+        "verification/liveness",
+        "verification/semantics"
+      ]
+    },
     "modular-verification-contextual-refinement-and-separate-compilation": {
       "observed_at": "2026-11-20",
       "subjects": [

@@ -1,0 +1,36 @@
+{
+  "topics": [
+    "anneal/theory",
+    "lean/mechanization",
+    "rust/concurrency",
+    "rust/unsafe",
+    "verification/concurrency",
+    "verification/liveness",
+    "verification/semantics"
+  ],
+  "subjects": [
+    {
+      "name": "google/zerocopy (anneal/ subtree)",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "b4c1107fa213ab01d860d6cb24a12fd0834f0df7"
+      }
+    },
+    {
+      "name": "rust-lang/rust (library/std/src/sync/poison)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+      }
+    },
+    {
+      "name": "leanprover/lean4",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
