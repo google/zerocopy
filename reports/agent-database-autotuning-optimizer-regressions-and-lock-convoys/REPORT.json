@@ -1,0 +1,181 @@
+{
+  "topics": [
+    "agents/database-tuning",
+    "agents/anomaly-diagnosis",
+    "agents/query-optimization",
+    "agents/reward-hacking",
+    "domains/databases",
+    "domains/online-ddl",
+    "systems/query-optimizers",
+    "systems/index-selection",
+    "systems/lock-managers",
+    "systems/mvcc",
+    "systems/orm-performance",
+    "tooling/database-advisors",
+    "verification/regression-gating"
+  ],
+  "subjects": [
+    {
+      "name": "PostgreSQL Relational Database Kernel and Official DDL/Locking Reference (postgres/postgres)",
+      "identity": {
+        "commit_date": "2026-11-21",
+        "repository": "postgres/postgres",
+        "revision": "9b5d4e3331753b3399e84965093109cac8f364bf"
+      }
+    },
+    {
+      "name": "HypoPG PostgreSQL Hypothetical Index Extension (HypoPG/hypopg)",
+      "identity": {
+        "commit_date": "2026-11-08",
+        "repository": "HypoPG/hypopg",
+        "revision": "a0d0213d450397ed8739db00683b18cf7b091862"
+      }
+    },
+    {
+      "name": "Dexter Automatic PostgreSQL Indexer (ankane/dexter)",
+      "identity": {
+        "commit_date": "2026-11-20",
+        "repository": "ankane/dexter",
+        "revision": "da35df3a8a95881d4ca20a9e2c1b8834f96523d3"
+      }
+    },
+    {
+      "name": "Hyrise Index Selection Evaluation Benchmark Platform (hyrise/index_selection_evaluation)",
+      "identity": {
+        "commit_date": "2024-04-05",
+        "repository": "hyrise/index_selection_evaluation",
+        "revision": "61f08074d1505ee14bfccee772ff1a539d7910b4"
+      }
+    },
+    {
+      "name": "OtterTune Automated DBMS Configuration Tuning Service (cmu-db/ottertune)",
+      "identity": {
+        "commit_date": "2020-09-19",
+        "repository": "cmu-db/ottertune",
+        "revision": "9758c65721d2624b813857ba9340d5550e899bda"
+      }
+    },
+    {
+      "name": "DB-BERT Manual-Reading Database Parameter Tuning Agent (itrummer/dbbert)",
+      "identity": {
+        "commit_date": "2023-08-19",
+        "repository": "itrummer/dbbert",
+        "revision": "120a61c60f3679589bc89373a3edad71f70d73df"
+      }
+    },
+    {
+      "name": "GPTuner Manual-Reading Database Tuning System (SolidLao/GPTuner)",
+      "identity": {
+        "commit_date": "2025-07-03",
+        "repository": "SolidLao/GPTuner",
+        "revision": "89401e61925c173f283cc283c847fb0943efdb37"
+      }
+    },
+    {
+      "name": "D-Bot / DB-GPT Multi-Agent Database Anomaly Diagnosis Framework (TsinghuaDatabaseGroup/DB-GPT)",
+      "identity": {
+        "commit_date": "2025-12-27",
+        "repository": "TsinghuaDatabaseGroup/DB-GPT",
+        "revision": "73cb3297fae0823c4bf8c3451513f7dbd3961f4b"
+      }
+    },
+    {
+      "name": "SQLite Embedded Relational Engine and VDBE Bytecode Interpreter",
+      "identity": {
+        "cpython_binding": "3.13.15",
+        "sqlite_version": "3.53.4"
+      }
+    },
+    {
+      "name": "Automatic Database Management System Tuning Through Large-Scale Machine Learning (Van Aken, Pavlo, Gordon, & Zhang, SIGMOD 2017)",
+      "identity": {
+        "doi": "10.1145/3035918.3064029",
+        "pages": "1009-1024",
+        "venue": "Proceedings of the 2017 ACM International Conference on Management of Data (SIGMOD 2017)",
+        "year": "2017"
+      }
+    },
+    {
+      "name": "DB-BERT: A Database Tuning Tool that \"Reads the Manual\" (Trummer, SIGMOD 2022)",
+      "identity": {
+        "arxiv": "2112.10925",
+        "doi": "10.1145/3514221.3517843",
+        "pages": "190-203",
+        "venue": "Proceedings of the 2022 International Conference on Management of Data (SIGMOD 2022)",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "GPTuner: A Manual-Reading Database Tuning System via GPT-Guided Bayesian Optimization (Lao et al., PVLDB 2024)",
+      "identity": {
+        "arxiv": "2311.03157v2",
+        "doi": "10.14778/3659437.3659449",
+        "pages": "1939-1952",
+        "venue": "PVLDB 17(8)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "D-Bot: Database Diagnosis System using Large Language Models (Zhou et al., PVLDB 2024)",
+      "identity": {
+        "arxiv": "2312.01454v2",
+        "doi": "10.14778/3675034.3675043",
+        "pages": "2514-2527",
+        "venue": "PVLDB 17(10)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "How Good Are Query Optimizers, Really? & Query Optimization Through the Looking Glass (Leis et al., PVLDB 2015 / VLDBJ 2018)",
+      "identity": {
+        "doi_pvldb": "10.14778/2850583.2850594",
+        "doi_vldbj": "10.1007/s00778-017-0480-7",
+        "pages_pvldb": "204-215",
+        "pages_vldbj": "643-668",
+        "venue": "PVLDB 9(3) (2015) and The VLDB Journal 27(5) (2018)",
+        "year": "2015-2018"
+      }
+    },
+    {
+      "name": "Magic Mirror in My Hand, Which is the Best in the Land? An Experimental Evaluation of Index Selection Algorithms (Kossmann et al., PVLDB 2020)",
+      "identity": {
+        "doi": "10.14778/3407790.3407832",
+        "pages": "2382-2395",
+        "venue": "PVLDB 13(11)",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Plan Stitch & AI Meets AI: Leveraging Query Executions to Improve Index Recommendations (Ding et al., PVLDB 2018 / SIGMOD 2019)",
+      "identity": {
+        "doi_pvldb": "10.14778/3231751.3231761",
+        "doi_sigmod": "10.1145/3299869.3324957",
+        "pages_pvldb": "1123-1136",
+        "pages_sigmod": "1241-1258",
+        "venue": "PVLDB 11(10) (2018) and Proceedings of the 2019 International Conference on Management of Data (SIGMOD 2019)",
+        "year": "2018-2019"
+      }
+    },
+    {
+      "name": "How Not to Structure Your Database-Backed Web Applications: A Study of Performance Bugs in the Wild (Yang et al., ICSE 2018)",
+      "identity": {
+        "doi": "10.1145/3180155.3180194",
+        "pages": "800-810",
+        "venue": "Proceedings of the 40th International Conference on Software Engineering (ICSE 2018)",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Detecting Performance Anti-Patterns & Redundant Data Access in ORM Applications (Chen et al., ICSE 2014 / IEEE TSE 2016)",
+      "identity": {
+        "doi_icse": "10.1145/2568225.2568259",
+        "doi_tse": "10.1109/TSE.2016.2553039",
+        "pages_icse": "1001-1012",
+        "pages_tse": "1148-1161",
+        "venue": "ICSE 2014 and IEEE Transactions on Software Engineering 42(12) (2016)",
+        "year": "2014-2016"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

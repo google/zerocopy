@@ -1,0 +1,212 @@
+{
+  "topics": [
+    "agents/architecture-recovery",
+    "agents/modularization",
+    "agents/api-compatibility",
+    "agents/benchmark-methodology",
+    "agents/reward-hacking",
+    "domains/graph-clustering",
+    "domains/software-architecture",
+    "pl/java-compatibility",
+    "pl/go-compatibility",
+    "pl/type-erasure",
+    "runtimes/jvm-linking",
+    "tooling/api-diffing",
+    "tooling/static-analysis",
+    "verification/compatibility-oracles"
+  ],
+  "subjects": [
+    {
+      "name": "Revapi Java API Analysis and 3-Axis Compatibility Checker (revapi/revapi)",
+      "identity": {
+        "commit_date": "2025-11-08",
+        "repository": "revapi/revapi",
+        "revision": "9ed5780461749706433bc1cdcef8023ad49046a9"
+      }
+    },
+    {
+      "name": "japicmp Java Archive Bytecode Compatibility Comparator (siom79/japicmp)",
+      "identity": {
+        "commit_date": "2026-11-04",
+        "repository": "siom79/japicmp",
+        "revision": "6262cf51923e20be3124a87b0a030a86b747cfbc"
+      }
+    },
+    {
+      "name": "Maracas Breaking-Change and Client-Impact Analyzer for Java (alien-tools/maracas)",
+      "identity": {
+        "commit_date": "2025-02-15",
+        "repository": "alien-tools/maracas",
+        "revision": "01e7a0653169b40411c24d205bcafc98d066130a"
+      }
+    },
+    {
+      "name": "Go Experimental Package API Compatibility Checker apidiff (golang/exp)",
+      "identity": {
+        "commit_date": "2026-11-21",
+        "repository": "golang/exp",
+        "revision": "e1094eeca1b508317bb24413555d977dea6bb30c"
+      }
+    },
+    {
+      "name": "NetworkX Louvain Community Detection Implementation (networkx/networkx)",
+      "identity": {
+        "commit_date": "2026-11-20",
+        "repository": "networkx/networkx",
+        "revision": "6c1a31d1613ad04cf2b2e3d63090b94979521981"
+      }
+    },
+    {
+      "name": "leidenalg Python Interface for Leiden Community Detection (vtraag/leidenalg)",
+      "identity": {
+        "commit_date": "2026-10-13",
+        "repository": "vtraag/leidenalg",
+        "revision": "9890a99a4bfe49b839905b8faba1bd4f9e5beec8"
+      }
+    },
+    {
+      "name": "libleidenalg C++ Leiden Constrained-Refinement Optimiser (vtraag/libleidenalg)",
+      "identity": {
+        "commit_date": "2026-06-24",
+        "repository": "vtraag/libleidenalg",
+        "revision": "fe2d4e79949048b7b79cce40892ce01490f7a24f"
+      }
+    },
+    {
+      "name": "ARCADE Software Architecture Recovery and MoJoFM/a2a Evaluator (usc-softarch/arcade_core)",
+      "identity": {
+        "commit_date": "2024-03-07",
+        "repository": "usc-softarch/arcade_core",
+        "revision": "53e6f4f6e35098b260290e5cda794ec78f6df4df"
+      }
+    },
+    {
+      "name": "SemArc / SARIF / SemRef Architecture Clustering Metric Suite (xjtu-enre/TSE2025SemArc)",
+      "identity": {
+        "commit_date": "2025-10-22",
+        "repository": "xjtu-enre/TSE2025SemArc",
+        "revision": "b635e5d9b14c910308af62f39e464ff2b58fa192"
+      }
+    },
+    {
+      "name": "The Java Language Specification and Java Virtual Machine Specification (Java SE 21 Edition)",
+      "identity": {
+        "sections_jls": "4.6, 4.9, 8.4.8.3, 9.4.1.3, 11.2.3, 13, 15.12.2.5, 15.29",
+        "sections_jvms": "4.7.2, 5.4.3.3, 5.4.6, 6.5",
+        "specification": "JLS & JVMS Java SE 21",
+        "url": "https://docs.oracle.com/javase/specs/jls/se21/html/index.html"
+      }
+    },
+    {
+      "name": "The Go Programming Language Specification (Interface Types, Method Sets, and Comparison Operators)",
+      "identity": {
+        "specification": "Go Language Specification",
+        "url": "https://go.dev/ref/spec"
+      }
+    },
+    {
+      "name": "Exploring the Structure of Complex Software Designs: An Empirical Study of Open Source and Proprietary Code (MacCormack, Rusnak, & Baldwin, Management Science 2006)",
+      "identity": {
+        "doi": "10.1287/mnsc.1060.0552",
+        "pages": "1015-1030",
+        "venue": "Management Science 52(7)",
+        "working_paper": "Harvard Business School Working Paper 05-016",
+        "year": "2006"
+      }
+    },
+    {
+      "name": "Bunch: A Clustering Tool for the Recovery and Maintenance of Software System Structures & On the Automatic Modularization of Software Systems Using the Bunch Tool (Mancoridis et al., ICSM 1999; Mitchell & Mancoridis, IEEE TSE 2006)",
+      "identity": {
+        "doi_icsm": "10.1109/ICSM.1999.792498",
+        "doi_tse": "10.1109/TSE.2006.31",
+        "pages_icsm": "50-59",
+        "pages_tse": "193-208",
+        "venue": "ICSM 1999 and IEEE Transactions on Software Engineering 32(3) (2006)",
+        "year": "1999-2006"
+      }
+    },
+    {
+      "name": "From Louvain to Leiden: Guaranteeing Well-Connected Communities (Traag, Waltman, & van Eck, Scientific Reports 2019)",
+      "identity": {
+        "article": "5233",
+        "arxiv": "1810.08473v3",
+        "doi": "10.1038/s41598-019-41695-z",
+        "venue": "Scientific Reports 9",
+        "year": "2019"
+      }
+    },
+    {
+      "name": "Comparing Software Architecture Recovery Techniques Using Accurate Dependencies (Lutellier et al., ICSE 2015)",
+      "identity": {
+        "doi": "10.1109/ICSE.2015.136",
+        "pages": "69-78",
+        "venue": "Proceedings of the 37th International Conference on Software Engineering (ICSE 2015), Vol. 2",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "SemRef: Enhancing Software Architecture Recovery with Semantic Refinement via Large Language Models (Zhang et al., ICSE 2026)",
+      "identity": {
+        "arxiv": "2607.23774",
+        "doi": "10.1145/3744916.3773114",
+        "venue": "Proceedings of the 48th IEEE/ACM International Conference on Software Engineering (ICSE 2026)",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "What Do LLM-Based Software Architecture Recovery Methods Actually Do? A Diagnostic Study (Quadri, York University MASc Thesis 2026)",
+      "identity": {
+        "handle": "https://hdl.handle.net/10315/44298",
+        "institution": "York University",
+        "month": "July",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "ArchAgent: Scalable Legacy Software Architecture Recovery with LLM Agents (Pan et al., 2026)",
+      "identity": {
+        "arxiv": "2601.13007",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Measuring Software Library Stability Through Historical Version Analysis & Semantic Versioning and Impact of Breaking Changes in the Maven Repository (Raemaekers, van Deursen, & Visser, SCAM 2014 / JSS 2017)",
+      "identity": {
+        "doi_jss": "10.1016/j.jss.2016.04.008",
+        "doi_scam": "10.1109/SCAM.2014.30",
+        "pages_jss": "140-158",
+        "pages_scam": "215-224",
+        "venue": "IEEE SCAM 2014 and Journal of Systems and Software 129 (2017)",
+        "year": "2014-2017"
+      }
+    },
+    {
+      "name": "Breaking Bad? Semantic Versioning and Impact of Breaking Changes in Maven Central (Ochoa, Degueule, Falleri, & Vinju, EMSE 2022)",
+      "identity": {
+        "article": "61",
+        "doi": "10.1007/s10664-021-10052-y",
+        "venue": "Empirical Software Engineering 27",
+        "year": "2022"
+      }
+    },
+    {
+      "name": "An Extended Study of Syntactic Breaking Changes in the Wild (Jayasuriya, Ou, Hegde, Terragni, Dietrich, & Blincoe, EMSE 2025)",
+      "identity": {
+        "article": "42",
+        "doi": "10.1007/s10664-024-10563-4",
+        "venue": "Empirical Software Engineering 30",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "How to Break an API: Cost Negotiation and Community Values in Three Software Ecosystems (Bogart, Kästner, Herbsleb, & Thung, FSE 2016)",
+      "identity": {
+        "doi": "10.1145/2950290.2950325",
+        "pages": "109-120",
+        "venue": "Proceedings of the 2016 24th ACM SIGSOFT International Symposium on Foundations of Software Engineering (FSE 2016)",
+        "year": "2016"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

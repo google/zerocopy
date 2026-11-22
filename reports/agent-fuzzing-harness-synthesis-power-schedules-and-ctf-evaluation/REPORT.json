@@ -1,0 +1,236 @@
+{
+  "topics": [
+    "agents/fuzzing",
+    "agents/harness-synthesis",
+    "agents/crash-triage",
+    "agents/ctf-benchmarks",
+    "security/fuzzing",
+    "security/protocol-fuzzing",
+    "security/ctf-evaluation",
+    "llvm/libfuzzer",
+    "llvm/entropic",
+    "compilers/compiler-fuzzing",
+    "tooling/oss-fuzz-gen",
+    "verification/precondition-oracles"
+  ],
+  "subjects": [
+    {
+      "name": "LLVM Project Compiler-RT LibFuzzer and Entropic Power Schedule (llvm/llvm-project)",
+      "identity": {
+        "commit_date": "2026-11-22",
+        "repository": "llvm/llvm-project",
+        "revision": "92de73668376d228016ca28ad882e7ad86a257cf"
+      }
+    },
+    {
+      "name": "AFLFast Markov-Chain Power Schedule Implementation (mboehme/aflfast)",
+      "identity": {
+        "commit_date": "2021-07-23",
+        "repository": "mboehme/aflfast",
+        "revision": "d1d54caf9850ca4afe2ac634a2a212aa6bb40032"
+      }
+    },
+    {
+      "name": "OSS-Fuzz-Gen LLM Fuzz Target Generation and Triage Framework (google/oss-fuzz-gen)",
+      "identity": {
+        "commit_date": "2026-11-10",
+        "repository": "google/oss-fuzz-gen",
+        "revision": "5105d97f0cb86ce885cd30a125af0acdf3fe40fd"
+      }
+    },
+    {
+      "name": "ChatAFL LLM-Guided Stateful Network Protocol Fuzzer (ChatAFLndss/ChatAFL)",
+      "identity": {
+        "commit_date": "2025-06-20",
+        "repository": "ChatAFLndss/ChatAFL",
+        "revision": "dcf109e18a423e9e27766b4bf8292349db05f49e"
+      }
+    },
+    {
+      "name": "Fuzz4All Universal LLM Compiler and Solver Fuzzer (fuzz4all/fuzz4all)",
+      "identity": {
+        "commit_date": "2025-08-11",
+        "repository": "fuzz4all/fuzz4all",
+        "revision": "0bf42fe037c8761bdde61e1c37a0946e8103fba1"
+      }
+    },
+    {
+      "name": "Cybench Cybersecurity Agent Evaluation Framework (andyzorigin/cybench)",
+      "identity": {
+        "commit_date": "2026-09-24",
+        "repository": "andyzorigin/cybench",
+        "revision": "ca483c6443f17a20ba7d6bac3d274859a1721e51"
+      }
+    },
+    {
+      "name": "NYU CTF Bench Offensive Security Dataset and Loader (NYU-LLM-CTF/NYU_CTF_Bench)",
+      "identity": {
+        "commit_date": "2025-09-22",
+        "repository": "NYU-LLM-CTF/NYU_CTF_Bench",
+        "revision": "4c5744f55a31a58e03d6118c9dbb1c18e5bbdfa9"
+      }
+    },
+    {
+      "name": "NYU CTF Baseline Agent Scaffolds and Tool Verifiers (NYU-LLM-CTF/nyuctf_agents)",
+      "identity": {
+        "commit_date": "2026-07-17",
+        "repository": "NYU-LLM-CTF/nyuctf_agents",
+        "revision": "612190f298ae9e604f00370019beed4ba1f372f6"
+      }
+    },
+    {
+      "name": "SWE-agent / EnIGMA Interactive CTF Agent Runtime (SWE-agent/SWE-agent)",
+      "identity": {
+        "commit_date": "2026-07-16",
+        "repository": "SWE-agent/SWE-agent",
+        "revision": "3ea751c087f32b16e039a2233dd6eefecef325d5"
+      }
+    },
+    {
+      "name": "EnIGMA CTF Benchmark Suite Adapters (enigma-agent/benchmarks)",
+      "identity": {
+        "commit_date": "2025-06-04",
+        "repository": "enigma-agent/benchmarks",
+        "revision": "c632a3c5d08f5f35eedc57f8c7a57be78defc013"
+      }
+    },
+    {
+      "name": "TitanFuzz Deep-Learning Library Fuzzer (ise-uiuc/TitanFuzz)",
+      "identity": {
+        "commit_date": "2023-09-10",
+        "repository": "ise-uiuc/TitanFuzz",
+        "revision": "a6d332e3f19ed2698bfd80a62e422d50b5dfb7f2"
+      }
+    },
+    {
+      "name": "PromptFuzz Coverage-Guided Fuzz Driver Synthesizer (FuzzAnything/PromptFuzz)",
+      "identity": {
+        "commit_date": "2026-05-15",
+        "repository": "FuzzAnything/PromptFuzz",
+        "revision": "5f91d9a35323a10602f15155fd111d02a2abfd68"
+      }
+    },
+    {
+      "name": "Hopper Interpretative Library Fuzzer (FuzzAnything/Hopper)",
+      "identity": {
+        "commit_date": "2026-05-16",
+        "repository": "FuzzAnything/Hopper",
+        "revision": "2603f56101da1178b75e9e5fa74106769f261a96"
+      }
+    },
+    {
+      "name": "CKGFuzzer Code-Knowledge-Graph Fuzz Driver Generator (security-pride/CKGFuzzer)",
+      "identity": {
+        "commit_date": "2025-02-05",
+        "repository": "security-pride/CKGFuzzer",
+        "revision": "bb50d2fd81c19b82cdbf6f96832097705decd57e"
+      }
+    },
+    {
+      "name": "UTopia Unit-Test-Guided Fuzz Driver Generator (Samsung/UTopia)",
+      "identity": {
+        "commit_date": "2025-04-16",
+        "repository": "Samsung/UTopia",
+        "revision": "4c0cdac822ccb4dd69f8c84f5ebe4fe55a4f8624"
+      }
+    },
+    {
+      "name": "FalseCrashReducer: Mitigating False Positive Crashes in OSS-Fuzz-Gen Using Agentic LLMs (Amusuo et al., 2025)",
+      "identity": {
+        "arxiv": "2510.02185",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation (Zhang et al., ISSTA 2024)",
+      "identity": {
+        "arxiv": "2307.12469",
+        "doi": "10.1145/3650212.3680355",
+        "pages": "1223-1235",
+        "venue": "Proceedings of the 33rd ACM SIGSOFT International Symposium on Software Testing and Analysis (ISSTA 2024)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Fuzz4All: Universal Fuzzing with Large Language Models (Xia et al., ICSE 2024)",
+      "identity": {
+        "arxiv": "2308.04748",
+        "doi": "10.1145/3597503.3639121",
+        "venue": "Proceedings of the 46th IEEE/ACM International Conference on Software Engineering (ICSE 2024), Article 126",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "TitanFuzz & FuzzGPT: LLM Fuzzing of Deep-Learning Libraries (Deng et al., ISSTA 2023 & ICSE 2024)",
+      "identity": {
+        "arxiv_fuzzgpt": "2304.02014",
+        "arxiv_titanfuzz": "2212.14834",
+        "doi_fuzzgpt": "10.1145/3597503.3623343",
+        "doi_titanfuzz": "10.1145/3597926.3598067",
+        "venue": "ACM ISSTA 2023 (pp. 423-435) and IEEE/ACM ICSE 2024 (Article 70)",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "Large Language Model guided Protocol Fuzzing (ChatAFL, Meng et al., NDSS 2024)",
+      "identity": {
+        "doi": "10.14722/ndss.2024.24556",
+        "venue": "Network and Distributed System Security Symposium (NDSS 2024)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "PromptFuzz & Hopper: Coverage-Guided Prompt Mutation and Interpretative Library Fuzzing (Lyu, Chen, et al., CCS 2023 & CCS 2024)",
+      "identity": {
+        "arxiv_hopper": "2309.03496",
+        "arxiv_promptfuzz": "2312.17677",
+        "doi_hopper": "10.1145/3576915.3616610",
+        "doi_promptfuzz": "10.1145/3658644.3670396",
+        "venue": "ACM CCS 2023 (pp. 1600-1614) and ACM CCS 2024 (pp. 3793-3807)",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "CKGFuzzer: LLM-Based Fuzz Driver Generation Enhanced by Code Knowledge Graph (Xu et al., ICSE-Companion 2025)",
+      "identity": {
+        "arxiv": "2411.11532",
+        "doi": "10.1109/ICSE-Companion66252.2025.00079",
+        "pages": "243-254",
+        "venue": "IEEE/ACM ICSE-Companion 2025 (SEIP Track)",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Consumer-Graph and Automata-Guided Fuzz Driver Synthesis (FuzzGen, USENIX Security 2020; RUBICK, USENIX Security 2023)",
+      "identity": {
+        "pages_fuzzgen": "2271-2287",
+        "pages_rubick": "2867-2884",
+        "venue": "29th USENIX Security Symposium (2020) and 32nd USENIX Security Symposium (2023)",
+        "year": "2020-2023"
+      }
+    },
+    {
+      "name": "Markov-Chain, Information-Theoretic, and Species-Scaling Greybox Fuzzing Laws (AFLFast, CCS 2016 / TSE 2019; Entropic & Boehme-Falk, ESEC/FSE 2020)",
+      "identity": {
+        "doi_aflfast_ccs": "10.1145/2976749.2978428",
+        "doi_aflfast_tse": "10.1109/TSE.2017.2785841",
+        "doi_boehme_falk": "10.1145/3368089.3409729",
+        "doi_entropic": "10.1145/3368089.3409698",
+        "venue": "ACM CCS 2016, IEEE TSE 2019, and ACM ESEC/FSE 2020 (pp. 678-689, 713-724)",
+        "year": "2016-2020"
+      }
+    },
+    {
+      "name": "Offensive Cybersecurity CTF Agent Benchmarks and Interactive Tool Evaluations (NYU CTF Bench, NeurIPS 2024; Cybench, ICLR 2025; EnIGMA, ICML 2025)",
+      "identity": {
+        "arxiv_cybench": "2408.08926",
+        "arxiv_enigma": "2409.16165",
+        "arxiv_nyuctf": "2406.05590",
+        "openreview_cybench": "tc90LV0yRL",
+        "venue": "NeurIPS 2024 Datasets & Benchmarks, ICLR 2025 Oral, and ICML 2025 (PMLR v267)",
+        "year": "2024-2025"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

@@ -2168,6 +2168,218 @@
         "verification/equivalence-modulo-theories"
       ]
     },
+    "agent-architecture-recovery-modularization-and-api-compatibility-oracles": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2025-11-08",
+            "repository": "revapi/revapi",
+            "revision": "9ed5780461749706433bc1cdcef8023ad49046a9"
+          },
+          "name": "Revapi Java API Analysis and 3-Axis Compatibility Checker (revapi/revapi)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-04",
+            "repository": "siom79/japicmp",
+            "revision": "6262cf51923e20be3124a87b0a030a86b747cfbc"
+          },
+          "name": "japicmp Java Archive Bytecode Compatibility Comparator (siom79/japicmp)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-02-15",
+            "repository": "alien-tools/maracas",
+            "revision": "01e7a0653169b40411c24d205bcafc98d066130a"
+          },
+          "name": "Maracas Breaking-Change and Client-Impact Analyzer for Java (alien-tools/maracas)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-21",
+            "repository": "golang/exp",
+            "revision": "e1094eeca1b508317bb24413555d977dea6bb30c"
+          },
+          "name": "Go Experimental Package API Compatibility Checker apidiff (golang/exp)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-20",
+            "repository": "networkx/networkx",
+            "revision": "6c1a31d1613ad04cf2b2e3d63090b94979521981"
+          },
+          "name": "NetworkX Louvain Community Detection Implementation (networkx/networkx)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-10-13",
+            "repository": "vtraag/leidenalg",
+            "revision": "9890a99a4bfe49b839905b8faba1bd4f9e5beec8"
+          },
+          "name": "leidenalg Python Interface for Leiden Community Detection (vtraag/leidenalg)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-06-24",
+            "repository": "vtraag/libleidenalg",
+            "revision": "fe2d4e79949048b7b79cce40892ce01490f7a24f"
+          },
+          "name": "libleidenalg C++ Leiden Constrained-Refinement Optimiser (vtraag/libleidenalg)"
+        },
+        {
+          "identity": {
+            "commit_date": "2024-03-07",
+            "repository": "usc-softarch/arcade_core",
+            "revision": "53e6f4f6e35098b260290e5cda794ec78f6df4df"
+          },
+          "name": "ARCADE Software Architecture Recovery and MoJoFM/a2a Evaluator (usc-softarch/arcade_core)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-10-22",
+            "repository": "xjtu-enre/TSE2025SemArc",
+            "revision": "b635e5d9b14c910308af62f39e464ff2b58fa192"
+          },
+          "name": "SemArc / SARIF / SemRef Architecture Clustering Metric Suite (xjtu-enre/TSE2025SemArc)"
+        },
+        {
+          "identity": {
+            "sections_jls": "4.6, 4.9, 8.4.8.3, 9.4.1.3, 11.2.3, 13, 15.12.2.5, 15.29",
+            "sections_jvms": "4.7.2, 5.4.3.3, 5.4.6, 6.5",
+            "specification": "JLS & JVMS Java SE 21",
+            "url": "https://docs.oracle.com/javase/specs/jls/se21/html/index.html"
+          },
+          "name": "The Java Language Specification and Java Virtual Machine Specification (Java SE 21 Edition)"
+        },
+        {
+          "identity": {
+            "specification": "Go Language Specification",
+            "url": "https://go.dev/ref/spec"
+          },
+          "name": "The Go Programming Language Specification (Interface Types, Method Sets, and Comparison Operators)"
+        },
+        {
+          "identity": {
+            "doi": "10.1287/mnsc.1060.0552",
+            "pages": "1015-1030",
+            "venue": "Management Science 52(7)",
+            "working_paper": "Harvard Business School Working Paper 05-016",
+            "year": "2006"
+          },
+          "name": "Exploring the Structure of Complex Software Designs: An Empirical Study of Open Source and Proprietary Code (MacCormack, Rusnak, & Baldwin, Management Science 2006)"
+        },
+        {
+          "identity": {
+            "doi_icsm": "10.1109/ICSM.1999.792498",
+            "doi_tse": "10.1109/TSE.2006.31",
+            "pages_icsm": "50-59",
+            "pages_tse": "193-208",
+            "venue": "ICSM 1999 and IEEE Transactions on Software Engineering 32(3) (2006)",
+            "year": "1999-2006"
+          },
+          "name": "Bunch: A Clustering Tool for the Recovery and Maintenance of Software System Structures & On the Automatic Modularization of Software Systems Using the Bunch Tool (Mancoridis et al., ICSM 1999; Mitchell & Mancoridis, IEEE TSE 2006)"
+        },
+        {
+          "identity": {
+            "article": "5233",
+            "arxiv": "1810.08473v3",
+            "doi": "10.1038/s41598-019-41695-z",
+            "venue": "Scientific Reports 9",
+            "year": "2019"
+          },
+          "name": "From Louvain to Leiden: Guaranteeing Well-Connected Communities (Traag, Waltman, & van Eck, Scientific Reports 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1109/ICSE.2015.136",
+            "pages": "69-78",
+            "venue": "Proceedings of the 37th International Conference on Software Engineering (ICSE 2015), Vol. 2",
+            "year": "2015"
+          },
+          "name": "Comparing Software Architecture Recovery Techniques Using Accurate Dependencies (Lutellier et al., ICSE 2015)"
+        },
+        {
+          "identity": {
+            "arxiv": "2607.23774",
+            "doi": "10.1145/3744916.3773114",
+            "venue": "Proceedings of the 48th IEEE/ACM International Conference on Software Engineering (ICSE 2026)",
+            "year": "2026"
+          },
+          "name": "SemRef: Enhancing Software Architecture Recovery with Semantic Refinement via Large Language Models (Zhang et al., ICSE 2026)"
+        },
+        {
+          "identity": {
+            "handle": "https://hdl.handle.net/10315/44298",
+            "institution": "York University",
+            "month": "July",
+            "year": "2026"
+          },
+          "name": "What Do LLM-Based Software Architecture Recovery Methods Actually Do? A Diagnostic Study (Quadri, York University MASc Thesis 2026)"
+        },
+        {
+          "identity": {
+            "arxiv": "2601.13007",
+            "year": "2026"
+          },
+          "name": "ArchAgent: Scalable Legacy Software Architecture Recovery with LLM Agents (Pan et al., 2026)"
+        },
+        {
+          "identity": {
+            "doi_jss": "10.1016/j.jss.2016.04.008",
+            "doi_scam": "10.1109/SCAM.2014.30",
+            "pages_jss": "140-158",
+            "pages_scam": "215-224",
+            "venue": "IEEE SCAM 2014 and Journal of Systems and Software 129 (2017)",
+            "year": "2014-2017"
+          },
+          "name": "Measuring Software Library Stability Through Historical Version Analysis & Semantic Versioning and Impact of Breaking Changes in the Maven Repository (Raemaekers, van Deursen, & Visser, SCAM 2014 / JSS 2017)"
+        },
+        {
+          "identity": {
+            "article": "61",
+            "doi": "10.1007/s10664-021-10052-y",
+            "venue": "Empirical Software Engineering 27",
+            "year": "2022"
+          },
+          "name": "Breaking Bad? Semantic Versioning and Impact of Breaking Changes in Maven Central (Ochoa, Degueule, Falleri, & Vinju, EMSE 2022)"
+        },
+        {
+          "identity": {
+            "article": "42",
+            "doi": "10.1007/s10664-024-10563-4",
+            "venue": "Empirical Software Engineering 30",
+            "year": "2025"
+          },
+          "name": "An Extended Study of Syntactic Breaking Changes in the Wild (Jayasuriya, Ou, Hegde, Terragni, Dietrich, & Blincoe, EMSE 2025)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2950290.2950325",
+            "pages": "109-120",
+            "venue": "Proceedings of the 2016 24th ACM SIGSOFT International Symposium on Foundations of Software Engineering (FSE 2016)",
+            "year": "2016"
+          },
+          "name": "How to Break an API: Cost Negotiation and Community Values in Three Software Ecosystems (Bogart, K\u00e4stner, Herbsleb, & Thung, FSE 2016)"
+        }
+      ],
+      "topics": [
+        "agents/architecture-recovery",
+        "agents/modularization",
+        "agents/api-compatibility",
+        "agents/benchmark-methodology",
+        "agents/reward-hacking",
+        "domains/graph-clustering",
+        "domains/software-architecture",
+        "pl/java-compatibility",
+        "pl/go-compatibility",
+        "pl/type-erasure",
+        "runtimes/jvm-linking",
+        "tooling/api-diffing",
+        "tooling/static-analysis",
+        "verification/compatibility-oracles"
+      ]
+    },
     "agent-behavioral-evaluation-judge-biases-code-review-and-prose-faithfulness": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -3806,6 +4018,187 @@
         "tooling/agent-harnesses"
       ]
     },
+    "agent-database-autotuning-optimizer-regressions-and-lock-convoys": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-11-21",
+            "repository": "postgres/postgres",
+            "revision": "9b5d4e3331753b3399e84965093109cac8f364bf"
+          },
+          "name": "PostgreSQL Relational Database Kernel and Official DDL/Locking Reference (postgres/postgres)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-08",
+            "repository": "HypoPG/hypopg",
+            "revision": "a0d0213d450397ed8739db00683b18cf7b091862"
+          },
+          "name": "HypoPG PostgreSQL Hypothetical Index Extension (HypoPG/hypopg)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-20",
+            "repository": "ankane/dexter",
+            "revision": "da35df3a8a95881d4ca20a9e2c1b8834f96523d3"
+          },
+          "name": "Dexter Automatic PostgreSQL Indexer (ankane/dexter)"
+        },
+        {
+          "identity": {
+            "commit_date": "2024-04-05",
+            "repository": "hyrise/index_selection_evaluation",
+            "revision": "61f08074d1505ee14bfccee772ff1a539d7910b4"
+          },
+          "name": "Hyrise Index Selection Evaluation Benchmark Platform (hyrise/index_selection_evaluation)"
+        },
+        {
+          "identity": {
+            "commit_date": "2020-09-19",
+            "repository": "cmu-db/ottertune",
+            "revision": "9758c65721d2624b813857ba9340d5550e899bda"
+          },
+          "name": "OtterTune Automated DBMS Configuration Tuning Service (cmu-db/ottertune)"
+        },
+        {
+          "identity": {
+            "commit_date": "2023-08-19",
+            "repository": "itrummer/dbbert",
+            "revision": "120a61c60f3679589bc89373a3edad71f70d73df"
+          },
+          "name": "DB-BERT Manual-Reading Database Parameter Tuning Agent (itrummer/dbbert)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-07-03",
+            "repository": "SolidLao/GPTuner",
+            "revision": "89401e61925c173f283cc283c847fb0943efdb37"
+          },
+          "name": "GPTuner Manual-Reading Database Tuning System (SolidLao/GPTuner)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-12-27",
+            "repository": "TsinghuaDatabaseGroup/DB-GPT",
+            "revision": "73cb3297fae0823c4bf8c3451513f7dbd3961f4b"
+          },
+          "name": "D-Bot / DB-GPT Multi-Agent Database Anomaly Diagnosis Framework (TsinghuaDatabaseGroup/DB-GPT)"
+        },
+        {
+          "identity": {
+            "cpython_binding": "3.13.15",
+            "sqlite_version": "3.53.4"
+          },
+          "name": "SQLite Embedded Relational Engine and VDBE Bytecode Interpreter"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3035918.3064029",
+            "pages": "1009-1024",
+            "venue": "Proceedings of the 2017 ACM International Conference on Management of Data (SIGMOD 2017)",
+            "year": "2017"
+          },
+          "name": "Automatic Database Management System Tuning Through Large-Scale Machine Learning (Van Aken, Pavlo, Gordon, & Zhang, SIGMOD 2017)"
+        },
+        {
+          "identity": {
+            "arxiv": "2112.10925",
+            "doi": "10.1145/3514221.3517843",
+            "pages": "190-203",
+            "venue": "Proceedings of the 2022 International Conference on Management of Data (SIGMOD 2022)",
+            "year": "2022"
+          },
+          "name": "DB-BERT: A Database Tuning Tool that \"Reads the Manual\" (Trummer, SIGMOD 2022)"
+        },
+        {
+          "identity": {
+            "arxiv": "2311.03157v2",
+            "doi": "10.14778/3659437.3659449",
+            "pages": "1939-1952",
+            "venue": "PVLDB 17(8)",
+            "year": "2024"
+          },
+          "name": "GPTuner: A Manual-Reading Database Tuning System via GPT-Guided Bayesian Optimization (Lao et al., PVLDB 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2312.01454v2",
+            "doi": "10.14778/3675034.3675043",
+            "pages": "2514-2527",
+            "venue": "PVLDB 17(10)",
+            "year": "2024"
+          },
+          "name": "D-Bot: Database Diagnosis System using Large Language Models (Zhou et al., PVLDB 2024)"
+        },
+        {
+          "identity": {
+            "doi_pvldb": "10.14778/2850583.2850594",
+            "doi_vldbj": "10.1007/s00778-017-0480-7",
+            "pages_pvldb": "204-215",
+            "pages_vldbj": "643-668",
+            "venue": "PVLDB 9(3) (2015) and The VLDB Journal 27(5) (2018)",
+            "year": "2015-2018"
+          },
+          "name": "How Good Are Query Optimizers, Really? & Query Optimization Through the Looking Glass (Leis et al., PVLDB 2015 / VLDBJ 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.14778/3407790.3407832",
+            "pages": "2382-2395",
+            "venue": "PVLDB 13(11)",
+            "year": "2020"
+          },
+          "name": "Magic Mirror in My Hand, Which is the Best in the Land? An Experimental Evaluation of Index Selection Algorithms (Kossmann et al., PVLDB 2020)"
+        },
+        {
+          "identity": {
+            "doi_pvldb": "10.14778/3231751.3231761",
+            "doi_sigmod": "10.1145/3299869.3324957",
+            "pages_pvldb": "1123-1136",
+            "pages_sigmod": "1241-1258",
+            "venue": "PVLDB 11(10) (2018) and Proceedings of the 2019 International Conference on Management of Data (SIGMOD 2019)",
+            "year": "2018-2019"
+          },
+          "name": "Plan Stitch & AI Meets AI: Leveraging Query Executions to Improve Index Recommendations (Ding et al., PVLDB 2018 / SIGMOD 2019)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3180155.3180194",
+            "pages": "800-810",
+            "venue": "Proceedings of the 40th International Conference on Software Engineering (ICSE 2018)",
+            "year": "2018"
+          },
+          "name": "How Not to Structure Your Database-Backed Web Applications: A Study of Performance Bugs in the Wild (Yang et al., ICSE 2018)"
+        },
+        {
+          "identity": {
+            "doi_icse": "10.1145/2568225.2568259",
+            "doi_tse": "10.1109/TSE.2016.2553039",
+            "pages_icse": "1001-1012",
+            "pages_tse": "1148-1161",
+            "venue": "ICSE 2014 and IEEE Transactions on Software Engineering 42(12) (2016)",
+            "year": "2014-2016"
+          },
+          "name": "Detecting Performance Anti-Patterns & Redundant Data Access in ORM Applications (Chen et al., ICSE 2014 / IEEE TSE 2016)"
+        }
+      ],
+      "topics": [
+        "agents/database-tuning",
+        "agents/anomaly-diagnosis",
+        "agents/query-optimization",
+        "agents/reward-hacking",
+        "domains/databases",
+        "domains/online-ddl",
+        "systems/query-optimizers",
+        "systems/index-selection",
+        "systems/lock-managers",
+        "systems/mvcc",
+        "systems/orm-performance",
+        "tooling/database-advisors",
+        "verification/regression-gating"
+      ]
+    },
     "agent-debugging-fault-localization-root-cause-diagnosis-and-execution-feedback": {
       "observed_at": "2026-11-21",
       "subjects": [
@@ -4418,6 +4811,242 @@
         "systems/cluster-scheduling",
         "vcs/merge-conflicts",
         "verification/n-version-programming"
+      ]
+    },
+    "agent-fuzzing-harness-synthesis-power-schedules-and-ctf-evaluation": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-11-22",
+            "repository": "llvm/llvm-project",
+            "revision": "92de73668376d228016ca28ad882e7ad86a257cf"
+          },
+          "name": "LLVM Project Compiler-RT LibFuzzer and Entropic Power Schedule (llvm/llvm-project)"
+        },
+        {
+          "identity": {
+            "commit_date": "2021-07-23",
+            "repository": "mboehme/aflfast",
+            "revision": "d1d54caf9850ca4afe2ac634a2a212aa6bb40032"
+          },
+          "name": "AFLFast Markov-Chain Power Schedule Implementation (mboehme/aflfast)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-10",
+            "repository": "google/oss-fuzz-gen",
+            "revision": "5105d97f0cb86ce885cd30a125af0acdf3fe40fd"
+          },
+          "name": "OSS-Fuzz-Gen LLM Fuzz Target Generation and Triage Framework (google/oss-fuzz-gen)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-06-20",
+            "repository": "ChatAFLndss/ChatAFL",
+            "revision": "dcf109e18a423e9e27766b4bf8292349db05f49e"
+          },
+          "name": "ChatAFL LLM-Guided Stateful Network Protocol Fuzzer (ChatAFLndss/ChatAFL)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-08-11",
+            "repository": "fuzz4all/fuzz4all",
+            "revision": "0bf42fe037c8761bdde61e1c37a0946e8103fba1"
+          },
+          "name": "Fuzz4All Universal LLM Compiler and Solver Fuzzer (fuzz4all/fuzz4all)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-09-24",
+            "repository": "andyzorigin/cybench",
+            "revision": "ca483c6443f17a20ba7d6bac3d274859a1721e51"
+          },
+          "name": "Cybench Cybersecurity Agent Evaluation Framework (andyzorigin/cybench)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-09-22",
+            "repository": "NYU-LLM-CTF/NYU_CTF_Bench",
+            "revision": "4c5744f55a31a58e03d6118c9dbb1c18e5bbdfa9"
+          },
+          "name": "NYU CTF Bench Offensive Security Dataset and Loader (NYU-LLM-CTF/NYU_CTF_Bench)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-07-17",
+            "repository": "NYU-LLM-CTF/nyuctf_agents",
+            "revision": "612190f298ae9e604f00370019beed4ba1f372f6"
+          },
+          "name": "NYU CTF Baseline Agent Scaffolds and Tool Verifiers (NYU-LLM-CTF/nyuctf_agents)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-07-16",
+            "repository": "SWE-agent/SWE-agent",
+            "revision": "3ea751c087f32b16e039a2233dd6eefecef325d5"
+          },
+          "name": "SWE-agent / EnIGMA Interactive CTF Agent Runtime (SWE-agent/SWE-agent)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-06-04",
+            "repository": "enigma-agent/benchmarks",
+            "revision": "c632a3c5d08f5f35eedc57f8c7a57be78defc013"
+          },
+          "name": "EnIGMA CTF Benchmark Suite Adapters (enigma-agent/benchmarks)"
+        },
+        {
+          "identity": {
+            "commit_date": "2023-09-10",
+            "repository": "ise-uiuc/TitanFuzz",
+            "revision": "a6d332e3f19ed2698bfd80a62e422d50b5dfb7f2"
+          },
+          "name": "TitanFuzz Deep-Learning Library Fuzzer (ise-uiuc/TitanFuzz)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-05-15",
+            "repository": "FuzzAnything/PromptFuzz",
+            "revision": "5f91d9a35323a10602f15155fd111d02a2abfd68"
+          },
+          "name": "PromptFuzz Coverage-Guided Fuzz Driver Synthesizer (FuzzAnything/PromptFuzz)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-05-16",
+            "repository": "FuzzAnything/Hopper",
+            "revision": "2603f56101da1178b75e9e5fa74106769f261a96"
+          },
+          "name": "Hopper Interpretative Library Fuzzer (FuzzAnything/Hopper)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-02-05",
+            "repository": "security-pride/CKGFuzzer",
+            "revision": "bb50d2fd81c19b82cdbf6f96832097705decd57e"
+          },
+          "name": "CKGFuzzer Code-Knowledge-Graph Fuzz Driver Generator (security-pride/CKGFuzzer)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-04-16",
+            "repository": "Samsung/UTopia",
+            "revision": "4c0cdac822ccb4dd69f8c84f5ebe4fe55a4f8624"
+          },
+          "name": "UTopia Unit-Test-Guided Fuzz Driver Generator (Samsung/UTopia)"
+        },
+        {
+          "identity": {
+            "arxiv": "2510.02185",
+            "year": "2025"
+          },
+          "name": "FalseCrashReducer: Mitigating False Positive Crashes in OSS-Fuzz-Gen Using Agentic LLMs (Amusuo et al., 2025)"
+        },
+        {
+          "identity": {
+            "arxiv": "2307.12469",
+            "doi": "10.1145/3650212.3680355",
+            "pages": "1223-1235",
+            "venue": "Proceedings of the 33rd ACM SIGSOFT International Symposium on Software Testing and Analysis (ISSTA 2024)",
+            "year": "2024"
+          },
+          "name": "How Effective Are They? Exploring Large Language Model Based Fuzz Driver Generation (Zhang et al., ISSTA 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2308.04748",
+            "doi": "10.1145/3597503.3639121",
+            "venue": "Proceedings of the 46th IEEE/ACM International Conference on Software Engineering (ICSE 2024), Article 126",
+            "year": "2024"
+          },
+          "name": "Fuzz4All: Universal Fuzzing with Large Language Models (Xia et al., ICSE 2024)"
+        },
+        {
+          "identity": {
+            "arxiv_fuzzgpt": "2304.02014",
+            "arxiv_titanfuzz": "2212.14834",
+            "doi_fuzzgpt": "10.1145/3597503.3623343",
+            "doi_titanfuzz": "10.1145/3597926.3598067",
+            "venue": "ACM ISSTA 2023 (pp. 423-435) and IEEE/ACM ICSE 2024 (Article 70)",
+            "year": "2023-2024"
+          },
+          "name": "TitanFuzz & FuzzGPT: LLM Fuzzing of Deep-Learning Libraries (Deng et al., ISSTA 2023 & ICSE 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.14722/ndss.2024.24556",
+            "venue": "Network and Distributed System Security Symposium (NDSS 2024)",
+            "year": "2024"
+          },
+          "name": "Large Language Model guided Protocol Fuzzing (ChatAFL, Meng et al., NDSS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv_hopper": "2309.03496",
+            "arxiv_promptfuzz": "2312.17677",
+            "doi_hopper": "10.1145/3576915.3616610",
+            "doi_promptfuzz": "10.1145/3658644.3670396",
+            "venue": "ACM CCS 2023 (pp. 1600-1614) and ACM CCS 2024 (pp. 3793-3807)",
+            "year": "2023-2024"
+          },
+          "name": "PromptFuzz & Hopper: Coverage-Guided Prompt Mutation and Interpretative Library Fuzzing (Lyu, Chen, et al., CCS 2023 & CCS 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2411.11532",
+            "doi": "10.1109/ICSE-Companion66252.2025.00079",
+            "pages": "243-254",
+            "venue": "IEEE/ACM ICSE-Companion 2025 (SEIP Track)",
+            "year": "2025"
+          },
+          "name": "CKGFuzzer: LLM-Based Fuzz Driver Generation Enhanced by Code Knowledge Graph (Xu et al., ICSE-Companion 2025)"
+        },
+        {
+          "identity": {
+            "pages_fuzzgen": "2271-2287",
+            "pages_rubick": "2867-2884",
+            "venue": "29th USENIX Security Symposium (2020) and 32nd USENIX Security Symposium (2023)",
+            "year": "2020-2023"
+          },
+          "name": "Consumer-Graph and Automata-Guided Fuzz Driver Synthesis (FuzzGen, USENIX Security 2020; RUBICK, USENIX Security 2023)"
+        },
+        {
+          "identity": {
+            "doi_aflfast_ccs": "10.1145/2976749.2978428",
+            "doi_aflfast_tse": "10.1109/TSE.2017.2785841",
+            "doi_boehme_falk": "10.1145/3368089.3409729",
+            "doi_entropic": "10.1145/3368089.3409698",
+            "venue": "ACM CCS 2016, IEEE TSE 2019, and ACM ESEC/FSE 2020 (pp. 678-689, 713-724)",
+            "year": "2016-2020"
+          },
+          "name": "Markov-Chain, Information-Theoretic, and Species-Scaling Greybox Fuzzing Laws (AFLFast, CCS 2016 / TSE 2019; Entropic & Boehme-Falk, ESEC/FSE 2020)"
+        },
+        {
+          "identity": {
+            "arxiv_cybench": "2408.08926",
+            "arxiv_enigma": "2409.16165",
+            "arxiv_nyuctf": "2406.05590",
+            "openreview_cybench": "tc90LV0yRL",
+            "venue": "NeurIPS 2024 Datasets & Benchmarks, ICLR 2025 Oral, and ICML 2025 (PMLR v267)",
+            "year": "2024-2025"
+          },
+          "name": "Offensive Cybersecurity CTF Agent Benchmarks and Interactive Tool Evaluations (NYU CTF Bench, NeurIPS 2024; Cybench, ICLR 2025; EnIGMA, ICML 2025)"
+        }
+      ],
+      "topics": [
+        "agents/fuzzing",
+        "agents/harness-synthesis",
+        "agents/crash-triage",
+        "agents/ctf-benchmarks",
+        "security/fuzzing",
+        "security/protocol-fuzzing",
+        "security/ctf-evaluation",
+        "llvm/libfuzzer",
+        "llvm/entropic",
+        "compilers/compiler-fuzzing",
+        "tooling/oss-fuzz-gen",
+        "verification/precondition-oracles"
       ]
     },
     "agent-handoff-compilation-problem-frames-and-conflict-attribution": {
@@ -6092,6 +6721,183 @@
         "agents/scaffolding-retirement",
         "tooling/agent-harnesses",
         "verification/experimental-design"
+      ]
+    },
+    "agent-rtl-synthesis-testbench-optimism-and-formal-equivalence-checking": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-08-15",
+            "release": "v2.0",
+            "repository": "hkust-zhiyao/RTLLM",
+            "revision": "51ed553d0ffd32797a1a0a13e051656bf302c81f"
+          },
+          "name": "RTLLM Open-Source Benchmark for Design RTL Generation (hkust-zhiyao/RTLLM)"
+        },
+        {
+          "identity": {
+            "commit_date": "2025-02-07",
+            "repository": "NVlabs/verilog-eval",
+            "revision": "c498220d0a52248f8e3fdffe279075215bde2da6",
+            "version": "v2.0.0"
+          },
+          "name": "VerilogEval Hardware Code Generation Benchmark v2 (NVlabs/verilog-eval)"
+        },
+        {
+          "identity": {
+            "commit_date": "2024-08-16",
+            "repository": "NVlabs/verilog-eval",
+            "revision": "4fa0ac4ed70ff1685114c25cd2e4c17cbba6a0c4",
+            "version": "release/1.0.0"
+          },
+          "name": "VerilogEval Hardware Code Generation Benchmark v1 (NVlabs/verilog-eval)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-06-08",
+            "repository": "NVlabs/cvdp_benchmark",
+            "revision": "8e894cf74414ab1eaea1e2b4e80a02f123df07b6",
+            "version": "v1.1.0"
+          },
+          "name": "Comprehensive Verilog Design Problems Benchmark (NVlabs/cvdp_benchmark)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-20",
+            "repository": "YosysHQ/yosys",
+            "revision": "11d972c2011064339498e292ad22e4a74f557f34"
+          },
+          "name": "Yosys Open SYnthesis Suite (YosysHQ/yosys)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-16",
+            "repository": "YosysHQ/sby",
+            "revision": "b21f778333efc1e7c33fe22b56d43f87e4f759d4"
+          },
+          "name": "SymbiYosys Formal Verification Front-End (YosysHQ/sby)"
+        },
+        {
+          "identity": {
+            "sections": "5.1.5, 5.1.8, 5.1.10, 5.1.13, 9.4",
+            "standard": "IEEE Std 1364-2005",
+            "year": "2005"
+          },
+          "name": "IEEE Standard for Verilog Hardware Description Language (IEEE Std 1364-2005)"
+        },
+        {
+          "identity": {
+            "sections": "6.11, 6.11.2, 11.4.5, 11.4.7, 11.4.9, 11.4.11, 12.4",
+            "standard": "IEEE Std 1800-2023",
+            "year": "2023"
+          },
+          "name": "IEEE Standard for SystemVerilog\u2014Unified Hardware Design, Specification, and Verification Language (IEEE Std 1800-2023)"
+        },
+        {
+          "identity": {
+            "python_version": "3.13.15"
+          },
+          "name": "CPython Standard-Library Verification Runtime"
+        },
+        {
+          "identity": {
+            "arxiv": "2212.11140",
+            "doi": "10.48550/arXiv.2212.11140",
+            "venue": "Design, Automation & Test in Europe Conference & Exhibition (DATE 2023)",
+            "year": "2023"
+          },
+          "name": "Benchmarking Large Language Models for Automated Verilog RTL Code Generation (Thakur et al., DATE 2023, VeriGen)"
+        },
+        {
+          "identity": {
+            "arxiv_v1": "2309.07544v2",
+            "arxiv_v2": "2408.11053v2",
+            "doi_v1": "10.48550/arXiv.2309.07544",
+            "venue": "ICCAD 2023, pp. 1-8; ICCAD 2024 / ACM TODAES 30(6):1-20 (2025)",
+            "year": "2023-2025"
+          },
+          "name": "VerilogEval: Evaluating Large Language Models for Verilog Code Generation & Revisiting VerilogEval (Liu et al., ICCAD 2023; Pinckney et al., ICCAD 2024 / ACM TODAES 2025)"
+        },
+        {
+          "identity": {
+            "arxiv_openllm_rtl": "2503.15112v1",
+            "arxiv_rtllm_v1": "2308.05345",
+            "venue": "29th ASP-DAC 2024, pp. 722-727; ICCAD 2024, pp. 1-9",
+            "year": "2024-2025"
+          },
+          "name": "RTLLM & OpenLLM-RTL: Open-Source Benchmarks and Datasets for LLM-Aided Design RTL Generation (Lu et al., ASP-DAC 2024; Liu et al., ICCAD 2024)"
+        },
+        {
+          "identity": {
+            "arxiv": "2506.14074v1",
+            "year": "2025"
+          },
+          "name": "Comprehensive Verilog Design Problems: A Next-Generation Benchmark Dataset for Evaluating Large Language Models and Agents on RTL Design and Verification (Pinckney et al., 2025, CVDP)"
+        },
+        {
+          "identity": {
+            "arxiv_autochip": "2311.04887v2",
+            "arxiv_rtlfixer": "2311.16543v3",
+            "venue": "61st ACM/IEEE Design Automation Conference (DAC 2024)",
+            "year": "2024"
+          },
+          "name": "RTLFixer & AutoChip: Iterative Compiler and Simulation Feedback for HDL Generation (Tsai et al., DAC 2024; Thakur et al., DAC 2024)"
+        },
+        {
+          "identity": {
+            "arxiv_chipnemo": "2311.00176v5",
+            "arxiv_mage": "2412.07822",
+            "arxiv_rome": "2407.18276",
+            "arxiv_rtlcoder": "2312.08617v5",
+            "doi_rtlcoder": "10.1109/LAD62341.2024.10691788",
+            "year": "2023-2024"
+          },
+          "name": "MAGE, ROME, ChipNeMo & RTLCoder: Multi-Agent, Hierarchical, and Domain-Adapted RTL Generation (Zhao et al., 2024; Nakkab et al., MLCAD 2024; Liu et al., 2024; Liu et al., IEEE LAD 2024)"
+        },
+        {
+          "identity": {
+            "arxiv_betterv": "2402.03375",
+            "arxiv_metrex": "2411.03471v2",
+            "arxiv_rtlrewriter": "2409.11414",
+            "doi_metrex": "10.1145/3658617.3697625",
+            "venue": "ICML 2024 (PMLR 235); ICCAD 2024; 30th ASP-DAC 2025, pp. 1-7",
+            "year": "2024-2025"
+          },
+          "name": "BetterV, RTLRewriter & MetRex: Synthesis-Guided Generation, E-Graph Rewriting, and Post-Synthesis Metric Reasoning (Pei et al., ICML 2024; Yao et al., ICCAD 2024; Abdelatty et al., ASP-DAC 2025)"
+        },
+        {
+          "identity": {
+            "arxiv_alpha_rtl": "2606.05253v1",
+            "arxiv_poet": "2603.19333v1",
+            "doi_alpha_rtl": "10.48550/arXiv.2606.05253",
+            "doi_poet": "10.48550/arXiv.2603.19333",
+            "year": "2026"
+          },
+          "name": "POET & Alpha-RTL: Evolutionary and Test-Time RL Optimization for RTL PPA Closure (Ping et al., 2026; Zhou et al., 2026)"
+        },
+        {
+          "identity": {
+            "pages": "2213-2217",
+            "venue": "37th Asilomar Conference on Signals, Systems & Computers",
+            "year": "2003"
+          },
+          "name": "A Taxonomy of Parallel Prefix Networks (Harris, Asilomar 2003)"
+        }
+      ],
+      "topics": [
+        "agents/ppa-optimization",
+        "agents/reward-hacking",
+        "agents/rtl-generation",
+        "domains/eda-synthesis",
+        "domains/hardware-rtl",
+        "pl/systemverilog-4state",
+        "smt/equivalence-checking",
+        "smt/k-induction",
+        "tooling/symbiyosys",
+        "tooling/yosys",
+        "verification/equivalence-checking",
+        "verification/hardware-testbenches"
       ]
     },
     "agent-scaffolding-automated-prompt-optimization-and-divergent-design-exploration": {

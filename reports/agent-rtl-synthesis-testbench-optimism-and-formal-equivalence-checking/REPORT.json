@@ -1,0 +1,177 @@
+{
+  "topics": [
+    "agents/ppa-optimization",
+    "agents/reward-hacking",
+    "agents/rtl-generation",
+    "domains/eda-synthesis",
+    "domains/hardware-rtl",
+    "pl/systemverilog-4state",
+    "smt/equivalence-checking",
+    "smt/k-induction",
+    "tooling/symbiyosys",
+    "tooling/yosys",
+    "verification/equivalence-checking",
+    "verification/hardware-testbenches"
+  ],
+  "subjects": [
+    {
+      "name": "RTLLM Open-Source Benchmark for Design RTL Generation (hkust-zhiyao/RTLLM)",
+      "identity": {
+        "commit_date": "2026-08-15",
+        "release": "v2.0",
+        "repository": "hkust-zhiyao/RTLLM",
+        "revision": "51ed553d0ffd32797a1a0a13e051656bf302c81f"
+      }
+    },
+    {
+      "name": "VerilogEval Hardware Code Generation Benchmark v2 (NVlabs/verilog-eval)",
+      "identity": {
+        "commit_date": "2025-02-07",
+        "repository": "NVlabs/verilog-eval",
+        "revision": "c498220d0a52248f8e3fdffe279075215bde2da6",
+        "version": "v2.0.0"
+      }
+    },
+    {
+      "name": "VerilogEval Hardware Code Generation Benchmark v1 (NVlabs/verilog-eval)",
+      "identity": {
+        "commit_date": "2024-08-16",
+        "repository": "NVlabs/verilog-eval",
+        "revision": "4fa0ac4ed70ff1685114c25cd2e4c17cbba6a0c4",
+        "version": "release/1.0.0"
+      }
+    },
+    {
+      "name": "Comprehensive Verilog Design Problems Benchmark (NVlabs/cvdp_benchmark)",
+      "identity": {
+        "commit_date": "2026-06-08",
+        "repository": "NVlabs/cvdp_benchmark",
+        "revision": "8e894cf74414ab1eaea1e2b4e80a02f123df07b6",
+        "version": "v1.1.0"
+      }
+    },
+    {
+      "name": "Yosys Open SYnthesis Suite (YosysHQ/yosys)",
+      "identity": {
+        "commit_date": "2026-11-20",
+        "repository": "YosysHQ/yosys",
+        "revision": "11d972c2011064339498e292ad22e4a74f557f34"
+      }
+    },
+    {
+      "name": "SymbiYosys Formal Verification Front-End (YosysHQ/sby)",
+      "identity": {
+        "commit_date": "2026-11-16",
+        "repository": "YosysHQ/sby",
+        "revision": "b21f778333efc1e7c33fe22b56d43f87e4f759d4"
+      }
+    },
+    {
+      "name": "IEEE Standard for Verilog Hardware Description Language (IEEE Std 1364-2005)",
+      "identity": {
+        "sections": "5.1.5, 5.1.8, 5.1.10, 5.1.13, 9.4",
+        "standard": "IEEE Std 1364-2005",
+        "year": "2005"
+      }
+    },
+    {
+      "name": "IEEE Standard for SystemVerilog—Unified Hardware Design, Specification, and Verification Language (IEEE Std 1800-2023)",
+      "identity": {
+        "sections": "6.11, 6.11.2, 11.4.5, 11.4.7, 11.4.9, 11.4.11, 12.4",
+        "standard": "IEEE Std 1800-2023",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "CPython Standard-Library Verification Runtime",
+      "identity": {
+        "python_version": "3.13.15"
+      }
+    },
+    {
+      "name": "Benchmarking Large Language Models for Automated Verilog RTL Code Generation (Thakur et al., DATE 2023, VeriGen)",
+      "identity": {
+        "arxiv": "2212.11140",
+        "doi": "10.48550/arXiv.2212.11140",
+        "venue": "Design, Automation & Test in Europe Conference & Exhibition (DATE 2023)",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "VerilogEval: Evaluating Large Language Models for Verilog Code Generation & Revisiting VerilogEval (Liu et al., ICCAD 2023; Pinckney et al., ICCAD 2024 / ACM TODAES 2025)",
+      "identity": {
+        "arxiv_v1": "2309.07544v2",
+        "arxiv_v2": "2408.11053v2",
+        "doi_v1": "10.48550/arXiv.2309.07544",
+        "venue": "ICCAD 2023, pp. 1-8; ICCAD 2024 / ACM TODAES 30(6):1-20 (2025)",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "RTLLM & OpenLLM-RTL: Open-Source Benchmarks and Datasets for LLM-Aided Design RTL Generation (Lu et al., ASP-DAC 2024; Liu et al., ICCAD 2024)",
+      "identity": {
+        "arxiv_openllm_rtl": "2503.15112v1",
+        "arxiv_rtllm_v1": "2308.05345",
+        "venue": "29th ASP-DAC 2024, pp. 722-727; ICCAD 2024, pp. 1-9",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Comprehensive Verilog Design Problems: A Next-Generation Benchmark Dataset for Evaluating Large Language Models and Agents on RTL Design and Verification (Pinckney et al., 2025, CVDP)",
+      "identity": {
+        "arxiv": "2506.14074v1",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "RTLFixer & AutoChip: Iterative Compiler and Simulation Feedback for HDL Generation (Tsai et al., DAC 2024; Thakur et al., DAC 2024)",
+      "identity": {
+        "arxiv_autochip": "2311.04887v2",
+        "arxiv_rtlfixer": "2311.16543v3",
+        "venue": "61st ACM/IEEE Design Automation Conference (DAC 2024)",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "MAGE, ROME, ChipNeMo & RTLCoder: Multi-Agent, Hierarchical, and Domain-Adapted RTL Generation (Zhao et al., 2024; Nakkab et al., MLCAD 2024; Liu et al., 2024; Liu et al., IEEE LAD 2024)",
+      "identity": {
+        "arxiv_chipnemo": "2311.00176v5",
+        "arxiv_mage": "2412.07822",
+        "arxiv_rome": "2407.18276",
+        "arxiv_rtlcoder": "2312.08617v5",
+        "doi_rtlcoder": "10.1109/LAD62341.2024.10691788",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "BetterV, RTLRewriter & MetRex: Synthesis-Guided Generation, E-Graph Rewriting, and Post-Synthesis Metric Reasoning (Pei et al., ICML 2024; Yao et al., ICCAD 2024; Abdelatty et al., ASP-DAC 2025)",
+      "identity": {
+        "arxiv_betterv": "2402.03375",
+        "arxiv_metrex": "2411.03471v2",
+        "arxiv_rtlrewriter": "2409.11414",
+        "doi_metrex": "10.1145/3658617.3697625",
+        "venue": "ICML 2024 (PMLR 235); ICCAD 2024; 30th ASP-DAC 2025, pp. 1-7",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "POET & Alpha-RTL: Evolutionary and Test-Time RL Optimization for RTL PPA Closure (Ping et al., 2026; Zhou et al., 2026)",
+      "identity": {
+        "arxiv_alpha_rtl": "2606.05253v1",
+        "arxiv_poet": "2603.19333v1",
+        "doi_alpha_rtl": "10.48550/arXiv.2606.05253",
+        "doi_poet": "10.48550/arXiv.2603.19333",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "A Taxonomy of Parallel Prefix Networks (Harris, Asilomar 2003)",
+      "identity": {
+        "pages": "2213-2217",
+        "venue": "37th Asilomar Conference on Signals, Systems & Computers",
+        "year": "2003"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
