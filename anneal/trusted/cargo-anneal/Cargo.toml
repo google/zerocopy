@@ -10,7 +10,7 @@
 name = "cargo-anneal"
 # FIXME(#4012): We must address all blockers listed in #4012 before permitting
 # stable releases.
-version = "0.2.0-alpha.5"
+version = "0.2.0-alpha.6"
 edition = "2024"
 description = "Formally verify Rust programs in Lean 4."
 license = "BSD-2-Clause OR Apache-2.0 OR MIT"
@@ -32,8 +32,8 @@ exclude = [
 [[package.metadata.exocrate]]
 os = "linux"
 arch = "x86_64"
-sha256 = "7387d26c927462cfbb34b4da35cc902002fc41703bae186454bc6467955dee6f"
-url = "https://github.com/google/zerocopy/releases/download/anneal-toolchain-v0.2.0-alpha.5/anneal-toolchain-linux-x86_64.tar.zst"
+sha256 = "55604d7f067c4e6103918a56180744becac1d595c2580d6daf43a07fcb48734a"
+url = "https://github.com/google/zerocopy/releases/download/anneal-toolchain-v0.2.0-alpha.6/anneal-toolchain-linux-x86_64.tar.zst"
 
 [[bin]]
 name = "cargo-anneal"
