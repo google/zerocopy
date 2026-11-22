@@ -2554,6 +2554,7 @@ mod tests {
         assert!(sources.contains("Anneal.BitVecArith"), "{sources:?}");
         assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
         assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
         assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
@@ -2708,6 +2709,7 @@ mod tests {
         assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
         assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
         assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
         assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
         let allowed_axioms: BTreeSet<&str> =
             BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
@@ -2721,6 +2723,7 @@ mod tests {
         assert!(!checker.stage.join("target-lib/Anneal/BitVecArith.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
         let export_dir = base.join("export-with-loopinv");
         assert!(checker.export_target_oleans(&export_dir).unwrap());
@@ -2731,6 +2734,7 @@ mod tests {
         assert!(!export_dir.join("Anneal/BitVecArith.olean").exists());
         assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
         assert!(!export_dir.join("Anneal/PTree.olean").exists());
+        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 
@@ -2825,6 +2829,7 @@ mod tests {
             .collect();
         assert!(sources.contains("Anneal.SpineForce"), "{sources:?}");
         assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
         assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
         assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
         assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
@@ -2839,6 +2844,7 @@ mod tests {
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
         assert!(checker.stage.join("target-lib/Anneal/SpineForce.olean").is_file());
         assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
@@ -2847,6 +2853,7 @@ mod tests {
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/SpineForce.olean").is_file());
         assert!(!export_dir.join("Anneal/PTree.olean").exists());
+        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
         assert!(!export_dir.join("Anneal/MirWp.olean").exists());
         assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
         assert!(!export_dir.join("Anneal/BitVec.olean").exists());
@@ -2988,6 +2995,7 @@ mod tests {
             .collect();
         assert!(sources.contains("Anneal.PTree"), "{sources:?}");
         assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LinearArith"), "{sources:?}");
         assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
         assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
         assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
@@ -3002,6 +3010,7 @@ mod tests {
         assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
         assert!(checker.stage.join("target-lib/Anneal/PTree.olean").is_file());
         assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/LinearArith.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
         assert!(!checker.stage.join("target-lib/Anneal/BitVec.olean").exists());
@@ -3010,9 +3019,128 @@ mod tests {
         assert!(checker.export_target_oleans(&export_dir).unwrap());
         assert!(export_dir.join("Anneal/PTree.olean").is_file());
         assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
+        assert!(!export_dir.join("Anneal/LinearArith.olean").exists());
         assert!(!export_dir.join("Anneal/MirWp.olean").exists());
         assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
         assert!(!export_dir.join("Anneal/BitVec.olean").exists());
+        assert!(!export_dir.join("Anneal/Unused.olean").exists());
+    }
+
+    #[test]
+    fn live_demand_driven_linear_arith_three_axiom_proof() {
+        let Some(lean) = explicit_verified_lean() else {
+            return;
+        };
+        let dir = tempfile::tempdir().unwrap();
+        let base = fs::canonicalize(dir.path()).unwrap();
+        let bundle = EmbeddedBundle::materialize(&base.join("bundle"));
+
+        // Unused bundled theory module with a deliberate elaboration error in
+        // its body (valid header only): proving it is pruned means it is never
+        // compiled.
+        let unused_path = base.join("Anneal_Unused.lean");
+        fs::write(
+            &unused_path,
+            "prelude\nimport Init.Prelude\ndef Anneal.Unused.broken : Nat := \"not_a_nat\"\n",
+        )
+        .unwrap();
+        let unused_sha = sha256_file(&unused_path, "fixture").unwrap();
+
+        let mut req = write_target_request(
+            &base.join("with-linear-arith"),
+            vec![
+                (
+                    "Model",
+                    TargetRole::Model,
+                    "prelude\nimport Init.Data.Int.Basic\n\
+                     namespace Trusted.MirSemantics\n\
+                     structure Crate where\n  program : Nat\n  specs : Nat → Prop\n\
+                     def UnitTheorem (c : Crate) : Prop := c.specs c.program\n",
+                ),
+                (
+                    "Captured",
+                    TargetRole::Capture,
+                    "prelude\nimport Model\ndef Captured.program : Nat := 0\n",
+                ),
+                (
+                    "Spec",
+                    TargetRole::Specification,
+                    "prelude\nimport Model\n\
+                     def Spec.specs (_ : Nat) : Prop :=\n  \
+                     (∀ i n : Nat, 2 * i + 1 ≤ 2 * n → i < n) ∧\n  \
+                     (∀ i n : Nat, 2 * i ≤ 2 * n + 1 → 2 * n + 1 ≤ 2 * i → False) ∧\n  \
+                     (∀ (x y : Int),\n    \
+                       Int.sub (Int.mul (Int.negOfNat 2) x) y ≤ Int.ofNat 5 →\n    \
+                       Int.negOfNat 3 ≤ Int.neg y →\n    \
+                       Int.negOfNat 4 ≤ x) ∧\n  \
+                     (∀ x : Nat, 0 ≤ x)\n",
+                ),
+                (
+                    "Expected",
+                    TargetRole::Expected,
+                    "prelude\nimport Captured\nimport Spec\n\
+                     def Expected.claim : Prop := Trusted.MirSemantics.UnitTheorem \
+                     (Trusted.MirSemantics.Crate.mk Captured.program Spec.specs)\n",
+                ),
+                (
+                    "Proof",
+                    TargetRole::Proof,
+                    "prelude\nimport Expected\nimport Anneal.LinearArith\n\
+                     theorem Proof.verify : Expected.claim :=\n  \
+                     ⟨Anneal.LinearArith.parity_stride_lt,\n   \
+                      Anneal.LinearArith.parity_cut_req_false,\n   \
+                      Anneal.LinearArith.int_sub_neg_mul_lower_bound,\n   \
+                      Anneal.LinearArith.nat_var_nonneg_no_hyps⟩\n",
+                ),
+            ],
+        );
+        bundle.attach(&mut req, false);
+        req.modules.push(TargetModule {
+            module: "Anneal.Unused".to_owned(),
+            source: unused_path,
+            expected_sha256: unused_sha,
+            role: TargetRole::Proof,
+        });
+
+        let mut checker = Checker::new(&bundle.root, Some(&lean)).unwrap();
+        let report = checker.run_target(&req).unwrap();
+        assert_eq!(report["replay"], Json::Bool(true));
+        assert_eq!(report["exactType"], Json::Bool(true));
+        let sources: BTreeSet<&str> = report["sources"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .map(|s| s["module"].as_str().unwrap())
+            .collect();
+        assert!(sources.contains("Anneal.LinearArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LoopInv"), "{sources:?}");
+        assert!(!sources.contains("Anneal.MirWp"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVec"), "{sources:?}");
+        assert!(!sources.contains("Anneal.BitVecArith"), "{sources:?}");
+        assert!(!sources.contains("Anneal.LeBytes"), "{sources:?}");
+        assert!(!sources.contains("Anneal.ListChunks"), "{sources:?}");
+        assert!(!sources.contains("Anneal.NatBitwise"), "{sources:?}");
+        assert!(!sources.contains("Anneal.SpineForce"), "{sources:?}");
+        assert!(!sources.contains("Anneal.PTree"), "{sources:?}");
+        assert!(!sources.contains("Anneal.Unused"), "{sources:?}");
+        let allowed_axioms: BTreeSet<&str> =
+            BTreeSet::from(["Classical.choice", "Quot.sound", "propext"]);
+        let used_axioms: BTreeSet<&str> =
+            report["axioms"].as_array().unwrap().iter().map(|a| a.as_str().unwrap()).collect();
+        assert!(used_axioms.is_subset(&allowed_axioms), "unexpected axioms: {used_axioms:?}");
+        assert!(checker.stage.join("target-lib/Anneal/LinearArith.olean").is_file());
+        assert!(!checker.stage.join("target-lib/Anneal/PTree.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/SpineForce.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/LoopInv.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/MirWp.olean").exists());
+        assert!(!checker.stage.join("target-lib/Anneal/Unused.olean").exists());
+        let export_dir = base.join("export-with-linear-arith");
+        assert!(checker.export_target_oleans(&export_dir).unwrap());
+        assert!(export_dir.join("Anneal/LinearArith.olean").is_file());
+        assert!(!export_dir.join("Anneal/PTree.olean").exists());
+        assert!(!export_dir.join("Anneal/SpineForce.olean").exists());
+        assert!(!export_dir.join("Anneal/LoopInv.olean").exists());
+        assert!(!export_dir.join("Anneal/MirWp.olean").exists());
         assert!(!export_dir.join("Anneal/Unused.olean").exists());
     }
 }
