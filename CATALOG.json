@@ -95949,6 +95949,65 @@
         "verification"
       ]
     },
+    "rustc-valtree-canonicalization-const-to-pat-structural-match-and-v0-mangling": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "commit_date": "2026-11-22",
+            "repository": "rust-lang/rust",
+            "revision": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1"
+          },
+          "name": "rustc (rust-lang/rust primary source)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-11-11",
+            "release": "1.102.0-nightly",
+            "repository": "rust-lang/rust",
+            "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1"
+          },
+          "name": "rustc 1.102.0-nightly"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-05-31",
+            "release": "1.98.0-nightly",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65"
+          },
+          "name": "rustc 1.98.0-nightly and Miri"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR semantics and capture boundary"
+        },
+        {
+          "identity": {
+            "release": "v4.34.1",
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+          },
+          "name": "Lean 4 kernel verifier"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rvv-lmul-vtype-hazards-arm-sme-streaming-za-tiles-and-ffload-speculation": {
       "observed_at": "2026-11-19",
       "subjects": [

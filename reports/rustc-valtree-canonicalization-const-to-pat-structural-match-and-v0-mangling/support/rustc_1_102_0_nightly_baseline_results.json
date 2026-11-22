@@ -1,0 +1,189 @@
+{
+  "timestamp_utc": "2026-11-21T18:22:14Z",
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "part_a_valtree_canonicalization": {
+    "padding_erasure_unification": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "SAME_TID=true V0=102 V1=102",
+      "run_stderr": ""
+    },
+    "miri_padding_direct_const": {
+      "rc": 1,
+      "stdout": "",
+      "stderr_head": "error: Undefined Behavior: constructing invalid value of type [u8; 8]: at [1], encountered uninitialized memory, but expected an integer\n --> src/main.rs:7:35\n  |\n7 |     let bytes: [u8; 8] = unsafe { core::mem::transmute(p) };\n  |                                   ^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n"
+    },
+    "miri_padding_valtree_const_param": {
+      "rc": 1,
+      "stdout": "",
+      "stderr_head": "error: Undefined Behavior: constructing invalid value of type [u8; 8]: at [1], encountered uninitialized memory, but expected an integer\n --> src/main.rs:9:14\n  |\n9 |     unsafe { core::mem::transmute(P) }\n  |              ^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n  |\n  = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n  = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n  = note: stack backtrace:\n          0: inspect::<Padded { a: 1, b: 2 }>\n              at src/main.rs:9:14: 9:37\n          1: main\n              at src/main.rs:12:17: 12:41\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n"
+    },
+    "ref_identity_erasure": {
+      "compile_rc": 0,
+      "stderr_head": "warning: the feature `unsized_const_params` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/a2_ref_erase.rs:2:30\n  |\n2 | #![feature(adt_const_params, unsized_const_params)]\n  |                              ^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #128028 <https://github.com/rust-lang/rust/issues/128028> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n",
+      "run_rc": 0,
+      "stdout": "REF_SAME_TID=true",
+      "run_stderr": ""
+    },
+    "valtree_array_match_size_sweep": {
+      "1000": {
+        "compile_rc": 0,
+        "err_line0": ""
+      },
+      "4000": {
+        "compile_rc": 0,
+        "err_line0": ""
+      },
+      "10000": {
+        "compile_rc": 0,
+        "err_line0": ""
+      },
+      "20000": {
+        "compile_rc": -11,
+        "err_line0": "error: rustc interrupted by SIGSEGV, printing backtrace"
+      },
+      "50000": {
+        "compile_rc": -11,
+        "err_line0": "error: rustc interrupted by SIGSEGV, printing backtrace"
+      },
+      "99999": {
+        "compile_rc": -11,
+        "err_line0": "error: rustc interrupted by SIGSEGV, printing backtrace"
+      },
+      "100001": {
+        "compile_rc": 1,
+        "err_line0": "error: maximum number of nodes exceeded in constant BIG"
+      }
+    },
+    "valtree_const_generic_arr_99999": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "CG_OK=99999",
+      "run_stderr": ""
+    },
+    "valtree_const_generic_arr_100001": {
+      "compile_rc": 1,
+      "stderr_head": "error: maximum number of nodes exceeded in constant main::{constant#0}\n --> <TMPDIR>/a3_cg_100001.rs:4:30\n  |\n4 | fn main() { let _ = ArrTag::<BIG>; println!(\"CG_OK=100001\"); }\n  |                              ^^^\n\nerror: aborting due to 1 previous error\n"
+    },
+    "valtree_dag_pat_d10": {
+      "compile_rc": 1,
+      "stderr_head": "error: const blocks cannot be used as patterns\n  --> <TMPDIR>/a3_dag_pat.rs:16:48\n   |\n16 | fn check(x: &Node) -> bool { matches!(x, const { &N10 }) }\n   |                                                ^^^^^^^^\n   |\n   = help: use a named `const`-item or an `if`-guard (`x if x == const { ... }`) instead\n\nerror: aborting due to 1 previous error\n"
+    },
+    "valtree_dag_cg_2pow18_memoized": {
+      "compile_rc": 0,
+      "stderr_head": "warning: the feature `unsized_const_params` is incomplete and may not be safe to use and/or cause compiler crashes\n --> <TMPDIR>/a3_dag_cg.rs:2:30\n  |\n2 | #![feature(adt_const_params, unsized_const_params)]\n  |                              ^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #128028 <https://github.com/rust-lang/rust/issues/128028> for more information\n  = note: `#[warn(incomplete_features)]` on by default\n\nwarning: 1 warning emitted\n",
+      "run_rc": 0,
+      "stdout": "DAG_CG_2POW18_DEPTH=18",
+      "run_stderr": ""
+    },
+    "valtree_cyclic_const": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0391]: cycle detected when simplifying constant for the type system `C`\n --> <TMPDIR>/a3_cycle.rs:4:1\n  |\n4 | const C: Cyc = Cyc(Some(&C));\n  | ^^^^^^^^^^^^\n  |\nnote: ...which requires const-evaluating + checking `C`...\n --> <TMPDIR>/a3_cycle.rs:4:26\n  |\n4 | const C: Cyc = Cyc(Some(&C));\n  |                          ^\n  = note: ...which again requires simplifying constant for the type system `C`, completing the cycle\n  = note: cycle used when simplifying constant for the type system `C`\n  = note: for more information, see <https://rustc-dev-guide.rust-lang.org/overview.html#queries> and <https://rustc-dev-guide.rust-lang.org/query.html>\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0391`."
+    }
+  },
+  "part_b_const_to_pat_and_structural_eq": {
+    "active_variant_empty_skips_nonstructural_payload": {
+      "compile_rc": 0,
+      "stderr_head": "warning: field `0` is never read\n --> <TMPDIR>/b1_empty.rs:2:15\n  |\n2 | struct Manual(u8);\n  |        ------ ^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: variant `Full` is never constructed\n --> <TMPDIR>/b1_empty.rs:5:23\n  |\n5 | enum Wrap<T> { Empty, Full(T) }\n  |      ----             ^^^^\n  |      |\n  |      variant in this enum",
+      "run_rc": 0,
+      "stdout": "ACTIVE_VARIANT_EMPTY_MATCHES=true EQ=true",
+      "run_stderr": ""
+    },
+    "active_variant_full_rejects_nonstructural_payload": {
+      "compile_rc": 1,
+      "stderr_head": "error: constant of non-structural type `Manual` in a pattern\n --> <TMPDIR>/b1_full.rs:7:53\n  |\n2 | struct Manual(u8);\n  | ------------- `Manual` must be annotated with `#[derive(PartialEq)]` to be usable in patterns\n...\n6 | const C_FULL: Wrap<Manual> = Wrap::Full(Manual(1));\n  | -------------------------- constant defined here\n7 | fn main() { let _ = matches!(Wrap::Full(Manual(1)), C_FULL); }\n  |                                                     ^^^^^^ constant of non-structural type\n  |\nnote: the `PartialEq` trait must be derived, manual `impl`s are not sufficient; see https://doc.rust-lang.org/stable/std/marker/trait.StructuralPartialEq.html for details\n --> <TMPDIR>/b1_full.rs:3:1\n  |\n3 | impl PartialEq for Manual { fn eq(&self, _: &Self) -> bool { false } }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^\nhelp: add a condition to the match arm checking for equality\n  |"
+    },
+    "manual_partialeq_direct_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error: constant of non-structural type `Manual` in a pattern\n --> <TMPDIR>/b2_manual.rs:5:41\n  |\n2 | struct Manual(u8);\n  | ------------- `Manual` must be annotated with `#[derive(PartialEq)]` to be usable in patterns\n3 | impl PartialEq for Manual { fn eq(&self, o...\n4 | const M: Manual = Manual(5);\n  | --------------- constant defined here\n5 | fn main() { let _ = matches!(Manual(5), M); }\n  |                                         ^ constant of non-structural type\n  |\nnote: the `PartialEq` trait must be derived, manual `impl`s are not sufficient; see https://doc.rust-lang.org/stable/std/marker/trait.StructuralPartialEq.html for details\n --> <TMPDIR>/b2_manual.rs:3:1\n  |\n3 | impl PartialEq for Manual { fn eq(&self, other: &Self) -> bool { self.0 =...\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^\nhelp: add a condition to the match arm checking for equality\n  |"
+    },
+    "const_fn_non_const_partialeq_allowed": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "CONST_FN_MATCH T=true F=false",
+      "run_stderr": ""
+    },
+    "float_pos_neg_zero_match": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "mir_len": 3428,
+      "mir_snippet": "// WARNING: This output format is intended for human consumers only\n// and is subject to change without notice. Knock yourself out.\n// HINT: See also -Z dump-mir for MIR at specific points during compilation.\nconst POS_ZERO: f64 = const 0f64;\n\nconst NEG_ZERO: f64 = const -0f64;\n\nfn match_pos_zero(_1: f64) -> bool {\n    debug x => _1;\n    let mut _0: bool;\n    let mut _2: bool;\n\n    bb0: {\n        _2 = Eq(const 0f64, copy _1);\n        switchInt(move _2) -> [0: bb1, otherwise: bb2];\n    }\n\n    bb1: {\n        _0 = const false;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _0 = const true;\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}\n\nfn match_neg_zero(_1: f64) -> bool {\n    debug x => _1;\n    let mut _0: bool;\n    let mut _2: bool;\n\n    bb0: {\n        _2 = Eq(const -0f64, copy _1);\n        switchInt(move _2) -> [0: bb1, otherwise: bb2];\n    }\n\n    bb1: {\n        _0 = const false;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _0 = const true;\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}\n\nfn main() -> () {\n    let mut _0: ();\n    let _1: ();\n    let mut _2: std::fmt::Arguments<'_>;\n    let _3: (&bool, &bool, &bool);\n    let mut _4: &bool;\n    let _5: bool;\n    let mut _6: &bool;\n    let _7: bool;\n    let mut _8: &bool;\n    let _9: bool;\n    let mut _11: core::fmt::rt::Argument<'_>;\n    let mut _12: core::fmt::rt::Argument<'_>;\n    let mut _13: core::fmt::rt::Argument<'_>;\n    let mut _14: &[u8; 61];\n    let _15: &[core::fmt::rt::Argument<'_>; 3];\n    let mut _16: &bool;\n    let mut _17: &bool;\n    let mut _18: &bool;\n    scope 1 {\n        debug args => _3;\n        let _10: [core::fmt::rt::Argument<'_>; 3];\n        scope 2 {",
+      "run_rc": 0,
+      "stdout": "NEG0_MATCHES_POS0=true POS0_MATCHES_NEG0=true NAN_MATCHES_0=false",
+      "run_stderr": ""
+    },
+    "float_nan_pattern_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error: cannot use NaN in patterns\n --> <TMPDIR>/b3_nan.rs:2:39\n  |\n1 | const MY_NAN: f64 = f64::NAN;\n  | ----------------- constant defined here\n2 | fn main() { let _ = matches!(0.0_f64, MY_NAN); }\n  |                                       ^^^^^^ evaluates to `NaN`, which is not allowed in patterns\n  |\n  = note: NaNs compare inequal to everything, even themselves, so this pattern would never match\n  = help: try using the `is_nan` method instead\n\nerror: aborting due to 1 previous error\n"
+    },
+    "float_const_param_ty_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error[E0741]: `f64` is forbidden as the type of a const generic parameter\n --> <TMPDIR>/b3_flt_param.rs:2:22\n  |\n2 | struct FTag<const F: f64>;\n  |                      ^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0741`."
+    },
+    "raw_ptr_without_provenance_allowed": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "INT_PTR_MATCH=true MISMATCH=false",
+      "run_stderr": ""
+    },
+    "raw_ptr_with_provenance_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error: function pointers and raw pointers not derived from integers in patterns behave unpredictably and should not be relied upon\n --> <TMPDIR>/b4_provptr.rs:3:47\n  |\n2 | const PROV_PTR: *const u8 = &X as *const u8;\n  | ------------------------- constant defined here\n3 | fn main() { let _ = matches!(&X as *const u8, PROV_PTR); }\n  |                                               ^^^^^^^^ can't be used in patterns\n  |\n  = note: see https://github.com/rust-lang/rust/issues/70861 for details\n\nerror: aborting due to 1 previous error\n"
+    },
+    "wide_raw_ptr_without_provenance_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error: function pointers and raw pointers not derived from integers in patterns behave unpredictably and should not be relied upon\n --> <TMPDIR>/b4_wideptr.rs:5:25\n  |\n2 | const WIDE_INT_PTR: *const [u8] = core::ptr::slice_from_raw_parts(core::p...\n  | ------------------------------- constant defined here\n...\n5 |     let _ = matches!(p, WIDE_INT_PTR);\n  |                         ^^^^^^^^^^^^ can't be used in patterns\n  |\n  = note: see https://github.com/rust-lang/rust/issues/70861 for details\n\nerror: aborting due to 1 previous error\n"
+    },
+    "fn_ptr_pattern_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error: function pointers and raw pointers not derived from integers in patterns behave unpredictably and should not be relied upon\n --> <TMPDIR>/b4_fnptr.rs:3:46\n  |\n2 | const FP: fn() = helper;\n  | -------------- constant defined here\n3 | fn main() { let _ = matches!(helper as fn(), FP); }\n  |                                              ^^ can't be used in patterns\n  |\n  = note: see https://github.com/rust-lang/rust/issues/70861 for details\n\nerror: aborting due to 1 previous error\n"
+    },
+    "union_pattern_rejected": {
+      "compile_rc": 1,
+      "stderr_head": "error: cannot use unions in constant patterns\n --> <TMPDIR>/b4_union.rs:5:42\n  |\n4 | const CU: U = U { a: 1 };\n  | ----------- constant defined here\n5 | fn main() { let _ = matches!(U { a: 1 }, CU); }\n  |                                          ^^ can't use a `union` here\n\nerror: aborting due to 1 previous error\n"
+    },
+    "padded_struct_pattern_ignores_padding": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "PAD_PAT_MATCH=true",
+      "run_stderr": ""
+    },
+    "non_exhaustive_const_param_without_adt_feature": {
+      "compile_rc": 1,
+      "stderr_head": "error: the trait `ConstParamTy` may not be implemented for this type\n --> <TMPDIR>/b6_min_only.rs:6:8\n  |\n4 | #[non_exhaustive]\n  | ----------------- caused by this attribute\n5 | #[derive(PartialEq, Eq, ConstParamTy)]\n  |                         ------------ in this derive macro expansion\n6 | struct NonExh { x: u8 }\n  |        ^^^^^^ non exhaustive const params are forbidden\n\nerror: aborting due to 1 previous error\n"
+    },
+    "non_exhaustive_const_param_with_adt_feature": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "NONEXH_WITH_FEATURE_OK",
+      "run_stderr": ""
+    }
+  },
+  "part_c_v0_const_generic_mangling": {
+    "compile_rc": 0,
+    "defined_symbols": [
+      "_RINvCs8V4Y6dIR9gp_8c_mangle10mangle_arrKAh1_h2_h3_EEB2_",
+      "_RINvCs8V4Y6dIR9gp_8c_mangle10mangle_i32Kl2a_EB2_",
+      "_RINvCs8V4Y6dIR9gp_8c_mangle10mangle_i32Kln2a_EB2_",
+      "_RINvCs8V4Y6dIR9gp_8c_mangle10mangle_padKVNtB2_6PaddedS1ah1_1bm2_EEB2_",
+      "_RINvCs8V4Y6dIR9gp_8c_mangle10mangle_refKRh7_EB2_",
+      "_RINvCs8V4Y6dIR9gp_8c_mangle10mangle_strKRe6869_EB2_",
+      "_RINvCs8V4Y6dIR9gp_8c_mangle10mangle_tupKVNtB2_11TupleStructTh9_b1_EEB2_",
+      "_RINvCs8V4Y6dIR9gp_8c_mangle11mangle_enumKVNtNtB2_6Choice3TupTt201_EEB2_",
+      "_RINvCs8V4Y6dIR9gp_8c_mangle11mangle_enumKVNtNtB2_6Choice4UnitUEB2_",
+      "_RINvCs8V4Y6dIR9gp_8c_mangle11mangle_enumKVNtNtB2_6Choice5NamedS3tagan3_EEB2_",
+      "_RINvCs8V4Y6dIR9gp_8c_mangle18mangle_dup_backrefKVNtB2_6PaddedS1ah1_1bm2_EKBK_EB2_"
+    ],
+    "mangle_pad_symbol_count": 1,
+    "mangle_ref_symbol_count": 1,
+    "mangle_dup_backref_symbols": [
+      "_RINvCs8V4Y6dIR9gp_8c_mangle18mangle_dup_backrefKVNtB2_6PaddedS1ah1_1bm2_EKBK_EB2_"
+    ]
+  }
+}
