@@ -1,0 +1,142 @@
+{
+  "topics": [
+    "agents/communication-artifacts",
+    "agents/authorship-provenance",
+    "agents/discourse-cohesion",
+    "agents/commit-messages",
+    "agents/bug-reproduction",
+    "vcs/commit-messages",
+    "vcs/authorship-trailers",
+    "tooling/architecture-decision-records",
+    "tooling/code-comments",
+    "tooling/bug-reports",
+    "verification/test-generation"
+  ],
+  "subjects": [
+    {
+      "name": "WhatMakesAGoodCM Commit-Message Quality Dataset and Bi-LSTM Classifier (WhatMakesAGoodCM/What-Makes-a-Good-Commit-Message; Tian et al., ICSE 2022)",
+      "identity": {
+        "arxiv": "2202.02974v1",
+        "doi": "10.1145/3510003.3510205",
+        "repository": "WhatMakesAGoodCM/What-Makes-a-Good-Commit-Message",
+        "revision": "2f7c1e33f15e36e333af4401bd28d11c691b13f3",
+        "year": "2022-2023",
+        "zenodo": "10.5281/zenodo.5763753"
+      }
+    },
+    {
+      "name": "CommitBench Curated Commit Message Generation Benchmark and Hygiene Analyzers (maxscha/commitbench; Schall, Czinczoll, & de Melo, SANER 2024)",
+      "identity": {
+        "arxiv": "2403.05188v1",
+        "doi": "10.1109/SANER60148.2024.00080",
+        "repository": "maxscha/commitbench",
+        "revision": "3219f9ceb187f878b54b65121f3778f67c5dc935",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "RACE Retrieval-Augmented Commit Message Generation Pipeline (DeepSoftwareAnalytics/RACE; Shi et al., EMNLP 2022)",
+      "identity": {
+        "arxiv": "2203.02700v3",
+        "doi": "10.18653/v1/2022.emnlp-main.372",
+        "repository": "DeepSoftwareAnalytics/RACE",
+        "revision": "cab39487ff94d6ebbfbfec3bb8821435767b38f4",
+        "year": "2022",
+        "zenodo": "10.5281/zenodo.7196893"
+      }
+    },
+    {
+      "name": "History-Aware Commit Message Completion and CommitChronicle Filter Audit (JetBrains-Research/commit_message_generation; Eliseeva et al., ASE 2023)",
+      "identity": {
+        "arxiv": "2308.07655v1",
+        "doi": "10.1109/ASE56229.2023.00078",
+        "repository": "JetBrains-Research/commit_message_generation",
+        "revision": "073f8e9d501fb4e35876b73743906fd2b258a7ba",
+        "year": "2023",
+        "zenodo": "10.5281/zenodo.8189043"
+      }
+    },
+    {
+      "name": "ArchAI_ADR Architectural Design Decision Generation Benchmark (sa4s-serc/ArchAI_ADR; Dhar, Vaidhyanathan, & Varma, IEEE ICSA 2024)",
+      "identity": {
+        "arxiv": "2403.01709v1",
+        "doi": "10.1109/ICSA59870.2024.00016",
+        "repository": "sa4s-serc/ArchAI_ADR",
+        "revision": "858974bd1c9166960e5210b8bd2077b3f43b3669",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "DRAFT Domain-Specific Retrieval-Augmented Few-Shot Fine-Tuning for ADRs (sa4s-serc/LLM4ADR; Dhar et al., 2025)",
+      "identity": {
+        "arxiv": "2504.08207v1",
+        "doi": "10.2139/ssrn.5217607",
+        "repository": "sa4s-serc/LLM4ADR",
+        "revision": "27a37d332a48868c4fc66f1a7ce3b54fb7ff9209",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "LIBRO Execution-Filtered Few-Shot LLM Bug Reproduction Pipeline and Defects4J/GHRB Replication Artifacts (coinse/libro; Kang, Yoon, & Yoo, ICSE 2023)",
+      "identity": {
+        "arxiv": "2209.11515v3",
+        "doi": "10.1109/ICSE48619.2023.00194",
+        "repository": "coinse/libro",
+        "revision": "645473dbc9a8d4194d815e9be87ae7bdbeb4d968",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "LearningToUpdateNLComments Edit-Conditioned Comment Co-Evolution Model (panthap2/LearningToUpdateNLComments; Panthaplackel et al., ACL 2020)",
+      "identity": {
+        "arxiv": "2004.12169v2",
+        "doi": "10.18653/v1/2020.acl-main.168",
+        "repository": "panthap2/LearningToUpdateNLComments",
+        "revision": "060d14bfffd3ddcf1192b35a3852ed4b0bc4f7d8",
+        "year": "2020"
+      }
+    },
+    {
+      "name": "Deep Just-In-Time Comment-Code Inconsistency Detection Artifact (panthap2/deep-jit-inconsistency-detection; Panthaplackel et al., AAAI 2021)",
+      "identity": {
+        "arxiv": "2010.01625v2",
+        "doi": "10.1609/aaai.v35i1.16119",
+        "repository": "panthap2/deep-jit-inconsistency-detection",
+        "revision": "5879fd54daa4212b60f29e95ffc94e6a23438fed",
+        "year": "2021-2025"
+      }
+    },
+    {
+      "name": "Industrial Change Comprehension, Context-Augmented Commit Message Generation, and OSS ADR Studies (Tao et al. 2012, 2021; Li et al. 2024, 2025; Imani et al. 2025; Ren et al. 2026; Tyree & Akerman 2005; Nygard 2011; Buchgeher et al. 2023; Karan et al. 2026)",
+      "identity": {
+        "arxiv": "2107.05373v3; 2408.02502v2; 2501.09861v1; 2608.22004v1; 2609.03721v1",
+        "doi": "10.1145/2393596.2393656; 10.1109/ICSME52107.2021.00018; 10.1145/3643760; 10.1109/ICSE55347.2025.00048; 10.1109/MS.2005.27; 10.1109/ACCESS.2023.3287654; 10.1007/978-3-032-39143-8_19",
+        "year": "2005-2026"
+      }
+    },
+    {
+      "name": "Bug-Report Information Asymmetry and Source-Code Comment Quality Foundations (Bettenburg et al., FSE 2008; Steidl, Hummel, & Juergens, ICPC 2013)",
+      "identity": {
+        "doi": "10.1145/1453101.1453146; 10.1109/ICPC.2013.6613836",
+        "year": "2008-2013"
+      }
+    },
+    {
+      "name": "Psycholinguistic Discourse Cohesion, Syntactic Locality, Grounding, and Readability-Formula Critiques (Davison & Kantor 1982; Gopen & Swan 1990; Britton & Gulgoz 1991; Clark & Brennan 1991; McNamara et al. 1996; Gibson 1998; Nickerson 1999; Redish 2000; Bailin & Grafstein 2001)",
+      "identity": {
+        "doi": "10.2307/747483; 10.1037/0022-0663.83.3.329; 10.1037/10096-006; 10.1207/s1532690xci1401_1; 10.1016/S0010-0277(98)00034-1; 10.1037/0033-2909.125.6.737; 10.1145/344599.344637; 10.1016/S0271-5309(01)00005-2",
+        "venue": "Reading Research Quarterly 17(2):187-209; American Scientist 78(6):550-558; J. Educational Psychology 83(3):329-345; Cognition and Instruction 14(1):1-43; Cognition 68(1):1-76; Psychological Bulletin 125(6):737-759; ACM JCD 24(3):132-137; Language & Communication 21(3):285-301",
+        "year": "1982-2001"
+      }
+    },
+    {
+      "name": "AI-Authorship Disclosure, Provenance Trailer Confounders, and Signature-Free Commit Detection Studies (Huang et al. 2020; Reif et al. 2025; Schilke & Reimann 2025; Gai et al. 2025/2026; Zi et al. 2025/2026; Prajod et al. 2026; Zheng et al. 2026; Yu et al. 2026; Butler et al. 2026; Horikawa et al. 2026)",
+      "identity": {
+        "arxiv": "2509.21891v3; 2601.09620v1; 2606.22711v1; 2610.36229v1; 2611.18572v1",
+        "doi": "10.1145/3368089.3409681; 10.1073/pnas.2426766122; 10.1016/j.obhdp.2025.104405; 10.2139/ssrn.5255039; 10.1111/jasp.70084",
+        "year": "2020-2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

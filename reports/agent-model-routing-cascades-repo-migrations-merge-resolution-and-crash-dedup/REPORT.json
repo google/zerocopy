@@ -1,0 +1,218 @@
+{
+  "topics": [
+    "agents/model-routing",
+    "agents/cascades",
+    "agents/speculative-execution",
+    "agents/repository-migrations",
+    "agents/merge-resolution",
+    "agents/crash-deduplication",
+    "vcs/three-way-merge",
+    "vcs/merge-conflict-resolution",
+    "tooling/code-migration",
+    "tooling/crash-bucketing",
+    "verification/semantic-merge-auditing"
+  ],
+  "subjects": [
+    {
+      "name": "RouteLLM Preference-Trained Pre-Query Router (lm-sys/RouteLLM; Ong et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2406.18665v4",
+        "repository": "lm-sys/RouteLLM",
+        "revision": "0b64fdafe049e596a3f5657c219329f24af24198",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "FrugalGPT Budget-Constrained Sequential LLM Cascade (stanford-futuredata/FrugalGPT; Chen, Zaharia, & Zou, TMLR 2024)",
+      "identity": {
+        "arxiv": "2305.05176v1",
+        "repository": "stanford-futuredata/FrugalGPT",
+        "revision": "2b23e6acbd4b39f71912816640dcc59e45aa4b5e",
+        "year": "2023-2024"
+      }
+    },
+    {
+      "name": "AutoMix Self-Verification and Discrete POMDP Meta-Verifier Cascade (automix-llm/automix; Aggarwal et al., NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2310.12963v5",
+        "repository": "automix-llm/automix",
+        "revision": "531af3ee3c4e4f4a53da1ffbc91dec4d6bb73781",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "Aider ArchitectCoder Role-Split Planning and Fresh-Context Editor Handoff (Aider-AI/aider, scoped to architect_coder.py and architect_prompts.py)",
+      "identity": {
+        "repository": "Aider-AI/aider",
+        "revision": "5dc9490bb35f9729ef2c95d00a19ccd30c26339c",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Speculative Actions Parallel Draft-Action Speculation Harness (naimengye/speculative-action; Ye et al., 2025-2026)",
+      "identity": {
+        "arxiv": "2510.04371v2",
+        "repository": "naimengye/speculative-action",
+        "revision": "dc938b9ef7474caf07fe4ad16549c1fa8c7d268c",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Dynamic Speculative Agent Planning (DSP; guanyilin428/Dynamic-Speculative-Planning; Guan et al., 2025)",
+      "identity": {
+        "arxiv": "2509.01920v3",
+        "repository": "guanyilin428/Dynamic-Speculative-Planning",
+        "revision": "40649e11f72cd0e93b8470f0fea3a4bafa54ae01",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Speculative Tool Overlap and Out-of-Order Sandbox Commit Studies (PASTE, Sui et al. 2026; TomasuLLM, Yu et al. 2026)",
+      "identity": {
+        "arxiv": "2603.18897v3; 2609.38201v2",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "PyMigBench-2.0, PyMigTax, and LLM-PyMig Python Library Migration Suite (ualberta-smr/PyMigBench; Islam et al., MSR 2023, FSE 2024, ASE 2025)",
+      "identity": {
+        "arxiv": "2504.13272v2",
+        "doi": "10.1109/MSR59073.2023.00075; 10.1145/3643731; 10.1109/ASE63991.2025.00077",
+        "repository": "ualberta-smr/PyMigBench",
+        "revision": "d8ffb982d23e1bda2a844bd4a6f7b451e192bd5b",
+        "version": "PyMigBench-2.0",
+        "year": "2023-2025"
+      }
+    },
+    {
+      "name": "MigrationBench Java 8-to-17 Repository-Level Migration Benchmark (amazon-science/MigrationBench; Liu et al., ACM SIGKDD 2026)",
+      "identity": {
+        "arxiv": "2505.09569v3",
+        "doi": "10.1145/3770855.3817526",
+        "repository": "amazon-science/MigrationBench",
+        "revision": "a022ab3c622deac52f9e8deb4c1111174615301a",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "RepoTransBench Multi-Language Repository Translation Benchmark and RepoTransAgent (DeepSoftwareAnalytics/RepoTransBench; Wang et al., 2024-2025)",
+      "identity": {
+        "arxiv": "2412.17744v2",
+        "repository": "DeepSoftwareAnalytics/RepoTransBench",
+        "revision": "f9f89ea27ca886571a5e59a8bb9a25deab5bd1c2",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "ConGra Merge-Conflict Resolution Benchmark and Metric Implementation (HKU-System-Security-Lab/ConGra; Zhang et al., 2024)",
+      "identity": {
+        "arxiv": "2409.14121v1",
+        "repository": "HKU-System-Security-Lab/ConGra",
+        "revision": "c33fc916536497da754e2c0dd6376bce9e921456",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Merge-Bench 11-Language Git Merge-Conflict Evaluation Harness (benedikt-schesch/Merge-Bench; Schesch & Ernst, ICPR 2026 / LNCS)",
+      "identity": {
+        "arxiv": "2605.25890v1",
+        "doi": "10.1007/978-3-032-31397-3_41",
+        "repository": "benedikt-schesch/Merge-Bench",
+        "revision": "804a31e017f3df6526cd33e63f3bd58c7d06b6fe",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "LLMerge GRPO Conflict-Resolution Training Harness for LLMergeJ (benedikt-schesch/LLMerge; Schesch & Ernst, ICPR 2026 / LNCS)",
+      "identity": {
+        "arxiv": "2605.25890v1",
+        "doi": "10.1007/978-3-032-31397-3_41",
+        "repository": "benedikt-schesch/LLMerge",
+        "revision": "e90735eafcf057571c79912c95f20f3bd96a96d4",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "SBCR and MergeGen Conflict-Resolution Similarity Study (gems-uff/sbcr_study; Campos Junior & Murta, 2026; Dong et al., ASE 2023)",
+      "identity": {
+        "arxiv": "2605.16646v1",
+        "doi": "10.1109/ASE56229.2023.00155",
+        "repository": "gems-uff/sbcr_study",
+        "revision": "fcb7a99b011324fe13dbc20b7c02f0b2584cf322",
+        "year": "2023-2026"
+      }
+    },
+    {
+      "name": "Structured, Neural, and LLM 3-Way Merge-Conflict Resolution Studies (Pan et al., ICSE 2021; DeepMerge, IEEE TSE 2023; MergeBERT, ESEC/FSE 2022; GMerge, ISSTA 2022; ConflictBench, JSS 2024; Schesch et al., ASE 2024; GitGoodBench, REALM 2025; Shen, 2026)",
+      "identity": {
+        "arxiv": "2109.00084v4; 2111.11904v1; 2505.22583v1; 2607.27674v1",
+        "doi": "10.1109/ICSE43902.2021.00077; 10.1109/TSE.2022.3183955; 10.1145/3540250.3549163; 10.1145/3533767.3534396; 10.1016/j.jss.2024.112084; 10.1145/3691620.3695075; 10.18653/v1/2025.realm-1.19",
+        "year": "2021-2026"
+      }
+    },
+    {
+      "name": "ClusterFuzz Stack-State Extraction, CrashComparer, and Transitive Pairwise Grouper (google/clusterfuzz)",
+      "identity": {
+        "repository": "google/clusterfuzz",
+        "revision": "ff2e60f0f75e218ddfe666db8e3c74501f89a97e",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Semantic Crash Bucketing (SCB; squaresLab/SemanticCrashBucketing; van Tonder, Kotheimer, & Le Goues, ASE 2018)",
+      "identity": {
+        "doi": "10.1145/3238147.3238200",
+        "repository": "squaresLab/SemanticCrashBucketing",
+        "revision": "1c64a92571f76d5495940fab74886ea42f293067",
+        "year": "2018"
+      }
+    },
+    {
+      "name": "Igor Dynamic CFG Minimization and Spectral Crash Clustering (HexHive/Igor; Jiang et al., ACM CCS 2021)",
+      "identity": {
+        "doi": "10.1145/3460120.3485364",
+        "repository": "HexHive/Igor",
+        "revision": "12639e90ce2e357e6f235642fbd41d1d490381c1",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "S3M Siamese Stack-Trace Encoder and ReBucket Baseline Port (akhvorov/S3M; Khvorov et al., MSR 2021)",
+      "identity": {
+        "arxiv": "2103.10526v1",
+        "doi": "10.1109/MSR52588.2021.00038",
+        "repository": "akhvorov/S3M",
+        "revision": "1d16f5759904d1f36fd63f5389a20ba401884115",
+        "year": "2021"
+      }
+    },
+    {
+      "name": "Single-Pass C++ ReBucket Implementation (ZhangShurong/rebucket; cited by Vasiliev et al., 2020)",
+      "identity": {
+        "arxiv": "2009.12590v1",
+        "repository": "ZhangShurong/rebucket",
+        "revision": "2e6d5845aedabbfe3800de1a1f6b86498841ee2d",
+        "year": "2020-2026"
+      }
+    },
+    {
+      "name": "GPTrace Multi-View Embedding Deduplication Artifacts and DeFault Baseline (Fraunhofer-AISEC/gptrace-artifacts; Herter et al., ICSE 2026; Zhang et al., ICSE 2022)",
+      "identity": {
+        "arxiv": "2512.01609v1",
+        "doi": "10.1145/3744916.3773161; 10.1145/3510003.3512760",
+        "repository": "Fraunhofer-AISEC/gptrace-artifacts",
+        "revision": "7c7c0d3c43b484f2be67ec825ae113c5afd2c151",
+        "year": "2022-2026"
+      }
+    },
+    {
+      "name": "Crash Deduplication Ground-Truth and Stack-Alignment Foundations (Dang et al., ReBucket ICSE 2012; Klees et al., ACM CCS 2018; Vasiliev et al., TraceSim Workshop 2020; Rodrigues et al., TraceSim EMSE 2022)",
+      "identity": {
+        "arxiv": "1808.09700v2; 2009.12590v1",
+        "doi": "10.1109/ICSE.2012.6227111; 10.1145/3243734.3243804; 10.1007/s10664-021-10070-w",
+        "year": "2012-2022"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

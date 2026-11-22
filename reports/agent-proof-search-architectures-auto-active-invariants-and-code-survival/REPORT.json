@@ -1,0 +1,207 @@
+{
+  "topics": [
+    "verification/proof-search",
+    "verification/auto-active-invariants",
+    "verification/bounded-model-checking",
+    "verification/kani",
+    "verification/verus",
+    "verification/dafny",
+    "lean/theorem-proving",
+    "rust/verification",
+    "smt/invariant-synthesis",
+    "agents/proof-repair",
+    "agents/code-survival",
+    "vcs/szz-attribution",
+    "tooling/empirical-se"
+  ],
+  "subjects": [
+    {
+      "name": "Draft, Sketch, and Prove (DSP) Isabelle/HOL Autoformalization Sketcher (albertqjiang/draft_sketch_prove; Jiang et al., ICLR 2023)",
+      "identity": {
+        "arxiv": "2210.12283v3",
+        "repository": "albertqjiang/draft_sketch_prove",
+        "revision": "647aa65ca7b89f4e0f7a65dc15b4e64a81af5e80",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "Baldur Whole-Proof Generation and Error-Driven Repair on PISA (First, Rabe, Ringer, & Brun, ESEC/FSE 2023)",
+      "identity": {
+        "arxiv": "2303.04910v2",
+        "doi": "10.1145/3611643.3616243",
+        "year": "2023"
+      }
+    },
+    {
+      "name": "LEGO-Prover Growing Lemma Skill Library (wiio12/LEGO-Prover; Wang et al., ICLR 2024)",
+      "identity": {
+        "arxiv": "2310.00656v3",
+        "repository": "wiio12/LEGO-Prover",
+        "revision": "357672c7751cd0c84aff6bf72a3d1bf97614e81d",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "DeepSeek-Prover-V2 Recursive Subgoal RL Prover (deepseek-ai/DeepSeek-Prover-V2; Ren et al. 2025)",
+      "identity": {
+        "arxiv": "2504.21801v2",
+        "repository": "deepseek-ai/DeepSeek-Prover-V2",
+        "revision": "e598a57ea3284997d4a2a168a069fdd5064afbc8",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "Prover Agent Informal-Formal Coordination Framework (kAIto47802/Prover-Agent; Baba, Liu, Kurita, & Sannai 2025-2026)",
+      "identity": {
+        "arxiv": "2506.19923v5",
+        "repository": "kAIto47802/Prover-Agent",
+        "revision": "c337a48de4e832373b913332ab99a2f01d2705af",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Hilbert Recursive Informal-Reasoner and Per-Subgoal-Pruning Lean 4 Prover (Rose-STL-Lab/ml-hilbert; Varambally et al. 2025-2026)",
+      "identity": {
+        "arxiv": "2509.22819v2",
+        "repository": "Rose-STL-Lab/ml-hilbert",
+        "revision": "bee1325d512d3f3073caa19ca628f4e98794192e",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Aristotle IMO 2025 Theorem Prover and Public Client SDK (harmonic-ai/aristotle; Achim et al. / Harmonic Team 2025-2026)",
+      "identity": {
+        "arxiv": "2510.01346v2",
+        "repository": "harmonic-ai/aristotle",
+        "revision": "36b7809a336fb8d17f64311b9440483672ff9774",
+        "version": "aristotlelib 3.4.0",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "DafnyBench Hint-Synthesis Benchmark (sun-wendy/DafnyBench; Loughridge et al. 2024)",
+      "identity": {
+        "arxiv": "2406.08467v1",
+        "repository": "sun-wendy/DafnyBench",
+        "revision": "0cd28feed9cd0179b07fdb9d002f8c39063658e4",
+        "year": "2024"
+      }
+    },
+    {
+      "name": "Laurel Placeholder-Localized Dafny Assertion Synthesizer (emugnier/dafny_repair; Mugnier, Anaya Gonzalez, Polikarpova, Jhala, & Zhou, PACMPL OOPSLA1 2025)",
+      "identity": {
+        "arxiv": "2405.16792v2",
+        "doi": "10.1145/3720499; 10.5281/zenodo.14676571",
+        "repository": "emugnier/dafny_repair",
+        "revision": "3d51e97b533f79b253a48c520c62f9d71fbe80d7",
+        "year": "2025"
+      }
+    },
+    {
+      "name": "AutoVerus Multi-Agent Error-Dispatched Rust/Verus Proof Synthesizer (microsoft/verus-proof-synthesis; Yang et al., PACMPL OOPSLA2 2025)",
+      "identity": {
+        "arxiv": "2409.13082v3",
+        "doi": "10.1145/3763174",
+        "repository": "microsoft/verus-proof-synthesis",
+        "revision": "cbf9c0c6337b224fd8e5b7cb4e01ae65c0f98bc1",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Vericoding Multi-Language Verified Synthesis Harness (Beneficial-AI-Foundation/vericoding; Bursuc et al. 2025)",
+      "identity": {
+        "arxiv": "2509.22908v1",
+        "repository": "Beneficial-AI-Foundation/vericoding",
+        "revision": "b265a3b2bce31e09d264306f419e810d02f98f44",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "Vericoding Formal Specification Benchmark (Beneficial-AI-Foundation/vericoding-benchmark; Bursuc et al. 2025)",
+      "identity": {
+        "arxiv": "2509.22908v1",
+        "repository": "Beneficial-AI-Foundation/vericoding-benchmark",
+        "revision": "387cd69996792d452ead7b0460f36ee4c5cdd148",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "SAFE Self-Evolving Verus Proof Synthesis and AlgoVeri Aligned Specification Benchmark (Chen et al. 2024-2025; Zhao et al., ICML 2026)",
+      "identity": {
+        "arxiv": "2410.15756v3; 2602.09464v2",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "Kani Rust Bounded Model Checker and Autoharness (model-checking/kani; Delmas et al., ASE 2024 / arXiv 2026)",
+      "identity": {
+        "arxiv": "2607.01504v1",
+        "repository": "model-checking/kani",
+        "revision": "87c87010eda7797d7fa14033ca68bcbe17184a63",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "KaPilot Kani Specification Synthesis and Empirical Bounded Model-Checking Practice Audit (Wang et al. 2026; Kolyakov, Calvo, Davis, & Amusuo 2026)",
+      "identity": {
+        "arxiv": "2607.21957v1; 2611.19267v1",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "AIDev Agentic Pull-Request Dataset Repository (SAILResearch/AI_Teammates_in_SE3; Li, Zhang, & Hassan, MSR 2026)",
+      "identity": {
+        "arxiv": "2602.09185v1",
+        "doi": "10.1145/3793302.3797249",
+        "repository": "SAILResearch/AI_Teammates_in_SE3",
+        "revision": "1ea6cd4f07a12bb7a2d2b59a7ebcfa34c329cd57",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Post-Merge Reality 12-Month Agentic PR Survival Replication (post-merge-reality/post-merge-reality; Xia & Miller 2026)",
+      "identity": {
+        "arxiv": "2607.09902v1",
+        "repository": "post-merge-reality/post-merge-reality",
+        "revision": "34103082257551b9c4f286ce5b0242a22363e328",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Rethinking SZZ Search Strategies Replication Package (higolab/rethinking-szz-replication; Kondo et al. 2026)",
+      "identity": {
+        "arxiv": "2610.14462v1",
+        "repository": "higolab/rethinking-szz-replication",
+        "revision": "455f6f8ca0d7f5400bdb96e39422e7b50253baaf",
+        "version": "v1.1.0",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "AgenticSZZ Temporal Knowledge Graph BIC Search Engine (SAILResearch/AgenticSZZ; Shi, Li, Adams, & Hassan 2026)",
+      "identity": {
+        "arxiv": "2602.02934v2",
+        "repository": "SAILResearch/AgenticSZZ",
+        "revision": "6540a5d23bdec9b296660aabdcc6edf46b85ec19",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Longitudinal Agent Code-Survival Specification-Curve Meta-Reproduction and Post-Merge Cohorts (Rahman, Begoug, & Shihab 2026; Popescu et al., MSR 2026; Sawada et al., EASE 2026; Kraishan 2026; Takerngsaksiri et al. 2026)",
+      "identity": {
+        "arxiv": "2611.21784v2; 2601.16809v3; 2605.06464v2; 2609.17598v1; 2609.26847v2",
+        "doi": "10.1145/3793302.3793354",
+        "year": "2026"
+      }
+    },
+    {
+      "name": "Longitudinal Staggered Difference-in-Differences OSS Panels, Controlled Security/Productivity Trials, Static-Analysis Code Audits, and Macro Churn Telemetry (2022-2026)",
+      "identity": {
+        "arxiv": "2410.02091v4; 2409.08379v4; 2507.09089v2; 2108.09293v3; 2211.03622v3; 2208.09727v4; 2303.17125v2; 2307.12596v2; 2310.02059v4; 2311.00889v3; 2601.00477v2",
+        "doi": "10.1109/SP46214.2022.9833571; 10.1145/3576915.3623157; 10.1007/s10664-023-10380-1; 10.1145/3597503.3608128; 10.1145/3643674; 10.1145/3716848; 10.1145/3691621.3694934",
+        "year": "2022-2026"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}

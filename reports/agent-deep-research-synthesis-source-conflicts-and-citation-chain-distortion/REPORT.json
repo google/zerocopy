@@ -1,0 +1,151 @@
+{
+  "topics": [
+    "agents/deep-research",
+    "agents/literature-synthesis",
+    "agents/knowledge-conflicts",
+    "agents/citation-attribution",
+    "agents/retrieval-augmented-generation",
+    "verification/citation-auditing",
+    "verification/conflict-resolution",
+    "verification/evaluation-harnesses",
+    "domains/bibliometrics",
+    "tooling/agent-harnesses"
+  ],
+  "subjects": [
+    {
+      "name": "PaperQA2 Scientific Literature Synthesis Agent (Future-House/paper-qa; Skarlinski et al., 2024)",
+      "identity": {
+        "arxiv": "2409.13740v2",
+        "doi": "10.48550/arXiv.2409.13740",
+        "repository": "Future-House/paper-qa",
+        "revision": "c692d0dfeac4a0296599f7fe21a253a58b7ac12a",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "OpenScholar Retrieval-Augmented Scientific Literature Synthesis Pipeline (AkariAsai/OpenScholar; Asai et al., arXiv 2024 & Nature 2026)",
+      "identity": {
+        "arxiv": "2411.14199v1",
+        "doi": "10.1038/s41586-025-10072-4",
+        "repository": "AkariAsai/OpenScholar",
+        "revision": "0e9b8fb912273d3dae39e593da86e4f6d3bf8de1",
+        "venue": "Nature 650(8103):857-863",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "ScholarBench / ScholarQABench Citation-Correctness Evaluation Harness (AkariAsai/ScholarBench; Asai et al., 2024-2026)",
+      "identity": {
+        "arxiv": "2411.14199v1",
+        "doi": "10.1038/s41586-025-10072-4",
+        "repository": "AkariAsai/ScholarBench",
+        "revision": "95e6fc52b0a8a0ce0a74956029991e3bb00c38b9",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "STORM and Co-STORM Multi-Perspective Synthesis and Collaborative Mind-Map Engine (stanford-oval/storm; Shao et al., NAACL 2024; Jiang et al., EMNLP 2024)",
+      "identity": {
+        "arxiv": "2402.14207v2; 2408.15232v2",
+        "repository": "stanford-oval/storm",
+        "revision": "fb951af7744dab086e34962e9bc6fe878e145f83",
+        "venue": "NAACL 2024; EMNLP 2024",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "BrowseComp Long-Horizon Browsing Benchmark and simple-evals Grader (openai/simple-evals; Wei et al., 2025)",
+      "identity": {
+        "arxiv": "2504.12516v1",
+        "repository": "openai/simple-evals",
+        "revision": "652c89d0ca9df547706735883097e9537d40dc47",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "DeepResearch Bench RACE and FACT Evaluation Harness (Ayanami0730/deep_research_bench; Du et al., 2025)",
+      "identity": {
+        "arxiv": "2506.11763v1",
+        "repository": "Ayanami0730/deep_research_bench",
+        "revision": "f2735b5c3636759c22f9e936c0232de8bf545b67",
+        "year": "2025-2026"
+      }
+    },
+    {
+      "name": "ConflictBank Large-Scale Knowledge-Conflict Benchmark and Prompt Templates (zhaochen0110/conflictbank; Su et al., NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2408.12076v1",
+        "repository": "zhaochen0110/conflictbank",
+        "revision": "3024a20ed69e290d616649547c3e533bcaf3c841",
+        "venue": "NeurIPS 2024 Datasets and Benchmarks",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "FaithEval Contextual Faithfulness Benchmark (SalesforceAIResearch/FaithEval; Ming et al., ICLR 2025)",
+      "identity": {
+        "arxiv": "2410.03727v3",
+        "repository": "SalesforceAIResearch/FaithEval",
+        "revision": "58d35840e3fbc7bf4b7672582a417b3b3a327dec",
+        "venue": "ICLR 2025",
+        "year": "2024-2026"
+      }
+    },
+    {
+      "name": "ClashEval Prior-vs.-Context Tug-of-War Benchmark and Analysis Notebook (kevinwu23/StanfordClashEval; Wu, Wu, & Zou, NeurIPS 2024)",
+      "identity": {
+        "arxiv": "2404.10198v3",
+        "repository": "kevinwu23/StanfordClashEval",
+        "revision": "56e7e0834b8cff17bb53eccd21f04ae916d78254",
+        "venue": "NeurIPS 2024 Datasets and Benchmarks",
+        "year": "2024-2025"
+      }
+    },
+    {
+      "name": "Stochastic Misprint-Propagation Citation Studies (Simkin & Roychowdhury, Complex Systems 2003, Scientometrics 2005, JASIST 2007)",
+      "identity": {
+        "arxiv": "cond-mat/0212043v1; cond-mat/0401529v2; physics/0504094v3",
+        "doi": "10.25088/complexsystems.14.3.269; 10.1007/s11192-005-0028-2; 10.1002/asi.20653",
+        "year": "2003-2007"
+      }
+    },
+    {
+      "name": "Biomedical Citation-Network Distortion Analysis (Greenberg, BMJ 2009)",
+      "identity": {
+        "doi": "10.1136/bmj.b2680",
+        "pmcid": "PMC2714656",
+        "pmid": "19622839",
+        "venue": "BMJ 339:b2680",
+        "year": "2009"
+      }
+    },
+    {
+      "name": "Academic Urban Legends and Secondary Citation Distortion (Rekdal, Social Studies of Science 2014)",
+      "identity": {
+        "doi": "10.1177/0306312714535679",
+        "pmcid": "PMC4232290",
+        "pmid": "25272616",
+        "venue": "Social Studies of Science 44(4):638-654",
+        "year": "2014"
+      }
+    },
+    {
+      "name": "Medical Journal Quotation Accuracy Systematic Review and Meta-Analysis (Jergas & Baethge, PeerJ 2015)",
+      "identity": {
+        "doi": "10.7717/peerj.1364",
+        "pmcid": "PMC4627914",
+        "pmid": "26528420",
+        "venue": "PeerJ 3:e1364",
+        "year": "2015"
+      }
+    },
+    {
+      "name": "Ecological and Marine Biology Citation-Accuracy Audits (Todd et al., Oikos 2007; Todd & Ladle, Nature 2008 & ESEP 2008; Todd et al., MEPS 2010)",
+      "identity": {
+        "doi": "10.1111/j.0030-1299.2007.15992.x; 10.1038/451244b; 10.3354/esep00091; 10.3354/meps08587",
+        "year": "2007-2010"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
