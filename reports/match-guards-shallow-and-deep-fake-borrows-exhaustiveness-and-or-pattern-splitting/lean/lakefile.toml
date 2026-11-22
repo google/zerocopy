@@ -1,0 +1,5 @@
+name = "toy_match_guard"
+defaultTargets = ["ToyMatchGuard"]
+
+[[lean_lib]]
+name = "ToyMatchGuard"

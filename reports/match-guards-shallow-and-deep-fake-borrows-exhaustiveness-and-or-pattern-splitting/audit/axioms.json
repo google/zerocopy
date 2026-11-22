@@ -1,0 +1,1829 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "List.lookup.eq_1": [],
+    "List.lookup.eq_2": [],
+    "List.lookup.eq_def": [],
+    "Toy.MatchGuard.Accessor.Acc": [],
+    "Toy.MatchGuard.Accessor.ExhaustiveOn": [],
+    "Toy.MatchGuard.Accessor.Pure": [],
+    "Toy.MatchGuard.Accessor.ResultStable": [],
+    "Toy.MatchGuard.Accessor.StateIdempotent": [],
+    "Toy.MatchGuard.Accessor.WellTyped": [],
+    "Toy.MatchGuard.Accessor.boolResultArms": [],
+    "Toy.MatchGuard.Accessor.boolResultArms_exhaustive": [],
+    "Toy.MatchGuard.Accessor.constFalseAcc": [],
+    "Toy.MatchGuard.Accessor.constFalseAcc_resultStable_not_wellTyped_and_iff_fails": [],
+    "Toy.MatchGuard.Accessor.countAcc": [],
+    "Toy.MatchGuard.Accessor.countAcc_same_selection_different_state": [],
+    "Toy.MatchGuard.Accessor.countedBoolAcc": [],
+    "Toy.MatchGuard.Accessor.countedBoolAcc_resultStable_not_stateIdempotent_not_pure": [],
+    "Toy.MatchGuard.Accessor.exhaustiveOn_example": [],
+    "Toy.MatchGuard.Accessor.findFrom": [],
+    "Toy.MatchGuard.Accessor.findFrom.eq_1": [],
+    "Toy.MatchGuard.Accessor.findFrom.eq_2": [],
+    "Toy.MatchGuard.Accessor.findFrom.eq_def": [],
+    "Toy.MatchGuard.Accessor.findFrom.match_1": [],
+    "Toy.MatchGuard.Accessor.findFrom_ne_none": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Accessor.findFrom_ne_none.match_1_1": [],
+    "Toy.MatchGuard.Accessor.flagAcc": [],
+    "Toy.MatchGuard.Accessor.flagAcc_stable_idempotent_not_pure": [],
+    "Toy.MatchGuard.Accessor.idAcc": [],
+    "Toy.MatchGuard.Accessor.idAcc_pure_wellTyped": [],
+    "Toy.MatchGuard.Accessor.loggedBoolAcc": [],
+    "Toy.MatchGuard.Accessor.loggedBoolAcc_resultStable_stateIdempotent_not_pure": [],
+    "Toy.MatchGuard.Accessor.not_exhaustiveOn_example": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Accessor.not_pure_example": [],
+    "Toy.MatchGuard.Accessor.not_resultStable_example": [],
+    "Toy.MatchGuard.Accessor.not_stateIdempotent_example": [],
+    "Toy.MatchGuard.Accessor.not_wellTyped_example": [],
+    "Toy.MatchGuard.Accessor.pure_example": [],
+    "Toy.MatchGuard.Accessor.repeated": [],
+    "Toy.MatchGuard.Accessor.repeated.eq_1": [],
+    "Toy.MatchGuard.Accessor.repeated.eq_2": [],
+    "Toy.MatchGuard.Accessor.repeated.eq_def": [],
+    "Toy.MatchGuard.Accessor.repeated.match_1": [],
+    "Toy.MatchGuard.Accessor.repeated_cons_of_stable": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Accessor.repeated_fst_of_resultStable": [],
+    "Toy.MatchGuard.Accessor.repeated_fst_of_resultStable.match_1_1": [],
+    "Toy.MatchGuard.Accessor.repeated_not_unreachable_on_exhaustiveOn_iff_resultStable_of_wellTyped": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.Accessor.resultStable_and_stateIdempotent_of_pure": [],
+    "Toy.MatchGuard.Accessor.resultStable_example": [],
+    "Toy.MatchGuard.Accessor.shared": [],
+    "Toy.MatchGuard.Accessor.shared.eq_1": [],
+    "Toy.MatchGuard.Accessor.shared.eq_2": [],
+    "Toy.MatchGuard.Accessor.shared.match_1": [],
+    "Toy.MatchGuard.Accessor.shared_eq_repeated_iff_resultStable_and_stateIdempotent": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.Accessor.shared_eq_repeated_of_unit_of_satisfiable": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Accessor.shared_selected_eq_repeated_selected_iff_resultStable": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.Accessor.stateIdempotent_example": [],
+    "Toy.MatchGuard.Accessor.threeBoolArms": [],
+    "Toy.MatchGuard.Accessor.threeBoolArms_exhaustive": [],
+    "Toy.MatchGuard.Accessor.toggleAcc": [],
+    "Toy.MatchGuard.Accessor.toggleAcc_repeated_reaches_unreachable": [],
+    "Toy.MatchGuard.Accessor.twoThenFlipAcc": [],
+    "Toy.MatchGuard.Accessor.twoThenFlipAcc.match_1": [],
+    "Toy.MatchGuard.Accessor.twoThenFlipAcc_stable_at_zero_and_repeated_reaches_unreachable": [],
+    "Toy.MatchGuard.Accessor.wellTyped_example": [],
+    "Toy.MatchGuard.AgreeOn": [
+      "propext"
+    ],
+    "Toy.MatchGuard.AgreeOn.mono": [
+      "propext"
+    ],
+    "Toy.MatchGuard.AgreeOn.refl": [
+      "propext"
+    ],
+    "Toy.MatchGuard.AgreeOn.trans": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Arm": [],
+    "Toy.MatchGuard.Arm.binds": [],
+    "Toy.MatchGuard.Arm.casesOn": [],
+    "Toy.MatchGuard.Arm.ctorIdx": [],
+    "Toy.MatchGuard.Arm.derefScrutinees": [],
+    "Toy.MatchGuard.Arm.guard": [],
+    "Toy.MatchGuard.Arm.guardWrites": [],
+    "Toy.MatchGuard.Arm.guardWrites.eq_1": [],
+    "Toy.MatchGuard.Arm.matchesDirect": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Arm.matchesDirect.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Arm.matchesDirect_congr": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.Arm.mk": [],
+    "Toy.MatchGuard.Arm.mk.inj": [],
+    "Toy.MatchGuard.Arm.mk.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Arm.mk.noConfusion": [],
+    "Toy.MatchGuard.Arm.mk.sizeOf_spec": [],
+    "Toy.MatchGuard.Arm.noConfusion": [],
+    "Toy.MatchGuard.Arm.noConfusionType": [],
+    "Toy.MatchGuard.Arm.rec": [],
+    "Toy.MatchGuard.Arm.recOn": [],
+    "Toy.MatchGuard.Arm.switchPlaces": [],
+    "Toy.MatchGuard.Arm.tests": [],
+    "Toy.MatchGuard.BoolDom": [],
+    "Toy.MatchGuard.BoxBoolDom": [],
+    "Toy.MatchGuard.ConstPat.AllDerived": [],
+    "Toy.MatchGuard.ConstPat.AllDerived.match_1": [],
+    "Toy.MatchGuard.ConstPat.CTy": [],
+    "Toy.MatchGuard.ConstPat.CTy.below": [],
+    "Toy.MatchGuard.ConstPat.CTy.brecOn": [],
+    "Toy.MatchGuard.ConstPat.CTy.brecOn.eq": [],
+    "Toy.MatchGuard.ConstPat.CTy.brecOn.go": [],
+    "Toy.MatchGuard.ConstPat.CTy.casesOn": [],
+    "Toy.MatchGuard.ConstPat.CTy.ctorElim": [],
+    "Toy.MatchGuard.ConstPat.CTy.ctorElimType": [],
+    "Toy.MatchGuard.ConstPat.CTy.ctorIdx": [],
+    "Toy.MatchGuard.ConstPat.CTy.flt": [],
+    "Toy.MatchGuard.ConstPat.CTy.flt.elim": [],
+    "Toy.MatchGuard.ConstPat.CTy.flt.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.CTy.int": [],
+    "Toy.MatchGuard.ConstPat.CTy.int.elim": [],
+    "Toy.MatchGuard.ConstPat.CTy.int.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.CTy.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.CTy.noConfusionType": [],
+    "Toy.MatchGuard.ConstPat.CTy.prod": [],
+    "Toy.MatchGuard.ConstPat.CTy.prod.elim": [],
+    "Toy.MatchGuard.ConstPat.CTy.prod.inj": [],
+    "Toy.MatchGuard.ConstPat.CTy.prod.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.CTy.prod.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.CTy.prod.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.CTy.rec": [],
+    "Toy.MatchGuard.ConstPat.CTy.recOn": [],
+    "Toy.MatchGuard.ConstPat.CTy.sum": [],
+    "Toy.MatchGuard.ConstPat.CTy.sum.elim": [],
+    "Toy.MatchGuard.ConstPat.CTy.sum.inj": [],
+    "Toy.MatchGuard.ConstPat.CTy.sum.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.CTy.sum.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.CTy.sum.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.CVal": [],
+    "Toy.MatchGuard.ConstPat.CVal.below": [],
+    "Toy.MatchGuard.ConstPat.CVal.brecOn": [],
+    "Toy.MatchGuard.ConstPat.CVal.brecOn.eq": [],
+    "Toy.MatchGuard.ConstPat.CVal.brecOn.go": [],
+    "Toy.MatchGuard.ConstPat.CVal.casesOn": [],
+    "Toy.MatchGuard.ConstPat.CVal.ctorElim": [],
+    "Toy.MatchGuard.ConstPat.CVal.ctorElimType": [],
+    "Toy.MatchGuard.ConstPat.CVal.ctorIdx": [],
+    "Toy.MatchGuard.ConstPat.CVal.flt": [],
+    "Toy.MatchGuard.ConstPat.CVal.flt.elim": [],
+    "Toy.MatchGuard.ConstPat.CVal.flt.inj": [],
+    "Toy.MatchGuard.ConstPat.CVal.flt.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.CVal.flt.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.CVal.flt.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.CVal.inl": [],
+    "Toy.MatchGuard.ConstPat.CVal.inl.elim": [],
+    "Toy.MatchGuard.ConstPat.CVal.inl.inj": [],
+    "Toy.MatchGuard.ConstPat.CVal.inl.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.CVal.inl.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.CVal.inl.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.CVal.inr": [],
+    "Toy.MatchGuard.ConstPat.CVal.inr.elim": [],
+    "Toy.MatchGuard.ConstPat.CVal.inr.inj": [],
+    "Toy.MatchGuard.ConstPat.CVal.inr.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.CVal.inr.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.CVal.inr.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.CVal.int": [],
+    "Toy.MatchGuard.ConstPat.CVal.int.elim": [],
+    "Toy.MatchGuard.ConstPat.CVal.int.inj": [],
+    "Toy.MatchGuard.ConstPat.CVal.int.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.CVal.int.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.CVal.int.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.CVal.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.CVal.noConfusionType": [],
+    "Toy.MatchGuard.ConstPat.CVal.pair": [],
+    "Toy.MatchGuard.ConstPat.CVal.pair.elim": [],
+    "Toy.MatchGuard.ConstPat.CVal.pair.inj": [],
+    "Toy.MatchGuard.ConstPat.CVal.pair.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.CVal.pair.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.CVal.pair.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.CVal.rec": [],
+    "Toy.MatchGuard.ConstPat.CVal.recOn": [],
+    "Toy.MatchGuard.ConstPat.EqImpl": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.casesOn": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.ctorElim": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.ctorElimType": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.ctorIdx": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.derived": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.derived.elim": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.derived.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.manual": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.manual.elim": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.manual.inj": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.manual.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.EqImpl.manual.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.manual.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.noConfusionType": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.rec": [],
+    "Toy.MatchGuard.ConstPat.EqImpl.recOn": [],
+    "Toy.MatchGuard.ConstPat.F": [],
+    "Toy.MatchGuard.ConstPat.F.casesOn": [],
+    "Toy.MatchGuard.ConstPat.F.ctorElim": [],
+    "Toy.MatchGuard.ConstPat.F.ctorElimType": [],
+    "Toy.MatchGuard.ConstPat.F.ctorIdx": [],
+    "Toy.MatchGuard.ConstPat.F.ieeeEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.F.ieeeEq.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.F.nan": [],
+    "Toy.MatchGuard.ConstPat.F.nan.elim": [],
+    "Toy.MatchGuard.ConstPat.F.nan.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.F.noConfusion": [],
+    "Toy.MatchGuard.ConstPat.F.noConfusionType": [],
+    "Toy.MatchGuard.ConstPat.F.nzero": [],
+    "Toy.MatchGuard.ConstPat.F.nzero.elim": [],
+    "Toy.MatchGuard.ConstPat.F.nzero.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.F.ofNat": [],
+    "Toy.MatchGuard.ConstPat.F.ofNat_ctorIdx": [],
+    "Toy.MatchGuard.ConstPat.F.one": [],
+    "Toy.MatchGuard.ConstPat.F.one.elim": [],
+    "Toy.MatchGuard.ConstPat.F.one.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.F.pzero": [],
+    "Toy.MatchGuard.ConstPat.F.pzero.elim": [],
+    "Toy.MatchGuard.ConstPat.F.pzero.sizeOf_spec": [],
+    "Toy.MatchGuard.ConstPat.F.rec": [],
+    "Toy.MatchGuard.ConstPat.F.recOn": [],
+    "Toy.MatchGuard.ConstPat.HasNan": [],
+    "Toy.MatchGuard.ConstPat.HasNan.eq_1": [],
+    "Toy.MatchGuard.ConstPat.HasNan.eq_2": [],
+    "Toy.MatchGuard.ConstPat.HasNan.eq_3": [],
+    "Toy.MatchGuard.ConstPat.HasNan.eq_4": [],
+    "Toy.MatchGuard.ConstPat.HasNan.eq_5": [],
+    "Toy.MatchGuard.ConstPat.HasNan.eq_def": [],
+    "Toy.MatchGuard.ConstPat.HasTy": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.HasTy.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.HasTy.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.HasTy.eq_3": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.HasTy.eq_4": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.HasTy.eq_5": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.HasTy.eq_6": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.HasTy.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.HasTy.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.LoweringAgrees": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.NoFloat": [],
+    "Toy.MatchGuard.ConstPat.NoFloat.match_1": [],
+    "Toy.MatchGuard.ConstPat.NoNanNoZeroLeaf": [],
+    "Toy.MatchGuard.ConstPat.NoNanNoZeroLeaf.eq_1": [],
+    "Toy.MatchGuard.ConstPat.NoNanNoZeroLeaf.eq_2": [],
+    "Toy.MatchGuard.ConstPat.NoNanNoZeroLeaf.eq_3": [],
+    "Toy.MatchGuard.ConstPat.NoNanNoZeroLeaf.eq_4": [],
+    "Toy.MatchGuard.ConstPat.NoNanNoZeroLeaf.eq_5": [],
+    "Toy.MatchGuard.ConstPat.NoNanNoZeroLeaf.eq_def": [],
+    "Toy.MatchGuard.ConstPat.allDerived_example": [],
+    "Toy.MatchGuard.ConstPat.derivedTy": [],
+    "Toy.MatchGuard.ConstPat.derivedTy_allDerived_noFloat": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.exists_teq_self_false_of_allDerived_of_not_noFloat": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.exists_teq_self_false_of_allDerived_of_not_noFloat.match_1_1": [],
+    "Toy.MatchGuard.ConstPat.flipZeros": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flipZeros.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flipZeros.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flipZeros.eq_3": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flipZeros.eq_4": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flipZeros.eq_5": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flipZeros.eq_6": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flipZeros.eq_7": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flipZeros.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flipZeros.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flt_allDerived_and_lowering_disagrees_nan": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.flt_lowering_disagrees_signedZero": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.hasTy_example": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.hasTy_flipZeros": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.hasTy_inhabit": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.hasTy_inhabit.match_1_1": [],
+    "Toy.MatchGuard.ConstPat.inhabit": [],
+    "Toy.MatchGuard.ConstPat.instDecidableEqCVal": [],
+    "Toy.MatchGuard.ConstPat.instDecidableEqCVal.decEq": [],
+    "Toy.MatchGuard.ConstPat.instDecidableEqCVal.decEq.match_1": [],
+    "Toy.MatchGuard.ConstPat.instDecidableEqF": [],
+    "Toy.MatchGuard.ConstPat.instReprCVal": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.instReprCVal.repr": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.instReprCVal.repr.match_1": [],
+    "Toy.MatchGuard.ConstPat.instReprF": [],
+    "Toy.MatchGuard.ConstPat.instReprF.repr": [],
+    "Toy.MatchGuard.ConstPat.instReprF.repr.match_1": [],
+    "Toy.MatchGuard.ConstPat.loweringAgrees_aux": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.loweringAgrees_aux.match_1_1": [],
+    "Toy.MatchGuard.ConstPat.loweringAgrees_example": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.loweringAgrees_iff_noFloat_of_allDerived": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.loweringAgrees_of_allDerived_of_noFloat": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.manualStructuralTy": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.manualStructuralTy_loweringAgrees_and_not_allDerived": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.manualVariantTy": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.manualVariantTy_noFloat_and_lowering_disagrees": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.manualVariantTy_not_allDerived_and_iff_fails": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.ne_flipZeros_of_not_hasNan_of_not_noNanNoZeroLeaf": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.nestedManualTy": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.nestedManualTy_lowering_disagrees": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.noFloat_example": [],
+    "Toy.MatchGuard.ConstPat.not_allDerived_example": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.not_hasTy_example": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.not_loweringAgrees_example": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.not_noFloat_example": [],
+    "Toy.MatchGuard.ConstPat.optFlt_none_agrees": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.payloadEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.payloadEq.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch.eq_3": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch.eq_4": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch.eq_5": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch.eq_6": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch_agrees_with_teq_iff_noNanNoZeroLeaf_of_allDerived": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch_eq_decide": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch_eq_teq_of_allDerived_of_noNanNoZeroLeaf": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch_example": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch_example_false": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch_refl": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.smatch_refl.match_1_1": [],
+    "Toy.MatchGuard.ConstPat.teq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq.eq_3": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq.eq_4": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq.eq_5": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq.eq_6": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq.eq_7": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq.eq_8": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq_flipZeros_of_not_hasNan": [
+      "propext"
+    ],
+    "Toy.MatchGuard.ConstPat.teq_self_false_of_hasNan": [
+      "propext"
+    ],
+    "Toy.MatchGuard.DeepConflict": [],
+    "Toy.MatchGuard.DeepConflict.eq_1": [],
+    "Toy.MatchGuard.DeepFrozenAll": [],
+    "Toy.MatchGuard.DeepFrozenBefore": [],
+    "Toy.MatchGuard.DeepFrozenBeforeAux": [],
+    "Toy.MatchGuard.DeepFrozenBeforeAux.eq_def": [],
+    "Toy.MatchGuard.DeepFrozenSwitchAll": [],
+    "Toy.MatchGuard.Env": [],
+    "Toy.MatchGuard.Exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.FakeKind": [],
+    "Toy.MatchGuard.FakeKind.casesOn": [],
+    "Toy.MatchGuard.FakeKind.ctorElim": [],
+    "Toy.MatchGuard.FakeKind.ctorElimType": [],
+    "Toy.MatchGuard.FakeKind.ctorIdx": [],
+    "Toy.MatchGuard.FakeKind.deep": [],
+    "Toy.MatchGuard.FakeKind.deep.elim": [],
+    "Toy.MatchGuard.FakeKind.deep.sizeOf_spec": [],
+    "Toy.MatchGuard.FakeKind.noConfusion": [],
+    "Toy.MatchGuard.FakeKind.noConfusionType": [],
+    "Toy.MatchGuard.FakeKind.ofNat": [],
+    "Toy.MatchGuard.FakeKind.ofNat_ctorIdx": [],
+    "Toy.MatchGuard.FakeKind.rec": [],
+    "Toy.MatchGuard.FakeKind.recOn": [],
+    "Toy.MatchGuard.FakeKind.shallow": [],
+    "Toy.MatchGuard.FakeKind.shallow.elim": [],
+    "Toy.MatchGuard.FakeKind.shallow.sizeOf_spec": [],
+    "Toy.MatchGuard.Guard": [],
+    "Toy.MatchGuard.Guard.casesOn": [],
+    "Toy.MatchGuard.Guard.cond": [],
+    "Toy.MatchGuard.Guard.ctorIdx": [],
+    "Toy.MatchGuard.Guard.mk": [],
+    "Toy.MatchGuard.Guard.mk.inj": [],
+    "Toy.MatchGuard.Guard.mk.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Guard.mk.noConfusion": [],
+    "Toy.MatchGuard.Guard.mk.sizeOf_spec": [],
+    "Toy.MatchGuard.Guard.noConfusion": [],
+    "Toy.MatchGuard.Guard.noConfusionType": [],
+    "Toy.MatchGuard.Guard.rec": [],
+    "Toy.MatchGuard.Guard.recOn": [],
+    "Toy.MatchGuard.Guard.writes": [],
+    "Toy.MatchGuard.GuardsPreserveDom": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Head": [],
+    "Toy.MatchGuard.Head.box": [],
+    "Toy.MatchGuard.Head.box.elim": [],
+    "Toy.MatchGuard.Head.box.sizeOf_spec": [],
+    "Toy.MatchGuard.Head.casesOn": [],
+    "Toy.MatchGuard.Head.ctor": [],
+    "Toy.MatchGuard.Head.ctor.elim": [],
+    "Toy.MatchGuard.Head.ctor.inj": [],
+    "Toy.MatchGuard.Head.ctor.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Head.ctor.noConfusion": [],
+    "Toy.MatchGuard.Head.ctor.sizeOf_spec": [],
+    "Toy.MatchGuard.Head.ctorElim": [],
+    "Toy.MatchGuard.Head.ctorElimType": [],
+    "Toy.MatchGuard.Head.ctorIdx": [],
+    "Toy.MatchGuard.Head.int": [],
+    "Toy.MatchGuard.Head.int.elim": [],
+    "Toy.MatchGuard.Head.int.inj": [],
+    "Toy.MatchGuard.Head.int.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Head.int.noConfusion": [],
+    "Toy.MatchGuard.Head.int.sizeOf_spec": [],
+    "Toy.MatchGuard.Head.noConfusion": [],
+    "Toy.MatchGuard.Head.noConfusionType": [],
+    "Toy.MatchGuard.Head.rec": [],
+    "Toy.MatchGuard.Head.recOn": [],
+    "Toy.MatchGuard.Memo": [],
+    "Toy.MatchGuard.MemoOK": [
+      "propext"
+    ],
+    "Toy.MatchGuard.MemoOK.nil": [
+      "propext"
+    ],
+    "Toy.MatchGuard.MemoOK.transfer": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.NoDerefPatterns": [],
+    "Toy.MatchGuard.OptBoolDom": [],
+    "Toy.MatchGuard.OptIntDom": [],
+    "Toy.MatchGuard.OptPairBoxBoolDom": [],
+    "Toy.MatchGuard.OrPat.DropPolicy": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.casesOn": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.ctorElim": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.ctorElimType": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.ctorIdx": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.firstAlternative": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.firstAlternative.elim": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.firstAlternative.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.matchedAlternative": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.matchedAlternative.elim": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.matchedAlternative.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.noConfusion": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.noConfusionType": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.ofNat": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.ofNat_ctorIdx": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.rec": [],
+    "Toy.MatchGuard.OrPat.DropPolicy.recOn": [],
+    "Toy.MatchGuard.OrPat.Env": [],
+    "Toy.MatchGuard.OrPat.Ev": [],
+    "Toy.MatchGuard.OrPat.Ev.body": [],
+    "Toy.MatchGuard.OrPat.Ev.body.elim": [],
+    "Toy.MatchGuard.OrPat.Ev.body.inj": [],
+    "Toy.MatchGuard.OrPat.Ev.body.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.Ev.body.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Ev.body.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.Ev.casesOn": [],
+    "Toy.MatchGuard.OrPat.Ev.ctorElim": [],
+    "Toy.MatchGuard.OrPat.Ev.ctorElimType": [],
+    "Toy.MatchGuard.OrPat.Ev.ctorIdx": [],
+    "Toy.MatchGuard.OrPat.Ev.drop": [],
+    "Toy.MatchGuard.OrPat.Ev.drop.elim": [],
+    "Toy.MatchGuard.OrPat.Ev.drop.inj": [],
+    "Toy.MatchGuard.OrPat.Ev.drop.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.Ev.drop.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Ev.drop.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.Ev.guard": [],
+    "Toy.MatchGuard.OrPat.Ev.guard.elim": [],
+    "Toy.MatchGuard.OrPat.Ev.guard.inj": [],
+    "Toy.MatchGuard.OrPat.Ev.guard.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.Ev.guard.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Ev.guard.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.Ev.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Ev.noConfusionType": [],
+    "Toy.MatchGuard.OrPat.Ev.rec": [],
+    "Toy.MatchGuard.OrPat.Ev.recOn": [],
+    "Toy.MatchGuard.OrPat.Ev.unreachable": [],
+    "Toy.MatchGuard.OrPat.Ev.unreachable.elim": [],
+    "Toy.MatchGuard.OrPat.Ev.unreachable.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.NoDupBindings": [],
+    "Toy.MatchGuard.OrPat.OrFree": [],
+    "Toy.MatchGuard.OrPat.PV": [],
+    "Toy.MatchGuard.OrPat.PV.below": [],
+    "Toy.MatchGuard.OrPat.PV.brecOn": [],
+    "Toy.MatchGuard.OrPat.PV.brecOn.eq": [],
+    "Toy.MatchGuard.OrPat.PV.brecOn.go": [],
+    "Toy.MatchGuard.OrPat.PV.casesOn": [],
+    "Toy.MatchGuard.OrPat.PV.ctorElim": [],
+    "Toy.MatchGuard.OrPat.PV.ctorElimType": [],
+    "Toy.MatchGuard.OrPat.PV.ctorIdx": [],
+    "Toy.MatchGuard.OrPat.PV.inl": [],
+    "Toy.MatchGuard.OrPat.PV.inl.elim": [],
+    "Toy.MatchGuard.OrPat.PV.inl.inj": [],
+    "Toy.MatchGuard.OrPat.PV.inl.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.PV.inl.noConfusion": [],
+    "Toy.MatchGuard.OrPat.PV.inl.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.PV.inr": [],
+    "Toy.MatchGuard.OrPat.PV.inr.elim": [],
+    "Toy.MatchGuard.OrPat.PV.inr.inj": [],
+    "Toy.MatchGuard.OrPat.PV.inr.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.PV.inr.noConfusion": [],
+    "Toy.MatchGuard.OrPat.PV.inr.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.PV.int": [],
+    "Toy.MatchGuard.OrPat.PV.int.elim": [],
+    "Toy.MatchGuard.OrPat.PV.int.inj": [],
+    "Toy.MatchGuard.OrPat.PV.int.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.PV.int.noConfusion": [],
+    "Toy.MatchGuard.OrPat.PV.int.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.PV.noConfusion": [],
+    "Toy.MatchGuard.OrPat.PV.noConfusionType": [],
+    "Toy.MatchGuard.OrPat.PV.pair": [],
+    "Toy.MatchGuard.OrPat.PV.pair.elim": [],
+    "Toy.MatchGuard.OrPat.PV.pair.inj": [],
+    "Toy.MatchGuard.OrPat.PV.pair.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.PV.pair.noConfusion": [],
+    "Toy.MatchGuard.OrPat.PV.pair.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.PV.rec": [],
+    "Toy.MatchGuard.OrPat.PV.recOn": [],
+    "Toy.MatchGuard.OrPat.Pat": [],
+    "Toy.MatchGuard.OrPat.Pat.below": [],
+    "Toy.MatchGuard.OrPat.Pat.bind": [],
+    "Toy.MatchGuard.OrPat.Pat.bind.elim": [],
+    "Toy.MatchGuard.OrPat.Pat.bind.inj": [],
+    "Toy.MatchGuard.OrPat.Pat.bind.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.Pat.bind.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Pat.bind.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.Pat.brecOn": [],
+    "Toy.MatchGuard.OrPat.Pat.brecOn.eq": [],
+    "Toy.MatchGuard.OrPat.Pat.brecOn.go": [],
+    "Toy.MatchGuard.OrPat.Pat.casesOn": [],
+    "Toy.MatchGuard.OrPat.Pat.ctorElim": [],
+    "Toy.MatchGuard.OrPat.Pat.ctorElimType": [],
+    "Toy.MatchGuard.OrPat.Pat.ctorIdx": [],
+    "Toy.MatchGuard.OrPat.Pat.inl": [],
+    "Toy.MatchGuard.OrPat.Pat.inl.elim": [],
+    "Toy.MatchGuard.OrPat.Pat.inl.inj": [],
+    "Toy.MatchGuard.OrPat.Pat.inl.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.Pat.inl.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Pat.inl.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.Pat.inr": [],
+    "Toy.MatchGuard.OrPat.Pat.inr.elim": [],
+    "Toy.MatchGuard.OrPat.Pat.inr.inj": [],
+    "Toy.MatchGuard.OrPat.Pat.inr.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.Pat.inr.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Pat.inr.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.Pat.int": [],
+    "Toy.MatchGuard.OrPat.Pat.int.elim": [],
+    "Toy.MatchGuard.OrPat.Pat.int.inj": [],
+    "Toy.MatchGuard.OrPat.Pat.int.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.Pat.int.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Pat.int.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.Pat.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Pat.noConfusionType": [],
+    "Toy.MatchGuard.OrPat.Pat.or": [],
+    "Toy.MatchGuard.OrPat.Pat.or.elim": [],
+    "Toy.MatchGuard.OrPat.Pat.or.inj": [],
+    "Toy.MatchGuard.OrPat.Pat.or.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.Pat.or.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Pat.or.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.Pat.pair": [],
+    "Toy.MatchGuard.OrPat.Pat.pair.elim": [],
+    "Toy.MatchGuard.OrPat.Pat.pair.inj": [],
+    "Toy.MatchGuard.OrPat.Pat.pair.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.Pat.pair.noConfusion": [],
+    "Toy.MatchGuard.OrPat.Pat.pair.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.Pat.rec": [],
+    "Toy.MatchGuard.OrPat.Pat.recOn": [],
+    "Toy.MatchGuard.OrPat.Pat.wild": [],
+    "Toy.MatchGuard.OrPat.Pat.wild.elim": [],
+    "Toy.MatchGuard.OrPat.Pat.wild.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.SArm": [],
+    "Toy.MatchGuard.OrPat.SArm.casesOn": [],
+    "Toy.MatchGuard.OrPat.SArm.ctorIdx": [],
+    "Toy.MatchGuard.OrPat.SArm.guard": [],
+    "Toy.MatchGuard.OrPat.SArm.mk": [],
+    "Toy.MatchGuard.OrPat.SArm.mk.inj": [],
+    "Toy.MatchGuard.OrPat.SArm.mk.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.SArm.mk.noConfusion": [],
+    "Toy.MatchGuard.OrPat.SArm.mk.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.SArm.noConfusion": [],
+    "Toy.MatchGuard.OrPat.SArm.noConfusionType": [],
+    "Toy.MatchGuard.OrPat.SArm.pat": [],
+    "Toy.MatchGuard.OrPat.SArm.rec": [],
+    "Toy.MatchGuard.OrPat.SArm.recOn": [],
+    "Toy.MatchGuard.OrPat.SameDeclOrder": [],
+    "Toy.MatchGuard.OrPat.SubBranch": [],
+    "Toy.MatchGuard.OrPat.SubBranch.arm": [],
+    "Toy.MatchGuard.OrPat.SubBranch.casesOn": [],
+    "Toy.MatchGuard.OrPat.SubBranch.ctorIdx": [],
+    "Toy.MatchGuard.OrPat.SubBranch.drops": [],
+    "Toy.MatchGuard.OrPat.SubBranch.drops.match_1": [],
+    "Toy.MatchGuard.OrPat.SubBranch.guard": [],
+    "Toy.MatchGuard.OrPat.SubBranch.mk": [],
+    "Toy.MatchGuard.OrPat.SubBranch.mk.inj": [],
+    "Toy.MatchGuard.OrPat.SubBranch.mk.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.SubBranch.mk.noConfusion": [],
+    "Toy.MatchGuard.OrPat.SubBranch.mk.sizeOf_spec": [],
+    "Toy.MatchGuard.OrPat.SubBranch.noConfusion": [],
+    "Toy.MatchGuard.OrPat.SubBranch.noConfusionType": [],
+    "Toy.MatchGuard.OrPat.SubBranch.order": [],
+    "Toy.MatchGuard.OrPat.SubBranch.pat": [],
+    "Toy.MatchGuard.OrPat.SubBranch.rec": [],
+    "Toy.MatchGuard.OrPat.SubBranch.recOn": [],
+    "Toy.MatchGuard.OrPat.armDrops": [],
+    "Toy.MatchGuard.OrPat.armDrops.eq_1": [],
+    "Toy.MatchGuard.OrPat.armDrops.eq_2": [],
+    "Toy.MatchGuard.OrPat.armDrops.match_1": [],
+    "Toy.MatchGuard.OrPat.bindingGuardArms": [],
+    "Toy.MatchGuard.OrPat.bindingGuardArms_noDupBindings_sameDeclOrder": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.constGuardArms": [],
+    "Toy.MatchGuard.OrPat.declOrder": [],
+    "Toy.MatchGuard.OrPat.declOrder.eq_1": [],
+    "Toy.MatchGuard.OrPat.declOrder.eq_2": [],
+    "Toy.MatchGuard.OrPat.declOrder.eq_3": [],
+    "Toy.MatchGuard.OrPat.declOrder.eq_4": [],
+    "Toy.MatchGuard.OrPat.declOrder.eq_5": [],
+    "Toy.MatchGuard.OrPat.declOrder.eq_6": [],
+    "Toy.MatchGuard.OrPat.declOrder.eq_7": [],
+    "Toy.MatchGuard.OrPat.declOrder.eq_def": [],
+    "Toy.MatchGuard.OrPat.declOrder.match_1": [],
+    "Toy.MatchGuard.OrPat.declOrder_example": [],
+    "Toy.MatchGuard.OrPat.dropsInOrder": [],
+    "Toy.MatchGuard.OrPat.dropsInOrder.eq_1": [],
+    "Toy.MatchGuard.OrPat.dropsMatched": [],
+    "Toy.MatchGuard.OrPat.dropsMatched.eq_1": [],
+    "Toy.MatchGuard.OrPat.dupBindArms": [],
+    "Toy.MatchGuard.OrPat.dupBindArms_sameDeclOrder_not_noDupBindings_and_policies_differ": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.expand": [],
+    "Toy.MatchGuard.OrPat.expand.eq_1": [],
+    "Toy.MatchGuard.OrPat.expand.eq_2": [],
+    "Toy.MatchGuard.OrPat.expand.eq_3": [],
+    "Toy.MatchGuard.OrPat.expand.eq_4": [],
+    "Toy.MatchGuard.OrPat.expand.eq_5": [],
+    "Toy.MatchGuard.OrPat.expand.eq_6": [],
+    "Toy.MatchGuard.OrPat.expand.eq_7": [],
+    "Toy.MatchGuard.OrPat.expand.eq_def": [],
+    "Toy.MatchGuard.OrPat.expand_example": [],
+    "Toy.MatchGuard.OrPat.filterMap_congr_mem": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.filterMap_lookup_keys": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.filterMap_lookup_keys.match_1_1": [],
+    "Toy.MatchGuard.OrPat.flatMap_comm_of_length_le_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.flatMap_comm_of_length_le_one.match_1_1": [],
+    "Toy.MatchGuard.OrPat.flatMap_congr_mem": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.instDecidableEqDropPolicy": [],
+    "Toy.MatchGuard.OrPat.instDecidableEqEv": [],
+    "Toy.MatchGuard.OrPat.instDecidableEqEv.decEq": [],
+    "Toy.MatchGuard.OrPat.instDecidableEqEv.decEq.match_1": [],
+    "Toy.MatchGuard.OrPat.instDecidableEqPV": [],
+    "Toy.MatchGuard.OrPat.instDecidableEqPV.decEq": [],
+    "Toy.MatchGuard.OrPat.instDecidableEqPV.decEq.match_1": [],
+    "Toy.MatchGuard.OrPat.instDecidableEqPat": [],
+    "Toy.MatchGuard.OrPat.instDecidableEqPat.decEq": [],
+    "Toy.MatchGuard.OrPat.instDecidableEqPat.decEq.match_1": [],
+    "Toy.MatchGuard.OrPat.instDecidableNoDupBindings": [],
+    "Toy.MatchGuard.OrPat.instDecidableSameDeclOrder": [],
+    "Toy.MatchGuard.OrPat.instReprDropPolicy": [],
+    "Toy.MatchGuard.OrPat.instReprDropPolicy.repr": [],
+    "Toy.MatchGuard.OrPat.instReprDropPolicy.repr.match_1": [],
+    "Toy.MatchGuard.OrPat.instReprEv": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.instReprEv.repr": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.instReprEv.repr.match_1": [],
+    "Toy.MatchGuard.OrPat.instReprPV": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.instReprPV.repr": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.instReprPV.repr.match_1": [],
+    "Toy.MatchGuard.OrPat.instReprPat": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.instReprPat.repr": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.instReprPat.repr.match_1": [],
+    "Toy.MatchGuard.OrPat.keys_of_mem_matchAll_orFree": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.keys_of_mem_matchAll_orFree.match_1_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_10": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_11": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_3": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_4": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_5": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_6": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_7": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_8": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_9": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.match_10": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.match_13": [],
+    "Toy.MatchGuard.OrPat.matchAll.match_4": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll.match_7": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll_eq_flatMap_expand": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll_eq_flatMap_expand_aux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll_eq_flatMap_expand_aux.match_1_1": [],
+    "Toy.MatchGuard.OrPat.matchAll_example": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.matchAll_example_none": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.noDupBindings_example": [],
+    "Toy.MatchGuard.OrPat.not_noDupBindings_example": [],
+    "Toy.MatchGuard.OrPat.not_orFree_example": [],
+    "Toy.MatchGuard.OrPat.not_sameDeclOrder_example": [],
+    "Toy.MatchGuard.OrPat.okErrGuardArms": [],
+    "Toy.MatchGuard.OrPat.okErrGuardArms_matchAll_length_le_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.orFree_example": [],
+    "Toy.MatchGuard.OrPat.orFree_length_le_one": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.orFree_length_le_one.match_1_1": [],
+    "Toy.MatchGuard.OrPat.orFree_length_le_one.match_1_15": [],
+    "Toy.MatchGuard.OrPat.orFree_of_mem_expand": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.orFree_of_mem_expand.match_1_1": [],
+    "Toy.MatchGuard.OrPat.refDropArms": [],
+    "Toy.MatchGuard.OrPat.refDropArms_noDupBindings_not_sameDeclOrder_and_policies_differ": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runGuardOnce": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runGuardOnce.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runGuardOnce.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runGuardOnce.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runGuardOnce_eq_runSrc_of_matchAll_length_le_one": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runGuardOnce_eq_runSrc_of_matchAll_length_le_one.match_1_7": [],
+    "Toy.MatchGuard.OrPat.runGuardOnce_ne_runSrc_bindingGuardArms_constGuardArms": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSplit": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSplit.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSplit.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSplit.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSplit.match_1": [],
+    "Toy.MatchGuard.OrPat.runSplit.match_3": [],
+    "Toy.MatchGuard.OrPat.runSplit_map_append": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSplit_map_append.match_1_1": [],
+    "Toy.MatchGuard.OrPat.runSplit_map_append.match_1_7": [],
+    "Toy.MatchGuard.OrPat.runSplit_matchedAlternative_ne_runSrc_firstAlternative_refDropArms": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSrc": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSrc.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSrc.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSrc.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSrc.match_1": [],
+    "Toy.MatchGuard.OrPat.runSrc_eq_runSplit_splitArms": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.runSrc_firstAlternative_eq_matchedAlternative_of_noDupBindings_of_sameDeclOrder": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.sameDeclOrder_example": [],
+    "Toy.MatchGuard.OrPat.shadowedSwapArms": [],
+    "Toy.MatchGuard.OrPat.shadowedSwapArms.eq_1": [],
+    "Toy.MatchGuard.OrPat.shadowedSwapArms_not_sameDeclOrder_and_policies_agree": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.OrPat.splitArm": [],
+    "Toy.MatchGuard.OrPat.splitArm.eq_1": [],
+    "Toy.MatchGuard.OrPat.splitArm.eq_2": [],
+    "Toy.MatchGuard.OrPat.splitArms": [],
+    "Toy.MatchGuard.OrPat.splitArms.eq_1": [],
+    "Toy.MatchGuard.OrPat.splitArms.eq_2": [],
+    "Toy.MatchGuard.OrPat.splitArms.eq_def": [],
+    "Toy.MatchGuard.OrPat.tryEnvs": [],
+    "Toy.MatchGuard.OrPat.tryEnvs.eq_1": [],
+    "Toy.MatchGuard.OrPat.tryEnvs.eq_2": [],
+    "Toy.MatchGuard.OrPat.tryEnvs.eq_3": [],
+    "Toy.MatchGuard.OrPat.tryEnvs.eq_def": [],
+    "Toy.MatchGuard.OrPat.tryEnvs.match_1": [],
+    "Toy.MatchGuard.OrPat.tryEnvs.match_3": [],
+    "Toy.MatchGuard.OrPat.unbalancedOrArms": [],
+    "Toy.MatchGuard.OrPat.unbalancedOrArms_firstAlternative_omits_drop": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Outcome": [],
+    "Toy.MatchGuard.Outcome.arm": [],
+    "Toy.MatchGuard.Outcome.arm.elim": [],
+    "Toy.MatchGuard.Outcome.arm.inj": [],
+    "Toy.MatchGuard.Outcome.arm.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Outcome.arm.noConfusion": [],
+    "Toy.MatchGuard.Outcome.arm.sizeOf_spec": [],
+    "Toy.MatchGuard.Outcome.casesOn": [],
+    "Toy.MatchGuard.Outcome.ctorElim": [],
+    "Toy.MatchGuard.Outcome.ctorElimType": [],
+    "Toy.MatchGuard.Outcome.ctorIdx": [],
+    "Toy.MatchGuard.Outcome.noConfusion": [],
+    "Toy.MatchGuard.Outcome.noConfusionType": [],
+    "Toy.MatchGuard.Outcome.reachesUnreachable": [],
+    "Toy.MatchGuard.Outcome.reachesUnreachable.match_1": [],
+    "Toy.MatchGuard.Outcome.rec": [],
+    "Toy.MatchGuard.Outcome.recOn": [],
+    "Toy.MatchGuard.Outcome.selected": [],
+    "Toy.MatchGuard.Outcome.unreachable": [],
+    "Toy.MatchGuard.Outcome.unreachable.elim": [],
+    "Toy.MatchGuard.Outcome.unreachable.inj": [],
+    "Toy.MatchGuard.Outcome.unreachable.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Outcome.unreachable.noConfusion": [],
+    "Toy.MatchGuard.Outcome.unreachable.sizeOf_spec": [],
+    "Toy.MatchGuard.PairBoolIntDom": [],
+    "Toy.MatchGuard.PairBoxDom": [],
+    "Toy.MatchGuard.PairOptBoolDom": [],
+    "Toy.MatchGuard.Place": [],
+    "Toy.MatchGuard.Proj": [],
+    "Toy.MatchGuard.Proj.casesOn": [],
+    "Toy.MatchGuard.Proj.ctorElim": [],
+    "Toy.MatchGuard.Proj.ctorElimType": [],
+    "Toy.MatchGuard.Proj.ctorIdx": [],
+    "Toy.MatchGuard.Proj.deref": [],
+    "Toy.MatchGuard.Proj.deref.elim": [],
+    "Toy.MatchGuard.Proj.deref.sizeOf_spec": [],
+    "Toy.MatchGuard.Proj.field": [],
+    "Toy.MatchGuard.Proj.field.elim": [],
+    "Toy.MatchGuard.Proj.field.inj": [],
+    "Toy.MatchGuard.Proj.field.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Proj.field.noConfusion": [],
+    "Toy.MatchGuard.Proj.field.sizeOf_spec": [],
+    "Toy.MatchGuard.Proj.noConfusion": [],
+    "Toy.MatchGuard.Proj.noConfusionType": [],
+    "Toy.MatchGuard.Proj.rec": [],
+    "Toy.MatchGuard.Proj.recOn": [],
+    "Toy.MatchGuard.RefOptBoolDom": [],
+    "Toy.MatchGuard.ShallowConflict": [],
+    "Toy.MatchGuard.ShallowConflict.eq_1": [],
+    "Toy.MatchGuard.ShallowFrozenAll": [],
+    "Toy.MatchGuard.ShallowFrozenBefore": [],
+    "Toy.MatchGuard.ShallowFrozenBeforeAux": [],
+    "Toy.MatchGuard.ShallowFrozenBeforeAux.eq_def": [],
+    "Toy.MatchGuard.ShallowFrozenBeforeAux.match_1": [],
+    "Toy.MatchGuard.ShallowFrozenDerefAll": [],
+    "Toy.MatchGuard.Test": [],
+    "Toy.MatchGuard.Test.casesOn": [],
+    "Toy.MatchGuard.Test.ctorElim": [],
+    "Toy.MatchGuard.Test.ctorElimType": [],
+    "Toy.MatchGuard.Test.ctorIdx": [],
+    "Toy.MatchGuard.Test.derefScrutinee?": [],
+    "Toy.MatchGuard.Test.derefSwitch": [],
+    "Toy.MatchGuard.Test.derefSwitch.elim": [],
+    "Toy.MatchGuard.Test.derefSwitch.inj": [],
+    "Toy.MatchGuard.Test.derefSwitch.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Test.derefSwitch.noConfusion": [],
+    "Toy.MatchGuard.Test.derefSwitch.sizeOf_spec": [],
+    "Toy.MatchGuard.Test.holds": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Test.holds.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Test.holds.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Test.holds.match_1": [],
+    "Toy.MatchGuard.Test.holds_congr": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Test.noConfusion": [],
+    "Toy.MatchGuard.Test.noConfusionType": [],
+    "Toy.MatchGuard.Test.rec": [],
+    "Toy.MatchGuard.Test.recOn": [],
+    "Toy.MatchGuard.Test.switch": [],
+    "Toy.MatchGuard.Test.switch.elim": [],
+    "Toy.MatchGuard.Test.switch.inj": [],
+    "Toy.MatchGuard.Test.switch.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Test.switch.noConfusion": [],
+    "Toy.MatchGuard.Test.switch.sizeOf_spec": [],
+    "Toy.MatchGuard.Test.switchPlace?": [],
+    "Toy.MatchGuard.Val": [],
+    "Toy.MatchGuard.Val.below": [],
+    "Toy.MatchGuard.Val.below_1": [],
+    "Toy.MatchGuard.Val.box": [],
+    "Toy.MatchGuard.Val.box.elim": [],
+    "Toy.MatchGuard.Val.box.inj": [],
+    "Toy.MatchGuard.Val.box.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Val.box.noConfusion": [],
+    "Toy.MatchGuard.Val.box.sizeOf_spec": [],
+    "Toy.MatchGuard.Val.brecOn": [],
+    "Toy.MatchGuard.Val.brecOn.eq": [],
+    "Toy.MatchGuard.Val.brecOn.go": [],
+    "Toy.MatchGuard.Val.brecOn_1": [],
+    "Toy.MatchGuard.Val.brecOn_1.eq": [],
+    "Toy.MatchGuard.Val.brecOn_1.go": [],
+    "Toy.MatchGuard.Val.casesOn": [],
+    "Toy.MatchGuard.Val.ctor": [],
+    "Toy.MatchGuard.Val.ctor.elim": [],
+    "Toy.MatchGuard.Val.ctor.inj": [],
+    "Toy.MatchGuard.Val.ctor.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Val.ctor.noConfusion": [],
+    "Toy.MatchGuard.Val.ctor.sizeOf_spec": [],
+    "Toy.MatchGuard.Val.ctorElim": [],
+    "Toy.MatchGuard.Val.ctorElimType": [],
+    "Toy.MatchGuard.Val.ctorIdx": [],
+    "Toy.MatchGuard.Val.decEq": [],
+    "Toy.MatchGuard.Val.decEq.match_1": [],
+    "Toy.MatchGuard.Val.decEq.match_3": [],
+    "Toy.MatchGuard.Val.decEq.match_5": [],
+    "Toy.MatchGuard.Val.decEqList": [],
+    "Toy.MatchGuard.Val.decEqList.match_1": [],
+    "Toy.MatchGuard.Val.decEqList.match_3": [],
+    "Toy.MatchGuard.Val.head": [],
+    "Toy.MatchGuard.Val.head.match_1": [],
+    "Toy.MatchGuard.Val.int": [],
+    "Toy.MatchGuard.Val.int.elim": [],
+    "Toy.MatchGuard.Val.int.inj": [],
+    "Toy.MatchGuard.Val.int.injEq": [
+      "propext"
+    ],
+    "Toy.MatchGuard.Val.int.noConfusion": [],
+    "Toy.MatchGuard.Val.int.sizeOf_spec": [],
+    "Toy.MatchGuard.Val.noConfusion": [],
+    "Toy.MatchGuard.Val.noConfusionType": [],
+    "Toy.MatchGuard.Val.rec": [],
+    "Toy.MatchGuard.Val.recOn": [],
+    "Toy.MatchGuard.Val.rec_1": [],
+    "Toy.MatchGuard.agreeOn_runWrites": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.bindEnv": [
+      "propext"
+    ],
+    "Toy.MatchGuard.bindEnv.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.boolArms": [],
+    "Toy.MatchGuard.boolArms_accepted_and_reaches_unreachable_outside_dom": [
+      "propext"
+    ],
+    "Toy.MatchGuard.boolArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.boolArms_exhaustive_frozen_and_reaches_unreachable_outside_dom": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.borrowck": [],
+    "Toy.MatchGuard.borrowck.eq_1": [],
+    "Toy.MatchGuard.borrowck_boxBoolArms": [],
+    "Toy.MatchGuard.borrowck_eq_true_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.borrowck_reassignArms": [],
+    "Toy.MatchGuard.borrowck_shallowGuardArms": [
+      "propext"
+    ],
+    "Toy.MatchGuard.boxBoolArms": [],
+    "Toy.MatchGuard.boxBoolArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.boxBoolArms_exhaustive_guardsPreserveDom_shallowFrozenBefore_and_reaches_unreachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.boxBoolArms_exhaustive_shallowFrozenAll_shallowFrozenDerefAll_and_reaches_unreachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.boxBoolArms_guardsPreserveDom": [
+      "propext"
+    ],
+    "Toy.MatchGuard.boxBoolArms_not_deepFrozenAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.boxBoolArms_not_deepFrozenBefore": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.boxBoolArms_not_noDerefPatterns": [],
+    "Toy.MatchGuard.boxBoolArms_not_noDerefPatterns_exhaustive_shallowFrozenAll_and_reaches_unreachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.boxBoolArms_shallowFrozenDerefAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.conflicts": [],
+    "Toy.MatchGuard.conflicts.eq_1": [],
+    "Toy.MatchGuard.conflicts.eq_2": [],
+    "Toy.MatchGuard.conflicts.match_1": [],
+    "Toy.MatchGuard.conflicts_deep_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.conflicts_shallow_iff": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.copyBoundFieldArms": [
+      "propext"
+    ],
+    "Toy.MatchGuard.copyBoundFieldArms_guardsPreserveDom_and_unmatched_write_leaves_dom": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.decDeepFrozenBeforeAux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.decShallowFrozenBeforeAux": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.derefHead": [
+      "propext"
+    ],
+    "Toy.MatchGuard.derefHead.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.derefHead.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.derefHead_congr": [
+      "propext"
+    ],
+    "Toy.MatchGuard.disjointSwitchWriteArms": [],
+    "Toy.MatchGuard.disjointSwitchWriteArms_deepFrozenSwitchAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.disjointSwitchWriteArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.e0510Arms": [],
+    "Toy.MatchGuard.e0510Arms_selects_last_arm_with_changed_memory": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.e0510Arms_selects_last_arm_with_changed_memory.match_1": [],
+    "Toy.MatchGuard.evalTest": [
+      "propext"
+    ],
+    "Toy.MatchGuard.evalTest.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.evalTest.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.evalTest.match_1": [],
+    "Toy.MatchGuard.evalTests": [
+      "propext"
+    ],
+    "Toy.MatchGuard.evalTests.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.evalTests.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.evalTests.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.evalTests.match_1": [],
+    "Toy.MatchGuard.evalTests.match_3": [],
+    "Toy.MatchGuard.evalTests_spec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.fakeBorrows": [],
+    "Toy.MatchGuard.fakeBorrows.eq_1": [],
+    "Toy.MatchGuard.guardWrites_some": [
+      "propext"
+    ],
+    "Toy.MatchGuard.guarded_arm_not_counted": [
+      "propext"
+    ],
+    "Toy.MatchGuard.headAt": [
+      "propext"
+    ],
+    "Toy.MatchGuard.headAt.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.headAt_example": [
+      "propext"
+    ],
+    "Toy.MatchGuard.headAt_example_none": [
+      "propext"
+    ],
+    "Toy.MatchGuard.headAt_runWrites_of_not_prefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.headAt_writeOrSkip_of_not_prefix": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.illTypedArms": [],
+    "Toy.MatchGuard.illTypedArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.illTypedArms_exhaustive_frozenBefore_and_reaches_unreachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.illTypedArms_not_guardsPreserveDom": [
+      "propext"
+    ],
+    "Toy.MatchGuard.illTypedArms_not_shallowFrozenAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.incrSomeField": [
+      "propext"
+    ],
+    "Toy.MatchGuard.incrSomeField.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.instDecidableDeepConflict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.instDecidableDeepFrozenAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.instDecidableDeepFrozenBefore": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.instDecidableDeepFrozenSwitchAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.instDecidableEqFakeKind": [],
+    "Toy.MatchGuard.instDecidableEqHead": [],
+    "Toy.MatchGuard.instDecidableEqHead.decEq": [],
+    "Toy.MatchGuard.instDecidableEqHead.decEq.match_1": [],
+    "Toy.MatchGuard.instDecidableEqProj": [],
+    "Toy.MatchGuard.instDecidableEqProj.decEq": [],
+    "Toy.MatchGuard.instDecidableEqProj.decEq.match_1": [],
+    "Toy.MatchGuard.instDecidableEqVal": [],
+    "Toy.MatchGuard.instDecidableNoDerefPatterns": [],
+    "Toy.MatchGuard.instDecidableShallowConflict": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.instDecidableShallowFrozenAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.instDecidableShallowFrozenBefore": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.instDecidableShallowFrozenDerefAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.instReprFakeKind": [],
+    "Toy.MatchGuard.instReprFakeKind.repr": [],
+    "Toy.MatchGuard.instReprFakeKind.repr.match_1": [],
+    "Toy.MatchGuard.instReprHead": [
+      "propext"
+    ],
+    "Toy.MatchGuard.instReprHead.repr": [
+      "propext"
+    ],
+    "Toy.MatchGuard.instReprHead.repr.match_1": [],
+    "Toy.MatchGuard.instReprProj": [],
+    "Toy.MatchGuard.instReprProj.repr": [],
+    "Toy.MatchGuard.instReprProj.repr.match_1": [],
+    "Toy.MatchGuard.laterTestedArms": [],
+    "Toy.MatchGuard.laterTestedArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.laterTestedArms_guardsPreserveDom": [
+      "propext"
+    ],
+    "Toy.MatchGuard.laterTestedArms_shallowFrozenBefore": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.lookup": [
+      "propext"
+    ],
+    "Toy.MatchGuard.lookup.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.lookup.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.lookup.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.lookup.match_1": [],
+    "Toy.MatchGuard.lookup.match_3": [],
+    "Toy.MatchGuard.lookup_cons_congr": [
+      "propext"
+    ],
+    "Toy.MatchGuard.lookup_example_none": [
+      "propext"
+    ],
+    "Toy.MatchGuard.lookup_example_some": [
+      "propext"
+    ],
+    "Toy.MatchGuard.lookup_runWrites_of_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.lookup_writeOrSkip_of_disjoint": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.memoFind": [],
+    "Toy.MatchGuard.memoFind.eq_1": [],
+    "Toy.MatchGuard.memoFind.eq_2": [],
+    "Toy.MatchGuard.memoFind.eq_def": [],
+    "Toy.MatchGuard.memoFind.match_1": [],
+    "Toy.MatchGuard.memoFind_mem": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.memoFind_mem.match_1_1": [],
+    "Toy.MatchGuard.missingArms": [],
+    "Toy.MatchGuard.missingArms_accepted_and_reaches_unreachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.missingArms_frozen_not_exhaustive_and_reaches_unreachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.mixedLaterTestedArms": [],
+    "Toy.MatchGuard.mixedLaterTestedArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.mixedLaterTestedArms_guardsPreserveDom": [
+      "propext"
+    ],
+    "Toy.MatchGuard.mixedLaterTestedArms_satisfy_frozenBefore_hypotheses_and_not_shallowFrozenAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.mixedStaticArms": [],
+    "Toy.MatchGuard.mixedStaticArms_accepted_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.mixedStaticArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.mixedStaticArms_satisfy_static_hypotheses": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.optBool_arms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.pairBoxArms": [],
+    "Toy.MatchGuard.pairBoxArms_deepFrozenAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.pairBoxArms_deepFrozenBefore": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.pairBoxArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.reassignArms": [],
+    "Toy.MatchGuard.reassignArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.reassignArms_exhaustive_deepFrozenAll_and_reaches_unreachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.reassignArms_exhaustive_guardsPreserveDom_deepFrozenBefore_and_reaches_unreachable": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.reassignArms_guardsPreserveDom": [
+      "propext"
+    ],
+    "Toy.MatchGuard.reassignArms_noDerefPatterns": [],
+    "Toy.MatchGuard.reassignArms_not_shallowFrozenAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.reassignArms_not_shallowFrozenBefore": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.reassignArms_rejected_exhaustive_and_reaches_unreachable": [
+      "propext"
+    ],
+    "Toy.MatchGuard.reassignArms_take3_not_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.reassignBox_not_shallowFrozenDerefAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.runArms": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runArms.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runArms.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runArms.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runArms.match_1": [],
+    "Toy.MatchGuard.runArms.match_3": [],
+    "Toy.MatchGuard.runArms.match_5": [],
+    "Toy.MatchGuard.runArms_unreachable_frozenBefore": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.runArms_unreachable_static": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.runMatch": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runMatch_laterTestedArms_someFalse": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runMatch_not_unreachable_of_borrowck_of_exhaustive": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.runMatch_not_unreachable_of_exhaustive_of_guardsPreserveDom_of_frozenBefore": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.runMatch_not_unreachable_of_exhaustive_of_shallowFrozenAll_of_deepFrozenAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.runMatch_not_unreachable_of_noDerefPatterns_of_exhaustive_of_shallowFrozenAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.runMatch_reassignArms_none": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runMatch_sameVariantArms_some0": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runMatch_sameVariantArms_some0.match_1": [],
+    "Toy.MatchGuard.runMatch_shallowGuardArms": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runWrites": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runWrites.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runWrites.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runWrites.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.runWrites.match_1": [],
+    "Toy.MatchGuard.sameVariantArms": [],
+    "Toy.MatchGuard.sameVariantArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.sameVariantArms_rejected_exhaustive_and_never_unreachable": [
+      "propext"
+    ],
+    "Toy.MatchGuard.setChild": [
+      "propext"
+    ],
+    "Toy.MatchGuard.setChild.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.setChild.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.setChild.eq_3": [
+      "propext"
+    ],
+    "Toy.MatchGuard.setChild.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.setChild_head": [
+      "propext"
+    ],
+    "Toy.MatchGuard.shallowFrozenAll_of_deepFrozenSwitchAll": [],
+    "Toy.MatchGuard.shallowFrozenAll_of_deepFrozenSwitchAll_strict_on_shallowGuardArms": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.shallowGuardArms": [
+      "propext"
+    ],
+    "Toy.MatchGuard.shallowGuardArms_exhaustive": [
+      "propext"
+    ],
+    "Toy.MatchGuard.shallowGuardArms_not_deepFrozenSwitchAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.shallowGuardArms_satisfy_static_hypotheses": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.shallowGuardArms_shallowFrozenAll": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.MatchGuard.step": [
+      "propext"
+    ],
+    "Toy.MatchGuard.step.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.step.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.step.eq_3": [
+      "propext"
+    ],
+    "Toy.MatchGuard.step.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.step_setChild_ne": [
+      "propext"
+    ],
+    "Toy.MatchGuard.step_setChild_same": [
+      "propext"
+    ],
+    "Toy.MatchGuard.vFalse": [],
+    "Toy.MatchGuard.vNone": [],
+    "Toy.MatchGuard.vSome": [],
+    "Toy.MatchGuard.vTrue": [],
+    "Toy.MatchGuard.write": [
+      "propext"
+    ],
+    "Toy.MatchGuard.write.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.write.eq_2": [
+      "propext"
+    ],
+    "Toy.MatchGuard.write.eq_def": [
+      "propext"
+    ],
+    "Toy.MatchGuard.write.match_1": [],
+    "Toy.MatchGuard.write.match_3": [],
+    "Toy.MatchGuard.writeBoundOptBool": [
+      "propext"
+    ],
+    "Toy.MatchGuard.writeBoundOptBool.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.writeBoundOptBool.match_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.writeOrSkip": [
+      "propext"
+    ],
+    "Toy.MatchGuard.writeOrSkip.eq_1": [
+      "propext"
+    ],
+    "Toy.MatchGuard.writeOrSkip_example_inside": [
+      "propext"
+    ],
+    "Toy.MatchGuard.writeOrSkip_example_skip": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

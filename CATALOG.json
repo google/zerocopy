@@ -58950,6 +58950,82 @@
         "pl/stochastic-logics"
       ]
     },
+    "match-guards-shallow-and-deep-fake-borrows-exhaustiveness-and-or-pattern-splitting": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "26bfbf28f5f79dff333ce5a232f131b496ec9cfe"
+          },
+          "name": "rustc (rust-lang/rust), documentation of fake borrows, match lowering, DerefPure and StructuralPartialEq"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rfcs",
+            "revision": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07"
+          },
+          "name": "Rust RFCs 1445 and 2535"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/507635.507641"
+          },
+          "name": "Optimizing pattern matching"
+        },
+        {
+          "identity": {
+            "doi": "10.1017/S0956796807006223"
+          },
+          "name": "Warnings for pattern matching"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1411304.1411311"
+          },
+          "name": "Compiling pattern matching to good decision trees"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-319-22102-1_30"
+          },
+          "name": "Pattern Matches in HOL: A New Representation and Improved Code Generation"
+        },
+        {
+          "identity": {
+            "date": "2024-05-27",
+            "url": "https://www.isa-afp.org/entries/Pattern_Completeness.html"
+          },
+          "name": "Verifying a Decision Procedure for Pattern Completeness (Archive of Formal Proofs)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "pl/pattern-matching",
+        "pl/match-guards",
+        "pl/or-patterns",
+        "pl/borrow-checking",
+        "pl/drop-order",
+        "pl/undefined-behavior",
+        "compilers/pattern-match-compilation"
+      ]
+    },
     "mathlib-cache-protocol-artifact-format-and-pruning": {
       "observed_at": "2026-11-05",
       "subjects": [
