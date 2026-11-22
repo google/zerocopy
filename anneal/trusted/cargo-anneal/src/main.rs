@@ -33,10 +33,16 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Command {
-    /// Install the pinned Anneal toolchain archive.
+    /// Install or reuse the versioned Anneal toolchain archive.
+    ///
+    /// Without `--local-archive`, reuses an existing cached installation for
+    /// this version or installs the pinned remote archive. With
+    /// `--local-archive`, replaces any existing cached installation for this
+    /// version while coordinating with concurrent `verify` runs via the cache
+    /// lock.
     #[cfg(feature = "setup")]
     Setup {
-        /// Install a local archive instead of downloading the pinned archive.
+        /// Install a local archive, replacing any existing cached version.
         #[arg(long, value_name = "path")]
         local_archive: Option<PathBuf>,
     },

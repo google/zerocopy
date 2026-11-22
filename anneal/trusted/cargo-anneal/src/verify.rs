@@ -1072,12 +1072,22 @@ struct SelectedTools {
     capture: PathBuf,
     sysroot: Option<PathBuf>,
     lean: Option<PathBuf>,
+    // Keep the shared bundle flock held until `verify::run` finishes so a
+    // concurrent `setup --local-archive` cannot swap toolchain binaries in use.
+    #[cfg(feature = "setup")]
+    _bundle_lease: Option<crate::setup::Bundle>,
 }
 
 fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
     #[cfg(feature = "setup")]
     {
-        let installed = installed_bundle();
+        let needs_discovery =
+            args.capture.is_none() || args.sysroot.is_none() || args.lean.is_none();
+        let installed = if needs_discovery {
+            installed_bundle().map_err(|detail| error("tool_failed", "capture-tool", detail))?
+        } else {
+            None
+        };
         let tools = resolve_tools(
             ToolOverrides {
                 capture: args.capture.clone(),
@@ -1088,7 +1098,12 @@ fn select_tools(args: &VerifyArgs) -> Result<SelectedTools> {
             std::env::current_exe(),
         )
         .map_err(|detail| error("tool_failed", "capture-tool", detail))?;
-        Ok(SelectedTools { capture: tools.capture, sysroot: tools.sysroot, lean: tools.lean })
+        Ok(SelectedTools {
+            capture: tools.capture,
+            sysroot: tools.sysroot,
+            lean: tools.lean,
+            _bundle_lease: installed,
+        })
     }
     #[cfg(not(feature = "setup"))]
     {

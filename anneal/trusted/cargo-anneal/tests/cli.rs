@@ -240,23 +240,111 @@ fn setup_uses_fresh_child_cache_for_each_invocation() {
             b"current-run CLI archive"
         );
 
+        let updated_archive = project.path().join("local archive v2.tar.zst");
+        archive_entries(
+            &updated_archive,
+            &[("marker.txt", b"replaced CLI archive", 0o644)],
+        );
+        let reinstall = command(route, project.path())
+            .env("XDG_CACHE_HOME", cache.path())
+            .args(["setup", "--local-archive"])
+            .arg(&updated_archive)
+            .output()
+            .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
+        assert_result(&reinstall, 0, "Installed Anneal toolchain at ", "");
+        assert!(reinstall.stderr.is_empty(), "{reinstall:?}");
+        assert_eq!(
+            std::fs::read(installed.join("marker.txt")).expect("read replaced archive marker"),
+            b"replaced CLI archive"
+        );
+
+        let fresh_cache = tempfile::tempdir().expect("create fresh cache");
         for name in ["missing", "broken"] {
-            let failed_cache = tempfile::tempdir().expect("create fresh cache");
             let bad_archive = project.path().join(format!("{name}.tar.zst"));
             if name == "broken" {
                 std::fs::write(&bad_archive, b"invalid archive").expect("write broken archive");
             }
-            let output = command(route, project.path())
-                .env("XDG_CACHE_HOME", failed_cache.path())
-                .args(["setup", "--local-archive"])
-                .arg(&bad_archive)
-                .output()
-                .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
-            assert_result(&output, 1, "", "error: failed to install Anneal toolchain:");
-            assert!(output.stdout.is_empty(), "{output:?}");
+            for cache_dir in [fresh_cache.path(), cache.path()] {
+                let output = command(route, project.path())
+                    .env("XDG_CACHE_HOME", cache_dir)
+                    .args(["setup", "--local-archive"])
+                    .arg(&bad_archive)
+                    .output()
+                    .unwrap_or_else(|error| panic!("launch {route:?}: {error}"));
+                assert_result(&output, 1, "", "error: failed to install Anneal toolchain:");
+                assert!(output.stdout.is_empty(), "{output:?}");
+            }
         }
-        assert!(installed.join("marker.txt").is_file());
+        assert_eq!(
+            std::fs::read(installed.join("marker.txt"))
+                .expect("replaced marker must survive error"),
+            b"replaced CLI archive"
+        );
     }
+}
+
+#[cfg(all(target_os = "linux", feature = "setup"))]
+#[test]
+fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
+    use std::{fs, os::unix::fs::symlink};
+
+    let project = tempfile::tempdir().expect("create fixture");
+    let help = command(Route::Direct, project.path())
+        .args(["setup", "--help"])
+        .output()
+        .unwrap();
+    assert_result(&help, 0, "replaces any existing cached installation", "");
+
+    let cache = tempfile::tempdir().expect("create cache");
+    let archive = project.path().join("v1.tar.zst");
+    local_archive(&archive);
+    let setup_out = command(Route::Direct, project.path())
+        .env("XDG_CACHE_HOME", cache.path())
+        .args(["setup", "--local-archive"])
+        .arg(&archive)
+        .output()
+        .unwrap();
+    assert_result(&setup_out, 0, "Installed Anneal toolchain at ", "");
+    let stdout = String::from_utf8_lossy(&setup_out.stdout);
+    let installed = std::path::PathBuf::from(
+        stdout
+            .trim_end()
+            .strip_prefix("Installed Anneal toolchain at ")
+            .unwrap(),
+    );
+
+    fs::remove_dir_all(&installed).unwrap();
+    let target = project.path().join("outside-dir");
+    fs::create_dir(&target).unwrap();
+    symlink(&target, &installed).unwrap();
+
+    fs::write(project.path().join("lib.rs"), b"pub fn zero() -> u64 { 0 }\n").unwrap();
+    fs::write(project.path().join("Spec.lean"), b"-- spec\n").unwrap();
+    fs::write(project.path().join("Proof.lean"), b"-- proof\n").unwrap();
+
+    let verify_out = command(Route::Direct, project.path())
+        .env("XDG_CACHE_HOME", cache.path())
+        .args([
+            "verify",
+            "rustc",
+            "lib.rs",
+            "--crate-name",
+            "sample",
+            "--spec-file",
+            "Spec=Spec.lean",
+            "--proof-file",
+            "Proof=Proof.lean",
+        ])
+        .output()
+        .unwrap();
+    assert_result(&verify_out, 2, "", "");
+    let receipt: serde_json::Value = serde_json::from_slice(&verify_out.stdout).unwrap();
+    assert_eq!(receipt["status"], "tool_failed", "{receipt}");
+    assert_eq!(receipt["phase"], "capture-tool", "{receipt}");
+    assert!(
+        receipt["detail"].as_str().unwrap_or("").contains("symlink"),
+        "{receipt}"
+    );
 }
 
 #[cfg(unix)]
