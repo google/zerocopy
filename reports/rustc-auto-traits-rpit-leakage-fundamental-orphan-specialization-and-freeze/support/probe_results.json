@@ -1,0 +1,241 @@
+{
+  "schema_version": 1,
+  "timestamp_utc": "2026-11-22T08:09:13Z",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "readelf_version": "GNU readelf (GNU Binutils for Debian) 2.47",
+  "core_case_count": 18,
+  "part_a_rpit_auto_trait_leakage": {
+    "rpit_leaks_send_sync_unpin_for_u32": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "RPIT_U32_LEAKS_ALL=ok"
+    },
+    "rpit_blocks_send_for_rc": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0277"
+      ],
+      "stderr_head": "error[E0277]: `Rc<u32>` cannot be sent between threads safely\n --> <WORKDIR>/a2_rpit_rc.rs:6:25\n  |\n4 | fn mk() -> impl Debug { Rc::new(42u32) }\n  |            ---------- within this `impl Debug`\n5 | fn assert_send<T: Send>(_: T) {}\n6 | fn main() { assert_send(mk()); }\n  |             ----------- ^^^^ `Rc<u32>` cannot be sent between threads safely\n  |             |\n  |             required by a bound introduced by this call\n  |\n  = help: within `impl Debug`, the trait `Send` is not implemented for `Rc<u32>`\nnote: required because it appears within the type `impl Debug`\n --> <WORKDIR>/a2_rpit_rc.rs:4:12\n  |\n4 | fn mk() -> impl Debug { Rc::new(42u32) }\n  |            ^^^^^^^^^^\nnote: required by a bound in `assert_send`\n --> <WORKDIR>/a2_rpit_rc.rs:5:19\n  |"
+    },
+    "rpit_send_not_sync_for_cell": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "RPIT_CELL_SEND=ok"
+    },
+    "rpit_blocks_sync_for_cell": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0277"
+      ],
+      "stderr_head": "error[E0277]: `Cell<u32>` cannot be shared between threads safely\n --> <WORKDIR>/a4_rpit_cell_sync.rs:6:25\n  |\n4 | fn mk() -> impl Debug { Cell::new(42u32) }\n  |            ---------- within this `impl Debug`\n5 | fn assert_sync<T: Sync>(_: T) {}\n6 | fn main() { assert_sync(mk()); }\n  |             ----------- ^^^^ `Cell<u32>` cannot be shared between threads safely\n  |             |\n  |             required by a bound introduced by this call\n  |\n  = help: within `impl Debug`, the trait `Sync` is not implemented for `Cell<u32>`\n  = note: if you want to do aliasing and mutation between multiple threads, use `std::sync::RwLock` or `std::sync::atomic::AtomicU32` instead\nnote: required because it appears within the type `impl Debug`\n --> <WORKDIR>/a4_rpit_cell_sync.rs:4:12\n  |\n4 | fn mk() -> impl Debug { Cell::new(42u32) }\n  |            ^^^^^^^^^^\nnote: required by a bound in `assert_sync`\n --> <WORKDIR>/a4_rpit_cell_sync.rs:5:19"
+    },
+    "rpit_blocks_unpin_for_phantom_pinned": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0277"
+      ],
+      "stderr_head": "error[E0277]: `PhantomPinned` cannot be unpinned\n --> <WORKDIR>/a5_rpit_unpin.rs:6:26\n  |\n4 | fn mk() -> impl Debug { PhantomPinned }\n  |            ---------- within this `impl Debug`\n5 | fn assert_unpin<T: Unpin>(_: T) {}\n6 | fn main() { assert_unpin(mk()); }\n  |             ------------ ^^^^ within `impl Debug`, the trait `Unpin` is not implemented for `PhantomPinned`\n  |             |\n  |             required by a bound introduced by this call\n  |\n  = note: consider using the `pin!` macro\n          consider using `Box::pin` if you need to access the pinned value outside of the current scope\nnote: required because it appears within the type `impl Debug`\n --> <WORKDIR>/a5_rpit_unpin.rs:4:12\n  |\n4 | fn mk() -> impl Debug { PhantomPinned }\n  |            ^^^^^^^^^^\nnote: required by a bound in `assert_unpin`\n --> <WORKDIR>/a5_rpit_unpin.rs:5:20"
+    },
+    "dyn_trait_does_not_leak_send": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0277"
+      ],
+      "stderr_head": "error[E0277]: `dyn Debug` cannot be sent between threads safely\n   --> <WORKDIR>/a6_dyn_no_leak.rs:5:25\n    |\n  5 | fn main() { assert_send(mk()); }\n    |             ----------- ^^^^ `dyn Debug` cannot be sent between threads safely\n    |             |\n    |             required by a bound introduced by this call\n    |\n    = help: the trait `Send` is not implemented for `dyn Debug`\n    = note: required for `std::ptr::Unique<dyn Debug>` to implement `Send`\nnote: required because it appears within the type `Box<dyn Debug>`\n   --> <RUST_SYSROOT>/lib/rustlib/src/rust/library/alloc/src/boxed.rs:234:12\n    |\n234 | pub struct Box<\n    |            ^^^\nnote: required by a bound in `assert_send`\n   --> <WORKDIR>/a6_dyn_no_leak.rs:4:19\n    |\n  4 | fn assert_send<T: Send>(_: T) {}\n    |                   ^^^^ required by this bound in `assert_send`"
+    }
+  },
+  "part_b_fundamental_orphan_rules": {
+    "fundamental_box_ref_pin_local_allowed": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "FUND_OK=11,22,32,43"
+    },
+    "non_fundamental_vec_local_rejected_e0117": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0117"
+      ],
+      "stderr_head": "error[E0117]: only traits defined in the current crate can be implemented for types defined outside of the crate\n --> <WORKDIR>/b2_vec_e0117.rs:4:1\n  |\n4 | impl ForeignTr for Vec<Local> { fn tag(&self) -> u32 { 0 } }\n  | ^^^^^^^^^^^^^^^^^^^----------\n  |                    |\n  |                    `Vec` is not defined in the current crate\n  |\n  = note: impl doesn't have any local type before any uncovered type parameters\n  = note: for more information see https://doc.rust-lang.org/reference/items/implementations.html#orphan-rules\n  = note: define and implement a trait or new type instead\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0117`."
+    },
+    "non_fundamental_option_local_rejected_e0117": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0117"
+      ],
+      "stderr_head": "error[E0117]: only traits defined in the current crate can be implemented for types defined outside of the crate\n --> <WORKDIR>/b3_option_e0117.rs:4:1\n  |\n4 | impl ForeignTr for Option<Local> { fn tag(&self) -> u32 { 0 } }\n  | ^^^^^^^^^^^^^^^^^^^-------------\n  |                    |\n  |                    `Option` is not defined in the current crate\n  |\n  = note: impl doesn't have any local type before any uncovered type parameters\n  = note: for more information see https://doc.rust-lang.org/reference/items/implementations.html#orphan-rules\n  = note: define and implement a trait or new type instead\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0117`."
+    },
+    "fundamental_uncovered_generic_box_t_rejected_e0210": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0210"
+      ],
+      "stderr_head": "error[E0210]: type parameter `T` must be used as the type parameter for some local type (e.g., `MyStruct<T>`)\n --> <WORKDIR>/b4_uncovered_e0210.rs:3:6\n  |\n3 | impl<T> ForeignTr for Box<T> { fn tag(&self) -> u32 { 0 } }\n  |      ^ type parameter `T` must be used as the type parameter for some local type\n  |\n  = note: implementing a foreign trait is only possible if at least one of the types for which it is implemented is local\n  = note: only traits defined in the current crate can be implemented for a type parameter\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0210`."
+    }
+  },
+  "part_c_min_specialization_and_marker": {
+    "min_spec_type_concrete_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "SPEC=generic,u32"
+    },
+    "min_spec_lifetime_static_rejected_soundness": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0119"
+      ],
+      "stderr_head": "error[E0119]: conflicting implementations of trait `BadSpec`\n --> <WORKDIR>/c2_spec_static_e0119.rs:5:1\n  |\n4 | impl<T> BadSpec for T { default fn is_static() -> bool { false } }\n  | --------------------- first implementation here\n5 | impl<T: 'static> BadSpec for T { fn is_static() -> bool { true } }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`."
+    },
+    "min_spec_equal_ref_lifetimes_rejected": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0119"
+      ],
+      "stderr_head": "error[E0119]: conflicting implementations of trait `SameLt` for type `(&u8, &u8)`\n --> <WORKDIR>/c3_spec_eqlt_e0119.rs:5:1\n  |\n4 | impl<'a, 'b> SameLt for (&'a u8, &'b u8) { default fn same() -> bool { fa...\n  | ---------------------------------------- first implementation here\n5 | impl<'a> SameLt for (&'a u8, &'a u8) { fn same() -> bool { true } }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `(&u8, &u8)`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`."
+    },
+    "marker_overlapping_blanket_impls_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "MARKER_OVERLAP=ok"
+    },
+    "marker_with_assoc_item_rejected_e0714": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0714"
+      ],
+      "stderr_head": "error[E0714]: marker traits cannot have associated items\n --> <WORKDIR>/c5_marker_e0714.rs:4:19\n  |\n4 | trait BadMarker { const X: u32 = 1; }\n  |                   ^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0714`."
+    }
+  },
+  "part_d_negative_impls_and_freeze_rodata_shift": {
+    "negative_impl_blocks_send": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0277"
+      ],
+      "stderr_head": "error[E0277]: `NoSend` cannot be sent between threads safely\n --> <WORKDIR>/d1_neg_send.rs:6:25\n  |\n6 | fn main() { assert_send(NoSend(1)); }\n  |             ----------- ^^^^^^^^^ `NoSend` cannot be sent between threads safely\n  |             |\n  |             required by a bound introduced by this call\n  |\nhelp: the trait `Send` is not implemented for `NoSend`\n --> <WORKDIR>/d1_neg_send.rs:3:1\n  |\n3 | struct NoSend(u32);\n  | ^^^^^^^^^^^^^\nnote: required by a bound in `assert_send`\n --> <WORKDIR>/d1_neg_send.rs:5:19\n  |\n5 | fn assert_send<T: Send>(_: T) {}\n  |                   ^^^^ required by this bound in `assert_send`\n\nerror: aborting due to 1 previous error"
+    },
+    "with_negative_coherence_disjoint_impls_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "NEG_COH=1,2"
+    },
+    "freeze_vs_unsafe_cell_elf_sections": {
+      "compile_rc": 0,
+      "stderr_head": "",
+      "symbols": {
+        "FROZEN_STAT": {
+          "ndx": "3",
+          "size": "4",
+          "bind": "GLOBAL",
+          "section": {
+            "name": ".rodata.FROZEN_STAT",
+            "type": "PROGBITS",
+            "flags": "A"
+          }
+        },
+        "PHANTOM_FREEZE_STAT": {
+          "ndx": "4",
+          "size": "4",
+          "bind": "GLOBAL",
+          "section": {
+            "name": ".rodata.PHANTOM_FREEZE_STAT",
+            "type": "PROGBITS",
+            "flags": "A"
+          }
+        },
+        "UNFROZEN_STAT": {
+          "ndx": "5",
+          "size": "4",
+          "bind": "GLOBAL",
+          "section": {
+            "name": ".data.UNFROZEN_STAT",
+            "type": "PROGBITS",
+            "flags": "WA"
+          }
+        },
+        "ZERO_UNFROZEN_STAT": {
+          "ndx": "6",
+          "size": "4",
+          "bind": "GLOBAL",
+          "section": {
+            "name": ".bss.ZERO_UNFROZEN_STAT",
+            "type": "NOBITS",
+            "flags": "WA"
+          }
+        }
+      }
+    }
+  },
+  "supplementary_discriminators": {
+    "layer2_min_spec_static_ref_rejected": {
+      "compile_rc": 1,
+      "error_codes": [],
+      "stderr_head": "error: cannot specialize on `'static` lifetime\n --> <WORKDIR>/s1_spec_static_ref.rs:5:1\n  |\n5 | impl Tr for &'static u8 { fn f() -> u32 { 1 } }\n  | ^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error"
+    },
+    "layer2_min_spec_duplicate_param_rejected": {
+      "compile_rc": 1,
+      "error_codes": [],
+      "stderr_head": "error: specializing impl repeats parameter `T`\n --> <WORKDIR>/s2_spec_dup_param.rs:5:1\n  |\n5 | impl<T> Tr for (T, T) { fn f() -> u32 { 1 } }\n  | ^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error"
+    },
+    "layer2_min_spec_non_spec_trait_bound_rejected": {
+      "compile_rc": 1,
+      "error_codes": [],
+      "stderr_head": "error: cannot specialize on trait `Clone`\n --> <WORKDIR>/s3_spec_trait_bound.rs:5:9\n  |\n5 | impl<T: Clone> Tr for T { fn f() -> u32 { 1 } }\n  |         ^^^^^\n\nerror: aborting due to 1 previous error"
+    },
+    "foreign_rc_disjoint_without_negative_coherence_rejected_e0119": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0119"
+      ],
+      "stderr_head": "error[E0119]: conflicting implementations of trait `Classify` for type `Rc<_>`\n --> <WORKDIR>/s4_rc_no_neg_coh.rs:5:1\n  |\n4 | impl<T: Send> Classify for T { fn id() -> u32 { 1 } }\n  | ---------------------------- first implementation here\n5 | impl<T> Classify for Rc<T> { fn id() -> u32 { 2 } }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^ conflicting implementation for `Rc<_>`\n  |\n  = note: upstream crates may add a new impl of trait `std::marker::Send` for type `std::rc::Rc<_>` in future versions\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0119`."
+    },
+    "foreign_rc_disjoint_with_negative_coherence_ok": {
+      "compile_rc": 0,
+      "error_codes": [],
+      "stderr_head": "",
+      "run_rc": 0,
+      "stdout": "RC_NEG_COH=1,2"
+    },
+    "rpit_leaks_freeze_for_u32_blocks_for_cell": {
+      "u32_freeze_ok": {
+        "compile_rc": 0,
+        "error_codes": [],
+        "stderr_head": "",
+        "run_rc": 0,
+        "stdout": "RPIT_FREEZE_U32=ok"
+      },
+      "cell_freeze_rejected": {
+        "compile_rc": 1,
+        "error_codes": [
+          "E0277"
+        ],
+        "stderr_head": "error[E0277]: the trait bound `UnsafeCell<u32>: Freeze` is not satisfied in `impl Debug`\n   --> <WORKDIR>/s6b_rpit_freeze_cell.rs:8:27\n    |\n  6 | fn mk() -> impl Debug { Cell::new(42u32) }\n    |            ---------- within this `impl Debug`\n  7 | fn assert_freeze<T: Freeze>(_: T) {}\n  8 | fn main() { assert_freeze(mk()); }\n    |             ------------- ^^^^ unsatisfied trait bound\n    |             |\n    |             required by a bound introduced by this call\n    |\n    = help: within `impl Debug`, the nightly-only, unstable trait `Freeze` is not implemented for `UnsafeCell<u32>`\nnote: required because it appears within the type `Cell<u32>`\n   --> <RUST_SYSROOT>/lib/rustlib/src/rust/library/core/src/cell.rs:312:12\n    |\n312 | pub struct Cell<T: ?Sized> {\n    |            ^^^^\nnote: required because it appears within the type `impl Debug`\n   --> <WORKDIR>/s6b_rpit_freeze_cell.rs:6:12\n    |"
+      }
+    },
+    "auto_trait_orphan_rejects_box_local_e0321": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0321"
+      ],
+      "stderr_head": "error[E0321]: cross-crate traits with a default impl, like `Send`, can only be implemented for a struct/enum type defined in the current crate\n --> <WORKDIR>/s7_auto_orphan_box_local.rs:3:1\n  |\n3 | unsafe impl Send for Box<Local> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ can't implement cross-crate trait for type in another crate\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0321`."
+    },
+    "negative_auto_trait_cannot_be_specialized_e0366": {
+      "compile_rc": 1,
+      "error_codes": [
+        "E0366"
+      ],
+      "stderr_head": "error[E0366]: `!Send` impls cannot be specialized\n --> <WORKDIR>/s8_neg_auto_e0366.rs:4:1\n  |\n4 | impl !Send for Wrapper<u32> {}\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: `u32` is not a generic parameter\nnote: use the same sequence of generic lifetime, type and const parameters as the struct definition\n --> <WORKDIR>/s8_neg_auto_e0366.rs:3:1\n  |\n3 | struct Wrapper<T>(T);\n  | ^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0366`."
+    }
+  }
+}
