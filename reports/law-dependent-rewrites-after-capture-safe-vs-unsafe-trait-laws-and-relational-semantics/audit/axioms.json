@@ -1,0 +1,703 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.LawRewrite.Beh": [],
+    "Toy.LawRewrite.Beh.casesOn": [],
+    "Toy.LawRewrite.Beh.ctorElim": [],
+    "Toy.LawRewrite.Beh.ctorElimType": [],
+    "Toy.LawRewrite.Beh.ctorIdx": [],
+    "Toy.LawRewrite.Beh.done": [],
+    "Toy.LawRewrite.Beh.done.elim": [],
+    "Toy.LawRewrite.Beh.done.inj": [],
+    "Toy.LawRewrite.Beh.done.injEq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Beh.done.noConfusion": [],
+    "Toy.LawRewrite.Beh.done.sizeOf_spec": [],
+    "Toy.LawRewrite.Beh.noConfusion": [],
+    "Toy.LawRewrite.Beh.noConfusionType": [],
+    "Toy.LawRewrite.Beh.prepend": [],
+    "Toy.LawRewrite.Beh.prepend.eq_1": [],
+    "Toy.LawRewrite.Beh.prepend.eq_2": [],
+    "Toy.LawRewrite.Beh.rec": [],
+    "Toy.LawRewrite.Beh.recOn": [],
+    "Toy.LawRewrite.Beh.trace": [],
+    "Toy.LawRewrite.Beh.trace.match_1": [],
+    "Toy.LawRewrite.Beh.ub": [],
+    "Toy.LawRewrite.Beh.ub.elim": [],
+    "Toy.LawRewrite.Beh.ub.inj": [],
+    "Toy.LawRewrite.Beh.ub.injEq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Beh.ub.noConfusion": [],
+    "Toy.LawRewrite.Beh.ub.sizeOf_spec": [],
+    "Toy.LawRewrite.CallRes": [],
+    "Toy.LawRewrite.CallRes.casesOn": [],
+    "Toy.LawRewrite.CallRes.ctorElim": [],
+    "Toy.LawRewrite.CallRes.ctorElimType": [],
+    "Toy.LawRewrite.CallRes.ctorIdx": [],
+    "Toy.LawRewrite.CallRes.noConfusion": [],
+    "Toy.LawRewrite.CallRes.noConfusionType": [],
+    "Toy.LawRewrite.CallRes.rec": [],
+    "Toy.LawRewrite.CallRes.recOn": [],
+    "Toy.LawRewrite.CallRes.ret": [],
+    "Toy.LawRewrite.CallRes.ret.elim": [],
+    "Toy.LawRewrite.CallRes.ret.inj": [],
+    "Toy.LawRewrite.CallRes.ret.injEq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.CallRes.ret.noConfusion": [],
+    "Toy.LawRewrite.CallRes.ret.sizeOf_spec": [],
+    "Toy.LawRewrite.CallRes.ubAfter": [],
+    "Toy.LawRewrite.CallRes.ubAfter.elim": [],
+    "Toy.LawRewrite.CallRes.ubAfter.inj": [],
+    "Toy.LawRewrite.CallRes.ubAfter.injEq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.CallRes.ubAfter.noConfusion": [],
+    "Toy.LawRewrite.CallRes.ubAfter.sizeOf_spec": [],
+    "Toy.LawRewrite.CaptureBridge.Den": [],
+    "Toy.LawRewrite.CaptureBridge.DenIncl": [],
+    "Toy.LawRewrite.CaptureBridge.OverApproxOnOk": [],
+    "Toy.LawRewrite.CaptureBridge.Sat": [],
+    "Toy.LawRewrite.CaptureBridge.Sat.of_denIncl": [],
+    "Toy.LawRewrite.CaptureBridge.TransferSound": [],
+    "Toy.LawRewrite.CaptureBridge.VerifierSound": [],
+    "Toy.LawRewrite.CaptureBridge.failClosed": [],
+    "Toy.LawRewrite.CaptureBridge.failClosed.eq_1": [],
+    "Toy.LawRewrite.CaptureBridge.failClosed_overApproxOnOk_iff": [
+      "propext"
+    ],
+    "Toy.LawRewrite.CaptureBridge.transfer_to_capture_input": [],
+    "Toy.LawRewrite.ContextSafeAt": [],
+    "Toy.LawRewrite.CoveredBy": [],
+    "Toy.LawRewrite.Env": [],
+    "Toy.LawRewrite.Env.casesOn": [],
+    "Toy.LawRewrite.Env.contract": [],
+    "Toy.LawRewrite.Env.ctorIdx": [],
+    "Toy.LawRewrite.Env.impl": [],
+    "Toy.LawRewrite.Env.mk": [],
+    "Toy.LawRewrite.Env.mk.inj": [],
+    "Toy.LawRewrite.Env.mk.injEq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Env.mk.noConfusion": [],
+    "Toy.LawRewrite.Env.mk.sizeOf_spec": [],
+    "Toy.LawRewrite.Env.noConfusion": [],
+    "Toy.LawRewrite.Env.noConfusionType": [],
+    "Toy.LawRewrite.Env.rec": [],
+    "Toy.LawRewrite.Env.recOn": [],
+    "Toy.LawRewrite.Env.safety": [],
+    "Toy.LawRewrite.Impl": [],
+    "Toy.LawRewrite.ImprovesPP": [],
+    "Toy.LawRewrite.ImprovesWT": [],
+    "Toy.LawRewrite.Inst": [],
+    "Toy.LawRewrite.LawAt": [],
+    "Toy.LawRewrite.LawAt.eq_1": [],
+    "Toy.LawRewrite.LawOnReached": [],
+    "Toy.LawRewrite.LawOnTargets": [],
+    "Toy.LawRewrite.Prog": [],
+    "Toy.LawRewrite.Reaches": [],
+    "Toy.LawRewrite.Reaches.eq_1": [],
+    "Toy.LawRewrite.Reaches.eq_2": [],
+    "Toy.LawRewrite.Reaches.eq_3": [],
+    "Toy.LawRewrite.Reaches.eq_4": [],
+    "Toy.LawRewrite.Reaches.eq_5": [],
+    "Toy.LawRewrite.Reaches.eq_6": [],
+    "Toy.LawRewrite.Reaches.eq_def": [],
+    "Toy.LawRewrite.Reaches.match_1": [],
+    "Toy.LawRewrite.RefinesPP": [],
+    "Toy.LawRewrite.RefinesWT": [],
+    "Toy.LawRewrite.RelyPos": [],
+    "Toy.LawRewrite.RelyPos.after": [],
+    "Toy.LawRewrite.RelyPos.after.elim": [],
+    "Toy.LawRewrite.RelyPos.after.sizeOf_spec": [],
+    "Toy.LawRewrite.RelyPos.before": [],
+    "Toy.LawRewrite.RelyPos.before.elim": [],
+    "Toy.LawRewrite.RelyPos.before.sizeOf_spec": [],
+    "Toy.LawRewrite.RelyPos.casesOn": [],
+    "Toy.LawRewrite.RelyPos.ctorElim": [],
+    "Toy.LawRewrite.RelyPos.ctorElimType": [],
+    "Toy.LawRewrite.RelyPos.ctorIdx": [],
+    "Toy.LawRewrite.RelyPos.noConfusion": [],
+    "Toy.LawRewrite.RelyPos.noConfusionType": [],
+    "Toy.LawRewrite.RelyPos.ofNat": [],
+    "Toy.LawRewrite.RelyPos.ofNat_ctorIdx": [],
+    "Toy.LawRewrite.RelyPos.rec": [],
+    "Toy.LawRewrite.RelyPos.recOn": [],
+    "Toy.LawRewrite.ReplIsContract": [],
+    "Toy.LawRewrite.Rewrite": [],
+    "Toy.LawRewrite.Rewrite.apply": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.apply.eq_1": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.applyAt": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.applyAt.eq_1": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.applyAt.eq_2": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.applyAt.eq_def": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.applyAt.match_1": [],
+    "Toy.LawRewrite.Rewrite.casesOn": [],
+    "Toy.LawRewrite.Rewrite.ctorIdx": [],
+    "Toy.LawRewrite.Rewrite.mk": [],
+    "Toy.LawRewrite.Rewrite.mk.inj": [],
+    "Toy.LawRewrite.Rewrite.mk.injEq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.mk.noConfusion": [],
+    "Toy.LawRewrite.Rewrite.mk.sizeOf_spec": [],
+    "Toy.LawRewrite.Rewrite.noConfusion": [],
+    "Toy.LawRewrite.Rewrite.noConfusionType": [],
+    "Toy.LawRewrite.Rewrite.rec": [],
+    "Toy.LawRewrite.Rewrite.recOn": [],
+    "Toy.LawRewrite.Rewrite.repl": [],
+    "Toy.LawRewrite.Rewrite.rwStmt": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.rwStmt.eq_1": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.rwStmt.eq_2": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.rwStmt.match_1": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Rewrite.targets": [],
+    "Toy.LawRewrite.Safety": [],
+    "Toy.LawRewrite.Safety.casesOn": [],
+    "Toy.LawRewrite.Safety.ctorElim": [],
+    "Toy.LawRewrite.Safety.ctorElimType": [],
+    "Toy.LawRewrite.Safety.ctorIdx": [],
+    "Toy.LawRewrite.Safety.noConfusion": [],
+    "Toy.LawRewrite.Safety.noConfusionType": [],
+    "Toy.LawRewrite.Safety.ofNat": [],
+    "Toy.LawRewrite.Safety.ofNat_ctorIdx": [],
+    "Toy.LawRewrite.Safety.rec": [],
+    "Toy.LawRewrite.Safety.recOn": [],
+    "Toy.LawRewrite.Safety.safeTrait": [],
+    "Toy.LawRewrite.Safety.safeTrait.elim": [],
+    "Toy.LawRewrite.Safety.safeTrait.sizeOf_spec": [],
+    "Toy.LawRewrite.Safety.unsafeTrait": [],
+    "Toy.LawRewrite.Safety.unsafeTrait.elim": [],
+    "Toy.LawRewrite.Safety.unsafeTrait.sizeOf_spec": [],
+    "Toy.LawRewrite.Sat": [],
+    "Toy.LawRewrite.Stmt": [],
+    "Toy.LawRewrite.Stmt.call": [],
+    "Toy.LawRewrite.Stmt.call.elim": [],
+    "Toy.LawRewrite.Stmt.call.inj": [],
+    "Toy.LawRewrite.Stmt.call.injEq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Stmt.call.noConfusion": [],
+    "Toy.LawRewrite.Stmt.call.sizeOf_spec": [],
+    "Toy.LawRewrite.Stmt.casesOn": [],
+    "Toy.LawRewrite.Stmt.ctorElim": [],
+    "Toy.LawRewrite.Stmt.ctorElimType": [],
+    "Toy.LawRewrite.Stmt.ctorIdx": [],
+    "Toy.LawRewrite.Stmt.noConfusion": [],
+    "Toy.LawRewrite.Stmt.noConfusionType": [],
+    "Toy.LawRewrite.Stmt.out": [],
+    "Toy.LawRewrite.Stmt.out.elim": [],
+    "Toy.LawRewrite.Stmt.out.inj": [],
+    "Toy.LawRewrite.Stmt.out.injEq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Stmt.out.noConfusion": [],
+    "Toy.LawRewrite.Stmt.out.sizeOf_spec": [],
+    "Toy.LawRewrite.Stmt.prim": [],
+    "Toy.LawRewrite.Stmt.prim.elim": [],
+    "Toy.LawRewrite.Stmt.prim.inj": [],
+    "Toy.LawRewrite.Stmt.prim.injEq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Stmt.prim.noConfusion": [],
+    "Toy.LawRewrite.Stmt.prim.sizeOf_spec": [],
+    "Toy.LawRewrite.Stmt.rec": [],
+    "Toy.LawRewrite.Stmt.recOn": [],
+    "Toy.LawRewrite.Stmt.set": [],
+    "Toy.LawRewrite.Stmt.set.elim": [],
+    "Toy.LawRewrite.Stmt.set.inj": [],
+    "Toy.LawRewrite.Stmt.set.injEq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.Stmt.set.noConfusion": [],
+    "Toy.LawRewrite.Stmt.set.sizeOf_spec": [],
+    "Toy.LawRewrite.Stmt.ub": [],
+    "Toy.LawRewrite.Stmt.ub.elim": [],
+    "Toy.LawRewrite.Stmt.ub.sizeOf_spec": [],
+    "Toy.LawRewrite.Store": [],
+    "Toy.LawRewrite.Store.upd": [],
+    "Toy.LawRewrite.Store.upd.eq_1": [],
+    "Toy.LawRewrite.TargetsDisjoint": [],
+    "Toy.LawRewrite.TargetsUnsafe": [],
+    "Toy.LawRewrite.UBFreeSpec": [],
+    "Toy.LawRewrite.Val": [],
+    "Toy.LawRewrite.Var": [],
+    "Toy.LawRewrite.applyAt_const_false": [
+      "propext"
+    ],
+    "Toy.LawRewrite.applyAt_const_true": [
+      "propext"
+    ],
+    "Toy.LawRewrite.applyAt_example": [
+      "propext"
+    ],
+    "Toy.LawRewrite.applySeq": [
+      "propext"
+    ],
+    "Toy.LawRewrite.applySeq.eq_1": [
+      "propext"
+    ],
+    "Toy.LawRewrite.applySeq_eq_firstMatch": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.applySeq_example": [
+      "propext"
+    ],
+    "Toy.LawRewrite.applySeq_pair": [
+      "propext"
+    ],
+    "Toy.LawRewrite.apply_apply_of_targets_le": [
+      "propext"
+    ],
+    "Toy.LawRewrite.apply_neg": [
+      "propext"
+    ],
+    "Toy.LawRewrite.apply_pos": [
+      "propext"
+    ],
+    "Toy.LawRewrite.callsSome": [
+      "propext"
+    ],
+    "Toy.LawRewrite.callsSome.eq_1": [
+      "propext"
+    ],
+    "Toy.LawRewrite.callsSome_neg": [
+      "propext"
+    ],
+    "Toy.LawRewrite.callsSome_neg_untargeted": [
+      "propext"
+    ],
+    "Toy.LawRewrite.callsSome_pos": [
+      "propext"
+    ],
+    "Toy.LawRewrite.capDirect": [],
+    "Toy.LawRewrite.capDirect.eq_1": [],
+    "Toy.LawRewrite.capDirectDen": [],
+    "Toy.LawRewrite.capDirectDen_neg": [
+      "propext"
+    ],
+    "Toy.LawRewrite.capDirectDen_pos": [
+      "propext"
+    ],
+    "Toy.LawRewrite.capDirect_after_example": [],
+    "Toy.LawRewrite.capDirect_before_example": [],
+    "Toy.LawRewrite.capDirect_eq_compiled_of_allSafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.capDirect_safe_example": [],
+    "Toy.LawRewrite.capDirect_singleton": [
+      "propext"
+    ],
+    "Toy.LawRewrite.capDirect_unsafe_lawful_example": [],
+    "Toy.LawRewrite.capRejectRewritable": [
+      "propext"
+    ],
+    "Toy.LawRewrite.capRejectRewritable_compiledDen_transferSound": [
+      "propext"
+    ],
+    "Toy.LawRewrite.capRejectRewritable_incomplete": [
+      "propext"
+    ],
+    "Toy.LawRewrite.capRel": [],
+    "Toy.LawRewrite.capRel.eq_1": [],
+    "Toy.LawRewrite.capRel_example": [],
+    "Toy.LawRewrite.capRel_ne_nil": [
+      "propext"
+    ],
+    "Toy.LawRewrite.capRel_nil_example": [],
+    "Toy.LawRewrite.capRel_subset_of_sound_for_every_applyAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.capRel_subset_of_sound_for_every_applyAt.match_1_1": [
+      "propext"
+    ],
+    "Toy.LawRewrite.capRel_unsafe_ignores_contract_example": [],
+    "Toy.LawRewrite.cex_applySeq_without_law": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_capRejectRewritable_not_transferSound_for_capDirect": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_capRejectRewritable_not_transferSound_for_capDirect.match_1_1": [],
+    "Toy.LawRewrite.cex_capRejectRewritable_target_outside_R": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_capRejectRewritable_unsound_verifier": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_capRel_loses_effect_property": [],
+    "Toy.LawRewrite.cex_capRel_not_weakest_for_all_or_nothing": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_capRel_sound_unverified": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_capRel_subset_without_soundness": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_contract_discharge_safe_call": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_contract_discharge_ub_tolerant": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_contract_discharge_unreached_arg": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_contract_discharge_unverified": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_deadCall_effectful_not_refined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_lawOnReached_not_necessary_for_one_program": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_nontrivial_clone_copy_rewrite": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_overlapping_rewrites_conjunction_not_necessary": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_probe_no_refinement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_probe_unsafe_before": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_probe_untargeted": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_refining_rewrites_seq_not_refining": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_relies_after_effect_not_refined": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_transfer_repl_not_contract": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_transfer_safe_target": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_transfer_unverified": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_ub_tolerant_spec_no_transfer": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_without_coveredBy": [
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_without_replIsContract": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cex_without_targetsUnsafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.cloneToCopy": [],
+    "Toy.LawRewrite.cloneToCopy.eq_1": [],
+    "Toy.LawRewrite.cloneToCopy1": [],
+    "Toy.LawRewrite.compiled": [],
+    "Toy.LawRewrite.compiled.eq_1": [],
+    "Toy.LawRewrite.compiledCalls": [],
+    "Toy.LawRewrite.compiledCalls.eq_1": [],
+    "Toy.LawRewrite.compiledDen": [],
+    "Toy.LawRewrite.compiledDen_neg": [
+      "propext"
+    ],
+    "Toy.LawRewrite.compiledDen_pos": [
+      "propext"
+    ],
+    "Toy.LawRewrite.compiled_apply_eq_of_repl_eq_impl": [
+      "propext"
+    ],
+    "Toy.LawRewrite.compiled_envSafeLog_probe": [],
+    "Toy.LawRewrite.compiled_envSafeLog_probe_rewritten": [
+      "propext"
+    ],
+    "Toy.LawRewrite.compiled_example": [],
+    "Toy.LawRewrite.compiled_singleton": [
+      "propext"
+    ],
+    "Toy.LawRewrite.contextSafeAt_forall_iff_lawOnTargets_of_targetsSafe": [],
+    "Toy.LawRewrite.contextSafeAt_iff_lawAt_of_safe": [],
+    "Toy.LawRewrite.contextSafeAt_neg_after": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.contextSafeAt_neg_safe": [],
+    "Toy.LawRewrite.contextSafeAt_neg_unsafe_lawful_noncontract": [
+      "propext"
+    ],
+    "Toy.LawRewrite.contextSafeAt_pos": [],
+    "Toy.LawRewrite.contextSafeAt_pos_after_prefix": [],
+    "Toy.LawRewrite.contract_at_reached_unsafe_of_sat_capDirect_of_ubFreeSpec": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.copyImpl": [],
+    "Toy.LawRewrite.copyImpl.eq_1": [],
+    "Toy.LawRewrite.coveredBy_neg": [],
+    "Toy.LawRewrite.coveredBy_pos": [
+      "propext"
+    ],
+    "Toy.LawRewrite.deadCall": [],
+    "Toy.LawRewrite.deadCall.eq_1": [],
+    "Toy.LawRewrite.directCalls": [],
+    "Toy.LawRewrite.directCalls.eq_1": [],
+    "Toy.LawRewrite.directCalls.eq_2": [],
+    "Toy.LawRewrite.directCalls.match_1": [],
+    "Toy.LawRewrite.directCalls.match_3": [],
+    "Toy.LawRewrite.envSafeLog": [],
+    "Toy.LawRewrite.envSafeSucc": [],
+    "Toy.LawRewrite.envSafeSucc.eq_1": [],
+    "Toy.LawRewrite.envSafeTriv": [],
+    "Toy.LawRewrite.envSafeTriv.eq_1": [],
+    "Toy.LawRewrite.envSeqChain": [],
+    "Toy.LawRewrite.envSeqChain.eq_1": [],
+    "Toy.LawRewrite.envUnsafeLog": [],
+    "Toy.LawRewrite.envUnsafeLog.eq_1": [],
+    "Toy.LawRewrite.envUnsafeSelective": [],
+    "Toy.LawRewrite.envUnsafeSelective.eq_1": [],
+    "Toy.LawRewrite.envUnsafeSucc": [],
+    "Toy.LawRewrite.envUnsafeSucc.eq_1": [],
+    "Toy.LawRewrite.envUnsafeTriv": [],
+    "Toy.LawRewrite.envUnsafeTriv.eq_1": [],
+    "Toy.LawRewrite.exec": [],
+    "Toy.LawRewrite.exec.eq_1": [],
+    "Toy.LawRewrite.exec.eq_2": [],
+    "Toy.LawRewrite.exec.eq_3": [],
+    "Toy.LawRewrite.exec.eq_4": [],
+    "Toy.LawRewrite.exec.eq_5": [],
+    "Toy.LawRewrite.exec.eq_6": [],
+    "Toy.LawRewrite.exec.eq_def": [],
+    "Toy.LawRewrite.exec.match_1": [],
+    "Toy.LawRewrite.exec.match_3": [],
+    "Toy.LawRewrite.firstMatch": [],
+    "Toy.LawRewrite.firstMatch.eq_1": [],
+    "Toy.LawRewrite.firstMatch.match_1": [],
+    "Toy.LawRewrite.firstMatch_neg": [],
+    "Toy.LawRewrite.firstMatch_pos": [],
+    "Toy.LawRewrite.guardTenRewrite": [],
+    "Toy.LawRewrite.guardTenRewrite.eq_1": [],
+    "Toy.LawRewrite.improvesPP_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.improvesPP_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.improvesWT_neg": [],
+    "Toy.LawRewrite.improvesWT_pos": [],
+    "Toy.LawRewrite.instDecidableEqBeh": [],
+    "Toy.LawRewrite.instDecidableEqBeh.decEq": [],
+    "Toy.LawRewrite.instDecidableEqBeh.decEq.match_1": [],
+    "Toy.LawRewrite.instDecidableEqCallRes": [],
+    "Toy.LawRewrite.instDecidableEqCallRes.decEq": [],
+    "Toy.LawRewrite.instDecidableEqCallRes.decEq.match_1": [],
+    "Toy.LawRewrite.instDecidableEqRelyPos": [],
+    "Toy.LawRewrite.instDecidableEqSafety": [],
+    "Toy.LawRewrite.instDecidableImprovesPP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.instDecidableImprovesWT": [],
+    "Toy.LawRewrite.instDecidableRefinesPP": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.instDecidableRefinesWT": [],
+    "Toy.LawRewrite.instDecidableSat": [],
+    "Toy.LawRewrite.lawAt_neg": [],
+    "Toy.LawRewrite.lawAt_of_refinesPP_probe_of_safe_of_targets": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.lawAt_pos": [],
+    "Toy.LawRewrite.lawOnReached_neg": [
+      "propext"
+    ],
+    "Toy.LawRewrite.lawOnReached_pos": [],
+    "Toy.LawRewrite.lawOnReached_unreached": [],
+    "Toy.LawRewrite.lawOnTargets_neg": [],
+    "Toy.LawRewrite.lawOnTargets_pos": [],
+    "Toy.LawRewrite.loggingClone": [],
+    "Toy.LawRewrite.loggingClone.eq_1": [],
+    "Toy.LawRewrite.mem_capRel_iff_exists_applyAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.mem_capRel_of_mem_compiled_applySeq_of_coveredBy": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.nonvacuity_applySeq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.nonvacuity_capRejectRewritable": [
+      "propext"
+    ],
+    "Toy.LawRewrite.nonvacuity_capRel_sound": [],
+    "Toy.LawRewrite.nonvacuity_capRel_subset": [
+      "propext"
+    ],
+    "Toy.LawRewrite.nonvacuity_contextSafeAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.nonvacuity_coveredBy": [
+      "propext"
+    ],
+    "Toy.LawRewrite.nonvacuity_lawOnReached": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.nonvacuity_probe_safe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.nonvacuity_ubFree_verification": [
+      "propext"
+    ],
+    "Toy.LawRewrite.nonvacuity_unsafe": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.probe": [],
+    "Toy.LawRewrite.probe.eq_1": [],
+    "Toy.LawRewrite.reaches_neg_after_ub": [
+      "propext"
+    ],
+    "Toy.LawRewrite.reaches_neg_arg": [
+      "propext"
+    ],
+    "Toy.LawRewrite.reaches_pos": [
+      "propext"
+    ],
+    "Toy.LawRewrite.refinesPP_capDirect_applySeq_of_lawOnReached": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.refinesPP_capDirect_apply_of_lawOnReached": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.refinesPP_capDirect_before_apply_of_targetsUnsafe_of_replIsContract": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.refinesPP_every_context_applySeq_iff_of_pairwise_disjoint": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.refinesPP_every_context_iff_contextSafeAt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.refinesPP_neg": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.refinesPP_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.refinesPP_refl": [],
+    "Toy.LawRewrite.refinesWT_capDirect_apply_of_targetsUnsafe_of_replIsContract": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.refinesWT_neg": [],
+    "Toy.LawRewrite.refinesWT_pos": [],
+    "Toy.LawRewrite.relCalls": [],
+    "Toy.LawRewrite.relCalls.eq_1": [],
+    "Toy.LawRewrite.relCalls_append": [
+      "propext"
+    ],
+    "Toy.LawRewrite.replIsContract_neg": [
+      "propext"
+    ],
+    "Toy.LawRewrite.replIsContract_pos": [],
+    "Toy.LawRewrite.sat_compiled_and_apply_of_sat_capRel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.sat_compiled_applyAt_of_sat_capRel": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.sat_compiled_apply_of_targetsUnsafe_of_replIsContract_of_ubFreeSpec_of_sat_capDirect": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.sat_neg": [],
+    "Toy.LawRewrite.sat_pos": [],
+    "Toy.LawRewrite.seqChainProg": [],
+    "Toy.LawRewrite.seqChainProg.eq_1": [],
+    "Toy.LawRewrite.succClone": [],
+    "Toy.LawRewrite.succClone.eq_1": [],
+    "Toy.LawRewrite.succRewrite": [],
+    "Toy.LawRewrite.succRewrite.eq_1": [],
+    "Toy.LawRewrite.targetsDisjoint_neg": [],
+    "Toy.LawRewrite.targetsDisjoint_pos": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.LawRewrite.targetsUnsafe_neg": [],
+    "Toy.LawRewrite.targetsUnsafe_pos": [],
+    "Toy.LawRewrite.twoCalls": [],
+    "Toy.LawRewrite.ubFreeSpec_neg": [],
+    "Toy.LawRewrite.ubFreeSpec_pos": [],
+    "Toy.LawRewrite.ubFreeSpec_pos.match_1_1": [],
+    "Toy.LawRewrite.\u03c30": []
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

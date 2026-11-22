@@ -1,0 +1,7 @@
+{"version": "1.2.0",
+ "packagesDir": ".lake/packages",
+ "packages": [],
+ "name":
+ "«law-dependent-rewrites-after-capture-safe-vs-unsafe-trait-laws-and-relational-semantics»",
+ "lakeDir": ".lake",
+ "fixedToolchain": false}

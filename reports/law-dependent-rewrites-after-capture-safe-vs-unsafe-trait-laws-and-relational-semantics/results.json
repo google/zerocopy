@@ -1,0 +1,885 @@
+[
+  {
+    "id": "law-on-reached-calls-suffices",
+    "lean": "Toy.LawRewrite.refinesPP_capDirect_apply_of_lawOnReached",
+    "lean_names": [
+      "Toy.LawRewrite.Val",
+      "Toy.LawRewrite.Var",
+      "Toy.LawRewrite.Inst",
+      "Toy.LawRewrite.Store",
+      "Toy.LawRewrite.Store.upd",
+      "Toy.LawRewrite.Impl",
+      "Toy.LawRewrite.copyImpl",
+      "Toy.LawRewrite.Safety",
+      "Toy.LawRewrite.RelyPos",
+      "Toy.LawRewrite.Env",
+      "Toy.LawRewrite.Stmt",
+      "Toy.LawRewrite.Prog",
+      "Toy.LawRewrite.Beh",
+      "Toy.LawRewrite.Beh.trace",
+      "Toy.LawRewrite.Beh.prepend",
+      "Toy.LawRewrite.CallRes",
+      "Toy.LawRewrite.exec",
+      "Toy.LawRewrite.Rewrite",
+      "Toy.LawRewrite.Rewrite.rwStmt",
+      "Toy.LawRewrite.Rewrite.apply",
+      "Toy.LawRewrite.compiledCalls",
+      "Toy.LawRewrite.directCalls",
+      "Toy.LawRewrite.compiled",
+      "Toy.LawRewrite.capDirect",
+      "Toy.LawRewrite.ImprovesPP",
+      "Toy.LawRewrite.RefinesPP",
+      "Toy.LawRewrite.LawAt",
+      "Toy.LawRewrite.Reaches",
+      "Toy.LawRewrite.LawOnReached",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.\u03c30",
+      "Toy.LawRewrite.deadCall",
+      "Toy.LawRewrite.succClone",
+      "Toy.LawRewrite.envSafeTriv",
+      "Toy.LawRewrite.envSafeLog",
+      "Toy.LawRewrite.envSafeSucc",
+      "Toy.LawRewrite.cloneToCopy",
+      "Toy.LawRewrite.cex_nontrivial_clone_copy_rewrite",
+      "Toy.LawRewrite.cex_lawOnReached_not_necessary_for_one_program",
+      "Toy.LawRewrite.cex_deadCall_effectful_not_refined",
+      "Toy.LawRewrite.nonvacuity_lawOnReached",
+      "Toy.LawRewrite.lawAt_pos",
+      "Toy.LawRewrite.lawAt_neg",
+      "Toy.LawRewrite.improvesPP_pos",
+      "Toy.LawRewrite.improvesPP_neg",
+      "Toy.LawRewrite.refinesPP_pos",
+      "Toy.LawRewrite.refinesPP_neg",
+      "Toy.LawRewrite.capDirect_safe_example",
+      "Toy.LawRewrite.compiled_example",
+      "Toy.LawRewrite.apply_pos",
+      "Toy.LawRewrite.apply_neg",
+      "Toy.LawRewrite.reaches_pos",
+      "Toy.LawRewrite.reaches_neg_arg",
+      "Toy.LawRewrite.reaches_neg_after_ub",
+      "Toy.LawRewrite.lawOnReached_pos",
+      "Toy.LawRewrite.lawOnReached_neg",
+      "Toy.LawRewrite.lawOnReached_unreached",
+      "Toy.LawRewrite.compiled_singleton",
+      "Toy.LawRewrite.capDirect_singleton",
+      "Toy.LawRewrite.refinesPP_capDirect_applySeq_of_lawOnReached"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Correctness of a law-justified rewrite when the law holds is folklore (cf. GHC `RULES`); the per-program form, demanding the law at the calls reached by the law-free execution and at no other argument, against a direct capture with UB as top, is made precise here (and serves as the single-rewrite entry point to `refinesPP_capDirect_applySeq_of_lawOnReached`).",
+    "plain_claim": "For every environment `env` (any safety marks), relies position `pos`, rewrite `\u03c1`, program `p` and store `\u03c3`: if the law of `\u03c1` holds at every call of a targeted instance that the law-free execution of `p` from `\u03c3` reaches, at the argument it is reached with (`LawOnReached env \u03c1 p \u03c3`), then every behaviour of the compiled rewritten program `\u03c1.apply p` from `\u03c3` improves, prefix-preservingly, some behaviour of the direct capture of `p` from `\u03c3` (`RefinesPP (capDirect env pos p \u03c3) (compiled env (\u03c1.apply p) \u03c3)`).",
+    "hypotheses": [
+      {
+        "name": "hlaw : LawOnReached env \u03c1 p \u03c3",
+        "purpose": "the replacement must agree with the impl wherever the program actually calls a targeted instance",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_nontrivial_clone_copy_rewrite",
+        "witness_class": "a concrete environment whose every instance is safe (`envSafeLog`), `cloneToCopy` on instance 0, initial store `\u03c30`, and `probe 0 5` of at most three (specifically, three) statements"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_lawOnReached`: in `envSafeTriv` the law holds at the reached call of `probe 0 5` from `\u03c30` and the conclusion holds; in `envSafeLog` the law holds vacuously for `[.ub, .call 0 1 0]` from `\u03c30` (the call is unreachable) although the impl violates it at every argument, and the conclusion holds.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_lawOnReached",
+    "non_claims": [
+      "The hypothesis `LawOnReached` is sufficient, not necessary, for a single fixed program: in `envSafeSucc` (effect-free `succClone`) from initial store `\u03c30` with relies point `before`, `deadCall` reaches a law-violating call at argument `5` whose return value is never emitted, and `cloneToCopy` still refines (`cex_lawOnReached_not_necessary_for_one_program`). When the safe impl has observable effects (`envSafeLog`), even `deadCall` from `\u03c30` fails to refine (`cex_deadCall_effectful_not_refined`).",
+      "Prefix-preserving refinement `RefinesPP (capDirect env pos p \u03c3) (compiled env (\u03c1.apply p) \u03c3)` does not imply behavioural equality and does not transfer specifications satisfied by UB behaviours (for instance, when `p` hits an untargeted unsafe contract violation, `capDirect` is UB while `compiled` terminates normally: `capDirect_before_example`, `compiled_example`).",
+      "The law is demanded at the calls reached by the law-free execution (`Reaches`), which continues past an unsafe call at which `capDirect` is already UB; a weaker hypothesis that stops at unsafe contract violations is not stated (not examined). This theorem is the singleton specialization (`\u03c1s = [\u03c1]`) of `refinesPP_capDirect_applySeq_of_lawOnReached`.",
+      "Nothing is said about rewrites whose replacement code contains calls; every replacement here is inline code `prim f`.",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "S. Peyton Jones, A. Tolmach, T. Hoare, \"Playing by the rules: rewriting as a practical optimisation technique in GHC\", Proceedings of the 2001 ACM SIGPLAN Haskell Workshop (Utrecht University Technical Report UU-CS-2001-23), pp. 203\u2013233, 2001 (https://www.microsoft.com/en-us/research/publication/playing-by-the-rules-rewriting-as-a-practical-optimisation-technique-in-ghc/): GHC `{-# RULES #-}` pragmas apply domain-specific and typeclass-law-dependent Core rewrites without compiler checking of the law, placing soundness on law satisfaction.",
+      "A. Farmer, N. Sculthorpe, A. Gill, \"Reasoning with the HERMIT: tool support for equational reasoning on GHC core programs\", Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell, pp. 23\u201334, 2015, doi:10.1145/2804302.2804303: interactive equational reasoning for verifying GHC Core transformations against algebraic and typeclass laws.",
+      "J. Breitner, A. Spector-Zabusky, Y. Li, C. Rizkallah, J. Wiegley, S. Weirich, \"Ready, set, verify! applying hs-to-coq to real-world Haskell code (experience report)\", PACMPL 2(ICFP):1\u201316, 2018, doi:10.1145/3236784: mechanized Coq verification of Haskell library code against specifications including typeclass laws; does not treat post-capture compiler rewrites.",
+      "B. H. Liskov, J. M. Wing, \"A behavioral notion of subtyping\", ACM TOPLAS 16(6):1811\u20131841, 1994, doi:10.1145/197320.197383 (metadata verified at Crossref): substituting a subtype implementation for a supertype specification preserves properties provable from the specification when the implementation meets the behavioral subtyping rules; related in spirit, not a statement about compiler rewrites after capture.",
+      "CompCert `common/Behaviors.v` at AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc:81-82, `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` \u2014 the prefix-preserving trace improvement (introduced in CompCert after Leroy 2009) that `ImprovesPP` restates (source behaviour first there, target behaviour first here).",
+      "Reference corpus package `zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume`: UB-erasing eliminations stated with the same two refinement disciplines (prefix-preserving `ImprovesPP`, whole-trace `ImprovesWT`) in a different toy; this package restates the disciplines independently.",
+      "Reference corpus report `closure-upvar-defunctionalization-symbolic-vtables-and-trait-coherence-laws`: coherence-keyed law registries against dictionary spoofing \u2014 which law instance a proof may assume; related, it does not treat rewrites that depend on a law."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "contextual-refinement-iff-pointwise-context-safety",
+    "lean": "Toy.LawRewrite.refinesPP_every_context_iff_contextSafeAt",
+    "lean_names": [
+      "Toy.LawRewrite.ContextSafeAt",
+      "Toy.LawRewrite.LawOnTargets",
+      "Toy.LawRewrite.nonvacuity_contextSafeAt",
+      "Toy.LawRewrite.contextSafeAt_iff_lawAt_of_safe",
+      "Toy.LawRewrite.contextSafeAt_forall_iff_lawOnTargets_of_targetsSafe",
+      "Toy.LawRewrite.contextSafeAt_pos",
+      "Toy.LawRewrite.contextSafeAt_pos_after_prefix",
+      "Toy.LawRewrite.contextSafeAt_neg_safe",
+      "Toy.LawRewrite.contextSafeAt_neg_after",
+      "Toy.LawRewrite.contextSafeAt_neg_unsafe_lawful_noncontract",
+      "Toy.LawRewrite.lawOnTargets_pos",
+      "Toy.LawRewrite.lawOnTargets_neg",
+      "Toy.LawRewrite.envSafeTriv",
+      "Toy.LawRewrite.envUnsafeTriv",
+      "Toy.LawRewrite.envUnsafeLog",
+      "Toy.LawRewrite.envUnsafeSucc",
+      "Toy.LawRewrite.envSafeLog",
+      "Toy.LawRewrite.succRewrite",
+      "Toy.LawRewrite.cex_lawOnReached_not_necessary_for_one_program",
+      "Toy.LawRewrite.cex_without_targetsUnsafe",
+      "Toy.LawRewrite.cex_transfer_safe_target",
+      "Toy.LawRewrite.cex_without_replIsContract"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "The contrast between safe-trait laws (whose violation is defined behaviour) and unsafe-trait contracts (whose violation is UB at a relies point) is folklore; the exact pointwise condition across both safety marks and both relies positions is made precise here.",
+    "plain_claim": "For every environment `env`, relies position `pos` and rewrite `\u03c1`: the compiled rewritten program refines, prefix-preservingly, the direct capture on every program and every initial store iff, at every targeted instance `i` and every argument `v`, `ContextSafeAt env pos \u03c1 i v` holds \u2014 that is, the impl agrees with the replacement at `v`, or `i` belongs to an unsafe trait, its impl violates the contract at `v`, and either the relies point is `before` or the impl's effects at `v` are a prefix of the replacement's effects at `v`.",
+    "hypotheses": [],
+    "depth": "substantive",
+    "nonvacuity_witness": "`nonvacuity_contextSafeAt`: the right-hand side holds across all three positive branches \u2014 a lawful impl (`envSafeTriv`, relies point `after`), an unsafe contract violation with relies point `before` (`envUnsafeLog`), and an unsafe contract violation with relies point `after` whose impl effects are a prefix of the replacement's (`envUnsafeSucc`, `contextSafeAt_pos_after_prefix`) \u2014 and fails for a safe law violation (`envSafeLog`), for an unsafe violation with relies point `after` an effect the replacement lacks (`envUnsafeLog`), and for a non-contract replacement on a lawful unsafe impl (`envUnsafeTriv`, `succRewrite`, `contextSafeAt_neg_unsafe_lawful_noncontract`).",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_contextSafeAt",
+    "non_claims": [
+      "The unsafe-trait behaviour relies on `capDirect` explicitly injecting UB at every call of an unsafe instance whose impl violates `env.contract` (`directCalls`). If a verifier captures a program under a semantics that executes the user impl without encoding the unsafe trait's contract as a relies-point UB check (equivalent to `compiled` or `safeTrait` in this toy), neither lawless refinement nor automatic contract discharge/transfer holds (`cex_without_targetsUnsafe`, `cex_transfer_safe_target`).",
+      "Every contract `env.contract i` here is a single-call, stateless pointwise behaviour (`Val \u2192 List Val \u00d7 Val`); multi-call or multi-method relational trait contracts (such as `TrustedLen` relating `size_hint` to repeated `next` calls) are not modelled.",
+      "The quantifier ranges over every program and every initial store of the toy language; for one fixed program the condition is not necessary (`cex_lawOnReached_not_necessary_for_one_program`).",
+      "For a safe instance `ContextSafeAt` is equivalent to `LawAt` (`contextSafeAt_iff_lawAt_of_safe`), and when every targeted instance is safe the right-hand side is equivalent to `LawOnTargets env \u03c1` (`contextSafeAt_forall_iff_lawOnTargets_of_targetsSafe`); the statement gives no license to rewrite, in every context, calls of a safe-trait instance whose impl violates the law at some argument.",
+      "The characterization holds for a fixed environment `env`: if a specific unsafe impl violates `env.contract` at every argument, even a replacement `\u03c1.repl` that disagrees with `env.contract` satisfies `ContextSafeAt` with relies point `before`; agreement with the contract (`ReplIsContract`) is forced when quantifying over environments that include lawful impls (`cex_without_replIsContract`, `contextSafeAt_neg_unsafe_lawful_noncontract`).",
+      "User impls (`Impl`) cannot themselves trigger UB; if a safe-trait impl could trigger UB before emitting incompatible effects, a rewrite could refine it without satisfying `LawAt` (not examined).",
+      "The characterization is stated for prefix-preserving refinement; the whole-trace analogue is not stated as an iff (not examined).",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "S. Peyton Jones, A. Tolmach, T. Hoare, \"Playing by the rules: rewriting as a practical optimisation technique in GHC\", Proceedings of the 2001 ACM SIGPLAN Haskell Workshop (Utrecht University Technical Report UU-CS-2001-23), pp. 203\u2013233, 2001 (https://www.microsoft.com/en-us/research/publication/playing-by-the-rules-rewriting-as-a-practical-optimisation-technique-in-ghc/): GHC `{-# RULES #-}` pragmas apply domain-specific and typeclass-law-dependent Core rewrites without compiler checking of the law, placing soundness on law satisfaction.",
+      "J. Cockx, N. Tabareau, T. Winterhalter, \"The taming of the rew: a type theory with computational assumptions\", PACMPL 5(POPL):1\u201329, 2021, doi:10.1145/3434341: soundness criteria for user-supplied rewrite rules in dependently typed proof assistants; does not treat imperative IR capture or UB refinement.",
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, \"RustBelt: securing the foundations of the Rust programming language\", PACMPL 2(POPL):1\u201334, 2018, doi:10.1145/3158154: Coq/Iris semantic-typing foundation of Rust's safe-vs-unsafe boundary, where `unsafe` trait invariants are semantic proof obligations of implementers while safe code cannot cause UB.",
+      "X. Denis, J.-H. Jourdan, C. March\u00e9, \"Creusot: A Foundry for the Deductive Verification of Rust Programs\", ICFEM 2022, LNCS 13478, pp. 90\u2013105, Springer, 2022, doi:10.1007/978-3-031-17244-1_6: deductive MIR verification supporting explicit `#[law]` trait laws discharged on implementations.",
+      "The Rust Reference, \"Traits \u2014 Unsafe traits\" (`[items.traits.safety]`, https://doc.rust-lang.org/reference/items/traits.html#unsafe-traits): documents that implementing an `unsafe` trait carries safety obligations that callers and unsafe consumers may rely on.",
+      "CompCert `common/Behaviors.v` at AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc:81-82, `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` \u2014 the prefix-preserving trace improvement (introduced in CompCert after Leroy 2009) that `ImprovesPP` restates (source behaviour first there, target behaviour first here).",
+      "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes, \"Taming undefined behavior in LLVM\", PLDI 2017, pp. 633\u2013647, 2017, doi:10.1145/3062341.3062343: formalizes LLVM's immediate/whole-execution UB refinement, contrasting with CompCert's prefix-preserving `Goes_wrong` refinement.",
+      "Reference corpus package `zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume`: UB-erasing eliminations stated with the same two refinement disciplines (prefix-preserving `ImprovesPP`, whole-trace `ImprovesWT`) in a different toy; this package restates the disciplines independently.",
+      "Reference corpus report `closure-upvar-defunctionalization-symbolic-vtables-and-trait-coherence-laws`: coherence-keyed law registries against dictionary spoofing \u2014 which law instance a proof may assume; related, it does not treat rewrites that depend on a law.",
+      "Reference corpus report `anneal-trusted-mir-gvn-instsimplify-algebraic-and-discriminant-folding`: algebraic identities used by simplification passes, with no user-implementable trait law; related prior art (cited by its slug; no claim is made about any verifier's implementation)."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "safe-target-refinement-on-probe-forces-law",
+    "lean": "Toy.LawRewrite.lawAt_of_refinesPP_probe_of_safe_of_targets",
+    "lean_names": [
+      "Toy.LawRewrite.cex_probe_unsafe_before",
+      "Toy.LawRewrite.cex_probe_untargeted",
+      "Toy.LawRewrite.cex_probe_no_refinement",
+      "Toy.LawRewrite.nonvacuity_probe_safe",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.LawAt",
+      "Toy.LawRewrite.cloneToCopy1",
+      "Toy.LawRewrite.envSafeTriv",
+      "Toy.LawRewrite.deadCall",
+      "Toy.LawRewrite.cex_lawOnReached_not_necessary_for_one_program"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "Observing a replaced call through its emitted effects and returned value is folklore; stated here for the three-statement probe context `probe i v`.",
+    "plain_claim": "For every environment `env`, relies position `pos`, rewrite `\u03c1`, instance `i`, argument `v` and store `\u03c3`: if `i` belongs to a safe trait (`env.safety i = .safeTrait`), `\u03c1` targets `i` (`\u03c1.targets i = true`), and the compiled rewritten probe `\u03c1.apply (probe i v)` refines, prefix-preservingly, the direct capture of `probe i v` from `\u03c3` (where `probe i v` sets variable `0` to `v`, calls `i` on it into variable `1`, and emits variable `1`), then the impl of `i` agrees with the replacement at `v` (`LawAt env \u03c1 i v`).",
+    "hypotheses": [
+      {
+        "name": "hsafe : env.safety i = .safeTrait",
+        "purpose": "for an unsafe trait the direct capture may be UB at the call, which permits the rewrite without LawAt",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_probe_unsafe_before",
+        "witness_class": "a concrete environment whose every instance is unsafe (`envUnsafeLog`), relies point `before`, `cloneToCopy`, initial store `\u03c30`, and `probe 0 5`"
+      },
+      {
+        "name": "ht : \u03c1.targets i = true",
+        "purpose": "an untargeted call is not rewritten, so the probe observes the impl against itself",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_probe_untargeted",
+        "witness_class": "the rewrite `cloneToCopy1` targeting instance 1, probed at safe instance 0 on `probe 0 5` from `\u03c30`"
+      },
+      {
+        "name": "href : RefinesPP (capDirect env pos (probe i v) \u03c3) (compiled env (\u03c1.apply (probe i v)) \u03c3)",
+        "purpose": "the observational refinement hypothesis on the probe context",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_probe_no_refinement",
+        "witness_class": "safe instance 0 in `envSafeLog`, `cloneToCopy`, relies point `before`, initial store `\u03c30`, and `probe 0 5`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_probe_safe`: `envSafeTriv`, instance `0`, `cloneToCopy`, relies point `before`, initial store `\u03c30`, argument `5`.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_probe_safe",
+    "non_claims": [
+      "The probe emits the returned value; `deadCall`, which ignores the returned value of an effect-free call, does not force the law (`cex_lawOnReached_not_necessary_for_one_program`).",
+      "User impls (`Impl`) cannot themselves trigger UB; if a safe-trait impl could trigger UB on `probe i v`, prefix-preserving refinement would not force agreement after that UB (not modelled).",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "S. Peyton Jones, A. Tolmach, T. Hoare, \"Playing by the rules: rewriting as a practical optimisation technique in GHC\", Proceedings of the 2001 ACM SIGPLAN Haskell Workshop (Utrecht University Technical Report UU-CS-2001-23), pp. 203\u2013233, 2001 (https://www.microsoft.com/en-us/research/publication/playing-by-the-rules-rewriting-as-a-practical-optimisation-technique-in-ghc/): GHC `{-# RULES #-}` pragmas apply domain-specific and typeclass-law-dependent Core rewrites without compiler checking of the law, placing soundness on law satisfaction.",
+      "B. H. Liskov, J. M. Wing, \"A behavioral notion of subtyping\", ACM TOPLAS 16(6):1811\u20131841, 1994, doi:10.1145/197320.197383 (metadata verified at Crossref): substituting a subtype implementation for a supertype specification preserves properties provable from the specification when the implementation meets the behavioral subtyping rules; related in spirit, not a statement about compiler rewrites after capture."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "nontrivial-clone-breaks-copy-rewrite",
+    "lean": "Toy.LawRewrite.cex_nontrivial_clone_copy_rewrite",
+    "lean_names": [
+      "Toy.LawRewrite.loggingClone",
+      "Toy.LawRewrite.envSafeLog",
+      "Toy.LawRewrite.cloneToCopy",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.\u03c30",
+      "Toy.LawRewrite.ReplIsContract",
+      "Toy.LawRewrite.ImprovesWT",
+      "Toy.LawRewrite.RefinesWT"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "That an effectful or non-identity `Clone` on a `Copy` type is observable when a copy is substituted is folklore; this concrete toy instance pins down the exact failure of both prefix-preserving and whole-trace refinement.",
+    "plain_claim": "In the concrete environment `envSafeLog` (every instance belongs to a safe trait; the impl `loggingClone` emits `9` and returns its argument; the contract is `copyImpl`), `cloneToCopy` on instance `0` satisfies `ReplIsContract`, `LawOnReached` fails on `probe 0 5` from initial store `\u03c30`, the direct capture of `probe 0 5` from `\u03c30` with relies point `before` equals `[.done [9, 5]]`, the compiled rewritten program from `\u03c30` equals `[.done [5]]`, prefix-preserving refinement fails with relies point `before`, and whole-trace refinement fails with relies point `after`.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The statement is itself a concrete instance.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.cex_nontrivial_clone_copy_rewrite",
+    "non_claims": [
+      "This exhibits one concrete toy program and environment; it neither shows nor refutes that any real compiler changes the behaviour of any real program.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "S. Peyton Jones, A. Tolmach, T. Hoare, \"Playing by the rules: rewriting as a practical optimisation technique in GHC\", Proceedings of the 2001 ACM SIGPLAN Haskell Workshop (Utrecht University Technical Report UU-CS-2001-23), pp. 203\u2013233, 2001 (https://www.microsoft.com/en-us/research/publication/playing-by-the-rules-rewriting-as-a-practical-optimisation-technique-in-ghc/): GHC `{-# RULES #-}` pragmas apply domain-specific and typeclass-law-dependent Core rewrites without compiler checking of the law, placing soundness on law satisfaction.",
+      "B. H. Liskov, J. M. Wing, \"A behavioral notion of subtyping\", ACM TOPLAS 16(6):1811\u20131841, 1994, doi:10.1145/197320.197383 (metadata verified at Crossref): substituting a subtype implementation for a supertype specification preserves properties provable from the specification when the implementation meets the behavioral subtyping rules; related in spirit, not a statement about compiler rewrites after capture."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "unsafe-relies-before-rewrite-refines-without-law",
+    "lean": "Toy.LawRewrite.refinesPP_capDirect_before_apply_of_targetsUnsafe_of_replIsContract",
+    "lean_names": [
+      "Toy.LawRewrite.cex_without_targetsUnsafe",
+      "Toy.LawRewrite.cex_without_replIsContract",
+      "Toy.LawRewrite.cex_relies_after_effect_not_refined",
+      "Toy.LawRewrite.nonvacuity_unsafe",
+      "Toy.LawRewrite.TargetsUnsafe",
+      "Toy.LawRewrite.ReplIsContract",
+      "Toy.LawRewrite.targetsUnsafe_pos",
+      "Toy.LawRewrite.targetsUnsafe_neg",
+      "Toy.LawRewrite.replIsContract_pos",
+      "Toy.LawRewrite.replIsContract_neg",
+      "Toy.LawRewrite.capDirect_before_example",
+      "Toy.LawRewrite.capDirect_unsafe_lawful_example",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.succClone",
+      "Toy.LawRewrite.envUnsafeLog",
+      "Toy.LawRewrite.cex_transfer_safe_target",
+      "Toy.LawRewrite.cex_ub_tolerant_spec_no_transfer",
+      "Toy.LawRewrite.refinesPP_every_context_iff_contextSafeAt"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "That a compiler may rely on an unsafe trait's contract because a violation is UB is folklore; the law-free prefix-preserving refinement theorem \u2014 requiring both `ReplIsContract` and relies point `before` \u2014 is made precise here (and follows as a corollary of `refinesPP_every_context_iff_contextSafeAt`).",
+    "plain_claim": "For every environment `env`, rewrite `\u03c1`, program `p` and store `\u03c3`: if every instance `\u03c1` targets belongs to an unsafe trait (`TargetsUnsafe env \u03c1`) and `\u03c1` substitutes at every targeted instance the exact behaviour its contract prescribes (`ReplIsContract env \u03c1`), then, with no law hypothesis on any impl, the compiled rewritten program refines, prefix-preservingly, the direct capture of `p` from `\u03c3` with the relies point `before` the impl.",
+    "hypotheses": [
+      {
+        "name": "hunsafe : TargetsUnsafe env \u03c1",
+        "purpose": "a violated safe-trait law is defined behaviour, so `capDirect` runs the impl without UB and the divergence is observable",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_without_targetsUnsafe",
+        "witness_class": "a concrete environment whose every instance is safe (`envSafeLog`), `cloneToCopy`, initial store `\u03c30`, and `probe 0 5`"
+      },
+      {
+        "name": "hrepl : ReplIsContract env \u03c1",
+        "purpose": "the relies-point UB covers only impls that violate `env.contract`; a replacement other than `env.contract` diverges from a contract-satisfying impl",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_without_replIsContract",
+        "witness_class": "every instance unsafe with a lawful copy impl (`envUnsafeTriv`), replacement `succRewrite` (`succClone`), initial store `\u03c30`, and `probe 0 5`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_unsafe`: `envUnsafeLog` (every instance unsafe, the impl violates the copy contract at every argument) with `cloneToCopy`; both hypotheses hold and the conclusion holds on `probe 0 5` from `\u03c30`.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_unsafe",
+    "positive_control_lean": "Toy.LawRewrite.cex_relies_after_effect_not_refined",
+    "non_claims": [
+      "The relies point is `before` the impl in the statement. With the relies point `after` the impl's effects, there is a contract-violating impl with effects (`envUnsafeLog`, `loggingClone` on `probe 0 5` from `\u03c30`) for which prefix-preserving refinement fails (`cex_relies_after_effect_not_refined`); this is a blocking qualifier, not a presentational choice.",
+      "The unsafe-trait behaviour relies on `capDirect` explicitly injecting UB at every call of an unsafe instance whose impl violates `env.contract` (`directCalls`). If a verifier captures a program under a semantics that executes the user impl without encoding the unsafe trait's contract as a relies-point UB check (equivalent to `compiled` or `safeTrait` in this toy), neither lawless refinement nor automatic contract discharge/transfer holds (`cex_without_targetsUnsafe`, `cex_transfer_safe_target`).",
+      "Every contract `env.contract i` here is a single-call, stateless pointwise behaviour (`Val \u2192 List Val \u00d7 Val`); multi-call or multi-method relational trait contracts (such as `TrustedLen` relating `size_hint` to repeated `next` calls) are not modelled.",
+      "The statement does not say a verifier may ignore the contract: `capDirect` is UB wherever the contract is violated, and verification of a UB-tolerant property does not transfer (`cex_ub_tolerant_spec_no_transfer`). This theorem is a specialization of the right-to-left direction of `refinesPP_every_context_iff_contextSafeAt` at `pos = .before`.",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, \"RustBelt: securing the foundations of the Rust programming language\", PACMPL 2(POPL):1\u201334, 2018, doi:10.1145/3158154: Coq/Iris semantic-typing foundation of Rust's safe-vs-unsafe boundary, where `unsafe` trait invariants are semantic proof obligations of implementers while safe code cannot cause UB.",
+      "X. Denis, J.-H. Jourdan, C. March\u00e9, \"Creusot: A Foundry for the Deductive Verification of Rust Programs\", ICFEM 2022, LNCS 13478, pp. 90\u2013105, Springer, 2022, doi:10.1007/978-3-031-17244-1_6: deductive MIR verification supporting explicit `#[law]` trait laws discharged on implementations.",
+      "The Rust Reference, \"Traits \u2014 Unsafe traits\" (`[items.traits.safety]`, https://doc.rust-lang.org/reference/items/traits.html#unsafe-traits): documents that implementing an `unsafe` trait carries safety obligations that callers and unsafe consumers may rely on.",
+      "CompCert `common/Behaviors.v` at AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc:81-82, `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` \u2014 the prefix-preserving trace improvement (introduced in CompCert after Leroy 2009) that `ImprovesPP` restates (source behaviour first there, target behaviour first here).",
+      "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes, \"Taming undefined behavior in LLVM\", PLDI 2017, pp. 633\u2013647, 2017, doi:10.1145/3062341.3062343: formalizes LLVM's immediate/whole-execution UB refinement, contrasting with CompCert's prefix-preserving `Goes_wrong` refinement.",
+      "Reference corpus package `zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume`: UB-erasing eliminations stated with the same two refinement disciplines (prefix-preserving `ImprovesPP`, whole-trace `ImprovesWT`) in a different toy; this package restates the disciplines independently.",
+      "Reference corpus package `place-evaluation-ub-placemention-erasure-inbounds-projections-and-equal-target-switches`: further UB-erasing rewrites under prefix-preserving refinement; related, no shared definitions."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "relies-after-effect-breaks-lawless-refinement-under-prefix-ub",
+    "lean": "Toy.LawRewrite.cex_relies_after_effect_not_refined",
+    "lean_names": [
+      "Toy.LawRewrite.envUnsafeLog",
+      "Toy.LawRewrite.envUnsafeSucc",
+      "Toy.LawRewrite.capDirect_after_example",
+      "Toy.LawRewrite.contextSafeAt_pos_after_prefix",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.\u03c30",
+      "Toy.LawRewrite.ContextSafeAt"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "The sensitivity of UB-exploiting rewrites to whether observable events precede the UB point under CompCert-style prefix-preserving refinement vs. LLVM-style whole-trace UB is made concrete here for unsafe-trait relies placement.",
+    "plain_claim": "In the concrete environment `envUnsafeLog` (every instance belongs to an unsafe trait; the impl emits `9` and returns its argument; the contract is `copyImpl`) with `cloneToCopy`, both `TargetsUnsafe` and `ReplIsContract` hold; from initial store `\u03c30` with the relies point `after` the impl, the direct capture of `probe 0 5` equals `[.ub [9]]`, the compiled rewritten program equals `[.done [5]]`, and prefix-preserving refinement fails; whole-trace refinement holds at relies point `after`, and prefix-preserving refinement holds at relies point `before`.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "nonvacuity_witness": "The statement is itself a concrete instance.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.cex_relies_after_effect_not_refined",
+    "non_claims": [
+      "This does not show that every relies-after capture requires `LawAt`: `ContextSafeAt` also admits an unsafe contract violation under relies point `after` when the impl's effects are a prefix of the replacement's effects, as witnessed by the effect-free `envUnsafeSucc` (`contextSafeAt_pos_after_prefix`).",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "CompCert `common/Behaviors.v` at AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc:81-82, `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` \u2014 the prefix-preserving trace improvement (introduced in CompCert after Leroy 2009) that `ImprovesPP` restates (source behaviour first there, target behaviour first here).",
+      "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes, \"Taming undefined behavior in LLVM\", PLDI 2017, pp. 633\u2013647, 2017, doi:10.1145/3062341.3062343: formalizes LLVM's immediate/whole-execution UB refinement, contrasting with CompCert's prefix-preserving `Goes_wrong` refinement.",
+      "Reference corpus package `zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume`: UB-erasing eliminations stated with the same two refinement disciplines (prefix-preserving `ImprovesPP`, whole-trace `ImprovesWT`) in a different toy; this package restates the disciplines independently."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "whole-trace-ub-unsafe-rewrite-refines-either-position",
+    "lean": "Toy.LawRewrite.refinesWT_capDirect_apply_of_targetsUnsafe_of_replIsContract",
+    "lean_names": [
+      "Toy.LawRewrite.cex_without_targetsUnsafe",
+      "Toy.LawRewrite.cex_without_replIsContract",
+      "Toy.LawRewrite.nonvacuity_unsafe",
+      "Toy.LawRewrite.ImprovesWT",
+      "Toy.LawRewrite.RefinesWT",
+      "Toy.LawRewrite.improvesWT_pos",
+      "Toy.LawRewrite.improvesWT_neg",
+      "Toy.LawRewrite.refinesWT_pos",
+      "Toy.LawRewrite.refinesWT_neg",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.succClone",
+      "Toy.LawRewrite.envUnsafeLog",
+      "Toy.LawRewrite.cex_relies_after_effect_not_refined",
+      "Toy.LawRewrite.cex_transfer_safe_target",
+      "Toy.LawRewrite.cex_ub_tolerant_spec_no_transfer"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Direct consequence of whole-trace UB acting as top regardless of prior trace events (Leroy 2009 Section 2.1 Definition 3; Lee et al. 2017), restated for unsafe-contract rewrites in this toy.",
+    "plain_claim": "For every environment `env`, relies position `pos` (`before` or `after`), rewrite `\u03c1`, program `p` and store `\u03c3`: if every instance `\u03c1` targets belongs to an unsafe trait (`TargetsUnsafe env \u03c1`) and `\u03c1` substitutes at every targeted instance the exact behaviour its contract prescribes (`ReplIsContract env \u03c1`), then, with no law hypothesis on any impl, the compiled rewritten program refines the direct capture of `p` from `\u03c3` in the whole-trace sense (`RefinesWT`).",
+    "hypotheses": [
+      {
+        "name": "hunsafe : TargetsUnsafe env \u03c1",
+        "purpose": "a violated safe-trait law is defined behaviour rather than UB in `capDirect`, so the rewritten program's divergence is not masked by source UB",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_without_targetsUnsafe",
+        "witness_class": "every instance safe (`envSafeLog`), `cloneToCopy`, initial store `\u03c30`, `probe 0 5`, either relies position"
+      },
+      {
+        "name": "hrepl : ReplIsContract env \u03c1",
+        "purpose": "when the unsafe impl obeys `env.contract`, `capDirect` terminates normally without UB, so `\u03c1.repl` must agree with `env.contract`",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_without_replIsContract",
+        "witness_class": "every instance unsafe with a lawful copy impl (`envUnsafeTriv`), replacement `succRewrite` (`succClone`), initial store `\u03c30`, `probe 0 5`, either relies position"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_unsafe`: `envUnsafeLog` with `cloneToCopy`, relies point `after`, initial store `\u03c30`; the conclusion holds on `probe 0 5`.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_unsafe",
+    "non_claims": [
+      "The unsafe-trait behaviour relies on `capDirect` explicitly injecting UB at every call of an unsafe instance whose impl violates `env.contract` (`directCalls`). If a verifier captures a program under a semantics that executes the user impl without encoding the unsafe trait's contract as a relies-point UB check (equivalent to `compiled` or `safeTrait` in this toy), neither lawless refinement nor automatic contract discharge/transfer holds (`cex_without_targetsUnsafe`, `cex_transfer_safe_target`).",
+      "Every contract `env.contract i` here is a single-call, stateless pointwise behaviour (`Val \u2192 List Val \u00d7 Val`); multi-call or multi-method relational trait contracts (such as `TrustedLen` relating `size_hint` to repeated `next` calls) are not modelled.",
+      "Whole-trace refinement discards events emitted before UB; the prefix-preserving analogue fails at relies point `after` for `envUnsafeLog` on `probe 0 5` from `\u03c30` (`cex_relies_after_effect_not_refined`).",
+      "The statement does not say a verifier may ignore the contract: `capDirect` is UB wherever the contract is violated, and verification of a UB-tolerant specification does not transfer (`cex_ub_tolerant_spec_no_transfer`).",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "X. Leroy, \"A Formally Verified Compiler Back-end\", Journal of Automated Reasoning 43(4):363\u2013446, 2009, doi:10.1007/s10817-009-9155-4 (arXiv:0902.2137, Section 2.1, Definition 3, p. 4): backward simulation for safe source programs (`Safe(S) \u21d2 \u2200 B, C \u21d3 B \u21d2 S \u21d3 B`, where `Safe(S)` rules out `Wrong` behaviours), corresponding to whole-trace UB exemption (`RefinesWT`) rather than CompCert's later prefix-preserving `behavior_improves`.",
+      "J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes, \"Taming undefined behavior in LLVM\", PLDI 2017, pp. 633\u2013647, 2017, doi:10.1145/3062341.3062343: formalizes LLVM's immediate/whole-execution UB refinement, contrasting with CompCert's prefix-preserving `Goes_wrong` refinement.",
+      "N. P. Lopes, J. Lee, C.-K. Hur, Z. Liu, J. Regehr, \"Alive2: bounded translation validation for LLVM\", PLDI 2021, pp. 65\u201379, 2021, doi:10.1145/3453483.3454030: automated translation validation of LLVM optimizations under whole-trace UB refinement.",
+      "CompCert `common/Behaviors.v` at AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc:81-82, `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` \u2014 the prefix-preserving trace improvement (introduced in CompCert after Leroy 2009) that `ImprovesPP` restates (source behaviour first there, target behaviour first here).",
+      "Reference corpus package `zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume`: UB-erasing eliminations stated with the same two refinement disciplines (prefix-preserving `ImprovesPP`, whole-trace `ImprovesWT`) in a different toy; this package restates the disciplines independently."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "ub-free-verification-transfers-through-unsafe-contract-rewrite",
+    "lean": "Toy.LawRewrite.sat_compiled_apply_of_targetsUnsafe_of_replIsContract_of_ubFreeSpec_of_sat_capDirect",
+    "lean_names": [
+      "Toy.LawRewrite.Sat",
+      "Toy.LawRewrite.UBFreeSpec",
+      "Toy.LawRewrite.sat_pos",
+      "Toy.LawRewrite.sat_neg",
+      "Toy.LawRewrite.ubFreeSpec_pos",
+      "Toy.LawRewrite.ubFreeSpec_neg",
+      "Toy.LawRewrite.cex_transfer_safe_target",
+      "Toy.LawRewrite.cex_transfer_repl_not_contract",
+      "Toy.LawRewrite.cex_ub_tolerant_spec_no_transfer",
+      "Toy.LawRewrite.cex_transfer_unverified",
+      "Toy.LawRewrite.cex_without_targetsUnsafe",
+      "Toy.LawRewrite.nonvacuity_ubFree_verification",
+      "Toy.LawRewrite.envUnsafeSelective",
+      "Toy.LawRewrite.envUnsafeTriv",
+      "Toy.LawRewrite.envUnsafeLog",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.succClone"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Direct instance of specification preservation for UB-ruling-out specifications under safe backward simulation (Leroy 2009 Section 2.1 Definition 6, mechanized in CompCert), applied to `refinesWT_capDirect_apply_of_targetsUnsafe_of_replIsContract`.",
+    "plain_claim": "For every environment `env`, relies position `pos`, rewrite `\u03c1`, program `p`, store `\u03c3` and specification `spec`: if every instance `\u03c1` targets belongs to an unsafe trait (`TargetsUnsafe env \u03c1`), `\u03c1` substitutes at every targeted instance the exact behaviour its contract prescribes (`ReplIsContract env \u03c1`), no UB behaviour satisfies `spec` (`UBFreeSpec spec`), and every behaviour of the direct capture of `p` from `\u03c3` satisfies `spec` (`Sat (capDirect env pos p \u03c3) spec`), then every behaviour of the compiled rewritten program from `\u03c3` satisfies `spec` (`Sat (compiled env (\u03c1.apply p) \u03c3) spec`).",
+    "hypotheses": [
+      {
+        "name": "hunsafe : TargetsUnsafe env \u03c1",
+        "purpose": "a safe-trait law is not checked as UB by `capDirect`, so UB-free verification does not discharge it",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_transfer_safe_target",
+        "witness_class": "every instance safe (`envSafeLog`), `cloneToCopy`, initial store `\u03c30`, `probe 0 5`"
+      },
+      {
+        "name": "hrepl : ReplIsContract env \u03c1",
+        "purpose": "UB-freedom of `capDirect` forces agreement with `env.contract`, not with a different replacement",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_transfer_repl_not_contract",
+        "witness_class": "every instance unsafe with a lawful copy impl (`envUnsafeTriv`), replacement `succRewrite` (`succClone`), initial store `\u03c30`, `probe 0 5`"
+      },
+      {
+        "name": "hub : UBFreeSpec spec",
+        "purpose": "a specification satisfied by UB behaviours does not force the relies-point contract checks in `capDirect` to succeed",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_ub_tolerant_spec_no_transfer",
+        "witness_class": "every instance unsafe (`envUnsafeLog`), `cloneToCopy`, relies point `before`, initial store `\u03c30`, `probe 0 5`, and the UB-admitting specification `fun b => b = .ub [] \u2228 b = .done [9, 5]`"
+      },
+      {
+        "name": "hsat : Sat (capDirect env pos p \u03c3) spec",
+        "purpose": "the verified `capDirect` verdict to transfer",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_transfer_unverified",
+        "witness_class": "every instance unsafe with a lawful impl (`envUnsafeTriv`), `cloneToCopy`, initial store `\u03c30`, `probe 0 5`, and an unverified UB-free specification"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_ubFree_verification`: in `envUnsafeSelective` (where the unsafe impl agrees with `copyImpl` at `5` and violates it at every other argument, so `LawOnTargets` fails globally), with `cloneToCopy`, relies point `after`, and initial store `\u03c30`, `fun b => b = .done [5]` is UB-free, holds of `capDirect` on `probe 0 5`, and transfers to the compiled rewritten program.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_ubFree_verification",
+    "non_claims": [
+      "The unsafe-trait behaviour relies on `capDirect` explicitly injecting UB at every call of an unsafe instance whose impl violates `env.contract` (`directCalls`). If a verifier captures a program under a semantics that executes the user impl without encoding the unsafe trait's contract as a relies-point UB check (equivalent to `compiled` or `safeTrait` in this toy), neither lawless refinement nor automatic contract discharge/transfer holds (`cex_without_targetsUnsafe`, `cex_transfer_safe_target`).",
+      "Every contract `env.contract i` here is a single-call, stateless pointwise behaviour (`Val \u2192 List Val \u00d7 Val`); multi-call or multi-method relational trait contracts (such as `TrustedLen` relating `size_hint` to repeated `next` calls) are not modelled.",
+      "The hypothesis `UBFreeSpec spec` cannot be dropped in general: there is a UB-tolerant specification (`fun b => b = .ub [] \u2228 b = .done [9, 5]`) verified of `capDirect envUnsafeLog .before (probe 0 5) \u03c30` that fails for the rewritten program (`cex_ub_tolerant_spec_no_transfer`). Not every UB-tolerant specification fails to transfer (for instance, `fun _ => True` holds of every behaviour list; not separately stated as a theorem here).",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "X. Leroy, \"A Formally Verified Compiler Back-end\", Journal of Automated Reasoning 43(4):363\u2013446, 2009, doi:10.1007/s10817-009-9155-4 (arXiv:0902.2137, Section 2.1, Definition 6, p. 5): preservation of specifications ruling out `Wrong` behaviours (`Spec(B) \u21d2 B \u2209 Wrong`, `S |= Spec \u21d2 C |= Spec`), proved there from backward simulation for safe programs; `UBFreeSpec` and `sat_compiled_apply_of_targetsUnsafe_of_replIsContract_of_ubFreeSpec_of_sat_capDirect` instantiate this condition for unsafe-contract rewrites.",
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, \"RustBelt: securing the foundations of the Rust programming language\", PACMPL 2(POPL):1\u201334, 2018, doi:10.1145/3158154: Coq/Iris semantic-typing foundation of Rust's safe-vs-unsafe boundary, where `unsafe` trait invariants are semantic proof obligations of implementers while safe code cannot cause UB.",
+      "X. Denis, J.-H. Jourdan, C. March\u00e9, \"Creusot: A Foundry for the Deductive Verification of Rust Programs\", ICFEM 2022, LNCS 13478, pp. 90\u2013105, Springer, 2022, doi:10.1007/978-3-031-17244-1_6: deductive MIR verification supporting explicit `#[law]` trait laws discharged on implementations.",
+      "L. G\u00e4her, M. Sammler, R. Jung, R. Krebbers, D. Dreyer, \"RefinedRust: A Type System for High-Assurance Verification of Rust Programs\", PACMPL 8(PLDI):1115\u20131139, 2024, doi:10.1145/3656422: foundational MIR-level refinement-type verification in Coq/Iris; does not treat post-capture law-dependent codegen rewrites.",
+      "CompCert `common/Behaviors.v` at AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc:81-82, `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` \u2014 the prefix-preserving trace improvement (introduced in CompCert after Leroy 2009) that `ImprovesPP` restates (source behaviour first there, target behaviour first here).",
+      "Reference corpus package `monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets`, card `R6-spec-transfer`: verification of a closed target transfers when, among other hypotheses, every user impl body (trait method, user `Drop`, user `Clone`) verifies against its spec \u2014 the analogous obligation on user impls in a monomorphization model."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "ub-free-verification-discharges-contract-at-reached-unsafe-calls",
+    "lean": "Toy.LawRewrite.contract_at_reached_unsafe_of_sat_capDirect_of_ubFreeSpec",
+    "lean_names": [
+      "Toy.LawRewrite.cex_contract_discharge_safe_call",
+      "Toy.LawRewrite.cex_contract_discharge_unreached_arg",
+      "Toy.LawRewrite.cex_contract_discharge_ub_tolerant",
+      "Toy.LawRewrite.cex_contract_discharge_unverified",
+      "Toy.LawRewrite.cex_without_targetsUnsafe",
+      "Toy.LawRewrite.cex_transfer_safe_target",
+      "Toy.LawRewrite.nonvacuity_ubFree_verification",
+      "Toy.LawRewrite.envUnsafeSelective",
+      "Toy.LawRewrite.Reaches"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "That a UB-free verdict entails every UB-guarding obligation reached along the run is folklore; made precise here for the relies-point checks of `capDirect` against the law-free reachability predicate `Reaches`.",
+    "plain_claim": "For every environment `env`, relies position `pos`, program `p`, store `\u03c3`, specification `spec`, instance `i` and argument `v`: if `i` belongs to an unsafe trait (`env.safety i = .unsafeTrait`), the law-free execution of `p` from `\u03c3` reaches a call of `i` with argument `v` (`Reaches env p \u03c3 i v`), no UB behaviour satisfies `spec` (`UBFreeSpec spec`), and every behaviour of the direct capture of `p` from `\u03c3` satisfies `spec` (`Sat (capDirect env pos p \u03c3) spec`), then the impl of `i` agrees with the contract at `v` (`env.impl i v = env.contract i v`).",
+    "hypotheses": [
+      {
+        "name": "hunsafe : env.safety i = .unsafeTrait",
+        "purpose": "`capDirect` checks `env.contract` only at unsafe-trait instances; safe-trait calls never trigger relies-point UB",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_contract_discharge_safe_call",
+        "witness_class": "safe instance 0 in `envSafeLog`, `probe 0 5` from `\u03c30`, relies point `before`, and UB-free specification `fun b => b = .done [9, 5]`"
+      },
+      {
+        "name": "hreach : Reaches env p \u03c3 i v",
+        "purpose": "`capDirect` executes only the calls and arguments actually reached from `\u03c3`; unreached arguments are never tested",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_contract_discharge_unreached_arg",
+        "witness_class": "unsafe instance 0 in `envUnsafeSelective` at unreached argument `0` during `probe 0 5` from `\u03c30`, relies point `after`"
+      },
+      {
+        "name": "hub : UBFreeSpec spec",
+        "purpose": "a specification satisfied by UB does not exclude a failing relies-point check",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_contract_discharge_ub_tolerant",
+        "witness_class": "unsafe instance 0 in `envUnsafeLog`, reached `(0, 5)` on `probe 0 5` from `\u03c30`, and the trivial specification `fun _ => True`"
+      },
+      {
+        "name": "hsat : Sat (capDirect env pos p \u03c3) spec",
+        "purpose": "the verified `capDirect` verdict ruling out UB along the run",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_contract_discharge_unverified",
+        "witness_class": "unsafe instance 0 in `envUnsafeLog`, reached `(0, 5)` on `probe 0 5` from `\u03c30`, and an unverified UB-free specification"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_ubFree_verification`: in `envUnsafeSelective` (where the contract fails at every argument other than `5`), `probe 0 5` from `\u03c30` reaches unsafe call `(0, 5)`, `fun b => b = .done [5]` is UB-free and holds of `capDirect` at relies point `after`, and `envUnsafeSelective.impl 0 5 = envUnsafeSelective.contract 0 5`.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_ubFree_verification",
+    "non_claims": [
+      "The unsafe-trait behaviour relies on `capDirect` explicitly injecting UB at every call of an unsafe instance whose impl violates `env.contract` (`directCalls`). If a verifier captures a program under a semantics that executes the user impl without encoding the unsafe trait's contract as a relies-point UB check (equivalent to `compiled` or `safeTrait` in this toy), neither lawless refinement nor automatic contract discharge/transfer holds (`cex_without_targetsUnsafe`, `cex_transfer_safe_target`).",
+      "Every contract `env.contract i` here is a single-call, stateless pointwise behaviour (`Val \u2192 List Val \u00d7 Val`); multi-call or multi-method relational trait contracts (such as `TrustedLen` relating `size_hint` to repeated `next` calls) are not modelled.",
+      "The contract is established at the reached arguments `(i, v)` of reached unsafe calls (`cex_contract_discharge_unreached_arg`), and safe-trait contracts are not discharged (`cex_contract_discharge_safe_call`).",
+      "The implication is one-way: satisfying the contract at every reached unsafe call does not by itself imply `Sat (capDirect env pos p \u03c3) spec` for an arbitrary `spec` (`cex_transfer_unverified`). Moreover, `Reaches` stops at `.ub` (`reaches_neg_after_ub`), and any `.ub` before a call already falsifies `Sat (capDirect env pos p \u03c3) spec` when `UBFreeSpec spec` holds.",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "X. Leroy, \"A Formally Verified Compiler Back-end\", Journal of Automated Reasoning 43(4):363\u2013446, 2009, doi:10.1007/s10817-009-9155-4 (arXiv:0902.2137, Section 2.1, Definition 6, p. 5): preservation of specifications ruling out `Wrong` behaviours (`Spec(B) \u21d2 B \u2209 Wrong`, `S |= Spec \u21d2 C |= Spec`), proved there from backward simulation for safe programs; `UBFreeSpec` and `sat_compiled_apply_of_targetsUnsafe_of_replIsContract_of_ubFreeSpec_of_sat_capDirect` instantiate this condition for unsafe-contract rewrites.",
+      "R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, \"RustBelt: securing the foundations of the Rust programming language\", PACMPL 2(POPL):1\u201334, 2018, doi:10.1145/3158154: Coq/Iris semantic-typing foundation of Rust's safe-vs-unsafe boundary, where `unsafe` trait invariants are semantic proof obligations of implementers while safe code cannot cause UB.",
+      "X. Denis, J.-H. Jourdan, C. March\u00e9, \"Creusot: A Foundry for the Deductive Verification of Rust Programs\", ICFEM 2022, LNCS 13478, pp. 90\u2013105, Springer, 2022, doi:10.1007/978-3-031-17244-1_6: deductive MIR verification supporting explicit `#[law]` trait laws discharged on implementations.",
+      "L. G\u00e4her, M. Sammler, R. Jung, R. Krebbers, D. Dreyer, \"RefinedRust: A Type System for High-Assurance Verification of Rust Programs\", PACMPL 8(PLDI):1115\u20131139, 2024, doi:10.1145/3656422: foundational MIR-level refinement-type verification in Coq/Iris; does not treat post-capture law-dependent codegen rewrites.",
+      "Reference corpus package `monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets`, card `R6-spec-transfer`: verification of a closed target transfers when, among other hypotheses, every user impl body (trait method, user `Drop`, user `Clone`) verifies against its spec \u2014 the analogous obligation on user impls in a monomorphization model."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "relational-capture-sound-for-every-partial-rewrite",
+    "lean": [
+      "Toy.LawRewrite.sat_compiled_applyAt_of_sat_capRel",
+      "Toy.LawRewrite.sat_compiled_and_apply_of_sat_capRel"
+    ],
+    "lean_names": [
+      "Toy.LawRewrite.Rewrite.applyAt",
+      "Toy.LawRewrite.relCalls",
+      "Toy.LawRewrite.capRel",
+      "Toy.LawRewrite.applyAt_const_true",
+      "Toy.LawRewrite.applyAt_const_false",
+      "Toy.LawRewrite.cex_capRel_sound_unverified",
+      "Toy.LawRewrite.nonvacuity_capRel_sound",
+      "Toy.LawRewrite.capRel_example",
+      "Toy.LawRewrite.capRel_nil_example",
+      "Toy.LawRewrite.capRel_unsafe_ignores_contract_example",
+      "Toy.LawRewrite.capRel_ne_nil",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.envSafeLog",
+      "Toy.LawRewrite.compiled_envSafeLog_probe_rewritten",
+      "Toy.LawRewrite.cex_nontrivial_clone_copy_rewrite",
+      "Toy.LawRewrite.cex_capRel_loses_effect_property"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Over-approximating deterministic implementation choices by demonic nondeterministic choice is textbook in refinement calculus (Back & von Wright 1998) and mechanized in Isabelle/HOL (`Refine_Monadic`, Lammich 2012) and Coq (`Fiat`, Delaware et al. 2015); restated here for per-site post-capture rewrite selections.",
+    "plain_claim": "For every environment `env`, rewrite `\u03c1`, program `p`, store `\u03c3` and specification `spec`: if every behaviour of the relational capture of `p` for `[\u03c1]` from `\u03c3` satisfies `spec` (`Sat (capRel env [\u03c1] p \u03c3) spec`), then for every site selection `S : Nat \u2192 Bool`, every behaviour from `\u03c3` of the compiled program with `\u03c1` applied at the selected statement positions (`\u03c1.applyAt S 0 p`) satisfies `spec` (`sat_compiled_applyAt_of_sat_capRel`), and in particular `spec` holds both of the unrewritten compiled program `p` and of the fully rewritten compiled program `\u03c1.apply p` (`sat_compiled_and_apply_of_sat_capRel`); no law is assumed.",
+    "hypotheses": [
+      {
+        "name": "hsat : Sat (capRel env [\u03c1] p \u03c3) spec",
+        "purpose": "the verified relational-capture verdict",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_capRel_sound_unverified",
+        "witness_class": "`envSafeLog`, `cloneToCopy`, initial store `\u03c30`, `probe 0 5`, an unverified specification `fun b => b = .done [5]`, and `S = fun _ => false`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_capRel_sound`: `fun b => b.trace.getLast? = some 5` holds of `capRel envSafeLog [cloneToCopy] (probe 0 5) \u03c30`.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_capRel_sound",
+    "non_claims": [
+      "Both `capRel` and `compiled` are law-free semantics that ignore `env.safety` and `env.contract` and perform no relies-point UB checks (`capRel_unsafe_ignores_contract_example`). Verifying a specification of `capRel` transfers to `compiled` and neither establishes `Sat (capDirect env pos p \u03c3) spec` nor rules out unsafe-trait UB in other passes or unsafe consumers.",
+      "Properties that depend on the impl's observable effects may fail for `capRel` even when they hold of `capDirect`: on `probe 0 5` from `\u03c30` in `envSafeLog` with relies point `before`, `fun b => b = .done [9, 5]` holds of `capDirect` and fails for `capRel` (`cex_capRel_loses_effect_property`). That lost property is also false of the compiled rewritten program (`compiled_envSafeLog_probe_rewritten`, `cex_nontrivial_clone_copy_rewrite`), so dropping it is required to remain sound when `cloneToCopy` runs.",
+      "Sites are statement positions of a straight-line program; in languages where one syntactic site executes multiple times, `capRel` chooses independently on each dynamic call whereas a static site selection must choose once per site (not examined).",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "R.-J. Back, J. von Wright, Refinement Calculus: A Systematic Introduction, Springer, 1998, doi:10.1007/978-1-4612-1674-2: textbook treatment of demonic nondeterministic choice as the universal over-approximation (least upper bound) of possible implementations, and of non-distributivity between local step choice and global choice.",
+      "P. Lammich, \"Refinement for Monadic Programs\", Archive of Formal Proofs (Isabelle/HOL), 2012, ISSN 2150-914X (https://isa-afp.org/entries/Refine_Monadic.html): mechanizes nondeterministic result-set over-approximation and refinement with failure as top.",
+      "B. Delaware, C. Pit-Claudel, J. Gross, A. Chlipala, \"Fiat: Deductive Synthesis of Abstract Data Types in a Proof Assistant\", POPL 2015, pp. 689\u2013700, 2015, doi:10.1145/2676726.2677006: Coq mechanization of refinement from nondeterministic relational specifications to deterministic implementations."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "relational-capture-weakest-for-per-site-rewriting",
+    "lean": [
+      "Toy.LawRewrite.mem_capRel_iff_exists_applyAt",
+      "Toy.LawRewrite.capRel_subset_of_sound_for_every_applyAt"
+    ],
+    "lean_names": [
+      "Toy.LawRewrite.cex_capRel_subset_without_soundness",
+      "Toy.LawRewrite.nonvacuity_capRel_subset",
+      "Toy.LawRewrite.applyAt_example",
+      "Toy.LawRewrite.capRel_unsafe_ignores_contract_example",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.envSafeLog",
+      "Toy.LawRewrite.twoCalls",
+      "Toy.LawRewrite.cex_capRel_not_weakest_for_all_or_nothing"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Characterizing per-call relational nondeterminism as the exact union of syntactic per-site partial rewrite applications (`applyAt`) in a straight-line program, and contrasting it with all-or-nothing pass application, makes precise when relational capture is and is not weakest.",
+    "plain_claim": "For every environment `env`, rewrite `\u03c1`, program `p` and store `\u03c3`: a behaviour `b` belongs to `capRel env [\u03c1] p \u03c3` iff there is a site selection `S : Nat \u2192 Bool` for which `b` belongs to `compiled env (\u03c1.applyAt S 0 p) \u03c3` (`mem_capRel_iff_exists_applyAt`); and for every behaviour predicate `D : Beh \u2192 Prop` such that every specification `spec : Beh \u2192 Prop` implied by `D` holds of `compiled env (\u03c1.applyAt S 0 p) \u03c3` under every site selection `S`, `D` contains every behaviour in `capRel env [\u03c1] p \u03c3` (`capRel_subset_of_sound_for_every_applyAt`).",
+    "hypotheses": [
+      {
+        "name": "hD : \u2200 spec : Beh \u2192 Prop, (\u2200 b, D b \u2192 spec b) \u2192 \u2200 S : Nat \u2192 Bool, Sat (compiled env (\u03c1.applyAt S 0 p) \u03c3) spec",
+        "purpose": "`D` is sound for every specification `spec` and every per-site partial application `S` (applies to `capRel_subset_of_sound_for_every_applyAt`; `mem_capRel_iff_exists_applyAt` is unconditional)",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_capRel_subset_without_soundness",
+        "witness_class": "the empty behaviour predicate `fun _ => False` on `probe 0 5` from `\u03c30` in `envSafeLog` with `cloneToCopy`"
+      }
+    ],
+    "depth": "substantive",
+    "nonvacuity_witness": "`nonvacuity_capRel_subset`: the two-element predicate `fun b => b = .done [9, 5] \u2228 b = .done [5]` satisfies `hD` for `probe 0 5` from `\u03c30` in `envSafeLog` with `cloneToCopy`.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_capRel_subset",
+    "positive_control_lean": "Toy.LawRewrite.cex_capRel_not_weakest_for_all_or_nothing",
+    "non_claims": [
+      "Both `capRel` and `compiled` are law-free semantics that ignore `env.safety` and `env.contract` and perform no relies-point UB checks (`capRel_unsafe_ignores_contract_example`). Verifying a specification of `capRel` transfers to `compiled` and neither establishes `Sat (capDirect env pos p \u03c3) spec` nor rules out unsafe-trait UB in other passes or unsafe consumers.",
+      "Weakest relative to per-site partial application (`applyAt`), not relative to all-or-nothing whole-program application (`apply`): on `twoCalls` (containing two calls of instance `0`) from `\u03c30` in `envSafeLog` with `cloneToCopy`, `fun b => b \u2260 .done [9]` holds both without the rewrite and with `cloneToCopy.apply`, yet fails on `capRel` because `capRel` admits mixed per-site runs (`cex_capRel_not_weakest_for_all_or_nothing`).",
+      "Weakest relative to per-site rewriting relies on the straight-line assumption that every syntactic call site executes at most once. In a language with loops or reusable functions where one site can execute multiple times, a static per-site selection `S` must make the same choice on every execution of that site, whereas `capRel` chooses independently on every dynamic call; `capRel` is therefore strictly weaker than static per-site rewriting once sites can execute repeatedly (not proved here).",
+      "The hypothesis `hD` quantifies over every predicate `spec : Beh \u2192 Prop` (including `spec = D`). For a verifier restricted to a proper subclass of trace predicates (such as UB-freedom alone, or properties ignoring some emitted events), a strictly smaller behaviour set `D` can remain sound for every site selection (not proved here).",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "R.-J. Back, J. von Wright, Refinement Calculus: A Systematic Introduction, Springer, 1998, doi:10.1007/978-1-4612-1674-2: textbook treatment of demonic nondeterministic choice as the universal over-approximation (least upper bound) of possible implementations, and of non-distributivity between local step choice and global choice.",
+      "P. Lammich, \"Refinement for Monadic Programs\", Archive of Formal Proofs (Isabelle/HOL), 2012, ISSN 2150-914X (https://isa-afp.org/entries/Refine_Monadic.html): mechanizes nondeterministic result-set over-approximation and refinement with failure as top.",
+      "B. Delaware, C. Pit-Claudel, J. Gross, A. Chlipala, \"Fiat: Deductive Synthesis of Abstract Data Types in a Proof Assistant\", POPL 2015, pp. 689\u2013700, 2015, doi:10.1145/2676726.2677006: Coq mechanization of refinement from nondeterministic relational specifications to deterministic implementations."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "fail-closed-rejection-of-rewritable-calls-sound-and-incomplete",
+    "lean": [
+      "Toy.LawRewrite.capRejectRewritable_compiledDen_transferSound",
+      "Toy.LawRewrite.capRejectRewritable_incomplete"
+    ],
+    "lean_names": [
+      "Toy.LawRewrite.callsSome",
+      "Toy.LawRewrite.compiledDen",
+      "Toy.LawRewrite.capDirectDen",
+      "Toy.LawRewrite.capRejectRewritable",
+      "Toy.LawRewrite.compiled_envSafeLog_probe",
+      "Toy.LawRewrite.compiled_envSafeLog_probe_rewritten",
+      "Toy.LawRewrite.compiledDen_pos",
+      "Toy.LawRewrite.compiledDen_neg",
+      "Toy.LawRewrite.capDirectDen_pos",
+      "Toy.LawRewrite.capDirectDen_neg",
+      "Toy.LawRewrite.cex_capRejectRewritable_target_outside_R",
+      "Toy.LawRewrite.cex_capRejectRewritable_unsound_verifier",
+      "Toy.LawRewrite.cex_capRejectRewritable_not_transferSound_for_capDirect",
+      "Toy.LawRewrite.nonvacuity_capRejectRewritable",
+      "Toy.LawRewrite.compiled_apply_eq_of_repl_eq_impl",
+      "Toy.LawRewrite.callsSome_pos",
+      "Toy.LawRewrite.callsSome_neg",
+      "Toy.LawRewrite.callsSome_neg_untargeted",
+      "Toy.LawRewrite.CaptureBridge.Den",
+      "Toy.LawRewrite.CaptureBridge.Sat",
+      "Toy.LawRewrite.CaptureBridge.DenIncl",
+      "Toy.LawRewrite.CaptureBridge.OverApproxOnOk",
+      "Toy.LawRewrite.CaptureBridge.VerifierSound",
+      "Toy.LawRewrite.CaptureBridge.TransferSound",
+      "Toy.LawRewrite.CaptureBridge.Sat.of_denIncl",
+      "Toy.LawRewrite.CaptureBridge.transfer_to_capture_input",
+      "Toy.LawRewrite.CaptureBridge.failClosed",
+      "Toy.LawRewrite.CaptureBridge.failClosed_overApproxOnOk_iff",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.envSafeTriv"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Direct instantiation of the copied fail-closed characterization `failClosed_overApproxOnOk_iff` and `transfer_to_capture_input`, with `semS` instantiated to the post-rewrite compiled semantics and `semV` to `compiledDen env`.",
+    "plain_claim": "For every environment `env`, rejected-instance predicate `R : Inst \u2192 Bool` and rewrite `\u03c1`: if every instance `\u03c1` targets satisfies `R`, then for every verdict relation `verified` sound for the law-free semantics `compiledDen env`, verification transfers (`TransferSound`) through `capRejectRewritable R` \u2014 which rejects every program containing a syntactic call of an instance in `R` and captures every other program unchanged \u2014 to the compiled program rewritten by `\u03c1` (`capRejectRewritable_compiledDen_transferSound`); and the capture is incomplete: `capRejectRewritable cloneToCopy.targets` rejects `probe 0 5` although in `envSafeTriv` every compiled run of the rewritten probe is already a run of the unrewritten probe (`capRejectRewritable_incomplete`).",
+    "hypotheses": [
+      {
+        "name": "hR : \u2200 i, \u03c1.targets i = true \u2192 R i = true",
+        "purpose": "every call site that `\u03c1` can rewrite must be rejected by `capRejectRewritable R` (applies to `capRejectRewritable_compiledDen_transferSound`)",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_capRejectRewritable_target_outside_R",
+        "witness_class": "`R = fun _ => false`, `envSafeLog`, `cloneToCopy`, and the exact verifier of `compiledDen envSafeLog` on `probe 0 5`"
+      },
+      {
+        "name": "hV : VerifierSound (compiledDen env) verified",
+        "purpose": "accepted verdicts must hold of the pre-rewrite law-free semantics `compiledDen env` (applies to `capRejectRewritable_compiledDen_transferSound`)",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_capRejectRewritable_unsound_verifier",
+        "witness_class": "the unsound verifier `fun _ _ => True` accepting every specification on the empty program `[]` in `envSafeTriv`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_capRejectRewritable`: `R = cloneToCopy.targets`, the exact verifier of `compiledDen envSafeLog`, and an accepted program `[.call 1 1 0]` calling untargeted instance `1`.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_capRejectRewritable",
+    "non_claims": [
+      "The verifier semantics in `hV` is the law-free semantics `compiledDen env` (every call runs its impl, no relies check). For a verifier sound for `capDirectDen` instead, `TransferSound` does not hold in general: for the exact verifier `fun q spec => CaptureBridge.Sat (capDirectDen envUnsafeLog .before q) spec`, `capRejectRewritable cloneToCopy.targets` accepts `probe 1 5` and fails to transfer the UB-tolerant specification `fun r => r.2 = .ub []` (`cex_capRejectRewritable_not_transferSound_for_capDirect`). Note also the `CaptureBridge` parameter roles: `semS` is instantiated to the post-rewrite compiled program `fun p => compiledDen env (\u03c1.apply p)` and `semV` to the pre-rewrite `compiledDen env`.",
+      "`callsSome` is a purely syntactic check over `p`, so `capRejectRewritable` also rejects programs whose targeted calls are unreachable (such as `[.ub, .call 0 1 0]`) or dead (`deadCall`).",
+      "The hypothesis `hR` covers a single rewrite `\u03c1`; extending the `env`-universal sufficiency theorem `capRejectRewritable_compiledDen_transferSound` from `\u03c1.apply` to a rewrite sequence `applySeq \u03c1s` would take `R` covering every rewrite in `\u03c1s` (or `(firstMatch \u03c1s).targets`) (not stated as a separate theorem here; for a fixed `env` where `\u03c1s` acts as an observational identity, such as `envSafeTriv`, `TransferSound` can hold without `R` covering `\u03c1s`).",
+      "Incompleteness is witnessed by one concrete program in `envSafeTriv`; how much coverage a real verifier loses by rejecting rewritable calls is not examined.",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "Reference corpus package `fail-closed-ir-capture-soundness-erasing-pass-sets-and-metadata-injectivity`: the capture bridge (`OverApproxOnOk`, `TransferSound`, `failClosed`) for passes before the capture point; its card `fail-closed-and-fail-open-obligations` (`failClosed_overApproxOnOk_iff`) is copied verbatim into `CaptureBridge.lean`. This package treats rewrites after the capture point."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "rewrite-sequence-refines-of-laws-on-reached-calls",
+    "lean": "Toy.LawRewrite.refinesPP_capDirect_applySeq_of_lawOnReached",
+    "lean_names": [
+      "Toy.LawRewrite.applySeq",
+      "Toy.LawRewrite.firstMatch",
+      "Toy.LawRewrite.applySeq_pair",
+      "Toy.LawRewrite.applySeq_eq_firstMatch",
+      "Toy.LawRewrite.applySeq_example",
+      "Toy.LawRewrite.firstMatch_pos",
+      "Toy.LawRewrite.firstMatch_neg",
+      "Toy.LawRewrite.cex_applySeq_without_law",
+      "Toy.LawRewrite.envSeqChain",
+      "Toy.LawRewrite.guardTenRewrite",
+      "Toy.LawRewrite.seqChainProg",
+      "Toy.LawRewrite.cex_refining_rewrites_seq_not_refining",
+      "Toy.LawRewrite.nonvacuity_applySeq",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.envSafeTriv"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Because every replacement in `Rewrite` is call-free inline code `prim f` that no later `Rewrite` matches, `applySeq \u03c1s` collapses algebraically to the single rewrite `(firstMatch \u03c1s).apply` (`applySeq_eq_firstMatch`), reducing sequence refinement directly to `refinesPP_capDirect_apply_of_lawOnReached`.",
+    "plain_claim": "For every environment `env`, relies position `pos`, list of rewrites `\u03c1s`, program `p` and store `\u03c3`: if for every rewrite `\u03c1 \u2208 \u03c1s` its law holds at every call of a targeted instance that the law-free execution of `p` from `\u03c3` reaches (`LawOnReached env \u03c1 p \u03c3`), then the compiled program obtained by applying the rewrites of `\u03c1s` in order (`applySeq \u03c1s p`) refines, prefix-preservingly, the direct capture of `p` from `\u03c3`.",
+    "hypotheses": [
+      {
+        "name": "hlaw : \u2200 \u03c1 \u2208 \u03c1s, LawOnReached env \u03c1 p \u03c3",
+        "purpose": "every rewrite in `\u03c1s` must agree with the impl at the reached calls of `p` that it may replace",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_applySeq_without_law",
+        "witness_class": "a sequence `[cloneToCopy]` of exactly one rewrite, `envSafeLog`, initial store `\u03c30`, relies point `before`, and `probe 0 5`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_applySeq`: `envSafeTriv`, `[cloneToCopy, cloneToCopy1]` on a program calling both instance `0` and instance `1` from `\u03c30`.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_applySeq",
+    "non_claims": [
+      "Within this call-free `prim` model, `applySeq \u03c1s p = (firstMatch \u03c1s).apply p` (`applySeq_eq_firstMatch`), so no sequence of `LawOnReached`-satisfying rewrites can interact to break refinement. That non-interaction relies on two strong restrictions: (1) per-program refinement `RefinesPP` itself is NOT closed under sequential composition when an earlier rewrite refines `p` without obeying `LawOnReached`, because changing an unobserved intermediate return value can change the argument reaching a later rewrite's call site (`cex_refining_rewrites_seq_not_refining`); and (2) rewrites whose replacements contain trait calls (such as redirecting one method to another) are not modelled \u2014 if an earlier rewrite can introduce a call to an instance unreached in `p`, `LawOnReached` on the original program `p` no longer suffices (not proved here).",
+      "Composing unsafe-trait rewrites without `LawOnReached` (under `TargetsUnsafe` and `ReplIsContract`) and laws relating two instances (such as cross-trait consistency between `Eq` and `Hash`) are not covered by this theorem.",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "S. Peyton Jones, A. Tolmach, T. Hoare, \"Playing by the rules: rewriting as a practical optimisation technique in GHC\", Proceedings of the 2001 ACM SIGPLAN Haskell Workshop (Utrecht University Technical Report UU-CS-2001-23), pp. 203\u2013233, 2001 (https://www.microsoft.com/en-us/research/publication/playing-by-the-rules-rewriting-as-a-practical-optimisation-technique-in-ghc/): GHC `{-# RULES #-}` pragmas apply domain-specific and typeclass-law-dependent Core rewrites without compiler checking of the law, placing soundness on law satisfaction.",
+      "A. Farmer, N. Sculthorpe, A. Gill, \"Reasoning with the HERMIT: tool support for equational reasoning on GHC core programs\", Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell, pp. 23\u201334, 2015, doi:10.1145/2804302.2804303: interactive equational reasoning for verifying GHC Core transformations against algebraic and typeclass laws.",
+      "CompCert `common/Behaviors.v` at AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc:81-82, `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` \u2014 the prefix-preserving trace improvement (introduced in CompCert after Leroy 2009) that `ImprovesPP` restates (source behaviour first there, target behaviour first here)."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "disjoint-rewrite-sequence-contextual-iff-conjunction",
+    "lean": "Toy.LawRewrite.refinesPP_every_context_applySeq_iff_of_pairwise_disjoint",
+    "lean_names": [
+      "Toy.LawRewrite.TargetsDisjoint",
+      "Toy.LawRewrite.applySeq_eq_firstMatch",
+      "Toy.LawRewrite.apply_apply_of_targets_le",
+      "Toy.LawRewrite.capDirect_eq_compiled_of_allSafe",
+      "Toy.LawRewrite.refinesPP_refl",
+      "Toy.LawRewrite.cex_overlapping_rewrites_conjunction_not_necessary",
+      "Toy.LawRewrite.nonvacuity_applySeq",
+      "Toy.LawRewrite.targetsDisjoint_pos",
+      "Toy.LawRewrite.targetsDisjoint_neg",
+      "Toy.LawRewrite.ContextSafeAt",
+      "Toy.LawRewrite.envSafeTriv",
+      "Toy.LawRewrite.refinesPP_capDirect_applySeq_of_lawOnReached",
+      "Toy.LawRewrite.succRewrite"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "Folklore made precise: call-free rewrites with pairwise-disjoint targets compose conjunctively over all contexts without shadowing, whereas overlapping targets allow an earlier rewrite to shadow a later invalid rewrite.",
+    "plain_claim": "For every environment `env`, relies position `pos` and list of rewrites `\u03c1s`: if no two rewrites in `\u03c1s` target a common instance (`\u03c1s.Pairwise TargetsDisjoint`), then `applySeq \u03c1s` refines, prefix-preservingly, the direct capture on every program and every initial store iff every rewrite `\u03c1 \u2208 \u03c1s` satisfies `ContextSafeAt env pos \u03c1 i v` at every instance `i` it targets and every argument `v`.",
+    "hypotheses": [
+      {
+        "name": "hdisj : \u03c1s.Pairwise TargetsDisjoint",
+        "purpose": "with overlapping targets an earlier rewrite replaces the calls a later rewrite would match, so the shadowed later rewrite need not satisfy `ContextSafeAt`",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_overlapping_rewrites_conjunction_not_necessary",
+        "witness_class": "the sequence `[cloneToCopy, succRewrite]` of at most two (specifically, two) rewrites targeting instance 0 in `envSafeTriv` at relies point `before`, quantified over all programs and stores"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_applySeq`: `[cloneToCopy, cloneToCopy1]` in `envSafeTriv` at relies point `before` (pairwise disjoint targets; `ContextSafeAt` holds everywhere).",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_applySeq",
+    "non_claims": [
+      "Under the stronger `LawOnReached` hypothesis (`LawAt` rather than `ContextSafeAt`), per-program sufficiency holds without `hdisj` (`refinesPP_capDirect_applySeq_of_lawOnReached`); sufficiency of the `ContextSafeAt` conjunction without `hdisj` is not proved here. Without `hdisj`, the left-to-right (necessity) direction fails for `[cloneToCopy, succRewrite]` in `envSafeTriv` at relies point `before`, where the earlier `cloneToCopy` satisfies `LawOnTargets` and shadows `succRewrite`, which fails `ContextSafeAt` at instance `0` and argument `0` (`cex_overlapping_rewrites_conjunction_not_necessary`).",
+      "Because replacements are call-free `prim` statements and targets are pairwise disjoint, the rewrites in `\u03c1s` do not create or consume matches for one another; pass-ordering sensitivity in real compilers (where one pass creates or enables matches for another) and multi-instance laws are not modelled.",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "S. Peyton Jones, A. Tolmach, T. Hoare, \"Playing by the rules: rewriting as a practical optimisation technique in GHC\", Proceedings of the 2001 ACM SIGPLAN Haskell Workshop (Utrecht University Technical Report UU-CS-2001-23), pp. 203\u2013233, 2001 (https://www.microsoft.com/en-us/research/publication/playing-by-the-rules-rewriting-as-a-practical-optimisation-technique-in-ghc/): GHC `{-# RULES #-}` pragmas apply domain-specific and typeclass-law-dependent Core rewrites without compiler checking of the law, placing soundness on law satisfaction.",
+      "A. Farmer, N. Sculthorpe, A. Gill, \"Reasoning with the HERMIT: tool support for equational reasoning on GHC core programs\", Proceedings of the 2015 ACM SIGPLAN Symposium on Haskell, pp. 23\u201334, 2015, doi:10.1145/2804302.2804303: interactive equational reasoning for verifying GHC Core transformations against algebraic and typeclass laws.",
+      "CompCert `common/Behaviors.v` at AbsInt/CompCert@2685140bf72c959446981fb99b5e44a8975021bc:81-82, `Definition behavior_improves (beh1 beh2: program_behavior) : Prop := beh1 = beh2 \\/ exists t, beh1 = Goes_wrong t /\\ behavior_prefix t beh2.` \u2014 the prefix-preserving trace improvement (introduced in CompCert after Leroy 2009) that `ImprovesPP` restates (source behaviour first there, target behaviour first here)."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  },
+  {
+    "id": "relational-capture-of-rewrite-list-covers-every-covered-sequence",
+    "lean": "Toy.LawRewrite.mem_capRel_of_mem_compiled_applySeq_of_coveredBy",
+    "lean_names": [
+      "Toy.LawRewrite.CoveredBy",
+      "Toy.LawRewrite.relCalls_append",
+      "Toy.LawRewrite.cex_without_coveredBy",
+      "Toy.LawRewrite.nonvacuity_coveredBy",
+      "Toy.LawRewrite.coveredBy_pos",
+      "Toy.LawRewrite.coveredBy_neg",
+      "Toy.LawRewrite.capRel_unsafe_ignores_contract_example",
+      "Toy.LawRewrite.applySeq",
+      "Toy.LawRewrite.probe",
+      "Toy.LawRewrite.succRewrite",
+      "Toy.LawRewrite.envSafeLog",
+      "Toy.LawRewrite.mem_capRel_iff_exists_applyAt",
+      "Toy.LawRewrite.cex_capRel_not_weakest_for_all_or_nothing"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "Monotonicity of nondeterministic over-approximation under inclusion of per-step choices (Back & von Wright 1998; `Refine_Monadic`, Lammich 2012), restated for `applySeq` and `CoveredBy`.",
+    "plain_claim": "For every environment `env`, lists of rewrites `\u03c1s` and `\u03c1s'`, program `p` and store `\u03c3`: if every replacement of every rewrite `\u03c1 \u2208 \u03c1s'` is the replacement of some rewrite in `\u03c1s` at the same instance (`\u2200 \u03c1 \u2208 \u03c1s', CoveredBy \u03c1s \u03c1`), then every behaviour from `\u03c3` of the compiled program `applySeq \u03c1s' p` belongs to `capRel env \u03c1s p \u03c3`.",
+    "hypotheses": [
+      {
+        "name": "hcov : \u2200 \u03c1 \u2208 \u03c1s', CoveredBy \u03c1s \u03c1",
+        "purpose": "every replacement that `applySeq \u03c1s'` may substitute at an instance must appear among `capRel env \u03c1s`'s choices at that instance",
+        "tightness": "tight",
+        "counterexample": "Toy.LawRewrite.cex_without_coveredBy",
+        "witness_class": "empty capture list `\u03c1s = []`, `\u03c1s' = [cloneToCopy]`, `envSafeLog`, initial store `\u03c30`, and `probe 0 5`"
+      }
+    ],
+    "depth": "shallow",
+    "nonvacuity_witness": "`nonvacuity_coveredBy`: `\u03c1s' = [succRewrite]` covered by `\u03c1s = [cloneToCopy, succRewrite]` on `probe 0 5` from `\u03c30` in `envSafeLog`.",
+    "nonvacuity_witness_lean": "Toy.LawRewrite.nonvacuity_coveredBy",
+    "non_claims": [
+      "Both `capRel` and `compiled` are law-free semantics that ignore `env.safety` and `env.contract` and perform no relies-point UB checks (`capRel_unsafe_ignores_contract_example`). Verifying a specification of `capRel` transfers to `compiled` and neither establishes `Sat (capDirect env pos p \u03c3) spec` nor rules out unsafe-trait UB in other passes or unsafe consumers.",
+      "`capRel env \u03c1s` is an over-approximation, not weakest, for whole-program sequences `applySeq \u03c1s'`: even for a singleton list `[cloneToCopy]`, `applySeq [cloneToCopy]` rewrites all matching sites uniformly, whereas `capRel` admits mixed per-site runs (`cex_capRel_not_weakest_for_all_or_nothing`).",
+      "Every rewrite of `\u03c1s'` in the statement is applied at all sites via `applySeq`; per-site partial application of a multi-rewrite list is not stated (per-site partial application of a single rewrite is characterized in `mem_capRel_iff_exists_applyAt`). Separately, `relCalls_append` shows that at each call `(i, v)`, `relCalls env (\u03c1s\u2081 ++ \u03c1s\u2082) i v` is the list concatenation (`++`, preserving order and duplicates) of `relCalls env \u03c1s\u2081 i v` with `(relCalls env \u03c1s\u2082 i v).tail`.",
+      "The toy language is straight-line: no loops, branches, recursion, heap, references or unwinding, and every statement runs at most once per execution. Behaviour for languages with control flow is not examined.",
+      "Impls are total, deterministic functions of the argument value alone; impls that diverge, panic, trigger UB, read or write shared state, or behave nondeterministically are not modelled.",
+      "Model\u2013system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about rustc, about any other compiler, or about any verifier that captures compiler IR."
+    ],
+    "prior_art": [
+      "R.-J. Back, J. von Wright, Refinement Calculus: A Systematic Introduction, Springer, 1998, doi:10.1007/978-1-4612-1674-2: textbook treatment of demonic nondeterministic choice as the universal over-approximation (least upper bound) of possible implementations, and of non-distributivity between local step choice and global choice.",
+      "P. Lammich, \"Refinement for Monadic Programs\", Archive of Formal Proofs (Isabelle/HOL), 2012, ISSN 2150-914X (https://isa-afp.org/entries/Refine_Monadic.html): mechanizes nondeterministic result-set over-approximation and refinement with failure as top.",
+      "B. Delaware, C. Pit-Claudel, J. Gross, A. Chlipala, \"Fiat: Deductive Synthesis of Abstract Data Types in a Proof Assistant\", POPL 2015, pp. 689\u2013700, 2015, doi:10.1145/2676726.2677006: Coq mechanization of refinement from nondeterministic relational specifications to deterministic implementations."
+    ],
+    "design_question": "Exactly when does a law-dependent rewrite that runs after the capture point refine the captured semantics, how does the answer differ between safe-trait and unsafe-trait laws, and which verifier-side remedies (discharging the law, relational capture, fail-closed rejection) are sound?"
+  }
+]

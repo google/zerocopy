@@ -54033,6 +54033,131 @@
         "compilers"
       ]
     },
+    "law-dependent-rewrites-after-capture-safe-vs-unsafe-trait-laws-and-relational-semantics": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 toolchain"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1"
+          },
+          "name": "Rust compiler and core library (library/core/src/clone.rs, library/core/src/iter/traits/marker.rs, compiler/rustc_feature/src/unstable.rs, compiler/rustc_codegen_ssa/src/mir/mod.rs)"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert (common/Behaviors.v)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/s10817-009-9155-4"
+          },
+          "name": "A Formally Verified Compiler Back-end (X. Leroy, Journal of Automated Reasoning 43(4):363-446, 2009)"
+        },
+        {
+          "identity": {
+            "report": "UU-CS-2001-23",
+            "url": "https://www.microsoft.com/en-us/research/publication/playing-by-the-rules-rewriting-as-a-practical-optimisation-technique-in-ghc/"
+          },
+          "name": "Playing by the rules: rewriting as a practical optimisation technique in GHC (S. Peyton Jones, A. Tolmach, T. Hoare, ACM SIGPLAN Haskell Workshop, 2001)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2804302.2804303"
+          },
+          "name": "Reasoning with the HERMIT: tool support for equational reasoning on GHC core programs (A. Farmer, N. Sculthorpe, A. Gill, Haskell Symposium, 2015)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3236784"
+          },
+          "name": "Ready, set, verify! applying hs-to-coq to real-world Haskell code (J. Breitner, A. Spector-Zabusky, Y. Li, C. Rizkallah, J. Wiegley, S. Weirich, PACMPL 2(ICFP), 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3434341"
+          },
+          "name": "The taming of the rew: a type theory with computational assumptions (J. Cockx, N. Tabareau, T. Winterhalter, PACMPL 5(POPL), 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3158154"
+          },
+          "name": "RustBelt: securing the foundations of the Rust programming language (R. Jung, J.-H. Jourdan, R. Krebbers, D. Dreyer, PACMPL 2(POPL), 2018)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-3-031-17244-1_6"
+          },
+          "name": "Creusot: A Foundry for the Deductive Verification of Rust Programs (X. Denis, J.-H. Jourdan, C. Marche, ICFEM 2022)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3656422"
+          },
+          "name": "RefinedRust: A Type System for High-Assurance Verification of Rust Programs (L. Gaher, M. Sammler, R. Jung, R. Krebbers, D. Dreyer, PACMPL 8(PLDI), 2024)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/197320.197383"
+          },
+          "name": "A behavioral notion of subtyping (B. H. Liskov, J. M. Wing, ACM TOPLAS 16(6):1811-1841, 1994)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3062341.3062343"
+          },
+          "name": "Taming undefined behavior in LLVM (J. Lee, Y. Kim, Y. Song, C.-K. Hur, S. Das, D. Majnemer, J. Regehr, N. P. Lopes, PLDI 2017)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/3453483.3454030"
+          },
+          "name": "Alive2: bounded translation validation for LLVM (N. P. Lopes, J. Lee, C.-K. Hur, Z. Liu, J. Regehr, PLDI 2021)"
+        },
+        {
+          "identity": {
+            "doi": "10.1007/978-1-4612-1674-2"
+          },
+          "name": "Refinement Calculus: A Systematic Introduction (R.-J. Back, J. von Wright, Springer, 1998)"
+        },
+        {
+          "identity": {
+            "entry": "Refine_Monadic",
+            "issn": "2150-914X",
+            "url": "https://isa-afp.org/entries/Refine_Monadic.html"
+          },
+          "name": "Refinement for Monadic Programs (P. Lammich, Archive of Formal Proofs, 2012)"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/2676726.2677006"
+          },
+          "name": "Fiat: Deductive Synthesis of Abstract Data Types in a Proof Assistant (B. Delaware, C. Pit-Claudel, J. Gross, A. Chlipala, POPL 2015)"
+        }
+      ],
+      "topics": [
+        "lean/mechanization",
+        "verification/formalized-results",
+        "verification/refinement",
+        "verification/relational-semantics",
+        "verification/soundness",
+        "verification/trusted-computing-base",
+        "compilers/law-dependent-rewrites",
+        "pl/trait-laws",
+        "pl/undefined-behavior"
+      ]
+    },
     "layout-dfa-inclusion-vs-intersection-checks-and-reference-transmute-freeze-obligations": {
       "observed_at": "2026-11-21",
       "subjects": [
