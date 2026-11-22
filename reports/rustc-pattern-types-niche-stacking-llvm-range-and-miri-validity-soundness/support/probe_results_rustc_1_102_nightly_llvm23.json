@@ -1,0 +1,162 @@
+{
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+  "opt2_ub_no": {
+    "compile_rc": 0,
+    "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: the feature `pattern_types` is internal to the compiler or standard library\n --> <TMP>/pat_probe.rs:2:12\n  |\n2 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: 2 warnings emitted\n\n",
+    "ir_fns": {
+      "take_pat_u8": "define dso_local noundef range(i8 1, 11) i8 @take_pat_u8(i8 noundef returned zeroext range(i8 1, 11) %x) unnamed_addr #6 personality ptr @rust_eh_personality !guid !200 {\nstart:\n  ret i8 %x\n}",
+      "ret_pat_u8": "define dso_local noundef range(i8 1, 11) i8 @ret_pat_u8(i8 noundef returned zeroext %x) unnamed_addr #5 personality ptr @rust_eh_personality !guid !196 {\nstart:\n  %0 = add i8 %x, -1\n  %or.cond = icmp ult i8 %0, 10\n  br i1 %or.cond, label %bb2, label %bb3, !prof !197\n\nbb3:                                              ; preds = %start\n; invoke core::panicking::panic\n  invoke void @_RNvNtCs2F9dQBLtWXO_4core9panicking5panic(ptr noalias nofree noundef nonnull readonly captures(address, read_provenance) @alloc_4f68f332d4fdf715e2f8f4e47cff0417, i64 noundef 35, ptr noalias nofree noundef readonly align 8 captures(address, read_provenance) dereferenceable(24) @alloc_47c6479385d11b779f6989b39ae551d6) #16\n          to label %unreachable unwind label %terminate\n\nbb2:                                              ; preds = %start\n  ret i8 %x\n\nterminate:                                        ; preds = %bb3\n  %1 = landingpad { ptr, i32 }\n          filter [0 x ptr] zeroinitializer\n; call core::panicking::panic_cannot_unwind\n  tail call void @_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind() #17\n  unreachable\n\nunreachable:                                      ; preds = %bb3\n  unreachable\n}",
+      "take_pat_pos_i32": "define dso_local noundef range(i32 1, -2147483648) i32 @take_pat_pos_i32(i32 noundef returned range(i32 1, -2147483648) %x) unnamed_addr #6 personality ptr @rust_eh_personality !guid !199 {\nstart:\n  ret i32 %x\n}",
+      "take_pat_nonnull": "define dso_local noundef i64 @take_pat_nonnull(ptr noundef nonnull %p) unnamed_addr #6 personality ptr @rust_eh_personality !guid !198 {\nstart:\n  %_6 = ptrtoint ptr %p to i64\n  ret i64 %_6\n}"
+    },
+    "mir_has_pat_syntax": {
+      "has_is_1_10": true,
+      "has_is_not_null": true
+    },
+    "runtime": {
+      "sizes": {
+        "rc": 0,
+        "stdout": "SIZES Pat1To10=1 Opt=1 OptOpt=1 Opt3=1 PatPosI32=4 OptPosI32=4 PatNonNull=8 OptNonNull=8 OptNZ=1 OptNN=8",
+        "stderr_head": []
+      },
+      "bad_pat_u8_11": {
+        "rc": 0,
+        "stdout": "BAD_PAT_U8=11",
+        "stderr_head": []
+      },
+      "bad_pat_nonnull": {
+        "rc": 0,
+        "stdout": "BAD_PAT_NN=0x0",
+        "stderr_head": []
+      },
+      "bad_nonzero_transmute": {
+        "rc": 0,
+        "stdout": "BAD_NZ_TX=0",
+        "stderr_head": []
+      },
+      "bad_nonzero_new_unchecked": {
+        "rc": 0,
+        "stdout": "BAD_NZ_NU=0",
+        "stderr_head": []
+      }
+    }
+  },
+  "opt0_ub_yes": {
+    "compile_rc": 0,
+    "compile_stderr": "warning: due to multiple output types requested, the explicitly specified output file name will be adapted for each output type\n\nwarning: the feature `pattern_types` is internal to the compiler or standard library\n --> <TMP>/pat_probe.rs:2:12\n  |\n2 | #![feature(pattern_types, pattern_type_macro)]\n  |            ^^^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nwarning: 2 warnings emitted\n\n",
+    "ir_fns": {
+      "take_pat_u8": "define dso_local i8 @take_pat_u8(i8 zeroext %x) unnamed_addr #4 personality ptr @rust_eh_personality !guid !97 {\nstart:\n  %_2 = icmp eq i8 %x, 0\n  br i1 %_2, label %bb2, label %bb1\n\nbb1:                                              ; preds = %start\n  %_3 = icmp ugt i8 %x, 10\n  br i1 %_3, label %bb2, label %bb4\n\nbb2:                                              ; preds = %bb1, %start\n; invoke <core::fmt::Arguments>::from_str\n  %0 = invoke { ptr, ptr } @_RNvMs4_NtCs2F9dQBLtWXO_4core3fmtNtB5_9Arguments8from_strCsis60uTsusiu_9pat_probe(ptr @alloc_38ed3ca66b490d65a92870e057a8c55f, i64 32)\n          to label %bb3 unwind label %terminate\n\nbb4:                                              ; preds = %bb1\n  ret i8 %x\n\nterminate:                                        ; preds = %bb3, %bb2\n  %1 = landingpad { ptr, i32 }\n          filter [0 x ptr] zeroinitializer\n; call core::panicking::panic_cannot_unwind\n  call void @_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind() #14\n  unreachable\n\nbb3:                                              ; preds = %bb2\n  %_5.0 = extractvalue { ptr, ptr } %0, 0\n  %_5.1 = extractvalue { ptr, ptr } %0, 1\n; invoke core::panicking::panic_fmt\n  invoke void @_RNvNtCs2F9dQBLtWXO_4core9panicking9panic_fmt(ptr %_5.0, ptr %_5.1, ptr align 8 @alloc_b7294e30bd23aee5cbecf7322366fc8e) #16\n          to label %unreachable unwind label %terminate\n\nunreachable:                                      ; preds = %bb3\n  unreachable\n}",
+      "ret_pat_u8": "define dso_local i8 @ret_pat_u8(i8 zeroext %x) unnamed_addr #4 personality ptr @rust_eh_personality !guid !94 {\nstart:\n  %_2 = icmp uge i8 %x, 1\n  br i1 %_2, label %bb1, label %bb3\n\nbb3:                                              ; preds = %bb1, %start\n; invoke core::panicking::panic\n  invoke void @_RNvNtCs2F9dQBLtWXO_4core9panicking5panic(ptr @alloc_4f68f332d4fdf715e2f8f4e47cff0417, i64 35, ptr align 8 @alloc_47c6479385d11b779f6989b39ae551d6) #16\n          to label %unreachable unwind label %terminate\n\nbb1:                                              ; preds = %start\n  %_3 = icmp ule i8 %x, 10\n  br i1 %_3, label %bb2, label %bb3\n\nbb2:                                              ; preds = %bb1\n  ret i8 %x\n\nterminate:                                        ; preds = %bb3\n  %0 = landingpad { ptr, i32 }\n          filter [0 x ptr] zeroinitializer\n; call core::panicking::panic_cannot_unwind\n  call void @_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind() #14\n  unreachable\n\nunreachable:                                      ; preds = %bb3\n  unreachable\n}",
+      "take_pat_pos_i32": "define dso_local i32 @take_pat_pos_i32(i32 %x) unnamed_addr #4 personality ptr @rust_eh_personality !guid !96 {\nstart:\n  %_2 = icmp sle i32 %x, 0\n  br i1 %_2, label %bb1, label %bb3\n\nbb3:                                              ; preds = %start\n  ret i32 %x\n\nbb1:                                              ; preds = %start\n; invoke <core::fmt::Arguments>::from_str\n  %0 = invoke { ptr, ptr } @_RNvMs4_NtCs2F9dQBLtWXO_4core3fmtNtB5_9Arguments8from_strCsis60uTsusiu_9pat_probe(ptr @alloc_573a272df19ee9fe000312258fc5e664, i64 10)\n          to label %bb2 unwind label %terminate\n\nterminate:                                        ; preds = %bb2, %bb1\n  %1 = landingpad { ptr, i32 }\n          filter [0 x ptr] zeroinitializer\n; call core::panicking::panic_cannot_unwind\n  call void @_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind() #14\n  unreachable\n\nbb2:                                              ; preds = %bb1\n  %_4.0 = extractvalue { ptr, ptr } %0, 0\n  %_4.1 = extractvalue { ptr, ptr } %0, 1\n; invoke core::panicking::panic_fmt\n  invoke void @_RNvNtCs2F9dQBLtWXO_4core9panicking9panic_fmt(ptr %_4.0, ptr %_4.1, ptr align 8 @alloc_a077a522f0ecad34e0c0a4813d57ebe8) #16\n          to label %unreachable unwind label %terminate\n\nunreachable:                                      ; preds = %bb2\n  unreachable\n}",
+      "take_pat_nonnull": "define dso_local i64 @take_pat_nonnull(ptr %p) unnamed_addr #4 personality ptr @rust_eh_personality !guid !95 {\nstart:\n; invoke <*const u8>::is_null\n  %_3 = invoke zeroext i1 @_RNvMNtNtCs2F9dQBLtWXO_4core3ptr9const_ptrPh7is_nullCsis60uTsusiu_9pat_probe(ptr %p)\n          to label %bb1 unwind label %terminate\n\nterminate:                                        ; preds = %bb3, %bb2, %start\n  %0 = landingpad { ptr, i32 }\n          filter [0 x ptr] zeroinitializer\n; call core::panicking::panic_cannot_unwind\n  call void @_RNvNtCs2F9dQBLtWXO_4core9panicking19panic_cannot_unwind() #14\n  unreachable\n\nbb1:                                              ; preds = %start\n  br i1 %_3, label %bb2, label %bb4\n\nbb4:                                              ; preds = %bb1\n  %_0 = ptrtoint ptr %p to i64\n  ret i64 %_0\n\nbb2:                                              ; preds = %bb1\n; invoke <core::fmt::Arguments>::from_str\n  %1 = invoke { ptr, ptr } @_RNvMs4_NtCs2F9dQBLtWXO_4core3fmtNtB5_9Arguments8from_strCsis60uTsusiu_9pat_probe(ptr @alloc_6d6fa30a6c0ae5244cbeda403fbe2a2a, i64 15)\n          to label %bb3 unwind label %terminate\n\nbb3:                                              ; preds = %bb2\n  %_5.0 = extractvalue { ptr, ptr } %1, 0\n  %_5.1 = extractvalue { ptr, ptr } %1, 1\n; invoke core::panicking::panic_fmt\n  invoke void @_RNvNtCs2F9dQBLtWXO_4core9panicking9panic_fmt(ptr %_5.0, ptr %_5.1, ptr align 8 @alloc_053f64e496d841fc7910a5e9b48adea8) #16\n          to label %unreachable unwind label %terminate\n\nunreachable:                                      ; preds = %bb3\n  unreachable\n}"
+    },
+    "mir_has_pat_syntax": {
+      "has_is_1_10": true,
+      "has_is_not_null": true
+    },
+    "runtime": {
+      "sizes": {
+        "rc": 0,
+        "stdout": "SIZES Pat1To10=1 Opt=1 OptOpt=1 Opt3=1 PatPosI32=4 OptPosI32=4 PatNonNull=8 OptNonNull=8 OptNZ=1 OptNN=8",
+        "stderr_head": []
+      },
+      "bad_pat_u8_11": {
+        "rc": 0,
+        "stdout": "BAD_PAT_U8=11",
+        "stderr_head": []
+      },
+      "bad_pat_nonnull": {
+        "rc": 0,
+        "stdout": "BAD_PAT_NN=0x0",
+        "stderr_head": []
+      },
+      "bad_nonzero_transmute": {
+        "rc": 0,
+        "stdout": "BAD_NZ_TX=0",
+        "stderr_head": []
+      },
+      "bad_nonzero_new_unchecked": {
+        "rc": -6,
+        "stdout": "",
+        "stderr_head": [
+          "",
+          "thread 'main' (<TID>) panicked at <TMP>/pat_probe.rs:70:14:"
+        ]
+      }
+    }
+  },
+  "miri_oracle": {
+    "sizes": {
+      "rc": 0,
+      "stdout": "SIZES Pat1To10=1 Opt=1 OptOpt=1 Opt3=1 PatPosI32=4 OptPosI32=4 PatNonNull=8 OptNonNull=8 OptNZ=1 OptNN=8",
+      "ub_lines": []
+    },
+    "bad_pat_u8_11": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: constructing invalid value of type pattern_type!(u8 is 1..=10): encountered 11, but expected something in the range 1..=10",
+        "|              ^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "bad_pat_nonnull": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: constructing invalid value of type pattern_type!(*const u8 is !null): encountered 0, but expected something greater or equal to 1",
+        "|              ^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "bad_nonzero_transmute": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: constructing invalid value of type std::num::NonZero<u8>: at .0.0, encountered 0, but expected something greater or equal to 1",
+        "|              ^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    },
+    "bad_nonzero_new_unchecked": {
+      "rc": 1,
+      "stdout": "",
+      "ub_lines": [
+        "error: Undefined Behavior: entering unreachable code",
+        "|              ^^^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here",
+        "= help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior"
+      ]
+    }
+  },
+  "extra_pat_checks": {
+    "pat_or_wrapping_range_unsigned": {
+      "ok": false,
+      "err_head": [
+        "error: only signed integer base types are allowed for or-pattern pattern types at present",
+        "error: aborting due to 1 previous error; 1 warning emitted"
+      ]
+    },
+    "pat_or_wrapping_range_signed": {
+      "ok": true,
+      "err_head": []
+    },
+    "transmute_from_pat_to_u8": {
+      "ok": false,
+      "err_head": [
+        "error[E0277]: `pattern_type!(u8 is 1..=10)` cannot be safely transmuted into `u8`",
+        "|                               ^^ analyzing the transmutability of `pattern_type!(u8 is 1..=10)` is not yet supported",
+        "error: aborting due to 1 previous error; 1 warning emitted",
+        "For more information about this error, try `rustc --explain E0277`."
+      ]
+    },
+    "transmute_from_u8_to_pat_validity": {
+      "ok": false,
+      "err_head": [
+        "error[E0277]: `u8` cannot be safely transmuted into `pattern_type!(u8 is 1..=10)`",
+        "|                             ^^^^^^^^ analyzing the transmutability of `pattern_type!(u8 is 1..=10)` is not yet supported",
+        "error: aborting due to 1 previous error; 1 warning emitted",
+        "For more information about this error, try `rustc --explain E0277`."
+      ]
+    }
+  }
+}
