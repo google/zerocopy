@@ -1,0 +1,82 @@
+{
+  "audit": {
+    "exit_code": 0,
+    "peak_rss_kb": 1606176,
+    "print_axioms": {
+      "PackedDropsSoundness.addMovesForPackedDrops_eliminates_unaligned_drop_self_ub": [
+        "propext"
+      ],
+      "PackedDropsSoundness.checkPackedRef_implies_all_borrows_aligned": [
+        "propext"
+      ],
+      "PackedDropsSoundness.drop_in_place_ub_checks_gap_counterexample": [
+        "propext"
+      ],
+      "PackedDropsSoundness.elaborateDrops_drop_each_live_leaf_once": [
+        "propext"
+      ],
+      "PackedDropsSoundness.full_packed_drop_pipeline_soundness": [
+        "propext"
+      ],
+      "PackedDropsSoundness.pipeline_order_counterexample": [
+        "propext"
+      ],
+      "PackedDropsSoundness.removeUninitDrops_preserves_semantics": []
+    },
+    "summary": {
+      "axioms_used": [
+        "propext"
+      ],
+      "constants": 614,
+      "constructors": 51,
+      "definitions": 338,
+      "inductive_types": 20,
+      "recursors": 20,
+      "theorems": 185,
+      "theorems_without_axioms": 114,
+      "violations": 0
+    },
+    "violation_lines": [],
+    "wall_seconds": 4.695
+  },
+  "compile": {
+    "errors": 0,
+    "exit_code": 0,
+    "olean_bytes": 1835800,
+    "peak_rss_kb": 551376,
+    "wall_seconds": 3.321,
+    "warnings": 0
+  },
+  "compile_flags": [
+    "-M2048",
+    "-DElab.async=false",
+    "-Ddebug.skipKernelTC=false",
+    "-DwarningAsError=true"
+  ],
+  "forbidden_token_counts": {
+    "Classical": 0,
+    "_unsafe_rec": 0,
+    "admit": 0,
+    "axiom": 0,
+    "bv_decide": 0,
+    "extern": 0,
+    "implemented_by": 0,
+    "native_decide": 0,
+    "omega": 0,
+    "opaque": 0,
+    "partial": 0,
+    "sorry": 0,
+    "unsafe": 0
+  },
+  "generated_on": "2026-11-22",
+  "lean_version": "Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)",
+  "module": "support/PackedDropsCheckPackedRefAndElaborateDropsSoundness.lean",
+  "passed": true,
+  "schema": "lean-check-receipt/1",
+  "source_bytes": 79593,
+  "source_def_keywords": 52,
+  "source_inductive_keywords": 19,
+  "source_lines": 1742,
+  "source_sha256": "c2d5cd441ae693e8480b0e19a5b8b8c6bdbdd2d4a1904f22bd8b38d4b621a3c0",
+  "source_theorem_keywords": 59
+}

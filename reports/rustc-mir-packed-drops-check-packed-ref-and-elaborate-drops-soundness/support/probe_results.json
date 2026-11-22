@@ -1,0 +1,838 @@
+{
+  "all_checks_passed": true,
+  "check_packed_ref_matrix": {
+    "e0793_generic_unbounded": {
+      "expected_error_code": "E0793",
+      "expected_rc": 1,
+      "matched_expected": true,
+      "rc": 1,
+      "stderr": "error[E0793]: reference to field of packed struct is unaligned\n --> <TMP>/e0793_generic_unbounded.rs:3:33\n  |\n3 | pub fn bad<T>(g: &G<T>) -> &T { &g.0 }\n  |                                 ^^^^\n  |\n  = note: this struct is 1-byte aligned, but the type of this field may require higher alignment\n  = note: creating a misaligned reference is undefined behavior (even if that reference is never dereferenced)\n  = help: copy the field contents to a local variable, or replace the reference with a raw pointer and use `read_unaligned`/`write_unaligned` (loads and stores via `*p` must be properly aligned even when using raw pointers)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0793`."
+    },
+    "e0793_nested_packed_min": {
+      "expected_error_code": "E0793",
+      "expected_rc": 1,
+      "matched_expected": true,
+      "rc": 1,
+      "stderr": "error[E0793]: reference to field of packed struct is unaligned\n --> <TMP>/e0793_nested_packed_min.rs:5:37\n  |\n5 | pub fn bad_u32(o: &Outer) -> &u32 { &o.i.y }\n  |                                     ^^^^^^\n  |\n  = note: this struct is at most 2-byte aligned, but the type of this field may require higher alignment\n  = note: creating a misaligned reference is undefined behavior (even if that reference is never dereferenced)\n  = help: copy the field contents to a local variable, or replace the reference with a raw pointer and use `read_unaligned`/`write_unaligned` (loads and stores via `*p` must be properly aligned even when using raw pointers)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0793`."
+    },
+    "e0793_packed1_mut_u64": {
+      "expected_error_code": "E0793",
+      "expected_rc": 1,
+      "matched_expected": true,
+      "rc": 1,
+      "stderr": "error[E0793]: reference to field of packed struct is unaligned\n --> <TMP>/e0793_packed1_mut_u64.rs:3:37\n  |\n3 | pub fn bad(p: &mut P) -> &mut u64 { &mut p.b }\n  |                                     ^^^^^^^^\n  |\n  = note: this struct is 1-byte aligned, but the type of this field may require higher alignment\n  = note: creating a misaligned reference is undefined behavior (even if that reference is never dereferenced)\n  = help: copy the field contents to a local variable, or replace the reference with a raw pointer and use `read_unaligned`/`write_unaligned` (loads and stores via `*p` must be properly aligned even when using raw pointers)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0793`."
+    },
+    "e0793_packed1_u32": {
+      "expected_error_code": "E0793",
+      "expected_rc": 1,
+      "matched_expected": true,
+      "rc": 1,
+      "stderr": "error[E0793]: reference to field of packed struct is unaligned\n --> <TMP>/e0793_packed1_u32.rs:3:29\n  |\n3 | pub fn bad(p: &P) -> &u32 { &p.b }\n  |                             ^^^^\n  |\n  = note: this struct is 1-byte aligned, but the type of this field may require higher alignment\n  = note: creating a misaligned reference is undefined behavior (even if that reference is never dereferenced)\n  = help: copy the field contents to a local variable, or replace the reference with a raw pointer and use `read_unaligned`/`write_unaligned` (loads and stores via `*p` must be properly aligned even when using raw pointers)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0793`."
+    },
+    "e0793_packed2_u32": {
+      "expected_error_code": "E0793",
+      "expected_rc": 1,
+      "matched_expected": true,
+      "rc": 1,
+      "stderr": "error[E0793]: reference to field of packed struct is unaligned\n --> <TMP>/e0793_packed2_u32.rs:3:30\n  |\n3 | pub fn bad(p: &P2) -> &u32 { &p.b }\n  |                              ^^^^\n  |\n  = note: this struct is at most 2-byte aligned, but the type of this field may require higher alignment\n  = note: creating a misaligned reference is undefined behavior (even if that reference is never dereferenced)\n  = help: copy the field contents to a local variable, or replace the reference with a raw pointer and use `read_unaligned`/`write_unaligned` (loads and stores via `*p` must be properly aligned even when using raw pointers)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0793`."
+    },
+    "ok_nested_packed_min": {
+      "expected_error_code": "",
+      "expected_rc": 0,
+      "matched_expected": true,
+      "rc": 0,
+      "stderr": "warning: type `Outer` is more private than the item `ok_u16`\n --> <TMP>/ok_nested_packed_min.rs:5:1\n  |\n5 | pub fn ok_u16(o: &Outer) -> &u16 { &o.i.x }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `ok_u16` is reachable at visibility `pub`\n  |\nnote: but type `Outer` is only usable at visibility `pub(crate)`\n --> <TMP>/ok_nested_packed_min.rs:4:1\n  |\n4 | struct Outer { a: u8, i: Inner }\n  | ^^^^^^^^^^^^\n  = note: `#[warn(private_interfaces)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "ok_packed1_deref_reset": {
+      "expected_error_code": "",
+      "expected_rc": 0,
+      "matched_expected": true,
+      "rc": 0,
+      "stderr": "warning: type `Q<'a>` is more private than the item `ok`\n --> <TMP>/ok_packed1_deref_reset.rs:3:1\n  |\n3 | pub fn ok<'a>(q: &Q<'a>) -> &'a u32 { &*q.r }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `ok` is reachable at visibility `pub`\n  |\nnote: but type `Q<'a>` is only usable at visibility `pub(crate)`\n --> <TMP>/ok_packed1_deref_reset.rs:2:1\n  |\n2 | struct Q<'a> { a: u8, r: &'a u32 }\n  | ^^^^^^^^^^^^\n  = note: `#[warn(private_interfaces)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "ok_packed1_raw_borrows": {
+      "expected_error_code": "",
+      "expected_rc": 0,
+      "matched_expected": true,
+      "rc": 0,
+      "stderr": "warning: type `P` is more private than the item `ok_const`\n --> <TMP>/ok_packed1_raw_borrows.rs:3:1\n  |\n3 | pub fn ok_const(p: &P) -> *const u32 { &raw const p.b }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `ok_const` is reachable at visibility `pub`\n  |\nnote: but type `P` is only usable at visibility `pub(crate)`\n --> <TMP>/ok_packed1_raw_borrows.rs:2:1\n  |\n2 | struct P { a: u8, b: u32 }\n  | ^^^^^^^^\n  = note: `#[warn(private_interfaces)]` on by default\n\nwarning: type `P` is more private than the item `ok_mut`\n --> <TMP>/ok_packed1_raw_borrows.rs:4:1\n  |\n4 | pub fn ok_mut(p: &mut P) -> *mut u32 { &raw mut p.b }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ function `ok_mut` is reachable at visibility `pub`\n  |\nnote: but type `P` is only usable at visibility `pub(crate)`\n --> <TMP>/ok_packed1_raw_borrows.rs:2:1\n  |\n2 | struct P { a: u8, b: u32 }\n  | ^^^^^^^^\n\nwarning: 2 warnings emitted"
+    },
+    "ok_packed1_u8": {
+      "expected_error_code": "",
+      "expected_rc": 0,
+      "matched_expected": true,
+      "rc": 0,
+      "stderr": "warning: type `P` is more private than the item `ok`\n --> <TMP>/ok_packed1_u8.rs:3:1\n  |\n3 | pub fn ok(p: &P) -> &u8 { &p.a }\n  | ^^^^^^^^^^^^^^^^^^^^^^^ function `ok` is reachable at visibility `pub`\n  |\nnote: but type `P` is only usable at visibility `pub(crate)`\n --> <TMP>/ok_packed1_u8.rs:2:1\n  |\n2 | struct P { a: u8, b: u32 }\n  | ^^^^^^^^\n  = note: `#[warn(private_interfaces)]` on by default\n\nwarning: 1 warning emitted"
+    },
+    "ok_packed2_u16": {
+      "expected_error_code": "",
+      "expected_rc": 0,
+      "matched_expected": true,
+      "rc": 0,
+      "stderr": "warning: type `P2` is more private than the item `ok`\n --> <TMP>/ok_packed2_u16.rs:3:1\n  |\n3 | pub fn ok(p: &P2) -> &u16 { &p.a }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^ function `ok` is reachable at visibility `pub`\n  |\nnote: but type `P2` is only usable at visibility `pub(crate)`\n --> <TMP>/ok_packed2_u16.rs:2:1\n  |\n2 | struct P2 { a: u16, b: u32 }\n  | ^^^^^^^^^\n  = note: `#[warn(private_interfaces)]` on by default\n\nwarning: 1 warning emitted"
+    }
+  },
+  "checks": {
+    "all_check_packed_ref_matched": true,
+    "all_packed_drop_type_rules_matched": true,
+    "direct_mut_deref_ub_checks_caught": true,
+    "packed_ok_miri_sb_1637": true,
+    "packed_ok_miri_tb_1637": true,
+    "packed_ok_native_1637": true,
+    "packed_ok_ub_checks_1637": true,
+    "raw_drop_miri_sb_caught": true,
+    "raw_drop_miri_tb_caught": true,
+    "raw_drop_ub_checks_bypassed": true,
+    "remove_uninit_drops_const_runs_only_with_feature": true,
+    "safe_read_unaligned_drop_passes_all": true
+  },
+  "drop_in_place_ub_checks_gap": {
+    "direct_mut_deref_control": {
+      "compile_ub_checks_rc": 0,
+      "miri_sb": {
+        "rc": 1,
+        "stderr": "warning: field `0` is never read\n --> <TMP>/direct_mut_deref_control.rs:4:20\n  |\n4 | struct AlignedDrop(u64);\n  |        ----------- ^^^\n  |        |\n  |        field in this struct\n  |\n  = help: consider removing this field\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: constructing invalid value of type &mut AlignedDrop: encountered an unaligned reference (required 8 byte alignment but found 1)\n  --> <TMP>/direct_mut_deref_control.rs:21:35\n   |\n21 |         let r: &mut AlignedDrop = &mut *ptr;\n   |                                   ^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted",
+        "stdout": ""
+      },
+      "ub_checks_rc": -6,
+      "ub_checks_stderr": "thread 'main' (2318988) panicked at <TMP>/direct_mut_deref_control.rs:21:35:\nmisaligned pointer dereference: address must be a multiple of 0x8 but is 0x7ffdbd8b6771\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.",
+      "ub_checks_stdout": ""
+    },
+    "raw_drop_in_place": {
+      "compile_ub_checks_rc": 0,
+      "main_check_alignment_asserts": 0,
+      "miri_sb": {
+        "rc": 1,
+        "stderr": "error: Undefined Behavior: constructing invalid value of type &mut AlignedDrop: encountered an unaligned reference (required 8 byte alignment but found 1)\n   --> <RUSTC_SYSROOT>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:820:24\n    |\n820 |     unsafe { drop_glue(&mut *to_drop) }\n    |                        ^^^^^^^^^^^^^ Undefined Behavior occurred here\n    |\n    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n    = note: stack backtrace:\n            0: std::ptr::drop_in_place::<AlignedDrop>\n                at <RUSTC_SYSROOT>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:820:24: 820:37\n            1: main\n                at <TMP>/raw_drop_in_place.rs:27:14: 27:43\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+        "stdout": ""
+      },
+      "miri_tb": {
+        "rc": 1,
+        "stderr": "error: Undefined Behavior: constructing invalid value of type &mut AlignedDrop: encountered an unaligned reference (required 8 byte alignment but found 1)\n   --> <RUSTC_SYSROOT>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:820:24\n    |\n820 |     unsafe { drop_glue(&mut *to_drop) }\n    |                        ^^^^^^^^^^^^^ Undefined Behavior occurred here\n    |\n    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n    = note: stack backtrace:\n            0: std::ptr::drop_in_place::<AlignedDrop>\n                at <RUSTC_SYSROOT>/lib/rustlib/src/rust/library/core/src/ptr/mod.rs:820:24: 820:37\n            1: main\n                at <TMP>/raw_drop_in_place.rs:27:14: 27:43\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error",
+        "stdout": ""
+      },
+      "ub_checks_o2_rc": 0,
+      "ub_checks_o2_stdout": "RAW_DROP_UB_CHECKS_SURVIVED=true",
+      "ub_checks_rc": 0,
+      "ub_checks_stderr": "",
+      "ub_checks_stdout": "RAW_DROP_UB_CHECKS_SURVIVED=true"
+    },
+    "read_unaligned_safe_drop": {
+      "compile_ub_checks_rc": 0,
+      "miri_sb": {
+        "rc": 0,
+        "stderr": "",
+        "stdout": "SAFE_READ_UNALIGNED_DROP=42"
+      },
+      "miri_tb": {
+        "rc": 0,
+        "stderr": "",
+        "stdout": "SAFE_READ_UNALIGNED_DROP=42"
+      },
+      "ub_checks_rc": 0,
+      "ub_checks_stdout": "SAFE_READ_UNALIGNED_DROP=42"
+    }
+  },
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "observed_at": "2026-11-22",
+  "packed_drop_type_rules": {
+    "e0277_unsized_tail_needs_drop_packed": {
+      "expected_error_code": "E0277",
+      "expected_rc": 1,
+      "matched_expected": true,
+      "rc": 1,
+      "stderr": "error[E0277]: the size for values of type `[AlignedDrop]` cannot be known at compilation time\n --> <TMP>/e0277_unsized_tail_needs_drop_packed.rs:5:36\n  |\n5 | struct BadUnsized { pad: u8, tail: [AlignedDrop] }\n  |                                    ^^^^^^^^^^^^^ doesn't have a size known at compile-time\n  |\n  = help: the trait `Sized` is not implemented for `[AlignedDrop]`\n  = note: the last field of a packed struct may only have a dynamically sized type if it does not need drop to be run\n  = help: change the field's type to have a statically known size\nhelp: borrowed types always have a statically known size\n  |\n5 | struct BadUnsized { pad: u8, tail: &[AlignedDrop] }\n  |                                    +\nhelp: the `Box` type always has a statically known size and allocates its contents in the heap\n  |\n5 | struct BadUnsized { pad: u8, tail: Box<[AlignedDrop]> }\n  |                                    ++++             +\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`."
+    },
+    "e0509_partial_move_packed_with_impl_drop": {
+      "expected_error_code": "E0509",
+      "expected_rc": 1,
+      "matched_expected": true,
+      "rc": 1,
+      "stderr": "error[E0509]: cannot move out of type `PackedWithImplDrop`, which implements the `Drop` trait\n --> <TMP>/e0509_partial_move_packed_with_impl_drop.rs:9:5\n  |\n9 |     p.inner\n  |     ^^^^^^^\n  |     |\n  |     cannot move out of here\n  |     move occurs because `p.inner` has type `AlignedDrop`, which does not implement the `Copy` trait\n  |\nnote: if `AlignedDrop` implemented `Clone`, you could clone the value\n --> <TMP>/e0509_partial_move_packed_with_impl_drop.rs:1:1\n  |\n1 | struct AlignedDrop(u64);\n  | ^^^^^^^^^^^^^^^^^^ consider implementing `Clone` for this type\n...\n9 |     p.inner\n  |     ------- you could clone this value\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0509`."
+    },
+    "e0588_packed_contains_repr_align": {
+      "expected_error_code": "E0588",
+      "expected_rc": 1,
+      "matched_expected": true,
+      "rc": 1,
+      "stderr": "error[E0588]: packed type cannot transitively contain a `#[repr(align)]` type\n --> <TMP>/e0588_packed_contains_repr_align.rs:4:1\n  |\n4 | struct BadPacked { pad: u8, inner: OverAligned }\n  | ^^^^^^^^^^^^^^^^\n  |\nnote: `OverAligned` has a `#[repr(align)]` attribute\n --> <TMP>/e0588_packed_contains_repr_align.rs:2:1\n  |\n2 | struct OverAligned(u64);\n  | ^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0588`."
+    },
+    "ok_unsized_tail_manually_drop_packed": {
+      "expected_error_code": "",
+      "expected_rc": 0,
+      "matched_expected": true,
+      "rc": 0,
+      "stderr": "warning: struct `AlignedDrop` is never constructed\n --> <TMP>/ok_unsized_tail_manually_drop_packed.rs:2:8\n  |\n2 | struct AlignedDrop(u64);\n  |        ^^^^^^^^^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: struct `OkUnsized` is never constructed\n --> <TMP>/ok_unsized_tail_manually_drop_packed.rs:6:8\n  |\n6 | struct OkUnsized { pad: u8, tail: ManuallyDrop<[AlignedDrop]> }\n  |        ^^^^^^^^^\n\nwarning: 2 warnings emitted"
+    }
+  },
+  "packed_ok": {
+    "compile_native_rc": 0,
+    "mir_dump_counts": {
+      "core.ops-function-FnOnce-call_once.1-1-001.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "core.ops-function-FnOnce-call_once.1-1-001.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "core.ptr-drop_glue.AlignedDrop.1-1-001.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 2,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "core.ptr-drop_glue.AlignedDrop.1-1-001.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 2,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "core.ptr-drop_glue.PackedNoImplDrop.1-1-001.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 4,
+        "goto_terminators": 6,
+        "storage_dead": 4,
+        "storage_live": 4,
+        "switch_int": 0
+      },
+      "core.ptr-drop_glue.PackedNoImplDrop.1-1-001.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 4,
+        "goto_terminators": 2,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "core.ptr-drop_glue.PackedWithImplDrop.1-1-001.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 2,
+        "goto_terminators": 4,
+        "storage_dead": 2,
+        "storage_live": 2,
+        "switch_int": 0
+      },
+      "core.ptr-drop_glue.PackedWithImplDrop.1-1-001.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 2,
+        "goto_terminators": 2,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.LOG.2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.LOG.2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.LOG.2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.LOG.2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[0].2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[0].2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[0].2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[0].2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[1].2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[1].2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[1].2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[1].2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[2].2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[2].2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[2].2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed-promoted[2].2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.drop_whole_packed.2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 4,
+        "drop_terminators": 2,
+        "goto_terminators": 3,
+        "storage_dead": 52,
+        "storage_live": 70,
+        "switch_int": 4
+      },
+      "packed_ok.drop_whole_packed.2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 4,
+        "drop_terminators": 5,
+        "goto_terminators": 0,
+        "storage_dead": 52,
+        "storage_live": 70,
+        "switch_int": 4
+      },
+      "packed_ok.drop_whole_packed.2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 4,
+        "drop_terminators": 2,
+        "goto_terminators": 2,
+        "storage_dead": 52,
+        "storage_live": 70,
+        "switch_int": 4
+      },
+      "packed_ok.drop_whole_packed.2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 4,
+        "drop_terminators": 2,
+        "goto_terminators": 2,
+        "storage_dead": 52,
+        "storage_live": 70,
+        "switch_int": 4
+      },
+      "packed_ok.main.2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 20,
+        "storage_live": 20,
+        "switch_int": 0
+      },
+      "packed_ok.main.2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 20,
+        "storage_live": 20,
+        "switch_int": 0
+      },
+      "packed_ok.main.2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 20,
+        "storage_live": 20,
+        "switch_int": 0
+      },
+      "packed_ok.main.2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 20,
+        "storage_live": 20,
+        "switch_int": 0
+      },
+      "packed_ok.packed_with_own_drop.2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 1,
+        "goto_terminators": 1,
+        "storage_dead": 3,
+        "storage_live": 3,
+        "switch_int": 0
+      },
+      "packed_ok.packed_with_own_drop.2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 2,
+        "goto_terminators": 0,
+        "storage_dead": 3,
+        "storage_live": 3,
+        "switch_int": 0
+      },
+      "packed_ok.packed_with_own_drop.2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 1,
+        "goto_terminators": 1,
+        "storage_dead": 3,
+        "storage_live": 3,
+        "switch_int": 0
+      },
+      "packed_ok.packed_with_own_drop.2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 1,
+        "goto_terminators": 1,
+        "storage_dead": 3,
+        "storage_live": 3,
+        "switch_int": 0
+      },
+      "packed_ok.partial_move_and_dynamic_drop_flag.2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 5,
+        "goto_terminators": 14,
+        "storage_dead": 9,
+        "storage_live": 9,
+        "switch_int": 3
+      },
+      "packed_ok.partial_move_and_dynamic_drop_flag.2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 1,
+        "drop_terminators": 8,
+        "goto_terminators": 2,
+        "storage_dead": 9,
+        "storage_live": 9,
+        "switch_int": 1
+      },
+      "packed_ok.partial_move_and_dynamic_drop_flag.2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 4,
+        "goto_terminators": 16,
+        "storage_dead": 13,
+        "storage_live": 13,
+        "switch_int": 2
+      },
+      "packed_ok.partial_move_and_dynamic_drop_flag.2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 4,
+        "goto_terminators": 12,
+        "storage_dead": 9,
+        "storage_live": 9,
+        "switch_int": 2
+      },
+      "packed_ok.{impl#0}-drop-promoted[0].2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.{impl#0}-drop-promoted[0].2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.{impl#0}-drop-promoted[0].2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.{impl#0}-drop-promoted[0].2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.{impl#0}-drop.2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 33,
+        "storage_live": 41,
+        "switch_int": 1
+      },
+      "packed_ok.{impl#0}-drop.2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 33,
+        "storage_live": 41,
+        "switch_int": 1
+      },
+      "packed_ok.{impl#0}-drop.2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 33,
+        "storage_live": 41,
+        "switch_int": 1
+      },
+      "packed_ok.{impl#0}-drop.2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 33,
+        "storage_live": 41,
+        "switch_int": 1
+      },
+      "packed_ok.{impl#1}-drop-promoted[0].2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.{impl#1}-drop-promoted[0].2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.{impl#1}-drop-promoted[0].2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.{impl#1}-drop-promoted[0].2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "packed_ok.{impl#1}-drop.2-2-004.ElaborateDrops.after.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 26,
+        "storage_live": 32,
+        "switch_int": 1
+      },
+      "packed_ok.{impl#1}-drop.2-2-004.ElaborateDrops.before.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 26,
+        "storage_live": 32,
+        "switch_int": 1
+      },
+      "packed_ok.{impl#1}-drop.2-2-007.AddMovesForPackedDrops.after.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 26,
+        "storage_live": 32,
+        "switch_int": 1
+      },
+      "packed_ok.{impl#1}-drop.2-2-007.AddMovesForPackedDrops.before.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 26,
+        "storage_live": 32,
+        "switch_int": 1
+      }
+    },
+    "miri_sb": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "PACKED_DROP_LOG=1637"
+    },
+    "miri_tb": {
+      "rc": 0,
+      "stderr": "",
+      "stdout": "PACKED_DROP_LOG=1637"
+    },
+    "native_rc": 0,
+    "native_stdout": "PACKED_DROP_LOG=1637",
+    "ub_checks_rc": 0,
+    "ub_checks_stdout": "PACKED_DROP_LOG=1637"
+  },
+  "remove_uninit_drops_const": {
+    "compile_rc": 0,
+    "mir_dump_counts": {
+      "remove_uninit_drops_const.RES.2-2-001.RemoveUninitDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 2,
+        "goto_terminators": 11,
+        "storage_dead": 14,
+        "storage_live": 14,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.RES.2-2-001.RemoveUninitDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 13,
+        "goto_terminators": 0,
+        "storage_dead": 14,
+        "storage_live": 14,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.RES.2-2-007.ElaborateDrops.after.mir": {
+        "bool_locals": 2,
+        "drop_terminators": 2,
+        "goto_terminators": 2,
+        "storage_dead": 14,
+        "storage_live": 14,
+        "switch_int": 2
+      },
+      "remove_uninit_drops_const.RES.2-2-007.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 2,
+        "goto_terminators": 0,
+        "storage_dead": 14,
+        "storage_live": 14,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.const_extract_both.2-2-001.RemoveUninitDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 5,
+        "storage_dead": 2,
+        "storage_live": 2,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.const_extract_both.2-2-001.RemoveUninitDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 5,
+        "goto_terminators": 0,
+        "storage_dead": 2,
+        "storage_live": 2,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.const_extract_both.2-2-007.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 2,
+        "storage_live": 2,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.const_extract_both.2-2-007.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 2,
+        "storage_live": 2,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.main-promoted[0].2-2-001.RemoveUninitDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.main-promoted[0].2-2-001.RemoveUninitDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.main-promoted[0].2-2-007.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.main-promoted[0].2-2-007.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.main.2-2-001.RemoveUninitDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 5,
+        "goto_terminators": 4,
+        "storage_dead": 24,
+        "storage_live": 24,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.main.2-2-001.RemoveUninitDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 9,
+        "goto_terminators": 0,
+        "storage_dead": 24,
+        "storage_live": 24,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.main.2-2-007.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 4,
+        "goto_terminators": 1,
+        "storage_dead": 24,
+        "storage_live": 24,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.main.2-2-007.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 5,
+        "goto_terminators": 0,
+        "storage_dead": 24,
+        "storage_live": 24,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.runtime_extract_both.2-2-001.RemoveUninitDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 5,
+        "storage_dead": 2,
+        "storage_live": 2,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.runtime_extract_both.2-2-001.RemoveUninitDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 5,
+        "goto_terminators": 0,
+        "storage_dead": 2,
+        "storage_live": 2,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.runtime_extract_both.2-2-007.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 2,
+        "storage_live": 2,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.runtime_extract_both.2-2-007.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 2,
+        "storage_live": 2,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.{impl#0}-drop.2-2-001.RemoveUninitDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.{impl#0}-drop.2-2-001.RemoveUninitDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.{impl#0}-drop.2-2-007.ElaborateDrops.after.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      },
+      "remove_uninit_drops_const.{impl#0}-drop.2-2-007.ElaborateDrops.before.mir": {
+        "bool_locals": 0,
+        "drop_terminators": 0,
+        "goto_terminators": 0,
+        "storage_dead": 0,
+        "storage_live": 0,
+        "switch_int": 0
+      }
+    },
+    "plain_non_const_crate_compile_rc": 0,
+    "plain_non_const_remove_uninit_drops_dumps": [],
+    "run_rc": 0,
+    "run_stdout": "CONST_RES=30 RT_RES=7"
+  },
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "schema": "packed-drops-probe/1"
+}

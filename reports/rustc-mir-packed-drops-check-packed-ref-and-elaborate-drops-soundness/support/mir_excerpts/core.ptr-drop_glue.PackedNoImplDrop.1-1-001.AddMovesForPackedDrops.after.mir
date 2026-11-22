@@ -1,0 +1,69 @@
+// MIR for `std::ptr::drop_glue` after AddMovesForPackedDrops
+
+fn std::ptr::drop_glue(_1: &mut PackedNoImplDrop) -> () {
+    let mut _0: ();
+    let mut _2: AlignedDrop;
+    let mut _3: AlignedDrop;
+    let mut _4: AlignedDrop;
+    let mut _5: AlignedDrop;
+
+    bb0: {
+        goto -> bb7;
+    }
+
+    bb1: {
+        return;
+    }
+
+    bb2 (cleanup): {
+        resume;
+    }
+
+    bb3: {
+        goto -> bb1;
+    }
+
+    bb4 (cleanup): {
+        StorageLive(_2);
+        _2 = move ((*_1).2: AlignedDrop);
+        drop(_2) -> [return: bb8, unwind terminate(cleanup)];
+    }
+
+    bb5 (cleanup): {
+        StorageLive(_3);
+        _3 = move ((*_1).1: AlignedDrop);
+        drop(_3) -> [return: bb9, unwind terminate(cleanup)];
+    }
+
+    bb6: {
+        StorageLive(_4);
+        _4 = move ((*_1).2: AlignedDrop);
+        drop(_4) -> [return: bb10, unwind: bb2];
+    }
+
+    bb7: {
+        StorageLive(_5);
+        _5 = move ((*_1).1: AlignedDrop);
+        drop(_5) -> [return: bb11, unwind: bb4];
+    }
+
+    bb8 (cleanup): {
+        StorageDead(_2);
+        goto -> bb2;
+    }
+
+    bb9 (cleanup): {
+        StorageDead(_3);
+        goto -> bb4;
+    }
+
+    bb10: {
+        StorageDead(_4);
+        goto -> bb3;
+    }
+
+    bb11: {
+        StorageDead(_5);
+        goto -> bb6;
+    }
+}

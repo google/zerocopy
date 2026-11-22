@@ -1,0 +1,156 @@
+// MIR for `partial_move_and_dynamic_drop_flag` after ElaborateDrops
+
+fn partial_move_and_dynamic_drop_flag(_1: bool, _2: u64, _3: u64) -> () {
+    debug take_first => _1;
+    debug first_tag => _2;
+    debug second_tag => _3;
+    let mut _0: ();
+    let _4: PackedNoImplDrop;
+    let mut _5: AlignedDrop;
+    let mut _6: u64;
+    let mut _7: AlignedDrop;
+    let mut _8: u64;
+    let mut _9: bool;
+    let _11: ();
+    let mut _12: AlignedDrop;
+    let mut _13: bool;
+    scope 1 {
+        debug p => _4;
+        let _10: AlignedDrop;
+        scope 2 {
+            debug moved => _10;
+        }
+    }
+
+    bb0: {
+        _13 = const false;
+        StorageLive(_4);
+        StorageLive(_5);
+        StorageLive(_6);
+        _6 = copy _2;
+        _5 = AlignedDrop { val: const 44_u64, tag: move _6 };
+        StorageDead(_6);
+        StorageLive(_7);
+        StorageLive(_8);
+        _8 = copy _3;
+        _7 = AlignedDrop { val: const 55_u64, tag: move _8 };
+        StorageDead(_8);
+        _13 = const true;
+        _4 = PackedNoImplDrop { pad: const 3_u8, first: move _5, second: move _7 };
+        goto -> bb1;
+    }
+
+    bb1: {
+        StorageDead(_7);
+        goto -> bb2;
+    }
+
+    bb2: {
+        StorageDead(_5);
+        StorageLive(_9);
+        _9 = copy _1;
+        switchInt(move _9) -> [0: bb6, otherwise: bb3];
+    }
+
+    bb3: {
+        StorageLive(_10);
+        _13 = const false;
+        _10 = move (_4.1: AlignedDrop);
+        StorageLive(_11);
+        StorageLive(_12);
+        _12 = move _10;
+        _11 = std::mem::drop::<AlignedDrop>(move _12) -> [return: bb4, unwind: bb9];
+    }
+
+    bb4: {
+        StorageDead(_12);
+        StorageDead(_11);
+        _0 = const ();
+        goto -> bb5;
+    }
+
+    bb5: {
+        StorageDead(_10);
+        goto -> bb7;
+    }
+
+    bb6: {
+        _0 = const ();
+        goto -> bb7;
+    }
+
+    bb7: {
+        StorageDead(_9);
+        goto -> bb20;
+    }
+
+    bb8: {
+        _13 = const false;
+        StorageDead(_4);
+        return;
+    }
+
+    bb9 (cleanup): {
+        goto -> bb10;
+    }
+
+    bb10 (cleanup): {
+        goto -> bb11;
+    }
+
+    bb11 (cleanup): {
+        goto -> bb24;
+    }
+
+    bb12 (cleanup): {
+        goto -> bb13;
+    }
+
+    bb13 (cleanup): {
+        resume;
+    }
+
+    bb14: {
+        goto -> bb8;
+    }
+
+    bb15 (cleanup): {
+        drop((_4.2: AlignedDrop)) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb16 (cleanup): {
+        goto -> bb18;
+    }
+
+    bb17 (cleanup): {
+        drop((_4.1: AlignedDrop)) -> [return: bb15, unwind terminate(cleanup)];
+    }
+
+    bb18 (cleanup): {
+        switchInt(copy _13) -> [0: bb15, otherwise: bb17];
+    }
+
+    bb19: {
+        drop((_4.2: AlignedDrop)) -> [return: bb14, unwind: bb13];
+    }
+
+    bb20: {
+        goto -> bb22;
+    }
+
+    bb21: {
+        drop((_4.1: AlignedDrop)) -> [return: bb19, unwind: bb15];
+    }
+
+    bb22: {
+        switchInt(copy _13) -> [0: bb19, otherwise: bb21];
+    }
+
+    bb23 (cleanup): {
+        drop((_4.2: AlignedDrop)) -> [return: bb13, unwind terminate(cleanup)];
+    }
+
+    bb24 (cleanup): {
+        goto -> bb23;
+    }
+}
