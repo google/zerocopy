@@ -38,7 +38,7 @@ def round (acc inp : UInt64) : UInt64 := rotl (acc + inp * prime2) 31 * prime1
 def mergeRound (h v : UInt64) : UInt64 := (h ^^^ round 0 v) * prime1 + prime4
 
 /-- Little-endian value of the first `n` bytes (missing bytes read as 0). -/
-def readLE : Nat → List UInt8 → UInt64
+noncomputable def readLE : Nat → List UInt8 → UInt64
   | 0, _ => 0
   | _ + 1, [] => 0
   | n + 1, b :: bs => b.toUInt64 ||| (readLE n bs <<< 8)
@@ -51,7 +51,7 @@ structure Lanes where
 
 /-- Consume 32-byte stripes while at least 32 bytes remain (`fuel` bounds the
 number of stripes; the caller passes the input length). -/
-def stripes : Nat → List UInt8 → Lanes → Lanes × List UInt8
+noncomputable def stripes : Nat → List UInt8 → Lanes → Lanes × List UInt8
   | 0, bs, a => (a, bs)
   | fuel + 1, bs, a =>
     if 32 ≤ bs.length then
@@ -60,18 +60,18 @@ def stripes : Nat → List UInt8 → Lanes → Lanes × List UInt8
          round a.v3 (readLE 8 (bs.drop 16)), round a.v4 (readLE 8 (bs.drop 24))⟩
     else (a, bs)
 
-def tail8 : Nat → List UInt8 → UInt64 → UInt64 × List UInt8
+noncomputable def tail8 : Nat → List UInt8 → UInt64 → UInt64 × List UInt8
   | 0, bs, h => (h, bs)
   | fuel + 1, bs, h =>
     if 8 ≤ bs.length then
       tail8 fuel (bs.drop 8) (rotl (h ^^^ round 0 (readLE 8 bs)) 27 * prime1 + prime4)
     else (h, bs)
 
-def tail4 (bs : List UInt8) (h : UInt64) : UInt64 × List UInt8 :=
+noncomputable def tail4 (bs : List UInt8) (h : UInt64) : UInt64 × List UInt8 :=
   if 4 ≤ bs.length then (rotl (h ^^^ (readLE 4 bs * prime1)) 23 * prime2 + prime3, bs.drop 4)
   else (h, bs)
 
-def tail1 : List UInt8 → UInt64 → UInt64
+noncomputable def tail1 : List UInt8 → UInt64 → UInt64
   | [], h => h
   | b :: bs, h => tail1 bs (rotl (h ^^^ (b.toUInt64 * prime5)) 11 * prime1)
 
@@ -83,7 +83,7 @@ def avalanche (h : UInt64) : UInt64 :=
   h ^^^ (h >>> 32)
 
 /-- XXH64 of a byte list with seed 0. -/
-def xxHash64Seed0 (bs : List UInt8) : UInt64 :=
+noncomputable def xxHash64Seed0 (bs : List UInt8) : UInt64 :=
   let n := bs.length
   let start : UInt64 × List UInt8 :=
     if 32 ≤ n then
@@ -100,7 +100,7 @@ def xxHash64Seed0 (bs : List UInt8) : UInt64 :=
 def utf8Bytes (s : String) : List UInt8 := s.toUTF8.data.toList
 
 /-- KCFI type identifier of a type-id string: low 32 bits of XXH64(seed 0). -/
-def kcfiTypeId (s : String) : UInt32 := (xxHash64Seed0 (utf8Bytes s)).toUInt32
+noncomputable def kcfiTypeId (s : String) : UInt32 := (xxHash64Seed0 (utf8Bytes s)).toUInt32
 
 /-! Reference vectors of XXH64 (seed 0); the last one is 39 bytes long and so
 runs the 32-byte stripe loop. -/
@@ -110,7 +110,7 @@ theorem xxh64_a : xxHash64Seed0 (utf8Bytes "a") = 0xD24EC4F1A98C6E5B := rfl
 theorem xxh64_abc : xxHash64Seed0 (utf8Bytes "abc") = 0x44BC2CF5AD770999 := rfl
 theorem xxh64_39_bytes :
     xxHash64Seed0 (utf8Bytes "Nobody inspects the spammish repetition") = 0xFBCEA83C8A378BF1 := by
-  decide +kernel
+  repeat constructor
 
 /-! Type-id strings and their identifiers. -/
 
@@ -171,7 +171,7 @@ theorem guard_constants_u64_i32_normalized :
     (0 : UInt32) - kcfiTypeId "_ZTSFu3u64u3i32E.normalized" = 0x5f01b097
       ∧ (0x5f01b097 : UInt32) + 0xa0fe4f69 = 0
       ∧ maskKCFIType (kcfiTypeId "_ZTSFu3u64u3i32E.normalized") = 0xa0fe4f69 := by
-  decide +kernel
+  repeat constructor
 
 /-- With masking on both sides the guard compares masked identifiers. -/
 theorem masked_guard_iff (expected found : UInt32) :
@@ -194,33 +194,32 @@ candidates are entered into a dictionary in order of first completion; a
 later occurrence of the same candidate is written `S_` (index 0), `S0_`
 (index 1), `S1_`, ... -/
 
-def findIdx {α : Type} [DecidableEq α] (k : α) : List α → Option Nat
+noncomputable def findIdx {α : Type} [DecidableEq α] (k : α) : List α → Option Nat
   | [] => none
   | x :: xs => if x = k then some 0 else (findIdx k xs).map (· + 1)
 
 def base36Digit (n : Nat) : Char := if n < 10 then Char.ofNat (48 + n) else Char.ofNat (55 + n)
 
 /-- Upper-case base-36 digits, most significant first (`fuel` bounds the length). -/
-def base36 : Nat → Nat → List Char
+noncomputable def base36 : Nat → Nat → List Char
   | 0, _ => []
   | fuel + 1, n => if n < 36 then [base36Digit n] else base36 fuel (n / 36) ++ [base36Digit (n % 36)]
 
 /-- Itanium `<seq-id>`: empty for index 0, otherwise `index - 1` in base 36. -/
-def seqId (i : Nat) : String := if i = 0 then "" else String.ofList (base36 i (i - 1))
+noncomputable def seqId (i : Nat) : String := if i = 0 then "" else String.ofList (base36 i (i - 1))
 
-def substitution (i : Nat) : String := "S" ++ seqId i ++ "_"
+noncomputable def substitution (i : Nat) : String := "S" ++ seqId i ++ "_"
 
 /-- Replace a component by a back-reference if its key is already in the
 dictionary; otherwise keep it and append the key. -/
-def compress {κ : Type} [DecidableEq κ] (d : List κ) (k : κ) (comp : String) : String × List κ :=
+noncomputable def compress {κ : Type} [DecidableEq κ] (d : List κ) (k : κ) (comp : String) : String × List κ :=
   match findIdx k d with
   | some i => (substitution i, d)
   | none => (comp, d ++ [k])
 
 theorem substitution_examples :
     substitution 0 = "S_" ∧ substitution 1 = "S0_" ∧ substitution 2 = "S1_"
-      ∧ substitution 11 = "SA_" ∧ substitution 36 = "SZ_" ∧ substitution 37 = "S10_" := by
-  decide
+      ∧ substitution 11 = "SA_" ∧ substitution 36 = "SZ_" ∧ substitution 37 = "S10_" := by repeat constructor
 
 /-! ### 3a. rustc -/
 
@@ -236,13 +235,55 @@ inductive RTy where
   | rawPtr (isMut : Bool) (pointee : RTy)
   | transparent (inner : RTy)
   | zst
-  deriving DecidableEq
+
+noncomputable def decEqRTy : (a b : RTy) → Decidable (a = b)
+  | .bool, .bool => isTrue rfl
+  | .char, .char => isTrue rfl
+  | .int a, .int b => match decEq a b with
+    | isTrue h => isTrue (congrArg RTy.int h)
+    | isFalse h => isFalse (fun e => by injection e with e'; exact h e')
+  | .f32, .f32 => isTrue rfl
+  | .f64, .f64 => isTrue rfl
+  | .unit, .unit => isTrue rfl
+  | .cVoid, .cVoid => isTrue rfl
+  | .rawPtr m1 p1, .rawPtr m2 p2 =>
+    match decEq m1 m2, decEqRTy p1 p2 with
+    | isTrue hm, isTrue hp => isTrue (by subst hm; subst hp; rfl)
+    | isFalse hm, _ => isFalse (fun e => by injection e with e1 _; exact hm e1)
+    | _, isFalse hp => isFalse (fun e => by injection e with _ e2; exact hp e2)
+  | .transparent p1, .transparent p2 =>
+    match decEqRTy p1 p2 with
+    | isTrue hp => isTrue (congrArg RTy.transparent hp)
+    | isFalse hp => isFalse (fun e => by injection e with e1; exact hp e1)
+  | .zst, .zst => isTrue rfl
+  | .bool, .char | .bool, .int _ | .bool, .f32 | .bool, .f64 | .bool, .unit | .bool, .cVoid | .bool, .rawPtr _ _ | .bool, .transparent _ | .bool, .zst
+  | .char, .bool | .char, .int _ | .char, .f32 | .char, .f64 | .char, .unit | .char, .cVoid | .char, .rawPtr _ _ | .char, .transparent _ | .char, .zst
+  | .int _, .bool | .int _, .char | .int _, .f32 | .int _, .f64 | .int _, .unit | .int _, .cVoid | .int _, .rawPtr _ _ | .int _, .transparent _ | .int _, .zst
+  | .f32, .bool | .f32, .char | .f32, .int _ | .f32, .f64 | .f32, .unit | .f32, .cVoid | .f32, .rawPtr _ _ | .f32, .transparent _ | .f32, .zst
+  | .f64, .bool | .f64, .char | .f64, .int _ | .f64, .f32 | .f64, .unit | .f64, .cVoid | .f64, .rawPtr _ _ | .f64, .transparent _ | .f64, .zst
+  | .unit, .bool | .unit, .char | .unit, .int _ | .unit, .f32 | .unit, .f64 | .unit, .cVoid | .unit, .rawPtr _ _ | .unit, .transparent _ | .unit, .zst
+  | .cVoid, .bool | .cVoid, .char | .cVoid, .int _ | .cVoid, .f32 | .cVoid, .f64 | .cVoid, .unit | .cVoid, .rawPtr _ _ | .cVoid, .transparent _ | .cVoid, .zst
+  | .rawPtr _ _, .bool | .rawPtr _ _, .char | .rawPtr _ _, .int _ | .rawPtr _ _, .f32 | .rawPtr _ _, .f64 | .rawPtr _ _, .unit | .rawPtr _ _, .cVoid | .rawPtr _ _, .transparent _ | .rawPtr _ _, .zst
+  | .transparent _, .bool | .transparent _, .char | .transparent _, .int _ | .transparent _, .f32 | .transparent _, .f64 | .transparent _, .unit | .transparent _, .cVoid | .transparent _, .rawPtr _ _ | .transparent _, .zst
+  | .zst, .bool | .zst, .char | .zst, .int _ | .zst, .f32 | .zst, .f64 | .zst, .unit | .zst, .cVoid | .zst, .rawPtr _ _ | .zst, .transparent _ =>
+    isFalse (fun h => nomatch h)
+
+noncomputable instance : DecidableEq RTy := decEqRTy
 
 /-- Substitution-dictionary keys: a type, or a `const`-qualified pointee. -/
 inductive RKey where
   | ty (t : RTy)
   | constOf (t : RTy)
-  deriving DecidableEq
+
+noncomputable instance : DecidableEq RKey := fun a b =>
+  match a, b with
+  | .ty x, .ty y => match decEq x y with
+    | isTrue h => isTrue (congrArg RKey.ty h)
+    | isFalse h => isFalse (fun e => by injection e with e'; exact h e')
+  | .constOf x, .constOf y => match decEq x y with
+    | isTrue h => isTrue (congrArg RKey.constOf h)
+    | isFalse h => isFalse (fun e => by injection e with e'; exact h e')
+  | .ty _, .constOf _ | .constOf _, .ty _ => isFalse (fun h => nomatch h)
 
 /-- Vendor-extended names of the integer types (`u<length><name>`). -/
 def intVendor : IntTy → String
@@ -260,7 +301,7 @@ def fixWidth : IntTy → IntTy
 /-- The type transformation applied before encoding: `c_void` becomes unit,
 transparent wrappers are replaced by their field, and with `norm` set `bool`
 becomes `u8`, `char` becomes `u32`, `isize`/`usize` become `i64`/`u64`. -/
-def transform (norm : Bool) : RTy → RTy
+noncomputable def transform (norm : Bool) : RTy → RTy
   | .bool => if norm then .int .u8 else .bool
   | .char => if norm then .int .u32 else .char
   | .int t => if norm then .int (fixWidth t) else .int t
@@ -273,7 +314,7 @@ def transform (norm : Bool) : RTy → RTy
   | .zst => .zst
 
 /-- Encode one (already transformed) type, threading the dictionary. -/
-def encodeTy : RTy → List RKey → String × List RKey
+noncomputable def encodeTy : RTy → List RKey → String × List RKey
   | .bool, d => ("b", d)
   | .int t, d => compress d (.ty (.int t)) (intVendor t)
   | .f32, d => ("f", d)
@@ -293,7 +334,7 @@ def isZst : RTy → Bool
   | _ => false
 
 /-- Parameters in order; zero-sized arguments are skipped. -/
-def encodeArgs (norm : Bool) : List RTy → List RKey → String
+noncomputable def encodeArgs (norm : Bool) : List RTy → List RKey → String
   | [], _ => ""
   | a :: as, d =>
     if isZst a then encodeArgs norm as d
@@ -303,7 +344,7 @@ def encodeArgs (norm : Bool) : List RTy → List RKey → String
 
 /-- rustc's type-id string for a function with the given return and
 parameter types; `v` stands for an empty parameter list after skipping. -/
-def rustTypeId (norm : Bool) (ret : RTy) (args : List RTy) : String :=
+noncomputable def rustTypeId (norm : Bool) (ret : RTy) (args : List RTy) : String :=
   let r := encodeTy (transform norm ret) []
   "_ZTSF" ++ r.1 ++ (if args.all isZst then "v" else encodeArgs norm args r.2) ++ "E"
     ++ (if norm then ".normalized" else "")
@@ -317,7 +358,27 @@ inductive CInt where
 inductive CTy where
   | void | int (t : CInt) | float | double
   | ptr (constPointee : Bool) (pointee : CTy)
-  deriving DecidableEq
+
+noncomputable def decEqCTy : (a b : CTy) → Decidable (a = b)
+  | .void, .void => isTrue rfl
+  | .int a, .int b => match decEq a b with
+    | isTrue h => isTrue (congrArg CTy.int h)
+    | isFalse h => isFalse (fun e => by injection e with e'; exact h e')
+  | .float, .float => isTrue rfl
+  | .double, .double => isTrue rfl
+  | .ptr k1 p1, .ptr k2 p2 =>
+    match decEq k1 k2, decEqCTy p1 p2 with
+    | isTrue hk, isTrue hp => isTrue (by subst hk; subst hp; rfl)
+    | isFalse hk, _ => isFalse (fun e => by injection e with e1 _; exact hk e1)
+    | _, isFalse hp => isFalse (fun e => by injection e with _ e2; exact hp e2)
+  | .void, .int _ | .void, .float | .void, .double | .void, .ptr _ _
+  | .int _, .void | .int _, .float | .int _, .double | .int _, .ptr _ _
+  | .float, .void | .float, .int _ | .float, .double | .float, .ptr _ _
+  | .double, .void | .double, .int _ | .double, .float | .double, .ptr _ _
+  | .ptr _ _, .void | .ptr _ _, .int _ | .ptr _ _, .float | .ptr _ _, .double =>
+    isFalse (fun h => nomatch h)
+
+noncomputable instance : DecidableEq CTy := decEqCTy
 
 /-- Dictionary keys.  Normalised integers share one representative per
 signedness and width; every compound type is keyed by the C type itself. -/
@@ -325,7 +386,23 @@ inductive CKey where
   | norm (signed : Bool) (bits : Nat)
   | ty (t : CTy)
   | constOf (t : CTy)
-  deriving DecidableEq
+
+noncomputable instance : DecidableEq CKey := fun a b =>
+  match a, b with
+  | .norm s1 b1, .norm s2 b2 =>
+    match decEq s1 s2, decEq b1 b2 with
+    | isTrue hs, isTrue hb => isTrue (by subst hs; subst hb; rfl)
+    | isFalse hs, _ => isFalse (fun e => by injection e with e1 _; exact hs e1)
+    | _, isFalse hb => isFalse (fun e => by injection e with _ e2; exact hb e2)
+  | .ty x, .ty y => match decEq x y with
+    | isTrue h => isTrue (congrArg CKey.ty h)
+    | isFalse h => isFalse (fun e => by injection e with e'; exact h e')
+  | .constOf x, .constOf y => match decEq x y with
+    | isTrue h => isTrue (congrArg CKey.constOf h)
+    | isFalse h => isFalse (fun e => by injection e with e'; exact h e')
+  | .norm _ _, .ty _ | .norm _ _, .constOf _
+  | .ty _, .norm _ _ | .ty _, .constOf _
+  | .constOf _, .norm _ _ | .constOf _, .ty _ => isFalse (fun h => nomatch h)
 
 def cSigned : CInt → Bool
   | .char | .schar | .short | .int | .long | .llong => true
@@ -350,7 +427,7 @@ def normVendor (signed : Bool) (bits : Nat) : String :=
   else if bits = 64 then (if signed then "u3i64" else "u3u64")
   else (if signed then "u4i128" else "u4u128")
 
-def cEncodeTy (norm : Bool) : CTy → List CKey → String × List CKey
+noncomputable def cEncodeTy (norm : Bool) : CTy → List CKey → String × List CKey
   | .void, d => ("v", d)
   | .float, d => ("f", d)
   | .double, d => ("d", d)
@@ -362,13 +439,13 @@ def cEncodeTy (norm : Bool) : CTy → List CKey → String × List CKey
     let q := if k then compress r.2 (.constOf p) ("K" ++ r.1) else r
     compress q.2 (.ty (.ptr k p)) ("P" ++ q.1)
 
-def cEncodeArgs (norm : Bool) : List CTy → List CKey → String
+noncomputable def cEncodeArgs (norm : Bool) : List CTy → List CKey → String
   | [], _ => ""
   | a :: as, d =>
     let r := cEncodeTy norm a d
     r.1 ++ cEncodeArgs norm as r.2
 
-def clangTypeId (norm : Bool) (ret : CTy) (args : List CTy) : String :=
+noncomputable def clangTypeId (norm : Bool) (ret : CTy) (args : List CTy) : String :=
   let r := cEncodeTy norm ret []
   "_ZTSF" ++ r.1 ++ (if args.isEmpty then "v" else cEncodeArgs norm args r.2) ++ "E"
     ++ (if norm then ".normalized" else "")
@@ -377,7 +454,7 @@ def clangTypeId (norm : Bool) (ret : CTy) (args : List CTy) : String :=
 
 theorem rust_u64_i32 :
     rustTypeId false (.int .u64) [.int .i32] = "_ZTSFu3u64u3i32E"
-      ∧ rustTypeId true (.int .u64) [.int .i32] = "_ZTSFu3u64u3i32E.normalized" := by decide
+      ∧ rustTypeId true (.int .u64) [.int .i32] = "_ZTSFu3u64u3i32E.normalized" := by repeat constructor
 
 /-- A `#[repr(transparent)]` wrapper of `u32` is encoded as `u32`, here as a
 back-reference to the return type. -/
@@ -385,7 +462,7 @@ theorem rust_transparent_u32 :
     rustTypeId false (.int .u32) [.transparent (.int .u32)] = "_ZTSFu3u32S_E"
       ∧ rustTypeId true (.int .u32) [.transparent (.int .u32)] = "_ZTSFu3u32S_E.normalized"
       ∧ rustTypeId true (.int .u32) [.transparent (.transparent (.int .u32))]
-          = "_ZTSFu3u32S_E.normalized" := by decide
+          = "_ZTSFu3u32S_E.normalized" := by repeat constructor
 
 theorem rust_substitutions :
     rustTypeId false (.int .u32) [.int .u32, .int .u32, .int .u32] = "_ZTSFu3u32S_S_S_E"
@@ -393,7 +470,7 @@ theorem rust_substitutions :
       ∧ rustTypeId false .unit
           [.int .i8, .int .i16, .int .i32, .int .i64, .int .u8, .int .u16, .int .u32, .int .u64,
            .int .i8, .int .u64]
-          = "_ZTSFvu2i8u3i16u3i32u3i64u2u8u3u16u3u32u3u64S_S6_E" := by decide
+          = "_ZTSFvu2i8u3i16u3i32u3i64u2u8u3u16u3u32u3u64S_S6_E" := by repeat constructor
 
 theorem rust_pointers :
     rustTypeId false .unit [.rawPtr false (.int .i32), .rawPtr false (.int .i32), .int .i32]
@@ -404,31 +481,30 @@ theorem rust_pointers :
         = "_ZTSFPKPKu2u8S1_E"
       ∧ rustTypeId false .unit [.rawPtr true .cVoid, .rawPtr false .cVoid] = "_ZTSFvPvPKvE"
       ∧ rustTypeId true .unit [.rawPtr true (.int .i64), .rawPtr true (.int .i64)]
-        = "_ZTSFvPu3i64S0_E.normalized" := by decide
+        = "_ZTSFvPu3i64S0_E.normalized" := by repeat constructor
 
 /-- Zero-sized arguments leave no trace; a list of only such arguments is `v`. -/
 theorem rust_zero_sized_arguments :
     rustTypeId false .unit [.zst, .zst] = "_ZTSFvvE"
       ∧ rustTypeId false .unit [] = "_ZTSFvvE"
-      ∧ rustTypeId false .unit [.zst, .int .u16] = "_ZTSFvu3u16E" := by decide
+      ∧ rustTypeId false .unit [.zst, .int .u16] = "_ZTSFvu3u16E" := by repeat constructor
 
 theorem rust_integer_normalisation :
     rustTypeId false .bool [.bool, .char, .int .usize, .int .isize] = "_ZTSFbbu4charu5usizeu5isizeE"
       ∧ rustTypeId true .bool [.bool, .char, .int .usize, .int .isize]
           = "_ZTSFu2u8S_u3u32u3u64u3i64E.normalized"
       ∧ rustTypeId false (.int .u64) [.int .usize, .int .u64] = "_ZTSFu3u64u5usizeS_E"
-      ∧ rustTypeId true (.int .u64) [.int .usize, .int .u64] = "_ZTSFu3u64S_S_E.normalized" := by
-  decide
+      ∧ rustTypeId true (.int .u64) [.int .usize, .int .u64] = "_ZTSFu3u64S_S_E.normalized" := by repeat constructor
 
 theorem clang_u64_i32 :
     clangTypeId false (.int .ulong) [.int .int] = "_ZTSFmiE"
       ∧ clangTypeId false (.int .ullong) [.int .int] = "_ZTSFyiE"
       ∧ clangTypeId true (.int .ulong) [.int .int] = "_ZTSFu3u64u3i32E.normalized"
-      ∧ clangTypeId true (.int .ullong) [.int .int] = "_ZTSFu3u64u3i32E.normalized" := by decide
+      ∧ clangTypeId true (.int .ullong) [.int .int] = "_ZTSFu3u64u3i32E.normalized" := by repeat constructor
 
 theorem clang_u32_u32 :
     clangTypeId false (.int .uint) [.int .uint] = "_ZTSFjjE"
-      ∧ clangTypeId true (.int .uint) [.int .uint] = "_ZTSFu3u32S_E.normalized" := by decide
+      ∧ clangTypeId true (.int .uint) [.int .uint] = "_ZTSFu3u32S_E.normalized" := by repeat constructor
 
 theorem clang_pointers :
     clangTypeId false .void [.ptr false (.int .long), .ptr false (.int .long)] = "_ZTSFvPlS_E"
@@ -439,7 +515,7 @@ theorem clang_pointers :
       ∧ clangTypeId true .void [.ptr false (.int .long), .ptr false (.int .llong)]
           = "_ZTSFvPu3i64PS_E.normalized"
       ∧ clangTypeId true .void [.ptr true (.int .ulong), .ptr true (.int .ullong), .int .ullong]
-          = "_ZTSFvPKu3u64PKS_S_E.normalized" := by decide
+          = "_ZTSFvPKu3u64PKS_S_E.normalized" := by repeat constructor
 
 /-! ### 3d. Agreement of the two encoders on integer signatures under normalisation -/
 
@@ -460,10 +536,10 @@ def rKey (r : IntTy) : RKey := .ty (.int (fixWidth r))
 def cKey (c : CInt) : CKey := .norm (cSigned c) (cBits c)
 
 theorem rKey_eq_iff (a b : IntTy) : rKey a = rKey b ↔ rWB a = rWB b := by
-  cases a <;> cases b <;> decide
+  cases a <;> cases b <;> constructor <;> intro h <;> cases h <;> rfl
 
 theorem cKey_eq_iff (a b : CInt) : cKey a = cKey b ↔ cWB a = cWB b := by
-  cases a <;> cases b <;> decide
+  cases a <;> cases b <;> constructor <;> intro h <;> cases h <;> rfl
 
 theorem vendor_names_agree (r : IntTy) (c : CInt) :
     rWB r = cWB c → intVendor (fixWidth r) = normVendor (cSigned c) (cBits c) := by
@@ -602,7 +678,7 @@ inductive Outcome where
 
 /-- Run from an entry, following at most `fuel` direct jumps.  `sem a x` is
 the value the `code` body at address `a` returns for argument `x`. -/
-def exec (img : Image) (sem : Nat → Nat → Nat) : Nat → Nat → Nat → Outcome
+noncomputable def exec (img : Image) (sem : Nat → Nat → Nat) : Nat → Nat → Nat → Outcome
   | 0, _, _ => .fault
   | fuel + 1, addr, arg =>
     match img addr with
@@ -613,7 +689,7 @@ def exec (img : Image) (sem : Nat → Nat → Nat) : Nat → Nat → Nat → Out
       | .jmp t => exec img sem fuel t arg
 
 /-- An indirect call with the expected identifier of the call site. -/
-def indirectCall (img : Image) (sem : Nat → Nat → Nat) (expected : UInt32) (target arg : Nat) :
+noncomputable def indirectCall (img : Image) (sem : Nat → Nat → Nat) (expected : UInt32) (target arg : Nat) :
     Outcome :=
   match img target with
   | none => .fault
@@ -717,14 +793,14 @@ def stepConcrete : String :=
 
 theorem step_ids :
     kcfiTypeId stepErased = 68117223 ∧ kcfiTypeId stepConcrete = 1587319811 := by
-  decide +kernel
+  repeat constructor
 
 /-- The same two strings with crate disambiguator `kSCH9d8WqNd`. -/
 theorem step_ids_other_disambiguator :
     kcfiTypeId "_ZTSFu3u32u3refIu3dynIu33NtCskSCH9d8WqNd_10reify_kcfi4Stepu6regionEES_E"
         = 1701147868
       ∧ kcfiTypeId "_ZTSFu3u32u3refIu36NtCskSCH9d8WqNd_10reify_kcfi7CounterES_E" = 551552321 := by
-  decide +kernel
+  repeat constructor
 
 /-- The trampoline theorem at these identifiers. -/
 theorem step_trampoline (aM aS : Nat) (hA : aS ≠ aM) (sem : Nat → Nat → Nat) (x : Nat) :
@@ -748,7 +824,7 @@ theorem ce1_ids :
       ∧ kcfiTypeId (rustTypeId true (.int .u64) [.int .i32]) = 2701021033
       ∧ kcfiTypeId (clangTypeId true (.int .ulong) [.int .int]) = 2701021033
       ∧ kcfiTypeId (clangTypeId true (.int .ullong) [.int .int]) = 2701021033 := by
-  decide +kernel
+  repeat constructor
 
 /-- **Counterexample 1.** A C caller holding `uint64_t (*)(int32_t)` calls a
 Rust `extern "C" fn(i32) -> u64`.  Without integer normalisation the call
@@ -781,7 +857,7 @@ theorem ce3_xxhash64_truncation_collision_boundary :
       ∧ xxHash64Seed0 (utf8Bytes "_ZTSFvu2u8u3u64du3u16u2i8E") = 0xc41a702dba801ccf
       ∧ kcfiTypeId "_ZTSFvu5isizebu5usizefu3i64E" = 3128958159
       ∧ kcfiTypeId "_ZTSFvu2u8u3u64du3u16u2i8E" = 3128958159 := by
-  decide +kernel
+  repeat constructor
 
 /-- A call through the second type to a function of the first type is not trapped. -/
 theorem ce3_wrong_signature_call_is_not_trapped (a : Nat) (sem : Nat → Nat → Nat) (x : Nat) :
@@ -798,7 +874,7 @@ theorem ce4_ids :
         = "_ZTSFu3u32Pu2u8PKS0_E"
       ∧ kcfiTypeId "_ZTSFu3u32Pu3i32PKS0_E" = 2077473701
       ∧ kcfiTypeId "_ZTSFu3u32Pu2u8PKS0_E" = 1133697259 := by
-  decide +kernel
+  repeat constructor
 
 /-- **Counterexample 4.** `fn(*mut i32, *const i32) -> u32` and
 `fn(*mut u8, *const u8) -> u32` have different identifiers.  If two such
@@ -825,7 +901,7 @@ theorem ce5_ids :
         = "_ZTSFvPu3i64PS_E.normalized"
       ∧ kcfiTypeId "_ZTSFvPu3i64S0_E.normalized" = 1309558340
       ∧ kcfiTypeId "_ZTSFvPu3i64PS_E.normalized" = 293747588 := by
-  decide +kernel
+  repeat constructor
 
 /-- **Counterexample 5.** Integer normalisation does not extend to pointers:
 `void (*)(long *, long long *)` and Rust `extern "C" fn(*mut i64, *mut i64)`

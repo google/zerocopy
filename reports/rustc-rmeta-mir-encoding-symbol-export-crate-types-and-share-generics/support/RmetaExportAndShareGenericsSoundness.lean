@@ -99,7 +99,7 @@ def crateExportThreshold : CrateType → SymbolExportLevel
 
 /-- Mirrors `crates_export_threshold` in `rustc_codegen_ssa/src/back/symbol_export.rs`:
     returns `.rust` iff any requested crate type has threshold `.rust`. -/
-def cratesExportThreshold : List CrateType → SymbolExportLevel
+noncomputable def cratesExportThreshold : List CrateType → SymbolExportLevel
   | [] => .c
   | ct :: rest => exportJoin (crateExportThreshold ct) (cratesExportThreshold rest)
 
@@ -232,7 +232,7 @@ structure ReachableSymbol where
 /-- CGU-retention tier (CGU codegen retention, `is_reachable_non_generic_provider_local`):
     a reachable non-generic symbol is retained (not internalized) in CGU `.rcgu.o`
     files iff its level is below the session join `cratesExportThreshold sessionTypes`. -/
-def cguRetained (sessionTypes : List CrateType) (s : ReachableSymbol) : Bool :=
+noncomputable def cguRetained (sessionTypes : List CrateType) (s : ReachableSymbol) : Bool :=
   exportLe (symbolExportLevel s.attrs) (cratesExportThreshold sessionTypes)
 
 /-- per-artifact linker-export tier (Per-artifact linker dynamic export list,
