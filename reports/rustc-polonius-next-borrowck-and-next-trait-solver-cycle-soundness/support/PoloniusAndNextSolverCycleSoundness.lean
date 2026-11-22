@@ -29,7 +29,7 @@ inductive ConstraintDirection where
   | forward        -- covariant: `O@P1 -> O@P2`
   | backward       -- contravariant: `O@P2 -> O@P1`
   | bidirectional  -- invariant: `O@P1 <-> O@P2` (enables "flowing back in time")
-  deriving DecidableEq, Repr
+  deriving DecidableEq
 
 def ConstraintDirection.allowsForward : ConstraintDirection -> Bool
   | .forward => true
@@ -45,7 +45,7 @@ def ConstraintDirection.allowsBackward : ConstraintDirection -> Bool
 structure LocalizedNode where
   region : Region
   point  : Point
-  deriving DecidableEq, Repr
+  deriving DecidableEq
 
 /-- Abstract MIR borrow-check constraint system combining CFG edges, localized
     and all-point outlives edges, region variances, region liveness, loan seeds,
@@ -446,20 +446,20 @@ inductive SolveResult where
   | yes
   | ambiguous
   | noSolution
-  deriving DecidableEq, Repr
+  deriving DecidableEq
 
 /-- Cycle edge polarity mirroring `rustc_type_ir::search_graph::PathKind`. -/
 inductive PathKind where
   | coinductive
   | inductive
   | unknown
-  deriving DecidableEq, Repr
+  deriving DecidableEq
 
 /-- Typing mode split mirroring `TypingMode::Coherence` vs. non-coherence modes (`Typeck`/`Codegen`). -/
 inductive TypingMode where
   | typeck
   | coherence
-  deriving DecidableEq, Repr
+  deriving DecidableEq
 
 /-- Kleene-like 3-valued conjunction for clause premises (`noSolution` absorbs; `yes` is unit). -/
 def SolveResult.and3 : SolveResult -> SolveResult -> SolveResult
@@ -517,13 +517,13 @@ def unsoundCoherenceNoSolPolicy : CyclePolicy
 structure TraitClause where
   head     : GoalId
   premises : List (PathKind × GoalId)
-  deriving DecidableEq, Repr
+  deriving DecidableEq
 
 abbrev TraitProgram := List TraitClause
 
 /-- Look up whether `g` is already active on the search stack and compute the
     accumulated cycle polarity from the cycle head down to the back-edge. -/
-def stackCycleKind : List (GoalId × PathKind) -> GoalId -> PathKind -> Option PathKind
+noncomputable def stackCycleKind : List (GoalId × PathKind) -> GoalId -> PathKind -> Option PathKind
   | [], _, _ => none
   | (h, stepFromParent) :: rest, target, acc =>
       if h == target then
@@ -533,7 +533,7 @@ def stackCycleKind : List (GoalId × PathKind) -> GoalId -> PathKind -> Option P
 
 /-- Evaluate all premises of a single clause structurally, delegating acyclic
     subgoals to `stepFn` and cycle back-edges to `policy mode cycleKind`. -/
-def evalPremisesWith (stepFn : List (GoalId × PathKind) -> GoalId -> SolveResult)
+noncomputable def evalPremisesWith (stepFn : List (GoalId × PathKind) -> GoalId -> SolveResult)
     (policy : CyclePolicy) (mode : TypingMode)
     (stack : List (GoalId × PathKind)) (parent : GoalId) :
     List (PathKind × GoalId) -> SolveResult
@@ -546,7 +546,7 @@ def evalPremisesWith (stepFn : List (GoalId × PathKind) -> GoalId -> SolveResul
       SolveResult.and3 rSub (evalPremisesWith stepFn policy mode stack parent rest)
 
 /-- Evaluate all matching clauses of `prog` for goal `g` via 3-valued disjunction. -/
-def evalClausesWith (stepFn : List (GoalId × PathKind) -> GoalId -> SolveResult)
+noncomputable def evalClausesWith (stepFn : List (GoalId × PathKind) -> GoalId -> SolveResult)
     (policy : CyclePolicy) (mode : TypingMode)
     (stack : List (GoalId × PathKind)) (g : GoalId) :
     List TraitClause -> SolveResult
@@ -560,7 +560,7 @@ def evalClausesWith (stepFn : List (GoalId × PathKind) -> GoalId -> SolveResult
 /-- Pure structurally recursive fuel-bounded evaluator for `SearchGraph` goal solving
     (total by structural recursion on `fuel`). Returns `ambiguous` (overflow) if fuel
     runs out. -/
-def evalGoal (policy : CyclePolicy) (mode : TypingMode) (prog : TraitProgram) :
+noncomputable def evalGoal (policy : CyclePolicy) (mode : TypingMode) (prog : TraitProgram) :
     Nat -> List (GoalId × PathKind) -> GoalId -> SolveResult
   | 0, _, _ => .ambiguous
   | fuel + 1, stack, g =>
@@ -569,7 +569,7 @@ def evalGoal (policy : CyclePolicy) (mode : TypingMode) (prog : TraitProgram) :
 /-- In Rust coherence, two potentially overlapping impls (whose intersection reduces
     to obligation `overlapGoal`) are permitted to coexist ONLY if the trait solver
     proves `overlapGoal` has `noSolution` under `TypingMode.coherence`. -/
-def coherencePermitsBothImpls (policy : CyclePolicy) (prog : TraitProgram)
+noncomputable def coherencePermitsBothImpls (policy : CyclePolicy) (prog : TraitProgram)
     (fuel : Nat) (overlapGoal : GoalId) : Bool :=
   evalGoal policy .coherence prog fuel [] overlapGoal == .noSolution
 
@@ -775,13 +775,13 @@ inductive Reg where
   | rStatic
   | rParam (id : Nat)
   | rBound (id : Nat)
-  deriving DecidableEq, Repr
+  deriving DecidableEq
 
 /-- Outlives constraint `lhs : rhs` (semantically `lhs` lives at least as long as `rhs`). -/
 structure Outlives where
   lhs : Reg
   rhs : Reg
-  deriving DecidableEq, Repr
+  deriving DecidableEq
 
 /-- Valuation mapping each region to its lifetime extent bounded above by `staticEnd`. -/
 structure LifetimeEnv where
@@ -837,7 +837,6 @@ theorem derives_sound (ctx : List Outlives) (env : LifetimeEnv)
     parameter types (e.g., `&'outer &'inner ()` syntactically implies `'inner : 'outer`). -/
 structure BinderImplied where
   impliedOutlives : List Outlives
-  deriving Repr
 
 /-- Sound WF-guarded binder assumption rule: an implied outlives clause from a
     binder may enter the assumption set ONLY if it is already well-formed
