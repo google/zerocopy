@@ -30,7 +30,7 @@ namespace ReproducibleBuildDeterminism
 /-! ## Section 1: Constructive Equality & Lexicographic Order on Byte Strings (`List Nat`) -/
 
 /-- Constructive boolean equality on `Nat`. -/
-def natEqBool : Nat → Nat → Bool
+noncomputable def natEqBool : Nat → Nat → Bool
   | 0, 0 => true
   | 0, _ + 1 => false
   | _ + 1, 0 => false
@@ -41,7 +41,7 @@ theorem natEqBool_refl : ∀ n : Nat, natEqBool n n = true
   | n + 1 => natEqBool_refl n
 
 /-- Constructive boolean equality on byte sequences (`List Nat`). -/
-def bytesEqBool : List Nat → List Nat → Bool
+noncomputable def bytesEqBool : List Nat → List Nat → Bool
   | [], [] => true
   | [], _ :: _ => false
   | _ :: _, [] => false
@@ -55,7 +55,7 @@ theorem bytesEqBool_refl : ∀ xs : List Nat, bytesEqBool xs xs = true
     exact bytesEqBool_refl xs
 
 /-- Constructive strict `<` on `Nat` as a `Bool`. -/
-def natLtBool : Nat → Nat → Bool
+noncomputable def natLtBool : Nat → Nat → Bool
   | 0, 0 => false
   | 0, _ + 1 => true
   | _ + 1, 0 => false
@@ -92,7 +92,7 @@ theorem natLtBool_trichotomy : ∀ m n : Nat,
     | Or.inr (Or.inr h) => Or.inr (Or.inr h)
 
 /-- Lexicographic strict order on byte sequences (`List Nat`), modeling `str::cmp`. -/
-def lexLt : List Nat → List Nat → Bool
+noncomputable def lexLt : List Nat → List Nat → Bool
   | [], [] => false
   | [], _ :: _ => true
   | _ :: _, [] => false
@@ -226,7 +226,7 @@ structure FilePathMapping where
   deriving DecidableEq, Repr
 
 /-- Strip prefix `pfx` from `path` if `pfx` is a component-wise prefix. -/
-def stripPrefix : PathSegs → PathSegs → Option PathSegs
+noncomputable def stripPrefix : PathSegs → PathSegs → Option PathSegs
   | [], rest => some rest
   | p :: ps, x :: xs => if bytesEqBool p x then stripPrefix ps xs else none
   | _ :: _, [] => none
@@ -239,7 +239,7 @@ theorem stripPrefix_append : ∀ pfx rel : PathSegs,
     exact stripPrefix_append ps rel
 
 /-- Try rules in order (caller passes `rules.reverse` to match `mapping.iter().rev()`). -/
-def applyRulesRev : List RemapRule → PathSegs → PathSegs × Bool
+noncomputable def applyRulesRev : List RemapRule → PathSegs → PathSegs × Bool
   | [], path => (path, false)
   | r :: rs, path =>
     match stripPrefix r.fromPrefix path with
@@ -248,7 +248,7 @@ def applyRulesRev : List RemapRule → PathSegs → PathSegs × Bool
 
 /-- Matches `FilePathMapping::map_prefix` (`source_map.rs:1141-1179`), applying later
     CLI rules first (`rules.reverse`). -/
-def mapPrefix (m : FilePathMapping) (path : PathSegs) : PathSegs × Bool :=
+noncomputable def mapPrefix (m : FilePathMapping) (path : PathSegs) : PathSegs × Bool :=
   applyRulesRev m.rules.reverse path
 
 /-- Models `InnerRealFileName` (`rustc_span/src/lib.rs:317-324`). -/
@@ -266,7 +266,7 @@ structure RealFileName where
   deriving DecidableEq, Repr
 
 /-- Models `FilePathMapping::to_real_filename` for an absolute source path under `cwd`. -/
-def toRealFileName (m : FilePathMapping) (cwd : PathSegs) (relFile : PathSegs) : RealFileName :=
+noncomputable def toRealFileName (m : FilePathMapping) (cwd : PathSegs) (relFile : PathSegs) : RealFileName :=
   let absPath := cwd ++ relFile
   let (remappedCwd, cwdRemapped) := mapPrefix m cwd
   let (remappedAbs, pathRemapped) := mapPrefix m absPath
@@ -281,14 +281,14 @@ def toRealFileName (m : FilePathMapping) (cwd : PathSegs) (relFile : PathSegs) :
 
 /-- Models `RealFileName::update_for_crate_metadata` (`rustc_span/src/lib.rs:476-484`).
     Clears `localPart` ONLY when fully remapped (`.all`) or not remapped at all (`.none`). -/
-def updateForCrateMetadata (rf : RealFileName) : RealFileName :=
+noncomputable def updateForCrateMetadata (rf : RealFileName) : RealFileName :=
   match rf.scopes with
   | RemapScope.all => { rf with localPart := none }
   | RemapScope.none => { rf with localPart := none }
   | RemapScope.objectOnly => rf
 
 /-- Path emitted into `#[track_caller]` / `file!()` (`RemapPathScopeComponents::MACRO`). -/
-def macroScopePath (rf : RealFileName) : PathSegs :=
+noncomputable def macroScopePath (rf : RealFileName) : PathSegs :=
   match rf.scopes with
   | RemapScope.none =>
     match rf.localPart with
@@ -298,7 +298,7 @@ def macroScopePath (rf : RealFileName) : PathSegs :=
   | RemapScope.all => rf.maybeRemapped.name
 
 /-- `(DW_AT_comp_dir, DW_AT_name)` emitted into DWARF (`RemapPathScopeComponents::DEBUGINFO`). -/
-def debuginfoPaths (rf : RealFileName) : PathSegs × PathSegs :=
+noncomputable def debuginfoPaths (rf : RealFileName) : PathSegs × PathSegs :=
   match rf.scopes with
   | RemapScope.none =>
     match rf.localPart with
@@ -410,7 +410,7 @@ structure CguPlanItem where
 /-- Models `compiler/rustc_mir_transform/src/inline.rs:45-59` (`14210df0e` / `342d74463`):
     at default MIR opt level 2 under `-O2`/`-O3`, MIR `Inline` is enabled iff
     `incremental == None` (unless overridden by `forceInline`). -/
-def mirInlineEnabled (opt : OptLevel) (incr : IncrementalSession) (forceInline : Option Bool := none) : Bool :=
+noncomputable def mirInlineEnabled (opt : OptLevel) (incr : IncrementalSession) (forceInline : Option Bool := none) : Bool :=
   match forceInline with
   | some b => b
   | none =>
@@ -452,7 +452,7 @@ structure ArHeader where
   perms : Nat
   deriving DecidableEq, Repr
 
-def canonicalArHeader (name : List Nat) : ArHeader :=
+noncomputable def canonicalArHeader (name : List Nat) : ArHeader :=
   { memberName := name, mtime := 0, uid := 0, gid := 0, perms := 0o644 }
 
 /-- Models `lib.rmeta-link` (`compiler/rustc_codegen_ssa/src/back/rmeta_link.rs:17-19`). -/
@@ -493,7 +493,7 @@ structure BuildOutput where
 /-- Insertion sort on `CompiledCgu` by lexicographic `cguName`, modeling
     `compiled_modules.modules.sort_by(|a, b| a.name.cmp(&b.name))`
     (`compiler/rustc_codegen_ssa/src/back/write.rs:2181` / `2207`). -/
-def insertCgu (x : CompiledCgu) : List CompiledCgu → List CompiledCgu
+noncomputable def insertCgu (x : CompiledCgu) : List CompiledCgu → List CompiledCgu
   | [] => [x]
   | y :: ys =>
     if lexLt x.cguName y.cguName then
@@ -501,7 +501,7 @@ def insertCgu (x : CompiledCgu) : List CompiledCgu → List CompiledCgu
     else
       y :: insertCgu x ys
 
-def sortCgus : List CompiledCgu → List CompiledCgu
+noncomputable def sortCgus : List CompiledCgu → List CompiledCgu
   | [] => []
   | x :: xs => insertCgu x (sortCgus xs)
 
@@ -660,13 +660,13 @@ theorem sortCgus_eq_of_perm {xs ys : List CompiledCgu}
 /-- Compute the `.rcgu.o` archive member name:
     - clean: `<baseName>.rcgu.o` (modeled as `baseName ++ [46, 111]`)
     - incremental: `<baseName>.<nonce>.rcgu.o` (modeled as `baseName ++ [46] ++ nonce ++ [46, 111]`). -/
-def makeMemberName (baseName : List Nat) (incr : IncrementalSession) : List Nat :=
+noncomputable def makeMemberName (baseName : List Nat) (incr : IncrementalSession) : List Nat :=
   match incr with
   | IncrementalSession.clean => baseName ++ [46, 111]
   | IncrementalSession.incremental nonce => baseName ++ [46] ++ nonce ++ [46, 111]
 
 /-- Compile a single CGU plan item deterministically given remapping, opt/debug, and incremental mode. -/
-def compileOneCgu
+noncomputable def compileOneCgu
     (cwd : PathSegs)
     (mapping : FilePathMapping)
     (opt : OptLevel)
@@ -688,7 +688,7 @@ def compileOneCgu
 
 /-- Assemble canonical GNU `ar` `.rlib` and linked ELF from an arbitrary-order list of
     worker-completed `CompiledCgu`s by sorting first (`OngoingCodegen::join`). -/
-def assembleArtifacts (rmeta : RmetaArtifact) (workerOutputs : List CompiledCgu) : BuildOutput :=
+noncomputable def assembleArtifacts (rmeta : RmetaArtifact) (workerOutputs : List CompiledCgu) : BuildOutput :=
   let sorted := sortCgus workerOutputs
   let objNames := sorted.map (fun c => c.memberFileName)
   let rmetaLink : RmetaLinkArtifact := { rustObjectFiles := objNames }
@@ -705,7 +705,7 @@ def assembleArtifacts (rmeta : RmetaArtifact) (workerOutputs : List CompiledCgu)
 
 /-- End-to-end `rustc` build pipeline parameterized by `(sourceTree, cwd, remapRules, cguPlan,
     optLevel, debugInfo, incrementalSession)`. -/
-def compilePipeline
+noncomputable def compilePipeline
     (src : SourceTree)
     (cwd : PathSegs)
     (mapping : FilePathMapping)
@@ -792,7 +792,7 @@ theorem sorted_cgu_archive_invariant_under_thread_schedule
 /-- Payload-normalized projection of an `ArArchive`: erases session-varying `ar` member
     basenames (`gnuStrtab`, `rmetaLink`, `ArHeader.memberName`) while retaining `rmeta`
     and every `.rcgu.o` object payload in canonical CGU order. -/
-def normalizedArchivePayload (a : ArArchive) : RmetaArtifact × List ObjectPayload :=
+noncomputable def normalizedArchivePayload (a : ArArchive) : RmetaArtifact × List ObjectPayload :=
   (a.rmetaBody, a.objEntries.map Prod.snd)
 
 theorem insertCgu_cguName_eq (f : CompiledCgu → CompiledCgu)
@@ -1069,26 +1069,26 @@ theorem normalized_payload_match_implies_elf_eq
 
 /-! ## Section 8: Constructive Counterexamples -/
 
-private def segWork     : List Nat := [119, 111, 114, 107] -- "work"
-private def segAlpha    : List Nat := [100, 105, 114, 95, 97, 108, 112, 104, 97] -- "dir_alpha"
-private def segBeta     : List Nat := [100, 105, 114, 95, 98, 101, 116, 97] -- "dir_beta"
-private def segRepro    : List Nat := [114, 101, 112, 114, 111] -- "repro"
-private def segLibRs    : List Nat := [108, 105, 98, 46, 114, 115] -- "lib.rs"
+private noncomputable def segWork     : List Nat := [119, 111, 114, 107] -- "work"
+private noncomputable def segAlpha    : List Nat := [100, 105, 114, 95, 97, 108, 112, 104, 97] -- "dir_alpha"
+private noncomputable def segBeta     : List Nat := [100, 105, 114, 95, 98, 101, 116, 97] -- "dir_beta"
+private noncomputable def segRepro    : List Nat := [114, 101, 112, 114, 111] -- "repro"
+private noncomputable def segLibRs    : List Nat := [108, 105, 98, 46, 114, 115] -- "lib.rs"
 
-private def sampleMod : SourceModule :=
+private noncomputable def sampleMod : SourceModule :=
   { relFile := [segLibRs]
     modId := 0
     usesTrackCaller := true
     hasInlineableHelper := true }
 
-private def sampleSrc : SourceTree :=
+private noncomputable def sampleSrc : SourceTree :=
   { crateName := segRepro
     modules := [sampleMod] }
 
-private def samplePlan : List CguPlanItem :=
+private noncomputable def samplePlan : List CguPlanItem :=
   [{ baseName := [99, 103, 117, 46, 48], mod := sampleMod }]
 
-private def emptyMapping : FilePathMapping :=
+private noncomputable def emptyMapping : FilePathMapping :=
   { rules := [], scope := RemapScope.none }
 
 /-- **Counterexample 1 (`ce1_unremapped_track_caller_breaks_cross_dir_repro`):**
