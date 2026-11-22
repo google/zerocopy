@@ -10,8 +10,11 @@
 edition = "2021"
 name = "ui-runner"
 version = "0.1.0"
+license = "BSD-2-Clause OR Apache-2.0 OR MIT"
 publish = false
 
 [dependencies]
 ui_test = "0.30.4"
 cargo_metadata = "0.23.1"
+
+[workspace]

@@ -7,11 +7,13 @@
 # those terms.
 
 [package]
-edition.workspace = true
+edition = "2021"
 name = "generate-readme"
-version.workspace = true
-license.workspace = true
-publish.workspace = true
+version = "0.0.0"
+license = "BSD-2-Clause OR Apache-2.0 OR MIT"
+publish = false
 
 [dependencies]
-regex.workspace = true
+regex = "1"
+
+[workspace]

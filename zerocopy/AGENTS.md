@@ -21,8 +21,8 @@ These instructions apply to work in the `zerocopy/` subtree.
   the top-level documentation in `src/lib.rs`. Regenerate it with:
 
   ```bash
-  (cd .. && cargo -q run --manifest-path tools/Cargo.toml \
-    -p generate-readme) > README.md
+  (cd .. && cargo -q run --manifest-path tools/generate-readme/Cargo.toml) \
+    > README.md
   ```
 
 <!-- TODO-check-disable -->
