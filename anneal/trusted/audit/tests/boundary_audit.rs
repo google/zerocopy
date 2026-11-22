@@ -4989,6 +4989,7 @@ fn rejects_trusted_correspondence_import_of_theory_in_pass2_preflight() {
         "theory/Anneal/MirWp.lean",
         "theory/Anneal/LoopInv.lean",
         "theory/Anneal/SpineForce.lean",
+        "theory/Anneal/PTree.lean",
     ] {
         let dst = fix.root.join(rel);
         fs::create_dir_all(dst.parent().unwrap()).unwrap();
