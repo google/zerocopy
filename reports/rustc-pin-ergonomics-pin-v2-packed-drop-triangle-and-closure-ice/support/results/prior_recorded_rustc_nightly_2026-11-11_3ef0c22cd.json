@@ -1,0 +1,61 @@
+{
+  "_provenance": {
+    "limits": "The probe sources of that run were not preserved; only the outputs below are, verbatim. Source excerpts quoted inside the diagnostics are the only record of the inputs. The numeric values printed by the Part A program therefore cannot be interpreted beyond `SAME_TID=true`.",
+    "omitted_keys": "Two metadata keys of the original record are omitted: a task label, and a source-checkout revision that is not a commit on the main branch of rust-lang/rust.",
+    "recorded_at_utc": "2026-11-21T21:26:39Z",
+    "what": "Compiler and Miri outcomes recorded by an earlier run of a different probe against the nightly identified in `rustc_version`. They were NOT re-executed when this package was authored, because that toolchain could not be installed on the authoring host."
+  },
+  "part_a_structural_projection_reborrow_and_miri_tree_borrows": {
+    "compile_rc": 0,
+    "compile_stderr": "",
+    "miri_sb_rc": 0,
+    "miri_sb_stderr": "",
+    "miri_sb_stdout": "SAME_TID=true DROP_PINNED=67 DROP_MOVED_UNPINNED=108",
+    "miri_tb_rc": 0,
+    "miri_tb_stderr": "",
+    "miri_tb_stdout": "SAME_TID=true DROP_PINNED=67 DROP_MOVED_UNPINNED=108",
+    "native_rc": 0,
+    "native_stdout": "SAME_TID=true DROP_PINNED=67 DROP_MOVED_UNPINNED=108"
+  },
+  "part_b_soundness_rejections": {
+    "non_pin_v2_struct_pattern_rejected": {
+      "rc": 1,
+      "stderr": "error: cannot project on type that is not `#[pin_v2]`\n --> <TMP>/non_pin_v2_struct_pattern_rejected.rs:5:18\n  |\n5 |     let &pin mut Plain(ref pin mut x) = p;\n  |                  ^^^^^^^^^^^^^^^^^^^^\n  |\nnote: type defined here\n --> <TMP>/non_pin_v2_struct_pattern_rejected.rs:3:1\n  |\n3 | pub struct Plain(pub u32);\n  | ^^^^^^^^^^^^^^^^\nhelp: add `#[pin_v2]` here\n  |\n3 + #[pin_v2]\n4 | pub struct Plain(pub u32);\n  |\n\nerror: aborting due to 1 previous error\n\n"
+    },
+    "non_unpin_field_as_ref_mut_rejected": {
+      "rc": 1,
+      "stderr": "error[E0277]: `PhantomPinned` cannot be unpinned\n --> <TMP>/non_unpin_field_as_ref_mut_rejected.rs:6:28\n  |\n6 |     let &pin mut PinnedBox(ref mut x) = p;\n  |                            ^^^^^^^^^ the trait `Unpin` is not implemented for `PhantomPinned`\n  |\n  = note: consider using the `pin!` macro\n          consider using `Box::pin` if you need to access the pinned value outside of the current scope\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n"
+    },
+    "pin_v2_conflicting_drop_and_pin_drop_rejected": {
+      "rc": 1,
+      "stderr": "error: conflicting implementations of `Drop::drop` and `Drop::pin_drop`\n --> <TMP>/pin_v2_conflicting_drop_and_pin_drop_rejected.rs:5:1\n  |\n5 | impl Drop for BothDrops {\n  | ^^^^^^^^^^^^^^^^^^^^^^^\n6 |     fn drop(&mut self) {}\n  |     ------------------ `drop(&mut self)` implemented here\n7 |     fn pin_drop(&pin mut self) {}\n  |     -------------------------- `pin_drop(&pin mut self)` implemented here\n\nerror: aborting due to 1 previous error\n\n"
+    },
+    "pin_v2_drop_only_pin_drop_fn": {
+      "rc": 0,
+      "stderr": ""
+    },
+    "pin_v2_drop_only_unpinned_drop_fn": {
+      "rc": 1,
+      "stderr": "error: `OnlyDrop` must implement `pin_drop`\n --> <TMP>/pin_v2_drop_only_unpinned_drop_fn.rs:6:5\n  |\n6 |     fn drop(&mut self) {}\n  |     ^^^^^^^^^^^^^^^^^^\n  |\n  = help: structurally pinned types must keep `Pin`'s safety contract\nnote: `OnlyDrop` is marked `#[pin_v2]` here\n --> <TMP>/pin_v2_drop_only_unpinned_drop_fn.rs:3:1\n  |\n3 | #[pin_v2]\n  | ^^^^^^^^^\nhelp: implement `pin_drop` instead\n  |\n6 -     fn drop(&mut self) {}\n6 +     fn pin_drop(&pin mut self) {}\n  |\nhelp: remove the `#[pin_v2]` attribute if it is not intended for structurally pinning\n  |\n3 - #[pin_v2]\n  |\n\nerror: aborting due to 1 previous error\n\n"
+    },
+    "pin_v2_on_repr_packed_rejected": {
+      "rc": 1,
+      "stderr": "error: `#[pin_v2]` types may not have `#[repr(packed)]`\n --> <TMP>/pin_v2_on_repr_packed_rejected.rs:5:1\n  |\n5 | pub struct PackedPin(pub u8, pub u32);\n  | ^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: fields of a `#[repr(packed)]` type can be under-aligned, so a structurally pinned field may be moved to a properly aligned location, which `Pin` does not allow\nnote: `PackedPin` is marked `#[pin_v2]` here\n --> <TMP>/pin_v2_on_repr_packed_rejected.rs:3:1\n  |\n3 | #[pin_v2]\n  | ^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n"
+    }
+  },
+  "part_c_closure_pin_pat_ice_expr_use_visitor": {
+    "closure_pin_pat_ice_expr_use_visitor_1515": {
+      "rc": 101,
+      "stderr": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: explicit deref of non-derefable type\n --> <TMP>/closure_pin_pat_ice_expr_use_visitor_1515.rs:8:13\n  |\n8 |         let &pin mut Pair { ref pin mut a, ref mut b } = q;\n  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\nnote: delayed at /rustc-dev/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:199:20 - disabled backtrace\n --> <TMP>/closure_pin_pat_ice_expr_use_visitor_1515.rs:8:13\n  |\n8 |         let &pin mut Pair { ref pin mut a, ref mut b } = q;\n  |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md\n\nnote"
+    },
+    "fn_item_pin_pat_ok": {
+      "rc": 0,
+      "stderr": ""
+    },
+    "implicit_match_ergonomics_explicit_ref_rejected": {
+      "rc": 1,
+      "stderr": "error: cannot explicitly borrow within an implicitly-borrowing pattern\n --> <TMP>/implicit_match_ergonomics_explicit_ref_rejected.rs:7:19\n  |\n7 |     let Pair { a, ref mut b } = p;\n  |                   ^^^^^^^ explicit `ref` binding modifier not allowed when implicitly borrowing\n  |\n  = note: for more information, see <https://doc.rust-lang.org/reference/patterns.html#binding-modes>\n\nerror: aborting due to 1 previous error\n\n"
+    }
+  },
+  "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5"
+}

@@ -1,0 +1,14 @@
+$ lean --version
+Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
+$ lean -M2048 -DElab.async=false -Ddebug.skipKernelTC=false -DwarningAsError=true PinErgonomicsSoundnessTriangle.lean
+audit ok: 408 module constants, 31 stated theorems, no axioms, no recursion helpers
+'PinErgonomics.pinV2_three_gate_preserves_pinned_address_through_drop' does not depend on any axioms
+'PinErgonomics.unpinned_drop_shim_sound_before_first_pin' does not depend on any axioms
+'PinErgonomics.cat_pattern_ref_pinned_projects_field0_before_deref' does not depend on any axioms
+'PinErgonomics.ce1_packed_drop_copy_invalidates_self_ptr' does not depend on any axioms
+'PinErgonomics.ce2_unpinned_drop_mem_replace_invalidates_pinned_field' does not depend on any axioms
+'PinErgonomics.ce3_unmarked_struct_projection_violates_private_pin_invariant' does not depend on any axioms
+'PinErgonomics.ce4_expr_use_visitor_cat_deref_fails_without_field0' does not depend on any axioms
+'PinErgonomics.ce5_manual_unpin_impl_lets_pin_drop_move_pinned_field' does not depend on any axioms
+'PinErgonomics.three_gates_give_pin_contract' does not depend on any axioms
+exit status: 0

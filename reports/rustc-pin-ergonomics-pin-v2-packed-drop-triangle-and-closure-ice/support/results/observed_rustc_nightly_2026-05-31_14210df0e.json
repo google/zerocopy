@@ -1,0 +1,387 @@
+{
+  "invocation": {
+    "compile_only": "rustc --edition 2024 --cap-lints allow <probe>.rs --emit=metadata",
+    "edition": "2024",
+    "miri_sb": "miri --sysroot <miri-sysroot> --edition 2024 --cap-lints allow <probe>.rs",
+    "miri_tb": "miri --sysroot <miri-sysroot> -Zmiri-tree-borrows --edition 2024 --cap-lints allow <probe>.rs",
+    "run": "rustc --edition 2024 --cap-lints allow <probe>.rs; ./<probe>"
+  },
+  "probes": {
+    "a1_structural_projection_reborrow_drop": {
+      "delayed_at": null,
+      "first_error": null,
+      "miri_sb_first_error": null,
+      "miri_sb_rc": 0,
+      "miri_sb_stderr": "",
+      "miri_sb_stdout": "SAME_TID=true PROJ_SUM=24 RIGHT_AFTER=12 DROP_PINNED_IN_PLACE=1 DROP_PINNED_MOVED=0 DROP_NEVER_PINNED=1",
+      "miri_sb_verdict": "ok",
+      "miri_tb_first_error": null,
+      "miri_tb_rc": 0,
+      "miri_tb_stderr": "",
+      "miri_tb_stdout": "SAME_TID=true PROJ_SUM=24 RIGHT_AFTER=12 DROP_PINNED_IN_PLACE=1 DROP_PINNED_MOVED=0 DROP_NEVER_PINNED=1",
+      "miri_tb_verdict": "ok",
+      "native_rc": 0,
+      "native_stderr": "",
+      "native_stdout": "SAME_TID=true PROJ_SUM=24 RIGHT_AFTER=12 DROP_PINNED_IN_PLACE=1 DROP_PINNED_MOVED=0 DROP_NEVER_PINNED=1",
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "type identity, structural projection, pinned reborrow, `pin_drop`"
+    },
+    "a2_packed_pinned_field_moved_on_drop": {
+      "delayed_at": null,
+      "first_error": null,
+      "miri_sb_first_error": null,
+      "miri_sb_rc": 0,
+      "miri_sb_stderr": "",
+      "miri_sb_stdout": "PACKED_PINNED_FIELD_DROPPED_IN_PLACE=false",
+      "miri_sb_verdict": "ok",
+      "miri_tb_first_error": null,
+      "miri_tb_rc": 0,
+      "miri_tb_stderr": "",
+      "miri_tb_stdout": "PACKED_PINNED_FIELD_DROPPED_IN_PLACE=false",
+      "miri_tb_verdict": "ok",
+      "native_rc": 0,
+      "native_stderr": "",
+      "native_stdout": "PACKED_PINNED_FIELD_DROPPED_IN_PLACE=false",
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "pinned field of a `#[pin_v2] #[repr(packed)]` struct at drop"
+    },
+    "a3_plain_packed_drop_moves_field": {
+      "delayed_at": null,
+      "first_error": null,
+      "miri_sb_first_error": null,
+      "miri_sb_rc": 0,
+      "miri_sb_stderr": "",
+      "miri_sb_stdout": "PACKED_OWNER_FIELD_DROPPED_INSIDE_OWNER=false PLAIN_OWNER_FIELD_DROPPED_INSIDE_OWNER=true",
+      "miri_sb_verdict": "ok",
+      "miri_tb_first_error": null,
+      "miri_tb_rc": 0,
+      "miri_tb_stderr": "",
+      "miri_tb_stdout": "PACKED_OWNER_FIELD_DROPPED_INSIDE_OWNER=false PLAIN_OWNER_FIELD_DROPPED_INSIDE_OWNER=true",
+      "miri_tb_verdict": "ok",
+      "native_rc": 0,
+      "native_stderr": "",
+      "native_stdout": "PACKED_OWNER_FIELD_DROPPED_INSIDE_OWNER=false PLAIN_OWNER_FIELD_DROPPED_INSIDE_OWNER=true",
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "packed drop glue moves an under-aligned field (no structural pinning)"
+    },
+    "a4_unmarked_projection_uaf": {
+      "delayed_at": null,
+      "first_error": null,
+      "miri_sb_first_error": "error: Undefined Behavior: constructing invalid value of type &[u8; 32]: encountered a dangling reference (use-after-free)",
+      "miri_sb_rc": 1,
+      "miri_sb_stderr": "error: Undefined Behavior: constructing invalid value of type &[u8; 32]: encountered a dangling reference (use-after-free)\n  --> a4_selfref_future.rs:28:9\n   |\n28 |         r[0]\n   |         ^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: a4_selfref_future::self_ref::{closure#0}\n               at a4_selfref_future.rs:28:9: 28:13\n           1: poll_inner::<{async block@a4_selfref_future::self_ref::{closure#0}}>\n               at a4_unmarked_projection_uaf.rs:28:5: 28:15\n           2: main\n               at a4_unmarked_projection_uaf.rs:40:11: 40:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "miri_sb_stdout": "",
+      "miri_sb_verdict": "undefined-behavior",
+      "miri_tb_first_error": "error: Undefined Behavior: constructing invalid value of type &[u8; 32]: encountered a dangling reference (use-after-free)",
+      "miri_tb_rc": 1,
+      "miri_tb_stderr": "error: Undefined Behavior: constructing invalid value of type &[u8; 32]: encountered a dangling reference (use-after-free)\n  --> a4_selfref_future.rs:28:9\n   |\n28 |         r[0]\n   |         ^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: a4_selfref_future::self_ref::{closure#0}\n               at a4_selfref_future.rs:28:9: 28:13\n           1: poll_inner::<{async block@a4_selfref_future::self_ref::{closure#0}}>\n               at a4_unmarked_projection_uaf.rs:28:5: 28:15\n           2: main\n               at a4_unmarked_projection_uaf.rs:40:11: 40:42\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "miri_tb_stdout": "",
+      "miri_tb_verdict": "undefined-behavior",
+      "native_rc": 0,
+      "native_stderr": "",
+      "native_stdout": "UNMARKED_PROJECTION_RESULT=130",
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "explicit projection through an unmarked `Unpin` wrapper around a self-referential future"
+    },
+    "a5_drop_glue_forwarding": {
+      "call_comments": [
+        "; call core::ptr::drop_glue::<a5_drop_glue_forwarding::OnlyPinDrop>",
+        "; call <a5_drop_glue_forwarding::OnlyPinDrop as core::ops::drop::Drop>::drop",
+        "; call core::mem::drop::<a5_drop_glue_forwarding::OnlyPinDrop>",
+        "; call <core::pin::Pin<&mut a5_drop_glue_forwarding::OnlyPinDrop> as core::ops::deref::Deref>::deref",
+        "; call <&mut a5_drop_glue_forwarding::OnlyPinDrop as core::ops::deref::Deref>::deref",
+        "; call <a5_drop_glue_forwarding::OnlyPinDrop as core::ops::drop::Drop>::pin_drop"
+      ],
+      "delayed_at": null,
+      "first_error": null,
+      "glue_calls_trait_drop": true,
+      "rc": 0,
+      "stderr": "",
+      "trait_drop_calls_pin_drop": true,
+      "verdict": "accepted",
+      "what": "functions called by the drop glue of a `pin_drop`-only type"
+    },
+    "b01_explicit_pattern_on_non_pin_v2_struct": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "explicit `&pin mut` projection through a struct that is not `#[pin_v2]`"
+    },
+    "b02_implicit_pattern_on_non_pin_v2_struct": {
+      "delayed_at": null,
+      "first_error": "error: cannot project on type that is not `#[pin_v2]`",
+      "rc": 1,
+      "stderr": "error: cannot project on type that is not `#[pin_v2]`\n  --> b02_implicit_pattern_on_non_pin_v2_struct.rs:10:9\n   |\n10 |     let Plain(x) = p;\n   |         ^^^^^^^^\n   |\nnote: type defined here\n  --> b02_implicit_pattern_on_non_pin_v2_struct.rs:7:1\n   |\n 7 | pub struct Plain(pub u32);\n   | ^^^^^^^^^^^^^^^^\nhelp: add `#[pin_v2]` here\n   |\n 7 + #[pin_v2]\n 8 | pub struct Plain(pub u32);\n   |\n\nerror: aborting due to 1 previous error\n\n",
+      "verdict": "rejected",
+      "what": "match-ergonomics projection through a struct that is not `#[pin_v2]`"
+    },
+    "b03_ref_mut_binding_of_non_unpin_field": {
+      "delayed_at": null,
+      "first_error": "error[E0277]: `PhantomPinned` cannot be unpinned",
+      "rc": 1,
+      "stderr": "error[E0277]: `PhantomPinned` cannot be unpinned\n  --> b03_ref_mut_binding_of_non_unpin_field.rs:13:28\n   |\n13 |     let &pin mut PinnedBox(ref mut x) = p;\n   |                            ^^^^^^^^^ the trait `Unpin` is not implemented for `PhantomPinned`\n   |\n   = note: consider using the `pin!` macro\n           consider using `Box::pin` if you need to access the pinned value outside of the current scope\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+      "verdict": "rejected",
+      "what": "`ref mut` binding of a `!Unpin` field below `&pin mut`"
+    },
+    "b04_ref_mut_binding_of_unpin_field_ok": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "control: `ref mut` binding of an `Unpin` field below `&pin mut`"
+    },
+    "b05_pin_v2_with_drop_only": {
+      "delayed_at": null,
+      "first_error": "error: `OnlyDrop` must implement `pin_drop`",
+      "rc": 1,
+      "stderr": "error: `OnlyDrop` must implement `pin_drop`\n  --> b05_pin_v2_with_drop_only.rs:11:5\n   |\n11 |     fn drop(&mut self) {}\n   |     ^^^^^^^^^^^^^^^^^^\n   |\n   = help: structurally pinned types must keep `Pin`'s safety contract\nnote: `OnlyDrop` is marked `#[pin_v2]` here\n  --> b05_pin_v2_with_drop_only.rs:7:1\n   |\n 7 | #[pin_v2]\n   | ^^^^^^^^^\nhelp: implement `pin_drop` instead\n   |\n11 -     fn drop(&mut self) {}\n11 +     fn pin_drop(&pin mut self) {}\n   |\nhelp: remove the `#[pin_v2]` attribute if it is not intended for structurally pinning\n   |\n 7 - #[pin_v2]\n   |\n\nerror: aborting due to 1 previous error\n\n",
+      "verdict": "rejected",
+      "what": "`#[pin_v2]` type implementing `Drop::drop(&mut self)`"
+    },
+    "b06_pin_v2_with_pin_drop_only": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "control: `#[pin_v2]` type implementing only `Drop::pin_drop`"
+    },
+    "b07_pin_v2_with_both_drop_and_pin_drop": {
+      "delayed_at": null,
+      "first_error": "error: conflicting implementations of `Drop::drop` and `Drop::pin_drop`",
+      "rc": 1,
+      "stderr": "error: conflicting implementations of `Drop::drop` and `Drop::pin_drop`\n  --> b07_pin_v2_with_both_drop_and_pin_drop.rs:10:1\n   |\n10 | impl Drop for BothDrops {\n   | ^^^^^^^^^^^^^^^^^^^^^^^\n11 |     fn drop(&mut self) {}\n   |     ------------------ `drop(&mut self)` implemented here\n12 |     fn pin_drop(&pin mut self) {}\n   |     -------------------------- `pin_drop(&pin mut self)` implemented here\n\nerror: aborting due to 1 previous error\n\n",
+      "verdict": "rejected",
+      "what": "`#[pin_v2]` type implementing both `drop` and `pin_drop`"
+    },
+    "b08_non_pin_v2_with_both_drop_and_pin_drop": {
+      "delayed_at": null,
+      "first_error": "error: conflicting implementations of `Drop::drop` and `Drop::pin_drop`",
+      "rc": 1,
+      "stderr": "error: conflicting implementations of `Drop::drop` and `Drop::pin_drop`\n  --> b08_non_pin_v2_with_both_drop_and_pin_drop.rs:9:1\n   |\n 9 | impl Drop for BothDrops {\n   | ^^^^^^^^^^^^^^^^^^^^^^^\n10 |     fn drop(&mut self) {}\n   |     ------------------ `drop(&mut self)` implemented here\n11 |     fn pin_drop(&pin mut self) {}\n   |     -------------------------- `pin_drop(&pin mut self)` implemented here\n\nerror: aborting due to 1 previous error\n\n",
+      "verdict": "rejected",
+      "what": "unmarked type implementing both `drop` and `pin_drop`"
+    },
+    "b09_non_pin_v2_with_pin_drop_only": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "control: unmarked type implementing only `pin_drop`"
+    },
+    "b10_pin_v2_repr_packed": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "`#[pin_v2]` on `#[repr(packed)]`"
+    },
+    "b11_pin_v2_repr_packed_2": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "`#[pin_v2]` on `#[repr(C, packed(2))]`"
+    },
+    "b12_manual_unpin_impl_on_pin_v2": {
+      "delayed_at": null,
+      "first_error": "error: explicit impls for the `Unpin` trait are not permitted for structurally pinned types",
+      "rc": 1,
+      "stderr": "error: explicit impls for the `Unpin` trait are not permitted for structurally pinned types\n  --> b12_manual_unpin_impl_on_pin_v2.rs:12:1\n   |\n12 | impl Unpin for Manual {}\n   | ^^^^^^^^^^^^^^^^^^^^^ impl of `Unpin` not allowed\n   |\nhelp: `Manual` is structurally pinned because it is marked as `#[pin_v2]`\n  --> b12_manual_unpin_impl_on_pin_v2.rs:10:1\n   |\n10 | pub struct Manual(pub PhantomPinned);\n   | ^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+      "verdict": "rejected",
+      "what": "explicit `Unpin` impl for a `#[pin_v2]` type"
+    },
+    "b13_explicit_pin_drop_call": {
+      "delayed_at": null,
+      "first_error": "error[E0040]: explicit use of destructor method",
+      "rc": 1,
+      "stderr": "error[E0040]: explicit use of destructor method\n  --> b13_explicit_pin_drop_call.rs:15:5\n   |\n15 |     Drop::pin_drop(d);\n   |     ^^^^^^^^^^^^^^ explicit destructor calls not allowed\n   |\nhelp: consider using `drop` function\n   |\n15 -     Drop::pin_drop(d);\n15 +     drop(d);\n   |\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0040`.\n",
+      "verdict": "rejected",
+      "what": "explicit call of `Drop::pin_drop`"
+    },
+    "b14_reference_to_underaligned_packed_field": {
+      "delayed_at": null,
+      "first_error": "error[E0793]: reference to field of packed struct is unaligned",
+      "rc": 1,
+      "stderr": "error[E0793]: reference to field of packed struct is unaligned\n  --> b14_reference_to_underaligned_packed_field.rs:11:19\n   |\n11 |     let Packed(_, ref mut b) = *p;\n   |                   ^^^^^^^^^\n   |\n   = note: this struct is 1-byte aligned, but the type of this field may require higher alignment\n   = note: creating a misaligned reference is undefined behavior (even if that reference is never dereferenced)\n   = help: copy the field contents to a local variable, or replace the reference with a raw pointer and use `read_unaligned`/`write_unaligned` (loads and stores via `*p` must be properly aligned even when using raw pointers)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0793`.\n",
+      "verdict": "rejected",
+      "what": "control (no feature gate): reference to an under-aligned packed field"
+    },
+    "b15_pin_v2_without_feature_gate": {
+      "delayed_at": null,
+      "first_error": "error[E0658]: pinned reference syntax is experimental",
+      "rc": 1,
+      "stderr": "error[E0658]: pinned reference syntax is experimental\n --> b15_pin_v2_without_feature_gate.rs:8:14\n  |\n8 | pub fn f(_: &pin mut Marked) {}\n  |              ^^^\n  |\n  = note: see issue #130494 <https://github.com/rust-lang/rust/issues/130494> for more information\n  = help: add `#![feature(pin_ergonomics)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror[E0658]: the `#[pin_v2]` attribute is an experimental feature\n --> b15_pin_v2_without_feature_gate.rs:5:1\n  |\n5 | #[pin_v2]\n  | ^^^^^^^^^\n  |\n  = note: see issue #130494 <https://github.com/rust-lang/rust/issues/130494> for more information\n  = help: add `#![feature(pin_ergonomics)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0658`.\n",
+      "verdict": "rejected",
+      "what": "control: `#[pin_v2]` and `&pin mut` without the feature gate"
+    },
+    "c01_fn_item_explicit_pin_mut_pattern": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "control: explicit `&pin mut` pattern in a fn body"
+    },
+    "c02_closure_explicit_pin_mut_pattern": {
+      "delayed_at": "/rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20",
+      "first_error": "error: internal compiler error: explicit deref of non-derefable type",
+      "rc": 101,
+      "stderr": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: explicit deref of non-derefable type\n  --> c02_closure_explicit_pin_mut_pattern.rs:15:13\n   |\n15 |         let &pin mut Pair { ref pin mut a, ref mut b } = q;\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\nnote: delayed at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20 - disabled backtrace\n  --> c02_closure_explicit_pin_mut_pattern.rs:15:13\n   |\n15 |         let &pin mut Pair { ref pin mut a, ref mut b } = q;\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md\n\nnote: please make sure that you have updated to the latest nightly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nquery stack during panic:\nend of query stack\n",
+      "verdict": "ice",
+      "what": "explicit `&pin mut` pattern in a closure body"
+    },
+    "c03_closure_explicit_pin_const_pattern": {
+      "delayed_at": "/rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20",
+      "first_error": "error: internal compiler error: explicit deref of non-derefable type",
+      "rc": 101,
+      "stderr": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: explicit deref of non-derefable type\n  --> c03_closure_explicit_pin_const_pattern.rs:15:13\n   |\n15 |         let &pin const Pair { ref pin const a, ref b } = q;\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\nnote: delayed at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20 - disabled backtrace\n  --> c03_closure_explicit_pin_const_pattern.rs:15:13\n   |\n15 |         let &pin const Pair { ref pin const a, ref b } = q;\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md\n\nnote: please make sure that you have updated to the latest nightly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nquery stack during panic:\nend of query stack\n",
+      "verdict": "ice",
+      "what": "explicit `&pin const` pattern in a closure body"
+    },
+    "c04_closure_implicit_pattern": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "control: match-ergonomics projection in a closure body"
+    },
+    "c05_fn_item_pinned_reborrow": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "control: implicit pinned reborrow in a fn body"
+    },
+    "c06_closure_pinned_reborrow": {
+      "delayed_at": "/rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20",
+      "first_error": "error: internal compiler error: explicit deref of non-derefable type",
+      "rc": 101,
+      "stderr": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: explicit deref of non-derefable type\n --> c06_closure_pinned_reborrow.rs:9:31\n  |\n9 |         let r: &pin mut u32 = q;\n  |                               ^\n  |\nnote: delayed at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20 - disabled backtrace\n --> c06_closure_pinned_reborrow.rs:9:31\n  |\n9 |         let r: &pin mut u32 = q;\n  |                               ^\n\nnote: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md\n\nnote: please make sure that you have updated to the latest nightly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nquery stack during panic:\nend of query stack\n",
+      "verdict": "ice",
+      "what": "implicit pinned reborrow in a closure body"
+    },
+    "c07_closure_pin_method_call": {
+      "delayed_at": "/rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20",
+      "first_error": "error: internal compiler error: explicit deref of non-derefable type",
+      "rc": 101,
+      "stderr": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: explicit deref of non-derefable type\n  --> c07_closure_pin_method_call.rs:12:52\n   |\n12 |     let c = |q: Pin<&mut F>, cx: &mut Context<'_>| q.poll(cx);\n   |                                                    ^\n   |\nnote: delayed at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20 - disabled backtrace\n  --> c07_closure_pin_method_call.rs:12:52\n   |\n12 |     let c = |q: Pin<&mut F>, cx: &mut Context<'_>| q.poll(cx);\n   |                                                    ^\n\nnote: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md\n\nnote: please make sure that you have updated to the latest nightly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nquery stack during panic:\nend of query stack\n",
+      "verdict": "ice",
+      "what": "`Pin<&mut Self>` method call in a closure body"
+    },
+    "c08_async_fn_await": {
+      "delayed_at": "/rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20",
+      "first_error": "error: internal compiler error: explicit deref of non-derefable type",
+      "rc": 101,
+      "stderr": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: explicit deref of non-derefable type\n  --> c08_async_fn_await.rs:10:13\n   |\n10 |     other().await;\n   |             ^^^^^\n   |\nnote: delayed at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20 - disabled backtrace\n  --> c08_async_fn_await.rs:10:13\n   |\n10 |     other().await;\n   |             ^^^^^\n\nnote: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md\n\nnote: please make sure that you have updated to the latest nightly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nquery stack during panic:\nend of query stack\n",
+      "verdict": "ice",
+      "what": "`.await` in an `async fn`"
+    },
+    "c09_async_fn_explicit_pin_mut_pattern": {
+      "delayed_at": "/rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20",
+      "first_error": "error: internal compiler error: explicit deref of non-derefable type",
+      "rc": 101,
+      "stderr": "note: no errors encountered even though delayed bugs were created\n\nnote: those delayed bugs will now be shown as internal compiler errors\n\nerror: internal compiler error: explicit deref of non-derefable type\n  --> c09_async_fn_explicit_pin_mut_pattern.rs:14:9\n   |\n14 |     let &pin mut Pair { ref pin mut a, ref mut b } = q;\n   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\nnote: delayed at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_hir_typeck/src/expr_use_visitor.rs:200:20 - disabled backtrace\n  --> c09_async_fn_explicit_pin_mut_pattern.rs:14:9\n   |\n14 |     let &pin mut Pair { ref pin mut a, ref mut b } = q;\n   |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nnote: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md\n\nnote: please make sure that you have updated to the latest nightly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nquery stack during panic:\nend of query stack\n",
+      "verdict": "ice",
+      "what": "explicit `&pin mut` pattern in an `async fn` body"
+    },
+    "c10_closure_upvar_explicit_pin_mut_pattern": {
+      "delayed_at": null,
+      "first_error": "error[E0381]: used binding `b` isn't initialized",
+      "rc": 1,
+      "stderr": "error[E0381]: used binding `b` isn't initialized\n  --> c10_closure_upvar_explicit_pin_mut_pattern.rs:16:9\n   |\n15 |         let &pin mut Pair { ref pin mut a, ref mut b } = p;\n   |                                            --------- binding declared here but left uninitialized\n16 |         *b += 1;\n   |         ^^^^^^^ `*b` used here but it isn't initialized\n\nerror[E0381]: used binding `a` isn't initialized\n  --> c10_closure_upvar_explicit_pin_mut_pattern.rs:17:10\n   |\n15 |         let &pin mut Pair { ref pin mut a, ref mut b } = p;\n   |                             ------------- binding declared here but left uninitialized\n16 |         *b += 1;\n17 |         *a + *b\n   |          ^ `a` used here but it isn't initialized\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0381`.\n",
+      "verdict": "rejected",
+      "what": "explicit `&pin mut` pattern on a captured variable"
+    },
+    "c11_closure_upvar_pinned_reborrow": {
+      "delayed_at": null,
+      "first_error": "error: internal compiler error: /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_build/src/builder/expr/as_place.rs:263:67: could not resolve upvar: LocalVarId(HirId(DefId(0:7 ~ c11_closure_upvar_pinned_reborrow[8507]::f).2)) + [Field(0, &'{erased} mut Pair), Deref]",
+      "rc": 101,
+      "stderr": "error: internal compiler error: /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_build/src/builder/expr/as_place.rs:263:67: could not resolve upvar: LocalVarId(HirId(DefId(0:7 ~ c11_closure_upvar_pinned_reborrow[8507]::f).2)) + [Field(0, &'{erased} mut Pair), Deref]\n  --> c11_closure_upvar_pinned_reborrow.rs:15:10\n   |\n15 | pub fn f(mut p: &pin mut Pair) {\n   |          ^^^^^\n\n\nthread 'rustc' (389173) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_build/src/builder/expr/as_place.rs:263:67:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md\n\nnote: please make sure that you have updated to the latest nightly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nquery stack during panic:\n#0 [mir_built] building MIR for `f::{closure#0}`\n#1 [check_unsafety] unsafety-checking `f`\n... and 1 other queries... use `env RUST_BACKTRACE=1` to see the full query stack\nerror: aborting due to 1 previous error\n\n",
+      "verdict": "ice",
+      "what": "implicit pinned reborrow of a captured variable"
+    },
+    "c12_closure_explicit_pattern_plus_type_error": {
+      "delayed_at": null,
+      "first_error": "error[E0308]: mismatched types",
+      "rc": 1,
+      "stderr": "error[E0308]: mismatched types\n  --> c12_closure_explicit_pattern_plus_type_error.rs:16:21\n   |\n16 |         let _: () = 1u8;\n   |                --   ^^^ expected `()`, found `u8`\n   |                |\n   |                expected due to this\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n",
+      "verdict": "rejected",
+      "what": "c02 plus an unrelated type error"
+    },
+    "c13_closure_pin_method_call_without_feature": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "control: c07 without the feature gate"
+    },
+    "c14_fn_param_pin_patterns": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "",
+      "verdict": "accepted",
+      "what": "`&pin` patterns in fn parameters"
+    },
+    "c15_closure_upvar_poll_fn": {
+      "delayed_at": null,
+      "first_error": "error: internal compiler error: /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_build/src/builder/expr/as_place.rs:263:67: could not resolve upvar: LocalVarId(HirId(DefId(0:5 ~ c15_closure_upvar_poll_fn[0828]::test_idempotency).2)) + []",
+      "rc": 101,
+      "stderr": "error: internal compiler error: /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_build/src/builder/expr/as_place.rs:263:67: could not resolve upvar: LocalVarId(HirId(DefId(0:5 ~ c15_closure_upvar_poll_fn[0828]::test_idempotency).2)) + []\n  --> c15_closure_upvar_poll_fn.rs:10:28\n   |\n10 | pub fn test_idempotency<T>(mut x: Pin<&mut T>) -> impl Future + '_\n   |                            ^^^^^\n\n\nthread 'rustc' (389221) panicked at /rustc-dev/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/compiler/rustc_mir_build/src/builder/expr/as_place.rs:263:67:\nBox<dyn Any>\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\n\nnote: we would appreciate a bug report: https://github.com/rust-lang/rust/issues/new?labels=C-bug%2C+I-ICE%2C+T-compiler&template=ice.md\n\nnote: please make sure that you have updated to the latest nightly\n\nnote: rustc 1.98.0-nightly (14210df0e 2026-05-31) running on x86_64-unknown-linux-gnu\n\nquery stack during panic:\n#0 [mir_built] building MIR for `test_idempotency::{closure#0}`\n#1 [has_ffi_unwind_calls] checking if `test_idempotency::{closure#0}` contains FFI-unwind calls\n... and 7 other queries... use `env RUST_BACKTRACE=1` to see the full query stack\nerror: aborting due to 1 previous error\n\n",
+      "verdict": "ice",
+      "what": "captured `Pin<&mut T>` polled in a `poll_fn` closure"
+    },
+    "c16_fn_item_overlapping_pinned_reborrows": {
+      "delayed_at": null,
+      "first_error": "error[E0499]: cannot borrow `*q.pointer` as mutable more than once at a time",
+      "rc": 1,
+      "stderr": "error[E0499]: cannot borrow `*q.pointer` as mutable more than once at a time\n  --> c16_fn_item_overlapping_pinned_reborrows.rs:11:27\n   |\n10 |     let r: &pin mut u32 = q;\n   |                           - first mutable borrow occurs here\n11 |     let s: &pin mut u32 = q;\n   |                           ^ second mutable borrow occurs here\n12 |     *r + *s\n   |      - first borrow later used here\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0499`.\n",
+      "verdict": "rejected",
+      "what": "two overlapping pinned reborrows in a fn body"
+    },
+    "d01_pin_mut_self_unused_mut_lint": {
+      "delayed_at": null,
+      "first_error": null,
+      "rc": 0,
+      "stderr": "warning: variable does not need to be mutable\n  --> d01_pin_mut_self_unused_mut_lint.rs:13:17\n   |\n13 |     fn pin_drop(&pin mut self) {}\n   |                 -----^^^^^^^^\n   |                 |\n   |                 help: remove this `mut`\n   |\n   = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+      "verdict": "accepted",
+      "warnings": [
+        "warning: variable does not need to be mutable",
+        "warning: 1 warning emitted"
+      ],
+      "what": "`unused_mut` warning on the `&pin mut self` receiver sugar"
+    },
+    "e01_pin_borrow_expression_then_use": {
+      "delayed_at": null,
+      "first_error": "error[E0382]: use of moved value: `x`",
+      "rc": 1,
+      "stderr": "error[E0382]: use of moved value: `x`\n  --> e01_pin_borrow_expression_then_use.rs:19:5\n   |\n17 |     let mut x = NotUnpin(1, PhantomPinned);\n   |         ----- move occurs because `x` has type `NotUnpin`, which does not implement the `Copy` trait\n18 |     observe(&pin mut x);\n   |                      - value moved here\n19 |     x\n   |     ^ value used here after move\n   |\nnote: if `NotUnpin` implemented `Clone`, you could clone the value\n  --> e01_pin_borrow_expression_then_use.rs:12:1\n   |\n12 | pub struct NotUnpin(pub u32, pub PhantomPinned);\n   | ^^^^^^^^^^^^^^^^^^^ consider implementing `Clone` for this type\n...\n18 |     observe(&pin mut x);\n   |                      - you could clone this value\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0382`.\n",
+      "verdict": "rejected",
+      "what": "`&pin mut place` borrow expression, then a use of the place"
+    }
+  },
+  "schema": "pin-ergonomics-probe/1",
+  "toolchain": {
+    "commit_hash": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+    "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+    "rustc_vV": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+  }
+}
