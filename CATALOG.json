@@ -20127,6 +20127,72 @@
         "pl/history"
       ]
     },
+    "c20-p0668r5-operational-seqcst-tree-borrows-fnexit-and-lean4-scope-soundness": {
+      "observed_at": "2026-11-22",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "f2efbfd1eb0c923aa2865e38229f72782a5aefb7"
+          },
+          "name": "google/zerocopy (anneal/ subtree)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "49d734536222bf28bb6d07d885b3a81d145981da"
+          },
+          "name": "rust-lang/rust (rustc, library/std, and bundled miri)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/miri",
+            "revision": "bc1b6da0d31959f0fb30c273955dd95304109cba"
+          },
+          "name": "rust-lang/miri"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "leanprover/lean4"
+        },
+        {
+          "identity": {
+            "document": "WG21 P0668R5",
+            "standard": "ISO/IEC 14882:2020 (C++20)"
+          },
+          "name": "WG21 P0668R5: Revising the C++ memory model"
+        },
+        {
+          "identity": {
+            "document": "WG21 P0982R1",
+            "standard": "ISO/IEC 14882:2020 (C++20)"
+          },
+          "name": "WG21 P0982R1: Weaken Release Sequences"
+        },
+        {
+          "identity": {
+            "specification": "Arm Architecture Reference Manual / herdtools7 aarch64.cat & aarch64hwreqs.cat"
+          },
+          "name": "Arm AArch64 Memory Model (ARMv8.0 & ARMv8.3 +rcpc)"
+        }
+      ],
+      "topics": [
+        "anneal/theory",
+        "isa/aarch64",
+        "lean/mechanization",
+        "rust/atomics",
+        "rust/concurrency",
+        "rust/memory-model",
+        "rust/miri",
+        "rust/unsafe",
+        "verification/concurrency",
+        "verification/semantics"
+      ]
+    },
     "c20-seqcst-fences-release-sequences-thin-air-and-rc11-to-rvwmo-arm-compilation-soundness": {
       "observed_at": "2026-11-20",
       "subjects": [
