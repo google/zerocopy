@@ -1,0 +1,655 @@
+{
+  "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "probe_1_wrapping_niche_enum_discr_inversion": {
+    "actual_runtime_bytes_sample": {
+      "Valid(-10)": 246,
+      "Valid(-5)": 251,
+      "Valid(-1)": 255,
+      "Valid(0)": 0,
+      "Valid(10)": 10,
+      "TagA": 11,
+      "TagB": 12
+    },
+    "all_23_runtime_bytes": {
+      "Valid(-10)": 246,
+      "Valid(-9)": 247,
+      "Valid(-8)": 248,
+      "Valid(-7)": 249,
+      "Valid(-6)": 250,
+      "Valid(-5)": 251,
+      "Valid(-4)": 252,
+      "Valid(-3)": 253,
+      "Valid(-2)": 254,
+      "Valid(-1)": 255,
+      "Valid(0)": 0,
+      "Valid(1)": 1,
+      "Valid(2)": 2,
+      "Valid(3)": 3,
+      "Valid(4)": 4,
+      "Valid(5)": 5,
+      "Valid(6)": 6,
+      "Valid(7)": 7,
+      "Valid(8)": 8,
+      "Valid(9)": 9,
+      "Valid(10)": 10,
+      "TagA": 11,
+      "TagB": 12
+    },
+    "msvc_cpp_like_emitted_discr_begin_u8": 10,
+    "msvc_cpp_like_emitted_discr_end_u8": 246,
+    "msvc_cpp_like_emitted_discr_exacts_u8": [
+      11,
+      12
+    ],
+    "intended_wrapping_begin_u8": 246,
+    "intended_wrapping_end_u8": 10,
+    "exhaustive_256_byte_audit": {
+      "valid_total": 21,
+      "natvis_display_valid_matched_count": 2,
+      "natvis_display_valid_matched_bytes": [
+        10,
+        246
+      ],
+      "natvis_display_valid_unmatched_count": 19,
+      "natvis_display_valid_unmatched_bytes": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        247,
+        248,
+        249,
+        250,
+        251,
+        252,
+        253,
+        254,
+        255
+      ],
+      "unused_niche_total": 233,
+      "natvis_unused_false_positive_count": 233,
+      "natvis_unused_false_positive_range": [
+        13,
+        245
+      ],
+      "expand_simultaneous_exact_and_range_bytes": [
+        11,
+        12
+      ],
+      "cpplike_pseudocode_field_order_misclassified_tags": [
+        {
+          "raw_byte": 11,
+          "decoded": "Valid(in_range)"
+        },
+        {
+          "raw_byte": 12,
+          "decoded": "Valid(in_range)"
+        }
+      ],
+      "corrected_circular_range_all_valid_ok": true,
+      "corrected_circular_range_no_exact_overlap": true,
+      "corrected_circular_range_zero_unused_false_positives": true
+    },
+    "msvc_signed_wrap_128": {
+      "emitted_begin_hex": "0xa",
+      "emitted_end_hex": "0xfffffffffffffffffffffffffffffff6",
+      "inverted_begin_le_end": true,
+      "exacts": [
+        11,
+        12
+      ]
+    },
+    "msvc_enum17_variant_field_count": 17,
+    "msvc_enum17_has_variant16": true,
+    "msvc_di_lines": [
+      "!194 = !DICompositeType(tag: DW_TAG_union_type, name: \"enum2$<wrap_msvc::SignedWrap>\", file: !9, size: 8, align: 8, flags: DIFlagPublic, elements: !195, templateParams: !21, identifier: \"ee5f8aca1f2bc21397b9b5d2c45c3585\")",
+      "!207 = !DIDerivedType(tag: DW_TAG_member, name: \"DISCR_BEGIN\", scope: !197, file: !9, baseType: !25, align: 64, flags: DIFlagStaticMember, extraData: i64 10)",
+      "!208 = !DIDerivedType(tag: DW_TAG_member, name: \"DISCR_END\", scope: !197, file: !9, baseType: !25, align: 64, flags: DIFlagStaticMember, extraData: i64 246)",
+      "!215 = !DIDerivedType(tag: DW_TAG_member, name: \"DISCR_EXACT\", scope: !210, file: !9, baseType: !25, align: 64, flags: DIFlagStaticMember, extraData: i64 11)",
+      "!222 = !DIDerivedType(tag: DW_TAG_member, name: \"DISCR_EXACT\", scope: !217, file: !9, baseType: !25, align: 64, flags: DIFlagStaticMember, extraData: i64 12)"
+    ],
+    "linux_dwarf_variants": [
+      {
+        "has_discr_value": false,
+        "discr_value": null,
+        "member_name": "Valid"
+      },
+      {
+        "has_discr_value": true,
+        "discr_value": 11,
+        "member_name": "TagA"
+      },
+      {
+        "has_discr_value": true,
+        "discr_value": 12,
+        "member_name": "TagB"
+      }
+    ],
+    "linux_dwarf_untagged_valid_omits_discr_value": true,
+    "linux_dwarf_snippet": " <2><498>: Abbrev Number: 19 (DW_TAG_structure_type)\n    <499>   DW_AT_name        : (indirect string, offset: 0x177863): SignedWrap\n    <49d>   DW_AT_byte_size   : 1\n    <49e>   DW_AT_accessibility: 1\t(public)\n    <49f>   DW_AT_alignment   : 1\n <3><4a0>: Abbrev Number: 35 (DW_TAG_variant_part)\n    <4a1>   DW_AT_discr       : <0x4a5>\n <4><4a5>: Abbrev Number: 36 (DW_TAG_member)\n    <4a6>   DW_AT_type        : <0x400>\n    <4aa>   DW_AT_alignment   : 1\n    <4ab>   DW_AT_data_member_location: 0\n    <4ac>   DW_AT_artificial  : 1\n <4><4ac>: Abbrev Number: 37 (DW_TAG_variant)\n <5><4ad>: Abbrev Number: 4 (DW_TAG_member)\n    <4ae>   DW_AT_name        : (indirect string, offset: 0xcce62): Valid\n    <4b2>   DW_AT_type        : <0x4d6>\n    <4b6>   DW_AT_alignment   : 1\n    <4b7>   DW_AT_data_member_location: 0\n <5><4b8>: Abbrev Number: 0\n <4><4b9>: Abbrev Number: 38 (DW_TAG_variant)\n    <4ba>   DW_AT_discr_value : 11\n <5><4bb>: Abbrev Number: 4 (DW_TAG_member)\n    <4bc>   DW_AT_name        : (indirect string, offset: 0xdb32c): TagA\n    <4c0>   DW_AT_type        : <0x4eb>\n    <4c4>   DW_AT_alignment   : 1\n    <4c5>   DW_AT_data_member_location: 0\n <5><4c6>: Abbrev Number: 0\n <4><4c7>: Abbrev Number: 38 (DW_TAG_variant)\n    <4c8>   DW_AT_discr_value : 12\n <5><4c9>: Abbrev Number: 4 (DW_TAG_member)\n    <4ca>   DW_AT_name        : (indirect string, offset: 0xe554): TagB\n    <4ce>   DW_AT_type        : <0x4f3>\n    <4d2>   DW_AT_alignment   : 1\n    <4d3>   DW_AT_data_member_location: 0\n <5><4d4>: Abbrev Number: 0\n <4><4d5>: Abbrev Number: 0\n <3><4d6>: Abbrev Number: 19 (DW_TAG_structure_type)\n    <4d7>   DW_AT_name        : (indirect string, offset: 0xcce62): Valid\n    <4db>   DW_AT_byte_size   : 1\n    <4dc>   DW_AT_accessibility: 1\t(public)\n    <4dd>   DW_AT_alignment   : 1\n <4><4de>: Abbrev Number: 20 (DW_TAG_member)\n    <4df>   DW_AT_name        : (indirect string, offset: 0xe978b): __0\n    <4e3>   DW_AT_type        : <0x52b>\n    <4e7>   DW_AT_alignment   : 1\n    <4e8>   DW_AT_data_member_location: 0\n    <4e9>   DW_AT_accessibility: 1\t(public)\n <4><4ea>: Abbrev Number: 0\n <3><4eb>: Abbrev Number: 39 (DW_TAG_structure_type)\n    <4ec>   DW_AT_name        : (indirect string, offset: 0xdb32c): TagA\n    <4f0>   DW_AT_byte_size   : 1\n    <4f1>   DW_AT_accessibility: 1\t(public)\n    <4f2>   DW_AT_alignment   : 1\n <3><4f3>: Abbrev Number: 39 (DW_TAG_structure_type)\n    <4f4>   DW_AT_name        : (indirect string, offset: 0xe554): TagB"
+  },
+  "probe_2_gdb_scripts_text_mutation": {
+    "levels": {
+      "debuginfo_0": {
+        "flags": [
+          "-C",
+          "debuginfo=0"
+        ],
+        "text_len": 247987,
+        "text_sha256": "59ea39d77febc61a0d0f66508bf5416290783efe6e729eb097042b760c82e323",
+        "has_debug_gdb_scripts": false,
+        "debug_gdb_scripts_len": 0,
+        "debug_gdb_scripts_raw_hex": "",
+        "main_has_movzbl": false,
+        "volatile_load_in_llvm_ir": false,
+        "main_disasm": "\n<TMP>/p2/bin_debuginfo_0:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000013820 <main>:\n   13820:\t50                   \tpush   %rax\n   13821:\t48 89 f1             \tmov    %rsi,%rcx\n   13824:\t48 63 d7             \tmovslq %edi,%rdx\n   13827:\t48 8d 05 c2 ff ff ff \tlea    -0x3e(%rip),%rax        # 137f0 <_RNvCsdtso6yMhVh2_8gdb_text4main>\n   1382e:\t48 89 04 24          \tmov    %rax,(%rsp)\n   13832:\t48 8d 35 df d7 03 00 \tlea    0x3d7df(%rip),%rsi        # 51018 <__frame_dummy_init_array_entry+0x8>\n   13839:\t48 89 e7             \tmov    %rsp,%rdi\n   1383c:\t45 31 c0             \txor    %r8d,%r8d\n   1383f:\tff 15 b3 f4 03 00    \tcall   *0x3f4b3(%rip)        # 52cf8 <_DYNAMIC+0x238>\n   13845:\t59                   \tpop    %rcx\n   13846:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:\n"
+      },
+      "debuginfo_line_directives": {
+        "flags": [
+          "-C",
+          "debuginfo=line-directives-only"
+        ],
+        "text_len": 247987,
+        "text_sha256": "34642176a6e8f4793d1b3498f8ab5a463f98ce548e1473341af7fdf1487cadcc",
+        "has_debug_gdb_scripts": true,
+        "debug_gdb_scripts_len": 34,
+        "debug_gdb_scripts_raw_hex": "016764625f6c6f61645f727573745f7072657474795f7072696e746572732e707900",
+        "main_has_movzbl": true,
+        "volatile_load_in_llvm_ir": true,
+        "main_disasm": "\n<TMP>/p2/bin_debuginfo_line_directives:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000013840 <main>:\n   13840:\t50                   \tpush   %rax\n   13841:\t48 89 f1             \tmov    %rsi,%rcx\n   13844:\t0f b6 05 3d 10 ff ff \tmovzbl -0xefc3(%rip),%eax        # 4888 <__rustc_debug_gdb_scripts_section__>\n   1384b:\t48 63 d7             \tmovslq %edi,%rdx\n   1384e:\t48 8d 05 bb ff ff ff \tlea    -0x45(%rip),%rax        # 13810 <_RNvCsdtso6yMhVh2_8gdb_text4main>\n   13855:\t48 89 04 24          \tmov    %rax,(%rsp)\n   13859:\t48 8d 35 d8 c7 03 00 \tlea    0x3c7d8(%rip),%rsi        # 50038 <__frame_dummy_init_array_entry+0x8>\n   13860:\t48 89 e7             \tmov    %rsp,%rdi\n   13863:\t45 31 c0             \txor    %r8d,%r8d\n   13866:\tff 15 ac e4 03 00    \tcall   *0x3e4ac(%rip)        # 51d18 <_DYNAMIC+0x238>\n   1386c:\t59                   \tpop    %rcx\n   1386d:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:\n"
+      },
+      "debuginfo_line_tables": {
+        "flags": [
+          "-C",
+          "debuginfo=line-tables-only"
+        ],
+        "text_len": 247987,
+        "text_sha256": "34642176a6e8f4793d1b3498f8ab5a463f98ce548e1473341af7fdf1487cadcc",
+        "has_debug_gdb_scripts": true,
+        "debug_gdb_scripts_len": 34,
+        "debug_gdb_scripts_raw_hex": "016764625f6c6f61645f727573745f7072657474795f7072696e746572732e707900",
+        "main_has_movzbl": true,
+        "volatile_load_in_llvm_ir": null,
+        "main_disasm": "\n<TMP>/p2/bin_debuginfo_line_tables:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000013840 <main>:\n   13840:\t50                   \tpush   %rax\n   13841:\t48 89 f1             \tmov    %rsi,%rcx\n   13844:\t0f b6 05 3d 10 ff ff \tmovzbl -0xefc3(%rip),%eax        # 4888 <__rustc_debug_gdb_scripts_section__>\n   1384b:\t48 63 d7             \tmovslq %edi,%rdx\n   1384e:\t48 8d 05 bb ff ff ff \tlea    -0x45(%rip),%rax        # 13810 <_RNvCsdtso6yMhVh2_8gdb_text4main>\n   13855:\t48 89 04 24          \tmov    %rax,(%rsp)\n   13859:\t48 8d 35 d8 c7 03 00 \tlea    0x3c7d8(%rip),%rsi        # 50038 <__frame_dummy_init_array_entry+0x8>\n   13860:\t48 89 e7             \tmov    %rsp,%rdi\n   13863:\t45 31 c0             \txor    %r8d,%r8d\n   13866:\tff 15 ac e4 03 00    \tcall   *0x3e4ac(%rip)        # 51d18 <_DYNAMIC+0x238>\n   1386c:\t59                   \tpop    %rcx\n   1386d:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:\n"
+      },
+      "debuginfo_1": {
+        "flags": [
+          "-C",
+          "debuginfo=1"
+        ],
+        "text_len": 247987,
+        "text_sha256": "34642176a6e8f4793d1b3498f8ab5a463f98ce548e1473341af7fdf1487cadcc",
+        "has_debug_gdb_scripts": true,
+        "debug_gdb_scripts_len": 34,
+        "debug_gdb_scripts_raw_hex": "016764625f6c6f61645f727573745f7072657474795f7072696e746572732e707900",
+        "main_has_movzbl": true,
+        "volatile_load_in_llvm_ir": null,
+        "main_disasm": "\n<TMP>/p2/bin_debuginfo_1:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000013840 <main>:\n   13840:\t50                   \tpush   %rax\n   13841:\t48 89 f1             \tmov    %rsi,%rcx\n   13844:\t0f b6 05 3d 10 ff ff \tmovzbl -0xefc3(%rip),%eax        # 4888 <__rustc_debug_gdb_scripts_section__>\n   1384b:\t48 63 d7             \tmovslq %edi,%rdx\n   1384e:\t48 8d 05 bb ff ff ff \tlea    -0x45(%rip),%rax        # 13810 <_RNvCsdtso6yMhVh2_8gdb_text4main>\n   13855:\t48 89 04 24          \tmov    %rax,(%rsp)\n   13859:\t48 8d 35 d8 c7 03 00 \tlea    0x3c7d8(%rip),%rsi        # 50038 <__frame_dummy_init_array_entry+0x8>\n   13860:\t48 89 e7             \tmov    %rsp,%rdi\n   13863:\t45 31 c0             \txor    %r8d,%r8d\n   13866:\tff 15 ac e4 03 00    \tcall   *0x3e4ac(%rip)        # 51d18 <_DYNAMIC+0x238>\n   1386c:\t59                   \tpop    %rcx\n   1386d:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:\n"
+      },
+      "debuginfo_2": {
+        "flags": [
+          "-C",
+          "debuginfo=2"
+        ],
+        "text_len": 247987,
+        "text_sha256": "34642176a6e8f4793d1b3498f8ab5a463f98ce548e1473341af7fdf1487cadcc",
+        "has_debug_gdb_scripts": true,
+        "debug_gdb_scripts_len": 34,
+        "debug_gdb_scripts_raw_hex": "016764625f6c6f61645f727573745f7072657474795f7072696e746572732e707900",
+        "main_has_movzbl": true,
+        "volatile_load_in_llvm_ir": true,
+        "main_disasm": "\n<TMP>/p2/bin_debuginfo_2:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000013840 <main>:\n   13840:\t50                   \tpush   %rax\n   13841:\t48 89 f1             \tmov    %rsi,%rcx\n   13844:\t0f b6 05 3d 10 ff ff \tmovzbl -0xefc3(%rip),%eax        # 4888 <__rustc_debug_gdb_scripts_section__>\n   1384b:\t48 63 d7             \tmovslq %edi,%rdx\n   1384e:\t48 8d 05 bb ff ff ff \tlea    -0x45(%rip),%rax        # 13810 <_RNvCsdtso6yMhVh2_8gdb_text4main>\n   13855:\t48 89 04 24          \tmov    %rax,(%rsp)\n   13859:\t48 8d 35 d8 c7 03 00 \tlea    0x3c7d8(%rip),%rsi        # 50038 <__frame_dummy_init_array_entry+0x8>\n   13860:\t48 89 e7             \tmov    %rsp,%rdi\n   13863:\t45 31 c0             \txor    %r8d,%r8d\n   13866:\tff 15 ac e4 03 00    \tcall   *0x3e4ac(%rip)        # 51d18 <_DYNAMIC+0x238>\n   1386c:\t59                   \tpop    %rcx\n   1386d:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:\n"
+      },
+      "debuginfo_2_strip_debuginfo": {
+        "flags": [
+          "-C",
+          "debuginfo=2",
+          "-C",
+          "strip=debuginfo"
+        ],
+        "text_len": 247987,
+        "text_sha256": "34642176a6e8f4793d1b3498f8ab5a463f98ce548e1473341af7fdf1487cadcc",
+        "has_debug_gdb_scripts": true,
+        "debug_gdb_scripts_len": 34,
+        "debug_gdb_scripts_raw_hex": "016764625f6c6f61645f727573745f7072657474795f7072696e746572732e707900",
+        "main_has_movzbl": true,
+        "volatile_load_in_llvm_ir": null,
+        "main_disasm": "\n<TMP>/p2/bin_debuginfo_2_strip_debuginfo:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\n0000000000013840 <main>:\n   13840:\t50                   \tpush   %rax\n   13841:\t48 89 f1             \tmov    %rsi,%rcx\n   13844:\t0f b6 05 3d 10 ff ff \tmovzbl -0xefc3(%rip),%eax        # 4888 <__rustc_debug_gdb_scripts_section__>\n   1384b:\t48 63 d7             \tmovslq %edi,%rdx\n   1384e:\t48 8d 05 bb ff ff ff \tlea    -0x45(%rip),%rax        # 13810 <_RNvCsdtso6yMhVh2_8gdb_text4main>\n   13855:\t48 89 04 24          \tmov    %rax,(%rsp)\n   13859:\t48 8d 35 d8 c7 03 00 \tlea    0x3c7d8(%rip),%rsi        # 50038 <__frame_dummy_init_array_entry+0x8>\n   13860:\t48 89 e7             \tmov    %rsp,%rdi\n   13863:\t45 31 c0             \txor    %r8d,%r8d\n   13866:\tff 15 ac e4 03 00    \tcall   *0x3e4ac(%rip)        # 51d18 <_DYNAMIC+0x238>\n   1386c:\t59                   \tpop    %rcx\n   1386d:\tc3                   \tret\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:\n"
+      },
+      "debuginfo_2_strip_symbols": {
+        "flags": [
+          "-C",
+          "debuginfo=2",
+          "-C",
+          "strip=symbols"
+        ],
+        "text_len": 247987,
+        "text_sha256": "34642176a6e8f4793d1b3498f8ab5a463f98ce548e1473341af7fdf1487cadcc",
+        "has_debug_gdb_scripts": true,
+        "debug_gdb_scripts_len": 34,
+        "debug_gdb_scripts_raw_hex": "016764625f6c6f61645f727573745f7072657474795f7072696e746572732e707900",
+        "main_has_movzbl": false,
+        "volatile_load_in_llvm_ir": null,
+        "main_disasm": "\n<TMP>/p2/bin_debuginfo_2_strip_symbols:     file format elf64-x86-64\n\n\nDisassembly of section .text:\n\nDisassembly of section .init:\n\nDisassembly of section .fini:\n\nDisassembly of section .plt:\n"
+      }
+    },
+    "text_identical_d0_vs_line_directives": false,
+    "text_identical_d0_vs_line_tables": false,
+    "text_identical_d0_vs_d1": false,
+    "text_identical_d0_vs_d2": false,
+    "text_identical_d0_vs_d2_strip_debuginfo": false,
+    "text_identical_line_directives_vs_d1_vs_d2": true,
+    "text_identical_d2_vs_d2_strip_debuginfo": true,
+    "text_delta_bytes_d2_minus_d0": 0,
+    "omit_gdb_pretty_printer_section_removed_rc": 1,
+    "omit_gdb_pretty_printer_section_stderr": "error[E0557]: feature has been removed\n --> <TMP>/p2/omit_removed.rs:1:12\n  |\n1 | #![feature(omit_gdb_pretty_printer_section)]\n  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ feature has been removed\n  |\n  = note: removed in 1.91.0; see <https://github.com/rust-lang/rust/pull/144738> for more information\n\nerror: cannot find attribute `omit_gdb_pretty_printer_section` in this scope\n --> <TMP>/p2/omit_removed.rs:2:4\n  |\n2 | #![omit_gdb_pretty_printer_section]\n  |    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0557`.\n",
+    "target_spec_emit_debug_gdb_scripts": {
+      "x86_64-unknown-linux-gnu": {
+        "explicit_key_present": false,
+        "effective_emit_debug_gdb_scripts": true
+      },
+      "x86_64-pc-windows-msvc": {
+        "explicit_key_present": true,
+        "effective_emit_debug_gdb_scripts": false
+      },
+      "riscv64gc-unknown-none-elf": {
+        "explicit_key_present": true,
+        "effective_emit_debug_gdb_scripts": false
+      }
+    },
+    "crate_type_gdb_scripts": {
+      "rlib": {
+        "o_member_count": 1,
+        "any_member_has_debug_gdb_scripts": false
+      },
+      "cdylib": {
+        "has_debug_gdb_scripts": false,
+        "debug_gdb_scripts_len": 0
+      },
+      "staticlib": {
+        "o_member_count": 329,
+        "any_member_has_debug_gdb_scripts": true
+      }
+    }
+  },
+  "probe_3_debugger_visualizer_transitive": {
+    "rlib_emits_debug_gdb_scripts": false,
+    "diamond_leaf": {
+      "bin_debug_gdb_scripts_bytes": 128,
+      "entry_count": 3,
+      "entries": [
+        {
+          "header_byte": 1,
+          "payload": "gdb_load_rust_pretty_printers.py"
+        },
+        {
+          "header_byte": 4,
+          "payload": "pretty-printer-vis_leaf-0\n# leaf-printer-v1\n"
+        },
+        {
+          "header_byte": 4,
+          "payload": "pretty-printer-vis_leaf-1\n# shared-printer-v1\n"
+        }
+      ],
+      "deduplicated_shared_script_count": 1
+    },
+    "local_vs_upstream_path_erased_asymmetry": {
+      "bin_debug_gdb_scripts_bytes": 150,
+      "entry_count": 3,
+      "entries": [
+        {
+          "header_byte": 1,
+          "payload": "gdb_load_rust_pretty_printers.py"
+        },
+        {
+          "header_byte": 4,
+          "payload": "pretty-printer-vis_leaf_local_dup-0\n# shared-printer-v1\n"
+        },
+        {
+          "header_byte": 4,
+          "payload": "pretty-printer-vis_leaf_local_dup-1\n# shared-printer-v1\n"
+        }
+      ],
+      "shared_script_occurrences": 2,
+      "local_and_upstream_identical_bytes_duplicated": true
+    }
+  },
+  "probe_4_split_debuginfo_and_thorin_dwp": {
+    "matrix": {
+      "dwarf4_off_single": {
+        "dwarf_version": 4,
+        "split_debuginfo": "off",
+        "split_dwarf_kind": "single",
+        "exe_size": 4365928,
+        "dwo_members_in_rlib": 0,
+        "loose_dwo_files": 0,
+        "has_dwp": false,
+        "dwp_size": 0,
+        "dwp_sections": [],
+        "cu_index_header": {},
+        "cu_index_unit_count": 0
+      },
+      "dwarf4_unpacked_split": {
+        "dwarf_version": 4,
+        "split_debuginfo": "unpacked",
+        "split_dwarf_kind": "split",
+        "exe_size": 4362600,
+        "dwo_members_in_rlib": 1,
+        "loose_dwo_files": 2,
+        "has_dwp": false,
+        "dwp_size": 0,
+        "dwp_sections": [],
+        "cu_index_header": {},
+        "cu_index_unit_count": 0
+      },
+      "dwarf4_unpacked_single": {
+        "dwarf_version": 4,
+        "split_debuginfo": "unpacked",
+        "split_dwarf_kind": "single",
+        "exe_size": 4362600,
+        "dwo_members_in_rlib": 0,
+        "loose_dwo_files": 0,
+        "has_dwp": false,
+        "dwp_size": 0,
+        "dwp_sections": [],
+        "cu_index_header": {},
+        "cu_index_unit_count": 0
+      },
+      "dwarf4_packed_split": {
+        "dwarf_version": 4,
+        "split_debuginfo": "packed",
+        "split_dwarf_kind": "split",
+        "exe_size": 4362592,
+        "dwo_members_in_rlib": 1,
+        "loose_dwo_files": 0,
+        "has_dwp": true,
+        "dwp_size": 5272,
+        "dwp_sections": [
+          ".debug_str_offsets.dwo",
+          ".debug_abbrev.dwo",
+          ".debug_info.dwo",
+          ".debug_str.dwo",
+          ".debug_cu_index"
+        ],
+        "cu_index_header": {
+          "version": 2,
+          "padding": 0,
+          "columns": 3,
+          "unit_count": 2,
+          "slot_count": 4
+        },
+        "cu_index_unit_count": 2
+      },
+      "dwarf4_packed_single": {
+        "dwarf_version": 4,
+        "split_debuginfo": "packed",
+        "split_dwarf_kind": "single",
+        "exe_size": 4362592,
+        "dwo_members_in_rlib": 0,
+        "loose_dwo_files": 0,
+        "has_dwp": true,
+        "dwp_size": 5272,
+        "dwp_sections": [
+          ".debug_str_offsets.dwo",
+          ".debug_abbrev.dwo",
+          ".debug_info.dwo",
+          ".debug_str.dwo",
+          ".debug_cu_index"
+        ],
+        "cu_index_header": {
+          "version": 2,
+          "padding": 0,
+          "columns": 3,
+          "unit_count": 2,
+          "slot_count": 4
+        },
+        "cu_index_unit_count": 2
+      },
+      "dwarf5_off_single": {
+        "dwarf_version": 5,
+        "split_debuginfo": "off",
+        "split_dwarf_kind": "single",
+        "exe_size": 4368352,
+        "dwo_members_in_rlib": 0,
+        "loose_dwo_files": 0,
+        "has_dwp": false,
+        "dwp_size": 0,
+        "dwp_sections": [],
+        "cu_index_header": {},
+        "cu_index_unit_count": 0
+      },
+      "dwarf5_unpacked_split": {
+        "dwarf_version": 5,
+        "split_debuginfo": "unpacked",
+        "split_dwarf_kind": "split",
+        "exe_size": 4366456,
+        "dwo_members_in_rlib": 1,
+        "loose_dwo_files": 2,
+        "has_dwp": false,
+        "dwp_size": 0,
+        "dwp_sections": [],
+        "cu_index_header": {},
+        "cu_index_unit_count": 0
+      },
+      "dwarf5_unpacked_single": {
+        "dwarf_version": 5,
+        "split_debuginfo": "unpacked",
+        "split_dwarf_kind": "single",
+        "exe_size": 4366456,
+        "dwo_members_in_rlib": 0,
+        "loose_dwo_files": 0,
+        "has_dwp": false,
+        "dwp_size": 0,
+        "dwp_sections": [],
+        "cu_index_header": {},
+        "cu_index_unit_count": 0
+      },
+      "dwarf5_packed_split": {
+        "dwarf_version": 5,
+        "split_debuginfo": "packed",
+        "split_dwarf_kind": "split",
+        "exe_size": 4366448,
+        "dwo_members_in_rlib": 1,
+        "loose_dwo_files": 0,
+        "has_dwp": true,
+        "dwp_size": 5360,
+        "dwp_sections": [
+          ".debug_str_offsets.dwo",
+          ".debug_abbrev.dwo",
+          ".debug_rnglists.dwo",
+          ".debug_info.dwo",
+          ".debug_str.dwo",
+          ".debug_cu_index"
+        ],
+        "cu_index_header": {
+          "version": 5,
+          "padding": 0,
+          "columns": 4,
+          "unit_count": 2,
+          "slot_count": 4
+        },
+        "cu_index_unit_count": 2
+      },
+      "dwarf5_packed_single": {
+        "dwarf_version": 5,
+        "split_debuginfo": "packed",
+        "split_dwarf_kind": "single",
+        "exe_size": 4366448,
+        "dwo_members_in_rlib": 0,
+        "loose_dwo_files": 0,
+        "has_dwp": true,
+        "dwp_size": 5360,
+        "dwp_sections": [
+          ".debug_str_offsets.dwo",
+          ".debug_abbrev.dwo",
+          ".debug_rnglists.dwo",
+          ".debug_info.dwo",
+          ".debug_str.dwo",
+          ".debug_cu_index"
+        ],
+        "cu_index_header": {
+          "version": 5,
+          "padding": 0,
+          "columns": 4,
+          "unit_count": 2,
+          "slot_count": 4
+        },
+        "cu_index_unit_count": 2
+      }
+    },
+    "remap_path_prefix_only": {
+      "remapped_packed_dwp_bit_identical": true,
+      "remapped_packed_exe_bit_identical": true,
+      "dwp_sha256_pair": [
+        "20c597ba8966c268574534f4c73bf6b68f844ac883ac5a2c63c29702d9ba896b",
+        "20c597ba8966c268574534f4c73bf6b68f844ac883ac5a2c63c29702d9ba896b"
+      ],
+      "exe_sha256_pair": [
+        "b0f00977012c2dd308c65febc311c58a2aed3920534714c82e5c93917e76f568",
+        "b0f00977012c2dd308c65febc311c58a2aed3920534714c82e5c93917e76f568"
+      ],
+      "dwp_size_pair": [
+        5176,
+        5176
+      ],
+      "exe_size_pair": [
+        4366168,
+        4366168
+      ]
+    },
+    "remap_path_and_cwd_prefix": {
+      "remapped_packed_dwp_bit_identical": true,
+      "remapped_packed_exe_bit_identical": true,
+      "dwp_sha256_pair": [
+        "20c597ba8966c268574534f4c73bf6b68f844ac883ac5a2c63c29702d9ba896b",
+        "20c597ba8966c268574534f4c73bf6b68f844ac883ac5a2c63c29702d9ba896b"
+      ],
+      "exe_sha256_pair": [
+        "b0f00977012c2dd308c65febc311c58a2aed3920534714c82e5c93917e76f568",
+        "b0f00977012c2dd308c65febc311c58a2aed3920534714c82e5c93917e76f568"
+      ],
+      "dwp_size_pair": [
+        5176,
+        5176
+      ],
+      "exe_size_pair": [
+        4366168,
+        4366168
+      ]
+    }
+  },
+  "probe_5_coroutine_and_collapse_debuginfo": {
+    "coroutine_linux_dwarf": {
+      "has_dunder_state_discr": true,
+      "dunder_state_is_artificial": true,
+      "numeric_variant_names": [
+        "0",
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "coroutine_msvc_cpp_like": {
+      "variant_names_enumerators": [
+        {
+          "name": "Unresumed",
+          "value": 0
+        },
+        {
+          "name": "Returned",
+          "value": 1
+        },
+        {
+          "name": "Panicked",
+          "value": 2
+        },
+        {
+          "name": "Suspend0",
+          "value": 3
+        }
+      ]
+    },
+    "collapse_debuginfo_cross_crate_matrix": {
+      "attr_default_cli_default": {
+        "macro_call": "mac_up::m_default!(x)",
+        "extra_flags": [],
+        "decodedline_references_mac_up_rs": false,
+        "local_var_decl_lines": {
+          "v_def": 3
+        }
+      },
+      "attr_yes_cli_default": {
+        "macro_call": "mac_up::m_yes!(x)",
+        "extra_flags": [],
+        "decodedline_references_mac_up_rs": false,
+        "local_var_decl_lines": {
+          "v_yes": 3
+        }
+      },
+      "attr_no_cli_default": {
+        "macro_call": "mac_up::m_no!(x)",
+        "extra_flags": [],
+        "decodedline_references_mac_up_rs": true,
+        "local_var_decl_lines": {
+          "v_no": 22
+        }
+      },
+      "attr_external_cli_default": {
+        "macro_call": "mac_up::m_ext!(x)",
+        "extra_flags": [],
+        "decodedline_references_mac_up_rs": false,
+        "local_var_decl_lines": {
+          "v_ext": 3
+        }
+      },
+      "attr_no_cli_yes_override": {
+        "macro_call": "mac_up::m_no!(x)",
+        "extra_flags": [
+          "-C",
+          "collapse-macro-debuginfo=yes"
+        ],
+        "decodedline_references_mac_up_rs": false,
+        "local_var_decl_lines": {
+          "v_no": 3
+        }
+      },
+      "attr_yes_cli_no_override": {
+        "macro_call": "mac_up::m_yes!(x)",
+        "extra_flags": [
+          "-C",
+          "collapse-macro-debuginfo=no"
+        ],
+        "decodedline_references_mac_up_rs": true,
+        "local_var_decl_lines": {
+          "v_yes": 13
+        }
+      }
+    },
+    "collapse_debuginfo_same_crate_decl_lines": {
+      "macro_def_lines": {
+        "loc_default": 1,
+        "loc_yes": 3,
+        "loc_no": 5,
+        "loc_ext": 7
+      },
+      "call_site_lines": {
+        "loc_default": 11,
+        "loc_yes": 12,
+        "loc_no": 13,
+        "loc_ext": 14
+      },
+      "observed_dw_at_decl_lines": {
+        "v_def": 1,
+        "v_yes": 12,
+        "v_no": 5,
+        "v_ext": 7
+      }
+    }
+  }
+}
