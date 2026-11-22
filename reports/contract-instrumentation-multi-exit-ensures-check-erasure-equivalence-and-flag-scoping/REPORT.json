@@ -1,0 +1,128 @@
+{
+  "topics": [
+    "lean/mechanization",
+    "verification/formalized-results",
+    "verification/runtime-assertion-checking",
+    "verification/refinement",
+    "verification/design-by-contract",
+    "compilers/contract-instrumentation",
+    "compilers/separate-compilation",
+    "pl/contracts"
+  ],
+  "subjects": [
+    {
+      "name": "Lean 4 toolchain",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "version": "v4.34.1",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52"
+      }
+    },
+    {
+      "name": "Rust compiler and core library source (contracts module)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "c7d5ba59d8e11ee2e2204b173458eec4cb41c973",
+        "path": "library/core/src/contracts.rs"
+      }
+    },
+    {
+      "name": "Ada 2012 Reference Manual",
+      "identity": {
+        "standard": "ISO/IEC 8652:2012",
+        "url": "http://www.ada-auth.org/standards/12rm/html/RM-6-1-1.html",
+        "url_section_11_4_2": "http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html"
+      }
+    },
+    {
+      "name": "JML Reference Manual",
+      "identity": {
+        "url": "https://www.cs.ucf.edu/~leavens/JML/jmlrefman/jmlrefman_9.html",
+        "edition": "HTML edition generated 2013-05-31"
+      }
+    },
+    {
+      "name": "SPARK Reference Manual",
+      "identity": {
+        "url": "https://docs.adacore.com/spark2014-docs/html/lrm/introduction.html",
+        "release": "28.0w"
+      }
+    },
+    {
+      "name": "LLVM Language Reference Manual (llvm.assume)",
+      "identity": {
+        "url": "https://llvm.org/docs/LangRef.html#llvm-assume-intrinsic"
+      }
+    },
+    {
+      "name": "Portable assumptions (WG21 P1774R8)",
+      "identity": {
+        "document": "P1774R8",
+        "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1774r8.pdf"
+      }
+    },
+    {
+      "name": "Contracts for C++ (WG21 P2900R14)",
+      "identity": {
+        "document": "P2900R14",
+        "url": "https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p2900r14.pdf"
+      }
+    },
+    {
+      "name": "Sound Runtime Assertion Checking for Memory Properties via Program Transformation",
+      "identity": {
+        "doi": "10.1145/3605951"
+      }
+    },
+    {
+      "name": "The Spirit of Ghost Code",
+      "identity": {
+        "doi": "10.1007/s10703-016-0243-x"
+      }
+    },
+    {
+      "name": "Alive2: Bounded Translation Validation for LLVM",
+      "identity": {
+        "doi": "10.1145/3453483.3454030"
+      }
+    },
+    {
+      "name": "Formal verification of a realistic compiler",
+      "identity": {
+        "doi": "10.1145/1538788.1538814"
+      }
+    },
+    {
+      "name": "Contracts for Higher-Order Functions",
+      "identity": {
+        "doi": "10.1145/581478.581484"
+      }
+    },
+    {
+      "name": "Refinement Calculus: A Systematic Introduction",
+      "identity": {
+        "doi": "10.1007/978-1-4612-1674-2"
+      }
+    },
+    {
+      "name": "Refinement for Monadic Programs (Archive of Formal Proofs)",
+      "identity": {
+        "url": "https://www.isa-afp.org/entries/Refine_Monadic.html"
+      }
+    },
+    {
+      "name": "A Runtime Assertion Checker for the Java Modeling Language (JML)",
+      "identity": {
+        "url": "http://www.cs.ucf.edu/~leavens/tech-reports/ISU/TR02-05/TR.pdf",
+        "report": "Iowa State University TR #02-05a"
+      }
+    },
+    {
+      "name": "Object-Oriented Software Construction, 2nd edition",
+      "identity": {
+        "isbn": "0-13-629155-4"
+      }
+    }
+  ],
+  "observed_at": "2026-11-21"
+}

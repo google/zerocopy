@@ -1,0 +1,1291 @@
+[
+  {
+    "id": "R1",
+    "lean": "Toy.Contracts.run_instr_allExits_eq_instrObs_of_lowered",
+    "lean_names": [
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.run",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.instrObs",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.runFrom_instr_allExits_eq_wrapObs",
+      "Toy.Contracts.wrapObs",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.cex_instr_before_lower_misses_try",
+      "Toy.Contracts.Fn",
+      "Toy.Contracts.nonvacuity_run_instr_allExits",
+      "Toy.Contracts.Block",
+      "Toy.Contracts.CheckKind",
+      "Toy.Contracts.Contract",
+      "Toy.Contracts.ExitKind",
+      "Toy.Contracts.Obs",
+      "Toy.Contracts.Operand",
+      "Toy.Contracts.Outcome",
+      "Toy.Contracts.Placement.selects",
+      "Toy.Contracts.Rvalue",
+      "Toy.Contracts.SR",
+      "Toy.Contracts.Stmt",
+      "Toy.Contracts.Store",
+      "Toy.Contracts.Store.set",
+      "Toy.Contracts.Term",
+      "Toy.Contracts.Term.isTryQ",
+      "Toy.Contracts.evalOp",
+      "Toy.Contracts.evalRv",
+      "Toy.Contracts.execStmts",
+      "Toy.Contracts.execStmts_append",
+      "Toy.Contracts.execStmts_no_stop_of_all",
+      "Toy.Contracts.execStmts_stop_outcome",
+      "Toy.Contracts.halts_gEarly_0",
+      "Toy.Contracts.halts_gEarly_100",
+      "Toy.Contracts.halts_gGood",
+      "Toy.Contracts.halts_gGood_5",
+      "Toy.Contracts.halts_gInt_3",
+      "Toy.Contracts.halts_gTry_1",
+      "Toy.Contracts.halts_iff_of_run_const",
+      "Toy.Contracts.halts_instr_allExits_gEarly_0",
+      "Toy.Contracts.halts_instr_allExits_gGood",
+      "Toy.Contracts.halts_instr_allExits_gInt_3",
+      "Toy.Contracts.halts_instr_allExits_gTry_1",
+      "Toy.Contracts.halts_instr_gEarly_100",
+      "Toy.Contracts.halts_instr_tailOnly_gEarly_0",
+      "Toy.Contracts.instrBlock",
+      "Toy.Contracts.instrObs_req_false",
+      "Toy.Contracts.instr_allExits_gEarly_block2",
+      "Toy.Contracts.instr_allExits_gPanic_blocks",
+      "Toy.Contracts.instr_gEarly_prologue",
+      "Toy.Contracts.instr_tailOnly_gEarly_block2",
+      "Toy.Contracts.not_halts_fuelOut",
+      "Toy.Contracts.not_halts_gLoop",
+      "Toy.Contracts.not_selects_tailOnly_early_tryErr",
+      "Toy.Contracts.runFrom",
+      "Toy.Contracts.runFrom_gLoop",
+      "Toy.Contracts.runFrom_instr_eq_of_ens",
+      "Toy.Contracts.runFrom_no_checkFail_of_blocks",
+      "Toy.Contracts.runFrom_succ",
+      "Toy.Contracts.run_gEarly_0_eq",
+      "Toy.Contracts.run_gLoop",
+      "Toy.Contracts.run_gPanic_eq",
+      "Toy.Contracts.run_gTry_1",
+      "Toy.Contracts.run_instr_gEarly_100",
+      "Toy.Contracts.run_instr_of_req_false",
+      "Toy.Contracts.selects_allExits_early",
+      "Toy.Contracts.wrapObs_fail",
+      "Toy.Contracts.wrapObs_keep",
+      "Toy.Contracts.wrapObs_of_execStmts_stop",
+      "Toy.Contracts.wrapObs_panic"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "T1: run-time checking of preconditions at entry and postconditions at every normal return, and the effect of disabling checks, are classical (Ada 2012 RM 6.1.1, JML, Eiffel); proofs for other formalisms exist on paper (Ly et al. 2024); no mechanized statement for a CFG with several return edges was found.",
+    "plain_claim": "For every contract `c` and every function `g` with `Lowered g` (no block of `g`, reachable or not, ends in the source form `tryQ` of `?`), and for every argument `x` and every fuel `n`: `run c (instr .allExits g) x n = instrObs c x (run c g x n)`. That is, if `Req x` fails, the instrumented run ends with a `requires` failure and no events; otherwise it is the run of `g`, except that a normal return of a value `r` with `Ens x r` false becomes an `ensures` failure with the same events; panics, failed checks, UB, stuck runs and fuel exhaustion are unchanged.",
+    "hypotheses": [
+      {
+        "name": "hg : Lowered g",
+        "purpose": "no block of `g`, reachable or not, ends in the source form `tryQ` of `?`; such a terminator returns without a `ret` edge, so no `ensures` check is inserted on it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_instr_before_lower_misses_try",
+        "witness_class": "a two-block function (`gTry`) with exactly one `?`, at input `1`, fuel `1`, contract `c1`"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Induction on fuel generalised over block, store and events (`runFrom_instr_allExits_eq_wrapObs`); the inserted check is the last statement before `ret`, so it sees the store in which the returned operand is evaluated, and a stop inside a block is a failed check or UB, which `wrapObs` leaves unchanged.",
+    "nonvacuity_witness": "`gEarly` (a tail return and an early return) is lowered.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_run_instr_allExits",
+    "non_claims": [
+      "Lowering precedes instrumentation in this theorem: there is a function still containing `tryQ` (`gTry`, at input `1` and fuel `1` under `c1`) for which the equation fails (`cex_instr_before_lower_misses_try`). Tightness does not mean the equation fails for every unlowered function; for example it is expected to hold when every `tryQ` block is unreachable (not proved here).",
+      "Body outlining is not modelled: `Fn` has no calls inside functions, so checking `Ens` once at a single wrapper call site (in the style of `instrObs`, or of the wrapper methods of the JML runtime assertion checker cited under prior art), or routing every exit through one shared return block, is not a transformation of this toy. The theorem says that per-edge insertion on a lowered function has the same observations as that wrapper; it says nothing about the cost or code size of either.",
+      "Panic paths: the instrumented run panics with the same events as `g` and `Ens` is not evaluated; a panic ends the run with outcome `panic`, there is no exceptional postcondition, and unwinding cleanup is not modelled (see the corpus package on panic safety and unwinding cited under prior art). The `?` error path is a normal return of a value (outcome `ret`) and so is subject to `Ens`; this models value-based error propagation, not exception propagation, which Ada 2012 6.1.1(35/3) and JML §9.9.3 exempt from normal postconditions.",
+      "Contract clauses are total Boolean functions of the immutable argument (and of the returned value); evaluating a clause cannot panic, diverge, have side effects or read mutable state. Mutable parameters and clauses over memory or over entry-time (`old`) values are not modelled.",
+      "A failed check is the distinct outcome `checkFail k`; whether a real failed check panics, unwinds or aborts is not modelled, and a failed check is never undefined behaviour in the toy.",
+      "`Lowered g` inspects every block of `g`, reachable or not; the natural weakening that restricts it to blocks reachable from the entry is not established here.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012 (Ada 2012), §6.1.1 'Preconditions and Postconditions', paragraphs 31/3–36/3 (online edition http://www.ada-auth.org/standards/12rm/html/RM-6-1-1.html, accessed 2026-11-21). 6.1.1(35/3): 'Upon successful return from a call of the subprogram or entry, prior to copying back any by-copy in out or out parameters, the postcondition check is performed.' 6.1.1(36/3): a failed check raises the exception at the point of the call. Checks on every successful return correspond to the all-exits policy; the paragraph imposes no check on exception propagation.",
+      "G. T. Leavens et al., JML Reference Manual (draft), HTML edition generated 2013-05-31, §9.9.3 'Ensures Clauses' (https://www.cs.ucf.edu/~leavens/JML/jmlrefman/jmlrefman_9.html, accessed 2026-11-21): 'An ensures clause specifies a normal postcondition, i.e., a property that is guaranteed to hold at the end of the method (or constructor) invocation in the case that this method (or constructor) invocation returns without throwing an exception.'",
+      "Y. Cheon and G. T. Leavens, 'A Runtime Assertion Checker for the Java Modeling Language (JML)', in H. R. Arabnia and Y. Mun (eds.), Proceedings of the International Conference on Software Engineering Research and Practice (SERP '02), Las Vegas, CSREA Press, June 2002, pp. 322–328; technical-report version Iowa State University TR #02-05a (March 2002, revised April 2002), http://www.cs.ucf.edu/~leavens/tech-reports/ISU/TR02-05/TR.pdf, accessed 2026-11-21: 'The original method becomes a private method with a new name; it is replaced by a wrapper method that is automatically generated. The wrapper method delegates client method calls to the original method with appropriate assertion checks.' A wrapper of this kind checks `Ens` once at the return of the call (the toy's `instrObs`) rather than on each return edge of the body.",
+      "B. Meyer, Object-Oriented Software Construction, 2nd edition, Prentice Hall, 1997, ISBN 0-13-629155-4, chapter 11 'Design by Contract: building reliable software' (p. 331 in the book's table of contents, https://archive.eiffel.com/doc/manuals/technology/oosc/ACROBAT/oosc-tab.pdf, accessed 2026-11-21); cited at chapter level for the notions of precondition and postcondition.",
+      "Corpus package panic-safety-unwinding-through-broken-invariants-leak-amplification-and-safe-forget (google/zerocopy branch reference at commit 95e95c2fbada69bc95437324bf4462759bd738a4): unwinding and panic safety in a toy model; cited for unwinding exits, not repeated."
+    ],
+    "design_question": "Where should `ensures` checks be placed so that every exit (tail expression, early `return`, `?`) is covered?"
+  },
+  {
+    "id": "R2",
+    "lean": "Toy.Contracts.req_and_ens_of_halts_ret_instr_allExits_lower",
+    "lean_names": [
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.JumpsInRange",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.lower",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.run_instr_allExits_eq_instrObs_of_lowered",
+      "Toy.Contracts.lowered_lower",
+      "Toy.Contracts.instrObs_eq_ret",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.lower_fOut_returns_where_fOut_stuck",
+      "Toy.Contracts.fOut",
+      "Toy.Contracts.halts_lower_iff_of_jumpsInRange",
+      "Toy.Contracts.cex_instr_before_lower_misses_try",
+      "Toy.Contracts.Halts",
+      "Toy.Contracts.cex_req_and_ens_premise",
+      "Toy.Contracts.nonvacuity_req_and_ens_lower"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "T1: run-time checking of preconditions at entry and postconditions at every normal return, and the effect of disabling checks, are classical (Ada 2012 RM 6.1.1, JML, Eiffel); proofs for other formalisms exist on paper (Ly et al. 2024); no mechanized statement for a CFG with several return edges was found.",
+    "plain_claim": "For every contract `c`, every function `f` as written (no hypothesis on `f`: neither `Lowered f` nor `JumpsInRange f` is assumed), every argument `x`, event list `tr` and value `r`: if the all-exits instrumentation of the lowering, `instr .allExits (lower f)`, halts on `x` with events `tr` and a normal return of `r`, then `Req x` and `Ens x r` both hold.",
+    "hypotheses": [
+      {
+        "name": "h : Halts c (instr .allExits (lower f)) x ⟨tr, .ret r⟩",
+        "purpose": "the premise: a normal return of the instrumented lowering.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_req_and_ens_premise",
+        "witness_class": "a lowered three-block function (`gEarly`) at input `0` and value `7` under `c1`"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "From `run_instr_allExits_eq_instrObs_of_lowered` applied to `lower f`, which is lowered for every `f` (`lowered_lower`), and `instrObs_eq_ret`.",
+    "nonvacuity_witness": "The premise holds for `gTry` on `5` (the instrumented lowering returns `4`).",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_req_and_ens_lower",
+    "non_claims": [
+      "A normal return of `instr .allExits (lower f)` need not be a normal return of `f`: without `JumpsInRange f`, `lower f` can return where `f` is `stuck` (`lower_fOut_returns_where_fOut_stuck`: on `5` under `c1`, `fOut` halts `stuck` while `instr .allExits (lower fOut)` returns `5`, and `Req 5` and `Ens 5 5` hold). Correspondence of the halting observations of `lower f` and `f` is `halts_lower_iff_of_jumpsInRange`, which assumes `JumpsInRange f`.",
+      "The theorem concerns normal returns; it does not say that every violation is reported (a run may diverge, panic or get stuck instead).",
+      "Lowering is applied before instrumentation; instrumenting `gTry` without lowering returns `9` on `1` under `c1` although `Ens 1 9` fails (`cex_instr_before_lower_misses_try`).",
+      "Contract clauses are total Boolean functions of the immutable argument (and of the returned value); evaluating a clause cannot panic, diverge, have side effects or read mutable state. Mutable parameters and clauses over memory or over entry-time (`old`) values are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012 (Ada 2012), §6.1.1 'Preconditions and Postconditions', paragraphs 31/3–36/3 (online edition http://www.ada-auth.org/standards/12rm/html/RM-6-1-1.html, accessed 2026-11-21). 6.1.1(35/3): 'Upon successful return from a call of the subprogram or entry, prior to copying back any by-copy in out or out parameters, the postcondition check is performed.' 6.1.1(36/3): a failed check raises the exception at the point of the call. Checks on every successful return correspond to the all-exits policy; the paragraph imposes no check on exception propagation.",
+      "G. T. Leavens et al., JML Reference Manual (draft), HTML edition generated 2013-05-31, §9.9.3 'Ensures Clauses' (https://www.cs.ucf.edu/~leavens/JML/jmlrefman/jmlrefman_9.html, accessed 2026-11-21): 'An ensures clause specifies a normal postcondition, i.e., a property that is guaranteed to hold at the end of the method (or constructor) invocation in the case that this method (or constructor) invocation returns without throwing an exception.'",
+      "D. Ly, N. Kosmatov, F. Loulergue and J. Signoles, 'Sound Runtime Assertion Checking for Memory Properties via Program Transformation', Formal Aspects of Computing 36(1), Article 4, 2024, DOI 10.1145/3605951 (author version https://hal.science/hal-04065774/file/main.pdf, accessed 2026-11-21): for an E-ACSL-style instrumentation of a C-like language it proves semantic preservation while no annotation is violated (its Theorem 5.7) and soundness of the runtime assertion checker (its Corollary 5.10), with paper proofs ('A machine-checked Coq proof of these results is left as future work')."
+    ],
+    "design_question": "Is a value returned by the all-exits instrumented lowering guaranteed to satisfy the contract?"
+  },
+  {
+    "id": "R4",
+    "lean": "Toy.Contracts.halts_lower_iff_of_jumpsInRange",
+    "lean_names": [
+      "Toy.Contracts.JumpsInRange",
+      "Toy.Contracts.lower",
+      "Toy.Contracts.fOut",
+      "Toy.Contracts.fBadEntry",
+      "Toy.Contracts.runFrom_lower_of_fin",
+      "Toy.Contracts.runFrom_of_lower_fin",
+      "Toy.Contracts.lower_blocks_lt",
+      "Toy.Contracts.lower_blocks_add",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.haltsEqAt_not_runEqAt_lower_gTry_1",
+      "Toy.Contracts.not_jumpsInRange_gStuck_and_lower_eq",
+      "Toy.Contracts.lower_gEarly_ne",
+      "Toy.Contracts.cex_lower_jumpsInRange",
+      "Toy.Contracts.cex_lower_entry_out_of_range",
+      "Toy.Contracts.nonvacuity_halts_lower",
+      "Toy.Contracts.Term.targets",
+      "Toy.Contracts.errBlock",
+      "Toy.Contracts.gStuck",
+      "Toy.Contracts.halts_fOut",
+      "Toy.Contracts.halts_lower_fOut",
+      "Toy.Contracts.halts_lower_gTry_1",
+      "Toy.Contracts.jumpsInRange_gEarly",
+      "Toy.Contracts.lowerTerm",
+      "Toy.Contracts.lower_gEarly_take",
+      "Toy.Contracts.lower_gTry_blocks",
+      "Toy.Contracts.lowered_gEarly",
+      "Toy.Contracts.lowered_lower_gTry",
+      "Toy.Contracts.not_jumpsInRange_fOut",
+      "Toy.Contracts.not_lowered_gTry",
+      "Toy.Contracts.run_fOut_eq"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "T1: correctness of lowering `?` to an explicit return edge is folklore; stated here for the toy CFG.",
+    "plain_claim": "For every contract `c`, every function `f` with `JumpsInRange f` (the entry and every jump target of every block, reachable or not, are block indices of `f`; a function with no blocks never satisfies it), every argument `x` and every observation `o`: `lower f` halts on `x` with `o` iff `f` halts on `x` with `o`.",
+    "hypotheses": [
+      {
+        "name": "hf : JumpsInRange f",
+        "purpose": "lowering appends fresh blocks at indices `n + i` (`n` the number of blocks); a jump of `f` to such an index, or an entry at such an index, is `stuck` in `f` but reaches a fresh block in `lower f`.",
+        "tightness": "tight",
+        "counterexample": [
+          "Toy.Contracts.cex_lower_jumpsInRange",
+          "Toy.Contracts.cex_lower_entry_out_of_range"
+        ],
+        "witness_class": "a two-block function (`fOut`) whose entry block jumps to index `3`; and a one-block function (`fBadEntry`) whose entry index `1` is out of range while its one jump target is in range"
+      }
+    ],
+    "depth": "substantive",
+    "depth_justification": "Two simulations by fuel induction from in-range blocks: a halting run of `f` at fuel `n` is a halting run of `lower f` at fuel `n + 1` (one extra block execution when the run ends at a `?` error exit; `runFrom_lower_of_fin`), and a halting run of `lower f` at fuel `n` is a halting run of `f` at the same fuel `n` (`runFrom_of_lower_fin`); index lemmas for `mapIdx` and the appended blocks (`lower_blocks_lt`, `lower_blocks_add`).",
+    "nonvacuity_witness": "`gTry` satisfies `JumpsInRange`.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_halts_lower",
+    "non_claims": [
+      "Halting observations are compared: fuel-exact runs differ (a run that ends at a lowered `?` error exit takes one more block execution; `haltsEqAt_not_runEqAt_lower_gTry_1`), and the events of runs that exhaust their fuel are not compared.",
+      "The natural weakening of `JumpsInRange f` to 'no reachable jump out of range' is not established.",
+      "Degenerate edge: a function with no blocks fails `JumpsInRange` although `lower` leaves it unchanged (`not_jumpsInRange_gStuck_and_lower_eq`), so the theorem does not cover it.",
+      "Lowering appends one block per original block, so `lower f` differs from `f` whenever `f` has a block, even without `?` (`lower_gEarly_ne`); the theorem is about halting observations, not syntax.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "No specific prior statement found; lowering `?` to an explicit early return is folklore."
+    ],
+    "design_question": "Can instrumentation be defined on lowered functions without changing the halting behaviour of the function as written?"
+  },
+  {
+    "id": "R5",
+    "lean": "Toy.Contracts.cex_tailOnly_misses_early_return",
+    "lean_names": [
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.instrObs"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "T1: folklore (a check attached to the tail expression misses other exits); made precise here with a concrete toy instance.",
+    "plain_claim": "There is a lowered function, `gEarly`, and an input, `0`, satisfying `Req` under `c1` (`requires x < 100`, `ensures r ≤ x`), such that: `gEarly` halts on `0` with no events and a normal return of `7` (its run takes the edge `ret .early (.lit 7)` of block `2`; the outcome `ret 7` itself records no provenance), `Ens 0 7` fails, the tail-only instrumentation `instr .tailOnly gEarly` halts with no events and a normal return of `7`, and the all-exits instrumentation `instr .allExits gEarly` halts with no events and an `ensures` failure.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_justification": "Evaluation of concrete runs.",
+    "non_claims": [
+      "One concrete instance; it is not a statement about every function, input or flag assignment.",
+      "It does not say that tail-only placement misses a violation for functions whose every return edge is the tail edge (not proved here).",
+      "Checking the returned value once at a wrapper call site (`instrObs`), or routing every exit through one return block that carries the tail edge, would also catch this return (not modelled as a transformation here).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012 (Ada 2012), §6.1.1 'Preconditions and Postconditions', paragraphs 31/3–36/3 (online edition http://www.ada-auth.org/standards/12rm/html/RM-6-1-1.html, accessed 2026-11-21). 6.1.1(35/3): 'Upon successful return from a call of the subprogram or entry, prior to copying back any by-copy in out or out parameters, the postcondition check is performed.' 6.1.1(36/3): a failed check raises the exception at the point of the call. Checks on every successful return correspond to the all-exits policy; the paragraph imposes no check on exception propagation.",
+      "G. T. Leavens et al., JML Reference Manual (draft), HTML edition generated 2013-05-31, §9.9.3 'Ensures Clauses' (https://www.cs.ucf.edu/~leavens/JML/jmlrefman/jmlrefman_9.html, accessed 2026-11-21): 'An ensures clause specifies a normal postcondition, i.e., a property that is guaranteed to hold at the end of the method (or constructor) invocation in the case that this method (or constructor) invocation returns without throwing an exception.'"
+    ],
+    "design_question": "Where should `ensures` checks be placed so that every exit (tail expression, early `return`, `?`) is covered?"
+  },
+  {
+    "id": "R6",
+    "lean": "Toy.Contracts.cex_tailOnly_misses_try_error_after_lowering",
+    "lean_names": [
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.lower"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "T1: folklore (a check attached to the tail expression misses other exits); made precise here with a concrete toy instance.",
+    "plain_claim": "There is a function with a `?`, `gTry` (`let y = x - 1` with truncated subtraction, then `y?` with error value `9`, then tail `y`), and an input, `1`, satisfying `Req` under `c1`, such that: `gTry` halts on `1` with no events and a normal return of `9` (the value of the `?` error path, taken because `1 - 1 = 0`), `Ens 1 9` fails, `lower gTry` is lowered, the tail-only instrumentation of `lower gTry` halts with no events and a normal return of `9`, and the all-exits instrumentation of `lower gTry` halts with no events and an `ensures` failure.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_justification": "Evaluation of concrete runs.",
+    "non_claims": [
+      "One concrete instance; it is not a statement about every function, input or flag assignment.",
+      "Lowering does not make tail-only placement complete in this instance; whether some other lowering (for example one that routes every exit through the tail edge) would, is not examined.",
+      "The `?` error path is a normal return of a value here (value-based error propagation), unlike an exception, which Ada 2012 6.1.1(35/3) and JML §9.9.3 exempt from normal postconditions.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012 (Ada 2012), §6.1.1 'Preconditions and Postconditions', paragraphs 31/3–36/3 (online edition http://www.ada-auth.org/standards/12rm/html/RM-6-1-1.html, accessed 2026-11-21). 6.1.1(35/3): 'Upon successful return from a call of the subprogram or entry, prior to copying back any by-copy in out or out parameters, the postcondition check is performed.' 6.1.1(36/3): a failed check raises the exception at the point of the call. Checks on every successful return correspond to the all-exits policy; the paragraph imposes no check on exception propagation.",
+      "G. T. Leavens et al., JML Reference Manual (draft), HTML edition generated 2013-05-31, §9.9.3 'Ensures Clauses' (https://www.cs.ucf.edu/~leavens/JML/jmlrefman/jmlrefman_9.html, accessed 2026-11-21): 'An ensures clause specifies a normal postcondition, i.e., a property that is guaranteed to hold at the end of the method (or constructor) invocation in the case that this method (or constructor) invocation returns without throwing an exception.'",
+      "No specific prior statement found; lowering `?` to an explicit early return is folklore."
+    ],
+    "design_question": "Where should `ensures` checks be placed so that every exit (tail expression, early `return`, `?`) is covered?"
+  },
+  {
+    "id": "R7",
+    "lean": "Toy.Contracts.cex_instr_before_lower_misses_try",
+    "lean_names": [
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.instrObs",
+      "Toy.Contracts.run",
+      "Toy.Contracts.run_instr_allExits_eq_instrObs_of_lowered",
+      "Toy.Contracts.Lowered"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "T1: folklore (instrumentation keyed to return statements misses implicit exits); made precise here with a concrete toy instance.",
+    "plain_claim": "There is a function that is not lowered, `gTry`, such that at input `1` and fuel `1` under `c1` the all-exits instrumentation `instr .allExits gTry` gives no events and a normal return of `9`, while the contract wrapper `instrObs c1 1 (run c1 gTry 1 1)` gives no events and an `ensures` failure, so the equation of `run_instr_allExits_eq_instrObs_of_lowered` fails without `Lowered`; moreover the instrumented `gTry` halts on `1` with no events and a normal return of `9`, and `Ens 1 9` fails.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_justification": "Evaluation of concrete runs.",
+    "non_claims": [
+      "One concrete instance; it is not a statement about every function, input or flag assignment.",
+      "Instrumenting the source form `tryQ` directly (adding a check on its error path), or checking at a wrapper call site, would also avoid this miss; neither is modelled.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012 (Ada 2012), §6.1.1 'Preconditions and Postconditions', paragraphs 31/3–36/3 (online edition http://www.ada-auth.org/standards/12rm/html/RM-6-1-1.html, accessed 2026-11-21). 6.1.1(35/3): 'Upon successful return from a call of the subprogram or entry, prior to copying back any by-copy in out or out parameters, the postcondition check is performed.' 6.1.1(36/3): a failed check raises the exception at the point of the call. Checks on every successful return correspond to the all-exits policy; the paragraph imposes no check on exception propagation.",
+      "G. T. Leavens et al., JML Reference Manual (draft), HTML edition generated 2013-05-31, §9.9.3 'Ensures Clauses' (https://www.cs.ucf.edu/~leavens/JML/jmlrefman/jmlrefman_9.html, accessed 2026-11-21): 'An ensures clause specifies a normal postcondition, i.e., a property that is guaranteed to hold at the end of the method (or constructor) invocation in the case that this method (or constructor) invocation returns without throwing an exception.'"
+    ],
+    "design_question": "Where should `ensures` checks be placed so that every exit (tail expression, early `return`, `?`) is covered?"
+  },
+  {
+    "id": "R8",
+    "lean": "Toy.Contracts.erase_instr_eq_of_noChecks",
+    "lean_names": [
+      "Toy.Contracts.NoChecks",
+      "Toy.Contracts.erase",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.gInt",
+      "Toy.Contracts.map_erase_instrBlock",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req",
+      "Toy.Contracts.cex_erase_instr_noChecks",
+      "Toy.Contracts.nonvacuity_erase_instr"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "T1: that deleting the inserted checks restores the uninstrumented program is folklore; no mechanized statement for runtime checks was found (ghost-code erasure is proved safe on paper by Filliâtre et al. 2016).",
+    "plain_claim": "For every placement `p` and every function `g` with `NoChecks g` (no `checkReq`, `checkEns` or `assumeReq` in its prologue or in any block, reachable or not): `erase (instr p g) = g`.",
+    "hypotheses": [
+      {
+        "name": "hg : NoChecks g",
+        "purpose": "no contract statement in the prologue or in any block of `g`, reachable or not; `erase` deletes every contract statement, including any already in `g`, so without the hypothesis the erasure can differ from `g`.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_erase_instr_noChecks",
+        "witness_class": "a one-block function (`gInt`) containing one `ensures` check"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "List-filter identities on the prologue and on each block (`map_erase_instrBlock`).",
+    "nonvacuity_witness": "`gEarly` has no contract statements.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_erase_instr",
+    "non_claims": [
+      "A syntactic identity; it says nothing about observations by itself.",
+      "Contract statements (`checkReq`, `checkEns`, `assumeReq`) carry no predicate of their own: each evaluates a clause of the contract `c` under which the function runs, and `erase` deletes every contract statement, including any already present in the function as written. `NoChecks g` is tight for that reason; the comparison of `g` itself with `instr .allExits g` at inputs satisfying `Req` is characterized under `Lowered g` without assuming `NoChecks g` (`instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req`). In-body assertions with predicates of their own are not modelled.",
+      "`NoChecks g` inspects the prologue and every block of `g`, reachable or not; the natural weakening that restricts it to blocks reachable from the entry is not established here.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012, §6.1.1 paragraph 19/3 and §11.4.2 'Pragmas Assert and Assertion_Policy', paragraphs 10/3 and 10.3/3 (http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html, accessed 2026-11-21). 6.1.1(19/3): pre- and postcondition expressions are enabled if checks are required by the assertion policies 'in effect at the point of a corresponding aspect specification'. 11.4.2(10/3): policy Ignore 'requires that the assertion expression not be evaluated at these points, and the run-time checks not be performed'. 11.4.2(10.3/3): 'If a pragma Assertion_Policy applies to a generic_instantiation, then the pragma Assertion_Policy applies to the entire instance.'",
+      "J.-C. Filliâtre, L. Gondelman and A. Paskevich, 'The Spirit of Ghost Code', Formal Methods in System Design 48(3):152–174, 2016, DOI 10.1007/s10703-016-0243-x (https://hal.science/hal-01396864, accessed 2026-11-21): defines erasure of ghost code and proves it safe by a bisimulation for a small ML-like language; related erasure result for specification-only code, not for runtime checks."
+    ],
+    "design_question": "When is running with checks disabled observationally identical to running with checks?"
+  },
+  {
+    "id": "R24",
+    "lean": "Toy.Contracts.instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req",
+    "lean_names": [
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.NoChecks",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.RunEqAt",
+      "Toy.Contracts.EnsOnReturnsAt",
+      "Toy.Contracts.HaltsEqAt",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.cOne",
+      "Toy.Contracts.gGood",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.run_instr_allExits_eq_instrObs_of_lowered",
+      "Toy.Contracts.instrObs_run_eq_of_req_of_ensOnReturnsAt",
+      "Toy.Contracts.instrObs_eq_ret",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.gInt",
+      "Toy.Contracts.cThree",
+      "Toy.Contracts.callRun_eq_ite_governingFlag_of_lowered",
+      "Toy.Contracts.erase",
+      "Toy.Contracts.erasure_obsEq_iff_ensOnReturnsAt_of_lowered_of_noChecks_of_req",
+      "Toy.Contracts.cex_erasure_noChecks",
+      "Toy.Contracts.cex_instrSelf_lowered",
+      "Toy.Contracts.cex_instrSelf_req",
+      "Toy.Contracts.nonvacuity_instrSelf",
+      "Toy.Contracts.haltsEqAt_of_runEqAt",
+      "Toy.Contracts.not_haltsEqAt_gGood_gEarly_0",
+      "Toy.Contracts.runEqAt_instr_gTry_1",
+      "Toy.Contracts.runFrom_mono"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "T1: run-time checking of preconditions at entry and postconditions at every normal return, and the effect of disabling checks, are classical (Ada 2012 RM 6.1.1, JML, Eiffel); proofs for other formalisms exist on paper (Ly et al. 2024); no mechanized statement for a CFG with several return edges was found.",
+    "plain_claim": "For every contract `c`, every function `g` with `Lowered g` (no block, reachable or not, ends in `tryQ`; contract statements in `g` are allowed, `NoChecks g` is not assumed) and every input `x` with `Req x`: the all-exits instrumentation `instr .allExits g` and `g` itself are fuel-exactly identical at `x` (`RunEqAt`: the same observation at every fuel, including the events emitted before the fuel runs out) iff every normal return of `g` on `x` satisfies `Ens` (`EnsOnReturnsAt c g x`); and the same iff holds with identity of halting observations (`HaltsEqAt`) in place of `RunEqAt`.",
+    "hypotheses": [
+      {
+        "name": "hg : Lowered g",
+        "purpose": "no block of `g`, reachable or not, ends in the source form `tryQ` of `?`; without it a `?` exit returns unchecked, so the two runs can agree while `Ens` fails.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_instrSelf_lowered",
+        "witness_class": "a two-block function with one `?` (`gTry`) at input `1` under `cOne`"
+      },
+      {
+        "name": "hreq : c.req x = true",
+        "purpose": "off `Req` the instrumentation fails its `requires` check while `g` runs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_instrSelf_req",
+        "witness_class": "a one-block function (`gGood`) at input `100` under `c1`"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "From `run_instr_allExits_eq_instrObs_of_lowered` and `instrObs_run_eq_of_req_of_ensOnReturnsAt`; the converse direction reads `Ens` off a halting return via `instrObs_eq_ret`.",
+    "nonvacuity_witness": "`gGood` on `5` (both sides hold), `gEarly` on `0` (both sides fail), and `gInt` on `3` under `cThree` (all hypotheses hold although `NoChecks gInt` fails).",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_instrSelf",
+    "non_claims": [
+      "This compares checking with running `g` as written, which is what a call does when its governing flag is off (`callRun_eq_ite_governingFlag_of_lowered`). The comparison with the erasure `erase (instr .allExits g)` is `erasure_obsEq_iff_ensOnReturnsAt_of_lowered_of_noChecks_of_req`, which assumes `NoChecks g`; that hypothesis is tight there (`cex_erasure_noChecks`: `gInt` at input `3` under `cThree`) because `erase` also deletes contract statements of `g`.",
+      "Diverging runs are compared by `RunEqAt` through their partial event traces; `HaltsEqAt` ignores them.",
+      "`Lowered g` inspects every block of `g`, reachable or not; the natural weakening that restricts it to blocks reachable from the entry is not established here.",
+      "Contract clauses are total Boolean functions of the immutable argument (and of the returned value); evaluating a clause cannot panic, diverge, have side effects or read mutable state. Mutable parameters and clauses over memory or over entry-time (`old`) values are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012, §6.1.1 paragraph 19/3 and §11.4.2 'Pragmas Assert and Assertion_Policy', paragraphs 10/3 and 10.3/3 (http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html, accessed 2026-11-21). 6.1.1(19/3): pre- and postcondition expressions are enabled if checks are required by the assertion policies 'in effect at the point of a corresponding aspect specification'. 11.4.2(10/3): policy Ignore 'requires that the assertion expression not be evaluated at these points, and the run-time checks not be performed'. 11.4.2(10.3/3): 'If a pragma Assertion_Policy applies to a generic_instantiation, then the pragma Assertion_Policy applies to the entire instance.'",
+      "D. Ly, N. Kosmatov, F. Loulergue and J. Signoles, 'Sound Runtime Assertion Checking for Memory Properties via Program Transformation', Formal Aspects of Computing 36(1), Article 4, 2024, DOI 10.1145/3605951 (author version https://hal.science/hal-04065774/file/main.pdf, accessed 2026-11-21): for an E-ACSL-style instrumentation of a C-like language it proves semantic preservation while no annotation is violated (its Theorem 5.7) and soundness of the runtime assertion checker (its Corollary 5.10), with paper proofs ('A machine-checked Coq proof of these results is left as future work')."
+    ],
+    "design_question": "When is running with checks disabled observationally identical to running with checks?"
+  },
+  {
+    "id": "R9",
+    "lean": "Toy.Contracts.erasure_obsEq_iff_ensOnReturnsAt_of_lowered_of_noChecks_of_req",
+    "lean_names": [
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.NoChecks",
+      "Toy.Contracts.erase",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.RunEqAt",
+      "Toy.Contracts.EnsOnReturnsAt",
+      "Toy.Contracts.HaltsEqAt",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.cOne",
+      "Toy.Contracts.gInt",
+      "Toy.Contracts.cThree",
+      "Toy.Contracts.gGood",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.erase_instr_eq_of_noChecks",
+      "Toy.Contracts.instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.cex_erasure_tailOnly",
+      "Toy.Contracts.cex_erasure_lowered",
+      "Toy.Contracts.cex_erasure_noChecks",
+      "Toy.Contracts.cex_erasure_req",
+      "Toy.Contracts.nonvacuity_erasure_pointwise",
+      "Toy.Contracts.Stmt.isContract",
+      "Toy.Contracts.erase_gInt_ne",
+      "Toy.Contracts.erase_instrBlock_eq",
+      "Toy.Contracts.erase_instr_allExits_gEarly",
+      "Toy.Contracts.filter_checkEns_singleton",
+      "Toy.Contracts.filter_checkReq_cons",
+      "Toy.Contracts.filter_not_isContract_of_all",
+      "Toy.Contracts.noChecks_gEarly",
+      "Toy.Contracts.not_noChecks_gInt",
+      "Toy.Contracts.not_noChecks_instr_gEarly",
+      "Toy.Contracts.not_runEqAt_erase_instr_gGood_100",
+      "Toy.Contracts.runEqAt_erase_instr_gGood_5",
+      "Toy.Contracts.runEqAt_erase_instr_gInt_ne",
+      "Toy.Contracts.runEqAt_erase_instr_gTry_1"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "T1: run-time checking of preconditions at entry and postconditions at every normal return, and the effect of disabling checks, are classical (Ada 2012 RM 6.1.1, JML, Eiffel); proofs for other formalisms exist on paper (Ly et al. 2024); no mechanized statement for a CFG with several return edges was found.",
+    "plain_claim": "For every contract `c`, every function `g` with `Lowered g` and `NoChecks g` (no block, reachable or not, ends in `tryQ`; no contract statement in the prologue or in any block, reachable or not), and every input `x` with `Req x`: the erasure `erase (instr .allExits g)` and the all-exits instrumentation `instr .allExits g` are fuel-exactly identical at `x` (`RunEqAt`: the same observation at every fuel, including the events emitted before the fuel runs out) iff every normal return of `g` on `x` satisfies `Ens` (`EnsOnReturnsAt c g x`); and the same iff holds with identity of halting observations (`HaltsEqAt`) in place of `RunEqAt`.",
+    "hypotheses": [
+      {
+        "name": "hg : Lowered g",
+        "purpose": "no block of `g`, reachable or not, ends in the source form `tryQ` of `?`; without it a `?` exit returns unchecked, so erasure and instrumentation can agree while `Ens` fails.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_erasure_lowered",
+        "witness_class": "a two-block function with one `?` (`gTry`) at input `1` under `cOne`"
+      },
+      {
+        "name": "hnc : NoChecks g",
+        "purpose": "no contract statement in the prologue or in any block of `g`, reachable or not; `erase` also deletes contract statements already in `g`, so the erasure can differ from `g` and the right-hand side no longer describes it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_erasure_noChecks",
+        "witness_class": "a one-block function containing a failing `ensures` check (`gInt`) at input `3` under `cThree`"
+      },
+      {
+        "name": "hreq : c.req x = true",
+        "purpose": "off `Req` the instrumentation fails its `requires` check while the erasure runs.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_erasure_req",
+        "witness_class": "a one-block function (`gGood`) at input `100` under `c1`"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "From `erase_instr_eq_of_noChecks` and `instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req`.",
+    "nonvacuity_witness": "`gGood` on `5` (both sides hold) and `gEarly` on `0` (both sides fail) satisfy all hypotheses.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_erasure_pointwise",
+    "non_claims": [
+      "Termination plays no role: `RunEqAt` compares partial event traces of runs that exhaust their fuel; `HaltsEqAt` ignores diverging runs.",
+      "The theorem is stated for the all-exits placement. With tail-only placement there is an instance at which its forward direction fails (`cex_erasure_tailOnly`: for `gEarly` on `0` under `c1` the erasure of the tail-only instrumentation is fuel-exactly identical to it while `Ens 0 7` fails).",
+      "Contract statements (`checkReq`, `checkEns`, `assumeReq`) carry no predicate of their own: each evaluates a clause of the contract `c` under which the function runs, and `erase` deletes every contract statement, including any already present in the function as written. `NoChecks g` is tight for that reason; the comparison of `g` itself with `instr .allExits g` at inputs satisfying `Req` is characterized under `Lowered g` without assuming `NoChecks g` (`instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req`). In-body assertions with predicates of their own are not modelled.",
+      "`Lowered g` and `NoChecks g` inspect every block of `g`, reachable or not (`NoChecks g` also the prologue); the natural weakenings that restrict them to blocks reachable from the entry are not established here.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012, §6.1.1 paragraph 19/3 and §11.4.2 'Pragmas Assert and Assertion_Policy', paragraphs 10/3 and 10.3/3 (http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html, accessed 2026-11-21). 6.1.1(19/3): pre- and postcondition expressions are enabled if checks are required by the assertion policies 'in effect at the point of a corresponding aspect specification'. 11.4.2(10/3): policy Ignore 'requires that the assertion expression not be evaluated at these points, and the run-time checks not be performed'. 11.4.2(10.3/3): 'If a pragma Assertion_Policy applies to a generic_instantiation, then the pragma Assertion_Policy applies to the entire instance.'",
+      "SPARK Reference Manual, release 28.0w (development documentation at https://docs.adacore.com/spark2014-docs/html/lrm/introduction.html, accessed 2026-11-21; no immutable revision identifier is published). §1: 'The run-time checking of assertion expressions may be suppressed by using the Ada pragma Assertion_Policy but the static analysis and proof tools always use the assertion expressions whatever the assertion policy.' §1.4.1 'Further Details on Formal Verification': 'In addition, the generation of verification conditions is unaffected by the suppression of checks (e.g., via pragma Suppress) or the disabling of assertions (e.g., via pragma Assertion_Policy).'",
+      "D. Ly, N. Kosmatov, F. Loulergue and J. Signoles, 'Sound Runtime Assertion Checking for Memory Properties via Program Transformation', Formal Aspects of Computing 36(1), Article 4, 2024, DOI 10.1145/3605951 (author version https://hal.science/hal-04065774/file/main.pdf, accessed 2026-11-21): for an E-ACSL-style instrumentation of a C-like language it proves semantic preservation while no annotation is violated (its Theorem 5.7) and soundness of the runtime assertion checker (its Corollary 5.10), with paper proofs ('A machine-checked Coq proof of these results is left as future work')."
+    ],
+    "design_question": "When is running with checks disabled observationally identical to running with checks?"
+  },
+  {
+    "id": "R10",
+    "lean": "Toy.Contracts.erasure_obsEq_onReq_iff_staticObligation_of_lowered_of_noChecks",
+    "lean_names": [
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.NoChecks",
+      "Toy.Contracts.erase",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.StaticObligation",
+      "Toy.Contracts.HaltsEqAt",
+      "Toy.Contracts.RunEqAt",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.cOne",
+      "Toy.Contracts.gInt",
+      "Toy.Contracts.cThree",
+      "Toy.Contracts.erasure_obsEq_iff_ensOnReturnsAt_of_lowered_of_noChecks_of_req",
+      "Toy.Contracts.gGood",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.not_haltsEqAt_erase_instr_of_req_false",
+      "Toy.Contracts.instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req",
+      "Toy.Contracts.cex_erasure_global_lowered",
+      "Toy.Contracts.cex_erasure_global_noChecks",
+      "Toy.Contracts.nonvacuity_erasure_global",
+      "Toy.Contracts.ensOnReturnsAt_gGood",
+      "Toy.Contracts.ensOnReturnsAt_gInt_3",
+      "Toy.Contracts.not_ensOnReturnsAt_gEarly_0",
+      "Toy.Contracts.not_ensOnReturnsAt_gTry_1",
+      "Toy.Contracts.not_staticObligationAt_gEarly_0",
+      "Toy.Contracts.not_staticObligation_gEarly",
+      "Toy.Contracts.staticObligationAt_gEarly_100",
+      "Toy.Contracts.staticObligationAt_gGood_5",
+      "Toy.Contracts.staticObligation_gGood"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "T1: run-time checking of preconditions at entry and postconditions at every normal return, and the effect of disabling checks, are classical (Ada 2012 RM 6.1.1, JML, Eiffel); proofs for other formalisms exist on paper (Ly et al. 2024); no mechanized statement for a CFG with several return edges was found.",
+    "plain_claim": "For every contract `c` and every function `g` with `Lowered g` and `NoChecks g` (both over every block, reachable or not; `NoChecks g` also over the prologue): the erasure `erase (instr .allExits g)` is fuel-exactly identical to the all-exits instrumentation at every input satisfying `Req` iff the static obligation `StaticObligation c g` holds (for every `x` with `Req x`, every normal return `r` of `g` on `x` satisfies `Ens x r`); and the same iff holds with `HaltsEqAt` in place of `RunEqAt`.",
+    "hypotheses": [
+      {
+        "name": "hg : Lowered g",
+        "purpose": "no block of `g`, reachable or not, ends in the source form `tryQ` of `?`; as in the pointwise form.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_erasure_global_lowered",
+        "witness_class": "`gTry` under `cOne` (whose `Req` admits exactly the input `1`)"
+      },
+      {
+        "name": "hnc : NoChecks g",
+        "purpose": "no contract statement in the prologue or in any block of `g`, reachable or not; as in the pointwise form.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_erasure_global_noChecks",
+        "witness_class": "`gInt` under `cThree` (whose `Req` admits exactly the input `3`)"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Pointwise from `erasure_obsEq_iff_ensOnReturnsAt_of_lowered_of_noChecks_of_req`.",
+    "nonvacuity_witness": "`gGood` (obligation holds) and `gEarly` (obligation fails) satisfy the hypotheses.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_erasure_global",
+    "non_claims": [
+      "Equivalence is claimed on `Req` inputs; off `Req` erasure and instrumentation never have the same halting observations (`not_haltsEqAt_erase_instr_of_req_false`).",
+      "Contract statements (`checkReq`, `checkEns`, `assumeReq`) carry no predicate of their own: each evaluates a clause of the contract `c` under which the function runs, and `erase` deletes every contract statement, including any already present in the function as written. `NoChecks g` is tight for that reason; the comparison of `g` itself with `instr .allExits g` at inputs satisfying `Req` is characterized under `Lowered g` without assuming `NoChecks g` (`instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req`). In-body assertions with predicates of their own are not modelled.",
+      "`Lowered g` and `NoChecks g` inspect every block of `g`, reachable or not (`NoChecks g` also the prologue); the natural weakenings that restrict them to blocks reachable from the entry are not established here.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012, §6.1.1 paragraph 19/3 and §11.4.2 'Pragmas Assert and Assertion_Policy', paragraphs 10/3 and 10.3/3 (http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html, accessed 2026-11-21). 6.1.1(19/3): pre- and postcondition expressions are enabled if checks are required by the assertion policies 'in effect at the point of a corresponding aspect specification'. 11.4.2(10/3): policy Ignore 'requires that the assertion expression not be evaluated at these points, and the run-time checks not be performed'. 11.4.2(10.3/3): 'If a pragma Assertion_Policy applies to a generic_instantiation, then the pragma Assertion_Policy applies to the entire instance.'",
+      "SPARK Reference Manual, release 28.0w (development documentation at https://docs.adacore.com/spark2014-docs/html/lrm/introduction.html, accessed 2026-11-21; no immutable revision identifier is published). §1: 'The run-time checking of assertion expressions may be suppressed by using the Ada pragma Assertion_Policy but the static analysis and proof tools always use the assertion expressions whatever the assertion policy.' §1.4.1 'Further Details on Formal Verification': 'In addition, the generation of verification conditions is unaffected by the suppression of checks (e.g., via pragma Suppress) or the disabling of assertions (e.g., via pragma Assertion_Policy).'",
+      "D. Ly, N. Kosmatov, F. Loulergue and J. Signoles, 'Sound Runtime Assertion Checking for Memory Properties via Program Transformation', Formal Aspects of Computing 36(1), Article 4, 2024, DOI 10.1145/3605951 (author version https://hal.science/hal-04065774/file/main.pdf, accessed 2026-11-21): for an E-ACSL-style instrumentation of a C-like language it proves semantic preservation while no annotation is violated (its Theorem 5.7) and soundness of the runtime assertion checker (its Corollary 5.10), with paper proofs ('A machine-checked Coq proof of these results is left as future work')."
+    ],
+    "design_question": "When is running with checks disabled observationally identical to running with checks?"
+  },
+  {
+    "id": "R11",
+    "lean": "Toy.Contracts.not_haltsEqAt_erase_instr_of_req_false",
+    "lean_names": [
+      "Toy.Contracts.instr",
+      "Toy.Contracts.erase",
+      "Toy.Contracts.NoChecks",
+      "Toy.Contracts.gGood",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.run_no_checkFail_of_noChecks",
+      "Toy.Contracts.noChecks_erase",
+      "Toy.Contracts.cex_not_haltsEq_req_true",
+      "Toy.Contracts.nonvacuity_req_false"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "T1: that disabling a precondition check changes behaviour on inputs violating the precondition is folklore (Ada 2012 11.4.2(10/3)); no mechanized statement was found.",
+    "plain_claim": "For every contract `c`, placement `p`, function `g` (no hypothesis on `g` or `p`) and input `x` with `Req x` false: the instrumentation `instr p g` ends with a `requires` failure and no events at every fuel; the erasure `erase (instr p g)` contains no contract statement in its prologue or in any block, reachable or not (`NoChecks`), and its run never ends with a failed check, at any fuel; and the two do not have the same halting observations at `x`.",
+    "hypotheses": [
+      {
+        "name": "h : c.req x = false",
+        "purpose": "makes the entry check fail.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_not_haltsEq_req_true",
+        "witness_class": "`gGood` at input `5` under `c1`"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "The entry check fails before any fuel is used; the erasure never fails a check by a fuel induction (`run_no_checkFail_of_noChecks`, with `noChecks_erase`).",
+    "nonvacuity_witness": "`Req 100` fails under `c1`.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_req_false",
+    "non_claims": [
+      "The theorem's hypothesis is an input with `c.req x = false`. For a contract whose `requires` clause is identically true there is none, and in a whole program whose calls all pass arguments satisfying `Req`, such inputs never reach `g` (whole-program call contexts are not modelled).",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012, §6.1.1 paragraph 19/3 and §11.4.2 'Pragmas Assert and Assertion_Policy', paragraphs 10/3 and 10.3/3 (http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html, accessed 2026-11-21). 6.1.1(19/3): pre- and postcondition expressions are enabled if checks are required by the assertion policies 'in effect at the point of a corresponding aspect specification'. 11.4.2(10/3): policy Ignore 'requires that the assertion expression not be evaluated at these points, and the run-time checks not be performed'. 11.4.2(10.3/3): 'If a pragma Assertion_Policy applies to a generic_instantiation, then the pragma Assertion_Policy applies to the entire instance.'"
+    ],
+    "design_question": "When is running with checks disabled observationally identical to running with checks?",
+    "positive_control_lean": "Toy.Contracts.cex_not_haltsEq_req_true"
+  },
+  {
+    "id": "R12",
+    "lean": "Toy.Contracts.run_assumeErase_eq_ite_req",
+    "lean_names": [
+      "Toy.Contracts.assumeErase",
+      "Toy.Contracts.erase",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.runFrom_congr_blocks",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.UBRefinesAt",
+      "Toy.Contracts.nonvacuity_assumeErase",
+      "Toy.Contracts.assumeErase_instr_gEarly_blocks",
+      "Toy.Contracts.assumeErase_instr_gEarly_prologue",
+      "Toy.Contracts.halts_assumeErase_instr_gEarly_0",
+      "Toy.Contracts.halts_assumeErase_instr_gInt_3"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "T0: the documented semantics of a UB-on-false assumption (LLVM `llvm.assume`, C++ `[[assume]]`), restated for an assumption placed first in the prologue.",
+    "plain_claim": "For every contract `c`, every function `q`, input `x` and fuel `n`: running `assumeErase q` (the erasure of `q` with `assumeReq` first in the prologue) gives the same observation as running `erase q` if `Req x` holds, and gives UB with no events (`⟨[], .ub⟩`) if `Req x` fails. The instances of interest are `q = instr p g`.",
+    "hypotheses": [],
+    "depth": "shallow",
+    "depth_justification": "Unfolding the prologue, plus a fuel induction showing that runs from a block depend on the blocks only (`runFrom_congr_blocks`), since `assumeErase q` and `erase q` differ in their prologue.",
+    "nonvacuity_witness": "Both branches occur: `Req 5` holds and `Req 100` fails under `c1`.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_assumeErase",
+    "non_claims": [
+      "UB is an outcome of the toy (`ub`); what an optimizer may do with it is captured here by the refinement relation `UBRefinesAt` and by nothing else.",
+      "The assumption is placed first in the prologue; assumptions at other program points are not modelled.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "LLVM Language Reference Manual, intrinsic 'llvm.assume' (https://llvm.org/docs/LangRef.html#llvm-assume-intrinsic, accessed 2026-11-21), Semantics: 'If the condition is violated during execution, the behavior is undefined.' (A moving document; no revision is pinned.)",
+      "T. Doumler, 'Portable assumptions', ISO/IEC JTC1/SC22/WG21 document P1774R8, 2022-06-14 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1774r8.pdf, accessed 2026-11-21). Proposed wording for `[[assume(expression)]]`: 'If the converted expression would evaluate to true at the point where the assumption appears, the assumption has no effect. Otherwise, the behavior is undefined.'",
+      "Corpus package zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume (google/zerocopy branch reference at commit 95e95c2fbada69bc95437324bf4462759bd738a4): `assume c` as a UB-on-false compiler assumption, and UB-erasing transformations as forward refinements (UB-bearing program as source) that are not equivalences; cited, not repeated."
+    ],
+    "design_question": "What does erasing checks while assuming `Req` do to a run?"
+  },
+  {
+    "id": "R13",
+    "lean": "Toy.Contracts.instr_allExits_ubRefinesAt_assumeErase_of_noChecks_of_staticObligationAt",
+    "lean_names": [
+      "Toy.Contracts.NoChecks",
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.StaticObligationAt",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.assumeErase",
+      "Toy.Contracts.UBRefinesAt",
+      "Toy.Contracts.erase",
+      "Toy.Contracts.gInt",
+      "Toy.Contracts.cThree",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.run_instr_eq_of_req_of_ensOnReturnsAt",
+      "Toy.Contracts.run_assumeErase_eq_ite_req",
+      "Toy.Contracts.erase_instr_eq_of_noChecks",
+      "Toy.Contracts.gGood",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.not_assumeErase_ubRefinesAt_instr_of_req_false",
+      "Toy.Contracts.ubRefinesAt_of_forall_not_halts",
+      "Toy.Contracts.ubRefinesAt_gLoop_gGood_5",
+      "Toy.Contracts.gLoop",
+      "Toy.Contracts.instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req",
+      "Toy.Contracts.cex_ubRefines_noChecks",
+      "Toy.Contracts.cex_ubRefines_obligation",
+      "Toy.Contracts.nonvacuity_ubRefines",
+      "Toy.Contracts.not_ubRefinesAt_instr_assumeErase_gEarly_0",
+      "Toy.Contracts.ubRefinesAt_instr_assumeErase_gGood_5"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "T0: that undefined behaviour of the source licenses every target behaviour, so that defined checking refines a UB-on-false assumption and not conversely, is the standard UB-refinement order (Alive2; mechanized for monadic programs by Lammich's Refine_Monadic, where a failing assertion is the top element); restated for the toy.",
+    "plain_claim": "For every contract `c`, every function `g` with `NoChecks g` (no contract statement in its prologue or in any block, reachable or not; `Lowered g` is not assumed) and every input `x` with `StaticObligationAt c g x` (if `Req x`, every normal return `r` of `g` on `x` satisfies `Ens x r`): the checked program `instr .allExits g` UB-refines the assume-erased program `assumeErase (instr .allExits g)` at `x` (`UBRefinesAt`, with the checked program as target and the assume-erased program as source): every halting observation of the checked program is a halting observation of the assume-erased program, or the assume-erased program halts with UB after a prefix of its events.",
+    "hypotheses": [
+      {
+        "name": "hnc : NoChecks g",
+        "purpose": "no contract statement in the prologue or in any block of `g`, reachable or not; a contract statement already in `g` can fail in the checked program while `erase` deletes it from the assume-erased program.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_ubRefines_noChecks",
+        "witness_class": "`gInt` at input `3` under `cThree`"
+      },
+      {
+        "name": "hob : StaticObligationAt c g x",
+        "purpose": "an `ensures` failure of the checked program is neither an observation of the assume-erased program nor licensed by UB there.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_ubRefines_obligation",
+        "witness_class": "`gEarly` at input `0` under `c1`"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Off `Req` the source halts with UB and no events; on `Req`, every inserted check passes wherever it is placed (`run_instr_eq_of_req_of_ensOnReturnsAt`, a fuel induction), and `run_assumeErase_eq_ite_req` with `erase_instr_eq_of_noChecks` identifies the source run with the run of `g`.",
+    "nonvacuity_witness": "`gGood` on `5` (lowered) and the unlowered `gTry` on `5` satisfy all hypotheses.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_ubRefines",
+    "non_claims": [
+      "Direction: in `UBRefinesAt c tgt src x` the first program refines the second. This theorem has the checked program as `tgt`. It does not say that the assume-erased program refines the checked program; that fails at every input where `Req` fails (`not_assumeErase_ubRefinesAt_instr_of_req_false`), so this theorem does not justify replacing checks by `assume Req` as a UB-refining transformation of the checked program.",
+      "`UBRefinesAt` compares halting observations of the target: a target that does not halt at `x` refines every source at `x` (`ubRefinesAt_of_forall_not_halts`; instance `ubRefinesAt_gLoop_gGood_5`, where the non-halting `gLoop` refines `gGood` at `5` although `gGood` returns `5` without UB). Divergence and the events of diverging runs are not constrained by this theorem.",
+      "Contract statements (`checkReq`, `checkEns`, `assumeReq`) carry no predicate of their own: each evaluates a clause of the contract `c` under which the function runs, and `erase` deletes every contract statement, including any already present in the function as written. `NoChecks g` is tight for that reason; the comparison of `g` itself with `instr .allExits g` at inputs satisfying `Req` is characterized under `Lowered g` without assuming `NoChecks g` (`instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req`). In-body assertions with predicates of their own are not modelled.",
+      "`NoChecks g` inspects the prologue and every block of `g`, reachable or not; the natural weakening that restricts it to blocks reachable from the entry is not established here.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "N. P. Lopes, J. Lee, C.-K. Hur, Z. Liu and J. Regehr, 'Alive2: Bounded Translation Validation for LLVM', PLDI 2021, pp. 65–79, DOI 10.1145/3453483.3454030 (https://users.cs.utah.edu/~regehr/alive2-pldi21.pdf, accessed 2026-11-21): a final source state that is undefined is refined by every target state (rule final-state-ub, its Fig. 4); `UBRefinesAt` is the halting-observation analogue, with a prefix condition on events.",
+      "P. Lammich, 'Refinement for Monadic Programs', Archive of Formal Proofs, January 2012, ISSN 2150-914x (https://www.isa-afp.org/entries/Refine_Monadic.html, accessed 2026-11-21): a mechanized (Isabelle/HOL) refinement calculus in which `ASSERT Φ` is `return ()` if `Φ` holds and the top element otherwise, and `ASSUME Φ` is `return ()` if `Φ` holds and the bottom element otherwise. The toy's failing `assumeReq` (UB, refined by every behaviour) plays the role of that top element.",
+      "R.-J. Back and J. von Wright, Refinement Calculus: A Systematic Introduction, Springer, 1998, ISBN 978-0-387-98417-9, DOI 10.1007/978-1-4612-1674-2: statements as predicate transformers, including assertions and guards, ordered by refinement.",
+      "X. Leroy, 'Formal verification of a realistic compiler', Communications of the ACM 52(7):107–115, July 2009, DOI 10.1145/1538788.1538814: compiler correctness stated as preservation of program behaviours, mechanized in Coq; cited for the notion of semantic preservation that `UBRefinesAt` specializes.",
+      "T. Doumler, 'Portable assumptions', ISO/IEC JTC1/SC22/WG21 document P1774R8, 2022-06-14 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1774r8.pdf, accessed 2026-11-21). Proposed wording for `[[assume(expression)]]`: 'If the converted expression would evaluate to true at the point where the assumption appears, the assumption has no effect. Otherwise, the behavior is undefined.'",
+      "Corpus package zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume (google/zerocopy branch reference at commit 95e95c2fbada69bc95437324bf4462759bd738a4): `assume c` as a UB-on-false compiler assumption, and UB-erasing transformations as forward refinements (UB-bearing program as source) that are not equivalences; cited, not repeated."
+    ],
+    "design_question": "Is replacing runtime checks by erasure plus `assume Req` an equivalence, a refinement in one direction, or neither?"
+  },
+  {
+    "id": "R14",
+    "lean": "Toy.Contracts.not_assumeErase_ubRefinesAt_instr_of_req_false",
+    "lean_names": [
+      "Toy.Contracts.assumeErase",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.UBRefinesAt",
+      "Toy.Contracts.gGood",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.instr_allExits_ubRefinesAt_assumeErase_of_noChecks_of_staticObligationAt",
+      "Toy.Contracts.cex_not_ubRefines_req_true",
+      "Toy.Contracts.nonvacuity_req_false"
+    ],
+    "kind": "theorem",
+    "tier": "T0",
+    "tier_justification": "T0: that undefined behaviour of the source licenses every target behaviour, so that defined checking refines a UB-on-false assumption and not conversely, is the standard UB-refinement order (Alive2; mechanized for monadic programs by Lammich's Refine_Monadic, where a failing assertion is the top element); restated for the toy.",
+    "plain_claim": "For every contract `c`, placement `p`, function `g` (no hypothesis on `g` or `p`) and input `x` with `Req x` false: the assume-erased program `assumeErase (instr p g)` reaches UB with no events at every fuel; the checked program `instr p g` ends with a `requires` failure and no events at every fuel (so it never reaches UB); and the assume-erased program does not UB-refine the checked program at `x` (`UBRefinesAt`, with the assume-erased program as target and the checked program as source).",
+    "hypotheses": [
+      {
+        "name": "h : c.req x = false",
+        "purpose": "makes the assumption fail.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_not_ubRefines_req_true",
+        "witness_class": "`gGood` at input `5` under `c1`"
+      }
+    ],
+    "depth": "definitional",
+    "depth_justification": "Both prologues stop at their first statement before any fuel is used; the refinement fails at the UB observation.",
+    "nonvacuity_witness": "`Req 100` fails under `c1`.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_req_false",
+    "non_claims": [
+      "Together with `instr_allExits_ubRefinesAt_assumeErase_of_noChecks_of_staticObligationAt`, this shows that erasure plus `assume Req` is not equivalent to checking in the toy: the checked program UB-refines the assume-erased program (under that theorem's hypotheses), and the assume-erased program does not UB-refine the checked program at inputs where `Req` fails. Replacing checks by `assume Req` adds UB there.",
+      "At an input with `Req x` true the conclusion can fail: for `gGood` at `5` under `c1` the assume-erased program UB-refines the checked program (`cex_not_ubRefines_req_true`); a caller that guarantees `Req` at every call is not modelled.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "N. P. Lopes, J. Lee, C.-K. Hur, Z. Liu and J. Regehr, 'Alive2: Bounded Translation Validation for LLVM', PLDI 2021, pp. 65–79, DOI 10.1145/3453483.3454030 (https://users.cs.utah.edu/~regehr/alive2-pldi21.pdf, accessed 2026-11-21): a final source state that is undefined is refined by every target state (rule final-state-ub, its Fig. 4); `UBRefinesAt` is the halting-observation analogue, with a prefix condition on events.",
+      "P. Lammich, 'Refinement for Monadic Programs', Archive of Formal Proofs, January 2012, ISSN 2150-914x (https://www.isa-afp.org/entries/Refine_Monadic.html, accessed 2026-11-21): a mechanized (Isabelle/HOL) refinement calculus in which `ASSERT Φ` is `return ()` if `Φ` holds and the top element otherwise, and `ASSUME Φ` is `return ()` if `Φ` holds and the bottom element otherwise. The toy's failing `assumeReq` (UB, refined by every behaviour) plays the role of that top element.",
+      "LLVM Language Reference Manual, intrinsic 'llvm.assume' (https://llvm.org/docs/LangRef.html#llvm-assume-intrinsic, accessed 2026-11-21), Semantics: 'If the condition is violated during execution, the behavior is undefined.' (A moving document; no revision is pinned.)",
+      "T. Doumler, 'Portable assumptions', ISO/IEC JTC1/SC22/WG21 document P1774R8, 2022-06-14 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1774r8.pdf, accessed 2026-11-21). Proposed wording for `[[assume(expression)]]`: 'If the converted expression would evaluate to true at the point where the assumption appears, the assumption has no effect. Otherwise, the behavior is undefined.'",
+      "Corpus package zero-sized-access-elimination-ub-erasure-and-unreachable-switch-pruning-with-assume (google/zerocopy branch reference at commit 95e95c2fbada69bc95437324bf4462759bd738a4): `assume c` as a UB-on-false compiler assumption, and UB-erasing transformations as forward refinements (UB-bearing program as source) that are not equivalences; cited, not repeated."
+    ],
+    "design_question": "Is replacing runtime checks by erasure plus `assume Req` an equivalence, a refinement in one direction, or neither?",
+    "positive_control_lean": "Toy.Contracts.cex_not_ubRefines_req_true"
+  },
+  {
+    "id": "R15",
+    "lean": "Toy.Contracts.callRun_eq_ite_governingFlag_of_lowered",
+    "lean_names": [
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.callRun",
+      "Toy.Contracts.instrObs",
+      "Toy.Contracts.run",
+      "Toy.Contracts.governingCrate",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.cOne",
+      "Toy.Contracts.run_instr_allExits_eq_instrObs_of_lowered",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.compileInDefCrate",
+      "Toy.Contracts.instantiateIn",
+      "Toy.Contracts.callInCallerCrate",
+      "Toy.Contracts.Resolution",
+      "Toy.Contracts.Site",
+      "Toy.Contracts.governingCrate_atDefinition",
+      "Toy.Contracts.cex_calleeSide_atInstantiation_definingFlag_on_undetected",
+      "Toy.Contracts.cex_callRun_lowered",
+      "Toy.Contracts.nonvacuity_callRun",
+      "Toy.Contracts.CallSite",
+      "Toy.Contracts.Exported",
+      "Toy.Contracts.callRun_gEarly_0_examples",
+      "Toy.Contracts.csGen3",
+      "Toy.Contracts.detects_callerOn_callerSide_gEarly_0",
+      "Toy.Contracts.flTwoOn",
+      "Toy.Contracts.flZeroOneOn",
+      "Toy.Contracts.governingCrate_cs1_atInstantiation",
+      "Toy.Contracts.governingCrate_csGen_atInstantiation",
+      "Toy.Contracts.holder_cs1",
+      "Toy.Contracts.not_detects_calleeSide_off_gEarly_0",
+      "Toy.Contracts.not_detects_gGood_5",
+      "Toy.Contracts.not_detects_gTry_1",
+      "Toy.Contracts.not_violationAt_gGood_5",
+      "Toy.Contracts.violationAt_gEarly_0",
+      "Toy.Contracts.violationAt_gEarly_100"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "T1: per-unit assertion policies scoped to the declaration or to a generic instance are documented for Ada 2012 (RM 6.1.1(19/3), 11.4.2(10.3/3)); no mechanized statement was found; stated here for a toy pipeline of per-crate steps.",
+    "plain_claim": "For every flag assignment `fl`, placement `s`, resolution `res`, call site `cs`, contract `c`, callee `g` with `Lowered g` (no block, reachable or not, ends in `tryQ`), argument `x` and fuel `n`: the cross-crate call `callRun fl s res cs c g x n` (compilation in the defining crate, instantiation in the instantiating crate and the call in the calling crate, each step reading the flag of its own crate and no other; callee-side checks are inserted by `instr .allExits`) equals `instrObs c x (run c g x n)` if `fl (governingCrate s res cs)` is true and `run c g x n` if it is false. The governing crate is the calling crate for caller-side placement; under callee-side placement it is the defining crate when the flag test is resolved at definition or the callee is not generic, and the instantiating crate for a generic callee whose flag test is resolved at instantiation.",
+    "hypotheses": [
+      {
+        "name": "hg : Lowered g",
+        "purpose": "no block of `g`, reachable or not, ends in the source form `tryQ` of `?`; callee-side placement instruments the callee body, and a `?` exit gets no check.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_callRun_lowered",
+        "witness_class": "callee-side placement with every flag on, for `gTry` at input `1` and fuel `1` under `cOne`"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Case analysis on placement, resolution, genericity and the three flags; the callee-side cases use `run_instr_allExits_eq_instrObs_of_lowered`. `callRun` does not mention `governingCrate`; the theorem derives it.",
+    "nonvacuity_witness": "`gEarly` is lowered.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_callRun",
+    "non_claims": [
+      "`callRun` is a toy pipeline of three per-crate steps (`compileInDefCrate`, `instantiateIn`, `callInCallerCrate`), each of which reads the flag of its own crate and no other; it is not derived from a compilation, monomorphization or linking semantics of any real toolchain. Where a real compiler resolves a flag test (`Resolution`) and where checks are placed (`Site`) are parameters, not findings, and callee-side checks in `callRun` always use the all-exits placement.",
+      "Policies that check `requires` at the caller and `ensures` in the callee, or that check whenever either crate's flag is on, are not modelled; nor are indirect calls through function pointers or trait objects, or a generic callee instantiated in more than one crate.",
+      "Under resolution at definition the governing crate is the crate holding the check (`governingCrate_atDefinition`); under resolution at instantiation it can differ (`cex_calleeSide_atInstantiation_definingFlag_on_undetected`).",
+      "`Lowered g` inspects every block of `g`, reachable or not; the natural weakening that restricts it to blocks reachable from the entry is not established here.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012, §6.1.1 paragraph 19/3 and §11.4.2 'Pragmas Assert and Assertion_Policy', paragraphs 10/3 and 10.3/3 (http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html, accessed 2026-11-21). 6.1.1(19/3): pre- and postcondition expressions are enabled if checks are required by the assertion policies 'in effect at the point of a corresponding aspect specification'. 11.4.2(10/3): policy Ignore 'requires that the assertion expression not be evaluated at these points, and the run-time checks not be performed'. 11.4.2(10.3/3): 'If a pragma Assertion_Policy applies to a generic_instantiation, then the pragma Assertion_Policy applies to the entire instance.'",
+      "R. B. Findler and M. Felleisen, 'Contracts for Higher-Order Functions', ICFP 2002, pp. 48–59, DOI 10.1145/581478.581484: contracts monitored at module boundaries; cited for the distinction between the calling and the defining side of a contract.",
+      "Corpus package monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets (google/zerocopy branch reference at commit 95e95c2fbada69bc95437324bf4462759bd738a4): a toy model of whole-program monomorphization in which generic bodies are instantiated by substitution; cited for instantiation of generic bodies, not repeated.",
+      "Corpus package call-site-inlining-slot-renaming-cleanup-splicing-capability-guards-and-caller-locations (google/zerocopy branch reference at commit 95e95c2fbada69bc95437324bf4462759bd738a4): a toy model of call-site inlining, including a counterexample showing that a condition proved for an inlined callee need not establish the callee's contract from its own entry; cited as related work on caller-side versus callee-side reasoning, not repeated."
+    ],
+    "design_question": "What happens when the defining, instantiating and calling crates use different flag settings?"
+  },
+  {
+    "id": "R16",
+    "lean": "Toy.Contracts.detects_iff_governingFlag_of_lowered_of_noChecks_of_violation",
+    "lean_names": [
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.NoChecks",
+      "Toy.Contracts.ViolationAt",
+      "Toy.Contracts.Detects",
+      "Toy.Contracts.governingCrate",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.cOne",
+      "Toy.Contracts.gIntReq",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.gGood",
+      "Toy.Contracts.callRun_eq_ite_governingFlag_of_lowered",
+      "Toy.Contracts.run_no_checkFail_of_noChecks",
+      "Toy.Contracts.instrObs",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.not_detects_of_noChecks_of_req_of_no_ret",
+      "Toy.Contracts.gPanic",
+      "Toy.Contracts.refuted_no_report_for_panicking_call_with_flag_on",
+      "Toy.Contracts.callRun_eq_checkFail_pre_of_req_false_of_governingFlag",
+      "Toy.Contracts.cex_detects_noChecks",
+      "Toy.Contracts.callRun",
+      "Toy.Contracts.compileInDefCrate",
+      "Toy.Contracts.instantiateIn",
+      "Toy.Contracts.callInCallerCrate",
+      "Toy.Contracts.Resolution",
+      "Toy.Contracts.Site",
+      "Toy.Contracts.cex_detects_lowered",
+      "Toy.Contracts.cex_detects_violation",
+      "Toy.Contracts.nonvacuity_detects"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "T1: per-unit assertion policies scoped to the declaration or to a generic instance are documented for Ada 2012 (RM 6.1.1(19/3), 11.4.2(10.3/3)); no mechanized statement was found; stated here for a toy pipeline of per-crate steps.",
+    "plain_claim": "For every flag assignment `fl`, placement `s`, resolution `res`, call site `cs`, contract `c`, callee `g` with `Lowered g` and `NoChecks g` (both over every block, reachable or not; `NoChecks g` also over the prologue), and argument `x` with `ViolationAt c g x` (`Req x` fails, or `Req x` holds and `g` halts on `x` with a normal return of a value violating `Ens`): the call (`callRun`, whose callee-side checks are inserted by `instr .allExits`) reports a failed check for some fuel (`Detects`) iff `fl (governingCrate s res cs)` is true.",
+    "hypotheses": [
+      {
+        "name": "hg : Lowered g",
+        "purpose": "no block of `g`, reachable or not, ends in the source form `tryQ` of `?`; otherwise callee-side checks can miss a `?` exit.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_detects_lowered",
+        "witness_class": "`gTry` at input `1` under `cOne`, every flag on, callee-side placement"
+      },
+      {
+        "name": "hnc : NoChecks g",
+        "purpose": "no contract statement in the prologue or in any block of `g`, reachable or not; `Detects` counts every failed check, including one already in `g`, which can fail with every flag off.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_detects_noChecks",
+        "witness_class": "`gIntReq` (containing its own `requires` check) at input `100` under `c1`, every flag off"
+      },
+      {
+        "name": "hv : ViolationAt c g x",
+        "purpose": "under the other two hypotheses, nothing is reported without a violation, even with the flag on.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_detects_violation",
+        "witness_class": "`gGood` at input `5` under `c1`, every flag on"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "From `callRun_eq_ite_governingFlag_of_lowered`, `run_no_checkFail_of_noChecks`, and evaluation of `instrObs` at the violating return.",
+    "nonvacuity_witness": "`gEarly` on `0` (an `ensures` violation) and on `100` (a `requires` violation).",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_detects",
+    "non_claims": [
+      "When `Req x` holds, a call of a callee without contract statements (in its prologue or in any block, reachable or not) that never returns normally on `x` (it panics, diverges or gets stuck) reports nothing under any flags (`not_detects_of_noChecks_of_req_of_no_ret`). Without `Req x` that conclusion fails: `gPanic` panics on `100` under `c1` and its callee-side call with every flag on reports a failed check (`refuted_no_report_for_panicking_call_with_flag_on`, a proved refutation of an earlier candidate statement that omitted `Req x`). When `Req x` fails and the governing flag is on, the call ends with a `requires` failure and no events at every fuel, whatever `g` does (`callRun_eq_checkFail_pre_of_req_false_of_governingFlag`).",
+      "`Detects` counts every `checkFail` outcome and cannot tell an inserted check from a contract statement already in `g`; `NoChecks g` is tight for that reason (`cex_detects_noChecks`).",
+      "Contract statements (`checkReq`, `checkEns`, `assumeReq`) carry no predicate of their own: each evaluates a clause of the contract `c` under which the function runs. In-body assertions with predicates of their own are not modelled.",
+      "`callRun` is a toy pipeline of three per-crate steps (`compileInDefCrate`, `instantiateIn`, `callInCallerCrate`), each of which reads the flag of its own crate and no other; it is not derived from a compilation, monomorphization or linking semantics of any real toolchain. Where a real compiler resolves a flag test (`Resolution`) and where checks are placed (`Site`) are parameters, not findings, and callee-side checks in `callRun` always use the all-exits placement.",
+      "Policies that check `requires` at the caller and `ensures` in the callee, or that check whenever either crate's flag is on, are not modelled; nor are indirect calls through function pointers or trait objects, or a generic callee instantiated in more than one crate.",
+      "`Lowered g` and `NoChecks g` inspect every block of `g`, reachable or not (`NoChecks g` also the prologue); the natural weakenings that restrict them to blocks reachable from the entry are not established here.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012, §6.1.1 paragraph 19/3 and §11.4.2 'Pragmas Assert and Assertion_Policy', paragraphs 10/3 and 10.3/3 (http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html, accessed 2026-11-21). 6.1.1(19/3): pre- and postcondition expressions are enabled if checks are required by the assertion policies 'in effect at the point of a corresponding aspect specification'. 11.4.2(10/3): policy Ignore 'requires that the assertion expression not be evaluated at these points, and the run-time checks not be performed'. 11.4.2(10.3/3): 'If a pragma Assertion_Policy applies to a generic_instantiation, then the pragma Assertion_Policy applies to the entire instance.'",
+      "R. B. Findler and M. Felleisen, 'Contracts for Higher-Order Functions', ICFP 2002, pp. 48–59, DOI 10.1145/581478.581484: contracts monitored at module boundaries; cited for the distinction between the calling and the defining side of a contract."
+    ],
+    "design_question": "What happens when the defining, instantiating and calling crates use different flag settings?"
+  },
+  {
+    "id": "R17",
+    "lean": "Toy.Contracts.callRun_eq_run_of_not_violation",
+    "lean_names": [
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.NoChecks",
+      "Toy.Contracts.ViolationAt",
+      "Toy.Contracts.callRun",
+      "Toy.Contracts.run",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.run_instr_eq_of_req_of_ensOnReturnsAt",
+      "Toy.Contracts.instrObs_run_eq_of_req_of_ensOnReturnsAt",
+      "Toy.Contracts.gGood",
+      "Toy.Contracts.compileInDefCrate",
+      "Toy.Contracts.instantiateIn",
+      "Toy.Contracts.callInCallerCrate",
+      "Toy.Contracts.Resolution",
+      "Toy.Contracts.Site",
+      "Toy.Contracts.cex_callRun_violation",
+      "Toy.Contracts.nonvacuity_not_violation"
+    ],
+    "kind": "theorem",
+    "tier": "T1",
+    "tier_justification": "T1: per-unit assertion policies scoped to the declaration or to a generic instance are documented for Ada 2012 (RM 6.1.1(19/3), 11.4.2(10.3/3)); no mechanized statement was found; stated here for a toy pipeline of per-crate steps.",
+    "plain_claim": "For every flag assignment `fl`, placement `s`, resolution `res`, call site `cs`, contract `c`, callee `g` (neither `Lowered g` nor `NoChecks g` assumed), argument `x` with `¬ ViolationAt c g x` (`Req x` holds and every normal return of `g` on `x` satisfies `Ens`) and fuel `n`: `callRun fl s res cs c g x n = run c g x n`.",
+    "hypotheses": [
+      {
+        "name": "hv : ¬ ViolationAt c g x",
+        "purpose": "with a violation, an enabled check can change the observation.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_callRun_violation",
+        "witness_class": "`gEarly` at input `0` under `c1`, every flag on"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "Every inserted check passes wherever it is placed (`run_instr_eq_of_req_of_ensOnReturnsAt`, a fuel induction), and the wrapper is the identity (`instrObs_run_eq_of_req_of_ensOnReturnsAt`); case analysis on the pipeline.",
+    "nonvacuity_witness": "`gGood` on `5` under `c1` has no violation.",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_not_violation",
+    "non_claims": [
+      "Unobservability of the flags on such inputs relies on contract clauses being pure, total Boolean functions in the toy; where evaluating a passing clause can have side effects, allocate, diverge or raise, enabling checks can be observable without any violation (not modelled).",
+      "`callRun` is a toy pipeline of three per-crate steps (`compileInDefCrate`, `instantiateIn`, `callInCallerCrate`), each of which reads the flag of its own crate and no other; it is not derived from a compilation, monomorphization or linking semantics of any real toolchain. Where a real compiler resolves a flag test (`Resolution`) and where checks are placed (`Site`) are parameters, not findings, and callee-side checks in `callRun` always use the all-exits placement.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012, §6.1.1 paragraph 19/3 and §11.4.2 'Pragmas Assert and Assertion_Policy', paragraphs 10/3 and 10.3/3 (http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html, accessed 2026-11-21). 6.1.1(19/3): pre- and postcondition expressions are enabled if checks are required by the assertion policies 'in effect at the point of a corresponding aspect specification'. 11.4.2(10/3): policy Ignore 'requires that the assertion expression not be evaluated at these points, and the run-time checks not be performed'. 11.4.2(10.3/3): 'If a pragma Assertion_Policy applies to a generic_instantiation, then the pragma Assertion_Policy applies to the entire instance.'"
+    ],
+    "design_question": "What happens when the defining, instantiating and calling crates use different flag settings?"
+  },
+  {
+    "id": "R18",
+    "lean": "Toy.Contracts.cex_same_flags_detection_depends_on_placement",
+    "lean_names": [
+      "Toy.Contracts.cs1",
+      "Toy.Contracts.flCallerOn",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.callRun",
+      "Toy.Contracts.compileInDefCrate",
+      "Toy.Contracts.instantiateIn",
+      "Toy.Contracts.callInCallerCrate",
+      "Toy.Contracts.Resolution",
+      "Toy.Contracts.Site"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "T1: per-unit assertion policies scoped to the declaration or to a generic instance are documented for Ada 2012 (RM 6.1.1(19/3), 11.4.2(10.3/3)); no mechanized statement was found; stated here for a toy pipeline of per-crate steps.",
+    "plain_claim": "There is a call site, `cs1` (crate `0` calls a non-generic function defined in crate `1`), and a flag assignment, `flCallerOn` (crate `0` on, every other crate off), such that the violation of `gEarly` on `0` under `c1` is reported under caller-side placement and is not reported under callee-side placement, both with resolution at definition.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_justification": "Evaluation of concrete runs.",
+    "non_claims": [
+      "One concrete instance; it is not a statement about every function, input or flag assignment.",
+      "`callRun` is a toy pipeline of three per-crate steps (`compileInDefCrate`, `instantiateIn`, `callInCallerCrate`), each of which reads the flag of its own crate and no other; it is not derived from a compilation, monomorphization or linking semantics of any real toolchain. Where a real compiler resolves a flag test (`Resolution`) and where checks are placed (`Site`) are parameters, not findings, and callee-side checks in `callRun` always use the all-exits placement.",
+      "Policies that check `requires` at the caller and `ensures` in the callee, or that check whenever either crate's flag is on, are not modelled; nor are indirect calls through function pointers or trait objects, or a generic callee instantiated in more than one crate.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012, §6.1.1 paragraph 19/3 and §11.4.2 'Pragmas Assert and Assertion_Policy', paragraphs 10/3 and 10.3/3 (http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html, accessed 2026-11-21). 6.1.1(19/3): pre- and postcondition expressions are enabled if checks are required by the assertion policies 'in effect at the point of a corresponding aspect specification'. 11.4.2(10/3): policy Ignore 'requires that the assertion expression not be evaluated at these points, and the run-time checks not be performed'. 11.4.2(10.3/3): 'If a pragma Assertion_Policy applies to a generic_instantiation, then the pragma Assertion_Policy applies to the entire instance.'",
+      "R. B. Findler and M. Felleisen, 'Contracts for Higher-Order Functions', ICFP 2002, pp. 48–59, DOI 10.1145/581478.581484: contracts monitored at module boundaries; cited for the distinction between the calling and the defining side of a contract.",
+      "Corpus package call-site-inlining-slot-renaming-cleanup-splicing-capability-guards-and-caller-locations (google/zerocopy branch reference at commit 95e95c2fbada69bc95437324bf4462759bd738a4): a toy model of call-site inlining, including a counterexample showing that a condition proved for an inlined callee need not establish the callee's contract from its own entry; cited as related work on caller-side versus callee-side reasoning, not repeated."
+    ],
+    "design_question": "What happens when the defining, instantiating and calling crates use different flag settings?"
+  },
+  {
+    "id": "R19",
+    "lean": "Toy.Contracts.cex_calleeSide_atInstantiation_definingFlag_on_undetected",
+    "lean_names": [
+      "Toy.Contracts.csGen",
+      "Toy.Contracts.flDefOn",
+      "Toy.Contracts.holder",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.cs1",
+      "Toy.Contracts.governingCrate_csGen3_atInstantiation",
+      "Toy.Contracts.detects_csGen3_follows_instCrate",
+      "Toy.Contracts.callRun",
+      "Toy.Contracts.compileInDefCrate",
+      "Toy.Contracts.instantiateIn",
+      "Toy.Contracts.callInCallerCrate",
+      "Toy.Contracts.Resolution",
+      "Toy.Contracts.Site"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "T1: per-unit assertion policies scoped to the declaration or to a generic instance are documented for Ada 2012 (RM 6.1.1(19/3), 11.4.2(10.3/3)); no mechanized statement was found; stated here for a toy pipeline of per-crate steps.",
+    "plain_claim": "There is a call site, `csGen` (crate `0` calls a generic function defined in crate `1` and instantiated in crate `0`), and a flag assignment, `flDefOn` (crate `1` on, every other crate off), such that: the crate holding the callee-side check is the defining crate (`holder .calleeSide csGen = csGen.defCrate`), its flag is on, the flag of the instantiating crate `0` is off, and under callee-side placement (checks inserted by `instr .allExits`) with resolution at instantiation the violation of `gEarly` on `0` under `c1` is not reported; it is reported under resolution at definition, and for the non-generic call site `cs1` it is reported under resolution at instantiation.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_justification": "Evaluation of concrete runs.",
+    "non_claims": [
+      "One concrete instance; it is not a statement about every function, input or flag assignment.",
+      "For a generic callee instantiated in a third crate, the governing crate under resolution at instantiation is that crate (`governingCrate_csGen3_atInstantiation`), and detection follows its flag (`detects_csGen3_follows_instCrate`: reported with crate `2`'s flag alone on; not reported with the calling and defining crates' flags on and crate `2`'s off). Ada 2012 11.4.2(10.3/3) attaches the policy of a generic instantiation to the instance; whether a given compiler resolves a flag test at definition or at instantiation is not asserted.",
+      "Policies that check `requires` at the caller and `ensures` in the callee, or that check whenever either crate's flag is on, are not modelled; nor are indirect calls through function pointers or trait objects, or a generic callee instantiated in more than one crate.",
+      "`callRun` is a toy pipeline of three per-crate steps (`compileInDefCrate`, `instantiateIn`, `callInCallerCrate`), each of which reads the flag of its own crate and no other; it is not derived from a compilation, monomorphization or linking semantics of any real toolchain. Where a real compiler resolves a flag test (`Resolution`) and where checks are placed (`Site`) are parameters, not findings, and callee-side checks in `callRun` always use the all-exits placement.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "Ada Reference Manual, ISO/IEC 8652:2012, §6.1.1 paragraph 19/3 and §11.4.2 'Pragmas Assert and Assertion_Policy', paragraphs 10/3 and 10.3/3 (http://www.ada-auth.org/standards/12rm/html/RM-11-4-2.html, accessed 2026-11-21). 6.1.1(19/3): pre- and postcondition expressions are enabled if checks are required by the assertion policies 'in effect at the point of a corresponding aspect specification'. 11.4.2(10/3): policy Ignore 'requires that the assertion expression not be evaluated at these points, and the run-time checks not be performed'. 11.4.2(10.3/3): 'If a pragma Assertion_Policy applies to a generic_instantiation, then the pragma Assertion_Policy applies to the entire instance.'",
+      "Corpus package monomorphization-reachability-lazy-shim-synthesis-and-closed-verification-targets (google/zerocopy branch reference at commit 95e95c2fbada69bc95437324bf4462759bd738a4): a toy model of whole-program monomorphization in which generic bodies are instantiated by substitution; cited for instantiation of generic bodies, not repeated."
+    ],
+    "design_question": "Does callee-side placement by itself make the defining crate's flag decisive?"
+  },
+  {
+    "id": "R20",
+    "lean": "Toy.Contracts.runtimeValue_iff_req_and_ens_of_lowered_of_noChecks_of_ctfeSkipConst",
+    "lean_names": [
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.NoChecks",
+      "Toy.Contracts.CtfeConst",
+      "Toy.Contracts.RuntimeValue",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.gInt",
+      "Toy.Contracts.cThree",
+      "Toy.Contracts.erase",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.erase_instr_eq_of_noChecks",
+      "Toy.Contracts.gGood",
+      "Toy.Contracts.run_instr_allExits_eq_instrObs_of_lowered",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.Placement",
+      "Toy.Contracts.cex_runtimeValue_tailOnly",
+      "Toy.Contracts.CtfeMode",
+      "Toy.Contracts.cex_ctfeSkip_requires_violation",
+      "Toy.Contracts.cex_ctfeSkip_ensures_violation",
+      "Toy.Contracts.instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req",
+      "Toy.Contracts.cex_runtimeValue_lowered",
+      "Toy.Contracts.cex_runtimeValue_noChecks",
+      "Toy.Contracts.cex_runtimeValue_ctfeConst",
+      "Toy.Contracts.nonvacuity_ctfe",
+      "Toy.Contracts.ctfeConst_skip_gEarly_100",
+      "Toy.Contracts.ctfeConst_skip_gTry_1",
+      "Toy.Contracts.ctfeRun",
+      "Toy.Contracts.ctfeRun_evalChecks_eq",
+      "Toy.Contracts.ctfeRun_gEarly_100_examples",
+      "Toy.Contracts.not_ctfeConst_eval_gEarly_100",
+      "Toy.Contracts.not_ctfeConst_skip_gGood_5_4",
+      "Toy.Contracts.not_runtimeValue_gEarly_100",
+      "Toy.Contracts.not_runtimeValue_gGood_5_4",
+      "Toy.Contracts.not_runtimeValue_gInt_3",
+      "Toy.Contracts.runtimeValue_gEarly_0_placement",
+      "Toy.Contracts.runtimeValue_gGood_5",
+      "Toy.Contracts.runtimeValue_gTry_1"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "T1: that evaluation without checks can produce values the checked run rejects is folklore (C++ proposals P1774R8 §4.6 and P2900R14 §3.5.12 discuss assumptions and contract assertions during constant evaluation); no mechanized statement of this condition was found.",
+    "plain_claim": "For every contract `c`, every function `g` with `Lowered g` and `NoChecks g` (both over every block, reachable or not; `NoChecks g` also over the prologue), every argument `x` and value `r`: if compile-time evaluation that skips checks, applied to the all-exits instrumentation, produces the constant `r` (`CtfeConst .allExits .skipChecks c g x r`), then the all-exits runtime-checked call returns `r` (`RuntimeValue .allExits c g x r`) iff `Req x` and `Ens x r` both hold.",
+    "hypotheses": [
+      {
+        "name": "hg : Lowered g",
+        "purpose": "no block of `g`, reachable or not, ends in the source form `tryQ` of `?`; otherwise a `?` exit returns unchecked at run time.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_runtimeValue_lowered",
+        "witness_class": "`gTry` at input `1` under `c1`"
+      },
+      {
+        "name": "hnc : NoChecks g",
+        "purpose": "no contract statement in the prologue or in any block of `g`, reachable or not; a contract statement already in `g` can fail at run time while check-skipping evaluation deletes it.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_runtimeValue_noChecks",
+        "witness_class": "`gInt` at input `3` under `cThree`"
+      },
+      {
+        "name": "hk : CtfeConst .allExits .skipChecks c g x r",
+        "purpose": "ties `r` to the value that the erasure `erase (instr .allExits g)` returns on `x`, which is the value `g` returns on `x` when `NoChecks g` holds (`erase_instr_eq_of_noChecks`); without it the runtime value need not be `r`.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_runtimeValue_ctfeConst",
+        "witness_class": "`gGood` at input `5` and value `4` under `c1`"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "From `run_instr_allExits_eq_instrObs_of_lowered` and `erase_instr_eq_of_noChecks`; no determinism argument is needed.",
+    "nonvacuity_witness": "`gEarly` on `0` (constant `7`) and on `5` (constant `5`).",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_ctfe",
+    "non_claims": [
+      "`CtfeConst` and `RuntimeValue` take a `Placement` parameter and the theorem is stated for `.allExits`. With `.tailOnly` in both places the equivalence fails at one proved instance (`cex_runtimeValue_tailOnly`: for `gEarly` on `0` under `c1`, check-skipping evaluation of the tail-only instrumentation gives `7`, the tail-only checked call returns `7`, and `Ens 0 7` fails).",
+      "Compile-time evaluation is a toy parameter (`CtfeMode`); nothing is asserted about which mode any compiler implements, and `CtfeConst` ignores events.",
+      "Concrete reference instances: `cex_ctfeSkip_requires_violation` (the `Req x` false case) and `cex_ctfeSkip_ensures_violation` (the `Ens x r` false case).",
+      "Contract statements (`checkReq`, `checkEns`, `assumeReq`) carry no predicate of their own: each evaluates a clause of the contract `c` under which the function runs, and `erase` deletes every contract statement, including any already present in the function as written. `NoChecks g` is tight for that reason; the comparison of `g` itself with `instr .allExits g` at inputs satisfying `Req` is characterized under `Lowered g` without assuming `NoChecks g` (`instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req`). In-body assertions with predicates of their own are not modelled.",
+      "`Lowered g` and `NoChecks g` inspect every block of `g`, reachable or not (`NoChecks g` also the prologue); the natural weakenings that restrict them to blocks reachable from the entry are not established here.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "T. Doumler, 'Portable assumptions', WG21 P1774R8, 2022-06-14 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1774r8.pdf, accessed 2026-11-21), §4.6 'Behaviour of assumptions during constant evaluation': an assumption that would not evaluate to true during constant evaluation makes it implementation-defined whether the program is ill-formed, and an assumption that cannot be evaluated at compile time is ignored.",
+      "J. Berne, T. Doumler, A. Krzemieński et al., 'Contracts for C++', WG21 P2900R14, 2025-02-13 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p2900r14.pdf, accessed 2026-11-21): one non-checking evaluation semantic (ignore) and three checking ones (observe, enforce, quick-enforce); §3.5.12 'Constant Evaluation' says that under ignore 'Nothing happens during constant evaluation', and that the semantic of a manifestly constant-evaluated contract assertion is chosen in an implementation-defined manner. The toy's `skipChecks` and `evalChecks` correspond loosely to ignore and to a checking semantic.",
+      "Rust contracts experiment: tracking issue https://github.com/rust-lang/rust/issues/128044 ('Tracking Issue for Contracts', open), cited as context in prose and not as a specification. At rust-lang/rust commit c7d5ba59d8e11ee2e2204b173458eec4cb41c973, library/core/src/contracts.rs does not document check placement, the enabling flag or compile-time evaluation."
+    ],
+    "design_question": "What happens when evaluation at compile time skips checks?"
+  },
+  {
+    "id": "R21",
+    "lean": "Toy.Contracts.runtimeValue_iff_staticObligationAt_of_lowered_of_noChecks_of_req_of_ctfeSkipConst",
+    "lean_names": [
+      "Toy.Contracts.Lowered",
+      "Toy.Contracts.NoChecks",
+      "Toy.Contracts.CtfeConst",
+      "Toy.Contracts.RuntimeValue",
+      "Toy.Contracts.StaticObligationAt",
+      "Toy.Contracts.gTry",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.gInt",
+      "Toy.Contracts.cThree",
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.erase",
+      "Toy.Contracts.instr",
+      "Toy.Contracts.gGood",
+      "Toy.Contracts.runtimeValue_iff_req_and_ens_of_lowered_of_noChecks_of_ctfeSkipConst",
+      "Toy.Contracts.halts_unique",
+      "Toy.Contracts.run_mono",
+      "Toy.Contracts.run",
+      "Toy.Contracts.cex_runtimeValue_obl_req",
+      "Toy.Contracts.Placement",
+      "Toy.Contracts.cex_runtimeValue_obl_tailOnly",
+      "Toy.Contracts.CtfeMode",
+      "Toy.Contracts.instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req",
+      "Toy.Contracts.cex_runtimeValue_obl_lowered",
+      "Toy.Contracts.cex_runtimeValue_obl_noChecks",
+      "Toy.Contracts.cex_runtimeValue_obl_ctfeConst",
+      "Toy.Contracts.nonvacuity_ctfe_req"
+    ],
+    "kind": "characterization",
+    "tier": "T1",
+    "tier_justification": "T1: that evaluation without checks can produce values the checked run rejects is folklore (C++ proposals P1774R8 §4.6 and P2900R14 §3.5.12 discuss assumptions and contract assertions during constant evaluation); no mechanized statement of this condition was found.",
+    "plain_claim": "For every contract `c`, every function `g` with `Lowered g` and `NoChecks g` (both over every block, reachable or not; `NoChecks g` also over the prologue), every argument `x` with `Req x` and every value `r`: if compile-time evaluation that skips checks, applied to the all-exits instrumentation, produces the constant `r` (`CtfeConst .allExits .skipChecks c g x r`), then the all-exits runtime-checked call returns `r` (`RuntimeValue .allExits c g x r`) iff the static obligation holds at `x` (`StaticObligationAt c g x`).",
+    "hypotheses": [
+      {
+        "name": "hg : Lowered g",
+        "purpose": "no block of `g`, reachable or not, ends in the source form `tryQ` of `?`; as for the previous characterization.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_runtimeValue_obl_lowered",
+        "witness_class": "`gTry` at input `1` under `c1`"
+      },
+      {
+        "name": "hnc : NoChecks g",
+        "purpose": "no contract statement in the prologue or in any block of `g`, reachable or not; as for the previous characterization.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_runtimeValue_obl_noChecks",
+        "witness_class": "`gInt` at input `3` under `cThree`"
+      },
+      {
+        "name": "hreq : c.req x = true",
+        "purpose": "off `Req` the static obligation holds vacuously while the runtime call fails its `requires` check.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_runtimeValue_obl_req",
+        "witness_class": "`gEarly` at input `100` under `c1`"
+      },
+      {
+        "name": "hk : CtfeConst .allExits .skipChecks c g x r",
+        "purpose": "ties `r` to the value that the erasure `erase (instr .allExits g)` returns on `x`, which is the value `g` returns on `x` when `NoChecks g` holds.",
+        "tightness": "tight",
+        "counterexample": "Toy.Contracts.cex_runtimeValue_obl_ctfeConst",
+        "witness_class": "`gGood` at input `5` and value `4` under `c1`"
+      }
+    ],
+    "depth": "shallow",
+    "depth_justification": "From `runtimeValue_iff_req_and_ens_of_lowered_of_noChecks_of_ctfeSkipConst` and determinism of halting runs (`halts_unique`, from fuel monotonicity `run_mono`), which identifies every normal return of `g` on `x` with `r`.",
+    "nonvacuity_witness": "`gEarly` on `0` (constant `7`).",
+    "nonvacuity_witness_lean": "Toy.Contracts.nonvacuity_ctfe_req",
+    "non_claims": [
+      "The equivalence between an existential statement (`RuntimeValue`: some checked return of `r`) and a universal one (`StaticObligationAt`: every normal return satisfies `Ens`) relies on determinism of `run` (`halts_unique`); for a nondeterministic semantics it is not established.",
+      "There is an input violating `Req` (`gEarly` on `100` under `c1`) at which the equivalence fails (`cex_runtimeValue_obl_req`): the static obligation holds vacuously there, but the runtime call fails its `requires` check.",
+      "`CtfeConst` and `RuntimeValue` take a `Placement` parameter and the theorem is stated for `.allExits`. With `.tailOnly` in both places the equivalence fails at one proved instance (`cex_runtimeValue_obl_tailOnly`: for `gEarly` on `0` under `c1`, `Req 0` holds, check-skipping evaluation of the tail-only instrumentation gives `7`, the tail-only checked call returns `7`, and the static obligation at `0` fails).",
+      "Compile-time evaluation is a toy parameter (`CtfeMode`); nothing is asserted about which mode any compiler implements, and `CtfeConst` ignores events.",
+      "Contract statements (`checkReq`, `checkEns`, `assumeReq`) carry no predicate of their own: each evaluates a clause of the contract `c` under which the function runs, and `erase` deletes every contract statement, including any already present in the function as written. `NoChecks g` is tight for that reason; the comparison of `g` itself with `instr .allExits g` at inputs satisfying `Req` is characterized under `Lowered g` without assuming `NoChecks g` (`instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req`). In-body assertions with predicates of their own are not modelled.",
+      "`Lowered g` and `NoChecks g` inspect every block of `g`, reachable or not (`NoChecks g` also the prologue); the natural weakenings that restrict them to blocks reachable from the entry are not established here.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "T. Doumler, 'Portable assumptions', WG21 P1774R8, 2022-06-14 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1774r8.pdf, accessed 2026-11-21), §4.6 'Behaviour of assumptions during constant evaluation': an assumption that would not evaluate to true during constant evaluation makes it implementation-defined whether the program is ill-formed, and an assumption that cannot be evaluated at compile time is ignored.",
+      "J. Berne, T. Doumler, A. Krzemieński et al., 'Contracts for C++', WG21 P2900R14, 2025-02-13 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p2900r14.pdf, accessed 2026-11-21): one non-checking evaluation semantic (ignore) and three checking ones (observe, enforce, quick-enforce); §3.5.12 'Constant Evaluation' says that under ignore 'Nothing happens during constant evaluation', and that the semantic of a manifestly constant-evaluated contract assertion is chosen in an implementation-defined manner. The toy's `skipChecks` and `evalChecks` correspond loosely to ignore and to a checking semantic.",
+      "Rust contracts experiment: tracking issue https://github.com/rust-lang/rust/issues/128044 ('Tracking Issue for Contracts', open), cited as context in prose and not as a specification. At rust-lang/rust commit c7d5ba59d8e11ee2e2204b173458eec4cb41c973, library/core/src/contracts.rs does not document check placement, the enabling flag or compile-time evaluation."
+    ],
+    "design_question": "What happens when evaluation at compile time skips checks?"
+  },
+  {
+    "id": "R22",
+    "lean": "Toy.Contracts.cex_ctfeSkip_requires_violation",
+    "lean_names": [
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.RuntimeValue",
+      "Toy.Contracts.runtimeValue_iff_req_and_ens_of_lowered_of_noChecks_of_ctfeSkipConst",
+      "Toy.Contracts.runtimeValue_iff_staticObligationAt_of_lowered_of_noChecks_of_req_of_ctfeSkipConst",
+      "Toy.Contracts.CtfeMode",
+      "Toy.Contracts.CtfeConst"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "T1: that evaluation without checks can produce values the checked run rejects is folklore (C++ proposals P1774R8 §4.6 and P2900R14 §3.5.12 discuss assumptions and contract assertions during constant evaluation); no mechanized statement of this condition was found.",
+    "plain_claim": "There is a lowered function without contract statements (in its prologue or in any block, reachable or not), `gEarly`, and an input, `100`, violating `Req` under `c1`, such that: check-skipping compile-time evaluation of the all-exits instrumentation yields the constant `100`; the static obligation at `100` holds vacuously; the all-exits runtime-checked call halts with a `requires` failure and no events at every fuel and returns no value at all (`∀ r, ¬ RuntimeValue .allExits c1 gEarly 100 r`); and check-evaluating compile-time evaluation of the all-exits instrumentation yields no constant at all.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_justification": "Evaluation of concrete runs.",
+    "non_claims": [
+      "Reference instance of the `Req x` false case of `runtimeValue_iff_req_and_ens_of_lowered_of_noChecks_of_ctfeSkipConst`, and of the tightness of `Req x` in `runtimeValue_iff_staticObligationAt_of_lowered_of_noChecks_of_req_of_ctfeSkipConst`.",
+      "One concrete instance; it is not a statement about every function, input or flag assignment.",
+      "Compile-time evaluation is a toy parameter (`CtfeMode`); nothing is asserted about which mode any compiler implements, and `CtfeConst` ignores events.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "T. Doumler, 'Portable assumptions', WG21 P1774R8, 2022-06-14 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1774r8.pdf, accessed 2026-11-21), §4.6 'Behaviour of assumptions during constant evaluation': an assumption that would not evaluate to true during constant evaluation makes it implementation-defined whether the program is ill-formed, and an assumption that cannot be evaluated at compile time is ignored.",
+      "J. Berne, T. Doumler, A. Krzemieński et al., 'Contracts for C++', WG21 P2900R14, 2025-02-13 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p2900r14.pdf, accessed 2026-11-21): one non-checking evaluation semantic (ignore) and three checking ones (observe, enforce, quick-enforce); §3.5.12 'Constant Evaluation' says that under ignore 'Nothing happens during constant evaluation', and that the semantic of a manifestly constant-evaluated contract assertion is chosen in an implementation-defined manner. The toy's `skipChecks` and `evalChecks` correspond loosely to ignore and to a checking semantic.",
+      "Rust contracts experiment: tracking issue https://github.com/rust-lang/rust/issues/128044 ('Tracking Issue for Contracts', open), cited as context in prose and not as a specification. At rust-lang/rust commit c7d5ba59d8e11ee2e2204b173458eec4cb41c973, library/core/src/contracts.rs does not document check placement, the enabling flag or compile-time evaluation."
+    ],
+    "design_question": "What happens when evaluation at compile time skips checks?"
+  },
+  {
+    "id": "R23",
+    "lean": "Toy.Contracts.cex_ctfeSkip_ensures_violation",
+    "lean_names": [
+      "Toy.Contracts.gEarly",
+      "Toy.Contracts.c1",
+      "Toy.Contracts.RuntimeValue",
+      "Toy.Contracts.runtimeValue_iff_req_and_ens_of_lowered_of_noChecks_of_ctfeSkipConst",
+      "Toy.Contracts.CtfeMode",
+      "Toy.Contracts.CtfeConst"
+    ],
+    "kind": "counterexample",
+    "tier": "T1",
+    "tier_justification": "T1: that evaluation without checks can produce values the checked run rejects is folklore (C++ proposals P1774R8 §4.6 and P2900R14 §3.5.12 discuss assumptions and contract assertions during constant evaluation); no mechanized statement of this condition was found.",
+    "plain_claim": "There is a lowered function without contract statements (in its prologue or in any block, reachable or not), `gEarly`, and an input, `0`, satisfying `Req` under `c1`, such that: check-skipping compile-time evaluation of the all-exits instrumentation yields the constant `7`; `Ens 0 7` fails; the all-exits runtime-checked call halts with an `ensures` failure and no events and returns no value at all (`∀ r, ¬ RuntimeValue .allExits c1 gEarly 0 r`); and check-evaluating compile-time evaluation of the all-exits instrumentation yields no constant at all.",
+    "hypotheses": [],
+    "depth": "definitional",
+    "depth_justification": "Evaluation of concrete runs.",
+    "non_claims": [
+      "Reference instance of the `Ens x r` false case of `runtimeValue_iff_req_and_ens_of_lowered_of_noChecks_of_ctfeSkipConst`.",
+      "One concrete instance; it is not a statement about every function, input or flag assignment.",
+      "Compile-time evaluation is a toy parameter (`CtfeMode`); nothing is asserted about which mode any compiler implements, and `CtfeConst` ignores events.",
+      "Model–system relation: none proved. These are statements about the toy model; they neither establish nor refute the corresponding claims about the experimental Rust contracts feature (tracking issue https://github.com/rust-lang/rust/issues/128044, open), rustc, Ada, SPARK, JML, Eiffel or C++."
+    ],
+    "prior_art": [
+      "T. Doumler, 'Portable assumptions', WG21 P1774R8, 2022-06-14 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2022/p1774r8.pdf, accessed 2026-11-21), §4.6 'Behaviour of assumptions during constant evaluation': an assumption that would not evaluate to true during constant evaluation makes it implementation-defined whether the program is ill-formed, and an assumption that cannot be evaluated at compile time is ignored.",
+      "J. Berne, T. Doumler, A. Krzemieński et al., 'Contracts for C++', WG21 P2900R14, 2025-02-13 (https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2025/p2900r14.pdf, accessed 2026-11-21): one non-checking evaluation semantic (ignore) and three checking ones (observe, enforce, quick-enforce); §3.5.12 'Constant Evaluation' says that under ignore 'Nothing happens during constant evaluation', and that the semantic of a manifestly constant-evaluated contract assertion is chosen in an implementation-defined manner. The toy's `skipChecks` and `evalChecks` correspond loosely to ignore and to a checking semantic.",
+      "Rust contracts experiment: tracking issue https://github.com/rust-lang/rust/issues/128044 ('Tracking Issue for Contracts', open), cited as context in prose and not as a specification. At rust-lang/rust commit c7d5ba59d8e11ee2e2204b173458eec4cb41c973, library/core/src/contracts.rs does not document check placement, the enabling flag or compile-time evaluation."
+    ],
+    "design_question": "What happens when evaluation at compile time skips checks?"
+  }
+]

@@ -1,0 +1,1545 @@
+{
+  "allowed": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "declarations": {
+    "Toy.Contracts.Block": [],
+    "Toy.Contracts.Block.casesOn": [],
+    "Toy.Contracts.Block.ctorIdx": [],
+    "Toy.Contracts.Block.mk": [],
+    "Toy.Contracts.Block.mk.inj": [],
+    "Toy.Contracts.Block.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Block.mk.noConfusion": [],
+    "Toy.Contracts.Block.mk.sizeOf_spec": [],
+    "Toy.Contracts.Block.noConfusion": [],
+    "Toy.Contracts.Block.noConfusionType": [],
+    "Toy.Contracts.Block.rec": [],
+    "Toy.Contracts.Block.recOn": [],
+    "Toy.Contracts.Block.stmts": [],
+    "Toy.Contracts.Block.term": [],
+    "Toy.Contracts.CallSite": [],
+    "Toy.Contracts.CallSite.callerCrate": [],
+    "Toy.Contracts.CallSite.casesOn": [],
+    "Toy.Contracts.CallSite.ctorIdx": [],
+    "Toy.Contracts.CallSite.defCrate": [],
+    "Toy.Contracts.CallSite.generic": [],
+    "Toy.Contracts.CallSite.instCrate": [],
+    "Toy.Contracts.CallSite.mk": [],
+    "Toy.Contracts.CallSite.mk.inj": [],
+    "Toy.Contracts.CallSite.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.CallSite.mk.noConfusion": [],
+    "Toy.Contracts.CallSite.mk.sizeOf_spec": [],
+    "Toy.Contracts.CallSite.noConfusion": [],
+    "Toy.Contracts.CallSite.noConfusionType": [],
+    "Toy.Contracts.CallSite.rec": [],
+    "Toy.Contracts.CallSite.recOn": [],
+    "Toy.Contracts.CheckKind": [],
+    "Toy.Contracts.CheckKind.casesOn": [],
+    "Toy.Contracts.CheckKind.ctorElim": [],
+    "Toy.Contracts.CheckKind.ctorElimType": [],
+    "Toy.Contracts.CheckKind.ctorIdx": [],
+    "Toy.Contracts.CheckKind.noConfusion": [],
+    "Toy.Contracts.CheckKind.noConfusionType": [],
+    "Toy.Contracts.CheckKind.ofNat": [],
+    "Toy.Contracts.CheckKind.ofNat_ctorIdx": [],
+    "Toy.Contracts.CheckKind.post": [],
+    "Toy.Contracts.CheckKind.post.elim": [],
+    "Toy.Contracts.CheckKind.post.sizeOf_spec": [],
+    "Toy.Contracts.CheckKind.pre": [],
+    "Toy.Contracts.CheckKind.pre.elim": [],
+    "Toy.Contracts.CheckKind.pre.sizeOf_spec": [],
+    "Toy.Contracts.CheckKind.rec": [],
+    "Toy.Contracts.CheckKind.recOn": [],
+    "Toy.Contracts.Contract": [],
+    "Toy.Contracts.Contract.casesOn": [],
+    "Toy.Contracts.Contract.ctorIdx": [],
+    "Toy.Contracts.Contract.ens": [],
+    "Toy.Contracts.Contract.mk": [],
+    "Toy.Contracts.Contract.mk.inj": [],
+    "Toy.Contracts.Contract.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Contract.mk.noConfusion": [],
+    "Toy.Contracts.Contract.mk.sizeOf_spec": [],
+    "Toy.Contracts.Contract.noConfusion": [],
+    "Toy.Contracts.Contract.noConfusionType": [],
+    "Toy.Contracts.Contract.rec": [],
+    "Toy.Contracts.Contract.recOn": [],
+    "Toy.Contracts.Contract.req": [],
+    "Toy.Contracts.CtfeConst": [
+      "propext"
+    ],
+    "Toy.Contracts.CtfeMode": [],
+    "Toy.Contracts.CtfeMode.casesOn": [],
+    "Toy.Contracts.CtfeMode.ctorElim": [],
+    "Toy.Contracts.CtfeMode.ctorElimType": [],
+    "Toy.Contracts.CtfeMode.ctorIdx": [],
+    "Toy.Contracts.CtfeMode.evalChecks": [],
+    "Toy.Contracts.CtfeMode.evalChecks.elim": [],
+    "Toy.Contracts.CtfeMode.evalChecks.sizeOf_spec": [],
+    "Toy.Contracts.CtfeMode.noConfusion": [],
+    "Toy.Contracts.CtfeMode.noConfusionType": [],
+    "Toy.Contracts.CtfeMode.ofNat": [],
+    "Toy.Contracts.CtfeMode.ofNat_ctorIdx": [],
+    "Toy.Contracts.CtfeMode.rec": [],
+    "Toy.Contracts.CtfeMode.recOn": [],
+    "Toy.Contracts.CtfeMode.skipChecks": [],
+    "Toy.Contracts.CtfeMode.skipChecks.elim": [],
+    "Toy.Contracts.CtfeMode.skipChecks.sizeOf_spec": [],
+    "Toy.Contracts.Detects": [
+      "propext"
+    ],
+    "Toy.Contracts.EnsOnReturnsAt": [
+      "propext"
+    ],
+    "Toy.Contracts.ExitKind": [],
+    "Toy.Contracts.ExitKind.casesOn": [],
+    "Toy.Contracts.ExitKind.ctorElim": [],
+    "Toy.Contracts.ExitKind.ctorElimType": [],
+    "Toy.Contracts.ExitKind.ctorIdx": [],
+    "Toy.Contracts.ExitKind.early": [],
+    "Toy.Contracts.ExitKind.early.elim": [],
+    "Toy.Contracts.ExitKind.early.sizeOf_spec": [],
+    "Toy.Contracts.ExitKind.noConfusion": [],
+    "Toy.Contracts.ExitKind.noConfusionType": [],
+    "Toy.Contracts.ExitKind.ofNat": [],
+    "Toy.Contracts.ExitKind.ofNat_ctorIdx": [],
+    "Toy.Contracts.ExitKind.rec": [],
+    "Toy.Contracts.ExitKind.recOn": [],
+    "Toy.Contracts.ExitKind.tail": [],
+    "Toy.Contracts.ExitKind.tail.elim": [],
+    "Toy.Contracts.ExitKind.tail.sizeOf_spec": [],
+    "Toy.Contracts.ExitKind.tryErr": [],
+    "Toy.Contracts.ExitKind.tryErr.elim": [],
+    "Toy.Contracts.ExitKind.tryErr.sizeOf_spec": [],
+    "Toy.Contracts.Exported": [],
+    "Toy.Contracts.Exported.casesOn": [],
+    "Toy.Contracts.Exported.compiled": [],
+    "Toy.Contracts.Exported.compiled.elim": [],
+    "Toy.Contracts.Exported.compiled.inj": [],
+    "Toy.Contracts.Exported.compiled.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Exported.compiled.noConfusion": [],
+    "Toy.Contracts.Exported.compiled.sizeOf_spec": [],
+    "Toy.Contracts.Exported.ctorElim": [],
+    "Toy.Contracts.Exported.ctorElimType": [],
+    "Toy.Contracts.Exported.ctorIdx": [],
+    "Toy.Contracts.Exported.noConfusion": [],
+    "Toy.Contracts.Exported.noConfusionType": [],
+    "Toy.Contracts.Exported.rec": [],
+    "Toy.Contracts.Exported.recOn": [],
+    "Toy.Contracts.Exported.template": [],
+    "Toy.Contracts.Exported.template.elim": [],
+    "Toy.Contracts.Exported.template.inj": [],
+    "Toy.Contracts.Exported.template.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Exported.template.noConfusion": [],
+    "Toy.Contracts.Exported.template.sizeOf_spec": [],
+    "Toy.Contracts.Fn": [],
+    "Toy.Contracts.Fn.blocks": [],
+    "Toy.Contracts.Fn.casesOn": [],
+    "Toy.Contracts.Fn.ctorIdx": [],
+    "Toy.Contracts.Fn.entry": [],
+    "Toy.Contracts.Fn.mk": [],
+    "Toy.Contracts.Fn.mk.inj": [],
+    "Toy.Contracts.Fn.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Fn.mk.noConfusion": [],
+    "Toy.Contracts.Fn.mk.sizeOf_spec": [],
+    "Toy.Contracts.Fn.noConfusion": [],
+    "Toy.Contracts.Fn.noConfusionType": [],
+    "Toy.Contracts.Fn.prologue": [],
+    "Toy.Contracts.Fn.rec": [],
+    "Toy.Contracts.Fn.recOn": [],
+    "Toy.Contracts.Halts": [
+      "propext"
+    ],
+    "Toy.Contracts.HaltsEqAt": [
+      "propext"
+    ],
+    "Toy.Contracts.JumpsInRange": [],
+    "Toy.Contracts.Lowered": [
+      "propext"
+    ],
+    "Toy.Contracts.NoChecks": [
+      "propext"
+    ],
+    "Toy.Contracts.Obs": [],
+    "Toy.Contracts.Obs.casesOn": [],
+    "Toy.Contracts.Obs.ctorIdx": [],
+    "Toy.Contracts.Obs.events": [],
+    "Toy.Contracts.Obs.mk": [],
+    "Toy.Contracts.Obs.mk.inj": [],
+    "Toy.Contracts.Obs.mk.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Obs.mk.noConfusion": [],
+    "Toy.Contracts.Obs.mk.sizeOf_spec": [],
+    "Toy.Contracts.Obs.noConfusion": [],
+    "Toy.Contracts.Obs.noConfusionType": [],
+    "Toy.Contracts.Obs.outcome": [],
+    "Toy.Contracts.Obs.rec": [],
+    "Toy.Contracts.Obs.recOn": [],
+    "Toy.Contracts.Operand": [],
+    "Toy.Contracts.Operand.arg": [],
+    "Toy.Contracts.Operand.arg.elim": [],
+    "Toy.Contracts.Operand.arg.sizeOf_spec": [],
+    "Toy.Contracts.Operand.casesOn": [],
+    "Toy.Contracts.Operand.ctorElim": [],
+    "Toy.Contracts.Operand.ctorElimType": [],
+    "Toy.Contracts.Operand.ctorIdx": [],
+    "Toy.Contracts.Operand.lit": [],
+    "Toy.Contracts.Operand.lit.elim": [],
+    "Toy.Contracts.Operand.lit.inj": [],
+    "Toy.Contracts.Operand.lit.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Operand.lit.noConfusion": [],
+    "Toy.Contracts.Operand.lit.sizeOf_spec": [],
+    "Toy.Contracts.Operand.loc": [],
+    "Toy.Contracts.Operand.loc.elim": [],
+    "Toy.Contracts.Operand.loc.inj": [],
+    "Toy.Contracts.Operand.loc.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Operand.loc.noConfusion": [],
+    "Toy.Contracts.Operand.loc.sizeOf_spec": [],
+    "Toy.Contracts.Operand.noConfusion": [],
+    "Toy.Contracts.Operand.noConfusionType": [],
+    "Toy.Contracts.Operand.rec": [],
+    "Toy.Contracts.Operand.recOn": [],
+    "Toy.Contracts.Outcome": [],
+    "Toy.Contracts.Outcome.casesOn": [],
+    "Toy.Contracts.Outcome.checkFail": [],
+    "Toy.Contracts.Outcome.checkFail.elim": [],
+    "Toy.Contracts.Outcome.checkFail.inj": [],
+    "Toy.Contracts.Outcome.checkFail.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Outcome.checkFail.noConfusion": [],
+    "Toy.Contracts.Outcome.checkFail.sizeOf_spec": [],
+    "Toy.Contracts.Outcome.ctorElim": [],
+    "Toy.Contracts.Outcome.ctorElimType": [],
+    "Toy.Contracts.Outcome.ctorIdx": [],
+    "Toy.Contracts.Outcome.fuelOut": [],
+    "Toy.Contracts.Outcome.fuelOut.elim": [],
+    "Toy.Contracts.Outcome.fuelOut.sizeOf_spec": [],
+    "Toy.Contracts.Outcome.noConfusion": [],
+    "Toy.Contracts.Outcome.noConfusionType": [],
+    "Toy.Contracts.Outcome.panic": [],
+    "Toy.Contracts.Outcome.panic.elim": [],
+    "Toy.Contracts.Outcome.panic.sizeOf_spec": [],
+    "Toy.Contracts.Outcome.rec": [],
+    "Toy.Contracts.Outcome.recOn": [],
+    "Toy.Contracts.Outcome.ret": [],
+    "Toy.Contracts.Outcome.ret.elim": [],
+    "Toy.Contracts.Outcome.ret.inj": [],
+    "Toy.Contracts.Outcome.ret.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Outcome.ret.noConfusion": [],
+    "Toy.Contracts.Outcome.ret.sizeOf_spec": [],
+    "Toy.Contracts.Outcome.stuck": [],
+    "Toy.Contracts.Outcome.stuck.elim": [],
+    "Toy.Contracts.Outcome.stuck.sizeOf_spec": [],
+    "Toy.Contracts.Outcome.ub": [],
+    "Toy.Contracts.Outcome.ub.elim": [],
+    "Toy.Contracts.Outcome.ub.sizeOf_spec": [],
+    "Toy.Contracts.Placement": [],
+    "Toy.Contracts.Placement.allExits": [],
+    "Toy.Contracts.Placement.allExits.elim": [],
+    "Toy.Contracts.Placement.allExits.sizeOf_spec": [],
+    "Toy.Contracts.Placement.casesOn": [],
+    "Toy.Contracts.Placement.ctorElim": [],
+    "Toy.Contracts.Placement.ctorElimType": [],
+    "Toy.Contracts.Placement.ctorIdx": [],
+    "Toy.Contracts.Placement.noConfusion": [],
+    "Toy.Contracts.Placement.noConfusionType": [],
+    "Toy.Contracts.Placement.ofNat": [],
+    "Toy.Contracts.Placement.ofNat_ctorIdx": [],
+    "Toy.Contracts.Placement.rec": [],
+    "Toy.Contracts.Placement.recOn": [],
+    "Toy.Contracts.Placement.selects": [],
+    "Toy.Contracts.Placement.selects.eq_1": [],
+    "Toy.Contracts.Placement.selects.eq_2": [],
+    "Toy.Contracts.Placement.selects.match_1": [],
+    "Toy.Contracts.Placement.tailOnly": [],
+    "Toy.Contracts.Placement.tailOnly.elim": [],
+    "Toy.Contracts.Placement.tailOnly.sizeOf_spec": [],
+    "Toy.Contracts.Resolution": [],
+    "Toy.Contracts.Resolution.atDefinition": [],
+    "Toy.Contracts.Resolution.atDefinition.elim": [],
+    "Toy.Contracts.Resolution.atDefinition.sizeOf_spec": [],
+    "Toy.Contracts.Resolution.atInstantiation": [],
+    "Toy.Contracts.Resolution.atInstantiation.elim": [],
+    "Toy.Contracts.Resolution.atInstantiation.sizeOf_spec": [],
+    "Toy.Contracts.Resolution.casesOn": [],
+    "Toy.Contracts.Resolution.ctorElim": [],
+    "Toy.Contracts.Resolution.ctorElimType": [],
+    "Toy.Contracts.Resolution.ctorIdx": [],
+    "Toy.Contracts.Resolution.noConfusion": [],
+    "Toy.Contracts.Resolution.noConfusionType": [],
+    "Toy.Contracts.Resolution.ofNat": [],
+    "Toy.Contracts.Resolution.ofNat_ctorIdx": [],
+    "Toy.Contracts.Resolution.rec": [],
+    "Toy.Contracts.Resolution.recOn": [],
+    "Toy.Contracts.RunEqAt": [
+      "propext"
+    ],
+    "Toy.Contracts.RuntimeValue": [
+      "propext"
+    ],
+    "Toy.Contracts.Rvalue": [],
+    "Toy.Contracts.Rvalue.add": [],
+    "Toy.Contracts.Rvalue.add.elim": [],
+    "Toy.Contracts.Rvalue.add.inj": [],
+    "Toy.Contracts.Rvalue.add.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Rvalue.add.noConfusion": [],
+    "Toy.Contracts.Rvalue.add.sizeOf_spec": [],
+    "Toy.Contracts.Rvalue.casesOn": [],
+    "Toy.Contracts.Rvalue.ctorElim": [],
+    "Toy.Contracts.Rvalue.ctorElimType": [],
+    "Toy.Contracts.Rvalue.ctorIdx": [],
+    "Toy.Contracts.Rvalue.noConfusion": [],
+    "Toy.Contracts.Rvalue.noConfusionType": [],
+    "Toy.Contracts.Rvalue.rec": [],
+    "Toy.Contracts.Rvalue.recOn": [],
+    "Toy.Contracts.Rvalue.sub": [],
+    "Toy.Contracts.Rvalue.sub.elim": [],
+    "Toy.Contracts.Rvalue.sub.inj": [],
+    "Toy.Contracts.Rvalue.sub.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Rvalue.sub.noConfusion": [],
+    "Toy.Contracts.Rvalue.sub.sizeOf_spec": [],
+    "Toy.Contracts.Rvalue.use": [],
+    "Toy.Contracts.Rvalue.use.elim": [],
+    "Toy.Contracts.Rvalue.use.inj": [],
+    "Toy.Contracts.Rvalue.use.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Rvalue.use.noConfusion": [],
+    "Toy.Contracts.Rvalue.use.sizeOf_spec": [],
+    "Toy.Contracts.SR": [],
+    "Toy.Contracts.SR.casesOn": [],
+    "Toy.Contracts.SR.cont": [],
+    "Toy.Contracts.SR.cont.elim": [],
+    "Toy.Contracts.SR.cont.inj": [],
+    "Toy.Contracts.SR.cont.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.SR.cont.noConfusion": [],
+    "Toy.Contracts.SR.cont.sizeOf_spec": [],
+    "Toy.Contracts.SR.ctorElim": [],
+    "Toy.Contracts.SR.ctorElimType": [],
+    "Toy.Contracts.SR.ctorIdx": [],
+    "Toy.Contracts.SR.noConfusion": [],
+    "Toy.Contracts.SR.noConfusionType": [],
+    "Toy.Contracts.SR.rec": [],
+    "Toy.Contracts.SR.recOn": [],
+    "Toy.Contracts.SR.stop": [],
+    "Toy.Contracts.SR.stop.elim": [],
+    "Toy.Contracts.SR.stop.inj": [],
+    "Toy.Contracts.SR.stop.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.SR.stop.noConfusion": [],
+    "Toy.Contracts.SR.stop.sizeOf_spec": [],
+    "Toy.Contracts.Site": [],
+    "Toy.Contracts.Site.calleeSide": [],
+    "Toy.Contracts.Site.calleeSide.elim": [],
+    "Toy.Contracts.Site.calleeSide.sizeOf_spec": [],
+    "Toy.Contracts.Site.callerSide": [],
+    "Toy.Contracts.Site.callerSide.elim": [],
+    "Toy.Contracts.Site.callerSide.sizeOf_spec": [],
+    "Toy.Contracts.Site.casesOn": [],
+    "Toy.Contracts.Site.ctorElim": [],
+    "Toy.Contracts.Site.ctorElimType": [],
+    "Toy.Contracts.Site.ctorIdx": [],
+    "Toy.Contracts.Site.noConfusion": [],
+    "Toy.Contracts.Site.noConfusionType": [],
+    "Toy.Contracts.Site.ofNat": [],
+    "Toy.Contracts.Site.ofNat_ctorIdx": [],
+    "Toy.Contracts.Site.rec": [],
+    "Toy.Contracts.Site.recOn": [],
+    "Toy.Contracts.StaticObligation": [
+      "propext"
+    ],
+    "Toy.Contracts.StaticObligationAt": [
+      "propext"
+    ],
+    "Toy.Contracts.Stmt": [],
+    "Toy.Contracts.Stmt.assign": [],
+    "Toy.Contracts.Stmt.assign.elim": [],
+    "Toy.Contracts.Stmt.assign.inj": [],
+    "Toy.Contracts.Stmt.assign.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Stmt.assign.noConfusion": [],
+    "Toy.Contracts.Stmt.assign.sizeOf_spec": [],
+    "Toy.Contracts.Stmt.assumeReq": [],
+    "Toy.Contracts.Stmt.assumeReq.elim": [],
+    "Toy.Contracts.Stmt.assumeReq.sizeOf_spec": [],
+    "Toy.Contracts.Stmt.casesOn": [],
+    "Toy.Contracts.Stmt.checkEns": [],
+    "Toy.Contracts.Stmt.checkEns.elim": [],
+    "Toy.Contracts.Stmt.checkEns.inj": [],
+    "Toy.Contracts.Stmt.checkEns.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Stmt.checkEns.noConfusion": [],
+    "Toy.Contracts.Stmt.checkEns.sizeOf_spec": [],
+    "Toy.Contracts.Stmt.checkReq": [],
+    "Toy.Contracts.Stmt.checkReq.elim": [],
+    "Toy.Contracts.Stmt.checkReq.sizeOf_spec": [],
+    "Toy.Contracts.Stmt.ctorElim": [],
+    "Toy.Contracts.Stmt.ctorElimType": [],
+    "Toy.Contracts.Stmt.ctorIdx": [],
+    "Toy.Contracts.Stmt.emit": [],
+    "Toy.Contracts.Stmt.emit.elim": [],
+    "Toy.Contracts.Stmt.emit.inj": [],
+    "Toy.Contracts.Stmt.emit.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Stmt.emit.noConfusion": [],
+    "Toy.Contracts.Stmt.emit.sizeOf_spec": [],
+    "Toy.Contracts.Stmt.isContract": [
+      "propext"
+    ],
+    "Toy.Contracts.Stmt.isContract.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.Stmt.isContract.eq_2": [
+      "propext"
+    ],
+    "Toy.Contracts.Stmt.isContract.eq_3": [
+      "propext"
+    ],
+    "Toy.Contracts.Stmt.isContract.eq_4": [
+      "propext"
+    ],
+    "Toy.Contracts.Stmt.isContract.match_1": [
+      "propext"
+    ],
+    "Toy.Contracts.Stmt.noConfusion": [],
+    "Toy.Contracts.Stmt.noConfusionType": [],
+    "Toy.Contracts.Stmt.rec": [],
+    "Toy.Contracts.Stmt.recOn": [],
+    "Toy.Contracts.Store": [],
+    "Toy.Contracts.Store.set": [],
+    "Toy.Contracts.Store.set.eq_1": [],
+    "Toy.Contracts.Term": [],
+    "Toy.Contracts.Term.branch": [],
+    "Toy.Contracts.Term.branch.elim": [],
+    "Toy.Contracts.Term.branch.inj": [],
+    "Toy.Contracts.Term.branch.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Term.branch.noConfusion": [],
+    "Toy.Contracts.Term.branch.sizeOf_spec": [],
+    "Toy.Contracts.Term.casesOn": [],
+    "Toy.Contracts.Term.ctorElim": [],
+    "Toy.Contracts.Term.ctorElimType": [],
+    "Toy.Contracts.Term.ctorIdx": [],
+    "Toy.Contracts.Term.goto": [],
+    "Toy.Contracts.Term.goto.elim": [],
+    "Toy.Contracts.Term.goto.inj": [],
+    "Toy.Contracts.Term.goto.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Term.goto.noConfusion": [],
+    "Toy.Contracts.Term.goto.sizeOf_spec": [],
+    "Toy.Contracts.Term.isTryQ": [
+      "propext"
+    ],
+    "Toy.Contracts.Term.isTryQ.match_1": [
+      "propext"
+    ],
+    "Toy.Contracts.Term.noConfusion": [],
+    "Toy.Contracts.Term.noConfusionType": [],
+    "Toy.Contracts.Term.panic": [],
+    "Toy.Contracts.Term.panic.elim": [],
+    "Toy.Contracts.Term.panic.sizeOf_spec": [],
+    "Toy.Contracts.Term.rec": [],
+    "Toy.Contracts.Term.recOn": [],
+    "Toy.Contracts.Term.ret": [],
+    "Toy.Contracts.Term.ret.elim": [],
+    "Toy.Contracts.Term.ret.inj": [],
+    "Toy.Contracts.Term.ret.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Term.ret.noConfusion": [],
+    "Toy.Contracts.Term.ret.sizeOf_spec": [],
+    "Toy.Contracts.Term.targets": [],
+    "Toy.Contracts.Term.targets.eq_1": [],
+    "Toy.Contracts.Term.targets.eq_2": [],
+    "Toy.Contracts.Term.targets.eq_3": [],
+    "Toy.Contracts.Term.targets.eq_4": [],
+    "Toy.Contracts.Term.targets.eq_5": [],
+    "Toy.Contracts.Term.targets.match_1": [],
+    "Toy.Contracts.Term.tryQ": [],
+    "Toy.Contracts.Term.tryQ.elim": [],
+    "Toy.Contracts.Term.tryQ.inj": [],
+    "Toy.Contracts.Term.tryQ.injEq": [
+      "propext"
+    ],
+    "Toy.Contracts.Term.tryQ.noConfusion": [],
+    "Toy.Contracts.Term.tryQ.sizeOf_spec": [],
+    "Toy.Contracts.UBRefinesAt": [
+      "propext"
+    ],
+    "Toy.Contracts.ViolationAt": [
+      "propext"
+    ],
+    "Toy.Contracts.assumeErase": [
+      "propext"
+    ],
+    "Toy.Contracts.assumeErase.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.assumeErase_instr_gEarly_blocks": [
+      "propext"
+    ],
+    "Toy.Contracts.assumeErase_instr_gEarly_prologue": [
+      "propext"
+    ],
+    "Toy.Contracts.c1": [],
+    "Toy.Contracts.c1.eq_1": [],
+    "Toy.Contracts.cOne": [],
+    "Toy.Contracts.cOne.eq_1": [],
+    "Toy.Contracts.cThree": [],
+    "Toy.Contracts.cThree.eq_1": [],
+    "Toy.Contracts.callInCallerCrate": [
+      "propext"
+    ],
+    "Toy.Contracts.callInCallerCrate.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.callInCallerCrate.eq_2": [
+      "propext"
+    ],
+    "Toy.Contracts.callRun": [
+      "propext"
+    ],
+    "Toy.Contracts.callRun.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.callRun_eq_checkFail_pre_of_req_false_of_governingFlag": [
+      "propext"
+    ],
+    "Toy.Contracts.callRun_eq_ite_governingFlag_of_lowered": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.callRun_eq_run_of_not_violation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.callRun_gEarly_0_examples": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_callRun_lowered": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_callRun_violation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_calleeSide_atInstantiation_definingFlag_on_undetected": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_ctfeSkip_ensures_violation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_ctfeSkip_ensures_violation.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_ctfeSkip_ensures_violation.match_1_3": [],
+    "Toy.Contracts.cex_ctfeSkip_requires_violation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_detects_lowered": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_detects_noChecks": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_detects_violation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_erase_instr_noChecks": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_global_lowered": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_global_lowered.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_global_noChecks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_global_noChecks.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_lowered": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_lowered.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_noChecks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_noChecks.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_req": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_req.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_erasure_tailOnly": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_instrSelf_lowered": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_instrSelf_lowered.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_instrSelf_req": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_instrSelf_req.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_instr_before_lower_misses_try": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_lower_entry_out_of_range": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_lower_entry_out_of_range.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_lower_jumpsInRange": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_not_haltsEq_req_true": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_not_haltsEq_req_true.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_not_ubRefines_req_true": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_not_ubRefines_req_true.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_req_and_ens_premise": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_req_and_ens_premise.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cex_runtimeValue_ctfeConst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_runtimeValue_lowered": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_runtimeValue_noChecks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_runtimeValue_obl_ctfeConst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_runtimeValue_obl_lowered": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_runtimeValue_obl_noChecks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_runtimeValue_obl_req": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_runtimeValue_obl_tailOnly": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_runtimeValue_tailOnly": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_same_flags_detection_depends_on_placement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_tailOnly_misses_early_return": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_tailOnly_misses_try_error_after_lowering": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_ubRefines_noChecks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.cex_ubRefines_obligation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.compileInDefCrate": [
+      "propext"
+    ],
+    "Toy.Contracts.compileInDefCrate.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.compileInDefCrate.eq_2": [
+      "propext"
+    ],
+    "Toy.Contracts.compileInDefCrate.eq_3": [
+      "propext"
+    ],
+    "Toy.Contracts.compileInDefCrate.match_1": [
+      "propext"
+    ],
+    "Toy.Contracts.cs1": [],
+    "Toy.Contracts.csGen": [],
+    "Toy.Contracts.csGen3": [],
+    "Toy.Contracts.ctfeConst_skip_gEarly_100": [
+      "propext"
+    ],
+    "Toy.Contracts.ctfeConst_skip_gTry_1": [
+      "propext"
+    ],
+    "Toy.Contracts.ctfeRun": [
+      "propext"
+    ],
+    "Toy.Contracts.ctfeRun.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.ctfeRun.eq_2": [
+      "propext"
+    ],
+    "Toy.Contracts.ctfeRun.match_1": [],
+    "Toy.Contracts.ctfeRun_evalChecks_eq": [
+      "propext"
+    ],
+    "Toy.Contracts.ctfeRun_gEarly_100_examples": [
+      "propext"
+    ],
+    "Toy.Contracts.detects_callerOn_callerSide_gEarly_0": [
+      "propext"
+    ],
+    "Toy.Contracts.detects_csGen3_follows_instCrate": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.detects_iff_governingFlag_of_lowered_of_noChecks_of_violation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.ensOnReturnsAt_gGood": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.ensOnReturnsAt_gInt_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.erase": [
+      "propext"
+    ],
+    "Toy.Contracts.erase.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.erase_gInt_ne": [
+      "propext"
+    ],
+    "Toy.Contracts.erase_instrBlock_eq": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.erase_instr_allExits_gEarly": [
+      "propext"
+    ],
+    "Toy.Contracts.erase_instr_eq_of_noChecks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.erasure_obsEq_iff_ensOnReturnsAt_of_lowered_of_noChecks_of_req": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.erasure_obsEq_onReq_iff_staticObligation_of_lowered_of_noChecks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.errBlock": [
+      "propext"
+    ],
+    "Toy.Contracts.evalOp": [],
+    "Toy.Contracts.evalOp.eq_1": [],
+    "Toy.Contracts.evalOp.eq_2": [],
+    "Toy.Contracts.evalOp.eq_3": [],
+    "Toy.Contracts.evalOp.match_1": [],
+    "Toy.Contracts.evalRv": [],
+    "Toy.Contracts.evalRv.eq_1": [],
+    "Toy.Contracts.evalRv.eq_2": [],
+    "Toy.Contracts.evalRv.eq_3": [],
+    "Toy.Contracts.evalRv.match_1": [],
+    "Toy.Contracts.execStmts": [],
+    "Toy.Contracts.execStmts.eq_1": [],
+    "Toy.Contracts.execStmts.eq_2": [],
+    "Toy.Contracts.execStmts.eq_3": [],
+    "Toy.Contracts.execStmts.eq_4": [],
+    "Toy.Contracts.execStmts.eq_5": [],
+    "Toy.Contracts.execStmts.eq_6": [],
+    "Toy.Contracts.execStmts.eq_def": [],
+    "Toy.Contracts.execStmts.match_1": [],
+    "Toy.Contracts.execStmts_append": [],
+    "Toy.Contracts.execStmts_append.match_1": [],
+    "Toy.Contracts.execStmts_no_stop_of_all": [
+      "propext"
+    ],
+    "Toy.Contracts.execStmts_stop_outcome": [],
+    "Toy.Contracts.fBadEntry": [],
+    "Toy.Contracts.fOut": [],
+    "Toy.Contracts.filter_checkEns_singleton": [
+      "propext"
+    ],
+    "Toy.Contracts.filter_checkReq_cons": [
+      "propext"
+    ],
+    "Toy.Contracts.filter_not_isContract_of_all": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.flCallerOn": [],
+    "Toy.Contracts.flDefOn": [],
+    "Toy.Contracts.flTwoOn": [],
+    "Toy.Contracts.flZeroOneOn": [],
+    "Toy.Contracts.gEarly": [],
+    "Toy.Contracts.gGood": [],
+    "Toy.Contracts.gGood.eq_1": [],
+    "Toy.Contracts.gInt": [],
+    "Toy.Contracts.gIntReq": [],
+    "Toy.Contracts.gLoop": [],
+    "Toy.Contracts.gLoop.eq_1": [],
+    "Toy.Contracts.gPanic": [],
+    "Toy.Contracts.gStuck": [],
+    "Toy.Contracts.gTry": [],
+    "Toy.Contracts.gTry.eq_1": [],
+    "Toy.Contracts.governingCrate": [],
+    "Toy.Contracts.governingCrate.eq_1": [],
+    "Toy.Contracts.governingCrate.eq_2": [],
+    "Toy.Contracts.governingCrate.eq_3": [],
+    "Toy.Contracts.governingCrate.match_1": [],
+    "Toy.Contracts.governingCrate_atDefinition": [],
+    "Toy.Contracts.governingCrate_cs1_atInstantiation": [],
+    "Toy.Contracts.governingCrate_csGen3_atInstantiation": [],
+    "Toy.Contracts.governingCrate_csGen_atInstantiation": [],
+    "Toy.Contracts.haltsEqAt_not_runEqAt_lower_gTry_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.haltsEqAt_of_runEqAt": [
+      "propext"
+    ],
+    "Toy.Contracts.halts_assumeErase_instr_gEarly_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_assumeErase_instr_gInt_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_fOut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_gEarly_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_gEarly_100": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_gGood": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_gGood_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_gInt_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_gTry_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_iff_of_run_const": [
+      "propext"
+    ],
+    "Toy.Contracts.halts_instr_allExits_gEarly_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_instr_allExits_gGood": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_instr_allExits_gInt_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_instr_allExits_gTry_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_instr_gEarly_100": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_instr_tailOnly_gEarly_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_lower_fOut": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_lower_gTry_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_lower_iff_of_jumpsInRange": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.halts_unique": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.holder": [],
+    "Toy.Contracts.holder.match_1": [],
+    "Toy.Contracts.holder_cs1": [],
+    "Toy.Contracts.instDecidableEqBlock": [],
+    "Toy.Contracts.instDecidableEqBlock.decEq": [],
+    "Toy.Contracts.instDecidableEqBlock.decEq.match_1": [],
+    "Toy.Contracts.instDecidableEqCallSite": [],
+    "Toy.Contracts.instDecidableEqCallSite.decEq": [],
+    "Toy.Contracts.instDecidableEqCallSite.decEq.match_1": [],
+    "Toy.Contracts.instDecidableEqCheckKind": [],
+    "Toy.Contracts.instDecidableEqCtfeMode": [],
+    "Toy.Contracts.instDecidableEqExitKind": [],
+    "Toy.Contracts.instDecidableEqExported": [],
+    "Toy.Contracts.instDecidableEqExported.decEq": [],
+    "Toy.Contracts.instDecidableEqExported.decEq.match_1": [],
+    "Toy.Contracts.instDecidableEqFn": [],
+    "Toy.Contracts.instDecidableEqFn.decEq": [],
+    "Toy.Contracts.instDecidableEqFn.decEq.match_1": [],
+    "Toy.Contracts.instDecidableEqObs": [],
+    "Toy.Contracts.instDecidableEqObs.decEq": [],
+    "Toy.Contracts.instDecidableEqObs.decEq.match_1": [],
+    "Toy.Contracts.instDecidableEqOperand": [],
+    "Toy.Contracts.instDecidableEqOperand.decEq": [],
+    "Toy.Contracts.instDecidableEqOperand.decEq.match_1": [],
+    "Toy.Contracts.instDecidableEqOutcome": [],
+    "Toy.Contracts.instDecidableEqOutcome.decEq": [],
+    "Toy.Contracts.instDecidableEqOutcome.decEq.match_1": [],
+    "Toy.Contracts.instDecidableEqPlacement": [],
+    "Toy.Contracts.instDecidableEqResolution": [],
+    "Toy.Contracts.instDecidableEqRvalue": [],
+    "Toy.Contracts.instDecidableEqRvalue.decEq": [],
+    "Toy.Contracts.instDecidableEqRvalue.decEq.match_1": [],
+    "Toy.Contracts.instDecidableEqSite": [],
+    "Toy.Contracts.instDecidableEqStmt": [],
+    "Toy.Contracts.instDecidableEqStmt.decEq": [],
+    "Toy.Contracts.instDecidableEqStmt.decEq.match_1": [],
+    "Toy.Contracts.instDecidableEqTerm": [],
+    "Toy.Contracts.instDecidableEqTerm.decEq": [],
+    "Toy.Contracts.instDecidableEqTerm.decEq.match_1": [],
+    "Toy.Contracts.instDecidableJumpsInRange": [],
+    "Toy.Contracts.instDecidableLowered": [
+      "propext"
+    ],
+    "Toy.Contracts.instDecidableNoChecks": [
+      "propext"
+    ],
+    "Toy.Contracts.instReprBlock": [
+      "propext"
+    ],
+    "Toy.Contracts.instReprBlock.repr": [
+      "propext"
+    ],
+    "Toy.Contracts.instReprCallSite": [],
+    "Toy.Contracts.instReprCallSite.repr": [],
+    "Toy.Contracts.instReprCheckKind": [],
+    "Toy.Contracts.instReprCheckKind.repr": [],
+    "Toy.Contracts.instReprCheckKind.repr.match_1": [],
+    "Toy.Contracts.instReprCtfeMode": [],
+    "Toy.Contracts.instReprCtfeMode.repr": [],
+    "Toy.Contracts.instReprCtfeMode.repr.match_1": [],
+    "Toy.Contracts.instReprExitKind": [],
+    "Toy.Contracts.instReprExitKind.repr": [],
+    "Toy.Contracts.instReprExitKind.repr.match_1": [],
+    "Toy.Contracts.instReprExported": [
+      "propext"
+    ],
+    "Toy.Contracts.instReprExported.repr": [
+      "propext"
+    ],
+    "Toy.Contracts.instReprExported.repr.match_1": [],
+    "Toy.Contracts.instReprFn": [
+      "propext"
+    ],
+    "Toy.Contracts.instReprFn.repr": [
+      "propext"
+    ],
+    "Toy.Contracts.instReprObs": [
+      "propext"
+    ],
+    "Toy.Contracts.instReprObs.repr": [
+      "propext"
+    ],
+    "Toy.Contracts.instReprOperand": [],
+    "Toy.Contracts.instReprOperand.repr": [],
+    "Toy.Contracts.instReprOperand.repr.match_1": [],
+    "Toy.Contracts.instReprOutcome": [],
+    "Toy.Contracts.instReprOutcome.repr": [],
+    "Toy.Contracts.instReprOutcome.repr.match_1": [],
+    "Toy.Contracts.instReprPlacement": [],
+    "Toy.Contracts.instReprPlacement.repr": [],
+    "Toy.Contracts.instReprPlacement.repr.match_1": [],
+    "Toy.Contracts.instReprResolution": [],
+    "Toy.Contracts.instReprResolution.repr": [],
+    "Toy.Contracts.instReprResolution.repr.match_1": [],
+    "Toy.Contracts.instReprRvalue": [],
+    "Toy.Contracts.instReprRvalue.repr": [],
+    "Toy.Contracts.instReprRvalue.repr.match_1": [],
+    "Toy.Contracts.instReprSite": [],
+    "Toy.Contracts.instReprSite.repr": [],
+    "Toy.Contracts.instReprSite.repr.match_1": [],
+    "Toy.Contracts.instReprStmt": [],
+    "Toy.Contracts.instReprStmt.repr": [],
+    "Toy.Contracts.instReprStmt.repr.match_1": [],
+    "Toy.Contracts.instReprTerm": [],
+    "Toy.Contracts.instReprTerm.repr": [],
+    "Toy.Contracts.instReprTerm.repr.match_1": [],
+    "Toy.Contracts.instantiateIn": [
+      "propext"
+    ],
+    "Toy.Contracts.instantiateIn.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.instantiateIn.eq_2": [
+      "propext"
+    ],
+    "Toy.Contracts.instr": [
+      "propext"
+    ],
+    "Toy.Contracts.instr.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.instrBlock": [
+      "propext"
+    ],
+    "Toy.Contracts.instrBlock.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.instrBlock.match_1": [
+      "propext"
+    ],
+    "Toy.Contracts.instrObs": [
+      "propext"
+    ],
+    "Toy.Contracts.instrObs.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.instrObs_eq_ret": [
+      "propext"
+    ],
+    "Toy.Contracts.instrObs_req_false": [
+      "propext"
+    ],
+    "Toy.Contracts.instrObs_run_eq_of_req_of_ensOnReturnsAt": [
+      "propext"
+    ],
+    "Toy.Contracts.instrObs_run_eq_of_req_of_ensOnReturnsAt.match_1_5": [],
+    "Toy.Contracts.instr_allExits_gEarly_block2": [
+      "propext"
+    ],
+    "Toy.Contracts.instr_allExits_gPanic_blocks": [
+      "propext"
+    ],
+    "Toy.Contracts.instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.instr_allExits_ubRefinesAt_assumeErase_of_noChecks_of_staticObligationAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.instr_allExits_ubRefinesAt_assumeErase_of_noChecks_of_staticObligationAt.match_1_1": [],
+    "Toy.Contracts.instr_gEarly_prologue": [
+      "propext"
+    ],
+    "Toy.Contracts.instr_tailOnly_gEarly_block2": [
+      "propext"
+    ],
+    "Toy.Contracts.jumpsInRange_gEarly": [],
+    "Toy.Contracts.lower": [
+      "propext"
+    ],
+    "Toy.Contracts.lower.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.lowerTerm": [
+      "propext"
+    ],
+    "Toy.Contracts.lower_blocks_add": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.lower_blocks_lt": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.lower_fOut_returns_where_fOut_stuck": [
+      "propext"
+    ],
+    "Toy.Contracts.lower_gEarly_ne": [
+      "propext"
+    ],
+    "Toy.Contracts.lower_gEarly_take": [
+      "propext"
+    ],
+    "Toy.Contracts.lower_gTry_blocks": [
+      "propext"
+    ],
+    "Toy.Contracts.lowered_gEarly": [
+      "propext"
+    ],
+    "Toy.Contracts.lowered_lower": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.lowered_lower_gTry": [
+      "propext"
+    ],
+    "Toy.Contracts.map_erase_instrBlock": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.noChecks_erase": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.noChecks_gEarly": [
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_assumeErase": [],
+    "Toy.Contracts.nonvacuity_callRun": [
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_ctfe": [
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_ctfe_req": [
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_detects": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_erase_instr": [
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_erasure_global": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_erasure_pointwise": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_halts_lower": [],
+    "Toy.Contracts.nonvacuity_instrSelf": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_not_violation": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_req_and_ens_lower": [
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_req_false": [],
+    "Toy.Contracts.nonvacuity_run_instr_allExits": [
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_ubRefines": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.nonvacuity_ubRefines.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.not_assumeErase_ubRefinesAt_instr_of_req_false": [
+      "propext"
+    ],
+    "Toy.Contracts.not_assumeErase_ubRefinesAt_instr_of_req_false.match_1_2": [],
+    "Toy.Contracts.not_ctfeConst_eval_gEarly_100": [
+      "propext"
+    ],
+    "Toy.Contracts.not_ctfeConst_skip_gGood_5_4": [
+      "propext"
+    ],
+    "Toy.Contracts.not_detects_calleeSide_off_gEarly_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_detects_gGood_5": [
+      "propext"
+    ],
+    "Toy.Contracts.not_detects_gTry_1": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_detects_of_noChecks_of_req_of_no_ret": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_ensOnReturnsAt_gEarly_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_ensOnReturnsAt_gTry_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_haltsEqAt_erase_instr_of_req_false": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_haltsEqAt_erase_instr_of_req_false.match_1_1": [],
+    "Toy.Contracts.not_haltsEqAt_gGood_gEarly_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_halts_fuelOut": [
+      "propext"
+    ],
+    "Toy.Contracts.not_halts_gLoop": [
+      "propext"
+    ],
+    "Toy.Contracts.not_jumpsInRange_fOut": [],
+    "Toy.Contracts.not_jumpsInRange_gStuck_and_lower_eq": [
+      "propext"
+    ],
+    "Toy.Contracts.not_lowered_gTry": [
+      "propext"
+    ],
+    "Toy.Contracts.not_noChecks_gInt": [
+      "propext"
+    ],
+    "Toy.Contracts.not_noChecks_instr_gEarly": [
+      "propext"
+    ],
+    "Toy.Contracts.not_runEqAt_erase_instr_gGood_100": [
+      "propext"
+    ],
+    "Toy.Contracts.not_runtimeValue_gEarly_100": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_runtimeValue_gGood_5_4": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_runtimeValue_gInt_3": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_selects_tailOnly_early_tryErr": [],
+    "Toy.Contracts.not_staticObligationAt_gEarly_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_staticObligation_gEarly": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_ubRefinesAt_instr_assumeErase_gEarly_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.not_violationAt_gGood_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.refuted_no_report_for_panicking_call_with_flag_on": [
+      "propext"
+    ],
+    "Toy.Contracts.req_and_ens_of_halts_ret_instr_allExits_lower": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.run": [
+      "propext"
+    ],
+    "Toy.Contracts.run.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.runEqAt_erase_instr_gGood_5": [
+      "propext"
+    ],
+    "Toy.Contracts.runEqAt_erase_instr_gInt_ne": [
+      "propext"
+    ],
+    "Toy.Contracts.runEqAt_erase_instr_gTry_1": [
+      "propext"
+    ],
+    "Toy.Contracts.runEqAt_instr_gTry_1": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom.eq_2": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom.eq_def": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom.match_1": [],
+    "Toy.Contracts.runFrom.match_3": [],
+    "Toy.Contracts.runFrom.match_5": [],
+    "Toy.Contracts.runFrom.match_7": [],
+    "Toy.Contracts.runFrom_congr_blocks": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_gLoop": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_instr_allExits_eq_wrapObs": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_instr_eq_of_ens": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_lower_of_fin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_no_checkFail_of_blocks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_no_checkFail_of_blocks.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_no_checkFail_of_blocks.match_1_10": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_no_checkFail_of_blocks.match_1_12": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_no_checkFail_of_blocks.match_1_6": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_no_checkFail_of_blocks.match_1_8": [],
+    "Toy.Contracts.runFrom_of_lower_fin": [
+      "Classical.choice",
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_succ": [
+      "propext"
+    ],
+    "Toy.Contracts.runFrom_succ.match_1": [],
+    "Toy.Contracts.runFrom_succ.match_3": [],
+    "Toy.Contracts.run_assumeErase_eq_ite_req": [
+      "propext"
+    ],
+    "Toy.Contracts.run_fOut_eq": [
+      "propext"
+    ],
+    "Toy.Contracts.run_gEarly_0_eq": [
+      "propext"
+    ],
+    "Toy.Contracts.run_gLoop": [
+      "propext"
+    ],
+    "Toy.Contracts.run_gPanic_eq": [
+      "propext"
+    ],
+    "Toy.Contracts.run_gTry_1": [
+      "propext"
+    ],
+    "Toy.Contracts.run_instr_allExits_eq_instrObs_of_lowered": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.run_instr_eq_of_req_of_ensOnReturnsAt": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.run_instr_eq_of_req_of_ensOnReturnsAt.match_1_11": [],
+    "Toy.Contracts.run_instr_gEarly_100": [
+      "propext"
+    ],
+    "Toy.Contracts.run_instr_of_req_false": [
+      "propext"
+    ],
+    "Toy.Contracts.run_mono": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.run_no_checkFail_of_noChecks": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runtimeValue_gEarly_0_placement": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runtimeValue_gEarly_0_placement.match_1_1": [
+      "propext"
+    ],
+    "Toy.Contracts.runtimeValue_gGood_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runtimeValue_gTry_1": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runtimeValue_iff_req_and_ens_of_lowered_of_noChecks_of_ctfeSkipConst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runtimeValue_iff_req_and_ens_of_lowered_of_noChecks_of_ctfeSkipConst.match_1_4": [],
+    "Toy.Contracts.runtimeValue_iff_staticObligationAt_of_lowered_of_noChecks_of_req_of_ctfeSkipConst": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.runtimeValue_iff_staticObligationAt_of_lowered_of_noChecks_of_req_of_ctfeSkipConst.match_1_4": [],
+    "Toy.Contracts.selects_allExits_early": [],
+    "Toy.Contracts.staticObligationAt_gEarly_100": [
+      "propext"
+    ],
+    "Toy.Contracts.staticObligationAt_gGood_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.staticObligation_gGood": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.ubRefinesAt_gLoop_gGood_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.ubRefinesAt_instr_assumeErase_gGood_5": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.ubRefinesAt_of_forall_not_halts": [
+      "propext"
+    ],
+    "Toy.Contracts.violationAt_gEarly_0": [
+      "Quot.sound",
+      "propext"
+    ],
+    "Toy.Contracts.violationAt_gEarly_100": [
+      "propext"
+    ],
+    "Toy.Contracts.wrapObs": [
+      "propext"
+    ],
+    "Toy.Contracts.wrapObs.eq_1": [
+      "propext"
+    ],
+    "Toy.Contracts.wrapObs.eq_2": [
+      "propext"
+    ],
+    "Toy.Contracts.wrapObs.match_1": [
+      "propext"
+    ],
+    "Toy.Contracts.wrapObs_fail": [
+      "propext"
+    ],
+    "Toy.Contracts.wrapObs_keep": [
+      "propext"
+    ],
+    "Toy.Contracts.wrapObs_of_execStmts_stop": [
+      "propext"
+    ],
+    "Toy.Contracts.wrapObs_panic": [
+      "propext"
+    ]
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}

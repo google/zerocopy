@@ -1,0 +1,1400 @@
+{
+  "statements": {
+    "Toy.Contracts.Block": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.CallSite": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.CheckKind": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Contract": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.CtfeConst": {
+      "closure_sha256": "389c6517a25007db7320976851929d0f3a043f29cb35982bd5dfbf32b8fca450",
+      "closure_size": 36,
+      "statement_sha256": "f3b4aea7421a147f2ec8c26364834e4f874bdbab99e6247317054232b967fb1d"
+    },
+    "Toy.Contracts.CtfeMode": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Detects": {
+      "closure_sha256": "7ab7432064565426710b2369d48906728af7eceae8fa925586a2db27139f6116",
+      "closure_size": 38,
+      "statement_sha256": "6893196ef02d925e5f186e12be61b81175f62c1155955d2fe22f32de427b9b83"
+    },
+    "Toy.Contracts.EnsOnReturnsAt": {
+      "closure_sha256": "dbe8ab1129928080739b7a09e07de4eed8068fb6b2b57a481d29def8b77be251",
+      "closure_size": 30,
+      "statement_sha256": "a492d67757b9406fbe164359f339d404c422b910b93f6d1df01f19cb11248e1a"
+    },
+    "Toy.Contracts.ExitKind": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Exported": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Fn": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Halts": {
+      "closure_sha256": "9981845b280fae580c511a6d0117789c169a0ad0a9aebfd927acce3639591160",
+      "closure_size": 42,
+      "statement_sha256": "0e275694efc2d8df8ec415ae8859abaf7820e88587fa5ccc18b2a0852b4a807b"
+    },
+    "Toy.Contracts.HaltsEqAt": {
+      "closure_sha256": "dbe8ab1129928080739b7a09e07de4eed8068fb6b2b57a481d29def8b77be251",
+      "closure_size": 30,
+      "statement_sha256": "d78bd9de279f5e90036c19d801e869e8ed27fbf5ed7414d5b22eda0f5765873a"
+    },
+    "Toy.Contracts.JumpsInRange": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "903b83ab3ab52f6abc69558b0b100200320e7f78ffe1cff01a561cc0deb430f2"
+    },
+    "Toy.Contracts.Lowered": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "3ce8a46411a385a2905b1ceee9b63a68eabb6a349bb1bcc93886d3e9712d8979"
+    },
+    "Toy.Contracts.NoChecks": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "3ce8a46411a385a2905b1ceee9b63a68eabb6a349bb1bcc93886d3e9712d8979"
+    },
+    "Toy.Contracts.Obs": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Operand": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Outcome": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Placement": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Placement.selects": {
+      "closure_sha256": "5db1fd97051d5144390b518cef882f13cc87576ce6b67fdb0ba92d995df933ed",
+      "closure_size": 7,
+      "statement_sha256": "b72a5219d65ecf9a758519366a35883dd322ca217b83a01d24c83d434bf2e2c0"
+    },
+    "Toy.Contracts.Resolution": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.RunEqAt": {
+      "closure_sha256": "dbe8ab1129928080739b7a09e07de4eed8068fb6b2b57a481d29def8b77be251",
+      "closure_size": 30,
+      "statement_sha256": "d78bd9de279f5e90036c19d801e869e8ed27fbf5ed7414d5b22eda0f5765873a"
+    },
+    "Toy.Contracts.RuntimeValue": {
+      "closure_sha256": "a21447db350eb682423af89d11960bb77e7a54318d4d24d9479e1569a833e193",
+      "closure_size": 33,
+      "statement_sha256": "31ac6bef0e34aeb77ef2e2a7844f24a2e0a265486a40d79f33884f2337d2f2ea"
+    },
+    "Toy.Contracts.Rvalue": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.SR": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Site": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.StaticObligation": {
+      "closure_sha256": "dbe8ab1129928080739b7a09e07de4eed8068fb6b2b57a481d29def8b77be251",
+      "closure_size": 30,
+      "statement_sha256": "151108e97e0851185436042973296f772cf0eba3af157ac4c48fca96435b6f1c"
+    },
+    "Toy.Contracts.StaticObligationAt": {
+      "closure_sha256": "dbe8ab1129928080739b7a09e07de4eed8068fb6b2b57a481d29def8b77be251",
+      "closure_size": 30,
+      "statement_sha256": "a492d67757b9406fbe164359f339d404c422b910b93f6d1df01f19cb11248e1a"
+    },
+    "Toy.Contracts.Stmt": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Stmt.isContract": {
+      "closure_sha256": "3faccf6fb8958cecfedd87f17a09cb3a0302ac1b16e452fc4df35f7b88feb843",
+      "closure_size": 14,
+      "statement_sha256": "3e7fd76d91a4c2c78b5500c0e5090b336af1e9f0622b38097e035db383f243c7"
+    },
+    "Toy.Contracts.Store": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Store.set": {
+      "closure_sha256": "8d944c1f5fe925cb8a801764c3a267806bf031efc2a9ca9f64d3cf18cfa1c9b3",
+      "closure_size": 1,
+      "statement_sha256": "39b0a1ffef5b4469f26e3de204b45e4fc1ac78d10357c42b6c9b0e5cee348ec1"
+    },
+    "Toy.Contracts.Term": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "b4611575b2b62eb57ff8b514cf96bf01666158b035ac2fcc89065136260d1e05"
+    },
+    "Toy.Contracts.Term.isTryQ": {
+      "closure_sha256": "0d917a603edc0a0a77176bb624033c9e08df498310cec5be100b0f34031f8e76",
+      "closure_size": 14,
+      "statement_sha256": "2633d398d3092fe322e69bcb53119f8f9ff546a2847c4b1ee5534e857409615f"
+    },
+    "Toy.Contracts.Term.targets": {
+      "closure_sha256": "0d917a603edc0a0a77176bb624033c9e08df498310cec5be100b0f34031f8e76",
+      "closure_size": 14,
+      "statement_sha256": "4fce3eca0c48751212c837b7244fe8a6554cc2b509609ebab2a68be3f2af997a"
+    },
+    "Toy.Contracts.UBRefinesAt": {
+      "closure_sha256": "dbe8ab1129928080739b7a09e07de4eed8068fb6b2b57a481d29def8b77be251",
+      "closure_size": 30,
+      "statement_sha256": "08dc765779fd88a56cb0abd749b04405f5c47fe3cd28808065cb1f850247490d"
+    },
+    "Toy.Contracts.ViolationAt": {
+      "closure_sha256": "dbe8ab1129928080739b7a09e07de4eed8068fb6b2b57a481d29def8b77be251",
+      "closure_size": 30,
+      "statement_sha256": "a492d67757b9406fbe164359f339d404c422b910b93f6d1df01f19cb11248e1a"
+    },
+    "Toy.Contracts.assumeErase": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "5d6423a94c9fccaf7b7ca35bc0da9365458827d6ccaa1bf777bfad9187c7c215"
+    },
+    "Toy.Contracts.assumeErase_instr_gEarly_blocks": {
+      "closure_sha256": "1817a83da0ebef04c92ba95dad971ca59aaddfa00a4d3875d4b62f176c26d4cf",
+      "closure_size": 62,
+      "statement_sha256": "486b526ecad21883d98102cea79c11a090cdaa80fe205578183abbe45fc42826"
+    },
+    "Toy.Contracts.assumeErase_instr_gEarly_prologue": {
+      "closure_sha256": "1817a83da0ebef04c92ba95dad971ca59aaddfa00a4d3875d4b62f176c26d4cf",
+      "closure_size": 62,
+      "statement_sha256": "173dd076dbf7d32b637128cc56c4c343b723a1f7550956e94bbad6b3349aa57b"
+    },
+    "Toy.Contracts.c1": {
+      "closure_sha256": "8b9bba98890a6a7158a2b0df2568d9dd58173a66d0d6278a4ebe58c25b11c9b3",
+      "closure_size": 2,
+      "statement_sha256": "eb910b6cc8b6b5edbad1d940e04a13f314bcc6a679dac03b33e54708589d569d"
+    },
+    "Toy.Contracts.cOne": {
+      "closure_sha256": "8b9bba98890a6a7158a2b0df2568d9dd58173a66d0d6278a4ebe58c25b11c9b3",
+      "closure_size": 2,
+      "statement_sha256": "eb910b6cc8b6b5edbad1d940e04a13f314bcc6a679dac03b33e54708589d569d"
+    },
+    "Toy.Contracts.cThree": {
+      "closure_sha256": "8b9bba98890a6a7158a2b0df2568d9dd58173a66d0d6278a4ebe58c25b11c9b3",
+      "closure_size": 2,
+      "statement_sha256": "eb910b6cc8b6b5edbad1d940e04a13f314bcc6a679dac03b33e54708589d569d"
+    },
+    "Toy.Contracts.callInCallerCrate": {
+      "closure_sha256": "c45ded94eec06bf9c74018e91ffcd1447637eb25b529031a638623ebb68cfee4",
+      "closure_size": 45,
+      "statement_sha256": "4618350a54b4c40b00f5dbed78b7ac48fd070553790036e8e42a29b97047ec72"
+    },
+    "Toy.Contracts.callRun": {
+      "closure_sha256": "41deba9cfb353cffb8963107c6799166028ba082f6c6a19d7d8826d96b0f5f75",
+      "closure_size": 50,
+      "statement_sha256": "5ac8c692b8ce6c15cf9e197711301236b7c4c74c30a83f8e09755b95d4e4243e"
+    },
+    "Toy.Contracts.callRun_eq_checkFail_pre_of_req_false_of_governingFlag": {
+      "closure_sha256": "0e7b19d8d242072643f8217486213ee65bc39f88c098e1569076630bfa66ee3e",
+      "closure_size": 138,
+      "statement_sha256": "9a2a7e6ebd1da74eeb0c45e774456d0e6e20cbff1461c5030dadef44451bea62"
+    },
+    "Toy.Contracts.callRun_eq_ite_governingFlag_of_lowered": {
+      "closure_sha256": "f2052fbf10a0c36047e81c3585d5557e96e07daa5cbfaca3e0de6d50b5e97aaa",
+      "closure_size": 142,
+      "statement_sha256": "1a558aa8877465f30d63fc2023041ec86a0ffb29e0ff7cd6843abdc87b4668e4"
+    },
+    "Toy.Contracts.callRun_eq_run_of_not_violation": {
+      "closure_sha256": "0b4e47e89773f0d2be74a5a56ba6eac4bd64ae9cda83ea82b499748b15cb7071",
+      "closure_size": 139,
+      "statement_sha256": "94467f88ae739420e457e62269568c2bc762d9bc894cd10566c45b8b11dc922b"
+    },
+    "Toy.Contracts.callRun_gEarly_0_examples": {
+      "closure_sha256": "30cc16984b8501f5568d55cfb107db71325afe36519f866d9a67ce85f34ebb75",
+      "closure_size": 140,
+      "statement_sha256": "d01a99c07eef340f6a5ae0e97dfbab33e5cb2c0e0097a60fada7951b6153d0c5"
+    },
+    "Toy.Contracts.cex_callRun_lowered": {
+      "closure_sha256": "dd9678d4802d934478918d785a22221ec3e05b45a43c52083e10f4624fa174ef",
+      "closure_size": 145,
+      "statement_sha256": "4c42dc3c14ca65fe051052283788c979921c8c8112e5649b652a37579ad6a78f"
+    },
+    "Toy.Contracts.cex_callRun_violation": {
+      "closure_sha256": "cadc1c948370261a94cd1dbc97a083401e137afd09431269ba4fae1bfcf54c1b",
+      "closure_size": 142,
+      "statement_sha256": "558b95f6d62c67be93f192ea47d9f7ed5679b460c83aa227ffbf630121ab21a8"
+    },
+    "Toy.Contracts.cex_calleeSide_atInstantiation_definingFlag_on_undetected": {
+      "closure_sha256": "0b4bdfcaf406ab0225539f7e76325deca7900a4ada847fe693e28292990c4f63",
+      "closure_size": 147,
+      "statement_sha256": "a7af2675ab53b0b94df061b3d062a2e54fb031152ae77723e1c92e23c99b22a4"
+    },
+    "Toy.Contracts.cex_ctfeSkip_ensures_violation": {
+      "closure_sha256": "28a3260478df2935ff948a6331fb31d5111851dfb6a000dfe63ab72263846282",
+      "closure_size": 119,
+      "statement_sha256": "05555043e94ae618fa97453e72e2f0fd02bd4f4b7b0d2f5f8446da53f7bfea67"
+    },
+    "Toy.Contracts.cex_ctfeSkip_requires_violation": {
+      "closure_sha256": "5f4f7e80e12baf1b30348c2e3c1f6faf8a5419644d416fe726e599e64a46ee6b",
+      "closure_size": 121,
+      "statement_sha256": "d25c3be7949f24c10b7dab1e8c30bce9d27f8c30a2b661c837590c1579741e6c"
+    },
+    "Toy.Contracts.cex_detects_lowered": {
+      "closure_sha256": "396ed482fa4fa17ac464abf5425cb7179672bfc2ef512ca049400edab48897ac",
+      "closure_size": 154,
+      "statement_sha256": "4afcbcdbd98405c9dc0ae38625d827c0cc33822f5c99a29547c39ff0cbfd660e"
+    },
+    "Toy.Contracts.cex_detects_noChecks": {
+      "closure_sha256": "3275b8a5e636385ca40784a98b00a3600daa3697677c80a9c40149f825147404",
+      "closure_size": 154,
+      "statement_sha256": "166607c8e9e9a304f084be26435a2779a6fa04b4a8af8ef44f3e8efa85e4d9c8"
+    },
+    "Toy.Contracts.cex_detects_violation": {
+      "closure_sha256": "665fda61d437a94100c19239378a0ed36a54f900a2280e38bce86646bc1c1145",
+      "closure_size": 154,
+      "statement_sha256": "e43f3e1efeb43e07c03cac65cbcea42129e31b7e949447037bb09c2cab994187"
+    },
+    "Toy.Contracts.cex_erase_instr_noChecks": {
+      "closure_sha256": "8d2e14f284e1371211cee6b01a5b05997d00df3233f3acc0835d458e77e2a71e",
+      "closure_size": 62,
+      "statement_sha256": "8eca39830ee30addc286cafe1fd4791d57d76a7cdf51aeeac8a0595b2ec60ae1"
+    },
+    "Toy.Contracts.cex_erasure_global_lowered": {
+      "closure_sha256": "9981af5622f1d370f2fc227612c6c2d1a94b6682b7b692b050731ec8f93bd135",
+      "closure_size": 115,
+      "statement_sha256": "f371cdbd60bb3dece4898554c20c8b9270f9923be70b908e9e4a1346c2636564"
+    },
+    "Toy.Contracts.cex_erasure_global_noChecks": {
+      "closure_sha256": "41dbaaf77507e43d93d11c233db5806cfa2c645c31c155973806c0faba8799e0",
+      "closure_size": 115,
+      "statement_sha256": "bd4ad68c5942b9f3ccbba5b4c63bd9ae6736003026940a7a7ade40f26a764691"
+    },
+    "Toy.Contracts.cex_erasure_lowered": {
+      "closure_sha256": "fe7a28a1302ea1ed8f78107833f2a14c5110bd0934db0105612699e13a380389",
+      "closure_size": 113,
+      "statement_sha256": "ce9cd3fbe0c0f5d0e0bfa96b592030455a37654ce70e27cdfcf88e38b7cc8a65"
+    },
+    "Toy.Contracts.cex_erasure_noChecks": {
+      "closure_sha256": "d41cd93bb73238aae8ead8cb80effafdad59b459782319017c55fb02b9fcb796",
+      "closure_size": 113,
+      "statement_sha256": "e5ce65585c67ed47612f3ec7c2ba660b0a130b90cdbf3bc14a831285b37322d1"
+    },
+    "Toy.Contracts.cex_erasure_req": {
+      "closure_sha256": "5af9d4cb76604fc81432319e535eaa75f6883766323903fe258e374ee22325a6",
+      "closure_size": 113,
+      "statement_sha256": "7de8e59e6ee7bc36dba05fcf5fc1140e028a0f60c0ecdbeaf4482270b9e62f1f"
+    },
+    "Toy.Contracts.cex_erasure_tailOnly": {
+      "closure_sha256": "fa8402ec5d8438476b7c769a263bad188307ae83f5b86a66f6955c8e6f0bf950",
+      "closure_size": 112,
+      "statement_sha256": "a2ebbb58353239e1f4df7a6a829a8631f546503b43592cb49f145bf33db0a886"
+    },
+    "Toy.Contracts.cex_instrSelf_lowered": {
+      "closure_sha256": "1c8691a7b41e522946489c1bd173361f8ce39cde1ac1153988296325b3a5366c",
+      "closure_size": 107,
+      "statement_sha256": "403e7915c20848e2e6d42f6ec5f1a06a023893820aa6618b2fdb43e577785a01"
+    },
+    "Toy.Contracts.cex_instrSelf_req": {
+      "closure_sha256": "5eef6f0f62c021a4de67c6ef87e3dbd012b41a565c7ecaf294229ff2fcb0cb83",
+      "closure_size": 107,
+      "statement_sha256": "6627ad5f5d154b9d5bd993ac7ad23ebcc941aef85736dd588daf75ea66e940e5"
+    },
+    "Toy.Contracts.cex_instr_before_lower_misses_try": {
+      "closure_sha256": "2dbc15bda0c9397a353d4671f2af7121776a3d30fb2fb44a63a545b1b68eec11",
+      "closure_size": 113,
+      "statement_sha256": "2ddf3cc85be3c930a5ccd7ac6a725b5fb5edec38875754448b7c9deed8f108d5"
+    },
+    "Toy.Contracts.cex_lower_entry_out_of_range": {
+      "closure_sha256": "f5e872df55fef5d7c00027a1af37196e341b3c77c9864f48ac187fb8cc035550",
+      "closure_size": 91,
+      "statement_sha256": "9b33e27d66aecba43fe9dcc9aef85d1a6afa5936dbd3d4d81ae2f3d1da5de0df"
+    },
+    "Toy.Contracts.cex_lower_jumpsInRange": {
+      "closure_sha256": "dad3f7551bfc24d9fc2321b197b1e54fc7526ae2cff8175df33285890a20c37d",
+      "closure_size": 91,
+      "statement_sha256": "ff06cccacc643e153d46653b39aab5c9a220129bc88d14b15a61f630aa4dc73d"
+    },
+    "Toy.Contracts.cex_not_haltsEq_req_true": {
+      "closure_sha256": "0be41dccf5a82349d33be9462f80b12c329a622e0f36194a56951f9834ed5f2a",
+      "closure_size": 107,
+      "statement_sha256": "0baa44296cfc59a1e574f663a98d0e02323eb979b994af7ae6f464c50f00ca55"
+    },
+    "Toy.Contracts.cex_not_ubRefines_req_true": {
+      "closure_sha256": "29bf42b0525715b82cec25a881f318467a34ae31ff836f43d1fc89eafd1db3b2",
+      "closure_size": 108,
+      "statement_sha256": "91f258042a298e07922228102687bf832d677bed671c21bddfc90dd944abcbfc"
+    },
+    "Toy.Contracts.cex_req_and_ens_premise": {
+      "closure_sha256": "805639ae50132eca1b158a621afddf4d9beefab078dfacc01df6308925d39ed7",
+      "closure_size": 105,
+      "statement_sha256": "784841726b9fabe00bdd4785b5a2244603a9eba033bba322d136f107bf548cb4"
+    },
+    "Toy.Contracts.cex_runtimeValue_ctfeConst": {
+      "closure_sha256": "73137c78c5bfb3af21756b0d7531a26db929607508f6c3319e4c426db48e381f",
+      "closure_size": 119,
+      "statement_sha256": "09544bf27faca8805484a5158897107e504913af8b7f4dcb34c07666d08c36e9"
+    },
+    "Toy.Contracts.cex_runtimeValue_lowered": {
+      "closure_sha256": "5a67f4311d9249c820c2634b59820627b7408ac03a200730ebb9f28b9e74e9c3",
+      "closure_size": 119,
+      "statement_sha256": "ae32fc9e638cb34edcd1e3e97644237c7589f355ce7a86ae55933a32585f5080"
+    },
+    "Toy.Contracts.cex_runtimeValue_noChecks": {
+      "closure_sha256": "b8fb8462292e85cd49a594a2f023047db11ea9dcb0fdf54e6016a12d98e4be5d",
+      "closure_size": 119,
+      "statement_sha256": "cc9a9d52d4e15839ef9e7fbca0bd32dbc9a77ed4611ed67ef21df88b60aef66b"
+    },
+    "Toy.Contracts.cex_runtimeValue_obl_ctfeConst": {
+      "closure_sha256": "e860d05fd7b1ddc70657d5bc92d5689fef71818e6edff0c43771044885234558",
+      "closure_size": 121,
+      "statement_sha256": "3df53178d82fcaf8f0de74ac36e4e2684091ba88c5182e0d5bd85d9d11c2644a"
+    },
+    "Toy.Contracts.cex_runtimeValue_obl_lowered": {
+      "closure_sha256": "a78ddf069d94b4f59de2f1e7a2fb3fea90bcf74fb860daf37fad1300d3915d37",
+      "closure_size": 121,
+      "statement_sha256": "32c1cb0ba8d9794f085bf075e832f4426b5c40753ef5a0d53685c052515e2014"
+    },
+    "Toy.Contracts.cex_runtimeValue_obl_noChecks": {
+      "closure_sha256": "c5098903d636f7b83439749915449a5d6fca35cd8e288a0acb01cb88f18aff65",
+      "closure_size": 121,
+      "statement_sha256": "df4c9f1dca0bafc8afa09adb11a27248c568c2252b935cad071ff768623ff51e"
+    },
+    "Toy.Contracts.cex_runtimeValue_obl_req": {
+      "closure_sha256": "5f4f7e80e12baf1b30348c2e3c1f6faf8a5419644d416fe726e599e64a46ee6b",
+      "closure_size": 121,
+      "statement_sha256": "9121a1dd91d697d28c3677cee57c15d6cc093c253a142f056d22c5abc05e48ad"
+    },
+    "Toy.Contracts.cex_runtimeValue_obl_tailOnly": {
+      "closure_sha256": "5f4f7e80e12baf1b30348c2e3c1f6faf8a5419644d416fe726e599e64a46ee6b",
+      "closure_size": 121,
+      "statement_sha256": "515e4147923a044969ae644d17715b238df635056e959d4229e56292736a49e4"
+    },
+    "Toy.Contracts.cex_runtimeValue_tailOnly": {
+      "closure_sha256": "28a3260478df2935ff948a6331fb31d5111851dfb6a000dfe63ab72263846282",
+      "closure_size": 119,
+      "statement_sha256": "80da92238444cc8394d5b4c53421d25a10fe57881aeb2767ee41ef7d4715bc49"
+    },
+    "Toy.Contracts.cex_same_flags_detection_depends_on_placement": {
+      "closure_sha256": "46b6009e471a59f5b92b8edc63f2b1ead8c5a6955d8996707d895500328b2470",
+      "closure_size": 144,
+      "statement_sha256": "86429578e0db4ee3733330a74a86ae423333e2defbdb19fff2ad75714d004567"
+    },
+    "Toy.Contracts.cex_tailOnly_misses_early_return": {
+      "closure_sha256": "758a51310d0c8db82272d162c302eb1b5203ff8720b09bb4a27b8203abee6e14",
+      "closure_size": 104,
+      "statement_sha256": "1202662df8f1e8c57c37598dd0b8f832736cd8f1f2318efcc06cc18def85d741"
+    },
+    "Toy.Contracts.cex_tailOnly_misses_try_error_after_lowering": {
+      "closure_sha256": "9f4715048a3ad683642985fe076113b4330c76ece56c5d47cecc0e29481c18be",
+      "closure_size": 107,
+      "statement_sha256": "22d6f0c42b6ddf7e0cf282d49144e0eae95b237d3215a952636c995e5bb60b27"
+    },
+    "Toy.Contracts.cex_ubRefines_noChecks": {
+      "closure_sha256": "5c9dbbb61a409fede02e88da71e7722c44e62afa6d79a6f783d5a3d565521cde",
+      "closure_size": 111,
+      "statement_sha256": "e3ce23088b02ca5fff7542b934b5910baed45dfca60d935c15ff43d9c8e6acfe"
+    },
+    "Toy.Contracts.cex_ubRefines_obligation": {
+      "closure_sha256": "6e973cb2a402a116f5dbce680aad619a975d0df2559ed2cc2b620808b4b896da",
+      "closure_size": 111,
+      "statement_sha256": "5b33d66b46844276df17599d6aeb8e34454db10ebbe066c201ccf0b55f36fefa"
+    },
+    "Toy.Contracts.compileInDefCrate": {
+      "closure_sha256": "593a2da40fbc9c05bd0e427afbb715794e4f2735da33aaf3c3d6abe94f201d43",
+      "closure_size": 37,
+      "statement_sha256": "2578bc1ca857f6dbf10e5eff19116284cf90d9fa8f19032bd058694f1e879c04"
+    },
+    "Toy.Contracts.cs1": {
+      "closure_sha256": "24c6ecf6c79632fb65a0886e5e69fce0841756f53f1df1a66837940b57d93af6",
+      "closure_size": 2,
+      "statement_sha256": "4e996f8229c494bfdcd9f352d861a46cd0a7786adb994bf891f5fb05250c0d5b"
+    },
+    "Toy.Contracts.csGen": {
+      "closure_sha256": "24c6ecf6c79632fb65a0886e5e69fce0841756f53f1df1a66837940b57d93af6",
+      "closure_size": 2,
+      "statement_sha256": "4e996f8229c494bfdcd9f352d861a46cd0a7786adb994bf891f5fb05250c0d5b"
+    },
+    "Toy.Contracts.csGen3": {
+      "closure_sha256": "24c6ecf6c79632fb65a0886e5e69fce0841756f53f1df1a66837940b57d93af6",
+      "closure_size": 2,
+      "statement_sha256": "4e996f8229c494bfdcd9f352d861a46cd0a7786adb994bf891f5fb05250c0d5b"
+    },
+    "Toy.Contracts.ctfeConst_skip_gEarly_100": {
+      "closure_sha256": "bd9fb1b692d70acb7a060e2b5feefb171d98ca3ba9241e6f71a2a7901b50fec0",
+      "closure_size": 111,
+      "statement_sha256": "8305bf1a437e5ac8956c2cfd187c859580d7d9c87970a4b95db505b3e0c92e52"
+    },
+    "Toy.Contracts.ctfeConst_skip_gTry_1": {
+      "closure_sha256": "cefc0a3bc62cf08a11f8429a2abaacfad4c8de933489ad593ea18a2bd3479992",
+      "closure_size": 111,
+      "statement_sha256": "cdfd2ade1b328fc56f9839611dc728ee903b334d04f3ab1d5e71e68d039c9e5c"
+    },
+    "Toy.Contracts.ctfeRun": {
+      "closure_sha256": "9a46610a742e5fd510fab3e699ff14e9fcd5e078914069c11abe635326cd1abb",
+      "closure_size": 45,
+      "statement_sha256": "78a235af31bf25aba1b0c84e2887054a6b98ed65a0475f103e948fa4ee48436f"
+    },
+    "Toy.Contracts.ctfeRun_evalChecks_eq": {
+      "closure_sha256": "11dd2ab0a76ff54776ea04887a7b1e50e46a62152a78dc1abbf70dc5fc803dac",
+      "closure_size": 90,
+      "statement_sha256": "bf73b2c7a8223daf2ca68be21d5653511619522c1a3e85d578318ee3a31d9c04"
+    },
+    "Toy.Contracts.ctfeRun_gEarly_100_examples": {
+      "closure_sha256": "7cd590b88b2959997a835bf6f263c934dd460d1f3f5edd685c1ce94e94ccd18e",
+      "closure_size": 110,
+      "statement_sha256": "95fad6ea0aafec5724861176bf3ef4a661a0167af02d220321fab8eaf6675641"
+    },
+    "Toy.Contracts.detects_callerOn_callerSide_gEarly_0": {
+      "closure_sha256": "2958b65380f900e0a8f46803fde90da27565af12da9080692d7fc8dde1a7c885",
+      "closure_size": 141,
+      "statement_sha256": "c4aa517341f974698f0d245b0a15f3b252f7ce324cec881225719e04ca296d8e"
+    },
+    "Toy.Contracts.detects_csGen3_follows_instCrate": {
+      "closure_sha256": "331f633920baee0ece8c10e6d15a8d1433c65c3a3bd09df562a2cdf1041096cc",
+      "closure_size": 142,
+      "statement_sha256": "ef19b76bb763954c08731a46dcfbe7cf7f1cfe6a4fa8c40de941346514141a24"
+    },
+    "Toy.Contracts.detects_iff_governingFlag_of_lowered_of_noChecks_of_violation": {
+      "closure_sha256": "64fffb14a4ed5c5b2d632d0875fc7160b35632f584145e047adda25bbea86fa4",
+      "closure_size": 151,
+      "statement_sha256": "584fd505619726a41a70548f77ceb1f8f8cb602c26fd65207f0ba6b4fd6f5c44"
+    },
+    "Toy.Contracts.ensOnReturnsAt_gGood": {
+      "closure_sha256": "607c87222c3c0150f9518c8bf5a802c7d255caa4f6fe24a067fbe8c2aa80b51b",
+      "closure_size": 83,
+      "statement_sha256": "09a7a18402426077b060ebf51004bc75fd1eca08941565741476d906946127f1"
+    },
+    "Toy.Contracts.ensOnReturnsAt_gInt_3": {
+      "closure_sha256": "33806e750945d46d60cc739f952a7bce4198bbaeb01868d96f6de65760a5eaea",
+      "closure_size": 83,
+      "statement_sha256": "1bcbf9537759a2fde2d98b6701b8f04a367b7cd8fd103291567164f2d1e94f75"
+    },
+    "Toy.Contracts.erase": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "5d6423a94c9fccaf7b7ca35bc0da9365458827d6ccaa1bf777bfad9187c7c215"
+    },
+    "Toy.Contracts.erase_gInt_ne": {
+      "closure_sha256": "c00521b3fe9bdd242ea7c5ec824362cbee09f79ae7814cd8c7230c893266af7e",
+      "closure_size": 41,
+      "statement_sha256": "869198e54f7991d8c29f63efc29162ceba0abceda11a61e1f3f4444ff0c90e68"
+    },
+    "Toy.Contracts.erase_instrBlock_eq": {
+      "closure_sha256": "5ccb6d8bb3090181bc5a7b099258cb92edb559177db0c21221967cc0e3817663",
+      "closure_size": 53,
+      "statement_sha256": "9b5e9524c9be651f1fcc3fca2d64950fbb7a251b194fdd7ecdc3187cd0e39759"
+    },
+    "Toy.Contracts.erase_instr_allExits_gEarly": {
+      "closure_sha256": "95fd9518845623c8e054703bfc6c1ecdde539f73fea448d9637a2179a17e4f37",
+      "closure_size": 61,
+      "statement_sha256": "5c68534c9a6024f5ce73373417328b5e9467584cff6ccbaac53561904c7ddf53"
+    },
+    "Toy.Contracts.erase_instr_eq_of_noChecks": {
+      "closure_sha256": "6a41053b9f284ff36e7fa325cc488019538bcf5f5ea13cc39227c57df556a0a3",
+      "closure_size": 61,
+      "statement_sha256": "0c4eb3d26a25f95673d2d2da84b3ad74b11686147fc5413dcdc91f5dcf1153e6"
+    },
+    "Toy.Contracts.erasure_obsEq_iff_ensOnReturnsAt_of_lowered_of_noChecks_of_req": {
+      "closure_sha256": "c9913b9a5f8da5a3d2bc3210e10258b66a6472b74cf3a0ef25147cc52ff00f7a",
+      "closure_size": 111,
+      "statement_sha256": "9875a76458edaacd51917eb788a72339938da540dd84a9c09e86a0268b3bc24a"
+    },
+    "Toy.Contracts.erasure_obsEq_onReq_iff_staticObligation_of_lowered_of_noChecks": {
+      "closure_sha256": "5d6660e8d1785b0a0439dcada69f9901d70fe8a1996ed326db57d1d8e210b013",
+      "closure_size": 113,
+      "statement_sha256": "cc0808ec9c06fe90b2a49d13ddef3a2869982aee832bf1cc4adb2198713009d8"
+    },
+    "Toy.Contracts.errBlock": {
+      "closure_sha256": "13b79b726a9c7e6d50c25c6d311e52ac53c0126ba475952fbd58c864e9977957",
+      "closure_size": 26,
+      "statement_sha256": "efb44478b2f1115778d64cb6bd6c9c34d2986b755a84df8a183e9c779741f4e5"
+    },
+    "Toy.Contracts.evalOp": {
+      "closure_sha256": "c806650999ecbbf2f08f294c78dd06dd94b024a547b7f46cfa7d1b2c713e01f1",
+      "closure_size": 5,
+      "statement_sha256": "06691a46f86093acc9da24bc816ed18b5a97b006a65fe32f209f110bd57ff73b"
+    },
+    "Toy.Contracts.evalRv": {
+      "closure_sha256": "4f4d1d3c7129c3538851d060a418a011a5dc9d8647ec80fcb899bf07eba742c7",
+      "closure_size": 9,
+      "statement_sha256": "f6b2d82504becabff0160f79003364e351f4f9bf34a8939a27b5d496c2c6ef8b"
+    },
+    "Toy.Contracts.execStmts": {
+      "closure_sha256": "85d0f673b879fd249471c36238f4084c3d72fa60da17b3db2d08b93972aecb2f",
+      "closure_size": 30,
+      "statement_sha256": "831d7254023357a074bb0e6825e047384f6a77dd076dd4c2edf6ca5b4fc68faf"
+    },
+    "Toy.Contracts.execStmts_append": {
+      "closure_sha256": "f2a0c815472b07f84fb39cb886595c29030cd397609870dcbfe364e65676f4da",
+      "closure_size": 49,
+      "statement_sha256": "aa181002d646afbf5a3973af9f9e5ad0e3e03cfabc4c3173bd4d71fc7a8592f4"
+    },
+    "Toy.Contracts.execStmts_no_stop_of_all": {
+      "closure_sha256": "cfb14e138eaba914a9a97deca42709ed229d3b99db893e57934cf874e724f57d",
+      "closure_size": 50,
+      "statement_sha256": "9e13ceb3b6b1eaf7826d126565cfa07836e07b406f772994052c076e3e5acdfb"
+    },
+    "Toy.Contracts.execStmts_stop_outcome": {
+      "closure_sha256": "9216c2284f5fcaeca24f9874c08d39c3a4ea89635ca0f1d3b8527aae4be73093",
+      "closure_size": 46,
+      "statement_sha256": "e875921ae63c83449bf8a5157d05de45d208fc3871320c34db5a4886f1d17b54"
+    },
+    "Toy.Contracts.fBadEntry": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "548cfc6a4b6cacd6c3d6b1e723653eacf794382f8a82fbfe38f0d1d285df746a"
+    },
+    "Toy.Contracts.fOut": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "548cfc6a4b6cacd6c3d6b1e723653eacf794382f8a82fbfe38f0d1d285df746a"
+    },
+    "Toy.Contracts.filter_checkEns_singleton": {
+      "closure_sha256": "6f082321e2f25df1334dacc79efcdb0d82c46f2f18e446b4d0501cda9e5ebca2",
+      "closure_size": 20,
+      "statement_sha256": "2f6289f79044327104b26424be7e977535f6b2dbcbf146d4b969bf1dbae46ef5"
+    },
+    "Toy.Contracts.filter_checkReq_cons": {
+      "closure_sha256": "6f082321e2f25df1334dacc79efcdb0d82c46f2f18e446b4d0501cda9e5ebca2",
+      "closure_size": 20,
+      "statement_sha256": "3efa4d3b9401cd6f86993986fd0f4223431a78074f801b91efa2c35ad3a7a4f2"
+    },
+    "Toy.Contracts.filter_not_isContract_of_all": {
+      "closure_sha256": "6f082321e2f25df1334dacc79efcdb0d82c46f2f18e446b4d0501cda9e5ebca2",
+      "closure_size": 20,
+      "statement_sha256": "49aa5f8e8598bb68ff053b945e63c7dd0d9cc22bcc16c8bf09d0ea5eec9d7da2"
+    },
+    "Toy.Contracts.flCallerOn": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "2ca4ec6f5b5f166febfa26e66b5ed6b2d92d462a483270b52b9bea9adc221d8e"
+    },
+    "Toy.Contracts.flDefOn": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "2ca4ec6f5b5f166febfa26e66b5ed6b2d92d462a483270b52b9bea9adc221d8e"
+    },
+    "Toy.Contracts.flTwoOn": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "2ca4ec6f5b5f166febfa26e66b5ed6b2d92d462a483270b52b9bea9adc221d8e"
+    },
+    "Toy.Contracts.flZeroOneOn": {
+      "closure_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "closure_size": 0,
+      "statement_sha256": "2ca4ec6f5b5f166febfa26e66b5ed6b2d92d462a483270b52b9bea9adc221d8e"
+    },
+    "Toy.Contracts.gEarly": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "548cfc6a4b6cacd6c3d6b1e723653eacf794382f8a82fbfe38f0d1d285df746a"
+    },
+    "Toy.Contracts.gGood": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "548cfc6a4b6cacd6c3d6b1e723653eacf794382f8a82fbfe38f0d1d285df746a"
+    },
+    "Toy.Contracts.gInt": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "548cfc6a4b6cacd6c3d6b1e723653eacf794382f8a82fbfe38f0d1d285df746a"
+    },
+    "Toy.Contracts.gIntReq": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "548cfc6a4b6cacd6c3d6b1e723653eacf794382f8a82fbfe38f0d1d285df746a"
+    },
+    "Toy.Contracts.gLoop": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "548cfc6a4b6cacd6c3d6b1e723653eacf794382f8a82fbfe38f0d1d285df746a"
+    },
+    "Toy.Contracts.gPanic": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "548cfc6a4b6cacd6c3d6b1e723653eacf794382f8a82fbfe38f0d1d285df746a"
+    },
+    "Toy.Contracts.gStuck": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "548cfc6a4b6cacd6c3d6b1e723653eacf794382f8a82fbfe38f0d1d285df746a"
+    },
+    "Toy.Contracts.gTry": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "548cfc6a4b6cacd6c3d6b1e723653eacf794382f8a82fbfe38f0d1d285df746a"
+    },
+    "Toy.Contracts.governingCrate": {
+      "closure_sha256": "8bb53105131a8830e4475b8078d2ec67fb32d29a520a677b1543b6f63345cdf8",
+      "closure_size": 8,
+      "statement_sha256": "e68a17c5b2024ad3de5d7b5547ee0c169792b01e53bcbb7fcbc52d742af22046"
+    },
+    "Toy.Contracts.governingCrate_atDefinition": {
+      "closure_sha256": "064357a44e78d5fd8521aae4d40fe70ef95d2d91fc769ae5054aaa909cd6a819",
+      "closure_size": 20,
+      "statement_sha256": "4e0802fdd7f2d9ec046233191a1b311bb93cc522757499f4318ba2f256a304eb"
+    },
+    "Toy.Contracts.governingCrate_cs1_atInstantiation": {
+      "closure_sha256": "f628df99ca012c6c8a30de6af2c59243406bd64bd7e8715a4a6b672fdae6cca0",
+      "closure_size": 19,
+      "statement_sha256": "de421e3fd311355368fd567b1b67234fbcf6f61ed11ea06706dbd8ec12920b49"
+    },
+    "Toy.Contracts.governingCrate_csGen3_atInstantiation": {
+      "closure_sha256": "86ac0b030365cb1d437b6eaeb313545411602dbe628c0147cb49d74a0819e7e9",
+      "closure_size": 19,
+      "statement_sha256": "78853e3c58d8ac1e0edab6c67f80fb09670c6625ea7c9fc5ea0194c3f49b4111"
+    },
+    "Toy.Contracts.governingCrate_csGen_atInstantiation": {
+      "closure_sha256": "18e23a2d4a9eedb27dd9cf7ce104fd2f97ceb527d71ccd51d079227268aa3577",
+      "closure_size": 19,
+      "statement_sha256": "eda200a1801a7fc8ca8386fe3651c1bfa2399fbc3fa7d42830bbd3bc519e1e1a"
+    },
+    "Toy.Contracts.haltsEqAt_not_runEqAt_lower_gTry_1": {
+      "closure_sha256": "35ce467c00a84159ee1cd6ae1e53f5086891f3ec597571de4448c892573d622c",
+      "closure_size": 90,
+      "statement_sha256": "ec1af09f3590909ee8ffca3a8541bd67d1d8563abfceb839cc56010dd9f17b0f"
+    },
+    "Toy.Contracts.haltsEqAt_of_runEqAt": {
+      "closure_sha256": "3ac1308ed7ecde7ba36ce7ecf7ee02d462a1991fea20cda7b03af5e444d066a1",
+      "closure_size": 82,
+      "statement_sha256": "03bf4e14af86b4876f7310fff16a52b7442275ca65a9345653495763450c809c"
+    },
+    "Toy.Contracts.halts_assumeErase_instr_gEarly_0": {
+      "closure_sha256": "ff46887b9371cb17ddfa1b53f09cbbc3bdf5690db6e9f35dd66f64311e003bda",
+      "closure_size": 106,
+      "statement_sha256": "36c0c2b4cd505de849d647c6ef7fe5d5e67539b83f4e98d4e7978eb871006a34"
+    },
+    "Toy.Contracts.halts_assumeErase_instr_gInt_3": {
+      "closure_sha256": "c7c02a0591dfdc1846c9223f2a74cb42e4d23199c76c5574168956b68481f394",
+      "closure_size": 106,
+      "statement_sha256": "bb9e6b49d8c7c48acb868ab7f95c2920c7c96455b8e1a2b39b96f1ae0600946d"
+    },
+    "Toy.Contracts.halts_fOut": {
+      "closure_sha256": "156ecc4e6f4017e72a57ad4e14e1386142108fd605857452576ba4da828fa953",
+      "closure_size": 82,
+      "statement_sha256": "46fd3ac47fe5ccb265f406e100a4230103dba30d8d34186074903ef0102f3e76"
+    },
+    "Toy.Contracts.halts_gEarly_0": {
+      "closure_sha256": "d1e22eedd595a435367aae64b7749365e1a3afd77e1bea5cda89279c4906055c",
+      "closure_size": 82,
+      "statement_sha256": "88aebcdd73c3340ba1ecb975810ce560d63c1a586c13e546eeb5458fab9574e3"
+    },
+    "Toy.Contracts.halts_gEarly_100": {
+      "closure_sha256": "d1e22eedd595a435367aae64b7749365e1a3afd77e1bea5cda89279c4906055c",
+      "closure_size": 82,
+      "statement_sha256": "18b88c783c8dcd9417ed4faf46373da0f96cd36390dc9f500660c77ba18f4ee3"
+    },
+    "Toy.Contracts.halts_gGood": {
+      "closure_sha256": "54e99233510467bd9a861df49f1d9dc493d75a01d486db3af0467369d336f26e",
+      "closure_size": 82,
+      "statement_sha256": "abc95fc6a57aa2e65a451b476b647232892e168af0aaf9a9ff911e0597430be0"
+    },
+    "Toy.Contracts.halts_gGood_5": {
+      "closure_sha256": "54e99233510467bd9a861df49f1d9dc493d75a01d486db3af0467369d336f26e",
+      "closure_size": 82,
+      "statement_sha256": "f26ae3ea8f10c72243cb1cf9f6af1e264f299cf67e636b6cbf2aaef9cd0f99c4"
+    },
+    "Toy.Contracts.halts_gInt_3": {
+      "closure_sha256": "d7f123cf845fbe0e70ff86e5002389f16285ce504ed3439f32c1cd7b995d5797",
+      "closure_size": 82,
+      "statement_sha256": "d2a3c3fc41f86ada2187dd81827caf063c9c553cbeed27d0df36c335771ff38f"
+    },
+    "Toy.Contracts.halts_gTry_1": {
+      "closure_sha256": "997143dd161baea0add3fdeba87291092c0b88beb9cdb38fa49bfdcd05fa4df2",
+      "closure_size": 81,
+      "statement_sha256": "40c9ce9a3dc3ea348dfff467dc4942b2de1875d3f0aa939a5c32a38894a1a93a"
+    },
+    "Toy.Contracts.halts_iff_of_run_const": {
+      "closure_sha256": "168776b44ad2aec128812951b5a620fdd2eaf6e3be60d6ae5ed71af684430b9b",
+      "closure_size": 80,
+      "statement_sha256": "329f2266742f90596961cb3cacec4a6a401af32f5702d454d01ab88f975f929a"
+    },
+    "Toy.Contracts.halts_instr_allExits_gEarly_0": {
+      "closure_sha256": "4c657e4fb254f798a54bc140d53d843c95c8997712b215ff887b99eb2176b209",
+      "closure_size": 100,
+      "statement_sha256": "22f5225f024d4dc48d8faee60d6ebb3822014bcc862d01426fafa2d7136fdf63"
+    },
+    "Toy.Contracts.halts_instr_allExits_gGood": {
+      "closure_sha256": "fc6fcce5123148612d9299e46c2ebf6c9c513b005fdebd1424643f22acf92b17",
+      "closure_size": 100,
+      "statement_sha256": "21193100a0a9110091e99138e2099836fb4b9b4db47a2e2c077027ec934add1a"
+    },
+    "Toy.Contracts.halts_instr_allExits_gInt_3": {
+      "closure_sha256": "b64f6e507bf9e782acad7e26efbe620896aa9cc5ad5716cad90d91edaabc9171",
+      "closure_size": 100,
+      "statement_sha256": "ed7e1e0a9bedad91db2449b2b04722dd35ba73281a30f22502fe0e613534969b"
+    },
+    "Toy.Contracts.halts_instr_allExits_gTry_1": {
+      "closure_sha256": "6f268436b430039d430aba41691e301432fcfa08dc86f8c7295a9021e17660b6",
+      "closure_size": 99,
+      "statement_sha256": "b697d2928f0f71d586e6b912d9613413951e337a3ddd0ff47ad8eec2cbdd9622"
+    },
+    "Toy.Contracts.halts_instr_gEarly_100": {
+      "closure_sha256": "4c657e4fb254f798a54bc140d53d843c95c8997712b215ff887b99eb2176b209",
+      "closure_size": 100,
+      "statement_sha256": "7898a09c786a75d6ea37e60e6a5287d24505d36739546121f04a9f0043ebadc6"
+    },
+    "Toy.Contracts.halts_instr_tailOnly_gEarly_0": {
+      "closure_sha256": "4c657e4fb254f798a54bc140d53d843c95c8997712b215ff887b99eb2176b209",
+      "closure_size": 100,
+      "statement_sha256": "e8ca979c0f9fe65389d92794c96fcf427fb27333e732364a06bfa2d756e5fbc1"
+    },
+    "Toy.Contracts.halts_lower_fOut": {
+      "closure_sha256": "09698b01cce63819d27b403b246c1ab694203ee2393e9b0d6d414466f14c5181",
+      "closure_size": 88,
+      "statement_sha256": "6f93f218dca198560e90cc1c7707960a1de25121157ee75d3f8e20cea3babf75"
+    },
+    "Toy.Contracts.halts_lower_gTry_1": {
+      "closure_sha256": "f4e522bd741ac306fa11215b2d5a19b90960c5e14cc1d8aa67e4a38c167d0747",
+      "closure_size": 88,
+      "statement_sha256": "c6aa5bce43dde0ed83c87e8243c5a4c085f9283a31930bb2a583aee2fc74692b"
+    },
+    "Toy.Contracts.halts_lower_iff_of_jumpsInRange": {
+      "closure_sha256": "2bf7876da2e5e96a8693516d4b159251c176f4a17f8e62b75965e7ec46285742",
+      "closure_size": 89,
+      "statement_sha256": "344c769dfd18af679bc34c8442050a5ae6d0ea987b89ddbae5f6d849451e4c61"
+    },
+    "Toy.Contracts.halts_unique": {
+      "closure_sha256": "168776b44ad2aec128812951b5a620fdd2eaf6e3be60d6ae5ed71af684430b9b",
+      "closure_size": 80,
+      "statement_sha256": "29d67a793e6aee7755b509d9627ef952935625b8a85f4fd6532e1d8769fc4925"
+    },
+    "Toy.Contracts.holder": {
+      "closure_sha256": "5c73d28d2e50bdb8813033a0b59c09cf4d0074aff6d1d05245d29283280a0bca",
+      "closure_size": 5,
+      "statement_sha256": "bab8ea23f5a7e134368102aeaf5c23ac79e3c384b0277b675cf715b5d41e546b"
+    },
+    "Toy.Contracts.holder_cs1": {
+      "closure_sha256": "e1453f33ac57d3a7e328e53a91a8708fa3958bc4fa26d617e55d9ea17588b93c",
+      "closure_size": 12,
+      "statement_sha256": "298ca5e37b1bb48f4ea51e5575eb64dca4d006c13213488249dc19d4e9874a71"
+    },
+    "Toy.Contracts.instantiateIn": {
+      "closure_sha256": "e0ccbc64af9d4c51b7ae5aa579eb09ea304c82c113c67d9f32f66b8b41d86034",
+      "closure_size": 31,
+      "statement_sha256": "69608125ef6e6c00a8cb6d3f0f44a4e436b88ff237b0eb9444434532e7d87e29"
+    },
+    "Toy.Contracts.instr": {
+      "closure_sha256": "dcfc31395522547e42649a67076e9b05967635d5b41d05749f2be284ee7bc637",
+      "closure_size": 31,
+      "statement_sha256": "69ff2d4facb4b68e401b20a33a6d6e481b6bbd7ec51a2526f9217a5b2d5fd21f"
+    },
+    "Toy.Contracts.instrBlock": {
+      "closure_sha256": "d37324cf73238f1a61e96465d3d9d510cc0fabf82169ced7a787f1a6f53fe75a",
+      "closure_size": 29,
+      "statement_sha256": "187429ed294b88414f11d703d63a79ec65f430f82c897b0a5cd20494e6ef65c0"
+    },
+    "Toy.Contracts.instrObs": {
+      "closure_sha256": "349fb164b1bde5f2c37085e9125b3ad14cdda1c1280a1a0ccc984588e78565ae",
+      "closure_size": 14,
+      "statement_sha256": "637d5cc0239d5a4b05d58667ef7f4dd2c6ea2af7f6781abf7ad8a667a6655e19"
+    },
+    "Toy.Contracts.instrObs_eq_ret": {
+      "closure_sha256": "b9be31028c834b742e3e5ec2ee4e31d050ec6dbd0a0f5b0884a6e8677a70f3fd",
+      "closure_size": 25,
+      "statement_sha256": "a537a04755375e803298da5360698538330a57af1f2e92e3c7039f13dbe2971d"
+    },
+    "Toy.Contracts.instrObs_req_false": {
+      "closure_sha256": "9716e6b44f29a8806909313d13841b8be98aafaa3734f3a514ab3ada6f6c7fa2",
+      "closure_size": 26,
+      "statement_sha256": "9a6b4ce9bc116c6a85b593b020277e79da0097631368514f61ca14f9b9b42dfe"
+    },
+    "Toy.Contracts.instrObs_run_eq_of_req_of_ensOnReturnsAt": {
+      "closure_sha256": "0d19923c921ae4dab459fb4571375460043ac7b1a98129b5f4da4554616d3700",
+      "closure_size": 90,
+      "statement_sha256": "b806d1c6cc2ff6008c060690a87a88f4482942ea70c162b15f1d64a82deb6ebf"
+    },
+    "Toy.Contracts.instr_allExits_gEarly_block2": {
+      "closure_sha256": "12bbdbd0ec2f6eb06e0d00ec80c9c912d410a6c625d50b05b6bd03ee610edd22",
+      "closure_size": 54,
+      "statement_sha256": "c0b380ebcb5b53da094624fab20332eab3ea3adfe095647a0a3c6f45b30e6030"
+    },
+    "Toy.Contracts.instr_allExits_gPanic_blocks": {
+      "closure_sha256": "c6ec97e5426fdd0d2006d6e288e5034ae79585d87484adfdb3c5501482703052",
+      "closure_size": 54,
+      "statement_sha256": "c9336c911f9448f08822505104ddb32f0a15c2d7773ecc808bd11395f831ea8a"
+    },
+    "Toy.Contracts.instr_allExits_obsEq_self_iff_ensOnReturnsAt_of_lowered_of_req": {
+      "closure_sha256": "1244b9ffbce0e1b852f5643c338b0c38a935d18d58913217545c5eaa14022890",
+      "closure_size": 105,
+      "statement_sha256": "005bf07b4fdb57d13b32898f2cf39e310a34695ad48ceb4bc745baaa815c3b97"
+    },
+    "Toy.Contracts.instr_allExits_ubRefinesAt_assumeErase_of_noChecks_of_staticObligationAt": {
+      "closure_sha256": "3eff23a4d331d1ed7e2ebb4916e25797e169a0c09c5d965a146ed6b89cfd4216",
+      "closure_size": 109,
+      "statement_sha256": "3f6b3dfa40f684c97526f059ee8054606c56a11da6c49997e7bb4a0a681d3adc"
+    },
+    "Toy.Contracts.instr_gEarly_prologue": {
+      "closure_sha256": "12bbdbd0ec2f6eb06e0d00ec80c9c912d410a6c625d50b05b6bd03ee610edd22",
+      "closure_size": 54,
+      "statement_sha256": "65ff663d53854c241bf05d06818825e653ac0c1dcc24afc7c62d26604548a140"
+    },
+    "Toy.Contracts.instr_tailOnly_gEarly_block2": {
+      "closure_sha256": "12bbdbd0ec2f6eb06e0d00ec80c9c912d410a6c625d50b05b6bd03ee610edd22",
+      "closure_size": 54,
+      "statement_sha256": "a2f5789ca37d3512ac782e8e5f2c717b1df9f71cfb26cb863b78473a6860cac6"
+    },
+    "Toy.Contracts.jumpsInRange_gEarly": {
+      "closure_sha256": "77b762f73a407b8055e14f8710c71010f27d8e46d93bf38523ccf6a920cfd539",
+      "closure_size": 37,
+      "statement_sha256": "2cd1d50a4b231226a314dd794dd11c9e04130a1be8fa6f6e75acc167f2b1be37"
+    },
+    "Toy.Contracts.lower": {
+      "closure_sha256": "e9ef6f804c09347ccd8999aaacea9296d3d39a67e51f78848e5a0096bd58dcdf",
+      "closure_size": 28,
+      "statement_sha256": "29febe4234c88c2e634d104c53a296ec5ca02442873bd717006d3ad898385396"
+    },
+    "Toy.Contracts.lowerTerm": {
+      "closure_sha256": "0d917a603edc0a0a77176bb624033c9e08df498310cec5be100b0f34031f8e76",
+      "closure_size": 14,
+      "statement_sha256": "0b8507886b7957db617175aeee2c21fee450baaa1348f9fc904afb6b7486fdd0"
+    },
+    "Toy.Contracts.lower_blocks_add": {
+      "closure_sha256": "1e77232f3420df17fe3f4d69a9cad3cbf6b64ad472faf85c86bc00201ec72192",
+      "closure_size": 41,
+      "statement_sha256": "f5c8476821b5f99d4b934c151778c98120d9e52233ffc5f308d623b0d2048701"
+    },
+    "Toy.Contracts.lower_blocks_lt": {
+      "closure_sha256": "1e77232f3420df17fe3f4d69a9cad3cbf6b64ad472faf85c86bc00201ec72192",
+      "closure_size": 41,
+      "statement_sha256": "8cb88ea578c713ceea55cfa3877cf50bab1a6050ce6042d96e78162f07a2de63"
+    },
+    "Toy.Contracts.lower_fOut_returns_where_fOut_stuck": {
+      "closure_sha256": "a85f576b4fb2a772337b72137b6418395f1f59c65c6a5795410cc251ecd024e2",
+      "closure_size": 108,
+      "statement_sha256": "333b8ffbd14d07edb0b6c2fe51c6c7d9a9d209d0191dd51952262ee16f5baff3"
+    },
+    "Toy.Contracts.lower_gEarly_ne": {
+      "closure_sha256": "d888c8cd3ab02fe00c9d49f0d47f44390e1990b07cdd329dcd8dba126eef415a",
+      "closure_size": 42,
+      "statement_sha256": "dffc260df17fd7b14543ee748cd05f1533dde11a05316782c21c7782cf7ef453"
+    },
+    "Toy.Contracts.lower_gEarly_take": {
+      "closure_sha256": "d888c8cd3ab02fe00c9d49f0d47f44390e1990b07cdd329dcd8dba126eef415a",
+      "closure_size": 42,
+      "statement_sha256": "b09e3179ac866cf9641bc32e20cdf08561ea24c838e477d11bd82e2ef3e92ca3"
+    },
+    "Toy.Contracts.lower_gTry_blocks": {
+      "closure_sha256": "b90f20e4870162e093053e25d77330d21002b776d1e198ca65fcffed2c8d8b6c",
+      "closure_size": 42,
+      "statement_sha256": "1a21c62845b8c772815d5950009d48e79f04abfea8eefc8c69bf009d022d5899"
+    },
+    "Toy.Contracts.lowered_gEarly": {
+      "closure_sha256": "6410e62ca9600465b8841a585893919d3224beeef76f006f928c6cf86134c539",
+      "closure_size": 38,
+      "statement_sha256": "87d0d5e66fcfedd0474a009d32cb222e8e270d39ef33c38f1f27a38b5b054fe4"
+    },
+    "Toy.Contracts.lowered_lower": {
+      "closure_sha256": "dc30b0d9966df88411c4201beeccdc456b1bcfeccd5ae3c693973359772cffdf",
+      "closure_size": 43,
+      "statement_sha256": "0a09faf89496ed190c6066dbeb8e6cb1654c840cf65dae1cc805da331e170f0c"
+    },
+    "Toy.Contracts.lowered_lower_gTry": {
+      "closure_sha256": "273a53578353767b71674c91f9d40810d8820ad86ce2772f1ee2c6ddee39df94",
+      "closure_size": 44,
+      "statement_sha256": "ff10da333e7a928ce5c0403284f3546180f1b3d4dc1424db6d8406fe3404cb01"
+    },
+    "Toy.Contracts.map_erase_instrBlock": {
+      "closure_sha256": "5ccb6d8bb3090181bc5a7b099258cb92edb559177db0c21221967cc0e3817663",
+      "closure_size": 53,
+      "statement_sha256": "7194c567301a3a5bbe213030b1a07bd389672631ad2ad25e621f2df3909a16f6"
+    },
+    "Toy.Contracts.noChecks_erase": {
+      "closure_sha256": "7231425047d9f962d63fb8dc13bb895fbc817634ab5bb2252fb57899d7c0e26d",
+      "closure_size": 41,
+      "statement_sha256": "54cf85609744ee29fc6d58d4c6d6acae37be905485ea9e2e8a5c05d3a2d9cb30"
+    },
+    "Toy.Contracts.noChecks_gEarly": {
+      "closure_sha256": "08de66ee43cbff73e893475e2bd45738352d6d4f85dcb63e7d76e325325a1d81",
+      "closure_size": 39,
+      "statement_sha256": "54acca8ed5dbf5351f16fcaab36d18231dbe42d6d04444cbf720f289d2667e0b"
+    },
+    "Toy.Contracts.nonvacuity_assumeErase": {
+      "closure_sha256": "80e766349bb53c719d77ad2a591fbdd3ddfdc37eb5c4110779f1706c147814ff",
+      "closure_size": 4,
+      "statement_sha256": "322889a6cccb77e124996e6bb1f520d090e6edd9daeeec15e4d1c2cb46670648"
+    },
+    "Toy.Contracts.nonvacuity_callRun": {
+      "closure_sha256": "6410e62ca9600465b8841a585893919d3224beeef76f006f928c6cf86134c539",
+      "closure_size": 38,
+      "statement_sha256": "87d0d5e66fcfedd0474a009d32cb222e8e270d39ef33c38f1f27a38b5b054fe4"
+    },
+    "Toy.Contracts.nonvacuity_ctfe": {
+      "closure_sha256": "53bf4f311f072772fcab25c158fada451113483f9215e1df25e23a2a650e0d46",
+      "closure_size": 116,
+      "statement_sha256": "f07b0598b917381ed44673280d802d24d515a059f27f9071d448ddee21b166f8"
+    },
+    "Toy.Contracts.nonvacuity_ctfe_req": {
+      "closure_sha256": "53bf4f311f072772fcab25c158fada451113483f9215e1df25e23a2a650e0d46",
+      "closure_size": 116,
+      "statement_sha256": "24505a07c618544ed4ec34669f76e683804dceedcd10427e6bd545145b0f36a6"
+    },
+    "Toy.Contracts.nonvacuity_detects": {
+      "closure_sha256": "0f9ec957b41e558b5cf9a14c4031944796f3f3a6b305d4b23c3213036c98a530",
+      "closure_size": 93,
+      "statement_sha256": "dc17035853000ffdb1fd373ed945d05fdf46ceaa3c0c8d8545d5a1026a584f95"
+    },
+    "Toy.Contracts.nonvacuity_erase_instr": {
+      "closure_sha256": "08de66ee43cbff73e893475e2bd45738352d6d4f85dcb63e7d76e325325a1d81",
+      "closure_size": 39,
+      "statement_sha256": "54acca8ed5dbf5351f16fcaab36d18231dbe42d6d04444cbf720f289d2667e0b"
+    },
+    "Toy.Contracts.nonvacuity_erasure_global": {
+      "closure_sha256": "400a8c6a53a5a99d8c80bc5dcb97b0496875da7219ad9f6f95962f0f864a6bea",
+      "closure_size": 96,
+      "statement_sha256": "862e8072bc5561cf9afe602e28fe4c7ebbed5234503c37ffe9b41928412e7250"
+    },
+    "Toy.Contracts.nonvacuity_erasure_pointwise": {
+      "closure_sha256": "f9e0983e4dd564709ed9fee2d7c5b8a0a0b30401e9abd2e7f77077ec61c8a716",
+      "closure_size": 113,
+      "statement_sha256": "846342724f51512d59ff0f25d458e83d08d099da07c5c6dd93718ad71352aa23"
+    },
+    "Toy.Contracts.nonvacuity_halts_lower": {
+      "closure_sha256": "cf3510e69abd47e189a98589eb17bce9d286d6a02d317db60a934befb2f91ed7",
+      "closure_size": 37,
+      "statement_sha256": "6b4f224a5eef5c0008860b55e8d9f62fff235366460f2c8ee27d3263a3007f1b"
+    },
+    "Toy.Contracts.nonvacuity_instrSelf": {
+      "closure_sha256": "187aabd345df1ddea557bf3740437f61e97795059cc64977ca0c1e765557d660",
+      "closure_size": 96,
+      "statement_sha256": "03ce7f5a69a91078efac2bddf2c9b91532bbcbe05a0068122e986a678185fd7c"
+    },
+    "Toy.Contracts.nonvacuity_not_violation": {
+      "closure_sha256": "70e80997a92585f0bd28a2049be959c9383d176ca85b5aea60b423c582123c26",
+      "closure_size": 83,
+      "statement_sha256": "9b1d0117a1c645329fcdfc7a0221329dba8fdc3f31495a50162d19555fed570f"
+    },
+    "Toy.Contracts.nonvacuity_req_and_ens_lower": {
+      "closure_sha256": "e97735210354acaede673a36c9336ca1b0aecf82bfb162de96fab747b8f45a0e",
+      "closure_size": 105,
+      "statement_sha256": "99b8c9e266c24af43feda9b223461edcee6f4232622c38322fa4b86bdc308aa5"
+    },
+    "Toy.Contracts.nonvacuity_req_false": {
+      "closure_sha256": "80e766349bb53c719d77ad2a591fbdd3ddfdc37eb5c4110779f1706c147814ff",
+      "closure_size": 4,
+      "statement_sha256": "e1b5c185eb4fd27d5b5cb257a4e9b3634c7674489dce54c17232335f151fa30c"
+    },
+    "Toy.Contracts.nonvacuity_run_instr_allExits": {
+      "closure_sha256": "6410e62ca9600465b8841a585893919d3224beeef76f006f928c6cf86134c539",
+      "closure_size": 38,
+      "statement_sha256": "87d0d5e66fcfedd0474a009d32cb222e8e270d39ef33c38f1f27a38b5b054fe4"
+    },
+    "Toy.Contracts.nonvacuity_ubRefines": {
+      "closure_sha256": "e145c286f45cf089c456143a11f07f62a15ee55ceb682396c9ad4ab7ac3339cc",
+      "closure_size": 95,
+      "statement_sha256": "7886cda61f822ebbd9bc32aa6adaf09c9c74bd5a25c14d618dd0af48ca7993a0"
+    },
+    "Toy.Contracts.not_assumeErase_ubRefinesAt_instr_of_req_false": {
+      "closure_sha256": "f1a81dc6cc7aefb12f926c4034830596a5bedffe8d306039b94377bdeb6e388d",
+      "closure_size": 106,
+      "statement_sha256": "cc9f754b2005a5e175f5dc6eb3cbb4647df2094ce7efc8dd9783e7fbcd0ff165"
+    },
+    "Toy.Contracts.not_ctfeConst_eval_gEarly_100": {
+      "closure_sha256": "bd9fb1b692d70acb7a060e2b5feefb171d98ca3ba9241e6f71a2a7901b50fec0",
+      "closure_size": 111,
+      "statement_sha256": "55925270994e513393516c18d5988a6a5cc3da84da769802c31b98f3e1cf9907"
+    },
+    "Toy.Contracts.not_ctfeConst_skip_gGood_5_4": {
+      "closure_sha256": "5aa3a5e4a26a6070061a948585b055e76c2cd33ea2fc02be0a464d55e4bae93f",
+      "closure_size": 111,
+      "statement_sha256": "a194e7f9e11964cadc92456f9376934be2f4f9428b66ae5e1917e00dfa0ff71b"
+    },
+    "Toy.Contracts.not_detects_calleeSide_off_gEarly_0": {
+      "closure_sha256": "e327865c4d88d8e62d0fc80cedbf939d19b8b7d75d7a4fb058231bb52eb2a171",
+      "closure_size": 141,
+      "statement_sha256": "c047208ff7993910189bba3505e25dce2d37f1d147176168f19c7bff3d696522"
+    },
+    "Toy.Contracts.not_detects_gGood_5": {
+      "closure_sha256": "854c299c858fb4338c69a915a7758aa5d3cc09964cfea2bba25fc19bbf8665a5",
+      "closure_size": 140,
+      "statement_sha256": "594ea7fe3ac0aa3f1031c7759231a5c86a3f6e16dbab244567c5df76731d6303"
+    },
+    "Toy.Contracts.not_detects_gTry_1": {
+      "closure_sha256": "bfdbf06ea0f0fc81aae9cf83920027727dc07934a24a84c287e8b0ce58e5d3ab",
+      "closure_size": 140,
+      "statement_sha256": "a44c45dbad44ed8767b2b0171b829d9352080a747e7d0b9fe0836c6cf8cf0779"
+    },
+    "Toy.Contracts.not_detects_of_noChecks_of_req_of_no_ret": {
+      "closure_sha256": "fc6b59484fac51e90d3cc13f3582c8a9bcf02485e0a3e6b2cfaa8e9eb1105598",
+      "closure_size": 144,
+      "statement_sha256": "ae6db26fada0b8716aa92090069a48be17230b3ab6d7c30886dac6ae0d779756"
+    },
+    "Toy.Contracts.not_ensOnReturnsAt_gEarly_0": {
+      "closure_sha256": "7a1e64947a9f2efe19ed571e0c5932b0b905dd3bbe3dc42100257f3b09826f5b",
+      "closure_size": 83,
+      "statement_sha256": "6761284bf83996a3708c4738c648b3cb7f6d9d0f2fb7e407089a6e41eecdfe8d"
+    },
+    "Toy.Contracts.not_ensOnReturnsAt_gTry_1": {
+      "closure_sha256": "fa624d05bc0cc6cdb19168e768740bb13db774e6f75339fc3105ce8b84404196",
+      "closure_size": 83,
+      "statement_sha256": "1621e162cbfbb68d9a7bc407bee5ae8806ca03297ebe67abff52a2271f6686b2"
+    },
+    "Toy.Contracts.not_haltsEqAt_erase_instr_of_req_false": {
+      "closure_sha256": "038dfe23996a09065f7a19aee48055e5f3233c831f529155be213d329527ad1f",
+      "closure_size": 105,
+      "statement_sha256": "fca00120b1de400fe073956996962e71a85958454f9b988dae1d57dde1e3ffe4"
+    },
+    "Toy.Contracts.not_haltsEqAt_gGood_gEarly_0": {
+      "closure_sha256": "479fdf52b60e9606298fd600da3e105eea905f63c8548dbe2b098f128cb08da4",
+      "closure_size": 84,
+      "statement_sha256": "d5be1eb84a5894710947f980d1416811983b597a4ec4a9a44de0e1aa8916b0e8"
+    },
+    "Toy.Contracts.not_halts_fuelOut": {
+      "closure_sha256": "54e99233510467bd9a861df49f1d9dc493d75a01d486db3af0467369d336f26e",
+      "closure_size": 82,
+      "statement_sha256": "71373dac7e28a0132924a3555ba2eb8d4b1ae8c0856cb4fa6a92f38699c8f05f"
+    },
+    "Toy.Contracts.not_halts_gLoop": {
+      "closure_sha256": "2b169c506e3a6e0291af4ab2632f1fcb8c4a81e03038a477b89f16d78d383ed0",
+      "closure_size": 82,
+      "statement_sha256": "ad80f2f8556098134ff4296064fc15b36dd383e73728667b798bac68d430ac44"
+    },
+    "Toy.Contracts.not_jumpsInRange_fOut": {
+      "closure_sha256": "a8f2dcdce37aa7b642fcbf497953b6bfe6a095978e6ace99ad6115b284b29ebd",
+      "closure_size": 37,
+      "statement_sha256": "fb02d172a814d32f8d264442f64721abb7e44bd69eb375a015a1d5fec0de9afb"
+    },
+    "Toy.Contracts.not_jumpsInRange_gStuck_and_lower_eq": {
+      "closure_sha256": "ae4ba937d951dde68160e1386b11850cc11ed89598d7a13c65706e742843f21a",
+      "closure_size": 45,
+      "statement_sha256": "0ed2b5263ee6d4f4cc62ed24dc879899a087972f9dddcfe6b41798a18e7d556e"
+    },
+    "Toy.Contracts.not_lowered_gTry": {
+      "closure_sha256": "44bebebc72671d6f42de2df34718e95a9f882a4333a8acf5134b13a441ab206d",
+      "closure_size": 38,
+      "statement_sha256": "ba23f99baa719ecee0c991f350a5f84312a72d43832afd48322f988f4a76b5b1"
+    },
+    "Toy.Contracts.not_noChecks_gInt": {
+      "closure_sha256": "c4eca50275c1e5609b04d7a11f77c0c22879e1946e50fe5fd9c4302153a55d02",
+      "closure_size": 39,
+      "statement_sha256": "73ed70b3dd8ffeda90e342ba852171e2309accf2c7640b1ac5531fc0914f98ad"
+    },
+    "Toy.Contracts.not_noChecks_instr_gEarly": {
+      "closure_sha256": "273853e49aee5a0c228db47367135493a342d72fc2d7a3362f34708b6806af2d",
+      "closure_size": 61,
+      "statement_sha256": "00c430e6538447bdcd5be04403c98783339561b2641b210f9ab1a0714b91bcdd"
+    },
+    "Toy.Contracts.not_runEqAt_erase_instr_gGood_100": {
+      "closure_sha256": "e007d84875fdbf223fe3c442c9f8cd0d4ef3c9825748cbddd064ac617fe0dfcd",
+      "closure_size": 104,
+      "statement_sha256": "1c0f38db293b9209a2dbccfcb338de7484eaf33eda5f8ce4411423148c8b99a0"
+    },
+    "Toy.Contracts.not_runtimeValue_gEarly_100": {
+      "closure_sha256": "d4eac2758cdc6920cfd3102df9de9c56ab1661b9f7c1981c098a935099b827d7",
+      "closure_size": 101,
+      "statement_sha256": "ae6e19fa25a46ea0e5052d4e8af5ffb6b36a8b9601ed7ea8b4df83ccf8c06819"
+    },
+    "Toy.Contracts.not_runtimeValue_gGood_5_4": {
+      "closure_sha256": "6ebbded3e1f293c01abb5bffdf2a930ae75b52a02a8d2d6bcb13735101051d81",
+      "closure_size": 101,
+      "statement_sha256": "4f41f290005172d9431a39e3ad085976541380c77a5e482381d5cf489d5c421f"
+    },
+    "Toy.Contracts.not_runtimeValue_gInt_3": {
+      "closure_sha256": "0778fc52d514359b36ab5b2c2aab3b36663fc6d56993b71e8f3c921c75b699f1",
+      "closure_size": 101,
+      "statement_sha256": "eecf335e0852ba22e29bce4a522819c37c1a16d79be139f49511b236c98b1e34"
+    },
+    "Toy.Contracts.not_selects_tailOnly_early_tryErr": {
+      "closure_sha256": "152ece29df69385506199f63d56f7b864aa8d1f34e2ce220e302dd89501f0328",
+      "closure_size": 17,
+      "statement_sha256": "dc220a51f51788c09801e2c8a1504f42296753a76df38b614c09a56bf8251604"
+    },
+    "Toy.Contracts.not_staticObligationAt_gEarly_0": {
+      "closure_sha256": "f31c51a0f6108ec218f40f66a5a5f0af0c82ee3f724af766bcd155955b4c5e38",
+      "closure_size": 84,
+      "statement_sha256": "86f3425b6f3c741e69dd63cb5f736ad6ac7ba1676a5245e44ff882022bf6cdf6"
+    },
+    "Toy.Contracts.not_staticObligation_gEarly": {
+      "closure_sha256": "aa8498fd2dbd0a831c0a94044a3ca389724a9267da5dffb882d1bb22afc31749",
+      "closure_size": 85,
+      "statement_sha256": "544a24d80027193adc8ca2733d76d44d3543a2a108fa52f140341fc94601d086"
+    },
+    "Toy.Contracts.not_ubRefinesAt_instr_assumeErase_gEarly_0": {
+      "closure_sha256": "cb53a7e95ed119734c968e3b3a598766708052fd66d63e3505c755a931aac9d5",
+      "closure_size": 108,
+      "statement_sha256": "09fa6158d066948e560695463a4773a7432887fc825ab9e090ee2768255aa6e1"
+    },
+    "Toy.Contracts.not_violationAt_gGood_5": {
+      "closure_sha256": "70e80997a92585f0bd28a2049be959c9383d176ca85b5aea60b423c582123c26",
+      "closure_size": 83,
+      "statement_sha256": "9b1d0117a1c645329fcdfc7a0221329dba8fdc3f31495a50162d19555fed570f"
+    },
+    "Toy.Contracts.refuted_no_report_for_panicking_call_with_flag_on": {
+      "closure_sha256": "3dfaaf591802930703abd54f9c58a83f23bb24895f76ba67bd7d8d4925d7f59b",
+      "closure_size": 151,
+      "statement_sha256": "39e4301378710bda9b21e6f10d15790ad187f42829f14f293abd12a4c7fe0df4"
+    },
+    "Toy.Contracts.req_and_ens_of_halts_ret_instr_allExits_lower": {
+      "closure_sha256": "a58370c31ddf0b24d9ed2461fc12b5c89c758c3c7ca17ad9325d26d6dfddb655",
+      "closure_size": 103,
+      "statement_sha256": "d0d2b6b51a9ee3fc9496223146ed71061c107bda7ee429bdb01c04377758b0b3"
+    },
+    "Toy.Contracts.run": {
+      "closure_sha256": "9981845b280fae580c511a6d0117789c169a0ad0a9aebfd927acce3639591160",
+      "closure_size": 42,
+      "statement_sha256": "96829ddebe7a31b82234940938abfbc52b7a84583aa63107befcb5f4d98d915e"
+    },
+    "Toy.Contracts.runEqAt_erase_instr_gGood_5": {
+      "closure_sha256": "e007d84875fdbf223fe3c442c9f8cd0d4ef3c9825748cbddd064ac617fe0dfcd",
+      "closure_size": 104,
+      "statement_sha256": "3e8f5e12e3ba9caef0b61899ea2e1d8d130096cc0ee882c9cb160dde4314412f"
+    },
+    "Toy.Contracts.runEqAt_erase_instr_gInt_ne": {
+      "closure_sha256": "82ca5305a332709de817e273c1b345666a7b9760c957178a017166de4a72800a",
+      "closure_size": 104,
+      "statement_sha256": "9aba00dd8beafaf34b50e9e29cbbbf44b772c8266793e8eb666ec4aced69e835"
+    },
+    "Toy.Contracts.runEqAt_erase_instr_gTry_1": {
+      "closure_sha256": "4193436aa3135bc80709c04107fe30cf433a6137a749d8e45f75226d7baa45c0",
+      "closure_size": 103,
+      "statement_sha256": "a0e624844c2ca9a72305030825f98eea3f6ece0c1700865305326f6a136c1818"
+    },
+    "Toy.Contracts.runEqAt_instr_gTry_1": {
+      "closure_sha256": "89cb8fa1df6ca403d9f4304ed48a0e84d58acdc51d914f7c054f281ed1482cd2",
+      "closure_size": 98,
+      "statement_sha256": "ac769d806bcf98d1d8a4baf9234821a499bb3772b776aed1b8888aa567ec1154"
+    },
+    "Toy.Contracts.runFrom": {
+      "closure_sha256": "d2392d2dda38118189c139bb0d5f7664cde8ce80155df2b2a7fe8d7a77229648",
+      "closure_size": 43,
+      "statement_sha256": "5501d4c2b281345aa5d2ccf66f3723e3b43726eae715e35416d1bf0987fd0eb4"
+    },
+    "Toy.Contracts.runFrom_congr_blocks": {
+      "closure_sha256": "332159cc1b5ca1216164a7c775a3fbc8cecffce120bb16027a6bb7c5fe678188",
+      "closure_size": 75,
+      "statement_sha256": "a816a52bd5cf1b512ec7cea88a26b4453ee37d416964f7f1cba81fa2cd6d2b5a"
+    },
+    "Toy.Contracts.runFrom_gLoop": {
+      "closure_sha256": "6fd292c42452b6e9d6b31728daafd4b7eaa1038f103fc2b4b948fded2ccbbd12",
+      "closure_size": 77,
+      "statement_sha256": "febd6264a03cc83bbf82491228f3749f4f6bda36b9298b7c087da07a45fec3fb"
+    },
+    "Toy.Contracts.runFrom_instr_allExits_eq_wrapObs": {
+      "closure_sha256": "ee53503f7f8e55918fc1ebb1e4987122490ad97999b7a180086f066e2c5ef87e",
+      "closure_size": 107,
+      "statement_sha256": "bbea4876c961a30a6c5fc66c1804b726f98ec8264014fad977fb547c69980c7e"
+    },
+    "Toy.Contracts.runFrom_instr_eq_of_ens": {
+      "closure_sha256": "fff259f07f3943fc9fef6e764613aeb238d0d1d214d0f9afe0786d720ba1060c",
+      "closure_size": 95,
+      "statement_sha256": "4f261eaad0391c30ec5802194d6ca2793bf427a18a43aa84ca233639609d1645"
+    },
+    "Toy.Contracts.runFrom_lower_of_fin": {
+      "closure_sha256": "c7fa9258f5d09d27a9cf2dda81868232ba428a3bc94df082b59d4fcd9b158709",
+      "closure_size": 86,
+      "statement_sha256": "27f0b6d0a551537b92fb37be6c58863243706fc579b2e5d2d327f5bf978abf8d"
+    },
+    "Toy.Contracts.runFrom_mono": {
+      "closure_sha256": "b3afe903acf58c2232020481776f0f2a605c1db943d15b2d27f8a825e11a1caa",
+      "closure_size": 76,
+      "statement_sha256": "b6d906e51dc49ffcc7c25d502406b5ea2c969658d34aecf000c2ea6e9b790439"
+    },
+    "Toy.Contracts.runFrom_no_checkFail_of_blocks": {
+      "closure_sha256": "4572794ad5fe59b2d822363483c96bf473e15e068ba996f00ca5fda3996b7cbf",
+      "closure_size": 80,
+      "statement_sha256": "68a0b8093e47d312eb743863fbb26b604d151100be859973700fd313a7b3a589"
+    },
+    "Toy.Contracts.runFrom_of_lower_fin": {
+      "closure_sha256": "c7fa9258f5d09d27a9cf2dda81868232ba428a3bc94df082b59d4fcd9b158709",
+      "closure_size": 86,
+      "statement_sha256": "80e0767153492a258d2bd03d6f2206ea251af5ed98456d69dc99dde70047c321"
+    },
+    "Toy.Contracts.runFrom_succ": {
+      "closure_sha256": "bfeadfc92ccdf2f4c77bd950113263521f763bc0c59af20ecf7db9568b9f38d1",
+      "closure_size": 78,
+      "statement_sha256": "913073a7e4dec23e066408199bea79085a1437aa6deff180e2025367f429292c"
+    },
+    "Toy.Contracts.run_assumeErase_eq_ite_req": {
+      "closure_sha256": "5e192c305f1333ebd69049243138418582d4e0132f9865c27c9debadd0afb697",
+      "closure_size": 84,
+      "statement_sha256": "97521ee77a50926517b8a02a2233a91d779e3e8eb2a7e5e257ea905e52607ff6"
+    },
+    "Toy.Contracts.run_fOut_eq": {
+      "closure_sha256": "346a1efc1be7ac1d433a98a9f4e17836972e4e28b4527a08a4775e8b5f398a8e",
+      "closure_size": 80,
+      "statement_sha256": "ba2fed9fd38a8dacce8b15c51122ef618d4cfd070ebdbcd20b3299d7955d2421"
+    },
+    "Toy.Contracts.run_gEarly_0_eq": {
+      "closure_sha256": "3f751eba9c7244186709858a902c41bb62e6e346f5586946b05c9ea37bfb891a",
+      "closure_size": 80,
+      "statement_sha256": "042fe2a2b74abc964194f25399babc6353264cc718f99688c4538d4574b8e241"
+    },
+    "Toy.Contracts.run_gLoop": {
+      "closure_sha256": "15e30c59c9559f38097a83da6a17327f77989f56211620152511c3a053a5eae3",
+      "closure_size": 80,
+      "statement_sha256": "6535780fab5024152481f1f66006c50ec96a34b1b9dd92936995b3afa0a196a9"
+    },
+    "Toy.Contracts.run_gPanic_eq": {
+      "closure_sha256": "898d733d4589ed51934c85d33f4bdd18b63126547f69aca8b0eaf25ddbdfbd4b",
+      "closure_size": 80,
+      "statement_sha256": "9b282f2f29e6df2a2ef842ab922d57ac5ad6385c4d689c43e74479bae1e955bd"
+    },
+    "Toy.Contracts.run_gTry_1": {
+      "closure_sha256": "bc7fd5c103890b761df8d1bbcc077e7715bd372a58d0750438fdac9fbcd3cef1",
+      "closure_size": 79,
+      "statement_sha256": "e3f0ffaf3f1ded2f32d53a8a2db5cde1acc792c50b3f397db7ef3cee247b8eb2"
+    },
+    "Toy.Contracts.run_instr_allExits_eq_instrObs_of_lowered": {
+      "closure_sha256": "23a3054e232832abe2c6388da01bf5aa1348e6e4a417db5152955a642402b349",
+      "closure_size": 109,
+      "statement_sha256": "b4ac00b91c92e7aaae36c4f3f5e423426b0620c460c1604b5ea0a0baea81c1b1"
+    },
+    "Toy.Contracts.run_instr_eq_of_req_of_ensOnReturnsAt": {
+      "closure_sha256": "0ef40b7dc22040386c1b1509586c3eb94551af9b57237f87a3e2467b0cb44877",
+      "closure_size": 99,
+      "statement_sha256": "d761fe29c2f80bd9f71c2e577b6608c8b736c21786d047fd199c50a3b5124229"
+    },
+    "Toy.Contracts.run_instr_gEarly_100": {
+      "closure_sha256": "2feb63360c25ee3d9f8bad5026834d4eee7861c81c53029a51b976284d0f1bd9",
+      "closure_size": 98,
+      "statement_sha256": "136678c8faaa3228b4cc9b8d4350ec707d1941319bb351229aa8cf78b57dfac9"
+    },
+    "Toy.Contracts.run_instr_of_req_false": {
+      "closure_sha256": "6410fd6af3e4b31fbb6bce81360f90cd326e6668b937ae03c456a7f3fe5a5984",
+      "closure_size": 96,
+      "statement_sha256": "d7fdc3616bcb34274f4560cf7472a956deb8766a982126a84fce129ebdbe5392"
+    },
+    "Toy.Contracts.run_mono": {
+      "closure_sha256": "e635697d2642ade4d5cfadc5f14ae4ebaded2fb998c1bf9c333f376a6f2e9a4f",
+      "closure_size": 79,
+      "statement_sha256": "e72447d85167a16c8439cb6bdf69ddffe9bea4db72044dc34047abcbcd53706d"
+    },
+    "Toy.Contracts.run_no_checkFail_of_noChecks": {
+      "closure_sha256": "fecde24caa23f2099667c44412db1fe5395316f66a3cbdfb34cf3f7f4e921572",
+      "closure_size": 84,
+      "statement_sha256": "e94e6eb0d356b66ec705ec9438794b94890f2703da9a497b9c70385645a6c985"
+    },
+    "Toy.Contracts.runtimeValue_gEarly_0_placement": {
+      "closure_sha256": "d4eac2758cdc6920cfd3102df9de9c56ab1661b9f7c1981c098a935099b827d7",
+      "closure_size": 101,
+      "statement_sha256": "871b6c2c4c12d38832fae0e1dbc4174d70b5544430eaa019ef4e8f7c75dcba9a"
+    },
+    "Toy.Contracts.runtimeValue_gGood_5": {
+      "closure_sha256": "6ebbded3e1f293c01abb5bffdf2a930ae75b52a02a8d2d6bcb13735101051d81",
+      "closure_size": 101,
+      "statement_sha256": "f9a35b7206be657cd18b0c9af07b26ff51f6175107372052e0184159010fcc39"
+    },
+    "Toy.Contracts.runtimeValue_gTry_1": {
+      "closure_sha256": "44564c6f7c00f1d6120c00536808ac7e8c446317436ab9d8f4c52448c5fa6082",
+      "closure_size": 101,
+      "statement_sha256": "8b1fa6a064f4f58d1179889211a263ff7f9330c507f26978ba1679aa8fed8bfa"
+    },
+    "Toy.Contracts.runtimeValue_iff_req_and_ens_of_lowered_of_noChecks_of_ctfeSkipConst": {
+      "closure_sha256": "62fe8fcb2ca34c8a5a7a5122d34b95a8486839267822c0b6b0fe946baff5d270",
+      "closure_size": 117,
+      "statement_sha256": "0d8ab585e69e96e5b9126726081f9073d5aa6806bad18179d60dda6f4db599bb"
+    },
+    "Toy.Contracts.runtimeValue_iff_staticObligationAt_of_lowered_of_noChecks_of_req_of_ctfeSkipConst": {
+      "closure_sha256": "f453b478ef54fcfbfe3998f3b1582ffa1be380e90a3d558238111769196b7456",
+      "closure_size": 119,
+      "statement_sha256": "6456fb97ff3f3b328f8636dfcdd5cd5046a1ef9e0d65aaaaf2594674c61cfc2f"
+    },
+    "Toy.Contracts.selects_allExits_early": {
+      "closure_sha256": "152ece29df69385506199f63d56f7b864aa8d1f34e2ce220e302dd89501f0328",
+      "closure_size": 17,
+      "statement_sha256": "5ebe71754b766f0c03a4a86908a217f93e9380c7f58a99db10267d8cf3e45ede"
+    },
+    "Toy.Contracts.staticObligationAt_gEarly_100": {
+      "closure_sha256": "f31c51a0f6108ec218f40f66a5a5f0af0c82ee3f724af766bcd155955b4c5e38",
+      "closure_size": 84,
+      "statement_sha256": "7c3fc4a395dfe1ebc1f8b4f3f4d65ca5d6aace238df1de420140c32484294498"
+    },
+    "Toy.Contracts.staticObligationAt_gGood_5": {
+      "closure_sha256": "33bf30c71c3736345a19aef4c0a760d0397d1a6fc132e1228112b5ab3d8d541f",
+      "closure_size": 84,
+      "statement_sha256": "6fe145ed2820204c01d2d2f18ed3d000b085f6807d5891a07d7332d293548bd7"
+    },
+    "Toy.Contracts.staticObligation_gGood": {
+      "closure_sha256": "eb86bf8559fe1257de5037fe15b328c8c4e0a4c4573f90811b5c93e64417ebb7",
+      "closure_size": 85,
+      "statement_sha256": "162db99eeece1f3745e13169a0918e6ff2df34d4b8025dba0c7a0a8bf3db620c"
+    },
+    "Toy.Contracts.ubRefinesAt_gLoop_gGood_5": {
+      "closure_sha256": "06abfc3a5558107590055a186ac670e94ed62888e25d5509ae587c53a26b4f37",
+      "closure_size": 85,
+      "statement_sha256": "b9b856d2d87c4d9d2ef4b927051dfd9f613ca621d9481f658b4374d4f42df412"
+    },
+    "Toy.Contracts.ubRefinesAt_instr_assumeErase_gGood_5": {
+      "closure_sha256": "29bf42b0525715b82cec25a881f318467a34ae31ff836f43d1fc89eafd1db3b2",
+      "closure_size": 108,
+      "statement_sha256": "3d19e1305bbc7ede59101fc59c540661995279240fdf64b4f64937de36d98391"
+    },
+    "Toy.Contracts.ubRefinesAt_of_forall_not_halts": {
+      "closure_sha256": "fb314970d613756165c36cef4362646f377edf19899e811d03134d083854e130",
+      "closure_size": 82,
+      "statement_sha256": "8dc26969607665e623ddb8e4287c207a08de3181dbc038cf5f55f01eb42b16ef"
+    },
+    "Toy.Contracts.violationAt_gEarly_0": {
+      "closure_sha256": "b6eeb3ba1870c1e9eab04c96627eca1dfaa6481357e32af3fd8e06ff2fe3fc4d",
+      "closure_size": 83,
+      "statement_sha256": "d029c232b3de9bbe1ba69df2a7f0b9ac63d732dc723e6ea17449b33ec34860c2"
+    },
+    "Toy.Contracts.violationAt_gEarly_100": {
+      "closure_sha256": "b6eeb3ba1870c1e9eab04c96627eca1dfaa6481357e32af3fd8e06ff2fe3fc4d",
+      "closure_size": 83,
+      "statement_sha256": "46af3a6b16d4c6f322045b1a3cb9a13bf6185134df893a23c28ca1bae100eb30"
+    },
+    "Toy.Contracts.wrapObs": {
+      "closure_sha256": "349fb164b1bde5f2c37085e9125b3ad14cdda1c1280a1a0ccc984588e78565ae",
+      "closure_size": 14,
+      "statement_sha256": "458fcd25a64da3982f28be3f507d93a0c07e25c1cef9cf96bce3449b54d65156"
+    },
+    "Toy.Contracts.wrapObs_fail": {
+      "closure_sha256": "a4b0d958a22ba08cae1eb6d57f69bf7f1cf0dbe34869ed67adf51e38fcfb929b",
+      "closure_size": 24,
+      "statement_sha256": "4a484fd3b84ef7e27199d346d468772867a5f7a13a4f08bd239f55cf130e97bc"
+    },
+    "Toy.Contracts.wrapObs_keep": {
+      "closure_sha256": "a4b0d958a22ba08cae1eb6d57f69bf7f1cf0dbe34869ed67adf51e38fcfb929b",
+      "closure_size": 24,
+      "statement_sha256": "e3762c791af5991f1d8e60e4b094c2ba8c29b79495a8807d83e94d3112999e52"
+    },
+    "Toy.Contracts.wrapObs_of_execStmts_stop": {
+      "closure_sha256": "dcb1144de7b8b929dd25835cd777dd7bff863274bb511c289b30ef98932fd8b7",
+      "closure_size": 56,
+      "statement_sha256": "38046383cbb5e574ef13d3e90251430a6a912291767f29d72aa504e072db30b2"
+    },
+    "Toy.Contracts.wrapObs_panic": {
+      "closure_sha256": "a4b0d958a22ba08cae1eb6d57f69bf7f1cf0dbe34869ed67adf51e38fcfb929b",
+      "closure_size": 24,
+      "statement_sha256": "e86f890f39018089b2255255d126b01af975e283ef04ae6e82a128b4dcf045da"
+    }
+  },
+  "toolchain": "leanprover/lean4:v4.34.1"
+}
