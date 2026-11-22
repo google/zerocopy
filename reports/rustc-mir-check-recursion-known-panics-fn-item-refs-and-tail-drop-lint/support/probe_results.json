@@ -1,0 +1,1024 @@
+{
+  "platform": "Linux x86_64",
+  "probes": {
+    "function_item_addr_bin": {
+      "all_messages": [
+        "taking a reference to a function item does not give a function pointer",
+        "taking a reference to a function item does not give a function pointer",
+        "2 warnings emitted"
+      ],
+      "crate": "probe_fn_item_addr",
+      "diagnostics": [
+        {
+          "code": "function_item_references",
+          "level": "warning",
+          "message": "taking a reference to a function item does not give a function pointer",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": null,
+              "line_end": 12,
+              "line_start": 12,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "function_item_references",
+          "level": "warning",
+          "message": "taking a reference to a function item does not give a function pointer",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": null,
+              "line_end": 13,
+              "line_start": 13,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "exec_returncode": 0,
+      "exec_stderr": "",
+      "exec_stdout": "ZST_SIZE=0 PTR_SIZE=8 REF_EQUAL=true PTR_EQUAL=false REF_ALPHA=0x1 REF_BETA=0x1 PTR_ALPHA=0x556b7b81b070 PTR_BETA=0x556b7b81b060",
+      "extra_args": [
+        "--edition=2021"
+      ],
+      "returncode": 0
+    },
+    "function_item_references": {
+      "all_messages": [
+        "taking a reference to a function item does not give a function pointer",
+        "taking a reference to a function item does not give a function pointer",
+        "taking a reference to a function item does not give a function pointer",
+        "taking a reference to a function item does not give a function pointer",
+        "taking a reference to a function item does not give a function pointer",
+        "5 warnings emitted"
+      ],
+      "crate": "probe_fn_item_refs",
+      "diagnostics": [
+        {
+          "code": "function_item_references",
+          "level": "warning",
+          "message": "taking a reference to a function item does not give a function pointer",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": null,
+              "line_end": 18,
+              "line_start": 18,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "function_item_references",
+          "level": "warning",
+          "message": "taking a reference to a function item does not give a function pointer",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": null,
+              "line_end": 28,
+              "line_start": 28,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "function_item_references",
+          "level": "warning",
+          "message": "taking a reference to a function item does not give a function pointer",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": null,
+              "line_end": 33,
+              "line_start": 33,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "function_item_references",
+          "level": "warning",
+          "message": "taking a reference to a function item does not give a function pointer",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": null,
+              "line_end": 45,
+              "line_start": 45,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "function_item_references",
+          "level": "warning",
+          "message": "taking a reference to a function item does not give a function pointer",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": null,
+              "line_end": 50,
+              "line_start": 50,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "extra_args": [
+        "--edition=2021"
+      ],
+      "returncode": 0
+    },
+    "known_panics_debug": {
+      "all_messages": [
+        "this operation will panic at runtime",
+        "this operation will panic at runtime",
+        "this arithmetic operation will overflow",
+        "this arithmetic operation will overflow",
+        "this arithmetic operation will overflow",
+        "this operation will panic at runtime",
+        "value assigned to `d` is never read",
+        "this operation will panic at runtime",
+        "this operation will panic at runtime",
+        "this operation will panic at runtime",
+        "aborting due to 9 previous errors; 1 warning emitted"
+      ],
+      "crate": "probe_known_panics_dbg",
+      "diagnostics": [
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 6,
+              "line_start": 6,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "index out of bounds: the length is 3 but the index is 3",
+              "line_end": 13,
+              "line_start": 13,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "arithmetic_overflow",
+          "level": "error",
+          "message": "this arithmetic operation will overflow",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to compute `u8::MAX + 1_u8`, which would overflow",
+              "line_end": 19,
+              "line_start": 19,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "arithmetic_overflow",
+          "level": "error",
+          "message": "this arithmetic operation will overflow",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to shift left by `32_u32`, which would overflow",
+              "line_end": 25,
+              "line_start": 25,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "arithmetic_overflow",
+          "level": "error",
+          "message": "this arithmetic operation will overflow",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to negate `i8::MIN`, which would overflow",
+              "line_end": 31,
+              "line_start": 31,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to compute `i32::MIN / -1_i32`, which would overflow",
+              "line_end": 38,
+              "line_start": 38,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unused_assignments",
+          "level": "warning",
+          "message": "value assigned to `d` is never read",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "this value is reassigned later and never used",
+              "line_end": 43,
+              "line_start": 43,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "`d` is overwritten here before the previous value is read",
+              "line_end": 47,
+              "line_start": 47,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 59,
+              "line_start": 59,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 74,
+              "line_start": 74,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 95,
+              "line_start": 95,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "extra_args": [
+        "--edition=2021",
+        "-C",
+        "overflow-checks=on"
+      ],
+      "returncode": 1
+    },
+    "known_panics_release_no_overflow_checks": {
+      "all_messages": [
+        "this operation will panic at runtime",
+        "this operation will panic at runtime",
+        "this arithmetic operation will overflow",
+        "this arithmetic operation will overflow",
+        "this arithmetic operation will overflow",
+        "this operation will panic at runtime",
+        "value assigned to `d` is never read",
+        "this operation will panic at runtime",
+        "this operation will panic at runtime",
+        "this operation will panic at runtime",
+        "aborting due to 9 previous errors; 1 warning emitted"
+      ],
+      "crate": "probe_known_panics_rel",
+      "diagnostics": [
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 6,
+              "line_start": 6,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "index out of bounds: the length is 3 but the index is 3",
+              "line_end": 13,
+              "line_start": 13,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "arithmetic_overflow",
+          "level": "error",
+          "message": "this arithmetic operation will overflow",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to compute `u8::MAX + 1_u8`, which would overflow",
+              "line_end": 19,
+              "line_start": 19,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "arithmetic_overflow",
+          "level": "error",
+          "message": "this arithmetic operation will overflow",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to shift left by `32_u32`, which would overflow",
+              "line_end": 25,
+              "line_start": 25,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "arithmetic_overflow",
+          "level": "error",
+          "message": "this arithmetic operation will overflow",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to negate `i8::MIN`, which would overflow",
+              "line_end": 31,
+              "line_start": 31,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to compute `i32::MIN / -1_i32`, which would overflow",
+              "line_end": 38,
+              "line_start": 38,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unused_assignments",
+          "level": "warning",
+          "message": "value assigned to `d` is never read",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "this value is reassigned later and never used",
+              "line_end": 43,
+              "line_start": 43,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "`d` is overwritten here before the previous value is read",
+              "line_end": 47,
+              "line_start": 47,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 59,
+              "line_start": 59,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 74,
+              "line_start": 74,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 95,
+              "line_start": 95,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "extra_args": [
+        "--edition=2021",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "overflow-checks=off"
+      ],
+      "returncode": 1
+    },
+    "known_panics_warn_mode": {
+      "all_messages": [
+        "this operation will panic at runtime",
+        "this operation will panic at runtime",
+        "this arithmetic operation will overflow",
+        "this arithmetic operation will overflow",
+        "this arithmetic operation will overflow",
+        "this operation will panic at runtime",
+        "value assigned to `d` is never read",
+        "this operation will panic at runtime",
+        "this operation will panic at runtime",
+        "this operation will panic at runtime",
+        "10 warnings emitted"
+      ],
+      "crate": "probe_known_panics_warn",
+      "diagnostics": [
+        {
+          "code": "unconditional_panic",
+          "level": "warning",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 6,
+              "line_start": 6,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "warning",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "index out of bounds: the length is 3 but the index is 3",
+              "line_end": 13,
+              "line_start": 13,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "arithmetic_overflow",
+          "level": "warning",
+          "message": "this arithmetic operation will overflow",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to compute `u8::MAX + 1_u8`, which would overflow",
+              "line_end": 19,
+              "line_start": 19,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "arithmetic_overflow",
+          "level": "warning",
+          "message": "this arithmetic operation will overflow",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to shift left by `32_u32`, which would overflow",
+              "line_end": 25,
+              "line_start": 25,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "arithmetic_overflow",
+          "level": "warning",
+          "message": "this arithmetic operation will overflow",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to negate `i8::MIN`, which would overflow",
+              "line_end": 31,
+              "line_start": 31,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "warning",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to compute `i32::MIN / -1_i32`, which would overflow",
+              "line_end": 38,
+              "line_start": 38,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unused_assignments",
+          "level": "warning",
+          "message": "value assigned to `d` is never read",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "this value is reassigned later and never used",
+              "line_end": 43,
+              "line_start": 43,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "`d` is overwritten here before the previous value is read",
+              "line_end": 47,
+              "line_start": 47,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "warning",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 59,
+              "line_start": 59,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "warning",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 74,
+              "line_start": 74,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "warning",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 95,
+              "line_start": 95,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "extra_args": [
+        "--edition=2021",
+        "-W",
+        "unconditional_panic",
+        "-W",
+        "arithmetic_overflow"
+      ],
+      "returncode": 0
+    },
+    "pass_toggle_default": {
+      "all_messages": [
+        "function cannot return without recursing",
+        "this operation will panic at runtime",
+        "aborting due to 1 previous error; 1 warning emitted"
+      ],
+      "crate": "probe_toggle_def",
+      "diagnostics": [
+        {
+          "code": "unconditional_recursion",
+          "level": "warning",
+          "message": "function cannot return without recursing",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "cannot return without recursing",
+              "line_end": 2,
+              "line_start": 2,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "recursive call site",
+              "line_end": 3,
+              "line_start": 3,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_panic",
+          "level": "error",
+          "message": "this operation will panic at runtime",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "attempt to divide `42_u32` by zero",
+              "line_end": 6,
+              "line_start": 6,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "extra_args": [
+        "--edition=2021"
+      ],
+      "returncode": 1
+    },
+    "pass_toggle_disabled": {
+      "all_messages": [],
+      "crate": "probe_toggle_off",
+      "diagnostics": [],
+      "extra_args": [
+        "--edition=2021",
+        "-Zmir-enable-passes=-CheckCallRecursion,-KnownPanicsLint"
+      ],
+      "returncode": 0
+    },
+    "recursion_and_drop": {
+      "all_messages": [
+        "function cannot return without recursing",
+        "function cannot return without recursing",
+        "function cannot return without recursing",
+        "3 warnings emitted"
+      ],
+      "crate": "probe_recursion",
+      "diagnostics": [
+        {
+          "code": "unconditional_recursion",
+          "level": "warning",
+          "message": "function cannot return without recursing",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "cannot return without recursing",
+              "line_end": 4,
+              "line_start": 4,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "recursive call site",
+              "line_end": 5,
+              "line_start": 5,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_recursion",
+          "level": "warning",
+          "message": "function cannot return without recursing",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "cannot return without recursing",
+              "line_end": 34,
+              "line_start": 34,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "recursive call site",
+              "line_end": 35,
+              "line_start": 35,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_recursion",
+          "level": "warning",
+          "message": "function cannot return without recursing",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "cannot return without recursing",
+              "line_end": 60,
+              "line_start": 60,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "recursive call site",
+              "line_end": 62,
+              "line_start": 62,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "recursive call site",
+              "line_end": 64,
+              "line_start": 64,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "extra_args": [
+        "--edition=2021"
+      ],
+      "returncode": 0
+    },
+    "tail_call_fp_bin": {
+      "all_messages": [
+        "function cannot return without recursing",
+        "1 warning emitted"
+      ],
+      "crate": "probe_tail_call_fp_bin",
+      "diagnostics": [
+        {
+          "code": "unconditional_recursion",
+          "level": "warning",
+          "message": "function cannot return without recursing",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "cannot return without recursing",
+              "line_end": 8,
+              "line_start": 8,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "recursive call site",
+              "line_end": 12,
+              "line_start": 12,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "exec_returncode": 0,
+      "exec_stderr": "",
+      "exec_stdout": "R_TRUE=42 R_FALSE=42",
+      "extra_args": [
+        "--edition=2021"
+      ],
+      "returncode": 0
+    },
+    "tail_call_recursion": {
+      "all_messages": [
+        "function cannot return without recursing",
+        "function cannot return without recursing",
+        "2 warnings emitted"
+      ],
+      "crate": "probe_tail_call",
+      "diagnostics": [
+        {
+          "code": "unconditional_recursion",
+          "level": "warning",
+          "message": "function cannot return without recursing",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "cannot return without recursing",
+              "line_end": 10,
+              "line_start": 10,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "recursive call site",
+              "line_end": 14,
+              "line_start": 14,
+              "suggested_replacement": null
+            }
+          ]
+        },
+        {
+          "code": "unconditional_recursion",
+          "level": "warning",
+          "message": "function cannot return without recursing",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "cannot return without recursing",
+              "line_end": 25,
+              "line_start": 25,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "recursive call site",
+              "line_end": 29,
+              "line_start": 29,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "extra_args": [
+        "--edition=2021"
+      ],
+      "returncode": 0
+    },
+    "tail_drop_bin_ed2021": {
+      "all_messages": [
+        "relative drop order changing in Rust 2024",
+        "1 warning emitted"
+      ],
+      "crate": "probe_tedo_2021",
+      "diagnostics": [
+        {
+          "code": "tail_expr_drop_order",
+          "level": "warning",
+          "message": "relative drop order changing in Rust 2024",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "this value will be stored in a temporary; let us call it `#1`",
+              "line_end": 17,
+              "line_start": 17,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": true,
+              "label": "up until Edition 2021 `#1` is dropped last but will be dropped earlier in Edition 2024",
+              "line_end": 17,
+              "line_start": 17,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "`_local` calls a custom destructor",
+              "line_end": 16,
+              "line_start": 16,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "`_local` will be dropped later as of Edition 2024",
+              "line_end": 16,
+              "line_start": 16,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "now the temporary value is dropped here, before the local variables in the block or statement",
+              "line_end": 18,
+              "line_start": 18,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "exec_returncode": 0,
+      "exec_stderr": "",
+      "exec_stdout": "V=42 ORDER=[\"local\", \"temp\"]",
+      "extra_args": [
+        "--edition=2021",
+        "-W",
+        "tail-expr-drop-order"
+      ],
+      "returncode": 0
+    },
+    "tail_drop_bin_ed2024": {
+      "all_messages": [],
+      "crate": "probe_tedo_2024",
+      "diagnostics": [],
+      "exec_returncode": 0,
+      "exec_stderr": "",
+      "exec_stdout": "V=42 ORDER=[\"temp\", \"local\"]",
+      "extra_args": [
+        "--edition=2024",
+        "-W",
+        "tail-expr-drop-order"
+      ],
+      "returncode": 0
+    },
+    "tail_drop_exclusions_ed2021": {
+      "all_messages": [
+        "relative drop order changing in Rust 2024",
+        "1 warning emitted"
+      ],
+      "crate": "probe_tedo_excl",
+      "diagnostics": [
+        {
+          "code": "tail_expr_drop_order",
+          "level": "warning",
+          "message": "relative drop order changing in Rust 2024",
+          "spans": [
+            {
+              "is_primary": true,
+              "label": "this value will be stored in a temporary; let us call it `#1`",
+              "line_end": 18,
+              "line_start": 18,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": true,
+              "label": "up until Edition 2021 `#1` is dropped last but will be dropped earlier in Edition 2024",
+              "line_end": 18,
+              "line_start": 18,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "`_local` calls a custom destructor",
+              "line_end": 17,
+              "line_start": 17,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "`_local` will be dropped later as of Edition 2024",
+              "line_end": 17,
+              "line_start": 17,
+              "suggested_replacement": null
+            },
+            {
+              "is_primary": false,
+              "label": "now the temporary value is dropped here, before the local variables in the block or statement",
+              "line_end": 19,
+              "line_start": 19,
+              "suggested_replacement": null
+            }
+          ]
+        }
+      ],
+      "extra_args": [
+        "--edition=2021",
+        "-W",
+        "tail-expr-drop-order"
+      ],
+      "returncode": 0
+    }
+  },
+  "rustc_path": "rustc",
+  "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6"
+}

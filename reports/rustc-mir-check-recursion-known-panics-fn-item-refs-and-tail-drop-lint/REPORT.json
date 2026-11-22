@@ -1,0 +1,66 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/trusted-boundary",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rustc nightly toolchain executed locally (MIR lint probes, MIR dumps, and Edition 2021/2024 execution)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+        "host": "x86_64-unknown-linux-gnu",
+        "llvm": "22.1.6"
+      }
+    },
+    {
+      "name": "rustc pinned revision audited in source and cross-checked against recorded diagnostic observations",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)",
+        "llvm": "23.1.5"
+      }
+    },
+    {
+      "name": "rustc default-branch head on observation date (source audit only, not executed)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "ce66487ebbd7541212d22d01c39a808057d69f1f"
+      }
+    },
+    {
+      "name": "The Rust Reference (destructors, temporary scopes, function item types, and function pointer types)",
+      "identity": {
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      }
+    },
+    {
+      "name": "Anneal (trusted Runtime(PostCleanup) MIR AST, operational semantics, and rustc capture driver)",
+      "identity": {
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      }
+    },
+    {
+      "name": "Lean 4 (kernel checking CheckRecursionKnownPanicsAndTailDropLintSoundness.lean)",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-22"
+}
