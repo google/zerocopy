@@ -1,0 +1,1278 @@
+{
+ "all_pins_match": true,
+ "edition": "2021 (part B cases record their own edition)",
+ "generated_at_utc": "2026-11-22T11:44:18Z",
+ "host_python": "3.13.15",
+ "miri_modes": {
+  "no_bt": [
+   "-Zmiri-disable-stacked-borrows"
+  ],
+  "sb": [],
+  "tb": [
+   "-Zmiri-tree-borrows"
+  ],
+  "tb_no_precise_im": [
+   "-Zmiri-tree-borrows",
+   "-Zmiri-tree-borrows-no-precise-interior-mut"
+  ]
+ },
+ "miri_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)",
+ "part_a1_hierarchy_thin_pointers_and_zero_offset_projection": {
+  "compile": {
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "stderr": "",
+   "warning_count": 0
+  },
+  "miri": {
+   "no_bt": {
+    "class": "ok",
+    "error_codes": [],
+    "error_count": 0,
+    "rc": 0,
+    "stderr": "",
+    "stdout_lines": [
+     "PTR_WIDTHS_EXTERN_HEADER_WRAP_U32_SLICE_STR_DYN_TUPLE=(8, 8, 8, 8, 16, 16, 16, 16)",
+     "TUPLE_U8_SLICE_U16_LEN3_SIZE_ALIGN=(8, 2)",
+     "TUPLE_U8_SLICE_U32_LEN0_SIZE_ALIGN=(4, 4)",
+     "DYN_TR_U64_SIZE_ALIGN_GET=(8, 8, 7)",
+     "SLICE_U32_LEN2_SIZE_ALIGN=(8, 4)",
+     "HEADER_PREFIX_VIA_RAW=(0xdeadbeef, 0x1234)",
+     "OPAQUE_REBORROW_SAME_ADDR=true",
+     "WRAP_ZERO_OFFSET_SAME_ADDR=true",
+     "ZST_PREFIX_ZERO_OFFSET_SAME_ADDR=true",
+     "A1_DONE"
+    ],
+    "warning_count": 0
+   },
+   "sb": {
+    "class": "ok_sb_warning",
+    "error_codes": [],
+    "error_count": 0,
+    "rc": 0,
+    "stderr": "warning: reborrow of a reference to `extern type` is not properly supported\n   --> <TMP>/part_a1.rs:104:42\n    |\n104 | ...ern = unsafe { &*(base as *const OpaqueExtern) };\n    |                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reborrow of reference to `extern type`\n    |\n    = help: `extern type` are not compatible with the Stacked Borrows aliasing model implemented by Miri; Miri may miss bugs in this code\n    = help: try running with `MIRIFLAGS=-Zmiri-tree-borrows` to use the more permissive but also even more experimental Tree Borrows aliasing checks instead\n\n",
+    "stdout_lines": [
+     "PTR_WIDTHS_EXTERN_HEADER_WRAP_U32_SLICE_STR_DYN_TUPLE=(8, 8, 8, 8, 16, 16, 16, 16)",
+     "TUPLE_U8_SLICE_U16_LEN3_SIZE_ALIGN=(8, 2)",
+     "TUPLE_U8_SLICE_U32_LEN0_SIZE_ALIGN=(4, 4)",
+     "DYN_TR_U64_SIZE_ALIGN_GET=(8, 8, 7)",
+     "SLICE_U32_LEN2_SIZE_ALIGN=(8, 4)",
+     "HEADER_PREFIX_VIA_RAW=(0xdeadbeef, 0x1234)",
+     "OPAQUE_REBORROW_SAME_ADDR=true",
+     "WRAP_ZERO_OFFSET_SAME_ADDR=true",
+     "ZST_PREFIX_ZERO_OFFSET_SAME_ADDR=true",
+     "A1_DONE"
+    ],
+    "warning_count": 1
+   },
+   "tb": {
+    "class": "ok",
+    "error_codes": [],
+    "error_count": 0,
+    "rc": 0,
+    "stderr": "",
+    "stdout_lines": [
+     "PTR_WIDTHS_EXTERN_HEADER_WRAP_U32_SLICE_STR_DYN_TUPLE=(8, 8, 8, 8, 16, 16, 16, 16)",
+     "TUPLE_U8_SLICE_U16_LEN3_SIZE_ALIGN=(8, 2)",
+     "TUPLE_U8_SLICE_U32_LEN0_SIZE_ALIGN=(4, 4)",
+     "DYN_TR_U64_SIZE_ALIGN_GET=(8, 8, 7)",
+     "SLICE_U32_LEN2_SIZE_ALIGN=(8, 4)",
+     "HEADER_PREFIX_VIA_RAW=(0xdeadbeef, 0x1234)",
+     "OPAQUE_REBORROW_SAME_ADDR=true",
+     "WRAP_ZERO_OFFSET_SAME_ADDR=true",
+     "ZST_PREFIX_ZERO_OFFSET_SAME_ADDR=true",
+     "A1_DONE"
+    ],
+    "warning_count": 0
+   },
+   "tb_no_precise_im": {
+    "class": "ok",
+    "error_codes": [],
+    "error_count": 0,
+    "rc": 0,
+    "stderr": "",
+    "stdout_lines": [
+     "PTR_WIDTHS_EXTERN_HEADER_WRAP_U32_SLICE_STR_DYN_TUPLE=(8, 8, 8, 8, 16, 16, 16, 16)",
+     "TUPLE_U8_SLICE_U16_LEN3_SIZE_ALIGN=(8, 2)",
+     "TUPLE_U8_SLICE_U32_LEN0_SIZE_ALIGN=(4, 4)",
+     "DYN_TR_U64_SIZE_ALIGN_GET=(8, 8, 7)",
+     "SLICE_U32_LEN2_SIZE_ALIGN=(8, 4)",
+     "HEADER_PREFIX_VIA_RAW=(0xdeadbeef, 0x1234)",
+     "OPAQUE_REBORROW_SAME_ADDR=true",
+     "WRAP_ZERO_OFFSET_SAME_ADDR=true",
+     "ZST_PREFIX_ZERO_OFFSET_SAME_ADDR=true",
+     "A1_DONE"
+    ],
+    "warning_count": 0
+   }
+  },
+  "native": {
+   "class": "ok",
+   "rc": 0,
+   "stderr": "",
+   "stdout_lines": [
+    "PTR_WIDTHS_EXTERN_HEADER_WRAP_U32_SLICE_STR_DYN_TUPLE=(8, 8, 8, 8, 16, 16, 16, 16)",
+    "TUPLE_U8_SLICE_U16_LEN3_SIZE_ALIGN=(8, 2)",
+    "TUPLE_U8_SLICE_U32_LEN0_SIZE_ALIGN=(4, 4)",
+    "DYN_TR_U64_SIZE_ALIGN_GET=(8, 8, 7)",
+    "SLICE_U32_LEN2_SIZE_ALIGN=(8, 4)",
+    "HEADER_PREFIX_VIA_RAW=(0xdeadbeef, 0x1234)",
+    "OPAQUE_REBORROW_SAME_ADDR=true",
+    "WRAP_ZERO_OFFSET_SAME_ADDR=true",
+    "ZST_PREFIX_ZERO_OFFSET_SAME_ADDR=true",
+    "A1_DONE"
+   ]
+  }
+ },
+ "part_a2_extern_tail_projection_matrix": {
+  "forbid_unsafe_rlib_compile": {
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "source_contains_unsafe_token": false,
+   "stderr": "",
+   "warning_count": 0
+  },
+  "llvm_ir_opt0_safe_lib": {
+   "emit_rc": 0,
+   "magic_of_header": {
+    "call_instructions": [],
+    "calls_panic_nounwind": false,
+    "definitions_found": 1
+   },
+   "module_mentions_abort_message": true,
+   "tail_of_dyn_header": {
+    "call_instructions": [],
+    "calls_panic_nounwind": false,
+    "definitions_found": 1
+   },
+   "tail_of_header": {
+    "body": [
+     "define ptr @_RNvCs4p1ZoYiu06_11a2_safe_lib14tail_of_header(ptr align 4 %h) unnamed_addr #0 {",
+     "start:",
+     "; call core::panicking::panic_nounwind",
+     "  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking14panic_nounwind(ptr @str.0, i64 72) #2",
+     "  %_0 = getelementptr inbounds i8, ptr %h, i64 6",
+     "  ret ptr %_0",
+     "}"
+    ],
+    "call_instructions": [
+     "call void @_RNvNtCs8b4M6GsfcPr_4core9panicking14panic_nounwind(ptr @str.0, i64 72) #2"
+    ],
+    "calls_panic_nounwind": true,
+    "definitions_found": 1
+   },
+   "tail_of_packed": {
+    "body": [
+     "define ptr @_RNvCs4p1ZoYiu06_11a2_safe_lib14tail_of_packed(ptr %h) unnamed_addr #0 {",
+     "start:",
+     "; call core::panicking::panic_nounwind",
+     "  call void @_RNvNtCs8b4M6GsfcPr_4core9panicking14panic_nounwind(ptr @str.0, i64 72) #2",
+     "  %_0 = getelementptr inbounds i8, ptr %h, i64 6",
+     "  ret ptr %_0",
+     "}"
+    ],
+    "call_instructions": [
+     "call void @_RNvNtCs8b4M6GsfcPr_4core9panicking14panic_nounwind(ptr @str.0, i64 72) #2"
+    ],
+    "calls_panic_nounwind": true,
+    "definitions_found": 1
+   },
+   "tail_of_slice_header": {
+    "call_instructions": [],
+    "calls_panic_nounwind": false,
+    "definitions_found": 1
+   },
+   "tail_of_transparent": {
+    "body": [
+     "define ptr @_RNvCs4p1ZoYiu06_11a2_safe_lib19tail_of_transparent(ptr %w) unnamed_addr #0 {",
+     "start:",
+     "  ret ptr %w",
+     "}"
+    ],
+    "call_instructions": [],
+    "calls_panic_nounwind": false,
+    "definitions_found": 1
+   },
+   "tail_of_zero_prefix": {
+    "call_instructions": [],
+    "calls_panic_nounwind": false,
+    "definitions_found": 1
+   }
+  },
+  "mir_statements_mentioning_extern_tail": [
+   "_0 = &((*_1).2: OpaqueExtern);",
+   "_0 = &raw const ((*_1).2: OpaqueExtern);",
+   "_0 = &((*_1).0: OpaqueExtern);",
+   "_0 = &((*_1).1: OpaqueExtern);"
+  ],
+  "scenarios": {
+   "dyn_tail_control": {
+    "miri_single_file": {
+     "no_bt": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT dyn_tail_control offset=8 get=7",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "sb": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT dyn_tail_control offset=8 get=7",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "tb": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT dyn_tail_control offset=8 get=7",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "tb_no_precise_im": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT dyn_tail_control offset=8 get=7",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     }
+    },
+    "native_two_crate": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT dyn_tail_control offset=8 get=7",
+      "A2_DONE"
+     ]
+    },
+    "native_two_crate_opt3": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT dyn_tail_control offset=8 get=7",
+      "A2_DONE"
+     ]
+    }
+   },
+   "header_ref_only": {
+    "miri_single_file": {
+     "no_bt": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT header_ref_only magic=0xdeadbeef",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "sb": {
+      "class": "ok_sb_warning",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "warning: reborrow of a reference to `extern type` is not properly supported\n   --> <TMP>/part_a2.rs:103:55\n    |\n103 | ...= unsafe { &*(base as *const safe::HeaderWithExtern) };\n    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reborrow of reference to `extern type`\n    |\n    = help: `extern type` are not compatible with the Stacked Borrows aliasing model implemented by Miri; Miri may miss bugs in this code\n    = help: try running with `MIRIFLAGS=-Zmiri-tree-borrows` to use the more permissive but also even more experimental Tree Borrows aliasing checks instead\n\n",
+      "stdout_lines": [
+       "RESULT header_ref_only magic=0xdeadbeef",
+       "A2_DONE"
+      ],
+      "warning_count": 1
+     },
+     "tb": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:103:55",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n   --> <TMP>/part_a2.rs:103:55\n    |\n103 | ...= unsafe { &*(base as *const safe::HeaderWithExtern) };\n    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n    |\n    = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     },
+     "tb_no_precise_im": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT header_ref_only magic=0xdeadbeef",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     }
+    },
+    "native_two_crate": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT header_ref_only magic=0xdeadbeef",
+      "A2_DONE"
+     ]
+    },
+    "native_two_crate_opt3": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT header_ref_only magic=0xdeadbeef",
+      "A2_DONE"
+     ]
+    }
+   },
+   "header_tail_raw_no_ref": {
+    "miri_single_file": {
+     "no_bt": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:113:30",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n   --> <TMP>/part_a2.rs:113:30\n    |\n113 |             let t = unsafe { &raw const (*hp).tail };\n    |                              ^^^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n    |\n    = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     },
+     "sb": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:113:30",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n   --> <TMP>/part_a2.rs:113:30\n    |\n113 |             let t = unsafe { &raw const (*hp).tail };\n    |                              ^^^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n    |\n    = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     },
+     "tb": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:113:30",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n   --> <TMP>/part_a2.rs:113:30\n    |\n113 |             let t = unsafe { &raw const (*hp).tail };\n    |                              ^^^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n    |\n    = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     },
+     "tb_no_precise_im": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:113:30",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n   --> <TMP>/part_a2.rs:113:30\n    |\n113 |             let t = unsafe { &raw const (*hp).tail };\n    |                              ^^^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n    |\n    = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     }
+    },
+    "native_two_crate": {
+     "class": "abort",
+     "rc": -6,
+     "stderr": "\nthread 'main' (<TID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:\nattempted to compute the size or alignment of extern type `a2_safe_lib::OpaqueExtern`\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.\n",
+     "stdout_lines": []
+    },
+    "native_two_crate_opt3": {
+     "class": "abort",
+     "rc": -6,
+     "stderr": "\nthread 'main' (<TID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:\nattempted to compute the size or alignment of extern type `a2_safe_lib::OpaqueExtern`\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.\n",
+     "stdout_lines": []
+    }
+   },
+   "header_tail_ref": {
+    "miri_single_file": {
+     "no_bt": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:63:5",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n  --> <TMP>/part_a2.rs:63:5\n   |\n63 |     &h.tail\n   |     ^^^^^^^ unsupported operation occurred here\n   |\n   = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n   = note: stack backtrace:\n           0: safe::tail_of_header\n               at <TMP>/part_a2.rs:63:5: 63:12\n           1: main\n               at <TMP>/part_a2.rs:108:21: 108:44\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     },
+     "sb": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:63:5",
+      "rc": 1,
+      "stderr": "warning: reborrow of a reference to `extern type` is not properly supported\n   --> <TMP>/part_a2.rs:107:55\n    |\n107 | ...= unsafe { &*(base as *const safe::HeaderWithExtern) };\n    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reborrow of reference to `extern type`\n    |\n    = help: `extern type` are not compatible with the Stacked Borrows aliasing model implemented by Miri; Miri may miss bugs in this code\n    = help: try running with `MIRIFLAGS=-Zmiri-tree-borrows` to use the more permissive but also even more experimental Tree Borrows aliasing checks instead\n\nerror: unsupported operation: `extern type` field does not have a known offset\n  --> <TMP>/part_a2.rs:63:5\n   |\n63 |     &h.tail\n   |     ^^^^^^^ unsupported operation occurred here\n   |\n   = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n   = note: stack backtrace:\n           0: safe::tail_of_header\n               at <TMP>/part_a2.rs:63:5: 63:12\n           1: main\n               at <TMP>/part_a2.rs:108:21: 108:44\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+      "stdout_lines": [],
+      "warning_count": 1
+     },
+     "tb": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:107:55",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n   --> <TMP>/part_a2.rs:107:55\n    |\n107 | ...= unsafe { &*(base as *const safe::HeaderWithExtern) };\n    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n    |\n    = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     },
+     "tb_no_precise_im": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:63:5",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n  --> <TMP>/part_a2.rs:63:5\n   |\n63 |     &h.tail\n   |     ^^^^^^^ unsupported operation occurred here\n   |\n   = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n   = note: stack backtrace:\n           0: safe::tail_of_header\n               at <TMP>/part_a2.rs:63:5: 63:12\n           1: main\n               at <TMP>/part_a2.rs:108:21: 108:44\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     }
+    },
+    "native_two_crate": {
+     "class": "abort",
+     "rc": -6,
+     "stderr": "\nthread 'main' (<TID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:\nattempted to compute the size or alignment of extern type `OpaqueExtern`\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.\n",
+     "stdout_lines": []
+    },
+    "native_two_crate_opt3": {
+     "class": "abort",
+     "rc": -6,
+     "stderr": "\nthread 'main' (<TID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:\nattempted to compute the size or alignment of extern type `a2_safe_lib::OpaqueExtern`\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.\n",
+     "stdout_lines": []
+    }
+   },
+   "opaque_mut_reborrow": {
+    "miri_single_file": {
+     "no_bt": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT opaque_mut_reborrow same=true",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "sb": {
+      "class": "ok_sb_warning",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "warning: reborrow of a reference to `extern type` is not properly supported\n   --> <TMP>/part_a2.rs:140:26\n    |\n140 | ...fe { &mut *((&raw mut scratch) as *mut safe::OpaqueExtern) };\n    |         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reborrow of reference to `extern type`\n    |\n    = help: `extern type` are not compatible with the Stacked Borrows aliasing model implemented by Miri; Miri may miss bugs in this code\n    = help: try running with `MIRIFLAGS=-Zmiri-tree-borrows` to use the more permissive but also even more experimental Tree Borrows aliasing checks instead\n\n",
+      "stdout_lines": [
+       "RESULT opaque_mut_reborrow same=true",
+       "A2_DONE"
+      ],
+      "warning_count": 1
+     },
+     "tb": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT opaque_mut_reborrow same=true",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "tb_no_precise_im": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT opaque_mut_reborrow same=true",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     }
+    },
+    "native_two_crate": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT opaque_mut_reborrow same=true",
+      "A2_DONE"
+     ]
+    },
+    "native_two_crate_opt3": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT opaque_mut_reborrow same=true",
+      "A2_DONE"
+     ]
+    }
+   },
+   "opaque_reborrow": {
+    "miri_single_file": {
+     "no_bt": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT opaque_reborrow same=true",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "sb": {
+      "class": "ok_sb_warning",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "warning: reborrow of a reference to `extern type` is not properly supported\n   --> <TMP>/part_a2.rs:133:51\n    |\n133 | ...n = unsafe { &*(base as *const safe::OpaqueExtern) };\n    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reborrow of reference to `extern type`\n    |\n    = help: `extern type` are not compatible with the Stacked Borrows aliasing model implemented by Miri; Miri may miss bugs in this code\n    = help: try running with `MIRIFLAGS=-Zmiri-tree-borrows` to use the more permissive but also even more experimental Tree Borrows aliasing checks instead\n\n",
+      "stdout_lines": [
+       "RESULT opaque_reborrow same=true",
+       "A2_DONE"
+      ],
+      "warning_count": 1
+     },
+     "tb": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT opaque_reborrow same=true",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "tb_no_precise_im": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT opaque_reborrow same=true",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     }
+    },
+    "native_two_crate": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT opaque_reborrow same=true",
+      "A2_DONE"
+     ]
+    },
+    "native_two_crate_opt3": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT opaque_reborrow same=true",
+      "A2_DONE"
+     ]
+    }
+   },
+   "packed_tail_raw": {
+    "miri_single_file": {
+     "no_bt": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:69:5",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n  --> <TMP>/part_a2.rs:69:5\n   |\n69 |     &raw const h.tail\n   |     ^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n   |\n   = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n   = note: stack backtrace:\n           0: safe::tail_of_packed\n               at <TMP>/part_a2.rs:69:5: 69:22\n           1: main\n               at <TMP>/part_a2.rs:119:21: 119:44\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     },
+     "sb": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:69:5",
+      "rc": 1,
+      "stderr": "warning: reborrow of a reference to `extern type` is not properly supported\n   --> <TMP>/part_a2.rs:118:26\n    |\n118 | ...unsafe { &*(base as *const safe::PackedHeaderWithExtern) };\n    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reborrow of reference to `extern type`\n    |\n    = help: `extern type` are not compatible with the Stacked Borrows aliasing model implemented by Miri; Miri may miss bugs in this code\n    = help: try running with `MIRIFLAGS=-Zmiri-tree-borrows` to use the more permissive but also even more experimental Tree Borrows aliasing checks instead\n\nerror: unsupported operation: `extern type` field does not have a known offset\n  --> <TMP>/part_a2.rs:69:5\n   |\n69 |     &raw const h.tail\n   |     ^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n   |\n   = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n   = note: stack backtrace:\n           0: safe::tail_of_packed\n               at <TMP>/part_a2.rs:69:5: 69:22\n           1: main\n               at <TMP>/part_a2.rs:119:21: 119:44\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted\n\n",
+      "stdout_lines": [],
+      "warning_count": 1
+     },
+     "tb": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:118:26",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n   --> <TMP>/part_a2.rs:118:26\n    |\n118 | ...unsafe { &*(base as *const safe::PackedHeaderWithExtern) };\n    |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n    |\n    = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     },
+     "tb_no_precise_im": {
+      "class": "unsupported_offset",
+      "error_codes": [],
+      "error_count": 2,
+      "first_error_site": "<TMP>/part_a2.rs:69:5",
+      "rc": 1,
+      "stderr": "error: unsupported operation: `extern type` field does not have a known offset\n  --> <TMP>/part_a2.rs:69:5\n   |\n69 |     &raw const h.tail\n   |     ^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n   |\n   = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n   = note: stack backtrace:\n           0: safe::tail_of_packed\n               at <TMP>/part_a2.rs:69:5: 69:22\n           1: main\n               at <TMP>/part_a2.rs:119:21: 119:44\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+      "stdout_lines": [],
+      "warning_count": 0
+     }
+    },
+    "native_two_crate": {
+     "class": "abort",
+     "rc": -6,
+     "stderr": "\nthread 'main' (<TID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:\nattempted to compute the size or alignment of extern type `OpaqueExtern`\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.\n",
+     "stdout_lines": []
+    },
+    "native_two_crate_opt3": {
+     "class": "abort",
+     "rc": -6,
+     "stderr": "\nthread 'main' (<TID>) panicked at /rustc/14210df0e27ccd7d9e6a05b8085cbd438e4bbc65/library/core/src/panicking.rs:225:5:\nattempted to compute the size or alignment of extern type `a2_safe_lib::OpaqueExtern`\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.\n",
+     "stdout_lines": []
+    }
+   },
+   "slice_tail_control": {
+    "miri_single_file": {
+     "no_bt": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT slice_tail_control offset=6 len=2",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "sb": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT slice_tail_control offset=6 len=2",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "tb": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT slice_tail_control offset=6 len=2",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "tb_no_precise_im": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT slice_tail_control offset=6 len=2",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     }
+    },
+    "native_two_crate": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT slice_tail_control offset=6 len=2",
+      "A2_DONE"
+     ]
+    },
+    "native_two_crate_opt3": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT slice_tail_control offset=6 len=2",
+      "A2_DONE"
+     ]
+    }
+   },
+   "transparent_tail_ref": {
+    "miri_single_file": {
+     "no_bt": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT transparent_tail_ref offset=0",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "sb": {
+      "class": "ok_sb_warning",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "warning: reborrow of a reference to `extern type` is not properly supported\n   --> <TMP>/part_a2.rs:123:49\n    |\n123 | ...n = unsafe { &*(base as *const safe::WrapExtern) };\n    |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reborrow of reference to `extern type`\n    |\n    = help: `extern type` are not compatible with the Stacked Borrows aliasing model implemented by Miri; Miri may miss bugs in this code\n    = help: try running with `MIRIFLAGS=-Zmiri-tree-borrows` to use the more permissive but also even more experimental Tree Borrows aliasing checks instead\n\n",
+      "stdout_lines": [
+       "RESULT transparent_tail_ref offset=0",
+       "A2_DONE"
+      ],
+      "warning_count": 1
+     },
+     "tb": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT transparent_tail_ref offset=0",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "tb_no_precise_im": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT transparent_tail_ref offset=0",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     }
+    },
+    "native_two_crate": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT transparent_tail_ref offset=0",
+      "A2_DONE"
+     ]
+    },
+    "native_two_crate_opt3": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT transparent_tail_ref offset=0",
+      "A2_DONE"
+     ]
+    }
+   },
+   "zero_prefix_tail_ref": {
+    "miri_single_file": {
+     "no_bt": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT zero_prefix_tail_ref offset=0",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "sb": {
+      "class": "ok_sb_warning",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "warning: reborrow of a reference to `extern type` is not properly supported\n   --> <TMP>/part_a2.rs:128:55\n    |\n128 | ...= unsafe { &*(base as *const safe::ZeroPrefixExtern) };\n    |               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reborrow of reference to `extern type`\n    |\n    = help: `extern type` are not compatible with the Stacked Borrows aliasing model implemented by Miri; Miri may miss bugs in this code\n    = help: try running with `MIRIFLAGS=-Zmiri-tree-borrows` to use the more permissive but also even more experimental Tree Borrows aliasing checks instead\n\n",
+      "stdout_lines": [
+       "RESULT zero_prefix_tail_ref offset=0",
+       "A2_DONE"
+      ],
+      "warning_count": 1
+     },
+     "tb": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT zero_prefix_tail_ref offset=0",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     },
+     "tb_no_precise_im": {
+      "class": "ok",
+      "error_codes": [],
+      "error_count": 0,
+      "first_error_site": null,
+      "rc": 0,
+      "stderr": "",
+      "stdout_lines": [
+       "RESULT zero_prefix_tail_ref offset=0",
+       "A2_DONE"
+      ],
+      "warning_count": 0
+     }
+    },
+    "native_two_crate": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT zero_prefix_tail_ref offset=0",
+      "A2_DONE"
+     ]
+    },
+    "native_two_crate_opt3": {
+     "class": "ok",
+     "rc": 0,
+     "stderr": "",
+     "stdout_lines": [
+      "RESULT zero_prefix_tail_ref offset=0",
+      "A2_DONE"
+     ]
+    }
+   }
+  },
+  "two_crate_bin_compile": {
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "stderr": "warning: feature `extern_types` is declared but not used\n --> <TMP>/a2_bin.rs:1:12\n  |\n1 | #![feature(extern_types, sized_hierarchy)]\n  |            ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n",
+   "warning_count": 2
+  },
+  "two_crate_opt3_compile": {
+   "bin_rc": 0,
+   "lib_rc": 0,
+   "stderr": "warning: feature `extern_types` is declared but not used\n --> <TMP>/a2_bin.rs:1:12\n  |\n1 | #![feature(extern_types, sized_hierarchy)]\n  |            ^^^^^^^^^^^^\n  |\n  = note: `#[warn(unused_features)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 1 warning emitted\n\n"
+  }
+ },
+ "part_b_compile_time_cases": {
+  "b01_size_of_val_on_extern_type": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\npub fn f(p: &OpaqueExtern) -> usize { core::mem::size_of_val(p) }\n",
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known\n   --> <TMP>/b01_size_of_val_on_extern_type.rs:3:62\n    |\n  3 | pub fn f(p: &OpaqueExtern) -> usize { core::mem::size_of_val(p) }\n    |                                       ---------------------- ^ the trait `MetaSized` is not implemented for `OpaqueExtern`\n    |                                       |\n    |                                       required by a bound introduced by this call\n    |\n    = note: the trait bound `OpaqueExtern: MetaSized` is not satisfied\nnote: required by a bound in `std::mem::size_of_val`\n   --> <SYSROOT>/lib/rustlib/src/rust/library/core/src/mem/mod.rs:401:26\n    |\n401 | pub const fn size_of_val<T: ?Sized>(val: &T) -> usize {\n    |                          ^ required by this bound in `size_of_val`\nhelp: consider borrowing here\n    |\n  3 | pub fn f(p: &OpaqueExtern) -> usize { core::mem::size_of_val(&p) }\n    |                                                              +\n  3 | pub fn f(p: &OpaqueExtern) -> usize { core::mem::size_of_val(&mut p) }\n    |                                                              ++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b02_align_of_val_on_extern_type": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\npub fn f(p: &OpaqueExtern) -> usize { core::mem::align_of_val(p) }\n",
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known\n   --> <TMP>/b02_align_of_val_on_extern_type.rs:3:63\n    |\n  3 | pub fn f(p: &OpaqueExtern) -> usize { core::mem::align_of_val(p) }\n    |                                       ----------------------- ^ the trait `MetaSized` is not implemented for `OpaqueExtern`\n    |                                       |\n    |                                       required by a bound introduced by this call\n    |\n    = note: the trait bound `OpaqueExtern: MetaSized` is not satisfied\nnote: required by a bound in `std::mem::align_of_val`\n   --> <SYSROOT>/lib/rustlib/src/rust/library/core/src/mem/mod.rs:548:27\n    |\n548 | pub const fn align_of_val<T: ?Sized>(val: &T) -> usize {\n    |                           ^ required by this bound in `align_of_val`\nhelp: consider borrowing here\n    |\n  3 | pub fn f(p: &OpaqueExtern) -> usize { core::mem::align_of_val(&p) }\n    |                                                               +\n  3 | pub fn f(p: &OpaqueExtern) -> usize { core::mem::align_of_val(&mut p) }\n    |                                                               ++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b03_question_sized_generic_rejects_extern_type": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\npub fn legacy_qsized<T: ?Sized>(_: &T) {}\npub fn caller(p: &OpaqueExtern) { legacy_qsized(p); }\n",
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known\n --> <TMP>/b03_question_sized_generic_rejects_extern_type.rs:4:49\n  |\n4 | pub fn caller(p: &OpaqueExtern) { legacy_qsized(p); }\n  |                                   ------------- ^ the trait `MetaSized` is not implemented for `OpaqueExtern`\n  |                                   |\n  |                                   required by a bound introduced by this call\n  |\n  = note: the trait bound `OpaqueExtern: MetaSized` is not satisfied\nnote: required by a bound in `legacy_qsized`\n --> <TMP>/b03_question_sized_generic_rejects_extern_type.rs:3:22\n  |\n3 | pub fn legacy_qsized<T: ?Sized>(_: &T) {}\n  |                      ^ required by this bound in `legacy_qsized`\nhelp: consider borrowing here\n  |\n4 | pub fn caller(p: &OpaqueExtern) { legacy_qsized(&p); }\n  |                                                 +\n4 | pub fn caller(p: &OpaqueExtern) { legacy_qsized(&mut p); }\n  |                                                 ++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b04_metasized_bound_rejects_header_with_extern_tail": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types, sized_hierarchy)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C)] pub struct Hdr { pub tag: u32, pub tail: OpaqueExtern }\npub fn need_meta<T: core::marker::MetaSized>(_: &T) {}\npub fn caller(h: &Hdr) { need_meta(h); }\n",
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known\n --> <TMP>/b04_metasized_bound_rejects_header_with_extern_tail.rs:5:36\n  |\n5 | pub fn caller(h: &Hdr) { need_meta(h); }\n  |                          --------- ^ doesn't have a known size\n  |                          |\n  |                          required by a bound introduced by this call\n  |\n  = help: within `Hdr`, the nightly-only, unstable trait `MetaSized` is not implemented for `OpaqueExtern`\nnote: required because it appears within the type `Hdr`\n --> <TMP>/b04_metasized_bound_rejects_header_with_extern_tail.rs:3:23\n  |\n3 | #[repr(C)] pub struct Hdr { pub tag: u32, pub tail: OpaqueExtern }\n  |                       ^^^\nnote: required by a bound in `need_meta`\n --> <TMP>/b04_metasized_bound_rejects_header_with_extern_tail.rs:4:21\n  |\n4 | pub fn need_meta<T: core::marker::MetaSized>(_: &T) {}\n  |                     ^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `need_meta`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b05_pointee_sized_bound_accepts_extern_type_and_header": {
+   "edition": "2021",
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "source": "#![feature(extern_types, sized_hierarchy)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C)] pub struct Hdr { pub tag: u32, pub tail: OpaqueExtern }\npub fn need_pointee<T: core::marker::PointeeSized>(_: &T) {}\npub fn caller(h: &Hdr, o: &OpaqueExtern) { need_pointee(h); need_pointee(o); }\n",
+   "stderr": "",
+   "warning_count": 0
+  },
+  "b06_non_tail_extern_type_field_rejected": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C)] pub struct Bad { pub first: OpaqueExtern, pub second: u32 }\n",
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known at compilation time\n --> <TMP>/b06_non_tail_extern_type_field_rejected.rs:3:40\n  |\n3 | #[repr(C)] pub struct Bad { pub first: OpaqueExtern, pub second: u32 }\n  |                                        ^^^^^^^^^^^^ doesn't have a size known at compile-time\n  |\n  = help: the trait `Sized` is not implemented for `OpaqueExtern`\n  = note: only the last field of a struct may have a dynamically sized type\n  = help: change the field's type to have a statically known size\nhelp: borrowed types always have a statically known size\n  |\n3 | #[repr(C)] pub struct Bad { pub first: &OpaqueExtern, pub second: u32 }\n  |                                        +\nhelp: the `Box` type always has a statically known size and allocates its contents in the heap\n  |\n3 | #[repr(C)] pub struct Bad { pub first: Box<OpaqueExtern>, pub second: u32 }\n  |                                        ++++            +\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b07_unsized_tuple_coercion_feature_removed": {
+   "edition": "2021",
+   "error_codes": [
+    "E0308",
+    "E0557"
+   ],
+   "error_count": 3,
+   "rc": 1,
+   "source": "#![feature(unsized_tuple_coercion)]\npub fn f(t: &(u8, [u32; 2])) -> &(u8, [u32]) { t }\n",
+   "stderr": "error[E0557]: feature has been removed\n --> <TMP>/b07_unsized_tuple_coercion_feature_removed.rs:1:12\n  |\n1 | #![feature(unsized_tuple_coercion)]\n  |            ^^^^^^^^^^^^^^^^^^^^^^ feature has been removed\n  |\n  = note: removed in 1.87.0; see <https://github.com/rust-lang/rust/pull/137728> for more information\n  = note: The feature restricts possible layouts for tuples, and this restriction is not worth it.\n\nerror[E0308]: mismatched types\n --> <TMP>/b07_unsized_tuple_coercion_feature_removed.rs:2:48\n  |\n2 | pub fn f(t: &(u8, [u32; 2])) -> &(u8, [u32]) { t }\n  |                                 ------------   ^ expected `&(u8, [u32])`, found `&(u8, [u32; 2])`\n  |                                 |\n  |                                 expected `&(u8, [u32])` because of return type\n  |\n  = note: expected reference `&(_, [u32])`\n             found reference `&(_, [u32; 2])`\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0308, E0557.\nFor more information about an error, try `rustc --explain E0308`.\n",
+   "warning_count": 0
+  },
+  "b08_unsized_tuple_coercion_without_feature": {
+   "edition": "2021",
+   "error_codes": [
+    "E0308"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "pub fn f(t: &(u8, [u32; 2])) -> &(u8, [u32]) { t }\n",
+   "stderr": "error[E0308]: mismatched types\n --> <TMP>/b08_unsized_tuple_coercion_without_feature.rs:1:48\n  |\n1 | pub fn f(t: &(u8, [u32; 2])) -> &(u8, [u32]) { t }\n  |                                 ------------   ^ expected `&(u8, [u32])`, found `&(u8, [u32; 2])`\n  |                                 |\n  |                                 expected `&(u8, [u32])` because of return type\n  |\n  = note: expected reference `&(_, [u32])`\n             found reference `&(_, [u32; 2])`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`.\n",
+   "warning_count": 0
+  },
+  "b09_repr_packed_with_extern_tail_definition": {
+   "edition": "2021",
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C, packed)] pub struct P { pub tag: u32, pub tail: OpaqueExtern }\n",
+   "stderr": "",
+   "warning_count": 0
+  },
+  "b10_reference_to_packed_extern_tail": {
+   "edition": "2021",
+   "error_codes": [
+    "E0793"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C, packed)] pub struct P { pub tag: u32, pub tail: OpaqueExtern }\npub fn f(p: &P) -> &OpaqueExtern { &p.tail }\n",
+   "stderr": "error[E0793]: reference to field of packed struct is unaligned\n --> <TMP>/b10_reference_to_packed_extern_tail.rs:4:36\n  |\n4 | pub fn f(p: &P) -> &OpaqueExtern { &p.tail }\n  |                                    ^^^^^^^\n  |\n  = note: this struct is 1-byte aligned, but the type of this field may require higher alignment\n  = note: creating a misaligned reference is undefined behavior (even if that reference is never dereferenced)\n  = help: copy the field contents to a local variable, or replace the reference with a raw pointer and use `read_unaligned`/`write_unaligned` (loads and stores via `*p` must be properly aligned even when using raw pointers)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0793`.\n",
+   "warning_count": 0
+  },
+  "b11_raw_borrow_of_packed_extern_tail": {
+   "edition": "2021",
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "source": "#![forbid(unsafe_code)]\n#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C, packed)] pub struct P { pub tag: u32, pub tail: OpaqueExtern }\npub fn f(p: &P) -> *const OpaqueExtern { &raw const p.tail }\n",
+   "stderr": "",
+   "warning_count": 0
+  },
+  "b12_pointee_sized_does_not_imply_meta_sized": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(sized_hierarchy)]\nuse core::marker::{MetaSized, PointeeSized};\npub fn need_meta<T: MetaSized>() {}\npub fn f<T: PointeeSized>() { need_meta::<T>() }\n",
+   "stderr": "error[E0277]: the size for values of type `T` cannot be known\n --> <TMP>/b12_pointee_sized_does_not_imply_meta_sized.rs:4:43\n  |\n4 | pub fn f<T: PointeeSized>() { need_meta::<T>() }\n  |                                           ^ doesn't have a known size\n  |\nnote: required by a bound in `need_meta`\n --> <TMP>/b12_pointee_sized_does_not_imply_meta_sized.rs:3:21\n  |\n3 | pub fn need_meta<T: MetaSized>() {}\n  |                     ^^^^^^^^^ required by this bound in `need_meta`\nhelp: consider further restricting type parameter `T` with unstable trait `MetaSized`\n  |\n4 | pub fn f<T: PointeeSized + std::marker::MetaSized>() { need_meta::<T>() }\n  |                          ++++++++++++++++++++++++\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b13_meta_sized_does_not_imply_sized": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(sized_hierarchy)]\nuse core::marker::MetaSized;\npub fn need_sized<T: Sized>() {}\npub fn f<T: MetaSized>() { need_sized::<T>() }\n",
+   "stderr": "error[E0277]: the size for values of type `T` cannot be known at compilation time\n --> <TMP>/b13_meta_sized_does_not_imply_sized.rs:4:41\n  |\n4 | pub fn f<T: MetaSized>() { need_sized::<T>() }\n  |          -                              ^ doesn't have a size known at compile-time\n  |          |\n  |          this type parameter needs to be `Sized`\n  |\nnote: required by a bound in `need_sized`\n --> <TMP>/b13_meta_sized_does_not_imply_sized.rs:3:22\n  |\n3 | pub fn need_sized<T: Sized>() {}\n  |                      ^^^^^ required by this bound in `need_sized`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b14_question_sized_param_satisfies_meta_sized": {
+   "edition": "2021",
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "source": "#![feature(sized_hierarchy)]\nuse core::marker::MetaSized;\npub fn need_meta<T: MetaSized>() {}\npub fn f<T: ?Sized>() { need_meta::<T>() }\n",
+   "stderr": "",
+   "warning_count": 0
+  },
+  "b15_default_trait_supertrait_rejects_impl_for_extern_type": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\npub trait Describe { fn describe(&self) -> u32; }\nimpl Describe for OpaqueExtern { fn describe(&self) -> u32 { 0 } }\n",
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known\n --> <TMP>/b15_default_trait_supertrait_rejects_impl_for_extern_type.rs:4:19\n  |\n4 | impl Describe for OpaqueExtern { fn describe(&self) -> u32 { 0 } }\n  |                   ^^^^^^^^^^^^ doesn't have a known size\n  |\n  = help: the nightly-only, unstable trait `MetaSized` is not implemented for `OpaqueExtern`\nnote: required by a bound in `Describe`\n --> <TMP>/b15_default_trait_supertrait_rejects_impl_for_extern_type.rs:3:1\n  |\n3 | pub trait Describe { fn describe(&self) -> u32; }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `Describe`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b16_pointee_sized_supertrait_accepts_impl_for_extern_type": {
+   "edition": "2021",
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "source": "#![feature(extern_types, sized_hierarchy)]\nextern \"C\" { pub type OpaqueExtern; }\npub trait Describe: core::marker::PointeeSized { fn describe(&self) -> u32; }\nimpl Describe for OpaqueExtern { fn describe(&self) -> u32 { 0 } }\n",
+   "stderr": "",
+   "warning_count": 0
+  },
+  "b17_sized_hierarchy_feature_gate_required": {
+   "edition": "2021",
+   "error_codes": [
+    "E0658"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "pub fn need_meta<T: core::marker::MetaSized>() {}\n",
+   "stderr": "error[E0658]: use of unstable library feature `sized_hierarchy`\n --> <TMP>/b17_sized_hierarchy_feature_gate_required.rs:1:21\n  |\n1 | pub fn need_meta<T: core::marker::MetaSized>() {}\n  |                     ^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #144404 <https://github.com/rust-lang/rust/issues/144404> for more information\n  = help: add `#![feature(sized_hierarchy)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0658`.\n",
+   "warning_count": 0
+  },
+  "b18_forbid_unsafe_lib_with_extern_tail_projections": {
+   "edition": "2021",
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "source": "#![forbid(unsafe_code)]\n#![feature(extern_types)]\n#![allow(dead_code)]\n\nextern \"C\" {\n    pub type OpaqueExtern;\n}\n\n#[repr(C)]\npub struct HeaderWithExtern {\n    pub magic: u32,\n    pub flags: u16,\n    pub tail: OpaqueExtern,\n}\n\n#[repr(C, packed)]\npub struct PackedHeaderWithExtern {\n    pub magic: u32,\n    pub flags: u16,\n    pub tail: OpaqueExtern,\n}\n\n#[repr(transparent)]\npub struct WrapExtern {\n    pub inner: OpaqueExtern,\n}\n\n#[repr(C)]\npub struct ZeroPrefixExtern {\n    pub unit: (),\n    pub tail: OpaqueExtern,\n}\n\n#[repr(C)]\npub struct SliceHeader {\n    pub magic: u32,\n    pub flags: u16,\n    pub tail: [u16],\n}\n\npub trait Tr {\n    fn get(&self) -> u32;\n}\nimpl Tr for u64 {\n    fn get(&self) -> u32 {\n        *self as u32\n    }\n}\n\n#[repr(C)]\npub struct GenericHeader<T: ?Sized> {\n    pub magic: u8,\n    pub tail: T,\n}\n\npub fn magic_of_header(h: &HeaderWithExtern) -> u32 {\n    h.magic\n}\n\n/// Non-zero static offset, unknown tail alignment.\npub fn tail_of_header(h: &HeaderWithExtern) -> &OpaqueExtern {\n    &h.tail\n}\n\n/// `packed(1)`: the tail offset is the static offset for every possible tail\n/// alignment, yet the same dynamic-alignment path is taken.\npub fn tail_of_packed(h: &PackedHeaderWithExtern) -> *const OpaqueExtern {\n    &raw const h.tail\n}\n\n/// Static offset 0.\npub fn tail_of_transparent(w: &WrapExtern) -> &OpaqueExtern {\n    &w.inner\n}\n\n/// Static offset 0 behind a zero-sized prefix field.\npub fn tail_of_zero_prefix(z: &ZeroPrefixExtern) -> &OpaqueExtern {\n    &z.tail\n}\n\n/// `MetaSized` control: slice tails have a statically known alignment.\npub fn tail_of_slice_header(h: &SliceHeader) -> &[u16] {\n    &h.tail\n}\n\n/// `MetaSized` control: `dyn` tails read their alignment from the vtable.\npub fn tail_of_dyn_header(h: &GenericHeader<dyn Tr>) -> &dyn Tr {\n    &h.tail\n}\n",
+   "stderr": "",
+   "warning_count": 0
+  },
+  "b19_box_of_extern_type": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\npub fn f(_: Box<OpaqueExtern>) {}\n",
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known\n   --> <TMP>/b19_box_of_extern_type.rs:3:13\n    |\n  3 | pub fn f(_: Box<OpaqueExtern>) {}\n    |             ^^^^^^^^^^^^^^^^^ doesn't have a known size\n    |\n    = help: the nightly-only, unstable trait `MetaSized` is not implemented for `OpaqueExtern`\nnote: required by a bound in `Box`\n   --> <SYSROOT>/lib/rustlib/src/rust/library/alloc/src/boxed.rs:235:5\n    |\n234 | pub struct Box<\n    |            --- required by a bound in this struct\n235 |     T: ?Sized,\n    |     ^ required by this bound in `Box`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b20_size_of_on_extern_type": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\npub fn f() -> usize { core::mem::size_of::<OpaqueExtern>() }\n",
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known at compilation time\n   --> <TMP>/b20_size_of_on_extern_type.rs:3:44\n    |\n  3 | pub fn f() -> usize { core::mem::size_of::<OpaqueExtern>() }\n    |                                            ^^^^^^^^^^^^ doesn't have a size known at compile-time\n    |\n    = help: the trait `Sized` is not implemented for `OpaqueExtern`\nnote: required by an implicit `Sized` bound in `std::mem::size_of`\n   --> <SYSROOT>/lib/rustlib/src/rust/library/core/src/mem/mod.rs:373:22\n    |\n373 | pub const fn size_of<T>() -> usize {\n    |                      ^ required by the implicit `Sized` requirement on this type parameter in `size_of`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b21_extern_types_feature_gate_required": {
+   "edition": "2021",
+   "error_codes": [
+    "E0658"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "extern \"C\" { pub type OpaqueExtern; }\n",
+   "stderr": "error[E0658]: extern types are experimental\n --> <TMP>/b21_extern_types_feature_gate_required.rs:1:14\n  |\n1 | extern \"C\" { pub type OpaqueExtern; }\n  |              ^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = note: see issue #43467 <https://github.com/rust-lang/rust/issues/43467> for more information\n  = help: add `#![feature(extern_types)]` to the crate attributes to enable\n  = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0658`.\n",
+   "warning_count": 0
+  },
+  "b22_size_of_val_on_header_with_extern_tail": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C)] pub struct Hdr { pub tag: u32, pub tail: OpaqueExtern }\npub fn f(h: &Hdr) -> usize { core::mem::size_of_val(h) }\n",
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known\n   --> <TMP>/b22_size_of_val_on_header_with_extern_tail.rs:4:53\n    |\n  4 | pub fn f(h: &Hdr) -> usize { core::mem::size_of_val(h) }\n    |                              ---------------------- ^ doesn't have a known size\n    |                              |\n    |                              required by a bound introduced by this call\n    |\n    = help: within `Hdr`, the nightly-only, unstable trait `MetaSized` is not implemented for `OpaqueExtern`\nnote: required because it appears within the type `Hdr`\n   --> <TMP>/b22_size_of_val_on_header_with_extern_tail.rs:3:23\n    |\n  3 | #[repr(C)] pub struct Hdr { pub tag: u32, pub tail: OpaqueExtern }\n    |                       ^^^\nnote: required by a bound in `std::mem::size_of_val`\n   --> <SYSROOT>/lib/rustlib/src/rust/library/core/src/mem/mod.rs:401:26\n    |\n401 | pub const fn size_of_val<T: ?Sized>(val: &T) -> usize {\n    |                          ^ required by this bound in `size_of_val`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b23_extern_type_is_not_unpin": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types, sized_hierarchy)]\nextern \"C\" { pub type OpaqueExtern; }\npub fn need<T: Unpin + core::marker::PointeeSized>() {}\npub fn f() { need::<OpaqueExtern>() }\n",
+   "stderr": "error[E0277]: `OpaqueExtern` cannot be unpinned\n --> <TMP>/b23_extern_type_is_not_unpin.rs:4:21\n  |\n4 | pub fn f() { need::<OpaqueExtern>() }\n  |                     ^^^^^^^^^^^^ the trait `Unpin` is not implemented for `OpaqueExtern`\n  |\n  = note: consider using the `pin!` macro\n          consider using `Box::pin` if you need to access the pinned value outside of the current scope\nnote: required by a bound in `need`\n --> <TMP>/b23_extern_type_is_not_unpin.rs:3:16\n  |\n3 | pub fn need<T: Unpin + core::marker::PointeeSized>() {}\n  |                ^^^^^ required by this bound in `need`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b24_extern_type_is_not_freeze": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types, sized_hierarchy, freeze)]\nextern \"C\" { pub type OpaqueExtern; }\npub fn need<T: core::marker::Freeze + core::marker::PointeeSized>() {}\npub fn f() { need::<OpaqueExtern>() }\n",
+   "stderr": "error[E0277]: the trait bound `OpaqueExtern: Freeze` is not satisfied\n --> <TMP>/b24_extern_type_is_not_freeze.rs:4:21\n  |\n4 | pub fn f() { need::<OpaqueExtern>() }\n  |                     ^^^^^^^^^^^^ the nightly-only, unstable trait `Freeze` is not implemented for `OpaqueExtern`\n  |\nnote: required by a bound in `need`\n --> <TMP>/b24_extern_type_is_not_freeze.rs:3:16\n  |\n3 | pub fn need<T: core::marker::Freeze + core::marker::PointeeSized>() {}\n  |                ^^^^^^^^^^^^^^^^^^^^ required by this bound in `need`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b25_extern_type_is_not_send": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types, sized_hierarchy)]\nextern \"C\" { pub type OpaqueExtern; }\npub fn need<T: Send + core::marker::PointeeSized>() {}\npub fn f() { need::<OpaqueExtern>() }\n",
+   "stderr": "error[E0277]: `OpaqueExtern` cannot be sent between threads safely\n --> <TMP>/b25_extern_type_is_not_send.rs:4:21\n  |\n4 | pub fn f() { need::<OpaqueExtern>() }\n  |                     ^^^^^^^^^^^^ `OpaqueExtern` cannot be sent between threads safely\n  |\n  = help: the trait `Send` is not implemented for `OpaqueExtern`\nnote: required by a bound in `need`\n --> <TMP>/b25_extern_type_is_not_send.rs:3:16\n  |\n3 | pub fn need<T: Send + core::marker::PointeeSized>() {}\n  |                ^^^^ required by this bound in `need`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b26_extern_type_is_not_sync": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types, sized_hierarchy)]\nextern \"C\" { pub type OpaqueExtern; }\npub fn need<T: Sync + core::marker::PointeeSized>() {}\npub fn f() { need::<OpaqueExtern>() }\n",
+   "stderr": "error[E0277]: `OpaqueExtern` cannot be shared between threads safely\n --> <TMP>/b26_extern_type_is_not_sync.rs:4:21\n  |\n4 | pub fn f() { need::<OpaqueExtern>() }\n  |                     ^^^^^^^^^^^^ `OpaqueExtern` cannot be shared between threads safely\n  |\n  = help: the trait `Sync` is not implemented for `OpaqueExtern`\nnote: required by a bound in `need`\n --> <TMP>/b26_extern_type_is_not_sync.rs:3:16\n  |\n3 | pub fn need<T: Sync + core::marker::PointeeSized>() {}\n  |                ^^^^ required by this bound in `need`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b27_slice_is_unpin_freeze_send_sync_control": {
+   "edition": "2021",
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "source": "#![feature(sized_hierarchy, freeze)]\npub fn need<T: Unpin + core::marker::Freeze + Send + Sync + core::marker::PointeeSized>() {}\npub fn f() { need::<[u32]>() }\n",
+   "stderr": "",
+   "warning_count": 0
+  },
+  "b28_offset_of_extern_tail_field": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C)] pub struct Hdr { pub magic: u32, pub flags: u16, pub tail: OpaqueExtern }\npub fn f() -> usize { core::mem::offset_of!(Hdr, tail) }\n",
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known at compilation time\n --> <TMP>/b28_offset_of_extern_tail_field.rs:4:23\n  |\n4 | pub fn f() -> usize { core::mem::offset_of!(Hdr, tail) }\n  |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time\n  |\n  = help: the trait `Sized` is not implemented for `OpaqueExtern`\n  = note: this error originates in the macro `core::mem::offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b29_offset_of_sized_prefix_field_of_extern_tailed_struct": {
+   "edition": "2021",
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C)] pub struct Hdr { pub magic: u32, pub flags: u16, pub tail: OpaqueExtern }\npub const FLAGS_OFFSET: usize = core::mem::offset_of!(Hdr, flags);\nconst _: () = assert!(FLAGS_OFFSET == 4);\n",
+   "stderr": "",
+   "warning_count": 0
+  },
+  "b30_offset_of_slice_tail_field": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#[repr(C)] pub struct Hdr { pub magic: u32, pub flags: u16, pub tail: [u16] }\npub fn f() -> usize { core::mem::offset_of!(Hdr, tail) }\n",
+   "stderr": "error[E0277]: the size for values of type `[u16]` cannot be known at compilation time\n --> <TMP>/b30_offset_of_slice_tail_field.rs:2:23\n  |\n2 | pub fn f() -> usize { core::mem::offset_of!(Hdr, tail) }\n  |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ doesn't have a size known at compile-time\n  |\n  = help: the trait `Sized` is not implemented for `[u16]`\n  = note: this error originates in the macro `core::mem::offset_of` (in Nightly builds, run with -Z macro-backtrace for more info)\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b31_forbid_unsafe_code_rejects_unsafe_extern_block": {
+   "edition": "2021",
+   "error_codes": [],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![forbid(unsafe_code)]\n#![feature(extern_types)]\nunsafe extern \"C\" { pub type OpaqueExtern; }\n",
+   "stderr": "error: usage of an `unsafe extern` block\n --> <TMP>/b31_forbid_unsafe_code_rejects_unsafe_extern_block.rs:3:1\n  |\n3 | unsafe extern \"C\" { pub type OpaqueExtern; }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\nnote: the lint level is defined here\n --> <TMP>/b31_forbid_unsafe_code_rejects_unsafe_extern_block.rs:1:11\n  |\n1 | #![forbid(unsafe_code)]\n  |           ^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+   "warning_count": 0
+  },
+  "b32_edition_2024_requires_unsafe_extern_block": {
+   "edition": "2024",
+   "error_codes": [],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types)]\nextern \"C\" { pub type OpaqueExtern; }\n",
+   "stderr": "error: extern blocks must be unsafe\n --> <TMP>/b32_edition_2024_requires_unsafe_extern_block.rs:2:1\n  |\n2 | extern \"C\" { pub type OpaqueExtern; }\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 1 previous error\n\n",
+   "warning_count": 0
+  },
+  "b33_edition_2024_forbid_unsafe_module_projects_foreign_declared_tail": {
+   "edition": "2024",
+   "error_codes": [],
+   "error_count": 0,
+   "rc": 0,
+   "source": "#![feature(extern_types)]\npub mod decl {\n    unsafe extern \"C\" { pub type OpaqueExtern; }\n    #[repr(C)] pub struct Hdr { pub magic: u32, pub flags: u16, pub tail: OpaqueExtern }\n}\n#[forbid(unsafe_code)]\npub mod safe {\n    pub fn tail(h: &super::decl::Hdr) -> &super::decl::OpaqueExtern { &h.tail }\n}\n",
+   "stderr": "",
+   "warning_count": 0
+  },
+  "b34_struct_with_extern_tail_is_not_unpin": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types, sized_hierarchy)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C)] pub struct Hdr { pub magic: u32, pub flags: u16, pub tail: OpaqueExtern }\npub fn need<T: Unpin + core::marker::PointeeSized>() {}\npub fn f() { need::<Hdr>() }\n",
+   "stderr": "error[E0277]: `OpaqueExtern` cannot be unpinned\n --> <TMP>/b34_struct_with_extern_tail_is_not_unpin.rs:5:21\n  |\n5 | pub fn f() { need::<Hdr>() }\n  |                     ^^^ within `Hdr`, the trait `Unpin` is not implemented for `OpaqueExtern`\n  |\n  = note: consider using the `pin!` macro\n          consider using `Box::pin` if you need to access the pinned value outside of the current scope\nnote: required because it appears within the type `Hdr`\n --> <TMP>/b34_struct_with_extern_tail_is_not_unpin.rs:3:23\n  |\n3 | #[repr(C)] pub struct Hdr { pub magic: u32, pub flags: u16, pub tail: Opa...\n  |                       ^^^\nnote: required by a bound in `need`\n --> <TMP>/b34_struct_with_extern_tail_is_not_unpin.rs:4:16\n  |\n4 | pub fn need<T: Unpin + core::marker::PointeeSized>() {}\n  |                ^^^^^ required by this bound in `need`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  },
+  "b35_struct_with_extern_tail_is_not_freeze": {
+   "edition": "2021",
+   "error_codes": [
+    "E0277"
+   ],
+   "error_count": 2,
+   "rc": 1,
+   "source": "#![feature(extern_types, sized_hierarchy, freeze)]\nextern \"C\" { pub type OpaqueExtern; }\n#[repr(C)] pub struct Hdr { pub magic: u32, pub flags: u16, pub tail: OpaqueExtern }\npub fn need<T: core::marker::Freeze + core::marker::PointeeSized>() {}\npub fn f() { need::<Hdr>() }\n",
+   "stderr": "error[E0277]: the trait bound `OpaqueExtern: Freeze` is not satisfied in `Hdr`\n --> <TMP>/b35_struct_with_extern_tail_is_not_freeze.rs:5:21\n  |\n5 | pub fn f() { need::<Hdr>() }\n  |                     ^^^ unsatisfied trait bound\n  |\n  = help: within `Hdr`, the nightly-only, unstable trait `Freeze` is not implemented for `OpaqueExtern`\nnote: required because it appears within the type `Hdr`\n --> <TMP>/b35_struct_with_extern_tail_is_not_freeze.rs:3:23\n  |\n3 | #[repr(C)] pub struct Hdr { pub magic: u32, pub flags: u16, pub tail: Opa...\n  |                       ^^^\nnote: required by a bound in `need`\n --> <TMP>/b35_struct_with_extern_tail_is_not_freeze.rs:4:16\n  |\n4 | pub fn need<T: core::marker::Freeze + core::marker::PointeeSized>() {}\n  |                ^^^^^^^^^^^^^^^^^^^^ required by this bound in `need`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0277`.\n",
+   "warning_count": 0
+  }
+ },
+ "pin_mismatches": [],
+ "probe_script_sha256": "45475852a6e1e0a351962c9dcce4dc01c6b7bf8425833841f0a0427e12079e6f",
+ "rustc_version_verbose": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+ "schema": "sized-hierarchy-extern-types-probe/1"
+}

@@ -1,0 +1,51 @@
+{
+ "part_a1_hierarchy_thin_ptr_prefix_and_tree_borrows": {
+  "compile_rc": 0,
+  "compile_stderr": "",
+  "miri_sb_rc": 0,
+  "miri_sb_stderr": "warning: reborrow of a reference to `extern type` is not properly supported\n  --> <TMP>/part_a1.rs:67:43\n   |\n67 | ...unsafe { &*((&raw const backing) as *const OpaqueExtern) };\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ reborrow of reference to `extern type`\n   |\n   = help: `extern type` are not compatible with the Stacked Borrows aliasing model implemented by Miri; Miri may miss bugs in this code\n   = help: try running with `MIRIFLAGS=-Zmiri-tree-borrows` to use the more permissive but also even more experimental Tree Borrows aliasing checks instead\n   = note",
+  "miri_sb_stdout": "PTR_WIDTHS=(8, 16, 16, 16, 8, 8, 16) DST_U16_3=(8, 2) DST_U32_0=(4, 4) WRAP_ZERO_OFF=true MAGIC=0xdeadbeef FLAGS=0x1234",
+  "miri_tb_rc": 0,
+  "miri_tb_stderr": "",
+  "miri_tb_stdout": "PTR_WIDTHS=(8, 16, 16, 16, 8, 8, 16) DST_U16_3=(8, 2) DST_U32_0=(4, 4) WRAP_ZERO_OFF=true MAGIC=0xdeadbeef FLAGS=0x1234",
+  "native_rc": 0,
+  "native_stdout": "PTR_WIDTHS=(8, 16, 16, 16, 8, 8, 16) DST_U16_3=(8, 2) DST_U32_0=(4, 4) WRAP_ZERO_OFF=true MAGIC=0xdeadbeef FLAGS=0x1234"
+ },
+ "part_a2_safe_extern_tail_projection_runtime_abort": {
+  "forbid_unsafe_lib_compile_rc": 0,
+  "forbid_unsafe_lib_stderr": "",
+  "miri_tb_rc": 1,
+  "miri_tb_stderr": "error: unsupported operation: `extern type` field does not have a known offset\n  --> <TMP>/part_a2_bin.rs:19:41\n   |\n19 | ...unsafe { &*((&raw const b) as *const HeaderWithExtern) };\n   |             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unsupported operation occurred here\n   |\n   = help: this is likely not a bug in the program; it indicates that the program performed an operation that Miri does not support\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error\n\n",
+  "native_rc": -6,
+  "native_stderr": "\nthread 'main' (<TID>) panicked at /rustc/3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1/library/core/src/panicking.rs:225:5:\nattempted to compute the size or alignment of extern type `OpaqueExtern`\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting.\n"
+ },
+ "part_b_compile_time_hierarchy_rejections": {
+  "header_with_extern_tail_rejected_by_metasized": {
+   "rc": 1,
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known\n --> <TMP>/header_with_extern_tail_rejected_by_metasized.rs:6:36\n  |\n6 | pub fn caller(h: &Hdr) { need_meta(h); }\n  |                          --------- ^ doesn't have a known size\n  |                          |\n  |                          required by a bound introduced by this call\n  |\n  = help: within `Hdr`, the nightly-only, unstable trait `MetaSized` is not implemented for `OpaqueExtern`\nnote: required because it appears within the type `Hdr`\n --> <TMP>/header_with_extern_tail_rejected_by_metasized.rs:4:43\n  |\n4 | #[repr(C)] pub struct Hdr { pub tag: u32, pub tail: OpaqueExtern }\n  |          "
+  },
+  "non_tail_extern_type_field_rejected": {
+   "rc": 1,
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known at compilation time\n --> <TMP>/non_tail_extern_type_field_rejected.rs:5:16\n  |\n5 |     pub first: OpaqueExtern,\n  |                ^^^^^^^^^^^^ doesn't have a size known at compile-time\n  |\n  = help: the trait `Sized` is not implemented for `OpaqueExtern`\n  = note: only the last field of a struct may have a dynamically sized type\n  = help: change the field's type to have a statically known size\nhelp: borrowed types always have a statically known size\n  |\n5 |     pub first: &OpaqueExtern,\n  |                +\nhelp: the `Box` type always has a statically known size and allocates its contents in the heap\n  |\n5 |"
+  },
+  "question_sized_rejects_extern_type_because_desugars_to_metasized": {
+   "rc": 1,
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known\n --> <TMP>/question_sized_rejects_extern_type_because_desugars_to_metasized.rs:5:19\n  |\n5 |     legacy_qsized(p);\n  |     ------------- ^ the trait `MetaSized` is not implemented for `OpaqueExtern`\n  |     |\n  |     required by a bound introduced by this call\n  |\n  = note: the trait bound `OpaqueExtern: MetaSized` is not satisfied\nnote: required by a bound in `legacy_qsized`\n --> <TMP>/question_sized_rejects_extern_type_because_desugars_to_metasized.rs:3:25\n  |\n3 | pub fn legacy_qsized<T: ?Sized>(_: &T) {}\n  |                         ^^^^^^ required by this bound in `legacy_qsized`\nhelp: consider b"
+  },
+  "repr_packed_with_extern_tail": {
+   "rc": 0,
+   "stderr": ""
+  },
+  "size_of_val_on_extern_type_rejected_not_metasized": {
+   "rc": 1,
+   "stderr": "error[E0277]: the size for values of type `OpaqueExtern` cannot be known\n   --> <TMP>/size_of_val_on_extern_type_rejected_not_metasized.rs:4:28\n    |\n  4 |     core::mem::size_of_val(p)\n    |     ---------------------- ^ the trait `MetaSized` is not implemented for `OpaqueExtern`\n    |     |\n    |     required by a bound introduced by this call\n    |\n    = note: the trait bound `OpaqueExtern: MetaSized` is not satisfied\nnote: required by a bound in `std::mem::size_of_val`\n   --> <SYSROOT>/lib/rustlib/src/rust/library/core/src/mem/mod.rs:410:29\n    |\n410 | pub const fn size_of_val<T: ?Sized>(val: &T) -> usize {"
+  },
+  "unsized_tuple_coercion_removed_in_1_87_pr_137728": {
+   "rc": 1,
+   "stderr": "error[E0557]: feature has been removed\n --> <TMP>/unsized_tuple_coercion_removed_in_1_87_pr_137728.rs:1:12\n  |\n1 | #![feature(unsized_tuple_coercion)]\n  |            ^^^^^^^^^^^^^^^^^^^^^^ feature has been removed\n  |\n  = note: removed in 1.87.0; see <https://github.com/rust-lang/rust/pull/137728> for more information\n  = note: The feature restricts possible layouts for tuples, and this restriction is not worth it.\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0557`.\n"
+  }
+ },
+ "rust_repo_head_inspected": "49d734536222bf28bb6d07d885b3a81d145981da",
+ "rustc_version": "rustc 1.102.0-nightly (3ef0c22cd 2026-11-11)\nbinary: rustc\ncommit-hash: 3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1\ncommit-date: 2026-11-11\nhost: x86_64-unknown-linux-gnu\nrelease: 1.102.0-nightly\nLLVM version: 23.1.5",
+ "timestamp_utc": "2026-11-21T21:46:41Z"
+}

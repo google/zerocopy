@@ -1,0 +1,166 @@
+{
+ "resolved_at_utc": "2026-11-22T11:34:02Z",
+ "method": "GitHub REST API GET repos/<owner>/<repo>/commits/<ref>, .../pulls/<n>, .../issues/<n>",
+ "commits": [
+  {
+   "repository": "rust-lang/rust",
+   "requested_ref": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "role": "commit of the executed toolchain (rustc 1.98.0-nightly, nightly-2026-06-01)",
+   "sha": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+   "committer_date": "2026-05-31T20:13:59Z",
+   "subject": "Auto merge of #157219 - jhpratt:rollup-70ooTMg, r=jhpratt",
+   "error": null
+  },
+  {
+   "repository": "rust-lang/rust",
+   "requested_ref": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "role": "commit of rustc 1.102.0-nightly (2026-11-11)",
+   "sha": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+   "committer_date": "2026-11-11T17:59:24Z",
+   "subject": "Auto merge of #165821 - JonathanBrouwer:rollup-TeJSwaI, r=JonathanBrouwer",
+   "error": null
+  },
+  {
+   "repository": "rust-lang/rust",
+   "requested_ref": "HEAD",
+   "role": "default-branch head at observation time",
+   "sha": "342d74463af7dd3018ef6aa04dd5500c2deb5bd1",
+   "committer_date": "2026-11-22T00:04:39Z",
+   "subject": "Auto merge of #166268 - flip1995:clippy-subtree-update, r=Manishearth",
+   "error": null
+  },
+  {
+   "repository": "rust-lang/rust",
+   "requested_ref": "257b4947ed14795a8411df53b6cf6d5a57b56240",
+   "role": "merge commit of pull request 137728",
+   "sha": "257b4947ed14795a8411df53b6cf6d5a57b56240",
+   "committer_date": "2025-03-05T13:46:44Z",
+   "subject": "Rollup merge of #137728 - Darksonn:no-tuple-unsize, r=oli-obk",
+   "error": null
+  },
+  {
+   "repository": "rust-lang/rust",
+   "requested_ref": "86d0aef80403f095d8bbabf44d9fdecfcd45f076",
+   "role": "merge commit of pull request 137944",
+   "sha": "86d0aef80403f095d8bbabf44d9fdecfcd45f076",
+   "committer_date": "2025-06-17T15:08:50Z",
+   "subject": "Auto merge of #137944 - davidtwco:sized-hierarchy, r=oli-obk",
+   "error": null
+  },
+  {
+   "repository": "rust-lang/rfcs",
+   "requested_ref": "HEAD",
+   "role": "default-branch head at observation time",
+   "sha": "f43d5789b838fb0d80962e3d4b45fb9ddfcc9a07",
+   "committer_date": "2026-11-14T17:21:49Z",
+   "subject": "Rename RFC to correct number",
+   "error": null
+  },
+  {
+   "repository": "rust-lang/rfcs",
+   "requested_ref": "1bb22f00880cb6d24192af4041585683b56e9b3a",
+   "role": "head commit of pull request 3729",
+   "sha": "1bb22f00880cb6d24192af4041585683b56e9b3a",
+   "committer_date": "2026-03-18T15:25:24Z",
+   "subject": "update alternatives to rfc post-const split",
+   "error": null
+  },
+  {
+   "repository": "joshlf/anneal",
+   "requested_ref": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "role": "examined Anneal revision",
+   "sha": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+   "committer_date": "2026-11-19T21:39:21Z",
+   "subject": "[theory] Bridge PureLift onto Trusted MIR semantics (#266)",
+   "error": null
+  },
+  {
+   "repository": "leanprover/lean4",
+   "requested_ref": "v4.34.1",
+   "role": "Lean release tag",
+   "sha": "5045d0056413266e57c625dcd7c365b10e377c52",
+   "committer_date": "2026-09-24T17:27:27Z",
+   "subject": "chore: prepare release",
+   "error": null
+  },
+  {
+   "repository": "proofs-rs/lean-miri",
+   "requested_ref": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a",
+   "role": "lean-miri revision vendored by the examined Anneal revision",
+   "sha": "c92d1d9754c9dd585b6b9d6949ae67e5e4665d6a",
+   "committer_date": "2026-11-05T10:18:02Z",
+   "subject": "Publish lean-miri landing page alongside API docs (#19)",
+   "error": null
+  }
+ ],
+ "pull_requests": [
+  {
+   "repository": "rust-lang/rust",
+   "number": 137728,
+   "title": "Remove unsizing coercions for tuples",
+   "state": "closed",
+   "merged": true,
+   "merged_at": "2025-03-05T18:29:38Z",
+   "merge_commit_sha": "257b4947ed14795a8411df53b6cf6d5a57b56240",
+   "head_sha": "68df70d510e2ff8a303d7b3c9c8b0cb3bce579f4",
+   "created_at": "2025-02-27T13:42:54Z",
+   "updated_at": "2025-07-20T16:44:28Z",
+   "error": null
+  },
+  {
+   "repository": "rust-lang/rust",
+   "number": 137944,
+   "title": "Sized Hierarchy: Part I",
+   "state": "closed",
+   "merged": true,
+   "merged_at": "2025-06-17T18:13:04Z",
+   "merge_commit_sha": "86d0aef80403f095d8bbabf44d9fdecfcd45f076",
+   "head_sha": "a31e1f12d9c0fa1b8f5d19aa989f0e2236de3bb8",
+   "created_at": "2025-03-03T14:51:33Z",
+   "updated_at": "2025-06-26T21:01:33Z",
+   "error": null
+  },
+  {
+   "repository": "rust-lang/rfcs",
+   "number": 3729,
+   "title": "Hierarchy of Sized traits",
+   "state": "open",
+   "merged": false,
+   "merged_at": null,
+   "merge_commit_sha": null,
+   "head_sha": "1bb22f00880cb6d24192af4041585683b56e9b3a",
+   "created_at": "2024-11-15T16:01:06Z",
+   "updated_at": "2026-10-12T17:02:57Z",
+   "error": null
+  }
+ ],
+ "issues": [
+  {
+   "repository": "rust-lang/rust",
+   "number": 144404,
+   "title": "Tracking Issue for Sized Hierarchy",
+   "state": "open",
+   "created_at": "2025-07-24T14:36:43Z",
+   "closed_at": null,
+   "error": null
+  },
+  {
+   "repository": "rust-lang/rust",
+   "number": 43467,
+   "title": "Tracking issue for RFC 1861: Extern types",
+   "state": "open",
+   "created_at": "2017-07-25T04:12:37Z",
+   "closed_at": null,
+   "error": null
+  },
+  {
+   "repository": "rust-lang/unsafe-code-guidelines",
+   "number": 276,
+   "title": "Stacked Borrows cannot properly handle `extern type`",
+   "state": "open",
+   "created_at": "2021-02-27T19:09:24Z",
+   "closed_at": null,
+   "error": null
+  }
+ ]
+}

@@ -1,0 +1,34 @@
+== lean version
+Lean (version 4.34.1, x86_64-unknown-linux-gnu, commit 5045d0056413266e57c625dcd7c365b10e377c52, Release)
+== token scan (each count must be 0)
+  \bsorry\b          0
+  \badmit\b          0
+  native_decide      0
+  bv_decide          0
+  \bomega\b          0
+  partial def        0
+  \bunsafe\b         0
+  Classical\.        0
+  ^axiom\b           0
+  implemented_by     0
+  \bderiving\b       0
+  ^import\b          0
+  \bopaque\b         0
+  _unsafe_rec        0
+TOKEN SCAN: PASS
+== elaborate and kernel-check (warnings are errors)
+MODULE CHECK: PASS (exit 0)
+== declaration and axiom audit
+AUDIT module=SizedHierarchyAndExternTailSoundness declarations=477 (theorem=144, def=262, inductive=15, constructor=41, recursor=15, axiom=0, opaque=0)
+AUDIT user_theorems=133 required_theorems_checked=24
+AUDIT axioms_used=[propext]
+AUDIT RESULT: PASS (0 disallowed axioms, 0 axioms declared, 0 opaque, 0 unsafe, 0 partial, 0 _unsafe_rec)
+'SizedHierarchyAndExternTailSoundness.metaSized_implies_total_runtime_layout' depends on axioms: [propext]
+'SizedHierarchyAndExternTailSoundness.extern_tail_offset_static_iff_zero_prefix_or_packed1_specialization' depends on axioms: [propext]
+'SizedHierarchyAndExternTailSoundness.extern_tail_offset_static_iff' depends on axioms: [propext]
+'SizedHierarchyAndExternTailSoundness.tree_borrows_reborrow_sound_without_pointee_size' depends on axioms: [propext]
+'SizedHierarchyAndExternTailSoundness.ce1_question_sized_as_pointee_sized_panics_size_of_val' depends on axioms: [propext]
+'SizedHierarchyAndExternTailSoundness.ce2_nonzero_prefix_extern_tail_requires_unknown_align' depends on axioms: [propext]
+'SizedHierarchyAndExternTailSoundness.ce3_stacked_borrows_eager_retag_requires_byte_span' does not depend on any axioms
+AXIOM AUDIT: PASS (exit 0)
+verify_lean.sh exit code: 0
