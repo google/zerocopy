@@ -598,7 +598,8 @@ pub fn verify_upstream_pin(vendor_root: &Path) -> Result<UpstreamPin, Failure> {
 /// Parse `UPSTREAM_PIN.json` bytes that [`verify_upstream_pin`] has
 /// authenticated against [`LOCKED_UPSTREAM_PIN_SHA256`] and verify every
 /// internal invariant (commit, toolchain, `patched_files` allowlist,
-/// `vendor_tree` and `vendor_aux_files` disk manifests, and 160-module
+/// `vendor_tree` and `vendor_aux_files` disk manifests,
+/// `upstream/source-lock.json` closed schema and pin parity, and 160-module
 /// `execution_machine_closure`) against the files under `vendor_root`.
 fn verify_upstream_pin_bytes(vendor_root: &Path, pin_bytes: &[u8]) -> Result<UpstreamPin, Failure> {
     let phase = "miri-pin";
@@ -765,6 +766,16 @@ fn verify_upstream_pin_bytes(vendor_root: &Path, pin_bytes: &[u8]) -> Result<Ups
             ));
         }
     }
+    if !is_sha256_hex(&pin.upstream_pins.source_lock_sha256)
+        || !expected_aux_files
+            .get("upstream/source-lock.json")
+            .is_some_and(|sha| sha.eq_ignore_ascii_case(&pin.upstream_pins.source_lock_sha256))
+    {
+        return Err(Failure::policy(
+            phase,
+            "upstream_pins.source_lock_sha256 mismatches vendor_aux_files for upstream/source-lock.json",
+        ));
+    }
 
     // Walk `vendor_root` without following symlinks and verify that on-disk
     // files match `expected_lean_files`, `expected_aux_files`, and
@@ -852,6 +863,22 @@ fn verify_upstream_pin_bytes(vendor_root: &Path, pin_bytes: &[u8]) -> Result<Ups
         ));
     }
 
+    let source_lock_path = vendor_root.join("upstream/source-lock.json");
+    let source_lock_bytes = fs::read(&source_lock_path).map_err(|e| {
+        Failure::operational(phase, format!("cannot read upstream/source-lock.json: {e}"))
+    })?;
+    let source_lock_sha = sha256_bytes(&source_lock_bytes);
+    if !source_lock_sha.eq_ignore_ascii_case(&pin.upstream_pins.source_lock_sha256) {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "upstream/source-lock.json SHA-256 differs from UPSTREAM_PIN.json: expected {}, got {source_lock_sha}",
+                pin.upstream_pins.source_lock_sha256
+            ),
+        ));
+    }
+    verify_source_lock_bytes_against_pins(&source_lock_bytes, &pin.upstream_pins)?;
+
     // Verify `execution_machine_closure` and ensure
     // `Miri.Input.NativeMathHost` (which contains `@[extern]` host math
     // bindings) and umbrella `Miri` are excluded from the correspondence slice.
@@ -900,6 +927,370 @@ fn verify_upstream_pin_bytes(vendor_root: &Path, pin_bytes: &[u8]) -> Result<Ups
     }
 
     Ok(pin)
+}
+
+/// The single upstream `c92d1d97` `supporting_files` record that retains a
+/// stray `"**HASH**": null` key until upstream regenerates `source-lock.json`.
+const LEGACY_STRAY_HASH_PATH: &str = "upstream/rustc-source/Cargo.lock";
+
+#[derive(Debug, Clone, Default)]
+enum LegacyStrayHash {
+    #[default]
+    Absent,
+    Null,
+    NonNull,
+}
+
+fn deserialize_legacy_stray_hash<'de, D>(deserializer: D) -> Result<LegacyStrayHash, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    match Option::<serde_json::Value>::deserialize(deserializer)? {
+        None => Ok(LegacyStrayHash::Null),
+        Some(_) => Ok(LegacyStrayHash::NonNull),
+    }
+}
+
+/// Deserializes `vendor/lean-miri/upstream/source-lock.json` under a closed
+/// schema so stray or unauthenticated keys fail closed.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SourceLock {
+    pub schema_version: i64,
+    pub acquisition: SourceLockAcquisition,
+    pub coverage_expected_rust_modules: BTreeMap<String, usize>,
+    pub coverage_roots: Vec<String>,
+    pub external_dependencies: SourceLockExternalDependencies,
+    pub features: BTreeMap<String, Vec<String>>,
+    pub files: Vec<SupportingFileRecord>,
+    pub pins: SourceLockPins,
+    pub scope_notes: Vec<String>,
+    pub supporting_files: Vec<SupportingFileRecord>,
+}
+
+/// Describes archive acquisition metadata in `upstream/source-lock.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SourceLockAcquisition {
+    pub note: String,
+    pub pin_markers: BTreeMap<String, String>,
+    pub procedure: String,
+    pub procedure_sha256: String,
+    pub rustc_selected_archive_paths: SourceLockSelectedArchivePaths,
+}
+
+/// Describes the extracted rustc file list metadata in
+/// `SourceLockAcquisition`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SourceLockSelectedArchivePaths {
+    pub count: usize,
+    pub path: String,
+    pub sha256: String,
+}
+
+/// Describes non-vendored dependencies and lockfile provenance in
+/// `upstream/source-lock.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SourceLockExternalDependencies {
+    pub cargo_packages: Vec<SourceLockCargoPackage>,
+    pub resolution_file: SourceLockResolutionFile,
+    pub rustc_private_crates: Vec<SourceLockRustcPrivateCrate>,
+    pub rustc_upstream_resolution_file: SourceLockResolutionFile,
+    pub toolchain_and_native: Vec<String>,
+}
+
+/// Describes one Cargo dependency requirement recorded in `source-lock.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SourceLockCargoPackage {
+    pub name: String,
+    pub scope: String,
+    #[serde(default)]
+    pub version: Option<String>,
+    #[serde(default)]
+    pub requirement: Option<String>,
+    #[serde(default)]
+    pub path: Option<String>,
+    #[serde(default)]
+    pub default_features: Option<bool>,
+    #[serde(default)]
+    pub features: Option<Vec<String>>,
+    #[serde(default)]
+    pub optional: Option<bool>,
+}
+
+/// Describes a referenced `Cargo.lock` resolution file in `source-lock.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SourceLockResolutionFile {
+    pub note: String,
+    pub path: String,
+    pub sha256: String,
+}
+
+/// Describes one `rustc_private` crate inventory entry in `source-lock.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SourceLockRustcPrivateCrate {
+    pub name: String,
+    pub status: String,
+    pub coverage_roots: Vec<String>,
+    pub evidence: String,
+    #[serde(default)]
+    pub version: Option<String>,
+    #[serde(default)]
+    pub checksum: Option<String>,
+    #[serde(default)]
+    pub git_commit: Option<String>,
+}
+
+/// Holds the four component pin records in `upstream/source-lock.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SourceLockPins {
+    pub aes: SourceLockComponentPin,
+    pub miri: SourceLockComponentPin,
+    pub rustc: SourceLockComponentPin,
+    pub rustc_apfloat: SourceLockComponentPin,
+}
+
+/// Describes one pinned upstream component in `upstream/source-lock.json`.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SourceLockComponentPin {
+    pub archive_path: String,
+    pub archive_sha256: String,
+    pub archive_url: String,
+    pub commit: String,
+    pub repository: String,
+    #[serde(default)]
+    pub checksum_source: Option<String>,
+    #[serde(default)]
+    pub commit_date_utc: Option<String>,
+    #[serde(default)]
+    pub commit_url: Option<String>,
+    #[serde(default)]
+    pub extracted_paths_manifest: Option<String>,
+    #[serde(default)]
+    pub extracted_paths_manifest_sha256: Option<String>,
+    #[serde(default)]
+    pub extracted_root: Option<String>,
+    #[serde(default)]
+    pub package_version: Option<String>,
+    #[serde(default)]
+    pub pinned_via: Option<String>,
+    #[serde(default)]
+    pub registry: Option<String>,
+    #[serde(default)]
+    pub tree: Option<String>,
+}
+
+/// Describes one file provenance record (`files` or `supporting_files`) in
+/// `upstream/source-lock.json`.
+///
+/// Leaves upstream `c92d1d97`'s `upstream/source-lock.json` byte-identical
+/// until upstream removes the legacy `"**HASH**": null` key on the next pin
+/// regeneration; rejects `"**HASH**"` everywhere except that single `null`
+/// entry.
+#[derive(Debug, Clone, Deserialize)]
+#[serde(deny_unknown_fields)]
+pub struct SupportingFileRecord {
+    pub component: String,
+    pub git_blob: String,
+    pub path: String,
+    pub sha256: String,
+    #[serde(default, rename = "**HASH**", deserialize_with = "deserialize_legacy_stray_hash")]
+    legacy_stray_hash: LegacyStrayHash,
+}
+
+fn is_git_oid_hex(s: &str) -> bool {
+    s.len() == 40 && s.bytes().all(|b| b.is_ascii_hexdigit())
+}
+
+fn is_canonical_relative_path(rel: &str) -> bool {
+    !rel.is_empty()
+        && rel == rel.trim()
+        && !rel.contains('\\')
+        && !rel.starts_with('/')
+        && !rel.ends_with('/')
+        && !rel.contains("//")
+        && rel.split('/').all(|seg| !seg.is_empty() && seg != "." && seg != "..")
+        && is_clean_relative_path(rel)
+}
+
+fn validate_component_pin(
+    name: &str,
+    pin: &SourceLockComponentPin,
+    phase: &str,
+) -> Result<(), Failure> {
+    if !is_canonical_relative_path(&pin.archive_path)
+        || !is_sha256_hex(&pin.archive_sha256)
+        || pin.archive_url.trim().is_empty()
+        || pin.repository.trim().is_empty()
+        || !is_git_oid_hex(&pin.commit)
+        || pin.tree.as_deref().is_some_and(|t| !is_git_oid_hex(t))
+        || pin.extracted_paths_manifest_sha256.as_deref().is_some_and(|s| !is_sha256_hex(s))
+    {
+        return Err(Failure::policy(
+            phase,
+            format!("invalid `{name}` pin record in upstream/source-lock.json"),
+        ));
+    }
+    Ok(())
+}
+
+fn validate_file_records<'a>(
+    section: &str,
+    records: &'a [SupportingFileRecord],
+    seen_paths: &mut BTreeSet<&'a str>,
+    phase: &str,
+) -> Result<(), Failure> {
+    if records.is_empty() {
+        return Err(Failure::policy(
+            phase,
+            format!("upstream/source-lock.json `{section}` must not be empty"),
+        ));
+    }
+    for record in records {
+        match record.legacy_stray_hash {
+            LegacyStrayHash::Absent => {}
+            LegacyStrayHash::Null
+                if section == "supporting_files" && record.path == LEGACY_STRAY_HASH_PATH => {}
+            LegacyStrayHash::Null | LegacyStrayHash::NonNull => {
+                return Err(Failure::policy(
+                    phase,
+                    format!(
+                        "unexpected `**HASH**` field in `{section}` record for {}",
+                        record.path
+                    ),
+                ));
+            }
+        }
+        if record.component.trim().is_empty() || record.component != record.component.trim() {
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "invalid `{section}` component name in upstream/source-lock.json: {:?}",
+                    record.component
+                ),
+            ));
+        }
+        if !is_canonical_relative_path(&record.path) {
+            return Err(Failure::policy(
+                phase,
+                format!("invalid `{section}` path in upstream/source-lock.json: {:?}", record.path),
+            ));
+        }
+        if !is_git_oid_hex(&record.git_blob) {
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "invalid `{section}` git_blob for {} in upstream/source-lock.json: {:?}",
+                    record.path, record.git_blob
+                ),
+            ));
+        }
+        if !is_sha256_hex(&record.sha256) {
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "invalid `{section}` sha256 for {} in upstream/source-lock.json: {:?}",
+                    record.path, record.sha256
+                ),
+            ));
+        }
+        if !seen_paths.insert(record.path.as_str()) {
+            return Err(Failure::policy(
+                phase,
+                format!("duplicate `{section}` path in upstream/source-lock.json: {}", record.path),
+            ));
+        }
+    }
+    Ok(())
+}
+
+/// Deserialize and validate `vendor/lean-miri/upstream/source-lock.json`
+/// bytes against its closed schema and field invariants.
+pub fn verify_source_lock_bytes(lock_bytes: &[u8]) -> Result<SourceLock, Failure> {
+    let phase = "miri-pin";
+    let lock: SourceLock = serde_json::from_slice(lock_bytes)
+        .map_err(|e| Failure::policy(phase, format!("malformed upstream/source-lock.json: {e}")))?;
+    if lock.schema_version != 1 {
+        return Err(Failure::policy(
+            phase,
+            format!(
+                "unsupported upstream/source-lock.json schema_version: {}",
+                lock.schema_version
+            ),
+        ));
+    }
+    if !is_canonical_relative_path(&lock.acquisition.procedure)
+        || !is_sha256_hex(&lock.acquisition.procedure_sha256)
+        || !is_canonical_relative_path(&lock.acquisition.rustc_selected_archive_paths.path)
+        || !is_sha256_hex(&lock.acquisition.rustc_selected_archive_paths.sha256)
+        || lock.acquisition.rustc_selected_archive_paths.count == 0
+    {
+        return Err(Failure::policy(
+            phase,
+            "invalid `acquisition` metadata in upstream/source-lock.json",
+        ));
+    }
+    for (label, res_file) in [
+        ("resolution_file", &lock.external_dependencies.resolution_file),
+        (
+            "rustc_upstream_resolution_file",
+            &lock.external_dependencies.rustc_upstream_resolution_file,
+        ),
+    ] {
+        if !is_canonical_relative_path(&res_file.path) || !is_sha256_hex(&res_file.sha256) {
+            return Err(Failure::policy(
+                phase,
+                format!("invalid `{label}` record in upstream/source-lock.json"),
+            ));
+        }
+    }
+    for (name, pin) in [
+        ("aes", &lock.pins.aes),
+        ("miri", &lock.pins.miri),
+        ("rustc", &lock.pins.rustc),
+        ("rustc_apfloat", &lock.pins.rustc_apfloat),
+    ] {
+        validate_component_pin(name, pin, phase)?;
+    }
+    let mut seen_paths = BTreeSet::new();
+    validate_file_records("files", &lock.files, &mut seen_paths, phase)?;
+    validate_file_records("supporting_files", &lock.supporting_files, &mut seen_paths, phase)?;
+    Ok(lock)
+}
+
+fn verify_source_lock_bytes_against_pins(
+    lock_bytes: &[u8],
+    expected_pins: &UpstreamSubPins,
+) -> Result<SourceLock, Failure> {
+    let phase = "miri-pin";
+    let lock = verify_source_lock_bytes(lock_bytes)?;
+    for (component, actual, expected) in [
+        ("aes", lock.pins.aes.commit.as_str(), expected_pins.aes_commit.as_str()),
+        ("miri", lock.pins.miri.commit.as_str(), expected_pins.miri_commit.as_str()),
+        ("rustc", lock.pins.rustc.commit.as_str(), expected_pins.rustc_commit.as_str()),
+        (
+            "rustc_apfloat",
+            lock.pins.rustc_apfloat.commit.as_str(),
+            expected_pins.rustc_apfloat_commit.as_str(),
+        ),
+    ] {
+        if !actual.eq_ignore_ascii_case(expected) {
+            return Err(Failure::policy(
+                phase,
+                format!(
+                    "upstream/source-lock.json `{component}` commit mismatch: expected {expected}, got {actual}"
+                ),
+            ));
+        }
+    }
+    Ok(lock)
 }
 
 #[cfg(test)]
@@ -1205,5 +1596,79 @@ mod tests {
             1
         );
         assert_eq!(fs::read(&victim).unwrap(), b"keep-me");
+    }
+
+    #[test]
+    fn verifies_source_lock_wiring_and_rejects_mismatched_pins_and_digests() {
+        let vendor_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../vendor/lean-miri");
+        let orig_pin_bytes = fs::read(vendor_root.join("UPSTREAM_PIN.json")).unwrap();
+        let mut pin_bad_sl_sha: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        pin_bad_sl_sha["upstream_pins"]["source_lock_sha256"] =
+            json!("5555555555555555555555555555555555555555555555555555555555555555");
+        let err_sl_sha =
+            verify_upstream_pin_bytes(&vendor_root, &serde_json::to_vec(&pin_bad_sl_sha).unwrap())
+                .unwrap_err();
+        assert_eq!(err_sl_sha.code, 1);
+        assert!(
+            err_sl_sha
+                .message
+                .contains("upstream_pins.source_lock_sha256 mismatches vendor_aux_files"),
+            "unexpected error: {err_sl_sha}"
+        );
+
+        let pin: UpstreamPin = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        let lock_bytes = fs::read(vendor_root.join("upstream/source-lock.json")).unwrap();
+        let mut lock_json: Json = serde_json::from_slice(&lock_bytes).unwrap();
+        lock_json["pins"]["rustc"]["commit"] = json!("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+        let err_commit = verify_source_lock_bytes_against_pins(
+            &serde_json::to_vec(&lock_json).unwrap(),
+            &pin.upstream_pins,
+        )
+        .unwrap_err();
+        assert_eq!(err_commit.code, 1);
+        assert!(
+            err_commit.message.contains("upstream/source-lock.json `rustc` commit mismatch"),
+            "unexpected error: {err_commit}"
+        );
+
+        // Audit-wiring check: `verify_upstream_pin_bytes` must validate the
+        // parsed `source-lock.json` even when the caller supplies matching
+        // `source_lock_sha256` and `vendor_aux_files` digests for a tampered
+        // lockfile.
+        let tmp = tempfile::tempdir().unwrap();
+        let vendor_copy = tmp.path().join("vendor/lean-miri");
+        for entry in WalkDir::new(&vendor_root).follow_links(false) {
+            let entry = entry.unwrap();
+            let rel = entry.path().strip_prefix(&vendor_root).unwrap();
+            let dst = vendor_copy.join(rel);
+            if entry.file_type().is_dir() {
+                fs::create_dir_all(&dst).unwrap();
+            } else {
+                fs::copy(entry.path(), &dst).unwrap();
+            }
+        }
+        let mut tampered_lock: Json = serde_json::from_slice(&lock_bytes).unwrap();
+        tampered_lock["supporting_files"][0]
+            .as_object_mut()
+            .unwrap()
+            .insert("**HASH**".to_string(), Json::Null);
+        let tampered_bytes = serde_json::to_vec(&tampered_lock).unwrap();
+        fs::write(vendor_copy.join("upstream/source-lock.json"), &tampered_bytes).unwrap();
+        let tampered_sha = sha256_bytes(&tampered_bytes);
+        let mut updated_pin: Json = serde_json::from_slice(&orig_pin_bytes).unwrap();
+        updated_pin["upstream_pins"]["source_lock_sha256"] = json!(tampered_sha);
+        for aux in updated_pin["vendor_aux_files"].as_array_mut().unwrap() {
+            if aux["path"].as_str() == Some("upstream/source-lock.json") {
+                aux["sha256"] = json!(tampered_sha);
+            }
+        }
+        let err_wired =
+            verify_upstream_pin_bytes(&vendor_copy, &serde_json::to_vec(&updated_pin).unwrap())
+                .unwrap_err();
+        assert_eq!(err_wired.code, 1);
+        assert!(
+            err_wired.message.contains("unexpected `**HASH**` field in `supporting_files`"),
+            "unexpected error: {err_wired}"
+        );
     }
 }

@@ -385,6 +385,9 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
    against their SHA-256 digests (rejecting symlinks, missing or unlisted files,
    and pre-existing `.olean`/`.ir` artifacts); `Miri.Input.NativeMathHost` is
    excluded only from the 160-module compiled `execution_machine_closure`.
+   It also validates `upstream/source-lock.json` against its closed schema and
+   `UPSTREAM_PIN.json` pin digests (admitting only the upstream `c92d1d97`
+   legacy `null` `"**HASH**"` key on `upstream/rustc-source/Cargo.lock`).
    Before any vendor module is compiled, `anneal-audit` also authenticates the
    pinned Lean toolchain's `Init`/`Std`/`Lean` `.olean` companions against
    `LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256`. Note that upstream

@@ -29,8 +29,11 @@ pub use cargo_anneal::{
 pub use cargo_boundary::{check_cargo_boundary, verify_bundled_resources};
 pub use miri_pin::{
     LOCKED_MIRI_COMMIT, LOCKED_PATCHED_MIRI_FILES, LOCKED_SYSROOT_FOUNDATION_MANIFEST_SHA256,
-    LOCKED_UPSTREAM_PIN_SHA256, MiriClosureEntry, PatchedMiriFile, UpstreamPin, UpstreamSubPins,
-    VendorFileEntry, VendorTree, ensure_miri_cache_outside_checkout, verify_sysroot_foundation_dir,
-    verify_upstream_pin,
+    LOCKED_UPSTREAM_PIN_SHA256, MiriClosureEntry, PatchedMiriFile, SourceLock,
+    SourceLockAcquisition, SourceLockCargoPackage, SourceLockComponentPin,
+    SourceLockExternalDependencies, SourceLockPins, SourceLockResolutionFile,
+    SourceLockRustcPrivateCrate, SourceLockSelectedArchivePaths, SupportingFileRecord, UpstreamPin,
+    UpstreamSubPins, VendorFileEntry, VendorTree, ensure_miri_cache_outside_checkout,
+    verify_source_lock_bytes, verify_sysroot_foundation_dir, verify_upstream_pin,
 };
 pub use repo_audit::{CandidateFeature, Checker, InspectorRequest, TrustTier, scan_lean_tree};
