@@ -26,15 +26,26 @@ namespace Anneal.Core
 open Trusted.MirAst Trusted.MirSemantics Anneal.MirTotal
 
 /-!
-# Logarithmic Radix-2 Basic-Block Trees (`Core.BlockTree`)
+# Logarithmic Radix-2 and Dense `Chunk8` Basic-Block Trees (`Core.BlockTree`)
 
-Provides a total, LCNF-computable (`0` `noncomputable`, `0` `._unsafe_rec`)
-radix-2 binary trie (`PTree α` and `BlockTree α`) supporting `O(log N)` trie
-lookup and single-pass functional update (`ptreeModifyAt`), `O(N log N)`
-direct list splitting (`ptreeFromListAt`) with `O(log N)` depth computation
-(`compLog2Depth`), unconditional equivalence to `Trusted.MirSemantics.getElem?`
-across both in-bounds and out-of-bounds indices, and a `BlockTree`-indexed
-single-body MIR step evaluator (`evalMirStepBlockTreeBy`).
+Provides total, LCNF-computable (`0` `noncomputable`, `0` `._unsafe_rec`)
+indexed lookup tables:
+
+1. Radix-2 binary trie (`PTree α` and `BlockTree α`) supporting `O(log N)` trie
+   lookup and single-pass functional update (`ptreeModifyAt`), `O(N log N)`
+   direct list splitting (`ptreeFromListAt`) with `O(log N)` depth
+   (`compLog2Depth`), unconditional equivalence to
+   `Trusted.MirSemantics.getElem?` across both in-bounds and out-of-bounds
+   indices, and a `BlockTree`-indexed single-body MIR step evaluator
+   (`evalMirStepBlockTreeBy`).
+2. Dense 8-wide balanced spine (`Chunk8 α`, `Chunk8Tree α`,
+   `Chunk8BlockTree α`, and `MaskTree := Chunk8BlockTree Bool`), unifying dense
+   block tables, chunked binary trees, and boolean live-local masks. Packing 8
+   contiguous elements per `Chunk8` leaf keeps spine depth `≤ 9` and tree height
+   `≤ 10` (`≤ 11` including the leaf chunk) at `N = 4,096` elements, uses
+   zero-`Decidable` `cond` dispatch on the spine, supports `O(1)` 8-element
+   batch chunk lookup (`lookupChunk`), and matches
+   `Trusted.MirSemantics.getElem?` unconditionally.
 -/
 
 /-! ## Constructive Binary Arithmetic Helpers -/
@@ -979,5 +990,1858 @@ theorem wpOutcomeState_of_evalMirFuelBlockTreeBy {tyEq : MirTy → MirTy → Boo
       onDone onFault fuel s := by
   rw [evalMirFuelBlockTreeBy_eq_evalMirFuelBy tyEq hValid fuel s] at h
   exact wpOutcomeState_of_evalMirFuelBy hTyEq h
+
+/-! ## Dense 8-Wide Balanced Spine (`Chunk8`, `Chunk8BlockTree`, `MaskTree`) -/
+
+/-- Fixed-width 8-slot leaf chunk storing `Option α` entries at offsets `0..7`.
+
+Grouping 8 contiguous indices per leaf shrinks the binary spine by 3 levels so
+`N = 4,096` elements fit in `512 = 2^9` chunks (spine depth `9`, tree height
+`≤ 10`, total constructor depth `≤ 11` vs. `4,097` for `List.cons`). -/
+structure Chunk8 (α : Type) where
+  e0 : Option α
+  e1 : Option α
+  e2 : Option α
+  e3 : Option α
+  e4 : Option α
+  e5 : Option α
+  e6 : Option α
+  e7 : Option α
+
+/-- All-`none` `Chunk8 α`. -/
+def Chunk8.empty {α : Type} : Chunk8 α :=
+  ⟨none, none, none, none, none, none, none, none⟩
+
+/-- Constant-time `O(1)` slot lookup in `Chunk8 α` (returns `none` for
+`r ≥ 8`). -/
+def Chunk8.get {α : Type} (c : Chunk8 α) (r : Nat) : Option α :=
+  match r with
+  | 0 => c.e0
+  | 1 => c.e1
+  | 2 => c.e2
+  | 3 => c.e3
+  | 4 => c.e4
+  | 5 => c.e5
+  | 6 => c.e6
+  | 7 => c.e7
+  | _ => none
+
+/-- Constant-time `O(1)` slot update in `Chunk8 α`.
+
+Destructures `c` once into flat constructor fields instead of using record
+update projections so repeated updates do not build nested projection chains in
+kernel WHNF. -/
+def Chunk8.set {α : Type} (c : Chunk8 α) (r : Nat) (v : Option α) : Chunk8 α :=
+  match c with
+  | ⟨e0, e1, e2, e3, e4, e5, e6, e7⟩ =>
+    match r with
+    | 0 => ⟨v, e1, e2, e3, e4, e5, e6, e7⟩
+    | 1 => ⟨e0, v, e2, e3, e4, e5, e6, e7⟩
+    | 2 => ⟨e0, e1, v, e3, e4, e5, e6, e7⟩
+    | 3 => ⟨e0, e1, e2, v, e4, e5, e6, e7⟩
+    | 4 => ⟨e0, e1, e2, e3, v, e5, e6, e7⟩
+    | 5 => ⟨e0, e1, e2, e3, e4, v, e6, e7⟩
+    | 6 => ⟨e0, e1, e2, e3, e4, e5, v, e7⟩
+    | 7 => ⟨e0, e1, e2, e3, e4, e5, e6, v⟩
+    | _ => ⟨e0, e1, e2, e3, e4, e5, e6, e7⟩
+
+/-- Lookup on `Chunk8.empty` is always `none`. -/
+theorem Chunk8.get_empty {α : Type} (r : Nat) :
+    (Chunk8.empty : Chunk8 α).get r = none := by
+  cases r with
+  | zero => rfl
+  | succ r1 =>
+    cases r1 with
+    | zero => rfl
+    | succ r2 =>
+      cases r2 with
+      | zero => rfl
+      | succ r3 =>
+        cases r3 with
+        | zero => rfl
+        | succ r4 =>
+          cases r4 with
+          | zero => rfl
+          | succ r5 =>
+            cases r5 with
+            | zero => rfl
+            | succ r6 =>
+              cases r6 with
+              | zero => rfl
+              | succ r7 =>
+                cases r7 <;> rfl
+
+private theorem nat_ge8_contra {r : Nat} (h : r + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 < 8) :
+    False :=
+  Nat.not_lt_of_ge (Nat.le_add_left 8 r) h
+
+private theorem chunk8_get_ge8 {α : Type} (c : Chunk8 α) (r : Nat) :
+    c.get (r + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1) = none := rfl
+
+private theorem chunk8_get_set_ge8 {α : Type} (c : Chunk8 α) (r j : Nat)
+    (v : Option α) :
+    (c.set r v).get (j + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1) =
+      c.get (j + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1) := by
+  rw [chunk8_get_ge8, chunk8_get_ge8]
+
+/-- Same-slot read-after-write law for `Chunk8.set` (`r < 8`). -/
+theorem Chunk8.get_set_same {α : Type} (c : Chunk8 α) {r : Nat}
+    (v : Option α) (hr : r < 8) :
+    (c.set r v).get r = v := by
+  cases c with
+  | mk e0 e1 e2 e3 e4 e5 e6 e7 =>
+    cases r with
+    | zero => rfl
+    | succ r1 =>
+      cases r1 with
+      | zero => rfl
+      | succ r2 =>
+        cases r2 with
+        | zero => rfl
+        | succ r3 =>
+          cases r3 with
+          | zero => rfl
+          | succ r4 =>
+            cases r4 with
+            | zero => rfl
+            | succ r5 =>
+              cases r5 with
+              | zero => rfl
+              | succ r6 =>
+                cases r6 with
+                | zero => rfl
+                | succ r7 =>
+                  cases r7 with
+                  | zero => rfl
+                  | succ r8 => exact False.elim (nat_ge8_contra hr)
+
+private theorem chunk8_get_set_ne_lt8 {α : Type} (c : Chunk8 α) {r j : Nat}
+    (v : Option α) (hNe : j ≠ r) :
+    (c.set r v).get j = c.get j := by
+  cases j with
+  | zero =>
+    cases r with
+    | zero => exact False.elim (hNe rfl)
+    | succ r1 =>
+      cases r1 with
+      | zero => cases c; rfl
+      | succ r2 =>
+        cases r2 with
+        | zero => cases c; rfl
+        | succ r3 =>
+          cases r3 with
+          | zero => cases c; rfl
+          | succ r4 =>
+            cases r4 with
+            | zero => cases c; rfl
+            | succ r5 =>
+              cases r5 with
+              | zero => cases c; rfl
+              | succ r6 =>
+                cases r6 with
+                | zero => cases c; rfl
+                | succ r7 =>
+                  cases r7 with
+                  | zero => cases c; rfl
+                  | succ _ => cases c; rfl
+  | succ j1 =>
+    cases j1 with
+    | zero =>
+      cases r with
+      | zero => cases c; rfl
+      | succ r1 =>
+        cases r1 with
+        | zero => exact False.elim (hNe rfl)
+        | succ r2 =>
+          cases r2 with
+          | zero => cases c; rfl
+          | succ r3 =>
+            cases r3 with
+            | zero => cases c; rfl
+            | succ r4 =>
+              cases r4 with
+              | zero => cases c; rfl
+              | succ r5 =>
+                cases r5 with
+                | zero => cases c; rfl
+                | succ r6 =>
+                  cases r6 with
+                  | zero => cases c; rfl
+                  | succ r7 =>
+                    cases r7 with
+                    | zero => cases c; rfl
+                    | succ _ => cases c; rfl
+    | succ j2 =>
+      cases j2 with
+      | zero =>
+        cases r with
+        | zero => cases c; rfl
+        | succ r1 =>
+          cases r1 with
+          | zero => cases c; rfl
+          | succ r2 =>
+            cases r2 with
+            | zero => exact False.elim (hNe rfl)
+            | succ r3 =>
+              cases r3 with
+              | zero => cases c; rfl
+              | succ r4 =>
+                cases r4 with
+                | zero => cases c; rfl
+                | succ r5 =>
+                  cases r5 with
+                  | zero => cases c; rfl
+                  | succ r6 =>
+                    cases r6 with
+                    | zero => cases c; rfl
+                    | succ r7 =>
+                      cases r7 with
+                      | zero => cases c; rfl
+                      | succ _ => cases c; rfl
+      | succ j3 =>
+        cases j3 with
+        | zero =>
+          cases r with
+          | zero => cases c; rfl
+          | succ r1 =>
+            cases r1 with
+            | zero => cases c; rfl
+            | succ r2 =>
+              cases r2 with
+              | zero => cases c; rfl
+              | succ r3 =>
+                cases r3 with
+                | zero => exact False.elim (hNe rfl)
+                | succ r4 =>
+                  cases r4 with
+                  | zero => cases c; rfl
+                  | succ r5 =>
+                    cases r5 with
+                    | zero => cases c; rfl
+                    | succ r6 =>
+                      cases r6 with
+                      | zero => cases c; rfl
+                      | succ r7 =>
+                        cases r7 with
+                        | zero => cases c; rfl
+                        | succ _ => cases c; rfl
+        | succ j4 =>
+          cases j4 with
+          | zero =>
+            cases r with
+            | zero => cases c; rfl
+            | succ r1 =>
+              cases r1 with
+              | zero => cases c; rfl
+              | succ r2 =>
+                cases r2 with
+                | zero => cases c; rfl
+                | succ r3 =>
+                  cases r3 with
+                  | zero => cases c; rfl
+                  | succ r4 =>
+                    cases r4 with
+                    | zero => exact False.elim (hNe rfl)
+                    | succ r5 =>
+                      cases r5 with
+                      | zero => cases c; rfl
+                      | succ r6 =>
+                        cases r6 with
+                        | zero => cases c; rfl
+                        | succ r7 =>
+                          cases r7 with
+                          | zero => cases c; rfl
+                          | succ _ => cases c; rfl
+          | succ j5 =>
+            cases j5 with
+            | zero =>
+              cases r with
+              | zero => cases c; rfl
+              | succ r1 =>
+                cases r1 with
+                | zero => cases c; rfl
+                | succ r2 =>
+                  cases r2 with
+                  | zero => cases c; rfl
+                  | succ r3 =>
+                    cases r3 with
+                    | zero => cases c; rfl
+                    | succ r4 =>
+                      cases r4 with
+                      | zero => cases c; rfl
+                      | succ r5 =>
+                        cases r5 with
+                        | zero => exact False.elim (hNe rfl)
+                        | succ r6 =>
+                          cases r6 with
+                          | zero => cases c; rfl
+                          | succ r7 =>
+                            cases r7 with
+                            | zero => cases c; rfl
+                            | succ _ => cases c; rfl
+            | succ j6 =>
+              cases j6 with
+              | zero =>
+                cases r with
+                | zero => cases c; rfl
+                | succ r1 =>
+                  cases r1 with
+                  | zero => cases c; rfl
+                  | succ r2 =>
+                    cases r2 with
+                    | zero => cases c; rfl
+                    | succ r3 =>
+                      cases r3 with
+                      | zero => cases c; rfl
+                      | succ r4 =>
+                        cases r4 with
+                        | zero => cases c; rfl
+                        | succ r5 =>
+                          cases r5 with
+                          | zero => cases c; rfl
+                          | succ r6 =>
+                            cases r6 with
+                            | zero => exact False.elim (hNe rfl)
+                            | succ r7 =>
+                              cases r7 with
+                              | zero => cases c; rfl
+                              | succ _ => cases c; rfl
+              | succ j7 =>
+                cases j7 with
+                | zero =>
+                  cases r with
+                  | zero => cases c; rfl
+                  | succ r1 =>
+                    cases r1 with
+                    | zero => cases c; rfl
+                    | succ r2 =>
+                      cases r2 with
+                      | zero => cases c; rfl
+                      | succ r3 =>
+                        cases r3 with
+                        | zero => cases c; rfl
+                        | succ r4 =>
+                          cases r4 with
+                          | zero => cases c; rfl
+                          | succ r5 =>
+                            cases r5 with
+                            | zero => cases c; rfl
+                            | succ r6 =>
+                              cases r6 with
+                              | zero => cases c; rfl
+                              | succ r7 =>
+                                cases r7 with
+                                | zero => exact False.elim (hNe rfl)
+                                | succ _ => cases c; rfl
+                | succ j8 => exact chunk8_get_set_ge8 c r j8 v
+
+/-- Distinct-slot frame law for `Chunk8.set` (`j ≠ r`). -/
+theorem Chunk8.get_set_ne {α : Type} (c : Chunk8 α) {r j : Nat}
+    (v : Option α) (hNe : j ≠ r) :
+    (c.set r v).get j = c.get j :=
+  chunk8_get_set_ne_lt8 c v hNe
+
+/-- Extracts the leading up-to-8 elements of `xs` into a `Chunk8 α` and returns
+the remaining suffix (`0` `noncomputable`). -/
+def takeChunk8 {α : Type} (xs : List α) : Chunk8 α × List α :=
+  match xs with
+  | [] => (Chunk8.empty, [])
+  | [x0] => (⟨some x0, none, none, none, none, none, none, none⟩, [])
+  | [x0, x1] => (⟨some x0, some x1, none, none, none, none, none, none⟩, [])
+  | [x0, x1, x2] =>
+    (⟨some x0, some x1, some x2, none, none, none, none, none⟩, [])
+  | [x0, x1, x2, x3] =>
+    (⟨some x0, some x1, some x2, some x3, none, none, none, none⟩, [])
+  | [x0, x1, x2, x3, x4] =>
+    (⟨some x0, some x1, some x2, some x3, some x4, none, none, none⟩, [])
+  | [x0, x1, x2, x3, x4, x5] =>
+    (⟨some x0, some x1, some x2, some x3, some x4, some x5, none, none⟩, [])
+  | [x0, x1, x2, x3, x4, x5, x6] =>
+    (⟨some x0, some x1, some x2, some x3, some x4, some x5, some x6, none⟩, [])
+  | x0 :: x1 :: x2 :: x3 :: x4 :: x5 :: x6 :: x7 :: rest =>
+    (⟨some x0, some x1, some x2, some x3, some x4, some x5, some x6, some x7⟩,
+      rest)
+
+/-- Fuel-bounded single-pass chunk packer via `@Nat.rec` (`0` `noncomputable`,
+`0` `brecOn`), terminating immediately on `[]`. -/
+def packChunk8Fuel {α : Type} (fuel : Nat) : List α → List (Chunk8 α) :=
+  @Nat.rec (fun _ => List α → List (Chunk8 α))
+    (fun _ => [])
+    (fun _ ih xs =>
+      match xs with
+      | [] => []
+      | _ :: _ =>
+        let p := takeChunk8 xs
+        p.1 :: ih p.2)
+    fuel
+
+/-- Packs `xs` into `⌈xs.length / 8⌉` `Chunk8 α` leaves in one linear pass. -/
+def packChunk8 {α : Type} (xs : List α) : List (Chunk8 α) :=
+  packChunk8Fuel (Nat.div (compListLength xs + 7) 8) xs
+
+private theorem nat_le_eight_mul_div_add7 (n : Nat) :
+    n ≤ 8 * Nat.div (n + 7) 8 := by
+  have hdiv : 8 * Nat.div (n + 7) 8 + Nat.mod (n + 7) 8 = n + 7 :=
+    Nat.div_add_mod (n + 7) 8
+  have hmod : Nat.mod (n + 7) 8 ≤ 7 :=
+    Nat.le_of_lt_succ (Nat.mod_lt (n + 7) (Nat.succ_pos 7))
+  have hle : 8 * Nat.div (n + 7) 8 + Nat.mod (n + 7) 8 ≤
+      8 * Nat.div (n + 7) 8 + 7 :=
+    Nat.add_le_add_left hmod (8 * Nat.div (n + 7) 8)
+  rw [hdiv] at hle
+  exact Nat.le_of_add_le_add_right hle
+
+private theorem packChunk8Fuel_nil {α : Type} (k : Nat) :
+    packChunk8Fuel k ([] : List α) = [] := by
+  cases k <;> rfl
+
+private theorem packChunk8Fuel_length_le {α : Type} :
+    ∀ (fuel : Nat) (xs : List α), (packChunk8Fuel fuel xs).length ≤ fuel
+  | 0, _ => Nat.le_refl 0
+  | _ + 1, [] => Nat.zero_le _
+  | k + 1, x :: tl =>
+    Nat.succ_le_succ (packChunk8Fuel_length_le k (takeChunk8 (x :: tl)).2)
+
+private theorem nat_div8_eq_zero_iff (idx : Nat) :
+    Nat.div idx 8 = 0 → idx = Nat.mod idx 8 := by
+  intro hq
+  have h : 8 * Nat.div idx 8 + Nat.mod idx 8 = idx := Nat.div_add_mod idx 8
+  rw [hq, Nat.mul_zero, Nat.zero_add] at h
+  exact h.symm
+
+private theorem nat_div8_succ_decomp (idx q : Nat)
+    (hq : Nat.div idx 8 = q + 1) :
+    idx = (8 * q + Nat.mod idx 8) + 8 ∧
+    Nat.div (8 * q + Nat.mod idx 8) 8 = q ∧
+    Nat.mod (8 * q + Nat.mod idx 8) 8 = Nat.mod idx 8 := by
+  have h : 8 * Nat.div idx 8 + Nat.mod idx 8 = idx := Nat.div_add_mod idx 8
+  rw [hq, Nat.mul_succ] at h
+  have hmod : Nat.mod idx 8 < 8 := Nat.mod_lt idx (Nat.succ_pos 7)
+  have hEq : idx = (8 * q + Nat.mod idx 8) + 8 := by
+    have hSwap : (8 * q + Nat.mod idx 8) + 8 = 8 * q + 8 + Nat.mod idx 8 := by
+      rw [Nat.add_assoc, Nat.add_comm (Nat.mod idx 8) 8, ← Nat.add_assoc]
+    exact h.symm.trans hSwap.symm
+  have hq' : Nat.div (8 * q + Nat.mod idx 8) 8 = q := by
+    have h1 : Nat.div (Nat.mod idx 8 + 8 * q) 8 =
+        Nat.div (Nat.mod idx 8) 8 + q := by
+      rw [Nat.mul_comm 8 q]
+      exact Nat.add_mul_div_right (Nat.mod idx 8) q (Nat.succ_pos 7)
+    have hDivZero : Nat.div (Nat.mod idx 8) 8 = 0 := Nat.div_eq_of_lt hmod
+    rw [Nat.add_comm (8 * q) (Nat.mod idx 8), h1, hDivZero, Nat.zero_add]
+  have hr' : Nat.mod (8 * q + Nat.mod idx 8) 8 = Nat.mod idx 8 := by
+    have hdm :
+        8 * Nat.div (8 * q + Nat.mod idx 8) 8 +
+          Nat.mod (8 * q + Nat.mod idx 8) 8 =
+        8 * q + Nat.mod idx 8 :=
+      Nat.div_add_mod (8 * q + Nat.mod idx 8) 8
+    rw [hq'] at hdm
+    exact Nat.add_left_cancel hdm
+  exact ⟨hEq, hq', hr'⟩
+
+private theorem takeChunk8_get_lt8 {α : Type} (xs : List α) (r : Nat)
+    (hr : r < 8) :
+    (takeChunk8 xs).1.get r = Trusted.MirSemantics.getElem? xs r := by
+  cases r with
+  | zero =>
+    cases xs with
+    | nil => rfl
+    | cons _ tl =>
+      cases tl with
+      | nil => rfl
+      | cons _ tl2 =>
+        cases tl2 with
+        | nil => rfl
+        | cons _ tl3 =>
+          cases tl3 with
+          | nil => rfl
+          | cons _ tl4 =>
+            cases tl4 with
+            | nil => rfl
+            | cons _ tl5 =>
+              cases tl5 with
+              | nil => rfl
+              | cons _ tl6 =>
+                cases tl6 with
+                | nil => rfl
+                | cons _ tl7 =>
+                  cases tl7 <;> rfl
+  | succ r1 =>
+    cases r1 with
+    | zero =>
+      cases xs with
+      | nil => rfl
+      | cons _ tl =>
+        cases tl with
+        | nil => rfl
+        | cons _ tl2 =>
+          cases tl2 with
+          | nil => rfl
+          | cons _ tl3 =>
+            cases tl3 with
+            | nil => rfl
+            | cons _ tl4 =>
+              cases tl4 with
+              | nil => rfl
+              | cons _ tl5 =>
+                cases tl5 with
+                | nil => rfl
+                | cons _ tl6 =>
+                  cases tl6 with
+                  | nil => rfl
+                  | cons _ tl7 => cases tl7 <;> rfl
+    | succ r2 =>
+      cases r2 with
+      | zero =>
+        cases xs with
+        | nil => rfl
+        | cons _ tl =>
+          cases tl with
+          | nil => rfl
+          | cons _ tl2 =>
+            cases tl2 with
+            | nil => rfl
+            | cons _ tl3 =>
+              cases tl3 with
+              | nil => rfl
+              | cons _ tl4 =>
+                cases tl4 with
+                | nil => rfl
+                | cons _ tl5 =>
+                  cases tl5 with
+                  | nil => rfl
+                  | cons _ tl6 =>
+                    cases tl6 with
+                    | nil => rfl
+                    | cons _ tl7 => cases tl7 <;> rfl
+      | succ r3 =>
+        cases r3 with
+        | zero =>
+          cases xs with
+          | nil => rfl
+          | cons _ tl =>
+            cases tl with
+            | nil => rfl
+            | cons _ tl2 =>
+              cases tl2 with
+              | nil => rfl
+              | cons _ tl3 =>
+                cases tl3 with
+                | nil => rfl
+                | cons _ tl4 =>
+                  cases tl4 with
+                  | nil => rfl
+                  | cons _ tl5 =>
+                    cases tl5 with
+                    | nil => rfl
+                    | cons _ tl6 =>
+                      cases tl6 with
+                      | nil => rfl
+                      | cons _ tl7 => cases tl7 <;> rfl
+        | succ r4 =>
+          cases r4 with
+          | zero =>
+            cases xs with
+            | nil => rfl
+            | cons _ tl =>
+              cases tl with
+              | nil => rfl
+              | cons _ tl2 =>
+                cases tl2 with
+                | nil => rfl
+                | cons _ tl3 =>
+                  cases tl3 with
+                  | nil => rfl
+                  | cons _ tl4 =>
+                    cases tl4 with
+                    | nil => rfl
+                    | cons _ tl5 =>
+                      cases tl5 with
+                      | nil => rfl
+                      | cons _ tl6 =>
+                        cases tl6 with
+                        | nil => rfl
+                        | cons _ tl7 => cases tl7 <;> rfl
+          | succ r5 =>
+            cases r5 with
+            | zero =>
+              cases xs with
+              | nil => rfl
+              | cons _ tl =>
+                cases tl with
+                | nil => rfl
+                | cons _ tl2 =>
+                  cases tl2 with
+                  | nil => rfl
+                  | cons _ tl3 =>
+                    cases tl3 with
+                    | nil => rfl
+                    | cons _ tl4 =>
+                      cases tl4 with
+                      | nil => rfl
+                      | cons _ tl5 =>
+                        cases tl5 with
+                        | nil => rfl
+                        | cons _ tl6 =>
+                          cases tl6 with
+                          | nil => rfl
+                          | cons _ tl7 => cases tl7 <;> rfl
+            | succ r6 =>
+              cases r6 with
+              | zero =>
+                cases xs with
+                | nil => rfl
+                | cons _ tl =>
+                  cases tl with
+                  | nil => rfl
+                  | cons _ tl2 =>
+                    cases tl2 with
+                    | nil => rfl
+                    | cons _ tl3 =>
+                      cases tl3 with
+                      | nil => rfl
+                      | cons _ tl4 =>
+                        cases tl4 with
+                        | nil => rfl
+                        | cons _ tl5 =>
+                          cases tl5 with
+                          | nil => rfl
+                          | cons _ tl6 =>
+                            cases tl6 with
+                            | nil => rfl
+                            | cons _ tl7 => cases tl7 <;> rfl
+              | succ r7 =>
+                cases r7 with
+                | zero =>
+                  cases xs with
+                  | nil => rfl
+                  | cons _ tl =>
+                    cases tl with
+                    | nil => rfl
+                    | cons _ tl2 =>
+                      cases tl2 with
+                      | nil => rfl
+                      | cons _ tl3 =>
+                        cases tl3 with
+                        | nil => rfl
+                        | cons _ tl4 =>
+                          cases tl4 with
+                          | nil => rfl
+                          | cons _ tl5 =>
+                            cases tl5 with
+                            | nil => rfl
+                            | cons _ tl6 =>
+                              cases tl6 with
+                              | nil => rfl
+                              | cons _ tl7 => cases tl7 <;> rfl
+                | succ r8 => exact False.elim (nat_ge8_contra hr)
+
+private theorem getElem?_packChunk8Fuel {α : Type} :
+    ∀ (fuel : Nat) (xs : List α),
+      xs.length ≤ 8 * fuel →
+      ∀ idx : Nat,
+        (match Trusted.MirSemantics.getElem? (packChunk8Fuel fuel xs)
+            (Nat.div idx 8) with
+         | some c => c.get (Nat.mod idx 8)
+         | none => none) =
+        Trusted.MirSemantics.getElem? xs idx
+  | 0, [], _, idx => by
+    cases idx <;> rfl
+  | 0, _ :: _, hBound, _ =>
+    False.elim (Nat.not_lt_of_ge hBound (Nat.succ_pos _))
+  | k + 1, [], _, idx => by
+    cases idx <;> rfl
+  | k + 1, x :: tl, hBound, idx => by
+    let xs := x :: tl
+    cases hq : Nat.div idx 8 with
+    | zero =>
+      have hidx := nat_div8_eq_zero_iff idx hq
+      have hr : Nat.mod idx 8 < 8 := Nat.mod_lt idx (Nat.succ_pos 7)
+      change (takeChunk8 xs).1.get (Nat.mod idx 8) =
+        Trusted.MirSemantics.getElem? xs idx
+      rw [takeChunk8_get_lt8 xs (Nat.mod idx 8) hr, ← hidx]
+    | succ q' =>
+      have hd := nat_div8_succ_decomp idx q' hq
+      cases tl with
+      | nil =>
+        change (match Trusted.MirSemantics.getElem? (packChunk8Fuel k []) q' with
+            | some c => c.get (Nat.mod idx 8)
+            | none => none) = Trusted.MirSemantics.getElem? [x] idx
+        rw [packChunk8Fuel_nil k, hd.1]; rfl
+      | cons x1 tl1 =>
+        cases tl1 with
+        | nil =>
+          change (match Trusted.MirSemantics.getElem? (packChunk8Fuel k []) q' with
+              | some c => c.get (Nat.mod idx 8)
+              | none => none) = Trusted.MirSemantics.getElem? [x, x1] idx
+          rw [packChunk8Fuel_nil k, hd.1]; rfl
+        | cons x2 tl2 =>
+          cases tl2 with
+          | nil =>
+            change (match Trusted.MirSemantics.getElem? (packChunk8Fuel k []) q' with
+                | some c => c.get (Nat.mod idx 8)
+                | none => none) =
+              Trusted.MirSemantics.getElem? [x, x1, x2] idx
+            rw [packChunk8Fuel_nil k, hd.1]; rfl
+          | cons x3 tl3 =>
+            cases tl3 with
+            | nil =>
+              change (match Trusted.MirSemantics.getElem? (packChunk8Fuel k []) q' with
+                  | some c => c.get (Nat.mod idx 8)
+                  | none => none) =
+                Trusted.MirSemantics.getElem? [x, x1, x2, x3] idx
+              rw [packChunk8Fuel_nil k, hd.1]; rfl
+            | cons x4 tl4 =>
+              cases tl4 with
+              | nil =>
+                change (match Trusted.MirSemantics.getElem? (packChunk8Fuel k []) q' with
+                    | some c => c.get (Nat.mod idx 8)
+                    | none => none) =
+                  Trusted.MirSemantics.getElem? [x, x1, x2, x3, x4] idx
+                rw [packChunk8Fuel_nil k, hd.1]; rfl
+              | cons x5 tl5 =>
+                cases tl5 with
+                | nil =>
+                  change (match Trusted.MirSemantics.getElem? (packChunk8Fuel k []) q' with
+                      | some c => c.get (Nat.mod idx 8)
+                      | none => none) =
+                    Trusted.MirSemantics.getElem? [x, x1, x2, x3, x4, x5] idx
+                  rw [packChunk8Fuel_nil k, hd.1]; rfl
+                | cons x6 tl6 =>
+                  cases tl6 with
+                  | nil =>
+                    change (match Trusted.MirSemantics.getElem? (packChunk8Fuel k []) q' with
+                        | some c => c.get (Nat.mod idx 8)
+                        | none => none) =
+                      Trusted.MirSemantics.getElem?
+                        [x, x1, x2, x3, x4, x5, x6] idx
+                    rw [packChunk8Fuel_nil k, hd.1]; rfl
+                  | cons x7 rest =>
+                    have hRestBound : rest.length ≤ 8 * k := by
+                      have hLen :
+                          (x :: x1 :: x2 :: x3 :: x4 :: x5 :: x6 :: x7 :: rest).length =
+                            rest.length + 8 := rfl
+                      rw [hLen, Nat.mul_succ] at hBound
+                      exact Nat.le_of_add_le_add_right hBound
+                    have ih := getElem?_packChunk8Fuel k rest hRestBound
+                      (8 * q' + Nat.mod idx 8)
+                    rw [hd.2.1, hd.2.2] at ih
+                    change (match Trusted.MirSemantics.getElem?
+                        (packChunk8Fuel k rest) q' with
+                        | some c => c.get (Nat.mod idx 8)
+                        | none => none) =
+                      Trusted.MirSemantics.getElem?
+                        (x :: x1 :: x2 :: x3 :: x4 :: x5 :: x6 :: x7 :: rest) idx
+                    have hStep8 :
+                        Trusted.MirSemantics.getElem?
+                          (x :: x1 :: x2 :: x3 :: x4 :: x5 :: x6 :: x7 :: rest)
+                          ((8 * q' + Nat.mod idx 8) + 8) =
+                        Trusted.MirSemantics.getElem? rest
+                          (8 * q' + Nat.mod idx 8) := rfl
+                    have hRhs :
+                        Trusted.MirSemantics.getElem?
+                          (x :: x1 :: x2 :: x3 :: x4 :: x5 :: x6 :: x7 :: rest)
+                          idx =
+                        Trusted.MirSemantics.getElem? rest
+                          (8 * q' + Nat.mod idx 8) :=
+                      (congrArg
+                        (Trusted.MirSemantics.getElem?
+                          (x :: x1 :: x2 :: x3 :: x4 :: x5 :: x6 :: x7 :: rest))
+                        hd.1).trans hStep8
+                    rw [hRhs]
+                    exact ih
+
+/-- Balanced dense binary spine storing `Chunk8 α` leaves (`0` `Option` leaf
+wrapper overhead). -/
+inductive Chunk8Tree (α : Type) : Type where
+  | empty : Chunk8Tree α
+  | leaf : Chunk8 α → Chunk8Tree α
+  | node : Chunk8Tree α → Chunk8Tree α → Chunk8Tree α
+
+private def natMax2 (a b : Nat) : Nat :=
+  cond (Nat.ble a b) b a
+
+private theorem natMax2_le {a b c : Nat} (ha : a ≤ c) (hb : b ≤ c) :
+    natMax2 a b ≤ c := by
+  unfold natMax2
+  cases Nat.ble a b with
+  | true => exact hb
+  | false => exact ha
+
+/-- Fuel-bounded constructor height of a `Chunk8Tree α` via `@Nat.rec` (`0`
+`noncomputable`, `0` `._unsafe_rec`, `hasIR = true`). -/
+def Chunk8Tree.heightAt {α : Type} (fuel : Nat) : Chunk8Tree α → Nat :=
+  @Nat.rec (fun _ => Chunk8Tree α → Nat)
+    (fun _ => 0)
+    (fun _ ih t =>
+      match t with
+      | .empty => 0
+      | .leaf _ => 1
+      | .node l r => natMax2 (ih l) (ih r) + 1)
+    fuel
+
+/-- Builds a balanced `Chunk8Tree α` of spine depth `depth` directly from a
+packed `List (Chunk8 α)` via single-pass even/odd splitting (`0`
+`noncomputable`, `0` `._unsafe_rec`, `hasIR = true`). -/
+def chunk8TreeFromChunksAt {α : Type} (depth : Nat) :
+    List (Chunk8 α) → Chunk8Tree α :=
+  @Nat.rec (fun _ => List (Chunk8 α) → Chunk8Tree α)
+    (fun cs =>
+      match cs with
+      | [] => .empty
+      | c :: _ => .leaf c)
+    (fun _ ih cs =>
+      match cs with
+      | [] => .empty
+      | _ :: _ =>
+        let eo := unzipEvenOdd cs
+        .node (ih eo.1) (ih eo.2))
+    depth
+
+/-- Height of `chunk8TreeFromChunksAt depth cs` is bounded unconditionally by
+`depth + 1` at every fuel budget `fuel`. -/
+theorem chunk8TreeFromChunksAt_height_le {α : Type} :
+    ∀ (fuel depth : Nat) (cs : List (Chunk8 α)),
+      (chunk8TreeFromChunksAt depth cs).heightAt fuel ≤ depth + 1
+  | 0, depth, _ => Nat.zero_le (depth + 1)
+  | _ + 1, 0, [] => Nat.zero_le 1
+  | _ + 1, 0, _ :: _ => Nat.le_refl 1
+  | _ + 1, d + 1, [] => Nat.zero_le (d + 2)
+  | f + 1, d + 1, c :: tl => by
+    change natMax2
+        ((chunk8TreeFromChunksAt d (unzipEvenOdd (c :: tl)).1).heightAt f)
+        ((chunk8TreeFromChunksAt d (unzipEvenOdd (c :: tl)).2).heightAt f) + 1 ≤
+      (d + 1) + 1
+    exact Nat.succ_le_succ
+      (natMax2_le
+        (chunk8TreeFromChunksAt_height_le f d (unzipEvenOdd (c :: tl)).1)
+        (chunk8TreeFromChunksAt_height_le f d (unzipEvenOdd (c :: tl)).2))
+
+/-- Looks up an entire `Chunk8 α` leaf at `chunkIdx` in `O(depth)` spine steps
+using `cond` (zero `@ite`/`Decidable` overhead). -/
+def chunk8TreeLookupChunkAt {α : Type} (depth : Nat) :
+    Chunk8Tree α → Nat → Option (Chunk8 α) :=
+  @Nat.rec (fun _ => Chunk8Tree α → Nat → Option (Chunk8 α))
+    (fun t chunkIdx =>
+      match t with
+      | .empty => none
+      | .leaf c => cond (Nat.beq chunkIdx 0) (some c) none
+      | .node _ _ => none)
+    (fun _ ih t chunkIdx =>
+      match t with
+      | .empty => none
+      | .leaf _ => none
+      | .node l r =>
+        cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+          (ih l (Nat.div chunkIdx 2))
+          (ih r (Nat.div chunkIdx 2)))
+    depth
+
+private theorem chunk8TreeLookupChunkAt_empty {α : Type} (depth chunkIdx : Nat) :
+    chunk8TreeLookupChunkAt depth (.empty : Chunk8Tree α) chunkIdx = none := by
+  cases depth <;> rfl
+
+/-- Exact chunk lookup equivalence between `chunk8TreeLookupChunkAt` and
+`Trusted.MirSemantics.getElem? cs chunkIdx` whenever `cs.length ≤ pow2 depth`.
+-/
+theorem chunk8TreeLookupChunkAt_fromChunksAt {α : Type} :
+    ∀ (depth : Nat) (cs : List (Chunk8 α)),
+      cs.length ≤ pow2 depth →
+      ∀ chunkIdx : Nat,
+        chunk8TreeLookupChunkAt depth (chunk8TreeFromChunksAt depth cs)
+            chunkIdx =
+          Trusted.MirSemantics.getElem? cs chunkIdx
+  | 0, [], _, chunkIdx => by
+    cases chunkIdx <;> rfl
+  | 0, [c], _, chunkIdx => by
+    cases chunkIdx <;> rfl
+  | 0, _ :: _ :: tl, hBound, _ => by
+    rw [pow2_zero] at hBound
+    exact False.elim
+      (Nat.not_lt_of_ge hBound (Nat.succ_lt_succ (Nat.succ_pos tl.length)))
+  | d + 1, [], _, chunkIdx => by
+    change (none : Option (Chunk8 α)) =
+      Trusted.MirSemantics.getElem? [] chunkIdx
+    cases chunkIdx <;> rfl
+  | d + 1, c :: tl, hBound, chunkIdx => by
+    let cs := c :: tl
+    have hLen := length_unzipEvenOdd_bounds cs
+    rw [pow2_succ] at hBound
+    have hSub2 : (unzipEvenOdd cs).2.length ≤ pow2 d := by
+      have h2 : 2 * (unzipEvenOdd cs).2.length ≤ 2 * pow2 d :=
+        Nat.le_trans hLen.2 hBound
+      exact Nat.le_of_mul_le_mul_left h2 (Nat.succ_pos 1)
+    have hSub1 : (unzipEvenOdd cs).1.length ≤ pow2 d := by
+      cases Nat.lt_or_ge (pow2 d) (unzipEvenOdd cs).1.length with
+      | inr hle => exact hle
+      | inl hgt =>
+        have hMulGe : 2 * (pow2 d + 1) ≤ 2 * (unzipEvenOdd cs).1.length :=
+          Nat.mul_le_mul_left 2 hgt
+        rw [Nat.mul_succ] at hMulGe
+        have hUpper : 2 * (unzipEvenOdd cs).1.length ≤ 2 * pow2 d + 1 :=
+          Nat.le_trans hLen.1 (Nat.succ_le_succ hBound)
+        have hContra : 2 * pow2 d + 2 ≤ 2 * pow2 d + 1 :=
+          Nat.le_trans hMulGe hUpper
+        exact False.elim
+          (Nat.not_lt_of_ge hContra (Nat.lt_succ_self (2 * pow2 d + 1)))
+    change
+      cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+        (chunk8TreeLookupChunkAt d
+          (chunk8TreeFromChunksAt d (unzipEvenOdd cs).1) (Nat.div chunkIdx 2))
+        (chunk8TreeLookupChunkAt d
+          (chunk8TreeFromChunksAt d (unzipEvenOdd cs).2) (Nat.div chunkIdx 2)) =
+      Trusted.MirSemantics.getElem? cs chunkIdx
+    have hde := nat_div2_decomp chunkIdx
+    cases hbeq : Nat.beq (Nat.mod chunkIdx 2) 0 with
+    | true =>
+      rw [hbeq] at hde
+      change 2 * Nat.div chunkIdx 2 = chunkIdx at hde
+      dsimp only [cond]
+      rw [chunk8TreeLookupChunkAt_fromChunksAt d (unzipEvenOdd cs).1 hSub1
+            (Nat.div chunkIdx 2),
+          (getElem?_unzipEvenOdd cs (Nat.div chunkIdx 2)).1, hde]
+    | false =>
+      rw [hbeq] at hde
+      change 2 * Nat.div chunkIdx 2 + 1 = chunkIdx at hde
+      dsimp only [cond]
+      rw [chunk8TreeLookupChunkAt_fromChunksAt d (unzipEvenOdd cs).2 hSub2
+            (Nat.div chunkIdx 2),
+          (getElem?_unzipEvenOdd cs (Nat.div chunkIdx 2)).2, hde]
+
+/-- Single-pass `O(depth)` functional update of slot `(chunkIdx, rem)` in a
+`Chunk8Tree α`, allocating missing spine nodes and `Chunk8.empty` leaves on
+demand (`0` `noncomputable`). -/
+def chunk8TreeModifyAt {α : Type} (depth : Nat) :
+    Chunk8Tree α → Nat → Nat → Option α → Chunk8Tree α :=
+  @Nat.rec (fun _ => Chunk8Tree α → Nat → Nat → Option α → Chunk8Tree α)
+    (fun t chunkIdx rem v =>
+      cond (Nat.beq chunkIdx 0)
+        (let c := match t with | .leaf c0 => c0 | .empty | .node _ _ => Chunk8.empty
+         .leaf (c.set rem v))
+        t)
+    (fun _ ih t chunkIdx rem v =>
+      let (l, r) : Chunk8Tree α × Chunk8Tree α :=
+        match t with
+        | .node l0 r0 => (l0, r0)
+        | .empty | .leaf _ => (.empty, .empty)
+      cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+        (.node (ih l (Nat.div chunkIdx 2) rem v) r)
+        (.node l (ih r (Nat.div chunkIdx 2) rem v)))
+    depth
+
+/-- Looks up element `idx` inside a depth-`depth` `Chunk8Tree α` in
+`O(depth)` spine steps plus one `O(1)` `Chunk8.get` dispatch. -/
+def chunk8TreeGetAt {α : Type} (depth : Nat) (t : Chunk8Tree α) (idx : Nat) :
+    Option α :=
+  match chunk8TreeLookupChunkAt depth t (Nat.div idx 8) with
+  | some c => c.get (Nat.mod idx 8)
+  | none => none
+
+private theorem chunk8TreeLookupChunkAt_modify_same {α : Type}
+    (depth : Nat) (t : Chunk8Tree α) (chunkIdx rem : Nat) (v : Option α)
+    (hc : chunkIdx < pow2 depth) :
+    chunk8TreeLookupChunkAt depth
+        (chunk8TreeModifyAt depth t chunkIdx rem v) chunkIdx =
+      some ((match chunk8TreeLookupChunkAt depth t chunkIdx with
+             | some c0 => c0
+             | none => Chunk8.empty).set rem v) := by
+  revert t chunkIdx
+  induction depth with
+  | zero =>
+    intro t chunkIdx hc
+    rw [pow2_zero] at hc
+    have h0 : chunkIdx = 0 := Nat.eq_zero_of_le_zero (Nat.le_of_lt_succ hc)
+    subst h0
+    cases t <;> rfl
+  | succ d ih =>
+    intro t chunkIdx hc
+    rw [pow2_succ, Nat.mul_comm 2 (pow2 d)] at hc
+    have hhalf : Nat.div chunkIdx 2 < pow2 d :=
+      (Nat.div_lt_iff_lt_mul (Nat.succ_pos 1)).mpr hc
+    cases t with
+    | empty | leaf _ =>
+      change chunk8TreeLookupChunkAt (d + 1)
+          (cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+            (.node (chunk8TreeModifyAt d .empty (Nat.div chunkIdx 2) rem v)
+              .empty)
+            (.node .empty
+              (chunk8TreeModifyAt d .empty (Nat.div chunkIdx 2) rem v)))
+          chunkIdx = some (Chunk8.empty.set rem v)
+      cases hpar : Nat.beq (Nat.mod chunkIdx 2) 0 with
+      | true =>
+        dsimp only [cond]
+        change cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+            (chunk8TreeLookupChunkAt d
+              (chunk8TreeModifyAt d .empty (Nat.div chunkIdx 2) rem v)
+              (Nat.div chunkIdx 2))
+            (chunk8TreeLookupChunkAt d .empty (Nat.div chunkIdx 2)) =
+          some (Chunk8.empty.set rem v)
+        rw [hpar]
+        dsimp only [cond]
+        rw [ih .empty (Nat.div chunkIdx 2) hhalf,
+          chunk8TreeLookupChunkAt_empty d (Nat.div chunkIdx 2)]
+      | false =>
+        dsimp only [cond]
+        change cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+            (chunk8TreeLookupChunkAt d .empty (Nat.div chunkIdx 2))
+            (chunk8TreeLookupChunkAt d
+              (chunk8TreeModifyAt d .empty (Nat.div chunkIdx 2) rem v)
+              (Nat.div chunkIdx 2)) =
+          some (Chunk8.empty.set rem v)
+        rw [hpar]
+        dsimp only [cond]
+        rw [ih .empty (Nat.div chunkIdx 2) hhalf,
+          chunk8TreeLookupChunkAt_empty d (Nat.div chunkIdx 2)]
+    | node l r =>
+      change chunk8TreeLookupChunkAt (d + 1)
+          (cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+            (.node (chunk8TreeModifyAt d l (Nat.div chunkIdx 2) rem v) r)
+            (.node l (chunk8TreeModifyAt d r (Nat.div chunkIdx 2) rem v)))
+          chunkIdx =
+        some ((match cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+                  (chunk8TreeLookupChunkAt d l (Nat.div chunkIdx 2))
+                  (chunk8TreeLookupChunkAt d r (Nat.div chunkIdx 2)) with
+               | some c0 => c0
+               | none => Chunk8.empty).set rem v)
+      cases hpar : Nat.beq (Nat.mod chunkIdx 2) 0 with
+      | true =>
+        dsimp only [cond]
+        change cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+            (chunk8TreeLookupChunkAt d
+              (chunk8TreeModifyAt d l (Nat.div chunkIdx 2) rem v)
+              (Nat.div chunkIdx 2))
+            (chunk8TreeLookupChunkAt d r (Nat.div chunkIdx 2)) = _
+        rw [hpar]
+        dsimp only [cond]
+        exact ih l (Nat.div chunkIdx 2) hhalf
+      | false =>
+        dsimp only [cond]
+        change cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+            (chunk8TreeLookupChunkAt d l (Nat.div chunkIdx 2))
+            (chunk8TreeLookupChunkAt d
+              (chunk8TreeModifyAt d r (Nat.div chunkIdx 2) rem v)
+              (Nat.div chunkIdx 2)) = _
+        rw [hpar]
+        dsimp only [cond]
+        exact ih r (Nat.div chunkIdx 2) hhalf
+
+private theorem chunk8TreeLookupChunkAt_modify_ne {α : Type}
+    (depth : Nat) (t : Chunk8Tree α) (chunkIdx q rem : Nat) (v : Option α)
+    (hNe : q ≠ chunkIdx) :
+    chunk8TreeLookupChunkAt depth
+        (chunk8TreeModifyAt depth t chunkIdx rem v) q =
+      chunk8TreeLookupChunkAt depth t q := by
+  revert t chunkIdx q
+  induction depth with
+  | zero =>
+    intro t chunkIdx q hNe
+    change chunk8TreeLookupChunkAt 0
+        (cond (Nat.beq chunkIdx 0)
+          (.leaf ((match t with | .leaf c0 => c0 | .empty | .node _ _ => Chunk8.empty).set rem v))
+          t) q =
+      chunk8TreeLookupChunkAt 0 t q
+    cases hIdx : Nat.beq chunkIdx 0 with
+    | false => rfl
+    | true =>
+      have h0 : chunkIdx = 0 := natEq_of_beq chunkIdx 0 hIdx
+      subst h0
+      have hq0 : Nat.beq q 0 = false := natBeq_false_of_ne hNe
+      dsimp only [cond]
+      cases t with
+      | empty =>
+        change cond (Nat.beq q 0) _ none = none
+        rw [hq0]; rfl
+      | leaf c0 =>
+        change cond (Nat.beq q 0) _ none = cond (Nat.beq q 0) (some c0) none
+        rw [hq0]; rfl
+      | node _ _ =>
+        change cond (Nat.beq q 0) _ none = none
+        rw [hq0]; rfl
+  | succ d ih =>
+    intro t chunkIdx q hNe
+    have hDivNe :
+        Nat.beq (Nat.mod q 2) 0 = Nat.beq (Nat.mod chunkIdx 2) 0 →
+        Nat.div q 2 ≠ Nat.div chunkIdx 2 := by
+      intro hParEq hDivEq
+      have hdq := nat_div2_decomp q
+      have hdc := nat_div2_decomp chunkIdx
+      cases hp : Nat.beq (Nat.mod chunkIdx 2) 0 with
+      | true =>
+        rw [hp] at hParEq hdc
+        rw [hParEq] at hdq
+        change 2 * Nat.div q 2 = q at hdq
+        change 2 * Nat.div chunkIdx 2 = chunkIdx at hdc
+        rw [hDivEq, hdc] at hdq
+        exact hNe hdq.symm
+      | false =>
+        rw [hp] at hParEq hdc
+        rw [hParEq] at hdq
+        change 2 * Nat.div q 2 + 1 = q at hdq
+        change 2 * Nat.div chunkIdx 2 + 1 = chunkIdx at hdc
+        rw [hDivEq, hdc] at hdq
+        exact hNe hdq.symm
+    cases t with
+    | empty | leaf _ =>
+      change chunk8TreeLookupChunkAt (d + 1)
+          (cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+            (.node (chunk8TreeModifyAt d .empty (Nat.div chunkIdx 2) rem v)
+              .empty)
+            (.node .empty
+              (chunk8TreeModifyAt d .empty (Nat.div chunkIdx 2) rem v))) q =
+        none
+      cases hpi : Nat.beq (Nat.mod chunkIdx 2) 0 with
+      | true =>
+        dsimp only [cond]
+        change cond (Nat.beq (Nat.mod q 2) 0)
+            (chunk8TreeLookupChunkAt d
+              (chunk8TreeModifyAt d .empty (Nat.div chunkIdx 2) rem v)
+              (Nat.div q 2))
+            (chunk8TreeLookupChunkAt d .empty (Nat.div q 2)) = none
+        cases hpq : Nat.beq (Nat.mod q 2) 0 with
+        | true =>
+          dsimp only [cond]
+          rw [ih .empty (Nat.div chunkIdx 2) (Nat.div q 2)
+                (hDivNe (hpq.trans hpi.symm)),
+              chunk8TreeLookupChunkAt_empty]
+        | false =>
+          dsimp only [cond]
+          exact chunk8TreeLookupChunkAt_empty d (Nat.div q 2)
+      | false =>
+        dsimp only [cond]
+        change cond (Nat.beq (Nat.mod q 2) 0)
+            (chunk8TreeLookupChunkAt d .empty (Nat.div q 2))
+            (chunk8TreeLookupChunkAt d
+              (chunk8TreeModifyAt d .empty (Nat.div chunkIdx 2) rem v)
+              (Nat.div q 2)) = none
+        cases hpq : Nat.beq (Nat.mod q 2) 0 with
+        | true =>
+          dsimp only [cond]
+          exact chunk8TreeLookupChunkAt_empty d (Nat.div q 2)
+        | false =>
+          dsimp only [cond]
+          rw [ih .empty (Nat.div chunkIdx 2) (Nat.div q 2)
+                (hDivNe (hpq.trans hpi.symm)),
+              chunk8TreeLookupChunkAt_empty]
+    | node l r =>
+      change chunk8TreeLookupChunkAt (d + 1)
+          (cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+            (.node (chunk8TreeModifyAt d l (Nat.div chunkIdx 2) rem v) r)
+            (.node l (chunk8TreeModifyAt d r (Nat.div chunkIdx 2) rem v))) q =
+        cond (Nat.beq (Nat.mod q 2) 0)
+          (chunk8TreeLookupChunkAt d l (Nat.div q 2))
+          (chunk8TreeLookupChunkAt d r (Nat.div q 2))
+      cases hpi : Nat.beq (Nat.mod chunkIdx 2) 0 with
+      | true =>
+        dsimp only [cond]
+        change cond (Nat.beq (Nat.mod q 2) 0)
+            (chunk8TreeLookupChunkAt d
+              (chunk8TreeModifyAt d l (Nat.div chunkIdx 2) rem v)
+              (Nat.div q 2))
+            (chunk8TreeLookupChunkAt d r (Nat.div q 2)) = _
+        cases hpq : Nat.beq (Nat.mod q 2) 0 with
+        | true =>
+          dsimp only [cond]
+          exact ih l (Nat.div chunkIdx 2) (Nat.div q 2)
+            (hDivNe (hpq.trans hpi.symm))
+        | false => rfl
+      | false =>
+        dsimp only [cond]
+        change cond (Nat.beq (Nat.mod q 2) 0)
+            (chunk8TreeLookupChunkAt d l (Nat.div q 2))
+            (chunk8TreeLookupChunkAt d
+              (chunk8TreeModifyAt d r (Nat.div chunkIdx 2) rem v)
+              (Nat.div q 2)) = _
+        cases hpq : Nat.beq (Nat.mod q 2) 0 with
+        | true => rfl
+        | false =>
+          dsimp only [cond]
+          exact ih r (Nat.div chunkIdx 2) (Nat.div q 2)
+            (hDivNe (hpq.trans hpi.symm))
+
+/-- Pure-data dense `Chunk8` balanced lookup table (`0` `Prop` fields) unifying
+dense block tables, chunked binary trees, and boolean live-local masks. -/
+structure Chunk8BlockTree (α : Type) where
+  depth : Nat
+  tree : Chunk8Tree α
+
+/-- Tabulates `xs` into a `Chunk8BlockTree α` at explicit spine depth `depth`.
+-/
+def Chunk8BlockTree.ofListAt {α : Type} (xs : List α) (depth : Nat) :
+    Chunk8BlockTree α :=
+  { depth := depth, tree := chunk8TreeFromChunksAt depth (packChunk8 xs) }
+
+/-- Tabulates `xs` into a `Chunk8BlockTree α` at minimal logarithmic spine
+depth `compLog2Depth (Nat.div (compListLength xs + 7) 8)`. -/
+def Chunk8BlockTree.ofList {α : Type} (xs : List α) : Chunk8BlockTree α :=
+  let chunks := packChunk8 xs
+  { depth := compLog2Depth (compListLength chunks)
+    tree := chunk8TreeFromChunksAt (compLog2Depth (compListLength chunks))
+      chunks }
+
+/-- Looks up an entire 8-element `Chunk8 α` leaf at `chunkIdx` in one spine
+traversal (`O(bt.depth)`), enabling stride-8 batch inspection. -/
+def Chunk8BlockTree.lookupChunk {α : Type} (bt : Chunk8BlockTree α)
+    (chunkIdx : Nat) : Option (Chunk8 α) :=
+  chunk8TreeLookupChunkAt bt.depth bt.tree chunkIdx
+
+/-- Looks up element `idx` in `bt` in `O(bt.depth)` spine steps plus one `O(1)`
+`Chunk8.get` dispatch. -/
+def Chunk8BlockTree.lookup {α : Type} (bt : Chunk8BlockTree α) (idx : Nat) :
+    Option α :=
+  chunk8TreeGetAt bt.depth bt.tree idx
+
+/-- Functionally updates element `idx` in `bt` in `O(bt.depth)` spine steps. -/
+def Chunk8BlockTree.modify {α : Type} (bt : Chunk8BlockTree α) (idx : Nat)
+    (v : Option α) : Chunk8BlockTree α :=
+  { depth := bt.depth
+    tree := chunk8TreeModifyAt bt.depth bt.tree (Nat.div idx 8)
+      (Nat.mod idx 8) v }
+
+/-- Validity predicate tying a pure-data `Chunk8BlockTree α` back to `xs`. -/
+def ValidChunk8BlockTree {α : Type} (xs : List α) (bt : Chunk8BlockTree α) :
+    Prop :=
+  xs.length ≤ 8 * pow2 bt.depth ∧
+  ∀ idx : Nat, bt.lookup idx = Trusted.MirSemantics.getElem? xs idx
+
+private theorem getElem?_ne_none_of_lt {α : Type} :
+    ∀ (xs : List α) (k : Nat),
+      k < xs.length → Trusted.MirSemantics.getElem? xs k ≠ none
+  | [], _, h => False.elim (Nat.not_lt_zero _ h)
+  | _ :: _, 0, _ => fun h => by cases h
+  | _ :: tl, k + 1, h => getElem?_ne_none_of_lt tl k (Nat.lt_of_succ_lt_succ h)
+
+/-- `Chunk8BlockTree.ofListAt xs depth` is valid whenever
+`(packChunk8 xs).length ≤ pow2 depth`. -/
+theorem valid_chunk8BlockTree_ofListAt {α : Type} (xs : List α) (depth : Nat)
+    (hChunks : (packChunk8 xs).length ≤ pow2 depth) :
+    ValidChunk8BlockTree xs (Chunk8BlockTree.ofListAt xs depth) := by
+  have hFuelBound : xs.length ≤ 8 * Nat.div (compListLength xs + 7) 8 := by
+    rw [compListLength_eq xs]
+    exact nat_le_eight_mul_div_add7 xs.length
+  have hLen : xs.length ≤ 8 * pow2 depth := by
+    have hPackLe : xs.length ≤ 8 * (packChunk8 xs).length := by
+      cases Nat.lt_or_ge (8 * (packChunk8 xs).length) xs.length with
+      | inr hle => exact hle
+      | inl hlt =>
+        have hGet := getElem?_packChunk8Fuel (Nat.div (compListLength xs + 7) 8)
+          xs hFuelBound (8 * (packChunk8 xs).length)
+        have hDiv : Nat.div (8 * (packChunk8 xs).length) 8 =
+            (packChunk8 xs).length := by
+          have hMul : Nat.div ((packChunk8 xs).length * 8) 8 =
+              (packChunk8 xs).length :=
+            Nat.mul_div_cancel (packChunk8 xs).length (Nat.succ_pos 7)
+          rw [Nat.mul_comm 8 _]
+          exact hMul
+        change (match Trusted.MirSemantics.getElem? (packChunk8 xs)
+            (Nat.div (8 * (packChunk8 xs).length) 8) with
+          | some c => c.get (Nat.mod (8 * (packChunk8 xs).length) 8)
+          | none => none) =
+          Trusted.MirSemantics.getElem? xs (8 * (packChunk8 xs).length) at hGet
+        rw [hDiv, getElem?_eq_none_of_le (packChunk8 xs) _ (Nat.le_refl _)]
+          at hGet
+        exact False.elim (getElem?_ne_none_of_lt xs _ hlt hGet.symm)
+    exact Nat.le_trans hPackLe (Nat.mul_le_mul_left 8 hChunks)
+  refine ⟨hLen, fun idx => ?_⟩
+  unfold Chunk8BlockTree.lookup Chunk8BlockTree.ofListAt chunk8TreeGetAt
+  dsimp only
+  rw [chunk8TreeLookupChunkAt_fromChunksAt depth (packChunk8 xs) hChunks
+    (Nat.div idx 8)]
+  exact getElem?_packChunk8Fuel (Nat.div (compListLength xs + 7) 8) xs
+    hFuelBound idx
+
+/-- `Chunk8BlockTree.ofList xs` is unconditionally valid for every `xs`. -/
+theorem valid_chunk8BlockTree_ofList {α : Type} (xs : List α) :
+    ValidChunk8BlockTree xs (Chunk8BlockTree.ofList xs) := by
+  have hChunks :
+      (packChunk8 xs).length ≤ pow2 (compLog2Depth (compListLength (packChunk8 xs))) := by
+    rw [compListLength_eq (packChunk8 xs)]
+    exact le_pow2_compLog2Depth (packChunk8 xs).length
+  exact valid_chunk8BlockTree_ofListAt xs
+    (compLog2Depth (compListLength (packChunk8 xs))) hChunks
+
+/-- Premise-free lookup equivalence for `Chunk8BlockTree.ofList xs`. -/
+theorem Chunk8BlockTree.ofList_lookup_eq {α : Type} (xs : List α) (idx : Nat) :
+    (Chunk8BlockTree.ofList xs).lookup idx =
+      Trusted.MirSemantics.getElem? xs idx :=
+  (valid_chunk8BlockTree_ofList xs).2 idx
+
+/-- Spine height bound for `Chunk8BlockTree.ofList xs`:
+`(Chunk8BlockTree.ofList xs).tree.heightAt fuel ≤ depth + 1` for every `fuel`.
+-/
+theorem Chunk8BlockTree.ofList_height_le {α : Type} (xs : List α) (fuel : Nat) :
+    (Chunk8BlockTree.ofList xs).tree.heightAt fuel ≤
+      (Chunk8BlockTree.ofList xs).depth + 1 :=
+  chunk8TreeFromChunksAt_height_le fuel _ (packChunk8 xs)
+
+/-- Same-index read-after-modify law for `Chunk8BlockTree.modify`
+(`idx < 8 * pow2 bt.depth`). -/
+theorem Chunk8BlockTree.lookup_modify_same {α : Type}
+    (bt : Chunk8BlockTree α) (idx : Nat) (v : Option α)
+    (hidx : idx < 8 * pow2 bt.depth) :
+    (bt.modify idx v).lookup idx = v := by
+  have hc : Nat.div idx 8 < pow2 bt.depth := by
+    rw [Nat.mul_comm 8 (pow2 bt.depth)] at hidx
+    exact (Nat.div_lt_iff_lt_mul (Nat.succ_pos 7)).mpr hidx
+  unfold Chunk8BlockTree.lookup Chunk8BlockTree.modify chunk8TreeGetAt
+  dsimp only
+  rw [chunk8TreeLookupChunkAt_modify_same bt.depth bt.tree (Nat.div idx 8)
+    (Nat.mod idx 8) v hc]
+  exact Chunk8.get_set_same _ v (Nat.mod_lt idx (Nat.succ_pos 7))
+
+/-- Distinct-index frame law for `Chunk8BlockTree.modify` (`j ≠ idx`). -/
+theorem Chunk8BlockTree.lookup_modify_ne {α : Type}
+    (bt : Chunk8BlockTree α) (idx j : Nat) (v : Option α) (hNe : j ≠ idx) :
+    (bt.modify idx v).lookup j = bt.lookup j := by
+  unfold Chunk8BlockTree.lookup Chunk8BlockTree.modify chunk8TreeGetAt
+  dsimp only
+  cases hq : Nat.beq (Nat.div j 8) (Nat.div idx 8) with
+  | false =>
+    have hqNe : Nat.div j 8 ≠ Nat.div idx 8 := fun hEq => by
+      rw [hEq, natBeq_refl] at hq
+      exact boolFalseNeTrue hq.symm
+    rw [chunk8TreeLookupChunkAt_modify_ne bt.depth bt.tree (Nat.div idx 8)
+      (Nat.div j 8) (Nat.mod idx 8) v hqNe]
+  | true =>
+    have hqEq : Nat.div j 8 = Nat.div idx 8 := natEq_of_beq _ _ hq
+    have hrNe : Nat.mod j 8 ≠ Nat.mod idx 8 := fun hrEq => by
+      have hj : 8 * Nat.div j 8 + Nat.mod j 8 = j := Nat.div_add_mod j 8
+      have hi : 8 * Nat.div idx 8 + Nat.mod idx 8 = idx := Nat.div_add_mod idx 8
+      rw [hqEq, hrEq, hi] at hj
+      exact hNe hj.symm
+    cases Nat.lt_or_ge (Nat.div idx 8) (pow2 bt.depth) with
+    | inl hc =>
+      rw [hqEq,
+        chunk8TreeLookupChunkAt_modify_same bt.depth bt.tree (Nat.div idx 8)
+          (Nat.mod idx 8) v hc]
+      dsimp only
+      rw [Chunk8.get_set_ne _ v hrNe]
+      cases chunk8TreeLookupChunkAt bt.depth bt.tree (Nat.div idx 8) with
+      | some _ => rfl
+      | none => exact Chunk8.get_empty (Nat.mod j 8)
+    | inr hge =>
+      -- Out-of-bounds chunks beyond `pow2 bt.depth` evaluate to `none`.
+      have hModOob :
+          ∀ (d : Nat) (t : Chunk8Tree α) (ci r : Nat),
+            pow2 d ≤ ci →
+            chunk8TreeLookupChunkAt d (chunk8TreeModifyAt d t ci r v) ci =
+              chunk8TreeLookupChunkAt d t ci := by
+        intro d
+        induction d with
+        | zero =>
+          intro t ci r hOob
+          rw [pow2_zero] at hOob
+          cases ci with
+          | zero => exact False.elim (Nat.not_lt_of_ge hOob Nat.zero_lt_one)
+          | succ _ => rfl
+        | succ d' ih =>
+          intro t ci r hOob
+          rw [pow2_succ, Nat.mul_comm 2 (pow2 d')] at hOob
+          have hhalf : pow2 d' ≤ Nat.div ci 2 :=
+            (Nat.le_div_iff_mul_le (Nat.succ_pos 1)).mpr hOob
+          cases t with
+          | empty | leaf _ =>
+            change chunk8TreeLookupChunkAt (d' + 1)
+                (cond (Nat.beq (Nat.mod ci 2) 0)
+                  (.node (chunk8TreeModifyAt d' .empty (Nat.div ci 2) r v)
+                    .empty)
+                  (.node .empty
+                    (chunk8TreeModifyAt d' .empty (Nat.div ci 2) r v))) ci =
+              none
+            cases hpar : Nat.beq (Nat.mod ci 2) 0 with
+            | true =>
+              dsimp only [cond]
+              change cond (Nat.beq (Nat.mod ci 2) 0)
+                  (chunk8TreeLookupChunkAt d'
+                    (chunk8TreeModifyAt d' .empty (Nat.div ci 2) r v)
+                    (Nat.div ci 2))
+                  (chunk8TreeLookupChunkAt d' .empty (Nat.div ci 2)) = none
+              rw [hpar]
+              dsimp only [cond]
+              rw [ih .empty (Nat.div ci 2) r hhalf,
+                chunk8TreeLookupChunkAt_empty]
+            | false =>
+              dsimp only [cond]
+              change cond (Nat.beq (Nat.mod ci 2) 0)
+                  (chunk8TreeLookupChunkAt d' .empty (Nat.div ci 2))
+                  (chunk8TreeLookupChunkAt d'
+                    (chunk8TreeModifyAt d' .empty (Nat.div ci 2) r v)
+                    (Nat.div ci 2)) = none
+              rw [hpar]
+              dsimp only [cond]
+              rw [ih .empty (Nat.div ci 2) r hhalf,
+                chunk8TreeLookupChunkAt_empty]
+          | node l r0 =>
+            change chunk8TreeLookupChunkAt (d' + 1)
+                (cond (Nat.beq (Nat.mod ci 2) 0)
+                  (.node (chunk8TreeModifyAt d' l (Nat.div ci 2) r v) r0)
+                  (.node l (chunk8TreeModifyAt d' r0 (Nat.div ci 2) r v))) ci =
+              cond (Nat.beq (Nat.mod ci 2) 0)
+                (chunk8TreeLookupChunkAt d' l (Nat.div ci 2))
+                (chunk8TreeLookupChunkAt d' r0 (Nat.div ci 2))
+            cases hpar : Nat.beq (Nat.mod ci 2) 0 with
+            | true =>
+              dsimp only [cond]
+              change cond (Nat.beq (Nat.mod ci 2) 0)
+                  (chunk8TreeLookupChunkAt d'
+                    (chunk8TreeModifyAt d' l (Nat.div ci 2) r v) (Nat.div ci 2))
+                  (chunk8TreeLookupChunkAt d' r0 (Nat.div ci 2)) = _
+              rw [hpar]
+              dsimp only [cond]
+              exact ih l (Nat.div ci 2) r hhalf
+            | false =>
+              dsimp only [cond]
+              change cond (Nat.beq (Nat.mod ci 2) 0)
+                  (chunk8TreeLookupChunkAt d' l (Nat.div ci 2))
+                  (chunk8TreeLookupChunkAt d'
+                    (chunk8TreeModifyAt d' r0 (Nat.div ci 2) r v) (Nat.div ci 2)) = _
+              rw [hpar]
+              dsimp only [cond]
+              exact ih r0 (Nat.div ci 2) r hhalf
+      rw [hqEq, hModOob bt.depth bt.tree (Nat.div idx 8) (Nat.mod idx 8) hge]
+
+/-- `Chunk8BlockTree.modify idx (some val)` preserves `ValidChunk8BlockTree`
+across `Trusted.MirSemantics.setElem?`. -/
+theorem Chunk8BlockTree.valid_modify_of_setElem? {α : Type} {xs xs' : List α}
+    {bt : Chunk8BlockTree α} {idx : Nat} {val : α}
+    (hValid : ValidChunk8BlockTree xs bt)
+    (hSet : Trusted.MirSemantics.setElem? xs idx val = some xs') :
+    ValidChunk8BlockTree xs' (bt.modify idx (some val)) := by
+  have hLtLen := setElem?_lt_and_length hSet
+  have hIdxBound : idx < 8 * pow2 bt.depth :=
+    Nat.lt_of_lt_of_le hLtLen.1 hValid.1
+  refine ⟨?_, fun j => ?_⟩
+  · unfold Chunk8BlockTree.modify
+    dsimp only
+    rw [hLtLen.2]
+    exact hValid.1
+  · cases hBeq : Nat.beq j idx with
+    | true =>
+      have hEq : j = idx := natEq_of_beq j idx hBeq
+      subst hEq
+      rw [Chunk8BlockTree.lookup_modify_same bt j (some val) hIdxBound,
+        bt_getElem?_setElem?_same hSet]
+    | false =>
+      have hNe : j ≠ idx := fun hEq => by
+        subst hEq
+        rw [natBeq_refl j] at hBeq
+        exact boolFalseNeTrue hBeq.symm
+      rw [Chunk8BlockTree.lookup_modify_ne bt idx j (some val) hNe,
+        hValid.2 j, bt_getElem?_setElem?_ne hNe hSet]
+
+/-- Dense boolean mask table unified onto `Chunk8BlockTree Bool` (subsuming
+standalone radix-8 `MaskTree` implementations). -/
+abbrev MaskTree : Type := Chunk8BlockTree Bool
+
+/-- Builds a `MaskTree` from a boolean list. -/
+def MaskTree.ofList (xs : List Bool) : MaskTree :=
+  Chunk8BlockTree.ofList xs
+
+/-- Looks up boolean mask bit `idx` (`false` when out of bounds). -/
+def MaskTree.get (mt : MaskTree) (idx : Nat) : Bool :=
+  match mt.lookup idx with
+  | some b => b
+  | none => false
+
+/-- Exact lookup equivalence for `MaskTree.ofList`. -/
+theorem MaskTree.get_ofList (xs : List Bool) (idx : Nat) :
+    (MaskTree.ofList xs).get idx =
+      match Trusted.MirSemantics.getElem? xs idx with
+      | some b => b
+      | none => false := by
+  unfold MaskTree.get MaskTree.ofList
+  rw [Chunk8BlockTree.ofList_lookup_eq xs idx]
+
+/-- Single-body MIR step evaluator (`0` `noncomputable`) indexing basic blocks
+via `Chunk8BlockTree BasicBlock`. -/
+def evalMirStepChunk8By (tyEq : MirTy → MirTy → Bool)
+    (bt : Chunk8BlockTree BasicBlock) (body : Body) (s : State) :
+    StepResult State TerminalOut :=
+  match s.frames with
+  | [frame] =>
+    if !Nat.beq frame.defId 0 then .fault .unsupported
+    else
+      match bt.lookup frame.blockIdx with
+      | none => .fault .unsupported
+      | some bb =>
+        match compGetElem? bb.statements frame.stmtIdx with
+        | some stmt => evalStatementBy tyEq body frame s.mem s.callerMem stmt
+        | none =>
+          if Nat.beq frame.stmtIdx bb.statements.length then
+            evalTerminatorComp body bb frame s.mem s.callerMem
+          else
+            .fault .unsupported
+  | _ => .fault .unsupported
+
+/-- Agreement between `evalMirStepChunk8By` and
+`Trusted.MirSemantics.evalStep (Anneal.MirWp.bodyProg body) 0` for any valid
+`Chunk8BlockTree BasicBlock`. -/
+theorem evalMirStepChunk8By_eq_evalStep (tyEq : MirTy → MirTy → Bool)
+    (hTyEq : ∀ a b, tyEq a b = MirTy.beq a b)
+    {body : Body} {bt : Chunk8BlockTree BasicBlock}
+    (hValid : ValidChunk8BlockTree body.basicBlocks bt) (s : State) :
+    evalMirStepChunk8By tyEq bt body s =
+      evalStep (Anneal.MirWp.bodyProg body) 0 s := by
+  have hMir : evalMirStepChunk8By tyEq bt body s =
+      evalMirStepBy tyEq (Anneal.MirWp.bodyProg body) 0 s := by
+    unfold evalMirStepChunk8By evalMirStepBy Anneal.MirWp.bodyProg
+    cases s with
+    | mk frames callerMem mem =>
+      cases frames with
+      | nil => rfl
+      | cons frame tail =>
+        cases tail with
+        | cons _ _ => rfl
+        | nil =>
+          cases frame with
+          | mk defId blkIdx stmtIdx locs =>
+            cases defId with
+            | zero =>
+              dsimp only
+              change (match bt.lookup blkIdx with
+                  | none => StepResult.fault FaultKind.unsupported
+                  | some bb =>
+                    match compGetElem? bb.statements stmtIdx with
+                    | some stmt =>
+                      evalStatementBy tyEq body ⟨0, blkIdx, stmtIdx, locs⟩
+                        mem callerMem stmt
+                    | none =>
+                      if Nat.beq stmtIdx bb.statements.length then
+                        evalTerminatorComp body bb ⟨0, blkIdx, stmtIdx, locs⟩
+                          mem callerMem
+                      else StepResult.fault FaultKind.unsupported) =
+                (match compGetElem? body.basicBlocks blkIdx with
+                  | none => StepResult.fault FaultKind.unsupported
+                  | some bb =>
+                    match compGetElem? bb.statements stmtIdx with
+                    | some stmt =>
+                      evalStatementBy tyEq body ⟨0, blkIdx, stmtIdx, locs⟩
+                        mem callerMem stmt
+                    | none =>
+                      if Nat.beq stmtIdx bb.statements.length then
+                        evalTerminatorComp body bb ⟨0, blkIdx, stmtIdx, locs⟩
+                          mem callerMem
+                      else StepResult.fault FaultKind.unsupported)
+              rw [hValid.2 blkIdx, ← compGetElem?_eq]
+            | succ _ => rfl
+  rw [hMir]
+  exact evalMirStepBy_eq tyEq hTyEq (Anneal.MirWp.bodyProg body) 0 s
+
+private theorem compLog2DepthGo_le_of_le (n : Nat) :
+    ∀ (fuel depth cap bound : Nat),
+      n ≤ cap * pow2 bound →
+      compLog2DepthGo n fuel depth cap ≤ depth + bound
+  | 0, depth, _, bound, _ => Nat.le_add_right depth bound
+  | k + 1, depth, cap, 0, hCap => by
+    rw [pow2_zero, Nat.mul_one] at hCap
+    change (if Nat.ble n cap then depth
+      else compLog2DepthGo n k (depth + 1) (2 * cap)) ≤ depth + 0
+    rw [Nat.ble_eq_true_of_le hCap, ite_bool_true rfl, Nat.add_zero]
+    exact Nat.le_refl depth
+  | k + 1, depth, cap, bound + 1, hCap => by
+    change (if Nat.ble n cap then depth
+      else compLog2DepthGo n k (depth + 1) (2 * cap)) ≤ depth + (bound + 1)
+    cases hble : Nat.ble n cap with
+    | true =>
+      rw [ite_bool_true rfl]
+      exact Nat.le_add_right depth (bound + 1)
+    | false =>
+      rw [ite_bool_false rfl]
+      have hCap' : n ≤ (2 * cap) * pow2 bound := by
+        rw [pow2_succ] at hCap
+        rw [Nat.mul_comm 2 cap, Nat.mul_assoc cap 2 (pow2 bound)]
+        exact hCap
+      have hRec := compLog2DepthGo_le_of_le n k (depth + 1) (2 * cap) bound hCap'
+      rw [Nat.succ_add, ← Nat.add_succ] at hRec
+      exact hRec
+
+/-- Logarithmic upper bound: `n ≤ pow2 bound → compLog2Depth n ≤ bound`. -/
+theorem compLog2Depth_le_of_le_pow2 {n bound : Nat} (h : n ≤ pow2 bound) :
+    compLog2Depth n ≤ bound := by
+  have h1 : n ≤ 1 * pow2 bound := by
+    rw [Nat.one_mul]
+    exact h
+  have h0 := compLog2DepthGo_le_of_le n n 0 1 bound h1
+  rw [Nat.zero_add] at h0
+  exact h0
+
+/-- For any list of length `≤ 4,096`, `Chunk8BlockTree.ofList xs` has spine
+depth `≤ 9` and tree height `≤ 10` (`≤ 11` including the `Chunk8` leaf payload)
+at every fuel budget `fuel`. -/
+theorem Chunk8BlockTree.ofList_height_le_10_of_le_4096 {α : Type}
+    (xs : List α) (hLen : xs.length ≤ 4096) (fuel : Nat) :
+    (Chunk8BlockTree.ofList xs).depth ≤ 9 ∧
+    (Chunk8BlockTree.ofList xs).tree.heightAt fuel ≤ 10 := by
+  have hDiv : Nat.div (xs.length + 7) 8 ≤ 512 := by
+    have hLt : xs.length + 7 < 513 * 8 :=
+      Nat.lt_of_le_of_lt (Nat.add_le_add_right hLen 7) (by decide)
+    have hDivLt : Nat.div (xs.length + 7) 8 < 513 :=
+      (Nat.div_lt_iff_lt_mul (Nat.succ_pos 7)).mpr hLt
+    exact Nat.le_of_lt_succ hDivLt
+  have hChunks : (packChunk8 xs).length ≤ pow2 9 := by
+    unfold packChunk8
+    have hp := packChunk8Fuel_length_le (Nat.div (compListLength xs + 7) 8) xs
+    rw [compListLength_eq xs] at hp
+    rw [compListLength_eq xs]
+    exact Nat.le_trans hp hDiv
+  have hDepth : (Chunk8BlockTree.ofList xs).depth ≤ 9 := by
+    unfold Chunk8BlockTree.ofList
+    dsimp only
+    rw [compListLength_eq (packChunk8 xs)]
+    exact compLog2Depth_le_of_le_pow2 hChunks
+  have hHeight : (Chunk8BlockTree.ofList xs).tree.heightAt fuel ≤ 10 :=
+    Nat.le_trans (Chunk8BlockTree.ofList_height_le xs fuel)
+      (Nat.succ_le_succ hDepth)
+  exact ⟨hDepth, hHeight⟩
+
+/-- Concrete spine-depth check at `N = 4,096` (`depth = 9`) and `N = 256`
+(`depth = 5`). -/
+theorem chunk8_depth_4096_canary :
+    compLog2Depth (Nat.div (4096 + 7) 8) = 9 ∧
+    compLog2Depth (Nat.div (256 + 7) 8) = 5 :=
+  ⟨rfl, rfl⟩
+
+private def mkChunk8Range : Nat → Nat → List Nat :=
+  @Nat.rec (fun _ => Nat → List Nat)
+    (fun _ => [])
+    (fun _ ih start => start :: ih (start + 1))
+
+/-- Top-down strided tabulation directly into a `Chunk8Tree α` (`O(depth)` WHNF
+path forcing on surgical lookups, avoiding intermediate `List` construction). -/
+def chunk8TreeTabulateAt {α : Type} (depth : Nat) :
+    Nat → Nat → (Nat → Option α) → Chunk8Tree α :=
+  @Nat.rec (fun _ => Nat → Nat → (Nat → Option α) → Chunk8Tree α)
+    (fun chunkOff _ f =>
+      let b := 8 * chunkOff
+      .leaf ⟨f b, f (b + 1), f (b + 2), f (b + 3),
+             f (b + 4), f (b + 5), f (b + 6), f (b + 7)⟩)
+    (fun _ ih chunkOff step f =>
+      .node (ih chunkOff (2 * step) f) (ih (chunkOff + step) (2 * step) f))
+    depth
+
+/-- Top-down `Chunk8BlockTree α` tabulation covering indices `0 .. 8*2^depth-1`
+in spine depth `depth` (`depth = 5` covers `256` elements; `depth = 9` covers
+`4,096` elements with tree height `10 ≤ 11`). -/
+def Chunk8BlockTree.tabulate {α : Type} (depth : Nat) (f : Nat → Option α) :
+    Chunk8BlockTree α :=
+  { depth := depth, tree := chunk8TreeTabulateAt depth 0 1 f }
+
+private theorem chunk8TreeLookupChunkAt_tabulateAt_in {α : Type}
+    (depth chunkIdx chunkOff step : Nat) (f : Nat → Option α)
+    (hc : chunkIdx < pow2 depth) :
+    chunk8TreeLookupChunkAt depth
+        (chunk8TreeTabulateAt depth chunkOff step f) chunkIdx =
+      let b := 8 * (chunkOff + step * chunkIdx)
+      some ⟨f b, f (b + 1), f (b + 2), f (b + 3),
+            f (b + 4), f (b + 5), f (b + 6), f (b + 7)⟩ := by
+  revert chunkIdx chunkOff step
+  induction depth with
+  | zero =>
+    intro chunkIdx chunkOff step hc
+    rw [pow2_zero] at hc
+    have h0 : chunkIdx = 0 := Nat.eq_zero_of_le_zero (Nat.le_of_lt_succ hc)
+    rw [h0, Nat.mul_zero, Nat.add_zero]
+    rfl
+  | succ d ih =>
+    intro chunkIdx chunkOff step hc
+    rw [pow2_succ, Nat.mul_comm 2 (pow2 d)] at hc
+    have hhalf : Nat.div chunkIdx 2 < pow2 d :=
+      (Nat.div_lt_iff_lt_mul (Nat.succ_pos 1)).mpr hc
+    change cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+        (chunk8TreeLookupChunkAt d
+          (chunk8TreeTabulateAt d chunkOff (2 * step) f) (Nat.div chunkIdx 2))
+        (chunk8TreeLookupChunkAt d
+          (chunk8TreeTabulateAt d (chunkOff + step) (2 * step) f)
+          (Nat.div chunkIdx 2)) = _
+    have hde := nat_div2_decomp chunkIdx
+    cases hbeq : Nat.beq (Nat.mod chunkIdx 2) 0 with
+    | true =>
+      rw [hbeq] at hde
+      change 2 * Nat.div chunkIdx 2 = chunkIdx at hde
+      dsimp only [cond]
+      rw [ih (Nat.div chunkIdx 2) chunkOff (2 * step) hhalf]
+      have hmul : (2 * step) * Nat.div chunkIdx 2 = step * chunkIdx := by
+        rw [Nat.mul_comm 2 step, Nat.mul_assoc step 2 (Nat.div chunkIdx 2), hde]
+      rw [hmul]
+    | false =>
+      rw [hbeq] at hde
+      change 2 * Nat.div chunkIdx 2 + 1 = chunkIdx at hde
+      dsimp only [cond]
+      rw [ih (Nat.div chunkIdx 2) (chunkOff + step) (2 * step) hhalf]
+      have harith :
+          (chunkOff + step) + (2 * step) * Nat.div chunkIdx 2 =
+            chunkOff + step * chunkIdx := by
+        rw [Nat.mul_comm 2 step, Nat.mul_assoc step 2 (Nat.div chunkIdx 2),
+          Nat.add_assoc chunkOff step (step * (2 * Nat.div chunkIdx 2))]
+        have hs1 :
+            step + step * (2 * Nat.div chunkIdx 2) =
+              step * (2 * Nat.div chunkIdx 2 + 1) := by
+          rw [Nat.mul_add, Nat.mul_one, Nat.add_comm]
+        rw [hs1, hde]
+      rw [harith]
+
+private theorem chunk8TreeLookupChunkAt_tabulateAt_oob {α : Type}
+    (depth chunkIdx chunkOff step : Nat) (f : Nat → Option α)
+    (hoob : pow2 depth ≤ chunkIdx) :
+    chunk8TreeLookupChunkAt depth
+        (chunk8TreeTabulateAt depth chunkOff step f) chunkIdx = none := by
+  revert chunkIdx chunkOff step
+  induction depth with
+  | zero =>
+    intro chunkIdx _ _ hoob
+    rw [pow2_zero] at hoob
+    cases chunkIdx with
+    | zero => exact False.elim (Nat.not_lt_of_ge hoob Nat.zero_lt_one)
+    | succ _ => rfl
+  | succ d ih =>
+    intro chunkIdx chunkOff step hoob
+    rw [pow2_succ, Nat.mul_comm 2 (pow2 d)] at hoob
+    have hhalf : pow2 d ≤ Nat.div chunkIdx 2 :=
+      (Nat.le_div_iff_mul_le (Nat.succ_pos 1)).mpr hoob
+    change cond (Nat.beq (Nat.mod chunkIdx 2) 0)
+        (chunk8TreeLookupChunkAt d
+          (chunk8TreeTabulateAt d chunkOff (2 * step) f) (Nat.div chunkIdx 2))
+        (chunk8TreeLookupChunkAt d
+          (chunk8TreeTabulateAt d (chunkOff + step) (2 * step) f)
+          (Nat.div chunkIdx 2)) = none
+    cases Nat.beq (Nat.mod chunkIdx 2) 0 with
+    | true =>
+      dsimp only [cond]
+      exact ih (Nat.div chunkIdx 2) chunkOff (2 * step) hhalf
+    | false =>
+      dsimp only [cond]
+      exact ih (Nat.div chunkIdx 2) (chunkOff + step) (2 * step) hhalf
+
+/-- Exact in-bounds lookup law for `Chunk8BlockTree.tabulate depth f`
+(`idx < 8 * pow2 depth`). -/
+theorem Chunk8BlockTree.lookup_tabulate_in {α : Type} (depth : Nat)
+    (f : Nat → Option α) {idx : Nat} (hidx : idx < 8 * pow2 depth) :
+    (Chunk8BlockTree.tabulate depth f).lookup idx = f idx := by
+  have hc : Nat.div idx 8 < pow2 depth := by
+    rw [Nat.mul_comm 8 (pow2 depth)] at hidx
+    exact (Nat.div_lt_iff_lt_mul (Nat.succ_pos 7)).mpr hidx
+  unfold Chunk8BlockTree.lookup Chunk8BlockTree.tabulate chunk8TreeGetAt
+  dsimp only
+  rw [chunk8TreeLookupChunkAt_tabulateAt_in depth (Nat.div idx 8) 0 1 f hc]
+  dsimp only
+  rw [Nat.one_mul, Nat.zero_add]
+  have hde : 8 * Nat.div idx 8 + Nat.mod idx 8 = idx := Nat.div_add_mod idx 8
+  have hr : Nat.mod idx 8 < 8 := Nat.mod_lt idx (Nat.succ_pos 7)
+  cases hm : Nat.mod idx 8 with
+  | zero =>
+    rw [hm, Nat.add_zero] at hde
+    dsimp only [Chunk8.get]
+    exact congrArg f hde
+  | succ r1 =>
+    cases r1 with
+    | zero =>
+      rw [hm] at hde
+      dsimp only [Chunk8.get]
+      exact congrArg f hde
+    | succ r2 =>
+      cases r2 with
+      | zero =>
+        rw [hm] at hde
+        dsimp only [Chunk8.get]
+        exact congrArg f hde
+      | succ r3 =>
+        cases r3 with
+        | zero =>
+          rw [hm] at hde
+          dsimp only [Chunk8.get]
+          exact congrArg f hde
+        | succ r4 =>
+          cases r4 with
+          | zero =>
+            rw [hm] at hde
+            dsimp only [Chunk8.get]
+            exact congrArg f hde
+          | succ r5 =>
+            cases r5 with
+            | zero =>
+              rw [hm] at hde
+              dsimp only [Chunk8.get]
+              exact congrArg f hde
+            | succ r6 =>
+              cases r6 with
+              | zero =>
+                rw [hm] at hde
+                dsimp only [Chunk8.get]
+                exact congrArg f hde
+              | succ r7 =>
+                cases r7 with
+                | zero =>
+                  rw [hm] at hde
+                  dsimp only [Chunk8.get]
+                  exact congrArg f hde
+                | succ r8 =>
+                  rw [hm] at hr
+                  exact False.elim (nat_ge8_contra hr)
+
+/-- Exact out-of-bounds lookup law for `Chunk8BlockTree.tabulate depth f`
+(`8 * pow2 depth ≤ idx`). -/
+theorem Chunk8BlockTree.lookup_tabulate_oob {α : Type} (depth : Nat)
+    (f : Nat → Option α) {idx : Nat} (hoob : 8 * pow2 depth ≤ idx) :
+    (Chunk8BlockTree.tabulate depth f).lookup idx = none := by
+  have hc : pow2 depth ≤ Nat.div idx 8 := by
+    rw [Nat.mul_comm 8 (pow2 depth)] at hoob
+    exact (Nat.le_div_iff_mul_le (Nat.succ_pos 7)).mpr hoob
+  unfold Chunk8BlockTree.lookup Chunk8BlockTree.tabulate chunk8TreeGetAt
+  dsimp only
+  rw [chunk8TreeLookupChunkAt_tabulateAt_oob depth (Nat.div idx 8) 0 1 f hc]
+
+/-- Exact height of `Chunk8BlockTree.tabulate depth f` at fuel `depth + 1`
+equals `depth + 1` (so `depth = 9` for `4,096` elements has height `10 ≤ 11`).
+-/
+theorem Chunk8BlockTree.tabulate_height {α : Type} (depth : Nat)
+    (f : Nat → Option α) :
+    (Chunk8BlockTree.tabulate depth f).tree.heightAt (depth + 1) = depth + 1 := by
+  unfold Chunk8BlockTree.tabulate
+  dsimp only
+  have hAt :
+      ∀ (d off step : Nat),
+        (chunk8TreeTabulateAt d off step f).heightAt (d + 1) = d + 1 := by
+    intro d
+    induction d with
+    | zero => intro _ _; rfl
+    | succ d' ih =>
+      intro off step
+      change natMax2
+          ((chunk8TreeTabulateAt d' off (2 * step) f).heightAt (d' + 1))
+          ((chunk8TreeTabulateAt d' (off + step) (2 * step) f).heightAt (d' + 1)) + 1 =
+        (d' + 1) + 1
+      rw [ih off (2 * step), ih (off + step) (2 * step)]
+      unfold natMax2
+      cases Nat.ble (d' + 1) (d' + 1) <;> rfl
+  exact hAt depth 0 1
+
+/-- 256-element and 4,096-element `Chunk8BlockTree.tabulate` plus 128-element
+`Chunk8BlockTree.ofList` and `MaskTree` scaling canaries discharged by `rfl`
+under default elaborator options. -/
+theorem chunk8BlockTree_scaling_canary :
+    let bt256 := Chunk8BlockTree.tabulate 5 (fun i => some i)
+    let bt4096 := Chunk8BlockTree.tabulate 9 (fun i => some i)
+    let bt128 := Chunk8BlockTree.ofList (mkChunk8Range 128 0)
+    let mt := MaskTree.ofList [true, false, true, true, false, false, false, false, true]
+    bt256.depth = 5 ∧
+    bt256.lookup 0 = some 0 ∧
+    bt256.lookup 127 = some 127 ∧
+    bt256.lookup 255 = some 255 ∧
+    bt256.lookup 256 = none ∧
+    (bt256.modify 200 (some 999)).lookup 200 = some 999 ∧
+    (bt256.modify 200 (some 999)).lookup 199 = some 199 ∧
+    bt4096.depth = 9 ∧
+    bt4096.lookup 0 = some 0 ∧
+    bt4096.lookup 2048 = some 2048 ∧
+    bt4096.lookup 4095 = some 4095 ∧
+    bt4096.lookup 4096 = none ∧
+    bt128.depth = 4 ∧
+    bt128.lookup 0 = some 0 ∧
+    bt128.lookup 127 = some 127 ∧
+    bt128.lookup 128 = none ∧
+    mt.get 0 = true ∧
+    mt.get 1 = false ∧
+    mt.get 8 = true ∧
+    mt.get 9 = false :=
+  ⟨rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl, rfl,
+   rfl, rfl, rfl, rfl, rfl⟩
 
 end Anneal.Core

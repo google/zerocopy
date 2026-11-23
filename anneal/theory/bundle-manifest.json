@@ -67,7 +67,7 @@
     },
     {
       "path": "theory/Anneal/PTree.lean",
-      "sha256": "ba65633a0ce74e8475cfb2596d2e7764d197b20ec2abf4918fd792f31e1c143e"
+      "sha256": "23ace126f9c85c64f4d3e076c166193484197be59dec2b18ee03d77d6d48276b"
     },
     {
       "path": "theory/Anneal/SpineForce.lean",
