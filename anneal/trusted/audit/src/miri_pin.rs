@@ -346,6 +346,28 @@ pub fn ensure_miri_cache_outside_checkout(
     Ok(())
 }
 
+/// Strip trailing path separators (and trailing `.` components) while
+/// preserving root prefixes such as `/` so `fs::symlink_metadata` inspects
+/// a symlink entry itself rather than dereferencing it under POSIX.
+fn strip_trailing_separators(path: &Path) -> PathBuf {
+    path.components().collect()
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum CacheEntryState {
+    Absent,
+    RegularFile,
+}
+
+enum PreparedCachePath {
+    /// `cache_dir` or an intermediate directory did not exist when
+    /// inspected with `create_dirs == false`, so `dst` cannot exist.
+    MissingAncestor(PathBuf),
+    /// `cache_dir` and all intermediate directories exist as real
+    /// directories, and `dst` was verified to be absent or a regular file.
+    Validated { dst: PathBuf, entry: CacheEntryState },
+}
+
 /// Validate that `cache_dir` and every path component of `rel_path` under
 /// `cache_dir` is free of symlinks, returning the validated destination path
 /// and creating missing intermediate directories without following links.
@@ -355,15 +377,26 @@ pub(crate) fn prepare_nosymlink_cache_path(
     create_dirs: bool,
     phase: &str,
 ) -> Result<PathBuf, Failure> {
+    match prepare_nosymlink_cache_path_state(cache_dir, rel_path, create_dirs, phase)? {
+        PreparedCachePath::MissingAncestor(dst) | PreparedCachePath::Validated { dst, .. } => {
+            Ok(dst)
+        }
+    }
+}
+
+fn prepare_nosymlink_cache_path_state(
+    cache_dir: &Path,
+    rel_path: &str,
+    create_dirs: bool,
+    phase: &str,
+) -> Result<PreparedCachePath, Failure> {
     if !is_clean_relative_path(rel_path) {
         return Err(Failure::policy(
             phase,
             format!("invalid relative cache path: {rel_path}"),
         ));
     }
-    // Strip any trailing slash so `symlink_metadata` inspects a symlinked
-    // `cache_dir` entry itself rather than dereferencing it under POSIX.
-    let cache_dir_buf: PathBuf = cache_dir.components().collect();
+    let cache_dir_buf = strip_trailing_separators(cache_dir);
     let cache_dir = cache_dir_buf.as_path();
     match fs::symlink_metadata(cache_dir) {
         Ok(meta) => {
@@ -401,7 +434,7 @@ pub(crate) fn prepare_nosymlink_cache_path(
                     ));
                 }
             } else {
-                return Ok(cache_dir.join(rel_path));
+                return Ok(PreparedCachePath::MissingAncestor(cache_dir.join(rel_path)));
             }
         }
         Err(e) => {
@@ -466,7 +499,7 @@ pub(crate) fn prepare_nosymlink_cache_path(
                             }
                         }
                     } else {
-                        return Ok(cache_dir.join(rel_path));
+                        return Ok(PreparedCachePath::MissingAncestor(cache_dir.join(rel_path)));
                     }
                 }
                 Err(e) => {
@@ -479,16 +512,16 @@ pub(crate) fn prepare_nosymlink_cache_path(
         }
     }
     let dst = cache_dir.join(rel_path);
-    ensure_cache_dst_regular_or_absent(&dst, phase)?;
-    Ok(dst)
+    let entry = ensure_cache_dst_regular_or_absent(&dst, phase)?;
+    Ok(PreparedCachePath::Validated { dst, entry })
 }
 
-/// Reject `dst` if it exists as a symlink or non-regular file; permit absent
-/// paths (`NotFound`) and regular files.
-fn ensure_cache_dst_regular_or_absent(dst: &Path, phase: &str) -> Result<(), Failure> {
+/// Reject `dst` if it exists as a symlink or non-regular file; return whether
+/// an inspected entry is absent (`NotFound`) or a regular file.
+fn ensure_cache_dst_regular_or_absent(dst: &Path, phase: &str) -> Result<CacheEntryState, Failure> {
     match fs::symlink_metadata(dst) {
         Ok(meta) => {
-            if !meta.file_type().is_file() {
+            if meta.file_type().is_symlink() || !meta.file_type().is_file() {
                 return Err(Failure::policy(
                     phase,
                     format!(
@@ -497,9 +530,9 @@ fn ensure_cache_dst_regular_or_absent(dst: &Path, phase: &str) -> Result<(), Fai
                     ),
                 ));
             }
-            Ok(())
+            Ok(CacheEntryState::RegularFile)
         }
-        Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(()),
+        Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(CacheEntryState::Absent),
         Err(e) => Err(Failure::operational(
             phase,
             format!("cannot stat cache entry {}: {e}", dst.display()),
@@ -633,7 +666,7 @@ pub(crate) fn write_cache_file(
 
     // Re-check `dst` right before publishing so a symlink or non-regular file
     // introduced after `prepare_nosymlink_cache_path` still fails closed.
-    ensure_cache_dst_regular_or_absent(&dst, phase)?;
+    let _ = ensure_cache_dst_regular_or_absent(&dst, phase)?;
     fs::rename(guard.path(), &dst).map_err(|e| {
         Failure::operational(phase, format!("cannot publish cache entry {}: {e}", dst.display()))
     })?;
@@ -648,22 +681,30 @@ pub(crate) fn remove_cache_file(
     rel_path: &str,
     phase: &str,
 ) -> Result<(), Failure> {
-    let dst = prepare_nosymlink_cache_path(cache_dir, rel_path, false, phase)?;
-    if fs::symlink_metadata(&dst).is_ok() {
-        fs::remove_file(&dst).map_err(|e| {
-            Failure::operational(
-                phase,
-                format!("cannot remove stale cache entry {}: {e}", dst.display()),
-            )
-        })?;
+    let dst = match prepare_nosymlink_cache_path_state(cache_dir, rel_path, false, phase)? {
+        PreparedCachePath::MissingAncestor(_)
+        | PreparedCachePath::Validated { entry: CacheEntryState::Absent, .. } => return Ok(()),
+        PreparedCachePath::Validated { dst, entry: CacheEntryState::RegularFile } => dst,
+    };
+    match fs::remove_file(&dst) {
+        Ok(()) => Ok(()),
+        Err(e) if e.kind() == io::ErrorKind::NotFound => Ok(()),
+        Err(e) => Err(Failure::operational(
+            phase,
+            format!("cannot remove stale cache entry {}: {e}", dst.display()),
+        )),
     }
-    Ok(())
 }
 
 /// Verify `vendor/lean-miri/UPSTREAM_PIN.json` and every file on disk under
 /// `vendor_root`.
 pub fn verify_upstream_pin(vendor_root: &Path) -> Result<UpstreamPin, Failure> {
     let phase = "miri-pin";
+    // Strip trailing separators (and trailing `.`) so `symlink_metadata`
+    // inspects a symlinked `vendor_root` itself rather than dereferencing it
+    // under POSIX.
+    let vendor_root_buf = strip_trailing_separators(vendor_root);
+    let vendor_root = vendor_root_buf.as_path();
     if let Some(parent) = vendor_root.parent()
         && parent.file_name().and_then(|s| s.to_str()) == Some("vendor")
     {
@@ -1853,6 +1894,210 @@ mod tests {
             guard.disarm();
         }
         assert_eq!(fs::read(&kept_path).unwrap(), b"published");
+    }
+
+    #[test]
+    fn remove_cache_file_handles_absent_concurrent_and_invalid_targets() {
+        let tmp = tempfile::tempdir().unwrap();
+
+        // 1. Missing cache root or intermediate directory returns `Ok(())`
+        // without creating any directories.
+        let missing_root = tmp.path().join("missing-cache");
+        remove_cache_file(&missing_root, "Miri/Hex.olean.server", "miri-pin").unwrap();
+        assert!(!missing_root.exists());
+
+        let cache = tmp.path().join("cache");
+        fs::create_dir_all(&cache).unwrap();
+        remove_cache_file(&cache, "Miri/Hex.olean.server", "miri-pin").unwrap();
+        assert!(!cache.join("Miri").exists());
+
+        // 2. Absent leaf under an existing directory succeeds; existing regular
+        // file is removed.
+        let miri_dir = cache.join("Miri");
+        fs::create_dir_all(&miri_dir).unwrap();
+        remove_cache_file(&cache, "Miri/Hex.olean.server", "miri-pin").unwrap();
+
+        let present = miri_dir.join("Hex.olean.server");
+        fs::write(&present, b"stale-sidecar").unwrap();
+        remove_cache_file(&cache, "Miri/Hex.olean.server", "miri-pin").unwrap();
+        assert!(!present.exists());
+
+        // 3. Directory leaf and non-directory intermediate path component fail
+        // closed with policy code `1` and leave entries untouched.
+        let dir_leaf = miri_dir.join("Dir.olean.server");
+        fs::create_dir_all(&dir_leaf).unwrap();
+        assert_eq!(
+            remove_cache_file(&cache, "Miri/Dir.olean.server", "miri-pin").unwrap_err().code,
+            1
+        );
+        assert!(dir_leaf.is_dir());
+
+        let file_parent = cache.join("FileComp");
+        fs::write(&file_parent, b"not-a-dir").unwrap();
+        assert_eq!(
+            remove_cache_file(&cache, "FileComp/Hex.olean.server", "miri-pin").unwrap_err().code,
+            1
+        );
+        assert!(file_parent.is_file());
+
+        // 4. Non-`NotFound` ancestor error (`ENOTDIR`) fails operationally with
+        // code `2` rather than treating the target as absent.
+        let bad_cache = file_parent.join("cache");
+        assert_eq!(
+            remove_cache_file(&bad_cache, "Miri/Hex.olean.server", "miri-pin").unwrap_err().code,
+            2
+        );
+        assert_eq!(
+            prepare_nosymlink_cache_path(&bad_cache, "Miri/Hex.olean.server", false, "miri-pin")
+                .unwrap_err()
+                .code,
+            2
+        );
+
+        // 5. Concurrent `remove_cache_file` calls racing on the same regular
+        // entry all succeed without surfacing `NotFound`.
+        const THREADS: usize = 8;
+        const ROUNDS: usize = 16;
+        let race_target = miri_dir.join("Race.olean.server");
+        for _ in 0..ROUNDS {
+            fs::write(&race_target, b"stale-race").unwrap();
+            let barrier = std::sync::Barrier::new(THREADS);
+            std::thread::scope(|scope| {
+                for _ in 0..THREADS {
+                    scope.spawn(|| {
+                        barrier.wait();
+                        remove_cache_file(&cache, "Miri/Race.olean.server", "miri-pin")
+                            .expect("concurrent remove_cache_file must tolerate NotFound races");
+                    });
+                }
+            });
+            assert!(!race_target.exists());
+        }
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn remove_cache_file_unix_symlinks_and_permission_errors_fail_closed() {
+        use std::os::unix::fs::{PermissionsExt as _, symlink};
+
+        struct ModeGuard<'a> {
+            path: &'a Path,
+        }
+        impl Drop for ModeGuard<'_> {
+            fn drop(&mut self) {
+                let _ = fs::set_permissions(self.path, fs::Permissions::from_mode(0o755));
+            }
+        }
+
+        let tmp = tempfile::tempdir().unwrap();
+        let cache = tmp.path().join("cache");
+        let miri_dir = cache.join("Miri");
+        fs::create_dir_all(&miri_dir).unwrap();
+
+        // 1. Dangling leaf symlink fails closed with policy code `1` and stays
+        // untouched.
+        let dangling = miri_dir.join("Dangling.olean.server");
+        symlink(cache.join("does-not-exist"), &dangling).unwrap();
+        assert_eq!(
+            remove_cache_file(&cache, "Miri/Dangling.olean.server", "miri-pin").unwrap_err().code,
+            1
+        );
+        assert!(fs::symlink_metadata(&dangling).is_ok());
+
+        // 2. Symlinked cache root with a trailing slash fails closed with
+        // code `1`.
+        let sym_root = tmp.path().join("sym-cache");
+        symlink(&cache, &sym_root).unwrap();
+        let sym_root_slash = PathBuf::from(format!("{}/", sym_root.display()));
+        assert_eq!(
+            remove_cache_file(&sym_root_slash, "Miri/Hex.olean.server", "miri-pin")
+                .unwrap_err()
+                .code,
+            1
+        );
+
+        // 3. Unsearchable directory (`EACCES` on `symlink_metadata`) fails
+        // operationally with code `2`.
+        let locked_dir = cache.join("Locked");
+        fs::create_dir_all(&locked_dir).unwrap();
+        fs::set_permissions(&locked_dir, fs::Permissions::from_mode(0o000)).unwrap();
+        let _locked_guard = ModeGuard { path: &locked_dir };
+        if fs::symlink_metadata(locked_dir.join("Hex.olean.server")).is_err() {
+            assert_eq!(
+                remove_cache_file(&cache, "Locked/Hex.olean.server", "miri-pin").unwrap_err().code,
+                2
+            );
+        }
+
+        // 4. Read-only directory (`EACCES` on `fs::remove_file(&dst)`) fails
+        // operationally with code `2` and preserves the entry.
+        let ro_dir = cache.join("ReadOnly");
+        fs::create_dir_all(&ro_dir).unwrap();
+        let ro_probe = ro_dir.join("probe");
+        let ro_entry = ro_dir.join("Hex.olean.server");
+        fs::write(&ro_probe, b"probe").unwrap();
+        fs::write(&ro_entry, b"keep-me").unwrap();
+        fs::set_permissions(&ro_dir, fs::Permissions::from_mode(0o555)).unwrap();
+        let _ro_guard = ModeGuard { path: &ro_dir };
+        if fs::remove_file(&ro_probe).is_err() {
+            assert_eq!(
+                remove_cache_file(&cache, "ReadOnly/Hex.olean.server", "miri-pin")
+                    .unwrap_err()
+                    .code,
+                2
+            );
+            assert!(ro_entry.is_file());
+        }
+    }
+
+    #[test]
+    fn verify_upstream_pin_trailing_slash_handling_and_symlink_rejection() {
+        assert_eq!(strip_trailing_separators(Path::new("/")), Path::new("/"));
+        assert_eq!(strip_trailing_separators(Path::new("///")), Path::new("/"));
+        assert_eq!(strip_trailing_separators(Path::new("/tmp/sym/")), Path::new("/tmp/sym"));
+        assert_eq!(strip_trailing_separators(Path::new("/tmp/sym/.")), Path::new("/tmp/sym"));
+        assert_eq!(strip_trailing_separators(Path::new("rel/sym/")), Path::new("rel/sym"));
+        assert_eq!(strip_trailing_separators(Path::new(".")), Path::new("."));
+        assert_eq!(strip_trailing_separators(Path::new("")), Path::new(""));
+
+        let vendor_root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../vendor/lean-miri");
+        let vendor_root_slash = PathBuf::from(format!("{}/", vendor_root.display()));
+        verify_upstream_pin(&vendor_root_slash)
+            .expect("legitimate vendor_root with trailing slash must verify");
+
+        #[cfg(unix)]
+        {
+            use std::os::unix::fs::symlink;
+            let tmp = tempfile::tempdir().unwrap();
+            let sym_root = tmp.path().join("sym-lean-miri");
+            symlink(&vendor_root, &sym_root).unwrap();
+
+            for candidate in [
+                sym_root.clone(),
+                PathBuf::from(format!("{}/", sym_root.display())),
+                PathBuf::from(format!("{}///", sym_root.display())),
+                sym_root.join("."),
+            ] {
+                let err = verify_upstream_pin(&candidate).unwrap_err();
+                assert_eq!(err.code, 1, "expected policy error for {}", candidate.display());
+                assert!(
+                    err.message.contains("expected regular vendor/lean-miri directory"),
+                    "unexpected error for {}: {err}",
+                    candidate.display()
+                );
+            }
+
+            let sym_vendor = tmp.path().join("vendor");
+            symlink(vendor_root.parent().unwrap(), &sym_vendor).unwrap();
+            let via_sym_vendor_slash =
+                PathBuf::from(format!("{}/", sym_vendor.join("lean-miri").display()));
+            let err_parent = verify_upstream_pin(&via_sym_vendor_slash).unwrap_err();
+            assert_eq!(err_parent.code, 1);
+            assert!(
+                err_parent.message.contains("expected regular vendor directory"),
+                "unexpected error: {err_parent}"
+            );
+        }
     }
 
     #[test]
