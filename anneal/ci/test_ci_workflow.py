@@ -6,7 +6,7 @@
 # This file may not be copied, modified, or distributed except according to
 # those terms.
 
-"""Exercise current Anneal CI manifest guards and cache invariants."""
+"""Exercise Anneal and repository CI manifest, cache, and path-filter guards."""
 
 from datetime import datetime, timedelta, timezone
 import hashlib
@@ -938,6 +938,496 @@ class CiWorkflowManifestGuardTests(unittest.TestCase):
                 "pull_request", "", "skipped", {"static-checks": bad_result}
             )
             self.assertNotEqual(res.returncode, 0)
+
+
+class PathFilterWorkflowTests(unittest.TestCase):
+    def setUp(self):
+        root = SOURCE.parent.parent
+        self.ci_wf = load_workflow_yaml(
+            (root / ".github/workflows/ci.yml").read_text()
+        )
+        self.anneal_wf = load_workflow_yaml(
+            (root / ".github/workflows/anneal.yml").read_text()
+        )
+
+    def _run_detect_changes(
+        self,
+        workflow,
+        event_name,
+        commit_batches,
+        *,
+        setup_extra=None,
+        synthetic_merge=False,
+        pr_base_sha_override=None,
+        pr_head_sha_override=None,
+        drop_origin_main=False,
+    ):
+        script = next(
+            step["run"]
+            for step in workflow["jobs"]["detect_changes"]["steps"]
+            if step.get("id") == "filter"
+        )
+        with tempfile.TemporaryDirectory(prefix="anneal-ci-filter-") as tmp:
+            repo = Path(tmp) / "repo"
+            repo.mkdir()
+            gh_out = Path(tmp) / "gh_out.txt"
+            gh_out.write_text("")
+
+            def git(*args):
+                return subprocess.run(
+                    [
+                        "git",
+                        "-c",
+                        "core.hooksPath=/dev/null",
+                        "-c",
+                        "core.fsmonitor=false",
+                        *args,
+                    ],
+                    cwd=repo,
+                    check=True,
+                    capture_output=True,
+                    text=True,
+                )
+
+            git("init", "-q", "-b", "main")
+            git("config", "user.email", "test@example.com")
+            git("config", "user.name", "Test")
+            (repo / "README.md").write_text("base\n")
+            git("add", "README.md")
+            git("commit", "-qm", "base")
+            if setup_extra is not None:
+                setup_extra(repo, git)
+            main_sha = git("rev-parse", "HEAD").stdout.strip()
+            if not drop_origin_main:
+                git("update-ref", "refs/remotes/origin/main", main_sha)
+
+            base_sha = main_sha
+            pr_tip = main_sha
+            if synthetic_merge:
+                # Create a diverged base commit on `main`, branch the PR from
+                # `main_sha`, commit `commit_batches`, and merge PR into base
+                # (mirroring GitHub's synthetic `refs/pull/N/merge` HEAD).
+                git("checkout", "-qb", "pr-branch", main_sha)
+                for idx, ops in enumerate(commit_batches):
+                    self._apply_ops(repo, git, ops)
+                    git("commit", "-qm", f"pr-{idx}")
+                pr_tip = git("rev-parse", "HEAD").stdout.strip()
+                git("checkout", "-q", "main")
+                (repo / "zerocopy").mkdir(exist_ok=True)
+                (repo / "zerocopy/unrelated_main.txt").write_text("main\n")
+                git("add", "zerocopy/unrelated_main.txt")
+                git("commit", "-qm", "advance-main")
+                base_sha = git("rev-parse", "HEAD").stdout.strip()
+                if not drop_origin_main:
+                    git("update-ref", "refs/remotes/origin/main", base_sha)
+                git("merge", "--no-ff", "-qm", "synthetic-pr-merge", pr_tip)
+            else:
+                for idx, ops in enumerate(commit_batches):
+                    self._apply_ops(repo, git, ops)
+                    git("commit", "-qm", f"batch-{idx}")
+                    if idx + 1 < len(commit_batches):
+                        base_sha = git("rev-parse", "HEAD").stdout.strip()
+                pr_tip = git("rev-parse", "HEAD").stdout.strip()
+
+            env = os.environ.copy()
+            env.update({
+                "GITHUB_OUTPUT": str(gh_out),
+                "EVENT_NAME": event_name,
+                "PR_BASE_SHA": (
+                    pr_base_sha_override
+                    if pr_base_sha_override is not None
+                    else (base_sha if event_name == "pull_request" else "")
+                ),
+                "PR_HEAD_SHA": (
+                    pr_head_sha_override
+                    if pr_head_sha_override is not None
+                    else (pr_tip if event_name == "pull_request" else "")
+                ),
+            })
+            res = subprocess.run(
+                [
+                    "bash",
+                    "--noprofile",
+                    "--norc",
+                    "-eo",
+                    "pipefail",
+                    "-c",
+                    script,
+                ],
+                cwd=repo,
+                env=env,
+                capture_output=True,
+                text=True,
+            )
+            self.assertEqual(res.returncode, 0, res.stdout + res.stderr)
+            out = {}
+            for line in gh_out.read_text().splitlines():
+                k, v = line.split("=", 1)
+                out[k] = v
+            return out
+
+    @staticmethod
+    def _apply_ops(repo, git, ops):
+        if callable(ops):
+            ops(repo, git)
+            return
+        for rel, content in ops.items():
+            p = repo / rel
+            if content is None:
+                git("rm", "-q", rel)
+            else:
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(content)
+                git("add", rel)
+
+    def test_detect_changes_classification_and_fail_closed_invariants(self):
+        # Verify least-privilege & token-stripping posture on both jobs.
+        for wf_name, wf in (("ci.yml", self.ci_wf), ("anneal.yml", self.anneal_wf)):
+            job = wf["jobs"]["detect_changes"]
+            self.assertEqual(job["permissions"], {"contents": "read"}, wf_name)
+            for token in (
+                "ACTIONS_CACHE_URL",
+                "ACTIONS_RESULTS_URL",
+                "ACTIONS_RUNTIME_TOKEN",
+            ):
+                self.assertEqual(job["env"][token], "", f"{wf_name}:{token}")
+            checkout = next(
+                s for s in job["steps"] if s.get("uses", "").startswith("actions/checkout@")
+            )
+            self.assertEqual(
+                checkout["with"]["persist-credentials"], "false", wf_name
+            )
+
+        cases = [
+            # (label, event, commit_batches, exp_run_zerocopy, exp_run_anneal)
+            ("anneal_only_pr", "pull_request", [{"anneal/README.md": "a"}], "false", "true"),
+            ("anneal_only_2_commits", "pull_request", [{"anneal/a.md": "a"}, {"anneal/b.md": "b"}], "false", "true"),
+            ("zerocopy_only_pr", "pull_request", [{"zerocopy/src/lib.rs": "z"}], "true", "false"),
+            ("zerocopy_only_2_commits", "pull_request", [{"zerocopy/a.rs": "a"}, {"zerocopy/b.rs": "b"}], "true", "false"),
+            (
+                "non_anneal_prefixes",
+                "pull_request",
+                [{"evals/a.txt": "e", "tools/b.txt": "t", "maintainers/c.txt": "m"}],
+                "true",
+                "false",
+            ),
+            (
+                "allowed_root_non_anneal",
+                "pull_request",
+                [{
+                    "CONTRIBUTING.md": "c",
+                    "LICENSE-APACHE": "la",
+                    "LICENSE-BSD": "lb",
+                    "LICENSE-MIT": "lm",
+                    "rustfmt.toml": "r",
+                    ".dockerignore": "d",
+                }],
+                "true",
+                "false",
+            ),
+            ("exocrate_touches_both", "pull_request", [{"exocrate/src/lib.rs": "e"}], "true", "true"),
+            ("workflow_touches_both", "pull_request", [{".github/workflows/ci.yml": "w"}], "true", "true"),
+            ("ci_dir_touches_both", "pull_request", [{"ci/check_fmt.sh": "s"}], "true", "true"),
+            ("githooks_touches_both", "pull_request", [{"githooks/pre-push": "h"}], "true", "true"),
+            ("skills_dir_touches_both", "pull_request", [{"skills/commit-message/SKILL.md": "s"}], "true", "true"),
+            ("root_cargo_override", "pull_request", [{".cargo/config.toml": "x"}], "true", "true"),
+            ("root_rust_toolchain_override", "pull_request", [{"rust-toolchain.toml": "n"}], "true", "true"),
+            ("root_gitignore_touches_both", "pull_request", [{".gitignore": "g"}], "true", "true"),
+            ("root_rgignore_touches_both", "pull_request", [{".rgignore": "r"}], "true", "true"),
+            ("root_gemini_touches_both", "pull_request", [{".gemini/styleguide.md": "s"}], "true", "true"),
+            ("root_vscode_touches_both", "pull_request", [{".vscode/settings.json": "{}"}], "true", "true"),
+            ("mixed_pr", "pull_request", [{"anneal/a.txt": "a", "zerocopy/z.txt": "z"}], "true", "true"),
+            (
+                "stacked_pr_lower_zerocopy_upper_anneal",
+                "pull_request",
+                [{"zerocopy/src/lib.rs": "z"}, {"anneal/README.md": "a"}],
+                "true",
+                "true",
+            ),
+            (
+                "stacked_pr_lower_anneal_upper_zerocopy",
+                "pull_request",
+                [{"anneal/README.md": "a"}, {"zerocopy/src/lib.rs": "z"}],
+                "true",
+                "true",
+            ),
+            ("push_always_runs_both", "push", [{"anneal/README.md": "a"}], "true", "true"),
+            ("merge_group_always_runs_both", "merge_group", [{"zerocopy/src/lib.rs": "z"}], "true", "true"),
+            ("workflow_dispatch_always_runs_both", "workflow_dispatch", [{"anneal/README.md": "a"}], "true", "true"),
+        ]
+        for label, event, batches, exp_zc, exp_an in cases:
+            with self.subTest(case=label):
+                zc_out = self._run_detect_changes(self.ci_wf, event, batches)
+                an_out = self._run_detect_changes(self.anneal_wf, event, batches)
+                self.assertEqual(zc_out["run_zerocopy"], exp_zc)
+                self.assertEqual(an_out["run_anneal"], exp_an)
+
+        # Decoy root `subprocess.py` in an untrusted PR must NOT be imported by
+        # `python3 -I -B -` to spoof `run_*=false`.
+        with self.subTest(case="decoy_root_subprocess_py_ignored"):
+            decoy = (
+                "import sys\n"
+                "print('run_anneal=false')\n"
+                "print('run_zerocopy=false')\n"
+                "sys.exit(0)\n"
+            )
+            batch = [{
+                "subprocess.py": decoy,
+                "anneal/trusted/foo.rs": "// tcb\n",
+                "zerocopy/src/lib.rs": "// zc\n",
+            }]
+            zc_out = self._run_detect_changes(self.ci_wf, "pull_request", batch)
+            an_out = self._run_detect_changes(self.anneal_wf, "pull_request", batch)
+            self.assertEqual(zc_out["run_zerocopy"], "true")
+            self.assertEqual(an_out["run_anneal"], "true")
+
+        # Cross-boundary renames must emit both source and destination paths
+        # (`--no-renames`) and trigger both suites in both directions.
+        def seed_renames(repo, git):
+            for rel, txt in (
+                ("anneal/src.txt", "unique-anneal-payload\n" * 20),
+                ("zerocopy/src.txt", "unique-zerocopy-payload\n" * 20),
+                ("exocrate/src.txt", "unique-exocrate-payload\n" * 20),
+            ):
+                p = repo / rel
+                p.parent.mkdir(parents=True, exist_ok=True)
+                p.write_text(txt)
+                git("add", rel)
+            git("commit", "-qm", "seed-renames")
+
+        for label, src, dst in (
+            ("mv_anneal_to_zerocopy", "anneal/src.txt", "zerocopy/moved.txt"),
+            ("mv_zerocopy_to_anneal", "zerocopy/src.txt", "anneal/moved.txt"),
+            ("mv_exocrate_to_zerocopy", "exocrate/src.txt", "zerocopy/moved_exo.txt"),
+        ):
+            def do_mv(repo, git, s=src, d=dst):
+                (repo / d).parent.mkdir(parents=True, exist_ok=True)
+                git("mv", s, d)
+
+            with self.subTest(case=label):
+                zc_out = self._run_detect_changes(
+                    self.ci_wf, "pull_request", [do_mv], setup_extra=seed_renames
+                )
+                an_out = self._run_detect_changes(
+                    self.anneal_wf, "pull_request", [do_mv], setup_extra=seed_renames
+                )
+                self.assertEqual(zc_out["run_zerocopy"], "true")
+                self.assertEqual(an_out["run_anneal"], "true")
+
+        # Synthetic PR merge commits (`HEAD^1` = main with unrelated zerocopy
+        # change, `HEAD^2` = Anneal-only PR) must classify using PR changes.
+        with self.subTest(case="synthetic_merge_anneal_only"):
+            zc_out = self._run_detect_changes(
+                self.ci_wf, "pull_request", [{"anneal/doc.md": "a"}],
+                synthetic_merge=True,
+            )
+            an_out = self._run_detect_changes(
+                self.anneal_wf, "pull_request", [{"anneal/doc.md": "a"}],
+                synthetic_merge=True,
+            )
+            self.assertEqual(zc_out["run_zerocopy"], "false")
+            self.assertEqual(an_out["run_anneal"], "true")
+
+        # Intermediate commit touching and reverting a file in the other suite
+        # must still trigger that suite via commit-log inspection (both linear
+        # and authored side-branch merges).
+        with self.subTest(case="intermediate_commit_touch_and_revert_anneal"):
+            def make_revert_anneal(repo, git):
+                (repo / "anneal").mkdir(exist_ok=True)
+                (repo / "anneal/temp.txt").write_text("temp\n")
+                git("add", "anneal/temp.txt")
+                git("commit", "-qm", "touch-anneal")
+                git("rm", "-q", "anneal/temp.txt")
+                (repo / "zerocopy").mkdir(exist_ok=True)
+                (repo / "zerocopy/change.rs").write_text("// zc\n")
+                git("add", "zerocopy/change.rs")
+
+            an_out = self._run_detect_changes(
+                self.anneal_wf, "pull_request", [make_revert_anneal],
+                synthetic_merge=True,
+            )
+            self.assertEqual(an_out["run_anneal"], "true")
+
+        with self.subTest(case="intermediate_commit_touch_and_revert_zerocopy"):
+            def make_revert_zc(repo, git):
+                (repo / "zerocopy").mkdir(exist_ok=True)
+                (repo / "zerocopy/temp.rs").write_text("// temp\n")
+                git("add", "zerocopy/temp.rs")
+                git("commit", "-qm", "touch-zc")
+                git("rm", "-q", "zerocopy/temp.rs")
+                (repo / "anneal").mkdir(exist_ok=True)
+                (repo / "anneal/doc.md").write_text("a\n")
+                git("add", "anneal/doc.md")
+
+            zc_out = self._run_detect_changes(
+                self.ci_wf, "pull_request", [make_revert_zc],
+                synthetic_merge=True,
+            )
+            self.assertEqual(zc_out["run_zerocopy"], "true")
+
+        with self.subTest(case="authored_merge_side_branch_touch_and_revert"):
+            def make_side_branch_merge(repo, git):
+                start = git("rev-parse", "HEAD").stdout.strip()
+                git("checkout", "-qb", "side-branch", start)
+                (repo / "anneal").mkdir(exist_ok=True)
+                (repo / "anneal/side.txt").write_text("side\n")
+                git("add", "anneal/side.txt")
+                git("commit", "-qm", "side-touch-anneal")
+                git("rm", "-q", "anneal/side.txt")
+                git("commit", "-qm", "side-revert-anneal")
+                side_tip = git("rev-parse", "HEAD").stdout.strip()
+                git("checkout", "-q", "pr-branch")
+                (repo / "zerocopy").mkdir(exist_ok=True)
+                (repo / "zerocopy/mainline.rs").write_text("// zc\n")
+                git("add", "zerocopy/mainline.rs")
+                git("commit", "-qm", "pr-zc-change")
+                git("merge", "--no-ff", "-qm", "merge-side", side_tip)
+                (repo / "zerocopy/final.rs").write_text("// final\n")
+                git("add", "zerocopy/final.rs")
+
+            an_out = self._run_detect_changes(
+                self.anneal_wf, "pull_request", [make_side_branch_merge],
+                synthetic_merge=True,
+            )
+            self.assertEqual(an_out["run_anneal"], "true")
+
+        # Fail-closed error and empty-diff conditions must run both suites.
+        # Use an Anneal-only commit for `ci.yml` and a Zerocopy-only commit for
+        # `anneal.yml` so every error guard is exercised non-vacuously.
+        fail_closed_cases = [
+            ("empty_diff", [], [], {}),
+            ("missing_pr_base_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_base_sha_override": ""}),
+            ("invalid_pr_base_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_base_sha_override": "0" * 40}),
+            ("missing_pr_head_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_head_sha_override": ""}),
+            ("mismatched_pr_head_sha", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"pr_head_sha_override": "f" * 40}),
+            ("missing_origin_main", [{"anneal/a.md": "a"}], [{"zerocopy/z.rs": "z"}], {"drop_origin_main": True}),
+        ]
+        for label, zc_batches, an_batches, kwargs in fail_closed_cases:
+            with self.subTest(case=label):
+                zc_out = self._run_detect_changes(self.ci_wf, "pull_request", zc_batches, **kwargs)
+                an_out = self._run_detect_changes(self.anneal_wf, "pull_request", an_batches, **kwargs)
+                self.assertEqual(zc_out["run_zerocopy"], "true")
+                self.assertEqual(an_out["run_anneal"], "true")
+
+    def test_all_jobs_succeed_gates_fail_closed(self):
+        for wf_name, wf, env_flag, always_on, gated_sample in [
+            (
+                "ci.yml",
+                self.ci_wf,
+                "RUN_ZEROCOPY",
+                {
+                    "detect_changes",
+                    "check_fmt",
+                    "check_actions",
+                    "check-job-dependencies",
+                    "check-todo",
+                    "test-tools",
+                    "check-skills",
+                    "run-git-hooks",
+                    "zizmor",
+                },
+                "kani",
+            ),
+            (
+                "anneal.yml",
+                self.anneal_wf,
+                "RUN_ANNEAL",
+                {"detect_changes"},
+                "current_anneal",
+            ),
+        ]:
+            gate_steps = wf["jobs"]["all-jobs-succeed"]["steps"]
+            self.assertTrue(
+                any(
+                    s.get("name") == "Reject workflow cancellation"
+                    and s.get("if") == "${{ cancelled() }}"
+                    for s in gate_steps
+                ),
+                wf_name,
+            )
+            gate_script = next(
+                step["run"]
+                for step in gate_steps
+                if step.get("name") == "Require every dependency to succeed"
+            )
+            deps = wf["jobs"]["all-jobs-succeed"]["needs"]
+
+            def eval_gate(event, run_flag, overrides=None):
+                needs = {}
+                for d in deps:
+                    if run_flag == "true":
+                        res = (
+                            "skipped"
+                            if (wf_name == "ci.yml" and d == "miri" and event == "pull_request")
+                            else "success"
+                        )
+                    else:
+                        res = "success" if d in always_on else "skipped"
+                    needs[d] = {"result": res}
+                if overrides:
+                    for k, v in overrides.items():
+                        needs[k] = {"result": v}
+                env = os.environ.copy()
+                env.update({
+                    "EVENT_NAME": event,
+                    env_flag: run_flag,
+                    "NEEDS_JSON": json.dumps(needs),
+                })
+                return subprocess.run(
+                    [
+                        "bash",
+                        "--noprofile",
+                        "--norc",
+                        "-eo",
+                        "pipefail",
+                        "-c",
+                        gate_script,
+                    ],
+                    env=env,
+                    capture_output=True,
+                    text=True,
+                ).returncode
+
+            self.assertEqual(eval_gate("pull_request", "true"), 0, wf_name)
+            self.assertEqual(eval_gate("pull_request", "false"), 0, wf_name)
+            self.assertEqual(eval_gate("merge_group", "true"), 0, wf_name)
+            # Non-PR skip must fail closed.
+            self.assertNotEqual(eval_gate("merge_group", "false"), 0, wf_name)
+            self.assertNotEqual(eval_gate("push", "false"), 0, wf_name)
+            self.assertNotEqual(eval_gate("workflow_dispatch", "false"), 0, wf_name)
+            # Empty or malformed run_flag must fail closed even when
+            # detect_changes reports success.
+            self.assertNotEqual(eval_gate("pull_request", ""), 0, wf_name)
+            self.assertNotEqual(eval_gate("pull_request", "unexpected"), 0, wf_name)
+            # Failed detect_changes must fail closed even if run_flag is empty.
+            self.assertNotEqual(
+                eval_gate("pull_request", "", {"detect_changes": "failure"}),
+                0,
+                wf_name,
+            )
+            # Failed or cancelled gated job must fail closed for both flags.
+            for run_flag in ("true", "false"):
+                for bad in ("failure", "cancelled"):
+                    self.assertNotEqual(
+                        eval_gate("pull_request", run_flag, {gated_sample: bad}),
+                        0,
+                        f"{wf_name}:{run_flag}:{bad}",
+                    )
+            if wf_name == "ci.yml":
+                # Miri skipped on push or merge_group must fail closed.
+                for ev in ("push", "merge_group"):
+                    self.assertNotEqual(
+                        eval_gate(ev, "true", {"miri": "skipped"}),
+                        0,
+                        f"ci.yml:miri:{ev}",
+                    )
+            # Skipped always-on job must fail closed.
+            for job in always_on:
+                self.assertNotEqual(
+                    eval_gate("pull_request", "false", {job: "skipped"}),
+                    0,
+                    f"{wf_name}:{job}",
+                )
 
 
 if __name__ == "__main__":
