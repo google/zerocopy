@@ -27821,6 +27821,112 @@
         "tooling/ci"
       ]
     },
+    "ci-performance-tracking-fork-safe-github-pages-dashboards-and-regression-detection": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "d3362d9a657e2f943d25a0812f7b13b93e60af4d"
+          },
+          "name": "Zerocopy and Anneal Rust-to-Lean verifier repository and CI workflows"
+        },
+        {
+          "identity": {
+            "repository": "benchmark-action/github-action-benchmark",
+            "revision": "84ec6ea748925b6580796c05ce7a1c8fd0d15f3b",
+            "version": "v1.22.2"
+          },
+          "name": "github-action-benchmark continuous benchmark action"
+        },
+        {
+          "identity": {
+            "repository": "bencherdev/bencher",
+            "revision": "a39a1f4fb7d2a0bffcfc2d4d044852072ce98358",
+            "version": "v0.6.17"
+          },
+          "name": "Bencher continuous benchmarking CLI and statistical boundary engine"
+        },
+        {
+          "identity": {
+            "action_repository": "CodSpeedHQ/action",
+            "action_revision": "b1f28b5eccf7cb5bfe6a2a89cb3053eb67f1150c",
+            "action_version": "v5.8.0",
+            "rust_repository": "CodSpeedHQ/codspeed-rust",
+            "rust_revision": "6ab62f6d0545adf2052e413e349c8b529904e575",
+            "rust_version": "v6.1.0"
+          },
+          "name": "CodSpeed GitHub Action and Rust instrumentation suite"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rustc-perf",
+            "revision": "15d95905429e577d5a710b17c49e04b4451c263b"
+          },
+          "name": "rustc-perf compiler benchmark collector and comparison site"
+        },
+        {
+          "identity": {
+            "repository": "zizmorcore/zizmor",
+            "revision": "0b77258cf93d4e0ae762c843422c333faf2793f6",
+            "version": "v1.23.1"
+          },
+          "name": "zizmor GitHub Actions static security analyzer"
+        },
+        {
+          "identity": {
+            "repository": "leeoniya/uPlot",
+            "revision": "a8b48ee3a2ec53700194155fbfd8db71e0ca9fef",
+            "version": "1.6.32"
+          },
+          "name": "uPlot time-series canvas charting library"
+        },
+        {
+          "identity": {
+            "repository": "chartjs/Chart.js",
+            "revision": "ff1bdc38a102e7b9e97756041b1118272ed08564",
+            "version": "v4.6.1"
+          },
+          "name": "Chart.js HTML5 charting library"
+        },
+        {
+          "identity": {
+            "repository": "vega/vega-lite",
+            "revision": "9d3a9a2e87ebbae0a525f1169b85b82fed986a21",
+            "version": "v6.5.0"
+          },
+          "name": "Vega-Lite declarative visualization grammar"
+        },
+        {
+          "identity": {
+            "repository": "torvalds/linux",
+            "revision": "65e4fd942f72a9dba0e4e257290c4fa1aa756854"
+          },
+          "name": "Linux kernel process fork and execve RSS high-water accounting"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "4.34.1"
+          },
+          "name": "Lean 4 theorem prover and .olean module serialization"
+        }
+      ],
+      "topics": [
+        "anneal/performance",
+        "build/benchmarking",
+        "build/ci",
+        "lean/olean",
+        "rustc/performance",
+        "security/ci",
+        "systems/measurement-noise",
+        "tooling/benchmark-harnesses",
+        "tooling/ci",
+        "vcs/git",
+        "verification/performance-metrics"
+      ]
+    },
     "ckd-epi-2021-race-free-refit-idms-creatinine-standardization-cockcroft-gault-drug-dosing-ekfc-equation-and-calvert-carboplatin-formula": {
       "observed_at": "2026-11-21",
       "subjects": [
