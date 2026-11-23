@@ -1,0 +1,477 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "probes": {
+    "a_ctlz_cttz_nonzero_vs_simd": {
+      "llvm_ir": {
+        "opt_0": {
+          "defined_functions": [
+            "define internal void @_RNvCscNtYg2vSlvG_4main14call_simd_ctlz(ptr sret([16 x i8]) align 16 %_0, ptr align 16 %v) unnamed_addr #2 {\nstart:\n  %0 = load <4 x i32>, ptr %v, align 16\n  %1 = call <4 x i32> @llvm.ctlz.v4i32(<4 x i32> %0, i1 false)\n  store <4 x i32> %1, ptr %_0, align 16\n  ret void\n}",
+            "define internal void @_RNvCscNtYg2vSlvG_4main14call_simd_cttz(ptr sret([16 x i8]) align 16 %_0, ptr align 16 %v) unnamed_addr #2 {\nstart:\n  %0 = load <4 x i32>, ptr %v, align 16\n  %1 = call <4 x i32> @llvm.cttz.v4i32(<4 x i32> %0, i1 false)\n  store <4 x i32> %1, ptr %_0, align 16\n  ret void\n}",
+            "define internal i32 @_RNvCscNtYg2vSlvG_4main17call_ctlz_nonzero(i32 %x) unnamed_addr #2 {\nstart:\n  %_0 = call i32 @llvm.ctlz.i32(i32 %x, i1 true)\n  ret i32 %_0\n}",
+            "define internal i32 @_RNvCscNtYg2vSlvG_4main17call_cttz_nonzero(i32 %x) unnamed_addr #2 {\nstart:\n  %_0 = call i32 @llvm.cttz.i32(i32 %x, i1 true)\n  ret i32 %_0\n}",
+            "define internal i32 @_RNvCscNtYg2vSlvG_4main19fold_ctlz_safe_lt32(i32 %x) unnamed_addr #2 {\nstart:\n  %_0 = alloca [4 x i8], align 4\n  %n = call i32 @llvm.ctlz.i32(i32 %x, i1 false)\n  %_3 = icmp ult i32 %n, 32\n  br i1 %_3, label %bb2, label %bb3\n\nbb3:                                              ; preds = %start\n  store i32 9999, ptr %_0, align 4\n  br label %bb4\n\nbb2:                                              ; preds = %start\n  %_0.i = add i32 %n, 1000\n  store i32 %_0.i, ptr %_0, align 4\n  br label %bb4\n\nbb4:                                              ; preds = %bb2, %bb3\n  %0 = load i32, ptr %_0, align 4\n  ret i32 %0\n}",
+            "define internal i32 @_RNvCscNtYg2vSlvG_4main22fold_ctlz_nonzero_lt32(i32 %x) unnamed_addr #2 {\nstart:\n  %_0 = alloca [4 x i8], align 4\n  %n = call i32 @llvm.ctlz.i32(i32 %x, i1 true)\n  %_3 = icmp ult i32 %n, 32\n  br i1 %_3, label %bb2, label %bb3\n\nbb3:                                              ; preds = %start\n  store i32 9999, ptr %_0, align 4\n  br label %bb4\n\nbb2:                                              ; preds = %start\n  %_0.i = add i32 %n, 1000\n  store i32 %_0.i, ptr %_0, align 4\n  br label %bb4\n\nbb4:                                              ; preds = %bb2, %bb3\n  %0 = load i32, ptr %_0, align 4\n  ret i32 %0\n}",
+            "define internal i32 @_RNvCscNtYg2vSlvG_4main9call_ctlz(i32 %x) unnamed_addr #2 {\nstart:\n  %_0 = call i32 @llvm.ctlz.i32(i32 %x, i1 false)\n  ret i32 %_0\n}",
+            "define internal i32 @_RNvCscNtYg2vSlvG_4main9call_cttz(i32 %x) unnamed_addr #2 {\nstart:\n  %_0 = call i32 @llvm.cttz.i32(i32 %x, i1 false)\n  ret i32 %_0\n}"
+          ]
+        },
+        "opt_2": {
+          "defined_functions": [
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main14call_simd_ctlz(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #4 {\nstart:\n  %0 = load <4 x i32>, ptr %v, align 16\n  %1 = tail call range(i32 0, 33) <4 x i32> @llvm.ctlz.v4i32(<4 x i32> %0, i1 false)\n  store <4 x i32> %1, ptr %_0, align 16\n  ret void\n}",
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main14call_simd_cttz(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #4 {\nstart:\n  %0 = load <4 x i32>, ptr %v, align 16\n  %1 = tail call range(i32 0, 33) <4 x i32> @llvm.cttz.v4i32(<4 x i32> %0, i1 false)\n  store <4 x i32> %1, ptr %_0, align 16\n  ret void\n}",
+            "define internal fastcc noundef range(i32 0, 32) i32 @_RNvCscNtYg2vSlvG_4main17call_ctlz_nonzero(i32 noundef %x) unnamed_addr #5 {\nstart:\n  %_0 = tail call range(i32 0, 33) i32 @llvm.ctlz.i32(i32 %x, i1 true)\n  ret i32 %_0\n}",
+            "define internal fastcc noundef range(i32 0, 32) i32 @_RNvCscNtYg2vSlvG_4main17call_cttz_nonzero(i32 noundef %x) unnamed_addr #5 {\nstart:\n  %_0 = tail call range(i32 0, 33) i32 @llvm.cttz.i32(i32 %x, i1 true)\n  ret i32 %_0\n}",
+            "define internal fastcc noundef range(i32 1000, 10000) i32 @_RNvCscNtYg2vSlvG_4main19fold_ctlz_safe_lt32(i32 noundef %x) unnamed_addr #5 {\nstart:\n  %_3.not = icmp eq i32 %x, 0\n  %n = tail call range(i32 0, 33) i32 @llvm.ctlz.i32(i32 %x, i1 true)\n  %0 = add nuw nsw i32 %n, 1000\n  %_0.sroa.0.0 = select i1 %_3.not, i32 9999, i32 %0\n  ret i32 %_0.sroa.0.0\n}",
+            "define internal fastcc noundef range(i32 1000, 1032) i32 @_RNvCscNtYg2vSlvG_4main22fold_ctlz_nonzero_lt32(i32 noundef %x) unnamed_addr #5 {\nstart:\n  %n = tail call range(i32 0, 33) i32 @llvm.ctlz.i32(i32 %x, i1 true)\n  %0 = add nuw nsw i32 %n, 1000\n  ret i32 %0\n}",
+            "define internal fastcc noundef range(i32 0, 33) i32 @_RNvCscNtYg2vSlvG_4main9call_ctlz(i32 noundef %x) unnamed_addr #5 {\nstart:\n  %_0 = tail call range(i32 0, 33) i32 @llvm.ctlz.i32(i32 %x, i1 false)\n  ret i32 %_0\n}",
+            "define internal fastcc noundef range(i32 0, 33) i32 @_RNvCscNtYg2vSlvG_4main9call_cttz(i32 noundef %x) unnamed_addr #5 {\nstart:\n  %_0 = tail call range(i32 0, 33) i32 @llvm.cttz.i32(i32 %x, i1 false)\n  ret i32 %_0\n}"
+          ]
+        }
+      },
+      "native_runs": {
+        "opt_0": {
+          "safe": {
+            "returncode": 0,
+            "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999",
+            "stderr": ""
+          },
+          "ctlz_zero": {
+            "returncode": 0,
+            "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999\nCTLZ_ZERO=31 FOLDED_LT32=1031",
+            "stderr": ""
+          },
+          "cttz_zero": {
+            "returncode": 0,
+            "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999\nCTTZ_ZERO=32",
+            "stderr": ""
+          }
+        },
+        "opt_2": {
+          "safe": {
+            "returncode": 0,
+            "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999",
+            "stderr": ""
+          },
+          "ctlz_zero": {
+            "returncode": 0,
+            "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999\nCTLZ_ZERO=3301782111 FOLDED_LT32=3301783111",
+            "stderr": ""
+          },
+          "cttz_zero": {
+            "returncode": 0,
+            "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999\nCTTZ_ZERO=32",
+            "stderr": ""
+          }
+        }
+      },
+      "miri_runs": {
+        "stacked_borrows__safe": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "safe"
+          ],
+          "returncode": 0,
+          "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999",
+          "stderr": "Compiling probe_a_ctlz_poison v0.1.0 (<TMPDIR>\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.20s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_a_ctlz_poison safe`"
+        },
+        "stacked_borrows__ctlz_zero": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "ctlz_zero"
+          ],
+          "returncode": 1,
+          "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_a_ctlz_poison ctlz_zero`\nerror: Undefined Behavior: `ctlz_nonzero` called on 0\n  --> src/main.rs:18:14\n   |\n18 |     unsafe { ctlz_nonzero(x) }\n   |              ^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: call_ctlz_nonzero\n               at src/main.rs:18:14: 18:29\n           1: main\n               at src/main.rs:74:30: 74:61\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "stacked_borrows__cttz_zero": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "cttz_zero"
+          ],
+          "returncode": 1,
+          "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_a_ctlz_poison cttz_zero`\nerror: Undefined Behavior: `cttz_nonzero` called on 0\n  --> src/main.rs:23:14\n   |\n23 |     unsafe { cttz_nonzero(x) }\n   |              ^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: call_cttz_nonzero\n               at src/main.rs:23:14: 23:29\n           1: main\n               at src/main.rs:79:30: 79:61\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows__safe": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "safe"
+          ],
+          "returncode": 0,
+          "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_a_ctlz_poison safe`"
+        },
+        "tree_borrows__ctlz_zero": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "ctlz_zero"
+          ],
+          "returncode": 1,
+          "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_a_ctlz_poison ctlz_zero`\nerror: Undefined Behavior: `ctlz_nonzero` called on 0\n  --> src/main.rs:18:14\n   |\n18 |     unsafe { ctlz_nonzero(x) }\n   |              ^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: call_ctlz_nonzero\n               at src/main.rs:18:14: 18:29\n           1: main\n               at src/main.rs:74:30: 74:61\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows__cttz_zero": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "cttz_zero"
+          ],
+          "returncode": 1,
+          "stdout": "SAFE_CTLZ=32 SAFE_CTLZ_NZ=15 SAFE_CTTZ=32 SAFE_CTTZ_NZ=16 SIMD_CTLZ=[32, 31, 0, 15] SIMD_CTTZ=[32, 0, 31, 16] SAFE_LT32_AT_0=9999",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_a_ctlz_poison cttz_zero`\nerror: Undefined Behavior: `cttz_nonzero` called on 0\n  --> src/main.rs:23:14\n   |\n23 |     unsafe { cttz_nonzero(x) }\n   |              ^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: call_cttz_nonzero\n               at src/main.rs:23:14: 23:29\n           1: main\n               at src/main.rs:79:30: 79:61\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        }
+      }
+    },
+    "b_simd_select_bitmask_shuffle_reduce": {
+      "llvm_ir": {
+        "opt_0": {
+          "defined_functions": [
+            "define internal zeroext i1 @_RNvCscNtYg2vSlvG_4main13do_reduce_any(ptr align 16 %mask) unnamed_addr #2 {\nstart:\n  %0 = load <4 x i32>, ptr %mask, align 16\n  %1 = lshr <4 x i32> %0, splat (i32 31)\n  %2 = trunc <4 x i32> %1 to <4 x i1>\n  %_0 = call i1 @llvm.vector.reduce.or.v4i1(<4 x i1> %2)\n  ret i1 %_0\n}",
+            "define internal void @_RNvCscNtYg2vSlvG_4main14do_simd_select(ptr sret([16 x i8]) align 16 %_0, ptr align 16 %mask, ptr align 16 %a, ptr align 16 %b) unnamed_addr #2 {\nstart:\n  %0 = load <4 x i32>, ptr %mask, align 16\n  %1 = load <4 x i32>, ptr %a, align 16\n  %2 = load <4 x i32>, ptr %b, align 16\n  %3 = lshr <4 x i32> %0, splat (i32 31)\n  %4 = trunc <4 x i32> %3 to <4 x i1>\n  %5 = select <4 x i1> %4, <4 x i32> %1, <4 x i32> %2\n  store <4 x i32> %5, ptr %_0, align 16\n  ret void\n}",
+            "define internal i16 @_RNvCscNtYg2vSlvG_4main19do_simd_bitmask_u16(ptr align 16 %mask) unnamed_addr #2 {\nstart:\n  %0 = load <16 x i8>, ptr %mask, align 16\n  %1 = lshr <16 x i8> %0, splat (i8 7)\n  %2 = trunc <16 x i8> %1 to <16 x i1>\n  %_0 = bitcast <16 x i1> %2 to i16\n  ret i16 %_0\n}",
+            "define internal i16 @_RNvCscNtYg2vSlvG_4main20do_simd_bitmask_arr2(ptr align 16 %mask) unnamed_addr #2 {\nstart:\n  %0 = alloca [2 x i8], align 1\n  %_0 = alloca [2 x i8], align 1\n  %1 = load <16 x i8>, ptr %mask, align 16\n  %2 = lshr <16 x i8> %1, splat (i8 7)\n  %3 = trunc <16 x i8> %2 to <16 x i1>\n  %4 = bitcast <16 x i1> %3 to i16\n  store i16 %4, ptr %0, align 1\n  %5 = load [2 x i8], ptr %0, align 1\n  store [2 x i8] %5, ptr %_0, align 1\n  %6 = load i16, ptr %_0, align 1\n  ret i16 %6\n}",
+            "define internal void @_RNvCscNtYg2vSlvG_4main21do_shuffle_and_reduce(ptr sret([32 x i8]) align 16 %_0, ptr align 16 %a, ptr align 16 %b, ptr align 16 %mask) unnamed_addr #2 {\nstart:\n  %0 = load <4 x i32>, ptr %a, align 16\n  %1 = load <4 x i32>, ptr %b, align 16\n  %shuf = shufflevector <4 x i32> %0, <4 x i32> %1, <4 x i32> <i32 0, i32 5, i32 2, i32 7>\n  %2 = load <4 x i32>, ptr %mask, align 16\n  %3 = lshr <4 x i32> %2, splat (i32 31)\n  %4 = trunc <4 x i32> %3 to <4 x i1>\n  %all = call i1 @llvm.vector.reduce.and.v4i1(<4 x i1> %4)\n  %5 = load <4 x i32>, ptr %mask, align 16\n  %6 = lshr <4 x i32> %5, splat (i32 31)\n  %7 = trunc <4 x i32> %6 to <4 x i1>\n  %any = call i1 @llvm.vector.reduce.or.v4i1(<4 x i1> %7)\n  %8 = load <4 x i32>, ptr %mask, align 16\n  %9 = lshr <4 x i32> %8, splat (i32 31)\n  %10 = trunc <4 x i32> %9 to <4 x i1>\n  %11 = bitcast <4 x i1> %10 to i4\n  %bm = zext i4 %11 to i8\n  store <4 x i32> %shuf, ptr %_0, align 16\n  %12 = getelementptr inbounds i8, ptr %_0, i64 16\n  %13 = zext i1 %all to i8\n  store i8 %13, ptr %12, align 16\n  %14 = getelementptr inbounds i8, ptr %_0, i64 17\n  %15 = zext i1 %any to i8\n  store i8 %15, ptr %14, align 1\n  %16 = getelementptr inbounds i8, ptr %_0, i64 18\n  store i8 %bm, ptr %16, align 2\n  ret void\n}",
+            "define internal void @_RNvCscNtYg2vSlvG_4main25do_simd_select_bitmask_u8(ptr sret([16 x i8]) align 16 %_0, i8 %mask, ptr align 16 %a, ptr align 16 %b) unnamed_addr #2 {\nstart:\n  %0 = load <4 x i32>, ptr %a, align 16\n  %1 = load <4 x i32>, ptr %b, align 16\n  %2 = trunc i8 %mask to i4\n  %3 = bitcast i4 %2 to <4 x i1>\n  %4 = select <4 x i1> %3, <4 x i32> %0, <4 x i32> %1\n  store <4 x i32> %4, ptr %_0, align 16\n  ret void\n}",
+            "define internal void @_RNvCscNtYg2vSlvG_4main27do_simd_select_bitmask_arr2(ptr sret([16 x i8]) align 16 %_0, i16 %0, ptr align 16 %a, ptr align 16 %b) unnamed_addr #2 {\nstart:\n  %1 = alloca [2 x i8], align 1\n  %2 = alloca [2 x i8], align 2\n  %mask = alloca [2 x i8], align 1\n  store i16 %0, ptr %2, align 2\n  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %mask, ptr align 2 %2, i64 2, i1 false)\n  %3 = load <16 x i8>, ptr %a, align 16\n  %4 = load <16 x i8>, ptr %b, align 16\n  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %1, ptr align 1 %mask, i64 2, i1 false)\n  %5 = load i16, ptr %1, align 1\n  %6 = bitcast i16 %5 to <16 x i1>\n  %7 = select <16 x i1> %6, <16 x i8> %3, <16 x i8> %4\n  store <16 x i8> %7, ptr %_0, align 16\n  ret void\n}",
+            "define internal void @_RNvCscNtYg2vSlvG_4main33do_simd_select_bitmask_arr2_len10(ptr sret([16 x i8]) align 16 %_0, i16 %0, ptr align 16 %a, ptr align 16 %b) unnamed_addr #2 {\nstart:\n  %1 = alloca [2 x i8], align 1\n  %2 = alloca [2 x i8], align 2\n  %mask = alloca [2 x i8], align 1\n  store i16 %0, ptr %2, align 2\n  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %mask, ptr align 2 %2, i64 2, i1 false)\n  %3 = load <10 x i8>, ptr %a, align 16\n  %4 = load <10 x i8>, ptr %b, align 16\n  call void @llvm.memcpy.p0.p0.i64(ptr align 1 %1, ptr align 1 %mask, i64 2, i1 false)\n  %5 = load i16, ptr %1, align 1\n  %6 = trunc i16 %5 to i10\n  %7 = bitcast i10 %6 to <10 x i1>\n  %8 = select <10 x i1> %7, <10 x i8> %3, <10 x i8> %4\n  store <10 x i8> %8, ptr %_0, align 16\n  ret void\n}"
+          ]
+        },
+        "opt_2": {
+          "defined_functions": [
+            "define internal fastcc noundef zeroext i1 @_RNvCscNtYg2vSlvG_4main13do_reduce_any(ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %mask) unnamed_addr #5 {\nstart:\n  %0 = load <4 x i32>, ptr %mask, align 16\n  %1 = icmp slt <4 x i32> %0, zeroinitializer\n  %2 = bitcast <4 x i1> %1 to i4\n  %_0 = icmp ne i4 %2, 0\n  ret i1 %_0\n}",
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main14do_simd_select(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %mask, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %a, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %b) unnamed_addr #4 {\nstart:\n  %0 = load <4 x i32>, ptr %mask, align 16\n  %1 = load <4 x i32>, ptr %a, align 16\n  %2 = load <4 x i32>, ptr %b, align 16\n  %3 = icmp slt <4 x i32> %0, zeroinitializer\n  %4 = select <4 x i1> %3, <4 x i32> %1, <4 x i32> %2\n  store <4 x i32> %4, ptr %_0, align 16\n  ret void\n}",
+            "define internal fastcc noundef i16 @_RNvCscNtYg2vSlvG_4main19do_simd_bitmask_u16(ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %mask) unnamed_addr #5 {\nstart:\n  %0 = load <16 x i8>, ptr %mask, align 16\n  %1 = icmp slt <16 x i8> %0, zeroinitializer\n  %_0 = bitcast <16 x i1> %1 to i16\n  ret i16 %_0\n}",
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main21do_shuffle_and_reduce(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([32 x i8]) align 16 captures(none) dereferenceable(32) initializes((0, 19)) %_0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %a, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %b, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %mask) unnamed_addr #4 {\nstart:\n  %0 = load <4 x i32>, ptr %a, align 16\n  %1 = load <4 x i32>, ptr %b, align 16\n  %shuf = shufflevector <4 x i32> %0, <4 x i32> %1, <4 x i32> <i32 0, i32 5, i32 2, i32 7>\n  %2 = load <4 x i32>, ptr %mask, align 16\n  %3 = icmp slt <4 x i32> %2, zeroinitializer\n  %4 = bitcast <4 x i1> %3 to i4\n  %all = icmp eq i4 %4, -1\n  %any = icmp ne i4 %4, 0\n  %bm = zext i4 %4 to i8\n  store <4 x i32> %shuf, ptr %_0, align 16\n  %5 = getelementptr inbounds nuw i8, ptr %_0, i64 16\n  %6 = zext i1 %all to i8\n  store i8 %6, ptr %5, align 16\n  %7 = getelementptr inbounds nuw i8, ptr %_0, i64 17\n  %8 = zext i1 %any to i8\n  store i8 %8, ptr %7, align 1\n  %9 = getelementptr inbounds nuw i8, ptr %_0, i64 18\n  store i8 %bm, ptr %9, align 2\n  ret void\n}",
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main25do_simd_select_bitmask_u8(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, i8 noundef %mask, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %a, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %b) unnamed_addr #4 {\nstart:\n  %0 = load <4 x i32>, ptr %a, align 16\n  %1 = load <4 x i32>, ptr %b, align 16\n  %2 = trunc i8 %mask to i4\n  %3 = bitcast i4 %2 to <4 x i1>\n  %4 = select <4 x i1> %3, <4 x i32> %0, <4 x i32> %1\n  store <4 x i32> %4, ptr %_0, align 16\n  ret void\n}",
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main27do_simd_select_bitmask_arr2(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, i16 noundef %0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %a, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %b) unnamed_addr #4 {\nstart:\n  %1 = load <16 x i8>, ptr %a, align 16\n  %2 = load <16 x i8>, ptr %b, align 16\n  %3 = bitcast i16 %0 to <16 x i1>\n  %4 = select <16 x i1> %3, <16 x i8> %1, <16 x i8> %2\n  store <16 x i8> %4, ptr %_0, align 16\n  ret void\n}",
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main33do_simd_select_bitmask_arr2_len10(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 10)) %_0, i16 noundef %0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %a, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %b) unnamed_addr #4 {\nstart:\n  %1 = load <10 x i8>, ptr %a, align 16\n  %2 = load <10 x i8>, ptr %b, align 16\n  %3 = trunc i16 %0 to i10\n  %4 = bitcast i10 %3 to <10 x i1>\n  %5 = select <10 x i1> %4, <10 x i8> %1, <10 x i8> %2\n  store <10 x i8> %5, ptr %_0, align 16\n  ret void\n}"
+          ]
+        }
+      },
+      "native_runs": {
+        "opt_0": {
+          "safe": {
+            "returncode": 0,
+            "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 9, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 19, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101",
+            "stderr": ""
+          },
+          "bad_mask_one": {
+            "returncode": 0,
+            "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 9, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 19, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101\nBAD_MASK_ONE=[100, 200, 300, 400]",
+            "stderr": ""
+          },
+          "bad_mask_neg2": {
+            "returncode": 0,
+            "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 9, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 19, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101\nBAD_MASK_NEG2=[10, 20, 300, 400]",
+            "stderr": ""
+          },
+          "bad_reduce_any_one": {
+            "returncode": 0,
+            "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 9, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 19, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101\nBAD_REDUCE_ANY_ONE=false",
+            "stderr": ""
+          }
+        },
+        "opt_2": {
+          "safe": {
+            "returncode": 0,
+            "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 9, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 19, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101",
+            "stderr": ""
+          },
+          "bad_mask_one": {
+            "returncode": 0,
+            "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 9, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 19, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101\nBAD_MASK_ONE=[100, 200, 300, 400]",
+            "stderr": ""
+          },
+          "bad_mask_neg2": {
+            "returncode": 0,
+            "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 9, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 19, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101\nBAD_MASK_NEG2=[10, 20, 300, 400]",
+            "stderr": ""
+          },
+          "bad_reduce_any_one": {
+            "returncode": 0,
+            "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 9, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 19, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101\nBAD_REDUCE_ANY_ONE=false",
+            "stderr": ""
+          }
+        }
+      },
+      "miri_runs": {
+        "stacked_borrows__safe": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "safe"
+          ],
+          "returncode": 0,
+          "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 19, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 9, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101",
+          "stderr": "Compiling probe_b_simd_select v0.1.0 (<TMPDIR>\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.18s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_b_simd_select safe`"
+        },
+        "stacked_borrows__bad_mask_one": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "bad_mask_one"
+          ],
+          "returncode": 1,
+          "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 19, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 9, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_b_simd_select bad_mask_one`\nerror: Undefined Behavior: each element of a SIMD mask must be all-0-bits or all-1-bits\n  --> src/main.rs:59:14\n   |\n59 |     unsafe { simd_select(mask, a, b) }\n   |              ^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_simd_select\n               at src/main.rs:59:14: 59:37\n           1: main\n               at src/main.rs:142:32: 142:84\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "stacked_borrows__bad_mask_neg2": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "bad_mask_neg2"
+          ],
+          "returncode": 1,
+          "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 19, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 9, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_b_simd_select bad_mask_neg2`\nerror: Undefined Behavior: each element of a SIMD mask must be all-0-bits or all-1-bits\n  --> src/main.rs:59:14\n   |\n59 |     unsafe { simd_select(mask, a, b) }\n   |              ^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_simd_select\n               at src/main.rs:59:14: 59:37\n           1: main\n               at src/main.rs:146:32: 146:86\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "stacked_borrows__bad_reduce_any_one": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "bad_reduce_any_one"
+          ],
+          "returncode": 1,
+          "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 19, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 9, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_b_simd_select bad_reduce_any_one`\nerror: Undefined Behavior: each element of a SIMD mask must be all-0-bits or all-1-bits\n   --> src/main.rs:101:14\n    |\n101 |     unsafe { simd_reduce_any(mask) }\n    |              ^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n    |\n    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n    = note: stack backtrace:\n            0: do_reduce_any\n                at src/main.rs:101:14: 101:35\n            1: main\n                at src/main.rs:150:32: 150:77\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows__safe": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "safe"
+          ],
+          "returncode": 0,
+          "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 19, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 9, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_b_simd_select safe`"
+        },
+        "tree_borrows__bad_mask_one": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "bad_mask_one"
+          ],
+          "returncode": 1,
+          "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 19, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 9, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_b_simd_select bad_mask_one`\nerror: Undefined Behavior: each element of a SIMD mask must be all-0-bits or all-1-bits\n  --> src/main.rs:59:14\n   |\n59 |     unsafe { simd_select(mask, a, b) }\n   |              ^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_simd_select\n               at src/main.rs:59:14: 59:37\n           1: main\n               at src/main.rs:142:32: 142:84\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows__bad_mask_neg2": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "bad_mask_neg2"
+          ],
+          "returncode": 1,
+          "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 19, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 9, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_b_simd_select bad_mask_neg2`\nerror: Undefined Behavior: each element of a SIMD mask must be all-0-bits or all-1-bits\n  --> src/main.rs:59:14\n   |\n59 |     unsafe { simd_select(mask, a, b) }\n   |              ^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_simd_select\n               at src/main.rs:59:14: 59:37\n           1: main\n               at src/main.rs:146:32: 146:86\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows__bad_reduce_any_one": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "bad_reduce_any_one"
+          ],
+          "returncode": 1,
+          "stdout": "SEL=[100, 20, 300, 40] SEL_BM=[10, 200, 30, 400] SEL_ARR=[1, 2, 23, 24, 25, 26, 27, 28, 9, 30, 31, 32, 33, 34, 35, 36] SEL_ARR10=[1, 2, 13, 4, 15, 16, 7, 8, 19, 10] SEL_ARR10_BIT8=[11, 12, 13, 14, 15, 16, 17, 18, 9, 20] SEL_ARR16_BIT8_LANE8=9 BM_ARR2=[3, 1] BM_U16=0x0103 SHUF=[10, 200, 30, 400] ALL=false ANY=true BM=0b0101",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_b_simd_select bad_reduce_any_one`\nerror: Undefined Behavior: each element of a SIMD mask must be all-0-bits or all-1-bits\n   --> src/main.rs:101:14\n    |\n101 |     unsafe { simd_reduce_any(mask) }\n    |              ^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n    |\n    = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n    = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n    = note: stack backtrace:\n            0: do_reduce_any\n                at src/main.rs:101:14: 101:35\n            1: main\n                at src/main.rs:150:32: 150:77\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        }
+      }
+    },
+    "c_simd_as_vs_cast_and_unchecked": {
+      "llvm_ir": {
+        "opt_0": {
+          "defined_functions": [
+            "define internal void @_RNvCscNtYg2vSlvG_4main14do_simd_as_i32(ptr sret([16 x i8]) align 16 %_0, ptr align 16 %v) unnamed_addr #2 {\nstart:\n  %0 = load <4 x float>, ptr %v, align 16\n  %1 = call <4 x i32> @llvm.fptosi.sat.v4i32.v4f32(<4 x float> %0)\n  store <4 x i32> %1, ptr %_0, align 16\n  ret void\n}",
+            "define internal void @_RNvCscNtYg2vSlvG_4main14do_simd_as_u32(ptr sret([16 x i8]) align 16 %_0, ptr align 16 %v) unnamed_addr #2 {\nstart:\n  %0 = load <4 x float>, ptr %v, align 16\n  %1 = call <4 x i32> @llvm.fptoui.sat.v4i32.v4f32(<4 x float> %0)\n  store <4 x i32> %1, ptr %_0, align 16\n  ret void\n}",
+            "define internal void @_RNvCscNtYg2vSlvG_4main15do_simd_cast_i8(ptr sret([4 x i8]) align 4 %_0, ptr align 16 %v) unnamed_addr #2 {\nstart:\n  %0 = load <4 x float>, ptr %v, align 16\n  %1 = fptosi <4 x float> %0 to <4 x i8>\n  store <4 x i8> %1, ptr %_0, align 4\n  ret void\n}",
+            "define internal void @_RNvCscNtYg2vSlvG_4main15do_simd_cast_u8(ptr sret([4 x i8]) align 4 %_0, ptr align 16 %v) unnamed_addr #2 {\nstart:\n  %0 = load <4 x float>, ptr %v, align 16\n  %1 = fptoui <4 x float> %0 to <4 x i8>\n  store <4 x i8> %1, ptr %_0, align 4\n  ret void\n}",
+            "define internal void @_RNvCscNtYg2vSlvG_4main16do_simd_cast_i32(ptr sret([16 x i8]) align 16 %_0, ptr align 16 %v) unnamed_addr #2 {\nstart:\n  %0 = load <4 x float>, ptr %v, align 16\n  %1 = fptosi <4 x float> %0 to <4 x i32>\n  store <4 x i32> %1, ptr %_0, align 16\n  ret void\n}",
+            "define internal i8 @_RNvCscNtYg2vSlvG_4main22do_scalar_unchecked_i8(float %x) unnamed_addr #2 {\nstart:\n  %_0 = fptosi float %x to i8\n  ret i8 %_0\n}",
+            "define internal i8 @_RNvCscNtYg2vSlvG_4main22do_scalar_unchecked_u8(float %x) unnamed_addr #2 {\nstart:\n  %_0 = fptoui float %x to i8\n  ret i8 %_0\n}",
+            "define internal i32 @_RNvCscNtYg2vSlvG_4main23do_scalar_unchecked_i32(float %x) unnamed_addr #2 {\nstart:\n  %_0 = fptosi float %x to i32\n  ret i32 %_0\n}"
+          ]
+        },
+        "opt_2": {
+          "defined_functions": [
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main14do_simd_as_i32(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #5 {\nstart:\n  %0 = load <4 x float>, ptr %v, align 16\n  %1 = tail call <4 x i32> @llvm.fptosi.sat.v4i32.v4f32(<4 x float> %0)\n  store <4 x i32> %1, ptr %_0, align 16\n  ret void\n}",
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main14do_simd_as_u32(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #5 {\nstart:\n  %0 = load <4 x float>, ptr %v, align 16\n  %1 = tail call <4 x i32> @llvm.fptoui.sat.v4i32.v4f32(<4 x float> %0)\n  store <4 x i32> %1, ptr %_0, align 16\n  ret void\n}",
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main15do_simd_cast_i8(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([4 x i8]) align 4 captures(none) dereferenceable(4) initializes((0, 4)) %_0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #5 {\nstart:\n  %0 = load <4 x float>, ptr %v, align 16\n  %1 = fptosi <4 x float> %0 to <4 x i8>\n  store <4 x i8> %1, ptr %_0, align 4\n  ret void\n}",
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main15do_simd_cast_u8(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([4 x i8]) align 4 captures(none) dereferenceable(4) initializes((0, 4)) %_0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #5 {\nstart:\n  %0 = load <4 x float>, ptr %v, align 16\n  %1 = fptoui <4 x float> %0 to <4 x i8>\n  store <4 x i8> %1, ptr %_0, align 4\n  ret void\n}",
+            "define internal fastcc void @_RNvCscNtYg2vSlvG_4main16do_simd_cast_i32(ptr dead_on_unwind noalias noundef nonnull writable writeonly sret([16 x i8]) align 16 captures(none) dereferenceable(16) initializes((0, 16)) %_0, ptr dead_on_return noalias noundef nonnull readonly align 16 captures(none) dereferenceable(16) %v) unnamed_addr #5 {\nstart:\n  %0 = load <4 x float>, ptr %v, align 16\n  %1 = fptosi <4 x float> %0 to <4 x i32>\n  store <4 x i32> %1, ptr %_0, align 16\n  ret void\n}",
+            "define internal fastcc noundef i8 @_RNvCscNtYg2vSlvG_4main22do_scalar_unchecked_i8(float noundef %x) unnamed_addr #6 {\nstart:\n  %_0 = fptosi float %x to i8\n  ret i8 %_0\n}",
+            "define internal fastcc noundef i8 @_RNvCscNtYg2vSlvG_4main22do_scalar_unchecked_u8(float noundef %x) unnamed_addr #6 {\nstart:\n  %_0 = fptoui float %x to i8\n  ret i8 %_0\n}",
+            "define internal fastcc noundef i32 @_RNvCscNtYg2vSlvG_4main23do_scalar_unchecked_i32(float noundef %x) unnamed_addr #6 {\nstart:\n  %_0 = fptosi float %x to i32\n  ret i32 %_0\n}"
+          ]
+        }
+      },
+      "native_runs": {
+        "opt_0": {
+          "safe": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+            "stderr": ""
+          },
+          "simd_cast_oob": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0\nSIMD_CAST_OOB=[-2147483648, -2147483648, -2147483648, 42]",
+            "stderr": ""
+          },
+          "simd_cast_i8_oob": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0\nSIMD_CAST_I8_OOB=[-128, 0, 0, 0]",
+            "stderr": ""
+          },
+          "simd_cast_u8_neg1": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0\nSIMD_CAST_U8_NEG1=[0, 0, 0, 0]",
+            "stderr": ""
+          },
+          "scalar_oob": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0\nSCALAR_OOB=-2147483648",
+            "stderr": ""
+          },
+          "scalar_nan": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0\nSCALAR_NAN=-2147483648",
+            "stderr": ""
+          }
+        },
+        "opt_2": {
+          "safe": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+            "stderr": ""
+          },
+          "simd_cast_oob": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0\nSIMD_CAST_OOB=[-2147483648, -2147483648, -2147483648, 42]",
+            "stderr": ""
+          },
+          "simd_cast_i8_oob": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0\nSIMD_CAST_I8_OOB=[-128, 0, 0, 0]",
+            "stderr": ""
+          },
+          "simd_cast_u8_neg1": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0\nSIMD_CAST_U8_NEG1=[0, 0, 0, 0]",
+            "stderr": ""
+          },
+          "scalar_oob": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0\nSCALAR_OOB=-2147483648",
+            "stderr": ""
+          },
+          "scalar_nan": {
+            "returncode": 0,
+            "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0\nSCALAR_NAN=-2147483648",
+            "stderr": ""
+          }
+        }
+      },
+      "miri_runs": {
+        "stacked_borrows__safe": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "safe"
+          ],
+          "returncode": 0,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Compiling probe_c_simd_as v0.1.0 (<TMPDIR>\n    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.18s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as safe`"
+        },
+        "stacked_borrows__simd_cast_oob": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "simd_cast_oob"
+          ],
+          "returncode": 1,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as simd_cast_oob`\nerror: Undefined Behavior: `simd_cast` intrinsic called on NaN_f32 which cannot be represented in target type `i32`\n  --> src/main.rs:59:14\n   |\n59 |     unsafe { simd_cast(v) }\n   |              ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_simd_cast_i32\n               at src/main.rs:59:14: 59:26\n           1: main\n               at src/main.rs:112:30: 112:95\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "stacked_borrows__simd_cast_i8_oob": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "simd_cast_i8_oob"
+          ],
+          "returncode": 1,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as simd_cast_i8_oob`\nerror: Undefined Behavior: `simd_cast` intrinsic called on -129f32 which cannot be represented in target type `i8`\n  --> src/main.rs:64:14\n   |\n64 |     unsafe { simd_cast(v) }\n   |              ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_simd_cast_i8\n               at src/main.rs:64:14: 64:26\n           1: main\n               at src/main.rs:116:30: 116:88\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "stacked_borrows__simd_cast_u8_neg1": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "simd_cast_u8_neg1"
+          ],
+          "returncode": 1,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as simd_cast_u8_neg1`\nerror: Undefined Behavior: `simd_cast` intrinsic called on -1f32 which cannot be represented in target type `u8`\n  --> src/main.rs:69:14\n   |\n69 |     unsafe { simd_cast(v) }\n   |              ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_simd_cast_u8\n               at src/main.rs:69:14: 69:26\n           1: main\n               at src/main.rs:120:30: 120:86\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "stacked_borrows__scalar_oob": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "scalar_oob"
+          ],
+          "returncode": 1,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as scalar_oob`\nerror: Undefined Behavior: `float_to_int_unchecked` intrinsic called on 1.00000002E+30f32 which cannot be represented in target type `i32`\n  --> src/main.rs:74:14\n   |\n74 |     unsafe { float_to_int_unchecked(x) }\n   |              ^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_scalar_unchecked_i32\n               at src/main.rs:74:14: 74:39\n           1: main\n               at src/main.rs:124:30: 124:70\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "stacked_borrows__scalar_nan": {
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "scalar_nan"
+          ],
+          "returncode": 1,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.02s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as scalar_nan`\nerror: Undefined Behavior: `float_to_int_unchecked` intrinsic called on NaN_f32 which cannot be represented in target type `i32`\n  --> src/main.rs:74:14\n   |\n74 |     unsafe { float_to_int_unchecked(x) }\n   |              ^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_scalar_unchecked_i32\n               at src/main.rs:74:14: 74:39\n           1: main\n               at src/main.rs:128:30: 128:74\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows__safe": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "safe"
+          ],
+          "returncode": 0,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as safe`"
+        },
+        "tree_borrows__simd_cast_oob": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "simd_cast_oob"
+          ],
+          "returncode": 1,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as simd_cast_oob`\nerror: Undefined Behavior: `simd_cast` intrinsic called on NaN_f32 which cannot be represented in target type `i32`\n  --> src/main.rs:59:14\n   |\n59 |     unsafe { simd_cast(v) }\n   |              ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_simd_cast_i32\n               at src/main.rs:59:14: 59:26\n           1: main\n               at src/main.rs:112:30: 112:95\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows__simd_cast_i8_oob": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "simd_cast_i8_oob"
+          ],
+          "returncode": 1,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as simd_cast_i8_oob`\nerror: Undefined Behavior: `simd_cast` intrinsic called on -129f32 which cannot be represented in target type `i8`\n  --> src/main.rs:64:14\n   |\n64 |     unsafe { simd_cast(v) }\n   |              ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_simd_cast_i8\n               at src/main.rs:64:14: 64:26\n           1: main\n               at src/main.rs:116:30: 116:88\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows__simd_cast_u8_neg1": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "simd_cast_u8_neg1"
+          ],
+          "returncode": 1,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as simd_cast_u8_neg1`\nerror: Undefined Behavior: `simd_cast` intrinsic called on -1f32 which cannot be represented in target type `u8`\n  --> src/main.rs:69:14\n   |\n69 |     unsafe { simd_cast(v) }\n   |              ^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_simd_cast_u8\n               at src/main.rs:69:14: 69:26\n           1: main\n               at src/main.rs:120:30: 120:86\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows__scalar_oob": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "scalar_oob"
+          ],
+          "returncode": 1,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as scalar_oob`\nerror: Undefined Behavior: `float_to_int_unchecked` intrinsic called on 1.00000002E+30f32 which cannot be represented in target type `i32`\n  --> src/main.rs:74:14\n   |\n74 |     unsafe { float_to_int_unchecked(x) }\n   |              ^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_scalar_unchecked_i32\n               at src/main.rs:74:14: 74:39\n           1: main\n               at src/main.rs:124:30: 124:70\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        },
+        "tree_borrows__scalar_nan": {
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "scalar_nan"
+          ],
+          "returncode": 1,
+          "stdout": "SIMD_AS_I=[0, 2147483647, -2147483648, 42] SIMD_AS_I_INF=[2147483647, -2147483648, 0, 2147483647] SIMD_AS_U=[0, 4294967295, 0, 42] SIMD_CAST_OK=[-10, 0, 42, 100] SIMD_CAST_I8_OPEN=[-128, 127, 0, 0] SIMD_CAST_U8_OPEN=[0, 255, 0, 42] SCALAR_OK=42 SCALAR_I8_OPEN=-128 SCALAR_U8_OPEN=0",
+          "stderr": "Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s\n     Running `<HOME>/.rustup/toolchains/nightly-2026-06-01-x86_64-unknown-linux-gnu/bin/cargo-miri runner target/miri/x86_64-unknown-linux-gnu/debug/probe_c_simd_as scalar_nan`\nerror: Undefined Behavior: `float_to_int_unchecked` intrinsic called on NaN_f32 which cannot be represented in target type `i32`\n  --> src/main.rs:74:14\n   |\n74 |     unsafe { float_to_int_unchecked(x) }\n   |              ^^^^^^^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: do_scalar_unchecked_i32\n               at src/main.rs:74:14: 74:39\n           1: main\n               at src/main.rs:128:30: 128:74\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error"
+        }
+      }
+    }
+  }
+}

@@ -108289,6 +108289,60 @@
         "verification"
       ]
     },
+    "rustc-simd-select-msb-bitmask-ctlz-poison-and-simd-as-saturation-soundness": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "5debe6a1244452beced762385f88a51857a915fc"
+          },
+          "name": "rustc and Miri (upstream HEAD primary source audit)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "toolchain": "rustc 1.98.0-nightly (2026-05-31), LLVM 22.1.6, miri 0.1.0"
+          },
+          "name": "rustc 1.98.0-nightly and miri 0.1.0 (executed x86_64 toolchain)"
+        },
+        {
+          "identity": {
+            "repository": "llvm/llvm-project",
+            "revision": "5426281720dcb4d2006140fce25cd6fcfd71d5dc"
+          },
+          "name": "llvm-project (upstream HEAD primary source audit)"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "anneal (TrustedBoundary and Trusted MIR semantics boundary)"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "lean4 (kernel-checked formalization toolchain)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/codegen",
+        "lean",
+        "lean/mechanization",
+        "llvm",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-size-optimized-compilation-parity-and-transformations": {
       "observed_at": "2026-11-13",
       "subjects": [
