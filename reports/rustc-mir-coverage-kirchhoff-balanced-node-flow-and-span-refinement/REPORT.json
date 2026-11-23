@@ -1,0 +1,60 @@
+{
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/mir",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "rustc/mir",
+    "verification"
+  ],
+  "subjects": [
+    {
+      "name": "rust-lang/rust (HEAD coverage pipeline)",
+      "identity": {
+        "kind": "source-repository",
+        "repository": "rust-lang/rust",
+        "revision": "5debe6a1244452beced762385f88a51857a915fc",
+        "subsystems": "compiler/rustc_mir_transform/src/coverage, compiler/rustc_codegen_llvm/src/coverageinfo",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    },
+    {
+      "name": "rust-lang/rust (installed nightly toolchain)",
+      "identity": {
+        "kind": "toolchain",
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "version": "1.98.0-nightly",
+        "commit_date": "2026-05-31",
+        "target": "x86_64-unknown-linux-gnu",
+        "llvm_version": "22.1.6",
+        "url": "https://github.com/rust-lang/rust"
+      }
+    },
+    {
+      "name": "llvm/llvm-project (coverage mapping reader, writer, and llvm-cov exporter)",
+      "identity": {
+        "kind": "source-repository",
+        "repository": "llvm/llvm-project",
+        "revision": "dd54bc3427332702425782da54fe306cecd3cdb5",
+        "subsystems": "llvm/lib/ProfileData/Coverage, llvm/tools/llvm-cov",
+        "url": "https://github.com/llvm/llvm-project"
+      }
+    },
+    {
+      "name": "joshlf/anneal (trusted MIR AST and operational semantics)",
+      "identity": {
+        "kind": "source-repository",
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+        "subsystems": "trusted/lean/Trusted",
+        "url": "https://github.com/joshlf/anneal"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

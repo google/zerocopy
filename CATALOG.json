@@ -104555,6 +104555,66 @@
         "rustc/mir-phases"
       ]
     },
+    "rustc-mir-coverage-kirchhoff-balanced-node-flow-and-span-refinement": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "kind": "source-repository",
+            "repository": "rust-lang/rust",
+            "revision": "5debe6a1244452beced762385f88a51857a915fc",
+            "subsystems": "compiler/rustc_mir_transform/src/coverage, compiler/rustc_codegen_llvm/src/coverageinfo",
+            "url": "https://github.com/rust-lang/rust"
+          },
+          "name": "rust-lang/rust (HEAD coverage pipeline)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-05-31",
+            "kind": "toolchain",
+            "llvm_version": "22.1.6",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "target": "x86_64-unknown-linux-gnu",
+            "url": "https://github.com/rust-lang/rust",
+            "version": "1.98.0-nightly"
+          },
+          "name": "rust-lang/rust (installed nightly toolchain)"
+        },
+        {
+          "identity": {
+            "kind": "source-repository",
+            "repository": "llvm/llvm-project",
+            "revision": "dd54bc3427332702425782da54fe306cecd3cdb5",
+            "subsystems": "llvm/lib/ProfileData/Coverage, llvm/tools/llvm-cov",
+            "url": "https://github.com/llvm/llvm-project"
+          },
+          "name": "llvm/llvm-project (coverage mapping reader, writer, and llvm-cov exporter)"
+        },
+        {
+          "identity": {
+            "kind": "source-repository",
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613",
+            "subsystems": "trusted/lean/Trusted",
+            "url": "https://github.com/joshlf/anneal"
+          },
+          "name": "joshlf/anneal (trusted MIR AST and operational semantics)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-mir-derefer-copyforderef-subtyper-and-visibly-uninhabited-calls": {
       "observed_at": "2026-11-22",
       "subjects": [
