@@ -133,8 +133,9 @@ translation preserves identically. The theorem quantifies universally over all
 programs $p$ (including that environment) and all input queries $q$ (function
 arguments and initial caller-visible memory), sharing $q$ directly while either
 sharing $p$'s representation or passing $p$ through a total,
-structure-preserving, TCB-audited translation $\tau_{\text{prog}}$ (`encodeProg`
-in Anneal's target design; see Section 4.3). Each model constructs its initial
+structure-preserving, TCB-audited translation $\tau_{\text{prog}}$
+(`encodeToMiri` in Anneal's target design; see Section 4.3). Each model
+constructs its initial
 state directly from the shared input—`initState` from $(p, q)$ for
 $M_{\text{anneal}}$ and `initRefState` from $(\tau_{\text{prog}}(p), q)$ for
 $M_{\text{ref}}$—so an unverified precondition or filtering conversion on $p$ or
@@ -254,7 +255,7 @@ small human-audited staged support gate one MIR feature at a time:
    untrusted `theory/` or `correspondence/`), and updates the correspondence
    and canary proofs—without changing `CorrespondenceClaim` or
    `FaultEquivalenceClaim` themselves. When a feature also adds a new
-   `MirAst` constructor, outer boundary definition, or `encodeProg`/
+   `MirAst` constructor, outer boundary definition, or `encodeToMiri`/
    `evalRefStep` arm (see [`docs/architecture.md`](architecture.md) and
    Section 4.3), those TCB additions receive the same human semantic review.
 2. **CI polices soundness automatically:** Whenever a pull request changes a
@@ -299,7 +300,7 @@ Landing $M_{\text{ref}}$ and locking the whole-program correspondence and
 fault-equivalence theorems on a minimal skeleton inverts these incentives. Human
 reviewers inspect the reference semantics, the locked theorem statements, and
 the outer boundary definitions once up front when the codebase is small; any
-later change to $M_{\text{ref}}$, the correspondence wrapper (`encodeProg`,
+later change to $M_{\text{ref}}$, the correspondence wrapper (`encodeToMiri`,
 `evalRefStep`, or the staged support gate), the locked theorem statements, or
 the outer boundary definitions requires the same human review. Every subsequent
 feature addition must satisfy those unchanged theorem statements, so when a PR
@@ -308,7 +309,7 @@ support gate update in $M_{\text{ref}}$'s wrapper (confirming it only widens
 delegation without weakening UB checks), the new `Trusted.*` canary theorem
 statements and fixtures together with their required witness locks in
 `trusted/audit/` (Section 4.6), and confirming that no outer boundary definition
-or `encodeProg`/`evalRefStep` rule changed silently.
+or `encodeToMiri`/`evalRefStep` rule changed silently.
 
 ## 4. Subtleties and formal failure modes
 
@@ -453,14 +454,15 @@ the input syntax to both $M_{\text{anneal}}$ and Stage 3's program logics and
 lowering passes. Within the Lean operational semantics (Stages 2–3), only the
 three human-audited semantic surfaces detailed in
 [`docs/architecture.md`](architecture.md)—the reference model $M_{\text{ref}}$
-(with its `Trusted/Correspondence.lean` wrapper, `RefProg` dispatch into
-`vendor/lean-miri/`, and staged support gate), the correspondence interface in
-`Trusted/Correspondence.lean` ($\tau_{\text{prog}}$, output and choice-coupling
-relations, and the locked `CorrespondenceClaim` and `FaultEquivalenceClaim`
-statements), and the outer theorem-stating boundary of $M_{\text{anneal}}$ in
-`Trusted/MirAst.lean` and `Trusted/MirSemantics.lean` (excluding `initState`,
-`evalStep`, and the helpers that only those rules use, once Pass 2 and the
-corresponding `AGENTS.md`/`.gemini/styleguide.md`/`skills/trust-review/SKILL.md`
+(with its `Trusted/Correspondence.lean` wrapper, `MiriProg` dispatch over
+`vendor/lean-miri/`'s `Miri.MIR.Body`, and staged support gate), the
+correspondence interface in `Trusted/Correspondence.lean` ($\tau_{\text{prog}}$,
+output and choice-coupling relations, and the locked `CorrespondenceClaim` and
+`FaultEquivalenceClaim` statements), and the outer theorem-stating boundary of
+$M_{\text{anneal}}$ in `Trusted/MirAst.lean` and `Trusted/MirSemantics.lean`
+(excluding `initState`, `evalStep`, and the helpers that only those rules use,
+once Pass 2 and the corresponding
+`AGENTS.md`/`.gemini/styleguide.md`/`skills/trust-review/SKILL.md`
 review-policy updates are active)—require human semantic
 audit (alongside Stage 1's `trusted/rustc-capture/` and the non-semantic TCB
 enforcement infrastructure). Per-crate verification (`cargo anneal verify`)
@@ -472,19 +474,19 @@ blocking repository CI (Pass 2, `anneal-audit --require-correspondence`) proves
 $M_{\text{anneal}}$ to $M_{\text{ref}}$ via $\tau_{\text{prog}}$. Adding or
 refactoring an execution rule in $M_{\text{anneal}}$ (`initState` and
 `evalStep`) is therefore certified by the Lean 4 kernel against $M_{\text{ref}}$
-rather than adding new semantic trust assumptions. Because AST normalization happens in Stage 3 (`Theory/Rust/Passes/` $\to$
-`StableAst`) above $M_{\text{anneal}}$, $\tau_{\text{prog}}$ (`encodeProg` in
+rather than adding new semantic trust assumptions. Because AST normalization
+happens in Stage 3 (`Theory/Rust/Passes/` $\to$ `StableAst`) above
+$M_{\text{anneal}}$, $\tau_{\text{prog}}$ (`encodeToMiri` in
 `Trusted/Correspondence.lean`) translates Stage 2's captured-MIR AST
-(`Trusted/MirAst.lean`) into the correspondence wrapper's intermediate
-reference-program representation (`RefProg`), which reuses `MirAst`'s operator
-enums and mirrors each statement and terminator constructor one-to-one while
-confining $\tau_{\text{prog}}$ to structural bookkeeping such as type-table
-indexing—audited as part of the TCB and checked by kernel-checked
-constructor-preservation theorems on `encodeProg` (`MirAst` $\to$ `RefProg`).
+(`Trusted/MirAst.lean`) directly into `MiriProg` (`Miri.MIR.Body` plus
+`MiriBodyMeta` metadata and the type table), confining $\tau_{\text{prog}}$ to
+structural bookkeeping such as type-table indexing—audited as part of the TCB
+and checked by kernel-checked constructor-preservation theorems on
+`encodeToMiri` (`MirAst` $\to$ `MiriProg` / `Miri.MIR`).
 Importantly, `lean-miri`'s input contract operates on concrete, monomorphized
 function instances with substituted generic arguments, normalized types,
 concrete layouts, and evaluated MIR constants rather than unnormalized generic
-bodies. Accordingly, neither `encodeProg` nor `evalRefStep` performs hidden
+bodies. Accordingly, neither `encodeToMiri` nor `evalRefStep` performs hidden
 monomorphization, type normalization, or constant evaluation: in the initial
 correspondence phase, the theorem domain is restricted explicitly to concrete,
 monomorphic captured MIR carrying the concrete instance, layout, and
@@ -502,9 +504,10 @@ layout/trait constraints and connecting every valid concrete substitution to
 $M_{\text{ref}}$ via a kernel-verified instantiation theorem (or formally
 verifying the normalization pass itself)—never by adding unverified lowering to
 `evalRefStep`.
-Within that concrete domain, the cross-AST dispatch from `RefProg` into
-`vendor/lean-miri/`'s internal syntax (`evalRefStep` inside $M_{\text{ref}}$'s
-`Trusted/Correspondence.lean` wrapper) is the remaining semantic-laundering
+Within that concrete domain, any remaining staged gating or helper dispatch into
+`vendor/lean-miri/`'s internal semantics (`evalRefStep` inside
+$M_{\text{ref}}$'s `Trusted/Correspondence.lean` wrapper) is the remaining
+semantic-laundering
 surface, so `evalRefStep` is audited one-to-one as part of the $M_{\text{ref}}$
 TCB and backed by end-to-end semantic canaries: for example, an unchecked
 addition that overflows must exhibit UB, whereas a wrapping addition of the

@@ -2155,7 +2155,7 @@ private theorem refReadReturnVal_pair (types : List MirTy) (w : IntWidth)
 /-- Executing `copyRuntimePlace` of an initialized overflow-pair immediate into
 the fresh `2 * w`-byte return allocation succeeds, updates only
 `st.machine.memory`, and `refReadReturnVal` reads the pair back. -/
-theorem copyReturn_pair_ok (rp : RefProg) (c : Choice) (w : IntWidth)
+theorem copyReturn_pair_ok (rp : MiriProg) (c : Choice) (w : IntWidth)
     (s : Bool) (bits : BitVec 128) (b : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -2217,7 +2217,7 @@ theorem copyReturn_pair_ok (rp : RefProg) (c : Choice) (w : IntWidth)
 
 /-- Executing `copyRuntimePlace` of an uninitialized overflow-pair immediate
 into the fresh return allocation fails with `.undefinedBehavior`. -/
-theorem copyReturn_pair_uninit_ub (rp : RefProg) (c : Choice)
+theorem copyReturn_pair_uninit_ub (rp : MiriProg) (c : Choice)
     (w : IntWidth) (s : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)

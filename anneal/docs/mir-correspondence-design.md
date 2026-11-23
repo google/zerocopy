@@ -40,10 +40,12 @@ This document specifies the architecture that implements that strategy:
    operational semantics that shares its boundary input and output value types
    (`Query`, `Out`, `TerminalOut`) directly with the reference adapter.
 3. **Canonical type codec and correspondence (`Trusted.Correspondence`):**
-   A total encoder (`encodeProg`) interns structural `MirTy` values into a
-   deduplicated type table (`RefProg.types`) indexed by `TyId := Nat`, and a
-   total decoder (`decodeProg`) inverts `encodeProg` unconditionally (`∀ p,
-   decodeProg (encodeProg p) = some p`). Unconditionally across every program
+   A total direct encoder (`encodeToMiri`) interns structural `MirTy` values
+   into a deduplicated type table (`MiriProg.types`) indexed by `TyId := Nat`
+   and translates captured MIR directly into `Miri.MIR.Body` values (paired
+   with `MiriBodyMeta` metadata) inside `MiriProg`, and a total decoder
+   (`decodeProg`) inverts `encodeToMiri` unconditionally (`∀ p, decodeProg
+   (encodeToMiri p) = some p`). Unconditionally across every program
    and input query `(p, q)` (without gating on `WellFormed p q`), the combined
    locked contract requires a faithful choice-coupled execution relation with
    (a) unconditional forward totality ($M_{\text{ref}} \to M_{\text{anneal}}$)
@@ -572,7 +574,8 @@ together with every later change to those definitions:
 | | `bodiesHaveUniqueIdentities` (Section 4.5) |
 | | `WpSoundnessClaim`, `WpFaultSoundnessClaim`, |
 | | `prog*`, `Canary*Claim` (15 Day-1; 25 with Phase 1, memory, and casts) |
-| `Trusted.Correspondence` | Codec (`RefProg`, `encodeProg`, `decodeProg`), |
+| `Trusted.Correspondence` | Direct `Miri.MIR` codec (`MiriProg`, |
+| | `MiriBodyMeta`, `encodeToMiri`, `decodeProg`), |
 | | reference machine & staged support gate |
 | | (`initRefState`, `refIsSupportedLocalTy`, |
 | | `refEnumAdmitted`, `refDiscriminantTypesValid`, |
@@ -610,7 +613,8 @@ together with every later change to those definitions:
   rules inside `initState` and `evalStep` against $M_{\text{ref}}$, but they
   assume, rather than check, the meaning of the predicates built on those rules.
 - **`Trusted.Correspondence` (`trusted/correspondence/`):** This module defines
-  the codec (`RefProg`, `encodeProg`, and `decodeProg`); the reference machine
+  the direct `Miri.MIR` codec (`MiriProg`, `MiriBodyMeta`, `encodeToMiri`, and
+  `decodeProg`); the reference machine
   and staged support gate that the claims observe (`initRefState`,
   `refIsSupportedLocalTy`, `refEnumAdmitted`, `refDiscriminantTypesValid`,
   `refInitMemoryAndRetPlace`, `refExecutionConfig`, `refLimits`,
@@ -713,8 +717,9 @@ layouts. Rather than maintaining several tables that could disagree on a type's
 size or signedness, `Trusted.Correspondence` keeps a single program-wide table:
 
 ```lean
-structure RefProg where
-  bodies : List RefBody
+structure MiriProg where
+  bodies : List Miri.MIR.Body
+  bodyMeta : List MiriBodyMeta
   entryDefId : DefId := 0
   types : List MirTy
   pointerWidthBits : Nat
@@ -743,7 +748,7 @@ from `rp.types[tyId]?`:
 - `refScalarLayoutData w signed` gives an integer or discriminant value the
   scalar layout of `toMiriSize w` bytes (`1`, `2`, `4`, `8`, or `16`) with
   signedness `signed`. Because `isize` and `usize` use 8 bytes, which is
-  correct only on 64-bit targets, `initRefState` rejects every `RefProg` whose
+  correct only on 64-bit targets, `initRefState` rejects every `MiriProg` whose
   `pointerWidthBits` is not `64` (Section 3.1).
 - `refEnumLayoutData ety` gives a fieldless enum the layout
   `Variants.Single 0` (0 bytes) when its tag is zero-sized and
@@ -1016,23 +1021,31 @@ Inside `Trusted.Correspondence`, `evalRefStep` drives every statement and
 terminator directly through
 `Miri.Interpreter.ExecutionMachine.step (refExecutionConfig rp) refLimits c
 rs.miri` over real `Miri.Interpreter.MachineHooks.State Unit RefUser`, passing
-a real translated `Miri.MIR.Body` (`toMiriBody`):
+a real translated `Miri.MIR.Body` (`encodeBody` directly from `encodeToMiri`):
 
-- **Body, operand, rvalue, and terminator translation (`toMiriBody`,
-  `toMiriOperand`, `toMiriRvalue`, `toMiriTerminator`):** `toMiriOperand` maps
-  `RefOperand` to `Miri.MIR.Operand`, encoding scalar constants with their real
-  `RefProg.types` index `c.ty` and 128-bit payload carrier and zero-sized
-  constants as `.ZeroSized`. `toMiriRvalue` maps `.use`, `.binaryOp`,
-  `.unaryOp`, and `.discriminant` to their real `Miri.MIR.Rvalue` constructors
-  (`Use`, `BinaryOp`, `UnaryOp`, `Discriminant`) with real translated operands
-  and places, while unmodeled Day-1 rvalues (`.ref`, `.addressOf`,
-  `.aggregateTuple`, `.unsupported`) route to `.CopyForDeref ⟨0, #[]⟩`, which
-  `evalRvalueIntoPlace` rejects fail-closed with `.invalidProgram` (mapped to
-  `.blocked`). Likewise, `.goto`, `.switchInt`, `.return_`, and `.unreachable`
-  translate directly to their real `Miri.MIR.TerminatorKind` constructors,
-  while unmodeled Day-1 terminators (`.unwindResume`, `.assert`, `.call`,
-  `.unsupported`) route to `.CoroutineDrop`, which `ControlFlow.evalTerminator`
-  rejects fail-closed with `.invalidProgram` (`.blocked`).
+- **Direct `Miri.MIR` encoding (`encodePlace`, `encodeOperand`, `encodeRvalue`,
+  `encodeStmt`, `encodeTerminator`):** `encodePlace` lowers each `.deref` to
+  `.Deref`, `.field idx ty` to `.ConstantIndex idx (lookupTyId ts ty) false`,
+  and `.unsupported` to `.PhantomDeref`, all of which `Miri` fails closed on
+  because no Day-1 `MirTy` has an `.Array` layout. `encodeOperand` maps
+  `Operand` directly to `Miri.MIR.Operand`, encoding scalar constants with their
+  real `MiriProg.types` index `lookupTyId ts c.ty` and 128-bit payload carrier
+  and zero-sized constants as `.ZeroSized`. `encodeRvalue` maps `.use`,
+  `.binaryOp`, `.unaryOp`, `.cast .intToInt`, and `.discriminant` directly to
+  their real `Miri.MIR.Rvalue` constructors (`Use`, `BinaryOp`, `UnaryOp`,
+  `Cast .IntToInt`, `Discriminant`) with encoded operands, places, and
+  `toMiriBinOp`/`toMiriUnOp` tables, while unmodeled Day-1 rvalues (`.cast
+  .unsupported`, `.ref`, `.addressOf`, `.aggregateTuple`, `.unsupported`) encode
+  into disjoint `.CopyForDeref ⟨0..4, ...⟩` payloads that `evalRvalueIntoPlace`
+  rejects fail-closed with `.invalidProgram` (mapped to `.blocked`) before
+  evaluating operands or allocating places. Likewise, `.assign`, `.storageLive`,
+  `.storageDead`, and `.nop` encode directly to `.Assign`, `.StorageLive`,
+  `.StorageDead`, and `.Nop`, with `.unsupported` mapped to `.Intrinsic
+  (.Assume (.RuntimeChecks .UbChecks))` (rejected by `refOperandLeaves` with
+  `.unsupported`). `encodeTerminator` maps `.goto`, `.switchInt`, `.return_`,
+  and `.unreachable` directly, `.unwindResume` to `.FalseEdge 0 0`,
+  `.unsupported` to `.CoroutineDrop`, and `.call`/`.assert` to tagged
+  `.InlineAsm` records.
 - **Real `ExecutionMachine.Config` (`refExecutionConfig rp`):** Sets
   `deinitMovedPlace := true`, `enforceValidity := true` (shallow validation via
   `ValidityMemory.bind` -> `ValidityVisitor.validatePlace`), disables Tree
@@ -1144,7 +1157,7 @@ and `identity`, unchanged.
 
 Once implemented, `anneal-rustc-capture` records the target layout,
 compiler/MIR profile, and capture scope in the `CaptureManifest`
-([`docs/architecture.md`](architecture.md)). `Program` and `RefProg`
+([`docs/architecture.md`](architecture.md)). `Program` and `MiriProg`
 deliberately omit Lean field defaults for `pointerWidthBits`,
 `mirProfileVersion`, and `scope` so that any capture serializer omitting these
 fields fails at Lean elaboration/compile time rather than silently defaulting
@@ -1174,36 +1187,40 @@ test-only helper constructor if concise defaults are desired:
   `mirProfileVersion` on incompatible capture-profile or target-ABI changes
   remains a human-review obligation coordinating updates across both models.
 
-### 3.2 Canonical Type Interning (`encodeProg` and `decodeProg`)
+### 3.2 Canonical Type Interning (`encodeToMiri` and `decodeProg`)
 
 Because `lean-miri` indexes types via `TyId := Nat`, `Trusted.Correspondence`
 provides a pure, total codec between `Program` (with inline `MirTy`) and
-`RefProg` (with `TyId` indices into `RefProg.types : List MirTy`):
+`MiriProg` (with `TyId` indices into `MiriProg.types : List MirTy` and direct
+`Miri.MIR.Body` syntax):
 
 1. **Unseeded initial type table (`collectProgTypes`):**
    `collectProgTypes p := p.bodies.foldl collectBody []` starts from the empty
    table `[]` and interns each `MirTy` in first-occurrence, bottom-up order via
-   `insertTy`. Consequently, no `TyId` in `RefProg.types` has a fixed
-   cross-program meaning: `RefProg.types` contains only types that appear
+   `insertTy`. Consequently, no `TyId` in `MiriProg.types` has a fixed
+   cross-program meaning: `MiriProg.types` contains only types that appear
    syntactically in `p`, while `ExecutionMachine` built-in layout queries
    (`boolLayout`, `usizeLayout`, `unitLayout`, and enum discriminant layouts)
    resolve through `tyIdFor` / `auxTyCode` (`resolveTy` dispatches indices
    `< types.length` into `types` and synthetic codes `≥ types.length` to
-   built-in primitive types without mutating `RefProg.types`).
+   built-in primitive types without mutating `MiriProg.types`).
 2. **Recursive bottom-up sub-type interning (`collectTy`):**
    `collectTy` traverses every `MirTy` appearing in `Body.locals`,
    `ConstOperand.ty`, and `ProjectionElem.field`, recursively interning child
    types (`pointee` in `.ref`/`.rawPtr` and `fields` in `.tuple`) via
    `insertTy` before interning the enclosing composite type.
-3. **Stateless-per-table encoding and decoding:**
+3. **Direct 2-hop encoding and decoding (`Program → MiriProg`):**
    Once `collectProgTypes p` constructs the program's `types : List MirTy`
-   table, `encodeProg p` replaces each `ty : MirTy` with `lookupTyId types ty`,
-   and `decodeProg rp` resolves each `id : TyId` back to `rp.types[id]?`
-   (returning `none` if any `TyId` is out of bounds). Both directions copy
-   `entryDefId`, `pointerWidthBits`, `mirProfileVersion`, and `scope` (and
-   each body's `argumentCount`, `isUnsafe`, and `identity`) unchanged, so the
-   reference machine checks the exact target width and semantic profile version
-   that the capture recorded.
+   table, `encodeToMiri p` encodes each `Body` directly into `Miri.MIR.Body`
+   alongside per-body metadata `MiriBodyMeta` (`{ isUnsafe, identity }`),
+   replacing each `ty : MirTy` with `lookupTyId types ty`. Conversely,
+   `decodeProg rp` decodes `(rp.bodies, rp.bodyMeta)` back to `Option (List
+   Body)`, resolving each `id : TyId` back to `rp.types[id]?` (returning `none`
+   if lengths differ or any `TyId`/construct is out of bounds or unmodeled).
+   Both directions preserve `entryDefId`, `pointerWidthBits`,
+   `mirProfileVersion`, and `scope` (and each body's `argumentCount`,
+   `isUnsafe`, and `identity`) unchanged, so the reference machine checks the
+   exact target width and semantic profile version that the capture recorded.
 
 ### 3.3 Unconditional Anti-Laundering Guarantees
 
@@ -1218,45 +1235,46 @@ exact `*Claim` constant in `Trusted.Correspondence`
 1. **Exact round-trip (`decodeProg_encodeProg`):**
    ```lean
    theorem decodeProg_encodeProg (p : Program) :
-       decodeProg (encodeProg p) = some p
+       decodeProg (encodeToMiri p) = some p
    ```
-   Every `p : Program` round-trips through `encodeProg` and `decodeProg` with
-   zero well-formedness preconditions. `encodeProg` is therefore injective and
-   cannot collapse distinct `Program`s onto the same `RefProg`.
+   Every `p : Program` round-trips through `encodeToMiri` and `decodeProg` with
+   zero well-formedness preconditions. `encodeToMiri` is therefore injective and
+   cannot collapse distinct `Program`s onto the same `MiriProg`.
 2. **Canonical type deduplication (`encodeProg_types_canonical`):**
    ```lean
    theorem encodeProg_types_canonical (p : Program) :
-       typesAreCanonical (encodeProg p).types = true
+       typesAreCanonical (encodeToMiri p).types = true
    ```
-   Every `MirTy` in `(encodeProg p).types` appears at a unique `TyId`. As a
+   Every `MirTy` in `(encodeToMiri p).types` appears at a unique `TyId`. As a
    result, nominal `TyId` equality inside `lean-miri` (`assertSameType` in
    binary operations and `assertRvalueLayout` in assignments) is equivalent to
    structural `MirTy` equality in $M_{\text{anneal}}$.
 3. **No dormant no-op laundering (`encodeStmt_no_dormant_noops`):**
-   `encodeStmt` maps a statement to `RefStatementKind.nop` if and only if the
-   source statement is `StatementKind.nop` (`encodeStmt ts s = .nop ↔ s =
-   .nop`), ensuring that `encodeProg` never silences an active or unsupported
+   `encodeStmt` maps a statement to `Miri.MIR.StatementKind.Nop` if and only if
+   the source statement is `StatementKind.nop` (`encodeStmt ts s = .Nop ↔ s =
+   .nop`), ensuring that `encodeToMiri` never silences an active or unsupported
    MIR statement by turning it into a no-op.
 4. **Operator, operand-order, and assignment preservation
    (`encodeRvalue_binaryOp_iff`, `encodeRvalue_unaryOp_iff`, and
    `encodeStmt_assign_iff`):**
-   `encodeRvalue ts rv` is `RefRvalue.binaryOp op l' r'` if and only if `rv` is
-   `Rvalue.binaryOp op l r` with the same operator `op`,
+   `encodeRvalue ts rv` is `Miri.MIR.Rvalue.BinaryOp (toMiriBinOp op) l' r'` if
+   and only if `rv` is `Rvalue.binaryOp op l r` with the same operator `op`,
    `encodeOperand ts l = l'`, and `encodeOperand ts r = r'`, so the encoder
    neither changes the operator nor swaps the operands. The same holds for
-   `RefRvalue.unaryOp` and for `RefStatementKind.assign` (with
-   `encodePlace ts dst` and `encodeRvalue ts rv`). The remaining encoder arms
-   (`encodePlace`, `encodeOperand`, `encodeTerminator`, `encodeBasicBlock`, and
-   `encodeBody`) are one-line structural maps that copy their constructor and
-   fields, which the human audit of `Trusted.Correspondence` checks directly.
+   `Miri.MIR.Rvalue.UnaryOp (toMiriUnOp op)` and for
+   `Miri.MIR.StatementKind.Assign` (with `encodePlace ts dst` and
+   `encodeRvalue ts rv`). The remaining encoder arms (`encodeProjElem`,
+   `encodePlace`, `encodeOperand`, `encodeTerminator`, `encodeBasicBlock`, and
+   `encodeBody`) are structural maps—preserving Day-1 constructors while routing
+   unmodeled Day-1 projections/terminators to disjoint fail-closed `Miri.MIR`
+   sentinels—which the human audit of `Trusted.Correspondence` checks directly.
 
 Guarantees 1–3 alone would not rule out semantic permutation: an encoder that
 exchanged `.add` and `.addUnchecked`, reversed `(lhs, rhs)` on `.sub`/`.div`, or
 exchanged `.storageLive` and `.storageDead`, paired with a decoder that reversed
-the permutation, would still satisfy round-trip (`decodeProg (encodeProg p) =
+the permutation, would still satisfy round-trip (`decodeProg (encodeToMiri p) =
 some p`). Guarantee 4 rules out operator, operand-order, and assignment
-permutations by theorem, and the audited one-line encoder arms rule out the
-rest.
+permutations by theorem, and the audited encoder arms rule out the rest.
 
 Two further checks pin the meaning of the shared operators. Inside
 `Trusted.Correspondence`, the reference machine maps each `BinOp` and `UnOp` to
@@ -1396,7 +1414,7 @@ checks that:
    `v.ty? = some paramTy` (including `ScalarVal.wf`: `v.bits.toNat <
    2 ^ v.width.bitWidth`).
 
-`initRefState` applies the same checks to `encodeProg p` and fails with the
+`initRefState` applies the same checks to `encodeToMiri p` and fails with the
 same `.error .unsupported`, so the two machines reject exactly the same entry
 inputs.
 
@@ -1992,13 +2010,13 @@ explicit parameter (`stepsExecuted := 0, maxSteps := maxSteps`), and
 `RefReaches` chains `RefStep` transitions completely unmodified:
 
 ```lean
-inductive RefReaches (rp : RefProg) : RefState → RefState → Prop where
+inductive RefReaches (rp : MiriProg) : RefState → RefState → Prop where
   | refl (rs : RefState) : RefReaches rp rs rs
   | tail : RefReaches rp rs₁ rs₂ →
       RefStep rp rs₂ (.running rs₃) →
       RefReaches rp rs₁ rs₃
 
-def RefReachesOutcome (rp : RefProg) (q : Query) (maxSteps : Nat)
+def RefReachesOutcome (rp : MiriProg) (q : Query) (maxSteps : Nat)
     (out : RefOutcome) : Prop :=
   match initRefState rp q maxSteps with
   | .error k => out = faultToRefOutcome k
@@ -2009,7 +2027,7 @@ def RefReachesOutcome (rp : RefProg) (q : Query) (maxSteps : Nat)
 `maxSteps : Nat` according to their polarity:
 
 ```lean
-def RefWellFormed (rp : RefProg) (q : Query) : Prop :=
+def RefWellFormed (rp : MiriProg) (q : Query) : Prop :=
   ∀ maxSteps : Nat,
     (∃ rs₀ : RefState, initRefState rp q maxSteps = .ok rs₀ ∧
       ∀ rs : RefState, RefReaches rp rs₀ rs →
@@ -2017,10 +2035,10 @@ def RefWellFormed (rp : RefProg) (q : Query) : Prop :=
     ¬ RefReachesOutcome rp q maxSteps .ub ∧
     ¬ RefReachesOutcome rp q maxSteps .blocked
 
-def RefBehavior (rp : RefProg) (q : Query) (out : TerminalOut) : Prop :=
+def RefBehavior (rp : MiriProg) (q : Query) (out : TerminalOut) : Prop :=
   ∃ maxSteps : Nat, RefReachesOutcome rp q maxSteps (.returned out)
 
-def RefDiverges (rp : RefProg) (q : Query) : Prop :=
+def RefDiverges (rp : MiriProg) (q : Query) : Prop :=
   ∃ rs₀ : RefState, initRefState rp q 0 = .ok rs₀ ∧
     ∃ trace : Nat → RefState,
       trace 0 = rs₀ ∧
@@ -2070,16 +2088,16 @@ locked Pass 2 claims in total) are proved with zero `sorry` in
 def CorrespondenceClaim : Prop :=
   ∀ (p : Program) (q : Query),
     WellFormed p q →
-      RefWellFormed (encodeProg p) q ∧
+      RefWellFormed (encodeToMiri p) q ∧
       (∀ out : TerminalOut,
-        Behavior p q out ↔ RefBehavior (encodeProg p) q out) ∧
-      (Diverges p q ↔ RefDiverges (encodeProg p) q)
+        Behavior p q out ↔ RefBehavior (encodeToMiri p) q out) ∧
+      (Diverges p q ↔ RefDiverges (encodeToMiri p) q)
 
 def FaultEquivalenceClaim : Prop :=
   ∀ (p : Program) (q : Query) (k : FaultKind),
     ReachesResult p q (.fault k) ↔
       ∃ maxSteps : Nat,
-        RefReachesOutcome (encodeProg p) q maxSteps (faultToRefOutcome k)
+        RefReachesOutcome (encodeToMiri p) q maxSteps (faultToRefOutcome k)
 ```
 
 where `faultToRefOutcome .undefined = .ub` and
@@ -2132,7 +2150,7 @@ def ValidPrefixAtChoices (p : Program) (q : Query)
   ∃ s₀ s : State,
     initState p q = .ok s₀ ∧ ReachesAtChoices p s₀ choices s
 
-inductive RefReachesAtChoices (rp : RefProg) :
+inductive RefReachesAtChoices (rp : MiriProg) :
     RefState → List Choice → RefState → Prop where
   | nil (rs : RefState) : RefReachesAtChoices rp rs [] rs
   | cons {rs₁ rs₂ rs₃ : RefState} {c : Choice} {cs : List Choice} :
@@ -2141,7 +2159,7 @@ inductive RefReachesAtChoices (rp : RefProg) :
       RefReachesAtChoices rp rs₂ cs rs₃ →
       RefReachesAtChoices rp rs₁ (c :: cs) rs₃
 
-def RefValidPrefixAtChoices (rp : RefProg) (q : Query)
+def RefValidPrefixAtChoices (rp : MiriProg) (q : Query)
     (choices : List Choice) : Prop :=
   ∃ maxSteps : Nat, ∃ rs₀ rs : RefState,
     initRefState rp q maxSteps = .ok rs₀ ∧
@@ -2149,22 +2167,22 @@ def RefValidPrefixAtChoices (rp : RefProg) (q : Query)
 
 def CorrespondenceAtChoicesClaim : Prop :=
   ∀ (p : Program) (q : Query),
-    (WellFormed p q → RefWellFormed (encodeProg p) q) ∧
+    (WellFormed p q → RefWellFormed (encodeToMiri p) q) ∧
     (∀ (choices : List Choice),
-      RefValidPrefixAtChoices (encodeProg p) q choices →
+      RefValidPrefixAtChoices (encodeToMiri p) q choices →
         ValidPrefixAtChoices p q choices) ∧
     (∀ (choices : List Choice) (out : TerminalOut),
-      RefBehaviorAtChoices (encodeProg p) q choices out →
+      RefBehaviorAtChoices (encodeToMiri p) q choices out →
         BehaviorAtChoices p q choices out) ∧
     (∀ (choiceStream : Nat → Choice),
-      RefDivergesAtChoices (encodeProg p) q choiceStream →
+      RefDivergesAtChoices (encodeToMiri p) q choiceStream →
         DivergesAtChoices p q choiceStream)
 
 def FaultEquivalenceAtChoicesClaim : Prop :=
   ∀ (p : Program) (q : Query) (choices : List Choice) (k : FaultKind),
     ReachesResultAtChoices p q choices (.fault k) ↔
       ∃ maxSteps : Nat,
-        RefReachesOutcomeAtChoices (encodeProg p) q choices maxSteps
+        RefReachesOutcomeAtChoices (encodeToMiri p) q choices maxSteps
           (faultToRefOutcome k)
 ```
 
@@ -2193,7 +2211,7 @@ divergence, and fault classifications.
 
 Each conjunct of `CorrespondenceClaim` closes a distinct gap:
 
-- **`RefWellFormed (encodeProg p) q`** transfers UB-freedom: no finite
+- **`RefWellFormed (encodeToMiri p) q`** transfers UB-freedom: no finite
   execution prefix in $M_{\text{ref}}$ reaches `.ub` or `.blocked`.
 - **Forward simulation** (the `→` direction of the behavior equivalence)
   shows that every terminal behavior of $M_{\text{anneal}}$ is one that
@@ -2205,7 +2223,7 @@ Each conjunct of `CorrespondenceClaim` closes a distinct gap:
   a branch, `SatisfiesPost` could prove a postcondition over
   $M_{\text{anneal}}$'s behaviors while another permitted reference execution
   violates it.
-- **Divergence equivalence** (`Diverges p q ↔ RefDiverges (encodeProg p) q`)
+- **Divergence equivalence** (`Diverges p q ↔ RefDiverges (encodeToMiri p) q`)
   makes termination versus divergence observable. Terminal behaviors and
   faults alone cannot distinguish two machines that agree on every finite
   outcome while only one of them also permits an infinite execution.
@@ -2227,25 +2245,26 @@ name it—pins every semantic field of `s` and the real `ExecutionMachine` state
 `rs` (up to `stepsExecuted`, `maxSteps`, and `miri.machine.user.control`):
 
 ```lean
-def FrameSimInv (rp : RefProg) (p : Program) (f : FrameState)
+def FrameSimInv (rp : MiriProg) (p : Program) (f : FrameState)
     (retPlace : Miri.Interpreter.MPlaceTy Miri.Memory.Provenance)
     (rf : Miri.Interpreter.Frame Miri.Memory.Provenance
       Miri.Interpreter.LocalLayout
       Miri.Interpreter.MachineHooks.FrameExtra) : Prop :=
-  ∃ (body : Body) (rbody : RefBody),
+  ∃ (body : Body) (rbody : Miri.MIR.Body) (rmeta : MiriBodyMeta),
     MirSemantics.getElem? p.bodies f.defId = some body ∧
     MirSemantics.getElem? rp.bodies f.defId = some rbody ∧
-    decodeBody rp.types rbody = some body ∧
+    MirSemantics.getElem? rp.bodyMeta f.defId = some rmeta ∧
+    decodeBody rp.types rmeta rbody = some body ∧
     Nat.blt body.argumentCount body.locals.length = true ∧
     storageAnnotationsInBounds body = true ∧
     discriminantTypesValid body = true ∧
     body.locals.all isSupportedScalarOrUnitTy = true ∧
     SlotsMatchTys body.locals f.locals ∧
     FramePcInBounds body f ∧
-    rf = mkRefMiriFrame rp.types f.defId rbody f.blockIdx f.stmtIdx
+    rf = mkRefMiriFrame f.defId rbody f.blockIdx f.stmtIdx
       (liftLocals rp.types body.locals f.locals) retPlace
 
-def SimulationInv (rp : RefProg) (p : Program) (s : State) (rs : RefState) :
+def SimulationInv (rp : MiriProg) (p : Program) (s : State) (rs : RefState) :
     Prop :=
   ∃ (f : FrameState)
     (rf : Miri.Interpreter.Frame Miri.Memory.Provenance
@@ -2595,7 +2614,7 @@ and allocated memory (Section 5.3).
 On Day 1, `anneal_corresponds_to_miri` requires that the reference adapter in
 `Trusted.Correspondence` models
 every construct that $M_{\text{anneal}}$ models
-(`WellFormed p q → RefWellFormed (encodeProg p) q`), ensuring that
+(`WellFormed p q → RefWellFormed (encodeToMiri p) q`), ensuring that
 `RefWellFormed` cannot vacuously excuse bugs via `.blocked`. This requirement
 does not lapse as coverage grows. Supporting a Rust feature (such as a
 compiler intrinsic or inline assembly construct) that upstream `lean-miri`
@@ -2736,7 +2755,7 @@ Mechanizing this approach revealed four structural flaws:
    unmodified `lean-miri`), and is then copied and returned via `_0 = copy _1;
    return`, $M_{\text{anneal}}$ returns `uninit` while unmodified `lean-miri`
    returns `init 42`. On such a program, `WellFormed p q` holds, but `Behavior p
-   q out → RefBehavior (encodeProg p) q out` is mathematically false.
+   q out → RefBehavior (encodeToMiri p) q out` is mathematically false.
 
 ### A.2 Type Representation and Codec Alternatives
 
@@ -2756,7 +2775,7 @@ representation artifacts:
    (`0 ≠ 1`), whereas structural type checks compare `MirTy` values
    (`u32 = u32`), breaking correspondence unless every `Program` carries an
    extra canonical-table well-formedness side condition. Carrying `MirTy` by
-   value in `Trusted.MirAst` and deduplicating during `encodeProg` eliminates
+   value in `Trusted.MirAst` and deduplicating during `encodeToMiri` eliminates
    both issues by construction.
 
 #### Pre-Seeded Primitive Type Table
@@ -2764,11 +2783,11 @@ representation artifacts:
 We considered pre-seeding `collectProgTypes` with primitive types such as
 `[.unit, .bool, .int .isize false]` at fixed `TyId`s `0`, `1`, and `2` instead
 of starting from `[]`. Starting `collectProgTypes` from `[]` keeps
-`RefProg.types` minimal and strictly faithful to the types appearing in `p`,
+`MiriProg.types` minimal and strictly faithful to the types appearing in `p`,
 while `tyIdFor` / `auxTyCode` / `resolveTy` cleanly serve `ExecutionMachine`
 built-in layout queries (`unitLayout`, `boolLayout`, `usizeLayout`, and
 discriminant integer layouts) via out-of-band auxiliary `TyId` codes
-`≥ types.length` without polluting `RefProg.types` or breaking
+`≥ types.length` without polluting `MiriProg.types` or breaking
 `typesAreCanonical`.
 
 ### A.3 State Machine and Step-Budget Alternatives
@@ -2790,7 +2809,7 @@ budget (such as `maxSteps := 2^64`). We rejected this because `Behavior p q out`
 in $M_{\text{anneal}}$ is an unbounded finite-step reachability predicate: for
 any fixed constant $K$, there exists a terminating loop of length $K + 1$ that
 returns `out` in $M_{\text{anneal}}$ but halts with `.exhaustedStepLimit` in
-$M_{\text{ref}}$, making `Behavior p q out → RefBehavior (encodeProg p) q out`
+$M_{\text{ref}}$, making `Behavior p q out → RefBehavior (encodeToMiri p) q out`
 unprovable.
 
 #### Resetting `stepsExecuted := 0` Inside `RefStep`

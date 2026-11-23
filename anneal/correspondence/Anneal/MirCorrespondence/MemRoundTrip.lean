@@ -32,7 +32,7 @@ namespace Anneal.MirCorrespondence
 open Trusted Trusted.MirAst Trusted.MirSemantics Trusted.Correspondence
 open Miri.ABI Miri.Memory Miri.Interpreter
 
-private theorem copyReturn_scalar_enumLike_ok (rp : RefProg) (c : Choice)
+private theorem copyReturn_scalar_enumLike_ok (rp : MiriProg) (c : Choice)
     (retTy : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
     (retVal : Val) (variant : Nat)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
@@ -125,7 +125,7 @@ private theorem copyReturn_scalar_enumLike_ok (rp : RefProg) (c : Choice)
     dsimp only
     rw [h_ve])
 
-private theorem copyReturn_scalar_enumLike_uninit_ub (rp : RefProg)
+private theorem copyReturn_scalar_enumLike_uninit_ub (rp : MiriProg)
     (c : Choice) (retTy : MirTy) (ety : EnumTy) (tagW : IntWidth) (tagS : Bool)
     (mem1 : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
@@ -178,7 +178,7 @@ private theorem copyReturn_scalar_enumLike_uninit_ub (rp : RefProg)
 fresh caller-owned `retPlace` allocation) on an initialized Day-1 return value
 `v` succeeds, updates only `st.machine.memory` to `mem'`, and satisfies
 `refReadReturnVal mem' retTy retPlace = .ok v`. -/
-theorem copyReturn_ok (rp : RefProg) (c : Choice) (retTy : MirTy) (v : Val)
+theorem copyReturn_ok (rp : MiriProg) (c : Choice) (retTy : MirTy) (v : Val)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (retPlace : MPlaceTy Miri.Memory.Provenance)
@@ -453,7 +453,7 @@ theorem copyReturn_ok (rp : RefProg) (c : Choice) (retTy : MirTy) (v : Val)
 
 /-- Executing `ExecutionControl.hooks.copyReturn` on an uninitialized non-ZST
 return local `_0` fails with `.undefinedBehavior`. -/
-theorem copyReturn_uninit_ub (rp : RefProg) (c : Choice) (retTy : MirTy)
+theorem copyReturn_uninit_ub (rp : MiriProg) (c : Choice) (retTy : MirTy)
     (mem : Miri.Memory.MemoryState Miri.Memory.Provenance
       Miri.TreeBorrows.BorrowTree Unit)
     (retPlace : MPlaceTy Miri.Memory.Provenance)

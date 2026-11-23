@@ -4015,7 +4015,13 @@ fn enforces_correspondence_non_backsliding() {
          def getBytesUnchecked : Nat := 0\n\
          def readScalar : Nat := 0\n\
          def writeUninit : Nat := 0\n\
-         end Miri.Memory.Allocation\n",
+         end Miri.Memory.Allocation\n\
+         namespace Miri.MIR\n\
+         def StatementKind.Nop : Nat := 0\n\
+         def StatementKind.Assign : Nat := 0\n\
+         def Rvalue.BinaryOp : Nat := 0\n\
+         def Rvalue.UnaryOp : Nat := 0\n\
+         end Miri.MIR\n",
     );
 
     compile_forged_module(
@@ -4092,6 +4098,10 @@ fn enforces_correspondence_non_backsliding() {
          def BinOp.addWithOverflow : Nat := 0\n\
          def BinOp.subWithOverflow : Nat := 0\n\
          def MirTy.char : Nat := 0\n\
+         def StatementKind.nop : Nat := 0\n\
+         def StatementKind.assign : Nat := 0\n\
+         def Rvalue.binaryOp : Nat := 0\n\
+         def Rvalue.unaryOp : Nat := 0\n\
          end Trusted.MirAst\n",
     );
 
@@ -4205,11 +4215,11 @@ fn enforces_correspondence_non_backsliding() {
              RefValidPrefixAtChoices ∧ Trusted.MirSemantics.ValidPrefixAtChoices ∧\n\
              RefBehaviorAtChoices ∧ Trusted.MirSemantics.BehaviorAtChoices ∧\n\
              RefDivergesAtChoices ∧ Trusted.MirSemantics.DivergesAtChoices ∧\n\
-             encodeProg = encodeProg",
+             encodeToMiri = encodeToMiri",
         );
         let fault_choices_def = fault_choices_override.unwrap_or(
             "Trusted.MirSemantics.ReachesResultAtChoices ∧ RefReachesOutcomeAtChoices ∧\n\
-             faultToRefOutcome = encodeProg",
+             faultToRefOutcome = encodeToMiri",
         );
         let wiring_def = wiring_override.unwrap_or(
             "Miri.Interpreter.ExecutionMachine.step = Miri.Interpreter.ExecutionMachine.stepHooks ∧\n\
@@ -4220,7 +4230,7 @@ fn enforces_correspondence_non_backsliding() {
              Miri.Interpreter.FnArg.copyFnArg = Miri.Interpreter.Call.deinitInPlaceArg",
         );
         let d6_def = d6_override.unwrap_or(
-            "progUseAfterMoveD6 = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+            "progUseAfterMoveD6 = encodeToMiri ∧ Trusted.MirSemantics.ReachesResult ∧\n\
              Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome",
         );
         let ref_step_allowed_def =
@@ -4235,13 +4245,15 @@ fn enforces_correspondence_non_backsliding() {
              def RefBehaviorAtChoices : Prop := True\n\
              def RefDivergesAtChoices : Prop := True\n\
              def RefReachesOutcomeAtChoices : Prop := True\n\
-             def encodeProg : Nat := 0\n\
+             def encodeToMiri : Nat := 0\n\
              def decodeProg : Nat := 0\n\
              def typesAreCanonical : Nat := 0\n\
              def encodeStmt : Nat := 0\n\
              def encodeRvalue : Nat := 0\n\
              def encodeOperand : Nat := 0\n\
              def encodePlace : Nat := 0\n\
+             def toMiriBinOp : Nat := 0\n\
+             def toMiriUnOp : Nat := 0\n\
              def SimulationInv : Prop := True\n\
              def stepResultToRefOutcome : Nat := 0\n\
              def mapStepRes : Nat := 0\n\
@@ -4263,20 +4275,23 @@ fn enforces_correspondence_non_backsliding() {
              def CorrespondenceClaim : Prop :=\n\
                Trusted.MirSemantics.WellFormed ∧ RefWellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefBehavior ∧\n\
-               Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeProg = encodeProg\n\
+               Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeToMiri = encodeToMiri\n\
              def FaultEquivalenceClaim : Prop :=\n\
                Trusted.MirSemantics.ReachesResult ∧ RefReachesOutcome ∧\n\
-               faultToRefOutcome = encodeProg\n\
+               faultToRefOutcome = encodeToMiri\n\
              def CorrespondenceAtChoicesClaim : Prop := {corr_choices_def}\n\
              def FaultEquivalenceAtChoicesClaim : Prop := {fault_choices_def}\n\
              def MiriMoveDeinitWiringClaim : Prop := {wiring_def}\n\
-             def DecodeProgEncodeProgClaim : Prop := decodeProg = encodeProg\n\
-             def EncodeProgTypesCanonicalClaim : Prop := typesAreCanonical = encodeProg\n\
-             def EncodeStmtNoDormantNoopsClaim : Prop := encodeStmt = encodeStmt\n\
-             def EncodeRvalueBinaryOpIffClaim : Prop := encodeRvalue = encodeOperand\n\
-             def EncodeRvalueUnaryOpIffClaim : Prop := encodeRvalue = encodeOperand\n\
+             def DecodeProgEncodeProgClaim : Prop := decodeProg = encodeToMiri\n\
+             def EncodeProgTypesCanonicalClaim : Prop := typesAreCanonical = encodeToMiri\n\
+             def EncodeStmtNoDormantNoopsClaim : Prop :=\n\
+               encodeStmt = encodeStmt ∧ Miri.MIR.StatementKind.Nop = Trusted.MirAst.StatementKind.nop\n\
+             def EncodeRvalueBinaryOpIffClaim : Prop :=\n\
+               encodeRvalue = encodeOperand ∧ Miri.MIR.Rvalue.BinaryOp = Trusted.MirAst.Rvalue.binaryOp ∧ toMiriBinOp = toMiriBinOp\n\
+             def EncodeRvalueUnaryOpIffClaim : Prop :=\n\
+               encodeRvalue = encodeOperand ∧ Miri.MIR.Rvalue.UnaryOp = Trusted.MirAst.Rvalue.unaryOp ∧ toMiriUnOp = toMiriUnOp\n\
              def EncodeStmtAssignIffClaim : Prop :=\n\
-               encodeStmt = encodePlace ∧ encodePlace = encodeRvalue\n\
+               encodeStmt = encodePlace ∧ encodePlace = encodeRvalue ∧ Miri.MIR.StatementKind.Assign = Trusted.MirAst.StatementKind.assign\n\
              def StateUniqueOfSimulationInvClaim : Prop := SimulationInv\n\
              def RefStateUniqueOfSimulationInvClaim : Prop := SimulationInv\n\
              def InitRefStateSimClaim : Prop :=\n\
@@ -4290,62 +4305,62 @@ fn enforces_correspondence_non_backsliding() {
              def SimOfRefReachesClaim : Prop :=\n\
                decodeProg = decodeProg ∧ SimulationInv ∧ RefReaches ∧ Trusted.MirSemantics.Reaches\n\
              def RefWellFormedOfWellFormedClaim : Prop :=\n\
-               Trusted.MirSemantics.WellFormed ∧ RefWellFormed ∧ encodeProg = encodeProg\n\
+               Trusted.MirSemantics.WellFormed ∧ RefWellFormed ∧ encodeToMiri = encodeToMiri\n\
              def RefBehaviorOfBehaviorClaim : Prop :=\n\
-               Trusted.MirSemantics.Behavior ∧ RefBehavior ∧ encodeProg = encodeProg\n\
+               Trusted.MirSemantics.Behavior ∧ RefBehavior ∧ encodeToMiri = encodeToMiri\n\
              def BehaviorOfRefBehaviorClaim : Prop :=\n\
-               RefBehavior ∧ Trusted.MirSemantics.Behavior ∧ encodeProg = encodeProg\n\
+               RefBehavior ∧ Trusted.MirSemantics.Behavior ∧ encodeToMiri = encodeToMiri\n\
              def BehaviorIffRefBehaviorClaim : Prop :=\n\
-               Trusted.MirSemantics.Behavior ∧ RefBehavior ∧ encodeProg = encodeProg\n\
+               Trusted.MirSemantics.Behavior ∧ RefBehavior ∧ encodeToMiri = encodeToMiri\n\
              def DivergesIffRefDivergesClaim : Prop :=\n\
-               Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeProg = encodeProg\n\
+               Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeToMiri = encodeToMiri\n\
              def CanaryD6UseAfterMoveUbClaim : Prop := {d6_def}\n\
              def CanaryD7aBinopCopyThenMoveOkClaim : Prop :=\n\
-               progBinOpCopyThenMoveD7a = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               progBinOpCopyThenMoveD7a = encodeToMiri ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
              def CanaryD7bBinopMoveThenCopyUbClaim : Prop :=\n\
-               progBinOpMoveThenCopyD7b = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               progBinOpMoveThenCopyD7b = encodeToMiri ∧ Trusted.MirSemantics.ReachesResult ∧\n\
                Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n\
              def CanaryD7cBinopMoveThenMoveUbClaim : Prop :=\n\
-               progBinOpMoveThenMoveD7c = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               progBinOpMoveThenMoveD7c = encodeToMiri ∧ Trusted.MirSemantics.ReachesResult ∧\n\
                Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n\
              def CanaryD8SelfMoveOkClaim : Prop :=\n\
-               progSelfMoveD8 = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               progSelfMoveD8 = encodeToMiri ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
              def CanaryD9MoveUnitZstOkClaim : Prop :=\n\
-               progMoveUnitZstD9 = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               progMoveUnitZstD9 = encodeToMiri ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
              def CanaryD10AddUncheckedOverflowUbClaim : Prop :=\n\
                Trusted.MirSemantics.progAddUncheckedU32 = Trusted.MirSemantics.progAddU32 ∧\n\
-               encodeProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               encodeToMiri = encodeToMiri ∧ Trusted.MirSemantics.ReachesResult ∧\n\
                Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefBehavior\n\
              def CanaryD11EnumDiscriminantAndConstOkClaim : Prop :=\n\
                Trusted.MirSemantics.progEnumExplicitReprU8 = Trusted.MirSemantics.progEnumSignedTagIsize ∧\n\
-               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               encodeToMiri = encodeToMiri ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
              def CanaryD12ZstEnumMoveAndDiscrOkClaim : Prop :=\n\
                Trusted.MirSemantics.progZstSingleEnumImplicitRet = Trusted.MirSemantics.progZstSingleEnumMoveAndDiscr ∧\n\
-               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               encodeToMiri = encodeToMiri ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
              def CanaryD13EnumInvalidTagAndUninitUbClaim : Prop :=\n\
                Trusted.MirSemantics.progEnumInvalidTagConstUb = Trusted.MirSemantics.progEnumUninitDiscrUb ∧\n\
-               encodeProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               encodeToMiri = encodeToMiri ∧ Trusted.MirSemantics.ReachesResult ∧\n\
                Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n\
              def CanaryD14CharCmpAndSwitchOkClaim : Prop :=\n\
                Trusted.MirSemantics.mkBinOpProg = Trusted.MirSemantics.mkCmpDiscriminantProg ∧\n\
                Trusted.MirAst.BinOp.cmp = Trusted.MirAst.MirTy.char ∧\n\
-               Trusted.MirSemantics.progCharSwitch = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               Trusted.MirSemantics.progCharSwitch = encodeToMiri ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
              def CanaryD15IntToIntCastClaim : Prop :=\n\
                Trusted.MirSemantics.mkIntToIntCastProg = Trusted.MirAst.MirTy.char ∧\n\
-               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               encodeToMiri = encodeToMiri ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ Trusted.MirSemantics.ReachesResult ∧\n\
                RefWellFormed ∧ RefBehavior ∧ RefReachesOutcome\n\
              def CanaryD16WithOverflowOkClaim : Prop :=\n\
                Trusted.MirSemantics.mkBinOpProg = Trusted.MirSemantics.overflowPairTy ∧\n\
                Trusted.MirAst.BinOp.addWithOverflow = Trusted.MirAst.BinOp.subWithOverflow ∧\n\
-               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               encodeToMiri = encodeToMiri ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n\
              def RefStepSoundForAllowedStepClaim : Prop := {ref_step_allowed_def}\n\
              def BytesCodecMatchesMiriClaim : Prop :=\n\
@@ -4377,10 +4392,10 @@ fn enforces_correspondence_non_backsliding() {
                    {wiring_proof}\n\
                  theorem decodeProg_encodeProg : DecodeProgEncodeProgClaim := Eq.refl _\n\
                  theorem encodeProg_types_canonical : EncodeProgTypesCanonicalClaim := Eq.refl _\n\
-                 theorem encodeStmt_no_dormant_noops : EncodeStmtNoDormantNoopsClaim := Eq.refl _\n\
-                 theorem encodeRvalue_binaryOp_iff : EncodeRvalueBinaryOpIffClaim := Eq.refl _\n\
-                 theorem encodeRvalue_unaryOp_iff : EncodeRvalueUnaryOpIffClaim := Eq.refl _\n\
-                 theorem encodeStmt_assign_iff : EncodeStmtAssignIffClaim := ⟨Eq.refl _, Eq.refl _⟩\n\
+                 theorem encodeStmt_no_dormant_noops : EncodeStmtNoDormantNoopsClaim := ⟨Eq.refl _, Eq.refl _⟩\n\
+                 theorem encodeRvalue_binaryOp_iff : EncodeRvalueBinaryOpIffClaim := ⟨Eq.refl _, Eq.refl _, Eq.refl _⟩\n\
+                 theorem encodeRvalue_unaryOp_iff : EncodeRvalueUnaryOpIffClaim := ⟨Eq.refl _, Eq.refl _, Eq.refl _⟩\n\
+                 theorem encodeStmt_assign_iff : EncodeStmtAssignIffClaim := ⟨Eq.refl _, Eq.refl _, Eq.refl _⟩\n\
                  theorem state_unique_of_simulationInv : StateUniqueOfSimulationInvClaim := True.intro\n\
                  theorem refState_unique_of_simulationInv : RefStateUniqueOfSimulationInvClaim := True.intro\n\
                  theorem initRefState_sim : InitRefStateSimClaim := ⟨Eq.refl _, Eq.refl _, True.intro⟩\n\
@@ -4722,20 +4737,20 @@ fn enforces_correspondence_non_backsliding() {
 
     // Weakening a `D11`–`D13` enum/ZST-enum canary claim by dropping any
     // required program fixture, MIR predicate, reference predicate, or
-    // `encodeProg` (replacing it with a duplicate of another symbol of the same
-    // type so the synthetic proof still type-checks) is rejected by
+    // `encodeToMiri` (replacing it with a duplicate of another symbol of the
+    // same type so the synthetic proof still type-checks) is rejected by
     // `verifyCorrespondenceClaims`.
     let valid_d11_def = "def CanaryD11EnumDiscriminantAndConstOkClaim : Prop :=\n\
                Trusted.MirSemantics.progEnumExplicitReprU8 = Trusted.MirSemantics.progEnumSignedTagIsize ∧\n\
-               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               encodeToMiri = encodeToMiri ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n";
     let valid_d12_def = "def CanaryD12ZstEnumMoveAndDiscrOkClaim : Prop :=\n\
                Trusted.MirSemantics.progZstSingleEnumImplicitRet = Trusted.MirSemantics.progZstSingleEnumMoveAndDiscr ∧\n\
-               encodeProg = encodeProg ∧ Trusted.MirSemantics.WellFormed ∧\n\
+               encodeToMiri = encodeToMiri ∧ Trusted.MirSemantics.WellFormed ∧\n\
                Trusted.MirSemantics.Behavior ∧ RefWellFormed ∧ RefBehavior\n";
     let valid_d13_def = "def CanaryD13EnumInvalidTagAndUninitUbClaim : Prop :=\n\
                Trusted.MirSemantics.progEnumInvalidTagConstUb = Trusted.MirSemantics.progEnumUninitDiscrUb ∧\n\
-               encodeProg = encodeProg ∧ Trusted.MirSemantics.ReachesResult ∧\n\
+               encodeToMiri = encodeToMiri ∧ Trusted.MirSemantics.ReachesResult ∧\n\
                Trusted.MirSemantics.WellFormed ∧ RefReachesOutcome\n";
     for (claim, valid_def, old_tok, replacement_tok, dropped) in [
         (
@@ -4783,9 +4798,9 @@ fn enforces_correspondence_non_backsliding() {
         (
             "CanaryD11EnumDiscriminantAndConstOkClaim",
             valid_d11_def,
-            "encodeProg = encodeProg",
+            "encodeToMiri = encodeToMiri",
             "Trusted.MirSemantics.progEnumExplicitReprU8 = Trusted.MirSemantics.progEnumExplicitReprU8",
-            "Trusted.Correspondence.encodeProg",
+            "Trusted.Correspondence.encodeToMiri",
         ),
         (
             "CanaryD12ZstEnumMoveAndDiscrOkClaim",
@@ -4832,9 +4847,9 @@ fn enforces_correspondence_non_backsliding() {
         (
             "CanaryD12ZstEnumMoveAndDiscrOkClaim",
             valid_d12_def,
-            "encodeProg = encodeProg",
+            "encodeToMiri = encodeToMiri",
             "Trusted.MirSemantics.progZstSingleEnumImplicitRet = Trusted.MirSemantics.progZstSingleEnumImplicitRet",
-            "Trusted.Correspondence.encodeProg",
+            "Trusted.Correspondence.encodeToMiri",
         ),
         (
             "CanaryD13EnumInvalidTagAndUninitUbClaim",
@@ -4874,9 +4889,9 @@ fn enforces_correspondence_non_backsliding() {
         (
             "CanaryD13EnumInvalidTagAndUninitUbClaim",
             valid_d13_def,
-            "encodeProg = encodeProg",
+            "encodeToMiri = encodeToMiri",
             "Trusted.MirSemantics.progEnumInvalidTagConstUb = Trusted.MirSemantics.progEnumInvalidTagConstUb",
-            "Trusted.Correspondence.encodeProg",
+            "Trusted.Correspondence.encodeToMiri",
         ),
     ] {
         assert_eq!(
@@ -4920,6 +4935,129 @@ fn enforces_correspondence_non_backsliding() {
                 "claim Trusted.Correspondence.{claim} body must reference {dropped}"
             )),
             "unexpected weakened {claim} error: {err_weak_canary}"
+        );
+    }
+
+    // Weakening the codec anti-laundering claims (including dropping
+    // `toMiriBinOp`, `toMiriUnOp`, `Miri.MIR.Rvalue.{BinaryOp,UnaryOp}`,
+    // `Miri.MIR.StatementKind.{Nop,Assign}`, or the corresponding
+    // `Trusted.MirAst` constructors) is rejected by
+    // `verifyCorrespondenceClaims`.
+    let valid_binop_def = "def EncodeRvalueBinaryOpIffClaim : Prop :=\n\
+               encodeRvalue = encodeOperand ∧ Miri.MIR.Rvalue.BinaryOp = Trusted.MirAst.Rvalue.binaryOp ∧ toMiriBinOp = toMiriBinOp\n";
+    let valid_unop_def = "def EncodeRvalueUnaryOpIffClaim : Prop :=\n\
+               encodeRvalue = encodeOperand ∧ Miri.MIR.Rvalue.UnaryOp = Trusted.MirAst.Rvalue.unaryOp ∧ toMiriUnOp = toMiriUnOp\n";
+    let valid_noop_def = "def EncodeStmtNoDormantNoopsClaim : Prop :=\n\
+               encodeStmt = encodeStmt ∧ Miri.MIR.StatementKind.Nop = Trusted.MirAst.StatementKind.nop\n";
+    let valid_assign_def = "def EncodeStmtAssignIffClaim : Prop :=\n\
+               encodeStmt = encodePlace ∧ encodePlace = encodeRvalue ∧ Miri.MIR.StatementKind.Assign = Trusted.MirAst.StatementKind.assign\n";
+    for (claim, valid_def, old_tok, replacement_tok, dropped) in [
+        (
+            "EncodeRvalueBinaryOpIffClaim",
+            valid_binop_def,
+            "toMiriBinOp = toMiriBinOp",
+            "encodeOperand = encodeOperand",
+            "Trusted.Correspondence.toMiriBinOp",
+        ),
+        (
+            "EncodeRvalueBinaryOpIffClaim",
+            valid_binop_def,
+            "Miri.MIR.Rvalue.BinaryOp",
+            "Trusted.MirAst.Rvalue.binaryOp",
+            "Miri.MIR.Rvalue.BinaryOp",
+        ),
+        (
+            "EncodeRvalueBinaryOpIffClaim",
+            valid_binop_def,
+            "= Trusted.MirAst.Rvalue.binaryOp",
+            "= Trusted.MirAst.Rvalue.unaryOp",
+            "Trusted.MirAst.Rvalue.binaryOp",
+        ),
+        (
+            "EncodeRvalueUnaryOpIffClaim",
+            valid_unop_def,
+            "toMiriUnOp = toMiriUnOp",
+            "encodeOperand = encodeOperand",
+            "Trusted.Correspondence.toMiriUnOp",
+        ),
+        (
+            "EncodeRvalueUnaryOpIffClaim",
+            valid_unop_def,
+            "Miri.MIR.Rvalue.UnaryOp",
+            "Trusted.MirAst.Rvalue.unaryOp",
+            "Miri.MIR.Rvalue.UnaryOp",
+        ),
+        (
+            "EncodeRvalueUnaryOpIffClaim",
+            valid_unop_def,
+            "= Trusted.MirAst.Rvalue.unaryOp",
+            "= Trusted.MirAst.Rvalue.binaryOp",
+            "Trusted.MirAst.Rvalue.unaryOp",
+        ),
+        (
+            "EncodeStmtNoDormantNoopsClaim",
+            valid_noop_def,
+            "Miri.MIR.StatementKind.Nop",
+            "Trusted.MirAst.StatementKind.nop",
+            "Miri.MIR.StatementKind.Nop",
+        ),
+        (
+            "EncodeStmtNoDormantNoopsClaim",
+            valid_noop_def,
+            "= Trusted.MirAst.StatementKind.nop",
+            "= Trusted.MirAst.StatementKind.assign",
+            "Trusted.MirAst.StatementKind.nop",
+        ),
+        (
+            "EncodeStmtAssignIffClaim",
+            valid_assign_def,
+            "Miri.MIR.StatementKind.Assign",
+            "Trusted.MirAst.StatementKind.assign",
+            "Miri.MIR.StatementKind.Assign",
+        ),
+        (
+            "EncodeStmtAssignIffClaim",
+            valid_assign_def,
+            "= Trusted.MirAst.StatementKind.assign",
+            "= Trusted.MirAst.StatementKind.nop",
+            "Trusted.MirAst.StatementKind.assign",
+        ),
+    ] {
+        assert_eq!(
+            valid_claims.matches(valid_def).count(),
+            1,
+            "synthetic {claim} body drifted"
+        );
+        compile_forged_module(
+            &mut checker_pass2,
+            &corr_src,
+            &trusted_lib,
+            &corr_deps,
+            "Trusted.Correspondence",
+            &valid_claims.replace(valid_def, &valid_def.replace(old_tok, replacement_tok)),
+        );
+        compile_forged_module(
+            &mut checker_pass2,
+            &corr_src,
+            &corr_lib,
+            &proof_deps,
+            "Anneal.MirCorrespondenceProof",
+            &all_proofs_src(
+                corr_choices_valid_proof,
+                fault_choices_valid_proof,
+                wiring_valid_proof,
+                d6_valid_proof,
+                ref_step_allowed_valid_proof,
+            ),
+        );
+        let err_weak_codec = run_corr_audit(&mut checker_pass2).unwrap_err();
+        assert_eq!(err_weak_codec.code, 1);
+        assert_eq!(err_weak_codec.phase, "correspondence-audit");
+        assert!(
+            err_weak_codec.message.contains(&format!(
+                "claim Trusted.Correspondence.{claim} body must reference {dropped}"
+            )),
+            "unexpected weakened {claim} error: {err_weak_codec}"
         );
     }
 
@@ -8188,12 +8326,12 @@ fn rejects_universe_polymorphic_claims_and_proofs() {
          def RefWellFormed : Prop := True\n\
          def RefBehavior : Prop := True\n\
          def RefDiverges : Prop := True\n\
-         def encodeProg : Nat := 0\n\
+         def encodeToMiri : Nat := 0\n\
          def CorrespondenceClaim.{u} : Prop :=\n\
            (fun (_ : PUnit.{u + 1}) =>\n\
              Trusted.MirSemantics.WellFormed ∧ RefWellFormed ∧\n\
              Trusted.MirSemantics.Behavior ∧ RefBehavior ∧\n\
-             Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeProg = encodeProg) PUnit.unit\n\
+             Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeToMiri = encodeToMiri) PUnit.unit\n\
          end Trusted.Correspondence\n",
     );
     compile_forged_module(
@@ -8231,11 +8369,11 @@ fn rejects_universe_polymorphic_claims_and_proofs() {
          def RefWellFormed : Prop := True\n\
          def RefBehavior : Prop := True\n\
          def RefDiverges : Prop := True\n\
-         def encodeProg : Nat := 0\n\
+         def encodeToMiri : Nat := 0\n\
          def CorrespondenceClaim : Prop :=\n\
            Trusted.MirSemantics.WellFormed ∧ RefWellFormed ∧\n\
            Trusted.MirSemantics.Behavior ∧ RefBehavior ∧\n\
-           Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeProg = encodeProg\n\
+           Trusted.MirSemantics.Diverges ∧ RefDiverges ∧ encodeToMiri = encodeToMiri\n\
          end Trusted.Correspondence\n",
     );
     compile_forged_module(

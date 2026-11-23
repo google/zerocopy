@@ -68,8 +68,8 @@ the repository's trust boundary (`trusted/`, pinned `vendor/`, `theory/`, and
    --require-correspondence`, Pass 2—run in repository CI rather than per-crate
    on user machines) anchors $M_{\text{anneal}}$ against an audited reference
    operational semantics ($M_{\text{ref}}$ in `vendor/lean-miri/`, bridged via a
-   minimal, one-to-one structural adapter $\tau_{\text{prog}}$ (`encodeProg`) in
-   `trusted/correspondence/Trusted/Correspondence.lean`). Minor semantic
+   minimal, one-to-one structural adapter $\tau_{\text{prog}}$ (`encodeToMiri`)
+   in `trusted/correspondence/Trusted/Correspondence.lean`). Minor semantic
    variations across compiler versions or compilation targets are controlled by
    declarative profile data (`CaptureProfile` / `CaptureManifest`, including
    `Program.pointerWidthBits`, `Program.mirProfileVersion`, and target layout
@@ -179,11 +179,11 @@ CI workflows):
 
 1. **$M_{\text{ref}}$:** the pinned `vendor/lean-miri/` reference semantics
    together with its `trusted/correspondence/Trusted/Correspondence.lean`
-   wrapper (`initRefState`, `RefProg`-to-`vendor/lean-miri/` operator,
-   statement, terminator, and layout dispatch in `evalRefStep`, reference
-   execution predicates, and staged support gate).
+   wrapper (`initRefState`, `MiriProg` execution over `vendor/lean-miri/`'s
+   `Miri.MIR.Body`, operator tables, layout hooks, and staged support gate in
+   `evalRefStep`) and reference execution predicates.
 2. **The correspondence interface (`Trusted/Correspondence.lean`):**
-   $\tau_{\text{prog}}$ (`encodeProg`), any output-equivalence / projection
+   $\tau_{\text{prog}}$ (`encodeToMiri`), any output-equivalence / projection
    relation ($\sim_{\text{out}}$ / $\pi$) and choice-event coupling relation,
    and the locked `CorrespondenceClaim` and `FaultEquivalenceClaim` statements.
 3. **The outer theorem-stating boundary of $M_{\text{anneal}}$:** the captured
@@ -256,7 +256,7 @@ flowchart TD
         THM["Crate / Unit Obligation (Trusted.CrateTheorem / UnitTheorem)"]
         SEM["Reference Semantics M_ref (vendor/lean-miri/ + Trusted/Correspondence.lean)"]
         AST --> MANNEAL --> THM
-        AST -->|"1-to-1 τ_prog (encodeProg)"| SEM
+        AST -->|"1-to-1 τ_prog (encodeToMiri)"| SEM
     end
 
     subgraph Stage3 ["Stage 3: Correspondence Proof, Lowering & Proof Engine — Kernel-Checked"]
@@ -328,7 +328,7 @@ repository CI by `trusted/correspondence/` and pinned `vendor/lean-miri/` under
   `vendor/lean-miri/` and `trusted/correspondence/`):** Defines the ground-truth
   small-step operational semantics and memory model for captured MIR (bridged
   from the captured MIR AST via a minimal, one-to-one structural adapter
-  $\tau_{\text{prog}}$ (`encodeProg`) in
+  $\tau_{\text{prog}}$ (`encodeToMiri`) in
   `trusted/correspondence/Trusted/Correspondence.lean`; `vendor/lean-miri/` is
   verified by `UPSTREAM_PIN.json` SHA-256, patched-file allowlist, `.olean`
   closure digests, standalone kernel replay of all safe constants in the pinned
@@ -502,7 +502,7 @@ anneal/
 │   │       └── Rust/               # [planned] Factored Ast/ & Semantics/ dirs
 │   ├── correspondence/             # Stage 2 (Pass 2): Reference adapter TCB
 │   │   └── Trusted/
-│   │       └── Correspondence.lean # RefProg codec, M_ref & claims (+ Correspondence/)
+│   │       └── Correspondence.lean # MiriProg codec & claims (+ submods)
 │   ├── audit/                      # CI .olean replay & boundary auditor
 │   │   ├── src/                    # anneal-audit binary & UPSTREAM_PIN pin
 │   │   └── TrustedBoundary.lean    # Syntactic preflight & kernel DAG inspector

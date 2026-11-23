@@ -291,21 +291,33 @@ theorem typesAreCanonical_insertTy (ty : MirTy) (ts : List MirTy)
         exact ih h_can
 
 
-/-- Componentwise structural homomorphism laws for `encodeBody` and
-`encodeBasicBlock`. -/
-theorem encodeBody_basicBlocks_eq (ts : List MirTy) (b : Body) :
-    (encodeBody ts b).basicBlocks =
-      b.basicBlocks.map (encodeBasicBlock ts) := rfl
-
-theorem encodeBasicBlock_statements_eq (ts : List MirTy) (bb : BasicBlock) :
-    (encodeBasicBlock ts bb).statements =
-      bb.statements.map (encodeStmt ts) := rfl
-
 /-- Anti-laundering guarantee: `encodeStmt` maps `.nop` and only `.nop` to
-`.nop`. -/
+`.Nop`. -/
 theorem encodeStmt_no_dormant_noops_base : EncodeStmtNoDormantNoopsClaim := by
   intro ts s
   cases s <;> constructor <;> intro h <;> first | rfl | cases h
+
+private theorem fromMiriBinOp_toMiriBinOp (op : BinOp) :
+    fromMiriBinOp (toMiriBinOp op) = some op := by
+  cases op <;> rfl
+
+private theorem toMiriBinOp_inj {a b : BinOp}
+    (h : toMiriBinOp a = toMiriBinOp b) : a = b := by
+  have ha := fromMiriBinOp_toMiriBinOp a
+  rw [h, fromMiriBinOp_toMiriBinOp b] at ha
+  injection ha with h_eq
+  exact h_eq.symm
+
+private theorem fromMiriUnOp_toMiriUnOp (op : UnOp) :
+    fromMiriUnOp (toMiriUnOp op) = some op := by
+  cases op <;> rfl
+
+private theorem toMiriUnOp_inj {a b : UnOp}
+    (h : toMiriUnOp a = toMiriUnOp b) : a = b := by
+  have ha := fromMiriUnOp_toMiriUnOp a
+  rw [h, fromMiriUnOp_toMiriUnOp b] at ha
+  injection ha with h_eq
+  exact h_eq.symm
 
 /-! ### Constructor preservation
 
@@ -313,11 +325,11 @@ theorem encodeStmt_no_dormant_noops_base : EncodeStmtNoDormantNoopsClaim := by
 semantic constructors (for example, `.add` ↔ `.addUnchecked`) as long as the
 decoder permutes them back. The following lemmas lock the operator, operands,
 and destination of every encoded assignment, binary operation, and unary
-operation to the source constructor. -/
+operation directly on `Miri.MIR.*`. -/
 
-/-- `encodeRvalue` produces `.binaryOp op l' r'` exactly when the source is a
-`.binaryOp` with the same operator `op` and operands encoding to `l'` and
-`r'`. -/
+/-- `encodeRvalue` produces `.BinaryOp (toMiriBinOp op) l' r'` exactly when the
+source is a `.binaryOp` with the same operator `op` and operands encoding to
+`l'` and `r'`. -/
 theorem encodeRvalue_binaryOp_iff_base : EncodeRvalueBinaryOpIffClaim := by
   intro ts rv op l' r'
   cases rv with
@@ -325,15 +337,19 @@ theorem encodeRvalue_binaryOp_iff_base : EncodeRvalueBinaryOpIffClaim := by
     constructor
     · intro h
       injection h with h_op h_l h_r
-      subst h_op
-      exact ⟨l, r, rfl, h_l, h_r⟩
+      exact ⟨l, r, by rw [toMiriBinOp_inj h_op], h_l, h_r⟩
     · intro h
       let ⟨l₁, r₁, h_rv, h_l, h_r⟩ := h
       injection h_rv with h_op h_l₁ h_r₁
       subst h_op; subst h_l₁; subst h_r₁
       dsimp only [encodeRvalue]
       rw [h_l, h_r]
-  | use _ | unaryOp _ _ | cast _ _ _ | discriminant _ | ref _ _
+  | cast k _ _ =>
+    cases k <;>
+      (constructor
+       · intro h; cases h
+       · intro h; let ⟨_, _, h_rv, _, _⟩ := h; cases h_rv)
+  | use _ | unaryOp _ _ | discriminant _ | ref _ _
   | addressOf _ _ | aggregateTuple _ | unsupported =>
     constructor
     · intro h; cases h
@@ -341,8 +357,9 @@ theorem encodeRvalue_binaryOp_iff_base : EncodeRvalueBinaryOpIffClaim := by
       let ⟨_, _, h_rv, _, _⟩ := h
       cases h_rv
 
-/-- `encodeRvalue` produces `.unaryOp op o'` exactly when the source is a
-`.unaryOp` with the same operator `op` and an operand encoding to `o'`. -/
+/-- `encodeRvalue` produces `.UnaryOp (toMiriUnOp op) o'` exactly when the
+source is a `.unaryOp` with the same operator `op` and an operand encoding to
+`o'`. -/
 theorem encodeRvalue_unaryOp_iff_base : EncodeRvalueUnaryOpIffClaim := by
   intro ts rv op o'
   cases rv with
@@ -350,15 +367,19 @@ theorem encodeRvalue_unaryOp_iff_base : EncodeRvalueUnaryOpIffClaim := by
     constructor
     · intro h
       injection h with h_op h_o
-      subst h_op
-      exact ⟨o, rfl, h_o⟩
+      exact ⟨o, by rw [toMiriUnOp_inj h_op], h_o⟩
     · intro h
       let ⟨o₁, h_rv, h_o⟩ := h
       injection h_rv with h_op h_o₁
       subst h_op; subst h_o₁
       dsimp only [encodeRvalue]
       rw [h_o]
-  | use _ | binaryOp _ _ _ | cast _ _ _ | discriminant _ | ref _ _
+  | cast k _ _ =>
+    cases k <;>
+      (constructor
+       · intro h; cases h
+       · intro h; let ⟨_, h_rv, _⟩ := h; cases h_rv)
+  | use _ | binaryOp _ _ _ | discriminant _ | ref _ _
   | addressOf _ _ | aggregateTuple _ | unsupported =>
     constructor
     · intro h; cases h
@@ -366,7 +387,7 @@ theorem encodeRvalue_unaryOp_iff_base : EncodeRvalueUnaryOpIffClaim := by
       let ⟨_, h_rv, _⟩ := h
       cases h_rv
 
-/-- `encodeStmt` produces `.assign dst' rv'` exactly when the source is an
+/-- `encodeStmt` produces `.Assign dst' rv'` exactly when the source is an
 `.assign` whose destination and rvalue encode to `dst'` and `rv'`. -/
 theorem encodeStmt_assign_iff_base : EncodeStmtAssignIffClaim := by
   intro ts s dst' rv'
@@ -761,6 +782,12 @@ theorem collectPlace_spec (acc : List MirTy) (p : Place) :
     rw [h_dec ts h_s]
     rfl
 
+private theorem bitVec128_ofNat_toNat_codec (bits : BitVec 128) :
+    BitVec.ofNat 128 bits.toNat = bits := by
+  apply BitVec.eq_of_toNat_eq
+  rw [BitVec.toNat_ofNat]
+  exact Nat.mod_eq_of_lt bits.isLt
+
 theorem collectOperand_spec (acc : List MirTy) (op : Operand) :
     SubTable acc (collectOperand acc op) ∧
     (∀ ts, SubTable (collectOperand acc op) ts →
@@ -783,9 +810,152 @@ theorem collectOperand_spec (acc : List MirTy) (op : Operand) :
     | mk ty lit =>
       let ⟨h_sub₁, h_dec₁⟩ := collectTy_spec acc ty
       refine ⟨h_sub₁, fun ts h_s => ?_⟩
-      dsimp only [encodeOperand, decodeOperand]
-      rw [h_dec₁ ts h_s]
-      rfl
+      cases lit with
+      | scalar bits =>
+        simp only [encodeOperand, encodeConstOperand, decodeOperand,
+          decodeConstOperand, optMap]
+        rw [h_dec₁ ts h_s]
+        dsimp only [optMap]
+        rw [bitVec128_ofNat_toNat_codec bits]
+      | zeroSized =>
+        simp only [encodeOperand, encodeConstOperand, decodeOperand,
+          decodeConstOperand, optMap]
+        rw [h_dec₁ ts h_s]
+
+private theorem decodeProjUntilStop_append (acc : List MirTy)
+    (proj : List ProjectionElem) :
+    SubTable acc (proj.foldl collectProjElem acc) ∧
+    (∀ ts rest, SubTable (proj.foldl collectProjElem acc) ts →
+      decodeProjUntilStop ts
+        (proj.map (encodeProjElem ts) ++ .Downcast none 0 :: rest) =
+      some (proj, rest)) := by
+  induction proj generalizing acc with
+  | nil => exact ⟨SubTable.refl acc, fun _ _ _ => rfl⟩
+  | cons e es ih =>
+    let ⟨h_sub₁, h_dec₁⟩ := collectProjElem_spec acc e
+    let ⟨h_sub₂, h_dec₂⟩ := ih (collectProjElem acc e)
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts rest h_s => ?_⟩
+    dsimp only [List.map, List.cons_append]
+    have h_e := h_dec₁ ts (SubTable.trans h_sub₂ h_s)
+    have h_es := h_dec₂ ts rest h_s
+    cases e with
+    | deref =>
+      dsimp only [encodeProjElem, decodeProjUntilStop, decodeProjElem]
+      rw [h_es]
+    | unsupported =>
+      dsimp only [encodeProjElem, decodeProjUntilStop, decodeProjElem]
+      rw [h_es]
+    | field idx ty =>
+      dsimp only [encodeProjElem, decodeProjElem, optMap] at h_e
+      dsimp only [encodeProjElem, decodeProjUntilStop, decodeProjElem, optMap]
+      cases h_g : MirSemantics.getElem? ts (lookupTyId ts ty) with
+      | none => rw [h_g] at h_e; cases h_e
+      | some ty' =>
+        rw [h_g] at h_e
+        dsimp only [optMap] at h_e
+        dsimp only [optMap]
+        injection h_e with h_e_eq
+        rw [h_e_eq, h_es]
+
+private theorem collectOperandElems_spec (acc : List MirTy) (op : Operand) :
+    SubTable acc (collectOperand acc op) ∧
+    (∀ ts rest, SubTable (collectOperand acc op) ts →
+      decodeOperandElems ts (encodeOperandElems ts op ++ rest) =
+        some (op, rest)) := by
+  cases op with
+  | copy p =>
+    cases p with
+    | mk locId proj =>
+      let ⟨h_sub, h_dec⟩ := decodeProjUntilStop_append acc proj
+      refine ⟨h_sub, fun ts rest h_s => ?_⟩
+      simp only [encodeOperandElems, List.cons_append, List.nil_append,
+        List.append_assoc, decodeOperandElems, optMap]
+      rw [h_dec ts rest h_s]
+  | move p =>
+    cases p with
+    | mk locId proj =>
+      let ⟨h_sub, h_dec⟩ := decodeProjUntilStop_append acc proj
+      refine ⟨h_sub, fun ts rest h_s => ?_⟩
+      simp only [encodeOperandElems, List.cons_append, List.nil_append,
+        List.append_assoc, decodeOperandElems, optMap]
+      rw [h_dec ts rest h_s]
+  | constant c =>
+    cases c with
+    | mk ty lit =>
+      let ⟨h_sub, h_dec⟩ := collectTy_spec acc ty
+      refine ⟨h_sub, fun ts rest h_s => ?_⟩
+      cases lit with
+      | scalar bits =>
+        simp only [encodeOperandElems, List.cons_append,
+          List.nil_append, decodeOperandElems, optMap]
+        rw [h_dec ts h_s]
+        dsimp only [optMap]
+        rw [bitVec128_ofNat_toNat_codec bits]
+      | zeroSized =>
+        simp only [encodeOperandElems, List.cons_append,
+          List.nil_append, decodeOperandElems, optMap]
+        rw [h_dec ts h_s]
+
+private theorem encodeOperandListElems_nonnil_of_cons (ts : List MirTy)
+    (op : Operand) (ops : List Operand) :
+    ∃ x xs, encodeOperandListElems ts (op :: ops) = x :: xs := by
+  cases op with
+  | copy _ => exact ⟨_, _, rfl⟩
+  | move _ => exact ⟨_, _, rfl⟩
+  | constant c =>
+    cases c with
+    | mk ty lit =>
+      cases lit with
+      | scalar _ => exact ⟨_, _, rfl⟩
+      | zeroSized => exact ⟨_, _, rfl⟩
+
+private theorem encodeOperandListElems_length_le (ts : List MirTy)
+    (ops : List Operand) :
+    ops.length ≤ (encodeOperandListElems ts ops).length := by
+  induction ops with
+  | nil => exact Nat.le_refl 0
+  | cons op ops ih =>
+    dsimp only [encodeOperandListElems]
+    have h_len : 1 ≤ (encodeOperandElems ts op).length := by
+      cases op with
+      | copy _ => exact Nat.succ_le_succ (Nat.zero_le _)
+      | move _ => exact Nat.succ_le_succ (Nat.zero_le _)
+      | constant c =>
+        cases c with
+        | mk ty lit => cases lit <;> exact Nat.le_refl 1
+    rw [List.length_append, Nat.add_comm (encodeOperandElems ts op).length]
+    exact Nat.add_le_add ih h_len
+
+private theorem collectOperandListElems_spec (ops : List Operand)
+    (acc : List MirTy) :
+    SubTable acc (ops.foldl collectOperand acc) ∧
+    (∀ ts fuel, ops.length ≤ fuel →
+      SubTable (ops.foldl collectOperand acc) ts →
+      decodeOperandListLoop fuel ts (encodeOperandListElems ts ops) =
+        some ops) := by
+  induction ops generalizing acc with
+  | nil =>
+    exact ⟨SubTable.refl acc, fun _ fuel _ _ => by cases fuel <;> rfl⟩
+  | cons op rest ih =>
+    let ⟨h_sub₁, h_dec₁⟩ := collectOperandElems_spec acc op
+    let ⟨h_sub₂, h_dec₂⟩ := ih (collectOperand acc op)
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts fuel h_le h_s => ?_⟩
+    cases fuel with
+    | zero => cases h_le
+    | succ fuel' =>
+      let ⟨x, xs, h_cons⟩ :=
+        encodeOperandListElems_nonnil_of_cons ts op rest
+      rw [h_cons]
+      simp only [decodeOperandListLoop]
+      rw [← h_cons]
+      dsimp only [encodeOperandListElems]
+      rw [h_dec₁ ts (encodeOperandListElems ts rest) (SubTable.trans h_sub₂ h_s)]
+      dsimp only [optMap]
+      rw [h_dec₂ ts fuel' (Nat.le_of_succ_le_succ h_le) h_s]
+
+private theorem natToMutability_mutabilityToNat (m : Mutability) :
+    natToMutability (mutabilityToNat m) = some m := by
+  cases m <;> rfl
 
 theorem collectRvalue_spec (acc : List MirTy) (rv : Rvalue) :
     SubTable acc (collectRvalue acc rv) ∧
@@ -803,21 +973,29 @@ theorem collectRvalue_spec (acc : List MirTy) (rv : Rvalue) :
     let ⟨h_sub₂, h_dec₂⟩ := collectOperand_spec (collectOperand acc l) r
     refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
     dsimp only [encodeRvalue, decodeRvalue]
-    rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
-    rfl
-  | cast k opnd ty =>
-    let ⟨h_sub₁, h_dec₁⟩ := collectOperand_spec acc opnd
-    let ⟨h_sub₂, h_dec₂⟩ := collectTy_spec (collectOperand acc opnd) ty
-    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
-    dsimp only [encodeRvalue, decodeRvalue]
-    rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
-    rfl
+    rw [fromMiriBinOp_toMiriBinOp op, h_dec₁ ts (SubTable.trans h_sub₂ h_s),
+      h_dec₂ ts h_s]
   | unaryOp op opnd =>
     let ⟨h_sub, h_dec⟩ := collectOperand_spec acc opnd
     refine ⟨h_sub, fun ts h_s => ?_⟩
     dsimp only [encodeRvalue, decodeRvalue]
-    rw [h_dec ts h_s]
-    rfl
+    rw [fromMiriUnOp_toMiriUnOp op, h_dec ts h_s]
+  | cast k opnd ty =>
+    cases k with
+    | intToInt =>
+      let ⟨h_sub₁, h_dec₁⟩ := collectOperand_spec acc opnd
+      let ⟨h_sub₂, h_dec₂⟩ := collectTy_spec (collectOperand acc opnd) ty
+      refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+      dsimp only [encodeRvalue, decodeRvalue]
+      rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+      rfl
+    | unsupported =>
+      let ⟨h_sub₁, h_dec₁⟩ := collectOperandElems_spec acc opnd
+      let ⟨h_sub₂, h_dec₂⟩ := collectTy_spec (collectOperand acc opnd) ty
+      refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+      simp only [encodeRvalue, decodeRvalue, decodeCopyForDeref]
+      rw [← List.append_nil (encodeOperandElems ts opnd),
+        h_dec₁ ts [] (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
   | discriminant p =>
     let ⟨h_sub, h_dec⟩ := collectPlace_spec acc p
     refine ⟨h_sub, fun ts h_s => ?_⟩
@@ -825,25 +1003,125 @@ theorem collectRvalue_spec (acc : List MirTy) (rv : Rvalue) :
     rw [h_dec ts h_s]
     rfl
   | ref m p =>
-    let ⟨h_sub, h_dec⟩ := collectPlace_spec acc p
+    let ⟨h_sub, h_dec⟩ := foldl_collect_mapOption_spec collectProjElem
+      encodeProjElem decodeProjElem collectProjElem_spec acc p.projection
     refine ⟨h_sub, fun ts h_s => ?_⟩
-    dsimp only [encodeRvalue, decodeRvalue]
-    rw [h_dec ts h_s]
-    rfl
+    simp only [encodeRvalue, decodeRvalue, decodeCopyForDeref, optMap2]
+    rw [natToMutability_mutabilityToNat m, h_dec ts h_s]
   | addressOf m p =>
-    let ⟨h_sub, h_dec⟩ := collectPlace_spec acc p
+    let ⟨h_sub, h_dec⟩ := foldl_collect_mapOption_spec collectProjElem
+      encodeProjElem decodeProjElem collectProjElem_spec acc p.projection
     refine ⟨h_sub, fun ts h_s => ?_⟩
-    dsimp only [encodeRvalue, decodeRvalue]
-    rw [h_dec ts h_s]
-    rfl
+    simp only [encodeRvalue, decodeRvalue, decodeCopyForDeref, optMap2]
+    rw [natToMutability_mutabilityToNat m, h_dec ts h_s]
   | aggregateTuple ops =>
-    let ⟨h_sub, h_dec⟩ := foldl_collect_mapOption_spec collectOperand
-      encodeOperand decodeOperand collectOperand_spec acc ops
+    let ⟨h_sub, h_dec⟩ := collectOperandListElems_spec ops acc
     refine ⟨h_sub, fun ts h_s => ?_⟩
-    dsimp only [encodeRvalue, decodeRvalue]
-    rw [h_dec ts h_s]
-    rfl
+    simp only [encodeRvalue, decodeRvalue, decodeCopyForDeref, optMap]
+    rw [h_dec ts (encodeOperandListElems ts ops).length
+      (encodeOperandListElems_length_le ts ops) h_s]
   | unsupported => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
+
+theorem decodeCopyForDeref_not_discr_intCast {ts : List MirTy}
+    {pl : Miri.MIR.Place} {rv : Rvalue}
+    (h : decodeCopyForDeref ts pl = some rv) :
+    (∀ src, rv ≠ .discriminant src) ∧
+    (∀ op ty, rv ≠ .cast .intToInt op ty) := by
+  cases pl with
+  | mk tag elems =>
+    cases elems with
+    | mk xs =>
+      cases tag with
+      | zero =>
+        simp only [decodeCopyForDeref] at h
+        cases h_e : (Array.mk xs).isEmpty <;> rw [h_e] at h
+        · cases h
+        · injection h with h_eq; subst h_eq
+          exact ⟨(fun _ h => by cases h), (fun _ _ h => by cases h)⟩
+      | succ tag =>
+        cases tag with
+        | zero =>
+          simp only [decodeCopyForDeref] at h
+          cases xs with
+          | nil => cases h
+          | cons e rest =>
+            cases e with
+            | OpaqueCast tyId =>
+              dsimp only at h
+              cases h_oe : decodeOperandElems ts rest with
+              | none => rw [h_oe] at h; cases h
+              | some pair =>
+                rw [h_oe] at h
+                cases pair with
+                | mk op' rem =>
+                  cases rem with
+                  | cons _ _ => cases h
+                  | nil =>
+                    cases h_ty : MirSemantics.getElem? ts tyId with
+                    | none => rw [h_ty] at h; cases h
+                    | some _ =>
+                      rw [h_ty] at h
+                      injection h with h_eq; subst h_eq
+                      exact ⟨(fun _ h => by cases h), (fun _ _ h => by cases h)⟩
+            | _ => cases h
+        | succ tag =>
+          cases tag with
+          | zero =>
+            simp only [decodeCopyForDeref, optMap2] at h
+            cases xs with
+            | nil => cases h
+            | cons e rest =>
+              cases e with
+              | OpaqueCast mCode =>
+                cases rest with
+                | nil => cases h
+                | cons e2 rest2 =>
+                  cases e2 with
+                  | Index _ =>
+                    dsimp only at h
+                    cases h_m : natToMutability mCode <;> rw [h_m] at h
+                    · cases h
+                    · cases h_p : mapOption (decodeProjElem ts) rest2 <;> rw [h_p] at h
+                      · cases h
+                      · injection h with h_eq; subst h_eq
+                        exact ⟨(fun _ h => by cases h), (fun _ _ h => by cases h)⟩
+                  | _ => cases h
+              | _ => cases h
+          | succ tag =>
+            cases tag with
+            | zero =>
+              simp only [decodeCopyForDeref, optMap2] at h
+              cases xs with
+              | nil => cases h
+              | cons e rest =>
+                cases e with
+                | OpaqueCast mCode =>
+                  cases rest with
+                  | nil => cases h
+                  | cons e2 rest2 =>
+                    cases e2 with
+                    | Index _ =>
+                      dsimp only at h
+                      cases h_m : natToMutability mCode <;> rw [h_m] at h
+                      · cases h
+                      · cases h_p : mapOption (decodeProjElem ts) rest2 <;> rw [h_p] at h
+                        · cases h
+                        · injection h with h_eq; subst h_eq
+                          exact ⟨(fun _ h => by cases h), (fun _ _ h => by cases h)⟩
+                    | _ => cases h
+                | _ => cases h
+            | succ tag =>
+              cases tag with
+              | zero =>
+                simp only [decodeCopyForDeref, optMap] at h
+                cases h_l : decodeOperandListLoop xs.length ts xs <;>
+                  rw [h_l] at h
+                · cases h
+                · injection h with h_eq; subst h_eq
+                  exact ⟨(fun _ h => by cases h), (fun _ _ h => by cases h)⟩
+              | succ _ =>
+                simp only [decodeCopyForDeref] at h
+                cases h
 
 theorem collectStmt_spec (acc : List MirTy) (s : StatementKind) :
     SubTable acc (collectStmt acc s) ∧
@@ -860,6 +1138,47 @@ theorem collectStmt_spec (acc : List MirTy) (s : StatementKind) :
   | storageLive _ | storageDead _ | nop | unsupported =>
     exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
 
+private theorem decodeSwitchTargets_encode (targets : SwitchTargets) :
+    decodeSwitchTargets (encodeSwitchTargets targets) = targets := by
+  cases targets with
+  | mk branches otherwise =>
+    dsimp only [encodeSwitchTargets, decodeSwitchTargets]
+    induction branches with
+    | nil => rfl
+    | cons b bs ih =>
+      dsimp only [List.map]
+      rw [bitVec128_ofNat_toNat_codec b.1]
+      injection ih with h_b _
+      rw [h_b]
+
+private theorem decodeAssertConst_encode (msg : AssertKind) :
+    decodeAssertConst (encodeAssertConst msg) = some msg := by
+  cases msg with
+  | overflow op =>
+    simp only [encodeAssertConst, decodeAssertConst, optMap]
+    rw [fromMiriBinOp_toMiriBinOp op]
+  | overflowNeg | divByZero | remByZero | boundsCheck
+  | misalignedPtrDeref | nullPtrDeref | unsupported => rfl
+
+private theorem fromMiriUnwindAction_toMiri (u : UnwindAction) :
+    fromMiriUnwindAction (toMiriUnwindAction u) = some u := by
+  cases u <;> rfl
+
+private theorem collectCallArgs_spec (acc : List MirTy) (args : List Operand) :
+    SubTable acc (args.foldl collectOperand acc) ∧
+    (∀ ts, SubTable (args.foldl collectOperand acc) ts →
+      decodeCallArgs ts
+        (args.map (fun a => Miri.MIR.InlineAsmOperand.In (.Reg .X86 "")
+          (encodeOperand ts a))) = some args) := by
+  induction args generalizing acc with
+  | nil => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
+  | cons a rest ih =>
+    let ⟨h_sub₁, h_dec₁⟩ := collectOperand_spec acc a
+    let ⟨h_sub₂, h_dec₂⟩ := ih (collectOperand acc a)
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    simp only [List.map, decodeCallArgs, optMap2]
+    rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+
 theorem collectTerminator_spec (acc : List MirTy) (term : TerminatorKind) :
     SubTable acc (collectTerminator acc term) ∧
     (∀ ts, SubTable (collectTerminator acc term) ts →
@@ -871,21 +1190,52 @@ theorem collectTerminator_spec (acc : List MirTy) (term : TerminatorKind) :
     let ⟨h_sub, h_dec⟩ := collectOperand_spec acc d
     refine ⟨h_sub, fun ts h_s => ?_⟩
     dsimp only [encodeTerminator, decodeTerminator]
-    rw [h_dec ts h_s]
+    rw [h_dec ts h_s, decodeSwitchTargets_encode targets]
     rfl
   | assert c exp msg t u =>
     let ⟨h_sub, h_dec⟩ := collectOperand_spec acc c
     refine ⟨h_sub, fun ts h_s => ?_⟩
     dsimp only [encodeTerminator, decodeTerminator]
-    rw [h_dec ts h_s]
-    rfl
+    rw [fromMiriUnwindAction_toMiri u]
+    have h_x86 : (Miri.MIR.InlineAsmArch.X86 == .X86 && "" == "") = true := rfl
+    dsimp only
+    simp only [h_x86, ite_true, optMap2]
+    rw [h_dec ts h_s, decodeAssertConst_encode msg]
   | call callee args dst t u =>
-    let ⟨h_sub₁, h_dec₁⟩ := foldl_collect_mapOption_spec collectOperand
-      encodeOperand decodeOperand collectOperand_spec acc args
+    let ⟨h_sub₁, h_dec₁⟩ := collectCallArgs_spec acc args
     let ⟨h_sub₂, h_dec₂⟩ :=
       collectPlace_spec (args.foldl collectOperand acc) dst
     refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
-    dsimp only [encodeTerminator, decodeTerminator]
+    have h_x86 : (Miri.MIR.InlineAsmArch.X86 == .X86 && "" == "") = true := rfl
+    cases t with
+    | none =>
+      dsimp only [encodeTerminator, decodeTerminator]
+      rw [fromMiriUnwindAction_toMiri u]
+      dsimp only
+      simp only [h_x86, ite_true, optMap2]
+      rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+    | some target =>
+      dsimp only [encodeTerminator, decodeTerminator]
+      rw [fromMiriUnwindAction_toMiri u]
+      dsimp only
+      simp only [h_x86, ite_true, optMap2]
+      rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+
+private theorem collectStmtEntries_spec (acc : List MirTy)
+    (stmts : List StatementKind) :
+    SubTable acc (stmts.foldl collectStmt acc) ∧
+    (∀ ts, SubTable (stmts.foldl collectStmt acc) ts →
+      mapOption (fun st => decodeStmt ts st.kind)
+        (stmts.map (fun s =>
+          ({ sourceInfo := ⟨⟨0⟩, 0⟩, kind := encodeStmt ts s } :
+            Miri.MIR.Statement))) = some stmts) := by
+  induction stmts generalizing acc with
+  | nil => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
+  | cons s rest ih =>
+    let ⟨h_sub₁, h_dec₁⟩ := collectStmt_spec acc s
+    let ⟨h_sub₂, h_dec₂⟩ := ih (collectStmt acc s)
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    dsimp only [List.map, mapOption]
     rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
     rfl
 
@@ -895,8 +1245,7 @@ theorem collectBasicBlock_spec (acc : List MirTy) (bb : BasicBlock) :
       decodeBasicBlock ts (encodeBasicBlock ts bb) = some bb) := by
   cases bb with
   | mk stmts term cleanup =>
-    let ⟨h_sub₁, h_dec₁⟩ := foldl_collect_mapOption_spec collectStmt
-      encodeStmt decodeStmt collectStmt_spec acc stmts
+    let ⟨h_sub₁, h_dec₁⟩ := collectStmtEntries_spec acc stmts
     let ⟨h_sub₂, h_dec₂⟩ :=
       collectTerminator_spec (stmts.foldl collectStmt acc) term
     refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
@@ -907,7 +1256,7 @@ theorem collectBasicBlock_spec (acc : List MirTy) (bb : BasicBlock) :
 theorem collectBody_spec (acc : List MirTy) (b : Body) :
     SubTable acc (collectBody acc b) ∧
     (∀ ts, SubTable (collectBody acc b) ts →
-      decodeBody ts (encodeBody ts b) = some b) := by
+      decodeBody ts (encodeBodyMeta b) (encodeBody ts b) = some b) := by
   cases b with
   | mk argCount locals bbs isUnsafe identity =>
     let ⟨h_sub₁, h_dec₁⟩ := collectTyList_spec acc locals
@@ -915,21 +1264,34 @@ theorem collectBody_spec (acc : List MirTy) (b : Body) :
       encodeBasicBlock decodeBasicBlock collectBasicBlock_spec
       (collectTyList acc locals) bbs
     refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
-    dsimp only [encodeBody, decodeBody]
+    dsimp only [encodeBody, encodeBodyMeta, decodeBody]
     rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
     rfl
 
+private theorem collectBodies_spec (acc : List MirTy) (bodies : List Body) :
+    SubTable acc (bodies.foldl collectBody acc) ∧
+    (∀ ts, SubTable (bodies.foldl collectBody acc) ts →
+      decodeBodies ts (bodies.map (encodeBody ts))
+        (bodies.map encodeBodyMeta) = some bodies) := by
+  induction bodies generalizing acc with
+  | nil => exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
+  | cons b rest ih =>
+    let ⟨h_sub₁, h_dec₁⟩ := collectBody_spec acc b
+    let ⟨h_sub₂, h_dec₂⟩ := ih (collectBody acc b)
+    refine ⟨SubTable.trans h_sub₁ h_sub₂, fun ts h_s => ?_⟩
+    dsimp only [List.map, decodeBodies, optMap2]
+    rw [h_dec₁ ts (SubTable.trans h_sub₂ h_s), h_dec₂ ts h_s]
+
 /-- Unconditional global anti-laundering theorem: every `p : Program` with
-inline `MirTy` round-trips through `encodeProg` and `decodeProg` with zero
+inline `MirTy` round-trips through `encodeToMiri` and `decodeProg` with zero
 preconditions, including its target `pointerWidthBits`, `mirProfileVersion`,
 and `scope`. -/
 theorem decodeProg_encodeProg_base : DecodeProgEncodeProgClaim := by
   intro p
   cases p with
   | mk bodies entryDefId pointerWidthBits mirProfileVersion scope =>
-    dsimp only [encodeProg, decodeProg, collectProgTypes]
-    let ⟨_, h_dec⟩ := foldl_collect_mapOption_spec collectBody
-      encodeBody decodeBody collectBody_spec [] bodies
+    dsimp only [encodeToMiri, decodeProg, collectProgTypes]
+    let ⟨_, h_dec⟩ := collectBodies_spec [] bodies
     rw [h_dec (bodies.foldl collectBody []) (SubTable.refl _)]
     rfl
 
@@ -1062,7 +1424,7 @@ theorem collectBody_canonical (acc : List MirTy) (b : Body)
     (collectTyList_canonical acc b.locals h)
 
 /-- Canonical type deduplication theorem: for every `p : Program`,
-`(encodeProg p).types` contains no duplicate `MirTy` entries, guaranteeing
+`(encodeToMiri p).types` contains no duplicate `MirTy` entries, guaranteeing
 that nominal `TyId` equality in `lean-miri` (`assertSameType`,
 `assertRvalueLayout`) agrees with structural `MirTy` equality. -/
 theorem encodeProg_types_canonical_base : EncodeProgTypesCanonicalClaim :=
