@@ -1,19 +1,18 @@
 # Anneal
 
-<img src="https://raw.githubusercontent.com/google/zerocopy/main/anneal/docs/images/logo.svg" alt="Anneal logo" width="100%">
+<img src="https://raw.githubusercontent.com/google/zerocopy/main/anneal/assets/logo.svg" alt="Anneal logo" width="100%">
 
 <p align="center"><em>logo by <a href="https://www.instagram.com/tinyneonspark">tinyneonspark</a></em></p>
 
-> **Note:** Anneal is in alpha. You're welcome to use it, but many things
-> are broken or unsound, and we will change APIs frequently.
-
-> [!NOTE]
-> The MIR-based alpha installs a toolchain from a published or locally built
-> archive and uses Lean's kernel to check proofs for selected Rust functions or
-> scalar library crates. General crate verification is under development. The
-> design discussion and examples below describe Anneal's goals. Verification
-> guarantees depend on trusted code being correct and the assumptions in the
-> verification receipt being valid.
+> [!WARNING]
+> Anneal is an early alpha. Today it supports only a small scalar subset of
+> Rust and has not yet been audited against adversarial proofs or hostile
+> crates, so treat passing runs as an experimental check rather than an
+> audited security guarantee, and expect frequent breaking API changes. The
+> discussion and examples below describe Anneal's target design as we harden
+> the trust boundary and broaden Rust support over time; see
+> [`DESIGN.md`][design-doc], [`THREAT_MODEL.md`][threat-model-doc], the
+> [alpha guide][alpha-guide], and our [roadmap][roadmap] to learn more.
 
 For safe code, Rust promises that "if it compiles, then it is memory-safe." Anneal promises the same for unsafe code.
 
@@ -45,7 +44,7 @@ impl usize {
 }
 ```
 
-Rust doesn't have any way to epxress "a pair of `usize`s such `rhs != 0` and `self % rhs == 0`". Thus, the type signature of `unchecked_div_exact` is *too permissive*. While it prevents some illegal values statically (e.g., the type system will not permit you to pass `-1`), some illegal values will compile just fine, and will result in memory safety bugs at runtime:
+Rust doesn't have any way to express "a pair of `usize`s such that `rhs != 0` and `self % rhs == 0`". Thus, the type signature of `unchecked_div_exact` is *too permissive*. While it prevents some illegal values statically (e.g., the type system will not permit you to pass `-1`), some illegal values will compile just fine, and will result in memory safety bugs at runtime:
 
 ```rust
 let res: usize = unsafe { 1usize.unchecked_div_exact(0) };
@@ -189,7 +188,7 @@ impl std::ops::Div<PositiveUsize> for usize {
     type Output = usize;
 
     fn div(self, rhs: PositiveUsize) -> usize {
-        unsafe { unchecked_div(self_val, rhs.val) }
+        unsafe { unchecked_div(self, rhs.val) }
     }
 }
 ```
@@ -200,7 +199,7 @@ The alpha verifies selected Rust functions or dependency-free scalar library
 crates on x86-64 Linux with glibc. Follow the [alpha guide][alpha-guide] to
 install it and check a runnable proof.
 
-[alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md
+[alpha-guide]: https://github.com/google/zerocopy/blob/main/anneal/development/alpha.md
 
 ## Agent skill
 
@@ -228,16 +227,29 @@ it with teammates and agents working in fresh checkouts.
 
 [gh-skill]: https://cli.github.com/manual/gh_skill_install
 
-## Repository checks
+## Documentation and contributor checks
 
-See the [contributor guide][developing-anneal] to build the local toolchain
-archive and audit the trust boundary, the [scaffold guide][scaffold-guide] to
-run installed smoke cases and reproduce retained failures, and the
+User-facing design and governing documents live at the top level of `anneal/`:
+[`DESIGN.md`][design-doc], [`PRINCIPLES.md`][principles-doc],
+[`THREAT_MODEL.md`][threat-model-doc], and
+[`META_PRINCIPLES.md`][meta-principles-doc].
+
+Internal contributor documentation (not user-facing) lives under
+[`development/`][development-dir]. See the
+[contributor guide][developing-anneal] to build the local toolchain archive and
+audit the trust boundary, the [scaffold guide][scaffold-guide] to run installed
+smoke cases and reproduce retained failures, and the
 [Gate 2 review guide][codex-review] for required merge checks.
 
-[developing-anneal]: https://github.com/google/zerocopy/blob/main/anneal/docs/README.md
-[scaffold-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/scaffolding.md
-[codex-review]: https://github.com/google/zerocopy/blob/main/anneal/docs/codex-review.md
+[design-doc]: https://github.com/google/zerocopy/blob/main/anneal/DESIGN.md
+[principles-doc]: https://github.com/google/zerocopy/blob/main/anneal/PRINCIPLES.md
+[threat-model-doc]: https://github.com/google/zerocopy/blob/main/anneal/THREAT_MODEL.md
+[meta-principles-doc]: https://github.com/google/zerocopy/blob/main/anneal/META_PRINCIPLES.md
+[development-dir]: https://github.com/google/zerocopy/tree/main/anneal/development
+[roadmap]: https://github.com/google/zerocopy/blob/main/anneal/development/README.md#roadmap-and-tracking
+[developing-anneal]: https://github.com/google/zerocopy/blob/main/anneal/development/README.md
+[scaffold-guide]: https://github.com/google/zerocopy/blob/main/anneal/development/scaffolding.md
+[codex-review]: https://github.com/google/zerocopy/blob/main/anneal/development/codex-review.md
 
 ## Acknowledgments
 

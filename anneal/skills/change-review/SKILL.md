@@ -184,7 +184,7 @@ integration, publication, and stack locking or rebasing.
     inline findings, and append `<!-- anneal-gate2-review:v1 {...} -->`
     binding `base_sha`, `head_sha`, `tree_sha`, `reviewer_family`,
     `author_family`, `verdict`, and `findings[]` per
-    [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates).
+    [`development/codex-review.md`](../../development/codex-review.md#merge-gates).
   - *Single-turn hosts with a summary channel:* Report blocked paths, checks
     not re-executed, and un-anchored open questions in the summary alongside
     inline findings.
@@ -217,10 +217,10 @@ instructions at that state). Revalidate candidate and base SHAs before reusing
 any prior evidence; any edit to tree, commit history, or base invalidates every
 affected verdict. One exception applies to a published PR: the merge gates key
 this tuple to the PR's **identity** defined in
-[`docs/codex-review.md`](../../docs/codex-review.md#merge-gates), so a history
-rewrite that leaves the identity unchanged keeps the evidence recorded on that
-PR valid. Freeze the candidate commit before delegating fresh-context reviews,
-and run the deterministic preflight checklist from
+[`development/codex-review.md`](../../development/codex-review.md#merge-gates),
+so a history rewrite that leaves the identity unchanged keeps the evidence
+recorded on that PR valid. Freeze the candidate commit before delegating
+fresh-context reviews, and run the deterministic preflight checklist from
 [`AGENTS.md`](../../AGENTS.md#standing-rules) once per frozen commit to produce
 a verbatim SHA-bound **reference preflight receipt** for reviewers. As manual
 checks graduate into CI, retire the redundant prose.
@@ -259,16 +259,16 @@ trivial edits incur zero needless ceremony:
      isolated holdouts only for semantic/compiler/auditor logic not covered by
      post-push Gate 2 falsification (`none` in field 4 when omitted), write a
      receipt, and push to draft so cold cross-family Gate 2 runs unprimed probes
-     ([`docs/codex-review.md`](../../docs/codex-review.md#merge-gates)).
+     ([`development/codex-review.md`](../../development/codex-review.md#merge-gates)).
    - *Standard surface* (other non-trivial edits—`theory/`, tests, doctests,
      tooling, substantive docs, or zero-semantic policy typos/wrapping): when
      cold post-push cross-family Gate 2 applies
-     ([`docs/codex-review.md`](../../docs/codex-review.md#merge-gates)) and no
-     CI-executed or semantic Human-review-surface path changes, run at most one
-     fast Pass 1 and specification/seam check (single subagent or disclosed
-     self-review; skip multi-round local critic ping-pong and holdouts) plus
-     policy drift checks, write a compact receipt, and delegate deep
-     cross-family falsification to Gate 2; else run one independent
+     ([`development/codex-review.md`](../../development/codex-review.md#merge-gates))
+     and no CI-executed or semantic Human-review-surface path changes, run at
+     most one fast Pass 1 and specification/seam check (single subagent or
+     disclosed self-review; skip multi-round local critic ping-pong and
+     holdouts) plus policy drift checks, write a compact receipt, and delegate
+     deep cross-family falsification to Gate 2; else run one independent
      fresh-context reviewer covering both passes (or a disclosed trust-first
      self-review fallback, noting single-model error correlation).
    - *Verified trivial edit* (typo, formatting, or non-directive prose/comment
@@ -321,10 +321,10 @@ trivial edits incur zero needless ceremony:
   distinct reviewer family from the author for automated Gate 2 in an isolated
   harness without Gate 1 or author transcripts; and cross-check concrete
   reviewer-designed fixes on a different family when available. Under
-  [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates), cold Gate 2
-  is the canonical unprimed confirmation pass unless running pre-publication
-  `swarm-model-refinement` or covering CI-executed, Pass 2, or semantic
-  `Human review surface` changes.
+  [`development/codex-review.md`](../../development/codex-review.md#merge-gates),
+  cold Gate 2 is the canonical unprimed confirmation pass unless running
+  pre-publication `swarm-model-refinement` or covering CI-executed, Pass 2, or
+  semantic `Human review surface` changes.
 - **Bounded read-only slice-sharding:** For large multi-subsystem diffs
   (especially touching `trusted/`, `ci/`, or `.github/`), only the coordinator
   may partition the inventory into one level of disjoint read-only domain
@@ -409,7 +409,8 @@ than serializing independent work, while keeping coordinator compute lean:
 
 ### Adjudicate findings and repairs
 
-Merge gates in [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates)
+Merge gates in
+[`development/codex-review.md`](../../development/codex-review.md#merge-gates)
 are non-adjudicable by an acting agent: never relax a stopping rule or waive a
 gate unilaterally to obtain approval. Adjudicate every local and Gate 2 finding
 in order of authority:
@@ -431,8 +432,8 @@ in order of authority:
   as moving semantic normalization into `trusted/` for cleanliness), weaken
   specs, tests, or checks, misdiagnose deliberate roadmap prose under a stale
   base, or repeat a closed local critic-vs.-critic style oscillation without new
-  falsifiable evidence. If a Gate 2 (or legacy Codex) finding is refuted,
-  follow [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates).
+  falsifiable evidence. If a Gate 2 (or legacy Codex) finding is refuted, follow
+  [`development/codex-review.md`](../../development/codex-review.md#merge-gates).
 - **Post-repair verification and convergence pause:** After any repair, verify
   prose grammar (especially after 80-column re-wrapping), companion manifests
   or generators, and commit messages under
@@ -453,12 +454,11 @@ surface** block listing any changes to the **Human review surface** defined in
 relaxation (or `none`). When a Gate 2 finding cannot be fixed, list it under
 `Gate 2 finding dispositions` (or legacy `Codex finding dispositions`) in that
 block with a proposed disposition and supporting evidence; Gate 5 maintainer
-approval decides it
-([`docs/codex-review.md`](../../docs/codex-review.md#merge-gates)).
+approval decides it ([`development/codex-review.md`](../../development/codex-review.md#merge-gates)).
 Follow the privacy rule in [`AGENTS.md`](../../AGENTS.md#standing-rules) across
 both surfaces. For narrow or trivial changes, condense all six fields below
-into 3–5 compact bullets; for complex or TCB changes, keep one structured
-bullet per field:
+into 3–5 compact bullets; for complex or TCB changes, keep one structured bullet
+per field:
 
 1. **Comparison tuple:** exact `(target_base, merge_base, head)` (and dirty
    state if unpublished).
@@ -479,5 +479,5 @@ bullet per field:
    human approval (Gate 5)" items, or merge blockers.
 
 Before merge, confirm every gate in
-[`docs/codex-review.md`](../../docs/codex-review.md#merge-gates) for the PR's
-current identity, with `merge_base == target_base`.
+[`development/codex-review.md`](../../development/codex-review.md#merge-gates)
+for the PR's current identity, with `merge_base == target_base`.

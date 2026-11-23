@@ -76,7 +76,7 @@ GRANDFATHERED_SKILL_LINE_CAPS: Dict[str, int] = {
 }
 # Codex reads `AGENTS.md` from repository root down to cwd within a 32 KiB
 # default budget (`project_doc_max_bytes = 32768`), reserving 1024 B for user
-# global instructions (see `anneal/docs/review-policy-design.md`).
+# global instructions (see `anneal/development/review-policy-design.md`).
 CODEX_AGENTS_MD_BUDGET_BYTES = 31744
 AGENTS_SCAN_PRUNE_DIRS = frozenset({".git", ".lake", "target"})
 THEORY_TACTIC_KIND_TO_TOKEN: Dict[str, Optional[str]] = {

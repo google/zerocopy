@@ -8,6 +8,12 @@ those terms. -->
 
 # Developing Anneal
 
+This directory holds **internal contributor and developer documentation**
+(architecture, trust-boundary enforcement, build/test scaffolding, and review
+policy). For user-facing documentation, see [`README.md`](../README.md),
+[`DESIGN.md`](../DESIGN.md), [`PRINCIPLES.md`](../PRINCIPLES.md), and
+[`THREAT_MODEL.md`](../THREAT_MODEL.md).
+
 The MIR-based implementation lives at [`anneal/`](../). See the
 [repository layout](architecture.md#repository-layout) for the workspace
 structure.
@@ -65,6 +71,7 @@ incrementally.
 
 | Document | Status | Scope |
 | :--- | :--- | :--- |
+| [User-facing design overview](../DESIGN.md) | Current + planned | High-level summary of how Anneal works, what it guarantees versus assumes, and what works today versus what is planned. |
 | [Project principles](../PRINCIPLES.md) | Current (governing) | Correctness promise and design principles. |
 | [Threat model](../THREAT_MODEL.md) | Current (governing) | Adversary assumptions, bounded two-surface human review, and in-scope defenses. |
 | [Meta-principles](../META_PRINCIPLES.md) | Current (governing) | Invariant goals governing principles and threat model. |
@@ -74,7 +81,7 @@ incrementally.
 
 | Document | Status | Scope |
 | :--- | :--- | :--- |
-| [Design overview](design.md) | Current + planned | Detailed verification workflow, library-centric model, specification modes, and incremental adoption. |
+| [Developer design overview](design.md) | Current + planned | Detailed verification workflow, library-centric model, specification modes, and incremental adoption. |
 | [MIR verifier alpha](alpha.md) | Current (Stage 0) | Exact Profile v1 scalar MIR subset, `verify` usage, taint flags, and alpha releases. |
 | [Scaffolding and testing](scaffolding.md) | Current | Running workspace tests, `installed_smoke`, packaging checks, and failure bundles. |
 | [Multi-step MIR architecture](architecture.md) | Current + planned | Three-stage MIR pipeline, repository layout, and compiler integration. |
@@ -94,6 +101,23 @@ incrementally.
 | [Auditing and Universal NDJSON Comparator](auditing-and-comparator.md) | Target Architecture | Universal NDJSON Comparator (`5a`/`5b`/`5c`, `nanoda_bin` + `con-ron`), `check_guard_mutation.py` CI, and honest non-adversarial `audit-spec` sanity checks. |
 | [Specification Core v2 and golden spec closure](spec-core-and-golden-closure.md) | Target Architecture | `FnContract` (`safetyPre`/`behaviorPre`), 8-mask `EffectMask` realizability, mutual-recursion stratification, and always-rendered golden spec closures under `CODEOWNERS`/`OWNERS`. |
 | [Anneal–Aeneas interop bridge](aeneas-interop-bridge.md) | Planned Interop | Opt-in zero-TCB `anneal/interop/aeneas-bridge/` architecture, strict vs. liberal `.fail` refinement, MIR prerequisites, and `read_u64` / `write_uint` / `split_at_mut` canaries. |
+
+## Roadmap and tracking
+
+Public milestones and subsystem umbrellas are tracked on `google/zerocopy`:
+
+- **Stage milestones:**
+  [Stage 0 — Alpha usability (`#4095`)](https://github.com/google/zerocopy/issues/4095)
+  → [Stage 1 — Audited trust boundary and TCB accounting (`#4012`)](https://github.com/google/zerocopy/issues/4012)
+  → [Stage 2 — Broad systems coverage and TCB reduction (`#4096`)](https://github.com/google/zerocopy/issues/4096).
+- **Subsystem umbrellas:**
+  [MIR (`#4097`)](https://github.com/google/zerocopy/issues/4097),
+  [Capture (`#4098`)](https://github.com/google/zerocopy/issues/4098),
+  [Audit (`#4099`)](https://github.com/google/zerocopy/issues/4099),
+  [Theory (`#4100`)](https://github.com/google/zerocopy/issues/4100),
+  [FFI/ISA (`#4101`)](https://github.com/google/zerocopy/issues/4101),
+  [Specs (`#4102`)](https://github.com/google/zerocopy/issues/4102), and
+  [UX (`#4103`)](https://github.com/google/zerocopy/issues/4103).
 
 ## Historical workspaces
 

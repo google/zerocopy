@@ -33,16 +33,17 @@ never proves defect absence or substitutes for CI or merge gates.
   (`#[anneal::trusted]`) or TCB audit log, `trusted/` (including trust tiers),
   `ci/`, `.github/`, pinned root manifests, lockfiles, packaged toolchain
   archives, governing docs (`META_PRINCIPLES.md`, `PRINCIPLES.md`,
-  `THREAT_MODEL.md`, `docs/trust-model.md`), policy files (`AGENTS.md`,
-  `CLAUDE.md`, `.gemini/styleguide.md`, `skills/`, `docs/codex-review.md`,
-  `docs/review-policy-design.md`), and editor or agent configs. Every PR's
-  Review Receipt comment (or branch-only handoff) must include a `Human review
-  surface` block listing every changed surface and intentional policy relaxation
-  (or `none`), completed before marking ready for review; PR descriptions reuse
-  the commit (or squash) message verbatim (unwrapped for Markdown). Relevant
-  commit bodies (or squash message) must explain what changed, why, and any
-  rule relaxation or tightening; any omission, mischaracterization, or unsound
-  relaxation blocks merge or ready-for-review.
+  `THREAT_MODEL.md`, `development/trust-model.md`), policy files (`AGENTS.md`,
+  `CLAUDE.md`, `.gemini/styleguide.md`, `skills/`,
+  `development/codex-review.md`, `development/review-policy-design.md`), and
+  editor or agent configs. Every PR's Review Receipt comment (or branch-only
+  handoff) must include a `Human review surface` block listing every changed
+  surface and intentional policy relaxation (or `none`), completed before
+  marking ready for review; PR descriptions reuse the commit (or squash)
+  message verbatim (unwrapped for Markdown). Relevant commit bodies (or squash
+  message) must explain what changed, why, and any rule relaxation or
+  tightening; any omission, mischaracterization, or unsound relaxation blocks
+  merge or ready-for-review.
 - **Comparison, diff integrity, and coverage:** Record
   `(target_base, merge_base, head)` (plus dirty or untracked files if
   unpublished). Enumerate every path, mode, dotfile, and companion artifact
@@ -69,8 +70,8 @@ never proves defect absence or substitutes for CI or merge gates.
   execute, include, import, or load as trusted code/config (`include!`,
   `#[path]`, Nix imports, workflow `run:`), or any `-- anneal-trust-tier:`
   directive in a `.lean` file. Paths that CI or `anneal-audit` only scan, hash,
-  or audit as untrusted inputs (`theory/`, `correspondence/`, `docs/`) do not
-  trigger Pass 2; skip Pass 2 immediately as inapplicable when untriggered.
+  or audit as untrusted inputs (`theory/`, `correspondence/`, `development/`) do
+  not trigger Pass 2; skip Pass 2 immediately as inapplicable when untriggered.
   Finish Pass 1 and any triggered Pass 2 before the general pass.
 - **Pass 1, filesystem hygiene, untrusted contents, and specifications:**
   - *Filesystem, Unicode, and config hygiene (every path):* Reject symlinks,

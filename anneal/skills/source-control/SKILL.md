@@ -214,8 +214,8 @@ forbid_names = {
     "lake-manifest.json", "foundation-lock.json", "root-manifest.sha256",
 }
 forbid_paths = {
-    "docs/codex-review.md", "docs/review-policy-design.md",
-    "docs/trust-model.md",
+    "development/codex-review.md", "development/review-policy-design.md",
+    "development/trust-model.md",
 }
 forbid_top_dirs = {"ci", "skills", "trusted"}
 forbid_build_exts = (
@@ -405,7 +405,7 @@ authorized**.
   user explicitly requests a visibly incomplete handoff).
 - **Stack merge guard:** Land stacked PRs bottom-up and never run
   `gh stack merge` unless every PR it would merge satisfies the merge gates in
-  [`docs/codex-review.md`](../../docs/codex-review.md#merge-gates).
+  [`development/codex-review.md`](../../development/codex-review.md#merge-gates).
 
 ## Lock and rebase a stack
 
@@ -423,10 +423,11 @@ authorized**.
   one-commit PR onto its lower PR's squash commit, whose tree equals the lower
   PR's reviewed head tree, leaves the upper PR's identity—and its review
   evidence—unchanged per
-  `main`); only its preflight and CI rerun. To avoid O(n²) Gate 2 re-reviews
-  during a stack landing cascade when identities do change, defer pushing
-  rebased upper branches until each reaches the bottom of the stack (or its base
-  settles on `main`).
+  [`development/codex-review.md`](../../development/codex-review.md#merge-gates);
+  only its preflight and CI rerun. To avoid O(n²) Gate 2 re-reviews during a
+  stack landing cascade when identities do change, defer pushing rebased upper
+  branches until each reaches the bottom of the stack (or its base settles on
+  `main`).
 - **Mandatory post-rebase checks:** After every rebase, run:
   1. `git range-diff <old-base>..<old-head> <new-base>..<new-head>` to verify
      whether patch diffs or upstream interfaces changed;

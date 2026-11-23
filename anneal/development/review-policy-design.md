@@ -20,7 +20,7 @@ Every policy file serves [`META_PRINCIPLES.md`](../META_PRINCIPLES.md),
 [`THREAT_MODEL.md`](../THREAT_MODEL.md). Pre-merge review narrows defects and
 prepares bounded human review of stated specifications and the TCB audit log;
 it never proves defect absence or substitutes for CI or the merge gates in
-[`docs/codex-review.md`](codex-review.md#merge-gates).
+[`development/codex-review.md`](codex-review.md#merge-gates).
 
 ## Policy ownership
 
@@ -38,8 +38,8 @@ the single repository-wide ownership map:
 | [`skills/change-review/SKILL.md`](../skills/change-review/SKILL.md) | Reviewer coverage, isolated probes, and host-constrained reporting (Part I); evidence reuse, risk/structure sizing, delegation, holdouts, pipelining, adjudication, and receipts (Part II) |
 | [`skills/trust-review/SKILL.md`](../skills/trust-review/SKILL.md) | Path-to-surface map, repo-wide filesystem/Unicode hygiene, Pass 1 untrusted/seam/spec audit, Pass 2 TCB/CI checklists, and pre-existing hazard reporting |
 | [`skills/source-control/SKILL.md`](../skills/source-control/SKILL.md) | Commit sizing, bottom-up stack self-containment, commit messages, delegated-worker quarantine, PR/stack publication and readiness, and stack locking/rebasing |
-| [`docs/codex-review.md`](codex-review.md) | Merge gates (including Gate 2 cross-family review), live ruleset state, read-only `ci/codex_review.py` diagnostics, and re-enablement criteria |
-| [`docs/review-policy-design.md`](review-policy-design.md) | Maintainer architecture contract, drift checks, non-bootstrap self-modification rule, and empirical evaluation methodology |
+| [`development/codex-review.md`](codex-review.md) | Merge gates (including Gate 2 cross-family review), live ruleset state, read-only `ci/codex_review.py` diagnostics, and re-enablement criteria |
+| [`development/review-policy-design.md`](review-policy-design.md) | Maintainer architecture contract, drift checks, non-bootstrap self-modification rule, and empirical evaluation methodology |
 | [`skills/README.md`](../skills/README.md) | Index of Anneal policy skills and pointer to shared [`../../skills/README.md`](../../skills/README.md) |
 
 ### Parity between Code Review Rules and skill hubs
@@ -61,8 +61,8 @@ Maintain parity using two rules:
    non-exhaustive static summary anchored to
    `trusted/audit/TrustedBoundary.lean`'s allowlists (the live allowlist in
    `TrustedBoundary.lean` governs); keep those summaries synchronized with
-   `TrustedBoundary.lean` and `docs/trust-model.md` whenever the allowlists
-   change.
+   `TrustedBoundary.lean` and `development/trust-model.md` whenever the
+   allowlists change.
 
 Root `AGENTS.md` owns the documentation rule. Anneal's `AGENTS.md` mirrors
 the author clause for hosts that load the local instructions. Both Gemini
@@ -247,7 +247,7 @@ example under the [Codex GitHub integration][codex-github] default P0/P1
 focus; see
 [`change-review`](../skills/change-review/SKILL.md#report-within-the-hosts-constraints)
 and
-[`docs/codex-review.md`](codex-review.md#merge-gates)).
+[`development/codex-review.md`](codex-review.md#merge-gates)).
 
 ## Non-bootstrap self-modification rule
 
@@ -263,7 +263,7 @@ weakened rules:
   confirmed at Gate 5 (human approval).
 - Keep CI and human branch protections live while automated Gate 2 ruleset
   enforcement remains disabled under
-  [`docs/codex-review.md`](codex-review.md).
+  [`development/codex-review.md`](codex-review.md).
 - Treat structural and drift checks as **design checks**, never as proof of
   reviewer behavioral effectiveness.
 
@@ -302,8 +302,8 @@ against its canonical owner and required outcome:
 6. **Findings-only hosted bot (clean `[]`, anchored question, incomplete):**
    [`change-review`](../skills/change-review/SKILL.md#report-within-the-hosts-constraints)
    and
-   [`docs/codex-review.md`](codex-review.md#merge-gates) — permits clean `[]`
-   on completed reviews, emits anchored questions inline without severity
+   [`development/codex-review.md`](codex-review.md#merge-gates) — permits clean
+   `[]` on completed reviews, emits anchored questions inline without severity
    inflation, forbids clean `[]` on incomplete runs, and keeps Gate 1 owning
    lower-severity questions.
 7. **Single-file reviewer self-containment and role purity:**
@@ -346,7 +346,7 @@ against its canonical owner and required outcome:
     untrusted probes in OS sandboxes after static checks, and rejects
     coverage-free or truncated outputs.
 13. **Identity-keyed merge evidence and nondeterministic Gate 2 review:**
-    [`docs/codex-review.md`](codex-review.md#merge-gates),
+    [`development/codex-review.md`](codex-review.md#merge-gates),
     [`change-review`](../skills/change-review/SKILL.md#key-every-result-to-its-inputs),
     and
     [`source-control`](../skills/source-control/SKILL.md#lock-and-rebase-a-stack)

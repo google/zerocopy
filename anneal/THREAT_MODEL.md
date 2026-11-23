@@ -18,12 +18,22 @@ those terms. -->
 > **and** Anneal emits no errors, **then** your code is sound and satisfies any
 > stated specifications.*
 
+> [!NOTE]
+> **Implementation status (alpha):** This document specifies Anneal's target
+> threat model, under which bounded two-surface human review holds once the
+> trust-boundary audit tracked in
+> [`#4012`](https://github.com/google/zerocopy/issues/4012) is complete. Today's
+> alpha has not yet completed that audit against adversarial proofs or hostile
+> crates; treat a passing run as an early experimental check rather than a
+> production-audited security boundary.
+
 This document defines what Anneal does and does not aim to defend against—and
 why—so that promise holds even when Rust code, specifications, and Lean proofs
 are written by untrusted humans or reward-hacking AI coding agents. For the
 invariant goals that govern this threat model, see
-[`META_PRINCIPLES.md`](META_PRINCIPLES.md); for how Anneal's architecture
-implements these defenses, see [`docs/trust-model.md`](docs/trust-model.md).
+[`META_PRINCIPLES.md`](META_PRINCIPLES.md); for the architectural overview and
+implementation of these defenses, see [`DESIGN.md`](DESIGN.md) and
+[`development/trust-model.md`](development/trust-model.md).
 
 ## 1. Adversarial contributions and bounded human review
 
@@ -92,10 +102,22 @@ conflated:
      *what the user is asking Anneal to verify*.
    - Calling specifications "trusted" does **not** mean Anneal assumes they hold
      without proof: Anneal proves that the Rust code satisfies its stated
-     specifications, while relying on human review to confirm that those
+     specifications—as **partial correctness** unless the specification
+     explicitly requires termination (such as `¬ Diverges`), since a
+     never-returning implementation (`loop {}`) meets any postcondition unless
+     return is required—while relying on human review to confirm that those
      specifications state the intended property (bridging the gap from
      *"satisfies any stated specifications"* to *"behaves as the maintainer
-     expects"*).
+     expects"*). Regardless of whether specifications are authored inline in
+     Rust annotations or out-of-line in Lean files, Anneal's target
+     architecture deterministically renders their complete, unambiguous
+     transitive definition closure—including each specification's resolved
+     canonical Rust item path (forbidding positional bindings such as
+     `entryProgForBody program 0` and failing closed on unresolved or renamed
+     targets), each bound item's safe/`unsafe fn` signature, and any verified
+     Rust helper or reference body referenced by a specification—so
+     reviewers and automated `CODEOWNERS` / `OWNERS` gates audit one canonical
+     artifact.
 2. **The TCB audit log — trusted to be *true without proof*:**
    - Covers Anneal's own Trusted Computing Base (Anneal, `rustc`, the Lean 4
      kernel, and their semantic models) together with any unproved assumptions
@@ -144,12 +166,14 @@ Build-time Lean 4 elaboration (`#eval`, `run_cmd`, `by_elab`, `initialize`) is
 bounded separately: on Linux, Anneal aims to contain untrusted Lean elaborator
 host file reads and writes, network access, and host IPC during verification,
 and restricts specification modules to declarative syntax before elaboration.
-Four residual boundaries remain outside automated elaborator containment: host
-path-metadata and existence visibility when unprivileged user namespaces are
-unavailable on the runner, non-Linux hosts or runs where the operator
-explicitly opts into unsandboxed elaboration (which taints the verification
-outcome), local resource exhaustion or denial of service, and external
-interactive editor or Lean language-server sessions outside Anneal.
+Four residual boundaries remain outside automated elaborator containment:
+
+- host path-metadata and existence visibility when unprivileged user namespaces
+  are unavailable on the runner;
+- non-Linux hosts or runs where the operator explicitly opts into unsandboxed
+  elaboration (which irrevocably taints the verification outcome);
+- local resource exhaustion or denial of service; and
+- external interactive editor or Lean language-server sessions outside Anneal.
 
 **There is no in-principle way for an un-sandboxed user-space tool to defend
 against a compromised execution environment.** If an agent running under the
@@ -211,10 +235,14 @@ behaviors unverified. Conversely, heuristically rejecting narrow preconditions
 or weak postconditions would reject legitimate domain-specific contracts.
 
 Anneal therefore does not treat heuristic or satisfiability-based vacuity checks
-as a security defense. Because any weakening of a stated specification or
-addition of a TCB waiver appears on the two human-reviewed surfaces, judging
-that stated specifications are strong enough and that logged TCB assumptions are
-acceptable is a **human-review responsibility**.
+as a security defense. Optional kernel-checked specification sanity checks—such
+as precondition inhabitation witnesses (`PreInhabited`) or dual-polar mutation
+refutation (`MutationRefute`)—are positioned strictly as **non-adversarial
+reviewer aids** for catching accidental contradictions or specification typos,
+never as anti-adversarial guarantees. Because any weakening of a stated
+specification or addition of a TCB waiver appears on the two human-reviewed
+surfaces, judging that stated specifications are strong enough and that logged
+TCB assumptions are acceptable remains a **human-review responsibility**.
 
 ## 3. In-scope threats: total defenses over untrusted repository contents
 
@@ -240,6 +268,18 @@ theorem statement or causing a false claim to pass—without restricting
 legitimate Lean 4 proofs, tactics, or macros—so that **proofs never need to be
 trusted or reviewed by humans**.
 
+To harden this boundary in Stage 1 ([`#4012`](https://github.com/google/zerocopy/issues/4012)),
+Anneal is transitioning proof checking toward a **Universal NDJSON Comparator**
+architecture: untrusted proof modules elaborate and export a canonical,
+memory-safe NDJSON declaration stream inside an isolated sandbox, and the
+verdict process checks that stream with independent external proof kernels
+(such as `nanoda_bin` and `con-ron`) against a positive foundation-axiom
+allowlist rather than deserializing untrusted compiled binary proof artifacts
+in-process. As defense-in-depth for the TCB itself, repository CI is adding
+mandatory **guard-mutation testing** (`check_guard_mutation.py`) that mutates
+individual UB and policy guards one at a time and requires dedicated negative
+refutation tests to catch every removed guard.
+
 ### 2. Hidden specification dependencies or unlogged TCB assumptions
 
 Even when every proof is mathematically sound in the Lean kernel, an adversarial
@@ -251,11 +291,18 @@ proved or assumed without appearing on the two surfaces a human reviewer audits:
   while modifying or shadowing a helper function, trait implementation,
   constant, type definition, or mathematical model that the specification's
   meaning transitively depends on—for example, modifying a helper predicate
-  `is_sorted(result)` so it always returns `true`. Anneal aims to ensure that
-  every definition capable of affecting the meaning of a stated specification is
-  explicitly demarcated on (or surfaced in) the human-reviewed specification
-  surface, and that no code outside that surface can shadow, redefine, or
-  silently alter what a specification means.
+  `is_sorted(result)` so it always returns `true`—or silently altering *which*
+  item a specification constrains via positional drift, renaming, or a
+  `fn` → `unsafe fn` signature flip. Anneal aims to ensure that every
+  definition capable of affecting the meaning of a stated specification
+  (including referenced Rust helper bodies), together with each specification's
+  resolved canonical Rust item path (failing closed on positional or unresolved
+  bindings) and bound safe/`unsafe fn` signature, is explicitly demarcated
+  on—and deterministically rendered into—the human-reviewed golden
+  specification closure (enabling mechanical `CODEOWNERS` / `OWNERS` review
+  gating regardless of whether specs are written inline in Rust or out-of-line
+  in Lean), and that no code outside that surface can shadow, redefine, or
+  silently alter what a specification means or applies to.
 - **Unlogged assumptions across crate items and compositional boundaries:**
   Bypassing verification of an obligation without recording an entry in the TCB
   audit log. Every obligation or assumption required for the crate's soundness
@@ -278,8 +325,9 @@ proved or assumed without appearing on the two surfaces a human reviewer audits:
     must prevent unverified code from breaking it: *every* function within the
     visibility scope capable of constructing the type, mutating its
     invariant-bearing fields, or exposing mutable access to those fields must
-    establish or preserve that invariant, and leaving any such function
-    unverified or waived must be surfaced as an assumption in the TCB audit log.
+    establish or preserve that invariant across **every exit, including
+    unwinding**, and leaving any such function unverified or waived must be
+    surfaced as an assumption in the TCB audit log.
   - *Crate and workspace dependencies:* Relying on an unverified dependency, or
     on a verified dependency that itself contains TCB waivers or assumptions,
     must surface those assumptions transitively in the TCB audit log so waivers

@@ -48,6 +48,15 @@ Anneal to write `unsafe` Rust as they are using `rustc` to write safe Rust.
 
 # Anneal's promise to its users
 
+> [!NOTE]
+> **Implementation status (alpha):** This document states Anneal's governing
+> target commitment. Today's alpha checks a small, call-free scalar subset of
+> Rust on x86-64 Linux and has not yet completed the independent trust-boundary
+> and TCB-accounting audit tracked in
+> [`#4012`](https://github.com/google/zerocopy/issues/4012). See
+> [`DESIGN.md`](DESIGN.md) for what works today versus what is planned, and
+> [`THREAT_MODEL.md`](THREAT_MODEL.md) for threat-model boundaries.
+
 One of Anneal's outputs is a *TCB audit log*, a list of code and assumptions
 Anneal trusts (including itself) to compile your code and prove it correct.
 Anneal's promise is this:

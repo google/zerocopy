@@ -66,7 +66,7 @@ preserve [`META_PRINCIPLES.md`](META_PRINCIPLES.md),
     clean tree, commit-message rules and `Agent-authored-by:` trailer per
     [`authorship-disclosure`](../skills/authorship-disclosure/SKILL.md),
     `./ci/check_todo.sh`, policy drift checks in
-    [`docs/review-policy-design.md`](docs/review-policy-design.md#drift-checks)
+    [`development/review-policy-design.md`](development/review-policy-design.md#drift-checks)
     when editing policy files, and applicable builds, tests, and audits (e.g.
     `python3 -B -m unittest discover -s ci -p 'test_*.py'`; authors may run
     normal local tests on their own worktree, whereas reviewers and
@@ -81,8 +81,8 @@ preserve [`META_PRINCIPLES.md`](META_PRINCIPLES.md),
   refinement by risk and complexity. Use the [trivial-edit path](#required-skills)
   for its scoped exceptions.
 - Publish with [`source-control`](skills/source-control/SKILL.md) and follow
-  the [merge gates](docs/codex-review.md#merge-gates).
-- Follow the [policy design](docs/review-policy-design.md) and keep
+  the [merge gates](development/codex-review.md#merge-gates).
+- Follow the [policy design](development/review-policy-design.md) and keep
   [vendored skills](../skills/README.md) unmodified.
 
 ## Code Review Rules
@@ -110,16 +110,17 @@ never proves defect absence or substitutes for CI or merge gates.
   (`#[anneal::trusted]`) or TCB audit log, `trusted/` (including trust tiers),
   `ci/`, `.github/`, pinned root manifests, lockfiles, packaged toolchain
   archives, governing docs (`META_PRINCIPLES.md`, `PRINCIPLES.md`,
-  `THREAT_MODEL.md`, `docs/trust-model.md`), policy files (`AGENTS.md`,
-  `CLAUDE.md`, `.gemini/styleguide.md`, `skills/`, `docs/codex-review.md`,
-  `docs/review-policy-design.md`), and editor or agent configs. Every PR's
-  Review Receipt comment (or branch-only handoff) must include a `Human review
-  surface` block listing every changed surface and intentional policy relaxation
-  (or `none`), completed before marking ready for review; PR descriptions reuse
-  the commit (or squash) message verbatim (unwrapped for Markdown). Relevant
-  commit bodies (or squash message) must explain what changed, why, and any
-  rule relaxation or tightening; any omission, mischaracterization, or unsound
-  relaxation blocks merge or ready-for-review.
+  `THREAT_MODEL.md`, `development/trust-model.md`), policy files (`AGENTS.md`,
+  `CLAUDE.md`, `.gemini/styleguide.md`, `skills/`,
+  `development/codex-review.md`, `development/review-policy-design.md`), and
+  editor or agent configs. Every PR's Review Receipt comment (or branch-only
+  handoff) must include a `Human review surface` block listing every changed
+  surface and intentional policy relaxation (or `none`), completed before
+  marking ready for review; PR descriptions reuse the commit (or squash)
+  message verbatim (unwrapped for Markdown). Relevant commit bodies (or squash
+  message) must explain what changed, why, and any rule relaxation or
+  tightening; any omission, mischaracterization, or unsound relaxation blocks
+  merge or ready-for-review.
 - **Comparison, diff integrity, and coverage:** Record
   `(target_base, merge_base, head)` (plus dirty or untracked files if
   unpublished). Enumerate every path, mode, dotfile, and companion artifact
@@ -146,8 +147,8 @@ never proves defect absence or substitutes for CI or merge gates.
   execute, include, import, or load as trusted code/config (`include!`,
   `#[path]`, Nix imports, workflow `run:`), or any `-- anneal-trust-tier:`
   directive in a `.lean` file. Paths that CI or `anneal-audit` only scan, hash,
-  or audit as untrusted inputs (`theory/`, `correspondence/`, `docs/`) do not
-  trigger Pass 2; skip Pass 2 immediately as inapplicable when untriggered.
+  or audit as untrusted inputs (`theory/`, `correspondence/`, `development/`) do
+  not trigger Pass 2; skip Pass 2 immediately as inapplicable when untriggered.
   Finish Pass 1 and any triggered Pass 2 before the general pass.
 - **Pass 1, filesystem hygiene, untrusted contents, and specifications:**
   - *Filesystem, Unicode, and config hygiene (every path):* Reject symlinks,
@@ -400,7 +401,8 @@ Anneal's design checks `Trusted.CrateTheorem` in Lean 4 over typed
 `Runtime(PostCleanup)` MIR and compiler facts. A result asserts that its TCB
 meets its trust policy and that the verified code is UB-free and meets its
 stated specifications if its trusted code is correct and the logged
-assumptions are jointly valid. See the [trust model](docs/trust-model.md).
+assumptions are jointly valid. See the
+[trust model](development/trust-model.md).
 
 Keep first-party verifier code that requires trust in `trusted/`. Audit the
 pinned build inputs, `ci/`, and Zerocopy's root workflows as part of boundary

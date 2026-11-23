@@ -35,13 +35,15 @@ effects, OS APIs, or custom axioms to undermine the guarantees established by
 
 For related architectural details, see:
 
-- [`docs/design.md`](design.md) for an overview of Anneal's verification
+- [`development/design.md`](design.md) (and user-facing
+  [`DESIGN.md`](../DESIGN.md)) for an overview of Anneal's verification
   workflow and specification modes.
-- [`docs/architecture.md`](architecture.md) for the three-stage MIR pipeline
-  and how untrusted lowering passes in `theory/` connect to `trusted/lean/`.
-- [`docs/mir-correspondence-design.md`](mir-correspondence-design.md) for how
-  Pass 2 anchors `Trusted.MirSemantics` against `vendor/lean-miri/`.
-- [`docs/elaborator-containment-design.md`](elaborator-containment-design.md)
+- [`development/architecture.md`](architecture.md) for the three-stage MIR
+  pipeline and how untrusted lowering passes in `theory/` connect to
+  `trusted/lean/`.
+- [`development/mir-correspondence-design.md`](mir-correspondence-design.md)
+  for how Pass 2 anchors `Trusted.MirSemantics` against `vendor/lean-miri/`.
+- [`development/elaborator-containment-design.md`](elaborator-containment-design.md)
   for target `ExecSeal` containment, `"spec-preflight"` admission, two-phase
   `"target-audit"` replay, and Receipt Schema v3 taint accounting.
 
@@ -66,7 +68,7 @@ The current workspace divides verification and audit code into three zones.
 | :--- | :--- | :--- | :--- |
 | **Trusted foundation** | [`trusted/`](../trusted) | Extracts MIR and emits pure proof scripts (`trusted/rustc-capture/`), defines captured MIR syntax and verification operational semantics (`trusted/lean/`), states MIR correspondence claims and reference-adapter specifications (`trusted/correspondence/`), orchestrates CLI invocation (`trusted/cargo-anneal/`), and audits the Anneal repository in CI (`trusted/audit/`). | **In the TCB.** Audited by humans (alongside external files pinned by hash manifests inside `trusted/`). |
 | **Proof theory & correspondence** | `theory/`, `correspondence/` | Defines the normalized `StableAst`, proves lowering passes (`Abstracts`), provides WP calculi (`theory/Anneal/MirWp.lean`), separation logic, and proof tactics (`theory/`), and proves the MIR correspondence theorems and canaries (`correspondence/`). | **Outside the TCB.** Treated as potentially adversarial; audited mechanically in Anneal's CI and checked by the Lean 4 kernel (`correspondence/` is checked in CI only and is not shipped in the user toolchain archive). |
-| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta and 3-file theorem-only memory specification patch ([#4009](https://github.com/google/zerocopy/issues/4009); [`docs/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (39,088 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
+| **Vendored reference model** | `vendor/lean-miri/` | Pinned snapshot of `proofs-rs/lean-miri` with a human-audited 10-file opt-in `deinitMovedPlace` delta and 3-file theorem-only memory specification patch ([#4009](https://github.com/google/zerocopy/issues/4009); [`development/mir-correspondence-design.md`](mir-correspondence-design.md)). Never shipped in the user toolchain archive. | **In the correspondence TCB.** Pinned byte-for-byte in `vendor/lean-miri/UPSTREAM_PIN.json` (locked by `LOCKED_UPSTREAM_PIN_SHA256` and `LOCKED_PATCHED_MIRI_FILES` in `trusted/audit/`). Only the 160-module `Miri.Interpreter.ExecutionMachine` slice (excluding `Miri.Input.NativeMathHost`) is compiled inside an OS-level `bwrap` sandbox (or restored from a digest-gated cache outside the checkout) and verified by `.olean` SHA-256; every non-`isPartial` vendored declaration (39,088 declarations) is replayed from scratch through the standalone Lean 4 kernel (`toKernelEnv.replay`) onto the authenticated sysroot base on every run, followed directly by replaying `Trusted.Correspondence*`, `Anneal.MirCorrespondence.*`, and `Anneal.MirCorrespondenceProof` on top of that replayed base and checking cone purity. |
 
 ### How CI auditing and user-machine verification fit together
 
@@ -232,7 +234,7 @@ unless `--allow-unsandboxed-elaboration` is explicitly passed with Receipt v3
 taint), while Repository Pass 2 requires `linux_bwrap`; Rust compilation
 (`rustc`) remains under the intact-host assumption in
 [`THREAT_MODEL.md`](../THREAT_MODEL.md) Section 2.1 (see
-[`docs/elaborator-containment-design.md`](elaborator-containment-design.md)).
+[`development/elaborator-containment-design.md`](elaborator-containment-design.md)).
 
 ### Cargo workspace containment
 
@@ -540,10 +542,10 @@ or `vendor/lean-miri/` are present), `anneal-audit` executes Pass 2
 To mechanically anchor `Trusted.MirSemantics` against `vendor/lean-miri/`
 without expanding the user-machine TCB or weakening Pass 1's pure `theory/`
 gate, Anneal's Pass 2 correspondence audit (detailed in
-[`docs/architecture.md`](architecture.md) and
-[`docs/mir-correspondence-design.md`](mir-correspondence-design.md)) governs
-five controls—four active in Pass 2 above and one remaining planned control
-tracked for a follow-up PR:
+[`development/architecture.md`](architecture.md) and
+[`development/mir-correspondence-design.md`](mir-correspondence-design.md))
+governs five controls—four active in Pass 2 above and one remaining planned
+control tracked for a follow-up PR:
 
 1. **Content-addressed vendor pinning, semantic diff review, and OS-level
    sandboxing (active):** Pin authentication, sysroot locking, external

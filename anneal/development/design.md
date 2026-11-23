@@ -59,11 +59,11 @@ For deeper coverage of specific subsystems, see:
 - [`THREAT_MODEL.md`](../THREAT_MODEL.md) for the threat model, bounded
   human-review surfaces (stated specifications and the TCB audit log), and
   explicit assumptions vs. total defenses.
-- [`docs/architecture.md`](architecture.md) for the three-stage MIR pipeline,
-  `rustc` extraction lifecycle, repository layout, and multi-version toolchain
-  strategy.
-- [`docs/trust-model.md`](trust-model.md) for the `trusted/` vs. `theory/`
-  boundary and repository CI auditing.
+- [`development/architecture.md`](architecture.md) for the three-stage MIR
+  pipeline, `rustc` extraction lifecycle, repository layout, and multi-version
+  toolchain strategy.
+- [`development/trust-model.md`](trust-model.md) for the `trusted/` vs.
+  `theory/` boundary and repository CI auditing.
 
 ## End-to-end verification workflow
 
@@ -101,9 +101,9 @@ flowchart LR
    operational semantics for Rust MIR ($M_{\text{anneal}}$, anchored by a
    kernel-checked correspondence proof against a pinned reference model
    $M_{\text{ref}}$ in repository CI; see
-   [`docs/architecture.md`](architecture.md) and
-   [`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md)). It
-   asserts that every targeted function is sound (UB-free) and satisfies any
+   [`development/architecture.md`](architecture.md) and
+   [`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md)).
+   It asserts that every targeted function is sound (UB-free) and satisfies any
    stated specifications, and that all trusted definitions and assumptions used
    in the verification satisfy the crate's trust policy.
 3. **Lowering and proof discharge (`theory/`):** Raw `rustc` MIR contains
@@ -141,8 +141,8 @@ combining two invariants:
   state the exact `Trusted.CrateTheorem Mir.crate` obligation and invoke only
   pure definitions from `trusted/lean/` and the CI-audited `theory/` library.
 
-See [`docs/trust-model.md`](trust-model.md) for the full trust model and CI
-boundary audit mechanics.
+See [`development/trust-model.md`](trust-model.md) for the full trust model and
+CI boundary audit mechanics.
 
 ## Library-centric verification
 
@@ -160,8 +160,8 @@ unusual layout or calling public methods in a different order.
 
 Anneal is library-centric by default (phased incrementally alongside the Pass 2
 correspondence domain in
-[`docs/mir-correspondence-strategy.md`](mir-correspondence-strategy.md): the
-initial concrete correspondence phase verifies concrete, monomorphic library
+[`development/mir-correspondence-strategy.md`](mir-correspondence-strategy.md):
+the initial concrete correspondence phase verifies concrete, monomorphic library
 functions modularly for *all* caller states and inputs without requiring a
 `fn main()`, failing closed to `unsupported` on uninstantiated generic bodies
 or unevaluated generic constants; polymorphic verification across arbitrary
