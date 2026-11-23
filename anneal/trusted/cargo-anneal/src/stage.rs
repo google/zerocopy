@@ -216,6 +216,7 @@ fn build_lean_compile_args(
     mem_limit_mb: u32,
     warn_as_err: bool,
     target_rejection: bool,
+    disable_auto_implicit: bool,
 ) -> Vec<String> {
     let mut compile_args = vec![
         "-j1".to_string(),
@@ -224,6 +225,12 @@ fn build_lean_compile_args(
         "-DElab.async=false".to_string(),
         "-Ddebug.skipKernelTC=false".to_string(),
     ];
+    if disable_auto_implicit {
+        // Prevent undeclared typos in `TargetRole::Specification` signatures
+        // from silently binding universally quantified auto-implicit variables.
+        compile_args.push("-DautoImplicit=false".to_string());
+        compile_args.push("-DrelaxedAutoImplicit=false".to_string());
+    }
     if target_rejection {
         // Only compilation uses the diagnostic protocol. Inspector modes
         // have their own explicit JSON response and failure categories.
@@ -411,13 +418,14 @@ fn prepare_module_cache(
     src_path: &Path,
     lib_dir: &Path,
     warn_as_err: bool,
+    disable_auto_implicit: bool,
     cache_ctx: Option<&(String, String)>,
     path_sha_cache: &mut BTreeMap<String, String>,
 ) -> Result<ModuleCachePrep, Failure> {
     let Some((lean_sha, sysroot_sha)) = cache_ctx else {
         return Ok(ModuleCachePrep::CompileNeeded(None));
     };
-    if !is_cacheable_bundled_module(module) {
+    if disable_auto_implicit || !is_cacheable_bundled_module(module) {
         return Ok(ModuleCachePrep::CompileNeeded(None));
     }
     let src_bytes =
@@ -2240,26 +2248,20 @@ impl Checker {
 
         let out_filename = format!("{leaf}.olean");
         let out_host = out_dir.join(&out_filename);
-        let mut compile_args = vec![
-            "-j1".to_string(),
-            format!("-M{}", self.effective_lean_memory_limit_mb(None)),
-            "-t0".to_string(),
-            "-DElab.async=false".to_string(),
-            "-Ddebug.skipKernelTC=false".to_string(),
-        ];
-        if target_rejection {
-            compile_args.push("--json".to_string());
-        }
-        if warn_as_err {
-            compile_args.push("-DwarningAsError=true".to_string());
-        }
-        compile_args.extend([
-            "--setup".to_string(),
-            mapper.map_str(&setup_host)?,
-            "-o".to_string(),
-            mapper.map_str(&out_host)?,
-            mapper.map_str(&in_src)?,
-        ]);
+        let mapped_setup = PathBuf::from(mapper.map_str(&setup_host)?);
+        let mapped_out = PathBuf::from(mapper.map_str(&out_host)?);
+        let mapped_src = PathBuf::from(mapper.map_str(&in_src)?);
+        let disable_auto_implicit =
+            self.compiled_roles.get(module) == Some(&TargetRole::Specification);
+        let compile_args = build_lean_compile_args(
+            &mapped_setup,
+            &mapped_out,
+            &mapped_src,
+            self.effective_lean_memory_limit_mb(None),
+            warn_as_err,
+            target_rejection,
+            disable_auto_implicit,
+        );
 
         let policy = SandboxPolicy {
             exec_bin: runtime.exec_lean.clone(),
@@ -2323,6 +2325,8 @@ impl Checker {
             fs::create_dir_all(parent)
                 .map_err(|e| Failure::operational("compile", e.to_string()))?;
         }
+        let disable_auto_implicit =
+            self.compiled_roles.get(module) == Some(&TargetRole::Specification);
         let compile_args = build_lean_compile_args(
             &setup_path,
             &output,
@@ -2330,6 +2334,7 @@ impl Checker {
             self.effective_lean_memory_limit_mb(None),
             warn_as_err,
             false,
+            disable_auto_implicit,
         );
         self.process_with_exit_policy(&format!("compile-{module}"), &compile_args, false)?;
         let mod_arts = collect_compiled_artifacts(module, &output)?;
@@ -2398,12 +2403,14 @@ impl Checker {
                 stage,
                 environment,
                 admitted,
+                compiled_roles,
                 olean_cache,
                 olean_ledger,
                 ..
             } = self;
             let stage: &Path = stage;
             let environment: &BTreeMap<String, String> = environment;
+            let compiled_roles: &BTreeMap<String, TargetRole> = compiled_roles;
             let adm = admitted
                 .as_mut()
                 .expect("toolchain admission verified above");
@@ -2422,6 +2429,8 @@ impl Checker {
                     let edge_list = &imports[module];
                     let mod_is_module = is_module.get(module).copied().unwrap_or(false);
                     let src_path = &sources[module];
+                    let disable_auto_implicit =
+                        compiled_roles.get(module) == Some(&TargetRole::Specification);
                     match prepare_module_cache(
                         olean_cache,
                         adm,
@@ -2431,6 +2440,7 @@ impl Checker {
                         src_path,
                         &lib_dir,
                         warn_as_err,
+                        disable_auto_implicit,
                         cache_ctx.as_ref(),
                         path_sha_cache,
                     )? {
@@ -2458,6 +2468,7 @@ impl Checker {
                                 mem_limit_mb,
                                 warn_as_err,
                                 false,
+                                disable_auto_implicit,
                             );
                             Ok(PreparedModuleCompile::Compile {
                                 work: (output, compile_args),
@@ -2543,12 +2554,14 @@ impl Checker {
             stage,
             counter,
             admitted,
+            compiled_roles,
             child_timeout,
             olean_cache,
             olean_ledger,
             ..
         } = self;
         let child_timeout = *child_timeout;
+        let compiled_roles: &BTreeMap<String, TargetRole> = compiled_roles;
         let adm = admitted.as_mut().expect("toolchain admission verified above");
         let mut path_sha_cache = BTreeMap::new();
         let mut shared = (adm, olean_cache, olean_ledger, &mut path_sha_cache);
@@ -2564,6 +2577,8 @@ impl Checker {
                 let edge_list = &imports[module];
                 let mod_is_module = is_module.get(module).copied().unwrap_or(false);
                 let src_path = &sources[module];
+                let disable_auto_implicit =
+                    compiled_roles.get(module) == Some(&TargetRole::Specification);
                 match prepare_module_cache(
                     olean_cache,
                     adm,
@@ -2573,6 +2588,7 @@ impl Checker {
                     src_path,
                     &lib_dir,
                     warn_as_err,
+                    disable_auto_implicit,
                     cache_ctx.as_ref(),
                     path_sha_cache,
                 )? {
@@ -2628,6 +2644,7 @@ impl Checker {
                             mem_limit_mb,
                             warn_as_err,
                             target_rejection,
+                            disable_auto_implicit,
                         );
                         let policy = SandboxPolicy {
                             exec_bin: runtime.exec_lean.clone(),
@@ -4807,5 +4824,20 @@ exit 1
             1,
             "--no-cache must compile Trusted.MirAst directly (in-memory inspector still cached)"
         );
+    }
+
+    #[test]
+    fn build_lean_compile_args_disables_auto_implicit_only_when_requested() {
+        let setup = Path::new("/work/in/Spec.setup.json");
+        let out = Path::new("/work/out/Spec.olean");
+        let src = Path::new("/work/in/Spec.lean");
+
+        let spec_args = build_lean_compile_args(setup, out, src, 2048, false, true, true);
+        assert!(spec_args.iter().any(|a| a == "-DautoImplicit=false"));
+        assert!(spec_args.iter().any(|a| a == "-DrelaxedAutoImplicit=false"));
+
+        let proof_args = build_lean_compile_args(setup, out, src, 2048, false, true, false);
+        assert!(!proof_args.iter().any(|a| a.contains("autoImplicit")));
+        assert!(!proof_args.iter().any(|a| a.contains("relaxedAutoImplicit")));
     }
 }

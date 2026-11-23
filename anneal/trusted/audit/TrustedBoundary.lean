@@ -1389,11 +1389,15 @@ def forbiddenSpecModifierKinds : List Name := [
 def forbiddenSpecRootNamespaces : List Name := [
   `Lean, `Lake, `IO, `BaseIO, `EIO, `EST, `ST, `Task, `System]
 
-/-- Root-level identifiers forbidden in specifications (`autoParam` evaluates a
+/-- Identifier components forbidden anywhere in specification references,
+dot-projections, `open`, and `export` declarations (`autoParam` evaluates a
 stored `Lean.Syntax` tactic script during elaboration, bypassing syntactic
-tactic inspection; `panic*` constants carry runtime panic side effects). -/
-def forbiddenSpecIdentifiers : List Name := [
-  `autoParam, `panic, `panicCore, `panicWithPos, `panicWithPosWithDecl]
+tactic inspection; `panic*`/`outOfBounds`/`sliceOrPanic` carry runtime panic
+side effects; `repeatM` implements partial unbounded `while`/`repeat`
+loops). -/
+def forbiddenSpecIdentifierComponents : List String := [
+  "autoParam", "panic", "panicCore", "panicWithPos", "panicWithPosWithDecl",
+  "outOfBounds", "repeatM", "sliceOrPanic"]
 
 /-- Exact `System.Platform` declarations admitted in target specifications. -/
 def allowedSystemPlatformDecls : List Name := [
@@ -1504,6 +1508,9 @@ def forbiddenSpecTermKinds : NameSet := .ofList [
   `Lean.Parser.Term.assert, `Lean.Parser.Term.debugAssert,
   `Lean.Parser.Term.doAssert, `Lean.Parser.Term.doAssertion,
   `Lean.Parser.Term.doDebugAssert,
+  `«term__[_]_!»,
+  `Lean.Parser.Term.doWhile, `Lean.Parser.Term.doRepeat,
+  `Lean.Parser.Term.doRepeatUntil,
   `Lean.Parser.Command.contractDeclVal,
   `Lean.Parser.Command.requiresClause,
   `Lean.Parser.Command.ensuresClause,
@@ -1538,6 +1545,23 @@ def isQuotationKind (k : SyntaxNodeKind) : Bool :=
 def hasUnsafeRecComponent (id : Name) : Bool :=
   id.components.any fun
     | .str .anonymous seg => seg == "_unsafe_rec"
+    | _ => false
+
+/-- Return `true` when any string component of `id` contains `'!'` (blocking
+panicking partial helpers such as `head!`, `get!`, `getElem!`, `back!`,
+`getLast!`, `tail!`, `get!Internal`, etc.). -/
+def hasBangComponent (id : Name) : Bool :=
+  id.components.any fun
+    | .str .anonymous seg => seg.contains '!'
+    | _ => false
+
+/-- Return `true` when any string component of `id` belongs to
+`forbiddenSpecIdentifierComponents` (catching bare references, qualified
+paths, dot-projections such as `pos.sliceOrPanic`, and `open`/`export`
+items). -/
+def hasForbiddenSpecIdentComponent (id : Name) : Bool :=
+  id.components.any fun
+    | .str .anonymous seg => forbiddenSpecIdentifierComponents.contains seg
     | _ => false
 
 /-- Extract `(commandLikeKinds, tacticLikeKinds)` dynamically from
@@ -1625,6 +1649,8 @@ def validateSpecAttrInstance (args : Array Syntax) : IO Unit := do
           c.isOfKind numLitKind ||
             (c.isIdent && isValidSourceIdent c.getId &&
               !hasUnsafeRecComponent c.getId &&
+              !hasBangComponent c.getId &&
+              !hasForbiddenSpecIdentComponent c.getId &&
               !forbiddenSpecRootNamespaces.contains c.getId.getRoot) do
       fail "unsupported arguments on specialize attribute in specification"
   else
@@ -1655,8 +1681,7 @@ def validateSpecSetOption (args : Array Syntax) : IO Unit := do
   if optName == `maxHeartbeats || optName == `maxRecDepth then
     unless valStx.isOfKind numLitKind do
       fail s!"option {optName} requires a numeric literal in specification"
-  else if optName == `autoImplicit || optName == `relaxedAutoImplicit ||
-      (`linter).isPrefixOf optName then
+  else if (`linter).isPrefixOf optName then
     let isBoolLit := match valStx with
       | .atom _ "true" | .atom _ "false" => true
       | .ident _ _ `true _ | .ident _ _ `false _ => true
@@ -1731,7 +1756,9 @@ def validateSpecOpenDecl (currNs : Name) (openDecls : List OpenDecl)
       fail s!"invalid open namespace {nsId} in specification"
     let itemIds := openDecl[2].getArgs.map Syntax.getId
     for itemId in itemIds do
-      unless isValidSourceIdent itemId && !hasUnsafeRecComponent itemId do
+      unless isValidSourceIdent itemId && !hasUnsafeRecComponent itemId &&
+          !hasBangComponent itemId &&
+          !hasForbiddenSpecIdentComponent itemId do
         fail s!"invalid open item {itemId} in specification"
     let candidates := candidateOpenNamespaces currNs openDecls nsId
     let mut ods := openDecls
@@ -1764,7 +1791,11 @@ def validateSpecOpenDecl (currNs : Name) (openDecls : List OpenDecl)
         let fromId := itemStx[0].getId
         let toId := itemStx[2].getId
         unless isValidSourceIdent fromId && !hasUnsafeRecComponent fromId &&
-            isValidSourceIdent toId && !hasUnsafeRecComponent toId do
+            !hasBangComponent fromId &&
+            !hasForbiddenSpecIdentComponent fromId &&
+            isValidSourceIdent toId && !hasUnsafeRecComponent toId &&
+            !hasBangComponent toId &&
+            !hasForbiddenSpecIdentComponent toId do
           fail (s!"invalid open renaming item {fromId} -> {toId} " ++
             "in specification")
     let candidates := candidateOpenNamespaces currNs openDecls nsId
@@ -1809,7 +1840,9 @@ def validateSpecExport (currNs : Name) (openDecls : List OpenDecl)
     fail s!"invalid export namespace {nsId} in specification"
   let itemIds := args[3]!.getArgs.map Syntax.getId
   for itemId in itemIds do
-    unless isValidSourceIdent itemId && !hasUnsafeRecComponent itemId do
+    unless isValidSourceIdent itemId && !hasUnsafeRecComponent itemId &&
+        !hasBangComponent itemId &&
+        !hasForbiddenSpecIdentComponent itemId do
       fail s!"invalid export item {itemId} in specification"
   for ns in candidateOpenNamespaces currNs openDecls nsId do
     if ns == `System.Platform then
@@ -1890,7 +1923,7 @@ partial def inspectSpecSyntax (commandLikeKinds tacticLikeKinds : NameSet)
       fail s!"invalid identifier {val} in specification"
     if hasUnsafeRecComponent val then
       fail s!"disallowed _unsafe_rec identifier {val} in specification"
-    if forbiddenSpecIdentifiers.contains val then
+    if hasForbiddenSpecIdentComponent val || hasBangComponent val then
       fail s!"disallowed identifier {val} in specification"
     if forbiddenSpecRootNamespaces.contains val.getRoot then
       unless allowedSystemPlatformDecls.contains val do
@@ -4182,20 +4215,27 @@ def isLeanSyntaxConst (n : Name) : Bool :=
   u == `Lean.Syntax || (`Lean.Syntax).isPrefixOf u
 
 /-- Return `true` when `n` (ignoring private prefixes) names one of Lean's
-runtime panic primitives.
+runtime panic primitives or panicking partial helpers (such as `outOfBounds`,
+`GetElem?.getElem!`, `List.head!`, `Option.get!`, `Array.back!`,
+`List.getLast!`, `List.tail!`, `Array.get!Internal`,
+`String.Pos.sliceOrPanic`, or `String.Slice.Pos.sliceOrPanic`).
 
 Checked directly on every `TargetRole::Specification` declaration (rather than
 transitively through `Init`/`Std` library internals) because `Init.Data.String`
 helpers reached by `deriving Repr` legitimately reference `panicWithPosWithDecl`
-internally, whereas authored specification code must never invoke `panic*`. -/
+internally, whereas authored specification code must never invoke panic
+primitives or panicking `!` helpers. -/
 def isPanicSpecConst (n : Name) : Bool :=
   let u := (privateToUserName n).replacePrefix rootNamespace .anonymous
-  [`panic, `panicCore, `panicWithPos, `panicWithPosWithDecl].contains u
+  [`panic, `panicCore, `panicWithPos, `panicWithPosWithDecl,
+    `outOfBounds, `String.Pos.sliceOrPanic,
+    `String.Slice.Pos.sliceOrPanic].contains u ||
+    hasBangComponent u
 
-/-- Narrowed transitive effect/meta/`System`/debug ban enforced across all
-declarations reachable from any `TargetRole::Specification` module. Preserves
-`System.Platform.{numBits, getNumBits, numBits_eq}` (and their compiler-private
-proof auxiliaries). -/
+/-- Narrowed transitive effect/meta/`System`/debug/unbounded-loop ban enforced
+across all declarations reachable from any `TargetRole::Specification` module.
+Preserves `System.Platform.{numBits, getNumBits, numBits_eq}` (and their
+compiler-private proof auxiliaries). -/
 def isForbiddenSpecTransitiveConst (n : Name) : Bool :=
   let u := (privateToUserName n).replacePrefix rootNamespace .anonymous
   let r := u.getRoot
@@ -4203,6 +4243,7 @@ def isForbiddenSpecTransitiveConst (n : Name) : Bool :=
     true
   else if [`Lean.Macro, `Lean.Elab, `Lean.Core, `Lean.Meta,
       `Lean.Environment, `Lean.Compiler, `Lean.Internal,
+      `Lean.Loop, `repeatM,
       `Lean.getGithash, `Lean.version,
       `System.FilePath, `System.SearchPath, `System.Uri].any
         (fun pre => u == pre || pre.isPrefixOf u) then

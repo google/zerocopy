@@ -454,8 +454,10 @@ command elaboration, zero tactic allowlist on `proof/`):
   - `Command.derivingClass` (globally):
     `{BEq, DecidableEq, Repr, Inhabited, Ord, Hashable, Nonempty}`.
   - `Command.set_option` and `Term.set_option`:
-    `{maxHeartbeats, maxRecDepth, autoImplicit, relaxedAutoImplicit}` plus
-    literal-boolean `linter.*`.
+    `{maxHeartbeats, maxRecDepth}` plus literal-boolean `linter.*`
+    (`autoImplicit` and `relaxedAutoImplicit` are fixed `false` via CLI flags
+    when compiling `TargetRole::Specification` modules and rejected in
+    `set_option`).
 - **Dynamic fail-closed pure-spec tactic allowlist (`allowedSpecTacticKinds`):**
   Extracts every syntax kind in every `Parser.parserExtension` category outside
   the closed 9-category pure expression/command/attribute/level/binder set
@@ -470,15 +472,20 @@ command elaboration, zero tactic allowlist on `proof/`):
   and future Lean solver categories by construction.
 - **Exact term and quotation guards:** Rejects double-backtick
   `` ``Lean.includeStr `` and `` ``Lean.byElab `` (failing closed at inspector
-  compile time if renamed in `Init`), `autoParam` identifiers,
-  `Term.{binderTactic,quotedName,doubleQuotedName}`, single-backtick
-  meta/debug/parser-macro `Term` and `doElem` forms (`sorry`, `unsafe`,
-  `dbgTrace`, `idbg`, `doDbgTrace`, `doIdbg`, `matchExpr`, `letExpr`,
-  `doMatchExpr`, `doLetExpr`, `doLetMetaExpr`, `showTermElabImpl`, `declName`,
-  `withDeclName`, `privateDecl`, `leading_parser`, `trailing_parser`,
-  `elabToSyntax`, `termMacro.trace[_]_`, `Syntax.exact?`,
-  `termEval_{prec,prio}_`, `termPrintln!__`, `logNamed*`/`throwNamed*`), and
-  trailing `"quot"`/`"quotSeq"` (`dynamicQuot`/`precheckedQuot`), backed by live
+  compile time if renamed in `Init`), component-matched forbidden identifiers
+  (`{autoParam, panic, panicCore, panicWithPos, panicWithPosWithDecl,
+  outOfBounds, repeatM, sliceOrPanic}`) and `'!'`-containing helper identifiers
+  (`hasBangComponent`) across references, dot-projections, `open`, `export`,
+  and `specialize` arguments, `Term.{binderTactic,quotedName,doubleQuotedName}`,
+  single-backtick meta/debug/panic/loop/parser-macro `Term` and `doElem` forms
+  (`sorry`, `unsafe`, `panic`, `unreachable`, `assert`, `debugAssert`,
+  `«term__[_]_!»`, `doWhile`, `doRepeat`, `doRepeatUntil`, `dbgTrace`, `idbg`,
+  `doDbgTrace`, `doIdbg`, `matchExpr`, `letExpr`, `doMatchExpr`, `doLetExpr`,
+  `doLetMetaExpr`, `showTermElabImpl`, `declName`, `withDeclName`,
+  `privateDecl`, `leading_parser`, `trailing_parser`, `elabToSyntax`,
+  `termMacro.trace[_]_`, `Syntax.exact?`, `termEval_{prec,prio}_`,
+  `termPrintln!__`, `logNamed*`/`throwNamed*`), and trailing
+  `"quot"`/`"quotSeq"` (`dynamicQuot`/`precheckedQuot`), backed by live
   parse-tree round-trip CI tests.
 
 ### 4.3 Unified 2-phase `"target-audit"`
@@ -501,12 +508,16 @@ command elaboration, zero tactic allowlist on `proof/`):
    - Strict 3-axiom ceiling (`{Classical.choice, Quot.sound, propext}`, zero
      `sorryAx`);
    - `.foundation` skipped, `.library` kernel-replayed, and `.source
-     .specification` strictly non-`opaque`, free of direct `Lean.Syntax` edges,
-     and transitively free of `{IO, BaseIO, EIO, EST, ST, Task,
-     Lean.{Macro,Elab,Core,Meta,Environment,Compiler,Internal,getGithash,
-     version}, System.FilePath, System.SearchPath, System.Uri,
-     System.Platform.* \ {numBits, getNumBits, numBits_eq}, dbgTrace,
-     dbgTraceVal, dbgTraceIfShared, dbgSleep, dbgStackTrace, dbgStackTraceIf}`.
+     .specification` strictly non-`opaque`, free of direct `Lean.Syntax` and
+     `isPanicSpecConst` edges (`{panic, panicCore, panicWithPos,
+     panicWithPosWithDecl, outOfBounds, String.Pos.sliceOrPanic,
+     String.Slice.Pos.sliceOrPanic}` plus any `'!'`-containing helper via
+     `hasBangComponent`), and transitively free of `{IO, BaseIO, EIO, EST, ST,
+     Task, Lean.{Macro,Elab,Core,Meta,Environment,Compiler,Internal,Loop,
+     getGithash,version}, repeatM, System.FilePath, System.SearchPath,
+     System.Uri, System.Platform.* \ {numBits, getNumBits, numBits_eq},
+     dbgTrace, dbgTraceVal, dbgTraceIfShared, dbgSleep, dbgStackTrace,
+     dbgStackTraceIf}`.
 2. **Phase 2 (Proof closure `[theoremName]`):** Reuses memoized `phase1Closure`
    state in the same loop. When `--allow-sorry-in-proof` is active, per-edge
    `sorryAx` admission runs in `parent`'s outgoing edge loop **before**
