@@ -1,0 +1,83 @@
+{
+  "topics": [
+    "anneal",
+    "anneal/architecture",
+    "anneal/mir-semantics",
+    "anneal/rustc-capture",
+    "build",
+    "build/hermeticity",
+    "ffi",
+    "ffi/c-abi",
+    "rust",
+    "rust/inline-asm",
+    "rust/memory-model",
+    "rust/unsafe",
+    "rustc",
+    "rustc/driver",
+    "rustc/mir",
+    "systems",
+    "systems/concurrency-weak-memory",
+    "systems/os-kernels",
+    "verification",
+    "verification/os-kernels",
+    "verification/rust",
+    "zerocopy",
+    "zerocopy/layout"
+  ],
+  "subjects": [
+    {
+      "name": "Linux kernel (mainline and Rust for Linux rust-next, 7.4-rc4)",
+      "identity": {
+        "repository": "torvalds/linux",
+        "revision": "b6a9fa34ce4187cb69d3c588a4bbffc31ce5db8f",
+        "version": "7.4-rc4"
+      }
+    },
+    {
+      "name": "Anneal MIR capture and verification toolchain in zerocopy",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "ccf9caacb6abc54b8b2cfd6db114f02cb87276e5",
+        "subpath": "anneal"
+      }
+    },
+    {
+      "name": "klint atomic-context and stack-size rustc linter for Linux",
+      "identity": {
+        "repository": "Rust-for-Linux/klint",
+        "revision": "2fb6a267bde4ce595e384cd9b9b34a5995c0419f"
+      }
+    },
+    {
+      "name": "Aeneas functional Rust verification toolchain",
+      "identity": {
+        "repository": "AeneasVerif/aeneas",
+        "revision": "fb44cb400eb6bfe7dce97422ebe8fa748b7e4f9b"
+      }
+    },
+    {
+      "name": "Charon rustc frontend for LLBC extraction",
+      "identity": {
+        "repository": "AeneasVerif/charon",
+        "revision": "0490c09eb6218e905fec38ec8ebebc9f796d4b04"
+      }
+    },
+    {
+      "name": "Rust compiler toolchain (pinned 1.98.0-nightly)",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Lean 4 theorem prover",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}
