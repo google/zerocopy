@@ -893,47 +893,62 @@ fn tuple_aggregate_non_empty() {
 }
 
 #[test]
-fn whole_crate_admits_implicit_fieldless_enums_and_refuses_all_anon_consts() {
-    // Implicit-discriminant fieldless enums (both multi-variant and single-
-    // variant ZST) have no `AnonConst` items and capture cleanly in crate
-    // scope.
-    let implicit_enums = b"\
-        pub enum E { A, B }\n\
-        pub enum Single { Only }\n\
-        pub fn tag(x: E) -> u8 { match x { E::A => 0, E::B => 1 } }\n\
-        pub fn match_single(v: Single) -> u8 { match v { Single::Only => 1 } }\n";
-    let fixture = Capture::new(implicit_enums);
-    let output = fixture.command().arg("--scope=crate").output().unwrap();
-    assert!(output.status.success(), "{output:?}");
-    let manifest = fixture.manifest();
-    assert_eq!(manifest["schema_version"], 4);
-    assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 2);
-    let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
-    assert!(lean.contains("EnumTagRepr.zeroSized"), "{lean}");
-
-    // Whole-crate scope refuses ALL `DefKind::AnonConst` items fail-closed,
-    // including literal explicit enum discriminants, negated literals, calls,
-    // `unsafe` blocks, external constants, nested items, and array lengths.
-    let refused_anon_const_cases: &[(&str, &[u8])] = &[
+fn whole_crate_admits_pure_anon_consts_and_refuses_unsafe_or_call_anon_consts() {
+    // Implicit-discriminant fieldless enums and pure literal/negated-literal
+    // explicit fieldless enum discriminants capture cleanly in crate scope.
+    for (name, source) in [
+        (
+            "implicit_enums",
+            b"pub enum E { A, B }\n\
+              pub enum Single { Only }\n\
+              pub fn tag(x: E) -> u8 { match x { E::A => 0, E::B => 1 } }\n\
+              pub fn match_single(v: Single) -> u8 { match v { Single::Only => 1 } }\n"
+                .as_slice(),
+        ),
         (
             "explicit_u8_literal",
             b"#[repr(u8)]\n\
               pub enum ExplicitU8 { Ten = 10, Twenty = 20 }\n\
               pub fn tag(x: ExplicitU8) -> u8 {\n\
                   match x { ExplicitU8::Ten => 10, ExplicitU8::Twenty => 20 }\n\
-              }\n",
+              }\n"
+            .as_slice(),
         ),
         (
             "explicit_negative_literal",
             b"pub enum NarrowSigned { Neg = -1, Pos = 1 }\n\
               pub fn read_discr(v: NarrowSigned) -> isize {\n\
                   match v { NarrowSigned::Neg => -1, NarrowSigned::Pos => 1 }\n\
-              }\n",
+              }\n"
+            .as_slice(),
         ),
-        (
-            "array_length_anon_const",
-            b"pub fn len_only() -> usize { let a = [0u8; 2 + 2]; a.len() }\n",
-        ),
+    ] {
+        let fixture = Capture::new(source);
+        let output = fixture.command().arg("--scope=crate").output().unwrap();
+        assert!(output.status.success(), "{name}: {output:?}");
+        let manifest = fixture.manifest();
+        assert_eq!(manifest["schema_version"], 4, "{name}");
+    }
+
+    // Pure arithmetic array-length `AnonConst` (`2 + 2`) is admitted while the
+    // surrounding function body still fails closed on the unsupported array
+    // local / `.len()` call rather than on `AnonConst`.
+    let array_len_fixture =
+        Capture::new(b"pub fn len_only() -> usize { let a = [0u8; 2 + 2]; a.len() }\n");
+    let array_len_out = array_len_fixture.command().arg("--scope=crate").output().unwrap();
+    assert_eq!(array_len_out.status.code(), Some(1), "{array_len_out:?}");
+    let array_len_failure = status(&array_len_out);
+    assert_eq!(array_len_failure["status"], "unsupported", "{array_len_failure}");
+    assert!(
+        !array_len_failure.to_string().contains("AnonConst")
+            && array_len_failure.to_string().contains("unsupported type"),
+        "{array_len_failure}"
+    );
+    array_len_fixture.assert_no_capture_artifacts();
+
+    // Whole-crate scope continues to refuse `DefKind::AnonConst` items with
+    // calls, `unsafe` blocks, external constants, or nested items fail-closed.
+    let refused_anon_const_cases: &[(&str, &[u8])] = &[
         (
             "nested_array_in_discr",
             b"pub enum Nested { A = [0u8; 1].len() as isize, B = 2 }\n\
@@ -3119,4 +3134,213 @@ fn testkit_staged_workspace_runs_capture_and_verifies_status() {
     assert!(cap_ok.capture.is_file());
     assert!(cap_ok.lean.is_file());
     staged.finish(Ok(())).unwrap();
+}
+
+#[test]
+fn whole_crate_admits_safe_traits_impls_consts_and_refuses_unsafe_or_extern_obligations() {
+    // Positive: safe traits (with bodyless Rust-ABI `AssocFn` and bodyless
+    // `AssocConst`), inherent and trait `Impl`s, pure `Const` / `AssocConst`
+    // items (`usize`, `[u8; N]`, fieldless enum), and array-length `AnonConst`s
+    // all pass `--scope=crate` when every concrete body is scalar-admissible.
+    let valid_crate = b"\
+        pub const SIZE: usize = 4;\n\
+        pub const BYTES: [u8; SIZE] = [1, 2, 3, 4];\n\
+        pub enum Tag { Zero, One }\n\
+        pub const DEFAULT_TAG: Tag = Tag::Zero;\n\
+        pub trait Ops {\n\
+            const BASE: usize;\n\
+            fn step(x: usize) -> usize;\n\
+        }\n\
+        impl Tag {\n\
+            pub fn as_u8(self) -> u8 {\n\
+                match self { Tag::Zero => 0, Tag::One => 1 }\n\
+            }\n\
+        }\n\
+        impl Ops for Tag {\n\
+            const BASE: usize = 7;\n\
+            fn step(x: usize) -> usize { x ^ 1 }\n\
+        }\n";
+    let ok_fixture = Capture::new(valid_crate);
+    let ok_out = ok_fixture.command().arg("--scope=crate").output().unwrap();
+    assert!(
+        ok_out.status.success(),
+        "expected safe trait/impl/const crate to capture:\n{}\n{}",
+        stdout(&ok_out),
+        stderr(&ok_out)
+    );
+    let manifest = ok_fixture.manifest();
+    assert!(
+        manifest["selected"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .any(|b| b["path"].as_str().unwrap().contains("Tag::as_u8")),
+        "{manifest}"
+    );
+
+    // Builtin `#[derive(Clone, Copy, PartialEq, Eq)]` emits `TrivialClone`,
+    // `Copy`, `StructuralPartialEq`, `Clone`, `PartialEq`, and `Eq` impls: all
+    // six impl items pass `whole_crate_item`, leaving only the `&self` method
+    // bodies unsupported until reference capture is enabled.
+    let derived_crate = b"\
+        #[derive(Clone, Copy, PartialEq, Eq)]\n\
+        pub enum Derived { A, B }\n\
+        pub fn ok(x: Derived) -> u8 { match x { Derived::A => 0, Derived::B => 1 } }\n";
+    let drv_fixture = Capture::new(derived_crate);
+    let drv_out = drv_fixture.command().arg("--scope=crate").output().unwrap();
+    assert_eq!(drv_out.status.code(), Some(1), "{drv_out:?}");
+    let drv_failure = status(&drv_out);
+    assert_eq!(drv_failure["status"], "unsupported", "{drv_failure}");
+    let drv_unsup = drv_failure["unsupported"].as_array().unwrap();
+    assert_eq!(drv_unsup.len(), 3, "{drv_failure}");
+    for item in drv_unsup {
+        assert!(
+            item["reason"].as_str().unwrap().contains("unsupported type: &'{erased} Derived"),
+            "{drv_failure}"
+        );
+    }
+    drv_fixture.assert_no_capture_artifacts();
+
+    // Pure `Struct`-typed `Const` (`Hash([0; 32])`) and its `AnonConst` length
+    // are admitted, leaving only the `Struct` definition itself unsupported.
+    let struct_const_crate = b"\
+        pub const HASH_SIZE: usize = 32;\n\
+        pub struct Hash(pub [u8; HASH_SIZE]);\n\
+        pub const EMPTY: Hash = Hash([0u8; HASH_SIZE]);\n\
+        pub fn ok() -> u8 { 0 }\n";
+    let sc_fixture = Capture::new(struct_const_crate);
+    let sc_out = sc_fixture.command().arg("--scope=crate").output().unwrap();
+    assert_eq!(sc_out.status.code(), Some(1), "{sc_out:?}");
+    let sc_failure = status(&sc_out);
+    let sc_unsup = sc_failure["unsupported"].as_array().unwrap();
+    assert_eq!(sc_unsup.len(), 1, "expected only Struct refusal, got {sc_failure}");
+    assert_eq!(sc_unsup[0]["path"], "Hash", "{sc_failure}");
+    assert!(
+        sc_unsup[0]["reason"]
+            .as_str()
+            .unwrap()
+            .contains("whole-crate obligation is unsupported: Struct"),
+        "{sc_failure}"
+    );
+    sc_fixture.assert_no_capture_artifacts();
+
+    // Negative cases: each unmodeled or unsafe non-callable obligation must
+    // fail closed under `--scope=crate`.
+    let refused_cases: &[(&str, &[u8], &str)] = &[
+        (
+            "unsafe_trait",
+            b"pub unsafe trait Bad { fn f(); }\npub fn ok() -> u8 { 0 }\n",
+            "whole-crate obligation is unsupported: Trait (unsafe trait)",
+        ),
+        (
+            "unsafe_trait_method",
+            b"pub trait UnsafeMethod { unsafe fn f(x: u8); }\npub fn ok() -> u8 { 0 }\n",
+            "unsafe trait method declarations are unsupported",
+        ),
+        (
+            "unsafe_trait_method_with_impl",
+            b"pub trait UnsafeMethod { unsafe fn f(x: u8); }\n\
+              pub enum E { A }\n\
+              impl UnsafeMethod for E { unsafe fn f(x: u8) {} }\n\
+              pub fn ok() -> u8 { 0 }\n",
+            "unsafe trait method declarations are unsupported",
+        ),
+        (
+            "auto_trait",
+            b"#![feature(auto_traits)]\n\
+              pub auto trait MyAuto {}\n\
+              pub fn ok() -> u8 { 0 }\n",
+            "whole-crate obligation is unsupported: Trait (auto trait)",
+        ),
+        (
+            "unsafe_impl",
+            b"pub enum E { A }\n\
+              pub unsafe trait Marker {}\n\
+              unsafe impl Marker for E {}\n\
+              pub fn ok() -> u8 { 0 }\n",
+            "whole-crate obligation is unsupported: Impl { of_trait: true } (unsafe impl)",
+        ),
+        (
+            "manual_trivial_clone_impl",
+            b"#![feature(trivial_clone)]\n\
+              #[derive(Clone, Copy)]\n\
+              pub enum E { A }\n\
+              pub enum M { X }\n\
+              impl Clone for M { fn clone(&self) -> Self { M::X } }\n\
+              #[automatically_derived]\n\
+              unsafe impl core::clone::TrivialClone for M {}\n\
+              pub fn ok() -> u8 { 0 }\n",
+            "whole-crate obligation is unsupported: Impl { of_trait: true } (unsafe impl)",
+        ),
+        (
+            "negative_impl",
+            b"#![feature(negative_impls)]\n\
+              pub enum E { A }\n\
+              pub trait Tr {}\n\
+              impl !Tr for E {}\n\
+              pub fn ok() -> u8 { 0 }\n",
+            "negative polarity",
+        ),
+        (
+            "extern_bodyless_fn",
+            b"unsafe extern \"C\" { pub fn ext(); }\npub fn ok() -> u8 { 0 }\n",
+            "whole-crate obligation is unsupported: Fn",
+        ),
+        (
+            "trait_extern_c_assoc_fn",
+            b"pub trait ForeignAbi { extern \"C\" fn f(); }\npub fn ok() -> u8 { 0 }\n",
+            "only non-variadic Rust ABI functions are admitted",
+        ),
+        (
+            "trait_linkage_assoc_fn",
+            b"#![feature(linkage)]\n\
+              pub trait WeakMethod { #[linkage = \"weak\"] fn f(); }\n\
+              pub fn ok() -> u8 { 0 }\n",
+            "linkage attribute WeakAny is unsupported",
+        ),
+        (
+            "unsafe_const",
+            b"pub const BAD: usize = unsafe { 1 };\npub fn ok() -> u8 { 0 }\n",
+            "unsafe blocks are unsupported in constants",
+        ),
+        (
+            "pointer_const",
+            b"pub const PTR: *const u8 = core::ptr::null();\npub fn ok() -> u8 { 0 }\n",
+            "unsupported constant type",
+        ),
+        (
+            "ref_const",
+            b"pub const MSG: &str = \"hello\";\npub fn ok() -> u8 { 0 }\n",
+            "unsupported constant type",
+        ),
+        (
+            "float_const",
+            b"pub const F: f64 = 1.0;\npub fn ok() -> u8 { 0 }\n",
+            "unsupported constant type",
+        ),
+        (
+            "generic_assoc_const",
+            b"pub trait Tr { const C: usize; }\n\
+              impl<T> Tr for T { const C: usize = 1; }\n\
+              pub fn ok() -> u8 { 0 }\n",
+            "generic constants require quantified instantiation obligations",
+        ),
+        (
+            "inline_const",
+            b"pub fn ok() -> u8 { let () = const { }; 0 }\n",
+            "whole-crate obligation is unsupported: InlineConst",
+        ),
+    ];
+    for (name, source, expected) in refused_cases {
+        let fixture = Capture::new(source);
+        let output = fixture.command().arg("--scope=crate").output().unwrap();
+        assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
+        let failure = status(&output);
+        assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
+        assert!(
+            failure.to_string().contains(expected),
+            "{name}: expected {expected:?}, got {failure}"
+        );
+        fixture.assert_no_capture_artifacts();
+    }
 }

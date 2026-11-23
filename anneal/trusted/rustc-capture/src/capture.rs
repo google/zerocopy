@@ -15,15 +15,22 @@ use std::io;
 use std::path::{Path, PathBuf};
 use std::sync::{Arc, Mutex, OnceLock};
 
-use rustc_abi::Endian;
-use rustc_ast::{Attribute, Crate, MetaItem, MetaItemInner};
+use std::ops::ControlFlow;
+
+use rustc_abi::{Endian, ExternAbi, Size};
+use rustc_ast::{Attribute, Crate, MetaItem, MetaItemInner, Mutability};
 use rustc_data_structures::steal::Steal;
 use rustc_driver::Compilation;
+use rustc_hir as hir;
 use rustc_hir::LangItem;
-use rustc_hir::def::DefKind;
+use rustc_hir::attrs::AttributeKind;
+use rustc_hir::def::{DefKind, Res};
+use rustc_hir::intravisit;
 use rustc_interface::interface;
 use rustc_middle::mir;
-use rustc_middle::ty::{self, TyCtxt};
+use rustc_middle::mir::interpret::{AllocRange, GlobalAlloc};
+use rustc_middle::ty::trait_def::{ImplRestrictionKind, TraitSpecializationKind};
+use rustc_middle::ty::{self, TyCtxt, TypeVisitableExt, TypingEnv};
 use rustc_middle::util::Providers;
 use rustc_session::EarlyDiagCtxt;
 use rustc_session::config::{CrateType, OptLevel, Options};
@@ -309,17 +316,545 @@ fn required(tcx: TyCtxt<'_>, def: LocalDefId, kind: DefKind, has_body: bool) -> 
 }
 
 // Required does not mean supported. Whole-crate capture must admit every
-// required owner, including owners with no runtime body. A fieldless enum
-// without explicit discriminant `AnonConst`s is admitted via the type adapter;
-// no callable body is fabricated for it. All `AnonConst` items (including
-// explicit enum discriminants) and other required owner classes remain
-// explicit refusals in whole-crate scope. A callable with a body is only a
-// candidate here: `collect` publishes it only if `extract::body` translates
-// it, and that translation also refuses intrinsics, unsupported entry
-// conditions, and unmodeled codegen attributes such as `#[linkage]`.
+// required owner, including owners with no runtime body:
+// - Fieldless enums without explicit discriminant `AnonConst`s are admitted
+//   via the type adapter.
+// - Pure array-length, repeat-count, and discriminant `AnonConst`s,
+//   non-generic pure-value `Const`/`AssocConst` items, safe `Trait`
+//   declarations (plus their bodyless safe Rust-ABI `AssocFn` and
+//   `AssocConst` items), and safe `Impl` blocks whose child items are
+//   checked separately are admitted fail-closed below with no fabricated body.
+// - `Struct` (pending struct capture/verification), `InlineConst`, `Static`,
+//   `Union`, `ForeignMod`, `ForeignTy`, `GlobalAsm`, and bodyless free `Fn`
+//   items remain explicit refusals in whole-crate scope.
+// - Callables with bodies are only candidates here: `collect` publishes one
+//   only if `extract::body` translates it, refusing intrinsics, generics,
+//   unsupported entry conditions, and unmodeled codegen attributes.
+
+/// Reject attributes on non-callable items whose semantic effect the scalar
+/// model does not capture (`#[linkage]`, `#[no_mangle]`, `#[export_name]`,
+/// `#[rustc_*]`, etc.). When `allow_repr` is true (for `Struct` constants
+/// whose `adt.repr()` options are validated separately), `AttributeKind::Repr`
+/// is permitted.
+fn check_non_callable_attrs(
+    tcx: TyCtxt<'_>,
+    def: LocalDefId,
+    allow_repr: bool,
+    context: &str,
+) -> extract::Result<()> {
+    for attr in tcx.hir_attrs(tcx.local_def_id_to_hir_id(def)) {
+        match attr {
+            hir::Attribute::Parsed(AttributeKind::Repr { .. }) if allow_repr => {}
+            hir::Attribute::Parsed(kind) => match kind {
+                AttributeKind::AutomaticallyDerived
+                | AttributeKind::CfgAttrTrace
+                | AttributeKind::CfgTrace(_)
+                | AttributeKind::Deprecated { .. }
+                | AttributeKind::Doc(_)
+                | AttributeKind::DocComment { .. }
+                | AttributeKind::DoNotRecommend
+                | AttributeKind::MustUse { .. }
+                | AttributeKind::OnConst { .. }
+                | AttributeKind::OnMove { .. }
+                | AttributeKind::OnUnimplemented { .. }
+                | AttributeKind::OnUnknown { .. }
+                | AttributeKind::OnUnmatchArgs { .. } => {}
+                other => {
+                    return Err(format!("{context}: unmodeled attribute {other:?} is unsupported"));
+                }
+            },
+            hir::Attribute::Unparsed(item) => {
+                let segments = item.path.segments.as_ref();
+                let is_lint_attr = segments.len() == 1
+                    && matches!(
+                        segments[0],
+                        sym::allow | sym::warn | sym::deny | sym::forbid | sym::expect
+                    );
+                let is_tool_attr =
+                    segments.len() >= 2 && matches!(segments[0].as_str(), "clippy" | "rustfmt");
+                if !is_lint_attr && !is_tool_attr {
+                    return Err(format!(
+                        "{context}: unmodeled attribute `{}` is unsupported",
+                        item.path
+                    ));
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
+/// Admit only safe, ordinary Rust trait declarations (not `unsafe trait`,
+/// `const trait`, `auto trait`, `#[marker]`, `#[fundamental]`, coinductive,
+/// specialization, or `#[rustc_*]`-attributed traits).
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/trait_def.rs#L19-L84
+fn admit_safe_trait(tcx: TyCtxt<'_>, def: LocalDefId) -> extract::Result<()> {
+    let ty::TraitDef {
+        def_id: _,
+        impl_restriction,
+        safety,
+        constness,
+        paren_sugar,
+        has_auto_impl,
+        is_marker,
+        is_coinductive,
+        is_fundamental,
+        skip_array_during_method_dispatch,
+        skip_boxed_slice_during_method_dispatch,
+        specialization_kind,
+        must_implement_one_of,
+        force_dyn_incompatible,
+        deny_explicit_impl,
+    } = tcx.trait_def(def);
+    if *safety != hir::Safety::Safe {
+        return Err("whole-crate obligation is unsupported: Trait (unsafe trait)".into());
+    }
+    if *constness != hir::Constness::NotConst {
+        return Err("whole-crate obligation is unsupported: Trait (const trait)".into());
+    }
+    if *has_auto_impl {
+        return Err("whole-crate obligation is unsupported: Trait (auto trait)".into());
+    }
+    if *is_marker
+        || *is_coinductive
+        || *is_fundamental
+        || *paren_sugar
+        || *skip_array_during_method_dispatch
+        || *skip_boxed_slice_during_method_dispatch
+        || *deny_explicit_impl
+        || must_implement_one_of.is_some()
+        || force_dyn_incompatible.is_some()
+        || !matches!(impl_restriction, ImplRestrictionKind::Unrestricted)
+        || !matches!(specialization_kind, TraitSpecializationKind::None)
+    {
+        return Err(
+            "whole-crate obligation is unsupported: Trait (unmodeled trait modifier)".into()
+        );
+    }
+    check_non_callable_attrs(tcx, def, false, "whole-crate obligation is unsupported: Trait")
+}
+
+/// Admit safe inherent or trait `Impl` blocks whose associated items are
+/// separately checked by `collect` / `whole_crate_item`. Reject `unsafe impl`
+/// (except builtin `#[derive(Clone, Copy)]`'s `core::clone::TrivialClone`
+/// marker impl, where `rustc` checks `self.is_automatically_derived(def_id)`
+/// and `RustcBuiltinMacro` on the derive expansion), negative/reservation
+/// impls (`ImplPolarity::{Negative, Reservation}`), `default impl`, `const
+/// impl`, and unmodeled attributes.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/mod.rs#L288-L294
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/predicate.rs#L272-L284
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_builtin_macros/src/deriving/clone.rs#L71-L92
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/mod.rs#L2047-L2060
+fn admit_safe_impl(tcx: TyCtxt<'_>, def: LocalDefId, of_trait: bool) -> extract::Result<()> {
+    let impl_ = tcx.hir_expect_item(def).expect_impl();
+    if impl_.constness != hir::Constness::NotConst {
+        return Err(format!(
+            "whole-crate obligation is unsupported: Impl {{ of_trait: {of_trait} }} (const impl)"
+        ));
+    }
+    if of_trait {
+        let Some(hir_header) = impl_.of_trait else {
+            return Err(
+                "whole-crate obligation is unsupported: Impl { of_trait: true } (missing header)"
+                    .into(),
+            );
+        };
+        if !matches!(hir_header.defaultness, hir::Defaultness::Final) {
+            return Err(
+                "whole-crate obligation is unsupported: Impl { of_trait: true } (default impl)"
+                    .into(),
+            );
+        }
+        let ty::ImplTraitHeader { trait_ref, polarity, safety, constness } =
+            tcx.impl_trait_header(def);
+        if constness != hir::Constness::NotConst {
+            return Err(
+                "whole-crate obligation is unsupported: Impl { of_trait: true } (const impl)"
+                    .into(),
+            );
+        }
+        if !matches!(polarity, ty::ImplPolarity::Positive) {
+            return Err(format!(
+                "whole-crate obligation is unsupported: Impl {{ of_trait: true }} \
+                 ({polarity} polarity)"
+            ));
+        }
+        if safety != hir::Safety::Safe {
+            let trait_def_id = trait_ref.instantiate_identity().skip_norm_wip().def_id;
+            let is_builtin_trivial_clone = !trait_def_id.is_local()
+                && tcx.is_lang_item(trait_def_id, LangItem::TrivialClone)
+                && tcx.is_builtin_derived(def.to_def_id());
+            if !is_builtin_trivial_clone {
+                return Err(
+                    "whole-crate obligation is unsupported: Impl { of_trait: true } (unsafe impl)"
+                        .into(),
+                );
+            }
+        }
+    }
+    check_non_callable_attrs(
+        tcx,
+        def,
+        false,
+        &format!("whole-crate obligation is unsupported: Impl {{ of_trait: {of_trait} }}"),
+    )
+}
+
+/// Check that a non-generic `Const`/`AssocConst` type contains only pure
+/// immutable value data (scalars, fieldless enums, `Ordering`, tuples, arrays,
+/// or local plain structs without `Drop`, `UnsafeCell`, unsafe fields, or
+/// unmodeled representations/attributes).
+fn const_ty_is_pure_value<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    ty: ty::Ty<'tcx>,
+    context: &str,
+) -> extract::Result<()> {
+    match *ty.kind() {
+        ty::Bool | ty::Char | ty::Never | ty::Int(_) | ty::Uint(_) => Ok(()),
+        ty::Tuple(elems) => {
+            for elem in elems {
+                const_ty_is_pure_value(tcx, elem, context)?;
+            }
+            Ok(())
+        }
+        ty::Array(elem, _) => const_ty_is_pure_value(tcx, elem, context),
+        ty::Adt(adt, args)
+            if args.is_empty() && tcx.is_lang_item(adt.did(), LangItem::OrderingEnum) =>
+        {
+            Ok(())
+        }
+        ty::Adt(adt, args) if adt.did().is_local() && adt.is_enum() && args.is_empty() => {
+            if adt.has_dtor(tcx) {
+                return Err(format!("{context}: Drop enum constant type {ty:?} is unsupported"));
+            }
+            extract::ty(tcx, ty).map(|_| ())
+        }
+        ty::Adt(adt, args) if adt.did().is_local() && adt.is_struct() && args.is_empty() => {
+            let Some(local_def) = adt.did().as_local() else {
+                return Err(format!("{context}: non-local struct constant type {ty:?}"));
+            };
+            if adt.has_dtor(tcx) {
+                return Err(format!("{context}: Drop struct constant type {ty:?} is unsupported"));
+            }
+            if ty.has_unsafe_fields() || !ty.is_freeze(tcx, TypingEnv::fully_monomorphized()) {
+                return Err(format!(
+                    "{context}: interior-mutable or unsafe-field constant type {ty:?} is unsupported"
+                ));
+            }
+            let repr = adt.repr();
+            if repr.simd() || repr.scalable() || repr.packed() {
+                return Err(format!("{context}: unmodeled repr on struct constant type {ty:?}"));
+            }
+            // Reject any `#[rustc_*]` or unmodeled attribute on the struct
+            // (allowing benign attributes plus `#[repr(..)]`, whose fields are
+            // checked above).
+            check_non_callable_attrs(tcx, local_def, true, context)?;
+            let typing_env = TypingEnv::fully_monomorphized();
+            for field in &adt.non_enum_variant().fields {
+                let field_ty = field.ty(tcx, args);
+                let normalized = tcx
+                    .try_normalize_erasing_regions(typing_env, field_ty)
+                    .map_err(|_| format!("{context}: unnormalizable field type {field_ty:?}"))?;
+                if normalized.has_non_region_param()
+                    || normalized.has_non_region_infer()
+                    || normalized.references_error()
+                {
+                    return Err(format!(
+                        "{context}: generic or erroneous field type {normalized:?}"
+                    ));
+                }
+                const_ty_is_pure_value(tcx, normalized, context)?;
+            }
+            Ok(())
+        }
+        _ => Err(format!("{context}: unsupported constant type {ty:?}")),
+    }
+}
+
+fn check_const_value_pure<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    ty: ty::Ty<'tcx>,
+    value: mir::ConstValue,
+    context: &str,
+) -> extract::Result<()> {
+    let typing_env = TypingEnv::fully_monomorphized();
+    match value {
+        mir::ConstValue::ZeroSized => {
+            let layout = tcx
+                .layout_of(typing_env.as_query_input(ty))
+                .map_err(|err| format!("{context}: failed to compute layout for {ty:?}: {err}"))?;
+            if layout.is_zst() {
+                Ok(())
+            } else {
+                Err(format!(
+                    "{context}: zero-sized constant value disagrees with non-ZST type {ty:?}"
+                ))
+            }
+        }
+        mir::ConstValue::Scalar(scalar) => {
+            if scalar.try_to_scalar_int().is_ok() {
+                Ok(())
+            } else {
+                Err(format!("{context}: provenance-bearing scalar constant is unsupported"))
+            }
+        }
+        mir::ConstValue::Indirect { alloc_id, offset: _ } => match tcx.global_alloc(alloc_id) {
+            GlobalAlloc::Memory(const_alloc) => {
+                let alloc = const_alloc.inner();
+                if alloc.mutability != Mutability::Not {
+                    return Err(format!(
+                        "{context}: mutable global allocations are unsupported in constants"
+                    ));
+                }
+                let range = AllocRange { start: Size::ZERO, size: alloc.size() };
+                if !alloc.provenance().range_empty(range, &tcx) {
+                    return Err(format!(
+                        "{context}: provenance-bearing constant allocation is unsupported"
+                    ));
+                }
+                Ok(())
+            }
+            GlobalAlloc::Static(_)
+            | GlobalAlloc::Function { .. }
+            | GlobalAlloc::VTable(..)
+            | GlobalAlloc::TypeId { .. } => {
+                Err(format!("{context}: non-memory global allocation in constant is unsupported"))
+            }
+        },
+        mir::ConstValue::Slice { .. } => {
+            Err(format!("{context}: slice constant values are unsupported"))
+        }
+    }
+}
+
+struct ConstHirSafetyVisitor<'tcx> {
+    reject_calls_and_items: bool,
+    typeck: Option<&'tcx ty::TypeckResults<'tcx>>,
+}
+
+impl<'v, 'tcx> intravisit::Visitor<'v> for ConstHirSafetyVisitor<'tcx> {
+    type Result = ControlFlow<String>;
+
+    fn visit_block(&mut self, b: &'v hir::Block<'v>) -> Self::Result {
+        if matches!(b.rules, hir::BlockCheckMode::UnsafeBlock(_)) {
+            return ControlFlow::Break("unsafe blocks are unsupported in constants".into());
+        }
+        intravisit::walk_block(self, b)
+    }
+
+    fn visit_stmt(&mut self, s: &'v hir::Stmt<'v>) -> Self::Result {
+        if self.reject_calls_and_items && matches!(s.kind, hir::StmtKind::Item(_)) {
+            return ControlFlow::Break(
+                "nested items are unsupported in anonymous constants".into(),
+            );
+        }
+        intravisit::walk_stmt(self, s)
+    }
+
+    fn visit_expr(&mut self, ex: &'v hir::Expr<'v>) -> Self::Result {
+        match ex.kind {
+            hir::ExprKind::InlineAsm(_) => {
+                return ControlFlow::Break("inline assembly is unsupported in constants".into());
+            }
+            hir::ExprKind::Call(..) | hir::ExprKind::MethodCall(..)
+                if self.reject_calls_and_items =>
+            {
+                return ControlFlow::Break(
+                    "function and method calls are unsupported in anonymous constants".into(),
+                );
+            }
+            hir::ExprKind::ConstBlock(_)
+            | hir::ExprKind::Closure(_)
+            | hir::ExprKind::AddrOf(..)
+                if self.reject_calls_and_items =>
+            {
+                return ControlFlow::Break(
+                    "const blocks, closures, and references are unsupported in anonymous constants"
+                        .into(),
+                );
+            }
+            hir::ExprKind::Path(ref qpath) if self.reject_calls_and_items => {
+                if let Some(typeck) = self.typeck
+                    && let Res::Def(_, did) = typeck.qpath_res(qpath, ex.hir_id)
+                    && !did.is_local()
+                {
+                    return ControlFlow::Break(
+                        "external definitions are unsupported in anonymous constants".into(),
+                    );
+                }
+            }
+            _ => {}
+        }
+        intravisit::walk_expr(self, ex)
+    }
+
+    fn visit_path(&mut self, path: &hir::Path<'v>, _id: hir::HirId) -> Self::Result {
+        if self.reject_calls_and_items
+            && let Res::Def(_, did) = path.res
+            && !did.is_local()
+        {
+            return ControlFlow::Break(
+                "external definitions are unsupported in anonymous constants".into(),
+            );
+        }
+        intravisit::walk_path(self, path)
+    }
+}
+
+fn check_const_hir_safety(
+    tcx: TyCtxt<'_>,
+    def: LocalDefId,
+    reject_calls_and_items: bool,
+    context: &str,
+) -> extract::Result<()> {
+    let body = tcx.hir_body_owned_by(def);
+    let typeck = reject_calls_and_items.then(|| tcx.typeck(tcx.typeck_root_def_id_local(def)));
+    let mut visitor = ConstHirSafetyVisitor { reject_calls_and_items, typeck };
+    if let ControlFlow::Break(reason) = intravisit::Visitor::visit_body(&mut visitor, body) {
+        return Err(format!("{context}: {reason}"));
+    }
+    Ok(())
+}
+
+fn admit_const_item(
+    tcx: TyCtxt<'_>,
+    def: LocalDefId,
+    is_assoc: bool,
+    is_type_const: bool,
+    has_body: bool,
+) -> extract::Result<()> {
+    let kind_label = if is_assoc { "AssocConst" } else { "Const" };
+    let context = format!(
+        "whole-crate obligation is unsupported: {kind_label} {{ is_type_const: {is_type_const} }}"
+    );
+    if is_type_const {
+        return Err(context);
+    }
+    check_non_callable_attrs(tcx, def, false, &context)?;
+    if !has_body {
+        if is_assoc && tcx.def_kind(tcx.local_parent(def)) == DefKind::Trait {
+            return admit_safe_trait(tcx, tcx.local_parent(def));
+        }
+        return Err(format!("{context} (missing constant body)"));
+    }
+    if tcx.generics_of(def).count() != 0 {
+        return Err(format!(
+            "{context} (generic constants require quantified instantiation obligations)"
+        ));
+    }
+    let raw_ty = tcx.type_of(def).instantiate_identity();
+    let ty = tcx
+        .try_normalize_erasing_regions(TypingEnv::fully_monomorphized(), raw_ty)
+        .map_err(|_| format!("{context}: failed to normalize constant type"))?;
+    if ty.has_non_region_param() || ty.has_non_region_infer() || ty.references_error() {
+        return Err(format!("{context}: generic or erroneous constant type {ty:?}"));
+    }
+    const_ty_is_pure_value(tcx, ty, &context)?;
+    check_const_hir_safety(tcx, def, false, &context)?;
+    let ctfe_mir = tcx.mir_for_ctfe(def.to_def_id());
+    if ctfe_mir.tainted_by_errors.is_some() {
+        return Err(format!("{context}: constant MIR tainted by compiler errors"));
+    }
+    let val = tcx
+        .const_eval_poly(def.to_def_id())
+        .map_err(|err| format!("{context}: constant failed CTFE: {err:?}"))?;
+    check_const_value_pure(tcx, ty, val, &context)
+}
+
+/// Admit pure scalar `AnonConst` items (literal/arithmetic array lengths,
+/// repeat counts, and explicit enum discriminants) while rejecting `GCE`/`GCA`
+/// const-generics, `unsafe` blocks, calls, nested items, external references,
+/// and generic-dependent constants.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir_analysis/src/collect/generics_of.rs#L97-L104
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/queries.rs#L15-L29
+fn admit_anon_const(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract::Result<()> {
+    let context = "whole-crate obligation is unsupported: AnonConst";
+    if !has_body {
+        return Err(format!("{context} (missing body)"));
+    }
+    if matches!(
+        tcx.anon_const_kind(def.to_def_id()),
+        ty::AnonConstKind::GCE | ty::AnonConstKind::GCA
+    ) {
+        return Err(format!("{context} (generic const expr/arg)"));
+    }
+    check_non_callable_attrs(tcx, def, false, context)?;
+    check_const_hir_safety(tcx, def, true, context)?;
+    let raw_ty = tcx.type_of(def).instantiate_identity();
+    let ty = tcx
+        .try_normalize_erasing_regions(TypingEnv::fully_monomorphized(), raw_ty)
+        .map_err(|_| format!("{context}: failed to normalize type"))?;
+    if !matches!(ty.kind(), ty::Int(_) | ty::Uint(_) | ty::Bool | ty::Char) {
+        return Err(format!("{context}: unsupported scalar type {ty:?}"));
+    }
+    let ctfe_mir = tcx.mir_for_ctfe(def.to_def_id());
+    if ctfe_mir.tainted_by_errors.is_some() {
+        return Err(format!("{context}: MIR tainted by compiler errors"));
+    }
+    for block in ctfe_mir.basic_blocks.iter() {
+        let Some(term) = &block.terminator else {
+            return Err(format!("{context}: missing terminator in CTFE MIR"));
+        };
+        if matches!(
+            term.kind,
+            mir::TerminatorKind::Call { .. }
+                | mir::TerminatorKind::TailCall { .. }
+                | mir::TerminatorKind::Drop { .. }
+                | mir::TerminatorKind::InlineAsm { .. }
+                | mir::TerminatorKind::Yield { .. }
+                | mir::TerminatorKind::CoroutineDrop
+        ) {
+            return Err(format!("{context}: unsupported CTFE MIR terminator {:?}", term.kind));
+        }
+    }
+    let val = tcx
+        .const_eval_poly(def.to_def_id())
+        .map_err(|err| format!("{context}: failed CTFE: {err:?}"))?;
+    if val.try_to_scalar_int().is_none() {
+        return Err(format!("{context}: expected concrete scalar integer constant"));
+    }
+    Ok(())
+}
+
 fn whole_crate_item(tcx: TyCtxt<'_>, def: LocalDefId, has_body: bool) -> extract::Result<()> {
     match tcx.def_kind(def) {
         DefKind::Fn | DefKind::AssocFn if has_body => Ok(()),
+        DefKind::AssocFn => {
+            let parent = tcx.local_parent(def);
+            if tcx.def_kind(parent) != DefKind::Trait {
+                return Err("whole-crate obligation is unsupported: AssocFn".into());
+            }
+            admit_safe_trait(tcx, parent)?;
+            if let Some(intrinsic) = tcx.intrinsic(def) {
+                return Err(format!(
+                    "intrinsic `{}` is unsupported in trait declaration",
+                    intrinsic.name
+                ));
+            }
+            let sig = tcx.fn_sig(def).instantiate_identity().skip_binder();
+            if sig.safety().is_unsafe() {
+                return Err("unsafe trait method declarations are unsupported".into());
+            }
+            if sig.abi() != ExternAbi::Rust || sig.c_variadic() {
+                return Err("only non-variadic Rust ABI functions are admitted".into());
+            }
+            extract::codegen_attrs(tcx, def)?;
+            check_non_callable_attrs(
+                tcx,
+                def,
+                false,
+                "whole-crate obligation is unsupported: AssocFn",
+            )
+        }
+        DefKind::Trait => admit_safe_trait(tcx, def),
+        DefKind::Impl { of_trait } => admit_safe_impl(tcx, def, of_trait),
+        DefKind::Const { is_type_const } => {
+            admit_const_item(tcx, def, false, is_type_const, has_body)
+        }
+        DefKind::AssocConst { is_type_const } => {
+            admit_const_item(tcx, def, true, is_type_const, has_body)
+        }
+        DefKind::AnonConst => admit_anon_const(tcx, def, has_body),
         // `instantiate_identity` "Makes the identity replacement
         // `T0 => T0, ..., TN => TN`", so a generic enum keeps its own
         // parameters and `extract::ty` refuses it. The enum's own type has no
@@ -1017,7 +1552,7 @@ fn collect(
             }
         };
         match admission {
-            Ok(()) if callable(kind) => selected_defs.push(def),
+            Ok(()) if callable(kind) && has_body => selected_defs.push(def),
             Ok(()) => {
                 if let Some(id) = enum_key {
                     admitted_enum_ids.insert(id);
