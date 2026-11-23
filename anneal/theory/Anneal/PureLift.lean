@@ -18,3 +18,4 @@ public import Anneal.PureLift.Adapter
 public import Anneal.PureLift.MirBridge
 public import Anneal.PureLift.BvLin
 public import Anneal.PureLift.SpatialMem
+public import Anneal.PureLift.FixedByteCodecBridge
