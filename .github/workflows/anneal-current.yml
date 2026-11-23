@@ -65,7 +65,7 @@ jobs:
             done
           done
       - name: Install Nix
-        uses: DeterminateSystems/determinate-nix-action@92957199488000b908fdad19f63711000965d8f3 # v3.24.1
+        uses: DeterminateSystems/determinate-nix-action@16f94ba7aae399b9f9077c254b6719ec6de7e3e3 # v3.24.2
       - name: Run todo check
         run: ./ci/check_todo.sh
       - name: Test release tooling and the Codex review gate
@@ -155,7 +155,7 @@ jobs:
 
       - name: Install Nix
         id: nix
-        uses: DeterminateSystems/determinate-nix-action@92957199488000b908fdad19f63711000965d8f3 # v3.24.1
+        uses: DeterminateSystems/determinate-nix-action@16f94ba7aae399b9f9077c254b6719ec6de7e3e3 # v3.24.2
 
       - name: Build omnibus toolchain archive
         id: build

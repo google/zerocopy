@@ -270,7 +270,7 @@ jobs:
           source="$(python3 -B ci/alpha_release.py "$VERSION" --prepare)"
           git checkout --detach "$source"
           printf 'source=%s\n' "$source" >> "$GITHUB_OUTPUT"
-      - uses: DeterminateSystems/determinate-nix-action@92957199488000b908fdad19f63711000965d8f3 # v3.24.1
+      - uses: DeterminateSystems/determinate-nix-action@16f94ba7aae399b9f9077c254b6719ec6de7e3e3 # v3.24.2
       - name: Build the pinned x86-64 Linux toolchain
         working-directory: anneal
         env:
@@ -368,7 +368,7 @@ jobs:
           env -u GH_TOKEN python3 -B ci/alpha_release.py "$VERSION" \
             --archive-base "$target" --archive-tree "$SOURCE_SHA" --pin "$digest"
       - name: Open the Anneal release PR
-        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1 # zizmor: ignore[superfluous-actions]
+        uses: peter-evans/create-pull-request@3ffccacd46053766916f087ce41d627c0b8cf2d1 # v8.1.1 # zizmor: ignore[superfluous-actions]
         with:
           commit-message: |
             Release Anneal ${{ inputs.version }}
