@@ -1071,7 +1071,21 @@ impl Checker {
         })
     }
 
-    fn ensure_sysroot_manifest_sha256(&mut self) -> Result<String, Failure> {
+    /// Return `(inspector_sha256, lean_binary_sha256, version,
+    /// runtime_libs_verified)` from the currently admitted toolchain.
+    pub(crate) fn claim_toolchain_identity(
+        &self,
+    ) -> Result<(String, String, String, bool), Failure> {
+        let adm = self.admitted()?;
+        Ok((
+            adm.inspector_sha256.clone(),
+            adm.lean_binary_sha256.as_deref().unwrap_or(&adm.lean_sha256).to_owned(),
+            adm.version.clone(),
+            adm.runtime_libs_verified,
+        ))
+    }
+
+    pub(crate) fn ensure_sysroot_manifest_sha256(&mut self) -> Result<String, Failure> {
         let (existing, prefix, unpinned) = {
             let adm = self.admitted()?;
             (adm.sysroot_manifest_sha256.clone(), adm.prefix.clone(), adm.unpinned)

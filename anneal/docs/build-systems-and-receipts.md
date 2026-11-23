@@ -364,7 +364,7 @@ glue:
 
 | Build system | Production target binding | Sharding & early cutoff | Containment & CI provenance |
 | :--- | :--- | :--- | :--- |
-| **Cargo** | `RUSTC_WORKSPACE_WRAPPER` with explicit `--target <triple>` separating target units from host `build.rs` / `proc-macro` units. | `none`, `nominal`, or `dynamic` (`ParallelDagPlan` + content-addressed local cache). | `self_execseal_in_process` (pipe-FD ephemeral HMAC to `compile-lean`). |
+| **Cargo** | `RUSTC_WORKSPACE_WRAPPER` with explicit `--target <triple>` separating target units from host `build.rs` / `proc-macro` units. | `none`, `nominal`, or `dynamic` (`ParallelDagPlan` + content-addressed local `.olean` / claim caches). | `self_execseal_in_process` (pipe-FD ephemeral HMAC to `compile-lean`). |
 | **Bazel** | Capture aspect on `@rules_rust` `rustc` actions (never metadata-only actions); build-action-native target configuration. | `none`, `nominal`, or `fixed-buckets=K`; public `.olean`-only upstream mounts for Skyframe early cutoff. | Remote RBE with `--allowed_local_actions_regex`, `--remote_local_fallback=false`, `--remote_upload_local_results=false` on PRs, and SLSA spawn-log provenance (or local `compile-lean`). |
 | **Soong** | Build-action capture attached to Soong `rust_library` / `rust_binary` Ninja rules under the target configuration without modifying production outputs. | Static analysis-time `none`, `nominal`, or `fixed-buckets=K`; `compile-lean` `move-if-changed` + Ninja `restat = 1` early cutoff. | Local `compile-lean` (`split_action_execseal_unauthenticated`) or remote-only CI execution with out-of-band provenance. |
 | **GN / Ninja** | Auxiliary `.anneal_capture` rule under `$target_toolchain` forwarding explicit `inputs` and preserving output-dir hygiene; host test targets consume the target-configured receipt. | Static `none`, `nominal`, or `fixed-buckets=K`; `compile-lean` `move-if-changed` + Ninja `restat = 1`. | Local `compile-lean` (`split_action_execseal_unauthenticated`) or remote-only CI execution (local fallback disabled) with provenance. |
@@ -382,3 +382,18 @@ Neovim, Helix) directly from `anneal-project.json` without `lakefile.toml` or
 elaboration for tactic feedback, remain explicitly outside Anneal's TCB
 ([`THREAT_MODEL.md`](../THREAT_MODEL.md) Section 2.1), and never emit Receipt
 v3.
+
+### Incremental Claim Cache (`anneal-claim-cache-v1`)
+
+In `cargo-anneal verify`, `--claim-cache-mode=full-receipt` (default; disable
+via `--claim-cache-mode=off` or `--no-cache`, override via `--claim-cache-dir`)
+caches audited `"target-audit"` evidence keyed by a domain-separated SHA-256
+digest over normalized scope, sorted `(module, role, sha256)` sources, model
+and specification manifests, correspondence provenance, foundation, library,
+and sysroot locks, Lean binary digest/version, runtime-library admission,
+sandbox mode, and policy flags. Cache hits bypass Lean re-elaboration only
+after fail-closed `O_NOFOLLOW`/UID/`0o700`/`0o444` checks and live validation
+of `report.graph`, `moduleIdentities`, `sources`, `bindings`, `unpinnedLean`,
+and on-disk module digests, recording `from_claim_cache`, `cache_status`, and
+`claim_cache_key` in Receipt v3 (while `--export-lean-lib` bypasses lookup so
+`<dir>/lean-lib/` artifacts are still materialized fresh).

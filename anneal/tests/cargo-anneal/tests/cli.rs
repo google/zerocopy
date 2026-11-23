@@ -1577,3 +1577,24 @@ fn testkit_parses_cli_failure_receipt_cleanly() {
     let parsed = anneal_testkit::VerifyReceipt::from_json_slice(&output.stdout).unwrap();
     anneal_testkit::assert_rejected(&parsed, "unsupported", Some("request"), "").unwrap();
 }
+
+#[test]
+fn claim_cache_flags_enforce_conflicts_and_non_empty_dir() {
+    let project = tempfile::tempdir().unwrap();
+    for bad in [
+        &["verify", "--request", "r.json", "--no-cache", "--claim-cache-mode", "full-receipt"][..],
+        &["verify", "--request", "r.json", "--no-cache", "--claim-cache-mode", "off"][..],
+        &["verify", "--request", "r.json", "--no-cache", "--claim-cache-dir", "claim-cache-dir"]
+            [..],
+        &["verify", "--request", "r.json", "--claim-cache-mode", "bogus"][..],
+        &["verify", "--request", "r.json", "--claim-cache-dir", ""][..],
+    ] {
+        let output = command(Route::Direct, project.path()).args(bad).output().unwrap();
+        assert_result(&output, 2, "", "error:");
+        assert!(output.stdout.is_empty(), "{bad:?}: {output:?}");
+    }
+
+    let help = command(Route::Direct, project.path()).args(["verify", "--help"]).output().unwrap();
+    assert_result(&help, 0, "--claim-cache-mode", "");
+    assert_result(&help, 0, "--claim-cache-dir", "");
+}

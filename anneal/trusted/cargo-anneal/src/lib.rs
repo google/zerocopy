@@ -27,6 +27,7 @@
 
 #[doc(hidden)]
 pub mod bundle;
+mod claim_cache;
 mod olean_cache;
 #[doc(hidden)]
 pub mod cli;
