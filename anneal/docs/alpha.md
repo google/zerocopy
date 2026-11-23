@@ -8,6 +8,17 @@ those terms. -->
 
 # MIR verifier alpha
 
+> [!WARNING]
+> **Stage 0 Alpha — Not Yet Audited:** Anneal is an early alpha that can
+> increase confidence on small scalar Rust crates, **not** an audited soundness
+> guarantee. The verifier (`trusted/audit/`, `trusted/rustc-capture/`,
+> `trusted/cargo-anneal/`) and its Receipt v3 TCB audit log have not yet
+> completed independent audit, so a passing run does not guarantee that every
+> remaining assumption is accounted for. Track maturity across
+> [Stage 0 (Alpha usability, `#4095`)](https://github.com/google/zerocopy/issues/4095)
+> -> [Stage 1 (Audited trust boundary and TCB accounting, `#4012`)](https://github.com/google/zerocopy/issues/4012)
+> -> [Stage 2 (Broad systems coverage and TCB reduction, `#4096`)](https://github.com/google/zerocopy/issues/4096).
+
 The developer alpha checks selected Rust functions or scalar library crates on
 x86-64 Linux with glibc, such as Ubuntu 24.04. It compiles a dependency-free
 library with the pinned compiler and checks the authored Lean proof against the
@@ -55,27 +66,38 @@ modules under `proof.sources`. For a dependency-free, feature-free Cargo
 library, `--manifest-path <Cargo.toml> --proof-dir <dir>` (with optional
 `--select <path>`) constructs the same request automatically.
 
-The alpha uses the x86-64 Linux scalar MIR profile: booleans, 8- through
-128-bit and pointer-sized integers, `char`, `core::cmp::Ordering`, `(T, bool)`
-overflowing-arithmetic pairs (via `core::intrinsics::*_with_overflow`, since
-`-Copt-level=0` leaves `overflowing_*` methods as `Call` terminators), unit,
-never, inhabited local fieldless enums, unary/binary scalar operators (division
-and remainder require unchecked intrinsics that do not emit runtime `Assert`
-terminators), and integer/character casts (for example,
-`ci/verify_starnix_e2e.py` checks Starnix's `ebpf_core` endianness conversion
-with symbolic MIR helpers in `Anneal.MirWp`). Proof modules may import bundled
-3-axiom `Anneal.*` proof libraries (such as `Anneal.MirWp`, `Anneal.LoopInv`,
-and `Anneal.BitVec`; see
-[`theory/bundle-manifest.json`](../theory/bundle-manifest.json) for the
-canonical manifest), compiled and audited on demand when imported;
-specification modules stay restricted to `Trusted.*`, `Init.*`/`Std.*`, and
-declared `specification` helpers. Calls (including `overflowing_*` methods),
-runtime `Assert` terminators (including ordinary Rust `/` and `%`), place
-projections, general tuple or ADT aggregates, pointer accesses, and external
-dependencies are outside the alpha's scope. An unsupported input returns an
-explicit refusal. Verify the stated configuration when comparing a result with a
-deployed binary. See the [threat model](../THREAT_MODEL.md) for the verification
-assumptions.
+## Stage 0 / MIR Profile v1: supported vs. refused
+
+The alpha runs on the x86-64 Linux scalar MIR profile (Profile v1) with
+`-Zmir-preserve-ub` enforced during capture (`#4114`). Any construct outside
+this profile returns an explicit fail-closed refusal rather than approximating
+semantics.
+
+| Category | Supported today (Profile v1) | Refused today (fail-closed) |
+| :--- | :--- | :--- |
+| **Types** | `bool`, `char`, 8- through 128-bit and pointer-sized integers (`i8`..`i128`, `isize`, `u8`..`u128`, `usize` on 64-bit targets), `()`, `!`, `core::cmp::Ordering`, `(T, bool)` overflowing-arithmetic pairs (via `core::intrinsics::*_with_overflow`), and non-generic inhabited crate-local fieldless enums (without explicit discriminant `AnonConst` items in whole-crate scope). | References and raw pointers (`&T`, `&mut T`, `*const T`, `*mut T`), slices, arrays, structs, unions, enums with payloads, uninhabited zero-variant enums, floats, general tuples, and generic types. |
+| **Statements & rvalues** | `Assign` (`Use` on retag-noop scalar types, unary `Not`/`Neg`, binary bitwise/shift/wrapping-arithmetic/`*WithOverflow`/comparison/`Cmp`/unchecked `Div`/`Rem`, `CastKind::IntToInt`, `Discriminant`), `StorageLive`, `StorageDead`, bare unprojected `PlaceMention`, and `Nop`. | Place projections (fields, indexing, dereferencing, projected `PlaceMention`), `Aggregate` rvalues, `PtrMetadata`, pointer/float/`Transmute` casts, and inline assembly. |
+| **Terminators & operands** | `Goto`, `SwitchInt`, `Return`, `Unreachable`; `Copy`/`Move` on unprojected locals; already-evaluated integer scalar or `ZeroSized` unit/single-variant-enum constants. | `Call` terminators (including `overflowing_*` methods under `-Copt-level=0`, and `CallSource::Use`), runtime `Assert` terminators (including ordinary Rust `/` and `%`), `Drop`, unwind/abort terminators, and unevaluated constants. |
+| **Crate scope & items** | Dependency-free, feature-free library crates (`Scope::Crate` or `Scope::SelectedUnit`); non-generic free and associated functions. | External crate dependencies, Cargo features, generics, closures, `const`/`static`/`trait`/`impl`/`AnonConst` owners in whole-crate scope, global assembly, and proc-macro crates. |
+
+For a realistic scalar example, `ci/verify_starnix_e2e.py` checks Starnix's
+`ebpf_core` endianness conversion using symbolic MIR helpers in `Anneal.MirWp`.
+
+### Bundled proof libraries and specification boundaries
+
+- **Proof modules:** May import any of the bundled 3-axiom `Anneal.*` proof
+  libraries listed in
+  [`theory/bundle-manifest.json`](../theory/bundle-manifest.json) (such as
+  `Anneal.MirWp`, `Anneal.LoopInv`, `Anneal.BitVec`, and `Anneal.ClassicalEm`),
+  which are compiled and audited on demand when imported. Other experimental
+  modules under `theory/Anneal/` that are not in `theory/bundle-manifest.json`
+  are not bundled into `cargo-anneal`.
+- **Specification modules:** Stay restricted to `Trusted.*`, `Init.*`/`Std.*`,
+  and declared `specification` helpers.
+
+Verify the stated compilation configuration in the receipt when comparing a
+result with a deployed binary. See the [threat model](../THREAT_MODEL.md) for
+the verification assumptions.
 
 ## Build-system and toolchain options
 
@@ -131,8 +153,12 @@ switches passing status to `tainted_crate_verified` or
 
 ## Install a published alpha
 
+Replace `<version>` with the latest published prerelease tag on GitHub Releases
+(for example, `0.2.0-alpha.6`; `main` tracks unreleased development versions
+whose archive digest is intentionally zeroed until release preparation):
+
 ```sh
-cargo install --locked cargo-anneal@0.2.0-alpha.3
+cargo install --locked cargo-anneal@<version>
 cargo anneal setup
 cargo anneal verify --request /path/to/scalar/request.json
 ```

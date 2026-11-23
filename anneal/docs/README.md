@@ -55,28 +55,45 @@ cargo run --locked -p anneal-audit -- \
 - The [Codex review guide](codex-review.md) describes review gates and the
   standalone diagnostic evaluator.
 
-## Design and maintenance
+## Documentation index
 
-- [Project principles](../PRINCIPLES.md), [threat model](../THREAT_MODEL.md),
-  and [meta-principles](../META_PRINCIPLES.md) define the promise to users,
-  the assumptions and review responsibilities, and the goals that govern
-  both documents.
-- [Design overview](design.md) explains the intended verification workflow,
-  specification forms, and incremental adoption.
-- [Architecture](architecture.md) covers the MIR pipeline, repository
-  layout, and compiler integration.
-- [Trust model and boundary enforcement](trust-model.md) explains the
-  `trusted/` boundary, dependency pins, and repository audits.
-- [Elaborator containment and Receipt v3
-  design](elaborator-containment-design.md) covers Linux `ExecSeal` sandboxing,
-  specification preflight, two-phase target replay, and Receipt Schema v3 taint
-  accounting.
-- [MIR correspondence design](mir-correspondence-design.md) and
-  [strategy](mir-correspondence-strategy.md) describe how Anneal relates its
-  operational semantics to the pinned reference model.
-- [Agent instructions](../AGENTS.md) and the
-  [review policy design](review-policy-design.md) describe contributor
-  obligations and where the review rules belong.
+Documents below distinguish between **Current** behavior (what runs in Stage 0
+alpha today) and **Target Architecture** or **Planned Interop** designs landing
+incrementally.
+
+### Governing and top-level docs
+
+| Document | Status | Scope |
+| :--- | :--- | :--- |
+| [Project principles](../PRINCIPLES.md) | Current (governing) | Correctness promise and design principles. |
+| [Threat model](../THREAT_MODEL.md) | Current (governing) | Adversary assumptions, bounded two-surface human review, and in-scope defenses. |
+| [Meta-principles](../META_PRINCIPLES.md) | Current (governing) | Invariant goals governing principles and threat model. |
+| [Agent instructions](../AGENTS.md) | Current | Contributor and AI-agent repository obligations. |
+
+### Current developer and architecture docs
+
+| Document | Status | Scope |
+| :--- | :--- | :--- |
+| [Design overview](design.md) | Current + planned | Detailed verification workflow, library-centric model, specification modes, and incremental adoption. |
+| [MIR verifier alpha](alpha.md) | Current (Stage 0) | Exact Profile v1 scalar MIR subset, `verify` usage, taint flags, and alpha releases. |
+| [Scaffolding and testing](scaffolding.md) | Current | Running workspace tests, `installed_smoke`, packaging checks, and failure bundles. |
+| [Multi-step MIR architecture](architecture.md) | Current + planned | Three-stage MIR pipeline, repository layout, and compiler integration. |
+| [Trust model and boundary enforcement](trust-model.md) | Current | The `trusted/` boundary, dependency pins, and repository CI audits. |
+| [Elaborator containment and Receipt v3](elaborator-containment-design.md) | Current | Linux `ExecSeal` sandboxing, specification preflight, target replay, and Receipt v3 taint law. |
+| [MIR correspondence design](mir-correspondence-design.md) | Current | Pass 2 correspondence anchoring `Trusted.MirSemantics` against `vendor/lean-miri/`. |
+| [MIR correspondence strategy](mir-correspondence-strategy.md) | Current | Proof strategy and simulation obligations for MIR correspondence. |
+| [Lean-Miri provenance](lean-miri-provenance.md) | Current | Provenance and patching policy for `vendor/lean-miri/`. |
+| [Review policy design](review-policy-design.md) | Current | Contributor review rules and policy-placement structure. |
+| [Codex review guide](codex-review.md) | Current | Automated review gates and standalone diagnostic evaluator. |
+
+### Target architecture and interop docs
+
+| Document | Status | Scope |
+| :--- | :--- | :--- |
+| [Build systems and orthogonal Receipt v3](build-systems-and-receipts.md) | Target Architecture | Five-phase split-action contract (Cargo, Bazel, Soong, GN, Buck2), orthogonal Receipt v3, Tier 1/2 cross-crate MIR, `nominal`/`fixed-buckets=K` sharding, and Lean `module` / `v4.35.0`. |
+| [Auditing and Universal NDJSON Comparator](auditing-and-comparator.md) | Target Architecture | Universal NDJSON Comparator (`5a`/`5b`/`5c`, `nanoda_bin` + `con-ron`), `check_guard_mutation.py` CI, and honest non-adversarial `audit-spec` sanity checks. |
+| [Specification Core v2 and golden spec closure](spec-core-and-golden-closure.md) | Target Architecture | `FnContract` (`safetyPre`/`behaviorPre`), 8-mask `EffectMask` realizability, mutual-recursion stratification, and always-rendered golden spec closures under `CODEOWNERS`/`OWNERS`. |
+| [Anneal–Aeneas interop bridge](aeneas-interop-bridge.md) | Planned Interop | Opt-in zero-TCB `anneal/interop/aeneas-bridge/` architecture, strict vs. liberal `.fail` refinement, MIR prerequisites, and `read_u64` / `write_uint` / `split_at_mut` canaries. |
 
 ## Historical workspaces
 
