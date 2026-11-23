@@ -64064,6 +64064,69 @@
         "verification"
       ]
     },
+    "lean-zip-verification-boundary-and-rust-deflate-mir-audit": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "ref": "master",
+            "repository": "kim-em/lean-zip",
+            "revision": "2f7a63f38195bc667a926881b55d10c9f8a88eeb"
+          },
+          "name": "lean-zip verified DEFLATE/INFLATE implementation in Lean 4"
+        },
+        {
+          "identity": {
+            "ref": "master",
+            "repository": "kim-em/lean-zip-benchmark",
+            "revision": "c0a635509312a94642fe616f8a750cae8ead3052"
+          },
+          "name": "lean-zip-benchmark multi-codec Silesia harness and comparator results"
+        },
+        {
+          "identity": {
+            "path": "anneal",
+            "repository": "google/zerocopy",
+            "revision": "f8f13a17d398ae688f0a4bbd24595e09e358eda7",
+            "version": "0.2.0-alpha.8+"
+          },
+          "name": "Anneal MIR verifier and Profile v1 capture/theory baseline"
+        },
+        {
+          "identity": {
+            "repository": "Frommi/miniz_oxide",
+            "revision": "b28c237471f63efebe152bddd962dc57bbb531eb",
+            "version": "0.9.1"
+          },
+          "name": "miniz_oxide pure-Rust DEFLATE/zlib reference implementation"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 v4.34.1 theorem prover and kernel (Anneal verification target)"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust nightly-2026-05-31 capture compiler toolchain (1.98.0-nightly)"
+        }
+      ],
+      "topics": [
+        "anneal/mir-semantics",
+        "domains/compression",
+        "isa/x86-64",
+        "lean/mechanization",
+        "rust/unsafe",
+        "verification/soundness",
+        "verification/tcb-audit"
+      ]
+    },
     "lean4-elaboration-vacuity-systemverilog-widths-and-defi-rounding-traps": {
       "observed_at": "2026-11-19",
       "subjects": [
