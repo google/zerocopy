@@ -2457,7 +2457,7 @@ theorem statefulAllocBump_realizability_canary :
 
 @[expose] def unwoundOnlyTrapPost (_q : Query) : TerminalOut → Prop
   | .returned _ => True
-  | .unwound _ => False
+  | .unwound _ | .aborted _ => False
 
 @[expose] def survivedNatPre (n : Nat) : Prop := n < 10
 @[expose] def survivedDisjNatPost (n ret : Nat) : Prop := n < 10 ∨ ret = 42

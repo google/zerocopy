@@ -79,6 +79,7 @@ inductive RefTerminatorKind where
   | return_
   | unreachable
   | unwindResume
+  | unwindTerminate
   | assert (cond : RefOperand) (expected : Bool) (msg : AssertKind)
       (target : BasicBlockId) (unwind : UnwindAction)
   | call (callee : DefId) (args : List RefOperand) (dst : RefPlace)
@@ -241,7 +242,8 @@ noncomputable def collectTerminator (acc : List MirTy) :
   | .assert c _ _ _ _ => collectOperand acc c
   | .call _ args dst _ _ =>
     collectPlace (args.foldl collectOperand acc) dst
-  | .goto _ | .return_ | .unreachable | .unwindResume | .unsupported => acc
+  | .goto _ | .return_ | .unreachable | .unwindResume | .unwindTerminate
+  | .unsupported => acc
 
 /-- Intern all `MirTy` descriptors carried in a `BasicBlock`. -/
 noncomputable def collectBasicBlock (acc : List MirTy)
@@ -303,6 +305,7 @@ noncomputable def encodeTerminator (ts : List MirTy) :
   | .return_ => .return_
   | .unreachable => .unreachable
   | .unwindResume => .unwindResume
+  | .unwindTerminate => .unwindTerminate
   | .assert c exp msg t u => .assert (encodeOperand ts c) exp msg t u
   | .call callee args dst t u =>
     .call callee (args.map (encodeOperand ts)) (encodePlace ts dst) t u
@@ -383,6 +386,7 @@ noncomputable def decodeTerminator (ts : List MirTy) :
   | .return_ => some .return_
   | .unreachable => some .unreachable
   | .unwindResume => some .unwindResume
+  | .unwindTerminate => some .unwindTerminate
   | .assert c exp msg t u =>
     optMap (fun c' => .assert c' exp msg t u) (decodeOperand ts c)
   | .call callee args dst t u =>

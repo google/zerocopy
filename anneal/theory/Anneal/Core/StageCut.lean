@@ -634,11 +634,13 @@ theorem wpProg_of_wlp_and_safety {p : Program} {fuel : Nat} {q : Query}
 
 /-! ## Two-Track Postconditions, `DropSpineCut`, and Early-Return Loops -/
 
-/-- Splits a `TerminalOut` postcondition into `(onRet, onUnwind)`. -/
+/-- Splits a `TerminalOut` postcondition into `(onRet, onUnwind)`, rejecting
+process aborts (`.aborted`) fail-closed. -/
 @[expose] def twoTrackPost (onRet : Out → Prop) (onUnwind : CallerMemory → Prop) :
     TerminalOut → Prop
   | .returned out => onRet out
   | .unwound cm => onUnwind cm
+  | .aborted _ => False
 
 /-- Two-track state-level weakest precondition forbidding faults (`0`
 `noncomputable`). -/

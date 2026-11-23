@@ -865,7 +865,8 @@ theorem collectTerminator_spec (acc : List MirTy) (term : TerminatorKind) :
     (∀ ts, SubTable (collectTerminator acc term) ts →
       decodeTerminator ts (encodeTerminator ts term) = some term) := by
   cases term with
-  | goto _ | return_ | unreachable | unwindResume | unsupported =>
+  | goto _ | return_ | unreachable | unwindResume | unwindTerminate
+  | unsupported =>
     exact ⟨SubTable.refl acc, fun _ _ => rfl⟩
   | switchInt d targets =>
     let ⟨h_sub, h_dec⟩ := collectOperand_spec acc d
@@ -1039,7 +1040,8 @@ theorem collectTerminator_canonical (acc : List MirTy) (term : TerminatorKind)
     (h : typesAreCanonical acc = true) :
     typesAreCanonical (collectTerminator acc term) = true := by
   cases term with
-  | goto _ | return_ | unreachable | unwindResume | unsupported => exact h
+  | goto _ | return_ | unreachable | unwindResume | unwindTerminate
+  | unsupported => exact h
   | switchInt d _ | assert d _ _ _ _ => exact collectOperand_canonical acc d h
   | call _ args dst _ _ =>
     exact collectPlace_canonical (args.foldl collectOperand acc) dst

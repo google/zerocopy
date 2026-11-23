@@ -140,19 +140,27 @@ Constructor correspondence:
 - `.return_` corresponds to `TerminatorKind::Return`.
 - `.unreachable` corresponds to `TerminatorKind::Unreachable`.
 - `.unwindResume` corresponds to `TerminatorKind::UnwindResume`.
+- `.unwindTerminate` corresponds to
+  `TerminatorKind::UnwindTerminate(UnwindTerminateReason)` (emitted, for
+  example, when an unwinding `extern "C-unwind"` call or cleanup path aborts
+  without unwinding under `-C panic=abort` or across a `nounwind` ABI
+  boundary). Profile version 1 `evalTerminator` currently fails closed to
+  `.fault .unsupported` until cleanup/abort execution semantics are wired into
+  both $M_{\text{anneal}}$ and `Trusted.Correspondence`.
 - `.assert cond expected msg target unwind` corresponds to
   `TerminatorKind::Assert { cond, expected, msg, target, unwind }`.
 - `.call callee args dst target unwind` corresponds to direct `FnDef`
   `TerminatorKind::Call`.
 - `.unsupported` represents all other `TerminatorKind` variants
-  (`UnwindTerminate`, `Drop`, indirect `Call`, `TailCall`, `Yield`,
-  `CoroutineDrop`, `FalseEdge`, `FalseUnwind`, and `InlineAsm`). -/
+  (`Drop`, indirect `Call`, `TailCall`, `Yield`, `CoroutineDrop`, `FalseEdge`,
+  `FalseUnwind`, and `InlineAsm`). -/
 inductive TerminatorKind where
   | goto (target : BasicBlockId)
   | switchInt (discr : Operand) (targets : SwitchTargets)
   | return_
   | unreachable
   | unwindResume
+  | unwindTerminate
   | assert (cond : Operand) (expected : Bool) (msg : AssertKind)
       (target : BasicBlockId) (unwind : UnwindAction)
   | call (callee : DefId) (args : List Operand) (dst : Place)

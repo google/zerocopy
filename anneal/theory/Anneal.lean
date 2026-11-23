@@ -16,6 +16,7 @@ public import Anneal.BitVecArith
 public import Anneal.LeBytes
 public import Anneal.ListChunks
 public import Anneal.MirWp
+public import Anneal.ContractCore
 public import Anneal.LoopInv
 public import Anneal.LinearArith
 public import Anneal.SpineForce
@@ -45,14 +46,15 @@ Umbrella module for Anneal's untrusted proof theory (`theory/`), re-exporting
 `Anneal.LoopInv`, `Anneal.LinearArith`, `Anneal.SpineForce`, `Anneal.PTree`,
 `Anneal.BitTrieLrat`, `Anneal.InitLemmas`, `Anneal.ClassicalEm`, and
 `Anneal.Firewall`), the fuel-bounded MIR weakest-precondition machinery
-(`Anneal.MirWp`), the computable MIR step mirrors and unbounded-depth bridges
-(`Anneal.MirTotal`), the block-tree, separation-logic, and stage-cut core
-(`Anneal.Core`), mixed-mask padded-aggregate and `[T; N]` byte-copy laws
-(`Anneal.ByteRun`), lawful sub-allocation byte lenses and `&mut` method call
-summaries (`Anneal.ByteSubLens`), constructive `< ω^ω` Cantor Normal Form
-ordinals and multi-rank termination (`Anneal.CnfOrd`), $\mathbb{F}_2$-linear
-and $\mathbb{F}_2$-bilinear SIMD certificate evaluators (`Anneal.F2Simd`), and
-`Anneal.PureLift`.
+(`Anneal.MirWp`), the effect-indexed contract soundness and negative-control
+suite (`Anneal.ContractCore`), the computable MIR step mirrors and
+unbounded-depth bridges (`Anneal.MirTotal`), the block-tree, separation-logic,
+and stage-cut core (`Anneal.Core`), mixed-mask padded-aggregate and `[T; N]`
+byte-copy laws (`Anneal.ByteRun`), lawful sub-allocation byte lenses and `&mut`
+method call summaries (`Anneal.ByteSubLens`), constructive `< ω^ω` Cantor
+Normal Form ordinals and multi-rank termination (`Anneal.CnfOrd`),
+$\mathbb{F}_2$-linear and $\mathbb{F}_2$-bilinear SIMD certificate evaluators
+(`Anneal.F2Simd`), and `Anneal.PureLift`.
 -/
 
 end Anneal
