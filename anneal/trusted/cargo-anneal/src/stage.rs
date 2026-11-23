@@ -132,9 +132,9 @@ struct InspectorErrResponse {
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
-struct InspectorOkResponse {
+struct InspectorOkTypedResponse<T> {
     ok: bool,
-    result: serde_json::Map<String, Json>,
+    result: T,
 }
 
 fn check_lean_output(
@@ -2442,8 +2442,21 @@ impl Checker {
     /// operational -> code `2`).
     #[doc(hidden)]
     pub fn invoke_inspector(&mut self, mode: &str, req: &Json) -> Result<Json, Failure> {
+        let map: serde_json::Map<String, Json> = self.invoke_inspector_typed(mode, req)?;
+        Ok(Json::Object(map))
+    }
+
+    /// Invoke staged `TrustedBoundary.lean` and deserialize the `"result"`
+    /// payload directly into a strict caller-defined schema `T` without passing
+    /// through an untyped map.
+    pub(crate) fn invoke_inspector_typed<T: serde::de::DeserializeOwned>(
+        &mut self,
+        mode: &str,
+        req: &Json,
+    ) -> Result<T, Failure> {
         if self.sandbox_mode == SandboxMode::Unsandboxed && matches!(mode, "preflight" | "audit") {
-            return self.invoke_inspector_direct(mode, req);
+            let text = self.invoke_inspector_direct_text(mode, req)?;
+            return parse_inspector_ok_typed(mode, &text);
         }
 
         let olean_host = self.ensure_inspector_compiled(mode, false)?;
@@ -2465,11 +2478,17 @@ impl Checker {
             host: in_dir.clone(),
             child: PathBuf::from("/work/in"),
         }];
-        if mode == "target-audit" {
-            let lib_dir = self.stage.join("lib");
-            create_dir_mode(&lib_dir, 0o700)?;
+        // Mount `stage/lib` (which holds compiled `Proof` `.olean`s) ONLY into
+        // the isolated `"target-export"` child process, NEVER into the
+        // verdict-producing `"target-audit"` process. For `"target-audit"`,
+        // only explicitly listed non-proof target `.olean`s are staged into
+        // `in_dir/lib` below so authored `Proof` `.olean` bytes are physically
+        // absent from `"target-audit"`'s mount namespace and Landlock ruleset.
+        let stage_lib_dir = self.stage.join("lib");
+        if mode == "target-export" {
+            create_dir_mode(&stage_lib_dir, 0o700)?;
             ro_mounts.push(MountSpec {
-                host: lib_dir,
+                host: stage_lib_dir.clone(),
                 child: PathBuf::from("/work/lib"),
             });
         }
@@ -2503,6 +2522,14 @@ impl Checker {
                 let mapped = mapper.map_str(Path::new(sys))?;
                 obj.insert("sysroot".to_string(), Json::String(mapped));
             }
+            if let Some(export_path) = obj.get("proofExportPath").and_then(Json::as_str) {
+                let copy_dest = in_dir.join("proof-export.json");
+                copy_readonly_file(Path::new(export_path), &copy_dest, mode)?;
+                obj.insert(
+                    "proofExportPath".to_string(),
+                    Json::String(mapper.map_str(&copy_dest)?),
+                );
+            }
             for key in ["sources", "baseSources"] {
                 if let Some(sources) = obj.get_mut(key).and_then(Json::as_array_mut) {
                     let sources_dir = in_dir.join(key);
@@ -2528,6 +2555,8 @@ impl Checker {
                 }
             }
             if let Some(arts_arr) = obj.get_mut("artifacts").and_then(Json::as_array_mut) {
+                let in_lib_dir = in_dir.join("lib");
+                let mut staged_nonproof_dirs = BTreeSet::new();
                 for entry in arts_arr.iter_mut() {
                     if let Some(pair) = entry.as_array_mut()
                         && pair.len() == 2
@@ -2537,12 +2566,34 @@ impl Checker {
                             if let Some(paths) = group.as_array_mut() {
                                 for p in paths.iter_mut() {
                                     if let Some(s) = p.as_str() {
-                                        *p = Json::String(mapper.map_str(Path::new(s))?);
+                                        let host_path = Path::new(s);
+                                        if mode == "target-audit"
+                                            && let Ok(rel) = host_path.strip_prefix(&stage_lib_dir)
+                                        {
+                                            let dest = in_lib_dir.join(rel);
+                                            copy_readonly_file(host_path, &dest, mode)?;
+                                            let mut dir = dest.parent();
+                                            while let Some(d) = dir {
+                                                if !d.starts_with(&in_lib_dir) {
+                                                    break;
+                                                }
+                                                staged_nonproof_dirs.insert(d.to_path_buf());
+                                                dir = d.parent();
+                                            }
+                                            *p = Json::String(mapper.map_str(&dest)?);
+                                        } else {
+                                            *p = Json::String(mapper.map_str(host_path)?);
+                                        }
                                     }
                                 }
                             }
                         }
                     }
+                }
+                // Lock staged non-proof artifact directories read-only bottom-up
+                // after all files have been copied into `in_dir/lib`.
+                for d in staged_nonproof_dirs.into_iter().rev() {
+                    set_mode(&d, 0o500)?;
                 }
             }
         }
@@ -2611,19 +2662,10 @@ impl Checker {
             door1_bytes.ok_or_else(|| Failure::new(2, mode, "missing inspector result.json"))?;
         let resp_text = String::from_utf8(resp_bytes)
             .map_err(|e| Failure::new(2, mode, format!("invalid UTF-8 inspector result: {e}")))?;
-        let resp: InspectorOkResponse = serde_json::from_str(&resp_text)
-            .map_err(|_| Failure::new(2, mode, "unexpected inspector protocol response"))?;
-        if !resp.ok {
-            return Err(Failure::new(
-                2,
-                mode,
-                "unexpected inspector protocol response",
-            ));
-        }
-        Ok(Json::Object(resp.result))
+        parse_inspector_ok_typed(mode, &resp_text)
     }
 
-    fn invoke_inspector_direct(&mut self, mode: &str, req: &Json) -> Result<Json, Failure> {
+    fn invoke_inspector_direct_text(&mut self, mode: &str, req: &Json) -> Result<String, Failure> {
         let _olean_host = self.ensure_inspector_compiled(mode, true)?;
         let control_dir = self.stage.join("control");
         let entry = control_dir.join("TrustedBoundaryEntry.lean");
@@ -2675,16 +2717,21 @@ impl Checker {
             ));
         }
 
-        let resp_text = fs::read_to_string(&result_path).map_err(|e| {
-            Failure::new(2, mode, format!("missing/malformed inspector result: {e}"))
-        })?;
-        let resp: InspectorOkResponse = serde_json::from_str(&resp_text)
-            .map_err(|_| Failure::new(2, mode, "unexpected inspector protocol response"))?;
-        if !resp.ok {
-            return Err(Failure::new(2, mode, "unexpected inspector protocol response"));
-        }
-        Ok(Json::Object(resp.result))
+        fs::read_to_string(&result_path)
+            .map_err(|e| Failure::new(2, mode, format!("missing/malformed inspector result: {e}")))
     }
+}
+
+fn parse_inspector_ok_typed<T: serde::de::DeserializeOwned>(
+    mode: &str,
+    resp_text: &str,
+) -> Result<T, Failure> {
+    let resp: InspectorOkTypedResponse<T> = serde_json::from_str(resp_text)
+        .map_err(|_| Failure::new(2, mode, "unexpected inspector protocol response"))?;
+    if !resp.ok {
+        return Err(Failure::new(2, mode, "unexpected inspector protocol response"));
+    }
+    Ok(resp.result)
 }
 
 /// Derive a dotted Lean module name from a relative `.olean` (or

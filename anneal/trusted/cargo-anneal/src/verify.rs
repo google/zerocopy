@@ -1910,14 +1910,41 @@ fn finalize_passing_artifacts(
     Ok(())
 }
 
-/// Validate `audit.sorryDeclarations` and cross-check it against `audit.axioms`
-/// (`sorryAx`). Returns `Ok(Some(decls))` when `--allow-sorry-in-proof` is
-/// active, `Ok(None)` when absent on a `sorry`-free proof, and
-/// `Err(tool_failed)` on missing, malformed, or inconsistent audit metadata.
+/// Validate `audit.sorryDeclarations`, closed `audit.axioms` allowlist,
+/// `replay`/`exactType` flags, and non-empty logical closures as
+/// defense-in-depth on the final verification receipt. Returns
+/// `Ok(Some(decls))` when `--allow-sorry-in-proof` is active, `Ok(None)` when
+/// absent on a `sorry`-free proof, and `Err(tool_failed)` on missing,
+/// malformed, or inconsistent audit metadata.
 fn validate_sorry_declarations(
     audit: &Value,
     allow_sorry_in_proof: bool,
 ) -> Result<Option<Vec<Value>>> {
+    if audit.get("replay").and_then(Value::as_bool) != Some(true)
+        || audit.get("exactType").and_then(Value::as_bool) != Some(true)
+    {
+        return Err(error(
+            "tool_failed",
+            "audit",
+            "audit metadata must certify replay == true and exactType == true",
+        ));
+    }
+    for closure_key in ["subjectClosure", "modelClosure", "specificationClosure"] {
+        let Some(rows) = audit.get(closure_key).and_then(Value::as_array) else {
+            return Err(error(
+                "tool_failed",
+                "audit",
+                format!("missing audit.{closure_key} metadata"),
+            ));
+        };
+        if rows.is_empty() {
+            return Err(error(
+                "tool_failed",
+                "audit",
+                format!("unexpected empty audit.{closure_key} metadata"),
+            ));
+        }
+    }
     let Some(sorry_decls) = audit.get("sorryDeclarations").and_then(Value::as_array) else {
         return Err(error("tool_failed", "audit", "missing audit.sorryDeclarations metadata"));
     };
@@ -1930,7 +1957,22 @@ fn validate_sorry_declarations(
     if !axioms.iter().all(Value::is_string) {
         return Err(error("tool_failed", "audit", "malformed audit.axioms metadata"));
     }
-    let uses_sorry_ax = axioms.iter().any(|a| a.as_str() == Some("sorryAx"));
+    const ALLOWED_AXIOMS: &[&str] = &["Classical.choice", "Quot.sound", "propext"];
+    let mut uses_sorry_ax = false;
+    for ax in axioms {
+        let Some(name) = ax.as_str() else {
+            return Err(error("tool_failed", "audit", "malformed audit.axioms metadata"));
+        };
+        if name == "sorryAx" {
+            uses_sorry_ax = true;
+        } else if !ALLOWED_AXIOMS.contains(&name) {
+            return Err(error(
+                "tool_failed",
+                "audit",
+                format!("unexpected axiom {name} outside closed allowlist in audit.axioms"),
+            ));
+        }
+    }
     if allow_sorry_in_proof {
         if uses_sorry_ax != !sorry_decls.is_empty() {
             return Err(error(
@@ -2597,14 +2639,27 @@ mod tests {
 
     #[test]
     fn validate_sorry_declarations_enforces_flag_and_axiom_consistency() {
-        let clean = json!({"sorryDeclarations": [], "axioms": ["propext"]});
+        let base_closures = |mut obj: serde_json::Map<String, Value>| {
+            obj.entry("replay").or_insert(json!(true));
+            obj.entry("exactType").or_insert(json!(true));
+            obj.entry("subjectClosure")
+                .or_insert(json!([{"name": "Captured.program", "module": "Captured"}]));
+            obj.entry("modelClosure")
+                .or_insert(json!([{"name": "Trusted.MirSemantics.UnitTheorem", "module": "Trusted.MirSemantics"}]));
+            obj.entry("specificationClosure")
+                .or_insert(json!([{"name": "Spec.specs", "module": "Spec"}]));
+            Value::Object(obj)
+        };
+        let with_base = |v: Value| base_closures(v.as_object().unwrap().clone());
+
+        let clean = with_base(json!({"sorryDeclarations": [], "axioms": ["propext"]}));
         assert_eq!(validate_sorry_declarations(&clean, false).unwrap(), None);
         assert_eq!(validate_sorry_declarations(&clean, true).unwrap(), Some(Vec::new()));
 
-        let with_sorry = json!({
+        let with_sorry = with_base(json!({
             "sorryDeclarations": ["Proof.hole"],
             "axioms": ["propext", "sorryAx"],
-        });
+        }));
         assert_eq!(
             validate_sorry_declarations(&with_sorry, true).unwrap(),
             Some(vec![json!("Proof.hole")])
@@ -2615,24 +2670,52 @@ mod tests {
         assert!(err.detail.contains("sorryDeclarations"), "{}", err.detail);
 
         for (case, allow, expected_substr) in [
-            (json!({"axioms": []}), false, "missing audit.sorryDeclarations"),
+            (with_base(json!({"axioms": []})), false, "missing audit.sorryDeclarations"),
             (
-                json!({"sorryDeclarations": [42], "axioms": []}),
+                with_base(json!({"sorryDeclarations": [42], "axioms": []})),
                 true,
                 "malformed audit.sorryDeclarations",
             ),
-            (json!({"sorryDeclarations": []}), false, "missing audit.axioms"),
-            (json!({"sorryDeclarations": [], "axioms": [true]}), true, "malformed audit.axioms"),
-            (json!({"sorryDeclarations": [], "axioms": ["sorryAx"]}), false, "unexpected sorryAx"),
+            (with_base(json!({"sorryDeclarations": []})), false, "missing audit.axioms"),
             (
-                json!({"sorryDeclarations": [], "axioms": ["sorryAx"]}),
+                with_base(json!({"sorryDeclarations": [], "axioms": [true]})),
+                true,
+                "malformed audit.axioms",
+            ),
+            (
+                with_base(json!({"sorryDeclarations": [], "axioms": ["sorryAx"]})),
+                false,
+                "unexpected sorryAx",
+            ),
+            (
+                with_base(json!({"sorryDeclarations": [], "axioms": ["sorryAx"]})),
                 true,
                 "inconsistent audit metadata",
             ),
             (
-                json!({"sorryDeclarations": ["Proof.hole"], "axioms": ["propext"]}),
+                with_base(json!({"sorryDeclarations": ["Proof.hole"], "axioms": ["propext"]})),
                 true,
                 "inconsistent audit metadata",
+            ),
+            (
+                with_base(json!({"sorryDeclarations": [], "axioms": ["Lean.ofReduceBool"]})),
+                false,
+                "outside closed allowlist",
+            ),
+            (
+                with_base(json!({"replay": false, "sorryDeclarations": [], "axioms": []})),
+                false,
+                "replay == true",
+            ),
+            (
+                with_base(json!({"exactType": false, "sorryDeclarations": [], "axioms": []})),
+                false,
+                "exactType == true",
+            ),
+            (
+                with_base(json!({"subjectClosure": [], "sorryDeclarations": [], "axioms": []})),
+                false,
+                "empty audit.subjectClosure",
             ),
         ] {
             let err = validate_sorry_declarations(&case, allow).unwrap_err();

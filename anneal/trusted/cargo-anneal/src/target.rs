@@ -327,28 +327,275 @@ impl Checker {
         };
         self.invoke_inspector("spec-preflight", &req)
     }
+}
 
+/// Closed set of foundation axioms permitted in any `"target-audit"` report
+/// (outside `--allow-sorry-in-proof`, which additionally permits `"sorryAx"`).
+pub(crate) const ALLOWED_TARGET_FOUNDATION_AXIOMS: &[&str] =
+    &["Classical.choice", "Quot.sound", "propext"];
+
+/// Single declaration-to-module entry in a `"target-audit"` logical closure.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct TargetClosureEntry {
+    name: String,
+    module: String,
+}
+
+/// Strict typed schema for the `"result"` payload emitted by `"target-audit"`.
+///
+/// Deserializing directly into this `#[serde(deny_unknown_fields)]` struct and
+/// validating every field against the authenticated [`TargetAuditRequest`] and
+/// admitted import graph prevents a malformed, truncated, or tampered audit
+/// payload from being accepted by `cargo-anneal`.
+#[derive(Debug, Clone, PartialEq, Eq, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase", deny_unknown_fields)]
+struct TargetAuditReport {
+    theorem: String,
+    canonical_root: String,
+    subject: String,
+    specification: String,
+    graph: BTreeMap<String, Vec<ImportEdge>>,
+    expected: String,
+    axioms: Vec<String>,
+    sorry_declarations: Vec<String>,
+    replay: bool,
+    exact_type: bool,
+    replayed_declarations: u64,
+    checked_alternate_proofs: u64,
+    subject_closure: Vec<TargetClosureEntry>,
+    model_closure: Vec<TargetClosureEntry>,
+    specification_closure: Vec<TargetClosureEntry>,
+}
+
+/// Validate every invariant of a deserialized [`TargetAuditReport`] against
+/// `request` and the admitted module import graph `expected_graph`.
+fn validate_target_audit_report(
+    report: &TargetAuditReport,
+    request: &TargetAuditRequest,
+    expected_graph: &BTreeMap<String, Vec<ImportEdge>>,
+) -> Result<(), Failure> {
+    if report.theorem != request.theorem_name {
+        return Err(Failure::operational(
+            "target-audit",
+            format!(
+                "target-audit theorem mismatch: expected {}, got {}",
+                request.theorem_name, report.theorem
+            ),
+        ));
+    }
+    if report.expected != request.expected_declaration {
+        return Err(Failure::operational(
+            "target-audit",
+            format!(
+                "target-audit expected declaration mismatch: expected {}, got {}",
+                request.expected_declaration, report.expected
+            ),
+        ));
+    }
+    if report.canonical_root != request.canonical_root {
+        return Err(Failure::operational(
+            "target-audit",
+            format!(
+                "target-audit canonicalRoot mismatch: expected {}, got {}",
+                request.canonical_root, report.canonical_root
+            ),
+        ));
+    }
+    if report.subject != request.subject_declaration {
+        return Err(Failure::operational(
+            "target-audit",
+            format!(
+                "target-audit subject mismatch: expected {}, got {}",
+                request.subject_declaration, report.subject
+            ),
+        ));
+    }
+    if report.specification != request.specification_declaration {
+        return Err(Failure::operational(
+            "target-audit",
+            format!(
+                "target-audit specification mismatch: expected {}, got {}",
+                request.specification_declaration, report.specification
+            ),
+        ));
+    }
+    if !report.replay || !report.exact_type {
+        return Err(Failure::operational(
+            "target-audit",
+            format!(
+                "target-audit did not certify replay and exactType (replay={}, exactType={})",
+                report.replay, report.exact_type
+            ),
+        ));
+    }
+    if report.replayed_declarations == 0 {
+        return Err(Failure::operational(
+            "target-audit",
+            "target-audit reported zero replayed declarations",
+        ));
+    }
+    if &report.graph != expected_graph {
+        return Err(Failure::operational(
+            "target-audit",
+            "target-audit reported import graph differing from admitted DAG",
+        ));
+    }
+    for (label, closure) in [
+        ("subjectClosure", &report.subject_closure),
+        ("modelClosure", &report.model_closure),
+        ("specificationClosure", &report.specification_closure),
+    ] {
+        if closure.is_empty() {
+            return Err(Failure::operational(
+                "target-audit",
+                format!("target-audit reported empty {label}"),
+            ));
+        }
+        for entry in closure {
+            if entry.name.is_empty() || entry.module.is_empty() {
+                return Err(Failure::operational(
+                    "target-audit",
+                    format!("target-audit reported malformed entry in {label}"),
+                ));
+            }
+        }
+    }
+    let mut seen_axioms = BTreeSet::new();
+    let mut uses_sorry_ax = false;
+    for ax in &report.axioms {
+        if !seen_axioms.insert(ax.as_str()) {
+            return Err(Failure::operational(
+                "target-audit",
+                format!("target-audit reported duplicate axiom {ax}"),
+            ));
+        }
+        if ax == "sorryAx" {
+            if !request.allow_sorry_in_proof {
+                return Err(Failure::operational(
+                    "target-audit",
+                    "target-audit reported sorryAx without allow_sorry_in_proof",
+                ));
+            }
+            uses_sorry_ax = true;
+        } else if !ALLOWED_TARGET_FOUNDATION_AXIOMS.contains(&ax.as_str()) {
+            return Err(Failure::operational(
+                "target-audit",
+                format!("target-audit reported axiom outside closed allowlist: {ax}"),
+            ));
+        }
+    }
+    if report.sorry_declarations.iter().any(String::is_empty) {
+        return Err(Failure::operational(
+            "target-audit",
+            "target-audit reported empty declaration name in sorryDeclarations",
+        ));
+    }
+    if request.allow_sorry_in_proof {
+        if uses_sorry_ax != !report.sorry_declarations.is_empty() {
+            return Err(Failure::operational(
+                "target-audit",
+                "target-audit mismatch between sorryAx axiom and sorryDeclarations",
+            ));
+        }
+    } else if !report.sorry_declarations.is_empty() {
+        return Err(Failure::operational(
+            "target-audit",
+            "target-audit reported non-empty sorryDeclarations without allow_sorry_in_proof",
+        ));
+    }
+    Ok(())
+}
+
+/// Run `"target-export"` (isolated proof-artifact export) followed by
+/// `"target-audit"` (verdict-producing replay with zero `Proof` `.olean`s
+/// mounted or imported) and validate the strict [`TargetAuditReport`] schema.
+impl Checker {
     /// Run `"target-audit"` mode over compiled target artifacts.
     #[doc(hidden)]
     pub fn inspect_target(&mut self, request: &TargetAuditRequest) -> Result<Json, Failure> {
-        let req = {
+        let proof_modules: BTreeSet<&str> = request
+            .modules
+            .iter()
+            .filter(|m| m.role == TargetRole::Proof)
+            .map(|m| m.module.as_str())
+            .collect();
+        let (export_req, expected_graph) = {
             let adm = self.admitted()?;
             let arts_arr: Vec<Json> =
                 adm.artifacts.iter().map(|(k, parts)| json!([k, parts.to_wire()])).collect();
             let libraries: Vec<&str> = adm.library_modules.iter().map(String::as_str).collect();
+            (
+                json!({
+                    "mode": "target-export",
+                    "sysroot": adm.prefix.to_string_lossy(),
+                    "artifacts": arts_arr,
+                    "foundation": adm.foundation_modules(),
+                    "libraries": libraries,
+                    "graph": &adm.graph,
+                    "axioms": &adm.axioms,
+                    "target": InspectorTargetAuditRequest::from(request),
+                }),
+                adm.graph.clone(),
+            )
+        };
+        // Step 1: Run `"target-export"` in its own isolated ExecSeal child
+        // process with no write access to `"target-audit"`'s verdict file.
+        // Map operational/policy errors back to the `"target-audit"` phase so
+        // callers see a unified audit failure surface.
+        let proof_export = self
+            .invoke_inspector("target-export", &export_req)
+            .map_err(|e| Failure::new(e.code, "target-audit", e.message))?;
+
+        let export_run_id = self.next_counter();
+        let proof_export_host = self.stage.join(format!("proof-export-{export_run_id:03}.json"));
+        let export_bytes = serde_json::to_vec(&proof_export).map_err(|e| {
+            Failure::operational("target-audit", format!("cannot serialize proof export: {e}"))
+        })?;
+        fs::write(&proof_export_host, export_bytes).map_err(|e| {
+            Failure::operational(
+                "target-audit",
+                format!("cannot write {}: {e}", proof_export_host.display()),
+            )
+        })?;
+        set_mode(&proof_export_host, 0o444)?;
+
+        // Step 2: Run `"target-audit"` with ZERO `Proof` `.olean` artifacts in
+        // either `artifacts` or its sandbox mount namespace.
+        let audit_req = {
+            let adm = self.admitted()?;
+            let non_proof_arts: Vec<Json> = adm
+                .artifacts
+                .iter()
+                .filter(|(k, _)| !proof_modules.contains(k.as_str()))
+                .map(|(k, parts)| json!([k, parts.to_wire()]))
+                .collect();
+            let libraries: Vec<&str> = adm.library_modules.iter().map(String::as_str).collect();
             json!({
                 "mode": "target-audit",
                 "sysroot": adm.prefix.to_string_lossy(),
-                "artifacts": arts_arr,
+                "artifacts": non_proof_arts,
                 "foundation": adm.foundation_modules(),
                 "libraries": libraries,
                 "graph": &adm.graph,
                 "axioms": &adm.axioms,
+                "proofExportPath": proof_export_host.to_string_lossy(),
                 "target": InspectorTargetAuditRequest::from(request),
             })
         };
-        self.invoke_inspector("target-audit", &req)
+        let typed_res: Result<TargetAuditReport, Failure> =
+            self.invoke_inspector_typed("target-audit", &audit_req);
+        let _ = set_mode(&proof_export_host, 0o600);
+        let _ = fs::remove_file(&proof_export_host);
+        let report = typed_res?;
+        validate_target_audit_report(&report, request, &expected_graph)?;
+        serde_json::to_value(&report).map_err(|e| {
+            Failure::operational("target-audit", format!("cannot encode validated report: {e}"))
+        })
     }
+}
+
+impl Checker {
 
     /// Authenticate the requested installed-library import closure.
     ///
@@ -1055,7 +1302,7 @@ esac
 while [ "$#" -gt 1 ]; do
     case "$1:$2" in
         -o:*/out/TrustedBoundary.olean|-o:*/inspector-compile-*/TrustedBoundary.olean)
-            printf 'olean\n' > "$2"
+            printf 'olean\002synthetic\n' > "$2"
             exit 0
             ;;
         --run:*/TrustedBoundaryEntry.lean)
@@ -1580,7 +1827,7 @@ esac
 while [ "$#" -gt 1 ]; do
     case "$1:$2" in
         -o:*/out/TrustedBoundary.olean|-o:*/inspector-compile-*/TrustedBoundary.olean)
-            printf 'olean\n' > "$2"
+            printf 'olean\002synthetic\n' > "$2"
             exit 0
             ;;
         --run:*/TrustedBoundaryEntry.lean)
@@ -4187,5 +4434,92 @@ mod tests {
             &["Anneal.ClassicalEm"],
             &["Anneal.Unused"],
         );
+    }
+
+    #[test]
+    fn target_audit_report_schema_rejects_unknown_fields_mismatches_and_unapproved_axioms() {
+        let valid_graph: BTreeMap<String, Vec<ImportEdge>> =
+            BTreeMap::from([("Init.Prelude".to_string(), Vec::new())]);
+        let request = TargetAuditRequest {
+            modules: Vec::new(),
+            theorem_module: "Proof".to_string(),
+            theorem_name: "Proof.verify".to_string(),
+            expected_module: "Expected".to_string(),
+            expected_declaration: "Expected.claim".to_string(),
+            canonical_root: "Trusted.MirSemantics.UnitTheorem".to_string(),
+            subject_declaration: "Captured.program".to_string(),
+            specification_declaration: "Spec.specs".to_string(),
+            allow_sorry_in_proof: false,
+            bindings: TargetBindings {
+                request_sha256: "0".repeat(64),
+                capture_sha256: "0".repeat(64),
+                model_manifest_sha256: "0".repeat(64),
+                specification_manifest_sha256: "0".repeat(64),
+            },
+        };
+        let valid_json = json!({
+            "theorem": "Proof.verify",
+            "canonicalRoot": "Trusted.MirSemantics.UnitTheorem",
+            "subject": "Captured.program",
+            "specification": "Spec.specs",
+            "graph": { "Init.Prelude": [] },
+            "expected": "Expected.claim",
+            "axioms": ["propext"],
+            "sorryDeclarations": [],
+            "replay": true,
+            "exactType": true,
+            "replayedDeclarations": 12,
+            "checkedAlternateProofs": 0,
+            "subjectClosure": [{"name": "Captured.program", "module": "Captured"}],
+            "modelClosure": [{"name": "Trusted.MirSemantics.UnitTheorem", "module": "Trusted.MirSemantics"}],
+            "specificationClosure": [{"name": "Spec.specs", "module": "Spec"}],
+        });
+        let valid: TargetAuditReport = serde_json::from_value(valid_json.clone()).unwrap();
+        validate_target_audit_report(&valid, &request, &valid_graph).unwrap();
+
+        // Unknown fields must fail closed under `deny_unknown_fields`.
+        let mut with_extra = valid_json.clone();
+        with_extra.as_object_mut().unwrap().insert("extraField".into(), json!(true));
+        assert!(serde_json::from_value::<TargetAuditReport>(with_extra).is_err());
+
+        // Missing fields must fail deserialization.
+        let mut missing_replay = valid_json.clone();
+        missing_replay.as_object_mut().unwrap().remove("replay");
+        assert!(serde_json::from_value::<TargetAuditReport>(missing_replay).is_err());
+
+        // Semantic mismatches must fail closed.
+        for (label, mutate) in [
+            ("wrong theorem", Box::new(|r: &mut TargetAuditReport| r.theorem = "Other.thm".into()) as Box<dyn FnOnce(&mut TargetAuditReport)>),
+            ("wrong expected", Box::new(|r: &mut TargetAuditReport| r.expected = "Other.claim".into())),
+            ("wrong canonicalRoot", Box::new(|r: &mut TargetAuditReport| r.canonical_root = "Other.root".into())),
+            ("wrong subject", Box::new(|r: &mut TargetAuditReport| r.subject = "Other.prog".into())),
+            ("wrong specification", Box::new(|r: &mut TargetAuditReport| r.specification = "Other.spec".into())),
+            ("replay false", Box::new(|r: &mut TargetAuditReport| r.replay = false)),
+            ("exactType false", Box::new(|r: &mut TargetAuditReport| r.exact_type = false)),
+            ("zero replayed", Box::new(|r: &mut TargetAuditReport| r.replayed_declarations = 0)),
+            ("empty subjectClosure", Box::new(|r: &mut TargetAuditReport| r.subject_closure.clear())),
+            ("empty modelClosure", Box::new(|r: &mut TargetAuditReport| r.model_closure.clear())),
+            ("empty specificationClosure", Box::new(|r: &mut TargetAuditReport| r.specification_closure.clear())),
+            ("unapproved axiom", Box::new(|r: &mut TargetAuditReport| r.axioms.push("Lean.ofReduceBool".into()))),
+            ("sorryAx disallowed", Box::new(|r: &mut TargetAuditReport| r.axioms.push("sorryAx".into()))),
+            ("duplicate axiom", Box::new(|r: &mut TargetAuditReport| r.axioms.push("propext".into()))),
+            ("graph mismatch", Box::new(|r: &mut TargetAuditReport| { r.graph.clear(); })),
+        ] {
+            let mut bad = valid.clone();
+            mutate(&mut bad);
+            assert!(
+                validate_target_audit_report(&bad, &request, &valid_graph).is_err(),
+                "expected validation failure for {label}"
+            );
+        }
+
+        // `allow_sorry_in_proof` permits `sorryAx` iff `sorryDeclarations` is non-empty.
+        let mut sorry_req = request.clone();
+        sorry_req.allow_sorry_in_proof = true;
+        let mut sorry_rep = valid.clone();
+        sorry_rep.axioms.push("sorryAx".into());
+        assert!(validate_target_audit_report(&sorry_rep, &sorry_req, &valid_graph).is_err());
+        sorry_rep.sorry_declarations.push("Proof.hole".into());
+        validate_target_audit_report(&sorry_rep, &sorry_req, &valid_graph).unwrap();
     }
 }

@@ -26,7 +26,7 @@ use rustc_middle::ty::TyCtxt;
 use rustc_middle::util::Providers;
 use rustc_session::EarlyDiagCtxt;
 use rustc_session::config::{CrateType, Options};
-use rustc_span::def_id::LocalDefId;
+use rustc_span::def_id::{LOCAL_CRATE, LocalDefId};
 use rustc_span::source_map::{FileLoader, RealFileLoader};
 use rustc_span::{FileName, sym};
 
@@ -253,7 +253,20 @@ fn callable(kind: DefKind) -> bool {
 // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_hir/src/def.rs#L99-L205
 //
 // Keep this match exhaustive: a compiler upgrade must classify each new kind.
-fn required(kind: DefKind, has_body: bool) -> bool {
+//
+// `DefKind::ForeignMod` and `DefKind::ForeignTy` are unconditionally required
+// even without child items or HIR bodies: an item-less
+// `#[link(name = "...")] unsafe extern "C" {}` block embeds link-time
+// native-library obligations into crate metadata, and foreign types introduce
+// unmodeled FFI invariants.
+//
+// Externally visible `DefKind::Macro(..)` items (`#[macro_export]`,
+// `pub macro`, or `pub use`-reexported macros) are required in whole-crate
+// scope because they expand into downstream crates (where `rustc`'s
+// `unsafe_code` lint exempts tokens originating from external macro spans).
+// Crate-private helper `macro_rules!` remain non-required when bodyless
+// because every crate-local expansion is already captured in caller MIR.
+fn required(tcx: TyCtxt<'_>, def: LocalDefId, kind: DefKind, has_body: bool) -> bool {
     match kind {
         DefKind::Fn
         | DefKind::AssocFn
@@ -265,20 +278,24 @@ fn required(kind: DefKind, has_body: bool) -> bool {
         | DefKind::Union
         | DefKind::Trait
         | DefKind::Impl { .. }
-        | DefKind::GlobalAsm => true,
+        | DefKind::GlobalAsm
+        | DefKind::ForeignMod
+        | DefKind::ForeignTy => true,
+        DefKind::Macro(..) => {
+            has_body
+                || tcx.effective_visibilities(()).is_exported(def)
+                || tcx.visibility(def).is_public()
+        }
         DefKind::Mod
         | DefKind::Variant
         | DefKind::TyAlias
-        | DefKind::ForeignTy
         | DefKind::TraitAlias
         | DefKind::AssocTy
         | DefKind::TyParam
         | DefKind::ConstParam
         | DefKind::Ctor(..)
-        | DefKind::Macro(..)
         | DefKind::ExternCrate
         | DefKind::Use
-        | DefKind::ForeignMod
         | DefKind::AnonConst
         | DefKind::InlineConst
         | DefKind::OpaqueTy
@@ -686,7 +703,7 @@ fn collect(
             }
         }
         let has_body = body_owners.contains(&def.local_def_index.as_u32());
-        let is_required = required(kind, has_body);
+        let is_required = required(tcx, def, kind, has_body);
         // Selected-unit claims cover only the requested callable bodies. Keep
         // every other item visible in the census without pretending to verify
         // it. Whole-crate mode instead requires admission of every required
@@ -777,6 +794,15 @@ fn collect(
     }
     if !unsupported.is_empty() {
         return Err(Failure::unsupported_items(unsupported));
+    }
+    // Belt-and-suspenders guard complementing `DefKind::ForeignMod`: refuse
+    // any crate carrying native-library link directives in crate metadata
+    // (such as item-less `#[link(name = ...)]` blocks or `-l` flags), since
+    // link-time native-library obligations are unmodeled in the scalar profile.
+    if !tcx.native_libraries(LOCAL_CRATE).is_empty() {
+        return Err(Failure::unsupported(
+            "crate-local native libraries are unsupported",
+        ));
     }
     // The manifest binds file bytes and explicit flags, not ambient environment
     // values. rustc records "Environment variables accessed during the build
