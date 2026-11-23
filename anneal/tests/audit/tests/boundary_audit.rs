@@ -128,6 +128,7 @@ fn copy_cargo_workspace(root: &Path) {
         "flake.lock",
         "trusted/root-manifest.sha256",
         "trusted/audit/Cargo.toml",
+        "tests/testkit/Cargo.toml",
         "tests/audit/Cargo.toml",
         "tests/cargo-anneal/Cargo.toml",
         "tests/rustc-capture/Cargo.toml",
@@ -951,6 +952,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     fs::copy(checkout.join("Cargo.toml"), fix.root.join("Cargo.toml")).unwrap();
     for rel in [
         "trusted/audit/Cargo.toml",
+        "tests/testkit/Cargo.toml",
         "tests/audit/Cargo.toml",
         "tests/cargo-anneal/Cargo.toml",
         "tests/rustc-capture/Cargo.toml",
@@ -1000,7 +1002,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         assert!(
             err_rev
                 .message
-                .contains("trusted/rustc-capture path dependency points outside trusted/: tests/audit"),
+                .contains("trusted/rustc-capture (Trusted) path dependency violates monotonic boundary targeting tests/audit (Tests)"),
             "unexpected error for {section}: {err_rev}"
         );
     }
@@ -1012,7 +1014,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     .unwrap();
     let err_dep = fix.check_expected(Some(1), Some("cargo-boundary"), Some(false)).unwrap_err();
     assert!(err_dep.message.contains(
-        "trusted/rustc-capture path dependency points outside trusted/: crates/untrusted-helper"
+        "trusted/rustc-capture path dependency points outside trusted/ or tests/: crates/untrusted-helper"
     ));
 
     fs::copy(
@@ -1022,7 +1024,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     .unwrap();
 
     // Test crates under `tests/` must declare `publish = false`, forbid
-    // `build.rs`, and reject path dependencies outside `trusted/`.
+    // `build.rs`, and reject path dependencies outside `trusted/` and `tests/`.
     fs::write(
         fix.root.join("tests/audit/Cargo.toml"),
         b"[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
@@ -1046,7 +1048,7 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
     assert!(
         err_test_dep
             .message
-            .contains("tests/audit path dependency points outside trusted/: crates/untrusted-helper"),
+            .contains("tests/audit path dependency points outside trusted/ or tests/: crates/untrusted-helper"),
         "unexpected error: {err_test_dep}"
     );
     fs::copy(checkout.join("tests/audit/Cargo.toml"), fix.root.join("tests/audit/Cargo.toml"))
@@ -1134,6 +1136,304 @@ fn rejects_cargo_workspace_members_and_path_deps_outside_trusted() {
         err_manifest.message.contains("root TCB manifest digest mismatch for flake.nix"),
         "unexpected error: {err_manifest}"
     );
+}
+
+/// Exhaustively exercises all 12 positive and negative cases of the two-zone
+/// monotonic Cargo workspace lattice (`WorkspaceZone::Trusted = 0 <
+/// WorkspaceZone::Tests = 1`) inside a `anneal-testkit` `WorkspaceBuilder`.
+#[test]
+fn enforces_two_zone_monotonic_cargo_boundary_lattice() {
+    use std::time::Duration;
+
+    let checkout = repo_root();
+    let mut ws = anneal_testkit::WorkspaceBuilder::new(
+        "anneal-lattice-audit-",
+        Duration::from_secs(10),
+    )
+    .unwrap();
+    ws.seed_minimal_audit_locks(&checkout).unwrap();
+
+    let base_root_toml = "\
+[workspace]
+resolver = \"2\"
+members = [
+    \"trusted/rustc-capture\",
+    \"trusted/cargo-anneal\",
+    \"trusted/audit\",
+    \"tests/testkit\",
+    \"tests/audit\",
+]
+";
+    let reset_manifests = |ws: &mut anneal_testkit::WorkspaceBuilder| {
+        ws.write_work_file("Cargo.toml", base_root_toml.as_bytes()).unwrap();
+        ws.write_work_file(
+            "trusted/rustc-capture/Cargo.toml",
+            b"[package]\nname = \"anneal-rustc-capture\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+        )
+        .unwrap();
+        ws.write_work_file(
+            "trusted/cargo-anneal/Cargo.toml",
+            b"[package]\nname = \"cargo-anneal\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+        )
+        .unwrap();
+        ws.write_work_file(
+            "trusted/audit/Cargo.toml",
+            b"[package]\nname = \"anneal-audit\"\nversion = \"0.1.0\"\nedition = \"2024\"\n[dependencies]\ncargo-anneal = { path = \"../cargo-anneal\" }\n",
+        )
+        .unwrap();
+        ws.write_work_file(
+            "tests/testkit/Cargo.toml",
+            b"[package]\nname = \"anneal-testkit\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n",
+        )
+        .unwrap();
+        ws.write_work_file(
+            "tests/audit/Cargo.toml",
+            b"[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[dependencies]\nanneal-audit = { path = \"../../trusted/audit\" }\nanneal-testkit = { path = \"../testkit\" }\n",
+        )
+        .unwrap();
+    };
+
+    // Cases 1–3: `trusted/* -> trusted/*` (`0 <= 0`), `tests/* -> trusted/*`
+    // (`0 <= 1`), and `tests/* -> tests/testkit` (`1 <= 1`) in `[dependencies]`
+    // all pass.
+    reset_manifests(&mut ws);
+    check_cargo_boundary(ws.work_dir()).unwrap();
+
+    // Case 4: `tests/* -> tests/testkit` across `[dev-dependencies]`,
+    // `[dev_dependencies]`, and `[target.'cfg(unix)'.dev-dependencies]` passes.
+    for section in [
+        "dev-dependencies",
+        "dev_dependencies",
+        "target.'cfg(unix)'.dev-dependencies",
+    ] {
+        reset_manifests(&mut ws);
+        ws.write_work_file(
+            "tests/audit/Cargo.toml",
+            format!(
+                "[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[{section}]\nanneal-testkit = {{ path = \"../testkit\" }}\n"
+            )
+            .as_bytes(),
+        )
+        .unwrap();
+        check_cargo_boundary(ws.work_dir()).unwrap();
+    }
+
+    // Cases 5–7: `trusted/* -> tests/testkit` (`1 <= 0` violated) fails across
+    // every dependency table spelling (`dependencies`, `dev-dependencies`,
+    // `dev_dependencies`, `build-dependencies`, `build_dependencies`, and
+    // `[target.<cfg>.*]`).
+    for section in [
+        "dependencies",
+        "dev-dependencies",
+        "dev_dependencies",
+        "build-dependencies",
+        "build_dependencies",
+        "target.'cfg(unix)'.dependencies",
+        "target.'cfg(unix)'.dev-dependencies",
+    ] {
+        reset_manifests(&mut ws);
+        ws.write_work_file(
+            "trusted/cargo-anneal/Cargo.toml",
+            format!(
+                "[package]\nname = \"cargo-anneal\"\nversion = \"0.1.0\"\nedition = \"2024\"\n[{section}]\nanneal-testkit = {{ path = \"../../tests/testkit\" }}\n"
+            )
+            .as_bytes(),
+        )
+        .unwrap();
+        let err = check_cargo_boundary(ws.work_dir()).unwrap_err();
+        assert_eq!(err.code, 1, "{section}: {err}");
+        assert_eq!(err.phase, "cargo-boundary", "{section}: {err}");
+        assert!(
+            err.message.contains("violates monotonic boundary targeting tests/testkit"),
+            "{section}: {err}"
+        );
+    }
+
+    // Case 8: `tests/*` crates omitting `publish = false`, setting
+    // `publish = true`,
+    // or setting `publish = ["crates-io"]` are rejected.
+    for publish_line in ["", "publish = true\n", "publish = [\"crates-io\"]\n"] {
+        reset_manifests(&mut ws);
+        ws.write_work_file(
+            "tests/testkit/Cargo.toml",
+            format!(
+                "[package]\nname = \"anneal-testkit\"\nversion = \"0.1.0\"\nedition = \"2024\"\n{publish_line}"
+            )
+            .as_bytes(),
+        )
+        .unwrap();
+        let err = check_cargo_boundary(ws.work_dir()).unwrap_err();
+        assert_eq!(err.code, 1);
+        assert!(err.message.contains("publish = false"), "{publish_line:?}: {err}");
+    }
+
+    // Case 9: `package.build`, `build.rs`, `proc-macro` targets (both
+    // `proc-macro`/`proc_macro` and `crate-type`/`crate_type`), and target path
+    // escapes (`../escape.rs`) fail closed in `tests/` (while explicit
+    // `proc-macro = false` + `crate-type = ["rlib"]` is permitted).
+    reset_manifests(&mut ws);
+    ws.write_work_file(
+        "tests/testkit/Cargo.toml",
+        b"[package]\nname = \"anneal-testkit\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[lib]\nproc-macro = false\ncrate-type = [\"rlib\"]\n",
+    )
+    .unwrap();
+    check_cargo_boundary(ws.work_dir()).unwrap();
+
+    for (lib_lines, expected_err) in [
+        ("proc-macro = true", "disallowed proc-macro target (lib.proc-macro)"),
+        ("proc_macro = true", "disallowed proc-macro target (lib.proc_macro)"),
+        ("proc-macro = \"false\"", "disallowed proc-macro target (lib.proc-macro)"),
+        (
+            "crate-type = [\"proc-macro\"]",
+            "disallowed proc-macro crate-type (lib.crate-type)",
+        ),
+        (
+            "crate_type = [\"rlib\", \"proc-macro\"]",
+            "disallowed proc-macro crate-type (lib.crate_type)",
+        ),
+        ("crate-type = \"rlib\"", "invalid lib.crate-type"),
+    ] {
+        reset_manifests(&mut ws);
+        ws.write_work_file(
+            "tests/testkit/Cargo.toml",
+            format!(
+                "[package]\nname = \"anneal-testkit\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[lib]\n{lib_lines}\n"
+            )
+            .as_bytes(),
+        )
+        .unwrap();
+        let err = check_cargo_boundary(ws.work_dir()).unwrap_err();
+        assert_eq!(err.code, 1, "{lib_lines}: {err}");
+        assert!(err.message.contains(expected_err), "{lib_lines}: {err}");
+    }
+
+    reset_manifests(&mut ws);
+    ws.write_work_file(
+        "tests/testkit/Cargo.toml",
+        b"[package]\nname = \"anneal-testkit\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\nbuild = \"build.rs\"\n",
+    )
+    .unwrap();
+    assert!(check_cargo_boundary(ws.work_dir()).unwrap_err().message.contains("disallowed package.build"));
+
+    reset_manifests(&mut ws);
+    ws.write_work_file("tests/testkit/build.rs", b"fn main() {}\n").unwrap();
+    assert!(
+        check_cargo_boundary(ws.work_dir())
+            .unwrap_err()
+            .message
+            .contains("disallowed build script tests/testkit/build.rs")
+    );
+    fs::remove_file(ws.work_dir().join("tests/testkit/build.rs")).unwrap();
+
+    reset_manifests(&mut ws);
+    ws.write_work_file(
+        "tests/testkit/Cargo.toml",
+        b"[package]\nname = \"anneal-testkit\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[lib]\npath = \"../escape.rs\"\n",
+    )
+    .unwrap();
+    assert!(
+        check_cargo_boundary(ws.work_dir())
+            .unwrap_err()
+            .message
+            .contains("escapes member directory")
+    );
+
+    // Case 10: `git` and custom `registry` dependencies are rejected.
+    for dep_spec in [
+        "evil = { git = \"https://example.com/repo.git\" }",
+        "evil = { version = \"0.1\", registry = \"custom\" }",
+    ] {
+        reset_manifests(&mut ws);
+        ws.write_work_file(
+            "tests/testkit/Cargo.toml",
+            format!(
+                "[package]\nname = \"anneal-testkit\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[dependencies]\n{dep_spec}\n"
+            )
+            .as_bytes(),
+        )
+        .unwrap();
+        let err = check_cargo_boundary(ws.work_dir()).unwrap_err();
+        assert!(err.message.contains("disallowed git or custom-registry"), "{err}");
+    }
+
+    // Case 11: Path dependencies pointing to non-member crates inside `tests/`,
+    // outside `trusted/` & `tests/`, or escaping the checkout all fail closed.
+    ws.write_work_file(
+        "tests/unlisted/Cargo.toml",
+        b"[package]\nname = \"unlisted\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n",
+    )
+    .unwrap();
+    reset_manifests(&mut ws);
+    ws.write_work_file(
+        "tests/audit/Cargo.toml",
+        b"[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[dependencies]\nunlisted = { path = \"../unlisted\" }\n",
+    )
+    .unwrap();
+    let err_nonmember = check_cargo_boundary(ws.work_dir()).unwrap_err();
+    assert!(
+        err_nonmember.message.contains("points to non-member crate: tests/unlisted"),
+        "{err_nonmember}"
+    );
+
+    // Create an actual directory outside `ws.work_dir()` so canonicalization
+    // succeeds and exercises the `strip_prefix(checkout_canon)` escape guard.
+    let outside_dir = ws.root_dir().join("outside");
+    fs::create_dir_all(&outside_dir).unwrap();
+    fs::write(
+        outside_dir.join("Cargo.toml"),
+        b"[package]\nname = \"outside\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n",
+    )
+    .unwrap();
+    reset_manifests(&mut ws);
+    ws.write_work_file(
+        "tests/audit/Cargo.toml",
+        b"[package]\nname = \"anneal-audit-tests\"\nversion = \"0.1.0\"\nedition = \"2024\"\npublish = false\n[dependencies]\nescape = { path = \"../../../outside\" }\n",
+    )
+    .unwrap();
+    let err_escape = check_cargo_boundary(ws.work_dir()).unwrap_err();
+    assert_eq!(err_escape.code, 1, "{err_escape}");
+    assert!(
+        err_escape.message.contains("escapes checkout"),
+        "expected checkout-escape diagnostic, got: {err_escape}"
+    );
+
+    // Case 12: Unclean member paths (bare `trusted`, `tests`, trailing `/`,
+    // or non-compliant `workspace.exclude` crates) are rejected.
+    for (bad_member, expected_diag) in [
+        ("trusted", "outside trusted/ or tests/: trusted"),
+        ("tests", "outside trusted/ or tests/: tests"),
+        ("trusted/", "unclean member path: trusted/"),
+        ("tests/../trusted/audit", "unclean member path: tests/../trusted/audit"),
+    ] {
+        reset_manifests(&mut ws);
+        ws.write_work_file(
+            "Cargo.toml",
+            format!(
+                "[workspace]\nresolver = \"2\"\nmembers = [\"trusted/rustc-capture\", \"{bad_member}\"]\n"
+            )
+            .as_bytes(),
+        )
+        .unwrap();
+        let err = check_cargo_boundary(ws.work_dir()).unwrap_err();
+        assert_eq!(err.code, 1, "{bad_member}: {err}");
+        assert!(err.message.contains(expected_diag), "{bad_member}: {err}");
+    }
+
+    reset_manifests(&mut ws);
+    ws.write_work_file(
+        "Cargo.toml",
+        format!("{base_root_toml}exclude = [\"tests/unlisted\"]\n").as_bytes(),
+    )
+    .unwrap();
+    ws.write_work_file(
+        "tests/unlisted/Cargo.toml",
+        b"[package]\nname = \"unlisted\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    let err_excl = check_cargo_boundary(ws.work_dir()).unwrap_err();
+    assert!(err_excl.message.contains("publish = false"), "{err_excl}");
+
+    ws.stage().unwrap().finish(Ok(())).unwrap();
 }
 
 /// Verifies module-level trust-tier non-contamination (both syntactic

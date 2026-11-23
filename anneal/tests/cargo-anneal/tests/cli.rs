@@ -274,10 +274,7 @@ fn setup_uses_fresh_child_cache_for_each_invocation() {
         );
 
         let updated_archive = project.path().join("local archive v2.tar.zst");
-        archive_entries(
-            &updated_archive,
-            &[("marker.txt", b"replaced CLI archive", 0o644)],
-        );
+        archive_entries(&updated_archive, &[("marker.txt", b"replaced CLI archive", 0o644)]);
         let reinstall = command(route, project.path())
             .env("XDG_CACHE_HOME", cache.path())
             .args(["setup", "--local-archive"])
@@ -322,10 +319,7 @@ fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
     use std::{fs, os::unix::fs::symlink};
 
     let project = tempfile::tempdir().expect("create fixture");
-    let help = command(Route::Direct, project.path())
-        .args(["setup", "--help"])
-        .output()
-        .unwrap();
+    let help = command(Route::Direct, project.path()).args(["setup", "--help"]).output().unwrap();
     assert_result(&help, 0, "replaces any existing cached installation", "");
     assert_result(&help, 0, "--clear-old", "");
 
@@ -341,10 +335,7 @@ fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
     assert_result(&setup_out, 0, "Installed Anneal toolchain at ", "");
     let stdout = String::from_utf8_lossy(&setup_out.stdout);
     let installed = std::path::PathBuf::from(
-        stdout
-            .trim_end()
-            .strip_prefix("Installed Anneal toolchain at ")
-            .unwrap(),
+        stdout.trim_end().strip_prefix("Installed Anneal toolchain at ").unwrap(),
     );
 
     fs::remove_dir_all(&installed).unwrap();
@@ -375,10 +366,7 @@ fn setup_help_and_verify_fail_closed_on_symlinked_cache_bundle() {
     let receipt: serde_json::Value = serde_json::from_slice(&verify_out.stdout).unwrap();
     assert_eq!(receipt["status"], "tool_failed", "{receipt}");
     assert_eq!(receipt["phase"], "capture-tool", "{receipt}");
-    assert!(
-        receipt["detail"].as_str().unwrap_or("").contains("symlink"),
-        "{receipt}"
-    );
+    assert!(receipt["detail"].as_str().unwrap_or("").contains("symlink"), "{receipt}");
 }
 
 #[cfg(all(target_os = "linux", feature = "setup"))]
@@ -906,8 +894,17 @@ fn host_policy_conflicts_exit_2_on_stderr_with_empty_stdout() {
             "lean",
         ],
         [
-            &["verify", "--panic", "abort", "--capture", "cap", "--sysroot", "sys", "--lean", "lean"]
-                [..],
+            &[
+                "verify",
+                "--panic",
+                "abort",
+                "--capture",
+                "cap",
+                "--sysroot",
+                "sys",
+                "--lean",
+                "lean",
+            ][..],
             &base_rustc[1..],
         ]
         .concat(),
@@ -957,11 +954,7 @@ fn unpinned_policy_taint_emits_stderr_banner_and_v3_failure_receipt() {
     assert_result(&output, 2, "", "TAINTED");
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(receipt["schema_version"], 3, "{receipt}");
-    assert_eq!(
-        receipt["taint_reasons"],
-        serde_json::json!(["unpinned_lean"]),
-        "{receipt}"
-    );
+    assert_eq!(receipt["taint_reasons"], serde_json::json!(["unpinned_lean"]), "{receipt}");
     assert!(receipt.get("tainted").is_none(), "{receipt}");
     assert!(receipt.get("unpinned_lean").is_none(), "{receipt}");
     assert_eq!(receipt["phase"], "staging");
@@ -1166,8 +1159,7 @@ fn unsandboxed_elaboration_flag_marks_early_failure_receipt_tainted() {
     let request = project.path().join("request.json");
     fs::write(&request, b"not JSON\n").unwrap();
     let mut cmd = command(Route::Direct, project.path());
-    cmd.args(["verify", "--allow-unsandboxed-elaboration", "--request"])
-        .arg(&request);
+    cmd.args(["verify", "--allow-unsandboxed-elaboration", "--request"]).arg(&request);
     #[cfg(not(feature = "setup"))]
     cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
     let output = cmd.output().unwrap();
@@ -1214,10 +1206,7 @@ fn taint_monoid_combines_all_three_allow_flags_in_canonical_order() {
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(stderr.contains("--allow-sorry-in-proof"), "{stderr}");
     assert!(stderr.contains("--allow-unpinned-lean"), "{stderr}");
-    assert!(
-        stderr.contains("--allow-unsandboxed-elaboration"),
-        "{stderr}"
-    );
+    assert!(stderr.contains("--allow-unsandboxed-elaboration"), "{stderr}");
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(receipt["schema_version"], 3, "{receipt}");
     assert_eq!(
@@ -1268,17 +1257,13 @@ fn verify_rejects_smuggled_env_key_in_request_json() {
     let receipt: serde_json::Value = serde_json::from_slice(&output.stdout).unwrap();
     assert_eq!(receipt["status"], "unsupported", "{receipt}");
     assert_eq!(receipt["phase"], "request", "{receipt}");
-    assert!(
-        receipt["detail"].as_str().unwrap_or("").contains("must not contain '='"),
-        "{receipt}"
-    );
+    assert!(receipt["detail"].as_str().unwrap_or("").contains("must not contain '='"), "{receipt}");
 }
 
 #[cfg(unix)]
 #[test]
 fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
-    use std::fs;
-    use std::os::unix::fs::PermissionsExt;
+    use std::{fs, os::unix::fs::PermissionsExt};
 
     let project = tempfile::tempdir().unwrap();
     fs::write(project.path().join("lib.rs"), b"pub fn f() -> u64 { 0 }\n").unwrap();
@@ -1462,8 +1447,7 @@ fn verify_passes_env_flags_and_rejects_mismatched_capture_env() {
 
 #[test]
 fn verify_passes_instantiate_flags_and_rejects_mismatched_capture_scope() {
-    use std::fs;
-    use std::os::unix::fs::PermissionsExt;
+    use std::{fs, os::unix::fs::PermissionsExt};
 
     let project = tempfile::tempdir().unwrap();
     fs::write(project.path().join("lib.rs"), b"pub fn id<T>(x: T) -> T { x }\n").unwrap();
@@ -1473,13 +1457,7 @@ fn verify_passes_instantiate_flags_and_rejects_mismatched_capture_scope() {
     // Malformed `--instantiate` JSON and `--request` + `--instantiate` conflict
     // must fail CLI validation with exit 2 and empty stdout.
     for bad in [
-        &[
-            "verify",
-            "--request",
-            "r.json",
-            "--instantiate",
-            r#"{"path":"id","args":["usize"]}"#,
-        ][..],
+        &["verify", "--request", "r.json", "--instantiate", r#"{"path":"id","args":["usize"]}"#][..],
         &[
             "verify",
             "rustc",
@@ -1583,4 +1561,19 @@ fn verify_passes_instantiate_flags_and_rejects_mismatched_capture_scope() {
         args_text.lines().any(|line| line == r#"{"path":"id","args":["usize"]}"#),
         "expected serialized --instantiate JSON in capture args:\n{args_text}"
     );
+}
+
+#[test]
+fn testkit_parses_cli_failure_receipt_cleanly() {
+    let project = tempfile::tempdir().unwrap();
+    let request = project.path().join("request.json");
+    std::fs::write(&request, b"not JSON\n").unwrap();
+    let mut cmd = command(Route::Direct, project.path());
+    cmd.arg("verify").arg("--request").arg(&request);
+    #[cfg(not(feature = "setup"))]
+    cmd.args(["--capture", "cap", "--sysroot", "sys", "--lean", "lean"]);
+    let output = cmd.output().unwrap();
+    assert_result(&output, 1, "", "");
+    let parsed = anneal_testkit::VerifyReceipt::from_json_slice(&output.stdout).unwrap();
+    anneal_testkit::assert_rejected(&parsed, "unsupported", Some("request"), "").unwrap();
 }

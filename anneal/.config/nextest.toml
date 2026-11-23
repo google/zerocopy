@@ -1,0 +1,27 @@
+# Copyright 2026 The Fuchsia Authors
+#
+# Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+# <LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+# license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+# This file may not be copied, modified, or distributed except according to
+# those terms.
+
+# `cargo-nextest` profiles for `anneal/` (providing per-test OS process
+# isolation and slow-test slot throttling; `cargo test --workspace --locked`
+# remains 100% supported).
+
+[profile.default]
+retries = 0
+slow-timeout = { period = "30s", terminate-after = 4 }
+fail-fast = false
+
+[[profile.default.overrides]]
+filter = 'test(/ndjson_quorum|correspondence|scale_|real_crates/)'
+threads-required = 2
+slow-timeout = { period = "45s", terminate-after = 4 }
+
+[profile.ci]
+retries = 0
+slow-timeout = { period = "30s", terminate-after = 4 }
+status-level = "pass"
+final-status-level = "slow"

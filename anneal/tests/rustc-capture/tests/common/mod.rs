@@ -8,17 +8,12 @@
 
 //! Shared helpers for `anneal-rustc-capture` integration tests.
 
-use std::path::PathBuf;
-use std::process::Command;
+use std::{path::PathBuf, process::Command};
 
 pub fn sysroot() -> PathBuf {
     let raw = ["ANNEAL_SYSROOT", "ANNEAL_TEST_RUST_SYSROOT"]
         .into_iter()
-        .find_map(|name| {
-            std::env::var_os(name)
-                .filter(|v| !v.is_empty())
-                .map(PathBuf::from)
-        })
+        .find_map(|name| std::env::var_os(name).filter(|v| !v.is_empty()).map(PathBuf::from))
         .or_else(|| {
             std::env::var_os("ANNEAL_TEST_INSTALL_ROOT")
                 .filter(|v| !v.is_empty())
@@ -35,9 +30,7 @@ pub fn sysroot() -> PathBuf {
                 String::from_utf8_lossy(&output.stderr)
             );
             PathBuf::from(
-                String::from_utf8(output.stdout)
-                    .expect("rustc sysroot must be UTF-8")
-                    .trim(),
+                String::from_utf8(output.stdout).expect("rustc sysroot must be UTF-8").trim(),
             )
         });
     std::fs::canonicalize(&raw)
@@ -51,10 +44,7 @@ fn find_installed_lean(toolchain_parent: &std::path::Path) -> Option<PathBuf> {
         .filter_map(|e| e.ok().map(|e| e.path()))
         .collect();
     entries.sort();
-    entries
-        .into_iter()
-        .map(|dir| dir.join("lean/bin/lean"))
-        .find(|candidate| candidate.is_file())
+    entries.into_iter().map(|dir| dir.join("lean/bin/lean")).find(|candidate| candidate.is_file())
 }
 
 #[allow(dead_code)]
@@ -77,11 +67,9 @@ pub fn lean() -> PathBuf {
     }
     if let Some(home) = std::env::var_os("HOME").filter(|v| !v.is_empty()) {
         let home = PathBuf::from(home);
-        for rel in [
-            ".cache/anneal/toolchain",
-            "Library/Caches/anneal/toolchain",
-            "anneal/toolchain",
-        ] {
+        for rel in
+            [".cache/anneal/toolchain", "Library/Caches/anneal/toolchain", "anneal/toolchain"]
+        {
             if let Some(found) = find_installed_lean(&home.join(rel)) {
                 return std::fs::canonicalize(&found).unwrap();
             }

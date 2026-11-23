@@ -7,9 +7,9 @@
 # those terms.
 
 # Integration tests for `cargo-anneal`, kept outside `trusted/` so non-TCB test
-# harnesses and fixtures do not inflate the human-audited TCB surface. The
-# dependency edge is strictly one-way (`tests/` -> `trusted/`, never
-# `trusted/` -> `tests/`), enforced mechanically by `check_cargo_boundary`.
+# harnesses and fixtures do not inflate the human-audited TCB surface.
+# `check_cargo_boundary` enforces the two-zone monotonic lattice (`tests/*` ->
+# `trusted/*` or `tests/testkit`, never `trusted/*` -> `tests/*`).
 
 [package]
 name = "cargo-anneal-tests"
@@ -29,6 +29,7 @@ cargo-anneal = { path = "../../trusted/cargo-anneal", default-features = false }
 exocrate = { version = "0.3.0", optional = true }
 
 [dev-dependencies]
+anneal-testkit = { path = "../testkit" }
 serde_json = "1.0"
 sha2 = "0.10"
 tar = "0.4"

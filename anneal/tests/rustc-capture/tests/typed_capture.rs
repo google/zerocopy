@@ -14,13 +14,15 @@
 
 mod common;
 
-use std::path::PathBuf;
-use std::process::{Command, Output};
+use std::{
+    fmt::Write as _,
+    path::PathBuf,
+    process::{Command, Output},
+};
 
 use common::sysroot;
 use serde_json::Value;
 use sha2::{Digest, Sha256};
-use std::fmt::Write as _;
 
 fn sha256_hex(bytes: &[u8]) -> String {
     let mut hex = String::with_capacity(64);
@@ -42,11 +44,7 @@ impl Capture {
         let source_path = directory.path().join("input.rs");
         std::fs::write(&source_path, source).expect("write capture fixture");
         let output = directory.path().join("output");
-        Self {
-            directory,
-            source: source_path,
-            output,
-        }
+        Self { directory, source: source_path, output }
     }
 
     fn command(&self) -> Command {
@@ -173,10 +171,7 @@ fn typed_options_do_not_select_typed_mode_without_the_subcommand() {
         .expect("pass typed option to raw compiler mode");
     assert_eq!(output.status.code(), Some(1), "{output:?}");
     assert!(output.stdout.is_empty(), "{output:?}");
-    assert!(
-        stderr(&output).contains("Unrecognized option"),
-        "{output:?}"
-    );
+    assert!(stderr(&output).contains("Unrecognized option"), "{output:?}");
     assert!(stderr(&output).contains("crate-root"), "{output:?}");
 }
 
@@ -186,10 +181,7 @@ fn selected_capture_keeps_unselected_unsupported_items_in_the_census() {
         b"pub fn selected(value: u64) -> u64 { value }\n\
           pub fn unsupported(value: f64) -> f64 { value }\n",
     );
-    let output = fixture
-        .selected_command()
-        .output()
-        .expect("capture selected supported function");
+    let output = fixture.selected_command().output().expect("capture selected supported function");
     assert!(output.status.success(), "{output:?}");
     assert_eq!(status(&output)["status"], "captured", "{output:?}");
     let manifest = fixture.manifest();
@@ -239,10 +231,7 @@ fn whole_crate_capture_refuses_an_unsupported_function() {
 fn source_hashes_bind_the_exact_crlf_input_bytes() {
     let source = b"pub fn selected(value: u64) -> u64 {\r\n    value\r\n}\r\n";
     let fixture = Capture::new(source);
-    let output = fixture
-        .selected_command()
-        .output()
-        .expect("capture CRLF source input");
+    let output = fixture.selected_command().output().expect("capture CRLF source input");
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
     let files = manifest["source_files"].as_array().expect("source records");
@@ -268,10 +257,8 @@ fn typed_argument_and_compiler_failures_leave_no_capture_artifacts() {
         b"pub fn selected() -> u64 { \"wrong type\" }\n".as_slice(),
     ] {
         let fixture = Capture::new(source);
-        let output = fixture
-            .selected_command()
-            .output()
-            .expect("run typed capture with compiler errors");
+        let output =
+            fixture.selected_command().output().expect("run typed capture with compiler errors");
         assert_eq!(output.status.code(), Some(1), "{output:?}");
         assert_eq!(status(&output)["status"], "compiler_failed", "{output:?}");
         fixture.assert_no_capture_artifacts();
@@ -297,8 +284,7 @@ fn metadata_failure_after_typed_analysis_prohibits_capture_artifacts() {
 #[cfg(unix)]
 #[test]
 fn typed_non_utf8_program_name_is_rejected_before_the_ice_hook() {
-    use std::os::unix::ffi::OsStringExt;
-    use std::os::unix::process::CommandExt;
+    use std::os::unix::{ffi::OsStringExt, process::CommandExt};
 
     let fixture = Capture::new(b"pub fn selected() {}\n");
     let output = fixture
@@ -308,10 +294,7 @@ fn typed_non_utf8_program_name_is_rejected_before_the_ice_hook() {
         .output()
         .expect("run typed capture with non-UTF-8 program name");
     assert!(!output.status.success(), "{output:?}");
-    assert!(
-        stderr(&output).contains("compiler program name is not UTF-8"),
-        "{output:?}"
-    );
+    assert!(stderr(&output).contains("compiler program name is not UTF-8"), "{output:?}");
     assert!(!stderr(&output).contains("panicked"), "{output:?}");
     fixture.assert_no_capture_artifacts();
 }
@@ -327,11 +310,7 @@ fn source_allowlist_is_required_and_enforced_for_modules() {
         .output()
         .expect("omit the source allowlist");
     assert_eq!(output.status.code(), Some(2), "{output:?}");
-    assert!(
-        status(&output)["diagnostics"]
-            .to_string()
-            .contains("--source-file")
-    );
+    assert!(status(&output)["diagnostics"].to_string().contains("--source-file"));
     fixture.assert_no_capture_artifacts();
 
     let output = fixture.selected_command().output().unwrap();
@@ -340,23 +319,12 @@ fn source_allowlist_is_required_and_enforced_for_modules() {
     // include reads are checked separately below so refusal remains required
     // even when rustc can recover from the loader's I/O error.
     assert_eq!(status(&output)["status"], "compiler_failed", "{output:?}");
-    assert!(
-        stderr(&output).contains("file not found for module"),
-        "{output:?}"
-    );
+    assert!(stderr(&output).contains("file not found for module"), "{output:?}");
     fixture.assert_no_capture_artifacts();
 
-    let output = fixture
-        .selected_command()
-        .arg("--source-file")
-        .arg(side)
-        .output()
-        .unwrap();
+    let output = fixture.selected_command().arg("--source-file").arg(side).output().unwrap();
     assert!(output.status.success(), "{output:?}");
-    assert_eq!(
-        fixture.manifest()["source_files"].as_array().unwrap().len(),
-        2
-    );
+    assert_eq!(fixture.manifest()["source_files"].as_array().unwrap().len(), 2);
 }
 
 #[test]
@@ -395,20 +363,11 @@ fn existing_destinations_are_refused_without_changing_their_contents() {
         }
         let output = fixture.selected_command().output().unwrap();
         assert_eq!(output.status.code(), Some(1), "{output:?}");
-        assert!(
-            stdout(&output).contains("new output directory"),
-            "{output:?}"
-        );
+        assert!(stdout(&output).contains("new output directory"), "{output:?}");
         fixture.assert_no_capture_artifacts();
-        assert_eq!(
-            std::fs::read_dir(&fixture.output).unwrap().count(),
-            usize::from(populated)
-        );
+        assert_eq!(std::fs::read_dir(&fixture.output).unwrap().count(), usize::from(populated));
         if populated {
-            assert_eq!(
-                std::fs::read(fixture.output.join("caller-data")).unwrap(),
-                b"preserve"
-            );
+            assert_eq!(std::fs::read(fixture.output.join("caller-data")).unwrap(), b"preserve");
         }
     }
 }
@@ -423,21 +382,10 @@ fn existing_output_symlink_is_refused_without_touching_its_target() {
     std::os::unix::fs::symlink(&target, &fixture.output).unwrap();
     let output = fixture.selected_command().output().unwrap();
     assert_eq!(output.status.code(), Some(1), "{output:?}");
-    assert!(
-        stdout(&output).contains("new output directory"),
-        "{output:?}"
-    );
-    assert_eq!(
-        std::fs::read(target.join("caller-data")).unwrap(),
-        b"preserve"
-    );
+    assert!(stdout(&output).contains("new output directory"), "{output:?}");
+    assert_eq!(std::fs::read(target.join("caller-data")).unwrap(), b"preserve");
     assert_eq!(std::fs::read_dir(target).unwrap().count(), 1);
-    assert!(
-        std::fs::symlink_metadata(&fixture.output)
-            .unwrap()
-            .file_type()
-            .is_symlink()
-    );
+    assert!(std::fs::symlink_metadata(&fixture.output).unwrap().file_type().is_symlink());
 }
 
 #[test]
@@ -452,10 +400,7 @@ fn unicode_function_identity_is_data_in_the_captured_subject() {
         .expect("capture a Unicode function identity");
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
-    assert_eq!(
-        manifest["program"]["bodies"][0]["identity"],
-        "rust-path-v1::café"
-    );
+    assert_eq!(manifest["program"]["bodies"][0]["identity"], "rust-path-v1::café");
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(!lean.contains("café"));
     assert!(lean.contains("(_root_.Char.ofNat 233)"));
@@ -492,10 +437,7 @@ fn function_identities_survive_unrelated_impl_insertion_and_reordering() {
                 let index = selected["body_index"].as_u64().unwrap() as usize;
                 (
                     selected["path"].as_str().unwrap().to_owned(),
-                    manifest["program"]["bodies"][index]["identity"]
-                        .as_str()
-                        .unwrap()
-                        .to_owned(),
+                    manifest["program"]["bodies"][index]["identity"].as_str().unwrap().to_owned(),
                 )
             })
             .collect::<std::collections::BTreeMap<_, _>>()
@@ -552,11 +494,7 @@ fn cfg_values_are_literals_not_response_files() {
     for path in [response, external.path().join("missing.rsp")] {
         let fixture = Capture::new(SOURCE);
         let cfg = format!("@{}", path.to_str().unwrap());
-        let output = fixture
-            .selected_command()
-            .arg(format!("--cfg={cfg}"))
-            .output()
-            .unwrap();
+        let output = fixture.selected_command().arg(format!("--cfg={cfg}")).output().unwrap();
         assert!(
             !output.status.success(),
             "cfg response path was accepted:\n{}\n{}",
@@ -602,31 +540,15 @@ fn declared_namespace_hides_ambient_module_alternatives() {
     let side = fixture.directory.path().join("side.rs");
     let secondary = fixture.directory.path().join("side/mod.rs");
     std::fs::write(&side, "pub fn other() {}\n").unwrap();
-    let output = fixture
-        .selected_command()
-        .arg("--source-file")
-        .arg(&side)
-        .output()
-        .unwrap();
-    assert!(
-        output.status.success(),
-        "initial declared module: {output:?}"
-    );
+    let output = fixture.selected_command().arg("--source-file").arg(&side).output().unwrap();
+    assert!(output.status.success(), "initial declared module: {output:?}");
     let expected = capture_pair(&fixture);
 
     std::fs::create_dir(secondary.parent().unwrap()).unwrap();
     std::fs::write(&secondary, "pub fn ambient() {}\n").unwrap();
     fixture.output = fixture.directory.path().join("with-ambient-file");
-    let output = fixture
-        .selected_command()
-        .arg("--source-file")
-        .arg(&side)
-        .output()
-        .unwrap();
-    assert!(
-        output.status.success(),
-        "undeclared alternative changed compilation: {output:?}"
-    );
+    let output = fixture.selected_command().arg("--source-file").arg(&side).output().unwrap();
+    assert!(output.status.success(), "undeclared alternative changed compilation: {output:?}");
     assert_eq!(capture_pair(&fixture), expected);
 
     // Declaring both names deliberately changes the configured compilation.
@@ -645,20 +567,9 @@ fn declared_namespace_hides_ambient_module_alternatives() {
     fixture.assert_no_capture_artifacts();
 
     fixture.output = fixture.directory.path().join("secondary-declared");
-    let output = fixture
-        .selected_command()
-        .arg("--source-file")
-        .arg(&secondary)
-        .output()
-        .unwrap();
-    assert!(
-        output.status.success(),
-        "declared secondary module: {output:?}"
-    );
-    assert_eq!(
-        fixture.manifest()["source_files"].as_array().unwrap().len(),
-        2
-    );
+    let output = fixture.selected_command().arg("--source-file").arg(&secondary).output().unwrap();
+    assert!(output.status.success(), "declared secondary module: {output:?}");
+    assert_eq!(fixture.manifest()["source_files"].as_array().unwrap().len(), 2);
 
     #[cfg(unix)]
     {
@@ -667,16 +578,8 @@ fn declared_namespace_hides_ambient_module_alternatives() {
         std::fs::remove_file(&secondary).unwrap();
         std::os::unix::fs::symlink(&side, &secondary).unwrap();
         fixture.output = fixture.directory.path().join("with-ambient-alias");
-        let output = fixture
-            .selected_command()
-            .arg("--source-file")
-            .arg(&side)
-            .output()
-            .unwrap();
-        assert!(
-            output.status.success(),
-            "undeclared alias changed compilation: {output:?}"
-        );
+        let output = fixture.selected_command().arg("--source-file").arg(&side).output().unwrap();
+        assert!(output.status.success(), "undeclared alias changed compilation: {output:?}");
         assert_eq!(capture_pair(&fixture), expected);
     }
 }
@@ -694,16 +597,8 @@ fn declared_namespace_preserves_parent_paths_and_hides_missing_prefixes() {
     .unwrap();
     let shared = fixture.directory.path().join("shared.rs");
     std::fs::write(&shared, "pub fn other() {}\n").unwrap();
-    let output = fixture
-        .selected_command()
-        .arg("--source-file")
-        .arg(&shared)
-        .output()
-        .unwrap();
-    assert!(
-        output.status.success(),
-        "declared ancestor ../ path: {output:?}"
-    );
+    let output = fixture.selected_command().arg("--source-file").arg(&shared).output().unwrap();
+    assert!(output.status.success(), "declared ancestor ../ path: {output:?}");
 
     // A canceled directory still has to exist in the declared namespace. The
     // answer must stay the same when the ambient directory appears later.
@@ -716,24 +611,10 @@ fn declared_namespace_preserves_parent_paths_and_hides_missing_prefixes() {
         if present {
             std::fs::create_dir(sub.join("missing")).unwrap();
         }
-        fixture.output = fixture
-            .directory
-            .path()
-            .join(format!("missing-prefix-{present}"));
-        let output = fixture
-            .selected_command()
-            .arg("--source-file")
-            .arg(&shared)
-            .output()
-            .unwrap();
-        assert!(
-            !output.status.success(),
-            "ambient prefix admitted: {output:?}"
-        );
-        assert!(
-            stdout(&output).contains("undeclared compiler read"),
-            "{output:?}"
-        );
+        fixture.output = fixture.directory.path().join(format!("missing-prefix-{present}"));
+        let output = fixture.selected_command().arg("--source-file").arg(&shared).output().unwrap();
+        assert!(!output.status.success(), "ambient prefix admitted: {output:?}");
+        assert!(stdout(&output).contains("undeclared compiler read"), "{output:?}");
         fixture.assert_no_capture_artifacts();
     }
 }
@@ -757,37 +638,20 @@ fn declared_namespace_guards_text_and_binary_include_reads() {
         .arg(&binary)
         .output()
         .unwrap();
-    assert!(
-        output.status.success(),
-        "declared text/binary include: {output:?}"
-    );
-    let sources = fixture.manifest()["source_files"]
-        .as_array()
-        .unwrap()
-        .clone();
+    assert!(output.status.success(), "declared text/binary include: {output:?}");
+    let sources = fixture.manifest()["source_files"].as_array().unwrap().clone();
     for (path, bytes, kind) in [
         (&text, std::fs::read(&text).unwrap(), "binary"),
         (&binary, std::fs::read(&binary).unwrap(), "binary"),
     ] {
-        let entry = sources
-            .iter()
-            .find(|entry| entry["path"] == path.to_str().unwrap())
-            .unwrap();
+        let entry = sources.iter().find(|entry| entry["path"] == path.to_str().unwrap()).unwrap();
         assert_eq!(entry["sha256"], sha256_hex(&bytes));
         assert_eq!(entry["read_kind"], kind);
     }
     fixture.output = fixture.directory.path().join("undeclared-include");
-    let output = fixture
-        .selected_command()
-        .arg("--source-file")
-        .arg(&text)
-        .output()
-        .unwrap();
+    let output = fixture.selected_command().arg("--source-file").arg(&text).output().unwrap();
     assert_eq!(status(&output)["status"], "unsupported", "{output:?}");
-    assert!(
-        stdout(&output).contains("undeclared compiler read"),
-        "{output:?}"
-    );
+    assert!(stdout(&output).contains("undeclared compiler read"), "{output:?}");
     fixture.assert_no_capture_artifacts();
 
     #[cfg(unix)]
@@ -797,20 +661,9 @@ fn declared_namespace_guards_text_and_binary_include_reads() {
         std::fs::write(&fixture.source,
             "const TEXT: &str = include_str!(\"text-alias.txt\");\npub fn selected() -> u64 { 0 }\n").unwrap();
         fixture.output = fixture.directory.path().join("undeclared-include-alias");
-        let output = fixture
-            .selected_command()
-            .arg("--source-file")
-            .arg(&text)
-            .output()
-            .unwrap();
-        assert!(
-            !output.status.success(),
-            "undeclared read alias admitted: {output:?}"
-        );
-        assert!(
-            stdout(&output).contains("undeclared compiler read"),
-            "{output:?}"
-        );
+        let output = fixture.selected_command().arg("--source-file").arg(&text).output().unwrap();
+        assert!(!output.status.success(), "undeclared read alias admitted: {output:?}");
+        assert!(stdout(&output).contains("undeclared compiler read"), "{output:?}");
         fixture.assert_no_capture_artifacts();
     }
 }
@@ -818,8 +671,7 @@ fn declared_namespace_guards_text_and_binary_include_reads() {
 #[cfg(unix)]
 #[test]
 fn non_utf8_output_destinations_fail_before_publication_and_remain_retryable() {
-    use std::ffi::OsString;
-    use std::os::unix::ffi::OsStringExt;
+    use std::{ffi::OsString, os::unix::ffi::OsStringExt};
 
     for form in ["final", "ancestor", "relative", "symlink"] {
         let mut fixture = Capture::new(b"pub fn selected() -> u64 { 0 }\n");
@@ -848,16 +700,8 @@ fn non_utf8_output_destinations_fail_before_publication_and_remain_retryable() {
             _ => destination.clone(),
         };
         for attempt in 0..2 {
-            let output = fixture
-                .selected_command()
-                .current_dir(&cwd)
-                .output()
-                .unwrap();
-            assert_eq!(
-                output.status.code(),
-                Some(1),
-                "{form}/{attempt}: {output:?}"
-            );
+            let output = fixture.selected_command().current_dir(&cwd).output().unwrap();
+            assert_eq!(output.status.code(), Some(1), "{form}/{attempt}: {output:?}");
             assert_eq!(status(&output)["status"], "tool_failed", "{output:?}");
             assert!(
                 !destination.exists(),
@@ -870,11 +714,7 @@ fn non_utf8_output_destinations_fail_before_publication_and_remain_retryable() {
             assert!(output.stderr.is_empty(), "{form}/{attempt}: {output:?}");
             let parent = destination.parent().unwrap();
             assert!(std::fs::read_dir(parent).unwrap().all(|entry| {
-                !entry
-                    .unwrap()
-                    .file_name()
-                    .to_string_lossy()
-                    .starts_with(".anneal-capture-")
+                !entry.unwrap().file_name().to_string_lossy().starts_with(".anneal-capture-")
             }));
         }
         // Refusal reserves no output name and leaves the source usable. A
@@ -893,23 +733,16 @@ fn captured_safety_bits_follow_safe_and_unsafe_declarations() {
         b"pub fn safe_entry() -> u64 { 0 }\n\
           pub unsafe fn unsafe_entry() -> u64 { 0 }\n",
     );
-    let output = fixture
-        .command()
-        .args(["--select=safe_entry", "--select=unsafe_entry"])
-        .output()
-        .unwrap();
+    let output =
+        fixture.command().args(["--select=safe_entry", "--select=unsafe_entry"]).output().unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
     let bodies = manifest["program"]["bodies"].as_array().unwrap();
     assert_eq!(bodies.len(), 2);
-    for (identity, expected) in [
-        ("rust-path-v1::safe_entry", false),
-        ("rust-path-v1::unsafe_entry", true),
-    ] {
-        let body = bodies
-            .iter()
-            .find(|body| body["identity"] == identity)
-            .unwrap();
+    for (identity, expected) in
+        [("rust-path-v1::safe_entry", false), ("rust-path-v1::unsafe_entry", true)]
+    {
+        let body = bodies.iter().find(|body| body["identity"] == identity).unwrap();
         assert_eq!(body["is_unsafe"], expected, "{body}");
     }
 }
@@ -931,9 +764,7 @@ fn enum_representations_follow_admitted_zst_and_scalar_tag_rules() {
         let failure = status(&output);
         assert_eq!(failure["status"], "unsupported", "{failure}");
         assert!(
-            failure
-                .to_string()
-                .contains("uninhabited zero-variant enums are unsupported"),
+            failure.to_string().contains("uninhabited zero-variant enums are unsupported"),
             "{failure}"
         );
         fixture.assert_no_capture_artifacts();
@@ -982,9 +813,7 @@ fn enum_representations_follow_admitted_zst_and_scalar_tag_rules() {
     let failure = status(&output);
     assert_eq!(failure["status"], "unsupported", "{failure}");
     assert!(
-        failure
-            .to_string()
-            .contains("captured program contains no executable bodies"),
+        failure.to_string().contains("captured program contains no executable bodies"),
         "{failure}"
     );
     empty_crate.assert_no_capture_artifacts();
@@ -1007,19 +836,14 @@ fn negative_isize_enum_discriminants_are_captured_as_64_bit_twos_complement() {
             }\n\
         }\n";
     let fixture = Capture::new(source);
-    let output = fixture
-        .selected_command()
-        .output()
-        .expect("capture signed repr(isize) enum");
+    let output = fixture.selected_command().output().expect("capture signed repr(isize) enum");
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
     let discriminants = manifest["program"]["bodies"][0]["local_tys"][1]["discriminants"]
         .as_array()
         .expect("enum discriminants");
-    let values: Vec<&str> = discriminants
-        .iter()
-        .map(|v| v.as_str().expect("decimal string discriminant"))
-        .collect();
+    let values: Vec<&str> =
+        discriminants.iter().map(|v| v.as_str().expect("decimal string discriminant")).collect();
     assert_eq!(values, vec!["18446744073709551615", "0", "1"]);
     let lean =
         std::fs::read_to_string(fixture.output.join("Captured.lean")).expect("read Captured.lean");
@@ -1181,9 +1005,7 @@ fn whole_crate_admits_implicit_fieldless_enums_and_refuses_all_anon_consts() {
         let failure = status(&output);
         assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
         assert!(
-            failure
-                .to_string()
-                .contains("whole-crate obligation is unsupported: AnonConst"),
+            failure.to_string().contains("whole-crate obligation is unsupported: AnonConst"),
             "{name}: {failure}"
         );
         fixture.assert_no_capture_artifacts();
@@ -1199,12 +1021,7 @@ fn whole_crate_admits_implicit_fieldless_enums_and_refuses_all_anon_consts() {
     assert_eq!(output.status.code(), Some(1), "{output:?}");
     let failure = status(&output);
     assert_eq!(failure["status"], "unsupported", "{failure}");
-    assert!(
-        failure
-            .to_string()
-            .contains("enum payloads are unsupported"),
-        "{failure}"
-    );
+    assert!(failure.to_string().contains("enum payloads are unsupported"), "{failure}");
     fixture.assert_no_capture_artifacts();
 }
 
@@ -1219,20 +1036,13 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
             match v { NarrowSigned::Neg => -1, NarrowSigned::Pos => 1 }\n\
         }\n";
     let fixture = Capture::new(default_narrow);
-    let output = fixture
-        .command()
-        .arg("--select=read_discr")
-        .output()
-        .unwrap();
+    let output = fixture.command().arg("--select=read_discr").output().unwrap();
     assert!(output.status.success(), "{output:?}");
     let manifest = fixture.manifest();
     assert_eq!(manifest["schema_version"], 4);
     assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1);
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
-    assert!(
-        lean.contains("EnumTagRepr.scalar Trusted.MirAst.IntWidth.i8 true"),
-        "{lean}"
-    );
+    assert!(lean.contains("EnumTagRepr.scalar Trusted.MirAst.IntWidth.i8 true"), "{lean}");
     assert!(lean.contains("[18446744073709551615, 1]"), "{lean}");
 
     // `#[repr(i8)]` fieldless enum records 8-bit signed tag and 8-bit
@@ -1244,17 +1054,10 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
             match v { NarrowSigned::Neg => -1, NarrowSigned::Pos => 1 }\n\
         }\n";
     let fixture = Capture::new(repr_i8);
-    let output = fixture
-        .command()
-        .arg("--select=read_discr")
-        .output()
-        .unwrap();
+    let output = fixture.command().arg("--select=read_discr").output().unwrap();
     assert!(output.status.success(), "{output:?}");
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
-    assert!(
-        lean.contains("EnumTagRepr.scalar Trusted.MirAst.IntWidth.i8 true"),
-        "{lean}"
-    );
+    assert!(lean.contains("EnumTagRepr.scalar Trusted.MirAst.IntWidth.i8 true"), "{lean}");
     assert!(lean.contains("[255, 1]"), "{lean}");
 
     // 1-variant ZST fieldless enum with explicit discriminant captures cleanly
@@ -1265,11 +1068,7 @@ fn selected_unit_captures_explicit_fieldless_enum_discriminants_and_refuses_adt_
             match v { SingleExplicit::Only => 42 }\n\
         }\n";
     let fixture = Capture::new(single_zst);
-    let output = fixture
-        .command()
-        .arg("--select=read_discr")
-        .output()
-        .unwrap();
+    let output = fixture.command().arg("--select=read_discr").output().unwrap();
     assert!(output.status.success(), "{output:?}");
     let lean = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
     assert!(lean.contains("EnumTagRepr.zeroSized"), "{lean}");
@@ -1351,9 +1150,7 @@ fn intrinsic_fallback_bodies_are_refused_in_selected_and_crate_scope() {
         let failure = status(&output);
         assert_eq!(failure["status"], "unsupported", "{scope}: {failure}");
         assert!(
-            failure
-                .to_string()
-                .contains("intrinsic `unreachable` is unsupported"),
+            failure.to_string().contains("intrinsic `unreachable` is unsupported"),
             "{scope}: {failure}"
         );
         fixture.assert_no_capture_artifacts();
@@ -1443,10 +1240,7 @@ fn unmodeled_codegen_attributes_are_refused_in_selected_and_crate_scope() {
             let output = fixture.command().arg(scope).output().unwrap();
             assert_eq!(output.status.code(), Some(1), "{name} {scope}: {output:?}");
             let failure = status(&output);
-            assert_eq!(
-                failure["status"], "unsupported",
-                "{name} {scope}: {failure}"
-            );
+            assert_eq!(failure["status"], "unsupported", "{name} {scope}: {failure}");
             assert!(
                 failure.to_string().contains(expected),
                 "{name} {scope}: expected {expected:?}, got {failure}"
@@ -1462,10 +1256,7 @@ fn unmodeled_codegen_attributes_are_refused_in_selected_and_crate_scope() {
         for scope in ["--select=selected", "--scope=crate"] {
             let fixture = Capture::new(format!("{attributes}{BODY}").as_bytes());
             let output = fixture.command().arg(scope).output().unwrap();
-            assert!(
-                output.status.success(),
-                "{attributes:?} {scope}: {output:?}"
-            );
+            assert!(output.status.success(), "{attributes:?} {scope}: {output:?}");
             let manifest = fixture.manifest();
             assert_eq!(
                 manifest["selected"][0]["path"], "selected",
@@ -1489,10 +1280,7 @@ fn cleanup_blocks_are_refused_before_local_types() {
     assert_eq!(output.status.code(), Some(1), "{output:?}");
     let failure = status(&output);
     assert_eq!(failure["status"], "unsupported", "{failure}");
-    assert!(
-        failure.to_string().contains("cleanup block bb"),
-        "{failure}"
-    );
+    assert!(failure.to_string().contains("cleanup block bb"), "{failure}");
     fixture.assert_no_capture_artifacts();
 }
 
@@ -1527,9 +1315,7 @@ fn environment_reads_are_refused_even_when_the_variable_is_absent() {
         let failure = status(&output);
         assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
         assert!(
-            failure
-                .to_string()
-                .contains("environment-dependent source inputs are unsupported"),
+            failure.to_string().contains("environment-dependent source inputs are unsupported"),
             "{name}: {failure}"
         );
         fixture.assert_no_capture_artifacts();
@@ -1565,10 +1351,7 @@ fn enum_ids_survive_unrelated_item_insertion() {
         "pub enum Inserted {{ X }}\npub struct Other;\npub fn other() {{}}\n{ENUM_AND_SELECTED}"
     );
     let (after, after_index) = capture_ids(inserted.as_str());
-    assert_ne!(
-        before_index, after_index,
-        "the insertion must move the DefIndex"
-    );
+    assert_ne!(before_index, after_index, "the insertion must move the DefIndex");
     assert_eq!(before, after);
     // Pin the documented scheme: the first four digest bytes, big-endian.
     let digest = Sha256::digest(b"anneal:enum:v1:rust-path-v1::E");
@@ -1589,18 +1372,11 @@ fn enum_id_collisions_between_distinct_local_enums_are_refused() {
             0\n\
         }\n";
     let crate_fixture = Capture::new(unreferenced_source);
-    let crate_output = crate_fixture
-        .command()
-        .arg("--scope=crate")
-        .output()
-        .unwrap();
+    let crate_output = crate_fixture.command().arg("--scope=crate").output().unwrap();
     assert_eq!(crate_output.status.code(), Some(1), "{crate_output:?}");
     let failure = status(&crate_output);
     assert_eq!(failure["status"], "unsupported", "{failure}");
-    assert!(
-        failure.to_string().contains("enum identity collision"),
-        "{failure}"
-    );
+    assert!(failure.to_string().contains("enum identity collision"), "{failure}");
     crate_fixture.assert_no_capture_artifacts();
 
     let referenced_source = b"pub fn outer() {\n\
@@ -1616,10 +1392,7 @@ fn enum_id_collisions_between_distinct_local_enums_are_refused() {
         assert_eq!(output.status.code(), Some(1), "{scope}: {output:?}");
         let failure = status(&output);
         assert_eq!(failure["status"], "unsupported", "{scope}: {failure}");
-        assert!(
-            failure.to_string().contains("enum identity collision"),
-            "{scope}: {failure}"
-        );
+        assert!(failure.to_string().contains("enum identity collision"), "{scope}: {failure}");
         fixture.assert_no_capture_artifacts();
     }
 }
@@ -1685,21 +1458,11 @@ fn identically_named_enums_in_distinct_modules_capture_with_distinct_ids() {
         let digest_b = Sha256::digest(b"anneal:enum:v1:rust-path-v1::b::E");
         assert_eq!(
             id_a,
-            u64::from(u32::from_be_bytes([
-                digest_a[0],
-                digest_a[1],
-                digest_a[2],
-                digest_a[3],
-            ]))
+            u64::from(u32::from_be_bytes([digest_a[0], digest_a[1], digest_a[2], digest_a[3],]))
         );
         assert_eq!(
             id_b,
-            u64::from(u32::from_be_bytes([
-                digest_b[0],
-                digest_b[1],
-                digest_b[2],
-                digest_b[3],
-            ]))
+            u64::from(u32::from_be_bytes([digest_b[0], digest_b[1], digest_b[2], digest_b[3],]))
         );
     }
 }
@@ -1749,9 +1512,7 @@ fn explicit_env_bindings_admit_env_macros_override_ambient_and_bind_manifest() {
     // 2. Changing an `--env` value changes the recorded `capture.json` digest.
     let fixture_b = Capture::new(source);
     let mut cmd_b = fixture_b.selected_command();
-    cmd_b
-        .arg("--env=ANNEAL_BUILD_TAG=rc1")
-        .arg("--env=CARGO_PKG_VERSION=0.8.65");
+    cmd_b.arg("--env=ANNEAL_BUILD_TAG=rc1").arg("--env=CARGO_PKG_VERSION=0.8.65");
     let out_b = cmd_b.output().unwrap();
     assert!(out_b.status.success(), "{out_b:?}");
     let bytes_b = std::fs::read(fixture_b.output.join("capture.json")).unwrap();
@@ -1761,17 +1522,13 @@ fn explicit_env_bindings_admit_env_macros_override_ambient_and_bind_manifest() {
     //    closed, even when `CARGO_PKG_VERSION` is declared.
     let partial = Capture::new(source);
     let mut cmd_partial = partial.selected_command();
-    cmd_partial
-        .arg("--env=CARGO_PKG_VERSION=0.8.64")
-        .env_remove("ANNEAL_BUILD_TAG");
+    cmd_partial.arg("--env=CARGO_PKG_VERSION=0.8.64").env_remove("ANNEAL_BUILD_TAG");
     let out_partial = cmd_partial.output().unwrap();
     assert_eq!(out_partial.status.code(), Some(1), "{out_partial:?}");
     let failure = status(&out_partial);
     assert_eq!(failure["status"], "unsupported", "{failure}");
     assert!(
-        failure
-            .to_string()
-            .contains("environment-dependent source inputs are unsupported")
+        failure.to_string().contains("environment-dependent source inputs are unsupported")
             && failure.to_string().contains("ANNEAL_BUILD_TAG"),
         "{failure}"
     );
@@ -1789,9 +1546,7 @@ fn explicit_env_bindings_admit_env_macros_override_ambient_and_bind_manifest() {
     let failure = status(&out_dup);
     assert_eq!(failure["status"], "tool_failed", "{failure}");
     assert!(
-        failure
-            .to_string()
-            .contains("duplicate --env binding for CARGO_PKG_VERSION"),
+        failure.to_string().contains("duplicate --env binding for CARGO_PKG_VERSION"),
         "{failure}"
     );
     dup.assert_no_capture_artifacts();
@@ -1827,11 +1582,7 @@ fn pre_capture_identity_check_rejects_missing_or_mismatched_sysroot_as_tool_fail
         let fake_sysroot = fixture.directory.path().join("fake-sysroot");
         std::fs::create_dir_all(fake_sysroot.join("bin")).unwrap();
         std::fs::create_dir_all(fake_sysroot.join("lib")).unwrap();
-        symlink(
-            real_sysroot.join("lib/rustlib"),
-            fake_sysroot.join("lib/rustlib"),
-        )
-        .unwrap();
+        symlink(real_sysroot.join("lib/rustlib"), fake_sysroot.join("lib/rustlib")).unwrap();
         let fake_rustc = fake_sysroot.join("bin/rustc");
         std::fs::write(
             &fake_rustc,
@@ -1876,21 +1627,13 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
     let link_sysroot = fixture.directory.path().join("symlinked-sysroot");
     std::fs::create_dir_all(link_sysroot.join("bin")).unwrap();
     std::fs::create_dir_all(link_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap();
-    symlink(
-        real_sysroot.join("bin/rustc"),
-        link_sysroot.join("bin/rustc"),
-    )
-    .unwrap();
+    symlink(real_sysroot.join("bin/rustc"), link_sysroot.join("bin/rustc")).unwrap();
     for entry in std::fs::read_dir(real_sysroot.join("lib")).unwrap() {
         let entry = entry.unwrap();
         if entry.file_name() == "rustlib" {
             continue;
         }
-        symlink(
-            entry.path(),
-            link_sysroot.join("lib").join(entry.file_name()),
-        )
-        .unwrap();
+        symlink(entry.path(), link_sysroot.join("lib").join(entry.file_name())).unwrap();
     }
     for entry in
         std::fs::read_dir(real_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap()
@@ -1898,9 +1641,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
         let entry = entry.unwrap();
         symlink(
             entry.path(),
-            link_sysroot
-                .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
-                .join(entry.file_name()),
+            link_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib").join(entry.file_name()),
         )
         .unwrap();
     }
@@ -1929,11 +1670,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
     let bad_sysroot = fixture.directory.path().join("bad-driver-sysroot");
     std::fs::create_dir_all(bad_sysroot.join("bin")).unwrap();
     std::fs::create_dir_all(bad_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap();
-    symlink(
-        real_sysroot.join("bin/rustc"),
-        bad_sysroot.join("bin/rustc"),
-    )
-    .unwrap();
+    symlink(real_sysroot.join("bin/rustc"), bad_sysroot.join("bin/rustc")).unwrap();
     for entry in
         std::fs::read_dir(real_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap()
     {
@@ -1947,9 +1684,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
         }
         symlink(
             entry.path(),
-            bad_sysroot
-                .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
-                .join(name),
+            bad_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib").join(name),
         )
         .unwrap();
     }
@@ -1976,11 +1711,7 @@ fn linux_residency_accepts_symlinked_sysroot_and_rejects_mismatched_driver_inode
         .output()
         .unwrap();
     assert_eq!(bad_output.status.code(), Some(1), "{bad_output:?}");
-    assert_eq!(
-        status(&bad_output)["status"],
-        "tool_failed",
-        "{bad_output:?}"
-    );
+    assert_eq!(status(&bad_output)["status"], "tool_failed", "{bad_output:?}");
     assert!(!bad_output_dir.exists());
 }
 
@@ -1998,23 +1729,14 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
     //    canonicalizing it away, and never consult `./lib/rustlib`.
     let tree_sysroot = fixture.directory.path().join("cas-tree-sysroot");
     std::fs::create_dir_all(tree_sysroot.join("bin")).unwrap();
-    std::fs::create_dir_all(tree_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib"))
-        .unwrap();
-    symlink(
-        real_sysroot.join("bin/rustc"),
-        tree_sysroot.join("bin/rustc"),
-    )
-    .unwrap();
+    std::fs::create_dir_all(tree_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap();
+    symlink(real_sysroot.join("bin/rustc"), tree_sysroot.join("bin/rustc")).unwrap();
     for entry in std::fs::read_dir(real_sysroot.join("lib")).unwrap() {
         let entry = entry.unwrap();
         if entry.file_name() == "rustlib" {
             continue;
         }
-        symlink(
-            entry.path(),
-            tree_sysroot.join("lib").join(entry.file_name()),
-        )
-        .unwrap();
+        symlink(entry.path(), tree_sysroot.join("lib").join(entry.file_name())).unwrap();
     }
     for entry in
         std::fs::read_dir(real_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib")).unwrap()
@@ -2022,9 +1744,7 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
         let entry = entry.unwrap();
         symlink(
             entry.path(),
-            tree_sysroot
-                .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
-                .join(entry.file_name()),
+            tree_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib").join(entry.file_name()),
         )
         .unwrap();
     }
@@ -2034,11 +1754,7 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
     // Plant a decoy `./lib/rustlib` inside `AT_FDCWD` to confirm explicit
     // `--sysroot` overrides `rustc`'s default relative lookup unconditionally.
     std::fs::create_dir_all(fixture.directory.path().join("lib/rustlib")).unwrap();
-    std::fs::write(
-        fixture.directory.path().join("lib/rustlib/decoy.rlib"),
-        b"decoy",
-    )
-    .unwrap();
+    std::fs::write(fixture.directory.path().join("lib/rustlib/decoy.rlib"), b"decoy").unwrap();
 
     let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
         .current_dir(fixture.directory.path())
@@ -2069,8 +1785,7 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
         "expected logical sysroot path to be preserved without canonicalization: {manifest}"
     );
     let is_sha256 = |val: &serde_json::Value| {
-        val.as_str()
-            .is_some_and(|s| s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit()))
+        val.as_str().is_some_and(|s| s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit()))
     };
     assert!(
         is_sha256(&manifest["compiler"]["rustc_sha256"]),
@@ -2078,27 +1793,19 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
     );
     let driver = &manifest["compiler"]["driver"];
     let linkage = driver["linkage"].as_str().unwrap();
-    assert!(
-        matches!(linkage, "dynamic_dso" | "static_exe"),
-        "unexpected driver linkage: {driver}"
-    );
+    assert!(matches!(linkage, "dynamic_dso" | "static_exe"), "unexpected driver linkage: {driver}");
     assert!(
         is_sha256(&driver["driver_sha256"]),
         "expected 64-hex driver_sha256 in manifest: {driver}"
     );
     let dso_digests = driver["dso_digests"].as_object().unwrap();
     for (name, digest) in dso_digests {
-        assert!(
-            is_sha256(digest),
-            "expected 64-hex digest for {name}: {driver}"
-        );
+        assert!(is_sha256(digest), "expected 64-hex digest for {name}: {driver}");
     }
     if linkage == "dynamic_dso" {
         assert!(
-            dso_digests
-                .iter()
-                .any(|(name, digest)| name.starts_with("librustc_driver-")
-                    && digest == &driver["driver_sha256"]),
+            dso_digests.iter().any(|(name, digest)| name.starts_with("librustc_driver-")
+                && digest == &driver["driver_sha256"]),
             "expected dynamic driver digest recorded in dso_digests: {driver}"
         );
     }
@@ -2114,11 +1821,7 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
     std::fs::create_dir_all(bad_llvm_sysroot.join("bin")).unwrap();
     std::fs::create_dir_all(bad_llvm_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib"))
         .unwrap();
-    symlink(
-        real_sysroot.join("bin/rustc"),
-        bad_llvm_sysroot.join("bin/rustc"),
-    )
-    .unwrap();
+    symlink(real_sysroot.join("bin/rustc"), bad_llvm_sysroot.join("bin/rustc")).unwrap();
     let mut replaced_llvm = false;
     for entry in std::fs::read_dir(real_sysroot.join("lib")).unwrap() {
         let entry = entry.unwrap();
@@ -2144,9 +1847,7 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
             && name_str.starts_with("libLLVM")
         {
             std::fs::write(
-                bad_llvm_sysroot
-                    .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
-                    .join(&name),
+                bad_llvm_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib").join(&name),
                 b"mismatched-llvm",
             )
             .unwrap();
@@ -2155,9 +1856,7 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
         }
         symlink(
             entry.path(),
-            bad_llvm_sysroot
-                .join("lib/rustlib/x86_64-unknown-linux-gnu/lib")
-                .join(name),
+            bad_llvm_sysroot.join("lib/rustlib/x86_64-unknown-linux-gnu/lib").join(name),
         )
         .unwrap();
     }
@@ -2199,13 +1898,10 @@ fn logical_symlinked_sysroot_preserves_path_and_rejects_mismatched_libllvm_and_l
     // 3. Ambient dynamic-linker injection variables must fail closed on
     //    presence (including empty-string values for presence-triggered flags)
     //    before entering the compiler session.
-    for (idx, (var, val)) in [
-        ("LD_DYNAMIC_WEAK", "1"),
-        ("LD_DYNAMIC_WEAK", ""),
-        ("DYLD_FORCE_FLAT_NAMESPACE", ""),
-    ]
-    .into_iter()
-    .enumerate()
+    for (idx, (var, val)) in
+        [("LD_DYNAMIC_WEAK", "1"), ("LD_DYNAMIC_WEAK", ""), ("DYLD_FORCE_FLAT_NAMESPACE", "")]
+            .into_iter()
+            .enumerate()
     {
         let preload_out = fixture.directory.path().join(format!("preload-out-{idx}"));
         let output = Command::new(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))
@@ -2258,10 +1954,7 @@ fn sysroot_only_gate_admits_no_std_core_and_refuses_proc_macro_and_extern_crates
         b"extern crate proc_macro;\n\
           pub fn selected(x: u64) -> u64 { x }\n",
     );
-    let output = extern_proc_macro_fixture
-        .selected_command()
-        .output()
-        .unwrap();
+    let output = extern_proc_macro_fixture.selected_command().output().unwrap();
     assert_eq!(output.status.code(), Some(1), "{output:?}");
     assert_ne!(status(&output)["status"], "captured", "{output:?}");
     extern_proc_macro_fixture.assert_no_capture_artifacts();
@@ -2357,10 +2050,7 @@ fn compile_captured_lean_if_trusted_sources_present(captured_lean: &std::path::P
         !combined.contains("maximum recursion depth"),
         "Captured.lean hit recursion-depth limit:\n{combined}"
     );
-    assert!(
-        out.status.success(),
-        "Captured.lean failed Lean compilation:\n{combined}"
-    );
+    assert!(out.status.success(), "Captured.lean failed Lean compilation:\n{combined}");
     assert!(captured_olean.is_file());
     true
 }
@@ -2615,10 +2305,7 @@ fn unmodeled_projections_tuples_casts_and_operators_fail_closed() {
 fn thousand_one_hundred_function_crate_compiles_in_lean_under_default_max_rec_depth() {
     let mut source = String::with_capacity(64 * 1024);
     for idx in 0..1_100usize {
-        let _ = writeln!(
-            source,
-            "pub fn f_{idx}(x: u64) -> u64 {{ (x ^ {idx}u64) + 1u64 }}"
-        );
+        let _ = writeln!(source, "pub fn f_{idx}(x: u64) -> u64 {{ (x ^ {idx}u64) + 1u64 }}");
     }
     let fixture = Capture::new(source.as_bytes());
     let output = fixture.command().arg("--scope=crate").output().unwrap();
@@ -2630,10 +2317,7 @@ fn thousand_one_hundred_function_crate_compiles_in_lean_under_default_max_rec_de
     );
     let manifest = fixture.manifest();
     assert_eq!(manifest["schema_version"], 4);
-    assert_eq!(
-        manifest["program"]["bodies"].as_array().unwrap().len(),
-        1_100
-    );
+    assert_eq!(manifest["program"]["bodies"].as_array().unwrap().len(), 1_100);
 
     let captured_lean = fixture.output.join("Captured.lean");
     let lean_text = std::fs::read_to_string(&captured_lean).unwrap();
@@ -2704,9 +2388,7 @@ fn mir_preserve_ub_retains_bare_place_mention_and_rejects_projected_place_mentio
     let failure = status(&output);
     assert_eq!(failure["status"], "unsupported", "{failure}");
     assert!(
-        failure
-            .to_string()
-            .contains("PlaceMention with projections is unsupported"),
+        failure.to_string().contains("PlaceMention with projections is unsupported"),
         "expected explicit projected PlaceMention refusal, got {failure}"
     );
     projected.assert_no_capture_artifacts();
@@ -2847,18 +2529,12 @@ fn whole_crate_refuses_itemless_link_foreign_block_and_native_libraries() {
     // Even in selected-unit mode, crate-local native library directives are
     // refused by the belt-and-suspenders `native_libraries` check.
     let sel_fixture = Capture::new(linked_foreign);
-    let sel_output = sel_fixture
-        .command()
-        .arg("--select=zero")
-        .output()
-        .unwrap();
+    let sel_output = sel_fixture.command().arg("--select=zero").output().unwrap();
     assert_eq!(sel_output.status.code(), Some(1), "{sel_output:?}");
     let sel_failure = status(&sel_output);
     assert_eq!(sel_failure["status"], "unsupported", "{sel_failure}");
     assert!(
-        sel_failure
-            .to_string()
-            .contains("crate-local native libraries are unsupported"),
+        sel_failure.to_string().contains("crate-local native libraries are unsupported"),
         "expected native_libraries refusal, got {sel_failure}"
     );
     sel_fixture.assert_no_capture_artifacts();
@@ -2960,11 +2636,7 @@ pub fn spin_never() -> ! {
         let bad_sel = Capture::new(nostd_src);
         let bad_out = bad_sel
             .command()
-            .args([
-                "--crate-type=bin",
-                "--panic=abort",
-                &format!("--select={forbidden_root}"),
-            ])
+            .args(["--crate-type=bin", "--panic=abort", &format!("--select={forbidden_root}")])
             .output()
             .unwrap();
         assert_eq!(bad_out.status.code(), Some(1), "{forbidden_root}: {bad_out:?}");
@@ -2992,11 +2664,8 @@ pub fn spin_never() -> ! {
 
     // 6. Omitting `--panic=abort` defaults to `--panic=unwind` and fails closed.
     let unwind_bad = Capture::new(nostd_src);
-    let unwind_out = unwind_bad
-        .command()
-        .args(["--crate-type=bin", "--select=guarded_exit"])
-        .output()
-        .unwrap();
+    let unwind_out =
+        unwind_bad.command().args(["--crate-type=bin", "--select=guarded_exit"]).output().unwrap();
     assert_eq!(unwind_out.status.code(), Some(1), "{unwind_out:?}");
     assert_eq!(status(&unwind_out)["status"], "compiler_failed");
     unwind_bad.assert_no_capture_artifacts();
@@ -3007,11 +2676,7 @@ fn binary_capture_boundaries_admit_std_bin_and_refuse_lib_panic_impl_returning_c
     // 1. Standard library-backed binary (`fn main() {}`) passes whole-crate capture.
     let std_bin = b"pub fn answer() -> u64 { 42 }\nfn main() {}\n";
     let ok_bin = Capture::new(std_bin);
-    let ok_out = ok_bin
-        .command()
-        .args(["--crate-type=bin", "--scope=crate"])
-        .output()
-        .unwrap();
+    let ok_out = ok_bin.command().args(["--crate-type=bin", "--scope=crate"]).output().unwrap();
     assert!(ok_out.status.success(), "{ok_out:?}");
     let manifest_raw = std::fs::read_to_string(ok_bin.output.join("capture.json")).unwrap();
     let manifest: serde_json::Value = serde_json::from_str(&manifest_raw).unwrap();
@@ -3045,11 +2710,7 @@ pub fn id(x: u64) -> u64 { x }
     // 3. Crate-level `#![crate_type = "bin"]` attribute stays refused even when `--crate-type=bin`
     // is explicitly requested on the CLI.
     let attr_bin = Capture::new(b"#![crate_type = \"bin\"]\nfn main() {}\n");
-    let attr_out = attr_bin
-        .command()
-        .args(["--crate-type=bin", "--scope=crate"])
-        .output()
-        .unwrap();
+    let attr_out = attr_bin.command().args(["--crate-type=bin", "--scope=crate"]).output().unwrap();
     assert_eq!(attr_out.status.code(), Some(1), "{attr_out:?}");
     let attr_status = status(&attr_out);
     assert_eq!(attr_status["status"], "unsupported", "{attr_status}");
@@ -3062,11 +2723,8 @@ pub fn id(x: u64) -> u64 { x }
     // 4. Returning calls (`target: Some(_)`) remain refused in both `bin` and `lib`.
     let returning_call = b"#[inline(never)] fn helper() -> u64 { 1 }\npub fn caller() -> u64 { helper() }\nfn main() {}\n";
     let call_bin = Capture::new(returning_call);
-    let call_out = call_bin
-        .command()
-        .args(["--crate-type=bin", "--select=caller"])
-        .output()
-        .unwrap();
+    let call_out =
+        call_bin.command().args(["--crate-type=bin", "--select=caller"]).output().unwrap();
     assert_eq!(call_out.status.code(), Some(1), "{call_out:?}");
     assert_eq!(status(&call_out)["status"], "unsupported");
     call_bin.assert_no_capture_artifacts();
@@ -3096,11 +2754,7 @@ fn required_consts_and_unevaluated_constants_capture_and_typecheck_in_lean() {
     let fixture = Capture::new(source);
     let output = fixture
         .command()
-        .args([
-            "--select=make_neg",
-            "--select=inline_const_ok",
-            "--select=make_unit",
-        ])
+        .args(["--select=make_neg", "--select=inline_const_ok", "--select=make_unit"])
         .output()
         .unwrap();
     assert!(
@@ -3208,10 +2862,7 @@ fn required_consts_post_monomorphization_errors_fail_closed() {
         stderr(&assoc_ok_out)
     );
     let assoc_lean = std::fs::read_to_string(assoc_ok.output.join("Captured.lean")).unwrap();
-    assert!(
-        assoc_lean.contains("ConstLit.scalar (BitVec.ofNat 128 8)"),
-        "{assoc_lean}"
-    );
+    assert!(assoc_lean.contains("ConstLit.scalar (BitVec.ofNat 128 8)"), "{assoc_lean}");
 
     let assoc_fail = Capture::new(assoc_const_pme);
     let assoc_fail_out = assoc_fail
@@ -3274,21 +2925,11 @@ fn explicit_concrete_monomorphization_captures_generics_consts_lifetimes_and_tra
     assert!(identities.contains(&"rust-path-v1::id::<usize>"));
     assert!(identities.contains(&"rust-path-v1::id::<bool>"));
     assert!(identities.contains(&"rust-path-v1::add_const::<42>"));
-    assert!(identities
-        .iter()
-        .any(|id| id.contains("with_lt") && id.contains("usize")));
-    assert!(identities
-        .iter()
-        .any(|id| id.contains("ManuallyDrop<u8> as Tag>::tag")));
+    assert!(identities.iter().any(|id| id.contains("with_lt") && id.contains("usize")));
+    assert!(identities.iter().any(|id| id.contains("ManuallyDrop<u8> as Tag>::tag")));
     let lean_text = std::fs::read_to_string(fixture.output.join("Captured.lean")).unwrap();
-    assert!(
-        lean_text.contains("ConstLit.scalar (BitVec.ofNat 128 42)"),
-        "{lean_text}"
-    );
-    assert!(
-        lean_text.contains("ConstLit.scalar (BitVec.ofNat 128 7)"),
-        "{lean_text}"
-    );
+    assert!(lean_text.contains("ConstLit.scalar (BitVec.ofNat 128 42)"), "{lean_text}");
+    assert!(lean_text.contains("ConstLit.scalar (BitVec.ofNat 128 7)"), "{lean_text}");
     compile_captured_lean_if_trusted_sources_present(&fixture.output.join("Captured.lean"));
 }
 
@@ -3307,21 +2948,9 @@ fn explicit_concrete_monomorphization_refuses_unsatisfied_bounds_and_invalid_req
             r#"{"path":"Tag::tag","args":["bool"]}"#,
             "trait or well-formedness predicates unsatisfied",
         ),
-        (
-            "wrong_arity",
-            r#"{"path":"id","args":["usize","u8"]}"#,
-            "expects 1 generic arguments",
-        ),
-        (
-            "malformed_arg_syntax",
-            r#"{"path":"id","args":["usize u8"]}"#,
-            "trailing tokens",
-        ),
-        (
-            "unknown_path",
-            r#"{"path":"missing_fn","args":["usize"]}"#,
-            "was not found",
-        ),
+        ("wrong_arity", r#"{"path":"id","args":["usize","u8"]}"#, "expects 1 generic arguments"),
+        ("malformed_arg_syntax", r#"{"path":"id","args":["usize u8"]}"#, "trailing tokens"),
+        ("unknown_path", r#"{"path":"missing_fn","args":["usize"]}"#, "was not found"),
         (
             "bad_abi_generic",
             r#"{"path":"bad_abi","args":["usize"]}"#,
@@ -3336,12 +2965,7 @@ fn explicit_concrete_monomorphization_refuses_unsatisfied_bounds_and_invalid_req
 
     for (name, inst_json, expected) in cases {
         let fixture = Capture::new(source);
-        let output = fixture
-            .command()
-            .arg("--instantiate")
-            .arg(inst_json)
-            .output()
-            .unwrap();
+        let output = fixture.command().arg("--instantiate").arg(inst_json).output().unwrap();
         assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
         let failure = status(&output);
         assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
@@ -3377,12 +3001,7 @@ fn explicit_monomorphization_enforces_crate_roots_region_bounds_and_self_const_f
         ),
     ] {
         let fixture = Capture::new(path_source);
-        let output = fixture
-            .command()
-            .arg("--instantiate")
-            .arg(inst_json)
-            .output()
-            .unwrap();
+        let output = fixture.command().arg("--instantiate").arg(inst_json).output().unwrap();
         assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
         let failure = status(&output);
         assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
@@ -3408,12 +3027,7 @@ fn explicit_monomorphization_enforces_crate_roots_region_bounds_and_self_const_f
         ("hrtb_trait_unsatisfied", r#"{"path":"hrtb_trait","args":["u8"]}"#),
     ] {
         let fixture = Capture::new(region_source);
-        let output = fixture
-            .command()
-            .arg("--instantiate")
-            .arg(inst_json)
-            .output()
-            .unwrap();
+        let output = fixture.command().arg("--instantiate").arg(inst_json).output().unwrap();
         assert_eq!(output.status.code(), Some(1), "{name}: {output:?}");
         let failure = status(&output);
         assert_eq!(failure["status"], "unsupported", "{name}: {failure}");
@@ -3468,4 +3082,41 @@ fn explicit_monomorphization_enforces_crate_roots_region_bounds_and_self_const_f
         stderr(&self_out)
     );
     assert_eq!(self_fixture.manifest()["program"]["bodies"].as_array().unwrap().len(), 2);
+}
+
+#[test]
+fn testkit_staged_workspace_runs_capture_and_verifies_status() {
+    use std::time::Duration;
+
+    let tools =
+        anneal_testkit::ToolchainEnv::resolve(anneal_testkit::ToolchainMode::WorkspaceBuild {
+            cli_bin: None,
+            capture_bin: Some(PathBuf::from(env!("CARGO_BIN_EXE_anneal-rustc-capture-test-bin"))),
+            auditor_bin: None,
+        })
+        .unwrap();
+    let mut ws =
+        anneal_testkit::WorkspaceBuilder::new("anneal-cap-testkit-", Duration::from_secs(30))
+            .unwrap();
+    ws.write_work_file("src/lib.rs", b"pub fn id(x: u64) -> u64 { x }\n").unwrap();
+    let staged = ws.stage().unwrap();
+    let src = staged.work_dir().join("src/lib.rs");
+    let out = staged.work_dir().join("capture_out");
+    let args = [
+        std::ffi::OsStr::new("--crate-root"),
+        src.as_os_str(),
+        std::ffi::OsStr::new("--crate-name=testkit_smoke"),
+        std::ffi::OsStr::new("--target=x86_64-unknown-linux-gnu"),
+        std::ffi::OsStr::new("--out-dir"),
+        out.as_os_str(),
+        std::ffi::OsStr::new("--select=id"),
+        std::ffi::OsStr::new("--source-file"),
+        src.as_os_str(),
+    ];
+    let run = staged.run_capture(&tools, &args).unwrap();
+    run.expect_code(0).unwrap();
+    let cap_ok = anneal_testkit::assert_captured(&run.output, 1).unwrap();
+    assert!(cap_ok.capture.is_file());
+    assert!(cap_ok.lean.is_file());
+    staged.finish(Ok(())).unwrap();
 }

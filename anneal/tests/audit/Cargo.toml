@@ -7,9 +7,9 @@
 # those terms.
 
 # Integration tests for `anneal-audit`, kept outside `trusted/` so non-TCB test
-# harnesses do not inflate the human-audited TCB surface. The dependency edge
-# is strictly one-way (`tests/` -> `trusted/`, never `trusted/` -> `tests/`),
-# enforced mechanically by `check_cargo_boundary`.
+# harnesses do not inflate the human-audited TCB surface. `check_cargo_boundary`
+# enforces the two-zone monotonic lattice (`tests/*` -> `trusted/*` or
+# `tests/testkit`, never `trusted/*` -> `tests/*`).
 
 [package]
 name = "anneal-audit-tests"
@@ -21,6 +21,7 @@ publish = false
 anneal-audit = { path = "../../trusted/audit" }
 
 [dev-dependencies]
+anneal-testkit = { path = "../testkit" }
 cargo-anneal = { path = "../../trusted/cargo-anneal", default-features = false }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
