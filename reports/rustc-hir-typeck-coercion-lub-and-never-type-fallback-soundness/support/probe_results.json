@@ -1,0 +1,611 @@
+{
+  "observed_at": "2026-11-23",
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+  "part_a_never_fallback": {
+    "edition_2021": {
+      "edition": "2021",
+      "unfeatured_never_compile": {
+        "edition": "2021",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0658]: the `!` type is experimental\n  --> <TMP>/a_unfeatured_2021.rs:10:15\n   |\n10 | impl Poly for ! {\n   |               ^\n   |\n   = note: see issue #35121 <https://github.com/rust-lang/rust/issues/35121> for more information\n   = help: add `#![feature(never_type)]` to the crate attributes to enable\n   = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0658`."
+      },
+      "feature_never_native_opt2": {
+        "edition": "2021",
+        "opt_level": "2",
+        "compile_rc": 0,
+        "compile_stderr": "",
+        "runs": {
+          "safe": {
+            "args": [
+              "safe"
+            ],
+            "rc": 0,
+            "stdout": "TAG=unit RES=ok",
+            "stderr": ""
+          },
+          "ub": {
+            "args": [
+              "ub"
+            ],
+            "rc": 0,
+            "stdout": "TAG=unit RES=ok",
+            "stderr": ""
+          }
+        }
+      },
+      "feature_never_native_opt0": {
+        "edition": "2021",
+        "opt_level": "0",
+        "compile_rc": 0,
+        "compile_stderr": "",
+        "runs": {
+          "safe": {
+            "args": [
+              "safe"
+            ],
+            "rc": 0,
+            "stdout": "TAG=unit RES=ok",
+            "stderr": ""
+          },
+          "ub": {
+            "args": [
+              "ub"
+            ],
+            "rc": 0,
+            "stdout": "TAG=unit RES=ok",
+            "stderr": ""
+          }
+        }
+      },
+      "feature_never_mir_excerpts": {
+        "probe_fallback": "fn probe_fallback() -> &str {\n    let mut _0: &str;\n    let _1: std::option::Option<()>;\n    let mut _2: (&str, std::option::Option<()>);\n    scope 1 {\n        debug t => _0;\n        debug o => _1;\n        scope 2 {\n            debug _x => const ();\n        }\n    }\n\n    bb0: {\n        _2 = make::<()>() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _0 = copy (_2.0: &str);\n        _1 = copy (_2.1: std::option::Option<()>);\n        return;\n    }\n}",
+        "probe_never_zeroed_live": "fn probe_never_zeroed_live(_1: bool) -> &str {\n    debug do_ub => _1;\n    let mut _0: &str;\n    let _2: ();\n    scope 1 {\n        debug _x => const ();\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _2 = zeroed::<()>() -> [return: bb2, unwind continue];\n    }\n\n    bb2: {\n        _0 = const \"ok\";\n        return;\n    }\n}"
+      },
+      "feature_never_miri_runs": {
+        "stacked_borrows__safe": {
+          "edition": "2021",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "safe"
+          ],
+          "rc": 0,
+          "stdout": "TAG=unit RES=ok",
+          "stderr": ""
+        },
+        "tree_borrows__safe": {
+          "edition": "2021",
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "safe"
+          ],
+          "rc": 0,
+          "stdout": "TAG=unit RES=ok",
+          "stderr": ""
+        },
+        "stacked_borrows__ub": {
+          "edition": "2021",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "ub"
+          ],
+          "rc": 0,
+          "stdout": "TAG=unit RES=ok",
+          "stderr": ""
+        },
+        "tree_borrows__ub": {
+          "edition": "2021",
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "ub"
+          ],
+          "rc": 0,
+          "stdout": "TAG=unit RES=ok",
+          "stderr": ""
+        }
+      },
+      "default_deny_unsafe_direct": {
+        "edition": "2021",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: never type fallback affects this call to an `unsafe` function\n --> <TMP>/a_deny_direct_2021.rs:3:51\n  |\n3 |     let _x = if false { return; } else { unsafe { core::mem::zeroed() } };\n  |                                                   ^^^^^^^^^^^^^^^^^^^\n  |\n  = help: specify the type explicitly\n  = warning: this changes meaning in Rust 2024 and in a future release in all editions!\n  = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>\n  = note: `#[deny(never_type_fallback_flowing_into_unsafe)]` (part of `#[deny(rust_2024_compatibility)]`) on by default\nhelp: use `()` annotations to avoid fallback changes\n  |\n3 |     let _x: () = if false { return; } else { unsafe { core::mem::zeroed() } };\n  |           ++++\n\nerror: aborting due to 1 previous error"
+      },
+      "default_deny_unsafe_graph_hop": {
+        "edition": "2021",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: this function depends on never type fallback being `()`\n --> <TMP>/a_deny_graph_2021.rs:2:1\n  |\n2 | pub fn trigger_indirect_hop(cond: bool) {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  |\n  = help: specify the types explicitly\nnote: in edition 2024, the requirement `!: Default` will fail\n --> <TMP>/a_deny_graph_2021.rs:3:40\n  |\n3 |     let a = if cond { return; } else { Default::default() };\n  |                                        ^^^^^^^^^^^^^^^^^^\n  = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in Rust 2024 and in a future release in all editions!\n  = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>\n  = note: `#[deny(dependency_on_unit_never_type_fallback)]` (part of `#[deny(rust_2024_compatibility)]`) on by default\nhelp: use `()` annotations to avoid fallback changes\n  |\n3 |     let a: () = if cond { return; } else { Default::default() };\n  |          ++++\n\nerror: never type fallback affects this call to an `unsafe` function\n --> <TMP>/a_deny_graph_2021.rs:4:44\n  |\n4 |     let b = if !cond { a } else { unsafe { core::mem::zeroed() } };\n  |                                            ^^^^^^^^^^^^^^^^^^^\n  |\n  = help: specify the type explicitly\n  = warning: this changes meaning in Rust 2024 and in a future release in all editions!\n  = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>\n  = note: `#[deny(never_type_fallback_flowing_into_unsafe)]` (part of `#[deny(rust_2024_compatibility)]`) on by default\nhelp: use `()` annotations to avoid fallback changes\n  |\n3 |     let a: () = if cond { return; } else { Default::default() };\n  |          ++++\n\nwarning: unreachable statement\n  --> <TMP>/a_deny_graph_2021.rs:10:5\n   |\n 9 |     let v0 = if cond { return; } else { loop {} };\n   |                        ------ any code following this expression is unreachable\n10 |     let v1 = if !cond { v0 } else { Default::default() };\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unreachable statement\n   |\n   = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: this function depends on never type fallback being `()`\n  --> <TMP>/a_deny_graph_2021.rs:8:1\n   |\n 8 | pub fn trigger_two_hop_coercion(cond: bool) {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = help: specify the types explicitly\nnote: in edition 2024, the requirement `!: Default` will fail\n  --> <TMP>/a_deny_graph_2021.rs:10:37\n   |\n10 |     let v1 = if !cond { v0 } else { Default::default() };\n   |                                     ^^^^^^^^^^^^^^^^^^\n   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in Rust 2024 and in a future release in all editions!\n   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>\nhelp: use `()` annotations to avoid fallback changes\n   |\n 9 |     let v0: () = if cond { return; } else { loop {} };\n   |           ++++\n\nerror: never type fallback affects this call to an `unsafe` function\n  --> <TMP>/a_deny_graph_2021.rs:11:45\n   |\n11 |     let v2 = if cond { v1 } else { unsafe { core::mem::zeroed() } };\n   |                                             ^^^^^^^^^^^^^^^^^^^\n   |\n   = help: specify the type explicitly\n   = warning: this changes meaning in Rust 2024 and in a future release in all editions!\n   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>\nhelp: use `()` annotations to avoid fallback changes\n   |\n 9 |     let v0: () = if cond { return; } else { loop {} };\n   |           ++++\n\nwarning: unused variable: `v0`\n --> <TMP>/a_deny_graph_2021.rs:9:9\n  |\n9 |     let v0 = if cond { return; } else { loop {} };\n  |         ^^ help: if this is intentional, prefix it with an underscore: `_v0`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 4 previous errors; 2 warnings emitted"
+      },
+      "dependency_on_unit_lint": {
+        "edition": "2021",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: this function depends on never type fallback being `()`\n  --> <TMP>/a_dep_unit_2021.rs:11:1\n   |\n11 | pub fn needs_unit(cond: bool) -> u32 {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n   |\n   = help: specify the types explicitly\nnote: in edition 2024, the requirement `!: OnlyUnit` will fail\n  --> <TMP>/a_dep_unit_2021.rs:13:10\n   |\n13 |     take(x)\n   |          ^\n   = warning: this was previously accepted by the compiler but is being phased out; it will become a hard error in Rust 2024 and in a future release in all editions!\n   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>\n   = note: `#[deny(dependency_on_unit_never_type_fallback)]` (part of `#[deny(rust_2024_compatibility)]`) on by default\nhelp: use `()` annotations to avoid fallback changes\n   |\n12 |     let x: () = if cond { return 1; } else { Default::default() };\n   |          ++++\n\nwarning: method `tag` is never used\n --> <TMP>/a_dep_unit_2021.rs:3:8\n  |\n2 | trait OnlyUnit {\n  |       -------- method in this trait\n3 |     fn tag(&self) -> u32;\n  |        ^^^\n  |\n  = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+      },
+      "all_diverging_and_place_read_mir": {
+        "all_diverge_if": "fn all_diverge_if(_1: bool) -> ! {\n    debug c => _1;\n    let mut _0: !;\n    let _2: !;\n    let mut _3: std::fmt::Arguments<'_>;\n    scope 1 {\n        debug x => const ZeroSized: !;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        goto -> bb1;\n    }\n\n    bb2: {\n        _3 = Arguments::<'_>::from_str(const \"arm2\") -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _2 = std::rt::panic_fmt(move _3) -> unwind continue;\n    }\n}",
+        "place_deref_wildcard": "fn place_deref_wildcard(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    scope 1 {\n    }\n\n    bb0: {\n        _0 = const 42_u32;\n        return;\n    }\n}",
+        "place_match_wildcard": "fn place_match_wildcard(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n\n    bb0: {\n        _0 = const 43_u32;\n        return;\n    }\n}",
+        "place_block_deref": "fn place_block_deref(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: bool;\n    let mut _7: *const ();\n    let mut _8: usize;\n    let mut _9: bool;\n    let mut _10: bool;\n    let mut _11: bool;\n    let mut _12: bool;\n    scope 1 {\n    }\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Sub(const <! as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _5 = BitAnd(copy _3, copy _4);\n        _6 = Eq(copy _5, const 0_usize);\n        assert(copy _6, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <! as std::mem::SizedTypeProperties>::ALIGN, copy _3) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _7 = copy _1 as *const () (PtrToPtr);\n        _8 = copy _7 as usize (Transmute);\n        _9 = Ne(const <! as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _10 = Eq(copy _8, const 0_usize);\n        _11 = BitAnd(copy _10, copy _9);\n        _12 = Not(copy _11);\n        assert(copy _12, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        unreachable;\n    }\n}",
+        "place_deref_read_unit": "fn place_deref_read_unit(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: bool;\n    let mut _7: *const ();\n    let mut _8: usize;\n    let mut _9: bool;\n    let mut _10: bool;\n    let mut _11: bool;\n    let mut _12: bool;\n    scope 1 {\n        debug _x => const ();\n    }\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Sub(const <! as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _5 = BitAnd(copy _3, copy _4);\n        _6 = Eq(copy _5, const 0_usize);\n        assert(copy _6, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <! as std::mem::SizedTypeProperties>::ALIGN, copy _3) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _7 = copy _1 as *const () (PtrToPtr);\n        _8 = copy _7 as usize (Transmute);\n        _9 = Ne(const <! as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _10 = Eq(copy _8, const 0_usize);\n        _11 = BitAnd(copy _10, copy _9);\n        _12 = Not(copy _11);\n        assert(copy _12, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        unreachable;\n    }\n}"
+      },
+      "place_read_native_opt0": {
+        "edition": "2021",
+        "opt_level": "0",
+        "compile_rc": 0,
+        "compile_stderr": "warning: unreachable expression\n --> <TMP>/a_place_read_bin_2021.rs:6:20\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                    ^^^^^^^-------\n  |                    |      |\n  |                    |      any code following this expression is unreachable\n  |                    unreachable expression\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable expression\n --> <TMP>/a_place_read_bin_2021.rs:7:5\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                                            -------------- any code following this expression is unreachable\n7 |     x\n  |     ^ unreachable expression\n\nwarning: unreachable expression\n  --> <TMP>/a_place_read_bin_2021.rs:29:5\n   |\n28 |     let _ = { *p };\n   |               -- any code following this expression is unreachable\n29 |     44\n   |     ^^ unreachable expression\n\nwarning: unreachable expression\n  --> <TMP>/a_place_read_bin_2021.rs:36:5\n   |\n35 |     let _x: () = *p;\n   |                  -- any code following this expression is unreachable\n36 |     45\n   |     ^^ unreachable expression\n\nwarning: unused variable: `x`\n --> <TMP>/a_place_read_bin_2021.rs:6:9\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |         ^ help: if this is intentional, prefix it with an underscore: `_x`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 5 warnings emitted",
+        "runs": {
+          "wild": {
+            "args": [
+              "wild"
+            ],
+            "rc": 0,
+            "stdout": "MODE=wild VAL=42",
+            "stderr": ""
+          },
+          "match_wild": {
+            "args": [
+              "match_wild"
+            ],
+            "rc": 0,
+            "stdout": "MODE=match_wild VAL=43",
+            "stderr": ""
+          },
+          "block_deref": {
+            "args": [
+              "block_deref"
+            ],
+            "rc": -4,
+            "stdout": "",
+            "stderr": ""
+          },
+          "read": {
+            "args": [
+              "read"
+            ],
+            "rc": -4,
+            "stdout": "",
+            "stderr": ""
+          }
+        }
+      },
+      "place_read_miri": {
+        "stacked_borrows__wild": {
+          "edition": "2021",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "wild"
+          ],
+          "rc": 0,
+          "stdout": "MODE=wild VAL=42",
+          "stderr": "warning: unreachable expression\n --> src/main.rs:6:20\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                    ^^^^^^^-------\n  |                    |      |\n  |                    |      any code following this expression is unreachable\n  |                    unreachable expression\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable expression\n --> src/main.rs:7:5\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                                            -------------- any code following this expression is unreachable\n7 |     x\n  |     ^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:29:5\n   |\n28 |     let _ = { *p };\n   |               -- any code following this expression is unreachable\n29 |     44\n   |     ^^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:36:5\n   |\n35 |     let _x: () = *p;\n   |                  -- any code following this expression is unreachable\n36 |     45\n   |     ^^ unreachable expression\n\nwarning: unused variable: `x`\n --> src/main.rs:6:9\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |         ^ help: if this is intentional, prefix it with an underscore: `_x`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default"
+        },
+        "stacked_borrows__match_wild": {
+          "edition": "2021",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "match_wild"
+          ],
+          "rc": 0,
+          "stdout": "MODE=match_wild VAL=43",
+          "stderr": "warning: unreachable expression\n --> src/main.rs:6:20\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                    ^^^^^^^-------\n  |                    |      |\n  |                    |      any code following this expression is unreachable\n  |                    unreachable expression\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable expression\n --> src/main.rs:7:5\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                                            -------------- any code following this expression is unreachable\n7 |     x\n  |     ^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:29:5\n   |\n28 |     let _ = { *p };\n   |               -- any code following this expression is unreachable\n29 |     44\n   |     ^^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:36:5\n   |\n35 |     let _x: () = *p;\n   |                  -- any code following this expression is unreachable\n36 |     45\n   |     ^^ unreachable expression\n\nwarning: unused variable: `x`\n --> src/main.rs:6:9\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |         ^ help: if this is intentional, prefix it with an underscore: `_x`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default"
+        },
+        "stacked_borrows__block_deref": {
+          "edition": "2021",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "block_deref"
+          ],
+          "rc": 1,
+          "stdout": "",
+          "stderr": "warning: unreachable expression\n --> src/main.rs:6:20\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                    ^^^^^^^-------\n  |                    |      |\n  |                    |      any code following this expression is unreachable\n  |                    unreachable expression\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable expression\n --> src/main.rs:7:5\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                                            -------------- any code following this expression is unreachable\n7 |     x\n  |     ^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:29:5\n   |\n28 |     let _ = { *p };\n   |               -- any code following this expression is unreachable\n29 |     44\n   |     ^^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:36:5\n   |\n35 |     let _x: () = *p;\n   |                  -- any code following this expression is unreachable\n36 |     45\n   |     ^^ unreachable expression\n\nwarning: unused variable: `x`\n --> src/main.rs:6:9\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |         ^ help: if this is intentional, prefix it with an underscore: `_x`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: constructing invalid value of type !: encountered a value of the never type `!`\n  --> src/main.rs:28:15\n   |\n28 |     let _ = { *p };\n   |               ^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: place_block_deref\n               at src/main.rs:28:15: 28:17\n           1: main\n               at src/main.rs:46:35: 46:55\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 5 warnings emitted"
+        },
+        "stacked_borrows__read": {
+          "edition": "2021",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "read"
+          ],
+          "rc": 1,
+          "stdout": "",
+          "stderr": "warning: unreachable expression\n --> src/main.rs:6:20\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                    ^^^^^^^-------\n  |                    |      |\n  |                    |      any code following this expression is unreachable\n  |                    unreachable expression\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable expression\n --> src/main.rs:7:5\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                                            -------------- any code following this expression is unreachable\n7 |     x\n  |     ^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:29:5\n   |\n28 |     let _ = { *p };\n   |               -- any code following this expression is unreachable\n29 |     44\n   |     ^^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:36:5\n   |\n35 |     let _x: () = *p;\n   |                  -- any code following this expression is unreachable\n36 |     45\n   |     ^^ unreachable expression\n\nwarning: unused variable: `x`\n --> src/main.rs:6:9\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |         ^ help: if this is intentional, prefix it with an underscore: `_x`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: constructing invalid value of type !: encountered a value of the never type `!`\n  --> src/main.rs:35:18\n   |\n35 |     let _x: () = *p;\n   |                  ^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: place_deref_read_unit\n               at src/main.rs:35:18: 35:20\n           1: main\n               at src/main.rs:47:28: 47:52\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 5 warnings emitted"
+        }
+      }
+    },
+    "edition_2024": {
+      "edition": "2024",
+      "unfeatured_never_compile": {
+        "edition": "2024",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0658]: the `!` type is experimental\n  --> <TMP>/a_unfeatured_2024.rs:10:15\n   |\n10 | impl Poly for ! {\n   |               ^\n   |\n   = note: see issue #35121 <https://github.com/rust-lang/rust/issues/35121> for more information\n   = help: add `#![feature(never_type)]` to the crate attributes to enable\n   = note: this compiler was built on 2026-05-31; consider upgrading it if it is out of date\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0658`."
+      },
+      "feature_never_native_opt2": {
+        "edition": "2024",
+        "opt_level": "2",
+        "compile_rc": 0,
+        "compile_stderr": "warning: the type `!` does not permit zero-initialization\n  --> <TMP>/a_poly_zeroed_2024.rs:32:63\n   |\n32 | ... } else { unsafe { core::mem::zeroed() } };\n   |                       ^^^^^^^^^^^^^^^^^^^ this code causes undefined behavior when executed\n   |\n   = note: the `!` type has no valid value\n   = note: `#[warn(invalid_value)]` on by default\n\nwarning: 1 warning emitted",
+        "runs": {
+          "safe": {
+            "args": [
+              "safe"
+            ],
+            "rc": 0,
+            "stdout": "TAG=never RES=ok",
+            "stderr": ""
+          },
+          "ub": {
+            "args": [
+              "ub"
+            ],
+            "rc": -6,
+            "stdout": "",
+            "stderr": "thread 'main' (3628387) panicked at <RUSTC_SRC>/library/core/src/panicking.rs:225:5:\nattempted to instantiate uninhabited type `!`\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting."
+          }
+        }
+      },
+      "feature_never_native_opt0": {
+        "edition": "2024",
+        "opt_level": "0",
+        "compile_rc": 0,
+        "compile_stderr": "warning: the type `!` does not permit zero-initialization\n  --> <TMP>/a_poly_zeroed_o0_2024.rs:32:63\n   |\n32 | ... } else { unsafe { core::mem::zeroed() } };\n   |                       ^^^^^^^^^^^^^^^^^^^ this code causes undefined behavior when executed\n   |\n   = note: the `!` type has no valid value\n   = note: `#[warn(invalid_value)]` on by default\n\nwarning: 1 warning emitted",
+        "runs": {
+          "safe": {
+            "args": [
+              "safe"
+            ],
+            "rc": 0,
+            "stdout": "TAG=never RES=ok",
+            "stderr": ""
+          },
+          "ub": {
+            "args": [
+              "ub"
+            ],
+            "rc": -6,
+            "stdout": "",
+            "stderr": "thread 'main' (3628415) panicked at <RUSTC_SRC>/library/core/src/panicking.rs:225:5:\nattempted to instantiate uninhabited type `!`\nnote: run with `RUST_BACKTRACE=1` environment variable to display a backtrace\nthread caused non-unwinding panic. aborting."
+          }
+        }
+      },
+      "feature_never_mir_excerpts": {
+        "probe_fallback": "fn probe_fallback() -> &str {\n    let mut _0: &str;\n    let mut _1: (&str, std::option::Option<!>);\n    scope 1 {\n        debug t => _0;\n        debug o => const Option::<!>::None;\n        scope 2 {\n            debug _x => const ZeroSized: !;\n        }\n    }\n\n    bb0: {\n        _1 = make::<!>() -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        _0 = copy (_1.0: &str);\n        return;\n    }\n}",
+        "probe_never_zeroed_live": "fn probe_never_zeroed_live(_1: bool) -> &str {\n    debug do_ub => _1;\n    let mut _0: &str;\n    let _2: !;\n    scope 1 {\n        debug _x => const ZeroSized: !;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _2 = zeroed::<!>() -> unwind continue;\n    }\n\n    bb2: {\n        _0 = const \"ok\";\n        return;\n    }\n}"
+      },
+      "feature_never_miri_runs": {
+        "stacked_borrows__safe": {
+          "edition": "2024",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "safe"
+          ],
+          "rc": 0,
+          "stdout": "TAG=never RES=ok",
+          "stderr": "warning: the type `!` does not permit zero-initialization\n  --> src/main.rs:32:63\n   |\n32 | ... } else { unsafe { core::mem::zeroed() } };\n   |                       ^^^^^^^^^^^^^^^^^^^ this code causes undefined behavior when executed\n   |\n   = note: the `!` type has no valid value\n   = note: `#[warn(invalid_value)]` on by default"
+        },
+        "tree_borrows__safe": {
+          "edition": "2024",
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "safe"
+          ],
+          "rc": 0,
+          "stdout": "TAG=never RES=ok",
+          "stderr": "warning: the type `!` does not permit zero-initialization\n  --> src/main.rs:32:63\n   |\n32 | ... } else { unsafe { core::mem::zeroed() } };\n   |                       ^^^^^^^^^^^^^^^^^^^ this code causes undefined behavior when executed\n   |\n   = note: the `!` type has no valid value\n   = note: `#[warn(invalid_value)]` on by default"
+        },
+        "stacked_borrows__ub": {
+          "edition": "2024",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "ub"
+          ],
+          "rc": 1,
+          "stdout": "",
+          "stderr": "warning: the type `!` does not permit zero-initialization\n  --> src/main.rs:32:63\n   |\n32 | ... } else { unsafe { core::mem::zeroed() } };\n   |                       ^^^^^^^^^^^^^^^^^^^ this code causes undefined behavior when executed\n   |\n   = note: the `!` type has no valid value\n   = note: `#[warn(invalid_value)]` on by default\n\nerror: Undefined Behavior: constructing invalid value of type !: encountered a value of the never type `!`\n  --> src/main.rs:32:63\n   |\n32 | ...nsafe { core::mem::zeroed() } };\n   |            ^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: probe_never_zeroed_live\n               at src/main.rs:32:63: 32:82\n           1: main\n               at src/main.rs:40:15: 40:52\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+        },
+        "tree_borrows__ub": {
+          "edition": "2024",
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [
+            "ub"
+          ],
+          "rc": 1,
+          "stdout": "",
+          "stderr": "warning: the type `!` does not permit zero-initialization\n  --> src/main.rs:32:63\n   |\n32 | ... } else { unsafe { core::mem::zeroed() } };\n   |                       ^^^^^^^^^^^^^^^^^^^ this code causes undefined behavior when executed\n   |\n   = note: the `!` type has no valid value\n   = note: `#[warn(invalid_value)]` on by default\n\nerror: Undefined Behavior: constructing invalid value of type !: encountered a value of the never type `!`\n  --> src/main.rs:32:63\n   |\n32 | ...nsafe { core::mem::zeroed() } };\n   |            ^^^^^^^^^^^^^^^^^^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: probe_never_zeroed_live\n               at src/main.rs:32:63: 32:82\n           1: main\n               at src/main.rs:40:15: 40:52\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+        }
+      },
+      "default_deny_unsafe_direct": {
+        "edition": "2024",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: never type fallback affects this call to an `unsafe` function\n --> <TMP>/a_deny_direct_2024.rs:3:51\n  |\n3 |     let _x = if false { return; } else { unsafe { core::mem::zeroed() } };\n  |                                                   ^^^^^^^^^^^^^^^^^^^\n  |\n  = help: specify the type explicitly\n  = warning: this changes meaning in Rust 2024 and in a future release in all editions!\n  = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>\n  = note: `#[deny(never_type_fallback_flowing_into_unsafe)]` (part of `#[deny(rust_2024_compatibility)]`) on by default\nhelp: use `()` annotations to avoid fallback changes\n  |\n3 |     let _x: () = if false { return; } else { unsafe { core::mem::zeroed() } };\n  |           ++++\n\nwarning: the type `!` does not permit zero-initialization\n --> <TMP>/a_deny_direct_2024.rs:3:51\n  |\n3 |     let _x = if false { return; } else { unsafe { core::mem::zeroed() } };\n  |                                                   ^^^^^^^^^^^^^^^^^^^ this code causes undefined behavior when executed\n  |\n  = note: the `!` type has no valid value\n  = note: `#[warn(invalid_value)]` on by default\n\nerror: aborting due to 1 previous error; 1 warning emitted"
+      },
+      "default_deny_unsafe_graph_hop": {
+        "edition": "2024",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error: never type fallback affects this call to an `unsafe` function\n --> <TMP>/a_deny_graph_2024.rs:4:44\n  |\n4 |     let b = if !cond { a } else { unsafe { core::mem::zeroed() } };\n  |                                            ^^^^^^^^^^^^^^^^^^^\n  |\n  = help: specify the type explicitly\n  = warning: this changes meaning in Rust 2024 and in a future release in all editions!\n  = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>\n  = note: `#[deny(never_type_fallback_flowing_into_unsafe)]` (part of `#[deny(rust_2024_compatibility)]`) on by default\nhelp: use `()` annotations to avoid fallback changes\n  |\n3 |     let a: () = if cond { return; } else { Default::default() };\n  |          ++++\n\nerror[E0277]: the trait bound `!: Default` is not satisfied\n --> <TMP>/a_deny_graph_2024.rs:3:40\n  |\n3 |     let a = if cond { return; } else { Default::default() };\n  |                                        ^^^^^^^^^^^^^^^^^^ the trait `Default` is not implemented for `!`\n  |\n  = note: this error might have been caused by changes to Rust's type-inference algorithm (see issue #148922 <https://github.com/rust-lang/rust/issues/148922> for more information)\n  = help: you might have intended to use the type `()` here instead\n\nwarning: unreachable statement\n  --> <TMP>/a_deny_graph_2024.rs:10:5\n   |\n 9 |     let v0 = if cond { return; } else { loop {} };\n   |                        ------ any code following this expression is unreachable\n10 |     let v1 = if !cond { v0 } else { Default::default() };\n   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ unreachable statement\n   |\n   = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nerror: never type fallback affects this call to an `unsafe` function\n  --> <TMP>/a_deny_graph_2024.rs:11:45\n   |\n11 |     let v2 = if cond { v1 } else { unsafe { core::mem::zeroed() } };\n   |                                             ^^^^^^^^^^^^^^^^^^^\n   |\n   = help: specify the type explicitly\n   = warning: this changes meaning in Rust 2024 and in a future release in all editions!\n   = note: for more information, see <https://doc.rust-lang.org/edition-guide/rust-2024/never-type-fallback.html>\nhelp: use `()` annotations to avoid fallback changes\n   |\n 9 |     let v0: () = if cond { return; } else { loop {} };\n   |           ++++\n\nerror[E0277]: the trait bound `!: Default` is not satisfied\n  --> <TMP>/a_deny_graph_2024.rs:10:37\n   |\n10 |     let v1 = if !cond { v0 } else { Default::default() };\n   |                                     ^^^^^^^^^^^^^^^^^^ the trait `Default` is not implemented for `!`\n   |\n   = note: this error might have been caused by changes to Rust's type-inference algorithm (see issue #148922 <https://github.com/rust-lang/rust/issues/148922> for more information)\n   = help: you might have intended to use the type `()` here instead\n\nerror: aborting due to 4 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "dependency_on_unit_lint": {
+        "edition": "2024",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0277]: the trait bound `!: OnlyUnit` is not satisfied\n  --> <TMP>/a_dep_unit_2024.rs:13:10\n   |\n13 |     take(x)\n   |     ---- ^ the trait `OnlyUnit` is not implemented for `!`\n   |     |\n   |     required by a bound introduced by this call\n   |\nhelp: the trait `OnlyUnit` is implemented for `()`\n  --> <TMP>/a_dep_unit_2024.rs:5:1\n   |\n 5 | impl OnlyUnit for () {\n   | ^^^^^^^^^^^^^^^^^^^^\n   = note: this error might have been caused by changes to Rust's type-inference algorithm (see issue #148922 <https://github.com/rust-lang/rust/issues/148922> for more information)\n   = help: you might have intended to use the type `()` here instead\nnote: required by a bound in `take`\n  --> <TMP>/a_dep_unit_2024.rs:9:12\n   |\n 9 | fn take<T: OnlyUnit>(_x: T) -> u32 { 7 }\n   |            ^^^^^^^^ required by this bound in `take`\n\nerror[E0277]: the trait bound `!: Default` is not satisfied\n  --> <TMP>/a_dep_unit_2024.rs:12:42\n   |\n12 |     let x = if cond { return 1; } else { Default::default() };\n   |                                          ^^^^^^^^^^^^^^^^^^ the trait `Default` is not implemented for `!`\n   |\n   = note: this error might have been caused by changes to Rust's type-inference algorithm (see issue #148922 <https://github.com/rust-lang/rust/issues/148922> for more information)\n   = help: you might have intended to use the type `()` here instead\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0277`."
+      },
+      "all_diverging_and_place_read_mir": {
+        "all_diverge_if": "fn all_diverge_if(_1: bool) -> ! {\n    debug c => _1;\n    let mut _0: !;\n    let _2: !;\n    let mut _3: std::fmt::Arguments<'_>;\n    scope 1 {\n        debug x => const ZeroSized: !;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        goto -> bb1;\n    }\n\n    bb2: {\n        _3 = Arguments::<'_>::from_str(const \"arm2\") -> [return: bb3, unwind continue];\n    }\n\n    bb3: {\n        _2 = std::rt::panic_fmt(move _3) -> unwind continue;\n    }\n}",
+        "place_deref_wildcard": "fn place_deref_wildcard(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    scope 1 {\n    }\n\n    bb0: {\n        _0 = const 42_u32;\n        return;\n    }\n}",
+        "place_match_wildcard": "fn place_match_wildcard(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n\n    bb0: {\n        _0 = const 43_u32;\n        return;\n    }\n}",
+        "place_block_deref": "fn place_block_deref(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: bool;\n    let mut _7: *const ();\n    let mut _8: usize;\n    let mut _9: bool;\n    let mut _10: bool;\n    let mut _11: bool;\n    let mut _12: bool;\n    scope 1 {\n    }\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Sub(const <! as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _5 = BitAnd(copy _3, copy _4);\n        _6 = Eq(copy _5, const 0_usize);\n        assert(copy _6, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <! as std::mem::SizedTypeProperties>::ALIGN, copy _3) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _7 = copy _1 as *const () (PtrToPtr);\n        _8 = copy _7 as usize (Transmute);\n        _9 = Ne(const <! as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _10 = Eq(copy _8, const 0_usize);\n        _11 = BitAnd(copy _10, copy _9);\n        _12 = Not(copy _11);\n        assert(copy _12, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        _0 = const 44_u32;\n        return;\n    }\n}",
+        "place_deref_read_unit": "fn place_deref_read_unit(_1: *const !) -> u32 {\n    debug p => _1;\n    let mut _0: u32;\n    let mut _2: *const ();\n    let mut _3: usize;\n    let mut _4: usize;\n    let mut _5: usize;\n    let mut _6: bool;\n    let mut _7: *const ();\n    let mut _8: usize;\n    let mut _9: bool;\n    let mut _10: bool;\n    let mut _11: bool;\n    let mut _12: bool;\n    scope 1 {\n        debug _x => const ();\n    }\n\n    bb0: {\n        _2 = copy _1 as *const () (PtrToPtr);\n        _3 = copy _2 as usize (Transmute);\n        _4 = Sub(const <! as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _5 = BitAnd(copy _3, copy _4);\n        _6 = Eq(copy _5, const 0_usize);\n        assert(copy _6, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <! as std::mem::SizedTypeProperties>::ALIGN, copy _3) -> [success: bb1, unwind unreachable];\n    }\n\n    bb1: {\n        _7 = copy _1 as *const () (PtrToPtr);\n        _8 = copy _7 as usize (Transmute);\n        _9 = Ne(const <! as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _10 = Eq(copy _8, const 0_usize);\n        _11 = BitAnd(copy _10, copy _9);\n        _12 = Not(copy _11);\n        assert(copy _12, \"null pointer dereference occurred\") -> [success: bb2, unwind unreachable];\n    }\n\n    bb2: {\n        unreachable;\n    }\n}"
+      },
+      "place_read_native_opt0": {
+        "edition": "2024",
+        "opt_level": "0",
+        "compile_rc": 0,
+        "compile_stderr": "warning: unreachable expression\n --> <TMP>/a_place_read_bin_2024.rs:6:20\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                    ^^^^^^^-------\n  |                    |      |\n  |                    |      any code following this expression is unreachable\n  |                    unreachable expression\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable expression\n --> <TMP>/a_place_read_bin_2024.rs:7:5\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                                            -------------- any code following this expression is unreachable\n7 |     x\n  |     ^ unreachable expression\n\nwarning: unreachable expression\n  --> <TMP>/a_place_read_bin_2024.rs:29:5\n   |\n28 |     let _ = { *p };\n   |               -- any code following this expression is unreachable\n29 |     44\n   |     ^^ unreachable expression\n\nwarning: unreachable expression\n  --> <TMP>/a_place_read_bin_2024.rs:36:5\n   |\n35 |     let _x: () = *p;\n   |                  -- any code following this expression is unreachable\n36 |     45\n   |     ^^ unreachable expression\n\nwarning: unused variable: `x`\n --> <TMP>/a_place_read_bin_2024.rs:6:9\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |         ^ help: if this is intentional, prefix it with an underscore: `_x`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nwarning: 5 warnings emitted",
+        "runs": {
+          "wild": {
+            "args": [
+              "wild"
+            ],
+            "rc": 0,
+            "stdout": "MODE=wild VAL=42",
+            "stderr": ""
+          },
+          "match_wild": {
+            "args": [
+              "match_wild"
+            ],
+            "rc": 0,
+            "stdout": "MODE=match_wild VAL=43",
+            "stderr": ""
+          },
+          "block_deref": {
+            "args": [
+              "block_deref"
+            ],
+            "rc": 0,
+            "stdout": "MODE=block_deref VAL=44",
+            "stderr": ""
+          },
+          "read": {
+            "args": [
+              "read"
+            ],
+            "rc": -4,
+            "stdout": "",
+            "stderr": ""
+          }
+        }
+      },
+      "place_read_miri": {
+        "stacked_borrows__wild": {
+          "edition": "2024",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "wild"
+          ],
+          "rc": 0,
+          "stdout": "MODE=wild VAL=42",
+          "stderr": "warning: unreachable expression\n --> src/main.rs:6:20\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                    ^^^^^^^-------\n  |                    |      |\n  |                    |      any code following this expression is unreachable\n  |                    unreachable expression\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable expression\n --> src/main.rs:7:5\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                                            -------------- any code following this expression is unreachable\n7 |     x\n  |     ^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:29:5\n   |\n28 |     let _ = { *p };\n   |               -- any code following this expression is unreachable\n29 |     44\n   |     ^^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:36:5\n   |\n35 |     let _x: () = *p;\n   |                  -- any code following this expression is unreachable\n36 |     45\n   |     ^^ unreachable expression\n\nwarning: unused variable: `x`\n --> src/main.rs:6:9\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |         ^ help: if this is intentional, prefix it with an underscore: `_x`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default"
+        },
+        "stacked_borrows__match_wild": {
+          "edition": "2024",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "match_wild"
+          ],
+          "rc": 0,
+          "stdout": "MODE=match_wild VAL=43",
+          "stderr": "warning: unreachable expression\n --> src/main.rs:6:20\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                    ^^^^^^^-------\n  |                    |      |\n  |                    |      any code following this expression is unreachable\n  |                    unreachable expression\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable expression\n --> src/main.rs:7:5\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                                            -------------- any code following this expression is unreachable\n7 |     x\n  |     ^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:29:5\n   |\n28 |     let _ = { *p };\n   |               -- any code following this expression is unreachable\n29 |     44\n   |     ^^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:36:5\n   |\n35 |     let _x: () = *p;\n   |                  -- any code following this expression is unreachable\n36 |     45\n   |     ^^ unreachable expression\n\nwarning: unused variable: `x`\n --> src/main.rs:6:9\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |         ^ help: if this is intentional, prefix it with an underscore: `_x`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default"
+        },
+        "stacked_borrows__block_deref": {
+          "edition": "2024",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "block_deref"
+          ],
+          "rc": 1,
+          "stdout": "",
+          "stderr": "warning: unreachable expression\n --> src/main.rs:6:20\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                    ^^^^^^^-------\n  |                    |      |\n  |                    |      any code following this expression is unreachable\n  |                    unreachable expression\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable expression\n --> src/main.rs:7:5\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                                            -------------- any code following this expression is unreachable\n7 |     x\n  |     ^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:29:5\n   |\n28 |     let _ = { *p };\n   |               -- any code following this expression is unreachable\n29 |     44\n   |     ^^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:36:5\n   |\n35 |     let _x: () = *p;\n   |                  -- any code following this expression is unreachable\n36 |     45\n   |     ^^ unreachable expression\n\nwarning: unused variable: `x`\n --> src/main.rs:6:9\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |         ^ help: if this is intentional, prefix it with an underscore: `_x`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: constructing invalid value of type !: encountered a value of the never type `!`\n  --> src/main.rs:28:15\n   |\n28 |     let _ = { *p };\n   |               ^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: place_block_deref\n               at src/main.rs:28:15: 28:17\n           1: main\n               at src/main.rs:46:35: 46:55\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 5 warnings emitted"
+        },
+        "stacked_borrows__read": {
+          "edition": "2024",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [
+            "read"
+          ],
+          "rc": 1,
+          "stdout": "",
+          "stderr": "warning: unreachable expression\n --> src/main.rs:6:20\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                    ^^^^^^^-------\n  |                    |      |\n  |                    |      any code following this expression is unreachable\n  |                    unreachable expression\n  |\n  = note: `#[warn(unreachable_code)]` (part of `#[warn(unused)]`) on by default\n\nwarning: unreachable expression\n --> src/main.rs:7:5\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |                                            -------------- any code following this expression is unreachable\n7 |     x\n  |     ^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:29:5\n   |\n28 |     let _ = { *p };\n   |               -- any code following this expression is unreachable\n29 |     44\n   |     ^^ unreachable expression\n\nwarning: unreachable expression\n  --> src/main.rs:36:5\n   |\n35 |     let _x: () = *p;\n   |                  -- any code following this expression is unreachable\n36 |     45\n   |     ^^ unreachable expression\n\nwarning: unused variable: `x`\n --> src/main.rs:6:9\n  |\n6 |     let x = if c { return loop {} } else { panic!(\"arm2\") };\n  |         ^ help: if this is intentional, prefix it with an underscore: `_x`\n  |\n  = note: `#[warn(unused_variables)]` (part of `#[warn(unused)]`) on by default\n\nerror: Undefined Behavior: constructing invalid value of type !: encountered a value of the never type `!`\n  --> src/main.rs:35:18\n   |\n35 |     let _x: () = *p;\n   |                  ^^ Undefined Behavior occurred here\n   |\n   = help: this indicates a bug in the program: it performed an invalid operation, and caused Undefined Behavior\n   = help: see https://doc.rust-lang.org/nightly/reference/behavior-considered-undefined.html for further information\n   = note: stack backtrace:\n           0: place_deref_read_unit\n               at src/main.rs:35:18: 35:20\n           1: main\n               at src/main.rs:47:28: 47:52\n\nnote: some details are omitted, run with `MIRIFLAGS=-Zmiri-backtrace=full` for a verbose backtrace\n\nerror: aborting due to 1 previous error; 5 warnings emitted"
+        }
+      }
+    }
+  },
+  "part_b_coerce_many_lub": {
+    "edition_2021": {
+      "edition": "2021",
+      "native_opt2": {
+        "edition": "2021",
+        "opt_level": "2",
+        "compile_rc": 0,
+        "compile_stderr": "",
+        "runs": {
+          "default": {
+            "args": [],
+            "rc": 0,
+            "stdout": "REF=(5,5) SLICES=(2,3) MSLICES=(2,3) CLOS=(12,14) FN=(30,20) RAW=5 BLK=5 LP=5",
+            "stderr": ""
+          }
+        }
+      },
+      "mir_excerpts": {
+        "lub_ref_mut_shared": "fn lub_ref_mut_shared(_1: bool, _2: &mut u32, _3: &u32) -> u32 {\n    debug cond => _1;\n    debug a => _2;\n    debug b => _3;\n    let mut _0: u32;\n    let _4: &u32;\n    scope 1 {\n        debug r => _4;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = &(*_2);\n        goto -> bb3;\n    }\n\n    bb2: {\n        _4 = copy _3;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _0 = copy (*_4);\n        return;\n    }\n}",
+        "lub_ref_shared_mut": "fn lub_ref_shared_mut(_1: bool, _2: &u32, _3: &mut u32) -> u32 {\n    debug cond => _1;\n    debug a => _2;\n    debug b => _3;\n    let mut _0: u32;\n    let _4: &u32;\n    scope 1 {\n        debug r => _4;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = copy _2;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _4 = &(*_3);\n        goto -> bb3;\n    }\n\n    bb3: {\n        _0 = copy (*_4);\n        return;\n    }\n}",
+        "lub_array_slices": "fn lub_array_slices() -> [&[u8]; 2] {\n    let mut _0: [&[u8]; 2];\n    let mut _1: &[u8];\n    let _2: &[u8; 2];\n    let mut _3: &[u8];\n    let _4: &[u8; 3];\n\n    bb0: {\n        _2 = const lub_array_slices::promoted[1];\n        _1 = copy _2 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _4 = const lub_array_slices::promoted[0];\n        _3 = copy _4 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _0 = [move _1, move _3];\n        return;\n    }\n}",
+        "lub_array_mut_and_shared_unsize": "fn lub_array_mut_and_shared_unsize(_1: &mut [u8; 2], _2: &[u8; 3]) -> [&[u8]; 2] {\n    debug a => _1;\n    debug b => _2;\n    let mut _0: [&[u8]; 2];\n    let mut _3: &[u8];\n    let mut _4: &[u8; 2];\n    let mut _5: &[u8];\n\n    bb0: {\n        _4 = &(*_1);\n        _3 = move _4 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _5 = copy _2 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _0 = [move _3, move _5];\n        return;\n    }\n}",
+        "lub_if_mut_unsize": "fn lub_if_mut_unsize(_1: bool, _2: &mut [u8; 2], _3: &[u8; 3]) -> &[u8] {\n    debug cond => _1;\n    debug a => _2;\n    debug b => _3;\n    let mut _0: &[u8];\n    let mut _4: &[u8; 2];\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = &(*_2);\n        _0 = move _4 as &[u8] (PointerCoercion(Unsize, Implicit));\n        goto -> bb3;\n    }\n\n    bb2: {\n        _0 = copy _3 as &[u8] (PointerCoercion(Unsize, Implicit));\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}",
+        "lub_two_closures": "fn lub_two_closures(_1: bool, _2: u32) -> u32 {\n    debug cond => _1;\n    debug v => _2;\n    let mut _0: u32;\n    let _3: fn(u32) -> u32;\n    let mut _4: fn(u32) -> u32;\n    scope 1 {\n        debug f => _3;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _3 = const ZeroSized: {closure@<TMP>/b_lub_mir_2021.rs:37:23: 37:31} as fn(u32) -> u32 (PointerCoercion(ClosureFnPointer(Safe), Implicit));\n        goto -> bb3;\n    }\n\n    bb2: {\n        _3 = const ZeroSized: {closure@<TMP>/b_lub_mir_2021.rs:37:47: 37:55} as fn(u32) -> u32 (PointerCoercion(ClosureFnPointer(Safe), Implicit));\n        goto -> bb3;\n    }\n\n    bb3: {\n        _4 = copy _3;\n        _0 = move _4(copy _2) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        return;\n    }\n}",
+        "lub_same_closure_stays_unreified": "fn lub_same_closure_stays_unreified(_1: bool, _2: u32) -> u32 {\n    debug cond => _1;\n    debug v => _2;\n    let mut _0: u32;\n    let mut _4: &{closure@<TMP>/b_lub_mir_2021.rs:43:13: 43:21};\n    let mut _5: (u32,);\n    scope 1 {\n        debug c => const ZeroSized: {closure@<TMP>/b_lub_mir_2021.rs:43:13: 43:21};\n        let _3: {closure@<TMP>/b_lub_mir_2021.rs:43:13: 43:21};\n        scope 2 {\n            debug f => const ZeroSized: {closure@<TMP>/b_lub_mir_2021.rs:43:13: 43:21};\n        }\n    }\n\n    bb0: {\n        _4 = &_3;\n        _5 = (copy _2,);\n        _0 = <{closure@<TMP>/b_lub_mir_2021.rs:43:13: 43:21} as Fn<(u32,)>>::call(move _4, move _5) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}",
+        "lub_safe_unsafe_fndef": "fn lub_safe_unsafe_fndef(_1: bool, _2: u32) -> u32 {\n    debug cond => _1;\n    debug v => _2;\n    let mut _0: u32;\n    let _3: unsafe fn(u32) -> u32;\n    let mut _4: unsafe fn(u32) -> u32;\n    scope 1 {\n        debug f => _3;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _3 = safe_fn as unsafe fn(u32) -> u32 (PointerCoercion(ReifyFnPointer(Unsafe), Implicit));\n        goto -> bb3;\n    }\n\n    bb2: {\n        _3 = unsafe_fn as unsafe fn(u32) -> u32 (PointerCoercion(ReifyFnPointer(Unsafe), Implicit));\n        goto -> bb3;\n    }\n\n    bb3: {\n        _4 = copy _3;\n        _0 = move _4(copy _2) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        return;\n    }\n}",
+        "lub_safe_unsafe_fnptr": "fn lub_safe_unsafe_fnptr(_1: bool, _2: u32) -> u32 {\n    debug cond => _1;\n    debug v => _2;\n    let mut _0: u32;\n    let _3: fn(u32) -> u32;\n    let mut _6: unsafe fn(u32) -> u32;\n    scope 1 {\n        debug p_safe => _3;\n        let _4: unsafe fn(u32) -> u32;\n        scope 2 {\n            debug p_unsafe => _4;\n            let _5: unsafe fn(u32) -> u32;\n            scope 3 {\n                debug f => _5;\n            }\n        }\n    }\n\n    bb0: {\n        _3 = safe_fn as fn(u32) -> u32 (PointerCoercion(ReifyFnPointer(Safe), Implicit));\n        _4 = unsafe_fn as unsafe fn(u32) -> u32 (PointerCoercion(ReifyFnPointer(Unsafe), Implicit));\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _5 = copy _3 as unsafe fn(u32) -> u32 (PointerCoercion(UnsafeFnPointer, Implicit));\n        goto -> bb3;\n    }\n\n    bb2: {\n        _5 = copy _4;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _6 = copy _5;\n        _0 = move _6(copy _2) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        return;\n    }\n}",
+        "lub_raw_mut_to_const": "fn lub_raw_mut_to_const(_1: bool, _2: *mut u32, _3: *const u32) -> u32 {\n    debug cond => _1;\n    debug a => _2;\n    debug b => _3;\n    let mut _0: u32;\n    let _4: *const u32;\n    scope 1 {\n        debug p => _4;\n        let mut _5: *const ();\n        let mut _6: usize;\n        let mut _7: usize;\n        let mut _8: usize;\n        let mut _9: bool;\n        let mut _10: *const ();\n        let mut _11: usize;\n        let mut _12: bool;\n        let mut _13: bool;\n        let mut _14: bool;\n        let mut _15: bool;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = copy _2 as *const u32 (PtrToPtr);\n        goto -> bb3;\n    }\n\n    bb2: {\n        _4 = copy _3;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _5 = copy _4 as *const () (PtrToPtr);\n        _6 = copy _5 as usize (Transmute);\n        _7 = Sub(const <u32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _8 = BitAnd(copy _6, copy _7);\n        _9 = Eq(copy _8, const 0_usize);\n        assert(copy _9, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <u32 as std::mem::SizedTypeProperties>::ALIGN, copy _6) -> [success: bb4, unwind unreachable];\n    }\n\n    bb4: {\n        _10 = copy _4 as *const () (PtrToPtr);\n        _11 = copy _10 as usize (Transmute);\n        _12 = Ne(const <u32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _13 = Eq(copy _11, const 0_usize);\n        _14 = BitAnd(copy _13, copy _12);\n        _15 = Not(copy _14);\n        assert(copy _15, \"null pointer dereference occurred\") -> [success: bb5, unwind unreachable];\n    }\n\n    bb5: {\n        _0 = copy (*_4);\n        return;\n    }\n}",
+        "lub_block_shared_first": "fn lub_block_shared_first(_1: bool, _2: u32, _3: u32) -> u32 {\n    debug cond => _1;\n    debug x => _2;\n    debug y => _3;\n    let mut _0: u32;\n    let _4: &u32;\n    let _5: &u32;\n    let _6: &mut u32;\n    scope 1 {\n        debug r => _4;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _5 = &_3;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _6 = &mut _2;\n        _5 = &(*_6);\n        goto -> bb3;\n    }\n\n    bb3: {\n        _4 = copy _5;\n        _0 = copy (*_4);\n        return;\n    }\n}",
+        "lub_loop_shared_first": "fn lub_loop_shared_first(_1: bool, _2: u32, _3: u32) -> u32 {\n    debug cond => _1;\n    debug x => _2;\n    debug y => _3;\n    let mut _0: u32;\n    let _4: &u32;\n    let _5: &u32;\n    let _6: &mut u32;\n    scope 1 {\n        debug s => _4;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _5 = &_3;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _6 = &mut _2;\n        _5 = &(*_6);\n        goto -> bb3;\n    }\n\n    bb3: {\n        _4 = copy _5;\n        _0 = copy (*_4);\n        return;\n    }\n}"
+      },
+      "miri_runs": {
+        "stacked_borrows": {
+          "edition": "2021",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [],
+          "rc": 0,
+          "stdout": "REF=(5,5) SLICES=(2,3) MSLICES=(2,3) CLOS=(12,14) FN=(30,20) RAW=5 BLK=5 LP=5",
+          "stderr": ""
+        },
+        "tree_borrows": {
+          "edition": "2021",
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [],
+          "rc": 0,
+          "stdout": "REF=(5,5) SLICES=(2,3) MSLICES=(2,3) CLOS=(12,14) FN=(30,20) RAW=5 BLK=5 LP=5",
+          "stderr": ""
+        }
+      },
+      "call_arg_order_fail": {
+        "edition": "2021",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0308]: mismatched types\n --> <TMP>/b_order_fail_2021.rs:7:26\n  |\n7 |     let _ = pick(&mut x, &y);\n  |             ---- ------  ^^ types differ in mutability\n  |             |    |\n  |             |    expected all arguments to be this `&mut i32` type because they need to match the type of this parameter\n  |             arguments to this function are incorrect\n  |\n  = note: expected mutable reference `&mut _`\n                     found reference `&_`\nhelp: the return type of this call is `&i32` due to the type of the argument passed\n --> <TMP>/b_order_fail_2021.rs:7:13\n  |\n7 |     let _ = pick(&mut x, &y);\n  |             ^^^^^^^^^^^^^--^\n  |                          |\n  |                          this argument influences the return type of `pick`\nnote: function defined here\n --> <TMP>/b_order_fail_2021.rs:2:4\n  |\n2 | fn pick<T>(a: T, _b: T) -> T { a }\n  |    ^^^^ -  ----  ----- this parameter needs to match the `&mut i32` type of `a`\n  |         |  |\n  |         |  `_b` needs to match the `&mut i32` type of this parameter\n  |         `a` and `_b` both reference this parameter `T`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "call_arg_order_ok": {
+        "edition": "2021",
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "loop_let_mut_first_fail": {
+        "edition": "2021",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0308]: mismatched types\n --> <TMP>/b_loop_let_fail_2021.rs:3:13\n  |\n3 |       let r = loop {\n  |  _____________^\n4 | |         if cond {\n5 | |             break &mut x;\n... |\n8 | |     };\n  | |_____^ types differ in mutability\n  |\n  = note: expected mutable reference `&mut _`\n                     found reference `&_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "block_let_mut_first_fail": {
+        "edition": "2021",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0308]: mismatched types\n --> <TMP>/b_block_let_fail_2021.rs:3:13\n  |\n3 |       let r = 'blk: {\n  |  _____________^\n4 | |         if cond {\n5 | |             break 'blk &mut x;\n... |\n8 | |     };\n  | |_____^ types differ in mutability\n  |\n  = note: expected mutable reference `&mut _`\n                     found reference `&_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "loop_and_block_stmt_no_expectation_ok": {
+        "edition": "2021",
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "capturing_closure_lub_rejected": {
+        "edition": "2021",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0308]: `if` and `else` have incompatible types\n --> <TMP>/b_clos_upvar_2021.rs:3:47\n  |\n3 |     let f = if cond { |x: u32| x + k } else { |x: u32| x + 1 };\n  |                       --------------          ^^^^^^^^^^^^^^ expected closure, found a different closure\n  |                       |\n  |                       the expected closure\n  |                       expected because of this\n  |\n  = note: expected closure `{closure@<TMP>/b_clos_upvar_2021.rs:3:23: 3:31}`\n             found closure `{closure@<TMP>/b_clos_upvar_2021.rs:3:47: 3:55}`\n  = note: no two closures, even if identical, have the same type\n  = help: consider boxing your closure and/or using it as a trait object\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "array_lub_without_slice_hint_rejected": {
+        "edition": "2021",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0308]: `if` and `else` have incompatible types\n --> <TMP>/b_arr_no_hint_2021.rs:3:43\n  |\n3 |     let _s = if cond { &[1u8, 2] } else { &[3, 4, 5] };\n  |                        ---------          ^^^^^^^^^^ expected an array with a size of 2, found one with a size of 3\n  |                        |\n  |                        expected because of this\n\nerror[E0308]: mismatched types\n --> <TMP>/b_arr_no_hint_2021.rs:7:26\n  |\n7 |     let _a = [&[1u8, 2], &[3, 4, 5]];\n  |                          ^^^^^^^^^^ expected an array with a size of 2, found one with a size of 3\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0308`."
+      }
+    },
+    "edition_2024": {
+      "edition": "2024",
+      "native_opt2": {
+        "edition": "2024",
+        "opt_level": "2",
+        "compile_rc": 0,
+        "compile_stderr": "",
+        "runs": {
+          "default": {
+            "args": [],
+            "rc": 0,
+            "stdout": "REF=(5,5) SLICES=(2,3) MSLICES=(2,3) CLOS=(12,14) FN=(30,20) RAW=5 BLK=5 LP=5",
+            "stderr": ""
+          }
+        }
+      },
+      "mir_excerpts": {
+        "lub_ref_mut_shared": "fn lub_ref_mut_shared(_1: bool, _2: &mut u32, _3: &u32) -> u32 {\n    debug cond => _1;\n    debug a => _2;\n    debug b => _3;\n    let mut _0: u32;\n    let _4: &u32;\n    scope 1 {\n        debug r => _4;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = &(*_2);\n        goto -> bb3;\n    }\n\n    bb2: {\n        _4 = copy _3;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _0 = copy (*_4);\n        return;\n    }\n}",
+        "lub_ref_shared_mut": "fn lub_ref_shared_mut(_1: bool, _2: &u32, _3: &mut u32) -> u32 {\n    debug cond => _1;\n    debug a => _2;\n    debug b => _3;\n    let mut _0: u32;\n    let _4: &u32;\n    scope 1 {\n        debug r => _4;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = copy _2;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _4 = &(*_3);\n        goto -> bb3;\n    }\n\n    bb3: {\n        _0 = copy (*_4);\n        return;\n    }\n}",
+        "lub_array_slices": "fn lub_array_slices() -> [&[u8]; 2] {\n    let mut _0: [&[u8]; 2];\n    let mut _1: &[u8];\n    let _2: &[u8; 2];\n    let mut _3: &[u8];\n    let _4: &[u8; 3];\n\n    bb0: {\n        _2 = const lub_array_slices::promoted[1];\n        _1 = copy _2 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _4 = const lub_array_slices::promoted[0];\n        _3 = copy _4 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _0 = [move _1, move _3];\n        return;\n    }\n}",
+        "lub_array_mut_and_shared_unsize": "fn lub_array_mut_and_shared_unsize(_1: &mut [u8; 2], _2: &[u8; 3]) -> [&[u8]; 2] {\n    debug a => _1;\n    debug b => _2;\n    let mut _0: [&[u8]; 2];\n    let mut _3: &[u8];\n    let mut _4: &[u8; 2];\n    let mut _5: &[u8];\n\n    bb0: {\n        _4 = &(*_1);\n        _3 = move _4 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _5 = copy _2 as &[u8] (PointerCoercion(Unsize, Implicit));\n        _0 = [move _3, move _5];\n        return;\n    }\n}",
+        "lub_if_mut_unsize": "fn lub_if_mut_unsize(_1: bool, _2: &mut [u8; 2], _3: &[u8; 3]) -> &[u8] {\n    debug cond => _1;\n    debug a => _2;\n    debug b => _3;\n    let mut _0: &[u8];\n    let mut _4: &[u8; 2];\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = &(*_2);\n        _0 = move _4 as &[u8] (PointerCoercion(Unsize, Implicit));\n        goto -> bb3;\n    }\n\n    bb2: {\n        _0 = copy _3 as &[u8] (PointerCoercion(Unsize, Implicit));\n        goto -> bb3;\n    }\n\n    bb3: {\n        return;\n    }\n}",
+        "lub_two_closures": "fn lub_two_closures(_1: bool, _2: u32) -> u32 {\n    debug cond => _1;\n    debug v => _2;\n    let mut _0: u32;\n    let _3: fn(u32) -> u32;\n    let mut _4: fn(u32) -> u32;\n    scope 1 {\n        debug f => _3;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _3 = const ZeroSized: {closure@<TMP>/b_lub_mir_2024.rs:37:23: 37:31} as fn(u32) -> u32 (PointerCoercion(ClosureFnPointer(Safe), Implicit));\n        goto -> bb3;\n    }\n\n    bb2: {\n        _3 = const ZeroSized: {closure@<TMP>/b_lub_mir_2024.rs:37:47: 37:55} as fn(u32) -> u32 (PointerCoercion(ClosureFnPointer(Safe), Implicit));\n        goto -> bb3;\n    }\n\n    bb3: {\n        _4 = copy _3;\n        _0 = move _4(copy _2) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        return;\n    }\n}",
+        "lub_same_closure_stays_unreified": "fn lub_same_closure_stays_unreified(_1: bool, _2: u32) -> u32 {\n    debug cond => _1;\n    debug v => _2;\n    let mut _0: u32;\n    let mut _4: &{closure@<TMP>/b_lub_mir_2024.rs:43:13: 43:21};\n    let mut _5: (u32,);\n    scope 1 {\n        debug c => const ZeroSized: {closure@<TMP>/b_lub_mir_2024.rs:43:13: 43:21};\n        let _3: {closure@<TMP>/b_lub_mir_2024.rs:43:13: 43:21};\n        scope 2 {\n            debug f => const ZeroSized: {closure@<TMP>/b_lub_mir_2024.rs:43:13: 43:21};\n        }\n    }\n\n    bb0: {\n        _4 = &_3;\n        _5 = (copy _2,);\n        _0 = <{closure@<TMP>/b_lub_mir_2024.rs:43:13: 43:21} as Fn<(u32,)>>::call(move _4, move _5) -> [return: bb1, unwind continue];\n    }\n\n    bb1: {\n        return;\n    }\n}",
+        "lub_safe_unsafe_fndef": "fn lub_safe_unsafe_fndef(_1: bool, _2: u32) -> u32 {\n    debug cond => _1;\n    debug v => _2;\n    let mut _0: u32;\n    let _3: unsafe fn(u32) -> u32;\n    let mut _4: unsafe fn(u32) -> u32;\n    scope 1 {\n        debug f => _3;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _3 = safe_fn as unsafe fn(u32) -> u32 (PointerCoercion(ReifyFnPointer(Unsafe), Implicit));\n        goto -> bb3;\n    }\n\n    bb2: {\n        _3 = unsafe_fn as unsafe fn(u32) -> u32 (PointerCoercion(ReifyFnPointer(Unsafe), Implicit));\n        goto -> bb3;\n    }\n\n    bb3: {\n        _4 = copy _3;\n        _0 = move _4(copy _2) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        return;\n    }\n}",
+        "lub_safe_unsafe_fnptr": "fn lub_safe_unsafe_fnptr(_1: bool, _2: u32) -> u32 {\n    debug cond => _1;\n    debug v => _2;\n    let mut _0: u32;\n    let _3: fn(u32) -> u32;\n    let mut _6: unsafe fn(u32) -> u32;\n    scope 1 {\n        debug p_safe => _3;\n        let _4: unsafe fn(u32) -> u32;\n        scope 2 {\n            debug p_unsafe => _4;\n            let _5: unsafe fn(u32) -> u32;\n            scope 3 {\n                debug f => _5;\n            }\n        }\n    }\n\n    bb0: {\n        _3 = safe_fn as fn(u32) -> u32 (PointerCoercion(ReifyFnPointer(Safe), Implicit));\n        _4 = unsafe_fn as unsafe fn(u32) -> u32 (PointerCoercion(ReifyFnPointer(Unsafe), Implicit));\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _5 = copy _3 as unsafe fn(u32) -> u32 (PointerCoercion(UnsafeFnPointer, Implicit));\n        goto -> bb3;\n    }\n\n    bb2: {\n        _5 = copy _4;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _6 = copy _5;\n        _0 = move _6(copy _2) -> [return: bb4, unwind continue];\n    }\n\n    bb4: {\n        return;\n    }\n}",
+        "lub_raw_mut_to_const": "fn lub_raw_mut_to_const(_1: bool, _2: *mut u32, _3: *const u32) -> u32 {\n    debug cond => _1;\n    debug a => _2;\n    debug b => _3;\n    let mut _0: u32;\n    let _4: *const u32;\n    scope 1 {\n        debug p => _4;\n        let mut _5: *const ();\n        let mut _6: usize;\n        let mut _7: usize;\n        let mut _8: usize;\n        let mut _9: bool;\n        let mut _10: *const ();\n        let mut _11: usize;\n        let mut _12: bool;\n        let mut _13: bool;\n        let mut _14: bool;\n        let mut _15: bool;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _4 = copy _2 as *const u32 (PtrToPtr);\n        goto -> bb3;\n    }\n\n    bb2: {\n        _4 = copy _3;\n        goto -> bb3;\n    }\n\n    bb3: {\n        _5 = copy _4 as *const () (PtrToPtr);\n        _6 = copy _5 as usize (Transmute);\n        _7 = Sub(const <u32 as std::mem::SizedTypeProperties>::ALIGN, const 1_usize);\n        _8 = BitAnd(copy _6, copy _7);\n        _9 = Eq(copy _8, const 0_usize);\n        assert(copy _9, \"misaligned pointer dereference: address must be a multiple of {} but is {}\", const <u32 as std::mem::SizedTypeProperties>::ALIGN, copy _6) -> [success: bb4, unwind unreachable];\n    }\n\n    bb4: {\n        _10 = copy _4 as *const () (PtrToPtr);\n        _11 = copy _10 as usize (Transmute);\n        _12 = Ne(const <u32 as std::mem::SizedTypeProperties>::SIZE, const 0_usize);\n        _13 = Eq(copy _11, const 0_usize);\n        _14 = BitAnd(copy _13, copy _12);\n        _15 = Not(copy _14);\n        assert(copy _15, \"null pointer dereference occurred\") -> [success: bb5, unwind unreachable];\n    }\n\n    bb5: {\n        _0 = copy (*_4);\n        return;\n    }\n}",
+        "lub_block_shared_first": "fn lub_block_shared_first(_1: bool, _2: u32, _3: u32) -> u32 {\n    debug cond => _1;\n    debug x => _2;\n    debug y => _3;\n    let mut _0: u32;\n    let _4: &u32;\n    let _5: &u32;\n    let _6: &mut u32;\n    scope 1 {\n        debug r => _4;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _5 = &_3;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _6 = &mut _2;\n        _5 = &(*_6);\n        goto -> bb3;\n    }\n\n    bb3: {\n        _4 = copy _5;\n        _0 = copy (*_4);\n        return;\n    }\n}",
+        "lub_loop_shared_first": "fn lub_loop_shared_first(_1: bool, _2: u32, _3: u32) -> u32 {\n    debug cond => _1;\n    debug x => _2;\n    debug y => _3;\n    let mut _0: u32;\n    let _4: &u32;\n    let _5: &u32;\n    let _6: &mut u32;\n    scope 1 {\n        debug s => _4;\n    }\n\n    bb0: {\n        switchInt(copy _1) -> [0: bb2, otherwise: bb1];\n    }\n\n    bb1: {\n        _5 = &_3;\n        goto -> bb3;\n    }\n\n    bb2: {\n        _6 = &mut _2;\n        _5 = &(*_6);\n        goto -> bb3;\n    }\n\n    bb3: {\n        _4 = copy _5;\n        _0 = copy (*_4);\n        return;\n    }\n}"
+      },
+      "miri_runs": {
+        "stacked_borrows": {
+          "edition": "2024",
+          "miriflags": "<default Stacked Borrows>",
+          "args": [],
+          "rc": 0,
+          "stdout": "REF=(5,5) SLICES=(2,3) MSLICES=(2,3) CLOS=(12,14) FN=(30,20) RAW=5 BLK=5 LP=5",
+          "stderr": ""
+        },
+        "tree_borrows": {
+          "edition": "2024",
+          "miriflags": "-Zmiri-tree-borrows",
+          "args": [],
+          "rc": 0,
+          "stdout": "REF=(5,5) SLICES=(2,3) MSLICES=(2,3) CLOS=(12,14) FN=(30,20) RAW=5 BLK=5 LP=5",
+          "stderr": ""
+        }
+      },
+      "call_arg_order_fail": {
+        "edition": "2024",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0308]: mismatched types\n --> <TMP>/b_order_fail_2024.rs:7:26\n  |\n7 |     let _ = pick(&mut x, &y);\n  |             ---- ------  ^^ types differ in mutability\n  |             |    |\n  |             |    expected all arguments to be this `&mut i32` type because they need to match the type of this parameter\n  |             arguments to this function are incorrect\n  |\n  = note: expected mutable reference `&mut _`\n                     found reference `&_`\nhelp: the return type of this call is `&i32` due to the type of the argument passed\n --> <TMP>/b_order_fail_2024.rs:7:13\n  |\n7 |     let _ = pick(&mut x, &y);\n  |             ^^^^^^^^^^^^^--^\n  |                          |\n  |                          this argument influences the return type of `pick`\nnote: function defined here\n --> <TMP>/b_order_fail_2024.rs:2:4\n  |\n2 | fn pick<T>(a: T, _b: T) -> T { a }\n  |    ^^^^ -  ----  ----- this parameter needs to match the `&mut i32` type of `a`\n  |         |  |\n  |         |  `_b` needs to match the `&mut i32` type of this parameter\n  |         `a` and `_b` both reference this parameter `T`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "call_arg_order_ok": {
+        "edition": "2024",
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "loop_let_mut_first_fail": {
+        "edition": "2024",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0308]: mismatched types\n --> <TMP>/b_loop_let_fail_2024.rs:3:13\n  |\n3 |       let r = loop {\n  |  _____________^\n4 | |         if cond {\n5 | |             break &mut x;\n... |\n8 | |     };\n  | |_____^ types differ in mutability\n  |\n  = note: expected mutable reference `&mut _`\n                     found reference `&_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "block_let_mut_first_fail": {
+        "edition": "2024",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0308]: mismatched types\n --> <TMP>/b_block_let_fail_2024.rs:3:13\n  |\n3 |       let r = 'blk: {\n  |  _____________^\n4 | |         if cond {\n5 | |             break 'blk &mut x;\n... |\n8 | |     };\n  | |_____^ types differ in mutability\n  |\n  = note: expected mutable reference `&mut _`\n                     found reference `&_`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "loop_and_block_stmt_no_expectation_ok": {
+        "edition": "2024",
+        "rc": 0,
+        "stdout": "",
+        "stderr": ""
+      },
+      "capturing_closure_lub_rejected": {
+        "edition": "2024",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0308]: `if` and `else` have incompatible types\n --> <TMP>/b_clos_upvar_2024.rs:3:47\n  |\n3 |     let f = if cond { |x: u32| x + k } else { |x: u32| x + 1 };\n  |                       --------------          ^^^^^^^^^^^^^^ expected closure, found a different closure\n  |                       |\n  |                       the expected closure\n  |                       expected because of this\n  |\n  = note: expected closure `{closure@<TMP>/b_clos_upvar_2024.rs:3:23: 3:31}`\n             found closure `{closure@<TMP>/b_clos_upvar_2024.rs:3:47: 3:55}`\n  = note: no two closures, even if identical, have the same type\n  = help: consider boxing your closure and/or using it as a trait object\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "array_lub_without_slice_hint_rejected": {
+        "edition": "2024",
+        "rc": 1,
+        "stdout": "",
+        "stderr": "error[E0308]: `if` and `else` have incompatible types\n --> <TMP>/b_arr_no_hint_2024.rs:3:43\n  |\n3 |     let _s = if cond { &[1u8, 2] } else { &[3, 4, 5] };\n  |                        ---------          ^^^^^^^^^^ expected an array with a size of 2, found one with a size of 3\n  |                        |\n  |                        expected because of this\n\nerror[E0308]: mismatched types\n --> <TMP>/b_arr_no_hint_2024.rs:7:26\n  |\n7 |     let _a = [&[1u8, 2], &[3, 4, 5]];\n  |                          ^^^^^^^^^^ expected an array with a size of 2, found one with a size of 3\n\nerror: aborting due to 2 previous errors\n\nFor more information about this error, try `rustc --explain E0308`."
+      }
+    }
+  }
+}

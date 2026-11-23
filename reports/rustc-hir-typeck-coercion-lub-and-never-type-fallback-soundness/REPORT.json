@@ -1,0 +1,70 @@
+{
+  "observed_at": "2026-11-23",
+  "subjects": [
+    {
+      "identity": {
+        "branch": "main",
+        "repository": "rust-lang/rust",
+        "revision": "5debe6a1244452beced762385f88a51857a915fc"
+      },
+      "name": "rustc upstream compiler source (post-1.100 HEAD)"
+    },
+    {
+      "identity": {
+        "commit_date": "2026-11-11",
+        "repository": "rust-lang/rust",
+        "revision": "3ef0c22cdb86ac42dc6b8f0f1ec36857daa6f2a1",
+        "rustc_release": "1.102.0-nightly"
+      },
+      "name": "rustc post-1.100 unconditional fallback baseline"
+    },
+    {
+      "identity": {
+        "commit_date": "2026-05-31",
+        "host": "x86_64-unknown-linux-gnu",
+        "llvm_version": "22.1.6",
+        "miri_version": "miri 0.1.0 (14210df0e2 2026-05-31)",
+        "repository": "rust-lang/rust",
+        "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+        "rustc_release": "1.98.0-nightly"
+      },
+      "name": "rustc and Miri live execution toolchain"
+    },
+    {
+      "identity": {
+        "branch": "main",
+        "repository": "rust-lang/reference",
+        "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+      },
+      "name": "The Rust Reference normative type coercion and divergence specification"
+    },
+    {
+      "identity": {
+        "branch": "main",
+        "repository": "joshlf/anneal",
+        "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+      },
+      "name": "Anneal trusted MIR semantics and rustc-capture boundary"
+    },
+    {
+      "identity": {
+        "host": "x86_64-unknown-linux-gnu",
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1"
+      },
+      "name": "Lean 4 proof kernel"
+    }
+  ],
+  "topics": [
+    "anneal",
+    "compilers",
+    "compilers/verified-rustc",
+    "compilers/verified-rustc/frontend",
+    "lean",
+    "lean/mechanization",
+    "rust",
+    "rustc",
+    "verification"
+  ]
+}
