@@ -63,7 +63,7 @@
     },
     {
       "path": "theory/Anneal/InitLemmas.lean",
-      "sha256": "f62333cca4ec7d63ccd7908434761ef369cf647c1623cd484232189cec59b11d"
+      "sha256": "55eef99a44c103d6e23b19204b9aee18c2d366ec2e8450d8aa0cb523116057c6"
     },
     {
       "path": "theory/Anneal/LeBytes.lean",
