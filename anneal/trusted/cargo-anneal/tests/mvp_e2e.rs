@@ -1809,3 +1809,106 @@ end Proof
         "expected wrong-arity unsatisfiable_safety warning: {arity_warnings:?}"
     );
 }
+
+#[test]
+fn explicit_instantiation_and_required_consts_verify_end_to_end() {
+    let tools = Tools::discover();
+    let fixture = Fixture::new();
+    fixture.write(
+        "rust/lib.rs",
+        "pub trait LayoutVal: Sized {\n\
+             const VAL: usize = {\n\
+                 assert!(core::mem::size_of::<Self>() > 0);\n\
+                 core::mem::size_of::<Self>()\n\
+             };\n\
+         }\n\
+         impl LayoutVal for u64 {}\n\
+         impl LayoutVal for () {}\n\
+         pub fn layout_val<T: LayoutVal>() -> usize {\n\
+             const { assert!(core::mem::size_of::<T>() > 0); }\n\
+             T::VAL\n\
+         }\n",
+    );
+    fixture.write(
+        "lean/Spec.lean",
+        r#"prelude
+import Trusted.MirSemantics
+
+namespace Spec
+
+open Trusted.MirAst Trusted.MirSemantics
+
+def expectedReturn : TerminalOut :=
+  .returned ⟨.scalar ⟨.isize, false, BitVec.ofNat 128 8⟩, ⟨[]⟩⟩
+
+noncomputable def returnsEight (program : Program) : Prop :=
+  let entry := entryProgForBody program 0
+  let call : Query := { args := [] }
+  SatisfiesPost entry call (fun outcome => outcome = expectedReturn) ∧
+    (¬ Diverges entry call) ∧ Behavior entry call expectedReturn
+
+noncomputable def specs : Specs := ⟨fun _ _ => True, returnsEight⟩
+
+end Spec
+"#,
+    );
+    fixture.write(
+        "lean/Proof.lean",
+        r#"prelude
+import Expected
+import Anneal.MirWp
+
+namespace Proof
+
+open Trusted.MirAst Trusted.MirSemantics Anneal.MirWp
+
+theorem execution :
+    execProg (entryProgForBody Captured.program 0) 10 { args := [] }
+      (fun outcome => outcome = Spec.expectedReturn) := rfl
+
+theorem totalCorrectness : Spec.returnsEight Captured.program := by
+  have ⟨post, terminates, out, returned, result⟩ :=
+    wellFormed_and_spec_of_wp (entryProgForBody Captured.program 0)
+      { args := [] } 10 (fun outcome => outcome = Spec.expectedReturn)
+      (wpProg_of_execProg execution)
+  exact ⟨post, terminates, result ▸ returned⟩
+
+theorem verify : Expected.claim := by
+  refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, totalCorrectness⟩
+  intro id body found
+  cases id with
+  | zero =>
+      have same : Captured.program.bodies[0] = body := Option.some.inj found
+      subst body
+      refine ⟨found, rfl, ?_⟩
+      intro args valid _
+      cases args with
+      | nil => exact totalCorrectness.1.1
+      | cons _ _ => cases valid
+  | succ id => cases found
+
+end Proof
+"#,
+    );
+
+    let mut ok_req = fixture.request.clone();
+    ok_req["scope"] = json!({
+        "kind": "selected_unit",
+        "roots": [],
+        "instantiations": [{"path": "layout_val", "args": ["u64"]}]
+    });
+    let verified = fixture.run(&tools, "mono-required-consts-ok", &ok_req);
+    verified.expect(0, "selected_unit_verified", None);
+    assert_eq!(verified.value["taint_reasons"], json!([]), "{}", verified.value);
+
+    // Post-monomorphization `const { assert!(size_of::<()>() > 0) }` must fail
+    // closed during capture.
+    let mut bad_req = fixture.request.clone();
+    bad_req["scope"] = json!({
+        "kind": "selected_unit",
+        "roots": [],
+        "instantiations": [{"path": "layout_val", "args": ["()"]}]
+    });
+    let rejected = fixture.run(&tools, "mono-required-consts-pme", &bad_req);
+    rejected.expect(2, "compiler_failed", Some("capture"));
+}

@@ -552,7 +552,10 @@ mod tests {
         assert!(!rendered.contains("unit_fn"), "{rendered}");
 
         let selected = Program::try_new(
-            Scope::SelectedUnit { roots: BTreeSet::from(["raw\"selector".into()]) },
+            Scope::SelectedUnit {
+                roots: BTreeSet::from(["raw\"selector".into()]),
+                instantiations: BTreeSet::new(),
+            },
             vec![body],
         )
         .unwrap();

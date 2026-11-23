@@ -142,7 +142,7 @@ impl PanicStrategy {
 #[command(subcommand_negates_reqs = true)]
 pub struct VerifyArgs {
     /// JSON compilation/proof request, with paths relative to its directory.
-    #[arg(long, conflicts_with_all = ["manifest_path", "proof_dir", "panic", "select"])]
+    #[arg(long, conflicts_with_all = ["manifest_path", "proof_dir", "panic", "select", "instantiate"])]
     request: Option<PathBuf>,
     /// A feature-free library or binary crate for the x86_64-unknown-linux-gnu scalar profile.
     #[arg(long, conflicts_with = "request", requires = "proof_dir")]
@@ -156,6 +156,16 @@ pub struct VerifyArgs {
     /// Select a function by its compiler path; omit to require the whole crate.
     #[arg(long, requires = "manifest_path", conflicts_with = "request")]
     select: Vec<String>,
+    /// Instantiate a generic item with concrete arguments as JSON
+    /// (`{"path":"...","args":[...]}`).
+    #[arg(
+        long,
+        requires = "manifest_path",
+        conflicts_with = "request",
+        value_name = "JSON",
+        value_parser = parse_instantiation_arg
+    )]
+    instantiate: Vec<Instantiation>,
     /// Capture driver; defaults to the installed bundle, then a sibling. The
     /// receipt records its SHA-256, which no lock pins.
     #[cfg_attr(
@@ -312,6 +322,10 @@ struct RustcArgs {
     /// Select a function by its compiler path; omit to require the whole crate.
     #[arg(long)]
     select: Vec<String>,
+    /// Instantiate a generic item with concrete arguments as JSON
+    /// (`{"path":"...","args":[...]}`).
+    #[arg(long, value_name = "JSON", value_parser = parse_instantiation_arg)]
+    instantiate: Vec<Instantiation>,
 }
 
 #[derive(Clone, Debug)]
@@ -413,11 +427,12 @@ impl VerifyArgs {
                 || self.proof_dir.is_some()
                 || self.panic.is_some()
                 || !self.select.is_empty()
+                || !self.instantiate.is_empty()
             {
                 return Err(cmd.error(
                     ErrorKind::ArgumentConflict,
-                    "--request, --manifest-path, --proof-dir, parent --panic, and parent \
-                     --select cannot be used with the `rustc` subcommand",
+                    "--request, --manifest-path, --proof-dir, parent --panic, parent \
+                     --select, and parent --instantiate cannot be used with the `rustc` subcommand",
                 ));
             }
             if rustc.crate_name.is_empty() {
@@ -554,10 +569,25 @@ fn target() -> String {
     "x86_64-unknown-linux-gnu".to_owned()
 }
 
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct Instantiation {
+    path: String,
+    args: Vec<String>,
+}
+
+fn parse_instantiation_arg(raw: &str) -> std::result::Result<Instantiation, String> {
+    serde_json::from_str(raw).map_err(|err| format!("invalid `--instantiate` JSON `{raw}`: {err}"))
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind", rename_all = "snake_case", deny_unknown_fields)]
 enum Scope {
-    SelectedUnit { roots: BTreeSet<String> },
+    SelectedUnit {
+        roots: BTreeSet<String>,
+        #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+        instantiations: BTreeSet<Instantiation>,
+    },
     // Empty struct variant (not unit) so `deny_unknown_fields` rejects extra
     // keys such as `roots` on `{"kind":"crate"}`.
     Crate {},
@@ -1023,10 +1053,13 @@ fn cargo_request(args: &VerifyArgs, manifest: &Path) -> Result<(Request, PathBuf
         }
     }
     sources.sort_by(|a, b| a.module.cmp(&b.module));
-    let scope = if args.select.is_empty() {
+    let scope = if args.select.is_empty() && args.instantiate.is_empty() {
         Scope::Crate {}
     } else {
-        Scope::SelectedUnit { roots: args.select.iter().cloned().collect() }
+        Scope::SelectedUnit {
+            roots: args.select.iter().cloned().collect(),
+            instantiations: args.instantiate.iter().cloned().collect(),
+        }
     };
     Ok((
         Request {
@@ -1255,10 +1288,13 @@ fn prepare_rustc_request(
         ));
     }
 
-    let scope = if rustc.select.is_empty() {
+    let scope = if rustc.select.is_empty() && rustc.instantiate.is_empty() {
         Scope::Crate {}
     } else {
-        Scope::SelectedUnit { roots: rustc.select.iter().cloned().collect() }
+        Scope::SelectedUnit {
+            roots: rustc.select.iter().cloned().collect(),
+            instantiations: rustc.instantiate.iter().cloned().collect(),
+        }
     };
     let request = Request {
         schema_version: 1,
@@ -1538,12 +1574,17 @@ fn run(args: &VerifyArgs, work: &Path) -> Result<Value> {
         Scope::Crate {} => {
             command.args(["--scope", "crate"]);
         }
-        Scope::SelectedUnit { roots } => {
-            if roots.is_empty() {
+        Scope::SelectedUnit { roots, instantiations } => {
+            if roots.is_empty() && instantiations.is_empty() {
                 return Err(error("unsupported", "request", "empty selected scope"));
             }
             for name in roots {
                 command.arg("--select").arg(name);
+            }
+            for inst in instantiations {
+                let encoded =
+                    serde_json::to_string(inst).map_err(|e| error("unsupported", "request", e))?;
+                command.arg("--instantiate").arg(encoded);
             }
         }
     }
@@ -2843,6 +2884,7 @@ mod tests {
             proof_dir: None,
             panic: None,
             select: Vec::new(),
+            instantiate: Vec::new(),
             capture: None,
             lean: None,
             sysroot: None,
@@ -2857,7 +2899,10 @@ mod tests {
             command: None,
         };
         let crate_scope = Scope::Crate {};
-        let unit_scope = Scope::SelectedUnit { roots: BTreeSet::from(["foo".to_owned()]) };
+        let unit_scope = Scope::SelectedUnit {
+            roots: BTreeSet::from(["foo".to_owned()]),
+            instantiations: BTreeSet::new(),
+        };
 
         for sorry in [false, true] {
             for unpinned in [false, true] {
@@ -2871,6 +2916,7 @@ mod tests {
                         proof_dir: None,
                         panic: None,
                         select: Vec::new(),
+                        instantiate: Vec::new(),
                         capture: None,
                         lean: None,
                         sysroot: None,
@@ -3128,6 +3174,7 @@ mod tests {
                 decl: "Spec.Helper.verify".to_owned(),
             },
             select: Vec::new(),
+            instantiate: Vec::new(),
         };
         let mut originals = Vec::new();
         let prepared = prepare_rustc_request(&rustc, &work, &mut originals).unwrap();
@@ -3174,6 +3221,7 @@ mod tests {
                 spec_decl: DeclSpec { module: None, decl: "Spec.specs".to_owned() },
                 theorem: DeclSpec { module: None, decl: "Proof.verify".to_owned() },
                 select: Vec::new(),
+                instantiate: Vec::new(),
             }
         };
         assert_eq!(
@@ -3206,15 +3254,33 @@ mod tests {
         assert_eq!(
             serde_json::from_str::<Scope>(r#"{"kind":"selected_unit","roots":["a","b","a"]}"#)
                 .unwrap(),
-            Scope::SelectedUnit { roots: BTreeSet::from(["a".to_owned(), "b".to_owned()]) }
+            Scope::SelectedUnit {
+                roots: BTreeSet::from(["a".to_owned(), "b".to_owned()]),
+                instantiations: BTreeSet::new(),
+            }
+        );
+        assert_eq!(
+            serde_json::from_str::<Scope>(
+                r#"{"kind":"selected_unit","roots":[],"instantiations":[{"path":"foo","args":["usize"]}]}"#
+            )
+            .unwrap(),
+            Scope::SelectedUnit {
+                roots: BTreeSet::new(),
+                instantiations: BTreeSet::from([Instantiation {
+                    path: "foo".to_owned(),
+                    args: vec!["usize".to_owned()],
+                }]),
+            }
         );
         for invalid in [
             r#"{"kind":"crate","roots":["a"]}"#,
             r#"{"kind":"crate","roots":null}"#,
+            r#"{"kind":"crate","instantiations":[]}"#,
             r#"{"kind":"crate","extra":1}"#,
             r#"{"kind":"selected_unit"}"#,
             r#"{"kind":"selected_unit","roots":null}"#,
             r#"{"kind":"selected_unit","roots":["a"],"extra":1}"#,
+            r#"{"kind":"selected_unit","roots":[],"instantiations":[{"path":"foo","args":[],"extra":1}]}"#,
             r#"{"kind":"other"}"#,
         ] {
             assert!(
@@ -3251,6 +3317,7 @@ mod tests {
             proof_dir: None,
             panic: None,
             select: Vec::new(),
+            instantiate: Vec::new(),
             capture: None,
             lean: None,
             sysroot: None,
@@ -3292,6 +3359,7 @@ mod tests {
                 proof_dir: None,
                 panic: None,
                 select: Vec::new(),
+                instantiate: Vec::new(),
                 artifacts: None,
                 export_lean_lib: false,
                 allow_unpinned_lean: false,
@@ -3358,6 +3426,7 @@ mod tests {
             },
             theorem: DeclSpec { module: Some("Proof".to_owned()), decl: "Proof.verify".to_owned() },
             select: Vec::new(),
+            instantiate: Vec::new(),
         };
 
         let work1 = tempfile::tempdir().unwrap();

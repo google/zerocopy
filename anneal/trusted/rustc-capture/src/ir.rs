@@ -1039,14 +1039,25 @@ impl Body {
 /// when emitting `Trusted.MirAst.VerificationScope`, so raw selector strings
 /// never enter the emitted Lean subject while remaining available in
 /// `capture.json` for receipt authentication.
+#[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd, serde::Deserialize, serde::Serialize)]
+#[serde(deny_unknown_fields)]
+pub struct Instantiation {
+    pub path: String,
+    pub args: Vec<String>,
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Scope {
-    SelectedUnit { roots: BTreeSet<String> },
+    SelectedUnit {
+        roots: BTreeSet<String>,
+        #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+        instantiations: BTreeSet<Instantiation>,
+    },
     Crate,
 }
 
-/// Validated captured program enforcing non-empty selected-unit roots,
+/// Validated captured program enforcing non-empty selected-unit targets,
 /// non-empty bodies, and pairwise-distinct function identities
 /// (`Trusted.MirSemantics.bodiesHaveUniqueIdentities`).
 #[derive(Debug, Serialize)]
@@ -1057,10 +1068,11 @@ pub struct Program {
 
 impl Program {
     pub fn try_new(scope: Scope, bodies: Vec<Body>) -> Result<Self, String> {
-        if let Scope::SelectedUnit { roots } = &scope
+        if let Scope::SelectedUnit { roots, instantiations } = &scope
             && roots.is_empty()
+            && instantiations.is_empty()
         {
-            return Err("selected-unit scope must contain at least one root".into());
+            return Err("selected-unit scope must contain at least one root or instantiation".into());
         }
         if bodies.is_empty() {
             return Err("captured program contains no executable bodies".into());

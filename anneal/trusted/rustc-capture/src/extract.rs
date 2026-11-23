@@ -10,7 +10,10 @@
 //! variants remain errors; this adapter performs no control-flow or expression
 //! simplification.
 
-use rustc_abi::{Endian, ExternAbi, HasDataLayout, Integer, Primitive, Size, TagEncoding, Variants};
+use rustc_abi::{
+    BackendRepr, Endian, ExternAbi, HasDataLayout, Integer, Primitive, Scalar, Size, TagEncoding,
+    Variants,
+};
 use rustc_ast::Mutability;
 use rustc_hir::attrs::{InlineAttr, OptimizeAttr};
 use rustc_middle::middle::codegen_fn_attrs::{
@@ -18,7 +21,7 @@ use rustc_middle::middle::codegen_fn_attrs::{
 };
 use rustc_middle::mir::interpret::{AllocRange, Allocation, GlobalAlloc, Provenance};
 use rustc_middle::mir::{self, MirPhase, RuntimePhase};
-use rustc_middle::ty::{self, TyCtxt, TypingEnv};
+use rustc_middle::ty::{self, TyCtxt, TypeVisitableExt, TypingEnv};
 use rustc_span::def_id::{DefId, LocalDefId};
 use sha2::{Digest, Sha256};
 
@@ -208,11 +211,134 @@ fn local(place: &mir::Place<'_>) -> Result<u32> {
     Ok(place.local.as_u32())
 }
 
+/// Evaluate an operand or `required_consts` constant under `typing_env`.
+///
+/// Upstream `Const::eval` resolves `Const::Unevaluated` via
+/// `const_eval_resolve`, lowers `ConstKind::Value(cv)` via
+/// `valtree_to_const_val`, triggers `bug!("Normalization of
+/// \`ty::ConstKind::Expr\` is unimplemented")` on `ConstKind::Expr`, and calls
+/// `delayed_bug("Unevaluated \`ty::Const\` in MIR body")` on any other
+/// `Const::Ty`; guard `Const::Ty` before calling `eval`.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/consts.rs#L268-L341
+fn eval_mir_const<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    constant: mir::Const<'tcx>,
+    span: rustc_span::Span,
+) -> Result<mir::ConstValue> {
+    if constant.has_non_region_param()
+        || constant.has_non_region_infer()
+        || constant.references_error()
+    {
+        return Err(format!("uninstantiated or erroneous constant: {constant:?}"));
+    }
+    match constant {
+        mir::Const::Val(value, _) => Ok(value),
+        mir::Const::Unevaluated(..) => constant
+            .eval(tcx, typing_env, span)
+            .map_err(|err| format!("unevaluated constant failed CTFE: {err:?}")),
+        mir::Const::Ty(_, ct) if matches!(ct.kind(), ty::ConstKind::Value(_)) => constant
+            .eval(tcx, typing_env, span)
+            .map_err(|err| format!("type-level constant failed evaluation: {err:?}")),
+        mir::Const::Ty(..) => Err(format!(
+            "unsupported non-value type-level constant: {constant:?}"
+        )),
+    }
+}
+
+/// Evaluate every `required_consts` entry on a body under `typing_env` so
+/// dead-branch or generic post-monomorphization constant errors fail closed.
+///
+/// Upstream `Body::required_consts` documents: "We hold in this field all the
+/// constants we are not able to evaluate yet. `None` indicates that the list
+/// has not been computed yet. This is soundness-critical, we make a guarantee
+/// that all consts syntactically mentioned in a function have successfully
+/// evaluated if the function ever gets executed at runtime."
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L266-L271
+fn eval_required_consts<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    body: &mir::Body<'tcx>,
+) -> Result<()> {
+    let Some(required_consts) = body.required_consts.as_deref() else {
+        return Err("required constants are unavailable in the scalar model".into());
+    };
+    for const_op in required_consts {
+        eval_mir_const(tcx, typing_env, const_op.const_, const_op.span)?;
+    }
+    Ok(())
+}
+
+/// Decode a concrete scalar `ConstValue` (`Scalar::Int` or `Indirect` static
+/// constant allocation without pointer provenance) to raw bits.
+///
+/// Upstream `Scalar` is "Information about one scalar component of a Rust
+/// type", and `Allocation::read_scalar` with `read_provenance = false` states
+/// "If we can just ignore provenance or there is none, that's easy" (checking
+/// `Prov::OFFSET_IS_ADDR || self.provenance.range_empty(range, cx)`), so we
+/// independently assert `alloc.provenance().range_empty(range, &tcx)` before
+/// reading raw bits.
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_abi/src/lib.rs#L1539-L1544
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/allocation.rs#L712-L737
+fn decode_scalar_bits<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    value: mir::ConstValue,
+    raw_ty: ty::Ty<'tcx>,
+    width: u32,
+) -> Result<u128> {
+    if let Some(scalar) = value.try_to_scalar_int() {
+        if scalar.size().bits() != u64::from(width) {
+            return Err("scalar constant width disagrees with its type".into());
+        }
+        return Ok(scalar.to_bits_unchecked());
+    }
+    let mir::ConstValue::Indirect { alloc_id, offset } = value else {
+        return Err("only integer and indirect scalar constants are modeled".into());
+    };
+    let layout = tcx
+        .layout_of(typing_env.as_query_input(raw_ty))
+        .map_err(|err| format!("failed to compute layout for indirect constant {raw_ty:?}: {err}"))?;
+    if layout.is_unsized() || layout.size.bits() != u64::from(width) {
+        return Err("indirect scalar constant size disagrees with its type".into());
+    }
+    if !matches!(
+        layout.backend_repr,
+        BackendRepr::Scalar(Scalar::Initialized { .. })
+    ) {
+        return Err(format!(
+            "indirect constant lacks initialized scalar representation: {:?}",
+            layout.backend_repr
+        ));
+    }
+    match tcx.global_alloc(alloc_id) {
+        GlobalAlloc::Memory(const_alloc) => {
+            read_rodata_scalar_from_alloc(&tcx, const_alloc.inner(), offset, width)
+        }
+        GlobalAlloc::Static(_) => {
+            Err("static global allocations are unsupported in constants".into())
+        }
+        GlobalAlloc::Function { .. } => {
+            Err("function global allocations are unsupported in constants".into())
+        }
+        GlobalAlloc::VTable(..) => {
+            Err("vtable global allocations are unsupported in constants".into())
+        }
+        GlobalAlloc::TypeId { .. } => {
+            Err("type-id global allocations are unsupported in constants".into())
+        }
+    }
+}
+
 /// Copy and move are distinct constructors. The source says a move "may
 /// additionally overwrite the place with `uninit` bytes"; the model owns that
 /// operational choice rather than having the adapter erase the distinction.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1303-L1330
-fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Operand> {
+fn operand<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    op: &mir::Operand<'tcx>,
+) -> Result<ir::Operand> {
     match op {
         mir::Operand::Copy(place) => Ok(ir::Operand::Copy {
             local: local(place)?,
@@ -221,7 +347,9 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
             local: local(place)?,
         }),
         mir::Operand::Constant(constant) => {
-            let t = ty(tcx, constant.const_.ty())?;
+            let raw_ty = constant.const_.ty();
+            let t = ty(tcx, raw_ty)?;
+            let const_val = eval_mir_const(tcx, typing_env, constant.const_, constant.span)?;
             let width = match &t {
                 ir::Ty::Bool | ir::Ty::Ordering => 8,
                 ir::Ty::Char => 32,
@@ -230,10 +358,7 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
                     // source type must independently be the empty tuple;
                     // other zero-sized types do not acquire unit semantics.
                     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/consts.rs#L38-L39
-                    if matches!(
-                        constant.const_,
-                        mir::Const::Val(mir::ConstValue::ZeroSized, _)
-                    ) {
+                    if matches!(const_val, mir::ConstValue::ZeroSized) {
                         return Ok(ir::Operand::Constant {
                             ty: t,
                             lit: ConstLit::ZeroSized,
@@ -250,10 +375,7 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
                 ir::Ty::Int(ity) => ity.width.bits(),
                 ir::Ty::Enum(ety) => match ety.tag_repr() {
                     ir::EnumTagRepr::ZeroSized => {
-                        if matches!(
-                            constant.const_,
-                            mir::Const::Val(mir::ConstValue::ZeroSized, _)
-                        ) {
+                        if matches!(const_val, mir::ConstValue::ZeroSized) {
                             return Ok(ir::Operand::Constant {
                                 ty: t,
                                 lit: ConstLit::ZeroSized,
@@ -267,58 +389,7 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
                     ir::EnumTagRepr::Scalar(tag) => tag.width.bits(),
                 },
             };
-            // Only already-valued integer scalars or read-only `.rodata`
-            // `GlobalAlloc::Memory` scalars are admitted. In particular, do not
-            // evaluate an `Unevaluated` constant and silently substitute its
-            // result for an unrepresented constant obligation.
-            // `Scalar::Int` denotes "The raw bytes of a simple value";
-            // `try_to_scalar_int` excludes provenance-bearing pointers.
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/consts.rs#L33-L71
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/value.rs
-            let mir::Const::Val(value, _) = constant.const_ else {
-                return Err(format!("unsupported constant: {:?}", constant.const_));
-            };
-            let bits = match value {
-                mir::ConstValue::Scalar(scalar) => {
-                    let scalar_int = scalar
-                        .try_to_scalar_int()
-                        .map_err(|_| "only integer scalar constants are modeled")?;
-                    if scalar_int.size().bits() != u64::from(width) {
-                        return Err("scalar constant width disagrees with its type".into());
-                    }
-                    scalar_int.to_bits_unchecked()
-                }
-                mir::ConstValue::Indirect { alloc_id, offset } => {
-                    match tcx.global_alloc(alloc_id) {
-                        GlobalAlloc::Memory(const_alloc) => {
-                            read_rodata_scalar_from_alloc(&tcx, const_alloc.inner(), offset, width)?
-                        }
-                        GlobalAlloc::Static(_) => {
-                            return Err(
-                                "static global allocations are unsupported in constants".into(),
-                            );
-                        }
-                        GlobalAlloc::Function { .. } => {
-                            return Err(
-                                "function global allocations are unsupported in constants".into(),
-                            );
-                        }
-                        GlobalAlloc::VTable(..) => {
-                            return Err(
-                                "vtable global allocations are unsupported in constants".into(),
-                            );
-                        }
-                        GlobalAlloc::TypeId { .. } => {
-                            return Err(
-                                "type-id global allocations are unsupported in constants".into(),
-                            );
-                        }
-                    }
-                }
-                mir::ConstValue::ZeroSized | mir::ConstValue::Slice { .. } => {
-                    return Err("only integer scalar constants are modeled".into());
-                }
-            };
+            let bits = decode_scalar_bits(tcx, typing_env, const_val, raw_ty, width)?;
             let lit = ConstLit::Scalar { bits };
             ir::validate_constant(&t, lit)?;
             Ok(ir::Operand::Constant { ty: t, lit })
@@ -455,24 +526,28 @@ fn bin_op(op: mir::BinOp) -> Result<ir::BinOp> {
 /// for shifts; no casts are inserted.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1363-L1365
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L1403-L1443
-fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rvalue> {
+fn rvalue<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    value: &mir::Rvalue<'tcx>,
+) -> Result<ir::Rvalue> {
     Ok(match value {
         mir::Rvalue::Use(op, with_retag) => ir::Rvalue::Use {
-            operand: operand(tcx, op)?,
+            operand: operand(tcx, typing_env, op)?,
             with_retag: with_retag.yes(),
         },
         mir::Rvalue::BinaryOp(op, values) => ir::Rvalue::Binary {
             op: bin_op(*op)?,
-            left: operand(tcx, &values.0)?,
-            right: operand(tcx, &values.1)?,
+            left: operand(tcx, typing_env, &values.0)?,
+            right: operand(tcx, typing_env, &values.1)?,
         },
         mir::Rvalue::UnaryOp(op, value) => ir::Rvalue::Unary {
             op: un_op(*op)?,
-            operand: operand(tcx, value)?,
+            operand: operand(tcx, typing_env, value)?,
         },
         mir::Rvalue::Cast(kind, value, target_ty) => ir::Rvalue::Cast {
             cast_kind: cast_kind(*kind)?,
-            operand: operand(tcx, value)?,
+            operand: operand(tcx, typing_env, value)?,
             ty: ty(tcx, *target_ty)?,
         },
         mir::Rvalue::Discriminant(place) => ir::Rvalue::Discriminant {
@@ -500,11 +575,15 @@ fn rvalue<'tcx>(tcx: TyCtxt<'tcx>, value: &mir::Rvalue<'tcx>) -> Result<ir::Rval
 /// `Trusted/MirAst/Statements.lean`). `Nop` alone has no effect.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L364-L393
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L442-L443
-fn statement<'tcx>(tcx: TyCtxt<'tcx>, stmt: &mir::StatementKind<'tcx>) -> Result<ir::Statement> {
+fn statement<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    stmt: &mir::StatementKind<'tcx>,
+) -> Result<ir::Statement> {
     Ok(match stmt {
         mir::StatementKind::Assign(value) => ir::Statement::Assign {
             local: local(&value.0)?,
-            value: rvalue(tcx, &value.1)?,
+            value: rvalue(tcx, typing_env, &value.1)?,
         },
         mir::StatementKind::StorageLive(local) => ir::Statement::StorageLive {
             local: local.as_u32(),
@@ -570,13 +649,17 @@ fn check_call_source(call_source: mir::CallSource) -> Result<()> {
 /// `CallSource::Use` fails closed even for diverging calls.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L692-L740
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L800-L821
-fn terminator<'tcx>(tcx: TyCtxt<'tcx>, term: &mir::TerminatorKind<'tcx>) -> Result<ir::Terminator> {
+fn terminator<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+    term: &mir::TerminatorKind<'tcx>,
+) -> Result<ir::Terminator> {
     Ok(match term {
         mir::TerminatorKind::Goto { target } => ir::Terminator::Goto {
             block: target.as_u32(),
         },
         mir::TerminatorKind::SwitchInt { discr, targets } => ir::Terminator::SwitchInt {
-            operand: operand(tcx, discr)?,
+            operand: operand(tcx, typing_env, discr)?,
             targets: targets
                 .iter()
                 .map(|(value, block)| (value, block.as_u32()))
@@ -639,6 +722,18 @@ fn item_identity(tcx: TyCtxt<'_>, def: DefId) -> String {
         rustc_middle::ty::print::with_no_visible_paths!(tcx.def_path_str(def))
     );
     format!("rust-path-v1::{path}")
+}
+
+pub(crate) fn instance_path<'tcx>(tcx: TyCtxt<'tcx>, instance: ty::Instance<'tcx>) -> String {
+    rustc_middle::ty::print::with_no_trimmed_paths!(
+        rustc_middle::ty::print::with_no_visible_paths!(
+            tcx.def_path_str_with_args(instance.def_id(), instance.args)
+        )
+    )
+}
+
+fn instance_identity<'tcx>(tcx: TyCtxt<'tcx>, instance: ty::Instance<'tcx>) -> String {
+    format!("rust-path-v1::{}", instance_path(tcx, instance))
 }
 
 /// Key a crate-local enum for `Trusted.MirAst.EnumTy.id`.
@@ -854,11 +949,34 @@ fn codegen_attrs(tcx: TyCtxt<'_>, def: LocalDefId) -> Result<()> {
     Ok(())
 }
 
-/// Translate the provider's exact body. `required_consts` is explicitly
-/// "soundness-critical"; an unrepresented required constant is a refusal,
-/// independent of runtime preconditions or whether any return is reachable.
+/// Translate the provider's exact body, evaluating all `required_consts`
+/// compile-time obligations before admitting the body.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L265-L271
 pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) -> Result<ir::Body> {
+    body_inner(tcx, def, None, body, TypingEnv::fully_monomorphized())
+}
+
+/// Translate an explicitly monomorphized body validated by [`crate::mono`].
+pub(crate) fn instantiated_body<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    resolved: &crate::mono::ResolvedMonoBody<'tcx>,
+) -> Result<ir::Body> {
+    body_inner(
+        tcx,
+        resolved.resolved_local,
+        Some(resolved.instance),
+        &resolved.body,
+        resolved.typing_env,
+    )
+}
+
+fn body_inner<'tcx>(
+    tcx: TyCtxt<'tcx>,
+    def: LocalDefId,
+    instance: Option<ty::Instance<'tcx>>,
+    body: &mir::Body<'tcx>,
+    typing_env: TypingEnv<'tcx>,
+) -> Result<ir::Body> {
     // Refuse intrinsics before reading the body: calls to an intrinsic need
     // not execute its fallback body. Once `#![feature(intrinsics)]` is
     // enabled, `intrinsic_raw` "Determines whether an item is an intrinsic"
@@ -925,34 +1043,49 @@ pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) ->
     if body.tainted_by_errors.is_some() || body.coroutine.is_some() || body.spread_arg.is_some() {
         return Err("tainted, coroutine or spread-argument body is unsupported".into());
     }
-    // `None` means "the list has not been computed yet", not an empty set of
-    // obligations. Even a valid scalar runtime body cannot waive a missing or
-    // nonempty compile-time obligation inventory.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L265-L271
-    if !matches!(body.required_consts.as_deref(), Some([])) {
-        return Err("required constants are unavailable in the scalar model".into());
-    }
-    // One captured body has one concrete scalar argument/type interpretation.
-    // Generic entry points would require quantified instantiation obligations;
-    // compiler completion alone does not prove every future instantiation.
+    eval_required_consts(tcx, typing_env, body)?;
+    // Unrequested generic entry points would require quantified instantiation
+    // obligations; compiler completion alone does not prove every future
+    // instantiation. Explicit concrete instantiations are admitted only after
+    // `mono::instantiate_body` resolves and validates concrete args and trait
+    // obligations.
     // `Generics` describes "the formal type/lifetime parameters associated
     // with an item or method", optionally starting with `Self`, and `count`
     // is `self.parent_count + self.own_params.len()`. A method therefore also
     // counts its parent's parameters, including a trait's implicit `Self`.
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/generics.rs#L112-L116
     // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/ty/generics.rs#L153-L156
-    if tcx.generics_of(def).count() != 0 {
-        return Err("generic functions require quantified instantiation obligations".into());
-    }
-    // With generics refused, the identity instantiation is the only one.
-    // `skip_binder` "is only valid when you are either extracting data that
-    // does not reference any generic arguments": the ABI, C-variadic and
-    // safety flags read below live in `fn_sig_kind`, separately from the
-    // argument and return types that late-bound regions can reference.
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/unnormalized.rs#L96-L100
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/binder.rs#L164-L170
-    // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs#L899-L904
-    let signature = tcx.fn_sig(def).instantiate_identity().skip_binder();
+    let (signature, identity) = match instance {
+        None => {
+            if tcx.generics_of(def).count() != 0 {
+                return Err("generic functions require quantified instantiation obligations".into());
+            }
+            // With generics refused, the identity instantiation is the only
+            // one. `skip_binder` "is only valid when you are either extracting
+            // data that does not reference any generic arguments": the ABI,
+            // C-variadic, and safety flags read below live in `fn_sig_kind`,
+            // separately from the argument and return types that late-bound
+            // regions can reference.
+            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/unnormalized.rs#L96-L100
+            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/binder.rs#L164-L170
+            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_type_ir/src/ty_kind.rs#L899-L904
+            (
+                tcx.fn_sig(def).instantiate_identity().skip_binder(),
+                item_identity(tcx, def.to_def_id()),
+            )
+        }
+        Some(inst) => {
+            let bound_sig = tcx.fn_sig(def).instantiate(tcx, inst.args);
+            let normalized_sig = tcx
+                .try_normalize_erasing_regions(typing_env, bound_sig)
+                .map_err(|_| "failed to normalize instantiated function signature".to_owned())?;
+            let sig = normalized_sig.skip_binder();
+            if sig.has_non_region_param() || sig.has_non_region_infer() || sig.references_error() {
+                return Err("instantiated function signature remains generic or erroneous".into());
+            }
+            (sig, instance_identity(tcx, inst))
+        }
+    };
     // The model has ordinary Rust arguments and no foreign/variadic calling
     // convention or hardware-feature entry conditions. Do not infer those
     // missing preconditions merely because the body happens to use scalars.
@@ -1003,7 +1136,7 @@ pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) ->
                 .iter()
                 .enumerate()
                 .map(|(index, stmt)| {
-                    statement(tcx, &stmt.kind)
+                    statement(tcx, typing_env, &stmt.kind)
                         .map_err(|error| format!("{id:?} statement {index}: {error}"))
                 })
                 .collect::<Result<Vec<_>>>()?;
@@ -1011,7 +1144,7 @@ pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) ->
             // construction"; a provided body without one is malformed.
             // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/mod.rs#L1327-L1335
             let term = block.terminator.as_ref().ok_or("missing terminator")?;
-            let terminator = terminator(tcx, &term.kind)
+            let terminator = terminator(tcx, typing_env, &term.kind)
                 .map_err(|error| format!("{id:?} terminator: {error}"))?;
             Ok(ir::Block {
                 statements,
@@ -1041,7 +1174,7 @@ pub fn body<'tcx>(tcx: TyCtxt<'tcx>, def: LocalDefId, body: &mir::Body<'tcx>) ->
         signature.safety().is_unsafe(),
         local_tys,
         blocks,
-        item_identity(tcx, def.to_def_id()),
+        identity,
     )
 }
 
@@ -1175,6 +1308,7 @@ mod tests {
             ir::Program::try_new(
                 ir::Scope::SelectedUnit {
                     roots: std::collections::BTreeSet::new(),
+                    instantiations: std::collections::BTreeSet::new(),
                 },
                 vec![valid.clone()],
             )
@@ -1339,6 +1473,7 @@ mod tests {
         let prog = ir::Program::try_new(
             ir::Scope::SelectedUnit {
                 roots: std::collections::BTreeSet::from(["enum_neg_tag".into(), "enum_zst".into()]),
+                instantiations: std::collections::BTreeSet::new(),
             },
             vec![valid_neg, valid_zst],
         )
