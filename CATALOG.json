@@ -104061,6 +104061,64 @@
         "verification"
       ]
     },
+    "rustc-mir-ptr-metadata-gvn-custom-dst-and-rawptr-aggregate-soundness": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "host": "x86_64-unknown-linux-gnu",
+            "llvm_version": "22.1.6",
+            "miri_version": "0.1.0 (14210df0e2 2026-05-31)",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly (2026-05-31)"
+          },
+          "name": "rustc nightly compiler, core/alloc libraries, and Miri interpreter"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "fde8dfd638478da758f93f0e8d9b74d7907f0c9e"
+          },
+          "name": "rust-lang/rust upstream HEAD MIR transform, const_eval, codegen_ssa, and core/alloc sources"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/reference",
+            "revision": "c9cc32825b03fc206d9c6fe73e9ca6a2f3576d6c"
+          },
+          "name": "The Rust Reference normative DST, pointer, type-coercion, layout, and UB rules"
+        },
+        {
+          "identity": {
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal trusted MIR AST, operational semantics, correspondence, and vendored Lean-Miri"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 kernel and elaborator"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "anneal/trusted-boundary",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/mir",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "rustc/mir",
+        "verification"
+      ]
+    },
     "rustc-mir-steal-lifetimes-and-dual-profile-capture": {
       "observed_at": "2026-11-12",
       "subjects": [
