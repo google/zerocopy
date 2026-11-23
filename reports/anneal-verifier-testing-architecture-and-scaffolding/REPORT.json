@@ -1,0 +1,132 @@
+{
+  "topics": [
+    "anneal/architecture",
+    "anneal/audit",
+    "anneal/tcb-audit",
+    "anneal/testing",
+    "build/nix",
+    "build/sandboxing",
+    "cargo/workspaces",
+    "lean/kernel-replay",
+    "lean/proof-scaling",
+    "rustc/compiletest",
+    "systems/elf",
+    "tooling/ci",
+    "tooling/differential-testing",
+    "verification/differential-testing",
+    "verification/mutation-testing",
+    "verification/rust",
+    "zerocopy"
+  ],
+  "subjects": [
+    {
+      "name": "zerocopy and Anneal multi-workspace repository",
+      "identity": {
+        "repository": "google/zerocopy",
+        "revision": "74d509c8529b05e0e4839cc739d6da2fe0841e41"
+      }
+    },
+    {
+      "name": "ci-core sandboxed CI planner, executor, and Sigstore attestation engine",
+      "identity": {
+        "repository": "joshlf/ci-core",
+        "revision": "39a79866b604b956467709d631ebbde97041a857",
+        "version": "v0.1.0"
+      }
+    },
+    {
+      "name": "Rust nightly compiler and Miri pinned by Anneal",
+      "identity": {
+        "repository": "rust-lang/rust",
+        "revision": "f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1",
+        "version": "1.98.0-nightly (2026-05-30)"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain pinned by Anneal foundation lock",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+        "version": "v4.34.1",
+        "linux_x86_64_sha256": "47bf4bbd78f70c2e9670598ab7124d92b6efb7330ff33e5fbb4030f6fd72e4e4"
+      }
+    },
+    {
+      "name": "Lean 4 toolchain with bundled external kernel checkers",
+      "identity": {
+        "repository": "leanprover/lean4",
+        "revision": "eb6cafb7290e8bd5f2937522d8d804f58f02bafc",
+        "version": "v4.35.0"
+      }
+    },
+    {
+      "name": "lean4export NDJSON proof exporter",
+      "identity": {
+        "repository": "leanprover/lean4export",
+        "revision": "5a9a355dc6c5fd82b69058d433e2ae2e8dfbf8fe",
+        "version": "3.1.0"
+      }
+    },
+    {
+      "name": "nanoda_lib independent Rust Lean 4 kernel checker",
+      "identity": {
+        "repository": "ammkrn/nanoda_lib",
+        "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929",
+        "version": "0.4.19"
+      }
+    },
+    {
+      "name": "Lean4Lean independent Lean 4 kernel checker",
+      "identity": {
+        "repository": "digama0/lean4lean",
+        "revision": "67f63b0c818920dfaed2ad07ccff187a6a8fe1e3"
+      }
+    },
+    {
+      "name": "ui_test declarative Rust compiler UI test framework",
+      "identity": {
+        "repository": "oli-obk/ui_test",
+        "revision": "7917d5025f381a7348d7a78dbe557c4bd64e8cbd",
+        "version": "0.30.7"
+      }
+    },
+    {
+      "name": "cargo-nextest process-per-test Rust test runner",
+      "identity": {
+        "repository": "nextest-rs/nextest",
+        "revision": "26ebeda79b9ae1d008cf64ddb01984bcaa6e1239",
+        "version": "0.9.152"
+      }
+    },
+    {
+      "name": "Verus Rust verification framework and rust_verify_test harness",
+      "identity": {
+        "repository": "verus-lang/verus",
+        "revision": "d749566d31400c9d1ab437f0853ee16d769d1b04"
+      }
+    },
+    {
+      "name": "Creusot deductive Rust verifier and UI/Why3 test harness",
+      "identity": {
+        "repository": "creusot-rs/creusot",
+        "revision": "faeb61f5b5a8ffda94fde1f100ef96a1d798088b"
+      }
+    },
+    {
+      "name": "Kani Rust bit-precise bounded model checker",
+      "identity": {
+        "repository": "model-checking/kani",
+        "revision": "87c87010eda7797d7fa14033ca68bcbe17184a63"
+      }
+    },
+    {
+      "name": "bubblewrap unprivileged Linux user-namespace sandbox",
+      "identity": {
+        "repository": "containers/bubblewrap",
+        "version": "v0.13.1",
+        "source_tarball_sha256": "0e85c8702248b8dd64144f594147553650cdd0e4c951690345faace79c217c4d"
+      }
+    }
+  ],
+  "observed_at": "2026-11-23"
+}

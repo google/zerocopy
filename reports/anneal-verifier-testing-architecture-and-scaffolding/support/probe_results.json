@@ -1,0 +1,243 @@
+{
+  "boundary_lattice": {
+    "cases_verified": 12,
+    "comparison": [
+      {
+        "case": "trusted_to_trusted",
+        "from": "trusted/cargo-anneal",
+        "to": "trusted/audit",
+        "strict_target_rule": true,
+        "monotonic_lattice_rule": true
+      },
+      {
+        "case": "trusted_to_testkit_forbidden",
+        "from": "trusted/audit",
+        "to": "tests/testkit",
+        "strict_target_rule": false,
+        "monotonic_lattice_rule": false
+      },
+      {
+        "case": "trusted_to_tests_forbidden",
+        "from": "trusted/cargo-anneal",
+        "to": "tests/cargo-anneal",
+        "strict_target_rule": false,
+        "monotonic_lattice_rule": false
+      },
+      {
+        "case": "tests_to_trusted",
+        "from": "tests/audit",
+        "to": "trusted/audit",
+        "strict_target_rule": true,
+        "monotonic_lattice_rule": true
+      },
+      {
+        "case": "tests_to_testkit_shared_harness",
+        "from": "tests/audit",
+        "to": "tests/testkit",
+        "strict_target_rule": false,
+        "monotonic_lattice_rule": true
+      },
+      {
+        "case": "tests_to_testkit_cargo_anneal",
+        "from": "tests/cargo-anneal",
+        "to": "tests/testkit",
+        "strict_target_rule": false,
+        "monotonic_lattice_rule": true
+      },
+      {
+        "case": "tests_to_testkit_capture",
+        "from": "tests/rustc-capture",
+        "to": "tests/testkit",
+        "strict_target_rule": false,
+        "monotonic_lattice_rule": true
+      },
+      {
+        "case": "testkit_to_trusted",
+        "from": "tests/testkit",
+        "to": "trusted/cargo-anneal",
+        "strict_target_rule": true,
+        "monotonic_lattice_rule": true
+      },
+      {
+        "case": "testkit_to_outside_forbidden",
+        "from": "tests/testkit",
+        "to": "theory",
+        "strict_target_rule": false,
+        "monotonic_lattice_rule": false
+      },
+      {
+        "case": "testkit_to_nonmember_forbidden",
+        "from": "tests/testkit",
+        "to": "tests/unlisted",
+        "strict_target_rule": false,
+        "monotonic_lattice_rule": false
+      },
+      {
+        "case": "test_member_missing_publish_false",
+        "from": "tests/testkit_pub_true",
+        "to": "trusted/audit",
+        "strict_target_rule": false,
+        "monotonic_lattice_rule": false
+      },
+      {
+        "case": "test_member_with_build_rs",
+        "from": "tests/testkit_with_build",
+        "to": "trusted/audit",
+        "strict_target_rule": false,
+        "monotonic_lattice_rule": false
+      }
+    ]
+  },
+  "split_store_and_readonly_cleanup": {
+    "naive_rmtree_failed_eacces_on_0o555": true,
+    "guarded_topdown_chmod_cleanup_succeeded": true,
+    "host_cross_pkg_symlink_stays_within_joined_root": false,
+    "cwd_overlaps_enclosing_temp_root": true,
+    "cwd_overlaps_disjoint_sibling_store_lib": false,
+    "bwrap_nix_store_mount_simulation": {
+      "available": true,
+      "exit_code": 0,
+      "canon_root": "/nix/store/0002-lean-joined/lib/lean",
+      "canon_target": "/nix/store/0001-lean-unwrapped/lib/lean/Init.olean",
+      "both_in_nix_store": true,
+      "read_only_enforced": true
+    }
+  },
+  "anneal_checkout_inventory": {
+    "trusted_total_files": 113,
+    "trusted_total_lines": 88328,
+    "trusted_non_test_files": 63,
+    "trusted_non_test_lines": 58363,
+    "trusted_embedded_test_files": 50,
+    "trusted_embedded_test_lines": 29965,
+    "integration_binaries_count": 14,
+    "integration_binaries": [
+      {
+        "path": "trusted/audit/tests/boundary_audit.rs",
+        "lines": 9824,
+        "tests": 53,
+        "ignored": 0
+      },
+      {
+        "path": "trusted/audit/tests/cli_environment.rs",
+        "lines": 121,
+        "tests": 4,
+        "ignored": 0
+      },
+      {
+        "path": "trusted/audit/tests/target_audit.rs",
+        "lines": 2332,
+        "tests": 32,
+        "ignored": 0
+      },
+      {
+        "path": "trusted/cargo-anneal/tests/cli.rs",
+        "lines": 1167,
+        "tests": 19,
+        "ignored": 0
+      },
+      {
+        "path": "trusted/cargo-anneal/tests/harness.rs",
+        "lines": 284,
+        "tests": 8,
+        "ignored": 1
+      },
+      {
+        "path": "trusted/cargo-anneal/tests/installed_smoke.rs",
+        "lines": 910,
+        "tests": 2,
+        "ignored": 2
+      },
+      {
+        "path": "trusted/cargo-anneal/tests/integration.rs",
+        "lines": 4315,
+        "tests": 16,
+        "ignored": 0
+      },
+      {
+        "path": "trusted/cargo-anneal/tests/mvp_e2e.rs",
+        "lines": 1566,
+        "tests": 6,
+        "ignored": 0
+      },
+      {
+        "path": "trusted/cargo-anneal/tests/sandbox_escape.rs",
+        "lines": 1191,
+        "tests": 7,
+        "ignored": 0
+      },
+      {
+        "path": "trusted/cargo-anneal/tests/support_paths.rs",
+        "lines": 515,
+        "tests": 22,
+        "ignored": 2
+      },
+      {
+        "path": "trusted/cargo-anneal/tests/support_regressions.rs",
+        "lines": 650,
+        "tests": 14,
+        "ignored": 2
+      },
+      {
+        "path": "trusted/cargo-anneal/tests/support_signals.rs",
+        "lines": 134,
+        "tests": 3,
+        "ignored": 0
+      },
+      {
+        "path": "trusted/rustc-capture/tests/compiler_session.rs",
+        "lines": 547,
+        "tests": 23,
+        "ignored": 0
+      },
+      {
+        "path": "trusted/rustc-capture/tests/typed_capture.rs",
+        "lines": 2643,
+        "tests": 48,
+        "ignored": 0
+      }
+    ],
+    "guard_mutation_mir_guards": 44,
+    "guard_mutation_audit_guards": 2,
+    "guard_mutation_total": 46,
+    "umbrella_reachable_modules": 73,
+    "umbrella_total_lines": 66307,
+    "umbrella_trusted_modules": 19,
+    "umbrella_theory_modules": 54,
+    "bundle_manifest_theory_modules": 18,
+    "umbrella_unbundled_theory_modules": 36,
+    "umbrella_unbundled_theory_lines": 43393,
+    "critical_path_depth": 28,
+    "critical_path_lines": 19704,
+    "critical_path_modules": [
+      "Trusted.MirAst.Types",
+      "Trusted.MirAst.Places",
+      "Trusted.MirAst.Rvalues",
+      "Trusted.MirAst.Terminators",
+      "Trusted.MirAst.Body",
+      "Trusted.MirAst",
+      "Trusted.MirModel",
+      "Trusted.MirSemantics.Ops",
+      "Trusted.MirSemantics.Enum",
+      "Trusted.MirSemantics.Layout",
+      "Trusted.MirSemantics.Memory",
+      "Trusted.MirSemantics.Bytes",
+      "Trusted.MirSemantics.Step",
+      "Trusted.MirSemantics.Boundary",
+      "Trusted.MirSemantics.CanaryFixtures",
+      "Trusted.MirSemantics",
+      "Anneal.MirWp.Core",
+      "Anneal.MirWp.Scalars",
+      "Anneal.MirWp.Reflection",
+      "Anneal.MirWp.Execution",
+      "Anneal.MirWp",
+      "Anneal.MirTotal.StepCore",
+      "Anneal.Core.BlockTree",
+      "Anneal.Core.StageCut",
+      "Anneal.Core.SepPCM",
+      "Anneal.Core.Canaries",
+      "Anneal.Core",
+      "Anneal"
+    ]
+  }
+}
