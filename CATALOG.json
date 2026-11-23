@@ -110128,6 +110128,176 @@
         "ffi"
       ]
     },
+    "sandboxed-interactive-verification-playground-architectures": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "https://github.com/rust-lang/rust-playground",
+            "revision": "ed28c128dd6706f378a31ae7b5d810ab296624db"
+          },
+          "name": "rust-lang/rust-playground"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover-community/lean4web",
+            "revision": "6e10386825b47d493befa6bce6bc16bf0af9aad2"
+          },
+          "name": "leanprover-community/lean4web"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/compiler-explorer/compiler-explorer",
+            "revision": "fd755666d5437e69af2d2100f4be3764d21e9453"
+          },
+          "name": "compiler-explorer/compiler-explorer"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/compiler-explorer/infra",
+            "revision": "99023a0e6d5433b8d8a9132091fe30cc6ffae6c7"
+          },
+          "name": "compiler-explorer/infra"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/verus-lang/verus-playground",
+            "revision": "ce8d1eb64891d429021ce8464bd9755748b96c45"
+          },
+          "name": "verus-lang/verus-playground"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/flux-rs/flux-playground",
+            "revision": "181d30b59359083045b55b7da7ee49b4ea172779"
+          },
+          "name": "flux-rs/flux-playground"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/fm4se/fm-playground",
+            "revision": "53131d8ddd25d5ad3153f1adb673905bc8386038"
+          },
+          "name": "fm4se/fm-playground"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/haslab/Alloy4Fun",
+            "revision": "c97f9b2041c7b8ba947122bfc8ae276a2c0d492f"
+          },
+          "name": "haslab/Alloy4Fun"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/jscoq/jscoq",
+            "revision": "47687039288b0c05a8c932d66737070418b9cfa9"
+          },
+          "name": "jscoq/jscoq"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/cauli/lean4-wasm-in-browser",
+            "revision": "931ef48162ffb5fdacedda5f027c71d3e9adf8fc"
+          },
+          "name": "cauli/lean4-wasm-in-browser"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/live-codes/browser-lean",
+            "revision": "a8aed095534e67061e2626b94e8e69193099091d"
+          },
+          "name": "live-codes/browser-lean"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/T-Brick/lean2wasm",
+            "revision": "28620e1f33e0772e90b036db12ed099a734b4b19"
+          },
+          "name": "T-Brick/lean2wasm"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/tlaplus/tla-by-example",
+            "revision": "ec0cc0380b0e4ac6f38b914153baac20d0bb0dc3200"
+          },
+          "name": "tlaplus/tla-by-example"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/will62794/spectacle",
+            "revision": "8193eb02717a90b0a64cfe5b03f40d90c2b4bc18a2"
+          },
+          "name": "will62794/spectacle"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/Z3Prover/z3",
+            "revision": "bbd46c9ebdd5955333682fe9f3cefc2b7c883e9c"
+          },
+          "name": "Z3Prover/z3"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/ammkrn/nanoda_lib",
+            "revision": "0da9f98feadd3a0a2ef4b3dbcf52a298a6fef929"
+          },
+          "name": "ammkrn/nanoda_lib"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/leanprover/con-ron",
+            "revision": "6fd8fee454dd71398ed7975ff3517058b5f5d8b6"
+          },
+          "name": "leanprover/con-ron"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/cryspen/hax",
+            "revision": "0d2f66ed697c46d7c0f5038150b7c9679e4d954b"
+          },
+          "name": "cryspen/hax"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/creusot-rs/tutorial",
+            "revision": "4c9a15a4e6b2a118b350542b5bb73e2c41679b52"
+          },
+          "name": "creusot-rs/tutorial"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/model-checking/kani",
+            "revision": "87c87010eda7797d7fa14033ca68bcbe17184a63"
+          },
+          "name": "model-checking/kani"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/informalsystems/quint",
+            "revision": "20959113bdb6275da970902974e38821f9ebdd42"
+          },
+          "name": "informalsystems/quint"
+        },
+        {
+          "identity": {
+            "repository": "https://github.com/google/zerocopy",
+            "revision": "d3362d9a657e2f943d25a0812f7b13b93e60af4d"
+          },
+          "name": "google/zerocopy (anneal sandbox)"
+        }
+      ],
+      "topics": [
+        "anneal/playground",
+        "lean/external-checkers",
+        "lean/lsp",
+        "runtimes/webassembly",
+        "rust/playgrounds",
+        "security/sandboxing",
+        "systems/containers",
+        "tooling/playgrounds",
+        "verification/interactive"
+      ]
+    },
     "sas-pdv-retain-abap-luw-rollback-jcl-cond-and-enterprise-batch-languages": {
       "observed_at": "2026-11-19",
       "subjects": [
