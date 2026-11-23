@@ -6,12 +6,15 @@ license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
 This file may not be copied, modified, or distributed except according to
 those terms. -->
 
-# Codex review policy and diagnostics
+# Gate 2 review policy and diagnostics
 
-Anneal uses Codex review alongside local `change-review`, `trust-review`, CI,
-and human review. Until [#4013](https://github.com/google/zerocopy/issues/4013)
-is resolved, Codex review is enforced by the manual merge gates below rather
-than by a GitHub ruleset.
+Anneal pairs local `change-review`, `trust-review`, CI, and human review with
+an independent cross-family automated review (**Gate 2**). Gate 2 accepts
+either an independent cross-family `COMMENT` review carrying a structured
+`anneal-gate2-review:v1` footer or, for backwards compatibility, a healthy
+`chatgpt-codex-connector[bot]` review summary. Until
+[#4013](https://github.com/google/zerocopy/issues/4013) is resolved, Gate 2 is
+enforced by the manual merge gates below rather than by a GitHub ruleset.
 
 ## Merge gates
 
@@ -31,7 +34,7 @@ In both cases `merge_base == target_base`: the PR's commits sit directly on
 the head of its target base, which is `main` for a lone PR or the bottom PR of
 a stack, and the head of the PR directly below it otherwise.
 
-Review evidence recorded on this PR for one identity (review receipts, Codex
+Review evidence recorded on this PR for one identity (review receipts, Gate 2
 reviews, and human approvals) remains valid for every later head of the same
 PR with that identity, however that head was produced, and for no other,
 subject to the Gate 5 rules for the Review Receipt comment's `Human review
@@ -55,14 +58,50 @@ re-confirm every affected gate whenever the identity changes:
    unresolved, and the PR author or acting agent has posted a Review Receipt
    comment naming a reviewed `head` SHA with the current identity that includes
    an accurate `Human review surface` block.
-2. **Gate 2 — Codex coverage and finding dispositions:** At least one complete
-   code review by an authentic `chatgpt-codex-connector[bot]`, posted on this
-   PR, covers the current identity; a request answered with an error, or a run
-   that has not completed, is not a review, and no Codex review requested on
-   this PR, for any identity, may still be running at merge time. Every
-   finding that Codex posts on this PR, for any identity and including
-   findings from incomplete or errored runs, is resolved in exactly one of two
-   ways:
+2. **Gate 2 — Independent cross-family review and finding dispositions:** At
+   least one complete automated Gate 2 review posted on this PR covers the
+   current identity, and no Gate 2 review requested on this PR, for any
+   identity, may still be running at merge time. A Gate 2 review is valid only
+   when produced via one of two mechanisms:
+   - **Structured cross-family `COMMENT` review (`anneal-gate2-review:v1`):**
+     A PR review submitted with `event: "COMMENT"` (never `APPROVE`, keeping
+     Gate 5 human approval strictly separate) by an authorized reviewer
+     (repository owner, org member, or collaborator, or an explicitly
+     configured review bot identity) using an automated model family strictly
+     distinct from the PR's authoring model family
+     (`reviewer_family != author_family`), executed from a clean `<target_base>`
+     checkout or neutral directory without author or Gate 1 conversation
+     history. When Gate 1 already used a distinct model family from the author,
+     prefer a third distinct model family for Gate 2 when available; otherwise,
+     pair Gate 2 with a distinct model family from the author in a fresh,
+     unprimed harness. Its body must contain exactly one machine-readable
+     footer:
+
+     ```html
+     <!-- anneal-gate2-review:v1 {"base_sha":"<40-hex>","head_sha":"<40-hex>","tree_sha":"<40-hex>","reviewer_family":"<family>","author_family":"<family|human>","verdict":"clean|findings|incomplete","findings":[{"severity":"P0|P1|P2|P3","path":"<path|null>","line":1,"summary":"<text>"}]} -->
+     ```
+
+     Here `author_family` names the authoring model family (or `"human"` for a
+     wholly human-authored PR), `reviewer_family` names an automated model
+     family distinct from `author_family` (never `"human"` or a placeholder; or
+     `"multi"` when `panel_seats[]` is present with at least one completed
+     cross-family seat), `verdict` is `"clean"` (`findings: []`), `"findings"`
+     (non-empty `findings`), or `"incomplete"`, and optional `parent_tree`,
+     `commit_msg_sha256`, `reviewed_at`, `round`, `risk_tier`, `merge_base`,
+     `identity_key`, `panel_seats[]`, `prior_findings_status[]`, and `coverage`
+     (plus per-finding `fingerprint`, `surface`, `consensus_count`,
+     `raised_by[]`, and `repro_status`) may carry one-commit identity or
+     multi-seat diagnostic metadata. Gate 2 provides the cold cross-family
+     review and falsification pass after Gate 1's pre-push convergence.
+   - **Legacy Codex summary (`codex-review-state:v1`):** For backwards
+     compatibility, a complete code review by an authentic
+     `chatgpt-codex-connector[bot]` covering the current identity.
+
+   An aborted run, a request answered with an error, a `verdict: "incomplete"`
+   run, or a run that has not completed is never a passing Gate 2 review. Every
+   finding that a Gate 2 reviewer posts on this PR, for any identity and
+   including findings from incomplete or errored runs, is resolved in exactly
+   one of two ways:
    - **Fixed:** after the finding, the surface it concerns changes (the PR's
      tree; its commit message; or, for a finding about something outside the
      identity, such as the PR description or Review Receipt comment, that
@@ -74,36 +113,36 @@ re-confirm every affected gate whenever the identity changes:
      the tree's behavior concerns the tree, and an ambiguous finding counts as
      a tree finding. A finding about the tree or commit message that was
      raised on the current identity cannot be fixed without a new identity.
-   - **Dispositioned:** the finding appears in a `Codex finding dispositions`
-     list inside the Review Receipt comment's `Human review surface` block,
-     with a proposed disposition and its evidence, and the maintainer's Gate 5
-     approval, newer than that comment's creation and last edit, accepts it. A
-     disposition may
+   - **Dispositioned:** the finding appears in a `Gate 2 finding dispositions`
+     (or legacy `Codex finding dispositions`) list inside the Review Receipt
+     comment's `Human review surface` block, with a proposed disposition and
+     its evidence, and the maintainer's Gate 5 approval, newer than that
+     comment's creation and last edit, accepts it. A disposition may
      refute a finding with falsifiable evidence or defer an out-of-scope
      finding (handling pre-existing hazards as
      [`trust-review`](../skills/trust-review/SKILL.md#report-findings-and-pre-existing-hazards)
      requires); a confirmed in-scope trust or soundness defect must be fixed,
      never deferred.
 
-   Codex review is nondeterministic: repeated reviews of identical content
+   Automated review is nondeterministic: repeated reviews of identical content
    regularly raise new findings, so a later review's silence about a finding
    never resolves it. Requesting several reviews of one identity, including in
    parallel, is permitted and only adds findings to resolve. Resolving a review
    thread never resolves a finding by itself, and a green `codex-review.yml`
-   diagnostic workflow run is never a Codex review. Because GitHub Codex
-   defaults to flagging P0 and P1 issues (per the
-   [Codex GitHub integration docs][codex-github]; re-verify periodically if
-   provider behavior changes), Gate 1 owns open trust questions and
-   lower-severity defects. If a PR added or modified an unauthorized nested
-   `AGENTS.md` or any `AGENTS.override.md` that tainted Codex's review, remove
-   it and require a new complete Codex review of the resulting identity; when a
-   PR edits root policy files (prefer dedicated policy-only PRs so Codex does
-   not review product code under modified rules), policy-stability
-   verification against the base rules comes from Gate 1 (local review against
-   `<target_base>`) and Gate 5, not Gate 2 alone. An acting agent may propose
-   dispositions, but never waives Gate 2, declares it passed with an
-   unresolved finding, or authors, edits, or simulates the maintainer's
-   acceptance.
+   diagnostic workflow run is never a Gate 2 review. When a hosted provider
+   filters output by severity (for example, GitHub Codex defaulting to P0 and
+   P1 issues per the [Codex GitHub integration docs][codex-github]; re-verify
+   periodically if provider behavior changes), Gate 1 owns open trust questions
+   and lower-severity defects. If a PR added or modified an unauthorized nested
+   `AGENTS.md` or any `AGENTS.override.md` that tainted an automated review,
+   remove it and require a new complete Gate 2 review of the resulting
+   identity; when a PR edits root policy files (prefer dedicated policy-only
+   PRs so automated reviewers do not evaluate product code under modified
+   rules), policy-stability verification against the base rules comes from
+   Gate 1 (local review against `<target_base>`) and Gate 5, not Gate 2 alone.
+   An acting agent may propose dispositions, but never waives Gate 2, declares
+   it passed with an unresolved finding, or authors, edits, or simulates the
+   maintainer's acceptance.
 3. **Gate 3 — Green required CI:** All required GitHub Actions checks pass on
    GitHub's current pull-request test-merge commit for the exact final
    `(target_base, head)` (reported on `head` by `pull_request`-triggered
@@ -120,7 +159,7 @@ re-confirm every affected gate whenever the identity changes:
    block (defined in [`AGENTS.md`](../AGENTS.md#code-review-rules), including
    stated specs and every definition their meaning transitively depends on,
    plus any editor or agent config, intentional policy relaxation, or proposed
-   Codex finding disposition). An approval holds across a pure rebase only if
+   Gate 2 finding disposition). An approval holds across a pure rebase only if
    no subsequent push changes this PR's own Human review surface, no
    rebased-over commit modifies a definition in a stated spec's transitive
    dependency closure (verified via `git range-diff` and inspecting touched
@@ -136,11 +175,12 @@ re-confirm every affected gate whenever the identity changes:
    agents must never self-approve pull requests or author, edit, or simulate
    maintainer dispositions or acceptance.
 
-## Hosted reviewers and skill boundaries
+## Automated Gate 2 reviewers and skill boundaries
 
-Hosted reviewers follow the [Code Review Rules](../AGENTS.md#code-review-rules)
-(mirrored verbatim in [`.gemini/styleguide.md`](../.gemini/styleguide.md)) and
-report within host output and severity limits per
+Automated Gate 2 reviewers follow the
+[Code Review Rules](../AGENTS.md#code-review-rules) (mirrored verbatim in
+[`.gemini/styleguide.md`](../.gemini/styleguide.md)) and report within host
+output and severity limits per
 [`change-review`](../skills/change-review/SKILL.md#report-within-the-hosts-constraints);
 these instructions never create a setting for unlimited findings or override a
 service limit. See
@@ -174,30 +214,33 @@ Changing Git files does not change GitHub's live rulesets. Disabling ruleset
 When authorized, the workflow can be dispatched manually on `main`:
 
 ```sh
-gh workflow run codex-review.yml --repo joshlf/anneal --ref main
-gh run list --repo joshlf/anneal --workflow codex-review.yml
+gh workflow run codex-review.yml --repo google/zerocopy --ref main
+gh run list --repo google/zerocopy --workflow codex-review.yml
 ```
 
 For local read-only diagnosis (without write-effect flags):
 
 ```sh
 GH_TOKEN="$(gh auth token)" python3 -I -B ci/codex_review.py \
-  --repository joshlf/anneal
+  --repository google/zerocopy
 ```
 
-The evaluator reads live PRs, summaries, historical deletion records, and merge
-queue state, then prints proposed verdicts. Its freshness rules can reject a
-completed review when Codex edits an older summary or supplies only a prose
-receipt; deletion records are no longer updated automatically. Treat its output
-strictly as diagnostic evidence and inspect Codex's actual reviews before
-making a manual merge decision.
+The evaluator reads live PRs, PR reviews, summaries, commit trees, historical
+deletion records, and merge queue state, then prints proposed verdicts. For
+`anneal-gate2-review:v1` reviews, it validates `base_sha`, `head_sha`,
+`tree_sha`, `reviewer_family != author_family`, `COMMENTED` state, and
+`findings[]` fail-closed. For legacy `codex-review-state:v1` summaries, its
+freshness rules still reject a completed review when Codex edits an older
+summary or supplies only a prose receipt; deletion records are no longer updated
+automatically. Treat diagnostic output as evidence and inspect actual Gate 2
+reviews before making a manual merge decision.
 
 ## Preserve the evaluator and re-enablement criteria
 
 The [adapter](../ci/codex_review.py) and its tests remain available for
-[#4013](https://github.com/google/zerocopy/issues/4013) as **research material,
-rather than a selected design for restoring enforcement**. Run the simulated
-tests locally with:
+[#4013](https://github.com/google/zerocopy/issues/4013) as **supporting
+infrastructure for automated Gate 2 verification**. Run the simulated tests
+locally with:
 
 ```sh
 python3 -B -m unittest discover -s ci -p 'test_codex_review.py' -v
@@ -205,14 +248,16 @@ python3 -B -m unittest discover -s ci -p 'test_codex_review.py' -v
 
 These tests use fake API data, make no GitHub changes, and include a deployment
 assertion requiring `.github/codex-review-ruleset.json` to remain disabled.
-Passing these tests does **not** validate the live provider's association
-between a review and its head/base comparison.
+Passing these tests does **not** by itself validate live GitHub ruleset
+enforcement or a reviewer's model-family honesty without an authenticated bot
+identity.
 
 Before re-enabling ruleset `26810364` and automated status publication:
 
-1. Address [#4013](https://github.com/google/zerocopy/issues/4013) and exercise
-   both **acceptance and refusal** against the live GitHub integration before
-   enabling enforcement.
+1. Address [#4013](https://github.com/google/zerocopy/issues/4013) (including
+   authenticating a dedicated Gate 2 bot identity via `--reviewer-login` or
+   bot-ID pinning if required) and exercise both **acceptance and refusal**
+   against the live GitHub integration before enabling enforcement.
 2. Deploy and validate the evaluator and provide a **recovery path that
    preserves review history** rather than deleting prior reviews.
 3. Reconcile the live GitHub ruleset with the checked-in ruleset template (and

@@ -228,7 +228,7 @@ it with teammates and agents working in fresh checkouts.
 See the [contributor guide][developing-anneal] to build the local toolchain
 archive and audit the trust boundary, the [scaffold guide][scaffold-guide] to
 run installed smoke cases and reproduce retained failures, and the
-[Codex review guide][codex-review] for required merge checks.
+[Gate 2 review guide][codex-review] for required merge checks.
 
 [developing-anneal]: https://github.com/google/zerocopy/blob/main/anneal/docs/README.md
 [scaffold-guide]: https://github.com/google/zerocopy/blob/main/anneal/docs/scaffolding.md
