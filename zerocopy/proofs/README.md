@@ -1,0 +1,41 @@
+<!-- Copyright 2026 The Fuchsia Authors
+
+Licensed under a BSD-style license <LICENSE-BSD>, Apache License, Version 2.0
+<LICENSE-APACHE or https://www.apache.org/licenses/LICENSE-2.0>, or the MIT
+license <LICENSE-MIT or https://opensource.org/licenses/MIT>, at your option.
+This file may not be copied, modified, or distributed except according to
+those terms. -->
+
+# Zerocopy Semi-Verification Proofs (`zerocopy/proofs`)
+
+This directory contains Anneal formal specifications and kernel-checked Lean 4
+proofs covering verbatim items in `../src/`.
+
+`../Cargo.toml` excludes `/proofs` from crates.io packages so downstream
+`zerocopy` users incur zero new dependencies, zero MSRV impact, and zero build
+overhead. CI continuously enforces every proof unit in
+`../../.github/workflows/anneal-current.yml` via
+`../../anneal/ci/verify_zerocopy.py`.
+
+## Verified Units
+
+| Unit | Verbatim `zerocopy/src/` Targets | Properties Proved | Axioms |
+| --- | --- | --- | --- |
+| `01_usize_pointer_metadata` | `<usize as PointerMetadata>::{from,to}_elem_count` | Total execution over all `2^64` `usize` inputs; two-way bijection round-trips; safe signatures (`isUnsafe = false`) | `["propext"]` |
+| `02_unit_pointer_metadata` | `<() as PointerMetadata>::{from,to}_elem_count` | Universal constant `()` and `0usize` return; round-trip invariants; safe signatures (`isUnsafe = false`) | `["propext"]` |
+| `03_macros_unsafe` | `util::macros::__unsafe` | Exact identity, `isUnsafe = true`, zero-argument signature, non-vacuous safety precondition, total `()` return | `["propext"]` |
+| `04_substantive_and_frombytes_markers` | All 5 substantive items above plus `u8` derive-only sealing markers (`Immutable`, `TryFromBytes`, `FromZeros`, `FromBytes`) | Compositional 9-body `BodiesVerified` dispatch and functional postconditions | `["propext"]` |
+
+## Reproducing Locally
+
+Run the CI driver against unmodified `zerocopy/src/` from the repository root:
+
+```sh
+python3 -I -B anneal/ci/verify_zerocopy.py
+```
+
+Or run `cargo anneal verify` on an individual unit:
+
+```sh
+cargo anneal verify --request zerocopy/proofs/01_usize_pointer_metadata/request.json
+```
