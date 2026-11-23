@@ -139,8 +139,9 @@ noncomputable def refLayoutOfTyId (types : List MirTy) (tyId : TyId) :
   | none => .error (.invalidProgram "unknown TyId in layoutOf")
 
 /-- Field-layout projection used by `ProjectionCx.field` and
-`PlaceProjectionHooks.field`: projects field `0` of a scalar-tagged fieldless
-enum (or of `core::cmp::Ordering`) to its initialized tag scalar layout
+`PlaceProjectionHooks.field`: projects field `0` of a scalar-tagged enum-like
+type (`refAsEnumTy? ty = some ety`, covering `.enum ety` and
+`core::cmp::Ordering`) to its initialized tag scalar layout
 (`refLocalLayoutForTy types (.int tagW tagS)`), and fields `0` and `1` of an
 overflow pair `.tuple [.int w s, .bool]` to the integer and `bool` layouts. -/
 noncomputable def refProjectFieldLayout (types : List MirTy)
@@ -148,14 +149,16 @@ noncomputable def refProjectFieldLayout (types : List MirTy)
     Except Miri.Interpreter.ProjectionError Miri.Interpreter.LocalLayout :=
   if Nat.beq fieldIdx 0 then
     match resolveTy types base.ty with
-    | some (.enum ety) =>
-      match ety.tagRepr with
-      | .scalar tagW tagS => .ok (refLocalLayoutForTy types (.int tagW tagS))
-      | .zeroSized => .error (.invariant "field projection on ZST enum")
-    | some .ordering => .ok (refLocalLayoutForTy types (.int .i8 true))
     | some (.tuple [.int w s, .bool]) =>
       .ok (refLocalLayoutForTy types (.int w s))
-    | _ => .error (.obligation "field projection unsupported on Day 1")
+    | some ty =>
+      match refAsEnumTy? ty with
+      | some ety =>
+        match ety.tagRepr with
+        | .scalar tagW tagS => .ok (refLocalLayoutForTy types (.int tagW tagS))
+        | .zeroSized => .error (.invariant "field projection on ZST enum")
+      | none => .error (.obligation "field projection unsupported on Day 1")
+    | none => .error (.obligation "field projection unsupported on Day 1")
   else if Nat.beq fieldIdx 1 then
     match resolveTy types base.ty with
     | some (.tuple [.int _ _, .bool]) => .ok (refLocalLayoutForTy types .bool)
@@ -164,23 +167,18 @@ noncomputable def refProjectFieldLayout (types : List MirTy)
     .error (.obligation "non-zero field projection unsupported on Day 1")
 
 /-- Variant-layout projection used by `ProjectionCx.variant` and
-`PlaceProjectionHooks.variant`: projects a fieldless enum downcast variant `v`
-to a 0-field `Variants.Single v` layout sharing `base.ty`. -/
+`PlaceProjectionHooks.variant`: projects an enum-like (`refAsEnumTy?`) downcast
+variant `v` to a 0-field `Variants.Single v` layout sharing `base.ty`. -/
 noncomputable def refProjectVariantLayout (types : List MirTy)
     (base : Miri.Interpreter.LocalLayout) (variant : Nat) :
     Except Miri.Interpreter.ProjectionError Miri.Interpreter.LocalLayout :=
-  match resolveTy types base.ty with
-  | some (.enum ety) =>
+  match (resolveTy types base.ty).bind refAsEnumTy? with
+  | some ety =>
     if Nat.blt variant ety.discriminants.length then
       .ok ⟨base.ty, { refUnitLayoutData with variants := .Single variant }⟩
     else
       .error (.invariant "enum variant index out of bounds")
-  | some .ordering =>
-    if Nat.blt variant refOrderingEnumTy.discriminants.length then
-      .ok ⟨base.ty, { refUnitLayoutData with variants := .Single variant }⟩
-    else
-      .error (.invariant "enum variant index out of bounds")
-  | _ => .error (.obligation "variant projection unsupported on Day 1")
+  | none => .error (.obligation "variant projection unsupported on Day 1")
 
 /-- Lift `ProjectionError` into `StepError` for `PlaceProjectionHooks`. -/
 noncomputable def refProjErrToStepErr :
@@ -404,19 +402,20 @@ noncomputable def refPlaceCopyHooks :
   validateSource := fun _ _ _ st => .ok () st
 }
 
-/-- `ExecutionLeaves.Discriminant` for `refExecutionConfig`. -/
+/-- `ExecutionLeaves.Discriminant` for `refExecutionConfig`, routing all
+enum-like types (`.enum ety` and `core::cmp::Ordering`) through
+`refAsEnumTy?`. -/
 noncomputable def refDiscriminantLeaves (types : List MirTy) :
     Miri.Interpreter.ExecutionLeaves.Discriminant
       (Miri.Interpreter.MachineHooks.State Unit RefUser) Choice := {
   discriminantLayout := fun _ tyId st =>
-    match resolveTy types tyId with
-    | some (.enum ety) =>
+    match (resolveTy types tyId).bind refAsEnumTy? with
+    | some ety =>
       if refEnumAdmitted ety then
         .ok (refLocalLayoutForTy types (.int ety.discrWidth ety.discrSigned)) st
       else
         .error (.unsupported "unadmitted enum in discriminantLayout") st
-    | some .ordering => .ok (refLocalLayoutForTy types (.int .i8 true)) st
-    | _ => .error (.unsupported "discriminant on non-enum type") st
+    | none => .error (.unsupported "discriminant on non-enum type") st
   tagLayout := fun _ tag st =>
     match tag.primitive with
     | .Int integer signed =>
@@ -424,31 +423,23 @@ noncomputable def refDiscriminantLeaves (types : List MirTy) :
       .ok (refLocalLayoutForTy types (.int w signed)) st
     | _ => .error (.invalidProgram "non-integer enum tag") st
   discriminantValue := fun _ tyId variant st =>
-    match resolveTy types tyId with
-    | some (.enum ety) =>
+    match (resolveTy types tyId).bind refAsEnumTy? with
+    | some ety =>
       match MirSemantics.getElem? ety.discriminants variant with
       | some disc =>
         .ok (some (tyIdFor types (.int ety.discrWidth ety.discrSigned),
           BitVec.ofNat 128 disc)) st
       | none => .error (.invalidProgram "enum variant out of bounds") st
-    | some .ordering =>
-      match MirSemantics.getElem? refOrderingEnumTy.discriminants variant with
-      | some disc =>
-        .ok (some (tyIdFor types (.int .i8 true), BitVec.ofNat 128 disc)) st
-      | none => .error (.invalidProgram "enum variant out of bounds") st
-    | _ => .error (.unsupported "discriminantValue on non-enum type") st
+    | none => .error (.unsupported "discriminantValue on non-enum type") st
   variantForDiscriminant := fun _ tyId discrBits st =>
-    match resolveTy types tyId with
-    | some (.enum ety) =>
+    match (resolveTy types tyId).bind refAsEnumTy? with
+    | some ety =>
       .ok (refFindDiscrVariant? discrBits ety.discriminants) st
-    | some .ordering =>
-      .ok (refFindDiscrVariant? discrBits refOrderingEnumTy.discriminants) st
-    | _ => .error (.unsupported "variantForDiscriminant on non-enum type") st
+    | none => .error (.unsupported "variantForDiscriminant on non-enum type") st
   adtVariantCount := fun _ tyId st =>
-    match resolveTy types tyId with
-    | some (.enum ety) => .ok ety.discriminants.length st
-    | some .ordering => .ok refOrderingEnumTy.discriminants.length st
-    | _ => .error (.unsupported "adtVariantCount on non-enum type") st
+    match (resolveTy types tyId).bind refAsEnumTy? with
+    | some ety => .ok ety.discriminants.length st
+    | none => .error (.unsupported "adtVariantCount on non-enum type") st
   scalarMayBeNull := fun _ _ st =>
     .error (.unsupported "niche scalarMayBeNull unsupported on Day 1") st
 }
@@ -584,12 +575,14 @@ noncomputable def refValidityHooks (types : List MirTy) :
       | some .bool => .ok .boolean st
       | some (.int _ _) => .ok .integer st
       | some .char => .ok .character st
-      | some .ordering => .ok (.aggregate false false true) st
       | some .unit => .ok (.aggregate false false false) st
       | some .never => .ok .never st
-      | some (.enum _) => .ok (.aggregate false false true) st
       | some (.tuple [.int _ _, .bool]) => .ok (.aggregate false false false) st
-      | _ => .error (.invalidProgram "unsupported validity type") st
+      | some ty =>
+        match refAsEnumTy? ty with
+        | some _ => .ok (.aggregate false false true) st
+        | none => .error (.invalidProgram "unsupported validity type") st
+      | none => .error (.invalidProgram "unsupported validity type") st
     unitLayout := fun _ st => .ok (refLocalLayoutForTy types .unit) st
     typeName := fun _ _ st => .ok "" st
     opsemInhabited := fun _ tyId st =>

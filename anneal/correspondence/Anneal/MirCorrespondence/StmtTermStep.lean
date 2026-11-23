@@ -130,15 +130,16 @@ private theorem discriminantTypesValid_stmt {body : Body} {bb : BasicBlock}
     (h_dv : discriminantTypesValid body = true)
     (h_bb : MirSemantics.getElem? body.basicBlocks blockIdx = some bb)
     (h_st : MirSemantics.getElem? bb.statements stmtIdx = some (.assign dst rv)) :
-    ∀ (src : Place) (ety : EnumTy) (dstTy : MirTy),
+    ∀ (src : Place) (srcTy : MirTy) (ety : EnumTy) (dstTy : MirTy),
       rv = .discriminant src →
       dst.projection.isEmpty = true →
       src.projection.isEmpty = true →
-      MirSemantics.getElem? body.locals src.localId = some (.enum ety) →
+      MirSemantics.getElem? body.locals src.localId = some srcTy →
+      refAsEnumTy? srcTy = some ety →
       MirSemantics.getElem? body.locals dst.localId = some dstTy →
       enumAdmitted ety = true →
       dstTy = .int ety.discrWidth ety.discrSigned := by
-  intro src ety dstTy h_rv h_dpe h_spe h_sty h_dty h_adm
+  intro src srcTy ety dstTy h_rv h_dpe h_spe h_sty h_as h_dty h_adm
   subst h_rv
   have h_bb_ok := list_all_mirGetElem? h_dv h_bb
   have h_st_ok := list_all_mirGetElem? h_bb_ok h_st
@@ -161,68 +162,24 @@ private theorem discriminantTypesValid_stmt {body : Body} {bb : BasicBlock}
         | _ => true
       | none => true
     else true) = true at h_st_ok
-  rw [h_dpe, h_spe, Bool.and_self, ite_true_eq] at h_st_ok
-  rw [h_sty] at h_st_ok
-  change
-    (match MirSemantics.getElem? body.locals dst.localId with
-     | some dstTy =>
-       if enumAdmitted ety then
-         MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
-       else true
-     | none => true) = true at h_st_ok
-  rw [h_dty] at h_st_ok
-  change
-    (if enumAdmitted ety = true then
-      MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
-    else true) = true at h_st_ok
-  rw [h_adm, ite_true_eq] at h_st_ok
-  exact MirTy.eq_of_beq h_st_ok
-
-private theorem discriminantTypesValid_stmt_ordering {body : Body}
-    {bb : BasicBlock} {blockIdx : BasicBlockId} {stmtIdx : Nat} {dst : Place}
-    {rv : Rvalue}
-    (h_dv : discriminantTypesValid body = true)
-    (h_bb : MirSemantics.getElem? body.basicBlocks blockIdx = some bb)
-    (h_st :
-      MirSemantics.getElem? bb.statements stmtIdx = some (.assign dst rv)) :
-    ∀ (src : Place) (dstTy : MirTy),
-      rv = .discriminant src →
-      dst.projection.isEmpty = true →
-      src.projection.isEmpty = true →
-      MirSemantics.getElem? body.locals src.localId = some .ordering →
-      MirSemantics.getElem? body.locals dst.localId = some dstTy →
-      dstTy = .int .i8 true := by
-  intro src dstTy h_rv h_dpe h_spe h_sty h_dty
-  subst h_rv
-  have h_bb_ok := list_all_mirGetElem? h_dv h_bb
-  have h_st_ok := list_all_mirGetElem? h_bb_ok h_st
-  change
-    (if (dst.projection.isEmpty && src.projection.isEmpty) = true then
-      match MirSemantics.getElem? body.locals src.localId with
-      | some srcTy =>
-        match srcTy with
-        | .enum ety =>
-          match MirSemantics.getElem? body.locals dst.localId with
-          | some dstTy =>
-            if enumAdmitted ety then
-              MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
-            else true
-          | none => true
-        | .ordering =>
-          match MirSemantics.getElem? body.locals dst.localId with
-          | some dstTy => MirTy.beq dstTy (.int .i8 true)
-          | none => true
-        | _ => true
-      | none => true
-    else true) = true at h_st_ok
-  rw [h_dpe, h_spe, Bool.and_self, ite_true_eq] at h_st_ok
-  rw [h_sty] at h_st_ok
-  change
-    (match MirSemantics.getElem? body.locals dst.localId with
-     | some dstTy => MirTy.beq dstTy (.int .i8 true)
-     | none => true) = true at h_st_ok
-  rw [h_dty] at h_st_ok
-  exact MirTy.eq_of_beq h_st_ok
+  rw [h_dpe, h_spe, Bool.and_self, ite_true_eq, h_sty] at h_st_ok
+  cases srcTy with
+  | enum _ =>
+    cases h_as
+    dsimp only at h_st_ok
+    rw [h_dty] at h_st_ok
+    change
+      (if enumAdmitted ety = true then
+        MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
+      else true) = true at h_st_ok
+    rw [h_adm, ite_true_eq] at h_st_ok
+    exact MirTy.eq_of_beq h_st_ok
+  | ordering =>
+    cases h_as
+    dsimp only at h_st_ok
+    rw [h_dty] at h_st_ok
+    exact MirTy.eq_of_beq h_st_ok
+  | _ => cases h_as
 
 private theorem castTypesValid_stmt {body : Body} {bb : BasicBlock}
     {blockIdx : BasicBlockId} {stmtIdx : Nat} {dst : Place} {rv : Rvalue}
@@ -705,22 +662,15 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
     (h_inv : SlotsMatchTys body.locals f.locals)
     (h_st_dec : decodeStmt rp.types rstmt = some stmt)
     (h_discr_ty :
-      ∀ (dst src : Place) (ety : EnumTy) (dstTy : MirTy),
+      ∀ (dst src : Place) (srcTy : MirTy) (ety : EnumTy) (dstTy : MirTy),
         stmt = .assign dst (.discriminant src) →
         dst.projection.isEmpty = true →
         src.projection.isEmpty = true →
-        MirSemantics.getElem? body.locals src.localId = some (.enum ety) →
+        MirSemantics.getElem? body.locals src.localId = some srcTy →
+        refAsEnumTy? srcTy = some ety →
         MirSemantics.getElem? body.locals dst.localId = some dstTy →
         enumAdmitted ety = true →
         dstTy = .int ety.discrWidth ety.discrSigned)
-    (h_ord_discr_ty :
-      ∀ (dst src : Place) (dstTy : MirTy),
-        stmt = .assign dst (.discriminant src) →
-        dst.projection.isEmpty = true →
-        src.projection.isEmpty = true →
-        MirSemantics.getElem? body.locals src.localId = some .ordering →
-        MirSemantics.getElem? body.locals dst.localId = some dstTy →
-        dstTy = .int .i8 true)
     (h_cast_ty :
       ∀ (dst : Place) (opnd : Operand) (castTy dstTy : MirTy),
         stmt = .assign dst (.cast .intToInt opnd castTy) →
@@ -843,10 +793,8 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
         injection h_st_dec with h_eq; subst h_eq
         have h_ev := evalRvalueIntoPlace_ref_eq rp c defId rbody body f.blockIdx
           f.stmtIdx f.locals amem retPlace mem ctrl cm rdst dst rrv rv h_bdec h_supp
-          h_inv h_pl h_rv (fun src ety dstTy h_eq_rv =>
-            h_discr_ty dst src ety dstTy (by rw [h_eq_rv]))
-          (fun src dstTy h_eq_rv =>
-            h_ord_discr_ty dst src dstTy (by rw [h_eq_rv]))
+          h_inv h_pl h_rv (fun src srcTy ety dstTy h_eq_rv =>
+            h_discr_ty dst src srcTy ety dstTy (by rw [h_eq_rv]))
           (fun opnd castTy dstTy h_eq_rv =>
             h_cast_ty dst opnd castTy dstTy (by rw [h_eq_rv]))
         have h_res :
@@ -912,8 +860,8 @@ private theorem step_evalStatement_ref_eq (rp : RefProg) (c : Choice)
     injection h_st_dec with h_eq; subst h_eq
     have h_ev := evalRvalueIntoPlace_ref_eq rp c defId rbody body f.blockIdx
       f.stmtIdx f.locals amem retPlace mem ctrl cm ⟨0, []⟩ ⟨0, []⟩ .unsupported
-      .unsupported h_bdec h_supp h_inv rfl rfl (fun _ _ _ h => by cases h)
-      (fun _ _ h => by cases h) (fun _ _ _ h => by cases h)
+      .unsupported h_bdec h_supp h_inv rfl rfl (fun _ _ _ _ h => by cases h)
+      (fun _ _ _ h => by cases h)
     have h_res :
         res = Miri.Interpreter.MachineHooks.run
           (Miri.Interpreter.evalRvalueIntoPlace
@@ -2898,12 +2846,9 @@ theorem evalRefStep_eq_base : EvalRefStepEqClaim := by
         (mapOption_getElem? h_stmts_dec f.stmtIdx).2 stmt h_st
       have h_evS := step_evalStatement_ref_eq rp c f.defId rbody body f
         rs.retPlace mem ctrl s.callerMem s.mem rstmt stmt h_bdec h_arg h_supp h_inv
-        h_rstmt_dec (fun dst src ety dstTy h_st_eq =>
+        h_rstmt_dec (fun dst src srcTy ety dstTy h_st_eq =>
           discriminantTypesValid_stmt h_dv h_bb (by rw [← h_st_eq]; exact h_st)
-            src ety dstTy rfl)
-        (fun dst src dstTy h_st_eq =>
-          discriminantTypesValid_stmt_ordering h_dv h_bb
-            (by rw [← h_st_eq]; exact h_st) src dstTy rfl)
+            src srcTy ety dstTy rfl)
         (fun dst opnd castTy dstTy h_st_eq =>
           castTypesValid_stmt h_cv h_bb (by rw [← h_st_eq]; exact h_st)
             opnd castTy dstTy rfl)

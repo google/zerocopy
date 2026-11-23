@@ -377,7 +377,7 @@ private theorem refLayoutDataForTy_align (ty : MirTy) :
       let ⟨_, _, _, h_eq⟩ := h
       rw [h_eq]; rfl
   | enum ety =>
-    dsimp only [refLayoutDataForTy, refEnumLayoutData]
+    dsimp only [refLayoutDataForTy, refAsEnumTy?, refEnumLayoutData]
     cases ety.tagRepr <;> rfl
 
 theorem refInitMemoryAndRetPlace_ok (types : List MirTy) (retTy : MirTy) :

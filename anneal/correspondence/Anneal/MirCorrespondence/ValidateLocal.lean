@@ -40,7 +40,7 @@ theorem refLayoutDataForTy_isSized (ty : MirTy) :
       let ⟨_, _, _, h_eq⟩ := h
       rw [h_eq]; rfl
   | enum ety =>
-    dsimp only [refLayoutDataForTy, refEnumLayoutData]
+    dsimp only [refLayoutDataForTy, refAsEnumTy?, refEnumLayoutData]
     cases ety.tagRepr <;> rfl
 
 theorem wrappingRange_full_contains_truncateBits (w : IntWidth)
@@ -262,12 +262,14 @@ theorem refValHooks_classify (types : List MirTy) (c : Choice)
       | some .bool => .ok .boolean st
       | some (.int _ _) => .ok .integer st
       | some .char => .ok .character st
-      | some .ordering => .ok (.aggregate false false true) st
       | some .unit => .ok (.aggregate false false false) st
       | some .never => .ok .never st
-      | some (.enum _) => .ok (.aggregate false false true) st
       | some (.tuple [.int _ _, .bool]) => .ok (.aggregate false false false) st
-      | _ => .error (.invalidProgram "unsupported validity type") st := rfl
+      | some ty =>
+        match refAsEnumTy? ty with
+        | some _ => .ok (.aggregate false false true) st
+        | none => .error (.invalidProgram "unsupported validity type") st
+      | none => .error (.invalidProgram "unsupported validity type") st := rfl
 
 theorem refValHooks_opsemInhabited (types : List MirTy) (c : Choice)
     (tyId : TyId) (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
@@ -324,25 +326,25 @@ theorem mem_refLocalLayoutForTy_ty (types : List MirTy) (ty : MirTy) :
     (refLocalLayoutForTy types ty).ty = tyIdFor types ty := rfl
 
 /-- A local type that $M_{\text{ref}}$ lays out, validates, and reads the
-discriminant of through the fieldless enum descriptor `ety`: an admitted
-`.enum ety` itself, or `.ordering` with `ety = refOrderingEnumTy`. -/
+discriminant of through the fieldless enum descriptor `ety` via `refAsEnumTy?`
+(`.enum ety` or `core::cmp::Ordering` with `ety = refOrderingEnumTy`). -/
 def EnumLike (types : List MirTy) (ty : MirTy) (ety : EnumTy) : Prop :=
-  (ty = .enum ety ∧
-    resolveTy types (tyIdFor types (.enum ety)) = some (.enum ety)) ∨
-  (ty = .ordering ∧ ety = refOrderingEnumTy ∧
-    resolveTy types (tyIdFor types .ordering) = some .ordering)
+  refAsEnumTy? ty = some ety ∧ resolveTy types (tyIdFor types ty) = some ty
 
 theorem mem_refOrderingEnumTy_admitted :
-    enumAdmitted refOrderingEnumTy = true := by
-  decide
+    enumAdmitted refOrderingEnumTy = true := rfl
+
+theorem enumLike_layoutData {ty : MirTy} {ety : EnumTy}
+    (h_as : refAsEnumTy? ty = some ety) :
+    refLayoutDataForTy ty = refEnumLayoutData ety := by
+  cases ty <;> cases h_as <;> rfl
 
 theorem enumLike_layout {types : List MirTy} {ty : MirTy} {ety : EnumTy}
     (h_el : EnumLike types ty ety) :
     refLocalLayoutForTy types ty =
       ⟨tyIdFor types ty, refEnumLayoutData ety⟩ := by
-  cases h_el with
-  | inl h => let ⟨h1, _⟩ := h; subst h1; rfl
-  | inr h => let ⟨h1, h2, _⟩ := h; subst h1 h2; rfl
+  dsimp only [refLocalLayoutForTy]
+  rw [enumLike_layoutData h_el.1]
 
 theorem enumLike_classify {types : List MirTy} {ty : MirTy}
     {ety : EnumTy}
@@ -350,36 +352,28 @@ theorem enumLike_classify {types : List MirTy} {ty : MirTy}
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     (refValHooks types).classify c (tyIdFor types ty) st =
       .ok (.aggregate false false true) st := by
-  rw [refValHooks_classify]
-  cases h_el with
-  | inl h => let ⟨h1, h2⟩ := h; subst h1; rw [h2]
-  | inr h => let ⟨h1, _, h3⟩ := h; subst h1; rw [h3]
+  rw [refValHooks_classify, h_el.2]
+  have h_as := h_el.1
+  cases ty <;> cases h_as <;> rfl
 
 theorem enumLike_opsemInhabited {types : List MirTy} {ty : MirTy}
     {ety : EnumTy} (h_el : EnumLike types ty ety) (c : Choice)
     (st : Miri.Interpreter.MachineHooks.State Unit RefUser) :
     (refValHooks types).opsemInhabited c (tyIdFor types ty) st =
       .ok true st := by
-  rw [refValHooks_opsemInhabited]
-  cases h_el with
-  | inl h => let ⟨h1, h2⟩ := h; subst h1; rw [h2]
-  | inr h => let ⟨h1, _, h3⟩ := h; subst h1; rw [h3]
+  rw [refValHooks_opsemInhabited, h_el.2]
+  have h_as := h_el.1
+  cases ty <;> cases h_as <;> rfl
 
 theorem enumLike_projectField0 {types : List MirTy} {ty : MirTy}
     {ety : EnumTy} {tagW : IntWidth} {tagS : Bool}
     (h_el : EnumLike types ty ety) (h_tr : ety.tagRepr = .scalar tagW tagS) :
     refProjectFieldLayout types (refLocalLayoutForTy types ty) 0 =
       .ok (refLocalLayoutForTy types (.int tagW tagS)) := by
-  cases h_el with
-  | inl h =>
-    let ⟨h1, h2⟩ := h; subst h1
-    dsimp only [refProjectFieldLayout, refLocalLayoutForTy]
-    rw [h2]; dsimp only; rw [h_tr]; rfl
-  | inr h =>
-    let ⟨h1, h2, h3⟩ := h; subst h1 h2
-    injection h_tr with hw hs; subst hw hs
-    dsimp only [refProjectFieldLayout, refLocalLayoutForTy]
-    rw [h3]; rfl
+  dsimp only [refProjectFieldLayout, refLocalLayoutForTy]
+  rw [h_el.2]
+  have h_as := h_el.1
+  cases ty <;> cases h_as <;> dsimp only [refAsEnumTy?] <;> rw [h_tr] <;> rfl
 
 theorem enumLike_projectVariant {types : List MirTy} {ty : MirTy}
     {ety : EnumTy} {variant : Nat}
@@ -389,15 +383,13 @@ theorem enumLike_projectVariant {types : List MirTy} {ty : MirTy}
         { refUnitLayoutData with variants := .Single variant }⟩ := by
   have h_blt : Nat.blt variant ety.discriminants.length = true :=
     Nat.ble_eq_true_of_le h_lt
-  cases h_el with
-  | inl h =>
-    let ⟨h1, h2⟩ := h; subst h1
-    dsimp only [refProjectVariantLayout, refLocalLayoutForTy]
-    rw [h2]; dsimp only; rw [h_blt]; rfl
-  | inr h =>
-    let ⟨h1, h2, h3⟩ := h; subst h1 h2
-    dsimp only [refProjectVariantLayout, refLocalLayoutForTy]
-    rw [h3]; dsimp only; rw [h_blt]; rfl
+  dsimp only [refProjectVariantLayout, refLocalLayoutForTy]
+  rw [h_el.2]
+  dsimp only [Option.bind]
+  rw [h_el.1]
+  dsimp only
+  rw [h_blt]
+  rfl
 
 private theorem enumLike_discriminantLayout {types : List MirTy} {ty : MirTy}
     {ety : EnumTy} (h_el : EnumLike types ty ety)
@@ -406,21 +398,15 @@ private theorem enumLike_discriminantLayout {types : List MirTy} {ty : MirTy}
     (refDiscriminantLeaves types).discriminantLayout c (tyIdFor types ty) st =
       .ok ⟨tyIdFor types (.int ety.discrWidth ety.discrSigned),
         refScalarLayoutData ety.discrWidth ety.discrSigned⟩ st := by
-  cases h_el with
-  | inl h =>
-    let ⟨h1, h2⟩ := h; subst h1
-    have h_ref_adm : refEnumAdmitted ety = true := by
-      rw [refEnumAdmitted_eq]; exact h_adm
-    dsimp only [refDiscriminantLeaves]
-    rw [h2]
-    dsimp only
-    rw [h_ref_adm]
-    rfl
-  | inr h =>
-    let ⟨h1, h2, h3⟩ := h; subst h1 h2
-    dsimp only [refDiscriminantLeaves]
-    rw [h3]
-    rfl
+  have h_ref_adm : refEnumAdmitted ety = true := by
+    rw [refEnumAdmitted_eq]; exact h_adm
+  dsimp only [refDiscriminantLeaves]
+  rw [h_el.2]
+  dsimp only [Option.bind]
+  rw [h_el.1]
+  dsimp only
+  rw [h_ref_adm]
+  rfl
 
 private theorem enumLike_variantForDiscriminant {types : List MirTy}
     {ty : MirTy}
@@ -430,15 +416,11 @@ private theorem enumLike_variantForDiscriminant {types : List MirTy}
     (refDiscriminantLeaves types).variantForDiscriminant c (tyIdFor types ty)
         bits st =
       .ok (refFindDiscrVariant? bits ety.discriminants) st := by
-  cases h_el with
-  | inl h =>
-    let ⟨h1, h2⟩ := h; subst h1
-    dsimp only [refDiscriminantLeaves]
-    rw [h2]
-  | inr h =>
-    let ⟨h1, h2, h3⟩ := h; subst h1 h2
-    dsimp only [refDiscriminantLeaves]
-    rw [h3]
+  dsimp only [refDiscriminantLeaves]
+  rw [h_el.2]
+  dsimp only [Option.bind]
+  rw [h_el.1]
+
 theorem readDiscriminant_validity_scalar_enum
     (types : List MirTy) (c : Choice) (ty : MirTy) (ety : EnumTy)
     (tagW : IntWidth)
@@ -1731,20 +1713,87 @@ theorem isOverflowPairTy_inv {fs : List MirTy}
         | _ => cases h
     | _ => cases h
 
-theorem ordering_variant (o : OrderingVal) :
-    ∃ variant, MirSemantics.getElem? refOrderingEnumTy.discriminants variant =
-      some (orderingTagBits o) := by
-  cases o with
-  | less => exact ⟨0, rfl⟩
-  | equal => exact ⟨1, rfl⟩
-  | greater => exact ⟨2, rfl⟩
+/-- Variant index of a `core::cmp::Ordering` value in `refOrderingEnumTy`. -/
+noncomputable def orderingVariantIdx : OrderingVal → Nat
+  | .less => 0
+  | .equal => 1
+  | .greater => 2
 
-theorem mem_valToMiriImmediate_ordering (o : OrderingVal) :
-    valToMiriImmediate .ordering (.ordering o) =
-      .scalar (.fromScalarInt (miriScalar .i8
-        (BitVec.ofNat 128 (orderingTagBits o)))) := by
-  dsimp only [valToMiriImmediate]
-  rw [scalar_fromInt_refOrderingToInt]
+theorem orderingVariant_getElem? (o : OrderingVal) :
+    MirSemantics.getElem? refOrderingEnumTy.discriminants
+      (orderingVariantIdx o) = some (orderingTagBits o) := by
+  cases o <;> rfl
+
+theorem orderingVariant_enumVariantOfVal (o : OrderingVal) :
+    refEnumVariantOfVal? .ordering (.ordering o) =
+      some (orderingVariantIdx o) := by
+  cases o <;> rfl
+
+theorem orderingVariant_valOfEnumVariant (o : OrderingVal) :
+    refValOfEnumVariant? .ordering (orderingVariantIdx o) =
+      some (.ordering o) := by
+  cases o <;> rfl
+
+theorem valToMiriImmediate_scalar_enumLike {ty : MirTy} {ety : EnumTy}
+    {v : Val} {variant disc : Nat} {tagW : IntWidth} {tagS : Bool}
+    (h_as : refAsEnumTy? ty = some ety)
+    (h_ev : refEnumVariantOfVal? ty v = some variant)
+    (h_tr : ety.tagRepr = .scalar tagW tagS)
+    (h_get_d : MirSemantics.getElem? ety.discriminants variant = some disc) :
+    valToMiriImmediate ty v =
+      .scalar (.fromScalarInt (miriScalar tagW (BitVec.ofNat 128 disc))) := by
+  cases ty with
+  | enum _ =>
+    cases h_as
+    cases v <;> cases h_ev
+    dsimp only [valToMiriImmediate, refAsEnumTy?, refEnumVariantOfVal?]
+    rw [h_tr, h_get_d]
+  | ordering =>
+    cases h_as
+    cases v with
+    | ordering o =>
+      cases o <;> cases h_ev <;> (
+        dsimp only [valToMiriImmediate, refAsEnumTy?, refEnumVariantOfVal?]
+        rw [h_tr, h_get_d])
+    | _ => cases h_ev
+  | _ => cases h_as
+
+private theorem visit_local_enumLike_ok (types : List MirTy) (c : Choice)
+    (localId : LocalId) (ty : MirTy) (ety : EnumTy) (v : Val) (variant : Nat)
+    (frame : Miri.Interpreter.Frame Miri.Memory.Provenance LocalLayout
+      Miri.Interpreter.MachineHooks.FrameExtra)
+    (st : Miri.Interpreter.MachineHooks.State Unit RefUser)
+    (h_el : EnumLike types ty ety)
+    (h_adm : enumAdmitted ety = true)
+    (h_ev : refEnumVariantOfVal? ty v = some variant)
+    (h_v_lt : variant < ety.discriminants.length)
+    (h_frames : st.stack.frames = (Array.mk [frame]))
+    (h_dr : frame.extra.dataRace = none)
+    (h_pmd : st.machine.pendingMoveDeinit = false)
+    (h_get : frame.getLocal localId =
+      .ok ⟨.live (.immediate (valToMiriImmediate ty v)),
+        some (refLocalLayoutForTy types ty)⟩) :
+    let initSess :
+        Miri.Interpreter.ValidityVisitor.Session Miri.Memory.Provenance := {
+      path := ⟨"", (Array.mk [])⟩, flags := ⟨true, false⟩, ctfeMode := none,
+      refTracking := none, dataBytes := none
+    }
+    Miri.Interpreter.ValidityVisitor.visit (refValHooks types) c 8 initSess
+        ⟨.local 0 localId none (LocalsIdentity.ofAllocationToken 0),
+          refLocalLayoutForTy types ty⟩ st = .ok initSess st := by
+  cases h_tr : ety.tagRepr with
+  | zeroSized =>
+    exact visit_local_fieldless_enum types c 7 _ _ ty ety 0 st rfl h_el
+      (by rw [enumLike_layout h_el]; dsimp only [refEnumLayoutData]
+          rw [h_tr]; rfl)
+      (by rw [enumLike_layout h_el]; dsimp only [refEnumLayoutData]
+          rw [h_tr]; rfl)
+      rfl
+  | scalar tagW tagS =>
+    let ⟨disc, h_get_d⟩ := mirGetElem?_some_of_lt h_v_lt
+    rw [valToMiriImmediate_scalar_enumLike h_el.1 h_ev h_tr h_get_d] at h_get
+    exact visit_local_scalar_enum_ok types c 7 6 rfl localId ty ety tagW tagS
+      variant disc frame st h_tr h_adm h_el h_get_d h_frames h_dr h_pmd h_get
 
 /-- `ValidityVisitor.validatePlace` on an initialized Day-1 `.local` holding
 `valToMiriImmediate ty v` with `checkVal v ty = true` succeeds without
@@ -1800,28 +1849,9 @@ theorem validatePlace_local_ok (types : List MirTy) (c : Choice)
   | inl h_e =>
     let ⟨ety, variant, hty, hv, h_adm, h_v_lt⟩ := h_e
     subst hty hv
-    have h_el : EnumLike types (.enum ety) ety := Or.inl ⟨rfl, h_res⟩
-    cases h_tr : ety.tagRepr with
-    | zeroSized =>
-      exact visit_local_fieldless_enum types c 7 _ _ (.enum ety) ety 0 st rfl
-        h_el
-        (by dsimp only [refLocalLayoutForTy, refLayoutDataForTy,
-              refEnumLayoutData]; rw [h_tr]; rfl)
-        (by dsimp only [refLocalLayoutForTy, refLayoutDataForTy,
-              refEnumLayoutData]; rw [h_tr]; rfl)
-        rfl
-    | scalar tagW tagS =>
-      let ⟨disc, h_get_d⟩ := mirGetElem?_some_of_lt h_v_lt
-      have h_val_eq :
-          valToMiriImmediate (.enum ety) (.enumVal ety variant) =
-            .scalar (.fromScalarInt
-              (miriScalar tagW (BitVec.ofNat 128 disc))) := by
-        dsimp only [valToMiriImmediate]
-        rw [h_tr, h_get_d]
-      rw [h_val_eq] at h_get
-      exact visit_local_scalar_enum_ok types c 7 6 rfl localId (.enum ety) ety
-        tagW tagS variant disc frame st h_tr h_adm h_el h_get_d h_frames h_dr
-        h_pmd h_get
+    exact visit_local_enumLike_ok types c localId (.enum ety) ety
+      (.enumVal ety variant) variant frame st ⟨rfl, h_res⟩ h_adm rfl h_v_lt
+      h_frames h_dr h_pmd h_get
   | inr h_rest =>
   cases h_rest with
   | inl h_c =>
@@ -1833,12 +1863,11 @@ theorem validatePlace_local_ok (types : List MirTy) (c : Choice)
   | inl h_o =>
     let ⟨o, hty, hv⟩ := h_o
     subst hty hv
-    let ⟨variant, h_get_d⟩ := ordering_variant o
-    rw [mem_valToMiriImmediate_ordering] at h_get
-    exact visit_local_scalar_enum_ok types c 7 6 rfl localId .ordering
-      refOrderingEnumTy .i8 true variant (orderingTagBits o) frame st rfl
-      mem_refOrderingEnumTy_admitted (Or.inr ⟨rfl, rfl, h_res⟩) h_get_d h_frames
-      h_dr h_pmd h_get
+    exact visit_local_enumLike_ok types c localId .ordering refOrderingEnumTy
+      (.ordering o) (orderingVariantIdx o) frame st ⟨rfl, h_res⟩
+      mem_refOrderingEnumTy_admitted (orderingVariant_enumVariantOfVal o)
+      (mirGetElem?_lt_of_some (orderingVariant_getElem? o))
+      h_frames h_dr h_pmd h_get
   | inr h_p =>
     let ⟨w, s, bits, b, hty, hv, _⟩ := h_p
     subst hty hv
@@ -1901,8 +1930,7 @@ theorem validatePlace_local_uninit_ub (types : List MirTy) (c : Choice)
       validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
   | ordering =>
     let ⟨msg, h_vis⟩ := visit_local_scalar_enum_uninit_ub types c 7 6 rfl
-      localId .ordering refOrderingEnumTy .i8 true frame st rfl
-      (Or.inr ⟨rfl, rfl, h_res⟩)
+      localId .ordering refOrderingEnumTy .i8 true frame st rfl ⟨rfl, h_res⟩
       h_frames h_dr h_get
     exact ⟨msg, st,
       validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
@@ -1917,10 +1945,10 @@ theorem validatePlace_local_uninit_ub (types : List MirTy) (c : Choice)
       cases h_zst
     | scalar tagW tagS =>
       let ⟨msg, h_vis⟩ := visit_local_scalar_enum_uninit_ub types c 7 6 rfl localId
-        (.enum ety) ety tagW tagS frame st h_tr (Or.inl ⟨rfl, h_res⟩)
+        (.enum ety) ety tagW tagS frame st h_tr ⟨rfl, h_res⟩
         h_frames h_dr h_get
       exact ⟨msg, st,
-      validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
+        validatePlace_shallow_local_ub_step types c _ _ st st msg h_toOp h_vis⟩
   | tuple fs =>
     let ⟨w, s, h_fs⟩ := isOverflowPairTy_inv h_supp
     subst h_fs

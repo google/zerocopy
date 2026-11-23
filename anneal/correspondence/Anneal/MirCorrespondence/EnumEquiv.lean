@@ -508,30 +508,70 @@ theorem bitVec128_ofNat_beq (n : Nat) (hn : n < Nat.pow 2 128)
         exact Nat.mod_eq_of_lt hn
       exact absurd h_n (Nat.ne_of_beq_eq_false h)
 
-theorem refOrderingOfTag_eq (tag : BitVec 128) :
-    refOrderingOfTag tag = orderingOfTagBits tag.toNat := by
-  dsimp only [refOrderingOfTag, refFindDiscrVariant?, refFindDiscrVariantAux,
+private theorem signExtend_mod_eight {m : Nat} (hm : 8 ≤ m) (u : BitVec 8) :
+    Nat.mod (BitVec.signExtend m u).toNat 256 = u.toNat := by
+  have h_pow : HPow.hPow 2 m - HPow.hPow 2 8 =
+      256 * (HPow.hPow 2 (m - 8) - 1) := by
+    have h_mul : HPow.hPow 2 m = 256 * HPow.hPow 2 (m - 8) :=
+      (congrArg (HPow.hPow 2) (Nat.add_sub_of_le hm).symm).trans
+        (Nat.pow_add 2 8 (m - 8))
+    have h_pos : 1 ≤ HPow.hPow 2 (m - 8) :=
+      Nat.one_le_pow (m - 8) 2 (by decide)
+    have h_m : HPow.hPow 2 m = 256 * (HPow.hPow 2 (m - 8) - 1) + 256 := by
+      have h_step : 256 * (HPow.hPow 2 (m - 8) - 1) + 256 =
+          256 * ((HPow.hPow 2 (m - 8) - 1) + 1) := by
+        rw [Nat.mul_add, Nat.mul_one]
+      rw [h_step, Nat.sub_add_cancel h_pos]
+      exact h_mul
+    change HPow.hPow 2 m - 256 = _
+    rw [h_m, Nat.add_sub_cancel]
+  rw [BitVec.toNat_signExtend, BitVec.toNat_setWidth_of_le hm]
+  cases u.msb with
+  | false =>
+    rw [ite_false_eq_true, Nat.add_zero]
+    exact Nat.mod_eq_of_lt u.isLt
+  | true =>
+    rw [ite_true_eq, h_pow]
+    change HMod.hMod (u.toNat + 256 * (HPow.hPow 2 (m - 8) - 1)) 256 = u.toNat
+    exact (Nat.add_mul_mod_self_left _ _ _).trans (Nat.mod_eq_of_lt u.isLt)
+
+private theorem tagBitsToDiscrBits_i8_self (bits : BitVec 128) :
+    tagBitsToDiscrBits .i8 true .i8 bits = truncateBits .i8 bits := by
+  have h_toInt : ∀ {n : Nat} (x : BitVec n), bvToInt x = x.toInt :=
+    fun _ => rfl
+  dsimp only [tagBitsToDiscrBits, signExtendBits]
+  rw [ite_true_eq, ← bitVec_ofInt_eq, h_toInt, BitVec.ofInt_toInt,
+    ← bitVec_signExtend_eq]
+  apply BitVec.eq_of_toNat_eq
+  rw [toNat_truncateBits, toNat_truncateBits]
+  have h_se := signExtend_mod_eight (by decide : 8 ≤ 128)
+    (bvExtractLsb (IntWidth.i8.bitWidth - 1) 0 bits)
+  have h_low : (bvExtractLsb (IntWidth.i8.bitWidth - 1) 0 bits).toNat =
+      Nat.mod bits.toNat 256 := by
+    dsimp only [bvExtractLsb, bvExtractLsb']
+    rw [nat_shiftRight_zero, BitVec.toNat_ofNat]
+    rfl
+  exact h_se.trans h_low
+
+private theorem refOrderingVariantLookup_eq (tag : BitVec 128) :
+    (match refFindDiscrVariant? tag refOrderingEnumTy.discriminants with
+    | some v =>
+      match refValOfEnumVariant? .ordering v with
+      | some val => (Except.ok val : Except FaultKind Val)
+      | none => .error .unsupported
+    | none => .error .undefined) =
+    (match orderingOfTagBits tag.toNat with
+    | some ord => .ok (.ordering ord)
+    | none => .error .undefined) := by
+  dsimp only [refFindDiscrVariant?, refFindDiscrVariantAux,
     refOrderingEnumTy, orderingOfTagBits]
   rw [bitVec128_ofNat_beq 255 (by decide), bitVec128_ofNat_beq 0 (by decide),
     bitVec128_ofNat_beq 1 (by decide)]
   cases Nat.beq tag.toNat 255 <;> cases Nat.beq tag.toNat 0 <;>
     cases Nat.beq tag.toNat 1 <;> rfl
 
-theorem refOrderingOfTag_orderingTagBits (o : OrderingVal) :
-    refOrderingOfTag (BitVec.ofNat 128 (orderingTagBits o)) = some o := by
-  rw [refOrderingOfTag_eq]
-  cases o <;> rfl
-
 theorem orderingOfTagBits_orderingTagBits (o : OrderingVal) :
     orderingOfTagBits (orderingTagBits o) = some o := by
-  cases o <;> rfl
-
-theorem scalar_fromInt_refOrderingToInt (o : OrderingVal) :
-    (Miri.Memory.Scalar.fromInt (refOrderingToInt o) (Size.ofBytes 1) :
-      Except Miri.Memory.ScalarError
-        (Miri.Memory.Scalar Miri.Memory.Provenance)) =
-      .ok (.fromScalarInt
-        (miriScalar .i8 (BitVec.ofNat 128 (orderingTagBits o)))) := by
   cases o <;> rfl
 
 theorem uint32_ofNat_char_toNat (c : Char) :
@@ -651,19 +691,25 @@ theorem evalRefConstLit_eq (ty : MirTy) (lit : ConstLit) :
     cases lit with
     | zeroSized => rfl
     | scalar bits =>
-      dsimp only [evalRefConstLit, evalConstLit]
-      rw [tryFromUInt_i8_eq]
+      have h_adm : (!refEnumAdmitted refOrderingEnumTy) = false := by
+        rw [refEnumAdmitted_eq]
+        rfl
+      have h_tr : refOrderingEnumTy.tagRepr = .scalar .i8 true := rfl
+      have h_dw : refOrderingEnumTy.discrWidth = .i8 := rfl
+      dsimp only [evalRefConstLit, evalConstLit, refAsEnumTy?]
+      rw [h_tr]
+      dsimp only
+      rw [h_adm, ite_false_eq_true, h_dw, tryFromUInt_eq_miriScalar]
       cases h_ov : (truncateBits .i8 bits != bits) with
       | true => rfl
       | false =>
-        change (match refOrderingOfTag (miriScalar .i8 bits).data with
-          | some ord => Except.ok (Val.ordering ord)
-          | none => Except.error FaultKind.undefined) =
-          (match orderingOfTagBits bits.toNat with
-          | some ord => Except.ok (Val.ordering ord)
-          | none => Except.error FaultKind.undefined)
-        rw [miriScalar_data, truncateBits_eq_of_beq_false h_ov,
-          refOrderingOfTag_eq]
+        rw [ite_false_eq_true]
+        dsimp only
+        rw [miriScalar_data, refMiriTagToDiscrBits_eq]
+        dsimp only
+        rw [tagBitsToDiscrBits_i8_self, truncateBits_idem,
+          truncateBits_eq_of_beq_false h_ov]
+        exact refOrderingVariantLookup_eq bits
   | int w s =>
     cases lit with
     | zeroSized => rfl
@@ -681,10 +727,12 @@ theorem evalRefConstLit_eq (ty : MirTy) (lit : ConstLit) :
   | enum ety =>
     cases lit with
     | zeroSized =>
-      dsimp only [evalRefConstLit, evalConstLit]
+      dsimp only [evalRefConstLit, evalConstLit, refAsEnumTy?,
+        refValOfEnumVariant?]
       rw [refIsZstEnumTy_eq]
     | scalar bits =>
-      dsimp only [evalRefConstLit, evalConstLit]
+      dsimp only [evalRefConstLit, evalConstLit, refAsEnumTy?,
+        refValOfEnumVariant?]
       cases ety.tagRepr with
       | zeroSized => rfl
       | scalar tagW tagS =>
@@ -1452,7 +1500,8 @@ theorem valToMiriImmediate_inj {ty : MirTy} {v₁ v₂ : Val}
             rw [h_tr] at h_tag
             let ⟨d₁, hd₁⟩ := mirGetElem?_some_of_lt hk₁
             let ⟨d₂, hd₂⟩ := mirGetElem?_some_of_lt hk₂
-            dsimp only [valToMiriImmediate] at h_eq
+            dsimp only [valToMiriImmediate, refAsEnumTy?,
+              refEnumVariantOfVal?] at h_eq
             rw [h_tr, hd₁, hd₂] at h_eq
             injection h_eq with h_sc
             injection h_sc with h_pl
@@ -1557,7 +1606,8 @@ theorem valToMiriImmediate_ne_uninit {ty : MirTy} {v : Val}
             cases h_z
           | scalar tagW tagS =>
             let ⟨d, hd⟩ := mirGetElem?_some_of_lt hk
-            dsimp only [valToMiriImmediate] at h_eq
+            dsimp only [valToMiriImmediate, refAsEnumTy?,
+              refEnumVariantOfVal?] at h_eq
             rw [h_tr, hd] at h_eq
             cases h_eq
         | inr hr => cases hr with
@@ -1635,19 +1685,15 @@ private noncomputable def refDiscrStmtOk (localTys : List MirTy)
       if dst.projection.isEmpty && src.projection.isEmpty then
         match MirSemantics.getElem? localTys src.localId with
         | some srcTy =>
-          match srcTy with
-          | .enum ety =>
+          match refAsEnumTy? srcTy with
+          | some ety =>
             match MirSemantics.getElem? localTys dst.localId with
             | some dstTy =>
               if refEnumAdmitted ety then
                 MirTy.beq dstTy (.int ety.discrWidth ety.discrSigned)
               else true
             | none => true
-          | .ordering =>
-            match MirSemantics.getElem? localTys dst.localId with
-            | some dstTy => MirTy.beq dstTy (.int .i8 true)
-            | none => true
-          | _ => true
+          | none => true
         | none => true
       else true
     | _ => true
@@ -1840,8 +1886,18 @@ private theorem refDiscrStmtOk_eq {ts : List MirTy} {localTys : List MirTy}
                   cases MirSemantics.getElem? localTys dst.localId with
                   | none => rfl
                   | some dstTy =>
-                    dsimp only
+                    dsimp only [refAsEnumTy?]
                     rw [refEnumAdmitted_eq]
+                | ordering =>
+                  cases MirSemantics.getElem? localTys dst.localId with
+                  | none => rfl
+                  | some dstTy =>
+                    have h_adm : refEnumAdmitted refOrderingEnumTy = true := by
+                      rw [refEnumAdmitted_eq]
+                      rfl
+                    dsimp only [refAsEnumTy?]
+                    rw [h_adm]
+                    rfl
                 | _ => rfl
         | cast k ro rty =>
           dsimp only [decodeRvalue] at h_rv
