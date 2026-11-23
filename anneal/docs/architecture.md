@@ -386,7 +386,7 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   (`theory/Anneal/{MirWp,LoopInv,LinearArith,BitVec,BitVecArith}.lean`,
   `theory/Anneal/{InitLemmas,ClassicalEm,Firewall,LeBytes,ListChunks}.lean`,
   `theory/Anneal/{NatBitwise,BitTrieLrat,PTree,SpineForce}.lean`,
-  `theory/Anneal/{ByteSubLens,CnfOrd,F2Simd,PureLift}/`, and planned
+  `theory/Anneal/{ByteRun,ByteSubLens,CnfOrd,F2Simd,PureLift}/`, and planned
   `Theory/Rust/{Wp,Tactics}/`):**
   Weakest-precondition calculi, loop-invariant and simulation combinators,
   Diaconescu classical excluded middle and existential choice, WHNF and
@@ -395,7 +395,9 @@ connects the verification layers to Stage 2 by kernel-checked refinement proofs:
   checker, constructive bitvector, byte-serialization, list-chunking, and
   canonical positive radix-trie framing proof libraries, CPS spine-forcing and
   `@Nat.rec` iteration combinators, a radix-2 trie RUP-only LRAT UNSAT checker,
-  lawful sub-allocation byte lenses and `@[irreducible]` `&mut` method call
+  run-decomposed mixed-`InitMask` padded-aggregate and `[T; N]` `Repeat`
+  byte-copy laws (`ByteRun`), lawful sub-allocation byte lenses and
+  `@[irreducible]` `&mut` method call
   summaries (`ByteSubLens`), constructive `< ω^ω` Cantor Normal Form ordinals
   and multi-rank worklist termination (`CnfOrd`), $\mathbb{F}_2$-linear,
   $\mathbb{F}_2$-bilinear, and cone-sliced SIMD certificate evaluators
@@ -515,6 +517,7 @@ anneal/
     │   ├── BitTrieLrat.lean        # Radix-2 trie RUP-only LRAT checker
     │   ├── BitVec.lean             # Constructive 3-axiom BitVec & tnum lemmas
     │   ├── BitVecArith.lean        # Constructive BitVec range & arithmetic
+    │   ├── ByteRun.lean            # Mixed-InitMask padded & Repeat byte-copy laws (+ ByteRun/)
     │   ├── ByteSubLens.lean        # Sub-alloc byte lenses & &mut summaries (+ ByteSubLens/)
     │   ├── ClassicalEm.lean        # Diaconescu excluded middle and choice
     │   ├── CnfOrd.lean             # Constructive < ω^ω CNF ordinals & worklists (+ CnfOrd/)
