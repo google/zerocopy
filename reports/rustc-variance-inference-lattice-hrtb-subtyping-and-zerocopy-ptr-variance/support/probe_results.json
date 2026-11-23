@@ -1,0 +1,171 @@
+{
+  "rustc_version": "rustc 1.98.0-nightly (14210df0e 2026-05-31)\nbinary: rustc\ncommit-hash: 14210df0e27ccd7d9e6a05b8085cbd438e4bbc65\ncommit-date: 2026-05-31\nhost: x86_64-unknown-linux-gnu\nrelease: 1.98.0-nightly\nLLVM version: 22.1.6",
+  "experiments": {
+    "a_variance_dump_and_subtyping_matrix": {
+      "rustc_dump_variances_output": {
+        "name": "rustc_dump_variances_output",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror[E0392]: type parameter `T` is never used\n  --> <tmp>/probe.rs:30:23\n   |\n30 | pub struct TrueUnused<T>(u8);\n   |                       ^ unused type parameter\n   |\n   = help: consider removing `T`, referring to it in a field, or using a marker such as `PhantomData`\n   = help: if you intended `T` to be a const parameter, use `const T: /* Type */` instead\n\nerror[E0392]: type parameter `T` is never used\n  --> <tmp>/probe.rs:33:24\n   |\n33 | pub struct BoundUnused<T: Copy>(u8);\n   |                        ^ unused type parameter\n   |\n   = help: consider removing `T`, referring to it in a field, or using a marker such as `PhantomData`\n\nerror: [T: +]\n --> <tmp>/probe.rs:6:1\n  |\n6 | pub struct CovPtr<T>(*const T);\n  | ^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: o]\n --> <tmp>/probe.rs:9:1\n  |\n9 | pub struct InvPtr<T>(*mut T);\n  | ^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: -, U: +]\n  --> <tmp>/probe.rs:12:1\n   |\n12 | pub struct FnVar<T, U>(PhantomData<fn(T) -> U>);\n   | ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: o]\n  --> <tmp>/probe.rs:15:1\n   |\n15 | pub struct FnInv<T>(PhantomData<fn(T) -> T>);\n   | ^^^^^^^^^^^^^^^^^^^\n\nerror: [T: o]\n  --> <tmp>/probe.rs:18:1\n   |\n18 | pub struct CellWrap<T>(UnsafeCell<T>);\n   | ^^^^^^^^^^^^^^^^^^^^^^\n\nerror: ['a: +, T: +]\n  --> <tmp>/probe.rs:21:1\n   |\n21 | pub struct SharedRef<'a, T>(&'a T);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: ['a: +, T: o]\n  --> <tmp>/probe.rs:24:1\n   |\n24 | pub struct MutRef<'a, T>(&'a mut T);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: +]\n  --> <tmp>/probe.rs:27:1\n   |\n27 | pub struct UnusedParam<T>(u8, PhantomData<fn() -> ()>, [T; 0]);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: *]\n  --> <tmp>/probe.rs:30:1\n   |\n30 | pub struct TrueUnused<T>(u8);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: *]\n  --> <tmp>/probe.rs:33:1\n   |\n33 | pub struct BoundUnused<T: Copy>(u8);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: [N: o]\n  --> <tmp>/probe.rs:36:1\n   |\n36 | pub struct ConstParam<const N: usize>(u8);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: o]\n  --> <tmp>/probe.rs:39:1\n   |\n39 | pub fn fn_unused<T>(_x: u8) {}\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: -]\n  --> <tmp>/probe.rs:42:1\n   |\n42 | pub struct MutualA<T>(*const MutualB<T>);\n   | ^^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: -]\n  --> <tmp>/probe.rs:45:1\n   |\n45 | pub struct MutualB<T>(*const MutualA<T>, PhantomData<fn(T)>);\n   | ^^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: -]\n  --> <tmp>/probe.rs:48:1\n   |\n48 | pub struct MutualCycleInvA<T>(PhantomData<fn(MutualCycleInvB<T>)>);\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: +]\n  --> <tmp>/probe.rs:51:1\n   |\n51 | pub struct MutualCycleInvB<T>(PhantomData<fn(MutualCycleInvA<T>)>, *cons...\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: [T: o]\n  --> <tmp>/probe.rs:54:1\n   |\n54 | pub struct SelfCycleOddInv<T>(PhantomData<fn(SelfCycleOddInv<T>)>, *cons...\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 19 previous errors; 1 warning emitted\n\nFor more information about this error, try `rustc --explain E0392`."
+      },
+      "covariant_unsafe_cell_availability": {
+        "name": "covariant_unsafe_cell_availability",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0432]: unresolved import `core::cell::CovariantUnsafeCell`\n --> <tmp>/probe.rs:2:5\n  |\n2 | use core::cell::CovariantUnsafeCell;\n  |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ no `CovariantUnsafeCell` in `cell`\n\nerror[E0635]: unknown feature `covariant_unsafe_cell`\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(covariant_unsafe_cell)]\n  |            ^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 2 previous errors\n\nSome errors have detailed explanations: E0432, E0635.\nFor more information about an error, try `rustc --explain E0432`."
+      },
+      "subtyping_positive_coercions": {
+        "name": "subtyping_positive_coercions",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "COV_REF=42 FN_CONTRA=42 CONST_PTR=42 LOCAL=9",
+        "run_stderr": ""
+      },
+      "invariant_mut_ref_rejected": {
+        "name": "invariant_mut_ref_rejected",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: lifetime may not live long enough\n --> <tmp>/probe.rs:1:72\n  |\n1 | pub fn inv_mut_ref<'a, 'b>(x: &'a mut &'static u8) -> &'a mut &'b u8 { x }\n  |                        -- lifetime `'b` defined here                   ^ returning this value requires that `'b` must outlive `'static`\n  |\n  = note: requirement occurs because of a mutable reference to `&u8`\n  = note: mutable references are invariant over their type parameter\n  = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: aborting due to 1 previous error"
+      },
+      "invariant_unsafe_cell_rejected": {
+        "name": "invariant_unsafe_cell_rejected",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: lifetime may not live long enough\n --> <tmp>/probe.rs:2:73\n  |\n2 | pub fn inv_cell<'a>(x: UnsafeCell<&'static u8>) -> UnsafeCell<&'a u8> { x }\n  |                 -- lifetime `'a` defined here                           ^ returning this value requires that `'a` must outlive `'static`\n  |\n  = note: requirement occurs because of the type `UnsafeCell<&u8>`, which makes the generic argument `&u8` invariant\n  = note: the struct `UnsafeCell<T>` is invariant over the parameter `T`\n  = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: aborting due to 1 previous error"
+      },
+      "contravariant_fn_reverse_rejected": {
+        "name": "contravariant_fn_reverse_rejected",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: lifetime may not live long enough\n --> <tmp>/probe.rs:1:59\n  |\n1 | pub fn bad_fn_arg<'a>(f: fn(&'static u8)) -> fn(&'a u8) { f }\n  |                   -- lifetime `'a` defined here           ^ returning this value requires that `'a` must outlive `'static`\n\nerror: aborting due to 1 previous error"
+      },
+      "invariant_phantom_fn_t_to_t_rejected": {
+        "name": "invariant_phantom_fn_t_to_t_rejected",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: lifetime may not live long enough\n --> <tmp>/probe.rs:4:42\n  |\n2 | pub fn bad_phantom_inv<'a>(\n  |                        -- lifetime `'a` defined here\n3 |     p: PhantomData<fn(&'static u8) -> &'static u8>,\n4 | ) -> PhantomData<fn(&'a u8) -> &'a u8> { p }\n  |                                          ^ returning this value requires that `'a` must outlive `'static`\n\nerror: aborting due to 1 previous error"
+      },
+      "invariant_phantom_mut_ptr_rejected": {
+        "name": "invariant_phantom_mut_ptr_rejected",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: lifetime may not live long enough\n --> <tmp>/probe.rs:4:33\n  |\n2 | pub fn bad_phantom_mut<'a>(\n  |                        -- lifetime `'a` defined here\n3 |     p: PhantomData<*mut &'static u8>,\n4 | ) -> PhantomData<*mut &'a u8> { p }\n  |                                 ^ returning this value requires that `'a` must outlive `'static`\n  |\n  = note: requirement occurs because of a mutable pointer to `&u8`\n  = note: mutable pointers are invariant over their type parameter\n  = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: aborting due to 1 previous error"
+      }
+    },
+    "b_hrtb_subtyping_and_polarity_flip": {
+      "hrtb_and_double_contravariant_flip_ok": {
+        "name": "hrtb_and_double_contravariant_flip_ok",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "HRTB_TO_STATIC=77 DOUBLE_FLIP=55",
+        "run_stderr": ""
+      },
+      "static_to_hrtb_rejected": {
+        "name": "static_to_hrtb_rejected",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0308]: mismatched types\n --> <tmp>/probe.rs:1:79\n  |\n1 | ...ic u8) -> u8) -> for<'a> fn(&'a u8) -> u8 { f }\n  |                     ------------------------   ^ one type is more general than the other\n  |                     |\n  |                     expected `for<'a> fn(&'a u8) -> u8` because of return type\n  |\n  = note: expected fn pointer `for<'a> fn(&'a _) -> _`\n             found fn pointer `fn(&'static _) -> _`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "static_to_hrtb_no_leak_check_rejected": {
+        "name": "static_to_hrtb_no_leak_check_rejected",
+        "edition": "2024",
+        "extra_args": [
+          "-Zno-leak-check"
+        ],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0308]: mismatched types\n --> <tmp>/probe.rs:1:79\n  |\n1 | ...a u8) -> u8 { f }\n  |                  ^ one type is more general than the other\n  |\n  = note: expected fn pointer `for<'a> fn(&'a _) -> _`\n             found fn pointer `fn(&_) -> _`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      },
+      "double_flip_reverse_rejected": {
+        "name": "double_flip_reverse_rejected",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error[E0308]: mismatched types\n --> <tmp>/probe.rs:3:40\n  |\n3 | ) -> fn(fn(&'static u8) -> u8) -> u8 { hof }\n  |      -------------------------------   ^^^ one type is more general than the other\n  |      |\n  |      expected `fn(fn(&'static u8) -> u8) -> u8` because of return type\n  |\n  = note: expected fn pointer `fn(fn(&'static _) -> _) -> _`\n             found fn pointer `fn(for<'a> fn(&'a _) -> _) -> _`\n\nerror: aborting due to 1 previous error\n\nFor more information about this error, try `rustc --explain E0308`."
+      }
+    },
+    "c_zerocopy_ptr_variance": {
+      "zerocopy_ptr_dump_variances": {
+        "name": "zerocopy_ptr_dump_variances",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "warning: the feature `rustc_attrs` is internal to the compiler or standard library\n --> <tmp>/probe.rs:1:12\n  |\n1 | #![feature(rustc_attrs)]\n  |            ^^^^^^^^^^^\n  |\n  = note: using it is strongly discouraged\n  = note: `#[warn(internal_features)]` on by default\n\nerror: ['a: +, T: o]\n --> <tmp>/probe.rs:7:1\n  |\n7 | pub struct ZcPtrInner<'a, T: ?Sized> {\n  | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: ['a: +, T: o, I: +]\n  --> <tmp>/probe.rs:13:1\n   |\n13 | pub struct ZcPtr<'a, T: ?Sized, I> {\n   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\nerror: aborting due to 2 previous errors; 1 warning emitted"
+      },
+      "zerocopy_ptr_lifetime_covariant_ok": {
+        "name": "zerocopy_ptr_lifetime_covariant_ok",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 0,
+        "compile_stdout": "",
+        "compile_stderr": "",
+        "run_returncode": 0,
+        "run_stdout": "ZC_PTR_COVARIANT_LT=91",
+        "run_stderr": ""
+      },
+      "zerocopy_ptr_shared_referent_t_invariant_rejected": {
+        "name": "zerocopy_ptr_shared_referent_t_invariant_rejected",
+        "edition": "2024",
+        "extra_args": [],
+        "compile_returncode": 1,
+        "compile_stdout": "",
+        "compile_stderr": "error: lifetime may not live long enough\n  --> <tmp>/probe.rs:20:5\n   |\n17 | pub fn cannot_shorten_t_even_for_shared<'a, 'b>(\n   |                                             -- lifetime `'b` defined here\n...\n20 |     p\n   |     ^ returning this value requires that `'b` must outlive `'static`\n   |\n   = note: requirement occurs because of the type `ZcPtr<'_, &u8, Shared>`, which makes the generic argument `&u8` invariant\n   = note: the struct `ZcPtr<'a, T, I>` is invariant over the parameter `T`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: aborting due to 1 previous error"
+      },
+      "real_zerocopy_crate": {
+        "crate_build_returncode": 0,
+        "crate_build_stderr": "",
+        "real_zerocopy_lifetime_covariant_ok": {
+          "name": "real_zerocopy_lifetime_covariant_ok",
+          "edition": "2021",
+          "extra_args": [
+            "--extern",
+            "zerocopy=<external>/libzerocopy.rlib"
+          ],
+          "compile_returncode": 0,
+          "compile_stdout": "",
+          "compile_stderr": "",
+          "run_returncode": 0,
+          "run_stdout": "REAL_ZC_SHARED=91 REAL_ZC_EXCL=7",
+          "run_stderr": ""
+        },
+        "real_zerocopy_referent_invariant_rejected": {
+          "name": "real_zerocopy_referent_invariant_rejected",
+          "edition": "2021",
+          "extra_args": [
+            "--extern",
+            "zerocopy=<external>/libzerocopy.rlib"
+          ],
+          "compile_returncode": 1,
+          "compile_stdout": "",
+          "compile_stderr": "error: lifetime may not live long enough\n  --> <tmp>/probe.rs:10:5\n   |\n 6 | pub fn _when_exclusive<'big: 'small, 'small>(\n   |                        ----          ------ lifetime `'small` defined here\n   |                        |\n   |                        lifetime `'big` defined here\n...\n10 |     _small = big;\n   |     ^^^^^^^^^^^^ assignment requires that `'small` must outlive `'big`\n   |\n   = help: consider adding the following bound: `'small: 'big`\n   = note: requirement occurs because of the type `Ptr<'_, &u32, (Exclusive, Aligned, invariant::Safe)>`, which makes the generic argument `&u32` invariant\n   = note: the struct `Ptr<'a, T, I>` is invariant over the parameter `T`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: lifetime may not live long enough\n  --> <tmp>/probe.rs:17:5\n   |\n13 | pub fn _when_shared<'big: 'small, 'small>(\n   |                     ----          ------ lifetime `'small` defined here\n   |                     |\n   |                     lifetime `'big` defined here\n...\n17 |     _small = big;\n   |     ^^^^^^^^^^^^ assignment requires that `'small` must outlive `'big`\n   |\n   = help: consider adding the following bound: `'small: 'big`\n   = note: requirement occurs because of the type `Ptr<'_, &u32, (Shared, Aligned, invariant::Safe)>`, which makes the generic argument `&u32` invariant\n   = note: the struct `Ptr<'a, T, I>` is invariant over the parameter `T`\n   = help: see <https://doc.rust-lang.org/nomicon/subtyping.html> for more information about variance\n\nerror: aborting due to 2 previous errors"
+        }
+      }
+    }
+  }
+}

@@ -111214,6 +111214,93 @@
         "verification"
       ]
     },
+    "rustc-variance-inference-lattice-hrtb-subtyping-and-zerocopy-ptr-variance": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "path": "compiler/rustc_type_ir/src/lib.rs; compiler/rustc_hir_analysis/src/variance; compiler/rustc_infer/src/infer/relate; compiler/rustc_infer/src/infer/region_constraints/leak_check.rs; library/core/src/cell/covariant_unsafe_cell.rs; library/core/src/marker/variance.rs",
+            "repository": "rust-lang/rust",
+            "revision": "960ba7cf7e8666ecb449402ca82b6e9e631bd227"
+          },
+          "name": "Rust compiler and core library (trunk main)"
+        },
+        {
+          "identity": {
+            "commit_date": "2026-05-31",
+            "repository": "rust-lang/rust",
+            "revision": "14210df0e27ccd7d9e6a05b8085cbd438e4bbc65",
+            "version": "1.98.0-nightly"
+          },
+          "name": "Rust compiler and standard library toolchain (1.98.0-nightly)"
+        },
+        {
+          "identity": {
+            "path": "compiler/rustc_hir_analysis/src/variance; library/core/src/cell/covariant_unsafe_cell.rs",
+            "repository": "rust-lang/rust",
+            "revision": "77977f9966b681ff865f810869859bcb2eb13a8e"
+          },
+          "name": "rust-lang/rust CovariantUnsafeCell introduction commit"
+        },
+        {
+          "identity": {
+            "path": "zerocopy/src/pointer/inner.rs; zerocopy/src/pointer/ptr.rs; zerocopy/tests/ui/ptr-is-invariant-over-v.rs",
+            "repository": "google/zerocopy",
+            "revision": "2b88472905b75a71b3940ef2a23a814abff46695"
+          },
+          "name": "zerocopy safe transmutation and pointer abstractions (trunk main)"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "907b9175fee081872ec883ca4709e6ad922f8ed0",
+            "version": "0.8.64"
+          },
+          "name": "zerocopy compiled crate snapshot (0.8.64)"
+        },
+        {
+          "identity": {
+            "path": "src/pointer/inner.rs; src/pointer/ptr.rs; tests/ui-nightly/ptr-is-invariant-over-v.rs",
+            "repository": "google/zerocopy",
+            "revision": "fe70ab6911f954f390b9ff04871e3c58fbba24e0"
+          },
+          "name": "google/zerocopy historical Ptr/PtrInner variance fix"
+        },
+        {
+          "identity": {
+            "path": "trusted/lean/Trusted/MirAst.lean",
+            "repository": "joshlf/anneal",
+            "revision": "c131b320eeeb26ef692e5afd5ec8db49ee518613"
+          },
+          "name": "Anneal formal verification framework"
+        },
+        {
+          "identity": {
+            "repository": "leanprover/lean4",
+            "revision": "5045d0056413266e57c625dcd7c365b10e377c52",
+            "version": "v4.34.1"
+          },
+          "name": "Lean 4 theorem prover"
+        },
+        {
+          "identity": {
+            "doi": "10.1145/1993498.1993569"
+          },
+          "name": "Altidor, Huang, and Smaragdakis, Taming the Wildcards: Combining Definition- and Use-Site Variance (PLDI 2011)"
+        }
+      ],
+      "topics": [
+        "anneal",
+        "compilers",
+        "compilers/verified-rustc",
+        "compilers/verified-rustc/types",
+        "lean",
+        "lean/mechanization",
+        "rust",
+        "rustc",
+        "verification"
+      ]
+    },
     "rustc-xray-instrument-fn-overwrite-mcount-and-coverage-branch-condition-soundness": {
       "observed_at": "2026-11-22",
       "subjects": [
