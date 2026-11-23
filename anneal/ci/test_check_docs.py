@@ -11,6 +11,7 @@
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 import stat
 import sys
@@ -244,7 +245,7 @@ class CheckSourcesOracleTests(unittest.TestCase):
             )
             errors: list[str] = []
             check_docs._validate_rust_anchor_coverage(
-                rs_path, [(3, 4, "rustdoc_include")], errors
+                rs_path, [(3, 4, "include")], errors
             )
             self.assertTrue(any("```anneal" in e for e in errors), errors)
             self.assertTrue(any("hidden_by_rustdoc" in e for e in errors), errors)
@@ -505,6 +506,40 @@ class CheckSourcesOracleTests(unittest.TestCase):
                 "`expect_exit` must be an integer",
             ),
             (
+                "bare_setup_clear_old_network",
+                {
+                    "kind": "cli",
+                    "display_command": "$ cargo anneal setup --clear-old",
+                    "argv": ["anneal", "setup", "--clear-old"],
+                    "expect_exit": 0,
+                    "fresh_cache_env": True,
+                    "transcript": "transcript.txt",
+                },
+                "closed offline CLI allowlist",
+            ),
+            (
+                "verify_runtime_unsandboxed",
+                {
+                    "kind": "cli",
+                    "display_command": "$ cargo anneal verify --request req.json",
+                    "argv": ["anneal", "verify", "--request", "req.json"],
+                    "expect_exit": 0,
+                    "transcript": "transcript.txt",
+                },
+                "closed offline CLI allowlist",
+            ),
+            (
+                "verify_rustc_runtime_unsandboxed",
+                {
+                    "kind": "cli",
+                    "display_command": "$ cargo anneal verify rustc lib.rs",
+                    "argv": ["anneal", "verify", "rustc", "lib.rs"],
+                    "expect_exit": 0,
+                    "transcript": "transcript.txt",
+                },
+                "closed offline CLI allowlist",
+            ),
+            (
                 "dot_setup_file",
                 {
                     "kind": "cli",
@@ -526,6 +561,155 @@ class CheckSourcesOracleTests(unittest.TestCase):
                     )
                     errors = check_docs.check_sources(root)
                     self.assertTrue(any(expected in e for e in errors), errors)
+
+    def test_cli_argv_allowlist_admits_safe_offline_subcommands(self):
+        good_cases = [
+            ("skill", ["anneal", "skill"], "$ cargo anneal skill", False, {}),
+            ("skill_help", ["anneal", "skill", "--help"], "$ cargo anneal skill --help", False, {}),
+            ("skill_example", ["anneal", "skill", "--example"], "$ cargo anneal skill --example", False, {}),
+            ("verify_help", ["anneal", "verify", "--help"], "$ cargo anneal verify --help", False, {}),
+            ("verify_rustc_help", ["anneal", "verify", "rustc", "--help"], "$ cargo anneal verify rustc --help", False, {}),
+            (
+                "setup_local_archive_clear_old",
+                ["anneal", "setup", "--local-archive", "bad.tar.zst", "--clear-old"],
+                "$ cargo anneal setup --local-archive bad.tar.zst --clear-old",
+                True,
+                {"bad.tar.zst": "not-an-archive\n"},
+            ),
+        ]
+        for label, argv, display, fresh_cache, setup_files in good_cases:
+            with self.subTest(case=label):
+                with tempfile.TemporaryDirectory(prefix="anneal-docs-test-") as tmp:
+                    root = _make_minimal_anneal_root(Path(tmp))
+                    case_obj = {
+                        "kind": "cli",
+                        "display_command": display,
+                        "argv": argv,
+                        "expect_exit": 0,
+                        "transcript": "transcript.txt",
+                    }
+                    if fresh_cache:
+                        case_obj["fresh_cache_env"] = True
+                    if setup_files:
+                        case_obj["setup_files"] = setup_files
+                    (root / "book/examples/cli/help/case.json").write_text(
+                        json.dumps(case_obj), encoding="utf-8"
+                    )
+                    self.assertEqual(check_docs.check_sources(root), [])
+
+    def test_staged_governing_docs_reject_directives_raw_html_stray_fences_and_local_images(
+        self,
+    ):
+        bad_docs = [
+            (
+                "prose_include_directive",
+                "# Principles\n\n{{#include ../../Cargo.toml}}\n",
+                "mdBook directive",
+            ),
+            (
+                "fenced_include_directive",
+                "# Principles\n\n```text\n{{#include ../../Cargo.toml}}\n```\n",
+                "mdBook directive",
+            ),
+            (
+                "raw_script_html",
+                "# Principles\n\n<script>alert(1)</script>\n",
+                "raw HTML tags are forbidden",
+            ),
+            (
+                "local_image",
+                "# Principles\n\n![secret](secret.png)\n",
+                "disallowed or local Markdown image target",
+            ),
+            (
+                "stray_fence",
+                "# Principles\n\n    ```text\nhi\n    ```\n",
+                "nested or indented code fence marker",
+            ),
+        ]
+        for label, body, expected in bad_docs:
+            with self.subTest(case=label):
+                with tempfile.TemporaryDirectory(prefix="anneal-docs-test-") as tmp:
+                    root = _make_minimal_anneal_root(Path(tmp))
+                    (root / "PRINCIPLES.md").write_text(body, encoding="utf-8")
+                    errors = check_docs.check_sources(root)
+                    self.assertTrue(any(expected in e for e in errors), errors)
+
+    def test_book_markdown_rejects_local_images_and_allows_https_or_backticked_images(
+        self,
+    ):
+        with tempfile.TemporaryDirectory(prefix="anneal-docs-test-") as tmp:
+            root = _make_minimal_anneal_root(Path(tmp))
+            (root / "book/src/index.md").write_text(
+                "# Anneal\n\n"
+                "Backticked `![diagram](missing.png)` is fine.\n\n"
+                "![logo](https://example.com/logo.svg)\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(check_docs.check_sources(root), [])
+
+            (root / "book/src/index.md").write_text(
+                "# Anneal\n\n![diagram](missing.png)\n",
+                encoding="utf-8",
+            )
+            errors = check_docs.check_sources(root)
+            self.assertTrue(
+                any("disallowed or local Markdown image target" in e for e in errors),
+                errors,
+            )
+
+    def test_collect_verified_snippets_supports_ranges_anchors_rustdoc_and_multi_include(
+        self,
+    ):
+        with tempfile.TemporaryDirectory(prefix="anneal-docs-test-") as tmp:
+            root = _make_minimal_anneal_root(Path(tmp))
+            (root / "book/examples/cli/help/transcript.txt").write_text(
+                "line1\n"
+                "// ANCHOR: outer\n"
+                "// ANCHOR: inner\n"
+                "visible_a\n"
+                "# hidden_line\n"
+                "## escaped_hash\n"
+                "visible_b\n"
+                "// ANCHOR_END: inner\n"
+                "// ANCHOR_END: outer\n"
+                "line_last\n",
+                encoding="utf-8",
+            )
+            (root / "book/src/index.md").write_text(
+                "# Intro\n\n"
+                "```console\n"
+                "{{#include ../examples/cli/help/transcript.txt:1:1}}\n"
+                "```\n\n"
+                "```console\n"
+                "{{#include ../examples/cli/help/transcript.txt:outer}}\n"
+                "```\n\n"
+                "```console\n"
+                "{{#include ../examples/cli/help/transcript.txt:1:1}}\n"
+                "{{#include ../examples/cli/help/transcript.txt:10:10}}\n"
+                "```\n\n"
+                "```console\n"
+                "{{#include ../examples/cli/help/transcript.txt:1:1}}\n\n"
+                "{{#include ../examples/cli/help/transcript.txt:10:10}}\n"
+                "```\n\n"
+                "```rust\n"
+                "{{#rustdoc_include ../examples/cli/help/transcript.txt:inner}}\n"
+                "```\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(check_docs.check_sources(root), [])
+            snippets = check_docs._collect_verified_snippet_texts(root)
+            self.assertIn("line1", snippets)
+            self.assertIn(
+                "visible_a\n# hidden_line\n## escaped_hash\nvisible_b",
+                snippets,
+            )
+            self.assertIn("line1\nline_last", snippets)
+            self.assertIn("line1\n\nline_last", snippets)
+            self.assertIn(
+                "visible_a\n# escaped_hash\nvisible_b",
+                snippets,
+            )
 
 
 class VerifyExamplesOracleTests(unittest.TestCase):
@@ -688,7 +872,46 @@ class EnsureMdbookTests(unittest.TestCase):
                     expected_tarball_sha256=good_tar_sha,
                     expected_bin_sha256=good_bin_sha,
                 )
+                self.assertTrue(bin_path.is_absolute())
                 self.assertEqual(bin_path.read_bytes(), payload)
+
+    def test_explicit_relative_mdbook_path_resolves_and_runs_without_path(self):
+        with tempfile.TemporaryDirectory(prefix="anneal-mdbook-rel-") as tmp:
+            tmp_path = Path(tmp)
+            root = _make_minimal_anneal_root(tmp_path / "anneal")
+            fake_mdbook = tmp_path / "mdbook"
+            fake_mdbook.write_text(
+                f"#!{sys.executable}\n"
+                "import sys\n"
+                "from pathlib import Path\n"
+                "dest = Path(sys.argv[sys.argv.index('--dest-dir') + 1])\n"
+                "dest.mkdir(parents=True, exist_ok=True)\n"
+                "(dest / 'index.html').write_text(\n"
+                "    '<html><body><main><h1>Ok</h1></main></body></html>',\n"
+                "    encoding='utf-8',\n"
+                ")\n",
+                encoding="utf-8",
+            )
+            fake_mdbook.chmod(fake_mdbook.stat().st_mode | stat.S_IXUSR)
+
+            old_cwd = Path.cwd()
+            try:
+                os.chdir(tmp_path)
+                resolved = check_docs.ensure_mdbook(
+                    Path("./cache"), explicit_bin=Path("./mdbook")
+                )
+                self.assertTrue(resolved.is_absolute())
+                self.assertEqual(resolved, fake_mdbook.resolve())
+
+                with mock.patch.dict(os.environ, {"PATH": ""}, clear=False):
+                    errors = check_docs.build_book(
+                        root,
+                        tmp_path / "out",
+                        mdbook_bin=Path("./mdbook"),
+                    )
+                self.assertEqual(errors, [])
+            finally:
+                os.chdir(old_cwd)
 
 
 class HtmlLinkCheckerTests(unittest.TestCase):
@@ -762,6 +985,96 @@ class HtmlLinkCheckerTests(unittest.TestCase):
                 errors,
             )
 
+    def test_html_auditor_checks_local_media_src_and_rust_boring_spans(self):
+        verified = {"fn ok() {}"}
+        boring = set(check_docs.RUST_PLAYGROUND_BOILERPLATE_LINES) | {"let hidden = 1;"}
+        with tempfile.TemporaryDirectory(prefix="anneal-docs-html-src-") as tmp:
+            html_root = Path(tmp)
+            (html_root / "sub").mkdir()
+            (html_root / "ok.png").write_bytes(b"png")
+            (html_root / "index.html").write_text(
+                "<html><body><main>"
+                '<img src="ok.png">'
+                '<img src="/zerocopy/anneal/ok.png">'
+                '<img src="https://example.com/logo.svg">'
+                '<pre class="playground"><code class="language-rust">'
+                '<span class="boring">#![allow(unused)]\n</span>'
+                '<span class="boring">fn main() {\n</span>'
+                '<span class="boring">let hidden = 1;\n</span>'
+                "fn ok() {}\n"
+                '<span class="boring">}</span>'
+                "</code></pre>"
+                "</main></body></html>",
+                encoding="utf-8",
+            )
+            self.assertEqual(
+                check_docs.check_built_html_links(
+                    html_root,
+                    verified_snippets=verified,
+                    verified_boring_lines=boring,
+                ),
+                [],
+            )
+
+            (html_root / "index.html").write_text(
+                "<html><body><main>"
+                '<img src="missing.png">'
+                '<img src="sub">'
+                '<img src="../escape.png">'
+                '<img src="/wrong/pic.png">'
+                '<img src="//cdn.example.com/pic.png">'
+                '<img src="mailto:user@example.com">'
+                '<img src="https:missing-host.png">'
+                '<source src="">'
+                '<pre class="playground"><code class="language-rust">'
+                '<span class="boring">unsafe { evil(); }\n</span>'
+                "fn ok() {}\n"
+                "</code></pre>"
+                "</main></body></html>",
+                encoding="utf-8",
+            )
+            errors = check_docs.check_built_html_links(
+                html_root,
+                verified_snippets=verified,
+                verified_boring_lines=boring,
+            )
+            self.assertTrue(
+                any("broken image/media source `missing.png`" in e for e in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("broken image/media source `sub`" in e for e in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("escapes built HTML root" in e for e in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("absolute image/media source `/wrong/pic.png`" in e for e in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("scheme-relative media source `//cdn.example.com/pic.png`" in e for e in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("disallowed URL scheme `mailto:` in media source" in e for e in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("malformed image/media source `https:missing-host.png`" in e for e in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("empty image/media source `src`" in e for e in errors),
+                errors,
+            )
+            self.assertTrue(
+                any("rendered hidden `rust` line does not match" in e for e in errors),
+                errors,
+            )
+
 
 class RepositoryDocsIntegrationTests(unittest.TestCase):
     def test_repository_book_sources_pass(self):
@@ -782,10 +1095,20 @@ class RepositoryDocsIntegrationTests(unittest.TestCase):
         ):
             self.assertEqual(static_env.get(key), "")
 
-        test_steps = anneal_ci["jobs"]["test-and-verify"]["steps"]
+        test_verify_steps = anneal_ci["jobs"]["test-and-verify"]["steps"]
+        self.assertEqual(
+            [
+                step
+                for step in test_verify_steps
+                if step.get("name") == "Verify and build public documentation"
+            ],
+            [],
+        )
+
+        smoke_steps = anneal_ci["jobs"]["installed-smoke"]["steps"]
         docs_steps = [
             step
-            for step in test_steps
+            for step in smoke_steps
             if step.get("name") == "Verify and build public documentation"
         ]
         self.assertEqual(len(docs_steps), 1)

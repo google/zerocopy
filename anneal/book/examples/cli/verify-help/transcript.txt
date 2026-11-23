@@ -1,0 +1,29 @@
+$ cargo anneal verify --help
+Capture a configured compilation and check its authored source proof
+
+Usage: cargo anneal verify [OPTIONS]
+       cargo anneal verify [OPTIONS] <COMMAND>
+
+Commands:
+  rustc  Verify a crate from explicit rustc inputs and Lean module mappings
+  help   Print this message or the help of the given subcommand(s)
+
+Options:
+      --request <REQUEST>              JSON compilation/proof request, with paths relative to its directory
+      --manifest-path <MANIFEST_PATH>  A feature-free library for the x86_64-unknown-linux-gnu scalar profile
+      --proof-dir <PROOF_DIR>          Directory containing Spec.lean and Proof.lean, for the Cargo shortcut
+      --select <SELECT>                Select a function by its compiler path; omit to require the whole crate
+      --capture <CAPTURE>              Capture driver; defaults to the installed bundle, then a sibling. The receipt records its SHA-256, which no lock pins
+      --lean <LEAN>                    Lean executable; defaults to the installed bundle, cached toolchain, or pinned elan installation. Its SHA-256 must match the foundation lock, which does not cover the shared libraries it loads
+      --sysroot <SYSROOT>              Compiler sysroot; defaults to the installed bundle when present. Capture checks its reported rustc commit but does not hash it
+      --artifacts <ARTIFACTS>          New UTF-8 directory path for retained capture, sources and audit evidence
+      --export-lean-lib                Export compiled `.olean*` files to `<artifacts>/lean-lib/`
+      --allow-unpinned-lean            Allow unpinned Lean with explicit `--lean` (taints receipt)
+      --allow-unsandboxed-elaboration  Disable OS-level elaborator containment (`ExecSeal`) and run Lean unsandboxed (taints receipt)
+      --allow-sorry-in-proof           Allow `sorry` in proof modules only, recording `sorry_declarations` (never specifications, model, capture, or expected; taints receipt)
+      --lean-memory-mb <MB>            Explicit Lean memory limit in MiB (`-M<MB>`; `resolve-imports` enforces a 4096 MiB floor)
+      --no-cache                       Disable prebuilt and local disk `.olean` caching for bundled modules and `TrustedBoundary`
+      --no-rebuild-bundled             Fail closed rather than compiling `Trusted.*`, `Anneal.*`, or `TrustedBoundary` when absent from prebuilt or local `.olean` caches
+  -h, --help                           Print help
+
+Run `cargo anneal skill` to print the bundled agent skill.

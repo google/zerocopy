@@ -10,15 +10,23 @@ those terms. -->
 
 Anneal is a formal verification framework for Rust backed by Lean 4. It proves
 that Rust programs—including `unsafe` code—are free of undefined behavior (UB)
-and satisfy developer-defined specifications, without requiring Rust programmers
-to write proofs in Lean 4.
+and satisfy developer-defined specifications, with Lean 4's kernel checking every
+proof while keeping human review bounded to specifications and the trusted
+computing base (TCB).
 
-> **Pre-alpha status:** Anneal is under active development. The current
-> toolchain supports pinned archive installation via `cargo anneal setup`;
-> end-to-end Rust crate verification (`cargo anneal verify`) is not yet exposed
-> in the CLI. To keep this book accurate, every command and code example shown
-> here is executed against the current `cargo-anneal` build in CI. Rust
-> verification guides will be added as each verification capability lands.
+> **Alpha status (Stage 0):** Anneal is in alpha and under active development;
+> APIs, specification syntax, and verification coverage change frequently. The
+> current CLI ships `cargo anneal setup` (versioned toolchain archive
+> installation), `cargo anneal verify` (including `--request`,
+> `--manifest-path`/`--proof-dir`, and `verify rustc` for the
+> `x86_64-unknown-linux-gnu` pointer-free scalar MIR profile using out-of-line
+> `Spec.lean` and `Proof.lean` modules), and `cargo anneal skill` (bundled
+> verification guidance and a working starter example). Inline Rust
+> specifications and broader MIR coverage are under development. To keep this
+> book accurate, every command and code example shown here is executed against
+> the current `cargo-anneal` build in CI. See
+> [Alpha Usage and Profile v1 Limits](https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md)
+> on GitHub for the exact supported and fail-closed refused Rust subset.
 
 ## What Anneal promises
 
@@ -52,15 +60,16 @@ Every command transcript in this book is checked directly against the live
 ## Where to go next
 
 - [Installing the Toolchain](getting-started/installation.md) walks through
-  `cargo anneal setup` and shows how Anneal fails closed on invalid archives.
-- [CLI Reference](reference/cli.md) documents every supported subcommand, flag,
-  and diagnostic emitted by the current CLI.
+  `cargo anneal setup`, local archives, cache cleanup, and fail-closed archive
+  handling.
+- [CLI Reference](reference/cli.md) documents `setup`, `skill`, `verify`,
+  `verify rustc`, Receipt Schema v3 diagnostics, and CLI error handling.
 - [Project Principles](foundations/principles.md),
   [Threat Model](foundations/threat-model.md), and
   [Meta-Principles](foundations/meta-principles.md) define Anneal's correctness
   promise and trust boundaries.
-- Contributing to Anneal itself? See the internal developer documentation on
-  GitHub:
+- Contributing to Anneal itself? See the developer documentation on GitHub:
+  [Alpha Usage](https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md),
   [Developing Anneal](https://github.com/google/zerocopy/blob/main/anneal/docs/README.md),
   [Design Overview](https://github.com/google/zerocopy/blob/main/anneal/docs/design.md),
   [Architecture](https://github.com/google/zerocopy/blob/main/anneal/docs/architecture.md),

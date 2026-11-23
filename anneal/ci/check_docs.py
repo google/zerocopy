@@ -145,6 +145,7 @@ STRAY_FENCE_RE = re.compile(r"^\s*(?:>\s*)*(?:(?:[-+*]|\d+[.)])\s+)*(?:`{3,}|~{3
 ANCHOR_START_RE = re.compile(r"ANCHOR:\s*([A-Za-z0-9_-]+)\b")
 ANCHOR_END_RE = re.compile(r"ANCHOR_END:\s*([A-Za-z0-9_-]+)\b")
 MD_LINK_RE = re.compile(r"(?<!!)\[[^\]]*\]\((?P<target>[^)\s]+)(?:\s+\"[^\"]*\")?\)", re.DOTALL)
+MD_IMAGE_RE = re.compile(r"!\[[^\]]*\]\((?P<target>[^)]+)\)", re.DOTALL)
 LOAD_BEARING_RUST_RE = re.compile(
     r"\bunsafe\b|anneal:|#!\[anneal::|#\[anneal::|(?:///|//!)\s*```anneal\b"
 )
@@ -170,6 +171,10 @@ DISALLOWED_MAIN_HTML_TAGS = frozenset(
 )
 URL_ATTRS = frozenset(
     {"href", "src", "action", "formaction", "xlink:href", "srcdoc", "data"}
+)
+MEDIA_SRC_TAGS = frozenset({"img", "source", "audio", "video", "track"})
+RUST_PLAYGROUND_BOILERPLATE_LINES = frozenset(
+    {"#![allow(unused)]", "fn main() {", "}"}
 )
 
 
@@ -401,6 +406,52 @@ def _extract_anchors(text: str) -> tuple[dict[str, tuple[int, int]], list[str]]:
     return anchors, errors
 
 
+def _strip_rust_hidden_lines(lines: list[str]) -> list[str]:
+    """Apply mdBook's Rust `#` hiding and `##` unescaping rules to `lines`."""
+    rendered: list[str] = []
+    for line in lines:
+        stripped = line.lstrip()
+        if stripped == "#" or stripped.startswith("# "):
+            continue
+        if stripped.startswith("##"):
+            indent = line[: len(line) - len(stripped)]
+            rendered.append(indent + stripped[1:])
+        else:
+            rendered.append(line)
+    return rendered
+
+
+def _render_include_slice(
+    target_text: str,
+    kind: str,
+    anchor: str | None,
+    line_range: tuple[int | None, int | None] | None,
+    *,
+    lang: str = "",
+) -> str:
+    """Render the visible text that mdBook emits for one include directive."""
+    lines = target_text.splitlines()
+    if anchor is not None:
+        anchors, _ = _extract_anchors(target_text)
+        start_line, end_line = anchors[anchor]
+        selected = [
+            ln
+            for ln in lines[start_line : end_line - 1]
+            if not ANCHOR_START_RE.search(ln) and not ANCHOR_END_RE.search(ln)
+        ]
+    elif line_range is not None:
+        start_opt, end_opt = line_range
+        start = 1 if start_opt is None else start_opt
+        end = len(lines) if end_opt is None else end_opt
+        selected = lines[start - 1 : end]
+    else:
+        selected = lines
+
+    if kind == "rustdoc_include" or lang in {"rust", "rs"}:
+        selected = _strip_rust_hidden_lines(selected)
+    return "\n".join(selected)
+
+
 def _validate_rust_anchor_coverage(
     rs_path: Path,
     included_ranges: list[tuple[int, int, str]],
@@ -409,13 +460,12 @@ def _validate_rust_anchor_coverage(
     """Reject hidden `unsafe` or Anneal-spec lines outside visible includes."""
     lines = rs_path.read_text(encoding="utf-8").splitlines()
     visible: set[int] = set()
-    for start, end, kind in included_ranges:
+    for start, end, _kind in included_ranges:
         for idx in range(start, end + 1):
             if 1 <= idx <= len(lines):
-                if kind == "rustdoc_include":
-                    stripped = lines[idx - 1].lstrip()
-                    if stripped == "#" or stripped.startswith("# "):
-                        continue
+                stripped = lines[idx - 1].lstrip()
+                if stripped == "#" or stripped.startswith("# "):
+                    continue
                 visible.add(idx)
 
     for lineno, line in enumerate(lines, start=1):
@@ -479,9 +529,11 @@ def _validate_cli_argv_allowlist(
 ) -> str | None:
     """Enforce a closed allowlist of safe, offline `cargo-anneal` invocations.
 
-    Rejects bare `setup` (which would attempt remote downloads) and any future
-    build/verify subcommand until OS sandboxing (such as `bwrap`) is wired for
-    example execution.
+    Rejects bare `setup` (including `setup --clear-old` without
+    `--local-archive`, which would attempt remote downloads) and rejects
+    runtime `verify` invocations (other than `--help`/`-h`/`help`) until
+    sandboxed execution and toolchain fixture isolation are wired for example
+    verification.
     """
     args = argv[1:] if argv and argv[0] == "anneal" else argv
     if args in (
@@ -494,29 +546,48 @@ def _validate_cli_argv_allowlist(
         ["help", "setup"],
         ["setup", "-h"],
         ["setup", "--help"],
+        ["help", "skill"],
+        ["skill"],
+        ["skill", "-h"],
+        ["skill", "--help"],
+        ["skill", "--example"],
+        ["help", "verify"],
+        ["verify", "-h"],
+        ["verify", "--help"],
+        ["verify", "help"],
+        ["verify", "help", "rustc"],
+        ["verify", "rustc", "-h"],
+        ["verify", "rustc", "--help"],
     ):
         return None
 
-    # Allow `setup --local-archive <file>` only against a declared relative
-    # setup file inside a fresh cache directory (never touching host state or
-    # network).
-    if (
-        len(args) == 3
-        and args[0] == "setup"
-        and args[1] == "--local-archive"
-        and args[2] in setup_files
-        and fresh_cache_env
-    ):
-        return None
+    # Allow `setup --local-archive <file>` (with optional `--clear-old`) only
+    # against a declared relative setup file inside a fresh cache directory
+    # (never touching host state or network).
+    if args and args[0] == "setup" and fresh_cache_env:
+        rest = args[1:]
+        if (
+            len(rest) == 2
+            and rest[0] == "--local-archive"
+            and rest[1] in setup_files
+        ):
+            return None
+        if len(rest) == 3 and "--clear-old" in rest:
+            without_clear = [tok for tok in rest if tok != "--clear-old"]
+            if (
+                len(without_clear) == 2
+                and without_clear[0] == "--local-archive"
+                and without_clear[1] in setup_files
+            ):
+                return None
 
     # Allow explicit argument-parsing negative examples (exit 2) for unknown
-    # single-token subcommands (excluding real subcommands such as `setup` or
-    # future `verify`).
+    # single-token subcommands (excluding real or reserved subcommands).
     if (
         expect_exit == 2
         and len(args) == 1
         and re.fullmatch(r"[a-z][a-z0-9_-]*", args[0]) is not None
-        and args[0] not in {"setup", "verify", "help", "check", "build"}
+        and args[0] not in {"setup", "init", "skill", "verify", "help", "check", "build"}
     ):
         return None
 
@@ -669,13 +740,37 @@ def _load_example_cases(
     return cases, errors
 
 
+def _check_prose_for_local_images(
+    prose_text: str, rel_to_anneal: Path, errors: list[str]
+) -> None:
+    """Reject local or non-HTTP(S) Markdown image targets in prose."""
+    without_comments = HTML_COMMENT_RE.sub(
+        lambda m: "\n" * m.group(0).count("\n"), prose_text
+    )
+    without_code = _strip_inline_code_spans(without_comments)
+    for match in MD_IMAGE_RE.finditer(without_code):
+        raw_target = match.group("target").strip()
+        # Strip optional Markdown link title (`path "title"`) and angle brackets.
+        target_token = raw_target.split(None, 1)[0] if raw_target else ""
+        if target_token.startswith("<") and target_token.endswith(">"):
+            target_token = target_token[1:-1].strip()
+        parsed = urlsplit(target_token)
+        scheme = parsed.scheme.lower()
+        if scheme not in {"http", "https"} or not parsed.netloc:
+            errors.append(
+                f"{rel_to_anneal}: disallowed or local Markdown image target "
+                f"`{raw_target}` (local image assets are not permitted)"
+            )
+
+
 def _rewrite_governing_doc(
     source_path: Path,
     dest_rel: str,
     anneal_root: Path,
 ) -> tuple[str, list[str]]:
-    """Rewrite root-relative links in a governing doc for staging under book/."""
+    """Validate and rewrite root-relative links in a governing doc for staging."""
     text = source_path.read_text(encoding="utf-8")
+    rel_src = source_path.relative_to(anneal_root)
     errors: list[str] = []
 
     def replace_link(match: re.Match[str]) -> str:
@@ -689,18 +784,48 @@ def _rewrite_governing_doc(
                 rewritten = f"{rewritten}#{frag}"
             return match.group(0).replace(f"({raw_target})", f"({rewritten})", 1)
         errors.append(
-            f"{source_path.relative_to(anneal_root)}: unmapped relative link "
+            f"{rel_src}: unmapped relative link "
             f"`{raw_target}` when staging to `{dest_rel}`; add it to "
             f"GOVERNING_LINK_REWRITES in ci/check_docs.py"
         )
         return match.group(0)
 
     fences = parse_fences(text)
+    for fence in fences:
+        if fence.get("unclosed"):
+            errors.append(
+                f"{rel_src}:{fence['start_line']}: unclosed fenced code block "
+                f"in staged governing doc"
+            )
     fence_ranges = [(f["start_line"], f["end_line"]) for f in fences]
     lines = text.splitlines(keepends=True)
 
     def line_in_fence(lineno: int) -> bool:
         return any(start <= lineno <= end for start, end in fence_ranges)
+
+    # Reject mdBook directives on ALL lines (including inside fences, where
+    # mdBook still expands `{{#include ...}}`) because staged governing docs
+    # are excluded from post-build code-parity checks.
+    for lineno, raw_line in enumerate(lines, start=1):
+        line_no_nl = raw_line.rstrip("\r\n")
+        for match in ANY_DIRECTIVE_RE.finditer(line_no_nl):
+            errors.append(
+                f"{rel_src}:{lineno}: mdBook directive `{match.group(0)}` is "
+                f"forbidden in staged governing doc"
+            )
+        if not line_in_fence(lineno) and STRAY_FENCE_RE.match(line_no_nl):
+            errors.append(
+                f"{rel_src}:{lineno}: nested or indented code fence marker "
+                f"outside a top-level fence is not allowed in staged governing doc"
+            )
+
+    prose_only_lines = [
+        "" if line_in_fence(lineno) else raw_line.rstrip("\r\n")
+        for lineno, raw_line in enumerate(lines, start=1)
+    ]
+    prose_text = "\n".join(prose_only_lines)
+    _check_prose_for_raw_html(prose_text, rel_src, errors)
+    _check_prose_for_local_images(prose_text, rel_src, errors)
 
     out_chunks: list[str] = []
     prose_buf: list[str] = []
@@ -939,16 +1064,115 @@ def _check_prose_for_raw_html(
 
 
 def _collect_verified_snippet_texts(anneal_root: Path) -> set[str]:
-    """Return normalized text bodies of all verified example artifacts."""
+    """Return expected rendered code-block texts for all verified book fences.
+
+    Reconstructs each checked, non-`conceptual` fence in `book/src/**/*.md` by
+    evaluating its `{{#include ...}}` and `{{#rustdoc_include ...}}` directives
+    through `_render_include_slice` against verified `case.json` artifacts so
+    ranged, anchored, `rustdoc_include`, and multi-include fences match
+    mdBook's exact rendered output.
+    """
+    book_root = anneal_root / "book"
+    src_root = book_root / "src"
+    examples_root = book_root / "examples"
+    cases, errors = _load_example_cases(examples_root)
+    if errors or not src_root.is_dir():
+        return set()
+    verified_artifacts: set[Path] = set()
+    for _case_file, _data, artifacts in cases:
+        verified_artifacts.update(artifacts)
+
+    texts: set[str] = set()
+    for md_file in sorted(src_root.rglob("*.md")):
+        if md_file.is_symlink() or not md_file.is_file():
+            continue
+        text = md_file.read_text(encoding="utf-8")
+        for fence in parse_fences(text):
+            if fence.get("unclosed"):
+                continue
+            tokens = _parse_fence_tokens(fence["info"])
+            matched_langs = sorted(tokens & CHECKED_FENCE_LANGS)
+            if not matched_langs or "conceptual" in tokens:
+                continue
+            lang = "rust" if (tokens & {"rust", "rs"}) else matched_langs[0]
+            rendered_lines: list[str] = []
+            valid_fence = True
+            has_directive = False
+            for _ln, body_line in fence["body"]:
+                stripped = body_line.strip()
+                if not stripped:
+                    rendered_lines.append("")
+                    continue
+                strict = STRICT_INCLUDE_RE.match(stripped)
+                if not strict:
+                    valid_fence = False
+                    break
+                has_directive = True
+                kind = strict.group("kind")
+                spec = strict.group("spec")
+                try:
+                    rel_target, anchor, line_range = _parse_include_spec(spec)
+                except DocError:
+                    valid_fence = False
+                    break
+                raw_target = md_file.parent / rel_target
+                if _has_symlink_component(raw_target, book_root):
+                    valid_fence = False
+                    break
+                target = raw_target.resolve()
+                if (
+                    not _is_within(target, examples_root)
+                    or not target.is_file()
+                    or target not in verified_artifacts
+                ):
+                    valid_fence = False
+                    break
+                target_text = target.read_text(encoding="utf-8")
+                if anchor is not None:
+                    anchors, anchor_errors = _extract_anchors(target_text)
+                    if anchor_errors or anchor not in anchors:
+                        valid_fence = False
+                        break
+                elif line_range is not None:
+                    total_lines = len(target_text.splitlines())
+                    start_opt, end_opt = line_range
+                    start = 1 if start_opt is None else start_opt
+                    end = total_lines if end_opt is None else end_opt
+                    if start < 1 or end > total_lines or start > end:
+                        valid_fence = False
+                        break
+                rendered_lines.append(
+                    _render_include_slice(
+                        target_text, kind, anchor, line_range, lang=lang
+                    )
+                )
+            if valid_fence and has_directive:
+                snippet = "\n".join(rendered_lines).strip()
+                if snippet:
+                    texts.add(snippet)
+    return texts
+
+
+def _collect_verified_rust_boring_lines(anneal_root: Path) -> set[str]:
+    """Return allowed `<span class="boring">` lines for verified Rust blocks."""
     examples_root = anneal_root / "book/examples"
     cases, errors = _load_example_cases(examples_root)
+    allowed = set(RUST_PLAYGROUND_BOILERPLATE_LINES)
     if errors:
-        return set()
-    texts: set[str] = set()
+        return allowed
     for _case_file, _data, artifacts in cases:
         for artifact in artifacts:
-            texts.add(artifact.read_text(encoding="utf-8").strip())
-    return texts
+            if not artifact.is_file():
+                continue
+            for line in artifact.read_text(encoding="utf-8").splitlines():
+                allowed.add(line)
+                stripped = line.lstrip()
+                if stripped == "#":
+                    allowed.add(line[: len(line) - len(stripped)])
+                elif stripped.startswith("# "):
+                    indent = line[: len(line) - len(stripped)]
+                    allowed.add(indent + stripped[2:])
+    return allowed
 
 
 def check_sources(anneal_root: Path) -> list[str]:
@@ -987,7 +1211,7 @@ def check_sources(anneal_root: Path) -> list[str]:
 
         # 1. Check fenced code blocks against the default-deny policy.
         fences = parse_fences(text)
-        checked_fence_lines: set[int] = set()
+        checked_fence_lines: dict[int, str] = {}
         all_fence_lines: set[int] = set()
         for fence in fences:
             for ln in range(fence["start_line"], fence["end_line"] + 1):
@@ -1022,19 +1246,21 @@ def check_sources(anneal_root: Path) -> list[str]:
                     f"verified artifact from book/examples/ via `{{{{#include ...}}}}`"
                 )
             else:
+                fence_lang = "rust" if (tokens & {"rust", "rs"}) else matched_langs[0]
                 for ln, _ in non_empty:
-                    checked_fence_lines.add(ln)
+                    checked_fence_lines[ln] = fence_lang
 
         # 2. Check all non-fence prose as a whole (catches multi-line raw HTML
-        #    tags and attributes) and reject any stray unparsed fence lines.
+        #    tags, attributes, and local Markdown images) and reject any stray
+        #    unparsed fence lines.
         lines = text.splitlines()
         prose_only_lines = [
             "" if lineno in all_fence_lines else line
             for lineno, line in enumerate(lines, start=1)
         ]
-        _check_prose_for_raw_html(
-            "\n".join(prose_only_lines), rel_to_anneal, errors
-        )
+        prose_text = "\n".join(prose_only_lines)
+        _check_prose_for_raw_html(prose_text, rel_to_anneal, errors)
+        _check_prose_for_local_images(prose_text, rel_to_anneal, errors)
 
         for lineno, line in enumerate(lines, start=1):
             if lineno not in all_fence_lines and STRAY_FENCE_RE.match(line):
@@ -1099,6 +1325,7 @@ def check_sources(anneal_root: Path) -> list[str]:
                 included_paths.add(target)
                 target_text = target.read_text(encoding="utf-8")
                 target_lines = target_text.splitlines()
+                fence_lang = checked_fence_lines[lineno]
 
                 if anchor is not None:
                     anchors, anchor_errors = _extract_anchors(target_text)
@@ -1111,8 +1338,14 @@ def check_sources(anneal_root: Path) -> list[str]:
                         )
                         continue
                     start_line, end_line = anchors[anchor]
-                    inner = target_lines[start_line : end_line - 1]
-                    if not any(item.strip() for item in inner):
+                    rendered_slice = _render_include_slice(
+                        target_text,
+                        kind,
+                        anchor,
+                        None,
+                        lang=fence_lang,
+                    )
+                    if not rendered_slice.strip():
                         errors.append(
                             f"{rel_to_anneal}:{lineno}: anchor `{anchor}` in "
                             f"{rel_target} is empty"
@@ -1132,9 +1365,14 @@ def check_sources(anneal_root: Path) -> list[str]:
                             f"`{start}:{end}` for {rel_target} ({len(target_lines)} lines)"
                         )
                         continue
-                    if not any(
-                        item.strip() for item in target_lines[start - 1 : end]
-                    ):
+                    rendered_slice = _render_include_slice(
+                        target_text,
+                        kind,
+                        None,
+                        line_range,
+                        lang=fence_lang,
+                    )
+                    if not rendered_slice.strip():
                         errors.append(
                             f"{rel_to_anneal}:{lineno}: line range `{start}:{end}` "
                             f"in {rel_target} is empty"
@@ -1145,7 +1383,14 @@ def check_sources(anneal_root: Path) -> list[str]:
                             (start, end, kind)
                         )
                 else:
-                    if not target_text.strip():
+                    rendered_slice = _render_include_slice(
+                        target_text,
+                        kind,
+                        None,
+                        None,
+                        lang=fence_lang,
+                    )
+                    if not rendered_slice.strip():
                         errors.append(
                             f"{rel_to_anneal}:{lineno}: included file is empty: "
                             f"{rel_target}"
@@ -1316,7 +1561,8 @@ def verify_examples(
     bless: bool = False,
 ) -> list[str]:
     """Run all auto-discovered doc examples against `cargo_anneal`."""
-    if not cargo_anneal.is_file():
+    cargo_anneal_resolved = cargo_anneal.resolve()
+    if not cargo_anneal_resolved.is_file():
         return [f"cargo-anneal binary does not exist: {cargo_anneal}"]
 
     examples_root = anneal_root / "book/examples"
@@ -1327,7 +1573,7 @@ def verify_examples(
     for case_file, data, _artifacts in cases:
         if data["kind"] == "cli":
             errors.extend(
-                _run_cli_case(case_file, data, cargo_anneal, bless=bless)
+                _run_cli_case(case_file, data, cargo_anneal_resolved, bless=bless)
             )
         else:
             errors.append(
@@ -1369,17 +1615,23 @@ def ensure_mdbook(
     expected_tarball_sha256: str = MDBOOK_SHA256,
     expected_bin_sha256: str = MDBOOK_BIN_SHA256,
 ) -> Path:
-    """Return a verified `mdbook` binary, fetching the pinned release if needed."""
+    """Return a verified absolute `mdbook` binary, fetching the pinned release if needed."""
     if explicit_bin is not None:
-        if explicit_bin.is_symlink() or not explicit_bin.is_file():
+        if explicit_bin.is_symlink():
             raise DocError(
                 f"explicit --mdbook binary is missing or a symlink: {explicit_bin}"
             )
-        return explicit_bin
+        resolved = explicit_bin.resolve()
+        if not resolved.is_file():
+            raise DocError(
+                f"explicit --mdbook binary is missing or a symlink: {explicit_bin}"
+            )
+        return resolved
 
     if not url.startswith("https://"):
         raise DocError(f"mdBook URL must use https: {url}")
 
+    cache_dir = cache_dir.resolve()
     cache_dir.mkdir(parents=True, exist_ok=True)
     install_dir = cache_dir / f"mdbook-v{MDBOOK_VERSION}-{MDBOOK_TARGET}"
     binary_path = install_dir / "mdbook"
@@ -1436,12 +1688,13 @@ def ensure_mdbook(
 
 
 class _HtmlAuditor(HTMLParser):
-    """Audit rendered HTML for link targets, `<main>` structure, XSS, and code blocks."""
+    """Audit rendered HTML for link/media targets, `<main>` structure, XSS, and code blocks."""
 
     def __init__(self) -> None:
         super().__init__()
         self.ids: set[str] = set()
         self.hrefs: list[str] = []
+        self.srcs: list[str] = []
         self.main_depth = 0
         self.main_open_count = 0
         self.main_close_count = 0
@@ -1450,7 +1703,11 @@ class _HtmlAuditor(HTMLParser):
         self.current_code_lang = ""
         self.current_code_conceptual = False
         self.current_code_chunks: list[str] = []
+        self.current_boring_chunks: list[str] = []
+        self.code_span_is_boring: list[bool] = []
+        self.boring_span_depth = 0
         self.checked_code_blocks: list[tuple[str, bool, str]] = []
+        self.checked_code_boring_blocks: list[tuple[str, bool, str]] = []
         self.unsafe_findings: list[str] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -1470,6 +1727,12 @@ class _HtmlAuditor(HTMLParser):
             if tag_l == "a" and attr_name == "href" and raw_val is not None:
                 self.hrefs.append(raw_val)
             if self.main_depth > 0:
+                if (
+                    tag_l in MEDIA_SRC_TAGS
+                    and attr_name == "src"
+                    and raw_val is not None
+                ):
+                    self.srcs.append(raw_val)
                 if attr_name.startswith("on"):
                     self.unsafe_findings.append(
                         f"disallowed event-handler attribute `{attr_name}` "
@@ -1512,11 +1775,35 @@ class _HtmlAuditor(HTMLParser):
                             self.current_code_lang = lang
                             self.current_code_conceptual = "conceptual" in classes
                             self.current_code_chunks = []
+                            self.current_boring_chunks = []
+                            self.code_span_is_boring = []
+                            self.boring_span_depth = 0
                             break
+            elif (
+                tag_l == "span"
+                and self.in_checked_code
+                and self.current_code_lang in {"rust", "rs"}
+            ):
+                classes = set()
+                for raw_name, raw_val in attrs:
+                    if raw_name.lower() == "class" and raw_val:
+                        classes.update(raw_val.split())
+                is_boring = "boring" in classes
+                self.code_span_is_boring.append(is_boring)
+                if is_boring:
+                    self.boring_span_depth += 1
 
     def handle_endtag(self, tag: str) -> None:
         tag_l = tag.lower()
-        if tag_l == "code" and self.in_checked_code:
+        if (
+            tag_l == "span"
+            and self.in_checked_code
+            and self.code_span_is_boring
+        ):
+            was_boring = self.code_span_is_boring.pop()
+            if was_boring and self.boring_span_depth > 0:
+                self.boring_span_depth -= 1
+        elif tag_l == "code" and self.in_checked_code:
             self.checked_code_blocks.append(
                 (
                     self.current_code_lang,
@@ -1524,10 +1811,20 @@ class _HtmlAuditor(HTMLParser):
                     "".join(self.current_code_chunks).strip(),
                 )
             )
+            self.checked_code_boring_blocks.append(
+                (
+                    self.current_code_lang,
+                    self.current_code_conceptual,
+                    "".join(self.current_boring_chunks),
+                )
+            )
             self.in_checked_code = False
             self.current_code_lang = ""
             self.current_code_conceptual = False
             self.current_code_chunks = []
+            self.current_boring_chunks = []
+            self.code_span_is_boring = []
+            self.boring_span_depth = 0
         elif tag_l == "pre" and self.pre_depth > 0:
             self.pre_depth -= 1
         elif tag_l == "main":
@@ -1539,7 +1836,10 @@ class _HtmlAuditor(HTMLParser):
 
     def handle_data(self, data: str) -> None:
         if self.in_checked_code:
-            self.current_code_chunks.append(data)
+            if self.boring_span_depth > 0:
+                self.current_boring_chunks.append(data)
+            else:
+                self.current_code_chunks.append(data)
 
 
 def check_built_html_links(
@@ -1547,8 +1847,9 @@ def check_built_html_links(
     site_url_prefix: str = SITE_URL_PREFIX,
     *,
     verified_snippets: set[str] | None = None,
+    verified_boring_lines: set[str] | None = None,
 ) -> list[str]:
-    """Verify built HTML links, `#fragments`, `<main>` hygiene, and code parity."""
+    """Verify built HTML links, media `src` targets, `#fragments`, `<main>` hygiene, and code parity."""
     errors: list[str] = []
     html_files = sorted(html_root.rglob("*.html"))
     if not html_files:
@@ -1556,6 +1857,7 @@ def check_built_html_links(
 
     page_ids: dict[Path, set[str]] = {}
     page_hrefs: dict[Path, list[str]] = {}
+    page_srcs: dict[Path, list[str]] = {}
     root_resolved = html_root.resolve()
     skip_code_parity_pages = {
         "foundations/principles.html",
@@ -1584,11 +1886,18 @@ def check_built_html_links(
 
         # Structural defense against CommonMark parser desyncs: every rendered
         # `CHECKED_FENCE_LANGS` code block in authored chapters must match a
-        # verified example artifact (and `conceptual` is forbidden in strict
-        # chapters).
+        # verified example artifact slice (and `conceptual` is forbidden in
+        # strict chapters).
         if verified_snippets is not None and rel_posix not in skip_code_parity_pages:
             top_section = rel_page.parts[0] if len(rel_page.parts) > 1 else ""
-            for lang, is_conceptual, code_text in auditor.checked_code_blocks:
+            for (lang, is_conceptual, code_text), (
+                _b_lang,
+                _b_conc,
+                boring_text,
+            ) in zip(
+                auditor.checked_code_blocks,
+                auditor.checked_code_boring_blocks,
+            ):
                 if is_conceptual:
                     if top_section in STRICT_CHAPTER_DIRS:
                         errors.append(
@@ -1601,9 +1910,18 @@ def check_built_html_links(
                         f"{rel_page}: rendered `{lang}` code block does not "
                         f"match any verified artifact under anneal/book/examples/"
                     )
+                if verified_boring_lines is not None and boring_text:
+                    for boring_line in boring_text.splitlines():
+                        if boring_line and boring_line not in verified_boring_lines:
+                            errors.append(
+                                f"{rel_page}: rendered hidden `{lang}` line does not "
+                                f"match any verified artifact under anneal/book/examples/: "
+                                f"{boring_line!r}"
+                            )
 
         page_ids[resolved] = auditor.ids
         page_hrefs[resolved] = auditor.hrefs
+        page_srcs[resolved] = auditor.srcs
 
     for page, hrefs in sorted(page_hrefs.items()):
         rel_page = page.relative_to(root_resolved)
@@ -1658,6 +1976,57 @@ def check_built_html_links(
                     errors.append(
                         f"{rel_page}: broken anchor `#{fragment}` in link `{href}`"
                     )
+
+    for page, srcs in sorted(page_srcs.items()):
+        rel_page = page.relative_to(root_resolved)
+        for src in srcs:
+            stripped_src = src.strip()
+            if not stripped_src:
+                errors.append(f"{rel_page}: empty image/media source `src`")
+                continue
+            parsed = urlsplit(stripped_src)
+            scheme = parsed.scheme.lower()
+            if scheme in {"http", "https"}:
+                if not parsed.netloc:
+                    errors.append(
+                        f"{rel_page}: malformed image/media source `{src}` (missing host)"
+                    )
+                continue
+            if scheme:
+                errors.append(
+                    f"{rel_page}: disallowed URL scheme `{scheme}:` in media source `{src}`"
+                )
+                continue
+            if parsed.netloc:
+                errors.append(
+                    f"{rel_page}: scheme-relative media source `{src}` is not allowed"
+                )
+                continue
+
+            path_part = unquote(parsed.path)
+            if not path_part:
+                errors.append(f"{rel_page}: broken image/media source `{src}`")
+                continue
+            if path_part.startswith(site_url_prefix):
+                rel = path_part[len(site_url_prefix) :]
+                target = (root_resolved / rel).resolve()
+            elif path_part.startswith("/"):
+                errors.append(
+                    f"{rel_page}: absolute image/media source `{src}` does not "
+                    f"start with `{site_url_prefix}`"
+                )
+                continue
+            else:
+                target = (page.parent / path_part).resolve()
+
+            if not _is_within(target, root_resolved):
+                errors.append(
+                    f"{rel_page}: image/media source `{src}` escapes built HTML root"
+                )
+                continue
+            if not target.is_file():
+                errors.append(f"{rel_page}: broken image/media source `{src}`")
+                continue
     return errors
 
 
@@ -1676,6 +2045,7 @@ def build_book(
             return source_errors
 
     verified_snippets = _collect_verified_snippet_texts(anneal_root)
+    verified_boring_lines = _collect_verified_rust_boring_lines(anneal_root)
     book_src = anneal_root / "book"
     with tempfile.TemporaryDirectory(prefix="anneal-book-stage-") as stage_str:
         stage_root = Path(stage_str)
@@ -1720,7 +2090,9 @@ def build_book(
             ]
 
     return check_built_html_links(
-        output_abs, verified_snippets=verified_snippets
+        output_abs,
+        verified_snippets=verified_snippets,
+        verified_boring_lines=verified_boring_lines,
     )
 
 

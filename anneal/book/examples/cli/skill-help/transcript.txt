@@ -1,0 +1,8 @@
+$ cargo anneal skill --help
+Print the bundled agent skill
+
+Usage: cargo anneal skill [OPTIONS]
+
+Options:
+      --example  Print a complete Rust, request, and Lean example
+  -h, --help     Print help

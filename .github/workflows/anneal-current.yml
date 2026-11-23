@@ -449,28 +449,6 @@ jobs:
             --jobs 4 \
             --json-out "$ANNEAL_TEST_DIAGNOSTICS/guard-mutation.json"
 
-      - name: Verify and build public documentation
-        id: docs
-        # Strip GitHub Actions cache and artifact service credentials because
-        # `ci/check_docs.py` lives outside `trusted/`. Clear `LD_LIBRARY_PATH`
-        # exported by `setup` so system `python3` does not load Rust's bundled
-        # shared libraries when downloading the pinned mdBook release.
-        env:
-          ACTIONS_CACHE_URL: ''
-          ACTIONS_RESULTS_URL: ''
-          ACTIONS_RUNTIME_TOKEN: ''
-          LD_LIBRARY_PATH: ''
-        run: |
-          set -euo pipefail
-          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/public-docs.log") 2>&1
-          python3 -B ci/check_docs.py \
-            --check-sources \
-            --verify-examples \
-            --cargo-anneal "$ANNEAL_TEST_CARGO_ANNEAL" \
-            --build \
-            --mdbook-cache "$RUNNER_TEMP/anneal-mdbook-cache" \
-            --output "$RUNNER_TEMP/anneal-book"
-
       - name: Verify clean working tree
         id: clean_tree
         env:
@@ -903,6 +881,28 @@ jobs:
             --config 'profile.dev.package.sha2.opt-level=3' \
             --config 'profile.dev.package.zstd-sys.opt-level=3' \
             -- --ignored --exact installed_smoke --nocapture
+
+      - name: Verify and build public documentation
+        id: docs
+        # Strip GitHub Actions cache and artifact service credentials because
+        # `ci/check_docs.py` lives outside `trusted/`. Clear `LD_LIBRARY_PATH`
+        # exported by `setup` so system `python3` does not load Rust's bundled
+        # shared libraries when downloading the pinned mdBook release.
+        env:
+          ACTIONS_CACHE_URL: ''
+          ACTIONS_RESULTS_URL: ''
+          ACTIONS_RUNTIME_TOKEN: ''
+          LD_LIBRARY_PATH: ''
+        run: |
+          set -euo pipefail
+          exec > >(tee "$ANNEAL_TEST_DIAGNOSTICS/public-docs.log") 2>&1
+          python3 -B ci/check_docs.py \
+            --check-sources \
+            --verify-examples \
+            --cargo-anneal "$ANNEAL_TEST_CARGO_ANNEAL" \
+            --build \
+            --mdbook-cache "$RUNNER_TEMP/anneal-mdbook-cache" \
+            --output "$RUNNER_TEMP/anneal-book"
 
       - name: Verify clean working tree
         id: clean_tree

@@ -8,8 +8,8 @@ those terms. -->
 
 # Installing the Toolchain
 
-`cargo anneal setup` installs the pinned Rust and Lean 4 toolchain bundle that
-Anneal uses during verification.
+`cargo anneal setup` installs or reuses the versioned Rust and Lean 4 toolchain
+bundle that Anneal uses during verification.
 
 ## Inspecting `setup` options
 
@@ -19,10 +19,20 @@ Check the supported options for `cargo anneal setup`:
 {{#include ../../examples/cli/setup-help/transcript.txt}}
 ```
 
-During pre-alpha development, use `--local-archive <path>` to install a locally
-built toolchain archive (see
+Without `--local-archive`, `cargo anneal setup` reuses an existing cached
+installation for the current `cargo-anneal` version or downloads the pinned
+remote archive. Pass `--clear-old` in scripts and CI to remove older cached
+toolchain directories without interactive prompts.
+
+When testing a locally built toolchain archive—or working before a remote
+release archive is published for your revision—pass `--local-archive <path>`
+(see
 [Developing Anneal](https://github.com/google/zerocopy/blob/main/anneal/docs/README.md)
-on GitHub for instructions on building the archive with Nix).
+and
+[Alpha Usage](https://github.com/google/zerocopy/blob/main/anneal/docs/alpha.md)
+on GitHub for instructions on building the archive with Nix). Builds compiled
+with `--no-default-features` omit `setup` and instead accept explicit
+`--capture`, `--sysroot`, and `--lean` paths on `cargo anneal verify`.
 
 ## Fail-closed archive handling
 

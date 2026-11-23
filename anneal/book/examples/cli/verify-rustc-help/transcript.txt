@@ -1,0 +1,32 @@
+$ cargo anneal verify rustc --help
+Verify a crate from explicit rustc inputs and Lean module mappings
+
+Usage: cargo anneal verify rustc [OPTIONS] --crate-name <CRATE_NAME> --spec-file <MOD=PATH> --proof-file <MOD=PATH> <CRATE_ROOT>
+
+Arguments:
+  <CRATE_ROOT>  Crate root Rust source file
+
+Options:
+      --crate-name <CRATE_NAME>        Crate name passed to rustc capture
+      --edition <EDITION>              Rust edition (`2015`, `2018`, `2021`, or `2024`) [default: 2024] [possible values: 2015, 2018, 2021, 2024]
+      --target <TARGET>                Target triple for the verification profile [default: x86_64-unknown-linux-gnu]
+      --cfg <CFG>                      Conditional compilation `cfg` flag passed to capture
+      --capture <CAPTURE>              Capture driver; defaults to the installed bundle, then a sibling. The receipt records its SHA-256, which no lock pins
+      --env <KEY=VALUE>                Compile-time environment variable (`KEY=VALUE`) for `env!` and `option_env!`
+      --lean <LEAN>                    Lean executable; defaults to the installed bundle, cached toolchain, or pinned elan installation. Its SHA-256 must match the foundation lock, which does not cover the shared libraries it loads
+      --source-file <SOURCE_FILE>      Additional Rust source file in the crate
+      --spec-file <MOD=PATH>           Reviewed specification module mapping (`<MOD>=<PATH>`)
+      --sysroot <SYSROOT>              Compiler sysroot; defaults to the installed bundle when present. Capture checks its reported rustc commit but does not hash it
+      --artifacts <ARTIFACTS>          New UTF-8 directory path for retained capture, sources and audit evidence
+      --proof-file <MOD=PATH>          Authored proof module mapping (`<MOD>=<PATH>`)
+      --export-lean-lib                Export compiled `.olean*` files to `<artifacts>/lean-lib/`
+      --spec-decl <[MODULE:]DECL>      Specification declaration (`[MODULE:]DECL`) [default: Spec:Spec.specs]
+      --allow-unpinned-lean            Allow unpinned Lean with explicit `--lean` (taints receipt)
+      --theorem <[MODULE:]DECL>        Proof theorem declaration (`[MODULE:]DECL`) [default: Proof:Proof.verify]
+      --allow-unsandboxed-elaboration  Disable OS-level elaborator containment (`ExecSeal`) and run Lean unsandboxed (taints receipt)
+      --select <SELECT>                Select a function by its compiler path; omit to require the whole crate
+      --allow-sorry-in-proof           Allow `sorry` in proof modules only, recording `sorry_declarations` (never specifications, model, capture, or expected; taints receipt)
+      --lean-memory-mb <MB>            Explicit Lean memory limit in MiB (`-M<MB>`; `resolve-imports` enforces a 4096 MiB floor)
+      --no-cache                       Disable prebuilt and local disk `.olean` caching for bundled modules and `TrustedBoundary`
+      --no-rebuild-bundled             Fail closed rather than compiling `Trusted.*`, `Anneal.*`, or `TrustedBoundary` when absent from prebuilt or local `.olean` caches
+  -h, --help                           Print help

@@ -4,8 +4,10 @@ Formally verify Rust programs in Lean 4
 Usage: cargo anneal [COMMAND]
 
 Commands:
-  setup  Install the pinned Anneal toolchain archive
-  help   Print this message or the help of the given subcommand(s)
+  setup   Install or reuse the versioned Anneal toolchain archive
+  skill   Print the bundled agent skill
+  verify  Capture a configured compilation and check its authored source proof
+  help    Print this message or the help of the given subcommand(s)
 
 Options:
   -h, --help     Print help
