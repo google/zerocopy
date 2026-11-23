@@ -87215,6 +87215,173 @@
         "systems/realtime"
       ]
     },
+    "receipt-attestation-audit-cli-inspection-and-anti-spoofing": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "repository": "cli/cli",
+            "revision": "de06af2c2ea536d5722fda35dc2001565f9b9f64"
+          },
+          "name": "GitHub CLI attestation inspect and verify"
+        },
+        {
+          "identity": {
+            "repository": "sigstore/cosign",
+            "revision": "19c90f91263701e6e3fb9f6e32ae1a8199712baf"
+          },
+          "name": "Sigstore Cosign"
+        },
+        {
+          "identity": {
+            "repository": "slsa-framework/slsa-verifier",
+            "revision": "46099781eca1b8e91884770f40476631b033e0e8"
+          },
+          "name": "SLSA Verifier"
+        },
+        {
+          "identity": {
+            "repository": "in-toto/in-toto",
+            "revision": "e352b43ad7cb8915d84c36d791aa61346152a0a3"
+          },
+          "name": "in-toto reference implementation"
+        },
+        {
+          "identity": {
+            "repository": "in-toto/witness",
+            "revision": "1eaafd56616bdf6c136e80ab92a9a0944e6c0ced"
+          },
+          "name": "in-toto Witness"
+        },
+        {
+          "identity": {
+            "repository": "mozilla/cargo-vet",
+            "revision": "a9bde85910409be3d2d61e6f6ff6ba7a521f0412"
+          },
+          "name": "cargo-vet"
+        },
+        {
+          "identity": {
+            "repository": "rust-secure-code/cargo-auditable",
+            "revision": "8e1e4eb579a99622f4430b2b28e441a24fb2d74d"
+          },
+          "name": "cargo-auditable and rust-audit-info"
+        },
+        {
+          "identity": {
+            "repository": "rustsec/rustsec",
+            "revision": "bafea68f94f3b9587f826c5b7ceda78955c5ba84"
+          },
+          "name": "cargo-audit (RustSec)"
+        },
+        {
+          "identity": {
+            "repository": "EmbarkStudios/cargo-deny",
+            "revision": "6d512893fcfea934e8e69c5df44132a4970c42d0"
+          },
+          "name": "cargo-deny"
+        },
+        {
+          "identity": {
+            "repository": "zizmorcore/zizmor",
+            "revision": "0af0be985a4cae71ecfaa64ef574a94b35dc722a"
+          },
+          "name": "zizmor"
+        },
+        {
+          "identity": {
+            "repository": "anchore/grype",
+            "revision": "8b2987cf575c69fb715ae4d3b15bb470e3e8f83b"
+          },
+          "name": "Anchore Grype"
+        },
+        {
+          "identity": {
+            "repository": "CycloneDX/cyclonedx-cli",
+            "revision": "b3cfa4b0edc356dad07e0b6e7ab6da0a94af0246"
+          },
+          "name": "CycloneDX CLI"
+        },
+        {
+          "identity": {
+            "repository": "openssl/openssl",
+            "revision": "241114689e8a032d00f7408987bda6309f34c45b"
+          },
+          "name": "OpenSSL X.509 printer"
+        },
+        {
+          "identity": {
+            "tool": "gpg"
+          },
+          "name": "GnuPG CLI"
+        },
+        {
+          "identity": {
+            "repository": "dafny-lang/dafny",
+            "revision": "427892ac6f36204c6a1c760b328b74e0715a0efa"
+          },
+          "name": "Dafny auditor"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus",
+            "revision": "1ce6a59bd72713cf486a7660097fe5ac57519617"
+          },
+          "name": "Verus verifier and verus-spec-check"
+        },
+        {
+          "identity": {
+            "repository": "verus-lang/verus-spec-check",
+            "revision": "8ffdbe43a1ac47db6208eb2da338676244143d9f"
+          },
+          "name": "verus-spec-check"
+        },
+        {
+          "identity": {
+            "repository": "graydon/millipede",
+            "revision": "4f13d3980a5570177a774e63cfbc95e652dd3cde"
+          },
+          "name": "Millipede assumption ledger"
+        },
+        {
+          "identity": {
+            "repository": "seL4/l4v",
+            "revision": "df4f444823f8c9f99b4a9f45990001eecc820a5a"
+          },
+          "name": "seL4 l4v proof regression and sorry scripts"
+        },
+        {
+          "identity": {
+            "repository": "AbsInt/CompCert",
+            "revision": "2685140bf72c959446981fb99b5e44a8975021bc"
+          },
+          "name": "CompCert proof hygiene checks"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/rust",
+            "revision": "58cf8f9c35b355199727627d07ae34a4e2846d67"
+          },
+          "name": "Rust compiler Trojan Source lexer checks"
+        },
+        {
+          "identity": {
+            "crate_version": "1.0.154",
+            "repository": "serde-rs/json",
+            "revision": "f51fa15a7015c7d02817a46d2db44c899a0016e8"
+          },
+          "name": "serde_json"
+        }
+      ],
+      "topics": [
+        "tooling/cli",
+        "tooling/diagnostics",
+        "security/supply-chain",
+        "security/attestation",
+        "verification/auditing",
+        "verification/trusted-computing-base"
+      ]
+    },
     "reentrant-ffi-mixed-mir-isa-call-stacks-tree-borrows-and-oracle-composition": {
       "observed_at": "2026-11-20",
       "subjects": [
