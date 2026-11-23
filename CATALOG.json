@@ -26094,6 +26094,66 @@
         "ffi/protocols"
       ]
     },
+    "ci-core-sandboxed-github-actions-and-nix-container-economics": {
+      "observed_at": "2026-11-23",
+      "subjects": [
+        {
+          "identity": {
+            "archive_aarch64_sha256": "5bb77f2861a04501f5ed14f155abc4c3a6ef51b8b60b1f6faf7cf7c6cd2b60da",
+            "archive_x86_64_sha256": "c92626ea849838b5e1472f5580bfdefb0ce7874b061eef7d32c6b65f51659cf1",
+            "repository": "joshlf/ci-core",
+            "revision": "39a79866b604b956467709d631ebbde97041a857",
+            "version": "v0.1.0"
+          },
+          "name": "ci-core sandboxed CI planner, executor, and Sigstore attestation engine"
+        },
+        {
+          "identity": {
+            "repository": "google/zerocopy",
+            "revision": "db067a465fb2d7ab93f217a104a2b4fc9312c4da"
+          },
+          "name": "zerocopy and Anneal multi-workspace repository"
+        },
+        {
+          "identity": {
+            "repository": "rust-lang/cargo",
+            "revision": "930a674da900a73c1dfbe16be62c42e75bdfdfc0"
+          },
+          "name": "Cargo manifest, workspace, and config discovery reference"
+        },
+        {
+          "identity": {
+            "repository": "containers/bubblewrap",
+            "source_tarball_sha256": "0e85c8702248b8dd64144f594147553650cdd0e4c951690345faace79c217c4d",
+            "version": "v0.13.1"
+          },
+          "name": "bubblewrap unprivileged Linux user-namespace sandbox"
+        },
+        {
+          "identity": {
+            "checkout_repository": "actions/checkout",
+            "checkout_revision": "3d3c42e5aac5ba805825da76410c181273ba90b1",
+            "download_artifact_repository": "actions/download-artifact",
+            "download_artifact_revision": "9000827ccba6bdab643e8b6fd33ac0654aef8333",
+            "upload_artifact_repository": "actions/upload-artifact",
+            "upload_artifact_revision": "cf430e030ddbb5b0abf93d22962f4752f3646cd9"
+          },
+          "name": "GitHub Actions checkout, upload-artifact, and download-artifact Node 24 releases"
+        }
+      ],
+      "topics": [
+        "build/caching",
+        "build/nix",
+        "build/sandboxing",
+        "cargo/workspaces",
+        "security/attestation",
+        "security/ci",
+        "security/container-sandboxing",
+        "systems/bubblewrap",
+        "tooling/ci",
+        "vcs/git"
+      ]
+    },
     "ci-enforced-source-closure-skipping-nix-and-alternatives": {
       "observed_at": "2026-11-21",
       "subjects": [
