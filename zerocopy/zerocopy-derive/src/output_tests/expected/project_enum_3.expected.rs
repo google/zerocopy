@@ -9,7 +9,6 @@
     clippy::missing_inline_in_public_items,
 )]
 #[deny(ambiguous_associated_items)]
-#[automatically_derived]
 const _: () = {
     #[repr(C)]
     #[allow(dead_code, clippy::derive_partial_eq_without_eq)]
@@ -60,7 +59,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         enum ẕ0 {}
         enum ẕ1 {}
@@ -80,7 +78,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -108,7 +105,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -157,7 +153,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -196,7 +191,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -235,7 +229,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -274,7 +267,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -321,7 +313,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -360,7 +351,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -399,7 +389,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -438,7 +427,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -485,7 +473,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -524,7 +511,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -563,7 +549,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -602,7 +587,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -649,7 +633,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -688,7 +671,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -727,7 +709,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -766,7 +747,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -813,7 +793,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -852,7 +831,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -891,7 +869,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -930,7 +907,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -977,7 +953,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1016,7 +991,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1055,7 +1029,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1094,7 +1067,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1143,7 +1115,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1182,7 +1153,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1221,7 +1191,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1275,7 +1244,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         enum ẕ0 {}
         enum ẕ1 {}
@@ -1293,7 +1261,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1321,7 +1288,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1370,7 +1336,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1409,7 +1374,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1448,7 +1412,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1487,7 +1450,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1534,7 +1496,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1573,7 +1534,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1612,7 +1572,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1651,7 +1610,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1698,7 +1656,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1737,7 +1694,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1776,7 +1732,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1815,7 +1770,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1862,7 +1816,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1901,7 +1854,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1940,7 +1892,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -1979,7 +1930,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2028,7 +1978,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2067,7 +2016,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2106,7 +2054,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2156,7 +2103,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         enum ẕ__field_StructLike {}
         enum ẕ__field_TupleLike {}
@@ -2172,7 +2118,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2197,7 +2142,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2243,7 +2187,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2279,7 +2222,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2315,7 +2257,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2361,7 +2302,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2397,7 +2337,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2433,7 +2372,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2477,7 +2415,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2513,7 +2450,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2555,7 +2491,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         enum ẕtag {}
         enum ẕvariants {}
@@ -2570,7 +2505,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2595,7 +2529,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2639,7 +2572,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2675,7 +2607,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2711,7 +2642,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2747,7 +2677,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2791,7 +2720,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2827,7 +2755,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2863,7 +2790,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 'a: 'static,
@@ -2900,7 +2826,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -2928,7 +2853,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3008,7 +2932,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3047,7 +2970,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3086,7 +3008,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3146,7 +3067,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3226,7 +3146,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3265,7 +3184,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3304,7 +3222,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3364,7 +3281,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3444,7 +3360,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3483,7 +3398,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3522,7 +3436,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3582,7 +3495,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3662,7 +3574,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3701,7 +3612,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3740,7 +3650,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3800,7 +3709,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3880,7 +3788,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3919,7 +3826,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -3958,7 +3864,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4018,7 +3923,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4098,7 +4002,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4137,7 +4040,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4176,7 +4078,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4236,7 +4137,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4316,7 +4216,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4355,7 +4254,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4394,7 +4292,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4454,7 +4351,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4534,7 +4430,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4573,7 +4468,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,
@@ -4612,7 +4506,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         unsafe impl<
             'a: 'static,

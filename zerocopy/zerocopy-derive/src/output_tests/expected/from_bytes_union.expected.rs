@@ -9,7 +9,6 @@
     clippy::missing_inline_in_public_items,
 )]
 #[deny(ambiguous_associated_items)]
-#[automatically_derived]
 const _: () = {
     unsafe impl ::zerocopy::TryFromBytes for Foo
     where
@@ -45,7 +44,6 @@ const _: () = {
         clippy::missing_inline_in_public_items,
     )]
     #[deny(ambiguous_associated_items)]
-    #[automatically_derived]
     const _: () = {
         enum ẕa {}
         #[allow(
@@ -59,7 +57,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl ::zerocopy::HasTag<
                 ::zerocopy::project_clients::TryFromBytesDerive,
@@ -80,7 +77,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl ::zerocopy::HasField<
                 ::zerocopy::project_clients::TryFromBytesDerive,
@@ -119,7 +115,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 ___ZcAliasing: ::zerocopy::invariant::Aliasing,
@@ -151,7 +146,6 @@ const _: () = {
             clippy::missing_inline_in_public_items,
         )]
         #[deny(ambiguous_associated_items)]
-        #[automatically_derived]
         const _: () = {
             unsafe impl<
                 ___ZcAliasing: ::zerocopy::invariant::Aliasing,
@@ -185,7 +179,6 @@ const _: () = {
     clippy::missing_inline_in_public_items,
 )]
 #[deny(ambiguous_associated_items)]
-#[automatically_derived]
 const _: () = {
     unsafe impl ::zerocopy::FromZeros for Foo
     where
@@ -205,7 +198,6 @@ const _: () = {
     clippy::missing_inline_in_public_items,
 )]
 #[deny(ambiguous_associated_items)]
-#[automatically_derived]
 const _: () = {
     unsafe impl ::zerocopy::FromBytes for Foo
     where
