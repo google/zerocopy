@@ -562,6 +562,42 @@ pub enum Statement {
     Nop,
 }
 
+/// Compilation crate type explicitly authorized for capture.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum CrateType {
+    #[default]
+    Lib,
+    Bin,
+}
+
+impl CrateType {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Lib => "lib",
+            Self::Bin => "bin",
+        }
+    }
+}
+
+/// Panic unwinding strategy explicitly configured for capture.
+#[derive(Clone, Copy, Debug, Default, PartialEq, Eq, Serialize)]
+#[serde(rename_all = "snake_case")]
+pub enum PanicStrategy {
+    #[default]
+    Unwind,
+    Abort,
+}
+
+impl PanicStrategy {
+    pub const fn as_str(self) -> &'static str {
+        match self {
+            Self::Unwind => "unwind",
+            Self::Abort => "abort",
+        }
+    }
+}
+
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
 #[serde(tag = "kind", rename_all = "snake_case")]
 pub enum Terminator {
@@ -576,6 +612,7 @@ pub enum Terminator {
     },
     Ret,
     Unreachable,
+    Unsupported,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize)]
@@ -911,7 +948,7 @@ impl Body {
                     }
                     check_block(*otherwise)?;
                 }
-                Terminator::Ret | Terminator::Unreachable => {}
+                Terminator::Ret | Terminator::Unreachable | Terminator::Unsupported => {}
             }
         }
         Ok(Self {
@@ -977,7 +1014,10 @@ impl Body {
             }
             match &block.terminator {
                 Terminator::SwitchInt { operand, .. } => operand.collect_enum_ids(out),
-                Terminator::Goto { .. } | Terminator::Ret | Terminator::Unreachable => {}
+                Terminator::Goto { .. }
+                | Terminator::Ret
+                | Terminator::Unreachable
+                | Terminator::Unsupported => {}
             }
         }
     }
@@ -1071,6 +1111,8 @@ pub struct Compiler {
 pub struct Configuration {
     pub crate_root: PathBuf,
     pub crate_name: String,
+    pub crate_type: CrateType,
+    pub panic: PanicStrategy,
     pub edition: String,
     pub target: String,
     pub cfg: Vec<String>,
@@ -1726,5 +1768,22 @@ mod tests {
         let mut ids = BTreeSet::new();
         body.collect_enum_ids(&mut ids);
         assert_eq!(ids, BTreeSet::from([101, 202]));
+
+        let unsupported_term = Body::try_new(
+            0,
+            false,
+            vec![Ty::Never],
+            vec![Block {
+                statements: vec![],
+                terminator: Terminator::Unsupported,
+            }],
+            "rust-path-v1::diverging_call".into(),
+        )
+        .unwrap();
+        let term_json = serde_json::to_value(&unsupported_term).unwrap();
+        assert_eq!(
+            term_json["blocks"][0]["terminator"],
+            serde_json::json!({ "kind": "unsupported" })
+        );
     }
 }

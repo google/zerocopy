@@ -3489,15 +3489,25 @@ fn rejects_symlinked_sources_and_disallowed_manifest_targets() {
         );
     }
 
-    // 4. Binary-only crate (no library target) must be rejected.
+    // 4. Multi-target crates (lib + bin, or multiple binaries) must be rejected.
     {
-        let sandbox = SandboxCrate::new("bin-only", ok_src);
-        fs::remove_file(sandbox.crate_dir.join("src/lib.rs")).unwrap();
-        fs::write(sandbox.crate_dir.join("src/main.rs"), "fn main() {}\n").unwrap();
-        let err = verify_sandbox(&tools, &sandbox, ok_src).unwrap_err();
+        let lib_and_bin = SandboxCrate::new("lib-and-bin", ok_src);
+        fs::write(lib_and_bin.crate_dir.join("src/main.rs"), "fn main() {}\n").unwrap();
+        let err = verify_sandbox(&tools, &lib_and_bin, ok_src).unwrap_err();
         assert!(
-            err.message.contains("Cargo shortcut requires a library target"),
-            "expected binary-only rejection, got: {err}"
+            err.message.contains("Cargo shortcut requires a single library or binary target"),
+            "expected lib+bin rejection, got: {err}"
+        );
+
+        let multi_bin = SandboxCrate::new("multi-bin", ok_src);
+        fs::remove_file(multi_bin.crate_dir.join("src/lib.rs")).unwrap();
+        fs::write(multi_bin.crate_dir.join("src/main.rs"), "fn main() {}\n").unwrap();
+        fs::create_dir_all(multi_bin.crate_dir.join("src/bin")).unwrap();
+        fs::write(multi_bin.crate_dir.join("src/bin/extra.rs"), "fn main() {}\n").unwrap();
+        let err = verify_sandbox(&tools, &multi_bin, ok_src).unwrap_err();
+        assert!(
+            err.message.contains("Cargo shortcut requires a single library or binary target"),
+            "expected multi-bin rejection, got: {err}"
         );
     }
 
@@ -3538,7 +3548,7 @@ fn rejects_symlinked_sources_and_disallowed_manifest_targets() {
         .unwrap();
         let err = verify_sandbox(&tools, &sandbox, ok_src).unwrap_err();
         assert!(
-            err.message.contains("Cargo shortcut requires a dependency-free library"),
+            err.message.contains("Cargo shortcut requires a dependency-free crate"),
             "expected Cargo dependencies rejection, got: {err}"
         );
     }
@@ -4312,4 +4322,233 @@ pub unsafe fn f(x: usize) -> S { S { val: x } }
         "expected unrecognized anneal: directive rejection, got: {}",
         failure.diagnostic
     );
+}
+
+#[test]
+fn cargo_shortcut_verifies_std_and_nostd_nomain_binaries() {
+    let tools = Tools::discover();
+
+    // 1. Single `std` binary (`src/main.rs`) verifies in whole-crate Cargo shortcut
+    // with `configuration.crate_type == "bin"` and `configuration.panic == "unwind"`.
+    {
+        let sandbox = SandboxCrate::new("std-bin", "");
+        fs::remove_file(sandbox.crate_dir.join("src/lib.rs")).unwrap();
+        fs::write(sandbox.crate_dir.join("src/main.rs"), "fn main() {}\n").unwrap();
+        fs::write(
+            sandbox.proof_dir.join("Spec.lean"),
+            format!(
+                "{LICENSE_HEADER}prelude\nimport Trusted.MirSemantics\n\n\
+                 namespace Spec\nopen Trusted.MirAst Trusted.MirSemantics\n\
+                 def specs : Specs where\n  safety := fun _ _ => True\n  property := fun _ => True\n\
+                 end Spec\n"
+            ),
+        )
+        .unwrap();
+        fs::write(
+            sandbox.proof_dir.join("Proof.lean"),
+            format!(
+                "{LICENSE_HEADER}prelude\nimport Expected\nimport Anneal.MirWp\n\n\
+                 namespace Proof\nopen Trusted.MirAst Trusted.MirSemantics Anneal.MirWp\n\
+                 theorem main_exec : execProg (entryProgForBody Captured.program 0) 8\n    \
+                   {{ args := [] }} (fun o => o = .returned ⟨.unit, ⟨[]⟩⟩) := rfl\n\
+                 theorem main_wf : WellFormed (entryProgForBody Captured.program 0) {{ args := [] }} :=\n  \
+                   (spec_and_behavior_of_wp_eq (wpProg_of_execProg main_exec)).1\n\
+                 theorem verify : Expected.claim := by\n  \
+                   refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, True.intro⟩\n  \
+                   intro id body found\n  \
+                   cases id with\n  \
+                   | zero =>\n    \
+                     have same : Captured.program.bodies[0] = body := Option.some.inj found\n    \
+                     subst body\n    \
+                     refine ⟨found, rfl, ?_⟩\n    \
+                     intro args h_valid _\n    \
+                     cases args with\n    \
+                     | nil => exact main_wf\n    \
+                     | cons _ _ => cases h_valid\n  \
+                   | succ id => cases found\n\
+                 end Proof\n"
+            ),
+        )
+        .unwrap();
+
+        let mut cmd = tools.command();
+        cmd.arg("--manifest-path")
+            .arg(sandbox.crate_dir.join("Cargo.toml"))
+            .arg("--proof-dir")
+            .arg(&sandbox.proof_dir)
+            .arg("--artifacts")
+            .arg(&sandbox.artifacts_dir);
+        let output = tools.run_command(cmd).unwrap();
+        assert!(output.status.success(), "{output:?}");
+        let receipt: Value = serde_json::from_slice(&output.stdout).unwrap();
+        assert_eq!(receipt["status"], "crate_verified", "{receipt}");
+        assert_eq!(receipt["configuration"]["crate_type"], "bin", "{receipt}");
+        assert_eq!(receipt["configuration"]["panic"], "unwind", "{receipt}");
+    }
+
+    // 2. `#![no_std] #![no_main]` hyphenated binary crate with `#[panic_handler]`, `_start -> !`,
+    // and diverging `zx_process_exit(1) -> !`:
+    //   - fails without `--panic abort` (defaults to unwind),
+    //   - fails in whole-crate scope (without `--select`),
+    //   - passes `selected_unit_verified` with `--panic abort --select guarded_exit` and strict Spec,
+    //   - fails `proof_failed` when Spec allows reaching `zx_process_exit(1)` (`.unsupported`).
+    let nostd_src = br#"#![no_std]
+#![no_main]
+
+use core::panic::PanicInfo;
+
+unsafe extern "C" {
+    fn zx_process_exit(code: i32) -> !;
+}
+
+#[panic_handler]
+fn panic(_info: &PanicInfo<'_>) -> ! {
+    unsafe { zx_process_exit(2) }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn _start() -> ! {
+    unsafe { zx_process_exit(0) }
+}
+
+/// # Safety
+/// `ok` must be `true`; otherwise `zx_process_exit(1)` diverges.
+pub unsafe fn guarded_exit(ok: bool) -> bool {
+    if ok {
+        true
+    } else {
+        unsafe { zx_process_exit(1) }
+    }
+}
+"#;
+    let sandbox = SandboxCrate::new("nostd-nomain-bin", "");
+    fs::write(
+        sandbox.crate_dir.join("Cargo.toml"),
+        "[package]\nname = \"nostd-bin\"\nversion = \"0.1.0\"\nedition = \"2024\"\n",
+    )
+    .unwrap();
+    fs::remove_file(sandbox.crate_dir.join("src/lib.rs")).unwrap();
+    fs::write(sandbox.crate_dir.join("src/main.rs"), nostd_src).unwrap();
+
+    let strict_spec = format!(
+        "{LICENSE_HEADER}prelude\nimport Trusted.MirSemantics\n\n\
+         namespace Spec\nopen Trusted.MirAst Trusted.MirSemantics\n\
+         def specs : Specs where\n  \
+           safety := fun _ args => args = [.bool true]\n  \
+           property := fun _ => True\n\
+         end Spec\n"
+    );
+    let proof_lean = format!(
+        "{LICENSE_HEADER}prelude\nimport Expected\nimport Anneal.MirWp\n\n\
+         namespace Proof\nopen Trusted.MirAst Trusted.MirSemantics Anneal.MirWp\n\
+         theorem guarded_exec : execProg (entryProgForBody Captured.program 0) 32\n    \
+           {{ args := [.bool true] }} (fun o => o = .returned ⟨.bool true, ⟨[]⟩⟩) := rfl\n\
+         theorem guarded_wf :\n    \
+           WellFormed (entryProgForBody Captured.program 0) {{ args := [.bool true] }} :=\n  \
+           (spec_and_behavior_of_wp_eq (wpProg_of_execProg guarded_exec)).1\n\
+         theorem verify : Expected.claim := by\n  \
+           refine ⟨rfl, rfl, rfl, rfl, rfl, rfl, ?_, True.intro⟩\n  \
+           intro id body found\n  \
+           cases id with\n  \
+           | zero =>\n    \
+             have same : Captured.program.bodies[0] = body := Option.some.inj found\n    \
+             subst body\n    \
+             refine ⟨found, rfl, ?_⟩\n    \
+             intro args _ hreq\n    \
+             have h_eq : args = [.bool true] := hreq rfl\n    \
+             subst args\n    \
+             exact guarded_wf\n  \
+           | succ id => cases found\n\
+         end Proof\n"
+    );
+    fs::write(sandbox.proof_dir.join("Spec.lean"), &strict_spec).unwrap();
+    fs::write(sandbox.proof_dir.join("Proof.lean"), &proof_lean).unwrap();
+
+    // 2a. Passing run (`--panic abort --select guarded_exit`).
+    let mut ok_cmd = tools.command();
+    ok_cmd
+        .arg("--manifest-path")
+        .arg(sandbox.crate_dir.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(&sandbox.proof_dir)
+        .arg("--panic")
+        .arg("abort")
+        .arg("--select")
+        .arg("guarded_exit")
+        .arg("--artifacts")
+        .arg(&sandbox.artifacts_dir);
+    let ok_out = tools.run_command(ok_cmd).unwrap();
+    assert!(ok_out.status.success(), "{ok_out:?}");
+    let ok_receipt: Value = serde_json::from_slice(&ok_out.stdout).unwrap();
+    assert_eq!(ok_receipt["status"], "selected_unit_verified", "{ok_receipt}");
+    assert_eq!(ok_receipt["configuration"]["crate_name"], "nostd_bin", "{ok_receipt}");
+    assert_eq!(ok_receipt["configuration"]["crate_type"], "bin", "{ok_receipt}");
+    assert_eq!(ok_receipt["configuration"]["panic"], "abort", "{ok_receipt}");
+    assert_eq!(ok_receipt["taint_reasons"], serde_json::json!([]), "{ok_receipt}");
+
+    // 2b. Default `--panic unwind` fails at capture on `#![no_std]` binary.
+    let mut no_panic_cmd = tools.command();
+    no_panic_cmd
+        .arg("--manifest-path")
+        .arg(sandbox.crate_dir.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(&sandbox.proof_dir)
+        .arg("--select")
+        .arg("guarded_exit");
+    let no_panic_out = tools.run_command(no_panic_cmd).unwrap();
+    assert!(!no_panic_out.status.success(), "{no_panic_out:?}");
+    let no_panic_receipt: Value = serde_json::from_slice(&no_panic_out.stdout).unwrap();
+    assert_eq!(no_panic_receipt["status"], "compiler_failed", "{no_panic_receipt}");
+    assert_eq!(no_panic_receipt["phase"], "capture", "{no_panic_receipt}");
+
+    // 2c. Whole-crate scope without `--select` fails closed on `PanicImpl`/`ForeignMod`/`_start`.
+    let mut crate_cmd = tools.command();
+    crate_cmd
+        .arg("--manifest-path")
+        .arg(sandbox.crate_dir.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(&sandbox.proof_dir)
+        .arg("--panic")
+        .arg("abort");
+    let crate_out = tools.run_command(crate_cmd).unwrap();
+    assert!(!crate_out.status.success(), "{crate_out:?}");
+    let crate_receipt: Value = serde_json::from_slice(&crate_out.stdout).unwrap();
+    assert_eq!(crate_receipt["status"], "unsupported", "{crate_receipt}");
+    assert_eq!(crate_receipt["phase"], "capture", "{crate_receipt}");
+
+    // 2d. Attempting to verify `guarded_exit(false)` (reaching `zx_process_exit(1)`, which
+    // lowers to `.unsupported` -> `.fault .unsupported`) must fail closed at Lean audit.
+    let weak_spec = format!(
+        "{LICENSE_HEADER}prelude\nimport Trusted.MirSemantics\n\n\
+         namespace Spec\nopen Trusted.MirAst Trusted.MirSemantics\n\
+         def specs : Specs where\n  \
+           safety := fun _ _ => True\n  \
+           property := fun _ => True\n\
+         end Spec\n"
+    );
+    let false_branch_proof = format!(
+        "{LICENSE_HEADER}prelude\nimport Expected\nimport Anneal.MirWp\n\n\
+         namespace Proof\nopen Trusted.MirAst Trusted.MirSemantics Anneal.MirWp\n\
+         theorem diverge_exec : execProg (entryProgForBody Captured.program 0) 32\n    \
+           {{ args := [.bool false] }} (fun _ => True) := by trivial\n\
+         theorem verify : Expected.claim := Unit.unit\n\
+         end Proof\n"
+    );
+    fs::write(sandbox.proof_dir.join("Spec.lean"), &weak_spec).unwrap();
+    fs::write(sandbox.proof_dir.join("Proof.lean"), &false_branch_proof).unwrap();
+    let mut weak_cmd = tools.command();
+    weak_cmd
+        .arg("--manifest-path")
+        .arg(sandbox.crate_dir.join("Cargo.toml"))
+        .arg("--proof-dir")
+        .arg(&sandbox.proof_dir)
+        .arg("--panic")
+        .arg("abort")
+        .arg("--select")
+        .arg("guarded_exit");
+    let weak_out = tools.run_command(weak_cmd).unwrap();
+    assert!(!weak_out.status.success(), "{weak_out:?}");
+    let weak_receipt: Value = serde_json::from_slice(&weak_out.stdout).unwrap();
+    assert_eq!(weak_receipt["status"], "proof_failed", "{weak_receipt}");
+    assert_eq!(weak_receipt["phase"], "audit", "{weak_receipt}");
 }

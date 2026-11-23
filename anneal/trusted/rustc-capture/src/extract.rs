@@ -10,11 +10,13 @@
 //! variants remain errors; this adapter performs no control-flow or expression
 //! simplification.
 
-use rustc_abi::{ExternAbi, Integer, Primitive, TagEncoding, Variants};
+use rustc_abi::{Endian, ExternAbi, HasDataLayout, Integer, Primitive, Size, TagEncoding, Variants};
+use rustc_ast::Mutability;
 use rustc_hir::attrs::{InlineAttr, OptimizeAttr};
 use rustc_middle::middle::codegen_fn_attrs::{
     CodegenFnAttrFlags, CodegenFnAttrs, SanitizerFnAttrs,
 };
+use rustc_middle::mir::interpret::{AllocRange, Allocation, GlobalAlloc, Provenance};
 use rustc_middle::mir::{self, MirPhase, RuntimePhase};
 use rustc_middle::ty::{self, TyCtxt, TypingEnv};
 use rustc_span::def_id::{DefId, LocalDefId};
@@ -265,30 +267,120 @@ fn operand<'tcx>(tcx: TyCtxt<'tcx>, op: &mir::Operand<'tcx>) -> Result<ir::Opera
                     ir::EnumTagRepr::Scalar(tag) => tag.width.bits(),
                 },
             };
-            // Only already-valued integer scalars are admitted. In particular,
-            // do not evaluate an Unevaluated constant and silently substitute
-            // its result for an unrepresented constant obligation.
+            // Only already-valued integer scalars or read-only `.rodata`
+            // `GlobalAlloc::Memory` scalars are admitted. In particular, do not
+            // evaluate an `Unevaluated` constant and silently substitute its
+            // result for an unrepresented constant obligation.
             // `Scalar::Int` denotes "The raw bytes of a simple value";
             // `try_to_scalar_int` excludes provenance-bearing pointers.
-            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/consts.rs
+            // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/consts.rs#L33-L71
             // https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/value.rs
             let mir::Const::Val(value, _) = constant.const_ else {
                 return Err(format!("unsupported constant: {:?}", constant.const_));
             };
-            let value = value
-                .try_to_scalar_int()
-                .ok_or("only integer scalar constants are modeled")?;
-            if value.size().bits() != u64::from(width) {
-                return Err("scalar constant width disagrees with its type".into());
-            }
-            let lit = ConstLit::Scalar {
-                bits: value.to_bits_unchecked(),
+            let bits = match value {
+                mir::ConstValue::Scalar(scalar) => {
+                    let scalar_int = scalar
+                        .try_to_scalar_int()
+                        .map_err(|_| "only integer scalar constants are modeled")?;
+                    if scalar_int.size().bits() != u64::from(width) {
+                        return Err("scalar constant width disagrees with its type".into());
+                    }
+                    scalar_int.to_bits_unchecked()
+                }
+                mir::ConstValue::Indirect { alloc_id, offset } => {
+                    match tcx.global_alloc(alloc_id) {
+                        GlobalAlloc::Memory(const_alloc) => {
+                            read_rodata_scalar_from_alloc(&tcx, const_alloc.inner(), offset, width)?
+                        }
+                        GlobalAlloc::Static(_) => {
+                            return Err(
+                                "static global allocations are unsupported in constants".into(),
+                            );
+                        }
+                        GlobalAlloc::Function { .. } => {
+                            return Err(
+                                "function global allocations are unsupported in constants".into(),
+                            );
+                        }
+                        GlobalAlloc::VTable(..) => {
+                            return Err(
+                                "vtable global allocations are unsupported in constants".into(),
+                            );
+                        }
+                        GlobalAlloc::TypeId { .. } => {
+                            return Err(
+                                "type-id global allocations are unsupported in constants".into(),
+                            );
+                        }
+                    }
+                }
+                mir::ConstValue::ZeroSized | mir::ConstValue::Slice { .. } => {
+                    return Err("only integer scalar constants are modeled".into());
+                }
             };
+            let lit = ConstLit::Scalar { bits };
             ir::validate_constant(&t, lit)?;
             Ok(ir::Operand::Constant { ty: t, lit })
         }
         other => Err(format!("unsupported operand: {other:?}")),
     }
+}
+
+/// Read an initialized, provenance-free little-endian scalar out of an immutable
+/// (`.rodata`, `Mutability::Not`) `GlobalAlloc::Memory` allocation.
+///
+/// Fails closed on mutable allocations, non-little-endian targets, out-of-bounds
+/// or overflowing ranges, uninitialized bytes (`InitMask`), and overlapping
+/// pointer provenance (`ProvenanceMap`), matching `Allocation::read_scalar`
+/// (`read_provenance = false`):
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/interpret/allocation.rs#L698-L737
+fn read_rodata_scalar_from_alloc<Prov: Provenance>(
+    cx: &impl HasDataLayout,
+    alloc: &Allocation<Prov>,
+    offset: Size,
+    width: u32,
+) -> Result<u128> {
+    if cx.data_layout().endian != Endian::Little {
+        return Err("non-little-endian global allocation constants are unsupported".into());
+    }
+    if width == 0 || !width.is_multiple_of(8) || width > 128 {
+        return Err(format!(
+            "unsupported scalar width {width} for global allocation constant"
+        ));
+    }
+    if alloc.mutability != Mutability::Not {
+        return Err("mutable global allocations are unsupported in constants".into());
+    }
+    let byte_len = u64::from(width / 8);
+    let end = offset
+        .bytes()
+        .checked_add(byte_len)
+        .ok_or("global allocation constant offset overflows")?;
+    if end > alloc.size().bytes() {
+        return Err(format!(
+            "global allocation constant range [{}..{end}) exceeds allocation size {}",
+            offset.bytes(),
+            alloc.size().bytes()
+        ));
+    }
+    let range = AllocRange {
+        start: offset,
+        size: Size::from_bytes(byte_len),
+    };
+    if !alloc.provenance().range_empty(range, cx) {
+        return Err("provenance-bearing global allocation constants are unsupported".into());
+    }
+    let scalar = alloc
+        .read_scalar(cx, range, false)
+        .map_err(|err| format!("unreadable global allocation constant: {err:?}"))?;
+    let mir::interpret::Scalar::Int(scalar_int) = scalar else {
+        return Err("provenance-bearing global allocation constants are unsupported".into());
+    };
+    if scalar_int.size().bits() != u64::from(width) {
+        return Err("global allocation constant width disagrees with its type".into());
+    }
+    Ok(scalar_int.to_bits_unchecked())
 }
 
 /// Extract MIR unary operators (`Not` and `Neg`), refusing `PtrMetadata`
@@ -457,12 +549,21 @@ fn check_call_source(call_source: mir::CallSource) -> Result<()> {
 
 /// `SwitchInt` evaluates its operand and selects an explicit or otherwise edge.
 /// `Unreachable` is retained because "Executing this terminator is UB."
-/// Calls, drop, unwind, assembly and all other terminators are refused. They
-/// need interprocedural, memory, or unwinding rules absent from this syntax;
-/// an apparently unreachable occurrence is not permission to erase it.
+/// Diverging calls (`TerminatorKind::Call { target: None, .. }`, e.g.
+/// `zx_process_exit -> !` or `_start -> !`) never return to a continuation
+/// block (`target` is "Where to go after this call returns. If none, the
+/// call necessarily diverges."); after checking [`check_call_source`], they
+/// lower to `ir::Terminator::Unsupported`
+/// (`Trusted.MirAst.TerminatorKind.unsupported`), which steps fail-closed to
+/// `.fault .unsupported` in `Trusted.MirSemantics` if reachable while
+/// permitting verified functions whose diverging guard branches are proved
+/// unreachable.
+/// Returning calls (`target: Some(_)`), `Drop`, unwind, assembly, and all
+/// other terminators stay refused at capture time.
 /// `TerminatorKind::Call` explicitly runs [`check_call_source`] first so
-/// `CallSource::Use` fails closed even once general call support is added.
+/// `CallSource::Use` fails closed even for diverging calls.
 /// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L692-L740
+/// https://github.com/rust-lang/rust/blob/f8a08b688cbe60acc386ed1fbd1b7cbaaf5576b1/compiler/rustc_middle/src/mir/syntax.rs#L800-L821
 fn terminator<'tcx>(tcx: TyCtxt<'tcx>, term: &mir::TerminatorKind<'tcx>) -> Result<ir::Terminator> {
     Ok(match term {
         mir::TerminatorKind::Goto { target } => ir::Terminator::Goto {
@@ -478,9 +579,17 @@ fn terminator<'tcx>(tcx: TyCtxt<'tcx>, term: &mir::TerminatorKind<'tcx>) -> Resu
         },
         mir::TerminatorKind::Return => ir::Terminator::Ret,
         mir::TerminatorKind::Unreachable => ir::Terminator::Unreachable,
-        mir::TerminatorKind::Call { call_source, .. } => {
+        mir::TerminatorKind::Call {
+            call_source,
+            target,
+            ..
+        } => {
             check_call_source(*call_source)?;
-            return Err(format!("unsupported terminator: {term:?}"));
+            if target.is_none() {
+                ir::Terminator::Unsupported
+            } else {
+                return Err(format!("unsupported terminator: {term:?}"));
+            }
         }
         other => return Err(format!("unsupported terminator: {other:?}")),
     })
@@ -559,8 +668,10 @@ pub fn enum_id(tcx: TyCtxt<'_>, def: DefId) -> u32 {
 /// of the "topmost" tracked call", which `core` observes through "the
 /// `core::intrinsics::caller_location` intrinsic". `rustc` passes the
 /// location "by appending an implicit parameter to the function ABI", outside
-/// the MIR locals. Reading it takes a call, and the admitted fragment refuses
-/// every call and assertion terminator, so no captured body can observe it.
+/// the MIR locals. Reading it takes a returning call (with `caller_location`
+/// returning `&'static Location<'_>`), and the admitted fragment refuses every
+/// returning call (`target: Some(_)`) and assertion terminator, so no captured
+/// body can observe it.
 /// The compiler also sets this flag when a trait method inherits the
 /// attribute from its declaration.
 /// https://github.com/rust-lang/reference/blob/a286e1ecb8ce193d50056e4bb042eea9b23876ef/src/attributes/codegen.md?plain=1#L763-L779
@@ -1316,5 +1427,96 @@ mod tests {
         ] {
             assert!(check_call_source(other).is_ok(), "{other:?}");
         }
+    }
+
+    #[test]
+    fn rodata_global_alloc_reader_enforces_immutability_init_bounds_endian_and_no_provenance() {
+        use rustc_abi::{AddressSpace, Align, TargetDataLayout};
+        use rustc_middle::mir::interpret::{AllocId, CtfeProvenance, Pointer, Scalar};
+        use std::num::NonZero;
+
+        let le_dl = TargetDataLayout::parse_from_llvm_datalayout_string(
+            "e-m:e-p270:32:32-p271:32:32-p272:64:64-i64:64-i128:128-f80:128-n8:16:32:64-S128",
+            AddressSpace::ZERO,
+        )
+        .ok()
+        .expect("valid little-endian data layout");
+        let be_dl = TargetDataLayout::parse_from_llvm_datalayout_string(
+            "E-m:e-p:64:64-i64:64-i128:128-n32:64-S128",
+            AddressSpace::ZERO,
+        )
+        .ok()
+        .expect("valid big-endian data layout");
+
+        // 1. Valid immutable `.rodata` scalar at non-zero offset (little-endian).
+        let bytes = [
+            0xaa, 0xbb, 0x01, 0x00, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+        ];
+        let ro_alloc: Allocation<CtfeProvenance> =
+            Allocation::from_bytes(bytes.as_slice(), Align::EIGHT, Mutability::Not, ());
+        assert_eq!(
+            read_rodata_scalar_from_alloc(&le_dl, &ro_alloc, Size::from_bytes(3), 64).unwrap(),
+            0x0807_0605_0403_0200
+        );
+        assert_eq!(
+            read_rodata_scalar_from_alloc(&le_dl, &ro_alloc, Size::from_bytes(2), 8).unwrap(),
+            1
+        );
+
+        // 2. Reject big-endian layouts, mutable allocations, and out-of-bounds ranges.
+        let be_err =
+            read_rodata_scalar_from_alloc(&be_dl, &ro_alloc, Size::ZERO, 8).unwrap_err();
+        assert!(be_err.contains("non-little-endian"), "{be_err}");
+
+        let mut_alloc: Allocation<CtfeProvenance> =
+            Allocation::from_bytes(bytes.as_slice(), Align::EIGHT, Mutability::Mut, ());
+        let mut_err =
+            read_rodata_scalar_from_alloc(&le_dl, &mut_alloc, Size::ZERO, 64).unwrap_err();
+        assert!(mut_err.contains("mutable global allocations"), "{mut_err}");
+
+        let oob_err =
+            read_rodata_scalar_from_alloc(&le_dl, &ro_alloc, Size::from_bytes(8), 64).unwrap_err();
+        assert!(oob_err.contains("exceeds allocation size"), "{oob_err}");
+
+        // 3. Reject uninitialized bytes inside range.
+        let mut uninit_alloc: Allocation<CtfeProvenance> = Allocation::from_bytes(
+            [1u8, 2, 3, 4, 5, 6, 7, 8].as_slice(),
+            Align::EIGHT,
+            Mutability::Mut,
+            (),
+        );
+        uninit_alloc.write_uninit(
+            &le_dl,
+            AllocRange {
+                start: Size::from_bytes(2),
+                size: Size::from_bytes(1),
+            },
+        );
+        uninit_alloc.mutability = Mutability::Not;
+        let uninit_err =
+            read_rodata_scalar_from_alloc(&le_dl, &uninit_alloc, Size::ZERO, 64).unwrap_err();
+        assert!(uninit_err.contains("unreadable global allocation"), "{uninit_err}");
+
+        // 4. Reject pointer provenance inside the read range.
+        let mut prov_alloc: Allocation<CtfeProvenance> =
+            Allocation::from_bytes([0u8; 8].as_slice(), Align::EIGHT, Mutability::Mut, ());
+        let ptr = Pointer::new(
+            CtfeProvenance::from(AllocId(NonZero::new(7).unwrap())),
+            Size::from_bytes(16),
+        );
+        prov_alloc
+            .write_scalar(
+                &le_dl,
+                AllocRange {
+                    start: Size::ZERO,
+                    size: Size::from_bytes(8),
+                },
+                Scalar::from_pointer(ptr, &le_dl),
+            )
+            .unwrap();
+        prov_alloc.mutability = Mutability::Not;
+        let prov_err =
+            read_rodata_scalar_from_alloc(&le_dl, &prov_alloc, Size::ZERO, 64).unwrap_err();
+        assert!(prov_err.contains("provenance-bearing"), "{prov_err}");
     }
 }

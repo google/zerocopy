@@ -2861,3 +2861,219 @@ fn whole_crate_refuses_itemless_link_foreign_block_and_native_libraries() {
     );
     sel_fixture.assert_no_capture_artifacts();
 }
+
+#[test]
+fn nostd_nomain_binary_selected_unit_captures_panic_handler_and_diverging_call() {
+    let nostd_src = br#"#![no_std]
+#![no_main]
+
+use core::panic::PanicInfo;
+
+unsafe extern "C" {
+    fn zx_process_exit(code: i32) -> !;
+}
+
+#[panic_handler]
+fn panic(_info: &PanicInfo<'_>) -> ! {
+    unsafe { zx_process_exit(1) }
+}
+
+#[unsafe(no_mangle)]
+pub extern "C" fn _start() -> ! {
+    unsafe { zx_process_exit(0) }
+}
+
+#[inline(never)]
+fn loop_forever() -> ! {
+    loop {}
+}
+
+pub unsafe fn guarded_exit(x: u64) -> u64 {
+    if x == 0 {
+        unsafe { zx_process_exit(1) }
+    }
+    x
+}
+
+pub unsafe fn guarded_local_diverge(flag: bool) -> u64 {
+    if flag {
+        42
+    } else {
+        loop_forever()
+    }
+}
+
+pub fn spin_never() -> ! {
+    loop {}
+}
+"#;
+
+    // 1. Selected function with diverging foreign `-> !` call compiles and captures
+    // under `--crate-type=bin --panic=abort`, emitting `.unsupported` for `target: None`.
+    let fixture = Capture::new(nostd_src);
+    let output = fixture
+        .command()
+        .args(["--crate-type=bin", "--panic=abort", "--select=guarded_exit"])
+        .output()
+        .unwrap();
+    assert!(output.status.success(), "{output:?}");
+    let manifest_raw = std::fs::read_to_string(fixture.output.join("capture.json")).unwrap();
+    let manifest: serde_json::Value = serde_json::from_str(&manifest_raw).unwrap();
+    assert_eq!(manifest["configuration"]["crate_type"], "bin");
+    assert_eq!(manifest["configuration"]["panic"], "abort");
+    let lean_path = fixture.output.join("Captured.lean");
+    let lean_src = std::fs::read_to_string(&lean_path).unwrap();
+    assert!(
+        lean_src.contains("Trusted.MirAst.TerminatorKind.unsupported"),
+        "expected diverging `-> !` call to emit TerminatorKind.unsupported:\n{lean_src}"
+    );
+    compile_captured_lean_if_trusted_sources_present(&lean_path);
+
+    // 2. Selected function calling a local `-> !` helper also lowers `target: None`
+    // cleanly without accepting returning calls.
+    let local_div_fixture = Capture::new(nostd_src);
+    let local_div_out = local_div_fixture
+        .command()
+        .args(["--crate-type=bin", "--panic=abort", "--select=guarded_local_diverge"])
+        .output()
+        .unwrap();
+    assert!(local_div_out.status.success(), "{local_div_out:?}");
+    compile_captured_lean_if_trusted_sources_present(
+        &local_div_fixture.output.join("Captured.lean"),
+    );
+
+    // 3. Selected function returning `!` (`MirTy.never`) captures cleanly.
+    let spin_fixture = Capture::new(nostd_src);
+    let spin_out = spin_fixture
+        .command()
+        .args(["--crate-type=bin", "--panic=abort", "--select=spin_never"])
+        .output()
+        .unwrap();
+    assert!(spin_out.status.success(), "{spin_out:?}");
+    compile_captured_lean_if_trusted_sources_present(&spin_fixture.output.join("Captured.lean"));
+
+    // 4. Selecting `_start` (`no_mangle` + `extern "C"`) or `panic` (`&PanicInfo`)
+    // must still fail closed.
+    for forbidden_root in ["_start", "panic"] {
+        let bad_sel = Capture::new(nostd_src);
+        let bad_out = bad_sel
+            .command()
+            .args([
+                "--crate-type=bin",
+                "--panic=abort",
+                &format!("--select={forbidden_root}"),
+            ])
+            .output()
+            .unwrap();
+        assert_eq!(bad_out.status.code(), Some(1), "{forbidden_root}: {bad_out:?}");
+        let failure = status(&bad_out);
+        assert_eq!(failure["status"], "unsupported", "{failure}");
+        bad_sel.assert_no_capture_artifacts();
+    }
+
+    // 5. Whole-crate mode refuses the `#![no_std]` binary crate because `#[panic_handler]`
+    // (`PanicImpl`), `ForeignMod`, and `_start` ABI/`no_mangle` are excluded from crate scope.
+    let crate_bad = Capture::new(nostd_src);
+    let crate_out = crate_bad
+        .command()
+        .args(["--crate-type=bin", "--panic=abort", "--scope=crate"])
+        .output()
+        .unwrap();
+    assert_eq!(crate_out.status.code(), Some(1), "{crate_out:?}");
+    let crate_status = status(&crate_out);
+    assert_eq!(crate_status["status"], "unsupported");
+    assert!(
+        crate_status.to_string().contains("PanicImpl"),
+        "expected PanicImpl whole-crate refusal, got {crate_status}"
+    );
+    crate_bad.assert_no_capture_artifacts();
+
+    // 6. Omitting `--panic=abort` defaults to `--panic=unwind` and fails closed.
+    let unwind_bad = Capture::new(nostd_src);
+    let unwind_out = unwind_bad
+        .command()
+        .args(["--crate-type=bin", "--select=guarded_exit"])
+        .output()
+        .unwrap();
+    assert_eq!(unwind_out.status.code(), Some(1), "{unwind_out:?}");
+    assert_eq!(status(&unwind_out)["status"], "compiler_failed");
+    unwind_bad.assert_no_capture_artifacts();
+}
+
+#[test]
+fn binary_capture_boundaries_admit_std_bin_and_refuse_lib_panic_impl_returning_calls_and_static() {
+    // 1. Standard library-backed binary (`fn main() {}`) passes whole-crate capture.
+    let std_bin = b"pub fn answer() -> u64 { 42 }\nfn main() {}\n";
+    let ok_bin = Capture::new(std_bin);
+    let ok_out = ok_bin
+        .command()
+        .args(["--crate-type=bin", "--scope=crate"])
+        .output()
+        .unwrap();
+    assert!(ok_out.status.success(), "{ok_out:?}");
+    let manifest_raw = std::fs::read_to_string(ok_bin.output.join("capture.json")).unwrap();
+    let manifest: serde_json::Value = serde_json::from_str(&manifest_raw).unwrap();
+    assert_eq!(manifest["configuration"]["crate_type"], "bin");
+    assert_eq!(manifest["configuration"]["panic"], "unwind");
+    compile_captured_lean_if_trusted_sources_present(&ok_bin.output.join("Captured.lean"));
+
+    // 2. Crate-local `#[panic_handler]` (`LangItem::PanicImpl`) remains refused on `--crate-type=lib`.
+    let nostd_lib_with_panic = br#"#![no_std]
+use core::panic::PanicInfo;
+#[panic_handler]
+fn panic(_info: &PanicInfo<'_>) -> ! { loop {} }
+pub fn id(x: u64) -> u64 { x }
+"#;
+    let bad_lib = Capture::new(nostd_lib_with_panic);
+    let bad_lib_out = bad_lib
+        .command()
+        .args(["--crate-type=lib", "--panic=abort", "--select=id"])
+        .output()
+        .unwrap();
+    assert_eq!(bad_lib_out.status.code(), Some(1), "{bad_lib_out:?}");
+    let bad_lib_status = status(&bad_lib_out);
+    assert_eq!(bad_lib_status["status"], "unsupported", "{bad_lib_status}");
+    assert!(
+        bad_lib_status.to_string().contains("PanicImpl")
+            || bad_lib_status.to_string().contains("lang item"),
+        "expected PanicImpl refusal on lib crate, got {bad_lib_status}"
+    );
+    bad_lib.assert_no_capture_artifacts();
+
+    // 3. Crate-level `#![crate_type = "bin"]` attribute stays refused even when `--crate-type=bin`
+    // is explicitly requested on the CLI.
+    let attr_bin = Capture::new(b"#![crate_type = \"bin\"]\nfn main() {}\n");
+    let attr_out = attr_bin
+        .command()
+        .args(["--crate-type=bin", "--scope=crate"])
+        .output()
+        .unwrap();
+    assert_eq!(attr_out.status.code(), Some(1), "{attr_out:?}");
+    let attr_status = status(&attr_out);
+    assert_eq!(attr_status["status"], "unsupported", "{attr_status}");
+    assert!(
+        attr_status.to_string().contains("crate_type"),
+        "expected crate_type attribute refusal, got {attr_status}"
+    );
+    attr_bin.assert_no_capture_artifacts();
+
+    // 4. Returning calls (`target: Some(_)`) remain refused in both `bin` and `lib`.
+    let returning_call = b"#[inline(never)] fn helper() -> u64 { 1 }\npub fn caller() -> u64 { helper() }\nfn main() {}\n";
+    let call_bin = Capture::new(returning_call);
+    let call_out = call_bin
+        .command()
+        .args(["--crate-type=bin", "--select=caller"])
+        .output()
+        .unwrap();
+    assert_eq!(call_out.status.code(), Some(1), "{call_out:?}");
+    assert_eq!(status(&call_out)["status"], "unsupported");
+    call_bin.assert_no_capture_artifacts();
+
+    // 5. `static` items remain refused (`StaticDef` / `GlobalAlloc::Static`).
+    let static_src = b"static S: u64 = 7;\npub fn read_static() -> u64 { S }\n";
+    let static_bad = Capture::new(static_src);
+    let static_out = static_bad.command().args(["--select=read_static"]).output().unwrap();
+    assert_eq!(static_out.status.code(), Some(1), "{static_out:?}");
+    assert_eq!(status(&static_out)["status"], "unsupported");
+    static_bad.assert_no_capture_artifacts();
+}
